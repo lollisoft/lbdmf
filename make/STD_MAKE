@@ -1,10 +1,13 @@
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.5 $
+# * $Revision: 1.6 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.5 2001/11/05 20:24:24 lothar Exp $
+# * $Id: STD_MAKE,v 1.6 2001/11/06 21:52:25 lothar Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.6  2001/11/06 21:52:25  lothar
+# * no message
+# *
 # * Revision 1.5  2001/11/05 20:24:24  lothar
 # * More standard values
 # *
@@ -23,12 +26,16 @@
 # will be rewritten for GNU make
 
 ifeq ($(OSTYPE), Windows_NT)
-STD_INCL = -i=.;Q:\develop\Tools\WATCOM\h; \
-	Q:\develop\Tools\WATCOM\h\nt; \
-	Q:\develop\projects\cpp\interfaces; \
-	Q:\develop\projects\cpp\include; \
-	Q:\develop\projects\dll\include; \
-	Q:\develop\projects\lib\include
+
+STD_INCL = -i=.;Q:\develop\Tools\WATCOM\h;Q:\develop\Tools\WATCOM\h\nt;Q:\develop\projects\cpp\interfaces;Q:\develop\projects\cpp\include;Q:\develop\projects\dll\include;Q:\develop\projects\lib\include
+
+OBJ =obj
+C_OPS =
+L_OPS =-o
+
+CC =wpp386
+LINK =wlink
+
 endif
 
 ifeq ($(OSTYPE), linux)
