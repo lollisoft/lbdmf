@@ -6,7 +6,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.21 2004/07/18 07:28:26 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.22 2004/07/21 22:21:10 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -44,11 +44,15 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.21 $
+ * $Revision: 1.22 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.21 2004/07/18 07:28:26 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.22 2004/07/21 22:21:10 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.22  2004/07/21 22:21:10  lollisoft
+ * Hang on exit solved by providing lb_wxGUI instance to lb_wxFrame. The
+ * frame then can cleanup on exit.
+ *
  * Revision 1.21  2004/07/18 07:28:26  lollisoft
  * Now the database sample works also under linux. Some bugs solved and minor changes
  *
@@ -96,6 +100,8 @@
 #define DYNAMIC_TEST1		1004
 #define DYNAMIC_TEST2           1005
 
+class lb_wxGUI;
+
 #ifdef LB_I_EXTENTIONS
 /*...sclass lb_wxFrame:0:*/
 class lb_wxFrame : 
@@ -105,15 +111,24 @@ class lb_wxFrame :
 public:
 /*...sctors\47\dtors:8:*/
         lb_wxFrame():
-        wxFrame(NULL, -1, "Dynamic sample", wxPoint(50, 50), wxSize(450, 340)) { menu_bar = NULL; }
+        	wxFrame(NULL, -1, "Dynamic sample", wxPoint(50, 50), wxSize(450, 340))
+        {
+        	printf("lb_wxFrame::lb_wxFrame() called.\n");
+        	menu_bar = NULL; 
+        	gui = NULL;
+        }
+        
         virtual ~lb_wxFrame() {
         	_LOG << "Closing GUI frame" LOG_
+        	printf("lb_wxFrame::~lb_wxFrame() called.\n");
         }
 /*...e*/
 public:
         lb_wxFrame(wxFrame *frame, char *title, int x, int y, int w, int h);
 
         DECLARE_LB_UNKNOWN()
+
+	void setGUI(lb_wxGUI* _gui) { gui = _gui; }
 
         virtual lb_wxFrame* getPeer() { return this; } 
 
@@ -157,6 +172,9 @@ public:
         virtual lb_I_Unknown* LB_STDCALL getEventsource(lb_I_EventConnector* object) { return NULL; }
         
         wxMenuBar* menu_bar;
+        
+        lb_wxGUI* gui;
+        
         UAP(lb_I_EventManager, eman, __FILE__, __LINE__)
         UAP(lb_I_Dispatcher, dispatcher, __FILE__, __LINE__)
 };
@@ -314,7 +332,6 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::setData(lb_I_Unknown* uk) {
 lbDatabaseDialog::lbDatabaseDialog()
 	: wxDialog(NULL, -1, wxString(_T("Database dialog")))
 {
-
 }
 /*...slbErrCodes LB_STDCALL lbDatabaseDialog\58\\58\registerEventHandler\40\lb_I_Dispatcher\42\ dispatcher\41\:0:*/
 lbErrCodes LB_STDCALL lbDatabaseDialog::registerEventHandler(lb_I_Dispatcher* dispatcher) {
@@ -437,7 +454,7 @@ void lbDatabaseDialog::init(wxWindow* parent, wxString SQLString) {
 
 
 lbDatabaseDialog::~lbDatabaseDialog() {
-
+	printf("lbDatabaseDialog::~lbDatabaseDialog() called.\n");
 }
 
 /*...slbErrCodes LB_STDCALL lbDatabaseDialog\58\\58\lbDBUpdate\40\\41\:0:*/
@@ -558,7 +575,10 @@ class lb_wxGUI
 public:
 /*...sctor\47\dtor:8:*/
         lb_wxGUI() {
+        	printf("lb_wxGUI::lb_wxGUI() called.\n");
+        	
                 _LOG << "lb_I_wxGUI object will be created and initialized" LOG_;
+                
                 eventCount = 0;
                 sampleQuery = NULL;
                 handlersInitialized = FALSE;
@@ -567,12 +587,16 @@ public:
         }
 
 	virtual ~lb_wxGUI() { 
+/* 
+	Handled in cleanup event handler	
 	
 		if (dialog) {
 			dialog->Destroy();
 			delete dialog;
 			dialog = NULL;
 		}
+*/
+		printf("lb_wxGUI::~lb_wxGUI() called.\n");
 	}
 /*...e*/
 
@@ -682,6 +706,16 @@ public:
 /*...e*/
         
 
+	/*
+	 * Cleanup. This will destroy all possible (hidden) dialogs.
+	 * These dialogs are like the database form sample dialog, wich woild
+	 * be created only once and then reused by ShowModal().
+	 */
+
+	lbErrCodes LB_STDCALL cleanup();
+
+
+
         int eventCount;
         
         lb_I_Unknown* _main_frame;
@@ -720,16 +754,6 @@ lbErrCodes LB_STDCALL lb_wxGUI::setDispatcher(lb_I_Dispatcher* disp) {
 /*...e*/
 
 
-/*...slbErrCodes LB_STDCALL lb_wxGUI\58\\58\registerEventHandler\40\lb_I_Dispatcher\42\ disp\41\:0:*/
-lbErrCodes LB_STDCALL lb_wxGUI::registerEventHandler(lb_I_Dispatcher* disp) {
-       _LOG << "Register event handler" LOG_;
-        
-        /**
-         * Need a event name map to event id
-         */
-        return ERR_NONE;
-}
-/*...e*/
 /*...slbErrCodes LB_STDCALL lb_wxGUI\58\\58\registerEvent\40\char\42\ EvName\44\ int \38\ EvNr\41\:0:*/
 lbErrCodes LB_STDCALL lb_wxGUI::registerEvent(char* EvName, int & EvNr) {
        _LOG << "Registering an event" LOG_;
@@ -812,6 +836,28 @@ lbErrCodes LB_STDCALL lb_wxGUI::insertMenuEntry(lb_I_Unknown* entry) {
 /*...e*/
 /*...e*/
 
+/*...slbErrCodes LB_STDCALL lb_wxGUI\58\\58\registerEventHandler\40\lb_I_Dispatcher\42\ disp\41\:0:*/
+lbErrCodes LB_STDCALL lb_wxGUI::registerEventHandler(lb_I_Dispatcher* disp) {
+
+// Cleanup is no event handler.        
+//        disp->addEventHandlerFn(this, (lbEvHandler) &lb_wxGUI::cleanup, "wxGUI_Cleanup"); 
+         
+        return ERR_NONE;
+}
+/*...e*/
+lbErrCodes LB_STDCALL lb_wxGUI::cleanup() {
+	
+	// destroy all still created forms that are hidden.
+
+	if (dialog) {
+		dialog->Destroy();
+		delete dialog;
+		dialog = NULL;
+	}
+
+        return ERR_NONE;
+}
+
 /*...slb_I_DatabaseForm\42\ LB_STDCALL lb_wxGUI\58\\58\createDBForm\40\char\42\ formName\41\:0:*/
 lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::createDBForm(char* SQLQuery) {
 
@@ -832,6 +878,8 @@ lb_I_Unknown* LB_STDCALL lb_wxGUI::createFrame() {
         
         frame->setModuleManager(getModuleManager(), __FILE__, __LINE__);
         frame->queryInterface("lb_I_Unknown", (void**) &_main_frame, __FILE__, __LINE__);
+
+	frame->setGUI(this);
 
 	char ptr[20] = "";
 	sprintf(ptr, "%p", frame);
@@ -920,6 +968,7 @@ class MyApp: public wxApp
 	  metaApp = NULL;
 #endif
 	 panel = NULL;
+	 printf("MyApp::MyApp() called.\n");
 	}
 
 	virtual ~MyApp() { 
@@ -930,6 +979,7 @@ class MyApp: public wxApp
 
 		if (wxGUI) delete wxGUI;
 
+		printf("MyApp::~MyApp() called.\n");
 	}
 
     bool OnInit(void);
@@ -1054,6 +1104,7 @@ IMPLEMENT_APP  (MyApp)
 
 /*...sMyApp\58\\58\OnInit\40\void\41\:0:*/
 // `Main program' equivalent, creating windows and returning main app frame
+/*...stestthis:0:*/
 void testthis(void* t) {
 #ifdef bla
 	char ptr[20] = "";
@@ -1061,6 +1112,7 @@ void testthis(void* t) {
 	_LOG << "This is " << ptr LOG_
 #endif
 }
+/*...e*/
 
 bool MyApp::OnInit(void)
 {
@@ -1121,7 +1173,14 @@ bool MyApp::OnInit(void)
   if (wxGUI == NULL) {
         wxGUI = new lb_wxGUI();
         wxGUI->setModuleManager(mm.getPtr(), __FILE__, __LINE__);
-        wxGUI->setDispatcher(*&disp);
+
+/* No event for a cleanup issue, that can be handled by lb_wxFrame knowing of wxGUI
+	int wxGUI_Cleanup;
+
+	ev_manager->registerEvent("wxGUI_Cleanup", wxGUI_Cleanup);
+
+        wxGUI->registerEventHandler(*&disp);
+*/
 
 
 	// Register Events, that I provide
@@ -1154,22 +1213,25 @@ bool MyApp::OnInit(void)
 
 /*...sload the frame \40\peer is the frame \63\\63\\41\:0:*/
 
-  lb_I_Unknown *uk = wxGUI->createFrame();
-  char ptr[20] = "";
-  sprintf(ptr, "%p", uk);
+	lb_I_Unknown *uk = wxGUI->createFrame();
+	char ptr[20] = "";
+	sprintf(ptr, "%p", uk);
   
-  _LOG << "Have got a frame: " << ptr LOG_
+	_LOG << "Have got a frame: " << ptr LOG_
   
-  /**
-   * A Peer interface to get the derived class
-   */
+	/**
+	 * A Peer interface to get the derived class
+	 */
 
-//  QI(uk_em, lb_I_EventManager, ev_manager, __FILE__, __LINE__)
-//  QI(uk, lb_I_wxFrame, frame, __FILE__, __LINE__)
+	//  QI(uk_em, lb_I_EventManager, ev_manager, __FILE__, __LINE__)
+	//  QI(uk, lb_I_wxFrame, frame, __FILE__, __LINE__)
+
+
 	uk->queryInterface("lb_I_wxFrame", (void**) &frame, __FILE__, __LINE__);
-  frame_peer = frame->getPeer();
+	
+	frame_peer = frame->getPeer();
   
-  sprintf(ptr, "%p", frame_peer);
+	sprintf(ptr, "%p", frame_peer);
   
 /*...e*/
   
@@ -1359,6 +1421,9 @@ _LOG << "Made panel" LOG_
 _LOG << "Showed the window" LOG_
 #endif
 
+
+/*...e*/
+
 /*...sInit the meta application:0:*/
 #ifdef LB_I_EXTENTIONS
   UAP_REQUEST(mm.getPtr(), lb_I_MetaApplication, metaApp)
@@ -1380,7 +1445,6 @@ _LOG << "Showed the window" LOG_
 _LOG << "Initialized metaapplication" LOG_
 #endif
 
-/*...e*/
 #ifdef LB_I_EXTENTIONS
   if (metaApp != NULL) metaApp->run();
 #endif
@@ -1714,8 +1778,15 @@ lb_wxFrame::lb_wxFrame(wxFrame *frame, char *title, int x, int y, int w, int h):
 /*...slb_wxFrame\58\\58\OnQuit\40\wxCommandEvent\38\ WXUNUSED\40\event\41\ \41\:0:*/
 void lb_wxFrame::OnQuit(wxCommandEvent& WXUNUSED(event) )
 {
-  _LOG << "Closing GUI demo" LOG_
-  Close(TRUE);
+  	/*
+  	 * Let the lb_wxGUI class cleanup it's created  and hidden forms.
+  	 * The database form sample is a modal form and may be making the
+  	 * problem, if it is not destroyed here.
+  	 */
+  	 
+	if (gui) gui->cleanup();
+	
+	Close(TRUE);
 }
 /*...e*/
 /*...slb_wxFrame\58\\58\OnAbout\40\wxCommandEvent\38\ WXUNUSED\40\event\41\ \41\:0:*/
