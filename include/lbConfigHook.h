@@ -1,6 +1,10 @@
 //#include <windows.h>
 #include <stdlib.h>
+
+#ifdef WINDOWS
 #include <conio.h>
+#endif
+
 #include <stdio.h>
 #include <iostream.h>
 
@@ -8,6 +12,10 @@
 
 #ifndef __LB_CONFIG_HOOK__
 #define __LB_CONFIG_HOOK__
+
+#ifdef LINUX
+#define HINSTANCE void*
+#endif
 
 extern HINSTANCE ModuleHandle;
 extern HINSTANCE LB_Module_Handle;
@@ -20,7 +28,7 @@ extern HINSTANCE LB_Module_Handle;
 lbErrCodes LB_STDCALL lbLoadModule(const char* name, HINSTANCE & hinst);
 /*...e*/
 /*...slbErrCodes LB_STDCALL lbGetFunctionPtr\40\const char\42\ name\44\ const HINSTANCE \38\ hinst\44\ void\42\\42\ pfn\41\:0:*/
-lbErrCodes LB_STDCALL lbGetFunctionPtr(const char* name, const HINSTANCE & hinst, void** pfn);
+lbErrCodes LB_STDCALL lbGetFunctionPtr(const char* name, HINSTANCE hinst, void** pfn);
 /*...e*/
 
 

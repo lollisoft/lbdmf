@@ -1,11 +1,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.15 $
+ * $Revision: 1.16 $
  * $Name:  $
- * $Id: lbInterfaces-sub-classes.h,v 1.15 2001/10/04 19:29:15 lothar Exp $
+ * $Id: lbInterfaces-sub-classes.h,v 1.16 2001/10/06 11:20:54 lothar Exp $
  *
  * $Log: lbInterfaces-sub-classes.h,v $
+ * Revision 1.16  2001/10/06 11:20:54  lothar
+ * Compiles module lbHook under linux now
+ *
  * Revision 1.15  2001/10/04 19:29:15  lothar
  * Current version seems to work good (without big memory holes)
  *
@@ -99,7 +102,7 @@ class lb_I_Object {
 protected:
     lb_I_Object() {}
     lb_I_Object(const lb_I_Object &o) {
-                setName(o.getName());
+                //setName(o.getName());
         }
     
     virtual ~lb_I_Object() {}

@@ -17,12 +17,17 @@
 #ifndef __LB_INTERFACES__
 #define __LB_INTERFACES__
 
-#include <lbErrCodes.h>
+#include <lbErrcodes.h>
 
 //#define LB_STDCALL
 
 #ifndef LB_STDCALL
+#ifdef WINDOWS
 #define LB_STDCALL __cdecl
+#endif
+#ifndef WINDOWS
+#define LB_STDCALL
+#endif
 #endif
 
 #ifdef __WATCOMC__
