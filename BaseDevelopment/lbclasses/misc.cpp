@@ -2,10 +2,13 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.24 $
+ * $Revision: 1.25 $
  * $Name:  $
- * $Id: misc.cpp,v 1.24 2002/12/08 23:22:56 lothar Exp $
+ * $Id: misc.cpp,v 1.25 2002/12/09 19:37:42 lolli Exp $
  * $Log: misc.cpp,v $
+ * Revision 1.25  2002/12/09 19:37:42  lolli
+ * removed debugging messages
+ *
  * Revision 1.24  2002/12/08 23:22:56  lothar
  * Possible bug was in the usage of realloc
  *
@@ -285,7 +288,6 @@ lbLog::lbLog(int l) {
 void LB_STDCALL lbLog::logdirect(const char *msg, char *f, int level) {
                 FILE *fp;
                 fp = fopen( f, "a" );
-		printf("lbLog::logdirect(...) called\n");
                 if( fp != NULL ) {
                         char buf[1000] = "";
                         buf[0] = 0;
@@ -301,7 +303,6 @@ void LB_STDCALL lbLog::logdirect(const char *msg, char *f, int level) {
                 }
         
                 fclose( fp );
-		printf("lbLog::logdirect(...) leaving\n");
 }
 /*...e*/
 /*...slbLog\58\\58\log\40\\46\\46\\46\\41\:0:*/
@@ -431,8 +432,6 @@ void LB_STDCALL lbLog::event_end(char *event) {
  */
  
 void LB_STDCALL lbLog::realloc(int add_size) {
-	printf("lbLog::realloc(int add_size=%d) called\n", add_size+lastsize);
-	printf("--------------------------------------\n");
 	if (logmessage == NULL) {
 		char* buf = (char*) malloc(add_size);
 		buf[0] = 0;
@@ -448,21 +447,16 @@ void LB_STDCALL lbLog::realloc(int add_size) {
 		//logmessage = (char*) ::realloc((void*) logmessage, lastsize+add_size);
 		lastsize += add_size;
 	}
-	printf("lbLog::realloc(int add_size) leaving\n");
 } 
  
 lb_I_Log& LB_STDCALL lbLog::operator<< (/*lb_I_Log* logger,*/ const int i) {
-	printf("lbLog::operator<< (const int i) called\n");
-	printf("--------------------------------------\n");
 	char s[100] = "";
 	realloc(strlen(itoa(i)) + 1);
 	lastsize = lastsize + strlen(itoa(i)) + 1;
 	strcat(logmessage, itoa(i));
-	printf("lbLog::operator<< (const int i) leaving");
 	return *this;
 }
 lb_I_Log& LB_STDCALL lbLog::operator<< (/*lb_I_Log* logger,*/ const char c) {
-	printf("lbLog::operator<< (const char c) called\n");
         realloc(lastsize + 2);
         lastsize = lastsize + 2;
         char add[2] = "";
@@ -474,13 +468,11 @@ lb_I_Log& LB_STDCALL lbLog::operator<< (/*lb_I_Log* logger,*/ const char c) {
         	logmessage = NULL;
         	lastsize = 0;
         }
-	printf("lbLog::operator<< (const char c) leaving\n");
 	return *this;
 }
 
 lb_I_Log& LB_STDCALL lbLog::operator<< (/*lb_I_Log* logger,*/ const char* string) {
 	if (string != NULL) {
-		printf("lbLog::operator<< (const char* string) called\n");
 		realloc(lastsize+strlen(string) + 10);
 		lastsize = lastsize + strlen(string) + 10;
 		strcat(logmessage, string);
@@ -491,7 +483,6 @@ lb_I_Log& LB_STDCALL lbLog::operator<< (/*lb_I_Log* logger,*/ const char* string
 			logmessage = NULL;
 			lastsize = 0;
 		}
-		printf("lbLog::operator<< (const char* string) leaving\n");
 	} else {
 		
 	}
