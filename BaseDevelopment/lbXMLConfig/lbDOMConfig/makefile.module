@@ -1,10 +1,29 @@
 # Define your module based settings
 
+# Use compiler MICROSOFT here
+COMPILER=MICROSOFT
+
 OBJDEP=../../lbHook/lbHook.o 
 #../../lbHook/conio.o
 
 ifeq ($(OSTYPE), Windows_NT)
-MOD_INCL=$(STD_INCL)
+
+VENDORLIBS="$(DEVROOT)\projects\dll\libs\xerces-c_1D.lib"
+
+INCLS=$(DEVROOT)\CPP\BaseDevelopment\lbclasses Q:\Develop\xml\xml4csrc3_3_1\src
+
+ifeq ($(COMPILER), MICROSOFT)
+MOD_INCL = $(STD_INCL_MICROSOFT)
+MOD_INCL += $(foreach s, $(INCLS), /I "$s")
+CC=Cl
+C_DLLOPS= $(C_DLLOPS_MICROSOFT$(MODE))
+C_EXEOPS= $(C_EXEOPS_MICROSOFT$(MODE))
+C_LIBOPS= $(C_LIBOPS_MICROSOFT$(MODE))
+LINK=  $(LINK_MICROSOFT)
+L_DLLOPS= $(L_DLLOPS_MICROSOFT)
+LNKDLLOPS = $(L_DLLOPS_MICROSOFT)
+endif
+
 endif
 
 ifeq ($(OSTYPE), linux)
