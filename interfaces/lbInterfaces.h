@@ -2050,12 +2050,15 @@ public:
 
 	/**
 	 * Starts listing of plugins.
+	 *
+	 * Currently this function is used to find and load the plugins.
 	 */
 	virtual bool LB_STDCALL beginEnumPlugins() = 0;
 	
 	/**
 	 * Gets the next plugin handle instance. This does not
-	 * load an instance of the plugin implementation.
+	 * load an instance of the plugin implementation. But it
+	 * loads the module.
 	 *
 	 * To finally use the plugin, you must attach to it.
 	 */
