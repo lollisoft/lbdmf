@@ -16,6 +16,19 @@
   
 -->
 
+  <StandardFunctor 
+    Interface="lb_I_String" 
+    Functor="_instanceOfString@4"
+    Module="lbclasses" />
+  <StandardFunctor 
+    Interface="lb_I_Integer" 
+    Functor="_instanceOfInteger@4"
+    Module="lbclasses" />
+  <StandardFunctor 
+    Interface="lb_I_Long" 
+    Functor="_instanceOfLong@4"
+    Module="lbclasses" />
+  
 <!--...sModules:2:-->
   <Modules>
     <Module>
@@ -24,14 +37,6 @@
 <!--...e-->
 <!--...sFunctions:8:-->
       <Functions>
-<!--...sFunction instanceOfLogger:16:-->
-        <Function>
-           <FunctionName Name="_instanceOfLogger@4"/>
-           <Functor>
-              <InterfaceName Name="lb_I_Log" Version="1.0"/>
-           </Functor>
-        </Function>
-<!--...e-->
 <!--...sFunction instanceOfContainer:16:-->
         <Function>
            <FunctionName Name="_instanceOfContainer@4"/>
@@ -40,11 +45,35 @@
            </Functor>
         </Function>
 <!--...e-->
+<!--...sFunction instanceOfLogger:16:-->
+        <Function>
+           <FunctionName Name="_instanceOfLogger@4"/>
+           <Functor>
+              <InterfaceName Name="lb_I_Log" Version="1.0"/>
+           </Functor>
+        </Function>
+<!--...e-->
 <!--...sFunction instanceOfIntegerKey:16:-->
         <Function>
            <FunctionName Name="_instanceOfIntegerKey@4"/>
            <Functor>
               <InterfaceName Name="lb_I_KeyBase" Version="1.0"/>
+           </Functor>
+        </Function>
+<!--...e-->
+<!--...sFunction instanceOfInteger:16:-->
+        <Function>
+           <FunctionName Name="_instanceOfInteger@4"/>
+           <Functor>
+              <InterfaceName Name="lb_I_Integer" Version="1.0"/>
+           </Functor>
+        </Function>
+<!--...e-->
+<!--...sFunction instanceOfString:16:-->
+        <Function>
+           <FunctionName Name="_instanceOfString@4"/>
+           <Functor>
+              <InterfaceName Name="lb_I_String" Version="1.0"/>
            </Functor>
         </Function>
 <!--...e-->

@@ -1,5 +1,5 @@
 
-<!ELEMENT dtdHostCfgDoc     ( Busmaster, Modules* )>
+<!ELEMENT dtdHostCfgDoc     ( Busmaster, StandardFunctor*, Modules* )>
 <!ATTLIST dtdHostCfgDoc VERSION            CDATA  #IMPLIED >
 
 
@@ -35,6 +35,14 @@ must be described in that tag.
                             Hostname       CDATA      #IMPLIED 
                             Port           CDATA      #IMPLIED 
                             Description    CDATA      #IMPLIED >
+<!--...e-->
+<!--...sStandardFunctor:0:-->
+<!ELEMENT StandardFunctor      (#PCDATA)>
+<!ATTLIST StandardFunctor   ID             ID         #IMPLIED 
+                            Interface      CDATA      #IMPLIED 
+                            Functor        CDATA      #IMPLIED 
+                            Module         CDATA      #IMPLIED
+                            Typ            CDATA      #IMPLIED >
 <!--...e-->
 <!--...sModuleName:0:-->
 <!ELEMENT ModuleName         (#PCDATA)>
