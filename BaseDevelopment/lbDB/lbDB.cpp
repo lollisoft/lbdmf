@@ -51,7 +51,7 @@ extern "C" {
 #include <lbConfigHook.h>
 
 /*...sLB_DATABASE_DLL scope:0:*/
-#define LB_DATABASE_DLL
+#define LB_DB_DLL
 #include <lbdb-module.h>
 /*...e*/
 
