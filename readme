@@ -51,19 +51,28 @@ env variables for the bootstrapping:
 	MODULELIB=lbModule.so
 	LBXMLFUNCTOR=getlbDOMConfigInstance
 	LBMODULEFUNCTOR=getlb_ModuleInstance
-	DEVROOT=/home/<user>/Develop
+	DEVROOT=/home/<user>/develop
 	LD_LIBRARY_PATH=/libdev/lib:
 	OSTYPE=linux
 
 
 Vendor libraries, that are used in my code:
 
-	XML4C C++ XML library:
+	XML4C C++ XML library: (Currently obsolete)
+	
 	Download the matching XML4C distribution for your OS 
 	from http://www.alphaWorks.ibm.com/aw.nsf/download/xml4c
 	place the extracted tree to /home/<user>/develop/Projects/CPP/vendor/XML4C,
 	please attent, that the directory name must match to xml4c-src3_5_1
 	build it and install it as usual.
+	
+	GTK is needed. I have tested it with the GTK developer package from CD (SuSE 9.1)
+	
+	wxWidgets is needed. Download the latest version as a source tarball (2.4.2)
+	Make and install it.
+
+	Install unixODBC and configure a postgreSQL database pointing to 'lbDMF'
+	Execute the script ...	
 	
 Vendor programs, that I have adopted for my need:
 
