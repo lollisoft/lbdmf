@@ -21,13 +21,6 @@ public:
 	virtual lbErrCodes LB_STDCALL findObject(const char* name, lb_I_ConfigObject*& object) = 0;
 	virtual lbErrCodes LB_STDCALL getAttribute(const char* name, lb_I_Attribute*& attr) = 0;
 
-	virtual void setGeneralParseError(BOOL _parseError) = 0;
-	virtual BOOL getGeneralParseError() = 0;
-	
-	virtual int  getDeep() = 0;
-	virtual void setDeep(int d) = 0;
-
-
 };
 /*...e*/
 /*...sclass lb_I_XMLConfig:0:*/
@@ -38,7 +31,7 @@ protected:
 	~lb_I_XMLConfig() {}
 public:
 	
-	virtual lbErrCodes parse() = 0;
+	virtual lbErrCodes LB_STDCALL parse() = 0;
 	
 	/**
 	 * Generic access to an xml config file. This should allow to ask
