@@ -41,47 +41,13 @@ IMPLEMENT_FUNCTOR(instanceOfReference, lbReference)
 }
 #endif            
 
-#ifdef bla
-/*...slbObject:0:*/
-void lbObject::setName(const char* d) {
-	if (name != NULL) delete name;
-    name = strdup(d);
-}
-
-const char* lbObject::getName() const {
-    return name;
-}
-
-ObjectTyp lbObject::getType() const {
-	if (OTyp == LB_OBJECT) {
-		_LOG << "Derived object has not been initialized correctly!" LOG_
-	}
-	return OTyp;
-}
-
-void lbObject::setType() {
-	_LOG << "Error: Base object has no object type" LOG_
-}
-
-lbErrCodes LB_STDCALL lbObject::setData(lb_I_Unknown* uk) {
-	CL_LOG("lbObject::setData(...) not implemented yet");
-	return ERR_NOT_IMPLEMENTED;
-}
-
-
-BEGIN_IMPLEMENT_LB_UNKNOWN(lbObject)
-	ADD_INTERFACE(lb_I_Object)
-END_IMPLEMENT_LB_UNKNOWN()
-/*...e*/
-#endif
-
 /*...slbReference:0:*/
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbReference)
 	ADD_INTERFACE(lb_I_Reference)
 END_IMPLEMENT_LB_UNKNOWN()
 
 lbErrCodes LB_STDCALL lbReference::setData(lb_I_Unknown* uk) {
-	CL_LOG("lbReference::setData(...) not implemented yet");
+	_CL_LOG << "lbReference::setData(...) not implemented yet" LOG_
 	return ERR_NOT_IMPLEMENTED;
 }
 
@@ -138,7 +104,7 @@ lb_I_Unknown* lbString::clone() const {
 	lb_I_Unknown* uk_cloned = NULL;
 	
 	if (cloned->queryInterface("lb_I_Unknown", (void**) &uk_cloned) != ERR_NONE) {
-		CL_LOG("Error while getting interface");
+		_CL_LOG << "Error while getting interface" LOG_
 	}
 	
 	return uk_cloned;
@@ -164,7 +130,7 @@ lbErrCodes LB_STDCALL lbString::setData(lb_I_Unknown* uk) {
 	lb_I_String* string = NULL;
 	
 	if (uk->queryInterface("lb_I_String", (void**) &string, __FILE__, __LINE__) != ERR_NONE) {
-		CL_LOG("Error: Could not get interface lb_I_String");
+		_CL_LOG << "Error: Could not get interface lb_I_String" LOG_
 	}
 	
 	if (string != NULL) {
@@ -309,7 +275,7 @@ BEGIN_IMPLEMENT_LB_UNKNOWN(lbLong)
 END_IMPLEMENT_LB_UNKNOWN()
 
 lbErrCodes LB_STDCALL lbLong::setData(lb_I_Unknown* uk) {
-	CL_LOG("lbLong::setData(...) not implemented yet");
+	_CL_LOG << "lbLong::setData(...) not implemented yet" LOG_
 	return ERR_NOT_IMPLEMENTED;
 }
 
@@ -372,7 +338,7 @@ lb_I_Unknown* lbStringList::clone() const {
 	lb_I_Unknown* uk_cloned = NULL;
 	
 	if (cloned->queryInterface("lb_I_Unknown", (void**) &uk_cloned) != ERR_NONE) {
-		CL_LOG("Error: query interface failed");
+		_CL_LOG << "Error: query interface failed" LOG_
 	}
 	
 	return uk_cloned;
@@ -415,7 +381,7 @@ lb_I_String* lbStringList::nextElement() {
 	uk_object = list->nextElement();
 	
 	if (uk_object->queryInterface("lb_I_String", (void**) &s) != ERR_NONE) {
-		CL_LOG("Error: query interface failed");
+		_CL_LOG << "Error: query interface failed" LOG_
 	}
 	
 	return s;

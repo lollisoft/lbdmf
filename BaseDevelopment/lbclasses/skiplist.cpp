@@ -2,11 +2,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.8 $
+ * $Revision: 1.9 $
  * $Name:  $
- * $Id: skiplist.cpp,v 1.8 2002/10/04 16:53:14 lolli Exp $
+ * $Id: skiplist.cpp,v 1.9 2002/10/17 17:35:13 lolli Exp $
  *
  * $Log: skiplist.cpp,v $
+ * Revision 1.9  2002/10/17 17:35:13  lolli
+ * Use of _CL_LOG macro
+ *
  * Revision 1.8  2002/10/04 16:53:14  lolli
  * Replaced old LOG macro with the new
  * _LOG << "text" << integer value LOG_
@@ -94,7 +97,7 @@ END_IMPLEMENT_LB_UNKNOWN()
 
 
 lbErrCodes LB_STDCALL SkipList::setData(lb_I_Unknown* uk) {
-	CL_LOG("SkipList::setData(...) not implemented yet");
+	_CL_LOG << "SkipList::setData(...) not implemented yet" LOG_
 	return ERR_NOT_IMPLEMENTED;
 }
 SkipList::SkipList() {
@@ -169,11 +172,11 @@ lbErrCodes LB_STDCALL SkipList::_insert(lb_I_Unknown** const e, lb_I_KeyBase** c
         _data->setModuleManager(manager.getPtr(), __FILE__, __LINE__); 
 
         _data->queryInterface("lb_I_Element", (void**) &container_data, __FILE__, __LINE__); 
-        if (container_data == NULL) CL_LOG("Could not get unknown interface of lbElement!"); 
+        if (container_data == NULL) _LOG << "Could not get unknown interface of lbElement!" LOG_
 
         lb_I_Unknown* uk_o = NULL; 
         if ((uk_o = container_data->getObject()) == NULL) { 
-                CL_LOG("Failed to insert first element in SkipList::insert"); 
+                _LOG << "Failed to insert first element in SkipList::insert" LOG_
                 return ERR_CONTAINER_INSERT; 
         } else RELEASE(uk_o); 
     } 
@@ -206,29 +209,7 @@ lbErrCodes LB_STDCALL SkipList::_insert(lb_I_Unknown** const e, lb_I_KeyBase** c
 /*...sSkipList\58\\58\_remove\40\lb_I_KeyBase\42\\42\ const key\41\:0:*/
 lbErrCodes LB_STDCALL SkipList::_remove(lb_I_KeyBase** const key) { 
 /*...sbla:0:*/
-#ifdef bla
-    if (container_data == NULL) { 
-        CL_LOG("Error: Can't remove from empty container!"); 
-        return ERR_CONTAINER_REMOVE; 
-    } 
-
-    lb_I_Element* pre = container_data; 
-    container_data = container_data->getNext(); 
-
-    if (pre->getKey() == *key) { 
-        RELEASE(pre); 
-        return ERR_NONE; 
-    } 
-
-    for (lb_I_Element* temp = container_data; temp != NULL; temp = container_data->getNext()) { 
-        if (temp->getKey() == *key) { 
-            pre->setNext(temp->getNext()); 
-            RELEASE(temp); 
-            return ERR_NONE; 
-        } 
-    } 
-#endif
-    CL_LOG("Error: No object with that key"); 
+    _LOG << "SkipList::_remove(lb_I_KeyBase** const key) is Obsolete" LOG_ 
 /*...e*/
     return ERR_CONTAINER_REMOVE; 
 } 
@@ -246,7 +227,7 @@ lb_I_Unknown* LB_STDCALL SkipList::nextElement() {
 	if(e != NULL) {
 		return e->getObject();
 	} else {
-	        CL_LOG("Error: Please call hasMoreElements first to check if any elements are available!"); 
+	        _LOG << "Error: Please call hasMoreElements first to check if any elements are available!" LOG_
         	getch(); 
 	        return NULL; 
 	}

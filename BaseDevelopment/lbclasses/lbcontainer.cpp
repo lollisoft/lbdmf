@@ -1,10 +1,13 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.16 $
+ * $Revision: 1.17 $
  * $Name:  $
- * $Id: lbcontainer.cpp,v 1.16 2002/04/15 18:24:33 lolli Exp $
+ * $Id: lbcontainer.cpp,v 1.17 2002/10/17 17:33:27 lolli Exp $
  * $Log: lbcontainer.cpp,v $
+ * Revision 1.17  2002/10/17 17:33:27  lolli
+ * Use of _CL_LOG macro
+ *
  * Revision 1.16  2002/04/15 18:24:33  lolli
  * Huge changes - works good
  *
@@ -119,7 +122,7 @@ lbContainer::lbContainer() {
     container_data = NULL;
 /*...sVERBOSE:0:*/
 #ifdef VERBOSE
-    CL_LOG("Set manager to NULL must be done automatically!");
+    _LOG << "Set manager to NULL must be done automatically!" LOG_
 #endif
 /*...e*/
     manager = NULL;
@@ -129,7 +132,7 @@ lbContainer::~lbContainer() {
 }
 
 lbErrCodes LB_STDCALL lbContainer::setData(lb_I_Unknown* uk) {
-	CL_LOG("lbContainer::setData(...) not implemented yet");
+	_CL_LOG << "lbContainer::setData(...) not implemented yet" LOG_
 	return ERR_NOT_IMPLEMENTED;
 }
 
@@ -148,6 +151,6 @@ END_IMPLEMENT_LB_UNKNOWN()
 IMPLEMENT_LB_ELEMENT(lbElement)
 
 lbErrCodes LB_STDCALL lbElement::setData(lb_I_Unknown* uk) {
-	CL_LOG("lbElement::setData(...) not implemented yet");
+	_CL_LOG << "lbElement::setData(...) not implemented yet" LOG_
 	return ERR_NOT_IMPLEMENTED;
 }

@@ -2,10 +2,13 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.20 $
+ * $Revision: 1.21 $
  * $Name:  $
- * $Id: misc.cpp,v 1.20 2002/10/11 17:20:59 lolli Exp $
+ * $Id: misc.cpp,v 1.21 2002/10/17 17:34:44 lolli Exp $
  * $Log: misc.cpp,v $
+ * Revision 1.21  2002/10/17 17:34:44  lolli
+ * Use of _CL_LOG macro
+ *
  * Revision 1.20  2002/10/11 17:20:59  lolli
  * Before CL_LOG change
  *
@@ -17,7 +20,7 @@
  *
  * Revision 1.17  2002/10/04 16:53:14  lolli
  * Replaced old LOG macro with the new
- * _LOG << "text" << integer value LOG_
+ * _CL_LOG << "text" << integer value LOG_
  * combination. This makes sprintf obsolete.
  *
  * Revision 1.16  2002/09/19 19:34:14  lolli
@@ -204,24 +207,6 @@ lb_I_Mutex* lbLog::mutex;
 
 //lb_I_CritSect sect;
 
-/*...sbla:0:*/
-#ifdef bla
-lbErrCodes DLLEXPORT LB_STDCALL instanceOfLogger(lb_I_Unknown*& uk) {
-        CL_LOG("instanceOfLogger() called and will create the requested instance");
-        
-        lbLog* logger = new lbLog();
-        uk = NULL;
-        
-        if (logger->queryInterface("lb_I_Unknown", (void**) &uk) != ERR_NONE) {
-                CL_LOG("Failed to create unknown reference to instance of lbLog!");
-                return ERR_FUNCTOR;
-        }
-        
-        return ERR_NONE;
-}
-#endif
-/*...e*/
-
 #ifdef __cplusplus
 extern "C" {       
 #endif            
@@ -233,17 +218,17 @@ IMPLEMENT_FUNCTOR(instanceOfLogger, lbLog)
 #endif            
 
 // Logging macro does not work recursively
-#undef _LOG
-#define _LOG cerr
-#undef LOG_
-#define LOG_ << "";
+//#undef _CL_LOG
+//#define _CL_LOG cerr
+//#undef LOG_
+//#define LOG_ << ""; }
 
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbLog)
         ADD_INTERFACE(lb_I_Log)
 END_IMPLEMENT_LB_UNKNOWN()
 
 lbErrCodes LB_STDCALL lbLog::setData(lb_I_Unknown* uk) {
-        CL_LOG("lbLog::setData(...) not implemented yet");
+        _CL_LOG << "lbLog::setData(...) not implemented yet" LOG_
         return ERR_NOT_IMPLEMENTED;
 }
 
@@ -253,7 +238,7 @@ lbLog::lbLog() {
 //lbLock lbLock(sect);
 	manager = NULL;
         strcpy(f, "c:\\log\\wsmaster.log");
-        logdirect("lbLog::lbLog(): Creating mutex for logfile", f, level);
+        logdirect("lbLog::lbLog(): Creating mutex for logfile\n", f, level);
         if (firstlog == 0) {
                 mutex = new lbMutex();
                 mutex->createMutex(LB_LOGFILE_MUTEX);
@@ -282,7 +267,7 @@ lbLog::lbLog(int l) {
 
         firstlog = 1;
         doLog = l;
-        CL_LOG("lbLog::lbLog(): Creating mutex for logfile");
+        _CL_LOG << "lbLog::lbLog(): Creating mutex for logfile" LOG_
     }
 /*...e*/
 /*...slbLog\58\\58\logdirect\40\\46\\46\\46\\41\:0:*/
@@ -394,7 +379,7 @@ void LB_STDCALL lbLog::event_begin(char *event) {
             beinlog = 1;
             start_time = clock();
 
-            CL_LOG(event);
+            _CL_LOG << event LOG_
     }
 }
 /*...e*/

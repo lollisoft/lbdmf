@@ -1,10 +1,13 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.11 $
+ * $Revision: 1.12 $
  * $Name:  $
- * $Id: lbkey.cpp,v 1.11 2002/04/15 18:24:33 lolli Exp $
+ * $Id: lbkey.cpp,v 1.12 2002/10/17 17:33:40 lolli Exp $
  * $Log: lbkey.cpp,v $
+ * Revision 1.12  2002/10/17 17:33:40  lolli
+ * Use of _CL_LOG macro
+ *
  * Revision 1.11  2002/04/15 18:24:33  lolli
  * Huge changes - works good
  *
@@ -118,7 +121,7 @@ END_IMPLEMENT_LB_UNKNOWN()
 
 
 lbErrCodes LB_STDCALL lbKey::setData(lb_I_Unknown* uk) {
-	CL_LOG("lbKey::setData() not implemented yet");
+	_CL_LOG << "lbKey::setData() not implemented yet" LOG_
 	return ERR_NONE;
 }
 /*...e*/
@@ -178,7 +181,7 @@ BEGIN_IMPLEMENT_LB_UNKNOWN(lbKeyUL)
 END_IMPLEMENT_LB_UNKNOWN()
 
 lbErrCodes LB_STDCALL lbKeyUL::setData(lb_I_Unknown* uk) {
-	CL_LOG("lbKey::setData() not implemented yet");
+	_CL_LOG << "lbKey::setData() not implemented yet" LOG_
 	return ERR_NONE;
 }
 
