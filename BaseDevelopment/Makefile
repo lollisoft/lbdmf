@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.29 $
+# * $Revision: 1.30 $
 # * $Name:  $
-# * $Id: Makefile,v 1.29 2005/03/03 08:33:56 lollisoft Exp $
+# * $Id: Makefile,v 1.30 2005/03/05 23:13:33 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.30  2005/03/05 23:13:33  lollisoft
+# * More changes to build source tree under Mac OS X
+# *
 # * Revision 1.29  2005/03/03 08:33:56  lollisoft
 # * Added plugins to compile
 # *
@@ -137,16 +140,15 @@ TARGETEXE=elf
 ALLTARGETS = lbHook \
 	lbModule \
 	lbMetaApplication \
-	lbclasses
-#	lbDB \
-#	lbModule \
-#	lbclasses \
-#	lbMetaApplication \
-#	../AppDevelopmentDemo/App \
-#	../AppDevelopmentDemo/DynamicApp/App \
-#	../Test/Console/XML \
-#	../Test/GUI/wxWrapper \
+	lbclasses \
+	lbDB \
+	../AppDevelopmentDemo/App \
+	../AppDevelopmentDemo/DynamicApp/App \
+	../Test/GUI/wxWrapper \
+	../Test/Console/XML
 #	../Doc/html
+#	lbPluginManager \
+
 endif
 
 ifeq ($(OSTYPE), linux)
@@ -225,10 +227,16 @@ dummy:
 	$(MAKE) -C $@ -e MODULE=Test -e TARGET=$(TARGETEXE) -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
 	$(MAKE) -C $@
 
+ifeq ($(OSTYPE), osx)
+../Test/GUI/wxWrapper: dummy
+	$(MAKE) -C $@ -f makefile.osx
+endif
+
 ifeq ($(OSTYPE), linux)
 ../Test/GUI/wxWrapper: dummy
 	$(MAKE) -C $@ -f makefile.wx-sample
 endif
+
 ifeq ($(OSTYPE), Windows_NT)
 ../Test/GUI/wxWrapper: dummy
 	$(MAKE) -C $@ -e MODULE=wxWrapper -e TARGET=$(TARGETEXE) -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure

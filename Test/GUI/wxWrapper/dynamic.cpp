@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.50 2005/03/03 08:42:21 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.51 2005/03/05 23:13:33 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.50 $
+ * $Revision: 1.51 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.50 2005/03/03 08:42:21 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.51 2005/03/05 23:13:33 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.51  2005/03/05 23:13:33  lollisoft
+ * More changes to build source tree under Mac OS X
+ *
  * Revision 1.50  2005/03/03 08:42:21  lollisoft
  * Added loading of plugins.
  *
@@ -2218,7 +2221,7 @@ lb_I_Form* LB_STDCALL lb_wxGUI::createLoginForm() {
 	}
 
 	if (_dialog) {
-		_dialog->Show();
+		_dialog->Show(TRUE);
 	} else {
 		_dialog = new lbLoginDialog();
 		_dialog->setModuleManager(getModuleManager(), __FILE__, __LINE__);
@@ -2271,7 +2274,7 @@ lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::createDBForm(char* formName, char* query
 	}
 
 	if (_dialog) {
-		_dialog->Show();
+		_dialog->Show(TRUE);
 	} else {
 		_dialog = new lbDatabaseDialog();
 		_dialog->setModuleManager(getModuleManager(), __FILE__, __LINE__);
@@ -2290,7 +2293,7 @@ lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::createDBForm(char* formName, char* query
 		}
 		
 		_dialog->init(frame, wxString(formName), wxString(queryString), DBName, DBUser, DBPass);
-		_dialog->Show();
+		_dialog->Show(TRUE);
 	}
 	return NULL;
 }
@@ -2578,8 +2581,9 @@ END_IMPLEMENT_LB_UNKNOWN()
 
 
 // Create a new application object
-//IMPLEMENT_APP  (MyApp)
-
+#ifdef OSX
+IMPLEMENT_APP  (MyApp)
+#endif
 int MyApp::OnExit() {
 	//wxGUI->cleanup();
 	return 0;
@@ -2784,7 +2788,9 @@ bool MyApp::OnInit(void)
 #ifdef __WXMSW__
   frame_peer->SetIcon(wxIcon("mondrian"));
 #else
+#ifndef OSX
   frame_peer->SetIcon(wxIcon(mondrian_xpm));
+#endif
 #endif
 /*...e*/
 #endif
@@ -2940,6 +2946,8 @@ _LOG << "Initialized metaapplication" LOG_
 #endif
 #endif
 
+// Not yet working under Mac OS X
+#ifndef OSX
 /*
  * Try to load all plugins and initialize it.
  */
@@ -2948,7 +2956,7 @@ UAP_REQUEST(mm.getPtr(), lb_I_PluginManager, PM)
 printf("Test plugin manager\n");
 PM->beginEnumPlugins();
 printf("Tested plugin manager\n");
-
+#endif
 
 #ifdef LB_I_EXTENTIONS
   if (metaApp != NULL) metaApp->run();
@@ -3453,6 +3461,8 @@ void lb_wxFrame::OnDispatch(wxCommandEvent& event ) {
 /*...e*/
 #endif
 
+#ifndef OSX
+
 wxApp *wxCreateApp()
     {
         wxApp::CheckBuildOptions(wxBuildOptions());
@@ -3475,3 +3485,4 @@ int PASCAL WinMain(HINSTANCE hInstance,
     
     return wxEntry((WXHINSTANCE) hInstance, (WXHINSTANCE) hPrevInstance, lpCmdLine, nCmdShow);
 }
+#endif

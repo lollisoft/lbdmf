@@ -25,11 +25,14 @@
 #            40235 DÅsseldorf (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.54 $
+# * $Revision: 1.55 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.54 2005/03/04 10:49:01 lollisoft Exp $
+# * $Id: STD_MAKE,v 1.55 2005/03/05 23:13:34 lollisoft Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.55  2005/03/05 23:13:34  lollisoft
+# * More changes to build source tree under Mac OS X
+# *
 # * Revision 1.54  2005/03/04 10:49:01  lollisoft
 # * Removed include path under OSX and defined OSX
 # *
@@ -392,7 +395,7 @@ C_OPS   = -c -DUNIX -DLINUX -DOSX
 C_SOOPS = $(C_OPS)
 C_ELFOPS= $(C_OPS)
 L_OPS   = -o
-LIBS    = -ldl -llibstdc++
+LIBS    = -ldl #-llibstdc++
 #-lefence
 CC =c++
 LD =c++

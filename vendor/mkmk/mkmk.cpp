@@ -12,11 +12,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.48 $
+ * $Revision: 1.49 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.48 2005/02/10 17:04:16 lollisoft Exp $
+ * $Id: mkmk.cpp,v 1.49 2005/03/05 23:13:34 lollisoft Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.49  2005/03/05 23:13:34  lollisoft
+ * More changes to build source tree under Mac OS X
+ *
  * Revision 1.48  2005/02/10 17:04:16  lollisoft
  * Changes for Mac OS X
  *
@@ -663,14 +666,27 @@ void ObjExt(char *s, char *ObjName, int Len)
 
 /*...swriteExeTarget\40\char\42\ modulename\41\:0:*/
 void writeExeTarget(char* modulename) {
+#ifdef OSX
+#undef UNIX
+  fprintf(stderr, "Writing osx executable target\n");
+  printf("PROGRAM=%s\n", modulename);
+  printf("\n%s.elf: $(OBJS)\n", modulename);
+  printf("\t\t$(CC) $(L_OPS) %s $(OBJS) $(OBJDEP) $(LIBS) -bind_at_load -lc $(VENDORLIBS)\n",modulename);
+  printf("\t\t$(CP) $(PROGRAM) $(HOME)/bin\n");
+#endif
+
 #ifdef UNIX
-  fprintf(stderr, "Writing exe target\n");
+  fprintf(stderr, "Writing linux executable target\n");
   printf("PROGRAM=%s\n", modulename);
   printf("\n%s.elf: $(OBJS)\n", modulename);
   printf("\t\t$(CC) $(L_OPS) %s $(OBJS) $(OBJDEP) $(LIBS) -lc $(VENDORLIBS)\n",modulename);
   printf("\t\t$(CP) $(PROGRAM) $(HOME)/bin\n");
-  fprintf(stderr, "Written exe target\n");
 #endif
+
+#ifdef OSX
+#define UNIX
+#endif
+
 #ifdef __WATCOMC__
   char* ModName = strdup(modulename);
   char** array;
@@ -979,7 +995,7 @@ void ShowHelp()
 
   fprintf(stderr, "Enhanced by Lothar Behrens (lothar.behrens@lollisoft.de)\n\n");
 
-  fprintf(stderr, "MKMK: makefile generator $Revision: 1.48 $\n");
+  fprintf(stderr, "MKMK: makefile generator $Revision: 1.49 $\n");
   fprintf(stderr, "Usage: MKMK lib|exe|dll|so modulname includepath,[includepath,...] file1 [file2 file3...]\n");
 }
 /*...e*/

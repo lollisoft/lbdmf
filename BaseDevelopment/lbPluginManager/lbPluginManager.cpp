@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.7 $
+ * $Revision: 1.8 $
  * $Name:  $
- * $Id: lbPluginManager.cpp,v 1.7 2005/03/03 08:38:00 lollisoft Exp $
+ * $Id: lbPluginManager.cpp,v 1.8 2005/03/05 23:13:33 lollisoft Exp $
  *
  * $Log: lbPluginManager.cpp,v $
+ * Revision 1.8  2005/03/05 23:13:33  lollisoft
+ * More changes to build source tree under Mac OS X
+ *
  * Revision 1.7  2005/03/03 08:38:00  lollisoft
  * Removed multiple code. Reporting failure or success of plugin loading.
  *
@@ -77,8 +80,12 @@ extern "C" {
 #endif
 
 #include <stdio.h>
+#ifndef OSX
 #include <malloc.h>
-
+#endif
+#ifdef OSX
+#include <sys/malloc.h>
+#endif
 #include <lbInterfaces.h>
 #include <lbConfigHook.h>
 

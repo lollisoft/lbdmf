@@ -48,8 +48,12 @@ extern "C" {
 
 #include <stdio.h>
 #include <iostream.h>
+#ifndef OSX
 #include <malloc.h>
-
+#endif
+#ifdef OSX
+#include <sys/malloc.h>
+#endif
 //#include "testdll.h"
 
 #include <lbConfigHook.h>

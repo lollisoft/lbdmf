@@ -2549,7 +2549,7 @@ lbErrCodes LB_STDCALL lbDatabase::connect(char* DSN, char* user, char* passwd) {
                 return ERR_DB_CONNECT;
 	    }
 
-	    _CL_VERBOSE << "SQLConnect(hdbc, ...);" LOG_
+	    _CL_VERBOSE << "SQLConnect(hdbc, '" << DSN << "', '" << user << "');" LOG_
 
 	    retcode = SQLConnect(hdbc, (unsigned char*) DSN, SQL_NTS, 
 				       (unsigned char*) user, SQL_NTS, 
