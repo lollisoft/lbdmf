@@ -83,6 +83,29 @@ extern "C" {
 /*...e*/
 
 #define LOOP
+
+
+void PrintData(lb_I_Query* q) {
+	if (q->first() == ERR_NONE) {
+
+	    for (int cols = 1; cols <= q->getColumns()-1; cols++) { 
+		printf("%s;", q->getAsString(cols)->charrep());
+	    };
+	    
+	    printf("%s\n", q->getAsString(q->getColumns())->charrep());
+	    
+	    while (q->next() == ERR_NONE) {
+		for (int cols = 1; cols <= q->getColumns()-1; cols++) { 
+			printf("%s;", q->getAsString(cols)->charrep());
+		};
+		printf("%s\n", q->getAsString(q->getColumns())->charrep());
+	    };
+	    
+	}
+}
+
+
+
 // (trackObject == NULL) ? "" : trackObject int argc, char *argv[]
 int main(int argc, char *argv[]) {
 	char* file = "";
@@ -107,80 +130,6 @@ int main(int argc, char *argv[]) {
 	}
 
 	lb_I_Module* mm = NULL;
-#ifdef bla
-/*...stest lbHook Memory usage:0:*/
-	lb_I_Module* mm = getModuleInstance();
-	mm->setModuleManager(mm, __FILE__, __LINE__);
-
-	printf("Uninitialize module manager\n");
-	mm->uninitialize();
-	printf("Release it\n");
-	RELEASE(mm)	
-	printf("Unhook all modules\n");
-	unHookAll();
-
-/*...e*/
-/*...stest lbHook Memory usage:0:*/
-	mm = getModuleInstance();
-	mm->setModuleManager(mm, __FILE__, __LINE__);
-
-	printf("Uninitialize module manager\n");
-	mm->uninitialize();
-	printf("Release it\n");
-	RELEASE(mm)	
-	printf("Unhook all modules\n");
-	unHookAll();
-
-/*...e*/
-/*...stest lbHook Memory usage:0:*/
-	mm = getModuleInstance();
-	mm->setModuleManager(mm, __FILE__, __LINE__);
-
-	printf("Uninitialize module manager\n");
-	mm->uninitialize();
-	printf("Release it\n");
-	RELEASE(mm)	
-	printf("Unhook all modules\n");
-	unHookAll();
-
-/*...e*/
-/*...stest lbHook Memory usage:0:*/
-	mm = getModuleInstance();
-	mm->setModuleManager(mm, __FILE__, __LINE__);
-
-	printf("Uninitialize module manager\n");
-	mm->uninitialize();
-	printf("Release it\n");
-	RELEASE(mm)	
-	printf("Unhook all modules\n");
-	unHookAll();
-
-/*...e*/
-/*...stest lbHook Memory usage:0:*/
-	mm = getModuleInstance();
-	mm->setModuleManager(mm, __FILE__, __LINE__);
-
-	printf("Uninitialize module manager\n");
-	mm->uninitialize();
-	printf("Release it\n");
-	RELEASE(mm)	
-	printf("Unhook all modules\n");
-	unHookAll();
-
-/*...e*/
-/*...stest lbHook Memory usage:0:*/
-	mm = getModuleInstance();
-	mm->setModuleManager(mm, __FILE__, __LINE__);
-
-	printf("Uninitialize module manager\n");
-	mm->uninitialize();
-	printf("Release it\n");
-	RELEASE(mm)	
-	printf("Unhook all modules\n");
-	unHookAll();
-
-/*...e*/
-#endif
 	mm = getModuleInstance();
 	mm->setModuleManager(mm, __FILE__, __LINE__);
 
@@ -206,8 +155,14 @@ if (a == b) {
 	database->init();
 	database->connect("trainres", "dba", "trainres");
 	
+	UAP_REQUEST(mm, lb_I_Database, database1)
+
+	database->init();
+	database->connect("trainres", "dba", "trainres");
 	UAP(lb_I_Query, query, __FILE__, __LINE__)
-	
+	UAP(lb_I_Query, query1, __FILE__, __LINE__)
+	UAP(lb_I_Query, query2, __FILE__, __LINE__)
+
 	query = database->getQuery(0);
 
 
@@ -219,128 +174,53 @@ if (a == b) {
 #endif
 // Second run fails ??
 
-
-
-	for(int ii = 1; ii <= 5; ii++) {
-		printf("=== 1 > Prepare column %s for the form\n", query->getColumnName(ii));
-		printf("=== 2 > Prepare column %s for the form\n", query->getColumnName(ii));
-		printf("=== 3 > Prepare column %s for the form\n", query->getColumnName(ii));
-		printf("=== 4 > Prepare column %s for the form\n", query->getColumnName(ii));
-		printf("=== 5 > Prepare column %s for the form\n", query->getColumnName(ii));
-	}
-
-
-
 /*...sforward:8:*/
-	UAP_REQUEST(mm, lb_I_String, s1)
-	UAP_REQUEST(mm, lb_I_String, s2)
-	UAP_REQUEST(mm, lb_I_String, s3)
-	UAP_REQUEST(mm, lb_I_String, s4)
-	UAP_REQUEST(mm, lb_I_String, s5)
-#ifdef USE_PK
-	UAP_REQUEST(mm, lb_I_String, s6)
-#endif	
 
-	if (query->first() != ERR_NONE) 
-		printf("Error while get next\n");
-	else {
-		s1 = query->getAsString(1);
-		s2 = query->getAsString(2);
-		s3 = query->getAsString(3);
-		s4 = query->getAsString(4);
-		s5 = query->getAsString(5);
-#ifdef USE_PK
-		s6 = query->getAsString(6);
-		printf("%s;%s;%s;%s;%s;%s\n", s1->charrep(), s2->charrep(), s3->charrep(), s4->charrep(), s5->charrep(), s6->charrep());
-#endif
-#ifndef USE_PK		
-		printf("%s;%s;%s;%s;%s\n", s1->charrep(), s2->charrep(), s3->charrep(), s4->charrep(), s5->charrep());
-#endif
-		UAP_REQUEST(mm, lb_I_String, col)
-		UAP_REQUEST(mm, lb_I_String, val)
-		
-		col->setData("objecttyp");
-		val->setData("Test");
-		
-		query->setString(*&col, *&val);
-		query->update();
-		s1 = query->getAsString(1);
+	PrintData(*&query);
 
-#ifdef USE_PK
-		printf("%s;%s;%s;%s;%s;%s\n", s1->charrep(), s2->charrep(), s3->charrep(), s4->charrep(), s5->charrep(), s6->charrep());
-#endif
-#ifndef USE_PK		
-		printf("%s;%s;%s;%s;%s\n", s1->charrep(), s2->charrep(), s3->charrep(), s4->charrep(), s5->charrep());
-#endif
-	}
-
-	while (query->next() == ERR_NONE) {
-		s1 = query->getAsString(1);
-		s2 = query->getAsString(2);
-		s3 = query->getAsString(3);
-		s4 = query->getAsString(4);
-		s5 = query->getAsString(5);
-#ifdef USE_PK
-		s6 = query->getAsString(6);
-		printf("%s;%s;%s;%s;%s;%s\n", s1->charrep(), s2->charrep(), s3->charrep(), s4->charrep(), s5->charrep(), s6->charrep());
-#endif		
-#ifndef USE_PK
-                printf("%s;%s;%s;%s;%s\n", s1->charrep(), s2->charrep(), s3->charrep(), s4->charrep(), s5->charrep());
-#endif	
-	}
-	printf("Ended foreward test\n");
+	UAP(lb_I_Query, testquery, __FILE__, __LINE__)
 	
-/*...e*/
-/*...sreverse:8:*/
-	if (query->last() != ERR_NONE)
-		printf("Error while get next\n");
-	else {
-		s1 = query->getAsString(1);
-		s2 = query->getAsString(2);
-		s3 = query->getAsString(3);
-		s4 = query->getAsString(4);
-		s5 = query->getAsString(5);
-#ifdef USE_PK
-		s6 = query->getAsString(6);
-		printf("%s;%s;%s;%s;%s;%s\n", s1->charrep(), s2->charrep(), s3->charrep(), s4->charrep(), s5->charrep(), s6->charrep());
-#endif
-#ifndef USE_PK		
-		printf("%s;%s;%s;%s;%s\n", s1->charrep(), s2->charrep(), s3->charrep(), s4->charrep(), s5->charrep());
-#endif
-	}
+	testquery = database->getQuery(0);
 
-	while (query->previous() == ERR_NONE) {
-		s1 = query->getAsString(1);
-		s2 = query->getAsString(2);
-		s3 = query->getAsString(3);
-		s4 = query->getAsString(4);
-		s5 = query->getAsString(5);
 #ifdef USE_PK
-		s6 = query->getAsString(6);
-		printf("%s;%s;%s;%s;%s;%s\n", s1->charrep(), s2->charrep(), s3->charrep(), s4->charrep(), s5->charrep(), s6->charrep());
+	testquery->query("select x, y, w, h, id from world order by id");
 #endif
-#ifndef USE_PK		
-		printf("%s;%s;%s;%s;%s\n", s1->charrep(), s2->charrep(), s3->charrep(), s4->charrep(), s5->charrep());
+#ifndef USE_PK
+	testquery->query("select x, y, w, h from world order by id");
 #endif
-	}
-	printf("Ended backward test\n");
-/*...e*/
+	PrintData(testquery.getPtr());
+	PrintData(*&query);
 
+	database1->init();
+	database1->connect("lbDMF", "dba", "trainres");
+	
+	query1 = database1->getQuery(0);
+	query2 = database1->getQuery(0);
+	
+	query1->query("select * from users order by id");
+	query2->query("select * from formulare order by id");	
+	
+	PrintData(*&query1);
+	PrintData(*&query2);
+	PrintData(*&query);
+	
+exit(0);	
+/*...e*/
 
 	printf("Test for database deletion with cursor\n");
 
 
-	UAP_REQUEST(mm, lb_I_Database, database1)
+	UAP_REQUEST(mm, lb_I_Database, db1)
 	UAP_REQUEST(mm, lb_I_Database, database2)
-	UAP(lb_I_Query, query1, __FILE__, __LINE__)
-	UAP(lb_I_Query, query2, __FILE__, __LINE__)
+	UAP(lb_I_Query, query11, __FILE__, __LINE__)
+	UAP(lb_I_Query, query12, __FILE__, __LINE__)
 	
-	database1->init();
-	database1->connect("trainres", "dba", "trainres");
+	db1->init();
+	db1->connect("trainres", "dba", "trainres");
 	database2->init();
 	database2->connect("trainres", "dba", "trainres");
 	
-	query1 = database1->getQuery(0);
+	query11 = db1->getQuery(0);
 	
 	UAP_REQUEST(mm, lb_I_String, t1)
 	UAP_REQUEST(mm, lb_I_String, t2)
@@ -353,55 +233,39 @@ printf("Dropped table test\n");
 
 printf("Created table test\n");
 
-	query1->query("delete from test");
+	query11->query("delete from test");
 
-	query1->query("insert into test values ('Test1', 1)");
-	query1->query("insert into test values ('Test2', 2)");
-	query1->query("insert into test values ('Test3', 3)");
-	query1->query("insert into test values ('Test4', 4)");
-	query1->query("insert into test values ('Test5', 5)");
-	query1->query("insert into test values ('Test6', 6)");
+	query11->query("insert into test values ('Test1', 1)");
+	query11->query("insert into test values ('Test2', 2)");
+	query11->query("insert into test values ('Test3', 3)");
+	query11->query("insert into test values ('Test4', 4)");
+	query11->query("insert into test values ('Test5', 5)");
+	query11->query("insert into test values ('Test6', 6)");
 
-	query2 = database2->getQuery(0);
+	query12 = database2->getQuery(0);
 
-	query2->query("select text, id from test");
+	query12->query("select text, id from test");
 
-	query2->first();
-	t1 = query2->getAsString(1);
-	t2 = query2->getAsString(2);
+	query12->first();
+	t1 = query12->getAsString(1);
+	t2 = query12->getAsString(2);
 	printf("%s;%s\n", t1->charrep(), t2->charrep());
-	query2->next();
-	t1 = query2->getAsString(1);
-	t2 = query2->getAsString(2);
+	query12->next();
+	t1 = query12->getAsString(1);
+	t2 = query12->getAsString(2);
 	printf("%s;%s\n", t1->charrep(), t2->charrep());
-	query2->next();
-	t1 = query2->getAsString(1);
-	t2 = query2->getAsString(2);
+	query12->next();
+	t1 = query12->getAsString(1);
+	t2 = query12->getAsString(2);
 	printf("%s;%s\n", t1->charrep(), t2->charrep());
-	query2->remove();
-	t1 = query2->getAsString(1);
-	t2 = query2->getAsString(2);
+	query12->remove();
+	t1 = query12->getAsString(1);
+	t2 = query12->getAsString(2);
 	printf("%s;%s\n", t1->charrep(), t2->charrep());
 
 printf("Deleted a row\n");
 	
-	query2->first();
-	t1 = query2->getAsString(1);
-	t2 = query2->getAsString(2);
-	printf("%s;%s\n", t1->charrep(), t2->charrep());
-	query2->next();
-	t1 = query2->getAsString(1);
-	t2 = query2->getAsString(2);
-	printf("%s;%s\n", t1->charrep(), t2->charrep());
-	query2->next();
-	t1 = query2->getAsString(1);
-	t2 = query2->getAsString(2);
-	printf("%s;%s\n", t1->charrep(), t2->charrep());
-	query2->next();
-	t1 = query2->getAsString(1);
-	t2 = query2->getAsString(2);
-	printf("%s;%s\n", t1->charrep(), t2->charrep());
-	query2->next();
+	PrintData(*&query12);
 
 	printf("Tested database cleanup\n");
 }
