@@ -622,7 +622,9 @@ public:
 		} \
 		\
 		virtual ~UAP##Unknown_Reference() { \
+			_CL_VERBOSE << "UAP destructor ~UAP" << #Unknown_Reference << "() at " << __FILE__ << " called" LOG_ \
 			if (_autoPtr != NULL) { \
+				_CL_VERBOSE << "Pointer is not NULL. Delete it." LOG_ \
 				if (allowDelete != 1) { \
 					if (_autoPtr->deleteState() == 1) { \
 						printf("Error: Instance would be deleted, but it's not allowed !!\n"); \
@@ -633,6 +635,7 @@ public:
 				RELEASE_1(_autoPtr, _file, _line); \
 				if (_file) delete [] _file; \
 			} \
+			_CL_VERBOSE << "UAP destructor ~UAP" << #Unknown_Reference << "() ready" LOG_ \
 		} \
 		void LB_STDCALL setFile(char* __file) { \
 			if (_file != NULL) { \
@@ -1017,6 +1020,7 @@ char*      LB_STDCALL classname::getCreationLoc() const { \
 lbErrCodes LB_STDCALL classname::release(char* file, int line) { \
         ref--; \
 	char ptr[20] = ""; \
+	sprintf(ptr, "%p", this); \
         if (manager != NULL) { \
         	manager->notify_release(this, #classname, file, line); \
         } \
@@ -1036,7 +1040,7 @@ lbErrCodes LB_STDCALL classname::release(char* file, int line) { \
         	return ERR_NONE; \
         } \
         if (ref < STARTREF) { \
-        	_CL_LOG << "Error: Reference count of instance " << ptr << " of object type " << #classname << " is less than " << STARTREF << " (" << ref << ") !!!" LOG_ \
+        	_CL_VERBOSE << "Error: Reference count of instance " << ptr << " of object type " << #classname << " is less than " << STARTREF << " (" << ref << ") !!!" LOG_ \
         	return ERR_REFERENCE_COUNTING; \
         } \
         return ERR_INSTANCE_STILL_USED; \
@@ -1194,6 +1198,7 @@ lbErrCodes LB_STDCALL classname::release(char* file, int line) { \
         	_CL_LOG << "lb_EventManager::release() called" LOG_ \
         } \
 	char ptr[20] = ""; \
+	sprintf(ptr, "%p", this); \
         if (manager != NULL) { \
         	manager->notify_release(this, #classname, file, line); \
         } \
@@ -1212,7 +1217,7 @@ lbErrCodes LB_STDCALL classname::release(char* file, int line) { \
         	return ERR_NONE; \
         } \
         if (ref < STARTREF) { \
-        	_CL_LOG << "Error: Reference count of instance " << ptr << " of object type " << #classname << " is less than " << STARTREF << " (" << ref << ") !!!" LOG_ \
+        	_CL_VERBOSE << "Error: Reference count of instance " << ptr << " of object type " << #classname << " is less than " << STARTREF << " (" << ref << ") !!!" LOG_ \
         	return ERR_REFERENCE_COUNTING; \
         } \
         return ERR_INSTANCE_STILL_USED; \
@@ -2194,7 +2199,6 @@ void LB_STDCALL cls::enumPlugins() { \
 	printf("Add a plugin %s, namespace %s\n", #plugin, #namespace); \
 	UAP_REQUEST(manager.getPtr(), lb_I_Plugin, P##plugin##namespace) \
 	\
-	printf("Initialize Plugin %s:%s:%s\n", _module->getData(), #plugin, #namespace); \
 	P##plugin##namespace->setModule(_module->getData()); \
 	P##plugin##namespace->setName(#plugin); \
 	P##plugin##namespace->setNamespace(#namespace); \
@@ -2211,7 +2215,6 @@ void LB_STDCALL cls::enumPlugins() { \
 	UAP(lb_I_Unknown, ukPl##plugin##namespace, __FILE__, __LINE__) \
 	UAP(lb_I_Plugin, Pl##plugin##namespace, __FILE__, __LINE__) \
 	ukPl##plugin##namespace = Plugins->getElement(&Key##plugin##namespace); \
-	printf("Got back the plugin at %p\n", ukPl##plugin##namespace.getPtr()); \
 	QI(ukPl##plugin##namespace, lb_I_Plugin, Pl##plugin##namespace, __FILE__, __LINE__) \
 	Pl##plugin##namespace->setModule(_module->getData()); \
 	Pl##plugin##namespace->setName(#plugin); \
