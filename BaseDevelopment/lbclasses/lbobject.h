@@ -4,10 +4,13 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.5 $
+ * $Revision: 1.6 $
  * $Name:  $
- * $Id: lbobject.h,v 1.5 2000/08/01 05:54:50 lolli Exp $
+ * $Id: lbobject.h,v 1.6 2000/10/05 22:56:45 lothar Exp $
  * $Log: lbobject.h,v $
+ * Revision 1.6  2000/10/05 22:56:45  lothar
+ * Most changes are interface issues
+ *
  * Revision 1.5  2000/08/01 05:54:50  lolli
  * Currently runs with new interface
  *
@@ -57,13 +60,15 @@
 
 
 #include <stdio.h>
+#include <lbInterfaces.h>
+
 
 //class lbKeyBase;
 class lbComponentDictionary;
 
 
 /*...sclass DLLEXPORT lbObject:0:*/
-class DLLEXPORT lbObject {
+class DLLEXPORT lbObject : public lb_I_Object {
 public:
     lbObject() {
 		name = NULL;
@@ -80,19 +85,8 @@ public:
 	/**
 	 * The type of an object
 	 */
-	enum ObjectTyp { LB_OBJECT, 
-	                 LB_STRING,
-                         LB_STRINGLIST,
-	                 LB_GUIOBJECT, 
-	                 LB_WXGUIOBJECT, 
-	                 LB_DATA_TRANSFER_OBJECT,
-	                 LB_CONNECTION,
-	                 LB_APPBUSCLIENT,
-	                 LB_APPCLIENT_DISPATCH_FN,
-	                 LB_APPSERVER_DISPATCH_PROTO,
-	                 LB_EVENT };
 
-	ObjectTyp getType() const;
+    ObjectTyp getType() const;
 
 	/**
 	 * A object has a name

@@ -22,31 +22,7 @@
 #endif
 /*...e*/
 
-/*...senum LB_PACKET_TYPE:0:*/
-typedef enum {
-	LB_INVALIDTYPE,
-	LB_INT,
-	LB_CHAR,
-	LB_SHORT,
-	LB_LONG,
-	LB_USHORT,
-	LB_ULONG,
-	LB_VOID,
-
-	LB_OBJECT,	// The basic type of lbObject
-} LB_PACKET_TYPE;
-/*...e*/
-
-typedef byte LB_DATA;
-
-/*...sLB_TRANSFER_DATA:0:*/
-typedef struct {
-	u_short			packet_no;
-	LB_PACKET_TYPE		packet_type;
-	u_short			packet_size;
-	LB_DATA			data;
-} LB_TRANSFER_DATA, * pLB_TRANSFER_DATA;
-/*...e*/
+#include <lbInterfaces-sub-transfer.h>
 
 class lbComponentDictionary;
 class lbSocket;
@@ -80,14 +56,17 @@ private:
  * This class represents the buffer to be send over a socket. A object of type lbObject
  * should be able to created over a constructor with a parameter of this type. 
  */
-class DLLEXPORT lb_Transfer_Data {
+class DLLEXPORT lb_Transfer_Data : public
+					lb_I_Transfer_Data
+{
 
 public:
 	lb_Transfer_Data(int _serverside=0);
 	virtual ~lb_Transfer_Data();
         
-        lb_Transfer_Data(const lb_Transfer_Data & t);
-        lb_Transfer_Data& operator= (const lb_Transfer_Data & t);
+        lb_Transfer_Data(const lb_I_Transfer_Data & t);
+
+	lb_I_Transfer_Data& assign(lb_I_Transfer_Data const & t);
 
 	/**
 	 * Packet functions to form packets fit to internet packet size.

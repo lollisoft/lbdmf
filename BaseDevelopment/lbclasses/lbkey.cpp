@@ -1,12 +1,16 @@
 
 
 
+/*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.4 $
+ * $Revision: 1.5 $
  * $Name:  $
- * $Id: lbkey.cpp,v 1.4 2000/07/06 06:09:20 lolli Exp $
+ * $Id: lbkey.cpp,v 1.5 2000/10/05 22:56:45 lothar Exp $
  * $Log: lbkey.cpp,v $
+ * Revision 1.5  2000/10/05 22:56:45  lothar
+ * Most changes are interface issues
+ *
  * Revision 1.4  2000/07/06 06:09:20  lolli
  * Constructor now with const parameter
  *
@@ -29,6 +33,7 @@
  * Initial
  *
  ************************************************************************************************************/
+/*...e*/
 
 //Define DLL here for implementing the module
 
@@ -40,14 +45,15 @@
 
 #include <lbInclude.h>
 
-int lbKeyBase::operator == (const lbKeyBase &_key) {
+#ifdef bla
+int lbKeyBase::operator == (const lb_I_KeyBase &_key) const {
     return (equals(_key));
 }
 
-int lbKeyBase::operator > (const lbKeyBase &_key) {
+int lbKeyBase::operator > (const lb_I_KeyBase &_key) const {
     return (greater(_key));
 }
-
+#endif
 /*...slbKey:0:*/
 lbKey::lbKey() {
     key = 0;
@@ -57,7 +63,7 @@ lbKey::lbKey(int _key) {
     key = _key;
 }
 
-lbKey::lbKey(const lbKeyBase & k) {
+lbKey::lbKey(const lb_I_KeyBase & k) {
     key = ((lbKey) k).key;
 }
 
@@ -65,15 +71,15 @@ lbKey::lbKey(const lbKeyBase & k) {
 lbKey::~lbKey(){
 }
 
-int lbKey::equals(const lbKeyBase &_key) {
+int lbKey::equals(const lb_I_KeyBase &_key) const {
     return key == ((lbKey) _key).key;
 }
 
-int lbKey::greater(const lbKeyBase &_key) {
+int lbKey::greater(const lb_I_KeyBase &_key) const {
     return key > ((lbKey) _key).key;
 }
 
-lbKeyBase* lbKey::clone() const{
+lb_I_KeyBase* lbKey::clone() const{
     lbKey *k = new lbKey(key);
     return k;
 }
@@ -96,7 +102,7 @@ lbKeyUL::lbKeyUL(unsigned long _key) {
     key = _key;
 }
 
-lbKeyUL::lbKeyUL(const lbKeyBase & k) {
+lbKeyUL::lbKeyUL(const lb_I_KeyBase & k) {
     key = ((lbKeyUL) k).key;
 }
 
@@ -104,15 +110,15 @@ lbKeyUL::lbKeyUL(const lbKeyBase & k) {
 lbKeyUL::~lbKeyUL(){
 }
 
-int lbKeyUL::equals(const lbKeyBase &_key) {
+int lbKeyUL::equals(const lb_I_KeyBase &_key) const {
     return key == ((lbKeyUL) _key).key;
 }
 
-int lbKeyUL::greater(const lbKeyBase &_key) {
+int lbKeyUL::greater(const lb_I_KeyBase &_key) const {
     return key > ((lbKeyUL) _key).key;
 }
 
-lbKeyBase* lbKeyUL::clone() const{
+lb_I_KeyBase* lbKeyUL::clone() const{
     lbKeyUL *k = new lbKeyUL(key);
     return k;
 }
@@ -139,15 +145,15 @@ lbStringKey::lbStringKey(const lbStringKey & k) {
 lbStringKey::~lbStringKey(){
 }
 
-int lbStringKey::equals(const lbKeyBase &_key) {
+int lbStringKey::equals(const lb_I_KeyBase &_key) const {
     return (strcmp(key, ((const lbStringKey &) _key).key) == 0);
 }
 
-int lbStringKey::greater(const lbKeyBase &_key) {
+int lbStringKey::greater(const lb_I_KeyBase &_key) const {
     return (strcmp(key, ((const lbStringKey &) _key).key) > 0);
 }
 
-lbKeyBase* lbStringKey::clone() const {
+lb_I_KeyBase* lbStringKey::clone() const {
     lbStringKey *k = new lbStringKey(key);
     return k;
 }

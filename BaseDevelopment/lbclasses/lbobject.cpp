@@ -2,7 +2,7 @@
 
 #include <string.h>
 #include <lbInclude.h>
-
+#include <lbInterfaces-sub-classes.h>
 
 /*...slbObject:0:*/
 void lbObject::setName(const char* d) {
@@ -14,7 +14,7 @@ const char* lbObject::getName() const {
     return name;
 }
 
-lbObject::ObjectTyp lbObject::getType() const {
+ObjectTyp lbObject::getType() const {
 	if (OTyp == LB_OBJECT) {
 		LOG("Derived object has not been initialized correctly!");
 	}

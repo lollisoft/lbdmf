@@ -4,10 +4,13 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.3 $
+ * $Revision: 1.4 $
  * $Name:  $
- * $Id: lbcontainer.h,v 1.3 2000/06/24 21:32:08 lolli Exp $
+ * $Id: lbcontainer.h,v 1.4 2000/10/05 22:56:45 lothar Exp $
  * $Log: lbcontainer.h,v $
+ * Revision 1.4  2000/10/05 22:56:45  lothar
+ * Most changes are interface issues
+ *
  * Revision 1.3  2000/06/24 21:32:08  lolli
  * Socket bugfix
  *
@@ -52,6 +55,9 @@
 #endif
 /*...e*/
 
+
+#include <lbInterfaces-sub-classes.h>
+
 /**
  * lbContainer represents the interface to all containers used.
  * 
@@ -65,11 +71,13 @@ class lbElement; // Container for one lbObject
 class lbKey; // Search criteria
 
 /*...sclass DLLEXPORT lbContainer:0:*/
-class DLLEXPORT lbContainer {
+class DLLEXPORT lbContainer : public
+			lb_I_Container
+{
 
 private:
     lbContainer(const lbContainer & c);
-    lbContainer& operator= (const lbContainer & c);
+    lb_I_Container& operator= (const lbContainer & c);
 
 public:
 
@@ -78,30 +86,37 @@ public:
 
     int Count();
 
-    lbErrCodes insert(const lbObject &e, const lbKeyBase &key);
-    lbErrCodes remove(const lbKeyBase &key);
+    lbErrCodes insert(const lb_I_Object &e, const lb_I_KeyBase &key);
+    lbErrCodes remove(const lb_I_KeyBase &key);
     
 	/**
 	 * General functions needed for storage (key driven)
 	 */
-    virtual lbErrCodes _insert(const lbObject &e, const lbKeyBase &key) = 0;
-    virtual lbErrCodes _remove(const lbKeyBase &key) = 0;
-    virtual int exists(const lbKeyBase& e) = 0;
+    virtual lbErrCodes _insert(const lb_I_Object &e, const lb_I_KeyBase &key) = 0;
+    virtual lbErrCodes _remove(const lb_I_KeyBase &key) = 0;
+    virtual int exists(const lb_I_KeyBase& e) = 0;
 
 	/**
 	 * Iterator (forward only)
 	 */
     virtual int hasMoreElements() = 0;
-    virtual lbObject* nextObject() = 0;
+    virtual lb_I_Object* nextObject() = 0;
+
+protected:
+    /**
+     * This should be used internally only
+     */
     virtual lbElement* nextElement() = 0;
+
+public:
 
 	/**
 	 * Direct access over key
 	 */
-    virtual lbObject* getElement(const lbKeyBase &key) = 0;
-    virtual void setElement(lbKeyBase &key, const lbObject &e) = 0;
+    virtual lb_I_Object* getElement(const lb_I_KeyBase &key) = 0;
+    virtual void setElement(lb_I_KeyBase &key, const lb_I_Object &e) = 0;
 
-    virtual lbContainer* clone() = 0;
+    virtual lb_I_Container* clone() = 0;
 
     virtual void deleteAll() = 0;
 
@@ -127,22 +142,22 @@ public:
     lbComponentDictionary();
     virtual ~lbComponentDictionary();
     
-    virtual lbErrCodes _insert(const lbObject &e, const lbKeyBase &key);
-    virtual lbErrCodes _remove(const lbKeyBase &key);
+    virtual lbErrCodes _insert(const lb_I_Object &e, const lb_I_KeyBase &key);
+    virtual lbErrCodes _remove(const lb_I_KeyBase &key);
     
-    virtual int exists(const lbKeyBase &key);
+    virtual int exists(const lb_I_KeyBase &key);
 
     virtual int hasMoreElements();
-    virtual lbObject* nextObject();
+    virtual lb_I_Object* nextObject();
     virtual lbElement* nextElement();
 
-    virtual lbContainer* clone();
+    virtual lb_I_Container* clone();
 
     virtual void deleteAll();
 
-    virtual lbObject* getElement(const lbKeyBase &key);
-    virtual void setElement(lbKeyBase &key, const lbObject &e);
-    virtual lbObject* getObject();
+    virtual lb_I_Object* getElement(const lb_I_KeyBase &key);
+    virtual void setElement(lb_I_KeyBase &key, const lb_I_Object &e);
+    virtual lb_I_Object* getObject();
 
 private:
 
@@ -151,5 +166,7 @@ private:
 /*...e*/
 
 extern lbCritSect critsect;
+
+lbErrCodes DLLEXPORT getContainerInstance(lb_I_Container*& inst, const char* type);
 
 #endif //LB_CONTAINER
