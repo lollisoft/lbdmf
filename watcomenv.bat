@@ -28,6 +28,8 @@ exit
 
 :WEITER
 
+set TARGET_APPLICATION=Q:\develop\Projects\CPP\AppDevelopment\Trainres\App\trainres
+
 set DEVLW=q:
 set BASE=develop
 set BASE_MAKE=develop
