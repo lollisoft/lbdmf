@@ -202,14 +202,14 @@ lbString::lbString() {
 }
 
 lbString::~lbString() {
-	if (stringdata != NULL) delete[] stringdata;
-	if (key != NULL) delete[] key;
+	if (stringdata != NULL) free(stringdata);
+	if (key != NULL) free(key);
 }
 
 void LB_STDCALL lbString::setData(char* p) {
-	if (stringdata != NULL) delete[] stringdata;
+	if (stringdata != NULL) free(stringdata);
 	stringdata = strdup(p);
-	if (key != NULL) delete[] key;
+	if (key != NULL) free(key);
 	key = strdup(p);
 }
 
@@ -366,16 +366,17 @@ int LB_STDCALL lbInteger::lessthan(const lb_I_KeyBase* _key) const {
 }
 
 char* LB_STDCALL lbInteger::charrep() const {
-    char buf[100];
-
+	static char buf[100];
+	buf[0] = 0;
+	
 #ifndef UNIX
-    itoa(key, buf, 10);
+	itoa(key, buf, 10);
 #endif
 #ifdef UNIX
-    sprintf(buf, "%d", key);
+	sprintf(buf, "%d", key);
 #endif
     
-    return buf;
+	return buf;
 }
 /*...e*/
 /*...e*/
@@ -426,16 +427,17 @@ int LB_STDCALL lbLong::lessthan(const lb_I_KeyBase* _key) const {
 }
 
 char* LB_STDCALL lbLong::charrep() const {
-    char buf[100];
-
+	static char buf[100];
+	buf[0] = 0;
+	
 #ifndef UNIX
-    itoa(key, buf, 10);
+	itoa(key, buf, 10);
 #endif
 #ifdef UNIX
-    sprintf(buf, "%d", key);
+	sprintf(buf, "%d", key);
 #endif
     
-    return buf;
+	return buf;
 }
 /*...e*/
 /*...e*/
