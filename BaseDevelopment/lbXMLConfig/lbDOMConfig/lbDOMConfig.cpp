@@ -28,11 +28,15 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.39 $
+ * $Revision: 1.40 $
  * $Name:  $
- * $Id: lbDOMConfig.cpp,v 1.39 2003/07/15 22:23:00 lollisoft Exp $
+ * $Id: lbDOMConfig.cpp,v 1.40 2003/07/17 18:51:41 lollisoft Exp $
  *
  * $Log: lbDOMConfig.cpp,v $
+ * Revision 1.40  2003/07/17 18:51:41  lollisoft
+ * Begin develop a hopefully faster and less memory consuming
+ * XML wrapper.
+ *
  * Revision 1.39  2003/07/15 22:23:00  lollisoft
  * Removed debug messages
  *
@@ -493,7 +497,7 @@ void DOMTreeErrorReporter::resetErrors()
 class lbDOMNode : public lb_I_ConfigObject
 {
 private:
-	lbDOMNode(lbDOMNode & n) {}
+	lbDOMNode(lbDOMNode & n) { c = NULL; }
 public:
 	lbDOMNode(char* file, int line);
 	lbDOMNode();
@@ -638,7 +642,7 @@ protected:
 	
 		
 //	int currentChildIndex;
-	
+	lb_I_Container* c;	
 	friend class lbDOMConfig;
 };
 /*...e*/
@@ -821,7 +825,6 @@ lbErrCodes lbDOMNode::setData(lb_I_Unknown* uk) {
 	node = _node->node;
 	if (_node->lbDOMchilds != NULL) {
 		QI(_node->lbDOMchilds, lb_I_Container, lbDOMchilds, __FILE__, __LINE__)
-//		_node->lbDOMchilds->queryInterface("lb_I_Container", (void**) & lbDOMchilds, __FILE__, __LINE__);
 	}
 
 /**
@@ -850,6 +853,8 @@ lbDOMNode::lbDOMNode(char* file, int line) {
 	track_Object(this, msg);
 	getNameValue = NULL;
 
+
+	c = NULL;
 
 	resetRefcount();
 //	currentChildIndex = 0;
@@ -883,6 +888,8 @@ lbDOMNode::lbDOMNode() {
 	getNameValue = NULL;
 
 	parent = NULL;
+
+	c = NULL;
 	
 	manager = NULL;
 
@@ -959,7 +966,12 @@ lbErrCodes LB_STDCALL lbDOMNode::setNode(DOM_Node _node) {
 		_CL_LOG << "Error: Null node could not be set!" LOG_
 		getch();
 	}
-	lb_I_Container* c = createAbstractedChildList(_node);
+	if (c != NULL) {
+		c->deleteAll();
+		RELEASE(c)
+		c = NULL;
+	}
+	c = createAbstractedChildList(_node);
 
 	if (c != NULL)
 		c->queryInterface("lb_I_Container", (void**) &lbDOMchilds, __FILE__, __LINE__);
@@ -1278,6 +1290,8 @@ protected:
 		_CL_LOG << "lbDOMConfig::lbDOMConfig(const lbDOMConfig & t) called !!!" LOG_
 		ref = STARTREF;
 		errReporter = NULL;
+		lastResult = NULL;
+		if (lastResult.getPtr() != NULL) printf("ERROR: Setting lastResult to NULL failed!\n");
 /*...sVERBOSE:0:*/
 #ifdef VERBOSE
 	cout << "lbDOMConfig(const lbDOMConfig* & t) called" << endl;
@@ -1505,7 +1519,7 @@ lbDOMConfig::lbDOMConfig(char* file, int line) {
 	lastResult = NULL;
 	interface_used = 0;
 	errReporter = new DOMTreeErrorReporter();
-	
+
 	if (initialized == 0) {
 /*...sInitialize the DOM4C2 system:16:*/
 		    // Initialize the DOM4C2 system
@@ -1569,6 +1583,7 @@ lbDOMConfig::~lbDOMConfig() {
 	if (lastResult != NULL) {
 		lastResult->deleteAll();
 		RELEASE(lastResult);
+		lastResult = NULL;
 	}
 }
 /*...e*/
@@ -1626,7 +1641,7 @@ lb_I_Container* LB_STDCALL lbDOMConfig::findNodesAtTreePos(const char* treePos) 
 	char* savename = NULL;
 	DOMString path;
 	int count = 1;
-	
+
 	/**
 	 * Use a lb_I_Container (implemented here)
 	 */
@@ -1656,7 +1671,6 @@ lb_I_Container* LB_STDCALL lbDOMConfig::findNodesAtTreePos(const char* treePos) 
 	delete [] savename;
 
 /*...e*/
-
 	for (int i = 0; i < len; i++) {
 		path = "";
 		DOM_Node node = DOMlist.item(i);
@@ -1669,9 +1683,7 @@ lb_I_Container* LB_STDCALL lbDOMConfig::findNodesAtTreePos(const char* treePos) 
 		while (node != NULL) {
 			DOMString name = node.getNodeName();
 			node = node.getParentNode();
-			//name.println();
 			path = name + DOMString(((path == "") ? "" : "/")) + path;
-			//path.println();
 		}
 /*...e*/
 /*...sVERBOSE:0:*/
@@ -1695,39 +1707,8 @@ lb_I_Container* LB_STDCALL lbDOMConfig::findNodesAtTreePos(const char* treePos) 
 			lbDOMNode* lbNode = new lbDOMNode(__FILE__, __LINE__);
 			lbNode->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
 			lbNode->setNode(currentnode);
-/*...sbla:16:*/
-#ifdef bla
-			lbNode->node = currentnode;
+
 			
-			/**
-			 * The element is a view in a list. So the list is the parent,
-			 * not the parent of currentnode! Currently, the list is not
-			 * an abstraction of a lb_I_ConfigObject. So there can't be assigned
-			 * a list to parent.
-			 */
-			//lbNode->parent = list; //currentnode.getParentNode();
-			
-			/**
-			 * At this point I should construct a list of childs where a lb_I_ConfigObject
-			 * abstracts the DOM_Node. So the elements in a view can be used to really get
-			 * their childs.
-			 *
-			 * lbNode->childs -> lb_I_ConfigObject >> DOM_Node
-			 *                   lb_I_ConfigObject >> DOM_Node
-			 *                   lb_I_ConfigObject >> DOM_Node
-			 *                   lb_I_ConfigObject >> DOM_Node
-			 *
-			 */
-			
-			/**
-			 * A node possibly some childs. Because of the search result, the nodes
-			 * are not encapsulated in a lbDOMNode. To increase the speed for further
-			 * requests, the abstracted childs of that node are created now.
-			 */
-			lbNode->childs = createAbstractedChildList(lbNode->node);
-			//lbNode->childs = NULL;
-#endif
-/*...e*/
 			UAP(lb_I_Unknown, unknown, __FILE__, __LINE__)
 			UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
 
@@ -1744,7 +1725,7 @@ lb_I_Container* LB_STDCALL lbDOMConfig::findNodesAtTreePos(const char* treePos) 
 			key.setFile(__FILE__);
 			
 			key->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
-			key++;
+			//key++;
 			
 			list->insert(&unknown, &key);
 /*...sVERBOSE:16:*/
@@ -1754,8 +1735,9 @@ lb_I_Container* LB_STDCALL lbDOMConfig::findNodesAtTreePos(const char* treePos) 
 /*...e*/
 		} else cout << "Path '" << path << "' does not match" << endl;
 /*...e*/
-
 	}
+
+
 	return list;
 }
 /*...e*/
@@ -1763,12 +1745,11 @@ lb_I_Container* LB_STDCALL lbDOMConfig::findNodesAtTreePos(const char* treePos) 
 lbErrCodes LB_STDCALL lbDOMConfig::hasConfigObject(const char* cfgObjectName, int & count) {
 	lb_I_ConfigObject* obj = NULL;
 	lbErrCodes err = ERR_NONE;
-
 	DOMString name = DOMString(cfgObjectName);
 	if (errorsOccured == 0) {
-		char buf[100] = "";
 		lastResult = findNodesAtTreePos(cfgObjectName);
 		count = lastResult->Count(); //= lastResult->getChildrenCount();
+		printf("lbDOMConfig::hasConfigObject(...) has produced %d elements in lastResult\n", count);
 		return err;
 	} else cout << "Any errors while parsing has been occured!" << endl;
 	return err;
@@ -1779,6 +1760,7 @@ lbErrCodes LB_STDCALL lbDOMConfig::getConfigObject(lb_I_ConfigObject** cfgObj,
                                         const char* const cfgObjectName) {
 	lbErrCodes err = ERR_NONE;
 	// Try to locate the identifer in the tree
+
 
 	/**
 	 * Create the view for this result.
@@ -1818,6 +1800,37 @@ lbErrCodes LB_STDCALL lbDOMConfig::getConfigObject(lb_I_ConfigObject** cfgObj,
 }
 /*...e*/
 /*...e*/
+
+
+class lbInterfaceRepository : public lb_I_InterfaceRepository
+{
+public:
+        lbInterfaceRepository() {}
+        virtual ~lbInterfaceRepository() {}
+
+        DECLARE_LB_UNKNOWN()
+
+
+	lb_I_FunctorEntity* LB_STDCALL getFirstEntity(char* iface);
+
+};
+
+BEGIN_IMPLEMENT_LB_UNKNOWN(lbInterfaceRepository)
+        ADD_INTERFACE(lb_I_InterfaceRepository)
+END_IMPLEMENT_LB_UNKNOWN()
+
+IMPLEMENT_FUNCTOR(getlbInterfaceRepository, lbInterfaceRepository)
+
+lbErrCodes lbInterfaceRepository::setData(lb_I_Unknown* uk) {
+        _CL_LOG << "lbInterfaceRepository::setData(...) not implemented yet" LOG_
+        return ERR_NOT_IMPLEMENTED;
+}
+
+lb_I_FunctorEntity* LB_STDCALL lbInterfaceRepository::getFirstEntity(char* iface) {
+	return NULL;
+}
+
+
 
 //IMPLEMENT_FUNCTOR(getlbDOMConfigInstance, lbDOMConfig)
 /*...s:0:*/

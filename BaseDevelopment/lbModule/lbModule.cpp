@@ -28,11 +28,15 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.56 $
+ * $Revision: 1.57 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.56 2003/07/15 22:20:43 lollisoft Exp $
+ * $Id: lbModule.cpp,v 1.57 2003/07/17 18:51:41 lollisoft Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.57  2003/07/17 18:51:41  lollisoft
+ * Begin develop a hopefully faster and less memory consuming
+ * XML wrapper.
+ *
  * Revision 1.56  2003/07/15 22:20:43  lollisoft
  * Removed debug messages
  *
@@ -3016,8 +3020,8 @@ _CL_LOG << "Requested for an interface " << request LOG_
                         (*result)->setModuleManager(this, __FILE__, __LINE__);
                         notify_create(*result, (*result)->getClassName());
 /*...sclean up:32:*/
-                        //if (moduleName != NULL) impl->deleteValue(moduleName);
-//                        if (value != NULL) impl->deleteValue(value);
+                        if (moduleName != NULL) impl->deleteValue(moduleName);
+                        if (functorName != NULL) impl->deleteValue(functorName);
 /*...e*/
                 } else {
                         cout << "Something goes wrong!" << endl;
