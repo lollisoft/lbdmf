@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.28 2004/08/03 22:01:10 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.29 2004/08/10 18:23:45 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,15 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.28 $
+ * $Revision: 1.29 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.28 2004/08/03 22:01:10 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.29 2004/08/10 18:23:45 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.29  2004/08/10 18:23:45  lollisoft
+ * Lesser logging messages and a try to disable database navigation buttons
+ * if they are not needed.
+ *
  * Revision 1.28  2004/08/03 22:01:10  lollisoft
  * Implemented adding of new data.
  *
@@ -202,9 +206,6 @@ public:
 	 * Return the frames menubar. Internal use only.
 	 */
 	wxMenuBar* LB_STDCALL getMenuBar() {
-		char ptr[200] = "";
-		sprintf(ptr, "%p for instance %p", menu_bar, this);
-		_LOG << "Return a menu pointer: " << ptr LOG_
 		return menu_bar;
 	}
 
@@ -647,7 +648,13 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBNext(lb_I_Unknown* uk) {
 printf("Move next\n");
 	lbDBUpdate();
 
-	sampleQuery->next();
+	if (sampleQuery->next() == ERR_DB_NODATA) {
+		wxWindow* w = FindWindowByName(wxString("Next"));
+		w->Disable();
+	}
+
+	wxWindow* w = FindWindowByName(wxString("Prev"));
+	w->Enable();
 
 	lbDBRead();
 
@@ -659,8 +666,14 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBPrev(lb_I_Unknown* uk) {
 printf("Move previous\n");
 	lbDBUpdate();
 
-	sampleQuery->previous();
+	if (sampleQuery->previous() == ERR_DB_NODATA) {
+	        wxWindow* w = FindWindowByName(wxString("Prev"));
+	        w->Disable();
+	}
 
+	wxWindow* w = FindWindowByName(wxString("Next"));
+	w->Enable();
+	
 	lbDBRead();
 
 	return ERR_NONE;
@@ -1281,6 +1294,7 @@ protected:
         int AddMenuEntry;
         int AddLabel;
         int AddTextField;
+        int AddButton;
         
         
 /*...sevent manager:8:*/
@@ -1430,7 +1444,7 @@ bool MyApp::OnInit(void)
 
 	ev_manager->registerEvent("AddMenu", AddMenu);
 	ev_manager->registerEvent("AddMenuBar", AddMenuBar);
-	
+	ev_manager->registerEvent("AddButton", AddButton);	
 	
 	
 	/*
@@ -1795,7 +1809,6 @@ lbErrCodes LB_STDCALL MyApp::lbEvHandler2(lb_I_Unknown* uk) {
  */
 lbErrCodes LB_STDCALL MyApp::lbEvHandler3(lb_I_Unknown* uk) {
 /*...scode:0:*/
-	_LOG << "MyApp::lbEvHandler3 called" LOG_
 	lbErrCodes err = ERR_NONE;
 
 	UAP_REQUEST(manager.getPtr(), lb_I_EventManager, ev_manager)
@@ -1845,7 +1858,6 @@ lbErrCodes LB_STDCALL MyApp::lbEvHandler3(lb_I_Unknown* uk) {
  */
 lbErrCodes LB_STDCALL MyApp::addButton(lb_I_Unknown* uk) {
 /*...scode:0:*/
-	_LOG << "MyApp::lbEvHandler3 called" LOG_
 	lbErrCodes err = ERR_NONE;
 
 	UAP_REQUEST(manager.getPtr(), lb_I_EventManager, ev_manager)
@@ -1878,8 +1890,6 @@ lbErrCodes LB_STDCALL MyApp::addButton(lb_I_Unknown* uk) {
 	ev_manager->resolveEvent(handlername->getData(), EvNr);
 
 	lb_wxFrame* f = frame_peer->getPeer();
-	
-	_LOG "Create a button" LOG_
 	
 //	if (panel == NULL) panel = new wxPanel(f);
 	
