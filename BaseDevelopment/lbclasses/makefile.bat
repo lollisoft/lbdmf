@@ -3,6 +3,7 @@
 @echo Build makefile
 type %DEVROOT%\Projects\cpp\make\makefile.template > makefile
 type makefile.module >> makefile
+echo Path=$(PATH) >> makefile
 echo all: premake lbClasses.dll >> makefile
 echo premake: >> makefile
 set echodef=@copy lbKey.h $(DEVROOT)\projects\dll\include > null
