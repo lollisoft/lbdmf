@@ -76,7 +76,7 @@ CXX = $(shell wx-config --cxx)
 
 PROGRAM = wxWrapper
 
-OBJECTS = $(PROGRAM).o
+OBJECTS = dynamic.o
 
 # implementation
 
