@@ -274,7 +274,7 @@ int LB_STDCALL lbQuery::getColCount() {
 }
 /*...e*/
 /*...svirtual char\42\ LB_STDCALL lbQuery\58\\58\getChar\40\int column\41\:0:*/
-virtual char* LB_STDCALL lbQuery::getChar(int column) {
+char* LB_STDCALL lbQuery::getChar(int column) {
 	SDWORD cbobjecttyp;
 	char   szobjecttyp[SZLEN+100];
 	lbErrCodes err = ERR_NONE;
@@ -351,7 +351,7 @@ lbErrCodes LB_STDCALL lbQuery::first() {
         // Indicate, that data must prebound to a buffer
         databound = 0;
 
-        retcode = SQLExtendedFetch(hstmt, SQL_FETCH_FIRST, NULL, &RowsFetched, RowStat);
+        retcode = SQLExtendedFetch(hstmt, SQL_FETCH_FIRST, 0, &RowsFetched, RowStat);
 
         if (retcode == SQL_ERROR || retcode == SQL_SUCCESS_WITH_INFO) {
                 _LOG << "lbQuery::first(): Error while fetching next row" LOG_
@@ -373,7 +373,7 @@ lbErrCodes LB_STDCALL lbQuery::next() {
 	// Indicate, that data must prebound to a buffer
 	databound = 0;
 
-	retcode = SQLExtendedFetch(hstmt, SQL_FETCH_NEXT, NULL, &RowsFetched, RowStat);
+	retcode = SQLExtendedFetch(hstmt, SQL_FETCH_NEXT, 0, &RowsFetched, RowStat);
 
 	if (retcode == SQL_ERROR || retcode == SQL_SUCCESS_WITH_INFO) {
 		_LOG << "lbQuery::next(): Error while fetching next row" LOG_
@@ -395,7 +395,7 @@ lbErrCodes LB_STDCALL lbQuery::previous() {
         // Indicate, that data must prebound to a buffer
         databound = 0;
 
-        retcode = SQLExtendedFetch(hstmt, SQL_FETCH_PREV, NULL, &RowsFetched, RowStat);
+        retcode = SQLExtendedFetch(hstmt, SQL_FETCH_PREV, 0, &RowsFetched, RowStat);
 
         if (retcode == SQL_ERROR || retcode == SQL_SUCCESS_WITH_INFO) {
                 _LOG << "lbQuery::previous(): Error while fetching next row" LOG_
@@ -417,7 +417,7 @@ lbErrCodes LB_STDCALL lbQuery::last() {
         // Indicate, that data must prebound to a buffer
         databound = 0;
 
-        retcode = SQLExtendedFetch(hstmt, SQL_FETCH_LAST, NULL, &RowsFetched, RowStat);
+        retcode = SQLExtendedFetch(hstmt, SQL_FETCH_LAST, 0, &RowsFetched, RowStat);
 
         if (retcode == SQL_ERROR || retcode == SQL_SUCCESS_WITH_INFO) {
                 _LOG << "lbQuery::last(): Error while fetching next row" LOG_
