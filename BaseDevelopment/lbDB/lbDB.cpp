@@ -955,7 +955,7 @@ lbErrCodes LB_STDCALL lbQuery::first() {
 #endif
 
         if (retcode == SQL_ERROR || retcode == SQL_SUCCESS_WITH_INFO) {
-                _LOG << "lbQuery::first(): Error while fetching next row" LOG_
+                _LOG << _("lbQuery::first(): Error while fetching next row") LOG_
                 printf("Error in lbQuery::first()\n");
                 dbError( "SQLExtendedFetch()");
                 
@@ -983,12 +983,51 @@ lbErrCodes LB_STDCALL lbQuery::next() {
 
 #ifndef USE_FETCH_SCROLL
 	retcode = SQLExtendedFetch(hstmt, SQL_FETCH_NEXT, 0, &RowsFetched, RowStat);
+	
+	
+	/* Check for having no data.
+	 * This could only happen, if really no data is in the resultset.
+	 */
+	if (retcode == SQL_NO_DATA) {
+		retcode = SQLExtendedFetch(hstmt, SQL_FETCH_PREV, 0, &RowsFetched, RowStat);
+		return ERR_DB_NODATA;
+	} else {
+		// Check next row to indicate having still data or not
+		
+		retcode = SQLExtendedFetch(hstmt, SQL_FETCH_NEXT, 0, &RowsFetched, RowStat);
+		
+		if (retcode == SQL_NO_DATA) {
+			// Indicate for no data and go back
+			
+			retcode = SQLExtendedFetch(hstmt, SQL_FETCH_PREV, 0, &RowsFetched, RowStat);
+			
+			if (retcode == SQL_NO_DATA) {
+				_LOG << "FATAL ERROR: Resultset indication for no data has been failed!" LOG_
+				
+				return ERR_DB_NODATA;
+			}
+			
+			return WARN_DB_NODATA;
+		} else {
+			retcode = SQLExtendedFetch(hstmt, SQL_FETCH_PREV, 0, &RowsFetched, RowStat);
+			
+			if (retcode == SQL_NO_DATA) {
+				_LOG << "FATAL ERROR: Resultset indication for no data has been failed!" LOG_
+				
+				return ERR_DB_NODATA;
+			}
+			
+			return ERR_NONE;
+		}
+	}
+	
 #endif
 
 #ifdef USE_FETCH_SCROLL
 	retcode = SQLFetchScroll(hstmt, SQL_FETCH_NEXT, 0);
 #endif
 
+#ifdef bla
 	if (retcode == SQL_ERROR || retcode == SQL_SUCCESS_WITH_INFO) {
 		_LOG << "lbQuery::next(): Error while fetching next row" LOG_
 		printf("Error in lbQuery::next()\n");
@@ -1011,6 +1050,7 @@ lbErrCodes LB_STDCALL lbQuery::next() {
 #endif
 
 	return ERR_NONE;
+#endif
 }
 /*...e*/
 /*...slbErrCodes LB_STDCALL lbQuery\58\\58\previous\40\\41\:0:*/
@@ -1023,11 +1063,49 @@ lbErrCodes LB_STDCALL lbQuery::previous() {
         
 #ifndef USE_FETCH_SCROLL
         retcode = SQLExtendedFetch(hstmt, SQL_FETCH_PREV, 0, &RowsFetched, RowStat);
+
+	/* Check for having no data.
+	 * This could only happen, if really no data is in the resultset.
+	 */
+	if (retcode == SQL_NO_DATA) {
+		retcode = SQLExtendedFetch(hstmt, SQL_FETCH_NEXT, 0, &RowsFetched, RowStat);
+		return ERR_DB_NODATA;
+	} else {
+		// Check next row to indicate having still data or not
+		
+		retcode = SQLExtendedFetch(hstmt, SQL_FETCH_PREV, 0, &RowsFetched, RowStat);
+		
+		if (retcode == SQL_NO_DATA) {
+			// Indicate for no data and go back
+			
+			retcode = SQLExtendedFetch(hstmt, SQL_FETCH_NEXT, 0, &RowsFetched, RowStat);
+			
+			if (retcode == SQL_NO_DATA) {
+				_LOG << "FATAL ERROR: Resultset indication for no data has been failed!" LOG_
+				
+				return ERR_DB_NODATA;
+			}
+			
+			return WARN_DB_NODATA;
+		} else {
+			retcode = SQLExtendedFetch(hstmt, SQL_FETCH_NEXT, 0, &RowsFetched, RowStat);
+			
+			if (retcode == SQL_NO_DATA) {
+				_LOG << "FATAL ERROR: Resultset indication for no data has been failed!" LOG_
+				
+				return ERR_DB_NODATA;
+			}
+			
+			return ERR_NONE;
+		}
+	}
 #endif
 
 #ifdef USE_FETCH_SCROLL
 	retcode = SQLFetchScroll(hstmt, SQL_FETCH_PREV, 0);
 #endif
+
+#ifdef bla
 
         if (retcode == SQL_ERROR || retcode == SQL_SUCCESS_WITH_INFO) {
                 _LOG << "lbQuery::previous(): Error while fetching next row" LOG_
@@ -1053,6 +1131,7 @@ lbErrCodes LB_STDCALL lbQuery::previous() {
 #endif
         
 	return ERR_NONE;
+#endif
 }
 /*...e*/
 /*...slbErrCodes LB_STDCALL lbQuery\58\\58\last\40\\41\:0:*/
