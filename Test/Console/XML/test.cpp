@@ -234,6 +234,8 @@ void main(int argc, char *argv[]) {
 
 	query->query("select ObjectTyp, X, Y, W, H from World");
 
+	int rows = 0;
+
 // Second run fails ??
 /*...sforward:8:*/
 	UAP_REQUEST(mm, lb_I_String, s1)
@@ -262,9 +264,10 @@ void main(int argc, char *argv[]) {
 		query->update();
 		s1 = query->getAsString(1);
 		printf("%s;%s;%s;%s;%s\n", s1->charrep(), s2->charrep(), s3->charrep(), s4->charrep(), s5->charrep());		
+		rows++;
 	}
 
-	while (query->next() == ERR_NONE) {
+	while ((rows < 4) && (query->next() == ERR_NONE)) {
 		s1 = query->getAsString(1);
 		s2 = query->getAsString(2);
 		s3 = query->getAsString(3);
@@ -272,6 +275,7 @@ void main(int argc, char *argv[]) {
 		s5 = query->getAsString(5);
 		
 		printf("%s;%s;%s;%s;%s\n", s1->charrep(), s2->charrep(), s3->charrep(), s4->charrep(), s5->charrep());
+		rows++;
 	}
 	printf("Ended foreward test\n");
 	getch();
@@ -282,7 +286,7 @@ void main(int argc, char *argv[]) {
 	
 /*...e*/
 /*...sreverse:8:*/
-
+	rows = 0;
 	if (query->last() != ERR_NONE)
 		printf("Error while get next\n");
 	else {
@@ -292,9 +296,10 @@ void main(int argc, char *argv[]) {
 		s4 = query->getAsString(4);
 		s5 = query->getAsString(5);
 		printf("%s;%s;%s;%s;%s\n", s1->charrep(), s2->charrep(), s3->charrep(), s4->charrep(), s5->charrep());
+		rows++;
 	}
 
-	while (query->previous() == ERR_NONE) {
+	while ((rows < 4) && (query->previous() == ERR_NONE)) {
 		s1 = query->getAsString(1);
 		s2 = query->getAsString(2);
 		s3 = query->getAsString(3);
@@ -302,6 +307,7 @@ void main(int argc, char *argv[]) {
 		s5 = query->getAsString(5);
 		
 		printf("%s;%s;%s;%s;%s\n", s1->charrep(), s2->charrep(), s3->charrep(), s4->charrep(), s5->charrep());
+		rows++;
 	}
 	printf("Ended backward test\n");
 	getch();
