@@ -85,7 +85,7 @@ endif
 .SUFFIXES:	.o .cpp
 
 .cpp.o :
-	$(CXX) -c `wx-config --cxxflags` -D__WXDEBUG__ -DLB_I_EXTENTIONS -DUNIX -DLINUX $(MOD_INCL) -o $@ $<
+	$(CXX) -c -g `wx-config --cxxflags` -D__WXDEBUG__ -DLB_I_EXTENTIONS -DUNIX -DLINUX $(MOD_INCL) -o $@ $<
 	
 all: $(PROGRAM)
 	
