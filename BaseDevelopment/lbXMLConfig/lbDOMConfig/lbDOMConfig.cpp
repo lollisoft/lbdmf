@@ -1,11 +1,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.10 $
+ * $Revision: 1.11 $
  * $Name:  $
- * $Id: lbDOMConfig.cpp,v 1.10 2001/06/21 06:39:53 lothar Exp $
+ * $Id: lbDOMConfig.cpp,v 1.11 2001/06/23 07:18:53 lothar Exp $
  *
  * $Log: lbDOMConfig.cpp,v $
+ * Revision 1.11  2001/06/23 07:18:53  lothar
+ * Interface repository now works with the basic test
+ *
  * Revision 1.10  2001/06/21 06:39:53  lothar
  * Much changes
  *
@@ -717,8 +720,6 @@ lbErrCodes LB_STDCALL lbDOMNode::getNextChildren(lb_I_ConfigObject*& children) {
 #endif	
 	//if (currentChildIndex > lbDOMchilds->Count()) {
 	if (!lbDOMchilds->hasMoreElements()) {
-		CL_LOG("ERR_CONFIG_NO_MORE_CHILDS");
-		getch();
 		return ERR_CONFIG_NO_MORE_CHILDS;
 	}
 	
@@ -1157,7 +1158,6 @@ lbDOMConfig::~lbDOMConfig() {
 /*...slbErrCodes lbDOMConfig\58\\58\parse\40\\41\:0:*/
 lbErrCodes LB_STDCALL lbDOMConfig::parse() {
 	lbErrCodes err = ERR_NONE;
-cout << "lbDOMConfig::parse() called ('" << hex << (void*) this << dec << "')" << endl;
 	char *filename = getenv("LBHOSTCFGFILE");
 /*...sVERBOSE:0:*/
 #ifdef VERBOSE
@@ -1229,7 +1229,6 @@ lbDOMContainer* LB_STDCALL lbDOMConfig::findNodesAtTreePos(const char* treePos) 
 	char* savename = NULL;
 	int count = 1;
 	
-	cout << "Enter 'lbDOMConfig::findNodesAtTreePos(const char* treePos)'" << endl;
 /*...sPrepare search:8:*/
 	/**
 	 * Use a lb_I_Container (implemented here)
@@ -1291,11 +1290,8 @@ lbDOMContainer* LB_STDCALL lbDOMConfig::findNodesAtTreePos(const char* treePos) 
 			 * implemented all abstract members.
 			 */
 			
-			cout << "Found an entry" << endl;
 			lbDOMNode* lbNode = new lbDOMNode;
-			cout << "Set the node" << endl;
 			lbNode->setNode(currentnode);
-			cout << "Query unknown interface of created node" << endl;
 /*...sbla:16:*/
 #ifdef bla
 			lbNode->node = currentnode;
@@ -1337,8 +1333,6 @@ lbDOMContainer* LB_STDCALL lbDOMConfig::findNodesAtTreePos(const char* treePos) 
 			
 			lbKey* key = new lbKey(count++);
 			
-			cout << "Insert the entry" << endl;
-			
 			list->insert(unknown, key);
 /*...sVERBOSE:16:*/
 #ifdef VERBOSE
@@ -1349,7 +1343,6 @@ lbDOMContainer* LB_STDCALL lbDOMConfig::findNodesAtTreePos(const char* treePos) 
 /*...e*/
 
 	}
-	cout << "Exit 'lbDOMConfig::findNodesAtTreePos(const char* treePos)'" << endl;
 	return list;
 }
 /*...e*/
@@ -1410,8 +1403,6 @@ lbErrCodes LB_STDCALL lbDOMConfig::getConfigObject(lb_I_ConfigObject*& cfgObj,
 	node->lbDOMchilds = lastResult;
 	node->node = NULL; // See null pointer operator
 	
-	cout << "lbDOMNode has been created. How should a view be structured ?" << endl;
-
 	// This interface is needed:
 	node->queryInterface("lb_I_ConfigObject", (void**) &cfgObj);
 

@@ -1,5 +1,18 @@
 #ifndef __LB_MODULE__
 #define __LB_MODULE__
+/*...sRevision history:0:*/
+/**************************************************************
+ * $Locker:  $
+ * $Revision: 1.6 $
+ * $Name:  $
+ * $Id: lbModule.h,v 1.6 2001/06/23 07:18:53 lothar Exp $
+ *
+ * $Log: lbModule.h,v $
+ * Revision 1.6  2001/06/23 07:18:53  lothar
+ * Interface repository now works with the basic test
+ *
+ **************************************************************/
+/*...e*/
 
 #include <iostream.h>
 

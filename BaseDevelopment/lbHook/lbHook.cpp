@@ -33,8 +33,6 @@ lbErrCodes LB_STDCALL lbLoadModule(const char* name, HINSTANCE & hinst) {
 /*...slbErrCodes LB_STDCALL lbGetFunctionPtr\40\const char\42\ name\44\ const HINSTANCE \38\ hinst\44\ void\42\\42\ pfn\41\:0:*/
 lbErrCodes LB_STDCALL lbGetFunctionPtr(const char* name, const HINSTANCE & hinst, void** pfn) {
         char msg[100] = "";
-        sprintf(msg, "Lade Funktion '%s'.", name);
-        CL_LOG(msg); 
 	
         if ((*pfn = (void*) GetProcAddress(hinst, name)) == NULL)
         {

@@ -1,5 +1,18 @@
 //#define VERBOSE
 #define LB_MODULE_DLL
+/*...sRevision history:0:*/
+/**************************************************************
+ * $Locker:  $
+ * $Revision: 1.9 $
+ * $Name:  $
+ * $Id: lbModule.cpp,v 1.9 2001/06/23 07:18:53 lothar Exp $
+ *
+ * $Log: lbModule.cpp,v $
+ * Revision 1.9  2001/06/23 07:18:53  lothar
+ * Interface repository now works with the basic test
+ *
+ **************************************************************/
+/*...e*/
 
 /*...sincludes:0:*/
 #include <windows.h>
@@ -320,9 +333,19 @@ char* lbModule::findFunctorName(lb_I_ConfigObject* node) {
 	lb_I_ConfigObject* _node = NULL;
 	lbErrCodes err = ERR_NONE;
 	
+	/**
+	 * Warning!
+	 * 
+	 * This is hard coded moving in a tree of a xml document.
+	 */
+	
 	if ((err = node->getParent(_node)) != ERR_NONE) {
 		CL_LOG("Some errors have ocured while getting a parent node!");
 	} 
+	
+	if ((err = _node->getParent(_node)) != ERR_NONE) {
+	        CL_LOG("Some errors have ocured while getting a parent node!");
+	}
 	
 	if (_node != NULL) {
 		lb_I_ConfigObject* __node = NULL;
@@ -395,7 +418,6 @@ lbErrCodes lbModule::getDefaultImpl(char* interfacename, lb_I_ConfigObject* node
 			temp_node->getAttributeValue("Interface", attr);
 			
 			if (strcmp(interfacename, attr) == 0) {
-				CL_LOG("Got the standard implementation.");
 				
 				temp_node->getAttributeValue("Module", module);
 				temp_node->getAttributeValue("Functor", implTor);
@@ -435,9 +457,6 @@ CL_LOG("Really leaved next children!");
 getch();
 #endif
 	
-	if (err == ERR_CONFIG_NO_MORE_CHILDS) {
-		CL_LOG("No more childs found");
-	}
 #ifdef VERBOSE
 CL_LOG("Done lbModule::getDefaultImpl(...)");
 getch();
@@ -784,9 +803,6 @@ lbErrCodes lbModule::request(const char* request, lb_I_Unknown*& result) {
 		getch();
 	}
 	
-	sprintf(buf, "Request interface %s\n", request);
-	CL_LOG(buf);
-	
         if (xml_Instance == NULL) xml_Instance = getXMLConfigObject();
         
 /*...sget my unknown interface:8:*/
@@ -806,18 +822,31 @@ lbErrCodes lbModule::request(const char* request, lb_I_Unknown*& result) {
 	 * instance is done in the xml file instead of if blocks.
 	 */
 	
-		char* node = "#document/dtdHostCfgDoc/Modules/Module/Functions/Function/Functor";
+		char* node = "#document/dtdHostCfgDoc/Modules/Module/Functions/Function/Functor/InterfaceName";
 		lb_I_ConfigObject* config = NULL;
 		int count = 0;
 					// request is a functor
-		if (internalInstanceRequest == 1) {
-			CL_LOG("xml_Instance->hasConfigObject(node, count):");
-		}
+
+		/**
+		 * Get the nodes that match the path in 'node'. It may simple to change this
+		 * to get all 'InterfaceName' entries. It should work the same way.
+		 *
+		 * 1. It is better to let this as it is. In the new XML file, an interfacename
+		 * is a chield of the functor. I must find the functor's that implements the
+		 * requiered interface.
+		 *
+		 * findFunctorNode, implemented as now, has a bug: It returns every times the
+		 * first element.
+		 * It should be an iterator to get all the elements found by hasConfigobject.
+		 * Leaving the current technique, enables the searchability for functors dirctly
+		 * and also enables the search for interfaces.
+		 *
+		 * The only thing, that must not appear, is an interfacename is the same as a
+		 * functor !
+		 */
+
 		
 		if (xml_Instance->hasConfigObject(node, count) == ERR_NONE) {
-			if (internalInstanceRequest == 1) {
-				CL_LOG("xml_Instance->getConfigObject(config, node):");
-			}
 			/**
 			 * Get the list of found objects as a list.
 			 * The result is a view of notes in a max deep
@@ -834,10 +863,58 @@ CL_LOG("Try to get the config object");
 CL_LOG("Got a config object (will the next crash ?)");
 #endif
 /*...e*/
-			if (internalInstanceRequest == 1) {
-				CL_LOG("findFunctorNode(config, request):");
+			
+			/**
+			 * Check, which element implements the requested interface.
+			 * If there are more than one for an interface, get the first.
+			 * Later, get the default.
+			 */
+			
+			lb_I_ConfigObject* implementations = NULL;
+			lb_I_ConfigObject* impl = NULL;
+			
+			//filterInterfaces(config, request, implementations);
+			
+			/**
+			 * Simply get the first.
+			 */
+			
+			//getFirstChildWithAttrEquals(config, "Name", request);
+			
+/*...sfind the needed node:32:*/
+			char* value = NULL;
+			if ((err = config->getFirstChildren(impl)) == ERR_NONE) {
+				char buf[100] = "";
+				err = impl->getAttributeValue("Name", value);
+				
+				if (strcmp(value, request) == 0) {
+					//impl is the needed object	
+				} else {
+					int stop = 1;
+					while (stop == 1) {
+						if ((err = config->getNextChildren(impl)) != ERR_NONE) {
+							stop = 0;
+							impl = NULL;
+							break;
+						}
+						
+						err = impl->getAttributeValue("Name", value);
+						
+						if (strcmp(value, request) == 0) stop = 0;
+							
+					}
+				}
+			}
+/*...e*/
+			
+			if (strcmp(request, value) != 0) {
+				CL_LOG("Error: There is no implementation for wanted interface");
 			}
 			
+			char* functorName = findFunctorName(impl);
+			char* moduleName = findFunctorModule(impl);
+/*...sbla:8:*/
+#ifdef bla			
 			lb_I_ConfigObject* functorNode = findFunctorNode(config, request);
 /*...sVERBOSE:32:*/
 #ifdef VERBOSE
@@ -853,12 +930,12 @@ CL_LOG("Not crashed!");
 				
 			}
 getch();
-			char* moduleName = findFunctorModule(functorNode);
+			moduleName = findFunctorModule(functorNode);
 			if (internalInstanceRequest == 1) {
 				CL_LOG("findFunctorName(functorNode):");
 			}
 			cout << "Search for this name '" << request << "'" << endl;
-			char* functorName = findFunctorName(functorNode);
+			functorName = findFunctorName(functorNode);
 
 			CL_LOG("Got this functor name:");
 			CL_LOG(functorName);
@@ -895,9 +972,10 @@ getch();
 			 * Better - put the value directly.
 			 */
 /*...e*/
-			 
-#ifdef bla			
+#endif			 
+/*...e*/
 /*...sbla:8:*/
+#ifdef bla			
 			/**
 			 * If a request want's to get any of these interface instances, I should not try
 			 * to call recursive my own function.
@@ -924,17 +1002,14 @@ getch();
 				CL_LOG("-------------------- End recursive call! -----------------------");
 				internalInstanceRequest = 0;
 			}
-/*...e*/
 #endif bla
+/*...e*/
 		
-/*...sinternal recursive call \63\:32:*/
+/*...sinternal management of loaded modules:32:*/
 #ifdef bla
 			if (internalInstanceRequest == 0) {
 #endif
 				// Set the value of the object
-			
-				CL_LOG("Try to get the string instance");
-				getch();
 			
 				lb_I_String* stringKey = NULL;
 
@@ -955,11 +1030,7 @@ getch();
 					xml_Instance->getConfigObject(config, node);
 
 					getDefaultImpl("lb_I_String", config, defaultFunctor, defaultModule);
-					CL_LOG("Called getDefaultImpl(...)");
-					getch();
 					makeInstance(defaultFunctor, defaultModule, key);
-					CL_LOG("Made an instance ?");
-					getch();
 				
 					if (key == NULL) {
 						CL_LOG("Error: Key is NULL!");
@@ -971,18 +1042,12 @@ getch();
 						getch();
 					}
 				
-					CL_LOG("Try to set the c string into lb_I_String instance");
-					getch();
-				
 					if (stringKey == NULL) {
 						CL_LOG("Error: NULL pointer detected at stringKey!");
 						getch();
 					}
 				
 					stringKey->setData(moduleName);
-				
-					CL_LOG("Have set data in the string :-)");
-					getch();
 				
 /*...sdoc:64:*/
 			/**
@@ -996,9 +1061,6 @@ getch();
 						CL_LOG("Module is loaded at first time!");
 						getch();
 					}
-					
-					CL_LOG("Got the element");
-					getch();
 				}
 
 #ifdef bla
