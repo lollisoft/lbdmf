@@ -1,3 +1,5 @@
+// used for documentation
+#define LB_I_EXTENTIONS
 /*...sCopyright notice:0:*/
 // Orginal version:
 /////////////////////////////////////////////////////////////////////////////
@@ -6,7 +8,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.25 2004/07/28 20:45:51 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.26 2004/07/31 15:51:38 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -44,11 +46,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.25 $
+ * $Revision: 1.26 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.25 2004/07/28 20:45:51 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.26 2004/07/31 15:51:38 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.26  2004/07/31 15:51:38  lollisoft
+ * Added doxygen formatted documentation.
+ *
  * Revision 1.25  2004/07/28 20:45:51  lollisoft
  * Added add and delete handlers, but doesn't work due to incomplete lbDB
  * implementation.
@@ -115,12 +120,20 @@ class lb_wxGUI;
 
 #ifdef LB_I_EXTENTIONS
 /*...sclass lb_wxFrame:0:*/
+/**
+ * \brief This is the main frame implementation.
+ *
+ * It implements the main event handling interface via OnDispatch.
+ */
 class lb_wxFrame : 
                 public lb_I_wxFrame,
 		public wxFrame
 { 
 public:
 /*...sctors\47\dtors:8:*/
+	/**
+	 * Initialize a default application layout.
+	 */
         lb_wxFrame():
         	wxFrame(NULL, -1, "Dynamic sample", wxPoint(50, 50), wxSize(450, 340))
         {
@@ -137,14 +150,24 @@ public:
 
         DECLARE_LB_UNKNOWN()
 
+	/**
+	 * Set the GUI wrapper instance.
+	 */
 	void setGUI(lb_wxGUI* _gui) { gui = _gui; }
 
+	/**
+	 * Intented to typecast to derived class. Not sure, if this is really stupid.
+	 * Where is it used ?
+	 */
         virtual lb_wxFrame* getPeer() { return this; } 
 
 public:
         void OnQuit(wxCommandEvent& event);
+        
+        /**
+         * Displays the about form of the application.
+         */
         void OnAbout(wxCommandEvent& event);
-
 
         /**
          * This dispatcher converts all events to lb_I_Dispatcher events
@@ -154,9 +177,19 @@ public:
          */
         void OnDispatch(wxCommandEvent& event);
 
+	/**
+	 * Build the minimal standard menu of the application.
+	 */
 	void OnBuildMenu(wxCommandEvent& event);
+	
+	/**
+	 * \deprecated This was only a menu instance pointer check - debug.
+	 */
 	void OnCheck(wxCommandEvent& event);
 
+	/**
+	 * Return the frames menubar. Internal use only.
+	 */
 	wxMenuBar* LB_STDCALL getMenuBar() {
 		char ptr[200] = "";
 		sprintf(ptr, "%p for instance %p", menu_bar, this);
@@ -1096,6 +1129,12 @@ class MyFrame;
 #endif
 /*...sclass MyApp:0:*/
 // Define a new application type
+
+/**
+ * \brief Sample application. The main of a wxWidgets application.
+ *
+ * It is used to demonstrate a GUI sample application.
+ */
 class MyApp: public wxApp
 #ifdef LB_I_EXTENTIONS
 , public lb_I_Unknown
@@ -1103,6 +1142,9 @@ class MyApp: public wxApp
 , public lb_I_EventHandler
 #endif
 { public:
+	/**
+	 * Initialisation.
+	 */
 	MyApp() {
 #ifdef LB_I_EXTENTIONS	
 	  wxGUI = NULL;
@@ -1112,6 +1154,9 @@ class MyApp: public wxApp
 	 printf("MyApp::MyApp() called.\n");
 	}
 
+	/**
+	 * Deletes the lb_I_GUI instance used for independent GUI component handlers.
+	 */
 	virtual ~MyApp() { 
 /*
  * It seems, that frame was deleted prior !!
@@ -1123,12 +1168,16 @@ class MyApp: public wxApp
 		printf("MyApp::~MyApp() called.\n");
 	}
 
+	/**
+	 * Main initialisation member. It shows the integration of my framework into a wxWidgets application.
+	 */
     bool OnInit(void);
+    
     int  OnExit();
 
 #ifdef LB_I_EXTENTIONS
 /*...ssome docs:0:*/
-    /**
+    /*
      * This instance knows of some events, have to be interconnected.
      * The source are menus and the target is the frame, that handles
      * it.
@@ -1142,25 +1191,61 @@ class MyApp: public wxApp
      * delegates the functionality to it.
      */
 /*...e*/
+
         virtual lbErrCodes LB_STDCALL getConnectorEventList(lb_I_Container* c) { return ERR_NONE; }
         virtual lbErrCodes LB_STDCALL createEventsource(lb_I_EventConnector* object) { return ERR_NONE; }
 
-
+	/**
+	 * Create event handler, that this application would provide to the lbDMF user.
+	 */
         virtual lbErrCodes LB_STDCALL registerEventHandler(lb_I_Dispatcher* disp);
 
 	// I provide some eventhandlers
-
+	
+	/**
+	 * Event handler to add a menu in the main application. It is not implemented because
+	 * the sample application creates it directly to have a menu if no other modules are
+	 * found. At leasd an exit handling is created.
+	 */
 	lbErrCodes LB_STDCALL lbEvHandler1(lb_I_Unknown* uk);
+	
+	/**
+	 * Event handler to add a menu bar on the main menu. This is used in my lb_I_MetaApplication and
+	 * also used in the demo app module.
+	 */
 	lbErrCodes LB_STDCALL lbEvHandler2(lb_I_Unknown* uk);
+	
+	/**
+	 * Event handler to add a menu entry in a given menu bar name.
+	 * \note These handlers should not called by the user of lbDMF. The programmer would use lb_I_MetaApplication to abstract from the real GUI implementation.
+	 */
 	lbErrCodes LB_STDCALL lbEvHandler3(lb_I_Unknown* uk);	
 	
 	// These event handlers are canditates for an API replacement
-	
+
+	/**
+	 * Add a button to the main frame.
+	 */	
 	lbErrCodes LB_STDCALL addButton(lb_I_Unknown* uk);
+	
+	/**
+	 * Add a label to the main frame.
+	 */
 	lbErrCodes LB_STDCALL addLabel(lb_I_Unknown* uk);
+	
+	/**
+	 * Add a text control to the main frame.
+	 */
 	lbErrCodes LB_STDCALL addTextField(lb_I_Unknown* uk);
 
+	/**
+	 * Unused ?
+	 */
         lbErrCodes LB_STDCALL HandleGetFrame(lb_I_Unknown* uk); // Thread parameter as output
+        
+        /**
+         * Unused ?
+         */
         lbErrCodes LB_STDCALL HandleAddMenu(lb_I_Unknown* uk);  // Thread parameter as input
     
         DECLARE_LB_UNKNOWN()
@@ -1188,7 +1273,7 @@ protected:
         
         
 /*...sevent manager:8:*/
-        /**
+        /*
          * I need an instance of the event manager. The event manager is used to give me id's for my
          * symbolic event names. First I do not handle a scope.
          */
@@ -1196,7 +1281,7 @@ protected:
         DEBUG_UAP(lb_I_EventManager, ev_manager, __FILE__, __LINE__)
 /*...e*/
 /*...smeta application:8:*/
-        /**
+        /*
          * I also need an instance of the meta application, that is loaded as the application wrapper.
          */
          
