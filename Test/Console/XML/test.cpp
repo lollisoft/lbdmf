@@ -134,12 +134,36 @@ void main(int argc, char *argv[]) {
 	database->connect("trainres", "dba", "trainres");
 	
 	UAP(lb_I_Query, query, __FILE__, __LINE__)
+	
 	query = database->getQuery();
-	query->query("select ObjectTyp, X, Y, W, H from World");
-	query->next();
 
-	printf("%s;%s;%s;%s;%s\n", query->getChar(1), query->getChar(2), query->getChar(3), query->getChar(4), query->getChar(5));
-//	printf("%s\n", query->getChar(1));
+	query->query("select ObjectTyp, X, Y, W, H from World");
+
+/*...sreverse:8:*/
+	if (query->last() != ERR_NONE)
+		printf("Error while get next\n");
+	else
+		printf("%s;%s;%s;%s;%s\n", query->getChar(1), query->getChar(2), query->getChar(3), query->getChar(4), query->getChar(5));
+	
+
+	while (query->previous() == ERR_NONE) {
+		printf("%s;%s;%s;%s;%s\n", query->getChar(1), query->getChar(2), query->getChar(3), query->getChar(4), query->getChar(5));
+	}
+/*...e*/
+// Second run fails ??
+/*...sforward:8:*/
+	if (query->next() != ERR_NONE) 
+		printf("Error while get next\n");
+	else
+		printf("%s;%s;%s;%s;%s\n", query->getChar(1), query->getChar(2), query->getChar(3), query->getChar(4), query->getChar(5));
+
+
+	while (query->next() == ERR_NONE) {
+		printf("%s;%s;%s;%s;%s\n", query->getChar(1), query->getChar(2), query->getChar(3), query->getChar(4), query->getChar(5));
+	}
+/*...e*/
+
+	
 
 	/* Todo:
 	 * Create a viewer instance for the current query and
