@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.59 2005/03/15 22:26:50 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.60 2005/03/19 16:44:05 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.59 $
+ * $Revision: 1.60 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.59 2005/03/15 22:26:50 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.60 2005/03/19 16:44:05 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.60  2005/03/19 16:44:05  lollisoft
+ * Implemented i18n. Removed unused code.
+ *
  * Revision 1.59  2005/03/15 22:26:50  lollisoft
  * More changes on OSX to compile plugins
  *
@@ -245,7 +248,7 @@ public:
 	 * Initialize a default application layout.
 	 */
         lb_wxFrame():
-        	wxFrame(NULL, -1, "Dynamic sample", wxPoint(50, 50), wxSize(450, 340))
+        	wxFrame(NULL, -1, _trans("Dynamic sample"), wxPoint(50, 50), wxSize(450, 340))
         {
         	menu_bar = NULL; 
         	gui = NULL;
@@ -379,12 +382,12 @@ lbErrCodes LB_STDCALL lb_wxFrame::createEventsource(lb_I_EventConnector* object)
   // Make a menubar
   wxMenu *file_menu = new wxMenu;
   
-  file_menu->Append(DYNAMIC_ABOUT, "&About");
-  file_menu->Append(DYNAMIC_VERBOSE, "&Verbose");
-  file_menu->Append(DYNAMIC_QUIT, "E&xit");
+  file_menu->Append(DYNAMIC_ABOUT, _trans("&About\tCtrl-A"));
+  file_menu->Append(DYNAMIC_VERBOSE, _trans("&Verbose\tCtrl-V"));
+  file_menu->Append(DYNAMIC_QUIT, _trans("E&xit\tCtrl-x"));
 
   menu_bar = new wxMenuBar;
-  menu_bar->Append(file_menu, "&File");
+  menu_bar->Append(file_menu, _trans("&File"));
   
 /*...e*/
 
@@ -784,288 +787,6 @@ char const * LB_STDCALL wxLogonPage::getTextValue(char* _name) {
 /*...e*/
 /*...e*/
 
-#ifdef bla
-/*...sclass lbLoginDialog:0:*/
-/**
- * This is the sample login dialog for a wxWidgets based GUI.
- */
-class lbLoginDialog :
-	public lb_I_Unknown,
-	public lb_I_EventHandler,
-	public wxDialog {
-public:
-	/**
-	 * Default constructor - implemented in BEGIN_IMPLEMENT_LB_UNKNOWN(lbDatabaseDialog)
-	 */
-	lbLoginDialog();
-	
-	/**
-	 * This function creates the dialog on the fly.
-	 *
-	 * It builds the layout, navigation elements.
-	 */
-	void init(wxWindow* parent);
-	
-	/**
-	 * Destructor
-	 */
-	virtual ~lbLoginDialog();
-
-	/**
-	 * Create a simple text control with its label.
-	 *
-	 * To be moved to a base class or the like.
-	 */
-	lbErrCodes LB_STDCALL createTextCtrl(char* _name);
-
-	/**
-	 * Returns the value of a text control.
-	 */
-	char const * LB_STDCALL getTextValue(char* _name);
-
-	/**
-	 * Handles the OK event of the users input for login.
-	 */
-	lbErrCodes LB_STDCALL lbLoginOk(lb_I_Unknown* uk);
-	
-	/**
-	 * Cancels the user input.
-	 */
-	lbErrCodes LB_STDCALL lbLoginCancel(lb_I_Unknown* uk);
-
-
-
-	/**
-	 * This function acts in a special way for registering the above navigation handlers
-	 *
-	 * It uses a string of the this pointer + a name for the respective eventhandler.
-	 * This is neccessary for handling more than one database dialog per application.
-	 *
-	 * This is a good sample, if you need to be able to handle more than one instance of
-	 * your registered event handlers.
-	 */
-	lbErrCodes LB_STDCALL registerEventHandler(lb_I_Dispatcher* dispatcher);
-
-	DECLARE_LB_UNKNOWN()
-
-	UAP(lb_I_Database, database, __FILE__, __LINE__)
-	UAP(lb_I_Query, sampleQuery, __FILE__, __LINE__)	
-	
-
-	// l gets overwritten, while assigning a lb_I_Query* pointer to sampleQuery !!
-	// l and buf are therefore as a bugfix.
-	long l;
-	char buf[100];
-	
-	wxWindow* OkButton;
-	wxWindow* CancelButton;
-	
-	wxBoxSizer* sizerMain;
-	wxBoxSizer* sizerHor;
-	wxBoxSizer* sizerAddRem;
-	wxBoxSizer* sizerLeft;
-	wxBoxSizer* sizerRight;
-};
-/*...e*/
-/*...sclass lbLoginDialog implementation:0:*/
-BEGIN_IMPLEMENT_LB_UNKNOWN(lbLoginDialog)
-END_IMPLEMENT_LB_UNKNOWN()
-
-lbErrCodes LB_STDCALL lbLoginDialog::setData(lb_I_Unknown* uk) {
-        _LOG << "lbLoginDialog::setData(...) not implemented yet" LOG_
-        return ERR_NOT_IMPLEMENTED;
-}
-
-
-lbLoginDialog::lbLoginDialog()
-	: wxDialog(NULL, -1, wxString(_T("Database dialog")), wxDefaultPosition, wxDefaultSize, wxRESIZE_BORDER|wxDEFAULT_DIALOG_STYLE)
-{
-	l = 0L;
-	strcpy(buf, "Test buffer\n");
-
-}
-
-/*...schar const \42\ LB_STDCALL lbLoginDialog\58\\58\getTextValue\40\char\42\ _name\41\:0:*/
-char const * LB_STDCALL lbLoginDialog::getTextValue(char* _name) {
-	
-	wxWindow* w = FindWindowByName(wxString(_name));
-
-	if (w != NULL) {
-        	wxTextCtrl* tx = (wxTextCtrl*) w;
-
-	        wxString v = tx->GetValue();
-
-		return v.c_str();
-	}
-
-	return "";
-}
-/*...e*/
-/*...slbErrCodes LB_STDCALL lbLoginDialog\58\\58\createTextCtrl\40\char\42\ _name\41\:0:*/
-lbErrCodes LB_STDCALL lbLoginDialog::createTextCtrl(char* _name) {
-
-		char* name = NULL;
-		
-		name = strdup(_name);
-		
-		wxTextCtrl *text = new wxTextCtrl(this, -1, "", wxPoint());
-		
-		text->SetName(name);
-		
-		sizerRight->Add(text, 1, wxEXPAND | wxALL, 5);
-		
-		char* tLabel = new char[strlen(name) + 1];
-		
-		tLabel[0] = 0;
-		
-		tLabel = strcat(tLabel, name); 
-		
-		wxStaticText *label = new wxStaticText(this, -1, tLabel, wxPoint());
-		sizerLeft->Add(label, 1, wxEXPAND | wxALL, 5);
-		
-		free(name);
-		
-		return ERR_NONE;
-}
-/*...e*/
-
-/*...slbErrCodes LB_STDCALL lbLoginDialog\58\\58\registerEventHandler\40\lb_I_Dispatcher\42\ dispatcher\41\:0:*/
-lbErrCodes LB_STDCALL lbLoginDialog::registerEventHandler(lb_I_Dispatcher* dispatcher) {
-
-	char eventName[100] = "";
-	
-	sprintf(eventName, "%pLoginOk", this);
-	dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbLoginDialog::lbLoginOk,  eventName);
-	
-	sprintf(eventName, "%pLoginCancel", this);
-	dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbLoginDialog::lbLoginCancel,  eventName);
-	
-	return ERR_NONE;
-}
-/*...e*/
-/*...svoid lbLoginDialog\58\\58\init\40\wxWindow\42\ parent\41\:0:*/
-void lbLoginDialog::init(wxWindow* parent) {
-	char prefix[100] = "";
-	sprintf(prefix, "%p", this);
-
-	SetTitle("Login");
-
-	sizerMain  = new wxBoxSizer(wxVERTICAL);
-	sizerHor   = new wxBoxSizer(wxHORIZONTAL);
-	sizerAddRem = new wxBoxSizer(wxHORIZONTAL);
-	sizerLeft  = new wxBoxSizer(wxVERTICAL);	
-	sizerRight = new wxBoxSizer(wxVERTICAL);
-
-	int LoginOk;
-	int LoginCancel;
-	
-	UAP_REQUEST(manager.getPtr(), lb_I_EventManager, eman)
-	UAP_REQUEST(manager.getPtr(), lb_I_Dispatcher, dispatcher)
-
-	char eventName[100] = "";
-		
-	sprintf(eventName, "%pLoginOk", this);
-	eman->registerEvent(eventName,  LoginOk);
-
-	sprintf(eventName, "%pLoginCancel", this);
-	eman->registerEvent(eventName,  LoginCancel);
-
-	dispatcher->setEventManager(eman.getPtr());
-
-	registerEventHandler(dispatcher.getPtr());
-
-	sizerHor->Add(sizerLeft, 1, wxEXPAND | wxALL, 5);
-	sizerHor->Add(sizerRight, 1, wxEXPAND | wxALL, 5);
-
-	wxButton *buttonOk = new wxButton(this, LoginOk, "Ok", wxPoint(), wxSize(100,20));
-	wxButton *buttonCancel = new wxButton(this, LoginCancel, "Cancel", wxPoint(), wxSize(100,20));
-
-	createTextCtrl("Benutzer:");
-	createTextCtrl("Passwort:");
-
-	sizerAddRem->Add(buttonOk, 1, wxALL, 5);
-	sizerAddRem->Add(buttonCancel, 1, wxALL, 5);
-
-//#define CONNECTOR ((wxFrame*) frame)
-#define CONNECTOR this
-
-	CONNECTOR->Connect( LoginOk,  -1, wxEVT_COMMAND_BUTTON_CLICKED,
-	  (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) &lb_wxFrame::OnDispatch);
-	CONNECTOR->Connect( LoginCancel,  -1, wxEVT_COMMAND_BUTTON_CLICKED,
-	  (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) &lb_wxFrame::OnDispatch);
-
-	SetAutoLayout(TRUE);
-	
-	sizerMain->Add(sizerHor, 0, wxEXPAND | wxALL, 5);
-	sizerMain->Add(sizerAddRem, 0, wxEXPAND | wxALL, 5);
-	
-	SetSizer(sizerMain);
-
-	sizerMain->SetSizeHints(this);
-	sizerMain->Fit(this);
-	
-	Centre();
-
-}
-/*...e*/
-
-
-lbLoginDialog::~lbLoginDialog() {
-	printf("lbLoginDialog::~lbLoginDialog() called.\n");
-}
-
-/*...slbErrCodes LB_STDCALL lbLoginDialog\58\\58\lbLoginOk\40\lb_I_Unknown\42\ uk\41\:0:*/
-lbErrCodes LB_STDCALL lbLoginDialog::lbLoginOk(lb_I_Unknown* uk) {
-	REQUEST(manager.getPtr(), lb_I_Database, database)
-printf("Begin test user and password\n");
-	database->init();
-
-	char* lbDMFPasswd = getenv("lbDMFPasswd");
-	char* lbDMFUser   = getenv("lbDMFUser");
-	
-	if (!lbDMFUser) lbDMFUser = "dba";
-	if (!lbDMFPasswd) lbDMFPasswd = "trainres";
-	
-	database->connect("lbDMF", lbDMFUser, lbDMFPasswd);
-
-	sampleQuery = database->getQuery(0);
-
-	char buffer[100] = "";
-	
-	char* pass = strdup(getTextValue("Passwort:"));
-	char* user = strdup(getTextValue("Benutzer:"));
-	
-	
-	sprintf(buffer, "select userid, passwort from \"Users\" where userid = '%s' and passwort = '%s'", 
-			user, pass);
-			
-	if (pass) free(pass);
-	if (user) free(user);
-
-	printf("%s\n", buffer);
-printf("Start query for user and password\n");
-	sampleQuery->query(buffer);
-
-	if (sampleQuery->first() == ERR_NONE) {
-		printf("User authenticated correctly\n");
-	} else {
-		printf("User authentication failed\n");
-	}
-
-
-	return ERR_NONE;
-}
-/*...e*/
-/*...slbErrCodes LB_STDCALL lbLoginDialog\58\\58\lbLoginCancel\40\lb_I_Unknown\42\ uk\41\:0:*/
-lbErrCodes LB_STDCALL lbLoginDialog::lbLoginCancel(lb_I_Unknown* uk) {
-
-	return ERR_NONE;
-}
-/*...e*/
-
-/*...e*/
-#endif
-
 /*...sclass lb_wxGUI:0:*/
 #ifdef LB_I_EXTENTIONS
 
@@ -1379,6 +1100,8 @@ lbErrCodes LB_STDCALL lb_wxGUI::cleanup() {
 				
 		lb_I_Unknown* form = forms->nextElement();
 
+		if (!form) continue;
+
 		UAP(lb_I_DatabaseForm, d, __FILE__, __LINE__)		
 		QI(form, lb_I_DatabaseForm, d, __FILE__, __LINE__)
 		
@@ -1529,6 +1252,12 @@ lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::createDBForm(char* formName, char* query
 		UAP_REQUEST(manager.getPtr(), lb_I_PluginManager, PM)
 		UAP(lb_I_Plugin, pl, __FILE__, __LINE__)
 		pl = PM->getFirstMatchingPlugin("lb_I_DatabaseForm");
+
+		if (pl == NULL) {
+			msgBox(_trans("Error"), _trans("Database form plugin not found or not installed.\n\nDatabase forms are not available."));
+			return NULL;
+		}
+
 		uk = pl->getImplementation();
 		
 		forms->insert(&uk, &key);
@@ -2318,14 +2047,6 @@ lbErrCodes LB_STDCALL MyApp::lbEvHandler2(lb_I_Unknown* uk) {
 
 	lbErrCodes err = ERR_NONE;
 
-/*
-
-	UAP(lb_I_String, string, __FILE__, __LINE__)
-	if (uk == NULL) _LOG << "Have got a null pointer" LOG_;
-	QI(uk, lb_I_String, string, __FILE__, __LINE__)
-
-*/
-
 	UAP_REQUEST(manager.getPtr(), lb_I_EventManager, ev_manager)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, name)
@@ -2398,6 +2119,7 @@ lbErrCodes LB_STDCALL MyApp::lbEvHandler3(lb_I_Unknown* uk) {
 	ev_manager->resolveEvent(handlername->getData(), EvNr);
 
 	wxMenuBar* mbar = frame_peer->getMenuBar();
+	
 	wxMenu* menu = mbar->GetMenu(mbar->FindMenu(wxString(menubar->getData())));
 
 	menu->Append(EvNr, menuname->getData());
@@ -2745,6 +2467,7 @@ void lb_wxFrame::OnDispatch(wxCommandEvent& event ) {
 /*...e*/
 #endif
 
+/*...sWindows based WinMain implementation:0:*/
 #ifndef OSX
 #ifndef LINUX
 wxApp *wxCreateApp()
@@ -2771,3 +2494,4 @@ int PASCAL WinMain(HINSTANCE hInstance,
 }
 #endif
 #endif
+/*...e*/
