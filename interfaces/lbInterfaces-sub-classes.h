@@ -28,11 +28,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.32 $
+ * $Revision: 1.33 $
  * $Name:  $
- * $Id: lbInterfaces-sub-classes.h,v 1.32 2003/07/10 21:17:18 lollisoft Exp $
+ * $Id: lbInterfaces-sub-classes.h,v 1.33 2003/08/22 17:42:35 lollisoft Exp $
  *
  * $Log: lbInterfaces-sub-classes.h,v $
+ * Revision 1.33  2003/08/22 17:42:35  lollisoft
+ * Added UAP integer parameter
+ *
  * Revision 1.32  2003/07/10 21:17:18  lollisoft
  * Added parameter interface
  *
@@ -327,6 +330,10 @@ public:
          
         virtual void LB_STDCALL setUAPString(lb_I_String*& parameter, lb_I_String*& p) = 0;
         virtual lbErrCodes LB_STDCALL getUAPString(lb_I_String*& parameter, lb_I_String*& p) = 0; 
+
+	virtual void LB_STDCALL setUAPInteger(lb_I_String*& parameter, lb_I_Integer*& p) = 0;
+	virtual lbErrCodes LB_STDCALL getUAPInteger(lb_I_String*& parameter, lb_I_Integer*& p) = 0;
+
 };
 /*...e*/
 
