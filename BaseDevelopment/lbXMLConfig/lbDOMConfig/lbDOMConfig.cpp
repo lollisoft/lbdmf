@@ -28,11 +28,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.38 $
+ * $Revision: 1.39 $
  * $Name:  $
- * $Id: lbDOMConfig.cpp,v 1.38 2003/06/16 21:50:37 lollisoft Exp $
+ * $Id: lbDOMConfig.cpp,v 1.39 2003/07/15 22:23:00 lollisoft Exp $
  *
  * $Log: lbDOMConfig.cpp,v $
+ * Revision 1.39  2003/07/15 22:23:00  lollisoft
+ * Removed debug messages
+ *
  * Revision 1.38  2003/06/16 21:50:37  lollisoft
  * Removed debug message
  *
@@ -490,7 +493,7 @@ void DOMTreeErrorReporter::resetErrors()
 class lbDOMNode : public lb_I_ConfigObject
 {
 private:
-	lbDOMNode(lbDOMNode & n) { printf("lbDOMNode(lbDOMNode & n) called\n"); }
+	lbDOMNode(lbDOMNode & n) {}
 public:
 	lbDOMNode(char* file, int line);
 	lbDOMNode();
@@ -1497,7 +1500,6 @@ lbErrCodes lbDOMConfig::setData(lb_I_Unknown* uk) {
 
 /*...slbDOMConfig\58\\58\lbDOMConfig\40\char\42\ file\44\ int line\41\:0:*/
 lbDOMConfig::lbDOMConfig(char* file, int line) {
-	printf("Created lbDOMConfig::lbDOMConfig(char* file, int line) instance\n");
 	manager = NULL;
 	ref = STARTREF;
 	lastResult = NULL;
@@ -1526,7 +1528,6 @@ lbDOMConfig::lbDOMConfig(char* file, int line) {
 /*...e*/
 /*...slbDOMConfig\58\\58\lbDOMConfig\40\\41\:0:*/
 lbDOMConfig::lbDOMConfig() {
-	printf("Created lbDOMConfig::lbDOMConfig() instance at %p\n", this);
 	manager = NULL;
 	ref = STARTREF;
 	lastResult = NULL;
@@ -1824,14 +1825,9 @@ lbErrCodes DLLEXPORT LB_FUNCTORCALL getlbDOMConfigInstance(lb_I_Unknown** uk, lb
 
 	lbErrCodes err = ERR_NONE;
         lbDOMConfig* instance = new lbDOMConfig();
-        char buf[200] = "";
-        sprintf(buf, "Have an instance for %s at %p\n", "lbDOMConfig", instance);
-        _CL_LOG << buf LOG_
         
         *uk = NULL;
-        printf("Call instance->setFurtherLock(0);\n");
         instance->setFurtherLock(0);
-        printf("instance->setFurtherLock(0); called\n");
         if (m != NULL) {
         	_CL_LOG << "Try to set module manager" LOG_
         	instance->setModuleManager(m, __FILE__, __LINE__);

@@ -28,11 +28,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.55 $
+ * $Revision: 1.56 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.55 2003/07/10 21:11:50 lollisoft Exp $
+ * $Id: lbModule.cpp,v 1.56 2003/07/15 22:20:43 lollisoft Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.56  2003/07/15 22:20:43  lollisoft
+ * Removed debug messages
+ *
  * Revision 1.55  2003/07/10 21:11:50  lollisoft
  * More debug
  *
@@ -2173,17 +2176,12 @@ lbErrCodes LB_STDCALL lbModule::initialize() {
         }
         
         if (xml_Instance == NULL) {
-printf("Get the XML config object\n");
                 getXMLConfigObject(&xml_Instance);
-printf("Got it\n");
-getch();
                 if (xml_Instance == NULL) {
                 	_CL_LOG << "Error: Functor has not returned a pointer!" LOG_
                 	exit(1);
                 }
 	}
-printf("Get module container\n");
-getch();
         lbModuleContainer* MList = new lbModuleContainer();
                
         MList->setModuleManager(this, __FILE__, __LINE__);
@@ -2877,8 +2875,6 @@ _CL_LOG << "Requested for an interface " << request LOG_
         }
 /*...e*/
         else {
-        printf("Get any interface\n");
-//        getch();
 /*...sget any interface:8:*/
 /*...sdoc:8:*/
         /**
@@ -2922,8 +2918,6 @@ _CL_LOG << "Requested for an interface " << request LOG_
                          */
 /*...e*/
                         xml_Instance->getConfigObject(&config, node);
-                        printf("Got config object\n");
-//                        getch();
                         track_Object(*&config, "Test object given by xml_Instance->getConfigObject()");
 /*...sVERBOSE:32:*/
                         #ifdef VERBOSE
@@ -2980,8 +2974,6 @@ _CL_LOG << "Requested for an interface " << request LOG_
                                 }
                         }
 /*...e*/
-			printf("Found the needed node\n");
-//			getch();
 
 /*...sreturn error if value \61\ NULL:32:*/
                         if (value == NULL) {
@@ -3007,9 +2999,6 @@ _CL_LOG << "Requested for an interface " << request LOG_
 /*...sfind up names:32:*/
                         moduleName = findFunctorModule(&impl);
                         functorName = findFunctorName(&impl);
-
-			printf("Found functor module and name\n");
-//			getch();
 /*...e*/
 /*...sclean up \63\\63\\63\:32:*/
                         if (value != NULL) {
@@ -3030,7 +3019,6 @@ _CL_LOG << "Requested for an interface " << request LOG_
                         //if (moduleName != NULL) impl->deleteValue(moduleName);
 //                        if (value != NULL) impl->deleteValue(value);
 /*...e*/
-			printf("Post cleanup\n");
                 } else {
                         cout << "Something goes wrong!" << endl;
                         cout << "xml_Instance->hasConfigObject() returns <> ERR_NONE!" << endl;
