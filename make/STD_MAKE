@@ -1,20 +1,37 @@
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.2 $
+# * $Revision: 1.3 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.2 2001/06/24 18:49:42 lothar Exp $
+# * $Id: STD_MAKE,v 1.3 2001/10/20 21:37:45 lothar Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.3  2001/10/20 21:37:45  lothar
+# * Changed to use under linux
+# *
 # * Revision 1.2  2001/06/24 18:49:42  lothar
 # * Added revision history
 # *
 # **************************************************************
 
-STD_INCL = -i=.;Q:\develop\Tools\WATCOM\h;&
-Q:\develop\Tools\WATCOM\h\nt;&
-Q:\develop\projects\cpp\interfaces;&
-Q:\develop\projects\cpp\include;&
-Q:\develop\projects\dll\include;&
-Q:\develop\projects\lib\include
+# In order to use one master file for make configuration, this file
+# will be rewritten for GNU make
 
+ifeq ($(OS), Windows_NT)
+STD_INCL = -i=.;Q:\develop\Tools\WATCOM\h; &
+Q:\develop\Tools\WATCOM\h\nt; &
+Q:\develop\projects\cpp\interfaces; &
+Q:\develop\projects\cpp\include; &
+Q:\develop\projects\dll\include; &
+Q:\develop\projects\lib\include
+endif
+
+ifeq ($(OSTYPE), linux)
+MORECHAR=\
+
+STD_INCL = -I ../lbHook/linuxCode \
+	-I ../../interfaces \
+	-I ../../include \
+	-I ../lbClasses \
+	-I . 
+endif
 
