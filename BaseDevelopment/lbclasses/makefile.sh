@@ -4,7 +4,7 @@
 
 cat ../../make/makefile.template > makefile
 cat makefile.module >> makefile
-echo all: lbclasses >> makefile
+echo all: lbClasses >> makefile
 echo >> makefile
 
-mkmk SO lbclasses ../include,../interfaces *.cpp >> makefile
+mkmk SO lbClasses ../include,../interfaces *.cpp >> makefile

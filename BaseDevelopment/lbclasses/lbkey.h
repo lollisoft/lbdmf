@@ -28,10 +28,13 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.16 $
+ * $Revision: 1.17 $
  * $Name:  $
- * $Id: lbkey.h,v 1.16 2003/01/15 22:42:22 lolli Exp $
+ * $Id: lbkey.h,v 1.17 2003/01/19 18:07:46 lothar Exp $
  * $Log: lbkey.h,v $
+ * Revision 1.17  2003/01/19 18:07:46  lothar
+ * MSC variant runs now under Linux
+ *
  * Revision 1.16  2003/01/15 22:42:22  lolli
  * Compiles with MSC
  *
@@ -95,6 +98,8 @@
 #ifndef LB_KEY
 #define LB_KEY
 
+#ifdef bla
+
 #ifndef _MSC_VER
 /*...sclass lbKey \58\ public lb_I_KeyBase:0:*/
 class lbKey : public lb_I_KeyBase {
@@ -118,6 +123,7 @@ private:
 	int key;
 };
 /*...e*/
+#endif
 #endif
 
 /*...sclass lbKeyUL \58\ public lb_I_KeyBase:0:*/
