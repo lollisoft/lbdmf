@@ -1,11 +1,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.3 $
+ * $Revision: 1.4 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.3 2002/04/15 18:24:31 lothar Exp $
+ * $Id: lbMetaApplication.cpp,v 1.4 2002/07/23 17:48:55 lothar Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.4  2002/07/23 17:48:55  lothar
+ * Current version runs
+ *
  * Revision 1.3  2002/04/15 18:24:31  lothar
  * Huge changes - works good
  *
@@ -17,7 +20,6 @@
 /*...e*/
 #define LB_METAAPP_DLL
 /*...sincludes:0:*/
-#include <lbmetaapp-module.h>
 
 
 #include <stdio.h>
@@ -41,6 +43,8 @@ extern "C" {
 #endif
 
 #include <lbConfigHook.h>
+
+#include <lbmetaapp-module.h>
 
 #include <lbMetaApplication.h>
 /*...e*/
@@ -91,6 +95,10 @@ lbErrCodes LB_STDCALL lb_MetaApplication::getGUI(lb_I_GUI** _gui) {
 	return ERR_NONE;
 }
 
+lb_I_EventManager * lb_MetaApplication::getEVManager( void ) {
+	return NULL;
+}
+
 lbErrCodes LB_STDCALL lb_MetaApplication::Initialize() {
 /**
  * At this point should be found the real application. The real one
@@ -115,7 +123,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::Initialize() {
 	 
 	eman->registerEvent("getBasicApplicationInfo", getBasicApplicationInfo);
 
-	char buf[100] = "";
+	char buf[1000] = "";
 	
 	sprintf(buf, "Registered an event 'getBasicApplicationInfo' as %d", getBasicApplicationInfo);
 	

@@ -1,11 +1,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.26 $
+ * $Revision: 1.27 $
  * $Name:  $
- * $Id: lbDOMConfig.cpp,v 1.26 2002/06/20 21:29:40 lothar Exp $
+ * $Id: lbDOMConfig.cpp,v 1.27 2002/07/23 17:48:56 lothar Exp $
  *
  * $Log: lbDOMConfig.cpp,v $
+ * Revision 1.27  2002/07/23 17:48:56  lothar
+ * Current version runs
+ *
  * Revision 1.26  2002/06/20 21:29:40  lothar
  * More debug information
  *
@@ -429,6 +432,7 @@ private:
 	lbDOMNode(lbDOMNode & n) { printf("lbDOMNode(lbDOMNode & n) called\n"); }
 public:
 	lbDOMNode(char* file, int line);
+	lbDOMNode();
 	virtual ~lbDOMNode();
 	
 	DECLARE_LB_UNKNOWN()
@@ -593,6 +597,7 @@ class lbDOMAttribute : public lb_I_Attribute
 	DECLARE_LB_UNKNOWN()
 
 	lbDOMAttribute(char* file, int line) {}
+	lbDOMAttribute() {}
 
 	virtual lbErrCodes LB_STDCALL getName(char*& name);
 	virtual lbErrCodes LB_STDCALL getValue(char*& value);
@@ -678,7 +683,7 @@ lbErrCodes lbDOMNode::setData(lb_I_Unknown* uk) {
 	return ERR_NONE;
 }
 /*...e*/
-/*...slbDOMNode\58\\58\lbDOMNode\40\\41\:0:*/
+/*...slbDOMNode\58\\58\lbDOMNode\40\char\42\ file\44\ int line\41\:0:*/
 lbDOMNode::lbDOMNode(char* file, int line) {
 
 	char ptr[2] = "";
@@ -687,6 +692,36 @@ lbDOMNode::lbDOMNode(char* file, int line) {
 	sprintf(msg, "lbDOMNode::lbDOMNode(...) called at %d in %s", line, file);
 	track_Object(this, msg);
 
+
+	resetRefcount();
+//	currentChildIndex = 0;
+	lbDOMchilds = NULL;
+	debug = 0;
+
+	parent = NULL;
+	
+	manager = NULL;
+	
+
+	parent.setFile(__FILE__);
+	parent.setLine(__LINE__);
+
+	lbDOMchilds.setFile(__FILE__);
+	lbDOMchilds.setLine(__LINE__);
+
+
+	// This was the bug for the wrong deletion while leave scope
+	//parent++;
+#ifdef VERBOSE
+	CL_LOG("Warning: Parent is set to my self in c'tor");
+#endif
+}
+/*...e*/
+/*...slbDOMNode\58\\58\lbDOMNode\40\\41\:0:*/
+lbDOMNode::lbDOMNode() {
+
+	char ptr[2] = "";
+	sprintf(ptr, "%p", this);
 
 	resetRefcount();
 //	currentChildIndex = 0;
@@ -1284,6 +1319,7 @@ lb_I_Container* LB_STDCALL lbDOMConfig::findNodesAtTreePos(const char* treePos) 
 	char* savename = NULL;
 	DOMString path;
 	int count = 1;
+	
 	/**
 	 * Use a lb_I_Container (implemented here)
 	 */
@@ -1297,7 +1333,6 @@ lb_I_Container* LB_STDCALL lbDOMConfig::findNodesAtTreePos(const char* treePos) 
 		if (list != NULL) CL_LOG("Obviously failed queryInterface, instance pointer is not NULL!!!!");
 		return NULL;
 	}
-	
 /*...sPrepare search:8:*/
 
 	if (treePos == NULL) {
@@ -1354,6 +1389,7 @@ lb_I_Container* LB_STDCALL lbDOMConfig::findNodesAtTreePos(const char* treePos) 
 			 * implemented all abstract members.
 			 */
 			 
+			 
 			lbDOMNode* lbNode = new lbDOMNode(__FILE__, __LINE__);
 			
 			lbNode->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
@@ -1409,6 +1445,7 @@ lb_I_Container* LB_STDCALL lbDOMConfig::findNodesAtTreePos(const char* treePos) 
 			
 			key->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
 			key++;
+			
 			list->insert(&unknown, &key);
 /*...sVERBOSE:16:*/
 #ifdef VERBOSE

@@ -39,6 +39,21 @@ HINSTANCE LB_Module_Handle = NULL;
 
 char* trackObject = NULL;
 
+DLLEXPORT void LB_STDCALL CL_doLog(char* f, char* msg) {
+                FILE *fp;
+                fp = fopen( f, "a" );
+                if( fp != NULL ) {
+                        char *buf = NULL;
+                        buf = (char*) malloc(10000);
+                        buf[0] = 0;
+                        printf( "%s%s", buf, msg);
+                        fprintf( fp, "%s%s", buf, msg);
+                        free((void*) buf);
+                }
+        
+                fclose( fp );
+}
+
 DLLEXPORT void LB_STDCALL set_trackObject(char* track) {
 	trackObject = track;
 	printf("Have a tracking address: %s\n", trackObject);
@@ -46,11 +61,12 @@ DLLEXPORT void LB_STDCALL set_trackObject(char* track) {
 
 DLLEXPORT void LB_STDCALL track_Object(lb_I_Unknown* o, char* msg) {
 	char ptr[20] = "";
-//	lb_I_Unknown *uk;
-//	o->queryInterface("lb_I_Unknown", (void**) &uk, __FILE__, __LINE__);
 	sprintf(ptr, "%p", o);
 	if (strcmp(ptr, (get_trackObject() == NULL) ? "" : get_trackObject()) == 0) {
-		printf("Track object: %s\n", msg);
+		char *message = (char*) malloc(strlen(msg)+100);
+		sprintf(message, "Track object: %s\n", msg);
+		CL_LOG(message);
+		free((void*) message);
 	}
 }
 

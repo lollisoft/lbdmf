@@ -1,11 +1,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.24 $
+ * $Revision: 1.25 $
  * $Name:  $
- * $Id: lbInterfaces-sub-classes.h,v 1.24 2002/06/18 17:47:52 lothar Exp $
+ * $Id: lbInterfaces-sub-classes.h,v 1.25 2002/07/23 17:54:52 lothar Exp $
  *
  * $Log: lbInterfaces-sub-classes.h,v $
+ * Revision 1.25  2002/07/23 17:54:52  lothar
+ * Current version runs
+ *
  * Revision 1.24  2002/06/18 17:47:52  lothar
  * More logging information
  *
@@ -709,7 +712,6 @@ lb_I_Unknown* LB_STDCALL classname::nextElement() { \
     lb_I_Element *temp = iterator; \
     if (temp == NULL) { \
         CL_LOG("Error: Please call hasMoreElements first to check if any elements are available!"); \
-        getch(); \
         return NULL; \
     } \
     iterator = iterator->getNext(); \

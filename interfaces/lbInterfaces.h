@@ -112,7 +112,10 @@ class lb_I_ConfigObject;
 // Type for lb protocol callback functions. This should be an interface.
 typedef lbErrCodes (lb_I_ProtocolTarget::*lbProtocolCallback)( lb_I_Transfer_Data const &, lb_I_Transfer_Data&);
 typedef lbErrCodes (lb_I_CallbackTarget::*lbMemberCallback)( const char* handlername, lb_I_Transfer_Data&);
-typedef lbErrCodes (lb_I_EventSink::*lb_I_EventCallback)(lb_I_Unknown* source, lb_I_Event* ev); 
+
+
+
+typedef lbErrCodes (lb_I_EventSink::*lb_I_EventCallback)(lb_I_Unknown* question, lb_I_Unknown* answer); 
 typedef lbErrCodes (LB_STDCALL lb_I_EventHandler::*lbEvHandler)(lb_I_Unknown* uk);
 /*...e*/
 
@@ -125,7 +128,6 @@ typedef lbErrCodes (LB_STDCALL lb_I_EventHandler::*lbEvHandler)(lb_I_Unknown* uk
 		if ((err = instance->release(__FILE__, __LINE__)) != ERR_NONE) { \
 			if (err == ERR_REFERENCE_COUNTING ) { \
 				printf("RELEASE(...) Reference count mismatch at %d in %s\n", __LINE__, __FILE__); \
-				getch(); \
 			} else { \
 			} \
 		} else { \
@@ -139,7 +141,6 @@ typedef lbErrCodes (LB_STDCALL lb_I_EventHandler::*lbEvHandler)(lb_I_Unknown* uk
 		if ((err = instance->release(__MACRO_FILE__, __MACRO_LINE__)) != ERR_NONE) { \
 			if (err == ERR_REFERENCE_COUNTING ) { \
 				printf("RELEASE_1(...) Reference count mismatch at %d in %s for instance %s\n", __MACRO_LINE__, __MACRO_FILE__, instance->getClassName()); \
-				getch(); \
 			} else { \
 			} \
 		} \
@@ -150,6 +151,11 @@ typedef lbErrCodes (LB_STDCALL lb_I_EventHandler::*lbEvHandler)(lb_I_Unknown* uk
 	target.setFile(file); \
 	target.setLine(line); \
  	err = source->queryInterface(#interface, (void**) &target, file, line);
+
+#define _QI(source, interface, target) \
+	target.setFile(file); \
+	target.setLine(line); \
+ 	err = source->queryInterface(#interface, (void**) &target, __FILE__, __LINE__);
 /*...e*/
 
 // UNKNOWN_AUTO_PTR was tested, use it.
@@ -254,7 +260,6 @@ public:
 				char buf[1000] = ""; \
 					sprintf(buf, "Warning: No reference has been taken in %s at %d (UAP is in %s at %d", _file, _line, file, line); \
 					CL_LOG(buf); \
-					getch(); \
 				} \
 				RELEASE_1(_autoPtr, _file, _line); \
 			} \
@@ -498,7 +503,6 @@ lbErrCodes LB_STDCALL classname::release(char* file, int line) { \
         if (ref < STARTREF) { \
         	sprintf(buf, "Error: Reference count of instance %p of object type %s is less than %d (%d) !!!", (void*) this, #classname, STARTREF, ref); \
         	CL_LOG(buf); \
-        	getch(); \
         	return ERR_REFERENCE_COUNTING; \
         } \
         return ERR_INSTANCE_STILL_USED; \
@@ -699,7 +703,6 @@ lbErrCodes LB_STDCALL classname::release(char* file, int line) { \
         if (ref < STARTREF) { \
         	sprintf(buf, "Error: Reference count of instance %p of object type %s is less than %d (%d) !!!", (void*) this, #classname, STARTREF, ref); \
         	CL_LOG(buf); \
-        	getch(); \
         	return ERR_REFERENCE_COUNTING; \
         } \
         return ERR_INSTANCE_STILL_USED; \
@@ -709,7 +712,7 @@ lb_I_Unknown* LB_STDCALL classname::clone(char* file, int line) const { \
 \
 	char ptr[20] = ""; \
 	sprintf(ptr, "%p", (lb_I_Unknown*) this); \
-	classname* cloned = new classname(__FILE__, __LINE__); \
+	classname* cloned = new classname(); \
 	if (strcmp(ptr, (get_trackObject() == NULL) ? "" : get_trackObject()) == 0) { \
 		char buf[1000] = ""; \
 		sprintf(buf, "Clone instance %s called (references:%d) at line %d in file %s\n", ptr, ref+1, line, file); \
@@ -803,6 +806,7 @@ lbErrCodes LB_STDCALL classname::queryInterface(char* name, void** unknown, char
 		} \
                 return ERR_NONE; \
         }
+        
 
 /*...e*/
 #endif
@@ -1159,6 +1163,7 @@ public:
 	 * to hold the event management.
 	 */
 	virtual lbErrCodes LB_STDCALL registerEvent(char* EvName, int & EvNr) = 0;
+	//virtual lbErrCodes LB_STDCALL registerSink(char* EvName, 
 protected:
 
 	virtual lbErrCodes LB_STDCALL resolveEvent(char* EvName, int & evNr) = 0;
@@ -1207,7 +1212,9 @@ public:
 /**
  * It seems, that this is the factory class for any GUI elements. It also knows about any instance.
  */
-class lb_I_GUI {
+class lb_I_GUI :
+public lb_I_Unknown
+{
 public:
 	virtual lb_I_Unknown* LB_STDCALL createFrame() = 0;
 	virtual lb_I_Unknown* LB_STDCALL createMenu() = 0;
@@ -1245,6 +1252,12 @@ public:
 	virtual lbErrCodes LB_STDCALL Initialize() = 0;
 	
 	virtual lbErrCodes LB_STDCALL getGUI(lb_I_GUI** gui) = 0;
+	
+	/**
+	 * Get access to the main event manager, so all parts can initialize event handlers
+	 * and then initialize Actors for still initialized event handlers.
+	 */
+	virtual lb_I_EventManager* getEVManager() = 0;
 };
 /*...e*/
 

@@ -37,6 +37,7 @@
 
 #endif
 
+
 // Object tracking
 DLLEXPORT void LB_STDCALL set_trackObject(char* track);
 DLLEXPORT char* LB_STDCALL get_trackObject();
@@ -78,6 +79,7 @@ DLLEXPORT void LB_STDCALL unHookAll();
 DLLEXPORT lb_I_Log *log;
 DLLEXPORT int isInitializing;
 
+#ifdef bla
 #ifndef LOG_DEFINED
 /*...sCL_LOG:0:*/
 #define CL_LOG(msg) \
@@ -109,8 +111,22 @@ DLLEXPORT int isInitializing;
 }
 /*...e*/
 #endif
-
-
+#endif
+#define CL_LOG(msg) \
+{ \
+	char *datei = strrchr(__FILE__, '\\'); \
+	char *buf = NULL; \
+	buf = (char*) malloc(1000); \
+	if (datei == NULL) { \
+		datei = __FILE__; \
+	} \
+	else { \
+		datei++; \
+	} \
+	sprintf(buf, "File: %s, Line: %d, Msg: %s\n", datei, __LINE__, msg); \
+	CL_doLog("c:\\log\\lbDMF.log", buf); \
+	free((void*) buf); \
+}
 /*...sGET_LOG_INSTANCE:0:*/
 #define GET_LOG_INSTANCE \
 			if (log == NULL) { \
@@ -201,5 +217,7 @@ DLLEXPORT int isInitializing;
 			}
 /*...e*/
 /*...e*/
+
+DLLEXPORT void LB_STDCALL CL_doLog(char* f, char* msg);
 
 #endif // __LB_CONFIG_HOOK__

@@ -1,11 +1,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.31 $
+ * $Revision: 1.32 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.31 2002/06/20 22:16:47 lothar Exp $
+ * $Id: lbModule.cpp,v 1.32 2002/07/23 17:48:55 lothar Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.32  2002/07/23 17:48:55  lothar
+ * Current version runs
+ *
  * Revision 1.31  2002/06/20 22:16:47  lothar
  * Found bug (really not a bug) about container deletion message.
  * Message removed by another order of UAP instances.
@@ -980,12 +983,13 @@ void LB_STDCALL InstanceRepository::addReference(char* addr, char* classname, ch
 					rL->count = 1;
 				}
 			} else {
-				char buf[1000] = "";
+				char *buf = NULL;
+				buf = (char*) malloc(1000);
 				sprintf(buf, 
 				"Error: InstanceRepository::addReference() classname differs.\nStored: %s Given: %s\nStored was created in %s at %d with pointer %s", 
 				temp->classname, classname, temp->file, temp->line, addr);
 				CL_LOG(buf);
-				getch();
+				free ((void*) buf);
 				return;
 			}
 		}
@@ -1066,7 +1070,6 @@ void LB_STDCALL InstanceRepository::delReference(char* addr, char* classname, ch
 					classname, file, line);
 					#ifdef VERBOSE
 					CL_LOG(buf)
-					getch();
 					#endif
 				}
 			} else {
@@ -1553,6 +1556,9 @@ lbErrCodes LB_STDCALL lbModule::initialize() {
 
         if (moduleList != NULL) {
                 CL_LOG("Warning: lbModule::initialize() called more than once!");
+                if (((unsigned long) xml_Instance.getPtr()) == 21) {
+                	CL_LOG("Leave xml_Instance pointer undefined !!!")
+                }
                 return ERR_NONE;
         }
         
@@ -2280,6 +2286,7 @@ lbErrCodes LB_STDCALL lbModule::request(const char* request, lb_I_Unknown** resu
                  * functor !
                  */
 /*...e*/
+		
                 if (xml_Instance->hasConfigObject(node, count) == ERR_NONE) {
 /*...svars:32:*/
                         char* moduleName = NULL;

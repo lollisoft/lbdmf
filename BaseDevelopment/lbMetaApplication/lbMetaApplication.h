@@ -1,11 +1,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.2 $
+ * $Revision: 1.3 $
  * $Name:  $
- * $Id: lbMetaApplication.h,v 1.2 2002/02/25 06:13:07 lothar Exp $
+ * $Id: lbMetaApplication.h,v 1.3 2002/07/23 17:48:55 lothar Exp $
  *
  * $Log: lbMetaApplication.h,v $
+ * Revision 1.3  2002/07/23 17:48:55  lothar
+ * Current version runs
+ *
  * Revision 1.2  2002/02/25 06:13:07  lothar
  * Much changes
  * Program seems to run, but performance is very slow
@@ -39,6 +42,8 @@ public:
 	 */
 	virtual lbErrCodes LB_STDCALL Initialize();
 	virtual lbErrCodes LB_STDCALL getGUI(lb_I_GUI** _gui);
+
+	virtual lb_I_EventManager * getEVManager( void );
 
 	void LB_STDCALL getBasicApplicationInfo(lb_I_Unknown** info);
 

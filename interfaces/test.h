@@ -84,6 +84,7 @@ lbErrCodes LB_STDCALL classname::release(char* file, int line) { \
         if (ref == STARTREF) { \
         	if (manager != NULL) { \
         		if (manager->can_delete(this, #classname) == 1)	{ \
+        			track_Object(this, "Tracked object will be deleted"); \
         			delete this; \
         			return ERR_RELEASED; \
         		} \
@@ -104,15 +105,21 @@ lbErrCodes LB_STDCALL classname::release(char* file, int line) { \
 lb_I_Unknown* LB_STDCALL classname::clone(char* file, int line) const { \
 \
 	char ptr[20] = ""; \
-	sprintf(ptr, "%p", this); \
+	sprintf(ptr, "%p", (lb_I_Unknown*) this); \
+	classname* cloned = new classname(__FILE__, __LINE__); \
 	if (strcmp(ptr, (get_trackObject() == NULL) ? "" : get_trackObject()) == 0) { \
 		char buf[1000] = ""; \
-		sprintf(buf, "Query interface for instance %s called (%d) at line %d in file %s\n", ptr, ref+1, line, file); \
+		sprintf(buf, "Clone instance %s called (references:%d) at line %d in file %s\n", ptr, ref+1, line, file); \
 		CL_LOG(buf); \
 	} \
-	classname* cloned = new classname(); \
 	cloned->setDebug(0); \
 	lb_I_Unknown* uk_this; \
+	sprintf(ptr, "%p", (lb_I_Unknown*) cloned); \
+	if (strcmp(ptr, (get_trackObject() == NULL) ? "" : get_trackObject()) == 0) { \
+		char buf[1000] = ""; \
+		sprintf(buf, "Cloned instance %s match tracked object (%d) at line %d in file %s.\nOrginal is %p", ptr, ref+1, line, file, (lb_I_Unknown*) this); \
+		CL_LOG(buf); \
+	} \
 \
 	lb_I_Unknown* uk_cloned = NULL; \
 \

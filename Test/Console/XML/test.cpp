@@ -49,6 +49,9 @@ extern "C" {
 #define LOOP
 // (trackObject == NULL) ? "" : trackObject int argc, char *argv[]
 void main(int argc, char *argv[]) {
+	char* file = "";
+	int line = 0;
+	lbErrCodes err = ERR_NONE;
 /*...svars:0:*/
     char* hostname = NULL;
     char* port = NULL;
@@ -182,12 +185,20 @@ void main(int argc, char *argv[]) {
 		}
 /*...e*/
 
+	CL_LOG("Test metaapplication");
+	UAP_REQUEST(mm, lb_I_MetaApplication, meta)
+	
+	if (meta != NULL) {
+		meta->Initialize();
+	}
+	
+	
+	CL_LOG("Tested metaapplication");
 
 	mm->uninitialize();
 	RELEASE(mm)
 	CL_LOG("Basic tests ended");
 	getch();
-
 
 	CL_LOG("Memory test ------------------------------------------");
 	getch();
