@@ -210,7 +210,7 @@ cout << "lbXMLConfig::parse() called ('" << hex << (void*) this << dec << "')" <
 
 		catch (const XMLException& )
 	        {
-			printf("Parse error\n");
+			CL_LOG("Parse error");
 			return ERR_XML_NOFILE;
 		}
 /*...e*/

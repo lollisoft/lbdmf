@@ -6,6 +6,7 @@
  
 /*...e*/
 
+/*...sincludes and definitions:0:*/
 /**
  * All classes, that anounce callbacks, must implement the interface for
  * lb_I_CallbackManager. The callback manager did not need to handle its
@@ -56,7 +57,7 @@ class lb_I_CallbackTarget;
 class lb_I_ProtocolTarget;
 
 #include <lbInterfaces-sub-transfer.h>
-
+/*...e*/
 
 
 /**
@@ -73,7 +74,7 @@ typedef lbErrCodes (lb_I_CallbackTarget::*lbMemberCallback)( const char* handler
  */
  
 class lb_I_gcManager;
- 
+int debug_macro = 0; 
 
 	/* setData must check the type of this ! */
 	/* = may also be possible */
@@ -135,6 +136,14 @@ lb_I_Unknown* classname::clone() const { \
 } \
 \
 lbErrCodes LB_STDCALL classname::queryInterface(char* name, void** unknown) { \
+	char buf[100] = ""; \
+	char iFaces[1000] = ""; \
+\
+	if (debug_macro == 1) { \
+		sprintf(buf, #classname"::queryInterface('%s', void** unknown)\n", name); \
+		CL_LOG(buf); \
+	} \
+	strcat(iFaces, "lb_I_Unknown, "); \
         if (strcmp(name, "lb_I_Unknown") == 0) { \
                 ref++; \
                 *unknown = (lb_I_Unknown*) this; \
@@ -142,6 +151,14 @@ lbErrCodes LB_STDCALL classname::queryInterface(char* name, void** unknown) { \
         }
 
 #define ADD_INTERFACE(interfaceName) \
+	buf[0] = 0; \
+\
+	if (debug_macro == 1) {\
+		sprintf(buf, "Comparing '%s' with given '%s'\n", #interfaceName, name); \
+		CL_LOG(buf); \
+	} \
+\
+	strcat(iFaces, #interfaceName ", "); \
         if (strcmp(name, #interfaceName) == 0) { \
                 ref++; \
                 *unknown = (interfaceName*) this; \
@@ -149,9 +166,16 @@ lbErrCodes LB_STDCALL classname::queryInterface(char* name, void** unknown) { \
         }
 
 #define END_IMPLEMENT_LB_UNKNOWN() \
+	buf[0] = 0; \
+	sprintf(buf, "Error: Requested interface '%s' not found!", name); \
+	CL_LOG(buf); \
+	getch(); \
 	return ERR_NONE; \
 }
-
+/* Das geht im Makro nicht:
+//	printf("Checked interfaces: %s\n", iFaces); \
+\
+*/
 /*...e*/
 
 /**
@@ -160,6 +184,7 @@ lbErrCodes LB_STDCALL classname::queryInterface(char* name, void** unknown) { \
  
 typedef lbErrCodes (__cdecl * T_pLB_GET_UNKNOWN_INSTANCE) (lb_I_Unknown*&);
 
+/*...sstandard functor:0:*/
 
 #define DECLARE_FUNCTOR(name) \
 lbErrCodes DLLEXPORT LB_STDCALL name(lb_I_Unknown*& uk);
@@ -179,6 +204,7 @@ lbErrCodes DLLEXPORT LB_STDCALL name(lb_I_Unknown*& uk) { \
         return ERR_NONE; \
 }
 
+/*...e*/
 
 
 /*...sclass lb_I_gcManager:0:*/
@@ -310,7 +336,9 @@ public:
 };
 /*...e*/
 
-#include <lbInterfaces-sub-classes.h>	
+class lb_I_String;
+
 #include <lbInterfaces-sub-xml.h>
+#include <lbInterfaces-sub-classes.h>	
 
 #endif // __LB_INTERFACES__

@@ -89,7 +89,11 @@
 
 /*...e*/
 
+callorder:
 
+getfunctornode
+findfunctormodule
+findfunctorname
 
 /*...sGUI Interface:0:*/
 /*...vlbgui\47\lb_I_GUI\46\h:0:*/
@@ -98,6 +102,7 @@
 /*...vlbwxgui\47\lb_I_wxGUI\46\h:0:*/
 /*...vlbwxgui\47\lb_I_wxGUI\46\cpp:0:*/
 /*...e*/
+
 
 /*...e*/
 /*...sAppDevelopment:0:*/
