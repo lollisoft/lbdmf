@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.39 $
+# * $Revision: 1.40 $
 # * $Name:  $
-# * $Id: Makefile,v 1.39 2005/03/16 20:31:55 lollisoft Exp $
+# * $Id: Makefile,v 1.40 2005/03/16 22:01:57 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.40  2005/03/16 22:01:57  lollisoft
+# * Added creating dll/libs dir under windows
+# *
 # * Revision 1.39  2005/03/16 20:31:55  lollisoft
 # * DEVROOT / DEVROOT_MAKE and DEVROOT_MAKE_INTERNAL clashes
 # * and cleanup.
@@ -220,6 +223,7 @@ TARGETPLUGIN=plugin
 TARGETWXPLUGIN=wxplugin
 
 ALLTARGETS = \
+	../../dll/libs \
 	lbHook \
 	lbDB \
 	lbModule \
