@@ -4,14 +4,8 @@
 #include <string.h>
 #include <stdlib.h>
 
-#include <lb_misc.h>
-
-#include <lbObject.h>
-#include <lbKey.h>
-#include <lbelement.h>
-#include <lbContainer.h>
-
 #include <lbInclude.h>
+#include <lbContainer.h>
 
 // Include base lb GUI interface
 #include <lb_I_GUI.h>
@@ -19,6 +13,82 @@
 // Include interface for wx library
 #include <lb_I_wxGUI.h>
 /*...e*/
+
+/*...sprivate classes:0:*/
+
+/*...sclass DLLEXPORT lb_I_wxGUIMenuBar\58\ public lb_I_wxGUIComponent:0:*/
+class DLLEXPORT lb_I_wxGUIMenuBar: public lb_I_wxGUIComponent {
+public:
+    lb_I_wxGUIMenuBar();
+    virtual ~lb_I_wxGUIMenuBar();
+
+// MenuBar specific
+    wxMenuBar* getMenuBar(wxEvtHandler* evtHandle, wxObjectEventFunction func);
+
+protected:
+    void setType();
+
+/*...sMarshalling:4:*/
+	lb_Transfer_Data* getParameterInfo();
+	int setParameters(lb_Transfer_Data* data);
+/*...e*/
+    
+
+    // A list of  (File, View, Help...)
+    lbComponentDictionary* Menus;
+};
+/*...e*/
+
+/*...sclass DLLEXPORT lb_I_wxGUIMenu\58\ public lb_I_wxGUIComponent:0:*/
+class DLLEXPORT lb_I_wxGUIMenu: public lb_I_wxGUIComponent {
+public:
+    lb_I_wxGUIMenu();
+    virtual ~lb_I_wxGUIMenu();
+        
+    wxMenu* getMenu(wxEvtHandler* evtHandle, wxObjectEventFunction func);
+
+    wxString getName();
+    void setName(wxString n);
+
+protected:
+    void setType();
+
+/*...sMarshalling:8:*/
+	lb_Transfer_Data* getParameterInfo();
+	int setParameters(lb_Transfer_Data* data);
+/*...e*/
+
+//    lbComponentDictionary* menuEntries;
+    wxString name;
+};
+/*...e*/
+
+/*...sclass DLLEXPORT lb_I_wxGUIMenuEntry\58\ public lb_I_wxGUIComponent:0:*/
+class DLLEXPORT lb_I_wxGUIMenuEntry: public lb_I_wxGUIComponent {
+public:
+    lb_I_wxGUIMenuEntry();
+    virtual ~lb_I_wxGUIMenuEntry();
+        
+    int getId();
+    wxString getTxt();
+    wxString getHlp();
+    
+    void setMenu(int id, wxString txt, wxString hlp);
+protected:
+    void setType();
+
+/*...sMarshalling:8:*/
+	lb_Transfer_Data* getParameterInfo();
+	int setParameters(lb_Transfer_Data* data);
+/*...e*/
+
+    wxString MenuTxt;
+    wxString MenuHlp;
+    int MenuId;
+};
+/*...e*/
+/*...e*/
+
 
 lb_I_wxGUIApplication* wxAppBus;
 
@@ -63,6 +133,12 @@ lb_I_wxGUIComponent::lb_I_wxGUIComponent() {
 }
 
 lb_I_wxGUIComponent::~lb_I_wxGUIComponent() {
+}
+
+static lb_I_wxGUIComponent* factory(const char* typeName) {
+	LOGENABLE("lb_I_wxGUIComponent* factory(const char* typeName)");
+	LOG("lb_I_wxGUIComponent* factory(const char* typeName): Error, not yet implemented");
+	return NULL;
 }
 
 GUITypes lb_I_wxGUIComponent::getType() {
@@ -213,7 +289,7 @@ lb_I_wxGUIMenuBar::lb_I_wxGUIMenuBar() {
          */
 		lb_I_GUIMenu* menu = (lb_I_GUIMenu*) GUIMenuBar.nextElement();
 /*...sVERBOSE:0:*/
-#ifdef VERBOSE
+#ifdef NOVERBOSE
 		LOG("lb_I_GUIMenu in lb_I_wxGUIMenuBar::lb_I_wxGUIMenuBar has now this name:");
 		LOG(menu->getName());
 #endif
@@ -275,13 +351,18 @@ wxMenuBar* lb_I_wxGUIMenuBar::getMenuBar(wxEvtHandler* evtHandle, wxObjectEventF
 /*...slb_I_wxGUIApplication:0:*/
 lb_I_wxGUIApplication::lb_I_wxGUIApplication() {
     LOGENABLE("lb_I_wxGUIApplication::lb_I_wxGUIApplication()");
-    title = strdup("Generic wxGUIApp by Lothar Behrens");
+
+
+
     componentCount = 1;
     components = new lbComponentDictionary();
+
+    GUIApplication = new lb_I_GUIApplication();
 }
 
 lb_I_wxGUIApplication::~lb_I_wxGUIApplication() {
     if (components != NULL) components->deleteAll();
+    if (GUIApplication != NULL) delete GUIApplication;
 }
 
 int lb_I_wxGUIApplication::_callback(lb_Transfer_Data&, lb_Transfer_Data&) {
@@ -315,8 +396,28 @@ lb_I_wxGUIComponent* lb_I_wxGUIApplication::nextComponent() {
     int setParent(lb_I_wxGUIComponent* const _this, lb_I_wxGUIComponent* const _parent);
 /*...e*/
 
+int lb_I_wxGUIApplication::setDynEvHandler(wxEvtHandler* evtHandler, wxObjectEventFunction func) {
+	/**
+	 * Store the instance evtHandler and func in a set.
+	 * Then I am able to add and remove event Id's during runtime.
+	 */
+	return 1;
+}
+
+const int lb_I_wxGUIApplication::getEvId(char* evName) const {
+	return -1;
+}
 
 int lb_I_wxGUIApplication::Load() {
+LOG("lb_I_wxGUIApplication::Load() called");
+
+    /**
+     * Normally the apptitle depends on a configuration file. If this
+     * File does not exsist, the GUI can display a list of possible
+     * applications, that are allowed to run on this host.
+     */
+    title = strdup("Generic wxGUIApp by Lothar Behrens");
+
 	if (GUIApplication->Load() == 0) {
 		LOG("lb_I_wxGUIApplication::Load(): Call to GUIApplication->Load() failed");
 	}

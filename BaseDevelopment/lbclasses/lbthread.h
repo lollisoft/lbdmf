@@ -4,7 +4,7 @@
 /*...sDLLEXPORT:0:*/
 #undef DLLEXPORT
 
-#ifdef LB_TOOLS_DLL
+#ifdef LB_CONTAINER_DLL
 
 #ifdef WINDOWS
 #define DLLEXPORT __declspec(dllexport)
@@ -12,7 +12,7 @@
 
 #endif
 
-#ifndef LB_TOOLS_DLL
+#ifndef LB_CONTAINER_DLL
 
 #ifdef WINDOWS
 #define DLLEXPORT __declspec(dllimport)
@@ -36,6 +36,66 @@ typedef enum
   LB_THREAD_ERROR
 } lbThreadError;
 /*...e*/
+
+/*...sclass DLLEXPORT lbMutex:0:*/
+#ifdef WINDOWS
+#include <windows.h>
+#endif
+
+class DLLEXPORT lbMutex
+{
+public:
+        lbMutex();
+        ~lbMutex();
+
+        void CreateMutex(int name);
+        void DeleteMutex(int name);
+        void Enter();
+        void Release();
+private:
+
+#ifdef WINDOWS
+        HANDLE mutex;
+#endif
+#ifdef __WXGTK__
+        int    mutex;
+        int    _name;
+#endif
+};
+/*...e*/
+
+
+
+class DLLEXPORT lbLock;
+
+class DLLEXPORT lbCritSect {
+public:
+	lbCritSect();
+	virtual ~lbCritSect();
+
+private:
+	//lbCritSect(const lbCritSect&) {}
+
+protected:
+	lbErrCodes enter();
+	lbErrCodes leave();
+	
+	void* critsect;	
+	
+	friend class lbLock;
+};
+
+class DLLEXPORT lbLock {
+public:
+	lbLock(lbCritSect& _cso, char* _name);
+	~lbLock();
+private:
+	lbLock() {}
+	lbLock(const lbLock&) {}
+
+	char* name;
+	lbCritSect* cso;
+};
 
 class lbThreadInternal; // For various operating systems
 
@@ -94,5 +154,17 @@ private:
 
 
 /*...e*/
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+DWORD DLLEXPORT lbGetCurrentThreadId();
+DWORD DLLEXPORT lbGetCurrentProcessId();
+
+#ifdef __cplusplus
+}
+#endif
+
 
 #endif

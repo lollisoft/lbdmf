@@ -1,6 +1,9 @@
 #include "module.h"
 
+#include <conio.h>
 #include <lbInclude.h>
+
+lbCritSect transferSection;
 
 /*...slbTransferDataObject:0:*/
 lbTransferDataObject::lbTransferDataObject() {
@@ -15,13 +18,25 @@ void lbTransferDataObject::setType() {
 }
 
 lbObject* lbTransferDataObject::clone() const {
+	lbLock lock(transferSection, "transferSection");
+	
+	char msg[100] = "";
 	lbTransferDataObject* o = new lbTransferDataObject();
-
+/*...sTRANSFER_VERBOSE:0:*/
+#ifdef TRANSFER_VERBOSE	
+	LOG("lbTransferDataObject::clone() called");
+#endif
+/*...e*/
 	pLB_TRANSFER_DATA pData = (pLB_TRANSFER_DATA) malloc(getData()->packet_size + sizeof(LB_TRANSFER_DATA));
 	memcpy(pData, getData(), getData()->packet_size + sizeof(LB_TRANSFER_DATA));
 	
 	o->setData(pData);
-	
+/*...sTRANSFER_VERBOSE:0:*/
+#ifdef TRANSFER_VERBOSE
+	sprintf(msg, "Cloned lbTransferDataObject (pData) to address %x", pData);
+	LOG(msg);
+#endif	
+/*...e*/
 	return o;
 }
 
@@ -38,16 +53,71 @@ pLB_TRANSFER_DATA lbTransferDataObject::getData() const {
 /*...e*/
 /*...slb_Transfer_Data:0:*/
 /*...slb_Transfer_Data\58\\58\lb_Transfer_Data\40\\41\:0:*/
-lb_Transfer_Data::lb_Transfer_Data() {
+lb_Transfer_Data::lb_Transfer_Data(int _serverside) {
 	elements = new lbComponentDictionary();
+	elementscopy = elements;
+
+	elements->deleteAll();
+	
 	packet_count = 0;
+	ref = 0;
+	serverside=_serverside;
+
+	lbSocket::gethostname(clientHost);	
+	clientPid = lbGetCurrentProcessId();
+	clientTid = lbGetCurrentThreadId();
 }
 /*...e*/
 /*...slb_Transfer_Data\58\\58\\126\lb_Transfer_Data\40\\41\:0:*/
 lb_Transfer_Data::~lb_Transfer_Data() {
-	if (elements != NULL) delete elements;
+	if (elements != NULL) {
+		//delete elements;
+	}
+
+	if (clientHost != NULL) free(clientHost);
 }
 /*...e*/
+
+/*...slb_Transfer_Data\58\\58\lb_Transfer_Data\40\const lb_Transfer_Data \38\ t\41\:0:*/
+lb_Transfer_Data::lb_Transfer_Data(const lb_Transfer_Data & t) {
+	elements = t.elements;
+	elementscopy = t.elementscopy;
+
+	packet_count = t.packet_count;
+	currentPos = t.currentPos;
+
+	if (t.clientHost != NULL)
+		clientHost = strdup(t.clientHost);
+	else
+		clientHost = strdup("No host given!");
+
+	clientPid = t.clientPid;
+	clientTid = t.clientTid;
+	serverside = t.serverside;
+	ref++;
+}
+/*...e*/
+
+/*...slb_Transfer_Data\58\\58\operator\61\ \40\const lb_Transfer_Data \38\ t\41\:0:*/
+lb_Transfer_Data& lb_Transfer_Data::operator= (const lb_Transfer_Data & t) {
+	elements = t.elements;
+	elementscopy = t.elementscopy;
+
+	packet_count = t.packet_count;
+	currentPos = t.currentPos;
+
+	if (t.clientHost != NULL)
+		clientHost = strdup(t.clientHost);
+	else
+		clientHost = strdup("No host given!");
+
+	clientPid = t.clientPid;
+	clientTid = t.clientTid;
+	serverside = t.serverside;
+	return *this;
+}
+/*...e*/
+
 /*...slb_Transfer_Data\58\\58\hasMorePackets\40\\41\:0:*/
 int lb_Transfer_Data::hasMorePackets() const {
 	return elements->hasMoreElements();
@@ -60,8 +130,17 @@ int lb_Transfer_Data::addPacket(pLB_TRANSFER_DATA data) {
 /*...e*/
 /*...slb_Transfer_Data\58\\58\getNextPacket\40\\41\:0:*/
 pLB_TRANSFER_DATA lb_Transfer_Data::getNextPacket() const {
-	lbTransferDataObject *o = (lbTransferDataObject*) elements->nextElement();
+	char msg[100] = "";
+	lbTransferDataObject *o = (lbTransferDataObject*) elements->nextObject();
 	if (o->getData() == NULL) LOG("lbTransferDataObject contains no data!");
+
+/*...sTRANSFER_VERBOSE:0:*/
+#ifdef TRANSFER_VERBOSE	
+	sprintf(msg, "lb_Transfer_Data::getNextPacket() returns this address: %x", o->getData());
+	LOG(msg);
+#endif
+/*...e*/
+	
 	return o->getData();
 }
 /*...e*/
@@ -74,30 +153,60 @@ int lb_Transfer_Data::getPacketCount() const {
 /*...slb_Transfer_Data\58\\58\resetPositionCount\40\\41\:0:*/
 int lb_Transfer_Data::resetPositionCount() {
 	currentPos = 1;
-
+/*...sTRANSFER_VERBOSE:0:*/
+#ifdef TRANSFER_VERBOSE
+	LOG("lb_Transfer_Data::resetPositionCount() called");
+#endif
+/*...e*/
 	return 1;
 }
 /*...e*/
 /*...slb_Transfer_Data\58\\58\incrementPosition\40\\41\:0:*/
 int lb_Transfer_Data::incrementPosition() {
 	currentPos++;
-	
+/*...sTRANSFER_VERBOSE:0:*/
+#ifdef TRANSFER_VERBOSE	
+	LOG("lb_Transfer_Data::incrementPosition() called");	
+#endif
+/*...e*/
 	return (currentPos > packet_count) ? 0 : 1;
 }
 /*...e*/
 /*...slb_Transfer_Data\58\\58\getPacketType\40\LB_PACKET_TYPE \38\ type\41\:0:*/
 int lb_Transfer_Data::getPacketType(LB_PACKET_TYPE & type) {
 	lbTransferDataObject *o;
-	
+/*...sTRANSFER_VERBOSE:0:*/
+#ifdef TRANSFER_VERBOSE	
 	char msg[100];
 	sprintf(msg, "Lookup element for key %d", currentPos);
 	LOG(msg);
+#endif
+/*...e*/
+	char buf[100] = "";
 	
 	o = (lbTransferDataObject*) elements->getElement(lbKey(currentPos));
+	
+	if (o == NULL) LOG("lb_Transfer_Data::getPacketType() Error, can't get packet type from a NULL pointer object");
 	
 	type = o->getData()->packet_type;
 	
 	return 1;
+}
+/*...e*/
+
+/*...slb_Transfer_Data\58\\58\deleteAll\40\\41\:0:*/
+int lb_Transfer_Data::deleteAll() {
+	int rc = 0;
+	if (elements != NULL) {
+		elements->deleteAll();
+		rc = 1;
+	} else {
+		LOG("lb_Transfer_Data::deleteAll() failed because elements is a NULL pointer!");
+	}
+
+	resetPositionCount();
+	packet_count = 0;
+	return rc;
 }
 /*...e*/
 
@@ -119,6 +228,18 @@ void lb_Transfer_Data::add(const void* buf, int len) {
 }
 /*...e*/
 
+void lb_Transfer_Data::add(int i) {
+	int len = sizeof(i);
+	
+	add((void*) &i, len, LB_INT);
+}
+
+void lb_Transfer_Data::add(unsigned long ul) {
+	int len = sizeof(ul);
+	
+	add((void*) &ul, len, LB_ULONG);
+}
+
 /* Not yet implemented
 	void add(int i);
 	void add(short s);
@@ -129,12 +250,47 @@ void lb_Transfer_Data::add(const void* buf, int len) {
 /*...e*/
 
 /*...slb_Transfer_Data getters:0:*/
-int lb_Transfer_Data::get(int& i) {
-	LOG("lb_Transfer_Data::get(int& i): Error, this function is not yet implemented !!!");
-	return 0;
+lbErrCodes lb_Transfer_Data::get(int& i) {
+	LB_PACKET_TYPE type;
+	
+	getPacketType(type);
+	
+	if (type == LB_INT) {
+		lbKey key = lbKey(currentPos);
+		lbTransferDataObject *o;
+		o = (lbTransferDataObject*) elements->getElement(key);
+		
+		//c = (char*) malloc(o->getData()->packet_size);
+		memcpy(&i, (void const*) &(o->getData()->data), 
+		          o->getData()->packet_size);
+		return ERR_NONE;
+	} else {
+		LOG("lb_Transfer_Data::get() called with wrong attempt of data type!");
+		return ERR_TRANSFER_DATA_INCORRECT_TYPE;
+	}
 }
 
-int lb_Transfer_Data::get(char* & c) {
+lbErrCodes lb_Transfer_Data::get(unsigned long& ul) {
+	LB_PACKET_TYPE type;
+	
+	getPacketType(type);
+	
+	if (type == LB_ULONG) {
+		lbKey key = lbKey(currentPos);
+		lbTransferDataObject *o;
+		o = (lbTransferDataObject*) elements->getElement(key);
+		
+		memcpy(&ul, (void const*) &(o->getData()->data), 
+		          o->getData()->packet_size);
+		return ERR_NONE;
+	} else {
+		LOG("lb_Transfer_Data::get() called with wrong attempt of data type!");
+		return ERR_TRANSFER_DATA_INCORRECT_TYPE;
+	}
+}
+
+
+lbErrCodes lb_Transfer_Data::get(char* & c) {
 	LB_PACKET_TYPE type;
 	
 	getPacketType(type);
@@ -147,11 +303,14 @@ int lb_Transfer_Data::get(char* & c) {
 		c = (char*) malloc(o->getData()->packet_size);
 		memcpy(c, (void const*) &(o->getData()->data), 
 		          o->getData()->packet_size);
-		return 1;
-	} else return 0;
+		return ERR_NONE;
+	} else {
+		LOG("lb_Transfer_Data::get() called with wrong attempt of data type!");
+		return ERR_TRANSFER_DATA_INCORRECT_TYPE;
+	}
 }
 
-int lb_Transfer_Data::get(void* & v, int & len) {
+lbErrCodes lb_Transfer_Data::get(void* & v, int & len) {
         LB_PACKET_TYPE type;
 
         getPacketType(type);
@@ -164,8 +323,8 @@ int lb_Transfer_Data::get(void* & v, int & len) {
                 v = (char*) malloc(o->getData()->packet_size);
                 memcpy(v, (void const*) &(o->getData()->data),
                           o->getData()->packet_size);
-                return 1;
-        } else return 0;
+                return ERR_NONE;
+        } else return ERR_TRANSFER_DATA_INCORRECT_TYPE;
 }
 /*...e*/
 
@@ -175,10 +334,16 @@ int lb_Transfer_Data::get(void* & v, int & len) {
  * of 1.
  */
 /*...slb_Transfer_Data\58\\58\add\40\const void\42\ buf\44\ int len\44\ LB_PACKET_TYPE type\41\:0:*/
+// This should not longer be verbose
+
 void lb_Transfer_Data::add(const void* buf, int len, LB_PACKET_TYPE type) {
+	lbLock lock(transferSection, "transferSection");
+//#define TRANSFER_VERBOSE	
+	char msg[100];
 	pLB_TRANSFER_DATA data;
-/*...sVERBOSE:0:*/
-#ifdef VERBOSE
+
+/*...sTRANSFER_VERBOSE:0:*/
+#ifdef TRANSFER_VERBOSE
 LOG("lb_Transfer_Data::add() called");
 #endif
 /*...e*/
@@ -186,45 +351,78 @@ LOG("lb_Transfer_Data::add() called");
 		int datalen = sizeof(LB_TRANSFER_DATA);
 
 		int resultlen = datalen + len;
-/*...sVERBOSE:0:*/
-#ifdef VERBOSE
-char msg[100];
+/*...sTRANSFER_VERBOSE:0:*/
+#ifdef TRANSFER_VERBOSE
 sprintf(msg, "lb_Transfer_Data::add() adds a LB_TRANSFER_DATA object with size = %d", resultlen);
 LOG(msg);
 #endif
 /*...e*/
 		data = (pLB_TRANSFER_DATA) malloc(resultlen);
-
+		if (data == NULL) {
+			LOG("Could not allocate memory");
+			return;
+		}
 		data->packet_size = len;
+		
 		data->packet_type = type;
 		data->packet_no = ++packet_count;
-/*...sVERBOSE:0:*/
-#ifdef VERBOSE
+/*...sTRANSFER_VERBOSE:0:*/
+#ifdef TRANSFER_VERBOSE
 sprintf(msg, "Do memcpy from %x to %x", buf, data->data);
 LOG(msg);
 #endif
 /*...e*/
 		memcpy(&(data->data), buf, len);
-/*...sVERBOSE:0:*/
-#ifdef VERBOSE
+/*...sTRANSFER_VERBOSE:0:*/
+#ifdef TRANSFER_VERBOSE
 LOG("Done memcpy");
 #endif
 /*...e*/
 		lbTransferDataObject o;
-
 		o.setData(data);
 
 		if (o.getData() == NULL) 
 		  LOG("lbTransferDataObject::add(): Error, add does not work correctly!");
-
-		char msg[100];
+		else {
+/*...sTRANSFER_VERBOSE:0:*/
+#ifdef TRANSFER_VERBOSE	
+		  sprintf(msg, "lbTransferDataObject has it's data pointer at %x", o.getData());
+		  LOG(msg);
+#endif	
+/*...e*/
+		}
+/*...sTRANSFER_VERBOSE:0:*/
+#ifdef TRANSFER_VERBOSE		
 		sprintf(msg, "Create key with number %d", packet_count);
 		LOG(msg);
-
+#endif
+/*...e*/
 		lbKey key = lbKey(packet_count);
-		
+/*...sTRANSFER_VERBOSE:0:*/
+#ifdef TRANSFER_VERBOSE
+LOG("Created");		
+#endif
+/*...e*/
+/*
+		sprintf(msg, "Address of elements now is 0x%x", elements);
+		LOG(msg);
+		if ((void*)elements != (void*)elementscopy) 
+		  LOG("Error: elements pointer has been overwritten!");
+*/
+		if (elements->exists(key) == 1) {
+			LOG("lb_Transfer_Data::add(...) Error: Creating key for packetcount (prior in list)");
+		}
+/*...sTRANSFER_VERBOSE:0:*/
+#ifdef TRANSFER_VERBOSE
+LOG("lb_Transfer_Data::add(...) Checked key for packet count nonexistence in list");
+#endif
+/*...e*/
 		elements->insert(o, key);
-		
+/*...sTRANSFER_VERBOSE:0:*/
+#ifdef TRANSFER_VERBOSE
+LOG("Inserted");
+#endif		
+/*...e*/
 		if (elements->exists(key) == 0)
 		  LOG("lb_Transfer_Data::add(...): Error, add could not insert object");
 		else {
@@ -232,19 +430,35 @@ LOG("Done memcpy");
 			e = (lbTransferDataObject*) elements->getElement(key);
 			
 			if (e != NULL) {
+/*...sTRANSFER_VERBOSE:0:*/
+#ifdef TRANSFER_VERBOSE
+				sprintf(msg, "lb_Transfer_Data::add() Have added this address: %x", e->getData());
+				LOG(msg);
+#endif			
+/*...e*/
 				if (e->getData() == NULL)
 				  LOG("lb_Transfer_Data::add(...): Error, lbTransferDataObject has no data!");
 			}
 		}
+/*...sTRANSFER_VERBOSE:0:*/
+#ifdef TRANSFER_VERBOSE		
+LOG("Checked");
+#endif
+/*...e*/
 		//packet_count++;
 	}
 }
+//#undef TRANSFER_VERBOSE
 /*...e*/
 /*...e*/
 /*...slbTransfer:0:*/
 /*...slbTransfer\58\\58\lbTransfer\40\\41\:0:*/
 lbTransfer::lbTransfer() {
+/*...sTRANSFER_VERBOSE:0:*/
+#ifdef TRANSFER_VERBOSE
 LOGENABLE("lbTransfer::lbTransfer()");
+#endif
+/*...e*/
 	sock = new lbSocket();
 	laststate = 1;
 	connected = 0;
@@ -253,7 +467,11 @@ LOGENABLE("lbTransfer::lbTransfer()");
 /*...e*/
 /*...slbTransfer\58\\58\\126\lbTransfer\40\\41\:0:*/
 lbTransfer::~lbTransfer() {
-	if (sock != NULL) delete sock;
+	if (sock != NULL) {
+		LOG("lbTransfer::~lbTransfer() Deletes sock instance");
+		delete sock;
+		sock = NULL;
+	}
 }
 /*...e*/
 /*...slbTransfer\58\\58\init\40\char \42\target\41\:0:*/
@@ -271,8 +489,8 @@ void lbTransfer::init(char *target) {
 	char *service;
 	char *subservice;
 	char prefix[100];
-/*...sVERBOSE:0:*/
-#ifdef VERBOSE
+/*...sTRANSFER_VERBOSE:0:*/
+#ifdef TRANSFER_VERBOSE
 LOG("lbTransfer::init(char *target) called");
 #endif
 /*...e*/
@@ -297,8 +515,8 @@ cout << "Check for machine" << endl;
 		 * machine is the computername. Service is the name of a service
 		 * mapped to a port.
 		 */
-/*...sVERBOSE:0:*/
-#ifdef VERBOSE
+/*...sTRANSFER_VERBOSE:0:*/
+#ifdef TRANSFER_VERBOSE
 char buf[100];
 sprintf(buf, "void lbTransfer::init(char *target): sock->initSymbolic(%s, %s);", machine, service);
 LOG(buf);
@@ -307,16 +525,27 @@ LOG(buf);
 		cout << "Init with symbolic name" << endl;
 
 		sock->initSymbolic(machine, service);
-		strcpy(prefix, (sock->isServer() == 1) ? "Server: " : "Client: ");
-		LOGPREFIX(prefix);
+		//strcpy(prefix, (sock->isServer() == 1) ? "Server: " : "Client: ");
+		//LOGPREFIX(prefix);
 	} else {
 		LOG("Subservices currently not supported");
 		// Handle special cases with subservices
 	}
+/*...sTRANSFER_VERBOSE:0:*/
+#ifdef TRANSFER_VERBOSE
 	LOG("lbTransfer::init(char *target): lbTransfer has been initialized");
-	
+#endif	
+/*...e*/
 }
 /*...e*/
+
+int lbTransfer::isValid() {
+	return sock->isValid();
+}
+
+int lbTransfer::isConnected() {
+	return connected;
+}
 
 /*
 LB_INT,
@@ -347,7 +576,11 @@ char* getStringFromEnumeration(LB_PACKET_TYPE type) {
 /*...sLB_PACKET_TYPE getEnumerationFromString\40\char\42\ typeAsString\41\:0:*/
 LB_PACKET_TYPE getEnumerationFromString(char* typeAsString) {
 	if (strcmp(typeAsString, "LB_CHAR") == 0) {
+/*...sTRANSFER_VERBOSE:0:*/
+	#ifdef TRANSFER_VERBOSE
 		LOG("getEnumerationFromString(...) returns LB_CHAR");
+	#endif
+/*...e*/
 		return LB_CHAR;
 	}
 	if (strcmp(typeAsString, "LB_INT") == 0) return LB_INT;
@@ -380,15 +613,18 @@ int lbTransfer::resetServerStateMachine() {
 		LOG("lbSocket: Server state error, reset comando don't be answered with 'ok'");
 		return 0;
 	}
-
+/*...sTRANSFER_VERBOSE:0:*/
+#ifdef TRANSFER_VERBOSE
 	LOG("lbTransfer: Reseting server statemachine sucseeded");
+#endif
+/*...e*/
 	return 1;
 }
 /*...e*/
 
 /*...slbTransfer\58\\58\sendDatatype\40\char\42\ type\41\:0:*/
 int lbTransfer::sendDatatype(char* type) {
-	if (sock->send_charbuf(type, strlen(type)+1) == 0) {
+	if (sock->send_charbuf(type, strlen(type)+1) != ERR_NONE) {
 		LOG("lbTransfer::sendDatatype(char* type): Failed to send packet type information");
 		return 0;
 	}
@@ -399,26 +635,24 @@ int lbTransfer::sendDatatype(char* type) {
 int lbTransfer::waitforAnswer(char* answer) {
 	char buf[MAXBUFLEN];
 	char msg[100];
-
-/*...sVERBOSE:0:*/
-#ifdef VERBOSE
+/*...sTRANSFER_VERBOSE:0:*/
+#ifdef TRANSFER_VERBOSE
 sprintf(buf, "waitforAnswer('%s') called", answer);
 LOG(buf);
 #endif
 /*...e*/
-	if (sock->recv_charbuf(buf) == 0)  {
+	if (sock->recv_charbuf(buf) != ERR_NONE)  {
 		LOG("lbSocket: Failed to get any answer");
 		return 0;
 	}
-/*...sVERBOSE:0:*/
-#ifdef VERBOSE
+/*...sTRANSFER_VERBOSE:0:*/
+#ifdef TRANSFER_VERBOSE
 sprintf(msg, "Got answer '%s'", buf);
 LOG(msg);
 #endif	
 /*...e*/
-
-
-	if (strcmp(buf, "Protokol error") == 0) LOG("Got an error in protokol flow");
+	if (strcmp(buf, "Protokol error") == 0) 
+		LOG("Got an error in protokol flow");
 
 	if (strcmp(buf, answer) != 0) {
 		sprintf(msg, "lbSocket: Incorrect answer '%s'. Try to reset state machine", buf);
@@ -426,18 +660,18 @@ LOG(msg);
 		resetServerStateMachine();
 		return 0;
 	}
-/*...sVERBOSE:0:*/
-#ifdef VERBOSE
+/*...sTRANSFER_VERBOSE:0:*/
+#ifdef TRANSFER_VERBOSE
 LOG("waitforAnswer(char* answer) returning");	
+fprintf(stderr, "waitforAnswer(): Got correct answer '%s'\n", answer);
 #endif
 /*...e*/
-fprintf(stderr, "waitforAnswer(): Got correct answer '%s'\n", answer);
 	return 1;
 }
 /*...e*/
 /*...slbTransfer\58\\58\sendString\40\char\42\ type\41\:0:*/
 int lbTransfer::sendString(char* type) {
-	if (sock->send_charbuf(type, strlen(type)+1) == 0) {
+	if (sock->send_charbuf(type, strlen(type)+1) != ERR_NONE) {
 		LOG("lbTransfer::sendString(char* type): Failed to send simple string");
 		return 0;
 	}
@@ -450,7 +684,7 @@ int lbTransfer::sendDataCount(int c) {
 
 	if (waitforAnswer("ok") == 0) return 0;
 
-	if (sock->sendInteger(c) == 0) {
+	if (sock->sendInteger(c) != ERR_NONE) {
 		LOG("lbTransfer: Could not send integer value");
 		resetServerStateMachine();
 		return 0;
@@ -465,8 +699,8 @@ int lbTransfer::sendDataCount(int c) {
 /*...e*/
 /*...slbTransfer\58\\58\sendBuffer\40\byte\42\ buf\44\ int len\41\:0:*/
 int lbTransfer::sendBuffer(byte* buf, int len) {
-/*...sVERBOSE:0:*/
-#ifdef VERBOSE
+/*...sTRANSFER_VERBOSE:0:*/
+#ifdef TRANSFER_VERBOSE
 LOG("lbTransfer::sendBuffer(void* buf, int len) Enter");
 #endif
 /*...e*/
@@ -475,9 +709,9 @@ LOG("lbTransfer::sendBuffer(void* buf, int len) Enter");
 		resetServerStateMachine();
 		return 0;
 	}
-/*...sVERBOSE:0:*/
-#ifdef VERBOSE
-LOG("lbTransfer::sendBuffer(void* buf, int len) waitforAnswer(\"ok\")");
+/*...sTRANSFER_VERBOSE:0:*/
+#ifdef TRANSFER_VERBOSE
+LOG("lbTransfer::sendBuffer(void* buf, int len) waitforAnswer('ok')");
 #endif
 /*...e*/
 	if (waitforAnswer("ok") == 0) {
@@ -487,10 +721,9 @@ LOG("lbTransfer::sendBuffer(void* buf, int len) waitforAnswer(\"ok\")");
 
 /*...sSend buffersize:8:*/
 	// Get the size of the packet for memory allocation (if possible)
-	if (sock->sendInteger(len) == 0) return 0;	
+	if (sock->sendInteger(len) != ERR_NONE) return 0;	
 	if (waitforAnswer("ok") == 0) return 0;
 /*...e*/
-
 	int peaces = len / MAXBUFLEN;
 	byte * currbufferpos = buf;
 	char msg[100];
@@ -498,45 +731,65 @@ LOG("lbTransfer::sendBuffer(void* buf, int len) waitforAnswer(\"ok\")");
 
 	// target knows multiple packets from buffersize > MAXBUFLEN !
 	for (int i = 0; i < peaces; i++) {
-	if (i == 0) LOG("Sending subsequent packets");
-	
-		if (sock->send((void* )currbufferpos, MAXBUFLEN) == 0) return 0;
+/*...sTRANSFER_VERBOSE:0:*/
+#ifdef TRANSFER_VERBOSE
+		if (i == 0) LOG("Sending subsequent packets");
+#endif
+/*...e*/
+		if (sock->send((void* )currbufferpos, MAXBUFLEN) != ERR_NONE) 
+		{
+			LOG("lbTransfer::sendBuffer(byte* buf, int len) failed");
+			return 0;
+		}
 		currbufferpos = currbufferpos + MAXBUFLEN;
-		if (waitforAnswer("Peace ok") == 0) return 0;
+		if (waitforAnswer("Peace ok") == 0) 
+		{
+			LOG("lbTransfer::sendBuffer(byte* buf, int len) waiting for 'Peace ok' failed");
+			return 0;
+		}
 	}
 	
 	// Send remaining
-/*...sVERBOSE:0:*/
-#ifdef VERBOSE
+/*...sTRANSFER_VERBOSE:0:*/
+#ifdef TRANSFER_VERBOSE
 LOG("Send remaining");
 #endif
 /*...e*/
 	//currbufferpos = currbufferpos + (len-peaces*MAXBUFLEN);
-/*...sVERBOSE:0:*/
-#ifdef VERBOSE
+/*...sTRANSFER_VERBOSE:0:*/
+#ifdef TRANSFER_VERBOSE
 	sprintf(msg, "Sending this buffer: '%s'", (char*) currbufferpos);
 	LOG(msg);
 #endif
 /*...e*/
-	if (sock->send((void* )currbufferpos, (len-peaces*MAXBUFLEN)) == 0) return 0;
-/*...sVERBOSE:0:*/
-#ifdef VERBOSE
-LOG("Wait for answer 'ok'");
+	if (sock->send((void* )currbufferpos, (len-peaces*MAXBUFLEN)) != ERR_NONE) 
+	{
+		return 0;
+	}
+/*...sTRANSFER_VERBOSE:0:*/
+#ifdef TRANSFER_VERBOSE
+LOG("Wait for answer 'Buffer Ok'");
 #endif
 /*...e*/
 	if (waitforAnswer("Buffer ok") == 0) {
 		LOG("Got incorrect answer");
 		return 0;
 	}
+/*...sTRANSFER_VERBOSE:0:*/
+#ifdef TRANSFER_VERBOSE
+LOG("lbTransfer::sendBuffer(byte* buf, int len) returning with success");
+#endif
+/*...e*/
 	return 1;
 }
+
 /*...e*/
 
 /*...slbTransfer\58\\58\waitForString\40\char\42\ \38\ string\41\:0:*/
 int lbTransfer::waitForString(char* & string) {
 	char buf[MAXBUFLEN];
 
-	if (sock->recv_charbuf(buf) == 0)
+	if (sock->recv_charbuf(buf) != ERR_NONE)
 	{
           LOG("lbSocket: Failed to get any data while waiting for a string");
           return 0;
@@ -550,9 +803,9 @@ int lbTransfer::waitForString(char* & string) {
 int lbTransfer::waitForBuffer(byte * & buffer, int & len) {
 	char buf[MAXBUFLEN];
 	char msg[100];
-	int buflen;
-/*...sVERBOSE:0:*/
-#ifdef VERBOSE
+	int buflen;	
+/*...sTRANSFER_VERBOSE:0:*/
+#ifdef TRANSFER_VERBOSE
 LOG("lbTransfer::waitForBuffer(void * & buffer, int & len) Enter");
 #endif
 /*...e*/
@@ -560,26 +813,35 @@ LOG("lbTransfer::waitForBuffer(void * & buffer, int & len) Enter");
 		LOG("Could not get 'Datablock' identifer");
 		return 0;
 	}
-/*...sVERBOSE:0:*/
-#ifdef VERBOSE
-LOG("sendString(\"ok\")");
+/*...sTRANSFER_VERBOSE:0:*/
+#ifdef TRANSFER_VERBOSE
+LOG("sendString('ok')");
 #endif
 /*...e*/
-	if (sendString("ok") == 0) return 0;
-/*...sVERBOSE:0:*/
-#ifdef VERBOSE
+	if (sendString("ok") == 0) {
+		LOG("lbTransfer::waitForBuffer(...) Error: Sending 'ok' after recieving 'Datablock'");
+		return 0;
+	}
+/*...sTRANSFER_VERBOSE:0:*/
+#ifdef TRANSFER_VERBOSE
 LOG("sock->recv_charbuf((char*) buf)");
 #endif
 /*...e*/
 /*...sGet buffersize:8:*/
 	// Get the size of the packet for memory allocation (if possible)
-	if (sock->recvInteger(buflen) == 0) return 0;	
+	if (sock->recvInteger(buflen) != ERR_NONE) {
+		LOG("lbTransfer::waitForBuffer(...) Error: Could not get buffer size");
+		return 0;	
+	}
 	
-	if (sendString("ok") == 0) return 0;
+	if (sendString("ok") == 0) {
+		LOG("lbTransfer::waitForBuffer(...) Error: Could not send 'ok' after recieving buffer size");
+		return 0;
+	}
 /*...e*/
 	len = buflen;
-/*...sVERBOSE:0:*/
-#ifdef VERBOSE
+/*...sTRANSFER_VERBOSE:0:*/
+#ifdef TRANSFER_VERBOSE
 sprintf(msg, "Got a buffersize of %d bytes", len);
 LOG(msg);
 #endif	
@@ -589,40 +851,45 @@ LOG(msg);
 	int peaces = buflen / MAXBUFLEN;
 	byte * currbufferpos = buffer;
 
-/*...sVERBOSE:0:*/
-#ifdef VERBOSE
+/*...sTRANSFER_VERBOSE:0:*/
+#ifdef TRANSFER_VERBOSE
 sprintf(msg, "Calculated values: peaces = %d, currbufferpos = %x", peaces, currbufferpos);
 LOG(msg);
 #endif
 /*...e*/
 
 	// target knows multiple packets from buffersize > MAXBUFLEN !
-/*...sVERBOSE:0:*/
-#ifdef VERBOSE
+/*...sTRANSFER_VERBOSE:0:*/
+#ifdef TRANSFER_VERBOSE
 LOG("Begin reciefing buffer");
 #endif
 /*...e*/
+/*...sRecieving all packets except the last:0:*/
 	for (int i = 0; i < peaces; i++) {
+/*...sTRANSFER_VERBOSE:0:*/
+#ifdef TRANSFER_VERBOSE
 	if (i == 0) LOG("Recieving subsequent packets");
-		int gotBuflen = MAXBUFLEN;
-/*...sVERBOSE:0:*/
-#ifdef VERBOSE
-LOG("Recv peace");
 #endif
 /*...e*/
-		if (sock->recv((void* )currbufferpos, gotBuflen) == 0) {
+		int gotBuflen = MAXBUFLEN;
+/*...sTRANSFER_VERBOSE:0:*/
+#ifdef TRANSFER_VERBOSE
+LOG("lbTransfer::waitForBuffer(...) Recv peace");
+#endif
+/*...e*/
+		if (sock->recv((void* )currbufferpos, gotBuflen) != ERR_NONE) {
 			LOG("sock->recv((void* )currbufferpos, gotBuflen) failed");
 			return 0;
 		}
-/*...sVERBOSE:0:*/
-#ifdef VERBOSE	
+/*...sTRANSFER_VERBOSE:0:*/
+#ifdef TRANSFER_VERBOSE	
 		sprintf(msg, "Wanted buflen: %d. Got this: %d", buflen, gotBuflen);
 		LOG(msg);
 #endif		
 /*...e*/
 		currbufferpos = currbufferpos + MAXBUFLEN;
-/*...sVERBOSE:0:*/
-#ifdef VERBOSE
+/*...sTRANSFER_VERBOSE:0:*/
+#ifdef TRANSFER_VERBOSE
 LOG("Send 'ok'");
 #endif
 /*...e*/
@@ -631,27 +898,36 @@ LOG("Send 'ok'");
 			return 0;
 		}
 	}
+/*...e*/
 	
 	// Recv remaining
-/*...sVERBOSE:0:*/
-#ifdef VERBOSE
+/*...sTRANSFER_VERBOSE:0:*/
+#ifdef TRANSFER_VERBOSE
 LOG("Recieving remaining");	
 #endif
 /*...e*/
 //	currbufferpos = currbufferpos + (buflen-peaces*MAXBUFLEN);
 	int wanted_peace_size = (buflen-peaces*MAXBUFLEN);
-/*...sVERBOSE:0:*/
-#ifdef VERBOSE
-sprintf(msg, "Calculated values: peaces = %d, currbufferpos = %x, torecv = %d", peaces, currbufferpos, (buflen-peaces*MAXBUFLEN));
+/*...sTRANSFER_VERBOSE:0:*/
+#ifdef TRANSFER_VERBOSE
+sprintf(msg, "Calculated values: peaces = %d, currbufferpos = %x, torecv = %d", peaces, currbufferpos, wanted_peace_size);
 LOG(msg);
 #endif
 /*...e*/
-	if (sock->recv((void* )currbufferpos, wanted_peace_size) == 0) {
+	
+	/* // Done in recv self
+	if (sock->isValid() == 0) {
+		LOG("lbTransfer::waitForBuffer(...) Error: Can't get data from an invalid socket!");
+		return 0;
+	}
+	*/
+	
+	if (sock->recv((void* )currbufferpos, wanted_peace_size) != ERR_NONE) {
 		LOG("Can't get buffer");
 		return 0;
 	}
-/*...sVERBOSE:0:*/
-#ifdef VERBOSE
+/*...sTRANSFER_VERBOSE:0:*/
+#ifdef TRANSFER_VERBOSE
 char gotbuffer[100];
 strncpy(gotbuffer, (char*)buffer, len);
 gotbuffer[len] = 0;
@@ -665,12 +941,11 @@ LOG(msg);
 		return 0;
 	}
 
-/*...sVERBOSE:0:*/
-#ifdef VERBOSE
+/*...sTRANSFER_VERBOSE:0:*/
+#ifdef TRANSFER_VERBOSE
 LOG("lbTransfer::waitForBuffer(void * & buffer, int & len) Leave");
 #endif
 /*...e*/
-
 	return 1;	
 }
 /*...e*/
@@ -679,26 +954,26 @@ LOG("lbTransfer::waitForBuffer(void * & buffer, int & len) Leave");
 /*...slbTransfer\58\\58\waitForDataCount\40\int \38\ c\41\:0:*/
 int lbTransfer::waitForDataCount(int & c) {
 fprintf(stderr, "waitForDataCount() called\n");
-/*...sVERBOSE:0:*/
-#ifdef VERBOSE
+/*...sTRANSFER_VERBOSE:0:*/
+#ifdef TRANSFER_VERBOSE
 LOG("waitForDataCount() Enter");
 #endif
 /*...e*/
 	if (waitforAnswer("DataCount") == 0) return 0;
 fprintf(stderr, "Got 'DataCount' identifer\n");	
-/*...sVERBOSE:0:*/
-#ifdef VERBOSE
+/*...sTRANSFER_VERBOSE:0:*/
+#ifdef TRANSFER_VERBOSE
 LOG("Got 'DataCount' identifer");
 #endif
 /*...e*/
 	if (sendString("ok") == 0) return 0;
 fprintf(stderr, "Sent 'ok'\n");
-	if (sock->recvInteger(c) == 0) return 0;
+	if (sock->recvInteger(c) != ERR_NONE) return 0;
 fprintf(stderr, "Got integer\n");	
 	if (sendString("Datacount ok") == 0) return 0;
 fprintf(stderr, "Sent 'Datacount ok'\n");
-/*...sVERBOSE:0:*/
-#ifdef VERBOSE
+/*...sTRANSFER_VERBOSE:0:*/
+#ifdef TRANSFER_VERBOSE
 LOG("waitForDataCount() Leave");
 #endif
 /*...e*/
@@ -709,12 +984,13 @@ LOG("waitForDataCount() Leave");
 /*...slbTransfer\58\\58\waitForDatatype\40\char\42\ \38\ result\41\:0:*/
 int lbTransfer::waitForDatatype(char* &result) {
         static char buf[MAXBUFLEN];
-        int err;
+        int err = 1;
         
-        if ((err = sock->recv_charbuf(buf)) == 0)
+        if (sock->recv_charbuf(buf) != ERR_NONE)
         {
                 LOG("lbSocket: Failed to get any datatype");
                 result = '\0';
+                err = 0;
         } else result = strdup(buf);
         
         return err;
@@ -728,25 +1004,38 @@ int lbTransfer::gethostname(char* &name) {
 /*...slbTransfer\58\\58\setSockConnection\40\lbSocket\42\ s\41\:0:*/
 int lbTransfer::setSockConnection(lbSocket* s) {
 	state = LB_STATE_CONNECTED;
-	sock = s;	
+	sock = s;
+	connected = 1;	
 	return 1;
 }
 /*...e*/
 
 /*...slbTransfer\58\\58\accept\40\\41\:0:*/
 int lbTransfer::accept(lbTransfer*& t) {
-	if (state == LB_STATE_CONNECTED) return NULL;
+	if (state == LB_STATE_CONNECTED) {
+		LOG("lbTransfer::accept(lbTransfer*& t) State error: Accept can not be called!");
+		return NULL;
+	}
 	fprintf(stderr, "Waiting for a connection...\n");
 	lbSocket *s = NULL;
-	if (sock->accept(s) == 1) {
-		fprintf(stderr, "Got a connection.");
-	
+	if (sock == NULL) LOG("lbTransfer::accept(lbTransfer*& t) Error: Internal sock instance points to NULL!");
+	if (sock->accept(s) == ERR_NONE) {
+/*...sTRANSFER_VERBOSE:0:*/
+#ifdef TRANSFER_VERBOSE
+		LOG("lbTransfer::accept(lbTransfer*& t): Create a lbTransfer object for the connected client");
+#endif
+/*...e*/
 		t = new lbTransfer();
-		/**
-		 * This sets the lbTransfer to socket mode
-		 */
+		 
+		if (s == NULL) {
+			LOG("t->setSockConnection(s) Error: s is a NULL pointer!"); 
+			return 0;
+		}
+		
+		// t cannot call accept or those functions that
+		// are outside of connected state
+		
 		t->setSockConnection(s);
-		state = LB_STATE_CONNECTED;
 		return 1;
 	} else {
 		LOG("lbTransfer::accept(lbTransfer*& t): Error, failed to accept on serversocket");
@@ -766,8 +1055,8 @@ void lbTransfer::operator<< (const lb_Transfer_Data& req) {
 /*...slbTransfer\58\\58\operator\62\\62\ \40\lb_Transfer_Data\38\ res\41\:0:*/
 void lbTransfer::operator>> (lb_Transfer_Data& res) {
 printf("lbTransfer::operator>> (lb_Transfer_Data& res) called\n");
-/*...sVERBOSE:0:*/
-#ifdef VERBOSE
+/*...sTRANSFER_VERBOSE:0:*/
+#ifdef TRANSFER_VERBOSE
 LOGENABLE("lbTransfer::operator>> (lb_Transfer_Data& res) called");
 #endif
 /*...e*/
@@ -782,49 +1071,97 @@ LOGENABLE("lbTransfer::operator>> (lb_Transfer_Data& res) called");
 int lbTransfer::send(const lb_Transfer_Data & data) {
 	char buf[MAXBUFLEN];
 	char msg[100];
+/*...sTRANSFER_VERBOSE:0:*/
+#ifdef TRANSFER_VERBOSE
 sprintf(msg, "lbTransfer::send(const lb_Transfer_Data & data): Sending %d packets", data.getPacketCount());	
 LOG(msg);
+#endif	
+/*...e*/
+
+if (data.serverside == 0) {
+/*...sClient sends internal data:0:*/
+	if (sendBuffer((byte*) &data.clientPid, sizeof(data.clientPid)) == 0) {
+		LOG("lbTransfer::send(...) Error: Could not send internal pid");
+		return 0;
+	}
+	if (waitforAnswer("Got buffer") == 0) {
+		LOG("Could not get answer 'Got buffer'");
+		return 0;
+	}
+	if (sendBuffer((byte*) &data.clientTid, sizeof(data.clientTid)) == 0) {
+		LOG("lbTransfer::send(...) Error: Could not send internal tid");
+		return 0;
+	}
+	if (waitforAnswer("Got buffer") == 0) {
+		LOG("Could not get answer 'Got buffer'");
+		return 0;
+	}
+	if (sendString(data.clientHost) == 0) {
+		LOG("lbTransfer::send(...) Error: Could not send internal client hostname");
+		return 0;
+	}	
+	if (waitforAnswer("ok") == 0) return 0;
+/*...e*/
+}
+
+	if (sendDatatype("lb_Transfer_Data") == 0) {
+		LOG("Failed to send data type information");	
+		return 0;
+	}
 	
-	
-	if (sendDatatype("lb_Transfer_Data") == 0) return 0;
+/*...sTRANSVER_VERBOSE:0:*/
+#ifdef TRANSFER_VERBOSE
+LOG("lbTransfer::send(...) Call waitforAnswer('Datatype ok')");
+#endif
+/*...e*/
 	if (waitforAnswer("Datatype ok") == 0) return 0;
+
 	if (sendDataCount(data.getPacketCount()) == 0) return 0;
 
 	while (data.hasMorePackets()) {
 		pLB_TRANSFER_DATA pData = data.getNextPacket();
-/*...sVERBOSE:0:*/
-#ifdef VERBOSE
-		sprintf(msg, "Send a packet with address %x", pData);
+/*...sTRANSFER_VERBOSE:0:*/
+#ifdef TRANSFER_VERBOSE
+		sprintf(msg, "Send a packet (pData) with address %x", pData);
 		LOG(msg);
 #endif
 /*...e*/
 		if (pData == NULL) 
 			LOG("lbTransfer::send(const lb_Transfer_Data & data): Error, can't send buffer. Null pointer exception.");
 		else {
-/*...sVERBOSE:0:*/
-#ifdef VERBOSE
+/*...sTRANSFER_VERBOSE:0:*/
+#ifdef TRANSFER_VERBOSE
 			LOG("Send a packet from LB_TRANSFER_DATA");
-			sprintf(msg, "Try to copy buffer to a char buffer. It's address: %x", pData->data);
+			sprintf(msg, "Try to copy buffer to a char buffer. It's address: %x, it's size %d", &pData->data, pData->packet_size);
 			LOG(msg);
 			char sendbuffer[100];
 			strncpy(sendbuffer, (char*) &(pData->data), pData->packet_size);
 			sprintf(msg, "Buffer '%s' has been copied", sendbuffer);
 			LOG(msg);
-#endif		
-/*...e*/
 			// Send the packet type
 			sprintf(msg, "Sending packet type: '%s'", getStringFromEnumeration(pData->packet_type));
 			LOG(msg);
+#endif		
+/*...e*/
 			if (sendString(getStringFromEnumeration(pData->packet_type)) == 0) return 0;
+/*...sTRANSFER_VERBOSE:0:*/
+#ifdef TRANSFER_VERBOSE
+			LOG("lbTransfer::send(...) Wait for 'ok' after sending packet type");
+#endif
+/*...e*/
 			if (waitforAnswer("ok") == 0) return 0;
-			
+/*...sTRANSFER_VERBOSE:0:*/
+#ifdef TRANSFER_VERBOSE
+			LOG("lbTransfer::send(...) Send packet size");
+#endif			
+/*...e*/
 			if (sendBuffer((byte*) &(pData->data), pData->packet_size) == 0) {
 				LOG("lbTransfer: Could not send data buffer");
-			resetServerStateMachine();
-			return 0;
+				resetServerStateMachine();
+				return 0;
 			}
-/*...sVERBOSE:0:*/
-#ifdef VERBOSE
+/*...sTRANSFER_VERBOSE:0:*/
+#ifdef TRANSFER_VERBOSE
 			LOG("waitforAnswer('Got buffer')");
 #endif
 /*...e*/
@@ -832,13 +1169,18 @@ LOG(msg);
 				LOG("Could not get answer 'Got buffer'");
 				return 0;
 			}
-/*...sVERBOSE:0:*/
-#ifdef VERBOSE			
+/*...sTRANSFER_VERBOSE:0:*/
+#ifdef TRANSFER_VERBOSE			
 			LOG("Sent a packet from LB_TRANSFER_DATA");
 #endif
 /*...e*/
 		}
 	}
+/*...sTRANSFER_VERBOSE:0:*/
+#ifdef TRANSFER_VERBOSE
+LOG("lbTransfer::send(...) Have sent all packets. Returning with success");
+#endif
+/*...e*/
 	return 1;
 }
 /*...e*/
@@ -846,31 +1188,66 @@ LOG(msg);
 /*...slbTransfer\58\\58\recv\40\lb_Transfer_Data \38\ data\41\:0:*/
 int lbTransfer::recv(lb_Transfer_Data & data) {
 	char* result = NULL;
+	int len;
 	void* buf = NULL;
         char msg[100];
 	int err;
-
+/*...sTRANSFER_VERBOSE:0:*/
+#ifdef TRANSFER_VERBOSE
 LOGENABLE("lbTransfer::recv(lb_Transfer_Data & data)");
-/*...sVERBOSE:0:*/
-#ifdef VERBOSE
 LOG("lbTransfer::recv() Enter");
-#endif
-/*...e*/
-/*...sVERBOSE:0:*/
-#ifdef VERBOSE
 LOG("lbTransfer::recv(lb_Transfer_Data & data): waitForDatatype(result)...");	
 #endif
 /*...e*/
+
+
+if (data.serverside == 1) {
+/*...sServerside recieves internal data :0:*/
+
+	if (waitForBuffer((byte*&) buf, len) == 0) {
+		LOG("lbTransfer::send(...) Error: Could not send internal pid");
+		return 0;
+	}
+	memcpy((void*) &data.clientPid, buf, len);
+	delete buf;
+	if (sendString("Got buffer") == 0) {
+	        LOG("Could not get answer 'Got buffer'");
+	        return 0;
+	}
+	
+	if (waitForBuffer((byte*&) buf, len) == 0) {
+		LOG("lbTransfer::send(...) Error: Could not send internal tid");
+		return 0;
+	}
+	memcpy((void*) &data.clientTid, buf, len);
+	delete buf;
+
+	if (sendString("Got buffer") == 0) {
+	        LOG("Could not get answer 'Got buffer'");
+	        return 0;
+	}
+
+	if (waitForString(data.clientHost) == 0) {
+		LOG("lbTransfer::send(...) Error: Could not send internal client hostname");
+		return 0;
+	}	
+
+       	if (sendString("ok") == 0) return 0;
+
+/*...e*/
+}
+
 	if ((err = waitForDatatype(result)) == 1) {
 	  if (strcmp(result, "lb_Transfer_Data") == 0)
 	  {// Got correct datatype
+/*...sget it:16:*/
 	    int count = 0;
 	    lb_Transfer_Data temp;
 	    int len;
 	    
 	    fprintf(stderr, "Got datatype information of '%s'\n", result);
-/*...sVERBOSE:0:*/
-#ifdef VERBOSE	   
+/*...sTRANSFER_VERBOSE:16:*/
+#ifdef TRANSFER_VERBOSE	   
 	    LOG("lbTransfer::recv(lb_Transfer_Data & data): Got wanted datatype");
 #endif
 /*...e*/
@@ -878,22 +1255,27 @@ LOG("lbTransfer::recv(lb_Transfer_Data & data): waitForDatatype(result)...");
 	   
 	    fprintf(stderr, "Waiting for packet count\n");
 	   
-/*...swaitForDataCount:12:*/
+/*...swaitForDataCount:28:*/
 	    if (waitForDataCount(count) == 0) {
+		LOG("waitForDataCount(count) Error: No packet count");
 	    	fprintf(stderr, "Waiting for packet count: Results in an error\n");
 	    	return 0;
 	    }
 /*...e*/
-/*...sVERBOSE:0:*/
-#ifdef VERBOSE
+/*...sTRANSFER_VERBOSE:16:*/
+#ifdef TRANSFER_VERBOSE
 	    sprintf(msg, "Begin with recieving %d packets", count);
 	    LOG(msg);
 #endif
 /*...e*/
-/*...sGet all packets:12:*/
+/*...sGet all packets:28:*/
+#ifdef TRANSFER_VERBOSE
+	        sprintf(msg, "Have %d packets", count);
+	        LOG(msg);
+#endif
 	    while (count != 0) {
-/*...sVERBOSE:12:*/
-#ifdef VERBOSE
+/*...sTRANSFER_VERBOSE:28:*/
+#ifdef TRANSFER_VERBOSE
 	        sprintf(msg, "Get a packet (%d)", count);
 	        LOG(msg);
 #endif
@@ -902,22 +1284,46 @@ LOG("lbTransfer::recv(lb_Transfer_Data & data): waitForDatatype(result)...");
 	        int ptypelen = sizeof(LB_PACKET_TYPE);
 	        LB_PACKET_TYPE type;
 	        char* typeAsString = NULL;
-	        if (waitForString(typeAsString) == 0) return 0;
-	        
+	        if (waitForString(typeAsString) == 0) {
+	        	LOG("lbTransfer::recv(...) Error: Could not get packet type information!");
+	        	return 0;
+	        }
+/*...sTRANSFER_VERBOSE:28:*/
+#ifdef TRANSFER_VERBOSE	        
 	        sprintf(msg, "Got packet type '%s'", typeAsString);
 	        LOG(msg);
-	        
+#endif	   
+/*...e*/
 	        type = getEnumerationFromString(typeAsString);
 	        
 	        if (type != LB_INVALIDTYPE) {
+/*...sTRANSFER_VERBOSE:28:*/
+#ifdef TRANSFER_VERBOSE	     
+	        	LOG("lbTransfer::recv(...) Got a known packet type, accept it with 'ok'");
+#endif	        	
+/*...e*/
 	        	if (sendString("ok") == 0) return 0;
 	        } else { 
+		        LOG("lbTransfer::recv(...) Got a unknown packet type, deny it (how to handle this)");
 	        	if (sendString("Protokol error") == 0) return 0;
 	        }
-	        
-		if (waitForBuffer((byte* &) buf, len) == 0) return 0;    	
-/*...sVERBOSE:12:*/
-#ifdef VERBOSE
+/*...sTRANSFER_VERBOSE:28:*/
+#ifdef TRANSFER_VERBOSE	
+	        LOG("lbTransfer::recv(...) Waiting for buffer");
+#endif
+/*...e*/
+		if (waitForBuffer((byte* &) buf, len) == 0) {
+			LOG("waitForBuffer((byte* &) buf, len) Error: Waiting for buffer failed!");
+			return 0;    	
+		}
+
+/*...sTRANSFER_VERBOSE:28:*/
+#ifdef TRANSFER_VERBOSE
+		LOG("lbTransfer::recv(...) Got buffer");
+#endif		
+/*...e*/
+/*...sTRANSFER_VERBOSE:28:*/
+#ifdef TRANSFER_VERBOSE
 		char b[100];
 		
 		strncpy(b, (char*)buf, len);
@@ -928,39 +1334,39 @@ LOG("lbTransfer::recv(lb_Transfer_Data & data): waitForDatatype(result)...");
 		
 		sprintf(msg, "Add packet with size = %d to list", len);
 		LOG(msg);
+		sprintf(msg, "Adding the packet with type '%s'", typeAsString);
+		LOG(msg);
 #endif		
 /*...e*/
 		data.add(buf, len, type);
-/*...sVERBOSE:12:*/
-#ifdef VERBOSE
-		LOG("Added packet to list");
+/*...sTRANSFER_VERBOSE:28:*/
+#ifdef TRANSFER_VERBOSE
+		LOG("lbTransfer::recv(...) Answer with 'Got buffer'");
 #endif		
 /*...e*/
-
 		if (sendString("Got buffer") == 0) {
 			LOG("Could not get answer 'Got buffer'");
 			return 0;
 		}
-
-
-/*...sVERBOSE:12:*/
-#ifdef VERBOSE		
+/*...sTRANSFER_VERBOSE:28:*/
+#ifdef TRANSFER_VERBOSE		
 		LOG("Got a packet");
 #endif
 /*...e*/
-	    }	    
+	    }
 /*...e*/
-/*...sVERBOSE:0:*/
-#ifdef VERBOSE	   
-	    LOG("Ending recieving packets\n");
+/*...sTRANSFER_VERBOSE:16:*/
+#ifdef TRANSFER_VERBOSE	   
+	    LOG("Ending recieving packets");
 #endif
 /*...e*/
-	  }
-	} else LOG("lbTransfer::recv(lb_Transfer_Data & data): Could not get data type");
+/*...e*/
+	  } else LOG("lbTransfer::recv(...) Error: Currently only 'lb_Transfer_Data' is supported");
+	} else LOG("lbTransfer::recv(lb_Transfer_Data & data): Could not get any data type");
 
 	fprintf(stderr, "Got a complete lb_Transfer_Data object\n");
-/*...sVERBOSE:0:*/
-#ifdef VERBOSE
+/*...sTRANSFER_VERBOSE:0:*/
+#ifdef TRANSFER_VERBOSE
 LOG("lbTransfer::recv() Leave");	
 #endif
 /*...e*/
@@ -968,5 +1374,3 @@ LOG("lbTransfer::recv() Leave");
 }
 /*...e*/
 /*...e*/
-
-

@@ -1,11 +1,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.3 $
+ * $Revision: 1.4 $
  * $Name:  $
- * $Id: lb_i_gui.h,v 1.3 2000/04/29 10:51:21 lolli Exp $
+ * $Id: lb_i_gui.h,v 1.4 2000/06/24 21:32:06 lolli Exp $
  *
  * $Log: lb_i_gui.h,v $
+ * Revision 1.4  2000/06/24 21:32:06  lolli
+ * Socket bugfix
+ *
  * Revision 1.3  2000/04/29 10:51:21  lolli
  * Minor changes
  *
@@ -47,6 +50,7 @@
 #endif
 /*...e*/
 
+/*...sbla:0:*/
 #ifdef bla
 /*...sComponentTypes:0:*/
 enum ComponentTypes {
@@ -65,14 +69,18 @@ enum GUITypes {
 };
 /*...e*/
 #endif
+/*...e*/
 
+/*...sclass forward declarations:0:*/
 class lbComponentDictionary;
 class RemoteAppRes;
 class lbAppBusClient;
+class lbAppClient;
 class lb_I_wxGUIApplication;
 class lb_I_GUIApplication;
 class lb_I_GUIComponent;
 class lb_Transfer_Data;
+/*...e*/
 
 
 /*...sclass DLLEXPORT lb_I_GUIComponent:0:*/
@@ -80,12 +88,6 @@ class DLLEXPORT lb_I_GUIComponent {
 public:
         lb_I_GUIComponent();
 	virtual ~lb_I_GUIComponent();
-
-	/**
-	 * This function creates an instance of an object from this family.
-	 * (Factory pattern)
-	 */
-	static lb_I_GUIComponent* factory(const char* typeName);
 
 	lbKey getKey();
 	
@@ -99,6 +101,14 @@ public:
 	int eventHandler(lb_Transfer_Data& request, lb_Transfer_Data& result);
 
 protected:
+
+	/**
+	 * This function creates an instance of an object from this family.
+	 * (Factory pattern)
+	 */
+	static lb_I_GUIComponent* factory(const char* typeName);
+
+
         virtual void setType() = 0;
         GUITypes typ;
 
@@ -192,12 +202,12 @@ typedef struct __eventTableEntry {
 
 /*...e*/
 
-class lb_I_EventDispatcher;
+class lb_EventDispatcher;
 
-/*...sclass lb_I_Event \58\ public lbObject:0:*/
-class lb_I_Event : public lbObject {
-	lb_I_Event();
-	virtual ~lb_I_Event();
+/*...sclass lb_EventHandler \58\ public lbObject:0:*/
+class lb_EventHandler : public lbObject {
+	lb_EventHandler();
+	virtual ~lb_EventHandler();
 
 	virtual void setType();
 	virtual lbObject* clone() const;
@@ -213,38 +223,43 @@ protected:
 	// The id generated from dispatcher
 	lbKey* eventId;
 	
-	friend class lb_I_EventDispatcher;
+	friend class lb_EventDispatcher;
 };
 /*...e*/
 
-/*...sclass DLLEXPORT lb_I_EventDispatcher:0:*/
-class DLLEXPORT lb_I_EventDispatcher {
-	lb_I_EventDispatcher();
-	virtual ~lb_I_EventDispatcher();
+/*...sclass DLLEXPORT lb_EventDispatcher:0:*/
+class DLLEXPORT lb_EventDispatcher {
+public:
+	lb_EventDispatcher();
+	virtual ~lb_EventDispatcher();
 	
 	int add(T_p_eventHandler eventFn);
 	
-	lbComponentDictionary eventTable;
-	
+	lbComponentDictionary* eventTable;
 };
 /*...e*/
 
 /*...sclass DLLEXPORT lb_I_Application:0:*/
-
 class DLLEXPORT lb_I_Application {
 public:
 	lb_I_Application();
 	virtual ~lb_I_Application();
 
 	/**
-	 * This cunction is called and will check, if the pointers are set
-	 * correctly and if the calling instance's this pointer is stored
-	 * in wrapped. Then it will be a correct call to a wrapper.
+	 * An application provides a general callback mechanism. So any
+	 * request can be issued to the application directly. The app must
+	 * dispatch the call to the target, that can handle the request.
+	 *
+	 * If the target can not be located in the dispatcher, then an error
+	 * result is returned. Also a returncode is returned, indicating
+	 * this error.
 	 */
 	int callback(lb_Transfer_Data& request, lb_Transfer_Data& result);
 
 protected:
-	virtual int _callback(lb_Transfer_Data&, lb_Transfer_Data&) = 0;
+	virtual int _callback(lb_Transfer_Data& request, lb_Transfer_Data& result) = 0;
+
+	lb_EventDispatcher dispatcher;
 
 	lb_I_Application *wrapper;
 	lb_I_Application *wrapped;
@@ -263,8 +278,6 @@ public:
     lb_I_GUIApplication();
 
     virtual ~lb_I_GUIApplication();
-
-    int _callback(lb_Transfer_Data&, lb_Transfer_Data&);
 
     int isFirstStart();
 
@@ -290,7 +303,7 @@ public:
      * like to be informed of any change or some else event.
      */
 
-    int setWrapperEventDispatcher(lb_I_EventDispatcher* evDisp);
+    int setWrapperEventDispatcher(lb_EventDispatcher* evDisp);
 
 /*...sComponent handling:0:*/
     lb_I_GUIComponent* getParent(lb_I_GUIComponent* from);
@@ -321,6 +334,12 @@ public:
 protected:
 
     int AnounceUser(char* _user, char* _passwd);
+    
+    lbComponentDictionary* getRootComponents();
+    
+    virtual int _callback(lb_Transfer_Data& request, lb_Transfer_Data& result);
+    
+    
 /*...sLoading and mapping:0:*/
     /**
      * This function makes the main work for loading the components for
@@ -359,12 +378,17 @@ protected:
      */
     lbComponentDictionary* LoadedComponents;
 
+    /**
+     * Currently the solution for holding root components
+     */
+     
+    lbComponentDictionary* rootComponents; 
 
     /**
      * A wrapper like lb_I_wxGUIApplication holds its own dispatcher.
      * He must be known here.
      */
-    lb_I_EventDispatcher* wrapper;
+    lb_EventDispatcher* wrapper;
 /*...e*/
 };
 /*...e*/

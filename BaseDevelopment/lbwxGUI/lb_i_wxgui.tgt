@@ -18,10 +18,14 @@ n_2dn
 1
 4
 MCommand
-0
+50
+copy lb_I_wxGUI.h $(%DEVROOT)\projects\dll\include
 5
 MCommand
-0
+79
+copy *.lib $(%DEVROOT)\projects\dll\libs
+copy *.dll $(%DEVROOT)\projects\dll
+
 6
 MItem
 14
@@ -83,7 +87,7 @@ WVList
 0
 21
 WPickList
-8
+7
 22
 MItem
 5
@@ -108,8 +112,8 @@ n????Include directories:
 1
 28
 WString
-143
-.;$(%watcom)\h;$(%watcom)\h\nt;$(%wxwin)\include;$(%DEVROOT)\projects\include;$(%DEVROOT)\projects\dll\include;$(%DEVROOT)\projects\lib\include
+147
+.;$(%watcom)\h;$(%watcom)\h\nt;$(%wxwin)\include;$(%DEVROOT)\projects\cpp\include;$(%DEVROOT)\projects\dll\include;$(%DEVROOT)\projects\lib\include
 0
 29
 MVState
@@ -272,24 +276,6 @@ NIL
 WVList
 0
 66
-WVList
-0
-55
-1
-1
-0
-67
-MItem
-21
-..\..\..\lib\misc.lib
-68
-WString
-3
-NIL
-69
-WVList
-0
-70
 WVList
 0
 55

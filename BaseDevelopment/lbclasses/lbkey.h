@@ -3,10 +3,13 @@
 
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.2 $
+ * $Revision: 1.3 $
  * $Name:  $
- * $Id: lbkey.h,v 1.2 2000/04/27 01:36:24 lolli Exp $
+ * $Id: lbkey.h,v 1.3 2000/06/24 21:32:08 lolli Exp $
  * $Log: lbkey.h,v $
+ * Revision 1.3  2000/06/24 21:32:08  lolli
+ * Socket bugfix
+ *
  * Revision 1.2  2000/04/27 01:36:24  lolli
  * Commit in order of data GAU
  *
@@ -74,6 +77,24 @@ public:
 private:
 
     int key;
+};
+
+class DLLEXPORT lbKeyUL : public lbKeyBase {
+public:
+    lbKeyUL();
+    lbKeyUL(unsigned long _key);
+    lbKeyUL(const lbKeyBase & k);
+    virtual ~lbKeyUL();
+
+    // Must be implemented
+    virtual int equals(const lbKeyBase &_key);
+    virtual int greater(const lbKeyBase &_key);
+    lbKeyBase* clone() const;
+
+    virtual char* charrep();
+private:
+
+    unsigned long key;
 };
 
 class DLLEXPORT lbStringKey : public lbKeyBase {

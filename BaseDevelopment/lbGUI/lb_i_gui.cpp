@@ -369,22 +369,11 @@ lb_I_GUIComponent* lb_I_GUIMenuEntry::createChildInstance() {
 #endif
 /*...e*/
 
-/*...slb_I_Event:0:*/
-lb_I_Event::lb_I_Event() {
+lb_EventDispatcher::lb_EventDispatcher() {
 }
 
-lb_I_Event::~lb_I_Event() {
+lb_EventDispatcher::~lb_EventDispatcher() {
 }
-
-void lb_I_Event::setType() {
-	OTyp = LB_EVENT;
-}
-
-lbObject* lb_I_Event::clone() const {
-	LOG("lb_I_Event::clone(): Not yet implemented!");
-	return NULL;
-}
-/*...e*/
 
 /*...slb_I_Application:0:*/
 lb_I_Application::lb_I_Application() {
@@ -396,17 +385,30 @@ lb_I_Application::~lb_I_Application() {
 	// Nothing to do yet
 }
 
+/*...slb_I_Application\58\\58\callback\40\\46\\46\\46\\41\:0:*/
 int lb_I_Application::callback(lb_Transfer_Data& request, lb_Transfer_Data& result) {
-	if ((wrapper != NULL) && 
-	    (wrapped != NULL) &&
-	    (this == wrapped)
+LOG("lb_I_Application::callback(...) called");
+return _callback(request, result);
+
+
+	if (TRUE
+	    /*(wrapper != NULL) && 
+	      (wrapped != NULL) &&
+	      ((void*)this == (void*)wrapped)*/
 	   ) {
+#ifdef NOVERBOSE
+	   	LOG("lb_I_Application::callback() Can call callback, do it");
+#endif
+		if (this->_callback == (void*)8L) LOG("Warning, calling a NULL pointer");
+
 	   	return _callback(request, result);
 	   } else {
 	   	LOG("lb_I_Application::callback(...): Failed to issue a callback");
 	   }
+
 	return 0;
 }
+/*...e*/
 
 /*...e*/
 
@@ -415,18 +417,21 @@ lbAppBusClient* lb_I_GUIApplication::AppBusClient = NULL;
 
 /*...slb_I_GUIApplication\58\\58\lb_I_GUIApplication\40\\41\:0:*/
 lb_I_GUIApplication::lb_I_GUIApplication() {
+	LOG("lb_I_GUIApplication::lb_I_GUIApplication() Called");
 	wrapped = this;
 }
 /*...e*/
 
 /*...slb_I_GUIApplication\58\\58\\126\lb_I_GUIApplication\40\\41\:0:*/
 lb_I_GUIApplication::~lb_I_GUIApplication() {
+	LOG("lb_I_GUIApplication::~lb_I_GUIApplication() Called");
 	if (AppBusClient != NULL) delete AppBusClient;
 }
 /*...e*/
 
 /*...slb_I_GUIApplication\58\\58\AnounceUser\40\char\42\ _user\44\ char\42\ _passwd\41\:0:*/
 int lb_I_GUIApplication::AnounceUser(char* _user, char* _passwd) {
+	LOG("lb_I_GUIApplication::AnounceUser(...) Called");
 	if (AppBusClient == NULL) {
 		LOG("lb_I_GUIApplication::AnounceUser(): Error, Load was not called prior this call.");
 		return 0;
@@ -440,22 +445,26 @@ int lb_I_GUIApplication::AnounceUser(char* _user, char* _passwd) {
 /*...e*/
 
 /*...sevent handling:0:*/
-int lb_I_GUIApplication::setWrapperEventDispatcher(lb_I_EventDispatcher* evDisp) {
+int lb_I_GUIApplication::setWrapperEventDispatcher(lb_EventDispatcher* evDisp) {
 	return 0;
 }
 /*...e*/
 
-/*...scallback:0:*/
+/*...slb_I_GUIApplication\58\\58\callback:0:*/
 /**
  * Must implement my _callback routine, so a GUI element may issue an event 
  * to my in order to update the data model. 
  * 
  */
-int lb_I_GUIApplication::_callback(lb_Transfer_Data&, lb_Transfer_Data&) {
+int lb_I_GUIApplication::_callback(lb_Transfer_Data& request, lb_Transfer_Data& result) {
 	LOG("lb_I_GUIApplication::_callback(...): Error, have no instance for a wrapped object");
 	return 0;
 }
 /*...e*/
+
+lbComponentDictionary* lb_I_GUIApplication::getRootComponents() {
+	return rootComponents;
+}
 
 /*...sLoad components:0:*/
 int lb_I_GUIApplication::loadComponent(lb_I_GUIComponent* parent) {
@@ -467,17 +476,38 @@ int lb_I_GUIApplication::loadComponent(lb_I_GUIComponent* parent) {
 
 	lbStringList* elements;
 	
-	if (parent == NULL)
+	if (parent == NULL) {
+/*...shandle for no parents:8:*/
+LOG("lb_I_GUIApplication::loadComponent(...) client->requestObject(...) (parent == NULL)");
+		/**
+		 * Request all objects, that are GUI related, 
+		 * but not recursive.
+		 */
 		elements = (lbStringList*) client->requestObject("GUI", "list components");
-	else 
+		rootComponents = new lbComponentDictionary;
+LOG("lb_I_GUIApplication::loadComponent(...) client->requestObject(...) called");
+/*...e*/
+	}
+	else {
+/*...shandle with parent:8:*/
 	/**
 	 * parent is currently an instance everywhere and so having 
 	 * a reverenceId. This is, because, the object still can be changed
 	 * since it has been created.
 	 *
 	 */
+LOG("lb_I_GUIApplication::loadComponent(...) client->requestObject(...) (parent != NULL)");
+
 		elements = (lbStringList*) client->requestObject("children", parent->getRefId());
 
+
+
+
+LOG("lb_I_GUIApplication::loadComponent(...) client->requestObject(...) called");
+/*...e*/
+	}
+LOG("lb_I_GUIApplication::loadComponent(...) handle all elements");
+	
 	while (elements->hasMoreElements()) {
 		lbString* componentName = elements->nextElement();
 		lbString* typeName = (lbString*) client->requestObject("Componenttype", componentName->getData());
@@ -494,10 +524,9 @@ int lb_I_GUIApplication::loadComponent(lb_I_GUIComponent* parent) {
 		c.setObject(component);
 		
 		LoadedComponents->insert(c, component->getKey());
+		if (parent == NULL) rootComponents->insert(c, component->getKey());
 		
 		loadComponent(component);
-		
-		//delete component;
 	}
 	delete elements;
 	
@@ -507,53 +536,90 @@ int lb_I_GUIApplication::loadComponent(lb_I_GUIComponent* parent) {
 
 /*...sLoad the application:0:*/
 int lb_I_GUIApplication::Load() {
+/*...sVars:0:*/
 	char *user = NULL;
 	char *passwd = NULL;
+	lbString ApplicationName;
+	ApplicationName.setData("Test");
+/*...e*/
 	// Reading the config file here for lb_I_GUIApplication
 	
 	// In turn of not having a config file and a tool for reading
 	// it, define it hardcoded.
+/*...sVERBOSE:0:*/
+#ifdef NOVERBOSE
+LOG("lb_I_GUIApplication::Load() called");
+#endif
+/*...e*/
 	
-	lbString ApplicationName;
-	ApplicationName.setData("Test");
-	
+/*...sCreate application bus client:0:*/
 	// Create the application bus if no object is created yet.
 	// Behind, this object may encapsulate it self and using a singleton
 	
 	if (AppBusClient == NULL) AppBusClient = new lbAppBusClient();
-	
+/*...e*/
+
+/*...sVERBOSE:0:*/
+#ifdef NOVERBOSE
+LOG("lb_I_GUIApplication::Load(): Try to login to the server");	
+#endif
+/*...e*/
 /*...slogin:8:*/
 	// Try three logins
 	int count = 0;
         do {
+/*...sVERBOSE:8:*/
+#ifdef NOVERBOSE
+	       LOG("lb_I_GUIApplication::Load(): Try AnounceUser");
+#endif
+/*...e*/
 		// Prepare callback
 		
 		lb_Transfer_Data needLoginData;
 		lb_Transfer_Data result;
 		
 		// Set the data...
-		
-		
+/*...sVERBOSE:8:*/
+#ifdef NOVERBOSE		
+		LOG("lb_I_GUIApplication::Load(): Issue callback");		
+#endif	
+/*...e*/
 		// Retrieve user name and password
 		callback(needLoginData, result);
-		
+/*...sVERBOSE:8:*/
+#ifdef NOVERBOSE		
+		LOG("lb_I_GUIApplication::Load(): Callback issued");
+#endif	
+/*...e*/
+		// Assume result
+		user = strdup("lothar");
+		passwd = strdup("einerlei");
 	}
-	while ((AnounceUser(user, passwd) == 0) &&
-	       (count++ < 3));
+	while ((AnounceUser(user, passwd) == 0) && (count++ < 3));
+/*...e*/
+/*...sVERBOSE:0:*/
+#ifdef NOVERBOSE
+LOG("lb_I_GUIApplication::Load(): Tried");
+#endif
 /*...e*/
 
+/*...sCreate the client connection to the known server:0:*/
 	// Get the needed application server
 	
 	// Create an instance of a client.
 	//client = AppBusClient->factory("AppClient", ApplicationName);
-	
+LOG("lb_I_GUIApplication::Load() Call AppBusClient->getClientInstance(...)");
+
 	client = AppBusClient->getClientInstance(ApplicationName.getData());
 
+LOG("lb_I_GUIApplication::Load() AppBusClient->getClientInstance(...) called");
 	// Loop
+/*...e*/
 
 	int result = loadComponent(NULL);
-	
+LOG("lb_I_GUIApplication::Load() All components loaded, release connection");	
 	AppBusClient->release(client);
+LOG("lb_I_GUIApplication::Load() Released");
 	
 	return 0;
 }
@@ -592,12 +658,14 @@ lbComponentDictionary* lb_I_GUIApplication::getChildrens(lb_I_GUIComponent* from
 
 /*...sint lb_I_GUIApplication\58\\58\hasMoreComponents\40\\41\:0:*/
 int lb_I_GUIApplication::hasMoreComponents() {
+	LOG("lb_I_GUIApplication::hasMoreComponents() Called");
 	return 0;
 }
 /*...e*/
 
 /*...slb_I_GUIComponent\42\ lb_I_GUIApplication\58\\58\nextComponent\40\\41\:0:*/
 lb_I_GUIComponent* lb_I_GUIApplication::nextComponent() {
+	LOG("lb_I_GUIApplication::nextComponent() Called");
 	return NULL;
 }
 /*...e*/

@@ -44,7 +44,8 @@ protected:
 
 /*...slbAppBusClient:0:*/
 
-class DLLEXPORT lbAppBusClient : public lbAppBus {
+class DLLEXPORT lbAppBusClient : public lbAppBus,
+				 public lbAppClient {
 public:
 
 	/**
@@ -54,6 +55,10 @@ public:
 	lbAppBusClient();
 	virtual ~lbAppBusClient();
 
+	virtual void setType();
+	virtual lbObject* clone() const;
+
+/*...sclient handling:8:*/
 	/**
 	 * The AppBusClient searches the server behind the scope. He is
 	 * doing this by asking the AppBusServer about the server with
@@ -62,8 +67,13 @@ public:
 	 */
 	lbAppClient* getClientInstance(char* scope);
 	int release(lbAppClient*& cl) { delete cl; cl = NULL; return 1; }
+/*...e*/
 
 	int AnounceUser(char* user, char* passwd);
+	int Echo(char* msg);
+
+	int Connect();
+	int Disconnect();
 
 protected:
 	/**
@@ -87,8 +97,9 @@ protected:
 	 * AppBus server.
 	 */
 	static lbTransfer* ABSConnection;
-	static char curruser[100];
 	static int instanceCount;
+	static char* curruser;
+	int connected;
 };
 /*...e*/
 
@@ -102,16 +113,23 @@ public:
 
 	char* getServiceName();	
 
-	int _connected(lbTransfer* _clt);
+	lbErrCodes _connected(lbTransfer* _clt);
 	
-	
-	int _request(	lb_Transfer_Data request,
+	lbErrCodes _request(	lb_Transfer_Data request,
 			lb_Transfer_Data & result);
 			
 protected:
+
 	// This let the client authenticate by user
 	int UserAnouncement(lb_Transfer_Data request,
 			    lb_Transfer_Data & result);
+
+	// Handle a appbus server specific request
+	lbErrCodes HandleEcho(	lb_Transfer_Data request,
+				lb_Transfer_Data & result);
+
+
+	lbComponentDictionary connections;	
 };
 /*...e*/
 #endif

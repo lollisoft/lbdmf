@@ -4,10 +4,13 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.2 $
+ * $Revision: 1.3 $
  * $Name:  $
- * $Id: lbobject.h,v 1.2 2000/04/27 01:36:25 lolli Exp $
+ * $Id: lbobject.h,v 1.3 2000/06/24 21:32:08 lolli Exp $
  * $Log: lbobject.h,v $
+ * Revision 1.3  2000/06/24 21:32:08  lolli
+ * Socket bugfix
+ *
  * Revision 1.2  2000/04/27 01:36:25  lolli
  * Commit in order of data GAU
  *
@@ -77,6 +80,8 @@ public:
 	                 LB_GUIOBJECT, 
 	                 LB_WXGUIOBJECT, 
 	                 LB_DATA_TRANSFER_OBJECT,
+	                 LB_CONNECTION,
+	                 LB_APPBUSCLIENT,
 	                 LB_EVENT };
 
 	ObjectTyp getType() const;

@@ -18,8 +18,8 @@ n_2dn
 1
 4
 MCommand
-85
-copy $(%DEVROOT)\projects\basedevelopment\lbcs\*.h $(%DEVROOT)\projects\dll\include
+89
+copy $(%DEVROOT)\projects\cpp\basedevelopment\lbcs\*.h $(%DEVROOT)\projects\dll\include
 
 5
 MCommand
@@ -44,7 +44,7 @@ WVList
 0
 10
 WPickList
-10
+9
 11
 MItem
 5
@@ -69,8 +69,8 @@ n????Include directories:
 1
 17
 WString
-125
-.;$(%watcom)\h;$(%watcom)\h\nt;$(%DEVROOT)\projects\include;$(%DEVROOT)\projects\dll\include;$(%DEVROOT)\projects\lib\include
+129
+.;$(%watcom)\h;$(%watcom)\h\nt;$(%DEVROOT)\projects\cpp\include;$(%DEVROOT)\projects\dll\include;$(%DEVROOT)\projects\lib\include
 0
 18
 MVState
@@ -225,12 +225,12 @@ WVList
 0
 -1
 1
-0
+1
 0
 53
 MItem
-28
-..\..\dll\libs\lbclasses.lib
+31
+..\..\..\dll\libs\lbclasses.lib
 54
 WString
 3
@@ -247,8 +247,8 @@ WVList
 0
 57
 MItem
-29
-..\..\dll\libs\lbtransfer.lib
+32
+..\..\..\dll\libs\lbtransfer.lib
 58
 WString
 3
@@ -257,24 +257,6 @@ NIL
 WVList
 0
 60
-WVList
-0
-49
-1
-1
-0
-61
-MItem
-18
-..\..\lib\misc.lib
-62
-WString
-3
-NIL
-63
-WVList
-0
-64
 WVList
 0
 49

@@ -1,11 +1,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.2 $
+ * $Revision: 1.3 $
  * $Name:  $
- * $Id: lb_i_wxgui.h,v 1.2 2000/04/27 01:36:06 lolli Exp $
+ * $Id: lb_i_wxgui.h,v 1.3 2000/06/24 21:32:12 lolli Exp $
  *
  * $Log: lb_i_wxgui.h,v $
+ * Revision 1.3  2000/06/24 21:32:12  lolli
+ * Socket bugfix
+ *
  * Revision 1.2  2000/04/27 01:36:06  lolli
  * Commit in order of data GAU
  *
@@ -25,6 +28,7 @@
 #ifndef LB_I_WXGUIAPPLICATION
 #define LB_I_WXGUIAPPLICATION
 
+#include <lb_I_GUI.h>
 
 /*...sDLLEXPORT:0:*/
 #undef DLLEXPORT
@@ -92,14 +96,15 @@ class lb_I_wxGUIApplication;
 class lb_Transfer_Data;
 
 /*...sclass DLLEXPORT lb_I_wxGUIComponent:0:*/
-class DLLEXPORT lb_I_wxGUIComponent {
+class DLLEXPORT lb_I_wxGUIComponent : public lb_I_GUIComponent {
 public:
         lb_I_wxGUIComponent();
 	virtual ~lb_I_wxGUIComponent();
 
         GUITypes getType();
 
-
+	static lb_I_wxGUIComponent* factory(const char* typeName);
+	
 protected:
         virtual void setType() = 0;
         GUITypes typ;
@@ -158,7 +163,7 @@ protected:
         friend class lb_I_wxGUIApplication;
 };
 /*...e*/
-
+#ifdef bla
 /*...sclass DLLEXPORT lb_I_wxGUIMenuBar\58\ public lb_I_wxGUIComponent:0:*/
 class DLLEXPORT lb_I_wxGUIMenuBar: public lb_I_wxGUIComponent {
 public:
@@ -230,14 +235,13 @@ protected:
     int MenuId;
 };
 /*...e*/
-
+#endif
 /*...sclass DLLEXPORT lb_I_wxGUIApplication:0:*/
-class DLLEXPORT lb_I_wxGUIApplication {
+class DLLEXPORT lb_I_wxGUIApplication : public lb_I_Application {
 public:
     lb_I_wxGUIApplication();
     virtual ~lb_I_wxGUIApplication();
 
-    int _callback(lb_Transfer_Data&, lb_Transfer_Data&);
 
     int isFirstStart();
 
@@ -251,7 +255,9 @@ public:
     /**
      * Set the handler to a member for handling the callback
      */
-    int set_wxCallback(wxObjectEventFunction fn);
+    int setDynEvHandler(wxEvtHandler* evtHandler, wxObjectEventFunction func);
+
+    const int getEvId(char* evName) const;
 
     /**
      * Callback for lb_I_GUIApplication
@@ -288,6 +294,9 @@ public:
 
 protected:    
 
+    int _callback(lb_Transfer_Data&, lb_Transfer_Data&);
+
+/*...svars:0:*/
     char* title;
     int componentCount;
     
@@ -303,6 +312,7 @@ protected:
      * Handler for all callback events.
      */
     wxObjectEventFunction m_fn;
+/*...e*/
 };
 /*...e*/
 

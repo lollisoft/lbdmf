@@ -81,9 +81,13 @@ private:
  * should be able to created over a constructor with a parameter of this type. 
  */
 class DLLEXPORT lb_Transfer_Data {
+
 public:
-	lb_Transfer_Data();
+	lb_Transfer_Data(int _serverside=0);
 	virtual ~lb_Transfer_Data();
+        
+        lb_Transfer_Data(const lb_Transfer_Data & t);
+        lb_Transfer_Data& operator= (const lb_Transfer_Data & t);
 
 	/**
 	 * Packet functions to form packets fit to internet packet size.
@@ -102,12 +106,15 @@ public:
 	int incrementPosition();
 	int getPacketType(LB_PACKET_TYPE & type);
 
+	int deleteAll();
+
 /*...ssetters:8:*/
 	/**
 	 * Data member operations
 	 */
 
 	void add(int i);
+	void add(unsigned long ul);
 	void add(const char* c);
 	void add(short s);
 	void add(long l);
@@ -117,14 +124,15 @@ public:
 /*...e*/
 
 /*...sgetters:8:*/
-	int get(int& i);
-	int get(char* & c);
-	int get(short & s);
-	int get(long & l);
-	int get(unsigned short & us);
-	int get(unsigned long & ul);
+	lbErrCodes get(int& i);
+	lbErrCodes get(unsigned long& ul);
+	lbErrCodes get(char* & c);
+	lbErrCodes get(short & s);
+	lbErrCodes get(long & l);
+	lbErrCodes get(unsigned short & us);
+	lbErrCodes get(unsigned long & ul);
 
-	int get(void* & v, int & len);
+	lbErrCodes get(void* & v, int & len);
 /*...e*/
 	
 	/**
@@ -137,8 +145,16 @@ public:
 	 * Use dictionary yet
 	 */
 	lbComponentDictionary* elements;
+	lbComponentDictionary* elementscopy;
+	
 	int packet_count;
 	int currentPos;
+	int ref;
+public:	
+	char *clientHost;
+	DWORD clientPid;
+	DWORD clientTid;
+	int serverside;
 };
 /*...e*/
 /*...slbTransfer:0:*/
@@ -153,6 +169,8 @@ public:
 	 */
 	void init(char *target);
 
+	int isConnected();
+
 	/**
 	 * Got a connection...
 	 */
@@ -162,6 +180,10 @@ public:
 
 	void operator>> (lb_Transfer_Data& res);
 
+	/**
+	 * This function allows checking for validness of this instance
+	 */
+	int isValid();
 
 	int gethostname(char* &name);
 private:

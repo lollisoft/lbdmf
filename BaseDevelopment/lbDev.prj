@@ -1,6 +1,8 @@
 /*...sBaseDevelopment:0:*/
 /*...v\46\\46\\47\include\47\lbInclude\46\h:0:*/
 /*...v\46\\46\\47\include\47\lbGlobal\46\h:0:*/
+/*...v\46\\46\\47\include\47\lbErrcodes\46\h:0:*/
+
 /*...slbCS:0:*/
 /*...vlbcs\47\appbus\46\h:0:*/
 /*...vlbcs\47\appbus\46\cpp:0:*/
@@ -11,6 +13,8 @@
 /*...slbClasses:0:*/
 /*...vlbclasses\47\lbelement\46\h:0:*/
 
+/*...vlbclasses\47\lb_misc\46\h:0:*/
+/*...vlbclasses\47\misc\46\cpp:0:*/
 /*...vlbclasses\47\lbObject\46\h:0:*/
 /*...vlbclasses\47\lbObject\46\cpp:0:*/
 /*...vlbclasses\47\lbKey\46\h:0:*/
@@ -35,11 +39,11 @@
 /*...e*/
 
 /*...sGUI Interface:0:*/
-/*...v\46\\46\\47\appdevelopment\47\gui\47\wxgui\47\lb_I_GUI\46\h:0:*/
-/*...v\46\\46\\47\appdevelopment\47\gui\47\wxgui\47\lb_I_GUI\46\cpp:0:*/
+/*...vlbgui\47\lb_I_GUI\46\h:0:*/
+/*...vlbgui\47\lb_I_GUI\46\cpp:0:*/
 
-/*...v\46\\46\\47\appdevelopment\47\gui\47\wxgui\47\lb_I_wxGUI\46\h:0:*/
-/*...v\46\\46\\47\appdevelopment\47\gui\47\wxgui\47\lb_I_wxGUI\46\cpp:0:*/
+/*...vlbwxgui\47\lb_I_wxGUI\46\h:0:*/
+/*...vlbwxgui\47\lb_I_wxGUI\46\cpp:0:*/
 /*...e*/
 
 
@@ -49,14 +53,19 @@
 /*...v\46\\46\\47\AppDevelopment\47\GUI\47\wxgui\47\minimal\46\cpp:0:*/
 /*...e*/
 /*...sConsole:0:*/
+/*...v\46\\46\\47\AppDevelopment\47\Console\47\GlobalAppServer\47\servertest\46\cpp:0:*/
 /*...v\46\\46\\47\AppDevelopment\47\Console\47\GlobalAppServer\47\main\46\cpp:0:*/
-/*...vd\58\\47\src\47\main\47\http_request\46\c:0:*/
 /*...e*/
 
 /*...e*/
 /*...sServiceDevelopment:0:*/
 /*...e*/
 
-/*...sOld Stuff:0:*/
-/*...vQ\58\\92\develop\92\projects\92\user\92\msipgw\92\msipgwr\46\cpp:0:*/
+
+/*...swxWindows:0:*/
+/*...v\46\\46\\47\\46\\46\\47\\46\\46\\47\wxwin\47\wx\47\src\47\common\47\socket\46\cpp:0:*/
 /*...e*/
+
+
+
+e:/develop/projects/lolli.prj

@@ -3,10 +3,13 @@
 
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.2 $
+ * $Revision: 1.3 $
  * $Name:  $
- * $Id: lbkey.cpp,v 1.2 2000/04/27 01:36:24 lolli Exp $
+ * $Id: lbkey.cpp,v 1.3 2000/06/24 21:32:08 lolli Exp $
  * $Log: lbkey.cpp,v $
+ * Revision 1.3  2000/06/24 21:32:08  lolli
+ * Socket bugfix
+ *
  * Revision 1.2  2000/04/27 01:36:24  lolli
  * Commit in order of data GAU
  *
@@ -32,7 +35,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include <lbKey.h>
+#include <lbInclude.h>
 
 int lbKeyBase::operator == (const lbKeyBase &_key) {
     return (equals(_key));
@@ -42,6 +45,7 @@ int lbKeyBase::operator > (const lbKeyBase &_key) {
     return (greater(_key));
 }
 
+/*...slbKey:0:*/
 lbKey::lbKey() {
     key = 0;
 }
@@ -78,7 +82,48 @@ char* lbKey::charrep() {
     
     return buf;
 }
+/*...e*/
 
+/*...slbKeyUL:0:*/
+lbKeyUL::lbKeyUL() {
+    key = 0;
+}
+
+lbKeyUL::lbKeyUL(unsigned long _key) {
+    key = _key;
+}
+
+lbKeyUL::lbKeyUL(const lbKeyBase & k) {
+    key = ((lbKeyUL) k).key;
+}
+
+
+lbKeyUL::~lbKeyUL(){
+}
+
+int lbKeyUL::equals(const lbKeyBase &_key) {
+    return key == ((lbKeyUL) _key).key;
+}
+
+int lbKeyUL::greater(const lbKeyBase &_key) {
+    return key > ((lbKeyUL) _key).key;
+}
+
+lbKeyBase* lbKeyUL::clone() const{
+    lbKeyUL *k = new lbKeyUL(key);
+    return k;
+}
+
+char* lbKeyUL::charrep() {
+    char buf[100];
+
+    itoa(key, buf, 10);
+    
+    return buf;
+}
+/*...e*/
+
+/*...slbStringKey:0:*/
 lbStringKey::lbStringKey(char* _key) {
     key = strdup(_key);
 }
@@ -107,4 +152,5 @@ lbKeyBase* lbStringKey::clone() const {
 char* lbStringKey::charrep() {
     return key;
 }
+/*...e*/
 

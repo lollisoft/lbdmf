@@ -71,46 +71,54 @@ class lb_Transfer_Data;
 class lbSocket {
 public:
         lbSocket();
+	lbSocket(const lbSocket& s);
         ~lbSocket() {}
 
-	int gethostname(char* &name);
+	/**
+	 * Is this object valid ?
+	 */
+	int isValid();
+
+	static int gethostname(char* &name);
 
 	void initSymbolic(char *host, char* service);
-        void init(unsigned long mysockaddr, u_short port = PORT);
         void reinit(char *mysockaddr="");
+
+	lbErrCodes neagleOff(SOCKET s);
 
 	int isServer() { return _isServer; }
 
-	int recvInteger(int& i);
-	int sendInteger(int i);
+	lbErrCodes recvInteger(int& i);
+	lbErrCodes sendInteger(int i);
 	
-	int send(void* buf, int len);		
+	lbErrCodes send(void* buf, int len);		
 
 	/**
 	 * Buffer must be allocated.
 	 */	
-	int recv(void* buf, int & len);
+	lbErrCodes recv(void* buf, int & len);
 		
-        int recv_charbuf(char *buf);
-        int send_charbuf(char *buf, int len);
+        lbErrCodes recv_charbuf(char *buf);
+        lbErrCodes send_charbuf(char *buf, int len);
 
 	/**
 	 * Send and recieve a data buffer and automatically split off to
 	 * the max amount of packet size.
 	 */
-	int recv(lb_Transfer_Data & data);
-	int send(lb_Transfer_Data & data);
+	lbErrCodes recv(lb_Transfer_Data & data);
+	lbErrCodes send(lb_Transfer_Data & data);
 
 
 	/**
 	 * Like the lbTransfer, here I must provide a lbSocket as a result.
 	 * At this time you have to delete the instance after use.
 	 */
-        int accept(lbSocket *& s);
+        lbErrCodes accept(lbSocket *& s);
 
 private:
-
+	// These functions must not be locket
         int startup();
+        void init(unsigned long mysockaddr, u_short port = PORT);
         int bind();
         int listen();
         int socket();
@@ -119,6 +127,8 @@ private:
         int setSockConnection(SOCKET s);
 
 	unsigned long inet_addrFromString(char* addr);
+	
+	lbMutex* mutex;
 
 
 #ifdef WINDOWS
@@ -128,9 +138,9 @@ private:
   SOCKADDR_IN clientSockAddr;
   SOCKET serverSocket;
   SOCKET clientSocket;
+  SOCKET clBackup;
   int status;
   int addrLen; //=sizeof(SOCKADDR_IN);
-  int numrcv;
 
   unsigned long destAddr; // for client init
 

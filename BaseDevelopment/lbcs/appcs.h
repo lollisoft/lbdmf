@@ -21,6 +21,25 @@
 #endif
 /*...e*/
 
+
+/*...sclass lbConnection:0:*/
+class lbConnection : public lbObject {
+public:
+	lbConnection(char* host, int _pid, int _tid);
+	virtual ~lbConnection();
+	
+	/**
+	 * Abstract functions
+	 */
+	void setType();
+	lbObject* clone() const;
+	
+	char* hostname;
+	int pid;
+	int tid;
+};
+/*...e*/
+
 /**
  * This is a base class for all servers
  */
@@ -31,32 +50,38 @@ public:
 	lbAppServer();
 	virtual ~lbAppServer();
 
+	/**
+	 * Checks, if the parameters (hostname, pid and tid) are available.
+	 * Then it checks, if tid is as key available in connections container.
+	 * If all succeeds, 1 is returned.
+	 */
+	int isConnected(lb_Transfer_Data &request);
 
 /*...sFunctions needed to encapsulate the transfer class:8:*/
 	/**
 	 * Functions needed to encapsulate the transfer class
 	 */
 	 
-	int waitForRequest(lbTransfer* _clt, lb_Transfer_Data &request);
+	lbErrCodes waitForRequest(lbTransfer* _clt, lb_Transfer_Data &request);
 	
-	int handleRequest(lb_Transfer_Data request, lb_Transfer_Data &result);
+	lbErrCodes handleRequest(lb_Transfer_Data request, lb_Transfer_Data &result);
 	                  
-	int answerRequest(lbTransfer* _clt, lb_Transfer_Data result);
+	lbErrCodes answerRequest(lbTransfer* _clt, lb_Transfer_Data result);
 /*...e*/
 
 	int run(); // called from main or thread
 
 	// Called from HandleRequest()
-/*...svirtual int _request\40\lb_Transfer_Data request\44\ lb_Transfer_Data \38\result\41\ \61\ 0\59\:8:*/
+/*...svirtual lbErrCodes _request\40\lb_Transfer_Data request\44\ lb_Transfer_Data \38\result\41\ \61\ 0\59\:8:*/
 	/**
 	 * _service is called by HandleRequest.
 	 */
-	virtual int _request(lb_Transfer_Data request, 
+	virtual lbErrCodes _request(lb_Transfer_Data request, 
 	                     lb_Transfer_Data &result) = 0;
 /*...e*/
 	
 	// Called from run() and gives a lbTransfer instance
-/*...svirtual int _connected\40\lbTransfer _clt\41\ \61\ 0\59\:8:*/
+/*...svirtual lbErrCodes _connected\40\lbTransfer _clt\41\ \61\ 0\59\:8:*/
 	/**
 	 * Implement this for your connected state. It is called per request.
 	 * I mean, that a socket connection has been opened and the
@@ -73,7 +98,7 @@ public:
 	 * some dispatching stuff to divide your service. I will be able to
 	 * add some overhead to the request packets like encryption or so.
 	 */
-	virtual int _connected(lbTransfer* _clt) = 0; 
+	virtual lbErrCodes _connected(lbTransfer* _clt) = 0; 
 /*...e*/
 
 /*...svirtual char\42\ getServiceName\40\\41\ \61\ 0\59\:8:*/
@@ -92,9 +117,40 @@ protected:
 	int removeFromUserList(lb_Transfer_Data request);
 	int AuthUser(char* user, char* passwd);
 
+	lbErrCodes makeProtoErrAnswer(lb_Transfer_Data &result, char* msg, char* where);
+
+
+	lbErrCodes requestString(lb_Transfer_Data& request, 
+	                         char* ident, 
+	                         char*& data);
+
+	lbErrCodes requestString(lb_Transfer_Data& request, 
+	                         char* ident);
+	                         
+	lbErrCodes requestInteger(lb_Transfer_Data& request,
+				 char* ident,
+				 int& data);
+
+	lbErrCodes requestULong(lb_Transfer_Data& request,
+				 char* ident,
+				 unsigned long& data);
+
+	// Connection is handled by 
+	// User wishes to disconnect. This must be a request, because server
+	// is in a thread handling requests in a loop till disconnect request
+	// comes from user.
+	
+	lbErrCodes HandleDisconnect(	lb_Transfer_Data request,
+					lb_Transfer_Data & result);
+
+	// First request must be this. If not, no requests are handled.					
+	lbErrCodes HandleConnect(	lb_Transfer_Data request,
+					lb_Transfer_Data & result);
+	
 	int initTransfer(char* host_servicename);
 
-	lbTransfer *transfer;		
+	lbTransfer *transfer;	
+	lbComponentDictionary *connections;	
 };
 /*...e*/
 
@@ -104,9 +160,10 @@ protected:
  * dismiss() instead.
  */
 /*...sclass DLLEXPORT lbAppClient:0:*/
-class DLLEXPORT lbAppClient {
+class DLLEXPORT lbAppClient : public lbObject {
 private:
-        lbAppClient();
+	lbAppClient();
+        lbAppClient(lbTransfer* clConn);
         virtual ~lbAppClient();
         
         /**
@@ -117,10 +174,6 @@ private:
         void operator delete(void* ptr);
 public:
 
-/*
-        void Connect(const char* application);
-        void Disconnect();
-*/
         lbObject* requestObject(const char* type, const char* name);
 
 	/**
@@ -131,6 +184,18 @@ public:
 	
 	// lbAppBusClient must be able to create objects of this class
 	friend class lbAppBusClient;
+	
+protected:
+	
+	/**
+	 * lbAppClient's can not instantiated directly. lbAppBusClient does
+	 * this. Also it sets its instance pointer here.
+	 */
+	void setAppBusClient(lbAppBusClient* _AppBusClient);
+
+	lbAppBusClient* AppBusClient;
+	
+	lbTransfer* clientConnection;
 };
 /*...e*/
 
