@@ -46,7 +46,7 @@ class DLLEXPORT lbMutex
 {
 public:
         lbMutex();
-        ~lbMutex();
+        virtual ~lbMutex();
 
         void CreateMutex(int name);
         void DeleteMutex(int name);
@@ -88,7 +88,7 @@ protected:
 class DLLEXPORT lbLock {
 public:
 	lbLock(lbCritSect& _cso, char* _name);
-	~lbLock();
+	virtual ~lbLock();
 private:
 	lbLock() {}
 	lbLock(const lbLock&) {}
