@@ -1,3 +1,17 @@
+/*...sRevision history:0:*/
+/**************************************************************
+ * $Locker:  $
+ * $Revision: 1.7 $
+ * $Name:  $
+ * $Id: lbInterfaces-sub-classes.h,v 1.7 2001/04/13 07:39:27 lothar Exp $
+ *
+ * $Log: lbInterfaces-sub-classes.h,v $
+ * Revision 1.7  2001/04/13 07:39:27  lothar
+ * Commit for backup
+ *
+ **************************************************************/
+/*...e*/
+
 #ifndef __LB_INTERFACES_SUB_CLASSES__
 #define __LB_INTERFACES_SUB_CLASSES__
 
@@ -175,18 +189,24 @@ virtual lb_I_KeyBase* LB_STDCALL getKey() const; \
 private: \
 \
     lb_I_Element* next; \
-    lb_I_Unknown* data; \
     lb_I_KeyBase* key; 
 
 #define IMPLEMENT_LB_ELEMENT(classname) \
 \
 classname::classname(const lb_I_Unknown* o, const lb_I_KeyBase* _key, lb_I_Element *_next) { \
     next = _next; \
+    CL_LOG("Creating an element object"); \
+    if (o == NULL) CL_LOG("Error! Can't clone a NULL pointer"); \
+    cout << "Address of unknown: " << (void*) o << endl; \
+    getch(); \
     lb_I_Unknown *uk_data = o->clone(); \
+    CL_LOG("Cloned the object"); \
     if (uk_data->queryInterface("lb_I_Object", (void**) &data) != ERR_NONE) { \
     	CL_LOG("Error while cloning"); \
     } \
+    CL_LOG("Queried interface of cloned unknown"); \
     key = _key->clone(); \
+    CL_LOG("Cloned the key"); \
     if (key == NULL) LOG("Key cloning in constructor failed. May be a memory problem"); \
 } \
 \
@@ -197,7 +217,7 @@ lb_I_Unknown* classname::getObject() const { \
     return data; \
 } \
 \
-lb_I_KeyBase* LB_STDCALL classname::getKey() { \
+lb_I_KeyBase* LB_STDCALL classname::getKey() const { \
 	return key; \
 } \
 \
@@ -205,13 +225,9 @@ void LB_STDCALL classname::setNext(lb_I_Element *e) { \
 	next = e; \
 } \
 \
-lbErrCodes LB_STDCALL lbElement::setData(lb_I_Unknown* _data) { \
-	data = _data->clone(); \
-\
-	if (data == NULL) CL_LOG("Container element could not be copied"); \
-	return ERR_NONE; \
+lb_I_Element* LB_STDCALL classname::getNext() const { \
+	return next; \
 }
-
 /*...e*/
 /*...sclass lb_I_Container:0:*/
 class lb_I_Container : public lb_I_Unknown {
@@ -400,8 +416,9 @@ void classname::setElement(co_Key* key, co_Interface const* e) { \
 
 
 /*...e*/
-/*...sIMPLEMENT_LB_I_CONTAINER_IMPL base \40\classname\41\ \47\\47\ only base lb_I_Unknown:0:*/
-#define IMPLEMENT_LB_I_CONTAINER_IMPL(classname) \
+
+/*...sbla \40\Does not work in VC if it is in next macro\41\:0:*/
+/*
 classname::classname() { \
     iteration = 0; \
     ref = 0; \
@@ -411,6 +428,11 @@ classname::classname() { \
 \
 classname::~classname() { \
 } \
+*/
+/*...e*/
+
+/*...sIMPLEMENT_LB_I_CONTAINER_IMPL base \40\classname\41\ \47\\47\ only base lb_I_Unknown:0:*/
+#define IMPLEMENT_LB_I_CONTAINER_IMPL(classname) \
 int classname::Count() { \
 	return count; \
 } \
@@ -427,13 +449,15 @@ int classname::exists(const lb_I_KeyBase* key) { \
     return 1; \
 } \
 \
-lbErrCodes classname::insert(const lb_I_Unknown* e, const lb_I_KeyBase* key) { \
+lbErrCodes LB_STDCALL classname::insert(const lb_I_Unknown* e, const lb_I_KeyBase* key) { \
 	lbErrCodes err = ERR_NONE; \
 \
+	CL_LOG("Begin inserting data"); \
 	if ((err = _insert(e, key)) != ERR_NONE) { \
-		LOG("lbContainer::insert(...) Failed!"); \
+		CL_LOG("lbContainer::insert(...) Failed!"); \
 		return err; \
 	} \
+	CL_LOG("End inserted data"); \
 \
 	count++; \
 	return err; \
@@ -453,18 +477,26 @@ lbErrCodes classname::remove(const lb_I_KeyBase* key) { \
 \
 lbErrCodes classname::_insert(const lb_I_Unknown* e, const lb_I_KeyBase* key) { \
 \
+	CL_LOG("Be in " #classname"::_insert(const lb_I_Unknown* e, const lb_I_KeyBase* key)"); \
     if (container_data == NULL) { \
+    	CL_LOG("Insert first element"); \
+    	cout << "Address of unknown object: " << (void*) e << endl; \
         lbElement* _data = new lbElement(e, key); \
+    	CL_LOG("Created lbElement"); \
 \
         _data->queryInterface("lb_I_Element", (void**) &container_data); \
+    	CL_LOG("Queried unknown of lbElement"); \
+    	if (container_data == NULL) CL_LOG("Could not get unknown interface of lbElement!"); \
 \
 	if (container_data->getObject() == NULL) { \
 		LOG("Failed to insert first element in classname::insert"); \
 		return ERR_CONTAINER_INSERT; \
 	} \
+	CL_LOG("Inserted first element"); \
     } \
     else { \
         lb_I_Element* temp; \
+        CL_LOG("Insert more elements"); \
         for (temp = container_data; temp != NULL; temp = temp->getNext()) { \
             lb_I_Element* next = temp->getNext(); \
 \
@@ -479,6 +511,7 @@ lbErrCodes classname::_insert(const lb_I_Unknown* e, const lb_I_KeyBase* key) { 
                 return ERR_NONE; \
             } \
         } \
+        CL_LOG("Inserted more elements"); \
     } \
     return ERR_NONE; \
 } \
@@ -552,7 +585,6 @@ void classname::setElement(lb_I_KeyBase* key, lb_I_Unknown const* e) { \
     remove(key); \
     insert(e, key); \
 }
-
 /*...e*/
 
 /*...e*/

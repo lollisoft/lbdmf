@@ -21,9 +21,10 @@ MCommand
 0
 5
 MCommand
-42
+209
 copy *.lib $(%DEVROOT)\projects\dll\libs
-
+attrib -r $(%DEVROOT)\projects\CPP\BaseDevelopment\lbXMLConfig\lbDOMConfig\lbHook.cpp
+copy lbHook.cpp $(%DEVROOT)\projects\CPP\BaseDevelopment\lbXMLConfig\lbDOMConfig
 6
 MItem
 10

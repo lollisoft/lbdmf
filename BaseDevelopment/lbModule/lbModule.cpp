@@ -108,11 +108,6 @@ BEGIN_IMPLEMENT_LB_UNKNOWN(lbModule)
 	ADD_INTERFACE(lb_I_Module)
 END_IMPLEMENT_LB_UNKNOWN()
 
-lbErrCodes lbModule::setData(lb_I_Unknown* uk) {
-	CL_LOG("lbModule::setData(...) not implemented");
-	return ERR_NONE;
-}
-
 lbErrCodes lbModule::initialize() {
         return ERR_NONE;
 }
@@ -382,32 +377,35 @@ public:
 class DLLEXPORT lbElement : public lb_I_Element {
 private:
 
-    lb_I_Element* next;
-    lb_I_Unknown* data;
-    lb_I_KeyBase* key;
+//    lb_I_Element* next;
+//    lb_I_Unknown* data;
+//    lb_I_KeyBase* key;
 
 public:
     lbElement() { next = NULL; data = NULL; key = NULL; }
     virtual ~lbElement();
 	
-//    lbElement(const lb_I_Object &o, const lb_I_KeyBase &_key, lb_I_Element *_next=NULL);
+//    lbElement(const lb_I_Object &o, const lb_I_KeyBase &key, lb_I_Element *next=NULL);
     lbElement(const lb_I_Element &e) { next = e.getNext(); }
 
     DECLARE_LB_UNKNOWN()
 
     DECLARE_LB_ELEMENT(lbElement)
 
-    lb_I_Element* getNext() const { return next; }
-    void setNext(lb_I_Element *e){ next = e; }
+//    lb_I_Element* getNext() const { return next; }
+
+//    void setNext(lb_I_Element *e){ next = e; }
+
     lb_I_Unknown* getObject() const;
 
 //    lbKeyBase &getKey() const { return *key; }
+/*
     lb_I_KeyBase *getKey() const
     {
         if (!key) printf("Key in lbElement is null\n");
         return key;
     }
-
+*/
     int operator == (const lb_I_Element &a) const;
 
     int operator == (const lb_I_KeyBase &key) const;
@@ -419,6 +417,18 @@ BEGIN_IMPLEMENT_LB_UNKNOWN(lbModuleContainer)
 	ADD_INTERFACE(lb_I_Container)
 END_IMPLEMENT_LB_UNKNOWN()
 
+lbModuleContainer::lbModuleContainer() {
+    iteration = 0;
+    ref = 0;
+    iterator = NULL;
+    count = 0;
+    container_data = NULL;
+}
+
+lbModuleContainer::~lbModuleContainer() {
+}
+
+
 IMPLEMENT_LB_I_CONTAINER_IMPL(lbModuleContainer)
 
 
@@ -427,10 +437,6 @@ BEGIN_IMPLEMENT_LB_UNKNOWN(lbElement)
 END_IMPLEMENT_LB_UNKNOWN()
 
 IMPLEMENT_LB_ELEMENT(lbElement)
-
-lbErrCodes LB_STDCALL lbElement::setData(lb_I_Unknown* data) {
-	return ERR_NONE;
-}
 
 int LB_STDCALL lbElement::equals(const lb_I_Element* a) const {
 	return 0;
@@ -445,12 +451,6 @@ BEGIN_IMPLEMENT_LB_UNKNOWN(lbNamedValue)
 // No additionally interface, because it's not used externally yet.
 END_IMPLEMENT_LB_UNKNOWN()
 
-/*...slbNamedValue\58\\58\setData\40\\41\:0:*/
-lbErrCodes lbNamedValue::setData(lb_I_Unknown* uk) {
-	CL_LOG("lbNamedValue::setData(...) not implemented");
-	return ERR_NONE;
-}
-/*...e*/
 /*...slbNamedValue\58\\58\setName\40\\41\:0:*/
 lbErrCodes lbNamedValue::setName(const char* const _name) {
 	name = strdup((_name == NULL) ? "" : _name);
@@ -527,7 +527,9 @@ lbErrCodes lbModule::request(const char* request, lb_I_Unknown*& result) {
         lb_I_XMLConfig* xml_Instance = NULL;
         lbErrCodes err = ERR_NONE;
 
+CL_LOG("Get a XML config object");
         xml_Instance = getXMLConfigObject();
+CL_LOG("Got it!");
         
 /*...sget my unknown interface:8:*/
         if (strcmp(request, "instance/XMLConfig") == 0) {
@@ -557,7 +559,7 @@ lbErrCodes lbModule::request(const char* request, lb_I_Unknown*& result) {
 			 * The result is a view of notes in a max deep
 			 * of one level.
 			 */
-			
+CL_LOG("Try to get the config object");			
 			xml_Instance->getConfigObject(config, node);
 
 CL_LOG("Got a config object");

@@ -93,6 +93,7 @@ public:
 #define DECLARE_LB_UNKNOWN() \
 private: \
 	int ref; \
+	lb_I_Unknown* data; \
 public: \
 	virtual lbErrCodes LB_STDCALL release(); \
 	virtual lbErrCodes LB_STDCALL queryInterface(char* name, void** unknown); \
@@ -108,6 +109,7 @@ lbErrCodes LB_STDCALL classname::release() { \
 \
 lb_I_Unknown* classname::clone() const { \
 \
+	CL_LOG(#classname"::clone() called."); \
 	classname* cloned = new classname(); \
 	lb_I_Unknown* uk_this; \
 \
@@ -117,7 +119,10 @@ lb_I_Unknown* classname::clone() const { \
 		CL_LOG("Error while getting interface"); \
 	} \
 \
+	CL_LOG("Set data in the cloned object"); \
+	getch(); \
 	uk_cloned->setData((lb_I_Unknown*) this); \
+	CL_LOG(#classname"::clone() leaving"); \
 \
 	return uk_cloned; \
 \

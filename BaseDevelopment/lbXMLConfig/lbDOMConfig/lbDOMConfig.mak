@@ -1,14 +1,19 @@
+#...sRevision history:0:
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.1 $
+# * $Revision: 1.2 $
 # * $Name:  $
-# * $Id: lbDOMConfig.mak,v 1.1 2001/04/05 18:54:14 lothar Exp $
+# * $Id: lbDOMConfig.mak,v 1.2 2001/04/13 07:39:27 lothar Exp $
 # *
 # * $Log: lbDOMConfig.mak,v $
+# * Revision 1.2  2001/04/13 07:39:27  lothar
+# * Commit for backup
+# *
 # * Revision 1.1  2001/04/05 18:54:14  lothar
 # * Initial (should work with foreign source dirs)
 # *
 # **************************************************************
+#...e
 
 # Microsoft Developer Studio Generated NMAKE File, Based on lbDOMConfig.dsp
 !IF "$(CFG)" == ""

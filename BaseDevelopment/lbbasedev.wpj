@@ -4,7 +4,7 @@ projectIdent
 VpeMain
 1
 WRect
-1380
+1370
 760
 8360
 7280
@@ -61,7 +61,7 @@ VComponent
 15
 WRect
 1830
-146
+120
 4090
 3000
 0
@@ -119,5 +119,5 @@ WFileName
 17
 lbhook\lbhook.tgt
 0
-1
-20
+0
+11

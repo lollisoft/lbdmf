@@ -16,11 +16,11 @@ extern HINSTANCE LB_Module_Handle;
 /**
  * Platform independend module loader
  */
-/*...slbErrCodes lbLoadModule\40\const char\42\ name\44\ HINSTANCE \38\ hinst\41\:0:*/
-lbErrCodes lbLoadModule(const char* name, HINSTANCE & hinst);
+/*...slbErrCodes LB_STDCALL lbLoadModule\40\const char\42\ name\44\ HINSTANCE \38\ hinst\41\:0:*/
+lbErrCodes LB_STDCALL lbLoadModule(const char* name, HINSTANCE & hinst);
 /*...e*/
-/*...slbErrCodes lbGetFunctionPtr\40\const char\42\ name\44\ const HINSTANCE \38\ hinst\44\ void\42\\42\ pfn\41\:0:*/
-lbErrCodes lbGetFunctionPtr(const char* name, const HINSTANCE & hinst, void** pfn);
+/*...slbErrCodes LB_STDCALL lbGetFunctionPtr\40\const char\42\ name\44\ const HINSTANCE \38\ hinst\44\ void\42\\42\ pfn\41\:0:*/
+lbErrCodes LB_STDCALL lbGetFunctionPtr(const char* name, const HINSTANCE & hinst, void** pfn);
 /*...e*/
 
 
@@ -29,14 +29,14 @@ lbErrCodes lbGetFunctionPtr(const char* name, const HINSTANCE & hinst, void** pf
  * of registered modules.
  */
 
-/*...slb_I_Module\42\ getModuleInstance\40\\41\:0:*/
-lb_I_Module* getModuleInstance();
+/*...slb_I_Module\42\ LB_STDCALL getModuleInstance\40\\41\:0:*/
+lb_I_Module* LB_STDCALL getModuleInstance();
 /*...e*/
-/*...slbErrCodes releaseInstance\40\lb_I_Unknown\42\ inst\41\:0:*/
-lbErrCodes releaseInstance(lb_I_Unknown* inst);
+/*...slbErrCodes LB_STDCALL releaseInstance\40\lb_I_Unknown\42\ inst\41\:0:*/
+lbErrCodes LB_STDCALL releaseInstance(lb_I_Unknown* inst);
 /*...e*/
-/*...svoid unHookAll\40\\41\:0:*/
-void unHookAll();
+/*...svoid LB_STDCALL unHookAll\40\\41\:0:*/
+void LB_STDCALL unHookAll();
 /*...e*/
 
 /*...sLogging macros:0:*/

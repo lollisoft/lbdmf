@@ -1,15 +1,15 @@
 #ifndef __LB_CONFIGOBJECT__
 #define __LB_CONFIGOBJECT__
 /*...sclass lb_I_Attribute:0:*/
-class lb_I_Attribute {
+class lb_I_Attribute : public lb_I_Unknown {
 protected:
 	lb_I_Attribute() {}
 	virtual ~lb_I_Attribute() {}
 	
 public:
-	virtual lbErrCodes getName(char*& name) = 0;
-	virtual lbErrCodes getValue(char*& value) = 0;
-	virtual lbErrCodes getType(char*& type) = 0;
+	virtual lbErrCodes LB_STDCALL getName(char*& name) = 0;
+	virtual lbErrCodes LB_STDCALL getValue(char*& value) = 0;
+	virtual lbErrCodes LB_STDCALL getType(char*& type) = 0;
 };
 /*...e*/
 class lb_I_XMLConfig;
