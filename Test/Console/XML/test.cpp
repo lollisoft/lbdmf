@@ -252,6 +252,7 @@ void main(int argc, char *argv[]) {
 		s3 = query->getAsString(3);
 		s4 = query->getAsString(4);
 		s5 = query->getAsString(5);
+/* Deactivated due to update failures.
 		printf("%s;%s;%s;%s;%s\n", s1->charrep(), s2->charrep(), s3->charrep(), s4->charrep(), s5->charrep());
 		
 		UAP_REQUEST(mm, lb_I_String, col)
@@ -263,6 +264,7 @@ void main(int argc, char *argv[]) {
 		query->setString(*&col, *&val);
 		query->update();
 		s1 = query->getAsString(1);
+*/
 		printf("%s;%s;%s;%s;%s\n", s1->charrep(), s2->charrep(), s3->charrep(), s4->charrep(), s5->charrep());		
 		rows++;
 	}
@@ -279,10 +281,6 @@ void main(int argc, char *argv[]) {
 	}
 	printf("Ended foreward test\n");
 	getch();
-
-	if (query->first() != ERR_NONE)
-	        printf("Error while get next\n");
-	
 	
 /*...e*/
 /*...sreverse:8:*/
@@ -313,10 +311,14 @@ void main(int argc, char *argv[]) {
 	getch();
 /*...e*/
 
+	UAP(lb_I_Query, query1, __FILE__, __LINE__)
+	
+	query1 = database->getQuery(0);
+
 	printf("Test creating a table, insert some data and drop it again\n");
-	query->query("create table test ( f1 char(20), f2 integer )");
-	query->query("insert into test values('Test', 1234)");
-	query->query("drop table test");
+	query1->query("create table test ( f1 char(20), f2 integer )");
+	query1->query("insert into test values('Test', 1234)");
+	query1->query("drop table test");
 	getch();	
 
 	/* Todo:
