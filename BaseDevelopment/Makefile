@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.11 $
+# * $Revision: 1.12 $
 # * $Name:  $
-# * $Id: Makefile,v 1.11 2004/10/16 09:47:37 lollisoft Exp $
+# * $Id: Makefile,v 1.12 2004/10/16 10:10:38 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.12  2004/10/16 10:10:38  lollisoft
+# * Added the doxygen rule depending on lbInterfaces.h
+# *
 # * Revision 1.11  2004/10/16 09:47:37  lollisoft
 # * New make system works nearly perfect. It does not longer build unnessesary.
 # *
@@ -69,7 +72,8 @@ ALLTARGETS = lbhook \
 	lbMetaApplication \
 	../AppDevelopmentDemo/App \
 	../Test/Console/XML \
-	../Test/GUI/wxWrapper
+	../Test/GUI/wxWrapper \
+	../Doc/html
 
 
 all_targets: $(ALLTARGETS)
@@ -134,3 +138,6 @@ lbMetaApplication: dummy
 lbXMLConfig/lbDOMConfig: dummy
 	$(MAKE) -C $@ -e MODULE=$@ -e TARGET="dll" -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
 	$(MAKE) -C $@
+
+../Doc/html: ../doxygen.conf ../interfaces/lbInterfaces.h
+	doxygen ../doxygen.conf
