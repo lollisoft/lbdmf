@@ -235,6 +235,7 @@ public:
 /*...sAutoPointer:0:*/
 /**
  * Is it possible to create an automatic pointer without templates ?
+ * An Unknown auto pointer.
  */
 
 #define UAP(interface, Unknown_Reference, file, line) \
@@ -358,6 +359,14 @@ public:
 #endif
 /*...e*/
 /*...e*/
+
+// Use this for a predefined UAP. It will automatically deleted, if scope is gone.
+#define REQUEST(mm, interface, variable) \
+  	UAP(lb_I_Unknown, uk##variable, __FILE__, __LINE__) \
+  	mm->request(#interface, &uk##variable); \
+  	uk##variable->setModuleManager(mm, __FILE__, __LINE__); \
+  	uk##variable->queryInterface(#interface, (void**) &variable, __FILE__, __LINE__);
+
 
 // Use this for an stack like environment. It will automatically deleted, if scope is gone.
 #define UAP_REQUEST(mm, interface, variable) \
@@ -1165,14 +1174,20 @@ public:
 	 * to hold the event management.
 	 */
 	virtual lbErrCodes LB_STDCALL registerEvent(char* EvName, int & EvNr) = 0;
-	//virtual lbErrCodes LB_STDCALL registerSink(char* EvName, 
+	virtual lbErrCodes LB_STDCALL resolveEvent(char* EvName, int & evNr) = 0;
+
 protected:
 
-	virtual lbErrCodes LB_STDCALL resolveEvent(char* EvName, int & evNr) = 0;
 
 	friend class lb_I_Dispatcher;
 };
 /*...e*/
+
+class lb_I_EvHandler : public lb_I_Unknown {
+public:
+	virtual lbErrCodes LB_STDCALL setHandler(lbEvHandler evHandler) = 0;
+	virtual lbEvHandler LB_STDCALL getHandler() = 0;
+};
 
 /*...sclass lb_I_DispatchRequest:0:*/
 class lb_I_DispatchRequest : public lb_I_Unknown {
@@ -1221,7 +1236,7 @@ public:
 	/**
 	 * ID variant
 	 */
-	virtual lbErrCodes LB_STDCALL dispatchEvent(int EvNr, lb_I_Unknown* EvData) = 0;
+	virtual lbErrCodes LB_STDCALL dispatch(int EvNr, lb_I_Unknown* EvData) = 0;
 	/**
 	 * Name variant
 	 *
@@ -1233,7 +1248,7 @@ public:
 	 * EvName = "AnnounceHandler"
 	 * EvData = lb_I_HandlerAddress
 	 */
-	virtual lbErrCodes LB_STDCALL queryEvent(char* EvName, lb_I_Unknown* EvData) = 0;
+	virtual lbErrCodes LB_STDCALL dispatch(char* EvName, lb_I_Unknown* EvData) = 0;
 	
 	/**
 	 * lb_I_DispatchRequest variant
