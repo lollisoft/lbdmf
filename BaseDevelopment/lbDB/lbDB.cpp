@@ -47,8 +47,12 @@ extern "C" {
 #endif
 
 #include <stdio.h>
+#ifndef OSX
 #include <malloc.h>
-
+#endif
+#ifdef OSX
+#include <sys/malloc.h>
+#endif
 #include <lbInterfaces.h>
 #include <lbConfigHook.h>
 
