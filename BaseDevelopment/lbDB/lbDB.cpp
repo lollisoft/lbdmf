@@ -2093,6 +2093,10 @@ public:
 	 * Note:	Moving to first or last interface resets any invalid status.
 	 */
 	int invalidSearchStatus;
+private:
+        RETCODE  retcode;
+        HENV     henv;
+        HDBC     hdbc;
 };
 
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbDBInterfaceRepository)
@@ -2104,6 +2108,85 @@ IMPLEMENT_FUNCTOR(instanceOfDBInterfaceRepository, lbDBInterfaceRepository)
 lbDBInterfaceRepository::lbDBInterfaceRepository() {	
 	manager = NULL;
 	ref = STARTREF;
+	henv = 0;
+	hdbc = 0;
+
+#ifdef bla
+
+	retcode = SQLAllocEnv(&henv);
+	if (retcode != SQL_SUCCESS) {
+        	dbError( "SQLAllocEnv()",henv,0,0);
+        	_LOG << "Database initializion failed." LOG_
+        	return ERR_DB_INIT;
+        }
+
+	retcode = SQLSetEnvAttr(henv, SQL_ATTR_ODBC_VERSION, (void*) SQL_OV_ODBC3, 0);
+
+	if (retcode != SQL_SUCCESS) {
+        	dbError( "SQLSetEnvAttr()",henv,0,0);
+        	_LOG << "Database version initializion failed." LOG_
+        	return ERR_DB_INIT;
+	}
+
+
+
+
+	retcode = SQLAllocConnect(henv, &hdbc); /* Connection handle */
+
+	if (retcode != SQL_SUCCESS)
+        {
+        	dbError( "SQLAllocConnect()",henv,hdbc,0);
+        	SQLFreeEnv(henv);
+        	return ERR_DB_CONNECT;
+        }	
+        
+	retcode = SQLSetConnectOption(hdbc, SQL_LOGIN_TIMEOUT, 15); /* Set login timeout to 15 seconds. */
+
+        if (retcode != SQL_SUCCESS)
+        {
+                dbError( "SQLSetConnectOption()",henv,hdbc,0);
+                SQLFreeEnv(henv);
+                return ERR_DB_CONNECT;
+        }
+
+	retcode = SQLSetConnectAttr(hdbc, SQL_ATTR_ODBC_CURSORS, SQL_CUR_USE_IF_NEEDED, 0);
+
+        if (retcode != SQL_SUCCESS)
+        {
+                dbError( "SQLSetConnectAttr()",henv,hdbc,0);
+                SQLFreeEnv(henv);
+                return ERR_DB_CONNECT;
+        }
+
+	retcode = SQLConnect(hdbc, (unsigned char*) "lbDMFConfig", SQL_NTS, 
+				   (unsigned char*) "lbDMF", SQL_NTS, 
+				   (unsigned char*) "lbDMF", SQL_NTS); /* Connect to data source */
+
+	if (retcode != SQL_SUCCESS && retcode != SQL_SUCCESS_WITH_INFO)
+        {
+        	dbError( "SQLConnect()",henv,hdbc,0);
+		_LOG << "Connection to database failed." LOG_
+        	SQLFreeEnv(henv);
+        	return ERR_DB_CONNECT;
+        } else {
+//		SQLFreeEnv(henv);
+		printf("Connection succeeded.\n");
+        }
+
+        retcode = SQLSetConnectOption(hdbc, SQL_AUTOCOMMIT, SQL_AUTOCOMMIT_ON);
+
+	if (retcode != SQL_SUCCESS)
+	{
+	        dbError( "SQLSetConnectOption(SQL_AUTOCOMMIT, SQL_AUTOCOMMIT_ON)",henv,hdbc,0);
+	        SQLFreeEnv(henv);
+	        return ERR_DB_CONNECT;
+	}
+        
+
+#endif
+
+
+
 }
 
 lbDBInterfaceRepository::~lbDBInterfaceRepository() {
@@ -2119,7 +2202,7 @@ void LB_STDCALL lbDBInterfaceRepository::setCurrentSearchInterface(const char* i
 	interfaces = 0;
 	CurrentSearchMode = 1;
 	
-	initIntefaceList();
+//	initIntefaceList();
 }
 
 /*...slb_I_FunctorEntity\42\ LB_STDCALL lbDBInterfaceRepository\58\\58\getFirstEntity\40\\41\:0:*/
@@ -2133,6 +2216,18 @@ lb_I_FunctorEntity* LB_STDCALL lbDBInterfaceRepository::getFirstEntity() {
 		printf("SearchMode currently not provided.\n");
 		return NULL;
 	}
+
+
+	
+
+
+
+
+
+
+
+
+
 
 
 	// Search for that node, containing specifed interface.
