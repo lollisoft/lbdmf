@@ -214,8 +214,29 @@ lbErrCodes LB_STDCALL lbQuery::init(HENV henv, HDBC _hdbc) {
 	
 	retcode = SQLSetStmtOption(hstmt, SQL_CURSOR_TYPE, SQL_CURSOR_STATIC); //KEYSET_DRIVEN);
 
+        if (retcode != SQL_SUCCESS)
+        {
+                dbError( "SQLSetStmtOption()",henv,hdbc,hstmt);
+                _LOG << "lbDatabase::getQuery() failed due to statement allocation." LOG_
+                SQLFreeEnv(henv);
+                return ERR_DB_ALLOCSTATEMENT;
+        }
+
+	retcode = SQLSetStmtAttr(hstmt, SQL_ATTR_CURSOR_SCROLLABLE, (void*) SQL_SCROLLABLE, 0);
+
+        if (retcode != SQL_SUCCESS)
+        {
+                dbError( "SQLSetStmtAttr()",henv,hdbc,hstmt);
+                _LOG << "lbDatabase::getQuery() failed due to statement allocation." LOG_
+                SQLFreeEnv(henv);
+                return ERR_DB_ALLOCSTATEMENT;
+        }
+
 // Unneccesary
 //	retcode = SQLSetStmtAttr(hstmt, SQL_ATTR_CURSOR_SCROLLABLE, (SQLPOINTER) SQL_SCROLLABLE, 0);
+
+
+
 
 	if (retcode != SQL_SUCCESS) {
 		dbError( "SQLSetStmtAttr()",henv,hdbc,hstmt);
@@ -466,6 +487,15 @@ lbErrCodes LB_STDCALL lbDatabase::init() {
         	_LOG << "Database initializion failed." LOG_
         	return ERR_DB_INIT;
         }
+
+	retcode = SQLSetEnvAttr(henv, SQL_ATTR_ODBC_VERSION, (void*) SQL_OV_ODBC3, 0);
+
+	if (retcode != SQL_SUCCESS) {
+        	dbError( "SQLSetEnvAttr()",henv,0,0);
+        	_LOG << "Database version initializion failed." LOG_
+        	return ERR_DB_INIT;
+	}
+
 	return ERR_NONE;
 }
 /*...e*/
@@ -486,7 +516,23 @@ lbErrCodes LB_STDCALL lbDatabase::connect(char* DSN, char* user, char* passwd) {
         	return ERR_DB_CONNECT;
         }	
 	
-	SQLSetConnectOption(hdbc, SQL_LOGIN_TIMEOUT, 15); /* Set login timeout to 15 seconds. */
+	retcode = SQLSetConnectOption(hdbc, SQL_LOGIN_TIMEOUT, 15); /* Set login timeout to 15 seconds. */
+
+        if (retcode != SQL_SUCCESS)
+        {
+                dbError( "SQLSetConnectOption()",henv,hdbc,0);
+                SQLFreeEnv(henv);
+                return ERR_DB_CONNECT;
+        }
+
+	retcode = SQLSetConnectAttr(hdbc, SQL_ATTR_ODBC_CURSORS, SQL_CUR_USE_IF_NEEDED, 0);
+
+        if (retcode != SQL_SUCCESS)
+        {
+                dbError( "SQLSetConnectAttr()",henv,hdbc,0);
+                SQLFreeEnv(henv);
+                return ERR_DB_CONNECT;
+        }
 
 	retcode = SQLConnect(hdbc, (unsigned char*) DSN, SQL_NTS, 
 				   (unsigned char*) user, SQL_NTS, 
