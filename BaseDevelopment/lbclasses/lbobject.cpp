@@ -209,7 +209,7 @@ lbString::~lbString() {
 	key = NULL;
 }
 
-void LB_STDCALL lbString::setData(char* p) {
+void LB_STDCALL lbString::setData(char const * p) {
 	if (stringdata != NULL) free(stringdata);
 	stringdata = strdup(p);
 	if (key != NULL) free(key);

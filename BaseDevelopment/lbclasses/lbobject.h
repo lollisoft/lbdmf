@@ -31,10 +31,13 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.19 $
+ * $Revision: 1.20 $
  * $Name:  $
- * $Id: lbobject.h,v 1.19 2003/12/13 10:56:25 lollisoft Exp $
+ * $Id: lbobject.h,v 1.20 2004/07/16 20:21:40 lollisoft Exp $
  * $Log: lbobject.h,v $
+ * Revision 1.20  2004/07/16 20:21:40  lollisoft
+ * Changed parameter from non const to const
+ *
  * Revision 1.19  2003/12/13 10:56:25  lollisoft
  * Database improovements and changes in my licence adress.
  * The database part is still not working by updating columns
@@ -229,7 +232,7 @@ public:
 	DECLARE_LB_UNKNOWN()
 
 public:	
-	virtual void LB_STDCALL setData(char* p);
+	virtual void LB_STDCALL setData(char const * p);
 	virtual char* LB_STDCALL getData() const;
 
 	DECLARE_LB_KEYBASE()
