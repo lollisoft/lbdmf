@@ -7,6 +7,10 @@
 #include <windows.h>
 #include <lbConfigHook.h>
 
+IMPLEMENT_FUNCTOR(instanceOfInteger, lbInteger)
+IMPLEMENT_FUNCTOR(instanceOfString, lbString)
+
+
 /*...slbObject:0:*/
 void lbObject::setName(const char* d) {
 	if (name != NULL) delete name;
@@ -41,14 +45,17 @@ END_IMPLEMENT_LB_UNKNOWN()
 /*...slbString:0:*/
 lbString::lbString() {
 	stringdata = NULL;
+	key = NULL;
 }
 
 lbString::~lbString() {
 	if (stringdata != NULL) delete[] stringdata;
+	if (key != NULL) delete[] key;
 }
 
 void lbString::setData(char* p) {
 	stringdata = strdup(p);
+	key = strdup(p);
 }
 
 char* lbString::getData() const {
@@ -89,6 +96,7 @@ char* lbString::getData() const {
 
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbString)
 	ADD_INTERFACE(lb_I_String)
+	ADD_INTERFACE(lb_I_KeyBase)
 END_IMPLEMENT_LB_UNKNOWN()
 
 lbErrCodes LB_STDCALL lbString::setData(lb_I_Unknown* uk) {
@@ -96,6 +104,151 @@ lbErrCodes LB_STDCALL lbString::setData(lb_I_Unknown* uk) {
 	return ERR_NOT_IMPLEMENTED;
 }
 
+/*...sKey:0:*/
+/*
+lbString::lbString(const char* _key) {
+    key = strdup(_key);
+}
+
+lbString::lbString(const lb_I_KeyBase* k) {
+    key = strdup(((lbString*) k)->key);
+}
+*/
+
+char* LB_STDCALL lbString::getKeyType() {
+    return "string";
+}
+
+int lbString::equals(const lb_I_KeyBase* _key) const {
+    return (strcmp(key, ((const lbString*) _key)->key) == 0);
+}
+
+int lbString::greater(const lb_I_KeyBase* _key) const {
+    return (strcmp(key, ((const lbString*) _key)->key) > 0);
+}
+
+char* lbString::charrep() {
+    return key;
+}
+/*...e*/
+/*...e*/
+/*...slbInteger:0:*/
+lbInteger::lbInteger() {
+	integerdata = 0;
+}
+
+lbInteger::~lbInteger() {
+}
+
+void lbInteger::setData(int p) {
+	integerdata = p;
+}
+
+int lbInteger::getData() const {
+	return integerdata;
+}
+
+BEGIN_IMPLEMENT_LB_UNKNOWN(lbInteger)
+	ADD_INTERFACE(lb_I_Integer)
+	ADD_INTERFACE(lb_I_KeyBase)
+END_IMPLEMENT_LB_UNKNOWN()
+
+lbErrCodes LB_STDCALL lbInteger::setData(lb_I_Unknown* uk) {
+	CL_LOG("lbInteger::setData(...) not implemented yet");
+	return ERR_NOT_IMPLEMENTED;
+}
+
+/*...sKey:0:*/
+/*
+char* LB_STDCALL lbInteger::getKeyType() {
+    return "integer";
+}
+
+int lbInteger::equals(const lb_I_KeyBase* _key) const {
+    return (strcmp(key, ((const lbInteger*) _key)->key) == 0);
+}
+
+int lbInteger::greater(const lb_I_KeyBase* _key) const {
+    return (strcmp(key, ((const lbInteger*) _key)->key) > 0);
+}
+
+char* lbInteger::charrep() {
+    char buffer[50] = "";
+    return itoa(key, buffer, 10);
+}
+
+*/
+
+char* LB_STDCALL lbInteger::getKeyType() {
+    return "int";
+}
+
+int lbInteger::equals(const lb_I_KeyBase* _key) const {
+    return key == ((lbInteger*) _key)->key;
+}
+
+int lbInteger::greater(const lb_I_KeyBase* _key) const {
+    return key > ((lbInteger*) _key)->key;
+}
+
+char* lbInteger::charrep() {
+    char buf[100];
+
+    itoa(key, buf, 10);
+    
+    return buf;
+}
+/*...e*/
+/*...e*/
+/*...slbLong:0:*/
+lbLong::lbLong() {
+	longdata = 0;
+	key = 0;
+	strcpy(keyType, "UL");
+}
+
+lbLong::~lbLong() {
+}
+
+void lbLong::setData(long p) {
+	longdata = p;
+}
+
+long lbLong::getData() const {
+	return longdata;
+}
+
+BEGIN_IMPLEMENT_LB_UNKNOWN(lbLong)
+	ADD_INTERFACE(lb_I_Long)
+	ADD_INTERFACE(lb_I_KeyBase)
+END_IMPLEMENT_LB_UNKNOWN()
+
+lbErrCodes LB_STDCALL lbLong::setData(lb_I_Unknown* uk) {
+	CL_LOG("lbLong::setData(...) not implemented yet");
+	return ERR_NOT_IMPLEMENTED;
+}
+
+/*...slbKeyUL:0:*/
+char* LB_STDCALL lbLong::getKeyType() {
+    return "UL";
+}
+
+int lbLong::equals(const lb_I_KeyBase* _key) const {
+    return key == ((lbLong*) _key)->key;
+}
+
+int lbLong::greater(const lb_I_KeyBase* _key) const {
+    return key > ((lbLong*) _key)->key;
+}
+
+char* lbLong::charrep() {
+    char buf[100];
+
+    itoa(key, buf, 10);
+    
+    return buf;
+}
+/*...e*/
 /*...e*/
 /*...slbStringList:0:*/
 lbStringList::lbStringList() {

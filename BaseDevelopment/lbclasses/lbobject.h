@@ -4,10 +4,13 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.8 $
+ * $Revision: 1.9 $
  * $Name:  $
- * $Id: lbobject.h,v 1.8 2001/03/04 18:30:43 lolli Exp $
+ * $Id: lbobject.h,v 1.9 2001/06/21 06:35:15 lolli Exp $
  * $Log: lbobject.h,v $
+ * Revision 1.9  2001/06/21 06:35:15  lolli
+ * Added lbInteger and lbLong
+ *
  * Revision 1.8  2001/03/04 18:30:43  lolli
  * Compiles now with interface support
  *
@@ -44,7 +47,28 @@
 #ifndef _LB_OBJECT_
 #define _LB_OBJECT_
 
+/*...sDLLEXPORT:0:*/
+#undef DLLEXPORT
 
+#ifdef LB_CONTAINER_DLL
+
+#ifdef WINDOWS
+#define DLLEXPORT __declspec(dllexport)
+#endif
+
+#endif
+
+#ifndef LB_CONTAINER_DLL
+
+#ifdef WINDOWS
+#define DLLEXPORT __declspec(dllimport)
+#endif
+
+#endif
+/*...e*/
+
+/*...sbla:0:*/
+#ifdef bla
 #undef DLLEXPORT
 #ifdef LB_LOADTIME_LINK
 /*...sDLLEXPORT:0:*/
@@ -69,6 +93,8 @@
 #ifdef LB_RUNTIME_LINK
 #define DLLEXPORT
 #endif
+#endif
+/*...e*/
 
 #include <stdio.h>
 #include <lbInterfaces.h>
@@ -135,9 +161,73 @@ public:
 	
 	virtual void LB_STDCALL setData(char* p);
 	virtual char* LB_STDCALL getData() const;
-	
+
+
+
+	// Must be implemented
+	virtual int LB_STDCALL equals(const lb_I_KeyBase* _key) const;
+	virtual int LB_STDCALL greater(const lb_I_KeyBase* _key) const;
+
+	virtual char* LB_STDCALL getKeyType();
+
+	virtual char* LB_STDCALL charrep();
 private:
+
+	char keyType[10];
+	char* key;    
 	char* stringdata;
+};
+/*...e*/
+/*...sclass lbInteger:0:*/
+class lbInteger : public lb_I_Integer
+{
+public:
+	lbInteger();
+	virtual ~lbInteger();
+
+	DECLARE_LB_UNKNOWN()
+	
+	virtual void LB_STDCALL setData(int p);
+	virtual int LB_STDCALL getData() const;
+	
+    // Must be implemented
+    virtual int LB_STDCALL equals(const lb_I_KeyBase* _key) const;
+    virtual int LB_STDCALL greater(const lb_I_KeyBase* _key) const;
+
+    virtual char* LB_STDCALL getKeyType();
+
+    virtual char* LB_STDCALL charrep();
+private:
+
+    char keyType[10];
+    int key;
+    int integerdata;
+};
+/*...e*/
+/*...sclass lbLong:0:*/
+class lbLong : public lb_I_Long
+{
+public:
+	lbLong();
+	virtual ~lbLong();
+
+	DECLARE_LB_UNKNOWN()
+	
+	virtual void LB_STDCALL setData(long p);
+	virtual long LB_STDCALL getData() const;
+	
+    // Must be implemented
+    virtual int LB_STDCALL equals(const lb_I_KeyBase* _key) const;
+    virtual int LB_STDCALL greater(const lb_I_KeyBase* _key) const;
+
+    virtual char* LB_STDCALL getKeyType();
+
+    virtual char* LB_STDCALL charrep();
+private:
+
+    char keyType[10];
+    unsigned long key;
+	long longdata;
 };
 /*...e*/
 
@@ -162,6 +252,23 @@ private:
 };
 /*...e*/
 
+/*...sifdef __cplusplus:0:*/
+#ifdef __cplusplus
+extern "C" {
+#endif
+/*...e*/
+
+DECLARE_FUNCTOR(instanceOfInteger)
+DECLARE_FUNCTOR(instanceOfString)
+
+/*...sendif __cplusplus:0:*/
+#ifdef __cplusplus
+}
+#endif
+/*...e*/
+
+
+/*...sbla:0:*/
 #ifdef bla
 /*...s\35\ifdef __cplusplus \123\:0:*/
 #ifdef __cplusplus
@@ -178,5 +285,6 @@ lbErrCodes DLLEXPORT __cdecl releaseInstance(lb_I_Unknown * inst);
 #endif
 /*...e*/
 #endif
+/*...e*/
 
 #endif //LB_OBJECT
