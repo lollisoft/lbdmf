@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.21 $
+# * $Revision: 1.22 $
 # * $Name:  $
-# * $Id: Makefile,v 1.21 2005/01/25 14:05:50 lollisoft Exp $
+# * $Id: Makefile,v 1.22 2005/01/27 12:47:21 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.22  2005/01/27 12:47:21  lollisoft
+# * Minor bugfixes
+# *
 # * Revision 1.21  2005/01/25 14:05:50  lollisoft
 # * Minor changes
 # *
@@ -118,10 +121,11 @@ ifeq ($(OSTYPE), Windows_NT)
 TARGETDLL=dll
 TARGETEXE=exe
 
-ALLTARGETS = lbHook \
+ALLTARGETS = ../../dll/libs \
+	lbHook \
 	lbDB \
 	lbModule \
-	lbClasses \
+	lbclasses \
 	lbMetaApplication \
 	../AppDevelopmentDemo/App \
 	../AppDevelopmentDemo/DynamicApp/App \
@@ -135,6 +139,8 @@ endif
 all_targets: $(ALLTARGETS)
 
 
+../../dll/libs:
+	mkdir ../../dll/libs
 
 clean:
 	@for d in $(ALLTARGETS); do \
