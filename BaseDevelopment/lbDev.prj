@@ -14,6 +14,7 @@
 /*...vQ\58\\92\Develop\92\Projects\92\CPP\92\AppDevelopment\92\Console\92\XML\47\lbxmlconfig\46\xml:0:*/
 
 
+/*...sSAX based parser:0:*/
 /*...vlbXMLConfig\47\lbXMLConfig\47\lbXMLConfig\46\dtd:0:*/
 /*...vlbXMLConfig\47\lbXMLConfig\47\lbXMLConfig\46\xml:0:*/
 
@@ -27,6 +28,11 @@
 /*...vlbXMLConfig\47\lbXMLConfig\47\TypeHandlers\46\h:0:*/
 /*...vlbXMLConfig\47\lbXMLConfig\47\XMLConfig\46\h:0:*/
 /*...vlbXMLConfig\47\lbXMLConfig\47\XMLConfigHandlers\46\h:0:*/
+/*...e*/
+/*...sDOM based parser:0:*/
+/*...vlbXMLConfig\47\lbDOMConfig\47\lbDOMConfig\46\h:0:*/
+/*...vlbXMLConfig\47\lbDOMConfig\47\lbDOMConfig\46\cpp:0:*/
+/*...e*/
 
 /*...e*/
 
