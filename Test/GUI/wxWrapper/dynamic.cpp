@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.33 2004/12/14 16:13:17 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.34 2004/12/14 19:25:01 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.33 $
+ * $Revision: 1.34 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.33 2004/12/14 16:13:17 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.34 2004/12/14 19:25:01 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.34  2004/12/14 19:25:01  lollisoft
+ * Change due to temporary variable differences in cleanup
+ *
  * Revision 1.33  2004/12/14 16:13:17  lollisoft
  * Implemented a login wizard with application selection from database configuration.
  *
@@ -642,6 +645,8 @@ DECLARE_LB_UNKNOWN()
 
 	wxWindow* OkButton;
 	wxWindow* CancelButton;
+	
+	wxString textValue;
 
 	wxBoxSizer* sizerMain;
 	wxBoxSizer* sizerHor;
@@ -677,9 +682,9 @@ char const * LB_STDCALL wxLogonPage::getTextValue(char* _name) {
 	if (w != NULL) {
         	wxTextCtrl* tx = (wxTextCtrl*) w;
 
-	        wxString v = tx->GetValue();
+	        textValue = tx->GetValue();
 
-		return v.c_str();
+		return textValue.c_str();
 	}
 
 	return "";
