@@ -8,6 +8,20 @@
  Define "UNIX" for unix orieted makefiles
 */
 /*...e*/
+/*...sRevision history:0:*/
+/**************************************************************
+ * $Locker:  $
+ * $Revision: 1.5 $
+ * $Name:  $
+ * $Id: mkmk.cpp,v 1.5 2001/10/20 19:45:43 lothar Exp $
+ *
+ * $Log: mkmk.cpp,v $
+ * Revision 1.5  2001/10/20 19:45:43  lothar
+ * Added revision history
+ *
+ **************************************************************/
+
+/*...e*/
 /*...sincludes:0:*/
 #include <stdio.h>
 #include <ctype.h>
@@ -183,7 +197,7 @@ void TIncludeParser::AddInclude(char *IncName)
   bool Found;
 
   if (l.Search(IncName)) return;
-  printf("    %s\n",IncName);
+  printf("    '%s'\n",IncName);
   Found=BasicParse(IncName);
   if (Found) l.Insert(IncName,"");
   else if (FilePath[0]!=0)
@@ -448,7 +462,9 @@ void DoDep(FILE *f, TDepItem *d)
   strcat(fullName, d->Name);
   
   WriteDep(f,fullName,&p);
+#ifdef VERBOSE
   printf("Warning: Using hardcoded char array.\n");
+#endif
 //  delete[] fullName;
 }
 /*...e*/

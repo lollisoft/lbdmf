@@ -2,6 +2,20 @@
 #include <string.h>
 
 #include "contain.h"
+/*...sRevision history:0:*/
+/**************************************************************
+ * $Locker:  $
+ * $Revision: 1.2 $
+ * $Name:  $
+ * $Id: contain.cpp,v 1.2 2001/10/20 19:45:43 lothar Exp $
+ *
+ * $Log: contain.cpp,v $
+ * Revision 1.2  2001/10/20 19:45:43  lothar
+ * Added revision history
+ *
+ **************************************************************/
+       
+/*...e*/
 
 /*...sDymamic Array:0:*/
 //------------------------- Dymamic Array -------------------------

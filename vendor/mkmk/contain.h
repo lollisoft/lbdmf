@@ -1,5 +1,19 @@
 // Container class library
 // Luis Crespo, lcrespo@ergos.es, 4/97
+/*...sRevision history:0:*/
+/**************************************************************
+ * $Locker:  $
+ * $Revision: 1.3 $
+ * $Name:  $
+ * $Id: contain.h,v 1.3 2001/10/20 19:45:43 lothar Exp $
+ *
+ * $Log: contain.h,v $
+ * Revision 1.3  2001/10/20 19:45:43  lothar
+ * Added revision history
+ *
+ **************************************************************/
+
+/*...e*/
 
 
 #ifndef _containers_included
