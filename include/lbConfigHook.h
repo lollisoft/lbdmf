@@ -171,10 +171,17 @@ DLLEXPORT int isInitializing;
 /*...s LOG_:0:*/
 #define  LOG_  << "\n"; }
 /*...e*/
+#ifndef __MISC
 #define CL_LOG(msg) \
 { \
-	_LOG << msg LOG_ \
-} 
+        _LOG << msg LOG_ \
+        }
+#endif
+#ifdef __MISC
+#define CL_LOG(msg) \
+{ \
+}
+#endif
 /*...sLOG\40\msg\41\:0:*/
 #define LOG(msg)	\
 			if (isInitializing != 0) { \
