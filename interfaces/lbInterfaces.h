@@ -593,7 +593,6 @@ public: \
 
 /*...e*/
 
-//#ifndef _MSC_VER
 /*...sBEGIN_IMPLEMENT_LB_UNKNOWN:0:*/
 
 
@@ -769,23 +768,21 @@ lbErrCodes LB_STDCALL classname::queryInterface(char* name, void** unknown, char
         }
 
 /*...e*/
-//#endif
-#ifdef bla
-#ifdef _MSC_VER
-/*...sBEGIN_IMPLEMENT_LB_UNKNOWN:0:*/
+/*...sBEGIN_IMPLEMENT_SINGLETON_LB_UNKNOWN:0:*/
 
 
-#define BEGIN_IMPLEMENT_LB_UNKNOWN(classname) \
+#define BEGIN_IMPLEMENT_SINGLETON_LB_UNKNOWN(classname) \
 char* LB_STDCALL classname::getClassName() { \
 	return #classname; \
 } \
 char* LB_STDCALL classname::_queryInterface(char* name, void** unknown, char* file, int line) { \
-	static char ID[1000] = ""; \
-	sprintf(ID, "FILE:%s,LINE:%d", file, line); \
-	\
+	char* ID = new char[strlen(name)+strlen(#classname)+strlen(file)+1]; \
+	strcat(ID, name); \
+	strcat(ID, #classname); \
+	strcat(ID, file); \
 	lbErrCodes err = ERR_NONE; \
 	if ((err = queryInterface(name, unknown, file, line)) != ERR_NONE) { \
-		_CL_LOG << "Error: queryInterface failed (in _queryInterface)!" LOG_ \
+		_CL_LOG <<"Error: queryInterface failed (in _queryInterface)!" LOG_ \
 		return ""; \
 	} \
 	\
@@ -804,9 +801,7 @@ lb_I_Module* LB_STDCALL classname::getModuleManager() { \
 \
 void LB_STDCALL classname::setModuleManager(lb_I_Module* m, char* file, int line) { \
 	if (m == NULL) { \
-		char buf[100] = ""; \
-		_CL_LOG << "Error: Set module manager with a NULL pointer in " << \
-		#classname << " while setModuleManager(...)!" LOG_ \
+		_CL_LOG << "Error: Set module manager with a NULL pointer in " << #classname << " while setModuleManager(...)!" LOG_ \
 		return; \
 	} \
 	\
@@ -814,7 +809,9 @@ void LB_STDCALL classname::setModuleManager(lb_I_Module* m, char* file, int line
 	if (debug_macro == 1) { \
 		_CL_LOG << "Warning: setModuleManager() must be enhanced by module manager use" LOG_ \
 	} \
-	if (m != manager.getPtr()) m->queryInterface("lb_I_Module", (void**) &manager, file, line); \
+	if (m != manager.getPtr()) { \
+	    if (m != NULL) m->queryInterface("lb_I_Module", (void**) &manager, file, line); \
+	} \
 	manager.setLine(__LINE__); \
 	manager.setFile(__FILE__); \
 	\
@@ -826,9 +823,7 @@ void LB_STDCALL classname::setModuleManager(lb_I_Module* m, char* file, int line
 			datei++; \
 		manager->notify_create(this, #classname, datei, line); \
 	} else { \
-		char buf[100]; \
-		_CL_LOG << "Error: Query interface failed for manager in " << \
-		#classname << " while setModuleManager(...)!" LOG_ \
+		_CL_LOG << "Error: Query interface failed for manager in " << #classname << " while setModuleManager(...)!" LOG_ \
 	} \
 } \
 \
@@ -844,14 +839,10 @@ char*      LB_STDCALL classname::getCreationLoc() const { \
 } \
 lbErrCodes LB_STDCALL classname::release(char* file, int line) { \
         ref--; \
+        if (strcmp("lb_EventManager", #classname) == 0) { \
+        	_CL_LOG << "lb_EventManager::release() called" LOG_ \
+        } \
 	char ptr[20] = ""; \
-	sprintf(ptr, "%p", this); \
-	if (strcmp(ptr, (get_trackObject() == NULL) ? "" : get_trackObject()) == 0) { \
-		_CL_LOG << "Release interface for instance " << \
-		ptr << " called (" << \
-		ref+1 << ") at line " << \
-		line << " in file " << file LOG_ \
-	} \
         if (manager != NULL) { \
         	manager->notify_release(this, #classname, file, line); \
         } \
@@ -859,8 +850,9 @@ lbErrCodes LB_STDCALL classname::release(char* file, int line) { \
         if (ref == STARTREF) { \
         	if (manager != NULL) { \
         		if (manager->can_delete(this, #classname) == 1)	{ \
-        			track_Object(this, "Tracked object will be deleted"); \
-        			delete this; \
+        			manager->notify_destroy(this, #classname, file, line); \
+        			printf("WARNING: Refcount goes to %d. Singleton instances can't be destroyed by release.\n", STARTREF); \
+        			ref++; \
         			return ERR_RELEASED; \
         		} \
         		else \
@@ -868,12 +860,8 @@ lbErrCodes LB_STDCALL classname::release(char* file, int line) { \
         	} \
         	return ERR_NONE; \
         } \
-        char buf[1000] = ""; \
         if (ref < STARTREF) { \
-        	_CL_LOG << "Error: Reference count of instance " << \
-        	ltoa(this) << " of object type " << \
-        	#classname << " is less than " << \
-        	STARTREF << " (" << ref << ") !!!" LOG_ \
+        	_CL_LOG << "Error: Reference count of instance " << ptr << " of object type " << #classname << " is less than " << STARTREF << " (" << ref << ") !!!" LOG_ \
         	return ERR_REFERENCE_COUNTING; \
         } \
         return ERR_INSTANCE_STILL_USED; \
@@ -881,17 +869,9 @@ lbErrCodes LB_STDCALL classname::release(char* file, int line) { \
 \
 lb_I_Unknown* LB_STDCALL classname::clone(char* file, int line) const { \
 \
-	char ptr[20] = ""; \
-	sprintf(ptr, "%p", (lb_I_Unknown*) this); \
 	classname* cloned = new classname(); \
-	if (strcmp(ptr, (get_trackObject() == NULL) ? "" : get_trackObject()) == 0) { \
-		_CL_LOG << "Clone instance " << \
-		ptr << " called (references:" << ref+1 << ") at line " << \
-		line << " in file " << file LOG_ \
-	} \
 	cloned->setDebug(0); \
 	lb_I_Unknown* uk_this; \
-	sprintf(ptr, "%p", (lb_I_Unknown*) cloned); \
 \
 	lb_I_Unknown* uk_cloned = NULL; \
 \
@@ -921,7 +901,7 @@ lb_I_Unknown* LB_STDCALL classname::clone(char* file, int line) const { \
 	} \
 \
 	if (uk->getRefCount() > 1) { \
-		_CL_LOG << "Cloned object has " << uk->getRefCount() << " references" LOG_ \
+		_CL_LOG << "Cloned object has %d references" << uk->getRefCount() LOG_ \
 	} \
 	return uk; \
 \
@@ -932,16 +912,13 @@ lbErrCodes LB_STDCALL classname::queryInterface(char* name, void** unknown, char
 	char iFaces[1000] = ""; \
 	char _classname[100] = #classname; \
 	if (further_lock == 1) { \
-		_CL_LOG << "Error: Object has been locked due to missing module manager (call setModuleManager(...) on me first)!" LOG_ \
+		_CL_LOG <<"Error: Object has been locked due to missing module manager (call setModuleManager(...) on me first)!" LOG_ \
 		return ERR_STATE_FURTHER_LOCK; \
 	} \
 	if (unknown == NULL) { \
 		_CL_LOG << "Error: Got NULL pointer reference while queryInterface() called for " << \
-		name << " << ! Did you coded it this way: (void**) &variable ?" LOG_ \
+		name << " ! Did you coded it this way: (void**) &variable ?" LOG_ \
 	} \
-\
-	char ptr[20] = ""; \
-	sprintf(ptr, "%p", this); \
 \
 	strcat(iFaces, "lb_I_Unknown, "); \
         if (strcmp(name, "lb_I_Unknown") == 0) { \
@@ -953,11 +930,8 @@ lbErrCodes LB_STDCALL classname::queryInterface(char* name, void** unknown, char
                 if (manager != NULL) { \
                 	lb_I_Unknown* that = (lb_I_Unknown*) this; \
                 	if (strcmp(_classname, "lbModule") == 0) { \
-                		_CL_LOG << "Register reference for " << \
-                		_classname << " in " << \
-                		file << \
-                		" at " << \
-                		line LOG_ \
+                		_CL_LOG << "Register reference for " << _classname << \
+                		" in " << file << " at " << line LOG_ \
                 	} \
 		        manager->notify_add(that, _classname, file, line); \
 		} \
@@ -968,11 +942,8 @@ lbErrCodes LB_STDCALL classname::queryInterface(char* name, void** unknown, char
 		} \
                 return ERR_NONE; \
         }
-        
 
 /*...e*/
-#endif
-#endif
 
 #define ADD_INTERFACE(interfaceName) \
 	buf[0] = 0; \
