@@ -29,11 +29,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.11 $
+ * $Revision: 1.12 $
  * $Name:  $
- * $Id: skiplist.cpp,v 1.11 2002/12/29 16:05:10 lolli Exp $
+ * $Id: skiplist.cpp,v 1.12 2003/01/19 17:31:25 lolli Exp $
  *
  * $Log: skiplist.cpp,v $
+ * Revision 1.12  2003/01/19 17:31:25  lolli
+ * Runs now with MSC
+ *
  * Revision 1.11  2002/12/29 16:05:10  lolli
  * Intent to go public
  *
@@ -144,6 +147,8 @@ SkipList::SkipList() {
 	skipiterator = NULL;
 	flag = 1;
 	level = MAXLEVEL;
+	count = 0;
+	ref = STARTREF;
 }
 
 SkipList::~SkipList() {
@@ -165,6 +170,7 @@ void LB_STDCALL SkipList::deleteAll() {
 
 	iteration = 0;
 	skipiterator = NULL;
+	count = 0;
 } 
 /*...e*/
 /*...sSkipList\58\\58\exists\40\lb_I_KeyBase\42\\42\ const key\41\:0:*/
@@ -184,7 +190,11 @@ lbErrCodes LB_STDCALL SkipList::insert(lb_I_Unknown** const e, lb_I_KeyBase** co
         el->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
 
         insert(el);
-        if (search(*key) == NULL) _LOG << "Error: SkipList::insert(...) failed" LOG_
+        if (search(*key) == NULL) {
+        	_LOG << "Error: SkipList::insert(...) failed" LOG_
+        } else {
+        	count++;
+        }
         
         return err; 
 } 
@@ -404,6 +414,7 @@ void SkipList::remove(Elem searchKey) {
         level--;
       }
     }
+    count--;
   }
 
 
