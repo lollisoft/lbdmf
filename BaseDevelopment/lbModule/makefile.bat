@@ -3,6 +3,7 @@
 
 type %DEVROOT%\Projects\cpp\make\makefile.template > makefile
 type makefile.module >> makefile
+echo Path=$(PATH) >> makefile
 echo all: lbModule.dll >> makefile
 
 mkmk dll lbModule %DEVROOT%\include,%DEVROOT%\interfaces *.cpp >> makefile
