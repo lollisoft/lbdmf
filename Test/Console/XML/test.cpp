@@ -62,56 +62,8 @@ void main() {
 	getch();
 
 	lb_I_Module* mm = getModuleInstance();
-	CL_LOG("Got a module instance")
 	mm->setModuleManager(mm, __FILE__, __LINE__);
-	CL_LOG("Set the module manager")
 /*...e*/
-#ifdef bla
-/*...stest string:0:*/
-	CL_LOG("Test using lb_I_String");
-	mm->request("lb_I_String", &unknown);
-	CL_LOG("Requested the string instance as unknown");
-	
-	if (unknown != NULL) {
-		lb_I_String* string = NULL;
-		lbErrCodes err = ERR_NONE;
-
-		CL_LOG("Try to get interface lb_I_String");
-		getch();
-		if ((err = unknown->queryInterface("lb_I_String", (void**) &string)) != ERR_NONE) {
-			sprintf(buf, "Getting a string failed (string instance is %p, ErrCode = %d) !!!!!!!!", (void*) string, err);
-			CL_LOG(buf);
-		}
-
-		if (string != NULL) {
-			CL_LOG("Using the string :-)");
-			string->setData("--------------------------------------------------------------------------------------------------------------------------------");
-			
-			CL_LOG("Test clone loop");
-			getch();
-			
-			for (long test = 0; test < 10000000000; test++) {
-			
-				lb_I_Unknown* cl = string->clone();
-				
-			
-			}
-			CL_LOG("Tested clone loop");
-			getch();
-			
-		}
-
-		CL_LOG("Unknown instance of lb_I_String is no more needed!");
-		RELEASE(unknown);
-		getch();
-
-		CL_LOG("Now release the string");
-		//string->release();
-		getch();
-
-	}
-/*...e*/
-#endif
 /*...stest logger:0:*/
 	mm->request("lb_I_Log", &unknown);
 	
@@ -130,6 +82,7 @@ void main() {
 	}
 /*...e*/
 /*...stest container:0:*/
+	CL_LOG("Requested a instance for interface lb_I_Container")
 	if (mm->request("lb_I_Container", &uk) != ERR_NONE) {
 		CL_LOG("Error: Could not get needed instance!");
 		getch();
