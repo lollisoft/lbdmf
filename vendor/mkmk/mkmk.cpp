@@ -11,11 +11,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.6 $
+ * $Revision: 1.7 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.6 2001/10/20 19:48:45 lothar Exp $
+ * $Id: mkmk.cpp,v 1.7 2001/10/20 19:52:53 lothar Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.7  2001/10/20 19:52:53  lothar
+ * Moved some messages to VERBOSE only
+ *
  * Revision 1.6  2001/10/20 19:48:45  lothar
  * Moved some messages to VERBOSE only
  *
@@ -423,18 +426,24 @@ void WriteEnding(FILE *f, char *ModuleName, TDepList *l)
 
   switch (targettype) {
   	case DLL_TARGET:
+  		#ifdef VERBOSE
   		printf("Making a dll target\n");
+  		#endif
 		fprintf(f,"%s: $(OBJS) $(LIBS)\n",ModuleName);
 		fprintf(f,"  *$(LINK) $(L_OPS_DLL) name %s file $(OBJS) library $(LIBS)\n",ModuleName);
   		break;
   	case LIB_TARGET:
+  		#ifdef VERBOSE
   		printf("Making a lib target\n");
+  		#endif
   		fprintf(f,"%s: $(OBJS) $(LIBS)\n",ModuleName);
   		fprintf(f,"  *$(WLIB) $(LIB_OPS_LIB) %s &\n", ModuleName);
   		fprintf(f,"	$(OBJS)\n");
   		break;
   	case EXE_TARGET:
+  		#ifdef VERBOSE
   		printf("Making a exe target\n");
+  		#endif
   		fprintf(f,"%s: $(OBJS) $(LIBS)\n",ModuleName);
   		fprintf(f,"  *$(LINK) $(L_OPS_EXE) name %s ",ModuleName);
   		fprintf(f,"file {$(OBJS)} library {$(LIBS)}\n");
