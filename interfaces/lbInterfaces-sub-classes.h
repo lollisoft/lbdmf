@@ -28,11 +28,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.31 $
+ * $Revision: 1.32 $
  * $Name:  $
- * $Id: lbInterfaces-sub-classes.h,v 1.31 2003/01/15 22:42:38 lothar Exp $
+ * $Id: lbInterfaces-sub-classes.h,v 1.32 2003/07/10 21:17:18 lollisoft Exp $
  *
  * $Log: lbInterfaces-sub-classes.h,v $
+ * Revision 1.32  2003/07/10 21:17:18  lollisoft
+ * Added parameter interface
+ *
  * Revision 1.31  2003/01/15 22:42:38  lothar
  * Compiles with MSC
  *
@@ -290,6 +293,43 @@ public:
         
 };
 /*...e*/
+
+/*...sclass lb_I_Parameter:0:*/
+class lb_I_Parameter : public lb_I_Unknown {
+protected:
+        lb_I_Parameter() {}
+        virtual ~lb_I_Parameter() {}
+
+public:
+#ifdef bla        
+        /**
+         * Integer parameter
+         */
+        virtual void LB_STDCALL setInt(char* parameter, int p) = 0;
+        virtual int LB_STDCALL getInt(char* parameter) const = 0;
+        
+        /**
+         * char* parameter
+         */
+        virtual void LB_STDCALL setChar(char* parameter, int p) = 0;
+        virtual lbErrCodes LB_STDCALL getChar(char* parameter, char** buffer, int length) = 0;
+        
+        /**
+         * Hopefully the better variant for char arrays.
+         */
+         
+        virtual void LB_STDCALL setString(lb_I_String* parameter, lb_I_String* p) = 0;
+        virtual lbErrCodes LB_STDCALL getString(lb_I_String* parameter, lb_I_String* p) = 0;
+#endif        
+        /**
+         * The UAP variant ??
+         */ 
+         
+        virtual void LB_STDCALL setUAPString(lb_I_String*& parameter, lb_I_String*& p) = 0;
+        virtual lbErrCodes LB_STDCALL getUAPString(lb_I_String*& parameter, lb_I_String*& p) = 0; 
+};
+/*...e*/
+
 
 /*...sclass lb_I_Element:0:*/
 class lb_I_Element : public lb_I_Unknown {
