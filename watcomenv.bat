@@ -4,26 +4,11 @@ set DEVROOT=%%DEVROOT%%
 echo ---------------------------------------------------------------- >> readme.txt
 echo *                  Basic development settings                  * >> readme.txt
 echo ---------------------------------------------------------------- >> readme.txt
-echo * Please set the following two environment variables to your   * >> readme.txt
-echo * actual unzipped source distribution.                         * >> readme.txt
-echo * As example: If you have unzipped the distribution to C:/,    * >> readme.txt
-echo * thn DEVLW is C: an DEVROOT will be %DEVLW%/dist/develop      * >> readme.txt
-echo *                                                              * >> readme.txt
-echo * The file to be edited is then located at                     * >> readme.txt
-echo * %DEVLW%/dist/develop/projects/cpp/watcomenv.bat              * >> readme.txt
-echo *                                                              * >> readme.txt 
-echo * BEFORE you try to compile:                                   * >> readme.txt 
-echo *                                                              * >> readme.txt 
-echo * Install Open Watcom 1.0 or newer to %DEVROOT%/Tools/Watcom   * >> readme.txt 
-echo *                                                              * >> readme.txt 
-echo * Install MSVC into %DEVROOT%/Tools/msc                        * >> readme.txt 
-echo * DO NOT INSTALL it TO THE DEFAULT LOCATION LIKE:              * >> readme.txt 
-echo *                                                              * >> readme.txt 
-echo * C:/Programme/Microsoft Visual Studio                         * >> readme.txt 
-echo * or                                                           * >> readme.txt 
-echo * C:/Program files/Microsoft Visual Studio                     * >> readme.txt 
+echo * You have started lbDMF Develop the first time. Please read   * >> readme.txt
+echo * the file 'readme' for further instructions.                  * >> readme.txt
+echo * It is in the directory 'Projects/CPP'                        * >> readme.txt
 echo ---------------------------------------------------------------- >> readme.txt 
-start notepad readme
+start notepad readme.txt
 exit
 
 :WEITER
