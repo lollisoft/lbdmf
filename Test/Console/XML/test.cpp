@@ -197,6 +197,7 @@ void main(int argc, char *argv[]) {
 	getch();
 	mm->setModuleManager(mm, __FILE__, __LINE__);
 
+/*...e*/
 /*...sTest database:0:*/
 	_CL_LOG << "Test database library" LOG_
 
@@ -246,7 +247,7 @@ void main(int argc, char *argv[]) {
 		UAP_REQUEST(mm, lb_I_String, val)
 		
 		col->setData("objecttyp");
-		val->setData("ashdjksdfksdkjsdhsd");
+		val->setData("12345 Test");
 		
 		query->setString(*&col, *&val);
 		query->update();
@@ -323,7 +324,6 @@ void main(int argc, char *argv[]) {
 	query1->query("insert into test values('Test', 1234)");
 	query1->query("drop table test");
 	getch();	
-/*...e*/
 /*...e*/
 /*...stest container:0:*/
 {
