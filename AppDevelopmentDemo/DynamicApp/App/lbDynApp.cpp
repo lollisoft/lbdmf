@@ -174,7 +174,14 @@ lbErrCodes LB_STDCALL lbDynamicApplication::getDynamicDBForm(lb_I_Unknown* uk) {
 		if(database == NULL) {
 			REQUEST(manager.getPtr(), lb_I_Database, database)
 			database->init();
-			database->connect("lbDMF", "dba", "trainres");
+
+			char* lbDMFPasswd = getenv("lbDMFPasswd");
+			char* lbDMFUser   = getenv("lbDMFUser");
+			
+			if (!lbDMFUser) lbDMFUser = "dba";
+			if (!lbDMFPasswd) lbDMFPasswd = "trainres";
+
+			database->connect("lbDMF", lbDMFUser, lbDMFPasswd);
 		}
 	
 		sampleQuery = database->getQuery(0);	
@@ -182,13 +189,13 @@ lbErrCodes LB_STDCALL lbDynamicApplication::getDynamicDBForm(lb_I_Unknown* uk) {
 		char buffer[1000] = "";
 
 		sprintf(buffer,
-		        "select formulare.id, formulare.name from formulare inner join anwendungen_formulare on "
-		        "formulare.id = anwendungen_formulare.formularid "
-		        "inner join anwendungen on anwendungen_formulare.anwendungid = anwendungen.id inner join "
-		        "user_anwendungen on anwendungen.id = user_anwendungen.anwendungenid inner join users on "
-		        " user_anwendungen.userid = users.id where "
-		        "users.userid = '%s' and anwendungen.name = '%s' and "
-		        "formulare.eventname = '%s'"
+		        "select Formulare.id, Formulare.name from Formulare inner join Anwendungen_Formulare on "
+		        "Formulare.id = Anwendungen_Formulare.formularid "
+		        "inner join Anwendungen on Anwendungen_Formulare.anwendungid = Anwendungen.id inner join "
+		        "User_Anwendungen on Anwendungen.id = User_Anwendungen.anwendungenid inner join Users on "
+		        " User_Anwendungen.userid = Users.id where "
+		        "Users.userid = '%s' and Anwendungen.name = '%s' and "
+		        "Formulare.eventname = '%s'"
 		                , userName, applicationName, eventName);
 
 		// Get the ID and Name of the intented formular
@@ -208,9 +215,9 @@ lbErrCodes LB_STDCALL lbDynamicApplication::getDynamicDBForm(lb_I_Unknown* uk) {
 		buffer[0] = 0;
 
 		sprintf(buffer,
-			"select formular_parameters.parametervalue from formular_parameters "
-			"where formular_parameters.parametername = 'query' and "
-			"formular_parameters.formularid = %s", formID->charrep());
+			"select Formular_Parameters.parametervalue from Formular_parameters "
+			"where Formular_Parameters.parametername = 'query' and "
+			"Formular_Parameters.formularid = %s", formID->charrep());
 
 		UAP(lb_I_Query, formularQuery, __FILE__, __LINE__)
 
@@ -234,9 +241,9 @@ lbErrCodes LB_STDCALL lbDynamicApplication::getDynamicDBForm(lb_I_Unknown* uk) {
 		buffer[0] = 0;
 		
 		sprintf(buffer,
-			"select parametername, parametervalue from anwendungs_parameter inner join "
-			"anwendungen on anwendungs_parameter.anwendungid = anwendungen.id where "
-			"anwendungen.name = '%s'", applicationName);
+			"select parametername, parametervalue from Anwendungs_Parameter inner join "
+			"Anwendungen on Anwendungs_Parameter.anwendungid = Anwendungen.id where "
+			"Anwendungen.name = '%s'", applicationName);
 
 		UAP(lb_I_Query, DBConnQuery, __FILE__, __LINE__)
 
@@ -351,19 +358,26 @@ lbErrCodes LB_STDCALL lbDynamicApplication::Initialize(char* user, char* app) {
 	UAP(lb_I_Query, sampleQuery, __FILE__, __LINE__)
 	
 	database->init();
-	database->connect("lbDMF", "dba", "trainres");
+
+	char* lbDMFPasswd = getenv("lbDMFPasswd");
+	char* lbDMFUser   = getenv("lbDMFUser");
+	
+	if (!lbDMFUser) lbDMFUser = "dba";
+	if (!lbDMFPasswd) lbDMFPasswd = "trainres";
+
+	database->connect("lbDMF", lbDMFUser, lbDMFPasswd);
 	
 	sampleQuery = database->getQuery(0);	
 
 	char buffer[1000] = "";
 
 	sprintf(buffer,
-	        "select formulare.eventname, formulare.menuname from formulare inner join anwendungen_formulare on "
-	        "formulare.id = anwendungen_formulare.formularid "
-	        "inner join anwendungen on anwendungen_formulare.anwendungid = anwendungen.id inner join "
-	        "user_anwendungen on anwendungen.id = user_anwendungen.anwendungenid inner join users on "
-	        " user_anwendungen.userid = users.id where "
-	        "users.userid = '%s' and anwendungen.name = '%s'"
+	        "select Formulare.eventname, Formulare.menuname from Formulare inner join Anwendungen_Formulare on "
+	        "Formulare.id = Anwendungen_Formulare.formularid "
+	        "inner join Anwendungen on Anwendungen_Formulare.anwendungid = Anwendungen.id inner join "
+	        "User_Anwendungen on Anwendungen.id = User_Anwendungen.anwendungenid inner join Users on "
+	        " User_Anwendungen.userid = Users.id where "
+	        "Users.userid = '%s' and Anwendungen.name = '%s'"
 	                , user, app);
 
 	
@@ -424,6 +438,7 @@ printf("Check if I have data\n");
 
 	return ERR_NONE;
 }
+
 /*...e*/
 
 

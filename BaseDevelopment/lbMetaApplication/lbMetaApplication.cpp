@@ -31,11 +31,15 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.48 $
+ * $Revision: 1.49 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.48 2005/02/10 17:02:26 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.49 2005/02/12 15:46:32 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.49  2005/02/12 15:46:32  lollisoft
+ * Changed SQL queries, enabled optional user and password settings via
+ * environment.
+ *
  * Revision 1.48  2005/02/10 17:02:26  lollisoft
  * Changes for Mac OS X
  *
@@ -496,6 +500,12 @@ lbErrCodes LB_STDCALL lb_MetaApplication::loadApplication(char* user, char* appl
 	lbErrCodes err = ERR_NONE;
         char* applicationName = getenv("TARGET_APPLICATION");
 
+	char* lbDMFPasswd = getenv("lbDMFPasswd");
+	char* lbDMFUser   = getenv("lbDMFUser");
+	
+	if (!lbDMFUser) lbDMFUser = "dba";
+	if (!lbDMFPasswd) lbDMFPasswd = "trainres";
+
 	if (applicationName == NULL) {
 		/*
 		 * No predefined application without authentication.
@@ -507,17 +517,17 @@ lbErrCodes LB_STDCALL lb_MetaApplication::loadApplication(char* user, char* appl
 		UAP(lb_I_Query, sampleQuery, __FILE__, __LINE__)
 
 		database->init();
-		database->connect("lbDMF", "dba", "trainres");
+		database->connect("lbDMF", lbDMFUser, lbDMFPasswd);
 
 		sampleQuery = database->getQuery(0);
 
 		char buffer[1000] = "";
 
 		sprintf(buffer,
-		        "select anwendungen.modulename, anwendungen.functor, anwendungen.interface from anwendungen inner join user_anwendungen on "
-		        "anwendungen.id = user_anwendungen.anwendungenid "
-		        "inner join users on user_anwendungen.userid = users.id where "
-		        "users.userid = '%s' and anwendungen.name = '%s'"
+		        "select Anwendungen.modulename, Anwendungen.functor, Anwendungen.interface from Anwendungen inner join User_Anwendungen on "
+		        "Anwendungen.id = User_Anwendungen.anwendungenid "
+		        "inner join Users on User_Anwendungen.userid = Users.id where "
+		        "Users.userid = '%s' and Anwendungen.name = '%s'"
 		                , user, application);
 
 		/*

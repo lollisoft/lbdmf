@@ -149,10 +149,16 @@ lbErrCodes LB_STDCALL lbApplication::getDynamicDBForm(lb_I_Unknown* uk) {
 			At best, this functionality is placed in a separate class.
 		*/
 		
+
+		char* lbDMFPasswd = getenv("lbDMFPasswd");
+		char* lbDMFUser   = getenv("lbDMFUser");
+		
+		if (!lbDMFUser) lbDMFUser = "dba";
+		if (!lbDMFPasswd) lbDMFPasswd = "trainres";
 		
 
 	        dbForm = gui->createDBForm("<Load title from database>", "<Load SQL query from database>",
-	        "trainres", "dba", "trainres");
+	        "trainres", lbDMFUser, lbDMFPasswd);
 	} else {
 	        COUT << "KundenDetails" << ENDL;
 	}
