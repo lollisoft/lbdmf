@@ -3,8 +3,8 @@
 
 [Setup]
 AppName=lbDMF Development Environment
-AppVerName=lbDMF Development Environment 0.4.1
-OutputBaseFilename=lbDMF-Source-0.4.1
+AppVerName=lbDMF Development Environment 0.4.2
+OutputBaseFilename=lbDMF-Source-0.4.2
 AppPublisher=Lothar Behrens
 AppPublisherURL=http://www.lollisoft.de
 AppSupportURL=http://www.sourceforge.net/projects/lbdmf
@@ -21,16 +21,6 @@ Name: "desktopicon"; Description: "Create a &desktop icon"; GroupDescription: "A
 Source: "c:\log\*.*"; DestDir: "c:\log"; CopyMode: alwaysoverwrite
 Source: "Q:\Develop\Projects\CPP\watcomenv.bat"; DestDir: "{app}"; CopyMode: alwaysoverwrite
 Source: "Q:\Develop\Projects\CPP\dist\*.*"; DestDir: "{app}"; CopyMode: alwaysoverwrite; Flags: recursesubdirs;
-;Source: "Q:\Develop\Projects\dll\libs\*.*"; DestDir: "{app}"; CopyMode: alwaysoverwrite; Flags: recursesubdirs;
-;Source: "Q:\Develop\Projects\dll\mspdb60.dll"; DestDir: "{app}\Develop\Projects\dll"; CopyMode: alwaysoverwrite;
-; --- My current binary only file
-;Source: "Q:\Develop\Projects\dll\lbDynApp.dll"; DestDir: "{app}\Develop\Projects\dll"; CopyMode: alwaysoverwrite;
-;Source: "Q:\Develop\Projects\dll\libs\xerces-c_1D.lib"; DestDir: "{app}\Develop\Projects\dll\libs"; CopyMode: alwaysoverwrite;
-;Source: "Q:\Develop\Projects\dll\xerces-c_1_3.dll"; DestDir: "{app}\Develop\Projects\dll"; CopyMode: alwaysoverwrite;
-;Source: "Q:\Develop\Projects\dll\wx22_7d.dll"; DestDir: "{app}\Develop\Projects\dll"; CopyMode: alwaysoverwrite;
-;Source: "Q:\Develop\Projects\plugins\*.dll"; DestDir: "{app}\Develop\Projects\plugins"; CopyMode: alwaysoverwrite;
-; ???
-;Source: "Q:\develop\Projects\CPP\Compilers\MSVC\lbDMF MSVC IDE.lnk"; DestDir: "{userdesktop}"; CopyMode: alwaysoverwrite;
 
 
 [Icons]
