@@ -1,7 +1,7 @@
 @echo off
 @rem This script creates a makefile based on templates
 
-type makefile.template > makefile
+type %DEVROOT%\Projects\cpp\make\makefile.template > makefile
 type makefile.module >> makefile
 echo all: mkmk.exe >> makefile
 
