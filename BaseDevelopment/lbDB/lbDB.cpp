@@ -540,6 +540,9 @@ Using SQLSetPos
 		boundcols->setModuleManager(*&manager, __FILE__, __LINE__);
 		
 		boundcols->setQuery(this);
+		
+		boundColumns = boundcols;
+		
 		printf("Have %d columns bound\n", cols);
 	}
 
@@ -631,7 +634,6 @@ lb_I_String* LB_STDCALL lbQuery::getAsString(int column) {
 	
 	// Caller get's an owner
 	string++;
-	
 	boundColumns->getString(column, *&string);
 	
 	return string.getPtr();;
@@ -642,7 +644,7 @@ lb_I_String* LB_STDCALL lbQuery::getAsString(int column) {
 lbErrCodes LB_STDCALL lbQuery::first() {
         UWORD   RowStat[20];
         UDWORD  RowsFetched = 0;
-
+	
         // Indicate, that data must prebound to a buffer
         databound = 0;
 
@@ -919,6 +921,7 @@ BEGIN_IMPLEMENT_LB_UNKNOWN(lbBoundColumn)
         ADD_INTERFACE(lb_I_BoundColumn)
 END_IMPLEMENT_LB_UNKNOWN()
 
+/*...slbErrCodes LB_STDCALL lbBoundColumn\58\\58\setData\40\lb_I_Unknown\42\ uk\41\:0:*/
 lbErrCodes LB_STDCALL lbBoundColumn::setData(lb_I_Unknown* uk) {
         _CL_LOG << "lbBoundColumn::setData(...) not implemented yet" LOG_
         
@@ -944,21 +947,27 @@ lbErrCodes LB_STDCALL lbBoundColumn::setData(lb_I_Unknown* uk) {
         
         return ERR_NOT_IMPLEMENTED;
 }
-
+/*...e*/
+/*...slbErrCodes LB_STDCALL lbBoundColumn\58\\58\leaveOwnership\40\lb_I_BoundColumn\42\ oldOwner\44\ lb_I_BoundColumn\42\ newOwner\41\:0:*/
 lbErrCodes LB_STDCALL lbBoundColumn::leaveOwnership(lb_I_BoundColumn* oldOwner, lb_I_BoundColumn* newOwner) {
 
-	newOwner->setData(oldOwner->getBound(), oldOwner->get_DataType(), oldOwner->buffer);
-	oldOwner->bound = 0;
-	oldOwner->buffer = NULL;
+	lbBoundColumn* oO = (lbBoundColumn*) oldOwner;
+	lbBoundColumn* nO = (lbBoundColumn*) newOwner;
+
+	nO->setData(oO->bound, oO->_DataType, oO->buffer);
+	oO->bound = 0;
+	oO->buffer = NULL;
 
 	return ERR_NONE;
 }
-
+/*...e*/
+/*...slb_I_Unknown\42\ LB_STDCALL lbBoundColumn\58\\58\getData\40\\41\:0:*/
 lb_I_Unknown* LB_STDCALL lbBoundColumn::getData() {
 	_CL_LOG << "lbBoundColumn::getData(...) not implemented yet" LOG_
 	return NULL;
 }
-
+/*...e*/
+/*...slbErrCodes LB_STDCALL lbBoundColumn\58\\58\getAsString\40\lb_I_String\42\ result\41\:0:*/
 lbErrCodes LB_STDCALL lbBoundColumn::getAsString(lb_I_String* result) {
 	
 	switch (_DataType) {
@@ -978,12 +987,14 @@ lbErrCodes LB_STDCALL lbBoundColumn::getAsString(lb_I_String* result) {
 	}
 	return ERR_NONE;
 }
+/*...e*/
 
 lbErrCodes LB_STDCALL lbBoundColumn::setFromString(lb_I_String* set) {
 	_CL_LOG << "lbBoundColumn::setFromString(...) not implemented yet" LOG_
 	return ERR_NONE;
 }
 
+/*...slbErrCodes LB_STDCALL lbBoundColumn\58\\58\bindColumn\40\lbQuery\42\ q\44\ int column\41\:0:*/
 lbErrCodes LB_STDCALL lbBoundColumn::bindColumn(lbQuery* q, int column) {
 //        _CL_LOG << "lbBoundColumn::bindColumn(...) not implemented yet" LOG_
 
@@ -1066,6 +1077,7 @@ lbErrCodes LB_STDCALL lbBoundColumn::bindColumn(lbQuery* q, int column) {
 
 	return ERR_NONE;
 }
+/*...e*/
 /*...e*/
 
 /*...sclass lbDatabase:0:*/
