@@ -30,13 +30,13 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.6 $
+ * $Revision: 1.7 $
  * $Name:  $
- * $Id: lbPluginManager.cpp,v 1.6 2005/03/03 07:34:33 lollisoft Exp $
+ * $Id: lbPluginManager.cpp,v 1.7 2005/03/03 08:38:00 lollisoft Exp $
  *
  * $Log: lbPluginManager.cpp,v $
- * Revision 1.6  2005/03/03 07:34:33  lollisoft
- * Improoved the plugin loader code.
+ * Revision 1.7  2005/03/03 08:38:00  lollisoft
+ * Removed multiple code. Reporting failure or success of plugin loading.
  *
  * Revision 1.5  2004/06/16 22:12:31  lollisoft
  * More code for plugin management
@@ -150,6 +150,7 @@ bool LB_STDCALL lbPluginManager::tryLoad(char* module) {
 	lbErrCodes err = ERR_NONE;
 	char* pluginDir = getenv("PLUGIN_DIR");
 				
+/*...sbuild PREFIX:0:*/
 #ifndef LINUX
         #ifdef __WATCOMC__
         #define PREFIX "_"
@@ -161,6 +162,7 @@ bool LB_STDCALL lbPluginManager::tryLoad(char* module) {
 #ifdef LINUX
 #define PREFIX ""
 #endif
+/*...e*/
 				
 	// Instantiate an lb_I_PluginModule object
 		
@@ -171,25 +173,20 @@ bool LB_STDCALL lbPluginManager::tryLoad(char* module) {
 	strcat(pluginModule, module);
 		
 	UAP(lb_I_Unknown, ukPlugin, __FILE__, __LINE__)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, pluginName)
+	pluginName->setData(module);
+	
+	UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
+	QI(pluginName, lb_I_KeyBase, key, __FILE__, __LINE__)
 				       
 	if (manager->makeInstance(PREFIX "instanceOfPluginModule", pluginModule, &ukPlugin) != ERR_NONE) {
 	
 		// It may be a Microsoft compiled plugin...
 		if (manager->makeInstance("instanceOfPluginModule", pluginModule, &ukPlugin) == ERR_NONE) {
-			ukPlugin->setModuleManager(*&manager, __FILE__, __LINE__);
-		
-			delete [] pluginModule;
-		
-			UAP_REQUEST(manager.getPtr(), lb_I_String, pluginName)
-			pluginName->setData(module);
-			
-			UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
-			
-			QI(pluginName, lb_I_KeyBase, key, __FILE__, __LINE__)
 
-			PluginModules->insert(&ukPlugin, &key);
-	
+			ukPlugin->setModuleManager(*&manager, __FILE__, __LINE__);
 			delete [] pluginModule;
+			PluginModules->insert(&ukPlugin, &key);
 	
 			return true;	
 		}
@@ -200,18 +197,8 @@ bool LB_STDCALL lbPluginManager::tryLoad(char* module) {
 		return false;
 	
 	} else {
-		
 		ukPlugin->setModuleManager(*&manager, __FILE__, __LINE__);
-		
 		delete [] pluginModule;
-		
-		UAP_REQUEST(manager.getPtr(), lb_I_String, pluginName)
-		pluginName->setData(module);
-			
-		UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
-			
-		QI(pluginName, lb_I_KeyBase, key, __FILE__, __LINE__)
-
 		PluginModules->insert(&ukPlugin, &key);
 	}
 
@@ -260,8 +247,12 @@ bool LB_STDCALL lbPluginManager::beginEnumPlugins() {
 #endif
 	
 	if (handle != -1) {
-		printf("Try to load plugin '%s'\n", find.name);
-		tryLoad(find.name);
+		printf("Try to load plugin '%s'", find.name);
+		if (!tryLoad(find.name)) 
+			printf(" ... failed.\n");
+		else
+			printf(" ... succeeded.\n");
+		
 /*...stest:16:*/
 #ifdef bla
 		if (PluginModules->exists(&key) == 1) {
@@ -279,8 +270,11 @@ bool LB_STDCALL lbPluginManager::beginEnumPlugins() {
 /*...e*/
 
 		while (_findnext(handle, &find) == 0) {
-			printf("Try to load plugin '%s'\n", find.name);
-			tryLoad(find.name);
+			printf("Try to load plugin '%s'", find.name);
+			if (!tryLoad(find.name)) 
+				printf(" ... failed.\n");
+			else
+			        printf(" ... succeeded.\n");
 		}
 		
 		_findclose(handle);
