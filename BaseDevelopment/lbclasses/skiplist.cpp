@@ -35,11 +35,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.13 $
+ * $Revision: 1.14 $
  * $Name:  $
- * $Id: skiplist.cpp,v 1.13 2003/02/17 21:34:41 lollisoft Exp $
+ * $Id: skiplist.cpp,v 1.14 2003/06/16 21:49:42 lollisoft Exp $
  *
  * $Log: skiplist.cpp,v $
+ * Revision 1.14  2003/06/16 21:49:42  lollisoft
+ * Bugfix ??
+ *
  * Revision 1.13  2003/02/17 21:34:41  lollisoft
  * Much problems with compilation solved, bu wy came this ??
  *
@@ -320,6 +323,7 @@ lb_I_KeyBase* LB_STDCALL SkipList::getKeyAt(int i) {
         while (temp != NULL) {
                 if (ii == i) return temp->getKey();
                 temp = temp->getNext();
+                ii++;
         }
         return NULL;
 }
