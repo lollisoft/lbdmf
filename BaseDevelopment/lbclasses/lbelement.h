@@ -4,10 +4,13 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.4 $
+ * $Revision: 1.5 $
  * $Name:  $
- * $Id: lbelement.h,v 1.4 2001/04/13 07:39:29 lolli Exp $
+ * $Id: lbelement.h,v 1.5 2001/06/21 06:33:40 lolli Exp $
  * $Log: lbelement.h,v $
+ * Revision 1.5  2001/06/21 06:33:40  lolli
+ * Removed some members
+ *
  * Revision 1.4  2001/04/13 07:39:29  lolli
  * Commit for backup
  *
@@ -65,33 +68,18 @@ class lbObject;
 class DLLEXPORT lbElement : public lb_I_Element {
 private:
 
-//    lb_I_Element* next;
-//    lb_I_Unknown* data;
-//    lb_I_KeyBase* key;
-
 public:
     lbElement() { next = NULL; data = NULL; key = NULL; }
     virtual ~lbElement();
 	
-//    lbElement(const lb_I_Object &o, const lb_I_KeyBase &_key, lbElement *_next=NULL);
     lbElement(const lb_I_Element &e) { next = e.getNext(); }
 
     DECLARE_LB_UNKNOWN()
 
     DECLARE_LB_ELEMENT(lbElement)
 
-//    lb_I_Element* getNext() const { return next; }
-//    void setNext(lb_I_Element *e){ next = e; }
     lb_I_Unknown* getObject() const;
 
-//    lbKeyBase &getKey() const { return *key; }
-/*
-    lb_I_KeyBase *getKey() const
-    {
-        if (!key) printf("Key in lbElement is null\n");
-        return key;
-    }
-*/
     int operator == (const lb_I_Element &a) const;
 
     int operator == (const lb_I_KeyBase &key) const;
