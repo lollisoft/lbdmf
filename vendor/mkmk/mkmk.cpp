@@ -11,11 +11,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.33 $
+ * $Revision: 1.34 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.33 2003/04/28 20:42:15 lollisoft Exp $
+ * $Id: mkmk.cpp,v 1.34 2003/05/29 08:41:19 lollisoft Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.34  2003/05/29 08:41:19  lollisoft
+ * Corrected makefile generation for watcom
+ *
  * Revision 1.33  2003/04/28 20:42:15  lollisoft
  * Moved back to watcom
  *
@@ -649,7 +652,8 @@ void writeDllTarget(char* modulename) {
   int count = split('.', ModName, &array);
 
   printf("FILE = FIL\n");
-  printf("FILE += $(foreach s, $(OBJS),$s, )\n");
+//  printf("FILE += $(foreach s, $(OBJS),$s, )\n");
+  printf("FILE += $(OBJLIST)\n");
   printf("LNK=%s.lnk\n", ModName);
   printf("ifeq ($(COMPILER), WATCOM)\n");
   printf("LINKFLAGS=@$(LNK)\n");
@@ -663,7 +667,7 @@ void writeDllTarget(char* modulename) {
   printf("\n%s.dll: $(OBJS)\n", ModName);
   printf("\t\t@echo Link %s.dll\n", ModName);
   printf("\t\t@echo NAME $(PROGRAM).dll > $(LNK)\n");
-  printf("\t\t@echo $(FILE) $(LIBS) >> $(LNK)\n");
+  printf("\t\t@echo $(FILE) >> $(LNK)\n");
   printf("\t\t@echo \"@if NOT \\\"$(LIBS)\\\" == \\\"\\\" echo LIBR $(LIBS) >> $(LNK)\" > doit.bat\n");
   printf("\t\t@cmd /C \"doit\"\n");
 //  printf("\t\t@;if NOT \"$(LIBS)\" == \"\" echo LIBR $(LIBS) >> $(LNK)\n");
@@ -870,6 +874,40 @@ void ListFiles(FILE *f, char *Line, TDepList *l, bool IsObj=false)
   printf("%s\n",Line);
 }
 /*...e*/
+/*...svoid ListFilesWithComma\40\FILE \42\f\44\ char \42\Line\44\ TDepList \42\l\44\ bool IsObj\61\false\41\:0:*/
+void ListFilesWithComma(FILE *f, char *Line, TDepList *l, bool IsObj=false)
+{
+  char s[120],FName[80];
+  int i;
+  TDepItem *d;
+
+  for (i=0; i<l->Count; i++)
+  {
+    d=(TDepItem*)(*l)[i];
+    strcpy(s," ");
+    strcat(s,d->Path);
+    if (IsObj) ObjExt(d->Name,FName,sizeof(FName));
+    else strcpy(FName,d->Name);
+    strcat(s,FName);
+
+    /* Append ',' if i is less than l->Count */
+    /* Because of problems in watcom linking */
+
+    if (i < l->Count-1) strcat(s, ",");
+
+    if (strlen(s)+strlen(Line)>74)
+    {
+      printf("%s %c\n",Line,MoreChar);
+      sprintf(Line,"\t\t%s",s);
+    }
+    else {
+//	if (i!=0) strcat(Line,", ");
+    	strcat(Line,s);
+    }
+  }
+  printf("%s\n",Line);
+}
+/*...e*/
 /*...svoid WriteDep\40\FILE \42\f\44\ char \42\Name\44\ TIncludeParser \42\p\41\:0:*/
 void WriteDep(FILE *f, char *Name, TIncludeParser *p)
 {
@@ -919,7 +957,12 @@ void WriteEnding(FILE *f, char *ModuleName, TDepList *l)
   char Line[120] = "";
 
   printf("OBJS =");
+  
   ListFiles(f,Line,l,true);
+  Line[0] = 0;
+  
+  printf("OBJLIST =");
+  ListFilesWithComma(f,Line,l,true);
 
 #ifndef UNIX
 //  printf("LIBS = $(DEVROOT)\\projects\\lib\\lbhook.lib \n");
