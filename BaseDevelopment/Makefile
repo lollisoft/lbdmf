@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.27 $
+# * $Revision: 1.28 $
 # * $Name:  $
-# * $Id: Makefile,v 1.27 2005/02/10 19:14:11 lollisoft Exp $
+# * $Id: Makefile,v 1.28 2005/03/02 20:05:57 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.28  2005/03/02 20:05:57  lollisoft
+# * Added new module lbLoginWizard and bugfixes
+# *
 # * Revision 1.27  2005/02/10 19:14:11  lollisoft
 # * Why ?
 # *
@@ -104,7 +107,7 @@ endif
 
 
 ifeq ($(OSTYPE), Windows_NT)
-DEVROOT_MAKE=$(DEVROOT)
+DEVROOT_MAKE=$(DEVLW)/$(BASE)
 endif
 
 Path=$(PATH)
@@ -175,9 +178,10 @@ ALLTARGETS = \
 	../AppDevelopmentDemo/DynamicApp/App \
 	../Test/Console/XML \
 	../Test/GUI/wxWrapper \
+	../Test/GUI/wxModules \
 	../AppDevelopment \
-	../Doc/html \
-	../Samples/HelloWorld
+	../Samples/HelloWorld \
+	../Doc/html
 endif
 
 
@@ -223,6 +227,10 @@ endif
 ifeq ($(OSTYPE), Windows_NT)
 ../Test/GUI/wxWrapper: dummy
 	$(MAKE) -C $@ -e MODULE=wxWrapper -e TARGET=$(TARGETEXE) -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
+	$(MAKE) -C $@
+
+../Test/GUI/wxModules: dummy
+	$(MAKE) -C $@ -e MODULE=lbLoginWizard -e TARGET=$(TARGETDLL) -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
 	$(MAKE) -C $@
 endif
 
