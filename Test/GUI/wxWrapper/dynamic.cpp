@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.41 2005/01/25 12:52:56 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.42 2005/01/27 12:59:11 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.41 $
+ * $Revision: 1.42 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.41 2005/01/25 12:52:56 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.42 2005/01/27 12:59:11 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.42  2005/01/27 12:59:11  lollisoft
+ * Changed logging messages and SQL query to not use " in it
+ *
  * Revision 1.41  2005/01/25 12:52:56  lollisoft
  * Be only on linux verbose
  *
@@ -396,12 +399,14 @@ public:
 		char buffer[1000] = "";
 
 		sprintf(buffer, 
-			"select \"anwendungen\".\"name\" from \"anwendungen\" inner join \"user_anwendungen\" on "
-			"\"anwendungen\".id = \"user_anwendungen\".\"anwendungenid\" "
-			"inner join \"users\" on \"user_anwendungen\".userid = \"users\".id where "
-			"\"users\".userid = '%s'"
+			"select anwendungen.name from anwendungen inner join user_anwendungen on "
+			"anwendungen.id = user_anwendungen.anwendungenid "
+			"inner join users on user_anwendungen.userid = users.id where "
+			"users.userid = '%s'"
 				, userid);
 
+
+		sampleQuery->skipFKCollecting();
 		sampleQuery->query(buffer);
 
 		// Fill up the available applications for that user.
@@ -579,35 +584,35 @@ DECLARE_LB_UNKNOWN()
 		
 		printf("wxLogonPage::OnWizardPageChanging() called\n");
 		REQUEST(manager.getPtr(), lb_I_Database, database)
-printf("Do init Database\n");
-		database->init();
-printf("Connect to the database server\n");
-		err = database->connect("lbDMF", "dba", "trainres");
 
-printf("Database initialized\n");
+		database->init();
+		err = database->connect("lbDMF", "dba", "trainres");
 
 		sampleQuery = database->getQuery(0);
 
 		char buffer[1000] = "";
 
-printf("Copy user and password\n");
-
 		char* pass = strdup(getTextValue("Passwort:"));
 		char* user = strdup(getTextValue("Benutzer:"));
 
 
-		sprintf(buffer, "select userid, passwort from \"users\" where userid = '%s' and passwort = '%s'",
+		sampleQuery->skipFKCollecting();
+
+		sprintf(buffer, "select userid, passwort from users where userid = '%s' and passwort = '%s'",
                 	user, pass);
-printf("---- %s ####\n", buffer);
+
+_CL_VERBOSE << "Query for user " << user LOG_
 
 		if (sampleQuery->query(buffer) != ERR_NONE) {
 		    printf("Query for user and password failed\n");
 		    return FALSE;
 		}
 
-printf("Execute query\n");
+_CL_VERBOSE << "Move to first row" LOG_
 
 		err = sampleQuery->first();
+
+_CL_VERBOSE << "Moved" LOG_
 
 		if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
 		        printf("User authenticated correctly (%s)\n", user);
