@@ -22,14 +22,87 @@ Each interface like lb_I_Container for a container is
 configured pointing to a module (DLL/so) and a functor, that creates the instance.
 
 
-Prerequirements:
+Requirements:
+
+Sample installation is at drive D:
 
 Windows:
 
-You need a MSC compiler (only the console tools),
-also the Watcom 10.6 or Openwatcom compiler is needed to compile all under Windows,
-MKMK.exe - a makefile creation tool to build makefiles that matches to
-my make environment, the source is included, so you can bootstrap it.
+	At least MSVC 6.0 compiler (only the console tools are needed)
+
+	The MSVC 6.0 IDE projectfile exists, but doesn't yet support
+	directly the making of the GUI sample. But the rest was tested earlier.
+
+	or
+
+	the Watcom 10.6 or the latest Openwatcom compiler is needed.
+
+	I use watcom and therefore, this compiler is tested at most time.
+
+	The wxWidgets source code. Tested version is 2.4.2.
+	
+
+
+Post installation:
+
+	Download the compilers of your choice. Install it into a Develop\Tools directory.
+	(eg. D:\lbDMF\Develop\tools\watcom)
+
+	Download the stable wxWidgets source distribution (at least 2.4.2). Install it to
+	a Develop\wxwin directory. (eg. D:\lbDMF\Develop\wxwin\wx)
+
+
+	A database is needed by the sample applications. Tested are MySQL, PostgreSQL,
+	Microsoft SQL Server 2000, Sybase SQL Anywhere 5.x.
+
+	The latest tests were done with MySQL and XAMPP for Windows. Feel free to use the
+	other database vendors, but note: There are not yet SQL scripts for all databases.
+
+	The following steps are not documented, nor tested as well. I use a running version :-)
+
+	Download xampp for windows or
+	http://www.apachefriends.org/en/xampp-windows.html#641
+
+	download the database only from the same site as the
+	ODBC drivers below.
+
+	Download ODBC drivers for MySQL
+	http://dev.mysql.com/downloads/connector/odbc/3.51.html
+
+Post setup:
+
+	If you start the lbDMF Develop link on the desktop, you get opened a text file with
+	a hint text.
+
+	This simply means to configure the base directory. In this sample installation scenario,
+	simply change the lines set DEVLW=<driveletter> to DEVLW=D:
+
+	Start a normal MSDOS console (cmd) and type these lines:
+	set WXWIN=D:\lbDMF\Develop\wxwin\wx
+	D:
+	cd %WXWIN%\src\msw
+	copy %WXWIN%\include\wx\msw\setup.h %WXWIN%\include
+	wmake -f makefile.wat all
+
+	This should start compiling the wxWidgets code.
+
+	If you have done this, you can restart the lbDMF Develop link and a simple console window
+	starts.
+
+	Type make
+
+	To be able to run the sample applications, you need to create at least one database.
+	Do this with the tools, provided from the database vendors.
+	
+	The first database, needed should be named lbdmf and a correct ODBC configuration should
+	be set up.
+
+	NOTE: The database login function is used with hardcoded ODBC DSN name and also user with password.
+	The functions could be found by a search for ->connect(
+
+	Create at least an use to have rights to change data.
+
+
 Unix tools like make (Mingw or the like), a version is also included in the binary distribution
 Batchfiles are provided to setup the env variables,
 subst a drive Q: pointing to the actual development tree
