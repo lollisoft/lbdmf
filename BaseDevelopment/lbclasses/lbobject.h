@@ -37,10 +37,13 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.17 $
+ * $Revision: 1.18 $
  * $Name:  $
- * $Id: lbobject.h,v 1.17 2003/08/16 18:07:00 lollisoft Exp $
+ * $Id: lbobject.h,v 1.18 2003/08/22 17:35:09 lollisoft Exp $
  * $Log: lbobject.h,v $
+ * Revision 1.18  2003/08/22 17:35:09  lollisoft
+ * Implemented UAP integer for parameter values
+ *
  * Revision 1.17  2003/08/16 18:07:00  lollisoft
  * Added my new address due to move
  *
@@ -188,13 +191,16 @@ protected:
 /*...sclass lbParameter:0:*/
 class lbParameter : public lb_I_Parameter {
 public:
-	lbParameter() { printf("lbParameter() called\n"); }
+	lbParameter() {}
 	virtual ~lbParameter() {}
 
 	DECLARE_LB_UNKNOWN()
 	
 	virtual void LB_STDCALL setUAPString(lb_I_String*& parameter, lb_I_String*& p);
 	virtual lbErrCodes LB_STDCALL getUAPString(lb_I_String*& parameter, lb_I_String*& p);
+
+	virtual void LB_STDCALL setUAPInteger(lb_I_String*& parameter, lb_I_Integer*& p);
+	virtual lbErrCodes LB_STDCALL getUAPInteger(lb_I_String*& parameter, lb_I_Integer*& p);
 protected:
 
 	UAP(lb_I_Container, parameters, __FILE__, __LINE__)

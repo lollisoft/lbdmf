@@ -135,6 +135,46 @@ lbErrCodes LB_STDCALL lbParameter::getUAPString(lb_I_String*& parameter, lb_I_St
 	
 	return ERR_NONE;
 }
+
+void LB_STDCALL lbParameter::setUAPInteger(lb_I_String*& parameter, lb_I_Integer*& p) {
+	lbErrCodes err = ERR_NONE;
+	if (parameters == NULL) {
+		REQUEST(manager.getPtr(), lb_I_Container, parameters)
+		if (parameters == NULL) {
+			_LOG << "Error: Could not get container instance for parameres" LOG_
+			return;
+		}
+	}	
+	
+	UAP(lb_I_KeyBase, k_parameter, __FILE__, __LINE__)
+	QI(parameter, lb_I_KeyBase, k_parameter, __FILE__, __LINE__)
+
+	UAP(lb_I_Unknown, uk_p, __FILE__, __LINE__)
+	QI(p, lb_I_Unknown, uk_p, __FILE__, __LINE__)
+	
+	
+	parameters->insert(&uk_p, &k_parameter);
+}
+
+lbErrCodes LB_STDCALL lbParameter::getUAPInteger(lb_I_String*& parameter, lb_I_Integer*& p) {
+	lbErrCodes err = ERR_NONE;
+	
+	lb_I_String* pp = parameter;
+	UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
+	QI(pp, lb_I_KeyBase, key, __FILE__, __LINE__)
+	
+	UAP(lb_I_Unknown, uk_p_integer, __FILE__, __LINE__)
+
+	uk_p_integer = parameters->getElement(&key);
+
+	UAP(lb_I_Integer, integer, __FILE__, __LINE__)
+	QI(uk_p_integer, lb_I_Integer, integer, __FILE__, __LINE__)
+	
+	if (integer.getPtr() != NULL) p->setData(integer->getData());
+	
+	
+	return ERR_NONE;
+}
 /*...e*/
 /*...slbReference:0:*/
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbReference)
