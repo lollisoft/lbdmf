@@ -92,3 +92,8 @@ all: $(PROGRAM)
 $(PROGRAM): $(OBJECTS)
 	$(CXX) -o $(PROGRAM) $(OBJECTS) `wx-config --libs` $(LIBS) -lc $(VENDORLIBS)
 	cp $(PROGRAM) $(HOME)/bin
+
+clean:
+	-rm *.o
+	-rm $(PROGRAM)
+	-rm *.log
