@@ -690,13 +690,13 @@ lbErrCodes LB_STDCALL lbQuery::init(HENV _henv, HDBC _hdbc, int readonly) {
                 return ERR_DB_ALLOCSTATEMENT;
         }
 
-        int size = 1;
+        SQLINTEGER size = 1;
 
-	retcode = SQLSetStmtAttr(hstmt, SQL_ATTR_ROW_ARRAY_SIZE, (SQLPOINTER) size, 0);
+	retcode = SQLSetStmtAttr(hstmt, SQL_ATTR_ROW_ARRAY_SIZE, (SQLPOINTER) &size, 0);
 
         if (retcode != SQL_SUCCESS)
         {
-                dbError( "SQLSetStmtAttr()");
+		_dbError( "SQLSetStmtAttr()",henv,hdbc,hstmt);
                 _LOG << "lbDatabase::getQuery() failed due to setting row array size." LOG_
                 SQLFreeEnv(henv);
                 return ERR_DB_ALLOCSTATEMENT;
@@ -716,6 +716,7 @@ lbErrCodes LB_STDCALL lbQuery::init(HENV _henv, HDBC _hdbc, int readonly) {
 	}	
 /*...e*/
 /*...sbla:0:*/
+#ifdef bla
 	hdbc = _hdbc;
 
 	retcode = SQLAllocStmt(hdbc, &hupdatestmt); /* Statement handle */
@@ -774,7 +775,8 @@ lbErrCodes LB_STDCALL lbQuery::init(HENV _henv, HDBC _hdbc, int readonly) {
 		_LOG << "lbDatabase::getQuery() failed due to set statement attributes." LOG_
 		//SQLFreeEnv(henv);
 		return ERR_DB_ALLOCSTATEMENT;
-	}	
+	}
+#endif	
 /*...e*/
 	
 	return ERR_NONE;
@@ -2301,12 +2303,12 @@ lbErrCodes LB_STDCALL lbDatabase::connect(char* DSN, char* user, char* passwd) {
 /*...e*/
 lb_I_Query* LB_STDCALL lbDatabase::getQuery(int readonly) {
 	lbQuery* query = new lbQuery;
+	query->setModuleManager(*&manager, __FILE__, __LINE__);
 
 	if (query->init(henv, hdbc, readonly) != ERR_NONE) {
 		//return NULL;
 	}
 
-	query->setModuleManager(*&manager, __FILE__, __LINE__);
 	lb_I_Query* q;
 	
 	query->queryInterface("lb_I_Query", (void**) &q, __FILE__, __LINE__);

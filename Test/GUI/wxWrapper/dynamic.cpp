@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.37 2005/01/23 11:35:00 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.38 2005/01/23 17:30:56 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.37 $
+ * $Revision: 1.38 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.37 2005/01/23 11:35:00 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.38 2005/01/23 17:30:56 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.38  2005/01/23 17:30:56  lollisoft
+ * Some problems under Linux
+ *
  * Revision 1.37  2005/01/23 11:35:00  lollisoft
  * Now the code compiles under SuSE Linux 9.1 except wx. It has link problems
  *
@@ -363,7 +366,8 @@ public:
 
 /*...svoid setLoggedOnUser\40\char\42\ user\41\:8:*/
 	void setLoggedOnUser(char* user) {
-		 userid = strdup(user);
+		printf("setLoggedOnUser(char* user)");;
+		userid = strdup(user);
 		 
 		REQUEST(manager.getPtr(), lb_I_Database, database)
 
@@ -547,18 +551,28 @@ DECLARE_LB_UNKNOWN()
 		database->init();
 		database->connect("lbDMF", "dba", "trainres");
 
+printf("Database initialized\n");
+
 		sampleQuery = database->getQuery(0);
 
-		char buffer[100] = "";
+		char buffer[1000] = "";
+
+printf("Copy user and password\n");
 
 		char* pass = strdup(getTextValue("Passwort:"));
 		char* user = strdup(getTextValue("Benutzer:"));
-	
+
 
 		sprintf(buffer, "select userid, passwort from \"users\" where userid = '%s' and passwort = '%s'",
                 	user, pass);
+printf("---- %s ####\n", buffer);
 
-		sampleQuery->query(buffer);
+		if (sampleQuery->query(buffer) != ERR_NONE) {
+		    printf("Query for user and password failed\n");
+		    return FALSE;
+		}
+
+printf("Execute query\n");
 
 		lbErrCodes err = sampleQuery->first();
 
@@ -1695,7 +1709,7 @@ lbLoginDialog::~lbLoginDialog() {
 /*...slbErrCodes LB_STDCALL lbLoginDialog\58\\58\lbLoginOk\40\lb_I_Unknown\42\ uk\41\:0:*/
 lbErrCodes LB_STDCALL lbLoginDialog::lbLoginOk(lb_I_Unknown* uk) {
 	REQUEST(manager.getPtr(), lb_I_Database, database)
-
+printf("Begin test user and password\n");
 	database->init();
 	database->connect("lbDMF", "dba", "trainres");
 
@@ -1714,7 +1728,7 @@ lbErrCodes LB_STDCALL lbLoginDialog::lbLoginOk(lb_I_Unknown* uk) {
 	if (user) free(user);
 
 	printf("%s\n", buffer);
-
+printf("Start query for user and password\n");
 	sampleQuery->query(buffer);
 
 	if (sampleQuery->first() == ERR_NONE) {
