@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.30 $
+# * $Revision: 1.31 $
 # * $Name:  $
-# * $Id: Makefile,v 1.30 2005/03/05 23:13:33 lollisoft Exp $
+# * $Id: Makefile,v 1.31 2005/03/05 23:28:05 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.31  2005/03/05 23:28:05  lollisoft
+# * Initial wx plugin attempt
+# *
 # * Revision 1.30  2005/03/05 23:13:33  lollisoft
 # * More changes to build source tree under Mac OS X
 # *
@@ -185,7 +188,7 @@ ALLTARGETS = \
 	../AppDevelopmentDemo/DynamicApp/App \
 	../Test/Console/XML \
 	../Test/GUI/wxWrapper \
-	../Test/GUI/wxModules \
+	../Test/GUI/wxPlugins/lbLoginWizard \
 	../AppDevelopment \
 	../Samples/HelloWorld \
 	../Doc/html
@@ -242,7 +245,7 @@ ifeq ($(OSTYPE), Windows_NT)
 	$(MAKE) -C $@ -e MODULE=wxWrapper -e TARGET=$(TARGETEXE) -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
 	$(MAKE) -C $@
 
-../Test/GUI/wxModules: dummy
+../Test/GUI/wxPlugins/lbLoginWizard: dummy
 	$(MAKE) -C $@ -e MODULE=lbLoginWizard -e TARGET=plugin -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
 	$(MAKE) -C $@
 endif
