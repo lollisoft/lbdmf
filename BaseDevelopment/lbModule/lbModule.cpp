@@ -1,11 +1,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.32 $
+ * $Revision: 1.33 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.32 2002/07/23 17:48:55 lothar Exp $
+ * $Id: lbModule.cpp,v 1.33 2002/08/21 18:01:37 lothar Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.33  2002/08/21 18:01:37  lothar
+ * Implemented the new container functions for direct access
+ *
  * Revision 1.32  2002/07/23 17:48:55  lothar
  * Current version runs
  *
@@ -389,6 +392,26 @@ void LB_STDCALL SkipList::setElement(lb_I_KeyBase** key, lb_I_Unknown ** const e
     insert(e, key); 
 }
 /*...e*/
+lb_I_Unknown* LB_STDCALL SkipList::getElementAt(int i) {
+        LOG("SkipList::getElementAt(int i) not implemented")
+        int ii = 0;
+        lb_I_Element* temp = container_data;
+        while (temp != NULL) {
+                if (ii == i) return temp->getObject();
+                temp = temp->getNext();
+        }
+        return NULL;
+}
+lb_I_KeyBase* LB_STDCALL SkipList::getKeyAt(int i) {
+        LOG("SkipList::getKeyAt(int i) not implemented")
+        int ii = 0;
+        lb_I_Element* temp = container_data;
+        while (temp != NULL) {
+                if (ii == i) return temp->getKey();
+                temp = temp->getNext();
+        }
+        return NULL;
+}
 
 
 /*...srandomLevel\40\void\41\:0:*/
