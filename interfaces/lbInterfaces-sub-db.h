@@ -3,9 +3,10 @@
 
 class lb_I_Query : public lb_I_Unknown
 {
+protected:
 	lb_I_Query() {}
 	virtual ~lb_I_Query() {}
-	
+public:	
 	virtual lbErrCodes LB_STDCALL query(char* q) = 0;
 	virtual lbErrCodes LB_STDCALL first() = 0;
 	virtual lbErrCodes LB_STDCALL next() = 0;
@@ -28,7 +29,7 @@ public:
 	 */
 	virtual lbErrCodes LB_STDCALL connect(char* DSN, char* user, char* passwd) = 0;
 	
-	virtual lb_I_Query LB_STDCALL getQuery() = 0;
+	virtual lb_I_Query* LB_STDCALL getQuery() = 0;
 	
 	
 };
