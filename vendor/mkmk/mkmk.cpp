@@ -11,11 +11,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.14 $
+ * $Revision: 1.15 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.14 2001/11/04 19:07:49 lothar Exp $
+ * $Id: mkmk.cpp,v 1.15 2001/11/04 19:28:47 lothar Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.15  2001/11/04 19:28:47  lothar
+ * Uninitalized variable bug solved
+ *
  * Revision 1.14  2001/11/04 19:07:49  lothar
  * Produces it's own makefile that work's (using templates)
  *
@@ -645,7 +648,7 @@ void WriteDep(FILE *f, char *Name, TIncludeParser *p)
 /*...svoid WriteEnding\40\FILE \42\f\44\ char \42\ExeName\44\ TDepList \42\l\41\:0:*/
 void WriteEnding(FILE *f, char *ModuleName, TDepList *l)
 {
-  char Line[120];
+  char Line[120] = "";
 
   printf("OBJS =");
   ListFiles(f,Line,l,true);
