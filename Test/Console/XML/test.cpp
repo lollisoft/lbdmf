@@ -26,13 +26,16 @@ void main() {
 #endif
 /*...e*/
 	getch();
-LOG("Test using logger before loading module manager");
 
 	lb_I_Module* mm = getModuleInstance();
 
+	mm->initialize();
+LOG("Test using logger before loading module manager");
+
         LOG("Test has been started");
         LOG("Test has been started");
 
+	mm->uninitialize();
         mm->release();
         unHookAll();
         getch();
@@ -41,9 +44,10 @@ LOG("Test using logger before loading module manager");
 	getch();
 	
 	mm = getModuleInstance();
+	mm->initialize();
 	lb_I_Unknown* uk = NULL;
 	
-	if (mm->request("_instanceOfContainer@4", uk) != ERR_NONE) {
+	if (mm->request("lb_I_Container", uk) != ERR_NONE) {
 		CL_LOG("Error: Could not get needed instance!");
 	}
 	
@@ -56,16 +60,19 @@ LOG("Test using logger before loading module manager");
 	CL_LOG("Container requested");
 	getch();
 
-	if (mm->request("_instanceOfIntegerKey@4", uk) != ERR_NONE) {
+	if (mm->request("lb_I_Integer", uk) != ERR_NONE) {
 		CL_LOG("Error: Could not get needed instance!");
 	}
-	
+#ifdef bla
 	lb_I_KeyBase* key = NULL;
 	if (uk->queryInterface("lb_I_KeyBase", (void**) &key) != ERR_NONE) {
 		CL_LOG("Error: Could not get needed interface!");
 	}
+#endif
+	mm->uninitialize();
+	mm->release();
 
-	CL_LOG("Key requested");
+	CL_LOG("Basic tests ended");
 	getch();
 
         /**
@@ -75,6 +82,7 @@ LOG("Test using logger before loading module manager");
         for (long i = 0; i < 10000000; i++) {
 #endif
                 lb_I_Module* modMan = getModuleInstance();
+                modMan->initialize();
 
 LOG("Call lb_I_Module->load()");
         
@@ -128,6 +136,7 @@ cout << "pUnknown->queryInterface('lb_I_XMLConfig', (void**) &XMLinst)" << endl;
                 
                 XMLinst->release();
                 pUnknown->release();
+		modMan->uninitialize();
                 modMan->release();
                 
               
