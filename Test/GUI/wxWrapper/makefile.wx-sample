@@ -84,7 +84,7 @@ endif
 
 .SUFFIXES:	.o .cpp
 
-.cpp.o :
+.cpp.o : $(DEVROOT)/Projects/CPP/interfaces/*.h $(DEVROOT)/Projects/CPP/include/*.h
 	$(CXX) -c -g `wx-config --cxxflags` -D__WXDEBUG__ -DLB_I_EXTENTIONS -DUNIX -DLINUX $(MOD_INCL) -o $@ $<
 	
 all: $(PROGRAM)
