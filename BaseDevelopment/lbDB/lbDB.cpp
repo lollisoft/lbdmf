@@ -109,7 +109,6 @@ class lbBoundColumns: public lb_I_ColumnBinding {
 public:	
 	lbBoundColumns() { ref = STARTREF; ArraySize = 1; }
 	virtual ~lbBoundColumns() {
-		printf("~lbBoundColumns() called\n");
 	}
 	
 	DECLARE_LB_UNKNOWN()
@@ -291,15 +290,12 @@ public:
 		colName = NULL;
 	}
 	virtual ~lbBoundColumn() {
-		printf("~lbBoundColumn() called\n");
 		switch (_DataType) {
 			case SQL_CHAR:
 			case SQL_VARCHAR:
 			case SQL_LONGVARCHAR:
-				printf("Destroy a bound column with '%s' as data\n", buffer);
 				break;
 			case SQL_INTEGER:
-				printf("Destroy a bound column with %d as data\n", buffer);
 				break;
 			default:
 				_CL_LOG << "lbBoundColumn::bindColumn(...) failed: Unknown or not supported datatype" LOG_
@@ -307,6 +303,7 @@ public:
 		}
 		
 		if ((bound != 0) && (buffer != NULL)) {
+			printf("Free buffer in lbBoundColumn\n");
 			free(buffer);
 			buffer = NULL;
 		}
@@ -339,12 +336,12 @@ protected:
 		_DataType = dt;
 		buffer = bu;
 		REQUEST(manager.getPtr(), lb_I_String, colName)
-		printf("Set data in cloned column. Buffer is %p\n", buffer);
+
 		if (name == NULL) {
 			printf("ERROR: Cloning data with NULL pointer\n");
 		}
+
 		colName->setData(name->getData());
-		printf("Have set data in cloned column (%s)\n", colName->getData());
 		return ERR_NONE;
 	}
 
@@ -395,6 +392,9 @@ END_IMPLEMENT_LB_UNKNOWN()
 
 lbErrCodes LB_STDCALL lbBoundColumns::setData(lb_I_Unknown* uk) {
         _CL_LOG << "lbBoundColumns::setData(...) not implemented yet" LOG_
+        
+        printf("lbBoundColumns::setData(lb_I_Unknown* uk) called\n");
+        
         return ERR_NOT_IMPLEMENTED;
 }
 
@@ -491,8 +491,6 @@ Therefore I need an indicator, set by the user of this library to know, which on
 	for (int i = 1; i <= num; i++) {
 		lbErrCodes err = ERR_NONE;
 		
-//		printf("Bind a column\n");
-
 		// Create the instance ...
 		lbBoundColumn* bc = new lbBoundColumn();
 
