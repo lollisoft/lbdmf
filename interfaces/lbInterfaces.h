@@ -1315,7 +1315,7 @@ protected:
 	friend class lb_I_Dispatcher;
 };
 /*...e*/
-
+/*...sclass lb_I_EvHandler:0:*/
 class lb_I_EvHandler : public lb_I_Unknown {
 public:
 	virtual lbErrCodes LB_STDCALL setHandler(lb_I_EventHandler* evHandlerInstance, lbEvHandler evHandler) = 0;
@@ -1324,6 +1324,7 @@ public:
 		
 	virtual lbErrCodes LB_STDCALL call(lb_I_Unknown* evData, lb_I_Unknown** evResult) = 0; 
 };
+/*...e*/
 
 /*...sclass lb_I_DispatchRequest:0:*/
 class lb_I_DispatchRequest : public lb_I_Unknown {
@@ -1497,6 +1498,16 @@ public:
 	 * and then initialize Actors for still initialized event handlers.
 	 */
 	virtual lb_I_EventManager* getEVManager() = 0;
+
+
+
+	/**
+	 * Basic functions to be used for a UI application
+	 */
+
+	virtual lbErrCodes LB_STDCALL addMenuBar(char* name) = 0;
+	virtual lbErrCodes LB_STDCALL addMenu(char* name) = 0;
+	virtual lbErrCodes LB_STDCALL addMenuEntry(char* in_menu, char* entry, char* evHandler, char* afterentry = NULL) = 0;
 };
 /*...e*/
 

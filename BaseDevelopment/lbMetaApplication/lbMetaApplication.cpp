@@ -1,11 +1,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.9 $
+ * $Revision: 1.10 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.9 2002/09/12 18:34:02 lothar Exp $
+ * $Id: lbMetaApplication.cpp,v 1.10 2002/09/17 04:26:36 lothar Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.10  2002/09/17 04:26:36  lothar
+ * First API-Callback works
+ *
  * Revision 1.9  2002/09/12 18:34:02  lothar
  * Added some UI wrapper and sub module creation. Cleanup
  *
@@ -248,7 +251,10 @@ lbErrCodes LB_STDCALL lb_MetaApplication::Initialize() {
 	 * environment variable (TARGET_APPLICATION)
 	 */
 	
-
+	addMenuBar("Edit");
+	LOG("Added first menu bar")
+	addMenuBar("Help");
+	LOG("Added second menu bar")
 
 	// Let the GUI show a message box
 	
@@ -278,7 +284,27 @@ lbErrCodes LB_STDCALL lb_MetaApplication::loadSubModules() {
 
 /*...sBasic functions to be used for a UI application:0:*/
 lbErrCodes LB_STDCALL lb_MetaApplication::addMenuBar(char* name) {
-	return ERR_NONE;
+	lbErrCodes err = ERR_NONE;
+	
+	UAP_REQUEST(manager.getPtr(), lb_I_String, string)
+	string->setData(name);
+	UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
+	QI(string, lb_I_Unknown, uk, __FILE__, __LINE__)
+
+	// Avoids GPF while leaving the function
+	string++;
+
+	UAP_REQUEST(manager.getPtr(), lb_I_String, result)
+	UAP(lb_I_Unknown, uk_result, __FILE__, __LINE__)
+	QI(result, lb_I_Unknown, uk_result, __FILE__, __LINE__)
+
+	if (uk == NULL) LOG("Error: Cannot call with a null pointer!")	
+	
+	LOG("Begin dispatch function")	
+	dispatcher->dispatch("AddMenuBar", uk.getPtr(), &uk_result);
+	LOG("Have dispatched function")
+	
+	return err;
 }
 
 lbErrCodes LB_STDCALL lb_MetaApplication::addMenu(char* name) {
@@ -608,6 +634,8 @@ lbErrCodes LB_STDCALL lb_Dispatcher::dispatch(char* EvName, lb_I_Unknown* EvData
 	LOG("Call handler now")
 	
 	ev->call(EvData, EvResult);
+	
+	LOG("Called handler now")
 
 	return ERR_NONE;
 }
