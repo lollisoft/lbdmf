@@ -28,11 +28,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.51 $
+ * $Revision: 1.52 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.51 2003/04/28 20:32:07 lollisoft Exp $
+ * $Id: lbModule.cpp,v 1.52 2003/05/24 02:11:47 lollisoft Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.52  2003/05/24 02:11:47  lollisoft
+ * Linux don't know DebugBreak()
+ *
  * Revision 1.51  2003/04/28 20:32:07  lollisoft
  * Moved back to watcom
  *
@@ -2004,7 +2007,7 @@ printf("Set up location\n");
 	_inst.setFile(__FILE__);
 	_inst.setLine(__LINE__);
 
-	if ((void**) &_inst == NULL) DebugBreak();
+	//if ((void**) &_inst == NULL) DebugBreak();
 	_CL_LOG << "Query interface for " << "lb_I_XMLConfig" LOG_
         err = xml_I->queryInterface("lb_I_XMLConfig", (void**) &_inst, __FILE__, __LINE__);
 
