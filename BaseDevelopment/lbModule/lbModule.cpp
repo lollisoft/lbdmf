@@ -3,11 +3,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.23 $
+ * $Revision: 1.24 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.23 2002/04/15 18:24:31 lothar Exp $
+ * $Id: lbModule.cpp,v 1.24 2002/04/18 19:23:43 lothar Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.24  2002/04/18 19:23:43  lothar
+ * Does not compile ???
+ *
  * Revision 1.23  2002/04/15 18:24:31  lothar
  * Huge changes - works good
  *
@@ -57,7 +60,7 @@
 #include <lbmodule-module.h>
 /*...e*/
 
-//#define IR_USAGE
+#define IR_USAGE
 
 /*...sincludes:0:*/
 #ifdef WINDOWS
@@ -320,6 +323,7 @@ public:
         void LB_STDCALL destroyInstance(char* addr, char* classname, char* file, int line);
         
 	char* LB_STDCALL getCreationLoc(char* addr);
+	void LB_STDCALL printReferences(char* addr);	
 
 
 	void LB_STDCALL loadContainer(lb_I_Module* m);
@@ -481,8 +485,10 @@ void LB_STDCALL InstanceRepository::delReference(char* addr, char* classname, ch
 				referenceList* rList = temp->rList;
 				referenceList* rPrev = NULL;
 				
+				if (rList == NULL) printf("Error: Reference list is NULL\n");
+/*...sSearch in the references:32:*/
 				while (rList != NULL) {
-				
+					printf("Stored reference is in %s at %d\n", rList->file, rList->line);
 					if ((strcmp(rList->file, file) == 0) && (rList->line == line)) {
 						foundReference = 1;
 						if (rList->count > 1) {
@@ -521,6 +527,7 @@ void LB_STDCALL InstanceRepository::delReference(char* addr, char* classname, ch
 					rPrev = rList;
 					rList = rList->next;
 				}
+/*...e*/
 				
 				if (foundReference == 0) {
 					char buf[1000] = "";
@@ -651,22 +658,25 @@ char* LB_STDCALL InstanceRepository::getCreationLoc(char* addr) {
 		temp = temp->next;
 	}
 /*...e*/
-#ifdef bla
-/*...sone element is in the list:8:*/
-	if (temp->next == NULL) {
-		if (strcmp(temp->addr, addr) == 0) {
-			char buf[1000] = "";
-			
-			sprintf(buf, "LocFile: %s, LocLine: %d", temp->file, temp->line);
-			return strdup(buf);
-		}
-	}
-/*...e*/
-#endif
 	return strdup("No location stored");	
 }
 /*...e*/
-
+void InstanceRepository::printReferences(char* addr) {
+	instanceList* temp = iList;
+	
+	while(temp != NULL) {
+		if (strcmp(Upper(temp->addr), Upper(addr)) == 0) {
+			referenceList* rTemp = temp->rList;
+			
+			while(rTemp != NULL) {
+				printf("Reference for %s in %f at %d with %d stored count's\n", 
+				temp->classname, rTemp->file, rTemp->line, rTemp->count);
+				rTemp = rTemp->next;
+			}
+		}
+		temp = temp->next;
+	}
+}
 void LB_STDCALL InstanceRepository::loadContainer(lb_I_Module* m) {
 	if (loadedContainer == 1) return;
 	loadedContainer = 1;
@@ -749,9 +759,7 @@ public:
         virtual lbErrCodes LB_STDCALL request(const char* request, lb_I_Unknown** result);
         virtual lbErrCodes LB_STDCALL uninitialize();
         
-        
-//        void operator delete(void * del) { delete del; }
-
+	virtual void LB_STDCALL printReferences(char* addr);        
 
 	virtual char* LB_STDCALL getCreationLoc(char* addr);
         virtual void LB_STDCALL notify_create(lb_I_Unknown* that, char* implName, char* file = "", int line = 0);
@@ -796,7 +804,6 @@ void LB_STDCALL lbModule::getXMLConfigObject(lb_I_XMLConfig** inst) {
         char *libname = getenv("LBXMLLIB");
         char *ftrname = getenv("LBXMLFUNCTOR");
         char *cfgname = getenv("LBHOSTCFGFILE");
-	CL_LOG("Enter lbModule::getXMLConfigObject()")
 	/**
 	 * The UAP seems to try release it self. Because of the macro, it couldn't
 	 * register a reference. The instance is not created yet!
@@ -818,9 +825,7 @@ void LB_STDCALL lbModule::getXMLConfigObject(lb_I_XMLConfig** inst) {
 
 
 
-	CL_LOG("Create UAP(lb_I_XMLConfig, xml_I, __FILE__, __LINE__)")
         UAP(lb_I_XMLConfig, xml_I, __FILE__, __LINE__)
-	CL_LOG("Created UAP(lb_I_XMLConfig, xml_I, __FILE__, __LINE__)")
 
         if (libname == NULL) return;
         if (ftrname == NULL) return;
@@ -890,7 +895,6 @@ void LB_STDCALL lbModule::getXMLConfigObject(lb_I_XMLConfig** inst) {
         if (*inst == NULL) { 
         	CL_LOG("Error: queryInterface() does not return a pointer!")
         }
-        CL_LOG("Leave lbModule::getXMLConfigObject()")
 }
 /*...e*/
 
@@ -908,6 +912,12 @@ char* LB_STDCALL lbModule::getCreationLoc(char* addr) {
 #ifndef IR_USAGE
 	return "IR is deactivated!";
 #endif
+}
+
+void LB_STDCALL lbModule::printReferences(char* addr) {
+	if (IR != NULL) {
+		IR->printReferences(addr);
+	}
 }
 
 void LB_STDCALL lbModule::notify_create(lb_I_Unknown* that, char* implName, char* file, int line) {
