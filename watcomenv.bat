@@ -28,7 +28,7 @@ exit
 
 :WEITER
 
-set TARGET_APPLICATION=Application
+rem set TARGET_APPLICATION=Application
 
 if NOT "%COMPUTERNAME%"=="ANAKIN" goto DISTMODE:
 
