@@ -2,11 +2,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.5 $
+ * $Revision: 1.6 $
  * $Name:  $
- * $Id: skiplist.cpp,v 1.5 2002/08/21 18:44:29 lolli Exp $
+ * $Id: skiplist.cpp,v 1.6 2002/09/07 09:57:13 lolli Exp $
  *
  * $Log: skiplist.cpp,v $
+ * Revision 1.6  2002/09/07 09:57:13  lolli
+ * First working callback function
+ *
  * Revision 1.5  2002/08/21 18:44:29  lolli
  * Implemented the new container functions for direct access
  *
@@ -127,10 +130,19 @@ int LB_STDCALL SkipList::exists(lb_I_KeyBase** const key) {
 /*...sSkipList\58\\58\insert\40\lb_I_Unknown\42\\42\ const e\44\ lb_I_KeyBase\42\\42\ const key\41\:0:*/
 lbErrCodes LB_STDCALL SkipList::insert(lb_I_Unknown** const e, lb_I_KeyBase** const key) { 
         lbErrCodes err = ERR_NONE; 
+
+	char msg[100] = "";
+	sprintf(msg, "Insert data with key %s into skiplist", (*key)->charrep());
+	LOG(msg)
         
         lbSkipListElement* el = new lbSkipListElement(*e, *key);
+        el->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+
+	sprintf(msg, "Have created a skiplist element with key %s", el->getKey()->charrep());
+	LOG(msg)
 
         insert(el);
+        if (search(*key) == NULL) LOG("Error: SkipList::insert(...) failed")
         
         return err; 
 } 
@@ -241,8 +253,9 @@ lb_I_Unknown* LB_STDCALL SkipList::nextElement() {
 /*...e*/
 /*...sSkipList\58\\58\getElement\40\lb_I_KeyBase\42\\42\ const key\41\:0:*/
 lb_I_Unknown* LB_STDCALL SkipList::getElement(lb_I_KeyBase** const key) { 
-
-    return search(*key);
+    lb_I_Unknown* e = search(*key);
+    if (e == NULL) LOG("SkipList::getElement(...) returns a NULL pointer!")
+    return e;
 } 
 /*...e*/
 /*...sSkipList\58\\58\setElement\40\lb_I_KeyBase\42\\42\ key\44\ lb_I_Unknown \42\\42\ const e\41\:0:*/
@@ -286,14 +299,27 @@ lb_I_Unknown* SkipList::search(lb_I_KeyBase* searchKey) { // Skiplist Search
   if (x == NULL) LOG("Error: NULL pointer while searching in skiplist");
   
   for (int i=level; i>=0; i--) {
-    while ((x->forward[i] != NULL) && (*(x->forward[i]->value) < searchKey)) {
+    while ((x->forward[i] != NULL) && (*(x->forward[i]->value->getKey()) < searchKey)) {
+      char msg[100] = "";
+      sprintf(msg, "Search on key '%s'", x->forward[i]->value->getKey()->charrep());
+      LOG(msg)
       x = x->forward[i];
     }
   }
   x = x->forward[0];  // Move to actual record, if it exists
-  if ((x != NULL) && (*(x->value) == searchKey)) {
+
+  if (x != NULL) {
+    char msg[100] = "";
+    sprintf(msg, "Search on key '%s'", x->value->getKey()->charrep());
+    LOG(msg)
+  }
+  if ((x != NULL) && (*(x->value->getKey()) == searchKey)) {
+  	LOG("SkipList::search(lb_I_KeyBase* searchKey) returns x->value->getObject();")
   	return x->value->getObject();
-  } else return NULL;
+  } else {
+  	LOG("SkipList::search(lb_I_KeyBase* searchKey) returns NULL")
+  	return NULL;
+  }
 }
 /*...e*/
 /*...sSkipList\58\\58\insert\40\Elem newValue\41\:0:*/
@@ -446,6 +472,7 @@ END_IMPLEMENT_LB_UNKNOWN()
 IMPLEMENT_LB_ELEMENT(lbSkipListElement)
 
 lbErrCodes LB_STDCALL lbSkipListElement::setData(lb_I_Unknown* uk) {
-	CL_LOG("lbSkipListElement::setData(...) not implemented yet");
+	LOG("lbSkipListElement::setData(...) not implemented yet");
+
 	return ERR_NOT_IMPLEMENTED;
 }

@@ -230,6 +230,7 @@ lbInteger::~lbInteger() {
 
 void lbInteger::setData(int p) {
 	integerdata = p;
+	key = p;
 }
 
 int lbInteger::getData() const {
@@ -242,8 +243,14 @@ BEGIN_IMPLEMENT_LB_UNKNOWN(lbInteger)
 END_IMPLEMENT_LB_UNKNOWN()
 
 lbErrCodes LB_STDCALL lbInteger::setData(lb_I_Unknown* uk) {
-	CL_LOG("lbInteger::setData(...) not implemented yet");
-	return ERR_NOT_IMPLEMENTED;
+	lbErrCodes err= ERR_NONE;
+	UAP(lb_I_Integer, i, __FILE__, __LINE__)
+	QI(uk, lb_I_Integer, i, __FILE__, __LINE__)
+	
+	int v = i->getData();
+	setData(v);
+	
+	return err;
 }
 
 /*...sKey:0:*/

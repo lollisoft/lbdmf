@@ -65,6 +65,8 @@ public:
     lbSkipListElement(const lb_I_Element &e) { 
     	ref = STARTREF; 
     	next = e.getNext(); 
+    	data = e.getObject();
+    	key = e.getKey();
 	manager = NULL;
     }
 
