@@ -1,6 +1,13 @@
 /*...v\46\\46\\47\make\47\STD_MAKE \45\ The global makefile definitions:0:*/
 
-/*...sBaseDevelopment:0:*/
+/*...sInterfaces:0:*/
+/*...v\46\\46\\47\interfaces\47\lbInterfaces\46\h:0:*/
+/*...v\46\\46\\47\interfaces\47\lbInterfaces\45\sub\45\transfer\46\h:0:*/
+/*...v\46\\46\\47\interfaces\47\lbInterfaces\45\sub\45\xml\46\h:0:*/
+/*...v\46\\46\\47\interfaces\47\lbInterfaces\45\sub\45\classes\46\h:0:*/
+/*...v\46\\46\\47\interfaces\47\lbInterfaces\45\sub\45\wxWrapper\46\h:0:*/
+/*...e*/
+/*...sHaeder:0:*/
 /*...v\46\\46\\47\\46\\46\\47\\46\\46\\47\tools\47\watcom\47\h\47\nt\47\windef\46\h:0:*/
 /*...v\46\\46\\47\\46\\46\\47\\46\\46\\47\tools\47\watcom\47\h\47\nt\47\winbase\46\h:0:*/
 /*...v\46\\46\\47\\46\\46\\47\\46\\46\\47\tools\47\watcom\47\h\47\nt\47\windows\46\h:0:*/
@@ -10,26 +17,23 @@
 /*...v\46\\46\\47\include\47\lbInclude\46\h:0:*/
 /*...v\46\\46\\47\include\47\lbGlobal\46\h:0:*/
 /*...v\46\\46\\47\include\47\lbErrcodes\46\h:0:*/
-
 These headers must define the per module (DLL) EXPORT variable
 
 /*...v\46\\46\\47\include\47\lbclasses\45\module\46\h:0:*/
 /*...v\46\\46\\47\include\47\lbmodule\45\module\46\h:0:*/
 /*...v\46\\46\\47\include\47\lbdomconfig\45\module\46\h:0:*/
+/*...v\46\\46\\47\include\47\lbmetaapp\45\module\46\h:0:*/
+/*...e*/
 
+/*...sHook:0:*/
 /*...v\46\\46\\47\include\47\lbConfigHook\46\h:0:*/
+/*...vlbHook\47\lbHook\46\cpp:0:*/
+/*...e*/
+
+/*...sBaseDevelopment:0:*/
 /*...vlbHook\47\MAKE_BEFORE:0:*/
 /*...vlbHook\47\MAKE_AFTER:0:*/
 /*...vlbHook\47\STD_MAKE:0:*/
-/*...vlbHook\47\lbHook\46\cpp:0:*/
-
-
-
-/*...v\46\\46\\47\interfaces\47\lbInterfaces\46\h:0:*/
-/*...v\46\\46\\47\interfaces\47\lbInterfaces\45\sub\45\transfer\46\h:0:*/
-/*...v\46\\46\\47\interfaces\47\lbInterfaces\45\sub\45\xml\46\h:0:*/
-/*...v\46\\46\\47\interfaces\47\lbInterfaces\45\sub\45\classes\46\h:0:*/
-/*...v\46\\46\\47\interfaces\47\lbInterfaces\45\sub\45\wxWrapper\46\h:0:*/
 
 /*...sMSC based XML parser:0:*/
 /*...vQ\58\\92\Develop\92\Projects\92\CPP\92\AppDevelopment\92\Console\92\XML\47\lbxmlconfig\46\dtd:0:*/
@@ -73,6 +77,8 @@ These headers must define the per module (DLL) EXPORT variable
 /*...e*/
 
 /*...slbMetaApplication:0:*/
+/*...vlbMetaApplication\47\makefile:0:*/
+/*...vlbMetaApplication\47\makefile\46\module:0:*/
 /*...vlbMetaApplication\47\lbMetaApplication\46\h:0:*/
 /*...vlbMetaApplication\47\lbMetaApplication\46\cpp:0:*/
 
@@ -144,9 +150,6 @@ findfunctorname
 /*...v\46\\46\\47\AppDevelopment\47\Console\47\GlobalAppServer\47\servertest\46\cpp:0:*/
 /*...v\46\\46\\47\AppDevelopment\47\Console\47\GlobalAppServer\47\main\46\cpp:0:*/
 
-/*...v\46\\46\\47\AppDevelopment\47\Console\47\xml\47\MAKE_BEFORE:0:*/
-/*...v\46\\46\\47\AppDevelopment\47\Console\47\xml\47\MAKE_AFTER:0:*/
-/*...v\46\\46\\47\AppDevelopment\47\Console\47\xml\47\STD_MAKE:0:*/
 /*...v\46\\46\\47\AppDevelopment\47\Console\47\xml\47\makefile:0:*/
 /*...v\46\\46\\47\AppDevelopment\47\Console\47\xml\47\makefile\46\module:0:*/
 /*...v\46\\46\\47\AppDevelopment\47\Console\47\xml\47\test\46\cpp:0:*/
@@ -155,7 +158,16 @@ findfunctorname
 /*...e*/
 /*...sServiceDevelopment:0:*/
 /*...e*/
+/*...sWrapperDevelopment:0:*/
+/*...swxWrapper:0:*/
+/*...v\46\\46\\47\WrapperDevelopment\47\wxWrapper\47\wxWrapper\46\h:0:*/
+/*...v\46\\46\\47\WrapperDevelopment\47\wxWrapper\47\wxWrapper\46\cpp:0:*/
+/*...v\46\\46\\47\WrapperDevelopment\47\wxWrapper\47\makefile\46\module:0:*/
+/*...v\46\\46\\47\WrapperDevelopment\47\wxWrapper\47\makefile:0:*/
+/*...e*/
+/*...e*/
 
+/*...sMisc:0:*/
 /*...smkmk a makefile make tool:0:*/
 /*...v\46\\46\\47\vendor\47\mkmk\47\contain\46\h:0:*/
 /*...v\46\\46\\47\vendor\47\mkmk\47\contain\46\cpp:0:*/
@@ -163,7 +175,6 @@ findfunctorname
 /*...v\46\\46\\47\vendor\47\mkmk\47\makefile\46\bat:0:*/
 /*...v\46\\46\\47\vendor\47\mkmk\47\makefile:0:*/
 /*...v\46\\46\\47\vendor\47\mkmk\47\makefile\46\module:0:*/
-/*...v\46\\46\\47\vendor\47\mkmk\47\mkmk\46\lnk:0:*/
 
 /*...e*/
 /*...v\46\\46\\47\vendor\47\DBFill\47\DBFill\46\cpp:0:*/
@@ -229,3 +240,9 @@ findfunctorname
 
 /*...vG\58\\92\powwow\92\projects\92\migration\92\erstelle\45\serviceliste\92\Waterboy\45\Karte\46\csv\46\txt:0:*/
 /*...vd\58\\92\export\45\29\45\03\45\2001\92\Artikel\45\Karte\46\csv:0:*/
+/*...e*/
+
+
+/*...sweb:0:*/
+/*...v\46\\46\\47\\46\\46\\47\web\47\index\46\html:0:*/
+/*...e*/
