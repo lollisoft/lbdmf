@@ -25,11 +25,14 @@
 #            40235 DÅsseldorf (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.43 $
+# * $Revision: 1.44 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.43 2004/04/10 17:54:25 lollisoft Exp $
+# * $Id: STD_MAKE,v 1.44 2004/05/08 10:41:32 lollisoft Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.44  2004/05/08 10:41:32  lollisoft
+# * Activated warnings
+# *
 # * Revision 1.43  2004/04/10 17:54:25  lollisoft
 # * Current version runs on linux again. There was a bug in additional linux code to strcat to a variable. This variable was given as a parameter and therefore I cannot assume, that I am able to have a big enough buffer for that action. Electric Fence gave me the hint for that bug.
 # *
@@ -186,7 +189,7 @@ STD_INCL_MICROSOFT = /I "." /I "$(DEVROOT)\Tools\msc\VC98\Include" /I "$(DEVROOT
 STD_INCL = $(STD_INCL_WATCOM)
 
 
-WATCOM_WARN=-w0
+WATCOM_WARN=-w3
 WATCOM_OPTIMIZE=-otexan
 WATCOM_RELAX_ALIAS=#-oa
 WATCOM_ERRCOUNT=-e25
