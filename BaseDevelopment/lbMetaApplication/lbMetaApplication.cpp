@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.32 $
+ * $Revision: 1.33 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.32 2004/02/02 23:24:39 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.33 2004/04/10 17:54:23 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.33  2004/04/10 17:54:23  lollisoft
+ * Current version runs on linux again. There was a bug in additional linux code to strcat to a variable. This variable was given as a parameter and therefore I cannot assume, that I am able to have a big enough buffer for that action. Electric Fence gave me the hint for that bug.
+ *
  * Revision 1.32  2004/02/02 23:24:39  lollisoft
  * New label and text field handlers works
  *
@@ -442,8 +445,12 @@ lbErrCodes LB_STDCALL lb_MetaApplication::loadApplication() {
         char* applicationName = getenv("TARGET_APPLICATION");
 
 	lb_I_Unknown* a;
+#ifdef WINDOWS	
 	manager->makeInstance("_instanceOfApplication", applicationName, &a);
-	
+#endif
+#ifdef LINUX
+	manager->makeInstance("instanceOfApplication", "Application.so", &a);
+#endif	
 	if (a == NULL) {
 		_LOG << "ERROR: Application could not be loaded - either not found or not configured." LOG_
 		return ERR_NONE;

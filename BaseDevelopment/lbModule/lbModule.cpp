@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.67 $
+ * $Revision: 1.68 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.67 2004/03/22 22:11:07 lollisoft Exp $
+ * $Id: lbModule.cpp,v 1.68 2004/04/10 17:54:24 lollisoft Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.68  2004/04/10 17:54:24  lollisoft
+ * Current version runs on linux again. There was a bug in additional linux code to strcat to a variable. This variable was given as a parameter and therefore I cannot assume, that I am able to have a big enough buffer for that action. Electric Fence gave me the hint for that bug.
+ *
  * Revision 1.67  2004/03/22 22:11:07  lollisoft
  * Current version works under linux
  *
@@ -2291,8 +2294,6 @@ void LB_STDCALL lbModule::getXMLConfigObject(lb_I_InterfaceRepository** inst) {
 #ifdef LINUX
 #define PREFIX ""
 #endif
-
-
 	HINSTANCE h = getModuleHandle();
 	setModuleHandle(h);
         if (newInterfaceRepository == NULL) {
@@ -3050,18 +3051,22 @@ lbErrCodes err = ERR_NONE;
                          * ModuleHandle is the result for this loaded module.
                          */
          		HINSTANCE h = getModuleHandle();
-         		
+         	
+			char* _module = (char*) malloc(strlen(module)+10);
+			_module[0] = 0;
+			strcpy(_module, module);
+	
 			#ifdef LINUX
-			if (strchr(module, '.') == NULL) strcat(module, ".so");
+			if (strchr(_module, '.') == NULL) strcat(_module, ".so");
 			#endif
-			
-			
-                        if ((err = lbLoadModule(module, h)) != ERR_NONE) {
+		
+                        if ((err = lbLoadModule(_module, h)) != ERR_NONE) {
                                 // report error if still loaded
                                 _CL_LOG << "Error: Could not load the module '" << module << "'" LOG_
                                 
                                 // return error if loading is impossible
                         }
+
                         setModuleHandle(h);
                         
                         if (getModuleHandle() == 0) _CL_LOG << "Error: Module could not be loaded '" << module << "'" LOG_
@@ -3078,6 +3083,7 @@ lbErrCodes err = ERR_NONE;
                                 if ((*instance) == NULL) _CL_LOG << "Something goes wrong while calling functor" LOG_
                         }
 
+	free (_module);
         return ERR_NONE;
 }
 /*...e*/
@@ -3284,16 +3290,16 @@ lbErrCodes LB_STDCALL lbModule::request(const char* request, lb_I_Unknown** resu
          
 #ifdef USE_INTERFACE_REPOSITORY
 	if (newInterfaceRepository != NULL) {
-		printf("Using new interface repository '%p' to request '%s'\n", newInterfaceRepository.getPtr(), request);
+		//printf("Using new interface repository '%p' to request '%s'\n", newInterfaceRepository.getPtr(), request);
 		newInterfaceRepository->setCurrentSearchInterface(request);
-		printf("Get first entity\n");
+		//printf("Get first entity\n");
 		lb_I_FunctorEntity* e = newInterfaceRepository->getFirstEntity();
 		
-		printf("Get functor and module\n");
+		//printf("Get functor and module\n");
 		char* functor = e->getFunctor();
 		char* module  = e->getModule();
 		
-		printf("Have functor '%s' and module '%s'\n", functor, module);
+		//printf("Have functor '%s' and module '%s'\n", functor, module);
 		
 		UAP(lb_I_Unknown, _result, __FILE__, __LINE__)
 		makeInstance(functor, module, &_result);
