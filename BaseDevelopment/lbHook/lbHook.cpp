@@ -33,6 +33,7 @@
 #include <lbhook-module.h>
 /*...e*/
 
+/*...sincludes:0:*/
 #include <stdarg.h>
 
 // Where should I define standard switches to choose the correct code ?
@@ -54,6 +55,7 @@
   #endif            
 
 #endif
+/*...e*/
 
 #ifdef _MSC_VER
 #pragma warning( disable: 4275 )
@@ -87,6 +89,7 @@ extern int lb_isInitializing;
 #endif
 
 
+/*...sHelpers:0:*/
 DLLEXPORT int LB_STDCALL isInitializing() {
 	return lb_isInitializing;
 }
@@ -163,6 +166,7 @@ DLLEXPORT void LB_STDCALL setModuleHandle(HINSTANCE h) {
 DLLEXPORT void LB_STDCALL setLBModuleHandle(HINSTANCE h) {
 	LB_Module_Handle = h;
 }
+/*...e*/
 
 
 #ifdef LINUX
@@ -246,12 +250,6 @@ lbErrCodes LB_STDCALL lbGetFunctionPtr(const char* name, HINSTANCE hinst, void**
         return ERR_NONE;
 }
 /*...e*/
-
-
-/**
- * A moduleinstance is a factory object for all other further instances
- * of registered modules.
- */
 
 /*...sDLLEXPORT lb_I_Module\42\ LB_STDCALL getModuleInstance\40\\41\:0:*/
 DLLEXPORT lb_I_Module* LB_STDCALL getModuleInstance() {
@@ -350,6 +348,25 @@ DLLEXPORT void LB_STDCALL unHookAll() {
 	setLoggerInstance(NULL);
 }
 /*...e*/
+
+DLLEXPORT char* LB_STDCALL translateText(char* text) {
+	lb_I_Module* mm = NULL;
+      
+	mm = getModuleInstance();
+	mm->setModuleManager(mm, __FILE__, __LINE__);
+
+	UAP_REQUEST(mm, lb_I_Locale, locale)
+
+	
+
+	return text;
+}
+
+/**
+ * A moduleinstance is a factory object for all other further instances
+ * of registered modules.
+ */
+
 
 /*...slbKey:0:*/
 /*...sc\39\tors and d\39\tors:0:*/
