@@ -1,0 +1,12 @@
+# Define your module based settings
+
+OBJDEP=../lbHook/lbHook.o 
+#../lbHook/conio.o
+
+ifeq ($(OSTYPE), Windows_NT)
+MOD_INCL=$(STD_INCL)
+endif
+
+ifeq ($(OSTYPE), linux)
+MOD_INCL=$(STD_INCL) -I../lbHook/linuxCode
+endif    

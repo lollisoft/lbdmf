@@ -1,0 +1,14 @@
+# Define your module based settings
+
+OBJDEP=../../lbHook/lbHook.o 
+#../../lbHook/conio.o
+
+ifeq ($(OSTYPE), Windows_NT)
+MOD_INCL=$(STD_INCL)
+endif
+
+ifeq ($(OSTYPE), linux)
+MOD_INCL=$(STD_INCL) -I../../lbHook/linuxCode \
+    -I$(DEVROOT)/CPP/vendor/XML4C/xml4c-src3_5_1/include \
+    -I$(DEVROOT)/CPP/BaseDevelopment/lbclasses
+endif    

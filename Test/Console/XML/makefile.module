@@ -1,0 +1,11 @@
+# Define your module based settings
+
+OBJDEP=$(DEVROOT)/CPP/BaseDevelopment/lbHook/lbHook.o $(DEVROOT)/CPP/BaseDevelopment/lbHook/conio.o
+
+ifeq ($(OSTYPE), Windows_NT)
+MOD_INCL=$(STD_INCL)
+endif
+
+ifeq ($(OSTYPE), linux)
+MOD_INCL=$(STD_INCL)
+endif    
