@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.34 2004/12/14 19:25:01 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.35 2005/01/05 13:40:02 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.34 $
+ * $Revision: 1.35 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.34 2004/12/14 19:25:01 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.35 2005/01/05 13:40:02 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.35  2005/01/05 13:40:02  lollisoft
+ * New dynamic application implementation works
+ *
  * Revision 1.34  2004/12/14 19:25:01  lollisoft
  * Change due to temporary variable differences in cleanup
  *
@@ -363,7 +366,6 @@ public:
 	void setLoggedOnUser(char* user) {
 		 userid = strdup(user);
 		 
-		 
 		REQUEST(manager.getPtr(), lb_I_Database, database)
 
 		database->init();
@@ -376,27 +378,23 @@ public:
 		sprintf(buffer, 
 			"select \"Anwendungen\".\"Name\" from \"Anwendungen\" inner join \"User_Anwendungen\" on "
 			"\"Anwendungen\".id = \"User_Anwendungen\".\"AnwendungenId\" "
-			"inner join \"User\" on \"User_Anwendungen\".userid = \"User\".id where "
-			"\"User\".userid = '%s'"
+			"inner join \"Users\" on \"User_Anwendungen\".userid = \"Users\".id where "
+			"\"Users\".userid = '%s'"
 				, userid);
-
-
-		printf("%s\n", buffer);
 
 		sampleQuery->query(buffer);
 
 		// Fill up the available applications for that user.
 
-		if (sampleQuery->first() == ERR_NONE) {
+		lbErrCodes err = sampleQuery->first();
+
+		if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
 
 			UAP_REQUEST(manager.getPtr(), lb_I_String, s1)	
 
 			s1 = sampleQuery->getAsString(1);
 
-			printf("Have application '%s'\n", s1->charrep());
-
 			box->Append(wxString(s1->charrep()));
-
 
 			while (TRUE) {
 				lbErrCodes err = sampleQuery->next();
@@ -404,15 +402,11 @@ public:
 				if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
 					s1 = sampleQuery->getAsString(1);
 					
-					printf("Have application '%s'\n", s1->charrep());
-					
 					box->Append(wxString(s1->charrep()));
 					
 					if (err == WARN_DB_NODATA) break;
 				}
 			}
-
-
 		}
 
 		return;
@@ -422,16 +416,21 @@ public:
 /*...svirtual bool TransferDataFromWindow\40\\41\:8:*/
 	virtual bool TransferDataFromWindow()
 	{
-		printf("wxAppSelectPage::TransferDataFromWindow() called\n");
-
 		// The application must have been selected here by the user.
-	
 	
 		int sel = box->GetSelection();
 		
 		app = box->GetString(sel);
-	
-		printf ("Have user %s and application %s\n", userid, app.c_str());
+
+		if (!app.IsEmpty()) {
+			UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
+		
+			char* _app = strdup(app.c_str());
+			
+			meta->loadApplication(userid, _app);
+			
+			free(_app);
+		}
 	
 	        return TRUE;
 	}
@@ -557,15 +556,14 @@ DECLARE_LB_UNKNOWN()
 		char* user = strdup(getTextValue("Benutzer:"));
 	
 
-		sprintf(buffer, "select userid, passwort from \"User\" where userid = '%s' and passwort = '%s'",
+		sprintf(buffer, "select userid, passwort from \"Users\" where userid = '%s' and passwort = '%s'",
                 	user, pass);
-
-
-		printf("%s\n", buffer);
 
 		sampleQuery->query(buffer);
 
-		if (sampleQuery->first() == ERR_NONE) {
+		lbErrCodes err = sampleQuery->first();
+
+		if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
 		        printf("User authenticated correctly (%s)\n", user);
 
 			appselect->setLoggedOnUser(user);
@@ -753,7 +751,7 @@ public:
 	 * It builds the layout, navigation elements and instanciate the needed
 	 * database classes.
 	 */
-	void init(wxWindow* parent, wxString formName, wxString SQLString);
+	void init(wxWindow* parent, wxString formName, wxString SQLString, char* DBName, char* DBUser, char* DBPass);
 	
 	/**
 	 * Destructor
@@ -831,7 +829,14 @@ public:
 	DECLARE_LB_UNKNOWN()
 
 	UAP(lb_I_Database, database, __FILE__, __LINE__)
-	UAP(lb_I_Query, sampleQuery, __FILE__, __LINE__)	
+	UAP(lb_I_Query, sampleQuery, __FILE__, __LINE__)
+	
+	/**
+	 * \brief Maps positions to id's for each displayed combo box.
+	 *
+	 * Store a container for each combo box with key(pos) and data(id). 
+	 */
+	UAP(lb_I_Container, ComboboxMapperList, __FILE__, __LINE__)
 	
 
 	// l gets overwritten, while assigning a lb_I_Query* pointer to sampleQuery !!
@@ -888,8 +893,8 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::registerEventHandler(lb_I_Dispatcher* di
 	return ERR_NONE;
 }
 /*...e*/
-/*...svoid lbDatabaseDialog\58\\58\init\40\wxWindow\42\ parent\44\ wxString formName\44\ wxString SQLString\41\:0:*/
-void lbDatabaseDialog::init(wxWindow* parent, wxString formName, wxString SQLString) {
+/*...svoid lbDatabaseDialog\58\\58\init\40\wxWindow\42\ parent\44\ wxString formName\44\ wxString SQLString\44\ char\42\ DBName\44\ char\42\ DBUser\44\ char\42\ DBPass\41\:0:*/
+void lbDatabaseDialog::init(wxWindow* parent, wxString formName, wxString SQLString, char* DBName, char* DBUser, char* DBPass) {
 	char prefix[100] = "";
 	sprintf(prefix, "%p", this);
 
@@ -908,7 +913,10 @@ void lbDatabaseDialog::init(wxWindow* parent, wxString formName, wxString SQLStr
 	REQUEST(manager.getPtr(), lb_I_Database, database)
 
 	database->init();
-	database->connect("trainres", "dba", "trainres");
+	
+	printf("Connecting to %s as %s\n", DBName, DBUser);
+	
+	database->connect(DBName, DBUser, DBPass);
 
 	char* _q = strdup(SQLString.c_str());
 
@@ -959,16 +967,155 @@ void lbDatabaseDialog::init(wxWindow* parent, wxString formName, wxString SQLStr
 	sampleQuery->first();
 	
 /*...screate database form elements:0:*/
+	REQUEST(manager.getPtr(), lb_I_Container, ComboboxMapperList)
+
 	for(int i = 1; i <= columns; i++) {
 		char* name = NULL;
+
+		UAP(lb_I_Query, FKColumnQuery, __FILE__, __LINE__)
 		
 		name = strdup(sampleQuery->getColumnName(i));
+
+		/* Determine, if the column is a foreign key. If so try to get the
+		   configured column to show instead.
+		*/ 
+
+		if (sampleQuery->hasFKColumn(name) == 1) {
+/*...sCreate a combobox:24:*/
+			lbErrCodes err = ERR_NONE;
+			
+			// Create a mapping instance for this combo box
+			UAP_REQUEST(manager.getPtr(), lb_I_Container, _ComboboxMapper)
+			UAP_REQUEST(manager.getPtr(), lb_I_Container, ComboboxMapper)
+
+			UAP_REQUEST(manager.getPtr(), lb_I_String, cbName)
+			UAP(lb_I_KeyBase, key_cbName, __FILE__, __LINE__)
+			
+			QI(cbName, lb_I_KeyBase, key_cbName, __FILE__, __LINE__)
+			QI(_ComboboxMapper, lb_I_Unknown, uk_ComboboxMapper, __FILE__, __LINE__)
+
+			cbName->setData(name);
+			
+			ComboboxMapperList->insert(&uk_ComboboxMapper, &key_cbName);
+
+			ukComboboxMapper = ComboboxMapperList->getElement(&key_cbName);
+			
+			QI(ukComboboxMapper, lb_I_Container, ComboboxMapper, __FILE__, __LINE__)
+			
+			char* buffer = (char*) malloc(1000);
+			buffer[0] = 0;
+			
+			sprintf(buffer, "select PKName, PKTable	from ForeignKey_VisibleData_Mapping "
+					"where FKName = '%s' and FKTable = '%s'", name, sampleQuery->getTableName());
+
+			FKColumnQuery = database->getQuery(0);
+			
+			FKColumnQuery->query(buffer);
+			
+			err = FKColumnQuery->first();
+			
+			if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
+/*...sHave mapping to visible data for the combobox:56:*/
+				UAP_REQUEST(manager.getPtr(), lb_I_String, PKName)
+				UAP_REQUEST(manager.getPtr(), lb_I_String, PKTable)
+				
+				PKName = FKColumnQuery->getAsString(1);
+				PKTable = FKColumnQuery->getAsString(2);
+					
+				wxComboBox *cbox = new wxComboBox(this, -1, wxString(""));
+				cbox->SetName(name);
+				
+				int old_fk = atoi(sampleQuery->getAsString(i)->charrep());
+				
+				buffer[0] = 0;
+				
+				sprintf(buffer, "select %s, id from %s order by id", PKName->charrep(), PKTable->charrep());
+				
+				UAP(lb_I_Query, ReplacementColumnQuery, __FILE__, __LINE__)
+				
+				ReplacementColumnQuery = database->getQuery(0);
+				
+				ReplacementColumnQuery->query(buffer);
+				
+				lbErrCodes DBerr = ReplacementColumnQuery->first();
+				
+				int cbox_pos = 0;
+				
+				if ((DBerr == ERR_NONE) || (DBerr == WARN_DB_NODATA)) {
+/*...sHave data to fill into the combobox and create mappings:96:*/
+					UAP_REQUEST(manager.getPtr(), lb_I_String, data)
+					UAP_REQUEST(manager.getPtr(), lb_I_String, possible_fk)
+					
+					data = ReplacementColumnQuery->getAsString(1);
+					possible_fk = ReplacementColumnQuery->getAsString(2);
+					
+					int possible_fk_pos = atoi(possible_fk->charrep());
+					
+					cbox->Append(wxString(data->charrep()));
+					
+					UAP_REQUEST(manager.getPtr(), lb_I_Integer, key)
+					
+					UAP(lb_I_Unknown, uk_possible_fk, __FILE__, __LINE__)
+					UAP(lb_I_KeyBase, key_cbox_pos, __FILE__, __LINE__)
+					
+					if (old_fk == possible_fk_pos) cbox->SetSelection(cbox_pos);
+					
+					key->setData(cbox_pos);
+					cbox_pos++;
+					
+					QI(key, lb_I_KeyBase, key_cbox_pos, __FILE__, __LINE__)
+					UAP_REQUEST(manager.getPtr(), lb_I_Integer, possible_fk_int)
+
+					possible_fk_int->setData(possible_fk_pos);
+
+					QI(possible_fk_int, lb_I_Unknown, uk_possible_fk, __FILE__, __LINE__)
+					
+					ComboboxMapper->insert(&uk_possible_fk, &key_cbox_pos);
+					
+					if (DBerr != WARN_DB_NODATA)
+					// Only if not WARN_DB_NODATA					
+					while ((DBerr == ERR_NONE) || (DBerr == WARN_DB_NODATA)) {
+						DBerr = ReplacementColumnQuery->next();
+						
+						data = ReplacementColumnQuery->getAsString(1);
+						possible_fk = ReplacementColumnQuery->getAsString(2);
+					
+						possible_fk_pos = atoi(possible_fk->charrep());
+					
+						cbox->Append(wxString(data->charrep()));
+					
+						if (old_fk == possible_fk_pos) cbox->SetSelection(cbox_pos);
+					
+						key->setData(cbox_pos);
+						cbox_pos++;
+						
+						QI(key, lb_I_KeyBase, key_cbox_pos, __FILE__, __LINE__)
+						UAP_REQUEST(manager.getPtr(), lb_I_Integer, possible_fk_int)
+						
+						possible_fk_int->setData(possible_fk_pos);
+						
+						QI(possible_fk_int, lb_I_Unknown, uk_possible_fk, __FILE__, __LINE__)
+					
+						ComboboxMapper->insert(&uk_possible_fk, &key_cbox_pos);
+					
+						if (DBerr == WARN_DB_NODATA) break;
+					}
+					
+/*...e*/
+				}
+				
+				sizerRight->Add(cbox, 1, wxEXPAND | wxALL, 5);
+				
+/*...e*/
+			}
+/*...e*/
+		} else {
+			wxTextCtrl *text = new wxTextCtrl(this, -1, sampleQuery->getAsString(i)->charrep(), wxPoint());
 		
-		wxTextCtrl *text = new wxTextCtrl(this, -1, sampleQuery->getAsString(i)->charrep(), wxPoint());
+			text->SetName(name);
 		
-		text->SetName(name);
-		
-		sizerRight->Add(text, 1, wxEXPAND | wxALL, 5);
+			sizerRight->Add(text, 1, wxEXPAND | wxALL, 5);
+		}
 		
 		char* tLabel = new char[strlen(name) + 1];
 		
@@ -978,6 +1125,7 @@ void lbDatabaseDialog::init(wxWindow* parent, wxString formName, wxString SQLStr
 		
 		wxStaticText *label = new wxStaticText(this, -1, tLabel, wxPoint());
 		sizerLeft->Add(label, 1, wxEXPAND | wxALL, 5);
+		
 		
 		free(name);
 	}
@@ -1065,17 +1213,72 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBUpdate() {
 
 		// Find the corresponding window
 		
-		wxWindow* w = FindWindowByName(wxString(name));
+		wxWindow* w = FindWindowByName(wxString(name), this);
 
 		if (w != NULL) {
-			wxTextCtrl* tx = (wxTextCtrl*) w;
+			if (sampleQuery->hasFKColumn(name) == 1) {
+				wxComboBox* cbox = (wxComboBox*) w;
+				
+				int pos = cbox->GetSelection();
+				
+				if (pos != -1) {
+					lbErrCodes err = ERR_NONE;
+				printf("Update a combo box\n");
+					UAP_REQUEST(manager.getPtr(), lb_I_Integer, key)
+					UAP_REQUEST(manager.getPtr(), lb_I_String, cbName)
+					
+					cbName->setData(name);
+					
+					UAP(lb_I_KeyBase, key_cbName, __FILE__, __LINE__)
+					UAP(lb_I_Unknown, uk_cbMapper, __FILE__, __LINE__)
+					UAP(lb_I_Container, cbMapper, __FILE__, __LINE__)
+					
+					QI(cbName, lb_I_KeyBase, key_cbName, __FILE__, __LINE__)
+					
+					uk_cbMapper = ComboboxMapperList->getElement(&key_cbName);
+					
+					QI(uk_cbMapper, lb_I_Container, cbMapper, __FILE__, __LINE__)
+					
+					key->setData(pos);
+					
+					UAP(lb_I_KeyBase, key_pos, __FILE__, __LINE__)
+					
+					QI(key, lb_I_KeyBase, key_pos, __FILE__, __LINE__)
+				
+					UAP(lb_I_Unknown, uk_mapping, __FILE__, __LINE__)
+					
+					printf("Have %d mappings and search for %d\n", cbMapper->Count(), key->getData());
+					
+					uk_mapping = cbMapper->getElement(&key_pos);
+					
+					if (uk_mapping == NULL)  { 
+						printf("ERROR: cbMapper didn't found an entry for above search argument\n");
+					} else {
+						UAP(lb_I_Integer, FK_id, __FILE__, __LINE__)
+					
+						QI(uk_mapping, lb_I_Integer, FK_id, __FILE__, __LINE__)
+					
+						int p = FK_id->getData();
+					
+						char pp[20] = "";
+						itoa(p, pp, 10);
+					
+						col->setData(name);
+						val->setData(pp);
+					
+						sampleQuery->setString(*&col, *&val);
+					}
+				}
+			} else {
+				wxTextCtrl* tx = (wxTextCtrl*) w;
 			
-			wxString v = tx->GetValue();
+				wxString v = tx->GetValue();
 			
-			col->setData(name);
-			val->setData(v.c_str());
+				col->setData(name);
+				val->setData(v.c_str());
 
-			sampleQuery->setString(*&col, *&val);
+				sampleQuery->setString(*&col, *&val);
+			}
 		} else {
 			printf("Control not found\n");
 		}
@@ -1096,11 +1299,62 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBRead() {
 		char* name = strdup(sampleQuery->getColumnName(i));
 		// Find the corresponding window
 		
-		wxWindow* w = FindWindowByName(wxString(name));
+		wxWindow* w = FindWindowByName(wxString(name), this);
 		
 		if (w != NULL) {
-			wxTextCtrl* tx = (wxTextCtrl*) w;
-			tx->SetValue(wxString(sampleQuery->getAsString(i)->charrep()));
+			if (sampleQuery->hasFKColumn(name) == 1) {
+				wxComboBox* cbox = (wxComboBox*) w;
+				
+				lbErrCodes err = ERR_NONE;
+
+				UAP_REQUEST(manager.getPtr(), lb_I_Integer, key)
+				UAP_REQUEST(manager.getPtr(), lb_I_String, cbName)
+
+				cbName->setData(name);
+
+				UAP(lb_I_KeyBase, key_cbName, __FILE__, __LINE__)
+				UAP(lb_I_Unknown, uk_cbMapper, __FILE__, __LINE__)
+				UAP(lb_I_Container, cbMapper, __FILE__, __LINE__)
+
+				QI(cbName, lb_I_KeyBase, key_cbName, __FILE__, __LINE__)
+
+				uk_cbMapper = ComboboxMapperList->getElement(&key_cbName);
+
+				QI(uk_cbMapper, lb_I_Container, cbMapper, __FILE__, __LINE__)
+				
+				int count = cbMapper->Count();
+				
+				char newFK[20] = "";
+				
+				strcpy(newFK, sampleQuery->getAsString(i)->charrep());
+				
+				printf("Get Position from FK %s\n", newFK);
+				
+				key->setData(atoi(newFK));
+				
+				UAP(lb_I_KeyBase, key_FK_id, __FILE__, __LINE__)
+				
+				QI(key, lb_I_KeyBase, key_FK_id, __FILE__, __LINE__)
+				
+				UAP(lb_I_Unknown, uk_cbBoxPosition, __FILE__, __LINE__)
+				UAP(lb_I_Integer, cbBoxPosition, __FILE__, __LINE__)
+				
+				int cbPos = 0;
+				
+				while (cbMapper->hasMoreElements() == 1) {
+					UAP(lb_I_Integer, sel, __FILE__, __LINE__)
+				        lb_I_Unknown* e = cbMapper->nextElement();
+				        QI(e, lb_I_Integer, sel, __FILE__, __LINE__)
+				        
+				        if (sel->getData() == atoi(newFK)) {
+				        	cbox->SetSelection(cbPos);
+				        }
+				        cbPos++;
+				}
+			} else {
+				wxTextCtrl* tx = (wxTextCtrl*) w;
+				tx->SetValue(wxString(sampleQuery->getAsString(i)->charrep()));
+			}
 		}
 		
 		free(name);
@@ -1451,7 +1705,7 @@ lbErrCodes LB_STDCALL lbLoginDialog::lbLoginOk(lb_I_Unknown* uk) {
 	char* user = strdup(getTextValue("Benutzer:"));
 	
 	
-	sprintf(buffer, "select userid, passwort from \"User\" where userid = '%s' and passwort = '%s'", 
+	sprintf(buffer, "select userid, passwort from \"Users\" where userid = '%s' and passwort = '%s'", 
 			user, pass);
 			
 	if (pass) free(pass);
@@ -1527,7 +1781,7 @@ public:
         virtual lb_I_Unknown* LB_STDCALL createMenuBar();
         virtual lb_I_Unknown* LB_STDCALL createMenuEntry();
 
-	virtual lb_I_DatabaseForm* LB_STDCALL createDBForm(char* formName, char* queryString);
+	virtual lb_I_DatabaseForm* LB_STDCALL createDBForm(char* formName, char* queryString, char* DBName, char* DBUser, char* DBPass);
 
 	virtual lb_I_Form* LB_STDCALL createLoginForm();
 /*...e*/
@@ -1839,12 +2093,13 @@ lb_I_Form* LB_STDCALL lb_wxGUI::createLoginForm() {
             wxICON_INFORMATION | wxOK);
         }
 
-	wxString app = page3->getSelectedApp();
+//	wxString app = page3->getSelectedApp();
 
 	wizard->Destroy();
 
 
 #ifdef bla
+/*...s:0:*/
 
 	lbErrCodes err = ERR_NONE;
 
@@ -1892,12 +2147,13 @@ lb_I_Form* LB_STDCALL lb_wxGUI::createLoginForm() {
 		_dialog->init(frame);
 		_dialog->Show();
 	}
+/*...e*/
 #endif
 	return NULL;
 }
 /*...e*/
-/*...slb_I_DatabaseForm\42\ LB_STDCALL lb_wxGUI\58\\58\createDBForm\40\char\42\ formName\44\ char\42\ queryString\41\:0:*/
-lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::createDBForm(char* formName, char* queryString) {
+/*...slb_I_DatabaseForm\42\ LB_STDCALL lb_wxGUI\58\\58\createDBForm\40\char\42\ formName\44\ char\42\ queryString\44\ char\42\ DBName\44\ char\42\ DBUser\44\ char\42\ DBPass\41\:0:*/
+lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::createDBForm(char* formName, char* queryString, char* DBName, char* DBUser, char* DBPass) {
 	lbErrCodes err = ERR_NONE;
 
 	// Locate the form instance in the container
@@ -1941,7 +2197,7 @@ lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::createDBForm(char* formName, char* query
 		        _dialog = (lbDatabaseDialog*) *&uk;
 		}
 		
-		_dialog->init(frame, wxString(formName), wxString(queryString));
+		_dialog->init(frame, wxString(formName), wxString(queryString), DBName, DBUser, DBPass);
 		_dialog->Show();
 	}
 	return NULL;
@@ -2663,15 +2919,48 @@ lbErrCodes LB_STDCALL MyApp::lbEvHandler2(lb_I_Unknown* uk) {
 
 	lbErrCodes err = ERR_NONE;
 
+/*
+
 	UAP(lb_I_String, string, __FILE__, __LINE__)
 	if (uk == NULL) _LOG << "Have got a null pointer" LOG_;
 	QI(uk, lb_I_String, string, __FILE__, __LINE__)
+
+*/
+
+	printf("lbErrCodes LB_STDCALL MyApp::lbEvHandler2(lb_I_Unknown* uk) called\n");
+
+	UAP_REQUEST(manager.getPtr(), lb_I_EventManager, ev_manager)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, name)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, after)
+
+	UAP(lb_I_Parameter, param, __FILE__, __LINE__)
 	
-	wxMenu *menu = new wxMenu;
+	QI(uk, lb_I_Parameter, param, __FILE__, __LINE__)
+	
+	parameter->setData("name");
+	param->getUAPString(*&parameter, *&name);
+	
+	if (param->Count() > 1) {
+		parameter->setData("after");
+		param->getUAPString(*&parameter, *&after);
+		
+		wxMenu *menu = new wxMenu;
+		
+		wxMenuBar* mbar = frame_peer->getMenuBar();
+		
+		int pos = 0;
+		
+		if (mbar) pos = mbar->FindMenu(wxString(after->getData()));
+		
+		if (mbar) mbar->Insert(pos+1, menu, name->getData());
+	} else {
+		wxMenu *menu = new wxMenu;
 
-	wxMenuBar* mbar = frame_peer->getMenuBar();
-	if (mbar) mbar->Append(menu, string->getData());
-
+		wxMenuBar* mbar = frame_peer->getMenuBar();
+		if (mbar) mbar->Append(menu, name->getData());
+	}
+	
 	return err;
 }
 /*...e*/
@@ -3032,8 +3321,10 @@ void lb_wxFrame::OnDispatch(wxCommandEvent& event ) {
 				dispatcher->setEventManager(eman.getPtr());
 			//}				
 
-			UAP_REQUEST(m, lb_I_String, param)
-			param->setData("wxWindows app calls dynamically assigned handler");
+			UAP_REQUEST(m, lb_I_Integer, param)
+			
+			param->setData(event.GetId());
+			
 			UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
 			QI(param, lb_I_Unknown, uk, __FILE__, __LINE__)
 		

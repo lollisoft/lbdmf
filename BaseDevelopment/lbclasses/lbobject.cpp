@@ -89,6 +89,11 @@ lbErrCodes LB_STDCALL lbParameter::setData(lb_I_Unknown* uk) {
 	return ERR_NOT_IMPLEMENTED;
 }
 
+int LB_STDCALL lbParameter::Count() {
+	if (parameters == NULL) return 0;
+	return parameters->Count();
+}
+
 void LB_STDCALL lbParameter::setUAPString(lb_I_String*& parameter, lb_I_String*& p) {
 	lbErrCodes err = ERR_NONE;
 	if (parameters == NULL) {

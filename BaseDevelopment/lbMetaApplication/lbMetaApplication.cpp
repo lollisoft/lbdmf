@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.40 $
+ * $Revision: 1.41 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.40 2004/10/09 16:55:07 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.41 2005/01/05 13:41:36 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.41  2005/01/05 13:41:36  lollisoft
+ * New dynamic application implementation works
+ *
  * Revision 1.40  2004/10/09 16:55:07  lollisoft
  * Bugfix for call of pure virtual function. Don't know where it comes from ??
  *
@@ -234,11 +237,17 @@ lbErrCodes LB_STDCALL lb_MetaApplication::registerEventHandler(lb_I_Dispatcher* 
 	disp->addEventHandlerFn(this, (lbEvHandler) &lb_MetaApplication::lbEvHandler1, "getBasicApplicationInfo");
 	disp->addEventHandlerFn(this, (lbEvHandler) &lb_MetaApplication::lbEvHandler2, "getMainModuleInfo");
 	disp->addEventHandlerFn(this, (lbEvHandler) &lb_MetaApplication::lbButtonTestHandler, "Button Test pressed");
+	
+	// Register a general login functionality
+	disp->addEventHandlerFn(this, (lbEvHandler) &lb_MetaApplication::getLoginData, "getLoginData");
+	
 	return ERR_NONE;
 }
 /*...e*/
 
 /*...sevent handlers\44\ that can be registered:0:*/
+
+/*...slbErrCodes LB_STDCALL lb_MetaApplication\58\\58\enterDebugger\40\lb_I_Unknown\42\ uk\41\:0:*/
 lbErrCodes LB_STDCALL lb_MetaApplication::enterDebugger(lb_I_Unknown* uk) {
 #ifdef WINDOWS
 	DebugBreak();
@@ -248,12 +257,14 @@ lbErrCodes LB_STDCALL lb_MetaApplication::enterDebugger(lb_I_Unknown* uk) {
 #endif
 	return ERR_NONE;
 }
-
+/*...e*/
+/*...slbErrCodes LB_STDCALL lb_MetaApplication\58\\58\lbEvHandler1\40\lb_I_Unknown\42\ uk\41\:0:*/
 lbErrCodes LB_STDCALL lb_MetaApplication::lbEvHandler1(lb_I_Unknown* uk) {
 	_LOG << "lb_MetaApplication::lbEvHandler1() called" LOG_
 	return ERR_NONE;
 }
-
+/*...e*/
+/*...slbErrCodes LB_STDCALL lb_MetaApplication\58\\58\lbEvHandler2\40\lb_I_Unknown\42\ uk\41\ \47\\47\ Show a simple message box:0:*/
 lbErrCodes LB_STDCALL lb_MetaApplication::lbEvHandler2(lb_I_Unknown* uk) {
 	_LOG << "lb_MetaApplication::lbEvHandler2() called" LOG_
 
@@ -265,7 +276,8 @@ lbErrCodes LB_STDCALL lb_MetaApplication::lbEvHandler2(lb_I_Unknown* uk) {
 
 	return ERR_NONE;
 }
-
+/*...e*/
+/*...slbErrCodes LB_STDCALL lb_MetaApplication\58\\58\lbButtonTestHandler\40\lb_I_Unknown\42\ uk\41\:0:*/
 lbErrCodes LB_STDCALL lb_MetaApplication::lbButtonTestHandler(lb_I_Unknown* uk) {
         _LOG << "lb_MetaApplication::lbEvHandler2() called" LOG_
 
@@ -277,6 +289,21 @@ lbErrCodes LB_STDCALL lb_MetaApplication::lbButtonTestHandler(lb_I_Unknown* uk) 
 
         return ERR_NONE;
 }
+/*...e*/
+/*...slbErrCodes LB_STDCALL lb_MetaApplication\58\\58\getLoginData\40\lb_I_Unknown\42\ uk\41\:0:*/
+lbErrCodes LB_STDCALL lb_MetaApplication::getLoginData(lb_I_Unknown* uk) {
+
+        if (gui != NULL) {
+                UAP(lb_I_Form, loginForm, __FILE__, __LINE__)
+
+                loginForm = gui->createLoginForm();
+        } else {
+                cout << "Login form on console not supported" << endl;
+        }
+
+	return ERR_NONE;
+}
+/*...e*/
 /*...e*/
 
 
@@ -308,8 +335,8 @@ lb_I_EventManager * lb_MetaApplication::getEVManager( void ) {
 	return NULL;
 }
 /*...e*/
-/*...slbErrCodes LB_STDCALL lb_MetaApplication\58\\58\Initialize\40\\41\:0:*/
-lbErrCodes LB_STDCALL lb_MetaApplication::Initialize() {
+/*...slbErrCodes LB_STDCALL lb_MetaApplication\58\\58\Initialize\40\char\42\ user \61\ NULL\44\ char\42\ app \61\ NULL\41\:0:*/
+lbErrCodes LB_STDCALL lb_MetaApplication::Initialize(char* user, char* app) {
 /*...sdoc:8:*/
 /**
  * At this point should be found the real application. The real one
@@ -329,6 +356,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::Initialize() {
 	int getMainModuleInfo;
 	int testPressed;
 	int enterDebugger;
+	int getLoginData;
 /*...e*/
 
 /*...sget the event manager:8:*/
@@ -340,12 +368,16 @@ lbErrCodes LB_STDCALL lb_MetaApplication::Initialize() {
 	REQUEST(m, lb_I_EventManager, eman)
 /*...e*/
 	
-/*...sregister a basic event \40\getBasicApplicationInfo\41\ by the event manager:8:*/
+/*...sregister some basic events \40\getBasicApplicationInfo\46\\46\\46\\41\ by the event manager:8:*/
 	eman->registerEvent("enterDebugger", enterDebugger);
 	eman->registerEvent("getBasicApplicationInfo", getBasicApplicationInfo);
 	eman->registerEvent("getMainModuleInfo", getMainModuleInfo);
 	eman->registerEvent("Button Test pressed", testPressed);
 
+	if (getenv("TARGET_APPLICATION") == NULL) {
+		// Need a database configuration based authentication
+		eman->registerEvent("getLoginData", getLoginData);
+	}
 /*...e*/
 
 /*...sget the dispatcher instance:8:*/
@@ -389,65 +421,36 @@ lbErrCodes LB_STDCALL lb_MetaApplication::Initialize() {
 	
 	addMenuBar("Edit");
 
-	loadApplication();
-
-	addMenuBar("Help");
+	if (getenv("TARGET_APPLICATION") != NULL) {
+		loadApplication("", "");
+	}
 	
-/*...sMain module demos and their help:8:*/
+	addMenuBar("Help");
+
+	if (getenv("TARGET_APPLICATION") == NULL) {
+		addMenuEntry("File", "Anmelden", "getLoginData", "");
+	}
+	
 	addMenuEntry("Help", "MainModuleInfo", "getMainModuleInfo", "");
 	addMenuEntry("Help", "Debug application", "enterDebugger", "");
+#ifdef bla	
+/*...sMain module demos and their help:8:*/
 
 	addButton("Press me for test", "Button Test pressed", 10, 30, 100, 20);
 	
 	int hight = 60;
-	int n = 1;
 
 	addLabel("Label", 115, 30, 100, 20);
 	addTextField("TextField", 220, 30, 100, 20);
 
-	
-	addButton("|<", "Button Test pressed", 10, hight+n*20+n*5, 100, 20);
-	addButton("<<", "Button Test pressed", 115, hight+n*20+n*5, 100, 20);
-	addButton(">>", "Button Test pressed", 220, hight+n*20+n*5, 100, 20);
-	addButton(">|", "Button Test pressed", 325, hight+n*20+n*5, 100, 20);
-	n++;
-	addButton("|<", "Button Test pressed", 10, hight+n*20+n*5, 100, 20);
-	addButton("<<", "Button Test pressed", 115, hight+n*20+n*5, 100, 20);
-	addButton(">>", "Button Test pressed", 220, hight+n*20+n*5, 100, 20);
-	addButton(">|", "Button Test pressed", 325, hight+n*20+n*5, 100, 20);
-	n++;
-	addButton("|<", "Button Test pressed", 10, hight+n*20+n*5, 100, 20);
-	addButton("<<", "Button Test pressed", 115, hight+n*20+n*5, 100, 20);
-	addButton(">>", "Button Test pressed", 220, hight+n*20+n*5, 100, 20);
-	addButton(">|", "Button Test pressed", 325, hight+n*20+n*5, 100, 20);
-	n++;
-	addButton("|<", "Button Test pressed", 10, hight+n*20+n*5, 100, 20);
-	addButton("<<", "Button Test pressed", 115, hight+n*20+n*5, 100, 20);
-	addButton(">>", "Button Test pressed", 220, hight+n*20+n*5, 100, 20);
-	addButton(">|", "Button Test pressed", 325, hight+n*20+n*5, 100, 20);
-	n++;
-	addButton("|<", "Button Test pressed", 10, hight+n*20+n*5, 100, 20);
-	addButton("<<", "Button Test pressed", 115, hight+n*20+n*5, 100, 20);
-	addButton(">>", "Button Test pressed", 220, hight+n*20+n*5, 100, 20);
-	addButton(">|", "Button Test pressed", 325, hight+n*20+n*5, 100, 20);
-	n++;
-	addButton("|<", "Button Test pressed", 10, hight+n*20+n*5, 100, 20);
-	addButton("<<", "Button Test pressed", 115, hight+n*20+n*5, 100, 20);
-	addButton(">>", "Button Test pressed", 220, hight+n*20+n*5, 100, 20);
-	addButton(">|", "Button Test pressed", 325, hight+n*20+n*5, 100, 20);
-	n++;
-	addButton("|<", "Button Test pressed", 10, hight+n*20+n*5, 100, 20);
-	addButton("<<", "Button Test pressed", 115, hight+n*20+n*5, 100, 20);
-	addButton(">>", "Button Test pressed", 220, hight+n*20+n*5, 100, 20);
-	addButton(">|", "Button Test pressed", 325, hight+n*20+n*5, 100, 20);
-	n++;
-	addButton("|<", "Button Test pressed", 10, hight+n*20+n*5, 100, 20);
-	addButton("<<", "Button Test pressed", 115, hight+n*20+n*5, 100, 20);
-	addButton(">>", "Button Test pressed", 220, hight+n*20+n*5, 100, 20);
-	addButton(">|", "Button Test pressed", 325, hight+n*20+n*5, 100, 20);
-	n++;
+	for (int n = 1; n <= 7; n++) {
+		addButton("|<", "Button Test pressed", 10, hight+n*20+n*5, 100, 20);
+		addButton("<<", "Button Test pressed", 115, hight+n*20+n*5, 100, 20);
+		addButton(">>", "Button Test pressed", 220, hight+n*20+n*5, 100, 20);
+		addButton(">|", "Button Test pressed", 325, hight+n*20+n*5, 100, 20);
+	}
 /*...e*/
-	
+#endif
 	return ERR_NONE;
 }
 /*...e*/
@@ -470,55 +473,168 @@ lbErrCodes LB_STDCALL lb_MetaApplication::loadSubModules() {
 	return ERR_NONE;
 }
 
-/*...slbErrCodes LB_STDCALL lb_MetaApplication\58\\58\loadApplication\40\\41\:0:*/
-lbErrCodes LB_STDCALL lb_MetaApplication::loadApplication() {
+/*...slbErrCodes LB_STDCALL lb_MetaApplication\58\\58\loadApplication\40\char\42\ user\44\ char\42\ app\41\:0:*/
+lbErrCodes LB_STDCALL lb_MetaApplication::loadApplication(char* user, char* application) {
 	lbErrCodes err = ERR_NONE;
         char* applicationName = getenv("TARGET_APPLICATION");
 
-	lb_I_Unknown* a = NULL;
+	if (applicationName == NULL) {
+		/*
+		 * No predefined application without authentication.
+		 * Read the configuration from a database.
+		 */
+		
 
-#ifndef LINUX
-	#ifdef __WATCOMC__
-	#define PREFIX "_"
-	#endif
-	#ifdef _MSC_VER
-	#define PREFIX ""
-	#endif
-#endif
-#ifdef LINUX
-#define PREFIX ""
-#endif
+		UAP_REQUEST(manager.getPtr(), lb_I_Database, database)
+		UAP(lb_I_Query, sampleQuery, __FILE__, __LINE__)
 
-#ifdef WINDOWS	
-	manager->makeInstance(PREFIX "instanceOfApplication", applicationName, &a);
-#endif
-#ifdef LINUX
-	manager->makeInstance(PREFIX "instanceOfApplication", "Application.so", &a);
-#endif	
-	if (a == NULL) {
-		_LOG << "ERROR: Application could not be loaded - either not found or not configured." LOG_
-		printf("ERROR: Application could not be loaded - either not found or not configured.\n");
-		getch();
-		return ERR_NONE;
+		database->init();
+		database->connect("lbDMF", "dba", "trainres");
+
+		sampleQuery = database->getQuery(0);
+
+		char buffer[1000] = "";
+
+		sprintf(buffer,
+		        "select \"Anwendungen\".\"ModuleName\", \"Anwendungen\".\"Functor\", \"Anwendungen\".\"Interface\" from \"Anwendungen\" inner join \"User_Anwendungen\" on "
+		        "\"Anwendungen\".id = \"User_Anwendungen\".\"AnwendungenId\" "
+		        "inner join \"Users\" on \"User_Anwendungen\".userid = \"Users\".id where "
+		        "\"Users\".userid = '%s' and \"Anwendungen\".\"Name\" = '%s'"
+		                , user, application);
+
+		/*
+		 * Decide upon the interface, if this code is capable to handle this application.
+		 * First, only handle lb_I_MetaApplication types.
+		 */
+
+		sampleQuery->query(buffer);
+
+		// Fill up the available applications for that user.
+		UAP_REQUEST(manager.getPtr(), lb_I_String, ModuleName)
+		UAP_REQUEST(manager.getPtr(), lb_I_String, Functor)
+
+		lbErrCodes DBerr = sampleQuery->first();
+
+		if ((DBerr == ERR_NONE) || (DBerr == WARN_DB_NODATA)) {
+
+		        ModuleName = sampleQuery->getAsString(1);
+			Functor = sampleQuery->getAsString(2);
+
+		        applicationName = strdup(ModuleName->charrep());
+
+			#ifdef bla
+/*...sRead only the first application\46\ More apps are wrong\46\:24:*/
+		        while (TRUE) {
+		                lbErrCodes err = sampleQuery->next();
+
+		                if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
+		                        s1 = sampleQuery->getAsString(1);
+
+		                        printf("Have application '%s'\n", s1->charrep());
+
+		                        box->Append(wxString(s1->charrep()));
+
+		                        if (err == WARN_DB_NODATA) break;
+		                }
+		        }
+/*...e*/
+			#endif
+
+		}
+
+		lb_I_Unknown* a = NULL;
+
+		#ifndef LINUX
+		        #ifdef __WATCOMC__
+		        	#define PREFIX "_"
+	        	#endif
+			#ifdef _MSC_VER
+			        #define PREFIX ""
+	        	#endif
+		#endif
+		#ifdef LINUX
+			#define PREFIX ""
+		#endif
+
+		char f[100] = "";
+		char appl[100] = "";
+
+		strcpy(f, PREFIX);
+		strcat(f, Functor->charrep());
+		strcpy(appl, applicationName);
+		
+                #ifdef WINDOWS
+                manager->makeInstance(f, appl, &a);
+                #endif
+                #ifdef LINUX
+		strcat(appl, ".so");		
+                manager->makeInstance(f, appl, &a);
+                #endif
+                if (a == NULL) {
+                        _LOG << "ERROR: Application could not be loaded - either not found or not configured." LOG_
+                        printf("ERROR: Application could not be loaded - either not found or not configured.\n");
+                        getch();
+                        return ERR_NONE;
+                }
+
+                QI(a, lb_I_MetaApplication, app, __FILE__, __LINE__)
+
+                if (dispatcher.getPtr() == NULL) _LOG << "Error: dispatcher is NULL" LOG_
+
+                app->setGUI(gui);
+                app->Initialize(user, application);
+
+                if (dispatcher.getPtr() == NULL) _LOG << "Error: dispatcher has been set to NULL" LOG_
+	} else {
+
+		lb_I_Unknown* a = NULL;
+
+		#ifndef LINUX
+			#ifdef __WATCOMC__
+				#define PREFIX "_"
+			#endif
+			#ifdef _MSC_VER
+				#define PREFIX ""
+			#endif
+		#endif
+		#ifdef LINUX
+			#define PREFIX ""
+		#endif
+
+		#ifdef WINDOWS	
+		manager->makeInstance(PREFIX "instanceOfApplication", applicationName, &a);
+		#endif
+		#ifdef LINUX
+		manager->makeInstance(PREFIX "instanceOfApplication", "Application.so", &a);
+		#endif	
+		if (a == NULL) {
+			_LOG << "ERROR: Application could not be loaded - either not found or not configured." LOG_
+			printf("ERROR: Application could not be loaded - either not found or not configured.\n");
+			getch();
+			return ERR_NONE;
+		}
+		
+		QI(a, lb_I_MetaApplication, app, __FILE__, __LINE__)
+
+		if (dispatcher.getPtr() == NULL) _LOG << "Error: dispatcher is NULL" LOG_
+
+		app->setGUI(gui);
+		printf("Initialize subsequential application\n");
+		app->Initialize();
+
+		if (dispatcher.getPtr() == NULL) _LOG << "Error: dispatcher has been set to NULL" LOG_
 	}
-	
-	QI(a, lb_I_MetaApplication, app, __FILE__, __LINE__)
 
-	if (dispatcher.getPtr() == NULL) _LOG << "Error: dispatcher is NULL" LOG_
-
-	app->setGUI(gui);
-	app->Initialize();
-	
-	if (dispatcher.getPtr() == NULL) _LOG << "Error: dispatcher has been set to NULL" LOG_
-	
         return ERR_NONE;
 }
 /*...e*/
 
 /*...sBasic functions to be used for a UI application:0:*/
-/*...slbErrCodes LB_STDCALL lb_MetaApplication\58\\58\addMenuBar\40\char\42\ name\41\:0:*/
-lbErrCodes LB_STDCALL lb_MetaApplication::addMenuBar(char* name) {
+/*...slbErrCodes LB_STDCALL lb_MetaApplication\58\\58\addMenuBar\40\char\42\ name\44\ char\42\ after\41\:0:*/
+lbErrCodes LB_STDCALL lb_MetaApplication::addMenuBar(char* name, char* after) {
 	lbErrCodes err = ERR_NONE;
+
+/*
 
 	UAP_REQUEST(manager.getPtr(), lb_I_String, string)
 	string->setData(name);
@@ -533,6 +649,37 @@ lbErrCodes LB_STDCALL lb_MetaApplication::addMenuBar(char* name) {
 	QI(result, lb_I_Unknown, uk_result, __FILE__, __LINE__)
 
 	if (uk == NULL) _LOG << "Error: Cannot call with a null pointer!" LOG_
+
+*/
+
+	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, value)
+
+	parameter->setData("name");
+	value->setData(name);
+	param->setUAPString(*&parameter, *&value);
+
+printf("Added first parameter for menu\n");
+
+	if (after != NULL) {
+		parameter->setData("after");
+		value->setData(after);
+		param->setUAPString(*&parameter, *&value);
+
+printf("Added second parameter for menu\n");
+
+	}
+
+
+	UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
+	QI(param, lb_I_Unknown, uk, __FILE__, __LINE__)
+	
+	UAP_REQUEST(manager.getPtr(), lb_I_String, result)
+	UAP(lb_I_Unknown, uk_result, __FILE__, __LINE__)
+	QI(result, lb_I_Unknown, uk_result, __FILE__, __LINE__)
+	
+printf("Dispatch \"AddMenuBar\"\n");	
 	
 	dispatcher->dispatch("AddMenuBar", uk.getPtr(), &uk_result);
 
@@ -883,6 +1030,32 @@ lbErrCodes LB_STDCALL lb_EventManager::resolveEvent(char* EvName, int & evNr) {
 /*...e*/
 
 	return ERR_NONE;
+}
+
+char* LB_STDCALL lb_EventManager::reverseEvent(int evNr) {
+	lbErrCodes err = ERR_NONE;
+	
+	UAP_REQUEST(manager.getPtr(), lb_I_Integer, ID)
+	ID->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+	ID->setData(evNr);
+	
+	UAP(lb_I_KeyBase, kk, __FILE__, __LINE__)
+	QI(ID, lb_I_Unknown, kk, __FILE__, __LINE__)
+	
+	if (reverse_events->exists(&kk) == 1) {
+		UAP(lb_I_Unknown, object, __FILE__, __LINE__)
+		UAP(lb_I_String, str, __FILE__, __LINE__)
+		
+		object = reverse_events->getElement(&kk);
+		QI(object, lb_I_String, str, __FILE__, __LINE__)
+		static char result[100] = "";
+		strcpy(result, str->getData());
+		
+		return result;
+	} else {
+		_LOG << "Error: Event id not registered: " << evNr LOG_
+		return "";
+	}
 }
 /*...e*/
 /*...slb_Dispatcher:0:*/

@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.14 $
+# * $Revision: 1.15 $
 # * $Name:  $
-# * $Id: Makefile,v 1.14 2004/12/14 16:15:06 lollisoft Exp $
+# * $Id: Makefile,v 1.15 2005/01/05 13:41:36 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.15  2005/01/05 13:41:36  lollisoft
+# * New dynamic application implementation works
+# *
 # * Revision 1.14  2004/12/14 16:15:06  lollisoft
 # * Also make wxWrapper with mkmk and the like.
 # *
@@ -102,6 +105,7 @@ ALLTARGETS = lbhook \
 	lbclasses \
 	lbMetaApplication \
 	../AppDevelopmentDemo/App \
+	../AppDevelopment/DynamicApp/App \
 	../Test/Console/XML \
 	../Test/GUI/wxWrapper \
 	../Doc/html
@@ -146,6 +150,10 @@ dummy:
 #	$(MAKEWXSAMPLE)
 
 #$(MAKEWXSAMPLE)
+
+../AppDevelopment/DynamicApp/App: dummy
+	$(MAKE) -C $@ -e MODULE=lbDynApp -e TARGET=$(TARGETDLL) -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
+	$(MAKE) -C $@
 
 ../AppDevelopmentDemo/App: dummy
 	$(MAKE) -C $@ -e MODULE=Application -e TARGET=$(TARGETDLL) -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure

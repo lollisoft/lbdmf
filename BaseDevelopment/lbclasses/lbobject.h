@@ -31,10 +31,13 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.20 $
+ * $Revision: 1.21 $
  * $Name:  $
- * $Id: lbobject.h,v 1.20 2004/07/16 20:21:40 lollisoft Exp $
+ * $Id: lbobject.h,v 1.21 2005/01/05 13:41:36 lollisoft Exp $
  * $Log: lbobject.h,v $
+ * Revision 1.21  2005/01/05 13:41:36  lollisoft
+ * New dynamic application implementation works
+ *
  * Revision 1.20  2004/07/16 20:21:40  lollisoft
  * Changed parameter from non const to const
  *
@@ -202,6 +205,9 @@ public:
 
 	virtual void LB_STDCALL setUAPInteger(lb_I_String*& parameter, lb_I_Integer*& p);
 	virtual lbErrCodes LB_STDCALL getUAPInteger(lb_I_String*& parameter, lb_I_Integer*& p);
+	
+	virtual int LB_STDCALL Count();
+	
 protected:
 
 	UAP(lb_I_Container, parameters, __FILE__, __LINE__)

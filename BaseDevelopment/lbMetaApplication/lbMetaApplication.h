@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.18 $
+ * $Revision: 1.19 $
  * $Name:  $
- * $Id: lbMetaApplication.h,v 1.18 2004/08/01 21:34:03 lollisoft Exp $
+ * $Id: lbMetaApplication.h,v 1.19 2005/01/05 13:41:36 lollisoft Exp $
  *
  * $Log: lbMetaApplication.h,v $
+ * Revision 1.19  2005/01/05 13:41:36  lollisoft
+ * New dynamic application implementation works
+ *
  * Revision 1.18  2004/08/01 21:34:03  lollisoft
  * More documentation
  *
@@ -117,7 +120,7 @@ public:
 	 * For each event, it gets an numeric identifer so it may
 	 * be able to dispatch that events.
 	 */
-	virtual lbErrCodes LB_STDCALL Initialize();
+	virtual lbErrCodes LB_STDCALL Initialize(char* user = NULL, char* app = NULL);
 	virtual lbErrCodes LB_STDCALL run();
 	virtual lbErrCodes LB_STDCALL getGUI(lb_I_GUI** _gui);
 
@@ -133,9 +136,10 @@ public:
 	/**
 	 * Load the real application.
 	 */
-	lbErrCodes LB_STDCALL loadApplication();
+	virtual lbErrCodes LB_STDCALL loadApplication(char* user, char* app);
 
 	lbErrCodes LB_STDCALL enterDebugger(lb_I_Unknown* uk);
+	lbErrCodes LB_STDCALL getLoginData(lb_I_Unknown* uk);
 
 	lbErrCodes LB_STDCALL lbEvHandler1(lb_I_Unknown* uk);
 	lbErrCodes LB_STDCALL lbEvHandler2(lb_I_Unknown* uk);
@@ -145,7 +149,7 @@ public:
 	/* The menubar is still present in the demo. At the
 	   first time, a new menubar should not be used.
 	*/
-	virtual lbErrCodes LB_STDCALL addMenuBar(char* name);
+	virtual lbErrCodes LB_STDCALL addMenuBar(char* name, char* after = NULL);
 
 	/**
 	 * Add a menu behind the last.
@@ -175,6 +179,8 @@ protected:
 	DEBUG_UAP(lb_I_EventManager, eman, __FILE__, __LINE__)
 	DEBUG_UAP(lb_I_Dispatcher, dispatcher, __FILE__, __LINE__)
 	UAP(lb_I_MetaApplication, app, __FILE__, __LINE__)
+	
+	char gwedgd[100];
 };
 /*...e*/
 /*...sclass lb_EventMapper:0:*/
@@ -256,6 +262,7 @@ public:
 	
 	virtual lbErrCodes LB_STDCALL registerEvent(char* EvName, int & EvNr);
 	virtual lbErrCodes LB_STDCALL resolveEvent(char* EvName, int & evNr);
+	virtual char* LB_STDCALL reverseEvent(int evNr);
 
 protected:
 

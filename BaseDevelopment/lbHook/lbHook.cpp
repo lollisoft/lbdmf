@@ -356,8 +356,9 @@ DLLEXPORT char* LB_STDCALL translateText(char* text) {
 	mm = getModuleInstance();
 	mm->setModuleManager(mm, __FILE__, __LINE__);
 
+/*
 	UAP_REQUEST(mm, lb_I_Locale, locale)
-
+*/
 	
 
 	return text;

@@ -192,7 +192,9 @@ public:
 	virtual lbErrCodes LB_STDCALL unregisterView(lb_I_MVC_View* view);
 /*...e*/
 
-	char* LB_STDCALL getTableName();
+	void LB_STDCALL prepareFKList();
+
+	virtual char* LB_STDCALL getTableName();
 
 	void LB_STDCALL dbError(char* lp);
 
@@ -219,6 +221,9 @@ public:
 
 	virtual int		LB_STDCALL getColumns();
 	virtual char*		LB_STDCALL getColumnName(int col);
+
+	virtual int		LB_STDCALL hasFKColumn(char* FKName);
+
         
         /* Navigation */
         virtual lbErrCodes	LB_STDCALL first();
@@ -262,7 +267,7 @@ private:
 	HSTMT   hstmt;
 	HSTMT   hupdatestmt;
 	RETCODE retcode;
-	char    szSql[256];
+	char    szSql[1000];
 	int	databound;
 	int     firstfetched;
 	int	_readonly; // readonly = 1, else = 0
@@ -272,12 +277,16 @@ private:
 	// Number of columns for the query
 	SQLSMALLINT cols;
 
+	UAP(lb_I_Container, ForeignColumns, __FILE__, __LINE__)
+
 #ifdef UNBOUND	
 	UAP(lb_I_Container, boundColumns, __FILE__, __LINE__)
 #endif
 #ifndef UNBOUND
 	UAP(lb_I_ColumnBinding, boundColumns, __FILE__, __LINE__)
 #endif
+	char buff[100];
+
 	int count;
 	
 	/**
@@ -774,7 +783,7 @@ lbErrCodes LB_STDCALL lbQuery::init(HENV _henv, HDBC _hdbc, int readonly) {
 /*...slbErrCodes LB_STDCALL lbQuery\58\\58\query\40\char\42\ q\41\:0:*/
 lbErrCodes LB_STDCALL lbQuery::query(char* q) {
 
-	if (strlen(q) >= 256) printf("WARNING: Bufferoverflow in %s at %d\n", __FILE__, __LINE__);
+	if (strlen(q) >= 1000) printf("WARNING: Bufferoverflow in %s at %d\n", __FILE__, __LINE__);
 
 	lstrcpy(szSql, q);
 
@@ -802,6 +811,7 @@ Using SQLSetPos
 
 #endif
 /*...e*/
+/*...sbla:0:*/
 /*
 	char cursorname[100] = "";
 	
@@ -809,6 +819,9 @@ Using SQLSetPos
 
 	retcode = SQLSetCursorName(hstmt, cursorname, SQL_NTS);
 */	
+/*...e*/
+
+	prepareFKList();
 
 	retcode = SQLExecDirect(hstmt, (unsigned char*) szSql, SQL_NTS);
 
@@ -942,6 +955,134 @@ int   LB_STDCALL lbQuery::getColumns() {
 	return cols;
 }
 
+/*...sint LB_STDCALL lbQuery\58\\58\hasFKColumn\40\char\42\ FKName\41\:0:*/
+int LB_STDCALL lbQuery::hasFKColumn(char* FKName) {
+	lbErrCodes err = ERR_NONE;
+	
+	UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, s)
+	
+	s->setData(FKName);
+	
+	QI(s, lb_I_KeyBase, key, __FILE__, __LINE__)
+	
+	if (ForeignColumns->exists(&key) == 1) return 1;
+
+	return 0;
+}
+/*...e*/
+
+/*...svoid LB_STDCALL lbQuery\58\\58\prepareFKList\40\\41\:0:*/
+void LB_STDCALL lbQuery::prepareFKList() {
+	#define TAB_LEN 100
+	#define COL_LEN 100
+
+	unsigned char*   szTable;     /* Table to display   */
+
+	UCHAR   szPkTable[TAB_LEN];  /* Primary key table name */
+	UCHAR   szFkTable[TAB_LEN];  /* Foreign key table name */
+	UCHAR   szPkCol[COL_LEN];  /* Primary key column   */
+	UCHAR   szFkCol[COL_LEN];  /* Foreign key column   */
+
+	SQLHSTMT         hstmt;
+	SQLINTEGER      cbPkTable, cbPkCol, cbFkTable, cbFkCol, cbKeySeq;
+	SQLSMALLINT      iKeySeq;
+	SQLRETURN         retcode;
+
+	retcode = SQLAllocStmt(hdbc, &hstmt); /* Statement handle */
+
+
+
+	SQLBindCol(hstmt, 3, SQL_C_CHAR, szPkTable, TAB_LEN, &cbPkTable);
+	SQLBindCol(hstmt, 4, SQL_C_CHAR, szPkCol, COL_LEN, &cbPkCol);
+	SQLBindCol(hstmt, 5, SQL_C_SSHORT, &iKeySeq, TAB_LEN, &cbKeySeq);
+	SQLBindCol(hstmt, 7, SQL_C_CHAR, szFkTable, TAB_LEN, &cbFkTable);
+	SQLBindCol(hstmt, 8, SQL_C_CHAR, szFkCol, COL_LEN, &cbFkCol);
+
+
+	REQUEST(manager.getPtr(), lb_I_Container, ForeignColumns)
+
+	
+	if (retcode != SQL_SUCCESS)
+	{
+	        _dbError( "SQLAllocStmt()",henv,hdbc,hstmt);
+	}
+
+	szTable = strdup(getTableName());
+/*
+	int a = 0;
+	int b = 0;
+
+	char* temp;
+	
+	temp = new char[strlen((char const*) szTable)+1];
+
+	while (b <= strlen((char const*) szTable)) {
+		if (szTable[b] != '\"') {
+			temp[a] = szTable[b];
+			a++;
+			b++;
+		} else {
+			b++;
+		}
+	}
+	
+	free(szTable);
+	szTable = temp;
+*/
+
+printf("Get foreign keys for table %s\n", szTable);
+
+	retcode = SQLForeignKeys(hstmt,
+	         NULL, 0,      /* Primary catalog   */
+	         NULL, 0,      /* Primary schema   */
+	         NULL, 0,      /* Primary table   */
+	         NULL, 0,      /* Foreign catalog   */
+	         NULL, 0,      /* Foreign schema   */
+	         szTable, SQL_NTS);      /* Foreign table   */
+	                    
+	while ((retcode == SQL_SUCCESS) || (retcode == SQL_SUCCESS_WITH_INFO)) {
+
+	/* Fetch and display the result set. This will be all of the */
+	/* foreign keys in other tables that refer to the ORDERS */
+	/* primary key.                 */
+
+printf("Try to print out the foreign columns\n");
+
+	   retcode = SQLFetch(hstmt);
+	   if (retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO) {
+	      lbErrCodes err = ERR_NONE;
+	      
+	      printf("%-s ( %-s ) <-- %-s ( %-s )\n", szPkTable, szPkCol, szFkTable, szFkCol);
+	      
+	      
+	      UAP_REQUEST(manager.getPtr(), lb_I_String, FKName)
+	      UAP_REQUEST(manager.getPtr(), lb_I_String, PKTable)
+	      
+	      FKName->setData((char*) szFkCol);
+	      PKTable->setData((char*) szPkTable);
+	      
+	      UAP(lb_I_Unknown, uk_PKTable, __FILE__, __LINE__)
+	      UAP(lb_I_KeyBase, key_FKName, __FILE__, __LINE__)
+	      
+	      QI(FKName, lb_I_KeyBase, key_FKName, __FILE__, __LINE__)
+	      QI(PKTable, lb_I_Unknown, uk_PKTable, __FILE__, __LINE__)
+
+	      printf("Try to insert foreign key data\n");
+	      
+	      ForeignColumns->insert(&uk_PKTable, &key_FKName);
+	      
+	   }
+	}
+
+	/* Close the cursor (the hstmt is still allocated). */
+
+	SQLFreeStmt(hstmt, SQL_DROP);
+
+                                  
+}
+/*...e*/
+
 /*...schar\42\ LB_STDCALL lbQuery\58\\58\getColumnName\40\int col\41\:0:*/
 char lbQuery_column_Name[100] = "";
 
@@ -987,6 +1128,52 @@ lbErrCodes LB_STDCALL lbQuery::first() {
                 
                 return ERR_DB_FETCHFIRST;
         }
+
+// Try also fetch probe here
+
+		retcode = SQLExtendedFetch(hstmt, SQL_FETCH_NEXT, 0, &RowsFetched, RowStat);
+
+char buf[100] = "";
+
+_LOG << "Fetch checked (step 2)" LOG_
+		
+		if (retcode == SQL_NO_DATA) {
+			// Indicate for no data and go back
+
+_LOG << "Fetch gave no more data. Return a warning." LOG_
+			
+			retcode = SQLExtendedFetch(hstmt, SQL_FETCH_PREV, 0, &RowsFetched, RowStat);
+			
+			if (retcode == SQL_NO_DATA) {
+				_LOG << "FATAL ERROR: Resultset indication for no data has been failed!" LOG_
+				
+				fetchstatus = 2;
+				
+				return ERR_DB_NODATA;
+			}
+			
+			fetchstatus = 1;
+			
+			return WARN_DB_NODATA;
+		} else {
+
+_LOG << "Fetch gave no error, so all would be good." LOG_
+
+			retcode = SQLExtendedFetch(hstmt, SQL_FETCH_PREV, 0, &RowsFetched, RowStat);
+			
+			if (retcode == SQL_NO_DATA) {
+				_LOG << "FATAL ERROR: Resultset indication for no data has been failed!" LOG_
+				
+				fetchstatus = 2;
+				
+				return ERR_DB_NODATA;
+			}
+			
+			fetchstatus = 0;
+			
+			return ERR_NONE;
+		}
+
 
 
 #ifndef USE_FETCH_SCROLL        
@@ -1257,6 +1444,45 @@ lbErrCodes LB_STDCALL lbQuery::last() {
 		
                 return ERR_DB_FETCHLAST;
         }
+
+// Try also here a fetch probe
+		retcode = SQLExtendedFetch(hstmt, SQL_FETCH_PREV, 0, &RowsFetched, RowStat);
+
+char buf[100] = "";
+		
+		if (retcode == SQL_NO_DATA) {
+			// Indicate for no data and go back
+			printf("No, we don't have more.\n");
+			retcode = SQLExtendedFetch(hstmt, SQL_FETCH_NEXT, 0, &RowsFetched, RowStat);
+			
+			if (retcode == SQL_NO_DATA) {
+				_LOG << "FATAL ERROR: Resultset indication for no data has been failed!" LOG_
+				
+				fetchstatus = -2;
+				
+				return ERR_DB_NODATA;
+			}
+			
+			fetchstatus = -1;
+			
+			return WARN_DB_NODATA;
+		} else {
+			printf("Yes, we have.\n");
+			retcode = SQLExtendedFetch(hstmt, SQL_FETCH_NEXT, 0, &RowsFetched, RowStat);
+			
+			if (retcode == SQL_NO_DATA) {
+				_LOG << "FATAL ERROR: Resultset indication for no data has been failed!" LOG_
+				
+				fetchstatus = -2;
+				
+				return ERR_DB_NODATA;
+			}
+			
+			fetchstatus = 0;
+			
+			return ERR_NONE;
+		}
+
 
 
 #ifndef USE_FETCH_SCROLL        
@@ -1544,8 +1770,6 @@ char* LB_STDCALL lbQuery::getTableName() {
    while (*lpsz && !ISWHITE(*lpsz)) lpsz++;
    while (*lpsz && ISWHITE(*lpsz))  lpsz++;
 
-printf("Preendscan at %s\n", lpsz);
-
 // There may be a bug in the last lines and here I have my table...
 
 int i = 0;
@@ -1553,11 +1777,31 @@ while (lpsz[i++] != ' ') i++;
 
 strcpy(lpszTable, lpsz);
 
-printf("%s\n", lpszTable);
-
 char* pos = strstr(lpszTable, "where");
 
 if (pos) pos[0] = 0;
+
+
+int a = 0;
+int b = 0;
+
+char* temp;
+
+temp = new char[strlen((char const*) lpszTable)+1];
+
+while (b <= strlen((char const*) lpszTable)) {
+        if (lpszTable[b] != '\"') {
+                temp[a] = lpszTable[b];
+                a++;
+                b++;
+        } else {
+                b++;
+        }
+}
+lpszTable[0] = 0;
+strcpy(lpszTable, temp);
+
+delete[] temp;
 
 return lpszTable; //!!!
 
