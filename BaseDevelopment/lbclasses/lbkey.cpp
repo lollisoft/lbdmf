@@ -37,12 +37,12 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.19 $
+ * $Revision: 1.20 $
  * $Name:  $
- * $Id: lbkey.cpp,v 1.19 2005/02/10 17:02:32 lollisoft Exp $
+ * $Id: lbkey.cpp,v 1.20 2005/02/12 13:57:34 lollisoft Exp $
  * $Log: lbkey.cpp,v $
- * Revision 1.19  2005/02/10 17:02:32  lollisoft
- * Changes for Mac OS X
+ * Revision 1.20  2005/02/12 13:57:34  lollisoft
+ * Changed lbKey to lbKey_ to enable built on Mac
  *
  * Revision 1.18  2004/05/08 10:51:15  lollisoft
  * bug in returning local nonstatic pointer

@@ -31,12 +31,12 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.20 $
+ * $Revision: 1.21 $
  * $Name:  $
- * $Id: lbkey.h,v 1.20 2005/02/10 17:02:33 lollisoft Exp $
+ * $Id: lbkey.h,v 1.21 2005/02/12 13:57:34 lollisoft Exp $
  * $Log: lbkey.h,v $
- * Revision 1.20  2005/02/10 17:02:33  lollisoft
- * Changes for Mac OS X
+ * Revision 1.21  2005/02/12 13:57:34  lollisoft
+ * Changed lbKey to lbKey_ to enable built on Mac
  *
  * Revision 1.19  2003/12/13 10:56:25  lollisoft
  * Database improovements and changes in my licence adress.
@@ -130,28 +130,6 @@ private:
 
     char keyType[10];
     unsigned long key;
-};
-/*...e*/
-/*...sclass lbKey_ \58\ public lb_I_KeyBase:0:*/
-class DLLEXPORT lbKey_ : public lb_I_KeyBase {
-public:
-#ifdef _MSC_VER
-	lbKey_(char* file, int line); // { key = 0; strcpy(keyType, "int"); }
-#endif
-
-	lbKey_();
-	lbKey_(int _key);
-	lbKey_(const lb_I_KeyBase* k);
-	virtual ~lbKey_();
-
-	DECLARE_LB_UNKNOWN()
-
-	DECLARE_LB_KEYBASE()
-	
-private:
-
-	char keyType[10];
-	int key;
 };
 /*...e*/
 
