@@ -11,11 +11,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.5 $
+ * $Revision: 1.6 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.5 2001/10/20 19:45:43 lothar Exp $
+ * $Id: mkmk.cpp,v 1.6 2001/10/20 19:48:45 lothar Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.6  2001/10/20 19:48:45  lothar
+ * Moved some messages to VERBOSE only
+ *
  * Revision 1.5  2001/10/20 19:45:43  lothar
  * Added revision history
  *
@@ -197,7 +200,9 @@ void TIncludeParser::AddInclude(char *IncName)
   bool Found;
 
   if (l.Search(IncName)) return;
+#ifdef VERBOSE
   printf("    '%s'\n",IncName);
+#endif
   Found=BasicParse(IncName);
   if (Found) l.Insert(IncName,"");
   else if (FilePath[0]!=0)
