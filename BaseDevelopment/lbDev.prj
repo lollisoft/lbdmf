@@ -127,6 +127,7 @@ These headers must define the per module (DLL) EXPORT variable
 /*...slbDB:0:*/
 /*...vlbDB\47\lbDB\46\h:0:*/
 /*...vlbDB\47\lbDB\46\cpp:0:*/
+/*...vlbDB\47\lbFakeDelete\46\cpp:0:*/
 /*...vlbDB\47\makefile:0:*/
 /*...vlbDB\47\makefile\46\module:0:*/
 /*...vlbDB\47\makefile\46\bat:0:*/
