@@ -9,6 +9,7 @@
 
 #include <stdio.h>
 #include <iostream.h>
+#include <fstream.h>
 #include <malloc.h>
 #include <lbInterfaces.h>
 
@@ -172,15 +173,21 @@ DLLEXPORT int isInitializing;
 #define  LOG_  << "\n"; }
 /*...e*/
 #ifndef __MISC
-#define CL_LOG(msg) \
+#define _CL_LOG \
 { \
-        _LOG << msg LOG_ \
-        }
+	ofstream of("C:\\log\\wsmaster.log"); \
+	
+        of << msg LOG_ \
+        
 #endif
 #ifdef __MISC
-#define CL_LOG(msg) \
+#define _CL_LOG \
 { \
-}
+	ofstream of("C:\\log\\wsmaster.log"); \
+	
+        of << msg LOG_ \
+        
+#endif
 #endif
 /*...sLOG\40\msg\41\:0:*/
 #define LOG(msg)	\
