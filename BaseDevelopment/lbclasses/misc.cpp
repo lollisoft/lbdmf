@@ -2,10 +2,15 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.16 $
+ * $Revision: 1.17 $
  * $Name:  $
- * $Id: misc.cpp,v 1.16 2002/09/19 19:34:14 lolli Exp $
+ * $Id: misc.cpp,v 1.17 2002/10/04 16:53:14 lolli Exp $
  * $Log: misc.cpp,v $
+ * Revision 1.17  2002/10/04 16:53:14  lolli
+ * Replaced old LOG macro with the new
+ * _LOG << "text" << integer value LOG_
+ * combination. This makes sprintf obsolete.
+ *
  * Revision 1.16  2002/09/19 19:34:14  lolli
  * Buggy version - only, if menu is really created
  *
@@ -76,6 +81,7 @@
 #include <lbclasses-module.h>
 /*...e*/
 
+/*...sIncludes:0:*/
 #include <iostream.h>
 #include <stdio.h>
 #include <time.h>
@@ -107,10 +113,13 @@ extern "C" {
 #include <lbConfigHook.h>
 #include <lbthread.h>
 #include <lb_misc.h>
+#include <fstream.h>
+// Don't know, how to link against
+//#include <string.hpp>
+/*...e*/
 
-
-#ifndef LOG_DEFINED
-#define LOG_DEFINED
+#ifndef  LOG_DEFINED
+#define  LOG_DEFINED
 
 /*...sclass lbLog:0:*/
 class lbLog : public lb_I_Log {
@@ -121,7 +130,12 @@ public:
     lbLog();
     lbLog(int l);
 
-    virtual ~lbLog() {}
+    virtual ~lbLog() { 
+    	if (logmessage != NULL) {
+    		free(logmessage);
+    		logmessage = NULL;
+    	}
+    }
 /*...e*/
 
 
@@ -143,10 +157,17 @@ public:
     virtual void LB_STDCALL event_end(char *event);
 
     virtual void LB_STDCALL setPrefix(char* p);
+    
+    
+    virtual lb_I_Log& LB_STDCALL operator<< (const int i);
+    virtual lb_I_Log& LB_STDCALL operator<< (const char c);
+    virtual lb_I_Log& LB_STDCALL operator<< (const char* string);
 /*...e*/
 
 /*...sprivate:0:*/
     private:
+
+	void LB_STDCALL realloc(int add_size);
 
     static char prefix[100];
     static int level;    
@@ -157,6 +178,8 @@ public:
     static int beinlog;
     static char f[100];
     static lb_I_Mutex* mutex;
+    static char* logmessage;
+    static int lastsize;
 /*...e*/
 
 };
@@ -167,6 +190,8 @@ int lbLog::level = 0;
 int lbLog::firstlog = 0;
 int lbLog::beinlog = 0;
 char lbLog::f[100];
+char* lbLog::logmessage = NULL;
+int lbLog::lastsize = 0;
 clock_t lbLog::start_time, lbLog::end_time;
 int lbLog::doLog = FALSE;
 char lbLog::prefix[100];
@@ -225,6 +250,8 @@ lbLog::lbLog() {
 
         firstlog = 1;
         doLog = 1;
+        logmessage = NULL;
+        lastsize = 0;
 
 	char buf[100] = "";
 }
@@ -232,6 +259,8 @@ lbLog::lbLog() {
 /*...slbLog\58\\58\lbLog\40\int l\41\:0:*/
 lbLog::lbLog(int l) {
 //lbLock lbLock(sect);
+	logmessage = NULL;
+	lastsize = 0;
         strcpy(f, "c:\\log\\wsmaster.log");
 //        logdirect("lbLog::lbLog(int l): Creating mutex for logfile", f, level);
 
@@ -260,7 +289,7 @@ void LB_STDCALL lbLog::logdirect(const char *msg, char *f, int level) {
                                 l--;
                         }
                         
-                        fprintf( fp, "Thread %d\t:%s%s%s\n", lbGetCurrentThreadId(), prefix, buf, msg);
+                        fprintf( fp, "Thread %d\t:%s%s%s", lbGetCurrentThreadId(), prefix, buf, msg);
                 }
         
                 fclose( fp );
@@ -275,6 +304,7 @@ void LB_STDCALL lbLog::log(const char *msg, long line, char* file) {
         mutex->enter(); 
         
         if (doLog == TRUE) {
+        
                 char *m = (char*) malloc(strlen(msg)+sizeof(line)+strlen(file)+10);
 
                 sprintf(m, "%s: %d - %s", file, line, msg);
@@ -385,8 +415,62 @@ void LB_STDCALL lbLog::event_end(char *event) {
     }
 /*...e*/
 
+/**
+ * My new - possible bugfree - log system
+ */
+ 
+void LB_STDCALL lbLog::realloc(int add_size) {
+	if (logmessage == NULL) {
+		logmessage = (char*) ::realloc((void*) logmessage, add_size);
+		lastsize = add_size;
+	} else {
+		logmessage = (char*) ::realloc((void*) logmessage, lastsize+add_size);
+		lastsize += add_size;
+	}
+} 
+ 
+lb_I_Log& LB_STDCALL lbLog::operator<< (/*lb_I_Log* logger,*/ const int i) {
+	char s[100] = "";
+	realloc(strlen(itoa(i, s, 10)) + 1);
+	lastsize = lastsize + strlen(itoa(i, s, 10)) + 1;
+	strcat(logmessage, itoa(i, s, 10));
+	return *this;
+}
+lb_I_Log& LB_STDCALL lbLog::operator<< (/*lb_I_Log* logger,*/ const char c) {
+        realloc(lastsize + 2);
+        lastsize = lastsize + 2;
+        char add[2] = "";
+        add[0] = c;
+        strcat(logmessage, add);
+        if (c == '\n') {
+        	logdirect(logmessage, f, 0);
+        	free(logmessage);
+        	logmessage = NULL;
+        	lastsize = 0;
+        }
+	return *this;
+}
 
-#endif // LOG_DEFINED
+lb_I_Log& LB_STDCALL lbLog::operator<< (/*lb_I_Log* logger,*/ const char* string) {
+	if (string != NULL) {
+		realloc(lastsize+strlen(string) + 1);
+		lastsize = lastsize + strlen(string) + 1;
+		strcat(logmessage, string);
+		
+		if (strcmp(string, "\n") == 0) {
+			logdirect(logmessage, f, 0);
+			free(logmessage);
+			logmessage = NULL;
+			lastsize = 0;
+		}
+	} else {
+		
+	}
+	return *this;
+}
+
+
+#endif //  LOG_DEFINED
 
 #ifdef __WXGTK__
 void delay(long mikrosek)

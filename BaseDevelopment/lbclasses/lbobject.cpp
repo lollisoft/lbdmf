@@ -54,13 +54,13 @@ const char* lbObject::getName() const {
 
 ObjectTyp lbObject::getType() const {
 	if (OTyp == LB_OBJECT) {
-		LOG("Derived object has not been initialized correctly!");
+		_LOG << "Derived object has not been initialized correctly!" LOG_
 	}
 	return OTyp;
 }
 
 void lbObject::setType() {
-	LOG("Error: Base object has no object type");
+	_LOG << "Error: Base object has no object type" LOG_
 }
 
 lbErrCodes LB_STDCALL lbObject::setData(lb_I_Unknown* uk) {
@@ -191,7 +191,7 @@ int LB_STDCALL lbString::equals(const lb_I_KeyBase* _key) const {
 /*...e*/
 	return strcmp(key, ((const lbString*) _key)->key) == 0 ? 1 : 0;
     } else {
-    	LOG("Error: Comparing wrong key types");
+    	_LOG << "Error: Comparing wrong key types" LOG_
     	return 0;
     }
 }
@@ -200,7 +200,7 @@ int LB_STDCALL lbString::greater(const lb_I_KeyBase* _key) const {
     if (strcmp(getKeyType(), _key->getKeyType()) == 0)
 	return strcmp(key, ((const lbString*) _key)->key) > 0 ? 1 : 0;
     else {
-    	LOG("Error: Comparing wrong key types");
+    	_LOG << "Error: Comparing wrong key types" LOG_
     	return 0;
     }
 }
@@ -209,7 +209,7 @@ int LB_STDCALL lbString::lessthan(const lb_I_KeyBase* _key) const {
     if (strcmp(getKeyType(), _key->getKeyType()) == 0)
 	return strcmp(key, ((const lbString*) _key)->key) < 0 ? 1 : 0;
     else {
-    	LOG("Error: Comparing wrong key types");
+    	_LOG << "Error: Comparing wrong key types" LOG_
     	return 0;
     }
 }

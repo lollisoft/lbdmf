@@ -2,11 +2,16 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.7 $
+ * $Revision: 1.8 $
  * $Name:  $
- * $Id: skiplist.cpp,v 1.7 2002/09/12 18:36:12 lolli Exp $
+ * $Id: skiplist.cpp,v 1.8 2002/10/04 16:53:14 lolli Exp $
  *
  * $Log: skiplist.cpp,v $
+ * Revision 1.8  2002/10/04 16:53:14  lolli
+ * Replaced old LOG macro with the new
+ * _LOG << "text" << integer value LOG_
+ * combination. This makes sprintf obsolete.
+ *
  * Revision 1.7  2002/09/12 18:36:12  lolli
  * Removed some log messages
  *
@@ -74,12 +79,12 @@ SkipNode::SkipNode(lb_I_Element* r, int level) {
             forward[i] = NULL;
 }
 SkipNode::~SkipNode() { 
-      LOG("SkipNode destructor called")
+      _LOG << "SkipNode destructor called" LOG_
       delete [] forward; 
-      LOG("Deleted forward array")
+      _LOG << "Deleted forward array" LOG_
       
       if (value != NULL) RELEASE(value)
-      LOG("Released value of this element")
+      _LOG << "Released value of this element" LOG_
 }
 /*...e*/
 
@@ -110,11 +115,11 @@ int LB_STDCALL SkipList::Count() {
 /*...e*/
 /*...sSkipList\58\\58\deleteAll\40\\41\:0:*/
 void LB_STDCALL SkipList::deleteAll() { 
-	LOG("DeleteAll() called")
+	_LOG << "DeleteAll() called" LOG_
 	delete head;
-	LOG("Deleted head")
+	_LOG << "Deleted head" LOG_
 	head = new SkipNode();
-	LOG("New head created")
+	_LOG << "New head created" LOG_
 	level = MAXLEVEL;
 
 	iteration = 0;
@@ -138,7 +143,7 @@ lbErrCodes LB_STDCALL SkipList::insert(lb_I_Unknown** const e, lb_I_KeyBase** co
         el->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
 
         insert(el);
-        if (search(*key) == NULL) LOG("Error: SkipList::insert(...) failed")
+        if (search(*key) == NULL) _LOG << "Error: SkipList::insert(...) failed" LOG_
         
         return err; 
 } 
@@ -250,7 +255,7 @@ lb_I_Unknown* LB_STDCALL SkipList::nextElement() {
 /*...sSkipList\58\\58\getElement\40\lb_I_KeyBase\42\\42\ const key\41\:0:*/
 lb_I_Unknown* LB_STDCALL SkipList::getElement(lb_I_KeyBase** const key) { 
     lb_I_Unknown* e = search(*key);
-    if (e == NULL) LOG("SkipList::getElement(...) returns a NULL pointer!")
+    if (e == NULL) _LOG << "SkipList::getElement(...) returns a NULL pointer!" LOG_
     return e;
 } 
 /*...e*/
@@ -261,7 +266,7 @@ void LB_STDCALL SkipList::setElement(lb_I_KeyBase** key, lb_I_Unknown ** const e
 }
 /*...e*/
 lb_I_Unknown* LB_STDCALL SkipList::getElementAt(int i) {
-        LOG("SkipList::getElementAt(int i) not implemented")
+        _LOG << "SkipList::getElementAt(int i) not implemented" LOG_
         int ii = 0;
         lb_I_Element* temp = container_data;
         while (temp != NULL) {
@@ -271,7 +276,7 @@ lb_I_Unknown* LB_STDCALL SkipList::getElementAt(int i) {
         return NULL;
 }
 lb_I_KeyBase* LB_STDCALL SkipList::getKeyAt(int i) {
-        LOG("SkipList::getKeyAt(int i) not implemented")
+        _LOG << "SkipList::getKeyAt(int i) not implemented" LOG_
         int ii = 0;
         lb_I_Element* temp = container_data;
         while (temp != NULL) {
@@ -292,7 +297,7 @@ int randomLevel(void) { // Pick a level on exponential distribution
 lb_I_Unknown* SkipList::search(lb_I_KeyBase* searchKey) { // Skiplist Search
   SkipNode *x = head;                  // Dummy header node
   
-  if (x == NULL) LOG("Error: NULL pointer while searching in skiplist");
+  if (x == NULL) _LOG << "Error: NULL pointer while searching in skiplist" LOG_
   
   for (int i=level; i>=0; i--) {
     while ((x->forward[i] != NULL) && (*(x->forward[i]->value->getKey()) < searchKey)) {
@@ -458,7 +463,7 @@ END_IMPLEMENT_LB_UNKNOWN()
 IMPLEMENT_LB_ELEMENT(lbSkipListElement)
 
 lbErrCodes LB_STDCALL lbSkipListElement::setData(lb_I_Unknown* uk) {
-	LOG("lbSkipListElement::setData(...) not implemented yet");
+	_LOG << "lbSkipListElement::setData(...) not implemented yet" LOG_
 
 	return ERR_NOT_IMPLEMENTED;
 }
