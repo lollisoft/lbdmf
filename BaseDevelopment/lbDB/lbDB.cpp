@@ -141,6 +141,7 @@ lb_I_Query* LB_STDCALL lbDatabase::getQuery() {
     return NULL;
 }
 
+/*...svoid process\40\void\41\:0:*/
 void process(void)
 {
 SDWORD cbempno;
@@ -196,7 +197,7 @@ if (retcode != SQL_SUCCESS)
         }
 
 SQLSetConnectOption(hdbc, SQL_LOGIN_TIMEOUT, 15); /* Set login timeout to 15 seconds. */
-retcode = SQLConnect(hdbc, (unsigned char*) "trainres", SQL_NTS, (unsigned char*) "dba", SQL_NTS, (unsigned char*) "", SQL_NTS); /* Connect to data source */
+retcode = SQLConnect(hdbc, (unsigned char*) "trainres", SQL_NTS, (unsigned char*) "dba", SQL_NTS, (unsigned char*) "trainres", SQL_NTS); /* Connect to data source */
 
 if (retcode != SQL_SUCCESS && retcode != SQL_SUCCESS_WITH_INFO)
         {
@@ -266,9 +267,8 @@ SQLDisconnect(hdbc);
 SQLFreeConnect(hdbc);
 SQLFreeEnv(henv);
 }
-// ------------------------------------------------------------------------------------------------------------
-
-// ------------------------------------------------------------------------------------------------------------
+/*...e*/
+/*...svoid dbError\40\ LPSTR lp\44\ HENV henv\44\HDBC hdbc\44\HSTMT hstmt\41\:0:*/
 void dbError( LPSTR lp, HENV henv,HDBC hdbc,HSTMT hstmt)
 {
 unsigned char buf[250];
@@ -277,6 +277,6 @@ unsigned char sqlstate[15];
 SQLError( henv, hdbc, hstmt, sqlstate, NULL,buf, sizeof(buf), NULL);
 fprintf(stderr, "%s. %s, SQLSTATE=%s\n",lp, buf, sqlstate);
 }
-// -------------------------------------------------------------------------------------------------------------
+/*...e*/
 
 
