@@ -1,3 +1,4 @@
+/*...sLicense:0:*/
 /*
     DMF Distributed Multiplatform Framework (the initial goal of this library)
     This file is part of lbDMF.
@@ -25,14 +26,18 @@
             
             40235 DÅsseldorf (germany)
 */
+/*...e*/
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.36 $
+ * $Revision: 1.37 $
  * $Name:  $
- * $Id: lbInterfaces-sub-classes.h,v 1.36 2004/06/09 07:06:25 lollisoft Exp $
+ * $Id: lbInterfaces-sub-classes.h,v 1.37 2004/06/16 22:15:33 lollisoft Exp $
  *
  * $Log: lbInterfaces-sub-classes.h,v $
+ * Revision 1.37  2004/06/16 22:15:33  lollisoft
+ * More interface code for database forms
+ *
  * Revision 1.36  2004/06/09 07:06:25  lollisoft
  * Did I need protected constructor and destructor in pure abstract classes ?
  *
@@ -977,6 +982,7 @@ public:
 	virtual void LB_STDCALL delReference(char* classname, char* file, int line) = 0;
 };
 /*...e*/
+/*...sclass lb_I_InstanceReference:0:*/
 class lb_I_InstanceReference :
 public lb_I_Unknown
 {
@@ -990,6 +996,7 @@ public:
         virtual void LB_STDCALL setCount(int c) = 0;
 
 };
+/*...e*/
 /*...sclass lb_I_Log:0:*/
 class lb_I_Log : public lb_I_Unknown {
 

@@ -1,3 +1,4 @@
+/*...sLicense:0:*/
 /*
 
     DMF Distributed Multiplatform Framework (the initial goal of this library)
@@ -26,6 +27,7 @@
 
             40235 Dsseldorf (germany)
 */
+/*...e*/
 
 #ifdef _MSC_VER
 
@@ -49,6 +51,7 @@
  
 /*...e*/
 
+/*...sbasics:0:*/
 /*...sincludes and definitions:0:*/
 /**
  * All classes, that anounce callbacks, must implement the interface for
@@ -248,6 +251,7 @@ typedef lbErrCodes (LB_STDCALL lb_I_EventHandler::*lbEvHandler)(lb_I_Unknown* uk
 	target.setLine(line); \
  	err = source->queryInterface(#interface, (void**) &target, __FILE__, __LINE__);
 /*...e*/
+/*...e*/
 
 // UNKNOWN_AUTO_PTR was tested, use it.
 
@@ -370,7 +374,6 @@ public:
 				} \
 				if (_line == -1) { \
 				} \
-				printf("Release %s\n", #Unknown_Reference); \
 				RELEASE_1(_autoPtr, _file, _line); \
 				if (_file) delete [] _file; \
 			} \
@@ -743,7 +746,6 @@ lbErrCodes LB_STDCALL classname::release(char* file, int line) { \
         	if (manager != NULL) { \
         		if (manager->can_delete(this, #classname) == 1)	{ \
         			manager->notify_destroy(this, #classname, file, line); \
-        			printf("Delete %s\n", #classname); \
         			delete this; \
         			return ERR_RELEASED; \
         		} \
@@ -758,7 +760,6 @@ lbErrCodes LB_STDCALL classname::release(char* file, int line) { \
         	_CL_LOG << "Error: Reference count of instance " << ptr << " of object type " << #classname << " is less than " << STARTREF << " (" << ref << ") !!!" LOG_ \
         	return ERR_REFERENCE_COUNTING; \
         } \
-        printf("Instance %s still used for %d references\n", #classname, ref); \
         return ERR_INSTANCE_STILL_USED; \
 } \
 \
@@ -1456,6 +1457,20 @@ public:
 	virtual lbErrCodes LB_STDCALL registerEventHandler(lb_I_Dispatcher* disp) = 0;
 };
 /*...e*/
+
+class lb_I_DatabaseForm;
+
+/*...sclass lb_I_Form:0:*/
+class lb_I_Form : public lb_I_Unknown  {
+public:
+
+	virtual lbErrCodes LB_STDCALL addButton(char* buttonText, char* evHandler, int x, int y, int w, int h) = 0;
+	virtual lbErrCodes LB_STDCALL addLabel(char* text, int x, int y, int w, int h) = 0;
+	virtual lbErrCodes LB_STDCALL addTextField(char* name, int x, int y, int w, int h) = 0;
+
+	virtual void LB_STDCALL show() = 0;
+};
+/*...e*/
 /*...sclass lb_I_GUI:0:*/
 /**
  * It seems, that this is the factory class for any GUI elements. It also knows about any instance.
@@ -1473,6 +1488,8 @@ public:
 	virtual lb_I_Unknown* LB_STDCALL createMenu() = 0;
 	virtual lb_I_Unknown* LB_STDCALL createMenuBar() = 0;
 	virtual lb_I_Unknown* LB_STDCALL createMenuEntry() = 0;
+
+	virtual lb_I_DatabaseForm* LB_STDCALL createDBForm(char* formName) = 0;
 /*...e*/
 /*...sGetter functions:8:*/
 	/**
@@ -1550,9 +1567,6 @@ public:
 	 *	char* afterentry:	Insert the entry after an exsisting entry
 	 */
 	virtual lbErrCodes LB_STDCALL addMenuEntry(char* in_menu, char* entry, char* evHandler, char* afterentry = NULL) = 0;
-	virtual lbErrCodes LB_STDCALL addButton(char* buttonText, char* evHandler, int x, int y, int w, int h) = 0;
-	virtual lbErrCodes LB_STDCALL addLabel(char* text, int x, int y, int w, int h) = 0;
-	virtual lbErrCodes LB_STDCALL addTextField(char* name, int x, int y, int w, int h) = 0;
 /*...e*/
 
 
@@ -1619,6 +1633,7 @@ public:
 /*...e*/
 
 class lb_I_Plugin;
+class lb_I_PluginImpl;
 class lb_I_String;
 
 /*
@@ -1664,43 +1679,52 @@ public:
 /*...sclass lb_I_PluginModule:0:*/
 class lb_I_PluginModule : public lb_I_Unknown {
 public:
-
+	/**
+	 * Get the list of plugins for the current plugin module.
+	 */
+	virtual lb_I_Container* LB_STDCALL getPlugins() = 0;
+	
+	/**
+	 * This function must be called once per instance of this
+	 * module. It internally generates the list of plugins
+	 * implemented in this module.
+	 */
 	virtual void LB_STDCALL initialize() = 0;
 
 protected:
+	/**
+	 * Used internally in the macros to build the plugin list.
+	 */
 	virtual void LB_STDCALL enumPlugins() = 0;
 };
 
 
 #define DECLARE_PLUGINS() \
+	virtual lb_I_Container* LB_STDCALL getPlugins(); \
 	virtual void LB_STDCALL enumPlugins(); \
 	UAP(lb_I_Container, Plugins, __FILE__, __LINE__)
 
 #define BEGIN_PLUGINS(cls) \
+lb_I_Container* cls::getPlugins() { \
+	Plugins++; \
+	return Plugins.getPtr(); \
+} \
 void LB_STDCALL cls::enumPlugins() { \
 	lbErrCodes err = ERR_NONE; \
 	REQUEST(manager.getPtr(), lb_I_Container, Plugins)
 
 #define ADD_PLUGIN(plugin, scope) \
-\
 	UAP_REQUEST(manager.getPtr(), lb_I_Plugin, P##plugin##scope) \
 	P##plugin##scope->setName(#plugin); \
 	P##plugin##scope->setScope(#scope); \
-\
 	UAP_REQUEST(manager.getPtr(), lb_I_String, s##plugin##scope) \
-\
 	UAP(lb_I_KeyBase, Key##plugin##scope, __FILE__, __LINE__) \
-\
 	UAP(lb_I_Unknown, ukPlugin##plugin##scope, __FILE__, __LINE__) \
-\
 	s##plugin##scope->setData(#plugin); \
-\
 	QI(s##plugin##scope, lb_I_KeyBase, Key##plugin##scope, __FILE__, __LINE__) \
-\
 	QI(P##plugin##scope, lb_I_Unknown, ukPlugin##plugin##scope, __FILE__, __LINE__) \
-\
 	Plugins->insert(&ukPlugin##plugin##scope, &Key##plugin##scope); \
-\
+
 
 #define END_PLUGINS() }
 
@@ -1713,9 +1737,57 @@ void LB_STDCALL cls::enumPlugins() { \
 class lb_I_Plugin : public lb_I_Unknown {
 public:
 
-	virtual void LB_STDCALL setName(char* name) = 0;
-	virtual void LB_STDCALL setScope(char* scope) = 0;
+	/**
+	 * Initialize the plugin. This function can only be called, if it has been
+	 * attached by the plugin manager. If this hasn't been made, nothing happens.
+	 */
+	virtual void LB_STDCALL initialize() = 0;
 
+	/**
+	 * The plugin must know of the plugin manager to self detach at cleanup due to
+	 * release calls.
+	 * This function is called prior to setAttached.
+	 */
+	virtual void LB_STDCALL setPluginManager(lb_I_PluginManager* plM) = 0; 
+
+	/**
+	 * Called by attach/detach function from plugin manager.
+	 * If the parameter is NULL, the plugin should uninitialize before
+	 * really detaching.
+	 */
+	virtual void LB_STDCALL setAttached(lb_I_PluginImpl* impl = NULL) = 0;
+
+	/**
+	 * This function should uninitialize all handlers, that are registered.
+	 */
+	virtual void LB_STDCALL uninitialize() = 0;
+
+	/**
+	 * Set the name of the module where the plugin is in.
+	 */
+	virtual void LB_STDCALL setModule(char* module) = 0;
+	
+	/**
+	 * Set the name of the plugin. This would be the functor name for
+	 * an instance of the plugin.
+	 */
+	virtual void LB_STDCALL setName(char* name) = 0;
+	
+	/**
+	 * The scope identifies the area of usage. If the scope is GUI, it
+	 * would only be usable in graphical user environment. If it is UI,
+	 * it would be usable in textual user interfaces as well. If it is
+	 * NONE, it could also be used in non user interface centric apps.
+	 *
+	 * This means, propably a server, where no user interaction is available.
+	 */
+	virtual void LB_STDCALL setScope(char* scope) = 0;
+	
+	
+	virtual char* LB_STDCALL getModule() = 0;
+	virtual char* LB_STDCALL getName() = 0;
+	virtual char* LB_STDCALL getScope() = 0;
+	
 };
 /*...e*/
 
@@ -1723,6 +1795,7 @@ public:
 class lb_I_PluginImpl : public lb_I_Unknown {
 public:
 
+	virtual void LB_STDCALL initialize() = 0;
 };
 /*...e*/
 

@@ -282,4 +282,26 @@ public:
 	
 };
 /*...e*/
+/*...sclass lb_I_DatabaseForm:0:*/
+class lb_I_DatabaseForm : public lb_I_Form {
+public:
+	/**
+	 * A database form needs a query object, from whom it should
+	 * show the data.
+	 */
+	virtual void LB_STDCALL setDataSource(lb_I_Query* customerQuery) = 0;
+	
+	/**
+	 * Determine the layout sheme depending on the query rows and then
+	 * create the elements for the form.
+	 */
+	virtual void LB_STDCALL autocalcLayout() = 0;
+	
+	
+	enum layout { TopDown, TwoColumns, FourColumns };
+	enum labels { Left, Top };
+	
+	virtual void LB_STDCALL setLayout(layout lay, labels lab) = 0;
+};
+/*...e*/
 #endif // __LB_DATABASE__

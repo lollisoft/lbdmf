@@ -6,7 +6,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.14 2004/05/08 10:45:23 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.15 2004/06/16 22:16:00 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -240,6 +240,8 @@ public:
         virtual lb_I_Unknown* LB_STDCALL createMenu();
         virtual lb_I_Unknown* LB_STDCALL createMenuBar();
         virtual lb_I_Unknown* LB_STDCALL createMenuEntry();
+
+	virtual lb_I_DatabaseForm* LB_STDCALL createDBForm(char* formName);
 /*...e*/
 
 /*...sGUI element getter functions:8:*/
@@ -454,6 +456,11 @@ lbErrCodes LB_STDCALL lb_wxGUI::insertMenuEntry(lb_I_Unknown* entry) {
 /*...e*/
 /*...e*/
 
+/*...slb_I_DatabaseForm\42\ LB_STDCALL lb_wxGUI\58\\58\createDBForm\40\char\42\ formName\41\:0:*/
+lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::createDBForm(char* formName) {
+	return NULL;
+}
+/*...e*/
 /*...slb_I_Unknown\42\ LB_STDCALL lb_wxGUI\58\\58\createFrame\40\\41\:0:*/
 lb_I_Unknown* LB_STDCALL lb_wxGUI::createFrame() {
         lb_wxFrame* frame = new lb_wxFrame();
@@ -690,6 +697,9 @@ void testthis(void* t) {
 bool MyApp::OnInit(void)
 {
     char b[100] = "";
+    
+    wxStopWatch sw;
+    
 /*...sCreate the frame:0:*/
 #ifndef LB_I_EXTENTIONS
   // Create the main frame window
@@ -1269,7 +1279,6 @@ lbErrCodes LB_STDCALL MyApp::addLabel(lb_I_Unknown* uk) {
 	wxStaticText *text = new wxStaticText(panel, -1, buttontext->getData(), wxPoint(x->getData(),y->getData()),
 					wxSize((int) w->getData(),(int) h->getData() ));
 
-	return ERR_NONE;
 /*...e*/
 	return ERR_NONE;
 }
@@ -1316,7 +1325,6 @@ lbErrCodes LB_STDCALL MyApp::addTextField(lb_I_Unknown* uk) {
 	wxTextCtrl(panel, -1, buttontext->getData(), wxPoint(x->getData(),y->getData()),
 					wxSize((int) w->getData(),(int) h->getData() ));
 
-	return ERR_NONE;
 /*...e*/
 	return ERR_NONE;
 }
