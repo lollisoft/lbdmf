@@ -3,7 +3,7 @@
 OBJDEP=../lbHook/lbHook.o 
 #../lbHook/conio.o
 
-C_OPS+= -dLB_CLASSES_DLL_INC
+C_OPS+= -DLB_CLASSES_DLL_INC
 
 ifeq ($(OSTYPE), Windows_NT)
 MOD_INCL=$(STD_INCL)
