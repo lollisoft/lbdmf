@@ -62,7 +62,8 @@ rem Some dll and bin search Paths
 set DLLROOT=%RUNROOT%\dll
 set BINROOT=%RUNROOT%\bin;%RUNROOT%\CPP\bin
 
-set Path=%DEVLW%\%BASE%\bin;%SystemRoot%\system32;C:\cygwin\bin;C:\;%WATBIN%;%DEVBIN%;%DLLROOT%;%BINROOT%
+set Path=%DEVLW%\%BASE%\bin;%SystemRoot%\system32;C:\;%WATBIN%;%DEVBIN%;%DLLROOT%;%BINROOT%
+set Path=%Path%;q:\develop\tools\cygwin\bin;Q:\develop\Tools\Perl\bin
 
 set MSC=%MSVCDir%\Bin;%MSVCDir%\Lib
 
@@ -107,6 +108,15 @@ REM set LBMODULEFUNCTOR=_getlb_ModuleInstance@4
 
 REM __cdecl convention
 set LBMODULEFUNCTOR=getlb_ModuleInstance
+
+
+REM ------------------------------------------------------------
+REM This stuff is added due to integrate Doxygen into my console
+REM ------------------------------------------------------------
+
+set BISON_SIMPLE=c:/cygwin/usr/share/bison.simple
+set path=%path%;Q:\develop\Tools\Perl\bin\
+
 
 start %1
 exit
