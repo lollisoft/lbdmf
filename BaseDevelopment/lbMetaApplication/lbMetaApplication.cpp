@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.38 $
+ * $Revision: 1.39 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.38 2004/08/01 21:34:03 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.39 2004/08/10 18:25:26 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.39  2004/08/10 18:25:26  lollisoft
+ * Lesser logging messages.
+ *
  * Revision 1.38  2004/08/01 21:34:03  lollisoft
  * More documentation
  *
@@ -528,11 +531,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::addMenuBar(char* name) {
 
 	if (uk == NULL) _LOG << "Error: Cannot call with a null pointer!" LOG_
 	
-	_LOG << "Begin dispatch function" LOG_
-
-// Produces crash
 	dispatcher->dispatch("AddMenuBar", uk.getPtr(), &uk_result);
-	_LOG << "Have dispatched function" LOG_
 
 	return err;
 }
@@ -759,13 +758,11 @@ BEGIN_IMPLEMENT_LB_UNKNOWN(lb_EventManager)
 END_IMPLEMENT_LB_UNKNOWN()
 
 lb_EventManager::lb_EventManager() {
-	_LOG << "lb_EventManager::lb_EventManager() called" LOG_
 	maxEvId = 0;
 	ref = STARTREF;
 }
 
 lb_EventManager::~lb_EventManager() {
-	_LOG << "lb_EventManager::~lb_EventManager() called" LOG_
 }
 	
 lbErrCodes LB_STDCALL lb_EventManager::setData(lb_I_Unknown* uk) {
@@ -778,6 +775,8 @@ lbErrCodes LB_STDCALL lb_EventManager::setData(lb_I_Unknown* uk) {
 lbErrCodes LB_STDCALL lb_EventManager::registerEvent(char* EvName, int & EvNr) {
 	lbErrCodes err = ERR_NONE;
 	int newId = maxEvId + 1;
+
+	printf("Register an event '%s'.\n", EvName);
 
 /*...sInit containers:8:*/
 	if (events == NULL) {
@@ -1036,7 +1035,6 @@ lb_EvHandler::lb_EvHandler() {
 }
 
 lb_EvHandler::~lb_EvHandler() {
-	_LOG << "lb_EvHandler::~lb_EvHandler() called" LOG_
 }
 
 lbEvHandler LB_STDCALL lb_EvHandler::getHandler() {

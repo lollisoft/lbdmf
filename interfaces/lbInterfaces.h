@@ -808,9 +808,6 @@ void LB_STDCALL classname::setModuleManager(lb_I_Module* m, char* file, int line
 	} \
 	\
 	further_lock = 0; \
-	if (debug_macro == 1) { \
-		_CL_LOG << "Warning: setModuleManager() must be enhanced by module manager use" LOG_ \
-	} \
 	if (m != manager.getPtr()) { \
 	    if (m != NULL) m->queryInterface("lb_I_Module", (void**) &manager, file, line); \
 	} \
@@ -841,9 +838,6 @@ char*      LB_STDCALL classname::getCreationLoc() const { \
 } \
 lbErrCodes LB_STDCALL classname::release(char* file, int line) { \
         ref--; \
-        if (strcmp("lb_EventManager", #classname) == 0) { \
-        	_CL_LOG << "lb_EventManager::release() called" LOG_ \
-        } \
 	char ptr[20] = ""; \
         if (manager != NULL) { \
         	manager->notify_release(this, #classname, file, line); \

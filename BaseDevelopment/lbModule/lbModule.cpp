@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.73 $
+ * $Revision: 1.74 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.73 2004/06/16 22:10:14 lollisoft Exp $
+ * $Id: lbModule.cpp,v 1.74 2004/08/10 18:25:00 lollisoft Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.74  2004/08/10 18:25:00  lollisoft
+ * Lesser logging messages.
+ *
  * Revision 1.73  2004/06/16 22:10:14  lollisoft
  * Added config for lb_I_Plugin
  *
@@ -776,7 +779,6 @@ lbSkipListElement::lbSkipListElement(const lb_I_Unknown* o, const lb_I_KeyBase* 
 
 lbSkipListElement::~lbSkipListElement() { 
         if (key != NULL) { 
-                key->setDebug(1); 
                 if (key->deleteState() != 1) _CL_LOG << "Key wouldn't deleted in container element!" LOG_ 
                 RELEASE(key); 
         } 
