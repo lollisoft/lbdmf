@@ -2,10 +2,33 @@
 /*...v\46\\46\\47\include\47\lbInclude\46\h:0:*/
 /*...v\46\\46\\47\include\47\lbGlobal\46\h:0:*/
 /*...v\46\\46\\47\include\47\lbErrcodes\46\h:0:*/
-
-
+/*...v\46\\46\\47\include\47\lbConfigHook\46\h:0:*/
 
 /*...v\46\\46\\47\interfaces\47\lbInterfaces\46\h:0:*/
+/*...v\46\\46\\47\interfaces\47\lbInterfaces\45\sub\45\transfer\46\h:0:*/
+/*...v\46\\46\\47\interfaces\47\lbInterfaces\45\sub\45\xml\46\h:0:*/
+/*...v\46\\46\\47\interfaces\47\lbInterfaces\45\sub\45\classes\46\h:0:*/
+
+/*...sMSC based XML parser:0:*/
+/*...vQ\58\\92\Develop\92\Projects\92\CPP\92\AppDevelopment\92\Console\92\XML\47\lbxmlconfig\46\dtd:0:*/
+/*...vQ\58\\92\Develop\92\Projects\92\CPP\92\AppDevelopment\92\Console\92\XML\47\lbxmlconfig\46\xml:0:*/
+
+
+/*...vlbXMLConfig\47\lbXMLConfig\47\lbXMLConfig\46\dtd:0:*/
+/*...vlbXMLConfig\47\lbXMLConfig\47\lbXMLConfig\46\xml:0:*/
+
+/*...vlbXMLConfig\47\lbXMLConfig\47\lbXMLConfig\46\h:0:*/
+/*...vlbXMLConfig\47\lbXMLConfig\47\lbXMLConfigDoc\46\h:0:*/
+
+/*...vlbXMLConfig\47\lbXMLConfig\47\lbXMLConfig\46\cpp:0:*/
+
+/*...vlbXMLConfig\47\lbXMLConfig\47\XMLConfigHandlers\46\cpp:0:*/
+
+/*...vlbXMLConfig\47\lbXMLConfig\47\TypeHandlers\46\h:0:*/
+/*...vlbXMLConfig\47\lbXMLConfig\47\XMLConfig\46\h:0:*/
+/*...vlbXMLConfig\47\lbXMLConfig\47\XMLConfigHandlers\46\h:0:*/
+
+/*...e*/
 
 /*...slbMetaApplication:0:*/
 /*...vlbMetaApplication\47\lbMetaApplication\46\h:0:*/
@@ -29,6 +52,7 @@
 /*...vlbclasses\47\lbObject\46\cpp:0:*/
 /*...vlbclasses\47\lbKey\46\h:0:*/
 /*...vlbclasses\47\lbKey\46\cpp:0:*/
+/*...vlbclasses\47\lbElement\46\h:0:*/
 /*...vlbclasses\47\lbContainer\46\h:0:*/
 /*...vlbclasses\47\lbContainer\46\cpp:0:*/
 /*...vlbclasses\47\lbThread\46\h:0:*/
@@ -48,6 +72,12 @@
 
 /*...e*/
 
+/*...slbModule:0:*/
+/*...vlbModule\47\lbModule\46\h:0:*/
+/*...vlbModule\47\lbModule\46\cpp:0:*/
+/*...e*/
+
+
 /*...sGUI Interface:0:*/
 /*...vlbgui\47\lb_I_GUI\46\h:0:*/
 /*...vlbgui\47\lb_I_GUI\46\cpp:0:*/
@@ -65,6 +95,7 @@
 /*...sConsole:0:*/
 /*...v\46\\46\\47\AppDevelopment\47\Console\47\GlobalAppServer\47\servertest\46\cpp:0:*/
 /*...v\46\\46\\47\AppDevelopment\47\Console\47\GlobalAppServer\47\main\46\cpp:0:*/
+/*...v\46\\46\\47\AppDevelopment\47\Console\47\xml\47\test\46\cpp:0:*/
 /*...e*/
 
 /*...e*/
@@ -85,3 +116,4 @@
 
 
 /*...ve\58\\47\develop\47\projects\47\lolli\46\prj:0:*/
+/*...vE\58\\92\develop\92\projects\92\lothar\92\XML\92\SalesOrder1\92\lbHostCfg\92\XMLHostCfgHandlers\46\cpp:0:*/
