@@ -252,7 +252,7 @@ void main(int argc, char *argv[]) {
 		s3 = query->getAsString(3);
 		s4 = query->getAsString(4);
 		s5 = query->getAsString(5);
-/* Deactivated due to update failures.
+
 		printf("%s;%s;%s;%s;%s\n", s1->charrep(), s2->charrep(), s3->charrep(), s4->charrep(), s5->charrep());
 		
 		UAP_REQUEST(mm, lb_I_String, col)
@@ -264,7 +264,7 @@ void main(int argc, char *argv[]) {
 		query->setString(*&col, *&val);
 		query->update();
 		s1 = query->getAsString(1);
-*/
+
 		printf("%s;%s;%s;%s;%s\n", s1->charrep(), s2->charrep(), s3->charrep(), s4->charrep(), s5->charrep());		
 		rows++;
 	}

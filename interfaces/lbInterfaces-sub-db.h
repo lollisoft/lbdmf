@@ -72,7 +72,7 @@ public:
 	 *
 	 * Warning: There may be a limit of string nength.
 	 */
-	virtual lbErrCodes LB_STDCALL getAsString(lb_I_String* result) = 0;
+	virtual lbErrCodes LB_STDCALL getAsString(lb_I_String* result, int asParameter = 0) = 0;
 	virtual lbErrCodes LB_STDCALL setFromString(lb_I_String* set, int mode) = 0;
 
 	virtual lb_I_String* LB_STDCALL getColumnName() = 0;

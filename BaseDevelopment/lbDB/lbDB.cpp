@@ -152,6 +152,7 @@ public:
 		_readonly = readonly; 
 		hdbc = 0; 
 		hstmt = 0; 
+		hupdatestmt = 0;
 		databound = 0; 
 		count = 0; 
 		firstfetched = 0;
@@ -234,6 +235,7 @@ private:
 	HENV    henv;
 	HDBC    hdbc;
 	HSTMT   hstmt;
+	HSTMT   hupdatestmt;
 	RETCODE retcode;
 	char    szSql[256];
 	int	databound;
@@ -269,7 +271,7 @@ public:
 
 
 	virtual lb_I_Unknown* LB_STDCALL getData();
-	virtual lbErrCodes LB_STDCALL getAsString(lb_I_String* result);
+	virtual lbErrCodes LB_STDCALL getAsString(lb_I_String* result, int asParameter = 0);
 	virtual lbErrCodes LB_STDCALL setFromString(lb_I_String* set, int mode);
 
 	lb_I_String* LB_STDCALL getColumnName();
@@ -581,6 +583,9 @@ lbErrCodes LB_STDCALL lbQuery::unregisterView(lb_I_MVC_View* view) {
 lbErrCodes LB_STDCALL lbQuery::init(HENV henv, HDBC _hdbc, int readonly) {
 	hdbc = _hdbc;
 
+/*...sbla:0:*/
+	hdbc = _hdbc;
+
 	retcode = SQLAllocStmt(hdbc, &hstmt); /* Statement handle */
 
 	if (retcode != SQL_SUCCESS)
@@ -640,6 +645,68 @@ lbErrCodes LB_STDCALL lbQuery::init(HENV henv, HDBC _hdbc, int readonly) {
 		//SQLFreeEnv(henv);
 		return ERR_DB_ALLOCSTATEMENT;
 	}	
+/*...e*/
+/*...sbla:0:*/
+	hdbc = _hdbc;
+
+	retcode = SQLAllocStmt(hdbc, &hupdatestmt); /* Statement handle */
+
+	if (retcode != SQL_SUCCESS)
+	{
+	        dbError( "SQLAllocStmt()",henv,hdbc,hupdatestmt);
+	        _LOG << "lbDatabase::getQuery() failed due to statement allocation." LOG_
+	        SQLFreeEnv(henv);
+        	return ERR_DB_ALLOCSTATEMENT;
+	}
+
+
+	if (readonly == 0) {
+	// Compare values before updating
+		retcode = SQLSetStmtOption(hupdatestmt, SQL_ATTR_CONCURRENCY, SQL_CONCUR_ROWVER);
+		_readonly = readonly;
+	}
+
+        if (retcode != SQL_SUCCESS)
+        {
+                dbError( "SQLSetStmtOption()",henv,hdbc,hupdatestmt);
+                _LOG << "lbDatabase::getQuery() failed due to setting concurrency settings." LOG_
+                SQLFreeEnv(henv);
+                return ERR_DB_ALLOCSTATEMENT;
+        }
+
+	retcode = SQLSetStmtOption(hupdatestmt, SQL_CURSOR_TYPE, SQL_CURSOR_KEYSET_DRIVEN);
+
+        if (retcode != SQL_SUCCESS)
+        {
+                dbError( "SQLSetStmtOption()",henv,hdbc,hupdatestmt);
+                _LOG << "lbDatabase::getQuery() failed due to setting cursor type." LOG_
+                SQLFreeEnv(henv);
+                return ERR_DB_ALLOCSTATEMENT;
+        }
+        
+	retcode = SQLSetStmtAttr(hupdatestmt, SQL_ATTR_ROW_ARRAY_SIZE, (SQLPOINTER) size, 0);
+
+        if (retcode != SQL_SUCCESS)
+        {
+                dbError( "SQLSetStmtAttr()",henv,hdbc,hupdatestmt);
+                _LOG << "lbDatabase::getQuery() failed due to setting row array size." LOG_
+                SQLFreeEnv(henv);
+                return ERR_DB_ALLOCSTATEMENT;
+        }
+
+// Unneccesary
+//	retcode = SQLSetStmtAttr(hstmt, SQL_ATTR_CURSOR_SCROLLABLE, (SQLPOINTER) SQL_SCROLLABLE, 0);
+
+
+
+
+	if (retcode != SQL_SUCCESS) {
+		dbError( "SQLSetStmtAttr()",henv,hdbc,hupdatestmt);
+		_LOG << "lbDatabase::getQuery() failed due to set statement attributes." LOG_
+		//SQLFreeEnv(henv);
+		return ERR_DB_ALLOCSTATEMENT;
+	}	
+/*...e*/
 	
 	return ERR_NONE;
 }
@@ -952,21 +1019,31 @@ lbErrCodes LB_STDCALL lbQuery::remove() {
 /*...slbErrCodes LB_STDCALL lbQuery\58\\58\update\40\\41\:0:*/
 lbErrCodes LB_STDCALL lbQuery::update() {
 	lbErrCodes err = ERR_NONE;
-printf("lbQuery::update() called\n");	
+	#define cbMAXSQL    512
+	char* CursorName = (char*) malloc(cbMAXSQL);
+	CursorName[0] = 0;
+
 	if (mode == 1) {
 		// Insert the new record
 		SQLSetPos(hstmt, 2, SQL_ADD, SQL_LOCK_NO_CHANGE);
 	} else {
-#ifdef bla
+//#ifdef bla
 		// Update the existing record
 
 		// Now I am able to begin the update statement
 		
-		char buffer[2000] = "";
+		char* buffer = (char*) malloc(2000);
 
 		char* Update = "UPDATE ";
 		char* Table  = getTableName();
 		char* Set    = " SET ";
+		
+		SWORD    cb;
+		
+		
+		SQLGetCursorName(hstmt, (unsigned char *) CursorName ,cbMAXSQL, &cb);
+		
+		
 		printf("Update table '%s'\n", Table);
 
 		/* Get the updateable columns, that I have bound.
@@ -978,51 +1055,46 @@ printf("lbQuery::update() called\n");
 		*/
 		
 		sprintf(buffer, "%s%s%s", Update, Table, Set);
-		printf("Created first statement part for update\n");
-		printf("Create %d set statements\n", boundColumns->getColumnCount());
 		
 		for (int i = 1; i <= boundColumns->getColumnCount()-1; i++) {
 			UAP(lb_I_BoundColumn, bc, __FILE__, __LINE__)
 			
-			printf("Get bound Column at %d\n", i);
 			bc = boundColumns->getBoundColumn(i);
-			
+
+
 			if (bc == NULL) {
 				_LOG << "ERROR: boundColumns->getBoundColumn(" << i << ") returns NULL pointer" LOG_
 				printf("Nullpointer logged\n");
 			}
 			
-		printf("Build set clause for %s\n", bc->getColumnName()->getData());
-			
 			char* tempbuffer = strdup(buffer);
 			
-			UAP(lb_I_Unknown, uks, __FILE__, __LINE__)
-			UAP(lb_I_String, s, __FILE__, __LINE__)
+			UAP_REQUEST(manager.getPtr(), lb_I_String, s)
+			if (s.getPtr() == NULL) printf("ERROR: s is NULL\n");
+			bc->getAsString(s.getPtr(), 1);
+
+			if (s == NULL) printf("ERROR: Null pointer in s\n");
+			if (bc == NULL) printf("ERROR: Null pointer in bc\n");
+			if (bc->getColumnName() == NULL) printf("ERROR: Null pointer in bc->getColumnName()\n");
 			
-			uks = bc->getData();
-			
-			QI(uks, lb_I_String, s, __FILE__, __LINE__)
-			
-			sprintf(buffer, "%s%s=%s, ", tempbuffer, bc->getColumnName()->getData(), s->getData());
-			
+			char* colName = bc->getColumnName()->getData();
+			char* colValue = s->getData();
+			sprintf(buffer, "%s%s=%s, ", tempbuffer, colName, colValue);
 			free(tempbuffer);
 		}
 		
 		{
 			UAP(lb_I_BoundColumn, bc, __FILE__, __LINE__)
 			bc = boundColumns->getBoundColumn(boundColumns->getColumnCount());
-		printf("Build set clause for %s\n", bc->getColumnName()->charrep());
+		
+		//printf("Build set clause for %s\n", bc->getColumnName()->charrep());
 			
 			char* tempbuffer = strdup(buffer);
 			
-			UAP(lb_I_Unknown, uks, __FILE__, __LINE__)
-			UAP(lb_I_String, s, __FILE__, __LINE__)
+			UAP_REQUEST(manager.getPtr(), lb_I_String, s)
+			bc->getAsString(s.getPtr(), 1);
 			
-			uks = bc->getData();
-			
-			QI(uks, lb_I_String, s, __FILE__, __LINE__)
-			
-			sprintf(buffer, "%s%s=%s, ", tempbuffer, bc->getColumnName()->getData(), s->getData());
+			sprintf(buffer, "%s%s=%s WHERE CURRENT OF %s", tempbuffer, bc->getColumnName()->getData(), s->getData(), CursorName);
 			
 			free(tempbuffer);
 			
@@ -1030,9 +1102,18 @@ printf("lbQuery::update() called\n");
 		
 printf("Query is: '%s'\n", buffer);
 
+		retcode = SQLExecDirect(hupdatestmt, (unsigned char *)buffer, SQL_NTS);
+		if (retcode != SQL_SUCCESS)
+		{
+		        dbError( "SQLExecDirect() for update",henv,hdbc,hstmt);
+		        _LOG << "lbQuery::update(...) failed." LOG_
+		        return ERR_DB_UPDATEFAILED;
+		}
 
-#endif
+free(buffer);
 
+//#endif
+/*
 		retcode = SQLSetPos(hstmt, 1, SQL_UPDATE, SQL_LOCK_NO_CHANGE);
 		
 		if (retcode != SQL_SUCCESS)
@@ -1040,8 +1121,8 @@ printf("Query is: '%s'\n", buffer);
 		        dbError( "SQLSetPos()",henv,hdbc,hstmt);
 		        _LOG << "lbQuery::update(...) failed." LOG_
 		        return ERR_DB_UPDATEFAILED;
-		}		
-
+		}
+*/
 	}
 
 
@@ -1298,6 +1379,10 @@ lbErrCodes LB_STDCALL lbBoundColumn::setData(lb_I_Unknown* uk) {
          * would write to an deleted pointer.
          */
 
+	REQUEST(manager.getPtr(), lb_I_String, colName)
+
+	colName->setData(column->getColumnName()->getData());
+
 
 	leaveOwnership(*&column, this);
 
@@ -1324,14 +1409,22 @@ lb_I_Unknown* LB_STDCALL lbBoundColumn::getData() {
 	return NULL;
 }
 /*...e*/
-/*...slbErrCodes LB_STDCALL lbBoundColumn\58\\58\getAsString\40\lb_I_String\42\ result\41\:0:*/
-lbErrCodes LB_STDCALL lbBoundColumn::getAsString(lb_I_String* result) {
+/*...slbErrCodes LB_STDCALL lbBoundColumn\58\\58\getAsString\40\lb_I_String\42\ result\44\ int asParameter\41\:0:*/
+lbErrCodes LB_STDCALL lbBoundColumn::getAsString(lb_I_String* result, int asParameter) {
 	
 	switch (_DataType) {
 	        case SQL_CHAR:
 	        case SQL_VARCHAR:
 	        case SQL_LONGVARCHAR:
-	        	result->setData((char*) buffer);
+	        	if (asParameter == 1) {
+	        		char* b = (char*) malloc(strlen((char const *) buffer)+3);
+	        		b[0] = 0;
+	        		sprintf(b, "'%s'", buffer);
+	        		result->setData(b);
+	        		free(b);
+	        	} else {
+	        		result->setData((char*) buffer);
+	        	}
 	        	break;
 	        case SQL_INTEGER:
 			{
@@ -1396,11 +1489,9 @@ lbErrCodes LB_STDCALL lbBoundColumn::bindColumn(lbQuery* q, int column) {
 	       , ColumnName, BufferLength, ColumnSize);
 
 
-	if (colName == NULL) {
-		REQUEST(manager.getPtr(), lb_I_String, colName)
+	REQUEST(manager.getPtr(), lb_I_String, colName)
 		
-		colName->setData((char*) ColumnName);
-	}
+	colName->setData((char*) ColumnName);
 
 	int rows = 2;
 
@@ -1563,6 +1654,7 @@ SQLCloseCursor(hstmt);
 /*...e*/
 /*...e*/
 lb_I_String* LB_STDCALL lbBoundColumn::getColumnName() {
+	if (colName.getPtr() == NULL) printf("ERROR lbBoundColumn::getColumnName(): returning a null pointer\n");
 	return colName.getPtr();
 }
 /*...e*/
