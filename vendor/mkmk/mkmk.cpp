@@ -11,11 +11,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.40 $
+ * $Revision: 1.41 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.40 2004/10/09 18:00:24 lollisoft Exp $
+ * $Id: mkmk.cpp,v 1.41 2004/10/16 09:47:38 lollisoft Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.41  2004/10/16 09:47:38  lollisoft
+ * New make system works nearly perfect. It does not longer build unnessesary.
+ *
  * Revision 1.40  2004/10/09 18:00:24  lollisoft
  * Added distclean feature
  *
@@ -655,8 +658,9 @@ void writeExeTarget(char* modulename) {
   printf("\t\t@echo Link %s.exe\n", ModName);
   printf("\t\t@echo NAME $(PROGRAM).exe > $(LNK)\n");
   printf("\t\t@echo $(FILE) $(LIBS) >> $(LNK)\n");
+  printf("\t\t-@cmd /C \"attrib -r *.bak\"\n");
   printf("\t\t@$(LINK) $(LINKFLAGS) $(LIBRS) $(COMPILERFLAGS)\n");
-  printf("\t\t@cmd      /C \"$(CP) $(PROGRAM).exe $(EXEDIR) > null\"\n");
+  printf("\t\t@$(CP) $(PROGRAM).exe $(EXEDIR) > null\n");
 #endif
 }
 /*...e*/
@@ -693,11 +697,13 @@ void writeDllTarget(char* modulename) {
   printf("\t\t@echo @if NOT \\\"$(LIBS)\\\" == \\\"\\\" echo LIBR $(LIBS) > doit.bat\n");
 
   printf("\t\t@cmd /C \"doit >> $(LNK)\"\n");
+  printf("\t\t@cmd /C \"rm doit.bat\"\n");
 //  printf("\t\t@;if NOT \"$(LIBS)\" == \"\" echo LIBR $(LIBS) >> $(LNK)\n");
+  printf("\t\t-@cmd /C \"attrib -r *.bak\"\n");
   printf("\t\t@$(LINK) $(LNKDLLOPS) $(LINKFLAGS)\n");
   printf("\t\t@wlib -q -n -b $(PROGRAM).lib +$(PROGRAM).dll\n");
-  printf("\t\t@cmd /C \"$(CP) $(PROGRAM).dll $(DLLDIR) > null\"\n");
-  printf("\t\t@cmd /C \"$(CP) $(PROGRAM).lib $(DLLLIBDIR) > null\"\n");
+  printf("\t\t@$(CP) $(PROGRAM).dll $(DLLDIR) > null\n");
+  printf("\t\t@$(CP) $(PROGRAM).lib $(DLLLIBDIR) > null\n");
   printf("endif\n");
 
   printf("ifeq ($(COMPILER), MICROSOFT)\n");
@@ -709,8 +715,8 @@ void writeDllTarget(char* modulename) {
 //  printf("\t\t@;if NOT \"$(LIBS)\" == \"\" echo LIBR $(LIBS) >> $(LNK)\n");
   printf("\t\t@$(LINK) $(LNKDLLOPS) $(LINKFLAGS)\n");
 // Hack for copy not found ??  
-  printf("\t\t@cmd /C \"$(CP) $(PROGRAM).dll $(DLLDIR) > null\"\n");
-  printf("\t\t@cmd /C \"$(CP) $(PROGRAM).lib $(DLLLIBDIR) > null\"\n");
+  printf("\t\t$(CP) $(PROGRAM).dll $(DLLDIR) > null\n");
+  printf("\t\t$(CP) $(PROGRAM).lib $(DLLLIBDIR) > null\n");
   printf("endif\n");
 #endif
 }
@@ -748,11 +754,13 @@ void writePluginTarget(char* modulename) {
   printf("\t\t@echo @if NOT \\\"$(LIBS)\\\" == \\\"\\\" echo LIBR $(LIBS) > doit.bat\n");
 
   printf("\t\t@cmd /C \"doit >> $(LNK)\"\n");
+  printf("\t\trm doit.bat\n");
 //  printf("\t\t@;if NOT \"$(LIBS)\" == \"\" echo LIBR $(LIBS) >> $(LNK)\n");
+  printf("\t\t-@cmd /C \"attrib -r *.bak\"\n");
   printf("\t\t@$(LINK) $(LNKDLLOPS) $(LINKFLAGS)\n");
   printf("\t\t@wlib -q -n -b $(PROGRAM).lib +$(PROGRAM).dll\n");
-  printf("\t\t@cmd /C \"$(CP) $(PROGRAM).dll $(PLUGINDIR) > null\"\n");
-  printf("\t\t@cmd /C \"$(CP) $(PROGRAM).lib $(PLUGINLIBDIR) > null\"\n");
+  printf("\t\t$(CP) $(PROGRAM).dll $(PLUGINDIR) > null\n");
+  printf("\t\t$(CP) $(PROGRAM).lib $(PLUGINLIBDIR) > null\n");
   printf("endif\n");
 
   printf("ifeq ($(COMPILER), MICROSOFT)\n");
@@ -764,8 +772,8 @@ void writePluginTarget(char* modulename) {
 //  printf("\t\t@;if NOT \"$(LIBS)\" == \"\" echo LIBR $(LIBS) >> $(LNK)\n");
   printf("\t\t@$(LINK) $(LNKDLLOPS) $(LINKFLAGS)\n");
 // Hack for copy not found ??  
-  printf("\t\t@cmd /C \"$(CP) $(PROGRAM).dll $(PLUGINDIR) > null\"\n");
-  printf("\t\t@cmd /C \"$(CP) $(PROGRAM).lib $(PLUGINLIBDIR) > null\"\n");
+  printf("\t\t$(CP) $(PROGRAM).dll $(PLUGINDIR) > null\n");
+  printf("\t\t$(CP) $(PROGRAM).lib $(PLUGINLIBDIR) > null\n");
   printf("endif\n");
 #endif
 }
@@ -828,6 +836,42 @@ void writeLibTarget(char* modulename) {
 #endif
 
 void write_clean(char* modulename = NULL) {
+#ifdef __WATCOMC__
+    // Write the normal clean rule
+    printf("clean:\n");
+    printf("\t\t-@del *.exp\n");
+    printf("\t\t-@del *.err\n");
+    printf("\t\t-@del *.ilk\n");
+    printf("\t\t-@del *.lib\n");
+    printf("\t\t-@del *.lk1\n");
+    printf("\t\t-@del *.mk1\n");
+    printf("\t\t-@del *.map\n");
+    printf("\t\t-@del *.mk\n");
+    printf("\t\t-@del *.mk1\n");
+    printf("\t\t-@del *.sym\n");
+    printf("\t\t-@del *.obj\n");
+    printf("\t\t-@del *.bak\n");
+    printf("\t\t-@del *.idb\n");
+    printf("\t\t-@del *.pch\n");
+    printf("\t\t-@del *.pdb\n");
+    if (modulename == NULL) {
+        printf("\t\t-@del *.dll\n");
+    } else {
+	printf("\t\t-@del %s.exe\n", modulename);
+    }
+    
+    // Write the distclean rule
+    printf("distclean:\n");
+    printf("\t\t-@del *.o\n");
+    printf("\t\t-@del makefile\n");
+    printf("\t\t-@del *.log\n");
+    if (modulename == NULL) {
+        printf("\t\t-@del *.so.*\n");
+    } else {
+	printf("\t\t-@del %s\n", modulename);
+    }
+#endif //__WATCOMC__
+#ifdef UNIX
     // Write the normal clean rule
     printf("clean:\n");
     printf("\t\t-rm *.o\n");
@@ -847,7 +891,7 @@ void write_clean(char* modulename = NULL) {
     } else {
 	printf("\t\t-rm %s\n", modulename);
     }
-    
+#endif //UNIX
 }
 
 /*...swrite_so_Target\40\char\42\ modulename\41\ create a UNIX shared library:0:*/
@@ -1121,15 +1165,19 @@ void WriteEnding(FILE *f, char *ModuleName, TDepList *l)
   switch (targettype) {
   	case DLL_TARGET:
 		writeDllTarget(ModuleName);
+		write_clean();
 		break;
   	case PLUGIN_TARGET:
 		writePluginTarget(ModuleName);
+		write_clean();
 		break;
   	case LIB_TARGET:
 		writeLibTarget(ModuleName, l);
+		write_clean();
 		break;
 	case EXE_TARGET:
 		writeExeTarget(ModuleName);
+		write_clean(ModuleName);
 		break;
 	case ELF_TARGET:
 		writeExeTarget(ModuleName);

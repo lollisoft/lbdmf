@@ -6,22 +6,22 @@ echo *                  Basic development settings                  * >> readme.
 echo ---------------------------------------------------------------- >> readme.txt
 echo * Please set the following two environment variables to your   * >> readme.txt
 echo * actual unzipped source distribution.                         * >> readme.txt
-echo * As example: If you have unzipped the distribution to C:\,    * >> readme.txt
-echo * thn DEVLW is C: an DEVROOT will be %DEVLW%\dist\develop      * >> readme.txt
+echo * As example: If you have unzipped the distribution to C:/,    * >> readme.txt
+echo * thn DEVLW is C: an DEVROOT will be %DEVLW%/dist/develop      * >> readme.txt
 echo *                                                              * >> readme.txt
 echo * The file to be edited is then located at                     * >> readme.txt
-echo * %DEVLW%\dist\develop\projects\cpp\watcomenv.bat              * >> readme.txt
+echo * %DEVLW%/dist/develop/projects/cpp/watcomenv.bat              * >> readme.txt
 echo *                                                              * >> readme.txt 
 echo * BEFORE you try to compile:                                   * >> readme.txt 
 echo *                                                              * >> readme.txt 
-echo * Install Open Watcom 1.0 or newer to %DEVROOT%\Tools\Watcom   * >> readme.txt 
+echo * Install Open Watcom 1.0 or newer to %DEVROOT%/Tools/Watcom   * >> readme.txt 
 echo *                                                              * >> readme.txt 
-echo * Install MSVC into %DEVROOT%\Tools\msc                        * >> readme.txt 
+echo * Install MSVC into %DEVROOT%/Tools/msc                        * >> readme.txt 
 echo * DO NOT INSTALL it TO THE DEFAULT LOCATION LIKE:              * >> readme.txt 
 echo *                                                              * >> readme.txt 
-echo * C:\Programme\Microsoft Visual Studio                         * >> readme.txt 
+echo * C:/Programme/Microsoft Visual Studio                         * >> readme.txt 
 echo * or                                                           * >> readme.txt 
-echo * C:\Program files\Microsoft Visual Studio                     * >> readme.txt 
+echo * C:/Program files/Microsoft Visual Studio                     * >> readme.txt 
 echo ---------------------------------------------------------------- >> readme.txt 
 start notepad readme.txt
 exit
@@ -40,7 +40,7 @@ goto BEGINENVIRONMENT:
 :DISTMODE
 
 set DEVLW=c:
-set BASE=lbDMF\develop
+set BASE=lbDMF/develop
 set BASE_MAKE=lbDMF/develop
 
 :BEGINENVIRONMENT
@@ -50,57 +50,57 @@ set BASE_MAKE=lbDMF/develop
 @rem *                          End config                          *
 @rem ----------------------------------------------------------------
 
-set DEVROOT=%DEVLW%\%BASE%
+set DEVROOT=%DEVLW%/%BASE%
 set DEVROOT_MAKE=%DEVLW%/%BASE_MAKE%
 
-set PLUGIN_DIR=%DEVROOT%\Projects\plugins
+set PLUGIN_DIR=%DEVROOT%/Projects/plugins
 
 
-set MSVCDir=%DEVROOT%\Tools\MSC\VC98
+set MSVCDir=%DEVROOT%/Tools/MSC/VC98
 
 @rem Alias to the linux environment
 set OSTYPE=%OS%
 
 rem Basic Runtime settings
-set RUNROOT=%DEVROOT%\projects
+set RUNROOT=%DEVROOT%/projects
 
 rem Some bin dirs for development
 
-rem set CVSBIN=%DEVROOT%\Tools\cvs
-set WATBIN=%DEVROOT%\Tools\WATCOM\BINNT;%DEVROOT%\Tools\WATCOM\BINW
-set DEVBIN=%DEVROOT%\bin
+rem set CVSBIN=%DEVROOT%/Tools/cvs
+set WATBIN=%DEVROOT%/Tools/WATCOM/BINNT;%DEVROOT%/Tools/WATCOM/BINW
+set DEVBIN=%DEVROOT%/bin
 
 rem Some dll and bin search Paths
-set DLLROOT=%RUNROOT%\dll
-set BINROOT=%RUNROOT%\bin;%RUNROOT%\CPP\bin
+set DLLROOT=%RUNROOT%/dll
+set BINROOT=%RUNROOT%/bin;%RUNROOT%/CPP/bin
 
-set Path=%DEVLW%\%BASE%\bin;%SystemRoot%\system32;C:\;%WATBIN%;%DEVBIN%;%DLLROOT%;%BINROOT%
-set Path=%Path%;q:\develop\tools\cygwin\bin;Q:\develop\Tools\Perl\bin
+set Path=%DEVLW%/%BASE%/bin;%SystemRoot%/system32;C:/;%WATBIN%;%DEVBIN%;%DLLROOT%;%BINROOT%
+set Path=%Path%;q:/develop/tools/cygwin/bin;Q:/develop/Tools/Perl/bin
 
-set MSC=%MSVCDir%\Bin;%MSVCDir%\Lib
+set MSC=%MSVCDir%/Bin;%MSVCDir%/Lib
 
-set Path=%MSC%;%Path%;%DEVROOT%\bin
-rem ??? F:\develop\NT\DevTools\bin
+set Path=%MSC%;%Path%;%DEVROOT%/bin
+rem ??? F:/develop/NT/DevTools/bin
 
 rem MSC Library path
-set LIB=%MSVCDir%\LIB;%MSVCDir%\MFC\LIB;%LIB%
+set LIB=%MSVCDir%/LIB;%MSVCDir%/MFC/LIB;%LIB%
 
 rem Watcom stuff
 
-SET INCLUDE=%DEVROOT%\wxwin\wx\src\msw;%MSVCDir%\Include;%DEVROOT%\Tools\WATCOM\
+SET INCLUDE=%DEVROOT%/wxwin/wx/src/msw;%MSVCDir%/Include;%DEVROOT%/Tools/WATCOM/
 
-rem ???;D:\Develop\Tools\WATCOM\H\NT
+rem ???;D:/Develop/Tools/WATCOM/H/NT
 rem SET INCLUDE=
-SET WATCOM=%DEVROOT%\Tools\WATCOM
-SET EDPath=%DEVROOT%\Tools\WATCOM\EDDAT
+SET WATCOM=%DEVROOT%/Tools/WATCOM
+SET EDPath=%DEVROOT%/Tools/WATCOM/EDDAT
 
 rem WXWIN stuff
 
-set WXWIN=%DEVROOT%\wxwin\wx
+set WXWIN=%DEVROOT%/wxwin/wx
 
 @rem XML Module Configuration
 
-set LBHOSTCFGFILE=%DEVROOT%\Projects\CPP\Test\Console\XML\lbXMLConfig.xml
+set LBHOSTCFGFILE=%DEVROOT%/Projects/CPP/Test/Console/XML/lbXMLConfig.xml
 
 REM __stdcall convention
 set LBXMLFUNCTOR=_getlbDOMConfigInstance@16
@@ -127,7 +127,7 @@ REM This stuff is added due to integrate Doxygen into my console
 REM ------------------------------------------------------------
 
 set BISON_SIMPLE=c:/cygwin/usr/share/bison.simple
-set path=%path%;Q:\develop\Tools\Perl\bin\
+set path=%path%;Q:/develop/Tools/Perl/bin/
 
 
 start %1

@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.10 $
+# * $Revision: 1.11 $
 # * $Name:  $
-# * $Id: Makefile,v 1.10 2004/10/09 18:01:27 lollisoft Exp $
+# * $Id: Makefile,v 1.11 2004/10/16 09:47:37 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.11  2004/10/16 09:47:37  lollisoft
+# * New make system works nearly perfect. It does not longer build unnessesary.
+# *
 # * Revision 1.10  2004/10/09 18:01:27  lollisoft
 # * Added distclean feature
 # *
@@ -43,6 +46,8 @@
 #
 #.PHONY: dummy
 
+Path=$(PATH)
+
 MAKESUBDIR= \
 	@( \
 	cd $@; \
@@ -57,7 +62,7 @@ MAKEWXSAMPLE= \
 	make; \
 	)
 
-ALLTARGETS = lbHook \
+ALLTARGETS = lbhook \
 	lbDB \
 	lbModule \
 	lbclasses \
@@ -90,7 +95,8 @@ distclean:
 dummy:
 
 ../Test/Console/XML: dummy
-	$(MAKESUBDIR)
+	$(MAKE) -C $@ -e MODULE=Test -e TARGET="exe" -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
+	$(MAKE) -C $@
 
 ../Test/GUI/wxWrapper: dummy
 	$(MAKEWXSAMPLE)
@@ -98,25 +104,33 @@ dummy:
 #$(MAKEWXSAMPLE)
 
 ../AppDevelopmentDemo/App: dummy
-	$(MAKESUBDIR)
+	$(MAKE) -C $@ -e MODULE=Application -e TARGET="dll" -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
+	$(MAKE) -C $@
 
-lbHook: dummy
-	$(MAKESUBDIR)
+lbhook: dummy
+	$(MAKE) -C $@ -e MODULE=$@ -e TARGET="dll" -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
+	$(MAKE) -C $@
 
 lbDB: dummy
-	$(MAKESUBDIR)
+	$(MAKE) -C $@ -e MODULE=$@ -e TARGET="dll" -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
+	$(MAKE) -C $@
 
 lbPluginManager: dummy
-	$(MAKESUBDIR)
+	$(MAKE) -C $@ -e MODULE=$@ -e TARGET="dll" -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
+	$(MAKE) -C $@
 
 lbModule: dummy
-	$(MAKESUBDIR)
+	$(MAKE) -C $@ -e MODULE=$@ -e TARGET="dll" -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
+	$(MAKE) -C $@
 
 lbclasses: dummy
-	$(MAKESUBDIR)
+	$(MAKE) -C $@ -e MODULE=$@ -e TARGET="dll" -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
+	$(MAKE) -C $@
 
 lbMetaApplication: dummy
-	$(MAKESUBDIR)
+	$(MAKE) -C $@ -e MODULE=$@ -e TARGET="dll" -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
+	$(MAKE) -C $@
 
 lbXMLConfig/lbDOMConfig: dummy
-	$(MAKESUBDIR)
+	$(MAKE) -C $@ -e MODULE=$@ -e TARGET="dll" -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
+	$(MAKE) -C $@

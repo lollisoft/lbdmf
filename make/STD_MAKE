@@ -25,11 +25,14 @@
 #            40235 DÅsseldorf (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.46 $
+# * $Revision: 1.47 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.46 2004/10/09 16:23:55 lollisoft Exp $
+# * $Id: STD_MAKE,v 1.47 2004/10/16 09:47:38 lollisoft Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.47  2004/10/16 09:47:38  lollisoft
+# * New make system works nearly perfect. It does not longer build unnessesary.
+# *
 # * Revision 1.46  2004/10/09 16:23:55  lollisoft
 # * Deactivated efence debugging
 # *
@@ -318,14 +321,14 @@ LINK     = $(LINK_WATCOM)
 L_DLLOPS = $(L_DLLOPS_WATCOM)
 LNKDLLOPS = $(L_DLLOPS_WATCOM)
 
-CP =copy
-EXEDIR =$(DEVROOT)\Projects\bin
-DLLDIR =$(DEVROOT)\Projects\dll
-PLUGINDIR =$(DEVROOT)\Projects\plugins
+CP =cp
+EXEDIR =$(DEVROOT)/Projects/bin
+DLLDIR =$(DEVROOT)/Projects/dll
+PLUGINDIR =$(DEVROOT)/Projects/plugins
 
-LIBDIR =$(DEVROOT)\Projects\lib
-DLLLIBDIR =$(DEVROOT)\Projects\dll\libs
-PLUGINLIBDIR =$(DEVROOT)\Projects\plugins\libs
+LIBDIR =$(DEVROOT)/Projects/lib
+DLLLIBDIR =$(DEVROOT)/Projects/dll/libs
+PLUGINLIBDIR =$(DEVROOT)/Projects/plugins/libs
 
 
 endif

@@ -1,11 +1,13 @@
 @echo off
 @rem This script creates a makefile based on templates
 
-type %DEVROOT%\Projects\cpp\make\makefile.template > makefile
+@echo makefile.bat called '%DEVROOT%'
+
+type %DEVROOT%/Projects/cpp/make/makefile.template > makefile
 type makefile.module >> makefile
 echo Path=$(PATH) >> makefile
 echo all: lbhook.dll >> makefile
 
-copy %DEVROOT%\Projects\cpp\basedevelopment\lbclasses\lbkey.h %DEVROOT%\Projects\cpp\include
+copy %DEVROOT%/Projects/cpp/basedevelopment/lbclasses/lbkey.h %DEVROOT%/Projects/cpp/include
 
-mkmk dll lbhook ..\dosdir *.cpp >> makefile
+mkmk dll lbhook ../dosdir *.cpp >> makefile
