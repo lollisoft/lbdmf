@@ -8,15 +8,15 @@
     <Module>
 <!--...sModuleName:8:-->
       <ModuleName>
-         Name="library1"
+         Name="lbclasses"
       </ModuleName>
 <!--...e-->
 <!--...sFunctions:8:-->
       <Functions>
 <!--...sFunction:16:-->
         <Function>
-           <FunctionName Name="Function1"/>
-           <SimpleFn     Return="lbString"/>
+           <FunctionName Name="instanceOfLogger"/>
+           <Functor/>
         </Function>
 <!--...e-->
 <!--...sFunction:16:-->
