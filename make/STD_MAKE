@@ -25,11 +25,14 @@
 #            40235 DÅsseldorf (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.53 $
+# * $Revision: 1.54 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.53 2005/02/13 08:55:45 lollisoft Exp $
+# * $Id: STD_MAKE,v 1.54 2005/03/04 10:49:01 lollisoft Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.54  2005/03/04 10:49:01  lollisoft
+# * Removed include path under OSX and defined OSX
+# *
 # * Revision 1.53  2005/02/13 08:55:45  lollisoft
 # * Activated debug again
 # *
@@ -382,11 +385,10 @@ STD_INCL = -I $(DEVROOT)/Projects/CPP/BaseDevelopment/lbHook/linuxCode \
 	-I $(DEVROOT)/Projects/CPP/include \
 	-I $(DEVROOT)/Projects/CPP/BaseDevelopment/lbclasses \
 	-I /usr/include \
-	-I /usr/include/sys \
 	-I . 
 
 OBJ =o
-C_OPS   = -c -DUNIX -DLINUX
+C_OPS   = -c -DUNIX -DLINUX -DOSX
 C_SOOPS = $(C_OPS)
 C_ELFOPS= $(C_OPS)
 L_OPS   = -o
