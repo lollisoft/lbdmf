@@ -161,8 +161,8 @@ DLLEXPORT void LB_STDCALL setLBModuleHandle(HINSTANCE h) {
 
 
 #ifdef LINUX
-lb_I_Log *log = NULL;
-int isInitializing = 0;
+lb_I_Log *lb_log = NULL;
+int lb_isInitializing = 0;
 #endif
 
 /**
