@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.65 $
+ * $Revision: 1.66 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.65 2004/02/02 22:07:50 lollisoft Exp $
+ * $Id: lbModule.cpp,v 1.66 2004/03/20 11:36:20 lollisoft Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.66  2004/03/20 11:36:20  lollisoft
+ * Added a hardcoded repository as an alternative to XML
+ *
  * Revision 1.65  2004/02/02 22:07:50  lollisoft
  * Libraries compiles again under linux and most of the test application works. But have problems with database test.
  *
@@ -1706,6 +1709,306 @@ public:
 };
 /*...e*/
 
+// A hardcoded interface repository
+/*...sclass lbFunctorEntity:0:*/
+class lbFunctorEntity : public lb_I_FunctorEntity
+{
+public:
+
+        lbFunctorEntity() {
+        	_functor = NULL;
+        	_module = NULL;
+        	_interface = NULL;
+        }
+        
+        virtual ~lbFunctorEntity() {
+        	if (_functor) free(_functor);
+        	if (_module) free(_module);
+        	if (_interface) free(_interface);
+        }
+
+public:
+
+        virtual void LB_STDCALL setFunctor(char* functor) {
+        	_functor = strdup(functor);
+        }
+        
+        virtual void LB_STDCALL setModule(char* module) {
+        	_module = strdup(module);
+        }
+        
+        virtual void LB_STDCALL setInterface(char* iface) {
+        	_interface = strdup(iface);
+        }
+
+	
+public:
+
+	DECLARE_LB_UNKNOWN()
+
+
+        virtual char* LB_STDCALL getFunctor() {
+        	return _functor;
+        }
+        
+        virtual char* LB_STDCALL getModule() {
+        	return _module;
+        }
+        
+        virtual char* LB_STDCALL getInterface() {
+        	return _interface;
+	}
+
+        friend class lb_I_InterfaceRepository;
+
+	char* _functor;
+	char* _module;
+	char* _interface;
+};
+
+BEGIN_IMPLEMENT_LB_UNKNOWN(lbFunctorEntity)
+        ADD_INTERFACE(lb_I_FunctorEntity)
+END_IMPLEMENT_LB_UNKNOWN()
+
+
+
+lbErrCodes lbFunctorEntity::setData(lb_I_Unknown* uk) {
+        _CL_LOG << "lbFunctorEntity::setData(...) not implemented yet" LOG_
+        return ERR_NOT_IMPLEMENTED;
+}
+/*...e*/
+/*...sclass lbHCInterfaceRepository:0:*/
+class lbHCInterfaceRepository : public lb_I_InterfaceRepository
+{
+public:
+        lbHCInterfaceRepository();
+        virtual ~lbHCInterfaceRepository();
+
+        DECLARE_LB_UNKNOWN()
+
+	void LB_STDCALL setCurrentSearchInterface(const char* iface);
+	lb_I_FunctorEntity* LB_STDCALL getFirstEntity();
+
+	void initIntefaceList();
+
+	int errorsOccured;
+	
+	// Created once and contains all interface nodes
+	unsigned int interfaces; // current interface index
+	unsigned int len;
+	
+	/**
+	 * Indicates the current search mode (currently only over interfaces).
+	 */
+	int CurrentSearchMode;
+	char* searchArgument;
+	
+	/**
+	 * Indicates an invalid search status like 
+	 * 	noPrevious interface;
+	 *	noNext     interface;
+	 *
+	 * Note:	Moving to first or last interface resets any invalid status.
+	 */
+	int invalidSearchStatus;
+private:
+};
+
+BEGIN_IMPLEMENT_LB_UNKNOWN(lbHCInterfaceRepository)
+        ADD_INTERFACE(lb_I_InterfaceRepository)
+END_IMPLEMENT_LB_UNKNOWN()
+
+IMPLEMENT_FUNCTOR(instanceOfHCInterfaceRepository, lbHCInterfaceRepository)
+
+lbHCInterfaceRepository::lbHCInterfaceRepository() {	
+	manager = NULL;
+	ref = STARTREF;
+}
+
+lbHCInterfaceRepository::~lbHCInterfaceRepository() {
+}
+
+lbErrCodes lbHCInterfaceRepository::setData(lb_I_Unknown* uk) {
+        _CL_LOG << "lbHCInterfaceRepository::setData(...) not implemented yet" LOG_
+        return ERR_NOT_IMPLEMENTED;
+}
+
+void LB_STDCALL lbHCInterfaceRepository::setCurrentSearchInterface(const char* iface) {
+	searchArgument = strdup(iface);
+	interfaces = 0;
+	CurrentSearchMode = 1;
+}
+
+/*...slb_I_FunctorEntity\42\ LB_STDCALL lbHCInterfaceRepository\58\\58\getFirstEntity\40\\41\:0:*/
+lb_I_FunctorEntity* LB_STDCALL lbHCInterfaceRepository::getFirstEntity() {
+	if (CurrentSearchMode == 0) {
+		printf("SearchMode not set. Please call first lbHCInterfaceRepository::setCurrentSearchInterface(char* iface)\nOr any further other setCurrentSearch<Mode>(char* argument) function\n");
+		return NULL;
+	}
+	
+	if (CurrentSearchMode != 1) {
+		printf("SearchMode currently not provided.\n");
+		return NULL;
+	}
+
+	char* module = NULL;
+	char* functor = NULL;
+
+// Add code here to overload exsisting interface definitions by custom repository
+
+#ifndef LINUX
+#define PREFIX "_"
+#endif
+#ifdef LINUX
+#define PREFIX ""
+#endif
+
+	if (strcmp(searchArgument, "lb_I_Container") == 0) {
+	 	functor = PREFIX "instanceOfSkipList";
+		module = "lbClasses";
+	}
+	
+	if (strcmp(searchArgument, "lb_I_Log") == 0) {
+		functor = PREFIX "instanceOfLogger";
+		module = "lbClasses";
+	}
+	
+	if (strcmp(searchArgument, "lb_I_KeyBase") == 0) {
+		functor = PREFIX "instanceOfIntegerKey";
+		module = "lbClasses";
+	}
+	
+	if (strcmp(searchArgument, "lb_I_Integer") == 0) {
+		functor = PREFIX "instanceOfInteger";
+		module = "lbClasses";
+	}
+	
+	if (strcmp(searchArgument, "lb_I_String") == 0) {
+		functor = PREFIX "instanceOfString";
+		module = "lbClasses";
+	}
+	
+	if (strcmp(searchArgument, "lb_I_Parameter") == 0) {
+		functor = PREFIX "instanceOfParameter";
+		module = "lbClasses";
+	}
+	
+	if (strcmp(searchArgument, "lb_I_Database") == 0) {
+		functor = PREFIX "instanceOfDatabase";
+		module = "lbDB";
+	}
+	
+	if (strcmp(searchArgument, "lb_I_InterfaceRepository") == 0) {
+	 	functor = "instanceOfInterfaceRepository";
+		module = "lbDOMConfig";
+	}
+	
+	if (strcmp(searchArgument, "lb_I_MetaApplication") == 0) {
+		functor = PREFIX "instanceOfMetaApplication";
+		module = "lbMetaApplication";
+	}
+	
+	if (strcmp(searchArgument, "lb_I_EventMapper") == 0) {
+		functor = PREFIX "instanceOfEventMapper";
+		module = "lbMetaApplication";
+	}
+	
+	if (strcmp(searchArgument, "lb_I_EventManager") == 0) {
+		functor = PREFIX "instanceOfEventManager";
+		module = "lbMetaApplication";
+	}
+	
+	if (strcmp(searchArgument, "lb_I_Dispatcher") == 0) {
+		functor = PREFIX "instanceOfDispatcher";
+		module = "lbMetaApplication";
+	}
+	
+	if (strcmp(searchArgument, "lb_I_EvHandler") == 0) {
+		functor = PREFIX "instanceOfEvHandler";
+		module = "lbMetaApplication";
+	}
+	
+
+	lbFunctorEntity* fe = new lbFunctorEntity;
+	fe->setModuleManager(this->getModuleManager(), __FILE__, __LINE__);
+	lb_I_FunctorEntity* _fe = NULL;
+	fe->queryInterface("lb_I_FunctorEntity", (void**) &_fe, __FILE__, __LINE__);
+
+	_fe->setModule(module);
+	_fe->setFunctor(functor);
+			
+	return _fe;
+}
+/*...e*/
+#ifdef bla
+/*...slbErrCodes LB_STDCALL lbHCInterfaceRepository\58\\58\parse\40\\41\:0:*/
+lbErrCodes LB_STDCALL lbHCInterfaceRepository::parse() {
+	lbErrCodes err = ERR_NONE;
+	char *filename = getenv("LBHOSTCFGFILE");
+/*...sVERBOSE:0:*/
+#ifdef VERBOSE
+	cout << "Parse file '" << filename << "'..." << endl;
+#endif
+/*...e*/
+
+	if (filename != NULL) {
+
+/*...sSetup objects:12:*/
+	    // Begin parsing...
+	    DOMParser parser;
+	    parser.setDoValidation(true);
+
+	    parser.setErrorHandler(errReporter);
+		
+/*...e*/
+
+
+/*...stry parsing \40\no explicid allocation\41\:12:*/
+	    // Parse the file and catch any exceptions that propogate out
+	    try	
+		{
+		    errorsOccured = 0;
+	            parser.parse(filename);
+	
+	            doc = parser.getDocument();
+		}
+
+		catch (const XMLException& )
+	        {
+			cout << "Parse error\n" << endl;
+			errorsOccured = 1;
+			return ERR_XML_NOFILE;
+		}
+/*...e*/
+
+	    // Clean up our parser and handler
+	    //delete handler;
+
+	} else return ERR_NO_ENVIRONMENT;
+	return err;
+}
+/*...e*/
+#endif
+/*...svoid lbHCInterfaceRepository\58\\58\initIntefaceList\40\\41\:0:*/
+void lbHCInterfaceRepository::initIntefaceList() {
+	char* name = NULL;
+	char* savename = NULL;
+        savename = strdup("#document/dtdHostCfgDoc/Modules/Module/Functions/Function/Functor/InterfaceName");
+        name = strrchr(savename, '/');
+        if (name == NULL) name = savename;
+//        DOMlist = doc.getElementsByTagName(((name[0] == '/') ? &name[1] : name));
+//        len = DOMlist.getLength();
+        // Cleanup
+        delete [] savename;
+}
+/*...e*/
+/*...e*/
+
+
+
+
+
+
 lb_I_Container* moduleList = NULL;
 /*...sclass lbModule and implementation:0:*/
 /*...sclass lbModule:0:*/
@@ -1974,6 +2277,21 @@ void LB_STDCALL lbModule::getXMLConfigObject(lb_I_InterfaceRepository** inst) {
         char *libname = getenv("LBXMLLIB");
         char *ftrname = getenv("LBXMLFUNCTOR");
         char *cfgname = getenv("LBHOSTCFGFILE");
+        
+#define USE_HARDCODED_REPOSITORY        
+#ifdef USE_HARDCODED_REPOSITORY        
+	HINSTANCE h = getModuleHandle();
+	setModuleHandle(h);
+        if (newInterfaceRepository == NULL) {
+                UAP(lb_I_Unknown, result, __FILE__, __LINE__)
+                makeInstance("_instanceOfHCInterfaceRepository", "lbModule", &result);
+		result->queryInterface("lb_I_InterfaceRepository", (void**) inst, __FILE__, __LINE__);
+        }
+      
+#endif
+
+#ifndef USE_HARDCODED_REPOSITORY        
+
 /*
  * Overwrite functor name and module name to use new interface repository. Config is done later.
  */
@@ -1991,7 +2309,7 @@ void LB_STDCALL lbModule::getXMLConfigObject(lb_I_InterfaceRepository** inst) {
                 makeInstance(ftrname, libname, &result);
 		result->queryInterface("lb_I_InterfaceRepository", (void**) inst, __FILE__, __LINE__);
         }
-                                
+#endif                                
 }                             
 #endif
 

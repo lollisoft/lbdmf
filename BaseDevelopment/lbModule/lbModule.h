@@ -33,11 +33,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.14 $
+ * $Revision: 1.15 $
  * $Name:  $
- * $Id: lbModule.h,v 1.14 2003/12/13 10:56:25 lollisoft Exp $
+ * $Id: lbModule.h,v 1.15 2004/03/20 11:36:20 lollisoft Exp $
  *
  * $Log: lbModule.h,v $
+ * Revision 1.15  2004/03/20 11:36:20  lollisoft
+ * Added a hardcoded repository as an alternative to XML
+ *
  * Revision 1.14  2003/12/13 10:56:25  lollisoft
  * Database improovements and changes in my licence adress.
  * The database part is still not working by updating columns
@@ -79,6 +82,8 @@ extern "C" {
 
 lbErrCodes DLLEXPORT LB_STDCALL lb_releaseInstance(lb_I_Unknown * inst);
 DECLARE_SINGLETON_FUNCTOR(getlb_ModuleInstance)
+
+DECLARE_FUNCTOR(instanceOfHCInterfaceRepository)
 
 /*...s\35\ifdef __cplusplus \125\:0:*/
 #ifdef __cplusplus
