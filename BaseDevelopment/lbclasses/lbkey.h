@@ -3,10 +3,13 @@
 
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.3 $
+ * $Revision: 1.4 $
  * $Name:  $
- * $Id: lbkey.h,v 1.3 2000/06/24 21:32:08 lolli Exp $
+ * $Id: lbkey.h,v 1.4 2000/07/06 06:09:32 lolli Exp $
  * $Log: lbkey.h,v $
+ * Revision 1.4  2000/07/06 06:09:32  lolli
+ * Constructor now with const parameter
+ *
  * Revision 1.3  2000/06/24 21:32:08  lolli
  * Socket bugfix
  *
@@ -99,7 +102,7 @@ private:
 
 class DLLEXPORT lbStringKey : public lbKeyBase {
 public:
-    lbStringKey(char* _key);
+    lbStringKey(const char* _key);
     lbStringKey(const lbStringKey & k);
     virtual ~lbStringKey();
 

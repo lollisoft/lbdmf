@@ -3,10 +3,13 @@
 
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.3 $
+ * $Revision: 1.4 $
  * $Name:  $
- * $Id: lbkey.cpp,v 1.3 2000/06/24 21:32:08 lolli Exp $
+ * $Id: lbkey.cpp,v 1.4 2000/07/06 06:09:20 lolli Exp $
  * $Log: lbkey.cpp,v $
+ * Revision 1.4  2000/07/06 06:09:20  lolli
+ * Constructor now with const parameter
+ *
  * Revision 1.3  2000/06/24 21:32:08  lolli
  * Socket bugfix
  *
@@ -124,7 +127,7 @@ char* lbKeyUL::charrep() {
 /*...e*/
 
 /*...slbStringKey:0:*/
-lbStringKey::lbStringKey(char* _key) {
+lbStringKey::lbStringKey(const char* _key) {
     key = strdup(_key);
 }
 
