@@ -49,6 +49,7 @@
 #include <stdio.h>
 #ifdef WINDOWS
 
+#define IOS ios
 #define COUT cout
 #define ENDL endl
 #define OFSTREAM ofstream
@@ -56,8 +57,10 @@
  #include <iostream.h>
  #include <fstream.h>
 #endif
+
 #ifdef LINUX
 
+#define IOS  std::ios
 #define COUT std::cout
 #define ENDL std::endl
 #define OFSTREAM std::ofstream
@@ -153,7 +156,7 @@
 #define _CL_LOG \
 { \
 	OFSTREAM of; \
-	of.open("C:\\log\\wsmaster.log", ios::app); \
+	of.open("C:\\log\\wsmaster.log", IOS::app); \
         of \
         
 #endif
@@ -161,7 +164,7 @@
 #define _CL_LOG \
 { \
 	OFSTREAM of; \
-	of.open("C:\\log\\wsmaster.log", ios::app); \
+	of.open("C:\\log\\wsmaster.log", IOS::app); \
         of \
         
 #endif

@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.17 $
+# * $Revision: 1.18 $
 # * $Name:  $
-# * $Id: Makefile,v 1.17 2005/01/22 15:01:25 lollisoft Exp $
+# * $Id: Makefile,v 1.18 2005/01/23 15:23:43 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.18  2005/01/23 15:23:43  lollisoft
+# * Last changes before release 0.4.0
+# *
 # * Revision 1.17  2005/01/22 15:01:25  lollisoft
 # * Commented out lbhook
 # *
@@ -93,7 +96,7 @@ TARGETEXE=elf
 ALLTARGETS = lbHook \
 	lbDB \
 	lbModule \
-	lbclasses \
+	lbClasses \
 	lbMetaApplication \
 	../AppDevelopmentDemo/App \
 	../Test/Console/XML \
@@ -150,9 +153,15 @@ dummy:
 	$(MAKE) -C $@ -e MODULE=Test -e TARGET=$(TARGETEXE) -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
 	$(MAKE) -C $@
 
+ifeq ($(OSTYPE), linux)
+../Test/GUI/wxWrapper: dummy
+	$(MAKE) -C $@ -f makefile.wx-sample
+endif
+ifeq ($(OSTYPE), Windows_NT)
 ../Test/GUI/wxWrapper: dummy
 	$(MAKE) -C $@ -e MODULE=wxWrapper -e TARGET=$(TARGETEXE) -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
 	$(MAKE) -C $@
+endif
 
 ../AppDevelopment: dummy
 	$(MAKE) -C $@
@@ -181,9 +190,9 @@ lbModule: dummy
 	$(MAKE) -C $@ -e MODULE=$@ -e TARGET=$(TARGETDLL) -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
 	$(MAKE) -C $@
 
-lbclasses: dummy
-	$(MAKE) -C $@ -e MODULE=$@ -e TARGET=$(TARGETDLL) -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
-	$(MAKE) -C $@
+lbClasses: dummy
+	$(MAKE) -C lbclasses -e MODULE=$@ -e TARGET=$(TARGETDLL) -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
+	$(MAKE) -C lbclasses
 
 lbMetaApplication: dummy
 	$(MAKE) -C $@ -e MODULE=$@ -e TARGET=$(TARGETDLL) -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
