@@ -79,7 +79,7 @@ int  getch(void);
 int  getche(void);
 int  kbhit(void);
 void delay(long millisek);
-int gettext(int left, int top, int right, int bottom, char *puffer);
+//int gettext(int left, int top, int right, int bottom, char *puffer);
 int puttext(int left, int top, int right, int bottom, char *puffer);
 int movetext(int left, int top, int right, int bottom,
              int zielleft, int zieltop);

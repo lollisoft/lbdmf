@@ -1003,7 +1003,7 @@ void LB_STDCALL lbQuery::prepareFKList() {
 	        _dbError( "SQLAllocStmt()",henv,hdbc,hstmt);
 	}
 
-	szTable = strdup(getTableName());
+	szTable = (unsigned char*) strdup(getTableName());
 /*...sbla:0:*/
 /*
 	int a = 0;

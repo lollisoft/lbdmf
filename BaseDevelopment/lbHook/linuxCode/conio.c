@@ -169,6 +169,7 @@ void delay(long millisek)
 }
 
 /*---------------------------------------------- gettext ------------*/
+#ifdef bla
 int gettext(int left, int top, int right, int bottom, char *puffer)
 {
    char *term_name = ttyname(0), vcsa_name[100] = "/dev/vcsaX";
@@ -192,7 +193,7 @@ int gettext(int left, int top, int right, int bottom, char *puffer)
    }
    fclose(vcsa);
 }
-
+#endif
 /*---------------------------------------------- puttext ------------*/
 int puttext(int left, int top, int right, int bottom, char *puffer)
 {
