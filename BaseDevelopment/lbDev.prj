@@ -1,4 +1,5 @@
-/*...V\46\\46\\47\make\47\Std_make \45\ The global makefile definitions:0:*/
+/*...sgeneral stuff:0:*/
+/*...v\46\\46\\47\make\47\Std_make \45\ The global makefile definitions:0:*/
 /*...v\46\\46\\47\README:0:*/
 /*...v\46\\46\\47\COPYING:0:*/
 /*...v\46\\46\\47\makedist\46\bat:0:*/
@@ -9,6 +10,7 @@
 /*...v\46\\46\\47\watcomenv\46\bat:0:*/
 
 /*...v\46\\46\\47\doxygen\46\conf:0:*/
+/*...e*/
 
 /*...sInterfaces:0:*/
 /*...v\46\\46\\47\interfaces\47\lbInterfaces\46\h:0:*/
@@ -77,9 +79,6 @@ These headers must define the per module (DLL) EXPORT variable
 
 
 /*...e*/
-
-
-
 
 /*...sBaseDevelopment:0:*/
 /*...vmake\46\bat:0:*/
@@ -227,7 +226,6 @@ These headers must define the per module (DLL) EXPORT variable
 /*...v\46\\46\\47\vendor\47\tinyxml\47\makefile:0:*/
 /*...v\46\\46\\47\vendor\47\tinyxml\47\makefile\46\bat:0:*/
 /*...e*/
-/*...v\46\\46\\47\vendor\47\DBFill\47\DBFill\46\cpp:0:*/
 
 /*...sXML4C\43\\43\:0:*/
 /*...v\46\\46\\47\\46\\46\\47\\46\\46\\47\xml\47\xml4csrc3_3_1\47\src\47\util\47\NetAccessors\92\WinSock\92\WinSockNetAccessor\46\cpp:0:*/
