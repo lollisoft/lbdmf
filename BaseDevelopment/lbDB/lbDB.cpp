@@ -161,6 +161,8 @@ public:
 		firstfetched = 0;
 		lpszTable = NULL;
 		cols = 0;
+		
+		fetchstatus = 0;
 	}
 	
 	virtual ~lbQuery() {}
@@ -277,6 +279,15 @@ private:
 	UAP(lb_I_ColumnBinding, boundColumns, __FILE__, __LINE__)
 #endif
 	int count;
+	
+	/**
+	 * The status of the last fetch.
+	 *
+	 * -1 means, that the first row was reached.
+	 * 0 means, that the cursor is everywhere between first and last.
+	 * 1  means, that the last row was reached.
+	 */
+	int fetchstatus;
 };
 /*...e*/
 /*...sclass def lbBoundColumn:0:*/
@@ -946,6 +957,8 @@ lbErrCodes LB_STDCALL lbQuery::first() {
         // Indicate, that data must prebound to a buffer
         databound = 0;
 
+	fetchstatus = -1;
+
 #ifndef USE_FETCH_SCROLL
         retcode = SQLExtendedFetch(hstmt, SQL_FETCH_FIRST, 0, &RowsFetched, RowStat);
 #endif
@@ -973,7 +986,6 @@ lbErrCodes LB_STDCALL lbQuery::first() {
 	return ERR_NONE;
 }
 /*...e*/
-/*...slbErrCodes LB_STDCALL lbQuery\58\\58\next\40\\41\:0:*/
 lbErrCodes LB_STDCALL lbQuery::next() {
 	UWORD   RowStat[20];
 	UDWORD  RowsFetched = 0;
@@ -983,39 +995,75 @@ lbErrCodes LB_STDCALL lbQuery::next() {
 
 #ifndef USE_FETCH_SCROLL
 	retcode = SQLExtendedFetch(hstmt, SQL_FETCH_NEXT, 0, &RowsFetched, RowStat);
-	
+
+_LOG << "Have fetched next (step 1)" LOG_	
 	
 	/* Check for having no data.
 	 * This could only happen, if really no data is in the resultset.
 	 */
 	if (retcode == SQL_NO_DATA) {
+
+	_LOG << "Fetch (step 1) failed" LOG_
+
 		retcode = SQLExtendedFetch(hstmt, SQL_FETCH_PREV, 0, &RowsFetched, RowStat);
+
+	_LOG << "Return error" LOG_	
+
+		fetchstatus = 1;
+		
 		return ERR_DB_NODATA;
 	} else {
 		// Check next row to indicate having still data or not
+
+// These check and error output solved pSQLODBC driver bug
+		
+		if ((retcode == SQL_SUCCESS_WITH_INFO) || (retcode == SQL_ERROR)) {
+			_LOG << "lbQuery::next() - SQLExtendedFetch failed" LOG_
+			
+			if (retcode == SQL_SUCCESS_WITH_INFO) dbError( "SQLExtendedFetch() failed with SQL_SUCCESS_WITH_INFO");
+			if (retcode == SQL_ERROR) dbError( "SQLExtendedFetch() failed with SQL_ERROR");
+		}
+		
+
+_LOG << "Fetch checks for next row (step 2)" LOG_
 		
 		retcode = SQLExtendedFetch(hstmt, SQL_FETCH_NEXT, 0, &RowsFetched, RowStat);
+
+_LOG << "Fetch checked (step 2)" LOG_
 		
 		if (retcode == SQL_NO_DATA) {
 			// Indicate for no data and go back
+
+_LOG << "Fetch gave no more data. Return a warning." LOG_
 			
 			retcode = SQLExtendedFetch(hstmt, SQL_FETCH_PREV, 0, &RowsFetched, RowStat);
 			
 			if (retcode == SQL_NO_DATA) {
 				_LOG << "FATAL ERROR: Resultset indication for no data has been failed!" LOG_
 				
+				fetchstatus = 2;
+				
 				return ERR_DB_NODATA;
 			}
+			
+			fetchstatus = 1;
 			
 			return WARN_DB_NODATA;
 		} else {
+
+_LOG << "Fetch gave no error, so all would be good." LOG_
+
 			retcode = SQLExtendedFetch(hstmt, SQL_FETCH_PREV, 0, &RowsFetched, RowStat);
 			
 			if (retcode == SQL_NO_DATA) {
 				_LOG << "FATAL ERROR: Resultset indication for no data has been failed!" LOG_
 				
+				fetchstatus = 2;
+				
 				return ERR_DB_NODATA;
 			}
+			
+			fetchstatus = 0;
 			
 			return ERR_NONE;
 		}
@@ -1052,8 +1100,6 @@ lbErrCodes LB_STDCALL lbQuery::next() {
 	return ERR_NONE;
 #endif
 }
-/*...e*/
-/*...slbErrCodes LB_STDCALL lbQuery\58\\58\previous\40\\41\:0:*/
 lbErrCodes LB_STDCALL lbQuery::previous() {
         UWORD   RowStat[20];
         UDWORD  RowsFetched = 0;
@@ -1069,10 +1115,22 @@ lbErrCodes LB_STDCALL lbQuery::previous() {
 	 */
 	if (retcode == SQL_NO_DATA) {
 		retcode = SQLExtendedFetch(hstmt, SQL_FETCH_NEXT, 0, &RowsFetched, RowStat);
+		
+		fetchstatus = -1;
+		
 		return ERR_DB_NODATA;
 	} else {
 		// Check next row to indicate having still data or not
 		
+// These check and error output solved pSQLODBC driver bug
+		
+		if ((retcode == SQL_SUCCESS_WITH_INFO) || (retcode == SQL_ERROR)) {
+			_LOG << "lbQuery::next() - SQLExtendedFetch failed" LOG_
+			
+			if (retcode == SQL_SUCCESS_WITH_INFO) dbError( "SQLExtendedFetch() failed with SQL_SUCCESS_WITH_INFO");
+			if (retcode == SQL_ERROR) dbError( "SQLExtendedFetch() failed with SQL_ERROR");
+		}
+
 		retcode = SQLExtendedFetch(hstmt, SQL_FETCH_PREV, 0, &RowsFetched, RowStat);
 		
 		if (retcode == SQL_NO_DATA) {
@@ -1083,8 +1141,12 @@ lbErrCodes LB_STDCALL lbQuery::previous() {
 			if (retcode == SQL_NO_DATA) {
 				_LOG << "FATAL ERROR: Resultset indication for no data has been failed!" LOG_
 				
+				fetchstatus = -2;
+				
 				return ERR_DB_NODATA;
 			}
+			
+			fetchstatus = -1;
 			
 			return WARN_DB_NODATA;
 		} else {
@@ -1093,8 +1155,12 @@ lbErrCodes LB_STDCALL lbQuery::previous() {
 			if (retcode == SQL_NO_DATA) {
 				_LOG << "FATAL ERROR: Resultset indication for no data has been failed!" LOG_
 				
+				fetchstatus = -2;
+				
 				return ERR_DB_NODATA;
 			}
+			
+			fetchstatus = 0;
 			
 			return ERR_NONE;
 		}
@@ -1133,7 +1199,6 @@ lbErrCodes LB_STDCALL lbQuery::previous() {
 	return ERR_NONE;
 #endif
 }
-/*...e*/
 /*...slbErrCodes LB_STDCALL lbQuery\58\\58\last\40\\41\:0:*/
 lbErrCodes LB_STDCALL lbQuery::last() {
         UWORD   RowStat[20];
@@ -1141,6 +1206,8 @@ lbErrCodes LB_STDCALL lbQuery::last() {
 
         // Indicate, that data must prebound to a buffer
         databound = 0;
+
+	fetchstatus = 1;
         
 #ifndef USE_FETCH_SCROLL
         retcode = SQLExtendedFetch(hstmt, SQL_FETCH_LAST, 0, &RowsFetched, RowStat);
@@ -1199,10 +1266,32 @@ lbErrCodes LB_STDCALL lbQuery::add() {
 /*...e*/
 /*...slbErrCodes LB_STDCALL lbQuery\58\\58\remove\40\\41\:0:*/
 lbErrCodes LB_STDCALL lbQuery::remove() {
+UWORD   RowStat[20];
+UDWORD  RowsFetched = 0;
 
 	if (mode == 1) return ERR_DB_STILL_ADDING;
 
 	SQLSetPos(hstmt, 1, SQL_DELETE, SQL_LOCK_NO_CHANGE);
+
+	if (fetchstatus == 0) {
+		lbErrCodes err = ERR_NONE;
+		err = next();
+		if ((err != ERR_NONE) && (err != WARN_DB_NODATA)) {
+			return first();
+		}
+	} else {		
+		switch (fetchstatus) {
+		
+		case 1  : 
+			return previous();
+			break;
+		case -1 :
+			return next();
+			break;
+		default:
+			break;
+		}
+	}
 
 	return ERR_NONE;
 }
@@ -1225,7 +1314,7 @@ lbErrCodes LB_STDCALL lbQuery::update() {
 		        _LOG << "lbQuery::update(...) adding failed." LOG_
 		        return ERR_DB_UPDATEFAILED;
 		}
-		
+
 		mode = 0;
 	} else {
 		printf("Update the record\n");
@@ -1794,11 +1883,11 @@ lbErrCodes LB_STDCALL lbBoundColumn::bindColumn(lb_I_Query* q, int column) {
 		case SQL_VARCHAR:
 		case SQL_LONGVARCHAR:
 /*...sbind a character array:24:*/
-			buffer = malloc((ColumnSize+1)*rows);
+			buffer = malloc((ColumnSize+1)*rows+20);
 
 			_DataType = DataType;
-			bound = 1;
-			memset(buffer, 0, (ColumnSize+1)*rows);
+			bound = 1;			     // Try a spacer for bugfix
+			memset(buffer, 0, (ColumnSize+1)*rows+20);
 			
 			ret = SQLBindCol(hstmt, column, SQL_C_DEFAULT, buffer, (ColumnSize+1), &cbBufferLength);
 			
