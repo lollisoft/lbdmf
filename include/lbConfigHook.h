@@ -112,6 +112,7 @@ DLLEXPORT int isInitializing;
 /*...e*/
 #endif
 #endif
+#ifdef bla
 #define CL_LOG(msg) \
 { \
 	char *datei = strrchr(__FILE__, '\\'); \
@@ -127,6 +128,11 @@ DLLEXPORT int isInitializing;
 	CL_doLog("c:\\log\\lbDMF.log", buf); \
 	free((void*) buf); \
 }
+#endif
+
+#define CL_LOG(msg) \
+{ \
+} 
 /*...sGET_LOG_INSTANCE:0:*/
 #define GET_LOG_INSTANCE \
 			if (log == NULL) { \
