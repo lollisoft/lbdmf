@@ -134,6 +134,43 @@ void main() {
 	}
 /*...e*/
 
+/*...stest unknown auto pointer:0:*/
+	{
+		UNKNOWN_AUTO_PTR(lb_I_Unknown, theVariable)
+		UNKNOWN_AUTO_PTR(lb_I_String, string)
+		
+		if (theVariable != NULL) CL_LOG("Error: UAP does not correctly work");
+
+		CL_LOG("Test unknown auto pointer");
+		getch();
+
+		if (mm->request("lb_I_String", theVariable) != NULL) {
+			CL_LOG("Error: Failed to get an instance lb_I_String");
+		}
+		
+		if (theVariable->queryInterface("lb_I_String", (void**) &string) != ERR_NONE) {
+			CL_LOG("Error: Failed to get a reference to the interface lb_I_String");
+		}
+		
+		if (string != NULL) {
+			CL_LOG("Test the created unknown autopointer !!!");
+			
+			string->setData("Blubber\n");
+			
+			char* buf = NULL;
+			
+			buf = string->getData();
+			
+			printf(buf);
+			CL_LOG("Tested the created unknown autopointer !!!");
+			getch();
+		}
+		CL_LOG("Releasing focus of auto pointer");
+	}
+	CL_LOG("Lost focus of auto pointer");
+/*...e*/
+
+
 	mm->uninitialize();
 	mm->release();
 
