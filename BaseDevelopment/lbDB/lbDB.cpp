@@ -307,7 +307,6 @@ virtual char* LB_STDCALL lbQuery::getChar(int column) {
 	char   szobjecttyp[SZLEN+100];
 	lbErrCodes err = ERR_NONE;
 
-
 	if (databound == 0) {
 /*...sPrebind columns:16:*/
 		// Prebound data from row
@@ -320,10 +319,9 @@ virtual char* LB_STDCALL lbQuery::getChar(int column) {
 		}
 		
 		if (boundColumns == NULL) _LOG << "Error: Unable to prebind columns!" LOG_
-		
 		count = getColCount();
 		
-//		UAP_REQUEST(manager.getPtr(), lb_I_Integer, key)
+		UAP_REQUEST(manager.getPtr(), lb_I_Integer, key)
 		UAP_REQUEST(manager.getPtr(), lb_I_String, string)
 		
 		for (int i = 1; i <= count; i++) {
@@ -335,7 +333,6 @@ virtual char* LB_STDCALL lbQuery::getChar(int column) {
 			} else {
 				// Strip trailing blanks
 				while (szobjecttyp[strlen(szobjecttyp)-1] == ' ') szobjecttyp[strlen(szobjecttyp)-1] = 0;
-
 				string->setData(szobjecttyp);
 				UAP(lb_I_KeyBase, bkey, __FILE__, __LINE__)
 				UAP(lb_I_Unknown, ustring, __FILE__, __LINE__)
@@ -362,9 +359,7 @@ virtual char* LB_STDCALL lbQuery::getChar(int column) {
 	QI(key, lb_I_KeyBase, bkey, __FILE__, __LINE__)
 	
 	UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
-
 	uk = boundColumns->getElement(&bkey);
-	
 	UAP(lb_I_String, string, __FILE__, __LINE__)
 	QI(uk, lb_I_String, string, __FILE__, __LINE__)
 
