@@ -1,0 +1,10 @@
+# Standard template
+
+ifeq ($(OSTYPE), Windows_NT)
+include $(DEVROOT)\projects\CPP\make\STD_MAKE
+endif
+
+ifeq ($(OSTYPE), linux)
+include $(DEVROOT)/CPP/make/STD_MAKE
+endif
+
