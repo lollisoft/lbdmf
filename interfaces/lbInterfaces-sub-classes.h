@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.37 $
+ * $Revision: 1.38 $
  * $Name:  $
- * $Id: lbInterfaces-sub-classes.h,v 1.37 2004/06/16 22:15:33 lollisoft Exp $
+ * $Id: lbInterfaces-sub-classes.h,v 1.38 2004/07/16 20:17:53 lollisoft Exp $
  *
  * $Log: lbInterfaces-sub-classes.h,v $
+ * Revision 1.38  2004/07/16 20:17:53  lollisoft
+ * lb_I_String changed non const to const parameter
+ *
  * Revision 1.37  2004/06/16 22:15:33  lollisoft
  * More interface code for database forms
  *
@@ -280,7 +283,7 @@ protected:
 
 public:
         
-        virtual void LB_STDCALL setData(char* p) = 0;
+        virtual void LB_STDCALL setData(char const * p) = 0;
         virtual char* LB_STDCALL getData() const = 0;
         
 };
