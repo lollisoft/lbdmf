@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.51 $
+ * $Revision: 1.52 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.51 2005/02/14 16:37:14 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.52 2005/02/20 09:39:33 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.52  2005/02/20 09:39:33  lollisoft
+ * Deactivated unneeded menu entries.
+ *
  * Revision 1.51  2005/02/14 16:37:14  lollisoft
  * Much tries to get foreign key handling work under linux. But there might be some magic bugs, that don't let them use
  *
@@ -458,7 +461,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::Initialize(char* user, char* app) {
 	}
 	
 	addMenuEntry("Help", "MainModuleInfo", "getMainModuleInfo", "");
-	addMenuEntry("Help", "Debug application", "enterDebugger", "");
+	//addMenuEntry("Help", "Debug application", "enterDebugger", "");
 
 #ifdef bla	
 /*...sMain module demos and their help:8:*/
