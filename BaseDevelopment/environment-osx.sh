@@ -1,5 +1,6 @@
 #!/bin/bash
 
+export CVS_RSH=ssh
 export MODULELIB=lbModule.so
 export LBXMLFUNCTOR=getlbDOMConfigInstance
 export LBMODULEFUNCTOR=getlb_ModuleInstance
