@@ -1,3 +1,4 @@
+/*...sLGPL licence:0:*/
 /*
     DMF Distributed Multiplatform Framework (the initial goal of this library)
     lbModule.h is part of DMF.
@@ -25,6 +26,7 @@
 
             22453 Hamburg (germany)
 */
+/*...e*/
 #ifdef _MSC_VER
 
 #pragma warning( disable: 4101 )
@@ -262,6 +264,11 @@ void main(int argc, char *argv[]) {
 	}
 	printf("Ended foreward test\n");
 	getch();
+
+	if (query->first() != ERR_NONE)
+	        printf("Error while get next\n");
+	
+	
 /*...e*/
 /*...sreverse:8:*/
 
@@ -289,7 +296,11 @@ void main(int argc, char *argv[]) {
 	getch();
 /*...e*/
 
-	
+	printf("Test creating a table, insert some data and drop it again\n");
+	query->query("create table test ( f1 char(20), f2 integer )");
+	query->query("insert into test values('Test', 1234)");
+	query->query("drop table test");
+	getch();	
 
 	/* Todo:
 	 * Create a viewer instance for the current query and
