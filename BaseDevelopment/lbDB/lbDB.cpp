@@ -209,7 +209,7 @@ lbErrCodes LB_STDCALL lbQuery::init(HENV henv, HDBC _hdbc) {
         	return ERR_DB_ALLOCSTATEMENT;
 	}
 	
-	//retcode = SQLSetStmtOption(hstmt, SQL_CURSOR_TYPE, SQL_CURSOR_STATIC);
+	retcode = SQLSetStmtOption(hstmt, SQL_CURSOR_TYPE, SQL_CURSOR_STATIC);
 	return ERR_NONE;
 }
 /*...e*/
@@ -359,7 +359,9 @@ virtual char* LB_STDCALL lbQuery::getChar(int column) {
 	QI(key, lb_I_KeyBase, bkey, __FILE__, __LINE__)
 	
 	UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
+
 	uk = boundColumns->getElement(&bkey);
+
 	UAP(lb_I_String, string, __FILE__, __LINE__)
 	QI(uk, lb_I_String, string, __FILE__, __LINE__)
 
@@ -367,19 +369,36 @@ virtual char* LB_STDCALL lbQuery::getChar(int column) {
 }
 
 lbErrCodes LB_STDCALL lbQuery::first() {
+        UWORD   RowStat[20];
+        UDWORD  RowsFetched;
+
+        // Indicate, that data must prebound to a buffer
+        databound = 0;
+
+        retcode = SQLExtendedFetch(hstmt, SQL_FETCH_FIRST, NULL, &RowsFetched, RowStat);
+
+        if (retcode == SQL_ERROR || retcode == SQL_SUCCESS_WITH_INFO) {
+                _LOG << "lbQuery::first(): Error while fetching next row" LOG_
+                printf("Error in lbQuery::first()\n");
+                dbError( "SQLExtendedFetch()",henv,hdbc,hstmt);
+                return ERR_DB_FETCHNEXT;
+        }
 	return ERR_NONE;
 }
 
 lbErrCodes LB_STDCALL lbQuery::next() {
-
+	UWORD   RowStat[20];
+	UDWORD  RowsFetched;
+	
 	// Indicate, that data must prebound to a buffer
 	databound = 0;
 
-	retcode = SQLFetch(hstmt);
+	retcode = SQLExtendedFetch(hstmt, SQL_FETCH_NEXT, NULL, &RowsFetched, RowStat);
 
 	if (retcode == SQL_ERROR || retcode == SQL_SUCCESS_WITH_INFO) {
-		dbError( "SQLFetch()",henv,hdbc,hstmt);
 		_LOG << "lbQuery::next(): Error while fetching next row" LOG_
+		printf("Error in lbQuery::next()\n");
+		dbError( "SQLExtendedFetch()",henv,hdbc,hstmt);
 		return ERR_DB_FETCHNEXT;
         }
 
@@ -387,10 +406,38 @@ lbErrCodes LB_STDCALL lbQuery::next() {
 }
 
 lbErrCodes LB_STDCALL lbQuery::previous() {
+        UWORD   RowStat[20];
+        UDWORD  RowsFetched;
+
+        // Indicate, that data must prebound to a buffer
+        databound = 0;
+
+        retcode = SQLExtendedFetch(hstmt, SQL_FETCH_PREV, NULL, &RowsFetched, RowStat);
+
+        if (retcode == SQL_ERROR || retcode == SQL_SUCCESS_WITH_INFO) {
+                _LOG << "lbQuery::previous(): Error while fetching next row" LOG_
+                printf("Error in lbQuery::previous()\n");
+                dbError( "SQLExtendedFetch()",henv,hdbc,hstmt);
+                return ERR_DB_FETCHNEXT;
+        }
 	return ERR_NONE;
 }
 
 lbErrCodes LB_STDCALL lbQuery::last() {
+        UWORD   RowStat[20];
+        UDWORD  RowsFetched;
+
+        // Indicate, that data must prebound to a buffer
+        databound = 0;
+
+        retcode = SQLExtendedFetch(hstmt, SQL_FETCH_LAST, NULL, &RowsFetched, RowStat);
+
+        if (retcode == SQL_ERROR || retcode == SQL_SUCCESS_WITH_INFO) {
+                _LOG << "lbQuery::last(): Error while fetching next row" LOG_
+                printf("Error in lbQuery::last()\n");
+                dbError( "SQLExtendedFetch()",henv,hdbc,hstmt);
+                return ERR_DB_FETCHNEXT;
+        }
 	return ERR_NONE;
 }
 /*...e*/
