@@ -10,6 +10,12 @@ call makefile.bat
 make --win32
 cd ..
 
+cd lbPluginManager
+attrib -r *.bak
+call makefile.bat
+make --win32
+cd ..
+
 cd lbModule
 attrib -r *.bak
 call makefile.bat
@@ -33,6 +39,12 @@ attrib -r *.bak
 call makefile.bat
 make --win32
 cd ..\..
+
+cd ..\Plugins\DatabaseForm
+attrib -r *.bak
+call makefile.bat
+make --win32
+cd ..\..\BaseDevelopment
 
 cd ..\test\Console\XML
 attrib -r *.bak
