@@ -32,7 +32,7 @@ lbErrCodes LB_STDCALL lbLoadModule(const char* name, HINSTANCE & hinst) {
 /*...e*/
 /*...slbErrCodes LB_STDCALL lbGetFunctionPtr\40\const char\42\ name\44\ const HINSTANCE \38\ hinst\44\ void\42\\42\ pfn\41\:0:*/
 lbErrCodes LB_STDCALL lbGetFunctionPtr(const char* name, const HINSTANCE & hinst, void** pfn) {
-        char msg[100] = "";
+        char msg[1000] = "";
 	
         if ((*pfn = (void*) GetProcAddress(hinst, name)) == NULL)
         {
@@ -53,7 +53,7 @@ lbErrCodes LB_STDCALL lbGetFunctionPtr(const char* name, const HINSTANCE & hinst
 
 /*...slb_I_Module\42\ LB_STDCALL getModuleInstance\40\\41\:0:*/
 lb_I_Module* LB_STDCALL getModuleInstance() {
-typedef lbErrCodes (LB_STDCALL *T_p_getlbModuleInstance) (lb_I_Module*&);
+typedef lbErrCodes (LB_STDCALL *T_p_getlbModuleInstance) (lb_I_Module*&, lb_I_Module* m, char* file, int line);
 T_p_getlbModuleInstance DLL_GETMODULEINSTANCE;
 	lbErrCodes err = ERR_NONE;
 	lb_I_Module* module = NULL;
@@ -72,14 +72,10 @@ T_p_getlbModuleInstance DLL_GETMODULEINSTANCE;
 	}
 	printf("Calling functor %s\n", functor);
 
-	if ((err = DLL_GETMODULEINSTANCE(module)) == ERR_STATE_FURTHER_LOCK) {
+	if ((err = DLL_GETMODULEINSTANCE(module, NULL, __FILE__, __LINE__)) == ERR_STATE_FURTHER_LOCK) {
 		CL_LOG("Instance is locked. Must set module manager first");
 		module->setModuleManager(module);
 	} 
-	
-getch();
-
-	printf("Called functor\n");
 	
 	return module;
 }

@@ -43,8 +43,8 @@ void main() {
     char* port = NULL;
     char buf[100] = "";
     int count = 0;
-    UAP(lb_I_Unknown, unknown)
-    UAP(lb_I_Unknown, uk)
+    UAP(lb_I_Unknown, unknown, __FILE__, __LINE__)
+    UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
 /*...e*/
 /*...sinit:0:*/
 	printf("Program starting...\n");
@@ -52,9 +52,7 @@ void main() {
 
 	lb_I_Module* mm = getModuleInstance();
 	mm->setModuleManager(mm);
-	printf("Address of module manager is %x\n", mm);
 	mm->initialize();
-	getch();
 /*...e*/
 #ifdef bla
 /*...stest string:0:*/
@@ -103,14 +101,10 @@ void main() {
 /*...e*/
 #endif
 /*...stest logger:0:*/
-	CL_LOG("Test invoking logger interface directly (requesting)...");
-	getch();
 	mm->request("lb_I_Log", &unknown);
-	CL_LOG("Requested lb_I_Log interface");
-	getch();
 	if (unknown != NULL) {
 		lb_I_Log* logger = NULL;
-		if (unknown->queryInterface("lb_I_Log", (void**) &logger) != ERR_NONE) {
+		if (unknown->queryInterface("lb_I_Log", (void**) &logger, __FILE__, __LINE__) != ERR_NONE) {
 			CL_LOG("Getting a logger failed !!!!!!!!");
 		}
 
@@ -128,13 +122,11 @@ void main() {
 	
 	lb_I_Container* c = NULL;
 
-	if (uk->queryInterface("lb_I_Container", (void**) &c) != ERR_NONE) {
+	if (uk->queryInterface("lb_I_Container", (void**) &c, __FILE__, __LINE__) != ERR_NONE) {
 		CL_LOG("Error: Could not get needed interface!");
 		getch();
 	}
 	
-	CL_LOG("Container requested");
-	getch();
 /*...e*/
 /*...stest integer:0:*/
 	if (mm->request("lb_I_Integer", &uk) != ERR_NONE) {
@@ -146,9 +138,8 @@ void main() {
 /*...stest unloading module manager:0:*/
 	CL_LOG("Test unloading module manager");
 	mm->uninitialize();
-	mm->release();
+	mm->release(__FILE__, __LINE__);
 	unHookAll();
-	getch();
 /*...e*/
 /*...stest after unloading:0:*/
 	mm = getModuleInstance();
@@ -166,13 +157,11 @@ void main() {
 	
 	c = NULL;
 
-	if (uk->queryInterface("lb_I_Container", (void**) &c) != ERR_NONE) {
+	if (uk->queryInterface("lb_I_Container", (void**) &c, __FILE__, __LINE__) != ERR_NONE) {
 		CL_LOG("Error: Could not get needed interface!");
 		getch();
 	}
 	
-	CL_LOG("Container requested");
-	getch();
 /*...e*/
 
 /*...stest integer:0:*/
@@ -185,21 +174,11 @@ void main() {
 /*...stest unknown auto pointer:0:*/
 	if (1)
 	{
-		UAP(lb_I_Unknown, theVariable)
-		UAP(lb_I_String, string)
-		
-		class A {
-		protected:
-			UAP(lb_I_Unknown, test)
-		};
-		
-		A a;
-		
+		UAP(lb_I_Unknown, theVariable, __FILE__, __LINE__)
+		UAP(lb_I_String, string, __FILE__, __LINE__)
 		
 		if (theVariable.getPtr() != NULL) CL_LOG("Error: UAP does not correctly work");
 
-		CL_LOG("Test unknown auto pointer");
-		getch();
 		lb_I_Unknown* uk = NULL;
 		lb_I_String* s = NULL;
 
@@ -209,17 +188,12 @@ void main() {
 		
 		theVariable = uk;
 		
-CL_LOG("Query interface lb_I_String");		
-
 		if (theVariable == NULL) CL_LOG("Error: UAP is not initialized!");
 
-		if (theVariable->queryInterface("lb_I_String", (void**) &string) != ERR_NONE) {
+		if (theVariable->queryInterface("lb_I_String", (void**) &string, __FILE__, __LINE__) != ERR_NONE) {
 			CL_LOG("Error: Failed to get a reference to the interface lb_I_String");
 		}
-CL_LOG("Query done");		
 		if (string != NULL) {
-			CL_LOG("Test the created unknown autopointer !!!");
-	
 			string->setData("Blubber\n");
 			
 			char* buf = NULL;
@@ -227,17 +201,13 @@ CL_LOG("Query done");
 			buf = string->getData();
 			
 			printf(buf);
-			CL_LOG("Tested the created unknown autopointer !!!");
-			getch();
 		}
-		CL_LOG("Releasing focus of auto pointer");
 	}
-	CL_LOG("Lost focus of auto pointer");
 /*...e*/
 
 
 	mm->uninitialize();
-	mm->release();
+	mm->release(__FILE__, __LINE__);
 
 	CL_LOG("Basic tests ended");
 	getch();
@@ -257,7 +227,7 @@ CL_LOG("Query done");
 	#ifdef LOOP
         for (long i = 0; i < 1; i++) {
     	#endif
-    			UAP(lb_I_Unknown, uk)
+    			UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
     			
 			if (modMan->request("lb_I_Container", &uk) != ERR_NONE) {
 				printf("Error: Could not get needed instance!\n");
@@ -265,10 +235,10 @@ CL_LOG("Query done");
 			}
 
 			if (uk != NULL) {
-				UAP(lb_I_Unknown, uk1)
-				UAP(lb_I_Container, container)
+				UAP(lb_I_Unknown, uk1, __FILE__, __LINE__)
+				UAP(lb_I_Container, container, __FILE__, __LINE__)
 
-				if (uk->queryInterface("lb_I_Container", (void**) &container) != ERR_NONE) {
+				if (uk->queryInterface("lb_I_Container", (void**) &container, __FILE__, __LINE__) != ERR_NONE) {
 					CL_LOG("Error: Could not query for interface lb_I_Container");
 				}
 			
@@ -279,8 +249,8 @@ CL_LOG("Query done");
 
 				if (uk1 != NULL) {
 					CL_LOG("Test the container");
-					UAP(lb_I_String, string)
-					if (uk1->queryInterface("lb_I_String", (void**) &string) != ERR_NONE) {
+					UAP(lb_I_String, string, __FILE__, __LINE__)
+					if (uk1->queryInterface("lb_I_String", (void**) &string, __FILE__, __LINE__) != ERR_NONE) {
 						printf("Error: Could not get needed interface!\n");
 						getch();
 					}
@@ -288,11 +258,11 @@ CL_LOG("Query done");
 					if (string != NULL) {
 						// Fill up the container
 for (long i = 0; i < 10000000; i++) {
-						UAP(lb_I_Unknown, uk)
-						UAP(lb_I_KeyBase, key)
+						UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
+						UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
 						
-						string->queryInterface("lb_I_Unknown", (void**) &uk);
-						string->queryInterface("lb_I_KeyBase", (void**) &key);
+						string->queryInterface("lb_I_Unknown", (void**) &uk, __FILE__, __LINE__);
+						string->queryInterface("lb_I_KeyBase", (void**) &key, __FILE__, __LINE__);
 						
 						uk->setDebug(1);
 						
@@ -359,7 +329,7 @@ getch();
         }
 #endif
 	modMan->uninitialize();
-        modMan->release();
+        modMan->release(__FILE__, __LINE__);
         unHookAll();
         getch();
 }

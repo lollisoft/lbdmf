@@ -33,7 +33,7 @@ char* sendConnect(lbTransfer & transfer) {
 	lb_Transfer_Data result;
 	lb_Transfer_Data request;
 	char *temp;
-	char msg[100];
+	char msg[1000];
 
 	transfer.gethostname(temp);
 /*...sAPPBUS_VERBOSE:0:*/
