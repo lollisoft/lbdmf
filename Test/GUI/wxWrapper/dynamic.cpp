@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.52 2005/03/07 19:30:22 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.53 2005/03/07 20:09:34 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.52 $
+ * $Revision: 1.53 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.52 2005/03/07 19:30:22 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.53 2005/03/07 20:09:34 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.53  2005/03/07 20:09:34  lollisoft
+ * Minor changes to compile under Linux
+ *
  * Revision 1.52  2005/03/07 19:30:22  lollisoft
  * Changes to again build correctly under linux
  *
@@ -2952,8 +2955,9 @@ _LOG << "Initialized metaapplication" LOG_
 #endif
 #endif
 
-// Not yet working under Mac OS X
+// Not yet working under Mac OS X, not yet tested under Linux
 #ifndef OSX
+#ifndef LINUX
 /*
  * Try to load all plugins and initialize it.
  */
@@ -2962,6 +2966,7 @@ UAP_REQUEST(mm.getPtr(), lb_I_PluginManager, PM)
 printf("Test plugin manager\n");
 PM->beginEnumPlugins();
 printf("Tested plugin manager\n");
+#endif
 #endif
 
 #ifdef LB_I_EXTENTIONS
