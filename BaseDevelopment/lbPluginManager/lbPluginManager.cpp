@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.15 $
+ * $Revision: 1.16 $
  * $Name:  $
- * $Id: lbPluginManager.cpp,v 1.15 2005/04/02 12:49:06 lollisoft Exp $
+ * $Id: lbPluginManager.cpp,v 1.16 2005/04/03 22:08:10 lollisoft Exp $
  *
  * $Log: lbPluginManager.cpp,v $
+ * Revision 1.16  2005/04/03 22:08:10  lollisoft
+ * Removed much logging messages.
+ *
  * Revision 1.15  2005/04/02 12:49:06  lollisoft
  * Bugfix, if PLUGIN_DIR is not configured
  *
@@ -328,8 +331,6 @@ void LB_STDCALL lbPluginManager::initialize() {
 #endif
 	strcat(toFind, mask);
 
-	printf("Try to find plugins in %s\n", toFind);
-
 #ifdef WINDOWS	
 	long handle = _findfirst(toFind, &find);
 #endif
@@ -344,8 +345,6 @@ void LB_STDCALL lbPluginManager::initialize() {
 	
 	dir_info = readdir(dir);
 #endif
-
-printf("Executed dd_findfirst\n");
 
 #ifndef LINUX
         #ifdef __WATCOMC__
@@ -366,36 +365,21 @@ printf("Executed dd_findfirst\n");
 	if (dir_info != NULL) {
 #endif
 #ifdef WINDOWS	
-		printf("Try to load plugin '%s'", find.name);
-		if (!tryLoad(find.name)) 
+		tryLoad(find.name);
 #endif
 #ifdef LINUX
-		if (strstr(dir_info->d_name, ".so") != NULL)
-		    printf("Try to load plugin '%s'", dir_info->d_name);
-		
-		if ((strstr(dir_info->d_name, ".so") != NULL) && !tryLoad(dir_info->d_name)) 
+		tryLoad(dir_info->d_name);
 #endif
-			printf(" ... failed.\n");
-		else
-			printf(" ... succeeded.\n");
 		
 #ifdef WINDOWS
 		while (_findnext(handle, &find) == 0) {
-			printf("Try to load plugin '%s'", find.name);
-			if (!tryLoad(find.name)) 
-				printf(" ... failed.\n");
-			else
-			        printf(" ... succeeded.\n");
+			tryLoad(find.name);
 		}
 #endif
 #ifdef LINUX
 		while ((dir_info = readdir(dir)) != NULL) {
 			if (strstr(dir_info->d_name, ".so") != NULL) {
-			    printf("Try to load plugin '%s'", dir_info->d_name);
-			    if (!tryLoad(dir_info->d_name)) 
-				    printf(" ... failed.\n");
-			    else
-				    printf(" ... succeeded.\n");
+			    tryLoad(dir_info->d_name);
 			}
 		}
 #endif
@@ -435,8 +419,6 @@ lb_I_Plugin* LB_STDCALL lbPluginManager::nextPlugin() {
 		
 		if (firstPlugin) {
 
-			printf("Have first Plugin of one module.\n");
-	
 			firstPlugin = FALSE;
 		
 			/* 
@@ -449,7 +431,6 @@ lb_I_Plugin* LB_STDCALL lbPluginManager::nextPlugin() {
 			
 			
 			while (PluginModules->hasMoreElements()) {
-				printf("Get next module...\n");
 				uk = PluginModules->nextElement();
 		
 				QI(uk, lb_I_PluginModule, plM, __FILE__, __LINE__)
@@ -457,23 +438,19 @@ lb_I_Plugin* LB_STDCALL lbPluginManager::nextPlugin() {
 				// Get all plugins of this module
 
 				if (PluginContainer != NULL) {
-					printf("Cleanup last PluginContainer from a module.\n");
 					PluginContainer->release(__FILE__, __LINE__);
 				}
 				
-				printf("Initialize plugins in module.\n");
 				plM->initialize();
 
 				PluginContainer = plM->getPlugins();
 			
 				if (PluginContainer->hasMoreElements()) {
-					printf("Have a plugin in module...\n");
 					uk = PluginContainer->nextElement();
 				
 					UAP(lb_I_Plugin, plugin, __FILE__, __LINE__)
 					QI(uk, lb_I_Plugin, plugin, __FILE__, __LINE__)
 				
-					printf("Plugin is %s in %s\n", plugin->getName(), plugin->getModule());
 					return plugin.getPtr();
 				}
 			}
@@ -483,13 +460,11 @@ lb_I_Plugin* LB_STDCALL lbPluginManager::nextPlugin() {
 		
 			if (!lastPlugin) {
 				if (PluginContainer->hasMoreElements()) {
-					printf("Have a plugin in module...\n");
 				        uk = PluginContainer->nextElement();
 
 				        UAP(lb_I_Plugin, plugin, __FILE__, __LINE__)
 				        QI(uk, lb_I_Plugin, plugin, __FILE__, __LINE__)
 
-					printf("Plugin is %s in %s\n", plugin->getName(), plugin->getModule());
 				        return plugin.getPtr();
 				} else {
 					firstPlugin = true;
@@ -613,8 +588,6 @@ lbPlugin::lbPlugin() {
 	
 	implementation = NULL;
 	isPreInitialized = false;
-	
-	printf("lbPlugin::lbPlugin() called.\n");
 }
 /*...e*/
 /*...slbPlugin\58\\58\\126\lbPlugin\40\\41\:0:*/
@@ -622,8 +595,6 @@ lbPlugin::~lbPlugin() {
 	free(_module);
 	free(_name);
 	free(_namespace);
-	
-	printf("lbPlugin::~lbPlugin() called.\n");
 }
 /*...e*/
 /*...slbErrCodes LB_STDCALL lbPlugin\58\\58\setData\40\lb_I_Unknown\42\ uk\41\:0:*/
