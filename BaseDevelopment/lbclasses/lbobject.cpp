@@ -14,7 +14,7 @@
 IMPLEMENT_FUNCTOR(instanceOfInteger, lbInteger)
 IMPLEMENT_FUNCTOR(instanceOfString, lbString)
 
-
+#ifdef bla
 /*...slbObject:0:*/
 void lbObject::setName(const char* d) {
 	if (name != NULL) delete name;
@@ -46,6 +46,8 @@ BEGIN_IMPLEMENT_LB_UNKNOWN(lbObject)
 	ADD_INTERFACE(lb_I_Object)
 END_IMPLEMENT_LB_UNKNOWN()
 /*...e*/
+#endif
+
 /*...slbString:0:*/
 lbString::lbString() {
 	ref = STARTREF;
@@ -59,7 +61,9 @@ lbString::~lbString() {
 }
 
 void LB_STDCALL lbString::setData(char* p) {
+	if (stringdata != NULL) delete[] stringdata;
 	stringdata = strdup(p);
+	if (key != NULL) delete[] key;
 	key = strdup(p);
 }
 

@@ -4,10 +4,13 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.10 $
+ * $Revision: 1.11 $
  * $Name:  $
- * $Id: lbobject.h,v 1.10 2001/07/11 16:04:35 lolli Exp $
+ * $Id: lbobject.h,v 1.11 2001/08/18 07:34:48 lolli Exp $
  * $Log: lbobject.h,v $
+ * Revision 1.11  2001/08/18 07:34:48  lolli
+ * Current version runs again. Module management is not ready.
+ *
  * Revision 1.10  2001/07/11 16:04:35  lolli
  * First version of module management that hold's a little stresstest
  *
@@ -82,7 +85,7 @@
 #include <stdio.h>
 #include <lbInterfaces.h>
 
-
+#ifdef bla
 /*...sclass lbObject:0:*/
 class lbObject : public lb_I_Object {
 public:
@@ -128,7 +131,7 @@ protected:
 //	ObjectTyp OTyp;
 };
 /*...e*/
-
+#endif
 
 /*...sclass lbString:0:*/
 class lbString : public lb_I_String

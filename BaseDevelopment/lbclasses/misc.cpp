@@ -1,10 +1,13 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.9 $
+ * $Revision: 1.10 $
  * $Name:  $
- * $Id: misc.cpp,v 1.9 2001/07/11 16:04:35 lolli Exp $
+ * $Id: misc.cpp,v 1.10 2001/08/18 07:34:48 lolli Exp $
  * $Log: misc.cpp,v $
+ * Revision 1.10  2001/08/18 07:34:48  lolli
+ * Current version runs again. Module management is not ready.
+ *
  * Revision 1.9  2001/07/11 16:04:35  lolli
  * First version of module management that hold's a little stresstest
  *
@@ -77,6 +80,8 @@ public:
 
     lbLog();
     lbLog(int l);
+
+    virtual ~lbLog() {}
 /*...e*/
 
 
@@ -164,19 +169,25 @@ lbErrCodes LB_STDCALL lbLog::setData(lb_I_Unknown* uk) {
 /*...slbLog\58\\58\lbLog\40\\41\:0:*/
 lbLog::lbLog() {
 //lbLock lbLock(sect);
+	manager = NULL;
+	printf("Try to log direct\n");
         strcpy(f, "c:\\log\\wsmaster.log");
+        printf("Created formatted string\n");
         logdirect("lbLog::lbLog(): Creating mutex for logfile", f, level);
-
+	printf("Logged\n");
         if (firstlog == 0) {
+        	printf("Create mutex\n");
                 mutex = new lbMutex();
                 mutex->createMutex(LB_LOGFILE_MUTEX);
+        	printf("Created\n");
         }
 
         firstlog = 1;
         doLog = 1;
 
 	char buf[100] = "";
-    }
+	printf("Leave ctor\n");
+}
 /*...e*/
 /*...slbLog\58\\58\lbLog\40\int l\41\:0:*/
 lbLog::lbLog(int l) {

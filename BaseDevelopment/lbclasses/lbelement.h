@@ -4,10 +4,13 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.6 $
+ * $Revision: 1.7 $
  * $Name:  $
- * $Id: lbelement.h,v 1.6 2001/07/11 16:04:35 lolli Exp $
+ * $Id: lbelement.h,v 1.7 2001/08/18 07:34:48 lolli Exp $
  * $Log: lbelement.h,v $
+ * Revision 1.7  2001/08/18 07:34:48  lolli
+ * Current version runs again. Module management is not ready.
+ *
  * Revision 1.6  2001/07/11 16:04:35  lolli
  * First version of module management that hold's a little stresstest
  *
@@ -51,10 +54,20 @@ class DLLEXPORT lbElement : public lb_I_Element {
 private:
 
 public:
-    lbElement() { ref = STARTREF; next = NULL; data = NULL; key = NULL; }
+    lbElement() { 
+    	ref = STARTREF; 
+    	next = NULL; 
+    	data = NULL; 
+    	key = NULL; 
+    	manager = NULL;
+    }
     virtual ~lbElement();
 	
-    lbElement(const lb_I_Element &e) { ref = STARTREF; next = e.getNext(); }
+    lbElement(const lb_I_Element &e) { 
+    	ref = STARTREF; 
+    	next = e.getNext(); 
+	manager = NULL;
+    }
 
     DECLARE_LB_UNKNOWN()
 
