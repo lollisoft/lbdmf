@@ -232,10 +232,13 @@ void main(int argc, char *argv[]) {
 	
 	query = database->getQuery(0);
 
-	query->query("select ObjectTyp, X, Y, W, H from World");
 
-	int rows = 0;
-
+#ifdef USE_PK
+	query->query("select objecttyp, x, y, w, h, id from world");
+#endif
+#ifndef USE_PK
+	query->query("select objecttyp, x, y, w, h from world");
+#endif
 // Second run fails ??
 /*...sforward:8:*/
 	UAP_REQUEST(mm, lb_I_String, s1)
@@ -243,6 +246,9 @@ void main(int argc, char *argv[]) {
 	UAP_REQUEST(mm, lb_I_String, s3)
 	UAP_REQUEST(mm, lb_I_String, s4)
 	UAP_REQUEST(mm, lb_I_String, s5)
+#ifdef USE_PK
+	UAP_REQUEST(mm, lb_I_String, s6)
+#endif	
 
 	if (query->first() != ERR_NONE) 
 		printf("Error while get next\n");
@@ -252,39 +258,50 @@ void main(int argc, char *argv[]) {
 		s3 = query->getAsString(3);
 		s4 = query->getAsString(4);
 		s5 = query->getAsString(5);
-
+#ifdef USE_PK
+		s6 = query->getAsString(6);
+		printf("%s;%s;%s;%s;%s;%s\n", s1->charrep(), s2->charrep(), s3->charrep(), s4->charrep(), s5->charrep(), s6->charrep());
+#endif
+#ifndef USE_PK		
 		printf("%s;%s;%s;%s;%s\n", s1->charrep(), s2->charrep(), s3->charrep(), s4->charrep(), s5->charrep());
-		
+#endif
 		UAP_REQUEST(mm, lb_I_String, col)
 		UAP_REQUEST(mm, lb_I_String, val)
 		
-		col->setData("ObjectTyp");
+		col->setData("objecttyp");
 		val->setData("ashdjksdfksdkjsdhsd");
 		
 		query->setString(*&col, *&val);
 		query->update();
 		s1 = query->getAsString(1);
 
-		printf("%s;%s;%s;%s;%s\n", s1->charrep(), s2->charrep(), s3->charrep(), s4->charrep(), s5->charrep());		
-		rows++;
+#ifdef USE_PK
+		printf("%s;%s;%s;%s;%s;%s\n", s1->charrep(), s2->charrep(), s3->charrep(), s4->charrep(), s5->charrep(), s6->charrep());
+#endif
+#ifndef USE_PK		
+		printf("%s;%s;%s;%s;%s\n", s1->charrep(), s2->charrep(), s3->charrep(), s4->charrep(), s5->charrep());
+#endif
 	}
 
-	while ((rows < 4) && (query->next() == ERR_NONE)) {
+	while (query->next() == ERR_NONE) {
 		s1 = query->getAsString(1);
 		s2 = query->getAsString(2);
 		s3 = query->getAsString(3);
 		s4 = query->getAsString(4);
 		s5 = query->getAsString(5);
-		
-		printf("%s;%s;%s;%s;%s\n", s1->charrep(), s2->charrep(), s3->charrep(), s4->charrep(), s5->charrep());
-		rows++;
+#ifdef USE_PK
+		s6 = query->getAsString(6);
+		printf("%s;%s;%s;%s;%s;%s\n", s1->charrep(), s2->charrep(), s3->charrep(), s4->charrep(), s5->charrep(), s6->charrep());
+#endif		
+#ifndef USE_PK
+                printf("%s;%s;%s;%s;%s\n", s1->charrep(), s2->charrep(), s3->charrep(), s4->charrep(), s5->charrep());
+#endif	
 	}
 	printf("Ended foreward test\n");
 	getch();
 	
 /*...e*/
 /*...sreverse:8:*/
-	rows = 0;
 	if (query->last() != ERR_NONE)
 		printf("Error while get next\n");
 	else {
@@ -293,19 +310,28 @@ void main(int argc, char *argv[]) {
 		s3 = query->getAsString(3);
 		s4 = query->getAsString(4);
 		s5 = query->getAsString(5);
+#ifdef USE_PK
+		s6 = query->getAsString(6);
+		printf("%s;%s;%s;%s;%s;%s\n", s1->charrep(), s2->charrep(), s3->charrep(), s4->charrep(), s5->charrep(), s6->charrep());
+#endif
+#ifndef USE_PK		
 		printf("%s;%s;%s;%s;%s\n", s1->charrep(), s2->charrep(), s3->charrep(), s4->charrep(), s5->charrep());
-		rows++;
+#endif
 	}
 
-	while ((rows < 4) && (query->previous() == ERR_NONE)) {
+	while (query->previous() == ERR_NONE) {
 		s1 = query->getAsString(1);
 		s2 = query->getAsString(2);
 		s3 = query->getAsString(3);
 		s4 = query->getAsString(4);
 		s5 = query->getAsString(5);
-		
+#ifdef USE_PK
+		s6 = query->getAsString(6);
+		printf("%s;%s;%s;%s;%s;%s\n", s1->charrep(), s2->charrep(), s3->charrep(), s4->charrep(), s5->charrep(), s6->charrep());
+#endif
+#ifndef USE_PK		
 		printf("%s;%s;%s;%s;%s\n", s1->charrep(), s2->charrep(), s3->charrep(), s4->charrep(), s5->charrep());
-		rows++;
+#endif
 	}
 	printf("Ended backward test\n");
 	getch();
