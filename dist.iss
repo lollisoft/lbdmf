@@ -8,7 +8,7 @@ AppPublisher=Lothar Behrens
 AppPublisherURL=http://www.lollisoft.de
 AppSupportURL=http://www.sourceforge.net/projects/lbdmf
 AppUpdatesURL=http://www.sourceforge.net/projects/lbdmf
-DefaultDirName={pf}\lbDMF
+DefaultDirName={sd}\lbDMF
 DefaultGroupName=lbDMF
 ; uncomment the following line if you want your installation to run on NT 3.51 too.
 ; MinVersion=4,3.51
@@ -18,8 +18,8 @@ Name: "desktopicon"; Description: "Create a &desktop icon"; GroupDescription: "A
 
 [Files]
 Source: "Q:\Develop\Projects\CPP\watcomenv.bat"; DestDir: "{app}"; CopyMode: alwaysoverwrite
-Source: "Q:\develop\Projects\bin\mkmk.exe"; DestDir: "C:\cygwin\bin"; CopyMode: alwaysoverwrite
-Source: "Q:\develop\Projects\bin\make.exe"; DestDir: "C:\cygwin\bin"; CopyMode: alwaysoverwrite
+Source: "Q:\develop\Projects\bin\mkmk.exe"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
+Source: "Q:\develop\Projects\bin\make.exe"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
 Source: "Q:\Develop\Projects\CPP\dist\*.*"; DestDir: "{app}"; CopyMode: alwaysoverwrite; Flags: recursesubdirs;
 Source: "Q:\Develop\Projects\dll\mspdb60.dll"; DestDir: "{app}\Develop\Projects\dll"; CopyMode: alwaysoverwrite;
 Source: "Q:\Develop\Projects\dll\libs\xerces-c_1D.lib"; DestDir: "{app}\Develop\Projects\dll\libs"; CopyMode: alwaysoverwrite;
