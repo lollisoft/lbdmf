@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.66 $
+ * $Revision: 1.67 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.66 2004/03/20 11:36:20 lollisoft Exp $
+ * $Id: lbModule.cpp,v 1.67 2004/03/22 22:11:07 lollisoft Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.67  2004/03/22 22:11:07  lollisoft
+ * Current version works under linux
+ *
  * Revision 1.66  2004/03/20 11:36:20  lollisoft
  * Added a hardcoded repository as an alternative to XML
  *
@@ -245,12 +248,14 @@ extern "C" {
 #include <malloc.h>
 
 #include <lbInterfaces.h>
-#include <lbConfigHook.h>
 
 /*...sLB_MODULE_DLL scope:0:*/
 #define LB_MODULE_DLL
 #include <lbmodule-module.h>
 /*...e*/
+
+#include <lbConfigHook.h>
+
 
 #include <lbModule.h>
 //#include <lbXMLConfig.h>
@@ -2280,11 +2285,19 @@ void LB_STDCALL lbModule::getXMLConfigObject(lb_I_InterfaceRepository** inst) {
         
 #define USE_HARDCODED_REPOSITORY        
 #ifdef USE_HARDCODED_REPOSITORY        
+#ifndef LINUX
+#define PREFIX "_"
+#endif
+#ifdef LINUX
+#define PREFIX ""
+#endif
+
+
 	HINSTANCE h = getModuleHandle();
 	setModuleHandle(h);
         if (newInterfaceRepository == NULL) {
                 UAP(lb_I_Unknown, result, __FILE__, __LINE__)
-                makeInstance("_instanceOfHCInterfaceRepository", "lbModule", &result);
+                makeInstance(PREFIX "instanceOfHCInterfaceRepository", "lbModule.so", &result);
 		result->queryInterface("lb_I_InterfaceRepository", (void**) inst, __FILE__, __LINE__);
         }
       
@@ -2306,8 +2319,12 @@ void LB_STDCALL lbModule::getXMLConfigObject(lb_I_InterfaceRepository** inst) {
 
         if (newInterfaceRepository == NULL) {
                 UAP(lb_I_Unknown, result, __FILE__, __LINE__)
+		
+		printf("Make an instance of %s out of %s\n", ftrname, libname);
                 makeInstance(ftrname, libname, &result);
+		printf("Have created an interface for lb_I_InterfaceRepository at %p\n", result.getPtr());
 		result->queryInterface("lb_I_InterfaceRepository", (void**) inst, __FILE__, __LINE__);
+		result++;
         }
 #endif                                
 }                             
@@ -3267,11 +3284,16 @@ lbErrCodes LB_STDCALL lbModule::request(const char* request, lb_I_Unknown** resu
          
 #ifdef USE_INTERFACE_REPOSITORY
 	if (newInterfaceRepository != NULL) {
+		printf("Using new interface repository '%p' to request '%s'\n", newInterfaceRepository.getPtr(), request);
 		newInterfaceRepository->setCurrentSearchInterface(request);
+		printf("Get first entity\n");
 		lb_I_FunctorEntity* e = newInterfaceRepository->getFirstEntity();
-
+		
+		printf("Get functor and module\n");
 		char* functor = e->getFunctor();
 		char* module  = e->getModule();
+		
+		printf("Have functor '%s' and module '%s'\n", functor, module);
 		
 		UAP(lb_I_Unknown, _result, __FILE__, __LINE__)
 		makeInstance(functor, module, &_result);

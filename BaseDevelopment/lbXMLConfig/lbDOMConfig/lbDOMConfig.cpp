@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.46 $
+ * $Revision: 1.47 $
  * $Name:  $
- * $Id: lbDOMConfig.cpp,v 1.46 2003/12/13 21:15:10 lollisoft Exp $
+ * $Id: lbDOMConfig.cpp,v 1.47 2004/03/22 22:11:08 lollisoft Exp $
  *
  * $Log: lbDOMConfig.cpp,v $
+ * Revision 1.47  2004/03/22 22:11:08  lollisoft
+ * Current version works under linux
+ *
  * Revision 1.46  2003/12/13 21:15:10  lollisoft
  * Compiles again under Linux using iODBC aka libiodbc.so
  *
@@ -1953,11 +1956,11 @@ public:
 	int invalidSearchStatus;
 };
 
-BEGIN_IMPLEMENT_LB_UNKNOWN(lbInterfaceRepository)
+BEGIN_IMPLEMENT_SINGLETON_LB_UNKNOWN(lbInterfaceRepository)
         ADD_INTERFACE(lb_I_InterfaceRepository)
 END_IMPLEMENT_LB_UNKNOWN()
 
-IMPLEMENT_FUNCTOR(instanceOfInterfaceRepository, lbInterfaceRepository)
+IMPLEMENT_SINGLETON_FUNCTOR(instanceOfInterfaceRepository, lbInterfaceRepository)
 
 lbInterfaceRepository::lbInterfaceRepository() {	
 	printf("lbInterfaceRepository::lbInterfaceRepository() called\n");
@@ -2000,7 +2003,7 @@ void LB_STDCALL lbInterfaceRepository::setCurrentSearchInterface(const char* ifa
 	searchArgument = DOMString(iface);
 	interfaces = 0;
 	CurrentSearchMode = 1;
-	
+	printf("Call lbInterfaceRepository::setCurrentSearchInterface(...):initIntefaceList()\n");
 	initIntefaceList();
 }
 
@@ -2263,11 +2266,22 @@ void lbInterfaceRepository::initIntefaceList() {
 	char* name = NULL;
 	char* savename = NULL;
         savename = strdup("#document/dtdHostCfgDoc/Modules/Module/Functions/Function/Functor/InterfaceName");
+	printf("Call strrchr\n");
         name = strrchr(savename, '/');
+	printf("Called and have %s\n", name);
         if (name == NULL) name = savename;
-        DOMlist = doc.getElementsByTagName(((name[0] == '/') ? &name[1] : name));
+	printf("Call getElementsByTagName(...) with %s\n", (name[0] == '/') ? &name[1] : name);
+	
+	DOMString s = DOMString((name[0] == '/') ? &name[1] : name);
+	printf("Have created a DOMString\n");
+	
+	if (doc.isNull()) printf("ERROR: DOM document is null!\n");
+	
+        DOMlist = doc.getElementsByTagName(s);
+	printf("Called getElementsByTagName(...)\n");
         len = DOMlist.getLength();
         // Cleanup
+	printf("lbInterfaceRepository::initIntefaceList(): cleanup\n");
         delete [] savename;
 }
 /*...e*/

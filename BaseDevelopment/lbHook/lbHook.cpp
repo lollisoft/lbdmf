@@ -67,6 +67,9 @@
 #include <lbConfigHook.h>
 //#include <lbkey.h>
 
+#ifdef LINUX
+#define HINSTANCE void*
+#endif
 
 #ifdef WINDOWS
 #ifndef LB_CLASSES_DLL
