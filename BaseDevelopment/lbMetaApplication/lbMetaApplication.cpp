@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.39 $
+ * $Revision: 1.40 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.39 2004/08/10 18:25:26 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.40 2004/10/09 16:55:07 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.40  2004/10/09 16:55:07  lollisoft
+ * Bugfix for call of pure virtual function. Don't know where it comes from ??
+ *
  * Revision 1.39  2004/08/10 18:25:26  lollisoft
  * Lesser logging messages.
  *
@@ -677,9 +680,9 @@ lbErrCodes LB_STDCALL lb_MetaApplication::addButton(char* buttonText, char* evHa
 lbErrCodes LB_STDCALL lb_MetaApplication::addMenuEntry(char* in_menu, char* entry, char* evHandler, char* afterentry) {
 	lbErrCodes err = ERR_NONE;
 	
-	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, value)
+	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
 	
 	
 	parameter->setData("menubar");
