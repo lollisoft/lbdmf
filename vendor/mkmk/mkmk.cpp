@@ -27,7 +27,13 @@
   #include <dosdir.h>
 #endif
 /*...e*/
+
 #define WATCOM_MAKE
+#ifdef LINUX
+#define UNIX
+#undef WATCOM_MAKE
+#endif
+
 /*...sdefs:0:*/
 #ifdef UNIX
   #define PathChar '/'
