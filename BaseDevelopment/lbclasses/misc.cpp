@@ -2,10 +2,13 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.14 $
+ * $Revision: 1.15 $
  * $Name:  $
- * $Id: misc.cpp,v 1.14 2002/02/25 06:15:35 lolli Exp $
+ * $Id: misc.cpp,v 1.15 2002/04/15 18:24:33 lolli Exp $
  * $Log: misc.cpp,v $
+ * Revision 1.15  2002/04/15 18:24:33  lolli
+ * Huge changes - works good
+ *
  * Revision 1.14  2002/02/25 06:15:35  lolli
  * Much changes
  * Program seems to run, but performance is very slow
@@ -263,11 +266,8 @@ void LB_STDCALL lbLog::logdirect(const char *msg, char *f, int level) {
 /*...slbLog\58\\58\log\40\\46\\46\\46\\41\:0:*/
 void LB_STDCALL lbLog::log(const char *msg, long line, char* file) {
 //lbLock lbLock(sect, "lbLockSection");
-printf("Called lbLog::log(...)\n");
         if (firstlog == 0) lbLog log = lbLog();
-printf("Enter mutex\n");
         mutex->enter(); 
-printf("Entered mutex\n");
         
         if (doLog == TRUE) {
                 char *m = (char*) malloc(strlen(msg)+sizeof(line)+strlen(file)+10);
@@ -277,7 +277,6 @@ printf("Entered mutex\n");
                 free(m);
         }
         mutex->release();
-printf("Released mutex\n");
 }
 /*...e*/
 /*...slbLog\58\\58\log\40\int log\41\:0:*/

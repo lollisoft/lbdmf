@@ -174,29 +174,46 @@ lbErrCodes LB_STDCALL lbString::setData(lb_I_Unknown* uk) {
 }
 
 /*...sKey:0:*/
-/*
-lbString::lbString(const char* _key) {
-    key = strdup(_key);
-}
-
-lbString::lbString(const lb_I_KeyBase* k) {
-    key = strdup(((lbString*) k)->key);
-}
-*/
-
-char* LB_STDCALL lbString::getKeyType() {
+char* LB_STDCALL lbString::getKeyType() const {
     return "string";
 }
 
-int lbString::equals(const lb_I_KeyBase* _key) const {
-    return (strcmp(key, ((const lbString*) _key)->key) == 0);
+int LB_STDCALL lbString::equals(const lb_I_KeyBase* _key) const {
+    if (strcmp(getKeyType(), _key->getKeyType()) == 0) {
+/*...sVERBOSE:0:*/
+#ifdef VERBOSE
+        printf("Stringvergleich %s == %s = %d\n", 
+        	key, 
+        	((const lbString*) _key)->key, 
+        	strcmp(key, ((const lbString*) _key)->key));
+#endif        	
+/*...e*/
+	return strcmp(key, ((const lbString*) _key)->key) == 0 ? 1 : 0;
+    } else {
+    	LOG("Error: Comparing wrong key types");
+    	return 0;
+    }
 }
 
-int lbString::greater(const lb_I_KeyBase* _key) const {
-    return (strcmp(key, ((const lbString*) _key)->key) > 0);
+int LB_STDCALL lbString::greater(const lb_I_KeyBase* _key) const {
+    if (strcmp(getKeyType(), _key->getKeyType()) == 0)
+	return strcmp(key, ((const lbString*) _key)->key) > 0 ? 1 : 0;
+    else {
+    	LOG("Error: Comparing wrong key types");
+    	return 0;
+    }
 }
 
-char* lbString::charrep() {
+int LB_STDCALL lbString::lessthan(const lb_I_KeyBase* _key) const {
+    if (strcmp(getKeyType(), _key->getKeyType()) == 0)
+	return strcmp(key, ((const lbString*) _key)->key) < 0 ? 1 : 0;
+    else {
+    	LOG("Error: Comparing wrong key types");
+    	return 0;
+    }
+}
+
+char* LB_STDCALL lbString::charrep() const {
     return key;
 }
 /*...e*/
@@ -229,39 +246,23 @@ lbErrCodes LB_STDCALL lbInteger::setData(lb_I_Unknown* uk) {
 }
 
 /*...sKey:0:*/
-/*
-char* LB_STDCALL lbInteger::getKeyType() {
-    return "integer";
-}
-
-int lbInteger::equals(const lb_I_KeyBase* _key) const {
-    return (strcmp(key, ((const lbInteger*) _key)->key) == 0);
-}
-
-int lbInteger::greater(const lb_I_KeyBase* _key) const {
-    return (strcmp(key, ((const lbInteger*) _key)->key) > 0);
-}
-
-char* lbInteger::charrep() {
-    char buffer[50] = "";
-    return itoa(key, buffer, 10);
-}
-
-*/
-
-char* LB_STDCALL lbInteger::getKeyType() {
+char* LB_STDCALL lbInteger::getKeyType() const {
     return "int";
 }
 
-int lbInteger::equals(const lb_I_KeyBase* _key) const {
+int LB_STDCALL lbInteger::equals(const lb_I_KeyBase* _key) const {
     return key == ((lbInteger*) _key)->key;
 }
 
-int lbInteger::greater(const lb_I_KeyBase* _key) const {
+int LB_STDCALL lbInteger::greater(const lb_I_KeyBase* _key) const {
     return key > ((lbInteger*) _key)->key;
 }
 
-char* lbInteger::charrep() {
+int LB_STDCALL lbInteger::lessthan(const lb_I_KeyBase* _key) const {
+    return key < ((lbInteger*) _key)->key;
+}
+
+char* LB_STDCALL lbInteger::charrep() const {
     char buf[100];
 
 #ifndef UNIX
@@ -305,19 +306,23 @@ lbErrCodes LB_STDCALL lbLong::setData(lb_I_Unknown* uk) {
 }
 
 /*...slbKeyUL:0:*/
-char* LB_STDCALL lbLong::getKeyType() {
+char* LB_STDCALL lbLong::getKeyType() const {
     return "UL";
 }
 
-int lbLong::equals(const lb_I_KeyBase* _key) const {
+int LB_STDCALL lbLong::equals(const lb_I_KeyBase* _key) const {
     return key == ((lbLong*) _key)->key;
 }
 
-int lbLong::greater(const lb_I_KeyBase* _key) const {
+int LB_STDCALL lbLong::greater(const lb_I_KeyBase* _key) const {
     return key > ((lbLong*) _key)->key;
 }
 
-char* lbLong::charrep() {
+int LB_STDCALL lbLong::lessthan(const lb_I_KeyBase* _key) const {
+    return key < ((lbLong*) _key)->key;
+}
+
+char* LB_STDCALL lbLong::charrep() const {
     char buf[100];
 
 #ifndef UNIX

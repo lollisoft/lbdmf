@@ -1,10 +1,13 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.15 $
+ * $Revision: 1.16 $
  * $Name:  $
- * $Id: lbcontainer.cpp,v 1.15 2001/12/12 17:12:45 lothar Exp $
+ * $Id: lbcontainer.cpp,v 1.16 2002/04/15 18:24:33 lolli Exp $
  * $Log: lbcontainer.cpp,v $
+ * Revision 1.16  2002/04/15 18:24:33  lolli
+ * Huge changes - works good
+ *
  * Revision 1.15  2001/12/12 17:12:45  lothar
  * Hehe - runs on linux
  *
@@ -143,14 +146,6 @@ BEGIN_IMPLEMENT_LB_UNKNOWN(lbElement)
 END_IMPLEMENT_LB_UNKNOWN()
 
 IMPLEMENT_LB_ELEMENT(lbElement)
-
-int LB_STDCALL lbElement::equals(const lb_I_Element* a) const {
-	return 0;
-}
-
-int LB_STDCALL lbElement::equals(const lb_I_KeyBase* key) const {
-	return 0;
-}
 
 lbErrCodes LB_STDCALL lbElement::setData(lb_I_Unknown* uk) {
 	CL_LOG("lbElement::setData(...) not implemented yet");

@@ -1,10 +1,13 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.10 $
+ * $Revision: 1.11 $
  * $Name:  $
- * $Id: lbkey.cpp,v 1.10 2001/12/12 17:12:45 lothar Exp $
+ * $Id: lbkey.cpp,v 1.11 2002/04/15 18:24:33 lolli Exp $
  * $Log: lbkey.cpp,v $
+ * Revision 1.11  2002/04/15 18:24:33  lolli
+ * Huge changes - works good
+ *
  * Revision 1.10  2001/12/12 17:12:45  lothar
  * Hehe - runs on linux
  *
@@ -120,19 +123,23 @@ lbErrCodes LB_STDCALL lbKey::setData(lb_I_Unknown* uk) {
 }
 /*...e*/
 
-char* LB_STDCALL lbKey::getKeyType() {
+char* LB_STDCALL lbKey::getKeyType() const {
     return "int";
 }
 
-int lbKey::equals(const lb_I_KeyBase* _key) const {
+int LB_STDCALL lbKey::equals(const lb_I_KeyBase* _key) const {
     return key == ((lbKey*) _key)->key;
 }
 
-int lbKey::greater(const lb_I_KeyBase* _key) const {
+int LB_STDCALL lbKey::greater(const lb_I_KeyBase* _key) const {
     return key > ((lbKey*) _key)->key;
 }
 
-char* lbKey::charrep() {
+int LB_STDCALL lbKey::lessthan(const lb_I_KeyBase* _key) const {
+    return key < ((lbKey*) _key)->key;
+}
+
+char* lbKey::charrep() const {
     char buf[100];
 
 #ifndef UNIX
@@ -176,19 +183,23 @@ lbErrCodes LB_STDCALL lbKeyUL::setData(lb_I_Unknown* uk) {
 }
 
 
-char* LB_STDCALL lbKeyUL::getKeyType() {
+char* LB_STDCALL lbKeyUL::getKeyType() const {
     return "UL";
 }
 
-int lbKeyUL::equals(const lb_I_KeyBase* _key) const {
+int LB_STDCALL lbKeyUL::equals(const lb_I_KeyBase* _key) const {
     return key == ((lbKeyUL*) _key)->key;
 }
 
-int lbKeyUL::greater(const lb_I_KeyBase* _key) const {
+int LB_STDCALL lbKeyUL::greater(const lb_I_KeyBase* _key) const {
     return key > ((lbKeyUL*) _key)->key;
 }
 
-char* lbKeyUL::charrep() {
+int LB_STDCALL lbKeyUL::lessthan(const lb_I_KeyBase* _key) const {
+    return key < ((lbKeyUL*) _key)->key;
+}
+
+char* lbKeyUL::charrep() const {
     char buf[100];
 
 #ifndef UNIX

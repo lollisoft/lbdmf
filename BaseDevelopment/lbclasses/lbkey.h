@@ -2,10 +2,13 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.10 $
+ * $Revision: 1.11 $
  * $Name:  $
- * $Id: lbkey.h,v 1.10 2001/12/12 17:12:45 lothar Exp $
+ * $Id: lbkey.h,v 1.11 2002/04/15 18:24:33 lolli Exp $
  * $Log: lbkey.h,v $
+ * Revision 1.11  2002/04/15 18:24:33  lolli
+ * Huge changes - works good
+ *
  * Revision 1.10  2001/12/12 17:12:45  lothar
  * Hehe - runs on linux
  *
@@ -54,25 +57,19 @@
 /*...sclass lbKey \58\ public lb_I_KeyBase:0:*/
 class lbKey : public lb_I_KeyBase {
 public:
-    lbKey();
-    lbKey(int _key);
-    lbKey(const lb_I_KeyBase* k);
-    virtual ~lbKey();
+	lbKey();
+	lbKey(int _key);
+	lbKey(const lb_I_KeyBase* k);
+	virtual ~lbKey();
 
-    DECLARE_LB_UNKNOWN()
+	DECLARE_LB_UNKNOWN()
 
-
-    // Must be implemented
-    virtual int LB_STDCALL equals(const lb_I_KeyBase* _key) const;
-    virtual int LB_STDCALL greater(const lb_I_KeyBase* _key) const;
-
-    virtual char* LB_STDCALL getKeyType();
-
-    virtual char* LB_STDCALL charrep();
+	DECLARE_LB_KEYBASE()
+	
 private:
 
-    char keyType[10];
-    int key;
+	char keyType[10];
+	int key;
 };
 /*...e*/
 /*...sclass lbKeyUL \58\ public lb_I_KeyBase:0:*/
@@ -85,14 +82,8 @@ public:
 
     DECLARE_LB_UNKNOWN()
     
+    DECLARE_LB_KEYBASE()
 
-    // Must be implemented
-    virtual int LB_STDCALL equals(const lb_I_KeyBase* _key) const;
-    virtual int LB_STDCALL greater(const lb_I_KeyBase* _key) const;
-
-    virtual char* LB_STDCALL getKeyType();
-
-    virtual char* LB_STDCALL charrep();
 private:
 
     char keyType[10];
@@ -108,15 +99,9 @@ public:
     virtual ~lbStringKey();
 
     DECLARE_LB_UNKNOWN()
+    
+    DECLARE_LB_KEYBASE()
 
-
-    // Must be implemented
-    virtual int LB_STDCALL equals(const lb_I_KeyBase* _key) const;
-    virtual int LB_STDCALL greater(const lb_I_KeyBase* _key) const;
-
-    virtual char* LB_STDCALL getKeyType();
-
-    virtual char* LB_STDCALL charrep();
 private:
 
     char keyType[10];

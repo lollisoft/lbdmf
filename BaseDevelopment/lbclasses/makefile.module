@@ -1,6 +1,6 @@
 # Define your module based settings
 
-OBJDEP=../lbHook/lbHook.o 
+#OBJDEP=../lbHook/lbHook.o 
 #../lbHook/conio.o
 
 C_OPS+= -DLB_CLASSES_DLL_INC

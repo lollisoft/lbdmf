@@ -4,10 +4,13 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.12 $
+ * $Revision: 1.13 $
  * $Name:  $
- * $Id: lbobject.h,v 1.12 2002/02/25 06:14:43 lolli Exp $
+ * $Id: lbobject.h,v 1.13 2002/04/15 18:24:33 lolli Exp $
  * $Log: lbobject.h,v $
+ * Revision 1.13  2002/04/15 18:24:33  lolli
+ * Huge changes - works good
+ *
  * Revision 1.12  2002/02/25 06:14:43  lolli
  * Much changes
  * Program seems to run, but performance is very slow
@@ -160,19 +163,13 @@ public:
 	virtual ~lbString();
 
 	DECLARE_LB_UNKNOWN()
-	
+
+public:	
 	virtual void LB_STDCALL setData(char* p);
 	virtual char* LB_STDCALL getData() const;
 
+	DECLARE_LB_KEYBASE()
 
-
-	// Must be implemented
-	virtual int LB_STDCALL equals(const lb_I_KeyBase* _key) const;
-	virtual int LB_STDCALL greater(const lb_I_KeyBase* _key) const;
-
-	virtual char* LB_STDCALL getKeyType();
-
-	virtual char* LB_STDCALL charrep();
 private:
 
 	char keyType[10];
@@ -189,16 +186,11 @@ public:
 
 	DECLARE_LB_UNKNOWN()
 	
+	DECLARE_LB_KEYBASE()
+	
 	virtual void LB_STDCALL setData(int p);
 	virtual int LB_STDCALL getData() const;
 	
-    // Must be implemented
-    virtual int LB_STDCALL equals(const lb_I_KeyBase* _key) const;
-    virtual int LB_STDCALL greater(const lb_I_KeyBase* _key) const;
-
-    virtual char* LB_STDCALL getKeyType();
-
-    virtual char* LB_STDCALL charrep();
 private:
 
     char keyType[10];
@@ -214,17 +206,12 @@ public:
 	virtual ~lbLong();
 
 	DECLARE_LB_UNKNOWN()
+
+	DECLARE_LB_KEYBASE()
 	
 	virtual void LB_STDCALL setData(long p);
 	virtual long LB_STDCALL getData() const;
 	
-    // Must be implemented
-    virtual int LB_STDCALL equals(const lb_I_KeyBase* _key) const;
-    virtual int LB_STDCALL greater(const lb_I_KeyBase* _key) const;
-
-    virtual char* LB_STDCALL getKeyType();
-
-    virtual char* LB_STDCALL charrep();
 private:
 
     char keyType[10];
