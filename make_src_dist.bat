@@ -16,9 +16,11 @@ call make_dist_base.bat AppDevelopmentDemo\App
 call make_dist_base.bat BaseDevelopment\lbHook 
 call make_dist_base.bat BaseDevelopment\lbclasses 
 call make_dist_base.bat BaseDevelopment\lbDB 
+call make_dist_base.bat BaseDevelopment\lbPluginManager
 call make_dist_base.bat BaseDevelopment\lbMetaApplication 
 call make_dist_base.bat BaseDevelopment\lbModule 
 call make_dist_base.bat BaseDevelopment\lbXMLConfig\lbDOMConfig 
+call make_dist_base.bat Plugins\DatabaseForm
 call make_dist_base.bat vendor\mkmk 
 call make_dist_base.bat vendor\dosdir 
 call make_dist_base.bat include 
@@ -26,7 +28,8 @@ call make_dist_base.bat interfaces
 call make_dist_base.bat make
 call make_dist_base.bat test\GUI\wxwrapper
 call make_dist_base.bat test\console\xml
-
+call make_dist_base.bat Compilers
+pause
 copy README %DEVROOT%
 copy COPYING %DEVROOT%
 copy BaseDevelopment\makefile %DEVROOT%\BaseDevelopment
