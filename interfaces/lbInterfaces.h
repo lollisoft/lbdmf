@@ -972,9 +972,9 @@ lbErrCodes DLLEXPORT LB_FUNCTORCALL name(lb_I_Unknown** uk, lb_I_Module* m, char
         *uk = NULL; \
         instance->setFurtherLock(0); \
         if (m != NULL) { \
-		if (strcmp(#clsname, "lbLog") == 0) printf("Functor calls setModuleManager\n"); \
+		if (strcmp(#clsname, "lb_MetaApplication") == 0) printf("Functor calls setModuleManager\n"); \
         	instance->setModuleManager(m, __FILE__, __LINE__); \
-		if (strcmp(#clsname, "lbLog") == 0) printf("Functor called setModuleManager\n"); \
+		if (strcmp(#clsname, "lb_MetaApplication") == 0) printf("Functor called setModuleManager\n"); \
         } else { \
         	_CL_LOG << "Error: Functor gets no manager. This is only possible for a manager it self." LOG_ \
         } \
