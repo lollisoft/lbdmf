@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.78 $
+ * $Revision: 1.79 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.78 2005/02/13 12:59:13 lollisoft Exp $
+ * $Id: lbModule.cpp,v 1.79 2005/03/03 08:36:04 lollisoft Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.79  2005/03/03 08:36:04  lollisoft
+ * Return error codes, if unable to get a functor.
+ *
  * Revision 1.78  2005/02/13 12:59:13  lollisoft
  * Removed unnessesary messages and in DllMain, changed _CL_LOG to _CL_VERBOSE
  *
@@ -3103,7 +3106,9 @@ lbErrCodes err = ERR_NONE;
                                 // report error if still loaded
                                 _CL_LOG << "Error: Could not load the module '" << module << "'" LOG_
                                 
-                                // return error if loading is impossible
+                                free(_module);
+                                
+                                return err; 
                         }
 
                         setModuleHandle(h);
@@ -3111,13 +3116,19 @@ lbErrCodes err = ERR_NONE;
                         if (getModuleHandle() == 0) _CL_LOG << "Error: Module could not be loaded '" << module << "'" LOG_
 
                         if ((err = lbGetFunctionPtr(functor, getModuleHandle(), (void**) &DLL_LB_GET_UNKNOWN_INSTANCE)) != ERR_NONE) {
-                                _CL_LOG << "Error while loading a functionpointer! (" << functor << ")" LOG_
+                                free(_module);
+                                
+                                return err;
                         } else {
                                 err = DLL_LB_GET_UNKNOWN_INSTANCE(instance, this, __FILE__, __LINE__);
 
                                 if (err != ERR_NONE) 
                                 {
-                                	_CL_LOG << "Could not get the instance!" LOG_
+                                	_CL_LOG << "Could not get an instance of type " << instance << " !" LOG_
+                                	
+                                	free(_module);
+                                	
+                                	return err;
                                 }
                                 if ((*instance) == NULL) _CL_LOG << "Something goes wrong while calling functor" LOG_
                         }
