@@ -8,6 +8,8 @@ C_OPS+= -DLB_CLASSES_DLL_INC
 ifeq ($(OSTYPE), Windows_NT)
 MOD_INCL=$(STD_INCL)
 LIBS = $(DEVROOT)\projects\dll\libs\lbhook.lib
+$(DEVROOT)\projects\dll\include\lbKey.h: lbKey.h
+		copy lbKey.h $(DEVROOT)\projects\dll\include
 endif
 
 ifeq ($(OSTYPE), linux)

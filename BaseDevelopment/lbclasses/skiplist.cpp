@@ -2,11 +2,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.2 $
+ * $Revision: 1.3 $
  * $Name:  $
- * $Id: skiplist.cpp,v 1.2 2002/04/15 18:24:33 lolli Exp $
+ * $Id: skiplist.cpp,v 1.3 2002/05/01 14:17:13 lolli Exp $
  *
  * $Log: skiplist.cpp,v $
+ * Revision 1.3  2002/05/01 14:17:13  lolli
+ * This version does not compile
+ *
  * Revision 1.2  2002/04/15 18:24:33  lolli
  * Huge changes - works good
  *
@@ -40,38 +43,6 @@ IMPLEMENT_FUNCTOR(instanceOfSkipList, SkipList)
 }
 #endif
 /*...e*/
-#ifdef bla
-/*...sMacrobased container:0:*/
-BEGIN_IMPLEMENT_LB_UNKNOWN(lbContainer)
-	ADD_INTERFACE(lb_I_Container)
-END_IMPLEMENT_LB_UNKNOWN()
-
-lbContainer::lbContainer() {
-    iteration = 0;
-    ref = STARTREF;
-    iterator = NULL;
-    count = 0;
-    container_data = NULL;
-/*...sVERBOSE:0:*/
-#ifdef VERBOSE
-    CL_LOG("Set manager to NULL must be done automatically!");
-#endif
-/*...e*/
-    manager = NULL;
-}
-
-lbContainer::~lbContainer() {
-}
-
-lbErrCodes LB_STDCALL lbContainer::setData(lb_I_Unknown* uk) {
-	CL_LOG("lbContainer::setData(...) not implemented yet");
-	return ERR_NOT_IMPLEMENTED;
-}
-
-
-IMPLEMENT_LB_I_CONTAINER_IMPL(lbContainer)
-/*...e*/
-#endif
 
 /*...sSkipNode implementation:0:*/
 SkipNode::SkipNode() {
