@@ -21,7 +21,8 @@ MCommand
 0
 5
 MCommand
-0
+34
+copy *.exe Q:\Develop\Projects\bin
 6
 MItem
 8
