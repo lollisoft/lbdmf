@@ -882,13 +882,14 @@ Using SQLSetPos
 	retcode = SQLSetCursorName(hstmt, cursorname, SQL_NTS);
 */	
 /*...e*/
+
+	retcode = SQLExecDirect(hstmt, (unsigned char*) szSql, SQL_NTS);
+	_CL_VERBOSE << "Executed SQLExecDirect()" LOG_
+
 	_CL_VERBOSE << "Call prepareFKList()" LOG_
 	prepareFKList();
 	_CL_VERBOSE  << "Called" LOG_
 	
-	retcode = SQLExecDirect(hstmt, (unsigned char*) szSql, SQL_NTS);
-
-	_CL_VERBOSE << "Executed SQLExecDirect()" LOG_
 
 	if ((retcode != SQL_SUCCESS) && (retcode != SQL_SUCCESS_WITH_INFO))
         {
