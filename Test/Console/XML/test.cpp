@@ -199,12 +199,15 @@ void main(int argc, char *argv[]) {
 /*...e*/
 
 	_CL_LOG << "Test metaapplication" LOG_
-	UAP_REQUEST(mm, lb_I_MetaApplication, meta)
+	
+	printf("Test meta application\n");
+	UAP_REQUEST(mm, lb_I_MetaApplication, meta) 
+	printf("Meta application loaded\n");
 	
 	if (meta != NULL) {
 		meta->Initialize();
 	}
-	
+	printf("Meta application initialized\n");
 	
 	_CL_LOG << "Tested metaapplication" LOG_
 
