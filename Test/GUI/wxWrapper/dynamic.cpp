@@ -6,7 +6,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.24 2004/07/26 22:00:40 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.25 2004/07/28 20:45:51 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -44,11 +44,15 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.24 $
+ * $Revision: 1.25 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.24 2004/07/26 22:00:40 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.25 2004/07/28 20:45:51 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.25  2004/07/28 20:45:51  lollisoft
+ * Added add and delete handlers, but doesn't work due to incomplete lbDB
+ * implementation.
+ *
  * Revision 1.24  2004/07/26 22:00:40  lollisoft
  * Better layout and resizeable database form
  *
@@ -313,6 +317,9 @@ public:
 	lbErrCodes LB_STDCALL lbDBNext(lb_I_Unknown* uk);
 	lbErrCodes LB_STDCALL lbDBPrev(lb_I_Unknown* uk);
 	lbErrCodes LB_STDCALL lbDBLast(lb_I_Unknown* uk);
+	
+	lbErrCodes LB_STDCALL lbDBAdd(lb_I_Unknown* uk);
+	lbErrCodes LB_STDCALL lbDBDelete(lb_I_Unknown* uk);
 
 	lbErrCodes LB_STDCALL lbDBUpdate();
 	lbErrCodes LB_STDCALL lbDBRead();
@@ -356,6 +363,12 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::registerEventHandler(lb_I_Dispatcher* di
 	sprintf(eventName, "%pDatabaseLast", this);
 	dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDatabaseDialog::lbDBLast,  eventName);
 	
+	sprintf(eventName, "%pDatabaseAdd", this);
+	dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDatabaseDialog::lbDBAdd,  eventName);
+	
+	sprintf(eventName, "%pDatabaseDelete", this);
+	dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDatabaseDialog::lbDBDelete,  eventName);
+	
 	return ERR_NONE;
 }
 /*...e*/
@@ -369,6 +382,8 @@ void lbDatabaseDialog::init(wxWindow* parent, wxString formName, wxString SQLStr
 	wxBoxSizer* sizerMain  = new wxBoxSizer(wxVERTICAL);
 	
 	wxBoxSizer* sizerHor   = new wxBoxSizer(wxHORIZONTAL);
+	
+	wxBoxSizer* sizerAddRem = new wxBoxSizer(wxHORIZONTAL);
 	wxBoxSizer* sizerNavi  = new wxBoxSizer(wxHORIZONTAL);
 	
 	wxBoxSizer* sizerLeft  = new wxBoxSizer(wxVERTICAL);	
@@ -387,6 +402,8 @@ void lbDatabaseDialog::init(wxWindow* parent, wxString formName, wxString SQLStr
 	int DatabaseNext;
 	int DatabasePrev;
 	int DatabaseLast;
+	int DatabaseAdd;
+	int DatabaseDelete;
 	
 	UAP_REQUEST(manager.getPtr(), lb_I_EventManager, eman)
 	UAP_REQUEST(manager.getPtr(), lb_I_Dispatcher, dispatcher)
@@ -405,6 +422,12 @@ void lbDatabaseDialog::init(wxWindow* parent, wxString formName, wxString SQLStr
 
 		sprintf(eventName, "%pDatabaseLast", this);
 		eman->registerEvent(eventName,  DatabaseLast);
+
+		sprintf(eventName, "%pDatabaseAdd", this);
+		eman->registerEvent(eventName,  DatabaseAdd);
+
+		sprintf(eventName, "%pDatabaseDelete", this);
+		eman->registerEvent(eventName,  DatabaseDelete);
 
 		dispatcher->setEventManager(eman.getPtr());
 
@@ -458,6 +481,13 @@ void lbDatabaseDialog::init(wxWindow* parent, wxString formName, wxString SQLStr
 	sizerNavi->Add(button2, 1, wxALL, 5);
 	sizerNavi->Add(button4, 1, wxALL, 5);
 
+	wxButton *buttonAdd = new wxButton(this, DatabaseAdd, "Add", wxPoint(), wxSize(100,20));
+	wxButton *buttonDelete = new wxButton(this, DatabaseDelete, "Delete", wxPoint(), wxSize(100,20));
+
+
+	sizerAddRem->Add(buttonAdd, 1, wxALL, 5);
+	sizerAddRem->Add(buttonDelete, 1, wxALL, 5);
+
 	//sizerNavi->SetAutoLayout(FALSE);
 
 //#define CONNECTOR ((wxFrame*) frame)
@@ -472,10 +502,15 @@ void lbDatabaseDialog::init(wxWindow* parent, wxString formName, wxString SQLStr
 	CONNECTOR->Connect( DatabaseLast,  -1, wxEVT_COMMAND_BUTTON_CLICKED,
 	  (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) &lb_wxFrame::OnDispatch);
 
+	CONNECTOR->Connect( DatabaseAdd,  -1, wxEVT_COMMAND_BUTTON_CLICKED,
+	  (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) &lb_wxFrame::OnDispatch);
+	CONNECTOR->Connect( DatabaseDelete,  -1, wxEVT_COMMAND_BUTTON_CLICKED,
+	  (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) &lb_wxFrame::OnDispatch);
 
 	SetAutoLayout(TRUE);
 	
 	sizerMain->Add(sizerHor, 0, wxEXPAND | wxALL, 5);
+	sizerMain->Add(sizerAddRem, 0, wxEXPAND | wxALL, 5);
 	sizerMain->Add(sizerNavi, 0, wxEXPAND | wxALL, 5);
 	
 	SetSizer(sizerMain);
@@ -593,6 +628,31 @@ printf("Move last\n");
 	lbDBUpdate();
 
 	sampleQuery->last();
+
+	lbDBRead();
+
+	return ERR_NONE;
+}
+/*...e*/
+
+/*...slbErrCodes LB_STDCALL lbDatabaseDialog\58\\58\lbDBAdd\40\lb_I_Unknown\42\ uk\41\:0:*/
+lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBAdd(lb_I_Unknown* uk) {
+printf("Add a new record\n");
+	lbDBUpdate();
+
+	sampleQuery->add();
+
+	lbDBRead();
+
+	return ERR_NONE;
+}
+/*...e*/
+/*...slbErrCodes LB_STDCALL lbDatabaseDialog\58\\58\lbDBDelete\40\lb_I_Unknown\42\ uk\41\:0:*/
+lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBDelete(lb_I_Unknown* uk) {
+printf("Delete a record\n");
+	//lbDBUpdate();
+
+	sampleQuery->remove();
 
 	lbDBRead();
 
