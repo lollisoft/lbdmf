@@ -271,6 +271,13 @@ void main(int argc, char *argv[]) {
 	
 	_CL_LOG << "Tested database" LOG_
 	getch();
+#ifdef bla
+	UAP_REQUEST(mm, lb_I_InterfaceRepository, ir)
+//DebugBreak();	
+
+	ir->setCurrentSearchInterface("lb_I_Container");	
+	if (ir->getFirstEntity() == NULL) exit;
+#endif	
 
 /*...stest logger:0:*/
 	printf("test logger\n");
@@ -320,6 +327,7 @@ void main(int argc, char *argv[]) {
 /*...e*/
 /*...stest after unloading:0:*/
 	printf("Create a new module manager\n");
+//	DebugBreak();
 	mm = getModuleInstance();
 	_CL_LOG << "Test logging after initializing the second one" LOG_
 	_CL_LOG << "Tested logging after initializing the second one" LOG_
