@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.63 $
+ * $Revision: 1.64 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.63 2003/12/13 10:56:25 lollisoft Exp $
+ * $Id: lbModule.cpp,v 1.64 2004/01/24 16:19:03 lollisoft Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.64  2004/01/24 16:19:03  lollisoft
+ * minor change
+ *
  * Revision 1.63  2003/12/13 10:56:25  lollisoft
  * Database improovements and changes in my licence adress.
  * The database part is still not working by updating columns
@@ -1753,6 +1756,7 @@ public:
         virtual lbErrCodes LB_STDCALL getInstance(char* functorname, lb_I_ConfigObject* node, lb_I_Unknown*& uk);
         virtual lbErrCodes LB_STDCALL getDefaultImpl(char* interfacename, lb_I_ConfigObject** node, char*& implTor, char*& module);
 	virtual lbErrCodes LB_STDCALL load(char* name);
+        virtual lbErrCodes LB_STDCALL makeInstance(char* functor, char* module, lb_I_Unknown** instance);
         
 protected:
 
@@ -1767,7 +1771,6 @@ protected:
         char* LB_STDCALL findFunctorModule(lb_I_ConfigObject** _node);
         char* LB_STDCALL findFunctorName(lb_I_ConfigObject** ___node);
 
-        lbErrCodes LB_STDCALL makeInstance(char* functor, char* module, lb_I_Unknown** instance);
         
         int internalInstanceRequest;
         UAP(lb_I_Container, loadedModules, __FILE__, __LINE__)
