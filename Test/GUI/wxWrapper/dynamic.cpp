@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.44 2005/02/10 19:16:23 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.45 2005/02/12 15:56:27 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,15 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.44 $
+ * $Revision: 1.45 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.44 2005/02/10 19:16:23 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.45 2005/02/12 15:56:27 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.45  2005/02/12 15:56:27  lollisoft
+ * Changed SQL queries and enabled user and password settings via
+ * environment.
+ *
  * Revision 1.44  2005/02/10 19:16:23  lollisoft
  * Begun with new database types, removed messages
  *
@@ -398,17 +402,24 @@ public:
 		REQUEST(manager.getPtr(), lb_I_Database, database)
 
 		database->init();
-		database->connect("lbDMF", "dba", "trainres");
+
+		char* lbDMFPasswd = getenv("lbDMFPasswd");
+		char* lbDMFUser   = getenv("lbDMFUser");
+		
+		if (!lbDMFUser) lbDMFUser = "dba";
+		if (!lbDMFPasswd) lbDMFPasswd = "trainres";
+
+		database->connect("lbDMF", lbDMFUser, lbDMFPasswd);
 
 		sampleQuery = database->getQuery(0);
 
 		char buffer[1000] = "";
 
 		sprintf(buffer, 
-			"select anwendungen.name from anwendungen inner join user_anwendungen on "
-			"anwendungen.id = user_anwendungen.anwendungenid "
-			"inner join users on user_anwendungen.userid = users.id where "
-			"users.userid = '%s'"
+			"select Anwendungen.name from Anwendungen inner join User_Anwendungen on "
+			"Anwendungen.id = User_Anwendungen.anwendungenid "
+			"inner join Users on User_Anwendungen.userid = Users.id where "
+			"Users.userid = '%s'"
 				, userid);
 
 
@@ -592,7 +603,14 @@ DECLARE_LB_UNKNOWN()
 		REQUEST(manager.getPtr(), lb_I_Database, database)
 
 		database->init();
-		err = database->connect("lbDMF", "dba", "trainres");
+
+		char* lbDMFPasswd = getenv("lbDMFPasswd");
+		char* lbDMFUser   = getenv("lbDMFUser");
+		
+		if (!lbDMFUser) lbDMFUser = "dba";
+		if (!lbDMFPasswd) lbDMFPasswd = "trainres";
+
+		err = database->connect("lbDMF", lbDMFUser, lbDMFPasswd);
 
 		sampleQuery = database->getQuery(0);
 
@@ -604,7 +622,7 @@ DECLARE_LB_UNKNOWN()
 
 		sampleQuery->skipFKCollecting();
 
-		sprintf(buffer, "select userid, passwort from users where userid = '%s' and passwort = '%s'",
+		sprintf(buffer, "select userid, passwort from Users where userid = '%s' and passwort = '%s'",
                 	user, pass);
 
 _CL_VERBOSE << "Query for user " << user LOG_
@@ -1758,7 +1776,14 @@ lbErrCodes LB_STDCALL lbLoginDialog::lbLoginOk(lb_I_Unknown* uk) {
 	REQUEST(manager.getPtr(), lb_I_Database, database)
 printf("Begin test user and password\n");
 	database->init();
-	database->connect("lbDMF", "dba", "trainres");
+
+	char* lbDMFPasswd = getenv("lbDMFPasswd");
+	char* lbDMFUser   = getenv("lbDMFUser");
+	
+	if (!lbDMFUser) lbDMFUser = "dba";
+	if (!lbDMFPasswd) lbDMFPasswd = "trainres";
+	
+	database->connect("lbDMF", lbDMFUser, lbDMFPasswd);
 
 	sampleQuery = database->getQuery(0);
 
