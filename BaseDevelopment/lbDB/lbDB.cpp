@@ -814,10 +814,10 @@ Using SQLSetPos
 
 //	retcode = SQLPrepare(hstmtDelete, "DELETE FROM Customers WHERE CURRENT OF Cust", SQL_NTS);
 
-	if (retcode != SQL_SUCCESS)
+	if ((retcode != SQL_SUCCESS) && (retcode != SQL_SUCCESS_WITH_INFO))
         {
         	dbError( "SQLExecDirect()");
-		_LOG << "lbQuery::query(...) failed. (" << q << ")" LOG_
+		_LOG << "lbQuery::query(...) failed. (" << szSql << ")" LOG_
 		return ERR_DB_QUERYFAILED;
         }
 
@@ -1126,12 +1126,14 @@ lbErrCodes LB_STDCALL lbQuery::previous() {
         databound = 0;
         
 #ifndef USE_FETCH_SCROLL
+	printf("Try to fetch prev.\n");
         retcode = SQLExtendedFetch(hstmt, SQL_FETCH_PREV, 0, &RowsFetched, RowStat);
 
 	/* Check for having no data.
 	 * This could only happen, if really no data is in the resultset.
 	 */
 	if (retcode == SQL_NO_DATA) {
+		printf("Have no data, go back to next.\n");
 		retcode = SQLExtendedFetch(hstmt, SQL_FETCH_NEXT, 0, &RowsFetched, RowStat);
 		
 		fetchstatus = -1;
@@ -1142,18 +1144,21 @@ lbErrCodes LB_STDCALL lbQuery::previous() {
 		
 // These check and error output solved pSQLODBC driver bug
 		
+		printf("Check for warnings or errors.\n");
+		
 		if ((retcode == SQL_SUCCESS_WITH_INFO) || (retcode == SQL_ERROR)) {
 			_LOG << "lbQuery::next() - SQLExtendedFetch failed" LOG_
 			
 			if (retcode == SQL_SUCCESS_WITH_INFO) dbError( "SQLExtendedFetch() failed with SQL_SUCCESS_WITH_INFO");
 			if (retcode == SQL_ERROR) dbError( "SQLExtendedFetch() failed with SQL_ERROR");
 		}
-
+		
+		printf("Peek for having more data in prev direction.\n");
 		retcode = SQLExtendedFetch(hstmt, SQL_FETCH_PREV, 0, &RowsFetched, RowStat);
 		
 		if (retcode == SQL_NO_DATA) {
 			// Indicate for no data and go back
-			
+			printf("No, we don't have more.\n");
 			retcode = SQLExtendedFetch(hstmt, SQL_FETCH_NEXT, 0, &RowsFetched, RowStat);
 			
 			if (retcode == SQL_NO_DATA) {
@@ -1168,6 +1173,7 @@ lbErrCodes LB_STDCALL lbQuery::previous() {
 			
 			return WARN_DB_NODATA;
 		} else {
+			printf("Yes, we have.\n");
 			retcode = SQLExtendedFetch(hstmt, SQL_FETCH_NEXT, 0, &RowsFetched, RowStat);
 			
 			if (retcode == SQL_NO_DATA) {
@@ -1291,12 +1297,37 @@ UDWORD  RowsFetched = 0;
 	if (mode == 1) return ERR_DB_STILL_ADDING;
 
 	SQLSetPos(hstmt, 1, SQL_DELETE, SQL_LOCK_NO_CHANGE);
+
+/*
+	SQLCHAR cursorname[100] = "";
+	short l;
 	
+	SQLGetCursorName(hstmt, cursorname, 99, &l);
+
+
+	SQLCHAR query[500] = "";
+	
+	sprintf((char*) query, "update %s set deleted = 1 where CURRENT OF '%s'", getTableName(), cursorname);
+
+	printf("%s\n", query);
+
+	retcode = SQLExecDirect(hstmt, query, SQL_NTS);
+
+	
+	if (retcode != SQL_SUCCESS)
+	{
+	        dbError( "SQLExecDirect()");
+	        _LOG << "lbQuery::remove(...) deleting failed." LOG_
+	        return ERR_NONE;
+	}
+
+	printf("SQLExecDirect() done\n");
+*/
 	SQLSetPos(hstmt, 1, SQL_REFRESH, SQL_LOCK_NO_CHANGE);
 	
 
-	if (fetchstatus == 1) return previous();
-	return next();
+//	if (fetchstatus == 1) return previous();
+//	return next();
 
 /*
 	if (fetchstatus == 0) {
@@ -1517,6 +1548,12 @@ int i = 0;
 while (lpsz[i++] != ' ') i++;
 
 strcpy(lpszTable, lpsz);
+
+printf("%s\n", lpszTable);
+
+char* pos = strstr(lpszTable, "where");
+
+if (pos) pos[0] = 0;
 
 return lpszTable; //!!!
 
