@@ -1,5 +1,12 @@
 /*...v\46\\46\\47\Appdevelopment\47\projects:0:*/
 
+/*...sSamples:0:*/
+/*...sHello World:0:*/
+/*...v\46\\46\\47\Samples\47\Helloworld\47\makefile\46\module:0:*/
+/*...v\46\\46\\47\Samples\47\Helloworld\47\helloworld\46\cpp:0:*/
+/*...e*/
+/*...e*/
+
 /*...slbDMF project:0:*/
 /*...smkmk a makefile make tool:0:*/
 /*...v\46\\46\\47\vendor\47\mkmk\47\contain\46\h:0:*/
@@ -212,6 +219,7 @@ These headers must define the per module (DLL) EXPORT variable
 /*...v\46\\46\\47\Test\47\console\47\xml\47\makefile:0:*/
 /*...v\46\\46\\47\Test\47\console\47\xml\47\makefile\46\module:0:*/
 /*...e*/
+
 /*...e*/
 /*...sMisc:0:*/
 /*...stinyxml:0:*/
