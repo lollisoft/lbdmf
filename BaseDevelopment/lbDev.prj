@@ -1,3 +1,6 @@
+/*...v\46\\46\\47\Appdevelopment\47\projects:0:*/
+
+/*...slbDMF project:0:*/
 /*...sgeneral stuff:0:*/
 /*...v\46\\46\\47\make\47\Std_make \45\ The global makefile definitions:0:*/
 /*...v\46\\46\\47\make\47\makefile\46\template:0:*/
@@ -8,7 +11,6 @@
 /*...v\46\\46\\47\make_src_dist\46\bat:0:*/
 /*...v\46\\46\\47\make_dist_base\46\bat:0:*/
 /*...vmakefile:0:*/
-/*...vmake\46\bat:0:*/
 /*...vmakeapps\46\bat:0:*/
 /*...v\46\\46\\47\watcomenv\46\bat:0:*/
 
@@ -55,19 +57,6 @@ These headers must define the per module (DLL) EXPORT variable
 
 /*...e*/
 
-/*...sAppdevelopment:0:*/
-/*...v\46\\46\\47\AppDevelopment\47\make\46\bat:0:*/
-/*...v\46\\46\\47\AppDevelopment\47\Trainres\47\App\47\makefile:0:*/
-
-
-/*...v\46\\46\\47\AppDevelopment\47\Trainres\47\App\47\Application\46\cpp:0:*/
-/*...v\46\\46\\47\AppDevelopment\47\Trainres\47\App\47\Application\46\h:0:*/
-/*...v\46\\46\\47\AppDevelopment\47\Trainres\47\App\47\makefile\46\module:0:*/
-/*...v\46\\46\\47\AppDevelopment\47\Trainres\47\App\47\makefile\46\bat:0:*/
-
-/*...v\46\\46\\47\AppDevelopment\47\DynamicApp\47\App\47\lbDynApp\46\cpp:0:*/
-/*...v\46\\46\\47\AppDevelopment\47\DynamicApp\47\App\47\lbDynApp\46\h:0:*/
-/*...e*/
 /*...sAppdevelopmentDemo:0:*/
 /*...v\46\\46\\47\AppDevelopmentDemo\47\make\46\bat:0:*/
 /*...v\46\\46\\47\AppDevelopmentDemo\47\App\47\makefile:0:*/
@@ -82,11 +71,9 @@ These headers must define the per module (DLL) EXPORT variable
 
 
 /*...e*/
-
 /*...sBaseDevelopment:0:*/
 /*...vmakefile:0:*/
 
-/*...vmake\46\bat:0:*/
 /*...vmakeapps\46\bat:0:*/
 /*...sMSC based XML parser:0:*/
 /*...vQ\58\\92\Develop\92\Projects\92\CPP\92\Test\92\Console\92\XML\47\lbxmlconfig\46\xml:0:*/
@@ -210,6 +197,21 @@ These headers must define the per module (DLL) EXPORT variable
 /*...v\46\\46\\47\Test\47\console\47\xml\47\makefile:0:*/
 /*...v\46\\46\\47\Test\47\console\47\xml\47\makefile\46\module:0:*/
 /*...e*/
+/*...e*/
+
+/*...sweb:0:*/
+/*...v\46\\46\\47\\46\\46\\47\web\47\index\46\html:0:*/
+/*...v\46\\46\\47\\46\\46\\47\web\47\logo\46\html:0:*/
+/*...v\46\\46\\47\\46\\46\\47\web\47\main\46\html:0:*/
+/*...v\46\\46\\47\\46\\46\\47\web\47\navi\46\html:0:*/
+/*...v\46\\46\\47\\46\\46\\47\web\47\de\47\navi\46\html:0:*/
+/*...v\46\\46\\47\\46\\46\\47\web\47\wolle\47\wolle\46\html:0:*/
+/*...v\46\\46\\47\\46\\46\\47\web\47\beitanja\47\tanja\46\html:0:*/
+/*...v\46\\46\\47\\46\\46\\47\web\47\swdev\47\main\46\html:0:*/
+/*...v\46\\46\\47\\46\\46\\47\web\47\eldev\47\main\46\html:0:*/
+
+/*...e*/
+
 /*...sMisc:0:*/
 /*...smkmk a makefile make tool:0:*/
 /*...v\46\\46\\47\vendor\47\mkmk\47\contain\46\h:0:*/
@@ -295,8 +297,6 @@ These headers must define the per module (DLL) EXPORT variable
 /*...vd\58\\92\export\45\29\45\03\45\2001\92\Artikel\45\Karte\46\csv:0:*/
 /*...e*/
 
-
-
 /*...sComponents:0:*/
 /*...v\46\\46\\47\Components\47\SimpleTextEditor\47\editor\46\h:0:*/
 /*...v\46\\46\\47\Components\47\SimpleTextEditor\47\editor\46\cpp:0:*/
@@ -328,18 +328,3 @@ What did I need ?
 /*...e*/
 /*...e*/
 
-
-
-/*...vg\58\\92\album\92\album\46\pl:0:*/
-
-/*...sweb:0:*/
-/*...v\46\\46\\47\\46\\46\\47\web\47\index\46\html:0:*/
-/*...v\46\\46\\47\\46\\46\\47\web\47\logo\46\html:0:*/
-/*...v\46\\46\\47\\46\\46\\47\web\47\main\46\html:0:*/
-/*...v\46\\46\\47\\46\\46\\47\web\47\navi\46\html:0:*/
-/*...v\46\\46\\47\\46\\46\\47\web\47\wolle\47\wolle\46\html:0:*/
-/*...v\46\\46\\47\\46\\46\\47\web\47\beitanja\47\tanja\46\html:0:*/
-/*...v\46\\46\\47\\46\\46\\47\web\47\swdev\47\main\46\html:0:*/
-/*...v\46\\46\\47\\46\\46\\47\web\47\eldev\47\main\46\html:0:*/
-
-/*...e*/
