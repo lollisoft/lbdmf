@@ -1,10 +1,13 @@
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.4 $
+# * $Revision: 1.5 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.4 2001/10/20 21:49:52 lothar Exp $
+# * $Id: STD_MAKE,v 1.5 2001/11/05 20:24:24 lothar Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.5  2001/11/05 20:24:24  lothar
+# * More standard values
+# *
 # * Revision 1.4  2001/10/20 21:49:52  lothar
 # * Tested under Windows
 # *
@@ -19,7 +22,7 @@
 # In order to use one master file for make configuration, this file
 # will be rewritten for GNU make
 
-ifeq ($(OS), Windows_NT)
+ifeq ($(OSTYPE), Windows_NT)
 STD_INCL = -i=.;Q:\develop\Tools\WATCOM\h; \
 	Q:\develop\Tools\WATCOM\h\nt; \
 	Q:\develop\projects\cpp\interfaces; \
@@ -29,10 +32,20 @@ STD_INCL = -i=.;Q:\develop\Tools\WATCOM\h; \
 endif
 
 ifeq ($(OSTYPE), linux)
+
 STD_INCL = -I ../lbHook/linuxCode \
 	-I ../../interfaces \
 	-I ../../include \
 	-I ../lbClasses \
+	-I /usr/include \
+	-I /usr/include/sys \
 	-I . 
+
+OBJ =o
+C_OPS =-c -DUNIX
+L_OPS =-o
+
+CC =cc
+LD =cc
 endif
 
