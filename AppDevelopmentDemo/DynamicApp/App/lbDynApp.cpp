@@ -406,7 +406,12 @@ lbErrCodes LB_STDCALL lbDynamicApplication::Initialize(char* user, char* app) {
 	UAP_REQUEST(manager.getPtr(), lb_I_String, EventName)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, MenuName)
 
-	addMenuBar(_trans("D&ynamic-Forms"), _trans("&Edit"));
+	char* ed = (char*) malloc(20);
+	ed = _trans("&Edit");
+	
+	addMenuBar(_trans("D&ynamic-Forms"), ed);
+
+	free(ed);
 
 	lbErrCodes DBerr = sampleQuery->first();
 	if ((DBerr == ERR_NONE) || (DBerr == WARN_DB_NODATA)) {
