@@ -35,11 +35,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.14 $
+ * $Revision: 1.15 $
  * $Name:  $
- * $Id: skiplist.cpp,v 1.14 2003/06/16 21:49:42 lollisoft Exp $
+ * $Id: skiplist.cpp,v 1.15 2003/07/31 20:18:25 lollisoft Exp $
  *
  * $Log: skiplist.cpp,v $
+ * Revision 1.15  2003/07/31 20:18:25  lollisoft
+ * Removed logging messages
+ *
  * Revision 1.14  2003/06/16 21:49:42  lollisoft
  * Bugfix ??
  *
@@ -135,12 +138,9 @@ SkipNode::SkipNode(lb_I_Element* r, int level) {
             forward[i] = NULL;
 }
 SkipNode::~SkipNode() { 
-      _LOG << "SkipNode destructor called" LOG_
       delete [] forward; 
-      _LOG << "Deleted forward array" LOG_
       
       if (value != NULL) RELEASE(value)
-      _LOG << "Released value of this element" LOG_
 }
 /*...e*/
 
@@ -173,11 +173,8 @@ int LB_STDCALL SkipList::Count() {
 /*...e*/
 /*...sSkipList\58\\58\deleteAll\40\\41\:0:*/
 void LB_STDCALL SkipList::deleteAll() { 
-	_LOG << "DeleteAll() called" LOG_
 	delete head;
-	_LOG << "Deleted head" LOG_
 	head = new SkipNode();
-	_LOG << "New head created" LOG_
 	level = MAXLEVEL;
 
 	iteration = 0;
