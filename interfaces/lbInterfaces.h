@@ -164,10 +164,14 @@
  *
  *	The database scripts are located in [C/D]:\\lbDMF\\Develop\\Projects\\CPP\\Database.
  *
- *	NOTE: The database login function is used with hardcoded ODBC DSN name and also user with password.
- *	The functions could be found by a search for ->connect(
- *
  *	Create at least an use to have rights to change data.
+ *
+ *	Set the environment variables to connect with the correct user and password. If not, default values from
+ *	my private database are used:
+ *
+ *	set lbDMFUser=<User>
+ *
+ *	set lbDMFpasswd=<Password>
  *
  * \section PSetup9 Run the sample GUI application
  *
