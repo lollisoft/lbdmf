@@ -22,14 +22,17 @@
 #    p-Mail: Lothar Behrens
 #            Rosmarinstr. 3
 #
-#            40235 DÅsseldorf (germany)
+#            40235 Duesseldorf (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.56 $
+# * $Revision: 1.57 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.56 2005/03/16 20:31:56 lollisoft Exp $
+# * $Id: STD_MAKE,v 1.57 2005/03/31 09:25:22 lollisoft Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.57  2005/03/31 09:25:22  lollisoft
+# * NC.
+# *
 # * Revision 1.56  2005/03/16 20:31:56  lollisoft
 # * DEVROOT / DEVROOT_MAKE and DEVROOT_MAKE_INTERNAL clashes
 # * and cleanup.
