@@ -11,11 +11,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.25 $
+ * $Revision: 1.26 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.25 2002/04/15 18:25:16 lothar Exp $
+ * $Id: mkmk.cpp,v 1.26 2002/05/29 19:09:06 lothar Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.26  2002/05/29 19:09:06  lothar
+ * Changes due to hiding much informal compile messages
+ *
  * Revision 1.25  2002/04/15 18:25:16  lothar
  * Huge changes - works good
  *
@@ -606,10 +609,11 @@ void writeExeTarget(char* modulename) {
   printf("PROGRAM=%s\n", ModName);
   
   printf("\n%s.exe: $(OBJS)\n", ModName);
-  printf("\t\techo NAME $(PROGRAM).exe > $(LNK)\n");
-  printf("\t\techo $(FILE) $(LIBS) >> $(LNK)\n");
-  printf("\t\t$(LINK) $(COMPILERFLAGS)\n");
-  printf("\t\t$(CP) $(PROGRAM).exe $(EXEDIR)\n");
+  printf("\t\t@echo Link %s.exe\n", ModName);
+  printf("\t\t@echo NAME $(PROGRAM).exe > $(LNK)\n");
+  printf("\t\t@echo $(FILE) $(LIBS) >> $(LNK)\n");
+  printf("\t\t@$(LINK) $(LINKFLAGS) $(COMPILERFLAGS)\n");
+  printf("\t\t@$(CP) $(PROGRAM).exe $(EXEDIR) > null\n");
 #endif
 }
 /*...e*/
@@ -636,11 +640,14 @@ void writeDllTarget(char* modulename) {
   printf("PROGRAM=%s\n", ModName);
   
   printf("\n%s.dll: $(OBJS)\n", ModName);
-  printf("\t\techo NAME $(PROGRAM).dll > $(LNK)\n");
-  printf("\t\techo $(FILE) $(LIBS) >> $(LNK)\n");
-  printf("\t\t;if NOT \"$(LIBS)\" == \"\" echo LIBR $(LIBS) >> $(LNK)\n");
-  printf("\t\t$(LINK) $(LNKDLLOPS) $(LINKFLAGS)\n");
-  printf("\t\t$(CP) $(PROGRAM).dll $(DLLDIR)\n");
+  printf("\t\t@echo Link %s.dll\n", ModName);
+  printf("\t\t@echo NAME $(PROGRAM).dll > $(LNK)\n");
+  printf("\t\t@echo $(FILE) $(LIBS) >> $(LNK)\n");
+  printf("\t\t@;if NOT \"$(LIBS)\" == \"\" echo LIBR $(LIBS) >> $(LNK)\n");
+  printf("\t\t@$(LINK) $(LNKDLLOPS) $(LINKFLAGS)\n");
+  printf("\t\t@wlib -q -n -b $(PROGRAM).lib +$(PROGRAM).dll\n");
+  printf("\t\t@$(CP) $(PROGRAM).dll $(DLLDIR) > null\n");
+  printf("\t\t@$(CP) $(PROGRAM).lib $(DLLLIBDIR) > null\n");
 #endif
 }
 /*...e*/
@@ -661,6 +668,7 @@ void writeLibTarget(char* modulename, TDepList* l) {
   printf("PROGRAM=%s\n", ModName);
   
   printf("\n%s.lib: $(OBJS)\n", ModName);
+  printf("\t\t@echo Link %s.lib\n", ModName);
 //  printf("\t\techo $(PROGRAM).$(OBJ) > $(LNK)\n");
 //  printf("\t\techo $(FILE) $(LIBS) >> $(LNK)\n");
 //  printf("\t\techo LIBR $(LIBS) >> $(LNK)\n");
@@ -679,12 +687,12 @@ void writeLibTarget(char* modulename, TDepList* l) {
     
     ObjExt(d->Name,FName,sizeof(FName));
 
-    printf("\t\techo +%s >> $(LNK)\n", FName);
+    printf("\t\t@echo +%s >> $(LNK)\n", FName);
   }
   
-  printf("\t\twlib -b -c -n -q -p=512 $(PROGRAM).lib @$(LNK)\n");
+  printf("\t\t@wlib -b -c -n -q -p=512 $(PROGRAM).lib @$(LNK)\n");
 //  printf("\t\t$(LINK) $(LNKDLLOPS) @$(LNK)\n");
-  printf("\t\t$(CP) $(PROGRAM).lib $(LIBDIR)\n");
+  printf("\t\t@$(CP) $(PROGRAM).lib $(LIBDIR) > null\n");
 #endif
 }
 /*...e*/
@@ -820,19 +828,22 @@ void WriteDep(FILE *f, char *Name, TIncludeParser *p)
 
   switch (targettype) {
   	case LIB_TARGET:
-		printf("\t\t$(CC) $(C_LIBOPS) $(MOD_INCL) %s\n\n",Name);
+  		printf("\t\t@echo Build %s\n",Name);
+		printf("\t\t@$(CC) $(C_LIBOPS) $(MOD_INCL) %s\n\n",Name);
 		break;
   	case DLL_TARGET:
-		printf("\t\t$(CC) $(C_DLLOPS) $(MOD_INCL) %s\n\n",Name);
+  		printf("\t\t@echo Build %s\n",Name);
+		printf("\t\t@$(CC) $(C_DLLOPS) $(MOD_INCL) %s\n\n",Name);
 		break;
 	case EXE_TARGET:
-		printf("\t\t$(CC) $(C_EXEOPS) $(MOD_INCL) %s\n\n",Name);
+  		printf("\t\t@echo Build %s\n",Name);
+		printf("\t\t@$(CC) $(C_EXEOPS) $(MOD_INCL) %s\n\n",Name);
 		break;
 	case ELF_TARGET:
-	    	printf("\t\t$(CC) $(C_ELFOPS) $(MOD_INCL) %s\n\n",Name);
+	    	printf("\t\t@$(CC) $(C_ELFOPS) $(MOD_INCL) %s\n\n",Name);
 		break;
 	case SO_TARGET:
-		printf("\t\t$(CC) -fPIC -g $(C_SOOPS) $(MOD_INCL) %s\n\n",Name);
+		printf("\t\t@$(CC) -fPIC -g $(C_SOOPS) $(MOD_INCL) %s\n\n",Name);
 	default:
 		break;
   }
