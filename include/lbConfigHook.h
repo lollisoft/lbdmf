@@ -66,11 +66,17 @@
 #define OFSTREAM std::ofstream
 
 
- #include <iostream>
- #include <fstream>
+ #include <iostream.h>
+ #include <fstream.h>
 #endif
-#include <malloc.h>
 
+#ifdef OSX
+#include <sys/malloc.h>
+#endif
+
+#ifndef OSX
+#include <malloc.h>
+#endif
 
 #define _(text) translateText(text)
 
