@@ -1,0 +1,60 @@
+		    DMF - Distributed Multiplatform Framework
+			Copyright (C) Lothar Behrens 2002
+
+
+This framework was intented to be independend from compiler and vendor frameworks
+like MFC or Watcom class libraries. Multiplatform stays currently for Windows and
+Linux. More OS systems are welcome, but I am unable to test it.
+
+The part Distributed is currently not integrated, because of my complete rewrite
+of my work to use COM like dynamic loading of classes. The part of distributed may
+be implemented with a CORBA compilant system and a wrapper class that is configured
+local in my system.
+
+Generally I write a pure abstract class (interface) and a corresponding cpp file
+implementing the interface. Loading instances from interfaces is dony by a name
+of the interface - the identifer of that class it self.
+
+The object repository uses a XML file that configures, which implementation is used
+in the current environment. Please pay attention of the different mangling on each
+platform. On linux, modify the xml file so that the functor has no prefix (_).
+Each interface like lb_I_Container for a container is
+configured pointing to a module (DLL/so) and a functor, that creates the instance.
+
+
+Prerequirements:
+
+Windows:
+
+You need a MSC compiler (only the console tools),
+also the Watcom 10.6 compiler is needed to compile all under Windows,
+MKMK.exe - a makefile creation tool to build makefiles that matches to
+my make environment,
+Unix tools like make (Mingw or the like)
+Batchfiles are provided to setup the env variables,
+subst a drive Q: pointing to the actual development tree
+(subst q: c:\dist),
+
+
+
+Linux:
+
+An actual G++ compiler and all the tools to compile,
+mkmk - a makefile creation tool to build makefiles that matches to
+my make environment,
+uncompress the file to your home directory,
+create /libdev/lib for the so modules (my choice for development :-),
+env variables for the bootstrapping:
+	MODULELIB=lbModule.so
+	LBXMLFUNCTOR=getlbDOMConfigInstance
+	LBMODULEFUNCTOR=getlb_ModuleInstance
+	DEVROOT=/home/<user>/dist/Develop
+	LD_LIBRARY_PATH=/libdev/lib:
+	OSTYPE=linux
+
+
+Vendor libraries, that are used in my code:
+
+	XML4C C++ XML library:
+	Download the matching XML4C distribution for your OS 
+	from http://www.alphaWorks.ibm.com/aw.nsf/download/xml4c
