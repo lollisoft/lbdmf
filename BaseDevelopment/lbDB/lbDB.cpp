@@ -118,6 +118,7 @@ lbErrCodes LB_STDCALL lbDBView::setViewSource(lb_I_Unknown* q) {
 }
 /*...e*/
 /*...sclass lbQuery:0:*/
+/*...sclass lbQuery:0:*/
 class lbQuery :
 public lb_I_Query
 {
@@ -149,6 +150,7 @@ public:
         virtual lbErrCodes LB_STDCALL next();
         virtual lbErrCodes LB_STDCALL previous();
         virtual lbErrCodes LB_STDCALL last();
+        virtual char* LB_STDCALL getChar(int column);
 	
 	lbErrCodes LB_STDCALL init(HENV henv, HDBC _hdbc);
 
@@ -159,11 +161,13 @@ private:
 	RETCODE retcode;
 	char    szSql[256];
 };
+/*...e*/
 
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbQuery)
         ADD_INTERFACE(lb_I_Query)
 END_IMPLEMENT_LB_UNKNOWN()
 
+/*...sto be implemented:0:*/
 lbErrCodes LB_STDCALL lbQuery::setData(lb_I_Unknown * uk) {
 	_LOG << "lbQuery::setData(...): Not implemented yet" LOG_
 	return ERR_NONE;
@@ -183,7 +187,9 @@ lbErrCodes LB_STDCALL lbQuery::unregisterView(lb_I_MVC_View* view) {
 	_LOG << "lbQuery::unregisterView(...): Not implemented yet" LOG_
         return ERR_NONE;
 }
+/*...e*/
 
+/*...slbErrCodes LB_STDCALL lbQuery\58\\58\init\40\HENV henv\44\ HDBC _hdbc\41\:0:*/
 lbErrCodes LB_STDCALL lbQuery::init(HENV henv, HDBC _hdbc) {
 	hdbc = _hdbc;
 
@@ -200,7 +206,8 @@ lbErrCodes LB_STDCALL lbQuery::init(HENV henv, HDBC _hdbc) {
 	//retcode = SQLSetStmtOption(hstmt, SQL_CURSOR_TYPE, SQL_CURSOR_STATIC);
 	return ERR_NONE;
 }
-
+/*...e*/
+/*...slbErrCodes LB_STDCALL lbQuery\58\\58\query\40\char\42\ q\41\:0:*/
 lbErrCodes LB_STDCALL lbQuery::query(char* q) {
 
 	lstrcpy(szSql, q);
@@ -216,12 +223,37 @@ lbErrCodes LB_STDCALL lbQuery::query(char* q) {
 
 	return ERR_NONE;
 }
+/*...e*/
+
+virtual char* LB_STDCALL lbQuery::getChar(int column) {
+	SDWORD cbobjecttyp;
+	char   szobjecttyp[SZLEN+100];
+
+	// buffer length problems, but don't know exactly why
+
+	retcode = SQLGetData(hstmt, column,SQL_C_CHAR,   szobjecttyp,      SZLEN+50, &cbobjecttyp);
+
+	if (retcode == SQL_ERROR || retcode == SQL_SUCCESS_WITH_INFO) {
+	        dbError( "SQLGetData()",henv,hdbc,hstmt);
+	        _LOG << "lbQuery::getChar(): Error while get data" LOG_
+	        return "Uninizialized";
+	}
+	return szobjecttyp;
+}
 
 lbErrCodes LB_STDCALL lbQuery::first() {
 	return ERR_NONE;
 }
 
 lbErrCodes LB_STDCALL lbQuery::next() {
+	retcode = SQLFetch(hstmt);
+
+	if (retcode == SQL_ERROR || retcode == SQL_SUCCESS_WITH_INFO) {
+		dbError( "SQLFetch()",henv,hdbc,hstmt);
+		_LOG << "lbQuery::next(): Error while fetching next row" LOG_
+		return ERR_DB_FETCHNEXT;
+        }
+
 	return ERR_NONE;
 }
 
@@ -379,6 +411,8 @@ HDBC       hdbc = 0;
 char       szSql[256];
 char       szout[256];
 TIMESTAMP_STRUCT ts;
+
+
 /*...e*/
 
 retcode = SQLAllocEnv(&henv);              /* Environment handle */

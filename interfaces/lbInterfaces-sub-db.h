@@ -88,6 +88,10 @@ public:
         virtual lbErrCodes LB_STDCALL next() = 0;
         virtual lbErrCodes LB_STDCALL previous() = 0;
         virtual lbErrCodes LB_STDCALL last() = 0;
+        
+        /* Accessors */
+        
+        virtual char* LB_STDCALL getChar(int column) = 0;
 };
 
 class lb_I_Database : public lb_I_Unknown
