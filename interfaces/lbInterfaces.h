@@ -25,7 +25,7 @@
 #endif
 
 #ifdef __WATCOMC__
-#define LB_DLLEXPORT __export
+#define LB_DLLEXPORT __declspec(dllexport)
 #endif
 #ifndef __WATCOMC__
 #define LB_DLLEXPORT __declspec(dllexport)
@@ -160,6 +160,27 @@ lbErrCodes LB_STDCALL classname::queryInterface(char* name, void** unknown) { \
  
 typedef lbErrCodes (__cdecl * T_pLB_GET_UNKNOWN_INSTANCE) (lb_I_Unknown*&);
 
+
+#define DECLARE_FUNCTOR(name) \
+lbErrCodes DLLEXPORT LB_STDCALL name(lb_I_Unknown*& uk);
+
+#define IMPLEMENT_FUNCTOR(name, clsname) \
+lbErrCodes DLLEXPORT LB_STDCALL name(lb_I_Unknown*& uk) { \
+        CL_LOG(#name"() called and will create an instance for "#clsname); \
+\
+        clsname* instance = new clsname(); \
+        uk = NULL; \
+\
+        if (instance->queryInterface("lb_I_Unknown", (void**) &uk) != ERR_NONE) { \
+                CL_LOG("Failed to create unknown reference to instance of "#clsname"!"); \
+                return ERR_FUNCTOR; \
+        } \
+\
+        return ERR_NONE; \
+}
+
+
+
 /*...sclass lb_I_gcManager:0:*/
 class lb_I_gcManager {
 protected:
@@ -171,13 +192,22 @@ public:
 };
 /*...e*/
 
+// What about exceptions ?
 
+/*...sclass lb_I_Exception:0:*/
+class lb_I_Exception {
+public:
+	virtual lbErrCodes getMessage(char*& msg) = 0;
+};
+/*...e*/
 /*...sclass lb_I_ErrorDescription:0:*/
 class lb_I_ErrorDescription {// Every interface may produce errors
 public:
 	virtual lbErrCodes getLastError(char* description, int len) = 0;
 };
 /*...e*/
+
+
 /*...sdocu  lb_I_Requestable:0:*/
 /**
  * lb_I_Requestable is intented to implement a class that can be called
