@@ -213,7 +213,12 @@ typedef lbErrCodes (LB_STDCALL lb_I_EventHandler::*lbEvHandler)(lb_I_Unknown* uk
 #define QI(source, interface, target, file, line) \
 	target.setFile(file); \
 	target.setLine(line); \
- 	err = source->queryInterface(#interface, (void**) &target, file, line);
+	{ \
+		char* iface = strdup(#interface); \
+	 	err = source->queryInterface(iface, (void**) &target, file, line); \
+	 	free(iface); \
+	 	iface = NULL; \
+	}
 
 #define _QI(source, interface, target) \
 	target.setFile(file); \
@@ -1021,6 +1026,7 @@ lbErrCodes DLLEXPORT LB_FUNCTORCALL name(lb_I_Unknown** uk, lb_I_Module* m, char
 \
 	lbErrCodes err = ERR_NONE; \
         clsname* instance = new clsname(); \
+        printf("Have an instance for %s at %p\n", #clsname, instance); \
         *uk = NULL; \
         instance->setFurtherLock(0); \
         if (m != NULL) { \
@@ -1041,6 +1047,7 @@ lbErrCodes DLLEXPORT LB_FUNCTORCALL name(lb_I_Unknown** uk, lb_I_Module* m, char
                 return ERR_FUNCTOR; \
         } \
 \
+	printf("Have an unknown interface for %s at %p\n", #clsname, *uk); \
         return ERR_NONE; \
 } \
 }
