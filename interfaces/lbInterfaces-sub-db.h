@@ -208,6 +208,8 @@ public:
 	virtual lbErrCodes LB_STDCALL unregisterView(lb_I_MVC_View* view) = 0;
 /*...e*/
 
+	virtual void LB_STDCALL dbError(char* lp) = 0;
+
         /* Set the SQL query */
         virtual lbErrCodes LB_STDCALL query(char* q) = 0;
 
