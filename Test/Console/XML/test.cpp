@@ -83,7 +83,6 @@ void main(int argc, char *argv[]) {
 	
 	lb_I_Container* c = NULL;
 	printf("test container 1\n");
-	getch();
 	if (uk->queryInterface("lb_I_Container", (void**) &c, __FILE__, __LINE__) != ERR_NONE) {
 		_CL_LOG << "Error: Could not get needed interface!" LOG_
 	}
@@ -98,8 +97,6 @@ void main(int argc, char *argv[]) {
 	
 	_CL_LOG << "Requested a instance for interface lb_I_Log" LOG_
 	printf("Tested container\n");
-	printf("----------------\n");
-	getch();
 	if (unknown != NULL) {
 		lb_I_Log* logger = NULL;
 		if (unknown->queryInterface("lb_I_Log", (void**) &logger, __FILE__, __LINE__) != ERR_NONE) {
@@ -114,7 +111,6 @@ void main(int argc, char *argv[]) {
 /*...e*/
 /*...stest container:0:*/
 	printf("test container 2\n");
-	getch();
 	if (mm->request("lb_I_Container", &uk) != ERR_NONE) {
 		_CL_LOG << "Error: Could not get needed instance!" LOG_
 	}
@@ -125,21 +121,16 @@ void main(int argc, char *argv[]) {
 		_CL_LOG << "Error: Could not get needed interface!" LOG_
 	}
 	printf("---- have lb_I_Container interface\n");
-	getch();
 /*...e*/
 /*...stest integer:0:*/
 
 	if (mm->request("lb_I_Integer", &uk) != ERR_NONE) {
 		_CL_LOG << "Error: Could not get needed instance!" LOG_
 	}
-	printf("---- have lb_I_Integer instance\n");
-	getch();
 /*...e*/
 
 /*...stest unloading module manager:0:*/
 	printf("Uninitialize module manager\n");
-	printf("---------------------------\n");
-	getch();
 	mm->uninitialize();
 	printf("Release it\n");
 	RELEASE(mm)
@@ -203,12 +194,8 @@ void main(int argc, char *argv[]) {
 	_CL_LOG << "Test metaapplication" LOG_
 	
 	printf("Test meta application\n");
-	printf("---------------------\n");
-	getch();
 	UAP_REQUEST(mm, lb_I_MetaApplication, meta) 
 	printf("Meta application loaded\n");
-	printf("-----------------------\n");
-	getch();
 	
 	if (meta != NULL) {
 		meta->Initialize();

@@ -580,15 +580,10 @@ void LB_STDCALL classname::setModuleManager(lb_I_Module* m, char* file, int line
 		_CL_LOG << "Warning: setModuleManager() must be enhanced by module manager use" LOG_ \
 	} \
 	if (m != manager.getPtr()) { \
-	    if (strcmp("lbLog", #classname) == 0) printf("Query interface for %s\n", #classname); \
-	    if (m == NULL) printf("Error: Manager pointer m = NULL!\n"); \
 	    if (m != NULL) m->queryInterface("lb_I_Module", (void**) &manager, file, line); \
-	    if (strcmp("lbLog", #classname) == 0) printf("Have got interface\n"); \
 	} \
 	manager.setLine(__LINE__); \
-	if (strcmp(#classname, "lbLog") == 0) printf("Set file parameter\n"); \
 	manager.setFile(__FILE__); \
-	if (strcmp(#classname, "lbLog") == 0) printf("Have set parameter\n"); \
 	\
 	if (manager != NULL) { \
 		char *datei = strrchr(file, '\\'); \

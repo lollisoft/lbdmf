@@ -1,11 +1,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.43 $
+ * $Revision: 1.44 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.43 2002/12/07 16:11:26 lothar Exp $
+ * $Id: lbModule.cpp,v 1.44 2002/12/09 19:37:16 lothar Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.44  2002/12/09 19:37:16  lothar
+ * removed debugging messages
+ *
  * Revision 1.43  2002/12/07 16:11:26  lothar
  * minor changes
  *
@@ -2586,13 +2589,10 @@ typedef struct instances_of_module {
  * language.
  */
 lbErrCodes LB_STDCALL lbModule::request(const char* request, lb_I_Unknown** result) {
-	printf("lbModule::request() calles\n");
         lbErrCodes err = ERR_NONE;
         char buf[1000] = "";
         if (moduleList == NULL) {
-		printf("Initialize module manager\n");
                 initialize();
-		printf("Initialized module manager\n");
         }
         char* functorName = NULL;
 	buf[0] = 0;
@@ -2740,20 +2740,15 @@ lbErrCodes LB_STDCALL lbModule::request(const char* request, lb_I_Unknown** resu
                         }
 /*...e*/
 /*...sfind up names:32:*/
-			printf("Find functor module\n");
                         moduleName = findFunctorModule(&impl);
                         functorName = findFunctorName(&impl);
-			printf("Found functor module %s\n", functorName);
-			getch();
 /*...e*/
 /*...sclean up \63\\63\\63\:32:*/
                         if (value != NULL) {
                                 impl->deleteValue(value);
                         }
 /*...e*/
-			printf("lbModule::request(): Make an instance %s\n", functorName);
                         makeInstance(functorName, moduleName, result);
-			printf("lbModule::request(): Made an instance %s\n", functorName);
 /*...sLog error:32:*/
                         if ((*result) == NULL) {
                         	_CL_LOG << "Error: makeInstance has been failed for '" <<
@@ -2766,8 +2761,6 @@ lbErrCodes LB_STDCALL lbModule::request(const char* request, lb_I_Unknown** resu
 /*...sclean up:32:*/
                         //if (moduleName != NULL) impl->deleteValue(moduleName);
 //                        if (value != NULL) impl->deleteValue(value);
-			printf("Completely created an instance\n");
-			getch();
 /*...e*/
                 } else {
                         cout << "Something goes wrong!" << endl;
@@ -2777,7 +2770,6 @@ lbErrCodes LB_STDCALL lbModule::request(const char* request, lb_I_Unknown** resu
                 
 /*...e*/
         }
-	printf("Request for %s is done\n", functorName);
         if (functorName != NULL) impl->deleteValue(functorName);
         return ERR_NONE;
 }

@@ -1,11 +1,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.32 $
+ * $Revision: 1.33 $
  * $Name:  $
- * $Id: lbDOMConfig.cpp,v 1.32 2002/12/07 06:55:00 lothar Exp $
+ * $Id: lbDOMConfig.cpp,v 1.33 2002/12/09 19:37:56 lothar Exp $
  *
  * $Log: lbDOMConfig.cpp,v $
+ * Revision 1.33  2002/12/09 19:37:56  lothar
+ * removed debugging messages
+ *
  * Revision 1.32  2002/12/07 06:55:00  lothar
  * Current Linux attempt is buggy
  *
@@ -854,7 +857,6 @@ lbDOMNode::lbDOMNode() {
 /*...e*/
 /*...slbDOMNode\58\\58\\126\lbDOMNode\40\\41\:0:*/
 lbDOMNode::~lbDOMNode() {
-	printf("lbDOMNode::~lbDOMNode() called\n");
 	char ptr[20] = "";
 	sprintf(ptr, "%p", (void*) this);
 
@@ -869,7 +871,6 @@ lbDOMNode::~lbDOMNode() {
 
 	// Bugfix (in createAbstractedChildList)
 	lbDOMchilds--;
-	printf("lbDOMNode::~lbDOMNode() leaving\n");
 /*
 // No more because UAP	
 	if (lbDOMchilds != NULL) {
