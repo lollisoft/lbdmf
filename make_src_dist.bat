@@ -11,6 +11,8 @@ if not EXIST "dist\Develop\Projects\lib" mkdir dist\Develop\Projects\lib
 if not EXIST "dist\Develop\Projects\dll\include" mkdir dist\Develop\Projects\dll\include
 if not EXIST "dist\Develop\Projects\lib\include" mkdir dist\Develop\Projects\lib\include
 
+call make_dist_base.bat AppDevelopmentDemo
+call make_dist_base.bat AppDevelopmentDemo\App
 call make_dist_base.bat BaseDevelopment\lbHook 
 call make_dist_base.bat BaseDevelopment\lbclasses 
 call make_dist_base.bat BaseDevelopment\lbDB 
