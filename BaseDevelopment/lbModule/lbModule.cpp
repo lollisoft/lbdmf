@@ -28,11 +28,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.50 $
+ * $Revision: 1.51 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.50 2003/03/14 16:00:42 lollisoft Exp $
+ * $Id: lbModule.cpp,v 1.51 2003/04/28 20:32:07 lollisoft Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.51  2003/04/28 20:32:07  lollisoft
+ * Moved back to watcom
+ *
  * Revision 1.50  2003/03/14 16:00:42  lollisoft
  * Removed the problem with _chkesp() failure. But still crash in my GUI app
  *
@@ -179,6 +182,9 @@ extern "C" {
 
 #include <conio.h>
 
+#ifdef __WATCOMC__
+#include <ctype.h>
+#endif
 #ifdef __cplusplus
 }
 #endif
@@ -1722,13 +1728,186 @@ protected:
 };
 /*...e*/
 
-BEGIN_IMPLEMENT_LB_UNKNOWN(lbModule)
+//BEGIN_IMPLEMENT_LB_UNKNOWN(lbModule)
+/*...s:0:*/
+char* LB_STDCALL lbModule::getClassName() { 
+	return "lbModule"; 
+} 
+char* LB_STDCALL lbModule::_queryInterface(char* name, void** unknown, char* file, int line) { 
+	char* ID = new char[strlen(name)+strlen("lbModule")+strlen(file)+1]; 
+	strcat(ID, name); 
+	strcat(ID, "lbModule"); 
+	strcat(ID, file); 
+	lbErrCodes err = ERR_NONE; 
+	if ((err = queryInterface(name, unknown, file, line)) != ERR_NONE) { 
+		_CL_LOG <<"Error: queryInterface failed (in _queryInterface)!" LOG_ 
+		return ""; 
+	} 
+	
+	return ID; 
+} 
+lb_I_Module* LB_STDCALL lbModule::getModuleManager() { 
+		lbErrCodes err = ERR_NONE; 
+		UAP(lb_I_Module, _mm, __FILE__, __LINE__) 
+		if (manager == NULL) { 
+			_CL_LOG << "Error: Can't return module manager. Call setModuleManager(...) on me first!" LOG_ 
+			return NULL; 
+		} 
+		QI(manager, lb_I_Module, _mm, __FILE__, __LINE__) 
+		return _mm.getPtr(); 
+} 
+
+void LB_STDCALL lbModule::setModuleManager(lb_I_Module* m, char* file, int line) { 
+	if (m == NULL) { 
+		_CL_LOG << "Error: Set module manager with a NULL pointer in " << "lbModule" << " while setModuleManager(...)!" LOG_ 
+		return; 
+	} 
+	
+	further_lock = 0; 
+	if (debug_macro == 1) { 
+		_CL_LOG << "Warning: setModuleManager() must be enhanced by module manager use" LOG_ 
+	} 
+	if (m != manager.getPtr()) { 
+	    if (m != NULL) m->queryInterface("lb_I_Module", (void**) &manager, file, line); 
+	} 
+	manager.setLine(__LINE__); 
+	manager.setFile(__FILE__); 
+	
+	if (manager != NULL) { 
+		char *datei = strrchr(file, '#'); 
+		if (datei == NULL) 
+			datei = file; 
+		else 
+			datei++; 
+		manager->notify_create(this, "lbModule", datei, line); 
+	} else { 
+		_CL_LOG << "Error: Query interface failed for manager in " << "lbModule" << " while setModuleManager(...)!" LOG_ 
+	} 
+} 
+
+void LB_STDCALL lbModule::resetRefcount() { ref = STARTREF; } 
+int LB_STDCALL lbModule::deleteState() { 
+	return (ref-1 == STARTREF) ? 1 : 0; 
+} 
+char*      LB_STDCALL lbModule::getCreationLoc() const { 
+	char buf[20] = ""; 
+	sprintf(buf, "%p", (void*) this); 
+	if (manager != NULL) return manager->getCreationLoc(buf); 
+	return strdup("Have no manager - location can't be found"); 
+} 
+lbErrCodes LB_STDCALL lbModule::release(char* file, int line) { 
+        ref--; 
+        if (strcmp("lb_EventManager", "lbModule") == 0) { 
+        	_CL_LOG << "lb_EventManager::release() called" LOG_ 
+        } 
+	char ptr[20] = ""; 
+        if (manager != NULL) { 
+        	manager->notify_release(this, "lbModule", file, line); 
+        } 
+	
+        if (ref == STARTREF) { 
+        	if (manager != NULL) { 
+        		if (manager->can_delete(this, "lbModule") == 1)	{ 
+        			manager->notify_destroy(this, "lbModule", file, line); 
+        			delete this; 
+        			return ERR_RELEASED; 
+        		} 
+        		else 
+        			_CL_LOG << "Error: Instance has been deleted prior!" LOG_ 
+        	} 
+        	return ERR_NONE; 
+        } 
+        if (ref < STARTREF) { 
+        	_CL_LOG << "Error: Reference count of instance " << ptr << " of object type " << "lbModule" << " is less than " << STARTREF << " (" << ref << ") !!!" LOG_ 
+        	return ERR_REFERENCE_COUNTING; 
+        } 
+        return ERR_INSTANCE_STILL_USED; 
+} 
+
+lb_I_Unknown* LB_STDCALL lbModule::clone(char* file, int line) const { 
+
+	lbModule* cloned = new lbModule(); 
+	cloned->setDebug(0); 
+	lb_I_Unknown* uk_this; 
+
+	lb_I_Unknown* uk_cloned = NULL; 
+
+	cloned->setFurtherLock(0); 
+	if (manager == NULL) _CL_LOG << "lbModule" << "::clone() can't be used because manager is a NULL pointer!" LOG_ 
+	cloned->setModuleManager(manager.getPtr(), file, line); 
+	if (cloned->queryInterface("lb_I_Unknown", (void**) &uk_cloned, file, line) != ERR_NONE) { 
+		_CL_LOG << "Error while getting interface" LOG_ 
+	} 
+
+	uk_cloned->setData((lb_I_Unknown*) this); 
+
+	cloned->resetRefcount(); 
+	
+	if (manager != NULL) { 
+		lb_I_Unknown* that = (lb_I_Unknown*) cloned; 
+	        manager->notify_add(that, cloned->getClassName(), file, line); 
+	} 
+        else 
+		if (debug_macro == 1) { 
+                	_CL_LOG << "Module manager was not set!" LOG_ 
+		} 
+	
+	lb_I_Unknown* uk = NULL; 
+	if (uk_cloned->queryInterface("lb_I_Unknown", (void**) &uk, file, line) != ERR_NONE) { 
+		_CL_LOG << "Error while getting unknown interface of cloned object" LOG_ 
+	} 
+
+	if (uk->getRefCount() > 1) { 
+		_CL_LOG << "Cloned object has %d references" << uk->getRefCount() LOG_ 
+	} 
+	return uk; 
+
+} 
+
+lbErrCodes LB_STDCALL lbModule::queryInterface(char* name, void** unknown, char* file, int line) { 
+	char buf[1000] = ""; 
+	char iFaces[1000] = ""; 
+	char _classname[100] = "lbModule"; 
+	if (further_lock == 1) { 
+		_CL_LOG <<"Error: Object has been locked due to missing module manager (call setModuleManager(...) on me first)!" LOG_ 
+		return ERR_STATE_FURTHER_LOCK; 
+	} 
+	if (unknown == NULL) { 
+		_CL_LOG << "Error: Got NULL pointer reference while queryInterface() called for " << 
+		name << " ! Did you coded it this way: (void**) &variable ?" LOG_ 
+	} 
+
+	strcat(iFaces, "lb_I_Unknown, "); 
+        if (strcmp(name, "lb_I_Unknown") == 0) { 
+        	if (ref < STARTREF) { 
+        		_CL_LOG << "Reference count error in queryInterface (" << "lbModule" << ")" LOG_ 
+        	} 
+                ref++; 
+                *unknown = (lb_I_Unknown*) this; 
+                if (manager != NULL) { 
+                	lb_I_Unknown* that = (lb_I_Unknown*) this; 
+                	if (strcmp(_classname, "lbModule") == 0) { 
+                		_CL_LOG << "Register reference for " << _classname << 
+                		" in " << file << " at " << line LOG_ 
+                	} 
+		        manager->notify_add(that, _classname, file, line); 
+		} 
+		else { 
+	        	setFurtherLock(1); 
+	        	_CL_LOG << "Lock object due to missing manager!" LOG_ 
+	        	return ERR_STATE_FURTHER_LOCK; 
+		} 
+                return ERR_NONE; 
+        }
+
+/*...e*/
+
         ADD_INTERFACE(lb_I_Module)
 END_IMPLEMENT_LB_UNKNOWN()
 
 /*...slb_I_XMLConfig\42\ LB_STDCALL lbModule\58\\58\getXMLConfigObject\40\\41\:0:*/
 extern "C" {
-typedef lbErrCodes (* T_pLB_GETXML_CONFIG_INSTANCE) (lb_I_XMLConfig** inst, lb_I_Module* m, char* file, int line);
+typedef lbErrCodes LB_FUNCTORCALL (* T_pLB_GETXML_CONFIG_INSTANCE) (lb_I_XMLConfig** inst, lb_I_Module* m, char* file, int line);
 T_pLB_GETXML_CONFIG_INSTANCE DLL_LB_GETXML_CONFIG_INSTANCE;
 }
 
@@ -1818,8 +1997,18 @@ printf("Set up location\n");
 /*...e*/
 
 	UAP(lb_I_XMLConfig, _inst, __FILE__, __LINE__)
-printf("Query interface of instance at %p\n", xml_I);
-        QI(xml_I, lb_I_XMLConfig, _inst, __FILE__, __LINE__) 
+	
+//printf("Query interface of instance at %p\n", xml_I);
+//        QI(xml_I, lb_I_XMLConfig, _inst, __FILE__, __LINE__) 
+//QI(source, interface, target, file, line)
+	_inst.setFile(__FILE__);
+	_inst.setLine(__LINE__);
+
+	if ((void**) &_inst == NULL) DebugBreak();
+	_CL_LOG << "Query interface for " << "lb_I_XMLConfig" LOG_
+        err = xml_I->queryInterface("lb_I_XMLConfig", (void**) &_inst, __FILE__, __LINE__);
+
+
 printf("Queried\n");        
         _inst++;
 printf("Increase count\n");

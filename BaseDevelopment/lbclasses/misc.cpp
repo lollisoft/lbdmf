@@ -28,10 +28,13 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.26 $
+ * $Revision: 1.27 $
  * $Name:  $
- * $Id: misc.cpp,v 1.26 2002/12/29 16:05:10 lolli Exp $
+ * $Id: misc.cpp,v 1.27 2003/04/28 20:33:43 lollisoft Exp $
  * $Log: misc.cpp,v $
+ * Revision 1.27  2003/04/28 20:33:43  lollisoft
+ * Moved back to watcom
+ *
  * Revision 1.26  2002/12/29 16:05:10  lolli
  * Intent to go public
  *
@@ -252,7 +255,40 @@ lb_I_Mutex* lbLog::mutex;
 extern "C" {       
 #endif            
 
-IMPLEMENT_FUNCTOR(instanceOfLogger, lbLog)
+//IMPLEMENT_FUNCTOR(instanceOfLogger, lbLog)
+
+/*...s:0:*/
+lbErrCodes DLLEXPORT LB_FUNCTORCALL instanceOfLogger(lb_I_Unknown** uk, lb_I_Module* m, char* file, int line) { 
+
+	lbErrCodes err = ERR_NONE; 
+        lbLog* instance = new lbLog(); 
+        printf("Have an instance for %s at %p\n", "lbLog", instance); 
+        *uk = NULL; 
+        instance->setFurtherLock(0); 
+        if (m != NULL) { 
+		if (strcmp("lbLog", "lb_MetaApplication") == 0) printf("Functor calls setModuleManager\n"); 
+        	instance->setModuleManager(m, __FILE__, __LINE__); 
+		if (strcmp("lbLog", "lb_MetaApplication") == 0) printf("Functor called setModuleManager\n"); 
+        } else { 
+        	_CL_LOG << "Error: Functor gets no manager. This is only possible for a manager it self." LOG_ 
+        } 
+        
+        if ((err = instance->queryInterface("lb_I_Unknown", (void**) uk, file, line)) != ERR_NONE) { 
+                _CL_LOG << "Failed to create unknown reference to instance of " << 
+                "lbLog" << ". Errcode is " << err LOG_ 
+                if (err == ERR_STATE_FURTHER_LOCK) { 
+                	_CL_LOG << "ERR_STATE_FURTHER_LOCK" LOG_ 
+                	return err; 
+                } 
+                return ERR_FUNCTOR; 
+        } 
+
+	printf("Have an unknown interface for %s at %p\n", "lbLog", *uk); 
+        return ERR_NONE; 
+} 
+
+/*...e*/
+
 
 #ifdef __cplusplus
 }

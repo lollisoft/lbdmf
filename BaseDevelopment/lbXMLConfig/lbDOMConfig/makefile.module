@@ -38,6 +38,7 @@ LIBS = $(DEVROOT)/projects/dll/libs/lbhook.lib
 INCLS=$(DEVROOT)\CPP\BaseDevelopment\lbclasses Q:\Develop\xml\xml4csrc3_3_1\src
 
 ifeq ($(COMPILER), MICROSOFT)
+LIBS =
 MOD_INCL = $(STD_INCL_MICROSOFT)
 MOD_INCL += $(foreach s, $(INCLS), /I "$s")
 CC=Cl

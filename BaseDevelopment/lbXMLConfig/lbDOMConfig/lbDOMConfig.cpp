@@ -28,11 +28,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.36 $
+ * $Revision: 1.37 $
  * $Name:  $
- * $Id: lbDOMConfig.cpp,v 1.36 2003/03/14 16:00:50 lollisoft Exp $
+ * $Id: lbDOMConfig.cpp,v 1.37 2003/04/28 20:32:49 lollisoft Exp $
  *
  * $Log: lbDOMConfig.cpp,v $
+ * Revision 1.37  2003/04/28 20:32:49  lollisoft
+ * Moved back to watcom
+ *
  * Revision 1.36  2003/03/14 16:00:50  lollisoft
  * Removed the problem with _chkesp() failure. But still crash in my GUI app
  *
@@ -1308,7 +1311,179 @@ protected:
 };
 /*...e*/
 
-BEGIN_IMPLEMENT_LB_UNKNOWN(lbDOMConfig)
+//BEGIN_IMPLEMENT_LB_UNKNOWN(lbDOMConfig)
+/*...slocal implemented:0:*/
+char* LB_STDCALL lbDOMConfig::getClassName() {
+	return "lbDOMConfig";
+}
+char* LB_STDCALL lbDOMConfig::_queryInterface(char* name, void** unknown, char* file, int line) {
+	char* ID = new char[strlen(name)+strlen("lbDOMConfig")+strlen(file)+1];
+	strcat(ID, name);
+	strcat(ID, "lbDOMConfig");
+	strcat(ID, file);
+	lbErrCodes err = ERR_NONE;
+	if ((err = queryInterface(name, unknown, file, line)) != ERR_NONE) {
+		_CL_LOG <<"Error: queryInterface failed (in _queryInterface)!" LOG_
+		return "";
+	}
+	
+	return ID;
+}
+lb_I_Module* LB_STDCALL lbDOMConfig::getModuleManager() {
+		lbErrCodes err = ERR_NONE;
+		UAP(lb_I_Module, _mm, __FILE__, __LINE__)
+		if (manager == NULL) {
+			_CL_LOG << "Error: Can't return module manager. Call setModuleManager(...) on me first!" LOG_
+			return NULL;
+		}
+		QI(manager, lb_I_Module, _mm, __FILE__, __LINE__)
+		return _mm.getPtr();
+}
+
+void LB_STDCALL lbDOMConfig::setModuleManager(lb_I_Module* m, char* file, int line) {
+	if (m == NULL) {
+		_CL_LOG << "Error: Set module manager with a NULL pointer in " << "lbDOMConfig" << " while setModuleManager(...)!" LOG_
+		return;
+	}
+	
+	further_lock = 0;
+	if (debug_macro == 1) {
+		_CL_LOG << "Warning: setModuleManager() must be enhanced by module manager use" LOG_
+	}
+	if (m != manager.getPtr()) {
+	    if (m != NULL) m->queryInterface("lb_I_Module", (void**) &manager, file, line);
+	}
+	manager.setLine(__LINE__);
+	manager.setFile(__FILE__);
+	
+	if (manager != NULL) {
+		char *datei = strrchr(file, '\\');
+		if (datei == NULL)
+			datei = file;
+		else
+			datei++;
+		manager->notify_create(this, "lbDOMConfig", datei, line);
+	} else {
+		_CL_LOG << "Error: Query interface failed for manager in " << "lbDOMConfig" << " while setModuleManager(...)!" LOG_
+	}
+}
+
+void LB_STDCALL lbDOMConfig::resetRefcount() { ref = STARTREF; }
+int LB_STDCALL lbDOMConfig::deleteState() {
+	return (ref-1 == STARTREF) ? 1 : 0;
+}
+char*      LB_STDCALL lbDOMConfig::getCreationLoc() const {
+	char buf[20] = "";
+	sprintf(buf, "%p", (void*) this);
+	if (manager != NULL) return manager->getCreationLoc(buf);
+	return strdup("Have no manager - location can't be found");
+}
+lbErrCodes LB_STDCALL lbDOMConfig::release(char* file, int line) {
+        ref--;
+        if (strcmp("lb_EventManager", "lbDOMConfig") == 0) {
+        	_CL_LOG << "lb_EventManager::release() called" LOG_
+        }
+	char ptr[20] = "";
+        if (manager != NULL) {
+        	manager->notify_release(this, "lbDOMConfig", file, line);
+        }
+	
+        if (ref == STARTREF) {
+        	if (manager != NULL) {
+        		if (manager->can_delete(this, "lbDOMConfig") == 1)	{
+        			manager->notify_destroy(this, "lbDOMConfig", file, line);
+        			delete this;
+        			return ERR_RELEASED;
+        		}
+        		else
+        			_CL_LOG << "Error: Instance has been deleted prior!" LOG_
+        	}
+        	return ERR_NONE;
+        }
+        if (ref < STARTREF) {
+        	_CL_LOG << "Error: Reference count of instance " << ptr << " of object type " << "lbDOMConfig" << " is less than " << STARTREF << " (" << ref << ") !!!" LOG_
+        	return ERR_REFERENCE_COUNTING;
+        }
+        return ERR_INSTANCE_STILL_USED;
+}
+
+lb_I_Unknown* LB_STDCALL lbDOMConfig::clone(char* file, int line) const {
+
+	lbDOMConfig* cloned = new lbDOMConfig();
+	cloned->setDebug(0);
+	lb_I_Unknown* uk_this;
+
+	lb_I_Unknown* uk_cloned = NULL;
+
+	cloned->setFurtherLock(0);
+	if (manager == NULL) _CL_LOG << "lbDOMConfig" << "::clone() can't be used because manager is a NULL pointer!" LOG_
+	cloned->setModuleManager(manager.getPtr(), file, line);
+	if (cloned->queryInterface("lb_I_Unknown", (void**) &uk_cloned, file, line) != ERR_NONE) {
+		_CL_LOG << "Error while getting interface" LOG_
+	}
+
+	uk_cloned->setData((lb_I_Unknown*) this);
+
+	cloned->resetRefcount();
+	
+	if (manager != NULL) {
+		lb_I_Unknown* that = (lb_I_Unknown*) cloned;
+	        manager->notify_add(that, cloned->getClassName(), file, line);
+	}
+        else
+		if (debug_macro == 1) {
+                	_CL_LOG << "Module manager was not set!" LOG_
+		}
+	
+	lb_I_Unknown* uk = NULL;
+	if (uk_cloned->queryInterface("lb_I_Unknown", (void**) &uk, file, line) != ERR_NONE) {
+		_CL_LOG << "Error while getting unknown interface of cloned object" LOG_
+	}
+
+	if (uk->getRefCount() > 1) {
+		_CL_LOG << "Cloned object has %d references" << uk->getRefCount() LOG_
+	}
+	return uk;
+
+}
+
+lbErrCodes LB_STDCALL lbDOMConfig::queryInterface(char* name, void** unknown, char* file, int line) {
+	char buf[1000] = "";
+	char iFaces[1000] = "";
+	char _classname[100] = "lbDOMConfig";
+	if (further_lock == 1) {
+		_CL_LOG <<"Error: Object has been locked due to missing module manager (call setModuleManager(...) on me first)!" LOG_
+		return ERR_STATE_FURTHER_LOCK;
+	}
+	if (unknown == NULL) {
+		_CL_LOG << "Error: Got NULL pointer reference while queryInterface() called for " <<
+		name << " ! Did you coded it this way: (void**) &variable ?" LOG_
+	}
+
+	strcat(iFaces, "lb_I_Unknown, ");
+        if (strcmp(name, "lb_I_Unknown") == 0) {
+        	if (ref < STARTREF) {
+        		_CL_LOG << "Reference count error in queryInterface (" "lbDOMConfig" ")" LOG_
+        	}
+                ref++;
+                *unknown = (lb_I_Unknown*) this;
+                if (manager != NULL) {
+                	lb_I_Unknown* that = (lb_I_Unknown*) this;
+                	if (strcmp(_classname, "lbModule") == 0) {
+                		_CL_LOG << "Register reference for " << _classname <<
+                		" in " << file << " at " << line LOG_
+                	}
+		        manager->notify_add(that, _classname, file, line);
+		}
+		else {
+	        	setFurtherLock(1);
+	        	_CL_LOG << "Lock object due to missing manager!" LOG_
+	        	return ERR_STATE_FURTHER_LOCK;
+		}
+                return ERR_NONE;
+        }
+
+/*...e*/
 	ADD_INTERFACE(lb_I_XMLConfig)
 END_IMPLEMENT_LB_UNKNOWN()
 
@@ -1640,8 +1815,42 @@ lbErrCodes LB_STDCALL lbDOMConfig::getConfigObject(lb_I_ConfigObject** cfgObj,
 /*...e*/
 /*...e*/
 
-IMPLEMENT_FUNCTOR(getlbDOMConfigInstance, lbDOMConfig)
+//IMPLEMENT_FUNCTOR(getlbDOMConfigInstance, lbDOMConfig)
+/*...s:0:*/
+lbErrCodes DLLEXPORT LB_FUNCTORCALL getlbDOMConfigInstance(lb_I_Unknown** uk, lb_I_Module* m, char* file, int line) {
 
+	lbErrCodes err = ERR_NONE;
+        lbDOMConfig* instance = new lbDOMConfig();
+        char buf[200] = "";
+        sprintf(buf, "Have an instance for %s at %p\n", "lbDOMConfig", instance);
+        _CL_LOG << buf LOG_
+        
+        *uk = NULL;
+        printf("Call instance->setFurtherLock(0);\n");
+        instance->setFurtherLock(0);
+        printf("instance->setFurtherLock(0); called\n");
+        if (m != NULL) {
+        	_CL_LOG << "Try to set module manager" LOG_
+        	instance->setModuleManager(m, __FILE__, __LINE__);
+		_CL_LOG << "Functor called setModuleManager" LOG_
+        } else {
+        	_CL_LOG << "Error: Functor gets no manager. This is only possible for a manager it self." LOG_
+        }
+       
+        if ((err = instance->queryInterface("lb_I_Unknown", (void**) uk, file, line)) != ERR_NONE) {
+                _CL_LOG << "Failed to create unknown reference to instance of " <<
+                "lbDOMConfig" << ". Errcode is " << err LOG_
+                if (err == ERR_STATE_FURTHER_LOCK) {
+                	_CL_LOG << "ERR_STATE_FURTHER_LOCK" LOG_
+                	return err;
+                }
+                return ERR_FUNCTOR;
+        }
+
+	printf("Have an unknown interface for %s at %p\n", "lbDOMConfig", *uk);
+        return ERR_NONE;
+}
+/*...e*/
 /*...sunused yet:0:*/
 /*...sostream\38\ operator\60\\60\\40\ostream\38\ target\44\ const DOMString\38\ s\41\:0:*/
 // ---------------------------------------------------------------------------
