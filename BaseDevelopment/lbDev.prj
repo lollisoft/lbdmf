@@ -27,6 +27,7 @@ These headers must define the per module (DLL) EXPORT variable
 /*...v\46\\46\\47\include\47\lbdomconfig\45\module\46\h:0:*/
 /*...v\46\\46\\47\include\47\lbmetaapp\45\module\46\h:0:*/
 /*...v\46\\46\\47\include\47\lbhook\45\module\46\h:0:*/
+/*...v\46\\46\\47\include\47\lbdb\45\module\46\h:0:*/
 /*...e*/
 
 /*...sHook:0:*/
@@ -75,6 +76,15 @@ These headers must define the per module (DLL) EXPORT variable
 
 /*...e*/
 
+/*...slbDB:0:*/
+/*...vlbDB\47\lbDB\46\h:0:*/
+/*...vlbDB\47\lbDB\46\cpp:0:*/
+/*...vlbDB\47\makefile:0:*/
+/*...vlbDB\47\makefile\46\module:0:*/
+/*...vlbDB\47\makefile\46\bat:0:*/
+
+
+/*...e*/
 /*...slbCS:0:*/
 /*...vlbcs\47\appbus\46\h:0:*/
 /*...vlbcs\47\appbus\46\cpp:0:*/
