@@ -1,11 +1,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.4 $
+ * $Revision: 1.5 $
  * $Name:  $
- * $Id: lbErrcodes.h,v 1.4 2000/10/21 10:41:20 lothar Exp $
+ * $Id: lbErrcodes.h,v 1.5 2001/02/06 20:38:16 lothar Exp $
  *
  * $Log: lbErrcodes.h,v $
+ * Revision 1.5  2001/02/06 20:38:16  lothar
+ * Commit for backup the data
+ *
  * Revision 1.4  2000/10/21 10:41:20  lothar
  * Added errcodes for lbDOMConfig results
  *
@@ -29,6 +32,10 @@
 /*...slbErrCodes:0:*/
 enum lbErrCodes { 
 	ERR_NONE = 0,
+
+/* A yet not specified err code */
+	
+	ERR_UNSPECIFIED,
 	ERR_NOT_IMPLEMENTED,
 	ERR_NO_OBJECT,
 	ERR_MORE_OBJECTS,
@@ -36,9 +43,11 @@ enum lbErrCodes {
 	ERR_NO_INTERFACE,
 	
 /* Errcodes for dispatcher */
+
 	ERR_DISP_HANDLER_EXSISTS,
 
 /* Errcodes for appbus dispatcher in connected state */
+
 	ERR_APPBUS_DISPATCH, 		// Haeder found, but unknown identifer
 	ERR_APPBUS_DISPATCH_HAEDER,	// No dispatch haeder found
 	ERR_APPBUS_ECHO,		// Test server for echo
@@ -56,6 +65,14 @@ enum lbErrCodes {
 	ERR_XML_NOFILE,	
 	ERR_XML_INIT,
 	ERR_XML_GENERAL_PARSE_FAILED,
+
+/* Errcodes for lb_I_ConfigObject */
+
+	ERR_CONFIG_NO_CHILDS,
+	ERR_CONFIG_NO_MORE_CHILDS,
+	ERR_CONFIG_EMPTY_CONTAINER,
+	ERR_CONFIG_CONTAINER_BOUND,
+	ERR_CONFIG_INTERNAL,
 	
 /* Errcodes for container */
 	ERR_CONTAINER_INSERT,

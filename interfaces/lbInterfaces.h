@@ -28,8 +28,10 @@
 #define __BASE_TYPES_DEFINED__
 /*...sbase types:0:*/
 #ifndef __WATCOMC__
+#ifndef _MSC_VER
 typedef unsigned short byte;
 typedef unsigned short u_short;
+#endif
 #endif
 #ifdef __POWERPP
 typedef unsigned short byte;
@@ -74,6 +76,37 @@ public:
 
 //friend class lb_I_gcManager;	
 };
+
+#define DECLARE_LB_UNKNOWN() \
+private: \
+	int ref; \
+public: \
+	virtual lbErrCodes LB_STDCALL release(); \
+	virtual lbErrCodes LB_STDCALL queryInterface(char* name, void** unknown); 
+
+#define BEGIN_IMPLEMENT_LB_UNKNOWN(classname) \
+lbErrCodes LB_STDCALL classname::release() { \
+        ref--; \
+        if (ref == STARTREF) delete this; \
+        return ERR_NONE; \
+} \
+\
+lbErrCodes LB_STDCALL classname::queryInterface(char* name, void** unknown) { \
+        if (strcmp(name, "lb_I_Unknown") == 0) { \
+                ref++; \
+                *unknown = (lb_I_Unknown*) this; \
+                return ERR_NONE; \
+        } \
+// At this point, other interfaces must be placed via defines or coded by hand.
+
+#define ADD_INTERFACE(interfaceName) \
+        if (strcmp(name, #interfaceName) == 0) { \
+                ref++; \
+                *unknown = (interfaceName*) this; \
+                return ERR_NONE; \
+        }
+
+#define END_IMPLEMENT_LB_UNKNOWN() }
 /*...e*/
 /*...sclass lb_I_gcManager:0:*/
 class lb_I_gcManager {
@@ -195,7 +228,7 @@ public:
 };
 /*...e*/
 
-#include <lbInterfaces-sub-xml.h>
 #include <lbInterfaces-sub-classes.h>	
+#include <lbInterfaces-sub-xml.h>
 
 #endif // __LB_INTERFACES__

@@ -12,6 +12,8 @@ HINSTANCE LB_Module_Handle = NULL;
 
 #include <lbInterfaces.h>
 
+
+
 /**
  * Platform independend module loader
  */
@@ -88,6 +90,94 @@ void unHookAll() {
 	if (ModuleHandle != NULL) FreeLibrary(ModuleHandle);
 	if (LB_Module_Handle != NULL) FreeLibrary(LB_Module_Handle);
 }
+/*...e*/
+
+/*...sLogging macros:0:*/
+lb_I_Log *log = NULL;
+int isInitializing = 0;
+
+/*...sGET_LOG_INSTANCE:0:*/
+#define GET_LOG_INSTANCE \
+			if (log == NULL) { \
+				isInitializing = 1; \
+				cout << "Getting a log instance..." << endl; \
+				lb_I_Module* modMan = getModuleInstance(); \
+				getch(); \
+				\
+				if (modMan != NULL) { \
+					lb_I_Unknown *Unknown = NULL; \
+					modMan->request("instanceOfLogger", Unknown); \
+					\
+					if (Unknown != NULL) { \
+						Unknown->queryInterface("lb_I_Log", (void**) &log); \
+						if (log == NULL) { \
+							cout << "Unknown object has no interface for lb_I_Log" << endl; \
+							getch(); \
+							exit (1); \
+						} \
+						cout << "Now have a log instance" << endl; \
+					} else { \
+						cout << "Instance could not be created" << endl; \
+						getch(); \
+						exit(1); \
+					} \
+				} else { \
+					cout << "Module manager could not be created" << endl; \
+					getch(); \
+					exit(1); \
+				} \
+			} \
+			isInitializing = 0;
+/*...e*/
+
+#define CL_LOG(msg) \
+	cout << "File: " << __FILE__ << ", Line: " << __LINE__ << ", Msg: " << msg << endl;
+
+#define LOG(msg)	\
+			if (isInitializing != 0) { \
+				cout << "Tried to log while initializing the logger." << \
+				"Msg: " << msg << " File: " << __FILE__ << " Line: " << __LINE__ << endl; \
+			} else { \
+				GET_LOG_INSTANCE \
+				cout << "Log a message: " << msg << endl; \
+				log->log(msg, __LINE__, __FILE__); \
+				cout << "Logged." << endl; \
+			}
+#define LOGENABLE       \
+			if (isInitializing != 0) { \
+				cout << "Tried to log while initializing the logger." << endl; \
+			} else { \
+				GET_LOG_INSTANCE \
+				log->enable(); \
+			}
+#define LOGDISABLE      \
+			if (isInitializing != 0) { \
+				cout << "Tried to log while initializing the logger." << endl; \
+			} else { \
+				GET_LOG_INSTANCE \
+				log->disable(); \
+			}
+#define LOGSTART        \
+			if (isInitializing != 0) { \
+				cout << "Tried to log while initializing the logger." << endl; \
+			} else { \
+				GET_LOG_INSTANCE \
+				log->event_begin(); \
+			}
+#define LOGEND          \
+			if (isInitializing != 0) { \
+				cout << "Tried to log while initializing the logger." << endl; \
+			} else { \
+				GET_LOG_INSTANCE \
+				log->event_end(); \
+			}
+#define LOGPREFIX(a)    \
+			if (isInitializing != 0) { \
+				cout << "Tried to log while initializing the logger." << endl; \
+			} else { \
+				GET_LOG_INSTANCE \
+				log->setPrefix(a); \
+			}
 /*...e*/
 
 #endif // __LB_CONFIG_HOOK__

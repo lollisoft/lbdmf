@@ -15,8 +15,6 @@
 
 
 /*...sSAX based parser:0:*/
-/*...vlbXMLConfig\47\lbXMLConfig\47\lbXMLConfig\46\dtd:0:*/
-/*...vlbXMLConfig\47\lbXMLConfig\47\lbXMLConfig\46\xml:0:*/
 
 /*...vlbXMLConfig\47\lbXMLConfig\47\lbXMLConfig\46\h:0:*/
 /*...vlbXMLConfig\47\lbXMLConfig\47\lbXMLConfigDoc\46\h:0:*/
@@ -30,6 +28,8 @@
 /*...vlbXMLConfig\47\lbXMLConfig\47\XMLConfigHandlers\46\h:0:*/
 /*...e*/
 /*...sDOM based parser:0:*/
+/*...vlbXMLConfig\47\lbDOMConfig\47\lbDOMConfig\46\mak:0:*/
+
 /*...vlbXMLConfig\47\lbDOMConfig\47\lbDOMConfig\46\h:0:*/
 /*...vlbXMLConfig\47\lbDOMConfig\47\lbDOMConfig\46\cpp:0:*/
 /*...e*/
@@ -119,7 +119,26 @@
 /*...v\46\\46\\47\\46\\46\\47\\46\\46\\47\wxwin\47\wx\47\src\47\common\47\socket\46\cpp:0:*/
 /*...e*/
 
+/*...sOpenNMS:0:*/
+/*...vj\58\\47\BlueBird\45\0\46\3\46\0\47\javaenv\46\bat:0:*/
+/*...vj\58\\47\BlueBird\45\0\46\3\46\0\47\RunBlueBird\46\bat:0:*/
+/*...vj\58\\47\BlueBird\45\0\46\3\46\0\47\run\46\bat:0:*/
+
+/*...vj\58\\47\BlueBird\45\0\46\3\46\0\47\data\47\users\47\admin\46\xml:0:*/
+/*...vj\58\\47\BlueBird\45\0\46\3\46\0\47\data\47\common\47\conf\47\users\46\xml:0:*/
+
+
+/*...e*/
 
 
 /*...ve\58\\47\develop\47\projects\47\lolli\46\prj:0:*/
 /*...vE\58\\92\develop\92\projects\92\lothar\92\XML\92\SalesOrder1\92\lbHostCfg\92\XMLHostCfgHandlers\46\cpp:0:*/
+
+
+
+
+
+/*...sPowWow Deutschland GmbH:0:*/
+/*...ve\58\\92\powwow\92\projects\92\exakt\92\exact\46\aut:0:*/
+/*...vH\58\\92\Lothar\92\exakt\92\export\92\exact\46\aut:0:*/
+/*...e*/

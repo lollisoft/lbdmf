@@ -47,9 +47,14 @@ public:
 //        void operator delete(void * del) { delete del; }
         
         virtual lbErrCodes load(char* name);
-        virtual lbErrCodes getObjectInstance(char* name, lb_I_Container*& inst);
+        virtual lbErrCodes getObjectInstance(const char* name, lb_I_Container*& inst);
         
 protected:
+
+		lb_I_ConfigObject* findFunctorNode(lb_I_ConfigObject* node, const char* request);
+		char* findFunctorModule(lb_I_ConfigObject* node);
+		char* findFunctorName(lb_I_ConfigObject* node);
+	
         int ref;
 };
 /*...e*/

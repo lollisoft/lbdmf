@@ -108,11 +108,141 @@ lbErrCodes lbModule::initialize() {
         return ERR_NONE;
 }
 
+// Helpers to abstract XML structure
+/*...slbModule\58\\58\findFunctorNode\40\\46\\46\\46\\41\:0:*/
+/**
+ * Creates a view of needed data in a lb_I_ConfigObject.
+ * The node then contains only one subtree for a functor.
+ * 
+ * Input:	A list of functor nodes in a view of a lb_I_ConfigObject
+ *		
+ *		The request itself
+ *
+ * Output:	Only one node from the list in a new view
+ */
+lb_I_ConfigObject* lbModule::findFunctorNode(lb_I_ConfigObject* node, const char* request) {
+	CL_LOG("lbModule::findFunctorNode() called");
+
+	lb_I_ConfigObject* temp_node = NULL;
+	lbErrCodes err = ERR_NONE;
+	
+	if ((err = node->getFirstChildren(temp_node)) == ERR_NONE) {
+		CL_LOG("Error while get first children of a node!");
+		
+		lb_I_Attribute* attribute;
+		
+		//temp_node->getAttribute("Functor", attribute);
+		
+		/**
+		 * This is the functor node !! It has no attributes. All parents also contains
+		 * the 'FunctionName' node, where the search criteria is stored. So the following
+		 * must be done here to check if this node is the one be searched:
+		 *
+		 * Go up one node (in the tree), get all 'FunctionName' nodes by calling
+		 * temp_node->getParentNode(). As the given node itself is a view of the DOM document,
+		 * a question must be issued here:
+		 *
+		 * Has my implementation for this view any parents?
+		 */
+		if ((strcmp(temp_node->getName(), "Functor")) == 0) {
+			CL_LOG("Found the requested node");
+			return temp_node;
+		}
+		
+		getch();
+		
+		
+	} else CL_LOG("Get first child failed");
+
+
+	while ((err = node->getNextChildren(temp_node)) == ERR_NONE) {
+		CL_LOG("Get next child");
+		if ((strcmp(temp_node->getName(), "Functor")) == 0) {
+			CL_LOG("Found the requested node");
+			return temp_node;
+		}
+	}
+	
+	if (err == ERR_CONFIG_NO_MORE_CHILDS) {
+		CL_LOG("No more childs found");
+	}
+
+CL_LOG("Release the temp_node reference");
+getch();	
+	if (temp_node != NULL) temp_node->release();
+	
+	CL_LOG("Returning a NULL value");
+	getch();
+	return NULL;
+}
+/*...e*/
+/*...slbModule\58\\58\findFunctorModule\40\\46\\46\\46\\41\:0:*/
+char* lbModule::findFunctorModule(lb_I_ConfigObject* node) {
+	CL_LOG("Not yet implemented");
+	return "NULL";
+}
+/*...e*/
+/*...slbModule\58\\58\findFunctorName\40\\46\\46\\46\\41\:0:*/
+char* lbModule::findFunctorName(lb_I_ConfigObject* node) {
+	CL_LOG("Not yet implemented");
+	
+	/**
+	 * Go up one level and get the children 'FunctionName'
+	 */
+	 
+	lb_I_ConfigObject* _node = NULL;
+	lbErrCodes err = ERR_NONE;
+	
+	if ((err = node->getParent(_node)) != ERR_NONE) {
+	} 
+	
+	if (_node != NULL) {
+		lb_I_ConfigObject* __node = NULL;
+		err = _node->getFirstChildren(__node);
+		
+		if (err != ERR_NONE) {
+			CL_LOG("Error. Children expected");
+			return NULL;
+		}
+		
+		while (err == ERR_NONE) {
+
+			/**
+			 * Check that node...
+			 */
+		 
+			if (strcmp(__node->getName(), "FunctionName") == 0) {
+				/**
+				 * Have the node. Here I must get an attribute...
+				 */
+				 
+				char* value = NULL; 
+				err = __node->getAttributeValue("Name", value); 
+				
+				if (err != ERR_NONE) {
+					CL_LOG("Error while getting attribute value");
+					return NULL;
+				} else return value;
+			}
+		
+			err = _node->getNextChildren(__node);
+		
+			//err = ERR_CONFIG_NO_MORE_CHILDS;
+		}
+	}
+	
+	return "NULL";
+}
+/*...e*/
+
+
+/*...slbModule\58\\58\request\40\\46\\46\\46\\41\:0:*/
 lbErrCodes lbModule::request(const char* request, lb_I_Unknown*& result) {
         lb_I_XMLConfig* xml_Instance = NULL;
 
         xml_Instance = getXMLConfigObject();
         
+/*...sget my unknown interface:8:*/
         if (strcmp(request, "instance/XMLConfig") == 0) {
                 //xml_Instance->hasConfigObject("Dat/object");
                 //result = (lb_I_Unknown*) xml_Instance;
@@ -121,11 +251,70 @@ lbErrCodes lbModule::request(const char* request, lb_I_Unknown*& result) {
                 
                 return ERR_NONE;
         }
+/*...e*/
+	else {
+/*...sget any interface:8:*/
+	/**
+	 * Here should be created an unknown object. The mapping of a real
+	 * instance is done in the xml file instead of if blocks.
+	 */
+	
+		cout << "Requested a unknown instance for this interface: " << request << ". Try to get one." << endl;
+		char* node = "#document/dtdHostCfgDoc/Modules/Module/Functions/Function/Functor";
+		lb_I_ConfigObject* config = NULL;
+		int count = 0;
+					// request is a functor
+		if (xml_Instance->hasConfigObject(node, count) == ERR_NONE) {
+
+			cout << "Have a configured instance maker" << endl;
+			
+			/**
+			 * Get the list of found objects as a list.
+			 * The result is a view of notes in a max deep
+			 * of one level.
+			 */
+			
+			xml_Instance->getConfigObject(config, node);
+			getch();
+			
+			/**
+			 * The request above results possibly in a list of
+			 * functors, so we need to get the correct node, 
+			 * containing the attribute value in request.
+			 */
+			
+			lb_I_ConfigObject* functorNode = findFunctorNode(config, request);
+			
+			cout << "Have a functor node" << endl;
+			getch();
+			
+			/**
+			 * Both functions used here, hides the navigation trough
+			 * the tree of the DOM document.
+			 */
+			
+			if (functorNode == NULL) {
+				cout << "Couldn't find the desired functor (nullpointer)!" << endl;
+				getch();
+			}
+			
+			char* moduleName = findFunctorModule(functorNode);
+			char* functorName = findFunctorName(functorNode);
+		} else {
+			cout << "Something goes wrong!" << endl;
+			cout << "xml_Instance->hasConfigObject() returns <> ERR_NONE!" << endl;
+		}
+		
+		getch();
+/*...e*/
+	}
         
-        xml_Instance->release();
+        // Possibly wrong here
+        //xml_Instance->release();
 
         return ERR_NONE;
 }
+/*...e*/
 
 lbErrCodes lbModule::uninitialize() {
         return ERR_NONE;
@@ -137,6 +326,8 @@ lbErrCodes lbModule::load(char* name) {
         lb_I_XMLConfig* xml_Instance = NULL;
 
         xml_Instance = getXMLConfigObject();
+        
+        cout << "lbModule::load(char* name) called" << endl;
 
         if (xml_Instance) {
             if (xml_Instance->parse() != ERR_NONE) {
@@ -149,12 +340,11 @@ lbErrCodes lbModule::load(char* name) {
         return ERR_NONE;
 }
 /*...e*/
-/*...slbErrCodes lbModule\58\\58\getObjectInstance\40\char\42\ name\44\ lb_I_Container\42\\38\ inst\41\:0:*/
-lbErrCodes lbModule::getObjectInstance(char* name, lb_I_Container*& inst) {
+/*...slbErrCodes lbModule\58\\58\getObjectInstance\40\const char\42\ name\44\ lb_I_Container\42\\38\ inst\41\:0:*/
+lbErrCodes lbModule::getObjectInstance(const char* name, lb_I_Container*& inst) {
         return ERR_NONE;
 }
 /*...e*/
-
 
 /*...slbErrCodes DLLEXPORT __cdecl getlb_ModuleInstance\40\lb_I_Module\42\\38\ inst\41\:0:*/
 lbErrCodes DLLEXPORT __cdecl getlb_ModuleInstance(lb_I_Module*& inst) {

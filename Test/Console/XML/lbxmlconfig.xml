@@ -2,7 +2,10 @@
 <!DOCTYPE dtdHostCfgDoc SYSTEM "lbXMLConfig.dtd">
 
 <dtdHostCfgDoc VERSION="1.0.0">
-  <Busmaster ID="ID1" Hostname="localhost" Port="5001" Description="Any description"/>
+  <Busmaster ID="ID1" Hostname="localhost" Port="5001" Description="Any description" />
+<!--
+  <BootstrapModule Name="lbClasses" />
+-->
 <!--...sModules:2:-->
   <Modules>
     <Module>
