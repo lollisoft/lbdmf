@@ -11,11 +11,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.26 $
+ * $Revision: 1.27 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.26 2002/05/29 19:09:06 lothar Exp $
+ * $Id: mkmk.cpp,v 1.27 2002/11/23 09:47:19 lothar Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.27  2002/11/23 09:47:19  lothar
+ * Added copy so file to libdev/lib
+ *
  * Revision 1.26  2002/05/29 19:09:06  lothar
  * Changes due to hiding much informal compile messages
  *
@@ -722,7 +725,8 @@ void write_so_Target(char* modulename) {
   printf("MINOR=0\n");
   printf("MICRO=1\n");
   printf("\n%s: $(OBJS)\n", modulename);
-  printf("\t\t$(CC) -shared -WL,soname,$(PROGRAM).so.$(MAJOR) -o $(PROGRAM).so.$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) -lc $(VENDORLIBS)\n",modulename);
+  printf("\t\t$(CC) -shared -WL,soname,$(PROGRAM).so.$(MAJOR) -o $(PROGRAM).so.$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) -lc $(VENDORLIBS)\n");
+  printf("\t\tcp $(PROGRAM).so.$(MAJOR).$(MINOR).$(MICRO) /libdev/lib");
 #endif
 #ifdef __WATCOMC__
   fprintf(stderr, "Warning: Creating a so library under Windows is not possible with Watcom !!\n");
