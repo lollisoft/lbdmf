@@ -2,10 +2,13 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.12 $
+ * $Revision: 1.13 $
  * $Name:  $
- * $Id: lbkey.h,v 1.12 2002/05/30 17:53:03 lolli Exp $
+ * $Id: lbkey.h,v 1.13 2002/06/20 21:02:56 lolli Exp $
  * $Log: lbkey.h,v $
+ * Revision 1.13  2002/06/20 21:02:56  lolli
+ * Added missing code for _MSC_VER
+ *
  * Revision 1.12  2002/05/30 17:53:03  lolli
  * Current development seems to run
  *
@@ -60,6 +63,10 @@
 /*...sclass lbKey \58\ public lb_I_KeyBase:0:*/
 class lbKey : public lb_I_KeyBase {
 public:
+#ifdef _MSC_VER
+	lbKey(char* file, int line) { key = 0; strcpy(keyType, "int"); }
+#endif
+
 	lbKey();
 	lbKey(int _key);
 	lbKey(const lb_I_KeyBase* k);
@@ -78,6 +85,9 @@ private:
 /*...sclass lbKeyUL \58\ public lb_I_KeyBase:0:*/
 class lbKeyUL : public lb_I_KeyBase {
 public:
+#ifdef _MSC_VER
+	lbKeyUL(char* file, int line) { key = 0; strcpy(keyType, "UL"); }
+#endif
     lbKeyUL();
     lbKeyUL(unsigned long _key);
     lbKeyUL(const lb_I_KeyBase* k);
@@ -103,6 +113,9 @@ LB_DLLIMPORT
 #endif
 lbStringKey : public lb_I_KeyBase {
 public:
+#ifdef _MSC_VER
+     lbStringKey(char* file, int line) { key = ""; strcpy(keyType, "string"); }
+#endif
     lbStringKey();
     lbStringKey(const char* _key);
     lbStringKey(const lb_I_KeyBase* k);
