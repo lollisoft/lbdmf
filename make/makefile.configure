@@ -3,16 +3,13 @@ all: makefile
 
 ifeq ($(OSTYPE), linux)
 DEVROOT_MAKE=$(DEVROOT)
-ATTRIB=
 MKMK=mkmk
 endif
 ifeq ($(OSTYPE), osx)
 DEVROOT_MAKE=$(DEVROOT)
 MKMK=~/bin/mkmk
-ATTRIB=
 endif
 ifeq ($(OSTYPE), Windows_NT)
-ATTRIB=@attrib -r $(DEVROOT_MAKE)/Projects/CPP/include/lbkey.h
 MKMK=mkmk
 endif
 _MODULE=$(MODULE)
@@ -27,9 +24,8 @@ $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
 	@cat makefile.module >> makefile
 	@echo Path=$(PATH) >> makefile
 	@echo all: $(_MODULE).dll >> makefile
-	$(ATTRIB)
-	@rm $(DEVROOT_MAKE)/Projects/CPP/include/lbkey.h
-	@cp $(DEVROOT_MAKE)/Projects/CPP/BaseDevelopment/lbclasses/lbkey.h $(DEVROOT_MAKE)/Projects/CPP/include
+	@rm -f $(DEVROOT_MAKE)/Projects/CPP/include/lbkey.h
+	@cp -f $(DEVROOT_MAKE)/Projects/CPP/BaseDevelopment/lbclasses/lbkey.h $(DEVROOT_MAKE)/Projects/CPP/include
 	$(MKMK) $(TARGET) $(_MODULE) ../dosdir *.cpp >> makefile
 
 endif
@@ -44,9 +40,8 @@ $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
 	@cat makefile.module >> makefile
 	@echo Path=$(PATH) >> makefile
 	@echo all: $(_MODULE).dll >> makefile
-	$(ATTRIB)
-	@rm $(DEVROOT_MAKE)/Projects/CPP/include/lbkey.h
-	@cp $(DEVROOT_MAKE)/Projects/CPP/BaseDevelopment/lbclasses/lbkey.h $(DEVROOT_MAKE)/Projects/CPP/include
+	@rm -f $(DEVROOT_MAKE)/Projects/CPP/include/lbkey.h
+	@cp -f $(DEVROOT_MAKE)/Projects/CPP/BaseDevelopment/lbclasses/lbkey.h $(DEVROOT_MAKE)/Projects/CPP/include
 	$(MKMK) $(TARGET) $(_MODULE) ../dosdir *.cpp >> makefile
 
 endif
@@ -61,9 +56,8 @@ $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
 	@cat makefile.module >> makefile
 	@echo Path=$(PATH) >> makefile
 	@echo all: $(_MODULE).so >> makefile
-	$(ATTRIB)
-	@rm $(DEVROOT_MAKE)/Projects/CPP/include/lbkey.h
-	@cp $(DEVROOT_MAKE)/Projects/CPP/BaseDevelopment/lbclasses/lbkey.h $(DEVROOT_MAKE)/Projects/CPP/include
+	@rm -f $(DEVROOT_MAKE)/Projects/CPP/include/lbkey.h
+	@cp -f $(DEVROOT_MAKE)/Projects/CPP/BaseDevelopment/lbclasses/lbkey.h $(DEVROOT_MAKE)/Projects/CPP/include
 	@$(MKMK) $(TARGET) $(_MODULE) ../dosdir *.cpp >> makefile
 
 endif
@@ -78,9 +72,8 @@ $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
 	@cat makefile.module >> makefile
 	@echo Path=$(PATH) >> makefile
 	@echo all: $(_MODULE).so >> makefile
-	$(ATTRIB)
-	@rm $(DEVROOT_MAKE)/Projects/CPP/include/lbkey.h
-	@cp $(DEVROOT_MAKE)/Projects/CPP/BaseDevelopment/lbclasses/lbkey.h $(DEVROOT_MAKE)/Projects/CPP/include
+	@rm -f $(DEVROOT_MAKE)/Projects/CPP/include/lbkey.h
+	@cp -f $(DEVROOT_MAKE)/Projects/CPP/BaseDevelopment/lbclasses/lbkey.h $(DEVROOT_MAKE)/Projects/CPP/include
 	@$(MKMK) $(TARGET) $(_MODULE) ../dosdir *.cpp >> makefile
 
 endif
@@ -95,9 +88,8 @@ $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
 	@cat makefile.module >> makefile
 	@echo Path=$(PATH) >> makefile
 	@echo all: $(_MODULE).$(TARGET) >> makefile
-	$(ATTRIB)
-	@rm $(DEVROOT_MAKE)/Projects/CPP/include/lbkey.h
-	@cp $(DEVROOT_MAKE)/Projects/CPP/BaseDevelopment/lbclasses/lbkey.h $(DEVROOT_MAKE)/Projects/CPP/include
+	@rm -f $(DEVROOT_MAKE)/Projects/CPP/include/lbkey.h
+	@cp -f $(DEVROOT_MAKE)/Projects/CPP/BaseDevelopment/lbclasses/lbkey.h $(DEVROOT_MAKE)/Projects/CPP/include
 	@$(MKMK) $(TARGET) $(_MODULE) ../dosdir *.cpp >> makefile
 
 endif
@@ -112,9 +104,8 @@ $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
 	@cat makefile.module >> makefile
 	@echo Path=$(PATH) >> makefile
 	@echo all: $(_MODULE) >> makefile
-	$(ATTRIB)
-	@rm $(DEVROOT_MAKE)/Projects/CPP/include/lbkey.h
-	@cp $(DEVROOT_MAKE)/Projects/CPP/BaseDevelopment/lbclasses/lbkey.h $(DEVROOT_MAKE)/Projects/CPP/include
+	@rm -f $(DEVROOT_MAKE)/Projects/CPP/include/lbkey.h
+	@cp -f $(DEVROOT_MAKE)/Projects/CPP/BaseDevelopment/lbclasses/lbkey.h $(DEVROOT_MAKE)/Projects/CPP/include
 	@$(MKMK) $(TARGET) $(_MODULE) ../dosdir *.cpp >> makefile
 
 endif
@@ -129,9 +120,8 @@ $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
 	@cat makefile.module >> makefile
 	@echo Path=$(PATH) >> makefile
 	@echo all: $(_MODULE).so >> makefile
-	$(ATTRIB)
-	@rm $(DEVROOT_MAKE)/Projects/CPP/include/lbkey.h
-	@cp $(DEVROOT_MAKE)/Projects/CPP/BaseDevelopment/lbclasses/lbkey.h $(DEVROOT_MAKE)/Projects/CPP/include
+	@rm -f $(DEVROOT_MAKE)/Projects/CPP/include/lbkey.h
+	@cp -f $(DEVROOT_MAKE)/Projects/CPP/BaseDevelopment/lbclasses/lbkey.h $(DEVROOT_MAKE)/Projects/CPP/include
 	@$(MKMK) $(TARGET) $(_MODULE) ../dosdir *.cpp >> makefile
 
 endif
@@ -146,9 +136,8 @@ $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
 	@cat makefile.module >> makefile
 	@echo Path=$(PATH) >> makefile
 	@echo all: $(_MODULE).exe >> makefile
-	$(ATTRIB)
-	@rm $(DEVROOT_MAKE)/Projects/CPP/include/lbkey.h
-	@cp $(DEVROOT_MAKE)/Projects/CPP/BaseDevelopment/lbclasses/lbkey.h $(DEVROOT_MAKE)/Projects/CPP/include
+	@rm -f $(DEVROOT_MAKE)/Projects/CPP/include/lbkey.h
+	@cp -f $(DEVROOT_MAKE)/Projects/CPP/BaseDevelopment/lbclasses/lbkey.h $(DEVROOT_MAKE)/Projects/CPP/include
 	@$(MKMK) $(TARGET) $(_MODULE) ../dosdir *.cpp >> makefile
 
 endif
