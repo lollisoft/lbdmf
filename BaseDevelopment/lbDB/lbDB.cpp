@@ -24,7 +24,7 @@
     p-Mail: Lothar Behrens
             Rosmarinstr. 3
             
-            40235 DÅsseldorf (germany)
+            40235 Duesseldorf (germany)
 */
 /*...e*/
 
@@ -1297,7 +1297,7 @@ lbErrCodes LB_STDCALL lbQuery::first() {
 #endif
 
         if (retcode == SQL_ERROR || retcode == SQL_SUCCESS_WITH_INFO) {
-                _LOG << _("lbQuery::first(): Error while fetching next row") LOG_
+                _LOG << "lbQuery::first(): Error while fetching next row" LOG_
                 printf("Error in lbQuery::first()\n");
                 dbError( "SQLExtendedFetch()");
                 
@@ -2261,6 +2261,13 @@ lbErrCodes LB_STDCALL lbBoundColumn::bindColumn(lb_I_Query* q, int column) {
 	                                BufferLength, &NameLength, &DataType,
 	                                &ColumnSize, &DecimalDigits, &Nullable);
 
+	if (ret != SQL_SUCCESS) {
+		printf("Error: Failed to get column description for column %d.\n", column);
+		q->dbError("SQLDescribeCol()");
+	}
+
+	printf("Got this data type: %d. Prepared was %d\n", DataType, _DataType);
+
 
 	REQUEST(manager.getPtr(), lb_I_String, colName)
 	colName->setData((char*) ColumnName);
@@ -2318,7 +2325,7 @@ lbErrCodes LB_STDCALL lbBoundColumn::bindColumn(lb_I_Query* q, int column) {
 			}
 			break;
 		default:
-			_CL_LOG << "lbBoundColumn::bindColumn(...) failed: Unknown or not supported datatype" LOG_
+			_CL_LOG << "lbBoundColumn::bindColumn(...) failed: Unknown or not supported datatype" << DataType LOG_
 			break;
 	}
 	
@@ -2711,6 +2718,8 @@ lb_I_Query* LB_STDCALL lbDatabase::getQuery(int readonly) {
 	query->setModuleManager(*&manager, __FILE__, __LINE__);
 
 	if (query->init(henv, hdbc, readonly) != ERR_NONE) {
+		_LOG << "ERROR: Initializion of query has been failed!" LOG_
+		
 		//return NULL;
 	}
 
