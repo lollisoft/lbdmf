@@ -1492,7 +1492,7 @@ public:
 	virtual lb_I_Unknown* LB_STDCALL createMenuBar() = 0;
 	virtual lb_I_Unknown* LB_STDCALL createMenuEntry() = 0;
 
-	virtual lb_I_DatabaseForm* LB_STDCALL createDBForm(char* formName) = 0;
+	virtual lb_I_DatabaseForm* LB_STDCALL createDBForm(char* formName, char* queryString) = 0;
 /*...e*/
 /*...sGetter functions:8:*/
 	/**
