@@ -7,6 +7,20 @@
 --USE jedi;
 
 -- +---------------------------------------------------------
+-- | TABLE: Translations
+-- +---------------------------------------------------------
+
+
+CREATE TABLE translations
+(
+  id SERIAL,
+  text VARCHAR(100),
+  translated VARCHAR(100),
+  language CHAR(30) default 'german',
+  PRIMARY KEY (id)
+);
+
+-- +---------------------------------------------------------
 -- | TABLE: CodegenTarget
 -- +---------------------------------------------------------
 
