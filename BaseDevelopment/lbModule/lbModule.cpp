@@ -28,11 +28,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.57 $
+ * $Revision: 1.58 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.57 2003/07/17 18:51:41 lollisoft Exp $
+ * $Id: lbModule.cpp,v 1.58 2003/07/17 19:41:41 lollisoft Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.58  2003/07/17 19:41:41  lollisoft
+ * removed some log messages
+ *
  * Revision 1.57  2003/07/17 18:51:41  lollisoft
  * Begin develop a hopefully faster and less memory consuming
  * XML wrapper.
@@ -2850,11 +2853,8 @@ lbErrCodes LB_STDCALL lbModule::request(const char* request, lb_I_Unknown** resu
         lbErrCodes err = ERR_NONE;
         char buf[1000] = "";
         if (moduleList == NULL) {
-        	printf("Initialize\n");
                 initialize();
-                printf("Initialized\n");
         }
-//	getch();
 	
         char* functorName = NULL;
 	buf[0] = 0;
@@ -2866,13 +2866,9 @@ lbErrCodes LB_STDCALL lbModule::request(const char* request, lb_I_Unknown** resu
          * impl is not returned in any way, I think, so it is allowed to delete the object
          * at lost of focus.
          */
-_CL_LOG << "Requested for an interface " << request LOG_        
 /*...sget my unknown interface:8:*/
         if (strcmp(request, "instance/XMLConfig") == 0) {
-                //xml_Instance->hasConfigObject("Dat/object");
-                //result = (lb_I_Unknown*) xml_Instance;
                 
-                _CL_LOG << "Query unknown interface of xml_Interface!" LOG_
                 xml_Instance->queryInterface("lb_I_Unknown", (void**) result, __FILE__, __LINE__);
                 
                 return ERR_NONE;

@@ -30,10 +30,13 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.15 $
+ * $Revision: 1.16 $
  * $Name:  $
- * $Id: lbobject.h,v 1.15 2003/07/10 21:14:35 lollisoft Exp $
+ * $Id: lbobject.h,v 1.16 2003/07/17 19:42:31 lollisoft Exp $
  * $Log: lbobject.h,v $
+ * Revision 1.16  2003/07/17 19:42:31  lollisoft
+ * removed some log messages
+ *
  * Revision 1.15  2003/07/10 21:14:35  lollisoft
  * Implemented parameter class
  *
@@ -175,7 +178,7 @@ protected:
 /*...sclass lbParameter:0:*/
 class lbParameter : public lb_I_Parameter {
 public:
-	lbParameter() {}
+	lbParameter() { printf("lbParameter() called\n"); }
 	virtual ~lbParameter() {}
 
 	DECLARE_LB_UNKNOWN()
