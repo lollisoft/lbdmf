@@ -28,11 +28,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.22 $
+ * $Revision: 1.23 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.22 2003/01/27 21:18:04 lothar Exp $
+ * $Id: lbMetaApplication.cpp,v 1.23 2003/02/09 13:22:50 lothar Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.23  2003/02/09 13:22:50  lothar
+ * Different log usage
+ *
  * Revision 1.22  2003/01/27 21:18:04  lothar
  * Missed STARTREF setup
  *
@@ -307,6 +310,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::Initialize() {
 	} else {
 		cout << "lb_MetaApplication::Initialize() called in console mode" << endl;
 	}
+	addMenuBar("Test");
 
 	return ERR_NONE;
 }
@@ -348,11 +352,11 @@ lbErrCodes LB_STDCALL lb_MetaApplication::addMenuBar(char* name) {
 
 	if (uk == NULL) _LOG << "Error: Cannot call with a null pointer!" LOG_
 	
-	_CL_LOG << "Begin dispatch function" LOG_
+	_LOG << "Begin dispatch function" LOG_
 
 // Produces crash
 	dispatcher->dispatch("AddMenuBar", uk.getPtr(), &uk_result);
-	_CL_LOG << "Have dispatched function" LOG_
+	_LOG << "Have dispatched function" LOG_
 
 	return err;
 }
@@ -702,11 +706,11 @@ lbErrCodes LB_STDCALL lb_Dispatcher::dispatch(char* EvName, lb_I_Unknown* EvData
 	
 		QI(uk, lb_I_EvHandler, ev, __FILE__, __LINE__)
 
-		_LOG << "Call handler now" LOG_
+		_LOG << "Call handler now " << EvName LOG_
 	
 		ev->call(EvData, EvResult);
 	
-		_LOG << "Called handler now" LOG_
+		_LOG << "Called handler now " << EvName LOG_
 	}
 
 	return ERR_NONE;
