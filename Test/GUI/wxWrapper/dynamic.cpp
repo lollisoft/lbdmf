@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.29 2004/08/10 18:23:45 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.30 2004/08/16 05:11:29 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.29 $
+ * $Revision: 1.30 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.29 2004/08/10 18:23:45 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.30 2004/08/16 05:11:29 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.30  2004/08/16 05:11:29  lollisoft
+ * Better handling of database navigation.
+ *
  * Revision 1.29  2004/08/10 18:23:45  lollisoft
  * Lesser logging messages and a try to disable database navigation buttons
  * if they are not needed.
@@ -273,11 +276,8 @@ lbErrCodes LB_STDCALL lb_wxFrame::createEventsource(lb_I_EventConnector* object)
   // Make a menubar
   wxMenu *file_menu = new wxMenu;
   
-  _LOG << "Create Build menu" LOG_
   file_menu->Append(DYNAMIC_BUILDMENU, "&Build menu");  
-  _LOG << "Create About menu" LOG_
   file_menu->Append(DYNAMIC_ABOUT, "&About");
-  _LOG << "Create Exit menu" LOG_
   file_menu->Append(DYNAMIC_QUIT, "E&xit");
 
 //  file_menu->Append(GUI->useEvent("DYNAMIC_ABOUT"), "&About");
@@ -521,6 +521,9 @@ void lbDatabaseDialog::init(wxWindow* parent, wxString formName, wxString SQLStr
 	wxButton *button3 = new wxButton(this, DatabaseNext, "Next", wxPoint(), wxSize(100,20));
 	wxButton *button4 = new wxButton(this, DatabaseLast, "Last", wxPoint(), wxSize(100,20));
 
+	button1->Disable();
+	button2->Disable();
+
 	sizerNavi->Add(button1, 1, wxALL, 5);
 	sizerNavi->Add(button2, 1, wxALL, 5);
 	sizerNavi->Add(button3, 1, wxALL, 5);
@@ -604,7 +607,7 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBUpdate() {
 		free(name);
 	}
 
-	sampleQuery->update();
+	if (sampleQuery->update() != ERR_NONE) return ERR_UPDATE_FAILED;
 	
 	return ERR_NONE;
 }
@@ -640,6 +643,18 @@ printf("Move first\n");
 
 	lbDBRead();
 
+	wxWindow* w = FindWindowByName(wxString("Prev"));
+	w->Disable();
+	
+	w = FindWindowByName(wxString("First"));
+	w->Disable();
+
+	w = FindWindowByName(wxString("Last"));
+	w->Enable();
+	
+	w = FindWindowByName(wxString("Next"));
+	w->Enable();
+
 	return ERR_NONE;
 }
 /*...e*/
@@ -648,12 +663,18 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBNext(lb_I_Unknown* uk) {
 printf("Move next\n");
 	lbDBUpdate();
 
-	if (sampleQuery->next() == ERR_DB_NODATA) {
+	if (sampleQuery->next() == WARN_DB_NODATA) {
 		wxWindow* w = FindWindowByName(wxString("Next"));
+		w->Disable();
+		
+		w = FindWindowByName(wxString("Last"));
 		w->Disable();
 	}
 
 	wxWindow* w = FindWindowByName(wxString("Prev"));
+	w->Enable();
+
+	w = FindWindowByName(wxString("First"));
 	w->Enable();
 
 	lbDBRead();
@@ -666,14 +687,20 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBPrev(lb_I_Unknown* uk) {
 printf("Move previous\n");
 	lbDBUpdate();
 
-	if (sampleQuery->previous() == ERR_DB_NODATA) {
+	if (sampleQuery->previous() == WARN_DB_NODATA) {
 	        wxWindow* w = FindWindowByName(wxString("Prev"));
 	        w->Disable();
+
+		w = FindWindowByName(wxString("First"));
+		w->Disable();
 	}
 
 	wxWindow* w = FindWindowByName(wxString("Next"));
 	w->Enable();
-	
+
+	w = FindWindowByName(wxString("Last"));
+	w->Enable();
+		
 	lbDBRead();
 
 	return ERR_NONE;
@@ -688,6 +715,18 @@ printf("Move last\n");
 
 	lbDBRead();
 
+	wxWindow* w = FindWindowByName(wxString("Next"));
+	w->Disable();
+	
+	w = FindWindowByName(wxString("Last"));
+	w->Disable();
+
+	w = FindWindowByName(wxString("First"));
+	w->Enable();
+	
+	w = FindWindowByName(wxString("Prev"));
+	w->Enable();
+	
 	return ERR_NONE;
 }
 /*...e*/
