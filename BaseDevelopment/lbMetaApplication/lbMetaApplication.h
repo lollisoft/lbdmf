@@ -1,11 +1,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.7 $
+ * $Revision: 1.8 $
  * $Name:  $
- * $Id: lbMetaApplication.h,v 1.7 2002/09/07 09:57:10 lothar Exp $
+ * $Id: lbMetaApplication.h,v 1.8 2002/09/12 18:32:59 lothar Exp $
  *
  * $Log: lbMetaApplication.h,v $
+ * Revision 1.8  2002/09/12 18:32:59  lothar
+ * Added some UI wrapper and sub module creation
+ *
  * Revision 1.7  2002/09/07 09:57:10  lothar
  * First working callback function
  *
@@ -64,9 +67,37 @@ public:
 	
 
 	virtual lbErrCodes LB_STDCALL registerEventHandler(lb_I_Dispatcher* disp);	
+	
+	lbErrCodes LB_STDCALL loadSubModules();
 
 	lbErrCodes LB_STDCALL lbEvHandler1(lb_I_Unknown* uk);
 	lbErrCodes LB_STDCALL lbEvHandler2(lb_I_Unknown* uk);
+
+/*...sWrapper for some usual GUI functions:8:*/
+
+	/* The menubar is still present in the demo. At the
+	   first time, a new menubar should not be used.
+	*/
+	virtual lbErrCodes LB_STDCALL addMenuBar(char* name);
+
+	/**
+	 * Add a menu behind the last.
+	 */
+	virtual lbErrCodes LB_STDCALL addMenu(char* name);
+	
+	/**
+	 * Add a menu entry in the named menu after given entry,
+	 * if provided. The handler must be registered.
+	 * 
+	 * Input:
+	 *	char* in_menu:		Which menu to add to (File/Edit/Help/...)
+	 *	char* entry:		The text for that entry
+	 *	char* evHandler:	The name of a registered event handler, that handle this
+	 *	char* afterentry:	Insert the entry after an exsisting entry
+	 */
+	virtual lbErrCodes LB_STDCALL addMenuEntry(char* in_menu, char* entry, char* evHandler, char* afterentry = NULL);
+	
+/*...e*/
 	
 
 protected:
@@ -173,6 +204,7 @@ protected:
 };
 /*...e*/
 
+/*...sclass lb_EvHandler:0:*/
 class lb_EvHandler : public lb_I_EvHandler {
 public:
 	lb_EvHandler();
@@ -189,6 +221,7 @@ public:
         lb_I_EventHandler* _evHandlerInstance;
         lbEvHandler ev;
 };
+/*...e*/
 
 /*...sifdef __cplusplus:0:*/
 #ifdef __cplusplus
