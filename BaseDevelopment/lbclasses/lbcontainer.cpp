@@ -36,10 +36,13 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.22 $
+ * $Revision: 1.23 $
  * $Name:  $
- * $Id: lbcontainer.cpp,v 1.22 2003/12/13 10:56:25 lollisoft Exp $
+ * $Id: lbcontainer.cpp,v 1.23 2004/06/09 07:03:23 lollisoft Exp $
  * $Log: lbcontainer.cpp,v $
+ * Revision 1.23  2004/06/09 07:03:23  lollisoft
+ * Still problems with undeleted container data ??
+ *
  * Revision 1.22  2003/12/13 10:56:25  lollisoft
  * Database improovements and changes in my licence adress.
  * The database part is still not working by updating columns
@@ -183,6 +186,8 @@ lbContainer::lbContainer() {
 }
 
 lbContainer::~lbContainer() {
+	printf("lbContainer::~lbContainer() called\n");
+	deleteAll();
 }
 
 lbErrCodes LB_STDCALL lbContainer::setData(lb_I_Unknown* uk) {

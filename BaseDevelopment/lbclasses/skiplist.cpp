@@ -38,11 +38,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.18 $
+ * $Revision: 1.19 $
  * $Name:  $
- * $Id: skiplist.cpp,v 1.18 2004/01/24 16:15:02 lollisoft Exp $
+ * $Id: skiplist.cpp,v 1.19 2004/06/09 07:03:23 lollisoft Exp $
  *
  * $Log: skiplist.cpp,v $
+ * Revision 1.19  2004/06/09 07:03:23  lollisoft
+ * Still problems with undeleted container data ??
+ *
  * Revision 1.18  2004/01/24 16:15:02  lollisoft
  * minor changes
  *
@@ -151,9 +154,10 @@ SkipNode::SkipNode(lb_I_Element* r, int level) {
             forward[i] = NULL;
 }
 SkipNode::~SkipNode() { 
+printf("SkipNode::~SkipNode() called\n");
       delete [] forward; 
       
-      if (value != NULL) RELEASE(value)
+//      if (value != NULL) RELEASE(value)
 }
 /*...e*/
 
