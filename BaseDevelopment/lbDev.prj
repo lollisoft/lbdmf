@@ -29,6 +29,7 @@ These headers must define the per module (DLL) EXPORT variable
 /*...v\46\\46\\47\interfaces\47\lbInterfaces\45\sub\45\transfer\46\h:0:*/
 /*...v\46\\46\\47\interfaces\47\lbInterfaces\45\sub\45\xml\46\h:0:*/
 /*...v\46\\46\\47\interfaces\47\lbInterfaces\45\sub\45\classes\46\h:0:*/
+/*...v\46\\46\\47\interfaces\47\lbInterfaces\45\sub\45\wxWrapper\46\h:0:*/
 
 /*...sMSC based XML parser:0:*/
 /*...vQ\58\\92\Develop\92\Projects\92\CPP\92\AppDevelopment\92\Console\92\XML\47\lbxmlconfig\46\dtd:0:*/
@@ -137,6 +138,7 @@ findfunctorname
 /*...sAppDevelopment:0:*/
 /*...sGUI:0:*/
 /*...v\46\\46\\47\AppDevelopment\47\GUI\47\wxgui\47\minimal\46\cpp:0:*/
+/*...v\46\\46\\47\AppDevelopment\47\GUI\47\wxwrapper\47\dynamic\46\cpp:0:*/
 /*...e*/
 /*...sConsole:0:*/
 /*...v\46\\46\\47\AppDevelopment\47\Console\47\GlobalAppServer\47\servertest\46\cpp:0:*/
