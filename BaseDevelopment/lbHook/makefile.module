@@ -34,6 +34,12 @@ MOD_INCL=$(STD_INCL) -i=..\dosdir
 # use global setup
 #COMPILER=MICROSOFT
 
+#
+# What is to do after the compile job ?
+#
+
+POST_PROCESS=cp $(DEVROOT)/Projects/CPP/BaseDevelopment/lbHook/*.lib $(DEVROOT)/Projects/dll/lib
+
 ifeq ($(COMPILER), MICROSOFT)
 MOD_INCL = $(STD_INCL_MICROSOFT)
 MOD_INCL += $(foreach s, $(INCLS), /I "$s")
