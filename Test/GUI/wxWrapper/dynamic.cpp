@@ -6,7 +6,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.7 2003/07/10 21:55:04 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.8 2003/07/15 22:04:03 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -70,12 +70,12 @@
 /*...e*/
 
 // ID for the menu commands
-#define DYNAMIC_QUIT		1
-#define DYNAMIC_TEXT		101
-#define DYNAMIC_ABOUT		102
-#define DYNAMIC_BUILDMENU	103
-#define DYNAMIC_TEST1		104
-#define DYNAMIC_TEST2           105
+#define DYNAMIC_QUIT		1000
+#define DYNAMIC_TEXT		1001
+#define DYNAMIC_ABOUT		1002
+#define DYNAMIC_BUILDMENU	1003
+#define DYNAMIC_TEST1		1004
+#define DYNAMIC_TEST2           1005
 
 #ifdef LB_I_EXTENTIONS
 /*...sclass lb_wxFrame:0:*/
@@ -136,6 +136,8 @@ public:
         virtual lb_I_Unknown* LB_STDCALL getEventsource(lb_I_EventConnector* object) { return NULL; }
         
         wxMenuBar* menu_bar;
+        UAP(lb_I_EventManager, eman, __FILE__, __LINE__)
+        UAP(lb_I_Dispatcher, dispatcher, __FILE__, __LINE__)
 };
 
 BEGIN_IMPLEMENT_LB_UNKNOWN(lb_wxFrame)
@@ -1082,12 +1084,17 @@ lbErrCodes LB_STDCALL MyApp::lbEvHandler3(lb_I_Unknown* uk) {
 	
 	
 	int EvNr = 0;
-	ev_manager->registerEvent(handlername->getData(), EvNr);	
+	ev_manager->resolveEvent(handlername->getData(), EvNr);
 
 	wxMenuBar* mbar = frame_peer->getMenuBar();
 	wxMenu* menu = mbar->GetMenu(mbar->FindMenu(wxString(menubar->getData())));
 
 	menu->Append(EvNr, menuname->getData());
+
+
+	((wxFrame*) frame_peer)->Connect( EvNr,  -1, wxEVT_COMMAND_MENU_SELECTED,
+          (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
+          &lb_wxFrame::OnDispatch );
 
 	return ERR_NONE;
 }
@@ -1181,6 +1188,31 @@ void lb_wxFrame::OnDispatch(wxCommandEvent& event ) {
         	break;
         default:
                 // Delegate all other events
+                {
+                	lbErrCodes err = ERR_NONE;
+			lb_I_Module* m = *&manager;
+			if (eman == NULL) {
+				printf("Get an event manager\n");
+				REQUEST(m, lb_I_EventManager, eman)
+			}
+		
+			if (dispatcher == NULL) {
+				printf("Get a dispatcher\n");
+				REQUEST(m, lb_I_Dispatcher, dispatcher)
+				dispatcher->setEventManager(eman.getPtr());
+			}				
+
+			UAP_REQUEST(manager.getPtr(), lb_I_String, param)
+			param->setData("wxWindows app calls dynamically assigned handler");
+			UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
+			QI(param, lb_I_Unknown, uk, __FILE__, __LINE__)
+		
+			UAP_REQUEST(manager.getPtr(), lb_I_String, result)
+			UAP(lb_I_Unknown, uk_result, __FILE__, __LINE__)
+			QI(result, lb_I_Unknown, uk_result, __FILE__, __LINE__)
+		
+			dispatcher->dispatch(event.GetId(), uk.getPtr(), &uk_result);
+                }
                 break;
         }
 }
