@@ -2,11 +2,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.4 $
+ * $Revision: 1.5 $
  * $Name:  $
- * $Id: skiplist.cpp,v 1.4 2002/06/01 08:59:27 lolli Exp $
+ * $Id: skiplist.cpp,v 1.5 2002/08/21 18:44:29 lolli Exp $
  *
  * $Log: skiplist.cpp,v $
+ * Revision 1.5  2002/08/21 18:44:29  lolli
+ * Implemented the new container functions for direct access
+ *
  * Revision 1.4  2002/06/01 08:59:27  lolli
  * Bug due to position of module definition for export
  *
@@ -248,7 +251,26 @@ void LB_STDCALL SkipList::setElement(lb_I_KeyBase** key, lb_I_Unknown ** const e
     insert(e, key); 
 }
 /*...e*/
-
+lb_I_Unknown* LB_STDCALL SkipList::getElementAt(int i) {
+        LOG("SkipList::getElementAt(int i) not implemented")
+        int ii = 0;
+        lb_I_Element* temp = container_data;
+        while (temp != NULL) {
+                if (ii == i) return temp->getObject();
+                temp = temp->getNext();
+        }
+        return NULL;
+}
+lb_I_KeyBase* LB_STDCALL SkipList::getKeyAt(int i) {
+        LOG("SkipList::getKeyAt(int i) not implemented")
+        int ii = 0;
+        lb_I_Element* temp = container_data;
+        while (temp != NULL) {
+                if (ii == i) return temp->getKey();
+                temp = temp->getNext();
+        }
+        return NULL;
+}
 
 /*...srandomLevel\40\void\41\:0:*/
 int randomLevel(void) { // Pick a level on exponential distribution
