@@ -1,10 +1,13 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.4 $
+ * $Revision: 1.5 $
  * $Name:  $
- * $Id: lb_misc.h,v 1.4 2001/05/01 15:51:52 lolli Exp $
+ * $Id: lb_misc.h,v 1.5 2001/05/04 17:14:43 lolli Exp $
  * $Log: lb_misc.h,v $
+ * Revision 1.5  2001/05/04 17:14:43  lolli
+ * Use of MACRO DECLARE_FUNCTOR works
+ *
  * Revision 1.4  2001/05/01 15:51:52  lolli
  * First instance could be loaded over the new module management
  *
@@ -57,6 +60,8 @@
 #include <string.h>
 #include <iostream.h>
 #include <stdio.h>
+
+#include <lbInterfaces.h>
 /*...e*/
 
 
@@ -66,7 +71,11 @@ extern "C" {
 #endif
 /*...e*/
 void lb_sleep(int ms);
-lbErrCodes DLLEXPORT LB_STDCALL instanceOfLogger(lb_I_Unknown*& uk);
+
+//lbErrCodes DLLEXPORT LB_STDCALL instanceOfLogger(lb_I_Unknown*& uk);
+
+DECLARE_FUNCTOR(instanceOfLogger)
+
 /*...sendif __cplusplus:0:*/
 #ifdef __cplusplus
 }
