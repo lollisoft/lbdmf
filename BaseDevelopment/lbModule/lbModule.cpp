@@ -28,11 +28,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.46 $
+ * $Revision: 1.47 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.46 2003/01/15 22:42:20 lothar Exp $
+ * $Id: lbModule.cpp,v 1.47 2003/01/24 17:55:55 lothar Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.47  2003/01/24 17:55:55  lothar
+ * Added debug information
+ *
  * Revision 1.46  2003/01/15 22:42:20  lothar
  * Compiles with MSC
  *
@@ -2692,6 +2695,7 @@ lbErrCodes LB_STDCALL lbModule::request(const char* request, lb_I_Unknown** resu
                          * of one level.
                          */
 /*...e*/
+			cout << "Get a config object" << endl;
                         xml_Instance->getConfigObject(&config, node);
                         track_Object(*&config, "Test object given by xml_Instance->getConfigObject()");
 /*...sVERBOSE:32:*/
@@ -2709,6 +2713,7 @@ lbErrCodes LB_STDCALL lbModule::request(const char* request, lb_I_Unknown** resu
                         // May be the same bug as in internal ...
                         // It was the self pointed parent member
                         // config++;
+                        cout << "Find the needed node" << endl;
 /*...sfind the needed node:32:*/
                         if ((err = config->getFirstChildren(&impl)) == ERR_NONE) {
                                 impl.setLine(__LINE__);
@@ -2781,6 +2786,7 @@ lbErrCodes LB_STDCALL lbModule::request(const char* request, lb_I_Unknown** resu
                                 impl->deleteValue(value);
                         }
 /*...e*/
+			cout << "Make the instance" << endl;
                         makeInstance(functorName, moduleName, result);
 /*...sLog error:32:*/
                         if ((*result) == NULL) {
