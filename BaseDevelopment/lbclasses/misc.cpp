@@ -31,10 +31,13 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.32 $
+ * $Revision: 1.33 $
  * $Name:  $
- * $Id: misc.cpp,v 1.32 2005/01/23 13:43:05 lollisoft Exp $
+ * $Id: misc.cpp,v 1.33 2005/01/24 22:49:30 lollisoft Exp $
  * $Log: misc.cpp,v $
+ * Revision 1.33  2005/01/24 22:49:30  lollisoft
+ * Logging is unclean...
+ *
  * Revision 1.32  2005/01/23 13:43:05  lollisoft
  * std:: is only under linux working
  *
@@ -192,6 +195,14 @@ extern "C" {
 #ifndef  LOG_DEFINED
 #define  LOG_DEFINED
 
+#ifdef WINDOWS
+#define LOGFILE "c:\\log\\lbDMF.log"
+#endif
+#ifdef LINUX
+//#define LOGFILE	"~/lbDMF.log"
+#define LOGFILE "c:\\log\\lbDMF.log"
+#endif
+
 /*...sclass lbLog:0:*/
 class lbLog : public lb_I_Log {
 
@@ -329,7 +340,7 @@ lbErrCodes LB_STDCALL lbLog::setData(lb_I_Unknown* uk) {
 lbLog::lbLog() {
 //lbLock lbLock(sect);
 	manager = NULL;
-        strcpy(f, "c:\\log\\wsmaster.log");
+        strcpy(f, LOGFILE);
         logdirect("lbLog::lbLog(): Creating mutex for logfile\n", f, level);
         if (firstlog == 0) {
                 mutex = new lbMutex();
@@ -347,7 +358,7 @@ lbLog::lbLog(int l) {
 //lbLock lbLock(sect);
 	logmessage = NULL;
 	lastsize = 0;
-        strcpy(f, "c:\\log\\wsmaster.log");
+	strcpy(f, LOGFILE);
 //        logdirect("lbLog::lbLog(int l): Creating mutex for logfile", f, level);
 
         if (firstlog == 0) {
