@@ -77,6 +77,9 @@ public:
 
 	virtual lb_I_String* LB_STDCALL getColumnName() = 0;
 	
+	virtual lbErrCodes   LB_STDCALL prepareBoundColumn(lb_I_Query* q, int column) = 0;
+	virtual lbErrCodes   LB_STDCALL bindColumn(lb_I_Query* q, int column) = 0;
+	
 
 protected:
 	/**
@@ -207,7 +210,6 @@ public:
 
         /* Set the SQL query */
         virtual lbErrCodes LB_STDCALL query(char* q) = 0;
-
 
 	/* Manipulation */
 	/**

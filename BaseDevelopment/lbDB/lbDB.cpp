@@ -261,6 +261,21 @@ public:
 		buffer = NULL;
 	}
 	virtual ~lbBoundColumn() {
+
+		switch (_DataType) {
+			case SQL_CHAR:
+			case SQL_VARCHAR:
+			case SQL_LONGVARCHAR:
+				printf("Destroy a bound column with '%s' as data\n", buffer);
+				break;
+			case SQL_INTEGER:
+				printf("Destroy a bound column with %d as data\n", buffer);
+				break;
+			default:
+				_CL_LOG << "lbBoundColumn::bindColumn(...) failed: Unknown or not supported datatype" LOG_
+				break;
+		}
+		
 		if ((bound != 0) && (buffer != NULL)) {
 			free(buffer);
 			buffer = NULL;
@@ -276,14 +291,22 @@ public:
 
 	lb_I_String* LB_STDCALL getColumnName();
 
-	lbErrCodes LB_STDCALL bindColumn(lbQuery* q, int column);
+	lbErrCodes LB_STDCALL prepareBoundColumn(lb_I_Query* q, int column);
+	lbErrCodes LB_STDCALL bindColumn(lb_I_Query* q, int column);
 	
 protected:
 
-	virtual lbErrCodes  LB_STDCALL setData(int b, SQLSMALLINT dt, void* bu) {
+	virtual lbErrCodes  LB_STDCALL setData(int b, SQLSMALLINT dt, void* bu, lb_I_String* name) {
 		bound = b;
 		_DataType = dt;
 		buffer = bu;
+		REQUEST(manager.getPtr(), lb_I_String, colName)
+		printf("Set data in cloned column\n");
+		if (name == NULL) {
+			printf("ERROR: Cloning data with NULL pointer\n");
+		}
+		colName->setData(name->getData());
+		printf("Have set data in cloned column\n");
 		return ERR_NONE;
 	}
 
@@ -392,6 +415,7 @@ int               LB_STDCALL lbBoundColumns::getColumnCount() {
 
 /*...slbErrCodes      LB_STDCALL lbBoundColumns\58\\58\setQuery\40\lbQuery\42\ q\41\:0:*/
 lbErrCodes      LB_STDCALL lbBoundColumns::setQuery(lbQuery* q) {
+/*...spreparements:0:*/
 	HSTMT hstmt = q->getCurrentStatement();
 	query = q;
 
@@ -413,6 +437,7 @@ lbErrCodes      LB_STDCALL lbBoundColumns::setQuery(lbQuery* q) {
 	 */
 	SQLSMALLINT num = 0;	
 	SQLRETURN sqlreturn = SQLNumResultCols(hstmt, &num);
+/*...e*/
 	
 /*...sdocs:0:*/
 #ifdef bla
@@ -439,25 +464,36 @@ Therefore I need an indicator, set by the user of this library to know, which on
 	// For each column create a bound column instance.
 	// The instance will bind the column.
 	for (int i = 1; i <= num; i++) {
+		lbErrCodes err = ERR_NONE;
+		
+		printf("Bind a column\n");
 
 		// Create the instance ...
-		printf("Try to create a new lbBoundColumn instance.\n");
 		lbBoundColumn* bc = new lbBoundColumn();
-		printf("bc->setModuleManager(*&manager, __FILE__, __LINE__);\n");
+
 		bc->setModuleManager(*&manager, __FILE__, __LINE__);
-		printf("Bind column %d.\n", i);
-		bc->bindColumn(q, i);
-		printf("Column has been bound.\n");		
+
+		bc->prepareBoundColumn(q, i);
+
 		integerKey->setData(i);
-		printf("integerKey->setData(i);\n");
+
 		UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
 		UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
 
 		bc->queryInterface("lb_I_Unknown", (void**) &uk, __FILE__, __LINE__);
 		integerKey->queryInterface("lb_I_KeyBase", (void**) &key, __FILE__, __LINE__);		
-		
+
+printf("Insert the bound column\n");		
+
 		boundColumns->insert(&uk, &key);
-		printf("Prepare column name mapping\n");
+
+		UAP(lb_I_BoundColumn, bc1, __FILE__, __LINE__)
+
+printf("Get the bound column back\n");
+		
+		bc1 = getBoundColumn(i);
+		
+		bc1->bindColumn(q, i);
 		
 /*...sGet the column name for this column and add an index to it\39\s column id\46\:16:*/
 
@@ -470,7 +506,7 @@ Therefore I need an indicator, set by the user of this library to know, which on
 		UAP(lb_I_KeyBase, skey, __FILE__, __LINE__)
 		UAP(lb_I_String, string, __FILE__, __LINE__)
 
-		string = bc->getColumnName();
+		string = bc1->getColumnName();
 		
 		printf("Create a key for the column\n");
 		
@@ -488,7 +524,7 @@ Therefore I need an indicator, set by the user of this library to know, which on
 		
 		ColumnNameMapping->insert(&ivalue, &skey);
 /*...e*/
-		printf("Inserted column name mapping\n");
+
 	}
 
 	return ERR_NONE;
@@ -1039,7 +1075,7 @@ lbErrCodes LB_STDCALL lbQuery::remove() {
 }
 /*...e*/
 /*...slbErrCodes LB_STDCALL lbQuery\58\\58\update\40\\41\:0:*/
-#define USE_CURRENT_OF
+//#define USE_CURRENT_OF
 lbErrCodes LB_STDCALL lbQuery::update() {
 	lbErrCodes err = ERR_NONE;
 	#define cbMAXSQL    512
@@ -1047,9 +1083,10 @@ lbErrCodes LB_STDCALL lbQuery::update() {
 	CursorName[0] = 0;
 
 	if (mode == 1) {
-		// Insert the new record
+		printf("Insert the new record\n");
 		SQLSetPos(hstmt, 2, SQL_ADD, SQL_LOCK_NO_CHANGE);
 	} else {
+		printf("Update the record\n");
 #ifdef USE_CURRENT_OF
 /*...susing WHERE CURRENT OF \46\\46\\46\:0:*/
 		// Update the existing record
@@ -1148,7 +1185,7 @@ free(buffer);
 /*...e*/
 #endif
 #ifndef USE_CURRENT_OF
-		retcode = SQLSetPos(hstmt, 0, SQL_UPDATE, SQL_LOCK_NO_CHANGE);
+		retcode = SQLSetPos(hstmt, 1, SQL_UPDATE, SQL_LOCK_NO_CHANGE);
 		
 		if (retcode != SQL_SUCCESS)
 		{
@@ -1418,11 +1455,15 @@ lbErrCodes LB_STDCALL lbBoundColumn::setData(lb_I_Unknown* uk) {
 
 	REQUEST(manager.getPtr(), lb_I_String, colName)
 
-	colName->setData(column->getColumnName()->getData());
+	printf("Copy the column name......................\n");
 
+	if (column->getColumnName() != NULL) colName->setData(column->getColumnName()->getData());
+
+	printf("Copied the column name......................\n");
 
 	leaveOwnership(*&column, this);
 
+	printf("Leaved the ownership\n");
         
         return ERR_NOT_IMPLEMENTED;
 }
@@ -1433,9 +1474,9 @@ lbErrCodes LB_STDCALL lbBoundColumn::leaveOwnership(lb_I_BoundColumn* oldOwner, 
 	lbBoundColumn* oO = (lbBoundColumn*) oldOwner;
 	lbBoundColumn* nO = (lbBoundColumn*) newOwner;
 
-	nO->setData(oO->bound, oO->_DataType, oO->buffer);
+	nO->setData(oO->bound, oO->_DataType, oO->buffer, oO->colName.getPtr());
 	oO->bound = 0;
-	oO->buffer = NULL;
+	oO->buffer = (char*) "Test";
 
 	return ERR_NONE;
 }
@@ -1495,10 +1536,11 @@ lbErrCodes LB_STDCALL lbBoundColumn::setFromString(lb_I_String* set, int mode) {
 	return ERR_NONE;
 }
 /*...e*/
-/*...slbErrCodes LB_STDCALL lbBoundColumn\58\\58\bindColumn\40\lbQuery\42\ q\44\ int column\41\:0:*/
-lbErrCodes LB_STDCALL lbBoundColumn::bindColumn(lbQuery* q, int column) {
+/*...slbErrCodes LB_STDCALL lbBoundColumn\58\\58\prepareBoundColumn\40\lb_I_Query\42\ q\44\ int column\41\:0:*/
+lbErrCodes LB_STDCALL lbBoundColumn::prepareBoundColumn(lb_I_Query* q, int column) {
+	lbErrCodes err = ERR_NONE;
 
-	HSTMT hstmt = q->getCurrentStatement();
+	HSTMT hstmt = ((lbQuery*) q)->getCurrentStatement();
 
 /*...svars:8:*/
 	SQLSMALLINT     ColumnNumber = 0;
@@ -1520,28 +1562,55 @@ lbErrCodes LB_STDCALL lbBoundColumn::bindColumn(lbQuery* q, int column) {
 
 	long cbBufferLength = 0; //(long*) malloc(sizeof(long));
 
+	REQUEST(manager.getPtr(), lb_I_String, colName)
+	colName->setData((char*) ColumnName);
+	return err;
+}
+/*...e*/
+/*...slbErrCodes LB_STDCALL lbBoundColumn\58\\58\bindColumn\40\lbQuery\42\ q\44\ int column\41\:0:*/
+lbErrCodes LB_STDCALL lbBoundColumn::bindColumn(lb_I_Query* q, int column) {
+
+	HSTMT hstmt = ((lbQuery*) q)->getCurrentStatement();
+
+/*...svars:8:*/
+	SQLSMALLINT     ColumnNumber = 0;
+	SQLCHAR         ColumnName[1000] = "";
+	SQLSMALLINT     BufferLength = 500;
+	SQLSMALLINT     NameLength = 0;
+	SQLSMALLINT     DataType = 0;
+	SQLUINTEGER     ColumnSize = 0; //new (long);
+	
+	SQLSMALLINT     DecimalDigits = 0;
+	SQLSMALLINT     Nullable = 0;
+/*...e*/
+
+// Assume readonly for now ...
+
+	long cbBufferLength = 0; //(long*) malloc(sizeof(long));
+	SQLRETURN ret;
+
+/*...sbla:0:*/
+//#ifdef bla
+
+	//SQLRETURN 
+	ret = SQLDescribeCol( hstmt, column, ColumnName,
+	                                BufferLength, &NameLength, &DataType,
+	                                &ColumnSize, &DecimalDigits, &Nullable);
+
+
 	printf("SQLDescribeCol(...) gave me the following information:\n"
 	       "ColumnName is: %s\n"
 	       "BufferLength is %d\n"
 	       "Returned ColumnSize is %d\n"
 	       , ColumnName, BufferLength, ColumnSize);
-printf("Get a string instance\n");
 
-if (manager.getPtr() == NULL) {
-    printf("FATAL: Manager is not set up correctly!\n");
-}
 
 	REQUEST(manager.getPtr(), lb_I_String, colName)
-printf("Have a string instance\n");		
-printf("Have a string instance\n");		
-printf("Have a string instance\n");		
-printf("Have a string instance\n");		
-printf("Have a string instance\n");		
-printf("Have a string instance\n");		
-printf("Have a string instance\n");		
-printf("Have a string instance\n");		
 	colName->setData((char*) ColumnName);
-printf("Have set column name\n");
+	
+//#endif
+/*...e*/
+
 	int rows = 2;
 
 	switch (DataType) {
