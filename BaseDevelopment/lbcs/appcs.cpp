@@ -24,6 +24,13 @@ void RemoteAppReq::setValue(const char* param) {
 	parameter = strdup(param);
 }
 /*...e*/
+char* RemoteAppReq::getIssue() {
+	return issue;
+}
+
+char* RemoteAppReq::getValue() {
+	return parameter;
+}
 /*...e*/
 /*...sRemoteAppRes:0:*/
 /*...sRemoteAppRes\58\\58\RemoteAppRes\40\\41\:0:*/
@@ -82,18 +89,21 @@ char* RemoteAppRes::getEntryName(int i) {
 /*...slbAppServer\58\\58\lbAppServer\40\\41\:0:*/
 lbAppServer::lbAppServer() {
 	LOGENABLE("lbAppServer::lbAppServer()");
+/*...sdead code:0:*/
 /*
 	LOG("lbAppServer::lbAppServer(): Initialize lbTransfer object");
 	transfer = new lbTransfer();
 	transfer->init("localhost/busmaster");
 	LOG("lbAppServer::lbAppServer(): Initialized");
 */
+/*...e*/
 }
 /*...e*/
 /*...slbAppServer\58\\58\\126\lbAppServer\40\\41\:0:*/
 lbAppServer::~lbAppServer() {
 }
 /*...e*/
+#ifdef bla
 /*...slbAppServer\58\\58\send \40\const RemoteAppRes\38\ res\41\:0:*/
 // This sends a result to the client
 void lbAppServer::send (const RemoteAppRes& res) {
@@ -104,19 +114,37 @@ void lbAppServer::send (const RemoteAppRes& res) {
 void lbAppServer::recv (RemoteAppReq& req) {
 LOGENABLE("lbAppServer::recv (RemoteAppReq& req)");
 	lb_Transfer_Data transferItem;
+/*...sVERBOSE:0:*/
+#ifdef VERBOSE
 LOG("lbAppServer::recv (RemoteAppReq& req): Get any data");	
+#endif
+/*...e*/
 	if (transfer != NULL) {
+#define VERBOSE
+/*...sVERBOSE:0:*/
+#ifdef VERBOSE
 	LOG("lbAppServer::recv (RemoteAppReq& req): Transfer is not null - do work");
-
+#endif
+/*...e*/
 		*transfer >> transferItem;
-
+/*...sVERBOSE:0:*/
+#ifdef VERBOSE
 	LOG("lbAppServer::recv (RemoteAppReq& req): Transfer is not null - done work");
+#endif
+/*...e*/
+#undef VERBOSE
 	}
 	else LOG("lbAppServer::recv (RemoteAppReq& req): transfer is null");
+/*...sVERBOSE:0:*/
+#ifdef VERBOSE
 LOG("lbAppServer::recv (RemoteAppReq& req): Got any data");	
+#endif
+/*...e*/
 }
 /*...e*/
+#endif
 /*...slbAppServer\58\\58\run\40\\41\:0:*/
+/*
 int lbAppServer::run() { 
 	LOG("lbAppServer::run() called");
 
@@ -125,8 +153,15 @@ int lbAppServer::run() {
         transfer->init("localhost/busmaster");
         LOG("lbAppServer::run(): Initialized");
 
-	return _service(); 
+	appBus = new lbAppBusServer();
+
+	while (1) {
+		transfer->accept();
+
+		if(_service() == 0) return 0; 
+	}
 };
+*/
 /*...e*/
 
 
@@ -168,7 +203,7 @@ void lbAppClient::Connect(const char* application) {
 	 * The Target for any anouncements must be configured by a configuration file.
 	 */
 /*...e*/
-#define VERBOSE
+
 /*...sVERBOSE:8:*/
 #ifdef VERBOSE
 LOG("lbAppClient::Connect(const char* application): Announce me as client");
@@ -208,7 +243,6 @@ LOG("lbAppClient::Connect(const char* application): Announce me as client");
 	 * state.
 	 */
 /*...e*/
-#undef VERBOSE
 }
 /*...e*/
 /*...slbAppClient\58\\58\Disconnect\40\\41\:0:*/

@@ -66,13 +66,23 @@ public:
         lbSocket();
         ~lbSocket() {}
 
+	int gethostname(char* &name);
 
 	void initSymbolic(char *host, char* service);
         void init(unsigned long mysockaddr, u_short port = PORT);
         void reinit(char *mysockaddr="");
 
+	int isServer() { return _isServer; }
+
 	int recvInteger(int& i);
 	int sendInteger(int i);
+	
+	int send(void* buf, int len);		
+
+	/**
+	 * Buffer must be allocated.
+	 */	
+	int recv(void* buf, int & len);
 		
         int recv_charbuf(char *buf);
         int send_charbuf(char *buf, int len);
@@ -84,12 +94,13 @@ public:
 		int recv(lb_Transfer_Data & data);
 		int send(lb_Transfer_Data & data);
 
+        int accept();
+
 private:
 
         int startup();
         int bind();
         int listen();
-        int accept();
         int socket();
 	int close();
         int connect();
@@ -124,7 +135,7 @@ private:
   
   unsigned long destAddr; // for client init
 #endif
-  int isServer;
+  int _isServer;
 };
 
 #endif // _LB_SOCKET_

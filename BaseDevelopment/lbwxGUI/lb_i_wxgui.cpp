@@ -1,5 +1,6 @@
 #define LB_I_WXGUI_DLL
 
+/*...sInclude:0:*/
 #include <string.h>
 #include <stdlib.h>
 
@@ -15,8 +16,9 @@
 
 // Include interface for wx library
 #include <lb_I_wxGUI.h>
+/*...e*/
 
-
+/*...slb_wxComponent:0:*/
 // Class, that holds a GUI component. An object of this class could be stored
 // in lbComponentDictionary
 class lb_wxComponent: public lbObject {
@@ -63,8 +65,9 @@ lb_I_wxGUIComponent::GUITypes lb_I_wxGUIComponent::getType() {
 void lb_I_wxGUIComponent::setApplicationName(wxString name) {
     forApplication = name;
 }
+/*...e*/
 
-
+/*...slb_I_wxMenuEntry:0:*/
 lb_I_wxGUIMenuEntry::lb_I_wxGUIMenuEntry() {
     MenuId  = -1;
     MenuTxt = "";
@@ -89,10 +92,9 @@ wxString lb_I_wxGUIMenuEntry::getTxt() {
 wxString lb_I_wxGUIMenuEntry::getHlp() {
     return MenuHlp;
 }
+/*...e*/
 
-
-
-
+/*...slb_I_wxGUIMenu:0:*/
 lb_I_wxGUIMenu::lb_I_wxGUIMenu(/*lb_I_GUIMenu& menu*/) {
 	setType();
 }
@@ -148,9 +150,9 @@ wxString lb_I_wxGUIMenu::getName() {
 void lb_I_wxGUIMenu::setName(wxString n) {
     name = n;
 }
+/*...e*/
 
-
-
+/*...slb_I_wxGUIMenuBar:0:*/
 /*...slb_I_wxGUIMenuBar\58\\58\lb_I_wxGUIMenuBar\40\wxString \38\applicationName\41\:0:*/
 lb_I_wxGUIMenuBar::lb_I_wxGUIMenuBar(wxString &applicationName) {
 
@@ -187,9 +189,12 @@ lb_I_wxGUIMenuBar::lb_I_wxGUIMenuBar(wxString &applicationName) {
          * 
          */
 		lb_I_GUIMenu* menu = (lb_I_GUIMenu*) GUIMenuBar.nextElement();
+/*...sVERBOSE:0:*/
+#ifdef VERBOSE
 		LOG("lb_I_GUIMenu in lb_I_wxGUIMenuBar::lb_I_wxGUIMenuBar has now this name:");
 		LOG(menu->getName());
-
+#endif
+/*...e*/
         /**
          * Construct a wxGUI object from a GUI object.
          * This means mapping to a specific framework.
@@ -237,20 +242,24 @@ wxMenuBar* lb_I_wxGUIMenuBar::getMenuBar(wxEvtHandler* evtHandle, wxObjectEventF
     while (Menus->hasMoreElements()) {
         lb_wxComponent* Element = (lb_wxComponent*) Menus->nextElement();
 
-		if(Element == NULL) LOG("lb_I_wxGUIMenuBar::getMenuBar(...) Element is NULL!");
-                
+	if(Element == NULL) 
+	{
+	  LOG("lb_I_wxGUIMenuBar::getMenuBar(...) Element is NULL! Where a non NULL was excepted.");
+	  break;
+        }
+               
         lb_I_wxGUIComponent* comp = Element->getObject();
                 
         wxMenu* menu;
 
         if (comp->getType() == lb_I_wxGUIComponent::LB_MENU)
         {
-			wxString menuName = ((lb_I_wxGUIMenu*) comp)->getName();
-			wxString msg = wxString("lb_I_wxGUIMenuBar::getMenuBar(...) Add a menu to the menubar(") + menuName + wxString(")");
+		wxString menuName = ((lb_I_wxGUIMenu*) comp)->getName();
+		wxString msg = wxString("lb_I_wxGUIMenuBar::getMenuBar(...) Add a menu to the menubar(") + menuName + wxString(")");
 			
-			LOG(msg.GetData());
-			
+		LOG(msg.GetData());
 
+/*...sOld code:0:*/
 /*
     evtHandle->Connect(1, -1, wxEVT_COMMAND_MENU_SELECTED,
                        (wxObjectEventFunction)
@@ -260,21 +269,20 @@ wxMenuBar* lb_I_wxGUIMenuBar::getMenuBar(wxEvtHandler* evtHandle, wxObjectEventF
     menuBar->Append(menuFile, "&File");
 
 */
-
-
-            menu = ((lb_I_wxGUIMenu*) comp)->getMenu(evtHandle, func);
-            menuBar->Append(menu, menuName);
+/*...e*/
+		menu = ((lb_I_wxGUIMenu*) comp)->getMenu(evtHandle, func);
+		menuBar->Append(menu, menuName);
         }
         else
         {
             LOG("Error while creating the menu. Submenu type is not LB_MENU");
         }
-
     }
     return menuBar;
 }
+/*...e*/
 
-
+/*...slb_I_wxGUIApplication:0:*/
 lb_I_wxGUIApplication::lb_I_wxGUIApplication() {
     title = strdup("Generic wxGUIApp by Lothar Behrens");
     componentCount = 1;
@@ -329,3 +337,4 @@ LOG("Created");
 wxMenu* lb_I_wxGUIApplication::loadMenu() {
     return NULL;
 }
+/*...e*/

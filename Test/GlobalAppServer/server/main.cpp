@@ -1,74 +1,158 @@
 #include <lbinclude.h>
 #include <conio.h>
 
-class myThread : public lbThread {
-public:
-	myThread();
-	
-	virtual ~myThread();
-	
-protected:
-	void* Entry();
-};
-
-myThread::myThread() {
-	LOG("myThread::myThread() called");
-}
-
-myThread::~myThread() {
-	LOG("myThread::~myThread() called\n");
-}
-
-class GlobalAppServer : public lbAppServer {
+/*...sclass GlobalAppServer:0:*/
+class GlobalAppServer : public lbAppBusServer {
 public:
 	GlobalAppServer() 
 	{
 		LOG("GlobalAppServer::GlobalAppServer() called");
 	};
-	virtual ~GlobalAppServer() {};
+
+	virtual ~GlobalAppServer() 
+	{
+	};
 	
 	int _service();
+	
+	int _request(char * servertype,
+                     lb_Transfer_Data request,
+                     lb_Transfer_Data & result);
 };
 
+/**
+ * Per request invoked
+ */
+/*...sGlobalAppServer\58\\58\_request\40\char \42\servicetyp\44\ request\44\ result\41\:0:*/
+int GlobalAppServer::_request(char *servicetyp, 
+                              lb_Transfer_Data request, 
+                              lb_Transfer_Data & result) {
+LOGENABLE("GlobalAppServer::_request()");
+LOG("GlobalAppServer::_request(): Handle a request");
+	// Handle the request
+	int count = request.getPacketCount();
 
+	char buf[100];
+	sprintf(buf, "GlobalAppServer::_request(): Packetcount = %d", count);
+	printf("%s\n", buf);
+	
+	LOG(buf);
+		
+	request.resetPositionCount();
+		
+	while (count--) {
+	LOG("GlobalAppServer::_request(): Handle a packet");
+		LB_PACKET_TYPE type;
+		int i = 0;
+		char *buffer;
+		request.getPacketType(type);
+
+		switch (type) {
+			case LB_CHAR:
+				request.get(buffer);
+				printf("Char value = %s\n", buffer); 
+				break;
+			case LB_INT: 
+				request.get(i);
+				printf("Integer value = %d\n", i);
+				break;
+				
+			default:
+				printf("Unknown packet type!\n"); 
+				break;
+		}
+			
+		request.incrementPosition();
+	LOG("GlobalAppServer::_request(): Packet handled");
+	}
+LOG("GlobalAppServer::_request(): Request handled");
+	return 1;                              
+}
+/*...e*/
+
+/**
+ * Per run invoked
+ */
+/*...sGlobalAppServer\58\\58\_service\40\\41\:0:*/
 int GlobalAppServer::_service() {
 	LOG("GlobalAppServer::_service() called");
-	
+
 	int exit = 0;
-	RemoteAppReq req;
-	RemoteAppRes res;
 	
-	while (exit == 0) {
+	while (exit <= 1) {
 		LOG("GlobalAppServer::_service(): Waiting for a request");
-		recv(req);
+		printf("GlobalAppServer::_service(): Waiting for a request\n");
+		
+		lb_Transfer_Data request;
+		lb_Transfer_Data result;
+		
+		waitForRequest(request);
+LOG("GlobalAppServer::_service(): Got a request, handle it");
+		// Check request for service type
+		handleRequest("GlobalAppServer", request, result);
+
+		answerRequest(result);
+
+		exit++;
+		printf("GlobalAppServer::_service(): Got a request\n");
 		LOG("GlobalAppServer::_service(): Got a request");
 	}	
 	
 	return 0;
 }
+/*...e*/
+/*...e*/
 
-void* myThread::Entry() {
-	LOG("myThread::Entry() called");
+/*...sclass GASThread:0:*/
+class GASThread : public lbThread {
+public:
+	GASThread();
+	
+	virtual ~GASThread();
+	
+protected:
+	void* Entry();
+};
+
+/*...sGASThread\58\\58\GASThread\40\\41\:0:*/
+GASThread::GASThread() {
+	LOG("myThread::myThread() called");
+}
+/*...e*/
+
+/*...sGASThread\58\\58\\126\GASThread\40\\41\:0:*/
+GASThread::~GASThread() {
+	LOG("myThread::~myThread() called");
+}
+/*...e*/
+
+/*...svoid\42\ GASThread\58\\58\Entry\40\\41\:0:*/
+void* GASThread::Entry() {
+	LOG("GASThread::Entry() called");
 
 	GlobalAppServer server;
 	
-	LOG("myThread::Entry(): Start server");
+	LOG("GASThread::Entry(): Start server");
 	server.run();
 
 
 	for (int i=0; i<5; i++) {
-		printf("myThread::Entry - Loop at %d\n", i);
+		printf("GASThread::Entry - Loop at %d\n", i);
 		Beep(200, 50);
 		lb_sleep(1000);
 	}
 	return NULL;
 }
+/*...e*/
+/*...e*/
 
+/*...smain:0:*/
 void main(int argc, char** argv) {
+LOGPREFIX("GlobalAppServer");
 LOGENABLE("main(...)");
 	printf("Global application server is starting...\n");
-	myThread *thread;
-	thread = new myThread();
+	GASThread *thread;
+	thread = new GASThread();
 	
 	lbThreadError err = thread->create();
 	//lb_sleep(1000);
@@ -87,17 +171,18 @@ LOGENABLE("main(...)");
 	err = thread->run();
 	lb_sleep(10);
 /*...sOutput of main:8:*/
-	for (int i=0;i<1000;i++) {
-		lb_sleep(100);
-		
+	int i = 0;
+	while (1) {
+		i++;
+		lb_sleep(1000);
+/*		
 		if (i == 100) {
 		  thread = new myThread();
 		  lbThreadError err = thread->create();
 		  err = thread->run();
 		}
-		
+*/		
 		printf("Main is at %d\n", i);
-		getch();
 	}
 /*...e*/
 	lb_sleep(1000);	
@@ -117,3 +202,4 @@ LOGENABLE("main(...)");
 	lb_sleep(1000);
 	getch();
 }
+/*...e*/

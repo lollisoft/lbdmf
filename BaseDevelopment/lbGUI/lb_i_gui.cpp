@@ -1,5 +1,6 @@
 #define LB_I_GUI_DLL
 
+/*...sInclude:0:*/
 #include <appcs.h>
 
 #include <string.h>
@@ -10,6 +11,7 @@
 
 #include <lb_I_GUI.h>
 #include <lb_misc.h>
+/*...e*/
 
 // Class, that holds a GUI component. An object of this class could be stored
 // in lbComponentDictionary
@@ -19,7 +21,7 @@ public:
         lb_GUIComponent() {
         }
 
-		virtual ~lb_GUIComponent() {
+	virtual ~lb_GUIComponent() {
         }
 
 		/**
@@ -59,7 +61,6 @@ void lb_I_GUIComponent::setApplicationName(char *name) {
 }
 /*...e*/
 
-
 /*...slb_I_GUIMenuBar:0:*/
 lb_I_GUIMenuBar::lb_I_GUIMenuBar() {
 }
@@ -69,7 +70,11 @@ lb_I_GUIMenuBar::~lb_I_GUIMenuBar() {
 
 void lb_I_GUIMenuBar::Setup(char* applicationName) {
 LOGENABLE("lb_I_GUIMenuBar::Setup(char* applicationName)");
+/*...sVERBOSE:0:*/
+#ifdef VERBOSE
 LOG("lb_I_GUIMenuBar::Setup(char* applicationName): Create instance lb_GUIComponent component;");
+#endif
+/*...e*/
 	lb_GUIComponent component;
 
 /*...sDoc:0:*/
@@ -79,13 +84,15 @@ LOG("lb_I_GUIMenuBar::Setup(char* applicationName): Create instance lb_GUICompon
 	// I need an application server, that serve for several GUI components
 	// Must I differ several component types ?
 /*...e*/
+/*...sVERBOSE:0:*/
+#ifdef VERBOSE
 LOG("lb_I_GUIMenuBar::Setup(char* applicationName): Create instance lbAppClient AppClient;");
+#endif
+/*...e*/
 	lbAppClient AppClient;
 
 	// The application server need to know, for which application the connection is needed.
-LOG("lb_I_GUIMenuBar::Setup(char* applicationName): Connecting to application server");
 	AppClient.Connect(applicationName);
-LOG("lb_I_GUIMenuBar::Setup(char* applicationName): Connected to application server");
 
     // Is beginLoad really good?
     //TaskId tid = RemoteApp.beginLoad(); // IP stuff or other machine info is built by the local dispatcher

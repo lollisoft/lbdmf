@@ -30,6 +30,7 @@ typedef enum {
 	LB_LONG,
 	LB_USHORT,
 	LB_ULONG,
+	LB_VOID,
 
 	LB_OBJECT,	// The basic type of lbObject
 } LB_PACKET_TYPE;
@@ -40,7 +41,7 @@ typedef byte LB_DATA;
 /*...sLB_TRANSFER_DATA:0:*/
 typedef struct {
 	u_short			packet_no;
-	LB_PACKET_TYPE	packet_type;
+	LB_PACKET_TYPE		packet_type;
 	u_short			packet_size;
 	LB_DATA			data;
 } LB_TRANSFER_DATA, * pLB_TRANSFER_DATA;
@@ -91,6 +92,11 @@ public:
 
 	int addPacket(pLB_TRANSFER_DATA data);
 
+	int resetPositionCount();
+	int incrementPosition();
+	int getPacketType(LB_PACKET_TYPE & type);
+
+/*...ssetters:8:*/
 	/**
 	 * Data member operations
 	 */
@@ -101,13 +107,32 @@ public:
 	void add(long l);
 	void add(unsigned short us);
 	void add(unsigned long ul);
+	void add(const void* buf, int len);
+/*...e*/
 
-	 /**
-	  * Use dictionary yet
-	  */
+/*...sgetters:8:*/
+	int get(int& i);
+	int get(char* & c);
+	int get(short & s);
+	int get(long & l);
+	int get(unsigned short & us);
+	int get(unsigned long & ul);
 
-	 lbComponentDictionary* elements;
-	 int packet_count;
+	int get(void* & v, int & len);
+/*...e*/
+	
+	/**
+	 * The really function who is adding
+	 */
+	void add(const void* buf, int len, LB_PACKET_TYPE type);
+
+
+	/**
+	 * Use dictionary yet
+	 */
+	lbComponentDictionary* elements;
+	int packet_count;
+	int currentPos;
 };
 /*...e*/
 /*...slbTransfer:0:*/
@@ -122,10 +147,17 @@ public:
 	 */
 	void init(char *target);
 
+	/**
+	 * Got a connection...
+	 */
+	void accept();
+
 	void operator<< (const lb_Transfer_Data& req);
 
 	void operator>> (lb_Transfer_Data& res);
 
+
+	int gethostname(char* &name);
 private:
 	int recv(lb_Transfer_Data & data);
 	int send(const lb_Transfer_Data & data);
@@ -134,9 +166,12 @@ private:
 	int sendDatatype(char* type);
 	int waitforAnswer(char* answer);
 	int sendDataCount(int c);
-	int sendBuffer(void* buf, int len);
-	
+	int sendBuffer(byte* buf, int len);
+	int sendString(char* type);
+	int waitForString(char* & string);
+	int waitForDataCount(int & c);
 	int waitForDatatype(char* & result);
+	int waitForBuffer(byte * & buffer, int & len);
 
 	lbSocket* sock;
 	int laststate;

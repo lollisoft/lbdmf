@@ -1,6 +1,7 @@
 #ifndef LB_APPCS
 #define LB_APPCS
 
+/*...sdefine DLLEXPORT:0:*/
 #undef DLLEXPORT
 
 #ifdef APPCS_DLL
@@ -18,6 +19,7 @@
 #endif
 
 #endif
+/*...e*/
 
 
 
@@ -28,6 +30,7 @@
 class DLLEXPORT RemoteAppCS {
 };
 
+/*...sclass RemoteAppReq:0:*/
 class DLLEXPORT RemoteAppReq {
 public:
 	RemoteAppReq();
@@ -35,17 +38,22 @@ public:
 
 	void setIssue(char* what);
 	void setValue(const char* param);
+	
+	char* getIssue();
+	char* getValue();
 
 private:
 	char* issue;
 	char* parameter;
 };
+/*...e*/
 
 /**
  * RemoteAppRes represents a list with one or more results. The list ha a name, wich can be get
  * with getResultName. A result number indicates the request number.
  */
 
+/*...sclass RemoteAppRes:0:*/
 class DLLEXPORT RemoteAppRes {
 public:
         RemoteAppRes();
@@ -59,27 +67,32 @@ public:
         int getEntries();
         char* getEntryName(int i);
 };
+/*...e*/
 
 class DLLEXPORT lbAppServer {
 public:
 	lbAppServer();
 	virtual ~lbAppServer();
 
-	int run();
+//	int run();
 	
-	// Implement this service function
+	/**
+	 * This function must be implemented by the specific 
+	 * server implementation.
+	 */
 	
 	virtual int _service() = 0;
 
 protected:
+
+#ifdef bla
 	// Server sends a result
 	void send (const RemoteAppRes& res);
 
 	// Server gets a request
 	void recv (RemoteAppReq& req);
+#endif
 
-private:
-	lbTransfer *transfer;		
 };
 
 class DLLEXPORT lbAppClient {

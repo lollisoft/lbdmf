@@ -4,8 +4,8 @@ projectIdent
 VpeMain
 1
 WRect
-240
-2520
+300
+2360
 8360
 7280
 2
@@ -43,7 +43,7 @@ WRect
 40
 4020
 3640
-1
+0
 0
 11
 WFileName
@@ -59,7 +59,7 @@ WRect
 80
 4090
 3000
-1
+0
 0
 14
 WFileName
@@ -72,10 +72,10 @@ VComponent
 16
 WRect
 2360
-933
+920
 3850
 3280
-1
+0
 0
 17
 WFileName

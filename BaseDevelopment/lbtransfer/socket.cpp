@@ -136,36 +136,25 @@ int lbSocket::socket()
 }
 /*...e*/
 
+int lbSocket::gethostname(char * & name) {
+	char buf[100];
+	
+	::gethostname(buf, sizeof(buf));
+	
+	if (strlen(buf) > 0) {
+		name = strdup(buf);
+		return 1;
+	}
+	
+	return 0;
+}
+
 /*...slbSocked\58\\58\inet_addrFromString\40\char\42\ addr\41\:0:*/
 unsigned long lbSocket::inet_addrFromString(char* w) {
     struct hostent *hep;
     unsigned long my_addr;
     char *p;
-/*
-    p = strchr(w, ':');
-    if (ports != NULL) {
-        *ports = 0;
-        if (p != NULL && strcmp(p + 1, "*") != 0)
-            *ports = atoi(p + 1);
-    }
-*/
-/*
-    if (p != NULL)
-        *p = '\0';
-    if (strcmp(w, "*") == 0) {
-        if (p != NULL)
-            *p = ':';
-        return htonl(INADDR_ANY);
-    }
-*/
-/*
-    my_addr = ap_inet_addr((char *)w);
-    if (my_addr != INADDR_NONE) {
-        if (p != NULL)
-            *p = ':';
-        return my_addr;
-    }
-*/
+
     hep = gethostbyname(w);
 
     if ((!hep) || (hep->h_addrtype != AF_INET || !hep->h_addr_list[0])) {
@@ -179,10 +168,7 @@ unsigned long lbSocket::inet_addrFromString(char* w) {
         fprintf(stderr, "a virtual host.  Exiting!!!\n");
         exit(1);
     }
-/*
-    if (p != NULL)
-        *p = ':';
-*/
+
     return ((struct in_addr *) (hep->h_addr))->s_addr;
 }
 /*...e*/
@@ -222,7 +208,7 @@ void lbSocket::reinit(char *mysockaddr)
 #ifdef __WXGTK__
   if (strcmp(mysockaddr, "") == 0)
   {
-    if (isServer == 1)
+    if (__isServer == 1)
     {
       //listen();
     
@@ -232,7 +218,7 @@ void lbSocket::reinit(char *mysockaddr)
   }
   else
   {
-    if (isServer == 0)
+    if (_isServer == 0)
     {
       accept();
       connect();
@@ -247,19 +233,22 @@ void lbSocket::initSymbolic(char* host, char* service) {
 	char msg[100];
 	int serverMode = 0;
 	startup();
-
+/*...sVERBOSE:0:*/
+#ifdef VERBOSE
 	sprintf(msg, "void lbSocket::initSymbolic(char* host, char* service): Init for %s %s", host, service);
 	LOG(msg);	
-	
+#endif
+/*...e*/
 	if (strcmp(host, "localhost") == 0)
 	{
 		LOG("Socket initializing as server");
 		serverMode = 1;
 	}
-	
+/*...sVERBOSE:0:*/
+#ifdef VERBOSE	
 	LOG("lbSocket::initSymbolic(char* host, char* service) called");
-
-//	hostent *entry = gethostbyname(host);
+#endif
+/*...e*/
 	
 	servent* s = getservbyname(service, NULL);
  
@@ -275,28 +264,21 @@ void lbSocket::initSymbolic(char* host, char* service) {
  */
 /*...e*/
 
-// 	if (entry == NULL) LOG("lbSocket::initSymbolic(char* host, char* service): No host address found");
-//	if ((entry != NULL) && (entry->h_addr_list == NULL)) LOG("lbSocket::initSymbolic(char* host, char* service): Host list is a NULL pointer!");
-
 	if(s == NULL) LOG("lbSocket::initSymbolic(char* host, char* service): No service entry found");
-
-	// List !
-	LOG("Get hostaddress");
-	
-	
-// 	unsigned long hostaddr = *(entry->h_addr_list);
-
+/*...sVERBOSE:0:*/
+#ifdef VERBOSE
  	sprintf(msg, "Got hostaddress: %d", inet_addrFromString(host));
  	LOG(msg);
-
+#endif
+/*...e*/
  	u_short port = s->s_port;
-
+/*...sVERBOSE:0:*/
+#ifdef VERBOSE
 	sprintf(msg, "lbSocket::init(char* hostaddr, char* port) with %s %d calling", host, port);
 	LOG(msg); 
- 
+#endif
+/*...e*/
  	init((serverMode == 1) ? 0 : inet_addrFromString(host), port);
-
-LOG("lbSocket::init(char* hostaddr, char* port) called");
 }
 /*...e*/
 /*...slbSocket\58\\58\init\40\unsigned long mysockaddr\44\ u_short port\41\:0:*/
@@ -304,7 +286,7 @@ void lbSocket::init( unsigned long mysockaddr, u_short port)
 {
   char buf[100];
   
-  (mysockaddr == 0) ? isServer = 1 : isServer = 0;
+  (mysockaddr == 0) ? _isServer = 1 : _isServer = 0;
 
 /*...sWINDOWS:0:*/
 #ifdef WINDOWS
@@ -312,7 +294,7 @@ void lbSocket::init( unsigned long mysockaddr, u_short port)
 
   startup();    
 
-  if (isServer == 0)
+  if (_isServer == 0)
   {// Address given, assume this as client initialition
     /* convert IP address into in_addr form */
     destAddr= mysockaddr; // inet_addr(...)
@@ -325,27 +307,47 @@ void lbSocket::init( unsigned long mysockaddr, u_short port)
   /* specify the address family as Internet */
   serverSockAddr.sin_family=AF_INET;
 
-  if (isServer == 1)
+  if (_isServer == 1)
   {// No address given, server can be connected from all
     /* specify that the address does not matter */
     serverSockAddr.sin_addr.s_addr=htonl(INADDR_ANY);
+/*...sVERBOSE:0:*/
+#ifdef VERBOSE
 LOG("lbSocket::init( unsigned long mysockaddr, u_short port): Initializing as server");
+#endif
+/*...e*/
   }
 
   socket();
 
-  if (isServer == 1)
+  if (_isServer == 1)
   {
+/*...sVERBOSE:0:*/
+#ifdef VERBOSE
     LOG("lbSocket::init(char *mysockaddr, u_short port) bind...");
+#endif
+/*...e*/
     bind();
+/*...sVERBOSE:0:*/
+#ifdef VERBOSE
     LOG("lbSocket::init(char *mysockaddr, u_short port) listen...");
+#endif
+/*...e*/
     listen();
   }
   else
   {
+/*...sVERBOSE:0:*/
+#ifdef VERBOSE
     LOG("lbSocket::init(char *mysockaddr, u_short port) connect...");
+#endif
+/*...e*/
     connect();
+/*...sVERBOSE:0:*/
+#ifdef VERBOSE
     LOG("lbSocket::init(char *mysockaddr, u_short port) connected");
+#endif
+/*...e*/
   }
 #endif
 /*...e*/
@@ -353,7 +355,7 @@ LOG("lbSocket::init( unsigned long mysockaddr, u_short port): Initializing as se
 #ifdef __WXGTK__
   addrLen=sizeof(sockaddr);
 
-  if (isServer == 1)
+  if (_isServer == 1)
   {// Address given, assume this as client initialition
     /* convert IP address into in_addr form */
     destAddr=inet_addr(mysockaddr);
@@ -366,7 +368,7 @@ LOG("lbSocket::init( unsigned long mysockaddr, u_short port): Initializing as se
   /* specify the address family as Internet */
   serverSockAddr.sin_family=AF_INET;
 
-  if (isServer == 1)
+  if (_isServer == 1)
   {// No address given, server can be connected from all
     /* specify that the address does not matter */
     serverSockAddr.sin_addr.s_addr=htonl(INADDR_ANY);
@@ -374,18 +376,34 @@ LOG("lbSocket::init( unsigned long mysockaddr, u_short port): Initializing as se
 
   socket();
 
-  if (isServer == 1)
+  if (_isServer == 1)
   {
+/*...sVERBOSE:0:*/
+#ifdef VERBOSE
     LOG("lbSocket::init(char *mysockaddr, u_short port) bind...");
+#endif
+/*...e*/
     bind();
+/*...sVERBOSE:0:*/
+#ifdef VERBOSE
     LOG("lbSocket::init(char *mysockaddr, u_short port) listen...");
+#endif
+/*...e*/
     listen();
   }
   else
   {
+/*...sVERBOSE:0:*/
+#ifdef VERBOSE
     LOG("lbSocket::init(char *mysockaddr, u_short port) connect...");
+#endif
+/*...e*/
     connect();
+/*...sVERBOSE:0:*/
+#ifdef VERBOSE
     LOG("lbSocket::init(char *mysockaddr, u_short port) connected");
+#endif
+/*...e*/
   }
 #endif
 /*...e*/
@@ -412,7 +430,9 @@ int lbSocket::sendInteger(int i) {
 int lbSocket::recvInteger(int& i) {
 	char buf[MAXBUFLEN];
         // Wait for a datapacket
-        accept();
+#ifdef VERBOSE
+LOG("lbSocket::recvInteger(): Enter");
+#endif
 
 	if (recv_charbuf(buf) == 1) {
 		int number = atoi(buf);
@@ -421,51 +441,53 @@ int lbSocket::recvInteger(int& i) {
 		LOG("lbSocket: Error while recieving an integer");
 		return 0;
 	}
+#ifdef VERBOSE
+LOG("lbSocket::recvInteger(): Enter");
+#endif
 	return 1;
 }
 /*...e*/
 
-/*...slbSocket\58\\58\recv_charbuf\40\char \42\buf\41\:0:*/
-int lbSocket::recv_charbuf(char *buf)
-{
-    // Wait for a datapacket
-    accept();
+/*...slbSocket\58\\58\recv\40\void\42\ buf\44\ int \38\ len\41\:0:*/
+int lbSocket::recv(void* buf, int & len) {
+#ifdef VERBOSE
+LOG("lbSocket::recv(void* buf, int & len): Enter");
+#endif
 
 /*...sWINDOWS:0:*/
 #ifdef WINDOWS
-  if (isServer == 1)
-    numrcv=::recv(clientSocket, buf,
-      MAXBUFLEN, NO_FLAGS_SET);
+  if (_isServer == 1)
+    numrcv=::recv(clientSocket, (char*) buf,
+      len, NO_FLAGS_SET);
       
-  if (isServer == 0)
-    numrcv=::recv(serverSocket, buf,
-      MAXBUFLEN, NO_FLAGS_SET);
+  if (_isServer == 0)
+    numrcv=::recv(serverSocket, (char*) buf,
+      len, NO_FLAGS_SET);
       
     if ((numrcv == 0) || (numrcv == SOCKET_ERROR))
     {
-      cout << "Connection terminated." << endl;
+      LOG("Connection terminated.");
       status=closesocket(clientSocket);
       if (status == SOCKET_ERROR)
-        cerr << "ERROR: closesocket unsuccessful" << endl;
+        LOG("ERROR: closesocket unsuccessful");
 #ifdef AUTOCLEANUP        
       status=WSACleanup();
       if (status == SOCKET_ERROR)
-        cerr << "ERROR: WSACleanup unsuccessful" << endl;
+        LOG"ERROR: WSACleanup unsuccessful");
 #endif        
-      //getch();
       return 0;
     }
 #endif
 /*...e*/
 /*...s__WXGTK__:0:*/
 #ifdef __WXGTK__
-  if (isServer == 1)
+  if (_isServer == 1)
     numrcv=::recv(clientSocket, buf,
-      MAXBUFLEN, NO_FLAGS_SET);
+      len, NO_FLAGS_SET);
       
-  if (isServer == 0)
+  if (_isServer == 0)
     numrcv=::recv(serverSocket, buf,
-      MAXBUFLEN, NO_FLAGS_SET);
+      len, NO_FLAGS_SET);
 
     if ((numrcv == 0) || (numrcv < 0))
     {
@@ -478,45 +500,64 @@ int lbSocket::recv_charbuf(char *buf)
     }
 #endif
 /*...e*/
-    
+
+    len = numrcv;    
+#ifdef VERBOSE
+LOG("lbSocket::recv(void* buf, int & len): Leave");
+#endif
     return 1;
 }
 /*...e*/
-/*...slbSocket\58\\58\send_charbuf\40\char \42\buf\44\ int len\41\:0:*/
-int lbSocket::send_charbuf(char *buf, int len)
+/*...slbSocket\58\\58\send\40\void\42\ buf\44\ int len\41\:0:*/
+int lbSocket::send(void *buf, int len)
 {
+char msg[100];
 #ifdef WINDOWS
    int numsnt;
 
-if (isServer == 0)
+if (_isServer == 0) {
+/*...sVERBOSE:0:*/
+#ifdef VERBOSE
+    sprintf(msg, "Client: lbSocket::send_charbuf(char *buf='%s', int len) called", buf);
+    LOG(msg);
+#endif
+/*...e*/
     numsnt=::send(serverSocket,
-                buf, len + 1,
+                (char const*) buf, len + 1,
                 NO_FLAGS_SET);
-if (isServer == 1)
+}
+if (_isServer == 1) {
+/*...sVERBOSE:0:*/
+#ifdef VERBOSE
+    sprintf(msg, "Server: lbSocket::send_charbuf(char *buf='%s', int len) called", buf);
+    LOG(msg);
+#endif
+/*...e*/
     numsnt=::send(clientSocket,
-                buf, len + 1,
+                (char const*) buf, len + 1,
                 NO_FLAGS_SET);
+}
                 
     if (numsnt != len + 1)
     {
-      LOG("lbSocket::send_charbuf(char *buf, int len): Connection terminated");
+      LOG("lbSocket::send(void *buf, int len): Connection terminated");
       status=closesocket(serverSocket);
       if (status == SOCKET_ERROR)
-        cerr << "ERROR: closesocket unsuccessful" << endl;
+        LOG("ERROR: closesocket unsuccessful");
       status=WSACleanup();
       if (status == SOCKET_ERROR)
-        cerr << "ERROR: WSACleanup unsuccessful" << endl;
+        LOG("ERROR: WSACleanup unsuccessful");
       return 0;  
     }
 #endif
 #ifdef __WXGTK__
    int numsnt = 0;
 
-	if (isServer == 0)
+	if (_isServer == 0)
     	numsnt=::send(serverSocket,
         	        buf, len + 1,
             	    NO_FLAGS_SET);
-	if (isServer == 1)
+	if (_isServer == 1)
     	numsnt=::send(clientSocket,
         	        buf, len + 1,
             	    NO_FLAGS_SET);
@@ -532,6 +573,156 @@ if (isServer == 1)
       return 0;  
     }
 #endif
+
+/*...sVERBOSE:0:*/
+#ifdef VERBOSE
+    if (_isServer == 0) LOG("Client: lbSocket::send_charbuf(char *buf, int len) returning");
+    if (_isServer == 1) LOG("Server: lbSocket::send_charbuf(char *buf, int len) returning");
+#endif
+/*...e*/
+
+    return 1;
+}
+/*...e*/
+
+/*...slbSocket\58\\58\recv_charbuf\40\char \42\buf\41\:0:*/
+int lbSocket::recv_charbuf(char *buf)
+{
+    // Wait for a datapacket
+#ifdef VERBOSE
+char msg[100];
+sprintf(msg, "lbSocket::recv_charbuf(char *buf) Enter");
+LOG(msg);
+#endif
+
+/*...sWINDOWS:0:*/
+#ifdef WINDOWS
+  if (_isServer == 1)
+    numrcv=::recv(clientSocket, buf,
+      MAXBUFLEN, NO_FLAGS_SET);
+      
+  if (_isServer == 0)
+    numrcv=::recv(serverSocket, buf,
+      MAXBUFLEN, NO_FLAGS_SET);
+      
+    if ((numrcv == 0) || (numrcv == SOCKET_ERROR))
+    {
+      LOG("Connection terminated.");
+      status=closesocket(clientSocket);
+      if (status == SOCKET_ERROR)
+        LOG("ERROR: closesocket unsuccessful");
+#ifdef AUTOCLEANUP        
+      status=WSACleanup();
+      if (status == SOCKET_ERROR)
+        LOG("ERROR: WSACleanup unsuccessful");
+#endif        
+      return 0;
+    }
+#endif
+/*...e*/
+/*...s__WXGTK__:0:*/
+#ifdef __WXGTK__
+  if (_isServer == 1)
+    numrcv=::recv(clientSocket, buf,
+      MAXBUFLEN, NO_FLAGS_SET);
+      
+  if (_isServer == 0)
+    numrcv=::recv(serverSocket, buf,
+      MAXBUFLEN, NO_FLAGS_SET);
+
+    if ((numrcv == 0) || (numrcv < 0))
+    {
+#ifdef bla
+        close();
+        status=WSACleanup();
+        cerr << "ERROR: WSACleanup unsuccessful" << endl;
+#endif
+      return 0;
+    }
+#endif
+/*...e*/
+
+#ifdef VERBOSE
+sprintf(msg, "lbSocket::recv_charbuf(char *buf) Leave");
+LOG(msg);
+#endif
+    
+    return 1;
+}
+/*...e*/
+/*...slbSocket\58\\58\send_charbuf\40\char \42\buf\44\ int len\41\:0:*/
+int lbSocket::send_charbuf(char *buf, int len)
+{
+char msg[100];
+#ifdef WINDOWS
+   int numsnt;
+
+if (_isServer == 0) {
+/*...sVERBOSE:0:*/
+#ifdef VERBOSE
+    sprintf(msg, "Client: lbSocket::send_charbuf(char *buf='%s', int len) called", buf);
+    LOG(msg);
+#endif
+/*...e*/
+    numsnt=::send(serverSocket,
+                buf, len + 1,
+                NO_FLAGS_SET);
+}
+if (_isServer == 1) {
+/*...sVERBOSE:0:*/
+#ifdef VERBOSE
+    sprintf(msg, "Server: lbSocket::send_charbuf(char *buf='%s', int len) called", buf);
+    LOG(msg);
+#endif
+/*...e*/
+    numsnt=::send(clientSocket,
+                buf, len + 1,
+                NO_FLAGS_SET);
+}
+                
+    if (numsnt != len + 1)
+    {
+      LOG("lbSocket::send_charbuf(char *buf, int len): Connection terminated");
+      status=closesocket(serverSocket);
+      if (status == SOCKET_ERROR)
+        LOG("ERROR: closesocket unsuccessful");
+      status=WSACleanup();
+      if (status == SOCKET_ERROR)
+        LOG("ERROR: WSACleanup unsuccessful");
+      return 0;  
+    }
+#endif
+#ifdef __WXGTK__
+   int numsnt = 0;
+
+	if (_isServer == 0)
+    	numsnt=::send(serverSocket,
+        	        buf, len + 1,
+            	    NO_FLAGS_SET);
+	if (_isServer == 1)
+    	numsnt=::send(clientSocket,
+        	        buf, len + 1,
+            	    NO_FLAGS_SET);
+                
+    if (numsnt != len + 1)
+    {
+#ifdef bla      
+      close();
+      status=WSACleanup();
+      if (status < 0)
+        cerr << "ERROR: WSACleanup unsuccessful" << endl;
+#endif
+      return 0;  
+    }
+#endif
+
+/*...sVERBOSE:0:*/
+#ifdef VERBOSE
+    if (_isServer == 0) LOG("Client: lbSocket::send_charbuf(char *buf, int len) returning");
+    if (_isServer == 1) LOG("Server: lbSocket::send_charbuf(char *buf, int len) returning");
+#endif
+/*...e*/
+
     return 1;
 }
 /*...e*/
