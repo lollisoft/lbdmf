@@ -28,11 +28,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.40 $
+ * $Revision: 1.41 $
  * $Name:  $
- * $Id: lbDOMConfig.cpp,v 1.40 2003/07/17 18:51:41 lollisoft Exp $
+ * $Id: lbDOMConfig.cpp,v 1.41 2003/07/31 20:12:30 lollisoft Exp $
  *
  * $Log: lbDOMConfig.cpp,v $
+ * Revision 1.41  2003/07/31 20:12:30  lollisoft
+ * Added new interface repository -  not complete yet
+ *
  * Revision 1.40  2003/07/17 18:51:41  lollisoft
  * Begin develop a hopefully faster and less memory consuming
  * XML wrapper.
@@ -540,9 +543,11 @@ protected:
 	char* getNameValue;
 	int debug;
 	UAP(lb_I_ConfigObject, parent, __FILE__, __LINE__)
-/*	
+	
 	UAP(lb_I_Container, lbDOMchilds, __FILE__, __LINE__)
-*/
+	//lb_I_Container* lbDOMchilds;
+#ifdef bla
+/*...sbla:0:*/
 		class UAPUnknown_Reference {
 		private:
 		UAPUnknown_Reference(UAPUnknown_Reference& from) {
@@ -637,8 +642,10 @@ protected:
 	        char* _file;
 	        int allowDelete;
 		};
+/*...e*/
         lb_I_Container* _UAPUnknown_Reference;
         UAPUnknown_Reference lbDOMchilds;
+#endif
 	
 		
 //	int currentChildIndex;
@@ -824,7 +831,8 @@ lbErrCodes lbDOMNode::setData(lb_I_Unknown* uk) {
 /*...e*/
 	node = _node->node;
 	if (_node->lbDOMchilds != NULL) {
-		QI(_node->lbDOMchilds, lb_I_Container, lbDOMchilds, __FILE__, __LINE__)
+		//QI(_node->lbDOMchilds, lb_I_Container, lbDOMchilds, __FILE__, __LINE__)
+		_node->lbDOMchilds->queryInterface("lb_I_Container", (void**) &lbDOMchilds, __FILE__, __LINE__);
 	}
 
 /**
@@ -867,8 +875,8 @@ lbDOMNode::lbDOMNode(char* file, int line) {
 
 	parent.setFile(__FILE__);
 	parent.setLine(__LINE__);
-	lbDOMchilds.setFile(__FILE__);
-	lbDOMchilds.setLine(__LINE__);
+//	lbDOMchilds.setFile(__FILE__);
+//	lbDOMchilds.setLine(__LINE__);
 
 	// This was the bug for the wrong deletion while leave scope
 	//parent++;
@@ -896,8 +904,8 @@ lbDOMNode::lbDOMNode() {
 	parent.setFile(__FILE__);
 	parent.setLine(__LINE__);
 
-	lbDOMchilds.setFile(__FILE__);
-	lbDOMchilds.setLine(__LINE__);
+//	lbDOMchilds.setFile(__FILE__);
+//	lbDOMchilds.setLine(__LINE__);
 
 
 	// This was the bug for the wrong deletion while leave scope
@@ -922,7 +930,7 @@ lbDOMNode::~lbDOMNode() {
 
 
 	// Bugfix (in createAbstractedChildList)
-	lbDOMchilds--;
+//	lbDOMchilds--;
 /*
 // No more because UAP	
 	if (lbDOMchilds != NULL) {
@@ -1291,6 +1299,7 @@ protected:
 		ref = STARTREF;
 		errReporter = NULL;
 		lastResult = NULL;
+		haveFunctorList = 0;
 		if (lastResult.getPtr() != NULL) printf("ERROR: Setting lastResult to NULL failed!\n");
 /*...sVERBOSE:0:*/
 #ifdef VERBOSE
@@ -1325,13 +1334,16 @@ protected:
 	
 	int errorsOccured;
 	DOM_Document doc;
+	int haveFunctorList;
 
 
 	UAP(lb_I_Container, lastResult, __FILE__, __LINE__)
+//	lb_I_Container* lastResult;
 };
 /*...e*/
 
-//BEGIN_IMPLEMENT_LB_UNKNOWN(lbDOMConfig)
+BEGIN_IMPLEMENT_SINGLETON_LB_UNKNOWN(lbDOMConfig)
+#ifdef bla
 /*...slocal implemented:0:*/
 char* LB_STDCALL lbDOMConfig::getClassName() {
 	return "lbDOMConfig";
@@ -1504,6 +1516,7 @@ lbErrCodes LB_STDCALL lbDOMConfig::queryInterface(char* name, void** unknown, ch
         }
 
 /*...e*/
+#endif
 	ADD_INTERFACE(lb_I_XMLConfig)
 END_IMPLEMENT_LB_UNKNOWN()
 
@@ -1514,9 +1527,11 @@ lbErrCodes lbDOMConfig::setData(lb_I_Unknown* uk) {
 
 /*...slbDOMConfig\58\\58\lbDOMConfig\40\char\42\ file\44\ int line\41\:0:*/
 lbDOMConfig::lbDOMConfig(char* file, int line) {
+	_CL_LOG << "lbDOMConfig::lbDOMConfig(char* file, int line) called" LOG_
 	manager = NULL;
 	ref = STARTREF;
 	lastResult = NULL;
+	haveFunctorList = 0;
 	interface_used = 0;
 	errReporter = new DOMTreeErrorReporter();
 
@@ -1542,9 +1557,11 @@ lbDOMConfig::lbDOMConfig(char* file, int line) {
 /*...e*/
 /*...slbDOMConfig\58\\58\lbDOMConfig\40\\41\:0:*/
 lbDOMConfig::lbDOMConfig() {
+	_CL_LOG << "lbDOMConfig::lbDOMConfig() called" LOG_
 	manager = NULL;
 	ref = STARTREF;
 	lastResult = NULL;
+	haveFunctorList = 0;
 	interface_used = 0;
 	errReporter = new DOMTreeErrorReporter();
 	
@@ -1571,9 +1588,7 @@ lbDOMConfig::lbDOMConfig() {
 /*...slbDOMConfig\58\\58\\126\lbDOMConfig\40\\41\:0:*/
 lbDOMConfig::~lbDOMConfig() {
 /*...sVERBOSE:0:*/
-#ifdef VERBOSE
 	cout << "lbDOMConfig::~lbDOMConfig() called" << endl;
-#endif
 /*...e*/
 
 	if (ref != STARTREF) cout << "Error: Reference count mismatch!" << endl;
@@ -1693,7 +1708,9 @@ lb_I_Container* LB_STDCALL lbDOMConfig::findNodesAtTreePos(const char* treePos) 
 #endif
 /*...e*/
 /*...sFound a entry \63\ insert in list:16:*/
+//		cout << path << endl;
 		if (path.equals(treePos)) {
+//			cout << "match" << endl;
 /*...sVERBOSE:16:*/
 #ifdef VERBOSE
 			cout << "Found a entry." << endl;
@@ -1725,7 +1742,7 @@ lb_I_Container* LB_STDCALL lbDOMConfig::findNodesAtTreePos(const char* treePos) 
 			key.setFile(__FILE__);
 			
 			key->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
-			//key++;
+			key++;
 			
 			list->insert(&unknown, &key);
 /*...sVERBOSE:16:*/
@@ -1747,9 +1764,14 @@ lbErrCodes LB_STDCALL lbDOMConfig::hasConfigObject(const char* cfgObjectName, in
 	lbErrCodes err = ERR_NONE;
 	DOMString name = DOMString(cfgObjectName);
 	if (errorsOccured == 0) {
-		lastResult = findNodesAtTreePos(cfgObjectName);
+		//if (haveFunctorList == 0) {
+		//	printf("lbDOMConfig::hasConfigObject() called with using findNodesAtTreePos();\n");
+			lastResult = findNodesAtTreePos(cfgObjectName);
+		//	printf("lbDOMConfig::hasConfigObject(...) has produced %d elements in lastResult\n", count);
+		//} else {
+		//	printf("lbDOMConfig::hasConfigObject() called without using findNodesAtTreePos();\n");
+		//}
 		count = lastResult->Count(); //= lastResult->getChildrenCount();
-		printf("lbDOMConfig::hasConfigObject(...) has produced %d elements in lastResult\n", count);
 		return err;
 	} else cout << "Any errors while parsing has been occured!" << endl;
 	return err;
@@ -1795,6 +1817,7 @@ lbErrCodes LB_STDCALL lbDOMConfig::getConfigObject(lb_I_ConfigObject** cfgObj,
 	node->queryInterface("lb_I_ConfigObject", (void**) cfgObj, __FILE__, __LINE__);
 
 	track_Object(*cfgObj, "Problematic instance created");
+	haveFunctorList = 1;
 
 	return err;
 }
@@ -1805,34 +1828,386 @@ lbErrCodes LB_STDCALL lbDOMConfig::getConfigObject(lb_I_ConfigObject** cfgObj,
 class lbInterfaceRepository : public lb_I_InterfaceRepository
 {
 public:
-        lbInterfaceRepository() {}
-        virtual ~lbInterfaceRepository() {}
+        lbInterfaceRepository();
+        virtual ~lbInterfaceRepository();
 
         DECLARE_LB_UNKNOWN()
 
+	void LB_STDCALL setCurrentSearchInterface(char* iface);
+	lb_I_FunctorEntity* LB_STDCALL getFirstEntity();
 
-	lb_I_FunctorEntity* LB_STDCALL getFirstEntity(char* iface);
-
+	lbErrCodes LB_STDCALL parse();
+	
+	
+	void initIntefaceList();
+	
+	ErrorHandler *errReporter;
+	int errorsOccured;
+	DOM_Document doc;
+	
+	// Created once and contains all interface nodes
+	DOM_NodeList DOMlist;
+	unsigned int interfaces; // current interface index
+	unsigned int len;
+	
+	/**
+	 * Indicates the current search mode (currently only over interfaces).
+	 */
+	int CurrentSearchMode;
+	DOMString searchArgument;
+	
+	/**
+	 * Indicates an invalid search status like 
+	 * 	noPrevious interface;
+	 *	noNext     interface;
+	 *
+	 * Note:	Moving to first or last interface resets any invalid status.
+	 */
+	int invalidSearchStatus;
 };
 
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbInterfaceRepository)
         ADD_INTERFACE(lb_I_InterfaceRepository)
 END_IMPLEMENT_LB_UNKNOWN()
 
-IMPLEMENT_FUNCTOR(getlbInterfaceRepository, lbInterfaceRepository)
+IMPLEMENT_FUNCTOR(instanceOfInterfaceRepository, lbInterfaceRepository)
+
+lbInterfaceRepository::lbInterfaceRepository() {	
+	printf("lbInterfaceRepository::lbInterfaceRepository() called\n");
+	_CL_LOG << "lbInterfaceRepository::lbInterfaceRepository() called" LOG_
+	manager = NULL;
+	ref = STARTREF;
+	errReporter = new DOMTreeErrorReporter();
+	_CL_LOG << "DOMTreeErrorReporter() created" LOG_
+#ifdef bla	
+	if (initialized == 0) {
+/*...sInitialize the DOM4C2 system:16:*/
+		    // Initialize the DOM4C2 system
+		    try
+		    {
+				XMLPlatformUtils::Initialize();
+		    }
+
+			catch (const XMLException& toCatch)
+		    {
+				cout << "Error during initialization! :\n"
+		                 << toCatch.getMessage() << endl;
+		         //return ERR_XML_INIT;
+		    }		
+/*...e*/
+	}
+#endif
+printf("Calling parse()\n");
+	parse();
+printf("Called parse()\n");
+	_CL_LOG << "parse() called" LOG_
+}
+
+lbInterfaceRepository::~lbInterfaceRepository() {
+}
 
 lbErrCodes lbInterfaceRepository::setData(lb_I_Unknown* uk) {
         _CL_LOG << "lbInterfaceRepository::setData(...) not implemented yet" LOG_
         return ERR_NOT_IMPLEMENTED;
 }
 
-lb_I_FunctorEntity* LB_STDCALL lbInterfaceRepository::getFirstEntity(char* iface) {
+void LB_STDCALL lbInterfaceRepository::setCurrentSearchInterface(char* iface) {
+	searchArgument = DOMString(iface);
+	interfaces = 0;
+	CurrentSearchMode = 1;
+	
+	initIntefaceList();
+}
+
+lb_I_FunctorEntity* LB_STDCALL lbInterfaceRepository::getFirstEntity() {
+	printf("lbInterfaceRepository::getFirstEntity() called\n");
+	
+	if (CurrentSearchMode == 0) {
+		printf("SearchMode not set. Please call first lbInterfaceRepository::setCurrentSearchInterface(char* iface)\nOr any further other setCurrentSearch<Mode>(char* argument) function\n");
+		return NULL;
+	}
+	
+	if (CurrentSearchMode != 1) {
+		printf("SearchMode currently not provided.\n");
+		return NULL;
+	}
+
+
+	// Search for that node, containing specifed intarfece.
+	for (interfaces; interfaces < len; interfaces++) {
+		DOM_Node node = DOMlist.item(interfaces);
+		
+		DOM_NamedNodeMap attributeMap = node.getAttributes();
+		
+		DOM_Node InterfaceName = attributeMap.getNamedItem(DOMString("Name"));
+		
+		/*
+		printf("Check for ");
+		InterfaceName.getNodeValue().print();
+		printf(" == ");
+		DOMString(searchArgument).println();
+		*/
+		
+		if (InterfaceName.getNodeValue().equals(DOMString(searchArgument))) {
+		
+			DOMString nodename = node.getNodeName();
+		
+			printf("Check for that node: ");
+			nodename.print();
+			printf("\n");
+		
+			// Navidate to the Function node to get the functor name
+			node = node.getParentNode().getParentNode();
+			DOM_NodeList nodeList = node.getChildNodes();
+		
+/*...sfind function name value:24:*/
+		// Find function name
+		for (unsigned int index = 0; index < nodeList.getLength(); index++) {
+			node = nodeList.item(index);
+			if (node.getNodeName().equals(DOMString("FunctionName"))) break;
+		}
+				
+		printf("Check that node ");
+		node.getNodeName().print();
+		printf("\n");
+		
+		attributeMap = node.getAttributes();
+
+/*		if (attributeMap == NULL) {
+		        _CL_LOG << "Error: This node is not of type ELEMENT" LOG_
+
+		        return NULL;
+		}
+*/
+		DOM_Node an_attr = attributeMap.getNamedItem(DOMString("Name"));
+
+		if (an_attr == NULL) {
+		        printf("Error: Attribute not found\n"); // LOG_
+
+		        return NULL;
+		        
+		}
+/*...e*/
+			DOMString functorName = an_attr.getNodeValue();
+			functorName.println();
+
+			DOM_Node moduleNode = node.getParentNode().getParentNode().getParentNode();
+			nodeList = moduleNode.getChildNodes();
+			
+			printf("Check for ModuleNode ");
+			moduleNode.getNodeName().println();
+			
+/*...sfind module for that functor:24:*/
+
+			DOM_Node moduleNameNode;
+
+	                // Find module name
+	                for (index = 0; index < nodeList.getLength(); index++) {
+	                        moduleNameNode = nodeList.item(index);
+	                        if (moduleNameNode.getNodeName().equals(DOMString("ModuleName"))) break;
+	                }			
+
+			printf("Have moduleNameNode ");
+			moduleNameNode.getNodeName().println();
+			
+			attributeMap = moduleNameNode.getAttributes();
+			printf("Get name of moduleNode ");
+			moduleNode.getNodeName().println();
+			an_attr = attributeMap.getNamedItem(DOMString("Name"));
+			
+			printf("Have an_attr\n");
+			
+			if (an_attr == NULL) {
+			        printf("Error: Attribute not found\n"); //" LOG_
+			        for (unsigned int l = 0; l < attributeMap.getLength(); l++) {
+			        	DOM_Node n = attributeMap.item(l);
+			        	printf("Debug of Node ");
+			        	moduleNode.getNodeName().print();
+			        	printf(" has Attribute ");
+			        	n.getNodeName().println();
+			        }
+
+			        return NULL;
+
+			}
+			
+/*...e*/
+
+			DOMString moduleName = an_attr.getNodeValue();
+
+			printf("Try to print result\n");
+			printf("Found the following module ");
+			moduleName.print();
+			printf(" with functor ");
+			functorName.println();
+			printf("---------------------------------------------------------------\n");		
+			break;
+		}
+/*...sRubbish:0:*/
+#ifdef bla
+		if (value == DOMString(iface)) {
+/*...sget the nodes\44\ that contains the data:24:*/
+			// Get the functor and module for creation of FunctorEntity
+			DOM_Node module = node.getParentNode();
+			module = module.getParentNode();
+			module = module.getParentNode();
+			module = module.getParentNode();
+			
+			DOM_Node functor = node.getParentNode();
+			functor = functor.getParentNode();
+/*...e*/
+
+			DOM_NodeList DOMlist = module.getChildNodes();
+			int count = DOMlist.getLength();
+			
+			DOM_Node child;
+			char* modulename = NULL;
+			char* functorname = NULL;
+			
+/*...sget module name:24:*/
+			for (int ii = 0; ii < count; ii++) {
+				child = DOMlist.item(ii);
+				
+				if (child.getNodeName() == DOMString("ModuleName")) {
+					DOM_NamedNodeMap attributeMap = child.getAttributes();
+
+					if (attributeMap == NULL) {
+					        _CL_LOG << "Error: This node is not of type ELEMENT" LOG_
+
+					        return NULL;
+					}
+
+					DOM_Node an_attr = attributeMap.getNamedItem(DOMString("Name"));
+
+					if (an_attr == NULL) {
+					        _CL_LOG << "Error: Attribute not found" LOG_
+
+					        return NULL;
+					}
+
+					DOMString value = an_attr.getNodeValue();
+					char* temp = value.transcode();
+					
+					// Bugfix in XML4C - do cleanup directly
+					modulename = strdup(temp);
+					value.deletetranscoded(temp);
+					temp = NULL;
+					break;
+				}
+			}
+/*...e*/
+			
+			DOMlist = functor.getChildNodes();
+			count = DOMlist.getLength();
+			
+/*...sget functor name:24:*/
+			for (ii = 0; ii < count; ii++) {
+				child = DOMlist.item(ii);
+				
+				if (child.getNodeName() == DOMString("FunctionName")) {
+					DOM_NamedNodeMap attributeMap = child.getAttributes();
+
+					if (attributeMap == NULL) {
+					        _CL_LOG << "Error: This node is not of type ELEMENT" LOG_
+
+					        return NULL;
+					}
+
+					DOM_Node an_attr = attributeMap.getNamedItem(DOMString("Name"));
+
+					if (an_attr == NULL) {
+					        _CL_LOG << "Error: Attribute not found" LOG_
+
+					        return NULL;
+					}
+
+					DOMString value = an_attr.getNodeValue();
+					char* temp = value.transcode();
+					
+					// Bugfix in XML4C - do cleanup directly
+					functorname = strdup(temp);
+					value.deletetranscoded(temp);
+					temp = NULL;
+				}
+			}
+/*...e*/
+
+			printf("lbInterfaceRepository got functor %s in module %s for %s\n", functorname, modulename, iface);
+			
+			break;
+		}
+#endif
+/*...e*/
+	}
+
 	return NULL;
 }
 
+/*...slbErrCodes LB_STDCALL lbInterfaceRepository\58\\58\parse\40\\41\:0:*/
+lbErrCodes LB_STDCALL lbInterfaceRepository::parse() {
+	lbErrCodes err = ERR_NONE;
+	char *filename = getenv("LBHOSTCFGFILE");
+/*...sVERBOSE:0:*/
+#ifdef VERBOSE
+	cout << "Parse file '" << filename << "'..." << endl;
+#endif
+/*...e*/
+
+	if (filename != NULL) {
+
+/*...sSetup objects:12:*/
+	    // Begin parsing...
+	    DOMParser parser;
+	    parser.setDoValidation(true);
+
+	    parser.setErrorHandler(errReporter);
+		
+/*...e*/
 
 
-//IMPLEMENT_FUNCTOR(getlbDOMConfigInstance, lbDOMConfig)
+/*...stry parsing \40\no explicid allocation\41\:12:*/
+	    // Parse the file and catch any exceptions that propogate out
+	    try	
+		{
+		    errorsOccured = 0;
+	            parser.parse(filename);
+	
+	            doc = parser.getDocument();
+		}
+
+		catch (const XMLException& )
+	        {
+			cout << "Parse error\n" << endl;
+			errorsOccured = 1;
+			return ERR_XML_NOFILE;
+		}
+/*...e*/
+
+	    // Clean up our parser and handler
+	    //delete handler;
+
+	} else return ERR_NO_ENVIRONMENT;
+	return err;
+}
+/*...e*/
+/*...svoid lbInterfaceRepository\58\\58\initIntefaceList\40\\41\:0:*/
+void lbInterfaceRepository::initIntefaceList() {
+	char* name = NULL;
+	char* savename = NULL;
+	
+        savename = strdup("#document/dtdHostCfgDoc/Modules/Module/Functions/Function/Functor/InterfaceName");
+        name = strrchr(savename, '/');
+        if (name == NULL) name = savename;
+                
+        DOMlist = doc.getElementsByTagName(((name[0] == '/') ? &name[1] : name));
+        len = DOMlist.getLength();
+        // Cleanup
+        delete [] savename;
+}
+/*...e*/
+
+IMPLEMENT_SINGLETON_FUNCTOR(getlbDOMConfigInstance, lbDOMConfig)
+#ifdef bla
 /*...s:0:*/
 lbErrCodes DLLEXPORT LB_FUNCTORCALL getlbDOMConfigInstance(lb_I_Unknown** uk, lb_I_Module* m, char* file, int line) {
 
@@ -1862,6 +2237,7 @@ lbErrCodes DLLEXPORT LB_FUNCTORCALL getlbDOMConfigInstance(lb_I_Unknown** uk, lb
         return ERR_NONE;
 }
 /*...e*/
+#endif
 /*...sunused yet:0:*/
 /*...sostream\38\ operator\60\\60\\40\ostream\38\ target\44\ const DOMString\38\ s\41\:0:*/
 // ---------------------------------------------------------------------------
