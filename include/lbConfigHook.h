@@ -167,7 +167,7 @@ extern int isInitializing;
 
 /*...e*/
 /*...s LOG_:0:*/
-#define  LOG_  << "\n"; \
+#define  LOG_  << '\n'; \
 		printf("LOG_ done\n"); }
 /*...e*/
 #ifndef __MISC
