@@ -202,10 +202,7 @@ lbString::lbString() {
 }
 
 lbString::~lbString() {
-	if (stringdata != NULL) {
-		printf("lbString::~lbString() called with data = %s\n", stringdata);
-		free(stringdata);
-	}
+	if (stringdata != NULL) free(stringdata);
 	
 	if (key != NULL) free(key);
 	stringdata = NULL;

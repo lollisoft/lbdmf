@@ -231,6 +231,19 @@ if (a == b) {
 	query->query("select objecttyp, x, y, w, h from world order by id");
 #endif
 // Second run fails ??
+
+
+
+	for(int ii = 1; ii <= 5; ii++) {
+		printf("=== 1 > Prepare column %s for the form\n", query->getColumnName(ii));
+		printf("=== 2 > Prepare column %s for the form\n", query->getColumnName(ii));
+		printf("=== 3 > Prepare column %s for the form\n", query->getColumnName(ii));
+		printf("=== 4 > Prepare column %s for the form\n", query->getColumnName(ii));
+		printf("=== 5 > Prepare column %s for the form\n", query->getColumnName(ii));
+	}
+
+
+
 /*...sforward:8:*/
 	UAP_REQUEST(mm, lb_I_String, s1)
 	UAP_REQUEST(mm, lb_I_String, s2)
@@ -778,8 +791,9 @@ if (a == b) {
 
         _CL_LOG << "End test lb_I_Container loop" LOG_
 
+/*...sA loop:0:*/
 #ifdef LOOP
-        for (long ii = 0; ii < 10000000; ii++) {
+        for (long oo = 0; oo < 10000000; oo++) {
 #endif
 printf("Test LOG macro\n");
 	_CL_LOG << "Call lb_I_Module->load()" LOG_
@@ -798,6 +812,7 @@ printf("Test LOG macro\n");
 #ifdef LOOP
         }
 #endif
+/*...e*/
 	modMan->uninitialize();
         RELEASE(modMan)
         unHookAll();

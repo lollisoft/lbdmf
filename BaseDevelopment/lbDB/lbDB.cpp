@@ -108,7 +108,9 @@ public:
 class lbBoundColumns: public lb_I_ColumnBinding {
 public:	
 	lbBoundColumns() { ref = STARTREF; ArraySize = 1; }
-	virtual ~lbBoundColumns() {}
+	virtual ~lbBoundColumns() {
+		printf("~lbBoundColumns() called\n");
+	}
 	
 	DECLARE_LB_UNKNOWN()
 
@@ -286,9 +288,10 @@ public:
 		bound = 0;
 		cbBufferLength = 0;
 		buffer = NULL;
+		colName = NULL;
 	}
 	virtual ~lbBoundColumn() {
-//		printf("~lbBoundColumn() called\n");
+		printf("~lbBoundColumn() called\n");
 		switch (_DataType) {
 			case SQL_CHAR:
 			case SQL_VARCHAR:
@@ -336,12 +339,12 @@ protected:
 		_DataType = dt;
 		buffer = bu;
 		REQUEST(manager.getPtr(), lb_I_String, colName)
-		//printf("Set data in cloned column. Buffer is %p\n", buffer);
+		printf("Set data in cloned column. Buffer is %p\n", buffer);
 		if (name == NULL) {
 			printf("ERROR: Cloning data with NULL pointer\n");
 		}
 		colName->setData(name->getData());
-		//printf("Have set data in cloned column\n");
+		printf("Have set data in cloned column (%s)\n", colName->getData());
 		return ERR_NONE;
 	}
 
@@ -420,6 +423,7 @@ lb_I_BoundColumn* LB_STDCALL lbBoundColumns::getBoundColumn(int column) {
 
 		UAP(lb_I_BoundColumn, bc, __FILE__, __LINE__)
 		lbErrCodes err = ukdata->queryInterface("lb_I_BoundColumn", (void**) &bc, __FILE__, __LINE__);
+
 		bc++;
 		return bc.getPtr();
 	}
@@ -913,26 +917,23 @@ lb_I_String* LB_STDCALL lbQuery::getAsString(int column) {
 /*...e*/
 //#define USE_FETCH_SCROLL
 
-virtual int   LB_STDCALL lbQuery::getColumns() {
+int   LB_STDCALL lbQuery::getColumns() {
 	return cols;
 }
 
-virtual char* LB_STDCALL lbQuery::getColumnName(int col) {
-	
+char* LB_STDCALL lbQuery::getColumnName(int col) {
 	UAP(lb_I_BoundColumn, column, __FILE__, __LINE__)
-	
 	column = boundColumns->getBoundColumn(col);
 	
 	UAP(lb_I_String, name, __FILE__, __LINE__)
 	
 	name = column->getColumnName();
+	name++;
 
 	static char* _name = NULL;
 	
-	_name = strdup(name->getData());
+	_name = strdup((char*) name->getData());
 
-	printf("Return column name %s\n", name->getData());
-	
 	return _name;
 }
 
@@ -1080,7 +1081,6 @@ lbErrCodes LB_STDCALL lbQuery::last() {
 lbErrCodes LB_STDCALL lbQuery::setString(lb_I_String* columnName, lb_I_String* value) {
 
 	if (_readonly == 1) return ERR_DB_READONLY;
-printf("lbQuery::setString(lb_I_String* columnName, lb_I_String* value)\n");
 	if (mode == 1) {
 		// Not supported yet
 		printf("lbQuery::setString(lb_I_String* columnName, lb_I_String* value) Error: Append data not supported yet\n");
@@ -1506,7 +1506,10 @@ lbErrCodes LB_STDCALL lbBoundColumn::setData(lb_I_Unknown* uk) {
 
 	REQUEST(manager.getPtr(), lb_I_String, colName)
 
-	if (column->getColumnName() != NULL) colName->setData(column->getColumnName()->getData());
+	if (column->getColumnName() != NULL) {
+		colName->setData(column->getColumnName()->getData());
+		printf("SetData for colName results in %s\n", column->getColumnName()->getData());
+	}
 
 	leaveOwnership(*&column, this);
         
@@ -1523,7 +1526,7 @@ lbErrCodes LB_STDCALL lbBoundColumn::leaveOwnership(lb_I_BoundColumn* oldOwner, 
 
 	nO->setData(oO->bound, oO->_DataType, oO->buffer, oO->colName.getPtr());
 	oO->bound = 0;
-	if (oO->buffer != NULL) oO->buffer = (char*) "Test";
+	if (oO->buffer != NULL) oO->buffer = NULL;
 
 	return ERR_NONE;
 }
@@ -1556,6 +1559,7 @@ lbErrCodes LB_STDCALL lbBoundColumn::getAsString(lb_I_String* result, int asPara
 	        		char charrep[100] = "";
 	        		sprintf(charrep, "%d", *(long*) buffer);
 	        		result->setData(charrep);
+	        		//printf("Bound column returns '%s'\n", charrep);
 			}
 	        	break;
 	        default:
@@ -1574,13 +1578,29 @@ lbErrCodes LB_STDCALL lbBoundColumn::setFromString(lb_I_String* set, int mode) {
 		printf("lbBoundColumn::setFromString(...) if (mode == 1) not implemented yet\n");
 	} else {
 		// This would overwrite the pointer, not the data !!!
-//		printf("Copy string '%s' to '%s' with size of %d\n", set->getData(), (char*) buffer, strlen(set->getData()));
-//		printf("Buffer pointer is at %p\n", buffer);
-		char* b = strcpy((char*) buffer, set->getData());
+/*
+		printf("Copy string '%s' to '%s' with size of %d\n", 
+			set->getData(), (char*) buffer, strlen(set->getData()));
+*/
 
-		cbBufferLength = strlen((char*) buffer);
+		switch (_DataType) {
+			case SQL_CHAR:
+			case SQL_VARCHAR:
+			case SQL_LONGVARCHAR:
+				{
+					char* b = strcpy((char*) buffer, set->getData());
+					cbBufferLength = strlen((char*) buffer);
+				}
+				break;
+			case SQL_INTEGER:
+				{
+					long l = 0;
+					l = atol(set->getData());
+					memcpy(buffer, &l, sizeof(l));
+				}
+				break;
+		}
 
-//		printf("Result is: '%s' (size: %d), returned is '%s', set is '%s'\n", buffer, strlen((char*) buffer), b, set->getData());
 	}
 
 	return ERR_NONE;
@@ -1610,7 +1630,9 @@ lbErrCodes LB_STDCALL lbBoundColumn::prepareBoundColumn(lb_I_Query* q, int colum
 	                                BufferLength, &NameLength, &DataType,
 	                                &ColumnSize, &DecimalDigits, &Nullable);
 
-	long cbBufferLength = 0; //(long*) malloc(sizeof(long));
+	_DataType = DataType;
+
+	long cbBufferLength = 0;
 
 	REQUEST(manager.getPtr(), lb_I_String, colName)
 	colName->setData((char*) ColumnName);
@@ -1626,8 +1648,8 @@ lbErrCodes LB_STDCALL lbBoundColumn::bindColumn(lb_I_Query* q, int column) {
 	SQLSMALLINT     ColumnNumber = 0;
 	SQLCHAR         ColumnName[1000] = "";
 	SQLSMALLINT     BufferLength = 500;
-	SQLSMALLINT     NameLength = 0;
 	SQLSMALLINT     DataType = 0;
+	SQLSMALLINT     NameLength = 0;
 	SQLUINTEGER     ColumnSize = 0; //new (long);
 	
 	SQLSMALLINT     DecimalDigits = 0;
@@ -1636,50 +1658,33 @@ lbErrCodes LB_STDCALL lbBoundColumn::bindColumn(lb_I_Query* q, int column) {
 
 // Assume readonly for now ...
 
-	cbBufferLength = 0; //(long*) malloc(sizeof(long));
+	cbBufferLength = 0;
 	SQLRETURN ret;
 
-/*...sbla:0:*/
-//#ifdef bla
 
-	//SQLRETURN 
 	ret = SQLDescribeCol( hstmt, column, ColumnName,
 	                                BufferLength, &NameLength, &DataType,
 	                                &ColumnSize, &DecimalDigits, &Nullable);
 
-/*
-	printf("SQLDescribeCol(...) gave me the following information:\n"
-	       "ColumnName is: %s\n"
-	       "BufferLength is %d\n"
-	       "Returned ColumnSize is %d\n"
-	       , ColumnName, BufferLength, ColumnSize);
-*/
 
 	REQUEST(manager.getPtr(), lb_I_String, colName)
 	colName->setData((char*) ColumnName);
 	
-//#endif
-/*...e*/
 
 	int rows = 2;
-
+	
 	switch (DataType) {
 		case SQL_CHAR:
 		case SQL_VARCHAR:
 		case SQL_LONGVARCHAR:
 /*...sbind a character array:24:*/
 			buffer = malloc((ColumnSize+1)*rows);
-#ifdef bla
-			if (strcmp((char*) ColumnName, "objecttyp") == 0) {
-				printf("Buffer pointer is at %p with size %d\n", buffer, (ColumnSize+1)*rows);
-			}
-#endif
+
 			_DataType = DataType;
 			bound = 1;
 			memset(buffer, 0, (ColumnSize+1)*rows);
 			
 			ret = SQLBindCol(hstmt, column, SQL_C_DEFAULT, buffer, (ColumnSize+1), &cbBufferLength);
-//			printf("Bound buffer with lenght %d and got %d\n", (ColumnSize+1), cbBufferLength);
 			
 			if (ret != SQL_SUCCESS) {
 				printf("Error while binding a column!\n");
@@ -1697,15 +1702,11 @@ lbErrCodes LB_STDCALL lbBoundColumn::bindColumn(lb_I_Query* q, int column) {
 /*...e*/
 		case SQL_INTEGER:
 /*...sbind an integer:24:*/
-//printf("Bind an integer (malloc)\n");
 			buffer = malloc((sizeof(long))*rows);
-//printf("Bind an integer\n");			
 			_DataType = DataType;
 			bound = 1;
 			memset(buffer, 0, sizeof(long)*rows);
-//printf("Call SQLBindCol\n");
 			SQLBindCol(hstmt, column, DataType, buffer, sizeof(long), &cbBufferLength);
-//printf("Called\n");			
 			if (ret != SQL_SUCCESS) {
 			        printf("Error while binding a column!\n");
 			        q->dbError("SQLBindCol()");

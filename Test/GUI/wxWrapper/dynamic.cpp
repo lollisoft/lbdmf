@@ -6,7 +6,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.17 2004/06/25 16:23:06 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.18 2004/06/27 09:28:55 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -477,12 +477,14 @@ lbErrCodes LB_STDCALL lb_wxGUI::insertMenuEntry(lb_I_Unknown* entry) {
 lbErrCodes LB_STDCALL lb_wxGUI::lbDBFirst(lb_I_Unknown* uk) {
 	int columns = sampleQuery->getColumns();
 
-	for (int i = 1; i <= 1; i++) {
-//		char* name = strdup(sampleQuery->getColumnName(i));
+printf("First\n");
+
+	for (int i = 1; i <= columns; i++) {
+		char* name = strdup(sampleQuery->getColumnName(i));
 
 		// Find the corresponding window
 		
-		wxWindow* w = dialog->FindWindowByName(wxString("objecttyp"));
+		wxWindow* w = dialog->FindWindowByName(wxString(name));
 
 		if (w != NULL) {
 			wxTextCtrl* tx = (wxTextCtrl*) w;
@@ -492,7 +494,7 @@ lbErrCodes LB_STDCALL lb_wxGUI::lbDBFirst(lb_I_Unknown* uk) {
 			UAP_REQUEST(manager.getPtr(), lb_I_String, col)
 			UAP_REQUEST(manager.getPtr(), lb_I_String, val)
 			
-			char* cc = strdup(tx->GetName().c_str());
+			char* cc = strdup(name);
 			col->setData(cc);
 			char* t = strdup(v.c_str());
 			val->setData(t);
@@ -505,25 +507,25 @@ lbErrCodes LB_STDCALL lb_wxGUI::lbDBFirst(lb_I_Unknown* uk) {
 			printf("Control not found\n");
 		}
 		
-//		free(name);
+		free(name);
 	}
 
 	sampleQuery->update();
 
 	sampleQuery->first();
 
-	for (i = 1; i <= 1; i++) {
-//		char* name = strdup(sampleQuery->getColumnName(i));
+	for (i = 1; i <= columns; i++) {
+		char* name = strdup(sampleQuery->getColumnName(i));
 		// Find the corresponding window
 		
-		wxWindow* w = dialog->FindWindowByName(wxString("objecttyp"));
+		wxWindow* w = dialog->FindWindowByName(wxString(name));
 		
 		if (w != NULL) {
 			wxTextCtrl* tx = (wxTextCtrl*) w;
 			tx->SetValue(wxString(sampleQuery->getAsString(i)->charrep()));
 		}
 		
-//		free(name);
+		free(name);
 	}
 
 	return ERR_NONE;
@@ -533,12 +535,14 @@ lbErrCodes LB_STDCALL lb_wxGUI::lbDBFirst(lb_I_Unknown* uk) {
 lbErrCodes LB_STDCALL lb_wxGUI::lbDBNext(lb_I_Unknown* uk) {
 	int columns = sampleQuery->getColumns();
 
-	for (int i = 1; i <= 1; i++) {
-//		char* name = strdup(sampleQuery->getColumnName(i));
+printf("Next\n");
+
+	for (int i = 1; i <= columns; i++) {
+		char* name = strdup(sampleQuery->getColumnName(i));
 
 		// Find the corresponding window
 		
-		wxWindow* w = dialog->FindWindowByName(wxString("objecttyp"));
+		wxWindow* w = dialog->FindWindowByName(wxString(name));
 
 		if (w != NULL) {
 			wxTextCtrl* tx = (wxTextCtrl*) w;
@@ -548,7 +552,7 @@ lbErrCodes LB_STDCALL lb_wxGUI::lbDBNext(lb_I_Unknown* uk) {
 			UAP_REQUEST(manager.getPtr(), lb_I_String, col)
 			UAP_REQUEST(manager.getPtr(), lb_I_String, val)
 			
-			char* cc = strdup(tx->GetName().c_str());
+			char* cc = strdup(name);
 			col->setData(cc);
 			char* t = strdup(v.c_str());
 			val->setData(t);
@@ -561,25 +565,25 @@ lbErrCodes LB_STDCALL lb_wxGUI::lbDBNext(lb_I_Unknown* uk) {
 			printf("Control not found\n");
 		}
 		
-//		free(name);
+		free(name);
 	}
 
 	sampleQuery->update();
 
 	sampleQuery->next();
 
-	for (i = 1; i <= 1; i++) {
-//		char* name = strdup(sampleQuery->getColumnName(i));
+	for (i = 1; i <= columns; i++) {
+		char* name = strdup(sampleQuery->getColumnName(i));
 		// Find the corresponding window
 		
-		wxWindow* w = dialog->FindWindowByName(wxString("objecttyp"));
+		wxWindow* w = dialog->FindWindowByName(wxString(name));
 		
 		if (w != NULL) {
 			wxTextCtrl* tx = (wxTextCtrl*) w;
 			tx->SetValue(wxString(sampleQuery->getAsString(i)->charrep()));
 		}
 		
-//		free(name);
+		free(name);
 	}
 
 	return ERR_NONE;
@@ -589,12 +593,14 @@ lbErrCodes LB_STDCALL lb_wxGUI::lbDBNext(lb_I_Unknown* uk) {
 lbErrCodes LB_STDCALL lb_wxGUI::lbDBPrev(lb_I_Unknown* uk) {
 	int columns = sampleQuery->getColumns();
 
-	for (int i = 1; i <= 1; i++) {
-//		char* name = strdup(sampleQuery->getColumnName(i));
+printf("Prev\n");
+
+	for (int i = 1; i <= columns; i++) {
+		char* name = strdup(sampleQuery->getColumnName(i));
 
 		// Find the corresponding window
 		
-		wxWindow* w = dialog->FindWindowByName(wxString("objecttyp"));
+		wxWindow* w = dialog->FindWindowByName(wxString(name));
 
 		if (w != NULL) {
 			wxTextCtrl* tx = (wxTextCtrl*) w;
@@ -604,7 +610,7 @@ lbErrCodes LB_STDCALL lb_wxGUI::lbDBPrev(lb_I_Unknown* uk) {
 			UAP_REQUEST(manager.getPtr(), lb_I_String, col)
 			UAP_REQUEST(manager.getPtr(), lb_I_String, val)
 			
-			char* cc = strdup(tx->GetName().c_str());
+			char* cc = strdup(name);
 			col->setData(cc);
 			char* t = strdup(v.c_str());
 			val->setData(t);
@@ -617,25 +623,25 @@ lbErrCodes LB_STDCALL lb_wxGUI::lbDBPrev(lb_I_Unknown* uk) {
 			printf("Control not found\n");
 		}
 		
-//		free(name);
+		free(name);
 	}
 
 	sampleQuery->update();
 
 	sampleQuery->previous();
 
-	for (i = 1; i <= 1; i++) {
-//		char* name = strdup(sampleQuery->getColumnName(i));
+	for (i = 1; i <= columns; i++) {
+		char* name = strdup(sampleQuery->getColumnName(i));
 		// Find the corresponding window
 		
-		wxWindow* w = dialog->FindWindowByName(wxString("objecttyp"));
+		wxWindow* w = dialog->FindWindowByName(wxString(name));
 		
 		if (w != NULL) {
 			wxTextCtrl* tx = (wxTextCtrl*) w;
 			tx->SetValue(wxString(sampleQuery->getAsString(i)->charrep()));
 		}
 		
-//		free(name);
+		free(name);
 	}
 
 	return ERR_NONE;
@@ -645,12 +651,14 @@ lbErrCodes LB_STDCALL lb_wxGUI::lbDBPrev(lb_I_Unknown* uk) {
 lbErrCodes LB_STDCALL lb_wxGUI::lbDBLast(lb_I_Unknown* uk) {
 	int columns = sampleQuery->getColumns();
 
-	for (int i = 1; i <= 1; i++) {
-//		char* name = strdup(sampleQuery->getColumnName(i));
+printf("Last\n");
+
+	for (int i = 1; i <= columns; i++) {
+		char* name = strdup(sampleQuery->getColumnName(i));
 
 		// Find the corresponding window
 		
-		wxWindow* w = dialog->FindWindowByName(wxString("objecttyp"));
+		wxWindow* w = dialog->FindWindowByName(wxString(name));
 
 		if (w != NULL) {
 			wxTextCtrl* tx = (wxTextCtrl*) w;
@@ -660,7 +668,7 @@ lbErrCodes LB_STDCALL lb_wxGUI::lbDBLast(lb_I_Unknown* uk) {
 			UAP_REQUEST(manager.getPtr(), lb_I_String, col)
 			UAP_REQUEST(manager.getPtr(), lb_I_String, val)
 			
-			char* cc = strdup(tx->GetName().c_str());
+			char* cc = strdup(name);
 			col->setData(cc);
 			char* t = strdup(v.c_str());
 			val->setData(t);
@@ -673,25 +681,25 @@ lbErrCodes LB_STDCALL lb_wxGUI::lbDBLast(lb_I_Unknown* uk) {
 			printf("Control not found\n");
 		}
 		
-//		free(name);
+		free(name);
 	}
 
 	sampleQuery->update();
 
 	sampleQuery->last();
 
-	for (i = 1; i <= 1; i++) {
-//		char* name = strdup(sampleQuery->getColumnName(i));
+	for (i = 1; i <= columns; i++) {
+		char* name = strdup(sampleQuery->getColumnName(i));
 		// Find the corresponding window
 		
-		wxWindow* w = dialog->FindWindowByName(wxString("objecttyp"));
+		wxWindow* w = dialog->FindWindowByName(wxString(name));
 		
 		if (w != NULL) {
 			wxTextCtrl* tx = (wxTextCtrl*) w;
 			tx->SetValue(wxString(sampleQuery->getAsString(i)->charrep()));
 		}
 		
-//		free(name);
+		free(name);
 	}
 
 	return ERR_NONE;
@@ -774,6 +782,8 @@ lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::createDBForm(char* formName) {
 		
 		wxStaticText *label = new wxStaticText(dialog, -1, tLabel, wxPoint());
 		sizerLeft->Add(label, 1, wxEXPAND | wxALL, 5);
+		
+		free(name);
 	}
 /*...e*/
 
