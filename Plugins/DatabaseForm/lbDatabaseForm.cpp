@@ -89,21 +89,17 @@ END_PLUGINS()
 
 lbPluginModule::lbPluginModule() {
 	ref = STARTREF;
-	printf("lbPluginModule::lbPluginModule() called.\n");
 }
 
 lbPluginModule::~lbPluginModule() {
-	printf("lbPluginModule::~lbPluginModule() called.\n");
 }
 
 void LB_STDCALL lbPluginModule::initialize() {
-	printf("lbPluginModule::initialize() called\n");
 	enumPlugins();
-	printf("lbPluginModule::initialize() enumerated plugins\n");
 }
 
 lbErrCodes LB_STDCALL lbPluginModule::setData(lb_I_Unknown* uk) {
-        _CL_LOG << "lbPluginModule::setData(...) not implemented yet" LOG_
+        _LOG << "lbPluginModule::setData(...) not implemented yet" LOG_
         
         return ERR_NOT_IMPLEMENTED;
 }
@@ -111,8 +107,7 @@ lbErrCodes LB_STDCALL lbPluginModule::setData(lb_I_Unknown* uk) {
 
 /*...sclass lbPluginDatabaseDialog implementation:0:*/
 class lbPluginDatabaseDialog : 
-	public lb_I_PluginImpl,
-	public lb_I_DatabaseDialog {
+	public lb_I_PluginImpl {
 public:
 	lbPluginDatabaseDialog();
 	virtual ~lbPluginDatabaseDialog();
