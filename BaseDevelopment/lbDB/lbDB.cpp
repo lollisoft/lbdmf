@@ -644,7 +644,6 @@ lbErrCodes LB_STDCALL lbQuery::init(HENV _henv, HDBC _hdbc, int readonly) {
         	return ERR_DB_ALLOCSTATEMENT;
 	}
 
-printf("SQLAllocStmt(...) called successfully\n");
 	if (readonly == 0) {
 	// Compare values before updating
 		retcode = SQLSetStmtOption(hstmt, SQL_ATTR_CONCURRENCY, SQL_CONCUR_ROWVER);
@@ -796,7 +795,7 @@ Using SQLSetPos
 	if (retcode != SQL_SUCCESS)
         {
         	dbError( "SQLExecDirect()");
-		_LOG << "lbQuery::query(...) failed." LOG_
+		_LOG << "lbQuery::query(...) failed. (" << q << ")" LOG_
 		return ERR_DB_QUERYFAILED;
         }
 
