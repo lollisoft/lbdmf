@@ -6,6 +6,13 @@
  
 /*...e*/
 
+/**
+ * All classes, that anounce callbacks, must implement the interface for
+ * lb_I_CallbackManager. The callback manager did not need to handle its
+ * own table, more it may delegate this to the static (singleton) handler.
+ */
+
+
 #ifndef __LB_INTERFACES__
 #define __LB_INTERFACES__
 
