@@ -50,3 +50,4 @@ cd ..\appdevelopmentdemo
 call make.bat
 cd ..\BaseDevelopment
 
+call makeapps.bat
