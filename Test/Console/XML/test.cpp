@@ -25,6 +25,11 @@
 
             22453 Hamburg (germany)
 */
+#ifdef _MSC_VER
+
+#pragma warning( disable: 4101 )
+
+#endif
 /*...sincludes:0:*/
 #ifdef WINDOWS
 #include <windows.h>
@@ -120,7 +125,16 @@ void main(int argc, char *argv[]) {
 /*...e*/
 	printf("Tested container 1\n");
 	getch();
-	_CL_LOG << "Tested container" LOG_
+
+	_CL_LOG << "Test database library" LOG_
+
+	UAP_REQUEST(mm, lb_I_Database, database)
+
+	database->connect("", "", "");
+	
+	_CL_LOG << "Tested database" LOG_
+	getch();
+
 /*...stest logger:0:*/
 	printf("test logger\n");
 	mm->request("lb_I_Log", &unknown);
