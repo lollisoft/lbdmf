@@ -149,10 +149,12 @@ void main(int argc, char *argv[]) {
 	while (query->previous() == ERR_NONE) {
 		printf("%s;%s;%s;%s;%s\n", query->getChar(1), query->getChar(2), query->getChar(3), query->getChar(4), query->getChar(5));
 	}
+	printf("Ended backward test\n");
+	getch();
 /*...e*/
 // Second run fails ??
 /*...sforward:8:*/
-	if (query->next() != ERR_NONE) 
+	if (query->first() != ERR_NONE) 
 		printf("Error while get next\n");
 	else
 		printf("%s;%s;%s;%s;%s\n", query->getChar(1), query->getChar(2), query->getChar(3), query->getChar(4), query->getChar(5));
