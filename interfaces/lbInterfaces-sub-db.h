@@ -44,7 +44,10 @@ public:
 	 * Warning: There may be a limit of string nength.
 	 */
 	virtual lbErrCodes LB_STDCALL getAsString(lb_I_String* result) = 0;
-	virtual lbErrCodes LB_STDCALL setFromString(lb_I_String* set) = 0;
+	virtual lbErrCodes LB_STDCALL setFromString(lb_I_String* set, int mode) = 0;
+
+	virtual lb_I_String* LB_STDCALL getColumnName() = 0;
+	
 
 protected:
 	/**
@@ -114,11 +117,17 @@ public:
 
         virtual lbErrCodes      LB_STDCALL getString(int column, lb_I_String* instance) = 0;
         virtual lbErrCodes      LB_STDCALL getString(char* column, lb_I_String* instance) = 0;
-        
+	virtual lbErrCodes      LB_STDCALL setString(char* column, lb_I_String* instance) = 0;        
         /**
          * Set a currently used query to bind their columns.
          */
 //        virtual lbErrCodes      LB_STDCALL setQuery(lb_I_Query* q) = 0;
+
+
+	/**
+	 * Returns 1 if adding mode is active. Otherwise it returns 0.
+	 */
+	virtual int		LB_STDCALL getMode() = 0;
 };
 /*...e*/
 /*...sclass lb_I_MVC_View:0:*/
