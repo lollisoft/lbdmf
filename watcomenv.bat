@@ -30,9 +30,21 @@ exit
 
 set TARGET_APPLICATION=Application
 
+if NOT "%COMPUTERNAME%"=="ANAKIN" goto DISTMODE:
+
 set DEVLW=q:
 set BASE=develop
 set BASE_MAKE=develop
+goto BEGINENVIRONMENT:
+
+:DISTMODE
+
+set DEVLW=c:
+set BASE=lbDMF\develop
+set BASE_MAKE=lbDMF/develop
+
+:BEGINENVIRONMENT
+
 
 @rem ----------------------------------------------------------------
 @rem *                          End config                          *
