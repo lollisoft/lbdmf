@@ -3,11 +3,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.19 $
+ * $Revision: 1.20 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.19 2001/12/12 17:12:44 lothar Exp $
+ * $Id: lbModule.cpp,v 1.20 2001/12/15 12:18:28 lothar Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.20  2001/12/15 12:18:28  lothar
+ * Removed usage of deleteValue
+ *
  * Revision 1.19  2001/12/12 17:12:44  lothar
  * Hehe - runs on linux
  *
@@ -850,12 +853,15 @@ lbErrCodes LB_STDCALL lbModule::getDefaultImpl(char* interfacename, lb_I_ConfigO
                         if (strcmp(interfacename, attr) == 0) {
                                 temp_node->getAttributeValue("Module", module);
                                 temp_node->getAttributeValue("Functor", implTor);
-                                temp_node->deleteValue(attr);
+                                
+                                //temp_node->deleteValue(attr);
+                                delete attr;
+                                
                                 return ERR_NONE;
                         }
                         
-                        temp_node->deleteValue(attr);
-                        
+                        //temp_node->deleteValue(attr);
+                        delete attr;
                 }
                 
         } else CL_LOG("Get first child failed");
@@ -885,11 +891,13 @@ lbErrCodes LB_STDCALL lbModule::getDefaultImpl(char* interfacename, lb_I_ConfigO
                                 
                                 temp_node->getAttributeValue("Module", module);
                                 temp_node->getAttributeValue("Functor", implTor);
-                                temp_node->deleteValue(attr);
+                                //temp_node->deleteValue(attr);
+                                delete attr;
                                 
                                 return ERR_NONE;
                         }
-                        temp_node->deleteValue(attr);
+                        //temp_node->deleteValue(attr);
+                        delete attr;
                 }
         }
 
@@ -1319,7 +1327,8 @@ lbErrCodes LB_STDCALL lbModule::request(const char* request, lb_I_Unknown** resu
                                                 if (value != NULL) 
                                                 {
                                                         char buf[100] = "";
-                                                        impl->deleteValue(value);
+                                                        //impl->deleteValue(value);
+                                                        delete value;
                                                         value = NULL;
                                                 }
 
@@ -1346,7 +1355,8 @@ lbErrCodes LB_STDCALL lbModule::request(const char* request, lb_I_Unknown** resu
                                 CL_LOG("Error: There is no implementation for wanted interface");
                                 
                                 if (value != NULL) {
-                                        impl->deleteValue(value);
+                                        //impl->deleteValue(value);
+                                        delete value;
                                 }
                                 return ERR_MODULE_NO_INTERFACE;
                         }
@@ -1354,7 +1364,8 @@ lbErrCodes LB_STDCALL lbModule::request(const char* request, lb_I_Unknown** resu
                         char buf[1000] = "";
 /*...sclean up \63\\63\\63\:32:*/
                         if (value != NULL) {
-                                impl->deleteValue(value);
+                                //impl->deleteValue(value);
+                                delete value;
                         }
 /*...e*/
 /*...sfind up names:32:*/
@@ -1363,7 +1374,8 @@ lbErrCodes LB_STDCALL lbModule::request(const char* request, lb_I_Unknown** resu
 /*...e*/
 /*...sclean up \63\\63\\63\:32:*/
                         if (value != NULL) {
-                                impl->deleteValue(value);
+                                //impl->deleteValue(value);
+                                delete value;
                         }
 /*...e*/
 #ifdef bla
@@ -1516,8 +1528,10 @@ lbErrCodes LB_STDCALL lbModule::request(const char* request, lb_I_Unknown** resu
                                         }
 /*...sclean up:72:*/
                                         
-                                        impl->deleteValue(defaultFunctor);
-                                        impl->deleteValue(defaultModule);
+                                        //impl->deleteValue(defaultFunctor);
+                                        //impl->deleteValue(defaultModule);
+                                        delete defaultFunctor;
+                                        delete defaultModule;
 /*...e*/
                                         CL_LOG("Leave part 'if (xml_Instance->hasConfigObject(node, count) == ERR_NONE) {'");
                                 }
@@ -1534,7 +1548,10 @@ lbErrCodes LB_STDCALL lbModule::request(const char* request, lb_I_Unknown** resu
                         notify_create(*result, (*result)->getClassName());
                          
 /*...sclean up:32:*/
-                        if (moduleName != NULL) impl->deleteValue(moduleName);
+                        if (moduleName != NULL) {
+                        	//impl->deleteValue(moduleName);
+                        	delete moduleName;
+                        }
 /*...e*/
                 } else {
                         cout << "Something goes wrong!" << endl;
@@ -1549,7 +1566,10 @@ lbErrCodes LB_STDCALL lbModule::request(const char* request, lb_I_Unknown** resu
         xml_Instance = NULL;
 
 
-        if (functorName != NULL) impl->deleteValue(functorName);
+        if (functorName != NULL) {
+        	//impl->deleteValue(functorName);
+        	delete functorName;
+        }
 
         return ERR_NONE;
 }
