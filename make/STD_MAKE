@@ -1,10 +1,13 @@
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.8 $
+# * $Revision: 1.9 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.8 2001/11/10 12:48:49 lothar Exp $
+# * $Id: STD_MAKE,v 1.9 2001/11/20 19:58:38 lothar Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.9  2001/11/20 19:58:38  lothar
+# * Added absolute path as DEVROOT
+# *
 # * Revision 1.8  2001/11/10 12:48:49  lothar
 # * Minor changes to compile
 # *
@@ -52,10 +55,10 @@ endif
 
 ifeq ($(OSTYPE), linux)
 
-STD_INCL = -I ../lbHook/linuxCode \
-	-I ../../interfaces \
-	-I ../../include \
-	-I ../lbclasses \
+STD_INCL = -I $(DEVROOT)/BaseDevelopment/lbHook/linuxCode \
+	-I $(DEVROOT)/interfaces \
+	-I $(DEVROOT)/include \
+	-I $(DEVROOT)/BaseDevelopment/lbclasses \
 	-I /usr/include \
 	-I /usr/include/sys \
 	-I . 
