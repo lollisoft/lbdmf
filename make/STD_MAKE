@@ -1,10 +1,13 @@
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.7 $
+# * $Revision: 1.8 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.7 2001/11/08 20:48:16 lothar Exp $
+# * $Id: STD_MAKE,v 1.8 2001/11/10 12:48:49 lothar Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.8  2001/11/10 12:48:49  lothar
+# * Minor changes to compile
+# *
 # * Revision 1.7  2001/11/08 20:48:16  lothar
 # * More standard settings
 # *
@@ -52,13 +55,13 @@ ifeq ($(OSTYPE), linux)
 STD_INCL = -I ../lbHook/linuxCode \
 	-I ../../interfaces \
 	-I ../../include \
-	-I ../lbClasses \
+	-I ../lbclasses \
 	-I /usr/include \
 	-I /usr/include/sys \
 	-I . 
 
 OBJ =o
-C_OPS =-c -DUNIX
+C_OPS =-c -DUNIX -DLINUX
 L_OPS =-o
 
 CC =cc

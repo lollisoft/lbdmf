@@ -48,8 +48,7 @@
 
 #ifndef DLLEXPORT
 // Default to import. Modules redefine this in general.
-#define DLLEXPORT LB_DLLIMPORT
-
+#define DLLEXPORT
 #endif
 
 #ifndef __BASE_TYPES_DEFINED__
