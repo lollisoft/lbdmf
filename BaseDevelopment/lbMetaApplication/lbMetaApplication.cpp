@@ -1,11 +1,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.8 $
+ * $Revision: 1.9 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.8 2002/09/07 09:57:10 lothar Exp $
+ * $Id: lbMetaApplication.cpp,v 1.9 2002/09/12 18:34:02 lothar Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.9  2002/09/12 18:34:02  lothar
+ * Added some UI wrapper and sub module creation. Cleanup
+ *
  * Revision 1.8  2002/09/07 09:57:10  lothar
  * First working callback function
  *
@@ -126,6 +129,7 @@ lbErrCodes LB_STDCALL lb_EvHandler::call(lb_I_Unknown* evData, lb_I_Unknown** ev
 /*...e*/
 
 /*...slb_MetaApplication:0:*/
+/*...sctors\47\dtors:0:*/
 lb_MetaApplication::lb_MetaApplication() {
 	ref = STARTREF;
 	LOG("Instance of lb_I_MetaApplication created")
@@ -134,8 +138,9 @@ lb_MetaApplication::lb_MetaApplication() {
 lb_MetaApplication::~lb_MetaApplication() {
 	LOG("Instance of lb_I_MetaApplication destroyed")
 }
+/*...e*/
 
-
+/*...sregister event handlers:0:*/
 lbErrCodes LB_STDCALL lb_MetaApplication::registerEventHandler(lb_I_Dispatcher* disp) {
 
 	disp->addEventHandlerFn(this, (lbEvHandler) lbEvHandler1, "getBasicApplicationInfo");
@@ -143,7 +148,9 @@ lbErrCodes LB_STDCALL lb_MetaApplication::registerEventHandler(lb_I_Dispatcher* 
 
 	return ERR_NONE;
 }
+/*...e*/
 
+/*...sevent handlers\44\ that can be registered:0:*/
 lbErrCodes LB_STDCALL lb_MetaApplication::lbEvHandler1(lb_I_Unknown* uk) {
 	LOG("lb_MetaApplication::lbEvHandler1() called")
 	return ERR_NONE;
@@ -153,6 +160,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::lbEvHandler2(lb_I_Unknown* uk) {
 	LOG("lb_MetaApplication::lbEvHandler2() called")
 	return ERR_NONE;
 }
+/*...e*/
 
 
 BEGIN_IMPLEMENT_LB_UNKNOWN(lb_MetaApplication)
@@ -185,6 +193,7 @@ lb_I_EventManager * lb_MetaApplication::getEVManager( void ) {
 /*...e*/
 /*...slbErrCodes LB_STDCALL lb_MetaApplication\58\\58\Initialize\40\\41\:0:*/
 lbErrCodes LB_STDCALL lb_MetaApplication::Initialize() {
+/*...sdoc:8:*/
 /**
  * At this point should be found the real application. The real one
  * may be defined by an environment variable, that is defined out of
@@ -192,17 +201,19 @@ lbErrCodes LB_STDCALL lb_MetaApplication::Initialize() {
  * The variable contains the name of the application, where a xml tag
  * resolves the functor for this application.
  */
-
-
+/*...e*/
 	char* applicationName = getenv("TARGET_APPLICATION");
 
+/*...sdispatch integer values:8:*/
 	/*
 	 * This variable is needed, if this instance also implements a little dispatcher.
 	 * It should moved into the class declatation and used in the dispatch functions.
 	 */
 	int getBasicApplicationInfo;
 	int getMainModuleInfo;
+/*...e*/
 
+/*...sget the event manager:8:*/
 	/**
 	 * Registrieren eines Events, der auch auf der GUI Seite bekannt ist.
 	 */
@@ -210,69 +221,34 @@ lbErrCodes LB_STDCALL lb_MetaApplication::Initialize() {
 	lb_I_Module* m = *&manager;
 
 	REQUEST(m, lb_I_EventManager, eman)
-	eman->setModuleManager(m, __FILE__, __LINE__);
+/*...e*/
 	
-	// Step 1
 /*...sregister a basic event \40\getBasicApplicationInfo\41\ by the event manager:8:*/
 	 
 	eman->registerEvent("getBasicApplicationInfo", getBasicApplicationInfo);
 	eman->registerEvent("getMainModuleInfo", getMainModuleInfo);
 
-	char buf[1000] = "";
-	
-	sprintf(buf, "Registered an event 'getBasicApplicationInfo' as %d", getBasicApplicationInfo);
-	
-	LOG(buf)
-
-	sprintf(buf, "Registered an event 'getMainModuleInfo' as %d", getMainModuleInfo);
-	
-	LOG(buf)
 /*...e*/
 
-/*...s\63\\63\\63\:8:*/
-/*...srequest a reference object \63\\63\:16:*/
-/*
-	UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
-	
-	if (manager != NULL) {
-		manager->request("lb_I_Reference", &uk);
-		
-		UAP(lb_I_Reference, ref, __FILE__, __LINE__)
-		
-		uk->queryInterface("lb_I_Reference", (void**) &ref, __FILE__, __LINE__);
-	
-		//gui->queryEvent("getFrame", ref);
-	}
-*/
-/*...e*/
-	
-/*...s\63\\63\\63\:16:*/
-	/*
-	 * 1. Let the GUI server setup his events, that it can handle
-	 * 	This should be done before this function will be called
-	 *	from the GUI server.
-	 */
-	
-	
-	/*
-	UAP(lb_I_Frame, frame, __FILE__, __LINE__)
-	
-	frame = gui->getFrame();
-	
-	frame->registerEvent("quit",  LB_COMMAND_MENU_SELECTED, frame->getDispatcherFn());
-	frame->registerEvent("about", LB_COMMAND_MENU_SELECTED, frame->getDispatcherFn());
-	*/
-/*...e*/
-/*...e*/
-	
-	// Step 2
+/*...sget the dispatcher instance:8:*/
 	REQUEST(m, lb_I_Dispatcher, dispatcher)
-
 	dispatcher->setEventManager(eman.getPtr());
-	dispatcher->setModuleManager(m, __FILE__, __LINE__);
+/*...e*/
 		
 	registerEventHandler(dispatcher.getPtr());
+
+	// Step 3 (Load sub components, handling menus and else needed for an UI)
+	loadSubModules();
+
+
+	/**
+	 * Init the application (menu, toolbar, accelerators)
+	 *
+	 * This will be done by the loaded application from the
+	 * environment variable (TARGET_APPLICATION)
+	 */
 	
+
 
 	// Let the GUI show a message box
 	
@@ -281,16 +257,40 @@ lbErrCodes LB_STDCALL lb_MetaApplication::Initialize() {
 	return ERR_NONE;
 }
 /*...e*/
+
+
+// This starts the main application
+
 /*...slbErrCodes LB_STDCALL lb_MetaApplication\58\\58\run\40\\41\:0:*/
 lbErrCodes LB_STDCALL lb_MetaApplication::run() {
 
 	lb_I_Unknown* result;
 
-	dispatcher->dispatch("getBasicApplicationInfo", NULL, &result);	
+	dispatcher->dispatch("AddMenu", NULL, &result);	
 
 	return ERR_NONE;
 }
 /*...e*/
+
+lbErrCodes LB_STDCALL lb_MetaApplication::loadSubModules() {
+	return ERR_NONE;
+}
+
+/*...sBasic functions to be used for a UI application:0:*/
+lbErrCodes LB_STDCALL lb_MetaApplication::addMenuBar(char* name) {
+	return ERR_NONE;
+}
+
+lbErrCodes LB_STDCALL lb_MetaApplication::addMenu(char* name) {
+	return ERR_NONE;
+}
+
+lbErrCodes LB_STDCALL lb_MetaApplication::addMenuEntry(char* in_menu, char* entry, char* evHandler, char* afterentry) {
+	return ERR_NONE;
+}
+/*...e*/
+
+
 /*...e*/
 /*...slb_EventMapper:0:*/
 lb_EventMapper::lb_EventMapper() {
@@ -496,29 +496,21 @@ lbErrCodes LB_STDCALL lb_Dispatcher::setEventManager(lb_I_EventManager* EvManage
 /*...e*/
 /*...slbErrCodes LB_STDCALL lb_Dispatcher\58\\58\addEventHandlerFn\40\lb_I_EventHandler\42\ evHandlerInstance\44\ lbEvHandler evHandler\44\ char\42\ EvName\41\:0:*/
 lbErrCodes LB_STDCALL lb_Dispatcher::addEventHandlerFn(lb_I_EventHandler* evHandlerInstance, lbEvHandler evHandler, char* EvName) {
-	LOG("lb_Dispatcher::addEventHandlerFn(lbEvHandler evHandler, char* EvName) called")
-	
-
 	/*
 	 * Create an instance of a function pointer object
 	 */
 	
 	int id = 0;
 	evManager->resolveEvent(EvName, id);
-	LOG("Resolved EvName")
 
 	addEventHandlerFn(evHandlerInstance, evHandler, id);	
 
-	LOG("Added event handler id")
-	
 	return ERR_NONE;
 }
 /*...e*/
 /*...slbErrCodes LB_STDCALL lb_Dispatcher\58\\58\addEventHandlerFn\40\lb_I_EventHandler\42\ evHandlerInstance\44\ lbEvHandler evHandler\44\ int EvNr\41\:0:*/
 lbErrCodes LB_STDCALL lb_Dispatcher::addEventHandlerFn(lb_I_EventHandler* evHandlerInstance, lbEvHandler evHandler, int EvNr) {
 	lbErrCodes err = ERR_NONE;
-	
-	LOG("lb_Dispatcher::addEventHandlerFn(lbEvHandler evHandler, int EvNr) called")
 	
 	if (dispatcher == NULL) {
 		// Create the instance, that holds the events mapping
@@ -538,25 +530,16 @@ lbErrCodes LB_STDCALL lb_Dispatcher::addEventHandlerFn(lb_I_EventHandler* evHand
 	    UAP(lb_I_Unknown, e, __FILE__, __LINE__)
 	QI(evH, lb_I_Unknown, e, __FILE__, __LINE__)
 
-LOG("Check if handler already registered")
-
 	if (dispatcher->exists(&k) == 1) {
-		LOG("Warning: Overwriting existing event handler")
         	dispatcher->remove(&k);
-        	LOG("Removed old event handler")
 	}
 
 	char msg[100] = "";
 	
-	sprintf(msg, "Insert a dispatch handler with key %s", k->charrep());
-	LOG(msg)
-
 	if ((err = dispatcher->insert(&e, &k)) != ERR_NONE) LOG("Error: Inserting new container element failed")
 
-	LOG("Inserted")
-
 	UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
-	
+
 	uk = dispatcher->getElement(&k);
 	
 	if (uk == NULL) LOG("Error: Adding event handler failed (not stored)")
