@@ -47,6 +47,12 @@
 #define HINSTANCE void*
 #endif
 
+#ifdef bla
+
+#ifdef DLLEXPORT
+#undef DLLEXPORT
+#endif
+
 #define DLLEXPORT
 
 #ifdef HOOK_DLL
@@ -70,6 +76,7 @@
 #endif
 #endif
 
+#endif
 
 // Object tracking
 DLLEXPORT void LB_STDCALL set_trackObject(char* track);
@@ -81,6 +88,13 @@ DLLEXPORT HINSTANCE LB_STDCALL getLBModuleHandle();
 
 DLLEXPORT void LB_STDCALL setModuleHandle(HINSTANCE h);
 DLLEXPORT void LB_STDCALL setLBModuleHandle(HINSTANCE h);
+
+
+DLLEXPORT int LB_STDCALL isInitializing();
+DLLEXPORT void LB_STDCALL setInitializing(int i);
+DLLEXPORT lb_I_Log* LB_STDCALL getLoggerInstance();
+DLLEXPORT void LB_STDCALL setLoggerInstance(lb_I_Log* l);
+
 
 /**
  * Platform independend module loader
@@ -111,16 +125,7 @@ DLLEXPORT void LB_STDCALL unHookAll();
 DLLEXPORT char* LB_STDCALL ltoa(void* ptr);
 DLLEXPORT char* LB_STDCALL itoa(int ptr);
 
-#ifdef WINDOWS
 /*...sLogging macros:0:*/
-DLLEXPORT lb_I_Log *log;
-DLLEXPORT int isInitializing;
-#endif
-#ifdef LINUX
-extern lb_I_Log *log;     
-extern int isInitializing;
-#endif
-
 
 #ifdef bla
 #ifndef  LOG_DEFINED
@@ -158,8 +163,8 @@ extern int isInitializing;
 
 /*...sLOG_INSTANCE:0:*/
 #define LOG_INSTANCE \
-			if (log == NULL) { \
-				isInitializing = 1; \
+			if (getLoggerInstance() == NULL) { \
+				setInitializing(1); \
 				lb_I_Module* modMan = getModuleInstance(); \
 				\
 				if (modMan != NULL) { \
@@ -168,7 +173,9 @@ extern int isInitializing;
 					lbErrCodes err = modMan->request("lb_I_Log", &Unknown); \
 					\
 					if (Unknown != NULL) { \
+						lb_I_Log* log; \
 						Unknown->queryInterface("lb_I_Log", (void**) &log, __FILE__, __LINE__); \
+						setLoggerInstance(log); \
 						if (log == NULL) { \
 							exit (1); \
 						} else { \
@@ -180,17 +187,17 @@ extern int isInitializing;
 					exit(1); \
 				} \
 			} \
-			isInitializing = 0;
+			setInitializing(0);
 /*...e*/
 
 /*...s_LOG:0:*/
 #define _LOG \
-	if (isInitializing != 0) { \
+	if (isInitializing() != 0) { \
 	} else { \
 	        LOG_INSTANCE \
 		printf("_LOG called\n"); \
-		if (log == NULL) printf("Fatal: log instance is NULL !!\n"); \
-		*log << "Datei: " << __FILE__ << " Zeile: " << __LINE__ << " Message: "
+		if (getLoggerInstance() == NULL) printf("Fatal: log instance is NULL !!\n"); \
+		*(getLoggerInstance()) << "Datei: " << __FILE__ << " Zeile: " << __LINE__ << " Message: "
 
 /*...e*/
 /*...s LOG_:0:*/
@@ -215,30 +222,30 @@ extern int isInitializing;
 #endif
 /*...sLOG\40\msg\41\:0:*/
 #define LOG(msg)	\
-			if (isInitializing != 0) { \
+			if (isInitializing() != 0) { \
 				cout << "Tried to log while initializing the logger." << \
 				"Msg: " << msg << " File: " << __FILE__ << " Line: " << __LINE__ << endl; \
 			} else { \
 				LOG_INSTANCE \
-				log->log(msg, __LINE__, __FILE__); \
+				getLoggerInstance()->log(msg, __LINE__, __FILE__); \
 			}
 /*...e*/
 /*...sLOGENABLE:0:*/
 #define LOGENABLE       \
-			if (isInitializing != 0) { \
+			if (isInitializing() != 0) { \
 				cout << "Tried to log while initializing the logger." << endl; \
 			} else { \
 				LOG_INSTANCE \
-				log->enable(); \
+				getLoggerInstance()->enable(); \
 			}
 /*...e*/
 /*...sLOGDISABLE:0:*/
 #define LOGDISABLE      \
-			if (isInitializing != 0) { \
+			if (isInitializing() != 0) { \
 				cout << "Tried to log while initializing the logger." << endl; \
 			} else { \
 				LOG_INSTANCE \
-				log->disable(); \
+				getLoggerInstance()->disable(); \
 			}
 /*...e*/
 /*...sLOGSTART:0:*/
@@ -247,27 +254,73 @@ extern int isInitializing;
 				cout << "Tried to log while initializing the logger." << endl; \
 			} else { \
 				LOG_INSTANCE \
-				log->event_begin(); \
+				getLoggerInstance()->event_begin(); \
 			}
 /*...e*/
 /*...sLOGEND:0:*/
 #define LOGEND          \
-			if (isInitializing != 0) { \
+			if (isInitializing() != 0) { \
 				cout << "Tried to log while initializing the logger." << endl; \
 			} else { \
 				LOG_INSTANCE \
-				log->event_end(); \
+				getLoggerInstance()->event_end(); \
 			}
 /*...e*/
 /*...sLOGPREFIX:0:*/
 #define LOGPREFIX(a)    \
-			if (isInitializing != 0) { \
+			if (isInitializing() != 0) { \
 				cout << "Tried to log while initializing the logger." << endl; \
 			} else { \
 				LOG_INSTANCE \
-				log->setPrefix(a); \
+				getLoggerInstance()->setPrefix(a); \
 			}
 /*...e*/
+/*...e*/
+
+
+/*...sclass lbStringKey \58\ public lb_I_KeyBase:0:*/
+class DLLEXPORT
+lbStringKey : public lb_I_KeyBase {
+public:
+#ifdef _MSC_VER
+     lbStringKey(char* file, int line) { key = ""; strcpy(keyType, "string"); }
+#endif
+    lbStringKey();
+    lbStringKey(const char* _key);
+    lbStringKey(const lb_I_KeyBase* k);
+    virtual ~lbStringKey();
+
+    DECLARE_LB_UNKNOWN()
+    
+    DECLARE_LB_KEYBASE()
+
+private:
+
+    char keyType[10];
+    char* key;    
+};
+/*...e*/
+/*...sclass lbKey \58\ public lb_I_KeyBase:0:*/
+class DLLEXPORT lbKey : public lb_I_KeyBase {
+public:
+#ifdef _MSC_VER
+	lbKey(char* file, int line); // { key = 0; strcpy(keyType, "int"); }
+#endif
+
+	lbKey();
+	lbKey(int _key);
+	lbKey(const lb_I_KeyBase* k);
+	virtual ~lbKey();
+
+	DECLARE_LB_UNKNOWN()
+
+	DECLARE_LB_KEYBASE()
+	
+private:
+
+	char keyType[10];
+	int key;
+};
 /*...e*/
 
 DLLEXPORT void LB_STDCALL CL_doLog(char* f, char* msg);

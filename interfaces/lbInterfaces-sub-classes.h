@@ -28,11 +28,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.30 $
+ * $Revision: 1.31 $
  * $Name:  $
- * $Id: lbInterfaces-sub-classes.h,v 1.30 2002/12/29 16:09:29 lothar Exp $
+ * $Id: lbInterfaces-sub-classes.h,v 1.31 2003/01/15 22:42:38 lothar Exp $
  *
  * $Log: lbInterfaces-sub-classes.h,v $
+ * Revision 1.31  2003/01/15 22:42:38  lothar
+ * Compiles with MSC
+ *
  * Revision 1.30  2002/12/29 16:09:29  lothar
  * Intent to go public
  *
@@ -115,7 +118,7 @@
 #define __LB_INTERFACES_SUB_CLASSES__
 
 /*...sclass lb_I_KeyBase:0:*/
-class lb_I_KeyBase : public lb_I_Unknown {
+class DLLEXPORT lb_I_KeyBase : public lb_I_Unknown {
 protected:
         lb_I_KeyBase() {}
         virtual ~lb_I_KeyBase() {}

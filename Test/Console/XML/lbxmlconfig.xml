@@ -67,7 +67,7 @@
            <!-- Windows prefix : _
                 Linux   postfix: 
            -->
-<!--...sFunction instanceOfContainer:16:-->
+<!--...sFunction _instanceOfContainer:16:-->
         <Function>
            <FunctionName Name="instanceOfSkipList"/>
            <Functor>
@@ -75,7 +75,7 @@
            </Functor>
         </Function>
 <!--...e-->
-<!--...sFunction instanceOfLogger:16:-->
+<!--...sFunction _instanceOfLogger:16:-->
         <Function>
            <FunctionName Name="instanceOfLogger"/>
            <Functor>
@@ -83,7 +83,7 @@
            </Functor>
         </Function>
 <!--...e-->
-<!--...sFunction instanceOfIntegerKey:16:-->
+<!--...sFunction _instanceOfIntegerKey:16:-->
         <Function>
            <FunctionName Name="instanceOfIntegerKey"/>
            <Functor>
@@ -91,7 +91,7 @@
            </Functor>
         </Function>
 <!--...e-->
-<!--...sFunction instanceOfInteger:16:-->
+<!--...sFunction _instanceOfInteger:16:-->
         <Function>
            <FunctionName Name="instanceOfInteger"/>
            <Functor>
@@ -99,7 +99,7 @@
            </Functor>
         </Function>
 <!--...e-->
-<!--...sFunction instanceOfString:16:-->
+<!--...sFunction _instanceOfString:16:-->
         <Function>
            <FunctionName Name="instanceOfString"/>
            <Functor>
@@ -107,7 +107,7 @@
            </Functor>
         </Function>
 <!--...e-->
-<!--...sFunction instanceOfReference:16:-->
+<!--...sFunction _instanceOfReference:16:-->
         <Function>
            <FunctionName Name="instanceOfReference"/>
            <Functor>
@@ -125,7 +125,7 @@
 <!--...e-->
     </Module>
     <Module>
-<!--...sModuleName lbMetaApp:8:-->
+<!--...sModuleName lbMetaApplication:8:-->
       <ModuleName Name="lbMetaApplication"/>
 <!--...e-->
 <!--...sFunctions:8:-->
@@ -133,7 +133,7 @@
            <!-- Windows prefix : _
                 Linux   postfix: 
            -->
-<!--...sFunction instanceOfMetaApplication:16:-->
+<!--...sFunction _instanceOfMetaApplication:16:-->
         <Function>
            <FunctionName Name="instanceOfMetaApplication"/>
            <Functor>
@@ -141,7 +141,7 @@
            </Functor>
         </Function>
 <!--...e-->
-<!--...sFunction instanceOfEventMapper:16:-->
+<!--...sFunction _instanceOfEventMapper:16:-->
         <Function>
            <FunctionName Name="instanceOfEventMapper"/>
            <Functor>
@@ -149,7 +149,7 @@
            </Functor>
         </Function>
 <!--...e-->
-<!--...sFunction instanceOfEventManager:16:-->
+<!--...sFunction _instanceOfEventManager:16:-->
         <Function>
            <FunctionName Name="instanceOfEventManager"/>
            <Functor>
@@ -157,7 +157,7 @@
            </Functor>
         </Function>
 <!--...e-->
-<!--...sFunction instanceOfDispatcher:16:-->
+<!--...sFunction _instanceOfDispatcher:16:-->
         <Function>
            <FunctionName Name="instanceOfDispatcher"/>
            <Functor>
@@ -165,7 +165,7 @@
            </Functor>
         </Function>
 <!--...e-->
-<!--...sFunction instanceOfEvHandler:16:-->
+<!--...sFunction _instanceOfEvHandler:16:-->
         <Function>
            <FunctionName Name="instanceOfEvHandler"/>
            <Functor>

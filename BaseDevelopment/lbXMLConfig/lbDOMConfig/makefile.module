@@ -33,6 +33,7 @@ COMPILER=MICROSOFT
 ifeq ($(OSTYPE), Windows_NT)
 OBJDEP=../../lbHook/conio.o
 VENDORLIBS="$(DEVROOT)\projects\dll\libs\xerces-c_1D.lib"
+LIBS = $(DEVROOT)\projects\dll\libs\lbhook.lib
 
 INCLS=$(DEVROOT)\CPP\BaseDevelopment\lbclasses Q:\Develop\xml\xml4csrc3_3_1\src
 

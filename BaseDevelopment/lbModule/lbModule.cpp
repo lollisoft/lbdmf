@@ -28,11 +28,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.45 $
+ * $Revision: 1.46 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.45 2002/12/29 16:09:29 lothar Exp $
+ * $Id: lbModule.cpp,v 1.46 2003/01/15 22:42:20 lothar Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.46  2003/01/15 22:42:20  lothar
+ * Compiles with MSC
+ *
  * Revision 1.45  2002/12/29 16:09:29  lothar
  * Intent to go public
  *
@@ -179,7 +182,7 @@ extern "C" {
 
 #include <lbModule.h>
 //#include <lbXMLConfig.h>
-#include <lbkey.h>
+//#include <lbkey.h>
 /*...e*/
 
 class lbSkipListElement;
@@ -2410,13 +2413,13 @@ lbErrCodes err = ERR_NONE;
 			
                         if ((err = lbLoadModule(module, h)) != ERR_NONE) {
                                 // report error if still loaded
-                                _CL_LOG << "Error: Could not load the module" LOG_
+                                _CL_LOG << "Error: Could not load the module '" << module << "'" LOG_
                                 
                                 // return error if loading is impossible
                         }
                         setModuleHandle(h);
                         
-                        if (getModuleHandle() == 0) _CL_LOG << "Error: Module could not be loaded" LOG_
+                        if (getModuleHandle() == 0) _CL_LOG << "Error: Module could not be loaded '" << module << "'" LOG_
 
                         if ((err = lbGetFunctionPtr(functor, getModuleHandle(), (void**) &DLL_LB_GET_UNKNOWN_INSTANCE)) != ERR_NONE) {
                                 _CL_LOG << "Error while loading a functionpointer!" LOG_

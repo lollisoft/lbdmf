@@ -28,11 +28,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.19 $
+ * $Revision: 1.20 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.19 2002/12/29 16:09:29 lothar Exp $
+ * $Id: lbMetaApplication.cpp,v 1.20 2003/01/15 22:42:20 lothar Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.20  2003/01/15 22:42:20  lothar
+ * Compiles with MSC
+ *
  * Revision 1.19  2002/12/29 16:09:29  lothar
  * Intent to go public
  *
@@ -240,6 +243,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::Initialize() {
 	printf("Register some events\n"); 
 	eman->registerEvent("getBasicApplicationInfo", getBasicApplicationInfo);
 	eman->registerEvent("getMainModuleInfo", getMainModuleInfo);
+	printf("Registered some events\n");
 
 /*...e*/
 
@@ -422,6 +426,7 @@ lbErrCodes LB_STDCALL lb_EventManager::registerEvent(char* EvName, int & EvNr) {
 
 /*...sInit containers:8:*/
 	if (events == NULL) {
+		printf("Init containers for event manager\n");
 		// Create the instance, that holds the events mapping
 		REQUEST(manager.getPtr(), lb_I_Container, events)
 
@@ -430,16 +435,18 @@ lbErrCodes LB_STDCALL lb_EventManager::registerEvent(char* EvName, int & EvNr) {
 		
 		// The reverse
 		REQUEST(manager.getPtr(), lb_I_Container, reverse_events)
+		printf("Initialized\n");
 	}
 /*...e*/
 	
 /*...sSetup key \40\get a string\44\ store the char\42\ value and get a key from it\41\:8:*/
+	printf("Setup key\n");
 	UAP_REQUEST(manager.getPtr(), lb_I_String, stringData)
-	//stringKey->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
 	stringData->setData(EvName);
 	
 	UAP(lb_I_KeyBase, sk, __FILE__, __LINE__)
 	QI(stringData, lb_I_Unknown, sk, __FILE__, __LINE__)
+	printf("Set up key\n");
 /*...e*/
 	
 /*...sError handling:8:*/
@@ -450,7 +457,7 @@ lbErrCodes LB_STDCALL lb_EventManager::registerEvent(char* EvName, int & EvNr) {
 		return ERR_EVENT_EXISTS;
 	}
 /*...e*/
-	
+printf("determine id\n");	
 /*...sdetermine id:8:*/
 	if (freeIds->Count() == 0) {
 		maxEvId++;
@@ -468,7 +475,7 @@ lbErrCodes LB_STDCALL lb_EventManager::registerEvent(char* EvName, int & EvNr) {
 		maxEvId = i->getData();
 	}
 /*...e*/
-
+printf("insert new event\n");
 /*...sinsert new event:8:*/
 	UAP_REQUEST(manager.getPtr(), lb_I_Integer, integerData)
 	integerData->setData(maxEvId);
@@ -488,7 +495,7 @@ lbErrCodes LB_STDCALL lb_EventManager::registerEvent(char* EvName, int & EvNr) {
 	
 	EvNr = maxEvId;
 /*...e*/
-
+printf("Check, if event is registered\n");
 
 	if (events->exists(&sk) != 1) {
 		_LOG << "lb_EventManager::registerEvent(): Error: Event could not be registered" LOG_

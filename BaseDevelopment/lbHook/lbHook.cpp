@@ -26,26 +26,30 @@
             22453 Hamburg (germany)
 */
 #define HOOK_DLL
+/*...sLB_HOOK_DLL scope:0:*/
+#define LB_HOOK_DLL
+#include <lbhook-module.h>
+/*...e*/
 
 #include <stdarg.h>
 
 // Where should I define standard switches to choose the correct code ?
 
 #ifdef WINDOWS
-#include <windows.h>
+  #include <windows.h>
 #endif
 #ifdef LINUX
-#include <dlfcn.h>
+  #include <dlfcn.h>
 
-#ifdef __cplusplus
-extern "C" {      
-#endif            
+  #ifdef __cplusplus
+    extern "C" {      
+  #endif            
 
-#include <conio.h>
+  #include <conio.h>
 
-#ifdef __cplusplus
-}
-#endif            
+  #ifdef __cplusplus
+    }
+  #endif            
 
 #endif
 
@@ -53,12 +57,46 @@ extern "C" {
 #pragma warning( disable: 4275 )
 #pragma warning( disable: 4251 )
 #pragma warning( disable: 4101 )
-#undef DLLEXPORT
-#define DLLEXPORT
+
+//#undef DLLEXPORT
+//#define DLLEXPORT
 #endif
 
 #include <lbConfigHook.h>
-#include <lbkey.h>
+//#include <lbkey.h>
+
+
+#ifdef WINDOWS
+#ifndef LB_CLASSES_DLL
+DLLEXPORT lb_I_Log *lb_log;
+DLLEXPORT int lb_isInitializing;
+#endif
+#ifdef LB_CLASSES_DLL
+LB_DLLIMPORT lb_I_Log *lb_log;
+LB_DLLIMPORT int lb_isInitializing;
+#endif
+#endif
+#ifdef LINUX
+extern lb_I_Log *lb_log;     
+extern int lb_isInitializing;
+#endif
+
+
+DLLEXPORT int LB_STDCALL isInitializing() {
+	return lb_isInitializing;
+}
+
+DLLEXPORT void LB_STDCALL setInitializing(int i) {
+	lb_isInitializing = i;
+}
+
+DLLEXPORT lb_I_Log* LB_STDCALL getLoggerInstance() {
+	return lb_log;
+}
+
+DLLEXPORT void LB_STDCALL setLoggerInstance(lb_I_Log* l) {
+	lb_log = l;
+}
 
 
 HINSTANCE ModuleHandle = NULL;
@@ -120,6 +158,7 @@ DLLEXPORT void LB_STDCALL setModuleHandle(HINSTANCE h) {
 DLLEXPORT void LB_STDCALL setLBModuleHandle(HINSTANCE h) {
 	LB_Module_Handle = h;
 }
+
 
 #ifdef LINUX
 lb_I_Log *log = NULL;
@@ -266,12 +305,18 @@ DLLEXPORT void LB_STDCALL unHookAll() {
 		LB_Module_Handle = NULL;
 	}
 	
-	log = NULL;
+	setLoggerInstance(NULL);
 }
 /*...e*/
 
 /*...slbKey:0:*/
 /*...sc\39\tors and d\39\tors:0:*/
+#ifdef _MSC_VER
+lbKey::lbKey(char* file, int line) {
+        key = 0;
+        strcpy(keyType, "int");
+}
+#endif
 lbKey::lbKey() {
     ref = STARTREF;
     key = 0;
@@ -333,6 +378,7 @@ char* LB_STDCALL lbKey::charrep() const {
     return strdup(buf);
 }
 /*...e*/
+#ifdef bla
 /*...slbKeyUL:0:*/
 
 
@@ -396,8 +442,9 @@ char* LB_STDCALL lbKeyUL::charrep() const {
     return strdup(buf);
 }
 /*...e*/
+#endif
 /*...slbStringKey:0:*/
-lbStringKey::lbStringKey() {
+DLLEXPORT lbStringKey::lbStringKey() {
     ref = STARTREF;
     key = "";
 }

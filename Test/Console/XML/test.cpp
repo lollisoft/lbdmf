@@ -104,7 +104,10 @@ void main(int argc, char *argv[]) {
 	mm->setModuleManager(mm, __FILE__, __LINE__);
 /*...e*/
 /*...stest container:0:*/
-{	if (mm->request("lb_I_Container", &uk) != ERR_NONE) {
+{
+	printf("Request lb_I_Container\n");
+	if (mm->request("lb_I_Container", &uk) != ERR_NONE) {
+		printf("Requesting lb_I_Container failed\n");
 		_CL_LOG << "Error: Could not get needed instance!" LOG_
 	}
 	

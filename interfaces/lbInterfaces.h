@@ -48,6 +48,7 @@
 
 //#define LB_STDCALL
 
+#ifndef _MSC_VER
 #ifndef LB_STDCALL
  #ifdef WINDOWS
  #define LB_STDCALL __stdcall
@@ -64,6 +65,27 @@
  #ifndef WINDOWS
  #define LB_FUNCTORCALL
  #endif
+#endif
+#endif
+
+#ifdef _MSC_VER
+#ifndef LB_STDCALL
+ #ifdef WINDOWS
+ #define LB_STDCALL __cdecl
+ #endif
+ #ifndef WINDOWS
+ #define LB_STDCALL
+ #endif
+#endif
+
+#ifndef LB_FUNCTORCALL
+ #ifdef WINDOWS
+ #define LB_FUNCTORCALL __cdecl
+ #endif
+ #ifndef WINDOWS
+ #define LB_FUNCTORCALL
+ #endif
+#endif
 #endif
 
 #ifdef __WATCOMC__
@@ -210,7 +232,7 @@ typedef lbErrCodes (LB_STDCALL lb_I_EventHandler::*lbEvHandler)(lb_I_Unknown* uk
 
 
 /*...sclass lb_I_Unknown:0:*/
-class lb_I_Unknown {
+class DLLEXPORT lb_I_Unknown {
 protected:
 	lb_I_Unknown() {}
 	virtual ~lb_I_Unknown() {}

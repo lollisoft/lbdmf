@@ -25,11 +25,14 @@
 #            22453 Hamburg (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.29 $
+# * $Revision: 1.30 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.29 2002/12/29 16:09:30 lothar Exp $
+# * $Id: STD_MAKE,v 1.30 2003/01/15 22:42:45 lothar Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.30  2003/01/15 22:42:45  lothar
+# * Compiles with MSC
+# *
 # * Revision 1.29  2002/12/29 16:09:30  lothar
 # * Intent to go public
 # *
@@ -178,23 +181,23 @@ RM =del
 # Microsoft
 OUTDIR=.
 INTDIR=.
-MSC_BASIC_EXE      = /Gd /nologo /W3 /GX /O2  /D "WINDOWS" /D "LB_RUNTIME_LINK" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "LBDOMCONFIG_EXPORTS" /Fp"$(INTDIR)\lbDOMConfig.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+#/D "LBDOMCONFIG_EXPORTS" /Fp"$(INTDIR)\lbDOMConfig.pch"
+MSC_BASIC_EXE      = /Gd /nologo /W3 /GX /O2  /D "WINDOWS" /D "LB_RUNTIME_LINK" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
 MSC_BASIC_EXE_NODBG= /MT  /O2         
 MSC_BASIC_EXE_DEBUG= /MDd /Gm /ZI /Od /YX 
 
 
 
-
-C_EXEOPS_MICROSOFT =        /Gd /nologo /MT  /W3     /GX /O2          /D "WINDOWS" /D "LB_RUNTIME_LINK" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "LBDOMCONFIG_EXPORTS" /Fp"$(INTDIR)\lbDOMConfig.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
-C_EXEOPS_MICROSOFT_DEBUG =  /Gd /nologo /MDd /W3 /Gm /GX      /ZI /Od /D "WINDOWS" /D "LB_RUNTIME_LINK" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "LBDOMCONFIG_EXPORTS" /Fp"$(INTDIR)\lbDOMConfig.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
-C_DLLOPS_MICROSOFT =        /Gd /nologo /MT  /W3     /GX /O2          /D "WINDOWS" /D "LB_RUNTIME_LINK" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "LBDOMCONFIG_EXPORTS" /Fp"$(INTDIR)\lbDOMConfig.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
-C_DLLOPS_MICROSOFT_DEBUG =  /Gd /nologo /MDd /W3     /GX /O2          /D "WINDOWS" /D "LB_RUNTIME_LINK" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "LBDOMCONFIG_EXPORTS" /Fp"$(INTDIR)\lbDOMConfig.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+#/Fp"$(INTDIR)\lbDOMConfig.pch"
+#/D "LBDOMCONFIG_EXPORTS"
+C_EXEOPS_MICROSOFT =        /Gd /nologo /MT  /W3     /GX /O2          /D "WINDOWS" /D "LB_RUNTIME_LINK" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+C_EXEOPS_MICROSOFT_DEBUG =  /Gd /nologo /MDd /W3 /Gm /GX      /ZI /Od /D "WINDOWS" /D "LB_RUNTIME_LINK" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+C_DLLOPS_MICROSOFT =        /Gd /nologo /MT  /W3     /GX /O2          /D "WINDOWS" /D "LB_RUNTIME_LINK" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+C_DLLOPS_MICROSOFT_DEBUG =  /Gd /nologo /MDd /W3     /GX /O2          /D "WINDOWS" /D "LB_RUNTIME_LINK" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
 
 LINK_MICROSOFT=link.exe
  
-LINK_MICROSOFT_OBJS= \
-	"$(INTDIR)\lbDOMConfig.obj" \
-	"..\..\..\..\..\..\XML\XML4CSRC3_3_1\Build\Win32\VC6\Release\xerces-c_1.lib"
+LINK_MICROSOFT_OBJS=
 
 
 C_EXEOPS = $(C_EXEOPS_WATCOM$(MODE))
@@ -207,10 +210,12 @@ LINK_WATCOM =wlink op q
 L_DLLOPS_WATCOM =SYS nt_dll op m op maxe=25 op q op symf d dwarf
 
 # Microsoft
+#/pdb:"$(OUTDIR)\lbDOMConfig.pdb"
+#/out:"$(OUTDIR)\lbDOMConfig.dll"
+#/implib:"$(OUTDIR)\lbDOMConfig.lib"
 L_DLLOPS_MICROSOFT =kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib \
 shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo \
-/dll /incremental:yes /pdb:"$(OUTDIR)\lbDOMConfig.pdb" /debug /machine:I386 \
-/out:"$(OUTDIR)\lbDOMConfig.dll" /implib:"$(OUTDIR)\lbDOMConfig.lib" \
+/dll /incremental:yes /debug /machine:I386 \
 /libpath:"Q:\Develop\xml\xml4csrc3_3_1\Build\Win32\VC6" \
 /libpath:"F:\develop\NT\MSC\VC98\Lib"
 
