@@ -11,11 +11,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.29 $
+ * $Revision: 1.30 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.29 2002/12/29 16:09:30 lothar Exp $
+ * $Id: mkmk.cpp,v 1.30 2003/01/15 22:44:30 lothar Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.30  2003/01/15 22:44:30  lothar
+ * Added handling of MSC compiler
+ *
  * Revision 1.29  2002/12/29 16:09:30  lothar
  * Intent to go public
  *
@@ -648,6 +651,7 @@ void writeDllTarget(char* modulename) {
   printf("endif\n");
   printf("PROGRAM=%s\n", ModName);
   
+  printf("ifeq ($(COMPILER), WATCOM)\n");
   printf("\n%s.dll: $(OBJS)\n", ModName);
   printf("\t\t@echo Link %s.dll\n", ModName);
   printf("\t\t@echo NAME $(PROGRAM).dll > $(LNK)\n");
@@ -657,6 +661,18 @@ void writeDllTarget(char* modulename) {
   printf("\t\t@wlib -q -n -b $(PROGRAM).lib +$(PROGRAM).dll\n");
   printf("\t\t@$(CP) $(PROGRAM).dll $(DLLDIR) > null\n");
   printf("\t\t@$(CP) $(PROGRAM).lib $(DLLLIBDIR) > null\n");
+  printf("endif\n");
+
+  printf("ifeq ($(COMPILER), MICROSOFT)\n");
+  printf("\n%s.dll: $(OBJS)\n", ModName);
+  printf("\t\t@echo Link %s.dll\n", ModName);
+  printf("\t\t@echo NAME $(PROGRAM).dll > $(LNK)\n");
+  printf("\t\t@echo $(FILE) $(LIBS) >> $(LNK)\n");
+  printf("\t\t@;if NOT \"$(LIBS)\" == \"\" echo LIBR $(LIBS) >> $(LNK)\n");
+  printf("\t\t@$(LINK) $(LNKDLLOPS) $(LINKFLAGS)\n");
+  printf("\t\t@$(CP) $(PROGRAM).dll $(DLLDIR) > null\n");
+  printf("\t\t@$(CP) $(PROGRAM).lib $(DLLLIBDIR) > null\n");
+  printf("endif\n");
 #endif
 }
 /*...e*/
