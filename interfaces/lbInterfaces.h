@@ -1722,6 +1722,9 @@ public:
 	 * \param queryString Is the SQL query whose data should be displayed for modification.
 	 */
 	virtual lb_I_DatabaseForm* LB_STDCALL createDBForm(char* formName, char* queryString) = 0;
+
+
+	virtual lb_I_Form* LB_STDCALL createLoginForm() = 0;
 /*...e*/
 /*...sGetter functions:8:*/
 	/**
