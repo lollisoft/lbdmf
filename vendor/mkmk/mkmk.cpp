@@ -11,11 +11,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.28 $
+ * $Revision: 1.29 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.28 2002/11/29 19:50:27 lothar Exp $
+ * $Id: mkmk.cpp,v 1.29 2002/12/29 16:09:30 lothar Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.29  2002/12/29 16:09:30  lothar
+ * Intent to go public
+ *
  * Revision 1.28  2002/11/29 19:50:27  lothar
  * Compiles again under linux, but some problems at runtime with DOMString
  *
@@ -116,7 +119,7 @@
   #define dd_name name
 #else
 
-  #include "dosdir.h"
+  #include <dosdir.h>
 
 #endif
 /*...e*/

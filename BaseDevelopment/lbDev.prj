@@ -1,4 +1,7 @@
 /*...v\46\\46\\47\make\47\Std_make \45\ The global makefile definitions:0:*/
+/*...v\46\\46\\47\README:0:*/
+/*...v\46\\46\\47\COPYING:0:*/
+/*...v\46\\46\\47\makedist\46\bat:0:*/
 
 /*...sInterfaces:0:*/
 /*...v\46\\46\\47\interfaces\47\lbInterfaces\46\h:0:*/
@@ -30,6 +33,7 @@ These headers must define the per module (DLL) EXPORT variable
 /*...vlbHook\47\lbHook\46\cpp:0:*/
 /*...vlbHook\47\makefile\46\bat:0:*/
 /*...vlbHook\47\makefile:0:*/
+/*...vlbHook\47\makefile\46\module:0:*/
 /*...vlbHook\47\lbhook\46\lnk:0:*/
 
 /*...e*/
@@ -153,6 +157,27 @@ findfunctorname
 /*...e*/
 
 /*...e*/
+
+/*...sComponents:0:*/
+/*...v\46\\46\\47\Components\47\SimpleTextEditor\47\editor\46\h:0:*/
+/*...v\46\\46\\47\Components\47\SimpleTextEditor\47\editor\46\cpp:0:*/
+
+
+The module wizard should be used to create a new module for my
+component system. It should create the nessecary files, that are
+needed to compile successfull.
+
+What did I need ?
+
+1:	A name for the module, like SimpleTextEditor
+2:	The directory to place it on
+
+/*...v\46\\46\\47\Components\47\lbModuleWizard\47\lbModuleWizard\46\h:0:*/
+/*...v\46\\46\\47\Components\47\lbModuleWizard\47\lbModuleWizard\46\cpp:0:*/
+
+
+/*...e*/
+
 /*...sServiceDevelopment:0:*/
 /*...e*/
 /*...sWrapperDevelopment:0:*/
