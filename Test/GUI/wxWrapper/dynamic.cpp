@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.60 2005/03/19 16:44:05 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.61 2005/03/31 09:22:03 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -44,18 +44,22 @@
     p-Mail: Lothar Behrens
             Rosmarinstr. 3
             
-            40235 Dsseldorf (germany)
+            40235 Duesseldorf (germany)
 */
 /*...e*/
 /*...e*/
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.60 $
+ * $Revision: 1.61 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.60 2005/03/19 16:44:05 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.61 2005/03/31 09:22:03 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.61  2005/03/31 09:22:03  lollisoft
+ * Copyright text problems under linux.
+ * Bugfix while calling _trans in function parameter twice.
+ *
  * Revision 1.60  2005/03/19 16:44:05  lollisoft
  * Implemented i18n. Removed unused code.
  *
@@ -1254,7 +1258,11 @@ lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::createDBForm(char* formName, char* query
 		pl = PM->getFirstMatchingPlugin("lb_I_DatabaseForm");
 
 		if (pl == NULL) {
-			msgBox(_trans("Error"), _trans("Database form plugin not found or not installed.\n\nDatabase forms are not available."));
+			char* msg = (char*) malloc(200);
+			msg[0] = 0;
+			strcpy(msg, _trans("Database form plugin not found or not installed.\n\nDatabase forms are not available."));
+			msgBox(_trans("Error"), msg);
+			free(msg);
 			return NULL;
 		}
 
