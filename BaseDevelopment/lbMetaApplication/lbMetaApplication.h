@@ -1,11 +1,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.4 $
+ * $Revision: 1.5 $
  * $Name:  $
- * $Id: lbMetaApplication.h,v 1.4 2002/08/06 05:41:39 lothar Exp $
+ * $Id: lbMetaApplication.h,v 1.5 2002/08/21 18:00:28 lothar Exp $
  *
  * $Log: lbMetaApplication.h,v $
+ * Revision 1.5  2002/08/21 18:00:28  lothar
+ * Added UAP variables
+ *
  * Revision 1.4  2002/08/06 05:41:39  lothar
  * More special Dispatcher and EventManager interface.
  * Empty bodies compiling
@@ -54,7 +57,9 @@ public:
 	
 
 	virtual lbErrCodes LB_STDCALL registerEventHandler(lb_I_Dispatcher* disp);	
+
 	lbErrCodes LB_STDCALL lbEvHandler1(lb_I_Unknown* uk);
+	lbErrCodes LB_STDCALL lbEvHandler2(lb_I_Unknown* uk);
 	
 
 protected:
@@ -125,6 +130,9 @@ public:
 	virtual lbErrCodes LB_STDCALL queryEvent(char* EvName, lb_I_Unknown* EvData);
 	
 	virtual lb_I_DispatchResponce* dispatch(lb_I_DispatchRequest* req);
+	
+	UAP(lb_I_Container, dispatcher, __FILE__, __LINE__)
+	UAP(lb_I_EventManager, evManager, __FILE__, __LINE__)
 };
 /*...e*/
 /*...sclass lb_EventManager:0:*/
@@ -136,11 +144,18 @@ public:
 	DECLARE_LB_UNKNOWN()
 	
 	virtual lbErrCodes LB_STDCALL registerEvent(char* EvName, int & EvNr);
-protected:
-
 	virtual lbErrCodes LB_STDCALL resolveEvent(char* EvName, int & evNr);
 
+protected:
+
+
 	friend class lb_I_Dispatcher;
+	
+	UAP(lb_I_Container, events, __FILE__, __LINE__)
+	
+	UAP(lb_I_Container, freeIds, __FILE__, __LINE__)
+	
+	int maxEvId;
 };
 /*...e*/
 
