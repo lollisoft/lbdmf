@@ -1264,7 +1264,7 @@ int i = 0;
 while (lpsz[i++] != ' ') i++;
 
 return strdup(lpsz); //!!!
-
+#ifdef bla
    if (*lpsz == *g_szQuoteChar) {
       *lpszTable++ = *lpsz++; // Copy beginning quote
       while (*lpsz && *lpsz != *g_szQuoteChar) *lpszTable++ = *lpsz++;
@@ -1281,6 +1281,7 @@ printf("Endscan at '%s'\n", lpszTable);
    //*lpszTable = '\0';
 
    return lpszTable;
+#endif
 }
 /*...e*/
 
@@ -2502,3 +2503,11 @@ void lbDBInterfaceRepository::initIntefaceList() {
 }
 /*...e*/
 /*...e*/
+
+#ifdef bla
+IMPLEMENT_FUNCTOR(instanceOfDatabaseForm, lbDatabaseForm)
+
+class lbDatabaseForm : public lb_I_Form {
+
+};
+#endif

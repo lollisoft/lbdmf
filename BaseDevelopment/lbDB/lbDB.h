@@ -44,7 +44,7 @@ extern "C" {
 //lbErrCodes DLLEXPORT LB_STDCALL lb_releaseInstance(lb_I_Unknown * inst);
 DECLARE_FUNCTOR(instanceOfDatabase)
 DECLARE_FUNCTOR(instanceOfDBInterfaceRepository)
-
+DECLARE_FUNCTOR(instanceOfDatabaseForm)
 /*...s\35\ifdef __cplusplus \125\:0:*/
 #ifdef __cplusplus
 }
