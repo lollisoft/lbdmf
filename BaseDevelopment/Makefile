@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.4 $
+# * $Revision: 1.5 $
 # * $Name:  $
-# * $Id: Makefile,v 1.4 2003/05/24 02:09:44 lollisoft Exp $
+# * $Id: Makefile,v 1.5 2004/06/06 12:55:58 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.5  2004/06/06 12:55:58  lollisoft
+# * Added new module lbPluginManager
+# *
 # * Revision 1.4  2003/05/24 02:09:44  lollisoft
 # * Added lbDB module
 # *
@@ -34,7 +37,7 @@ MAKESUBDIR= \
 	cd ..; \
 	)
 
-all_targets: lbHook lbDB lbModule lbclasses lbMetaApplication lbXMLConfig/lbDOMConfig
+all_targets: lbHook lbDB lbPluginManager lbModule lbclasses lbMetaApplication lbXMLConfig/lbDOMConfig
 
 dummy:
 
@@ -43,6 +46,9 @@ lbHook: dummy
 	$(MAKESUBDIR)
 
 lbDB: dummy
+	$(MAKESUBDIR)
+
+lbPluginManager: dummy
 	$(MAKESUBDIR)
 
 lbModule: dummy
