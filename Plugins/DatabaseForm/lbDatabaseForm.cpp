@@ -83,7 +83,6 @@ END_IMPLEMENT_LB_UNKNOWN()
 
 IMPLEMENT_SINGLETON_FUNCTOR(instanceOfPluginModule, lbPluginModule)
 
-
 BEGIN_PLUGINS(lbPluginModule)
 	ADD_PLUGIN(lbPluginDatabaseDialog, GUI)
 END_PLUGINS()
@@ -106,16 +105,14 @@ void LB_STDCALL lbPluginModule::initialize() {
 lbErrCodes LB_STDCALL lbPluginModule::setData(lb_I_Unknown* uk) {
         _CL_LOG << "lbPluginModule::setData(...) not implemented yet" LOG_
         
-        
-        
-        
-        
-        
         return ERR_NOT_IMPLEMENTED;
 }
 /*...e*/
 
-class lbPluginDatabaseDialog : public lb_I_PluginImpl {
+/*...sclass lbPluginDatabaseDialog implementation:0:*/
+class lbPluginDatabaseDialog : 
+	public lb_I_PluginImpl,
+	public lb_I_DatabaseDialog {
 public:
 	lbPluginDatabaseDialog();
 	virtual ~lbPluginDatabaseDialog();
@@ -148,3 +145,4 @@ lbPluginDatabaseDialog::~lbPluginDatabaseDialog() {
 void LB_STDCALL lbPluginDatabaseDialog::initialize() {
 
 }
+/*...e*/
