@@ -48,7 +48,7 @@ public:
 	 * For each event, it gets an numeric identifer so it may
 	 * be able to dispatch that events.
 	 */
-	virtual lbErrCodes LB_STDCALL Initialize();
+	virtual lbErrCodes LB_STDCALL Initialize(char* user = NULL, char* app = NULL);
 	virtual lbErrCodes LB_STDCALL run();
 	virtual lbErrCodes LB_STDCALL getGUI(lb_I_GUI** _gui);
 
@@ -65,12 +65,14 @@ public:
 
 	lbErrCodes LB_STDCALL getCustomFormsConfig(lb_I_Unknown* uk);
 
+	virtual lbErrCodes LB_STDCALL loadApplication(char* user, char* app);
+
 /*...sWrapper for some usual GUI functions:8:*/
 
 	/* The menubar is still present in the demo. At the
 	   first time, a new menubar should not be used.
 	*/
-	virtual lbErrCodes LB_STDCALL addMenuBar(char* name);
+	virtual lbErrCodes LB_STDCALL addMenuBar(char* name, char* after = NULL);
 
 	/**
 	 * Add a menu behind the last.
@@ -116,7 +118,7 @@ lbApplication::~lbApplication() {
 /*...sregister event handlers:0:*/
 lbErrCodes LB_STDCALL lbApplication::registerEventHandler(lb_I_Dispatcher* disp) {
 
-	disp->addEventHandlerFn(this, (lbEvHandler) &lbApplication::getLoginData, "getLoginData");
+//	disp->addEventHandlerFn(this, (lbEvHandler) &lbApplication::getLoginData, "getLoginData");
 
 	disp->addEventHandlerFn(this, (lbEvHandler) &lbApplication::getKundenDetails, "getKundenDetails");
 	disp->addEventHandlerFn(this, (lbEvHandler) &lbApplication::getKundenListe, "getKundenListe");
@@ -149,7 +151,8 @@ lbErrCodes LB_STDCALL lbApplication::getDynamicDBForm(lb_I_Unknown* uk) {
 		
 		
 
-	        dbForm = gui->createDBForm("<Load title from database>", "<Load SQL query from database>");
+	        dbForm = gui->createDBForm("<Load title from database>", "<Load SQL query from database>",
+	        "trainres", "dba", "trainres");
 	} else {
 	        cout << "KundenDetails" << endl;
 	}
@@ -178,7 +181,8 @@ lbErrCodes LB_STDCALL lbApplication::getKundenDetails(lb_I_Unknown* uk) {
 	if (gui != NULL) {
 		UAP(lb_I_DatabaseForm, dbForm, __FILE__, __LINE__)
 		
-		dbForm = gui->createDBForm("Elemente in World", "select objecttyp, x, y, w, h from world order by id");
+		dbForm = gui->createDBForm("Elemente in World", "select objecttyp, x, y, w, h from world order by id",
+		"trainres", "dba", "trainres");
 	} else {
 	        cout << "KundenDetails" << endl;
 	}
@@ -193,7 +197,8 @@ lbErrCodes LB_STDCALL lbApplication::getKundenListe(lb_I_Unknown* uk) {
 	if (gui != NULL) {
 		UAP(lb_I_DatabaseForm, dbForm, __FILE__, __LINE__)
 		
-		dbForm = gui->createDBForm("Kunden", "select Firma, Name, Vorname, Strasse, Hausnummer, Ort, Plz, Vorwahl, Telefon, deleted from Kunden where deleted = 0");
+		dbForm = gui->createDBForm("Kunden", "select Firma, Name, Vorname, Strasse, Hausnummer, Ort, Plz, Vorwahl, Telefon from Kunden",
+		"trainres", "dba", "trainres");
 	} else {
 	        cout << "KundenDetails" << endl;
 	}
@@ -208,7 +213,8 @@ lbErrCodes LB_STDCALL lbApplication::getCustomFormsConfig(lb_I_Unknown* uk) {
 	if (gui != NULL) {
 		UAP(lb_I_DatabaseForm, dbForm, __FILE__, __LINE__)
 		
-		dbForm = gui->createDBForm("Formulare", "select Name, MenuName, EventName, query from DBForms");
+		dbForm = gui->createDBForm("Formulare", "select Name, MenuName, EventName, query from DBForms",
+		"trainres", "dba", "trainres");
 	}
 
 	return ERR_NONE;
@@ -247,13 +253,11 @@ lb_I_EventManager * lbApplication::getEVManager( void ) {
 	return NULL;
 }
 /*...e*/
-/*...slbErrCodes LB_STDCALL lbApplication\58\\58\Initialize\40\\41\:0:*/
-lbErrCodes LB_STDCALL lbApplication::Initialize() {
-	/*
-	 * This variable is needed, if this instance also implements a little dispatcher.
-	 * It should moved into the class declatation and used in the dispatch functions.
-	 */
-	 
+/*...slbErrCodes LB_STDCALL lbApplication\58\\58\Initialize\40\char\42\ user \61\ NULL\44\ char\42\ app \61\ NULL\41\:0:*/
+lbErrCodes LB_STDCALL lbApplication::Initialize(char* user, char* app) {
+
+	// To be implemented in a separate application module
+
 	int getKundenDetails;
 	int getKundenListe;
 	int getLoginData;
@@ -313,14 +317,15 @@ lbErrCodes LB_STDCALL lbApplication::Initialize() {
 	 */
 /*...e*/
 	
-	addMenuBar("Kunden");
-	addMenuBar("Reservierungen");
-	addMenuBar("Bahnhoefe");
+	addMenuBar("Kunden", "Edit");
+	addMenuBar("Reservierungen", "Kunden");
+	addMenuBar("Bahnhoefe", "Reservierungen");
 	
 	
-	addMenuEntry("File", "Anmelden", "getLoginData", "");
+	//addMenuEntry("File", "Anmelden", "getLoginData", "");
 	addMenuEntry("Kunden", "Elemente in World", "getKundenDetails", "");
 	addMenuEntry("Kunden", "Kunden", "getKundenListe", "");
+
 	
 	return ERR_NONE;
 }
@@ -341,11 +346,20 @@ lbErrCodes LB_STDCALL lbApplication::run() {
 /*...e*/
 
 /*...sBasic functions to be used for a UI application:0:*/
-lbErrCodes LB_STDCALL lbApplication::addMenuBar(char* name) {
+lbErrCodes LB_STDCALL lbApplication::loadApplication(char* user, char* app) {
+        lbErrCodes err = ERR_NONE;
+
+        UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, MetaApp)
+        MetaApp->loadApplication(user, app);
+
+        return err;
+}
+
+lbErrCodes LB_STDCALL lbApplication::addMenuBar(char* name, char* after) {
 	lbErrCodes err = ERR_NONE;
 
 	UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, app)
-	app->addMenuBar(name);
+	app->addMenuBar(name, after);
 
 	return err;
 }
