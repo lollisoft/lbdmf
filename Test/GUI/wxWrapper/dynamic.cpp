@@ -6,7 +6,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.5 2003/04/28 20:50:13 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.6 2003/07/04 19:12:11 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -1049,6 +1049,26 @@ lbErrCodes LB_STDCALL MyApp::lbEvHandler2(lb_I_Unknown* uk) {
  */
 lbErrCodes LB_STDCALL MyApp::lbEvHandler3(lb_I_Unknown* uk) {
 	_LOG << "MyApp::lbEvHandler3 called" LOG_
+
+
+	/*
+	 * Create an id for the append method, that also is the id
+	 * for the dispatcher handling that event.
+	 */
+
+/*
+	UAP_REQUEST(lb_I_EventManager, ev_manager)
+
+	int event = 0;
+	
+	
+	UAP(lb_I_Container, c, __FILE__, __LINE__)
+	QI(uk, lb_I_Container, c, __FILE__, __LINE__)
+	
+	ev_manager->registerEvent("", event);
+*/
+
+
 	return ERR_NONE;
 }
 /*...e*/
