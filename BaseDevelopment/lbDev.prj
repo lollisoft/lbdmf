@@ -55,6 +55,7 @@ These headers must define the per module (DLL) EXPORT variable
 /*...e*/
 /*...sBaseDevelopment:0:*/
 /*...vmake\46\bat:0:*/
+/*...vmakeapps\46\bat:0:*/
 /*...sMSC based XML parser:0:*/
 /*...vQ\58\\92\Develop\92\Projects\92\CPP\92\Test\92\Console\92\XML\47\lbxmlconfig\46\xml:0:*/
 /*...vQ\58\\92\Develop\92\Projects\92\CPP\92\Test\92\Console\92\XML\47\lbxmlconfig\46\dtd:0:*/
