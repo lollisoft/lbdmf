@@ -28,11 +28,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.26 $
+ * $Revision: 1.27 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.26 2003/07/10 21:13:06 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.27 2003/07/15 22:18:05 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.27  2003/07/15 22:18:05  lollisoft
+ * Removed debug messages, implemented numeric dispatcher and much more
+ *
  * Revision 1.26  2003/07/10 21:13:06  lollisoft
  * Adding menu entry implemented
  *
@@ -280,7 +283,6 @@ lbErrCodes LB_STDCALL lb_MetaApplication::Initialize() {
 /*...e*/
 
 /*...sget the dispatcher instance:8:*/
-	printf("Get a dispatcher\n");
 	REQUEST(m, lb_I_Dispatcher, dispatcher)
 	dispatcher->setEventManager(eman.getPtr());
 /*...e*/
@@ -406,8 +408,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::addMenuEntry(char* in_menu, char* entr
 	value->setData(entry);
 	param->setUAPString(*&parameter, *&value);
 
-
-	parameter->setData("menuhandler");
+	parameter->setData("handlername");
 	value->setData(evHandler);
 	param->setUAPString(*&parameter, *&value);
 
@@ -418,7 +419,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::addMenuEntry(char* in_menu, char* entr
 	UAP(lb_I_Unknown, uk_result, __FILE__, __LINE__)
 	QI(result, lb_I_Unknown, uk_result, __FILE__, __LINE__)
 
-	dispatcher->dispatch("AddMenuBar", uk.getPtr(), &uk_result);
+	dispatcher->dispatch("AddMenuEntry", uk.getPtr(), &uk_result);
 	
 
 	return ERR_NONE;
@@ -496,7 +497,6 @@ lbErrCodes LB_STDCALL lb_EventManager::registerEvent(char* EvName, int & EvNr) {
 
 /*...sInit containers:8:*/
 	if (events == NULL) {
-		printf("Init containers for event manager\n");
 		// Create the instance, that holds the events mapping
 		REQUEST(manager.getPtr(), lb_I_Container, events)
 
@@ -505,18 +505,15 @@ lbErrCodes LB_STDCALL lb_EventManager::registerEvent(char* EvName, int & EvNr) {
 		
 		// The reverse
 		REQUEST(manager.getPtr(), lb_I_Container, reverse_events)
-		printf("Initialized\n");
 	}
 /*...e*/
 	
 /*...sSetup key \40\get a string\44\ store the char\42\ value and get a key from it\41\:8:*/
-	printf("Setup key\n");
 	UAP_REQUEST(manager.getPtr(), lb_I_String, stringData)
 	stringData->setData(EvName);
 	
 	UAP(lb_I_KeyBase, sk, __FILE__, __LINE__)
 	QI(stringData, lb_I_Unknown, sk, __FILE__, __LINE__)
-	printf("Set up key\n");
 /*...e*/
 	
 /*...sError handling:8:*/
@@ -527,36 +524,24 @@ lbErrCodes LB_STDCALL lb_EventManager::registerEvent(char* EvName, int & EvNr) {
 		return ERR_EVENT_EXISTS;
 	}
 /*...e*/
-printf("determine id\n");	
 /*...sdetermine id:8:*/
 	if (freeIds->Count() == 0) {
-		printf("Increase maxEvId\n");
 		maxEvId++;
 	} else {
-		printf("Reuse an id\n");
 		UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
 		UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
 
-		printf("Get key from element at %d\n", freeIds->Count());
-		
 		key = freeIds->getKeyAt(freeIds->Count());
 		uk = freeIds->getElementAt(freeIds->Count());
 		
-		printf("Remove free id\n");
-			
 		freeIds->remove(&key);
-			
-		printf("Get the new maxEvId\n");
 			
 		UAP(lb_I_Integer, i, __FILE__, __LINE__)
 		QI(uk, lb_I_Integer, i, __FILE__, __LINE__)
 
 		newId = i->getData();
-			
-		printf("Got %d. MaxEvId is %d\n", newId, maxEvId);
 	}
 /*...e*/
-printf("insert new event\n");
 /*...sinsert new event:8:*/
 	UAP_REQUEST(manager.getPtr(), lb_I_Integer, integerData)
 	integerData->setData(maxEvId);
@@ -576,7 +561,6 @@ printf("insert new event\n");
 	
 	EvNr = maxEvId;
 /*...e*/
-printf("Check, if event is registered\n");
 
 	if (events->exists(&sk) != 1) {
 		_LOG << "lb_EventManager::registerEvent(): Error: Event could not be registered" LOG_
@@ -653,11 +637,8 @@ lbErrCodes LB_STDCALL lb_Dispatcher::addEventHandlerFn(lb_I_EventHandler* evHand
 	 */
 	
 	int id = 0;
-	printf("Resolve eventId\n");
 	evManager->resolveEvent(EvName, id);
-	printf("Resolved\n");
 	addEventHandlerFn(evHandlerInstance, evHandler, id);	
-	printf("Added\n");
 	return ERR_NONE;
 }
 /*...e*/
@@ -682,13 +663,11 @@ lbErrCodes LB_STDCALL lb_Dispatcher::addEventHandlerFn(lb_I_EventHandler* evHand
 
 	    UAP(lb_I_Unknown, e, __FILE__, __LINE__)
 	QI(evH, lb_I_Unknown, e, __FILE__, __LINE__)
-printf("Be here\n");
 	if (dispatcher->exists(&k) == 1) {
         	dispatcher->remove(&k);
 	}
 
 	if ((err = dispatcher->insert(&e, &k)) != ERR_NONE) _LOG << "Error: Inserting new container element failed" LOG_
-printf("And now here\n");
 
 	UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
 
@@ -696,7 +675,6 @@ printf("And now here\n");
 	
 	if (uk == NULL) _LOG << "Error: Adding event handler failed (not stored)" LOG_
 
-printf("Return now\n");	
 	return ERR_NONE;
 }
 /*...e*/
@@ -722,21 +700,11 @@ lb_I_DispatchResponce* lb_Dispatcher::dispatch(lb_I_DispatchRequest* req) {
 /*...slbErrCodes LB_STDCALL lb_Dispatcher\58\\58\dispatch\40\int EvNr\44\ lb_I_Unknown\42\ EvData\44\ lb_I_Unknown\42\\42\ EvResult\41\:0:*/
 lbErrCodes LB_STDCALL lb_Dispatcher::dispatch(int EvNr, lb_I_Unknown* EvData, lb_I_Unknown** EvResult) {
 	_LOG << "lb_Dispatcher::dispatchEvent() called" LOG_
-	return ERR_NONE;
-}
-/*...e*/
-/*...slbErrCodes LB_STDCALL lb_Dispatcher\58\\58\dispatch\40\char\42\ EvName\44\ lb_I_Unknown\42\ EvData\44\ lb_I_Unknown\42\\42\ EvResult\41\:0:*/
-lbErrCodes LB_STDCALL lb_Dispatcher::dispatch(char* EvName, lb_I_Unknown* EvData, lb_I_Unknown** EvResult) {
 
-	int id = 0;
 	lbErrCodes err = ERR_NONE;
 	
-	evManager->resolveEvent(EvName, id);
-
-	_LOG << "Resolved this event id (" << id << ") from " << EvName LOG_
-
 	UAP_REQUEST(manager.getPtr(), lb_I_Integer, i)
-	i->setData(id);
+	i->setData(EvNr);
 	_LOG << "Set the event id" LOG_
 	
 	UAP(lb_I_KeyBase, ik, __FILE__, __LINE__)
@@ -761,14 +729,22 @@ lbErrCodes LB_STDCALL lb_Dispatcher::dispatch(char* EvName, lb_I_Unknown* EvData
 	
 		QI(uk, lb_I_EvHandler, ev, __FILE__, __LINE__)
 
-		_LOG << "Call handler now " << EvName LOG_
-	
 		ev->call(EvData, EvResult);
-	
-		_LOG << "Called handler now " << EvName LOG_
 	}
-
 	return ERR_NONE;
+}
+/*...e*/
+/*...slbErrCodes LB_STDCALL lb_Dispatcher\58\\58\dispatch\40\char\42\ EvName\44\ lb_I_Unknown\42\ EvData\44\ lb_I_Unknown\42\\42\ EvResult\41\:0:*/
+lbErrCodes LB_STDCALL lb_Dispatcher::dispatch(char* EvName, lb_I_Unknown* EvData, lb_I_Unknown** EvResult) {
+
+	int id = 0;
+	lbErrCodes err = ERR_NONE;
+	
+	_LOG << "Resolve handler now " << EvName LOG_
+	evManager->resolveEvent(EvName, id);
+	_LOG << "Resolved handler now " << EvName LOG_
+
+	return dispatch(id, EvData, EvResult);
 }
 /*...e*/
 /*...e*/
