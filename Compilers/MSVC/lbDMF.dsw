@@ -24,7 +24,7 @@ Package=<4>
     Project_Dep_Name lbMetaApplication
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name lbDOMConfig
+    Project_Dep_Name Application
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name lbModule
@@ -48,7 +48,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "lbDB"=..\..\BASEDEVELOPMENT\LBDB\lbDB\lbDB.dsp - Package Owner=<4>
+Project: "Application"=..\..\Appdevelopmentdemo\App\Application.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -63,7 +63,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "lbDOMConfig"=..\..\BASEDEVELOPMENT\LBXMLCONFIG\LBDOMCONFIG\lbDOMConfig\lbDOMConfig.dsp - Package Owner=<4>
+Project: "lbDB"=..\..\BASEDEVELOPMENT\LBDB\lbDB\lbDB.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
