@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.42 $
+ * $Revision: 1.43 $
  * $Name:  $
- * $Id: lbInterfaces-sub-classes.h,v 1.42 2004/12/14 16:08:05 lollisoft Exp $
+ * $Id: lbInterfaces-sub-classes.h,v 1.43 2005/01/05 13:44:39 lollisoft Exp $
  *
  * $Log: lbInterfaces-sub-classes.h,v $
+ * Revision 1.43  2005/01/05 13:44:39  lollisoft
+ * New dynamic application code works
+ *
  * Revision 1.42  2004/12/14 16:08:05  lollisoft
  * An attempt for i18n.
  *
@@ -527,6 +530,12 @@ public:
 
 	virtual void LB_STDCALL setUAPInteger(lb_I_String*& parameter, lb_I_Integer*& p) = 0;
 	virtual lbErrCodes LB_STDCALL getUAPInteger(lb_I_String*& parameter, lb_I_Integer*& p) = 0;
+	
+	/**
+	 * /brief Returns the number of parameters
+	 *
+	 */
+	virtual int LB_STDCALL Count() = 0;
 
 };
 /*...e*/

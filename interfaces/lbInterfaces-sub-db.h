@@ -379,6 +379,20 @@ public:
 	 * \param col Integer index of the column.
 	 */
 	virtual char*      LB_STDCALL getColumnName(int col) = 0;
+
+	/**
+	 * \brief Get the table name of the query.
+	 *
+	 * This is still buggy, if the query has joins.
+	 */
+	virtual char* LB_STDCALL getTableName() = 0;
+
+	/**
+	 * \brief Determines occurence of foreign column.
+	 *
+	 * Returns 1 if true. 0 if false.
+	 */
+	virtual int	   LB_STDCALL hasFKColumn(char* FKName) = 0;
         
         /* Navigation */
         

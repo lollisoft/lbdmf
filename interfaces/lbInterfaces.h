@@ -1531,6 +1531,8 @@ public:
 	 */
 	virtual lbErrCodes LB_STDCALL resolveEvent(char* EvName, int & evNr) = 0;
 
+	virtual char* LB_STDCALL reverseEvent(int evNr) = 0;
+
 protected:
 
 	friend class lb_I_Dispatcher;
@@ -1721,7 +1723,7 @@ public:
 	 * \param formName Is the name for the form.
 	 * \param queryString Is the SQL query whose data should be displayed for modification.
 	 */
-	virtual lb_I_DatabaseForm* LB_STDCALL createDBForm(char* formName, char* queryString) = 0;
+	virtual lb_I_DatabaseForm* LB_STDCALL createDBForm(char* formName, char* queryString, char* DBName, char* DBUser, char* DBPass) = 0;
 
 
 	virtual lb_I_Form* LB_STDCALL createLoginForm() = 0;
@@ -1848,11 +1850,32 @@ public:
 };
 /*...e*/
 /*...sclass lb_I_MetaApplication:0:*/
+/**
+ * \brief Interface from a wrapper and lbDMF
+ *
+ * The meta application is an attempt to provide an interface for the
+ * application developer. It hides the real framework like MFC or others
+ * from the developer.
+ */
 class lb_I_MetaApplication : public lb_I_Unknown {
 public:
 
+	/**
+	 * Set the graphical user interface instance that is the wrapper side.
+	 */
 	virtual lbErrCodes LB_STDCALL setGUI(lb_I_GUI* gui) = 0;
-	virtual lbErrCodes LB_STDCALL Initialize() = 0;
+	
+	/**
+	 * Initialize the application module. Optionally, provide user and application name.
+	 */
+	virtual lbErrCodes LB_STDCALL Initialize(char* user = NULL, char* app = NULL) = 0;
+	
+	/**
+	 * \brief Run the application
+	 *
+	 * This lets the GUI 'start' some threads in the background or run the app without
+	 * a GUI.
+	 */
 	virtual lbErrCodes LB_STDCALL run() = 0;
 	
 	virtual lbErrCodes LB_STDCALL getGUI(lb_I_GUI** gui) = 0;
@@ -1864,12 +1887,14 @@ public:
 	virtual lb_I_EventManager* getEVManager() = 0;
 
 
+	virtual lbErrCodes LB_STDCALL loadApplication(char* user, char* app) = 0;
+
 
 	/**
 	 * Basic functions to be used for a UI application
 	 */
 
-	virtual lbErrCodes LB_STDCALL addMenuBar(char* name) = 0;
+	virtual lbErrCodes LB_STDCALL addMenuBar(char* name, char* after) = 0;
 	virtual lbErrCodes LB_STDCALL addMenu(char* name) = 0;
 	virtual lbErrCodes LB_STDCALL addMenuEntry(char* in_menu, char* entry, char* evHandler, char* afterentry = NULL) = 0;
 	virtual lbErrCodes LB_STDCALL addButton(char* buttonText, char* evHandler, int x, int y, int w, int h) = 0;
@@ -1882,7 +1907,7 @@ class lb_I_Plugin;
 class lb_I_PluginImpl;
 class lb_I_String;
 
-/*
+/**
  * The plugin manager should handle automatic loading of exsisting plugins and optionally
  * unload plugins by a plugin management dialog.
  */
