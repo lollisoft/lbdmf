@@ -40,7 +40,7 @@ MOD_INCL += $(foreach s, $(INCLS), /I "$s")
 LINK_MICROSOFT_OBJS= \
         "$(INTDIR)\lbHook.obj"
 
-MODULE=lbhook
+MODULE=lbHook
 
 CC=Cl
 C_DLLOPS= $(C_DLLOPS_MICROSOFT$(MODE))

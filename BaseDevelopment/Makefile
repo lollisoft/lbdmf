@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.20 $
+# * $Revision: 1.21 $
 # * $Name:  $
-# * $Id: Makefile,v 1.20 2005/01/25 12:28:34 lollisoft Exp $
+# * $Id: Makefile,v 1.21 2005/01/25 14:05:50 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.21  2005/01/25 14:05:50  lollisoft
+# * Minor changes
+# *
 # * Revision 1.20  2005/01/25 12:28:34  lollisoft
 # * Changes for linux due to several reasons. The GUI sample has still problems with database access. Crash in lbDB.cpp while creating bound columns. Console works
 # *
@@ -115,10 +118,10 @@ ifeq ($(OSTYPE), Windows_NT)
 TARGETDLL=dll
 TARGETEXE=exe
 
-ALLTARGETS = lbhook \
+ALLTARGETS = lbHook \
 	lbDB \
 	lbModule \
-	lbclasses \
+	lbClasses \
 	lbMetaApplication \
 	../AppDevelopmentDemo/App \
 	../AppDevelopmentDemo/DynamicApp/App \
@@ -184,10 +187,6 @@ endif
 lbHook: dummy
 	$(MAKE) -C $@ -e MODULE=$@ -e TARGET=$(TARGETDLL) -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
 	$(MAKE) -C $@
-
-#lbhook: dummy
-#	$(MAKE) -C $@ -e MODULE=$@ -e TARGET=$(TARGETDLL) -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
-#	$(MAKE) -C $@
 
 lbDB: dummy
 	$(MAKE) -C $@ -e MODULE=$@ -e TARGET=$(TARGETDLL) -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure

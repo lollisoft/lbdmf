@@ -15,5 +15,7 @@ $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
 	@cat makefile.module >> makefile
 	@echo Path=$(PATH) >> makefile
 	@echo all: $(_MODULE).$(TARGET) >> makefile
+	@attrib -r $(DEVROOT)/Projects/CPP/include/lbkey.h
+	@rm $(DEVROOT)/Projects/CPP/include/lbkey.h
 	@cp $(DEVROOT)/Projects/CPP/BaseDevelopment/lbclasses/lbkey.h $(DEVROOT)/Projects/CPP/include
 	@mkmk $(TARGET) $(_MODULE) ../dosdir *.cpp >> makefile
