@@ -1,5 +1,6 @@
 #include <lbinclude.h>
 #include <conio.h>
+#include <signal.h>
 
 #ifdef bla
 /*...sclass GlobalAppServer:0:*/
@@ -174,11 +175,23 @@ void* GASThread::Entry() {
 /*...e*/
 /*...e*/
 
+void handler(int sig) {
+	cout << "Oops..." << endl;
+	exit(0);
+}
+
 /*...smain:0:*/
 void main(int argc, char** argv) {
 LOGPREFIX("GlobalAppServer: ");
 
 	printf("Global application server is starting...\n");
+
+	/**
+	 * This let the app not crashing. But the handler simply
+	 * does exit(0), no cleanup yet ???
+	 */
+	signal(SIGINT, handler);
+
 /*
 	if (TRUE) {	
 		GASThread *thread = new GASThread;
