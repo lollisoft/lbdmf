@@ -1,13 +1,15 @@
 if EXIST readme.txt goto WEITER:
 set DEVLW=%%DEVLW%%
 set DEVROOT=%%DEVROOT%%
-echo ---------------------------------------------------------------- >> readme.txt
-echo *                  Basic development settings                  * >> readme.txt
-echo ---------------------------------------------------------------- >> readme.txt
-echo * You have started lbDMF Develop the first time. Please read   * >> readme.txt
-echo * the file 'readme' for further instructions.                  * >> readme.txt
-echo * It is in the directory 'Projects/CPP'                        * >> readme.txt
-echo ---------------------------------------------------------------- >> readme.txt 
+echo ------------------------------------------------------------------------ >> readme.txt
+echo *                  Basic development settings                          * >> readme.txt
+echo ------------------------------------------------------------------------ >> readme.txt
+echo * You have started lbDMF Develop the first time. Please read           * >> readme.txt
+echo * lbDMF Help at your desktop for further instructions.                 * >> readme.txt
+echo *                                                                      * >> readme.txt
+echo * If you don't find the help icon, download the latest                 * >> readme.txt
+echo * documentation install package from my sourceforge project site.      * >> readme.txt 
+echo ------------------------------------------------------------------------ >> readme.txt 
 start notepad readme.txt
 exit
 
@@ -24,8 +26,8 @@ goto BEGINENVIRONMENT:
 
 :DISTMODE
 
-set DEVLW=c:
-set BASE=lbDMF/develop
+set DEVLW=d:
+set BASE=lbDMF\develop
 set BASE_MAKE=lbDMF/develop
 
 :BEGINENVIRONMENT
@@ -35,7 +37,8 @@ set BASE_MAKE=lbDMF/develop
 @rem *                          End config                          *
 @rem ----------------------------------------------------------------
 
-set DEVROOT=%DEVLW%/%BASE%
+
+set DEVROOT=%DEVLW%\%BASE%
 set DEVROOT_MAKE=%DEVLW%/%BASE_MAKE%
 
 set PLUGIN_DIR=%DEVROOT%/Projects/plugins
@@ -114,6 +117,9 @@ REM ------------------------------------------------------------
 set BISON_SIMPLE=%DEVLW%/cygwin/usr/share/bison.simple
 set path=%path%;%DEVLW%/develop/Tools/Perl/bin/
 
+cd %DEVROOT%\Projects\dll
+if not exist "libs" mkdir libs
+cd %DEVROOT%\Projects\cpp\basedevelopment
 
 start %1
 exit
