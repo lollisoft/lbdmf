@@ -1,11 +1,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.28 $
+ * $Revision: 1.29 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.28 2002/05/30 17:53:01 lothar Exp $
+ * $Id: lbModule.cpp,v 1.29 2002/06/01 09:16:06 lothar Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.29  2002/06/01 09:16:06  lothar
+ * Removed some unneccesary code
+ *
  * Revision 1.28  2002/05/30 17:53:01  lothar
  * Current development seems to run
  *
@@ -557,11 +560,6 @@ lbErrCodes LB_STDCALL lbSkipListElement::setData(lb_I_Unknown* uk) {
 }
 /*...e*/
 
-
-__declspec(dllexport) void __cdecl test() {
-	printf("Test\n");
-}
-
 /*...sclass InstanceRepository:0:*/
 /*...sreferenceList:0:*/
 typedef struct _referenceList {
@@ -882,13 +880,11 @@ void LB_STDCALL InstanceRepository::createInstance(char* addr, char* classname, 
 	instanceList* temp = iList;
 	instances++;
 	
-	printf("Register creation of Classname %s\n", classname);
 	if (strcmp("lbInstance", classname) == 0) return;
 	if (strcmp("lbStringKey", classname) == 0) return;
 	
 	if (loadedContainer == 1) {
 		lbInstance* inst = new lbInstance();
-		printf("Set module manager for lbInstance\n");
 		inst->setModuleManager(manager, __FILE__, __LINE__);
 	
 		inst->setAddress(addr);
@@ -914,17 +910,11 @@ void LB_STDCALL InstanceRepository::createInstance(char* addr, char* classname, 
 		iList->classname = strdup(classname);
 		iList->file = strdup(file);
 		iList->line = line;
-		if (strcmp(address, "00860ed0") == 0) {
-			printf("Have address. And pointer to instance is %p\n", iList->addr);
-		}
 		return;
 	}
 /*...e*/
 /*...smore than one elements:8:*/
 	while (temp != NULL) {
-		CL_LOG("Test address of instence");
-		printf("Address of temp is %p, temp->addr is %p\n", temp , temp->addr);
-
 		if ((strcmp(Upper(temp->addr), Upper(addr)) == 0) && (strcmp(temp->classname, classname) == 0)) {
 			// Error. This instance is always registered
 			char buf[1000] = "";
@@ -934,19 +924,16 @@ void LB_STDCALL InstanceRepository::createInstance(char* addr, char* classname, 
 			CL_LOG("Error: Found a registered object with the same address. Was it not deleted correctly?")
 		} else if (temp->next == NULL) {
 			// Insert it here
-			CL_LOG("Insert another instance");
 			instanceList* neu = new instanceList;
 			
 			neu->next = NULL;
 			neu->rList = NULL;
 			neu->addr = strdup(addr);
-			printf("Address of neu is %p, neu->addr is %p\n", neu , neu->addr);
 			neu->classname = strdup(classname);
 			neu->file = strdup(file);
 			neu->line = line;
 
 			temp->next = neu;
-			CL_LOG("Inserted another instance");
 			return;
 		}
 		temp = temp->next;
@@ -1039,7 +1026,6 @@ void LB_STDCALL InstanceRepository::delReference(char* addr, char* classname, ch
 							
 							if (prev == NULL) {
 								prev = temp;
-								printf("Delete first element in instance list: %p\n", prev);
 								temp = temp->next;
 								free(prev->classname);
 								free(prev->file);
@@ -1054,7 +1040,6 @@ void LB_STDCALL InstanceRepository::delReference(char* addr, char* classname, ch
 								return;
 							} else {
 								prev->next = temp->next;
-								printf("Delete an element in instance list: %p\n", temp);
 								free(temp->classname);
 								free(temp->file);
 								delete temp;
@@ -1237,25 +1222,17 @@ void LB_STDCALL InstanceRepository::loadContainer(lb_I_Module* m) {
 	if (loadedContainer == 1) return;
 	loadedContainer = 1;
 
-#ifdef bla
-printf("Load container for instance repository\n");
-	STATIC_REQUEST(m, lb_I_Container, instlist)
-printf("Got an instance\n");	
-#endif
-
-printf("InstanceRepository::loadContainer() Load Skiplist container\n");
 	SkipList* instances = new SkipList();
 
 	lb_iList = instances;
 	
 	instanceList* temp = iList;
-
+	CL_LOG("Info: InstanceRepository::loadContainer(...) is not implemented completely")
 	while (temp != NULL) {
 		printf("Have an instance %s in %s at %d\n", temp->classname, temp->file, temp->line);
 		temp = temp->next;
 	}
 
-printf("Loaded\n");	
 }
 /*...e*/
 /*...e*/
@@ -1505,11 +1482,7 @@ void LB_STDCALL lbModule::notify_create(lb_I_Unknown* that, char* implName, char
          * other instances.
          */
         if (strcmp("lbInstance", implName) != 0) {
-	        CL_LOG("Call IR->createInstance(...)");
-        	printf("Address of IR is %p\n", IR);
-        	getch();
         	IR->createInstance(addr, implName, file, line);
-        	CL_LOG("Called IR->createInstance(...)");
         }
 #ifdef VERBOSE
         CL_LOG("lbModule::notify_create() called")
@@ -2303,7 +2276,6 @@ lbErrCodes LB_STDCALL lbModule::request(const char* request, lb_I_Unknown** resu
                  * functor !
                  */
 /*...e*/
-		CL_LOG("Did I have the config object")
                 if (xml_Instance->hasConfigObject(node, count) == ERR_NONE) {
 /*...svars:32:*/
                         char* moduleName = NULL;
@@ -2317,7 +2289,6 @@ lbErrCodes LB_STDCALL lbModule::request(const char* request, lb_I_Unknown** resu
                          * of one level.
                          */
 /*...e*/
-			CL_LOG("Get the config object")
                         xml_Instance->getConfigObject(&config, node);
 
 /*...sdoc:8:*/
