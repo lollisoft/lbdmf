@@ -5,10 +5,13 @@ ifeq ($(OSTYPE), linux)
 DEVROOT_MAKE=$(DEVROOT)
 ATTRIB=
 endif
+ifeq ($(OSTYPE), osx)
+DEVROOT_MAKE=$(DEVROOT)
+ATTRIB=
+endif
 ifeq ($(OSTYPE), Windows_NT)
 ATTRIB=@attrib -r $(DEVROOT)/Projects/CPP/include/lbkey.h
 endif
-
 _MODULE=$(MODULE)
 
 makefile: makefile.module \
@@ -22,4 +25,4 @@ $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
 	$(ATTRIB)
 	@rm $(DEVROOT)/Projects/CPP/include/lbkey.h
 	@cp $(DEVROOT)/Projects/CPP/BaseDevelopment/lbclasses/lbkey.h $(DEVROOT)/Projects/CPP/include
-	@mkmk $(TARGET) $(_MODULE) ../dosdir *.cpp >> makefile
+	@~/bin/mkmk $(TARGET) $(_MODULE) ../dosdir *.cpp >> makefile

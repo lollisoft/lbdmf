@@ -155,9 +155,7 @@
 #ifndef __MISC
 #define _CL_LOG \
 { \
-	OFSTREAM of; \
-	of.open("C:\\log\\wsmaster.log", IOS::app); \
-        of \
+        COUT \
         
 #endif
 #ifdef __MISC

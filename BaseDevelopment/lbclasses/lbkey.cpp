@@ -37,10 +37,13 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.18 $
+ * $Revision: 1.19 $
  * $Name:  $
- * $Id: lbkey.cpp,v 1.18 2004/05/08 10:51:15 lollisoft Exp $
+ * $Id: lbkey.cpp,v 1.19 2005/02/10 17:02:32 lollisoft Exp $
  * $Log: lbkey.cpp,v $
+ * Revision 1.19  2005/02/10 17:02:32  lollisoft
+ * Changes for Mac OS X
+ *
  * Revision 1.18  2004/05/08 10:51:15  lollisoft
  * bug in returning local nonstatic pointer
  *
@@ -142,64 +145,64 @@ extern "C" {
 // Fix it
 #define DLLEXPORT LB_DLLEXPORT
 #endif
-IMPLEMENT_FUNCTOR(instanceOfIntegerKey, lbKey)
+IMPLEMENT_FUNCTOR(instanceOfIntegerKey, lbKey_)
 
-/*...slbKey:0:*/
+/*...slbKey_:0:*/
 /*...sc\39\tors and d\39\tors:0:*/
 #ifdef _MSC_VER
-lbKey::lbKey(char* file, int line) {
+lbKey_::lbKey_(char* file, int line) {
 	key = 0; 
 	strcpy(keyType, "int");
 }
 #endif
 
-lbKey::lbKey() {
+lbKey_::lbKey_() {
     key = 0;
     strcpy(keyType, "int");
 }
 
-lbKey::lbKey(int _key) {
+lbKey_::lbKey_(int _key) {
     key = _key;
     strcpy(keyType, "int");
 }
 
-lbKey::lbKey(const lb_I_KeyBase* k) {
-    key = ((lbKey) k).key;
+lbKey_::lbKey_(const lb_I_KeyBase* k) {
+    key = ((lbKey_) k).key;
 }
 
-lbKey::~lbKey(){
+lbKey_::~lbKey_(){
 }
 /*...e*/
 
 /*...simplement lb_I_Unknown:0:*/
-BEGIN_IMPLEMENT_LB_UNKNOWN(lbKey)
+BEGIN_IMPLEMENT_LB_UNKNOWN(lbKey_)
 	ADD_INTERFACE(lb_I_KeyBase)
 END_IMPLEMENT_LB_UNKNOWN()
 
 
-lbErrCodes LB_STDCALL lbKey::setData(lb_I_Unknown* uk) {
-	_CL_LOG << "lbKey::setData() not implemented yet" LOG_
+lbErrCodes LB_STDCALL lbKey_::setData(lb_I_Unknown* uk) {
+	_CL_LOG << "lbKey_::setData() not implemented yet" LOG_
 	return ERR_NONE;
 }
 /*...e*/
 
-char* LB_STDCALL lbKey::getKeyType() const {
+char* LB_STDCALL lbKey_::getKeyType() const {
     return "int";
 }
 
-int LB_STDCALL lbKey::equals(const lb_I_KeyBase* _key) const {
-    return key == ((lbKey*) _key)->key;
+int LB_STDCALL lbKey_::equals(const lb_I_KeyBase* _key) const {
+    return key == ((lbKey_*) _key)->key;
 }
 
-int LB_STDCALL lbKey::greater(const lb_I_KeyBase* _key) const {
-    return key > ((lbKey*) _key)->key;
+int LB_STDCALL lbKey_::greater(const lb_I_KeyBase* _key) const {
+    return key > ((lbKey_*) _key)->key;
 }
 
-int LB_STDCALL lbKey::lessthan(const lb_I_KeyBase* _key) const {
-    return key < ((lbKey*) _key)->key;
+int LB_STDCALL lbKey_::lessthan(const lb_I_KeyBase* _key) const {
+    return key < ((lbKey_*) _key)->key;
 }
 
-char* lbKey::charrep() const {
+char* lbKey_::charrep() const {
 	static char buf[100];
 	buf[0] = 0;
 

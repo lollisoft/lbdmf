@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.25 $
+# * $Revision: 1.26 $
 # * $Name:  $
-# * $Id: Makefile,v 1.25 2005/02/10 12:48:25 lollisoft Exp $
+# * $Id: Makefile,v 1.26 2005/02/10 16:59:05 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.26  2005/02/10 16:59:05  lollisoft
+# * Changes for Mac OS X
+# *
 # * Revision 1.25  2005/02/10 12:48:25  lollisoft
 # * Changes for Mac OS X
 # *
@@ -118,7 +121,10 @@ ifeq ($(OSTYPE), osx)
 TARGETDLL=so
 TARGETEXE=elf
 
-ALLTARGETS = lbHook
+ALLTARGETS = lbHook \
+	lbModule \
+	lbMetaApplication \
+	lbclasses
 #	lbDB \
 #	lbModule \
 #	lbclasses \

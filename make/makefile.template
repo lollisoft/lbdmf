@@ -8,3 +8,7 @@ ifeq ($(OSTYPE), linux)
 include $(DEVROOT)/Projects/CPP/make/STD_MAKE
 endif
 
+ifeq ($(OSTYPE), osx)
+include $(DEVROOT)/Projects/CPP/make/STD_MAKE
+endif
+

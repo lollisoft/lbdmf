@@ -25,11 +25,14 @@
 #            40235 DÅsseldorf (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.51 $
+# * $Revision: 1.52 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.51 2005/01/25 12:28:36 lollisoft Exp $
+# * $Id: STD_MAKE,v 1.52 2005/02/10 17:04:15 lollisoft Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.52  2005/02/10 17:04:15  lollisoft
+# * Changes for Mac OS X
+# *
 # * Revision 1.51  2005/01/25 12:28:36  lollisoft
 # * Changes for linux due to several reasons. The GUI sample has still problems with database access. Crash in lbDB.cpp while creating bound columns. Console works
 # *
@@ -365,6 +368,29 @@ LIBS    = -ldl -lstdc++
 #-lefence
 CC =cc
 LD =cc
+CP =cp
+EXEDIR =
+endif
+
+ifeq ($(OSTYPE), osx)
+
+STD_INCL = -I $(DEVROOT)/Projects/CPP/BaseDevelopment/lbHook/linuxCode \
+	-I $(DEVROOT)/Projects/CPP/interfaces \
+	-I $(DEVROOT)/Projects/CPP/include \
+	-I $(DEVROOT)/Projects/CPP/BaseDevelopment/lbclasses \
+	-I /usr/include \
+	-I /usr/include/sys \
+	-I . 
+
+OBJ =o
+C_OPS   = -c -DUNIX -DLINUX
+C_SOOPS = $(C_OPS)
+C_ELFOPS= $(C_OPS)
+L_OPS   = -o
+LIBS    = -ldl -llibstdc++
+#-lefence
+CC =c++
+LD =c++
 CP =cp
 EXEDIR =
 endif

@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.47 $
+ * $Revision: 1.48 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.47 2005/02/02 13:30:29 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.48 2005/02/10 17:02:26 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.48  2005/02/10 17:02:26  lollisoft
+ * Changes for Mac OS X
+ *
  * Revision 1.47  2005/02/02 13:30:29  lollisoft
  * Latest changes for version 0.4.1
  *
@@ -588,7 +591,6 @@ lbErrCodes LB_STDCALL lb_MetaApplication::loadApplication(char* user, char* appl
                 if (a == NULL) {
                         _LOG << "ERROR: Application could not be loaded - either not found or not configured." LOG_
                         printf("ERROR: Application could not be loaded - either not found or not configured.\n");
-                        getch();
                         return ERR_NONE;
                 }
 
@@ -626,7 +628,6 @@ lbErrCodes LB_STDCALL lb_MetaApplication::loadApplication(char* user, char* appl
 		if (a == NULL) {
 			_LOG << "ERROR: Application could not be loaded - either not found or not configured." LOG_
 			printf("ERROR: Application could not be loaded - either not found or not configured.\n");
-			getch();
 			return ERR_NONE;
 		}
 		

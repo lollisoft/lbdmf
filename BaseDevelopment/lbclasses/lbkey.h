@@ -31,10 +31,13 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.19 $
+ * $Revision: 1.20 $
  * $Name:  $
- * $Id: lbkey.h,v 1.19 2003/12/13 10:56:25 lollisoft Exp $
+ * $Id: lbkey.h,v 1.20 2005/02/10 17:02:33 lollisoft Exp $
  * $Log: lbkey.h,v $
+ * Revision 1.20  2005/02/10 17:02:33  lollisoft
+ * Changes for Mac OS X
+ *
  * Revision 1.19  2003/12/13 10:56:25  lollisoft
  * Database improovements and changes in my licence adress.
  * The database part is still not working by updating columns
@@ -108,34 +111,6 @@
 #ifndef LB_KEY
 #define LB_KEY
 
-#ifdef bla
-
-#ifndef _MSC_VER
-/*...sclass lbKey \58\ public lb_I_KeyBase:0:*/
-class lbKey : public lb_I_KeyBase {
-public:
-#ifdef _MSC_VER
-	lbKey(char* file, int line); // { key = 0; strcpy(keyType, "int"); }
-#endif
-
-	lbKey();
-	lbKey(int _key);
-	lbKey(const lb_I_KeyBase* k);
-	virtual ~lbKey();
-
-	DECLARE_LB_UNKNOWN()
-
-	DECLARE_LB_KEYBASE()
-	
-private:
-
-	char keyType[10];
-	int key;
-};
-/*...e*/
-#endif
-#endif
-
 /*...sclass lbKeyUL \58\ public lb_I_KeyBase:0:*/
 class lbKeyUL : public lb_I_KeyBase {
 public:
@@ -157,30 +132,28 @@ private:
     unsigned long key;
 };
 /*...e*/
-#ifdef bla
-/*...sclass lbStringKey \58\ public lb_I_KeyBase:0:*/
-class DLLEXPORT
-lbStringKey : public lb_I_KeyBase {
+/*...sclass lbKey_ \58\ public lb_I_KeyBase:0:*/
+class DLLEXPORT lbKey_ : public lb_I_KeyBase {
 public:
 #ifdef _MSC_VER
-     lbStringKey(char* file, int line) { key = ""; strcpy(keyType, "string"); }
+	lbKey_(char* file, int line); // { key = 0; strcpy(keyType, "int"); }
 #endif
-    lbStringKey();
-    lbStringKey(const char* _key);
-    lbStringKey(const lb_I_KeyBase* k);
-    virtual ~lbStringKey();
 
-    DECLARE_LB_UNKNOWN()
-    
-    DECLARE_LB_KEYBASE()
+	lbKey_();
+	lbKey_(int _key);
+	lbKey_(const lb_I_KeyBase* k);
+	virtual ~lbKey_();
 
+	DECLARE_LB_UNKNOWN()
+
+	DECLARE_LB_KEYBASE()
+	
 private:
 
-    char keyType[10];
-    char* key;    
+	char keyType[10];
+	int key;
 };
 /*...e*/
-#endif
 
 #ifdef __cplusplus
 extern "C" {

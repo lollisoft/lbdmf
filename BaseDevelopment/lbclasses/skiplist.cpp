@@ -38,11 +38,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.22 $
+ * $Revision: 1.23 $
  * $Name:  $
- * $Id: skiplist.cpp,v 1.22 2005/01/23 13:43:05 lollisoft Exp $
+ * $Id: skiplist.cpp,v 1.23 2005/02/10 17:02:33 lollisoft Exp $
  *
  * $Log: skiplist.cpp,v $
+ * Revision 1.23  2005/02/10 17:02:33  lollisoft
+ * Changes for Mac OS X
+ *
  * Revision 1.22  2005/01/23 13:43:05  lollisoft
  * std:: is only under linux working
  *
@@ -315,7 +318,6 @@ lb_I_Unknown* LB_STDCALL SkipList::nextElement() {
 		return e->getObject();
 	} else {
 	        _LOG << "Error: Please call hasMoreElements first to check if any elements are available!" LOG_
-        	getch(); 
 	        return NULL; 
 	}
 } 

@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.76 $
+ * $Revision: 1.77 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.76 2005/01/23 13:43:04 lollisoft Exp $
+ * $Id: lbModule.cpp,v 1.77 2005/02/10 17:02:26 lollisoft Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.77  2005/02/10 17:02:26  lollisoft
+ * Changes for Mac OS X
+ *
  * Revision 1.76  2005/01/23 13:43:04  lollisoft
  * std:: is only under linux working
  *
@@ -546,7 +549,6 @@ lb_I_Unknown* LB_STDCALL SkipList::nextElement() {
 		return e->getObject();
 	} else {
 	        _CL_LOG << "Error: Please call hasMoreElements first to check if any elements are available!" LOG_ 
-        	getch(); 
 	        return NULL; 
 	}
 } 
@@ -2722,7 +2724,6 @@ lb_I_ConfigObject* LB_STDCALL lbModule::findFunctorNode(lb_I_ConfigObject** _nod
                  
                 if (temp_node == NULL) {
                         _CL_LOG << "temp_node is NULL!" LOG_
-                        getch();
                 } 
                 if ((strcmp(temp_node->getName(), "Functor")) == 0) {
                         /**
@@ -2754,7 +2755,6 @@ lb_I_ConfigObject* LB_STDCALL lbModule::findFunctorNode(lb_I_ConfigObject** _nod
         #endif
         
         _CL_LOG << "Returning a NULL value" LOG_
-        getch();        
         return NULL;
 }
 /*...e*/
@@ -2907,7 +2907,6 @@ char* LB_STDCALL lbModule::findFunctorName(lb_I_ConfigObject** ___node) {
                                 } else {
                                 #ifdef VERBOSE
                                         COUT << "Found function name '" << value << "'" << ENDL;
-                                        getch();
                                 #endif
                                         return value;
                                 }
@@ -2945,7 +2944,6 @@ lbErrCodes LB_STDCALL lbModule::getDefaultImpl(char* interfacename, lb_I_ConfigO
         if ((err = _node->getFirstChildren(&temp_node)) == ERR_NONE) {
                 if (temp_node == NULL) {
                         _CL_LOG << "temp_node is NULL!" LOG_
-                        getch();
                 } 
 
                 if ((strcmp(temp_node->getName(), "StandardFunctor")) == 0) {
@@ -2978,7 +2976,6 @@ lbErrCodes LB_STDCALL lbModule::getDefaultImpl(char* interfacename, lb_I_ConfigO
                 
                 if (temp_node == NULL) {
                         _CL_LOG << "temp_node is NULL!" LOG_
-                        getch();
                         continue;
                 } 
                 
@@ -3021,7 +3018,6 @@ lbErrCodes LB_STDCALL lbModule::getFunctors(char* interfacename, lb_I_ConfigObje
                 
                 if (temp_node == NULL) {
                         _CL_LOG << "temp_node is NULL!" LOG_
-                        getch();
                 } 
                 
                 if ((strcmp(temp_node->getName(), "InterfaceName")) == 0) {
@@ -3230,7 +3226,6 @@ END_IMPLEMENT_LB_UNKNOWN()
 
 lbErrCodes lbNamedValue::setData(lb_I_Unknown* uk) {
         _CL_LOG << "lbNamedValue::setData(...) not implemented yet" LOG_
-        getch();
         return ERR_NOT_IMPLEMENTED;
 }
 /*...e*/

@@ -6,16 +6,20 @@
 
  Define "WATCOM_MAKE" for Watcom C/C++ oriented makefiles.
  Define "UNIX" for unix orieted makefiles
+ Define "OSX" for Mac OS X oriented makefiles
 */
 /*...e*/
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.47 $
+ * $Revision: 1.48 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.47 2005/01/27 13:01:07 lollisoft Exp $
+ * $Id: mkmk.cpp,v 1.48 2005/02/10 17:04:16 lollisoft Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.48  2005/02/10 17:04:16  lollisoft
+ * Changes for Mac OS X
+ *
  * Revision 1.47  2005/01/27 13:01:07  lollisoft
  * Added POST_PROCESS functionality
  *
@@ -184,6 +188,12 @@
 #define UNIX
 #undef WATCOM_MAKE
 #endif
+
+#ifdef OSX
+#define UNIX
+#undef WATCOM_MAKE
+#endif
+
 /*...e*/
 /*...sdefs:0:*/
 #ifdef UNIX
@@ -907,10 +917,34 @@ void write_so_Target(char* modulename) {
   printf("MINOR=0\n");
   printf("MICRO=1\n");
   printf("\n%s.so: $(OBJS)\n", modulename);
+
+// Patch to create dynamic libraries under Mac OS X
+#ifdef OSX
+  printf("\t\t$(CC) -dynamiclib -WL,soname,$(PROGRAM).so.$(MAJOR) -o $(PROGRAM).so.$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) -lc $(VENDORLIBS)\n");
+#undef UNIX  
+#endif
+#ifdef UNIX
   printf("\t\t$(CC) -shared -WL,soname,$(PROGRAM).so.$(MAJOR) -o $(PROGRAM).so.$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) -lc $(VENDORLIBS)\n");
+#endif
+#ifdef OSX
+#define UNIX
+#endif
+
+
+#ifdef OSX
+  printf("\t\tcp $(PROGRAM).so.$(MAJOR).$(MINOR).$(MICRO) $(HOME)/lib\n");
+  printf("\t\tln -sf $(HOME)/lib/$(PROGRAM).so.$(MAJOR).$(MINOR).$(MICRO) $(HOME)/lib/$(PROGRAM).so.$(MAJOR)\n");
+  printf("\t\tln -sf $(HOME)/lib/$(PROGRAM).so.$(MAJOR) $(HOME)/lib/$(PROGRAM).so\n");
+#undef UNIX  
+#endif
+#ifdef UNIX
   printf("\t\tcp $(PROGRAM).so.$(MAJOR).$(MINOR).$(MICRO) /libdev/lib\n");
   printf("\t\tln -sf /libdev/lib/$(PROGRAM).so.$(MAJOR).$(MINOR).$(MICRO) /libdev/lib/$(PROGRAM).so.$(MAJOR)\n");
   printf("\t\tln -sf /libdev/lib/$(PROGRAM).so.$(MAJOR) /libdev/lib/$(PROGRAM).so\n");
+#endif
+#ifdef OSX
+#define UNIX
+#endif
 #endif
 #ifdef __WATCOMC__
   fprintf(stderr, "Warning: Creating a so library under Windows is not possible with Watcom !!\n");
@@ -945,7 +979,7 @@ void ShowHelp()
 
   fprintf(stderr, "Enhanced by Lothar Behrens (lothar.behrens@lollisoft.de)\n\n");
 
-  fprintf(stderr, "MKMK: makefile generator $Revision: 1.47 $\n");
+  fprintf(stderr, "MKMK: makefile generator $Revision: 1.48 $\n");
   fprintf(stderr, "Usage: MKMK lib|exe|dll|so modulname includepath,[includepath,...] file1 [file2 file3...]\n");
 }
 /*...e*/
