@@ -46,7 +46,7 @@ call makefile.bat
 make --win32
 cd ..\..\..\BaseDevelopment
 
-cd ..\appdevelopment
+cd ..\appdevelopmentdemo
 call make.bat
 cd ..\BaseDevelopment
 
