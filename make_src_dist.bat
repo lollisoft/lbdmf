@@ -13,6 +13,10 @@ if not EXIST "dist\Develop\Projects\lib\include" mkdir dist\Develop\Projects\lib
 
 call make_dist_base.bat AppDevelopmentDemo
 call make_dist_base.bat AppDevelopmentDemo\App
+call make_dist_base.bat AppDevelopmentDemo\DynamicApp
+call make_dist_base.bat AppDevelopmentDemo\DynamicApp\App
+call make_dist_base.bat AppDevelopmentDemo\DynamicApp\Database
+call make_dist_base.bat AppDevelopmentDemo\DynamicApp\Doc
 call make_dist_base.bat BaseDevelopment\lbHook 
 call make_dist_base.bat BaseDevelopment\lbclasses 
 call make_dist_base.bat BaseDevelopment\lbDB 
