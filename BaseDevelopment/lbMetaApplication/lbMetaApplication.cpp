@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.44 $
+ * $Revision: 1.45 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.44 2005/01/23 13:43:04 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.45 2005/01/25 12:54:41 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.45  2005/01/25 12:54:41  lollisoft
+ * Verbose message added
+ *
  * Revision 1.44  2005/01/23 13:43:04  lollisoft
  * std:: is only under linux working
  *
@@ -588,6 +591,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::loadApplication(char* user, char* appl
                 if (dispatcher.getPtr() == NULL) _LOG << "Error: dispatcher is NULL" LOG_
 
                 app->setGUI(gui);
+		_CL_VERBOSE << "Initialize the loaded application" LOG_
                 app->Initialize(user, application);
 
                 if (dispatcher.getPtr() == NULL) _LOG << "Error: dispatcher has been set to NULL" LOG_
