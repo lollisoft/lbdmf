@@ -64,6 +64,10 @@
 
 //#define LB_STDCALL
 
+#ifndef FALSE
+#define FALSE false
+#endif
+
 #ifndef _MSC_VER
  #ifndef LB_STDCALL
   #ifdef WINDOWS
