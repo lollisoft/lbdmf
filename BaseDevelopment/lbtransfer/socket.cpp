@@ -1,4 +1,5 @@
 #include "module.h"
+#include <signal.h>
 /*...sinclude:0:*/
 /*...sifdef WINDOWS:0:*/
 #ifdef WINDOWS
@@ -27,6 +28,7 @@ lbCritSect socketSection;
 lbMutex sendMutex;
 lbMutex recvMutex;
 
+
 /*...sclass lbSocketModule:0:*/
 class lbSocketModule {
 public:
@@ -34,10 +36,13 @@ public:
 		sendMutex.CreateMutex(LB_SEND_MUTEX);
 		recvMutex.CreateMutex(LB_RECV_MUTEX);
 	}
-	~lbSocketModule() {
+	virtual ~lbSocketModule() {
+		cout << "Deinit socket module" << endl;
 	}
 };
 /*...e*/
+
+int lbSocket::sockUse = 0;
 
 lbSocketModule sockModule; // Module initializion
 
@@ -49,7 +54,7 @@ public:
 		mutex.Enter();
 	}
 	
-	~lbMutexLocker() {
+	virtual ~lbMutexLocker() {
 		mutex.Release();
 	}
 	
@@ -91,6 +96,7 @@ LOGENABLE("lbSocket::lbSocket()");
 /*...e*/
 
 	startupflag = 0;
+	sockUse++;
 }
 
 /*...slbSocket\58\\58\lbSocket\40\const lbSocket\38\ s\41\:0:*/
@@ -116,6 +122,21 @@ lbSocket::lbSocket(const lbSocket& s) {
 }
 /*...e*/
 
+lbSocket::~lbSocket() {
+	cout << "lbSocket::~lbSocket() called" << endl;
+	LOG("lbSocket::~lbSocket() called");
+	
+	if (lbSockState == LB_SOCK_CONNECTED) close();
+	sockUse--;
+	
+	if (sockUse == 0) {
+		if (WSACleanup() == SOCKET_ERROR) {
+			LOG("Winsock library could not be unloaded - how ever?");
+			cout << "Winsock library could not be unloaded - how ever?" << endl;
+		}
+	}
+}
+
 /*...slbSocket\58\\58\isValid\40\\41\:0:*/
 int lbSocket::isValid() {
 	int numread = 0;
@@ -123,8 +144,8 @@ int lbSocket::isValid() {
 	char buf[MAXBUFLEN] = "";
 //lbLock lock(socketSection, "socketSection");
 
-//pendingBytes++;
-//return 1;
+pendingBytes++;
+return 1;
 
 	if (_isServer == 1) {
 /*...sSOCKET_VERBOSE:0:*/
@@ -211,7 +232,7 @@ lbErrCodes lbSocket::neagleOff(SOCKET s) {
 /*...slbSocket\58\\58\connect\40\\41\:0:*/
 int lbSocket::connect()
 {
-      if (state == LB_SOCK_CONNECTED) {
+      if (lbSockState == LB_SOCK_CONNECTED) {
       	LOG("lbSocket::connect(): ERROR: Illegal state for this function");
       	return 0;
       }
@@ -253,6 +274,12 @@ int lbSocket::close()
           return 0;
         }
 #endif
+#ifdef WINDOWS
+	if(_isServer == 1)
+		status=::closesocket(serverSocket);
+	else
+		status=::closesocket(clientSocket);	
+#endif
         return 1;
 }
 /*...e*/
@@ -264,7 +291,11 @@ int lbSocket::listen()
 LOGENABLE("lbSocket::listen()");
 #endif
 /*...e*/
-      if (state == LB_SOCK_CONNECTED) {
+
+    lbSockState = LB_SOCK_LISTENING;
+
+
+      if (lbSockState == LB_SOCK_CONNECTED) {
       	LOG("lbSocket::listen(): ERROR: Illegal state for this function");
       	return 0;
       }
@@ -279,6 +310,8 @@ LOGENABLE("lbSocket::listen()");
     if (status < 0)
       LOG("lbSocket::listen(): ERROR: listen unsuccessful");
 #endif
+
+
     return 1;
 }
 /*...e*/
@@ -290,7 +323,7 @@ lbErrCodes lbSocket::accept(lbSocket *& s)
 LOGENABLE("lbSocket::accept(lbSocket *& s)");
 #endif
 /*...e*/
-      if (state == LB_SOCK_CONNECTED) {
+      if (lbSockState == LB_SOCK_CONNECTED) {
       	LOG("lbSocket::accept(lbSocket** s): ERROR: Illegal state for this function");
       	return ERR_SOCKET_STATE;
       }
@@ -299,7 +332,7 @@ LOGENABLE("lbSocket::accept(lbSocket *& s)");
     /* accept the connection request when one
        is received */
     clientSocket=::accept(serverSocket, (LPSOCKADDR) &clientSockAddr, &addrLen);
-
+    if (clientSocket == SOCKET_ERROR) LOG("Error while accepting on socket");
 
 #endif
 /*...e*/
@@ -333,6 +366,10 @@ LOGENABLE("lbSocket::accept(lbSocket *& s)");
     LOG("lbSocket::accept(lbSocket*& s): Created");
 #endif
 /*...e*/
+
+    // This socket can never be in connected state
+    //lbSockState = LB_SOCK_CONNECTED;
+
     return ERR_NONE;
 }
 /*...e*/
@@ -381,7 +418,7 @@ int lbSocket::socket()
 
 /*...slbSocket\58\\58\setSockConnection\40\SOCKET s\41\:0:*/
 int lbSocket::setSockConnection(SOCKET s) {
-	state = LB_SOCK_CONNECTED;
+	lbSockState = LB_SOCK_CONNECTED;
 	clientSocket = s;
         clBackup = clientSocket;
 	_isServer = 1;
@@ -496,7 +533,7 @@ void lbSocket::initSymbolic(char* host, char* service) {
 	char msg[100];
 	int serverMode = 0;
 	startup();
-	cout << "Initialize for host '" << host << "'" << endl;
+	//cout << "Initialize for host '" << host << "'" << endl;
 /*...sSOCKET_VERBOSE:0:*/
 #ifdef SOCKET_VERBOSE
 	sprintf(msg, "void lbSocket::initSymbolic(char* host, char* service): Init for %s %s", host, service);
@@ -1004,6 +1041,8 @@ LOG(msg);
   LOG("lbSocket::recv_charbuf(...) Have valid data");
 #endif
 /*...e*/
+
+/*...sserver:0:*/
   if (_isServer == 1) {
 
 // Empfange Packetgr”áe
@@ -1016,7 +1055,9 @@ LOG(msg);
     numrcv=::recv(clientSocket, buf,
       len, NO_FLAGS_SET);
   }
+/*...e*/
   
+/*...sclient:0:*/
   if (_isServer == 0) {
 // Empfange Packetgr”áe
     numrcv=::recv(serverSocket,
@@ -1028,12 +1069,15 @@ LOG(msg);
     numrcv=::recv(serverSocket, buf,
       len, NO_FLAGS_SET);
   }    
+/*...e*/
+
     if ((numrcv == 0) || (numrcv == SOCKET_ERROR))
     {
       if (_isServer == 0)
       	lastError = LogWSAError("recv_charbuf(char *buf) server");
       else
       	lastError = LogWSAError("recv_charbuf(char *buf) client");
+
       status= closesocket( (_isServer==0) ? clientSocket : serverSocket);
       if (status == SOCKET_ERROR)
         LOG("ERROR: closesocket unsuccessful");
@@ -1042,7 +1086,7 @@ LOG(msg);
       if (status == SOCKET_ERROR)
         LOG("ERROR: WSACleanup unsuccessful");
 #endif        
-      return err;
+      return ERR_SOCKET_RECV;//err;
     }
 #endif
 /*...e*/
