@@ -225,7 +225,8 @@ lbErrCodes LB_STDCALL lbLoadModule(const char* name, HINSTANCE & hinst) {
 /*...slbErrCodes LB_STDCALL lbGetFunctionPtr\40\const char\42\ name\44\ const HINSTANCE \38\ hinst\44\ void\42\\42\ pfn\41\:0:*/
 lbErrCodes LB_STDCALL lbGetFunctionPtr(const char* name, HINSTANCE hinst, void** pfn) {
         char msg[1000] = "";
-#ifdef WINDOWS	
+#ifdef WINDOWS
+	
         if ((*pfn = (void*) GetProcAddress(hinst, name)) == NULL)
         {
             _LOG << "Kann Funktion '" << name << "' nicht finden." LOG_
@@ -264,6 +265,14 @@ T_p_getlbModuleInstance DLL_GETMODULEINSTANCE;
 
 	if (functor == NULL) printf("Error: Have no functor!\n");
 
+#ifdef WINDOWS
+#ifndef _MSC_VER
+	char* temp = new char [strlen(functor)+2];
+	temp[0] = '_';
+	strcat(temp, functor);
+	functor = temp;
+#endif
+#endif
 
 	if (LB_Module_Handle == NULL) {
 		if (lbLoadModule(libname, LB_Module_Handle) != ERR_NONE) {
@@ -282,6 +291,13 @@ T_p_getlbModuleInstance DLL_GETMODULEINSTANCE;
 		_CL_LOG << "Fatal: Could not get functor for the module manager!" LOG_
 		exit(1);
 	}
+	
+#ifdef WINDOWS
+#ifndef _MSC_VER
+	if (temp) delete [] temp;
+	functor = NULL;
+#endif
+#endif
 	
 	if ((err = DLL_GETMODULEINSTANCE(&module, NULL, __FILE__, __LINE__)) == ERR_STATE_FURTHER_LOCK) {
 		_CL_LOG << "Instance is locked. Must set module manager first" LOG_
