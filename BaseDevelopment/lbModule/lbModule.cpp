@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.77 $
+ * $Revision: 1.78 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.77 2005/02/10 17:02:26 lollisoft Exp $
+ * $Id: lbModule.cpp,v 1.78 2005/02/13 12:59:13 lollisoft Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.78  2005/02/13 12:59:13  lollisoft
+ * Removed unnessesary messages and in DllMain, changed _CL_LOG to _CL_VERBOSE
+ *
  * Revision 1.77  2005/02/10 17:02:26  lollisoft
  * Changes for Mac OS X
  *
@@ -2295,10 +2298,6 @@ lbErrCodes LB_STDCALL lbModule::queryInterface(char* name, void** unknown, char*
                 *unknown = (lb_I_Unknown*) this; 
                 if (manager != NULL) { 
                 	lb_I_Unknown* that = (lb_I_Unknown*) this; 
-                	if (strcmp(_classname, "lbModule") == 0) { 
-                		_CL_LOG << "Register reference for " << _classname << 
-                		" in " << file << " at " << line LOG_ 
-                	} 
 		        manager->notify_add(that, _classname, file, line); 
 		} 
 		else { 
@@ -3533,27 +3532,27 @@ BOOL WINAPI DllMain(HINSTANCE dllHandle, DWORD reason, LPVOID situation) {
         switch (reason) {
                 case DLL_PROCESS_ATTACH:
                         if (situation) {
-                                _CL_LOG << "DLL statically loaded." LOG_
+                                _CL_VERBOSE << "DLL statically loaded." LOG_
                         }
                         else {
-                                _CL_LOG << "DLL dynamically loaded.\n" LOG_
+                                _CL_VERBOSE << "DLL dynamically loaded.\n" LOG_
                         }
                         break;
                 case DLL_THREAD_ATTACH:
-                        _CL_LOG << "New thread starting.\n" LOG_
+                        _CL_VERBOSE << "New thread starting.\n" LOG_
                         break;
                 case DLL_PROCESS_DETACH:                        
                         if (situation)
                         {
-                                _CL_LOG << "DLL released by system." LOG_
+                                _CL_VERBOSE << "DLL released by system." LOG_
                         }
                         else
                         {
-                                _CL_LOG << "DLL released by program.\n" LOG_
+                                _CL_VERBOSE << "DLL released by program.\n" LOG_
                         }
                         break;
                 case DLL_THREAD_DETACH:
-                        _CL_LOG << "Thread terminating.\n" LOG_
+                        _CL_VERBOSE << "Thread terminating.\n" LOG_
                 default:
                         return FALSE;
         }
