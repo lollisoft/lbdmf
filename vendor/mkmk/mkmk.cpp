@@ -11,11 +11,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.8 $
+ * $Revision: 1.9 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.8 2001/10/20 20:20:12 lothar Exp $
+ * $Id: mkmk.cpp,v 1.9 2001/10/21 12:32:06 lothar Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.9  2001/10/21 12:32:06  lothar
+ * Little changes
+ *
  * Revision 1.8  2001/10/20 20:20:12  lothar
  * Changed file output to stdout
  *
@@ -47,7 +50,7 @@
   #define ffblk find_t
   #define ff_name name
 #else
-  #include <dosdir.h>
+  #include "dosdir.h"
 #endif
 /*...e*/
 
@@ -373,7 +376,7 @@ void ObjExt(char *s, char *ObjName, int Len)
   if (l<1) return;
   while (l>=0 && s[l]!='.') l--;
   if (l>=0 && l<Len) memcpy(ObjName,s,l+1);
-  strcat(ObjName,"OBJ");
+  strcat(ObjName,"$(OBJ)");
 }
 /*...e*/
 /*...svoid ListFiles\40\FILE \42\f\44\ char \42\Line\44\ TDepList \42\l\44\ bool IsObj\61\false\41\:0:*/
@@ -398,7 +401,7 @@ void ListFiles(FILE *f, char *Line, TDepList *l, bool IsObj=false)
       sprintf(Line," %s",s);
     }
     else {
-	if (i!=0) strcat(Line,", ");
+//	if (i!=0) strcat(Line,", ");
     	strcat(Line,s);
     }
   }
@@ -414,7 +417,7 @@ void WriteDep(FILE *f, char *Name, TIncludeParser *p)
   ObjExt(Name,ObjName,sizeof(ObjName));
   sprintf(Line,"%s: makefile %s",ObjName,Name);
   ListFiles(f,Line,&p->l);
-  printf("  $(CC) $(C_OPS) $(STD_INCL) %s\n\n",Name);
+  printf("\t\t$(CC) $(C_OPS) $(STD_INCL) %s\n\n",Name);
 }
 /*...e*/
 /*...svoid WriteEnding\40\FILE \42\f\44\ char \42\ExeName\44\ TDepList \42\l\41\:0:*/
@@ -424,7 +427,11 @@ void WriteEnding(FILE *f, char *ModuleName, TDepList *l)
 
   printf("OBJS =");
   ListFiles(f,Line,l,true);
+
+#ifndef UNIX
   printf("LIBS = $(%%DEVROOT)\\projects\\dll\\libs\\lbHook.lib \n\n");
+#endif
+
 #ifdef WATCOM_MAKE
 
   switch (targettype) {
@@ -433,14 +440,14 @@ void WriteEnding(FILE *f, char *ModuleName, TDepList *l)
   		printf("Making a dll target\n");
   		#endif
 		printf("%s: $(OBJS) $(LIBS)\n",ModuleName);
-		printf("  *$(LINK) $(L_OPS_DLL) name %s file $(OBJS) library $(LIBS)\n",ModuleName);
+		printf("\t\t*$(LINK) $(L_OPS_DLL) name %s file $(OBJS) library $(LIBS)\n",ModuleName);
   		break;
   	case LIB_TARGET:
   		#ifdef VERBOSE
   		printf("Making a lib target\n");
   		#endif
   		printf("%s: $(OBJS) $(LIBS)\n",ModuleName);
-  		printf("  *$(WLIB) $(LIB_OPS_LIB) %s &\n", ModuleName);
+  		printf("\t\t*$(WLIB) $(LIB_OPS_LIB) %s &\n", ModuleName);
   		printf("	$(OBJS)\n");
   		break;
   	case EXE_TARGET:
@@ -448,16 +455,17 @@ void WriteEnding(FILE *f, char *ModuleName, TDepList *l)
   		printf("Making a exe target\n");
   		#endif
   		printf("%s: $(OBJS) $(LIBS)\n",ModuleName);
-  		printf("  *$(LINK) $(L_OPS_EXE) name %s ",ModuleName);
+  		printf("\t\t*$(LINK) $(L_OPS_EXE) name %s ",ModuleName);
   		printf("file {$(OBJS)} library {$(LIBS)}\n");
   		    
   		break;
   	default:
   		break;
   }
-
+#ifndef UNIX
   printf(".AFTER\n");
   printf("!include MAKE_AFTER\n");
+#endif
 
 #else
   printf("  $(LINK) $(L_OPS) %s $(OBJS) $(LIBS)\n",ModuleName);
@@ -477,7 +485,6 @@ void DoDep(FILE *f, TDepItem *d)
   
   strcpy(fullName, d->Path);
   strcat(fullName, d->Name);
-  
   WriteDep(f,fullName,&p);
 #ifdef VERBOSE
   printf("Warning: Using hardcoded char array.\n");
@@ -499,13 +506,13 @@ void main(int argc, char *argv[])
     ShowHelp();
     return 0;
   }
-  f=fopen("makefile","wt");
+/*  f=fopen("makefile","wt");
   if (!f)
   {
 	  fputs("ERROR: could not create makefile",stderr);
     return 0;
   }
-  
+*/  
 /*...sdetermine target type:0:*/
   char *target = strdup(argv[1]);
   char *targetname = strdup(argv[2]);
@@ -531,10 +538,10 @@ void main(int argc, char *argv[])
   if (strchr(targetname, '.') == NULL) targetname = strcat(targetname, target_ext);
 /*...e*/
   
-  WriteHeader(f,targetname);
+//  WriteHeader(f,targetname);
   for (i=3; i<argc; i++) Sources.AddMask(argv[i]);
   for (i=0; i<Sources.Count; i++) DoDep(f,(TDepItem*)Sources[i]);
   WriteEnding(f,targetname,&Sources);
-  fclose(f);
+//  fclose(f);
 }
 /*...e*/
