@@ -3,11 +3,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.9 $
+ * $Revision: 1.10 $
  * $Name:  $
- * $Id: lbModule.h,v 1.9 2001/12/12 17:12:45 lothar Exp $
+ * $Id: lbModule.h,v 1.10 2001/12/15 17:57:01 lothar Exp $
  *
  * $Log: lbModule.h,v $
+ * Revision 1.10  2001/12/15 17:57:01  lothar
+ * Minor changes
+ *
  * Revision 1.9  2001/12/12 17:12:45  lothar
  * Hehe - runs on linux
  *
@@ -32,12 +35,12 @@ extern "C" {
 /*...e*/
 
 lbErrCodes DLLEXPORT LB_STDCALL lb_releaseInstance(lb_I_Unknown * inst);
+DECLARE_FUNCTOR(getlb_ModuleInstance)
 
 /*...s\35\ifdef __cplusplus \125\:0:*/
 #ifdef __cplusplus
 }
 #endif
-DECLARE_FUNCTOR(getlb_ModuleInstance)
 
 /*...e*/
 
