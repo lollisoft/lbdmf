@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.49 2005/03/02 20:02:47 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.50 2005/03/03 08:42:21 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.49 $
+ * $Revision: 1.50 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.49 2005/03/02 20:02:47 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.50 2005/03/03 08:42:21 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.50  2005/03/03 08:42:21  lollisoft
+ * Added loading of plugins.
+ *
  * Revision 1.49  2005/03/02 20:02:47  lollisoft
  * Now using DLL version of wxWidgets library
  *
@@ -2936,6 +2939,16 @@ _LOG << "Showed the window" LOG_
 _LOG << "Initialized metaapplication" LOG_
 #endif
 #endif
+
+/*
+ * Try to load all plugins and initialize it.
+ */
+
+UAP_REQUEST(mm.getPtr(), lb_I_PluginManager, PM)
+printf("Test plugin manager\n");
+PM->beginEnumPlugins();
+printf("Tested plugin manager\n");
+
 
 #ifdef LB_I_EXTENTIONS
   if (metaApp != NULL) metaApp->run();
