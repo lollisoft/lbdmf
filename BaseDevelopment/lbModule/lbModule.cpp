@@ -1,11 +1,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.41 $
+ * $Revision: 1.42 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.41 2002/12/07 06:54:59 lothar Exp $
+ * $Id: lbModule.cpp,v 1.42 2002/12/07 13:31:20 lothar Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.42  2002/12/07 13:31:20  lothar
+ * minor changes
+ *
  * Revision 1.41  2002/12/07 06:54:59  lothar
  * Current Linux attempt is buggy
  *
@@ -2745,14 +2748,14 @@ lbErrCodes LB_STDCALL lbModule::request(const char* request, lb_I_Unknown** resu
                                 impl->deleteValue(value);
                         }
 /*...e*/
-			printf("Make an instance\n");
+			printf("lbModule::request(): Make an instance %s\n", functorName);
                         makeInstance(functorName, moduleName, result);
-			printf("Made an instance\n");
+			printf("lbModule::request(): Made an instance %s\n", functorName);
 /*...sLog error:32:*/
                         if ((*result) == NULL) {
                         	_CL_LOG << "Error: makeInstance has been failed for '" <<
                         	request << "', '" << functorName << "', '" << moduleName << "'" LOG_
-				printf("Error: Instance is a NULL pointer\n");
+				printf("Error: Instance is a NULL pointer %s\n", functorName);
                         }
 /*...e*/
                         (*result)->setModuleManager(this, __FILE__, __LINE__);
