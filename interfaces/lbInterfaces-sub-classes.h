@@ -1,11 +1,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.7 $
+ * $Revision: 1.8 $
  * $Name:  $
- * $Id: lbInterfaces-sub-classes.h,v 1.7 2001/04/13 07:39:27 lothar Exp $
+ * $Id: lbInterfaces-sub-classes.h,v 1.8 2001/04/27 18:57:32 lothar Exp $
  *
  * $Log: lbInterfaces-sub-classes.h,v $
+ * Revision 1.8  2001/04/27 18:57:32  lothar
+ * Commit for removing some getch()'s
+ *
  * Revision 1.7  2001/04/13 07:39:27  lothar
  * Commit for backup
  *
@@ -207,7 +210,7 @@ classname::classname(const lb_I_Unknown* o, const lb_I_KeyBase* _key, lb_I_Eleme
     CL_LOG("Queried interface of cloned unknown"); \
     key = _key->clone(); \
     CL_LOG("Cloned the key"); \
-    if (key == NULL) LOG("Key cloning in constructor failed. May be a memory problem"); \
+    if (key == NULL) CL_LOG("Key cloning in constructor failed. May be a memory problem"); \
 } \
 \
 classname::~classname() { \
@@ -452,12 +455,10 @@ int classname::exists(const lb_I_KeyBase* key) { \
 lbErrCodes LB_STDCALL classname::insert(const lb_I_Unknown* e, const lb_I_KeyBase* key) { \
 	lbErrCodes err = ERR_NONE; \
 \
-	CL_LOG("Begin inserting data"); \
 	if ((err = _insert(e, key)) != ERR_NONE) { \
 		CL_LOG("lbContainer::insert(...) Failed!"); \
 		return err; \
 	} \
-	CL_LOG("End inserted data"); \
 \
 	count++; \
 	return err; \
@@ -477,26 +478,20 @@ lbErrCodes classname::remove(const lb_I_KeyBase* key) { \
 \
 lbErrCodes classname::_insert(const lb_I_Unknown* e, const lb_I_KeyBase* key) { \
 \
-	CL_LOG("Be in " #classname"::_insert(const lb_I_Unknown* e, const lb_I_KeyBase* key)"); \
     if (container_data == NULL) { \
-    	CL_LOG("Insert first element"); \
     	cout << "Address of unknown object: " << (void*) e << endl; \
         lbElement* _data = new lbElement(e, key); \
-    	CL_LOG("Created lbElement"); \
 \
         _data->queryInterface("lb_I_Element", (void**) &container_data); \
-    	CL_LOG("Queried unknown of lbElement"); \
     	if (container_data == NULL) CL_LOG("Could not get unknown interface of lbElement!"); \
 \
 	if (container_data->getObject() == NULL) { \
 		LOG("Failed to insert first element in classname::insert"); \
 		return ERR_CONTAINER_INSERT; \
 	} \
-	CL_LOG("Inserted first element"); \
     } \
     else { \
         lb_I_Element* temp; \
-        CL_LOG("Insert more elements"); \
         for (temp = container_data; temp != NULL; temp = temp->getNext()) { \
             lb_I_Element* next = temp->getNext(); \
 \
@@ -511,7 +506,6 @@ lbErrCodes classname::_insert(const lb_I_Unknown* e, const lb_I_KeyBase* key) { 
                 return ERR_NONE; \
             } \
         } \
-        CL_LOG("Inserted more elements"); \
     } \
     return ERR_NONE; \
 } \
