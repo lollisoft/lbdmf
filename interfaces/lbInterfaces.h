@@ -1,4 +1,5 @@
 /*
+
     DMF Distributed Multiplatform Framework (the initial goal of this library)
     This file is part of lbDMF.
     Copyright (C) 2002  Lothar Behrens (lothar.behrens@lollisoft.de)
