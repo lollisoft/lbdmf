@@ -1,0 +1,84 @@
+#include <lbinclude.h>
+#include <conio.h>
+
+class myThread : public lbThread {
+public:
+	myThread();
+	
+	virtual ~myThread();
+	
+protected:
+	void* Entry();
+};
+
+myThread::myThread() {
+	printf("myThread::myThread() called\n");
+	LOG("myThread::myThread() called");
+}
+
+myThread::~myThread() {
+	printf("myThread::~myThread() called\n");
+}
+
+void* myThread::Entry() {
+	LOG("myThread::Entry() called");
+	for (int i=0; i<5; i++) {
+		printf("myThread::Entry - Loop at %d\n", i);
+		Beep(200, 50);
+		lb_sleep(1000);
+	}
+	return NULL;
+}
+
+void main(int argc, char** argv) {
+LOGENABLE("main(...)");
+	printf("Global application server is starting...\n");
+	myThread *thread;
+	thread = new myThread();
+	
+	lbThreadError err = thread->create();
+	//lb_sleep(1000);
+/*...sCheck and print errors:8:*/
+	switch (err) {
+		case LB_THREAD_NO_ERROR:
+			printf("Thread is created...\n");
+			break;
+		case LB_THREAD_ERROR:
+			printf("Thread run returns some error\n");
+			break;
+		default:
+			printf("Thread run returns unknown error\n");
+	}
+/*...e*/
+	err = thread->run();
+	lb_sleep(10);
+/*...sOutput of main:8:*/
+	for (int i=0;i<1000;i++) {
+		lb_sleep(100);
+		
+		if (i == 100) {
+		  thread = new myThread();
+		  lbThreadError err = thread->create();
+		  err = thread->run();
+		}
+		
+		printf("Main is at %d\n", i);
+	}
+/*...e*/
+	lb_sleep(1000);	
+/*...sCheck and print errors:8:*/
+	switch (err) {
+		case LB_THREAD_NO_ERROR:
+			printf("Thread is running...\n");
+			break;
+		case LB_THREAD_ERROR:
+			printf("Thread run returns some error\n");
+			break;
+		default:
+			printf("Thread run returns unknown error\n");
+	}
+/*...e*/
+	printf("Global application server is ending...\n");
+	lb_sleep(1000);
+	getch();
+}
