@@ -1,11 +1,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.14 $
+ * $Revision: 1.15 $
  * $Name:  $
- * $Id: lbDOMConfig.cpp,v 1.14 2001/07/18 22:44:41 lothar Exp $
+ * $Id: lbDOMConfig.cpp,v 1.15 2001/08/18 07:38:55 lothar Exp $
  *
  * $Log: lbDOMConfig.cpp,v $
+ * Revision 1.15  2001/08/18 07:38:55  lothar
+ * Current version runs again. Module management is not ready.
+ *
  * Revision 1.14  2001/07/18 22:44:41  lothar
  * Using more UAP's - works, but mem leak still there ?
  *
@@ -116,6 +119,7 @@ class lbDOMContainer;
 lbKey::lbKey() {
     ref = STARTREF;
     key = 0;
+	manager = NULL;
     strcpy(keyType, "int");
 }
 
@@ -123,6 +127,7 @@ lbKey::lbKey(int _key) {
     ref = STARTREF;
     key = _key;
     strcpy(keyType, "int");
+	manager = NULL;
 }
 
 lbKey::lbKey(const lb_I_KeyBase* k) {
@@ -409,11 +414,21 @@ public:
 /*...sclass lbElement:0:*/
 class lbElement : public lb_I_Element {
 public:
-    lbElement() { ref = STARTREF; next = NULL; data = NULL; key = NULL; }
+    lbElement() { 
+    	ref = STARTREF; 
+    	next = NULL; 
+    	data = NULL; 
+    	key = NULL; 
+    	manager = NULL;
+    }
     virtual ~lbElement();
 	
 //    lbElement(const lb_I_Object &o, const lb_I_KeyBase &_key, lb_I_Element *_next=NULL);
-    lbElement(const lb_I_Element &e) { ref = STARTREF; next = e.getNext(); }
+    lbElement(const lb_I_Element &e) { 
+    	ref = STARTREF; 
+    	next = e.getNext(); 
+    	manager = NULL;
+    }
 
     DECLARE_LB_UNKNOWN()
 
@@ -433,16 +448,16 @@ lbDOMContainer::lbDOMContainer() {
     iterator = NULL;
     count = 0;
     container_data = NULL;
+    manager = NULL;
 }
 
 lbDOMContainer::~lbDOMContainer() {
 }
 
 lbErrCodes LB_STDCALL lbDOMContainer::setData(lb_I_Unknown* data) {
-#ifdef VERBOSE
 	CL_LOG("lbDOMContainer::setData(lb_I_Unknown* data) called");
 	getch();
-#endif
+
 	return ERR_NONE;
 }
 
@@ -555,6 +570,7 @@ lbDOMNode::lbDOMNode() {
 //	currentChildIndex = 0;
 	lbDOMchilds = NULL;
 	parent = this;
+	manager = NULL;
 	
 	// This was the bug for the wrong deletion while leave scope
 	parent++;
@@ -599,13 +615,8 @@ lbErrCodes LB_STDCALL lbDOMNode::getParent(lb_I_ConfigObject** _parent) {
 		getch();
 	}
 
-	char buf[100] = "";
-	sprintf(buf, "lbDOMNode::getParent(...) relies on parent at %x", parent);
-	CL_LOG(buf);
-	
 	parent->queryInterface("lb_I_ConfigObject", (void**) _parent);
-	
-	CL_LOG("lbDOMNode::getParent() returns no error");
+
 	return ERR_NONE;
 }
 /*...e*/
@@ -627,9 +638,9 @@ lbErrCodes LB_STDCALL lbDOMNode::setNode(DOM_Node _node) {
 		CL_LOG("Error: Null node could not be set!");
 		getch();
 	}
-
+	
 	lb_I_Container* c = createAbstractedChildList(_node);
-
+	
 	if (c != NULL)
 		c->queryInterface("lb_I_Container", (void**) &lbDOMchilds);
 	else
@@ -655,6 +666,11 @@ lbErrCodes LB_STDCALL lbDOMNode::setNode(DOM_Node _node) {
 #endif			
 		}
 		lbDOMNode* _parent = new lbDOMNode();
+		
+		_parent->setFurtherLock(0);
+		if (manager == NULL) CL_LOG("Error: Set manager in parent with a NULL pointer!");
+		_parent->setModuleManager(manager);
+		
 		_parent->setNode(pnode);
 		parent = _parent;
 		parent++;
@@ -779,9 +795,23 @@ lbDOMContainer* LB_STDCALL lbDOMNode::createAbstractedChildList(DOM_Node _node) 
 	lbDOMContainer* list = new lbDOMContainer;
 	lbErrCodes err = ERR_NONE;
 
+	if (manager == NULL) {
+		CL_LOG("Module manager has not been set!");
+		getch();
+	}
+	
+	if (manager == NULL) CL_LOG("Error: Setting in lbDOMNode::createAbstractedChildList() a NULL pointer as manager");
+	
+	list->setModuleManager(manager);
+	
+	char buf[100] = "";
+
 	for (int i = 0; i < len; i++) {
 		DOM_Node child = DOMlist.item(i);	
 		lbDOMNode* lbNode = new lbDOMNode();
+		
+		lbNode->setFurtherLock(0);
+		lbNode->setModuleManager(manager);
 	        
 		lbNode->node = child;
 		UAP(lb_I_Unknown, unknown)
@@ -789,6 +819,8 @@ lbDOMContainer* LB_STDCALL lbDOMNode::createAbstractedChildList(DOM_Node _node) 
 		if (lbNode->queryInterface("lb_I_Unknown", (void**) &unknown) != ERR_NONE) {
 		        CL_LOG("lbNode->queryInterface() Failed!");
 		}
+
+		if (unknown == NULL) CL_LOG("Error: The unknown pointer must not be NULL!");
 		
 		if (unknown != lbNode) {
 			CL_LOG("Error: Pointer of unknown instance differs from created instance");
@@ -797,6 +829,9 @@ lbDOMContainer* LB_STDCALL lbDOMNode::createAbstractedChildList(DOM_Node _node) 
 
 		UAP(lb_I_KeyBase, key)
 		key = new lbKey(i);
+		
+		key->setModuleManager(manager);
+		
 		key++;
 		
 		if (unknown == NULL) CL_LOG("Error: Inserting a null pointer!");
@@ -953,6 +988,7 @@ lbErrCodes lbDOMConfig::setData(lb_I_Unknown* uk) {
 
 /*...slbDOMConfig\58\\58\lbDOMConfig\40\\41\:0:*/
 lbDOMConfig::lbDOMConfig() {
+	manager = NULL;
 	ref = STARTREF;
 	lastResult = NULL;
 	interface_used = 0;
@@ -1054,6 +1090,9 @@ lb_I_Container* LB_STDCALL lbDOMConfig::findNodesAtTreePos(const char* treePos) 
 	 */
 	lbDOMContainer* DOM_list = new lbDOMContainer;
 	lb_I_Container* list = NULL;
+
+
+	DOM_list->setModuleManager(manager);
 	
 	if (DOM_list->queryInterface("lb_I_Container", (void**) &list) != NULL) {
 		CL_LOG("Error: Could not generate a reference with interface lb_I_Container");
@@ -1118,6 +1157,7 @@ lb_I_Container* LB_STDCALL lbDOMConfig::findNodesAtTreePos(const char* treePos) 
 			 */
 			
 			lbDOMNode* lbNode = new lbDOMNode;
+			lbNode->setModuleManager(manager);
 			lbNode->setNode(currentnode);
 /*...sbla:16:*/
 #ifdef bla
@@ -1161,9 +1201,11 @@ lb_I_Container* LB_STDCALL lbDOMConfig::findNodesAtTreePos(const char* treePos) 
 			}
 			
 			key = new lbKey(count++);
+			key->setModuleManager(manager);
 			key++;
 			
 			list->insert(&unknown, &key);
+			getch();
 /*...sVERBOSE:16:*/
 #ifdef VERBOSE
 			cout << "Inserted the entry" << endl;
@@ -1188,7 +1230,8 @@ lbErrCodes LB_STDCALL lbDOMConfig::hasConfigObject(const char* cfgObjectName, in
 		lastResult = findNodesAtTreePos(cfgObjectName);
 
 		count = lastResult->Count(); //= lastResult->getChildrenCount();
-
+		CL_LOG("Returning from hasConfigObject()");
+		getch();
 		return err;
 	} else cout << "Any errors while parsing has been occured!" << endl;
 	
@@ -1207,11 +1250,15 @@ lbErrCodes LB_STDCALL lbDOMConfig::getConfigObject(lb_I_ConfigObject** cfgObj,
 	 
 	lbDOMNode *node = new lbDOMNode();
 	lb_I_Container* c = NULL;
+
+	node->setModuleManager(manager);
 	
 	if (lastResult == NULL) {
 		CL_LOG("Error: Function sequence may be wrong. Please call hasConfigObject first!");
 		return ERR_FUNCTION_SEQUENCE;
 	}
+	
+	lastResult->setModuleManager(manager);
 	
 	if ((lastResult != NULL) && (lastResult->queryInterface("lb_I_Container", (void**) &c)) != ERR_NONE) {
 		CL_LOG("Error: Could not get interface lb_I_Container");

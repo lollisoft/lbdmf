@@ -21,23 +21,6 @@ extern int isInitializing = 0;
  
 /*...slbErrCodes LB_STDCALL lbLoadModule\40\const char\42\ name\44\ HINSTANCE \38\ hinst\41\:0:*/
 lbErrCodes LB_STDCALL lbLoadModule(const char* name, HINSTANCE & hinst) {
-
-
-
-	class test {
-	public:
-		test() { printf("Test inline class\n"); }
-		~test() {}
-	};
-
-
-	test t;
-
-
-
-
-
-
         if ((hinst = LoadLibrary(name)) == NULL)
         {
             printf("Kann DLL '%s.dll' nicht laden.\n", name); 
@@ -72,7 +55,7 @@ lbErrCodes LB_STDCALL lbGetFunctionPtr(const char* name, const HINSTANCE & hinst
 lb_I_Module* LB_STDCALL getModuleInstance() {
 typedef lbErrCodes (LB_STDCALL *T_p_getlbModuleInstance) (lb_I_Module*&);
 T_p_getlbModuleInstance DLL_GETMODULEINSTANCE;
-
+	lbErrCodes err = ERR_NONE;
 	lb_I_Module* module = NULL;
 
 	char* libname = getenv("MODULELIB");
@@ -89,7 +72,12 @@ T_p_getlbModuleInstance DLL_GETMODULEINSTANCE;
 	}
 	printf("Calling functor %s\n", functor);
 
-	DLL_GETMODULEINSTANCE(module);
+	if ((err = DLL_GETMODULEINSTANCE(module)) == ERR_STATE_FURTHER_LOCK) {
+		CL_LOG("Instance is locked. Must set module manager first");
+		module->setModuleManager(module);
+	} 
+	
+getch();
 
 	printf("Called functor\n");
 	

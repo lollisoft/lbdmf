@@ -1,11 +1,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.13 $
+ * $Revision: 1.14 $
  * $Name:  $
- * $Id: lbInterfaces-sub-classes.h,v 1.13 2001/07/18 05:52:57 lothar Exp $
+ * $Id: lbInterfaces-sub-classes.h,v 1.14 2001/08/18 07:38:55 lothar Exp $
  *
  * $Log: lbInterfaces-sub-classes.h,v $
+ * Revision 1.14  2001/08/18 07:38:55  lothar
+ * Current version runs again. Module management is not ready.
+ *
  * Revision 1.13  2001/07/18 05:52:57  lothar
  * Seems to work now (lbDOMNode::parent - refcount must be corrected)
  *
@@ -236,24 +239,35 @@ private: \
 \
 classname::classname(const lb_I_Unknown* o, const lb_I_KeyBase* _key, lb_I_Element *_next) { \
     ref = STARTREF; \
+    manager = NULL; \
     if (_next == NULL) next = _next; \
     if (_next != NULL) { \
         _next->queryInterface("lb_I_Element", (void**) &next); \
     } \
     if (o == NULL) CL_LOG("Error! Can't clone a NULL pointer"); \
-    lb_I_Unknown *uk_data = o->clone(); \
-    if (uk_data->queryInterface("lb_I_Unknown", (void**) &data) != ERR_NONE) { \
-        CL_LOG("Error while cloning"); \
+    data = o->clone(); \
+    if (data->getRefCount() > 1) { \
+        CL_LOG("Refcount after cloning is more than 1 !!!"); \
     } \
     lb_I_Unknown* uk_key = NULL; \
-    uk_key = _key->clone(); \
-    uk_key->queryInterface("lb_I_KeyBase", (void**) &key); \
+    key = (lb_I_KeyBase*) _key->clone(); \
     if (key == NULL) CL_LOG("Key cloning in constructor failed. May be a memory problem"); \
 } \
 \
 classname::~classname() { \
-        if (key != NULL) RELEASE(key); \
-        if (data != NULL) RELEASE(data); \
+        char buf[100] = ""; \
+        if (key != NULL) { \
+                key->setDebug(1); \
+                if (key->deleteState() != 1) CL_LOG("Key wouldn't deleted in container element!"); \
+                RELEASE(key); \
+        } \
+        if (data != NULL) { \
+                if (data->deleteState() != 1) { \
+                        sprintf(buf, "Data (at %x) (refcount=%d) (classname='%s') wouldn't deleted in container element!", data, data->getRefCount(), data->getClassName()); \
+                        CL_LOG(buf); \
+                        RELEASE(data); \
+                } \
+        } \
         key = NULL; \
         data = NULL; \
 } \
@@ -266,8 +280,7 @@ lb_I_Unknown* classname::getObject() const { \
 \
 lb_I_KeyBase* LB_STDCALL classname::getKey() const { \
         lb_I_KeyBase* kbase = NULL; \
-        key->queryInterface("lb_I_KeyBase", (void**) &kbase); \
-        return kbase; \
+        return key; \
 } \
 \
 void LB_STDCALL classname::setNext(lb_I_Element *e) { \
@@ -495,11 +508,15 @@ void LB_STDCALL classname::deleteAll() { \
 \
     lb_I_Element* pre = NULL; \
 \
+    char buf[100] = ""; \
+    sprintf(buf, #classname "::deleteAll() at %x called", this); \
+    CL_LOG(buf); \
     while (container_data->getNext() != NULL) { \
         pre = container_data; \
         container_data = container_data->getNext(); \
         RELEASE(pre); \
     } \
+    CL_LOG("Delete last element in container"); \
     RELEASE(container_data); \
 \
 } \
@@ -538,6 +555,7 @@ lbErrCodes classname::_insert(lb_I_Unknown** const e, lb_I_KeyBase** const key) 
 \
     if (container_data == NULL) { \
         lbElement* _data = new lbElement(*e, *key); \
+        _data->setModuleManager(manager); \
 \
         _data->queryInterface("lb_I_Element", (void**) &container_data); \
         if (container_data == NULL) CL_LOG("Could not get unknown interface of lbElement!"); \
@@ -555,12 +573,16 @@ lbErrCodes classname::_insert(lb_I_Unknown** const e, lb_I_KeyBase** const key) 
 \
             if (next != NULL) { \
                 if (next->getKey() < *key) { \
-                    temp->setNext(new lbElement(*e, *key, next)); \
+                    lbElement* el = new lbElement(*e, *key, next); \
+                    el->setModuleManager(manager); \
+                    temp->setNext(el); \
                     return ERR_NONE; \
                 } \
             } \
             else { \
-                temp->setNext(new lbElement(*e, *key)); \
+            	lbElement* el = new lbElement(*e, *key, next); \
+            	el->setModuleManager(manager); \
+                temp->setNext(el); \
                 return ERR_NONE; \
             } \
         } \
@@ -654,6 +676,12 @@ protected:
         lb_I_Module() {}
         virtual ~lb_I_Module() {}
 public:
+
+        virtual void LB_STDCALL notify_create(lb_I_Unknown* that, char* implName) = 0;
+        virtual void LB_STDCALL notify_add(lb_I_Unknown* that, char* implName) = 0;
+        virtual void LB_STDCALL notify_release(lb_I_Unknown* that, char* implName) = 0;
+
+        virtual int  LB_STDCALL can_delete(lb_I_Unknown* that, char* implName) = 0;
 
         /**
          * This function loads a module and stores the modulehandle in an array

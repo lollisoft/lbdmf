@@ -88,6 +88,7 @@ typedef lbErrCodes (lb_I_CallbackTarget::*lbMemberCallback)( const char* handler
  
 class lb_I_gcManager;
 class lb_I_Unknown;
+class lb_I_Module;
 
 /*
 	CL_LOG("Releasing instance"); \
@@ -100,6 +101,8 @@ class lb_I_Unknown;
 				printf("Reference count mismatch at %d in %s\n", __LINE__, __FILE__); \
 			} else { \
 			} \
+		} else { \
+			instance = NULL; \
 		} \
 	}
 /*...e*/
@@ -131,8 +134,6 @@ protected:
 	lb_I_Unknown() {}
 	virtual ~lb_I_Unknown() {}
 	
-	// New refcount setup
-	virtual void LB_STDCALL resetRefcount() = 0;
 public:
 	virtual lbErrCodes LB_STDCALL release() = 0;
 	/**
@@ -140,6 +141,11 @@ public:
 	 * of release().
 	 */
 	virtual int LB_STDCALL deleteState() = 0;
+	virtual void LB_STDCALL setDebug(int i) = 0;
+	virtual int LB_STDCALL getRefCount() = 0;
+	virtual char* LB_STDCALL getClassName() = 0;
+
+	virtual void LB_STDCALL setModuleManager(lb_I_Unknown* m) = 0;
 	
 	virtual lbErrCodes LB_STDCALL queryInterface(char* name, void** unknown) = 0;
         
@@ -261,26 +267,57 @@ lb_I_Unknown* _autoPtr;
 /*...e*/
 /*...e*/
 
-
 #define DECLARE_LB_UNKNOWN() \
 private: \
+	lb_I_Module* manager; \
 	int ref; \
 	lb_I_Unknown* data; \
 	int debug_macro; \
+	int further_lock; \
 protected: \
-	virtual void LB_STDCALL resetRefcount(); \
 public: \
-	virtual void setDebug(int i = 1) { debug_macro = i; } \
+	virtual void LB_STDCALL setFurtherLock(int state) { further_lock = state; } \
+	virtual void LB_STDCALL setModuleManager(lb_I_Unknown* m); \
+	virtual void LB_STDCALL resetRefcount(); \
+	virtual void LB_STDCALL setDebug(int i = 1) { debug_macro = i; } \
 	virtual lbErrCodes LB_STDCALL release(); \
+	virtual char* LB_STDCALL getClassName(); \
 	virtual int LB_STDCALL deleteState(); \
 	virtual lbErrCodes LB_STDCALL queryInterface(char* name, void** unknown); \
 	virtual lb_I_Unknown* LB_STDCALL clone() const; \
-	virtual lbErrCodes LB_STDCALL setData(lb_I_Unknown* u);
+	virtual lbErrCodes LB_STDCALL setData(lb_I_Unknown* u); \
+	virtual int LB_STDCALL getRefCount() { return ref; }
 
 #define BEGIN_IMPLEMENT_LB_UNKNOWN(classname) \
+char* LB_STDCALL classname::getClassName() { \
+	return #classname; \
+} \
+\
+void LB_STDCALL classname::setModuleManager(lb_I_Unknown* m) { \
+	if (m == NULL) { \
+		printf("Error: Set module manager with a NULL pointer!"); \
+		return; \
+	} \
+	\
+	further_lock = 0; \
+	if (debug_macro == 1) { \
+		CL_LOG("Warning: setModuleManager() must be enhanced by module manager use"); \
+	} \
+	m->queryInterface("lb_I_Module", (void**) &manager); \
+	\
+	if (manager != NULL) { \
+		manager->notify_create(this, #classname); \
+	} \
+} \
+\
 void LB_STDCALL classname::resetRefcount() { ref = STARTREF; } \
 int LB_STDCALL classname::deleteState() { \
-	return (ref == STARTREF) ? 1 : 0; \
+	if (debug_macro == 1) { \
+		char buf[100] = ""; \
+		sprintf(buf, #classname "::deleteState() called at ref = %d", ref); \
+		CL_LOG(buf); \
+	} \
+	return (ref-1 == STARTREF) ? 1 : 0; \
 } \
 lbErrCodes LB_STDCALL classname::release() { \
 	if ((debug_macro == 1) && (strcmp(#classname, "lbDOMNode")) != 0) { \
@@ -289,13 +326,21 @@ lbErrCodes LB_STDCALL classname::release() { \
 		CL_LOG(buf); \
 	} \
         ref--; \
+        \
+        if (manager != NULL) manager->notify_release(this, #classname); \
+        \
         if (ref == STARTREF) { \
-        	if ((debug_macro == 1) && (strcmp(#classname, "lbDOMNode") != 0)) {\
+        	if ((debug_macro == 1) && (strcmp(#classname, "lbDOMNode") != 0)) { \
 	        	char buf[100] = ""; \
         		sprintf(buf, "Delete instance %x of object type %s", this, #classname); \
         		CL_LOG(buf); \
         	} \
-        	delete this; \
+        	if (manager != NULL) { \
+        		if (manager->can_delete(this, #classname) == 1)	\
+        			delete this; \
+        		else \
+        			CL_LOG("Error: Instance has been deleted prior!"); \
+        	} \
         	return ERR_NONE; \
         } \
         char buf[100] = ""; \
@@ -316,12 +361,30 @@ lb_I_Unknown* LB_STDCALL classname::clone() const { \
 \
 	lb_I_Unknown* uk_cloned = NULL; \
 \
+	cloned->setFurtherLock(0); \
+	if (manager == NULL) CL_LOG(#classname "::clone() can't be used because manager is a NULL pointer!"); \
+	cloned->setModuleManager(manager); \
 	if (cloned->queryInterface("lb_I_Unknown", (void**) &uk_cloned) != ERR_NONE) { \
 		CL_LOG("Error while getting interface"); \
 	} \
 \
 	uk_cloned->setData((lb_I_Unknown*) this); \
 \
+	cloned->resetRefcount(); \
+	\
+	if (manager != NULL) \
+	        manager->notify_add(cloned, cloned->getClassName()); \
+        else \
+		if (debug_macro == 1) { \
+                	CL_LOG("Module manager was not set!"); \
+		} \
+	\
+	lb_I_Unknown* uk = NULL; \
+	if (uk_cloned->queryInterface("lb_I_Unknown", (void**) &uk) != ERR_NONE) { \
+		CL_LOG("Error while getting interface"); \
+	} \
+\
+	return uk; \
 	return uk_cloned; \
 \
 } \
@@ -329,16 +392,17 @@ lb_I_Unknown* LB_STDCALL classname::clone() const { \
 lbErrCodes LB_STDCALL classname::queryInterface(char* name, void** unknown) { \
 	char buf[100] = ""; \
 	char iFaces[1000] = ""; \
+	char _classname[100] = #classname; \
 \
+	if (further_lock == 1) { \
+		CL_LOG("Error: Object has been locked due to missing module manager!"); \
+		return ERR_STATE_FURTHER_LOCK; \
+	} \
 	if (unknown == NULL) { \
 		sprintf(buf, "Error: Got NULL pointer reference while queryInterface() called for %s !", name); \
 		CL_LOG(buf); \
 	} \
 \
-	if (debug_macro == 1) { \
-		sprintf(buf, #classname"::queryInterface('%s', void** unknown)\n", name); \
-		CL_LOG(buf); \
-	} \
 	strcat(iFaces, "lb_I_Unknown, "); \
         if (strcmp(name, "lb_I_Unknown") == 0) { \
         	if (ref < STARTREF) { \
@@ -347,16 +411,22 @@ lbErrCodes LB_STDCALL classname::queryInterface(char* name, void** unknown) { \
         	} \
                 ref++; \
                 *unknown = (lb_I_Unknown*) this; \
+                if (manager != NULL) { \
+		        manager->notify_add(this, _classname); \
+		} \
+		else { \
+			if (debug_macro == 1) { \
+				sprintf(buf, "Module manager is not set!"); \
+		        	CL_LOG(buf); \
+		        } \
+	        	setFurtherLock(1); \
+	        	return ERR_STATE_FURTHER_LOCK; \
+		} \
                 return ERR_NONE; \
         }
 
 #define ADD_INTERFACE(interfaceName) \
 	buf[0] = 0; \
-\
-	if (debug_macro == 1) {\
-		sprintf(buf, "Comparing '%s' with given '%s'\n", #interfaceName, name); \
-		CL_LOG(buf); \
-	} \
 \
 	if ((strlen(iFaces)+strlen(#interfaceName)) > 1000) { \
 		CL_LOG("String size exceeds fixed len!"); \
@@ -365,6 +435,17 @@ lbErrCodes LB_STDCALL classname::queryInterface(char* name, void** unknown) { \
         if (strcmp(name, #interfaceName) == 0) { \
                 ref++; \
                 *unknown = (interfaceName*) this; \
+                if (manager != NULL) { \
+                	manager->notify_add(this, _classname); \
+                } \
+		else { \
+			if (debug_macro == 1) { \
+				sprintf(buf, "Module manager is not set!"); \
+			        CL_LOG(buf); \
+		        } \
+		        setFurtherLock(1); \
+	        	return ERR_STATE_FURTHER_LOCK; \
+		} \
                 return ERR_NONE; \
         }
 
@@ -387,6 +468,12 @@ lbErrCodes LB_STDCALL classname::queryInterface(char* name, void** unknown) { \
  
 typedef lbErrCodes (LB_STDCALL *T_pLB_GET_UNKNOWN_INSTANCE) (lb_I_Unknown**);
 
+/**
+ * Idea: To ensure, that the object gets the module manager, it is locked until
+ * setModuleManager is called with a correct value.
+ * queryInterface can at first time do it's work, store the data, that has to
+ * be stored in module manager and lock the instance for further use.
+ */
 /*...sstandard functor:0:*/
 
 #define DECLARE_FUNCTOR(name) \
@@ -395,12 +482,16 @@ lbErrCodes DLLEXPORT LB_STDCALL name(lb_I_Unknown** uk);
 #define IMPLEMENT_FUNCTOR(name, clsname) \
 lbErrCodes DLLEXPORT LB_STDCALL name(lb_I_Unknown** uk) { \
 \
+	lbErrCodes err = ERR_NONE; \
         clsname* instance = new clsname(); \
         *uk = NULL; \
         char buf[100] = ""; \
-\
-        if (instance->queryInterface("lb_I_Unknown", (void**) uk) != ERR_NONE) { \
+        \
+        instance->setFurtherLock(0); \
+        \
+        if ((err = instance->queryInterface("lb_I_Unknown", (void**) uk)) != ERR_NONE) { \
                 CL_LOG("Failed to create unknown reference to instance of "#clsname"!"); \
+                if (err == ERR_STATE_FURTHER_LOCK) return err; \
                 return ERR_FUNCTOR; \
         } \
 \

@@ -8,6 +8,7 @@
 
 #include <lbConfigHook.h>
 
+/*...sbla:0:*/
 #ifdef bla
 		class UAP_theVariable {
 		public:
@@ -32,6 +33,7 @@
 	        lb_I_Unknown* _autoPtr;
 		};
 #endif
+/*...e*/
 
 #define LOOP
 
@@ -49,8 +51,12 @@ void main() {
 	getch();
 
 	lb_I_Module* mm = getModuleInstance();
+	mm->setModuleManager(mm);
+	printf("Address of module manager is %x\n", mm);
 	mm->initialize();
+	getch();
 /*...e*/
+#ifdef bla
 /*...stest string:0:*/
 	CL_LOG("Test using lb_I_String");
 	mm->request("lb_I_String", &unknown);
@@ -69,7 +75,20 @@ void main() {
 
 		if (string != NULL) {
 			CL_LOG("Using the string :-)");
-			string->setData("müll");
+			string->setData("--------------------------------------------------------------------------------------------------------------------------------");
+			
+			CL_LOG("Test clone loop");
+			getch();
+			
+			for (long test = 0; test < 10000000000; test++) {
+			
+				lb_I_Unknown* cl = string->clone();
+				
+			
+			}
+			CL_LOG("Tested clone loop");
+			getch();
+			
 		}
 
 		CL_LOG("Unknown instance of lb_I_String is no more needed!");
@@ -82,10 +101,13 @@ void main() {
 
 	}
 /*...e*/
+#endif
 /*...stest logger:0:*/
 	CL_LOG("Test invoking logger interface directly (requesting)...");
+	getch();
 	mm->request("lb_I_Log", &unknown);
-
+	CL_LOG("Requested lb_I_Log interface");
+	getch();
 	if (unknown != NULL) {
 		lb_I_Log* logger = NULL;
 		if (unknown->queryInterface("lb_I_Log", (void**) &logger) != ERR_NONE) {
@@ -233,7 +255,7 @@ CL_LOG("Query done");
 	
 /*...sTest container with inserting strings:0:*/
 	#ifdef LOOP
-        for (long i = 0; i < 10000000; i++) {
+        for (long i = 0; i < 1; i++) {
     	#endif
     			UAP(lb_I_Unknown, uk)
     			
@@ -256,35 +278,50 @@ CL_LOG("Query done");
 				}
 
 				if (uk1 != NULL) {
+					CL_LOG("Test the container");
 					UAP(lb_I_String, string)
-
-					if (uk->queryInterface("lb_I_String", (void**) &string) != ERR_NONE) {
+					if (uk1->queryInterface("lb_I_String", (void**) &string) != ERR_NONE) {
 						printf("Error: Could not get needed interface!\n");
 						getch();
 					}
-
+					CL_LOG("Have the string interface, insert data");
 					if (string != NULL) {
 						// Fill up the container
+for (long i = 0; i < 10000000; i++) {
 						UAP(lb_I_Unknown, uk)
 						UAP(lb_I_KeyBase, key)
 						
 						string->queryInterface("lb_I_Unknown", (void**) &uk);
 						string->queryInterface("lb_I_KeyBase", (void**) &key);
 						
+						uk->setDebug(1);
+						
 						string->setData("Bla");
+						CL_LOG("Insert first element");
+						
+						
+						if (container == NULL) CL_LOG("Container is NULL");
+						
+						sprintf(buf, "RefCount of uk and key is %d, %d", uk->getRefCount(), key->getRefCount());
+						CL_LOG(buf);
+						
 						container->insert(&uk, &key);
-						string->setData("Bla1");
+						CL_LOG("Inserted first element");
+						string->setData("Bla1---------------------------------------------");
 						container->insert(&uk, &key);
-						string->setData("Bla2");
+						string->setData("Bla2---------------------------------------------");
 						container->insert(&uk, &key);
-						string->setData("Bla3");
+						string->setData("Bla3---------------------------------------------");
 						container->insert(&uk, &key);
-						string->setData("Bla4");
+						string->setData("Bla4---------------------------------------------");
 						container->insert(&uk, &key);
-					}
-				}
 
 				container->deleteAll();
+				CL_LOG("Deleted all container data");
+				getch();
+}
+					}
+				}
 				
 			} else {
 				CL_LOG("Here must be an object!!!");

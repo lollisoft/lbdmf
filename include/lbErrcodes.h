@@ -1,11 +1,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.8 $
+ * $Revision: 1.9 $
  * $Name:  $
- * $Id: lbErrcodes.h,v 1.8 2001/07/11 16:03:03 lothar Exp $
+ * $Id: lbErrcodes.h,v 1.9 2001/08/18 07:38:55 lothar Exp $
  *
  * $Log: lbErrcodes.h,v $
+ * Revision 1.9  2001/08/18 07:38:55  lothar
+ * Current version runs again. Module management is not ready.
+ *
  * Revision 1.8  2001/07/11 16:03:03  lothar
  * First version of module management that hold's a little stresstest
  *
@@ -79,6 +82,10 @@ enum lbErrCodes {
 	ERR_MODULE_NOT_FOUND,
 	ERR_FUNCTION_NOT_FOUND,
 	ERR_MODULE_NO_INTERFACE,
+	ERR_STATE_FURTHER_LOCK,		/**
+					 * Object has increased refcount, but hasn't manager available.
+					 * Object is locked!
+					 */
 	
 /* Errcodes for dealing with XML */
 
