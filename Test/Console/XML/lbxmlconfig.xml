@@ -69,6 +69,17 @@
       </Functions>
     </Module>
     <Module>
+      <ModuleName Name="lbDOMConfig"/>
+      <Functions>
+        <Function>
+           <FunctionName Name="instanceOfInterfaceRepository"/>
+           <Functor>
+              <InterfaceName Name="lb_I_InterfaceRepository" Version="1.0"/>
+           </Functor>
+        </Function>
+      </Functions>
+    </Module>
+    <Module>
       <ModuleName Name="lbClasses"/>
       <Functions>
         <Function>
