@@ -1,11 +1,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.23 $
+ * $Revision: 1.24 $
  * $Name:  $
- * $Id: lbDOMConfig.cpp,v 1.23 2002/05/30 17:53:01 lothar Exp $
+ * $Id: lbDOMConfig.cpp,v 1.24 2002/06/01 09:52:00 lothar Exp $
  *
  * $Log: lbDOMConfig.cpp,v $
+ * Revision 1.24  2002/06/01 09:52:00  lothar
+ * Removed some debug lines
+ *
  * Revision 1.23  2002/05/30 17:53:01  lothar
  * Current development seems to run
  *
@@ -1222,19 +1225,13 @@ lb_I_Container* LB_STDCALL lbDOMConfig::findNodesAtTreePos(const char* treePos) 
 	lbDOMContainer* DOM_list = new lbDOMContainer;
 	lb_I_Container* list = NULL;
 
-	CL_LOG("Call DOM_list->setModuleManager(manager.getPtr(), __FILE__, __LINE__)")
-
 	DOM_list->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
-
-	CL_LOG("Call DOM_list->queryInterface(...)")
 
 	if (DOM_list->queryInterface("lb_I_Container", (void**) &list, __FILE__, __LINE__) != NULL) {
 		CL_LOG("Error: Could not generate a reference with interface lb_I_Container");
 		if (list != NULL) CL_LOG("Obviously failed queryInterface, instance pointer is not NULL!!!!");
 		return NULL;
 	}
-	
-	CL_LOG("Prepare search")
 	
 /*...sPrepare search:8:*/
 
@@ -1256,8 +1253,6 @@ lb_I_Container* LB_STDCALL lbDOMConfig::findNodesAtTreePos(const char* treePos) 
 	delete [] savename;
 
 /*...e*/
-
-	CL_LOG("Build the path");
 
 	for (int i = 0; i < len; i++) {
 		path = "";
