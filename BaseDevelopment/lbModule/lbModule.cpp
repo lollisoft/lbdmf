@@ -3,11 +3,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.17 $
+ * $Revision: 1.18 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.17 2001/10/08 19:34:27 lothar Exp $
+ * $Id: lbModule.cpp,v 1.18 2001/10/08 20:11:22 lothar Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.18  2001/10/08 20:11:22  lothar
+ * This module now compiles under linux
+ *
  * Revision 1.17  2001/10/08 19:34:27  lothar
  * Include lbXMLConfig.h no longer used
  *
@@ -42,7 +45,9 @@
 /*...e*/
 
 /*...sincludes:0:*/
+#ifdef WINDOWS
 #include <windows.h>
+#endif
 
 #include <conio.h>
 #include <stdio.h>
@@ -52,7 +57,7 @@
 #include <lbModule.h>
 //#include <lbXMLConfig.h>
 #include <lbConfigHook.h>
-#include <lbKey.h>
+#include <lbkey.h>
 /*...e*/
 /*...sclass InstanceRepository:0:*/
 /*...sreferenceList:0:*/
@@ -397,7 +402,7 @@ typedef lbErrCodes (* LB_STDCALL T_pLB_GETXML_CONFIG_INSTANCE) (lb_I_XMLConfig**
 T_pLB_GETXML_CONFIG_INSTANCE DLL_LB_GETXML_CONFIG_INSTANCE;
 
 void lbModule::getXMLConfigObject(lb_I_XMLConfig** inst) {
-     
+	lbErrCodes err = ERR_NONE;
         char *libname = getenv("LBXMLLIB");
         char *ftrname = getenv("LBXMLFUNCTOR");
         char *cfgname = getenv("LBHOSTCFGFILE");
@@ -412,15 +417,14 @@ void lbModule::getXMLConfigObject(lb_I_XMLConfig** inst) {
                 exit(1);
         }
 
-        if ((DLL_LB_GETXML_CONFIG_INSTANCE = (T_pLB_GETXML_CONFIG_INSTANCE)
-               GetProcAddress(ModuleHandle, ftrname)) == NULL)
-        {
+        if ((err = lbGetFunctionPtr(ftrname, ModuleHandle, (void**) &DLL_LB_GETXML_CONFIG_INSTANCE)) != ERR_NONE) {
             char buf[1000] = "";
             sprintf(buf, "Kann Funktion '%s' nicht finden.\n", ftrname);  
             CL_LOG(buf);
             exit(1);
         }
-        lbErrCodes err = DLL_LB_GETXML_CONFIG_INSTANCE(&xml_I, this, __FILE__, __LINE__);
+	
+        err = DLL_LB_GETXML_CONFIG_INSTANCE(&xml_I, this, __FILE__, __LINE__);
 
         if (xml_I == NULL) {
             CL_LOG("Konnte XML Konfigurationsinstanz nicht bekommen.\n");
@@ -1571,6 +1575,7 @@ lbErrCodes DLLEXPORT LB_STDCALL lb_releaseInstance(lb_I_Unknown * inst) {
 }
 /*...e*/
 
+#ifdef WINDOWS
 /*...sDllMain:0:*/
 BOOL WINAPI DllMain(HINSTANCE dllHandle, DWORD reason, LPVOID situation) {
         char buf[100]="";
@@ -1606,3 +1611,4 @@ BOOL WINAPI DllMain(HINSTANCE dllHandle, DWORD reason, LPVOID situation) {
         return TRUE;
 }
 /*...e*/
+#endif
