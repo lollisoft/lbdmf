@@ -37,10 +37,13 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.17 $
+ * $Revision: 1.18 $
  * $Name:  $
- * $Id: lbkey.cpp,v 1.17 2003/12/13 10:56:25 lollisoft Exp $
+ * $Id: lbkey.cpp,v 1.18 2004/05/08 10:51:15 lollisoft Exp $
  * $Log: lbkey.cpp,v $
+ * Revision 1.18  2004/05/08 10:51:15  lollisoft
+ * bug in returning local nonstatic pointer
+ *
  * Revision 1.17  2003/12/13 10:56:25  lollisoft
  * Database improovements and changes in my licence adress.
  * The database part is still not working by updating columns
@@ -197,16 +200,17 @@ int LB_STDCALL lbKey::lessthan(const lb_I_KeyBase* _key) const {
 }
 
 char* lbKey::charrep() const {
-    char buf[100];
+	static char buf[100];
+	buf[0] = 0;
 
 #ifndef UNIX
-    itoa(key, buf, 10);
+	itoa(key, buf, 10);
 #endif
 #ifdef UNIX
-    sprintf(buf, "%d", key);
+	sprintf(buf, "%d", key);
 #endif
     
-    return buf;
+	return buf;
 }
 /*...e*/
 /*...slbKeyUL:0:*/
@@ -261,16 +265,17 @@ int LB_STDCALL lbKeyUL::lessthan(const lb_I_KeyBase* _key) const {
 }
 
 char* lbKeyUL::charrep() const {
-    char buf[100];
+	static char buf[100];
+	buf[0] = 0;
 
 #ifndef UNIX
-    itoa(key, buf, 10);
+	itoa(key, buf, 10);
 #endif
 #ifdef UNIX
-    sprintf(buf, "%d", key);
+	sprintf(buf, "%d", key);
 #endif
     
-    return buf;
+	return buf;
 }
 /*...e*/
 
