@@ -81,7 +81,7 @@ Post setup:
 	set WXWIN=D:\lbDMF\Develop\wxwin\wx
 	D:
 	cd %WXWIN%\src\msw
-	copy %WXWIN%\include\wx\msw\setup.h %WXWIN%\include
+	copy %WXWIN%\include\wx\msw\setup.h %WXWIN%\include\wx
 	wmake -f makefile.wat all
 
 	This should start compiling the wxWidgets code.
