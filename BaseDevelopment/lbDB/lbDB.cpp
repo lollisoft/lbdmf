@@ -1962,7 +1962,9 @@ lbErrCodes LB_STDCALL lbDatabase::connect(char* DSN, char* user, char* passwd) {
 lb_I_Query* LB_STDCALL lbDatabase::getQuery(int readonly) {
 	lbQuery* query = new lbQuery;
 
-	if (query->init(henv, hdbc, readonly) != ERR_NONE) return NULL;
+	if (query->init(henv, hdbc, readonly) != ERR_NONE) {
+		//return NULL;
+	}
 
 	query->setModuleManager(*&manager, __FILE__, __LINE__);
 	lb_I_Query* q;
