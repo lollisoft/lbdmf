@@ -1,11 +1,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.3 $
+ * $Revision: 1.4 $
  * $Name:  $
- * $Id: lbErrcodes.h,v 1.3 2000/10/05 23:07:20 lothar Exp $
+ * $Id: lbErrcodes.h,v 1.4 2000/10/21 10:41:20 lothar Exp $
  *
  * $Log: lbErrcodes.h,v $
+ * Revision 1.4  2000/10/21 10:41:20  lothar
+ * Added errcodes for lbDOMConfig results
+ *
  * Revision 1.3  2000/10/05 23:07:20  lothar
  * Much changes
  *
@@ -28,6 +31,8 @@ enum lbErrCodes {
 	ERR_NONE = 0,
 	ERR_NOT_IMPLEMENTED,
 	ERR_NO_OBJECT,
+	ERR_MORE_OBJECTS,
+	ERR_SINGLE_OBJECT,
 	ERR_NO_INTERFACE,
 	
 /* Errcodes for dispatcher */
