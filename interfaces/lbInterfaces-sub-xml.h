@@ -106,6 +106,7 @@ public:
 	 */
 	virtual lbErrCodes LB_STDCALL getAttribute(const char* name, lb_I_Attribute*& attr) = 0;
 	virtual lbErrCodes LB_STDCALL getAttributeValue(const char* name, char*& attr) = 0;
+//	virtual lbErrCodes getDefaultImpl(char* interfacename, lb_I_ConfigObject* node, char*& implTor, char*& module) = 0;
 	virtual char*      LB_STDCALL getName() = 0;
 
 	friend class lb_I_XMLConfig;
