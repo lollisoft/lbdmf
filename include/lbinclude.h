@@ -17,7 +17,6 @@
 /*...e*/
 
 
-
 #include <windows.h>
 
 // Global definitions like GUITypes and so on
@@ -76,6 +75,8 @@
 #ifdef LB_TRANSFER_DLL_INC
 #include <transfer.h>
 #include <socket.h>
+// Defines general interfaces
+#include <lbInterfaces.h>
 #endif
 
 #ifdef LB_CLASSES_DLL_INC
@@ -89,6 +90,7 @@
 #include <lbObject.h>
 #include <appcs.h>
 #include <transfer.h>
+#include <lbInterfaces.h>
 #include <appbus.h>
 #endif
 #endif

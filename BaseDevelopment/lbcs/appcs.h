@@ -40,186 +40,54 @@ public:
 };
 /*...e*/
 
+/**
+ * Interface fÅr ein Objekt, das das Ziel eines Requests
+ * darstellt. Mit diesem Interface kann man an das Objekt
+ * Anfragen stellen.
+ */
+class lb_I_Requestable; 
+
 class lbAppServer;
 
-#ifdef bla
-/*...sObject thunking implementation:0:*/
-/**
- * Object thunking implementation
- */
 
-
-/*...sDocu:0:*/
-// Declarations added here will be included at the top of the .HPP file
-
-///////////////////////////////////////////////////////////////////////////////
-//
-//   1999 Herbert Menke
-//  This software is provided 'as-is', without any express or implied
-//  warranty.  In no event will the author be held liable for any damages
-//  arising from the use of this software.
-//
-//  Permission is granted to anyone to use this software for any purpose,
-//  including commercial applications, and to alter it and redistribute it
-//  freely
-//
-//     If you find any bugs in this software or 
-//     you have any suggestions for extension, 
-//     please send a mail to me:
-//
-//     Herbert Menke
-//     Goetheallee 21
-//     D 53225 Bonn
-//     E-Mail: h.menke@gmx.de
-//
-///////////////////////////////////////////////////////////////////////////////
-//
-//  Version  Date        Remarks
-//   1.00    05.11.1998  Initial Version created
-//   1.01    10.03.1999  Minor bugs fixed
-//                       thunk code optimized
-//                       Interface changed
-//   1.02    04.04.1999  thunk for rtl callback added
-///////////////////////////////////////////////////////////////////////////////
-// Object Thunking
-//
-// Using a class member function as a callback function is not trivial, 
-// since a class member function must be passed as an implicit pointer 
-// to the object it is associated with. 
-// Object thunking is a method to associate a callback with an object. 
-// Borland's OWL uses this scheme to use the window callback procedure 
-// as a member callback function
-//
-// Object Thunking creates a thunk( a dynamically piece of code) that adds 
-// the this pointer on the stack and jumps to the member function.
-//
-// The following code is used for the stdcall thunk:
-//
-//  push eax                  ; increase stack
-//  mov  eax, thisPointer     ; load thispointer
-//  xchg eax, 4[esp]          ; exchange thispointer and return address
-//  xchg [esp], eax           ; save return address
-//  push callBackPointer      ; push callbackpointer
-//  ret                       ; jmp with ret to member callback
-//
-// The following code is used for the rtl thunk:
-//
-//  push ecx                  ; ecx must be saved
-//  push edx                  ; push second parameter
-//  push eax                  ; push first parameter
-//  push thispointer          ; push thispointer
-//  mov  eax,callback         ; load address of member callback
-//  call eax                  ; and call method
-//  pop ecx                   ; restore ecx
-//  ret                       ; and back
-
-// The class WObjectThunk provides the object thunking method for the 
-// Power++ component library.
-//
-// For more info read "Object Thunking.Rtf"
-/*...e*/
-
-
-
-/////////////////////////////////////////////////////////////////////////
-// Typedef for rtl callback functions qsort, bsearch, lsearch and lfind
-typedef int (* WRtlCallBack )(const void *, const void *);
-
-///////////////////////////////////////////////////////////////
-// Type for member callback functions
-typedef void * __stdcall (lbAppServer::*WMemberCallBack)( void *);
-
-
-
-
-///////////////////////////////////////////////////////////////
-// Helper macro
-#define WMemberCallBackCast( __cls, __mcb )              \
-        static_cast< void * (lbAppServer::*)( void * ) >(    \
-        reinterpret_cast< void * (__cls::*)( void * ) >( \
-        &__cls::__mcb ) )
-
-
-#if !defined( __WObjectThunk_declspec )
-#define __WObjectThunk_declspec
-#endif
-
-class __WObjectThunk_declspec WObjectThunk
-{
-
-    public:
-        // add your public instance data here
-    private:
-        // add your private instance data here
-    protected:
-        // add your protected instance data here
-
-    public:
-        WObjectThunk();
-
-    public:
-/*...sDocu:8:*/
-        //
-        // Create method
-        //
-
-        // creates the thunk and returns it as a void * pointer, that should 
-        // be used as the callback parameter for Windows Enumeration- and 
-        // Callback functions.
-
-        // object	                is the object to which the callback applies. 
-        //                        This is almost always the class that receives 
-        //                        the callback; therefore, the argument is commonly this.
-        // callbackMemberFunction is the pointer to the class member callback function. 
-        //                        Use the WMemberCallBackCast macro to generate a callback 
-        //                        pointer to function. 
-        //                        The use is according to the WEventHandlerCast macro.
-        // createRtlCallback      if true a thunk for the watcom runtime library callback
-        //                        function is created. Only for use with qsort, bsearch,
-        //                        lsearch and lfind
-/*...e*/
-
-        static void * Create(lbObject * object, WMemberCallBack callbackMemberFunction, BOOL createRtlCallback = FALSE );
-
-    public:
-/*...sDocu:8:*/
-        //
-        // Destroy method
-        //
-
-        // destroys the thunk and frees the memory used for the thunk.
-
-        // thunkCode	is the pointer to the thunk, that was returned by the Create method.
-        //
-        // The return value is true, if the thunk was destroyed.
-/*...e*/
-
-        static BOOL Destroy( void * thunkCode );
-
+/*...sclass lbDispatchProto:0:*/
+class lbDispatchProto : public lbObject {
+public:
+	lbDispatchProto(const char* service, lbProtocolCallback fn);
+	virtual ~lbDispatchProto();
+	
+	/**
+	 * Abstract functions
+	 */
+	void setType();
+	lbObject* clone() const;
+	
+	lbProtocolCallback getProto();
+	
+	lbProtocolCallback dispProto;
 };
 /*...e*/
-#endif
-
-/**
- * This is a base class for all servers
- */
-///////////////////////////////////////////////////////////////
-// Type for lb member callback functions
-typedef lbErrCodes (lbAppServer::*lbMemberEvent)( lb_Transfer_Data, lb_Transfer_Data&);
 
 /*...sclass DLLEXPORT lbAppServer:0:*/
-class DLLEXPORT lbAppServer {
+class DLLEXPORT lbAppServer : 
+/*...sDerives from:24:*/
+			public lb_I_ProtocolManager,    // Implemented here
+			public lb_I_ProtocolDispatcher, // Implemented here
+			public lb_I_ProtocolTarget      // Implemented in derived class, not here
+/*...e*/
+			 {
 public:
 	lbAppServer();
 	virtual ~lbAppServer();
-
+/*...sint isConnected\40\lb_Transfer_Data \38\request\41\\59\:8:*/
 	/**
 	 * Checks, if the parameters (hostname, pid and tid) are available.
 	 * Then it checks, if tid is as key available in connections container.
-	 * If all succeeds, 1 is returned.
+	 * If all succeeds, 1 is returned and the request would be done.
 	 */
 	int isConnected(lb_Transfer_Data &request);
-
+/*...e*/
+protected:
 /*...sFunctions needed to encapsulate the transfer class:8:*/
 	/**
 	 * Functions needed to encapsulate the transfer class
@@ -231,23 +99,18 @@ public:
 	                  
 	lbErrCodes answerRequest(lbTransfer* _clt, lb_Transfer_Data result);
 /*...e*/
-
+public:
 	int run(); // called from main or thread
 
-	// Called from HandleRequest()
-#ifdef bla
-//Now handled by registered dispatch handlers
-/*...svirtual lbErrCodes _request\40\lb_Transfer_Data request\44\ lb_Transfer_Data \38\result\41\ \61\ 0\59\:8:*/
 	/**
-	 * _service is called by HandleRequest.
+	 * Called from run() and gives a lbTransfer instance.
+	 * This is no longer abstract, because this 'baseclass'
+	 * does all the server stuff for now.
+	 * A derived server must only make visible its handles
+	 * to this base class.
 	 */
-	virtual lbErrCodes _request(lb_Transfer_Data request, 
-	                     lb_Transfer_Data &result) = 0;
-/*...e*/
-#endif
-	
-	// Called from run() and gives a lbTransfer instance
-/*...svirtual lbErrCodes _connected\40\lbTransfer _clt\41\ \61\ 0\59\:8:*/
+	 
+/*...slbErrCodes _connected\40\lbTransfer _clt\41\\59\:8:*/
 	/**
 	 * Implement this for your connected state. It is called per request.
 	 * I mean, that a socket connection has been opened and the
@@ -264,13 +127,14 @@ public:
 	 * some dispatching stuff to divide your service. I will be able to
 	 * add some overhead to the request packets like encryption or so.
 	 */
-	virtual lbErrCodes _connected(lbTransfer* _clt) = 0; 
+	lbErrCodes _connected(lbTransfer* _clt); 
 /*...e*/
 
-/*...sDispatch handling:8:*/
-	virtual lbErrCodes _registerServices() = 0;
-	lbErrCodes addServiceHandler(const char* handlername, 
-	                             lbMemberEvent cbFn);
+protected:
+/*...sImplement interfaces dispatch\44\ add and del protocol handler:8:*/
+	lbErrCodes dispatch(lb_Transfer_Data request, lb_Transfer_Data & result);
+	lbErrCodes addProtocolHandler(const char* handlername, lbProtocolCallback cbFn);
+	lbErrCodes delProtocolHandler(const char* handlername);
 /*...e*/
 	
 /*...svirtual char\42\ getServiceName\40\\41\ \61\ 0\59\:8:*/
@@ -285,12 +149,7 @@ protected:
 	/**
 	 * User management
 	 */
-	int addToUserList(lb_Transfer_Data request);
-	int removeFromUserList(lb_Transfer_Data request);
-	int AuthUser(char* user, char* passwd);
-
 	lbErrCodes makeProtoErrAnswer(lb_Transfer_Data &result, char* msg, char* where);
-
 /*...sSecure dataextractors:8:*/
 	lbErrCodes requestString(lb_Transfer_Data& request, 
 	                         char* ident, 
@@ -307,7 +166,6 @@ protected:
 				 char* ident,
 				 unsigned long& data);
 /*...e*/
-
 /*...sProtohandler:8:*/
 	// Connection is handled by 
 	// User wishes to disconnect. This must be a request, because server
@@ -323,26 +181,22 @@ protected:
 
 
 /*...e*/
-	
 	int initTransfer(char* host_servicename);
 
-	lbErrCodes dispatch(lb_Transfer_Data request, lb_Transfer_Data & result);
-
+/*...svars:8:*/
 	lbTransfer *transfer;	
 	lbComponentDictionary *connections;	
 	
-	// This table stores the functions to be dispatched to
+	// Dispatch table for registered protocol handlers
 	lbComponentDictionary *dispatchTable;
+/*...e*/
 };
 /*...e*/
-
-//typedef lbErrCodes (__export T_p_DispatchHandler)(lb_Transfer_Data request, lb_Transfer_Data& result);
-
 
 /*...sclass lbDispatchFn:0:*/
 class lbDispatchFn : public lbObject {
 public:
-	lbDispatchFn(const char* service, lbMemberEvent fn);
+	lbDispatchFn(const char* service, lbMemberCallback fn);
 	virtual ~lbDispatchFn();
 	
 	/**
@@ -351,9 +205,9 @@ public:
 	void setType();
 	lbObject* clone() const;
 	
-	lbMemberEvent getFn();
+	lbMemberCallback getFn();
 	
-	lbMemberEvent dispFn;
+	lbMemberCallback dispFn;
 };
 /*...e*/
 
@@ -364,7 +218,13 @@ public:
  * dismiss() instead.
  */
 /*...sclass DLLEXPORT lbAppClient:0:*/
-class DLLEXPORT lbAppClient : public lbObject {
+class DLLEXPORT lbAppClient : public 
+			lbObject, 
+			lb_I_Requestable,
+			lb_I_CallbackManager,
+			lb_I_CallbackDispatcher,
+			lb_I_CallbackTarget		
+			{
 private:
 	lbAppClient();
         lbAppClient(lbTransfer* clConn);
@@ -376,9 +236,21 @@ private:
          */
         void* operator new(size_t size);
         void operator delete(void* ptr);
+        
 public:
 
         lbObject* requestObject(const char* type, const char* name);
+
+/*...sImplement the interfaces:8:*/
+	lbErrCodes getLastError(char* description, int len);
+	lbErrCodes initialize();
+	lbErrCodes request(const char* request, lb_Transfer_Data& result);
+	lbErrCodes release();
+	lbErrCodes addCallbackHandler(const char* handlername, lbMemberCallback callbackFn);
+	lbErrCodes delCallbackHandler(const char* handlername);
+	lbErrCodes dispatch(const char* request, lb_Transfer_Data& result);
+/*...e*/
+
 
 	/**
 	 * Use this function to indicate, that this instance is no longer
@@ -390,7 +262,7 @@ public:
 	friend class lbAppBusClient;
 	
 protected:
-	
+
 	/**
 	 * lbAppClient's can not instantiated directly. lbAppBusClient does
 	 * this. Also it sets its instance pointer here.
@@ -400,6 +272,9 @@ protected:
 	lbAppBusClient* AppBusClient;
 	
 	lbTransfer* clientConnection;
+
+	// Dispatch table for registered member callbacks
+	lbComponentDictionary *dispatchTable;
 };
 /*...e*/
 

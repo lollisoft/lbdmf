@@ -1,11 +1,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.1 $
+ * $Revision: 1.2 $
  * $Name:  $
- * $Id: lbErrcodes.h,v 1.1 2000/07/06 06:14:24 lolli Exp $
+ * $Id: lbErrcodes.h,v 1.2 2000/08/01 05:55:08 lolli Exp $
  *
  * $Log: lbErrcodes.h,v $
+ * Revision 1.2  2000/08/01 05:55:08  lolli
+ * Currently runs with new interface
+ *
  * Revision 1.1  2000/07/06 06:14:24  lolli
  * Initial
  *
@@ -32,6 +35,7 @@ enum lbErrCodes {
 	ERR_CONTAINER_INSERT,
 	ERR_CONTAINER_REMOVE,
 
+	ERR_APP_SERVER_DISPATCH,	// Unknown protocol header
 	ERR_APP_SERVER_HANDLECONNECT,
 	ERR_APP_SERVER_HANDLEDISCONNECT,
 	ERR_APP_SERVER_REQUEST_CHAR,
@@ -39,6 +43,8 @@ enum lbErrCodes {
 	ERR_APP_SERVER_WAIT_REQUEST,
 	ERR_APP_SERVER_SEND_REQUEST,
 	ERR_APP_SERVER_ADDHANDLER,
+	
+	ERR_APP_CLIENT_ADDHANDLER,
 
 	ERR_APPBUS_SERVER_ANOUNCECLIENT,
 

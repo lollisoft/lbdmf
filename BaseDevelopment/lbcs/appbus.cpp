@@ -160,6 +160,10 @@ lbAppClient* lbAppBusClient::getClientInstance(char* scope) {
 }
 /*...e*/
 
+lbErrCodes lbAppBusClient::registerCallbacks() {
+	return ERR_NONE;
+}
+
 /**
  * Make the client known by the busmaster
  */
@@ -517,6 +521,7 @@ char* lbAppBusServer::getServiceName() {
 }
 /*...e*/
 
+#ifdef bla
 /*...slbAppBusServer\58\\58\_request\40\lb_Transfer_Data request\44\ lb_Transfer_Data \38\ result\41\:0:*/
 lbErrCodes lbAppBusServer::_request(lb_Transfer_Data request, lb_Transfer_Data & result) {
 	lbErrCodes rc = ERR_NONE;
@@ -591,6 +596,7 @@ LOG("lbAppBusServer::_request(): Handle a request");
 }
 /*...e*/
 /*...slbAppBusServer\58\\58\_connected\40\lbTransfer\42\ _clt\41\:0:*/
+#ifdef bla
 lbErrCodes lbAppBusServer::_connected(lbTransfer* _clt) {
 
 	/**
@@ -617,7 +623,7 @@ lbErrCodes lbAppBusServer::_connected(lbTransfer* _clt) {
 	  if ((rcin = waitForRequest(_clt, request)) != ERR_NONE) {
 	    LOG("waitForRequest(_clt, request) failed");
 	  } else {
-            if ((rc_handler = handleRequest(request, result)) != ERR_NONE) {
+            if ((rc_handler = dispatch(request, result)) != ERR_NONE) {
 			LOG("handleRequest(request, result) failed");
 		}
 /*...sAPPBUS_SVR_VERBOSE:8:*/
@@ -652,13 +658,21 @@ LOG("lbAppBusServer::_connected(lbTransfer* _clt) Answer sent");
 
 	return rc;
 }
+#endif
 /*...e*/
-/*...slbAppBusServer\58\\58\_registerServices\40\\41\:0:*/
-lbErrCodes lbAppBusServer::_registerServices() {
+#endif
+
+lbErrCodes lbAppBusServer::getLastError(char* description, int len) {
+	strncpy(description, "", len);
+
+	return ERR_NONE;
+}
+/*...slbAppBusServer\58\\58\registerProtocols\40\\41\:0:*/
+lbErrCodes lbAppBusServer::registerProtocols() {
 
 
-        addServiceHandler("Echo", 
-                          (lbMemberEvent) lbAppBusServer::HandleEcho);
+        addProtocolHandler("Echo", 
+                          (lbProtocolCallback) lbAppBusServer::HandleEcho);
         
         
 	return ERR_NONE;
@@ -666,6 +680,7 @@ lbErrCodes lbAppBusServer::_registerServices() {
 /*...e*/
 
 
+// Implemented 
 /*...slbAppBusServer\58\\58\HandleEcho\40\\46\\46\\46\\41\:0:*/
 lbErrCodes lbAppBusServer::HandleEcho(lb_Transfer_Data request,
           			      lb_Transfer_Data & result) {

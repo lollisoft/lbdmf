@@ -3,184 +3,7 @@
 #include <string.h>
 #include <conio.h>
 #include <lbInclude.h>
-
-#ifdef bla
-/*...sObject thunking implementation:0:*/
-struct WCallBackInfo
-{
-  WMemberCallBack memberCallBack;
-  lbObject       * object;
-};
-    
-DWORD GetCallBackPointer
-(
-  const WCallBackInfo * info
-);
-
-#pragma aux  GetCallBackPointer   = \
-  " call dword ptr[ eax ]         " \
-  parm [eax];
-
-DWORD GetThisPointer
-(
-  const WCallBackInfo * info
-);
-
-#pragma aux  GetThisPointer    = \
-  " mov eax, 0xc[edx]          " \ 
-  " add eax, 0x4[edx]          " \
-  parm [edx] ;
-
-
-#define POP_EAX   BYTE( 0x58 )
-#define PUSH_EAX  BYTE( 0x50 )
-#define PUSH_ECX  BYTE( 0x51 )
-#define PUSH_EDX  BYTE( 0x52 )
-#define PUSH_32   BYTE( 0x68 )
-#define JMP_EAX1  BYTE( 0xff )
-#define JMP_EAX2  BYTE( 0xe0 )
-#define JMP_32    BYTE( 0xe9 )
-#define MOV_EDX   BYTE( 0xba )
-#define MOV_EAX   BYTE( 0xb8 )
-#define JMP_EAX   USHORT( 0xe0ff )
-
-
-/////////////////////////////////////////////////////////////////////////
-#pragma pack( push, 1 )
-
-struct WThunkCode
-{
-  BYTE   code1[2];
-  DWORD  thisPointer;
-  BYTE   code2[8];
-  DWORD  callBackPointer;
-  BYTE   code3[2];
-};
-
-
-struct WRtlThunkCode
-{
-  BYTE   code1[4];
-  DWORD  thisPointer;
-  BYTE   code2[1];
-  DWORD  callBackPointer;
-  BYTE   code3[4];
-};
-
-#pragma pack ( pop )
-
-
-static const BYTE m_codePattern[ sizeof(WThunkCode) ] =
-{
-  0x50,                          //  0 push eax
-  0xb8, 0x00, 0x00, 0x00, 0x00,  //  1 mov  eax, thisPointer
-  0x87, 0x44, 0x24, 0x04,        //  6 xchg eax, 4[esp]
-  0x87, 0x04, 0x24,              // 10 xchg [esp], eax
-  0x68, 0x00, 0x00, 0x00, 0x00,  // 13 push callBackPointer
-  0xc3,                          // 18 ret
-  0x90,                          // 19 nop
-};
-
-static const BYTE m_codeRtlPattern[ sizeof(WRtlThunkCode) ] =
-{
-  0x51,             //  0 push ecx
-  0x52,             //  1 push edx
-  0x50,             //  2 push eax
-  0x68, 0, 0, 0, 0, //  3 push thispointer
-  0xb8, 0, 0, 0, 0, //  8 mov  eax,callback
-  0xff, 0xD0,       // 13 call eax
-  0x59,             // 15 pop ecx
-  0xc3,             // 16 ret
-};
-
-
-
-//  Include definitions for resources.
-
-
-WObjectThunk::WObjectThunk()
-{
-
-}
-
-void * WObjectThunk::Create(lbObject * object, WMemberCallBack callbackMemberFunction, BOOL createRtlCallback )
-{
-//  WTraceFunction();
-  //////////////////////////////////////////////////
-
-  if( object )
-  {
-    WCallBackInfo info;
-
-    info.memberCallBack   = callbackMemberFunction;
-    info.object           = object;
-
-    if( createRtlCallback )
-    {
-      WRtlThunkCode * code   = new WRtlThunkCode;
-
-      if( code )
-      {
-        ///////////////////////////////////////
-        // fill the thunk code piece 
-
-        memcpy( code, m_codeRtlPattern, sizeof( WRtlThunkCode ) );
-        code->thisPointer     = GetThisPointer( &info );
-        code->callBackPointer = GetCallBackPointer( &info );
-      }  
-      return code;
-    }
-    else
-    {
-      WThunkCode * code   = new WThunkCode;
-
-      if( code )
-      {
-        ///////////////////////////////////////
-        // fill the thunk code piece 
-
-        memcpy( code, m_codePattern, sizeof( WThunkCode ) );
-        code->thisPointer     = GetThisPointer( &info );
-        code->callBackPointer = GetCallBackPointer( &info );
-
-      }
-      return code;
-    }  
-  }
-  return NULL;
-}
-
-BOOL WObjectThunk::Destroy( void * thunkCode )
-{
-//  WTraceFunction();
-  //////////////////////////////////////////////////
-
-  if( thunkCode )
-  {
-    if( *(BYTE *)thunkCode == PUSH_ECX )
-    {
-      WRtlThunkCode * code = (WRtlThunkCode *)thunkCode;
-
-      delete code;
-      return TRUE;
-    }
-
-    else if ( *(BYTE *)thunkCode == PUSH_EAX )
-    {
-      WThunkCode * code = (WThunkCode *)thunkCode;
-
-      delete code;
-      return TRUE;
-    }
-    else 
-      LOG("Unknown ThunkCode");
-      //WAssertEx( false, "Unknown ThunkCode" );
-  }
-  return FALSE;
-}
-
-/*...e*/
-#endif
+//#include <lbInterfaces.h>
 
 /*...slbAppServerThread:0:*/
 class lbAppServerThread : public lbThread {
@@ -243,8 +66,8 @@ lbAppServerThread::~lbAppServerThread() {
 
 /*...e*/
 
-/*...slbDispatchFn \40\Container for a registered handler\41\:0:*/
-lbDispatchFn::lbDispatchFn(const char* service, lbMemberEvent fn) {
+/*...slbDispatchFn \40\Container for a registered function handler\41\:0:*/
+lbDispatchFn::lbDispatchFn(const char* service, lbMemberCallback fn) {
 	dispFn = fn;
 }
 
@@ -252,7 +75,7 @@ lbDispatchFn::~lbDispatchFn() {
 }
 
 void lbDispatchFn::setType() {
-	OTyp = LB_APPSERVER_DISPATCH_FN;
+	OTyp = LB_APPCLIENT_DISPATCH_FN;
 }
 
 lbObject* lbDispatchFn::clone() const {
@@ -260,8 +83,30 @@ lbObject* lbDispatchFn::clone() const {
 	return clone;
 }
 	
-lbMemberEvent lbDispatchFn::getFn() {
+lbMemberCallback lbDispatchFn::getFn() {
 	return dispFn;
+}
+/*...e*/
+
+/*...slbDispatchProto \40\Container for a registered protocol handler\41\:0:*/
+lbDispatchProto::lbDispatchProto(const char* service, lbProtocolCallback fn) {
+	dispProto = fn;
+}
+
+lbDispatchProto::~lbDispatchProto() {
+}
+
+void lbDispatchProto::setType() {
+	OTyp = LB_APPSERVER_DISPATCH_PROTO;
+}
+
+lbObject* lbDispatchProto::clone() const {
+	lbDispatchProto *clone = new lbDispatchProto("", dispProto);
+	return clone;
+}
+	
+lbProtocolCallback lbDispatchProto::getProto() {
+	return dispProto;
 }
 /*...e*/
 
@@ -323,7 +168,7 @@ int lbAppServer::initTransfer(char* host_servicename) {
 	/**
 	 * Register all servives, the derived class may have implemented
 	 */
-        lbErrCodes err = _registerServices();
+        lbErrCodes err = registerProtocols();
 	
 	return 1;
 }
@@ -502,6 +347,71 @@ int lbAppServer::run() {
 	}
 }
 /*...e*/
+/*...slbAppServer\58\\58\_connected\40\lbTransfer\42\ _clt\41\:0:*/
+lbErrCodes lbAppServer::_connected(lbTransfer* _clt) {
+
+	/**
+	 * Loop only exit if not ERR_NONE. This can occur
+	 * if any communication error has arrived.
+	 */
+
+	lbErrCodes rc = ERR_NONE;	 
+	lbErrCodes rcin = ERR_NONE;
+	lbErrCodes rcout = ERR_NONE;
+	lbErrCodes rc_handler = ERR_NONE; 
+	
+	// This objects must be clean for each request!
+
+	lb_Transfer_Data request(1);
+	lb_Transfer_Data result(1);	
+	
+/*...sHandle connection:8:*/
+
+	do {
+	  request.deleteAll();
+	  result.deleteAll();
+	
+	  if ((rcin = waitForRequest(_clt, request)) != ERR_NONE) {
+	    LOG("waitForRequest(_clt, request) failed");
+	  } else {
+            if ((rc_handler = dispatch(request, result)) != ERR_NONE) {
+			LOG("handleRequest(request, result) failed");
+		}
+/*...sAPPBUS_SVR_VERBOSE:8:*/
+#ifdef APPBUS_SVR_VERBOSE
+LOG("lbAppBusServer::_connected(lbTransfer* _clt) Request handled, send answer");
+#endif
+/*...e*/
+		if ((rcout = answerRequest(_clt, result)) != ERR_NONE) {
+			LOG("answerRequest(_clt, result) failed");
+		}
+/*...sAPPBUS_SVR_VERBOSE:8:*/
+#ifdef APPBUS_SVR_VERBOSE
+LOG("lbAppBusServer::_connected(lbTransfer* _clt) Answer sent");
+#endif
+/*...e*/
+	}
+
+	/**
+	 * Request is set correctly, because loop is entered at least once.
+	 * So it is possible to handle a disconnect request here.
+	 */
+	} while ((isConnected(request) == 1) // Must disconnect before closing transfer 
+		&& (rcin == ERR_NONE) // Recieving failed
+		&& (rcout == ERR_NONE)); // Sendback failed
+
+	LOG("Handle connection tests case of ending loop...");
+	if (rcin != ERR_NONE)  LOG("Thread will be ended because recieving data has failed");
+	if (rcout != ERR_NONE) LOG("Thread will be ended because sending data has failed");
+	if (rc_handler != ERR_NONE) LOG("Handling request failed");
+	LOG("Tested");
+/*...e*/
+
+	return rc;
+}
+/*...e*/
+
+
 
 // Request handler
 /*...slbAppServer\58\\58\waitForRequest\40\lbTransfer\42\ _clt\44\ lb_Transfer_Data \38\ request\41\:0:*/
@@ -524,9 +434,9 @@ lbErrCodes lbAppServer::waitForRequest(lbTransfer* _clt, lb_Transfer_Data & requ
 	return ERR_NONE;
 }
 /*...e*/
-/*...slbAppServer\58\\58\handleRequest\40\\46\\46\\46\\41\:0:*/
-lbErrCodes lbAppServer::handleRequest(lb_Transfer_Data request, 
-                               lb_Transfer_Data & result)
+/*...slbAppServer\58\\58\dispatch\40\\46\\46\\46\\41\:0:*/
+lbErrCodes lbAppServer::dispatch(lb_Transfer_Data request, 
+                                 lb_Transfer_Data & result)
 {// Dispatching were possible here with servertype...
 
 lbErrCodes rc = ERR_NONE;
@@ -550,12 +460,13 @@ lbErrCodes rc = ERR_NONE;
 		} else {
 
 			// Block here for dynamic dispatch handling		
-			lbDispatchFn* fn = (lbDispatchFn*) dispatchTable->getElement(lbStringKey(buffer));
+			lbDispatchProto* proto = (lbDispatchProto*) dispatchTable->getElement(lbStringKey(buffer));
 		
-			if (fn != NULL) {
-				rc = (this->*((lbMemberEvent) (fn->getFn()))) (request, result);
+			if (proto != NULL) {
+				rc = (this->*((lbProtocolCallback) (proto->getProto()))) (request, result);
 			} else {
-				LOG("Can not dispatch this request");
+				LOG("Can not dispatch unknown request");
+				rc = ERR_APP_SERVER_DISPATCH;
 			}
 			
 		}
@@ -585,13 +496,13 @@ lbErrCodes lbAppServer::answerRequest(lbTransfer* _clt, lb_Transfer_Data result)
 
 // Handler management
 
-/*...slbAppServer\58\\58\addServiceHandler\40\\46\\46\\46\\41\:0:*/
-lbErrCodes lbAppServer::addServiceHandler(const char* handlername, 
-                                          lbMemberEvent cbFn) {
+/*...slbAppServer\58\\58\addProtocolHandler\40\\46\\46\\46\\41\:0:*/
+lbErrCodes lbAppServer::addProtocolHandler(const char* handlername, 
+                                          lbProtocolCallback cbFn) {
 	lbErrCodes err = ERR_NONE;
 
 	if (dispatchTable->exists(lbStringKey(handlername)) == 0) {
-		if ((err = dispatchTable->insert(lbDispatchFn(handlername, cbFn), 
+		if ((err = dispatchTable->insert(lbDispatchProto(handlername, cbFn), 
 		                      lbStringKey(handlername))) != ERR_NONE) {
 			LOG("Could not add handler");
 			err = ERR_APP_SERVER_ADDHANDLER;
@@ -603,6 +514,23 @@ lbErrCodes lbAppServer::addServiceHandler(const char* handlername,
 	return err;
 }
 /*...e*/
+/*...slbAppServer\58\\58\delProtocolHandler\40\\46\\46\\46\\41\:0:*/
+lbErrCodes lbAppServer::delProtocolHandler(const char* handlername) {
+	lbErrCodes err = ERR_NONE;
+
+	if (dispatchTable->exists(lbStringKey(handlername)) == 1) {
+		if ((err = dispatchTable->remove(lbStringKey(handlername))) != ERR_NONE) {
+			LOG("Could not remove handler");
+			err = ERR_APP_SERVER_ADDHANDLER;
+		}
+	} else {
+		LOG("Service not registered");
+		err = ERR_APP_SERVER_ADDHANDLER;
+	}
+	return err;
+}
+/*...e*/
+
 
 // Proto handler
 /*...slbAppServer\58\\58\HandleConnect\40\\46\\46\\46\\41\:0:*/
@@ -796,27 +724,8 @@ lbObject* lbAppClient::requestObject(const char* type, const char* name) {
 	 * Setup request.
 	 */
 	
-	lb_Transfer_Data request;
-	lb_Transfer_Data result;
-	 
-	request.add("requestObject");
-	request.add("type");
-	request.add(type);
-	request.add("name");
-	request.add(name);	 
-	
-	*clientConnection << request;
-	*clientConnection >> result;
-	
-	lbString object;
-	object.setData("Test");
-/*...sAPPCS_VERBOSE:0:*/
-#ifdef APPCS_VERBOSE
-LOG("lbAppClient::requestObject(...) Creates currently only an lbString");
-#endif
-/*...e*/
 
-	return object.clone();
+	return NULL; //object.clone();
 }
 /*...e*/
 /*...slbAppClient\58\\58\delete\40\void\42\ ptr\41\:0:*/
@@ -833,6 +742,51 @@ void* lbAppClient::operator new(size_t size) {
 	return NULL;
 }
 /*...e*/
+
+// Handler management
+
+/*...slbAppClient\58\\58\addCallbackHandler\40\\46\\46\\46\\41\:0:*/
+lbErrCodes lbAppClient::addCallbackHandler(const char* handlername, 
+                                          lbMemberCallback cbFn) {
+	lbErrCodes err = ERR_NONE;
+
+	if (dispatchTable->exists(lbStringKey(handlername)) == 0) {
+		if ((err = dispatchTable->insert(lbDispatchFn(handlername, cbFn), 
+		                      lbStringKey(handlername))) != ERR_NONE) {
+			LOG("Could not add handler");
+			err = ERR_APP_CLIENT_ADDHANDLER;
+		}
+	} else {
+		LOG("Request previously added");
+		err = ERR_APP_CLIENT_ADDHANDLER;
+	}
+	return err;
+}
+/*...e*/
+
+lbErrCodes lbAppClient::dispatch(const char* request, lb_Transfer_Data& result) {
+	return ERR_NONE;
+}
+
+lbErrCodes lbAppClient::getLastError(char* description, int len) {
+	return ERR_NONE;
+}
+
+lbErrCodes lbAppClient::delCallbackHandler(const char* handlername) {
+	return ERR_NONE;
+}
+
+lbErrCodes lbAppClient::initialize() {
+	return ERR_NONE;
+}
+
+lbErrCodes lbAppClient::request(const char* request, lb_Transfer_Data& result) {
+	return ERR_NONE;
+}
+
+lbErrCodes lbAppClient::release() {
+	return ERR_NONE;
+}
 
 void lbAppClient::setAppBusClient(lbAppBusClient* _AppBusClient) {
 	AppBusClient = _AppBusClient;

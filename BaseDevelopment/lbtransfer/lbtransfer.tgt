@@ -69,8 +69,8 @@ n????Include directories:
 1
 17
 WString
-129
-.;$(%watcom)\h;$(%watcom)\h\nt;$(%DEVROOT)\projects\cpp\include;$(%DEVROOT)\projects\dll\include;$(%DEVROOT)\projects\lib\include
+165
+.;$(%watcom)\h;$(%watcom)\h\nt;$(%DEVROOT)\projects\cpp\include;$(%DEVROOT)\projects\cpp\interfaces;$(%DEVROOT)\projects\dll\include;$(%DEVROOT)\projects\lib\include
 0
 18
 MCState

@@ -4,10 +4,13 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.4 $
+ * $Revision: 1.5 $
  * $Name:  $
- * $Id: lbobject.h,v 1.4 2000/07/06 06:10:12 lolli Exp $
+ * $Id: lbobject.h,v 1.5 2000/08/01 05:54:50 lolli Exp $
  * $Log: lbobject.h,v $
+ * Revision 1.5  2000/08/01 05:54:50  lolli
+ * Currently runs with new interface
+ *
  * Revision 1.4  2000/07/06 06:10:12  lolli
  * Added classtype for dispatcher function container object
  *
@@ -85,7 +88,8 @@ public:
 	                 LB_DATA_TRANSFER_OBJECT,
 	                 LB_CONNECTION,
 	                 LB_APPBUSCLIENT,
-	                 LB_APPSERVER_DISPATCH_FN,
+	                 LB_APPCLIENT_DISPATCH_FN,
+	                 LB_APPSERVER_DISPATCH_PROTO,
 	                 LB_EVENT };
 
 	ObjectTyp getType() const;

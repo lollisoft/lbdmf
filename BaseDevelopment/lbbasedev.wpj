@@ -4,8 +4,8 @@ projectIdent
 VpeMain
 1
 WRect
-590
-2600
+440
+2240
 8360
 7280
 2
@@ -65,8 +65,8 @@ WRect
 WFileName
 13
 lbcs\lbcs.tgt
-1
-8
+0
+6
 15
 VComponent
 16
@@ -83,4 +83,4 @@ WFileName
 lbtransfer\lbtransfer.tgt
 0
 7
-12
+15

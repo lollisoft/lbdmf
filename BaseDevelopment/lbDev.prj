@@ -3,6 +3,15 @@
 /*...v\46\\46\\47\include\47\lbGlobal\46\h:0:*/
 /*...v\46\\46\\47\include\47\lbErrcodes\46\h:0:*/
 
+
+
+/*...v\46\\46\\47\interfaces\47\lbInterfaces\46\h:0:*/
+/*...v\46\\46\\47\interfaces\47\lbUnknown\46\h:0:*/
+/*...v\46\\46\\47\interfaces\47\lbRequester\46\h:0:*/
+/*...v\46\\46\\47\interfaces\47\lbCallbackInterface\46\h:0:*/
+
+
+
 /*...slbCS:0:*/
 /*...vlbcs\47\appbus\46\h:0:*/
 /*...vlbcs\47\appbus\46\cpp:0:*/

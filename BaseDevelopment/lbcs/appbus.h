@@ -58,6 +58,8 @@ public:
 	virtual void setType();
 	virtual lbObject* clone() const;
 
+	lbErrCodes registerCallbacks();
+
 /*...sclient handling:8:*/
 	/**
 	 * The AppBusClient searches the server behind the scope. He is
@@ -105,26 +107,25 @@ protected:
 
 /*...slbAppBusServer:0:*/
 class lb_Transfer_Data;
-class DLLEXPORT lbAppBusServer : public lbAppBus,
-                                 public lbAppServer {
+class DLLEXPORT lbAppBusServer :
+				 public lbAppBus,
+                                 public lbAppServer 
+                                 {
 public:
 	lbAppBusServer();
 	virtual ~lbAppBusServer();
 
 	char* getServiceName();	
 
-	lbErrCodes _connected(lbTransfer* _clt);
+	lbErrCodes getLastError(char* description, int len);
 	
-	lbErrCodes _request(	lb_Transfer_Data request,
-			lb_Transfer_Data & result);
-			
 	/**
 	 * This function registers services implemented here.
 	 * So all requests must have a service prefix in its
 	 * lb_Transfer_Data container. If this is not happen,
 	 * the request can't dispatched anywhere !
 	 */
-	lbErrCodes _registerServices();
+	lbErrCodes registerProtocols();
 	
 			
 protected:
