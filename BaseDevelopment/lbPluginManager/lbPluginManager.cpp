@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.4 $
+ * $Revision: 1.5 $
  * $Name:  $
- * $Id: lbPluginManager.cpp,v 1.4 2004/06/09 06:59:59 lollisoft Exp $
+ * $Id: lbPluginManager.cpp,v 1.5 2004/06/16 22:12:31 lollisoft Exp $
  *
  * $Log: lbPluginManager.cpp,v $
+ * Revision 1.5  2004/06/16 22:12:31  lollisoft
+ * More code for plugin management
+ *
  * Revision 1.4  2004/06/09 06:59:59  lollisoft
  * Loading plugin module and insertin to internal PluginModules list implemented
  *
@@ -86,9 +89,7 @@ extern "C" {
 #include <lbPluginManager.h>
 /*...e*/
 
-
-
-
+/*...sclass lbPluginManager:0:*/
 class lbPluginManager : public lb_I_PluginManager {
 public:
 
@@ -107,24 +108,29 @@ private:
 	bool firstEnumerate;
 	
 	UAP(lb_I_Container, PluginModules, __FILE__, __LINE__)
+	UAP(lb_I_Container, PluginContainer, __FILE__, __LINE__)
+	
+	bool firstPlugin;
+	bool lastPlugin;
 };
-
-
-
+/*...e*/
+/*...simplementation of class lbPluginManager:0:*/
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbPluginManager)
         ADD_INTERFACE(lb_I_PluginManager)
 END_IMPLEMENT_LB_UNKNOWN()
 
-IMPLEMENT_SINGLETON_FUNCTOR(instanceOfPluginManager, lbPluginManager)
+IMPLEMENT_FUNCTOR(instanceOfPluginManager, lbPluginManager)
 
 
 lbPluginManager::lbPluginManager() {
 	ref = STARTREF;
 	begunEnumerate = firstEnumerate = FALSE;
+	firstPlugin = TRUE;
+	lastPlugin = FALSE;
 }
 
 lbPluginManager::~lbPluginManager() {
-
+	printf("lbPluginManager::~lbPluginManager() called\n");
 }
 
 lbErrCodes LB_STDCALL lbPluginManager::setData(lb_I_Unknown* uk) {
@@ -196,8 +202,24 @@ bool LB_STDCALL lbPluginManager::beginEnumPlugins() {
 		UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
 			
 		QI(pluginName, lb_I_KeyBase, key, __FILE__, __LINE__)
-			
+
 		PluginModules->insert(&ukPlugin, &key);
+
+/*...stest:0:*/
+#ifdef bla
+		if (PluginModules->exists(&key) == 1) {
+			printf("Stored element is really in the container.\n");
+			
+			ukPlugin = PluginModules->getElement(&key);
+			
+			UAP(lb_I_PluginModule, PM, __FILE__, __LINE__)
+			QI(ukPlugin, lb_I_PluginModule, PM, __FILE__, __LINE__)
+			
+			
+			PM->initialize();
+		}
+#endif
+/*...e*/
 
 		while (_findnext(handle, &find) == 0) {
 /*...sTry load plugin and insert into list:24:*/
@@ -233,8 +255,10 @@ bool LB_STDCALL lbPluginManager::beginEnumPlugins() {
 	
 	delete [] toFind;
 	
-	if (PluginModules->hasMoreElements() == 1) return TRUE;
-	
+	if (PluginModules->hasMoreElements()) {
+		begunEnumerate = TRUE;
+		return TRUE;
+	}
 	return FALSE;
 }
 /*...e*/
@@ -242,6 +266,26 @@ bool LB_STDCALL lbPluginManager::beginEnumPlugins() {
 lb_I_Plugin* LB_STDCALL lbPluginManager::nextPlugin() {
 
 	if (begunEnumerate) {
+	
+	#ifdef rubbish
+	// Must be established in beginEnumPlugins because of the possible failure,
+	// if the plugin module has really no modules.
+		UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
+		UAP(lb_I_PluginModule, plM, __FILE__, __LINE__)
+		
+		if (firstPlugin) {
+		// Have first Plugin of one module
+			firstPlugin = FALSE;
+		
+			uk = PluginModules->nextElement();
+		
+			QI(uk, lb_I_PluginModule, plM, __FILE__, __LINE__)
+		
+			PluginCountainer = plM->getPlugins();
+		} else {
+			
+		}	
+	#endif
 	
 	}
 
@@ -255,3 +299,70 @@ bool LB_STDCALL lbPluginManager::attach(lb_I_Plugin* toAttach) {
 bool LB_STDCALL lbPluginManager::detach(lb_I_Plugin* toAttach) {
 	return FALSE;
 }
+/*...e*/
+/*...sclass lbPlugin:0:*/
+class lbPlugin : public lb_I_Plugin {
+public:
+
+        lbPlugin();
+        virtual ~lbPlugin();
+
+        DECLARE_LB_UNKNOWN()
+
+	void LB_STDCALL initialize();
+	void LB_STDCALL uninitialize();
+	
+	void LB_STDCALL setPluginManager(lb_I_PluginManager* plM);
+	void LB_STDCALL setAttached(lb_I_PluginImpl* impl);
+	
+	void LB_STDCALL setModule(char* module) { _module = strdup(module); }
+	void LB_STDCALL setName(char* name) { _name = strdup(name); }
+	void LB_STDCALL setScope(char* scope) { _scope = strdup(scope); }
+
+	char* LB_STDCALL getModule() { return _module; }
+	char* LB_STDCALL getName() { return _name; }
+	char* LB_STDCALL getScope() { return _scope; }
+
+	char* _name;
+	char* _scope;
+	char* _module;
+	UAP(lb_I_PluginManager, _plM, __FILE__, __LINE__)
+};
+/*...e*/
+/*...simplementation of class lbPlugin:0:*/
+IMPLEMENT_FUNCTOR(instanceOfPlugin, lbPlugin)
+
+BEGIN_IMPLEMENT_LB_UNKNOWN(lbPlugin)
+        ADD_INTERFACE(lb_I_Plugin)
+END_IMPLEMENT_LB_UNKNOWN()
+
+lbPlugin::lbPlugin() {
+	ref = STARTREF;
+}
+
+lbPlugin::~lbPlugin() {
+
+}
+
+lbErrCodes LB_STDCALL lbPlugin::setData(lb_I_Unknown* uk) {
+        _CL_LOG << "lbPlugin::setData(...) not implemented yet" LOG_
+        return ERR_NOT_IMPLEMENTED;
+}
+
+void LB_STDCALL lbPlugin::setPluginManager(lb_I_PluginManager* plM) {
+	_plM = plM;
+	_plM++;
+}
+
+void LB_STDCALL lbPlugin::setAttached(lb_I_PluginImpl* impl) {
+
+}
+
+void LB_STDCALL lbPlugin::uninitialize() {
+
+}
+
+void LB_STDCALL lbPlugin::initialize() {
+
+}
+/*...e*/

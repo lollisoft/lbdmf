@@ -33,11 +33,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.1 $
+ * $Revision: 1.2 $
  * $Name:  $
- * $Id: lbPluginManager.h,v 1.1 2004/06/06 12:31:21 lollisoft Exp $
+ * $Id: lbPluginManager.h,v 1.2 2004/06/16 22:12:32 lollisoft Exp $
  *
  * $Log: lbPluginManager.h,v $
+ * Revision 1.2  2004/06/16 22:12:32  lollisoft
+ * More code for plugin management
+ *
  * Revision 1.1  2004/06/06 12:31:21  lollisoft
  * Initial
  *
@@ -54,6 +57,7 @@ extern "C" {
 /*...e*/
 
 DECLARE_FUNCTOR(instanceOfPluginManager)
+DECLARE_FUNCTOR(instanceOfPlugin)
 
 /*...s\35\ifdef __cplusplus \125\:0:*/
 #ifdef __cplusplus
