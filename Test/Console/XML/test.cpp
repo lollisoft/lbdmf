@@ -134,28 +134,12 @@ void main(int argc, char *argv[]) {
 	database->connect("trainres", "dba", "trainres");
 	
 	UAP(lb_I_Query, query, __FILE__, __LINE__)
-	
 	query = database->getQuery();
-
 	query->query("select ObjectTyp, X, Y, W, H from World");
-
 	query->next();
-/*
-	char ObjectTyp[1000];
-	char X[100];
-	char Y[100];
-	char W[100];
-	char H[100];
-
-	strcpy(ObjectTyp, query->getChar(1));
-	strcpy(X, query->getChar(2));
-	strcpy(Y, query->getChar(3));
-	strcpy(W, query->getChar(4));
-	strcpy(H, query->getChar(5));
-*/
 
 	printf("%s;%s;%s;%s;%s\n", query->getChar(1), query->getChar(2), query->getChar(3), query->getChar(4), query->getChar(5));
-
+//	printf("%s\n", query->getChar(1));
 
 	/* Todo:
 	 * Create a viewer instance for the current query and
