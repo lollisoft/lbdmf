@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.38 $
+ * $Revision: 1.39 $
  * $Name:  $
- * $Id: lbInterfaces-sub-classes.h,v 1.38 2004/07/16 20:17:53 lollisoft Exp $
+ * $Id: lbInterfaces-sub-classes.h,v 1.39 2004/07/26 22:20:35 lollisoft Exp $
  *
  * $Log: lbInterfaces-sub-classes.h,v $
+ * Revision 1.39  2004/07/26 22:20:35  lollisoft
+ * Some problems with Power++ solved ?
+ *
  * Revision 1.38  2004/07/16 20:17:53  lollisoft
  * lb_I_String changed non const to const parameter
  *
@@ -142,7 +145,7 @@
 #define __LB_INTERFACES_SUB_CLASSES__
 
 /*...sclass lb_I_KeyBase:0:*/
-class DLLEXPORT lb_I_KeyBase : public lb_I_Unknown {
+class lb_I_KeyBase : public lb_I_Unknown {
 protected:
         lb_I_KeyBase() {}
         virtual ~lb_I_KeyBase() {}
@@ -285,6 +288,7 @@ public:
         
         virtual void LB_STDCALL setData(char const * p) = 0;
         virtual char* LB_STDCALL getData() const = 0;
+        virtual lbErrCodes LB_STDCALL setData( lb_I_Unknown * uk) = 0;
         
 };
 /*...e*/
@@ -298,7 +302,7 @@ public:
         
         virtual void LB_STDCALL setData(int p) = 0;
         virtual int LB_STDCALL getData() const = 0;
-        
+	virtual lbErrCodes LB_STDCALL setData( lb_I_Unknown * uk) = 0;        
 };
 /*...e*/
 /*...sclass lb_I_Long:0:*/
@@ -311,7 +315,7 @@ public:
         
         virtual void LB_STDCALL setData(long p) = 0;
         virtual long LB_STDCALL getData() const = 0;
-        
+	virtual lbErrCodes LB_STDCALL setData( lb_I_Unknown * uk) = 0;        
 };
 /*...e*/
 
@@ -950,6 +954,8 @@ public:
         virtual lbErrCodes LB_STDCALL getObjectInstance(const char* name, lb_I_Container*& inst) = 0;
         
         virtual lbErrCodes LB_STDCALL makeInstance(char* functor, char* module, lb_I_Unknown** instance) = 0;
+        
+        virtual char* LB_STDCALL getCreationLoc() const = 0;
 };
 /*...e*/
 /*...sclass lb_I_Instance:0:*/

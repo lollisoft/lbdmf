@@ -28,7 +28,9 @@
 */
 /*...e*/
 #ifdef WINDOWS
+#ifndef LB_DMF_POWER
 #include <windows.h>
+#endif
 #endif
 #include <stdlib.h>
 

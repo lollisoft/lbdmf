@@ -132,6 +132,9 @@
 #ifdef WINDOWS
 #define DLLEXPORT
 #endif
+#ifdef LB_DMF_POWER
+#define DLLEXPORT
+#endif
 #ifdef LINUX
 #define DLLEXPORT
 #endif
