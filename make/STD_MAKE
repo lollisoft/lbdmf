@@ -25,11 +25,14 @@
 #            40235 DÅsseldorf (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.47 $
+# * $Revision: 1.48 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.47 2004/10/16 09:47:38 lollisoft Exp $
+# * $Id: STD_MAKE,v 1.48 2005/01/22 11:56:22 lollisoft Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.48  2005/01/22 11:56:22  lollisoft
+# * Little bug in non debug version / deactivated debug version
+# *
 # * Revision 1.47  2004/10/16 09:47:38  lollisoft
 # * New make system works nearly perfect. It does not longer build unnessesary.
 # *
@@ -186,8 +189,8 @@ DEVROOT_MAKE_INTERNAL=$(DEVROOT_MAKE)
 # Set standard compiler
 COMPILER=WATCOM
 #COMPILER=MICROSOFT
-MODE=_DEBUG
-#MODE=
+#MODE=_DEBUG
+MODE=
 
 STD_INCL_WATCOM =-i=. -i=$(DEVROOT)\\Tools\\WATCOM\\h -i=$(DEVROOT)\\Tools\\WATCOM\\h\\nt -i=$(DEVROOT)\\projects\\cpp\\interfaces -i=$(DEVROOT)\\projects\\cpp\\include -i=$(DEVROOT)\\projects\\dll\\include -i=$(DEVROOT)\\projects\\lib\\include
 #ANAKIN
@@ -223,15 +226,17 @@ $(WATCOM_STACK)
 
 OBJ =obj
 # Watcom -zp4
-C_EXEOPS_WATCOM_DEBUG= $(WATCOM_STD_C_OPS) $(WATCOM_STDDEBUG) -bt=nt -mf #-hd
+C_EXEOPS_WATCOM=        $(WATCOM_STD_C_OPS) -bt=nt -mf #-hd
 
-C_DLLOPS_WATCOM   =  $(WATCOM_STD_C_OPS) $(WATCOM_DLLTARGET)                       -bt=nt -mf #-hd
+C_EXEOPS_WATCOM_DEBUG=  $(WATCOM_STD_C_OPS) $(WATCOM_STDDEBUG) -bt=nt -mf #-hd
 
-C_DLLOPS_WATCOM_DEBUG = $(WATCOM_STD_C_OPS) $(WATCOM_STDDEBUG) $(WATCOM_DLLTARGET) -bt=nt -mf #-hd
+C_DLLOPS_WATCOM   =     $(WATCOM_STD_C_OPS)                     $(WATCOM_DLLTARGET) -bt=nt -mf #-hd
 
-C_LIBOPS_WATCOM   =  $(WATCOM_STD_C_OPS) $(WATCOM_LIBTARGET)                       -bt=nt -mf #-hd
+C_DLLOPS_WATCOM_DEBUG = $(WATCOM_STD_C_OPS) $(WATCOM_STDDEBUG)  $(WATCOM_DLLTARGET) -bt=nt -mf #-hd
 
-C_LIBOPS_WATCOM_DEBUG = $(WATCOM_STD_C_OPS) $(WATCOM_STDDEBUG) $(WATCOM_LIBTARGET) -bt=nt -mf #-hd
+C_LIBOPS_WATCOM   =     $(WATCOM_STD_C_OPS)                     $(WATCOM_LIBTARGET) -bt=nt -mf #-hd
+
+C_LIBOPS_WATCOM_DEBUG = $(WATCOM_STD_C_OPS) $(WATCOM_STDDEBUG)  $(WATCOM_LIBTARGET) -bt=nt -mf #-hd
 
 CC =wpp386
 RM =del
