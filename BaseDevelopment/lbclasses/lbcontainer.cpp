@@ -4,10 +4,13 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.10 $
+ * $Revision: 1.11 $
  * $Name:  $
- * $Id: lbcontainer.cpp,v 1.10 2001/04/13 07:39:29 lolli Exp $
+ * $Id: lbcontainer.cpp,v 1.11 2001/05/01 15:51:52 lolli Exp $
  * $Log: lbcontainer.cpp,v $
+ * Revision 1.11  2001/05/01 15:51:52  lolli
+ * First instance could be loaded over the new module management
+ *
  * Revision 1.10  2001/04/13 07:39:29  lolli
  * Commit for backup
  *
@@ -49,7 +52,6 @@
  *
  ************************************************************************************************************/
 /*...e*/
-#define VERBOSE
 //Define DLL here for implementing the module
 
 #define LB_CONTAINER_DLL
@@ -93,6 +95,11 @@ lbContainer::lbContainer() {
 lbContainer::~lbContainer() {
 }
 
+lbErrCodes LB_STDCALL lbContainer::setData(lb_I_Unknown* uk) {
+	CL_LOG("lbContainer::setData(...) not implemented yet");
+	return ERR_NOT_IMPLEMENTED;
+}
+
 
 IMPLEMENT_LB_I_CONTAINER_IMPL(lbContainer)
 
@@ -113,4 +120,9 @@ int LB_STDCALL lbElement::equals(const lb_I_Element* a) const {
 
 int LB_STDCALL lbElement::equals(const lb_I_KeyBase* key) const {
 	return 0;
+}
+
+lbErrCodes LB_STDCALL lbElement::setData(lb_I_Unknown* uk) {
+	CL_LOG("lbElement::setData(...) not implemented yet");
+	return ERR_NOT_IMPLEMENTED;
 }

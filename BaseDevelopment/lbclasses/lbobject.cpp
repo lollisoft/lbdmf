@@ -28,6 +28,11 @@ void lbObject::setType() {
 	LOG("Error: Base object has no object type");
 }
 
+lbErrCodes LB_STDCALL lbObject::setData(lb_I_Unknown* uk) {
+	CL_LOG("lbObject::setData(...) not implemented yet");
+	return ERR_NOT_IMPLEMENTED;
+}
+
 
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbObject)
 	ADD_INTERFACE(lb_I_Object)
@@ -85,6 +90,11 @@ char* lbString::getData() const {
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbString)
 	ADD_INTERFACE(lb_I_String)
 END_IMPLEMENT_LB_UNKNOWN()
+
+lbErrCodes LB_STDCALL lbString::setData(lb_I_Unknown* uk) {
+	CL_LOG("lbString::setData(...) not implemented yet");
+	return ERR_NOT_IMPLEMENTED;
+}
 
 /*...e*/
 /*...slbStringList:0:*/

@@ -1,10 +1,13 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.3 $
+ * $Revision: 1.4 $
  * $Name:  $
- * $Id: lb_misc.h,v 1.3 2001/03/14 20:52:51 lolli Exp $
+ * $Id: lb_misc.h,v 1.4 2001/05/01 15:51:52 lolli Exp $
  * $Log: lb_misc.h,v $
+ * Revision 1.4  2001/05/01 15:51:52  lolli
+ * First instance could be loaded over the new module management
+ *
  * Revision 1.3  2001/03/14 20:52:51  lolli
  * Compiles and links now, but it will not run
  *
@@ -26,23 +29,13 @@
  **************************************************************/
 /*...e*/
 
-#ifndef _MISC_
-#define _MISC_
-
-/*...sincludes:0:*/
-#include <time.h>
-#include <string.h>
-#include <iostream.h>
-#include <stdio.h>
-/*...e*/
-
 /*...sDLLEXPORT:0:*/
 #undef DLLEXPORT
 
 #ifdef LB_CONTAINER_DLL
 
 #ifdef WINDOWS
-#define DLLEXPORT __declspec(dllexport)
+#define DLLEXPORT LB_DLLEXPORT
 #endif
 
 #endif
@@ -56,12 +49,24 @@
 #endif
 /*...e*/
 
+#ifndef _MISC_
+#define _MISC_
+
+/*...sincludes:0:*/
+#include <time.h>
+#include <string.h>
+#include <iostream.h>
+#include <stdio.h>
+/*...e*/
+
+
 /*...sifdef __cplusplus:0:*/
 #ifdef __cplusplus
 extern "C" {
 #endif
 /*...e*/
-void DLLEXPORT lb_sleep(int ms);
+void lb_sleep(int ms);
+lbErrCodes DLLEXPORT LB_STDCALL instanceOfLogger(lb_I_Unknown*& uk);
 /*...sendif __cplusplus:0:*/
 #ifdef __cplusplus
 }

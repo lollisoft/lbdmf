@@ -1,10 +1,13 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.6 $
+ * $Revision: 1.7 $
  * $Name:  $
- * $Id: misc.cpp,v 1.6 2001/04/13 07:39:29 lolli Exp $
+ * $Id: misc.cpp,v 1.7 2001/05/01 15:51:52 lolli Exp $
  * $Log: misc.cpp,v $
+ * Revision 1.7  2001/05/01 15:51:52  lolli
+ * First instance could be loaded over the new module management
+ *
  * Revision 1.6  2001/04/13 07:39:29  lolli
  * Commit for backup
  *
@@ -53,6 +56,7 @@
 #include <lbInterfaces.h>
 #include <lbConfigHook.h>
 #include <lbThread.h>
+#include <lb_misc.h>
 
 /*...sclass lbLog:0:*/
 class lbLog : public lb_I_Log {
@@ -116,62 +120,82 @@ char lbLog::prefix[100];
 lb_I_Mutex* lbLog::mutex;
 
 //lb_I_CritSect sect;
-
+#ifdef bla
 void gol() {
 /*...sGET_LOG_INSTANCE:0:*/
-			if (log == NULL) {
-				isInitializing = 1;
-				CL_LOG("Getting a log instance...");
-				lb_I_Module* modMan = getModuleInstance();
-				getch();
+                        if (log == NULL) {
+                                isInitializing = 1;
+                                CL_LOG("Getting a log instance...");
+                                lb_I_Module* modMan = getModuleInstance();
+                                
 
-				if (modMan != NULL) {
-					lb_I_Unknown *Unknown = NULL;
-					lbErrCodes err = modMan->request("instanceOfLogger", Unknown);
+                                if (modMan != NULL) {
+                                        lb_I_Unknown *Unknown = NULL;
+                                        lbErrCodes err = modMan->request("instanceOfLogger", Unknown);
 
-					if (Unknown != NULL) {
-						Unknown->queryInterface("lb_I_Log", (void**) &log);
-						if (log == NULL) {
-							CL_LOG("Unknown object has no interface for lb_I_Log");
-							getch();
-							exit (1);
-						}
-						CL_LOG("Now have a log instance");
-					} else {
-						char buf[100] = "";
-						sprintf(buf, "%s %d %s", "Instance could not be created, errcode is ", err, ".");
-						CL_LOG(buf);
-						getch();
-						exit(1);
-					}
-				} else {
-					CL_LOG("Module manager could not be created");
-					getch();
-					exit(1);
-				}
-			}
-			isInitializing = 0;
+                                        if (Unknown != NULL) {
+                                                Unknown->queryInterface("lb_I_Log", (void**) &log);
+                                                if (log == NULL) {
+                                                        CL_LOG("Unknown object has no interface for lb_I_Log");
+                                                        
+                                                        exit (1);
+                                                }
+                                                CL_LOG("Now have a log instance");
+                                        } else {
+                                                char buf[100] = "";
+                                                sprintf(buf, "%s %d %s", "Instance could not be created, errcode is ", err, ".");
+                                                CL_LOG(buf);
+                                                
+                                                exit(1);
+                                        }
+                                } else {
+                                        CL_LOG("Module manager could not be created");
+                                        
+                                        exit(1);
+                                }
+                        }
+                        isInitializing = 0;
 /*...e*/
 }
 
 void dlog(char* msg) {
 /*...sLOG:0:*/
-			if (isInitializing != 0) {
-				cout << "Tried to log while initializing the logger." <<
-				"Msg: " << msg << " File: " << __FILE__ << " Line: " << __LINE__ << endl;
-			} else {
-				gol();
-				cout << "Log a message: " << msg << endl;
-				log->log(msg, __LINE__, __FILE__);
-				cout << "Logged." << endl;
-			}
+                        if (isInitializing != 0) {
+                                cout << "Tried to log while initializing the logger." <<
+                                "Msg: " << msg << " File: " << __FILE__ << " Line: " << __LINE__ << endl;
+                        } else {
+                                gol();
+                                cout << "Log a message: " << msg << endl;
+                                log->log(msg, __LINE__, __FILE__);
+                                cout << "Logged." << endl;
+                        }
 /*...e*/
 }
+#endif
 
+lbErrCodes DLLEXPORT LB_STDCALL instanceOfLogger(lb_I_Unknown*& uk) {
+        CL_LOG("instanceOfLogger() called and will create the requested instance");
+        
+        lbLog* logger = new lbLog();
+        uk = NULL;
+        
+        if (logger->queryInterface("lb_I_Unknown", (void**) &uk) != ERR_NONE) {
+                CL_LOG("Failed to create unknown reference to instance of lbLog!");
+                return ERR_FUNCTOR;
+        }
+        
+        return ERR_NONE;
+}
 
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbLog)
-	ADD_INTERFACE(lb_I_Log)
+        ADD_INTERFACE(lb_I_Log)
 END_IMPLEMENT_LB_UNKNOWN()
+
+lbErrCodes LB_STDCALL lbLog::setData(lb_I_Unknown* uk) {
+        CL_LOG("lbLog::setData(...) not implemented yet");
+        return ERR_NOT_IMPLEMENTED;
+}
+
 
 /*...slbLog\58\\58\lbLog\40\\41\:0:*/
 lbLog::lbLog() {
@@ -179,15 +203,15 @@ lbLog::lbLog() {
         strcpy(f, "c:\\log\\wsmaster.log");
 //        logdirect("lbLog::lbLog(): Creating mutex for logfile", f, level);
 
-	if (firstlog == 0) {
-        	mutex = new lbMutex();
-        	mutex->createMutex(LB_LOGFILE_MUTEX);
+        if (firstlog == 0) {
+                mutex = new lbMutex();
+                mutex->createMutex(LB_LOGFILE_MUTEX);
         }
 
         firstlog = 1;
         doLog = 1;
         
-	CL_LOG("Creating mutex for logfile");
+        CL_LOG("Creating mutex for logfile");
     }
 /*...e*/
 /*...slbLog\58\\58\lbLog\40\int l\41\:0:*/
@@ -196,9 +220,9 @@ lbLog::lbLog(int l) {
         strcpy(f, "c:\\log\\wsmaster.log");
 //        logdirect("lbLog::lbLog(int l): Creating mutex for logfile", f, level);
 
-	if (firstlog == 0) {
-        	mutex = new lbMutex();
-        	mutex->createMutex(LB_LOGFILE_MUTEX);
+        if (firstlog == 0) {
+                mutex = new lbMutex();
+                mutex->createMutex(LB_LOGFILE_MUTEX);
         }
 
         firstlog = 1;
@@ -211,16 +235,16 @@ void lbLog::logdirect(const char *msg, char *f, int level) {
                 FILE *fp;
                 fp = fopen( f, "a" );
                 if( fp != NULL ) {
-                	char buf[100];
-                	buf[0] = 0;
-                	
-                	int l = level;
-                	
-                	while (l > 0) {
-	                	sprintf(buf, "%s%s", buf, "    ");
-	                	l--;
-	                }
-                	
+                        char buf[100];
+                        buf[0] = 0;
+                        
+                        int l = level;
+                        
+                        while (l > 0) {
+                                sprintf(buf, "%s%s", buf, "    ");
+                                l--;
+                        }
+                        
                         fprintf( fp, "Thread %d\t:%s%s%s\n", lbGetCurrentThreadId(), prefix, buf, msg);
                 }
         
@@ -230,78 +254,78 @@ void lbLog::logdirect(const char *msg, char *f, int level) {
 /*...slbLog\58\\58\log\40\\46\\46\\46\\41\:0:*/
 void lbLog::log(const char *msg, long line, char* file) {
 //lbLock lbLock(sect, "lbLockSection");
-	if (firstlog == 0) lbLog log = lbLog();
+        if (firstlog == 0) lbLog log = lbLog();
 
-	mutex->enter();	
-	
-	if (doLog == TRUE) {
-		char *m = (char*) malloc(strlen(msg)+sizeof(line)+strlen(file)+10);
+        mutex->enter(); 
+        
+        if (doLog == TRUE) {
+                char *m = (char*) malloc(strlen(msg)+sizeof(line)+strlen(file)+10);
 
-		sprintf(m, "%s: %d - %s", file, line, msg);
-		logdirect(m, f, level);
-		free(m);
-	}
-	mutex->release();
+                sprintf(m, "%s: %d - %s", file, line, msg);
+                logdirect(m, f, level);
+                free(m);
+        }
+        mutex->release();
 }
 /*...e*/
 /*...slbLog\58\\58\log\40\int log\41\:0:*/
 void lbLog::log(int log) {
-	if (firstlog == 0) lbLog log = lbLog();
-	doLog = log;
+        if (firstlog == 0) lbLog log = lbLog();
+        doLog = log;
 }
 /*...e*/
 /*...slbLog\58\\58\setPrefix\40\char\42\ p\41\:0:*/
 void lbLog::setPrefix(char* p) {
 //cout << "lbLog::setPrefix(char* p) called" << endl;
-	{
-		//lbLock lbLock(sect, "lbLockSection");
-		strcpy(prefix, p);
-	}
+        {
+                //lbLock lbLock(sect, "lbLockSection");
+                strcpy(prefix, p);
+        }
 }
 /*...e*/
 /*...slbLog\58\\58\enable\40\char \42\where\41\:0:*/
 void lbLog::enable(char *where) {
-	char buf[100];
-	doLog = TRUE;
-	
-	if (firstlog == 0) lbLog log = lbLog();
-	
-	mutex->enter();
+        char buf[100];
+        doLog = TRUE;
+        
+        if (firstlog == 0) lbLog log = lbLog();
+        
+        mutex->enter();
 
-	sprintf(buf, "Log is enabled at %s", where);
-//	level++;
-	logdirect(buf, f, level);
-//	level++;
-	
-	mutex->release();
+        sprintf(buf, "Log is enabled at %s", where);
+//      level++;
+        logdirect(buf, f, level);
+//      level++;
+        
+        mutex->release();
 }
 /*...e*/
 /*...slbLog\58\\58\disable\40\char \42\where\41\:0:*/
 void lbLog::disable(char *where) {
-	char buf[100];
-	
-	if (firstlog == 0) lbLog log = lbLog();
-	
-	mutex->enter();
-	
-	if (level <= 0) {
-		logdirect("lbLog: Function sequence error. Disable called before enable!", f, 0);
-		return;
-	}
-	
-	doLog = FALSE;
-	sprintf(buf, "Log is disabled at %s", where);
-//	level--;
-	logdirect(buf, f, level);
-//	level--;
+        char buf[100];
+        
+        if (firstlog == 0) lbLog log = lbLog();
+        
+        mutex->enter();
+        
+        if (level <= 0) {
+                logdirect("lbLog: Function sequence error. Disable called before enable!", f, 0);
+                return;
+        }
+        
+        doLog = FALSE;
+        sprintf(buf, "Log is disabled at %s", where);
+//      level--;
+        logdirect(buf, f, level);
+//      level--;
 
-	mutex->release();
+        mutex->release();
 }
 /*...e*/
 /*...slbLog\58\\58\event_begin\40\char \42\event\41\:0:*/
 void lbLog::event_begin(char *event) {
-	if (firstlog == 0) lbLog log = lbLog();
-	if (doLog == TRUE) {
+        if (firstlog == 0) lbLog log = lbLog();
+        if (doLog == TRUE) {
             beinlog = 1;
             start_time = clock();
 
@@ -312,7 +336,7 @@ void lbLog::event_begin(char *event) {
 /*...slbLog\58\\58\event_end\40\char \42\event\41\:0:*/
 void lbLog::event_end(char *event) {
         char buf[100];
-	if (firstlog == 0) lbLog log = lbLog();
+        if (firstlog == 0) lbLog log = lbLog();
 
         if (doLog == TRUE) {
                 beinlog = 0;
