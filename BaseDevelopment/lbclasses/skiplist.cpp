@@ -38,11 +38,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.24 $
+ * $Revision: 1.25 $
  * $Name:  $
- * $Id: skiplist.cpp,v 1.24 2005/03/14 18:59:02 lollisoft Exp $
+ * $Id: skiplist.cpp,v 1.25 2005/03/19 16:38:54 lollisoft Exp $
  *
  * $Log: skiplist.cpp,v $
+ * Revision 1.25  2005/03/19 16:38:54  lollisoft
+ * Bugfix, if iterate an empty container.
+ *
  * Revision 1.24  2005/03/14 18:59:02  lollisoft
  * Various changes and additions to make plugins also work with database forms
  *
@@ -500,6 +503,7 @@ Elem SkipList::dump_next() {
 		
 		while (e == NULL) {
 			skipiterator = skipiterator->forward[0];
+			if (!skipiterator) return NULL;
 			e = skipiterator->value.getPtr();
 		}
 
