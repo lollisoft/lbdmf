@@ -995,13 +995,19 @@ lbErrCodes LB_STDCALL lbQuery::next() {
 		dbError( "SQLExtendedFetch()");
 
 		// Unsave !!
-		if (retcode == SQL_SUCCESS_WITH_INFO) return ERR_NONE;
+		if (retcode == SQL_SUCCESS_WITH_INFO) {
+			_LOG << "lbQuery::next() returns with SQL_SUCCESS_WITH_INFO" LOG_
+			return ERR_NONE;
+		}
 		
 		return ERR_DB_NODATA;
         }
 
 #ifndef USE_FETCH_SCROLL
-	if (RowsFetched == 0) return ERR_DB_NODATA;
+	if (RowsFetched == 0) {
+		_LOG << "lbQuery::next() returns with ERR_DB_NODATA" LOG_
+		return ERR_DB_NODATA;
+	}
 #endif
 
 	return ERR_NONE;
@@ -1029,13 +1035,21 @@ lbErrCodes LB_STDCALL lbQuery::previous() {
                 dbError( "SQLExtendedFetch()");
 
 		// Unsave !!
-		if (retcode == SQL_SUCCESS_WITH_INFO) return ERR_NONE;
+		if (retcode == SQL_SUCCESS_WITH_INFO) {
+			
+			_LOG << "lbQuery::previous() returns with SQL_SUCCESS_WITH_INFO" LOG_
+			
+			return ERR_NONE;
+		}
 		
                 return ERR_DB_NODATA;
         }
 
 #ifndef USE_FETCH_SCROLL        
-	if (RowsFetched == 0) return ERR_DB_NODATA;
+	if (RowsFetched == 0) {
+		_LOG << "lbQuery::previous() returns with ERR_DB_NODATA" LOG_
+		return ERR_DB_NODATA;
+	}
 #endif
         
 	return ERR_NONE;
