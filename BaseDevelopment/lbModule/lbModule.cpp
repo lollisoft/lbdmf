@@ -157,13 +157,9 @@ lbErrCodes lbModule::initialize() {
  * Output:	Only one node from the list in a new view
  */
 lb_I_ConfigObject* lbModule::findFunctorNode(lb_I_ConfigObject* node, const char* request) {
-	CL_LOG("lbModule::findFunctorNode() called");
-
 	lb_I_ConfigObject* temp_node = NULL;
 	lbErrCodes err = ERR_NONE;
-getch();	
 	if ((err = node->getFirstChildren(temp_node)) == ERR_NONE) {
-getch();		
 		lb_I_Attribute* attribute;
 		
 		//temp_node->getAttribute("Functor", attribute);
@@ -184,11 +180,7 @@ getch();
 			CL_LOG("temp_node is NULL!");
 			getch();
 		} 
-		CL_LOG("Try to get name of node");
-		getch();
 		if ((strcmp(temp_node->getName(), "Functor")) == 0) {
-			CL_LOG("Found the requested node");
-			getch();
 #ifdef bla			
 /*...sWith this test the result in parent\39\s child\39\s is ok:0:*/
 			
@@ -219,21 +211,11 @@ if ((err = temp_node->getParent(_node)) != ERR_NONE) {
 #endif			
 			return temp_node;
 		}
-		CL_LOG("Node not found in first of list");
-		getch();
-		
-		
 		
 	} else CL_LOG("Get first child failed");
-CL_LOG("Got first children");
-getch();
 
 	while ((err = node->getNextChildren(temp_node)) == ERR_NONE) {
-		CL_LOG("Get next child");
-		getch();
 		if ((strcmp(temp_node->getName(), "Functor")) == 0) {
-			CL_LOG("Found the requested node");
-			getch();
 			return temp_node;
 		}
 	}
@@ -242,12 +224,10 @@ getch();
 		CL_LOG("No more childs found");
 	}
 
-CL_LOG("Release the temp_node reference");
-getch();	
 	if (temp_node != NULL) temp_node->release();
 	
 	CL_LOG("Returning a NULL value");
-getch();	
+	getch();	
 	return NULL;
 }
 /*...e*/
@@ -260,19 +240,10 @@ char* lbModule::findFunctorModule(lb_I_ConfigObject* node) {
 		CL_LOG("NULL pointer detected!");
 		return "NULL";
 	}
-#ifdef VERBOSE
-CL_LOG("Get the name of the node");
-getch();
-#endif
+
 	if (strcmp (node->getName(), "Module") == 0) {
-		CL_LOG("Found node 'Module'");
-		getch();
 		
 		if ((err = node->getFirstChildren(temp_node)) == ERR_NONE) {
-#ifdef VERBOSE
-			CL_LOG("Test first children");
-			CL_LOG(temp_node->getName());
-#endif
 			if ((strcmp(temp_node->getName(), "ModuleName")) == 0) {
 				char* value = NULL;
 				err = temp_node->getAttributeValue("Name", value);
@@ -288,14 +259,8 @@ getch();
 		}
 
 		while ((err = node->getNextChildren(temp_node)) == ERR_NONE) {
-#ifdef VERBOSE
-		        CL_LOG("Get next child");
-		        CL_LOG(temp_node->getName());
-#endif
 		        if ((strcmp(temp_node->getName(), "ModuleName")) == 0) {
 				char* value = NULL;
-
-				CL_LOG("Found 'ModuleName'");
 
 				err = temp_node->getAttributeValue("Name", value);
 				
@@ -309,10 +274,6 @@ getch();
 		}
 	}
 	else {
-#ifdef VERBOSE
-	CL_LOG("Go calling findFunctorModule(temp_node) recursive");
-	getch();
-#endif
 		while ((err = node->getParent(temp_node)) == ERR_NONE) {
 			if (temp_node == NULL) {
 				CL_LOG("Error: No parent");
@@ -327,8 +288,6 @@ getch();
 /*...e*/
 /*...slbModule\58\\58\findFunctorName\40\\46\\46\\46\\41\:0:*/
 char* lbModule::findFunctorName(lb_I_ConfigObject* node) {
-	CL_LOG("Not yet implemented");
-	
 	/**
 	 * Go up one level and get the children 'FunctionName'
 	 */
