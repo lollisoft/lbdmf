@@ -11,11 +11,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.12 $
+ * $Revision: 1.13 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.12 2001/10/23 20:17:56 lothar Exp $
+ * $Id: mkmk.cpp,v 1.13 2001/10/23 20:23:16 lothar Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.13  2001/10/23 20:23:16  lothar
+ * What is that ???
+ *
  * Revision 1.12  2001/10/23 20:17:56  lothar
  * Changed hardcoded path seperator
  *
@@ -720,7 +723,12 @@ void main(int argc, char *argv[])
   if (argc<4)
   {
     ShowHelp();
+#ifdef UNIX
     return 0;
+#endif
+#ifdef __WATCOMC__
+    return;
+#endif
   }
 /*...sbla:0:*/
 /*  f=fopen("makefile","wt");
