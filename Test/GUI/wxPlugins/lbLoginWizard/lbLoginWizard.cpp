@@ -492,7 +492,9 @@ char const * LB_STDCALL wxLogonPage::getTextValue(char* _name) {
 /*...e*/
 /*...e*/
 
-class lbPluginLoginWizard : public lb_I_PluginImpl
+class lbPluginLoginWizard : 
+	public lb_I_PluginImpl,
+	public lb_I_EventHandler
 {
 public:
 
@@ -500,9 +502,14 @@ public:
 	virtual ~lbPluginLoginWizard();
 
 	DECLARE_LB_UNKNOWN()
+
+	virtual lbErrCodes LB_STDCALL registerEventHandler(lb_I_Dispatcher* disp);
 	
 	virtual void LB_STDCALL initialize();
 	virtual bool LB_STDCALL run();
+
+	lbErrCodes LB_STDCALL runLogin(lb_I_Unknown* uk);
+	
 	
 	wxWizard *wizard;
 	wxWizardPageSimple *page1;
@@ -512,7 +519,7 @@ BEGIN_IMPLEMENT_LB_UNKNOWN(lbPluginLoginWizard)
         ADD_INTERFACE(lb_I_PluginImpl)
 END_IMPLEMENT_LB_UNKNOWN()
 
-IMPLEMENT_FUNCTOR(instanceOflbPluginDatabaseDialog, lbPluginLoginWizard)
+IMPLEMENT_FUNCTOR(instanceOflbPluginLoginWizard, lbPluginLoginWizard)
 
 lbErrCodes LB_STDCALL lbPluginLoginWizard::setData(lb_I_Unknown* uk) {
         _CL_LOG << "lbPluginLoginWizard::setData(...) not implemented yet" LOG_
@@ -523,15 +530,45 @@ lbErrCodes LB_STDCALL lbPluginLoginWizard::setData(lb_I_Unknown* uk) {
 lbPluginLoginWizard::lbPluginLoginWizard() {
 	wizard = NULL;
 	page1 = NULL;
+	printf("lbPluginLoginWizard::lbPluginLoginWizard() called.\n");
 }
 
 lbPluginLoginWizard::~lbPluginLoginWizard() {
 	if (wizard) wizard->Destroy();
+	printf("lbPluginLoginWizard::~lbPluginLoginWizard() called.\n");
 }
 	
 	
+lbErrCodes LB_STDCALL lbPluginLoginWizard::registerEventHandler(lb_I_Dispatcher* disp) {
+	disp->addEventHandlerFn(this, (lbEvHandler) &lbPluginLoginWizard::runLogin, "RunLogin");
+	
+	return ERR_NONE;
+}
+
+lbErrCodes LB_STDCALL lbPluginLoginWizard::runLogin(lb_I_Unknown* uk) {
+	run();
+	return ERR_NONE;
+}
+	
 void LB_STDCALL lbPluginLoginWizard::initialize() {
-	wxWizard *wizard = new wxWizard(NULL, -1, _T("Anmeldung"));
+
+	UAP_REQUEST(manager.getPtr(), lb_I_EventManager, ev)
+	
+	int lEvent;
+	
+	ev->registerEvent("RunLogin", lEvent);
+
+	UAP_REQUEST(manager.getPtr(), lb_I_Dispatcher, disp)
+	
+	registerEventHandler(*&disp);
+
+	UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
+	
+	meta->addMenuEntry("File", "Login via Plugin", "RunLogin", "");
+}
+
+bool LB_STDCALL lbPluginLoginWizard::run() {
+	wizard = new wxWizard(NULL, -1, _T("Anmeldung via Plugin"));
 
 	page1 = new wxWizardPageSimple(wizard);
 
@@ -557,13 +594,14 @@ void LB_STDCALL lbPluginLoginWizard::initialize() {
 	page3->SetPrev(page2);
 	
 	wizard->SetPageSize(size);
-}
 
-bool LB_STDCALL lbPluginLoginWizard::run() {
-	if ( page1 && ! wizard->RunWizard(page1) )
+	if ( !wizard->RunWizard(page1) )
 	{
+		wizard->Destroy();
 		return false;
         }
+
+	wizard->Destroy();
 
 	return true;
 }

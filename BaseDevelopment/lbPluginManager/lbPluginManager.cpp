@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.9 $
+ * $Revision: 1.10 $
  * $Name:  $
- * $Id: lbPluginManager.cpp,v 1.9 2005/03/10 09:01:19 lollisoft Exp $
+ * $Id: lbPluginManager.cpp,v 1.10 2005/03/10 16:48:27 lollisoft Exp $
  *
  * $Log: lbPluginManager.cpp,v $
+ * Revision 1.10  2005/03/10 16:48:27  lollisoft
+ * Fully implemented plugin functionality
+ *
  * Revision 1.9  2005/03/10 09:01:19  lollisoft
  * Plugin code complete until real loading.
  *
@@ -197,7 +200,6 @@ bool LB_STDCALL lbPluginManager::tryLoad(char* module) {
 		if (manager->makeInstance("instanceOfPluginModule", pluginModule, &ukPlugin) == ERR_NONE) {
 
 			ukPlugin->setModuleManager(*&manager, __FILE__, __LINE__);
-			delete [] pluginModule;
 			
 			PluginModules->insert(&ukPlugin, &key);
 			
@@ -206,20 +208,17 @@ bool LB_STDCALL lbPluginManager::tryLoad(char* module) {
 			UAP(lb_I_PluginModule, plM, __FILE__, __LINE__)
 			QI(ukPlugin, lb_I_PluginModule, plM, __FILE__, __LINE__)
 			
-			plM->setModule(pluginName->charrep());
-			
+			plM->setModule(pluginModule);
+			delete [] pluginModule;
 	
 			return true;	
 		}
-	
-	
 		delete [] pluginModule;
 	
 		return false;
 	
 	} else {
 		ukPlugin->setModuleManager(*&manager, __FILE__, __LINE__);
-		delete [] pluginModule;
 		PluginModules->insert(&ukPlugin, &key);
 		
 		ukPlugin = PluginModules->getElement(&key);
@@ -227,7 +226,8 @@ bool LB_STDCALL lbPluginManager::tryLoad(char* module) {
 		UAP(lb_I_PluginModule, plM, __FILE__, __LINE__)
 		QI(ukPlugin, lb_I_PluginModule, plM, __FILE__, __LINE__)
 		
-		plM->setModule(pluginName->charrep());
+		plM->setModule(pluginModule);
+		delete [] pluginModule;
 	}
 
 	return true;
@@ -462,12 +462,15 @@ lbPlugin::lbPlugin() {
 	_name = NULL;
 	_scope = NULL;
 	ref = STARTREF;
+	printf("lbPlugin::lbPlugin() called.\n");
 }
 
 lbPlugin::~lbPlugin() {
 	free(_module);
 	free(_name);
 	free(_scope);
+	
+	printf("lbPlugin::~lbPlugin() called.\n");
 }
 
 lbErrCodes LB_STDCALL lbPlugin::setData(lb_I_Unknown* uk) {
@@ -489,7 +492,57 @@ void LB_STDCALL lbPlugin::uninitialize() {
 }
 
 void LB_STDCALL lbPlugin::initialize() {
+	lbErrCodes err = ERR_NONE;
+
+/*...sbuild PREFIX:0:*/
+#ifndef LINUX
+        #ifdef __WATCOMC__
+        #define PREFIX "_"
+        #endif
+        #ifdef _MSC_VER
+        #define PREFIX ""
+        #endif
+#endif
+#ifdef LINUX
+#define PREFIX ""
+#endif
+/*...e*/
+	
 	printf("lbPlugin::initialize() called. Module: %s, name: %s, scope: %s\n", _module, _name, _scope);
+
+	UAP(lb_I_Unknown, ukPlugin, __FILE__, __LINE__)
+
+	char* name = (char*) malloc(strlen(PREFIX)+strlen("instanceOf")+strlen(_name)+1);
+	
+	name[0] = 0;
+	strcat(name, PREFIX);
+	strcat(name, "instanceOf");
+	strcat(name, _name);
+
+	if (manager->makeInstance(name, _module, &ukPlugin) == ERR_NONE) {	
+	
+		UAP(lb_I_PluginImpl, impl, __FILE__, __LINE__)
+		QI(ukPlugin, lb_I_PluginImpl, impl, __FILE__, __LINE__)
+		impl++;
+		
+		impl->initialize();
+	} else {
+		name[0] = 0;
+		strcat(name, "instanceOf");
+		strcat(name, _name);
+	
+		if (manager->makeInstance(name, _module, &ukPlugin) == ERR_NONE) {
+			UAP(lb_I_PluginImpl, impl, __FILE__, __LINE__)
+			QI(ukPlugin, lb_I_PluginImpl, impl, __FILE__, __LINE__)
+			impl++;
+		
+			impl->initialize();
+		} else {
+			printf("lbPlugin::initialize() failed to forward call!\n");
+		}
+	}
+
+	free(name);
 }
 
 bool LB_STDCALL lbPlugin::run() {
