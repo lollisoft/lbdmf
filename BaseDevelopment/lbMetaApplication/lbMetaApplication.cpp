@@ -1,11 +1,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.10 $
+ * $Revision: 1.11 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.10 2002/09/17 04:26:36 lothar Exp $
+ * $Id: lbMetaApplication.cpp,v 1.11 2002/09/19 19:34:12 lothar Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.11  2002/09/19 19:34:12  lothar
+ * Buggy version - only, if menu is really created
+ *
  * Revision 1.10  2002/09/17 04:26:36  lothar
  * First API-Callback works
  *
@@ -502,6 +505,7 @@ lb_Dispatcher::lb_Dispatcher() {
 }
 
 lb_Dispatcher::~lb_Dispatcher() {
+	LOG("lb_Dispatcher::~lb_Dispatcher() called")
 }
 
 /*...slbErrCodes LB_STDCALL lb_Dispatcher\58\\58\setData\40\lb_I_Unknown\42\ uk\41\:0:*/
@@ -516,6 +520,7 @@ lbErrCodes LB_STDCALL lb_Dispatcher::setEventManager(lb_I_EventManager* EvManage
 	LOG("lb_Dispatcher::setEventManager() called")
 	
 	evManager = EvManager;
+	evManager++;
 	
 	return ERR_NONE;
 }

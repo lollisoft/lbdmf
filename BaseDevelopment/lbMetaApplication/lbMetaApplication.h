@@ -1,11 +1,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.8 $
+ * $Revision: 1.9 $
  * $Name:  $
- * $Id: lbMetaApplication.h,v 1.8 2002/09/12 18:32:59 lothar Exp $
+ * $Id: lbMetaApplication.h,v 1.9 2002/09/19 19:34:12 lothar Exp $
  *
  * $Log: lbMetaApplication.h,v $
+ * Revision 1.9  2002/09/19 19:34:12  lothar
+ * Buggy version - only, if menu is really created
+ *
  * Revision 1.8  2002/09/12 18:32:59  lothar
  * Added some UI wrapper and sub module creation
  *
@@ -102,8 +105,8 @@ public:
 
 protected:
 	lb_I_GUI* gui;
-	UAP(lb_I_EventManager, eman, __FILE__, __LINE__)
-	UAP(lb_I_Dispatcher, dispatcher, __FILE__, __LINE__)
+	DEBUG_UAP(lb_I_EventManager, eman, __FILE__, __LINE__)
+	DEBUG_UAP(lb_I_Dispatcher, dispatcher, __FILE__, __LINE__)
 };
 /*...e*/
 /*...sclass lb_EventMapper:0:*/
@@ -171,8 +174,8 @@ public:
 	
 	virtual lb_I_DispatchResponce* dispatch(lb_I_DispatchRequest* req);
 	
-	UAP(lb_I_Container, dispatcher, __FILE__, __LINE__)
-	UAP(lb_I_EventManager, evManager, __FILE__, __LINE__)
+	DEBUG_UAP(lb_I_Container, dispatcher, __FILE__, __LINE__)
+	DEBUG_UAP(lb_I_EventManager, evManager, __FILE__, __LINE__)
 };
 /*...e*/
 /*...sclass lb_EventManager:0:*/
@@ -192,13 +195,13 @@ protected:
 	friend class lb_I_Dispatcher;
 
 	// Maps id to event name	
-	UAP(lb_I_Container, events, __FILE__, __LINE__)
+	DEBUG_UAP(lb_I_Container, events, __FILE__, __LINE__)
 	
 	// Holds free id
-	UAP(lb_I_Container, freeIds, __FILE__, __LINE__)
+	DEBUG_UAP(lb_I_Container, freeIds, __FILE__, __LINE__)
 	
 	// Reverse mapping name -> id
-	UAP(lb_I_Container, reverse_events, __FILE__, __LINE__)
+	DEBUG_UAP(lb_I_Container, reverse_events, __FILE__, __LINE__)
 	
 	int maxEvId;
 };

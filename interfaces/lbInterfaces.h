@@ -381,6 +381,7 @@ public:
 	        	allowDelete = 1; \
 		} \
 		virtual ~UAP##Unknown_Reference() { \
+			LOG("Destroy " #interface " at " #Unknown_Reference) \
 			if (_autoPtr != NULL) { \
 				if (allowDelete != 1) { \
 					if (_autoPtr->deleteState() == 1) { \

@@ -1,11 +1,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.34 $
+ * $Revision: 1.35 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.34 2002/08/31 10:49:14 lothar Exp $
+ * $Id: lbModule.cpp,v 1.35 2002/09/19 19:34:12 lothar Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.35  2002/09/19 19:34:12  lothar
+ * Buggy version - only, if menu is really created
+ *
  * Revision 1.34  2002/08/31 10:49:14  lothar
  * Deactivated IR_USAGE
  *
@@ -227,7 +230,7 @@ END_IMPLEMENT_LB_UNKNOWN()
 
 
 lbErrCodes LB_STDCALL SkipList::setData(lb_I_Unknown* uk) {
-	CL_LOG("SkipList::setData(...) not implemented yet");
+	LOG("SkipList::setData(...) not implemented yet");
 	return ERR_NOT_IMPLEMENTED;
 }
 SkipList::SkipList() {
@@ -300,11 +303,11 @@ lbErrCodes LB_STDCALL SkipList::_insert(lb_I_Unknown** const e, lb_I_KeyBase** c
         _data->setModuleManager(manager.getPtr(), __FILE__, __LINE__); 
 
         _data->queryInterface("lb_I_Element", (void**) &container_data, __FILE__, __LINE__); 
-        if (container_data == NULL) CL_LOG("Could not get unknown interface of lbElement!"); 
+        if (container_data == NULL) LOG("Could not get unknown interface of lbElement!"); 
 
         lb_I_Unknown* uk_o = NULL; 
         if ((uk_o = container_data->getObject()) == NULL) { 
-                CL_LOG("Failed to insert first element in SkipList::insert"); 
+                LOG("Failed to insert first element in SkipList::insert"); 
                 return ERR_CONTAINER_INSERT; 
         } else RELEASE(uk_o); 
     } 
@@ -339,7 +342,7 @@ lbErrCodes LB_STDCALL SkipList::_remove(lb_I_KeyBase** const key) {
 /*...sbla:0:*/
 #ifdef bla
     if (container_data == NULL) { 
-        CL_LOG("Error: Can't remove from empty container!"); 
+        LOG("Error: Can't remove from empty container!"); 
         return ERR_CONTAINER_REMOVE; 
     } 
 
@@ -359,7 +362,7 @@ lbErrCodes LB_STDCALL SkipList::_remove(lb_I_KeyBase** const key) {
         } 
     } 
 #endif
-    CL_LOG("Error: No object with that key"); 
+    LOG("Error: No object with that key"); 
 /*...e*/
     return ERR_CONTAINER_REMOVE; 
 } 
@@ -377,7 +380,7 @@ lb_I_Unknown* LB_STDCALL SkipList::nextElement() {
 	if(e != NULL) {
 		return e->getObject();
 	} else {
-	        CL_LOG("Error: Please call hasMoreElements first to check if any elements are available!"); 
+	        LOG("Error: Please call hasMoreElements first to check if any elements are available!"); 
         	getch(); 
 	        return NULL; 
 	}
@@ -591,7 +594,7 @@ END_IMPLEMENT_LB_UNKNOWN()
 IMPLEMENT_LB_ELEMENT(lbSkipListElement)
 
 lbErrCodes LB_STDCALL lbSkipListElement::setData(lb_I_Unknown* uk) {
-	CL_LOG("lbSkipListElement::setData(...) not implemented yet");
+	LOG("lbSkipListElement::setData(...) not implemented yet");
 	return ERR_NOT_IMPLEMENTED;
 }
 /*...e*/
@@ -712,7 +715,7 @@ lbErrCodes LB_STDCALL lbInstance::setData(lb_I_Unknown* uk) {
 		lb_I_Instance* i;
 		
 		if (uk->queryInterface("lb_I_Instance", (void**) &i, __FILE__, __LINE__) != ERR_NONE) {
-			CL_LOG("Error: Failed to get interface lb_I_Instance")
+			LOG("Error: Failed to get interface lb_I_Instance")
 		}
 		
 		if (i != NULL) {
@@ -816,7 +819,7 @@ void LB_STDCALL lbInstanceReference::setFile(char* f) {
 }
 	
 lbErrCodes LB_STDCALL lbInstanceReference::setData(lb_I_Unknown* uk) {
-	CL_LOG("lbInstanceReference::setData(...) not implemented yet");
+	LOG("lbInstanceReference::setData(...) not implemented yet");
 	return ERR_NOT_IMPLEMENTED;
 }
 #ifdef bla
@@ -930,7 +933,7 @@ void LB_STDCALL InstanceRepository::createInstance(char* addr, char* classname, 
 		
 		lbStringKey *key = new lbStringKey(addr);
 
-		if (manager == NULL) CL_LOG("Error: InstanceRepository has got a NULL pointer for the manager");		
+		if (manager == NULL) LOG("Error: InstanceRepository has got a NULL pointer for the manager");		
 		key->setModuleManager(manager, __FILE__, __LINE__);
 		
 		lb_iList->insert((lb_I_Unknown**) &inst, (lb_I_KeyBase**) &key);
@@ -955,9 +958,9 @@ void LB_STDCALL InstanceRepository::createInstance(char* addr, char* classname, 
 			// Error. This instance is always registered
 			char buf[1000] = "";
 			sprintf(buf, "Error: Instance %s in %s at %d already registered", classname, file, line);
-			CL_LOG(buf)
+			LOG(buf)
 		} else if (strcmp(Upper(temp->addr), Upper(addr)) == 0) {
-			CL_LOG("Error: Found a registered object with the same address. Was it not deleted correctly?")
+			LOG("Error: Found a registered object with the same address. Was it not deleted correctly?")
 		} else if (temp->next == NULL) {
 			// Insert it here
 			instanceList* neu = new instanceList;
@@ -1014,7 +1017,7 @@ void LB_STDCALL InstanceRepository::addReference(char* addr, char* classname, ch
 				sprintf(buf, 
 				"Error: InstanceRepository::addReference() classname differs.\nStored: %s Given: %s\nStored was created in %s at %d with pointer %s", 
 				temp->classname, classname, temp->file, temp->line, addr);
-				CL_LOG(buf);
+				LOG(buf);
 				free ((void*) buf);
 				return;
 			}
@@ -1049,7 +1052,7 @@ void LB_STDCALL InstanceRepository::delReference(char* addr, char* classname, ch
 							rList->count--;
 							return;
 						} else {
-							if (rList->count != 1) CL_LOG("Error: Reference count is wrong")
+							if (rList->count != 1) LOG("Error: Reference count is wrong")
 							
 							if (rPrev == NULL) {
 								temp->rList = rList->next;
@@ -1095,11 +1098,11 @@ void LB_STDCALL InstanceRepository::delReference(char* addr, char* classname, ch
 					sprintf(buf, "Error: Reference was not registered (classname=%s, file=%s, line=%d)", 
 					classname, file, line);
 					#ifdef VERBOSE
-					CL_LOG(buf)
+					LOG(buf)
 					#endif
 				}
 			} else {
-				CL_LOG("Error: InstanceRepository::delReference() classname differs");
+				LOG("Error: InstanceRepository::delReference() classname differs");
 				return;
 			}
 		}
@@ -1112,20 +1115,20 @@ void LB_STDCALL InstanceRepository::delReference(char* addr, char* classname, ch
 void LB_STDCALL InstanceRepository::destroyInstance(char* addr, char* classname, char* file, int line) {
 	instanceList* temp = iList;
 	instanceList* prev = NULL;
-	CL_LOG("InstanceRepository::destroyInstance(...) called")
+	LOG("InstanceRepository::destroyInstance(...) called")
 	
 	while (temp != NULL) {
 		if ((strcmp(Upper(temp->addr), Upper(addr)) == 0) && (strcmp(temp->classname, classname) == 0)) {
 			if (prev == NULL) {
 				if (temp->rList != NULL) {
 					if (temp->rList->count >= 1) {
-						CL_LOG("Error: Destroying an instance, that always has references")
+						LOG("Error: Destroying an instance, that always has references")
 						referenceList* rTemp = temp->rList;
 						
 						while (rTemp != NULL) {
 							char buf[1000] = "";
 							sprintf(buf, "Reference for %s is at %s: %d with %d references.\n", classname, rTemp->file, rTemp->line, rTemp->count);
-							CL_LOG(buf)
+							LOG(buf)
 							referenceList* rPrev = rTemp;
 							rTemp = rTemp->next;
 							
@@ -1138,7 +1141,7 @@ void LB_STDCALL InstanceRepository::destroyInstance(char* addr, char* classname,
 						while (rTemp != NULL) {
 							char buf[1000] = "";
 							sprintf(buf, "Reference for %s is at %s: %d with %d references.\n", classname, rTemp->file, rTemp->line, rTemp->count);
-							CL_LOG(buf)
+							LOG(buf)
 							referenceList* rPrev = rTemp;
 							rTemp = rTemp->next;
 							
@@ -1158,13 +1161,13 @@ void LB_STDCALL InstanceRepository::destroyInstance(char* addr, char* classname,
 			} else {
 				if (temp->rList != NULL) {
 					if (temp->rList->count >= 1) {
-						CL_LOG("Error: Destroying an instance, that always has references")
+						LOG("Error: Destroying an instance, that always has references")
 						referenceList* rTemp = temp->rList;
 						
 						while (rTemp != NULL) {
 							char buf[1000] = "";
 							sprintf(buf, "Reference for %s is at %s: %d with %d references.\n", classname, rTemp->file, rTemp->line, rTemp->count);
-							CL_LOG(buf)
+							LOG(buf)
 							referenceList* rPrev = rTemp;
 							rTemp = rTemp->next;
 							
@@ -1177,7 +1180,7 @@ void LB_STDCALL InstanceRepository::destroyInstance(char* addr, char* classname,
 						while (rTemp != NULL) {
 							char buf[1000] = "";
 							sprintf(buf, "Reference for %s is at %s: %d with %d references.\n", classname, rTemp->file, rTemp->line, rTemp->count);
-							CL_LOG(buf)
+							LOG(buf)
 							referenceList* rPrev = rTemp;
 							rTemp = rTemp->next;
 							
@@ -1227,7 +1230,7 @@ char* LB_STDCALL InstanceRepository::getCreationLoc(char* addr) {
 /*...sInstanceRepository\58\\58\printReferences\40\char\42\ addr\41\:0:*/
 void LB_STDCALL InstanceRepository::printReferences(char* addr) {
 	instanceList* temp = iList;
-CL_LOG("InstanceRepository::printReferences(char* addr) called")	
+LOG("InstanceRepository::printReferences(char* addr) called")	
 	while(temp != NULL) {
 		if (strcmp(Upper(temp->addr), Upper(addr)) == 0) {
 			referenceList* rTemp = temp->rList;
@@ -1240,7 +1243,7 @@ CL_LOG("InstanceRepository::printReferences(char* addr) called")
 		}
 		temp = temp->next;
 	}
-CL_LOG("InstanceRepository::printReferences(char* addr) leaving")
+LOG("InstanceRepository::printReferences(char* addr) leaving")
 }
 /*...e*/
 /*...sInstanceRepository\58\\58\dumpReference\40\instanceList\42\ i\41\:0:*/
@@ -1263,7 +1266,7 @@ void LB_STDCALL InstanceRepository::loadContainer(lb_I_Module* m) {
 	lb_iList = instances;
 	
 	instanceList* temp = iList;
-	CL_LOG("Info: InstanceRepository::loadContainer(...) is not implemented completely")
+	LOG("Info: InstanceRepository::loadContainer(...) is not implemented completely")
 	while (temp != NULL) {
 		printf("Have an instance %s in %s at %d\n", temp->classname, temp->file, temp->line);
 		temp = temp->next;
@@ -1312,7 +1315,7 @@ public:
                 initializing = 0;
 /*...sVERBOSE:0:*/
 #ifdef VERBOSE
-                CL_LOG("lbModule init manager");
+                LOG("lbModule init manager");
 #endif
 /*...e*/
                 manager = this;
@@ -1323,7 +1326,7 @@ public:
                 if (ref != STARTREF) cout << "Error: Reference count mismatch" << endl;
 /*...sVERBOSE:0:*/
 #ifdef VERBOSE
-                CL_LOG("lbModule::~lbModule() called");
+                LOG("lbModule::~lbModule() called");
 #endif
 /*...e*/
         }
@@ -1417,7 +1420,7 @@ void LB_STDCALL lbModule::getXMLConfigObject(lb_I_XMLConfig** inst) {
         if ((err = lbGetFunctionPtr(ftrname, getModuleHandle(), (void**) &DLL_LB_GETXML_CONFIG_INSTANCE)) != ERR_NONE) {
             char buf[1000] = "";
             sprintf(buf, "Kann Funktion '%s' nicht finden.\n", ftrname);  
-            CL_LOG(buf);
+            LOG(buf);
             exit(1);
         }
 	
@@ -1431,7 +1434,7 @@ void LB_STDCALL lbModule::getXMLConfigObject(lb_I_XMLConfig** inst) {
 
 
         if (xml_I == NULL) {
-            CL_LOG("Konnte XML Konfigurationsinstanz nicht bekommen.\n");
+            LOG("Konnte XML Konfigurationsinstanz nicht bekommen.\n");
             exit(1);
         }
 /*...sdoc:8:*/
@@ -1472,7 +1475,7 @@ void LB_STDCALL lbModule::getXMLConfigObject(lb_I_XMLConfig** inst) {
         system_up = 1;
         
         if (*inst == NULL) { 
-        	CL_LOG("Error: queryInterface() does not return a pointer!")
+        	LOG("Error: queryInterface() does not return a pointer!")
         }
 }
 /*...e*/
@@ -1485,7 +1488,7 @@ char* LB_STDCALL lbModule::getCreationLoc(char* addr) {
 	if (IR != NULL) {
 		return IR->getCreationLoc(addr);
 	} else {
-		CL_LOG("Error: Call sequence error!");
+		LOG("Error: Call sequence error!");
 		return "Interface repository not initialized";
 	}
 #endif
@@ -1521,7 +1524,7 @@ void LB_STDCALL lbModule::notify_create(lb_I_Unknown* that, char* implName, char
         	IR->createInstance(addr, implName, file, line);
         }
 #ifdef VERBOSE
-        CL_LOG("lbModule::notify_create() called")
+        LOG("lbModule::notify_create() called")
 #endif
 #endif
 }
@@ -1536,7 +1539,7 @@ void LB_STDCALL lbModule::notify_add(lb_I_Unknown* that, char* implName, char* f
 	if (IR == NULL) {
 		char buf[1000] = "";
 		sprintf(buf, "Error: Initial lbModule::notify_create() was not done for %s in %s at %d!", implName, file, line);
-		CL_LOG(buf)
+		LOG(buf)
 		return;
 	}
 	IR->addReference(addr, implName, file, line);
@@ -1570,20 +1573,20 @@ int  LB_STDCALL lbModule::can_delete(lb_I_Unknown* that, char* implName, char* f
 
 /*...slbErrCodes lbModule\58\\58\setData\40\lb_I_Unknown\42\ uk\41\:0:*/
 lbErrCodes LB_STDCALL lbModule::setData(lb_I_Unknown* uk) {
-        CL_LOG("lbModule::setData(...) not implemented yet");
+        LOG("lbModule::setData(...) not implemented yet");
         return ERR_NOT_IMPLEMENTED;
 }
 /*...e*/
 /*...slbErrCodes LB_STDCALL lbModule\58\\58\initialize\40\\41\:0:*/
 lbErrCodes LB_STDCALL lbModule::initialize() {
-	if (initializing == 1) CL_LOG("Warning: Initialize while initializing (loop)")
+	if (initializing == 1) LOG("Warning: Initialize while initializing (loop)")
 
 	initializing = 1;
 
         if (moduleList != NULL) {
-                CL_LOG("Warning: lbModule::initialize() called more than once!");
+                LOG("Warning: lbModule::initialize() called more than once!");
                 if (((unsigned long) xml_Instance.getPtr()) == 21) {
-                	CL_LOG("Leave xml_Instance pointer undefined !!!")
+                	LOG("Leave xml_Instance pointer undefined !!!")
                 }
                 return ERR_NONE;
         }
@@ -1591,7 +1594,7 @@ lbErrCodes LB_STDCALL lbModule::initialize() {
         if (xml_Instance == NULL) {
                 getXMLConfigObject(&xml_Instance);
                 if (xml_Instance == NULL) {
-                	CL_LOG("Error: Functor has not returned a pointer!");
+                	LOG("Error: Functor has not returned a pointer!");
                 	exit(1);
                 }
 	}
@@ -1603,7 +1606,7 @@ lbErrCodes LB_STDCALL lbModule::initialize() {
         MList->queryInterface("lb_I_Container", (void**) &moduleList, __FILE__, __LINE__);
 
 	if (moduleList == NULL) {
-		CL_LOG("Error: moduleList must now be initialized!")
+		LOG("Error: moduleList must now be initialized!")
 	}
 #ifdef IR_USAGE
 	IR->loadContainer(this);
@@ -1669,7 +1672,7 @@ lb_I_ConfigObject* LB_STDCALL lbModule::findFunctorNode(lb_I_ConfigObject** _nod
                  */
                  
                 if (temp_node == NULL) {
-                        CL_LOG("temp_node is NULL!");
+                        LOG("temp_node is NULL!");
                         getch();
                 } 
                 if ((strcmp(temp_node->getName(), "Functor")) == 0) {
@@ -1684,7 +1687,7 @@ lb_I_ConfigObject* LB_STDCALL lbModule::findFunctorNode(lb_I_ConfigObject** _nod
                         return *&temp_node;
                 }
                 
-        } else CL_LOG("Get first child failed");
+        } else LOG("Get first child failed");
 
         while ((err = node->getNextChildren(&temp_node)) == ERR_NONE) {
                 if ((strcmp(temp_node->getName(), "Functor")) == 0) {
@@ -1694,14 +1697,14 @@ lb_I_ConfigObject* LB_STDCALL lbModule::findFunctorNode(lb_I_ConfigObject** _nod
         }
         
         if (err == ERR_CONFIG_NO_MORE_CHILDS) {
-                CL_LOG("No more childs found");
+                LOG("No more childs found");
         }
 
         #ifdef USE_UAP
         if (temp_node != NULL) RELEASE(temp_node);
         #endif
         
-        CL_LOG("Returning a NULL value");
+        LOG("Returning a NULL value");
         getch();        
         return NULL;
 }
@@ -1714,7 +1717,7 @@ char* LB_STDCALL lbModule::findFunctorModule(lb_I_ConfigObject** _node) {
         char buf[100] = "";
         
         if (node == NULL) {
-                CL_LOG("NULL pointer detected!");
+                LOG("NULL pointer detected!");
                 return "NULL";
         }
         
@@ -1731,8 +1734,8 @@ char* LB_STDCALL lbModule::findFunctorModule(lb_I_ConfigObject** _node) {
                                 err = temp_node->getAttributeValue("Name", value);
                                 
                                 if (err != ERR_NONE) {
-                                        CL_LOG("Error while getting attribute value");
-                                        CL_LOG(value);
+                                        LOG("Error while getting attribute value");
+                                        LOG(value);
                                         return "NULL";
                                 } else {
                                         return value;
@@ -1755,7 +1758,7 @@ char* LB_STDCALL lbModule::findFunctorModule(lb_I_ConfigObject** _node) {
                                 err = temp_node->getAttributeValue("Name", value);
                                 
                                 if (err != ERR_NONE) {
-                                        CL_LOG("Error while getting attribute value");
+                                        LOG("Error while getting attribute value");
                                         return "NULL";
                                 } else {
                                         return value;
@@ -1809,11 +1812,11 @@ char* LB_STDCALL lbModule::findFunctorName(lb_I_ConfigObject** ___node) {
          */
         
         if ((err = node->getParent(&_node)) != ERR_NONE) {
-                CL_LOG("Some errors have ocured while getting a parent node!");
+                LOG("Some errors have ocured while getting a parent node!");
         } 
         
         if ((err = _node->getParent(&__node)) != ERR_NONE) {
-                CL_LOG("Some errors have ocured while getting a parent node!");
+                LOG("Some errors have ocured while getting a parent node!");
         }
         
         if (_node != NULL) {
@@ -1830,7 +1833,7 @@ char* LB_STDCALL lbModule::findFunctorName(lb_I_ConfigObject** ___node) {
                                 err = __node->getFirstChildren(&child);
                                 
                                 if (err != ERR_NONE) {
-                                        CL_LOG("Error. Children expected");
+                                        LOG("Error. Children expected");
                                         return NULL;
                                 }
                                 first = 0;
@@ -1851,7 +1854,7 @@ char* LB_STDCALL lbModule::findFunctorName(lb_I_ConfigObject** ___node) {
                                 err = child->getAttributeValue("Name", value); 
                                 
                                 if (err != ERR_NONE) {
-                                        CL_LOG("Error while getting attribute value");
+                                        LOG("Error while getting attribute value");
                                         return NULL;
                                 } else {
                                 #ifdef VERBOSE
@@ -1863,7 +1866,7 @@ char* LB_STDCALL lbModule::findFunctorName(lb_I_ConfigObject** ___node) {
                         }
                 }
         } else {
-                CL_LOG("A parent node was not found!?");
+                LOG("A parent node was not found!?");
         }
         
         char *result = new char[100];
@@ -1893,7 +1896,7 @@ lbErrCodes LB_STDCALL lbModule::getDefaultImpl(char* interfacename, lb_I_ConfigO
 /*...sget first children:8:*/
         if ((err = _node->getFirstChildren(&temp_node)) == ERR_NONE) {
                 if (temp_node == NULL) {
-                        CL_LOG("temp_node is NULL!");
+                        LOG("temp_node is NULL!");
                         getch();
                 } 
 
@@ -1914,7 +1917,7 @@ lbErrCodes LB_STDCALL lbModule::getDefaultImpl(char* interfacename, lb_I_ConfigO
                         
                 }
                 
-        } else CL_LOG("Get first child failed");
+        } else LOG("Get first child failed");
 /*...e*/
 }
 
@@ -1926,7 +1929,7 @@ lbErrCodes LB_STDCALL lbModule::getDefaultImpl(char* interfacename, lb_I_ConfigO
                 err = _node->getNextChildren(&temp_node);
                 
                 if (temp_node == NULL) {
-                        CL_LOG("temp_node is NULL!");
+                        LOG("temp_node is NULL!");
                         getch();
                         continue;
                 } 
@@ -1969,7 +1972,7 @@ lbErrCodes LB_STDCALL lbModule::getFunctors(char* interfacename, lb_I_ConfigObje
                 lb_I_Attribute* attribute;
                 
                 if (temp_node == NULL) {
-                        CL_LOG("temp_node is NULL!");
+                        LOG("temp_node is NULL!");
                         getch();
                 } 
                 
@@ -1978,12 +1981,12 @@ lbErrCodes LB_STDCALL lbModule::getFunctors(char* interfacename, lb_I_ConfigObje
                         lb_I_Unknown* uk = NULL;
                         
                         if (temp_node->queryInterface("lb_I_Unknown", (void**) &uk) != ERR_NONE) {
-                                CL_LOG("Error: Could not get unknown interface!");
+                                LOG("Error: Could not get unknown interface!");
                                 exit(1);
                         }
                         
                         if (uk == NULL) {
-                                CL_LOG("Error: Don't expect a NULL pointer here!");
+                                LOG("Error: Don't expect a NULL pointer here!");
                                 exit(1);
                         }
                         
@@ -1991,7 +1994,7 @@ lbErrCodes LB_STDCALL lbModule::getFunctors(char* interfacename, lb_I_ConfigObje
                         char* module = NULL;
                         
                         if ((err == getDefaultImpl("lb_I_Integer", node, functor, module)) != ERR_NONE) {
-                                CL_LOG("Oops!");
+                                LOG("Oops!");
                         }
                         
                         
@@ -2001,7 +2004,7 @@ lbErrCodes LB_STDCALL lbModule::getFunctors(char* interfacename, lb_I_ConfigObje
                         //functors->insert(uk, key);
                 }
                 
-        } else CL_LOG("Get first child failed");
+        } else LOG("Get first child failed");
 
         while ((err = node->getNextChildren(temp_node)) == ERR_NONE) {
                 if ((strcmp(temp_node->getName(), "InterfaceName")) == 0) {
@@ -2010,12 +2013,12 @@ lbErrCodes LB_STDCALL lbModule::getFunctors(char* interfacename, lb_I_ConfigObje
                         lb_I_Unknown* uk = NULL;
                         
                         if (temp_node->queryInterface("lb_I_Unknown", (void**) &uk) != ERR_NONE) {
-                                CL_LOG("Error: Could not get unknown interface!");
+                                LOG("Error: Could not get unknown interface!");
                                 exit(1);
                         }
                         
                         if (uk == NULL) {
-                                CL_LOG("Error: Don't expect a NULL pointer here!");
+                                LOG("Error: Don't expect a NULL pointer here!");
                                 exit(1);
                         }
                         
@@ -2026,13 +2029,13 @@ lbErrCodes LB_STDCALL lbModule::getFunctors(char* interfacename, lb_I_ConfigObje
         }
         
         if (err == ERR_CONFIG_NO_MORE_CHILDS) {
-                CL_LOG("No more childs found");
+                LOG("No more childs found");
         }
 
         if (temp_node != NULL) RELEASE(temp_node);
 #endif
 /*...e*/
-        CL_LOG("lbModule::getFunctors(...) not implemented");
+        LOG("lbModule::getFunctors(...) not implemented");
         return ERR_NONE;
 }
 /*...e*/
@@ -2146,7 +2149,7 @@ lbModuleContainer::~lbModuleContainer() {
 IMPLEMENT_LB_I_CONTAINER_IMPL(lbModuleContainer)
 
 lbErrCodes lbModuleContainer::setData(lb_I_Unknown* uk) {
-        CL_LOG("lbModuleContainer::setData(...) not implemented yet");
+        LOG("lbModuleContainer::setData(...) not implemented yet");
         return ERR_NOT_IMPLEMENTED;
 }
 /*...e*/
@@ -2158,7 +2161,7 @@ END_IMPLEMENT_LB_UNKNOWN()
 IMPLEMENT_LB_ELEMENT(lbElement)
 
 lbErrCodes lbElement::setData(lb_I_Unknown* uk) {
-        CL_LOG("lbElement::setData(...) not implemented yet");
+        LOG("lbElement::setData(...) not implemented yet");
         return ERR_NOT_IMPLEMENTED;
 }
 /*...e*/
@@ -2168,7 +2171,7 @@ BEGIN_IMPLEMENT_LB_UNKNOWN(lbNamedValue)
 END_IMPLEMENT_LB_UNKNOWN()
 
 lbErrCodes lbNamedValue::setData(lb_I_Unknown* uk) {
-        CL_LOG("lbNamedValue::setData(...) not implemented yet");
+        LOG("lbNamedValue::setData(...) not implemented yet");
         getch();
         return ERR_NOT_IMPLEMENTED;
 }
@@ -2345,7 +2348,6 @@ lbErrCodes LB_STDCALL lbModule::request(const char* request, lb_I_Unknown** resu
                         // config++;
 /*...sfind the needed node:32:*/
                         if ((err = config->getFirstChildren(&impl)) == ERR_NONE) {
-                                char buf[100] = "";
                                 impl.setLine(__LINE__);
                                 impl.setFile(__FILE__);
                                 err = impl->getAttributeValue("Name", value);
@@ -2370,7 +2372,6 @@ lbErrCodes LB_STDCALL lbModule::request(const char* request, lb_I_Unknown** resu
 
                                                 if (value != NULL) 
                                                 {
-                                                        char buf[100] = "";
                                                         impl->deleteValue(value);
                                                         value = NULL;
                                                 }
@@ -2403,7 +2404,6 @@ lbErrCodes LB_STDCALL lbModule::request(const char* request, lb_I_Unknown** resu
                                 return ERR_MODULE_NO_INTERFACE;
                         }
 /*...e*/
-                        char buf[1000] = "";
 /*...sclean up \63\\63\\63\:32:*/
                         if (value != NULL) {
                                 impl->deleteValue(value);
@@ -2424,24 +2424,11 @@ lbErrCodes LB_STDCALL lbModule::request(const char* request, lb_I_Unknown** resu
                         if ((*result) == NULL) {
                         	char buf[1000] = "";
                         	sprintf(buf, "Error: makeInstance has been failed for '%s', '%s', '%s'", request, functorName, moduleName);
-                        	LOG(buf)
+                        	CL_LOG(buf)
                         }
 /*...e*/
                         (*result)->setModuleManager(this, __FILE__, __LINE__);
 
-                        if (strcmp((*result)->getClassName(), "lbDOMNode") == 0)
-                                CL_LOG("Created a lbDOMNode in lbModule!");
-                        
-                        char addr[20] = "";
-                        
-                        sprintf(addr, "%x", *result);
-                        
-                        if (strcmp(addr, "011f47a0") == 0) {
-                        	char buf[1000] = "";
-                        	sprintf(buf, "Created an instance from %s at %s", (*result)->getClassName(), addr);
-                        	CL_LOG(buf)
-                        }
-                        
                         notify_create(*result, (*result)->getClassName());
 /*...sclean up:32:*/
                         if (moduleName != NULL) impl->deleteValue(moduleName);
@@ -2472,7 +2459,7 @@ lbErrCodes lbModule::load(char* name) {
 
         if (xml_Instance != NULL) {
             if (xml_Instance->parse() != ERR_NONE) {
-                CL_LOG("Error while parsing XML document\n");
+                LOG("Error while parsing XML document\n");
             }
         }
         
@@ -2500,27 +2487,27 @@ BOOL WINAPI DllMain(HINSTANCE dllHandle, DWORD reason, LPVOID situation) {
         switch (reason) {
                 case DLL_PROCESS_ATTACH:
                         if (situation) {
-                                CL_LOG("DLL statically loaded.\n");
+                                LOG("DLL statically loaded.\n");
                         }
                         else {
-                                //CL_LOG("DLL dynamically loaded.\n");
+                                //LOG("DLL dynamically loaded.\n");
                         }
                         break;
                 case DLL_THREAD_ATTACH:
-                        CL_LOG("New thread starting.\n");
+                        LOG("New thread starting.\n");
                         break;
                 case DLL_PROCESS_DETACH:                        
                         if (situation)
                         {
-                                CL_LOG("DLL released by system.\n");
+                                LOG("DLL released by system.\n");
                         }
                         else
                         {
-                                //CL_LOG("DLL released by program.\n");
+                                //LOG("DLL released by program.\n");
                         }
                         break;
                 case DLL_THREAD_DETACH:
-                        CL_LOG("Thread terminating.\n");
+                        LOG("Thread terminating.\n");
                 derault:
                         return FALSE;
         }
