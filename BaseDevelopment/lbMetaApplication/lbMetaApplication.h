@@ -37,11 +37,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.13 $
+ * $Revision: 1.14 $
  * $Name:  $
- * $Id: lbMetaApplication.h,v 1.13 2003/08/16 18:03:53 lollisoft Exp $
+ * $Id: lbMetaApplication.h,v 1.14 2003/08/22 17:38:35 lollisoft Exp $
  *
  * $Log: lbMetaApplication.h,v $
+ * Revision 1.14  2003/08/22 17:38:35  lollisoft
+ * Implemented a handler for a button press event and code to demonstrate
+ *
  * Revision 1.13  2003/08/16 18:03:53  lollisoft
  * Added my new address due to move
  *
@@ -147,9 +150,10 @@ public:
 	 *	char* afterentry:	Insert the entry after an exsisting entry
 	 */
 	virtual lbErrCodes LB_STDCALL addMenuEntry(char* in_menu, char* entry, char* evHandler, char* afterentry = NULL);
-	
+	virtual lbErrCodes LB_STDCALL addButton(char* buttonText, char* evHandler, int x, int y, int w, int h);
 /*...e*/
-	
+
+	lbErrCodes LB_STDCALL lbButtonTestHandler(lb_I_Unknown* uk);	
 
 protected:
 	lb_I_GUI* gui;

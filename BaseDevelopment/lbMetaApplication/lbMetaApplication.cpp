@@ -37,11 +37,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.28 $
+ * $Revision: 1.29 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.28 2003/08/16 18:03:25 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.29 2003/08/22 17:38:35 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.29  2003/08/22 17:38:35  lollisoft
+ * Implemented a handler for a button press event and code to demonstrate
+ *
  * Revision 1.28  2003/08/16 18:03:25  lollisoft
  * Added my new address due to move
  *
@@ -201,7 +204,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::registerEventHandler(lb_I_Dispatcher* 
 
 	disp->addEventHandlerFn(this, (lbEvHandler) &lb_MetaApplication::lbEvHandler1, "getBasicApplicationInfo");
 	disp->addEventHandlerFn(this, (lbEvHandler) &lb_MetaApplication::lbEvHandler2, "getMainModuleInfo");
-
+	disp->addEventHandlerFn(this, (lbEvHandler) &lb_MetaApplication::lbButtonTestHandler, "Button Test pressed");
 	return ERR_NONE;
 }
 /*...e*/
@@ -216,12 +219,24 @@ lbErrCodes LB_STDCALL lb_MetaApplication::lbEvHandler2(lb_I_Unknown* uk) {
 	_LOG << "lb_MetaApplication::lbEvHandler2() called" LOG_
 
 	if (gui != NULL) {
-	        gui->msgBox("Information", "getMainModuleInfo called up");
+	        gui->msgBox("Information", "The main module of this application is a DLL and creates a basic functionality.\nThe real application will be loaded from configuraton and then the control\nwill be delegated to it.");
 	} else {
 	        cout << "lb_MetaApplication::Initialize() called in console mode" << endl;
 	}
 
 	return ERR_NONE;
+}
+
+lbErrCodes LB_STDCALL lb_MetaApplication::lbButtonTestHandler(lb_I_Unknown* uk) {
+        _LOG << "lb_MetaApplication::lbEvHandler2() called" LOG_
+
+        if (gui != NULL) {
+                gui->msgBox("Information", "Test button has been pressed");
+        } else {
+                cout << "lb_MetaApplication::Initialize() called in console mode" << endl;
+        }
+
+        return ERR_NONE;
 }
 /*...e*/
 
@@ -274,6 +289,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::Initialize() {
 	 */
 	int getBasicApplicationInfo;
 	int getMainModuleInfo;
+	int testPressed;
 /*...e*/
 
 /*...sget the event manager:8:*/
@@ -290,6 +306,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::Initialize() {
 	printf("Register some events\n"); 
 	eman->registerEvent("getBasicApplicationInfo", getBasicApplicationInfo);
 	eman->registerEvent("getMainModuleInfo", getMainModuleInfo);
+	eman->registerEvent("Button Test pressed", testPressed);
 	printf("Registered some events\n");
 
 /*...e*/
@@ -305,6 +322,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::Initialize() {
 	// Step 3 (Load sub components, handling menus and else needed for an UI)
 	loadSubModules();
 
+/*...ssome docs:8:*/
 	/**
 	 * After initializion of all event handlers, we need to get up all
 	 * GUI accessible handlers - like menus or else.
@@ -331,6 +349,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::Initialize() {
 	 * This will be done by the loaded application from the
 	 * environment variable (TARGET_APPLICATION)
 	 */
+/*...e*/
 	
 	printf("Add a menubar\n");
 	addMenuBar("Edit");
@@ -341,16 +360,54 @@ lbErrCodes LB_STDCALL lb_MetaApplication::Initialize() {
 	// Let the GUI show a message box
 	
 	
-	addMenuEntry("Edit", "MainModuleInfo", "getMainModuleInfo", "");
-	
-	if (gui != NULL) {
-		gui->msgBox("Information", "Meta application started up");
-		//cout << "lb_MetaApplication::Initialize() called in console mode" << endl;
-	} else {
-		cout << "lb_MetaApplication::Initialize() called in console mode" << endl;
-	}
-	addMenuBar("Test");
+	addMenuEntry("Help", "MainModuleInfo", "getMainModuleInfo", "");
 
+	addButton("Press me for test", "Button Test pressed", 10, 30, 100, 20);
+	
+	int hight = 60;
+	int n = 1;
+	
+	addButton("|<", "Button Test pressed", 10, hight+n*20+n*5, 100, 20);
+	addButton("<<", "Button Test pressed", 115, hight+n*20+n*5, 100, 20);
+	addButton(">>", "Button Test pressed", 220, hight+n*20+n*5, 100, 20);
+	addButton(">|", "Button Test pressed", 325, hight+n*20+n*5, 100, 20);
+	n++;
+	addButton("|<", "Button Test pressed", 10, hight+n*20+n*5, 100, 20);
+	addButton("<<", "Button Test pressed", 115, hight+n*20+n*5, 100, 20);
+	addButton(">>", "Button Test pressed", 220, hight+n*20+n*5, 100, 20);
+	addButton(">|", "Button Test pressed", 325, hight+n*20+n*5, 100, 20);
+	n++;
+	addButton("|<", "Button Test pressed", 10, hight+n*20+n*5, 100, 20);
+	addButton("<<", "Button Test pressed", 115, hight+n*20+n*5, 100, 20);
+	addButton(">>", "Button Test pressed", 220, hight+n*20+n*5, 100, 20);
+	addButton(">|", "Button Test pressed", 325, hight+n*20+n*5, 100, 20);
+	n++;
+	addButton("|<", "Button Test pressed", 10, hight+n*20+n*5, 100, 20);
+	addButton("<<", "Button Test pressed", 115, hight+n*20+n*5, 100, 20);
+	addButton(">>", "Button Test pressed", 220, hight+n*20+n*5, 100, 20);
+	addButton(">|", "Button Test pressed", 325, hight+n*20+n*5, 100, 20);
+	n++;
+	addButton("|<", "Button Test pressed", 10, hight+n*20+n*5, 100, 20);
+	addButton("<<", "Button Test pressed", 115, hight+n*20+n*5, 100, 20);
+	addButton(">>", "Button Test pressed", 220, hight+n*20+n*5, 100, 20);
+	addButton(">|", "Button Test pressed", 325, hight+n*20+n*5, 100, 20);
+	n++;
+	addButton("|<", "Button Test pressed", 10, hight+n*20+n*5, 100, 20);
+	addButton("<<", "Button Test pressed", 115, hight+n*20+n*5, 100, 20);
+	addButton(">>", "Button Test pressed", 220, hight+n*20+n*5, 100, 20);
+	addButton(">|", "Button Test pressed", 325, hight+n*20+n*5, 100, 20);
+	n++;
+	addButton("|<", "Button Test pressed", 10, hight+n*20+n*5, 100, 20);
+	addButton("<<", "Button Test pressed", 115, hight+n*20+n*5, 100, 20);
+	addButton(">>", "Button Test pressed", 220, hight+n*20+n*5, 100, 20);
+	addButton(">|", "Button Test pressed", 325, hight+n*20+n*5, 100, 20);
+	n++;
+	addButton("|<", "Button Test pressed", 10, hight+n*20+n*5, 100, 20);
+	addButton("<<", "Button Test pressed", 115, hight+n*20+n*5, 100, 20);
+	addButton(">>", "Button Test pressed", 220, hight+n*20+n*5, 100, 20);
+	addButton(">|", "Button Test pressed", 325, hight+n*20+n*5, 100, 20);
+	n++;
+	
 	return ERR_NONE;
 }
 /*...e*/
@@ -402,6 +459,51 @@ lbErrCodes LB_STDCALL lb_MetaApplication::addMenuBar(char* name) {
 
 lbErrCodes LB_STDCALL lb_MetaApplication::addMenu(char* name) {
 	return ERR_NONE;
+}
+
+lbErrCodes LB_STDCALL lb_MetaApplication::addButton(char* buttonText, char* evHandler, int x, int y, int w, int h) {
+        lbErrCodes err = ERR_NONE;
+
+	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, value)
+	UAP_REQUEST(manager.getPtr(), lb_I_Integer, i)
+	
+	
+	parameter->setData("buttontext");
+	value->setData(buttonText);
+	param->setUAPString(*&parameter, *&value);
+	
+	parameter->setData("handlername");
+	value->setData(evHandler);
+	param->setUAPString(*&parameter, *&value);
+	
+	parameter->setData("x");
+	i->setData(x);
+	param->setUAPInteger(*&parameter, *&i);
+
+	parameter->setData("y");
+	i->setData(y);
+	param->setUAPInteger(*&parameter, *&i);
+
+	parameter->setData("w");
+	i->setData(w);
+	param->setUAPInteger(*&parameter, *&i);
+
+	parameter->setData("h");
+	i->setData(h);
+	param->setUAPInteger(*&parameter, *&i);
+
+	UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
+	QI(param, lb_I_Unknown, uk, __FILE__, __LINE__)
+	
+	UAP_REQUEST(manager.getPtr(), lb_I_String, result)
+	UAP(lb_I_Unknown, uk_result, __FILE__, __LINE__)
+	QI(result, lb_I_Unknown, uk_result, __FILE__, __LINE__)
+	
+	dispatcher->dispatch("AddButton", uk.getPtr(), &uk_result);
+
+	return err;
 }
 
 lbErrCodes LB_STDCALL lb_MetaApplication::addMenuEntry(char* in_menu, char* entry, char* evHandler, char* afterentry) {

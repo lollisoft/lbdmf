@@ -6,7 +6,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.8 2003/07/15 22:04:03 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.9 2003/08/22 17:41:53 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -517,6 +517,7 @@ class MyApp: public wxApp
 	  wxGUI = NULL;
 	  metaApp = NULL;
 #endif
+	 panel = NULL;
 	}
 
 	virtual ~MyApp() { 
@@ -555,6 +556,7 @@ class MyApp: public wxApp
 	lbErrCodes LB_STDCALL lbEvHandler1(lb_I_Unknown* uk);
 	lbErrCodes LB_STDCALL lbEvHandler2(lb_I_Unknown* uk);
 	lbErrCodes LB_STDCALL lbEvHandler3(lb_I_Unknown* uk);	
+	lbErrCodes LB_STDCALL addButton(lb_I_Unknown* uk);
 
         lbErrCodes LB_STDCALL HandleGetFrame(lb_I_Unknown* uk); // Thread parameter as output
         lbErrCodes LB_STDCALL HandleAddMenu(lb_I_Unknown* uk);  // Thread parameter as input
@@ -605,6 +607,7 @@ protected:
         #ifndef LB_I_EXTENTIONS
         MyFrame *frame;
         #endif
+        wxPanel *panel;
 };
 /*...e*/
 
@@ -900,10 +903,10 @@ bool MyApp::OnInit(void)
 /*...sMake a panel with a message:0:*/
   // Make a panel with a message
 #ifdef LB_I_EXTENTIONS
-  wxPanel *panel = new wxPanel(frame_peer, -1, wxPoint(0, 0), wxSize(400, 200), wxTAB_TRAVERSAL);
+  panel = new wxPanel(frame_peer, -1, wxPoint(0, 0), wxSize(400, 200), wxTAB_TRAVERSAL);
 #endif
 #ifndef LB_I_EXTENTIONS
-  wxPanel *panel = new wxPanel(frame, -1, wxPoint(0, 0), wxSize(400, 200), wxTAB_TRAVERSAL);
+  panel = new wxPanel(frame, -1, wxPoint(0, 0), wxSize(400, 200), wxTAB_TRAVERSAL);
 #endif
 #ifdef LB_I_EXTENTIONS
   (void)new wxStaticText(panel, 311, "Hello!", wxPoint(10, 10), wxSize(-1, -1), 0);
@@ -978,6 +981,7 @@ lbErrCodes LB_STDCALL MyApp::registerEventHandler(lb_I_Dispatcher* disp) {
         disp->addEventHandlerFn(this, (lbEvHandler) &MyApp::lbEvHandler1, "AddMenu");
         disp->addEventHandlerFn(this, (lbEvHandler) &MyApp::lbEvHandler2, "AddMenuBar");
         disp->addEventHandlerFn(this, (lbEvHandler) &MyApp::lbEvHandler3, "AddMenuEntry");
+	disp->addEventHandlerFn(this, (lbEvHandler) &MyApp::addButton, "AddButton");
 
         return ERR_NONE;
 }
@@ -1060,6 +1064,7 @@ lbErrCodes LB_STDCALL MyApp::lbEvHandler2(lb_I_Unknown* uk) {
  *	handlername:	Name of handler
  */
 lbErrCodes LB_STDCALL MyApp::lbEvHandler3(lb_I_Unknown* uk) {
+/*...scode:0:*/
 	_LOG << "MyApp::lbEvHandler3 called" LOG_
 	lbErrCodes err = ERR_NONE;
 
@@ -1097,6 +1102,89 @@ lbErrCodes LB_STDCALL MyApp::lbEvHandler3(lb_I_Unknown* uk) {
           &lb_wxFrame::OnDispatch );
 
 	return ERR_NONE;
+/*...e*/
+}
+
+
+/**
+ * Add a button to the active window.
+ *
+ * Params:
+ *      buttontext:     Text of the button
+ *      handlername:    Name of handler
+ */
+lbErrCodes LB_STDCALL MyApp::addButton(lb_I_Unknown* uk) {
+/*...scode:0:*/
+	_LOG << "MyApp::lbEvHandler3 called" LOG_
+	lbErrCodes err = ERR_NONE;
+
+
+//addButton("Press me for test", "Button Test pressed", 10, 10, 100, 20);
+
+
+	UAP_REQUEST(manager.getPtr(), lb_I_EventManager, ev_manager)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, buttontext)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, handlername)
+	UAP_REQUEST(manager.getPtr(), lb_I_Integer, x)
+	UAP_REQUEST(manager.getPtr(), lb_I_Integer, y)
+	UAP_REQUEST(manager.getPtr(), lb_I_Integer, w)
+	UAP_REQUEST(manager.getPtr(), lb_I_Integer, h)	
+	
+	
+	UAP(lb_I_Parameter, param, __FILE__, __LINE__)
+
+	QI(uk, lb_I_Parameter, param, __FILE__, __LINE__)
+
+
+	parameter->setData("buttontext");
+	param->getUAPString(*&parameter, *&buttontext);
+	parameter->setData("handlername");
+	param->getUAPString(*&parameter, *&handlername);
+	parameter->setData("x");
+	param->getUAPInteger(*&parameter, *&x);	
+	parameter->setData("y");
+	param->getUAPInteger(*&parameter, *&y);	
+	parameter->setData("w");
+	param->getUAPInteger(*&parameter, *&w);	
+	parameter->setData("h");
+	param->getUAPInteger(*&parameter, *&h);	
+	
+	int EvNr = 0;
+	ev_manager->resolveEvent(handlername->getData(), EvNr);
+
+
+
+	lb_wxFrame* f = frame_peer->getPeer();
+	
+	_LOG "Create a button" LOG_
+	
+//	if (panel == NULL) panel = new wxPanel(f);
+	
+	wxButton *button = new wxButton(panel, EvNr, buttontext->getData(), 
+					wxPoint(x->getData(),y->getData()), 
+					wxSize((int) w->getData(),(int) h->getData() ));
+
+	((wxFrame*) frame_peer)->Connect( EvNr,  -1, wxEVT_COMMAND_BUTTON_CLICKED,
+	  (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
+	    &lb_wxFrame::OnDispatch );
+
+/*
+	wxMenuBar* mbar = frame_peer->getMenuBar();
+	wxMenu* menu = mbar->GetMenu(mbar->FindMenu(wxString(menubar->getData())));
+
+	menu->Append(EvNr, menuname->getData());
+
+
+	((wxFrame*) frame_peer)->Connect( EvNr,  -1, wxEVT_COMMAND_MENU_SELECTED,
+          (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
+          &lb_wxFrame::OnDispatch );
+*/
+
+
+
+	return ERR_NONE;
+/*...e*/
 }
 /*...e*/
 #endif
