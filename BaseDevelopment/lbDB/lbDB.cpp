@@ -123,7 +123,7 @@ class lbQuery :
 public lb_I_Query
 {
 public:
-	lbQuery() { hdbc = 0; hstmt = 0; }
+	lbQuery() { hdbc = 0; hstmt = 0; databound = 0; count = 0; }
 	virtual ~lbQuery() {}
 	
 	DECLARE_LB_UNKNOWN()
@@ -151,8 +151,10 @@ public:
         virtual lbErrCodes LB_STDCALL previous();
         virtual lbErrCodes LB_STDCALL last();
         virtual char* LB_STDCALL getChar(int column);
+        
 	
 	lbErrCodes LB_STDCALL init(HENV henv, HDBC _hdbc);
+	int LB_STDCALL getColCount();
 
 private:
 	HENV    henv;
@@ -160,6 +162,10 @@ private:
 	HSTMT   hstmt;
 	RETCODE retcode;
 	char    szSql[256];
+	int	databound;
+	
+	UAP(lb_I_Container, boundColumns, __FILE__, __LINE__)
+	int count;
 };
 /*...e*/
 
@@ -225,20 +231,144 @@ lbErrCodes LB_STDCALL lbQuery::query(char* q) {
 }
 /*...e*/
 
+
+#ifdef bla
+/*...s:0:*/
+#define STR_LEN 128+1
+#define REM_LEN 254+1
+
+/* Declare storage locations for result set data */
+
+UCHAR  szQualifier[STR_LEN], szOwner[STR_LEN];
+UCHAR  szTableName[STR_LEN], szColName[STR_LEN];
+UCHAR  szTypeName[STR_LEN], szRemarks[REM_LEN];
+SDWORD Precision, Length;
+SWORD  DataType, Scale, Radix, Nullable;
+
+/* Declare storage locations for bytes available to return */
+
+SDWORD cbQualifier, cbOwner, cbTableName, cbColName;
+SDWORD cbTypeName, cbRemarks, cbDataType, cbPrecision;
+SDWORD cbLength, cbScale, cbRadix, cbNullable;
+
+retcode = SQLColumns(hstmt,
+                     NULL, 0,              /* All qualifiers */
+
+                     NULL, 0,              /* All owners     */
+                     "EMPLOYEE", SQL_NTS,  /* EMPLOYEE table */
+                     NULL, 0);             /* All columns    */
+
+if (retcode == SQL_SUCCESS) {
+
+	/* Bind columns in result set to storage locations */
+
+	SQLBindCol(hstmt, 1, SQL_C_CHAR, szQualifier, STR_LEN,&cbQualifier);
+	SQLBindCol(hstmt, 2, SQL_C_CHAR, szOwner, STR_LEN, &cbOwner);
+	SQLBindCol(hstmt, 3, SQL_C_CHAR, szTableName, STR_LEN,&cbTableName);
+	SQLBindCol(hstmt, 4, SQL_C_CHAR, szColName, STR_LEN, &cbColName);
+	SQLBindCol(hstmt, 5, SQL_C_SSHORT, &DataType, 0, &cbDataType);
+	SQLBindCol(hstmt, 6, SQL_C_CHAR, szTypeName, STR_LEN, &cbTypeName);
+
+SQLBindCol(hstmt, 7, SQL_C_SLONG, &Precision, 0, &cbPrecision);
+	SQLBindCol(hstmt, 8, SQL_C_SLONG, &Length, 0, &cbLength);
+	SQLBindCol(hstmt, 9, SQL_C_SSHORT, &Scale, 0, &cbScale);
+	SQLBindCol(hstmt, 10, SQL_C_SSHORT, &Radix, 0, &cbRadix);
+	SQLBindCol(hstmt, 11, SQL_C_SSHORT, &Nullable, 0, &cbNullable);
+	SQLBindCol(hstmt, 12, SQL_C_CHAR, szRemarks, REM_LEN, &cbRemarks);
+
+	while(TRUE) {
+		retcode = SQLFetch(hstmt);
+		if (retcode == SQL_ERROR || retcode == SQL_SUCCESS_WITH_INFO) {
+			show_error( );
+		}
+		if (retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO){
+			...;  /* Process fetched data */
+		} else {
+			break;
+		}
+	}
+}
+/*...e*/
+#endif
+
+
+int LB_STDCALL lbQuery::getColCount() {
+	SWORD count;
+	retcode = SQLNumResultCols(hstmt, &count);
+	
+	return count;
+}
+
+UAP(lb_I_Integer, key, __FILE__, __LINE__)
+
+
 virtual char* LB_STDCALL lbQuery::getChar(int column) {
 	SDWORD cbobjecttyp;
 	char   szobjecttyp[SZLEN+100];
+	lbErrCodes err = ERR_NONE;
 
-	// buffer length problems, but don't know exactly why
 
-	retcode = SQLGetData(hstmt, column,SQL_C_CHAR,   szobjecttyp,      SZLEN+50, &cbobjecttyp);
+	if (databound == 0) {
+/*...sPrebind columns:16:*/
+		// Prebound data from row
+		
+		if (boundColumns == NULL) {
+			REQUEST(manager.getPtr(), lb_I_Container, boundColumns)
+		} else {
+			_LOG << "Delete bound collumns" LOG_
+			boundColumns->deleteAll();
+		}
+		
+		if (boundColumns == NULL) _LOG << "Error: Unable to prebind columns!" LOG_
+		
+		count = getColCount();
+		
+//		UAP_REQUEST(manager.getPtr(), lb_I_Integer, key)
+		UAP_REQUEST(manager.getPtr(), lb_I_String, string)
+		
+		for (int i = 1; i <= count; i++) {
+			retcode = SQLGetData(hstmt, i, SQL_C_CHAR, szobjecttyp, SZLEN+50, &cbobjecttyp);
 
-	if (retcode == SQL_ERROR || retcode == SQL_SUCCESS_WITH_INFO) {
-	        dbError( "SQLGetData()",henv,hdbc,hstmt);
-	        _LOG << "lbQuery::getChar(): Error while get data" LOG_
-	        return "Uninizialized";
+			if (retcode == SQL_ERROR || retcode == SQL_SUCCESS_WITH_INFO) {
+	        		dbError( "SQLGetData()",henv,hdbc,hstmt);
+	        		_LOG << "lbQuery::getChar(): Error while get data" LOG_
+			} else {
+				// Strip trailing blanks
+				while (szobjecttyp[strlen(szobjecttyp)-1] == ' ') szobjecttyp[strlen(szobjecttyp)-1] = 0;
+
+				string->setData(szobjecttyp);
+				UAP(lb_I_KeyBase, bkey, __FILE__, __LINE__)
+				UAP(lb_I_Unknown, ustring, __FILE__, __LINE__)
+				QI(key, lb_I_KeyBase, bkey, __FILE__, __LINE__)
+				QI(string, lb_I_Unknown, ustring, __FILE__, __LINE__)
+				
+				key->setData(i);
+				
+				boundColumns->insert(&ustring, &bkey);
+				boundColumns->getElement(&bkey);
+			}
+		}
+		
+		databound = 1;
+/*...e*/
 	}
-	return szobjecttyp;
+	
+	if (key == NULL) {
+		REQUEST(manager.getPtr(), lb_I_Integer, key)
+	}
+	
+	key->setData(column);
+	UAP(lb_I_KeyBase, bkey, __FILE__, __LINE__)
+	QI(key, lb_I_KeyBase, bkey, __FILE__, __LINE__)
+	
+	UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
+
+	uk = boundColumns->getElement(&bkey);
+	
+	UAP(lb_I_String, string, __FILE__, __LINE__)
+	QI(uk, lb_I_String, string, __FILE__, __LINE__)
+
+	return string->getData();
 }
 
 lbErrCodes LB_STDCALL lbQuery::first() {
@@ -246,6 +376,10 @@ lbErrCodes LB_STDCALL lbQuery::first() {
 }
 
 lbErrCodes LB_STDCALL lbQuery::next() {
+
+	// Indicate, that data must prebound to a buffer
+	databound = 0;
+
 	retcode = SQLFetch(hstmt);
 
 	if (retcode == SQL_ERROR || retcode == SQL_SUCCESS_WITH_INFO) {
