@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.34 $
+# * $Revision: 1.35 $
 # * $Name:  $
-# * $Id: Makefile,v 1.34 2005/03/06 12:02:45 lollisoft Exp $
+# * $Id: Makefile,v 1.35 2005/03/15 14:43:51 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.35  2005/03/15 14:43:51  lollisoft
+# * Changes for linux to build and let GUI running with plugins
+# *
 # * Revision 1.34  2005/03/06 12:02:45  lollisoft
 # * Added touching lbkey.h in include directory to avoid build failures (osx)
 # *
@@ -148,6 +151,7 @@ ifeq ($(OSTYPE), osx)
 
 TARGETDLL=so
 TARGETEXE=elf
+TARGETPLUGIN=soplugin
 
 ALLTARGETS = \
 	../include/lbkey.h \
@@ -171,16 +175,20 @@ ifeq ($(OSTYPE), linux)
 
 TARGETDLL=so
 TARGETEXE=elf
+TARGETPLUGIN=soplugin
 
 ALLTARGETS = lbHook \
 	lbDB \
 	lbModule \
 	lbclasses \
 	lbMetaApplication \
+	lbPluginManager \
+	../Plugins/DatabaseForm \
 	../AppDevelopmentDemo/App \
 	../AppDevelopmentDemo/DynamicApp/App \
 	../Test/Console/XML \
 	../Test/GUI/wxWrapper \
+	../Test/GUI/wxPlugins/lbLoginWizard \
 	../Doc/html
 endif
 
@@ -188,6 +196,7 @@ ifeq ($(OSTYPE), Windows_NT)
 
 TARGETDLL=dll
 TARGETEXE=exe
+TARGETPLUGIN=plugin
 
 ALLTARGETS = \
 	lbHook \
@@ -275,7 +284,7 @@ ifeq ($(OSTYPE), Windows_NT)
 	$(MAKE) -C $@
 
 ../Test/GUI/wxPlugins/lbLoginWizard: dummy
-	$(MAKE) -C $@ -e MODULE=lbLoginWizard -e TARGET=plugin -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
+	$(MAKE) -C $@ -e MODULE=lbLoginWizard -e TARGET=$(TARGETPLUGIN) -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
 	$(MAKE) -C $@
 endif
 
@@ -291,7 +300,7 @@ endif
 	$(MAKE) -C $@
 
 ../Plugins/DatabaseForm: dummy
-	$(MAKE) -C $@ -e MODULE=lbDatabaseForm -e TARGET=plugin -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
+	$(MAKE) -C $@ -e MODULE=lbDatabaseForm -e TARGET=$(TARGETDLL) -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
 	$(MAKE) -C $@
 
 lbHook: dummy

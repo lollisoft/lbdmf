@@ -240,15 +240,6 @@ public:
 #endif
 #ifndef UNBOUND
 
-	/** \brief Check for NULL value.
-	 * 
-	 * If the column in the database is a NULL value - no real data has been assigned,
-	 * the bound column would not be set correctly.
-	 *
-	 * This function helps to set proper value.
-	 */
-	virtual bool            LB_STDCALL isNull(int column) = 0;
-
 	/**
 	 * \brief Get the column data as lb_I_String* instance.
 	 * 
@@ -628,7 +619,7 @@ public:
 	 * A database form needs a query object, from whom it should
 	 * show the data.
 	 */
-	virtual void LB_STDCALL init(char* formName, char* SQLString, char* DBName, char* DBUser, char* DBPass);
+	virtual void LB_STDCALL init(char* formName, char* SQLString, char* DBName, char* DBUser, char* DBPass) = 0;
 	
 };
 /*...e*/

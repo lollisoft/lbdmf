@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.56 2005/03/14 18:59:03 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.57 2005/03/15 14:43:52 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.56 $
+ * $Revision: 1.57 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.56 2005/03/14 18:59:03 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.57 2005/03/15 14:43:52 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.57  2005/03/15 14:43:52  lollisoft
+ * Changes for linux to build and let GUI running with plugins
+ *
  * Revision 1.56  2005/03/14 18:59:03  lollisoft
  * Various changes and additions to make plugins also work with database forms
  *
@@ -3091,7 +3094,7 @@ _LOG << "Initialized metaapplication" LOG_
 
 // Not yet working under Mac OS X, not yet tested under Linux
 #ifndef OSX
-#ifndef LINUX
+//#ifndef LINUX
 /*
  * Try to load all plugins and initialize it.
  */
@@ -3120,7 +3123,7 @@ _LOG << "Initialized metaapplication" LOG_
 
 	printf("Tested plugin manager\n");
 
-#endif
+//#endif
 #endif
 
 #ifdef LB_I_EXTENTIONS

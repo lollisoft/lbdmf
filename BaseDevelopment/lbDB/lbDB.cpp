@@ -249,7 +249,6 @@ public:
         virtual char* 		LB_STDCALL getChar(int column);
 #endif
 #ifndef UNBOUND       
-	virtual bool		LB_STDCALL isNull(int column);
         virtual lb_I_String*	LB_STDCALL getAsString(int column);
 	virtual lbErrCodes	LB_STDCALL setString(lb_I_String* columnName, lb_I_String* value);
 #endif        

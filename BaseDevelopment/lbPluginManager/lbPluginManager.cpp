@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.11 $
+ * $Revision: 1.12 $
  * $Name:  $
- * $Id: lbPluginManager.cpp,v 1.11 2005/03/14 18:59:02 lollisoft Exp $
+ * $Id: lbPluginManager.cpp,v 1.12 2005/03/15 14:43:52 lollisoft Exp $
  *
  * $Log: lbPluginManager.cpp,v $
+ * Revision 1.12  2005/03/15 14:43:52  lollisoft
+ * Changes for linux to build and let GUI running with plugins
+ *
  * Revision 1.11  2005/03/14 18:59:02  lollisoft
  * Various changes and additions to make plugins also work with database forms
  *
@@ -86,6 +89,21 @@ extern "C" {
 #endif
 #ifdef __cplusplus
 }
+#endif
+
+#ifdef __WATCOMC__
+
+#include <dos.h>
+#define dd_findfirst(x,y,z) _dos_findfirst(x,y,z)
+#define dd_findnext _dos_findnext
+#define dd_ffblk find_t
+#define dd_name name
+
+#endif
+
+#ifdef LINUX
+#include <sys/types.h>
+#include <dirent.h>
 #endif
 
 #include <stdio.h>
@@ -153,9 +171,9 @@ IMPLEMENT_SINGLETON_FUNCTOR(instanceOfPluginManager, lbPluginManager)
 
 lbPluginManager::lbPluginManager() {
 	ref = STARTREF;
-	begunEnumerate = firstEnumerate = FALSE;
-	firstPlugin = TRUE;
-	lastPlugin = FALSE;
+	begunEnumerate = firstEnumerate = false;
+	firstPlugin = true;
+	lastPlugin = false;
 }
 
 lbPluginManager::~lbPluginManager() {
@@ -191,7 +209,15 @@ bool LB_STDCALL lbPluginManager::tryLoad(char* module) {
 	char* pluginModule = new char[strlen(pluginDir)+strlen(module)+2];
 	pluginModule[0] = 0;
 	strcat(pluginModule, pluginDir);
+#ifdef WINDOWS
 	strcat(pluginModule, "\\");
+#endif
+#ifdef LINUX
+	strcat(pluginModule, "/");
+#endif
+#ifdef OSX
+	strcat(pluginModule, "/");
+#endif
 	strcat(pluginModule, module);
 		
 	UAP(lb_I_Unknown, ukPlugin, __FILE__, __LINE__)
@@ -243,23 +269,59 @@ bool LB_STDCALL lbPluginManager::tryLoad(char* module) {
 /*...svoid LB_STDCALL lbPluginManager\58\\58\initialize\40\\41\:0:*/
 void LB_STDCALL lbPluginManager::initialize() {
 	if (!firstEnumerate) {
-		firstEnumerate = TRUE;
+		firstEnumerate = true;
 		
 		REQUEST(manager.getPtr(), lb_I_Container, PluginModules)
 	}
-	
-	_finddata_t find;
 
+#ifdef WINDOWS	
+	_finddata_t find;
+#endif
+
+#ifdef WINDOWS
 	char* mask = "*.dll";
+#endif
+#ifdef LINUX
+	char* mask = "*.so";
+#endif
+#ifdef OSX
+	char* mask = "*.so";
+#endif
+
 	char* pluginDir = getenv("PLUGIN_DIR");
 	char* toFind = new char[strlen(mask)+strlen(pluginDir)+2];
 	toFind[0] = 0;
 	
 	strcat(toFind, pluginDir);
+#ifdef WINDOWS
 	strcat(toFind, "\\");
+#endif
+#ifdef LINUX
+	strcat(toFind, "/");
+#endif
+#ifdef OSX
+	strcat(toFind, "/");
+#endif
 	strcat(toFind, mask);
-	
+
+	printf("Try to find plugins in %s\n", toFind);
+
+#ifdef WINDOWS	
 	long handle = _findfirst(toFind, &find);
+#endif
+#ifdef LINUX
+	DIR *dir;
+	struct dirent *dir_info;
+	
+	if ((dir = opendir(pluginDir)) == NULL) {
+	    printf("Plugin directory not found!\n");
+	    return;
+	}
+	
+	dir_info = readdir(dir);
+#endif
+
+printf("Executed dd_findfirst\n");
 
 #ifndef LINUX
         #ifdef __WATCOMC__
@@ -273,29 +335,27 @@ void LB_STDCALL lbPluginManager::initialize() {
 #define PREFIX ""
 #endif
 
+#ifdef WINDOWS
 	if (handle != -1) {
+#endif
+#ifdef LINUX
+	if (dir_info != NULL) {
+#endif
+#ifdef WINDOWS	
 		printf("Try to load plugin '%s'", find.name);
 		if (!tryLoad(find.name)) 
+#endif
+#ifdef LINUX
+		if (strstr(dir_info->d_name, ".so") != NULL)
+		    printf("Try to load plugin '%s'", dir_info->d_name);
+		
+		if ((strstr(dir_info->d_name, ".so") != NULL) && !tryLoad(dir_info->d_name)) 
+#endif
 			printf(" ... failed.\n");
 		else
 			printf(" ... succeeded.\n");
 		
-/*...stest:16:*/
-#ifdef bla
-		if (PluginModules->exists(&key) == 1) {
-			printf("Stored element is really in the container.\n");
-			
-			ukPlugin = PluginModules->getElement(&key);
-			
-			UAP(lb_I_PluginModule, PM, __FILE__, __LINE__)
-			QI(ukPlugin, lb_I_PluginModule, PM, __FILE__, __LINE__)
-			
-			
-			PM->initialize();
-		}
-#endif
-/*...e*/
-
+#ifdef WINDOWS
 		while (_findnext(handle, &find) == 0) {
 			printf("Try to load plugin '%s'", find.name);
 			if (!tryLoad(find.name)) 
@@ -303,8 +363,21 @@ void LB_STDCALL lbPluginManager::initialize() {
 			else
 			        printf(" ... succeeded.\n");
 		}
-		
+#endif
+#ifdef LINUX
+		while ((dir_info = readdir(dir)) != NULL) {
+			if (strstr(dir_info->d_name, ".so") != NULL) {
+			    printf("Try to load plugin '%s'", dir_info->d_name);
+			    if (!tryLoad(dir_info->d_name)) 
+				    printf(" ... failed.\n");
+			    else
+				    printf(" ... succeeded.\n");
+			}
+		}
+#endif
+#ifdef WINDOWS		
 		_findclose(handle);
+#endif
 	} else {
 		printf("No plugins found.\n");
 	}
@@ -322,9 +395,9 @@ bool LB_STDCALL lbPluginManager::beginEnumPlugins() {
 	if (PluginModules->hasMoreElements()) {
 		begunEnumerate = true;
 		firstPlugin = true;
-		return TRUE;
+		return true;
 	}
-	return FALSE;
+	return false;
 }
 /*...e*/
 /*...slb_I_Plugin\42\ LB_STDCALL lbPluginManager\58\\58\nextPlugin\40\\41\:0:*/
@@ -395,7 +468,7 @@ lb_I_Plugin* LB_STDCALL lbPluginManager::nextPlugin() {
 					printf("Plugin is %s in %s\n", plugin->getName(), plugin->getModule());
 				        return plugin.getPtr();
 				} else {
-					firstPlugin = TRUE;
+					firstPlugin = true;
 					
 					return nextPlugin();
 				}
@@ -414,7 +487,7 @@ lb_I_Plugin* LB_STDCALL lbPluginManager::getFirstMatchingPlugin(char* match) {
 	
 	if (beginEnumPlugins()) {
 
-        	while (TRUE) {
+        	while (true) {
 
 	                UAP(lb_I_Plugin, pl, __FILE__, __LINE__)
 
