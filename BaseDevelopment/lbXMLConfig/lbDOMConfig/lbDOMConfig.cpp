@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.47 $
+ * $Revision: 1.48 $
  * $Name:  $
- * $Id: lbDOMConfig.cpp,v 1.47 2004/03/22 22:11:08 lollisoft Exp $
+ * $Id: lbDOMConfig.cpp,v 1.48 2004/05/08 10:53:11 lollisoft Exp $
  *
  * $Log: lbDOMConfig.cpp,v $
+ * Revision 1.48  2004/05/08 10:53:11  lollisoft
+ * minor change
+ *
  * Revision 1.47  2004/03/22 22:11:08  lollisoft
  * Current version works under linux
  *
@@ -1372,6 +1375,7 @@ char* LB_STDCALL lbDOMConfig::getClassName() {
 }
 char* LB_STDCALL lbDOMConfig::_queryInterface(char* name, void** unknown, char* file, int line) {
 	char* ID = new char[strlen(name)+strlen("lbDOMConfig")+strlen(file)+1];
+	ID[0] = 0;
 	strcat(ID, name);
 	strcat(ID, "lbDOMConfig");
 	strcat(ID, file);
