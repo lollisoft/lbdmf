@@ -2,10 +2,13 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.17 $
+ * $Revision: 1.18 $
  * $Name:  $
- * $Id: misc.cpp,v 1.17 2002/10/04 16:53:14 lolli Exp $
+ * $Id: misc.cpp,v 1.18 2002/10/04 17:11:55 lolli Exp $
  * $Log: misc.cpp,v $
+ * Revision 1.18  2002/10/04 17:11:55  lolli
+ * Whats wrong ?
+ *
  * Revision 1.17  2002/10/04 16:53:14  lolli
  * Replaced old LOG macro with the new
  * _LOG << "text" << integer value LOG_
@@ -86,8 +89,6 @@
 #include <stdio.h>
 #include <time.h>
 
-//#include <lbInclude.h>
-
 #include <stdarg.h>
 #ifdef WINDOWS
 #include <windows.h>
@@ -105,17 +106,13 @@ extern "C" {
 #endif            
 
 #endif
-//#include <windef.h>
-//#include <winbase.h>
-
-#include <lbInterfaces.h>
 
 #include <lbConfigHook.h>
+#include <lbInterfaces.h>
+
 #include <lbthread.h>
 #include <lb_misc.h>
 #include <fstream.h>
-// Don't know, how to link against
-//#include <string.hpp>
 /*...e*/
 
 #ifndef  LOG_DEFINED
