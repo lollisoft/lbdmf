@@ -1,11 +1,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.42 $
+ * $Revision: 1.43 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.42 2002/12/07 13:31:20 lothar Exp $
+ * $Id: lbModule.cpp,v 1.43 2002/12/07 16:11:26 lothar Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.43  2002/12/07 16:11:26  lothar
+ * minor changes
+ *
  * Revision 1.42  2002/12/07 13:31:20  lothar
  * minor changes
  *
@@ -2774,8 +2777,8 @@ lbErrCodes LB_STDCALL lbModule::request(const char* request, lb_I_Unknown** resu
                 
 /*...e*/
         }
+	printf("Request for %s is done\n", functorName);
         if (functorName != NULL) impl->deleteValue(functorName);
-	printf("Request is done\n");
         return ERR_NONE;
 }
 /*...e*/
