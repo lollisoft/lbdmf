@@ -1,5 +1,6 @@
 #/bin/sh
 
+
 # This script creates a makefile based on templates
 
 cat ../../make/makefile.template > makefile
