@@ -25,11 +25,14 @@
 #            22453 Hamburg (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.37 $
+# * $Revision: 1.38 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.37 2003/06/23 19:47:30 lollisoft Exp $
+# * $Id: STD_MAKE,v 1.38 2003/07/15 22:11:58 lollisoft Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.38  2003/07/15 22:11:58  lollisoft
+# * Corrected link and compiler flags
+# *
 # * Revision 1.37  2003/06/23 19:47:30  lollisoft
 # * reuse dwarf and best optimations
 # *
@@ -269,7 +272,7 @@ C_DLLOPS = $(C_DLLOPS_WATCOM$(MODE))
 C_LIBOPS = $(C_LIBOPS_WATCOM$(MODE))
 
 # Watcom
-L_EXEOPS_WATCOM = -o d dwarf
+L_EXEOPS_WATCOM = op symf d dwarf
 LINK_WATCOM =wlink op q 
 L_DLLOPS_WATCOM =SYS nt_dll op m op maxe=25 op q op symf d dwarf
 
@@ -284,7 +287,7 @@ shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo \
 /libpath:"F:\develop\NT\MSC\VC98\Lib"
 
 # Standard link ops
-#L_OPS   = $(L_EXEOPS_WATCOM)
+L_EXEOPS = $(L_EXEOPS_WATCOM)
 LINK     = $(LINK_WATCOM)
 L_DLLOPS = $(L_DLLOPS_WATCOM)
 LNKDLLOPS = $(L_DLLOPS_WATCOM)
