@@ -1,11 +1,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.24 $
+ * $Revision: 1.25 $
  * $Name:  $
- * $Id: lbDOMConfig.cpp,v 1.24 2002/06/01 09:52:00 lothar Exp $
+ * $Id: lbDOMConfig.cpp,v 1.25 2002/06/01 10:18:53 lothar Exp $
  *
  * $Log: lbDOMConfig.cpp,v $
+ * Revision 1.25  2002/06/01 10:18:53  lothar
+ * pragma warning affect here
+ *
  * Revision 1.24  2002/06/01 09:52:00  lothar
  * Removed some debug lines
  *
@@ -84,6 +87,12 @@
  **************************************************************/
 
 /*...e*/
+
+// As in http://groups.google.com/groups?q=how+to+disable+warning+C4275&hl=en&lr=&selm=uGr0NDca%23GA.248%40uppssnewspub04.moswest.msn.net&rnum=1
+// documented
+#pragma warning( disable: 4275 )
+#pragma warning( disable: 4251 )
+#pragma warning( disable: 4101 )
 
 
 /*...sincludes:0:*/
