@@ -71,7 +71,7 @@
 #ifdef _MSC_VER
 #ifndef LB_STDCALL
  #ifdef WINDOWS
- #define LB_STDCALL __cdecl
+ #define LB_STDCALL __stdcall
  #endif
  #ifndef WINDOWS
  #define LB_STDCALL
@@ -80,7 +80,7 @@
 
 #ifndef LB_FUNCTORCALL
  #ifdef WINDOWS
- #define LB_FUNCTORCALL __cdecl
+ #define LB_FUNCTORCALL __stdcall
  #endif
  #ifndef WINDOWS
  #define LB_FUNCTORCALL
@@ -999,8 +999,11 @@ lbErrCodes LB_STDCALL classname::queryInterface(char* name, void** unknown, char
 /**
  * Base of all instances - the functor
  */
- 
+
+extern "C" { 
 typedef lbErrCodes (LB_STDCALL *T_pLB_GET_UNKNOWN_INSTANCE) (lb_I_Unknown**, lb_I_Module* m, char* file, int line);
+}
+
 /**
  * Idea: To ensure, that the object gets the module manager, it is locked until
  * setModuleManager is called with a correct value.
