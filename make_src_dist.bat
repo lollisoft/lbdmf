@@ -47,6 +47,6 @@ copy q:\develop\Projects\CPP\watcomenv.bat.lnk dist
 copy q:\develop\ide.bat %DEVROOT%
 del *.idb
 
-tar cvzf Output\lbDMF-Source-0.4.1.tgz dist\
+tar cvzf Output\lbDMF-Source-0.4.4.tgz dist\
 
 rem xcopy /I /E /Y dist q:\dist
