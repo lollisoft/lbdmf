@@ -182,13 +182,13 @@ lbErrCodes LB_STDCALL lbDynamicApplication::getDynamicDBForm(lb_I_Unknown* uk) {
 		char buffer[1000] = "";
 
 		sprintf(buffer,
-		        "select \"formulare\".\"id\", \"formulare\".\"name\" from \"formulare\" inner join \"anwendungen_formulare\" on "
-		        "\"formulare\".id = \"anwendungen_formulare\".\"formularid\" "
-		        "inner join \"anwendungen\" on \"anwendungen_formulare\".anwendungid = \"anwendungen\".id inner join "
+		        "select formulare.id, formulare.name from formulare inner join anwendungen_formulare on "
+		        "formulare.id = anwendungen_formulare.formularid "
+		        "inner join anwendungen on anwendungen_formulare.anwendungid = anwendungen.id inner join "
 		        "user_anwendungen on anwendungen.id = user_anwendungen.anwendungenid inner join users on "
 		        " user_anwendungen.userid = users.id where "
-		        "\"users\".userid = '%s' and \"anwendungen\".\"name\" = '%s' and "
-		        "\"formulare\".\"eventname\" = '%s'"
+		        "users.userid = '%s' and anwendungen.name = '%s' and "
+		        "formulare.eventname = '%s'"
 		                , userName, applicationName, eventName);
 
 		// Get the ID and Name of the intented formular
@@ -208,9 +208,9 @@ lbErrCodes LB_STDCALL lbDynamicApplication::getDynamicDBForm(lb_I_Unknown* uk) {
 		buffer[0] = 0;
 
 		sprintf(buffer,
-			"select \"formular_parameters\".\"parametervalue\" from formular_parameters "
-			"where \"formular_parameters\".\"parametername\" = 'query' and "
-			"\"formular_parameters\".\"formularid\" = %s", formID->charrep());
+			"select formular_parameters.parametervalue from formular_parameters "
+			"where formular_parameters.parametername = 'query' and "
+			"formular_parameters.formularid = %s", formID->charrep());
 
 		UAP(lb_I_Query, formularQuery, __FILE__, __LINE__)
 
@@ -234,7 +234,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::getDynamicDBForm(lb_I_Unknown* uk) {
 		buffer[0] = 0;
 		
 		sprintf(buffer,
-			"select \"parametername\", \"parametervalue\" from anwendungs_parameter inner join "
+			"select parametername, parametervalue from anwendungs_parameter inner join "
 			"anwendungen on anwendungs_parameter.anwendungid = anwendungen.id where "
 			"anwendungen.name = '%s'", applicationName);
 
@@ -358,12 +358,12 @@ lbErrCodes LB_STDCALL lbDynamicApplication::Initialize(char* user, char* app) {
 	char buffer[1000] = "";
 
 	sprintf(buffer,
-	        "select \"formulare\".\"eventname\", \"formulare\".\"menuname\" from \"formulare\" inner join \"anwendungen_formulare\" on "
-	        "\"formulare\".id = \"anwendungen_formulare\".\"formularid\" "
-	        "inner join \"anwendungen\" on \"anwendungen_formulare\".anwendungid = \"anwendungen\".id inner join "
+	        "select formulare.eventname, formulare.menuname from formulare inner join anwendungen_formulare on "
+	        "formulare.id = anwendungen_formulare.formularid "
+	        "inner join anwendungen on anwendungen_formulare.anwendungid = anwendungen.id inner join "
 	        "user_anwendungen on anwendungen.id = user_anwendungen.anwendungenid inner join users on "
 	        " user_anwendungen.userid = users.id where "
-	        "\"users\".userid = '%s' and \"anwendungen\".\"name\" = '%s'"
+	        "users.userid = '%s' and anwendungen.name = '%s'"
 	                , user, app);
 
 	
