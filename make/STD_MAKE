@@ -1,0 +1,6 @@
+STD_INCL = -i=.;Q:\develop\Tools\WATCOM\h;&
+Q:\develop\Tools\WATCOM\h\nt;&
+Q:\develop\projects\cpp\interfaces;&
+Q:\develop\projects\cpp\include;&
+Q:\develop\projects\dll\include;&
+Q:\develop\projects\lib\include
