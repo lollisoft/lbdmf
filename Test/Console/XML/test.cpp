@@ -73,6 +73,7 @@ void main(int argc, char *argv[]) {
 	}
 
 	lb_I_Module* mm = getModuleInstance();
+	getch();
 	mm->setModuleManager(mm, __FILE__, __LINE__);
 /*...e*/
 /*...stest container:0:*/
@@ -81,18 +82,23 @@ void main(int argc, char *argv[]) {
 	}
 	
 	lb_I_Container* c = NULL;
-
+	printf("test container 1\n");
+	getch();
 	if (uk->queryInterface("lb_I_Container", (void**) &c, __FILE__, __LINE__) != ERR_NONE) {
 		_CL_LOG << "Error: Could not get needed interface!" LOG_
 	}
 }
 /*...e*/
+	printf("Tested container 1\n");
+	getch();
 	_CL_LOG << "Tested container" LOG_
 /*...stest logger:0:*/
+	printf("test logger\n");
 	mm->request("lb_I_Log", &unknown);
 	
 	_CL_LOG << "Requested a instance for interface lb_I_Log" LOG_
-	
+	printf("tested container\n");
+	getch();
 	if (unknown != NULL) {
 		lb_I_Log* logger = NULL;
 		if (unknown->queryInterface("lb_I_Log", (void**) &logger, __FILE__, __LINE__) != ERR_NONE) {
@@ -106,28 +112,40 @@ void main(int argc, char *argv[]) {
 	}
 /*...e*/
 /*...stest container:0:*/
+	printf("test container 2\n");
+	getch();
 	if (mm->request("lb_I_Container", &uk) != ERR_NONE) {
 		_CL_LOG << "Error: Could not get needed instance!" LOG_
 	}
-	
+	printf("have instance\n");
 	lb_I_Container* c = NULL;
 
 	if (uk->queryInterface("lb_I_Container", (void**) &c, __FILE__, __LINE__) != ERR_NONE) {
 		_CL_LOG << "Error: Could not get needed interface!" LOG_
 	}
+	printf("---- have lb_I_Container interface\n");
+	getch();
 /*...e*/
 /*...stest integer:0:*/
+
 	if (mm->request("lb_I_Integer", &uk) != ERR_NONE) {
 		_CL_LOG << "Error: Could not get needed instance!" LOG_
 	}
+	printf("---- have lb_I_Integer instance\n");
+	getch();
 /*...e*/
 
 /*...stest unloading module manager:0:*/
+	printf("Uninitialize module manager\n");
+	getch();
 	mm->uninitialize();
+	printf("Release it\n");
 	RELEASE(mm)
+	printf("Unhook all modules\n");
 	unHookAll();
 /*...e*/
 /*...stest after unloading:0:*/
+	printf("Create a new module manager\n");
 	mm = getModuleInstance();
 	_CL_LOG << "Test logging after initializing the second one" LOG_
 	_CL_LOG << "Tested logging after initializing the second one" LOG_

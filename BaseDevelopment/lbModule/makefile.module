@@ -11,5 +11,5 @@ endif
 ifeq ($(OSTYPE), linux)
 MOD_INCL=$(STD_INCL)
 OBJDEP=
-VENDORLIBS=/usr/lib/lbhook.so
+VENDORLIBS=/libdev/lib/lbhook.so
 endif    

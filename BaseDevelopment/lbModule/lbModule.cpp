@@ -1,11 +1,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.40 $
+ * $Revision: 1.41 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.40 2002/11/29 19:50:26 lothar Exp $
+ * $Id: lbModule.cpp,v 1.41 2002/12/07 06:54:59 lothar Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.41  2002/12/07 06:54:59  lothar
+ * Current Linux attempt is buggy
+ *
  * Revision 1.40  2002/11/29 19:50:26  lothar
  * Compiles again under linux, but some problems at runtime with DOMString
  *
@@ -2361,11 +2364,9 @@ lbErrCodes err = ERR_NONE;
                          * ModuleHandle is the result for this loaded module.
                          */
          		HINSTANCE h = getModuleHandle();
-			printf("Got module handle\n");
 			#ifdef LINUX
 			if (strchr(module, '.') == NULL) strcat(module, ".so");
 			#endif
-			printf("Load module\n");
 			
 			
                         if ((err = lbLoadModule(module, h)) != ERR_NONE) {
@@ -2374,7 +2375,6 @@ lbErrCodes err = ERR_NONE;
                                 
                                 // return error if loading is impossible
                         }
-                        printf("Set module handle\n");
                         setModuleHandle(h);
                         
                         if (getModuleHandle() == 0) _CL_LOG << "Error: Module could not be loaded" LOG_
@@ -2594,7 +2594,6 @@ lbErrCodes LB_STDCALL lbModule::request(const char* request, lb_I_Unknown** resu
         UAP(lb_I_ConfigObject, impl, __FILE__, __LINE__)
         config.setLine(__LINE__);
         config.setFile(__FILE__);
-	printf("Decide for interface\n");
         /**
          * impl is not returned in any way, I think, so it is allowed to delete the object
          * at lost of focus.
@@ -2641,13 +2640,11 @@ lbErrCodes LB_STDCALL lbModule::request(const char* request, lb_I_Unknown** resu
                  * functor !
                  */
 /*...e*/
-		printf("Call xml_Instance->hasConfigObject(node, count)\n");
                 if (xml_Instance->hasConfigObject(node, count) == ERR_NONE) {
 /*...svars:32:*/
                         char* moduleName = NULL;
                         lb_I_ConfigObject* implementations = NULL;
                         char* value = NULL;
-			printf("Called xml_Instance->hasConfigObject(node, count)\n");
 /*...e*/
 /*...sdoc:8:*/
                         /**
@@ -2740,7 +2737,8 @@ lbErrCodes LB_STDCALL lbModule::request(const char* request, lb_I_Unknown** resu
 			printf("Find functor module\n");
                         moduleName = findFunctorModule(&impl);
                         functorName = findFunctorName(&impl);
-			printf("Found functor name\n");
+			printf("Found functor module %s\n", functorName);
+			getch();
 /*...e*/
 /*...sclean up \63\\63\\63\:32:*/
                         if (value != NULL) {
@@ -2757,15 +2755,13 @@ lbErrCodes LB_STDCALL lbModule::request(const char* request, lb_I_Unknown** resu
 				printf("Error: Instance is a NULL pointer\n");
                         }
 /*...e*/
-			printf("1\n");
                         (*result)->setModuleManager(this, __FILE__, __LINE__);
-			printf("2\n");
                         notify_create(*result, (*result)->getClassName());
 /*...sclean up:32:*/
-			printf("3\n");
                         //if (moduleName != NULL) impl->deleteValue(moduleName);
 //                        if (value != NULL) impl->deleteValue(value);
 			printf("Completely created an instance\n");
+			getch();
 /*...e*/
                 } else {
                         cout << "Something goes wrong!" << endl;

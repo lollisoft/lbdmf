@@ -1,11 +1,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.31 $
+ * $Revision: 1.32 $
  * $Name:  $
- * $Id: lbDOMConfig.cpp,v 1.31 2002/11/29 19:50:27 lothar Exp $
+ * $Id: lbDOMConfig.cpp,v 1.32 2002/12/07 06:55:00 lothar Exp $
  *
  * $Log: lbDOMConfig.cpp,v $
+ * Revision 1.32  2002/12/07 06:55:00  lothar
+ * Current Linux attempt is buggy
+ *
  * Revision 1.31  2002/11/29 19:50:27  lothar
  * Compiles again under linux, but some problems at runtime with DOMString
  *
@@ -135,8 +138,8 @@ extern "C" {
 #include <conio.h>
 
 #ifdef __cplusplus
-}      
-#endif            
+}
+#endif
 
 #ifdef WINDOWS
 #include <windows.h>
@@ -254,7 +257,7 @@ char* LB_STDCALL lbKey::charrep() const {
 #endif
 #ifdef LINUX
     sprintf(buf, "%d", key);
-#endif    
+#endif
     return strdup(buf);
 }
 /*...e*/
@@ -316,8 +319,8 @@ char* LB_STDCALL lbKeyUL::charrep() const {
 #endif
 #ifdef LINUX
     sprintf(buf, "%d", key);
-#endif    
-    
+#endif
+
     return strdup(buf);
 }
 /*...e*/
@@ -391,7 +394,7 @@ public:
 
     virtual ~DOMTreeErrorReporter()
     {
-    } 
+    }
 
 
     // -----------------------------------------------------------------------
@@ -485,9 +488,107 @@ protected:
 	char* getNameValue;
 	int debug;
 	UAP(lb_I_ConfigObject, parent, __FILE__, __LINE__)
-	
+/*	
 	UAP(lb_I_Container, lbDOMchilds, __FILE__, __LINE__)
+*/
+		class UAPUnknown_Reference {
+		private:
+		UAPUnknown_Reference(UAPUnknown_Reference& from) {
+			_CL_LOG << "Copy constructor called!" LOG_
+		}
+		public:
+	        UAPUnknown_Reference() {
+	        	_autoPtr = NULL;
+	        	_line = -1;
+	        	_file = NULL;
+	        	allowDelete = 1;
+		}
+		virtual ~UAPUnknown_Reference() {
+			if (_autoPtr != NULL) {
+				if (allowDelete != 1) {
+					if (_autoPtr->deleteState() == 1) {
+						_CL_LOG << "Error: Instance would be deleted, but it's not allowed !!" LOG_
+					}
+				}
+				if (_line == -1) {
+				}
+				RELEASE_1(_autoPtr, _file, _line);
+			}
+			if (_file != NULL) {
+				char ptr[20] = "";
+				sprintf(ptr, "%p", (void*) _file);
+				if (strcmp(ptr, "0x81fd020") != 0) free(_file);
+			}
+		}
+		void setFile(char* __file) {
+			if (_file != NULL) delete [] _file;
+			if (__file != NULL) {
+				//_file = new char [strlen(__file) + 1];
+				//_file = strcpy(_file, __file);
+				_file = strdup(__file);
+			}
+		}
+		void setLine(int __line) {
+			_line = __line;
+		}
+		
+		lb_I_Container* getPtr() const { return _autoPtr; }
+		void setPtr(lb_I_Container*& source) {
+			if (_autoPtr != NULL) {
+				_CL_LOG << "Error: UAP object still initialized!" LOG_
+			}
+			_autoPtr = source;
+		}
+		
+		lb_I_Container& operator * () {
+		return *_autoPtr; }
+		lb_I_Container* operator -> () const {
+			if (_autoPtr == NULL) {
+			}
+			return _autoPtr;
+		}
+		lb_I_Container* operator -> () {
+			if (_autoPtr == NULL) {
+			}
+			return _autoPtr;
+		}
+		UAPUnknown_Reference& operator++(int) {
+			lb_I_Container* temp = NULL;
+			_autoPtr->queryInterface("lb_I_Container", (void**) &temp, __FILE__, __LINE__);
+			return *this;
+		}
+		UAPUnknown_Reference& operator--(int) {
+			lb_I_Container* temp = NULL;
+			if (_autoPtr->release(__FILE__, __LINE__) == ERR_RELEASED) _autoPtr = NULL;
+			return *this;
+		}
+		
+		lb_I_Container ** operator & () {
+			return &_autoPtr;
+		}
+		
+		UAPUnknown_Reference& operator = (lb_I_Container* autoPtr) {
+			_autoPtr = autoPtr;
+			return *this;
+		}
+		int operator == (const lb_I_Container* b) const {
+			return _autoPtr == b;
+		}
+		int operator != (const lb_I_Container* b) const {
+			return _autoPtr != b;
+		}
+		void setDelete(int _allow) { allowDelete = _allow; }
+		
+		protected:
+	        lb_I_Container* _autoPtr;
+	        int _line;
+	        char* _file;
+	        int allowDelete;
+		};
+        lb_I_Container* _UAPUnknown_Reference;
+        UAPUnknown_Reference lbDOMchilds;
 	
+		
 //	int currentChildIndex;
 	
 	friend class lbDOMConfig;
@@ -520,26 +621,26 @@ public:
 /*...sclass lbElement:0:*/
 class lbElement : public lb_I_Element {
 public:
-    lbElement() { 
-    	ref = STARTREF; 
-    	next = NULL; 
-    	data = NULL; 
-    	key = NULL; 
+    lbElement() {
+    	ref = STARTREF;
+    	next = NULL;
+    	data = NULL;
+    	key = NULL;
     	manager = NULL;
     }
-    lbElement(char* file, int line) { 
-    	ref = STARTREF; 
-    	next = NULL; 
-    	data = NULL; 
-    	key = NULL; 
+    lbElement(char* file, int line) {
+    	ref = STARTREF;
+    	next = NULL;
+    	data = NULL;
+    	key = NULL;
     	manager = NULL;
     }
     virtual ~lbElement();
 	
 //    lbElement(const lb_I_Object &o, const lb_I_KeyBase &_key, lb_I_Element *_next=NULL);
-    lbElement(const lb_I_Element &e) { 
-    	ref = STARTREF; 
-    	next = e.getNext(); 
+    lbElement(const lb_I_Element &e) {
+    	ref = STARTREF;
+    	next = e.getNext();
     	manager = NULL;
     }
 
@@ -663,8 +764,8 @@ lbErrCodes lbDOMNode::setData(lb_I_Unknown* uk) {
 /*...sVERBOSE:0:*/
 #ifdef VERBOSE
 	if (strcmp(_node->getName(), "InterfaceName") == 0) {
-		_CL_LOG << "Cloned lbDOMNode at " << ltoa(this) << " gets data from " << 
-		ltoa(uk) << ". Cloned: " << getCreationLoc() << " Orginal: " << uk->getCreationLoc() LOG_ 
+		_CL_LOG << "Cloned lbDOMNode at " << ltoa(this) << " gets data from " <<
+		ltoa(uk) << ". Cloned: " << getCreationLoc() << " Orginal: " << uk->getCreationLoc() LOG_
 	
 	}
 #endif	
@@ -753,6 +854,7 @@ lbDOMNode::lbDOMNode() {
 /*...e*/
 /*...slbDOMNode\58\\58\\126\lbDOMNode\40\\41\:0:*/
 lbDOMNode::~lbDOMNode() {
+	printf("lbDOMNode::~lbDOMNode() called\n");
 	char ptr[20] = "";
 	sprintf(ptr, "%p", (void*) this);
 
@@ -761,12 +863,13 @@ lbDOMNode::~lbDOMNode() {
 		getNameValue = NULL;
 	}
 
-	if (ref != STARTREF) 
+	if (ref != STARTREF)
 		_CL_LOG << "Error: Reference count mismatch" LOG_
 
 
 	// Bugfix (in createAbstractedChildList)
 	lbDOMchilds--;
+	printf("lbDOMNode::~lbDOMNode() leaving\n");
 /*
 // No more because UAP	
 	if (lbDOMchilds != NULL) {
@@ -822,7 +925,7 @@ lbErrCodes LB_STDCALL lbDOMNode::setNode(DOM_Node _node) {
 		
 	}
 	
-	node = _node; 
+	node = _node;
 	if (node.isNull()) {
 		_CL_LOG << "Error: Null node could not be set!" LOG_
 		getch();
@@ -1121,7 +1224,7 @@ char* LB_STDCALL lbDOMNode::getName() {
 /*...e*/
 /*...sclass lbDOMConfig \58\ public lb_I_XMLConfig:0:*/
 /*...sclass lbDOMConfig:0:*/
-class lbDOMConfig : 
+class lbDOMConfig :
 		public lb_I_XMLConfig
 {
 protected:
@@ -1279,7 +1382,7 @@ lbErrCodes LB_STDCALL lbDOMConfig::parse() {
 		{
 		    errorsOccured = 0;
 	            parser.parse(filename);
-	            
+	
 	            doc = parser.getDocument();
 		}
 
@@ -1311,7 +1414,6 @@ lb_I_Container* LB_STDCALL lbDOMConfig::findNodesAtTreePos(const char* treePos) 
 	 */
 	lbDOMContainer* DOM_list = new lbDOMContainer;
 	lb_I_Container* list = NULL;
-printf("Have a lbDOMContainer\n");
 	DOM_list->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
 	if (DOM_list->queryInterface("lb_I_Container", (void**) &list, __FILE__, __LINE__) != NULL) {
 		_CL_LOG << "Error: Could not generate a reference with interface lb_I_Container" LOG_
@@ -1333,7 +1435,6 @@ printf("Have a lbDOMContainer\n");
 	DOM_NodeList DOMlist = doc.getElementsByTagName(((name[0] == '/') ? &name[1] : name));
 	int len = DOMlist.getLength();
 	// Cleanup
-printf("Cleanup\n");	
 	delete [] savename;
 
 /*...e*/
@@ -1347,18 +1448,13 @@ printf("Cleanup\n");
 		 * Build the path to this node by recursively getting
 		 * parents.
 		 */
-		printf("Build node path\n");		 
 		while (node != NULL) {
-			printf("Get the node name\n");
 			DOMString name = node.getNodeName();
-			printf("Got node name\n");
 			node = node.getParentNode();
-			printf("Got parent node\n");
-			name.println();
+			//name.println();
 			path = name + DOMString(((path == "") ? "" : "/")) + path;
-			path.println();
+			//path.println();
 		}
-		printf("Built node path\n");
 /*...e*/
 /*...sVERBOSE:0:*/
 #ifdef VERBOSE
@@ -1377,8 +1473,7 @@ printf("Cleanup\n");
 			 * Create the wrapper object lbDOMNode, after it has
 			 * implemented all abstract members.
 			 */
-			 
-			printf("Found an entry\n"); 
+			
 			lbDOMNode* lbNode = new lbDOMNode(__FILE__, __LINE__);
 			lbNode->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
 			lbNode->setNode(currentnode);
@@ -1411,9 +1506,7 @@ printf("Cleanup\n");
 			 * are not encapsulated in a lbDOMNode. To increase the speed for further
 			 * requests, the abstracted childs of that node are created now.
 			 */
-			printf("Create abstracted child list\n"); 
 			lbNode->childs = createAbstractedChildList(lbNode->node);
-			printf("Created it\n"); 
 			//lbNode->childs = NULL;
 #endif
 /*...e*/
@@ -1456,9 +1549,7 @@ lbErrCodes LB_STDCALL lbDOMConfig::hasConfigObject(const char* cfgObjectName, in
 	DOMString name = DOMString(cfgObjectName);
 	if (errorsOccured == 0) {
 		char buf[100] = "";
-		printf("Call findNodesAtTreePos(cfgObjectName)\n");
 		lastResult = findNodesAtTreePos(cfgObjectName);
-		printf("Called findNodesAtTreePos(cfgObjectName)\n");
 		count = lastResult->Count(); //= lastResult->getChildrenCount();
 		return err;
 	} else cout << "Any errors while parsing has been occured!" << endl;
@@ -1466,7 +1557,7 @@ lbErrCodes LB_STDCALL lbDOMConfig::hasConfigObject(const char* cfgObjectName, in
 }
 /*...e*/
 /*...slbErrCodes lbDOMConfig\58\\58\getConfigObject\40\lb_I_ConfigObject\42\\42\ \44\ const char\42\ const\41\:0:*/
-lbErrCodes LB_STDCALL lbDOMConfig::getConfigObject(lb_I_ConfigObject** cfgObj, 
+lbErrCodes LB_STDCALL lbDOMConfig::getConfigObject(lb_I_ConfigObject** cfgObj,
                                         const char* const cfgObjectName) {
 	lbErrCodes err = ERR_NONE;
 	// Try to locate the identifer in the tree
@@ -1474,7 +1565,7 @@ lbErrCodes LB_STDCALL lbDOMConfig::getConfigObject(lb_I_ConfigObject** cfgObj,
 	/**
 	 * Create the view for this result.
 	 */
-	 
+	
 	lbDOMNode *node = new lbDOMNode(__FILE__, __LINE__);
 	
 	lb_I_Container* c = NULL;

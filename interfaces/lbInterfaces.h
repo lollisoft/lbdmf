@@ -273,9 +273,17 @@ public:
 				} \
 				if (_line == -1) { \
 				} \
+				if (strcmp(#interface, "lb_I_Container") == 0) { \
+				    printf("Destroy an lb_I_Container (1)\n"); \
+				}\
 				RELEASE_1(_autoPtr, _file, _line); \
 			} \
-			if (_file) delete [] _file; \
+			if (strcmp(#interface, "lb_I_Container") == 0) { \
+			    printf("Destroy an lb_I_Container (2)\n"); \
+			}\
+			if (strcmp(#interface, "lb_I_Container") == 0) { \
+			    printf("Destroy an lb_I_Container (3)\n"); \
+			}\
 		} \
 		void setFile(char* __file) { \
 			if (_file != NULL) delete [] _file; \
@@ -573,7 +581,9 @@ void LB_STDCALL classname::setModuleManager(lb_I_Module* m, char* file, int line
 	} \
 	if (m != manager.getPtr()) m->queryInterface("lb_I_Module", (void**) &manager, file, line); \
 	manager.setLine(__LINE__); \
+	if (strcmp(#classname, "lbLog") == 0) printf("Set file parameter\n"); \
 	manager.setFile(__FILE__); \
+	if (strcmp(#classname, "lbLog") == 0) printf("Have set parameter\n"); \
 	\
 	if (manager != NULL) { \
 		char *datei = strrchr(file, '\\'); \
@@ -962,7 +972,9 @@ lbErrCodes DLLEXPORT LB_FUNCTORCALL name(lb_I_Unknown** uk, lb_I_Module* m, char
         *uk = NULL; \
         instance->setFurtherLock(0); \
         if (m != NULL) { \
+		if (strcmp(#clsname, "lbLog") == 0) printf("Functor calls setModuleManager\n"); \
         	instance->setModuleManager(m, __FILE__, __LINE__); \
+		if (strcmp(#clsname, "lbLog") == 0) printf("Functor called setModuleManager\n"); \
         } else { \
         	_CL_LOG << "Error: Functor gets no manager. This is only possible for a manager it self." LOG_ \
         } \
