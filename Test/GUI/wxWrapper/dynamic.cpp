@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.65 2005/04/02 12:49:56 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.66 2005/04/03 22:10:08 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.65 $
+ * $Revision: 1.66 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.65 2005/04/02 12:49:56 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.66 2005/04/03 22:10:08 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.66  2005/04/03 22:10:08  lollisoft
+ * Form gets destroyed and - so - self deleted. UAP is not really needed.
+ *
  * Revision 1.65  2005/04/02 12:49:56  lollisoft
  * More translations
  *
@@ -1264,7 +1267,7 @@ lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::createDBForm(char* formName, char* query
 		 * This demonstrates the extensibleability of the GUI wrapper with the new plugin
 		 * framework.
 		 */
-	
+
 		UAP_REQUEST(manager.getPtr(), lb_I_PluginManager, PM)
 		UAP(lb_I_Plugin, pl, __FILE__, __LINE__)
 		pl = PM->getFirstMatchingPlugin("lb_I_DatabaseForm");
@@ -1290,6 +1293,7 @@ lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::createDBForm(char* formName, char* query
 		QI(uk, lb_I_DatabaseForm, form, __FILE__, __LINE__)
 		
 		form->destroy();
+		form = NULL;
 		//-------------------------------------------------------
 		
 		uk = forms->getElement(&key);
@@ -1301,6 +1305,7 @@ lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::createDBForm(char* formName, char* query
 		_dialog->init(formName, queryString, DBName, DBUser, DBPass);
 		_dialog->show();
 	}
+	
 	return NULL;
 }
 /*...e*/
