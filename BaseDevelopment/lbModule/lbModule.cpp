@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.72 $
+ * $Revision: 1.73 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.72 2004/06/07 20:27:26 lollisoft Exp $
+ * $Id: lbModule.cpp,v 1.73 2004/06/16 22:10:14 lollisoft Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.73  2004/06/16 22:10:14  lollisoft
+ * Added config for lb_I_Plugin
+ *
  * Revision 1.72  2004/06/07 20:27:26  lollisoft
  * Initial plugin manager implementation
  *
@@ -1925,6 +1928,11 @@ lb_I_FunctorEntity* LB_STDCALL lbHCInterfaceRepository::getFirstEntity() {
 	
 	if (strcmp(searchArgument, "lb_I_PluginManager") == 0) {
 		functor = PREFIX "instanceOfPluginManager";
+		module = "lbPluginManager";
+	}
+	
+	if (strcmp(searchArgument, "lb_I_Plugin") == 0) {
+		functor = PREFIX "instanceOfPlugin";
 		module = "lbPluginManager";
 	}
 	
