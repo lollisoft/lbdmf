@@ -5,6 +5,9 @@
 #ifdef WINDOWS
 #define DLLEXPORT LB_DLLEXPORT
 #endif
+#ifdef LINUX     
+#define DLLEXPORT
+#endif           
 
 #endif
 
@@ -13,6 +16,9 @@
 #ifdef WINDOWS
 #define DLLEXPORT LB_DLLIMPORT
 #endif
+#ifdef LINUX     
+#define DLLEXPORT
+#endif           
 
 #endif
 

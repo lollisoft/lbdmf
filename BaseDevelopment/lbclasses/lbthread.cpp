@@ -683,7 +683,7 @@ extern "C" {
 #endif
 /*...e*/
 
-DWORD LB_DLLEXPORT LB_STDCALL lbGetCurrentThreadId() {
+DWORD DLLEXPORT LB_STDCALL lbGetCurrentThreadId() {
 #ifdef WINDOWS
 	return ::GetCurrentThreadId();
 #else
@@ -691,7 +691,7 @@ DWORD LB_DLLEXPORT LB_STDCALL lbGetCurrentThreadId() {
 #endif
 }
 
-DWORD LB_DLLEXPORT LB_STDCALL lbGetCurrentProcessId() {
+DWORD DLLEXPORT LB_STDCALL lbGetCurrentProcessId() {
 #ifdef WINDOWS
 	return ::GetCurrentProcessId();
 #else

@@ -27,6 +27,9 @@
 #ifdef WINDOWS
 #define DLLEXPORT LB_DLLEXPORT
 #endif
+#ifdef LINUX
+#define DLLEXPORT
+#endif
 
 #endif
 
@@ -35,7 +38,9 @@
 #ifdef WINDOWS
 #define DLLEXPORT LB_DLLIMPORT
 #endif
-
+#ifdef LINUX
+#define DLLEXPORT
+#endif
 #endif
 
 
@@ -77,10 +82,18 @@ DLLEXPORT void LB_STDCALL unHookAll();
 /*...e*/
 
 DLLEXPORT char* LB_STDCALL ltoa(void* ptr);
+DLLEXPORT char* LB_STDCALL itoa(int ptr);
 
+#ifdef WINDOWS
 /*...sLogging macros:0:*/
 DLLEXPORT lb_I_Log *log;
 DLLEXPORT int isInitializing;
+#endif
+#ifdef LINUX
+extern lb_I_Log *log;     
+extern int isInitializing;
+#endif
+
 
 #ifdef bla
 #ifndef  LOG_DEFINED

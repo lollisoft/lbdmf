@@ -1,11 +1,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.39 $
+ * $Revision: 1.40 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.39 2002/10/17 17:36:44 lothar Exp $
+ * $Id: lbModule.cpp,v 1.40 2002/11/29 19:50:26 lothar Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.40  2002/11/29 19:50:26  lothar
+ * Compiles again under linux, but some problems at runtime with DOMString
+ *
  * Revision 1.39  2002/10/17 17:36:44  lothar
  * Use of _CL_LOG macro
  *
@@ -853,7 +856,6 @@ void LB_STDCALL lbInstance::delReference(char* classname, char* file, int line) 
 		QI(element, lb_I_InstanceReference, instance, __FILE__, __LINE__)
 		if (instance != NULL) {
 			if (instance->getCount() == 0) {
-				DebugBreak();
 				_CL_LOG << "Warning: Reference count goes under 0!" LOG_
 			}
 			instance->setCount(instance->getCount() - 1);
@@ -1290,7 +1292,6 @@ void LB_STDCALL InstanceRepository::delReference(char* addr, char* classname, ch
         int foundReference = 0;
 
 	if (strcmp(classname, "lbStringKey") == 0) return;
-	DebugBreak();
         if (loadedContainer == 1) {
                 lbStringKey *key = new lbStringKey(addr);
 
@@ -2360,13 +2361,20 @@ lbErrCodes err = ERR_NONE;
                          * ModuleHandle is the result for this loaded module.
                          */
          		HINSTANCE h = getModuleHandle();
+			printf("Got module handle\n");
+			#ifdef LINUX
+			if (strchr(module, '.') == NULL) strcat(module, ".so");
+			#endif
+			printf("Load module\n");
+			
+			
                         if ((err = lbLoadModule(module, h)) != ERR_NONE) {
                                 // report error if still loaded
                                 _CL_LOG << "Error: Could not load the module" LOG_
                                 
                                 // return error if loading is impossible
                         }
-                        
+                        printf("Set module handle\n");
                         setModuleHandle(h);
                         
                         if (getModuleHandle() == 0) _CL_LOG << "Error: Module could not be loaded" LOG_
@@ -2374,7 +2382,9 @@ lbErrCodes err = ERR_NONE;
                         if ((err = lbGetFunctionPtr(functor, getModuleHandle(), (void**) &DLL_LB_GET_UNKNOWN_INSTANCE)) != ERR_NONE) {
                                 _CL_LOG << "Error while loading a functionpointer!" LOG_
                         } else {
+				printf("Get an unknown instance for %s\n", functor);
                                 err = DLL_LB_GET_UNKNOWN_INSTANCE(instance, this, __FILE__, __LINE__);
+				printf("Got an unknown instance\n");
 
                                 if (err != ERR_NONE) 
                                 {
@@ -2570,10 +2580,13 @@ typedef struct instances_of_module {
  * language.
  */
 lbErrCodes LB_STDCALL lbModule::request(const char* request, lb_I_Unknown** result) {
+	printf("lbModule::request() calles\n");
         lbErrCodes err = ERR_NONE;
         char buf[1000] = "";
         if (moduleList == NULL) {
+		printf("Initialize module manager\n");
                 initialize();
+		printf("Initialized module manager\n");
         }
         char* functorName = NULL;
 	buf[0] = 0;
@@ -2581,7 +2594,7 @@ lbErrCodes LB_STDCALL lbModule::request(const char* request, lb_I_Unknown** resu
         UAP(lb_I_ConfigObject, impl, __FILE__, __LINE__)
         config.setLine(__LINE__);
         config.setFile(__FILE__);
-
+	printf("Decide for interface\n");
         /**
          * impl is not returned in any way, I think, so it is allowed to delete the object
          * at lost of focus.
@@ -2628,12 +2641,13 @@ lbErrCodes LB_STDCALL lbModule::request(const char* request, lb_I_Unknown** resu
                  * functor !
                  */
 /*...e*/
-		
+		printf("Call xml_Instance->hasConfigObject(node, count)\n");
                 if (xml_Instance->hasConfigObject(node, count) == ERR_NONE) {
 /*...svars:32:*/
                         char* moduleName = NULL;
                         lb_I_ConfigObject* implementations = NULL;
                         char* value = NULL;
+			printf("Called xml_Instance->hasConfigObject(node, count)\n");
 /*...e*/
 /*...sdoc:8:*/
                         /**
@@ -2723,28 +2737,35 @@ lbErrCodes LB_STDCALL lbModule::request(const char* request, lb_I_Unknown** resu
                         }
 /*...e*/
 /*...sfind up names:32:*/
+			printf("Find functor module\n");
                         moduleName = findFunctorModule(&impl);
                         functorName = findFunctorName(&impl);
+			printf("Found functor name\n");
 /*...e*/
 /*...sclean up \63\\63\\63\:32:*/
                         if (value != NULL) {
                                 impl->deleteValue(value);
                         }
 /*...e*/
-
+			printf("Make an instance\n");
                         makeInstance(functorName, moduleName, result);
+			printf("Made an instance\n");
 /*...sLog error:32:*/
                         if ((*result) == NULL) {
                         	_CL_LOG << "Error: makeInstance has been failed for '" <<
                         	request << "', '" << functorName << "', '" << moduleName << "'" LOG_
+				printf("Error: Instance is a NULL pointer\n");
                         }
 /*...e*/
+			printf("1\n");
                         (*result)->setModuleManager(this, __FILE__, __LINE__);
-
+			printf("2\n");
                         notify_create(*result, (*result)->getClassName());
 /*...sclean up:32:*/
-                        if (moduleName != NULL) impl->deleteValue(moduleName);
+			printf("3\n");
+                        //if (moduleName != NULL) impl->deleteValue(moduleName);
 //                        if (value != NULL) impl->deleteValue(value);
+			printf("Completely created an instance\n");
 /*...e*/
                 } else {
                         cout << "Something goes wrong!" << endl;
@@ -2755,6 +2776,7 @@ lbErrCodes LB_STDCALL lbModule::request(const char* request, lb_I_Unknown** resu
 /*...e*/
         }
         if (functorName != NULL) impl->deleteValue(functorName);
+	printf("Request is done\n");
         return ERR_NONE;
 }
 /*...e*/
@@ -2795,6 +2817,7 @@ lbErrCodes DLLEXPORT LB_STDCALL lb_releaseInstance(lb_I_Unknown * inst) {
 /*...sDllMain:0:*/
 BOOL WINAPI DllMain(HINSTANCE dllHandle, DWORD reason, LPVOID situation) {
         char buf[100]="";
+	printf("lbModule.cpp DllMain(HINSTANCE dllHandle, DWORD reason, LPVOID situation) called\n");
         switch (reason) {
                 case DLL_PROCESS_ATTACH:
                         if (situation) {

@@ -42,7 +42,7 @@
            -->
 <!--...sFunction instanceOfContainer:16:-->
         <Function>
-           <FunctionName Name="_instanceOfSkipList"/>
+           <FunctionName Name="instanceOfSkipList"/>
            <Functor>
               <InterfaceName Name="lb_I_Container" Version="1.0"/>
            </Functor>
@@ -50,7 +50,7 @@
 <!--...e-->
 <!--...sFunction instanceOfLogger:16:-->
         <Function>
-           <FunctionName Name="_instanceOfLogger"/>
+           <FunctionName Name="instanceOfLogger"/>
            <Functor>
               <InterfaceName Name="lb_I_Log" Version="1.0"/>
            </Functor>
@@ -58,7 +58,7 @@
 <!--...e-->
 <!--...sFunction instanceOfIntegerKey:16:-->
         <Function>
-           <FunctionName Name="_instanceOfIntegerKey"/>
+           <FunctionName Name="instanceOfIntegerKey"/>
            <Functor>
               <InterfaceName Name="lb_I_KeyBase" Version="1.0"/>
            </Functor>
@@ -66,7 +66,7 @@
 <!--...e-->
 <!--...sFunction instanceOfInteger:16:-->
         <Function>
-           <FunctionName Name="_instanceOfInteger"/>
+           <FunctionName Name="instanceOfInteger"/>
            <Functor>
               <InterfaceName Name="lb_I_Integer" Version="1.0"/>
            </Functor>
@@ -74,7 +74,7 @@
 <!--...e-->
 <!--...sFunction instanceOfString:16:-->
         <Function>
-           <FunctionName Name="_instanceOfString"/>
+           <FunctionName Name="instanceOfString"/>
            <Functor>
               <InterfaceName Name="lb_I_String" Version="1.0"/>
            </Functor>
@@ -82,7 +82,7 @@
 <!--...e-->
 <!--...sFunction instanceOfReference:16:-->
         <Function>
-           <FunctionName Name="_instanceOfReference"/>
+           <FunctionName Name="instanceOfReference"/>
            <Functor>
               <InterfaceName Name="lb_I_Reference" Version="1.0"/>
            </Functor>
@@ -108,7 +108,7 @@
            -->
 <!--...sFunction instanceOfMetaApplication:16:-->
         <Function>
-           <FunctionName Name="_instanceOfMetaApplication"/>
+           <FunctionName Name="instanceOfMetaApplication"/>
            <Functor>
               <InterfaceName Name="lb_I_MetaApplication" Version="1.0"/>
            </Functor>
@@ -116,7 +116,7 @@
 <!--...e-->
 <!--...sFunction instanceOfEventMapper:16:-->
         <Function>
-           <FunctionName Name="_instanceOfEventMapper"/>
+           <FunctionName Name="instanceOfEventMapper"/>
            <Functor>
               <InterfaceName Name="lb_I_EventMapper" Version="1.0"/>
            </Functor>
@@ -124,7 +124,7 @@
 <!--...e-->
 <!--...sFunction instanceOfEventManager:16:-->
         <Function>
-           <FunctionName Name="_instanceOfEventManager"/>
+           <FunctionName Name="instanceOfEventManager"/>
            <Functor>
               <InterfaceName Name="lb_I_EventManager" Version="1.0"/>
            </Functor>
@@ -132,7 +132,7 @@
 <!--...e-->
 <!--...sFunction instanceOfDispatcher:16:-->
         <Function>
-           <FunctionName Name="_instanceOfDispatcher"/>
+           <FunctionName Name="instanceOfDispatcher"/>
            <Functor>
               <InterfaceName Name="lb_I_Dispatcher" Version="1.0"/>
            </Functor>
@@ -140,7 +140,7 @@
 <!--...e-->
 <!--...sFunction instanceOfEvHandler:16:-->
         <Function>
-           <FunctionName Name="_instanceOfEvHandler"/>
+           <FunctionName Name="instanceOfEvHandler"/>
            <Functor>
               <InterfaceName Name="lb_I_EvHandler" Version="1.0"/>
            </Functor>

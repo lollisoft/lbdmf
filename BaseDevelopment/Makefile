@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.1 $
+# * $Revision: 1.2 $
 # * $Name:  $
-# * $Id: Makefile,v 1.1 2001/10/14 10:25:56 lothar Exp $
+# * $Id: Makefile,v 1.2 2002/11/29 19:50:26 lothar Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.2  2002/11/29 19:50:26  lothar
+# * Compiles again under linux, but some problems at runtime with DOMString
+# *
 # * Revision 1.1  2001/10/14 10:25:56  lothar
 # * Initial
 # *
@@ -20,11 +23,12 @@ MAKESUBDIR= \
 	@( \
 	cd $@; \
 	pwd; \
-	./make.sh; \
+	./makefile.sh; \
+	make; \
 	cd ..; \
 	)
 
-all_targets: lbHook lbModule
+all_targets: lbHook lbModule lbclasses lbMetaApplication lbXMLConfig/lbDOMConfig
 
 dummy:
 
@@ -34,3 +38,11 @@ lbHook: dummy
 lbModule: dummy
 	$(MAKESUBDIR)
 
+lbclasses: dummy
+	$(MAKESUBDIR)
+
+lbMetaApplication: dummy
+	$(MAKESUBDIR)
+
+lbXMLConfig/lbDOMConfig:dummy
+	$(MAKESUBDIR)

@@ -2,10 +2,13 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.21 $
+ * $Revision: 1.22 $
  * $Name:  $
- * $Id: misc.cpp,v 1.21 2002/10/17 17:34:44 lolli Exp $
+ * $Id: misc.cpp,v 1.22 2002/11/29 19:50:27 lothar Exp $
  * $Log: misc.cpp,v $
+ * Revision 1.22  2002/11/29 19:50:27  lothar
+ * Compiles again under linux, but some problems at runtime with DOMString
+ *
  * Revision 1.21  2002/10/17 17:34:44  lolli
  * Use of _CL_LOG macro
  *
@@ -109,7 +112,7 @@
 #ifdef __cplusplus
 extern "C" {      
 #endif            
-
+#include <stdlib.h>
 #include <conio.h>
 
 #ifdef __cplusplus
@@ -427,9 +430,9 @@ void LB_STDCALL lbLog::realloc(int add_size) {
  
 lb_I_Log& LB_STDCALL lbLog::operator<< (/*lb_I_Log* logger,*/ const int i) {
 	char s[100] = "";
-	realloc(strlen(itoa(i, s, 10)) + 1);
-	lastsize = lastsize + strlen(itoa(i, s, 10)) + 1;
-	strcat(logmessage, itoa(i, s, 10));
+	realloc(strlen(itoa(i)) + 1);
+	lastsize = lastsize + strlen(itoa(i)) + 1;
+	strcat(logmessage, itoa(i));
 	return *this;
 }
 lb_I_Log& LB_STDCALL lbLog::operator<< (/*lb_I_Log* logger,*/ const char c) {
@@ -489,3 +492,4 @@ void lb_sleep(int ms)
         delay(ms * 1000);
 #endif
 }
+

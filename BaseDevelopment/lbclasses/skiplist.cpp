@@ -2,11 +2,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.9 $
+ * $Revision: 1.10 $
  * $Name:  $
- * $Id: skiplist.cpp,v 1.9 2002/10/17 17:35:13 lolli Exp $
+ * $Id: skiplist.cpp,v 1.10 2002/11/29 19:50:27 lothar Exp $
  *
  * $Log: skiplist.cpp,v $
+ * Revision 1.10  2002/11/29 19:50:27  lothar
+ * Compiles again under linux, but some problems at runtime with DOMString
+ *
  * Revision 1.9  2002/10/17 17:35:13  lolli
  * Use of _CL_LOG macro
  *
@@ -42,6 +45,11 @@
 #include <iostream.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <conio.h>
+
+#ifdef LINUX
+#include <string.h>
+#endif
 
 #include <lbInterfaces.h>
 #include <lbConfigHook.h>

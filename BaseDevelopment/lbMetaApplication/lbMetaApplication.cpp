@@ -1,11 +1,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.15 $
+ * $Revision: 1.16 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.15 2002/11/08 18:53:25 lothar Exp $
+ * $Id: lbMetaApplication.cpp,v 1.16 2002/11/29 19:50:26 lothar Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.16  2002/11/29 19:50:26  lothar
+ * Compiles again under linux, but some problems at runtime with DOMString
+ *
  * Revision 1.15  2002/11/08 18:53:25  lothar
  * Compiles now (-d1)
  *
@@ -52,6 +55,7 @@
  **************************************************************/
 /*...e*/
 #define LB_METAAPP_DLL
+
 /*...sincludes:0:*/
 
 
@@ -115,8 +119,8 @@ lb_MetaApplication::~lb_MetaApplication() {
 /*...sregister event handlers:0:*/
 lbErrCodes LB_STDCALL lb_MetaApplication::registerEventHandler(lb_I_Dispatcher* disp) {
 
-	disp->addEventHandlerFn(this, (lbEvHandler) lbEvHandler1, "getBasicApplicationInfo");
-	disp->addEventHandlerFn(this, (lbEvHandler) lbEvHandler2, "getMainModuleInfo");
+	disp->addEventHandlerFn(this, (lbEvHandler) &lb_MetaApplication::lbEvHandler1, "getBasicApplicationInfo");
+	disp->addEventHandlerFn(this, (lbEvHandler) &lb_MetaApplication::lbEvHandler2, "getMainModuleInfo");
 
 	return ERR_NONE;
 }
@@ -346,7 +350,6 @@ lb_EventManager::lb_EventManager() {
 
 lb_EventManager::~lb_EventManager() {
 	_LOG << "lb_EventManager::~lb_EventManager() called" LOG_
-	DebugBreak();
 }
 	
 lbErrCodes LB_STDCALL lb_EventManager::setData(lb_I_Unknown* uk) {

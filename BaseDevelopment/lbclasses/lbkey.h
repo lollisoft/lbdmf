@@ -2,10 +2,13 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.13 $
+ * $Revision: 1.14 $
  * $Name:  $
- * $Id: lbkey.h,v 1.13 2002/06/20 21:02:56 lolli Exp $
+ * $Id: lbkey.h,v 1.14 2002/11/29 19:50:27 lothar Exp $
  * $Log: lbkey.h,v $
+ * Revision 1.14  2002/11/29 19:50:27  lothar
+ * Compiles again under linux, but some problems at runtime with DOMString
+ *
  * Revision 1.13  2002/06/20 21:02:56  lolli
  * Added missing code for _MSC_VER
  *
@@ -105,11 +108,13 @@ private:
 /*...e*/
 /*...sclass lbStringKey \58\ public lb_I_KeyBase:0:*/
 class 
+#ifdef WINDOWS
 #ifdef HOOK_DLL
 LB_DLLEXPORT
 #endif
 #ifndef HOOK_DLL
 LB_DLLIMPORT
+#endif
 #endif
 lbStringKey : public lb_I_KeyBase {
 public:

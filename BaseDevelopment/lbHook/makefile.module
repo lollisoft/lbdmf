@@ -1,11 +1,12 @@
 # Define your module based settings
 
-OBJDEP=../dosdir/match.o ../dosdir/dosdir.o
+OBJDEP=
+#../dosdir/match.o ../dosdir/dosdir.o
 
 ifeq ($(OSTYPE), Windows_NT)
 MOD_INCL=$(STD_INCL) -i=..\dosdir
 endif
 
 ifeq ($(OSTYPE), linux)
-MOD_INCL=$(STD_INCL) -I ../dosdir
+MOD_INCL=$(STD_INCL) -I ../linuxCode
 endif    

@@ -31,7 +31,7 @@ extern "C" {
 #endif
 
 #include <lbConfigHook.h>
-#include <lbKey.h>
+#include <lbkey.h>
 
 
 HINSTANCE ModuleHandle = NULL;
@@ -39,9 +39,16 @@ HINSTANCE LB_Module_Handle = NULL;
 
 char* trackObject = NULL;
 
+DLLEXPORT char* LB_STDCALL itoa(int ptr) {
+        static char buf[20] = "";           
+        sprintf(buf, "%d", ptr);            
+        return buf;                         
+}                                           
+
 DLLEXPORT char* LB_STDCALL ltoa(void* ptr) {
         static char buf[20] = "";
-        return ltoa((long) ptr, buf, 10);
+	sprintf(buf, "%p", ptr);
+        return buf;
 }
 
 DLLEXPORT void LB_STDCALL CL_doLog(char* f, char* msg) {
@@ -87,7 +94,7 @@ DLLEXPORT void LB_STDCALL setLBModuleHandle(HINSTANCE h) {
 	LB_Module_Handle = h;
 }
 
-#ifdef bla
+#ifdef LINUX
 lb_I_Log *log = NULL;
 int isInitializing = 0;
 #endif
@@ -108,7 +115,7 @@ lbErrCodes LB_STDCALL lbLoadModule(const char* name, HINSTANCE & hinst) {
         if ((hinst = LoadLibrary(name)) == NULL)
         {
             printf("Kann DLL '%s' nicht laden.\n", name); 
-            getch(); 
+            //getch(); 
             return ERR_MODULE_NOT_FOUND;
         }
 #endif
@@ -116,7 +123,7 @@ lbErrCodes LB_STDCALL lbLoadModule(const char* name, HINSTANCE & hinst) {
 	if ((hinst = dlopen(name, RTLD_LAZY)) == NULL)
 	{
 	    printf("Kann SO module '%s' nicht laden.\n", name);
-	    getch();
+	    //getch();
 	    return ERR_MODULE_NOT_FOUND;
 	}
 #endif
@@ -139,8 +146,7 @@ lbErrCodes LB_STDCALL lbGetFunctionPtr(const char* name, HINSTANCE hinst, void**
 	{
 	    printf("Handle for library is %p\n", (void*) hinst);
             sprintf(msg, "Kann Funktion '%s' nicht finden.", name);
-            CL_LOG(msg); 
-            getch(); 
+            _LOG << msg LOG_ 
             return ERR_FUNCTION_NOT_FOUND;	    
 	}
 #endif

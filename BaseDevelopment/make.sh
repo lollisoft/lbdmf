@@ -1,7 +1,9 @@
 #!/bin/bash
 
 cd lbHook
-./make.sh
+#./make.sh
+makefile.sh
+make
 
 cd ..
 

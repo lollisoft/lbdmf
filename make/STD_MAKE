@@ -1,10 +1,13 @@
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.26 $
+# * $Revision: 1.27 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.26 2002/11/08 18:50:25 lothar Exp $
+# * $Id: STD_MAKE,v 1.27 2002/11/29 19:50:27 lothar Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.27  2002/11/29 19:50:27  lothar
+# * Compiles again under linux, but some problems at runtime with DOMString
+# *
 # * Revision 1.26  2002/11/08 18:50:25  lothar
 # * Watcom compiler produces internal error E095 with -d2 on my code.
 # * Use -d1 instead.
@@ -198,10 +201,10 @@ endif
 
 ifeq ($(OSTYPE), linux)
 
-STD_INCL = -I $(DEVROOT)/CPP/BaseDevelopment/lbHook/linuxCode \
-	-I $(DEVROOT)/CPP/interfaces \
-	-I $(DEVROOT)/CPP/include \
-	-I $(DEVROOT)/CPP/BaseDevelopment/lbclasses \
+STD_INCL = -I $(DEVROOT)/Projects/CPP/BaseDevelopment/lbHook/linuxCode \
+	-I $(DEVROOT)/Projects/CPP/interfaces \
+	-I $(DEVROOT)/Projects/CPP/include \
+	-I $(DEVROOT)/Projects/CPP/BaseDevelopment/lbclasses \
 	-I /usr/include \
 	-I /usr/include/sys \
 	-I . 

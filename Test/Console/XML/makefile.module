@@ -9,5 +9,6 @@ endif
 
 ifeq ($(OSTYPE), linux)
 MOD_INCL=$(STD_INCL)
-OBJDEP=$(DEVROOT)/CPP/BaseDevelopment/lbHook/lbHook.o $(DEVROOT)/CPP/BaseDevelopment/lbHook/conio.o
+OBJDEP=
+VENDORLIBS=/libdev/lib/lbhook.so
 endif    

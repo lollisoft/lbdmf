@@ -1,11 +1,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.30 $
+ * $Revision: 1.31 $
  * $Name:  $
- * $Id: lbDOMConfig.cpp,v 1.30 2002/10/28 18:36:55 lothar Exp $
+ * $Id: lbDOMConfig.cpp,v 1.31 2002/11/29 19:50:27 lothar Exp $
  *
  * $Log: lbDOMConfig.cpp,v $
+ * Revision 1.31  2002/11/29 19:50:27  lothar
+ * Compiles again under linux, but some problems at runtime with DOMString
+ *
  * Revision 1.30  2002/10/28 18:36:55  lothar
  * Using _CL_LOG ... LOG_
  *
@@ -152,6 +155,9 @@ extern "C" {
 
 #include <lbkey.h>
 /*...e*/
+
+
+
 
 int initialized = 0;
 /*...scheckPtr\40\void\42\ addr\44\ int line\44\ char\42\ file\44\ char\42\ cmp\41\:0:*/
@@ -688,8 +694,7 @@ lbErrCodes lbDOMNode::setData(lb_I_Unknown* uk) {
 /*...e*/
 /*...slbDOMNode\58\\58\lbDOMNode\40\char\42\ file\44\ int line\41\:0:*/
 lbDOMNode::lbDOMNode(char* file, int line) {
-
-	char ptr[2] = "";
+	char ptr[20] = "";
 	sprintf(ptr, "%p", this);
 	char msg[1000] = "";
 	sprintf(msg, "lbDOMNode::lbDOMNode(...) called at %d in %s", line, file);
@@ -705,14 +710,11 @@ lbDOMNode::lbDOMNode(char* file, int line) {
 	parent = NULL;
 	
 	manager = NULL;
-	
 
 	parent.setFile(__FILE__);
 	parent.setLine(__LINE__);
-
 	lbDOMchilds.setFile(__FILE__);
 	lbDOMchilds.setLine(__LINE__);
-
 
 	// This was the bug for the wrong deletion while leave scope
 	//parent++;
@@ -723,10 +725,8 @@ lbDOMNode::lbDOMNode(char* file, int line) {
 /*...e*/
 /*...slbDOMNode\58\\58\lbDOMNode\40\\41\:0:*/
 lbDOMNode::lbDOMNode() {
-
-	char ptr[2] = "";
+	char ptr[20] = "";
 	sprintf(ptr, "%p", this);
-
 	resetRefcount();
 //	currentChildIndex = 0;
 	lbDOMchilds = NULL;
@@ -736,7 +736,6 @@ lbDOMNode::lbDOMNode() {
 	parent = NULL;
 	
 	manager = NULL;
-	
 
 	parent.setFile(__FILE__);
 	parent.setLine(__LINE__);
@@ -1312,9 +1311,8 @@ lb_I_Container* LB_STDCALL lbDOMConfig::findNodesAtTreePos(const char* treePos) 
 	 */
 	lbDOMContainer* DOM_list = new lbDOMContainer;
 	lb_I_Container* list = NULL;
-
+printf("Have a lbDOMContainer\n");
 	DOM_list->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
-
 	if (DOM_list->queryInterface("lb_I_Container", (void**) &list, __FILE__, __LINE__) != NULL) {
 		_CL_LOG << "Error: Could not generate a reference with interface lb_I_Container" LOG_
 		if (list != NULL) _LOG << "Obviously failed queryInterface, instance pointer is not NULL!!!!" LOG_
@@ -1334,9 +1332,8 @@ lb_I_Container* LB_STDCALL lbDOMConfig::findNodesAtTreePos(const char* treePos) 
 	
 	DOM_NodeList DOMlist = doc.getElementsByTagName(((name[0] == '/') ? &name[1] : name));
 	int len = DOMlist.getLength();
-
 	// Cleanup
-	
+printf("Cleanup\n");	
 	delete [] savename;
 
 /*...e*/
@@ -1345,18 +1342,23 @@ lb_I_Container* LB_STDCALL lbDOMConfig::findNodesAtTreePos(const char* treePos) 
 		path = "";
 		DOM_Node node = DOMlist.item(i);
 		DOM_Node currentnode = node;
-		
 /*...sBuild the path:16:*/
 		/**
 		 * Build the path to this node by recursively getting
 		 * parents.
 		 */
-		 
+		printf("Build node path\n");		 
 		while (node != NULL) {
+			printf("Get the node name\n");
 			DOMString name = node.getNodeName();
+			printf("Got node name\n");
 			node = node.getParentNode();
+			printf("Got parent node\n");
+			name.println();
 			path = name + DOMString(((path == "") ? "" : "/")) + path;
+			path.println();
 		}
+		printf("Built node path\n");
 /*...e*/
 /*...sVERBOSE:0:*/
 #ifdef VERBOSE
@@ -1376,9 +1378,8 @@ lb_I_Container* LB_STDCALL lbDOMConfig::findNodesAtTreePos(const char* treePos) 
 			 * implemented all abstract members.
 			 */
 			 
-			 
+			printf("Found an entry\n"); 
 			lbDOMNode* lbNode = new lbDOMNode(__FILE__, __LINE__);
-			
 			lbNode->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
 			lbNode->setNode(currentnode);
 /*...sbla:16:*/
@@ -1410,8 +1411,9 @@ lb_I_Container* LB_STDCALL lbDOMConfig::findNodesAtTreePos(const char* treePos) 
 			 * are not encapsulated in a lbDOMNode. To increase the speed for further
 			 * requests, the abstracted childs of that node are created now.
 			 */
-			lbNode->childs = createAbstractedChildList(lbNode->node); 
-			 
+			printf("Create abstracted child list\n"); 
+			lbNode->childs = createAbstractedChildList(lbNode->node);
+			printf("Created it\n"); 
 			//lbNode->childs = NULL;
 #endif
 /*...e*/
@@ -1452,14 +1454,14 @@ lbErrCodes LB_STDCALL lbDOMConfig::hasConfigObject(const char* cfgObjectName, in
 	lbErrCodes err = ERR_NONE;
 
 	DOMString name = DOMString(cfgObjectName);
-
 	if (errorsOccured == 0) {
 		char buf[100] = "";
+		printf("Call findNodesAtTreePos(cfgObjectName)\n");
 		lastResult = findNodesAtTreePos(cfgObjectName);
+		printf("Called findNodesAtTreePos(cfgObjectName)\n");
 		count = lastResult->Count(); //= lastResult->getChildrenCount();
 		return err;
 	} else cout << "Any errors while parsing has been occured!" << endl;
-	
 	return err;
 }
 /*...e*/

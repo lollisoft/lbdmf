@@ -127,6 +127,7 @@ typedef lbErrCodes (lb_I_CallbackTarget::*lbMemberCallback)( const char* handler
 
 
 typedef lbErrCodes (lb_I_EventSink::*lb_I_EventCallback)(lb_I_Unknown* question, lb_I_Unknown* answer); 
+
 typedef lbErrCodes (LB_STDCALL lb_I_EventHandler::*lbEvHandler)(lb_I_Unknown* uk);
 /*...e*/
 

@@ -4,7 +4,7 @@
 
 cat ../../make/makefile.template > makefile
 cat makefile.module >> makefile
-echo all: lbMetaApp >> makefile
+echo all: lbMetaApplication >> makefile
 echo >> makefile
 
-mkmk SO lbMetaApp ../include,../interfaces *.cpp >> makefile
+mkmk SO lbMetaApplication ../include,../interfaces *.cpp >> makefile

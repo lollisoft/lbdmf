@@ -69,7 +69,7 @@ void main(int argc, char *argv[]) {
 	
 	if ((argc == 3) && (strcmp(argv[1], "-trackObject") == 0)) {
 		printf("Running in tracking mode\n");
-		set_trackObject(strdup(argv[2]));
+		//set_trackObject(strdup(argv[2]));
 	}
 
 	lb_I_Module* mm = getModuleInstance();
@@ -78,14 +78,12 @@ void main(int argc, char *argv[]) {
 /*...stest container:0:*/
 {	if (mm->request("lb_I_Container", &uk) != ERR_NONE) {
 		_CL_LOG << "Error: Could not get needed instance!" LOG_
-		getch();
 	}
 	
 	lb_I_Container* c = NULL;
 
 	if (uk->queryInterface("lb_I_Container", (void**) &c, __FILE__, __LINE__) != ERR_NONE) {
 		_CL_LOG << "Error: Could not get needed interface!" LOG_
-		getch();
 	}
 }
 /*...e*/
@@ -110,20 +108,17 @@ void main(int argc, char *argv[]) {
 /*...stest container:0:*/
 	if (mm->request("lb_I_Container", &uk) != ERR_NONE) {
 		_CL_LOG << "Error: Could not get needed instance!" LOG_
-		getch();
 	}
 	
 	lb_I_Container* c = NULL;
 
 	if (uk->queryInterface("lb_I_Container", (void**) &c, __FILE__, __LINE__) != ERR_NONE) {
 		_CL_LOG << "Error: Could not get needed interface!" LOG_
-		getch();
 	}
 /*...e*/
 /*...stest integer:0:*/
 	if (mm->request("lb_I_Integer", &uk) != ERR_NONE) {
 		_CL_LOG << "Error: Could not get needed instance!" LOG_
-		getch();
 	}
 /*...e*/
 
@@ -143,14 +138,12 @@ void main(int argc, char *argv[]) {
 /*...stest countainer:0:*/
 	if (mm->request("lb_I_Container", &uk) != ERR_NONE) {
 		_CL_LOG << "Error: Could not get needed instance!" LOG_
-		getch();
 	}
 	
 	c = NULL;
 
 	if (uk->queryInterface("lb_I_Container", (void**) &c, __FILE__, __LINE__) != ERR_NONE) {
 		_CL_LOG << "Error: Could not get needed interface!" LOG_
-		getch();
 	}
 	
 /*...e*/
@@ -158,7 +151,6 @@ void main(int argc, char *argv[]) {
 /*...stest integer:0:*/
 	if (mm->request("lb_I_Integer", &uk) != ERR_NONE) {
 		_CL_LOG << "Error: Could not get needed instance!" LOG_
-		getch();
 	}
 /*...e*/
 
@@ -201,10 +193,8 @@ void main(int argc, char *argv[]) {
 	mm->uninitialize();
 	RELEASE(mm)
 	_CL_LOG << "Basic tests ended" LOG_
-	getch();
 
 	_CL_LOG << "Memory test ------------------------------------------" LOG_
-	getch();
 	
         /**
          * Get module manager
@@ -221,7 +211,6 @@ void main(int argc, char *argv[]) {
     			
 			if (modMan->request("lb_I_Container", &uk) != ERR_NONE) {
 				printf("Error: Could not get needed instance!\n");
-				getch();
 			}
 
 			if (uk != NULL) {
@@ -234,7 +223,6 @@ void main(int argc, char *argv[]) {
 			
 				if (modMan->request("lb_I_String", &uk1) != ERR_NONE) {
 					printf("Error: Could not get needed instance!\n");
-					getch();
 				}
 
 				if (uk1 != NULL) {
@@ -242,7 +230,6 @@ void main(int argc, char *argv[]) {
 					UAP(lb_I_String, string, __FILE__, __LINE__)
 					if (uk1->queryInterface("lb_I_String", (void**) &string, __FILE__, __LINE__) != ERR_NONE) {
 						printf("Error: Could not get needed interface!\n");
-						getch();
 					}
 					_CL_LOG << "Have the string interface, insert data" LOG_
 					if (string != NULL) {
@@ -354,7 +341,6 @@ void main(int argc, char *argv[]) {
 	
 							container->deleteAll();
 							_CL_LOG << "Deleted all container data" LOG_
-							getch();
 /*...e*/
 						}
 					}
@@ -362,7 +348,6 @@ void main(int argc, char *argv[]) {
 				
 			} else {
 				_CL_LOG << "Here must be an object!!!" LOG_
-				getch();
 			}
 
 	#ifdef LOOP
@@ -371,14 +356,12 @@ void main(int argc, char *argv[]) {
 /*...e*/
 
         _CL_LOG << "End test lb_I_Container loop" LOG_
-		getch();
 
 #ifdef LOOP
         for (long ii = 0; ii < 10000000; ii++) {
 #endif
 printf("Test LOG macro\n");
 	_CL_LOG << "Call lb_I_Module->load()" LOG_
-getch();
 
 		
 
@@ -397,5 +380,4 @@ getch();
 	modMan->uninitialize();
         RELEASE(modMan)
         unHookAll();
-        getch();
 }
