@@ -372,17 +372,17 @@ void lbDatabaseDialog::init(char* formName, char* SQLString, char* DBName, char*
 
 	SetTitle(formName);
 
-/*...ssizers:8:*/
 	wxBoxSizer* sizerMain  = new wxBoxSizer(wxVERTICAL);
 	
 	wxBoxSizer* sizerHor   = new wxBoxSizer(wxHORIZONTAL);
 	
 	wxBoxSizer* sizerAddRem = new wxBoxSizer(wxHORIZONTAL);
 	wxBoxSizer* sizerNavi  = new wxBoxSizer(wxHORIZONTAL);
+
+	wxBoxSizer* sizerActions = new wxBoxSizer(wxHORIZONTAL);
 	
 	wxBoxSizer* sizerLeft  = new wxBoxSizer(wxVERTICAL);	
 	wxBoxSizer* sizerRight = new wxBoxSizer(wxVERTICAL);
-/*...e*/
 
 	REQUEST(manager.getPtr(), lb_I_Database, database)
 
@@ -643,7 +643,6 @@ void lbDatabaseDialog::init(char* formName, char* SQLString, char* DBName, char*
 	}
 /*...e*/
 
-/*...screate dialog:8:*/
 	sizerHor->Add(sizerLeft, 1, wxEXPAND | wxALL, 5);
 	sizerHor->Add(sizerRight, 1, wxEXPAND | wxALL, 5);
 
@@ -672,7 +671,76 @@ void lbDatabaseDialog::init(char* formName, char* SQLString, char* DBName, char*
 	sizerAddRem->Add(buttonAdd, 1, wxALL, 5);
 	sizerAddRem->Add(buttonDelete, 1, wxALL, 5);
 
-	//sizerNavi->SetAutoLayout(FALSE);
+
+	/*
+	 * Create action elements as configured.
+	 */
+
+	UAP(lb_I_Query, actionQuery, __FILE__, __LINE__)
+	
+	actionQuery = database->getQuery(0);
+
+	char *_actionquery = "select actions.name, action_target.what from actions "
+			     
+			     "inner join action_target on actions.id = action_target.id "
+			     
+			     "inner join formular_actions on actions.id = formular_actions.action "
+			     
+			     "inner join formulare on formular_actions.formular = formulare.id "
+			     
+			     "where formulare.name = '%s'";
+
+	char *buf = (char*) malloc(strlen(_actionquery) + strlen(formName) + 1);
+	buf[0] = 0;
+	
+	sprintf(buf, _actionquery, formName);
+	
+	printf("%s\n", buf);
+	
+	actionQuery->query(buf);
+	lbErrCodes err = actionQuery->first();
+	
+	while (err == ERR_NONE) {
+		UAP(lb_I_String, action, __FILE__, __LINE__)
+		UAP(lb_I_String, actionWhat, __FILE__, __LINE__)
+		
+		action = actionQuery->getAsString(1);
+		actionWhat = actionQuery->getAsString(2);
+
+		int actionID = 0;
+		
+		char eventName[100] = "";
+		
+		sprintf(eventName, "%s", this, actionWhat->charrep());
+		eman->registerEvent(eventName, actionID);
+		
+		wxButton *actionButton = new wxButton(this, actionID, action->charrep(), wxPoint(), wxSize(100,20));
+		
+		sizerActions->Add(actionButton);
+
+		err = actionQuery->next();
+	}
+	
+	if (err == WARN_DB_NODATA) {
+		UAP(lb_I_String, action, __FILE__, __LINE__)
+		UAP(lb_I_String, actionWhat, __FILE__, __LINE__)
+		
+		action = actionQuery->getAsString(1);
+		actionWhat = actionQuery->getAsString(2);
+
+		int actionID = 0;
+		
+		char eventName[100] = "";
+		
+		sprintf(eventName, "%s", this, actionWhat->charrep());
+		eman->registerEvent(eventName, actionID);
+		
+		wxButton *actionButton = new wxButton(this, actionID, action->charrep(), wxPoint(), wxSize(100,20));
+		
+		sizerActions->Add(actionButton);
+	
+	}
+
 
 //#define CONNECTOR ((wxFrame*) frame)
 #define CONNECTOR this
@@ -694,6 +762,7 @@ void lbDatabaseDialog::init(char* formName, char* SQLString, char* DBName, char*
 	SetAutoLayout(TRUE);
 	
 	sizerMain->Add(sizerHor, 0, wxEXPAND | wxALL, 5);
+	sizerMain->Add(sizerActions, 0, wxEXPAND | wxALL, 5);
 	sizerMain->Add(sizerAddRem, 0, wxEXPAND | wxALL, 5);
 	sizerMain->Add(sizerNavi, 0, wxEXPAND | wxALL, 5);
 	
@@ -703,7 +772,6 @@ void lbDatabaseDialog::init(char* formName, char* SQLString, char* DBName, char*
 	sizerMain->Fit(this);
 	
 	Centre();
-/*...e*/
 
 }
 /*...e*/
