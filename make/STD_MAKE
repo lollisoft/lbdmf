@@ -1,10 +1,14 @@
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.16 $
+# * $Revision: 1.17 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.16 2002/04/15 18:25:16 lothar Exp $
+# * $Id: STD_MAKE,v 1.17 2002/04/19 17:43:45 lothar Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.17  2002/04/19 17:43:45  lothar
+# * Added -hc due to debuging compilation problems
+# * (Fatal segment too long)
+# *
 # * Revision 1.16  2002/04/15 18:25:16  lothar
 # * Huge changes - works good
 # *
@@ -94,15 +98,15 @@ $(WATCOM_CALLING_CONV)
 
 OBJ =obj
 # Watcom
-C_EXEOPS_WATCOM_DEBUG= $(WATCOM_STD_C_OPS) $(WATCOM_STDDEBUG) -ei -zp4 -bt=nt -mf
+C_EXEOPS_WATCOM_DEBUG= $(WATCOM_STD_C_OPS) $(WATCOM_STDDEBUG) -ei -zp4 -bt=nt -mf -hc
 
-C_DLLOPS_WATCOM   =  $(WATCOM_STD_C_OPS) $(WATCOM_DLLTARGET) -ei -zp4 -bt=nt -mf
+C_DLLOPS_WATCOM   =  $(WATCOM_STD_C_OPS) $(WATCOM_DLLTARGET) -ei -zp4 -bt=nt -mf -hc
 
-C_DLLOPS_WATCOM_DEBUG = $(WATCOM_STD_C_OPS) $(WATCOM_STDDEBUG) $(WATCOM_DLLTARGET) -ei -zp4 -bt=nt -mf
+C_DLLOPS_WATCOM_DEBUG = $(WATCOM_STD_C_OPS) $(WATCOM_STDDEBUG) $(WATCOM_DLLTARGET) -ei -zp4 -bt=nt -mf -hc
 
-C_LIBOPS_WATCOM   =  $(WATCOM_STD_C_OPS) $(WATCOM_LIBTARGET) -ei -zp4 -bt=nt -mf
+C_LIBOPS_WATCOM   =  $(WATCOM_STD_C_OPS) $(WATCOM_LIBTARGET) -ei -zp4 -bt=nt -mf -hc
 
-C_LIBOPS_WATCOM_DEBUG = $(WATCOM_STD_C_OPS) $(WATCOM_STDDEBUG) $(WATCOM_LIBTARGET) -ei -zp4 -bt=nt -mf
+C_LIBOPS_WATCOM_DEBUG = $(WATCOM_STD_C_OPS) $(WATCOM_STDDEBUG) $(WATCOM_LIBTARGET) -ei -zp4 -bt=nt -mf -hc
 
 CC =wpp386
 RM =del
