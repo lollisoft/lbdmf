@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.17 $
+ * $Revision: 1.18 $
  * $Name:  $
- * $Id: lbMetaApplication.h,v 1.17 2004/07/16 20:24:41 lollisoft Exp $
+ * $Id: lbMetaApplication.h,v 1.18 2004/08/01 21:34:03 lollisoft Exp $
  *
  * $Log: lbMetaApplication.h,v $
+ * Revision 1.18  2004/08/01 21:34:03  lollisoft
+ * More documentation
+ *
  * Revision 1.17  2004/07/16 20:24:41  lollisoft
  * Added handler to enter into the debugger
  *
@@ -227,7 +230,7 @@ public:
 	/**
 	 * Name variant
 	 *
-	 * This variant let's the programmer issue any events from his/her module.
+	 * This variant let's the programmer issue any events from his or her module.
 	 * As a sample, it must be possible to query from an event name an id.
 	 * Also it must be possible to call this function to announce a handler.
 	 * 
@@ -237,7 +240,7 @@ public:
 	 */
 	virtual lbErrCodes LB_STDCALL dispatch(char* EvName, lb_I_Unknown* EvData, lb_I_Unknown** EvResult);
 	
-	virtual lb_I_DispatchResponce* LB_STDCALL dispatch(lb_I_DispatchRequest* req);
+	virtual lb_I_DispatchResponse* LB_STDCALL dispatch(lb_I_DispatchRequest* req);
 	
 	DEBUG_UAP(lb_I_Container, dispatcher, __FILE__, __LINE__)
 	DEBUG_UAP(lb_I_EventManager, evManager, __FILE__, __LINE__)

@@ -80,6 +80,9 @@ class lbAppServer;
 
 
 /*...sclass lbDispatchProto:0:*/
+/**
+ * \brief An attempt to dispatch several protocols over one tcp port.
+ */
 class lbDispatchProto : public lbObject {
 public:
 	lbDispatchProto(const char* service, lbProtocolCallback fn);
@@ -223,6 +226,9 @@ protected:
 /*...e*/
 
 /*...sclass lbDispatchFn:0:*/
+/**
+ * \brief An attempt to dispatch function calls.
+ */
 class lbDispatchFn : public lbObject {
 public:
 	lbDispatchFn(const char* service, lbMemberCallback fn);

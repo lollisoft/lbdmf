@@ -1,5 +1,10 @@
 // used for documentation
+
+#ifdef LB_I_EXTENTIONS
+#undef LB_I_EXTENTIONS
 #define LB_I_EXTENTIONS
+#endif
+
 /*...sCopyright notice:0:*/
 // Orginal version:
 /////////////////////////////////////////////////////////////////////////////
@@ -8,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.26 2004/07/31 15:51:38 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.27 2004/08/01 21:34:03 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -46,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.26 $
+ * $Revision: 1.27 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.26 2004/07/31 15:51:38 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.27 2004/08/01 21:34:03 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.27  2004/08/01 21:34:03  lollisoft
+ * More documentation
+ *
  * Revision 1.26  2004/07/31 15:51:38  lollisoft
  * Added doxygen formatted documentation.
  *
@@ -1091,7 +1099,7 @@ lbErrCodes LB_STDCALL lb_wxGUI::gotoMenuEntry(char* entry) {
          * We get a dispatch responce
          */
          
-        UAP(lb_I_DispatchResponce, d_res, __FILE__, __LINE__)
+        UAP(lb_I_DispatchResponse, d_res, __FILE__, __LINE__)
 
         if (d_req.getPtr()) {
                 // d_req must resolve the symbolic request name to its Id.

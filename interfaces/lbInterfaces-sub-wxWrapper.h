@@ -38,7 +38,13 @@ class lb_wxFrame;
 
 
 /**
- * Peer interfaces to its wx companions
+ * \brief Peer interfaces to its wx companions.
+ *
+ * Don't know, if this is really good. The derived class must be predefined and therefore
+ * The derived class name is predefined.
+ *
+ * If others like to write another GUI wrapper, say, with MFC, they need to name their
+ * class to this predefined name.
  */
 
 class lb_I_wxFrame : public lb_I_Unknown,

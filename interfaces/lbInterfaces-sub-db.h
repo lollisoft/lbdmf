@@ -33,19 +33,28 @@
 class lb_I_Query;
 
 /*...sclass lb_I_BoundColumn:0:*/
-/*
- * A single bound column, such as a text field on a form
+/**
+ * \brief A single bound column, such as a text field on a form
+ *
+ * A bounf column contains one entity of a database column.
  */
 class lb_I_BoundColumn : public lb_I_Unknown
 {
 protected:
+	/**
+	 * \deprecated Pure abstract class has no ctor/dtor's
+	 */
         lb_I_BoundColumn() {}
+
+        /**
+         * \deprecated Pure abstract class has no ctor/dtor's
+         */
         virtual ~lb_I_BoundColumn() {}
 public:
 
 /*...sdoc:8:*/
 	/**
-	 * Universal access to the column.
+	 * \brief Universal access to the column.
 	 *
 	 * This function creates an instance of an interface regarding to the
 	 * underlying data type. For example:
@@ -68,16 +77,43 @@ public:
 	virtual lb_I_Unknown* LB_STDCALL getData() = 0;
 	
 	/**
-	 * Generic string representatoin - regardless of data type.
+	 * \brief Get the data formatted as string.
 	 *
-	 * Warning: There may be a limit of string nength.
+	 * \param result Result must be an instance of lb_I_String to be filled.
+	 * \param asParameter Don't know why here a parameter should be possible.
 	 */
 	virtual lbErrCodes LB_STDCALL getAsString(lb_I_String* result, int asParameter = 0) = 0;
+	
+	/**
+	 * \brief Set the data from a string.
+	 *
+	 * This sets the column value to the content of string set.
+	 *
+	 * \param set Set the value of this string into the column.
+	 * \param mode ??
+	 */	
 	virtual lbErrCodes LB_STDCALL setFromString(lb_I_String* set, int mode) = 0;
 
+	/**
+	 * \brief Get the column name.
+	 */
 	virtual lb_I_String* LB_STDCALL getColumnName() = 0;
 	
+	/**
+	 * \brief Preparation for column binding.
+	 *
+	 * This should be protected and only visible to the lb_I_BoundColumns interface.
+	 */
 	virtual lbErrCodes   LB_STDCALL prepareBoundColumn(lb_I_Query* q, int column) = 0;
+	
+	/**
+	 * \brief Finish binding of a column.
+	 *
+	 * Bind a column from the query to this instance.
+	 *
+	 * \param q The query.
+	 * \param column The number of the column to bind.
+	 */
 	virtual lbErrCodes   LB_STDCALL bindColumn(lb_I_Query* q, int column) = 0;
 	
 
@@ -125,7 +161,9 @@ BufferLength,
 };
 /*...e*/
 /*...sclass lb_I_ColumnBinding:0:*/
-/*
+/**
+ * \brief Bound columns interface. It holds all bound columns.
+ *
  * This interface is an attempt to providing column binding
  * informations for the query. As I saw, when the column binding is done
  * twice, the documentation says, that this is not possible with an
@@ -138,28 +176,87 @@ BufferLength,
 class lb_I_ColumnBinding : public lb_I_Unknown
 {
 protected:
+	/**
+	 * \deprecated Pure abstract class has no ctor/dtor's
+	 */
         lb_I_ColumnBinding() {}
+	/**
+	 * \deprecated Pure abstract class has no ctor/dtor's
+	 */
         virtual ~lb_I_ColumnBinding() {}
 public:
         /* Get bound columns. If the ColumnBinding instance does not
          * bind all colums of a query, it would provide dummies.
          */
+         
+        /**
+         * \brief Get a list of bound columns.
+         *
+         * This is not implemented yet.
+         */ 
         virtual lb_I_Container* LB_STDCALL getBoundColumns() = 0;
+        
+        /**
+         * \brief Set a list of bound columns.
+         *
+         * This is not implemented yet.
+         */
         virtual lbErrCodes      LB_STDCALL setBoundColumns(lb_I_Container* bc) = 0;
 
+	/**
+	 * \brief Get the bound column.
+	 *
+	 * \param column Index of the column
+	 */
 	virtual lb_I_BoundColumn* LB_STDCALL getBoundColumn(int column) = 0;
+	
+	/**
+	 * \brief Get the amound of columns.
+	 *
+	 * This returns the currently bound columns based on the SQL query.
+	 */
 	virtual int               LB_STDCALL getColumnCount() = 0;
 
+	/**
+	 * \brief Get the column as string representation.
+	 *
+	 * Returns index column as a string.
+	 *
+	 * \param column Index of the column.
+	 * \param instance String instance to be filled with the value.
+	 */
         virtual lbErrCodes      LB_STDCALL getString(int column, lb_I_String* instance) = 0;
+        
+	/**
+	 * \brief Get the column as string representation.
+	 *
+	 * Returns index column as a string.
+	 *
+	 * \param column Name of the column.
+	 * \param instance String instance to be filled with the value.
+	 */
         virtual lbErrCodes      LB_STDCALL getString(char* column, lb_I_String* instance) = 0;
+        
+	/**
+	 * \brief Set the column as string representation.
+	 *
+	 * Sets column as a string.
+	 *
+	 * \param column Name of the column.
+	 * \param instance String instance with the value to be set.
+	 */
 	virtual lbErrCodes      LB_STDCALL setString(char* column, lb_I_String* instance) = 0;        
+
+#ifdef bla
         /**
          * Set a currently used query to bind their columns.
          */
 //        virtual lbErrCodes      LB_STDCALL setQuery(lb_I_Query* q) = 0;
-
+#endif
 
 	/**
+	 * \brief Indicator, if the current column is an adding column.
+	 *
 	 * Returns 1 if adding mode is active. Otherwise it returns 0.
 	 */
 	virtual int		LB_STDCALL getMode() = 0;
@@ -188,13 +285,29 @@ public:
 };
 /*...e*/
 /*...sclass lb_I_Query:0:*/
+/**
+ * \brief A SQL Query interface.
+ *
+ * This is a basic interface to issue SQL queries. It should provide cursor functionality,
+ * because it has first, next, previous and last for navigation in the result of a query.
+ */
 class lb_I_Query : public lb_I_Unknown
 {
 protected:
+	/**
+	 * \deprecated Pure abstract class has no ctor/dtor's
+	 */
         lb_I_Query() {}
+	/**
+	 * \deprecated Pure abstract class has no ctor/dtor's
+	 */
         virtual ~lb_I_Query() {}
 public:
-	/* Column binding mode */
+	/**
+	 * \brief Column binding mode.
+	 * 
+	 * Not clear how the view should get a bound columns instance.
+	 */
         virtual lbErrCodes LB_STDCALL setView(lb_I_ColumnBinding* cb) = 0;
 
 /*...svirtual lbErrCodes LB_STDCALL \40\un\41\registerView\40\lb_I_MVC_View\42\ view\41\ \61\ 0\59\:8:*/
@@ -204,17 +317,38 @@ public:
 	 * graphics and the textual view. The controller then might use one button
 	 * for updating the model and the model then informs its views.
 	 */
+	/**
+	 * \brief Register a view to this query instance.
+	 *
+	 * It is an attempt to enable active updates issued to the views, if other
+	 * views have made them.
+	 */
 	virtual lbErrCodes LB_STDCALL registerView(lb_I_MVC_View* view) = 0;
+	
+	/**
+	 * \brief Unregister a view to this query instance.
+	 *
+	 * A view would be destroyed. Unregister it prior.
+	 */
 	virtual lbErrCodes LB_STDCALL unregisterView(lb_I_MVC_View* view) = 0;
 /*...e*/
 
+	/**
+	 * \brief Error message printing.
+	 */
 	virtual void LB_STDCALL dbError(char* lp) = 0;
 
-        /* Set the SQL query */
+        /**
+         * \brief Set the SQL query.
+         *
+         * Set the SQL query string to be used.
+         */
         virtual lbErrCodes LB_STDCALL query(char* q) = 0;
 
 	/* Manipulation */
 	/**
+	 * \brief Begin adding a row.
+	 *
 	 * Sets a flag, that the data should be positioned at the new row space.
 	 * This also should set default values accordingly to the database in behind.
 	 *
@@ -225,61 +359,131 @@ public:
 	virtual lbErrCodes LB_STDCALL add() = 0;
 	
 	/**
-	 * Deletes the current entry.
+	 * \brief Deletes the current entry.
 	 */
 	virtual lbErrCodes LB_STDCALL remove() = 0;
 	
 	/**
-	 * Updates the modified data or stores the new data added via add().
+	 * \brief Updates the modified data or stores the new data added via add().
 	 */
 	virtual lbErrCodes LB_STDCALL update() = 0;
 
-
+	/**
+	 * \brief Get column count.
+	 */
 	virtual int        LB_STDCALL getColumns() = 0;
+	
+	/**
+	 * \brief Get the name of a column.
+	 *
+	 * \param col Integer index of the column.
+	 */
 	virtual char*      LB_STDCALL getColumnName(int col) = 0;
         
         /* Navigation */
+        
+	/**
+	 * \brief Move to first row.
+	 *
+	 * Sets the cursor position to the first of the result set.
+	 */        
         virtual lbErrCodes LB_STDCALL first() = 0;
+
+	/**
+	 * \brief Move to next row.
+	 *
+	 * Sets the cursor position to the next of the result set.
+	 */        
         virtual lbErrCodes LB_STDCALL next() = 0;
+
+	/**
+	 * \brief Move to previous row.
+	 *
+	 * Sets the cursor position to the previous of the result set.
+	 */        
         virtual lbErrCodes LB_STDCALL previous() = 0;
+
+	/**
+	 * \brief Move to last row.
+	 *
+	 * Sets the cursor position to the last  of the result set.
+	 */        
         virtual lbErrCodes LB_STDCALL last() = 0;
         
         /* Accessors */
 #ifdef UNBOUND        
+	/**
+	 * \brief Get the column data as char*
+	 */
         virtual char* LB_STDCALL getChar(int column) = 0;
 #endif
 #ifndef UNBOUND
+
+	/**
+	 * \brief Get the column data as lb_I_String* instance.
+	 * 
+	 * Builds a lb_I_String instance and fills in the data of the bound column.
+	 */
         virtual lb_I_String*    LB_STDCALL getAsString(int column) = 0;
         
         /**
-         * Modifies the column at the current row or sets the column for the new row data 
+         * \brief Set string to column.
+         *
+         * Modifies the column at the current row or sets the column for the new row data.
+         *
+         * \param columnName Name of the column.
+         * \param value Value as a string.
          */
         virtual lbErrCodes	LB_STDCALL setString(lb_I_String* columnName, lb_I_String* value) = 0;
 #endif
 };
 /*...e*/
 /*...sclass lb_I_Database:0:*/
+/**
+ * \brief The main class for operating with databases.
+ *
+ * This interface is used as the main access interface for operating with
+ * databases.
+ */
 class lb_I_Database : public lb_I_Unknown
 {
 protected:
+	/**
+	 * \deprecated Pure abstract class has no ctor/dtor's
+	 */
 	lb_I_Database() {}
+	/**
+	 * \deprecated Pure abstract class has no ctor/dtor's
+	 */
 	virtual ~lb_I_Database() {}
 public:
-	virtual lbErrCodes LB_STDCALL init() = 0;
 	/**
+	 * \brief Initializion of the database backend.
+	 */
+	virtual lbErrCodes LB_STDCALL init() = 0;
+
+	/**
+	 * \brief Connect to the database.
+	 *
 	 * This function connects to the database and in this first state of
 	 * development makes the test against this database.
 	 * For this test, you should have created an ODBC datasource to
 	 * a postgreSQL database named trainres. User is dba, password is
 	 * trainres and the table is as the following definition:
+	 *
+	 * \param DSN Data source name - usually the name in the ODBC configuration.
+	 * \param user User to connect as.
+	 * \param passwd The passord. 
 	 */
 	virtual lbErrCodes LB_STDCALL connect(char* DSN, char* user, char* passwd) = 0;
 
 	/**
-	 * Get a query instance to be used against the connection.
-	 * The parameter readonly is per default set to 1 to indicate
-	 * a readonly query. To change data in that query, you must
-	 * call the function with a 0 value as parameter.
+	 * \brief Get a query instance.
+	 *
+	 * Creates a query instance and returns it. You get the ownership and must destroy it
+	 * if no longer in use.
+	 *
+	 * \param readonly Set 0 to have write access. Default is readonly.
 	 */	
 	virtual lb_I_Query* LB_STDCALL getQuery(int readonly = 1) = 0;
 	
@@ -287,24 +491,49 @@ public:
 };
 /*...e*/
 /*...sclass lb_I_DatabaseForm:0:*/
+/**
+ * \brief An attempt for a database form interface.
+ */
 class lb_I_DatabaseForm : public lb_I_Form {
 public:
 	/**
+	 * \brief Set the query object.
+	 *
 	 * A database form needs a query object, from whom it should
 	 * show the data.
 	 */
 	virtual void LB_STDCALL setDataSource(lb_I_Query* customerQuery) = 0;
 	
 	/**
+	 * \brief Calculate the layout.
+	 *
 	 * Determine the layout sheme depending on the query rows and then
 	 * create the elements for the form.
 	 */
 	virtual void LB_STDCALL autocalcLayout() = 0;
 	
+	/**
+	 * \brief Layout types
+	 */
+	enum layout { 
+		TopDown,    /*!< Top down layout */
+		TwoColumns, /*!< Two columns to be used */
+		FourColumns /*!< Four columns to be used */
+	};
 	
-	enum layout { TopDown, TwoColumns, FourColumns };
-	enum labels { Left, Top };
+	/**
+	 * Where are the lables.
+	 */
+	enum labels {
+		Left, /*!< Put it at the left */
+		Top   /*!< Top of the data field */
+	};
 	
+	/**
+	 * \brief Set the layout typ.
+	 *
+	 * \param lay Layout as in enum layout.
+	 */
 	virtual void LB_STDCALL setLayout(layout lay, labels lab) = 0;
 };
 /*...e*/

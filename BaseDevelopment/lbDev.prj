@@ -1,4 +1,4 @@
-/*...v\46\\46\\47\make\47\Std_make \45\ The global makefile definitions:0:*/
+/*...V\46\\46\\47\make\47\Std_make \45\ The global makefile definitions:0:*/
 /*...v\46\\46\\47\README:0:*/
 /*...v\46\\46\\47\COPYING:0:*/
 /*...v\46\\46\\47\makedist\46\bat:0:*/
@@ -62,7 +62,6 @@ These headers must define the per module (DLL) EXPORT variable
 
 
 
-/*...v\46\\46\\47\AppDevelopment\47\lbDMF\45\IDE\47\App:0:*/
 /*...e*/
 /*...sAppdevelopmentDemo:0:*/
 /*...v\46\\46\\47\AppDevelopmentDemo\47\make\46\bat:0:*/
@@ -77,7 +76,6 @@ These headers must define the per module (DLL) EXPORT variable
 
 
 
-/*...v\46\\46\\47\AppDevelopment\47\lbDMF\45\IDE\47\App:0:*/
 /*...e*/
 
 

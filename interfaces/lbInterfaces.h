@@ -29,6 +29,13 @@
 */
 /*...e*/
 
+/**
+ *  \file lbInterfaces.h
+ *  Main include file for all interfaces.
+ *
+ *  lbConfigHook.h includes this file for you.
+ */
+
 #ifdef _MSC_VER
 
 #pragma warning( disable: 4275 )
@@ -268,11 +275,11 @@ typedef lbErrCodes (LB_STDCALL lb_I_EventHandler::*lbEvHandler)(lb_I_Unknown* uk
 
 /*...sclass lb_I_Unknown:0:*/
 /**
+ * \brief Similar to IUnknown aka Microsoft COM.
+ *
  * lb_I_Unknown is the base class for all other classes, that are used in the framework.
- * 
- * All classes, that needs to be loaded dynamically, need this as the parent class.
+ * All classes, that needs to be loaded dynamically, must inherid from this class.
  */
-
 class lb_I_Unknown {
 protected:
 	/**
@@ -286,7 +293,14 @@ protected:
 	virtual ~lb_I_Unknown() {}
 
 private:
+	/**
+	 * Hide this operator to prevent usage. Effect ??
+	 */
 	lb_I_Unknown& operator=(const lb_I_Unknown& rhs);
+	
+	/**
+	 * Hide this operator to prevent usage. Effect ??
+	 */
 	lb_I_Unknown* operator=(const lb_I_Unknown* rhs);
 	
 public:
@@ -308,6 +322,7 @@ public:
 	
 	/**
 	 * Indicator, to determine, if the instance has no more references.
+	 * The instance would be deleted at next release.
 	 */
 	virtual int LB_STDCALL deleteState() = 0;
 	
@@ -348,6 +363,9 @@ public:
 	 *
 	 * There is a list interface functionality missing. I do not know, how to implement
 	 * this in the macros.
+	 *
+	 * An idea may be a dummy call to it at any point after instantiation and include code
+	 * to register all defined interfaces one per livetime.
 	 */
 	virtual lbErrCodes LB_STDCALL queryInterface(char* name, void** unknown, char* file, int line) = 0;
 
@@ -361,7 +379,6 @@ public:
 	 */
 	virtual char* LB_STDCALL _queryInterface(char* name, void** unknown, char* file, int line) = 0;
         
-/*...sdoc:0:*/
         /**
          * This was used yet for put an object in a container. After inserting the object
          * into the container, there are two instances (not two references).
@@ -382,11 +399,10 @@ public:
          *
          *		return uk;
          */
-/*...e*/
         virtual lb_I_Unknown* LB_STDCALL clone(char* file, int line) const = 0;
         
         /**
-         * This member must be implemented by the programmer of a class. setData is called
+         * This member must be implemented by the programmer of each class. setData is called
          * from the clone member to get a correct copy of the cloned instance.
          */
         virtual lbErrCodes LB_STDCALL setData(lb_I_Unknown* u) = 0;
@@ -396,9 +412,8 @@ public:
 /*...e*/
 
 /*...sAutoPointer:0:*/
-/**
- * Is it possible to create an automatic pointer without templates ?
- * An Unknown auto pointer.
+/** \def UAP(interface, Unknown_Reference, file, line)
+ *  \brief An automatic pointer implementation via macro.
  */
 
 #define UAP(interface, Unknown_Reference, file, line) \
@@ -524,9 +539,8 @@ public:
 /*...e*/
 /*...e*/
 /*...sDebug AutoPointer:0:*/
-/**
- * Is it possible to create an automatic pointer without templates ?
- * An Unknown auto pointer.
+/** \def DEBUG_UAP(interface, Unknown_Reference, file, line)
+ * \brief An automatic pointer implementation via macro. Debug version.
  */
 
 #define DEBUG_UAP(interface, Unknown_Reference, file, line) \
@@ -653,6 +667,13 @@ public:
 
 /*...sREQUEST Use this for a predefined UAP\46\:0:*/
 // Use this for a predefined UAP. It will automatically deleted, if scope is gone.
+
+/** \def REQUEST(mm, interface, variable)
+ *  \brief Requester macro for getting an instance of given interface.
+ *
+ *  Makes it simpler to instantiate any kint of object.
+ */
+
 #define REQUEST(mm, interface, variable) \
   	UAP(lb_I_Unknown, uk##variable, __FILE__, __LINE__) \
   	mm->request(#interface, &uk##variable); \
@@ -660,6 +681,12 @@ public:
   	uk##variable->queryInterface(#interface, (void**) &variable, __FILE__, __LINE__); \
 	uk##variable.setFile(__FILE__); \
 	uk##variable.setLine(__LINE__);
+
+
+/** \def DEBUG_REQUEST(mm, interface, variable)
+ *  \brief Requester macro for getting an instance of given interface.
+ *  Makes it simpler to instantiate any kint of object. Debug version.
+ */
 
 #define DEBUG_REQUEST(mm, interface, variable) \
   	UAP(lb_I_Unknown, uk##variable, __FILE__, __LINE__) \
@@ -678,6 +705,13 @@ public:
 
 /*...sUAP_REQUEST Use this for an stack like environment\46\:0:*/
 // Use this for an stack like environment. It will automatically deleted, if scope is gone.
+
+/** \def UAP_REQUEST(mm, interface, variable)
+ *  \brief Variable and instantiation of any interface.
+ *  This is usefull in functions, if the object should automatically
+ *  destroyed, if the scope is left.
+ */
+
 #define UAP_REQUEST(mm, interface, variable) \
   	UAP(lb_I_Unknown, uk##variable, __FILE__, __LINE__) \
   	if (mm->request(#interface, &uk##variable) == ERR_MODULE_NO_INTERFACE) _CL_LOG << "Error: Interface not defined" LOG_ \
@@ -687,10 +721,9 @@ public:
 
 /*...e*/
 
-/*...s\35\define STATIC_REQUEST\40\mm\44\ interface\44\ variable\41\:0:*/
-/**
- * This is an replacement for a normal pointer. It has one reference, that you can use.
- * But you must release it yourself, or put it to a UAP in any scope.
+/*...sSTATIC_REQUEST\40\mm\44\ interface\44\ variable\41\:0:*/
+/** \def STATIC_REQUEST(mm, interface, variable)
+ *  \brief Non automatic destroying variant of UAP_REQUEST. This could be used to return the created instance over their interface.
  */
 #define STATIC_REQUEST(mm, interface, variable) \
   	lb_I_Unknown* uk##variable; \
@@ -703,8 +736,10 @@ public:
 
 /*...e*/
 
-/*...s\35\define DECLARE_LB_UNKNOWN\40\\41\:0:*/
-
+/*...sDECLARE_LB_UNKNOWN\40\\41\:0:*/
+/** \def DECLARE_LB_UNKNOWN() To be used in any interface implementation.
+ *  This has to be used for each class definition, when deriving from lb_I_Unknown.
+ */
 #define DECLARE_LB_UNKNOWN() \
 private: \
 	UAP(lb_I_Module, manager, __FILE__, __LINE__) \
@@ -732,7 +767,10 @@ public: \
 /*...e*/
 
 /*...sBEGIN_IMPLEMENT_LB_UNKNOWN:0:*/
-
+/** \def BEGIN_IMPLEMENT_LB_UNKNOWN Implements the memberfunctions of lb_I_Unknown.
+ *  This must be used to begin the interface declaration of your class.
+ *  It implements the mechanisms of the component system.
+ */
 
 #define BEGIN_IMPLEMENT_LB_UNKNOWN(classname) \
 char* LB_STDCALL classname::getClassName() { \
@@ -910,7 +948,12 @@ lbErrCodes LB_STDCALL classname::queryInterface(char* name, void** unknown, char
 
 /*...e*/
 /*...sBEGIN_IMPLEMENT_SINGLETON_LB_UNKNOWN:0:*/
-
+/** \def BEGIN_IMPLEMENT_SINGLETON_LB_UNKNOWN Implements the memberfunctions of lb_I_Unknown.
+ *  This must be used to begin the interface declaration of your class.
+ *  It implements the mechanisms of the component system.
+ *
+ *  This could be used, if only one instance should be used per process.
+ */
 
 #define BEGIN_IMPLEMENT_SINGLETON_LB_UNKNOWN(classname) \
 char* LB_STDCALL classname::getClassName() { \
@@ -1087,6 +1130,9 @@ lbErrCodes LB_STDCALL classname::queryInterface(char* name, void** unknown, char
 
 /*...e*/
 
+/** \def ADD_INTERFACE Adds support for a specific interface.
+ *  This could be used multiple times for having more than one interface.
+ */
 #define ADD_INTERFACE(interfaceName) \
 	buf[0] = 0; \
 \
@@ -1126,7 +1172,9 @@ extern "C" {
 typedef lbErrCodes (LB_FUNCTORCALL *T_pLB_GET_UNKNOWN_INSTANCE) (lb_I_Unknown**, lb_I_Module* m, char* file, int line);
 }
 
-/**
+/** \def DECLARE_FUNCTOR Declares a functor in a header file.
+ * This must be used once per class.
+ *
  * Idea: To ensure, that the object gets the module manager, it is locked until
  * setModuleManager is called with a correct value.
  * queryInterface can at first time do it's work, store the data, that has to
@@ -1137,6 +1185,10 @@ typedef lbErrCodes (LB_FUNCTORCALL *T_pLB_GET_UNKNOWN_INSTANCE) (lb_I_Unknown**,
 extern "C" { \
 lbErrCodes DLLEXPORT LB_FUNCTORCALL name(lb_I_Unknown** uk, lb_I_Module* m, char* file, int line); \
 }
+
+/** \def IMPLEMENT_FUNCTOR Implements the functor in a cpp file.
+ * Use this once per class.
+ */
 #define IMPLEMENT_FUNCTOR(name, clsname) \
 extern "C" { \
 lbErrCodes DLLEXPORT LB_FUNCTORCALL name(lb_I_Unknown** uk, lb_I_Module* m, char* file, int line) { \
@@ -1165,11 +1217,18 @@ lbErrCodes DLLEXPORT LB_FUNCTORCALL name(lb_I_Unknown** uk, lb_I_Module* m, char
 } \
 }
 
+/** \def DECLARE_SINGLETON_FUNCTOR Declares a singleton functor in a header file.
+ * This must be used once per class.
+ */
 #define DECLARE_SINGLETON_FUNCTOR(name) \
 extern "C" { \
 extern lb_I_Unknown* name##_singleton; \
 lbErrCodes DLLEXPORT LB_FUNCTORCALL name(lb_I_Unknown** uk, lb_I_Module* m, char* file, int line); \
 } 
+
+/** \def IMPLEMENT_SINGLETON_FUNCTOR Implements the singleton functor in a cpp file.
+ * Use this once per class.
+ */
 #define IMPLEMENT_SINGLETON_FUNCTOR(name, clsname) \
 extern "C" { \
 lb_I_Unknown* name##_singleton = NULL; \
@@ -1220,6 +1279,18 @@ lbErrCodes DLLEXPORT LB_FUNCTORCALL name(lb_I_Unknown** uk, lb_I_Module* m, char
 /*...e*/
 
 /*...sclass lb_I_Reference:0:*/
+/**
+ * \brief This should be a class to be used as a 'smart' pointer.
+ *
+ * Currently I use the UAP macros as smart pointer implementations.
+ * The UAP solution has no base class. This would be one, but it would
+ * bite it self indirectly into the whife.
+ *
+ * This is because UAP is a 'normal' class. It can't and shouldn't be created by the lbDMF system.
+ *
+ * If it could be created by REQUEST, the UAP_REQUEST macro - requesting an instance for a particular
+ * interface - must also request the base class of it self to have the UAP class.
+ */
 class lb_I_Reference : public lb_I_Unknown {
 public:
 	virtual lbErrCodes LB_STDCALL set(lb_I_Unknown* r) = 0;
@@ -1228,6 +1299,9 @@ public:
 /*...e*/
 
 /*...sclass lb_I_gcManager:0:*/
+/**
+ * \brief An attempt to create garbage collection classes.
+ */
 class lb_I_gcManager {
 protected:
 	lb_I_gcManager() {}
@@ -1241,12 +1315,18 @@ public:
 // What about exceptions ?
 
 /*...sclass lb_I_Exception:0:*/
+/**
+ * \brief An attempt for exceptions.
+ */
 class lb_I_Exception {
 public:
 	virtual lbErrCodes getMessage(char*& msg) = 0;
 };
 /*...e*/
 /*...sclass lb_I_ErrorDescription:0:*/
+/**
+ * \brief An attempt for error descriptions.
+ */
 class lb_I_ErrorDescription {// Every interface may produce errors
 public:
 	virtual lbErrCodes getLastError(char* description, int len) = 0;
@@ -1254,8 +1334,11 @@ public:
 /*...e*/
 
 
+/*...sclass lb_I_Requestable:0:*/
 /*...sdocu  lb_I_Requestable:0:*/
 /**
+ * \deprecated Have lb_I_EventHandler for this.
+ *
  * lb_I_Requestable is intented to implement a class that can be called
  * for any requests. This may be the 'Meta' Application.
  * The Meta Application did not need to provide an interface for dispatching.
@@ -1263,7 +1346,6 @@ public:
  * members.
  */
 /*...e*/
-/*...sclass lb_I_Requestable:0:*/
 class lb_I_Requestable {
 public:
 	virtual lbErrCodes LB_STDCALL initialize() = 0;
@@ -1425,26 +1507,47 @@ protected:
 	
 /*...sclass lb_I_EventManager:0:*/
 /**
- * Register symbolic events and get an id,
- * unregister registered events.
+ * \brief An event ID manager. It reserves ID's for symbolic event names.
+ * 
+ * This is used to create event ID numbers, that - for sample - are used in my
+ * GUI sample application. wxWidgets usually defines those ID's per define. Here,
+ * I am capable to manage those ID's dynamically.
+ *
+ * You are able to write a plugin module and insert menu entries dynamically to
+ * the wx application and let the app resolve that event ID correctly to the module
+ * by forwarding all those events to a OnDispatch handler. This handler forwards
+ * the event to my own event handling mechanism.
+ *
+ * This does not interfer the two different mechanisms of wx and my own.
+ *
+ * \note A class of this interface must be singleton.
  */
 class lb_I_EventManager : public lb_I_Unknown {
 public:
 
 	/**
-	 * The implementation of this interface is in the GUI server, so it is the place
-	 * to hold the event management.
+	 * Register a symbolic event name and get back their ID.
+	 * \param EvName The symbolic name of the event. This could be a #define EVENTXY "eventXY".
+	 * \param EvNr The ID, generated inside of this implementation.
 	 */
 	virtual lbErrCodes LB_STDCALL registerEvent(char* EvName, int & EvNr) = 0;
+	
+	/**
+	 * Get the ID of a registered symbolic event name. Parameters as above described.
+	 */
 	virtual lbErrCodes LB_STDCALL resolveEvent(char* EvName, int & evNr) = 0;
 
 protected:
-
 
 	friend class lb_I_Dispatcher;
 };
 /*...e*/
 /*...sclass lb_I_EvHandler:0:*/
+/**
+ * \brief An event handler entity.
+ *
+ * An event handler entity is an instance for a class, that has one or more event handlers.
+ */
 class lb_I_EvHandler : public lb_I_Unknown {
 public:
 	virtual lbErrCodes LB_STDCALL setHandler(lb_I_EventHandler* evHandlerInstance, lbEvHandler evHandler) = 0;
@@ -1456,21 +1559,44 @@ public:
 /*...e*/
 
 /*...sclass lb_I_DispatchRequest:0:*/
+/**
+ * \brief An attempt to create a request packet, that could be predefined.
+ *
+ * Idea: You do not need to build up a more complex event every time. Predefine
+ * it as a class and instantiate it over REQUEST or directly and use it later.
+ */
 class lb_I_DispatchRequest : public lb_I_Unknown {
 public:
 	virtual lbErrCodes LB_STDCALL setRequestName(char* name) = 0;
 };
 /*...e*/
 /*...sclass lb_I_DispatchResponce:0:*/
-class lb_I_DispatchResponce : public lb_I_Unknown {
+/**
+ * \brief An attempt to create a request packet response, that could be predefined.
+ *
+ * Idea: You do not need to build up a more complex response every time. Predefine
+ * it as a class and instantiate it over REQUEST or directly at start time and use it later.
+ */
+class lb_I_DispatchResponse : public lb_I_Unknown {
 public:
 	virtual int LB_STDCALL isOk() = 0;
 };
 /*...e*/
 /*...sclass lb_I_Dispatcher:0:*/
+/**
+ * \brief Dispatcher contains all registered event handlers.
+ *
+ * Dispatcher is used to hold all registered event handlers. If an event has been fired,
+ * one of it's dispatch members are called to forward that event to the desired handler.
+ */
 class lb_I_Dispatcher : public lb_I_Unknown {
 public:
-
+	/**
+	 * Set an event manager. Dispatcher stores the handlers per event ID's. It needs
+	 * a manager, if it gets a symbolic event, to resolve the ID.
+	 *
+	 * \param EvManager The event manager.
+	 */
 	virtual lbErrCodes LB_STDCALL setEventManager(lb_I_EventManager* EvManager) = 0;
 	
 /*...sevent handler management:8:*/
@@ -1492,9 +1618,24 @@ public:
 	/**
 	 * Add a dispatcher, if it is not my self (singleton). This enables cascaded
 	 * dispatching and complete replacement of a dispatcher.
+	 *
+	 * You could forward events to a separate dispatcher, if the main dispatcher
+	 * does not contain the registered handler. So a group of handlers could be
+	 * replaced by some contect of an application.
+	 *
+	 * Sample: Some event handlers goes to a remote host due to some extend.
+	 * The separate dispatcher is build up and the remote handlers are also
+	 * build up before replacing a local decentand.
 	 */
 	virtual lbErrCodes LB_STDCALL addDispatcher(lb_I_Dispatcher* disp) = 0;
 	
+	/**
+	 * Delete a decentand dispatcher.
+	 *
+	 * \note You must implement thread savetiness in your replace code.
+	 *
+	 * \param disp Deprecated. Why holding more than one decentand dispatcher ?
+	 */
 	virtual lbErrCodes LB_STDCALL delDispatcher(lb_I_Dispatcher* disp) = 0;
 /*...e*/
 
@@ -1511,18 +1652,23 @@ public:
 	/**
 	 * lb_I_DispatchRequest variant. Parameter contains all needed data for the dispatch request.
 	 */
-	 
-	virtual lb_I_DispatchResponce* LB_STDCALL dispatch(lb_I_DispatchRequest* req) = 0; 
+	virtual lb_I_DispatchResponse* LB_STDCALL dispatch(lb_I_DispatchRequest* req) = 0; 
 /*...e*/
 };
 /*...e*/
 
 /*...sclass lb_I_EventHandler:0:*/
 /**
+ * \brief An event handler class. It handles one or more events.
  *
+ * The event handler registers all it's handlers by get a call of registerEventHandler.
+ * It get's an external dispatcher, to don't need to provide it's own dispatcher.
  */
 class lb_I_EventHandler {
 public:
+	/**
+	 * Register all the handlers by this class to the given dispatcher.
+	 */
 	virtual lbErrCodes LB_STDCALL registerEventHandler(lb_I_Dispatcher* disp) = 0;
 };
 /*...e*/
@@ -1550,57 +1696,84 @@ public lb_I_Unknown
 public:
 	
 /*...sCreation functions:8:*/
-	/**
+	/*
 	 * Creation functions
 	 */
+	 
+	/**
+	 * Let the GUI implementation create a frame.
+	 */ 
 	virtual lb_I_Unknown* LB_STDCALL createFrame() = 0;
+	
+	/**
+	 * Let the GUI implementation create a menu.
+	 */
 	virtual lb_I_Unknown* LB_STDCALL createMenu() = 0;
+	
+	/**
+	 * Let the GUI implementation create a menu bar.
+	 */
 	virtual lb_I_Unknown* LB_STDCALL createMenuBar() = 0;
+	
+	/**
+	 * Let the GUI implementation create a menu entry.
+	 */
 	virtual lb_I_Unknown* LB_STDCALL createMenuEntry() = 0;
 
+	
+	/**
+	 * This function creates a database dialog for the given query.
+	 *
+	 * \param formName Is the name for the form.
+	 * \param queryString Is the SQL query whose data should be displayed for modification.
+	 */
 	virtual lb_I_DatabaseForm* LB_STDCALL createDBForm(char* formName, char* queryString) = 0;
 /*...e*/
 /*...sGetter functions:8:*/
 	/**
-	 * Getter functions
+	 * Returns the main frame for the GUI application.
 	 */
 	 
 	virtual lb_I_Frame* LB_STDCALL getFrame() = 0; 
 /*...e*/
 /*...sMenu manipulation:8:*/
 	/**
-	 * Menu manipulation based on current position. The members
-	 * deleates this calls to the lb_I_GUI instance.
+	 * Disable a menuentry at the current position.
+	 * The position is reached by using gotoMenuEntry.
 	 */
-	 
 	virtual lbErrCodes LB_STDCALL deactivateMenuEntry() = 0;
+	
+	/**
+	 * Enable a menuentry at the current position.
+	 * The position is reached by using gotoMenuEntry.
+	 */
 	virtual lbErrCodes LB_STDCALL activateMenuEntry() = 0;
 
 	/**
-	 * This enables the manipulation of any main menus and the addition of
+	 * This enables the manipulation of any manin menu entries and the addition of
 	 * main menus.
 	 */	
 	virtual lbErrCodes LB_STDCALL gotoMenuRoot() = 0;
 	
 	/**
-	 * Go to any menu entry, to manipulate at this position
+	 * Go to any menu entry, to manipulate at this position.
 	 */
 	virtual lbErrCodes LB_STDCALL gotoMenuEntry(char* entry) = 0;
 	
 	/**
-	 * Insert after the current position
+	 * Insert a menu instance after the current position.
 	 */
 	virtual lbErrCodes LB_STDCALL insertMenuEntry(lb_I_Unknown* entry) = 0;
 	
 	/**
 	 * Add an entry at the current position (insert before)
 	 */
-	
 	virtual lbErrCodes LB_STDCALL addMenuEntry(lb_I_Unknown* entry) = 0; 
 /*...e*/
 
 
 
+/*...sDocs:0:*/
 /*
  * This will fasten up the current sample. It is not really needed to use
  * parameter based dispatching, if the target GUI interface provides the desired
@@ -1613,11 +1786,17 @@ public:
  *
  * The handling code should include creation, removement, hiding and so on.
  */
+/*...e*/
+
 /*...sfunctions that had been implemented in metaapplication:0:*/
 
 	/* The menubar is still present in the demo. At the
 	   first time, a new menubar should not be used.
 	*/
+
+	/**
+	 * Add a menu bar to the main menu with the given name.
+	 */
 	virtual lbErrCodes LB_STDCALL addMenuBar(char* name) = 0;
 
 	/**
@@ -1629,11 +1808,11 @@ public:
 	 * Add a menu entry in the named menu after given entry,
 	 * if provided. The handler must be registered.
 	 * 
-	 * Input:
-	 *	char* in_menu:		Which menu to add to (File/Edit/Help/...)
-	 *	char* entry:		The text for that entry
-	 *	char* evHandler:	The name of a registered event handler, that handle this
-	 *	char* afterentry:	Insert the entry after an exsisting entry
+	 * 
+	 * \param  in_menu Which menu to add to (File/Edit/Help/...)
+	 * \param  entry The text for that entry
+	 * \param  evHandler The name of a registered event handler, that handle this
+	 * \param  afterentry Insert the entry after an exsisting entry
 	 */
 	virtual lbErrCodes LB_STDCALL addMenuEntry(char* in_menu, char* entry, char* evHandler, char* afterentry = NULL) = 0;
 /*...e*/
@@ -1642,12 +1821,13 @@ public:
 
 	
 	/**
-	 * Let the GUI server show a dialog box
+	 * Let the GUI server show a dialog box.
+	 * This would be the simplest way to show informations to the user.
 	 */
 	virtual lbErrCodes LB_STDCALL msgBox(char* windowTitle, char* msg) = 0;
 
 	/**
-	 * We do not implement a dispatcher here, but we need one
+	 * We do not implement a dispatcher here, but we need one.
 	 */
 	virtual lbErrCodes LB_STDCALL setDispatcher(lb_I_Dispatcher* disp) = 0;	
 };

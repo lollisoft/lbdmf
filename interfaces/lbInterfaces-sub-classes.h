@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.39 $
+ * $Revision: 1.40 $
  * $Name:  $
- * $Id: lbInterfaces-sub-classes.h,v 1.39 2004/07/26 22:20:35 lollisoft Exp $
+ * $Id: lbInterfaces-sub-classes.h,v 1.40 2004/08/01 21:34:03 lollisoft Exp $
  *
  * $Log: lbInterfaces-sub-classes.h,v $
+ * Revision 1.40  2004/08/01 21:34:03  lollisoft
+ * More documentation
+ *
  * Revision 1.39  2004/07/26 22:20:35  lollisoft
  * Some problems with Power++ solved ?
  *
@@ -140,28 +143,51 @@
  *
  **************************************************************/
 /*...e*/
+/**
+ *  \file lbInterfaces-sub-classes.h
+ *  \brief Some basic interfaces.
+ *
+ *  This file contains interfaces like lb_I_String, lb_I_Parameter and so on.
+ */
 
 #ifndef __LB_INTERFACES_SUB_CLASSES__
 #define __LB_INTERFACES_SUB_CLASSES__
 
 /*...sclass lb_I_KeyBase:0:*/
+/**
+ * \brief Interface for any class, that could be stored in lb_I_Container.
+ *
+ * Implement this interface to let your classes containable.
+ */
 class lb_I_KeyBase : public lb_I_Unknown {
 protected:
+	/**
+	 * \deprecated Pure abstract class has no ctor/dtor's
+	 */
         lb_I_KeyBase() {}
+	/**
+	 * \deprecated Pure abstract class has no ctor/dtor's
+	 */
         virtual ~lb_I_KeyBase() {}
 public:
 
-    virtual int LB_STDCALL operator == (const lb_I_KeyBase* _key) const = 0;
-    virtual int LB_STDCALL operator > (const lb_I_KeyBase* _key) const = 0;
-    virtual int LB_STDCALL operator < (const lb_I_KeyBase* _key) const = 0;
+	virtual int LB_STDCALL operator == (const lb_I_KeyBase* _key) const = 0;
+	virtual int LB_STDCALL operator > (const lb_I_KeyBase* _key) const = 0;
+	virtual int LB_STDCALL operator < (const lb_I_KeyBase* _key) const = 0;
 
-    virtual int LB_STDCALL equals(const lb_I_KeyBase* _key) const = 0;
-    virtual int LB_STDCALL greater(const lb_I_KeyBase* _key) const = 0;
-    virtual int LB_STDCALL lessthan(const lb_I_KeyBase* _key) const = 0;
+	virtual int LB_STDCALL equals(const lb_I_KeyBase* _key) const = 0;
+	virtual int LB_STDCALL greater(const lb_I_KeyBase* _key) const = 0;
+	virtual int LB_STDCALL lessthan(const lb_I_KeyBase* _key) const = 0;
 
-    virtual char* LB_STDCALL getKeyType() const = 0;
+	/**
+	 * Returns the type of this key.
+	 */
+	virtual char* LB_STDCALL getKeyType() const = 0;
 
-    virtual char* LB_STDCALL charrep() const = 0;
+	/**
+	 * Char representation of the key.
+	 */
+	virtual char* LB_STDCALL charrep() const = 0;
 };
 
 
@@ -220,6 +246,10 @@ public: \
 /*...e*/
 
 /*...sclass lb_I_Object:0:*/
+/**
+ * \brief Olt base class now declared as interface.
+ * \deprecated use lb_I_Unknown.
+ */
 class lb_I_Object {
 protected:
     lb_I_Object() {}
@@ -279,33 +309,90 @@ void LB_STDCALL classname::setType() {              \
 
 // Keyable interfaces
 /*...sclass lb_I_String:0:*/
+/**
+ * \brief A basic string class.
+ *
+ * This is a set of base interfaces that are compatible to the lb_I_Container interface.
+ */
 class lb_I_String : public lb_I_KeyBase {
 protected:
+	/**
+	 * \deprecated Pure abstract class has no ctor/dtor's
+	 */
         lb_I_String() {}
+	/**
+	 * \deprecated Pure abstract class has no ctor/dtor's
+	 */
         virtual ~lb_I_String() {}
 
 public:
-        
+        /**
+         * \brief Set the string data from char*
+         * 
+         * \param p Input char const * data .
+         */
         virtual void LB_STDCALL setData(char const * p) = 0;
+        
+        /**
+         * \brief Return char* representation.
+         *
+         * \return char* value.
+         */
         virtual char* LB_STDCALL getData() const = 0;
+        
+        /**
+         * \brief Set data from other lb_I_String instance.
+         *
+         * This member is used in lb_I_Container implementation via clone.
+         */
         virtual lbErrCodes LB_STDCALL setData( lb_I_Unknown * uk) = 0;
         
 };
 /*...e*/
 /*...sclass lb_I_Integer:0:*/
+/**
+ * \brief A basic integer class.
+ *
+ * This is a set of base interfaces that are compatible to the lb_I_Container interface.
+ */
 class lb_I_Integer : public lb_I_KeyBase {
 protected:
+	/**
+	 * \deprecated Pure abstract class has no ctor/dtor's
+	 */
         lb_I_Integer() {}
+	/**
+	 * \deprecated Pure abstract class has no ctor/dtor's
+	 */
         virtual ~lb_I_Integer() {}
 
 public:
-        
+	/** 
+	 * \brief Set p as the int value.
+	 *
+	 * \param p Integer value to be set.
+	 */        
         virtual void LB_STDCALL setData(int p) = 0;
+        
+        /**
+         * \brief Get the integer value.
+         */
         virtual int LB_STDCALL getData() const = 0;
+	
+        /**
+         * \brief Set data from other lb_I_Integer instance.
+         *
+         * This member is used in lb_I_Container implementation via clone.
+         */
 	virtual lbErrCodes LB_STDCALL setData( lb_I_Unknown * uk) = 0;        
 };
 /*...e*/
 /*...sclass lb_I_Long:0:*/
+/**
+ * \brief A basic long class.
+ *
+ * This is a set of base interfaces that are compatible to the lb_I_Container interface.
+ */
 class lb_I_Long : public lb_I_KeyBase {
 protected:
         lb_I_Long() {}
@@ -320,6 +407,12 @@ public:
 /*...e*/
 
 /*...sclass lb_I_Parameter:0:*/
+/**
+ * \brief A parameter interface. Set of parameter - value pairs.
+ *
+ * This interface is used in build up dynamic commands to be issued to
+ * event handlers (lb_I_EventHandler, lb_I_EvHandler).
+ */
 class lb_I_Parameter : public lb_I_Unknown {
 protected:
         lb_I_Parameter() {}
@@ -347,10 +440,58 @@ public:
         virtual lbErrCodes LB_STDCALL getString(lb_I_String* parameter, lb_I_String* p) = 0;
 #endif        
         /**
-         * The UAP variant ??
+         * \brief Set a String as a parameter.
+         *
+         * \param parameter This is the name of the parameter.
+         * \param p         This is the value for the given name.
          */ 
-         
         virtual void LB_STDCALL setUAPString(lb_I_String*& parameter, lb_I_String*& p) = 0;
+        
+        /**
+         * \brief Get a String as a parameter.
+         *
+         * \param parameter This is the name of the parameter.
+         * \param p         This is the value for the given name.
+         *
+         * Here is a sample how to implement an event handler for creating a menu entry,
+         * wich in turn routes the event ID to the general OnDispatch member of a wxFrame:
+         *
+         * \code
+		_LOG << "MyApp::lbEvHandler3 called" LOG_
+		lbErrCodes err = ERR_NONE;
+
+		UAP_REQUEST(manager.getPtr(), lb_I_EventManager, ev_manager)
+		UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
+		UAP_REQUEST(manager.getPtr(), lb_I_String, menubar)
+		UAP_REQUEST(manager.getPtr(), lb_I_String, menuname)
+		UAP_REQUEST(manager.getPtr(), lb_I_String, handlername)
+	
+		UAP(lb_I_Parameter, param, __FILE__, __LINE__)
+
+		QI(uk, lb_I_Parameter, param, __FILE__, __LINE__)
+
+		parameter->setData("menubar");
+		param->getUAPString(*&parameter, *&menubar);
+	
+		parameter->setData("menuname");
+		param->getUAPString(*&parameter, *&menuname);
+	
+		parameter->setData("handlername");
+		param->getUAPString(*&parameter, *&handlername);
+	
+		int EvNr = 0;
+		ev_manager->resolveEvent(handlername->getData(), EvNr);
+
+		wxMenuBar* mbar = frame_peer->getMenuBar();
+		wxMenu* menu = mbar->GetMenu(mbar->FindMenu(wxString(menubar->getData())));
+
+		menu->Append(EvNr, menuname->getData());
+
+		((wxFrame*) frame_peer)->Connect( EvNr,  -1, wxEVT_COMMAND_MENU_SELECTED,
+	          (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
+	          &lb_wxFrame::OnDispatch );
+         * \endcode
+         */ 
         virtual lbErrCodes LB_STDCALL getUAPString(lb_I_String*& parameter, lb_I_String*& p) = 0; 
 
 	virtual void LB_STDCALL setUAPInteger(lb_I_String*& parameter, lb_I_Integer*& p) = 0;

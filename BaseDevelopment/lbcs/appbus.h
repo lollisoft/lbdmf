@@ -72,7 +72,10 @@ protected:
 /*...e*/
 
 /*...slbAppBusClient:0:*/
-
+/**
+ * \brief An attempt for client server communication.
+ * \deprecated This is not lbDMF based. Must be rewritten.
+ */
 class DLLEXPORT lbAppBusClient : public lbAppBus,
 				 public lbAppClient {
 public:
@@ -136,6 +139,8 @@ protected:
 
 /*...slbAppBusServer:0:*/
 class lb_Transfer_Data;
+
+
 class DLLEXPORT lbAppBusServer :
 				 public lbAppBus,
                                  public lbAppServer 

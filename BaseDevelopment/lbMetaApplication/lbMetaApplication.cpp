@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.37 $
+ * $Revision: 1.38 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.37 2004/07/18 07:28:25 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.38 2004/08/01 21:34:03 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.38  2004/08/01 21:34:03  lollisoft
+ * More documentation
+ *
  * Revision 1.37  2004/07/18 07:28:25  lollisoft
  * Now the database sample works also under linux. Some bugs solved and minor changes
  *
@@ -972,7 +975,7 @@ lbErrCodes LB_STDCALL lb_Dispatcher::delDispatcher(lb_I_Dispatcher* disp) {
 }
 /*...e*/
 /*...slb_I_DispatchResponce\42\ lb_Dispatcher\58\\58\dispatch\40\lb_I_DispatchRequest\42\ req\41\:0:*/
-lb_I_DispatchResponce* lb_Dispatcher::dispatch(lb_I_DispatchRequest* req) {
+lb_I_DispatchResponse* lb_Dispatcher::dispatch(lb_I_DispatchRequest* req) {
 	_LOG << "lb_Dispatcher::dispatch() called" LOG_
 	return NULL;
 }
