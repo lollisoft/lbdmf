@@ -1,8 +1,8 @@
 @echo off
 @rem This script creates a makefile based on templates
 
-if EXIST *.bak attrib -r *.bak
-if EXIST *.bak del *.bak
+if exist "*.bak" attrib -r *.bak
+if exist "*.bak" del *.bak
 type %DEVROOT%\Projects\cpp\make\makefile.template > makefile
 type makefile.module >> makefile
 echo Path=$(PATH) >> makefile
