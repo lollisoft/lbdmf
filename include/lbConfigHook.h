@@ -1,4 +1,6 @@
-//#include <windows.h>
+#ifdef WINDOWS
+#include <windows.h>
+#endif
 #include <stdlib.h>
 
 #ifdef WINDOWS
