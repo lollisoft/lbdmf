@@ -183,7 +183,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::getDynamicDBForm(lb_I_Unknown* uk) {
 	
 		sampleQuery = database->getQuery(0);	
 
-		char b =
+		char* b =
 		        "select Formulare.id, Formulare.name from Formulare inner join Anwendungen_Formulare on "
 		        "Formulare.id = Anwendungen_Formulare.formularid "
 		        "inner join Anwendungen on Anwendungen_Formulare.anwendungid = Anwendungen.id inner join "
@@ -192,7 +192,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::getDynamicDBForm(lb_I_Unknown* uk) {
 		        "Users.userid = '%s' and Anwendungen.name = '%s' and "
 		        "Formulare.eventname = '%s'";
 
-		char* buffer = malloc(strlen(b)+strlen(userName)+strlen(applicationName)+strlen(eventName)+1);
+		char* buffer = (char*) malloc(strlen(b)+strlen(userName)+strlen(applicationName)+strlen(eventName)+1);
 
 		buffer[0] = 0;
 
@@ -385,7 +385,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::Initialize(char* user, char* app) {
 	        " User_Anwendungen.userid = Users.id where "
 	        "Users.userid = '%s' and Anwendungen.name = '%s'";
 
-	char* buffer = malloc(strlen(b)+strlen(user)+strlen(app)+1);
+	char* buffer = (char*) malloc(strlen(b)+strlen(user)+strlen(app)+1);
 
 	sprintf(buffer, b, user, app);
 
