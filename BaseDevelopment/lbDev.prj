@@ -2,6 +2,7 @@
 /*...v\46\\46\\47\README:0:*/
 /*...v\46\\46\\47\COPYING:0:*/
 /*...v\46\\46\\47\makedist\46\bat:0:*/
+/*...vmake\46\bat:0:*/
 
 /*...sInterfaces:0:*/
 /*...v\46\\46\\47\interfaces\47\lbInterfaces\46\h:0:*/
@@ -29,6 +30,7 @@ These headers must define the per module (DLL) EXPORT variable
 /*...v\46\\46\\47\include\47\lbmetaapp\45\module\46\h:0:*/
 /*...v\46\\46\\47\include\47\lbhook\45\module\46\h:0:*/
 /*...v\46\\46\\47\include\47\lbdb\45\module\46\h:0:*/
+/*...v\46\\46\\47\include\47\lbapp\45\module\46\h:0:*/
 /*...e*/
 
 /*...sHook:0:*/
@@ -41,6 +43,16 @@ These headers must define the per module (DLL) EXPORT variable
 
 /*...e*/
 
+/*...sAppdevelopment:0:*/
+/*...v\46\\46\\47\AppDevelopment\47\make\46\bat:0:*/
+/*...v\46\\46\\47\AppDevelopment\47\Trainres\47\App\47\makefile:0:*/
+
+
+/*...v\46\\46\\47\AppDevelopment\47\Trainres\47\App\47\Application\46\cpp:0:*/
+/*...v\46\\46\\47\AppDevelopment\47\Trainres\47\App\47\Application\46\h:0:*/
+/*...v\46\\46\\47\AppDevelopment\47\Trainres\47\App\47\makefile\46\module:0:*/
+/*...v\46\\46\\47\AppDevelopment\47\Trainres\47\App\47\makefile\46\bat:0:*/
+/*...e*/
 /*...sBaseDevelopment:0:*/
 /*...vmake\46\bat:0:*/
 /*...sMSC based XML parser:0:*/
@@ -154,40 +166,6 @@ findfunctorname
 /*...v\46\\46\\47\Test\47\console\47\xml\47\makefile:0:*/
 /*...v\46\\46\\47\Test\47\console\47\xml\47\makefile\46\module:0:*/
 /*...e*/
-
-
-
-/*...sComponents:0:*/
-/*...v\46\\46\\47\Components\47\SimpleTextEditor\47\editor\46\h:0:*/
-/*...v\46\\46\\47\Components\47\SimpleTextEditor\47\editor\46\cpp:0:*/
-
-
-The module wizard should be used to create a new module for my
-component system. It should create the nessecary files, that are
-needed to compile successfull.
-
-What did I need ?
-
-1:	A name for the module, like SimpleTextEditor
-2:	The directory to place it on
-
-/*...v\46\\46\\47\Components\47\lbModuleWizard\47\lbModuleWizard\46\h:0:*/
-/*...v\46\\46\\47\Components\47\lbModuleWizard\47\lbModuleWizard\46\cpp:0:*/
-
-
-/*...e*/
-
-/*...sServiceDevelopment:0:*/
-/*...e*/
-/*...sWrapperDevelopment:0:*/
-/*...swxWrapper:0:*/
-/*...v\46\\46\\47\WrapperDevelopment\47\wxWrapper\47\wxWrapper\46\h:0:*/
-/*...v\46\\46\\47\WrapperDevelopment\47\wxWrapper\47\wxWrapper\46\cpp:0:*/
-/*...v\46\\46\\47\WrapperDevelopment\47\wxWrapper\47\makefile\46\module:0:*/
-/*...v\46\\46\\47\WrapperDevelopment\47\wxWrapper\47\makefile:0:*/
-/*...e*/
-/*...e*/
-
 /*...sMisc:0:*/
 /*...smkmk a makefile make tool:0:*/
 /*...v\46\\46\\47\vendor\47\mkmk\47\contain\46\h:0:*/
@@ -197,6 +175,19 @@ What did I need ?
 /*...v\46\\46\\47\vendor\47\mkmk\47\makefile:0:*/
 /*...v\46\\46\\47\vendor\47\mkmk\47\makefile\46\module:0:*/
 
+/*...e*/
+/*...stinyxml:0:*/
+/*...v\46\\46\\47\vendor\47\tinyxml\47\tinystr\46\cpp:0:*/
+/*...v\46\\46\\47\vendor\47\tinyxml\47\tinyxml\46\cpp:0:*/
+/*...v\46\\46\\47\vendor\47\tinyxml\47\tinyxmlerror\46\cpp:0:*/
+/*...v\46\\46\\47\vendor\47\tinyxml\47\tinyxmlparser\46\cpp:0:*/
+/*...v\46\\46\\47\vendor\47\tinyxml\47\xmltest\46\cpp:0:*/
+
+/*...v\46\\46\\47\vendor\47\tinyxml\47\lbtinyxmlwrapper\46\h:0:*/
+/*...v\46\\46\\47\vendor\47\tinyxml\47\lbtinyxmlwrapper\46\cpp:0:*/
+/*...v\46\\46\\47\vendor\47\tinyxml\47\makefile\46\module:0:*/
+/*...v\46\\46\\47\vendor\47\tinyxml\47\makefile:0:*/
+/*...v\46\\46\\47\vendor\47\tinyxml\47\makefile\46\bat:0:*/
 /*...e*/
 /*...v\46\\46\\47\vendor\47\DBFill\47\DBFill\46\cpp:0:*/
 
@@ -260,6 +251,40 @@ What did I need ?
 /*...vG\58\\92\powwow\92\projects\92\migration\92\erstelle\45\serviceliste\92\Waterboy\45\Karte\46\csv\46\txt:0:*/
 /*...vd\58\\92\export\45\29\45\03\45\2001\92\Artikel\45\Karte\46\csv:0:*/
 /*...e*/
+
+
+
+/*...sComponents:0:*/
+/*...v\46\\46\\47\Components\47\SimpleTextEditor\47\editor\46\h:0:*/
+/*...v\46\\46\\47\Components\47\SimpleTextEditor\47\editor\46\cpp:0:*/
+
+
+The module wizard should be used to create a new module for my
+component system. It should create the nessecary files, that are
+needed to compile successfull.
+
+What did I need ?
+
+1:	A name for the module, like SimpleTextEditor
+2:	The directory to place it on
+
+/*...v\46\\46\\47\Components\47\lbModuleWizard\47\lbModuleWizard\46\h:0:*/
+/*...v\46\\46\\47\Components\47\lbModuleWizard\47\lbModuleWizard\46\cpp:0:*/
+
+
+/*...e*/
+
+/*...sServiceDevelopment:0:*/
+/*...e*/
+/*...sWrapperDevelopment:0:*/
+/*...swxWrapper:0:*/
+/*...v\46\\46\\47\WrapperDevelopment\47\wxWrapper\47\wxWrapper\46\h:0:*/
+/*...v\46\\46\\47\WrapperDevelopment\47\wxWrapper\47\wxWrapper\46\cpp:0:*/
+/*...v\46\\46\\47\WrapperDevelopment\47\wxWrapper\47\makefile\46\module:0:*/
+/*...v\46\\46\\47\WrapperDevelopment\47\wxWrapper\47\makefile:0:*/
+/*...e*/
+/*...e*/
+
 
 
 /*...vg\58\\92\album\92\album\46\pl:0:*/
