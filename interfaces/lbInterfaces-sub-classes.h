@@ -28,11 +28,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.35 $
+ * $Revision: 1.36 $
  * $Name:  $
- * $Id: lbInterfaces-sub-classes.h,v 1.35 2004/01/24 16:48:20 lollisoft Exp $
+ * $Id: lbInterfaces-sub-classes.h,v 1.36 2004/06/09 07:06:25 lollisoft Exp $
  *
  * $Log: lbInterfaces-sub-classes.h,v $
+ * Revision 1.36  2004/06/09 07:06:25  lollisoft
+ * Did I need protected constructor and destructor in pure abstract classes ?
+ *
  * Revision 1.35  2004/01/24 16:48:20  lollisoft
  * Added access to makeInstance (lbMetaApplication)
  *
@@ -488,11 +491,11 @@ int LB_STDCALL classname::lessthan(const lb_I_KeyBase* _key) const { \
 /*...e*/
 /*...sclass lb_I_Container:0:*/
 class lb_I_Container : public lb_I_Unknown {
-
+/*
 protected:
     lb_I_Container() {}
     virtual ~lb_I_Container() {}
-
+*/
 public:
     virtual int LB_STDCALL Count() = 0;
 
