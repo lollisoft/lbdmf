@@ -36,6 +36,7 @@ LIBS = $(DEVROOT_MAKE)/projects/dll/libs/lbhook.lib,../../../../tools/watcom/lib
 ifeq ($(COMPILER), MICROSOFT)
 MOD_INCL = $(STD_INCL_MICROSOFT)
 MOD_INCL += $(foreach s, $(INCLS), /I "$s")
+LIBS = Q:/develop/Tools/msc/VC98/Lib/odbc32.lib
 CC=Cl
 C_DLLOPS= $(C_DLLOPS_MICROSOFT$(MODE))
 C_EXEOPS= $(C_EXEOPS_MICROSOFT$(MODE))
