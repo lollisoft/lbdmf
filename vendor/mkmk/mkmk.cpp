@@ -11,11 +11,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.9 $
+ * $Revision: 1.10 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.9 2001/10/21 12:32:06 lothar Exp $
+ * $Id: mkmk.cpp,v 1.10 2001/10/21 13:08:45 lothar Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.10  2001/10/21 13:08:45  lothar
+ * Added includepath parameter
+ *
  * Revision 1.9  2001/10/21 12:32:06  lothar
  * Little changes
  *
@@ -539,7 +542,9 @@ void main(int argc, char *argv[])
 /*...e*/
   
 //  WriteHeader(f,targetname);
-  for (i=3; i<argc; i++) Sources.AddMask(argv[i]);
+  char *inclPaths = strdup(argv[3]);
+  printf("Parameter include path: %s\n", inclPaths);
+  for (i=4; i<argc; i++) Sources.AddMask(argv[i]);
   for (i=0; i<Sources.Count; i++) DoDep(f,(TDepItem*)Sources[i]);
   WriteEnding(f,targetname,&Sources);
 //  fclose(f);
