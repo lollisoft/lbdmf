@@ -2,10 +2,13 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.7 $
+ * $Revision: 1.8 $
  * $Name:  $
- * $Id: lbkey.h,v 1.7 2001/03/30 20:08:07 lolli Exp $
+ * $Id: lbkey.h,v 1.8 2001/06/21 06:34:42 lolli Exp $
  * $Log: lbkey.h,v $
+ * Revision 1.8  2001/06/21 06:34:42  lolli
+ * Now using interface macros
+ *
  * Revision 1.7  2001/03/30 20:08:07  lolli
  * Commit due to possible head crash on anakin (Linux)
  *
@@ -39,10 +42,6 @@
  ************************************************************************************************************/
 /*...e*/
 
-#ifndef LB_KEY
-#define LB_KEY
-
-#ifdef bla
 /*...sDLLEXPORT:0:*/
 #undef DLLEXPORT
 
@@ -62,79 +61,84 @@
 
 #endif
 /*...e*/
-#endif
 
-/*...sclass lbKeyBase:0:*/
-class lbKeyBase : public lb_I_KeyBase {
-public:
 
-//    virtual int operator == (const lb_I_KeyBase &_key) const;
-//    virtual int operator > (const lb_I_KeyBase &_key) const;
+#ifndef LB_KEY
+#define LB_KEY
 
-    virtual int LB_STDCALL equals(const lb_I_KeyBase* _key) const = 0;
-    virtual int LB_STDCALL greater(const lb_I_KeyBase* _key) const = 0;
-    virtual lb_I_KeyBase* LB_STDCALL clone() const = 0;
-
-    virtual char* LB_STDCALL charrep() = 0;
-};
-/*...e*/
-/*...sclass lbKey \58\ public lbKeyBase:0:*/
-class lbKey : public lbKeyBase {
+/*...sclass lbKey \58\ public lb_I_KeyBase:0:*/
+class lbKey : public lb_I_KeyBase {
 public:
     lbKey();
     lbKey(int _key);
     lbKey(const lb_I_KeyBase* k);
     virtual ~lbKey();
 
+    DECLARE_LB_UNKNOWN()
+
+
     // Must be implemented
     virtual int LB_STDCALL equals(const lb_I_KeyBase* _key) const;
     virtual int LB_STDCALL greater(const lb_I_KeyBase* _key) const;
-    lb_I_KeyBase* LB_STDCALL clone() const;
+
+    virtual char* LB_STDCALL getKeyType();
 
     virtual char* LB_STDCALL charrep();
-    virtual char* LB_STDCALL getMainInterface() const { return "intKey"; }
 private:
 
+    char keyType[10];
     int key;
 };
 /*...e*/
-/*...sclass lbKeyUL \58\ public lbKeyBase:0:*/
-class lbKeyUL : public lbKeyBase {
+/*...sclass lbKeyUL \58\ public lb_I_KeyBase:0:*/
+class lbKeyUL : public lb_I_KeyBase {
 public:
     lbKeyUL();
     lbKeyUL(unsigned long _key);
     lbKeyUL(const lb_I_KeyBase* k);
     virtual ~lbKeyUL();
 
+    DECLARE_LB_UNKNOWN()
+    
+
     // Must be implemented
     virtual int LB_STDCALL equals(const lb_I_KeyBase* _key) const;
     virtual int LB_STDCALL greater(const lb_I_KeyBase* _key) const;
-    lb_I_KeyBase* LB_STDCALL clone() const;
+
+    virtual char* LB_STDCALL getKeyType();
 
     virtual char* LB_STDCALL charrep();
-    virtual char* LB_STDCALL getMainInterface() const { return "ULKey"; }
 private:
 
+    char keyType[10];
     unsigned long key;
 };
 /*...e*/
-/*...sclass lbStringKey \58\ public lbKeyBase:0:*/
-class lbStringKey : public lbKeyBase {
+/*...sclass lbStringKey \58\ public lb_I_KeyBase:0:*/
+class lbStringKey : public lb_I_KeyBase {
 public:
+    lbStringKey();
     lbStringKey(const char* _key);
     lbStringKey(const lb_I_KeyBase* k);
     virtual ~lbStringKey();
 
+    DECLARE_LB_UNKNOWN()
+
+
     // Must be implemented
     virtual int LB_STDCALL equals(const lb_I_KeyBase* _key) const;
     virtual int LB_STDCALL greater(const lb_I_KeyBase* _key) const;
-    lb_I_KeyBase* LB_STDCALL clone() const;
+
+    virtual char* LB_STDCALL getKeyType();
 
     virtual char* LB_STDCALL charrep();
-    virtual char* LB_STDCALL getMainInterface() const { return "stringKey"; }
 private:
+
+    char keyType[10];
     char* key;    
 };
 /*...e*/
+
+DECLARE_FUNCTOR(instanceOfIntegerKey)
 
 #endif //LB_ELEMENT
