@@ -1045,6 +1045,8 @@ _LOG << "Fetch checks for next row (step 2)" LOG_
 		
 		retcode = SQLExtendedFetch(hstmt, SQL_FETCH_NEXT, 0, &RowsFetched, RowStat);
 
+char buf[100] = "";
+
 _LOG << "Fetch checked (step 2)" LOG_
 		
 		if (retcode == SQL_NO_DATA) {
@@ -1155,6 +1157,8 @@ lbErrCodes LB_STDCALL lbQuery::previous() {
 		
 		printf("Peek for having more data in prev direction.\n");
 		retcode = SQLExtendedFetch(hstmt, SQL_FETCH_PREV, 0, &RowsFetched, RowStat);
+
+char buf[100] = "";
 		
 		if (retcode == SQL_NO_DATA) {
 			// Indicate for no data and go back
