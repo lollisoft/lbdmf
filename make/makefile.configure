@@ -4,6 +4,7 @@ all: makefile
 ifeq ($(OSTYPE), linux)
 DEVROOT_MAKE=$(DEVROOT)
 ATTRIB=
+MKMK=mkmk
 endif
 ifeq ($(OSTYPE), osx)
 DEVROOT_MAKE=$(DEVROOT)
