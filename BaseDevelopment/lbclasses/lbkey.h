@@ -2,10 +2,13 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.11 $
+ * $Revision: 1.12 $
  * $Name:  $
- * $Id: lbkey.h,v 1.11 2002/04/15 18:24:33 lolli Exp $
+ * $Id: lbkey.h,v 1.12 2002/05/30 17:53:03 lolli Exp $
  * $Log: lbkey.h,v $
+ * Revision 1.12  2002/05/30 17:53:03  lolli
+ * Current development seems to run
+ *
  * Revision 1.11  2002/04/15 18:24:33  lolli
  * Huge changes - works good
  *
@@ -91,7 +94,14 @@ private:
 };
 /*...e*/
 /*...sclass lbStringKey \58\ public lb_I_KeyBase:0:*/
-class lbStringKey : public lb_I_KeyBase {
+class 
+#ifdef HOOK_DLL
+LB_DLLEXPORT
+#endif
+#ifndef HOOK_DLL
+LB_DLLIMPORT
+#endif
+lbStringKey : public lb_I_KeyBase {
 public:
     lbStringKey();
     lbStringKey(const char* _key);

@@ -689,14 +689,13 @@ CL_LOG("lbThread::OnExit() leave");
 /*...e*/
 
 #endif
-
 /*...sextern C begin:0:*/
 #ifdef __cplusplus
 extern "C" {
 #endif
 /*...e*/
 
-DWORD DLLEXPORT LB_STDCALL lbGetCurrentThreadId() {
+DWORD LB_DLLEXPORT LB_STDCALL lbGetCurrentThreadId() {
 #ifdef WINDOWS
 	return ::GetCurrentThreadId();
 #else
@@ -704,7 +703,7 @@ DWORD DLLEXPORT LB_STDCALL lbGetCurrentThreadId() {
 #endif
 }
 
-DWORD DLLEXPORT LB_STDCALL lbGetCurrentProcessId() {
+DWORD LB_DLLEXPORT LB_STDCALL lbGetCurrentProcessId() {
 #ifdef WINDOWS
 	return ::GetCurrentProcessId();
 #else

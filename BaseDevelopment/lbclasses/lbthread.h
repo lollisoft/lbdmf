@@ -7,6 +7,10 @@
 
 #include <lbInterfaces.h>
 
+/*...sLB_CLASSES_DLL scope:0:*/
+#include <lbclasses-module.h>
+/*...e*/
+
 /*...stypedef lbMutexError:0:*/
 typedef enum
 {
