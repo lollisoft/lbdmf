@@ -28,11 +28,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.47 $
+ * $Revision: 1.48 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.47 2003/01/24 17:55:55 lothar Exp $
+ * $Id: lbModule.cpp,v 1.48 2003/01/27 21:18:34 lothar Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.48  2003/01/27 21:18:34  lothar
+ * More logging
+ *
  * Revision 1.47  2003/01/24 17:55:55  lothar
  * Added debug information
  *
@@ -1752,13 +1755,13 @@ void LB_STDCALL lbModule::getXMLConfigObject(lb_I_XMLConfig** inst) {
         if (cfgname == NULL) return;
 
 	HINSTANCE h = getModuleHandle();
-
+printf("Get module handle\n");
         if (lbLoadModule(libname, h) != ERR_NONE) {
                 exit(1);
         }
-        
+printf("Set module handle\n");        
         setModuleHandle(h);
-
+printf("Get function pointer\n");
         if ((err = lbGetFunctionPtr(ftrname, getModuleHandle(), (void**) &DLL_LB_GETXML_CONFIG_INSTANCE)) != ERR_NONE) {
             _CL_LOG <<  "Kann Funktion '" << ftrname << "' nicht finden." LOG_  
             exit(1);
@@ -1769,6 +1772,7 @@ void LB_STDCALL lbModule::getXMLConfigObject(lb_I_XMLConfig** inst) {
 	
         err = DLL_LB_GETXML_CONFIG_INSTANCE(&xml_I, this, __FILE__, __LINE__);
         // Debug helper
+printf("Set up location\n");        
         xml_I.setLine(__LINE__);
         xml_I.setFile(__FILE__);
 
@@ -1802,12 +1806,13 @@ void LB_STDCALL lbModule::getXMLConfigObject(lb_I_XMLConfig** inst) {
 /*...e*/
 
 	UAP(lb_I_XMLConfig, _inst, __FILE__, __LINE__)
-
+printf("Query interface of instance at %p\n", xml_I);
         QI(xml_I, lb_I_XMLConfig, _inst, __FILE__, __LINE__) 
-        
+printf("Queried\n");        
         _inst++;
+printf("Increase count\n");
         *inst = *&_inst;
-        
+printf("Increased\n");        
         /**
          * Set a flag, that say's system is up.
          */
@@ -1955,7 +1960,9 @@ lbErrCodes LB_STDCALL lbModule::initialize() {
         }
         
         if (xml_Instance == NULL) {
+printf("Get the XML config object\n");
                 getXMLConfigObject(&xml_Instance);
+printf("Got it\n");
                 if (xml_Instance == NULL) {
                 	_CL_LOG << "Error: Functor has not returned a pointer!" LOG_
                 	exit(1);
@@ -2628,7 +2635,9 @@ lbErrCodes LB_STDCALL lbModule::request(const char* request, lb_I_Unknown** resu
         lbErrCodes err = ERR_NONE;
         char buf[1000] = "";
         if (moduleList == NULL) {
+        	printf("Initialize\n");
                 initialize();
+                printf("Initialized\n");
         }
         char* functorName = NULL;
 	buf[0] = 0;
@@ -2640,7 +2649,7 @@ lbErrCodes LB_STDCALL lbModule::request(const char* request, lb_I_Unknown** resu
          * impl is not returned in any way, I think, so it is allowed to delete the object
          * at lost of focus.
          */
-        
+_CL_LOG << "Requested for an interface " << request LOG_        
 /*...sget my unknown interface:8:*/
         if (strcmp(request, "instance/XMLConfig") == 0) {
                 //xml_Instance->hasConfigObject("Dat/object");

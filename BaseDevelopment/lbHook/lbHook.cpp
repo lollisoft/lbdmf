@@ -261,11 +261,11 @@ T_p_getlbModuleInstance DLL_GETMODULEINSTANCE;
 		_CL_LOG << "Instance is locked. Must set module manager first" LOG_
 		module->setModuleManager(module.getPtr(), __FILE__, __LINE__);
 	} 
-	
+_CL_LOG << "Got instance for module" LOG_	
 	UAP(lb_I_Module, inst, __FILE__, __LINE__)
-	
+_CL_LOG << "Have UAP" LOG_	
 	QI(module, lb_I_Module, inst, __FILE__, __LINE__)
-	
+_CL_LOG << "Have interface lb_I_Module" LOG_	
 	return inst.getPtr();
 }
 /*...e*/

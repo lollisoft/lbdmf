@@ -28,11 +28,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.34 $
+ * $Revision: 1.35 $
  * $Name:  $
- * $Id: lbDOMConfig.cpp,v 1.34 2002/12/29 16:09:29 lothar Exp $
+ * $Id: lbDOMConfig.cpp,v 1.35 2003/01/27 21:18:54 lothar Exp $
  *
  * $Log: lbDOMConfig.cpp,v $
+ * Revision 1.35  2003/01/27 21:18:54  lothar
+ * More logging
+ *
  * Revision 1.34  2002/12/29 16:09:29  lothar
  * Intent to go public
  *
@@ -1313,6 +1316,7 @@ lbErrCodes lbDOMConfig::setData(lb_I_Unknown* uk) {
 
 /*...slbDOMConfig\58\\58\lbDOMConfig\40\char\42\ file\44\ int line\41\:0:*/
 lbDOMConfig::lbDOMConfig(char* file, int line) {
+	printf("Created lbDOMConfig::lbDOMConfig(char* file, int line) instance\n");
 	manager = NULL;
 	ref = STARTREF;
 	lastResult = NULL;
@@ -1341,6 +1345,7 @@ lbDOMConfig::lbDOMConfig(char* file, int line) {
 /*...e*/
 /*...slbDOMConfig\58\\58\lbDOMConfig\40\\41\:0:*/
 lbDOMConfig::lbDOMConfig() {
+	printf("Created lbDOMConfig::lbDOMConfig() instance at %p\n", this);
 	manager = NULL;
 	ref = STARTREF;
 	lastResult = NULL;
