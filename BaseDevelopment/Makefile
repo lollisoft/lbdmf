@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.41 $
+# * $Revision: 1.42 $
 # * $Name:  $
-# * $Id: Makefile,v 1.41 2005/03/16 23:01:25 lollisoft Exp $
+# * $Id: Makefile,v 1.42 2005/03/16 23:38:07 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.42  2005/03/16 23:38:07  lollisoft
+# * Missing define to build wx so plugins
+# *
 # * Revision 1.41  2005/03/16 23:01:25  lollisoft
 # * Automatically creating target directories for plugins
 # *
@@ -198,6 +201,7 @@ ifeq ($(OSTYPE), linux)
 TARGETDLL=so
 TARGETEXE=elf
 TARGETPLUGIN=soplugin
+TARGETWXPLUGIN=wxsoplugin
 
 ALLTARGETS = \
 	../include/lbkey.h \
