@@ -31,6 +31,10 @@
 typedef unsigned short byte;
 typedef unsigned short u_short;
 #endif
+#ifdef __POWERPP
+typedef unsigned short byte;
+typedef unsigned short u_short;
+#endif
 typedef byte LB_DATA;
 /*...e*/
 #endif // __BASE_TYPES_DEFINED__
