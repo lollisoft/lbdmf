@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.40 $
+# * $Revision: 1.41 $
 # * $Name:  $
-# * $Id: Makefile,v 1.40 2005/03/16 22:01:57 lollisoft Exp $
+# * $Id: Makefile,v 1.41 2005/03/16 23:01:25 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.41  2005/03/16 23:01:25  lollisoft
+# * Automatically creating target directories for plugins
+# *
 # * Revision 1.40  2005/03/16 22:01:57  lollisoft
 # * Added creating dll/libs dir under windows
 # *
@@ -224,6 +227,7 @@ TARGETWXPLUGIN=wxplugin
 
 ALLTARGETS = \
 	../../dll/libs \
+	../../plugins/libs \
 	lbHook \
 	lbDB \
 	lbModule \
@@ -247,8 +251,10 @@ all_targets: $(ALLTARGETS)
 
 ../../dll/libs:
 	mkdir ../../dll/libs
-	#chmod 0777 ../../dll/libs
-	#echo "clean: dummy" > Makefile
+
+../../plugins/libs:
+	mkdir ../../plugins
+	mkdir ../../plugins/libs
 
 clean:
 	@for d in $(ALLTARGETS); do \
