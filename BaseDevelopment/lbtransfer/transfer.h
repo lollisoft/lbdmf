@@ -195,14 +195,14 @@ private:
 
 
 	int resetServerStateMachine();
-	int sendDatatype(char* type);
+	lbErrCodes sendDatatype(char* type);
 	int waitforAnswer(char* answer);
 	int sendDataCount(int c);
 	int sendBuffer(byte* buf, int len);
 	int sendString(char* type);
 	int waitForString(char* & string);
 	int waitForDataCount(int & c);
-	int waitForDatatype(char* & result);
+	lbErrCodes waitForDatatype(char* & result);
 	int waitForBuffer(byte * & buffer, int & len);
 
 	lbSocket* sock;

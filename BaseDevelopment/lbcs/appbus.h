@@ -118,16 +118,32 @@ public:
 	lbErrCodes _request(	lb_Transfer_Data request,
 			lb_Transfer_Data & result);
 			
+	/**
+	 * This function registers services implemented here.
+	 * So all requests must have a service prefix in its
+	 * lb_Transfer_Data container. If this is not happen,
+	 * the request can't dispatched anywhere !
+	 */
+	lbErrCodes _registerServices();
+	
+			
 protected:
 
-	// This let the client authenticate by user
-	int UserAnouncement(lb_Transfer_Data request,
-			    lb_Transfer_Data & result);
-
+/*...sHandleEcho \40\a simple echo server \45\ just a test\41\:8:*/
 	// Handle a appbus server specific request
 	lbErrCodes HandleEcho(	lb_Transfer_Data request,
 				lb_Transfer_Data & result);
+/*...e*/
+/*...sUserAnouncement \40\a user logs in\41\:8:*/
+	// This let the client authenticate by user
+	int UserAnouncement(lb_Transfer_Data request,
+			    lb_Transfer_Data & result);
+/*...e*/
 
+	/**
+	 * Further services should be registered by a function.
+	 * This function has to be implemented by the class 
+	 */
 
 	lbComponentDictionary connections;	
 };

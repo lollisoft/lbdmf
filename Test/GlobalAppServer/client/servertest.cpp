@@ -29,10 +29,8 @@ LOGPREFIX("ServerTest: ");
 
 	char buf[100] = "";
 	
-	while (count++ < 3) {
-	LOG("--------------- Anounce user ---------------");
+	while (count++ < 1000) {
 		client.Echo("Hallo, dies ist eine Echo - Message");
-	LOG("--------------- User anounced --------------");
 	}
 	
 	cout << "Ending server test thread" << endl;

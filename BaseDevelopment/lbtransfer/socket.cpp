@@ -68,13 +68,19 @@ int LogWSAError(char* msg) {
 	char buf[100] = "";
 	char _buf[100] = "Socket error (%d) at '%s'";
 	int lastError = WSAGetLastError();
-	
-	if (strlen(_buf)+strlen(msg) >99) {	
-		LOG("LogWSAError(char* msg) Error: Buffer overflow");
-		return 0;
-	} else {	
-		sprintf(buf, "Socket error (%d) at '%s'", lastError, msg);
-		LOG(buf);
+
+	if ((lastError != 10054) && // Not a "Connection reset by peer"
+	    (lastError != 10061)    // Not a "Connection refused" (on client I think)
+	   ) { 
+/*...slog it:8:*/
+	  if (strlen(_buf)+strlen(msg) >99) {	
+		  LOG("LogWSAError(char* msg) Error: Buffer overflow");
+		  return 0;
+	  } else {	
+		  sprintf(buf, "Socket error (%d) at '%s'", lastError, msg);
+		  LOG(buf);
+	  }
+/*...e*/
 	}
 	
 	return lastError;
@@ -260,6 +266,7 @@ int lbSocket::connect()
         return 0;
       }
 #endif
+      lbSockState = LB_SOCK_CONNECTED;
       return 1;
 }
 /*...e*/
@@ -1014,6 +1021,11 @@ lbErrCodes lbSocket::recv_charbuf(char *buf)
     // Wait for a datapacket
     int numrcv = 0;
     int len = 0; // Packet len haeder
+
+    if (lbSockState != LB_SOCK_CONNECTED) {
+      LOG("Error: Can not recieve on unconnected socket");
+      return ERR_SOCKET_UNCONNECTED;
+    }
     
 //LOG("Enter recv");    
 //    lbMutexLocker mlock(recvMutex);
@@ -1078,7 +1090,16 @@ LOG(msg);
       else
       	lastError = LogWSAError("recv_charbuf(char *buf) client");
 
-      status= closesocket( (_isServer==0) ? clientSocket : serverSocket);
+      if (_isServer == 1) {
+        if (lbSockState == LB_SOCK_CONNECTED) {
+          // lbSocket is serverside and was connected yet
+          status = closesocket(clientSocket);
+        }
+      }
+      else
+        status = closesocket(serverSocket);
+
+
       if (status == SOCKET_ERROR)
         LOG("ERROR: closesocket unsuccessful");
 #ifdef AUTOCLEANUP        

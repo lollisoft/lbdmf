@@ -611,16 +611,13 @@ lbErrCodes lbAppBusServer::_connected(lbTransfer* _clt) {
 /*...sHandle connection:8:*/
 
 	do {
-LOG("Handle connection loop begins");	
+	  request.deleteAll();
+	  result.deleteAll();
 	
-	request.deleteAll();
-	result.deleteAll();
-	
-	if ((rcin = waitForRequest(_clt, request)) != ERR_NONE) {
-		LOG("waitForRequest(_clt, request) failed");
-	} else {
-	
-		if ((rc_handler = handleRequest(request, result)) != ERR_NONE) {
+	  if ((rcin = waitForRequest(_clt, request)) != ERR_NONE) {
+	    LOG("waitForRequest(_clt, request) failed");
+	  } else {
+            if ((rc_handler = handleRequest(request, result)) != ERR_NONE) {
 			LOG("handleRequest(request, result) failed");
 		}
 /*...sAPPBUS_SVR_VERBOSE:8:*/
@@ -642,7 +639,6 @@ LOG("lbAppBusServer::_connected(lbTransfer* _clt) Answer sent");
 	 * Request is set correctly, because loop is entered at least once.
 	 * So it is possible to handle a disconnect request here.
 	 */
-LOG("Handle connection loop ends");	
 	} while ((isConnected(request) == 1) // Must disconnect before closing transfer 
 		&& (rcin == ERR_NONE) // Recieving failed
 		&& (rcout == ERR_NONE)); // Sendback failed
@@ -657,6 +653,18 @@ LOG("Handle connection loop ends");
 	return rc;
 }
 /*...e*/
+/*...slbAppBusServer\58\\58\_registerServices\40\\41\:0:*/
+lbErrCodes lbAppBusServer::_registerServices() {
+
+
+        addServiceHandler("Echo", 
+                          (lbMemberEvent) lbAppBusServer::HandleEcho);
+        
+        
+	return ERR_NONE;
+}
+/*...e*/
+
 
 /*...slbAppBusServer\58\\58\HandleEcho\40\\46\\46\\46\\41\:0:*/
 lbErrCodes lbAppBusServer::HandleEcho(lb_Transfer_Data request,
@@ -678,13 +686,14 @@ lbErrCodes lbAppBusServer::HandleEcho(lb_Transfer_Data request,
 		makeProtoErrAnswer(result, 
 				   "Error: Echo parameter not sent",
 				   "lbAppServer::HandleEcho(...)");
+		cout << "Fehler ..." << endl;
 		return ERR_APPBUS_ECHO;
 	}
 
 
 	result.add("Echoed");
 	result.add(echostring);
-
+cout << "Echo this: " << echostring << endl;
 	return ERR_NONE;
 }
 /*...e*/

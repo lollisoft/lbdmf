@@ -653,12 +653,12 @@ int lbTransfer::resetServerStateMachine() {
 /*...e*/
 
 /*...slbTransfer\58\\58\sendDatatype\40\char\42\ type\41\:0:*/
-int lbTransfer::sendDatatype(char* type) {
+lbErrCodes lbTransfer::sendDatatype(char* type) {
 	if (sock->send_charbuf(type, strlen(type)+1) != ERR_NONE) {
 		LOG("lbTransfer::sendDatatype(char* type): Failed to send packet type information");
-		return 0;
+		return ERR_TRANSFER_SEND_DATATYPE;
 	}
-	return 1;
+	return ERR_NONE;
 }
 /*...e*/
 /*...slbTransfer\58\\58\waitforAnswer\40\char\42\ answer\41\:0:*/
@@ -1007,15 +1007,21 @@ LOG("waitForDataCount() Leave");
 /*...e*/
 
 /*...slbTransfer\58\\58\waitForDatatype\40\char\42\ \38\ result\41\:0:*/
-int lbTransfer::waitForDatatype(char* &result) {
+lbErrCodes lbTransfer::waitForDatatype(char* &result) {
         static char buf[MAXBUFLEN];
-        int err = 1;
+        lbErrCodes err = ERR_NONE;
         
-        if (sock->recv_charbuf(buf) != ERR_NONE)
+        if ((err = sock->recv_charbuf(buf)) != ERR_NONE)
         {
-                LOG("lbSocket: Failed to get any datatype");
+        	switch (err) {
+        		case ERR_SOCKET_CLOSED:
+        			err = ERR_TRANSFER_ENDED;
+        			break;
+        		default:
+		                LOG("lbSocket: Failed to get any datatype");
+        			err = ERR_TRANSFER_FAILED;
+        	}
                 result = '\0';
-                err = 0;
         } else result = strdup(buf);
         
         return err;
@@ -1139,7 +1145,7 @@ if (data.serverside == 0) {
 /*...e*/
 }
 
-	if (sendDatatype("lb_Transfer_Data") == 0) {
+	if (sendDatatype("lb_Transfer_Data") != ERR_NONE) {
 		LOG("Failed to send data type information");	
 		lastError = ERR_TRANSFER_FAILED;
 		return 0;
@@ -1242,7 +1248,7 @@ int lbTransfer::recv(lb_Transfer_Data & data) {
 	int len;
 	void* buf = NULL;
         char msg[100];
-	int err;
+	lbErrCodes err = ERR_NONE;
 /*...sTRANSFER_VERBOSE:0:*/
 #ifdef TRANSFER_VERBOSE
 LOGENABLE("lbTransfer::recv(lb_Transfer_Data & data)");
@@ -1251,7 +1257,6 @@ LOG("lbTransfer::recv(lb_Transfer_Data & data): waitForDatatype(result)...");
 #endif
 /*...e*/
 
-LOG("Wait for internal data");
 if (data.serverside == 1) {
 /*...sServerside recieves internal data :0:*/
 
@@ -1295,9 +1300,8 @@ if (data.serverside == 1) {
 
 /*...e*/
 }
-LOG("Have internal data");
 
-	if ((err = waitForDatatype(result)) == 1) {
+	if ((err = waitForDatatype(result)) == ERR_NONE) {
 	  if (strcmp(result, "lb_Transfer_Data") == 0)
 	  {// Got correct datatype
 /*...sget it:16:*/
@@ -1444,7 +1448,7 @@ LOG("Have internal data");
 		return 0;
 	}
 
-	fprintf(stderr, "Got a complete lb_Transfer_Data object\n");
+//	fprintf(stderr, "Got a complete lb_Transfer_Data object\n");
 /*...sTRANSFER_VERBOSE:0:*/
 #ifdef TRANSFER_VERBOSE
 LOG("lbTransfer::recv() Leave");	

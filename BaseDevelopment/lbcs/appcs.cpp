@@ -4,7 +4,185 @@
 #include <conio.h>
 #include <lbInclude.h>
 
-/*...sclass lbAppServerThread:0:*/
+#ifdef bla
+/*...sObject thunking implementation:0:*/
+struct WCallBackInfo
+{
+  WMemberCallBack memberCallBack;
+  lbObject       * object;
+};
+    
+DWORD GetCallBackPointer
+(
+  const WCallBackInfo * info
+);
+
+#pragma aux  GetCallBackPointer   = \
+  " call dword ptr[ eax ]         " \
+  parm [eax];
+
+DWORD GetThisPointer
+(
+  const WCallBackInfo * info
+);
+
+#pragma aux  GetThisPointer    = \
+  " mov eax, 0xc[edx]          " \ 
+  " add eax, 0x4[edx]          " \
+  parm [edx] ;
+
+
+#define POP_EAX   BYTE( 0x58 )
+#define PUSH_EAX  BYTE( 0x50 )
+#define PUSH_ECX  BYTE( 0x51 )
+#define PUSH_EDX  BYTE( 0x52 )
+#define PUSH_32   BYTE( 0x68 )
+#define JMP_EAX1  BYTE( 0xff )
+#define JMP_EAX2  BYTE( 0xe0 )
+#define JMP_32    BYTE( 0xe9 )
+#define MOV_EDX   BYTE( 0xba )
+#define MOV_EAX   BYTE( 0xb8 )
+#define JMP_EAX   USHORT( 0xe0ff )
+
+
+/////////////////////////////////////////////////////////////////////////
+#pragma pack( push, 1 )
+
+struct WThunkCode
+{
+  BYTE   code1[2];
+  DWORD  thisPointer;
+  BYTE   code2[8];
+  DWORD  callBackPointer;
+  BYTE   code3[2];
+};
+
+
+struct WRtlThunkCode
+{
+  BYTE   code1[4];
+  DWORD  thisPointer;
+  BYTE   code2[1];
+  DWORD  callBackPointer;
+  BYTE   code3[4];
+};
+
+#pragma pack ( pop )
+
+
+static const BYTE m_codePattern[ sizeof(WThunkCode) ] =
+{
+  0x50,                          //  0 push eax
+  0xb8, 0x00, 0x00, 0x00, 0x00,  //  1 mov  eax, thisPointer
+  0x87, 0x44, 0x24, 0x04,        //  6 xchg eax, 4[esp]
+  0x87, 0x04, 0x24,              // 10 xchg [esp], eax
+  0x68, 0x00, 0x00, 0x00, 0x00,  // 13 push callBackPointer
+  0xc3,                          // 18 ret
+  0x90,                          // 19 nop
+};
+
+static const BYTE m_codeRtlPattern[ sizeof(WRtlThunkCode) ] =
+{
+  0x51,             //  0 push ecx
+  0x52,             //  1 push edx
+  0x50,             //  2 push eax
+  0x68, 0, 0, 0, 0, //  3 push thispointer
+  0xb8, 0, 0, 0, 0, //  8 mov  eax,callback
+  0xff, 0xD0,       // 13 call eax
+  0x59,             // 15 pop ecx
+  0xc3,             // 16 ret
+};
+
+
+
+//  Include definitions for resources.
+
+
+WObjectThunk::WObjectThunk()
+{
+
+}
+
+void * WObjectThunk::Create(lbObject * object, WMemberCallBack callbackMemberFunction, BOOL createRtlCallback )
+{
+//  WTraceFunction();
+  //////////////////////////////////////////////////
+
+  if( object )
+  {
+    WCallBackInfo info;
+
+    info.memberCallBack   = callbackMemberFunction;
+    info.object           = object;
+
+    if( createRtlCallback )
+    {
+      WRtlThunkCode * code   = new WRtlThunkCode;
+
+      if( code )
+      {
+        ///////////////////////////////////////
+        // fill the thunk code piece 
+
+        memcpy( code, m_codeRtlPattern, sizeof( WRtlThunkCode ) );
+        code->thisPointer     = GetThisPointer( &info );
+        code->callBackPointer = GetCallBackPointer( &info );
+      }  
+      return code;
+    }
+    else
+    {
+      WThunkCode * code   = new WThunkCode;
+
+      if( code )
+      {
+        ///////////////////////////////////////
+        // fill the thunk code piece 
+
+        memcpy( code, m_codePattern, sizeof( WThunkCode ) );
+        code->thisPointer     = GetThisPointer( &info );
+        code->callBackPointer = GetCallBackPointer( &info );
+
+      }
+      return code;
+    }  
+  }
+  return NULL;
+}
+
+BOOL WObjectThunk::Destroy( void * thunkCode )
+{
+//  WTraceFunction();
+  //////////////////////////////////////////////////
+
+  if( thunkCode )
+  {
+    if( *(BYTE *)thunkCode == PUSH_ECX )
+    {
+      WRtlThunkCode * code = (WRtlThunkCode *)thunkCode;
+
+      delete code;
+      return TRUE;
+    }
+
+    else if ( *(BYTE *)thunkCode == PUSH_EAX )
+    {
+      WThunkCode * code = (WThunkCode *)thunkCode;
+
+      delete code;
+      return TRUE;
+    }
+    else 
+      LOG("Unknown ThunkCode");
+      //WAssertEx( false, "Unknown ThunkCode" );
+  }
+  return FALSE;
+}
+
+/*...e*/
+#endif
+
+/*...slbAppServerThread:0:*/
 class lbAppServerThread : public lbThread {
 public:
 	lbAppServerThread(lbTransfer* _clt, lbAppServer* _server);
@@ -65,7 +243,29 @@ lbAppServerThread::~lbAppServerThread() {
 
 /*...e*/
 
-/*...sclass lbConnection:0:*/
+/*...slbDispatchFn \40\Container for a registered handler\41\:0:*/
+lbDispatchFn::lbDispatchFn(const char* service, lbMemberEvent fn) {
+	dispFn = fn;
+}
+
+lbDispatchFn::~lbDispatchFn() {
+}
+
+void lbDispatchFn::setType() {
+	OTyp = LB_APPSERVER_DISPATCH_FN;
+}
+
+lbObject* lbDispatchFn::clone() const {
+	lbDispatchFn *clone = new lbDispatchFn("", dispFn);
+	return clone;
+}
+	
+lbMemberEvent lbDispatchFn::getFn() {
+	return dispFn;
+}
+/*...e*/
+
+/*...slbConnection:0:*/
 lbConnection::lbConnection(char* host, int _pid, int _tid) {
 	hostname = strdup(host);
 	pid = _pid;
@@ -105,10 +305,12 @@ lbAppServer::lbAppServer() {
 /*...e*/
 
     connections = new lbComponentDictionary();
+    dispatchTable = new lbComponentDictionary();
 }
 /*...e*/
 /*...slbAppServer\58\\58\\126\lbAppServer\40\\41\:0:*/
 lbAppServer::~lbAppServer() {
+	delete dispatchTable;
 }
 /*...e*/
 /*...slbAppServer\58\\58\initTransfer\40\char\42\ host_servicename\41\:0:*/
@@ -117,6 +319,11 @@ int lbAppServer::initTransfer(char* host_servicename) {
 	transfer = new lbTransfer();
 	//cout << "Created instance of lbTransfer" << endl;
 	transfer->init(host_servicename);
+
+	/**
+	 * Register all servives, the derived class may have implemented
+	 */
+        lbErrCodes err = _registerServices();
 	
 	return 1;
 }
@@ -337,8 +544,22 @@ lbErrCodes rc = ERR_NONE;
 		return rc;
 	}
 	else {
-		rc = _request(request, result);
-		LOG("Handled a connected request");
+		char* buffer = NULL;
+		if (request.get(buffer) == ERR_TRANSFER_DATA_INCORRECT_TYPE) {
+			return ERR_APP_SERVER_REQUEST_CHAR;
+		} else {
+
+			// Block here for dynamic dispatch handling		
+			lbDispatchFn* fn = (lbDispatchFn*) dispatchTable->getElement(lbStringKey(buffer));
+		
+			if (fn != NULL) {
+				rc = (this->*((lbMemberEvent) (fn->getFn()))) (request, result);
+			} else {
+				LOG("Can not dispatch this request");
+			}
+			
+		}
+	
 		return rc;
 	}
 }
@@ -359,6 +580,27 @@ lbErrCodes lbAppServer::answerRequest(lbTransfer* _clt, lb_Transfer_Data result)
 
 
 	return ERR_NONE;
+}
+/*...e*/
+
+// Handler management
+
+/*...slbAppServer\58\\58\addServiceHandler\40\\46\\46\\46\\41\:0:*/
+lbErrCodes lbAppServer::addServiceHandler(const char* handlername, 
+                                          lbMemberEvent cbFn) {
+	lbErrCodes err = ERR_NONE;
+
+	if (dispatchTable->exists(lbStringKey(handlername)) == 0) {
+		if ((err = dispatchTable->insert(lbDispatchFn(handlername, cbFn), 
+		                      lbStringKey(handlername))) != ERR_NONE) {
+			LOG("Could not add handler");
+			err = ERR_APP_SERVER_ADDHANDLER;
+		}
+	} else {
+		LOG("Service previously added");
+		err = ERR_APP_SERVER_ADDHANDLER;
+	}
+	return err;
 }
 /*...e*/
 
