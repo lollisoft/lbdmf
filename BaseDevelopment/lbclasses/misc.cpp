@@ -1,10 +1,14 @@
+
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.12 $
+ * $Revision: 1.13 $
  * $Name:  $
- * $Id: misc.cpp,v 1.12 2001/12/12 17:12:45 lothar Exp $
+ * $Id: misc.cpp,v 1.13 2001/12/12 18:44:09 lothar Exp $
  * $Log: misc.cpp,v $
+ * Revision 1.13  2001/12/12 18:44:09  lothar
+ * Test group users under linux
+ *
  * Revision 1.12  2001/12/12 17:12:45  lothar
  * Hehe - runs on linux
  *
