@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.40 $
+ * $Revision: 1.41 $
  * $Name:  $
- * $Id: lbInterfaces-sub-classes.h,v 1.40 2004/08/01 21:34:03 lollisoft Exp $
+ * $Id: lbInterfaces-sub-classes.h,v 1.41 2004/08/16 05:09:16 lollisoft Exp $
  *
  * $Log: lbInterfaces-sub-classes.h,v $
+ * Revision 1.41  2004/08/16 05:09:16  lollisoft
+ * New locale interface
+ *
  * Revision 1.40  2004/08/01 21:34:03  lollisoft
  * More documentation
  *
@@ -306,6 +309,12 @@ void LB_STDCALL classname::setType() {              \
 
 /*...e*/
 /*...e*/
+
+class lb_I_Locale : public lb_I_Unknown {
+public:
+
+	virtual void LB_STDCALL setLanguage(char const * lang) = 0;
+};
 
 // Keyable interfaces
 /*...sclass lb_I_String:0:*/
