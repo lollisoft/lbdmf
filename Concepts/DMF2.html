@@ -1,0 +1,56 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=iso-8859-1">
+	<TITLE>Gr&uuml;nde und wie ich diese l&ouml;sen m&ouml;chte</TITLE>
+	<META NAME="GENERATOR" CONTENT="StarOffice/5.2 (Win32)">
+	<META NAME="CREATED" CONTENT="20031222;21085431">
+	<META NAME="CHANGEDBY" CONTENT=" ">
+	<META NAME="CHANGED" CONTENT="20031222;21085438">
+	<STYLE>
+	<!--
+		@page { margin-left: 3.18cm; margin-right: 3.18cm; margin-top: 2.54cm; margin-bottom: 2.54cm }
+		H2 { margin-bottom: 0.21cm; font-family: "Arial", sans-serif; font-size: 14pt; font-style: italic }
+		H1 { margin-bottom: 0.11cm; font-family: "Arial", sans-serif; font-size: 14pt }
+		P { margin-bottom: 0.21cm }
+	-->
+	</STYLE>
+</HEAD>
+<BODY>
+<H1>Gr&uuml;nde und wie ich diese l&ouml;sen m&ouml;chte</H1>
+<OL>
+	<LI><P STYLE="margin-bottom: 0cm">Verschiedene Werkzeuge und deren
+	Klassenbibliotheken f&uuml;hren dazu, da&szlig; man diese anwendet
+	und sich dabei leicht abh&auml;ngig vom Hersteller macht. Ich
+	tendiere nun dazu, alles, was ich verwende (fremde Implementationen,
+	frei oder kommerziell) in eine Vertreter &#150; Implementation zu
+	packen (Entwurfsmuster).</P>
+	<LI><P STYLE="margin-bottom: 0cm">Wenn die Applikation auch im
+	Internet laufen soll, so ist zum Beispiel Java die geeignete
+	Sprache.</P>
+	<LI><P STYLE="margin-bottom: 0cm">Man sollte sich nicht abh&auml;ngig
+	von einem Betriebssystem machen. In Windows beispielsweise nicht die
+	Registry verwenden.</P>
+	<LI><P STYLE="margin-bottom: 0cm">Dies f&uuml;hrt eigentlich zu
+	diesem Dokument...</P>
+</OL>
+<P ALIGN=LEFT STYLE="margin-bottom: 0cm"><BR>
+</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0cm"><BR>
+</P>
+<H2>Verschiedene Werkzeuge</H2>
+<P>Jeder kocht sein eigenes S&uuml;ppchen. Bezogen auf ein Werkzeug
+oder eine Entwicklungsumgebung bedeuted dies, da&szlig; verschiedene
+Interfaces verwendet werden. Diese Interfaces beschreiben ein Objekt
+und sein Verhalten. Bei einem Interface meinen alle eigentlich das
+gleiche, implementieren aber alles in verschiedenen Funktionen</P>
+<P>(deren Namen). Das Ergebnis: Je Werkzeug und Platform separate
+Quelltexte.</P>
+<H2>Internet</H2>
+<P>Java ist die praktikabelste Sprache f&uuml;r das Internet. Doch
+wie schafft man am besten eine Verbindung dieser Sprachen &uuml;ber
+eine Schnittstelle ?</P>
+<P><BR><BR>
+</P>
+</BODY>
+</HTML>

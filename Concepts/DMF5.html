@@ -1,0 +1,100 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=iso-8859-1">
+	<TITLE>Anwendung der Schnittstellen</TITLE>
+	<META NAME="GENERATOR" CONTENT="StarOffice/5.2 (Win32)">
+	<META NAME="CREATED" CONTENT="20031222;21085518">
+	<META NAME="CHANGEDBY" CONTENT=" ">
+	<META NAME="CHANGED" CONTENT="20031222;21085523">
+	<STYLE>
+	<!--
+		@page { margin-left: 3.18cm; margin-right: 3.18cm; margin-top: 2.54cm; margin-bottom: 2.54cm }
+		H2 { margin-bottom: 0.21cm; font-family: "Arial", sans-serif; font-size: 14pt; font-style: italic }
+		H1 { margin-bottom: 0.11cm; font-family: "Arial", sans-serif; font-size: 14pt }
+		P { margin-bottom: 0.21cm }
+	-->
+	</STYLE>
+</HEAD>
+<BODY>
+<H1>Anwendung der Schnittstellen</H1>
+<P><BR><BR>
+</P>
+<P STYLE="margin-bottom: 0cm"><SPAN STYLE="font-weight: medium">An
+dieser Stelle werden alle Schnittstellen in ihrer Implementation
+beschreiben.</SPAN></P>
+<P STYLE="margin-bottom: 0cm; font-weight: medium"><BR>
+</P>
+<H2>lb_I_Unknown</H2>
+<P>Diese Schnittstelle dient dazu, Zeiger eines bestimmten Interfaces
+zur&uuml;ck zu geben. Hierbei kann schon festgestellt werden, welche
+Interaces zu Verf&uuml;gung stehen.</P>
+<H2>lb_I_Module</H2>
+<P>Da diese Schnittstelle schon beschrieben wurde, ist hier nichts
+zur Einleitung zu sagen. Also gleich zur Anwendung:</P>
+<P>In der Regel ist eine Instanz dieses Intefaces immer im Hauptmodul
+einer Anwendung zu finden. Es werden einige Instanzen bei einem
+Programmstart ben&ouml;tigt, bevor &uuml;berhaupt mal etwas bei der
+GUI passiert. Hier m&ouml;chte ich nochmal auf die Besonderheit des
+Loggings aufmerksam machen. Da das Logging eigentlich durch eine
+Instanz eines Intefaces erledigt wird, kann an dieser Stelle auch
+noch nicht mit der Eigentlichen Instanz gearbeitet werden.</P>
+<P>Nun zur Anwendung:</P>
+<P>Um den Module Manager verwenden zu k&ouml;nnen, ist zuerst eine
+Instanz zu erzeugen. Dies wird mit folgenden Zeilen erreicht:</P>
+<P><BR><BR>
+</P>
+<P><FONT FACE="Courier New, monospace"><FONT SIZE=1 STYLE="font-size: 8pt">#include
+&lt;lbConfigHook.h&gt;</FONT></FONT></P>
+<P><FONT FACE="Courier New, monospace"><FONT SIZE=1 STYLE="font-size: 8pt">lb_I_Module*
+modMan = getModuleInstance();</FONT></FONT></P>
+<P>Nachdem ein korrektes Ergebnis vorhanden ist, wird mit folgender
+Anweisung eine Instanz angefordert:</P>
+<P><FONT SIZE=1 STYLE="font-size: 8pt"><FONT FACE="Courier New, monospace">lb_I_Unknown
+*Unknown = NULL;</FONT></FONT></P>
+<P><FONT SIZE=1 STYLE="font-size: 8pt"><FONT FACE="Courier New, monospace">modMan-&gt;request(&quot;instanceOfLogger&quot;,
+Unknown);</FONT></FONT></P>
+<P STYLE="margin-bottom: 0cm">Dies f&uuml;hrt bei Erfolg zu einer
+Instanz des Interfaces lb_I_Unknown. Mit einem unbekanntem Objekt
+kann in aller Regel aber noch nichts angefangen werden. Daher ist nun
+von dem Objekt das eigentliche Interface anzufordern:</P>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
+<P STYLE="margin-bottom: 0cm">verwenden um die Anwendung darstellen
+zu k&ouml;nnen.</P>
+<P><FONT FACE="Courier New, monospace"><FONT SIZE=1 STYLE="font-size: 8pt">	lb_I_Log*
+log = NULL;</FONT></FONT></P>
+<P><FONT FACE="Courier New, monospace"><FONT SIZE=1 STYLE="font-size: 8pt">	lbErrCodes
+err = Unknown-&gt;queryInterface(&quot;lb_I_Log&quot;, (void**)
+&amp;log);</FONT></FONT></P>
+<P><FONT FACE="Courier New, monospace"><FONT SIZE=1 STYLE="font-size: 8pt">	if
+(err != ERR_NONE) {</FONT></FONT></P>
+<P><FONT FACE="Courier New, monospace"><FONT SIZE=1 STYLE="font-size: 8pt">		//
+Do log error</FONT></FONT></P>
+<P><FONT FACE="Courier New, monospace"><FONT SIZE=1 STYLE="font-size: 8pt">	}</FONT></FONT></P>
+<P><FONT FACE="Courier New, monospace"><FONT SIZE=1 STYLE="font-size: 8pt">	//
+Use the instance</FONT></FONT></P>
+<P><FONT FACE="Courier New, monospace"><FONT SIZE=1 STYLE="font-size: 8pt">	log-&gt;log(&#132;Any
+logging message&#147;);</FONT></FONT></P>
+<P><FONT FACE="Courier New, monospace"><FONT SIZE=1 STYLE="font-size: 8pt">	log-&gt;release();</FONT></FONT></P>
+<P><FONT FACE="Courier New, monospace"><FONT SIZE=1 STYLE="font-size: 8pt">}</FONT></FONT></P>
+<P STYLE="margin-bottom: 0cm">Nachdem die Instanz verwendet wurde
+kann Sie wieder freigegeben werden. Bis jetzt ist dies explizit durch
+den Anwender zu tun.</P>
+<P><BR><BR>
+</P>
+<H2>lb_I_Object</H2>
+<H2>lb_I_Container</H2>
+<P>Wie verh&auml;lt es sich, wenn ein Objekt im Container abgelegt
+wird ?</P>
+<P>Kann dann der verwendende Client seine Kopie noch ver&auml;ndern,
+als ob Ihm noch</P>
+<P>die Kopie vorliegt ? Mu&szlig; er nicht das Object zur &Auml;nderung
+wieder anfordern ?</P>
+<P>Wie lange kann ein Client das Object blockieren ?</P>
+<H2>lb_I_KeyBase</H2>
+<H2>lb_I_String</H2>
+<P STYLE="font-weight: medium"><BR><BR>
+</P>
+</BODY>
+</HTML>

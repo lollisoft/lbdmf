@@ -1,0 +1,101 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=iso-8859-1">
+	<TITLE></TITLE>
+	<META NAME="GENERATOR" CONTENT="StarOffice/5.2 (Win32)">
+	<META NAME="AUTHOR" CONTENT="Lothar Behrens">
+	<META NAME="CREATED" CONTENT="20001106;14530238">
+	<META NAME="CHANGEDBY" CONTENT="Lothar Behrens">
+	<META NAME="CHANGED" CONTENT="20020623;12434325">
+	<STYLE>
+	<!--
+		@page { margin-left: 3.18cm; margin-right: 3.18cm; margin-top: 2.54cm; margin-bottom: 2.54cm }
+		P { margin-bottom: 0.21cm }
+		H1 { margin-bottom: 0.11cm; font-family: "Arial", sans-serif; font-size: 14pt }
+	-->
+	</STYLE>
+</HEAD>
+<BODY>
+<P ALIGN=CENTER STYLE="margin-top: 0.42cm; page-break-after: avoid"><BR><BR>
+</P>
+<P ALIGN=CENTER STYLE="margin-top: 0.42cm; page-break-after: avoid"><BR><BR>
+</P>
+<P ALIGN=CENTER STYLE="margin-top: 0.42cm; page-break-after: avoid"><BR><BR>
+</P>
+<P ALIGN=CENTER STYLE="margin-top: 0.42cm; page-break-after: avoid"><BR><BR>
+</P>
+<P ALIGN=CENTER STYLE="margin-top: 0.42cm; page-break-after: avoid"><BR><BR>
+</P>
+<P ALIGN=CENTER STYLE="margin-top: 0.42cm; page-break-after: avoid"><BR><BR>
+</P>
+<P ALIGN=CENTER STYLE="margin-top: 0.42cm; page-break-after: avoid"><BR><BR>
+</P>
+<P ALIGN=CENTER STYLE="margin-top: 0.42cm; page-break-after: avoid"><BR><BR>
+</P>
+<P ALIGN=CENTER STYLE="margin-top: 0.42cm; page-break-after: avoid"><BR><BR>
+</P>
+<P ALIGN=CENTER STYLE="margin-top: 0.42cm; page-break-after: avoid"><BR><BR>
+</P>
+<P ALIGN=CENTER STYLE="margin-top: 0.42cm; page-break-after: avoid"><BR><BR>
+</P>
+<P ALIGN=CENTER STYLE="margin-top: 0.42cm; page-break-after: avoid"><FONT FACE="Arial, sans-serif"><FONT SIZE=4>Distributed
+Multiplatform GUI Framework</FONT></FONT></P>
+<P ALIGN=CENTER>von Lothar Behrens 
+</P>
+<P ALIGN=CENTER>Copyright &copy; 2000,2001,2002</P>
+<P STYLE="margin-top: 0.42cm; page-break-after: avoid"><FONT FACE="Arial, sans-serif"><FONT SIZE=4 STYLE="font-size: 16pt"><B>Inhaltsverzeichnis</B></FONT></FONT></P>
+<P STYLE="margin-bottom: 0cm">Einleitung	2</P>
+<P STYLE="margin-bottom: 0cm">Gr&uuml;nde und wie ich diese l&ouml;sen
+m&ouml;chte	3</P>
+<P STYLE="margin-left: 0.5cm; margin-bottom: 0cm">Verschiedene
+Werkzeuge	3</P>
+<P STYLE="margin-left: 0.5cm; margin-bottom: 0cm">Internet	3</P>
+<P STYLE="margin-bottom: 0cm">Das Programm	3</P>
+<P STYLE="margin-left: 0.5cm; margin-bottom: 0cm">Der Ladeprozess
+eines Programms	3</P>
+<P STYLE="margin-left: 0.5cm; margin-bottom: 0cm">Eine Alternative
+Methode	4</P>
+<P STYLE="margin-left: 0.5cm; margin-bottom: 0cm">Was passiert bei
+einem Programmstart	4</P>
+<P STYLE="margin-left: 0.5cm; margin-bottom: 0cm">Nichts neues, oder
+doch ?	4</P>
+<P STYLE="margin-left: 0.5cm; margin-bottom: 0cm">Das Wissen, wo
+welche Instanzen herkommen und XML	4</P>
+<P STYLE="margin-left: 1cm; margin-bottom: 0cm">Die Modulbibliothek	4</P>
+<P STYLE="margin-left: 1cm; margin-bottom: 0cm">Erzeugen einer
+Instanz mit gegebenem Interface	4</P>
+<P STYLE="margin-bottom: 0cm">Die Schnittstelle	5</P>
+<P STYLE="margin-left: 0.5cm; margin-bottom: 0cm">Das unbekannte
+Objekt	5</P>
+<P STYLE="margin-left: 0.5cm; margin-bottom: 0cm">&Uuml;bersicht
+aller Schnittstellen	6</P>
+<P STYLE="margin-bottom: 0cm">Anwendung der Schnittstellen	6</P>
+<P STYLE="margin-left: 0.5cm; margin-bottom: 0cm">lb_I_Unknown	6</P>
+<P STYLE="margin-left: 0.5cm; margin-bottom: 0cm">lb_I_Module	6</P>
+<P STYLE="margin-left: 0.5cm; margin-bottom: 0cm">lb_I_Object	7</P>
+<P STYLE="margin-left: 0.5cm; margin-bottom: 0cm">lb_I_Container	7</P>
+<P STYLE="margin-left: 0.5cm; margin-bottom: 0cm">lb_I_KeyBase	7</P>
+<P STYLE="margin-left: 0.5cm; margin-bottom: 0cm">lb_I_String	7</P>
+<P STYLE="margin-bottom: 0cm">Deteils zu den Implementationen	7</P>
+<P STYLE="margin-left: 0.5cm; margin-bottom: 0cm">lb_I_Module	7</P>
+<P STYLE="margin-left: 1cm; margin-bottom: 0cm">Ablauf der Funktion
+request	8</P>
+<P STYLE="margin-bottom: 0cm">Die Anbindung einer GUI Umgebung	8</P>
+<P STYLE="margin-left: 1cm; margin-bottom: 0cm">GUI &#150; Die
+Interfaces	9</P>
+<P STYLE="margin-left: 1cm; margin-bottom: 0cm">GUI &#150; alles sind
+Elemente	10</P>
+<P STYLE="margin-left: 1cm; margin-bottom: 0cm">...	10</P>
+<P ALIGN=LEFT><BR><BR>
+</P>
+<H1><A HREF="DMF1.html">Einleitung</A></H1>
+<H1><A HREF="DMF2.html">Gr&uuml;nde und wie ich diese l&ouml;sen
+m&ouml;chte</A></H1>
+<H1><A HREF="DMF3.html">Das Programm</A></H1>
+<H1><A HREF="DMF4.html">Die Schnittstelle</A></H1>
+<H1><A HREF="DMF5.html">Anwendung der Schnittstellen</A></H1>
+<H1><A HREF="DMF6.html">Deteils zu den Implementationen</A></H1>
+<H1><A HREF="DMF7.html">Die Anbindung einer GUI Umgebung</A></H1>
+</BODY>
+</HTML>

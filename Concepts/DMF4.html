@@ -1,0 +1,88 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=iso-8859-1">
+	<TITLE>Die Schnittstelle</TITLE>
+	<META NAME="GENERATOR" CONTENT="StarOffice/5.2 (Win32)">
+	<META NAME="CREATED" CONTENT="20031222;21085483">
+	<META NAME="CHANGEDBY" CONTENT=" ">
+	<META NAME="CHANGED" CONTENT="20031222;21085489">
+	<STYLE>
+	<!--
+		@page { margin-left: 3.18cm; margin-right: 3.18cm; margin-top: 2.54cm; margin-bottom: 2.54cm }
+		H2 { margin-bottom: 0.21cm; font-family: "Arial", sans-serif; font-size: 14pt; font-style: italic }
+		H1 { margin-bottom: 0.11cm; font-family: "Arial", sans-serif; font-size: 14pt }
+		P { margin-bottom: 0.21cm }
+	-->
+	</STYLE>
+</HEAD>
+<BODY>
+<H1>Die Schnittstelle</H1>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
+<P>Schnittstellen erm&ouml;glichen eine einheitliche
+Verwendungsm&ouml;glichkeit eines Objekts. Beispielsweise sind
+Hashtables und verkettete Listen im Grunde Container. Daraus folgt
+eine Schnittstelle, die sich dann '<B>lb_I_Container</B>' nennt. Alle
+Container, die im System verwendet werden, erreicht man durch diese
+Schnittstelle.</P>
+<P>Als Basis aller m&ouml;glichen Objekte gibt es eine sogenannte
+unbekannte Schnittstelle.  Diese tr&auml;gt den Namen '<B>lb_I_Unknown</B><SPAN STYLE="font-weight: medium">'.</SPAN>
+Jede Implementation mu&szlig; diese Schnittstelle bereitstellen.
+Damit in einen Container ein Objekt eingef&uuml;gt werden kann, mu&szlig;
+das Objekt die Schnittstelle '<B>lb_I_Clonable</B><SPAN STYLE="font-weight: medium">'
+implementieren. Bisher ist dies in der Ben&ouml;tigten Schnittstelle
+<SPAN STYLE="font-weight: medium">'</SPAN><B>lb_I_Object</B><SPAN STYLE="font-weight: medium">'
+implementiert.</SPAN> Die Methode des Clonens habe ich bisher in der
+Containerimplementation angewendet, um ein Object generell in den
+Conteiner hinein zu kopieren. </SPAN>
+</P>
+<P><B>Warum habe ich das bisher so gemacht??</B></P>
+<P><SPAN STYLE="font-weight: medium">Durch das Clonen konnte ich
+Objekte, die auf dem Stack existieren, bei einer Einf&uuml;ge &#150;
+Operation in ein Objekt auf dem Heap kopieren. Das Objekt auf dem
+Stack ist insofern nach dieser Operation nicht mehr n&ouml;tig.
+Besser: Es sollte nicht mehr verwendet werden, da eine &Auml;nderung
+dieses Objektes nicht zur &Auml;nderung des Objektes in dem Container
+f&uuml;hrt</SPAN>. Das ist auf lange Sicht nicht gut. Besser w&auml;hre
+ein Pointer auf das Objekt, wobei die Erzeugung des Objektes jetzt
+keine Rolle spielt. Nach dem einf&uuml;gen in den Container
+existieren 2 Referenzen auf das Objekt. Nun kann &uuml;ber die erste
+Referenz auf das Objekt zugegriffen werden, um noch &Auml;nderungen
+durchf&uuml;hren zu k&ouml;nnen. Oder die erste Referenz kann
+freigegeben werden, weil Sie nichtmehr verwendet wird. Zu den
+Referenzen und deren Freigabe sp&auml;ter mehr.</P>
+<H2>Das unbekannte Objekt</H2>
+<P><SPAN STYLE="font-weight: medium">Wie oben schon gesehen,
+existiert eine Schnittstelle, die so &auml;hnlich funktioniert, wie
+die I_UNKNOWN Schnittstelle von dem COM  Modell von Microsoft</SPAN>.
+&Uuml;ber diese Schnittstelle k&ouml;nnen Systemweit Objekte
+ausgetauscht werden und aus jetzt noch unbekannten Modulen (DLL's)
+erzeugt werden.</P>
+<P><BR><BR>
+</P>
+<H2>&Uuml;bersicht aller Schnittstellen</H2>
+<P>Nun z&auml;hle ich alle bisher definierten Schnittstellen auf, die
+ich f&uuml;r wichtig halte.</P>
+<P><BR><BR>
+</P>
+<P><B>lb_I_Unknown</B><SPAN STYLE="font-weight: medium">	:	Basisschnittstelle,
+aus der auf alle anderen zugegriffen 				werden kann.</SPAN></P>
+<P><B>lb_I_Module</B><SPAN STYLE="font-weight: medium">		:	Basisschnittstelle,
+die f&uuml;r die Modulverwaltung 					verwendet wird. Sie wird f&uuml;r
+alle zu erzeugenden 					Objekte verwendet.</SPAN></P>
+<P><B>lb_I_Object</B><SPAN STYLE="font-weight: medium">		:	Basisschnittstelle,
+die f&uuml;r einen Container ben&ouml;tigt 					wird. Weiter ist
+dieses Interface die Basis fast aller 					Objekte.</SPAN></P>
+<P><B>lb_I_Container</B><SPAN STYLE="font-weight: medium">	:	Basis</SPAN>schnittstelle,
+in der Objekte des Interfaces 					'<B>lb_I_Object' </B><SPAN STYLE="font-weight: medium">gespeichert
+werden k&ouml;nnen.</SPAN></P>
+<P><B>lb_I_KeyBase</B><SPAN STYLE="font-weight: medium">	:	Basis</SPAN>schnittstelle,
+<SPAN STYLE="font-weight: medium">die f&uuml;r eine Identifizierung
+von 					Objekten in Kontainern ben&ouml;tigt wird. Bisher sind
+					String's, Int's und ULong's als Schl&uuml;ssel implementiert.</SPAN></P>
+<P><B>lb_I_UIEvent	</B><SPAN STYLE="font-weight: medium">:	Diese
+Schnittstelle defi</SPAN>niert alle m&ouml;glichen Events, die				in
+einer Anwendung auftreten k&ouml;nnen</P>
+</BODY>
+</HTML>

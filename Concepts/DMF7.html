@@ -1,0 +1,251 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=iso-8859-1">
+	<TITLE>Die Anbindung einer GUI Umgebung</TITLE>
+	<META NAME="GENERATOR" CONTENT="StarOffice/5.2 (Win32)">
+	<META NAME="CREATED" CONTENT="20031222;21085566">
+	<META NAME="CHANGED" CONTENT="16010101;0">
+	<STYLE>
+	<!--
+		@page { margin-left: 3.18cm; margin-right: 3.18cm; margin-top: 2.54cm; margin-bottom: 2.54cm }
+		H3 { margin-bottom: 0.21cm; font-family: "Arial", sans-serif; font-size: 12pt; font-style: italic }
+		H1 { margin-bottom: 0.11cm; font-family: "Arial", sans-serif; font-size: 14pt }
+		P { margin-bottom: 0.21cm }
+	-->
+	</STYLE>
+</HEAD>
+<BODY>
+<H1>Die Anbindung einer GUI Umgebung</H1>
+<P>Dieses Thema hatte ich am Anfang der Entwicklung dieser Bibliothek
+aufgegriffen. Es ist aber sp&auml;ter in den Hintergrund geraten, da
+die grundlegenden Mechanismen gefehlt haben.</P>
+<P>Mit der Anbindung einer GUI hatte ich folgendes im Sinne:</P>
+<P>Es sollte m&ouml;glich sein, jede beliebige GUI, sei es wxWindows
+oder MFC, zu verwenden um die Anwendung darstellen zu k&ouml;nnen.</P>
+<P>Generell kann auch eine Anwendung ohne GUI erstellt werden. Eine
+Applikation ohne GUI kann, wie die Testanwendung f&uuml;r das
+lbModule Projekt, schon alle weiteren Objektinstanzen anfordern. Sie
+m&uuml;ssen konfiguriert sein.</P>
+<P>Eine GUI ist etwas komplexer, es sollte aber auch m&ouml;glich
+sein, eine GUI von Objektinstanzen &#150; erzeugt durch lbModule &#150;
+zu steuern.</P>
+<P>Anforderungen, die ich an eine GUI stelle:</P>
+<UL>
+	<LI><P>Alle Objektinstanzen werden durch das Interfacerepository
+	erzeugt.</P>
+	<LI><P>Die Interaktion der GUI erfolgt &uuml;ber wohldefinierte
+	Schnittstellen.</P>
+	<LI><P>Die GUI stellt eine gewisse Menge an Eventhandlern bereit.</P>
+	<LI><P>Eventhandler werden mit einem Set von Interfacefunktionen
+	verwaltet.</P>
+</UL>
+<P><BR><BR>
+</P>
+<P>Bei der Verwendung der wxWindows Library stelle ich folgende
+Eigenschaften fest:</P>
+<UL>
+	<LI><P>Jeder Eventhandler kann f&uuml;r bestimmte Events
+	verantwortlich sein. Dadurch ergibt sich, da&szlig; nicht an
+	zentraler Stelle Events konfiguriert werden.</P>
+	<LI><P>Events sind nichtvirtuelle Funktionen. Diese k&ouml;nnen also
+	nicht in den Interfaces definiert werden. Wann soll ein Event durch
+	direckten Aufruf der Eventfunktion ausgef&uuml;hrt werden? Das
+	Interface dieses Events mu&szlig; nicht bekannt sein. Nur der Event
+	selbst. Dieser kann auch als Aktor initziiert werden (Timer,
+	Interrupt...)</P>
+</UL>
+<P>Dazu stelle ich weitere Gedanken:</P>
+<UL>
+	<LI><P>Jeder Handler kann nur bestimmte Events verarbeiten. Dieses
+	sind die Mu&szlig; und Kann &#150; Events.</P>
+	<LI><P>Ein Fehlercode teilt mit, da&szlig; dieser Event nicht
+	verarbeitet werden kann. Eine Verkn&uuml;pfung des betroffenen
+	Events mit diesem Handler ist nicht m&ouml;glich.</P>
+	<LI><P>Eine Funktion stellt eine Liste der Events bereit, die f&uuml;r
+	das Objekt ben&ouml;tigt werden. Eine Frame listet z.B.
+	EV_ABOUT,EV_EXIT... Diese Events sollten Ereignisse empfangen
+	k&ouml;nnnen.</P>
+	<LI><P>Um Events empfangen zu k&ouml;nnen, m&uuml;ssen auch Objekte
+	vorhanden sein, die diese senden k&ouml;nnen. Dies sind z.B. Men&uuml;s,
+	oder Shortcuts. Ich nenne diese auch Aktoren. Dies k&ouml;nnen auch
+	Hardware &#150; oder Remote &#150; Aktoren ein.</P>
+</UL>
+<P>Dies sind nur einige Gedanken, die ich weiterspinnen werde.</P>
+<P>Ich stelle mir eine Anwendung wie folgt im Ablauf vor:</P>
+<P>Ein GUI Wrapper wird gestartet, welcher nat&uuml;rlich auch seine
+Konfiguration vorfindet. Es gibt einen Ablaufplan, welcher
+einzuhalten ist und den Benutzer durch das Programm f&uuml;hrt. Als
+wesentlicher Schritt darin ist die Initialisierung der Anwendung zu
+nennen. Hier werden alle initialen Objekte erzeugt und verkn&uuml;pft.
+Nach der Verkn&uuml;pfung wird gepr&uuml;ft, ob alle Eventhandler
+auch mit Aktoren verbunden sind. Dies dient dem Programmentwickler
+als Pr&uuml;fung zur Lauff&auml;higkeit.</P>
+<P><BR><BR>
+</P>
+<P>Nun zu den Interfaces, die zu dieser Anforderung implementiert
+werden k&ouml;nnten:</P>
+<UL>
+	<LI><P>Connect verbindet einen Event mit einem Handler</P>
+	<LI><P>Disconnect trennt diesen wieder</P>
+	<LI><P>DisconnectAll trennt alle</P>
+	<LI><P>getHandlerHavetoConnected listet alle Eventhandler mit einem
+	Eventnamen</P>
+	<LI><P>approveConnections pr&uuml;ft, ob alle Handler konnektiert
+	sind</P>
+</UL>
+<H3>GUI &#150; Die Interfaces</H3>
+<P STYLE="margin-bottom: 0cm">Folgende Interfaces k&ouml;nnen dadurch
+definiert werden:</P>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
+<P><FONT SIZE=1 STYLE="font-size: 8pt"><FONT FACE="Courier New, monospace">class
+lb_I_EventHandler {</FONT></FONT></P>
+<P><FONT FACE="Courier New, monospace"><FONT SIZE=1 STYLE="font-size: 8pt">	virtual
+lbErrCodes Connect(</FONT></FONT></P>
+<P><FONT FACE="Courier New, monospace"><FONT SIZE=1 STYLE="font-size: 8pt">		lb_I_Actor*
+an_actor,</FONT></FONT></P>
+<P><FONT FACE="Courier New, monospace"><FONT SIZE=1 STYLE="font-size: 8pt">		char*
+eventname,</FONT></FONT></P>
+<P><FONT FACE="Courier New, monospace"><FONT SIZE=1 STYLE="font-size: 8pt">		evPTR*
+evFn</FONT></FONT></P>
+<P><FONT FACE="Courier New, monospace"><FONT SIZE=1 STYLE="font-size: 8pt">	}
+= 0;</FONT></FONT></P>
+<P><FONT FACE="Courier New, monospace"><FONT SIZE=1 STYLE="font-size: 8pt">	virtual
+lbErrCodes registerEvents() = 0;</FONT></FONT></P>
+<P><FONT FACE="Courier New, monospace"><FONT SIZE=1 STYLE="font-size: 8pt">	virtual
+lbErrCodes getHandlerHavetoConnected(lb_I_Container* c) = 0;</FONT></FONT></P>
+<P><FONT FACE="Courier New, monospace"><FONT SIZE=1 STYLE="font-size: 8pt">	virtual
+lbErrCodes approveConnections() = 0;</FONT></FONT></P>
+<P><FONT FACE="Courier New, monospace"><FONT SIZE=1 STYLE="font-size: 8pt">};</FONT></FONT></P>
+<P><FONT FACE="Courier New, monospace"><FONT SIZE=1 STYLE="font-size: 8pt">class
+lb_I_Actor {</FONT></FONT></P>
+<P><FONT FACE="Courier New, monospace"><FONT SIZE=1 STYLE="font-size: 8pt">	virtual
+lbErrCodes registerActors() = 0;</FONT></FONT></P>
+<P><FONT FACE="Courier New, monospace"><FONT SIZE=1 STYLE="font-size: 8pt">};</FONT></FONT></P>
+<P><BR><BR>
+</P>
+<P><BR><BR>
+</P>
+<P><FONT FACE="Courier New, monospace"><FONT SIZE=1 STYLE="font-size: 8pt">class
+lb_I_Menu :</FONT></FONT></P>
+<P><FONT FACE="Courier New, monospace"><FONT SIZE=1 STYLE="font-size: 8pt">			public
+lb_I_Actor, // Erzeugt Events</FONT></FONT></P>
+<P><FONT FACE="Courier New, monospace"><FONT SIZE=1 STYLE="font-size: 8pt">			public
+lb_I_EventHandler, // Events k&ouml;nnen deaktiviert werden</FONT></FONT></P>
+<P><FONT FACE="Courier New, monospace"><FONT SIZE=1 STYLE="font-size: 8pt">			public
+lb_I_Unknown {</FONT></FONT></P>
+<P><FONT FACE="Courier New, monospace"><FONT SIZE=1 STYLE="font-size: 8pt">};</FONT></FONT></P>
+<P><FONT FACE="Courier New, monospace"><FONT SIZE=1 STYLE="font-size: 8pt">class
+lb_I_EventConnector {</FONT></FONT></P>
+<P><FONT FACE="Courier New, monospace"><FONT SIZE=1 STYLE="font-size: 8pt">		virtual
+lbErrCodes getProduceableEventList(lb_I_Container* c) = 0;</FONT></FONT></P>
+<P><FONT FACE="Courier New, monospace"><FONT SIZE=1 STYLE="font-size: 8pt">};</FONT></FONT></P>
+<P><FONT FACE="Courier New, monospace"><FONT SIZE=1 STYLE="font-size: 8pt">class
+lb_I_Frame :</FONT></FONT></P>
+<P><FONT FACE="Courier New, monospace"><FONT SIZE=1 STYLE="font-size: 8pt">			public
+lb_I_Actor, // ???</FONT></FONT></P>
+<P><FONT FACE="Courier New, monospace"><FONT SIZE=1 STYLE="font-size: 8pt">			public
+lb_I_EventHandler,</FONT></FONT></P>
+<P><FONT FACE="Courier New, monospace"><FONT SIZE=1 STYLE="font-size: 8pt">			public
+lb_I_Unknown {</FONT></FONT></P>
+<P><FONT FACE="Courier New, monospace"><FONT SIZE=1 STYLE="font-size: 8pt">};</FONT></FONT></P>
+<P><FONT FACE="Courier New, monospace"><FONT SIZE=1 STYLE="font-size: 8pt">class
+lb_I_GUIWrapper :</FONT></FONT></P>
+<P><FONT FACE="Courier New, monospace"><FONT SIZE=1 STYLE="font-size: 8pt">			public
+lb_I_Actor,</FONT></FONT></P>
+<P><FONT FACE="Courier New, monospace"><FONT SIZE=1 STYLE="font-size: 8pt">			public
+lb_I_EventHandler,</FONT></FONT></P>
+<P><FONT FACE="Courier New, monospace"><FONT SIZE=1 STYLE="font-size: 8pt">			public
+lb_I_Unknown {</FONT></FONT></P>
+<P><FONT FACE="Courier New, monospace"><FONT SIZE=1 STYLE="font-size: 8pt">};</FONT></FONT></P>
+<H3>GUI &#150; alles sind Elemente</H3>
+<P STYLE="margin-bottom: 0cm">Ich stelle mir eine Schnittstelle f&uuml;r
+ein GUI Element wie folgt vor:</P>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
+<P><FONT SIZE=1 STYLE="font-size: 8pt"><FONT FACE="Courier New, monospace">class
+lb_I_GUIElement : public lb_I_Unknown {</FONT></FONT></P>
+<H3><FONT FACE="Courier New, monospace"><FONT SIZE=1 STYLE="font-size: 8pt">...</FONT></FONT></H3>
+<P><BR><BR>
+</P>
+<P><FONT FACE="Courier New, monospace"><FONT SIZE=1 STYLE="font-size: 8pt">	//
+Ein GUI Element kann Ereignisse erzeugen</FONT></FONT></P>
+<P><FONT FACE="Courier New, monospace"><FONT SIZE=1 STYLE="font-size: 8pt">	virtual
+lbErrCodes createEvent(char* name, lb_I_GUIEvent* event) = 0;</FONT></FONT></P>
+<P><BR><BR>
+</P>
+<P><FONT FACE="Courier New, monospace"><FONT SIZE=1 STYLE="font-size: 8pt">	//
+Ein GUI Element kann Ereignisse empfangen</FONT></FONT></P>
+<P><FONT FACE="Courier New, monospace"><FONT SIZE=1 STYLE="font-size: 8pt">	virtual
+lbErrCodes recieveEvent(char* name, lb_I_GUIEvent* event) = 0;</FONT></FONT></P>
+<P><FONT FACE="Courier New, monospace"><FONT SIZE=1 STYLE="font-size: 8pt">}</FONT></FONT></P>
+<P STYLE="margin-bottom: 0cm"> 
+</P>
+<P STYLE="margin-bottom: 0cm">Wie kann nun eine Interfacedefinition
+mit einem realem Objekt, wie ein Men&uuml; interagieren ?</P>
+<P STYLE="margin-bottom: 0cm"><IMG SRC="DMF7f71.gif" ALIGN=LEFT><BR>
+</P>
+<P STYLE="font-weight: medium"><IMG SRC="DMF7f72.gif" ALIGN=LEFT><IMG SRC="DMF7f73.gif" ALIGN=LEFT><IMG SRC="DMF7f74.gif" ALIGN=LEFT><BR><BR>
+</P>
+<P STYLE="font-weight: medium"><BR><BR>
+</P>
+<P><IMG SRC="DMF7f75.gif" ALIGN=LEFT><SPAN STYLE="font-weight: medium"><FONT SIZE=1 STYLE="font-size: 8pt"><FONT FACE="Courier New, monospace">							
+    Referenz</FONT></FONT></SPAN></P>
+<P STYLE="font-weight: medium"><BR><BR>
+</P>
+<P STYLE="font-weight: medium"><BR><BR>
+</P>
+<P STYLE="font-weight: medium"><IMG SRC="DMF7f76.gif" ALIGN=LEFT><BR><BR>
+</P>
+<P STYLE="font-weight: medium"><BR><BR>
+</P>
+<P STYLE="font-weight: medium"><IMG SRC="DMF7f77.gif" ALIGN=LEFT><BR><BR>
+</P>
+<P STYLE="margin-bottom: 0cm"><IMG SRC="DMF7f78.gif" ALIGN=LEFT><BR>
+</P>
+<P STYLE="margin-bottom: 0cm"><IMG SRC="DMF7f79.gif" ALIGN=LEFT><BR>
+</P>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
+<P STYLE="margin-bottom: 0cm">Das Interface lb_I_EventHandler ist
+z.B. eine Frame. Diese implementiert einige Events, die es zu
+verkn&uuml;pfen gilt. Eine Liste der Events erh&auml;lt man &uuml;ber
+die Funktion getHandlerHavetoConnected(...). Diese Funktion kann in
+der Designphase verwendet werden, um zu sehen, welche Aktoren
+ben&ouml;tigt werden.</P>
+<P STYLE="margin-bottom: 0cm">Beispielsweise kann dadurch automatisch
+eine Liste mit Aktorobjekten erstellt werden, und die Verbindungen
+k&ouml;nnten so ohne zuhilfenahme von Designwerkzeugen erstellt
+werden.</P>
+<P STYLE="margin-bottom: 0cm">lb_WX_App ruft in diesem Fall
+getHandlerHavetoConnected(...) auf und kann aus der Liste Aktoren
+erzeugen lassen, um Sie dann zu verbinden.</P>
+<P STYLE="margin-bottom: 0cm">Wie wei&szlig; lb_WX_App, welche
+Objekte logisch zusammen geh&ouml;ren ?</P>
+<P STYLE="margin-bottom: 0cm; font-weight: medium"><BR>
+</P>
+<P STYLE="margin-bottom: 0cm; font-weight: medium"><BR>
+</P>
+<P STYLE="margin-bottom: 0cm; font-weight: medium"><BR>
+</P>
+<P STYLE="margin-bottom: 0cm; font-weight: medium"><BR>
+</P>
+<P STYLE="margin-bottom: 0cm; font-weight: medium"><BR>
+</P>
+<P STYLE="margin-bottom: 0cm">Ein Objektinterconnektion Graf mu&szlig;
+diese Informationen bereithalten. Wie kann dieser Graf aussehen ?</P>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
+<P STYLE="margin-bottom: 0cm; font-weight: medium"><BR>
+</P>
+<P STYLE="margin-bottom: 0cm; font-weight: medium"><BR>
+</P>
+</BODY>
+</HTML>

@@ -1,0 +1,58 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=iso-8859-1">
+	<TITLE>Deteils zu den Implementationen</TITLE>
+	<META NAME="GENERATOR" CONTENT="StarOffice/5.2 (Win32)">
+	<META NAME="CREATED" CONTENT="20031222;21085540">
+	<META NAME="CHANGEDBY" CONTENT=" ">
+	<META NAME="CHANGED" CONTENT="20031222;21085546">
+	<STYLE>
+	<!--
+		@page { margin-left: 3.18cm; margin-right: 3.18cm; margin-top: 2.54cm; margin-bottom: 2.54cm }
+		H3 { margin-bottom: 0.21cm; font-family: "Arial", sans-serif; font-size: 12pt; font-style: italic }
+		H2 { margin-bottom: 0.21cm; font-family: "Arial", sans-serif; font-size: 14pt; font-style: italic }
+		H1 { margin-bottom: 0.11cm; font-family: "Arial", sans-serif; font-size: 14pt }
+		P { margin-bottom: 0.21cm }
+	-->
+	</STYLE>
+</HEAD>
+<BODY>
+<H1>Deteils zu den Implementationen</H1>
+<P STYLE="margin-bottom: 0cm">Hier werden nun die einzellnen Module
+in Ihrer Funktion genauer beschrieben. Ich betrachte diesen Abschnitt
+als Referenzdokumentation.</P>
+<P><BR><BR>
+</P>
+<H2>lb_I_Module</H2>
+<P>Das Interface implementiert bisher keine neuen Funktionen. Es
+basiert auf dem Interface '<B>lb_I_Unknown'</B> und
+'<B>lb_I_Requestable'. </B><SPAN STYLE="font-weight: medium">Im
+Grunde kann ich an den Modulmanager nur Anforderungen in Form von
+Requests stellen und bekomme darauf eine Instanz von '</SPAN><B>lb_I_Unknown'</B><SPAN STYLE="font-weight: medium">.
+</SPAN>
+</P>
+<H3>Ablauf der Funktion request</H3>
+<P><SPAN STYLE="font-weight: medium">Zuerst wird ein Objekt von
+lb_I_XMLConfig erzeugt. Dieses ist in Umgebungs &#150; Variablen
+eingestellt.  Danach wird mit <SPAN STYLE="font-weight: medium"><FONT SIZE=1 STYLE="font-size: 8pt"><FONT FACE="Courier New, monospace">hasConfigObject</FONT></FONT></SPAN>
+gefragt, ob das Objekt dieses Konfiguratio</SPAN>sobjekt erzeugen
+kann. Als R&uuml;ckgabe wird auch die Anzahl der Objekte gegeben.</P>
+<P><BR><BR>
+</P>
+<P>Mittlerweile habe ich festgestellt, dass der Modul Manager in sich
+Schnittstellen ben&ouml;tigt, die bisher in anderen Modulen
+implementiert sind. Bis jetzt habe ich folgende davon identifiziert:</P>
+<P>lb_I_String, lb_I_Int, lb_I_Container und nat&uuml;rlich
+lb_I_Unknown.</P>
+<P><BR><BR>
+</P>
+<P>Diese werden ben&ouml;tigt, um zu wissen, welche Module und
+Instanzen geladen sind. 
+</P>
+<P STYLE="font-weight: medium"><BR><BR>
+</P>
+<P STYLE="font-weight: medium"><BR><BR>
+</P>
+</BODY>
+</HTML>

@@ -1,0 +1,110 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=iso-8859-1">
+	<TITLE>Das Programm</TITLE>
+	<META NAME="GENERATOR" CONTENT="StarOffice/5.2 (Win32)">
+	<META NAME="CREATED" CONTENT="20031222;21085460">
+	<META NAME="CHANGEDBY" CONTENT=" ">
+	<META NAME="CHANGED" CONTENT="20031222;21085463">
+	<STYLE>
+	<!--
+		@page { margin-left: 3.18cm; margin-right: 3.18cm; margin-top: 2.54cm; margin-bottom: 2.54cm }
+		H3 { margin-bottom: 0.21cm; font-family: "Arial", sans-serif; font-size: 12pt; font-style: italic }
+		H2 { margin-bottom: 0.21cm; font-family: "Arial", sans-serif; font-size: 14pt; font-style: italic }
+		H1 { margin-bottom: 0.11cm; font-family: "Arial", sans-serif; font-size: 14pt }
+		P { margin-bottom: 0.21cm }
+	-->
+	</STYLE>
+</HEAD>
+<BODY>
+<H1>Das Programm</H1>
+<P STYLE="margin-bottom: 0cm">Eine Anwendung, wie Sie heute meistens
+vorgefunden wird, besteht aus mehreren Modulen (unter Windows sind
+dies DLL's). Gute Programme laden diese DLL's nicht bei einem
+Programmstart, sondern dann, wenn Sie ben&ouml;tigt werden.</P>
+<P STYLE="margin-bottom: 0cm">Dies erm&ouml;glicht einerseits die
+Reaktion auf nicht vorhandene DLL's mit Alternativen, wenn es auch
+nur eine Meldung ist, die Informationen gibt, wo ich die ben&ouml;tigte
+DLL finden/downloaden kann.</P>
+<P STYLE="margin-bottom: 0cm">Eine weitere M&ouml;glichkeit ist,
+Module nachzur&uuml;sten oder durch neuere zu ersetzen, w&auml;hrend
+das Programm l&auml;uft.</P>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
+<H2>Der Ladeprozess eines Programms</H2>
+<P>Bis jetzt ist bei Programmen und Modulen nichts neues vorgekommen.
+Ein Programm mu&szlig; genau wissen, welche Funktion f&uuml;r eine
+bestimmte Aufgabe in einem Modul vorhanden sein mu&szlig;. Ist diese
+Funktion nicht vorhanden, kann entsprechend darauf reagiert werden.</P>
+<H2>Eine Alternative Methode</H2>
+<P>Ich m&ouml;chte hier eine andere M&ouml;glichkeit aufzeigen, die
+mir besser gef&auml;llt und einige weitere Vorteile bietet. Moderne
+Entwicklungstechniken gehen in modulare Programme, wobei
+Schnittstellen definiert werden, mit denen die Module Ihre Dienste
+anbieten. Das Thema 'Schnittstellen' werde ich sp&auml;ter abhandeln.
+An dieser Stelle m&ouml;chte ich prim&auml;r auf den Start eines
+Programmes eingehen.</P>
+<H2>Was passiert bei einem Programmstart</H2>
+<P>Verglichen mit der COM Technologie ist meine Implementation sehr
+&auml;hnlich aufgebaut. Das Programm erzeugt nicht selbst das
+gew&uuml;nschte Objekt, sondern l&auml;sst es durch ein Modul
+erzeugen, in dem es implementiert ist. Wenn das Objekt nicht mehr
+ben&ouml;tigt wird, dann l&ouml;scht nicht das Programm das Objekt,
+sondern das Modul, das es erzeugt hat. In Verbindung mit klar
+definierten Schnittstellen und dem Wissen, das ein Modul ein Objekt
+mit dieser Schnittstelle anbietet, lassen sich beliebige Module und
+Programme miteinander kombinieren, ohne den internen Aufbau zu
+kennen.</P>
+<H2>Nichts neues, oder doch ?</H2>
+<P>Bisher habe ich nichts neues gezeigt. Alles l&auml;sst sich auch
+mit COM realisieren. COM ist aber eine Proprit&auml;re Technologie,
+die nicht alle Platformen unterst&uuml;tzt wird.</P>
+<P><BR><BR>
+</P>
+<P>Bei meiner Idee gibt es doch noch was neues &#150; glaube ich. Ich
+m&ouml;chte ein Framework entwickeln, mit dem eine Anwendung auf
+verschiedenen Platformen kompiliert werden kann und ebenso auch
+lauff&auml;hig ist. Die Anwendung soll modular auf verschiedene
+Rechner verteilbar sein. Es sollen verschiedene GUI Frameworks
+verwendet werden k&ouml;nnen. Die Anwendung soll unabh&auml;ngig von
+GUI und Platform schell entwickelt werden k&ouml;nnen. Module, die
+Ihre Dienste anbieten, sollen zur Laufzeit ausgetauscht und auf
+andere Rechner verschoben werden k&ouml;nnen.</P>
+<P>Bisher ist das auch nichts neues. Es riecht nach CORBA, ist aber
+bis jetzt nicht konform. Neu ist bis jetzt eigentlich nur die
+Verwendbarkeit verschiedener GUI's. Nicht neu aber anders ist die
+Implementation des ganzen Frameworks in sich.</P>
+<H2>Das Wissen, wo welche Instanzen herkommen und XML</H2>
+<P>In COM wird dies in der Registry gespeichert. Nun, dies ist
+Windows. Besser ist es, wenn die Daten in einer unabh&auml;ngigen
+Form abgelegt werden. Hier kann XML ins Spiel kommen. Dies Fokusiere
+ich auch in meinem Projekt. Als konkretes Beispiel m&ouml;chte ich
+nun das Erzeugen einer Instanz darstellen.</P>
+<H3>Die Modulbibliothek</H3>
+<P>Die Modulbibliothek dient dazu, eine Instanz eines Interfaces zu
+erzeugen. Sie ist die zentrale Anlaufstelle, um Objekte zu erzeugen,
+die danach verwendet werden k&ouml;nnen. Weitere Hinweise erhalten
+Sie in der Beschreibung von der Implementation des Interfaces
+'<B>lb_I_Module</B>' mit gleichem Namen.</P>
+<H3>Erzeugen einer Instanz mit gegebenem Interface</H3>
+<P>Eine Anwendung m&ouml;chte eine Instanz eines Kontainers haben, um
+darin Daten anderer Instanzen zu speichern. Dazu wird das Interface
+'<B>lb_I_Container</B>' verwendet. Die Anwendung hat bereits eine
+Instanz des Module Managers in Form von lbModule (Siehe 'Die
+Modulbibliothek'). Das einzige, was die Anwendung machen mu&szlig;,
+ist ein Funktionsaufruf. Sie erh&auml;lt die Instanz.</P>
+<P>F&uuml;r diese Aufgabe werden in der XML Datei nur Konfigurationen
+vorgenommen. Die Modulbibliothek schaut bei einem Aufruf f&uuml;r
+eine Instanz in der XML Datei nach, ob diese erzeugt werden kann. F&uuml;r
+den Programmierer ist hierbei nicht zu erkennen, ob die Daten
+tats&auml;chlich im XML Format vorliegen. Ich verwende in meiner
+Implementation des Interfaces <B>'lb_I_Module'</B> XML, da ich dieses
+Format als am sinnvollsten halte. Hierbei habe ich die Verwendung von
+XML nicht direkt implementiert &#150; vielmehr verwende ich eine
+eigene Abstraktion, die in '<B>lb_I_ConfigObject</B>' definiert ist.
+Dieses Interface mu&szlig; auch nicht XML verwenden. Es kann die
+Daten theoretisch auch in einer Datenbank speichern.</P>
+<P>Wo ist hier nun die Verbindung zu XML ?</P>
+</BODY>
+</HTML>
