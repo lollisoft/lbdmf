@@ -25,11 +25,15 @@
 #            40235 DÅsseldorf (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.55 $
+# * $Revision: 1.56 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.55 2005/03/05 23:13:34 lollisoft Exp $
+# * $Id: STD_MAKE,v 1.56 2005/03/16 20:31:56 lollisoft Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.56  2005/03/16 20:31:56  lollisoft
+# * DEVROOT / DEVROOT_MAKE and DEVROOT_MAKE_INTERNAL clashes
+# * and cleanup.
+# *
 # * Revision 1.55  2005/03/05 23:13:34  lollisoft
 # * More changes to build source tree under Mac OS X
 # *
@@ -204,16 +208,20 @@
 
 ifeq ($(OSTYPE), Windows_NT)
 
-DEVROOT_MAKE_INTERNAL=$(DEVROOT_MAKE)
-
-
 # Set standard compiler
 COMPILER=WATCOM
 #COMPILER=MICROSOFT
 MODE=_DEBUG
 #MODE=
 
-STD_INCL_WATCOM =-i=. -i=$(DEVROOT)\\Tools\\WATCOM\\h -i=$(DEVROOT)\\Tools\\WATCOM\\h\\nt -i=$(DEVROOT)\\projects\\cpp\\interfaces -i=$(DEVROOT)\\projects\\cpp\\include -i=$(DEVROOT)\\projects\\dll\\include -i=$(DEVROOT)\\projects\\lib\\include
+WATCOM_SLASH=/
+
+STD_INCL_WATCOM =-i=.   -i=$(DEVROOT_MAKE)$(WATCOM_SLASH)Tools$(WATCOM_SLASH)WATCOM$(WATCOM_SLASH)h \
+			-i=$(DEVROOT_MAKE)$(WATCOM_SLASH)Tools$(WATCOM_SLASH)WATCOM$(WATCOM_SLASH)h$(WATCOM_SLASH)nt \
+			-i=$(DEVROOT_MAKE)$(WATCOM_SLASH)projects$(WATCOM_SLASH)cpp$(WATCOM_SLASH)interfaces \
+			-i=$(DEVROOT_MAKE)$(WATCOM_SLASH)projects$(WATCOM_SLASH)cpp$(WATCOM_SLASH)include \
+			-i=$(DEVROOT_MAKE)$(WATCOM_SLASH)projects$(WATCOM_SLASH)dll$(WATCOM_SLASH)include \
+			-i=$(DEVROOT_MAKE)$(WATCOM_SLASH)projects$(WATCOM_SLASH)lib$(WATCOM_SLASH)include
 #ANAKIN
 #STD_INCL_MICROSOFT = /I "." /I "F:\develop\NT\MSC\VC98\Include" /I "Q:\Develop\xml\xml4csrc3_3_1\src" /I "Q:\Develop\Projects\CPP\include" /I "Q:\Develop\Projects\CPP\interfaces" /I "Q:\Develop\Projects\CPP\basedevelopment\lbclasses"
 #LOTHARBNOTEBOOK
@@ -348,13 +356,13 @@ L_DLLOPS = $(L_DLLOPS_WATCOM)
 LNKDLLOPS = $(L_DLLOPS_WATCOM)
 
 CP =cp
-EXEDIR =$(DEVROOT)/Projects/bin
-DLLDIR =$(DEVROOT)/Projects/dll
-PLUGINDIR =$(DEVROOT)/Projects/plugins
+EXEDIR =$(DEVROOT_MAKE)/Projects/bin
+DLLDIR =$(DEVROOT_MAKE)/Projects/dll
+PLUGINDIR =$(DEVROOT_MAKE)/Projects/plugins
 
-LIBDIR =$(DEVROOT)/Projects/lib
-DLLLIBDIR =$(DEVROOT)/Projects/dll/libs
-PLUGINLIBDIR =$(DEVROOT)/Projects/plugins/libs
+LIBDIR =$(DEVROOT_MAKE)/Projects/lib
+DLLLIBDIR =$(DEVROOT_MAKE)/Projects/dll/libs
+PLUGINLIBDIR =$(DEVROOT_MAKE)/Projects/plugins/libs
 
 
 endif

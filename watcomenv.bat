@@ -17,34 +17,34 @@ exit
 
 rem set TARGET_APPLICATION=Application
 
-if NOT "%COMPUTERNAME%"=="ANAKIN" goto DISTMODE:
+rem if NOT "%COMPUTERNAME%"=="ANAKIN" goto DISTMODE:
 
 set DEVLW=q:
 set BASE=develop
 set BASE_MAKE=develop
 
-set DEVROOT=%DEVLW%/%BASE%
+set DEVROOT=%DEVLW%\%BASE%
 set DEVROOT_MAKE=%DEVLW%/%BASE_MAKE%
 
 goto BEGINENVIRONMENT:
 
 :DISTMODE
 
-set DEVLW=c:
+set DEVLW=d:
 set BASE=lbDMF\develop
 set BASE_MAKE=lbDMF/develop
 
-set BASE=lbDMF\develop
-
-set DEVROOT=%DEVLW%/%BASE%
+set DEVROOT=%DEVLW%\%BASE%
 set DEVROOT_MAKE=%DEVLW%/%BASE_MAKE%
+
+goto BEGINENVIRONMENT:
 
 cd %DEVROOT%\Projects\dll
 if not exist "libs" mkdir libs
 cd %DEVROOT%\Projects\cpp\basedevelopment
 set BASE=lbDMF\develop
 
-set DEVROOT=%DEVLW%/%BASE%
+set DEVROOT=%DEVLW%\%BASE%
 
 
 :BEGINENVIRONMENT

@@ -1,11 +1,15 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.38 $
+# * $Revision: 1.39 $
 # * $Name:  $
-# * $Id: Makefile,v 1.38 2005/03/16 00:27:36 lollisoft Exp $
+# * $Id: Makefile,v 1.39 2005/03/16 20:31:55 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.39  2005/03/16 20:31:55  lollisoft
+# * DEVROOT / DEVROOT_MAKE and DEVROOT_MAKE_INTERNAL clashes
+# * and cleanup.
+# *
 # * Revision 1.38  2005/03/16 00:27:36  lollisoft
 # * Last changes to full automatic compiling under OSX.
 # *
@@ -137,7 +141,7 @@ endif
 
 
 ifeq ($(OSTYPE), Windows_NT)
-DEVROOT_MAKE=$(DEVLW)/$(BASE)
+DEVROOT_MAKE=$(DEVLW)/$(BASE_MAKE)
 endif
 
 Path=$(PATH)
