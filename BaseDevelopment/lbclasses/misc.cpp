@@ -2,10 +2,13 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.18 $
+ * $Revision: 1.19 $
  * $Name:  $
- * $Id: misc.cpp,v 1.18 2002/10/04 17:11:55 lolli Exp $
+ * $Id: misc.cpp,v 1.19 2002/10/08 16:00:29 lolli Exp $
  * $Log: misc.cpp,v $
+ * Revision 1.19  2002/10/08 16:00:29  lolli
+ * Logging macro works now also for misc.cpp
+ *
  * Revision 1.18  2002/10/04 17:11:55  lolli
  * Whats wrong ?
  *
@@ -83,6 +86,8 @@
 #define LB_CLASSES_DLL
 #include <lbclasses-module.h>
 /*...e*/
+
+#define __MISC
 
 /*...sIncludes:0:*/
 #include <iostream.h>
