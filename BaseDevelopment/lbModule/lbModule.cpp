@@ -3,11 +3,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.12 $
+ * $Revision: 1.13 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.12 2001/07/18 05:50:18 lothar Exp $
+ * $Id: lbModule.cpp,v 1.13 2001/07/18 22:43:55 lothar Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.13  2001/07/18 22:43:55  lothar
+ * Using more UAP's - works, but mem leak still there ?
+ *
  * Revision 1.12  2001/07/18 05:50:18  lothar
  * Seems to work now (lbDOMNode::parent - refcount must be corrected)
  *
@@ -99,7 +102,7 @@ public:
 
         virtual lbErrCodes LB_STDCALL getFunctors(char* interfacename, lb_I_ConfigObject* node, lb_I_Unknown*& uk);
         virtual lbErrCodes LB_STDCALL getInstance(char* functorname, lb_I_ConfigObject* node, lb_I_Unknown*& uk);
-        virtual lbErrCodes LB_STDCALL getDefaultImpl(char* interfacename, lb_I_ConfigObject* node, char*& implTor, char*& module);
+        virtual lbErrCodes LB_STDCALL getDefaultImpl(char* interfacename, lb_I_ConfigObject** node, char*& implTor, char*& module);
         
 protected:
 
@@ -349,13 +352,11 @@ char* LB_STDCALL lbModule::findFunctorModule(lb_I_ConfigObject** _node) {
         }
         else {
                 UAP(lb_I_ConfigObject, temp_node)
-                temp_node.setDelete(0);
                 
                 sprintf(buf, "Try to get parent from node %s", node->getName());
                 CL_LOG(buf);
                 
                	err = node->getParent(&temp_node);
-                temp_node++;
 
 		if (err == ERR_NONE) {
 			char* result = findFunctorModule(&temp_node);
@@ -456,12 +457,12 @@ char* LB_STDCALL lbModule::findFunctorName(lb_I_ConfigObject** ___node) {
         return result;
 }
 /*...e*/
-/*...slbErrCodes lbModule\58\\58\getDefaultImpl\40\char\42\ interfacename\44\ lb_I_ConfigObject\42\ node\44\ char\42\\38\ implTor\44\ char\42\\38\ module\41\:0:*/
-lbErrCodes LB_STDCALL lbModule::getDefaultImpl(char* interfacename, lb_I_ConfigObject* node, char*& implTor, char*& module) {
+/*...slbErrCodes lbModule\58\\58\getDefaultImpl\40\char\42\ interfacename\44\ lb_I_ConfigObject\42\\42\ node\44\ char\42\\38\ implTor\44\ char\42\\38\ module\41\:0:*/
+lbErrCodes LB_STDCALL lbModule::getDefaultImpl(char* interfacename, lb_I_ConfigObject** node, char*& implTor, char*& module) {
         lbErrCodes err = ERR_NONE;
         int count = 0;
 	UAP(lb_I_ConfigObject, _node)
-	_node = node;
+	_node = *node;
 	_node++; // UAP must check the pointer here too
 
         implTor = new char[100];
@@ -887,7 +888,7 @@ CL_LOG("Begin dispatch the request");
          */
 /*...e*/
                 char* node = "#document/dtdHostCfgDoc/Modules/Module/Functions/Function/Functor/InterfaceName";
-                lb_I_ConfigObject* config = NULL;
+                UAP(lb_I_ConfigObject, config)
                 int count = 0;
                                         // request is a functor
 /*...sdoc:8:*/
@@ -922,7 +923,7 @@ CL_LOG("Begin dispatch the request");
                          * of one level.
                          */
 /*...e*/
-                        xml_Instance->getConfigObject(config, node);
+                        xml_Instance->getConfigObject(&config, node);
 /*...sdoc:8:*/
                         /**
                          * Check, which element implements the requested interface.
@@ -930,6 +931,9 @@ CL_LOG("Begin dispatch the request");
                          * Later, get the default.
                          */
 /*...e*/
+			// May be the same bug as in internal ...
+			// It was the self pointed parent member
+			// config++;
 			CL_LOG("Find the needed node");
 /*...sfind the needed node:32:*/
                         if ((err = config->getFirstChildren(&impl)) == ERR_NONE) {
@@ -1013,6 +1017,7 @@ CL_LOG("Begin dispatch the request");
                         
                                 UAP(lb_I_String, string)
                                 UAP(lb_I_KeyBase, stringKey)
+                                UAP(lb_I_ConfigObject, i_config)
 
                                 /**
                                  * Get a default implementation - needed here to avoid recursive
@@ -1025,12 +1030,14 @@ CL_LOG("Begin dispatch the request");
                                 char* defaultModule = NULL;
 /*...e*/
                                 char* node = "#document/dtdHostCfgDoc/StandardFunctor";
-                                lb_I_ConfigObject* i_config = NULL;
 
                                 if (xml_Instance->hasConfigObject(node, count) == ERR_NONE) {
-                                        xml_Instance->getConfigObject(i_config, node);
+                                        xml_Instance->getConfigObject(&i_config, node);
+					// Some bug causes refcount mismatch here ??
+					// It was the self pointed parent member
+                                        //i_config++;
 
-                                        getDefaultImpl("lb_I_String", i_config, defaultFunctor, defaultModule);
+                                        getDefaultImpl("lb_I_String", &i_config, defaultFunctor, defaultModule);
                                         makeInstance(defaultFunctor, defaultModule, &key);
                                 
 /*...sprepare for string:72:*/
@@ -1103,7 +1110,7 @@ CL_LOG("Begin dispatch the request");
                                         	}
 /*...e*/
                                         }
-                                        
+                                        CL_LOG("Inserted the container in the module list");
                                         instances = moduleList->getElement(&stringKey);
                                         
                                         if (instances == NULL) {
@@ -1143,26 +1150,24 @@ CL_LOG("Begin dispatch the request");
 /*...e*/
                                         	}
                                         }
-
+					CL_LOG("Begin cleanup internal management of loaded modules");
 /*...sclean up:72:*/
-                                        RELEASE(i_config);
-                                        RELEASE(stringKey);
-                                        RELEASE(key);
                                         
                                         impl->deleteValue(defaultFunctor);
                                         impl->deleteValue(defaultModule);
 /*...e*/
+					CL_LOG("End cleanup");
                                 }
 
 /*...e*/
 /*...smake the hells needed instance:32:*/
                         makeInstance(functorName, moduleName, result);
 /*...e*/
-
+			CL_LOG("Made the instance!");
 /*...sclean up:32:*/
                         if (moduleName != NULL) impl->deleteValue(moduleName);
-                        if (config != NULL) RELEASE(config);
 /*...e*/
+			CL_LOG("Leave scope");
                 } else {
                         cout << "Something goes wrong!" << endl;
                         cout << "xml_Instance->hasConfigObject() returns <> ERR_NONE!" << endl;

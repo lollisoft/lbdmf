@@ -1,11 +1,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.13 $
+ * $Revision: 1.14 $
  * $Name:  $
- * $Id: lbDOMConfig.cpp,v 1.13 2001/07/18 05:52:27 lothar Exp $
+ * $Id: lbDOMConfig.cpp,v 1.14 2001/07/18 22:44:41 lothar Exp $
  *
  * $Log: lbDOMConfig.cpp,v $
+ * Revision 1.14  2001/07/18 22:44:41  lothar
+ * Using more UAP's - works, but mem leak still there ?
+ *
  * Revision 1.13  2001/07/18 05:52:27  lothar
  * Seems to work now (lbDOMNode::parent - refcount must be corrected)
  *
@@ -371,9 +374,9 @@ protected:
 
 
 	DOM_Node   node;
-	lbDOMNode*   parent;
+	UAP(lb_I_ConfigObject, parent)
 	
-	lb_I_Container* lbDOMchilds;
+	UAP(lb_I_Container, lbDOMchilds)
 	
 //	int currentChildIndex;
 	
@@ -552,6 +555,9 @@ lbDOMNode::lbDOMNode() {
 //	currentChildIndex = 0;
 	lbDOMchilds = NULL;
 	parent = this;
+	
+	// This was the bug for the wrong deletion while leave scope
+	parent++;
 #ifdef VERBOSE
 	CL_LOG("Warning: Parent is set to my self in c'tor");
 #endif
@@ -568,12 +574,15 @@ lbDOMNode::~lbDOMNode() {
 		sprintf(buf, "Delete lbDOMNode at %x with name = '%s'\n", this, getName());
 		printf(buf);
 //	}
-	
+
+/*
+// No more because UAP	
 	if (lbDOMchilds != NULL) {
 		lbDOMchilds->deleteAll();
 		RELEASE(lbDOMchilds);
 		lbDOMchilds = NULL;
 	}
+*/
 }
 /*...e*/
 /*...slbErrCodes LB_STDCALL lbDOMNode\58\\58\setChildrens\40\lbNodeList\42\ _childs\41\:0:*/
@@ -645,8 +654,10 @@ lbErrCodes LB_STDCALL lbDOMNode::setNode(DOM_Node _node) {
 			CL_LOG("Previous parent node will be overwritten!");
 #endif			
 		}
-		parent = new lbDOMNode();
-		parent->setNode(pnode);
+		lbDOMNode* _parent = new lbDOMNode();
+		_parent->setNode(pnode);
+		parent = _parent;
+		parent++;
 	} else {
 		if (parent != NULL) {
 		#ifdef VERBOSE
@@ -862,7 +873,7 @@ char* LB_STDCALL lbDOMNode::getName() {
 	if (node.isNull()) {
 		CL_LOG("node is NULL!");
 		getch();
-		return "";
+		return "Internal node not defined!";
 	}
 
 	DOMString string = node.getNodeName();
@@ -907,7 +918,7 @@ public:
 
 	virtual lbErrCodes LB_STDCALL parse();
 	virtual lbErrCodes LB_STDCALL hasConfigObject(const char* cfgObjectName, int & count);
-	virtual lbErrCodes LB_STDCALL getConfigObject(lb_I_ConfigObject*& cfgObj, const char* const cfgObjectName);
+	virtual lbErrCodes LB_STDCALL getConfigObject(lb_I_ConfigObject** cfgObj, const char* const cfgObjectName);
 
 protected:
 	/**
@@ -1184,8 +1195,8 @@ lbErrCodes LB_STDCALL lbDOMConfig::hasConfigObject(const char* cfgObjectName, in
 	return err;
 }
 /*...e*/
-/*...slbErrCodes lbDOMConfig\58\\58\getConfigObject\40\lb_I_ConfigObject\42\\38\ \44\ const char\42\ const\41\:0:*/
-lbErrCodes LB_STDCALL lbDOMConfig::getConfigObject(lb_I_ConfigObject*& cfgObj, 
+/*...slbErrCodes lbDOMConfig\58\\58\getConfigObject\40\lb_I_ConfigObject\42\\42\ \44\ const char\42\ const\41\:0:*/
+lbErrCodes LB_STDCALL lbDOMConfig::getConfigObject(lb_I_ConfigObject** cfgObj, 
                                         const char* const cfgObjectName) {
 	lbErrCodes err = ERR_NONE;
 	// Try to locate the identifer in the tree
@@ -1210,10 +1221,10 @@ lbErrCodes LB_STDCALL lbDOMConfig::getConfigObject(lb_I_ConfigObject*& cfgObj,
 	if (c == NULL) CL_LOG("Error: Failed to get container instance of lastResult");
 	
 	node->lbDOMchilds = c;
-	node->node = NULL; // See null pointer operator
+	node->node = NULL; // See null pointer operator (this results in the error in the destructor)
 	
 	// This interface is needed:
-	node->queryInterface("lb_I_ConfigObject", (void**) &cfgObj);
+	node->queryInterface("lb_I_ConfigObject", (void**) cfgObj);
 
 	return err;
 }

@@ -136,7 +136,7 @@ public:
 	 * This returns an instancepointer to the config object. The pointer
 	 * must not be deleted by client. Client must call release for that.
 	 */
-	virtual lbErrCodes LB_STDCALL getConfigObject(lb_I_ConfigObject*& cfgObj, const char* const cfgObjectName) = 0;
+	virtual lbErrCodes LB_STDCALL getConfigObject(lb_I_ConfigObject** cfgObj, const char* const cfgObjectName) = 0;
 };
 /*...e*/
 

@@ -77,7 +77,7 @@ void main() {
 		getch();
 
 		CL_LOG("Now release the string");
-		string->release();
+		//string->release();
 		getch();
 
 	}
