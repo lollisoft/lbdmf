@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.79 $
+ * $Revision: 1.80 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.79 2005/03/03 08:36:04 lollisoft Exp $
+ * $Id: lbModule.cpp,v 1.80 2005/03/04 10:47:10 lollisoft Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.80  2005/03/04 10:47:10  lollisoft
+ * Little changes for my new Mac OS X
+ *
  * Revision 1.79  2005/03/03 08:36:04  lollisoft
  * Return error codes, if unable to get a functor.
  *
@@ -281,8 +284,12 @@ extern "C" {
 #endif
 
 #include <stdio.h>
+#ifdef OSX
+#include <sys/malloc.h>
+#endif
+#ifndef OSX
 #include <malloc.h>
-
+#endif
 #include <lbInterfaces.h>
 
 /*...sLB_MODULE_DLL scope:0:*/
