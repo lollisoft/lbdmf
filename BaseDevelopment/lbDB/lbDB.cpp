@@ -163,7 +163,7 @@ public:
 		firstfetched = 0;
 //		lpszTable = NULL;
 		cols = 0;
-		skipFKCollections = 0;
+		skipFKCollections = 1;
 		
 		fetchstatus = 0;
 	}
@@ -479,6 +479,7 @@ int               LB_STDCALL lbBoundColumns::getColumnCount() {
 /*...slbErrCodes      LB_STDCALL lbBoundColumns\58\\58\setQuery\40\lbQuery\42\ q\41\:0:*/
 lbErrCodes      LB_STDCALL lbBoundColumns::setQuery(lbQuery* q) {
 /*...spreparements:0:*/
+
 	HSTMT hstmt = q->getCurrentStatement();
 	query = q;
 
@@ -500,6 +501,9 @@ lbErrCodes      LB_STDCALL lbBoundColumns::setQuery(lbQuery* q) {
 	 */
 	SQLSMALLINT num = 0;	
 	SQLRETURN sqlreturn = SQLNumResultCols(hstmt, &num);
+
+
+_CL_VERBOSE << "1." LOG_
 	
 /*...e*/
 	
@@ -523,24 +527,27 @@ Therefore I need an indicator, set by the user of this library to know, which on
 	// Warning: This function should only called once yet.
 	REQUEST(manager.getPtr(), lb_I_Container, boundColumns)
 	REQUEST(manager.getPtr(), lb_I_Integer, integerKey)
+
+_CL_VERBOSE << "2." LOG_
 	
 
 	// For each column create a bound column instance.
 	// The instance will bind the column.
 	for (int i = 1; i <= num; i++) {
 		lbErrCodes err = ERR_NONE;
+
+_CL_VERBOSE << "3." LOG_
 		
 		// Create the instance ...
 		
-		char puffer1[100];
 		lbBoundColumn* bc = new lbBoundColumn();
-		char puffer2[100];
 
-		char ptr[20] = "";
+		lb_I_Module* m = getModuleManager();
 
-		lb_I_Module *man = manager.getPtr();
 
-		bc->setModuleManager(man, "lbDB.cpp", __LINE__);
+_CL_VERBOSE << "4." LOG_
+		bc->setModuleManager(m, __FILE__, __LINE__);
+_CL_VERBOSE << "5." LOG_
 
 		bc->prepareBoundColumn(q, i);
 
@@ -572,18 +579,31 @@ Therefore I need an indicator, set by the user of this library to know, which on
 		UAP(lb_I_String, string, __FILE__, __LINE__)
 
 		string = bc1->getColumnName();
+
+_CL_VERBOSE << "6." LOG_
 		
 		string->queryInterface("lb_I_KeyBase", (void**) &skey, __FILE__, __LINE__);
+
+_CL_VERBOSE << "7." LOG_
 		
 		UAP(lb_I_Unknown, ivalue, __FILE__, __LINE__)
+
+_CL_VERBOSE << "8." LOG_
 		
 		integerKey->queryInterface("lb_I_Unknown", (void**) &ivalue, __FILE__, __LINE__);
+
+_CL_VERBOSE << "9." LOG_
 		
 		if (ColumnNameMapping.getPtr() == NULL) printf("Error: NULL pointer at ColumnNameMapping detected\n");
 		if (ivalue.getPtr() == NULL) printf("Error: NULL pointer at ivalue detected\n");
 		if (skey.getPtr() == NULL) printf("Error: NULL pointer at skey detected\n");
+
+_CL_VERBOSE << "10." LOG_
 		
 		ColumnNameMapping->insert(&ivalue, &skey);
+
+_CL_VERBOSE << "11." LOG_
+
 /*...e*/
 
 	}
@@ -815,7 +835,10 @@ lbErrCodes LB_STDCALL lbQuery::init(HENV _henv, HDBC _hdbc, int readonly) {
 /*...e*/
 /*...slbErrCodes LB_STDCALL lbQuery\58\\58\query\40\char\42\ q\41\:0:*/
 lbErrCodes LB_STDCALL lbQuery::query(char* q) {
-
+	char buf[100] = "";
+	lbBoundColumns* boundcols = NULL;
+	char buf1[100] = "";
+	
 	if (strlen(q) >= 1000) printf("WARNING: Bufferoverflow in %s at %d\n", __FILE__, __LINE__);
 
 	lstrcpy(szSql, q);
@@ -879,11 +902,13 @@ _CL_VERBOSE << "Called SQLNumResultCols()" LOG_
 	        return ERR_DB_QUERYFAILED;
 	} else {
 
-		lbBoundColumns* boundcols = new lbBoundColumns();
+		boundcols = new lbBoundColumns();
+		
+		printf("Bound columns is at %p\n", boundcols);
+		
 		boundcols->setModuleManager(*&manager, __FILE__, __LINE__);
 		
-		_CL_VERBOSE << "Create bound columns" LOG_
-		
+		printf("Bound columns is at %p\n", boundcols);
 		boundcols->setQuery(this);
 		
 		_CL_VERBOSE << "Created" LOG_
@@ -1820,6 +1845,10 @@ if (pos) pos[0] = 0;
 
 
 pos = strstr(lpszTable, " order");
+
+if (pos) pos[0] = 0;
+
+pos = strstr(lpszTable, " inner");
 
 if (pos) pos[0] = 0;
 
