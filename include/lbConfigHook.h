@@ -52,6 +52,8 @@
 #include <malloc.h>
 
 
+#define _(text) translateText(text)
+
 /*...sLogging macros:0:*/
 
 #ifdef bla
@@ -260,6 +262,8 @@ DLLEXPORT void LB_STDCALL setInitializing(int i);
 DLLEXPORT lb_I_Log* LB_STDCALL getLoggerInstance();
 DLLEXPORT void LB_STDCALL setLoggerInstance(lb_I_Log* l);
 
+
+DLLEXPORT char* LB_STDCALL translateText(char* text);
 
 /*...slbErrCodes LB_STDCALL lbLoadModule\40\const char\42\ name\44\ HINSTANCE \38\ hinst\41\:0:*/
 /**
