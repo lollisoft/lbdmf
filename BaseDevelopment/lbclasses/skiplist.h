@@ -45,6 +45,9 @@ class SkipNode {
     
     SkipNode();
     SkipNode(lb_I_Element* r, int level);
+    SkipNode(const SkipNode &s) {
+    	printf("Copy constructor for SkipNode called\n");
+    }
     virtual ~SkipNode();
     
 };

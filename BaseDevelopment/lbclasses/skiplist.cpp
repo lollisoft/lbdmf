@@ -38,11 +38,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.19 $
+ * $Revision: 1.20 $
  * $Name:  $
- * $Id: skiplist.cpp,v 1.19 2004/06/09 07:03:23 lollisoft Exp $
+ * $Id: skiplist.cpp,v 1.20 2004/06/16 22:13:52 lollisoft Exp $
  *
  * $Log: skiplist.cpp,v $
+ * Revision 1.20  2004/06/16 22:13:52  lollisoft
+ * Logs for debug - skip list may be memory leaky
+ *
  * Revision 1.19  2004/06/09 07:03:23  lollisoft
  * Still problems with undeleted container data ??
  *
@@ -149,6 +152,8 @@ SkipNode::SkipNode() {
 SkipNode::SkipNode(lb_I_Element* r, int level) {
         myLevel = level;
         value = r;
+        
+        if (value == NULL) printf("ERROR: Constructor got a NULL pointer as data\n");
         forward = new SkipNode* [level+1];
         for (int i=0; i<=level; i++)
             forward[i] = NULL;
@@ -157,7 +162,12 @@ SkipNode::~SkipNode() {
 printf("SkipNode::~SkipNode() called\n");
       delete [] forward; 
       
-//      if (value != NULL) RELEASE(value)
+      if (value != NULL) {
+      	printf("Delete object in SkipNode: RefCount %d\n", value->getRefCount());
+      	RELEASE(value)
+      } else {
+      	printf("SkipNode::~SkipNode() value is a NULL pointer!\n");
+      }
 }
 /*...e*/
 
@@ -181,7 +191,9 @@ SkipList::SkipList() {
 }
 
 SkipList::~SkipList() {
+	printf("SkipList::~SkipList() called\n");
 	delete head;
+	printf("SkipList::~SkipList() elements deleted\n");
 }
 /*...sSkipList\58\\58\Count\40\\41\:0:*/
 int LB_STDCALL SkipList::Count() { 
