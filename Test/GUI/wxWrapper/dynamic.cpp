@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.32 2004/11/16 19:49:57 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.33 2004/12/14 16:13:17 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.32 $
+ * $Revision: 1.33 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.32 2004/11/16 19:49:57 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.33 2004/12/14 16:13:17 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.33  2004/12/14 16:13:17  lollisoft
+ * Implemented a login wizard with application selection from database configuration.
+ *
  * Revision 1.32  2004/11/16 19:49:57  lollisoft
  * Added much code to implement a login wizard
  *
@@ -330,7 +333,7 @@ public wxWizardPageSimple
 public:
 
 	wxAppSelectPage() {
-	
+		app = wxString("");
 	}
 	
 	virtual ~wxAppSelectPage() {
@@ -350,6 +353,8 @@ public:
 
 /*...e*/
 	lbErrCodes LB_STDCALL registerEventHandler(lb_I_Dispatcher* dispatcher);
+
+	wxString LB_STDCALL getSelectedApp() { return app; }
 
 /*...svoid setLoggedOnUser\40\char\42\ user\41\:8:*/
 	void setLoggedOnUser(char* user) {
@@ -377,6 +382,8 @@ public:
 
 		sampleQuery->query(buffer);
 
+		// Fill up the available applications for that user.
+
 		if (sampleQuery->first() == ERR_NONE) {
 
 			UAP_REQUEST(manager.getPtr(), lb_I_String, s1)	
@@ -386,6 +393,22 @@ public:
 			printf("Have application '%s'\n", s1->charrep());
 
 			box->Append(wxString(s1->charrep()));
+
+
+			while (TRUE) {
+				lbErrCodes err = sampleQuery->next();
+				
+				if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
+					s1 = sampleQuery->getAsString(1);
+					
+					printf("Have application '%s'\n", s1->charrep());
+					
+					box->Append(wxString(s1->charrep()));
+					
+					if (err == WARN_DB_NODATA) break;
+				}
+			}
+
 
 		}
 
@@ -398,9 +421,14 @@ public:
 	{
 		printf("wxAppSelectPage::TransferDataFromWindow() called\n");
 
-		// Select all applications of the user to be allowed...
+		// The application must have been selected here by the user.
 	
-		printf ("Have user %s\n", userid);
+	
+		int sel = box->GetSelection();
+		
+		app = box->GetString(sel);
+	
+		printf ("Have user %s and application %s\n", userid, app.c_str());
 	
 	        return TRUE;
 	}
@@ -410,9 +438,12 @@ private:
 	wxCheckBox *m_checkbox;
 	char* userid;
 	wxComboBox* box;
+	wxString app;
 
 	UAP(lb_I_Database, database, __FILE__, __LINE__)
 	UAP(lb_I_Query, sampleQuery, __FILE__, __LINE__)
+
+	
 	
 	
 	// l gets overwritten, while assigning a lb_I_Query* pointer to sampleQuery !!
@@ -459,8 +490,6 @@ DECLARE_LB_UNKNOWN()
 	wxLogonPage(wxWizard *parent) : wxWizardPageSimple(parent)
 	{
 	        //m_bitmap = wxBITMAP(wiztest2);
-
-	        //m_checkbox = new wxCheckBox(this, -1, _T("&Check me"));
 	}
 
 	char const * LB_STDCALL getTextValue(char* _name);
@@ -1804,6 +1833,9 @@ lb_I_Form* LB_STDCALL lb_wxGUI::createLoginForm() {
 	    wxMessageBox(_T("The wizard successfully completed"), _T("That's all"),
             wxICON_INFORMATION | wxOK);
         }
+
+	wxString app = page3->getSelectedApp();
+
 	wizard->Destroy();
 
 
