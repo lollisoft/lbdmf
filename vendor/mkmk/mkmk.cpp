@@ -11,11 +11,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.21 $
+ * $Revision: 1.22 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.21 2001/11/21 22:30:01 lothar Exp $
+ * $Id: mkmk.cpp,v 1.22 2001/12/12 17:20:20 lothar Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.22  2001/12/12 17:20:20  lothar
+ * Works on elf now
+ *
  * Revision 1.21  2001/11/21 22:30:01  lothar
  * Much changes to make lib makefiles working
  *
@@ -571,10 +574,12 @@ void ObjExt(char *s, char *ObjName, int Len)
 /*...swriteExeTarget\40\char\42\ modulename\41\:0:*/
 void writeExeTarget(char* modulename) {
 #ifdef UNIX
+  fprintf(stderr, "Writing exe target\n");
   printf("PROGRAM=%s\n", modulename);
   printf("\n%s: $(OBJS)\n", modulename);
-  printf("\t\t$(CC) $(L_OPS) %s $(OBJS) $(OBJDEP)\n",modulename);
+  printf("\t\t$(CC) $(L_OPS) %s $(OBJS) $(OBJDEP) $(LIBS)\n",modulename);
   printf("\t\t$(CP) $(PROGRAM) $(HOME)/bin\n");
+  fprintf(stderr, "Written exe target\n");
 #endif
 #ifdef __WATCOMC__
   char* ModName = strdup(modulename);
@@ -943,6 +948,11 @@ void main(int argc, char *argv[])
   for(int c = 0; c < strlen(target); c++) target[c] = toupper(target[c]);
   
   if (strcmp(target, "-") == 0) {
+  	targettype = ELF_TARGET;
+  	target_ext = strdup("");
+  }
+  
+  if (strcmp(target, "ELF") == 0) {
   	targettype = ELF_TARGET;
   	target_ext = strdup("");
   }
