@@ -198,6 +198,11 @@ void main(int argc, char *argv[]) {
 	mm->setModuleManager(mm, __FILE__, __LINE__);
 
 /*...e*/
+
+	UAP_REQUEST(mm, lb_I_PluginManager, PM)
+	
+	PM->beginEnumPlugins();
+
 /*...sTest database:0:*/
 	_CL_LOG << "Test database library" LOG_
 

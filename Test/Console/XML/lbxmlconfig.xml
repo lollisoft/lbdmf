@@ -69,6 +69,17 @@
       </Functions>
     </Module>
     <Module>
+      <ModuleName Name="lbPluginManager"/>
+      <Functions>
+        <Function>
+           <FunctionName Name="instanceOfPluginManager"/>
+           <Functor>
+              <InterfaceName Name="lb_I_PluginManager" Version="1.0"/>
+           </Functor>
+        </Function>
+      </Functions>
+    </Module>
+    <Module>
       <ModuleName Name="lbDOMConfig"/>
       <Functions>
         <Function>
