@@ -51,8 +51,22 @@ void LB_STDCALL unHookAll();
 extern lb_I_Log *log;
 extern int isInitializing;
 
+
+#define CL_LOG(msg) \
+{ \
+	char *datei = strrchr(__FILE__, '\\'); \
+	if (datei == NULL) { \
+		datei = __FILE__; \
+	} \
+	else { \
+		datei++; \
+	} \
+	cout << "File: " << datei << ", Line: " << __LINE__ << ", Msg: " << msg << endl; \
+}
+#ifdef bla
 #define CL_LOG(msg) \
 	cout << "File: " << __FILE__ << ", Line: " << __LINE__ << ", Msg: " << msg << endl;
+#endif
 	
 /*...sGET_LOG_INSTANCE:0:*/
 #define GET_LOG_INSTANCE \
@@ -65,14 +79,14 @@ extern int isInitializing;
 					lbErrCodes err = modMan->request("lb_I_Log", &Unknown); \
 					\
 					if (Unknown != NULL) { \
-						Unknown->queryInterface("lb_I_Log", (void**) &log); \
+						Unknown->queryInterface("lb_I_Log", (void**) &log, __FILE__, __LINE__); \
 						if (log == NULL) { \
 							CL_LOG("Unknown object has no interface for lb_I_Log"); \
 							exit (1); \
 						} else { \
 						} \
 					} else { \
-						char buf[100] = ""; \
+						char buf[1000] = ""; \
 						sprintf(buf, "%s %d %s", "Instance could not be created, errcode is ", err, "."); \
 						CL_LOG(buf); \
 						getch(); \
