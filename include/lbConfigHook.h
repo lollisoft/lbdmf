@@ -53,7 +53,8 @@ void LB_STDCALL unHookAll();
 extern lb_I_Log *log;
 extern int isInitializing;
 
-
+#ifndef LOG_DEFINED
+/*...sCL_LOG:0:*/
 #define CL_LOG(msg) \
 { \
 	char *datei = strrchr(__FILE__, '\\'); \
@@ -65,11 +66,26 @@ extern int isInitializing;
 	} \
 	cout << "File: " << datei << ", Line: " << __LINE__ << ", Msg: " << msg << endl; \
 }
-#ifdef bla
-#define CL_LOG(msg) \
-	cout << "File: " << __FILE__ << ", Line: " << __LINE__ << ", Msg: " << msg << endl;
+/*...e*/
 #endif
-	
+#ifdef LOG_DEFINED
+/*...sCL_LOG:0:*/
+#define CL_LOG(msg) \
+{ \
+	char *datei = strrchr(__FILE__, '\\'); \
+	if (datei == NULL) { \
+		datei = __FILE__; \
+	} \
+	else { \
+		datei++; \
+	} \
+	cout << "File: " << datei << ", Line: " << __LINE__ << ", Msg: " << msg << endl; \
+	if (log != NULL) log->log(msg, __LINE__, __FILE__); \
+}
+/*...e*/
+#endif
+
+
 /*...sGET_LOG_INSTANCE:0:*/
 #define GET_LOG_INSTANCE \
 			if (log == NULL) { \
