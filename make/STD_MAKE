@@ -1,10 +1,13 @@
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.10 $
+# * $Revision: 1.11 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.10 2001/11/21 20:40:54 lothar Exp $
+# * $Id: STD_MAKE,v 1.11 2001/11/21 21:59:42 lothar Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.11  2001/11/21 21:59:42  lothar
+# * Added RM variable
+# *
 # * Revision 1.10  2001/11/21 20:40:54  lothar
 # * Added the libdir variable
 # *
@@ -46,6 +49,7 @@ C_OPS = -DWINDOWS
 L_OPS =-o
 
 CC =wpp386
+RM =del
 LINK =wlink
 CP =copy
 EXEDIR =Q:\Develop\Projects\bin
