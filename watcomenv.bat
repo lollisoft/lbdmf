@@ -33,7 +33,8 @@ set LIB=%MSVCDir%\LIB;%MSVCDir%\MFC\LIB;%LIB%
 
 rem Watcom stuff
 
-rem SET INCLUDE=Q:\Develop\wxwin232\wx\src\msw;F:\develop\NT\MSC\VC98\Include;%DEVROOT%\Tools\WATCOM\H;D:\Develop\Tools\WATCOM\H\NT
+SET INCLUDE=Q:\Develop\wxwin232\wx\src\msw;%MSVCDir%\Include;%DEVROOT%\Tools\WATCOM\H;D:\Develop\Tools\WATCOM\H\NT
+rem SET INCLUDE=
 SET WATCOM=%DEVROOT%\Tools\WATCOM
 SET EDPath=%DEVROOT%\Tools\WATCOM\EDDAT
 
