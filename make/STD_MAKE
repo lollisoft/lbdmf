@@ -1,10 +1,13 @@
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.9 $
+# * $Revision: 1.10 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.9 2001/11/20 19:58:38 lothar Exp $
+# * $Id: STD_MAKE,v 1.10 2001/11/21 20:40:54 lothar Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.10  2001/11/21 20:40:54  lothar
+# * Added the libdir variable
+# *
 # * Revision 1.9  2001/11/20 19:58:38  lothar
 # * Added absolute path as DEVROOT
 # *
@@ -47,6 +50,7 @@ LINK =wlink
 CP =copy
 EXEDIR =Q:\Develop\Projects\bin
 DLLDIR =Q:\Develop\Projects\dll
+LIBDIR =Q:\Develop\Projects\lib
 DLLLIBDIR =Q:\Develop\Projects\dll\libs
 
 LNKDLLOPS =d all SYS nt_dll op m op maxe=25 op q op symf
