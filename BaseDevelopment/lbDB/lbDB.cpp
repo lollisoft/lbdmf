@@ -1111,6 +1111,13 @@ void LB_STDCALL lbQuery::prepareFKList() {
 	SQLFreeStmt(hstmt, SQL_DROP);
 /*...e*/
 	#endif
+
+// MySQL does not yet support Foreign keys or my tests with type INNODB doesn't work
+// Force to use manual queries.
+
+#ifdef WINDOWS
+#define UNIX
+#endif
 		
 	#ifdef UNIX
 /*...sOriginally for Linux:8:*/
@@ -1179,6 +1186,9 @@ void LB_STDCALL lbQuery::prepareFKList() {
 /*...e*/
 	#endif
 	
+#ifdef WINDOWS
+#undef UNIX
+#endif		
 
 }
 /*...e*/
