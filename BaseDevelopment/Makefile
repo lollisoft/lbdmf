@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.24 $
+# * $Revision: 1.25 $
 # * $Name:  $
-# * $Id: Makefile,v 1.24 2005/02/03 19:56:41 lollisoft Exp $
+# * $Id: Makefile,v 1.25 2005/02/10 12:48:25 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.25  2005/02/10 12:48:25  lollisoft
+# * Changes for Mac OS X
+# *
 # * Revision 1.24  2005/02/03 19:56:41  lollisoft
 # * Samples and more dependencies in documentation
 # *
@@ -89,6 +92,10 @@ ifeq ($(OSTYPE), linux)
 DEVROOT_MAKE=$(DEVROOT)
 endif
 
+ifeq ($(OSTYPE), osx)
+DEVROOT_MAKE=$(DEVROOT)
+endif
+
 
 Path=$(PATH)
 
@@ -106,6 +113,23 @@ MAKEWXSAMPLE= \
 	make; \
 	)
 
+ifeq ($(OSTYPE), osx)
+
+TARGETDLL=so
+TARGETEXE=elf
+
+ALLTARGETS = lbHook
+#	lbDB \
+#	lbModule \
+#	lbclasses \
+#	lbMetaApplication \
+#	../AppDevelopmentDemo/App \
+#	../AppDevelopmentDemo/DynamicApp/App \
+#	../Test/Console/XML \
+#	../Test/GUI/wxWrapper \
+#	../Doc/html
+endif
+
 ifeq ($(OSTYPE), linux)
 
 TARGETDLL=so
@@ -122,6 +146,7 @@ ALLTARGETS = lbHook \
 	../Test/GUI/wxWrapper \
 	../Doc/html
 endif
+
 ifeq ($(OSTYPE), Windows_NT)
 
 TARGETDLL=dll
