@@ -1,10 +1,14 @@
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.25 $
+# * $Revision: 1.26 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.25 2002/10/11 17:20:57 lothar Exp $
+# * $Id: STD_MAKE,v 1.26 2002/11/08 18:50:25 lothar Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.26  2002/11/08 18:50:25  lothar
+# * Watcom compiler produces internal error E095 with -d2 on my code.
+# * Use -d1 instead.
+# *
 # * Revision 1.25  2002/10/11 17:20:57  lothar
 # * Before CL_LOG change
 # *
@@ -104,11 +108,11 @@ WATCOM_OPTIMIZE=-otexan
 WATCOM_RELAX_ALIAS=-oa
 WATCOM_ERRCOUNT=-e25
 WATCOM_QUIET=-zq
-WATCOM_CALLING_CONV=-5r
+WATCOM_CALLING_CONV=-5r -zz
 WATCOM_DLLTARGET=-bd
 WATCOM_LIBTARGET=
 WATCOM_THREAD_MODEL=-bm
-WATCOM_STDDEBUG=-d2 -hd
+WATCOM_STDDEBUG=-d1 -hd
 WATCOM_STACK= #-of
 
 WATCOM_STD_C_OPS= \
@@ -123,7 +127,7 @@ $(WATCOM_CALLING_CONV) \
 $(WATCOM_STACK)
 
 OBJ =obj
-# Watcom
+# Watcom -zp4
 C_EXEOPS_WATCOM_DEBUG= $(WATCOM_STD_C_OPS) $(WATCOM_STDDEBUG)                      -ei -zp4 -bt=nt -mf -hd
 
 C_DLLOPS_WATCOM   =  $(WATCOM_STD_C_OPS) $(WATCOM_DLLTARGET)                       -ei -zp4 -bt=nt -mf -hd
