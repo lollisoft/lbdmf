@@ -27,6 +27,14 @@
             40235 DÅsseldorf (germany)
 */
 /*...e*/
+
+/**
+ * \file lbConfigHook.h
+ * \brief The main header for bootstrapping lbDMF
+ *
+ * This file must be included by each file to be able to use lbDMF.
+ */
+
 #ifdef WINDOWS
 #ifndef LB_DMF_POWER
 #include <windows.h>
@@ -253,10 +261,15 @@ DLLEXPORT lb_I_Log* LB_STDCALL getLoggerInstance();
 DLLEXPORT void LB_STDCALL setLoggerInstance(lb_I_Log* l);
 
 
-/**
- * Platform independend module loader
- */
 /*...slbErrCodes LB_STDCALL lbLoadModule\40\const char\42\ name\44\ HINSTANCE \38\ hinst\41\:0:*/
+/**
+ * \fn Platform independend module loader. This function is used to load a DLL or so module.
+ * \param name The name of the module to be load.
+ * \param hinst The instance handle of the module would be stored here.
+ */
+
+
+
 lbErrCodes DLLEXPORT LB_STDCALL lbLoadModule(const char* name, HINSTANCE & hinst);
 /*...e*/
 /*...slbErrCodes LB_STDCALL lbGetFunctionPtr\40\const char\42\ name\44\ const HINSTANCE \38\ hinst\44\ void\42\\42\ pfn\41\:0:*/

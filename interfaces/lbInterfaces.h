@@ -267,9 +267,22 @@ typedef lbErrCodes (LB_STDCALL lb_I_EventHandler::*lbEvHandler)(lb_I_Unknown* uk
 
 
 /*...sclass lb_I_Unknown:0:*/
+/**
+ * lb_I_Unknown is the base class for all other classes, that are used in the framework.
+ * 
+ * All classes, that needs to be loaded dynamically, need this as the parent class.
+ */
+
 class lb_I_Unknown {
 protected:
+	/**
+	 * Remove this.
+	 */
 	lb_I_Unknown() {}
+
+	/**
+	 * Remove this.
+	 */
 	virtual ~lb_I_Unknown() {}
 
 private:
@@ -277,20 +290,65 @@ private:
 	lb_I_Unknown* operator=(const lb_I_Unknown* rhs);
 	
 public:
-	virtual lbErrCodes LB_STDCALL release(char* file, int line) = 0;
 	/**
-	 * This function indicates, if the object will be deleted on a call
-	 * of release().
+	 * Call this, when you no longer use an instance of any classes, that have
+	 * this as a base class.
+	 *
+	 * This decrements the internal reference counter and if zero, it destroys
+	 * it self. The pointer, you have in use, is undefined afterwards. You should set
+	 * it to NULL.
+	 */
+	virtual lbErrCodes LB_STDCALL release(char* file, int line) = 0;
+
+	/**
+	 * This function returns it's location of creation. The creation of this instance
+	 * would be set with setModuleManager.
 	 */
 	virtual char* LB_STDCALL getCreationLoc() const = 0;
+	
+	/**
+	 * Indicator, to determine, if the instance has no more references.
+	 */
 	virtual int LB_STDCALL deleteState() = 0;
+	
+	/**
+	 * Activate or deactivate debug informations.
+	 */
 	virtual void LB_STDCALL setDebug(int i) = 0;
+	
+	/**
+	 * Returns the number of references to this instance.
+	 */
 	virtual int LB_STDCALL getRefCount() = 0;
+	
+	/**
+	 * Returns the classname of this instance. It should be a hint to determine
+	 * the real type of this instance. This is not a way to determine the interface
+	 * of this class. The class in use can provide more than one interface to be used.
+	 *
+	 * It is not clear, how to implement that.
+	 */
 	virtual char* LB_STDCALL getClassName() = 0;
 
+	/**
+	 * Set the module manager. This is the - so called - object hook to get new
+	 * instances of any kint of interface.
+	 */
 	virtual void LB_STDCALL setModuleManager(lb_I_Module* m, char* file, int line) = 0;
+	
+	/**
+	 * This returns the module manager, if you like to use it. It may not be set up
+	 * in this instance. Better use the global function getModuleInstance().
+	 */
 	virtual lb_I_Module*   LB_STDCALL getModuleManager() = 0;
 		
+	/**
+	 * Query this instance for any interfaces it may support. A real implementation, derived
+	 * from this, has a supported interface.
+	 *
+	 * There is a list interface functionality missing. I do not know, how to implement
+	 * this in the macros.
+	 */
 	virtual lbErrCodes LB_STDCALL queryInterface(char* name, void** unknown, char* file, int line) = 0;
 
 	/**
@@ -326,6 +384,11 @@ public:
          */
 /*...e*/
         virtual lb_I_Unknown* LB_STDCALL clone(char* file, int line) const = 0;
+        
+        /**
+         * This member must be implemented by the programmer of a class. setData is called
+         * from the clone member to get a correct copy of the cloned instance.
+         */
         virtual lbErrCodes LB_STDCALL setData(lb_I_Unknown* u) = 0;
 
 //friend class lb_I_gcManager;	

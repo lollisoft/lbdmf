@@ -63,3 +63,5 @@ call make.bat
 cd ..\BaseDevelopment
 
 rem call makeapps.bat
+
+doxygen ..\doxygen.conf
