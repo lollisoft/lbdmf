@@ -28,11 +28,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.18 $
+ * $Revision: 1.19 $
  * $Name:  $
- * $Id: lbErrcodes.h,v 1.18 2003/06/26 20:12:02 lollisoft Exp $
+ * $Id: lbErrcodes.h,v 1.19 2003/11/27 23:20:01 lollisoft Exp $
  *
  * $Log: lbErrcodes.h,v $
+ * Revision 1.19  2003/11/27 23:20:01  lollisoft
+ * Attempt to implement write access to databases
+ *
  * Revision 1.18  2003/06/26 20:12:02  lollisoft
  * More error codes for db library
  *
@@ -208,7 +211,9 @@ enum lbErrCodes {
 	ERR_DB_CONNECT,
 	ERR_DB_FETCHFIRST,
 	ERR_DB_FETCHLAST,
-	ERR_DB_NODATA
+	ERR_DB_NODATA,
+	ERR_DB_READONLY,
+	ERR_DB_STILL_ADDING
 };
 /*...e*/
 

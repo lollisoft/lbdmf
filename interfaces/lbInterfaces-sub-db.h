@@ -3,6 +3,7 @@
 
 class lb_I_Query;
 
+/*...sclass lb_I_BoundColumn:0:*/
 /*
  * A single bound column, such as a text field on a form
  */
@@ -87,7 +88,8 @@ BufferLength,
 
 
 };
-
+/*...e*/
+/*...sclass lb_I_ColumnBinding:0:*/
 /*
  * This interface is an attempt to providing column binding
  * informations for the query. As I saw, when the column binding is done
@@ -118,7 +120,8 @@ public:
          */
 //        virtual lbErrCodes      LB_STDCALL setQuery(lb_I_Query* q) = 0;
 };
-
+/*...e*/
+/*...sclass lb_I_MVC_View:0:*/
 class lb_I_MVC_View : public lb_I_Unknown
 {
 protected:
@@ -139,8 +142,8 @@ public:
         virtual lbErrCodes LB_STDCALL setViewSource(lb_I_Unknown* q) = 0;
 /*...e*/
 };
-
-
+/*...e*/
+/*...sclass lb_I_Query:0:*/
 class lb_I_Query : public lb_I_Unknown
 {
 protected:
@@ -163,6 +166,28 @@ public:
 
         /* Set the SQL query */
         virtual lbErrCodes LB_STDCALL query(char* q) = 0;
+
+
+	/* Manipulation */
+	/**
+	 * Sets a flag, that the data should be positioned at the new row space.
+	 * This also should set default values accordingly to the database in behind.
+	 *
+	 * All further data manipulation is done at this row.
+	 *
+	 * Any further navigation is skipped until the update function has been called.
+	 */
+	virtual lbErrCodes LB_STDCALL add() = 0;
+	
+	/**
+	 * Deletes the current entry.
+	 */
+	virtual lbErrCodes LB_STDCALL remove() = 0;
+	
+	/**
+	 * Updates the modified data or stores the new data added via add().
+	 */
+	virtual lbErrCodes LB_STDCALL update() = 0;
         
         /* Navigation */
         virtual lbErrCodes LB_STDCALL first() = 0;
@@ -174,11 +199,17 @@ public:
 #ifdef UNBOUND        
         virtual char* LB_STDCALL getChar(int column) = 0;
 #endif
-#ifndef UNBOUND       
+#ifndef UNBOUND
         virtual lb_I_String*    LB_STDCALL getAsString(int column) = 0;
+        
+        /**
+         * Modifies the column at the current row or sets the column for the new row data 
+         */
+        virtual lbErrCodes	LB_STDCALL setString(lb_I_String* columnName, lb_I_String* value) = 0;
 #endif
 };
-
+/*...e*/
+/*...sclass lb_I_Database:0:*/
 class lb_I_Database : public lb_I_Unknown
 {
 protected:
@@ -205,4 +236,5 @@ public:
 	
 	
 };
+/*...e*/
 #endif // __LB_DATABASE__

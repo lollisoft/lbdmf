@@ -115,7 +115,7 @@ public:
 /*...sclass def lbBoundColumns:0:*/
 class lbBoundColumns: public lb_I_ColumnBinding {
 public:	
-	lbBoundColumns() {}
+	lbBoundColumns() { ArraySize = 1; }
 	virtual ~lbBoundColumns() {}
 	
 	DECLARE_LB_UNKNOWN()
@@ -134,9 +134,13 @@ public:
         lbErrCodes	LB_STDCALL getString(int column, lb_I_String* instance);
         lbErrCodes	LB_STDCALL getString(char* column, lb_I_String* instance);
 
+	int LB_STDCALL getArraySize() { return ArraySize; }
+
 
 	UAP(lb_I_Container, boundColumns, __FILE__, __LINE__)
 	UAP(lb_I_Integer, integerKey, __FILE__, __LINE__)
+	int ArraySize;
+
 };
 /*...e*/
 /*...sclass def lbQuery:0:*/
@@ -173,6 +177,18 @@ public:
 
         /* Set the SQL query */
         virtual lbErrCodes LB_STDCALL query(char* q);
+
+	virtual lbErrCodes LB_STDCALL add();
+
+	/**
+	 * Deletes the current entry.
+	 */
+	virtual lbErrCodes LB_STDCALL remove();
+	
+	/**
+	 * Updates the modified data or stores new data (added via add())
+	 */
+	virtual lbErrCodes LB_STDCALL update();
         
         /* Navigation */
         virtual lbErrCodes	LB_STDCALL first();
@@ -185,6 +201,7 @@ public:
 #endif
 #ifndef UNBOUND       
         virtual lb_I_String*	LB_STDCALL getAsString(int column);
+	virtual lbErrCodes	LB_STDCALL setString(lb_I_String* columnName, lb_I_String* value);
 #endif        
 	
 	lbErrCodes LB_STDCALL init(HENV henv, HDBC _hdbc);
@@ -203,6 +220,12 @@ public:
 		return _readonly;
 	}
 
+#ifndef UNBOUND
+	lb_I_ColumnBinding* getBoundColumns() {
+		return boundColumns.getPtr();
+	}
+#endif
+
 private:
 	HENV    henv;
 	HDBC    hdbc;
@@ -211,7 +234,8 @@ private:
 	char    szSql[256];
 	int	databound;
 	int     firstfetched;
-	int	_readonly;
+	int	_readonly; // readonly = 1, else = 0
+	int	mode;  // insert = 1, select = 0
 
 #ifdef UNBOUND	
 	UAP(lb_I_Container, boundColumns, __FILE__, __LINE__)
@@ -311,8 +335,20 @@ lbErrCodes      LB_STDCALL lbBoundColumns::setBoundColumns(lb_I_Container* bc) {
 
 /*...slbErrCodes      LB_STDCALL lbBoundColumns\58\\58\setQuery\40\lbQuery\42\ q\41\:0:*/
 lbErrCodes      LB_STDCALL lbBoundColumns::setQuery(lbQuery* q) {
-
 	HSTMT hstmt = q->getCurrentStatement();
+	const int ArraySize = 1;
+	SQLUSMALLINT RowStatusArray[ArraySize];
+
+	// Set the array size to one.
+	SQLSetStmtAttr(hstmt, SQL_ATTR_ROW_ARRAY_SIZE, (void*) &ArraySize, 0);
+	
+	// Why this construct ??
+	SQLINTEGER csrType = SQL_CURSOR_KEYSET_DRIVEN;
+	
+	SQLSetStmtAttr(hstmt, SQL_ATTR_CURSOR_TYPE, (void*) &csrType, 0);
+	SQLSetStmtAttr(hstmt, SQL_ATTR_ROW_BIND_TYPE, SQL_BIND_BY_COLUMN, 0);
+	SQLSetStmtAttr(hstmt, SQL_ATTR_ROW_STATUS_PTR, RowStatusArray, 0);
+
 
 	/*
 	 * Get the number of columns for this query.
@@ -747,6 +783,42 @@ lbErrCodes LB_STDCALL lbQuery::last() {
 /*...e*/
 
 
+lbErrCodes LB_STDCALL lbQuery::setString(lb_I_String* columnName, lb_I_String* value) {
+	return ERR_NONE;
+}
+
+lbErrCodes LB_STDCALL lbQuery::add() {
+
+	if (_readonly == 1) return ERR_DB_READONLY;
+
+	mode = 1;
+
+	return ERR_NONE;
+}
+
+lbErrCodes LB_STDCALL lbQuery::remove() {
+
+	if (mode == 1) return ERR_DB_STILL_ADDING;
+
+	SQLSetPos(hstmt, 1, SQL_DELETE, SQL_LOCK_NO_CHANGE);
+
+	return ERR_NONE;
+}
+
+lbErrCodes LB_STDCALL lbQuery::update() {
+
+	if (mode == 1) {
+		// Insert the new record
+		SQLSetPos(hstmt, 2, SQL_ADD, SQL_LOCK_NO_CHANGE);
+	} else {
+		// Update the existing record
+		SQLSetPos(hstmt, 1, SQL_UPDATE, SQL_LOCK_NO_CHANGE);
+	}
+
+
+	return ERR_NONE;
+}
+
 #ifdef bla
 /*...sbla:0:*/
 
@@ -1000,7 +1072,8 @@ lbErrCodes LB_STDCALL lbBoundColumn::bindColumn(lbQuery* q, int column) {
 	                                &ColumnSize, &DecimalDigits, &Nullable);
 
 	long cbBufferLength;
-	
+
+
 	switch (DataType) {
 		case SQL_CHAR:
 		case SQL_VARCHAR:
