@@ -28,11 +28,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.16 $
+ * $Revision: 1.17 $
  * $Name:  $
- * $Id: lbErrcodes.h,v 1.16 2003/06/10 21:24:10 lollisoft Exp $
+ * $Id: lbErrcodes.h,v 1.17 2003/06/13 17:10:09 lollisoft Exp $
  *
  * $Log: lbErrcodes.h,v $
+ * Revision 1.17  2003/06/13 17:10:09  lollisoft
+ * Added ERR_DB_FETCHNEXT
+ *
  * Revision 1.16  2003/06/10 21:24:10  lollisoft
  * lbDB additions
  *
@@ -199,7 +202,8 @@ enum lbErrCodes {
 	ERR_DB_INIT,
 	ERR_DB_ALLOCSTATEMENT,
 	ERR_DB_QUERYFAILED,
-	ERR_DB_CONNECT
+	ERR_DB_CONNECT,
+	ERR_DB_FETCHNEXT
 };
 /*...e*/
 
