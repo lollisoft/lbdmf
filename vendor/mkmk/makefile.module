@@ -9,3 +9,5 @@ endif
 ifeq ($(OSTYPE), linux)
 MOD_INCL=$(STD_INCL) -I ../dosdir
 endif    
+
+Path=$(PATH)
