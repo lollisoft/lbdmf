@@ -3,7 +3,7 @@
 
 rem Linking fails, if the backup file of the source is readonly
 attrib -r *.bak
-
+rem copy ..\lbHook\lbHook.cpp .
 type %DEVROOT%\Projects\cpp\make\makefile.template > makefile
 type makefile.module >> makefile
 echo Path=$(PATH) >> makefile
