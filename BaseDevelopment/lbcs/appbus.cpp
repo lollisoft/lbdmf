@@ -224,7 +224,7 @@ LOG("lbAppBusClient::AnounceClient() called");
 		result.getPacketType(type);
 
 		switch (type) {
-			case LB_CHAR:
+			case PACKET_LB_CHAR:
 				result.get(buffer);
 
 				printf("Char value = %s\n", buffer); 
@@ -308,7 +308,7 @@ int lbAppBusClient::Echo(char* msg) {
 		result.getPacketType(type);
 
 		switch (type) {
-			case LB_CHAR:
+			case PACKET_LB_CHAR:
 				result.get(buffer);
 				//printf("Char value = %s\n", buffer); 
 				break;
@@ -389,7 +389,7 @@ LOG("lbAppBusClient::AnounceClient() called");
 		result.getPacketType(type);
 
 		switch (type) {
-			case LB_CHAR:
+			case PACKET_LB_CHAR:
 				result.get(buffer);
 
 				//printf("Char value = %s\n", buffer); 
@@ -472,7 +472,7 @@ LOG("lbAppBusClient::AnounceClient() called");
 		result.getPacketType(type);
 
 		switch (type) {
-			case LB_CHAR:
+			case PACKET_LB_CHAR:
 				result.get(buffer);
 
 				//printf("Char value = %s\n", buffer); 
