@@ -12,7 +12,61 @@ protected:
         lb_I_BoundColumn() {}
         virtual ~lb_I_BoundColumn() {}
 public:
-	virtual char* getDataType() = 0;
+
+	/**
+	 * Universal access to the column.
+	 *
+	 * This function creates an instance of an interface regarding to the
+	 * underlying data type. For example:
+	 * 
+	 * DATETIME creates a lb_I_Datetime instance (to be implemented),
+	 * CHAR(n)  creates a lb_I_String instance,
+	 * VARCHAR  creates a lb_I_String instance
+	 * and so on...
+	 *
+	 * The user of this class library knows about its datatypes for a query.
+	 * Therefore he can expect that interfaces.
+	 *
+	 * If the application is an interacive query tool, then it should be the
+	 * same. But it should additionally contain a general representation
+	 * interface - like a lb_I_String.
+	 *
+	 * The setData is still defined in the base class - to be implemented here.
+	 */
+	virtual lb_I_Unknown* LB_STDCALL getData() = 0;
+	
+	/**
+	 * Generic string representatoin - regardless of data type.
+	 *
+	 * Warning: There may be a limit of string nength.
+	 */
+	virtual lbErrCodes LB_STDCALL getAsString(lb_I_String* result) = 0;
+	virtual lbErrCodes LB_STDCALL setFromString(lb_I_String* set) = 0;
+
+#ifdef bla	
+	virtual lbErrCodes LB_STDCALL bindColumn(
+	SQLSMALLINT	stmt,
+	SQLCHAR		column,
+	SQLSMALLINT	name,
+	SQLSMALLINT	length,
+	SQLSMALLINT
+	SQLUINTEGER
+	SQLSMALLINT
+	SQLSMALLINT
+
+hstmt, 
+i, 
+ColumnName,
+BufferLength, 
+&NameLength, 
+&DataType,
+&ColumnSize, 
+&DecimalDigits, 
+&Nullable
+
+#endif
+
+
 };
 
 /*
@@ -36,6 +90,11 @@ public:
          */
         virtual lb_I_Container* LB_STDCALL getBoundColumns() = 0;
         virtual lbErrCodes      LB_STDCALL setBoundColumns(lb_I_Container* bc) = 0;
+        
+        /**
+         * Set a currently used query to bind their columns.
+         */
+//        virtual lbErrCodes      LB_STDCALL setQuery(lb_I_Query* q) = 0;
 };
 
 class lb_I_MVC_View : public lb_I_Unknown
@@ -109,8 +168,14 @@ public:
 	 * trainres and the table is as the following definition:
 	 */
 	virtual lbErrCodes LB_STDCALL connect(char* DSN, char* user, char* passwd) = 0;
-	
-	virtual lb_I_Query* LB_STDCALL getQuery() = 0;
+
+	/**
+	 * Get a query instance to be used against the connection.
+	 * The parameter readonly is per default set to 1 to indicate
+	 * a readonly query. To change data in that query, you must
+	 * call the function with a 0 value as parameter.
+	 */	
+	virtual lb_I_Query* LB_STDCALL getQuery(int readonly = 1) = 0;
 	
 	
 };
