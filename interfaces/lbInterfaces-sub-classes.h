@@ -1,11 +1,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.9 $
+ * $Revision: 1.10 $
  * $Name:  $
- * $Id: lbInterfaces-sub-classes.h,v 1.9 2001/05/01 15:51:49 lothar Exp $
+ * $Id: lbInterfaces-sub-classes.h,v 1.10 2001/05/08 20:55:12 lothar Exp $
  *
  * $Log: lbInterfaces-sub-classes.h,v $
+ * Revision 1.10  2001/05/08 20:55:12  lothar
+ * Change of lb_I_KeyBase interface
+ *
  * Revision 1.9  2001/05/01 15:51:49  lothar
  * First instance could be loaded over the new module management
  *
@@ -22,33 +25,23 @@
 #define __LB_INTERFACES_SUB_CLASSES__
 
 /*...sclass lb_I_KeyBase:0:*/
-class lb_I_KeyBase {
+class lb_I_KeyBase : public lb_I_Unknown {
 public:
 
     virtual int LB_STDCALL operator == (const lb_I_KeyBase* _key) const {
-        if (strcmp(this->getMainInterface(), _key->getMainInterface()) == 0)
-    		return this->equals(_key);
-    	else {
-    		return -1;
-    	}
+	return this->equals(_key);
     }
     
     virtual int LB_STDCALL operator > (const lb_I_KeyBase* _key) const {
-        if (strcmp(this->getMainInterface(), _key->getMainInterface()) == 0)
-	    	return this->greater(_key);
-	else {
-		return -1;
-	}
+    	return this->greater(_key);
     }
 
     virtual int LB_STDCALL equals(const lb_I_KeyBase* _key) const = 0;
     virtual int LB_STDCALL greater(const lb_I_KeyBase* _key) const = 0;
-    virtual lb_I_KeyBase* LB_STDCALL clone() const = 0;
+
+    virtual char* LB_STDCALL getKeyType() = 0;
 
     virtual char* LB_STDCALL charrep() = 0;
-    
-    // Returns the real interface for the object
-    virtual char* LB_STDCALL getMainInterface() const = 0;
 };
 /*...e*/
 /*
@@ -206,7 +199,9 @@ classname::classname(const lb_I_Unknown* o, const lb_I_KeyBase* _key, lb_I_Eleme
     if (uk_data->queryInterface("lb_I_Object", (void**) &data) != ERR_NONE) { \
     	CL_LOG("Error while cloning"); \
     } \
-    key = _key->clone(); \
+    lb_I_Unknown* uk_key = NULL; \
+    uk_key = _key->clone(); \
+    uk_key->queryInterface("lb_I_KeyBase", (void**) &key); \
     if (key == NULL) CL_LOG("Key cloning in constructor failed. May be a memory problem"); \
 } \
 \
@@ -476,7 +471,6 @@ lbErrCodes classname::remove(const lb_I_KeyBase* key) { \
 lbErrCodes classname::_insert(const lb_I_Unknown* e, const lb_I_KeyBase* key) { \
 \
     if (container_data == NULL) { \
-    	cout << "Address of unknown object: " << (void*) e << endl; \
         lbElement* _data = new lbElement(e, key); \
 \
         _data->queryInterface("lb_I_Element", (void**) &container_data); \
