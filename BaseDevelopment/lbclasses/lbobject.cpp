@@ -1,7 +1,3 @@
-/*...sLB_CLASSES_DLL scope:0:*/
-#define LB_CLASSES_DLL
-#include <lbclasses-module.h>
-/*...e*/
 
 #include <stdio.h>
 #include <string.h>
@@ -24,6 +20,11 @@ extern "C" {
 #endif
 
 #include <lbConfigHook.h>
+
+/*...sLB_CLASSES_DLL scope:0:*/
+#define LB_CLASSES_DLL
+#include <lbclasses-module.h>
+/*...e*/
 
 #include <lbobject.h>
 #include <lbkey.h>

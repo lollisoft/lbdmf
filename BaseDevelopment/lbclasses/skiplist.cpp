@@ -2,11 +2,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.3 $
+ * $Revision: 1.4 $
  * $Name:  $
- * $Id: skiplist.cpp,v 1.3 2002/05/01 14:17:13 lolli Exp $
+ * $Id: skiplist.cpp,v 1.4 2002/06/01 08:59:27 lolli Exp $
  *
  * $Log: skiplist.cpp,v $
+ * Revision 1.4  2002/06/01 08:59:27  lolli
+ * Bug due to position of module definition for export
+ *
  * Revision 1.3  2002/05/01 14:17:13  lolli
  * This version does not compile
  *
@@ -18,10 +21,6 @@
  *
  **************************************************************/
 /*...e*/
-/*...sLB_CLASSES_DLL scope:0:*/
-#define LB_CLASSES_DLL
-#include <lbclasses-module.h>
-/*...e*/
 /*...sincludes:0:*/
 #include <iostream.h>
 #include <stdlib.h>
@@ -29,6 +28,11 @@
 
 #include <lbInterfaces.h>
 #include <lbConfigHook.h>
+
+/*...sLB_CLASSES_DLL scope:0:*/
+#define LB_CLASSES_DLL
+#include <lbclasses-module.h>
+/*...e*/
 
 #include <skiplist.h>
 /*...e*/
