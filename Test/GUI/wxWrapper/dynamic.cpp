@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.64 2005/04/02 09:45:06 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.65 2005/04/02 12:49:56 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.64 $
+ * $Revision: 1.65 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.64 2005/04/02 09:45:06 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.65 2005/04/02 12:49:56 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.65  2005/04/02 12:49:56  lollisoft
+ * More translations
+ *
  * Revision 1.64  2005/04/02 09:45:06  lollisoft
  * Removed log messages and little code changes.
  *
@@ -1892,11 +1895,15 @@ bool MyApp::OnInit(void)
 #ifndef LB_I_EXTENTIONS
   panel = new wxPanel(frame, -1, wxPoint(0, 0), wxSize(400, 200), wxTAB_TRAVERSAL);
 #endif
+  char* hello = NULL;
 #ifdef LB_I_EXTENTIONS
-  (void)new wxStaticText(panel, 311, "Hello!", wxPoint(10, 10), wxSize(-1, -1), 0);
+  hello = strdup(_trans("Hello!"));
+  (void)new wxStaticText(panel, 311, hello, wxPoint(10, 10), wxSize(-1, -1), 0);
+  free(hello);
 #endif
 #ifndef LB_I_EXTENTIONS
-  (void)new wxStaticText(panel, 311, "Hello!", wxPoint(10, 10), wxSize(-1, -1), 0);
+  hello = "Hello!";
+  (void)new wxStaticText(panel, 311, hello, wxPoint(10, 10), wxSize(-1, -1), 0);
 #endif
 /*...e*/
 #ifdef LB_I_EXTENTIONS
@@ -2400,10 +2407,14 @@ void lb_wxFrame::OnVerbose(wxCommandEvent& WXUNUSED(event) ) {
 /*...slb_wxFrame\58\\58\OnAbout\40\wxCommandEvent\38\ WXUNUSED\40\event\41\ \41\:0:*/
 void lb_wxFrame::OnAbout(wxCommandEvent& WXUNUSED(event) )
 {
-  wxMessageDialog dialog(NULL, "This is the wxWindows GUI wrapper.\nA interface to any application.",
-    "About wxWindows GUI wrapper", wxYES_NO|wxCANCEL);
+  char* buf = strdup(_trans("This is the wxWindows GUI wrapper.\nA interface to any application."));
+  char* buf1 = strdup(_trans("About wxWidgets GUI wrapper"));
+  wxMessageDialog dialog(NULL, buf, buf1, wxOK);
 
   dialog.ShowModal();
+
+  free(buf);
+  free(buf1);
 }
 /*...e*/
 /*...slb_wxFrame\58\\58\OnCheck\40\wxCommandEvent\38\ WXUNUSED\40\event\41\ \41\:0:*/
