@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.8 $
+# * $Revision: 1.9 $
 # * $Name:  $
-# * $Id: Makefile,v 1.8 2004/10/09 16:52:46 lollisoft Exp $
+# * $Id: Makefile,v 1.9 2004/10/09 17:22:51 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.9  2004/10/09 17:22:51  lollisoft
+# * Changed make process for wx based apps
+# *
 # * Revision 1.8  2004/10/09 16:52:46  lollisoft
 # * Enhancements for cleaning up
 # *
@@ -47,7 +50,8 @@ MAKESUBDIR= \
 MAKEWXSAMPLE= \
 	@( \
 	cd $@; \
-	make -f makefile.wx-sample; \
+	cp makefile.wx-sample makefile; \
+	make; \
 	)
 
 ALLTARGETS = lbHook \
@@ -81,7 +85,7 @@ dummy:
 	$(MAKESUBDIR)
 
 ../Test/GUI/wxWrapper: dummy
-	$(MAKESUBDIR)
+	$(MAKEWXSAMPLE)
 
 #$(MAKEWXSAMPLE)
 
