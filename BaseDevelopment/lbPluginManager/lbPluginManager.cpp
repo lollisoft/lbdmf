@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.3 $
+ * $Revision: 1.4 $
  * $Name:  $
- * $Id: lbPluginManager.cpp,v 1.3 2004/06/07 20:26:30 lollisoft Exp $
+ * $Id: lbPluginManager.cpp,v 1.4 2004/06/09 06:59:59 lollisoft Exp $
  *
  * $Log: lbPluginManager.cpp,v $
+ * Revision 1.4  2004/06/09 06:59:59  lollisoft
+ * Loading plugin module and insertin to internal PluginModules list implemented
+ *
  * Revision 1.3  2004/06/07 20:26:30  lollisoft
  * Initial plugin manager implementation
  *
@@ -103,7 +106,7 @@ private:
 	bool begunEnumerate;
 	bool firstEnumerate;
 	
-	UAP(lb_I_Container, Plugins, __FILE__, __LINE__)
+	UAP(lb_I_Container, PluginModules, __FILE__, __LINE__)
 };
 
 
@@ -129,11 +132,12 @@ lbErrCodes LB_STDCALL lbPluginManager::setData(lb_I_Unknown* uk) {
         return ERR_NOT_IMPLEMENTED;
 }
 
+/*...sbool LB_STDCALL lbPluginManager\58\\58\beginEnumPlugins\40\\41\:0:*/
 bool LB_STDCALL lbPluginManager::beginEnumPlugins() {
 	if (!firstEnumerate) {
 		firstEnumerate = TRUE;
 		
-		REQUEST(manager.getPtr(), lb_I_Container, Plugins)
+		REQUEST(manager.getPtr(), lb_I_Container, PluginModules)
 	}
 	
 	// Scan the plugin directory for DLL's or so's and try to get the plugin module instance.
@@ -154,11 +158,72 @@ bool LB_STDCALL lbPluginManager::beginEnumPlugins() {
 	strcat(toFind, mask);
 	
 	long handle = _findfirst(toFind, &find);
+
+
+#ifndef LINUX
+        #ifdef __WATCOMC__
+        #define PREFIX "_"
+        #endif
+        #ifdef _MSC_VER
+        #define PREFIX ""
+        #endif
+#endif
+#ifdef LINUX
+#define PREFIX ""
+#endif
 	
 	if (handle != -1) {
 		printf("Plugin: %s\n", find.name);
+
+		lbErrCodes err = ERR_NONE;
+			
+		// Instantiate an lb_I_PluginModule object
+		
+		char* pluginModule = new char[strlen(pluginDir)+strlen(find.name)+2];
+		pluginModule[0] = 0;
+		strcat(pluginModule, pluginDir);
+		strcat(pluginModule, "\\");
+		strcat(pluginModule, find.name);
+		
+		UAP(lb_I_Unknown, ukPlugin, __FILE__, __LINE__)
+				       
+		manager->makeInstance(PREFIX "instanceOfPluginModule", pluginModule, &ukPlugin);
+		delete [] pluginModule;
+		
+		UAP_REQUEST(manager.getPtr(), lb_I_String, pluginName)
+		pluginName->setData(find.name);
+			
+		UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
+			
+		QI(pluginName, lb_I_KeyBase, key, __FILE__, __LINE__)
+			
+		PluginModules->insert(&ukPlugin, &key);
+
 		while (_findnext(handle, &find) == 0) {
-			printf("Plugin: %s\n", find.name);
+/*...sTry load plugin and insert into list:24:*/
+			printf("Found plugin in while loop: %s\n", find.name);
+			
+			// Instantiate an lb_I_PluginModule object
+		
+			char* pluginModule = new char[strlen(pluginDir)+strlen(find.name)+2];
+			pluginModule[0] = 0;
+			strcat(pluginModule, pluginDir);
+			strcat(pluginModule, "\\");
+			strcat(pluginModule, find.name);
+		
+			UAP(lb_I_Unknown, ukPlugin, __FILE__, __LINE__)
+			manager->makeInstance(PREFIX "instanceOfPluginModule", pluginModule, &ukPlugin);
+			delete [] pluginModule;
+			
+			UAP_REQUEST(manager.getPtr(), lb_I_String, pluginName)
+			pluginName->setData(find.name);
+			
+			UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
+			
+			QI(pluginName, lb_I_KeyBase, key, __FILE__, __LINE__)
+			
+			PluginModules->insert(&ukPlugin, &key);
+/*...e*/
 		}
 		
 		_findclose(handle);
@@ -168,10 +233,11 @@ bool LB_STDCALL lbPluginManager::beginEnumPlugins() {
 	
 	delete [] toFind;
 	
-	if (Plugins->hasMoreElements() == 1) return TRUE;
+	if (PluginModules->hasMoreElements() == 1) return TRUE;
 	
 	return FALSE;
 }
+/*...e*/
 
 lb_I_Plugin* LB_STDCALL lbPluginManager::nextPlugin() {
 
