@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.15 $
+# * $Revision: 1.16 $
 # * $Name:  $
-# * $Id: Makefile,v 1.15 2005/01/05 13:41:36 lollisoft Exp $
+# * $Id: Makefile,v 1.16 2005/01/22 11:59:42 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.16  2005/01/22 11:59:42  lollisoft
+# * Restructuring
+# *
 # * Revision 1.15  2005/01/05 13:41:36  lollisoft
 # * New dynamic application implementation works
 # *
@@ -92,6 +95,7 @@ ALLTARGETS = lbHook \
 	../AppDevelopmentDemo/App \
 	../Test/Console/XML \
 	../Test/GUI/wxWrapper \
+	../AppDevelopment \
 	../Doc/html
 endif
 ifeq ($(OSTYPE), Windows_NT)
@@ -105,9 +109,9 @@ ALLTARGETS = lbhook \
 	lbclasses \
 	lbMetaApplication \
 	../AppDevelopmentDemo/App \
-	../AppDevelopment/DynamicApp/App \
 	../Test/Console/XML \
 	../Test/GUI/wxWrapper \
+	../AppDevelopment \
 	../Doc/html
 endif
 
@@ -147,12 +151,7 @@ dummy:
 	$(MAKE) -C $@ -e MODULE=wxWrapper -e TARGET=$(TARGETEXE) -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
 	$(MAKE) -C $@
 
-#	$(MAKEWXSAMPLE)
-
-#$(MAKEWXSAMPLE)
-
-../AppDevelopment/DynamicApp/App: dummy
-	$(MAKE) -C $@ -e MODULE=lbDynApp -e TARGET=$(TARGETDLL) -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
+../AppDevelopment: dummy
 	$(MAKE) -C $@
 
 ../AppDevelopmentDemo/App: dummy
@@ -192,4 +191,5 @@ lbXMLConfig/lbDOMConfig: dummy
 	$(MAKE) -C $@
 
 ../Doc/html: ../doxygen.conf ../interfaces/lbInterfaces.h
-	doxygen ../doxygen.conf
+	@doxygen ../doxygen.conf
+
