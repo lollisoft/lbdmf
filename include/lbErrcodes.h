@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.20 $
+ * $Revision: 1.21 $
  * $Name:  $
- * $Id: lbErrcodes.h,v 1.20 2003/12/13 10:56:26 lollisoft Exp $
+ * $Id: lbErrcodes.h,v 1.21 2004/08/16 05:10:00 lollisoft Exp $
  *
  * $Log: lbErrcodes.h,v $
+ * Revision 1.21  2004/08/16 05:10:00  lollisoft
+ * New error codes for database class
+ *
  * Revision 1.20  2003/12/13 10:56:26  lollisoft
  * Database improovements and changes in my licence adress.
  * The database part is still not working by updating columns
@@ -210,6 +213,8 @@ enum lbErrCodes {
 	ERR_SOCKET_RECV,
 	ERR_SOCKET_UNCONNECTED,
 	ERR_SOCKET_CLOSED,
+
+/* Errcodes for the database module */
 	
 	ERR_DB_INIT,
 	ERR_DB_ALLOCSTATEMENT,
@@ -220,7 +225,9 @@ enum lbErrCodes {
 	ERR_DB_FETCHLAST,
 	ERR_DB_NODATA,
 	ERR_DB_READONLY,
-	ERR_DB_STILL_ADDING
+	ERR_DB_STILL_ADDING,
+	ERR_UPDATE_FAILED,
+	WARN_DB_NODATA
 };
 /*...e*/
 
