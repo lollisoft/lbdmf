@@ -369,8 +369,10 @@ public:
 #define STATIC_REQUEST(mm, interface, variable) \
   	lb_I_Unknown* uk##variable; \
   	mm->request(#interface, &uk##variable); \
+  	printf("STATIC_REQUEST: Have an instance\n"); \
   	interface* variable; \
   	uk##variable->setModuleManager(mm, __FILE__, __LINE__); \
+  	printf("STATIC_REQUEST: Set module manager\n"); \
   	uk##variable->queryInterface(#interface, (void**) &variable, __FILE__, __LINE__);
 
 
@@ -416,13 +418,14 @@ char* LB_STDCALL classname::_queryInterface(char* name, void** unknown, char* fi
 	return ID; \
 } \
 lb_I_Module* LB_STDCALL classname::getModuleManager() { \
-		lb_I_Module* _mm; \
+		lbErrCodes err = ERR_NONE; \
+		UAP(lb_I_Module, _mm, __FILE__, __LINE__) \
 		if (manager == NULL) { \
 			CL_LOG("Error: Can't return module manager. Call setModuleManager(...) on me first!"); \
 			return NULL; \
 		} \
-		manager->queryInterface("lb_I_Module", (void**) &_mm, __FILE__, __LINE__); \
-		return _mm; \
+		QI(manager, lb_I_Module, _mm, __FILE__, __LINE__) \
+		return _mm.getPtr(); \
 } \
 \
 void LB_STDCALL classname::setModuleManager(lb_I_Module* m, char* file, int line) { \
@@ -552,6 +555,11 @@ lbErrCodes LB_STDCALL classname::queryInterface(char* name, void** unknown, char
                 *unknown = (lb_I_Unknown*) this; \
                 if (manager != NULL) { \
                 	lb_I_Unknown* that = (lb_I_Unknown*) this; \
+                	if (strcmp(_classname, "lbModule") == 0) { \
+                		char buf[1000] = ""; \
+                		sprintf(buf, "Register reference for %s in %s at %d", _classname, file, line); \
+                		CL_LOG(buf) \
+                	} \
 		        manager->notify_add(that, _classname, file, line); \
 		} \
 		else { \

@@ -94,7 +94,7 @@ void main() {
 		CL_LOG("Error: Could not get needed interface!");
 		getch();
 	}
-	
+	CL_LOG("Got interface lb_I_Container for instance lb_I_Container")	
 /*...e*/
 /*...stest integer:0:*/
 	if (mm->request("lb_I_Integer", &uk) != ERR_NONE) {

@@ -25,7 +25,7 @@ extern "C" {
 //#include <winbase.h>
 
 #include <lbConfigHook.h>
-
+#include <lbKey.h>
 
 
 HINSTANCE ModuleHandle = NULL;
@@ -177,5 +177,184 @@ void LB_STDCALL unHookAll() {
 	}
 	
 	log = NULL;
+}
+/*...e*/
+
+/*...slbKey:0:*/
+/*...sc\39\tors and d\39\tors:0:*/
+lbKey::lbKey() {
+    ref = STARTREF;
+    key = 0;
+	manager = NULL;
+    strcpy(keyType, "int");
+}
+
+lbKey::lbKey(int _key) {
+    ref = STARTREF;
+    key = _key;
+    strcpy(keyType, "int");
+	manager = NULL;
+}
+
+lbKey::lbKey(const lb_I_KeyBase* k) {
+    ref = STARTREF;
+    key = ((lbKey) k).key;
+}
+
+lbKey::~lbKey(){
+}
+/*...e*/
+
+/*...simplement lb_I_Unknown:0:*/
+BEGIN_IMPLEMENT_LB_UNKNOWN(lbKey)
+	ADD_INTERFACE(lb_I_KeyBase)
+END_IMPLEMENT_LB_UNKNOWN()
+
+
+lbErrCodes LB_STDCALL lbKey::setData(lb_I_Unknown* uk) {
+	return ERR_NONE;
+}
+/*...e*/
+
+char* LB_STDCALL lbKey::getKeyType() const {
+    return "int";
+}
+
+int LB_STDCALL lbKey::equals(const lb_I_KeyBase* _key) const {
+    return key == ((lbKey*) _key)->key;
+}
+
+int LB_STDCALL lbKey::greater(const lb_I_KeyBase* _key) const {
+    return key > ((lbKey*) _key)->key;
+}
+
+int LB_STDCALL lbKey::lessthan(const lb_I_KeyBase* _key) const {
+    return key < ((lbKey*) _key)->key;
+}
+
+char* LB_STDCALL lbKey::charrep() const {
+    char buf[100];
+#ifdef WINDOWS
+    itoa(key, buf, 10);
+#endif
+#ifdef LINUX
+    sprintf(buf, "%d", key);
+#endif    
+    return strdup(buf);
+}
+/*...e*/
+/*...slbKeyUL:0:*/
+
+
+lbKeyUL::lbKeyUL() {
+    ref = STARTREF;
+    key = 0;
+    strcpy(keyType, "UL");
+}
+
+lbKeyUL::lbKeyUL(unsigned long _key) {
+    ref = STARTREF;
+    key = _key;
+    strcpy(keyType, "UL");
+}
+
+lbKeyUL::lbKeyUL(const lb_I_KeyBase* k) {
+    ref = STARTREF;
+    key = ((lbKeyUL*) k)->key;
+}
+
+
+lbKeyUL::~lbKeyUL(){
+}
+
+BEGIN_IMPLEMENT_LB_UNKNOWN(lbKeyUL)
+	ADD_INTERFACE(lb_I_KeyBase)
+END_IMPLEMENT_LB_UNKNOWN()
+
+lbErrCodes LB_STDCALL lbKeyUL::setData(lb_I_Unknown* uk) {
+	CL_LOG("lbKey::setData() not implemented yet");
+	return ERR_NONE;
+}
+
+
+char* LB_STDCALL lbKeyUL::getKeyType() const {
+    return "UL";
+}
+
+int LB_STDCALL lbKeyUL::equals(const lb_I_KeyBase* _key) const {
+    return key == ((lbKeyUL*) _key)->key;
+}
+
+int LB_STDCALL lbKeyUL::greater(const lb_I_KeyBase* _key) const {
+    return key > ((lbKeyUL*) _key)->key;
+}
+
+int LB_STDCALL lbKeyUL::lessthan(const lb_I_KeyBase* _key) const {
+    return key < ((lbKeyUL*) _key)->key;
+}
+
+char* LB_STDCALL lbKeyUL::charrep() const {
+    char buf[100];
+
+#ifdef WINDOWS
+    itoa(key, buf, 10);
+#endif
+#ifdef LINUX
+    sprintf(buf, "%d", key);
+#endif    
+    
+    return strdup(buf);
+}
+/*...e*/
+/*...slbStringKey:0:*/
+lbStringKey::lbStringKey() {
+    ref = STARTREF;
+    key = "";
+}
+
+lbStringKey::lbStringKey(const char* _key) {
+    ref = STARTREF;
+    key = strdup(_key);
+}
+
+lbStringKey::lbStringKey(const lb_I_KeyBase* k) {
+    ref = STARTREF;
+    key = strdup(((lbStringKey*) k)->key);
+}
+
+
+lbStringKey::~lbStringKey(){
+	if (key != NULL) {
+		delete key;
+	}
+}
+
+BEGIN_IMPLEMENT_LB_UNKNOWN(lbStringKey)
+	ADD_INTERFACE(lb_I_KeyBase)
+END_IMPLEMENT_LB_UNKNOWN()
+
+lbErrCodes LB_STDCALL lbStringKey::setData(lb_I_Unknown* uk) {
+	CL_LOG("lbKey::setData() not implemented yet");
+	return ERR_NONE;
+}
+
+char* LB_STDCALL lbStringKey::getKeyType() const {
+    return "string";
+}
+
+int LB_STDCALL lbStringKey::equals(const lb_I_KeyBase* _key) const {
+    return (strcmp(key, ((const lbStringKey*) _key)->key) == 0);
+}
+
+int LB_STDCALL lbStringKey::greater(const lb_I_KeyBase* _key) const {
+    return (strcmp(key, ((const lbStringKey*) _key)->key) > 0);
+}
+
+int LB_STDCALL lbStringKey::lessthan(const lb_I_KeyBase* _key) const {
+    return (strcmp(key, ((const lbStringKey*) _key)->key) < 0);
+}
+
+char* LB_STDCALL lbStringKey::charrep() const {
+    return key;
 }
 /*...e*/

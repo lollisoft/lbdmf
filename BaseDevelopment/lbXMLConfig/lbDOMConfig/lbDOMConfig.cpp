@@ -1,11 +1,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.21 $
+ * $Revision: 1.22 $
  * $Name:  $
- * $Id: lbDOMConfig.cpp,v 1.21 2002/04/15 18:24:31 lothar Exp $
+ * $Id: lbDOMConfig.cpp,v 1.22 2002/05/01 14:17:11 lothar Exp $
  *
  * $Log: lbDOMConfig.cpp,v $
+ * Revision 1.22  2002/05/01 14:17:11  lothar
+ * This version does not compile
+ *
  * Revision 1.21  2002/04/15 18:24:31  lothar
  * Huge changes - works good
  *
@@ -156,7 +159,7 @@ class lbDOMConfig;
 bool doEscapes = false;
 
 class lbDOMContainer;
-
+#ifdef bla
 /*...slbKey:0:*/
 /*...sc\39\tors and d\39\tors:0:*/
 lbKey::lbKey() {
@@ -335,7 +338,7 @@ char* LB_STDCALL lbStringKey::charrep() const {
     return key;
 }
 /*...e*/
-
+#endif
 
 
 /*...sclass DOMTreeErrorReporter:0:*/
@@ -594,6 +597,7 @@ END_IMPLEMENT_LB_UNKNOWN()
 lbErrCodes lbDOMNode::setData(lb_I_Unknown* uk) {
 	
 	lbDOMNode* _node = NULL;
+	lbErrCodes err = ERR_NONE;
 
 	if (uk->queryInterface("lb_I_ConfigObject", (void**) &_node, __FILE__, __LINE__) != ERR_NONE) {
 		CL_LOG("Error: Cloning interface not present!");
@@ -612,9 +616,10 @@ lbErrCodes lbDOMNode::setData(lb_I_Unknown* uk) {
 #endif	
 /*...e*/
 	node = _node->node;
-	if (_node->lbDOMchilds != NULL)
-		_node->lbDOMchilds->queryInterface("lb_I_Container", (void**) & lbDOMchilds, __FILE__, __LINE__);
-	
+	if (_node->lbDOMchilds != NULL) {
+		QI(_node->lbDOMchilds, lb_I_Container, lbDOMchilds, __FILE__, __LINE__)
+//		_node->lbDOMchilds->queryInterface("lb_I_Container", (void**) & lbDOMchilds, __FILE__, __LINE__);
+	}
 	if (_node->parent == NULL) {
 #ifdef VERBOSE
 		CL_LOG("Warning: Cloning a object without parent pointing to a real parent!");

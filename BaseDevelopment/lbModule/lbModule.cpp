@@ -3,11 +3,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.26 $
+ * $Revision: 1.27 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.26 2002/04/25 18:07:57 lothar Exp $
+ * $Id: lbModule.cpp,v 1.27 2002/05/01 14:17:10 lothar Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.27  2002/05/01 14:17:10  lothar
+ * This version does not compile
+ *
  * Revision 1.26  2002/04/25 18:07:57  lothar
  * Added Skiplist implementation
  *
@@ -588,7 +591,7 @@ InstanceRepository* IR = NULL;
 
 /*...sclass lbInstance:0:*/
 class lbInstance : 
-public lb_I_KeyBase
+public lb_I_Unknown
 {
 private:
         char* addr;
@@ -599,7 +602,7 @@ private:
 
 	DECLARE_LB_UNKNOWN()
 	
-	DECLARE_LB_KEYBASE()
+//	DECLARE_LB_KEYBASE()
 
 public:
 	lbInstance();
@@ -608,10 +611,12 @@ public:
 	virtual char* LB_STDCALL getAddress();
 	virtual char* LB_STDCALL getInstanceClassname();
 	virtual char* LB_STDCALL getFile();
+	virtual int LB_STDCALL getLine();
 	
 	virtual void LB_STDCALL setAddress(char* a);
 	virtual void LB_STDCALL setClassname(char* c);
 	virtual void LB_STDCALL setFile(char* f);
+	virtual void LB_STDCALL setLine(int l);
 };
 
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbInstance)
@@ -642,6 +647,10 @@ char* LB_STDCALL lbInstance::getFile() {
 	return file;
 }
 	
+int LB_STDCALL lbInstance::getLine() {
+	return line;
+}
+
 void LB_STDCALL lbInstance::setAddress(char* a) {
 	if (addr != NULL) free(addr);
 	addr = strdup(a);
@@ -662,42 +671,23 @@ lbErrCodes LB_STDCALL lbInstance::setData(lb_I_Unknown* uk) {
 	return ERR_NOT_IMPLEMENTED;
 }
 
-/*...skey:0:*/
-char* LB_STDCALL lbInstance::getKeyType() const {
-    return "lbInstance";
+void LB_STDCALL lbInstance::setLine(int l) {
+	line = l;
 }
-
-int LB_STDCALL lbInstance::equals(const lb_I_KeyBase* _key) const {
-    return strcmp(key, ((lbInstance*) _key)->key) == 0;
-}
-
-int LB_STDCALL lbInstance::greater(const lb_I_KeyBase* _key) const {
-    return strcmp(key, ((lbInstance*) _key)->key) > 0;
-}
-
-int LB_STDCALL lbInstance::lessthan(const lb_I_KeyBase* _key) const {
-    return strcmp(key, ((lbInstance*) _key)->key) < 0;
-}
-
-char* lbInstance::charrep() const {
-    
-    return key;
-}
-/*...e*/
 /*...e*/
 /*...sclass lbInstanceReference:0:*/
 class lbInstanceReference : 
-public lb_I_KeyBase
+public lb_I_Unknown
 {
 private:
         char* file;
         int line;
         int count;
-        char* key;
+        //char* key;
 
 	DECLARE_LB_UNKNOWN()
 	
-        DECLARE_LB_KEYBASE()
+//        DECLARE_LB_KEYBASE()
 
 public:
         lbInstanceReference();
@@ -751,7 +741,7 @@ lbErrCodes LB_STDCALL lbInstanceReference::setData(lb_I_Unknown* uk) {
 	CL_LOG("lbInstanceReference::setData(...) not implemented yet");
 	return ERR_NOT_IMPLEMENTED;
 }
-
+#ifdef bla
 /*...skey:0:*/
 char* LB_STDCALL lbInstanceReference::getKeyType() const {
     return "lbInstanceReference";
@@ -774,6 +764,7 @@ char* lbInstanceReference::charrep() const {
     return key;
 }
 /*...e*/
+#endif
 /*...e*/
 
 char* Upper(char* string) {
@@ -803,6 +794,7 @@ public:
         
         UAP(lb_I_Container, lb_iList, __FILE__, __LINE__)
         UAP(lb_I_Container, lb_cList, __FILE__, __LINE__)
+
 private:
 	int loadedContainer;
 	int instances;
@@ -841,6 +833,18 @@ void LB_STDCALL InstanceRepository::createInstance(char* addr, char* classname, 
 	instanceList* temp = iList;
 	instances++;
 	
+	if (loadedContainer == 1) {
+		lbInstance* inst = new lbInstance();
+	
+		inst->setAddress(addr);
+		inst->setClassname(classname);
+		inst->setFile(file);
+		inst->setLine(line);
+		
+		lbStringKey *key = new lbStringKey(addr);
+		
+		lb_iList->insert((lb_I_Unknown**) &inst, (lb_I_KeyBase**) &key);
+	} else {
 /*...sfirst element:8:*/
 	if (iList == NULL) {
 		iList = new instanceList;
@@ -879,6 +883,7 @@ void LB_STDCALL InstanceRepository::createInstance(char* addr, char* classname, 
 		temp = temp->next;
 	}
 /*...e*/
+	}
 }
 /*...e*/
 /*...sInstanceRepository\58\\58\addReference\40\char\42\ addr\44\ char\42\ classname\44\ char\42\ file\44\ int line\41\:0:*/
@@ -887,6 +892,7 @@ void LB_STDCALL InstanceRepository::addReference(char* addr, char* classname, ch
 	int foundReference = 0;
 
 	while (temp != NULL) {
+/*...ssearch instance address:16:*/
 		if (strcmp(Upper(temp->addr), Upper(addr)) == 0) {
 			// Found the entry for this instance
 			if (strcmp(temp->classname, classname) == 0) {
@@ -920,6 +926,7 @@ void LB_STDCALL InstanceRepository::addReference(char* addr, char* classname, ch
 				return;
 			}
 		}
+/*...e*/
 		temp = temp->next;
 	}
 }
@@ -1152,18 +1159,23 @@ void LB_STDCALL InstanceRepository::loadContainer(lb_I_Module* m) {
 	if (loadedContainer == 1) return;
 	loadedContainer = 1;
 
+#ifdef bla
 printf("Load container for instance repository\n");
 	STATIC_REQUEST(m, lb_I_Container, instlist)
 printf("Got an instance\n");	
-	lb_iList = instlist;
+#endif
+
+printf("InstanceRepository::loadContainer() Load Skiplist container\n");
+	SkipList* instances = new SkipList();
+
+	lb_iList = instances;
 	
 	instanceList* temp = iList;
 
-#ifdef bla
 	while (temp != NULL) {
-		
+		printf("Have an instance %s in %s at %d\n", temp->classname, temp->file, temp->line);
+		temp = temp->next;
 	}
-#endif
 
 printf("Loaded\n");	
 }

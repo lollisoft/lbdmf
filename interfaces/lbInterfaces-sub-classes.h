@@ -1,11 +1,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.21 $
+ * $Revision: 1.22 $
  * $Name:  $
- * $Id: lbInterfaces-sub-classes.h,v 1.21 2002/04/15 18:25:16 lothar Exp $
+ * $Id: lbInterfaces-sub-classes.h,v 1.22 2002/05/01 14:17:11 lothar Exp $
  *
  * $Log: lbInterfaces-sub-classes.h,v $
+ * Revision 1.22  2002/05/01 14:17:11  lothar
+ * This version does not compile
+ *
  * Revision 1.21  2002/04/15 18:25:16  lothar
  * Huge changes - works good
  *
@@ -323,7 +326,9 @@ classname::~classname() { \
         	                (void*) data, data->getCreationLoc(), data->getRefCount(), data->getClassName()); \
         	        } \
                         CL_LOG(buf); \
-                        getch(); \
+                        char ptr[20] = ""; \
+                        sprintf(ptr, "%p", (void*) data); \
+                        manager->printReferences(ptr); \
                 } \
                 RELEASE(data); \
                 getch(); \
@@ -751,7 +756,8 @@ public:
          * automatically unloaded (the array/list).
          */
         virtual lbErrCodes LB_STDCALL load(char* name) = 0;
-        
+
+	virtual void LB_STDCALL printReferences(char* addr) = 0;        
         
         /**
          * The module manager is responsible for creating any instances, that are
