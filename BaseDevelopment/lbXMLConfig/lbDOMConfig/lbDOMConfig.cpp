@@ -37,11 +37,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.43 $
+ * $Revision: 1.44 $
  * $Name:  $
- * $Id: lbDOMConfig.cpp,v 1.43 2003/08/16 18:13:37 lollisoft Exp $
+ * $Id: lbDOMConfig.cpp,v 1.44 2003/08/22 17:31:54 lollisoft Exp $
  *
  * $Log: lbDOMConfig.cpp,v $
+ * Revision 1.44  2003/08/22 17:31:54  lollisoft
+ * removed unused code and debuging
+ *
  * Revision 1.43  2003/08/16 18:13:37  lollisoft
  * Added my new address due to move
  *
@@ -1980,9 +1983,7 @@ lbInterfaceRepository::lbInterfaceRepository() {
 /*...e*/
 	}
 
-printf("Calling parse()\n");
 	parse();
-printf("Called parse()\n");
 	_CL_LOG << "parse() called" LOG_
 }
 
@@ -2004,8 +2005,6 @@ void LB_STDCALL lbInterfaceRepository::setCurrentSearchInterface(const char* ifa
 
 /*...slb_I_FunctorEntity\42\ LB_STDCALL lbInterfaceRepository\58\\58\getFirstEntity\40\\41\:0:*/
 lb_I_FunctorEntity* LB_STDCALL lbInterfaceRepository::getFirstEntity() {
-	printf("lbInterfaceRepository::getFirstEntity() called\n");
-	
 	if (CurrentSearchMode == 0) {
 		printf("SearchMode not set. Please call first lbInterfaceRepository::setCurrentSearchInterface(char* iface)\nOr any further other setCurrentSearch<Mode>(char* argument) function\n");
 		return NULL;
@@ -2045,12 +2044,6 @@ lb_I_FunctorEntity* LB_STDCALL lbInterfaceRepository::getFirstEntity() {
 				
 		attributeMap = node.getAttributes();
 
-/*		if (attributeMap == NULL) {
-		        _CL_LOG << "Error: This node is not of type ELEMENT" LOG_
-
-		        return NULL;
-		}
-*/
 		DOM_Node an_attr = attributeMap.getNamedItem(DOMString("Name"));
 
 		if (an_attr == NULL) {
@@ -2061,12 +2054,9 @@ lb_I_FunctorEntity* LB_STDCALL lbInterfaceRepository::getFirstEntity() {
 		}
 /*...e*/
 			DOMString functorName = an_attr.getNodeValue();
-			functorName.println();
 
 			DOM_Node moduleNode = node.getParentNode().getParentNode().getParentNode();
 			nodeList = moduleNode.getChildNodes();
-			
-			moduleNode.getNodeName().println();
 			
 /*...sfind module for that functor:24:*/
 
