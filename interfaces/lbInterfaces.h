@@ -36,6 +36,7 @@
  *  lbConfigHook.h includes this file for you.
  */
 
+/*...sMain page documentation:0:*/
 /** \mainpage DMF - Version 0.4.1
  * \section intro_sec Introduction to DMF - Distributed Multiplatform Framework
  *
@@ -43,7 +44,7 @@
  * Here the post installation will be explained in short and other important things,
  * that have to do with installation and different usage as of databases.
  *
- * To start programming, you could start at the quickstart at the Start programming section below.
+ * To start programming, you could start \ref Quickstart "Here."
  *
  * Prerequirements:
  *
@@ -57,10 +58,10 @@
  * Other databases may be possible, but there is not yet a SQL script to setup the database.
  *
  * \ref Postsetup "Post setup instructions."
- *
- * \ref Quickstart "Start programming."
  */
+/*...e*/
 
+/*...sQuickstart page documentation:0:*/
 /** \page Quickstart Beginning programming in DMF environment.
  *
  * \section Introduction
@@ -74,8 +75,13 @@
  * We would use the console logging feature of DMF and a string class that will be loaded from
  * anywhere else using an interface.
  *
+ * At first, you will see the code:
+ * \ref FirstSample "Hello world."
+ *
  */
+/*...e*/
 
+/*...sPost setup documentation:0:*/
 /** \page Postsetup Post setup instructions.
  *
  * \section Introduction
@@ -171,6 +177,7 @@
  *	After successfull login you should be able to select an application. Choose lbDMF Manager.
  *
  */
+/*...e*/
 
 #ifdef _MSC_VER
 
