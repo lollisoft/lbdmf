@@ -386,15 +386,22 @@ Therefore I need an indicator, set by the user of this library to know, which on
 	for (int i = 1; i <= num; i++) {
 
 		// Create the instance ...
+		printf("Try to create a new lbBoundColumn instance.\n");
 		
 		lbBoundColumn* bc = new lbBoundColumn();
 		
+		printf("bc->setModuleManager(*&manager, __FILE__, __LINE__);\n");
+		
 		bc->setModuleManager(*&manager, __FILE__, __LINE__);
+		
 		printf("Bind column %d.\n", i);
+		
 		bc->bindColumn(q, i);
 		
-		integerKey->setData(i);
+		printf("Column has been bound.\n");		
 		
+		integerKey->setData(i);
+		printf("integerKey->setData(i);\n");
 		UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
 		UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
 
@@ -402,7 +409,7 @@ Therefore I need an indicator, set by the user of this library to know, which on
 		integerKey->queryInterface("lb_I_KeyBase", (void**) &key, __FILE__, __LINE__);		
 		
 		boundColumns->insert(&uk, &key);
-		
+		printf("Prepare column name mapping\n");
 /*...sGet the column name for this column and add an index to it\39\s column id\46\:16:*/
 
 		if (ColumnNameMapping == NULL) {
@@ -415,15 +422,24 @@ Therefore I need an indicator, set by the user of this library to know, which on
 		UAP(lb_I_String, string, __FILE__, __LINE__)
 
 		string = bc->getColumnName();
+		
+		printf("Create a key for the column\n");
+		
 		string->queryInterface("lb_I_KeyBase", (void**) &skey, __FILE__, __LINE__);
+		
+		printf("Have created it\n");
 		
 		UAP(lb_I_Unknown, ivalue, __FILE__, __LINE__)
 		
 		integerKey->queryInterface("lb_I_Unknown", (void**) &ivalue, __FILE__, __LINE__);
 		
+		if (ColumnNameMapping.getPtr() == NULL) printf("Error: NULL pointer at ColumnNameMapping detected\n");
+		if (ivalue.getPtr() == NULL) printf("Error: NULL pointer at ivalue detected\n");
+		if (skey.getPtr() == NULL) printf("Error: NULL pointer at skey detected\n");
+		
 		ColumnNameMapping->insert(&ivalue, &skey);
 /*...e*/
-		
+		printf("Inserted column name mapping\n");
 	}
 
 	return ERR_NONE;
@@ -1179,7 +1195,7 @@ lbErrCodes LB_STDCALL lbBoundColumn::bindColumn(lbQuery* q, int column) {
 	                                BufferLength, &NameLength, &DataType,
 	                                &ColumnSize, &DecimalDigits, &Nullable);
 
-	long cbBufferLength;
+	long cbBufferLength = 0; //(long*) malloc(sizeof(long));
 
 
 	if (colName == NULL) {
@@ -1195,32 +1211,21 @@ lbErrCodes LB_STDCALL lbBoundColumn::bindColumn(lbQuery* q, int column) {
 		case SQL_VARCHAR:
 		case SQL_LONGVARCHAR:
 /*...sbind a character array:24:*/
-			//        100    <      ?
-			if (BufferLength < ColumnSize) {
-				_CL_LOG << 
-				"Warning: BufferLength is smaller than ColumnSize. Data would be truncated." LOG_
-			}
+			buffer = malloc((ColumnSize+1)*rows);
 			
-			buffersize = (ColumnSize == 0) ? (BufferLength+1)*rows : (ColumnSize+1)*rows;
-			if (buffersize == 0) printf("Fatal: Calculated bufferzize is zero!!\n");
-			
-			static char staticBuffer[1000];
-			
-			buffer = &staticBuffer; //malloc(buffersize);
-			
-			printf("Buffer pointer is at %p with size %d\n", buffer, buffersize);
+			printf("Buffer pointer is at %p with size %d\n", buffer, (ColumnSize+1)*rows);
 			
 			
 			_DataType = DataType;
 			bound = 1;
 			((char*) buffer)[0] = 0;
 			
-			ret = SQLBindCol(hstmt, column, DataType, buffer, (ColumnSize == 0) ? 
-				(BufferLength+1) : (ColumnSize+1), &cbBufferLength);
+			ret = SQLBindCol(hstmt, column, DataType, buffer, (ColumnSize+1), &cbBufferLength);
 			
 			if (ret != SQL_SUCCESS) {
 				printf("Error while binding a column!\n");
 			}
+			printf("Buffer pointer for char array allocated and bound.\n");
 /*...e*/
 			break;
 /*...slater:16:*/
@@ -1233,22 +1238,19 @@ lbErrCodes LB_STDCALL lbBoundColumn::bindColumn(lbQuery* q, int column) {
 /*...e*/
 		case SQL_INTEGER:
 /*...sbind an integer:24:*/
-			//        100    <      ?
-			if (BufferLength < ColumnSize) {
-				_CL_LOG << "Warning: BufferLength is smaller than ColumnSize. Data would be truncated." LOG_
-			}
+			buffer = malloc((ColumnSize+1)*rows);
 			
-			buffer = malloc((ColumnSize == 0) ? BufferLength+1 : ColumnSize+1);
 			_DataType = DataType;
 			bound = 1;
 			memset(buffer, 0, sizeof(long));
 
-			SQLBindCol(hstmt, column, DataType, buffer, (ColumnSize == 0) ? BufferLength+1 : ColumnSize+1, &cbBufferLength);
+			SQLBindCol(hstmt, column, DataType, buffer, (ColumnSize+1), &cbBufferLength);
 			
 			if (ret != SQL_SUCCESS) {
 			        printf("Error while binding a column!\n");
 			}
 			
+			printf("Buffer pointer for integer allocated and bound.\n");
 /*...e*/
 			break;
 		default:
@@ -1480,7 +1482,7 @@ lbErrCodes LB_STDCALL lbDatabase::connect(char* DSN, char* user, char* passwd) {
         	SQLFreeEnv(henv);
         	return ERR_DB_CONNECT;
         } else {
-		SQLFreeEnv(henv);
+//		SQLFreeEnv(henv);
 		printf("Connection succeeded.\n");
         }
 
