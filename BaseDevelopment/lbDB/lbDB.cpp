@@ -442,19 +442,12 @@ Therefore I need an indicator, set by the user of this library to know, which on
 
 		// Create the instance ...
 		printf("Try to create a new lbBoundColumn instance.\n");
-		
 		lbBoundColumn* bc = new lbBoundColumn();
-		
 		printf("bc->setModuleManager(*&manager, __FILE__, __LINE__);\n");
-		
 		bc->setModuleManager(*&manager, __FILE__, __LINE__);
-		
 		printf("Bind column %d.\n", i);
-		
 		bc->bindColumn(q, i);
-		
 		printf("Column has been bound.\n");		
-		
 		integerKey->setData(i);
 		printf("integerKey->setData(i);\n");
 		UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
@@ -465,6 +458,7 @@ Therefore I need an indicator, set by the user of this library to know, which on
 		
 		boundColumns->insert(&uk, &key);
 		printf("Prepare column name mapping\n");
+		
 /*...sGet the column name for this column and add an index to it\39\s column id\46\:16:*/
 
 		if (ColumnNameMapping == NULL) {
@@ -867,6 +861,7 @@ lb_I_String* LB_STDCALL lbQuery::getAsString(int column) {
 }
 #endif
 /*...e*/
+//#define USE_FETCH_SCROLL
 /*...slbErrCodes LB_STDCALL lbQuery\58\\58\first\40\\41\:0:*/
 lbErrCodes LB_STDCALL lbQuery::first() {
         UWORD   RowStat[20];
@@ -875,9 +870,13 @@ lbErrCodes LB_STDCALL lbQuery::first() {
         // Indicate, that data must prebound to a buffer
         databound = 0;
 
-//        retcode = SQLExtendedFetch(hstmt, SQL_FETCH_FIRST, 0, &RowsFetched, RowStat);
+#ifndef USE_FETCH_SCROLL
+        retcode = SQLExtendedFetch(hstmt, SQL_FETCH_FIRST, 0, &RowsFetched, RowStat);
+#endif
 
+#ifdef USE_FETCH_SCROLL
 	retcode = SQLFetchScroll(hstmt, SQL_FETCH_FIRST, 0);
+#endif
 
         if (retcode == SQL_ERROR || retcode == SQL_SUCCESS_WITH_INFO) {
                 _LOG << "lbQuery::first(): Error while fetching next row" LOG_
@@ -889,8 +888,11 @@ lbErrCodes LB_STDCALL lbQuery::first() {
                 
                 return ERR_DB_FETCHFIRST;
         }
-        
-//        if (RowsFetched == 0) return ERR_DB_FETCHFIRST;
+
+
+#ifndef USE_FETCH_SCROLL        
+        if (RowsFetched == 0) return ERR_DB_FETCHFIRST;
+#endif
         
 	return ERR_NONE;
 }
@@ -903,9 +905,13 @@ lbErrCodes LB_STDCALL lbQuery::next() {
 	// Indicate, that data must prebound to a buffer
 	databound = 0;
 
-	//retcode = SQLExtendedFetch(hstmt, SQL_FETCH_NEXT, 0, &RowsFetched, RowStat);
+#ifndef USE_FETCH_SCROLL
+	retcode = SQLExtendedFetch(hstmt, SQL_FETCH_NEXT, 0, &RowsFetched, RowStat);
+#endif
 
+#ifdef USE_FETCH_SCROLL
 	retcode = SQLFetchScroll(hstmt, SQL_FETCH_NEXT, 0);
+#endif
 
 	if (retcode == SQL_ERROR || retcode == SQL_SUCCESS_WITH_INFO) {
 		_LOG << "lbQuery::next(): Error while fetching next row" LOG_
@@ -918,7 +924,9 @@ lbErrCodes LB_STDCALL lbQuery::next() {
 		return ERR_DB_NODATA;
         }
 
-//	if (RowsFetched == 0) return ERR_DB_NODATA;
+#ifndef USE_FETCH_SCROLL
+	if (RowsFetched == 0) return ERR_DB_NODATA;
+#endif
 
 	return ERR_NONE;
 }
@@ -930,10 +938,14 @@ lbErrCodes LB_STDCALL lbQuery::previous() {
 
         // Indicate, that data must prebound to a buffer
         databound = 0;
+        
+#ifndef USE_FETCH_SCROLL
+        retcode = SQLExtendedFetch(hstmt, SQL_FETCH_PREV, 0, &RowsFetched, RowStat);
+#endif
 
-        //retcode = SQLExtendedFetch(hstmt, SQL_FETCH_PREV, 0, &RowsFetched, RowStat);
-
+#ifdef USE_FETCH_SCROLL
 	retcode = SQLFetchScroll(hstmt, SQL_FETCH_PREV, 0);
+#endif
 
         if (retcode == SQL_ERROR || retcode == SQL_SUCCESS_WITH_INFO) {
                 _LOG << "lbQuery::previous(): Error while fetching next row" LOG_
@@ -945,8 +957,10 @@ lbErrCodes LB_STDCALL lbQuery::previous() {
 		
                 return ERR_DB_NODATA;
         }
-        
-//	if (RowsFetched == 0) return ERR_DB_NODATA;
+
+#ifndef USE_FETCH_SCROLL        
+	if (RowsFetched == 0) return ERR_DB_NODATA;
+#endif
         
 	return ERR_NONE;
 }
@@ -958,10 +972,14 @@ lbErrCodes LB_STDCALL lbQuery::last() {
 
         // Indicate, that data must prebound to a buffer
         databound = 0;
+        
+#ifndef USE_FETCH_SCROLL
+        retcode = SQLExtendedFetch(hstmt, SQL_FETCH_LAST, 0, &RowsFetched, RowStat);
+#endif
 
-        //retcode = SQLExtendedFetch(hstmt, SQL_FETCH_LAST, 0, &RowsFetched, RowStat);
-
+#ifdef USE_FETCH_SCROLL
 	retcode = SQLFetchScroll(hstmt, SQL_FETCH_LAST, 0);
+#endif
 
         if (retcode == SQL_ERROR || retcode == SQL_SUCCESS_WITH_INFO) {
                 _LOG << "lbQuery::last(): Error while fetching next row" LOG_
@@ -974,12 +992,16 @@ lbErrCodes LB_STDCALL lbQuery::last() {
 		
                 return ERR_DB_FETCHLAST;
         }
-        
-//        if (RowsFetched == 0) return ERR_DB_FETCHLAST;
+
+
+#ifndef USE_FETCH_SCROLL        
+        if (RowsFetched == 0) return ERR_DB_FETCHLAST;
+#endif
                       
 	return ERR_NONE;
 }
 /*...e*/
+
 /*...slbErrCodes LB_STDCALL lbQuery\58\\58\setString\40\lb_I_String\42\ columnName\44\ lb_I_String\42\ value\41\:0:*/
 lbErrCodes LB_STDCALL lbQuery::setString(lb_I_String* columnName, lb_I_String* value) {
 
@@ -1017,6 +1039,7 @@ lbErrCodes LB_STDCALL lbQuery::remove() {
 }
 /*...e*/
 /*...slbErrCodes LB_STDCALL lbQuery\58\\58\update\40\\41\:0:*/
+//#define USE_CURRENT_OF
 lbErrCodes LB_STDCALL lbQuery::update() {
 	lbErrCodes err = ERR_NONE;
 	#define cbMAXSQL    512
@@ -1027,7 +1050,8 @@ lbErrCodes LB_STDCALL lbQuery::update() {
 		// Insert the new record
 		SQLSetPos(hstmt, 2, SQL_ADD, SQL_LOCK_NO_CHANGE);
 	} else {
-//#ifdef bla
+#ifdef USE_CURRENT_OF
+/*...susing WHERE CURRENT OF \46\\46\\46\:0:*/
 		// Update the existing record
 
 		// Now I am able to begin the update statement
@@ -1102,7 +1126,7 @@ lbErrCodes LB_STDCALL lbQuery::update() {
 		
 printf("Query is: '%s'\n", buffer);
 
-		retcode = SQLExecDirect(hupdatestmt, (unsigned char *)buffer, SQL_NTS);
+		retcode = SQLExec(hupdatestmt, (unsigned char *)buffer, SQL_NTS);
 		if (retcode != SQL_SUCCESS)
 		{
 		        dbError( "SQLExecDirect() for update",henv,hdbc,hstmt);
@@ -1112,8 +1136,9 @@ printf("Query is: '%s'\n", buffer);
 
 free(buffer);
 
-//#endif
-/*
+/*...e*/
+#endif
+#ifndef USE_CURRENT_OF
 		retcode = SQLSetPos(hstmt, 1, SQL_UPDATE, SQL_LOCK_NO_CHANGE);
 		
 		if (retcode != SQL_SUCCESS)
@@ -1122,7 +1147,7 @@ free(buffer);
 		        _LOG << "lbQuery::update(...) failed." LOG_
 		        return ERR_DB_UPDATEFAILED;
 		}
-*/
+#endif
 	}
 
 
@@ -1182,6 +1207,9 @@ char* LB_STDCALL lbQuery::getTableName() {
 printf("Preendscan at %s\n", lpsz);
 
 // There may be a bug in the last lines and here I have my table...
+
+int i = 0;
+while (lpsz[i++] != ' ') i++;
 
 return strdup(lpsz); //!!!
 
@@ -1469,7 +1497,8 @@ lbErrCodes LB_STDCALL lbBoundColumn::bindColumn(lbQuery* q, int column) {
 	SQLSMALLINT     BufferLength = 500;
 	SQLSMALLINT     NameLength = 0;
 	SQLSMALLINT     DataType = 0;
-	SQLUINTEGER     ColumnSize = 0;
+	SQLUINTEGER     ColumnSize = 0; //new (long);
+	
 	SQLSMALLINT     DecimalDigits = 0;
 	SQLSMALLINT     Nullable = 0;
 /*...e*/
@@ -1488,7 +1517,6 @@ lbErrCodes LB_STDCALL lbBoundColumn::bindColumn(lbQuery* q, int column) {
 	       "Returned ColumnSize is %d\n"
 	       , ColumnName, BufferLength, ColumnSize);
 
-
 	REQUEST(manager.getPtr(), lb_I_String, colName)
 		
 	colName->setData((char*) ColumnName);
@@ -1500,21 +1528,18 @@ lbErrCodes LB_STDCALL lbBoundColumn::bindColumn(lbQuery* q, int column) {
 		case SQL_VARCHAR:
 		case SQL_LONGVARCHAR:
 /*...sbind a character array:24:*/
-			buffer = malloc((ColumnSize+1)*rows);
-			
+			buffer = malloc((BufferLength+1)*rows);
 			printf("Buffer pointer is at %p with size %d\n", buffer, (ColumnSize+1)*rows);
-			
 			
 			_DataType = DataType;
 			bound = 1;
-			((char*) buffer)[0] = 0;
+			memset(buffer, 0, (BufferLength+1)*rows);
 			
-			ret = SQLBindCol(hstmt, column, DataType, buffer, (ColumnSize+1), &cbBufferLength);
+			ret = SQLBindCol(hstmt, column, DataType, buffer, (BufferLength+1), &cbBufferLength);
 			
 			if (ret != SQL_SUCCESS) {
 				printf("Error while binding a column!\n");
 			}
-			printf("Buffer pointer for char array allocated and bound.\n");
 /*...e*/
 			break;
 /*...slater:16:*/
@@ -1527,19 +1552,17 @@ lbErrCodes LB_STDCALL lbBoundColumn::bindColumn(lbQuery* q, int column) {
 /*...e*/
 		case SQL_INTEGER:
 /*...sbind an integer:24:*/
-			buffer = malloc((ColumnSize+1)*rows);
+			buffer = malloc((sizeof(long))*rows);
 			
 			_DataType = DataType;
 			bound = 1;
-			memset(buffer, 0, sizeof(long));
+			memset(buffer, 0, sizeof(long)*rows);
 
-			SQLBindCol(hstmt, column, DataType, buffer, (ColumnSize+1), &cbBufferLength);
+			SQLBindCol(hstmt, column, DataType, buffer, sizeof(long), &cbBufferLength);
 			
 			if (ret != SQL_SUCCESS) {
 			        printf("Error while binding a column!\n");
 			}
-			
-			printf("Buffer pointer for integer allocated and bound.\n");
 /*...e*/
 			break;
 		default:
@@ -1937,10 +1960,10 @@ SQLFreeEnv(henv);
 /*...svoid dbError\40\ LPSTR lp\44\ HENV henv\44\HDBC hdbc\44\HSTMT hstmt\41\:0:*/
 void dbError( LPSTR lp, HENV henv,HDBC hdbc,HSTMT hstmt)
 {
-unsigned char buf[250];
+unsigned char buf[1000];
 unsigned char sqlstate[15];
 
-SQLError( henv, hdbc, hstmt, sqlstate, NULL,buf, sizeof(buf), NULL);
+SQLError( henv, hdbc, hstmt, sqlstate, NULL, buf, sizeof(buf), NULL);
 fprintf(stderr, "%s. %s, SQLSTATE=%s\n",lp, buf, sqlstate);
 }
 /*...e*/
