@@ -1,8 +1,14 @@
 /*...sBaseDevelopment:0:*/
+/*...v\46\\46\\47\\46\\46\\47\\46\\46\\47\tools\47\watcom\47\h\47\nt\47\windef\46\h:0:*/
+/*...v\46\\46\\47\\46\\46\\47\\46\\46\\47\tools\47\watcom\47\h\47\nt\47\winbase\46\h:0:*/
+/*...v\46\\46\\47\\46\\46\\47\\46\\46\\47\tools\47\watcom\47\h\47\nt\47\windows\46\h:0:*/
+
 /*...v\46\\46\\47\include\47\lbInclude\46\h:0:*/
 /*...v\46\\46\\47\include\47\lbGlobal\46\h:0:*/
 /*...v\46\\46\\47\include\47\lbErrcodes\46\h:0:*/
+
 /*...v\46\\46\\47\include\47\lbConfigHook\46\h:0:*/
+/*...vlbHook\47\lbHook\46\cpp:0:*/
 
 /*...v\46\\46\\47\interfaces\47\lbInterfaces\46\h:0:*/
 /*...v\46\\46\\47\interfaces\47\lbInterfaces\45\sub\45\transfer\46\h:0:*/
@@ -35,6 +41,10 @@
 /*...e*/
 
 /*...e*/
+/*...slbModule:0:*/
+/*...vlbModule\47\lbModule\46\h:0:*/
+/*...vlbModule\47\lbModule\46\cpp:0:*/
+/*...e*/
 
 /*...slbMetaApplication:0:*/
 /*...vlbMetaApplication\47\lbMetaApplication\46\h:0:*/
@@ -50,8 +60,6 @@
 
 /*...e*/
 /*...slbClasses:0:*/
-/*...vlbclasses\47\lbelement\46\h:0:*/
-
 /*...vlbclasses\47\lb_misc\46\h:0:*/
 /*...vlbclasses\47\misc\46\cpp:0:*/
 /*...vlbclasses\47\lbObject\46\h:0:*/
@@ -78,10 +86,6 @@
 
 /*...e*/
 
-/*...slbModule:0:*/
-/*...vlbModule\47\lbModule\46\h:0:*/
-/*...vlbModule\47\lbModule\46\cpp:0:*/
-/*...e*/
 
 
 /*...sGUI Interface:0:*/
@@ -91,7 +95,6 @@
 /*...vlbwxgui\47\lb_I_wxGUI\46\h:0:*/
 /*...vlbwxgui\47\lb_I_wxGUI\46\cpp:0:*/
 /*...e*/
-
 
 /*...e*/
 /*...sAppDevelopment:0:*/
@@ -108,6 +111,16 @@
 /*...sServiceDevelopment:0:*/
 /*...e*/
 
+/*...sMy old code:0:*/
+/*...smailslot:0:*/
+/*...v\46\\46\\47\User\47\mylibs\47\mailslot\47\src\47\mailslot\46\h:0:*/
+/*...v\46\\46\\47\User\47\mylibs\47\mailslot\47\src\47\mailslot\46\cpp:0:*/
+/*...v\46\\46\\47\User\47\mylibs\47\mailslot\47\src\47\makefile:0:*/
+/*...v\46\\46\\47\User\47\mylibs\47\mailslot\47\src\47\linux\45\gnu\47\makefile:0:*/
+
+
+/*...e*/
+/*...e*/
 
 /*...swxWindows:0:*/
 /*...v\46\\46\\47\\46\\46\\47\\46\\46\\47\wxwin\47\wx\47\include\47\wx\47\event\46\h:0:*/
@@ -134,11 +147,13 @@
 /*...ve\58\\47\develop\47\projects\47\lolli\46\prj:0:*/
 /*...vE\58\\92\develop\92\projects\92\lothar\92\XML\92\SalesOrder1\92\lbHostCfg\92\XMLHostCfgHandlers\46\cpp:0:*/
 
-
-
-
-
 /*...sPowWow Deutschland GmbH:0:*/
 /*...ve\58\\92\powwow\92\projects\92\exakt\92\exact\46\aut:0:*/
-/*...vH\58\\92\Lothar\92\exakt\92\export\92\exact\46\aut:0:*/
+/*...ve\58\\92\powwow\92\projects\92\waterboy\45\SQL\92\waterboy\45\07\45\02\45\2001\46\sql:0:*/
+/*...ve\58\\92\powwow\92\projects\92\waterboy\45\SQL\92\SQLAbfragen\92\abfrage\46\sql:0:*/
 /*...e*/
+
+
+
+/*...vG\58\\92\powwow\92\projects\92\migration\92\erstelle\45\serviceliste\92\Waterboy\45\Karte\46\csv\46\txt:0:*/
+/*...vd\58\\92\export\45\29\45\03\45\2001\92\Artikel\45\Karte\46\csv:0:*/

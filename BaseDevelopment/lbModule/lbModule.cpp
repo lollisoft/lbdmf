@@ -10,6 +10,7 @@
 #include <lbModule.h>
 #include <lbXMLConfig.h>
 #include <lbConfigHook.h>
+#include <lbKey.h>
 /*...e*/
 
 /*...slb_I_XMLConfig\42\ getXMLConfigObject\40\\41\:0:*/
@@ -67,42 +68,50 @@ lbErrCodes lb_gcManager::toTrash(lb_I_Unknown* inst) {
         return ERR_NONE;
 }
 /*...e*/
+#ifdef bla
+/*...slbStringKey:0:*/
+lbStringKey::lbStringKey(const char* _key) {
+    key = strdup(_key);
+}
+
+lbStringKey::lbStringKey(const lb_I_KeyBase* k) {
+    key = strdup(((lbStringKey*) k)->key);
+}
+
+
+lbStringKey::~lbStringKey(){
+}
+
+int lbStringKey::equals(const lb_I_KeyBase* _key) const {
+    return (strcmp(key, ((const lbStringKey*) _key)->key) == 0);
+}
+
+int lbStringKey::greater(const lb_I_KeyBase* _key) const {
+    return (strcmp(key, ((const lbStringKey*) _key)->key) > 0);
+}
+
+lb_I_KeyBase* lbStringKey::clone() const {
+    lbStringKey *k = new lbStringKey(key);
+    return k;
+}
+
+char* lbStringKey::charrep() {
+    return key;
+}
+/*...e*/
+#endif
 
 lb_gcManager gcManager;
 
-/*...slbErrCodes lbModule\58\\58\release\40\\41\:0:*/
-lbErrCodes lbModule::release() {
-        ref--;
+/*...slbModule:0:*/
+BEGIN_IMPLEMENT_LB_UNKNOWN(lbModule)
+	ADD_INTERFACE(lb_I_Module)
+END_IMPLEMENT_LB_UNKNOWN()
 
-        if (ref == STARTREF) delete this;
-        
-        return ERR_NONE;
+lbErrCodes lbModule::setData(lb_I_Unknown* uk) {
+	CL_LOG("lbModule::setData(...) not implemented");
+	return ERR_NONE;
 }
-/*...e*/
-/*...slbErrCodes lbModule\58\\58\queryInterface\40\\46\\46\\46\\41\:0:*/
-lbErrCodes lbModule::queryInterface(char* name, void** unknown) {
-
-        /**
-         * Lookup the interface name and then call the registered
-         * functor for this interface.
-         */
-
-        if (strcmp(name, "lb_I_Module") == 0) {
-                ref++;
-                *unknown = (lb_I_Module*) this;
-                return ERR_NONE;
-        }
-        
-        if (strcmp(name, "lb_I_Unknown") == 0) {
-                ref++;
-                lb_I_Unknown* const pUnknown = this;
-                *unknown = pUnknown;
-                return ERR_NONE;
-        }
-
-        return ERR_NO_INTERFACE;
-}
-/*...e*/
 
 lbErrCodes lbModule::initialize() {
         return ERR_NONE;
@@ -317,11 +326,206 @@ char* lbModule::findFunctorName(lb_I_ConfigObject* node) {
 	return "NULL";
 }
 /*...e*/
+/*...e*/
 
+/*...sclass lbNamedValue:0:*/
+class lbNamedValue :	public lb_I_Unknown {
+public:
+	lbNamedValue() {
+		name = strdup("");
+	}
+	
+	virtual ~lbNamedValue() {
+		delete[] name;
+	}
+
+	DECLARE_LB_UNKNOWN()
+
+	lbErrCodes getName(char* & _name);
+	lbErrCodes setName(const char* const _name);
+	
+	/**
+	 * This is a one value container. Objects in a container are copies of inserted
+	 * ones. This prevents manipulation of an object outside of the container.
+	 *
+	 * A modification must explicidly set into the container via the set function.
+	 */
+	lbErrCodes setValue(lb_I_Unknown* _value);
+	lbErrCodes getValue(lb_I_Unknown* & _value);
+	
+	char*         name;
+	lb_I_Unknown* uk_value;
+};
+/*...e*/
+/*...sclass lbContainer:0:*/
+class lbModuleContainer : 	public lb_I_Container
+{
+
+public:
+    lbModuleContainer(const lb_I_Container* c);
+    lb_I_Container* operator= (const lb_I_Container* c);
+
+public:
+
+    lbModuleContainer();
+    virtual ~lbModuleContainer();
+
+    DECLARE_LB_UNKNOWN()
+
+// This may be a string container
+
+    DECLARE_LB_I_CONTAINER_IMPL()
+
+};
+/*...e*/
+/*...sclass lbElement:0:*/
+class DLLEXPORT lbElement : public lb_I_Element {
+private:
+
+    lb_I_Element* next;
+    lb_I_Unknown* data;
+    lb_I_KeyBase* key;
+
+public:
+    lbElement() { next = NULL; data = NULL; key = NULL; }
+    virtual ~lbElement();
+	
+//    lbElement(const lb_I_Object &o, const lb_I_KeyBase &_key, lb_I_Element *_next=NULL);
+    lbElement(const lb_I_Element &e) { next = e.getNext(); }
+
+    DECLARE_LB_UNKNOWN()
+
+    DECLARE_LB_ELEMENT(lbElement)
+
+    lb_I_Element* getNext() const { return next; }
+    void setNext(lb_I_Element *e){ next = e; }
+    lb_I_Unknown* getObject() const;
+
+//    lbKeyBase &getKey() const { return *key; }
+    lb_I_KeyBase *getKey() const
+    {
+        if (!key) printf("Key in lbElement is null\n");
+        return key;
+    }
+
+    int operator == (const lb_I_Element &a) const;
+
+    int operator == (const lb_I_KeyBase &key) const;
+
+};
+/*...e*/
+
+BEGIN_IMPLEMENT_LB_UNKNOWN(lbModuleContainer)
+	ADD_INTERFACE(lb_I_Container)
+END_IMPLEMENT_LB_UNKNOWN()
+
+IMPLEMENT_LB_I_CONTAINER_IMPL(lbModuleContainer)
+
+
+BEGIN_IMPLEMENT_LB_UNKNOWN(lbElement)
+        ADD_INTERFACE(lb_I_Element)
+END_IMPLEMENT_LB_UNKNOWN()
+
+IMPLEMENT_LB_ELEMENT(lbElement)
+
+lbErrCodes LB_STDCALL lbElement::setData(lb_I_Unknown* data) {
+	return ERR_NONE;
+}
+
+int LB_STDCALL lbElement::equals(const lb_I_Element* a) const {
+	return 0;
+}
+
+int LB_STDCALL lbElement::equals(const lb_I_KeyBase* key) const {
+	return 0;
+}
+
+
+BEGIN_IMPLEMENT_LB_UNKNOWN(lbNamedValue)
+// No additionally interface, because it's not used externally yet.
+END_IMPLEMENT_LB_UNKNOWN()
+
+/*...slbNamedValue\58\\58\setData\40\\41\:0:*/
+lbErrCodes lbNamedValue::setData(lb_I_Unknown* uk) {
+	CL_LOG("lbNamedValue::setData(...) not implemented");
+	return ERR_NONE;
+}
+/*...e*/
+/*...slbNamedValue\58\\58\setName\40\\41\:0:*/
+lbErrCodes lbNamedValue::setName(const char* const _name) {
+	name = strdup((_name == NULL) ? "" : _name);
+	return ERR_NONE;
+}
+/*...e*/
+/*...slbNamedValue\58\\58\getName\40\\41\:0:*/
+lbErrCodes lbNamedValue::getName(char* & _name) {
+	_name = strdup(name);
+	return ERR_NONE;
+}
+/*...e*/
+/*...slbNamedValue\58\\58\setValue\40\\41\:0:*/
+lbErrCodes lbNamedValue::setValue(lb_I_Unknown* _value) {
+	if (uk_value != NULL) uk_value->release();
+	
+	// clone() set's the ref counter to 1, so a release above deletes the object.
+	uk_value = _value->clone();
+	return ERR_NONE;
+}
+/*...e*/
+/*...slbNamedValue\58\\58\getValue\40\\41\:0:*/
+lbErrCodes lbNamedValue::getValue(lb_I_Unknown* & _value) {
+	_value = uk_value->clone();
+	
+	return ERR_NONE;
+}
+/*...e*/
+
+lbNamedValue* namedValue = NULL;
+lb_I_Container* moduleList = NULL;
+
+/*...sDocu for Module management:0:*/
+/**
+ * lbModule is a manager for creating instances of interfaces, regartless where
+ * it came from. lbModule must be responsible for the following tasks:
+ *
+ * Knowing of loaded modules,
+ * loading new modules,
+ * releasing a module, if no more instances from there are in use.
+ *
+ *
+ * So these functions may be declared for that issues:
+ *
+ * protected:
+ * // Handle is managed internally
+ * lbErrCodes lbModule::loadModule(const char* modulename);
+ *
+ * // Not the handle is needed. A module can only loaded once in a process.
+ * lbErrCodes lbModule::unloadModule(const char* modulename);	
+ *
+ *
+ * A general problem here is, that a bootstraping of some base instances must be
+ * made. For the module management I need a container instance. For this problem,
+ * It may be usefull to implement simple classes for that interfaces.
+ *
+ *
+ *
+ */
+/*...e*/
 
 /*...slbModule\58\\58\request\40\\46\\46\\46\\41\:0:*/
+/**
+ * The requestable interface simply return result of 'spoken' requests.
+ * The 'spoken' request may be only one word or it may a sentence.
+ *
+ * A possible request may like this:
+ *	get instance from interface '<parameter>'
+ *
+ * With this, a requestable object may be instructable by a simple script
+ * language.
+ */
 lbErrCodes lbModule::request(const char* request, lb_I_Unknown*& result) {
         lb_I_XMLConfig* xml_Instance = NULL;
+        lbErrCodes err = ERR_NONE;
 
         xml_Instance = getXMLConfigObject();
         
@@ -355,6 +559,9 @@ lbErrCodes lbModule::request(const char* request, lb_I_Unknown*& result) {
 			 */
 			
 			xml_Instance->getConfigObject(config, node);
+
+CL_LOG("Got a config object");
+getch();
 			
 			lb_I_ConfigObject* functorNode = findFunctorNode(config, request);
 			
@@ -376,9 +583,36 @@ lbErrCodes lbModule::request(const char* request, lb_I_Unknown*& result) {
 			
 			/**
 			 * Now I should have all my information, create the instance.
+			 *
+			 * The basic question here is: What must be stored as information
+			 * for a newly created interface.
+			 *
+			 * The Module, where it is loaded from, the interface itself ?
+			 * 
+			 * How to unload ?
+			 *
+			 * Currently all instances, used, are unloaded (released) by their
+			 * user. The user only is responsible for releasing it's instances.
+			 *
+			 * The lb_I_Unknown interface is responsible for informing the module -
+			 * manager, that it's instance will be released.
+			 *
+			 * How to count used instances ?
 			 */
 			 
+			// Check, if module is already loaded 
 			 
+//			lbStringKey* key = new lbStringKey(moduleName);
+
+CL_LOG("Begin loading module");
+			 
+			if ((err = lbLoadModule(moduleName, ModuleHandle)) != ERR_NONE) {
+				// report error if still loaded
+				
+				// return error if loading is impossible
+			}
+CL_LOG("End loading module");			
+			
 			
 		} else {
 			cout << "Something goes wrong!" << endl;

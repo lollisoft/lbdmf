@@ -44,7 +44,7 @@ public:
 	 * In a view of search result may be more than one parent available.
 	 */
 /*...e*/
-	virtual lbErrCodes LB_STDCALL getParent(lb_I_ConfigObject*& parent) = 0;
+	virtual lbErrCodes LB_STDCALL getParent(lb_I_ConfigObject*& _parent) = 0;
 /*...sdoc:8:*/
 	/**
 	 * A config object may be only a view. So the internal childrens may

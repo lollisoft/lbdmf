@@ -17,7 +17,7 @@
 /*...e*/
 
 
-#include <windows.h>
+//#include <windows.h>
 
 // Global definitions like GUITypes and so on
 #include <lbGlobal.h>

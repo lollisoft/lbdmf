@@ -1,11 +1,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.5 $
+ * $Revision: 1.6 $
  * $Name:  $
- * $Id: lbErrcodes.h,v 1.5 2001/02/06 20:38:16 lothar Exp $
+ * $Id: lbErrcodes.h,v 1.6 2001/03/30 20:08:05 lothar Exp $
  *
  * $Log: lbErrcodes.h,v $
+ * Revision 1.6  2001/03/30 20:08:05  lothar
+ * Commit due to possible head crash on anakin (Linux)
+ *
  * Revision 1.5  2001/02/06 20:38:16  lothar
  * Commit for backup the data
  *
@@ -77,6 +80,9 @@ enum lbErrCodes {
 /* Errcodes for container */
 	ERR_CONTAINER_INSERT,
 	ERR_CONTAINER_REMOVE,
+	
+/* Errcodes for threads */	
+	LB_THREAD_ERROR,
 
 	ERR_APP_SERVER_DISPATCH,	// Unknown protocol header
 	ERR_APP_SERVER_HANDLECONNECT,

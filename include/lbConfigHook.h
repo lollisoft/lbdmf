@@ -1,43 +1,26 @@
-#ifndef __LB_CONFIG_HOOK__
-#define __LB_CONFIG_HOOK__
-
-#include <windows.h>
+//#include <windows.h>
 #include <stdlib.h>
 #include <conio.h>
 #include <stdio.h>
-
-
-HINSTANCE ModuleHandle = NULL;
-HINSTANCE LB_Module_Handle = NULL;
+#include <iostream.h>
 
 #include <lbInterfaces.h>
 
+#ifndef __LB_CONFIG_HOOK__
+#define __LB_CONFIG_HOOK__
+
+extern HINSTANCE ModuleHandle;
+extern HINSTANCE LB_Module_Handle;
 
 
 /**
  * Platform independend module loader
  */
 /*...slbErrCodes lbLoadModule\40\const char\42\ name\44\ HINSTANCE \38\ hinst\41\:0:*/
-lbErrCodes lbLoadModule(const char* name, HINSTANCE & hinst) {
-        if ((hinst = LoadLibrary(name)) == NULL)
-        {
-            printf("Kann DLL '%s.dll' nicht laden.\n", name); 
-            getch(); 
-            return ERR_MODULE_NOT_FOUND;
-        }
-        return ERR_NONE;
-}
+lbErrCodes lbLoadModule(const char* name, HINSTANCE & hinst);
 /*...e*/
 /*...slbErrCodes lbGetFunctionPtr\40\const char\42\ name\44\ const HINSTANCE \38\ hinst\44\ void\42\\42\ pfn\41\:0:*/
-lbErrCodes lbGetFunctionPtr(const char* name, const HINSTANCE & hinst, void** pfn) {
-        if ((*pfn = (void*) GetProcAddress(hinst, name)) == NULL)
-        {
-            printf("Kann Funktion '%s' nicht finden.\n", name); 
-            getch(); 
-            return ERR_FUNCTION_NOT_FOUND;
-        }
-        return ERR_NONE;
-}
+lbErrCodes lbGetFunctionPtr(const char* name, const HINSTANCE & hinst, void** pfn);
 /*...e*/
 
 
@@ -47,82 +30,54 @@ lbErrCodes lbGetFunctionPtr(const char* name, const HINSTANCE & hinst, void** pf
  */
 
 /*...slb_I_Module\42\ getModuleInstance\40\\41\:0:*/
-lb_I_Module* getModuleInstance() {
-typedef lbErrCodes (* __cdecl T_p_getlbModuleInstance) (lb_I_Module*&);
-T_p_getlbModuleInstance DLL_GETMODULEINSTANCE;
-
-	lb_I_Module* module = NULL;
-
-	char* libname = getenv("MODULELIB");
-	char* functor = getenv("LBMODULEFUNCTOR");
-
-	if (LB_Module_Handle == NULL) {
-		if (lbLoadModule(libname, LB_Module_Handle) != ERR_NONE) {
-			exit(1);
-		}
-	}
-	
-	if (lbGetFunctionPtr(functor, LB_Module_Handle, (void**) &DLL_GETMODULEINSTANCE) != ERR_NONE) {
-		exit(1);
-	}
-	
-	DLL_GETMODULEINSTANCE(module);
-	
-	return module;
-}
+lb_I_Module* getModuleInstance();
 /*...e*/
 /*...slbErrCodes releaseInstance\40\lb_I_Unknown\42\ inst\41\:0:*/
-lbErrCodes releaseInstance(lb_I_Unknown* inst) {
-	typedef lbErrCodes (* __cdecl T_p_releaseInstance) (lb_I_Unknown*);
-	T_p_releaseInstance DLL_RELEASEINSTANCE;
-	
-	if (lbGetFunctionPtr("_lb_releaseInstance", LB_Module_Handle, (void**) &DLL_RELEASEINSTANCE) != ERR_NONE) {
-		exit(1);
-	}
-	
-	DLL_RELEASEINSTANCE(inst);
-	
-	return ERR_NONE;
-}
+lbErrCodes releaseInstance(lb_I_Unknown* inst);
 /*...e*/
 /*...svoid unHookAll\40\\41\:0:*/
-void unHookAll() {
-	if (ModuleHandle != NULL) FreeLibrary(ModuleHandle);
-	if (LB_Module_Handle != NULL) FreeLibrary(LB_Module_Handle);
-}
+void unHookAll();
 /*...e*/
 
 /*...sLogging macros:0:*/
-lb_I_Log *log = NULL;
-int isInitializing = 0;
+extern lb_I_Log *log;
+extern int isInitializing;
 
+#define CL_LOG(msg) \
+	cout << "File: " << __FILE__ << ", Line: " << __LINE__ << ", Msg: " << msg << endl;
+	
 /*...sGET_LOG_INSTANCE:0:*/
 #define GET_LOG_INSTANCE \
 			if (log == NULL) { \
 				isInitializing = 1; \
-				cout << "Getting a log instance..." << endl; \
+				CL_LOG("Getting a log instance..."); \
 				lb_I_Module* modMan = getModuleInstance(); \
 				getch(); \
 				\
 				if (modMan != NULL) { \
 					lb_I_Unknown *Unknown = NULL; \
-					modMan->request("instanceOfLogger", Unknown); \
+					lbErrCodes err = modMan->request("instanceOfLogger", Unknown); \
+					\
+					CL_LOG("Module manager was requested for 'instanceOfLogger"); \
+					getch(); \
 					\
 					if (Unknown != NULL) { \
 						Unknown->queryInterface("lb_I_Log", (void**) &log); \
 						if (log == NULL) { \
-							cout << "Unknown object has no interface for lb_I_Log" << endl; \
+							CL_LOG("Unknown object has no interface for lb_I_Log"); \
 							getch(); \
 							exit (1); \
 						} \
-						cout << "Now have a log instance" << endl; \
+						CL_LOG("Now have a log instance"); \
 					} else { \
-						cout << "Instance could not be created" << endl; \
+						char buf[100] = ""; \
+						sprintf(buf, "%s %d %s", "Instance could not be created, errcode is ", err, "."); \
+						CL_LOG(buf); \
 						getch(); \
 						exit(1); \
 					} \
 				} else { \
-					cout << "Module manager could not be created" << endl; \
+					CL_LOG("Module manager could not be created"); \
 					getch(); \
 					exit(1); \
 				} \
@@ -130,9 +85,7 @@ int isInitializing = 0;
 			isInitializing = 0;
 /*...e*/
 
-#define CL_LOG(msg) \
-	cout << "File: " << __FILE__ << ", Line: " << __LINE__ << ", Msg: " << msg << endl;
-
+/*...sLOG:0:*/
 #define LOG(msg)	\
 			if (isInitializing != 0) { \
 				cout << "Tried to log while initializing the logger." << \
@@ -143,6 +96,8 @@ int isInitializing = 0;
 				log->log(msg, __LINE__, __FILE__); \
 				cout << "Logged." << endl; \
 			}
+/*...e*/
+/*...sLOGENABLE:0:*/
 #define LOGENABLE       \
 			if (isInitializing != 0) { \
 				cout << "Tried to log while initializing the logger." << endl; \
@@ -150,6 +105,8 @@ int isInitializing = 0;
 				GET_LOG_INSTANCE \
 				log->enable(); \
 			}
+/*...e*/
+/*...sLOGDISABLE:0:*/
 #define LOGDISABLE      \
 			if (isInitializing != 0) { \
 				cout << "Tried to log while initializing the logger." << endl; \
@@ -157,6 +114,8 @@ int isInitializing = 0;
 				GET_LOG_INSTANCE \
 				log->disable(); \
 			}
+/*...e*/
+/*...sLOGSTART:0:*/
 #define LOGSTART        \
 			if (isInitializing != 0) { \
 				cout << "Tried to log while initializing the logger." << endl; \
@@ -164,6 +123,8 @@ int isInitializing = 0;
 				GET_LOG_INSTANCE \
 				log->event_begin(); \
 			}
+/*...e*/
+/*...sLOGEND:0:*/
 #define LOGEND          \
 			if (isInitializing != 0) { \
 				cout << "Tried to log while initializing the logger." << endl; \
@@ -171,6 +132,8 @@ int isInitializing = 0;
 				GET_LOG_INSTANCE \
 				log->event_end(); \
 			}
+/*...e*/
+/*...sLOGPREFIX:0:*/
 #define LOGPREFIX(a)    \
 			if (isInitializing != 0) { \
 				cout << "Tried to log while initializing the logger." << endl; \
@@ -178,6 +141,7 @@ int isInitializing = 0;
 				GET_LOG_INSTANCE \
 				log->setPrefix(a); \
 			}
+/*...e*/
 /*...e*/
 
 #endif // __LB_CONFIG_HOOK__

@@ -23,7 +23,9 @@ copy $(%DEVROOT)\projects\cpp\basedevelopment\lbtransfer\*.h $(%DEVROOT)\project
 
 5
 MCommand
-0
+37
+copy *.dll $(%DEVROOT)\projects\dll
+
 6
 MItem
 14

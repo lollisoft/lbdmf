@@ -9,14 +9,20 @@
 <!--...sModules:2:-->
   <Modules>
     <Module>
-<!--...sModuleName:8:-->
+<!--...sModuleName lbclasses:8:-->
       <ModuleName Name="lbclasses"/>
 <!--...e-->
 <!--...sFunctions:8:-->
       <Functions>
-<!--...sFunction:16:-->
+<!--...sFunction instanceOfLogger:16:-->
         <Function>
            <FunctionName Name="instanceOfLogger"/>
+           <Functor/>
+        </Function>
+<!--...e-->
+<!--...sFunction instanceOf_lb_I_Container:16:-->
+        <Function>
+           <FunctionName Name="instanceOf_lb_I_Container"/>
            <Functor/>
         </Function>
 <!--...e-->

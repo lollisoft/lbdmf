@@ -35,10 +35,9 @@ public:
         virtual ~lbModule() {
                 if (ref != STARTREF) cout << "Error: Reference count mismatch" << endl;
         }
-        
-        virtual lbErrCodes release();
-        virtual lbErrCodes queryInterface(char* name, void** unknown);
-        
+
+	DECLARE_LB_UNKNOWN()
+
         virtual lbErrCodes initialize();
         virtual lbErrCodes request(const char* request, lb_I_Unknown*& result);
         virtual lbErrCodes uninitialize();
@@ -55,7 +54,6 @@ protected:
 		char* findFunctorModule(lb_I_ConfigObject* node);
 		char* findFunctorName(lb_I_ConfigObject* node);
 	
-        int ref;
 };
 /*...e*/
 

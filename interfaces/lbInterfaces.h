@@ -37,7 +37,9 @@ typedef unsigned short u_short;
 typedef unsigned short byte;
 typedef unsigned short u_short;
 #endif
-typedef byte LB_DATA;
+
+typedef unsigned short LB_DATA;
+typedef unsigned short u_short;
 /*...e*/
 #endif // __BASE_TYPES_DEFINED__
 
@@ -62,6 +64,9 @@ typedef lbErrCodes (lb_I_CallbackTarget::*lbMemberCallback)( const char* handler
  
 class lb_I_gcManager;
  
+
+	/* setData must check the type of this ! */
+	/* = may also be possible */
 /*...sclass lb_I_Unknown:0:*/
 #define STARTREF 0
 
@@ -73,6 +78,14 @@ public:
 	virtual lbErrCodes LB_STDCALL release() = 0;
 	
 	virtual lbErrCodes LB_STDCALL queryInterface(char* name, void** unknown) = 0;
+        
+        /**
+         * This was used yet for put an object in a container. After inserting the object
+         * into the container, there are two instances (not two references).
+         * So the cloning is generaly a good way to make copies of an object.
+         */
+        virtual lb_I_Unknown* LB_STDCALL clone() const = 0;
+        virtual lbErrCodes LB_STDCALL setData(lb_I_Unknown* u) = 0;
 
 //friend class lb_I_gcManager;	
 };
@@ -82,7 +95,9 @@ private: \
 	int ref; \
 public: \
 	virtual lbErrCodes LB_STDCALL release(); \
-	virtual lbErrCodes LB_STDCALL queryInterface(char* name, void** unknown); 
+	virtual lbErrCodes LB_STDCALL queryInterface(char* name, void** unknown); \
+	virtual lb_I_Unknown* LB_STDCALL clone() const; \
+	virtual lbErrCodes LB_STDCALL setData(lb_I_Unknown* u);
 
 #define BEGIN_IMPLEMENT_LB_UNKNOWN(classname) \
 lbErrCodes LB_STDCALL classname::release() { \
@@ -91,13 +106,29 @@ lbErrCodes LB_STDCALL classname::release() { \
         return ERR_NONE; \
 } \
 \
+lb_I_Unknown* classname::clone() const { \
+\
+	classname* cloned = new classname(); \
+	lb_I_Unknown* uk_this; \
+\
+	lb_I_Unknown* uk_cloned = NULL; \
+\
+	if (cloned->queryInterface("lb_I_Unknown", (void**) &uk_cloned) != ERR_NONE) { \
+		CL_LOG("Error while getting interface"); \
+	} \
+\
+	uk_cloned->setData((lb_I_Unknown*) this); \
+\
+	return uk_cloned; \
+\
+} \
+\
 lbErrCodes LB_STDCALL classname::queryInterface(char* name, void** unknown) { \
         if (strcmp(name, "lb_I_Unknown") == 0) { \
                 ref++; \
                 *unknown = (lb_I_Unknown*) this; \
                 return ERR_NONE; \
-        } \
-// At this point, other interfaces must be placed via defines or coded by hand.
+        }
 
 #define ADD_INTERFACE(interfaceName) \
         if (strcmp(name, #interfaceName) == 0) { \
@@ -106,7 +137,10 @@ lbErrCodes LB_STDCALL classname::queryInterface(char* name, void** unknown) { \
                 return ERR_NONE; \
         }
 
-#define END_IMPLEMENT_LB_UNKNOWN() }
+#define END_IMPLEMENT_LB_UNKNOWN() \
+	return ERR_NONE; \
+}
+
 /*...e*/
 /*...sclass lb_I_gcManager:0:*/
 class lb_I_gcManager {

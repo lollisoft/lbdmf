@@ -175,8 +175,6 @@ virtual lb_I_KeyBase* LB_STDCALL getKey() const;
 
 #define IMPLEMENT_LB_ELEMENT(classname) \
 \
-lbCritSect elementSection; \
-\
 classname::classname(const lb_I_Unknown* o, const lb_I_KeyBase* _key, lb_I_Element *_next) { \
     next = _next; \
     lb_I_Unknown *uk_data = o->clone(); \
@@ -253,7 +251,6 @@ protected: \
 /*...e*/
 /*...sDECLARE_LB_I_CONTAINER_IMPL \40\\41\:0:*/
 #define DECLARE_LB_I_CONTAINER_IMPL() \
-	virtual lb_I_Unknown* LB_STDCALL nextObject(); \
 	virtual int LB_STDCALL hasMoreElements(); \
 	virtual int LB_STDCALL exists(const lb_I_KeyBase* e); \
 	virtual int LB_STDCALL Count(); \
@@ -409,6 +406,12 @@ void LB_STDCALL classname::deleteAll() { \
 \
 	LOG(#classname"::deleteAll() has not been implemented"); \
 \
+} \
+\
+int classname::exists(const lb_I_KeyBase* key) { \
+    LOG(#classname"::deleteAll() has not been implemented completly"); \
+    if (getElement(key) == NULL) return 0; \
+    return 1; \
 } \
 \
 lbErrCodes classname::insert(const lb_I_Unknown* e, const lb_I_KeyBase* key) { \
@@ -589,7 +592,7 @@ public:
 };
 /*...e*/
 
-
+/*...sclass lb_I_Thread:0:*/
 class lb_I_Thread : public lb_I_Unknown {
 protected:
 	lb_I_Thread() {}
@@ -611,7 +614,8 @@ private:
         lb_I_Thread(const lb_I_Thread&) {}
         lb_I_Thread& operator=(const lb_I_Thread&) { return *this; }
 };
-
+/*...e*/
+/*...sclass lb_I_Mutex:0:*/
 class lb_I_Mutex {
 protected:
 	lb_I_Mutex() {}
@@ -624,6 +628,7 @@ public:
         virtual void release() = 0;
 	
 };
+/*...e*/
 
 class lb_I_Lock;
 /*...sclass lb_I_CriticalSection:0:*/
