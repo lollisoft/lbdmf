@@ -159,7 +159,7 @@ public:
 		databound = 0; 
 		count = 0; 
 		firstfetched = 0;
-		lpszTable = NULL;
+//		lpszTable = NULL;
 		cols = 0;
 		
 		fetchstatus = 0;
@@ -267,7 +267,7 @@ private:
 	int     firstfetched;
 	int	_readonly; // readonly = 1, else = 0
 	int	mode;  // insert = 1, select = 0
-	char* lpszTable;
+//	char* lpszTable;
 	
 	// Number of columns for the query
 	SQLSMALLINT cols;
@@ -802,8 +802,17 @@ Using SQLSetPos
 
 #endif
 /*...e*/
+/*
+	char cursorname[100] = "";
+	
+	sprintf(cursorname, "Cursor-%p", this);
+
+	retcode = SQLSetCursorName(hstmt, cursorname, SQL_NTS);
+*/	
 
 	retcode = SQLExecDirect(hstmt, (unsigned char*) szSql, SQL_NTS);
+
+//	retcode = SQLPrepare(hstmtDelete, "DELETE FROM Customers WHERE CURRENT OF Cust", SQL_NTS);
 
 	if (retcode != SQL_SUCCESS)
         {
@@ -934,6 +943,8 @@ int   LB_STDCALL lbQuery::getColumns() {
 }
 
 /*...schar\42\ LB_STDCALL lbQuery\58\\58\getColumnName\40\int col\41\:0:*/
+char lbQuery_column_Name[100] = "";
+
 char* LB_STDCALL lbQuery::getColumnName(int col) {
 	UAP(lb_I_BoundColumn, column, __FILE__, __LINE__)
 	column = boundColumns->getBoundColumn(col);
@@ -943,11 +954,9 @@ char* LB_STDCALL lbQuery::getColumnName(int col) {
 	name = column->getColumnName();
 	name++;
 
-	static char* _name = NULL;
+	strcpy(lbQuery_column_Name, (char*) name->getData());
 	
-	_name = strdup((char*) name->getData());
-
-	return _name;
+	return lbQuery_column_Name;
 }
 /*...e*/
 /*...slbErrCodes LB_STDCALL lbQuery\58\\58\first\40\\41\:0:*/
@@ -1003,6 +1012,11 @@ _LOG << "Have fetched next (step 1)" LOG_
 	/* Check for having no data.
 	 * This could only happen, if really no data is in the resultset.
 	 */
+	 
+	 
+	 
+	printf("Fehlercode fr SQLExtendedFetch(): %d\n", retcode); 
+	 
 	if (retcode == SQL_NO_DATA) {
 
 	_LOG << "Fetch (step 1) failed" LOG_
@@ -1277,8 +1291,10 @@ UDWORD  RowsFetched = 0;
 	if (mode == 1) return ERR_DB_STILL_ADDING;
 
 	SQLSetPos(hstmt, 1, SQL_DELETE, SQL_LOCK_NO_CHANGE);
+	
+	//SQLSetPos(hstmt, 1, SQL_REFRESH, SQL_LOCK_NO_CHANGE);
+	
 
-	if (fetchstatus == 0) return next();
 	if (fetchstatus == 1) return previous();
 	return next();
 
@@ -1454,12 +1470,13 @@ free(buffer);
 #define ISWHITE(x)      (ISBLANK(x) || ISTAB(x) || ISRETURN(x))
 
 
+char lpszTable[100] = "";
+
 char* LB_STDCALL lbQuery::getTableName() {
    LPCSTR   lpsz;
    int      cp;
    int      cb;
 
-   if (lpszTable == NULL) lpszTable = new char[100];
    lpszTable[0] = 0;
 
    cb = strlen("from");
@@ -1499,7 +1516,10 @@ printf("Preendscan at %s\n", lpsz);
 int i = 0;
 while (lpsz[i++] != ' ') i++;
 
-return strdup(lpsz); //!!!
+strcpy(lpszTable, lpsz);
+
+return lpszTable; //!!!
+
 #ifdef bla
    if (*lpsz == *g_szQuoteChar) {
       *lpszTable++ = *lpsz++; // Copy beginning quote
