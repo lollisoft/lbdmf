@@ -235,7 +235,6 @@ typedef lbErrCodes (LB_STDCALL lb_I_EventHandler::*lbEvHandler)(lb_I_Unknown* uk
 	{ lbErrCodes err; \
 		if ((err = instance->release(#__MACRO_FILE__, __MACRO_LINE__)) != ERR_NONE) { \
 			if (err == ERR_REFERENCE_COUNTING ) { \
-				printf("Error in reference counting (%s in %s, %d)!\n", #instance, #__MACRO_FILE__, __MACRO_LINE__); \
 				if (__MACRO_FILE__ != NULL) { \
 				_CL_LOG << "RELEASE_1(...) Reference count mismatch at " << __MACRO_LINE__ << " in " << #__MACRO_FILE__ << " for instance " << instance->getClassName() LOG_ \
 				} \
