@@ -1,11 +1,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.27 $
+ * $Revision: 1.28 $
  * $Name:  $
- * $Id: lbDOMConfig.cpp,v 1.27 2002/07/23 17:48:56 lothar Exp $
+ * $Id: lbDOMConfig.cpp,v 1.28 2002/08/31 10:51:34 lothar Exp $
  *
  * $Log: lbDOMConfig.cpp,v $
+ * Revision 1.28  2002/08/31 10:51:34  lothar
+ * Use a member variable for char* return. Delete buffer before create new buffer
+ *
  * Revision 1.27  2002/07/23 17:48:56  lothar
  * Current version runs
  *
@@ -469,6 +472,7 @@ protected:
 
 
 	DOM_Node   node;
+	char* getNameValue;
 	int debug;
 	UAP(lb_I_ConfigObject, parent, __FILE__, __LINE__)
 	
@@ -691,6 +695,7 @@ lbDOMNode::lbDOMNode(char* file, int line) {
 	char msg[1000] = "";
 	sprintf(msg, "lbDOMNode::lbDOMNode(...) called at %d in %s", line, file);
 	track_Object(this, msg);
+	getNameValue = NULL;
 
 
 	resetRefcount();
@@ -727,6 +732,7 @@ lbDOMNode::lbDOMNode() {
 //	currentChildIndex = 0;
 	lbDOMchilds = NULL;
 	debug = 0;
+	getNameValue = NULL;
 
 	parent = NULL;
 	
@@ -751,6 +757,11 @@ lbDOMNode::lbDOMNode() {
 lbDOMNode::~lbDOMNode() {
 	char ptr[20] = "";
 	sprintf(ptr, "%p", (void*) this);
+
+	if (getNameValue != NULL) {
+		deleteValue(getNameValue);
+		getNameValue = NULL;
+	}
 
 	if (ref != STARTREF) 
 		CL_LOG("Error: Reference count mismatch");
@@ -1123,13 +1134,14 @@ char* LB_STDCALL lbDOMNode::getName() {
 	getch();
 #endif
 
-	char* temp = string.transcode();
+	if (getNameValue != NULL) deleteValue(getNameValue);
+	getNameValue = string.transcode();
 
 #ifdef VERBOSE
 	CL_LOG("Got the node name");
 	getch();
 #endif	
-	return temp;
+	return getNameValue;
 }
 /*...e*/
 /*...e*/
