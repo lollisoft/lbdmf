@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.33 $
+ * $Revision: 1.34 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.33 2004/04/10 17:54:23 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.34 2004/06/29 16:35:50 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.34  2004/06/29 16:35:50  lollisoft
+ * Removed some log messages
+ *
  * Revision 1.33  2004/04/10 17:54:23  lollisoft
  * Current version runs on linux again. There was a bug in additional linux code to strcat to a variable. This variable was given as a parameter and therefore I cannot assume, that I am able to have a big enough buffer for that action. Electric Fence gave me the hint for that bug.
  *
@@ -866,7 +869,6 @@ lbErrCodes LB_STDCALL lb_Dispatcher::setData(lb_I_Unknown* uk) {
 /*...e*/
 /*...slbErrCodes LB_STDCALL lb_Dispatcher\58\\58\setEventManager\40\lb_I_EventManager\42\ EvManager\41\:0:*/
 lbErrCodes LB_STDCALL lb_Dispatcher::setEventManager(lb_I_EventManager* EvManager) {
-	_LOG << "lb_Dispatcher::setEventManager() called" LOG_
 	
 	evManager = EvManager;
 	evManager++;
@@ -943,13 +945,10 @@ lb_I_DispatchResponce* lb_Dispatcher::dispatch(lb_I_DispatchRequest* req) {
 /*...e*/
 /*...slbErrCodes LB_STDCALL lb_Dispatcher\58\\58\dispatch\40\int EvNr\44\ lb_I_Unknown\42\ EvData\44\ lb_I_Unknown\42\\42\ EvResult\41\:0:*/
 lbErrCodes LB_STDCALL lb_Dispatcher::dispatch(int EvNr, lb_I_Unknown* EvData, lb_I_Unknown** EvResult) {
-	_LOG << "lb_Dispatcher::dispatchEvent() called" LOG_
-
 	lbErrCodes err = ERR_NONE;
 	
 	UAP_REQUEST(manager.getPtr(), lb_I_Integer, i)
 	i->setData(EvNr);
-	_LOG << "Set the event id" LOG_
 	
 	UAP(lb_I_KeyBase, ik, __FILE__, __LINE__)
 	QI(i, lb_I_KeyBase, ik, __FILE__, __LINE__)
@@ -957,8 +956,6 @@ lbErrCodes LB_STDCALL lb_Dispatcher::dispatch(int EvNr, lb_I_Unknown* EvData, lb
 	
 	UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
 	UAP(lb_I_EvHandler, ev, __FILE__, __LINE__)
-	
-	_LOG <<"Get the handler out from the dispatcher" LOG_
 	
 	if (dispatcher == NULL) {
 		_LOG << "Error: Have no dispatcher" LOG_
@@ -984,9 +981,7 @@ lbErrCodes LB_STDCALL lb_Dispatcher::dispatch(char* EvName, lb_I_Unknown* EvData
 	int id = 0;
 	lbErrCodes err = ERR_NONE;
 	
-	_LOG << "Resolve handler now " << EvName LOG_
 	evManager->resolveEvent(EvName, id);
-	_LOG << "Resolved handler now " << EvName LOG_
 
 	return dispatch(id, EvData, EvResult);
 }
