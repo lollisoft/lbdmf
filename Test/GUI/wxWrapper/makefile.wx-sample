@@ -97,3 +97,5 @@ clean:
 	-rm *.o
 	-rm $(PROGRAM)
 	-rm *.log
+
+distclean: clean
