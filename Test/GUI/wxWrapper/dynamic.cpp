@@ -6,7 +6,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.1 2003/03/15 01:59:45 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.2 2003/04/01 17:49:49 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -633,9 +633,16 @@ END_IMPLEMENT_LB_UNKNOWN()
 
 /*...sMyApp\58\\58\OnInit\40\void\41\:0:*/
 // `Main program' equivalent, creating windows and returning main app frame
+void testthis(void* t) {
+	char ptr[20] = "";
+	sprintf(ptr, "%p", t);
+	_LOG << "This is " << ptr LOG_
+}
+
 bool MyApp::OnInit(void)
 {
     char b[100] = "";
+testthis(this);
 /*...sCreate the frame:0:*/
 #ifndef LB_I_EXTENTIONS
   // Create the main frame window
@@ -710,6 +717,9 @@ bool MyApp::OnInit(void)
   lb_I_Unknown *uk = wxGUI->createFrame();
   char ptr[20] = "";
   sprintf(ptr, "%p", uk);
+  
+  _LOG << "Have got a frame: " << ptr LOG_
+  
   /**
    * A Peer interface to get the derived class
    */
@@ -725,6 +735,9 @@ bool MyApp::OnInit(void)
   
 #endif
 /*...e*/
+
+testthis(this);
+
 #ifdef LB_I_EXTENTIONS
 #endif
 /*...sInitializiation of the hardcoded part \40\regardless of delegation or not\41\:0:*/
@@ -902,6 +915,7 @@ _LOG << "Made panel" LOG_
 #ifdef LB_I_EXTENTIONS
 _LOG << "Showed the window" LOG_
 #endif
+
 /*...sInit the meta application:0:*/
 #ifdef LB_I_EXTENTIONS
   UAP_REQUEST(mm.getPtr(), lb_I_MetaApplication, metaApp)
@@ -918,16 +932,18 @@ _LOG << "Showed the window" LOG_
   } 
 #endif
 /*...e*/
+
 #ifdef LB_I_EXTENTIONS
 _LOG << "Initialized metaapplication" LOG_
 #endif
 
 /*...e*/
+testthis(this);
 #ifdef LB_I_EXTENTIONS
-  metaApp->run();
+  if (metaApp != NULL) metaApp->run();
 #endif
   sprintf(ptr, "%p", frame_peer);
-
+testthis(this);
   return TRUE;
 }
 /*...e*/
