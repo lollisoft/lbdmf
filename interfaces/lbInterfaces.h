@@ -1474,12 +1474,12 @@ public:
 	/* The menubar is still present in the demo. At the
 	   first time, a new menubar should not be used.
 	*/
-	virtual lbErrCodes LB_STDCALL addMenuBar(char* name);
+	virtual lbErrCodes LB_STDCALL addMenuBar(char* name) = 0;
 
 	/**
 	 * Add a menu behind the last.
 	 */
-	virtual lbErrCodes LB_STDCALL addMenu(char* name);
+	virtual lbErrCodes LB_STDCALL addMenu(char* name) = 0;
 	
 	/**
 	 * Add a menu entry in the named menu after given entry,
@@ -1491,10 +1491,10 @@ public:
 	 *	char* evHandler:	The name of a registered event handler, that handle this
 	 *	char* afterentry:	Insert the entry after an exsisting entry
 	 */
-	virtual lbErrCodes LB_STDCALL addMenuEntry(char* in_menu, char* entry, char* evHandler, char* afterentry = NULL);
-	virtual lbErrCodes LB_STDCALL addButton(char* buttonText, char* evHandler, int x, int y, int w, int h);
-	virtual lbErrCodes LB_STDCALL addLabel(char* text, int x, int y, int w, int h);
-	virtual lbErrCodes LB_STDCALL addTextField(char* name, int x, int y, int w, int h);
+	virtual lbErrCodes LB_STDCALL addMenuEntry(char* in_menu, char* entry, char* evHandler, char* afterentry = NULL) = 0;
+	virtual lbErrCodes LB_STDCALL addButton(char* buttonText, char* evHandler, int x, int y, int w, int h) = 0;
+	virtual lbErrCodes LB_STDCALL addLabel(char* text, int x, int y, int w, int h) = 0;
+	virtual lbErrCodes LB_STDCALL addTextField(char* name, int x, int y, int w, int h) = 0;
 /*...e*/
 
 
