@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.68 $
+ * $Revision: 1.69 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.68 2004/04/10 17:54:24 lollisoft Exp $
+ * $Id: lbModule.cpp,v 1.69 2004/04/11 07:26:03 lollisoft Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.69  2004/04/11 07:26:03  lollisoft
+ * Resolved conflict
+ *
  * Revision 1.68  2004/04/10 17:54:24  lollisoft
  * Current version runs on linux again. There was a bug in additional linux code to strcat to a variable. This variable was given as a parameter and therefore I cannot assume, that I am able to have a big enough buffer for that action. Electric Fence gave me the hint for that bug.
  *
@@ -2298,7 +2301,7 @@ void LB_STDCALL lbModule::getXMLConfigObject(lb_I_InterfaceRepository** inst) {
 	setModuleHandle(h);
         if (newInterfaceRepository == NULL) {
                 UAP(lb_I_Unknown, result, __FILE__, __LINE__)
-                makeInstance(PREFIX "instanceOfHCInterfaceRepository", "lbModule.so", &result);
+                makeInstance(PREFIX "instanceOfHCInterfaceRepository", "lbModule", &result);
 		result->queryInterface("lb_I_InterfaceRepository", (void**) inst, __FILE__, __LINE__);
         }
       
