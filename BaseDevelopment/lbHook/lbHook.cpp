@@ -22,6 +22,11 @@ extern "C" {
 
 #endif
 
+#ifdef _MSC_VER
+#pragma warning( disable: 4275 )
+#pragma warning( disable: 4251 )
+#pragma warning( disable: 4101 )
+#endif
 
 #include <lbConfigHook.h>
 #include <lbKey.h>
