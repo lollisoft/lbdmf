@@ -78,7 +78,7 @@
 #include <malloc.h>
 #endif
 
-#define _(text) translateText(text)
+#define _trans(text) translateText(text)
 
 /*...sLogging macros:0:*/
 
