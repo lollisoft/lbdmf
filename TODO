@@ -1,0 +1,63 @@
+
+
+		This file describes some things that should be done in the next time.
+		
+		I also will discuss some problems while the development stages.
+		
+		
+		
+		29.01.2005	Found some unimplemented features in the MYSQL database
+				engine, or the workaround dows not work.
+				
+				The database does not support foreign keys in tables not of
+				type InnoDB. But I have changed it to these types and while
+				creating the tables again, I run into an error message like this:
+				
+				
+				Error
+				
+				SQL-query : 
+				
+				CREATE TABLE Formulare(
+				id INTEGER NOT NULL AUTO_INCREMENT ,
+				Name VARCHAR( 30 ) ,
+				MenuName VARCHAR( 30 ) ,
+				EventName VARCHAR( 30 ) ,
+				MenuHilfe VARCHAR( 100 ) ,
+				AnwendungID INTEGER,
+				Typ INTEGER NOT NULL ,
+				PRIMARY KEY ( id ) ,
+				FOREIGN KEY FK_AnwendungID( AnwendungID ) REFERENCES Anwendungen( id )
+				) TYPE = INNODB
+				
+				MySQL said:
+				
+				Can't create table '.\lbdmf\formulare.frm' (errno: 150)
+				
+				
+				Solutions:
+				
+				I would create the referencing logic at application level, but I haven't
+				yet created a general class structure to hide this from normal application
+				code.
+				
+				I still have a table that documents the foreign key column at a specific
+				table. It hints to the primary table, wich would be a great help for me to
+				only make minor changes in my code.
+				
+				
+				
+				TODO: Deactivate the part of reading out foreign keys by SQLForeignKeys.
+				Directly use the table from lbdmf. Getting the primary key via SQLPrimaryKeys
+				would be working.
+				
+				Table: ForeignKey_VisibleData_Mapping having these columns:
+
+					(FKName, FKTable, PKName, PKTable)
+				
+				To handle the additional refferential from one table to primary table, I would still
+				have a column PKName, but I store another field to hint to a column to show instead
+				the primary key.
+				
+				
+				
