@@ -3,8 +3,7 @@
 # Use compiler MICROSOFT here
 COMPILER=MICROSOFT
 
-OBJDEP=../../lbHook/lbHook.o 
-#../../lbHook/conio.o
+OBJDEP=../../lbHook/lbHook.o ../../lbHook/conio.o
 
 ifeq ($(OSTYPE), Windows_NT)
 
@@ -30,4 +29,5 @@ ifeq ($(OSTYPE), linux)
 MOD_INCL=$(STD_INCL) -I../../lbHook/linuxCode \
     -I$(DEVROOT)/CPP/vendor/XML4C/xml4c-src3_5_1/include \
     -I$(DEVROOT)/CPP/BaseDevelopment/lbclasses
+VENDORLIBS=-ldl -lstdc++ -lxerces-c1_5
 endif    
