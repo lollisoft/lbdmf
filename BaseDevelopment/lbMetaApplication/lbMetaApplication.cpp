@@ -1,11 +1,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.16 $
+ * $Revision: 1.17 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.16 2002/11/29 19:50:26 lothar Exp $
+ * $Id: lbMetaApplication.cpp,v 1.17 2002/12/08 17:07:23 lothar Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.17  2002/12/08 17:07:23  lothar
+ * More tries to run under linux
+ *
  * Revision 1.16  2002/11/29 19:50:26  lothar
  * Compiles again under linux, but some problems at runtime with DOMString
  *
@@ -108,6 +111,7 @@ IMPLEMENT_SINGLETON_FUNCTOR(instanceOfEventManager, lb_EventManager)
 /*...sctors\47\dtors:0:*/
 lb_MetaApplication::lb_MetaApplication() {
 	ref = STARTREF;
+	printf("Instance of lb_I_MetaApplication created\n");
 	_LOG << "Instance of lb_I_MetaApplication created" LOG_
 }
 
@@ -195,22 +199,23 @@ lbErrCodes LB_STDCALL lb_MetaApplication::Initialize() {
 	 */
 	
 	lb_I_Module* m = *&manager;
-
+	printf("Get an event manager\n");
 	REQUEST(m, lb_I_EventManager, eman)
 /*...e*/
 	
 /*...sregister a basic event \40\getBasicApplicationInfo\41\ by the event manager:8:*/
-	 
+	printf("Register some events\n"); 
 	eman->registerEvent("getBasicApplicationInfo", getBasicApplicationInfo);
 	eman->registerEvent("getMainModuleInfo", getMainModuleInfo);
 
 /*...e*/
 
 /*...sget the dispatcher instance:8:*/
+	printf("Get a dispatcher\n");
 	REQUEST(m, lb_I_Dispatcher, dispatcher)
 	dispatcher->setEventManager(eman.getPtr());
 /*...e*/
-		
+	printf("Connet the event handlers to the dispatcher\n");	
 	registerEventHandler(dispatcher.getPtr());
 
 	// Step 3 (Load sub components, handling menus and else needed for an UI)
@@ -224,11 +229,12 @@ lbErrCodes LB_STDCALL lb_MetaApplication::Initialize() {
 	 * environment variable (TARGET_APPLICATION)
 	 */
 	
+	printf("Add a menubar\n");
 	addMenuBar("Edit");
 	_LOG << "Added first menu bar" LOG_
 	addMenuBar("Help");
 	_LOG << "Added second menu bar" LOG_
-
+	printf("Added menubars\n");
 	// Let the GUI show a message box
 	
 	if (gui != NULL) {

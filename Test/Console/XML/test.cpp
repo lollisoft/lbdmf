@@ -97,7 +97,8 @@ void main(int argc, char *argv[]) {
 	mm->request("lb_I_Log", &unknown);
 	
 	_CL_LOG << "Requested a instance for interface lb_I_Log" LOG_
-	printf("tested container\n");
+	printf("Tested container\n");
+	printf("----------------\n");
 	getch();
 	if (unknown != NULL) {
 		lb_I_Log* logger = NULL;
@@ -137,6 +138,7 @@ void main(int argc, char *argv[]) {
 
 /*...stest unloading module manager:0:*/
 	printf("Uninitialize module manager\n");
+	printf("---------------------------\n");
 	getch();
 	mm->uninitialize();
 	printf("Release it\n");
@@ -201,8 +203,12 @@ void main(int argc, char *argv[]) {
 	_CL_LOG << "Test metaapplication" LOG_
 	
 	printf("Test meta application\n");
+	printf("---------------------\n");
+	getch();
 	UAP_REQUEST(mm, lb_I_MetaApplication, meta) 
 	printf("Meta application loaded\n");
+	printf("-----------------------\n");
+	getch();
 	
 	if (meta != NULL) {
 		meta->Initialize();

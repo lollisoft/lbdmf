@@ -2,10 +2,13 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.22 $
+ * $Revision: 1.23 $
  * $Name:  $
- * $Id: misc.cpp,v 1.22 2002/11/29 19:50:27 lothar Exp $
+ * $Id: misc.cpp,v 1.23 2002/12/08 17:07:23 lothar Exp $
  * $Log: misc.cpp,v $
+ * Revision 1.23  2002/12/08 17:07:23  lothar
+ * More tries to run under linux
+ *
  * Revision 1.22  2002/11/29 19:50:27  lothar
  * Compiles again under linux, but some problems at runtime with DOMString
  *
@@ -253,6 +256,7 @@ lbLog::lbLog() {
         lastsize = 0;
 
 	char buf[100] = "";
+	printf("lbLog::lbLog() leaving\n");
 }
 /*...e*/
 /*...slbLog\58\\58\lbLog\40\int l\41\:0:*/
@@ -271,12 +275,14 @@ lbLog::lbLog(int l) {
         firstlog = 1;
         doLog = l;
         _CL_LOG << "lbLog::lbLog(): Creating mutex for logfile" LOG_
+	printf("lbLog::lbLog(int l) leaving\n");
     }
 /*...e*/
 /*...slbLog\58\\58\logdirect\40\\46\\46\\46\\41\:0:*/
 void LB_STDCALL lbLog::logdirect(const char *msg, char *f, int level) {
                 FILE *fp;
                 fp = fopen( f, "a" );
+		printf("lbLog::logdirect(...) called\n");
                 if( fp != NULL ) {
                         char buf[1000] = "";
                         buf[0] = 0;
@@ -292,6 +298,7 @@ void LB_STDCALL lbLog::logdirect(const char *msg, char *f, int level) {
                 }
         
                 fclose( fp );
+		printf("lbLog::logdirect(...) leaving\n");
 }
 /*...e*/
 /*...slbLog\58\\58\log\40\\46\\46\\46\\41\:0:*/
@@ -303,12 +310,14 @@ void LB_STDCALL lbLog::log(const char *msg, long line, char* file) {
         mutex->enter(); 
         
         if (doLog == TRUE) {
-        
+    		printf("Malloc heap for logging message\n");
                 char *m = (char*) malloc(strlen(msg)+sizeof(line)+strlen(file)+10);
 
                 sprintf(m, "%s: %d - %s", file, line, msg);
                 logdirect(m, f, level);
+		printf("Freeing it\n");
                 free((void*) m);
+		printf("Have freed up memory of logging message\n");
         }
         mutex->release();
 }
@@ -419,6 +428,7 @@ void LB_STDCALL lbLog::event_end(char *event) {
  */
  
 void LB_STDCALL lbLog::realloc(int add_size) {
+	printf("lbLog::realloc(int add_size) called\n");
 	if (logmessage == NULL) {
 		logmessage = (char*) ::realloc((void*) logmessage, add_size);
 		lastsize = add_size;
@@ -426,16 +436,21 @@ void LB_STDCALL lbLog::realloc(int add_size) {
 		logmessage = (char*) ::realloc((void*) logmessage, lastsize+add_size);
 		lastsize += add_size;
 	}
+	printf("lbLog::realloc(int add_size) leaving\n");
 } 
  
 lb_I_Log& LB_STDCALL lbLog::operator<< (/*lb_I_Log* logger,*/ const int i) {
+	printf("lbLog::operator<< (const int i) called\n");
+	printf("--------------------------------------\n");
 	char s[100] = "";
 	realloc(strlen(itoa(i)) + 1);
 	lastsize = lastsize + strlen(itoa(i)) + 1;
 	strcat(logmessage, itoa(i));
+	printf("lbLog::operator<< (const int i) leaving");
 	return *this;
 }
 lb_I_Log& LB_STDCALL lbLog::operator<< (/*lb_I_Log* logger,*/ const char c) {
+	printf("lbLog::operator<< (const char c) called\n");
         realloc(lastsize + 2);
         lastsize = lastsize + 2;
         char add[2] = "";
@@ -447,11 +462,13 @@ lb_I_Log& LB_STDCALL lbLog::operator<< (/*lb_I_Log* logger,*/ const char c) {
         	logmessage = NULL;
         	lastsize = 0;
         }
+	printf("lbLog::operator<< (const char c) leaving\n");
 	return *this;
 }
 
 lb_I_Log& LB_STDCALL lbLog::operator<< (/*lb_I_Log* logger,*/ const char* string) {
 	if (string != NULL) {
+		printf("lbLog::operator<< (const char* string) called\n");
 		realloc(lastsize+strlen(string) + 1);
 		lastsize = lastsize + strlen(string) + 1;
 		strcat(logmessage, string);
@@ -462,6 +479,7 @@ lb_I_Log& LB_STDCALL lbLog::operator<< (/*lb_I_Log* logger,*/ const char* string
 			logmessage = NULL;
 			lastsize = 0;
 		}
+		printf("lbLog::operator<< (const char* string) leaving\n");
 	} else {
 		
 	}

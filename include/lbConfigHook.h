@@ -161,11 +161,14 @@ extern int isInitializing;
 	if (isInitializing != 0) { \
 	} else { \
 	        LOG_INSTANCE \
+		printf("_LOG called\n"); \
+		if (log == NULL) printf("Fatal: log instance is NULL !!\n"); \
 		*log << "Datei: " << __FILE__ << " Zeile: " << __LINE__ << " Message: "
 
 /*...e*/
 /*...s LOG_:0:*/
-#define  LOG_  << "\n"; }
+#define  LOG_  << "\n"; \
+		printf("LOG_ done\n"); }
 /*...e*/
 #ifndef __MISC
 #define _CL_LOG \

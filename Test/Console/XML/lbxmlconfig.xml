@@ -99,7 +99,7 @@
     </Module>
     <Module>
 <!--...sModuleName lbMetaApp:8:-->
-      <ModuleName Name="lbMetaApp"/>
+      <ModuleName Name="lbMetaApplication"/>
 <!--...e-->
 <!--...sFunctions:8:-->
       <Functions>
