@@ -41,6 +41,9 @@ set BASE_MAKE=develop
 set DEVROOT=%DEVLW%\%BASE%
 set DEVROOT_MAKE=%DEVLW%/%BASE_MAKE%
 
+set PLUGIN_DIR=%DEVROOT%\Projects\plugins
+
+
 set MSVCDir=%DEVROOT%\Tools\MSC\VC98
 
 @rem Alias to the linux environment
