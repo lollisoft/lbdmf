@@ -1,11 +1,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.9 $
+ * $Revision: 1.10 $
  * $Name:  $
- * $Id: lbMetaApplication.h,v 1.9 2002/09/19 19:34:12 lothar Exp $
+ * $Id: lbMetaApplication.h,v 1.10 2002/10/08 16:33:38 lothar Exp $
  *
  * $Log: lbMetaApplication.h,v $
+ * Revision 1.10  2002/10/08 16:33:38  lothar
+ * Missing LB_STDCALL
+ *
  * Revision 1.9  2002/09/19 19:34:12  lothar
  * Buggy version - only, if menu is really created
  *
@@ -172,7 +175,7 @@ public:
 	 */
 	virtual lbErrCodes LB_STDCALL dispatch(char* EvName, lb_I_Unknown* EvData, lb_I_Unknown** EvResult);
 	
-	virtual lb_I_DispatchResponce* dispatch(lb_I_DispatchRequest* req);
+	virtual lb_I_DispatchResponce* LB_STDCALL dispatch(lb_I_DispatchRequest* req);
 	
 	DEBUG_UAP(lb_I_Container, dispatcher, __FILE__, __LINE__)
 	DEBUG_UAP(lb_I_EventManager, evManager, __FILE__, __LINE__)
