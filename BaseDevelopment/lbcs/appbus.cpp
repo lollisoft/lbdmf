@@ -32,13 +32,15 @@ char* sendConnect(lbTransfer & transfer) {
 	lb_Transfer_Data result;
 	lb_Transfer_Data request;
 	char *temp;
+	char msg[100];
 
+	transfer.gethostname(temp);
 
-	LOG("sendConnect(lbTransfer & transfer): Send a connect request");
-
+	sprintf(msg, "sendConnect(lbTransfer & transfer): Send a connect request from host %s", temp);
+	LOG(msg);
+	
 	request.add("Connect");
 	request.add("Requesthost");
-	transfer.gethostname(temp);
 	request.add(temp);
 	
 	// More data may be user name, password...
