@@ -174,6 +174,10 @@ public:
 		sampleQuery->skipFKCollecting();
 		sampleQuery->query(buffer);
 		sampleQuery->enableFKCollecting();
+
+		// Clear the box, if it was previously filled due to navigation.
+		
+		box->Clear();
 		
 		// Fill up the available applications for that user.
 
@@ -208,6 +212,8 @@ public:
 	virtual bool TransferDataFromWindow()
 	{
 		// The application must have been selected here by the user.
+#ifdef bla
+		printf("TransferDataFromWindow() called.\n");
 	
 		int sel = box->GetSelection();
 		
@@ -222,16 +228,35 @@ public:
 			
 			free(_app);
 		}
-	
+#endif	
 	        return TRUE;
 	}
 /*...e*/
+
+	void OnWizardPageChanging(wxWizardEvent& event) {
+		if (event.GetDirection()) {
+			int sel = box->GetSelection();
+			app = box->GetString(sel);
+
+			if (!app.IsEmpty()) {
+				UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
+		
+				char* _app = strdup(app.c_str());
+			
+				meta->loadApplication(userid, _app);
+			
+				free(_app);
+			}
+		}
+	}
 
 private:
 	wxCheckBox *m_checkbox;
 	char* userid;
 	wxComboBox* box;
 	wxString app;
+
+	DECLARE_EVENT_TABLE()
 
 	UAP(lb_I_Database, database, __FILE__, __LINE__)
 	UAP(lb_I_Query, sampleQuery, __FILE__, __LINE__)
@@ -245,6 +270,11 @@ private:
 	char buf[100];
 };
 
+
+BEGIN_EVENT_TABLE(wxAppSelectPage, wxWizardPageSimple)
+    EVT_WIZARD_PAGE_CHANGING(-1, wxAppSelectPage::OnWizardPageChanging)
+END_EVENT_TABLE()
+        
 
 BEGIN_IMPLEMENT_LB_UNKNOWN(wxAppSelectPage)
 END_IMPLEMENT_LB_UNKNOWN()
