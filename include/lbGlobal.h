@@ -1,6 +1,7 @@
+/*...sLicence:0:*/
 /*
     DMF Distributed Multiplatform Framework (the initial goal of this library)
-    lbModule.h is part of DMF.
+    This file is part of lbDMF.
     Copyright (C) 2002  Lothar Behrens (lothar.behrens@lollisoft.de)
 
     This library is free software; you can redistribute it and/or
@@ -21,18 +22,23 @@
     The author of this work will be reached by e-Mail or paper mail.
     e-Mail: lothar.behrens@lollisoft.de
     p-Mail: Lothar Behrens
-            Borsteler Bogen 4
-
-            22453 Hamburg (germany)
+            Rosmarinstr. 3
+            
+            40235 DÅsseldorf (germany)
 */
+/*...e*/
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.4 $
+ * $Revision: 1.5 $
  * $Name:  $
- * $Id: lbGlobal.h,v 1.4 2002/12/29 16:09:29 lothar Exp $
+ * $Id: lbGlobal.h,v 1.5 2003/12/13 10:56:26 lollisoft Exp $
  *
  * $Log: lbGlobal.h,v $
+ * Revision 1.5  2003/12/13 10:56:26  lollisoft
+ * Database improovements and changes in my licence adress.
+ * The database part is still not working by updating columns
+ *
  * Revision 1.4  2002/12/29 16:09:29  lothar
  * Intent to go public
  *

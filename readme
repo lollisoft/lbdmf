@@ -27,10 +27,10 @@ Prerequirements:
 Windows:
 
 You need a MSC compiler (only the console tools),
-also the Watcom 10.6 compiler is needed to compile all under Windows,
+also the Watcom 10.6 or Openwatcom compiler is needed to compile all under Windows,
 MKMK.exe - a makefile creation tool to build makefiles that matches to
-my make environment,
-Unix tools like make (Mingw or the like)
+my make environment, the source is included, so you can bootstrap it.
+Unix tools like make (Mingw or the like), a version is also included in the binary distribution
 Batchfiles are provided to setup the env variables,
 subst a drive Q: pointing to the actual development tree
 (subst q: c:\). Then q:\ has the following tree:
@@ -42,7 +42,7 @@ Linux:
 
 An actual G++ compiler and all the tools to compile,
 mkmk - a makefile creation tool to build makefiles that matches to
-my make environment,
+my make environment, the source is included, so you can bootstrap it.
 uncompress the file to your home directory,
 create /libdev/lib (as root) for the so modules and give rigths to you to 
 copy the so's to it (my choice for development :-),
@@ -75,6 +75,7 @@ Vendor programs, that I have adopted for my need:
 		call make.sh
 		copy mkmk to ~/bin
 		
-		
+Hint: The mkmk tool was orginally written by Luis Crespo. His publication is at:
+http://www.cubic.org/~submissive/sourcerer/mkmk.htm		
 		
 	

@@ -1,5 +1,7 @@
+/*...sLicence:0:*/
 /*
-    DMF Distributed Multiplatform Framework
+    DMF Distributed Multiplatform Framework (the initial goal of this library)
+    This file is part of lbDMF.
     Copyright (C) 2002  Lothar Behrens (lothar.behrens@lollisoft.de)
 
     This library is free software; you can redistribute it and/or
@@ -19,28 +21,24 @@
 
     The author of this work will be reached by e-Mail or paper mail.
     e-Mail: lothar.behrens@lollisoft.de
-    p-Mail: 
-    	    Old
-    	    Lothar Behrens
-            Borsteler Bogen 4
-
-            22453 Hamburg (germany)
+    p-Mail: Lothar Behrens
+            Rosmarinstr. 3
             
-            New
-            Lothar Behrens
-            Rosmarinstra·e 3
-            
-            40235 DÅsseldorf
-            
+            40235 DÅsseldorf (germany)
 */
+/*...e*/
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.62 $
+ * $Revision: 1.63 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.62 2003/08/22 17:33:16 lollisoft Exp $
+ * $Id: lbModule.cpp,v 1.63 2003/12/13 10:56:25 lollisoft Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.63  2003/12/13 10:56:25  lollisoft
+ * Database improovements and changes in my licence adress.
+ * The database part is still not working by updating columns
+ *
  * Revision 1.62  2003/08/22 17:33:16  lollisoft
  * removed debuging
  *

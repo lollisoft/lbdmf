@@ -1,6 +1,6 @@
 /*
     DMF Distributed Multiplatform Framework (the initial goal of this library)
-    lbModule.h is part of DMF.
+    This file is part of lbDMF.
     Copyright (C) 2002  Lothar Behrens (lothar.behrens@lollisoft.de)
 
     This library is free software; you can redistribute it and/or
@@ -21,9 +21,9 @@
     The author of this work will be reached by e-Mail or paper mail.
     e-Mail: lothar.behrens@lollisoft.de
     p-Mail: Lothar Behrens
-            Borsteler Bogen 4
+            Rosmarinstr. 3
 
-            22453 Hamburg (germany)
+            40235 DÅsseldorf (germany)
 */
 
 #ifdef _MSC_VER

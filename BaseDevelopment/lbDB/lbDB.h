@@ -1,5 +1,7 @@
+/*...sLicence:0:*/
 /*
-    DMF Distributed Multiplatform Framework
+    DMF Distributed Multiplatform Framework (the initial goal of this library)
+    This file is part of lbDMF.
     Copyright (C) 2002  Lothar Behrens (lothar.behrens@lollisoft.de)
 
     This library is free software; you can redistribute it and/or
@@ -19,20 +21,12 @@
 
     The author of this work will be reached by e-Mail or paper mail.
     e-Mail: lothar.behrens@lollisoft.de
-    p-Mail:
-            Old
-            Lothar Behrens
-            Borsteler Bogen 4
-
-            22453 Hamburg (germany)
-
-            New
-            Lothar Behrens
-            Rosmarinstra·e 3
-
-            40235 DÅsseldorf
-
+    p-Mail: Lothar Behrens
+            Rosmarinstr. 3
+            
+            40235 DÅsseldorf (germany)
 */
+/*...e*/
 
 #ifndef __LB_DATABASE__
 #define __LB_DATABASE__

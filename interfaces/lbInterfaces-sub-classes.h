@@ -1,6 +1,6 @@
 /*
     DMF Distributed Multiplatform Framework (the initial goal of this library)
-    lbModule.h is part of DMF.
+    This file is part of lbDMF.
     Copyright (C) 2002  Lothar Behrens (lothar.behrens@lollisoft.de)
 
     This library is free software; you can redistribute it and/or
@@ -21,18 +21,22 @@
     The author of this work will be reached by e-Mail or paper mail.
     e-Mail: lothar.behrens@lollisoft.de
     p-Mail: Lothar Behrens
-            Borsteler Bogen 4
-
-            22453 Hamburg (germany)
+            Rosmarinstr. 3
+            
+            40235 DÅsseldorf (germany)
 */
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.33 $
+ * $Revision: 1.34 $
  * $Name:  $
- * $Id: lbInterfaces-sub-classes.h,v 1.33 2003/08/22 17:42:35 lollisoft Exp $
+ * $Id: lbInterfaces-sub-classes.h,v 1.34 2003/12/13 10:56:26 lollisoft Exp $
  *
  * $Log: lbInterfaces-sub-classes.h,v $
+ * Revision 1.34  2003/12/13 10:56:26  lollisoft
+ * Database improovements and changes in my licence adress.
+ * The database part is still not working by updating columns
+ *
  * Revision 1.33  2003/08/22 17:42:35  lollisoft
  * Added UAP integer parameter
  *

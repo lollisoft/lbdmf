@@ -1,6 +1,7 @@
+/*...sLicence:0:*/
 /*
     DMF Distributed Multiplatform Framework (the initial goal of this library)
-    lbModule.h is part of DMF.
+    This file is part of lbDMF.
     Copyright (C) 2002  Lothar Behrens (lothar.behrens@lollisoft.de)
 
     This library is free software; you can redistribute it and/or
@@ -21,18 +22,23 @@
     The author of this work will be reached by e-Mail or paper mail.
     e-Mail: lothar.behrens@lollisoft.de
     p-Mail: Lothar Behrens
-            Borsteler Bogen 4
-
-            22453 Hamburg (germany)
+            Rosmarinstr. 3
+            
+            40235 DÅsseldorf (germany)
 */
+/*...e*/
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.19 $
+ * $Revision: 1.20 $
  * $Name:  $
- * $Id: lbErrcodes.h,v 1.19 2003/11/27 23:20:01 lollisoft Exp $
+ * $Id: lbErrcodes.h,v 1.20 2003/12/13 10:56:26 lollisoft Exp $
  *
  * $Log: lbErrcodes.h,v $
+ * Revision 1.20  2003/12/13 10:56:26  lollisoft
+ * Database improovements and changes in my licence adress.
+ * The database part is still not working by updating columns
+ *
  * Revision 1.19  2003/11/27 23:20:01  lollisoft
  * Attempt to implement write access to databases
  *
@@ -208,6 +214,7 @@ enum lbErrCodes {
 	ERR_DB_INIT,
 	ERR_DB_ALLOCSTATEMENT,
 	ERR_DB_QUERYFAILED,
+	ERR_DB_UPDATEFAILED,
 	ERR_DB_CONNECT,
 	ERR_DB_FETCHFIRST,
 	ERR_DB_FETCHLAST,

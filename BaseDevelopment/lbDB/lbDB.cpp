@@ -1,6 +1,7 @@
-/*...sLGPL Licence:0:*/
+/*...sLicence:0:*/
 /*
-    DMF Distributed Multiplatform Framework
+    DMF Distributed Multiplatform Framework (the initial goal of this library)
+    This file is part of lbDMF.
     Copyright (C) 2002  Lothar Behrens (lothar.behrens@lollisoft.de)
 
     This library is free software; you can redistribute it and/or
@@ -20,19 +21,10 @@
 
     The author of this work will be reached by e-Mail or paper mail.
     e-Mail: lothar.behrens@lollisoft.de
-    p-Mail:
-            Old
-            Lothar Behrens
-            Borsteler Bogen 4
-
-            22453 Hamburg (germany)
-
-            New
-            Lothar Behrens
-            Rosmarinstraáe 3
-
-            40235 Dsseldorf
-
+    p-Mail: Lothar Behrens
+            Rosmarinstr. 3
+            
+            40235 Dsseldorf (germany)
 */
 /*...e*/
 
@@ -210,7 +202,7 @@ public:
 	virtual lbErrCodes	LB_STDCALL setString(lb_I_String* columnName, lb_I_String* value);
 #endif        
 	
-	lbErrCodes LB_STDCALL init(HENV henv, HDBC _hdbc);
+	lbErrCodes LB_STDCALL init(HENV henv, HDBC _hdbc, int readonly = 1);
 	int LB_STDCALL getColCount();
 
 
@@ -292,6 +284,7 @@ protected:
 	int		bound;
 	SQLSMALLINT     _DataType;
 	void*		buffer;
+	int		buffersize;
 	UAP(lb_I_String, colName, __FILE__, __LINE__)
 };
 /*...e*/
@@ -465,7 +458,7 @@ lbErrCodes	LB_STDCALL lbBoundColumns::getString(char* column, lb_I_String* insta
 }
 lbErrCodes      LB_STDCALL lbBoundColumns::setString(char* column, lb_I_String* instance) {
 	lbErrCodes err = ERR_NONE;
-	
+printf("lbBoundColumns::setString(char* column, lb_I_String* instance) called\n");	
 	UAP(lb_I_Unknown, ukdata, __FILE__, __LINE__)
 	UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
 	
@@ -485,11 +478,12 @@ lbErrCodes      LB_STDCALL lbBoundColumns::setString(char* column, lb_I_String* 
 	UAP(lb_I_BoundColumn, bc, __FILE__, __LINE__)
 	QI(uk_bc, lb_I_BoundColumn, bc, __FILE__, __LINE__)
 
-	// Adding or updating ?
+	// Adding or updating ? - Decided inside
 	bc->setFromString(instance, getMode());
 
 	return ERR_NONE;
 }
+
 int		LB_STDCALL lbBoundColumns::getMode() {
 	return query->isAdding();
 }
@@ -525,7 +519,7 @@ lbErrCodes LB_STDCALL lbQuery::unregisterView(lb_I_MVC_View* view) {
 /*...e*/
 
 /*...slbErrCodes LB_STDCALL lbQuery\58\\58\init\40\HENV henv\44\ HDBC _hdbc\41\:0:*/
-lbErrCodes LB_STDCALL lbQuery::init(HENV henv, HDBC _hdbc) {
+lbErrCodes LB_STDCALL lbQuery::init(HENV henv, HDBC _hdbc, int readonly) {
 	hdbc = _hdbc;
 
 	retcode = SQLAllocStmt(hdbc, &hstmt); /* Statement handle */
@@ -537,23 +531,40 @@ lbErrCodes LB_STDCALL lbQuery::init(HENV henv, HDBC _hdbc) {
 	        SQLFreeEnv(henv);
         	return ERR_DB_ALLOCSTATEMENT;
 	}
-	
-	retcode = SQLSetStmtOption(hstmt, SQL_CURSOR_TYPE, SQL_CURSOR_STATIC); //KEYSET_DRIVEN);
+
+
+	if (readonly == 0) {
+	// Compare values before updating
+		retcode = SQLSetStmtOption(hstmt, SQL_ATTR_CONCURRENCY, SQL_CONCUR_ROWVER);
+		_readonly = readonly;
+	}
 
         if (retcode != SQL_SUCCESS)
         {
                 dbError( "SQLSetStmtOption()",henv,hdbc,hstmt);
-                _LOG << "lbDatabase::getQuery() failed due to statement allocation." LOG_
+                _LOG << "lbDatabase::getQuery() failed due to setting concurrency settings." LOG_
                 SQLFreeEnv(henv);
                 return ERR_DB_ALLOCSTATEMENT;
         }
 
-	//retcode = SQLSetStmtAttr(hstmt, SQL_ATTR_CURSOR_SCROLLABLE, (void*) SQL_SCROLLABLE, 0);
+	retcode = SQLSetStmtOption(hstmt, SQL_CURSOR_TYPE, SQL_CURSOR_KEYSET_DRIVEN);
+
+        if (retcode != SQL_SUCCESS)
+        {
+                dbError( "SQLSetStmtOption()",henv,hdbc,hstmt);
+                _LOG << "lbDatabase::getQuery() failed due to setting cursor type." LOG_
+                SQLFreeEnv(henv);
+                return ERR_DB_ALLOCSTATEMENT;
+        }
+        
+        int size = 1;
+
+	retcode = SQLSetStmtAttr(hstmt, SQL_ATTR_ROW_ARRAY_SIZE, (SQLPOINTER) size, 0);
 
         if (retcode != SQL_SUCCESS)
         {
                 dbError( "SQLSetStmtAttr()",henv,hdbc,hstmt);
-                _LOG << "lbDatabase::getQuery() failed due to statement allocation." LOG_
+                _LOG << "lbDatabase::getQuery() failed due to setting row array size." LOG_
                 SQLFreeEnv(henv);
                 return ERR_DB_ALLOCSTATEMENT;
         }
@@ -835,21 +846,23 @@ lbErrCodes LB_STDCALL lbQuery::last() {
 	return ERR_NONE;
 }
 /*...e*/
-
-
+/*...slbErrCodes LB_STDCALL lbQuery\58\\58\setString\40\lb_I_String\42\ columnName\44\ lb_I_String\42\ value\41\:0:*/
 lbErrCodes LB_STDCALL lbQuery::setString(lb_I_String* columnName, lb_I_String* value) {
 
 	if (_readonly == 1) return ERR_DB_READONLY;
-
+printf("lbQuery::setString(lb_I_String* columnName, lb_I_String* value)\n");
 	if (mode == 1) {
 		// Not supported yet
+		printf("lbQuery::setString(lb_I_String* columnName, lb_I_String* value) Error: Append data not supported yet\n");
 	} else {
+		printf("Call boundColumns->setString('%s', '%s')\n", columnName->charrep(), value->charrep());
 		boundColumns->setString(columnName->charrep(), value);
 	}
 
 	return ERR_NONE;
 }
-
+/*...e*/
+/*...slbErrCodes LB_STDCALL lbQuery\58\\58\add\40\\41\:0:*/
 lbErrCodes LB_STDCALL lbQuery::add() {
 
 	if (_readonly == 1) return ERR_DB_READONLY;
@@ -858,7 +871,8 @@ lbErrCodes LB_STDCALL lbQuery::add() {
 
 	return ERR_NONE;
 }
-
+/*...e*/
+/*...slbErrCodes LB_STDCALL lbQuery\58\\58\remove\40\\41\:0:*/
 lbErrCodes LB_STDCALL lbQuery::remove() {
 
 	if (mode == 1) return ERR_DB_STILL_ADDING;
@@ -867,7 +881,8 @@ lbErrCodes LB_STDCALL lbQuery::remove() {
 
 	return ERR_NONE;
 }
-
+/*...e*/
+/*...slbErrCodes LB_STDCALL lbQuery\58\\58\update\40\\41\:0:*/
 lbErrCodes LB_STDCALL lbQuery::update() {
 
 	if (mode == 1) {
@@ -875,12 +890,21 @@ lbErrCodes LB_STDCALL lbQuery::update() {
 		SQLSetPos(hstmt, 2, SQL_ADD, SQL_LOCK_NO_CHANGE);
 	} else {
 		// Update the existing record
-		SQLSetPos(hstmt, 1, SQL_UPDATE, SQL_LOCK_NO_CHANGE);
+		printf("Update the existing record\n");
+		retcode = SQLSetPos(hstmt, 1, SQL_UPDATE, SQL_LOCK_NO_CHANGE);
+		
+		if (retcode != SQL_SUCCESS)
+		{
+		        dbError( "SQLSetPos()",henv,hdbc,hstmt);
+		        _LOG << "lbQuery::update(...) failed." LOG_
+		        return ERR_DB_UPDATEFAILED;
+		}		
 	}
 
 
 	return ERR_NONE;
 }
+/*...e*/
 
 #ifdef bla
 /*...sbla:0:*/
@@ -1090,12 +1114,10 @@ lbErrCodes LB_STDCALL lbBoundColumn::getAsString(lb_I_String* result) {
 	        case SQL_CHAR:
 	        case SQL_VARCHAR:
 	        case SQL_LONGVARCHAR:
-	        	printf("Get bound column at %p\n", (void*) buffer);
 	        	result->setData((char*) buffer);
 	        	break;
 	        case SQL_INTEGER:
 	        	char charrep[100] = "";
-	        	printf("Get bound column at %p\n", (void*) buffer);
 	        	sprintf(charrep, "%d", *(long*) buffer);
 	        	result->setData(charrep);
 	        	break;
@@ -1106,12 +1128,25 @@ lbErrCodes LB_STDCALL lbBoundColumn::getAsString(lb_I_String* result) {
 	return ERR_NONE;
 }
 /*...e*/
-
+/*...slbErrCodes LB_STDCALL lbBoundColumn\58\\58\setFromString\40\lb_I_String\42\ set\44\ int mode\41\:0:*/
 lbErrCodes LB_STDCALL lbBoundColumn::setFromString(lb_I_String* set, int mode) {
-	_CL_LOG << "lbBoundColumn::setFromString(...) not implemented yet" LOG_
+	_LOG << "lbBoundColumn::setFromString(...) not implemented yet" LOG_
+
+	if (mode == 1) {
+		// Not supported yet
+		_LOG << "lbBoundColumn::setFromString(...) if (mode == 1) not implemented yet" LOG_
+		printf("lbBoundColumn::setFromString(...) if (mode == 1) not implemented yet\n");
+	} else {
+		// This would overwrite the pointer, not the data !!!
+		printf("Copy string '%s' to '%s' with size of %d\n", set->getData(), (char*) buffer, strlen(set->getData()));
+		printf("Buffer pointer is at %p\n", buffer);
+		char* b = strcpy((char*) buffer, set->getData());
+		printf("Result is: '%s', returned is '%s', set is '%s'\n", (char*) buffer, b, set->getData());
+	}
+
 	return ERR_NONE;
 }
-
+/*...e*/
 /*...slbErrCodes LB_STDCALL lbBoundColumn\58\\58\bindColumn\40\lbQuery\42\ q\44\ int column\41\:0:*/
 lbErrCodes LB_STDCALL lbBoundColumn::bindColumn(lbQuery* q, int column) {
 
@@ -1155,13 +1190,22 @@ lbErrCodes LB_STDCALL lbBoundColumn::bindColumn(lbQuery* q, int column) {
 				"Warning: BufferLength is smaller than ColumnSize. Data would be truncated." LOG_
 			}
 			
-			buffer = malloc((ColumnSize == 0) ? (BufferLength+1)*2 : (ColumnSize+1)*2);
+			int rows = 2;
+			
+			buffersize = (ColumnSize == 0) ? (BufferLength+1)*rows : (ColumnSize+1)*rows;
+			if (buffersize == 0) printf("Fatal: Calculated bufferzize is zero!!\n");
+			
+			buffer = malloc(buffersize);
+			
+			printf("Buffer pointer is at %p\n", buffer);
+			
+			
 			_DataType = DataType;
 			bound = 1;
 			((char*) buffer)[0] = 0;
 			
 			ret = SQLBindCol(hstmt, column, DataType, buffer, (ColumnSize == 0) ? 
-				(BufferLength+1)*2 : (ColumnSize+1)*2, &cbBufferLength);
+				(BufferLength+1) : (ColumnSize+1), &cbBufferLength);
 			
 			if (ret != SQL_SUCCESS) {
 				printf("Error while binding a column!\n");
@@ -1293,7 +1337,7 @@ lbErrCodes LB_STDCALL lbDatabase::connect(char* DSN, char* user, char* passwd) {
         	SQLFreeEnv(henv);
         	return ERR_DB_CONNECT;
         }	
-	
+        
 	retcode = SQLSetConnectOption(hdbc, SQL_LOGIN_TIMEOUT, 15); /* Set login timeout to 15 seconds. */
 
         if (retcode != SQL_SUCCESS)
@@ -1327,13 +1371,24 @@ lbErrCodes LB_STDCALL lbDatabase::connect(char* DSN, char* user, char* passwd) {
 		printf("Connection succeeded.\n");
         }
 
+        retcode = SQLSetConnectOption(hdbc, SQL_AUTOCOMMIT, SQL_AUTOCOMMIT_ON);
+
+	if (retcode != SQL_SUCCESS)
+	{
+	        dbError( "SQLSetConnectOption(SQL_AUTOCOMMIT, SQL_AUTOCOMMIT_ON)",henv,hdbc,0);
+	        SQLFreeEnv(henv);
+	        return ERR_DB_CONNECT;
+	}
+        
+
+
 	return ERR_NONE;
 }
 /*...e*/
-lb_I_Query* LB_STDCALL lbDatabase::getQuery(int readoly) {
+lb_I_Query* LB_STDCALL lbDatabase::getQuery(int readonly) {
 	lbQuery* query = new lbQuery;
 
-	if (query->init(henv, hdbc) != ERR_NONE) return NULL;
+	if (query->init(henv, hdbc, readonly) != ERR_NONE) return NULL;
 
 	query->setModuleManager(*&manager, __FILE__, __LINE__);
 	lb_I_Query* q;

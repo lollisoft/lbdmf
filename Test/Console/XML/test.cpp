@@ -1,7 +1,7 @@
-/*...sLGPL licence:0:*/
+/*...sLicence:0:*/
 /*
     DMF Distributed Multiplatform Framework (the initial goal of this library)
-    lbModule.h is part of DMF.
+    This file is part of lbDMF.
     Copyright (C) 2002  Lothar Behrens (lothar.behrens@lollisoft.de)
 
     This library is free software; you can redistribute it and/or
@@ -22,9 +22,9 @@
     The author of this work will be reached by e-Mail or paper mail.
     e-Mail: lothar.behrens@lollisoft.de
     p-Mail: Lothar Behrens
-            Borsteler Bogen 4
-
-            22453 Hamburg (germany)
+            Rosmarinstr. 3
+            
+            40235 Dsseldorf (germany)
 */
 /*...e*/
 #ifdef _MSC_VER
@@ -230,7 +230,7 @@ void main(int argc, char *argv[]) {
 	
 	UAP(lb_I_Query, query, __FILE__, __LINE__)
 	
-	query = database->getQuery();
+	query = database->getQuery(0);
 
 	query->query("select ObjectTyp, X, Y, W, H from World");
 
@@ -251,6 +251,17 @@ void main(int argc, char *argv[]) {
 		s4 = query->getAsString(4);
 		s5 = query->getAsString(5);
 		printf("%s;%s;%s;%s;%s\n", s1->charrep(), s2->charrep(), s3->charrep(), s4->charrep(), s5->charrep());
+		
+		UAP_REQUEST(mm, lb_I_String, col)
+		UAP_REQUEST(mm, lb_I_String, val)
+		
+		col->setData("ObjectTyp");
+		val->setData("ashdjksdfksdkjsdhsd");
+		
+		query->setString(*&col, *&val);
+		query->update();
+		s1 = query->getAsString(1);
+		printf("%s;%s;%s;%s;%s\n", s1->charrep(), s2->charrep(), s3->charrep(), s4->charrep(), s5->charrep());		
 	}
 
 	while (query->next() == ERR_NONE) {
