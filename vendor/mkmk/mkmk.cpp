@@ -11,11 +11,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.38 $
+ * $Revision: 1.39 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.38 2004/06/07 20:09:17 lollisoft Exp $
+ * $Id: mkmk.cpp,v 1.39 2004/10/09 16:16:44 lollisoft Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.39  2004/10/09 16:16:44  lollisoft
+ * Added clean feature for linux
+ *
  * Revision 1.38  2004/06/07 20:09:17  lollisoft
  * Added support for plugins
  *
@@ -820,6 +823,17 @@ void writeLibTarget(char* modulename) {
 }
 /*...e*/
 #endif
+
+void write_clean(char* modulename = NULL) {
+    printf("clean:\n");
+    printf("\t\t-rm *.o\n");
+    if (modulename == NULL) {
+        printf("\t\t-rm *.so.*\n");
+    } else {
+	printf("\t\t-rm %s\n", modulename);
+    }
+}
+
 /*...swrite_so_Target\40\char\42\ modulename\41\ create a UNIX shared library:0:*/
 void write_so_Target(char* modulename) {
 #ifdef UNIX
@@ -1103,12 +1117,15 @@ void WriteEnding(FILE *f, char *ModuleName, TDepList *l)
 		break;
 	case ELF_TARGET:
 		writeExeTarget(ModuleName);
+		write_clean(ModuleName);
 		break;
 	case SO_TARGET:
 		write_so_Target(ModuleName);
+		write_clean();
 		break;
 	case SOPLUGIN_TARGET:
 		write_soPlugin_Target(ModuleName);
+		write_clean();
 	default:
 		break;
   }
