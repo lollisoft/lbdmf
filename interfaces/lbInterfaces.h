@@ -82,7 +82,8 @@
 #ifdef _MSC_VER
 #ifndef LB_STDCALL
  #ifdef WINDOWS
- #define LB_STDCALL __stdcall
+ #define LB_STDCALL 
+ //__stdcall
  #endif
  #ifndef WINDOWS
  #define LB_STDCALL
