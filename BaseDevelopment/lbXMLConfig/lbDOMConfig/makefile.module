@@ -35,7 +35,7 @@ OBJDEP=../../lbHook/conio.o
 VENDORLIBS="$(DEVROOT)/projects/dll/libs/xerces-c_1D.lib"
 LIBS = $(DEVROOT)/projects/dll/libs/lbhook.lib
 
-INCLS=$(DEVROOT)\CPP\BaseDevelopment\lbclasses Q:\Develop\xml\xml4csrc3_3_1\src
+INCLS=$(DEVROOT)\CPP\BaseDevelopment\lbclasses Q:\Develop\xml\xml4csrc3_3_1\src F:\develop\NT\MSC\VC98\Include
 
 ifeq ($(COMPILER), MICROSOFT)
 LIBS =
