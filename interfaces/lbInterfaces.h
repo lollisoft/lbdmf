@@ -546,9 +546,7 @@ lb_I_Module* LB_STDCALL classname::getModuleManager() { \
 \
 void LB_STDCALL classname::setModuleManager(lb_I_Module* m, char* file, int line) { \
 	if (m == NULL) { \
-		char buf[100] = ""; \
-		sprintf(buf, "Error: Set module manager with a NULL pointer in %s while setModuleManager(...)!", #classname); \
-		CL_LOG(buf); \
+		_LOG << "Error: Set module manager with a NULL pointer in " << #classname << " while setModuleManager(...)!" LOG_ \
 		return; \
 	} \
 	\
@@ -568,9 +566,7 @@ void LB_STDCALL classname::setModuleManager(lb_I_Module* m, char* file, int line
 			datei++; \
 		manager->notify_create(this, #classname, datei, line); \
 	} else { \
-		char buf[100]; \
-		sprintf(buf, "Error: Query interface failed for manager in %s while setModuleManager(...)!", #classname); \
-		CL_LOG(buf) \
+		_LOG << "Error: Query interface failed for manager in " << #classname << " while setModuleManager(...)!" LOG_ \
 	} \
 } \
 \
@@ -592,9 +588,7 @@ lbErrCodes LB_STDCALL classname::release(char* file, int line) { \
 	char ptr[20] = ""; \
 	sprintf(ptr, "%p", this); \
 	if (strcmp(ptr, (get_trackObject() == NULL) ? "" : get_trackObject()) == 0) { \
-		char buf[1000] = ""; \
-		sprintf(buf, "Release interface for instance %s called (%d) at line %d in file %s\n", ptr, ref+1, line, file); \
-		CL_LOG(buf); \
+		_LOG << "Release interface for instance " << ptr << " called (" << ref+1 << ") at line " << line << " in file " << file LOG_ \
 	} \
         if (manager != NULL) { \
         	manager->notify_release(this, #classname, file, line); \
@@ -611,10 +605,8 @@ lbErrCodes LB_STDCALL classname::release(char* file, int line) { \
         	} \
         	return ERR_NONE; \
         } \
-        char buf[1000] = ""; \
         if (ref < STARTREF) { \
-        	sprintf(buf, "Error: Reference count of instance %p of object type %s is less than %d (%d) !!!", (void*) this, #classname, STARTREF, ref); \
-        	CL_LOG(buf); \
+        	_LOG << "Error: Reference count of instance " << ptr << " of object type " << #classname << " is less than " << STARTREF << " (" << ref << ") !!!" LOG_ \
         	return ERR_REFERENCE_COUNTING; \
         } \
         return ERR_INSTANCE_STILL_USED; \
@@ -622,13 +614,6 @@ lbErrCodes LB_STDCALL classname::release(char* file, int line) { \
 \
 lb_I_Unknown* LB_STDCALL classname::clone(char* file, int line) const { \
 \
-	char ptr[20] = ""; \
-	sprintf(ptr, "%p", this); \
-	if (strcmp(ptr, (get_trackObject() == NULL) ? "" : get_trackObject()) == 0) { \
-		char buf[1000] = ""; \
-		sprintf(buf, "Query interface for instance %s called (%d) at line %d in file %s\n", ptr, ref+1, line, file); \
-		CL_LOG(buf); \
-	} \
 	classname* cloned = new classname(); \
 	cloned->setDebug(0); \
 	lb_I_Unknown* uk_this; \
@@ -661,9 +646,8 @@ lb_I_Unknown* LB_STDCALL classname::clone(char* file, int line) const { \
 	} \
 \
 	if (uk->getRefCount() > 1) { \
-		char buf[1000] = ""; \
-		sprintf(buf, "Cloned object has %d references\n", uk->getRefCount()); \
-		CL_LOG(buf); \
+		char buf[100] = ""; \
+		_LOG << "Cloned object has %d references\n" << uk->getRefCount() LOG_ \
 	} \
 	return uk; \
 \
@@ -679,13 +663,6 @@ lbErrCodes LB_STDCALL classname::queryInterface(char* name, void** unknown, char
 	} \
 	if (unknown == NULL) { \
 		sprintf(buf, "Error: Got NULL pointer reference while queryInterface() called for %s ! Did you coded it this way: (void**) &variable ?", name); \
-		CL_LOG(buf); \
-	} \
-\
-	char ptr[20] = ""; \
-	sprintf(ptr, "%p", this); \
-	if (strcmp(ptr, (get_trackObject() == NULL) ? "" : get_trackObject()) == 0) { \
-		sprintf(buf, "Query interface for instance %s called (%d) at line %d in file %s\n", ptr, ref+1, line, file); \
 		CL_LOG(buf); \
 	} \
 \
@@ -953,10 +930,7 @@ lbErrCodes LB_STDCALL classname::queryInterface(char* name, void** unknown, char
 	CL_LOG(buf); \
 	return ERR_NONE; \
 }
-/* Das geht im Makro nicht:
-//	printf("Checked interfaces: %s\n", iFaces); \
-\
-*/
+
 /*...e*/
 
 /*...sstandard functor:0:*/

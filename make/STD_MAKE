@@ -1,10 +1,13 @@
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.24 $
+# * $Revision: 1.25 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.24 2002/10/04 16:53:12 lothar Exp $
+# * $Id: STD_MAKE,v 1.25 2002/10/11 17:20:57 lothar Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.25  2002/10/11 17:20:57  lothar
+# * Before CL_LOG change
+# *
 # * Revision 1.24  2002/10/04 16:53:12  lothar
 # * Replaced old LOG macro with the new
 # * _LOG << "text" << integer value LOG_
@@ -91,7 +94,7 @@ MODE=_DEBUG
 #MODE=
 
 STD_INCL_WATCOM = -i=.;Q:\develop\Tools\WATCOM\h;Q:\develop\Tools\WATCOM\h\nt;Q:\develop\projects\cpp\interfaces;Q:\develop\projects\cpp\include;Q:\develop\projects\dll\include;Q:\develop\projects\lib\include
-STD_INCL_MICROSOFT = /I "F:\develop\NT\MSC\VC98\Include" /I "Q:\Develop\xml\xml4csrc3_3_1\src" /I "Q:\Develop\Projects\CPP\include" /I "Q:\Develop\Projects\CPP\interfaces" /I "Q:\Develop\Projects\CPP\basedevelopment\lbclasses"
+STD_INCL_MICROSOFT = /I "." /I "F:\develop\NT\MSC\VC98\Include" /I "Q:\Develop\xml\xml4csrc3_3_1\src" /I "Q:\Develop\Projects\CPP\include" /I "Q:\Develop\Projects\CPP\interfaces" /I "Q:\Develop\Projects\CPP\basedevelopment\lbclasses"
 
 STD_INCL = $(STD_INCL_WATCOM)
 
