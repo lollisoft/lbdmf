@@ -1,32 +1,12 @@
-#ifndef  __CONIO_H
-#define  __CONIO_H
 
 /*  conio.h - Einfache Nachbildung der wichtigsten
               Semigraphik-Funktionen von Borland-C unter DOS 
               (aus conio.h und dos.h)                              */
 
-#include   <stdio.h>
-#include   <signal.h>
-#include   <string.h>
-#include   <stdarg.h>
-#include   <ctype.h>
-#include   <sys/time.h>
-#include   <time.h>
-#include   <sys/types.h>
-#include   <termios.h>
-#include   <unistd.h>
-#include   <stdlib.h>
-
-/*================ Hilfsroutinen =====================================*/
-/*====================================================================*/
-
-static struct termios   alt_terminal;
-static int              alt_ttyfd = -1;
-static enum { RESET, CBREAK } tty_modus = RESET;
+#include   <conio.h>
 
 /*------ tty_cbreak --- Terminal in cbreak-Modus umschalten ----------*/
-int tty_cbreak(int fd, int echo);
-#ifdef bla
+int tty_cbreak(int fd, int echo)
 {
    struct termios  terminal;
 
@@ -43,10 +23,9 @@ int tty_cbreak(int fd, int echo);
    alt_ttyfd = fd;
    return(0);
 }
-#endif
+
 /*------ tty_reset --- Terminal in alten Modus zuruecksetzen ---------*/
-int tty_reset(int fd);
-#ifdef bla
+int tty_reset(int fd)
 {
    if (tty_modus != CBREAK)
       return(-1);
@@ -54,10 +33,9 @@ int tty_reset(int fd);
       return(-1);
    return(0);
 }
-#endif
+
 /*------ wherexy --- Aktuellen Cursorkoordinaten ermitteln ----------*/
-void wherexy(int *x, int *y);
-#ifdef bla
+void wherexy(int *x, int *y)
 {
    char *term_name = ttyname(0), vcsa_name[100] = "/dev/vcsaX";
    FILE *vcsa;
@@ -72,63 +50,40 @@ void wherexy(int *x, int *y);
    *y = fgetc(vcsa);
    fclose(vcsa);
 }
-#endif
+
 /*====================================================================*/
 /*=================== conio-Teil =====================================*/
 /*====================================================================*/
-# define  BLACK         0
-# define  RED           1
-# define  GREEN         2
-# define  BROWN         3
-# define  BLUE          4
-# define  MAGENTA       5
-# define  CYAN          6
-# define  LIGHTGRAY     7
-# define  DARKGRAY      8
-# define  LIGHTRED      9
-# define  LIGHTGREEN   10
-# define  YELLOW       11
-# define  LIGHTBLUE    12
-# define  LIGHTMAGENTA 13
-# define  LIGHTCYAN    14
-# define  WHITE        15
+void clreol(void)         { printf("\033[80X");          fflush(stdout); }
+void gotoxy(int x, int y) { printf("\033[%d;%dH", y, x); fflush(stdout); }
+void clrscr(void)         { printf("\033[H\033[J");      fflush(stdout); }
+void delline(void)        { printf("\033[1M");           fflush(stdout); }
+void insline(void)        { printf("\033[1L");           fflush(stdout); }
+void normvideo(void)      { printf("\033[0m");           fflush(stdout); }
+void highvideo(void)      { printf("\033[1m");           fflush(stdout); }
+void lowvideo(void)       { printf("\033[2m");           fflush(stdout); }
+int  wherex(void)         { int  x, y; wherexy(&x,&y);   return(x+1);    }
+int  wherey(void)         { int  x, y; wherexy(&x,&y);   return(y+1);    }
+int  putch(int zeich)     { printf("%c", zeich);         fflush(stdout); }
+int  cputs(char *string)  { printf("%s", string);        fflush(stdout); }
 
-# define BLINK       0x80
-
-#define  cscanf   scanf
-#define  cgets    gets
-
-void clreol(void);//         { printf("\033[80X");          fflush(stdout); }
-void gotoxy(int x, int y);// { printf("\033[%d;%dH", y, x); fflush(stdout); }
-void clrscr(void);//         { printf("\033[H\033[J");      fflush(stdout); }
-void delline(void);//        { printf("\033[1M");           fflush(stdout); }
-void insline(void);//        { printf("\033[1L");           fflush(stdout); }
-void normvideo(void);//      { printf("\033[0m");           fflush(stdout); }
-void highvideo(void);//      { printf("\033[1m");           fflush(stdout); }
-void lowvideo(void);//       { printf("\033[2m");           fflush(stdout); }
-int  wherex(void);//         { int  x, y; wherexy(&x,&y);   return(x+1);    }
-int  wherey(void);//         { int  x, y; wherexy(&x,&y);   return(y+1);    }
-int  putch(int zeich);//     { printf("%c", zeich);         fflush(stdout); }
-int  cputs(char *string);//  { printf("%s", string);        fflush(stdout); }
-
-void textcolor(int farbe);/* { printf("\033[2m\033[2;%d]", farbe & 0x7f);
+void textcolor(int farbe) { printf("\033[2m\033[2;%d]", farbe & 0x7f);
                             printf("\033[%dm", (farbe & 0x80) ? 5 : 25);
-                            fflush(stdout);                              }*/
+                            fflush(stdout);                              }
 
-void textbackground(int farbe);/* { printf("\033[%dm", 40+farbe%8);
-                                 fflush(stdout);                         }*/
+void textbackground(int farbe) { printf("\033[%dm", 40+farbe%8);
+                                 fflush(stdout);                         }
 
-void textattr(int attr);/*        { textcolor( attr & 0x0f );
-                                 textbackground( (attr >> 4) & 0x0f );   }*/
+void textattr(int attr)        { textcolor( attr & 0x0f );
+                                 textbackground( (attr >> 4) & 0x0f );   }
 
-void sound(unsigned frequenz);/*  { printf("\033[10;%d]", frequenz);
-                                 printf("\007");         fflush(stdout); }*/
+void sound(unsigned frequenz)  { printf("\033[10;%d]", frequenz);
+                                 printf("\007");         fflush(stdout); }
 
-void nosound(void);//             { printf("\033[10;0]");   fflush(stdout); }
+void nosound(void)             { printf("\033[10;0]");   fflush(stdout); }
 
 /*---------------------------------------------- cprintf ------------*/
-void cprintf(const char *format, ...);
-#ifdef bla
+void cprintf(const char *format, ...)
 {
    char puffer[5000];
    va_list     az;
@@ -141,10 +96,9 @@ void cprintf(const char *format, ...);
 
    va_end(az);
 }
-#endif
+
 /*------------------------------------------------ getch ------------*/
-int  getch(void);
-#ifdef bla
+int  getch(void)
 {
    int zeich;
 
@@ -157,10 +111,9 @@ int  getch(void);
    tty_reset(STDIN_FILENO);
    return(zeich);
 }
-#endif
+
 /*----------------------------------------------- getche ------------*/
-int  getche(void);
-#ifdef bla
+int  getche(void)
 {
    int zeich;
 
@@ -173,10 +126,9 @@ int  getche(void);
    tty_reset(STDIN_FILENO);
    return(zeich);
 }
-#endif
+
 /*------------------------------------------------ kbhit ------------*/
-int  kbhit(void);
-#ifdef bla
+int  kbhit(void)
 {
    fd_set          lese_menge;
    struct timeval  timeout;
@@ -204,10 +156,9 @@ int  kbhit(void);
    tty_reset(STDIN_FILENO);
    return(taste);
 }
-#endif
+
 /*------------------------------------------------ delay ------------*/
-void delay(long millisek);
-#ifdef bla
+void delay(long millisek)
 {
    int mikrosek = millisek*1000;
    struct timeval  timeout;
@@ -216,10 +167,9 @@ void delay(long millisek);
    timeout.tv_usec = mikrosek % 1000000L;
    select(0, NULL, NULL, NULL, &timeout);
 }
-#endif
+
 /*---------------------------------------------- gettext ------------*/
-int gettext(int left, int top, int right, int bottom, char *puffer);
-#ifdef bla
+int gettext(int left, int top, int right, int bottom, char *puffer)
 {
    char *term_name = ttyname(0), vcsa_name[100] = "/dev/vcsaX";
    FILE *vcsa;
@@ -232,7 +182,7 @@ int gettext(int left, int top, int right, int bottom, char *puffer);
 
    if ( (vcsa = fopen(vcsa_name, "r")) == NULL) {
       fprintf(stderr, "kann `%s' nicht oeffnen\n", vcsa_name);
-      return;
+      return -1;
    }
    fseek(vcsa, offset, SEEK_SET);
    for (i=1; i<=zeil_zahl; i++) {
@@ -242,10 +192,9 @@ int gettext(int left, int top, int right, int bottom, char *puffer);
    }
    fclose(vcsa);
 }
-#endif
+
 /*---------------------------------------------- puttext ------------*/
-int puttext(int left, int top, int right, int bottom, char *puffer);
-#ifdef bla
+int puttext(int left, int top, int right, int bottom, char *puffer)
 {
    char *term_name = ttyname(0), vcsa_name[100] = "/dev/vcsaX";
    FILE *vcsa;
@@ -257,7 +206,7 @@ int puttext(int left, int top, int right, int bottom, char *puffer);
    vcsa_name[strlen(vcsa_name)-1] = term_name[strlen(term_name)-1];
    if ( (vcsa = fopen(vcsa_name, "w")) == NULL) {
       fprintf(stderr, "kann `%s' nicht oeffnen\n", vcsa_name);
-      return;
+      return -1;
    }
    fseek(vcsa, offset, SEEK_SET);
    for (i=1; i<=zeil_zahl; i++) {
@@ -267,11 +216,10 @@ int puttext(int left, int top, int right, int bottom, char *puffer);
    }
    fclose(vcsa);
 }
-#endif
+
 /*--------------------------------------------- movetext ------------*/
 int movetext(int left, int top, int right, int bottom,
-             int zielleft, int zieltop);
-#ifdef bla
+             int zielleft, int zieltop)
 {
    char *term_name = ttyname(0), vcsa_name[100] = "/dev/vcsaX", puffer[5000];
    FILE *vcsa;
@@ -284,7 +232,7 @@ int movetext(int left, int top, int right, int bottom,
    vcsa_name[strlen(vcsa_name)-1] = term_name[strlen(term_name)-1];
    if ( (vcsa = fopen(vcsa_name, "w+")) == NULL) {
       fprintf(stderr, "kann `%s' nicht oeffnen\n", vcsa_name);
-      return;
+      return -1;
    }
 
    fseek(vcsa, offset, SEEK_SET);
@@ -303,14 +251,9 @@ int movetext(int left, int top, int right, int bottom,
    }
    fclose(vcsa);
 }
-#endif
-/*--------------------------------------- _setcursortype ------------*/
-#define _NOCURSOR      0
-#define _SOLIDCURSOR   1
-#define _NORMALCURSOR  2
 
-void _setcursortype(int cursor);
-#ifdef bla
+/*--------------------------------------- _setcursortype ------------*/
+void _setcursortype(int cursor)
 {
    if (cursor == _NOCURSOR) {
       printf("\033[?25l");
@@ -319,11 +262,9 @@ void _setcursortype(int cursor);
       printf("\033[?25h");
    fflush(stdout);
 }
-#endif
+
 /*---------------------------------------------- getpass ------------*/
-#define  MAX_PASSWORT   8  /* Maximal 8 Zeichen fuer ein Passwort */
-char *getpass(const char *prompt);
-#ifdef bla
+char *getpass(const char *prompt)
 {
    static char      puffer[MAX_PASSWORT + 1];
    char             *zgr;
@@ -365,5 +306,4 @@ char *getpass(const char *prompt);
 
    return(puffer);
 }
-#endif
-#endif  /* __CONIO_H */
+
