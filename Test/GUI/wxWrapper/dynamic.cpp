@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.46 2005/02/14 16:37:14 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.47 2005/02/20 09:38:44 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.46 $
+ * $Revision: 1.47 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.46 2005/02/14 16:37:14 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.47 2005/02/20 09:38:44 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.47  2005/02/20 09:38:44  lollisoft
+ * Removed unneeded menu entries.
+ *
  * Revision 1.46  2005/02/14 16:37:14  lollisoft
  * Much tries to get foreign key handling work under linux. But there might be some magic bugs, that don't let them use
  *
@@ -340,14 +343,9 @@ lbErrCodes LB_STDCALL lb_wxFrame::createEventsource(lb_I_EventConnector* object)
   // Make a menubar
   wxMenu *file_menu = new wxMenu;
   
-  //file_menu->Append(DYNAMIC_BUILDMENU, "&Build menu");  
   file_menu->Append(DYNAMIC_ABOUT, "&About");
-  file_menu->Append(DYNAMIC_QUIT, "E&xit");
   file_menu->Append(DYNAMIC_VERBOSE, "&Verbose");
-
-//  file_menu->Append(GUI->useEvent("DYNAMIC_ABOUT"), "&About");
-//  file_menu->Append(GUI->useEvent("DYNAMIC_QUIT"), "E&xit");
-
+  file_menu->Append(DYNAMIC_QUIT, "E&xit");
 
   menu_bar = new wxMenuBar;
   menu_bar->Append(file_menu, "&File");
