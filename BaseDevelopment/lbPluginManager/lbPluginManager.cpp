@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.2 $
+ * $Revision: 1.3 $
  * $Name:  $
- * $Id: lbPluginManager.cpp,v 1.2 2004/06/06 12:53:29 lollisoft Exp $
+ * $Id: lbPluginManager.cpp,v 1.3 2004/06/07 20:26:30 lollisoft Exp $
  *
  * $Log: lbPluginManager.cpp,v $
+ * Revision 1.3  2004/06/07 20:26:30  lollisoft
+ * Initial plugin manager implementation
+ *
  * Revision 1.2  2004/06/06 12:53:29  lollisoft
  * Include file lower case
  *
@@ -48,6 +51,7 @@
 /*...sincludes:0:*/
 #ifdef WINDOWS
 #include <windows.h>
+#include <io.h>
 #endif
 
 #ifdef __cplusplus
@@ -85,15 +89,21 @@ extern "C" {
 class lbPluginManager : public lb_I_PluginManager {
 public:
 
-	lbPluginManager() {}
-	virtual ~lbPluginManager() {}
+	lbPluginManager();
+	virtual ~lbPluginManager();
 
 	DECLARE_LB_UNKNOWN()
 
-        void LB_STDCALL beginEnumPlugins();
+        bool LB_STDCALL beginEnumPlugins();
         lb_I_Plugin* LB_STDCALL nextPlugin();
         bool LB_STDCALL attach(lb_I_Plugin* toAttach);
         bool LB_STDCALL detach(lb_I_Plugin* toAttach);
+        
+private:
+	bool begunEnumerate;
+	bool firstEnumerate;
+	
+	UAP(lb_I_Container, Plugins, __FILE__, __LINE__)
 };
 
 
@@ -104,16 +114,71 @@ END_IMPLEMENT_LB_UNKNOWN()
 
 IMPLEMENT_SINGLETON_FUNCTOR(instanceOfPluginManager, lbPluginManager)
 
+
+lbPluginManager::lbPluginManager() {
+	ref = STARTREF;
+	begunEnumerate = firstEnumerate = FALSE;
+}
+
+lbPluginManager::~lbPluginManager() {
+
+}
+
 lbErrCodes LB_STDCALL lbPluginManager::setData(lb_I_Unknown* uk) {
         _CL_LOG << "lbPluginManager::setData(...) not implemented yet" LOG_
         return ERR_NOT_IMPLEMENTED;
 }
 
-void LB_STDCALL lbPluginManager::beginEnumPlugins() {
+bool LB_STDCALL lbPluginManager::beginEnumPlugins() {
+	if (!firstEnumerate) {
+		firstEnumerate = TRUE;
+		
+		REQUEST(manager.getPtr(), lb_I_Container, Plugins)
+	}
+	
+	// Scan the plugin directory for DLL's or so's and try to get the plugin module instance.
+	// If the instance could be loaded, insert its plugin definitions into the container.
+	
+	// ...
+	
+	
+	_finddata_t find;
 
+	char* pluginDir = getenv("PLUGIN_DIR");
+	char* mask = "*.dll";
+	char* toFind = new char[strlen(mask)+strlen(pluginDir)+2];
+	toFind[0] = 0;
+	
+	strcat(toFind, pluginDir);
+	strcat(toFind, "\\");
+	strcat(toFind, mask);
+	
+	long handle = _findfirst(toFind, &find);
+	
+	if (handle != -1) {
+		printf("Plugin: %s\n", find.name);
+		while (_findnext(handle, &find) == 0) {
+			printf("Plugin: %s\n", find.name);
+		}
+		
+		_findclose(handle);
+	} else {
+		printf("No plugins found.\n");
+	}
+	
+	delete [] toFind;
+	
+	if (Plugins->hasMoreElements() == 1) return TRUE;
+	
+	return FALSE;
 }
 
 lb_I_Plugin* LB_STDCALL lbPluginManager::nextPlugin() {
+
+	if (begunEnumerate) {
+	
+	}
+
 	return NULL;
 }
 

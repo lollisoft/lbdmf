@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.71 $
+ * $Revision: 1.72 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.71 2004/05/27 08:14:53 lollisoft Exp $
+ * $Id: lbModule.cpp,v 1.72 2004/06/07 20:27:26 lollisoft Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.72  2004/06/07 20:27:26  lollisoft
+ * Initial plugin manager implementation
+ *
  * Revision 1.71  2004/05/27 08:14:53  lollisoft
  * Implemented complete MSVC IDE project. It compiles, but has runtime errors. The project files have no clear location layout.
  *
@@ -1918,6 +1921,11 @@ lb_I_FunctorEntity* LB_STDCALL lbHCInterfaceRepository::getFirstEntity() {
 	if (strcmp(searchArgument, "lb_I_Database") == 0) {
 		functor = PREFIX "instanceOfDatabase";
 		module = "lbDB";
+	}
+	
+	if (strcmp(searchArgument, "lb_I_PluginManager") == 0) {
+		functor = PREFIX "instanceOfPluginManager";
+		module = "lbPluginManager";
 	}
 	
 	if (strcmp(searchArgument, "lb_I_InterfaceRepository") == 0) {
