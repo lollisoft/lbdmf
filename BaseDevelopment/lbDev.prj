@@ -6,7 +6,6 @@
 /*...v\46\\46\\47\vendor\47\mkmk\47\contain\46\cpp:0:*/
 /*...v\46\\46\\47\vendor\47\mkmk\47\mkmk\46\cpp:0:*/
 /*...v\46\\46\\47\vendor\47\mkmk\47\makefile\46\bat:0:*/
-/*...v\46\\46\\47\vendor\47\mkmk\47\makefile:0:*/
 /*...v\46\\46\\47\vendor\47\mkmk\47\makefile\46\module:0:*/
 
 /*...e*/
@@ -70,6 +69,8 @@ These headers must define the per module (DLL) EXPORT variable
 /*...v\46\\46\\47\AppDevelopmentDemo\47\make\46\bat:0:*/
 /*...v\46\\46\\47\AppDevelopmentDemo\47\App\47\makefile:0:*/
 
+/*...v\46\\46\\47\AppDevelopmentDemo\47\DynamicApp\47\App\47\lbDynApp\46\cpp:0:*/
+
 
 /*...v\46\\46\\47\AppDevelopmentDemo\47\App\47\Application\46\cpp:0:*/
 /*...v\46\\46\\47\AppDevelopmentDemo\47\App\47\Application\46\h:0:*/
@@ -98,7 +99,6 @@ These headers must define the per module (DLL) EXPORT variable
 
 /*...v\46\\46\\47\make\47\std_make:0:*/
 /*...vlbXMLConfig\47\lbDOMConfig\47\makefile\46\bat:0:*/
-/*...vlbXMLConfig\47\lbDOMConfig\47\makefile:0:*/
 /*...vlbXMLConfig\47\lbDOMConfig\47\makefile\46\module:0:*/
 /*...e*/
 /*...e*/
@@ -123,7 +123,6 @@ These headers must define the per module (DLL) EXPORT variable
 /*...slbDB:0:*/
 /*...vlbDB\47\lbDB\46\h:0:*/
 /*...vlbDB\47\lbDB\46\cpp:0:*/
-/*...vlbDB\47\lbFakeDelete\46\cpp:0:*/
 /*...vlbDB\47\makefile:0:*/
 /*...vlbDB\47\makefile\46\module:0:*/
 /*...vlbDB\47\makefile\46\bat:0:*/
@@ -138,7 +137,6 @@ These headers must define the per module (DLL) EXPORT variable
 
 /*...e*/
 /*...slbClasses:0:*/
-/*...vlbclasses\47\lbclasses\46\lnk:0:*/
 /*...vlbclasses\47\makefile:0:*/
 /*...vlbclasses\47\makefile\46\bat:0:*/
 /*...vlbclasses\47\makefile\46\module:0:*/
@@ -192,8 +190,6 @@ These headers must define the per module (DLL) EXPORT variable
 /*...v\46\\46\\47\plugins\47\databaseform\47\lbDatabaseForm\46\cpp:0:*/
 /*...v\46\\46\\47\plugins\47\databaseform\47\makefile\46\bat:0:*/
 /*...v\46\\46\\47\plugins\47\databaseform\47\makefile\46\module:0:*/
-/*...v\46\\46\\47\plugins\47\databaseform\47\makefile\46\sh:0:*/
-/*...v\46\\46\\47\plugins\47\databaseform\47\makefile:0:*/
 /*...e*/
 /*...sTest:0:*/
 /*...v\46\\46\\47\Test\47\GUI\47\wxwrapper\47\wxwrapper\46\lnk:0:*/
@@ -283,20 +279,7 @@ These headers must define the per module (DLL) EXPORT variable
 /*...vd\58\\92\export\45\29\45\03\45\2001\92\Artikel\45\Karte\46\csv:0:*/
 /*...e*/
 
-/*...sweb:0:*/
-/*...v\46\\46\\47\\46\\46\\47\web\47\index\46\html:0:*/
-/*...v\46\\46\\47\\46\\46\\47\web\47\logo\46\html:0:*/
-/*...v\46\\46\\47\\46\\46\\47\web\47\main\46\html:0:*/
-/*...v\46\\46\\47\\46\\46\\47\web\47\navi\46\html:0:*/
-/*...v\46\\46\\47\\46\\46\\47\web\47\de\47\navi\46\html:0:*/
-/*...v\46\\46\\47\\46\\46\\47\web\47\wolle\47\wolle\46\html:0:*/
-/*...v\46\\46\\47\\46\\46\\47\web\47\swdev\47\main\46\html:0:*/
-/*...v\46\\46\\47\\46\\46\\47\web\47\eldev\47\main\46\html:0:*/
-
-
-/*...v\46\\46\\47\\46\\46\\47\web\47\de\47\screens\46\html:0:*/
-/*...v\46\\46\\47\\46\\46\\47\web\47\screens\46\html:0:*/
-/*...e*/
+/*...v\46\\46\\47\\46\\46\\47\web\46\prj:0:*/
 
 
 /*...sComponents:0:*/
