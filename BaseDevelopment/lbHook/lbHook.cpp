@@ -152,10 +152,12 @@ DLLEXPORT HINSTANCE LB_STDCALL getLBModuleHandle() {
 }
 
 DLLEXPORT void LB_STDCALL setModuleHandle(HINSTANCE h) {
+	printf("setModuleHandle(HINSTANCE h) called.\n");
 	ModuleHandle = h;
 }
 
 DLLEXPORT void LB_STDCALL setLBModuleHandle(HINSTANCE h) {
+	printf("setLBModuleHandle(HINSTANCE h) called.\n");
 	LB_Module_Handle = h;
 }
 
@@ -177,13 +179,33 @@ int lb_isInitializing = 0;
  
 /*...slbErrCodes LB_STDCALL lbLoadModule\40\const char\42\ name\44\ HINSTANCE \38\ hinst\41\:0:*/
 lbErrCodes LB_STDCALL lbLoadModule(const char* name, HINSTANCE & hinst) {
-#ifdef WINDOWS
 	printf("Lade Modul %s.\n", name);
-
+#ifdef WINDOWS
         if ((hinst = LoadLibrary(name)) == NULL)
         {
             printf("Kann DLL '%s' nicht laden.\n", name); 
-            //getch(); 
+            
+            LPVOID lpMsgBuf;
+	    if (!FormatMessage( 
+	      FORMAT_MESSAGE_ALLOCATE_BUFFER | 
+	      FORMAT_MESSAGE_FROM_SYSTEM | 
+	      FORMAT_MESSAGE_IGNORE_INSERTS,
+	      NULL,
+	      GetLastError(),
+	      MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
+	      (LPTSTR) &lpMsgBuf,
+	      0,
+	      NULL ))
+	    {
+	      // Handle the error.
+	      return ERR_MODULE_NOT_FOUND;
+	    }
+
+	    MessageBox( NULL, (LPCTSTR)lpMsgBuf, "Error", MB_OK | MB_ICONINFORMATION );
+
+            // Free the buffer.
+            LocalFree( lpMsgBuf );
+            
             return ERR_MODULE_NOT_FOUND;
         }
 #endif
@@ -195,6 +217,7 @@ lbErrCodes LB_STDCALL lbLoadModule(const char* name, HINSTANCE & hinst) {
 	    return ERR_MODULE_NOT_FOUND;
 	}
 #endif
+        printf("Modul erfolgreich geladen\n");
         return ERR_NONE;
 }
 /*...e*/
