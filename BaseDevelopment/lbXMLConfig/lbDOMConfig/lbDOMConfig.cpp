@@ -1,11 +1,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.16 $
+ * $Revision: 1.17 $
  * $Name:  $
- * $Id: lbDOMConfig.cpp,v 1.16 2001/10/04 19:28:32 lothar Exp $
+ * $Id: lbDOMConfig.cpp,v 1.17 2001/12/08 11:51:12 lothar Exp $
  *
  * $Log: lbDOMConfig.cpp,v $
+ * Revision 1.17  2001/12/08 11:51:12  lothar
+ * Modified line 896 due to compilation errors
+ *
  * Revision 1.16  2001/10/04 19:28:32  lothar
  * Current version seems to work good (without big memory holes)
  *
@@ -81,7 +84,9 @@
 
 #include <conio.h>
 
+#ifdef WINDOWS
 #include <windows.h>
+#endif
 
 #include <lbConfigHook.h>
 
@@ -89,7 +94,7 @@
 
 #include <lbDOMConfig.h>
 
-#include <lbKey.h>
+#include <lbkey.h>
 /*...e*/
 
 int initialized = 0;
@@ -180,9 +185,12 @@ int lbKey::greater(const lb_I_KeyBase* _key) const {
 
 char* lbKey::charrep() {
     char buf[100];
-
+#ifdef WINDOWS
     itoa(key, buf, 10);
-    
+#endif
+#ifdef LINUX
+    sprintf(buf, "%d", key);
+#endif    
     return strdup(buf);
 }
 /*...e*/
@@ -235,7 +243,12 @@ int lbKeyUL::greater(const lb_I_KeyBase* _key) const {
 char* lbKeyUL::charrep() {
     char buf[100];
 
+#ifdef WINDOWS
     itoa(key, buf, 10);
+#endif
+#ifdef LINUX
+    sprintf(buf, "%d", key);
+#endif    
     
     return strdup(buf);
 }
@@ -883,7 +896,7 @@ lbErrCodes LB_STDCALL lbDOMNode::getAttributeValue(const char* name, char*& attr
 		return ERR_UNSPECIFIED;
 	}
 	
-	DOM_Attr an_attr = (DOM_Attr&) attributeMap.getNamedItem(DOMString(name));	
+	DOM_Node an_attr = attributeMap.getNamedItem(DOMString(name));	
 	
 	if (an_attr == NULL) {
 		CL_LOG("Error: Attribute not found");
@@ -891,27 +904,34 @@ lbErrCodes LB_STDCALL lbDOMNode::getAttributeValue(const char* name, char*& attr
 		return ERR_UNSPECIFIED;
 	}
 	
-	DOMString value = an_attr.getValue();
-
+	DOMString value = an_attr.getNodeValue();
+#ifdef bla
 	attr = value.transcode();
 	
 	char buf[100] = "";
-	
+
 	if (attr != NULL) value.deletetranscoded(attr);
 	attr = NULL;
+#endif
 	char* result = value.transcode();
 	
 	attr = strdup(result);
+#ifdef WINDOWS
 	value.deletetranscoded(result);
-		
+#endif		
 	return ERR_NONE;
 }
 /*...e*/
 /*...slbDOMNode\58\\58\deleteValue\40\\46\\46\\46\\41\:0:*/
 lbErrCodes LB_STDCALL lbDOMNode::deleteValue(char*& attr) {
 	DOMString value = DOMString();
+#ifdef WINDOWS
 	value.deletetranscoded(attr);
-	
+#endif
+#ifdef LINUX
+	delete attr;
+	attr = NULL;
+#endif	
 	return ERR_NONE;
 }
 /*...e*/

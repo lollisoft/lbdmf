@@ -1,11 +1,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.2 $
+ * $Revision: 1.3 $
  * $Name:  $
- * $Id: lbDOMConfig.h,v 1.2 2001/07/11 16:04:33 lothar Exp $
+ * $Id: lbDOMConfig.h,v 1.3 2001/12/08 11:51:12 lothar Exp $
  *
  * $Log: lbDOMConfig.h,v $
+ * Revision 1.3  2001/12/08 11:51:12  lothar
+ * Modified line 896 due to compilation errors
+ *
  * Revision 1.2  2001/07/11 16:04:33  lothar
  * First version of module management that hold's a little stresstest
  *
@@ -20,7 +23,7 @@
 #define __LB_DOM_CONFIG__
 
 /*...sincludes:0:*/
-#include <lbErrCodes.h>
+#include <lbErrcodes.h>
 #include <lbInterfaces.h>
 /*...e*/
 
