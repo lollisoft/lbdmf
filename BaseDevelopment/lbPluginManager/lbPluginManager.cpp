@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.12 $
+ * $Revision: 1.13 $
  * $Name:  $
- * $Id: lbPluginManager.cpp,v 1.12 2005/03/15 14:43:52 lollisoft Exp $
+ * $Id: lbPluginManager.cpp,v 1.13 2005/03/15 22:26:40 lollisoft Exp $
  *
  * $Log: lbPluginManager.cpp,v $
+ * Revision 1.13  2005/03/15 22:26:40  lollisoft
+ * More changes on OSX to compile plugins
+ *
  * Revision 1.12  2005/03/15 14:43:52  lollisoft
  * Changes for linux to build and let GUI running with plugins
  *
@@ -284,8 +287,10 @@ void LB_STDCALL lbPluginManager::initialize() {
 #ifdef LINUX
 	char* mask = "*.so";
 #endif
+#ifndef LINUX
 #ifdef OSX
 	char* mask = "*.so";
+#endif
 #endif
 
 	char* pluginDir = getenv("PLUGIN_DIR");
@@ -299,8 +304,10 @@ void LB_STDCALL lbPluginManager::initialize() {
 #ifdef LINUX
 	strcat(toFind, "/");
 #endif
+#ifndef LINUX
 #ifdef OSX
 	strcat(toFind, "/");
+#endif
 #endif
 	strcat(toFind, mask);
 

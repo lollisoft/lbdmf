@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.36 $
+# * $Revision: 1.37 $
 # * $Name:  $
-# * $Id: Makefile,v 1.36 2005/03/15 22:17:52 lollisoft Exp $
+# * $Id: Makefile,v 1.37 2005/03/15 22:26:39 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.37  2005/03/15 22:26:39  lollisoft
+# * More changes on OSX to compile plugins
+# *
 # * Revision 1.36  2005/03/15 22:17:52  lollisoft
 # * mkmk and make process under linux improoved
 # *
@@ -165,6 +168,8 @@ ALLTARGETS = \
 	lbMetaApplication \
 	lbclasses \
 	lbDB \
+	lbPluginManager \
+	../Plugins/DatabaseForm \
 	../AppDevelopmentDemo/App \
 	../AppDevelopmentDemo/DynamicApp/App \
 	../Test/GUI/wxWrapper \

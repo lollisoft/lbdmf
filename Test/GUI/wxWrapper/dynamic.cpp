@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.58 2005/03/15 20:52:29 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.59 2005/03/15 22:26:50 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.58 $
+ * $Revision: 1.59 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.58 2005/03/15 20:52:29 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.59 2005/03/15 22:26:50 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.59  2005/03/15 22:26:50  lollisoft
+ * More changes on OSX to compile plugins
+ *
  * Revision 1.58  2005/03/15 20:52:29  lollisoft
  * Removed from now on unused code.
  *
@@ -2206,7 +2209,7 @@ _LOG << "Initialized metaapplication" LOG_
 #endif
 
 // Not yet working under Mac OS X, not yet tested under Linux
-#ifndef OSX
+//#ifndef OSX
 //#ifndef LINUX
 /*
  * Try to load all plugins and initialize it.
@@ -2237,7 +2240,7 @@ _LOG << "Initialized metaapplication" LOG_
 	printf("Tested plugin manager\n");
 
 //#endif
-#endif
+//#endif
 
 #ifdef LB_I_EXTENTIONS
   if (metaApp != NULL) metaApp->run();

@@ -38,7 +38,7 @@
 extern "C" {
 #endif
 
-#include <conio.h>
+//#include <conio.h>
 
 #ifdef __WATCOMC__
 #include <ctype.h>
@@ -48,7 +48,12 @@ extern "C" {
 #endif
 
 #include <stdio.h>
+#ifndef OSX
 #include <malloc.h>
+#endif
+#ifdef OSX
+#include <sys/malloc.h>
+#endif
 
 #include <lbConfigHook.h>
 #include <lbInterfaces.h>
