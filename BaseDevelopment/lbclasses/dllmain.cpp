@@ -51,7 +51,7 @@ BOOL WINAPI DllMain(HINSTANCE dllHandle, DWORD reason, LPVOID situation) {
                         break;
                 case DLL_THREAD_DETACH:
                         break;
-                derault:
+                default:
                         return FALSE;
         }
         
