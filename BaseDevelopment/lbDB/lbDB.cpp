@@ -234,6 +234,7 @@ public:
 	virtual char*		LB_STDCALL getColumnName(int col);
 
 	virtual int		LB_STDCALL hasFKColumn(char* FKName);
+	virtual lb_I_String*	LB_STDCALL getPKTable(char* FKName);
 
 	virtual bool		LB_STDCALL isNull(int pos);
 
@@ -1077,6 +1078,38 @@ int LB_STDCALL lbQuery::hasFKColumn(char* FKName) {
 }
 /*...e*/
 
+lb_I_String* LB_STDCALL lbQuery::getPKTable(char* FKName) {
+	lbErrCodes err = ERR_NONE;
+
+
+	if (skipFKCollections == 1) {
+		_CL_VERBOSE << "Warning: Skipping for checking of foreign columns." LOG_
+		return NULL;
+	}
+	
+	UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, s)
+	
+	s->setData(FKName);
+	
+	QI(s, lb_I_KeyBase, key, __FILE__, __LINE__)
+	
+	if (ForeignColumns->exists(&key) == 1) {
+		UAP(lb_I_String, string, __FILE__, __LINE__)
+		UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
+		
+		uk = ForeignColumns->getElement(&key)->clone(__FILE__, __LINE__);
+		
+		QI(uk, lb_I_String, string, __FILE__, __LINE__)
+
+		string++;
+		
+		return string.getPtr();
+	}
+
+	return NULL;
+}
+
 /*...svoid LB_STDCALL lbQuery\58\\58\prepareFKList\40\\41\:0:*/
 void LB_STDCALL lbQuery::prepareFKList() {
 	#define TAB_LEN 100
@@ -1092,7 +1125,6 @@ void LB_STDCALL lbQuery::prepareFKList() {
 	    return;
 	}
 
-	#ifdef bla
 /*...sOriginally for windows:8:*/
 
 	unsigned char*   szTable;     /* Table to display   */
@@ -1170,16 +1202,12 @@ void LB_STDCALL lbQuery::prepareFKList() {
 
 	SQLFreeStmt(hstmt, SQL_DROP);
 /*...e*/
-	#endif
+
 
 // MySQL does not yet support Foreign keys or my tests with type INNODB doesn't work
-// Force to use manual queries.
+// Fallback to use manual queries.
 
-#ifdef WINDOWS
-#define UNIX
-#endif
-		
-	#ifdef UNIX
+	if (ForeignColumns->Count() == 0) {		
 /*...sOriginally for Linux:8:*/
 	lbErrCodes err = ERR_NONE;
 	
@@ -1244,12 +1272,7 @@ void LB_STDCALL lbQuery::prepareFKList() {
 	    }
 	}
 /*...e*/
-	#endif
-	
-#ifdef WINDOWS
-#undef UNIX
-#endif		
-
+	}
 }
 /*...e*/
 
@@ -2265,9 +2288,6 @@ lbErrCodes LB_STDCALL lbBoundColumn::bindColumn(lb_I_Query* q, int column) {
 		printf("Error: Failed to get column description for column %d.\n", column);
 		q->dbError("SQLDescribeCol()");
 	}
-
-	printf("Got this data type: %d. Prepared was %d\n", DataType, _DataType);
-
 
 	REQUEST(manager.getPtr(), lb_I_String, colName)
 	colName->setData((char*) ColumnName);
