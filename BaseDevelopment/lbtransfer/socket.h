@@ -62,6 +62,8 @@
 enum LB_SOCK_STATE {
 	LB_SOCK_UNINITIALIZED,
 	LB_SOCK_CONNECTED,
+	LB_SOCK_CLOSED,
+	LB_SOCK_LISTENING
 };
 
 class lb_Transfer_Data;
@@ -72,8 +74,8 @@ class lbSocket {
 public:
         lbSocket();
 	lbSocket(const lbSocket& s);
-        ~lbSocket() {}
-
+        virtual ~lbSocket();
+        
 	/**
 	 * Is this object valid ?
 	 */
@@ -130,6 +132,7 @@ private:
 	
 	lbMutex* mutex;
 
+	static int sockUse;
 
 #ifdef WINDOWS
 
@@ -159,7 +162,7 @@ private:
   unsigned long destAddr; // for client init
 #endif
   int _isServer;
-  LB_SOCK_STATE state;
+  LB_SOCK_STATE lbSockState;
 };
 
 #endif // _LB_SOCKET_
