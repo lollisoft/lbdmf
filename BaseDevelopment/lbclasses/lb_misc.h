@@ -1,9 +1,13 @@
+/*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.1 $
+ * $Revision: 1.2 $
  * $Name:  $
- * $Id: lb_misc.h,v 1.1 2000/07/06 06:19:40 lolli Exp $
+ * $Id: lb_misc.h,v 1.2 2001/02/06 20:38:18 lolli Exp $
  * $Log: lb_misc.h,v $
+ * Revision 1.2  2001/02/06 20:38:18  lolli
+ * Commit for backup the data
+ *
  * Revision 1.1  2000/07/06 06:19:40  lolli
  * Readded (possibly to new location)
  *
@@ -17,14 +21,17 @@
  * Added logging / and a new class for debug via log
  *
  **************************************************************/
+/*...e*/
 
 #ifndef _MISC_
 #define _MISC_
 
+/*...sincludes:0:*/
 #include <time.h>
 #include <string.h>
 #include <iostream.h>
 #include <stdio.h>
+/*...e*/
 
 /*...sDLLEXPORT:0:*/
 #undef DLLEXPORT
@@ -46,62 +53,70 @@
 #endif
 /*...e*/
 
+/*...sifdef __cplusplus:0:*/
 #ifdef __cplusplus
 extern "C" {
 #endif
-
+/*...e*/
 void DLLEXPORT lb_sleep(int ms);
+/*...sendif __cplusplus:0:*/
 #ifdef __cplusplus
 }
 #endif
+/*...e*/
 
 #define TRUE 1
 #define FALSE 0
 
 class lbMutex;
 
-class DLLEXPORT lbLog {
+/*...sclass lbLog:0:*/
+class DLLEXPORT lbLog : public lb_I_Log {
 
+/*...spublic:0:*/
 public:
 
     lbLog();
     lbLog(int l);
 
-    static void log(const char *msg, long line, char* file);
+    void log(const char *msg, long line, char* file);
 
-    static void logdirect(const char *msg, char *f, int level);
+    void logdirect(const char *msg, char *f, int level);
     
-    static void log(int log);
+    void log(int log);
 
-    static void enable(char *where);
+    void enable(char *where);
     
-    static void disable(char *where);
+    void disable(char *where);
     
-    static void event_begin(char *event);
+    void event_begin(char *event);
 
-    static void event_end(char *event);
+    void event_end(char *event);
 
-    static void setPrefix(char* p);
+    void setPrefix(char* p);
+/*...e*/
 
+/*...sprivate:0:*/
     private:
 
-    static char prefix[100];
-    static int level;    
-    static int doLog;
-    static int firstlog;
-    static clock_t start_time, end_time;
-    static char lastevent[100];
-    static int beinlog;
-    static char f[100];
-    static lbMutex* mutex;
-};
+    char prefix[100];
+    int level;    
+    int doLog;
+    int firstlog;
+    clock_t start_time, end_time;
+    char lastevent[100];
+    int beinlog;
+    char f[100];
+    lbMutex* mutex;
+/*...e*/
 
-#define LOG(msg)	 lbLog::log(msg, __LINE__, __FILE__)
-#define LOGENABLE        lbLog::enable
-#define LOGDISABLE       lbLog::disable
-#define LOGSTART         lbLog::event_begin
-#define LOGEND           lbLog::event_end
-#define LOGPREFIX(a)     lbLog::setPrefix(a)
+/*...slb_I_Log:0:*/
+/*...e*/
+
+
+};
+/*...e*/
+
 
 extern lbCritSect sect;
 

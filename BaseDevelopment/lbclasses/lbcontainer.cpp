@@ -4,10 +4,13 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.6 $
+ * $Revision: 1.7 $
  * $Name:  $
- * $Id: lbcontainer.cpp,v 1.6 2000/10/05 22:56:45 lothar Exp $
+ * $Id: lbcontainer.cpp,v 1.7 2001/02/06 20:38:18 lolli Exp $
  * $Log: lbcontainer.cpp,v $
+ * Revision 1.7  2001/02/06 20:38:18  lolli
+ * Commit for backup the data
+ *
  * Revision 1.6  2000/10/05 22:56:45  lothar
  * Most changes are interface issues
  *
@@ -62,6 +65,8 @@ lbErrCodes DLLEXPORT getContainerInstance(lb_I_Container*& inst, const char* typ
 }
 
 
+/*...slbContainer:0:*/
+/*...slbContainer\58\\58\lbContainer\40\\41\:0:*/
 lbContainer::lbContainer() {
     iteration = 0;
     ref = 0;
@@ -69,28 +74,32 @@ lbContainer::lbContainer() {
     count = 0;
 //    lbLog l = lbLog(); // Initialize logging
 }
-
+/*...e*/
+/*...slbContainer\58\\58\\126\lbContainer\40\\41\:0:*/
+lbContainer::~lbContainer() {
+}
+/*...e*/
+/*...slbContainer\58\\58\lbContainer\40\const lbContainer \38\ c\41\:0:*/
 lbContainer::lbContainer(const lbContainer & c) {
     iteration = c.iteration;
     iterator = c.iterator;
     count = c.count;
     ref = c.ref;
 }
-
+/*...e*/
+/*...slbContainer\58\\58\operator\61\ \40\const lbContainer \38\ c\41\:0:*/
 lb_I_Container& lbContainer::operator= (const lbContainer & c) {
     iteration = c.iteration;
     iterator = c.iterator;
     count = c.count;
     return *this;
 }
-
-lbContainer::~lbContainer() {
-}
-
+/*...e*/
+/*...slbContainer\58\\58\Count\40\\41\:0:*/
 int lbContainer::Count() {
 	return count;
 }
-
+/*...e*/
 /*...slbErrCodes lbContainer\58\\58\insert\40\const lb_I_Object \38\e\44\ const lb_I_KeyBase \38\key\41\:0:*/
 lbErrCodes lbContainer::insert(const lb_I_Object &e, const lb_I_KeyBase &key) {
 	lbErrCodes err = ERR_NONE;
@@ -104,7 +113,6 @@ lbErrCodes lbContainer::insert(const lb_I_Object &e, const lb_I_KeyBase &key) {
 	return err;
 }
 /*...e*/
-
 /*...slbErrCodes lbContainer\58\\58\remove\40\const lb_I_KeyBase \38\key\41\:0:*/
 lbErrCodes lbContainer::remove(const lb_I_KeyBase &key) {
 	lbErrCodes err = ERR_NONE;
@@ -118,17 +126,22 @@ lbErrCodes lbContainer::remove(const lb_I_KeyBase &key) {
 	return err;
 }
 /*...e*/
+/*...e*/
 
+/*...slbComponentDictionary:0:*/
+/*...slbComponentDictionary\58\\58\lbComponentDictionary\40\\41\:0:*/
 lbComponentDictionary::lbComponentDictionary() : lbContainer() {
     data = NULL;
 }
-
+/*...e*/
+/*...slbComponentDictionary\58\\58\lbComponentDictionary\40\\46\\46\\46\\41\:0:*/
 lbComponentDictionary::lbComponentDictionary(const lbComponentDictionary & c) {
     iteration = c.iteration;
     iterator = c.iterator;
     count = c.count;
 }
-
+/*...e*/
+/*...slbComponentDictionary\58\\58\operator\61\ \40\\46\\46\\46\\41\:0:*/
 lbComponentDictionary& lbComponentDictionary::operator= (const lbComponentDictionary & c) {
     iteration = c.iteration;
     iterator = c.iterator;
@@ -137,14 +150,14 @@ lbComponentDictionary& lbComponentDictionary::operator= (const lbComponentDictio
     ref++;
     return *this;
 }
-
-
+/*...e*/
+/*...slbComponentDictionary\58\\58\\126\lbComponentDictionary\40\\41\:0:*/
 lbComponentDictionary::~lbComponentDictionary() {
 	ref --;
 	if (ref < 0) LOG("Error, reference count not implemented corectly!");
 	if (ref == 0) deleteAll();
 }
-
+/*...e*/
 /*...slbComponentDictionary\58\\58\clone\40\\41\:0:*/
 lb_I_Container* lbComponentDictionary::clone() {
 //lbLock lock(containerSection, "containerSection");
@@ -160,7 +173,6 @@ lb_I_Container* lbComponentDictionary::clone() {
 	return dic;
 }
 /*...e*/
-
 /*...slbComponentDictionary\58\\58\deleteAll\40\\41\:0:*/
 void lbComponentDictionary::deleteAll() {
 /*...sCLASSES_VERBOSE:0:*/
@@ -182,7 +194,6 @@ if (e == NULL) LOG("NULL pointer");
         count = 0;
 }
 /*...e*/
-
 /*...slbComponentDictionary\58\\58\_insert\40\\46\\46\\46\\41\:0:*/
 lbErrCodes lbComponentDictionary::_insert(const lb_I_Object &e, const lb_I_KeyBase &key) {
 
@@ -234,7 +245,6 @@ LOG("lbComponentDictionary::insert(...) Inserting first element");
     return ERR_NONE;      
 }
 /*...e*/
-
 /*...slbComponentDictionary\58\\58\_remove\40\\46\\46\\46\\41\:0:*/
 lbErrCodes lbComponentDictionary::_remove(const lb_I_KeyBase &key) {
 //    lbLock lock(containerSection, "containerSection");
@@ -263,7 +273,7 @@ lbErrCodes lbComponentDictionary::_remove(const lb_I_KeyBase &key) {
     return ERR_CONTAINER_REMOVE;
 }
 /*...e*/
-
+/*...slbComponentDictionary\58\\58\exists\40\\46\\46\\46\\41\:0:*/
 int lbComponentDictionary::exists(const lb_I_KeyBase &key) {
 /*...sCLASSES_VERBOSE:0:*/
 #ifdef CLASSES_VERBOSE
@@ -273,7 +283,8 @@ int lbComponentDictionary::exists(const lb_I_KeyBase &key) {
     if (getElement(key) == NULL) return 0;
     return 1;
 }
-
+/*...e*/
+/*...slbComponentDictionary\58\\58\hasMoreElements\40\\41\:0:*/
 int lbComponentDictionary::hasMoreElements() {
 //lbLock lock(containerSection, "containerSection");
     if (iteration == 0) {
@@ -289,7 +300,8 @@ int lbComponentDictionary::hasMoreElements() {
 
     return 1;
 }
-
+/*...e*/
+/*...slbComponentDictionary\58\\58\nextElement\40\\41\:0:*/
 lbElement* lbComponentDictionary::nextElement() {
 //    lbLock lock(containerSection, "containerSection");
     lbElement *temp = iterator;
@@ -297,7 +309,8 @@ lbElement* lbComponentDictionary::nextElement() {
 	
     return temp;
 }
-
+/*...e*/
+/*...slbComponentDictionary\58\\58\nextObject\40\\41\:0:*/
 lb_I_Object* lbComponentDictionary::nextObject() {
 //    lbLock lock(containerSection, "containerSection");
     
@@ -312,9 +325,8 @@ lb_I_Object* lbComponentDictionary::nextObject() {
 
     return temp->getObject();
 }
-
-
-
+/*...e*/
+/*...slbComponentDictionary\58\\58\getElement\40\\46\\46\\46\\41\:0:*/
 lb_I_Object* lbComponentDictionary::getElement(const lb_I_KeyBase &key) {
 /*...sCLASSES_VERBOSE:0:*/
 #ifdef CLASSES_VERBOSE
@@ -343,17 +355,21 @@ lb_I_Object* lbComponentDictionary::getElement(const lb_I_KeyBase &key) {
 /*...e*/
     return NULL;
 }
-
+/*...e*/
+/*...slbComponentDictionary\58\\58\setElement\40\\46\\46\\46\\41\:0:*/
 void lbComponentDictionary::setElement(lb_I_KeyBase &key, lb_I_Object const &e) {
 //    lbLock lock(containerSection, "containerSection");
     remove(key);
     insert(e, key);
 }
- 
+/*...e*/
+/*...slbComponentDictionary\58\\58\getObject\40\\41\:0:*/
 lb_I_Object* lbComponentDictionary::getObject() {
 //    lbLock lock(containerSection, "containerSection");
     return data->getObject();
 }
+/*...e*/
+/*...e*/
 
 lbElement::lbElement(const lb_I_Object &o, const lb_I_KeyBase &_key, lbElement *_next) {
 /*...sCLASSES_VERBOSE:0:*/

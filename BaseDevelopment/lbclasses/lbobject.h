@@ -4,10 +4,13 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.6 $
+ * $Revision: 1.7 $
  * $Name:  $
- * $Id: lbobject.h,v 1.6 2000/10/05 22:56:45 lothar Exp $
+ * $Id: lbobject.h,v 1.7 2001/02/06 20:38:18 lolli Exp $
  * $Log: lbobject.h,v $
+ * Revision 1.7  2001/02/06 20:38:18  lolli
+ * Commit for backup the data
+ *
  * Revision 1.6  2000/10/05 22:56:45  lothar
  * Most changes are interface issues
  *
@@ -38,8 +41,10 @@
 #ifndef _LB_OBJECT_
 #define _LB_OBJECT_
 
-/*...sDLLEXPORT:0:*/
+
 #undef DLLEXPORT
+#ifdef LB_LOADTIME_LINK
+/*...sDLLEXPORT:0:*/
 
 #ifdef LB_CONTAINER_DLL
 
@@ -57,7 +62,10 @@
 
 #endif
 /*...e*/
-
+#endif
+#ifdef LB_RUNTIME_LINK
+#define DLLEXPORT
+#endif
 
 #include <stdio.h>
 #include <lbInterfaces.h>
