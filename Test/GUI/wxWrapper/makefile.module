@@ -54,10 +54,6 @@ LIBRS =	libr $(WATCOMLIBS)$(SLASH)kernel32.lib \
 	libr $(WATCOMLIBS)$(SLASH)wsock32.lib \
 	libr $(WATCOMLIBS)$(SLASH)winmm.lib
 
-#	$(WATCOMLIBS)$(SLASH)winspool.lib, \
-#	odbc32.lib \
-#	odbccp32.lib \
-
 
 # use global setup
 #COMPILER=MICROSOFT
