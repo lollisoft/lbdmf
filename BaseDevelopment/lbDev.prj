@@ -23,6 +23,8 @@ These headers must define the per module (DLL) EXPORT variable
 /*...vlbHook\47\STD_MAKE:0:*/
 /*...vlbHook\47\lbHook\46\cpp:0:*/
 
+
+
 /*...v\46\\46\\47\interfaces\47\lbInterfaces\46\h:0:*/
 /*...v\46\\46\\47\interfaces\47\lbInterfaces\45\sub\45\transfer\46\h:0:*/
 /*...v\46\\46\\47\interfaces\47\lbInterfaces\45\sub\45\xml\46\h:0:*/
@@ -51,9 +53,17 @@ These headers must define the per module (DLL) EXPORT variable
 
 /*...vlbXMLConfig\47\lbDOMConfig\47\lbDOMConfig\46\h:0:*/
 /*...vlbXMLConfig\47\lbDOMConfig\47\lbDOMConfig\46\cpp:0:*/
+
+
+/*...v\46\\46\\47\make\47\std_make:0:*/
+/*...vlbXMLConfig\47\lbDOMConfig\47\makefile:0:*/
+/*...vlbXMLConfig\47\lbDOMConfig\47\makefile\46\module:0:*/
 /*...e*/
 /*...e*/
 /*...slbModule:0:*/
+/*...vlbModule\47\lbModule\46\lnk:0:*/
+/*...vlbModule\47\makefile:0:*/
+/*...vlbModule\47\makefile\46\module:0:*/
 /*...vlbModule\47\MAKE_BEFORE:0:*/
 /*...vlbModule\47\MAKE_AFTER:0:*/
 /*...vlbModule\47\STD_MAKE:0:*/
@@ -78,6 +88,9 @@ These headers must define the per module (DLL) EXPORT variable
 /*...vlbclasses\47\MAKE_BEFORE:0:*/
 /*...vlbclasses\47\MAKE_AFTER:0:*/
 /*...vlbclasses\47\STD_MAKE:0:*/
+
+/*...vlbclasses\47\makefile:0:*/
+
 
 /*...vlbclasses\47\lb_misc\46\h:0:*/
 /*...vlbclasses\47\misc\46\cpp:0:*/
@@ -132,6 +145,8 @@ findfunctorname
 /*...v\46\\46\\47\AppDevelopment\47\Console\47\xml\47\MAKE_BEFORE:0:*/
 /*...v\46\\46\\47\AppDevelopment\47\Console\47\xml\47\MAKE_AFTER:0:*/
 /*...v\46\\46\\47\AppDevelopment\47\Console\47\xml\47\STD_MAKE:0:*/
+/*...v\46\\46\\47\AppDevelopment\47\Console\47\xml\47\makefile:0:*/
+/*...v\46\\46\\47\AppDevelopment\47\Console\47\xml\47\makefile\46\module:0:*/
 /*...v\46\\46\\47\AppDevelopment\47\Console\47\xml\47\test\46\cpp:0:*/
 /*...e*/
 
@@ -146,7 +161,6 @@ findfunctorname
 /*...v\46\\46\\47\vendor\47\mkmk\47\makefile\46\bat:0:*/
 /*...v\46\\46\\47\vendor\47\mkmk\47\makefile:0:*/
 /*...v\46\\46\\47\vendor\47\mkmk\47\makefile\46\module:0:*/
-/*...v\46\\46\\47\vendor\47\mkmk\47\makefile\46\template:0:*/
 /*...v\46\\46\\47\vendor\47\mkmk\47\mkmk\46\lnk:0:*/
 
 /*...e*/
@@ -159,12 +173,6 @@ findfunctorname
 /*...v\46\\46\\47\\46\\46\\47\\46\\46\\47\xml\47\xml4csrc3_3_1\47\src\47\util\47\Transcoders\47\Win32\47\Win32TransService\46\cpp:0:*/
 /*...v\46\\46\\47\\46\\46\\47\\46\\46\\47\xml\47\xml4csrc3_3_1\47\src\47\util\47\RefHashTableOf\46\c:0:*/
 /*...v\46\\46\\47\\46\\46\\47\\46\\46\\47\xml\47\xml4csrc3_3_1\47\src\47\util\47\XMLString\46\cpp:0:*/
-
-
-
-
-/*...vf\58\\47\develop\47\NT\47\MSC\47\include\47\basetsd\46\h:0:*/
-
 /*...e*/
 
 
@@ -209,6 +217,7 @@ findfunctorname
 /*...ve\58\\92\powwow\92\projects\92\waterboy\45\SQL\92\waterboy\45\07\45\02\45\2001\46\sql:0:*/
 /*...ve\58\\92\powwow\92\projects\92\waterboy\45\SQL\92\SQLAbfragen\92\abfrage\46\sql:0:*/
 
+/*...vq\58\\92\develop\92\projects\92\cpp\92\vendor\92\dbfill\92\test\46\cpp:0:*/
 /*...vq\58\\92\develop\92\projects\92\cpp\92\vendor\92\dbfill\92\dbfill\46\cpp:0:*/
 /*...vq\58\\92\develop\92\projects\92\cpp\92\vendor\92\dbfill\92\scripts\92\nettopreise\46\txt:0:*/
 /*...vq\58\\92\develop\92\projects\92\cpp\92\vendor\92\dbfill\92\scripts\92\auswertung\46\bat:0:*/
