@@ -341,6 +341,26 @@ public:
 	        	_file = NULL; \
 	        	allowDelete = 1; \
 		} \
+		\
+		UAP##Unknown_Reference(const UAP##Unknown_Reference& _ref) { \
+			_file = NULL; \
+			if (_ref._file) { \
+				_file = new char [strlen(_ref._file) + 1]; \
+				_file = strcpy(_file, _ref._file); \
+			} \
+			_line = _ref._line; \
+		} \
+		void operator=(const UAP##Unknown_Reference& _ref) { \
+			if (_file != NULL) { \
+				delete [] _file; \
+				if (_ref._file) { \
+					_file = new char [strlen(_ref._file) + 1]; \
+					_file = strcpy(_file, _ref._file); \
+				} \
+			} \
+			_line = _ref._line; \
+		} \
+		\
 		virtual ~UAP##Unknown_Reference() { \
 			if (_autoPtr != NULL) { \
 				if (allowDelete != 1) { \
@@ -351,6 +371,7 @@ public:
 				if (_line == -1) { \
 				} \
 				RELEASE_1(_autoPtr, _file, _line); \
+				if (_file) delete [] _file; \
 			} \
 		} \
 		void LB_STDCALL setFile(char* __file) { \
@@ -448,6 +469,25 @@ public:
 	        	_file = strdup(""); \
 	        	allowDelete = 1; \
 		} \
+		UAP##Unknown_Reference(const UAP##Unknown_Reference& _ref) { \
+	        	_file = NULL; \
+		        if (_ref._file) { \
+		                _file = new char [strlen(_ref._file) + 1]; \
+		                _file = strcpy(_file, _ref._file); \
+		        } \
+		        _line = _ref._line; \
+		} \
+		void operator=(const UAP##Unknown_Reference& _ref) { \
+		        if (_file != NULL) { \
+		                delete [] _file; \
+		                if (_ref._file) { \
+		                        _file = new char [strlen(_ref._file) + 1]; \
+		                        _file = strcpy(_file, _ref._file); \
+		                } \
+		        } \
+		        _line = _ref._line; \
+		} \
+		\
 		virtual ~UAP##Unknown_Reference() { \
 			if (_autoPtr != NULL) { \
 				if (allowDelete != 1) { \
