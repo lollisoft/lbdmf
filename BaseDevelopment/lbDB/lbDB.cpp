@@ -128,11 +128,15 @@ public:
          */
         lbErrCodes      LB_STDCALL setQuery(lbQuery* q);
         
-        char*		LB_STDCALL getChar(int column);
+        /**
+         * Convert the internal data to a char array and return the data.
+         */
+        lbErrCodes	LB_STDCALL getString(int column, lb_I_String* instance);
+        lbErrCodes	LB_STDCALL getString(char* column, lb_I_String* instance);
 
 
 	UAP(lb_I_Container, boundColumns, __FILE__, __LINE__)
-
+	UAP(lb_I_Integer, integerKey, __FILE__, __LINE__)
 };
 /*...e*/
 /*...sclass def lbQuery:0:*/
@@ -171,12 +175,17 @@ public:
         virtual lbErrCodes LB_STDCALL query(char* q);
         
         /* Navigation */
-        virtual lbErrCodes LB_STDCALL first();
-        virtual lbErrCodes LB_STDCALL next();
-        virtual lbErrCodes LB_STDCALL previous();
-        virtual lbErrCodes LB_STDCALL last();
-        virtual char* LB_STDCALL getChar(int column);
-        
+        virtual lbErrCodes	LB_STDCALL first();
+        virtual lbErrCodes	LB_STDCALL next();
+        virtual lbErrCodes	LB_STDCALL previous();
+        virtual lbErrCodes	LB_STDCALL last();
+
+#ifdef UNBOUND
+        virtual char* 		LB_STDCALL getChar(int column);
+#endif
+#ifndef UNBOUND       
+        virtual lb_I_String*	LB_STDCALL getAsString(int column);
+#endif        
 	
 	lbErrCodes LB_STDCALL init(HENV henv, HDBC _hdbc);
 	int LB_STDCALL getColCount();
@@ -203,8 +212,13 @@ private:
 	int	databound;
 	int     firstfetched;
 	int	_readonly;
-	
+
+#ifdef UNBOUND	
 	UAP(lb_I_Container, boundColumns, __FILE__, __LINE__)
+#endif
+#ifndef UNBOUND
+	UAP(lb_I_ColumnBinding, boundColumns, __FILE__, __LINE__)
+#endif
 	int count;
 };
 /*...e*/
@@ -215,7 +229,12 @@ public:
 		bound = 0;
 		buffer = NULL;
 	}
-	virtual ~lbBoundColumn() {}
+	virtual ~lbBoundColumn() {
+		if ((bound != 0) && (buffer != NULL)) {
+			free(buffer);
+			buffer = NULL;
+		}
+	}
 	
 	DECLARE_LB_UNKNOWN()
 
@@ -227,6 +246,17 @@ public:
 	lbErrCodes LB_STDCALL bindColumn(lbQuery* q, int column);
 	
 protected:
+
+	virtual lbErrCodes  LB_STDCALL setData(int b, SQLSMALLINT dt, void* bu) {
+		bound = b;
+		_DataType = dt;
+		buffer = bu;
+		return ERR_NONE;
+	}
+
+	// I call my self to leave my ownership
+	virtual lbErrCodes LB_STDCALL leaveOwnership(lb_I_BoundColumn* oldOwner, lb_I_BoundColumn* newOwner);
+
 	int		bound;
 	SQLSMALLINT     _DataType;
 	void*		buffer;
@@ -279,6 +309,7 @@ lbErrCodes      LB_STDCALL lbBoundColumns::setBoundColumns(lb_I_Container* bc) {
 	return ERR_NONE;
 }
 
+/*...slbErrCodes      LB_STDCALL lbBoundColumns\58\\58\setQuery\40\lbQuery\42\ q\41\:0:*/
 lbErrCodes      LB_STDCALL lbBoundColumns::setQuery(lbQuery* q) {
 
 	HSTMT hstmt = q->getCurrentStatement();
@@ -307,7 +338,12 @@ Therefore I need an indicator, set by the user of this library to know, which on
 /* Done in lbBoundColumns later ...
 	if (q->isReadonly() == 1) {
 */
+
+	// Request bound columns holder and key helper
+	// Warning: This function should only called once yet.
 	REQUEST(manager.getPtr(), lb_I_Container, boundColumns)
+	REQUEST(manager.getPtr(), lb_I_Integer, integerKey)
+	
 
 	// For each column create a bound column instance.
 	// The instance will bind the column.
@@ -318,9 +354,18 @@ Therefore I need an indicator, set by the user of this library to know, which on
 		lbBoundColumn* bc = new lbBoundColumn();
 		
 		bc->setModuleManager(*&manager, __FILE__, __LINE__);
-printf("Bind column %d.\n", i);
+		printf("Bind column %d.\n", i);
 		bc->bindColumn(q, i);
 		
+		integerKey->setData(i);
+		
+		UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
+		UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
+
+		bc->queryInterface("lb_I_Unknown", (void**) &uk, __FILE__, __LINE__);
+		integerKey->queryInterface("lb_I_KeyBase", (void**) &key, __FILE__, __LINE__);		
+		
+		boundColumns->insert(&uk, &key);
 	}
 /*
 	} else {
@@ -328,6 +373,34 @@ printf("Bind column %d.\n", i);
 	}
 */
 
+	return ERR_NONE;
+}
+/*...e*/
+/*...slbErrCodes      LB_STDCALL lbBoundColumns\58\\58\getString\40\int column\44\ lb_I_String\42\ instance\41\:0:*/
+lbErrCodes	LB_STDCALL lbBoundColumns::getString(int column, lb_I_String* instance) {
+	lbErrCodes err = ERR_NONE;
+
+	if (boundColumns != NULL) {
+		integerKey->setData(column);
+		
+		UAP(lb_I_Unknown, ukdata, __FILE__, __LINE__)
+		UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
+		
+		QI(integerKey, lb_I_KeyBase, key, __FILE__, __LINE__)
+		ukdata = boundColumns->getElement(&key);
+
+		if (ukdata == NULL) printf("NULL pointer!\n");
+
+		UAP(lb_I_BoundColumn, bc, __FILE__, __LINE__)
+		lbErrCodes err = ukdata->queryInterface("lb_I_BoundColumn", (void**) &bc, __FILE__, __LINE__);
+
+		bc->getAsString(instance);
+	}
+
+	return ERR_NONE;
+}
+/*...e*/
+lbErrCodes	LB_STDCALL lbBoundColumns::getString(char* column, lb_I_String* instance) {
 	return ERR_NONE;
 }
 /*...e*/
@@ -553,8 +626,15 @@ char* LB_STDCALL lbQuery::getChar(int column) {
 }
 #endif
 #ifndef UNBOUND
-char* LB_STDCALL lbQuery::getChar(int column) {
-	return NULL;
+lb_I_String* LB_STDCALL lbQuery::getAsString(int column) {
+	UAP_REQUEST(manager.getPtr(), lb_I_String, string)
+	
+	// Caller get's an owner
+	string++;
+	
+	boundColumns->getString(column, *&string);
+	
+	return string.getPtr();;
 }
 #endif
 /*...e*/
@@ -841,7 +921,37 @@ END_IMPLEMENT_LB_UNKNOWN()
 
 lbErrCodes LB_STDCALL lbBoundColumn::setData(lb_I_Unknown* uk) {
         _CL_LOG << "lbBoundColumn::setData(...) not implemented yet" LOG_
+        
+        lbErrCodes err = ERR_NONE;
+        
+        UAP(lb_I_BoundColumn, column, __FILE__, __LINE__)
+        
+        QI(uk, lb_I_BoundColumn, column, __FILE__, __LINE__)
+        
+        /**
+         * I cannot use normal use of setData, because the internal pointers would
+         * be copied to others. The ODBC bound column instead uses the old pointer.
+         *
+         * There must be a way to carry the pointer from one instance to another,
+         * then set the old pointer to NULL (NO FREE or DELETE).
+         * If the pointer would be deleted due to instance cleanup, the ODBC driver
+         * would write to an deleted pointer.
+         */
+
+
+	leaveOwnership(*&column, this);
+
+        
         return ERR_NOT_IMPLEMENTED;
+}
+
+lbErrCodes LB_STDCALL lbBoundColumn::leaveOwnership(lb_I_BoundColumn* oldOwner, lb_I_BoundColumn* newOwner) {
+
+	newOwner->setData(oldOwner->getBound(), oldOwner->get_DataType(), oldOwner->buffer);
+	oldOwner->bound = 0;
+	oldOwner->buffer = NULL;
+
+	return ERR_NONE;
 }
 
 lb_I_Unknown* LB_STDCALL lbBoundColumn::getData() {
@@ -850,7 +960,22 @@ lb_I_Unknown* LB_STDCALL lbBoundColumn::getData() {
 }
 
 lbErrCodes LB_STDCALL lbBoundColumn::getAsString(lb_I_String* result) {
-	_CL_LOG << "lbBoundColumn::getAsString(...) not implemented yet" LOG_
+	
+	switch (_DataType) {
+	        case SQL_CHAR:
+	        case SQL_VARCHAR:
+	        case SQL_LONGVARCHAR:
+	        	result->setData((char*) buffer);
+	        	break;
+	        case SQL_INTEGER:
+	        	char charrep[100] = "";
+	        	sprintf(charrep, "%d", buffer);
+	        	result->setData(charrep);
+	        	break;
+	        default:
+	        	_CL_LOG << "lbBoundColumn::bindColumn(...) failed: Unknown or not supported datatype" LOG_
+	        	break;
+	}
 	return ERR_NONE;
 }
 
@@ -860,7 +985,7 @@ lbErrCodes LB_STDCALL lbBoundColumn::setFromString(lb_I_String* set) {
 }
 
 lbErrCodes LB_STDCALL lbBoundColumn::bindColumn(lbQuery* q, int column) {
-        _CL_LOG << "lbBoundColumn::bindColumn(...) not implemented yet" LOG_
+//        _CL_LOG << "lbBoundColumn::bindColumn(...) not implemented yet" LOG_
 
 	HSTMT hstmt = q->getCurrentStatement();
 
