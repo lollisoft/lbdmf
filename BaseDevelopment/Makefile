@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.28 $
+# * $Revision: 1.29 $
 # * $Name:  $
-# * $Id: Makefile,v 1.28 2005/03/02 20:05:57 lollisoft Exp $
+# * $Id: Makefile,v 1.29 2005/03/03 08:33:56 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.29  2005/03/03 08:33:56  lollisoft
+# * Added plugins to compile
+# *
 # * Revision 1.28  2005/03/02 20:05:57  lollisoft
 # * Added new module lbLoginWizard and bugfixes
 # *
@@ -174,6 +177,8 @@ ALLTARGETS = \
 	lbModule \
 	lbclasses \
 	lbMetaApplication \
+	lbPluginManager \
+	../Plugins/DatabaseForm \
 	../AppDevelopmentDemo/App \
 	../AppDevelopmentDemo/DynamicApp/App \
 	../Test/Console/XML \
@@ -230,7 +235,7 @@ ifeq ($(OSTYPE), Windows_NT)
 	$(MAKE) -C $@
 
 ../Test/GUI/wxModules: dummy
-	$(MAKE) -C $@ -e MODULE=lbLoginWizard -e TARGET=$(TARGETDLL) -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
+	$(MAKE) -C $@ -e MODULE=lbLoginWizard -e TARGET=plugin -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
 	$(MAKE) -C $@
 endif
 
@@ -243,6 +248,10 @@ endif
 
 ../AppDevelopmentDemo/DynamicApp/App: dummy
 	$(MAKE) -C $@ -e MODULE=lbDynApp -e TARGET=$(TARGETDLL) -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
+	$(MAKE) -C $@
+
+../Plugins/DatabaseForm: dummy
+	$(MAKE) -C $@ -e MODULE=lbDatabaseForm -e TARGET=plugin -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
 	$(MAKE) -C $@
 
 lbHook: dummy
