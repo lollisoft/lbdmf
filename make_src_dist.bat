@@ -6,6 +6,7 @@ if not EXIST "dist" mkdir dist
 if not EXIST "dist\Develop" mkdir dist\Develop
 if not EXIST "dist\Develop\Projects" mkdir dist\Develop\Projects
 if not EXIST "dist\Develop\Projects\dll" mkdir dist\Develop\Projects\dll
+if not EXIST "dist\Develop\Projects\bin" mkdir dist\Develop\Projects\bin
 if not EXIST "dist\Develop\Projects\lib" mkdir dist\Develop\Projects\lib
 if not EXIST "dist\Develop\Projects\dll\include" mkdir dist\Develop\Projects\dll\include
 if not EXIST "dist\Develop\Projects\lib\include" mkdir dist\Develop\Projects\lib\include
