@@ -1613,6 +1613,73 @@ public:
 };
 /*...e*/
 
+class lb_I_Plugin;
+
+/*
+ * The plugin manager should handle automatic loading of exsisting plugins and optionally
+ * unload plugins by a plugin management dialog.
+ */
+/*...sclass lb_I_PluginManager:0:*/
+class lb_I_PluginManager : public lb_I_Unknown {
+public:
+
+	/**
+	 * Starts listing of plugins.
+	 */
+	virtual void LB_STDCALL beginEnumPlugins() = 0;
+	
+	/**
+	 * Gets the next plugin handle instance. This does not
+	 * load an instance of the plugin implementation.
+	 *
+	 * To finally use the plugin, you must attach to it.
+	 */
+	virtual lb_I_Plugin* LB_STDCALL nextPlugin() = 0;
+	
+	/**
+	 * Attach the plugin implementation to the plugin handle.
+	 * After attaching the plugin, you will be able to init
+	 * the plugin via the initialize() function.
+	 */
+	virtual bool LB_STDCALL attach(lb_I_Plugin* toAttach) = 0;
+	
+	/** 
+	 * Detach it. If it returns true, it could be destroyed or
+	 * stored permanently for replacing with other implementation.
+	 */
+	virtual bool LB_STDCALL detach(lb_I_Plugin* toAttach) = 0;
+};
+/*...e*/
+
+/*
+ * The plugin module is a class per module, that should list all included plugins for one
+ * module. This should be similar to the BEGIN_IMPLEMENT_UNKNOWN and ADD_INTERFACE macros.
+ */
+/*...sclass lb_I_PluginModule:0:*/
+class lb_I_PluginModule : public lb_I_Unknown {
+public:
+
+};
+/*...e*/
+
+/*
+ * Interface for single plugin. This should be a wrapper to the plugin implementation.
+ */
+/*...sclass lb_I_Plugin:0:*/
+class lb_I_Plugin : public lb_I_Unknown {
+public:
+
+};
+/*...e*/
+
+/*...sclass lb_I_PluginImpl:0:*/
+class lb_I_PluginImpl : public lb_I_Unknown {
+public:
+
+};
+/*...e*/
+
+
 class lb_I_String;
 
 #include <lbInterfaces-sub-xml.h>
