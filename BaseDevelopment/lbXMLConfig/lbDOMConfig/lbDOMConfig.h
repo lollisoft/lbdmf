@@ -28,11 +28,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.8 $
+ * $Revision: 1.9 $
  * $Name:  $
- * $Id: lbDOMConfig.h,v 1.8 2003/07/17 18:51:42 lollisoft Exp $
+ * $Id: lbDOMConfig.h,v 1.9 2003/07/31 20:10:54 lollisoft Exp $
  *
  * $Log: lbDOMConfig.h,v $
+ * Revision 1.9  2003/07/31 20:10:54  lollisoft
+ * Changed functor name
+ *
  * Revision 1.8  2003/07/17 18:51:42  lollisoft
  * Begin develop a hopefully faster and less memory consuming
  * XML wrapper.
@@ -80,7 +83,7 @@ extern "C" {
 /*...e*/
 
 DECLARE_FUNCTOR(getlbDOMConfigInstance)
-DECLARE_FUNCTOR(getlbInterfaceRepository)
+DECLARE_FUNCTOR(instanceOfInterfaceRepository)
 /*...s\35\ifdef __cplusplus \125\:0:*/
 #ifdef __cplusplus
 #ifdef WINDOWS
