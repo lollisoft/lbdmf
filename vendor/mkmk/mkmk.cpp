@@ -11,11 +11,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.20 $
+ * $Revision: 1.21 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.20 2001/11/20 20:05:15 lothar Exp $
+ * $Id: mkmk.cpp,v 1.21 2001/11/21 22:30:01 lothar Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.21  2001/11/21 22:30:01  lothar
+ * Much changes to make lib makefiles working
+ *
  * Revision 1.20  2001/11/20 20:05:15  lothar
  * Changed linking object files
  *
@@ -551,6 +554,20 @@ char* TIncludeParser::BasicParse(char *FileName)
 /*...e*/
 /*...e*/
 
+/*...svoid ObjExt\40\char \42\s\44\ char \42\ObjName\44\ int Len\41\:0:*/
+void ObjExt(char *s, char *ObjName, int Len)
+{
+  int l;
+
+  memset(ObjName,0,Len);
+  l=strlen(s)-1;
+  if (l<1) return;
+  while (l>=0 && s[l]!='.') l--;
+  if (l>=0 && l<Len) memcpy(ObjName,s,l+1);
+  strcat(ObjName,"$(OBJ)");
+}
+/*...e*/
+
 /*...swriteExeTarget\40\char\42\ modulename\41\:0:*/
 void writeExeTarget(char* modulename) {
 #ifdef UNIX
@@ -602,6 +619,68 @@ void writeDllTarget(char* modulename) {
 #endif
 }
 /*...e*/
+/*...swriteLibTarget\40\char\42\ modulename\44\ TDepList\42\ l\41\:0:*/
+void writeLibTarget(char* modulename, TDepList* l) {
+#ifdef UNIX
+//  printf("\n%s: $(OBJS)\n", modulename);
+//  printf("\t\t$(CC) $(L_OPS) %s $(OBJS) $(OBJDEP)\n",modulename);
+#endif
+#ifdef __WATCOMC__
+  char* ModName = strdup(modulename);
+  char** array;
+  int count = split('.', ModName, &array);
+
+  printf("FILE = FIL\n");
+  printf("FILE += $(foreach s, $(OBJS),$s, )\n");
+  printf("LNK=%s.lnk\n", ModName);
+  printf("PROGRAM=%s\n", ModName);
+  
+  printf("\n%s.lib: $(OBJS)\n", ModName);
+//  printf("\t\techo $(PROGRAM).$(OBJ) > $(LNK)\n");
+//  printf("\t\techo $(FILE) $(LIBS) >> $(LNK)\n");
+//  printf("\t\techo LIBR $(LIBS) >> $(LNK)\n");
+
+
+//  printf("\t\twlib -b -c -n -q -p=512 lbhook.lib @lbhook.lb1
+
+  TDepItem *d;
+  char FName[80] = "";
+
+  printf("\t\t$(RM) $(LNK)\n");
+
+  for (int i=0; i<l->Count; i++)
+  {
+    d=(TDepItem*)(*l)[i];
+    
+    ObjExt(d->Name,FName,sizeof(FName));
+
+    printf("\t\techo +%s >> $(LNK)\n", FName);
+  }
+  
+  printf("\t\twlib -b -c -n -q -p=512 $(PROGRAM).lib @$(LNK)\n");
+//  printf("\t\t$(LINK) $(LNKDLLOPS) @$(LNK)\n");
+  printf("\t\t$(CP) $(PROGRAM).lib $(LIBDIR)\n");
+#endif
+}
+/*...e*/
+#ifdef bla
+/*...swriteLibTarget\40\char\42\ modulename\41\:0:*/
+void writeLibTarget(char* modulename) {
+#ifdef UNIX
+  printf("\n%s: $(OBJS)\n", modulename);
+  printf("\t\t$(CC) $(L_OPS) %s $(OBJS) $(OBJDEP)\n",modulename);
+#endif
+#ifdef __WATCOMC__
+  #ifdef VERBOSE
+  printf("Making a lib target\n");
+  #endif
+  printf("%s: $(OBJS) $(LIBS)\n",modulename);
+  printf("\t\t*$(WLIB) $(LIB_OPS_LIB) %s \\\n", modulename);
+  printf("\t\t$(OBJS)\n");
+#endif
+}
+/*...e*/
+#endif
 /*...swrite_so_Target\40\char\42\ modulename\41\ create a UNIX shared library:0:*/
 void write_so_Target(char* modulename) {
 #ifdef UNIX
@@ -675,19 +754,6 @@ void WriteHeader(FILE *f, char *ExeName)
   printf("#File dependencies:\n\n");
 }
 /*...e*/
-/*...svoid ObjExt\40\char \42\s\44\ char \42\ObjName\44\ int Len\41\:0:*/
-void ObjExt(char *s, char *ObjName, int Len)
-{
-  int l;
-
-  memset(ObjName,0,Len);
-  l=strlen(s)-1;
-  if (l<1) return;
-  while (l>=0 && s[l]!='.') l--;
-  if (l>=0 && l<Len) memcpy(ObjName,s,l+1);
-  strcat(ObjName,"$(OBJ)");
-}
-/*...e*/
 /*...svoid ListFiles\40\FILE \42\f\44\ char \42\Line\44\ TDepList \42\l\44\ bool IsObj\61\false\41\:0:*/
 void ListFiles(FILE *f, char *Line, TDepList *l, bool IsObj=false)
 {
@@ -728,6 +794,9 @@ void WriteDep(FILE *f, char *Name, TIncludeParser *p)
   ListFiles(f,Line,&p->l);
 
   switch (targettype) {
+  	case LIB_TARGET:
+		printf("\t\t$(CC) $(C_OPS) $(MOD_INCL) %s\n\n",Name);
+		break;
   	case DLL_TARGET:
 		printf("\t\t$(CC) $(C_OPS) $(MOD_INCL) %s\n\n",Name);
 		break;
@@ -753,7 +822,7 @@ void WriteEnding(FILE *f, char *ModuleName, TDepList *l)
   ListFiles(f,Line,l,true);
 
 #ifndef UNIX
-  printf("LIBS = $(DEVROOT)\\projects\\dll\\libs\\lbhook.lib \n");
+  printf("LIBS = $(DEVROOT)\\projects\\lib\\lbhook.lib \n");
 #endif
 
 #ifdef WATCOM_MAKE
@@ -797,6 +866,9 @@ void WriteEnding(FILE *f, char *ModuleName, TDepList *l)
   switch (targettype) {
   	case DLL_TARGET:
 		writeDllTarget(ModuleName);
+		break;
+  	case LIB_TARGET:
+		writeLibTarget(ModuleName, l);
 		break;
 	case EXE_TARGET:
 		writeExeTarget(ModuleName);
