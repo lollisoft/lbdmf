@@ -17,7 +17,7 @@ DefaultGroupName=lbDMF
 Name: "desktopicon"; Description: "Create a &desktop icon"; GroupDescription: "Additional icons:"; MinVersion: 4,4
 
 [Files]
-Source: "c:\log\readme.txt"; DestDir: "c:\log"; CopyMode: alwaysoverwrite
+Source: "c:\log\*.*"; DestDir: "c:\log"; CopyMode: alwaysoverwrite
 Source: "Q:\develop\Tools\cygwin\bin\sh.exe"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
 Source: "Q:\develop\Tools\cygwin\bin\cp.exe"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
 Source: "Q:\develop\Tools\cygwin\bin\cat.exe"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
@@ -48,7 +48,7 @@ Source: "Q:\Develop\Projects\plugins\*.dll"; DestDir: "{app}\Develop\Projects\pl
 [Icons]
 Name: "{group}\lbDMF Develop"; Filename: "{app}\watcomenv.bat"; WorkingDir: "{app}\develop\projects\cpp\BaseDevelopment"
 Name: "{userdesktop}\lbDMF Develop"; Filename: "{app}\watcomenv.bat"; MinVersion: 4,4; Tasks: desktopicon; WorkingDir: "{app}\develop\projects\cpp\BaseDevelopment"
-Name: "{userdesktop}\lbDMF Help"; Filename: "{app}\develop\projects\cpp\Doc\html\index.html"; MinVersion: 4,4; Tasks: desktopicon; WorkingDir: "{app}\develop\projects\cpp\BaseDevelopment"
+;Name: "{userdesktop}\lbDMF Help"; Filename: "{app}\develop\projects\cpp\Doc\html\index.html"; MinVersion: 4,4; Tasks: desktopicon; WorkingDir: "{app}\develop\projects\cpp\BaseDevelopment"
 
 [Run]
 ;Filename: "{app}\watcomenv.bat"; Description: "Launch My Program"; Flags: shellexec postinstall skipifsilent
