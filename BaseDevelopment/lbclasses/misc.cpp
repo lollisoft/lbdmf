@@ -1,10 +1,13 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.8 $
+ * $Revision: 1.9 $
  * $Name:  $
- * $Id: misc.cpp,v 1.8 2001/05/04 17:16:25 lolli Exp $
+ * $Id: misc.cpp,v 1.9 2001/07/11 16:04:35 lolli Exp $
  * $Log: misc.cpp,v $
+ * Revision 1.9  2001/07/11 16:04:35  lolli
+ * First version of module management that hold's a little stresstest
+ *
  * Revision 1.8  2001/05/04 17:16:25  lolli
  * Use of MACRO DECLARE_FUNCTOR works.
  * Removed unused code
@@ -45,7 +48,10 @@
  **************************************************************/
 /*...e*/
 
-#define LB_CONTAINER_DLL
+/*...sLB_CLASSES_DLL scope:0:*/
+#define LB_CLASSES_DLL
+#include <lbclasses-module.h>
+/*...e*/
 
 #include <iostream.h>
 #include <stdio.h>
@@ -54,8 +60,9 @@
 //#include <lbInclude.h>
 
 #include <stdarg.h>
-#include <windef.h>
-#include <winbase.h>
+#include <windows.h>
+//#include <windef.h>
+//#include <winbase.h>
 
 #include <lbInterfaces.h>
 #include <lbConfigHook.h>
@@ -70,22 +77,27 @@ public:
 
     lbLog();
     lbLog(int l);
+/*...e*/
 
-    void log(const char *msg, long line, char* file);
 
-    void logdirect(const char *msg, char *f, int level);
+    DECLARE_LB_UNKNOWN()
+
+/*...slb_I_Log:0:*/
+    virtual void LB_STDCALL log(const char *msg, long line, char* file);
+
+    virtual void LB_STDCALL logdirect(const char *msg, char *f, int level);
     
-    void log(int log);
+    virtual void LB_STDCALL log(int log);
 
-    void enable(char *where);
+    virtual void LB_STDCALL enable(char *where);
     
-    void disable(char *where);
+    virtual void LB_STDCALL disable(char *where);
     
-    void event_begin(char *event);
+    virtual void LB_STDCALL event_begin(char *event);
 
-    void event_end(char *event);
+    virtual void LB_STDCALL event_end(char *event);
 
-    void setPrefix(char* p);
+    virtual void LB_STDCALL setPrefix(char* p);
 /*...e*/
 
 /*...sprivate:0:*/
@@ -101,12 +113,6 @@ public:
     static char f[100];
     static lb_I_Mutex* mutex;
 /*...e*/
-
-    DECLARE_LB_UNKNOWN()
-
-/*...slb_I_Log:0:*/
-/*...e*/
-
 
 };
 /*...e*/
@@ -159,7 +165,7 @@ lbErrCodes LB_STDCALL lbLog::setData(lb_I_Unknown* uk) {
 lbLog::lbLog() {
 //lbLock lbLock(sect);
         strcpy(f, "c:\\log\\wsmaster.log");
-//        logdirect("lbLog::lbLog(): Creating mutex for logfile", f, level);
+        logdirect("lbLog::lbLog(): Creating mutex for logfile", f, level);
 
         if (firstlog == 0) {
                 mutex = new lbMutex();
@@ -168,8 +174,8 @@ lbLog::lbLog() {
 
         firstlog = 1;
         doLog = 1;
-        
-        CL_LOG("Creating mutex for logfile");
+
+	char buf[100] = "";
     }
 /*...e*/
 /*...slbLog\58\\58\lbLog\40\int l\41\:0:*/
@@ -189,7 +195,7 @@ lbLog::lbLog(int l) {
     }
 /*...e*/
 /*...slbLog\58\\58\logdirect\40\\46\\46\\46\\41\:0:*/
-void lbLog::logdirect(const char *msg, char *f, int level) {
+void LB_STDCALL lbLog::logdirect(const char *msg, char *f, int level) {
                 FILE *fp;
                 fp = fopen( f, "a" );
                 if( fp != NULL ) {
@@ -210,30 +216,35 @@ void lbLog::logdirect(const char *msg, char *f, int level) {
 }
 /*...e*/
 /*...slbLog\58\\58\log\40\\46\\46\\46\\41\:0:*/
-void lbLog::log(const char *msg, long line, char* file) {
+void LB_STDCALL lbLog::log(const char *msg, long line, char* file) {
 //lbLock lbLock(sect, "lbLockSection");
+printf("Called lbLog::log(...)\n");
         if (firstlog == 0) lbLog log = lbLog();
-
+printf("Enter mutex\n");
         mutex->enter(); 
+printf("Entered mutex\n");
         
         if (doLog == TRUE) {
                 char *m = (char*) malloc(strlen(msg)+sizeof(line)+strlen(file)+10);
 
                 sprintf(m, "%s: %d - %s", file, line, msg);
+                printf("Call logdirect\n");
                 logdirect(m, f, level);
+                printf("Called logdirect\n");
                 free(m);
         }
         mutex->release();
+printf("Released mutex\n");
 }
 /*...e*/
 /*...slbLog\58\\58\log\40\int log\41\:0:*/
-void lbLog::log(int log) {
+void LB_STDCALL lbLog::log(int log) {
         if (firstlog == 0) lbLog log = lbLog();
         doLog = log;
 }
 /*...e*/
 /*...slbLog\58\\58\setPrefix\40\char\42\ p\41\:0:*/
-void lbLog::setPrefix(char* p) {
+void LB_STDCALL lbLog::setPrefix(char* p) {
 //cout << "lbLog::setPrefix(char* p) called" << endl;
         {
                 //lbLock lbLock(sect, "lbLockSection");
@@ -242,7 +253,7 @@ void lbLog::setPrefix(char* p) {
 }
 /*...e*/
 /*...slbLog\58\\58\enable\40\char \42\where\41\:0:*/
-void lbLog::enable(char *where) {
+void LB_STDCALL lbLog::enable(char *where) {
         char buf[100];
         doLog = TRUE;
         
@@ -259,7 +270,7 @@ void lbLog::enable(char *where) {
 }
 /*...e*/
 /*...slbLog\58\\58\disable\40\char \42\where\41\:0:*/
-void lbLog::disable(char *where) {
+void LB_STDCALL lbLog::disable(char *where) {
         char buf[100];
         
         if (firstlog == 0) lbLog log = lbLog();
@@ -281,7 +292,7 @@ void lbLog::disable(char *where) {
 }
 /*...e*/
 /*...slbLog\58\\58\event_begin\40\char \42\event\41\:0:*/
-void lbLog::event_begin(char *event) {
+void LB_STDCALL lbLog::event_begin(char *event) {
         if (firstlog == 0) lbLog log = lbLog();
         if (doLog == TRUE) {
             beinlog = 1;
@@ -292,7 +303,7 @@ void lbLog::event_begin(char *event) {
 }
 /*...e*/
 /*...slbLog\58\\58\event_end\40\char \42\event\41\:0:*/
-void lbLog::event_end(char *event) {
+void LB_STDCALL lbLog::event_end(char *event) {
         char buf[100];
         if (firstlog == 0) lbLog log = lbLog();
 

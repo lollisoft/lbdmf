@@ -4,10 +4,13 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.9 $
+ * $Revision: 1.10 $
  * $Name:  $
- * $Id: lbobject.h,v 1.9 2001/06/21 06:35:15 lolli Exp $
+ * $Id: lbobject.h,v 1.10 2001/07/11 16:04:35 lolli Exp $
  * $Log: lbobject.h,v $
+ * Revision 1.10  2001/07/11 16:04:35  lolli
+ * First version of module management that hold's a little stresstest
+ *
  * Revision 1.9  2001/06/21 06:35:15  lolli
  * Added lbInteger and lbLong
  *
@@ -47,33 +50,13 @@
 #ifndef _LB_OBJECT_
 #define _LB_OBJECT_
 
-/*...sDLLEXPORT:0:*/
-#undef DLLEXPORT
-
-#ifdef LB_CONTAINER_DLL
-
-#ifdef WINDOWS
-#define DLLEXPORT __declspec(dllexport)
-#endif
-
-#endif
-
-#ifndef LB_CONTAINER_DLL
-
-#ifdef WINDOWS
-#define DLLEXPORT __declspec(dllimport)
-#endif
-
-#endif
-/*...e*/
-
 /*...sbla:0:*/
 #ifdef bla
 #undef DLLEXPORT
 #ifdef LB_LOADTIME_LINK
 /*...sDLLEXPORT:0:*/
 
-#ifdef LB_CONTAINER_DLL
+#ifdef LB_CLASSES_DLL
 
 #ifdef WINDOWS
 #define DLLEXPORT __declspec(dllexport)
@@ -81,7 +64,7 @@
 
 #endif
 
-#ifndef LB_CONTAINER_DLL
+#ifndef LB_CLASSES_DLL
 
 #ifdef WINDOWS
 #define DLLEXPORT __declspec(dllimport)
@@ -98,10 +81,6 @@
 
 #include <stdio.h>
 #include <lbInterfaces.h>
-
-
-//class lbKeyBase;
-//class lbComponentDictionary;
 
 
 /*...sclass lbObject:0:*/
@@ -149,6 +128,7 @@ protected:
 //	ObjectTyp OTyp;
 };
 /*...e*/
+
 
 /*...sclass lbString:0:*/
 class lbString : public lb_I_String
@@ -230,7 +210,7 @@ private:
 	long longdata;
 };
 /*...e*/
-
+#ifdef bla
 /*...sclass lbStringList:0:*/
 class lbStringList : public lbObject {
 public:
@@ -251,7 +231,7 @@ private:
 	int count;
 };
 /*...e*/
-
+#endif
 /*...sifdef __cplusplus:0:*/
 #ifdef __cplusplus
 extern "C" {

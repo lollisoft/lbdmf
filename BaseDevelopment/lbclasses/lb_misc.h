@@ -1,10 +1,13 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.5 $
+ * $Revision: 1.6 $
  * $Name:  $
- * $Id: lb_misc.h,v 1.5 2001/05/04 17:14:43 lolli Exp $
+ * $Id: lb_misc.h,v 1.6 2001/07/11 16:04:34 lolli Exp $
  * $Log: lb_misc.h,v $
+ * Revision 1.6  2001/07/11 16:04:34  lolli
+ * First version of module management that hold's a little stresstest
+ *
  * Revision 1.5  2001/05/04 17:14:43  lolli
  * Use of MACRO DECLARE_FUNCTOR works
  *
@@ -32,26 +35,6 @@
  **************************************************************/
 /*...e*/
 
-/*...sDLLEXPORT:0:*/
-#undef DLLEXPORT
-
-#ifdef LB_CONTAINER_DLL
-
-#ifdef WINDOWS
-#define DLLEXPORT LB_DLLEXPORT
-#endif
-
-#endif
-
-#ifndef LB_CONTAINER_DLL
-
-#ifdef WINDOWS
-#define DLLEXPORT __declspec(dllimport)
-#endif
-
-#endif
-/*...e*/
-
 #ifndef _MISC_
 #define _MISC_
 
@@ -71,8 +54,6 @@ extern "C" {
 #endif
 /*...e*/
 void lb_sleep(int ms);
-
-//lbErrCodes DLLEXPORT LB_STDCALL instanceOfLogger(lb_I_Unknown*& uk);
 
 DECLARE_FUNCTOR(instanceOfLogger)
 

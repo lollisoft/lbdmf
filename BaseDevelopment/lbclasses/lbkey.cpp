@@ -1,13 +1,13 @@
-
-
-
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.7 $
+ * $Revision: 1.8 $
  * $Name:  $
- * $Id: lbkey.cpp,v 1.7 2001/06/21 06:34:42 lolli Exp $
+ * $Id: lbkey.cpp,v 1.8 2001/07/11 16:04:35 lolli Exp $
  * $Log: lbkey.cpp,v $
+ * Revision 1.8  2001/07/11 16:04:35  lolli
+ * First version of module management that hold's a little stresstest
+ *
  * Revision 1.7  2001/06/21 06:34:42  lolli
  * Now using interface macros
  *
@@ -40,10 +40,10 @@
  *
  ************************************************************************************************************/
 /*...e*/
-
-//Define DLL here for implementing the module
-
-#define LB_CONTAINER_DLL
+/*...sLB_CLASSES_DLL scope:0:*/
+#define LB_CLASSES_DLL
+#include <lbclasses-module.h>
+/*...e*/
 
 #include <windows.h>
 

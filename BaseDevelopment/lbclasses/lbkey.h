@@ -2,10 +2,13 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.8 $
+ * $Revision: 1.9 $
  * $Name:  $
- * $Id: lbkey.h,v 1.8 2001/06/21 06:34:42 lolli Exp $
+ * $Id: lbkey.h,v 1.9 2001/07/11 16:04:35 lolli Exp $
  * $Log: lbkey.h,v $
+ * Revision 1.9  2001/07/11 16:04:35  lolli
+ * First version of module management that hold's a little stresstest
+ *
  * Revision 1.8  2001/06/21 06:34:42  lolli
  * Now using interface macros
  *
@@ -41,27 +44,6 @@
  *
  ************************************************************************************************************/
 /*...e*/
-
-/*...sDLLEXPORT:0:*/
-#undef DLLEXPORT
-
-#ifdef LB_CONTAINER_DLL
-
-#ifdef WINDOWS
-#define DLLEXPORT __declspec(dllexport)
-#endif
-
-#endif
-
-#ifndef LB_CONTAINER_DLL
-
-#ifdef WINDOWS
-#define DLLEXPORT __declspec(dllimport)
-#endif
-
-#endif
-/*...e*/
-
 
 #ifndef LB_KEY
 #define LB_KEY

@@ -1,13 +1,13 @@
-
-
-
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.12 $
+ * $Revision: 1.13 $
  * $Name:  $
- * $Id: lbcontainer.cpp,v 1.12 2001/06/21 06:32:40 lolli Exp $
+ * $Id: lbcontainer.cpp,v 1.13 2001/07/11 16:04:35 lolli Exp $
  * $Log: lbcontainer.cpp,v $
+ * Revision 1.13  2001/07/11 16:04:35  lolli
+ * First version of module management that hold's a little stresstest
+ *
  * Revision 1.12  2001/06/21 06:32:40  lolli
  * Using IMPLEMENT_FUNCTOR(instanceOfContainer, lbContainer)
  *
@@ -55,9 +55,10 @@
  *
  ************************************************************************************************************/
 /*...e*/
-//Define DLL here for implementing the module
-
-#define LB_CONTAINER_DLL
+/*...sLB_CLASSES_DLL scope:0:*/
+#define LB_CLASSES_DLL
+#include <lbclasses-module.h>
+/*...e*/
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -84,7 +85,7 @@ END_IMPLEMENT_LB_UNKNOWN()
 
 lbContainer::lbContainer() {
     iteration = 0;
-    ref = 0;
+    ref = STARTREF;
     iterator = NULL;
     count = 0;
     container_data = NULL;

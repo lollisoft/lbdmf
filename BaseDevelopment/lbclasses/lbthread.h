@@ -1,26 +1,6 @@
 #ifndef LB_TOOLS
 #define LB_TOOLS
 
-/*...sDLLEXPORT:0:*/
-#undef DLLEXPORT
-
-#ifdef LB_CONTAINER_DLL
-
-#ifdef WINDOWS
-#define DLLEXPORT __declspec(dllexport)
-#endif
-
-#endif
-
-#ifndef LB_CONTAINER_DLL
-
-#ifdef WINDOWS
-#define DLLEXPORT __declspec(dllimport)
-#endif
-
-#endif
-/*...e*/
-
 #ifdef WINDOWS
 #include <windows.h>
 #endif
@@ -155,8 +135,8 @@ private:
 extern "C" {
 #endif
 
-DWORD DLLEXPORT lbGetCurrentThreadId();
-DWORD DLLEXPORT lbGetCurrentProcessId();
+DWORD DLLEXPORT LB_STDCALL lbGetCurrentThreadId();
+DWORD DLLEXPORT LB_STDCALL lbGetCurrentProcessId();
 
 #ifdef __cplusplus
 }

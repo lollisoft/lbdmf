@@ -4,10 +4,13 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.8 $
+ * $Revision: 1.9 $
  * $Name:  $
- * $Id: lbcontainer.h,v 1.8 2001/06/23 07:18:54 lolli Exp $
+ * $Id: lbcontainer.h,v 1.9 2001/07/11 16:04:35 lolli Exp $
  * $Log: lbcontainer.h,v $
+ * Revision 1.9  2001/07/11 16:04:35  lolli
+ * First version of module management that hold's a little stresstest
+ *
  * Revision 1.8  2001/06/23 07:18:54  lolli
  * Interface repository now works with the basic test
  *
@@ -46,27 +49,6 @@
 
 #ifndef LB_CONTAINER
 #define LB_CONTAINER
-
-/*...sDLLEXPORT:0:*/
-#undef DLLEXPORT
-
-#ifdef LB_CONTAINER_DLL
-
-#ifdef WINDOWS
-#define DLLEXPORT __declspec(dllexport)
-#endif
-
-#endif
-
-#ifndef LB_CONTAINER_DLL
-
-#ifdef WINDOWS
-#define DLLEXPORT __declspec(dllimport)
-#endif
-
-#endif
-/*...e*/
-
 
 #include <lbInterfaces-sub-classes.h>
 /**

@@ -1,5 +1,9 @@
-#define LB_CONTAINER_DLL
+/*...sLB_CLASSES_DLL scope:0:*/
+#define LB_CLASSES_DLL
+#include <lbclasses-module.h>
+/*...e*/
 
+#include <stdio.h>
 #include <string.h>
 #include <lbInterfaces.h>
 #include <lbObject.h>
@@ -44,6 +48,7 @@ END_IMPLEMENT_LB_UNKNOWN()
 /*...e*/
 /*...slbString:0:*/
 lbString::lbString() {
+	ref = STARTREF;
 	stringdata = NULL;
 	key = NULL;
 }
@@ -53,12 +58,12 @@ lbString::~lbString() {
 	if (key != NULL) delete[] key;
 }
 
-void lbString::setData(char* p) {
+void LB_STDCALL lbString::setData(char* p) {
 	stringdata = strdup(p);
 	key = strdup(p);
 }
 
-char* lbString::getData() const {
+char* LB_STDCALL lbString::getData() const {
 	return stringdata;
 }
 
@@ -100,8 +105,18 @@ BEGIN_IMPLEMENT_LB_UNKNOWN(lbString)
 END_IMPLEMENT_LB_UNKNOWN()
 
 lbErrCodes LB_STDCALL lbString::setData(lb_I_Unknown* uk) {
-	CL_LOG("lbString::setData(...) not implemented yet");
-	return ERR_NOT_IMPLEMENTED;
+	
+	lb_I_String* string = NULL;
+	
+	if (uk->queryInterface("lb_I_String", (void**) &string) != ERR_NONE) {
+		CL_LOG("Error: Could not get interface lb_I_String");
+	}
+	
+	if (string != NULL) {
+		setData(string->getData());
+	}
+	
+	return ERR_NONE;
 }
 
 /*...sKey:0:*/
@@ -134,6 +149,7 @@ char* lbString::charrep() {
 /*...e*/
 /*...slbInteger:0:*/
 lbInteger::lbInteger() {
+	ref = STARTREF;
 	integerdata = 0;
 }
 
@@ -202,6 +218,7 @@ char* lbInteger::charrep() {
 /*...e*/
 /*...slbLong:0:*/
 lbLong::lbLong() {
+	ref = STARTREF;
 	longdata = 0;
 	key = 0;
 	strcpy(keyType, "UL");
@@ -250,15 +267,17 @@ char* lbLong::charrep() {
 }
 /*...e*/
 /*...e*/
+#ifdef bla
 /*...slbStringList:0:*/
 lbStringList::lbStringList() {
+	ref = STARTREF;
 	list = NULL;
 	count = 0;
 }
 
 lbStringList::~lbStringList() {
 	list->deleteAll();
-	list->release();
+	RELEASE(list);
 }
 
 void lbStringList::setType() {
@@ -326,5 +345,5 @@ lb_I_String* lbStringList::nextElement() {
 }
 
 /*...e*/
-
+#endif
 

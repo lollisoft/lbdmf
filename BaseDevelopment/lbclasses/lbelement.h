@@ -4,10 +4,13 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.5 $
+ * $Revision: 1.6 $
  * $Name:  $
- * $Id: lbelement.h,v 1.5 2001/06/21 06:33:40 lolli Exp $
+ * $Id: lbelement.h,v 1.6 2001/07/11 16:04:35 lolli Exp $
  * $Log: lbelement.h,v $
+ * Revision 1.6  2001/07/11 16:04:35  lolli
+ * First version of module management that hold's a little stresstest
+ *
  * Revision 1.5  2001/06/21 06:33:40  lolli
  * Removed some members
  *
@@ -38,27 +41,6 @@
 #ifndef LB_ELEMENT
 #define LB_ELEMENT
 
-/*...sDLLEXPORT:0:*/
-#undef DLLEXPORT
-
-#ifdef LB_CONTAINER_DLL
-
-#ifdef WINDOWS
-#define DLLEXPORT __declspec(dllexport)
-#endif
-
-#endif
-
-#ifndef LB_CONTAINER_DLL
-
-#ifdef WINDOWS
-#define DLLEXPORT __declspec(dllimport)
-#endif
-
-#endif
-/*...e*/
-
-
 #include <stdlib.h>
 #include <lbInterfaces-sub-classes.h>
 
@@ -69,10 +51,10 @@ class DLLEXPORT lbElement : public lb_I_Element {
 private:
 
 public:
-    lbElement() { next = NULL; data = NULL; key = NULL; }
+    lbElement() { ref = STARTREF; next = NULL; data = NULL; key = NULL; }
     virtual ~lbElement();
 	
-    lbElement(const lb_I_Element &e) { next = e.getNext(); }
+    lbElement(const lb_I_Element &e) { ref = STARTREF; next = e.getNext(); }
 
     DECLARE_LB_UNKNOWN()
 

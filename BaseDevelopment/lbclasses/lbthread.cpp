@@ -1,5 +1,9 @@
-#define LB_CONTAINER_DLL
+/*...sLB_CLASSES_DLL scope:0:*/
+#define LB_CLASSES_DLL
+#include <lbclasses-module.h>
+/*...e*/
 
+#include <stdio.h>
 #include <conio.h>
 #include <iostream.h>
 
@@ -672,7 +676,13 @@ LOG("lbThread::OnExit() leave");
 /*...e*/
 /*...e*/
 
-DWORD lbGetCurrentThreadId() {
+/*...sextern C begin:0:*/
+#ifdef __cplusplus
+extern "C" {
+#endif
+/*...e*/
+
+DWORD DLLEXPORT LB_STDCALL lbGetCurrentThreadId() {
 #ifdef WINDOWS
 	return ::GetCurrentThreadId();
 #else
@@ -680,10 +690,16 @@ DWORD lbGetCurrentThreadId() {
 #endif
 }
 
-DWORD lbGetCurrentProcessId() {
+DWORD DLLEXPORT LB_STDCALL lbGetCurrentProcessId() {
 #ifdef WINDOWS
 	return ::GetCurrentProcessId();
 #else
 #error "Only Windows target is supported"
 #endif
 }
+
+/*...sextern C end:0:*/
+#ifdef __cplusplus
+}
+#endif
+/*...e*/
