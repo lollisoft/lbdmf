@@ -112,7 +112,7 @@ public:
 	 *		passwd	database password
 	 */
 	virtual lbErrCodes LB_STDCALL connect(char* DSN, char* user, char* passwd);
-
+	virtual lb_I_Query* LB_STDCALL getQuery();
 };
 
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbDatabase)
@@ -135,6 +135,10 @@ lbErrCodes LB_STDCALL lbDatabase::setData(lb_I_Unknown* uk) {
 lbErrCodes LB_STDCALL lbDatabase::connect(char* DSN, char* user, char* passwd) {
     process();
     return ERR_NONE;
+}
+
+lb_I_Query* LB_STDCALL lbDatabase::getQuery() {
+    return NULL;
 }
 
 void process(void)
