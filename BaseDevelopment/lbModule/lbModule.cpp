@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.69 $
+ * $Revision: 1.70 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.69 2004/04/11 07:26:03 lollisoft Exp $
+ * $Id: lbModule.cpp,v 1.70 2004/05/08 10:54:17 lollisoft Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.70  2004/05/08 10:54:17  lollisoft
+ * free memory bug, variable uninitialized
+ *
  * Revision 1.69  2004/04/11 07:26:03  lollisoft
  * Resolved conflict
  *
@@ -2105,7 +2108,8 @@ char* LB_STDCALL lbModule::getClassName() {
 	return "lbModule"; 
 } 
 char* LB_STDCALL lbModule::_queryInterface(char* name, void** unknown, char* file, int line) { 
-	char* ID = new char[strlen(name)+strlen("lbModule")+strlen(file)+1]; 
+	char* ID = new char[strlen(name)+strlen("lbModule")+strlen(file)+1];
+	ID[0] = 0;
 	strcat(ID, name); 
 	strcat(ID, "lbModule"); 
 	strcat(ID, file); 
@@ -3104,7 +3108,7 @@ public:
         }
         
         virtual ~lbNamedValue() {
-                delete[] name;
+                free(name);
         }
 
         DECLARE_LB_UNKNOWN()
@@ -3518,7 +3522,7 @@ BOOL WINAPI DllMain(HINSTANCE dllHandle, DWORD reason, LPVOID situation) {
                         break;
                 case DLL_THREAD_DETACH:
                         _CL_LOG << "Thread terminating.\n" LOG_
-                derault:
+                default:
                         return FALSE;
         }
         
