@@ -1,10 +1,13 @@
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.17 $
+# * $Revision: 1.18 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.17 2002/04/19 17:43:45 lothar Exp $
+# * $Id: STD_MAKE,v 1.18 2002/05/29 19:07:59 lothar Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.18  2002/05/29 19:07:59  lothar
+# * Minor changes
+# *
 # * Revision 1.17  2002/04/19 17:43:45  lothar
 # * Added -hc due to debuging compilation problems
 # * (Fatal segment too long)
@@ -132,7 +135,7 @@ C_LIBOPS = $(C_LIBOPS_WATCOM$(MODE))
 
 # Watcom
 L_EXEOPS_WATCOM = -o
-LINK_WATCOM =wlink
+LINK_WATCOM =wlink op q
 L_DLLOPS_WATCOM =d all SYS nt_dll op m op maxe=25 op q op symf
 
 # Microsoft
@@ -152,6 +155,7 @@ LNKDLLOPS = $(L_DLLOPS_WATCOM)
 CP =copy
 EXEDIR =Q:\Develop\Projects\bin
 DLLDIR =Q:\Develop\Projects\dll
+DLLLIBDIR =Q:\Develop\Projects\dll\lib
 LIBDIR =Q:\Develop\Projects\lib
 DLLLIBDIR =Q:\Develop\Projects\dll\libs
 
