@@ -127,7 +127,6 @@ lb_I_ConfigObject* lbModule::findFunctorNode(lb_I_ConfigObject* node, const char
 	lbErrCodes err = ERR_NONE;
 	
 	if ((err = node->getFirstChildren(temp_node)) == ERR_NONE) {
-		CL_LOG("Error while get first children of a node!");
 		
 		lb_I_Attribute* attribute;
 		
@@ -146,6 +145,34 @@ lb_I_ConfigObject* lbModule::findFunctorNode(lb_I_ConfigObject* node, const char
 		 */
 		if ((strcmp(temp_node->getName(), "Functor")) == 0) {
 			CL_LOG("Found the requested node");
+#ifdef bla			
+/*...sWith this test the result in parent\39\s child\39\s is ok:0:*/
+			
+lb_I_ConfigObject* _node = NULL;
+lbErrCodes err = ERR_NONE;
+
+if ((err = temp_node->getParent(_node)) != ERR_NONE) {
+        CL_LOG("Some errors have ocured while getting a parent node!");
+}			
+	if (_node != NULL) {
+		lb_I_ConfigObject* __node = NULL;
+		CL_LOG("DEBUG PAUSE 1");
+		getch();
+
+		err = _node->getFirstChildren(__node);
+		
+		CL_LOG("DEBUG PAUSE 2");
+		getch();
+		
+		if (err != ERR_NONE) {
+			CL_LOG("Error. Children expected");
+			getch();
+			return NULL;
+		}
+		CL_LOG("No error found!");
+}
+/*...e*/
+#endif			
 			return temp_node;
 		}
 		
@@ -178,7 +205,58 @@ getch();
 /*...e*/
 /*...slbModule\58\\58\findFunctorModule\40\\46\\46\\46\\41\:0:*/
 char* lbModule::findFunctorModule(lb_I_ConfigObject* node) {
-	CL_LOG("Not yet implemented");
+	lbErrCodes err = ERR_NONE;
+	lb_I_ConfigObject* temp_node = node;
+
+	if (node == NULL) {
+		CL_LOG("NULL pointer detected!");
+		return "NULL";
+	}
+
+	if (strcmp (node->getName(), "Module") == 0) {
+		CL_LOG("Found node 'Module'");
+		getch();
+		
+		if ((err = node->getFirstChildren(temp_node)) == ERR_NONE) {
+			CL_LOG("Test first children");
+			CL_LOG(temp_node->getName());
+			if ((strcmp(temp_node->getName(), "ModuleName")) == 0) {
+				char* value = NULL;
+				err = temp_node->getAttributeValue("Name", value);
+				
+				if (err != ERR_NONE) {
+				        CL_LOG("Error while getting attribute value");
+				        CL_LOG(value);
+			                return "NULL";
+		                } else {
+		                        return value;
+				}
+			}		
+		}
+
+		while ((err = node->getNextChildren(temp_node)) == ERR_NONE) {
+		        CL_LOG("Get next child");
+		        CL_LOG(temp_node->getName());
+		        if ((strcmp(temp_node->getName(), "ModuleName")) == 0) {
+				char* value = NULL;
+				CL_LOG("Found 'ModuleName'");
+				err = temp_node->getAttributeValue("Name", value);
+				
+				if (err != ERR_NONE) {
+				        CL_LOG("Error while getting attribute value");
+			                return "NULL";
+		                } else {
+		                        return value;
+				}
+		        }
+		}
+	}
+	else
+	while ((err = node->getParent(temp_node)) == ERR_NONE) {
+		return findFunctorModule(temp_node);
+	} 
+
+
 	return "NULL";
 }
 /*...e*/
@@ -194,17 +272,18 @@ char* lbModule::findFunctorName(lb_I_ConfigObject* node) {
 	lbErrCodes err = ERR_NONE;
 	
 	if ((err = node->getParent(_node)) != ERR_NONE) {
+		CL_LOG("Some errors have ocured while getting a parent node!");
 	} 
 	
 	if (_node != NULL) {
 		lb_I_ConfigObject* __node = NULL;
+
 		err = _node->getFirstChildren(__node);
 		
 		if (err != ERR_NONE) {
 			CL_LOG("Error. Children expected");
 			return NULL;
 		}
-		
 		while (err == ERR_NONE) {
 
 			/**
@@ -222,13 +301,17 @@ char* lbModule::findFunctorName(lb_I_ConfigObject* node) {
 				if (err != ERR_NONE) {
 					CL_LOG("Error while getting attribute value");
 					return NULL;
-				} else return value;
+				} else {
+					return value;
+				}
 			}
 		
 			err = _node->getNextChildren(__node);
 		
 			//err = ERR_CONFIG_NO_MORE_CHILDS;
 		}
+	} else {
+		CL_LOG("A parent node was not found!?");
 	}
 	
 	return "NULL";
@@ -265,9 +348,6 @@ lbErrCodes lbModule::request(const char* request, lb_I_Unknown*& result) {
 		int count = 0;
 					// request is a functor
 		if (xml_Instance->hasConfigObject(node, count) == ERR_NONE) {
-
-			cout << "Have a configured instance maker" << endl;
-			
 			/**
 			 * Get the list of found objects as a list.
 			 * The result is a view of notes in a max deep
@@ -275,31 +355,31 @@ lbErrCodes lbModule::request(const char* request, lb_I_Unknown*& result) {
 			 */
 			
 			xml_Instance->getConfigObject(config, node);
-			getch();
-			
-			/**
-			 * The request above results possibly in a list of
-			 * functors, so we need to get the correct node, 
-			 * containing the attribute value in request.
-			 */
 			
 			lb_I_ConfigObject* functorNode = findFunctorNode(config, request);
-			
-			cout << "Have a functor node" << endl;
-			getch();
-			
-			/**
-			 * Both functions used here, hides the navigation trough
-			 * the tree of the DOM document.
-			 */
 			
 			if (functorNode == NULL) {
 				cout << "Couldn't find the desired functor (nullpointer)!" << endl;
 				getch();
 			}
 			
+			CL_LOG("Try to get module name");
 			char* moduleName = findFunctorModule(functorNode);
+			CL_LOG("Got this module name");
+			CL_LOG(moduleName);
+			
+			CL_LOG("Try to get functor name");
 			char* functorName = findFunctorName(functorNode);
+			
+			CL_LOG("Got this functor name:");
+			CL_LOG(functorName);
+			
+			/**
+			 * Now I should have all my information, create the instance.
+			 */
+			 
+			 
+			
 		} else {
 			cout << "Something goes wrong!" << endl;
 			cout << "xml_Instance->hasConfigObject() returns <> ERR_NONE!" << endl;
