@@ -1,13 +1,13 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.14 $
+ * $Revision: 1.15 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.14 2002/10/28 18:36:01 lothar Exp $
+ * $Id: lbMetaApplication.cpp,v 1.15 2002/11/08 18:53:25 lothar Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
- * Revision 1.14  2002/10/28 18:36:01  lothar
- * lb_MetaApplication::addMenuBar(...) outdefined - works
+ * Revision 1.15  2002/11/08 18:53:25  lothar
+ * Compiles now (-d1)
  *
  * Revision 1.13  2002/10/04 16:53:11  lothar
  * Replaced old LOG macro with the new
@@ -99,51 +99,6 @@ IMPLEMENT_SINGLETON_FUNCTOR(instanceOfEventManager, lb_EventManager)
 #endif            
 /*...e*/
 
-/*...slb_EvHandler:0:*/
-BEGIN_IMPLEMENT_LB_UNKNOWN(lb_EvHandler)
-	ADD_INTERFACE(lb_I_EvHandler)
-END_IMPLEMENT_LB_UNKNOWN()
-
-lb_EvHandler::lb_EvHandler() {
-	ev = NULL;
-}
-
-lb_EvHandler::~lb_EvHandler() {
-	_LOG << "lb_EvHandler::~lb_EvHandler() called" LOG_
-}
-
-lbErrCodes LB_STDCALL lb_EvHandler::setData(lb_I_Unknown* uk) {
-	lbErrCodes err = ERR_NONE;
-	
-	UAP(lb_I_EvHandler, eh, __FILE__, __LINE__)
-	QI(uk, lb_I_EvHandler, eh, __FILE__, __LINE__)
-	
-	setHandler(eh->getHandlerInstance(), eh->getHandler());
-	
-	return ERR_NONE;
-}
-
-lb_I_EventHandler* LB_STDCALL lb_EvHandler::getHandlerInstance() {
-	return _evHandlerInstance;
-}
-
-lbErrCodes LB_STDCALL lb_EvHandler::setHandler(lb_I_EventHandler* evHandlerInstance, lbEvHandler evHandler) {
-	_evHandlerInstance = evHandlerInstance;
-	ev = evHandler;
-	return ERR_NONE;
-}
-
-lbEvHandler LB_STDCALL lb_EvHandler::getHandler() {
-	return ev;
-}
-
-
-lbErrCodes LB_STDCALL lb_EvHandler::call(lb_I_Unknown* evData, lb_I_Unknown** evResult) {
-	(_evHandlerInstance->*(lbEvHandler) ev) (evData);
-	
-	return ERR_NONE;
-}
-/*...e*/
 
 /*...slb_MetaApplication:0:*/
 /*...sctors\47\dtors:0:*/
@@ -287,11 +242,11 @@ lbErrCodes LB_STDCALL lb_MetaApplication::Initialize() {
 
 /*...slbErrCodes LB_STDCALL lb_MetaApplication\58\\58\run\40\\41\:0:*/
 lbErrCodes LB_STDCALL lb_MetaApplication::run() {
-
+#ifdef bla
 	lb_I_Unknown* result;
 
 	dispatcher->dispatch("AddMenu", NULL, &result);	
-
+#endif
 	return ERR_NONE;
 }
 /*...e*/
@@ -303,7 +258,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::loadSubModules() {
 /*...sBasic functions to be used for a UI application:0:*/
 lbErrCodes LB_STDCALL lb_MetaApplication::addMenuBar(char* name) {
 	lbErrCodes err = ERR_NONE;
-#ifdef bla	
+
 	UAP_REQUEST(manager.getPtr(), lb_I_String, string)
 	string->setData(name);
 	UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
@@ -318,10 +273,12 @@ lbErrCodes LB_STDCALL lb_MetaApplication::addMenuBar(char* name) {
 
 	if (uk == NULL) _LOG << "Error: Cannot call with a null pointer!" LOG_
 	
-	_LOG << "Begin dispatch function" LOG_
+	_CL_LOG << "Begin dispatch function" LOG_
+
+// Produces crash
 	dispatcher->dispatch("AddMenuBar", uk.getPtr(), &uk_result);
-	_LOG << "Have dispatched function" LOG_
-#endif
+	_CL_LOG << "Have dispatched function" LOG_
+
 	return err;
 }
 
@@ -661,4 +618,50 @@ lbErrCodes LB_STDCALL lb_Dispatcher::dispatch(char* EvName, lb_I_Unknown* EvData
 	return ERR_NONE;
 }
 /*...e*/
+/*...e*/
+
+/*...slb_EvHandler:0:*/
+BEGIN_IMPLEMENT_LB_UNKNOWN(lb_EvHandler)
+	ADD_INTERFACE(lb_I_EvHandler)
+END_IMPLEMENT_LB_UNKNOWN()
+
+lb_EvHandler::lb_EvHandler() {
+	ev = NULL;
+}
+
+lb_EvHandler::~lb_EvHandler() {
+	_LOG << "lb_EvHandler::~lb_EvHandler() called" LOG_
+}
+
+lbEvHandler LB_STDCALL lb_EvHandler::getHandler() {
+	return ev;
+}
+
+lbErrCodes LB_STDCALL lb_EvHandler::setData(lb_I_Unknown* uk) {
+	lbErrCodes err = ERR_NONE;
+	
+	UAP(lb_I_EvHandler, eh, __FILE__, __LINE__)
+	QI(uk, lb_I_EvHandler, eh, __FILE__, __LINE__)
+	
+	setHandler(eh->getHandlerInstance(), eh->getHandler());
+	
+	return ERR_NONE;
+}
+
+lb_I_EventHandler* LB_STDCALL lb_EvHandler::getHandlerInstance() {
+	return _evHandlerInstance;
+}
+
+lbErrCodes LB_STDCALL lb_EvHandler::setHandler(lb_I_EventHandler* evHandlerInstance, lbEvHandler evHandler) {
+	_evHandlerInstance = evHandlerInstance;
+	ev = evHandler;
+	return ERR_NONE;
+}
+
+
+lbErrCodes LB_STDCALL lb_EvHandler::call(lb_I_Unknown* evData, lb_I_Unknown** evResult) {
+	(_evHandlerInstance->*(lbEvHandler) ev) (evData);
+	
+	return ERR_NONE;
+}
 /*...e*/
