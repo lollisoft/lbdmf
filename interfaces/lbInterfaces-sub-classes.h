@@ -415,13 +415,6 @@ int classname::Count() { \
 	return count; \
 } \
 \
-lbErrCodes LB_STDCALL classname::setData(lb_I_Unknown* u) { \
-\
-	LOG(#classname"::setData(lb_I_Unknown* u) has not been implemented"); \
-	return ERR_NONE; \
-\
-} \
-\
 void LB_STDCALL classname::deleteAll() { \
 \
 	LOG(#classname"::deleteAll() has not been implemented"); \
