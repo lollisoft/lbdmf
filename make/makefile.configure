@@ -8,6 +8,7 @@ endif
 _MODULE=$(MODULE)
 
 makefile: makefile.module \
+$(DEVROOT_MAKE)/Projects/CPP/BaseDevelopment/Makefile \
 $(DEVROOT_MAKE)/Projects/CPP/make/makefile.template \
 $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
 	cat $(DEVROOT)/Projects/CPP/make/makefile.template > makefile
