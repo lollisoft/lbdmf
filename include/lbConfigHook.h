@@ -133,12 +133,6 @@ DLLEXPORT int isInitializing;
 #endif
 /*...e*/
 
-//#ifdef bla
-#define CL_LOG(msg) \
-{ \
-} 
-//#endif
-
 /*...sLOG_INSTANCE:0:*/
 #define LOG_INSTANCE \
 			if (log == NULL) { \
@@ -153,20 +147,13 @@ DLLEXPORT int isInitializing;
 					if (Unknown != NULL) { \
 						Unknown->queryInterface("lb_I_Log", (void**) &log, __FILE__, __LINE__); \
 						if (log == NULL) { \
-							CL_LOG("Unknown object has no interface for lb_I_Log"); \
 							exit (1); \
 						} else { \
 						} \
 					} else { \
-						char buf[1000] = ""; \
-						sprintf(buf, "%s %d %s", "Instance could not be created, errcode is ", err, "."); \
-						CL_LOG(buf); \
-						getch(); \
 						exit(1); \
 					} \
 				} else { \
-					CL_LOG("Module manager could not be created"); \
-					getch(); \
 					exit(1); \
 				} \
 			} \
@@ -184,6 +171,10 @@ DLLEXPORT int isInitializing;
 /*...s LOG_:0:*/
 #define  LOG_  << "\n"; }
 /*...e*/
+#define CL_LOG(msg) \
+{ \
+	_LOG << msg LOG_ \
+} 
 /*...sLOG\40\msg\41\:0:*/
 #define LOG(msg)	\
 			if (isInitializing != 0) { \
