@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.31 $
+ * $Revision: 1.32 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.31 2004/01/24 16:16:57 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.32 2004/02/02 23:24:39 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.32  2004/02/02 23:24:39  lollisoft
+ * New label and text field handlers works
+ *
  * Revision 1.31  2004/01/24 16:16:57  lollisoft
  * Added support for loading application
  *
@@ -364,6 +367,10 @@ lbErrCodes LB_STDCALL lb_MetaApplication::Initialize() {
 	
 	int hight = 60;
 	int n = 1;
+
+	addLabel("Label", 115, 30, 100, 20);
+	addTextField("TextField", 220, 30, 100, 20);
+
 	
 	addButton("|<", "Button Test pressed", 10, hight+n*20+n*5, 100, 20);
 	addButton("<<", "Button Test pressed", 115, hight+n*20+n*5, 100, 20);
@@ -429,6 +436,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::loadSubModules() {
 	return ERR_NONE;
 }
 
+/*...slbErrCodes LB_STDCALL lb_MetaApplication\58\\58\loadApplication\40\\41\:0:*/
 lbErrCodes LB_STDCALL lb_MetaApplication::loadApplication() {
 	lbErrCodes err = ERR_NONE;
         char* applicationName = getenv("TARGET_APPLICATION");
@@ -452,8 +460,10 @@ lbErrCodes LB_STDCALL lb_MetaApplication::loadApplication() {
 	
         return ERR_NONE;
 }
+/*...e*/
 
 /*...sBasic functions to be used for a UI application:0:*/
+/*...slbErrCodes LB_STDCALL lb_MetaApplication\58\\58\addMenuBar\40\char\42\ name\41\:0:*/
 lbErrCodes LB_STDCALL lb_MetaApplication::addMenuBar(char* name) {
 	lbErrCodes err = ERR_NONE;
 
@@ -479,11 +489,13 @@ lbErrCodes LB_STDCALL lb_MetaApplication::addMenuBar(char* name) {
 
 	return err;
 }
+/*...e*/
 
 lbErrCodes LB_STDCALL lb_MetaApplication::addMenu(char* name) {
 	return ERR_NONE;
 }
 
+/*...slb_MetaApplication\58\\58\addTextField\40\char\42\ name\44\ int x\44\ int y\44\ int w\44\ int h\41\:0:*/
 lbErrCodes LB_STDCALL lb_MetaApplication::addTextField(char* name, int x, int y, int w, int h) {
 	lbErrCodes err = ERR_NONE;
 	
@@ -492,7 +504,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::addTextField(char* name, int x, int y,
 	UAP_REQUEST(manager.getPtr(), lb_I_String, value)
 	UAP_REQUEST(manager.getPtr(), lb_I_Integer, i)
 
-        parameter->setData("name");
+        parameter->setData("text");
         value->setData(name);
         param->setUAPString(*&parameter, *&value);
 
@@ -519,11 +531,13 @@ lbErrCodes LB_STDCALL lb_MetaApplication::addTextField(char* name, int x, int y,
         UAP(lb_I_Unknown, uk_result, __FILE__, __LINE__)
         QI(result, lb_I_Unknown, uk_result, __FILE__, __LINE__)
 
-        dispatcher->dispatch("AddLabel", uk.getPtr(), &uk_result);
+        dispatcher->dispatch("AddTextField", uk.getPtr(), &uk_result);
 
         return err;
 }
+/*...e*/
 
+/*...slb_MetaApplication\58\\58\addLabel\40\char\42\ text\44\ int x\44\ int y\44\ int w\44\ int h\41\:0:*/
 lbErrCodes LB_STDCALL lb_MetaApplication::addLabel(char* text, int x, int y, int w, int h) {
 	lbErrCodes err = ERR_NONE;
 
@@ -533,7 +547,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::addLabel(char* text, int x, int y, int
 	UAP_REQUEST(manager.getPtr(), lb_I_Integer, i)
 
 
-	parameter->setData("text");
+	parameter->setData("labeltext");
 	value->setData(text);
 	param->setUAPString(*&parameter, *&value);
 
@@ -560,11 +574,13 @@ lbErrCodes LB_STDCALL lb_MetaApplication::addLabel(char* text, int x, int y, int
 	UAP(lb_I_Unknown, uk_result, __FILE__, __LINE__)
 	QI(result, lb_I_Unknown, uk_result, __FILE__, __LINE__)
 	
-	dispatcher->dispatch("AddTextField", uk.getPtr(), &uk_result);
+	dispatcher->dispatch("AddLabel", uk.getPtr(), &uk_result);
 
 	return err;
 }
+/*...e*/
 
+/*...slb_MetaApplication\58\\58\addButton\40\char\42\ buttonText\44\ char\42\ evHandler\44\ int x\44\ int y\44\ int w\44\ int h\41\:0:*/
 lbErrCodes LB_STDCALL lb_MetaApplication::addButton(char* buttonText, char* evHandler, int x, int y, int w, int h) {
         lbErrCodes err = ERR_NONE;
 
@@ -609,7 +625,9 @@ lbErrCodes LB_STDCALL lb_MetaApplication::addButton(char* buttonText, char* evHa
 
 	return err;
 }
+/*...e*/
 
+/*...slb_MetaApplication\58\\58\addMenuEntry\40\char\42\ in_menu\44\ char\42\ entry\44\ char\42\ evHandler\44\ char\42\ afterentry\41\:0:*/
 lbErrCodes LB_STDCALL lb_MetaApplication::addMenuEntry(char* in_menu, char* entry, char* evHandler, char* afterentry) {
 	lbErrCodes err = ERR_NONE;
 	
@@ -642,6 +660,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::addMenuEntry(char* in_menu, char* entr
 
 	return ERR_NONE;
 }
+/*...e*/
 /*...e*/
 /*...e*/
 /*...slb_EventMapper:0:*/

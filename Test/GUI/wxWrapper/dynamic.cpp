@@ -6,7 +6,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.11 2004/01/24 16:54:35 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.12 2004/02/02 23:23:11 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -1045,6 +1045,7 @@ lbErrCodes LB_STDCALL MyApp::lbEvHandler1(lb_I_Unknown* uk) {
 	return ERR_NONE;
 }
 
+/*...sAddMenuBar\9\\9\Handler:0:*/
 lbErrCodes LB_STDCALL MyApp::lbEvHandler2(lb_I_Unknown* uk) {
 
 	lbErrCodes err = ERR_NONE;
@@ -1060,8 +1061,8 @@ lbErrCodes LB_STDCALL MyApp::lbEvHandler2(lb_I_Unknown* uk) {
 
 	return err;
 }
-
-
+/*...e*/
+/*...sAddMenuEntry\9\Handler:0:*/
 /**
  * Add a menu entry to a specific menubar.
  *
@@ -1111,8 +1112,8 @@ lbErrCodes LB_STDCALL MyApp::lbEvHandler3(lb_I_Unknown* uk) {
 	return ERR_NONE;
 /*...e*/
 }
-
-
+/*...e*/
+/*...sAddButton \9\\9\Handler:0:*/
 /**
  * Add a button to the active window.
  *
@@ -1193,14 +1194,97 @@ lbErrCodes LB_STDCALL MyApp::addButton(lb_I_Unknown* uk) {
 	return ERR_NONE;
 /*...e*/
 }
+/*...e*/
 
 lbErrCodes LB_STDCALL MyApp::addLabel(lb_I_Unknown* uk) {
 	_LOG << "lbErrCodes LB_STDCALL MyApp::addLabel(lb_I_Unknown* uk) called" LOG_
+/*...scode:0:*/
+	_LOG << "MyApp::addLabel called" LOG_
+	lbErrCodes err = ERR_NONE;
+
+
+	UAP_REQUEST(manager.getPtr(), lb_I_EventManager, ev_manager)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, buttontext)
+	UAP_REQUEST(manager.getPtr(), lb_I_Integer, x)
+	UAP_REQUEST(manager.getPtr(), lb_I_Integer, y)
+	UAP_REQUEST(manager.getPtr(), lb_I_Integer, w)
+	UAP_REQUEST(manager.getPtr(), lb_I_Integer, h)	
+	
+	
+	UAP(lb_I_Parameter, param, __FILE__, __LINE__)
+
+	QI(uk, lb_I_Parameter, param, __FILE__, __LINE__)
+
+
+	parameter->setData("labeltext");
+	param->getUAPString(*&parameter, *&buttontext);
+	parameter->setData("x");
+	param->getUAPInteger(*&parameter, *&x);	
+	parameter->setData("y");
+	param->getUAPInteger(*&parameter, *&y);	
+	parameter->setData("w");
+	param->getUAPInteger(*&parameter, *&w);	
+	parameter->setData("h");
+	param->getUAPInteger(*&parameter, *&h);	
+	
+	lb_wxFrame* f = frame_peer->getPeer();
+	
+	_LOG "Create a static text" LOG_
+
+
+	wxStaticText *text = new wxStaticText(panel, -1, buttontext->getData(), wxPoint(x->getData(),y->getData()),
+					wxSize((int) w->getData(),(int) h->getData() ));
+
+	return ERR_NONE;
+/*...e*/
 	return ERR_NONE;
 }
 
 lbErrCodes LB_STDCALL MyApp::addTextField(lb_I_Unknown* uk) {
 	_LOG << "lbErrCodes LB_STDCALL MyApp::addTextField(lb_I_Unknown* uk) called" LOG_
+/*...scode:0:*/
+	_LOG << "MyApp::addTextField called" LOG_
+	lbErrCodes err = ERR_NONE;
+
+
+	UAP_REQUEST(manager.getPtr(), lb_I_EventManager, ev_manager)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, buttontext)
+	UAP_REQUEST(manager.getPtr(), lb_I_Integer, x)
+	UAP_REQUEST(manager.getPtr(), lb_I_Integer, y)
+	UAP_REQUEST(manager.getPtr(), lb_I_Integer, w)
+	UAP_REQUEST(manager.getPtr(), lb_I_Integer, h)	
+	
+	
+	UAP(lb_I_Parameter, param, __FILE__, __LINE__)
+
+	QI(uk, lb_I_Parameter, param, __FILE__, __LINE__)
+
+
+	parameter->setData("text");
+	param->getUAPString(*&parameter, *&buttontext);
+	parameter->setData("x");
+	param->getUAPInteger(*&parameter, *&x);	
+	parameter->setData("y");
+	param->getUAPInteger(*&parameter, *&y);	
+	parameter->setData("w");
+	param->getUAPInteger(*&parameter, *&w);	
+	parameter->setData("h");
+	param->getUAPInteger(*&parameter, *&h);	
+	
+	lb_wxFrame* f = frame_peer->getPeer();
+	
+	_LOG "Create a static text" LOG_
+
+
+	wxTextCtrl *text = new 
+	
+	wxTextCtrl(panel, -1, buttontext->getData(), wxPoint(x->getData(),y->getData()),
+					wxSize((int) w->getData(),(int) h->getData() ));
+
+	return ERR_NONE;
+/*...e*/
 	return ERR_NONE;
 }
 /*...e*/
