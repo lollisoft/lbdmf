@@ -195,32 +195,7 @@ void main(int argc, char *argv[]) {
 	getch();
 	mm->setModuleManager(mm, __FILE__, __LINE__);
 
-/*...e*/
-/*...stest container:0:*/
-{
-	printf("Request lb_I_Container\n");
-	if (mm->request("lb_I_Container", &uk) != ERR_NONE) {
-		printf("Requesting lb_I_Container failed\n");
-		_CL_LOG << "Error: Could not get needed instance!" LOG_
-	}
-
-	printf("Requested container\n");
-	getch();
-	
-	lb_I_Container* c = NULL;
-	printf("test container 1\n");
-	if (uk->queryInterface("lb_I_Container", (void**) &c, __FILE__, __LINE__) != ERR_NONE) {
-		_CL_LOG << "Error: Could not get needed interface!" LOG_
-	}
-	printf("Interface queried for container\n");
-	RELEASE(c)
-	printf("Released Container\n");
-	getch();
-}
-/*...e*/
-	printf("Tested container 1\n");
-	getch();
-
+/*...sTest database:0:*/
 	_CL_LOG << "Test database library" LOG_
 
 	UAP_REQUEST(mm, lb_I_Database, database)
@@ -346,6 +321,30 @@ void main(int argc, char *argv[]) {
 	query1->query("insert into test values('Test', 1234)");
 	query1->query("drop table test");
 	getch();	
+/*...e*/
+/*...e*/
+/*...stest container:0:*/
+{
+	printf("Request lb_I_Container\n");
+	if (mm->request("lb_I_Container", &uk) != ERR_NONE) {
+		printf("Requesting lb_I_Container failed\n");
+		_CL_LOG << "Error: Could not get needed instance!" LOG_
+	}
+
+	printf("Requested container\n");
+	getch();
+	
+	lb_I_Container* c = NULL;
+	printf("test container 1\n");
+	if (uk->queryInterface("lb_I_Container", (void**) &c, __FILE__, __LINE__) != ERR_NONE) {
+		_CL_LOG << "Error: Could not get needed interface!" LOG_
+	}
+	printf("Interface queried for container\n");
+	RELEASE(c)
+	printf("Released Container\n");
+	getch();
+}
+/*...e*/
 
 	/* Todo:
 	 * Create a viewer instance for the current query and
@@ -353,7 +352,7 @@ void main(int argc, char *argv[]) {
 	 */
 
 
-
+// Database tests moved to ... init
 
 	
 	_CL_LOG << "Tested database" LOG_
