@@ -27,13 +27,25 @@
 <!--...sFunction instanceOfLogger:16:-->
         <Function>
            <FunctionName Name="_instanceOfLogger@4"/>
-           <Functor/>
+           <Functor>
+              <InterfaceName Name="lb_I_Log" Version="1.0"/>
+           </Functor>
         </Function>
 <!--...e-->
-<!--...sFunction instanceOf_lb_I_Container:16:-->
+<!--...sFunction instanceOfContainer:16:-->
         <Function>
-           <FunctionName Name="instanceOf_lb_I_Container"/>
-           <Functor/>
+           <FunctionName Name="_instanceOfContainer@4"/>
+           <Functor>
+              <InterfaceName Name="lb_I_Container" Version="1.0"/>
+           </Functor>
+        </Function>
+<!--...e-->
+<!--...sFunction instanceOfIntegerKey:16:-->
+        <Function>
+           <FunctionName Name="_instanceOfIntegerKey@4"/>
+           <Functor>
+              <InterfaceName Name="lb_I_KeyBase" Version="1.0"/>
+           </Functor>
         </Function>
 <!--...e-->
 <!--...sFunction:16:-->
