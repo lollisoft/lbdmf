@@ -122,7 +122,7 @@ public:
         /**
          * Set a currently used query to bind their columns.
          */
-        lbErrCodes      LB_STDCALL setQuery(lbQuery* q);
+        lbErrCodes      LB_STDCALL setQuery(lb_I_Query* q);
 
 	int		LB_STDCALL getMode();
 
@@ -169,7 +169,7 @@ public:
 		#endif
 		
 		#ifdef UNIX
-		skipFKCollections = 1;
+		skipFKCollections = 0;
 		#endif
 		fetchstatus = 0;
 	}
@@ -462,6 +462,9 @@ lb_I_BoundColumn* LB_STDCALL lbBoundColumns::getBoundColumn(int column) {
 		UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
 		
 		QI(integerKey, lb_I_KeyBase, key, __FILE__, __LINE__)
+
+		printf("Have %d columns in boundColumns and search for %s\n", boundColumns->Count(), key->charrep());
+
 		ukdata = boundColumns->getElement(&key);
 		if (ukdata == NULL) printf("NULL pointer!\n");
 
@@ -481,13 +484,16 @@ int               LB_STDCALL lbBoundColumns::getColumnCount() {
 }
 /*...e*/
 
+class lbQuery;
 
 /*...slbErrCodes      LB_STDCALL lbBoundColumns\58\\58\setQuery\40\lbQuery\42\ q\41\:0:*/
-lbErrCodes      LB_STDCALL lbBoundColumns::setQuery(lbQuery* q) {
+lbErrCodes      LB_STDCALL lbBoundColumns::setQuery(lb_I_Query* q) {
 /*...spreparements:0:*/
 
-	HSTMT hstmt = q->getCurrentStatement();
-	query = q;
+	lbQuery* qq = (lbQuery*) q;
+
+	HSTMT hstmt = qq->getCurrentStatement();
+	query = qq;
 
 	const int ArraySize = 1;
 	SQLUSMALLINT RowStatusArray[ArraySize];
@@ -509,8 +515,6 @@ lbErrCodes      LB_STDCALL lbBoundColumns::setQuery(lbQuery* q) {
 	SQLRETURN sqlreturn = SQLNumResultCols(hstmt, &num);
 
 
-_CL_VERBOSE << "1." LOG_
-	
 /*...e*/
 	
 /*...sdocs:0:*/
@@ -534,16 +538,11 @@ Therefore I need an indicator, set by the user of this library to know, which on
 	REQUEST(manager.getPtr(), lb_I_Container, boundColumns)
 	REQUEST(manager.getPtr(), lb_I_Integer, integerKey)
 
-_CL_VERBOSE << "2." LOG_
-	
-
 	// For each column create a bound column instance.
 	// The instance will bind the column.
 	for (int i = 1; i <= num; i++) {
 		lbErrCodes err = ERR_NONE;
 
-_CL_VERBOSE << "3." LOG_
-		
 		// Create the instance ...
 		
 		lbBoundColumn* bc = new lbBoundColumn();
@@ -551,9 +550,7 @@ _CL_VERBOSE << "3." LOG_
 		lb_I_Module* m = getModuleManager();
 
 
-_CL_VERBOSE << "4." LOG_
 		bc->setModuleManager(m, __FILE__, __LINE__);
-_CL_VERBOSE << "5." LOG_
 
 		bc->prepareBoundColumn(q, i);
 
@@ -568,7 +565,6 @@ _CL_VERBOSE << "5." LOG_
 		boundColumns->insert(&uk, &key);
 
 		UAP(lb_I_BoundColumn, bc1, __FILE__, __LINE__)
-
 		bc1 = getBoundColumn(i);
 
 		bc1->bindColumn(q, i);
@@ -586,29 +582,19 @@ _CL_VERBOSE << "5." LOG_
 
 		string = bc1->getColumnName();
 
-_CL_VERBOSE << "6." LOG_
-		
+		_CL_LOG << "Have Column '" << string->charrep() << "'" LOG_
+
 		string->queryInterface("lb_I_KeyBase", (void**) &skey, __FILE__, __LINE__);
 
-_CL_VERBOSE << "7." LOG_
-		
 		UAP(lb_I_Unknown, ivalue, __FILE__, __LINE__)
 
-_CL_VERBOSE << "8." LOG_
-		
 		integerKey->queryInterface("lb_I_Unknown", (void**) &ivalue, __FILE__, __LINE__);
-
-_CL_VERBOSE << "9." LOG_
 		
 		if (ColumnNameMapping.getPtr() == NULL) printf("Error: NULL pointer at ColumnNameMapping detected\n");
 		if (ivalue.getPtr() == NULL) printf("Error: NULL pointer at ivalue detected\n");
 		if (skey.getPtr() == NULL) printf("Error: NULL pointer at skey detected\n");
 
-_CL_VERBOSE << "10." LOG_
-		
 		ColumnNameMapping->insert(&ivalue, &skey);
-
-_CL_VERBOSE << "11." LOG_
 
 /*...e*/
 
@@ -896,7 +882,7 @@ Using SQLSetPos
 
 	retcode = SQLNumResultCols(hstmt, &cols);
 
-	_CL_VERBOSE << "Called SQLNumResultCols()" LOG_
+	_CL_VERBOSE << "Called SQLNumResultCols() and have " << cols << " columns" LOG_
 	
 	if (retcode != SQL_SUCCESS)
 	{
@@ -909,18 +895,13 @@ Using SQLSetPos
 		
 		boundcols = new lbBoundColumns();
 		boundcols->setModuleManager(*&manager, __FILE__, __LINE__);
-		boundcols->setQuery(this);
-		
-		_CL_VERBOSE << "Created" LOG_
-		
 		boundColumns = boundcols;
 		
-
+		boundColumns->setQuery(this);
+		
 		_CL_VERBOSE << "Call prepareFKList()" LOG_
 		prepareFKList();
 		_CL_VERBOSE  << "Called" LOG_
-	
-
 	}
 
 	return ERR_NONE;
@@ -1011,6 +992,7 @@ lb_I_String* LB_STDCALL lbQuery::getAsString(int column) {
 	
 	// Caller get's an owner
 	string++;
+	
 	boundColumns->getString(column, *&string);
 	
 	return string.getPtr();
@@ -1054,6 +1036,8 @@ void LB_STDCALL lbQuery::prepareFKList() {
 
 	if (skipFKCollections == 1) return;
 
+#ifdef WINDOWS
+
 	unsigned char*   szTable;     /* Table to display   */
 
 	UCHAR   szPkTable[TAB_LEN];  /* Primary key table name */
@@ -1066,11 +1050,7 @@ void LB_STDCALL lbQuery::prepareFKList() {
 	SQLSMALLINT      iKeySeq;
 	SQLRETURN         retcode;
 
-_CL_VERBOSE << "Call SQLAllocStmt(...)" LOG_
-
 	retcode = SQLAllocStmt(hdbc, &hstmt); /* Statement handle */
-
-_CL_VERBOSE << "Bind collumns" LOG_
 
 	SQLBindCol(hstmt, 3, SQL_C_CHAR, szPkTable, TAB_LEN, &cbPkTable);
 	SQLBindCol(hstmt, 4, SQL_C_CHAR, szPkCol, COL_LEN, &cbPkCol);
@@ -1078,9 +1058,6 @@ _CL_VERBOSE << "Bind collumns" LOG_
 	SQLBindCol(hstmt, 7, SQL_C_CHAR, szFkTable, TAB_LEN, &cbFkTable);
 	SQLBindCol(hstmt, 8, SQL_C_CHAR, szFkCol, COL_LEN, &cbFkCol);
 
-
-_CL_VERBOSE << "Bound columns" LOG_
-	
 	if (retcode != SQL_SUCCESS)
 	{
 	        _dbError( "SQLAllocStmt()",henv,hdbc,hstmt);
@@ -1092,32 +1069,6 @@ _CL_VERBOSE << "Bound columns" LOG_
 		_CL_LOG << "ERROR: Possible buffer overflows!" LOG_
 	}
 	
-/*...sbla:0:*/
-/*
-	int a = 0;
-	int b = 0;
-
-	char* temp;
-	
-	temp = new char[strlen((char const*) szTable)+1];
-
-	while (b <= strlen((char const*) szTable)) {
-		if (szTable[b] != '\"') {
-			temp[a] = szTable[b];
-			a++;
-			b++;
-		} else {
-			b++;
-		}
-	}
-	
-	free(szTable);
-	szTable = temp;
-*/
-/*...e*/
-
-_CL_VERBOSE << "Call SQLForeignKeys(...) for table " << szTable LOG_
-
 	retcode = SQLForeignKeys(hstmt,
 	         NULL, 0,      /* Primary catalog   */
 	         NULL, 0,      /* Primary schema   */
@@ -1126,17 +1077,17 @@ _CL_VERBOSE << "Call SQLForeignKeys(...) for table " << szTable LOG_
 	         NULL, 0,      /* Foreign schema   */
 	         szTable, SQL_NTS);      /* Foreign table   */
 
-_CL_VERBOSE << "Try to fetch out the foreign keys" LOG_
 
 	while ((retcode == SQL_SUCCESS) || (retcode == SQL_SUCCESS_WITH_INFO)) {
 
-_CL_VERBOSE << "In loop ..." LOG_
+_CL_VERBOSE << "In loop to get foreign columns ..." LOG_
 
 	/* Fetch and display the result set. This will be all of the */
 	/* foreign keys in other tables that refer to the ORDERS */
 	/* primary key.                 */
 
 	   retcode = SQLFetch(hstmt);
+	   
 	   if (retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO) {
 	      lbErrCodes err = ERR_NONE;
 
@@ -1165,6 +1116,74 @@ _CL_VERBOSE << "Have one definition" LOG_
 	/* Close the cursor (the hstmt is still allocated). */
 
 	SQLFreeStmt(hstmt, SQL_DROP);
+
+#endif
+
+#ifdef UNIX
+	lbErrCodes err = ERR_NONE;
+	
+	UAP_REQUEST(manager.getPtr(), lb_I_Database, db)
+	db->init();
+	
+	char* user = getenv("lbDMFUser");
+	char* pass = getenv("lbDMFPasswd");
+	
+	if (!user) user = "dba";
+	if (!pass) pass = "trainres";
+	
+	db->connect("lbDMF", user, pass);
+	char buffer[1000] = "";
+	
+	/* For each column in the table for the current query try to select the PKTable and associate it to
+	   the foreign column.
+	 */
+	
+	char* table = getTableName();
+	
+	printf("Try to get foreign columns for table %s. Columns = %d\n", table, getColumns());
+	
+	for (int i = 1; i <= getColumns(); i++) { 
+    	    UAP(lb_I_Query, q, __FILE__, __LINE__)
+
+	    buffer[0] = 0;
+	    
+	    char* column = getColumnName(i);
+
+	    printf("Check for column %s\n", column);
+	    
+	    sprintf(buffer, "select PKTable from ForeignKey_VisibleData_Mapping where FKTable = '%s' and FKName = '%s'", table, column);
+	
+	    q = db->getQuery(0);
+	
+	    err = q->query(buffer);
+	    
+	    err = q->first();
+
+	    _CL_LOG << "Try to get the data for foreign columns" LOG_
+	    
+	    if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
+		UAP_REQUEST(manager.getPtr(), lb_I_String, FKName)
+	        UAP_REQUEST(manager.getPtr(), lb_I_String, PKTable)
+	
+		_CL_LOG << "Fill in from result column" LOG_
+	        
+		PKTable = q->getAsString(1);
+		
+	        FKName->setData(column);
+		
+		UAP(lb_I_Unknown, uk_PKTable, __FILE__, __LINE__)
+		UAP(lb_I_KeyBase, key_FKName, __FILE__, __LINE__)
+	      
+	        QI(FKName, lb_I_KeyBase, key_FKName, __FILE__, __LINE__)
+	        QI(PKTable, lb_I_Unknown, uk_PKTable, __FILE__, __LINE__)
+
+		_CL_LOG << "Insert " << PKTable->charrep() << " for " << FKName->charrep() << " into ForeignColumns" LOG_
+
+	        ForeignColumns->insert(&uk_PKTable, &key_FKName);
+	    }
+	}
+
+#endif
 
 _CL_VERBOSE << "Leave lbQuery::prepareFKList()" LOG_
 }
@@ -2278,6 +2297,64 @@ lb_I_String* LB_STDCALL lbBoundColumn::getColumnName() {
 }
 /*...e*/
 
+class lbConnection : public lb_I_Connection
+{
+	DECLARE_LB_UNKNOWN()
+
+public:
+        lbConnection()  {
+	    ref = STARTREF;
+	    _dbname = NULL;
+	    _dbuser = NULL;
+	}
+        virtual ~lbConnection() {
+	    if (_dbname) free(_dbname);
+	    if (_dbuser) free(_dbuser);
+	}
+
+	virtual char* LB_STDCALL getDBName() { return _dbname; }
+	virtual char* LB_STDCALL getDBUser() { return _dbuser; }
+
+//-- Private interface -----------------------------------------
+	virtual void LB_STDCALL setDBName(char* name) {
+	    if (_dbname) {
+		free(_dbname);
+		_dbname = NULL;
+	    }
+	    
+	    if (name) _dbname = strdup(name);
+	}
+	
+	virtual void LB_STDCALL setDBUser(char* name) {
+	    if (_dbuser) {
+		free(_dbuser);
+		_dbuser = NULL;
+	    }
+	    
+	    if (name) _dbuser = strdup(name);
+	}
+	
+	virtual void LB_STDCALL setConnection(HDBC _hdbc) {
+	    hdbc = _hdbc;
+	}
+	
+	virtual HDBC LB_STDCALL getConnection() { return hdbc; }
+	
+protected:
+
+	char* _dbname;
+	char* _dbuser;
+	
+	HDBC     hdbc;
+};
+
+BEGIN_IMPLEMENT_LB_UNKNOWN(lbConnection)
+	ADD_INTERFACE(lb_I_Connection)
+END_IMPLEMENT_LB_UNKNOWN()
+
+//IMPLEMENT_FUNCTOR(instanceOfConnection, lbConnection)
+
+
 /*...sclass lbDatabase:0:*/
 class lbDatabase :
 public lb_I_Database
@@ -2309,7 +2386,11 @@ private:
 	RETCODE  retcode;
 	HENV     henv;	
 	HDBC     hdbc;
+	
+	static lb_I_Container* connPooling;
 };
+
+lb_I_Container* lbDatabase::connPooling = NULL;
 
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbDatabase)
 	ADD_INTERFACE(lb_I_Database)
@@ -2318,6 +2399,7 @@ END_IMPLEMENT_LB_UNKNOWN()
 IMPLEMENT_FUNCTOR(instanceOfDatabase, lbDatabase)
 
 lbDatabase::lbDatabase() {
+	_CL_LOG << "lbDatabase::lbDatabase() called" LOG_
 	ref = STARTREF;
 	henv = 0;
 	hdbc = 0;
@@ -2354,66 +2436,119 @@ lbErrCodes LB_STDCALL lbDatabase::setData(lb_I_Unknown* uk) {
 /*...e*/
 /*...slbErrCodes LB_STDCALL lbDatabase\58\\58\connect\40\char\42\ DSN\44\ char\42\ user\44\ char\42\ passwd\41\:0:*/
 lbErrCodes LB_STDCALL lbDatabase::connect(char* DSN, char* user, char* passwd) {
-_CL_VERBOSE << "SQLAllocConnect(henv, &hdbc);" LOG_
+	lbErrCodes err = ERR_NONE;
+	
+	if (connPooling == NULL) {
+	    UAP_REQUEST(manager.getPtr(), lb_I_Container, container)
+	    container->queryInterface("lb_I_Container", (void**) &connPooling, __FILE__, __LINE__);
+	    
+	    _CL_LOG << "Initialize connection pooling" LOG_
+	}
 
-	retcode = SQLAllocConnect(henv, &hdbc); /* Connection handle */
+	char* DSN_user = (char*) malloc(strlen(DSN)+1+strlen(user)+1);
+	DSN_user[0] = 0;
+	
+	// Build the key for the connection
+	
+	strcat(DSN_user, DSN);	
+	strcat(DSN_user, "-");
+	strcat(DSN_user, user);
+	
+	UAP_REQUEST(manager.getPtr(), lb_I_String, dsn_user)
+	dsn_user->setData(DSN_user);
+	
+	free(DSN_user);
+	
+	UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
+	UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
+	
+	QI(dsn_user, lb_I_KeyBase, key, __FILE__, __LINE__)
+	
+	if (connPooling->exists(&key) == 1) {
+	    UAP(lb_I_Connection, con, __FILE__, __LINE__)
+	    
+	    uk = connPooling->getElement(&key);
+	    
+	    QI(uk, lb_I_Connection, con, __FILE__, __LINE__)
+	    
+	    if (con != NULL) {
+		lbConnection* c = (lbConnection*) con.getPtr();
+		
+		hdbc = c->getConnection();
+	    }
+	    	
+	} else {
+	
 
-	if (retcode != SQL_SUCCESS)
-        {
-        	_dbError( "SQLAllocConnect()",henv,hdbc,0);
-        	SQLFreeEnv(henv);
-        	return ERR_DB_CONNECT;
-        }	
+	    _CL_VERBOSE << "SQLAllocConnect(henv, &hdbc);" LOG_
+
+	    retcode = SQLAllocConnect(henv, &hdbc); /* Connection handle */
+
+		if (retcode != SQL_SUCCESS)
+	        {
+    		    _dbError( "SQLAllocConnect()",henv,hdbc,0);
+        	    SQLFreeEnv(henv);
+        	    return ERR_DB_CONNECT;
+    		}	
         
-_CL_VERBOSE << "SQLSetConnectOption(hdbc, SQL_LOGIN_TIMEOUT, 15);" LOG_
-	retcode = SQLSetConnectOption(hdbc, SQL_LOGIN_TIMEOUT, 15); /* Set login timeout to 15 seconds. */
+	    lbConnection* c = new lbConnection();
+	    
+	    c->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+	
+	    c->setConnection(hdbc);
 
-        if (retcode != SQL_SUCCESS)
-        {
-                _dbError( "SQLSetConnectOption()",henv,hdbc,0);
+	    QI(c, lb_I_Unknown, uk, __FILE__, __LINE__)
+	    
+	    connPooling->insert(&uk, &key);
+	
+	    _CL_VERBOSE << "SQLSetConnectOption(hdbc, SQL_LOGIN_TIMEOUT, 15);" LOG_
+	    retcode = SQLSetConnectOption(hdbc, SQL_LOGIN_TIMEOUT, 15); /* Set login timeout to 15 seconds. */
+
+            if (retcode != SQL_SUCCESS)
+            {
+                    _dbError( "SQLSetConnectOption()",henv,hdbc,0);
+                    SQLFreeEnv(henv);
+                    return ERR_DB_CONNECT;
+            }
+
+	    _CL_VERBOSE << "SQLSetConnectAttr(hdbc, SQL_ATTR_ODBC_CURSORS, SQL_CUR_USE_IF_NEEDED, 0);" LOG_
+
+	    retcode = SQLSetConnectAttr(hdbc, SQL_ATTR_ODBC_CURSORS, SQL_CUR_USE_IF_NEEDED, 0);
+
+            if (retcode != SQL_SUCCESS)
+            {
+	        _dbError( "SQLSetConnectAttr()",henv,hdbc,0);
                 SQLFreeEnv(henv);
                 return ERR_DB_CONNECT;
-        }
+	    }
 
-_CL_VERBOSE << "SQLSetConnectAttr(hdbc, SQL_ATTR_ODBC_CURSORS, SQL_CUR_USE_IF_NEEDED, 0);" LOG_
+	    _CL_VERBOSE << "SQLConnect(hdbc, ...);" LOG_
 
-	retcode = SQLSetConnectAttr(hdbc, SQL_ATTR_ODBC_CURSORS, SQL_CUR_USE_IF_NEEDED, 0);
+	    retcode = SQLConnect(hdbc, (unsigned char*) DSN, SQL_NTS, 
+				       (unsigned char*) user, SQL_NTS, 
+				       (unsigned char*) passwd, SQL_NTS); /* Connect to data source */
 
-        if (retcode != SQL_SUCCESS)
-        {
-                _dbError( "SQLSetConnectAttr()",henv,hdbc,0);
-                SQLFreeEnv(henv);
-                return ERR_DB_CONNECT;
-        }
+	    _CL_VERBOSE << "Called." LOG_
 
-_CL_VERBOSE << "SQLConnect(hdbc, ...);" LOG_
-
-	retcode = SQLConnect(hdbc, (unsigned char*) DSN, SQL_NTS, 
-				   (unsigned char*) user, SQL_NTS, 
-				   (unsigned char*) passwd, SQL_NTS); /* Connect to data source */
-
-_CL_VERBOSE << "Called." LOG_
-
-	if (retcode != SQL_SUCCESS && retcode != SQL_SUCCESS_WITH_INFO)
-        {
+	    if (retcode != SQL_SUCCESS && retcode != SQL_SUCCESS_WITH_INFO)
+            {
         	_dbError( "SQLConnect()",henv,hdbc,0);
 		_LOG << "Connection to database failed." LOG_
         	SQLFreeEnv(henv);
         	return ERR_DB_CONNECT;
-        }
+            }
 
-_CL_VERBOSE << "SQLSetConnectOption(hdbc, SQL_AUTOCOMMIT, SQL_AUTOCOMMIT_ON);" LOG_
+	    _CL_VERBOSE << "SQLSetConnectOption(hdbc, SQL_AUTOCOMMIT, SQL_AUTOCOMMIT_ON);" LOG_
 
-        retcode = SQLSetConnectOption(hdbc, SQL_AUTOCOMMIT, SQL_AUTOCOMMIT_ON);
+            retcode = SQLSetConnectOption(hdbc, SQL_AUTOCOMMIT, SQL_AUTOCOMMIT_ON);
 
-	if (retcode != SQL_SUCCESS)
-	{
+	    if (retcode != SQL_SUCCESS)
+	    {
 	        _dbError( "SQLSetConnectOption(SQL_AUTOCOMMIT, SQL_AUTOCOMMIT_ON)",henv,hdbc,0);
 	        SQLFreeEnv(henv);
 	        return ERR_DB_CONNECT;
-	}
-        
-
+	    }
+        }
 
 	return ERR_NONE;
 }
