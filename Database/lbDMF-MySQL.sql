@@ -195,12 +195,12 @@ insert into ForeignKey_VisibleData_Mapping (FKName, FKTable, PKName, PKTable) Va
 insert into ForeignKey_VisibleData_Mapping (FKName, FKTable, PKName, PKTable) Values ('AnwendungenId', 'User_Anwendungen', 'Name', 'Anwendungen');
 
 
-insert into Formular_Parameters Values (1, 'query', 'select "Anrede", "Name", "Vorname", "Ort", "PLZ", "Strasse", "Vorwahl", "Telefon" from Kunden', 5);
-insert into Formular_Parameters Values (2, 'query', 'select "Name", "Vorname", "Erwachsene", "Kinder" from Reservierungen inner join Kunden on Reservierungen.KundenID = Kunden.ID', 6);
-insert into Formular_Parameters Values (3, 'query', 'select "Name", "Vorname", "userid", "passwort" from "Users"', 1);
-insert into Formular_Parameters Values (4, 'query', 'select "Name", "MenuName", "EventName", "MenuHilfe", "AnwendungID", "Typ" from "Formulare"', 2);
-insert into Formular_Parameters Values (5, 'query', 'select "ParameterName", "ParameterValue", "FormularID" from "Formular_Parameters"', 7);
-insert into Formular_Parameters Values (6, 'query', 'select "AnwendungenId", "userid" from "User_Anwendungen"', 8);
+insert into Formular_Parameters Values (1, 'query', 'select Anrede, Name, Vorname, Ort, PLZ, Strasse, Vorwahl, Telefon from Kunden', 5);
+insert into Formular_Parameters Values (2, 'query', 'select Name, Vorname, Erwachsene, Kinder from Reservierungen inner join Kunden on Reservierungen.KundenID = Kunden.ID', 6);
+insert into Formular_Parameters Values (3, 'query', 'select Name, Vorname, userid, passwort from Users', 1);
+insert into Formular_Parameters Values (4, 'query', 'select Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ from Formulare', 2);
+insert into Formular_Parameters Values (5, 'query', 'select ParameterName, ParameterValue, FormularID from Formular_Parameters', 7);
+insert into Formular_Parameters Values (6, 'query', 'select AnwendungenId, userid from User_Anwendungen', 8);
 
 insert into Anwendungs_Parameter Values (1, 'DBName', 'trainres', 3);
 insert into Anwendungs_Parameter Values (2, 'DBUser', 'dba', 3);

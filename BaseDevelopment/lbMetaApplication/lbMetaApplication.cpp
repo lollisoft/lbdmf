@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.45 $
+ * $Revision: 1.46 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.45 2005/01/25 12:54:41 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.46 2005/01/27 12:53:27 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.46  2005/01/27 12:53:27  lollisoft
+ * Changed SQL query not to use " in it
+ *
  * Revision 1.45  2005/01/25 12:54:41  lollisoft
  * Verbose message added
  *
@@ -505,10 +508,10 @@ lbErrCodes LB_STDCALL lb_MetaApplication::loadApplication(char* user, char* appl
 		char buffer[1000] = "";
 
 		sprintf(buffer,
-		        "select \"anwendungen\".\"modulename\", \"anwendungen\".\"functor\", \"anwendungen\".\"interface\" from \"anwendungen\" inner join \"user_anwendungen\" on "
-		        "\"anwendungen\".id = \"user_anwendungen\".\"anwendungenid\" "
-		        "inner join \"users\" on \"user_anwendungen\".userid = \"users\".id where "
-		        "\"users\".userid = '%s' and \"anwendungen\".\"name\" = '%s'"
+		        "select anwendungen.modulename, anwendungen.functor, anwendungen.interface from anwendungen inner join user_anwendungen on "
+		        "anwendungen.id = user_anwendungen.anwendungenid "
+		        "inner join users on user_anwendungen.userid = users.id where "
+		        "users.userid = '%s' and anwendungen.name = '%s'"
 		                , user, application);
 
 		/*
