@@ -334,10 +334,6 @@ public:
 #define UAP(interface, Unknown_Reference, file, line) \
 		class UAP##Unknown_Reference { \
 \
-		private: \
-		UAP##Unknown_Reference(UAP##Unknown_Reference& from) { \
-			_CL_LOG << "Copy constructor called!" LOG_ \
-		} \
 		public: \
 	        UAP##Unknown_Reference() { \
 	        	_autoPtr = NULL; \
@@ -1618,6 +1614,7 @@ public:
 /*...e*/
 
 class lb_I_Plugin;
+class lb_I_String;
 
 /*
  * The plugin manager should handle automatic loading of exsisting plugins and optionally
@@ -1630,7 +1627,7 @@ public:
 	/**
 	 * Starts listing of plugins.
 	 */
-	virtual void LB_STDCALL beginEnumPlugins() = 0;
+	virtual bool LB_STDCALL beginEnumPlugins() = 0;
 	
 	/**
 	 * Gets the next plugin handle instance. This does not
@@ -1663,7 +1660,45 @@ public:
 class lb_I_PluginModule : public lb_I_Unknown {
 public:
 
+	virtual void LB_STDCALL initialize() = 0;
+
+protected:
+	virtual void LB_STDCALL enumPlugins() = 0;
 };
+
+
+#define DECLARE_PLUGINS() \
+	virtual void LB_STDCALL enumPlugins(); \
+	UAP(lb_I_Container, Plugins, __FILE__, __LINE__)
+
+#define BEGIN_PLUGINS(cls) \
+void LB_STDCALL cls::enumPlugins() { \
+	lbErrCodes err = ERR_NONE; \
+	REQUEST(manager.getPtr(), lb_I_Container, Plugins)
+
+#define ADD_PLUGIN(plugin, scope) \
+\
+	UAP_REQUEST(manager.getPtr(), lb_I_Plugin, P##plugin##scope) \
+	P##plugin##scope->setName(#plugin); \
+	P##plugin##scope->setScope(#scope); \
+\
+	UAP_REQUEST(manager.getPtr(), lb_I_String, s##plugin##scope) \
+\
+	UAP(lb_I_KeyBase, Key##plugin##scope, __FILE__, __LINE__) \
+\
+	UAP(lb_I_Unknown, ukPlugin##plugin##scope, __FILE__, __LINE__) \
+\
+	s##plugin##scope->setData(#plugin); \
+\
+	QI(s##plugin##scope, lb_I_KeyBase, Key##plugin##scope, __FILE__, __LINE__) \
+\
+	QI(P##plugin##scope, lb_I_Unknown, ukPlugin##plugin##scope, __FILE__, __LINE__) \
+\
+	Plugins->insert(&ukPlugin##plugin##scope, &Key##plugin##scope); \
+\
+
+#define END_PLUGINS() }
+
 /*...e*/
 
 /*
@@ -1672,6 +1707,9 @@ public:
 /*...sclass lb_I_Plugin:0:*/
 class lb_I_Plugin : public lb_I_Unknown {
 public:
+
+	virtual void LB_STDCALL setName(char* name) = 0;
+	virtual void LB_STDCALL setScope(char* scope) = 0;
 
 };
 /*...e*/
@@ -1684,7 +1722,6 @@ public:
 /*...e*/
 
 
-class lb_I_String;
 
 #include <lbInterfaces-sub-xml.h>
 #include <lbInterfaces-sub-classes.h>	
