@@ -1,9 +1,13 @@
+/*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.3 $
+ * $Revision: 1.4 $
  * $Name:  $
- * $Id: misc.cpp,v 1.3 2000/10/20 06:07:56 lolli Exp $
+ * $Id: misc.cpp,v 1.4 2000/11/14 22:40:52 lolli Exp $
  * $Log: misc.cpp,v $
+ * Revision 1.4  2000/11/14 22:40:52  lolli
+ * Minor changes
+ *
  * Revision 1.3  2000/10/20 06:07:56  lolli
  * test1
  *
@@ -26,6 +30,7 @@
  * Added logging and a log class, lb_sleep changed
  *
  **************************************************************/
+/*...e*/
 
 #define LB_CONTAINER_DLL
 
