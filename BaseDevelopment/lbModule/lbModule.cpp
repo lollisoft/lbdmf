@@ -1,11 +1,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.33 $
+ * $Revision: 1.34 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.33 2002/08/21 18:01:37 lothar Exp $
+ * $Id: lbModule.cpp,v 1.34 2002/08/31 10:49:14 lothar Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.34  2002/08/31 10:49:14  lothar
+ * Deactivated IR_USAGE
+ *
  * Revision 1.33  2002/08/21 18:01:37  lothar
  * Implemented the new container functions for direct access
  *
@@ -82,7 +85,7 @@
 /*...e*/
 
 
-#define IR_USAGE
+//#define IR_USAGE
 
 /*...sincludes:0:*/
 #ifdef WINDOWS
@@ -2442,6 +2445,7 @@ lbErrCodes LB_STDCALL lbModule::request(const char* request, lb_I_Unknown** resu
                         notify_create(*result, (*result)->getClassName());
 /*...sclean up:32:*/
                         if (moduleName != NULL) impl->deleteValue(moduleName);
+//                        if (value != NULL) impl->deleteValue(value);
 /*...e*/
                 } else {
                         cout << "Something goes wrong!" << endl;
