@@ -18,6 +18,8 @@
 /*...e*/
 
 /*...sgeneral stuff:0:*/
+/*...vmakefile:0:*/
+
 /*...v\46\\46\\47\make\47\Std_make \45\ The global makefile definitions:0:*/
 /*...v\46\\46\\47\make\47\makefile\46\template:0:*/
 /*...v\46\\46\\47\make\47\makefile\46\configure:0:*/
@@ -36,7 +38,6 @@
 /*...v\46\\46\\47\makedist\46\bat:0:*/
 /*...v\46\\46\\47\make_src_dist\46\bat:0:*/
 /*...v\46\\46\\47\make_dist_base\46\bat:0:*/
-/*...vmakefile:0:*/
 /*...vmakeapps\46\bat:0:*/
 /*...v\46\\46\\47\watcomenv\46\bat:0:*/
 
@@ -213,6 +214,13 @@ These headers must define the per module (DLL) EXPORT variable
 /*...v\46\\46\\47\Test\47\GUI\47\wxwrapper\47\makefile\46\module:0:*/
 /*...v\46\\46\\47\Test\47\GUI\47\wxwrapper\47\makefile:0:*/
 /*...v\46\\46\\47\Test\47\GUI\47\wxwrapper\47\dynamic\46\cpp:0:*/
+
+
+
+/*...v\46\\46\\47\Test\47\GUI\47\wxModules\47\makefile\46\module:0:*/
+/*...v\46\\46\\47\Test\47\GUI\47\wxModules\47\lbLoginWizard\46\cpp:0:*/
+
+
 /*...v\46\\46\\47\Test\47\console\47\xml\47\lbxmlconfig\46\xml:0:*/
 /*...v\46\\46\\47\Test\47\console\47\xml\47\test\46\cpp:0:*/
 /*...v\46\\46\\47\Test\47\console\47\xml\47\makefile\46\bat:0:*/
