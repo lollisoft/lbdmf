@@ -74,7 +74,7 @@ extern "C" {
 #endif
 
 void process(void);
-void dbError( LPSTR lp, HENV henv,HDBC hdbc,HSTMT hstmt);
+void _dbError( LPSTR lp, HENV henv,HDBC hdbc,HSTMT hstmt);
 
 
 
@@ -152,6 +152,7 @@ public:
 		_readonly = readonly; 
 		hdbc = 0; 
 		hstmt = 0; 
+		henv = 0;
 		hupdatestmt = 0;
 		databound = 0; 
 		count = 0; 
@@ -172,12 +173,23 @@ public:
 	 * As a sample may be a graphical view for the result of the interpreted
 	 * graphics and the textual view. The controller then might use one button
 	 * for updating the model and the model then informs its views.
+	 *
+	 * For the future porting of FRS I would have a graphical view of the reserved
+	 * places. It will show reserved as red and free as green.
+	 *
+	 * The source code for that object will call - maybe - 
+	 * getColor("Reserved-Status", me).
+	 *
+	 * The dialog to reserve a place will update the data and therefore the model
+	 * will inform also the graphical view.
 	 */
 	virtual lbErrCodes LB_STDCALL registerView(lb_I_MVC_View* view);
 	virtual lbErrCodes LB_STDCALL unregisterView(lb_I_MVC_View* view);
 /*...e*/
 
 	char* LB_STDCALL getTableName();
+
+	void LB_STDCALL dbError(char* lp);
 
         /* Set the SQL query */
         virtual lbErrCodes LB_STDCALL query(char* q);
@@ -209,7 +221,7 @@ public:
 	virtual lbErrCodes	LB_STDCALL setString(lb_I_String* columnName, lb_I_String* value);
 #endif        
 	
-	lbErrCodes LB_STDCALL init(HENV henv, HDBC _hdbc, int readonly = 1);
+	lbErrCodes LB_STDCALL init(HENV _henv, HDBC _hdbc, int readonly = 1);
 	int LB_STDCALL getColCount();
 
 
@@ -587,9 +599,10 @@ lbErrCodes LB_STDCALL lbQuery::unregisterView(lb_I_MVC_View* view) {
 }
 /*...e*/
 
-/*...slbErrCodes LB_STDCALL lbQuery\58\\58\init\40\HENV henv\44\ HDBC _hdbc\41\:0:*/
-lbErrCodes LB_STDCALL lbQuery::init(HENV henv, HDBC _hdbc, int readonly) {
+/*...slbErrCodes LB_STDCALL lbQuery\58\\58\init\40\HENV _henv\44\ HDBC _hdbc\41\:0:*/
+lbErrCodes LB_STDCALL lbQuery::init(HENV _henv, HDBC _hdbc, int readonly) {
 	hdbc = _hdbc;
+	henv = _henv;
 
 /*...sbla:0:*/
 	hdbc = _hdbc;
@@ -598,7 +611,7 @@ lbErrCodes LB_STDCALL lbQuery::init(HENV henv, HDBC _hdbc, int readonly) {
 
 	if (retcode != SQL_SUCCESS)
 	{
-	        dbError( "SQLAllocStmt()",henv,hdbc,hstmt);
+	        dbError( "SQLAllocStmt()");
 	        _LOG << "lbDatabase::getQuery() failed due to statement allocation." LOG_
 	        SQLFreeEnv(henv);
         	return ERR_DB_ALLOCSTATEMENT;
@@ -613,7 +626,7 @@ printf("SQLAllocStmt(...) called successfully\n");
 
         if (retcode != SQL_SUCCESS)
         {
-                dbError( "SQLSetStmtOption()",henv,hdbc,hstmt);
+                dbError( "SQLSetStmtOption()");
                 _LOG << "lbDatabase::getQuery() failed due to setting concurrency settings." LOG_
                 SQLFreeEnv(henv);
                 return ERR_DB_ALLOCSTATEMENT;
@@ -623,19 +636,19 @@ printf("SQLAllocStmt(...) called successfully\n");
 
         if (retcode != SQL_SUCCESS)
         {
-                dbError( "SQLSetStmtOption()",henv,hdbc,hstmt);
+                dbError( "SQLSetStmtOption()");
                 _LOG << "lbDatabase::getQuery() failed due to setting cursor type." LOG_
                 SQLFreeEnv(henv);
                 return ERR_DB_ALLOCSTATEMENT;
         }
-        
+
         int size = 1;
 
 	retcode = SQLSetStmtAttr(hstmt, SQL_ATTR_ROW_ARRAY_SIZE, (SQLPOINTER) size, 0);
 
         if (retcode != SQL_SUCCESS)
         {
-                dbError( "SQLSetStmtAttr()",henv,hdbc,hstmt);
+                dbError( "SQLSetStmtAttr()");
                 _LOG << "lbDatabase::getQuery() failed due to setting row array size." LOG_
                 SQLFreeEnv(henv);
                 return ERR_DB_ALLOCSTATEMENT;
@@ -648,7 +661,7 @@ printf("SQLAllocStmt(...) called successfully\n");
 
 
 	if (retcode != SQL_SUCCESS) {
-		dbError( "SQLSetStmtAttr()",henv,hdbc,hstmt);
+		dbError( "SQLSetStmtAttr()");
 		_LOG << "lbDatabase::getQuery() failed due to set statement attributes." LOG_
 		//SQLFreeEnv(henv);
 		return ERR_DB_ALLOCSTATEMENT;
@@ -661,7 +674,7 @@ printf("SQLAllocStmt(...) called successfully\n");
 
 	if (retcode != SQL_SUCCESS)
 	{
-	        dbError( "SQLAllocStmt()",henv,hdbc,hupdatestmt);
+	        _dbError( "SQLAllocStmt()",henv,hdbc,hupdatestmt);
 	        _LOG << "lbDatabase::getQuery() failed due to statement allocation." LOG_
 	        SQLFreeEnv(henv);
         	return ERR_DB_ALLOCSTATEMENT;
@@ -676,7 +689,7 @@ printf("SQLAllocStmt(...) called successfully\n");
 
         if (retcode != SQL_SUCCESS)
         {
-                dbError( "SQLSetStmtOption()",henv,hdbc,hupdatestmt);
+                _dbError( "SQLSetStmtOption()",henv,hdbc,hupdatestmt);
                 _LOG << "lbDatabase::getQuery() failed due to setting concurrency settings." LOG_
                 SQLFreeEnv(henv);
                 return ERR_DB_ALLOCSTATEMENT;
@@ -686,17 +699,17 @@ printf("SQLAllocStmt(...) called successfully\n");
 
         if (retcode != SQL_SUCCESS)
         {
-                dbError( "SQLSetStmtOption()",henv,hdbc,hupdatestmt);
+                _dbError( "SQLSetStmtOption()",henv,hdbc,hupdatestmt);
                 _LOG << "lbDatabase::getQuery() failed due to setting cursor type." LOG_
                 SQLFreeEnv(henv);
                 return ERR_DB_ALLOCSTATEMENT;
         }
-        
+
 	retcode = SQLSetStmtAttr(hupdatestmt, SQL_ATTR_ROW_ARRAY_SIZE, (SQLPOINTER) size, 0);
 
         if (retcode != SQL_SUCCESS)
         {
-                dbError( "SQLSetStmtAttr()",henv,hdbc,hupdatestmt);
+                _dbError( "SQLSetStmtAttr()",henv,hdbc,hupdatestmt);
                 _LOG << "lbDatabase::getQuery() failed due to setting row array size." LOG_
                 SQLFreeEnv(henv);
                 return ERR_DB_ALLOCSTATEMENT;
@@ -709,7 +722,7 @@ printf("SQLAllocStmt(...) called successfully\n");
 
 
 	if (retcode != SQL_SUCCESS) {
-		dbError( "SQLSetStmtAttr()",henv,hdbc,hupdatestmt);
+		_dbError( "SQLSetStmtAttr()",henv,hdbc,hupdatestmt);
 		_LOG << "lbDatabase::getQuery() failed due to set statement attributes." LOG_
 		//SQLFreeEnv(henv);
 		return ERR_DB_ALLOCSTATEMENT;
@@ -721,6 +734,8 @@ printf("SQLAllocStmt(...) called successfully\n");
 /*...e*/
 /*...slbErrCodes LB_STDCALL lbQuery\58\\58\query\40\char\42\ q\41\:0:*/
 lbErrCodes LB_STDCALL lbQuery::query(char* q) {
+
+	if (strlen(q) >= 256) printf("WARNING: Bufferoverflow in %s at %d\n", __FILE__, __LINE__);
 
 	lstrcpy(szSql, q);
 
@@ -753,7 +768,7 @@ Using SQLSetPos
 
 	if (retcode != SQL_SUCCESS)
         {
-        	dbError( "SQLExecDirect()",henv,hdbc,hstmt);
+        	dbError( "SQLExecDirect()");
 		_LOG << "lbQuery::query(...) failed." LOG_
 		return ERR_DB_QUERYFAILED;
         }
@@ -764,7 +779,7 @@ Using SQLSetPos
 	
 	if (retcode != SQL_SUCCESS)
 	{
-	        dbError( "SQLNumResultCols()",henv,hdbc,hstmt);
+	        dbError( "SQLNumResultCols()");
 	        _LOG << "lbQuery::query(...) failed." LOG_
 	        return ERR_DB_QUERYFAILED;
 	} else {
@@ -895,7 +910,7 @@ lbErrCodes LB_STDCALL lbQuery::first() {
         if (retcode == SQL_ERROR || retcode == SQL_SUCCESS_WITH_INFO) {
                 _LOG << "lbQuery::first(): Error while fetching next row" LOG_
                 printf("Error in lbQuery::first()\n");
-                dbError( "SQLExtendedFetch()",henv,hdbc,hstmt);
+                dbError( "SQLExtendedFetch()");
                 
                 // Unsave !!
                 if (retcode == SQL_SUCCESS_WITH_INFO) return ERR_NONE;
@@ -930,7 +945,7 @@ lbErrCodes LB_STDCALL lbQuery::next() {
 	if (retcode == SQL_ERROR || retcode == SQL_SUCCESS_WITH_INFO) {
 		_LOG << "lbQuery::next(): Error while fetching next row" LOG_
 		printf("Error in lbQuery::next()\n");
-		dbError( "SQLExtendedFetch()",henv,hdbc,hstmt);
+		dbError( "SQLExtendedFetch()");
 
 		// Unsave !!
 		if (retcode == SQL_SUCCESS_WITH_INFO) return ERR_NONE;
@@ -964,7 +979,7 @@ lbErrCodes LB_STDCALL lbQuery::previous() {
         if (retcode == SQL_ERROR || retcode == SQL_SUCCESS_WITH_INFO) {
                 _LOG << "lbQuery::previous(): Error while fetching next row" LOG_
                 printf("Error in lbQuery::previous()\n");
-                dbError( "SQLExtendedFetch()",henv,hdbc,hstmt);
+                dbError( "SQLExtendedFetch()");
 
 		// Unsave !!
 		if (retcode == SQL_SUCCESS_WITH_INFO) return ERR_NONE;
@@ -999,7 +1014,7 @@ lbErrCodes LB_STDCALL lbQuery::last() {
                 _LOG << "lbQuery::last(): Error while fetching next row" LOG_
                 printf("Error in lbQuery::last()\n");
 
-                dbError( "SQLExtendedFetch()",henv,hdbc,hstmt);
+                dbError( "SQLExtendedFetch()");
 
 		// Unsave !!
 		if (retcode == SQL_SUCCESS_WITH_INFO) return ERR_NONE;
@@ -1153,7 +1168,7 @@ printf("Query is: '%s'\n", buffer);
 //		             SQLExecute(hupdatestmt, (unsigned char *)buffer, SQL_NTS);
 		if (retcode != SQL_SUCCESS)
 		{
-		        dbError( "SQLExecDirect() for update",henv,hdbc,hstmt);
+		        _dbError( "SQLExecDirect() for update",henv,hdbc,hupdatestmt);
 		        _LOG << "lbQuery::update(...) failed." LOG_
 		        return ERR_DB_UPDATEFAILED;
 		}
@@ -1167,13 +1182,14 @@ free(buffer);
 		
 		if (retcode != SQL_SUCCESS)
 		{
-		        dbError( "SQLSetPos()",henv,hdbc,hstmt);
+		        dbError( "SQLSetPos()");
 		        _LOG << "lbQuery::update(...) failed." LOG_
 		        return ERR_DB_UPDATEFAILED;
 		}
 #endif
 	}
 
+	free(CursorName);
 
 	return ERR_NONE;
 }
@@ -1255,6 +1271,16 @@ printf("Endscan at '%s'\n", lpszTable);
    return lpszTable;
 }
 /*...e*/
+
+void LB_STDCALL lbQuery::dbError(char* lp)
+{
+	unsigned char buf[1000];
+	unsigned char sqlstate[15];
+
+	SQLError( henv, hdbc, hstmt, sqlstate, NULL, buf, sizeof(buf), NULL);
+	fprintf(stderr, "%s. %s, SQLSTATE=%s\n",lp, buf, sqlstate);
+}
+
 
 #ifdef bla
 /*...sbla:0:*/
@@ -1501,10 +1527,10 @@ lbErrCodes LB_STDCALL lbBoundColumn::setFromString(lb_I_String* set, int mode) {
 		printf("lbBoundColumn::setFromString(...) if (mode == 1) not implemented yet\n");
 	} else {
 		// This would overwrite the pointer, not the data !!!
-		printf("Copy string '%s' to '%s' with size of %d\n", set->getData(), (char*) buffer, strlen(set->getData()));
-		printf("Buffer pointer is at %p\n", buffer);
+		//printf("Copy string '%s' to '%s' with size of %d\n", set->getData(), (char*) buffer, strlen(set->getData()));
+		//printf("Buffer pointer is at %p\n", buffer);
 		char* b = strcpy((char*) buffer, set->getData());
-		printf("Result is: '%s', returned is '%s', set is '%s'\n", (char*) buffer, b, set->getData());
+		//printf("Result is: '%s', returned is '%s', set is '%s'\n", (char*) buffer, b, set->getData());
 	}
 
 	return ERR_NONE;
@@ -1592,17 +1618,18 @@ printf("lbBoundColumn::bindColumn(...) called\n");
 		case SQL_VARCHAR:
 		case SQL_LONGVARCHAR:
 /*...sbind a character array:24:*/
-			buffer = malloc((BufferLength+1)*rows);
+			buffer = malloc((ColumnSize+1)*rows);
 			printf("Buffer pointer is at %p with size %d\n", buffer, (ColumnSize+1)*rows);
 			
 			_DataType = DataType;
 			bound = 1;
-			memset(buffer, 0, (BufferLength+1)*rows);
+			memset(buffer, 0, (ColumnSize+1)*rows);
 			
-			ret = SQLBindCol(hstmt, column, DataType, buffer, (BufferLength+1), &cbBufferLength);
+			ret = SQLBindCol(hstmt, column, SQL_C_DEFAULT, buffer, (ColumnSize+1), &cbBufferLength);
 			
 			if (ret != SQL_SUCCESS) {
 				printf("Error while binding a column!\n");
+				q->dbError("SQLBindCol()");
 			}
 /*...e*/
 			break;
@@ -1627,6 +1654,7 @@ printf("Call SQLBindCol\n");
 printf("Called\n");			
 			if (ret != SQL_SUCCESS) {
 			        printf("Error while binding a column!\n");
+			        q->dbError("SQLBindCol()");
 			}
 /*...e*/
 			break;
@@ -1798,7 +1826,7 @@ lbDatabase::~lbDatabase() {
 lbErrCodes LB_STDCALL lbDatabase::init() {
 	retcode = SQLAllocEnv(&henv);
 	if (retcode != SQL_SUCCESS) {
-        	dbError( "SQLAllocEnv()",henv,0,0);
+        	_dbError( "SQLAllocEnv()",henv,0,0);
         	_LOG << "Database initializion failed." LOG_
         	return ERR_DB_INIT;
         }
@@ -1806,7 +1834,7 @@ lbErrCodes LB_STDCALL lbDatabase::init() {
 	retcode = SQLSetEnvAttr(henv, SQL_ATTR_ODBC_VERSION, (void*) SQL_OV_ODBC3, 0);
 
 	if (retcode != SQL_SUCCESS) {
-        	dbError( "SQLSetEnvAttr()",henv,0,0);
+        	_dbError( "SQLSetEnvAttr()",henv,0,0);
         	_LOG << "Database version initializion failed." LOG_
         	return ERR_DB_INIT;
 	}
@@ -1826,7 +1854,7 @@ lbErrCodes LB_STDCALL lbDatabase::connect(char* DSN, char* user, char* passwd) {
 
 	if (retcode != SQL_SUCCESS)
         {
-        	dbError( "SQLAllocConnect()",henv,hdbc,0);
+        	_dbError( "SQLAllocConnect()",henv,hdbc,0);
         	SQLFreeEnv(henv);
         	return ERR_DB_CONNECT;
         }	
@@ -1835,7 +1863,7 @@ lbErrCodes LB_STDCALL lbDatabase::connect(char* DSN, char* user, char* passwd) {
 
         if (retcode != SQL_SUCCESS)
         {
-                dbError( "SQLSetConnectOption()",henv,hdbc,0);
+                _dbError( "SQLSetConnectOption()",henv,hdbc,0);
                 SQLFreeEnv(henv);
                 return ERR_DB_CONNECT;
         }
@@ -1844,7 +1872,7 @@ lbErrCodes LB_STDCALL lbDatabase::connect(char* DSN, char* user, char* passwd) {
 
         if (retcode != SQL_SUCCESS)
         {
-                dbError( "SQLSetConnectAttr()",henv,hdbc,0);
+                _dbError( "SQLSetConnectAttr()",henv,hdbc,0);
                 SQLFreeEnv(henv);
                 return ERR_DB_CONNECT;
         }
@@ -1855,7 +1883,7 @@ lbErrCodes LB_STDCALL lbDatabase::connect(char* DSN, char* user, char* passwd) {
 
 	if (retcode != SQL_SUCCESS && retcode != SQL_SUCCESS_WITH_INFO)
         {
-        	dbError( "SQLConnect()",henv,hdbc,0);
+        	_dbError( "SQLConnect()",henv,hdbc,0);
 		_LOG << "Connection to database failed." LOG_
         	SQLFreeEnv(henv);
         	return ERR_DB_CONNECT;
@@ -1868,7 +1896,7 @@ lbErrCodes LB_STDCALL lbDatabase::connect(char* DSN, char* user, char* passwd) {
 
 	if (retcode != SQL_SUCCESS)
 	{
-	        dbError( "SQLSetConnectOption(SQL_AUTOCOMMIT, SQL_AUTOCOMMIT_ON)",henv,hdbc,0);
+	        _dbError( "SQLSetConnectOption(SQL_AUTOCOMMIT, SQL_AUTOCOMMIT_ON)",henv,hdbc,0);
 	        SQLFreeEnv(henv);
 	        return ERR_DB_CONNECT;
 	}
@@ -1937,7 +1965,7 @@ retcode = SQLAllocEnv(&henv);              /* Environment handle */
 
 if (retcode != SQL_SUCCESS)
         {
-        dbError( "SQLAllocEnv()",henv,hdbc,hstmt);
+        _dbError( "SQLAllocEnv()",henv,hdbc,hstmt);
         return;
         }
 
@@ -1945,7 +1973,7 @@ retcode = SQLAllocConnect(henv, &hdbc); /* Connection handle */
 
 if (retcode != SQL_SUCCESS)
         {
-        dbError( "SQLAllocConnect()",henv,hdbc,hstmt);
+        _dbError( "SQLAllocConnect()",henv,hdbc,hstmt);
         SQLFreeEnv(henv);
         return;
         }
@@ -1955,7 +1983,7 @@ retcode = SQLConnect(hdbc, (unsigned char*) "trainres", SQL_NTS, (unsigned char*
 
 if (retcode != SQL_SUCCESS && retcode != SQL_SUCCESS_WITH_INFO)
         {
-        dbError( "SQLConnect()",henv,hdbc,hstmt);
+        _dbError( "SQLConnect()",henv,hdbc,hstmt);
         SQLFreeEnv(henv);
         return;
         } else {
@@ -1970,7 +1998,7 @@ retcode = SQLAllocStmt(hdbc, &hstmt); /* Statement handle */
 
 if (retcode != SQL_SUCCESS)
         {
-        dbError( "SQLAllocStmt()",henv,hdbc,hstmt);
+        _dbError( "SQLAllocStmt()",henv,hdbc,hstmt);
         SQLFreeEnv(henv);
         return;
         }
@@ -1982,7 +2010,7 @@ retcode = SQLExecDirect(hstmt, (unsigned char*) szSql, SQL_NTS);
 
 if (retcode != SQL_SUCCESS)
         {
-        dbError( " SQLExecDirect()",henv,hdbc,hstmt);
+        _dbError( " SQLExecDirect()",henv,hdbc,hstmt);
         }
 
 if (retcode == SQL_SUCCESS)
@@ -1995,7 +2023,7 @@ if (retcode == SQL_SUCCESS)
 
                 if (retcode == SQL_ERROR || retcode == SQL_SUCCESS_WITH_INFO)
                         {
-                        dbError( "SQLFetch()",henv,hdbc,hstmt);
+                        _dbError( "SQLFetch()",henv,hdbc,hstmt);
                         }
 
                 if (retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO)
@@ -2022,8 +2050,8 @@ SQLFreeConnect(hdbc);
 SQLFreeEnv(henv);
 }
 /*...e*/
-/*...svoid dbError\40\ LPSTR lp\44\ HENV henv\44\HDBC hdbc\44\HSTMT hstmt\41\:0:*/
-void dbError( LPSTR lp, HENV henv,HDBC hdbc,HSTMT hstmt)
+/*...svoid _dbError\40\ LPSTR lp\44\ HENV henv\44\HDBC hdbc\44\HSTMT hstmt\41\:0:*/
+void _dbError( LPSTR lp, HENV henv,HDBC hdbc,HSTMT hstmt)
 {
 unsigned char buf[1000];
 unsigned char sqlstate[15];
@@ -2191,19 +2219,7 @@ lb_I_FunctorEntity* LB_STDCALL lbDBInterfaceRepository::getFirstEntity() {
 		return NULL;
 	}
 
-
-	
-
-
-
-
-
-
-
-
-
-
-
+#ifdef bla
 	// Search for that node, containing specifed interface.
 	for (interfaces; interfaces < len; interfaces++) {
 /*...sOld DOM code:0:*/
@@ -2398,6 +2414,7 @@ lb_I_FunctorEntity* LB_STDCALL lbDBInterfaceRepository::getFirstEntity() {
 #endif
 /*...e*/
 	}
+#endif
 
 	return NULL;
 }
