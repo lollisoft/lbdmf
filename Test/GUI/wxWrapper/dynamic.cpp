@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.27 2004/08/01 21:34:03 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.28 2004/08/03 22:01:10 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.27 $
+ * $Revision: 1.28 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.27 2004/08/01 21:34:03 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.28 2004/08/03 22:01:10 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.28  2004/08/03 22:01:10  lollisoft
+ * Implemented adding of new data.
+ *
  * Revision 1.27  2004/08/01 21:34:03  lollisoft
  * More documentation
  *
@@ -513,13 +516,13 @@ void lbDatabaseDialog::init(wxWindow* parent, wxString formName, wxString SQLStr
 	sizerHor->Add(sizerRight, 1, wxEXPAND | wxALL, 5);
 
 	wxButton *button1 = new wxButton(this, DatabaseFirst, "First", wxPoint(), wxSize(100,20));
-	wxButton *button2 = new wxButton(this, DatabaseNext, "Next", wxPoint(), wxSize(100,20));
-	wxButton *button3 = new wxButton(this, DatabasePrev, "Prev", wxPoint(), wxSize(100,20));
+	wxButton *button2 = new wxButton(this, DatabasePrev, "Prev", wxPoint(), wxSize(100,20));
+	wxButton *button3 = new wxButton(this, DatabaseNext, "Next", wxPoint(), wxSize(100,20));
 	wxButton *button4 = new wxButton(this, DatabaseLast, "Last", wxPoint(), wxSize(100,20));
 
 	sizerNavi->Add(button1, 1, wxALL, 5);
-	sizerNavi->Add(button3, 1, wxALL, 5);
 	sizerNavi->Add(button2, 1, wxALL, 5);
+	sizerNavi->Add(button3, 1, wxALL, 5);
 	sizerNavi->Add(button4, 1, wxALL, 5);
 
 	wxButton *buttonAdd = new wxButton(this, DatabaseAdd, "Add", wxPoint(), wxSize(100,20));
@@ -683,7 +686,7 @@ printf("Add a new record\n");
 
 	sampleQuery->add();
 
-	lbDBRead();
+//	lbDBRead();
 
 	return ERR_NONE;
 }
