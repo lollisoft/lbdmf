@@ -1,11 +1,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.25 $
+ * $Revision: 1.26 $
  * $Name:  $
- * $Id: lbInterfaces-sub-classes.h,v 1.25 2002/07/23 17:54:52 lothar Exp $
+ * $Id: lbInterfaces-sub-classes.h,v 1.26 2002/08/21 18:53:07 lothar Exp $
  *
  * $Log: lbInterfaces-sub-classes.h,v $
+ * Revision 1.26  2002/08/21 18:53:07  lothar
+ * New direct container access implementation
+ *
  * Revision 1.25  2002/07/23 17:54:52  lothar
  * Current version runs
  *
@@ -395,6 +398,10 @@ public:
     virtual int LB_STDCALL hasMoreElements() = 0;
     virtual lb_I_Unknown* LB_STDCALL nextElement() = 0;
 
+
+    virtual lb_I_Unknown* LB_STDCALL getElementAt(int i) = 0;
+    virtual lb_I_KeyBase* LB_STDCALL getKeyAt(int i) = 0;
+
         /**
          * Direct access over key
          */
@@ -420,6 +427,8 @@ public:
         virtual lb_I_Unknown* LB_STDCALL getElement(const lb_I_KeyBase* key); \
         virtual lb_I_Unknown* LB_STDCALL nextElement(); \
         \
+	virtual lb_I_Unknown* LB_STDCALL getElementAt(int i); \
+	virtual lb_I_Unknown* LB_STDCALL getKeyAt(int i); \
         \
         virtual void LB_STDCALL setElement(lb_I_KeyBase* key, const co_Interface* e); \
         virtual void LB_STDCALL setElement(lb_I_KeyBase* key, const lb_I_Unknown* e); \
@@ -445,6 +454,8 @@ protected: \
         virtual lb_I_Unknown* LB_STDCALL getElement(lb_I_KeyBase** const key); \
         virtual lb_I_Unknown* LB_STDCALL nextElement(); \
         \
+	virtual lb_I_Unknown* LB_STDCALL getElementAt(int i); \
+	virtual lb_I_KeyBase* LB_STDCALL getKeyAt(int i); \
         \
         virtual void LB_STDCALL setElement(lb_I_KeyBase** key, lb_I_Unknown** const e); \
         \
@@ -472,6 +483,14 @@ classname::classname() { \
     count = 0; \
 } \
 \
+lb_I_Unknown* LB_STDCALL classname::getElementAt(int i) { \
+	LOG(#classname "::getElementAt(int i) not implemented") \
+	return NULL; \
+} \
+lb_I_Unknown* LB_STDCALL getKeyAt(int i) { \
+	LOG(#classname "::getKeyAt(int i) not implemented") \
+	return NULL; \
+} \
 classname::~classname() { \
 } \
 int classname::Count() { \
@@ -582,6 +601,24 @@ int LB_STDCALL classname::Count() { \
         return count; \
 } \
 \
+lb_I_Unknown* LB_STDCALL classname::getElementAt(int i) { \
+        int ii = 0; \
+        lb_I_Element* temp = container_data; \
+        while (temp != NULL) { \
+                if (ii == i) return temp->getObject(); \
+                temp = temp->getNext(); \
+        } \
+        return NULL; \
+} \
+lb_I_KeyBase* LB_STDCALL classname::getKeyAt(int i) { \
+	int ii = 0; \
+	lb_I_Element* temp = container_data; \
+	while (temp != NULL) { \
+		if (ii == i) return temp->getKey(); \
+		temp = temp->getNext(); \
+        } \
+        return NULL; \
+} \
 void LB_STDCALL classname::deleteAll() { \
 \
     if (container_data == NULL) { \
@@ -601,7 +638,6 @@ void LB_STDCALL classname::deleteAll() { \
 } \
 \
 int LB_STDCALL classname::exists(lb_I_KeyBase** const key) { \
-    CL_LOG(#classname"::deleteAll() has not been implemented completly"); \
     if (getElement(key) == NULL) return 0; \
     return 1; \
 } \
