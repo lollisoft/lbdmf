@@ -1,11 +1,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.13 $
+ * $Revision: 1.14 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.13 2002/10/04 16:53:11 lothar Exp $
+ * $Id: lbMetaApplication.cpp,v 1.14 2002/10/28 18:36:01 lothar Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.14  2002/10/28 18:36:01  lothar
+ * lb_MetaApplication::addMenuBar(...) outdefined - works
+ *
  * Revision 1.13  2002/10/04 16:53:11  lothar
  * Replaced old LOG macro with the new
  * _LOG << "text" << integer value LOG_
@@ -269,7 +272,11 @@ lbErrCodes LB_STDCALL lb_MetaApplication::Initialize() {
 
 	// Let the GUI show a message box
 	
-	gui->msgBox("Information", "Meta application started up");
+	if (gui != NULL) {
+		gui->msgBox("Information", "Meta application started up");
+	} else {
+		cout << "lb_MetaApplication::Initialize() called in console mode" << endl;
+	}
 
 	return ERR_NONE;
 }
@@ -296,7 +303,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::loadSubModules() {
 /*...sBasic functions to be used for a UI application:0:*/
 lbErrCodes LB_STDCALL lb_MetaApplication::addMenuBar(char* name) {
 	lbErrCodes err = ERR_NONE;
-	
+#ifdef bla	
 	UAP_REQUEST(manager.getPtr(), lb_I_String, string)
 	string->setData(name);
 	UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
@@ -314,7 +321,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::addMenuBar(char* name) {
 	_LOG << "Begin dispatch function" LOG_
 	dispatcher->dispatch("AddMenuBar", uk.getPtr(), &uk_result);
 	_LOG << "Have dispatched function" LOG_
-	
+#endif
 	return err;
 }
 
@@ -637,7 +644,10 @@ lbErrCodes LB_STDCALL lb_Dispatcher::dispatch(char* EvName, lb_I_Unknown* EvData
 	
 		uk = dispatcher->getElement(&ik);
 	
-		if (uk == NULL) _LOG << "Error: Could not get the handler from the id" LOG_
+		if (uk == NULL) {
+			_LOG << "Error: Could not get the handler from the id" LOG_
+			return ERR_DISPATCH_FAILS;
+		}
 	
 		QI(uk, lb_I_EvHandler, ev, __FILE__, __LINE__)
 
