@@ -30,10 +30,13 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.9 $
+ * $Revision: 1.10 $
  * $Name:  $
- * $Id: lbelement.h,v 1.9 2002/12/29 16:05:10 lolli Exp $
+ * $Id: lbelement.h,v 1.10 2003/01/15 22:42:22 lolli Exp $
  * $Log: lbelement.h,v $
+ * Revision 1.10  2003/01/15 22:42:22  lolli
+ * Compiles with MSC
+ *
  * Revision 1.9  2002/12/29 16:05:10  lolli
  * Intent to go public
  *
@@ -82,7 +85,7 @@
 class lbKeyBase;
 class lbObject;
 
-class DLLEXPORT lbElement : public lb_I_Element {
+class lbElement : public lb_I_Element {
 private:
 
 public:
@@ -105,7 +108,9 @@ public:
 
     DECLARE_LB_ELEMENT(lbElement)
 #ifndef UNIX
+#ifndef _MSC_VER
     lb_I_Unknown* getObject() const;
+#endif
 #endif
     int operator == (const lb_I_Element &a) const;
 

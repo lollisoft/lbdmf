@@ -28,10 +28,13 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.18 $
+ * $Revision: 1.19 $
  * $Name:  $
- * $Id: lbcontainer.cpp,v 1.18 2002/12/29 16:05:10 lolli Exp $
+ * $Id: lbcontainer.cpp,v 1.19 2003/01/15 22:42:22 lolli Exp $
  * $Log: lbcontainer.cpp,v $
+ * Revision 1.19  2003/01/15 22:42:22  lolli
+ * Compiles with MSC
+ *
  * Revision 1.18  2002/12/29 16:05:10  lolli
  * Intent to go public
  *
@@ -132,7 +135,10 @@ lbCritSect containerSection;
 #ifdef __cplusplus
 extern "C" {
 #endif
-
+#ifdef _MSC_VER
+// Fix it
+#define DLLEXPORT LB_DLLEXPORT
+#endif
 IMPLEMENT_FUNCTOR(instanceOfContainer, lbContainer)
 
 #ifdef __cplusplus

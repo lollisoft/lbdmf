@@ -34,6 +34,23 @@ C_OPS+= -DLB_CLASSES_DLL_INC
 ifeq ($(OSTYPE), Windows_NT)
 MOD_INCL=$(STD_INCL)
 LIBS = $(DEVROOT)\projects\dll\libs\lbhook.lib
+COMPILER=MICROSOFT
+ifeq ($(COMPILER), MICROSOFT)
+MOD_INCL = $(STD_INCL_MICROSOFT)
+MOD_INCL += $(foreach s, $(INCLS), /I "$s")
+CC=Cl
+MODULE=lbClasses
+C_DLLOPS= $(C_DLLOPS_MICROSOFT$(MODE)) 
+C_EXEOPS= $(C_EXEOPS_MICROSOFT$(MODE))
+C_LIBOPS= $(C_LIBOPS_MICROSOFT$(MODE))
+LINK=  $(LINK_MICROSOFT)
+L_DLLOPS= $(L_DLLOPS_MICROSOFT)
+MODULE=lbClasses
+LNKDLLOPS = $(L_DLLOPS_MICROSOFT) \
+	/pdb:"$(OUTDIR)\$(MODULE).pdb" \
+	/out:"$(OUTDIR)\$(MODULE).dll" \
+	/implib:"$(OUTDIR)\$(MODULE).lib"
+endif
 endif
 
 ifeq ($(OSTYPE), linux)

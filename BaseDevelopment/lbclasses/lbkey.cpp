@@ -28,10 +28,13 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.13 $
+ * $Revision: 1.14 $
  * $Name:  $
- * $Id: lbkey.cpp,v 1.13 2002/12/29 16:05:10 lolli Exp $
+ * $Id: lbkey.cpp,v 1.14 2003/01/15 22:42:22 lolli Exp $
  * $Log: lbkey.cpp,v $
+ * Revision 1.14  2003/01/15 22:42:22  lolli
+ * Compiles with MSC
+ *
  * Revision 1.13  2002/12/29 16:05:10  lolli
  * Intent to go public
  *
@@ -113,19 +116,21 @@ extern "C" {
 #include <lbConfigHook.h>
 
 #include <lbkey.h>
-
-#ifdef __cplusplus
-extern "C" {
+#ifdef _MSC_VER
+// Fix it
+#define DLLEXPORT LB_DLLEXPORT
 #endif
-
 IMPLEMENT_FUNCTOR(instanceOfIntegerKey, lbKey)
-
-#ifdef __cplusplus
-}        
-#endif            
 
 /*...slbKey:0:*/
 /*...sc\39\tors and d\39\tors:0:*/
+#ifdef _MSC_VER
+lbKey::lbKey(char* file, int line) {
+	key = 0; 
+	strcpy(keyType, "int");
+}
+#endif
+
 lbKey::lbKey() {
     key = 0;
     strcpy(keyType, "int");
@@ -186,7 +191,11 @@ char* lbKey::charrep() const {
 }
 /*...e*/
 /*...slbKeyUL:0:*/
-
+#ifdef _MSC_VER
+lbKeyUL::lbKeyUL(char* file, int line) { 
+	key = 0; strcpy(keyType, "UL");
+}
+#endif
 
 lbKeyUL::lbKeyUL() {
     key = 0;

@@ -28,10 +28,13 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.15 $
+ * $Revision: 1.16 $
  * $Name:  $
- * $Id: lbkey.h,v 1.15 2002/12/29 16:05:10 lolli Exp $
+ * $Id: lbkey.h,v 1.16 2003/01/15 22:42:22 lolli Exp $
  * $Log: lbkey.h,v $
+ * Revision 1.16  2003/01/15 22:42:22  lolli
+ * Compiles with MSC
+ *
  * Revision 1.15  2002/12/29 16:05:10  lolli
  * Intent to go public
  *
@@ -92,11 +95,12 @@
 #ifndef LB_KEY
 #define LB_KEY
 
+#ifndef _MSC_VER
 /*...sclass lbKey \58\ public lb_I_KeyBase:0:*/
 class lbKey : public lb_I_KeyBase {
 public:
 #ifdef _MSC_VER
-	lbKey(char* file, int line) { key = 0; strcpy(keyType, "int"); }
+	lbKey(char* file, int line); // { key = 0; strcpy(keyType, "int"); }
 #endif
 
 	lbKey();
@@ -114,11 +118,13 @@ private:
 	int key;
 };
 /*...e*/
+#endif
+
 /*...sclass lbKeyUL \58\ public lb_I_KeyBase:0:*/
 class lbKeyUL : public lb_I_KeyBase {
 public:
 #ifdef _MSC_VER
-	lbKeyUL(char* file, int line) { key = 0; strcpy(keyType, "UL"); }
+	lbKeyUL(char* file, int line);// { key = 0; strcpy(keyType, "UL"); }
 #endif
     lbKeyUL();
     lbKeyUL(unsigned long _key);
@@ -135,16 +141,9 @@ private:
     unsigned long key;
 };
 /*...e*/
+#ifdef bla
 /*...sclass lbStringKey \58\ public lb_I_KeyBase:0:*/
-class 
-#ifdef WINDOWS
-#ifdef HOOK_DLL
-LB_DLLEXPORT
-#endif
-#ifndef HOOK_DLL
-LB_DLLIMPORT
-#endif
-#endif
+class DLLEXPORT
 lbStringKey : public lb_I_KeyBase {
 public:
 #ifdef _MSC_VER
@@ -165,6 +164,7 @@ private:
     char* key;    
 };
 /*...e*/
+#endif
 
 #ifdef __cplusplus
 extern "C" {

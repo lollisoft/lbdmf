@@ -30,6 +30,14 @@
 #include <windows.h>
 #include <lbInterfaces.h>
 #include <lbConfigHook.h>
+
+
+#ifdef LB_CLASSES_DLL
+lb_I_Log *log;
+int isInitializing;
+#endif
+
+
 /*...sDllMain:0:*/
 BOOL WINAPI DllMain(HINSTANCE dllHandle, DWORD reason, LPVOID situation) {
         char buf[100]="";
