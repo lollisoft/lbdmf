@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.3 $
+# * $Revision: 1.4 $
 # * $Name:  $
-# * $Id: Makefile,v 1.3 2003/02/17 21:34:33 lollisoft Exp $
+# * $Id: Makefile,v 1.4 2003/05/24 02:09:44 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.4  2003/05/24 02:09:44  lollisoft
+# * Added lbDB module
+# *
 # * Revision 1.3  2003/02/17 21:34:33  lollisoft
 # * Much problems with compilation solved, bu wy came this ??
 # *
@@ -31,12 +34,15 @@ MAKESUBDIR= \
 	cd ..; \
 	)
 
-all_targets: lbHook lbModule lbclasses lbMetaApplication lbXMLConfig/lbDOMConfig
+all_targets: lbHook lbDB lbModule lbclasses lbMetaApplication lbXMLConfig/lbDOMConfig
 
 dummy:
 
 lbHook: dummy
 	echo "Make with Makefile"
+	$(MAKESUBDIR)
+
+lbDB: dummy
 	$(MAKESUBDIR)
 
 lbModule: dummy
