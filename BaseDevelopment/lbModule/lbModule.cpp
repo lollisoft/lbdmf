@@ -36,11 +36,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.60 $
+ * $Revision: 1.61 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.60 2003/08/16 17:59:07 lollisoft Exp $
+ * $Id: lbModule.cpp,v 1.61 2003/08/18 22:05:56 lollisoft Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.61  2003/08/18 22:05:56  lollisoft
+ * Bug in new interface repository solved
+ *
  * Revision 1.60  2003/08/16 17:59:07  lollisoft
  * Added usage for new interface repository, but deactivated
  * (//#define USE_INTERFACE_REPOSITORY)
@@ -208,7 +211,7 @@
 
 //#define IR_USAGE
 
-//#define USE_INTERFACE_REPOSITORY
+#define USE_INTERFACE_REPOSITORY
 
 /*...sincludes:0:*/
 #ifdef WINDOWS
@@ -2953,7 +2956,7 @@ lbErrCodes LB_STDCALL lbModule::request(const char* request, lb_I_Unknown** resu
 		//QI(result, lb_I_InterfaceRepository, newInterfaceRepository, __FILE__, __LINE__)		
 		*result = _result.getPtr();
 		(*result)->setModuleManager(this, __FILE__, __LINE__);
-		
+		_result++;
 	} else {
 		printf("Error: Have no interface repository to locate configuration for %s\n", request); 
 	}
