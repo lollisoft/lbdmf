@@ -24,6 +24,15 @@
 #define LB_STDCALL __stdcall
 #endif
 
+#ifdef __WATCOMC__
+#define LB_DLLEXPORT __export
+#endif
+#ifndef __WATCOMC__
+#define LB_DLLEXPORT __declspec(dllexport)
+#endif
+
+
+
 #ifndef __BASE_TYPES_DEFINED__
 #define __BASE_TYPES_DEFINED__
 /*...sbase types:0:*/
@@ -47,6 +56,7 @@ class lb_I_CallbackTarget;
 class lb_I_ProtocolTarget;
 
 #include <lbInterfaces-sub-transfer.h>
+
 
 
 /**
@@ -109,7 +119,6 @@ lbErrCodes LB_STDCALL classname::release() { \
 \
 lb_I_Unknown* classname::clone() const { \
 \
-	CL_LOG(#classname"::clone() called."); \
 	classname* cloned = new classname(); \
 	lb_I_Unknown* uk_this; \
 \
@@ -119,10 +128,7 @@ lb_I_Unknown* classname::clone() const { \
 		CL_LOG("Error while getting interface"); \
 	} \
 \
-	CL_LOG("Set data in the cloned object"); \
-	getch(); \
 	uk_cloned->setData((lb_I_Unknown*) this); \
-	CL_LOG(#classname"::clone() leaving"); \
 \
 	return uk_cloned; \
 \
@@ -147,6 +153,13 @@ lbErrCodes LB_STDCALL classname::queryInterface(char* name, void** unknown) { \
 }
 
 /*...e*/
+
+/**
+ * Base of all instances - the functor
+ */
+ 
+typedef lbErrCodes (__cdecl * T_pLB_GET_UNKNOWN_INSTANCE) (lb_I_Unknown*&);
+
 /*...sclass lb_I_gcManager:0:*/
 class lb_I_gcManager {
 protected:

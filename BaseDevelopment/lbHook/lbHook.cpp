@@ -34,7 +34,9 @@ lbErrCodes LB_STDCALL lbLoadModule(const char* name, HINSTANCE & hinst) {
 lbErrCodes LB_STDCALL lbGetFunctionPtr(const char* name, const HINSTANCE & hinst, void** pfn) {
         if ((*pfn = (void*) GetProcAddress(hinst, name)) == NULL)
         {
-            printf("Kann Funktion '%s' nicht finden.\n", name); 
+            char msg[100] = "";
+            sprintf(msg, "Kann Funktion '%s' nicht finden.", name);
+            CL_LOG(msg); 
             getch(); 
             return ERR_FUNCTION_NOT_FOUND;
         }

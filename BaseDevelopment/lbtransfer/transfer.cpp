@@ -9,7 +9,7 @@ lbCritSect transferSection;
 
 void handler(int sig) {
         cout << "Oops" << flush << endl;
-        getch();
+        
 }
 
 /*...sclass lbTransferModule:0:*/

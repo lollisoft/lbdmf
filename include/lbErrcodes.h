@@ -1,11 +1,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.6 $
+ * $Revision: 1.7 $
  * $Name:  $
- * $Id: lbErrcodes.h,v 1.6 2001/03/30 20:08:05 lothar Exp $
+ * $Id: lbErrcodes.h,v 1.7 2001/05/01 15:51:49 lothar Exp $
  *
  * $Log: lbErrcodes.h,v $
+ * Revision 1.7  2001/05/01 15:51:49  lothar
+ * First instance could be loaded over the new module management
+ *
  * Revision 1.6  2001/03/30 20:08:05  lothar
  * Commit due to possible head crash on anakin (Linux)
  *
@@ -44,6 +47,7 @@ enum lbErrCodes {
 	ERR_MORE_OBJECTS,
 	ERR_SINGLE_OBJECT,
 	ERR_NO_INTERFACE,
+	ERR_FUNCTOR,
 	
 /* Errcodes for dispatcher */
 

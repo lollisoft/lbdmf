@@ -6,6 +6,16 @@
 <!--
   <BootstrapModule Name="lbClasses" />
 -->
+
+<!--
+  A possible better way may a mapping from interfaces to their functors like this:
+  
+  <Map Interface="lb_I_Log" Module="lbclasses" Functor="..." />
+  
+  But in this way a mapping can contain multiple entries of the same mapping.
+  
+-->
+
 <!--...sModules:2:-->
   <Modules>
     <Module>
@@ -16,7 +26,7 @@
       <Functions>
 <!--...sFunction instanceOfLogger:16:-->
         <Function>
-           <FunctionName Name="instanceOfLogger"/>
+           <FunctionName Name="_instanceOfLogger@4"/>
            <Functor/>
         </Function>
 <!--...e-->

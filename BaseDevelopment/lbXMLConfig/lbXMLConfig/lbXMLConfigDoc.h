@@ -46,7 +46,6 @@ public:
 	lbConfigObject(const lbConfigObject& c) {
 		//ocount++;
 		cout << "lbConfigObject::lbConfigObject(const lbConfigObject& c) called" << flush << endl;
-		getch();
 	}
 	
 	virtual ~lbConfigObject();

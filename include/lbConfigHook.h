@@ -52,20 +52,18 @@ extern int isInitializing;
 				isInitializing = 1; \
 				CL_LOG("Getting a log instance..."); \
 				lb_I_Module* modMan = getModuleInstance(); \
-				getch(); \
+				CL_LOG("Requested a module manager instance"); \
 				\
 				if (modMan != NULL) { \
 					lb_I_Unknown *Unknown = NULL; \
-					lbErrCodes err = modMan->request("instanceOfLogger", Unknown); \
+					lbErrCodes err = modMan->request("_instanceOfLogger@4", Unknown); \
 					\
-					CL_LOG("Module manager was requested for 'instanceOfLogger"); \
-					getch(); \
+					CL_LOG("Module manager was requested for '_instanceOfLogger@4"); \
 					\
 					if (Unknown != NULL) { \
 						Unknown->queryInterface("lb_I_Log", (void**) &log); \
 						if (log == NULL) { \
 							CL_LOG("Unknown object has no interface for lb_I_Log"); \
-							getch(); \
 							exit (1); \
 						} \
 						CL_LOG("Now have a log instance"); \

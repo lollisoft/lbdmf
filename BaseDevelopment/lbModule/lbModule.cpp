@@ -34,13 +34,13 @@ lb_I_XMLConfig* getXMLConfigObject() {
         if ((DLL_LB_GETXML_CONFIG_INSTANCE = (T_pLB_GETXML_CONFIG_INSTANCE)
                GetProcAddress(ModuleHandle, ftrname)) == NULL)
         {
-            printf("Kann Funktion '%s' nicht finden.\n", ftrname); getch(); exit(1);
+            printf("Kann Funktion '%s' nicht finden.\n", ftrname);  exit(1);
         }
 
         lbErrCodes err = DLL_LB_GETXML_CONFIG_INSTANCE(xml_Instance);
 
         if (xml_Instance == NULL) {
-            printf("Konnte XML Konfigurationsinstanz nicht bekommen.\n"); getch(); exit(1);
+            printf("Konnte XML Konfigurationsinstanz nicht bekommen.\n");  exit(1);
         }
 
         return xml_Instance;
@@ -68,45 +68,77 @@ lbErrCodes lb_gcManager::toTrash(lb_I_Unknown* inst) {
         return ERR_NONE;
 }
 /*...e*/
-#ifdef bla
-/*...slbStringKey:0:*/
-lbStringKey::lbStringKey(const char* _key) {
-    key = strdup(_key);
-}
 
-lbStringKey::lbStringKey(const lb_I_KeyBase* k) {
-    key = strdup(((lbStringKey*) k)->key);
-}
-
-
-lbStringKey::~lbStringKey(){
-}
-
-int lbStringKey::equals(const lb_I_KeyBase* _key) const {
-    return (strcmp(key, ((const lbStringKey*) _key)->key) == 0);
-}
-
-int lbStringKey::greater(const lb_I_KeyBase* _key) const {
-    return (strcmp(key, ((const lbStringKey*) _key)->key) > 0);
-}
-
-lb_I_KeyBase* lbStringKey::clone() const {
-    lbStringKey *k = new lbStringKey(key);
-    return k;
-}
-
-char* lbStringKey::charrep() {
-    return key;
-}
-/*...e*/
-#endif
+T_pLB_GET_UNKNOWN_INSTANCE DLL_LB_GET_UNKNOWN_INSTANCE;
 
 lb_gcManager gcManager;
 
-/*...slbModule:0:*/
+/*...sclass lbModuleContainer:0:*/
+class lbModuleContainer : 	public lb_I_Container
+{
+
+public:
+    lbModuleContainer(const lb_I_Container* c);
+    lb_I_Container* operator= (const lb_I_Container* c);
+
+public:
+
+    lbModuleContainer();
+    virtual ~lbModuleContainer();
+
+    DECLARE_LB_UNKNOWN()
+
+// This may be a string container
+
+    DECLARE_LB_I_CONTAINER_IMPL()
+
+};
+/*...e*/
+/*...sclass lbModule and implementation:0:*/
+/*...sclass lbModule:0:*/
+class lbModule : 
+                public lb_I_Module
+{
+public:
+        lbModule() {
+                ref = STARTREF;
+                loadedModules = NULL;
+        }
+        
+        virtual ~lbModule() {
+                if (ref != STARTREF) cout << "Error: Reference count mismatch" << endl;
+        }
+
+	DECLARE_LB_UNKNOWN()
+
+        virtual lbErrCodes initialize();
+        virtual lbErrCodes request(const char* request, lb_I_Unknown*& result);
+        virtual lbErrCodes uninitialize();
+        
+        
+//        void operator delete(void * del) { delete del; }
+        
+        virtual lbErrCodes load(char* name);
+        virtual lbErrCodes getObjectInstance(const char* name, lb_I_Container*& inst);
+        
+protected:
+
+	lb_I_ConfigObject* findFunctorNode(lb_I_ConfigObject* node, const char* request);
+	char* findFunctorModule(lb_I_ConfigObject* node);
+	char* findFunctorName(lb_I_ConfigObject* node);
+	
+	lb_I_Container* loadedModules;
+};
+/*...e*/
+
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbModule)
 	ADD_INTERFACE(lb_I_Module)
 END_IMPLEMENT_LB_UNKNOWN()
+
+lbErrCodes lbModule::setData(lb_I_Unknown* uk) {
+	CL_LOG("lbModule::setData(...) not implemented yet");
+	return ERR_NOT_IMPLEMENTED;
+}
 
 lbErrCodes lbModule::initialize() {
         return ERR_NONE;
@@ -129,9 +161,9 @@ lb_I_ConfigObject* lbModule::findFunctorNode(lb_I_ConfigObject* node, const char
 
 	lb_I_ConfigObject* temp_node = NULL;
 	lbErrCodes err = ERR_NONE;
-	
+getch();	
 	if ((err = node->getFirstChildren(temp_node)) == ERR_NONE) {
-		
+getch();		
 		lb_I_Attribute* attribute;
 		
 		//temp_node->getAttribute("Functor", attribute);
@@ -147,8 +179,16 @@ lb_I_ConfigObject* lbModule::findFunctorNode(lb_I_ConfigObject* node, const char
 		 *
 		 * Has my implementation for this view any parents?
 		 */
+		 
+		if (temp_node == NULL) {
+			CL_LOG("temp_node is NULL!");
+			getch();
+		} 
+		CL_LOG("Try to get name of node");
+		getch();
 		if ((strcmp(temp_node->getName(), "Functor")) == 0) {
 			CL_LOG("Found the requested node");
+			getch();
 #ifdef bla			
 /*...sWith this test the result in parent\39\s child\39\s is ok:0:*/
 			
@@ -161,16 +201,16 @@ if ((err = temp_node->getParent(_node)) != ERR_NONE) {
 	if (_node != NULL) {
 		lb_I_ConfigObject* __node = NULL;
 		CL_LOG("DEBUG PAUSE 1");
-		getch();
+		
 
 		err = _node->getFirstChildren(__node);
 		
 		CL_LOG("DEBUG PAUSE 2");
-		getch();
+		
 		
 		if (err != ERR_NONE) {
 			CL_LOG("Error. Children expected");
-			getch();
+			
 			return NULL;
 		}
 		CL_LOG("No error found!");
@@ -179,17 +219,21 @@ if ((err = temp_node->getParent(_node)) != ERR_NONE) {
 #endif			
 			return temp_node;
 		}
-		
+		CL_LOG("Node not found in first of list");
 		getch();
 		
 		
+		
 	} else CL_LOG("Get first child failed");
-
+CL_LOG("Got first children");
+getch();
 
 	while ((err = node->getNextChildren(temp_node)) == ERR_NONE) {
 		CL_LOG("Get next child");
+		getch();
 		if ((strcmp(temp_node->getName(), "Functor")) == 0) {
 			CL_LOG("Found the requested node");
+			getch();
 			return temp_node;
 		}
 	}
@@ -203,7 +247,7 @@ getch();
 	if (temp_node != NULL) temp_node->release();
 	
 	CL_LOG("Returning a NULL value");
-	getch();
+getch();	
 	return NULL;
 }
 /*...e*/
@@ -216,14 +260,19 @@ char* lbModule::findFunctorModule(lb_I_ConfigObject* node) {
 		CL_LOG("NULL pointer detected!");
 		return "NULL";
 	}
-
+#ifdef VERBOSE
+CL_LOG("Get the name of the node");
+getch();
+#endif
 	if (strcmp (node->getName(), "Module") == 0) {
 		CL_LOG("Found node 'Module'");
 		getch();
 		
 		if ((err = node->getFirstChildren(temp_node)) == ERR_NONE) {
+#ifdef VERBOSE
 			CL_LOG("Test first children");
 			CL_LOG(temp_node->getName());
+#endif
 			if ((strcmp(temp_node->getName(), "ModuleName")) == 0) {
 				char* value = NULL;
 				err = temp_node->getAttributeValue("Name", value);
@@ -239,11 +288,15 @@ char* lbModule::findFunctorModule(lb_I_ConfigObject* node) {
 		}
 
 		while ((err = node->getNextChildren(temp_node)) == ERR_NONE) {
+#ifdef VERBOSE
 		        CL_LOG("Get next child");
 		        CL_LOG(temp_node->getName());
+#endif
 		        if ((strcmp(temp_node->getName(), "ModuleName")) == 0) {
 				char* value = NULL;
+
 				CL_LOG("Found 'ModuleName'");
+
 				err = temp_node->getAttributeValue("Name", value);
 				
 				if (err != ERR_NONE) {
@@ -255,11 +308,19 @@ char* lbModule::findFunctorModule(lb_I_ConfigObject* node) {
 		        }
 		}
 	}
-	else
-	while ((err = node->getParent(temp_node)) == ERR_NONE) {
-		return findFunctorModule(temp_node);
-	} 
-
+	else {
+#ifdef VERBOSE
+	CL_LOG("Go calling findFunctorModule(temp_node) recursive");
+	getch();
+#endif
+		while ((err = node->getParent(temp_node)) == ERR_NONE) {
+			if (temp_node == NULL) {
+				CL_LOG("Error: No parent");
+				getch();
+			}
+			return findFunctorModule(temp_node);
+		} 
+	}
 
 	return "NULL";
 }
@@ -352,60 +413,22 @@ public:
 	lb_I_Unknown* uk_value;
 };
 /*...e*/
-/*...sclass lbContainer:0:*/
-class lbModuleContainer : 	public lb_I_Container
-{
-
-public:
-    lbModuleContainer(const lb_I_Container* c);
-    lb_I_Container* operator= (const lb_I_Container* c);
-
-public:
-
-    lbModuleContainer();
-    virtual ~lbModuleContainer();
-
-    DECLARE_LB_UNKNOWN()
-
-// This may be a string container
-
-    DECLARE_LB_I_CONTAINER_IMPL()
-
-};
-/*...e*/
 /*...sclass lbElement:0:*/
-class DLLEXPORT lbElement : public lb_I_Element {
+class lbElement : public lb_I_Element {
 private:
-
-//    lb_I_Element* next;
-//    lb_I_Unknown* data;
-//    lb_I_KeyBase* key;
 
 public:
     lbElement() { next = NULL; data = NULL; key = NULL; }
     virtual ~lbElement();
 	
-//    lbElement(const lb_I_Object &o, const lb_I_KeyBase &key, lb_I_Element *next=NULL);
     lbElement(const lb_I_Element &e) { next = e.getNext(); }
 
     DECLARE_LB_UNKNOWN()
 
     DECLARE_LB_ELEMENT(lbElement)
 
-//    lb_I_Element* getNext() const { return next; }
-
-//    void setNext(lb_I_Element *e){ next = e; }
-
     lb_I_Unknown* getObject() const;
 
-//    lbKeyBase &getKey() const { return *key; }
-/*
-    lb_I_KeyBase *getKey() const
-    {
-        if (!key) printf("Key in lbElement is null\n");
-        return key;
-    }
-*/
     int operator == (const lb_I_Element &a) const;
 
     int operator == (const lb_I_KeyBase &key) const;
@@ -413,6 +436,7 @@ public:
 };
 /*...e*/
 
+/*...simplementation of lbModuleContainer:0:*/
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbModuleContainer)
 	ADD_INTERFACE(lb_I_Container)
 END_IMPLEMENT_LB_UNKNOWN()
@@ -431,12 +455,23 @@ lbModuleContainer::~lbModuleContainer() {
 
 IMPLEMENT_LB_I_CONTAINER_IMPL(lbModuleContainer)
 
-
+lbErrCodes lbModuleContainer::setData(lb_I_Unknown* uk) {
+	CL_LOG("lbModuleContainer::setData(...) not implemented yet");
+	return ERR_NOT_IMPLEMENTED;
+}
+/*...e*/
+/*...simplementation of lbElement:0:*/
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbElement)
         ADD_INTERFACE(lb_I_Element)
 END_IMPLEMENT_LB_UNKNOWN()
 
 IMPLEMENT_LB_ELEMENT(lbElement)
+
+lbErrCodes lbElement::setData(lb_I_Unknown* uk) {
+	CL_LOG("lbElement::setData(...) not implemented yet");
+	return ERR_NOT_IMPLEMENTED;
+}
+
 
 int LB_STDCALL lbElement::equals(const lb_I_Element* a) const {
 	return 0;
@@ -445,11 +480,18 @@ int LB_STDCALL lbElement::equals(const lb_I_Element* a) const {
 int LB_STDCALL lbElement::equals(const lb_I_KeyBase* key) const {
 	return 0;
 }
-
-
+/*...e*/
+/*...simplementation of lbNamedValue:0:*/
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbNamedValue)
 // No additionally interface, because it's not used externally yet.
 END_IMPLEMENT_LB_UNKNOWN()
+
+lbErrCodes lbNamedValue::setData(lb_I_Unknown* uk) {
+	CL_LOG("lbNamedValue::setData(...) not implemented yet");
+	getch();
+	return ERR_NOT_IMPLEMENTED;
+}
+/*...e*/
 
 /*...slbNamedValue\58\\58\setName\40\\41\:0:*/
 lbErrCodes lbNamedValue::setName(const char* const _name) {
@@ -559,30 +601,29 @@ CL_LOG("Got it!");
 			 * The result is a view of notes in a max deep
 			 * of one level.
 			 */
+#ifdef VERBOSE
 CL_LOG("Try to get the config object");			
+#endif
 			xml_Instance->getConfigObject(config, node);
-
-CL_LOG("Got a config object");
-getch();
+#ifdef VERBOSE
+CL_LOG("Got a config object (will the next crash ?)");
+#endif
 			
 			lb_I_ConfigObject* functorNode = findFunctorNode(config, request);
+#ifdef VERBOSE
+CL_LOG("Not crashed!");
+#endif			
 			
 			if (functorNode == NULL) {
 				cout << "Couldn't find the desired functor (nullpointer)!" << endl;
-				getch();
+				
 			}
-			
-			CL_LOG("Try to get module name");
 			char* moduleName = findFunctorModule(functorNode);
-			CL_LOG("Got this module name");
-			CL_LOG(moduleName);
-			
-			CL_LOG("Try to get functor name");
 			char* functorName = findFunctorName(functorNode);
-			
+
 			CL_LOG("Got this functor name:");
 			CL_LOG(functorName);
-			
+
 			/**
 			 * Now I should have all my information, create the instance.
 			 *
@@ -606,22 +647,49 @@ getch();
 			 
 //			lbStringKey* key = new lbStringKey(moduleName);
 
-CL_LOG("Begin loading module");
-			 
+char msg[100] = "";
+sprintf(msg, "Begin loading module %s", moduleName);
+CL_LOG(msg);
+getch();		
+			/**
+			 * ModuleHandle is the result for this loaded module.
+			 */
+	 
 			if ((err = lbLoadModule(moduleName, ModuleHandle)) != ERR_NONE) {
 				// report error if still loaded
 				
 				// return error if loading is impossible
 			}
-CL_LOG("End loading module");			
+CL_LOG("End loading module");	
+getch();		
+
+			lbNamedValue* nv = new lbNamedValue;
 			
-			
+			if ((err = lbGetFunctionPtr(functorName, ModuleHandle, (void**) &DLL_LB_GET_UNKNOWN_INSTANCE)) != ERR_NONE) {
+				CL_LOG("Error while loading a functionpointer!");
+			} else {
+				err = DLL_LB_GET_UNKNOWN_INSTANCE(result);
+				if (err == ERR_NONE) 
+				{
+					CL_LOG("Got the requested instance!");
+				}
+				else
+				{
+					CL_LOG("Could not get the instance!");
+				}
+				
+				if (result != NULL) {
+					CL_LOG("Instancepointer is available");
+				}
+				
+				getch();
+			}
 		} else {
 			cout << "Something goes wrong!" << endl;
 			cout << "xml_Instance->hasConfigObject() returns <> ERR_NONE!" << endl;
 		}
 		
-		getch();
+		
 /*...e*/
 	}
         

@@ -54,7 +54,7 @@ public:
 /*...sVERBOSE:0:*/
 #ifdef VERBOSE
 	cout << "lbXMLConfig(const lbXMLConfig* & t) called" << endl;
-	getch();
+	
 #endif	
 /*...e*/
 		gTopLevel = t.gTopLevel;
@@ -275,7 +275,7 @@ lbErrCodes LBXMLCONFIG_API __cdecl getlbXMLConfigInstance(lb_I_XMLConfig*& inst)
 /*...sMEMTEST:0:*/
 #ifdef MEMTEST	
 	cout << "Initialize lbXMLConfig object" << endl;
-	getch();
+	
 	
 	for (long i = 0; i < 1000000; i++) { 
 #endif
@@ -288,7 +288,7 @@ lbErrCodes LBXMLCONFIG_API __cdecl getlbXMLConfigInstance(lb_I_XMLConfig*& inst)
 	}
 	
 	cout << "Done it" << endl;
-	getch();
+	
 #endif
 /*...e*/
 	return ERR_NONE;
@@ -567,12 +567,11 @@ XMLHandler* lbConfigObject::startElement(const   XMLCh* const    name,
 
 	if (strcmp(_name, "ModuleName") == 0) {
 		cout << "I saw element: " << _name << " " << hex << (void*) this << dec << endl;
-		getch();
 	}
 	
 	if (_name == NULL) {
 		cout << "Error! _name is a NULL pointer" << endl;
-		getch();
+		
 	}
 	
 /*...sVERBOSE:0:*/
@@ -633,7 +632,7 @@ cout << "Begin storing data" << endl;
 /*...sVERBOSE:8:*/
 #ifdef VERBOSE
 		cout << "Stored object is " << hex << (void*) childs->obj << endl;
-		getch();
+		
 #endif
 /*...e*/
 	} else {
@@ -657,7 +656,7 @@ cout << "Begin storing data" << endl;
 /*...sVERBOSE:8:*/
 #ifdef VERBOSE	
 		cout << "Stored object is " << hex << (void*) childs->obj << endl;
-		getch();
+		
 #endif
 /*...e*/
 		childs = firstElement;
@@ -722,7 +721,7 @@ cout << "Stored attributes" << endl;
 /*...e*/
 	if (childs == NULL) {
 		cout << "Childs = NULL" << endl;
-		getch();
+		
 	}
 #endif
 	
@@ -738,7 +737,6 @@ lbErrCodes LB_STDCALL lbConfigObject::findObject(const char* name, lb_I_ConfigOb
 		
 	cout << "I (" << hex << (void*) this << dec << ") saw element: " << ((_name) ? _name : "?") << endl;
 
-	getch();
 
 	plbElementList pChild = childs;
 	
@@ -771,7 +769,7 @@ lbErrCodes LB_STDCALL lbConfigObject::findObject(const char* name, lb_I_ConfigOb
 	
 	char* at = strchr(pattern, '/');
 
-	getch();
+	
 
 
 	if (at == NULL) {
@@ -784,7 +782,7 @@ lbErrCodes LB_STDCALL lbConfigObject::findObject(const char* name, lb_I_ConfigOb
 			return ERR_NO_OBJECT;
 		}
 		cout << "strcmp(_name: '" << _name << "')..." << endl;
-		getch();
+		
 		if (strcmp(_name, pattern) == 0) {
 			cout << "Found object with name '" << pattern << "'" << endl;
 			queryInterface("lb_I_ConfigObject", (void**) &object);
@@ -871,7 +869,7 @@ lbErrCodes LB_STDCALL lbConfigObject::findObject(const char* name, lb_I_ConfigOb
 		}
 		
 		cout << "Not a NULL pointer, go ahead" << endl;
-		getch();
+		
 		
 		if (strcmp(_name, part) == 0) {
 			cout << "Found object with name '" << name << "'" << endl;

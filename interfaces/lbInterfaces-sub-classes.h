@@ -1,11 +1,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.8 $
+ * $Revision: 1.9 $
  * $Name:  $
- * $Id: lbInterfaces-sub-classes.h,v 1.8 2001/04/27 18:57:32 lothar Exp $
+ * $Id: lbInterfaces-sub-classes.h,v 1.9 2001/05/01 15:51:49 lothar Exp $
  *
  * $Log: lbInterfaces-sub-classes.h,v $
+ * Revision 1.9  2001/05/01 15:51:49  lothar
+ * First instance could be loaded over the new module management
+ *
  * Revision 1.8  2001/04/27 18:57:32  lothar
  * Commit for removing some getch()'s
  *
@@ -198,18 +201,12 @@ private: \
 \
 classname::classname(const lb_I_Unknown* o, const lb_I_KeyBase* _key, lb_I_Element *_next) { \
     next = _next; \
-    CL_LOG("Creating an element object"); \
     if (o == NULL) CL_LOG("Error! Can't clone a NULL pointer"); \
-    cout << "Address of unknown: " << (void*) o << endl; \
-    getch(); \
     lb_I_Unknown *uk_data = o->clone(); \
-    CL_LOG("Cloned the object"); \
     if (uk_data->queryInterface("lb_I_Object", (void**) &data) != ERR_NONE) { \
     	CL_LOG("Error while cloning"); \
     } \
-    CL_LOG("Queried interface of cloned unknown"); \
     key = _key->clone(); \
-    CL_LOG("Cloned the key"); \
     if (key == NULL) CL_LOG("Key cloning in constructor failed. May be a memory problem"); \
 } \
 \

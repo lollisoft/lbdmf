@@ -23,39 +23,6 @@
 #endif
 /*...e*/
 
-/*...sclass lbModule:0:*/
-class lbModule : 
-                public lb_I_Module
-{
-public:
-        lbModule() {
-                ref = STARTREF;
-        }
-        
-        virtual ~lbModule() {
-                if (ref != STARTREF) cout << "Error: Reference count mismatch" << endl;
-        }
-
-	DECLARE_LB_UNKNOWN()
-
-        virtual lbErrCodes initialize();
-        virtual lbErrCodes request(const char* request, lb_I_Unknown*& result);
-        virtual lbErrCodes uninitialize();
-        
-        
-//        void operator delete(void * del) { delete del; }
-        
-        virtual lbErrCodes load(char* name);
-        virtual lbErrCodes getObjectInstance(const char* name, lb_I_Container*& inst);
-        
-protected:
-
-		lb_I_ConfigObject* findFunctorNode(lb_I_ConfigObject* node, const char* request);
-		char* findFunctorModule(lb_I_ConfigObject* node);
-		char* findFunctorName(lb_I_ConfigObject* node);
-	
-};
-/*...e*/
 
 /*...s\35\ifdef __cplusplus \123\:0:*/
 #ifdef __cplusplus
