@@ -12,7 +12,7 @@ MKMK=~/bin/mkmk
 ATTRIB=
 endif
 ifeq ($(OSTYPE), Windows_NT)
-ATTRIB=@attrib -r $(DEVROOT)/Projects/CPP/include/lbkey.h
+ATTRIB=@attrib -r $(DEVROOT_MAKE)/Projects/CPP/include/lbkey.h
 MKMK=mkmk
 endif
 _MODULE=$(MODULE)
@@ -21,11 +21,11 @@ makefile: makefile.module \
 $(DEVROOT_MAKE)/Projects/CPP/BaseDevelopment/Makefile \
 $(DEVROOT_MAKE)/Projects/CPP/make/makefile.template \
 $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
-	@cat $(DEVROOT)/Projects/CPP/make/makefile.template > makefile
+	@cat $(DEVROOT_MAKE)/Projects/CPP/make/makefile.template > makefile
 	@cat makefile.module >> makefile
 	@echo Path=$(PATH) >> makefile
 	@echo all: $(_MODULE).$(TARGET) >> makefile
 	$(ATTRIB)
-	@rm $(DEVROOT)/Projects/CPP/include/lbkey.h
-	@cp $(DEVROOT)/Projects/CPP/BaseDevelopment/lbclasses/lbkey.h $(DEVROOT)/Projects/CPP/include
+	@rm $(DEVROOT_MAKE)/Projects/CPP/include/lbkey.h
+	@cp $(DEVROOT_MAKE)/Projects/CPP/BaseDevelopment/lbclasses/lbkey.h $(DEVROOT_MAKE)/Projects/CPP/include
 	@$(MKMK) $(TARGET) $(_MODULE) ../dosdir *.cpp >> makefile
