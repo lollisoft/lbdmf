@@ -26,6 +26,8 @@ extern "C" {
 #pragma warning( disable: 4275 )
 #pragma warning( disable: 4251 )
 #pragma warning( disable: 4101 )
+#undef DLLEXPORT
+#define DLLEXPORT
 #endif
 
 #include <lbConfigHook.h>
@@ -34,6 +36,28 @@ extern "C" {
 
 HINSTANCE ModuleHandle = NULL;
 HINSTANCE LB_Module_Handle = NULL;
+
+char* trackObject = NULL;
+
+DLLEXPORT void LB_STDCALL set_trackObject(char* track) {
+	trackObject = track;
+	printf("Have a tracking address: %s\n", trackObject);
+}
+
+DLLEXPORT void LB_STDCALL track_Object(lb_I_Unknown* o, char* msg) {
+	char ptr[20] = "";
+//	lb_I_Unknown *uk;
+//	o->queryInterface("lb_I_Unknown", (void**) &uk, __FILE__, __LINE__);
+	sprintf(ptr, "%p", o);
+	if (strcmp(ptr, (get_trackObject() == NULL) ? "" : get_trackObject()) == 0) {
+		printf("Track object: %s\n", msg);
+	}
+}
+
+DLLEXPORT char* LB_STDCALL get_trackObject() {
+	if (trackObject == NULL) return getenv("TRACKOBJECT");
+	return trackObject;
+}
 
 DLLEXPORT HINSTANCE LB_STDCALL getModuleHandle() {
 	return ModuleHandle;
