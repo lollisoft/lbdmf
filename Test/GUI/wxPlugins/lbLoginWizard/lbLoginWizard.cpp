@@ -492,6 +492,83 @@ char const * LB_STDCALL wxLogonPage::getTextValue(char* _name) {
 /*...e*/
 /*...e*/
 
+class lbPluginLoginWizard : public lb_I_PluginImpl
+{
+public:
+
+	lbPluginLoginWizard();
+	virtual ~lbPluginLoginWizard();
+
+	DECLARE_LB_UNKNOWN()
+	
+	virtual void LB_STDCALL initialize();
+	virtual bool LB_STDCALL run();
+	
+	wxWizard *wizard;
+	wxWizardPageSimple *page1;
+};	
+
+BEGIN_IMPLEMENT_LB_UNKNOWN(lbPluginLoginWizard)
+        ADD_INTERFACE(lb_I_PluginImpl)
+END_IMPLEMENT_LB_UNKNOWN()
+
+IMPLEMENT_FUNCTOR(instanceOflbPluginDatabaseDialog, lbPluginLoginWizard)
+
+lbErrCodes LB_STDCALL lbPluginLoginWizard::setData(lb_I_Unknown* uk) {
+        _CL_LOG << "lbPluginLoginWizard::setData(...) not implemented yet" LOG_
+
+        return ERR_NOT_IMPLEMENTED;
+}
+
+lbPluginLoginWizard::lbPluginLoginWizard() {
+	wizard = NULL;
+	page1 = NULL;
+}
+
+lbPluginLoginWizard::~lbPluginLoginWizard() {
+	if (wizard) wizard->Destroy();
+}
+	
+	
+void LB_STDCALL lbPluginLoginWizard::initialize() {
+	wxWizard *wizard = new wxWizard(NULL, -1, _T("Anmeldung"));
+
+	page1 = new wxWizardPageSimple(wizard);
+
+	wxStaticText *text = new wxStaticText(page1, -1, _T("Melden Sie sich nun an.\n"));
+
+	wxSize size = text->GetBestSize();
+
+	wxLogonPage *page2 = new wxLogonPage(wizard);
+	
+	page2->setModuleManager(getModuleManager(), __FILE__, __LINE__);
+
+	//page2->init(frame);
+	page2->init(NULL);
+
+	wxAppSelectPage *page3 = new wxAppSelectPage(wizard);
+	page3->setModuleManager(getModuleManager(), __FILE__, __LINE__);
+
+	page2->setAppSelectPage(page3);
+
+	page1->SetNext(page2);
+	page2->SetPrev(page1);
+	page2->SetNext(page3);
+	page3->SetPrev(page2);
+	
+	wizard->SetPageSize(size);
+}
+
+bool LB_STDCALL lbPluginLoginWizard::run() {
+	if ( page1 && ! wizard->RunWizard(page1) )
+	{
+		return false;
+        }
+
+	return true;
+}
+
+
 #ifdef WINDOWS
 /*...sDllMain:0:*/
 BOOL WINAPI DllMain(HINSTANCE dllHandle, DWORD reason, LPVOID situation) {

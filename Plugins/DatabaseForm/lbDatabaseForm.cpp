@@ -115,6 +115,8 @@ public:
 	DECLARE_LB_UNKNOWN()
 	
 	virtual void LB_STDCALL initialize();
+	
+	virtual bool LB_STDCALL run();
 };
 
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbPluginDatabaseDialog)
@@ -130,7 +132,7 @@ lbErrCodes LB_STDCALL lbPluginDatabaseDialog::setData(lb_I_Unknown* uk) {
 }
 
 lbPluginDatabaseDialog::lbPluginDatabaseDialog() {
-
+	printf("lbPluginDatabaseDialog::lbPluginDatabaseDialog() called.\n");
 }
 
 lbPluginDatabaseDialog::~lbPluginDatabaseDialog() {
@@ -138,6 +140,10 @@ lbPluginDatabaseDialog::~lbPluginDatabaseDialog() {
 }
 
 void LB_STDCALL lbPluginDatabaseDialog::initialize() {
+	printf("lbPluginDatabaseDialog::initialize() called.\n");
+}
 
+bool LB_STDCALL lbPluginDatabaseDialog::run() {
+	return true;
 }
 /*...e*/

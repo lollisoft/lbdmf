@@ -2040,7 +2040,8 @@ class lb_I_Plugin;
 class lb_I_PluginImpl;
 class lb_I_String;
 
-/**
+/** \brief The plugin manager
+ *
  * The plugin manager should handle automatic loading of exsisting plugins and optionally
  * unload plugins by a plugin management dialog.
  */
@@ -2079,13 +2080,20 @@ public:
 };
 /*...e*/
 
-/*
+/** \brief Plugin module
+ *
  * The plugin module is a class per module, that should list all included plugins for one
  * module. This should be similar to the BEGIN_IMPLEMENT_UNKNOWN and ADD_INTERFACE macros.
  */
 /*...sclass lb_I_PluginModule:0:*/
 class lb_I_PluginModule : public lb_I_Unknown {
 public:
+	/**
+	 * Set the name of the module. Typically the path and name to the shared library.
+	 */
+	 
+	virtual void LB_STDCALL setModule(char* module) = 0; 
+
 	/**
 	 * Get the list of plugins for the current plugin module.
 	 */
@@ -2107,11 +2115,20 @@ protected:
 
 
 #define DECLARE_PLUGINS() \
+	virtual void LB_STDCALL setModule(char* module); \
 	virtual lb_I_Container* LB_STDCALL getPlugins(); \
 	virtual void LB_STDCALL enumPlugins(); \
-	UAP(lb_I_Container, Plugins, __FILE__, __LINE__)
+	UAP(lb_I_Container, Plugins, __FILE__, __LINE__) \
+	UAP(lb_I_String, _module, __FILE__, __LINE__)
 
 #define BEGIN_PLUGINS(cls) \
+\
+void LB_STDCALL cls::setModule(char* module) { \
+	if (_module == NULL) { \
+		REQUEST(manager.getPtr(), lb_I_String, _module) \
+	} \
+	_module->setData(module); \
+} \
 lb_I_Container* cls::getPlugins() { \
 	Plugins++; \
 	return Plugins.getPtr(); \
@@ -2121,35 +2138,62 @@ void LB_STDCALL cls::enumPlugins() { \
 	REQUEST(manager.getPtr(), lb_I_Container, Plugins)
 
 #define ADD_PLUGIN(plugin, scope) \
+	printf("Add a plugin %s, scope %s\n", #plugin, #scope); \
 	UAP_REQUEST(manager.getPtr(), lb_I_Plugin, P##plugin##scope) \
+	\
+	P##plugin##scope->setModule(_module->getData()); \
 	P##plugin##scope->setName(#plugin); \
 	P##plugin##scope->setScope(#scope); \
+	\
 	UAP_REQUEST(manager.getPtr(), lb_I_String, s##plugin##scope) \
 	UAP(lb_I_KeyBase, Key##plugin##scope, __FILE__, __LINE__) \
 	UAP(lb_I_Unknown, ukPlugin##plugin##scope, __FILE__, __LINE__) \
+	\
 	s##plugin##scope->setData(#plugin); \
 	QI(s##plugin##scope, lb_I_KeyBase, Key##plugin##scope, __FILE__, __LINE__) \
 	QI(P##plugin##scope, lb_I_Unknown, ukPlugin##plugin##scope, __FILE__, __LINE__) \
 	Plugins->insert(&ukPlugin##plugin##scope, &Key##plugin##scope); \
+	\
+	UAP(lb_I_Unknown, ukPl##plugin##scope, __FILE__, __LINE__) \
+	UAP(lb_I_Plugin, Pl##plugin##scope, __FILE__, __LINE__) \
+	ukPl##plugin##scope = Plugins->getElement(&Key##plugin##scope); \
+	printf("Got back the plugin at %p\n", ukPl##plugin##scope.getPtr()); \
+	QI(ukPl##plugin##scope, lb_I_Plugin, Pl##plugin##scope, __FILE__, __LINE__) \
+	Pl##plugin##scope->setModule(_module->getData()); \
+	Pl##plugin##scope->setName(#plugin); \
+	Pl##plugin##scope->setScope(#scope);
 
 
 #define END_PLUGINS() }
 
 /*...e*/
 
-/*
- * Interface for single plugin. This should be a wrapper to the plugin implementation.
+/**
+ * \brief Interface for single plugin (forwarder). 
+ *
+ * This should be a wrapper to the plugin implementation.
  */
 /*...sclass lb_I_Plugin:0:*/
 class lb_I_Plugin : public lb_I_Unknown {
 public:
 
-	/**
+	/** \brief Forwarder for initializion.
+	 *
 	 * Initialize the plugin. This function can only be called, if it has been
 	 * attached by the plugin manager. If this hasn't been made, nothing happens.
+	 *
+	 * If the plugin is correctly set up, initialize can forward its call to the
+	 * underlying plugin implementation.
 	 */
 	virtual void LB_STDCALL initialize() = 0;
 
+	/** \brief Forwarder for running the plugin.
+	 *
+	 * Let the plugin implementation run.
+	 */
+	virtual bool LB_STDCALL run() = 0;
+
+/*...slb_I_Plugin management API:0:*/
 	/**
 	 * The plugin must know of the plugin manager to self detach at cleanup due to
 	 * release calls.
@@ -2194,15 +2238,27 @@ public:
 	virtual char* LB_STDCALL getModule() = 0;
 	virtual char* LB_STDCALL getName() = 0;
 	virtual char* LB_STDCALL getScope() = 0;
+/*...e*/
 	
 };
 /*...e*/
 
+/**
+ * \brief This interface must be used for each plugin implementation.
+ */
 /*...sclass lb_I_PluginImpl:0:*/
 class lb_I_PluginImpl : public lb_I_Unknown {
 public:
 
+	/**
+	 * Let the plugin initialize it self.
+	 */
 	virtual void LB_STDCALL initialize() = 0;
+	
+	/**
+	 * Run the plugin.
+	 */
+	virtual bool LB_STDCALL run() = 0;
 };
 /*...e*/
 

@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.54 2005/03/07 20:27:25 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.55 2005/03/10 09:02:34 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.54 $
+ * $Revision: 1.55 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.54 2005/03/07 20:27:25 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.55 2005/03/10 09:02:34 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.55  2005/03/10 09:02:34  lollisoft
+ * Plugin code complete until real loading.
+ *
  * Revision 1.54  2005/03/07 20:27:25  lollisoft
  * Minor compile problem fixed due to Linux changes
  *
@@ -2968,10 +2971,28 @@ _LOG << "Initialized metaapplication" LOG_
  * Try to load all plugins and initialize it.
  */
 
-UAP_REQUEST(mm.getPtr(), lb_I_PluginManager, PM)
-printf("Test plugin manager\n");
-PM->beginEnumPlugins();
-printf("Tested plugin manager\n");
+	UAP_REQUEST(mm.getPtr(), lb_I_PluginManager, PM)
+	printf("Test plugin manager\n");
+
+	if (PM->beginEnumPlugins()) {
+	
+		while (TRUE) {
+		
+			UAP(lb_I_Plugin, pl, __FILE__, __LINE__)
+			
+			pl = PM->nextPlugin();
+			
+			if (pl == NULL) break;
+
+			pl->initialize();
+		
+		}
+	
+	
+	}
+
+	printf("Tested plugin manager\n");
+
 #endif
 #endif
 
