@@ -47,8 +47,8 @@ extern "C" {
 /*...e*/
 
 #define LOOP
-
-void main() {
+// (trackObject == NULL) ? "" : trackObject int argc, char *argv[]
+void main(int argc, char *argv[]) {
 /*...svars:0:*/
     char* hostname = NULL;
     char* port = NULL;
@@ -58,11 +58,31 @@ void main() {
     UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
 /*...e*/
 /*...sinit:0:*/
-	printf("Program starting...\n");
-	getch();
+	printf("Program starting with %d arguments ...\n", argc);
+	
+	
+	
+	if ((argc == 3) && (strcmp(argv[1], "-trackObject") == 0)) {
+		printf("Running in tracking mode\n");
+		set_trackObject(strdup(argv[2]));
+	}
 
 	lb_I_Module* mm = getModuleInstance();
 	mm->setModuleManager(mm, __FILE__, __LINE__);
+/*...e*/
+/*...stest container:0:*/
+{	if (mm->request("lb_I_Container", &uk) != ERR_NONE) {
+		CL_LOG("Error: Could not get needed instance!");
+		getch();
+	}
+	
+	lb_I_Container* c = NULL;
+
+	if (uk->queryInterface("lb_I_Container", (void**) &c, __FILE__, __LINE__) != ERR_NONE) {
+		CL_LOG("Error: Could not get needed interface!");
+		getch();
+	}
+}
 /*...e*/
 /*...stest logger:0:*/
 	mm->request("lb_I_Log", &unknown);
@@ -82,7 +102,6 @@ void main() {
 	}
 /*...e*/
 /*...stest container:0:*/
-	CL_LOG("Requested a instance for interface lb_I_Container")
 	if (mm->request("lb_I_Container", &uk) != ERR_NONE) {
 		CL_LOG("Error: Could not get needed instance!");
 		getch();
@@ -94,7 +113,6 @@ void main() {
 		CL_LOG("Error: Could not get needed interface!");
 		getch();
 	}
-	CL_LOG("Got interface lb_I_Container for instance lb_I_Container")	
 /*...e*/
 /*...stest integer:0:*/
 	if (mm->request("lb_I_Integer", &uk) != ERR_NONE) {
