@@ -11,11 +11,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.15 $
+ * $Revision: 1.16 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.15 2001/11/04 19:28:47 lothar Exp $
+ * $Id: mkmk.cpp,v 1.16 2001/11/06 21:38:30 lothar Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.16  2001/11/06 21:38:30  lothar
+ * Added writeExeTarget function to be able building my self under windows
+ *
  * Revision 1.15  2001/11/04 19:28:47  lothar
  * Uninitalized variable bug solved
  *
@@ -534,6 +537,29 @@ char* TIncludeParser::BasicParse(char *FileName)
 }
 /*...e*/
 /*...e*/
+
+void writeExeTarget(char* modulename) {
+#ifdef UNIX
+  printf("\n%s: $(OBJS)\n", modulename);
+  printf("\t\t$(CC) $(L_OPS) %s $(OBJS) $(OBJDEP)\n",modulename);
+#endif
+#ifdef __WATCOMC__
+  char* ModName = strdup(modulename);
+  char** array;
+  int count = split('.', ModName, &array);
+
+  printf("FILE = FIL\n");
+  printf("FILE += $(foreach s, $(OBJS),$s, )\n");
+  printf("LNK=%s.lnk\n", ModName);
+  printf("PROGRAM=%s\n", ModName);
+  
+  printf("\n%s.exe: $(OBJS)\n", ModName);
+  printf("\t\techo NAME $(PROGRAM).exe > $(LNK)\n");
+  printf("\t\techo $(FILE) >> $(LNK)\n");
+  printf("\t\t$(LINK) @$(LNK)\n");
+#endif
+}
+
 //------------------------------ Main code ------------------------------
 /*...svoid ShowHelp\40\\41\:0:*/
 void ShowHelp()
@@ -658,7 +684,7 @@ void WriteEnding(FILE *f, char *ModuleName, TDepList *l)
 #endif
 
 #ifdef WATCOM_MAKE
-
+/*...swrite a wmake makefile:0:*/
   switch (targettype) {
   	case DLL_TARGET:
   		#ifdef VERBOSE
@@ -692,9 +718,11 @@ void WriteEnding(FILE *f, char *ModuleName, TDepList *l)
   printf("!include MAKE_AFTER\n");
 #endif
 
+/*...e*/
 #else
-  printf("\n%s: $(OBJS)\n", ModuleName);
-  printf("\t\t$(CC) $(L_OPS) %s $(OBJS) $(OBJDEP)\n",ModuleName);
+
+  writeExeTarget(ModuleName);
+  
 #endif
 }
 /*...e*/
