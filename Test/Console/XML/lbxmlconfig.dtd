@@ -1,0 +1,59 @@
+
+<!ELEMENT dtdHostCfgDoc     ( Busmaster, Modules* )>
+<!ATTLIST dtdHostCfgDoc VERSION            CDATA  #IMPLIED >
+
+
+<!ELEMENT Modules        (Module*)>
+<!--
+<!ATTLIST Modules        GroupDescription CDATA #FIXED "No description yet" >
+-->
+
+<!--...sDocu to LOCID:0:-->
+<!-- 
+The name of a module is unique, because a module may only once
+declared for an application. So ID is possible here. And the
+IDPtr is not needed, because the SAX parser does this validation.
+
+LOCID is a descriptor, explaining that in this subtree, all
+FunctionName tags contain an unique identifer. The identiver itself
+must be described in that tag.
+-->
+<!--...e-->
+<!ELEMENT Module         (ModuleName, Functions*)>
+<!ATTLIST Module         LOCID    CDATA      #FIXED "FunctionName" >
+
+<!ELEMENT Functions      (Function*)>
+<!--
+<!ATTLIST Functions      GroupDescription CDATA #FIXED "No description yet" >
+-->
+
+<!ELEMENT Function       (FunctionName, (Functor|SimpleFn))>
+<!--
+<!ATTLIST Function       Description      CDATA #FIXED "No description yet" >
+-->
+
+<!--...sBusmaster:0:-->
+<!ELEMENT Busmaster      (#PCDATA)>
+<!ATTLIST Busmaster         ID             ID         #IMPLIED 
+                            Hostname       CDATA      #IMPLIED 
+                            Port           CDATA      #IMPLIED 
+                            Description    CDATA      #IMPLIED >
+<!--...e-->
+<!--...sModuleName:0:-->
+<!ELEMENT ModuleName         (#PCDATA)>
+<!ATTLIST ModuleName         Name     ID         #IMPLIED >
+<!--...e-->
+<!--...sFunctionName:0:-->
+<!ELEMENT FunctionName          (#PCDATA)>
+<!ATTLIST FunctionName       Name     CDATA       #IMPLIED 
+                             IDPtr    CDATA       #FIXED "Name" >
+<!--...e-->
+<!--...sSimpleFn:0:-->
+<!ELEMENT SimpleFn       (#PCDATA)>
+<!ATTLIST SimpleFn       Return    CDATA      #IMPLIED >
+<!--...e-->
+<!--...sFunctor:0:-->
+<!ELEMENT Functor        (#PCDATA)>
+<!ATTLIST Functor        Return    CDATA      #FIXED "lbErrCodes" >
+<!--...e-->
+
