@@ -8,6 +8,11 @@ call makefile.bat
 make
 cd ..
 
+cd lbMetaApplication
+call makefile.bat
+make
+cd ..
+
 cd lbclasses
 call makefile.bat
 make
