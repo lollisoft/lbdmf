@@ -178,6 +178,16 @@ public:
 	 */
 	virtual int	LB_STDCALL hasFKColumn(char* FKName) = 0;
 
+	/**
+	 * \brief Get primary table name.
+	 *
+	 * Returns an lb_I_String instance of the primary table name from the given foreign column name.
+	 * 
+	 * Returns a NULL pointer, if no primary table name could be found.
+	 */
+	virtual lb_I_String*	LB_STDCALL getPKTable(char* FKName) = 0;
+
+
 
 	/**
 	 * \brief NULL indicator for pos column.
