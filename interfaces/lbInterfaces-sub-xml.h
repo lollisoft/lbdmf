@@ -200,7 +200,12 @@ protected:
         virtual ~lb_I_InterfaceRepository() {}
 public:
 
-	virtual lb_I_FunctorEntity* LB_STDCALL getFirstEntity(char* iface) = 0;
+	/**
+	 * Set an actual search argument as interface to be searched. This resets the internal
+	 * index over all interfaces to zero.
+	 */
+	virtual void LB_STDCALL setCurrentSearchInterface(char* iface) = 0;
+	virtual lb_I_FunctorEntity* LB_STDCALL getFirstEntity() = 0;
 };
 /*...e*/
 
