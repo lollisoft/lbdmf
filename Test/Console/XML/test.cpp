@@ -234,10 +234,10 @@ void main(int argc, char *argv[]) {
 
 
 #ifdef USE_PK
-	query->query("select objecttyp, x, y, w, h, id from world");
+	query->query("select objecttyp, x, y, w, h, id from world order by id");
 #endif
 #ifndef USE_PK
-	query->query("select objecttyp, x, y, w, h from world");
+	query->query("select objecttyp, x, y, w, h from world order by id");
 #endif
 // Second run fails ??
 /*...sforward:8:*/
