@@ -72,7 +72,7 @@ cout << "pUnknown->queryInterface('lb_I_XMLConfig', (void**) &XMLinst)" << endl;
                 
                 cout << "Called XMLinst->parse()" << endl;
                 
-                if (XMLinst->hasConfigObject("Module" /*"dtdHostCfgDoc/Modules/Module/ModuleName"*/) != ERR_NONE) {
+                if (XMLinst->hasConfigObject("#document/dtdHostCfgDoc/Modules/Module/ModuleName") != ERR_NONE) {
                         printf("Object not found\n");
                 } else {
                         printf("Object was found\n");
