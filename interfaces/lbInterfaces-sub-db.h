@@ -38,16 +38,25 @@ public:
         virtual lbErrCodes      LB_STDCALL setBoundColumns(lb_I_Container* bc) = 0;
 };
 
-class lb_I_MVC_DBView : public lb_I_Unknown
+class lb_I_MVC_View : public lb_I_Unknown
 {
 protected:
-	lb_I_MVC_DBView() {}
-	virtual ~lb_I_MVC_DBView() {}
+	lb_I_MVC_View() {}
+	virtual ~lb_I_MVC_View() {}
 public:
+/*...svirtual lbErrCodes LB_STDCALL updateView\40\\41\ \61\ 0\59\:8:*/
         /*------ MVC variant ------------*/
         /* Data is available, I can read it out ... */
-        virtual lbErrCodes LB_STDCALL dataAvailable() = 0;
-        virtual lbErrCodes LB_STDCALL setQueryInstance(lb_I_Query* q) = 0;
+        virtual lbErrCodes LB_STDCALL updateView() = 0;
+/*...e*/
+        
+/*...svirtual lbErrCodes LB_STDCALL setViewSource\40\lb_I_Unknown\42\ q\41\ \61\ 0\59\:8:*/
+        /* The view source is the data, that should be displayed.
+         * As this would be a database view, the function tries to get
+         * a lb_I_Query source.
+         */
+        virtual lbErrCodes LB_STDCALL setViewSource(lb_I_Unknown* q) = 0;
+/*...e*/
 };
 
 
@@ -60,19 +69,20 @@ public:
 	/* Column binding mode */
         virtual lbErrCodes LB_STDCALL setView(lb_I_ColumnBinding* cb) = 0;
 
+/*...svirtual lbErrCodes LB_STDCALL \40\un\41\registerView\40\lb_I_MVC_View\42\ view\41\ \61\ 0\59\:8:*/
 	/* MVC View mode */
 	/*
 	 * As a sample may be a graphical view for the result of the interpreted
 	 * graphics and the textual view. The controller then might use one button
 	 * for updating the model and the model then informs its views.
 	 */
-	virtual lbErrCodes LB_STDCALL registerView(lb_I_MVC_DBView* view) = 0;
-	virtual lbErrCodes LB_STDCALL unregisterView(lb_I_MVC_DBView* view) = 0;
-
-
+	virtual lbErrCodes LB_STDCALL registerView(lb_I_MVC_View* view) = 0;
+	virtual lbErrCodes LB_STDCALL unregisterView(lb_I_MVC_View* view) = 0;
+/*...e*/
 
         /* Set the SQL query */
         virtual lbErrCodes LB_STDCALL query(char* q) = 0;
+        
         /* Navigation */
         virtual lbErrCodes LB_STDCALL first() = 0;
         virtual lbErrCodes LB_STDCALL next() = 0;
@@ -86,6 +96,7 @@ protected:
 	lb_I_Database() {}
 	virtual ~lb_I_Database() {}
 public:
+	virtual lbErrCodes LB_STDCALL init() = 0;
 	/**
 	 * This function connects to the database and in this first state of
 	 * development makes the test against this database.
