@@ -4,10 +4,13 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.7 $
+ * $Revision: 1.8 $
  * $Name:  $
- * $Id: lbobject.h,v 1.7 2001/02/06 20:38:18 lolli Exp $
+ * $Id: lbobject.h,v 1.8 2001/03/04 18:30:43 lolli Exp $
  * $Log: lbobject.h,v $
+ * Revision 1.8  2001/03/04 18:30:43  lolli
+ * Compiles now with interface support
+ *
  * Revision 1.7  2001/02/06 20:38:18  lolli
  * Commit for backup the data
  *
@@ -72,11 +75,11 @@
 
 
 //class lbKeyBase;
-class lbComponentDictionary;
+//class lbComponentDictionary;
 
 
-/*...sclass DLLEXPORT lbObject:0:*/
-class DLLEXPORT lbObject : public lb_I_Object {
+/*...sclass lbObject:0:*/
+class lbObject : public lb_I_Object {
 public:
     lbObject() {
 		name = NULL;
@@ -89,6 +92,10 @@ public:
 	}
     
     virtual ~lbObject() {}
+
+
+    DECLARE_LB_UNKNOWN()
+    DECLARE_LB_OBJECT()
 
 	/**
 	 * The type of an object
@@ -105,53 +112,71 @@ public:
 	/**
 	 * Abstract functions
 	 */
-	virtual void setType() = 0;
-	virtual lbObject* clone() const = 0;
+//	virtual void setType() = 0;
+//	virtual lb_I_Unknown* clone() const = 0;
 
 	
 
 protected:
 
-    char *name;
-	ObjectTyp OTyp;
+  //  char *name;
+//	ObjectTyp OTyp;
 };
 /*...e*/
 
-/*...sclass DLLEXPORT lbString:0:*/
-class DLLEXPORT lbString : public lbObject {
+/*...sclass lbString:0:*/
+class lbString : public lb_I_String
+{
 public:
 	lbString();
 	virtual ~lbString();
-	
-	virtual void setType();
-	virtual lbObject* clone() const;
 
-	void setData(char* p);
-	char* getData() const;
+	DECLARE_LB_UNKNOWN()
+	
+	virtual void LB_STDCALL setData(char* p);
+	virtual char* LB_STDCALL getData() const;
 	
 private:
 	char* stringdata;
 };
 /*...e*/
 
-/*...sclass DLLEXPORT lbStringList:0:*/
-class DLLEXPORT lbStringList : public lbObject {
+/*...sclass lbStringList:0:*/
+class lbStringList : public lbObject {
 public:
         lbStringList();
         virtual ~lbStringList();
 
         virtual void setType();
-        virtual lbObject* clone() const;
+        virtual lb_I_Unknown* clone() const;
 
-	void insert(lbString &s);
-	int remove(const lbString &s);
-	int exists(const lbString &s);
+	void insert(lb_I_String* s);
+	int remove(const lb_I_String* s);
+	int exists(const lb_I_String* s);
 	
 	int hasMoreElements();
-	lbString* nextElement();
+	lb_I_String* nextElement();
 private:
-	lbComponentDictionary* list;
+	lb_I_Container* list;
 	int count;
 };
 /*...e*/
+
+#ifdef bla
+/*...s\35\ifdef __cplusplus \123\:0:*/
+#ifdef __cplusplus
+extern "C" {
+#endif
+/*...e*/
+
+lbErrCodes DLLEXPORT __cdecl queryInterface(lb_I_Unknown*& inst, const char* _name);
+lbErrCodes DLLEXPORT __cdecl releaseInstance(lb_I_Unknown * inst);
+
+/*...s\35\ifdef __cplusplus \125\:0:*/
+#ifdef __cplusplus
+}
+#endif
+/*...e*/
+#endif
+
 #endif //LB_OBJECT
