@@ -3,6 +3,7 @@
 
 #include <windows.h>
 
+#include <lbthread.h>
 #include <lb_misc.h> // Helpers collected here
 
 #include <lbObject.h>
@@ -61,7 +62,6 @@
 #include <lbObject.h>
 #include <lbKey.h>
 #include <lbContainer.h>
-#include <lbThread.h>
 #endif
 
 #ifdef LB_CS_DLL_INC
@@ -69,6 +69,5 @@
 #include <appcs.h>
 #include <transfer.h>
 #include <appbus.h>
-#include <lbthread.h>
 #endif
 #endif
