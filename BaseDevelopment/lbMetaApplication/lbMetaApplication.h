@@ -1,11 +1,15 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.3 $
+ * $Revision: 1.4 $
  * $Name:  $
- * $Id: lbMetaApplication.h,v 1.3 2002/07/23 17:48:55 lothar Exp $
+ * $Id: lbMetaApplication.h,v 1.4 2002/08/06 05:41:39 lothar Exp $
  *
  * $Log: lbMetaApplication.h,v $
+ * Revision 1.4  2002/08/06 05:41:39  lothar
+ * More special Dispatcher and EventManager interface.
+ * Empty bodies compiling
+ *
  * Revision 1.3  2002/07/23 17:48:55  lothar
  * Current version runs
  *
@@ -25,7 +29,8 @@
 
 /*...sclass lb_MetaApplication:0:*/
 class lb_MetaApplication : 
-public lb_I_MetaApplication
+public lb_I_MetaApplication,
+public lb_I_EventHandler
 {
 public:
 	lb_MetaApplication();
@@ -46,6 +51,11 @@ public:
 	virtual lb_I_EventManager * getEVManager( void );
 
 	void LB_STDCALL getBasicApplicationInfo(lb_I_Unknown** info);
+	
+
+	virtual lbErrCodes LB_STDCALL registerEventHandler(lb_I_Dispatcher* disp);	
+	lbErrCodes LB_STDCALL lbEvHandler1(lb_I_Unknown* uk);
+	
 
 protected:
 	lb_I_GUI* gui;
@@ -93,6 +103,10 @@ public:
 
 	virtual lbErrCodes LB_STDCALL setEventManager(lb_I_EventManager* EvManager);
 	virtual lbErrCodes LB_STDCALL addDispatcher(lb_I_Dispatcher* disp);
+	virtual lbErrCodes LB_STDCALL delDispatcher(lb_I_Dispatcher* disp);
+	virtual lbErrCodes LB_STDCALL addEventHandlerFn(lbEvHandler evHandler, char* EvName);
+	virtual lbErrCodes LB_STDCALL addEventHandlerFn(lbEvHandler evHandler, int EvNr);
+	
 	/**
 	 * ID variant
 	 */
@@ -109,6 +123,8 @@ public:
 	 * EvData = lb_I_HandlerAddress
 	 */
 	virtual lbErrCodes LB_STDCALL queryEvent(char* EvName, lb_I_Unknown* EvData);
+	
+	virtual lb_I_DispatchResponce* dispatch(lb_I_DispatchRequest* req);
 };
 /*...e*/
 /*...sclass lb_EventManager:0:*/

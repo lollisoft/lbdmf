@@ -102,6 +102,8 @@ class lb_I_EventManager;
 class lb_I_EventHandler;
 
 class lb_I_ConfigObject;
+
+class lb_I_Frame;
 /*...e*/
 
 /*...scallback \47\ handler typedefs:0:*/
@@ -1171,16 +1173,51 @@ protected:
 	friend class lb_I_Dispatcher;
 };
 /*...e*/
+
+/*...sclass lb_I_DispatchRequest:0:*/
+class lb_I_DispatchRequest : public lb_I_Unknown {
+public:
+	virtual lbErrCodes LB_STDCALL setRequestName(char* name) = 0;
+};
+/*...e*/
+/*...sclass lb_I_DispatchResponce:0:*/
+class lb_I_DispatchResponce : public lb_I_Unknown {
+public:
+	virtual int LB_STDCALL isOk() = 0;
+};
+/*...e*/
 /*...sclass lb_I_Dispatcher:0:*/
-/**
- * Delegate events to their dispat events to
- * registered dispatchers.
- */
 class lb_I_Dispatcher : public lb_I_Unknown {
 public:
 
 	virtual lbErrCodes LB_STDCALL setEventManager(lb_I_EventManager* EvManager) = 0;
+	
+/*...sevent handler management:8:*/
+
+	/**
+	 * Register an event handler function under it's name. If the name is not registered, the
+	 * function will fail. The dispatcher is not responsible for registering event names or id's.
+	 */
+	virtual lbErrCodes LB_STDCALL addEventHandlerFn(lbEvHandler evHandler, char* EvName) = 0;
+	
+	/**
+	 * Register an event handler function under it's id. If the id is not registered, the
+	 * function will fail. The dispatcher is not responsible for registering event names or id's.
+	 */
+	virtual lbErrCodes LB_STDCALL addEventHandlerFn(lbEvHandler evHandler, int EvNr) = 0;
+/*...e*/
+	
+/*...scascade management:8:*/
+	/**
+	 * Add a dispatcher, if it is not my self (singleton). This enables cascaded
+	 * dispatching and complete replacement of a dispatcher.
+	 */
 	virtual lbErrCodes LB_STDCALL addDispatcher(lb_I_Dispatcher* disp) = 0;
+	
+	virtual lbErrCodes LB_STDCALL delDispatcher(lb_I_Dispatcher* disp) = 0;
+/*...e*/
+
+/*...sdispatching:8:*/
 	/**
 	 * ID variant
 	 */
@@ -1197,8 +1234,16 @@ public:
 	 * EvData = lb_I_HandlerAddress
 	 */
 	virtual lbErrCodes LB_STDCALL queryEvent(char* EvName, lb_I_Unknown* EvData) = 0;
+	
+	/**
+	 * lb_I_DispatchRequest variant
+	 */
+	 
+	virtual lb_I_DispatchResponce* LB_STDCALL dispatch(lb_I_DispatchRequest* req) = 0; 
+/*...e*/
 };
 /*...e*/
+
 /*...sclass lb_I_EventHandler:0:*/
 /**
  *
@@ -1216,12 +1261,24 @@ class lb_I_GUI :
 public lb_I_Unknown
 {
 public:
+	
+/*...sCreation functions:8:*/
+	/**
+	 * Creation functions
+	 */
 	virtual lb_I_Unknown* LB_STDCALL createFrame() = 0;
 	virtual lb_I_Unknown* LB_STDCALL createMenu() = 0;
 	virtual lb_I_Unknown* LB_STDCALL createMenuBar() = 0;
 	virtual lb_I_Unknown* LB_STDCALL createMenuEntry() = 0;
-
-
+/*...e*/
+/*...sGetter functions:8:*/
+	/**
+	 * Getter functions
+	 */
+	 
+	virtual lb_I_Frame* LB_STDCALL getFrame() = 0; 
+/*...e*/
+/*...sMenu manipulation:8:*/
 	/**
 	 * Menu manipulation based on current position. The members
 	 * deleates this calls to the lb_I_GUI instance.
@@ -1229,14 +1286,52 @@ public:
 	 
 	virtual lbErrCodes LB_STDCALL deactivateMenuEntry() = 0;
 	virtual lbErrCodes LB_STDCALL activateMenuEntry() = 0;
-	
+
+	/**
+	 * This enables the manipulation of any main menus and the addition of
+	 * main menus.
+	 */	
 	virtual lbErrCodes LB_STDCALL gotoMenuRoot() = 0;
+	
+	/**
+	 * Go to any menu entry, to manipulate at this position
+	 */
 	virtual lbErrCodes LB_STDCALL gotoMenuEntry(char* entry) = 0;
 	
+	/**
+	 * Insert after the current position
+	 */
 	virtual lbErrCodes LB_STDCALL insertMenuEntry(lb_I_Unknown* entry) = 0;
 	
-	virtual lbErrCodes LB_STDCALL msgBox(char* windowTitle, char* msg) = 0;
+	/**
+	 * Add an entry at the current position (insert before)
+	 */
 	
+	virtual lbErrCodes LB_STDCALL addMenuEntry(lb_I_Unknown* entry) = 0; 
+/*...e*/
+	
+	/**
+	 * Let the GUI server show a dialog box
+	 */
+	virtual lbErrCodes LB_STDCALL msgBox(char* windowTitle, char* msg) = 0;
+
+	/**
+	 * We do not implement a dispatcher here, but we need one
+	 */
+	virtual lbErrCodes LB_STDCALL setDispatcher(lb_I_Dispatcher* disp) = 0;	
+};
+/*...e*/
+/*...sclass lb_I_Frame:0:*/
+/**
+ * It seems, that this is the factory class for any GUI elements. It also knows about any instance.
+ */
+class lb_I_Frame :
+public lb_I_Unknown
+{
+public:
+	virtual lb_I_Unknown* LB_STDCALL createFrame() = 0;
+//	virtual lbErrCodes registerEvent(char* evName, int evType, frame->getDispatcherFn())
+
 };
 /*...e*/
 /*...sclass lb_I_wxGUI:0:*/
