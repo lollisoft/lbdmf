@@ -80,7 +80,7 @@ lbErrCodes LB_STDCALL lbGetFunctionPtr(const char* name, HINSTANCE hinst, void**
 	
 	if ((*pfn = dlsym(hinst, name)) == NULL)
 	{
-	    printf("Handle for library is %x\n", hinst);
+	    printf("Handle for library is %p\n", (void*) hinst);
             sprintf(msg, "Kann Funktion '%s' nicht finden.", name);
             CL_LOG(msg); 
             getch(); 
@@ -136,7 +136,7 @@ T_p_getlbModuleInstance DLL_GETMODULEINSTANCE;
 	
 	if ((err = DLL_GETMODULEINSTANCE(module, NULL, __FILE__, __LINE__)) == ERR_STATE_FURTHER_LOCK) {
 		CL_LOG("Instance is locked. Must set module manager first");
-		module->setModuleManager(module);
+		module->setModuleManager(module, __FILE__, __LINE__);
 	} 
 	
 	return module;
