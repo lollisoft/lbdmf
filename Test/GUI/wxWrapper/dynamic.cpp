@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.62 2005/03/31 14:42:51 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.63 2005/03/31 15:21:00 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.62 $
+ * $Revision: 1.63 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.62 2005/03/31 14:42:51 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.63 2005/03/31 15:21:00 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.63  2005/03/31 15:21:00  lollisoft
+ * Reporting name of menu to append after
+ *
  * Revision 1.62  2005/03/31 14:42:51  lollisoft
  * Changes to get menubar appending to work
  *
@@ -2085,6 +2088,7 @@ lbErrCodes LB_STDCALL MyApp::lbEvHandler2(lb_I_Unknown* uk) {
 		int pos = 0;
 		
 		if (mbar) {
+			printf("Find menu entry '%s'\n", after->charrep());
 			pos = mbar->FindMenu(wxString(after->getData()));
 			printf("Pos is %d\n", pos);
 			mbar->Insert(pos+1, menu, name->getData());
