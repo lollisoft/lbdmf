@@ -33,6 +33,7 @@ call make_dist_base.bat make
 call make_dist_base.bat test\GUI\wxwrapper
 call make_dist_base.bat test\console\xml
 call make_dist_base.bat Compilers
+call make_dist_base.bat Database
 call make_dist_base.bat Doc
 
 copy README %DEVROOT%
@@ -43,5 +44,7 @@ copy q:\develop\Projects\CPP\watcomenv.bat %DEVROOT%
 copy q:\develop\Projects\CPP\watcomenv.bat.lnk dist
 copy q:\develop\ide.bat %DEVROOT%
 del *.idb
+
+tar cvzf lbDBF-Source.tgz dist\
 
 rem xcopy /I /E /Y dist q:\dist
