@@ -30,13 +30,14 @@ exit
 
 set DEVLW=q:
 set BASE=develop
+set BASE_MAKE=develop
 
 @rem ----------------------------------------------------------------
 @rem *                          End config                          *
 @rem ----------------------------------------------------------------
 
 set DEVROOT=%DEVLW%\%BASE%
-set DEVROOT_MAKE=%DEVLW%/%BASE%
+set DEVROOT_MAKE=%DEVLW%/%BASE_MAKE%
 
 set MSVCDir=%DEVROOT%\Tools\MSC\VC98
 
@@ -81,7 +82,7 @@ set WXWIN=%DEVROOT%\wxwin\wx
 
 @rem XML Module Configuration
 
-set LBHOSTCFGFILE=%DEVROOT%\Projects\CPP\AppDevelopment\Console\XML\lbXMLConfig.xml
+set LBHOSTCFGFILE=%DEVROOT%\Projects\CPP\Test\Console\XML\lbXMLConfig.xml
 
 REM __stdcall convention
 set LBXMLFUNCTOR=_getlbDOMConfigInstance@16
