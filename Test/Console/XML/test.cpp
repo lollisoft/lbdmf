@@ -140,7 +140,7 @@ void main(int argc, char *argv[]) {
 	query->query("select ObjectTyp, X, Y, W, H from World");
 
 	query->next();
-
+/*
 	char ObjectTyp[1000];
 	char X[100];
 	char Y[100];
@@ -152,9 +152,9 @@ void main(int argc, char *argv[]) {
 	strcpy(Y, query->getChar(3));
 	strcpy(W, query->getChar(4));
 	strcpy(H, query->getChar(5));
+*/
 
-
-	printf("%s;%s;%s;%s;%s\n", ObjectTyp, X, Y, W, H);
+	printf("%s;%s;%s;%s;%s\n", query->getChar(1), query->getChar(2), query->getChar(3), query->getChar(4), query->getChar(5));
 
 
 	/* Todo:
