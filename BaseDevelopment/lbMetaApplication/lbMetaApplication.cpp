@@ -28,11 +28,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.25 $
+ * $Revision: 1.26 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.25 2003/03/14 16:00:36 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.26 2003/07/10 21:13:06 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.26  2003/07/10 21:13:06  lollisoft
+ * Adding menu entry implemented
+ *
  * Revision 1.25  2003/03/14 16:00:36  lollisoft
  * Removed the problem with _chkesp() failure. But still crash in my GUI app
  *
@@ -196,6 +199,13 @@ lbErrCodes LB_STDCALL lb_MetaApplication::lbEvHandler1(lb_I_Unknown* uk) {
 
 lbErrCodes LB_STDCALL lb_MetaApplication::lbEvHandler2(lb_I_Unknown* uk) {
 	_LOG << "lb_MetaApplication::lbEvHandler2() called" LOG_
+
+	if (gui != NULL) {
+	        gui->msgBox("Information", "getMainModuleInfo called up");
+	} else {
+	        cout << "lb_MetaApplication::Initialize() called in console mode" << endl;
+	}
+
 	return ERR_NONE;
 }
 /*...e*/
@@ -316,6 +326,9 @@ lbErrCodes LB_STDCALL lb_MetaApplication::Initialize() {
 	printf("Added menubars\n");
 	// Let the GUI show a message box
 	
+	
+	addMenuEntry("Edit", "MainModuleInfo", "getMainModuleInfo", "");
+	
 	if (gui != NULL) {
 		gui->msgBox("Information", "Meta application started up");
 		//cout << "lb_MetaApplication::Initialize() called in console mode" << endl;
@@ -378,6 +391,36 @@ lbErrCodes LB_STDCALL lb_MetaApplication::addMenu(char* name) {
 }
 
 lbErrCodes LB_STDCALL lb_MetaApplication::addMenuEntry(char* in_menu, char* entry, char* evHandler, char* afterentry) {
+	lbErrCodes err = ERR_NONE;
+	
+	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, value)
+	
+	
+	parameter->setData("menubar");
+	value->setData(in_menu);
+	param->setUAPString(*&parameter, *&value);
+	
+	parameter->setData("menuname");
+	value->setData(entry);
+	param->setUAPString(*&parameter, *&value);
+
+
+	parameter->setData("menuhandler");
+	value->setData(evHandler);
+	param->setUAPString(*&parameter, *&value);
+
+	UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
+	QI(param, lb_I_Unknown, uk, __FILE__, __LINE__)
+
+	UAP_REQUEST(manager.getPtr(), lb_I_String, result)
+	UAP(lb_I_Unknown, uk_result, __FILE__, __LINE__)
+	QI(result, lb_I_Unknown, uk_result, __FILE__, __LINE__)
+
+	dispatcher->dispatch("AddMenuBar", uk.getPtr(), &uk_result);
+	
+
 	return ERR_NONE;
 }
 /*...e*/
