@@ -40,92 +40,7 @@
 #include <iostream.h>
 #include <fstream.h>
 #include <malloc.h>
-#include <lbInterfaces.h>
 
-#ifndef __LB_CONFIG_HOOK__
-#define __LB_CONFIG_HOOK__
-
-#ifdef LINUX
-#define HINSTANCE void*
-#endif
-
-#ifdef bla
-
-#ifdef DLLEXPORT
-#undef DLLEXPORT
-#endif
-
-#define DLLEXPORT
-
-#ifdef HOOK_DLL
-#undef DLLEXPORT
-#ifdef WINDOWS
-#define DLLEXPORT LB_DLLEXPORT
-#endif
-#ifdef LINUX
-#define DLLEXPORT
-#endif
-
-#endif
-
-#ifndef HOOK_DLL
-#undef DLLEXPORT
-#ifdef WINDOWS
-#define DLLEXPORT LB_DLLIMPORT
-#endif
-#ifdef LINUX
-#define DLLEXPORT
-#endif
-#endif
-
-#endif
-
-// Object tracking
-DLLEXPORT void LB_STDCALL set_trackObject(char* track);
-DLLEXPORT char* LB_STDCALL get_trackObject();
-DLLEXPORT void LB_STDCALL track_Object(lb_I_Unknown* o, char* msg);
-
-DLLEXPORT HINSTANCE LB_STDCALL getModuleHandle();
-DLLEXPORT HINSTANCE LB_STDCALL getLBModuleHandle();
-
-DLLEXPORT void LB_STDCALL setModuleHandle(HINSTANCE h);
-DLLEXPORT void LB_STDCALL setLBModuleHandle(HINSTANCE h);
-
-
-DLLEXPORT int LB_STDCALL isInitializing();
-DLLEXPORT void LB_STDCALL setInitializing(int i);
-DLLEXPORT lb_I_Log* LB_STDCALL getLoggerInstance();
-DLLEXPORT void LB_STDCALL setLoggerInstance(lb_I_Log* l);
-
-
-/**
- * Platform independend module loader
- */
-/*...slbErrCodes LB_STDCALL lbLoadModule\40\const char\42\ name\44\ HINSTANCE \38\ hinst\41\:0:*/
-lbErrCodes DLLEXPORT LB_STDCALL lbLoadModule(const char* name, HINSTANCE & hinst);
-/*...e*/
-/*...slbErrCodes LB_STDCALL lbGetFunctionPtr\40\const char\42\ name\44\ const HINSTANCE \38\ hinst\44\ void\42\\42\ pfn\41\:0:*/
-lbErrCodes DLLEXPORT LB_STDCALL lbGetFunctionPtr(const char* name, HINSTANCE hinst, void** pfn);
-/*...e*/
-
-
-/**
- * A moduleinstance is a factory object for all other further instances
- * of registered modules.
- */
-
-/*...slb_I_Module\42\ LB_STDCALL getModuleInstance\40\\41\:0:*/
-DLLEXPORT lb_I_Module* LB_STDCALL getModuleInstance();
-/*...e*/
-/*...slbErrCodes LB_STDCALL releaseInstance\40\lb_I_Unknown\42\ inst\41\:0:*/
-lbErrCodes LB_STDCALL releaseInstance(lb_I_Unknown* inst);
-/*...e*/
-/*...svoid LB_STDCALL unHookAll\40\\41\:0:*/
-DLLEXPORT void LB_STDCALL unHookAll();
-/*...e*/
-
-DLLEXPORT char* LB_STDCALL ltoa(void* ptr);
-DLLEXPORT char* LB_STDCALL itoa(int ptr);
 
 /*...sLogging macros:0:*/
 
@@ -276,6 +191,95 @@ DLLEXPORT char* LB_STDCALL itoa(int ptr);
 			}
 /*...e*/
 /*...e*/
+
+
+#include <lbInterfaces.h>
+
+#ifndef __LB_CONFIG_HOOK__
+#define __LB_CONFIG_HOOK__
+
+#ifdef LINUX
+#define HINSTANCE void*
+#endif
+
+#ifdef bla
+
+#ifdef DLLEXPORT
+#undef DLLEXPORT
+#endif
+
+#define DLLEXPORT
+
+#ifdef HOOK_DLL
+#undef DLLEXPORT
+#ifdef WINDOWS
+#define DLLEXPORT LB_DLLEXPORT
+#endif
+#ifdef LINUX
+#define DLLEXPORT
+#endif
+
+#endif
+
+#ifndef HOOK_DLL
+#undef DLLEXPORT
+#ifdef WINDOWS
+#define DLLEXPORT LB_DLLIMPORT
+#endif
+#ifdef LINUX
+#define DLLEXPORT
+#endif
+#endif
+
+#endif
+
+// Object tracking
+DLLEXPORT void LB_STDCALL set_trackObject(char* track);
+DLLEXPORT char* LB_STDCALL get_trackObject();
+DLLEXPORT void LB_STDCALL track_Object(lb_I_Unknown* o, char* msg);
+
+DLLEXPORT HINSTANCE LB_STDCALL getModuleHandle();
+DLLEXPORT HINSTANCE LB_STDCALL getLBModuleHandle();
+
+DLLEXPORT void LB_STDCALL setModuleHandle(HINSTANCE h);
+DLLEXPORT void LB_STDCALL setLBModuleHandle(HINSTANCE h);
+
+
+DLLEXPORT int LB_STDCALL isInitializing();
+DLLEXPORT void LB_STDCALL setInitializing(int i);
+DLLEXPORT lb_I_Log* LB_STDCALL getLoggerInstance();
+DLLEXPORT void LB_STDCALL setLoggerInstance(lb_I_Log* l);
+
+
+/**
+ * Platform independend module loader
+ */
+/*...slbErrCodes LB_STDCALL lbLoadModule\40\const char\42\ name\44\ HINSTANCE \38\ hinst\41\:0:*/
+lbErrCodes DLLEXPORT LB_STDCALL lbLoadModule(const char* name, HINSTANCE & hinst);
+/*...e*/
+/*...slbErrCodes LB_STDCALL lbGetFunctionPtr\40\const char\42\ name\44\ const HINSTANCE \38\ hinst\44\ void\42\\42\ pfn\41\:0:*/
+lbErrCodes DLLEXPORT LB_STDCALL lbGetFunctionPtr(const char* name, HINSTANCE hinst, void** pfn);
+/*...e*/
+
+
+/**
+ * A moduleinstance is a factory object for all other further instances
+ * of registered modules.
+ */
+
+/*...slb_I_Module\42\ LB_STDCALL getModuleInstance\40\\41\:0:*/
+DLLEXPORT lb_I_Module* LB_STDCALL getModuleInstance();
+/*...e*/
+/*...slbErrCodes LB_STDCALL releaseInstance\40\lb_I_Unknown\42\ inst\41\:0:*/
+lbErrCodes LB_STDCALL releaseInstance(lb_I_Unknown* inst);
+/*...e*/
+/*...svoid LB_STDCALL unHookAll\40\\41\:0:*/
+DLLEXPORT void LB_STDCALL unHookAll();
+/*...e*/
+
+DLLEXPORT char* LB_STDCALL ltoa(void* ptr);
+DLLEXPORT char* LB_STDCALL itoa(int ptr);
+
 
 
 /*...sclass lbStringKey \58\ public lb_I_KeyBase:0:*/
