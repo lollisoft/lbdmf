@@ -288,6 +288,8 @@ public:
 		cbBufferLength = 0;
 		buffer = NULL;
 		colName = NULL;
+		ColumnSize = 0;
+		rows = 2;
 	}
 	virtual ~lbBoundColumn() {
 		switch (_DataType) {
@@ -352,7 +354,9 @@ protected:
 	SQLSMALLINT     _DataType;
 	void*		buffer;
 	int		buffersize;
-	long cbBufferLength;
+	long		cbBufferLength;
+	SQLUINTEGER     ColumnSize; //new (long);
+	int		rows;
 	UAP(lb_I_String, colName, __FILE__, __LINE__)
 };
 /*...e*/
@@ -1080,7 +1084,7 @@ lbErrCodes LB_STDCALL lbQuery::setString(lb_I_String* columnName, lb_I_String* v
 	if (_readonly == 1) return ERR_DB_READONLY;
 	if (mode == 1) {
 		// Not supported yet
-		printf("lbQuery::setString(lb_I_String* columnName, lb_I_String* value) Error: Append data not supported yet\n");
+		//printf("lbQuery::setString(lb_I_String* columnName, lb_I_String* value) Error: Append data not supported yet\n");
 		boundColumns->setString(columnName->charrep(), value);
 	} else {
 		//printf("Call boundColumns->setString('%s', '%s')\n", columnName->charrep(), value->charrep());
@@ -1120,7 +1124,15 @@ lbErrCodes LB_STDCALL lbQuery::update() {
 
 	if (mode == 1) {
 		printf("Insert the new record\n");
-		SQLSetPos(hstmt, 2, SQL_ADD, SQL_LOCK_NO_CHANGE);
+		retcode = SQLSetPos(hstmt, 2, SQL_ADD, SQL_LOCK_NO_CHANGE);
+		
+		if (retcode != SQL_SUCCESS)
+		{
+		        dbError( "SQLSetPos()");
+		        _LOG << "lbQuery::update(...) adding failed." LOG_
+		        return ERR_DB_UPDATEFAILED;
+		}
+		
 		mode = 0;
 	} else {
 		printf("Update the record\n");
@@ -1228,7 +1240,7 @@ free(buffer);
 		if (retcode != SQL_SUCCESS)
 		{
 		        dbError( "SQLSetPos()");
-		        _LOG << "lbQuery::update(...) failed." LOG_
+		        _LOG << "lbQuery::update(...) updating failed." LOG_
 		        return ERR_DB_UPDATEFAILED;
 		}
 #endif
@@ -1572,18 +1584,16 @@ lbErrCodes LB_STDCALL lbBoundColumn::getAsString(lb_I_String* result, int asPara
 lbErrCodes LB_STDCALL lbBoundColumn::setFromString(lb_I_String* set, int mode) {
 
 	if (mode == 1) {
-		// Not supported yet
-		_LOG << "lbBoundColumn::setFromString(...) if (mode == 1) not implemented yet" LOG_
-		printf("lbBoundColumn::setFromString(...) if (mode == 1) not implemented yet\n");
-		// This would overwrite the pointer, not the data !!!
-
 		switch (_DataType) {
 			case SQL_CHAR:
 			case SQL_VARCHAR:
 			case SQL_LONGVARCHAR:
 				{
 					// Must set an offset for the insert buffer
-					char* b = strcpy((char*) buffer, set->getData());
+					
+					char* bb = (char*) buffer;
+					
+					char* b = strcpy(bb + ColumnSize + 1, set->getData());
 					cbBufferLength = strlen((char*) buffer);
 				}
 				break;
@@ -1591,18 +1601,17 @@ lbErrCodes LB_STDCALL lbBoundColumn::setFromString(lb_I_String* set, int mode) {
 				{
 					long l = 0;
 					l = atol(set->getData());
-					memcpy(buffer, &l, sizeof(l));
+					
+					long* pl = (long*) buffer;
+					
+					void* b = pl+1;
+					
+					memcpy(b, &l, sizeof(l));
 				}
 				break;
 		}
 
 	} else {
-		// This would overwrite the pointer, not the data !!!
-/*
-		printf("Copy string '%s' to '%s' with size of %d\n", 
-			set->getData(), (char*) buffer, strlen(set->getData()));
-*/
-
 		switch (_DataType) {
 			case SQL_CHAR:
 			case SQL_VARCHAR:
@@ -1638,7 +1647,6 @@ lbErrCodes LB_STDCALL lbBoundColumn::prepareBoundColumn(lb_I_Query* q, int colum
 	SQLSMALLINT     BufferLength = 500;
 	SQLSMALLINT     NameLength = 0;
 	SQLSMALLINT     DataType = 0;
-	SQLUINTEGER     ColumnSize = 0; //new (long);
 	
 	SQLSMALLINT     DecimalDigits = 0;
 	SQLSMALLINT     Nullable = 0;
@@ -1651,8 +1659,6 @@ lbErrCodes LB_STDCALL lbBoundColumn::prepareBoundColumn(lb_I_Query* q, int colum
 	                                &ColumnSize, &DecimalDigits, &Nullable);
 
 	_DataType = DataType;
-
-	long cbBufferLength = 0;
 
 	REQUEST(manager.getPtr(), lb_I_String, colName)
 	colName->setData((char*) ColumnName);
@@ -1670,7 +1676,6 @@ lbErrCodes LB_STDCALL lbBoundColumn::bindColumn(lb_I_Query* q, int column) {
 	SQLSMALLINT     BufferLength = 500;
 	SQLSMALLINT     DataType = 0;
 	SQLSMALLINT     NameLength = 0;
-	SQLUINTEGER     ColumnSize = 0; //new (long);
 	
 	SQLSMALLINT     DecimalDigits = 0;
 	SQLSMALLINT     Nullable = 0;
@@ -1691,8 +1696,6 @@ lbErrCodes LB_STDCALL lbBoundColumn::bindColumn(lb_I_Query* q, int column) {
 	colName->setData((char*) ColumnName);
 	
 
-	int rows = 2;
-	
 	switch (DataType) {
 		case SQL_CHAR:
 		case SQL_VARCHAR:
