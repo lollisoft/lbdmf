@@ -103,14 +103,25 @@ class TopLevel : public XMLHandler
 {
 public:
 	TopLevel() { 
+/*...sVERBOSE:0:*/
+#ifdef VERBOSE	
 		cout << "TopLevel() called" << endl;
+#endif	
+/*...e*/
 		m_plbConfigObject = new lbConfigObject; 
-		
 	}
 	virtual ~TopLevel() { 
+/*...sVERBOSE:0:*/
+#ifdef VERBOSE
 		cout << "~TopLevel() called" << endl;
+#endif
+/*...e*/
 		m_plbConfigObject->release();
+/*...sVERBOSE:0:*/
+#ifdef VERBOSE
 		cout << "~TopLevel() returns" << endl; 
+#endif
+/*...e*/
 	}
 	
 	virtual XMLHandler* startElement(const   XMLCh* const    name,
