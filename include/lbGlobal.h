@@ -1,11 +1,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.2 $
+ * $Revision: 1.3 $
  * $Name:  $
- * $Id: lbGlobal.h,v 1.2 2000/05/04 23:51:43 lolli Exp $
+ * $Id: lbGlobal.h,v 1.3 2000/06/24 21:14:16 lolli Exp $
  *
  * $Log: lbGlobal.h,v $
+ * Revision 1.3  2000/06/24 21:14:16  lolli
+ * Many changes
+ *
  * Revision 1.2  2000/05/04 23:51:43  lolli
  * Added define for logfile mutex
  *
@@ -37,6 +40,8 @@ enum GUITypes {
 /*...e*/
 
 #define LB_LOGFILE_MUTEX 1
+#define LB_SEND_MUTEX 2
+#define LB_RECV_MUTEX 3
 
 #endif
 

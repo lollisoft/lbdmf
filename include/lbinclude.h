@@ -1,7 +1,29 @@
 #ifndef LB_INCLUDE
 #define LB_INCLUDE
 
+/*...sdefine VERBOSE switches for modules:0:*/
+//#define SOCKET_VERBOSE
+//#define TRANSFER_VERBOSE
+
+//#define CLASSES_VERBOSE
+//#define THREAD_VERBOSE
+
+
+//#define APPCS_VERBOSE
+
+//#define APPBUS_VERBOSE
+//#define APPBUS_SVR_VERBOSE
+//#define APPBUS_CLT_VERBOSE
+/*...e*/
+
+
+
 #include <windows.h>
+
+// Global definitions like GUITypes and so on
+#include <lbGlobal.h>
+#include <lbErrcodes.h>
+
 
 #include <lbthread.h>
 #include <lb_misc.h> // Helpers collected here
@@ -9,8 +31,6 @@
 #include <lbObject.h>
 #include <lbKey.h>
 
-// Global definitions like GUITypes and so on
-#include <lbGlobal.h>
 
 /**
  * LB_CS_DLL_INC needs LB_CLASSES_DLL_INC and LB_TRANSFER_DLL_INC
@@ -62,6 +82,7 @@
 #include <lbObject.h>
 #include <lbKey.h>
 #include <lbContainer.h>
+#include <lbElement.h>
 #endif
 
 #ifdef LB_CS_DLL_INC
