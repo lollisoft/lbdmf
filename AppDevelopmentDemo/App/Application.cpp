@@ -55,9 +55,15 @@ public:
 	virtual lb_I_EventManager * getEVManager( void );
 
 	virtual lbErrCodes LB_STDCALL registerEventHandler(lb_I_Dispatcher* disp);	
+
+	lbErrCodes LB_STDCALL getDynamicDBForm(lb_I_Unknown* uk);
 	
 	lbErrCodes LB_STDCALL getKundenDetails(lb_I_Unknown* uk);
 	lbErrCodes LB_STDCALL getKundenListe(lb_I_Unknown* uk);
+
+	lbErrCodes LB_STDCALL getLoginData(lb_I_Unknown* uk);
+
+	lbErrCodes LB_STDCALL getCustomFormsConfig(lb_I_Unknown* uk);
 
 /*...sWrapper for some usual GUI functions:8:*/
 
@@ -110,20 +116,66 @@ lbApplication::~lbApplication() {
 /*...sregister event handlers:0:*/
 lbErrCodes LB_STDCALL lbApplication::registerEventHandler(lb_I_Dispatcher* disp) {
 
+	disp->addEventHandlerFn(this, (lbEvHandler) &lbApplication::getLoginData, "getLoginData");
+
 	disp->addEventHandlerFn(this, (lbEvHandler) &lbApplication::getKundenDetails, "getKundenDetails");
 	disp->addEventHandlerFn(this, (lbEvHandler) &lbApplication::getKundenListe, "getKundenListe");
+
+	// Register a dynamic formular creator
+
+	disp->addEventHandlerFn(this, (lbEvHandler) &lbApplication::getDynamicDBForm, "getDynamicDBForm");
 
 	return ERR_NONE;
 }
 /*...e*/
 
 /*...sevent handlers\44\ that can be registered:0:*/
+lbErrCodes LB_STDCALL lbApplication::getDynamicDBForm(lb_I_Unknown* uk) {
+	if (gui != NULL) {
+	        UAP(lb_I_DatabaseForm, dbForm, __FILE__, __LINE__)
+
+		/*
+			To get the data from the database, we do transmit only a few data by uk to this
+			function.
+			
+			It would be only the form id it self. Additionally, we need to check the typ of the
+			formular to be really a DynamicDBForm.
+			
+			If this is ok, we need to load the additional query from a foreign table for that
+			typ of form.
+			
+			At best, this functionality is placed in a separate class.
+		*/
+		
+		
+
+	        dbForm = gui->createDBForm("<Load title from database>", "<Load SQL query from database>");
+	} else {
+	        cout << "KundenDetails" << endl;
+	}
+
+        return ERR_NONE;
+}
+
+/*...slbErrCodes LB_STDCALL lbApplication\58\\58\getLoginData\40\lb_I_Unknown\42\ uk\41\:0:*/
+lbErrCodes LB_STDCALL lbApplication::getLoginData(lb_I_Unknown* uk) {
+
+	if (gui != NULL) {
+	        UAP(lb_I_Form, loginForm, __FILE__, __LINE__)
+		
+		loginForm = gui->createLoginForm();
+	} else {
+		cout << "Login form on console not supported" << endl;
+	}
+
+	return ERR_NONE;
+}
+/*...e*/
+/*...slbErrCodes LB_STDCALL lbApplication\58\\58\getKundenDetails\40\lb_I_Unknown\42\ uk\41\:0:*/
 lbErrCodes LB_STDCALL lbApplication::getKundenDetails(lb_I_Unknown* uk) {
 	_LOG << "lbApplication::getKundenDetails() called" LOG_
 
 	if (gui != NULL) {
-		//UAP_REQUEST(manager.getPtr(), lb_I_Database, database)
-
 		UAP(lb_I_DatabaseForm, dbForm, __FILE__, __LINE__)
 		
 		dbForm = gui->createDBForm("Elemente in World", "select objecttyp, x, y, w, h from world order by id");
@@ -133,16 +185,15 @@ lbErrCodes LB_STDCALL lbApplication::getKundenDetails(lb_I_Unknown* uk) {
 
 	return ERR_NONE;
 }
-
+/*...e*/
+/*...slbErrCodes LB_STDCALL lbApplication\58\\58\getKundenListe\40\lb_I_Unknown\42\ uk\41\:0:*/
 lbErrCodes LB_STDCALL lbApplication::getKundenListe(lb_I_Unknown* uk) {
 	_LOG << "lbApplication::getKundenListe() called" LOG_
 
 	if (gui != NULL) {
-		//UAP_REQUEST(manager.getPtr(), lb_I_Database, database)
-
 		UAP(lb_I_DatabaseForm, dbForm, __FILE__, __LINE__)
 		
-		dbForm = gui->createDBForm("Kunden", "select Firma, Name, Vorname, Strasse, Hausnummer, Ort, Plz, Vorwahl, Telefon from Kunden order by id");
+		dbForm = gui->createDBForm("Kunden", "select Firma, Name, Vorname, Strasse, Hausnummer, Ort, Plz, Vorwahl, Telefon, deleted from Kunden where deleted = 0");
 	} else {
 	        cout << "KundenDetails" << endl;
 	}
@@ -150,6 +201,19 @@ lbErrCodes LB_STDCALL lbApplication::getKundenListe(lb_I_Unknown* uk) {
 
 	return ERR_NONE;
 }
+/*...e*/
+/*...slbErrCodes LB_STDCALL lbApplication\58\\58\getCustomFormsConfig\40\lb_I_Unknown\42\ uk\41\:0:*/
+lbErrCodes LB_STDCALL lbApplication::getCustomFormsConfig(lb_I_Unknown* uk) {
+
+	if (gui != NULL) {
+		UAP(lb_I_DatabaseForm, dbForm, __FILE__, __LINE__)
+		
+		dbForm = gui->createDBForm("Formulare", "select Name, MenuName, EventName, query from DBForms");
+	}
+
+	return ERR_NONE;
+}
+/*...e*/
 /*...e*/
 
 
@@ -192,6 +256,8 @@ lbErrCodes LB_STDCALL lbApplication::Initialize() {
 	 
 	int getKundenDetails;
 	int getKundenListe;
+	int getLoginData;
+	int unused;
 
 	// Get the event manager
 
@@ -203,6 +269,9 @@ lbErrCodes LB_STDCALL lbApplication::Initialize() {
 	
 	eman->registerEvent("getKundenDetails", getKundenDetails);
 	eman->registerEvent("getKundenListe", getKundenListe);
+	eman->registerEvent("getLoginData", getLoginData);
+
+	eman->registerEvent("getDynamicDBForm", unused);
 
 	// Attach to the dispatcher
 
@@ -249,6 +318,7 @@ lbErrCodes LB_STDCALL lbApplication::Initialize() {
 	addMenuBar("Bahnhoefe");
 	
 	
+	addMenuEntry("File", "Anmelden", "getLoginData", "");
 	addMenuEntry("Kunden", "Elemente in World", "getKundenDetails", "");
 	addMenuEntry("Kunden", "Kunden", "getKundenListe", "");
 	
