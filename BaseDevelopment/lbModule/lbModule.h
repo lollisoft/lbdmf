@@ -3,11 +3,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.7 $
+ * $Revision: 1.8 $
  * $Name:  $
- * $Id: lbModule.h,v 1.7 2001/07/11 16:04:33 lothar Exp $
+ * $Id: lbModule.h,v 1.8 2001/07/18 05:49:13 lothar Exp $
  *
  * $Log: lbModule.h,v $
+ * Revision 1.8  2001/07/18 05:49:13  lothar
+ * minor changes
+ *
  * Revision 1.7  2001/07/11 16:04:33  lothar
  * First version of module management that hold's a little stresstest
  *
@@ -26,7 +29,6 @@ extern "C" {
 /*...e*/
 
 DECLARE_FUNCTOR(getlb_ModuleInstance)
-//lbErrCodes DLLEXPORT LB_STDCALL getlb_ModuleInstance(lb_I_Module*& inst);
 lbErrCodes DLLEXPORT LB_STDCALL lb_releaseInstance(lb_I_Unknown * inst);
 
 /*...s\35\ifdef __cplusplus \125\:0:*/
