@@ -25,11 +25,14 @@
 #            40235 DÅsseldorf (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.44 $
+# * $Revision: 1.45 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.44 2004/05/08 10:41:32 lollisoft Exp $
+# * $Id: STD_MAKE,v 1.45 2004/06/07 20:10:48 lollisoft Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.45  2004/06/07 20:10:48  lollisoft
+# * Added support for plugins
+# *
 # * Revision 1.44  2004/05/08 10:41:32  lollisoft
 # * Activated warnings
 # *
@@ -315,9 +318,11 @@ LNKDLLOPS = $(L_DLLOPS_WATCOM)
 CP =copy
 EXEDIR =$(DEVROOT)\Projects\bin
 DLLDIR =$(DEVROOT)\Projects\dll
-DLLLIBDIR =$(DEVROOT)\Projects\dll\lib
+PLUGINDIR =$(DEVROOT)\Projects\plugins
+
 LIBDIR =$(DEVROOT)\Projects\lib
 DLLLIBDIR =$(DEVROOT)\Projects\dll\libs
+PLUGINLIBDIR =$(DEVROOT)\Projects\plugins\libs
 
 
 endif

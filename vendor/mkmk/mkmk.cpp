@@ -11,11 +11,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.37 $
+ * $Revision: 1.38 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.37 2003/09/10 19:39:03 lollisoft Exp $
+ * $Id: mkmk.cpp,v 1.38 2004/06/07 20:09:17 lollisoft Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.38  2004/06/07 20:09:17  lollisoft
+ * Added support for plugins
+ *
  * Revision 1.37  2003/09/10 19:39:03  lollisoft
  * Watcom lnk file cration problem solved
  *
@@ -178,6 +181,8 @@
 #define LIB_TARGET 3
 #define ELF_TARGET 4
 #define SO_TARGET  5
+#define PLUGIN_TARGET 6
+#define SOPLUGIN_TARGET 7
 
 int targettype=EXE_TARGET;
 
@@ -704,6 +709,61 @@ void writeDllTarget(char* modulename) {
 #endif
 }
 /*...e*/
+/*...swritePluginTarget\40\char\42\ modulename\41\:0:*/
+void writePluginTarget(char* modulename) {
+#ifdef UNIX
+  printf("\n%s: $(OBJS)\n", modulename);
+  printf("\t\t$(CC) $(L_OPS) %s $(OBJS) $(OBJDEP)\n",modulename);
+#endif
+#ifdef __WATCOMC__
+  char* ModName = strdup(modulename);
+  char** array;
+  int count = split('.', ModName, &array);
+
+  printf("FILE = FIL\n");
+//  printf("FILE += $(foreach s, $(OBJS),$s, )\n");
+  printf("FILE += $(OBJLIST)\n");
+  printf("LNK=%s.lnk\n", ModName);
+  printf("ifeq ($(COMPILER), WATCOM)\n");
+  printf("LINKFLAGS=@$(LNK)\n");
+  printf("endif\n");
+  printf("ifeq ($(COMPILER), MICROSOFT)\n");
+  printf("LINKFLAGS=$(OBJS) $(VENDORLIBS) $(LIBS)\n");
+  printf("endif\n");
+  printf("PROGRAM=%s\n", ModName);
+  
+  printf("ifeq ($(COMPILER), WATCOM)\n");
+  printf("\n%s.dll: $(OBJS)\n", ModName);
+  printf("\t\t@echo Link %s.dll\n", ModName);
+  printf("\t\t@echo NAME $(PROGRAM).dll > $(LNK)\n");
+  printf("\t\t@echo $(FILE) >> $(LNK)\n");
+
+  printf("\t\t@echo @rem Nothing > doit.bat\n");
+  printf("\t\t@echo @if NOT \\\"$(LIBS)\\\" == \\\"\\\" echo LIBR $(LIBS) > doit.bat\n");
+
+  printf("\t\t@cmd /C \"doit >> $(LNK)\"\n");
+//  printf("\t\t@;if NOT \"$(LIBS)\" == \"\" echo LIBR $(LIBS) >> $(LNK)\n");
+  printf("\t\t@$(LINK) $(LNKDLLOPS) $(LINKFLAGS)\n");
+  printf("\t\t@wlib -q -n -b $(PROGRAM).lib +$(PROGRAM).dll\n");
+  printf("\t\t@cmd /C \"$(CP) $(PROGRAM).dll $(PLUGINDIR) > null\"\n");
+  printf("\t\t@cmd /C \"$(CP) $(PROGRAM).lib $(PLUGINLIBDIR) > null\"\n");
+  printf("endif\n");
+
+  printf("ifeq ($(COMPILER), MICROSOFT)\n");
+  printf("\n%s.dll: $(OBJS)\n", ModName);
+  printf("\t\t@echo Link %s.dll\n", ModName);
+  printf("\t\t@echo NAME $(PROGRAM).dll > $(LNK)\n");
+  printf("\t\t@echo $(FILE) $(LIBS) >> $(LNK)\n");
+// Don know, why this doesn't work now ??
+//  printf("\t\t@;if NOT \"$(LIBS)\" == \"\" echo LIBR $(LIBS) >> $(LNK)\n");
+  printf("\t\t@$(LINK) $(LNKDLLOPS) $(LINKFLAGS)\n");
+// Hack for copy not found ??  
+  printf("\t\t@cmd /C \"$(CP) $(PROGRAM).dll $(PLUGINDIR) > null\"\n");
+  printf("\t\t@cmd /C \"$(CP) $(PROGRAM).lib $(PLUGINLIBDIR) > null\"\n");
+  printf("endif\n");
+#endif
+}
+/*...e*/
 /*...swriteLibTarget\40\char\42\ modulename\44\ TDepList\42\ l\41\:0:*/
 void writeLibTarget(char* modulename, TDepList* l) {
 #ifdef UNIX
@@ -772,6 +832,24 @@ void write_so_Target(char* modulename) {
   printf("\t\tcp $(PROGRAM).so.$(MAJOR).$(MINOR).$(MICRO) /libdev/lib\n");
   printf("\t\tln -sf /libdev/lib/$(PROGRAM).so.$(MAJOR).$(MINOR).$(MICRO) /libdev/lib/$(PROGRAM).so.$(MAJOR)\n");
   printf("\t\tln -sf /libdev/lib/$(PROGRAM).so.$(MAJOR) /libdev/lib/$(PROGRAM).so\n");
+#endif
+#ifdef __WATCOMC__
+  fprintf(stderr, "Warning: Creating a so library under Windows is not possible with Watcom !!\n");
+#endif
+}
+/*...e*/
+/*...swrite_soPlugin_Target\40\char\42\ modulename\41\ create a UNIX shared library:0:*/
+void write_soPlugin_Target(char* modulename) {
+#ifdef UNIX
+  printf("PROGRAM=%s\n", modulename);
+  printf("MAJOR=0\n");
+  printf("MINOR=0\n");
+  printf("MICRO=1\n");
+  printf("\n%s: $(OBJS)\n", modulename);
+  printf("\t\t$(CC) -shared -WL,soname,$(PROGRAM).so.$(MAJOR) -o $(PROGRAM).so.$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) -lc $(VENDORLIBS)\n");
+  printf("\t\tcp $(PROGRAM).so.$(MAJOR).$(MINOR).$(MICRO) /libdev/plugins\n");
+  printf("\t\tln -sf /libdev/plugins/$(PROGRAM).so.$(MAJOR).$(MINOR).$(MICRO) /libdev/plugins/$(PROGRAM).so.$(MAJOR)\n");
+  printf("\t\tln -sf /libdev/plugins/$(PROGRAM).so.$(MAJOR) /libdev/plugins/$(PROGRAM).so\n");
 #endif
 #ifdef __WATCOMC__
   fprintf(stderr, "Warning: Creating a so library under Windows is not possible with Watcom !!\n");
@@ -925,21 +1003,20 @@ void WriteDep(FILE *f, char *Name, TIncludeParser *p)
 
   switch (targettype) {
   	case LIB_TARGET:
-//  		printf("\t\t@echo Build %s\n",Name);
 		printf("\t\t@$(CC) $(C_LIBOPS) $(MOD_INCL) %s\n\n",Name);
 		break;
   	case DLL_TARGET:
-//  		printf("\t\t@echo Build %s\n",Name);
+	case PLUGIN_TARGET:
 		printf("\t\t@$(CC) $(C_DLLOPS) $(MOD_INCL) %s\n\n",Name);
 		break;
 	case EXE_TARGET:
-//  		printf("\t\t@echo Build %s\n",Name);
 		printf("\t\t@$(CC) $(C_EXEOPS) $(MOD_INCL) %s\n\n",Name);
 		break;
 	case ELF_TARGET:
 	    	printf("\t\t@$(CC) $(C_ELFOPS) $(MOD_INCL) %s\n\n",Name);
 		break;
 	case SO_TARGET:
+	case SOPLUGIN_TARGET:
 		{
 		int pos = 0;
 		for (int i = 0; i < strlen(ObjName); i++) {
@@ -1015,6 +1092,9 @@ void WriteEnding(FILE *f, char *ModuleName, TDepList *l)
   	case DLL_TARGET:
 		writeDllTarget(ModuleName);
 		break;
+  	case PLUGIN_TARGET:
+		writePluginTarget(ModuleName);
+		break;
   	case LIB_TARGET:
 		writeLibTarget(ModuleName, l);
 		break;
@@ -1026,6 +1106,9 @@ void WriteEnding(FILE *f, char *ModuleName, TDepList *l)
 		break;
 	case SO_TARGET:
 		write_so_Target(ModuleName);
+		break;
+	case SOPLUGIN_TARGET:
+		write_soPlugin_Target(ModuleName);
 	default:
 		break;
   }
@@ -1113,6 +1196,16 @@ void main(int argc, char *argv[])
   if (strcmp(target, "DLL") == 0) {
   	targettype = DLL_TARGET;
   	target_ext = strdup(".dll");
+  }
+
+  if (strcmp(target, "PLUGIN") == 0) {
+        targettype = PLUGIN_TARGET;
+        target_ext = strdup(".dll");
+  }
+  
+  if (strcmp(target, "SOPLUGIN") == 0) {
+        targettype = SOPLUGIN_TARGET;
+        target_ext = strdup("");
   }
   
   if (strcmp(target, "EXE") == 0) {
