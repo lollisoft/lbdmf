@@ -6,7 +6,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.3 2003/04/07 21:20:50 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.4 2003/04/28 20:41:02 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -647,7 +647,7 @@ bool MyApp::OnInit(void)
   }
 //#ifdef bla
 // +-+-+-+
-//#define haveabug
+#define haveabug
 /*...sstep one:0:*/
 {
   lb_I_wxFrame* frame = NULL;
