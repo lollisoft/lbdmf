@@ -31,7 +31,8 @@ MOD_INCL=$(STD_INCL)
 OBJDEP=
 LIBS = $(DEVROOT)/projects/dll/libs/lbhook.lib
 
-COMPILER=MICROSOFT
+# use global setup
+#COMPILER=MICROSOFT
 ifeq ($(COMPILER), MICROSOFT)
 MOD_INCL = $(STD_INCL_MICROSOFT)
 MOD_INCL += $(foreach s, $(INCLS), /I "$s")
