@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.43 $
+ * $Revision: 1.44 $
  * $Name:  $
- * $Id: lbInterfaces-sub-classes.h,v 1.43 2005/01/05 13:44:39 lollisoft Exp $
+ * $Id: lbInterfaces-sub-classes.h,v 1.44 2005/02/13 19:01:50 lollisoft Exp $
  *
  * $Log: lbInterfaces-sub-classes.h,v $
+ * Revision 1.44  2005/02/13 19:01:50  lollisoft
+ * Skiplist element does not check for data NULL pointer.
+ *
  * Revision 1.43  2005/01/05 13:44:39  lollisoft
  * New dynamic application code works
  *
@@ -655,6 +658,7 @@ classname::~classname() { \
 \
 lb_I_Unknown* classname::getObject() const { \
     lb_I_Unknown* uk = NULL; \
+    if(data == NULL) _CL_LOG << "ERROR: Element has no data. Could not return from NULL pointer!!" LOG_ \
     data->queryInterface("lb_I_Unknown", (void**) &uk, __FILE__, __LINE__); \
     return uk; \
 } \
