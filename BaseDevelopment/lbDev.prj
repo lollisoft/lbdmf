@@ -62,6 +62,25 @@ These headers must define the per module (DLL) EXPORT variable
 
 /*...v\46\\46\\47\AppDevelopment\47\lbDMF\45\IDE\47\App:0:*/
 /*...e*/
+/*...sAppdevelopmentDemo:0:*/
+/*...v\46\\46\\47\AppDevelopmentDemo\47\make\46\bat:0:*/
+/*...v\46\\46\\47\AppDevelopmentDemo\47\App\47\makefile:0:*/
+
+
+/*...v\46\\46\\47\AppDevelopmentDemo\47\App\47\Application\46\cpp:0:*/
+/*...v\46\\46\\47\AppDevelopmentDemo\47\App\47\Application\46\h:0:*/
+/*...v\46\\46\\47\AppDevelopmentDemo\47\App\47\makefile\46\module:0:*/
+/*...v\46\\46\\47\AppDevelopmentDemo\47\App\47\makefile\46\bat:0:*/
+
+
+
+
+/*...v\46\\46\\47\AppDevelopment\47\lbDMF\45\IDE\47\App:0:*/
+/*...e*/
+
+
+
+
 /*...sBaseDevelopment:0:*/
 /*...vmake\46\bat:0:*/
 /*...vmakeapps\46\bat:0:*/
