@@ -217,7 +217,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::getDynamicDBForm(lb_I_Unknown* uk) {
 		"where Formular_Parameters.parametername = 'query' and "
 		"Formular_Parameters.formularid = %s";
 		
-		realloc(buffer, strlen(b)+strlen(formID->charrep())+1);
+		buffer = (char*) realloc(buffer, strlen(b)+strlen(formID->charrep())+1);
 
 		buffer[0] = 0;
 
@@ -247,7 +247,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::getDynamicDBForm(lb_I_Unknown* uk) {
 			"Anwendungen on Anwendungs_Parameter.anwendungid = Anwendungen.id where "
 			"Anwendungen.name = '%s'";
 
-		realloc(buffer, strlen(b)+strlen(applicationName)+1);
+		buffer = (char*) realloc(buffer, strlen(b)+strlen(applicationName)+1);
 
 		buffer[0] = 0;
 		
