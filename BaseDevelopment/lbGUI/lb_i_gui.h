@@ -1,11 +1,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.2 $
+ * $Revision: 1.3 $
  * $Name:  $
- * $Id: lb_i_gui.h,v 1.2 2000/04/27 01:36:05 lolli Exp $
+ * $Id: lb_i_gui.h,v 1.3 2000/04/29 10:51:21 lolli Exp $
  *
  * $Log: lb_i_gui.h,v $
+ * Revision 1.3  2000/04/29 10:51:21  lolli
+ * Minor changes
+ *
  * Revision 1.2  2000/04/27 01:36:05  lolli
  * Commit in order of data GAU
  *
@@ -179,12 +182,15 @@ protected:
 };
 /*...e*/
 
+/*...sEvent table:0:*/
 typedef int (lb_I_GUIComponent::*T_p_eventHandler)(lb_Transfer_Data& request, lb_Transfer_Data& result);
 
 
 typedef struct __eventTableEntry {
 	T_p_eventHandler eventFn(lb_Transfer_Data& request, lb_Transfer_Data& result);
 } eventTableEntry, *peventTableEntry;
+
+/*...e*/
 
 class lb_I_EventDispatcher;
 
