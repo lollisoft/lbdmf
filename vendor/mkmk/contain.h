@@ -26,6 +26,8 @@ class TDynArray {      // Dynamic array
 /*...e*/
 /*...sclass TCollection:0:*/
 class TCollection {    // Dynamic array of pointers to objects
+  private:
+    TCollection() {}
   public:
     TCollection(int iLimit, int iDelta);
     ~TCollection();

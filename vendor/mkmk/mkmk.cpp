@@ -13,7 +13,7 @@
 #include <ctype.h>
 #include <string.h>
 
-#include "defs.h"
+#include "DEFS.H"
 #include "contain.h"
 /*...e*/
 /*...sdefs:0:*/
@@ -24,7 +24,7 @@
   #define ffblk find_t
   #define ff_name name
 #else
-  #include <dir.h>
+  #include <dosdir.h>
 #endif
 /*...e*/
 #define WATCOM_MAKE
@@ -33,6 +33,11 @@
   #define PathChar '/'
 #else
   #define PathChar '\\'
+#endif
+
+#ifdef UNIX
+  #define ffblk dd_ffblk;
+
 #endif
 
 #ifdef WATCOM_MAKE
@@ -103,7 +108,8 @@ bool TDepList::Search(char *s)
   while (i<Count && !Found)
   {
     d=(TDepItem*)(*this)[i];
-    Found = strcmpi(d->Name,s)==0;
+    //Found = strcmpi(d->Name,s)==0;
+    Found = strcmp(d->Name,s)==0;
     i++;
   }
   return Found;
@@ -124,7 +130,7 @@ void TDepList::Insert(char *n, char *p)
 void TDepList::AddMask(char *Mask)
 {
   TDepItem i;
-  struct ffblk ffblk;
+  dd_ffblk _ffblk;
   bool Done;
   char Path[80],Name[80];
 
@@ -132,14 +138,16 @@ void TDepList::AddMask(char *Mask)
   FSplit(Mask,Path,Name);
   strcpy(i.Name,Name);
   strcpy(i.Path,Path);
+
   if (strchr(Mask,'*') || strchr(Mask,'?'))
   {
-    Done=findfirst(Mask,&ffblk,0);
+    Done = 0;
+    Done = dd_findfirst(Mask,&_ffblk,0);
     while (!Done)
     {
-      strcpy(i.Name,ffblk.ff_name);
+      strcpy(i.Name,_ffblk.dd_name);
       TDynArray::Insert(&i);
-      Done=findnext(&ffblk);
+      Done=dd_findnext(&_ffblk);
     }
   }
   else TDynArray::Insert(&i);
@@ -352,13 +360,14 @@ void ListFiles(FILE *f, char *Line, TDepList *l, bool IsObj=false)
     if (IsObj) ObjExt(d->Name,FName,sizeof(FName));
     else strcpy(FName,d->Name);
     strcat(s,FName);
+
     if (strlen(s)+strlen(Line)>74)
     {
       fprintf(f,"%s, %c\n",Line,MoreChar);
       sprintf(Line," %s",s);
     }
     else {
-    	if (i!=0) strcat(Line,", ");
+	if (i!=0) strcat(Line,", ");
     	strcat(Line,s);
     }
   }
@@ -368,10 +377,9 @@ void ListFiles(FILE *f, char *Line, TDepList *l, bool IsObj=false)
 /*...svoid WriteDep\40\FILE \42\f\44\ char \42\Name\44\ TIncludeParser \42\p\41\:0:*/
 void WriteDep(FILE *f, char *Name, TIncludeParser *p)
 {
-  char ObjName[80];
+  char ObjName[800];
   char Line[120];
 
-  printf("WriteDep with '%s'\n", Name);
   ObjExt(Name,ObjName,sizeof(ObjName));
   sprintf(Line,"%s: makefile %s",ObjName,Name);
   ListFiles(f,Line,&p->l);
@@ -427,16 +435,15 @@ void DoDep(FILE *f, TDepItem *d)
 
   strcpy(FileName,d->Path);
   strcat(FileName,d->Name);
-  printf("\n%s\n",FileName);
   p.Parse(FileName);
-  printf("Write a dependency: %s\n", d->Name);
   char fullName[1000] = "";
   
   strcpy(fullName, d->Path);
   strcat(fullName, d->Name);
   
   WriteDep(f,fullName,&p);
-  delete[] fullName;
+  printf("Warning: Using hardcoded char array.\n");
+//  delete[] fullName;
 }
 /*...e*/
 /*...e*/
@@ -451,13 +458,13 @@ void main(int argc, char *argv[])
   if (argc<4)
   {
     ShowHelp();
-    return;
+    return 0;
   }
   f=fopen("makefile","wt");
   if (!f)
   {
 	  fputs("ERROR: could not create makefile",stderr);
-    return;
+    return 0;
   }
   
 /*...sdetermine target type:0:*/
