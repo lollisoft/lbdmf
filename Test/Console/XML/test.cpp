@@ -103,10 +103,96 @@ void main(int argc, char *argv[]) {
 		printf("Running in tracking mode\n");
 		//set_trackObject(strdup(argv[2]));
 	}
-
+/*...stest lbHook Memory usage:0:*/
 	lb_I_Module* mm = getModuleInstance();
 	getch();
 	mm->setModuleManager(mm, __FILE__, __LINE__);
+
+	printf("Uninitialize module manager\n");
+	mm->uninitialize();
+	printf("Release it\n");
+	RELEASE(mm)	
+	printf("Unhook all modules\n");
+	unHookAll();
+
+	getch();
+/*...e*/
+#ifdef bla
+/*...stest lbHook Memory usage:0:*/
+	mm = getModuleInstance();
+	getch();
+	mm->setModuleManager(mm, __FILE__, __LINE__);
+
+	printf("Uninitialize module manager\n");
+	mm->uninitialize();
+	printf("Release it\n");
+	RELEASE(mm)	
+	printf("Unhook all modules\n");
+	unHookAll();
+
+	getch();
+/*...e*/
+/*...stest lbHook Memory usage:0:*/
+	mm = getModuleInstance();
+	getch();
+	mm->setModuleManager(mm, __FILE__, __LINE__);
+
+	printf("Uninitialize module manager\n");
+	mm->uninitialize();
+	printf("Release it\n");
+	RELEASE(mm)	
+	printf("Unhook all modules\n");
+	unHookAll();
+
+	getch();
+/*...e*/
+/*...stest lbHook Memory usage:0:*/
+	mm = getModuleInstance();
+	getch();
+	mm->setModuleManager(mm, __FILE__, __LINE__);
+
+	printf("Uninitialize module manager\n");
+	mm->uninitialize();
+	printf("Release it\n");
+	RELEASE(mm)	
+	printf("Unhook all modules\n");
+	unHookAll();
+
+	getch();
+/*...e*/
+/*...stest lbHook Memory usage:0:*/
+	mm = getModuleInstance();
+	getch();
+	mm->setModuleManager(mm, __FILE__, __LINE__);
+
+	printf("Uninitialize module manager\n");
+	mm->uninitialize();
+	printf("Release it\n");
+	RELEASE(mm)	
+	printf("Unhook all modules\n");
+	unHookAll();
+
+	getch();
+/*...e*/
+/*...stest lbHook Memory usage:0:*/
+	mm = getModuleInstance();
+	getch();
+	mm->setModuleManager(mm, __FILE__, __LINE__);
+
+	printf("Uninitialize module manager\n");
+	mm->uninitialize();
+	printf("Release it\n");
+	RELEASE(mm)	
+	printf("Unhook all modules\n");
+	unHookAll();
+
+	getch();
+/*...e*/
+#endif
+	mm = getModuleInstance();
+	getch();
+	mm->setModuleManager(mm, __FILE__, __LINE__);
+
 /*...e*/
 /*...stest container:0:*/
 {
@@ -115,12 +201,19 @@ void main(int argc, char *argv[]) {
 		printf("Requesting lb_I_Container failed\n");
 		_CL_LOG << "Error: Could not get needed instance!" LOG_
 	}
+
+	printf("Requested container\n");
+	getch();
 	
 	lb_I_Container* c = NULL;
 	printf("test container 1\n");
 	if (uk->queryInterface("lb_I_Container", (void**) &c, __FILE__, __LINE__) != ERR_NONE) {
 		_CL_LOG << "Error: Could not get needed interface!" LOG_
 	}
+	printf("Interface queried for container\n");
+	RELEASE(c)
+	printf("Released Container\n");
+	getch();
 }
 /*...e*/
 	printf("Tested container 1\n");
