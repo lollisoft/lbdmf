@@ -886,10 +886,6 @@ Using SQLSetPos
 	retcode = SQLExecDirect(hstmt, (unsigned char*) szSql, SQL_NTS);
 	_CL_VERBOSE << "Executed SQLExecDirect()" LOG_
 
-	_CL_VERBOSE << "Call prepareFKList()" LOG_
-	prepareFKList();
-	_CL_VERBOSE  << "Called" LOG_
-	
 
 	if ((retcode != SQL_SUCCESS) && (retcode != SQL_SUCCESS_WITH_INFO))
         {
@@ -919,6 +915,12 @@ Using SQLSetPos
 		
 		boundColumns = boundcols;
 		
+
+		_CL_VERBOSE << "Call prepareFKList()" LOG_
+		prepareFKList();
+		_CL_VERBOSE  << "Called" LOG_
+	
+
 	}
 
 	return ERR_NONE;
