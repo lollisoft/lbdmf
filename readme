@@ -33,7 +33,8 @@ my make environment,
 Unix tools like make (Mingw or the like)
 Batchfiles are provided to setup the env variables,
 subst a drive Q: pointing to the actual development tree
-(subst q: c:\dist),
+(subst q: c:\). Then q:\ has the following tree:
+q:\develop\projects\CPP\...
 
 
 
@@ -43,12 +44,14 @@ An actual G++ compiler and all the tools to compile,
 mkmk - a makefile creation tool to build makefiles that matches to
 my make environment,
 uncompress the file to your home directory,
-create /libdev/lib for the so modules (my choice for development :-),
+create /libdev/lib (as root) for the so modules and give rigths to you to 
+copy the so's to it (my choice for development :-),
+place the CPP directory to /home/<user>/develop/Projects
 env variables for the bootstrapping:
 	MODULELIB=lbModule.so
 	LBXMLFUNCTOR=getlbDOMConfigInstance
 	LBMODULEFUNCTOR=getlb_ModuleInstance
-	DEVROOT=/home/<user>/dist/Develop
+	DEVROOT=/home/<user>/Develop
 	LD_LIBRARY_PATH=/libdev/lib:
 	OSTYPE=linux
 
@@ -58,3 +61,20 @@ Vendor libraries, that are used in my code:
 	XML4C C++ XML library:
 	Download the matching XML4C distribution for your OS 
 	from http://www.alphaWorks.ibm.com/aw.nsf/download/xml4c
+	place the extracted tree to /home/<user>/develop/Projects/CPP/vendor/XML4C,
+	please attent, that the directory name must match to xml4c-src3_5_1
+	build it and install it as usual.
+	
+Vendor programs, that I have adopted for my need:
+
+	mkmk
+	    Build: 
+		Goto /home/<user>/develop/Projects/CPP/vendor/dosdir,
+		call make.sh
+		goto /home/<user>/develop/Projects/CPP/vendor/mkmk,
+		call make.sh
+		copy mkmk to ~/bin
+		
+		
+		
+	
