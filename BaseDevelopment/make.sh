@@ -20,3 +20,7 @@ makefile.sh
 make
 cd ../..
 
+cd ../AppDevelopment/Console/XML
+makefile.sh
+make
+cd ../../../BaseDevelopment
