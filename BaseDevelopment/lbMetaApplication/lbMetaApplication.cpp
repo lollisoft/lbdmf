@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.30 $
+ * $Revision: 1.31 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.30 2003/12/13 10:56:25 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.31 2004/01/24 16:16:57 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.31  2004/01/24 16:16:57  lollisoft
+ * Added support for loading application
+ *
  * Revision 1.30  2003/12/13 10:56:25  lollisoft
  * Database improovements and changes in my licence adress.
  * The database part is still not working by updating columns
@@ -170,7 +173,7 @@ extern "C" {
 extern "C" {       
 #endif            
 
-IMPLEMENT_FUNCTOR(instanceOfMetaApplication, lb_MetaApplication)
+IMPLEMENT_SINGLETON_FUNCTOR(instanceOfMetaApplication, lb_MetaApplication)
 IMPLEMENT_FUNCTOR(instanceOfEventMapper, lb_EventMapper)
 IMPLEMENT_FUNCTOR(instanceOfEvHandler, lb_EvHandler)
 
@@ -278,7 +281,6 @@ lbErrCodes LB_STDCALL lb_MetaApplication::Initialize() {
  * resolves the functor for this application.
  */
 /*...e*/
-	char* applicationName = getenv("TARGET_APPLICATION");
 
 /*...sdispatch integer values:8:*/
 	/*
@@ -349,15 +351,13 @@ lbErrCodes LB_STDCALL lb_MetaApplication::Initialize() {
 	 */
 /*...e*/
 	
-	printf("Add a menubar\n");
 	addMenuBar("Edit");
-	_LOG << "Added first menu bar" LOG_
+
+	loadApplication();
+
 	addMenuBar("Help");
-	_LOG << "Added second menu bar" LOG_
-	printf("Added menubars\n");
-	// Let the GUI show a message box
 	
-	
+/*...sMain module demos and their help:8:*/
 	addMenuEntry("Help", "MainModuleInfo", "getMainModuleInfo", "");
 
 	addButton("Press me for test", "Button Test pressed", 10, 30, 100, 20);
@@ -405,6 +405,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::Initialize() {
 	addButton(">>", "Button Test pressed", 220, hight+n*20+n*5, 100, 20);
 	addButton(">|", "Button Test pressed", 325, hight+n*20+n*5, 100, 20);
 	n++;
+/*...e*/
 	
 	return ERR_NONE;
 }
@@ -426,6 +427,30 @@ lbErrCodes LB_STDCALL lb_MetaApplication::run() {
 
 lbErrCodes LB_STDCALL lb_MetaApplication::loadSubModules() {
 	return ERR_NONE;
+}
+
+lbErrCodes LB_STDCALL lb_MetaApplication::loadApplication() {
+	lbErrCodes err = ERR_NONE;
+        char* applicationName = getenv("TARGET_APPLICATION");
+
+	lb_I_Unknown* a;
+	manager->makeInstance("_instanceOfApplication", applicationName, &a);
+	
+	if (a == NULL) {
+		_LOG << "ERROR: Application could not be loaded - either not found or not configured." LOG_
+		return ERR_NONE;
+	}
+	
+	QI(a, lb_I_MetaApplication, app, __FILE__, __LINE__)
+
+	if (dispatcher.getPtr() == NULL) _LOG << "Error: dispatcher is NULL" LOG_
+
+	app->setGUI(gui);
+	app->Initialize();
+	
+	if (dispatcher.getPtr() == NULL) _LOG << "Error: dispatcher has been set to NULL" LOG_
+	
+        return ERR_NONE;
 }
 
 /*...sBasic functions to be used for a UI application:0:*/
@@ -457,6 +482,87 @@ lbErrCodes LB_STDCALL lb_MetaApplication::addMenuBar(char* name) {
 
 lbErrCodes LB_STDCALL lb_MetaApplication::addMenu(char* name) {
 	return ERR_NONE;
+}
+
+lbErrCodes LB_STDCALL lb_MetaApplication::addTextField(char* name, int x, int y, int w, int h) {
+	lbErrCodes err = ERR_NONE;
+	
+	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, value)
+	UAP_REQUEST(manager.getPtr(), lb_I_Integer, i)
+
+        parameter->setData("name");
+        value->setData(name);
+        param->setUAPString(*&parameter, *&value);
+
+        parameter->setData("x");
+        i->setData(x);
+        param->setUAPInteger(*&parameter, *&i);
+
+        parameter->setData("y");
+        i->setData(y);
+        param->setUAPInteger(*&parameter, *&i);
+
+        parameter->setData("w");
+        i->setData(w);
+        param->setUAPInteger(*&parameter, *&i);
+
+        parameter->setData("h");
+        i->setData(h);
+        param->setUAPInteger(*&parameter, *&i);
+
+        UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
+        QI(param, lb_I_Unknown, uk, __FILE__, __LINE__)
+
+        UAP_REQUEST(manager.getPtr(), lb_I_String, result)
+        UAP(lb_I_Unknown, uk_result, __FILE__, __LINE__)
+        QI(result, lb_I_Unknown, uk_result, __FILE__, __LINE__)
+
+        dispatcher->dispatch("AddLabel", uk.getPtr(), &uk_result);
+
+        return err;
+}
+
+lbErrCodes LB_STDCALL lb_MetaApplication::addLabel(char* text, int x, int y, int w, int h) {
+	lbErrCodes err = ERR_NONE;
+
+	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, value)
+	UAP_REQUEST(manager.getPtr(), lb_I_Integer, i)
+
+
+	parameter->setData("text");
+	value->setData(text);
+	param->setUAPString(*&parameter, *&value);
+
+	parameter->setData("x");
+	i->setData(x);
+	param->setUAPInteger(*&parameter, *&i);
+
+	parameter->setData("y");
+	i->setData(y);
+	param->setUAPInteger(*&parameter, *&i);
+
+	parameter->setData("w");
+	i->setData(w);
+	param->setUAPInteger(*&parameter, *&i);
+
+	parameter->setData("h");
+	i->setData(h);
+	param->setUAPInteger(*&parameter, *&i);
+
+	UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
+	QI(param, lb_I_Unknown, uk, __FILE__, __LINE__)
+	
+	UAP_REQUEST(manager.getPtr(), lb_I_String, result)
+	UAP(lb_I_Unknown, uk_result, __FILE__, __LINE__)
+	QI(result, lb_I_Unknown, uk_result, __FILE__, __LINE__)
+	
+	dispatcher->dispatch("AddTextField", uk.getPtr(), &uk_result);
+
+	return err;
 }
 
 lbErrCodes LB_STDCALL lb_MetaApplication::addButton(char* buttonText, char* evHandler, int x, int y, int w, int h) {
@@ -704,7 +810,7 @@ lbErrCodes LB_STDCALL lb_EventManager::resolveEvent(char* EvName, int & evNr) {
 		QI(object, lb_I_Integer, i, __FILE__, __LINE__)
 		evNr = i->getData();
 	} else {
-		_LOG << "Error: Event name not registered" LOG_
+		_LOG << "Error: Event name not registered: " << EvName LOG_
 	}
 /*...e*/
 

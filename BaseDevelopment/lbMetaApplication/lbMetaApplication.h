@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.15 $
+ * $Revision: 1.16 $
  * $Name:  $
- * $Id: lbMetaApplication.h,v 1.15 2003/12/13 10:56:25 lollisoft Exp $
+ * $Id: lbMetaApplication.h,v 1.16 2004/01/24 16:17:29 lollisoft Exp $
  *
  * $Log: lbMetaApplication.h,v $
+ * Revision 1.16  2004/01/24 16:17:29  lollisoft
+ * Added support for loading application
+ *
  * Revision 1.15  2003/12/13 10:56:25  lollisoft
  * Database improovements and changes in my licence adress.
  * The database part is still not working by updating columns
@@ -120,6 +123,11 @@ public:
 	virtual lbErrCodes LB_STDCALL registerEventHandler(lb_I_Dispatcher* disp);	
 	
 	lbErrCodes LB_STDCALL loadSubModules();
+	
+	/**
+	 * Load the real application.
+	 */
+	lbErrCodes LB_STDCALL loadApplication();
 
 	lbErrCodes LB_STDCALL lbEvHandler1(lb_I_Unknown* uk);
 	lbErrCodes LB_STDCALL lbEvHandler2(lb_I_Unknown* uk);
@@ -148,6 +156,8 @@ public:
 	 */
 	virtual lbErrCodes LB_STDCALL addMenuEntry(char* in_menu, char* entry, char* evHandler, char* afterentry = NULL);
 	virtual lbErrCodes LB_STDCALL addButton(char* buttonText, char* evHandler, int x, int y, int w, int h);
+	virtual lbErrCodes LB_STDCALL addLabel(char* text, int x, int y, int w, int h);
+	virtual lbErrCodes LB_STDCALL addTextField(char* name, int x, int y, int w, int h);
 /*...e*/
 
 	lbErrCodes LB_STDCALL lbButtonTestHandler(lb_I_Unknown* uk);	
@@ -156,6 +166,7 @@ protected:
 	lb_I_GUI* gui;
 	DEBUG_UAP(lb_I_EventManager, eman, __FILE__, __LINE__)
 	DEBUG_UAP(lb_I_Dispatcher, dispatcher, __FILE__, __LINE__)
+	UAP(lb_I_MetaApplication, app, __FILE__, __LINE__)
 };
 /*...e*/
 /*...sclass lb_EventMapper:0:*/
