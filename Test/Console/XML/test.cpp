@@ -199,6 +199,7 @@ void main(int argc, char *argv[]) {
 
 /*...e*/
 
+#ifdef TestPlugins
 int a = 1;
 int b = 1;
 
@@ -209,7 +210,7 @@ if (a == b) {
 	printf("Tested plugin manager\n");	
 }
 	getch();
-
+#endif
 
 /*...sTest database:0:*/
 	_CL_LOG << "Test database library" LOG_
