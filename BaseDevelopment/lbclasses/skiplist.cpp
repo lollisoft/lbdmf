@@ -38,11 +38,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.17 $
+ * $Revision: 1.18 $
  * $Name:  $
- * $Id: skiplist.cpp,v 1.17 2003/12/13 10:56:25 lollisoft Exp $
+ * $Id: skiplist.cpp,v 1.18 2004/01/24 16:15:02 lollisoft Exp $
  *
  * $Log: skiplist.cpp,v $
+ * Revision 1.18  2004/01/24 16:15:02  lollisoft
+ * minor changes
+ *
  * Revision 1.17  2003/12/13 10:56:25  lollisoft
  * Database improovements and changes in my licence adress.
  * The database part is still not working by updating columns
@@ -303,7 +306,12 @@ lb_I_Unknown* LB_STDCALL SkipList::nextElement() {
 /*...sSkipList\58\\58\getElement\40\lb_I_KeyBase\42\\42\ const key\41\:0:*/
 lb_I_Unknown* LB_STDCALL SkipList::getElement(lb_I_KeyBase** const key) { 
     lb_I_Unknown* e = search(*key);
-    if (e == NULL) _LOG << "SkipList::getElement(...) returns a NULL pointer!" LOG_
+    
+    if (e == NULL) {
+    	_LOG << "SkipList::getElement(...) returns a NULL pointer!" LOG_
+	printf("SkipList::getElement(lb_I_KeyBase** const key) searches for '%s'\n", (*key)->charrep());
+    }
+    
     return e;
 } 
 /*...e*/
