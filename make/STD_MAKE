@@ -25,11 +25,14 @@
 #            40235 DÅsseldorf (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.45 $
+# * $Revision: 1.46 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.45 2004/06/07 20:10:48 lollisoft Exp $
+# * $Id: STD_MAKE,v 1.46 2004/10/09 16:23:55 lollisoft Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.46  2004/10/09 16:23:55  lollisoft
+# * Deactivated efence debugging
+# *
 # * Revision 1.45  2004/06/07 20:10:48  lollisoft
 # * Added support for plugins
 # *
@@ -343,6 +346,7 @@ C_SOOPS = $(C_OPS)
 C_ELFOPS= $(C_OPS)
 L_OPS   = -o
 LIBS    = -ldl -lstdc++
+# -lefence
 CC =cc
 LD =cc
 CP =cp
