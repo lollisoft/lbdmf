@@ -1,11 +1,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.23 $
+ * $Revision: 1.24 $
  * $Name:  $
- * $Id: lbInterfaces-sub-classes.h,v 1.23 2002/05/30 17:53:47 lothar Exp $
+ * $Id: lbInterfaces-sub-classes.h,v 1.24 2002/06/18 17:47:52 lothar Exp $
  *
  * $Log: lbInterfaces-sub-classes.h,v $
+ * Revision 1.24  2002/06/18 17:47:52  lothar
+ * More logging information
+ *
  * Revision 1.23  2002/05/30 17:53:47  lothar
  * Current development seems to run
  *
@@ -301,6 +304,11 @@ classname::classname(const lb_I_Unknown* o, const lb_I_KeyBase* _key, lb_I_Eleme
     } \
     if (o == NULL) CL_LOG("Error! Can't clone a NULL pointer"); \
     data = o->clone(__FILE__, __LINE__); \
+    char ptr[20] = ""; \
+    sprintf(ptr, "%p", (void*) data); \
+    if (strcmp(ptr, "019a30c0") == 0) { \
+    	CL_LOG("Mysterious object found") \
+    } \
     if (data->getRefCount() > 1) { \
         CL_LOG("Refcount after cloning is more than 1 !!!"); \
     } \
@@ -319,9 +327,9 @@ classname::~classname() { \
         if (data != NULL) { \
                 if (data->deleteState() != 1) { \
                         lb_I_ConfigObject* node; \
-                        data->queryInterface("lb_I_ConfigObject", (void**) &node, __FILE__, __LINE__); \
+                        data->queryInterface("lb_I_ConfigObject", (void**) &node, __FILE__ ": " #classname "::~" #classname, __LINE__); \
                         if (node != NULL) { \
-	                        sprintf(buf, "Data (at %p) (created at: %s) (refcount=%d) (classname='%s', tagname='%s') wouldn't deleted in container element!", \
+	                        sprintf(buf, "Data (lb_I_Unknown at %p) (created at: %s) (refcount=%d) (classname='%s', tagname='%s') wouldn't deleted in container element!", \
         	                (void*) data, data->getCreationLoc(), data->getRefCount(), data->getClassName(), node->getName()); \
         	                node->release(__FILE__, __LINE__); \
                         } else { \
@@ -334,7 +342,6 @@ classname::~classname() { \
                         manager->printReferences(ptr); \
                 } \
                 RELEASE(data); \
-                getch(); \
         } \
         key = NULL; \
         data = NULL; \
