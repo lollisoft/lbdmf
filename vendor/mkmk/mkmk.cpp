@@ -11,11 +11,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.36 $
+ * $Revision: 1.37 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.36 2003/09/05 15:46:22 lollisoft Exp $
+ * $Id: mkmk.cpp,v 1.37 2003/09/10 19:39:03 lollisoft Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.37  2003/09/10 19:39:03  lollisoft
+ * Watcom lnk file cration problem solved
+ *
  * Revision 1.36  2003/09/05 15:46:22  lollisoft
  * Last changes to try to make setup distribution and before moving to Düsseldorf
  *
@@ -674,8 +677,11 @@ void writeDllTarget(char* modulename) {
   printf("\t\t@echo Link %s.dll\n", ModName);
   printf("\t\t@echo NAME $(PROGRAM).dll > $(LNK)\n");
   printf("\t\t@echo $(FILE) >> $(LNK)\n");
-  printf("\t\t@echo \"@if NOT \\\"$(LIBS)\\\" == \\\"\\\" echo LIBR $(LIBS) >> $(LNK)\" > doit.bat\n");
-  printf("\t\t@cmd /C \"doit\"\n");
+
+  printf("\t\t@echo @rem Nothing > doit.bat\n");
+  printf("\t\t@echo @if NOT \\\"$(LIBS)\\\" == \\\"\\\" echo LIBR $(LIBS) > doit.bat\n");
+
+  printf("\t\t@cmd /C \"doit >> $(LNK)\"\n");
 //  printf("\t\t@;if NOT \"$(LIBS)\" == \"\" echo LIBR $(LIBS) >> $(LNK)\n");
   printf("\t\t@$(LINK) $(LNKDLLOPS) $(LINKFLAGS)\n");
   printf("\t\t@wlib -q -n -b $(PROGRAM).lib +$(PROGRAM).dll\n");
