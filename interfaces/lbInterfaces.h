@@ -1073,10 +1073,6 @@ lbErrCodes LB_STDCALL classname::queryInterface(char* name, void** unknown, char
                 *unknown = (lb_I_Unknown*) this; \
                 if (manager != NULL) { \
                 	lb_I_Unknown* that = (lb_I_Unknown*) this; \
-                	if (strcmp(_classname, "lbModule") == 0) { \
-                		_CL_LOG << "Register reference for " << _classname << \
-                		" in " << file << " at " << line LOG_ \
-                	} \
 		        manager->notify_add(that, _classname, file, line); \
 		} \
 		else { \
@@ -1255,10 +1251,6 @@ lbErrCodes LB_STDCALL classname::queryInterface(char* name, void** unknown, char
                 *unknown = (lb_I_Unknown*) this; \
                 if (manager != NULL) { \
                 	lb_I_Unknown* that = (lb_I_Unknown*) this; \
-                	if (strcmp(_classname, "lbModule") == 0) { \
-                		_CL_LOG << "Register reference for " << _classname << \
-                		" in " << file << " at " << line LOG_ \
-                	} \
 		        manager->notify_add(that, _classname, file, line); \
 		} \
 		else { \

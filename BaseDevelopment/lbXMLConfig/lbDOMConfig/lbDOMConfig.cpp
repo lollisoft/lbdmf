@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.49 $
+ * $Revision: 1.50 $
  * $Name:  $
- * $Id: lbDOMConfig.cpp,v 1.49 2005/01/23 13:43:04 lollisoft Exp $
+ * $Id: lbDOMConfig.cpp,v 1.50 2005/02/13 12:57:15 lollisoft Exp $
  *
  * $Log: lbDOMConfig.cpp,v $
+ * Revision 1.50  2005/02/13 12:57:15  lollisoft
+ * Removed unnessesary messages
+ *
  * Revision 1.49  2005/01/23 13:43:04  lollisoft
  * std:: is only under linux working
  *
@@ -1530,10 +1533,6 @@ lbErrCodes LB_STDCALL lbDOMConfig::queryInterface(char* name, void** unknown, ch
                 *unknown = (lb_I_Unknown*) this;
                 if (manager != NULL) {
                 	lb_I_Unknown* that = (lb_I_Unknown*) this;
-                	if (strcmp(_classname, "lbModule") == 0) {
-                		_CL_LOG << "Register reference for " << _classname <<
-                		" in " << file << " at " << line LOG_
-                	}
 		        manager->notify_add(that, _classname, file, line);
 		}
 		else {
