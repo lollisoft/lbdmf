@@ -370,6 +370,7 @@ public:
 				} \
 				if (_line == -1) { \
 				} \
+				printf("Release %s\n", #Unknown_Reference); \
 				RELEASE_1(_autoPtr, _file, _line); \
 				if (_file) delete [] _file; \
 			} \
@@ -742,11 +743,14 @@ lbErrCodes LB_STDCALL classname::release(char* file, int line) { \
         	if (manager != NULL) { \
         		if (manager->can_delete(this, #classname) == 1)	{ \
         			manager->notify_destroy(this, #classname, file, line); \
+        			printf("Delete %s\n", #classname); \
         			delete this; \
         			return ERR_RELEASED; \
         		} \
-        		else \
+        		else { \
+        			printf("Error: Instance %s has been deleted prior!\n", #classname); \
         			_CL_LOG << "Error: Instance has been deleted prior!" LOG_ \
+        		} \
         	} \
         	return ERR_NONE; \
         } \
@@ -754,6 +758,7 @@ lbErrCodes LB_STDCALL classname::release(char* file, int line) { \
         	_CL_LOG << "Error: Reference count of instance " << ptr << " of object type " << #classname << " is less than " << STARTREF << " (" << ref << ") !!!" LOG_ \
         	return ERR_REFERENCE_COUNTING; \
         } \
+        printf("Instance %s still used for %d references\n", #classname, ref); \
         return ERR_INSTANCE_STILL_USED; \
 } \
 \

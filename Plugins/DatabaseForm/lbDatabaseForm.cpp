@@ -91,10 +91,11 @@ END_PLUGINS()
 
 lbPluginModule::lbPluginModule() {
 	ref = STARTREF;
+	printf("lbPluginModule::lbPluginModule() called.\n");
 }
 
 lbPluginModule::~lbPluginModule() {
-
+	printf("lbPluginModule::~lbPluginModule() called.\n");
 }
 
 void LB_STDCALL lbPluginModule::initialize() {
