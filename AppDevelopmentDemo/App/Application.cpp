@@ -122,7 +122,43 @@ lbErrCodes LB_STDCALL lbApplication::getKundenDetails(lb_I_Unknown* uk) {
 	_LOG << "lbApplication::getKundenDetails() called" LOG_
 
 	if (gui != NULL) {
-	        gui->msgBox("Information", "KundenDetails.");
+	        //gui->msgBox("Information", "KundenDetails.");
+
+		/*
+		 * How would I access a database dialog or create it ?
+		 *
+		 * The database connection should be done in constructor.
+		 *
+		 * The dbForm instance pointer currently will be NULL.
+		 * This is because the GUI implementation has not yet
+		 * implemented the form code with a suitable interface.
+		 */
+
+		UAP_REQUEST(manager.getPtr(), lb_I_Database, database)
+
+		UAP(lb_I_DatabaseForm, dbForm, __FILE__, __LINE__)
+		
+		dbForm = gui->createDBForm("CustomerForm");
+		
+		if (dbForm == NULL) {
+//			gui->msgBox("ERROR", "Database form could not be opened!");
+			return ERR_NONE;
+		}
+
+		UAP(lb_I_Query, customerQuery, __FILE__, __LINE__)
+
+		database->init();
+		database->connect("trainres", "dba", "trainres");
+
+		customerQuery = database->getQuery(0);
+		customerQuery->query("select firstName, lastName, Strasse, HNr, Ort from customers");
+
+		dbForm->setDataSource(customerQuery.getPtr());
+		
+		dbForm->autocalcLayout();
+		
+		dbForm->show();
+
 	} else {
 	        cout << "KundenDetails" << endl;
 	}
