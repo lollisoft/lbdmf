@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.31 2004/10/05 22:19:54 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.32 2004/11/16 19:49:57 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.31 $
+ * $Revision: 1.32 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.31 2004/10/05 22:19:54 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.32 2004/11/16 19:49:57 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.32  2004/11/16 19:49:57  lollisoft
+ * Added much code to implement a login wizard
+ *
  * Revision 1.31  2004/10/05 22:19:54  lollisoft
  * Corrected a bug in enabling/disabling the right buttons in the RIGHT windows.
  * Attention: There is a documented bugfix.
@@ -128,6 +131,8 @@
 #include "mondrian.xpm"
 #endif
 /*...e*/
+
+#include "wx/wizard.h"
 /*...e*/
 
 // ID for the menu commands
@@ -190,6 +195,12 @@ public:
          * Displays the about form of the application.
          */
         void OnAbout(wxCommandEvent& event);
+
+	/**
+	 * Displays the logon wizard dialog.
+	 */
+	void OnRunLogonWizard(wxCommandEvent& WXUNUSED(event));
+
 
         /**
          * This dispatcher converts all events to lb_I_Dispatcher events
@@ -310,6 +321,342 @@ lbErrCodes LB_STDCALL lb_wxFrame::createEventsource(lb_I_EventConnector* object)
 /*...e*/
 #endif
 
+/*...swxAppSelectPage:0:*/
+class wxAppSelectPage :
+public lb_I_Unknown,
+public lb_I_EventHandler, 
+public wxWizardPageSimple
+{
+public:
+
+	wxAppSelectPage() {
+	
+	}
+	
+	virtual ~wxAppSelectPage() {
+	
+	}
+
+
+	DECLARE_LB_UNKNOWN()
+
+/*...swxAppSelectPage\40\wxWizard \42\parent\41\:8:*/
+	wxAppSelectPage(wxWizard *parent) : wxWizardPageSimple(parent)
+	{
+	        //m_bitmap = wxBITMAP(wiztest2);
+
+	        box = new wxComboBox(this, -1);
+	}
+
+/*...e*/
+	lbErrCodes LB_STDCALL registerEventHandler(lb_I_Dispatcher* dispatcher);
+
+/*...svoid setLoggedOnUser\40\char\42\ user\41\:8:*/
+	void setLoggedOnUser(char* user) {
+		 userid = strdup(user);
+		 
+		 
+		REQUEST(manager.getPtr(), lb_I_Database, database)
+
+		database->init();
+		database->connect("lbDMF", "dba", "trainres");
+
+		sampleQuery = database->getQuery(0);
+
+		char buffer[1000] = "";
+
+		sprintf(buffer, 
+			"select \"Anwendungen\".\"Name\" from \"Anwendungen\" inner join \"User_Anwendungen\" on "
+			"\"Anwendungen\".id = \"User_Anwendungen\".\"AnwendungenId\" "
+			"inner join \"User\" on \"User_Anwendungen\".userid = \"User\".id where "
+			"\"User\".userid = '%s'"
+				, userid);
+
+
+		printf("%s\n", buffer);
+
+		sampleQuery->query(buffer);
+
+		if (sampleQuery->first() == ERR_NONE) {
+
+			UAP_REQUEST(manager.getPtr(), lb_I_String, s1)	
+
+			s1 = sampleQuery->getAsString(1);
+
+			printf("Have application '%s'\n", s1->charrep());
+
+			box->Append(wxString(s1->charrep()));
+
+		}
+
+		return;
+	}
+/*...e*/
+
+/*...svirtual bool TransferDataFromWindow\40\\41\:8:*/
+	virtual bool TransferDataFromWindow()
+	{
+		printf("wxAppSelectPage::TransferDataFromWindow() called\n");
+
+		// Select all applications of the user to be allowed...
+	
+		printf ("Have user %s\n", userid);
+	
+	        return TRUE;
+	}
+/*...e*/
+
+private:
+	wxCheckBox *m_checkbox;
+	char* userid;
+	wxComboBox* box;
+
+	UAP(lb_I_Database, database, __FILE__, __LINE__)
+	UAP(lb_I_Query, sampleQuery, __FILE__, __LINE__)
+	
+	
+	// l gets overwritten, while assigning a lb_I_Query* pointer to sampleQuery !!
+	// l and buf are therefore as a bugfix.
+	long l;
+	char buf[100];
+};
+
+
+BEGIN_IMPLEMENT_LB_UNKNOWN(wxAppSelectPage)
+END_IMPLEMENT_LB_UNKNOWN()
+
+lbErrCodes LB_STDCALL wxAppSelectPage::setData(lb_I_Unknown* uk) {
+        _LOG << "wxAppSelectPage::setData(...) not implemented yet" LOG_
+        return ERR_NOT_IMPLEMENTED;
+}
+
+/*...slbErrCodes LB_STDCALL wxAppSelectPage\58\\58\registerEventHandler\40\lb_I_Dispatcher\42\ dispatcher\41\:0:*/
+lbErrCodes LB_STDCALL wxAppSelectPage::registerEventHandler(lb_I_Dispatcher* dispatcher) {
+
+	return ERR_NONE;
+}
+/*...e*/
+/*...e*/
+/*...swxLogonPage:0:*/
+class wxLogonPage :
+public lb_I_Unknown,
+public lb_I_EventHandler,
+public wxWizardPageSimple
+{
+public:
+
+
+DECLARE_LB_UNKNOWN()
+
+	wxLogonPage() {
+	
+	}
+	
+	virtual ~wxLogonPage() {
+	
+	}
+
+	wxLogonPage(wxWizard *parent) : wxWizardPageSimple(parent)
+	{
+	        //m_bitmap = wxBITMAP(wiztest2);
+
+	        //m_checkbox = new wxCheckBox(this, -1, _T("&Check me"));
+	}
+
+	char const * LB_STDCALL getTextValue(char* _name);
+
+	void setAppSelectPage(wxAppSelectPage* p) {
+		appselect = p;
+	}
+
+	// wizard event handlers
+	void OnWizardCancel(wxWizardEvent& event)
+	{
+	        if ( wxMessageBox(_T("Do you really want to cancel?"), _T("Question"),
+	                          wxICON_QUESTION | wxYES_NO, this) != wxYES )
+	        {
+	            // not confirmed
+	            event.Veto();
+	        }
+	}
+
+	lbErrCodes LB_STDCALL registerEventHandler(lb_I_Dispatcher* dispatcher);
+
+/*...slbErrCodes LB_STDCALL createTextCtrl\40\char\42\ _name\41\:8:*/
+	lbErrCodes LB_STDCALL createTextCtrl(char* _name) {
+		char* name = NULL;
+
+		name = strdup(_name);
+
+		wxTextCtrl *text = new wxTextCtrl(this, -1, "", wxPoint());
+
+		text->SetName(name);
+
+		sizerRight->Add(text, 1, wxEXPAND | wxALL, 5);
+
+		char* tLabel = new char[strlen(name) + 1];
+
+		tLabel[0] = 0;
+
+		tLabel = strcat(tLabel, name);
+
+		wxStaticText *label = new wxStaticText(this, -1, tLabel, wxPoint());
+		sizerLeft->Add(label, 1, wxEXPAND | wxALL, 5);
+	
+		free(name);
+
+		return ERR_NONE;
+	}
+/*...e*/
+/*...svirtual bool TransferDataFromWindow\40\\41\:8:*/
+	virtual bool TransferDataFromWindow()
+	{
+		printf("wxLogonPage::OnWizardPageChanging() called\n");
+		REQUEST(manager.getPtr(), lb_I_Database, database)
+
+		database->init();
+		database->connect("lbDMF", "dba", "trainres");
+
+		sampleQuery = database->getQuery(0);
+
+		char buffer[100] = "";
+
+		char* pass = strdup(getTextValue("Passwort:"));
+		char* user = strdup(getTextValue("Benutzer:"));
+	
+
+		sprintf(buffer, "select userid, passwort from \"User\" where userid = '%s' and passwort = '%s'",
+                	user, pass);
+
+
+		printf("%s\n", buffer);
+
+		sampleQuery->query(buffer);
+
+		if (sampleQuery->first() == ERR_NONE) {
+		        printf("User authenticated correctly (%s)\n", user);
+
+			appselect->setLoggedOnUser(user);
+
+			if (pass) free(pass);
+			if (user) free(user);
+
+			return TRUE;
+		} else {
+		        printf("User authentication failed\n");
+
+			if (pass) free(pass);
+			if (user) free(user);
+
+			return FALSE;
+		}
+	}
+/*...e*/
+/*...svoid init\40\wxWindow\42\ parent\41\:8:*/
+	void init(wxWindow* parent)
+	{
+		char prefix[100] = "";
+		sprintf(prefix, "%p", this);
+
+		SetTitle("Login");
+
+		sizerMain  = new wxBoxSizer(wxVERTICAL);
+		sizerHor   = new wxBoxSizer(wxHORIZONTAL);
+		sizerAddRem = new wxBoxSizer(wxHORIZONTAL);
+		sizerLeft  = new wxBoxSizer(wxVERTICAL);	
+		sizerRight = new wxBoxSizer(wxVERTICAL);
+
+		int LoginOk;
+		int LoginCancel;
+	
+		UAP_REQUEST(manager.getPtr(), lb_I_EventManager, eman)
+		UAP_REQUEST(manager.getPtr(), lb_I_Dispatcher, dispatcher)
+
+		char eventName[100] = "";
+		
+		dispatcher->setEventManager(eman.getPtr());
+
+		registerEventHandler(dispatcher.getPtr());
+
+		sizerHor->Add(sizerLeft, 1, wxEXPAND | wxALL, 5);
+		sizerHor->Add(sizerRight, 1, wxEXPAND | wxALL, 5);
+	
+		createTextCtrl("Benutzer:");
+		createTextCtrl("Passwort:");
+
+		//#define CONNECTOR ((wxFrame*) frame)
+		#define CONNECTOR this
+	
+		SetAutoLayout(TRUE);
+		
+		sizerMain->Add(sizerHor, 0, wxEXPAND | wxALL, 5);
+		sizerMain->Add(sizerAddRem, 0, wxEXPAND | wxALL, 5);
+		
+		SetSizer(sizerMain);
+	
+		sizerMain->SetSizeHints(this);
+		sizerMain->Fit(this);
+		
+		//Centre();
+	}
+/*...e*/
+
+    
+	UAP(lb_I_Database, database, __FILE__, __LINE__)
+	UAP(lb_I_Query, sampleQuery, __FILE__, __LINE__)
+
+
+	// l gets overwritten, while assigning a lb_I_Query* pointer to sampleQuery !!
+	// l and buf are therefore as a bugfix.
+	long l;
+	char buf[100];
+
+	wxWindow* OkButton;
+	wxWindow* CancelButton;
+
+	wxBoxSizer* sizerMain;
+	wxBoxSizer* sizerHor;
+	wxBoxSizer* sizerAddRem;
+	wxBoxSizer* sizerLeft;
+	wxBoxSizer* sizerRight;
+
+	wxAppSelectPage* appselect;
+};
+
+
+BEGIN_IMPLEMENT_LB_UNKNOWN(wxLogonPage)
+END_IMPLEMENT_LB_UNKNOWN()
+
+lbErrCodes LB_STDCALL wxLogonPage::setData(lb_I_Unknown* uk) {
+        _LOG << "wxLogonPage::setData(...) not implemented yet" LOG_
+        return ERR_NOT_IMPLEMENTED;
+}
+
+
+/*...slbErrCodes LB_STDCALL wxLogonPage\58\\58\registerEventHandler\40\lb_I_Dispatcher\42\ dispatcher\41\:0:*/
+lbErrCodes LB_STDCALL wxLogonPage::registerEventHandler(lb_I_Dispatcher* dispatcher) {
+
+	return ERR_NONE;
+}
+/*...e*/
+
+/*...schar const \42\ LB_STDCALL wxLogonPage\58\\58\getTextValue\40\char\42\ _name\41\:0:*/
+char const * LB_STDCALL wxLogonPage::getTextValue(char* _name) {
+	
+	wxWindow* w = FindWindowByName(wxString(_name));
+
+	if (w != NULL) {
+        	wxTextCtrl* tx = (wxTextCtrl*) w;
+
+	        wxString v = tx->GetValue();
+
+		return v.c_str();
+	}
+
+	return "";
+}
+/*...e*/
+/*...e*/
 
 /*...sdoc:0:*/
 /*
@@ -825,6 +1172,282 @@ printf("Delete a record\n");
 }
 /*...e*/
 /*...e*/
+
+/*...sclass lbLoginDialog:0:*/
+/**
+ * This is the sample login dialog for a wxWidgets based GUI.
+ */
+class lbLoginDialog :
+	public lb_I_Unknown,
+	public lb_I_EventHandler,
+	public wxDialog {
+public:
+	/**
+	 * Default constructor - implemented in BEGIN_IMPLEMENT_LB_UNKNOWN(lbDatabaseDialog)
+	 */
+	lbLoginDialog();
+	
+	/**
+	 * This function creates the dialog on the fly.
+	 *
+	 * It builds the layout, navigation elements.
+	 */
+	void init(wxWindow* parent);
+	
+	/**
+	 * Destructor
+	 */
+	virtual ~lbLoginDialog();
+
+	/**
+	 * Create a simple text control with its label.
+	 *
+	 * To be moved to a base class or the like.
+	 */
+	lbErrCodes LB_STDCALL createTextCtrl(char* _name);
+
+	/**
+	 * Returns the value of a text control.
+	 */
+	char const * LB_STDCALL getTextValue(char* _name);
+
+	/**
+	 * Handles the OK event of the users input for login.
+	 */
+	lbErrCodes LB_STDCALL lbLoginOk(lb_I_Unknown* uk);
+	
+	/**
+	 * Cancels the user input.
+	 */
+	lbErrCodes LB_STDCALL lbLoginCancel(lb_I_Unknown* uk);
+
+
+
+	/**
+	 * This function acts in a special way for registering the above navigation handlers
+	 *
+	 * It uses a string of the this pointer + a name for the respective eventhandler.
+	 * This is neccessary for handling more than one database dialog per application.
+	 *
+	 * This is a good sample, if you need to be able to handle more than one instance of
+	 * your registered event handlers.
+	 */
+	lbErrCodes LB_STDCALL registerEventHandler(lb_I_Dispatcher* dispatcher);
+
+	DECLARE_LB_UNKNOWN()
+
+	UAP(lb_I_Database, database, __FILE__, __LINE__)
+	UAP(lb_I_Query, sampleQuery, __FILE__, __LINE__)	
+	
+
+	// l gets overwritten, while assigning a lb_I_Query* pointer to sampleQuery !!
+	// l and buf are therefore as a bugfix.
+	long l;
+	char buf[100];
+	
+	wxWindow* OkButton;
+	wxWindow* CancelButton;
+	
+	wxBoxSizer* sizerMain;
+	wxBoxSizer* sizerHor;
+	wxBoxSizer* sizerAddRem;
+	wxBoxSizer* sizerLeft;
+	wxBoxSizer* sizerRight;
+};
+/*...e*/
+/*...sclass lbLoginDialog implementation:0:*/
+BEGIN_IMPLEMENT_LB_UNKNOWN(lbLoginDialog)
+END_IMPLEMENT_LB_UNKNOWN()
+
+lbErrCodes LB_STDCALL lbLoginDialog::setData(lb_I_Unknown* uk) {
+        _LOG << "lbLoginDialog::setData(...) not implemented yet" LOG_
+        return ERR_NOT_IMPLEMENTED;
+}
+
+
+lbLoginDialog::lbLoginDialog()
+	: wxDialog(NULL, -1, wxString(_T("Database dialog")), wxDefaultPosition, wxDefaultSize, wxRESIZE_BORDER|wxDEFAULT_DIALOG_STYLE)
+{
+	l = 0L;
+	strcpy(buf, "Test buffer\n");
+
+}
+
+/*...schar const \42\ LB_STDCALL lbLoginDialog\58\\58\getTextValue\40\char\42\ _name\41\:0:*/
+char const * LB_STDCALL lbLoginDialog::getTextValue(char* _name) {
+	
+	wxWindow* w = FindWindowByName(wxString(_name));
+
+	if (w != NULL) {
+        	wxTextCtrl* tx = (wxTextCtrl*) w;
+
+	        wxString v = tx->GetValue();
+
+		return v.c_str();
+	}
+
+	return "";
+}
+/*...e*/
+/*...slbErrCodes LB_STDCALL lbLoginDialog\58\\58\createTextCtrl\40\char\42\ _name\41\:0:*/
+lbErrCodes LB_STDCALL lbLoginDialog::createTextCtrl(char* _name) {
+
+		char* name = NULL;
+		
+		name = strdup(_name);
+		
+		wxTextCtrl *text = new wxTextCtrl(this, -1, "", wxPoint());
+		
+		text->SetName(name);
+		
+		sizerRight->Add(text, 1, wxEXPAND | wxALL, 5);
+		
+		char* tLabel = new char[strlen(name) + 1];
+		
+		tLabel[0] = 0;
+		
+		tLabel = strcat(tLabel, name); 
+		
+		wxStaticText *label = new wxStaticText(this, -1, tLabel, wxPoint());
+		sizerLeft->Add(label, 1, wxEXPAND | wxALL, 5);
+		
+		free(name);
+		
+		return ERR_NONE;
+}
+/*...e*/
+
+/*...slbErrCodes LB_STDCALL lbLoginDialog\58\\58\registerEventHandler\40\lb_I_Dispatcher\42\ dispatcher\41\:0:*/
+lbErrCodes LB_STDCALL lbLoginDialog::registerEventHandler(lb_I_Dispatcher* dispatcher) {
+
+	char eventName[100] = "";
+	
+	sprintf(eventName, "%pLoginOk", this);
+	dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbLoginDialog::lbLoginOk,  eventName);
+	
+	sprintf(eventName, "%pLoginCancel", this);
+	dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbLoginDialog::lbLoginCancel,  eventName);
+	
+	return ERR_NONE;
+}
+/*...e*/
+/*...svoid lbLoginDialog\58\\58\init\40\wxWindow\42\ parent\41\:0:*/
+void lbLoginDialog::init(wxWindow* parent) {
+	char prefix[100] = "";
+	sprintf(prefix, "%p", this);
+
+	SetTitle("Login");
+
+	sizerMain  = new wxBoxSizer(wxVERTICAL);
+	sizerHor   = new wxBoxSizer(wxHORIZONTAL);
+	sizerAddRem = new wxBoxSizer(wxHORIZONTAL);
+	sizerLeft  = new wxBoxSizer(wxVERTICAL);	
+	sizerRight = new wxBoxSizer(wxVERTICAL);
+
+	int LoginOk;
+	int LoginCancel;
+	
+	UAP_REQUEST(manager.getPtr(), lb_I_EventManager, eman)
+	UAP_REQUEST(manager.getPtr(), lb_I_Dispatcher, dispatcher)
+
+	char eventName[100] = "";
+		
+	sprintf(eventName, "%pLoginOk", this);
+	eman->registerEvent(eventName,  LoginOk);
+
+	sprintf(eventName, "%pLoginCancel", this);
+	eman->registerEvent(eventName,  LoginCancel);
+
+	dispatcher->setEventManager(eman.getPtr());
+
+	registerEventHandler(dispatcher.getPtr());
+
+	sizerHor->Add(sizerLeft, 1, wxEXPAND | wxALL, 5);
+	sizerHor->Add(sizerRight, 1, wxEXPAND | wxALL, 5);
+
+	wxButton *buttonOk = new wxButton(this, LoginOk, "Ok", wxPoint(), wxSize(100,20));
+	wxButton *buttonCancel = new wxButton(this, LoginCancel, "Cancel", wxPoint(), wxSize(100,20));
+
+	createTextCtrl("Benutzer:");
+	createTextCtrl("Passwort:");
+
+	sizerAddRem->Add(buttonOk, 1, wxALL, 5);
+	sizerAddRem->Add(buttonCancel, 1, wxALL, 5);
+
+//#define CONNECTOR ((wxFrame*) frame)
+#define CONNECTOR this
+
+	CONNECTOR->Connect( LoginOk,  -1, wxEVT_COMMAND_BUTTON_CLICKED,
+	  (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) &lb_wxFrame::OnDispatch);
+	CONNECTOR->Connect( LoginCancel,  -1, wxEVT_COMMAND_BUTTON_CLICKED,
+	  (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) &lb_wxFrame::OnDispatch);
+
+	SetAutoLayout(TRUE);
+	
+	sizerMain->Add(sizerHor, 0, wxEXPAND | wxALL, 5);
+	sizerMain->Add(sizerAddRem, 0, wxEXPAND | wxALL, 5);
+	
+	SetSizer(sizerMain);
+
+	sizerMain->SetSizeHints(this);
+	sizerMain->Fit(this);
+	
+	Centre();
+
+}
+/*...e*/
+
+
+lbLoginDialog::~lbLoginDialog() {
+	printf("lbLoginDialog::~lbLoginDialog() called.\n");
+}
+
+/*...slbErrCodes LB_STDCALL lbLoginDialog\58\\58\lbLoginOk\40\lb_I_Unknown\42\ uk\41\:0:*/
+lbErrCodes LB_STDCALL lbLoginDialog::lbLoginOk(lb_I_Unknown* uk) {
+	REQUEST(manager.getPtr(), lb_I_Database, database)
+
+	database->init();
+	database->connect("lbDMF", "dba", "trainres");
+
+	sampleQuery = database->getQuery(0);
+
+	char buffer[100] = "";
+	
+	char* pass = strdup(getTextValue("Passwort:"));
+	char* user = strdup(getTextValue("Benutzer:"));
+	
+	
+	sprintf(buffer, "select userid, passwort from \"User\" where userid = '%s' and passwort = '%s'", 
+			user, pass);
+			
+	if (pass) free(pass);
+	if (user) free(user);
+
+	printf("%s\n", buffer);
+
+	sampleQuery->query(buffer);
+
+	if (sampleQuery->first() == ERR_NONE) {
+		printf("User authenticated correctly\n");
+	} else {
+		printf("User authentication failed\n");
+	}
+
+
+	return ERR_NONE;
+}
+/*...e*/
+/*...slbErrCodes LB_STDCALL lbLoginDialog\58\\58\lbLoginCancel\40\lb_I_Unknown\42\ uk\41\:0:*/
+lbErrCodes LB_STDCALL lbLoginDialog::lbLoginCancel(lb_I_Unknown* uk) {
+
+	return ERR_NONE;
+}
+/*...e*/
+
+/*...e*/
+
+
+
 /*...sclass lb_wxGUI:0:*/
 #ifdef LB_I_EXTENTIONS
 
@@ -871,6 +1494,8 @@ public:
         virtual lb_I_Unknown* LB_STDCALL createMenuEntry();
 
 	virtual lb_I_DatabaseForm* LB_STDCALL createDBForm(char* formName, char* queryString);
+
+	virtual lb_I_Form* LB_STDCALL createLoginForm();
 /*...e*/
 
 /*...sGUI element getter functions:8:*/
@@ -953,7 +1578,7 @@ public:
 	
 	/**
 	 * Add a menu entry in the named menu after given entry,
-	 * if provided. The handler must be registered.
+	 * if provided. The handler must be registered prior.
 	 * 
 	 * Input:
 	 *	char* in_menu:		Which menu to add to (File/Edit/Help/...)
@@ -962,8 +1587,24 @@ public:
 	 *	char* afterentry:	Insert the entry after an exsisting entry
 	 */
 	virtual lbErrCodes LB_STDCALL addMenuEntry(char* in_menu, char* entry, char* evHandler, char* afterentry = NULL) { return ERR_NONE; };
+
+	/**
+	 * Add a button at a given position.
+	 *
+	 * Input:
+	 *	char* buttonText	The text for that button
+	 *	char* evHandler		The name of a registered event handler, that handle this
+	 *	int x 			X coordinade
+	 *	int y			Y coordinade
+	 *	int w			W coordinade
+	 *	int h			H coordinade
+	 */
 	virtual lbErrCodes LB_STDCALL addButton(char* buttonText, char* evHandler, int x, int y, int w, int h) { return ERR_NONE; };
+
+
 	virtual lbErrCodes LB_STDCALL addLabel(char* text, int x, int y, int w, int h) { return ERR_NONE; };
+
+
 	virtual lbErrCodes LB_STDCALL addTextField(char* name, int x, int y, int w, int h) { return ERR_NONE; };
 /*...e*/
         
@@ -1108,6 +1749,7 @@ lbErrCodes LB_STDCALL lb_wxGUI::registerEventHandler(lb_I_Dispatcher* disp) {
         return ERR_NONE;
 }
 /*...e*/
+/*...slbErrCodes LB_STDCALL lb_wxGUI\58\\58\cleanup\40\\41\:0:*/
 lbErrCodes LB_STDCALL lb_wxGUI::cleanup() {
 	
 	// destroy all still created forms that are hidden.
@@ -1126,7 +1768,97 @@ lbErrCodes LB_STDCALL lb_wxGUI::cleanup() {
 
         return ERR_NONE;
 }
+/*...e*/
+/*...slb_I_Form\42\ LB_STDCALL lb_wxGUI\58\\58\createLoginForm\40\\41\:0:*/
+lb_I_Form* LB_STDCALL lb_wxGUI::createLoginForm() {
+	wxWizard *wizard = new wxWizard(NULL, -1, _T("Anmeldung"));
 
+	wxWizardPageSimple *page1 = new wxWizardPageSimple(wizard);
+
+	wxStaticText *text = new wxStaticText(page1, -1, _T("Melden Sie sich nun an.\n"));
+
+	wxSize size = text->GetBestSize();
+
+	wxLogonPage *page2 = new wxLogonPage(wizard);
+	
+	page2->setModuleManager(getModuleManager(), __FILE__, __LINE__);
+
+	page2->init(frame);
+
+	wxAppSelectPage *page3 = new wxAppSelectPage(wizard);
+	page3->setModuleManager(getModuleManager(), __FILE__, __LINE__);
+
+	page2->setAppSelectPage(page3);
+
+
+	page1->SetNext(page2);
+	page2->SetPrev(page1);
+	page2->SetNext(page3);
+	page3->SetPrev(page2);
+	
+
+	wizard->SetPageSize(size);
+
+	if ( wizard->RunWizard(page1) )
+	{
+	    wxMessageBox(_T("The wizard successfully completed"), _T("That's all"),
+            wxICON_INFORMATION | wxOK);
+        }
+	wizard->Destroy();
+
+
+#ifdef bla
+
+	lbErrCodes err = ERR_NONE;
+
+	// Locate the form instance in the container
+	
+	lbLoginDialog* _dialog = NULL;
+	
+	if (forms == NULL) {
+		REQUEST(getModuleManager(), lb_I_Container, forms)
+	}	
+
+	UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
+	UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
+	
+	UAP_REQUEST(getModuleManager(), lb_I_String, fName)
+	fName->setData("LoginForm");
+	
+	QI(fName, lb_I_KeyBase, key, __FILE__, __LINE__)
+	
+	uk = forms->getElement(&key);	
+	
+	if (uk != NULL) {
+		_dialog = (lbLoginDialog*) *&uk;
+	}
+
+	if (_dialog) {
+		_dialog->Show();
+	} else {
+		_dialog = new lbLoginDialog();
+		_dialog->setModuleManager(getModuleManager(), __FILE__, __LINE__);
+		
+		QI(_dialog, lb_I_Unknown, uk, __FILE__, __LINE__)
+		
+		forms->insert(&uk, &key);
+		
+		delete _dialog;
+		_dialog = NULL;
+		
+		uk = forms->getElement(&key);
+		
+		if (uk != NULL) {
+		        _dialog = (lbLoginDialog*) *&uk;
+		}
+		
+		_dialog->init(frame);
+		_dialog->Show();
+	}
+#endif
+	return NULL;
+}
+/*...e*/
 /*...slb_I_DatabaseForm\42\ LB_STDCALL lb_wxGUI\58\\58\createDBForm\40\char\42\ formName\44\ char\42\ queryString\41\:0:*/
 lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::createDBForm(char* formName, char* queryString) {
 	lbErrCodes err = ERR_NONE;
@@ -2147,7 +2879,32 @@ lb_wxFrame::~lb_wxFrame() {
         }
 }
 
+void lb_wxFrame::OnRunLogonWizard(wxCommandEvent& WXUNUSED(event)) {
+    wxWizard *wizard = new wxWizard(this, -1, _T("Anmeldung"));
 
+    wxWizardPageSimple *page1 = new wxWizardPageSimple(wizard);
+
+    wxStaticText *text = new wxStaticText(page1, -1, _T("Melden Sie sich nun an.\n"));
+
+    wxSize size = text->GetBestSize();
+
+    wxLogonPage *page2 = new wxLogonPage(wizard);
+    wxAppSelectPage *page3 = new wxAppSelectPage(wizard);
+    
+    wxWizardPageSimple::Chain(page2, page3);
+    
+    wizard->SetPageSize(size);
+
+    if ( wizard->RunWizard(page1) )
+    {
+        wxMessageBox(_T("The wizard successfully completed"), _T("That's all"),
+                     wxICON_INFORMATION | wxOK);
+    }
+
+    wizard->Destroy();
+                                             
+
+}
 /*...slb_wxFrame\58\\58\OnQuit\40\wxCommandEvent\38\ WXUNUSED\40\event\41\ \41\:0:*/
 void lb_wxFrame::OnQuit(wxCommandEvent& WXUNUSED(event) )
 {
