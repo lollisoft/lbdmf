@@ -76,41 +76,6 @@
 
 /*...sLogging macros:0:*/
 
-#ifdef bla
-#ifndef  LOG_DEFINED
-/*...sCL_LOG:0:*/
-#define CL_LOG(msg) \
-{ \
-	char *datei = strrchr(__FILE__, '\\'); \
-	if (datei == NULL) { \
-		datei = __FILE__; \
-	} \
-	else { \
-		datei++; \
-	} \
-	COUT << "File: " << datei << ", Line: " << __LINE__ << ", Msg: " << msg << ENDL; \
-}
-/*...e*/
-#endif
-#ifdef  LOG_DEFINED
-/*...sCL_LOG:0:*/
-#define CL_LOG(msg) \
-{ \
-	char *datei = strrchr(__FILE__, '\\'); \
-	if (datei == NULL) { \
-		datei = __FILE__; \
-	} \
-	else { \
-		datei++; \
-	} \
-	COUT << "File: " << datei << ", Line: " << __LINE__ << ", Msg: " << msg << ENDL; \
-	if (log != NULL) log->log(msg, __LINE__, __FILE__); \
-}
-/*...e*/
-#endif
-#endif
-
-
 /*...sLOG_INSTANCE:0:*/
 #define LOG_INSTANCE \
 			if (getLoggerInstance() == NULL) { \
@@ -155,17 +120,13 @@
 #ifndef __MISC
 #define _CL_LOG \
 { \
-	OFSTREAM of; \
-	of.open("C:\\log\\wsmaster.log", IOS::app); \
-        of \
+        COUT \
         
 #endif
 #ifdef __MISC
 #define _CL_LOG \
 { \
-	OFSTREAM of; \
-	of.open("C:\\log\\wsmaster.log", IOS::app); \
-        of \
+        COUT \
         
 #endif
 
