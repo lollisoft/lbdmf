@@ -1318,8 +1318,11 @@ protected:
 
 class lb_I_EvHandler : public lb_I_Unknown {
 public:
-	virtual lbErrCodes LB_STDCALL setHandler(lbEvHandler evHandler) = 0;
+	virtual lbErrCodes LB_STDCALL setHandler(lb_I_EventHandler* evHandlerInstance, lbEvHandler evHandler) = 0;
 	virtual lbEvHandler LB_STDCALL getHandler() = 0;
+	virtual lb_I_EventHandler* LB_STDCALL getHandlerInstance() = 0;
+		
+	virtual lbErrCodes LB_STDCALL call(lb_I_Unknown* evData, lb_I_Unknown** evResult) = 0; 
 };
 
 /*...sclass lb_I_DispatchRequest:0:*/
@@ -1346,13 +1349,13 @@ public:
 	 * Register an event handler function under it's name. If the name is not registered, the
 	 * function will fail. The dispatcher is not responsible for registering event names or id's.
 	 */
-	virtual lbErrCodes LB_STDCALL addEventHandlerFn(lbEvHandler evHandler, char* EvName) = 0;
+	virtual lbErrCodes LB_STDCALL addEventHandlerFn(lb_I_EventHandler* evHandlerInstance, lbEvHandler evHandler, char* EvName) = 0;
 	
 	/**
 	 * Register an event handler function under it's id. If the id is not registered, the
 	 * function will fail. The dispatcher is not responsible for registering event names or id's.
 	 */
-	virtual lbErrCodes LB_STDCALL addEventHandlerFn(lbEvHandler evHandler, int EvNr) = 0;
+	virtual lbErrCodes LB_STDCALL addEventHandlerFn(lb_I_EventHandler* evHandlerInstance, lbEvHandler evHandler, int EvNr) = 0;
 /*...e*/
 	
 /*...scascade management:8:*/

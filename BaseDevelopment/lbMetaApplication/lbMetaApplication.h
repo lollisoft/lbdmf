@@ -1,11 +1,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.6 $
+ * $Revision: 1.7 $
  * $Name:  $
- * $Id: lbMetaApplication.h,v 1.6 2002/09/04 17:52:12 lothar Exp $
+ * $Id: lbMetaApplication.h,v 1.7 2002/09/07 09:57:10 lothar Exp $
  *
  * $Log: lbMetaApplication.h,v $
+ * Revision 1.7  2002/09/07 09:57:10  lothar
+ * First working callback function
+ *
  * Revision 1.6  2002/09/04 17:52:12  lothar
  * Problems with stack cleanup
  *
@@ -115,8 +118,8 @@ public:
 	virtual lbErrCodes LB_STDCALL setEventManager(lb_I_EventManager* EvManager);
 	virtual lbErrCodes LB_STDCALL addDispatcher(lb_I_Dispatcher* disp);
 	virtual lbErrCodes LB_STDCALL delDispatcher(lb_I_Dispatcher* disp);
-	virtual lbErrCodes LB_STDCALL addEventHandlerFn(lbEvHandler evHandler, char* EvName);
-	virtual lbErrCodes LB_STDCALL addEventHandlerFn(lbEvHandler evHandler, int EvNr);
+	virtual lbErrCodes LB_STDCALL addEventHandlerFn(lb_I_EventHandler* evHandlerInstance, lbEvHandler evHandler, char* EvName);
+	virtual lbErrCodes LB_STDCALL addEventHandlerFn(lb_I_EventHandler* evHandlerInstance, lbEvHandler evHandler, int EvNr);
 	
 	/**
 	 * ID variant
@@ -156,10 +159,15 @@ protected:
 
 
 	friend class lb_I_Dispatcher;
-	
+
+	// Maps id to event name	
 	UAP(lb_I_Container, events, __FILE__, __LINE__)
 	
+	// Holds free id
 	UAP(lb_I_Container, freeIds, __FILE__, __LINE__)
+	
+	// Reverse mapping name -> id
+	UAP(lb_I_Container, reverse_events, __FILE__, __LINE__)
 	
 	int maxEvId;
 };
@@ -172,9 +180,13 @@ public:
 
 	DECLARE_LB_UNKNOWN()
         
-	virtual lbErrCodes LB_STDCALL setHandler(lbEvHandler evHandler);
+	virtual lbErrCodes LB_STDCALL setHandler(lb_I_EventHandler* evHandlerInstance, lbEvHandler evHandler);
         virtual lbEvHandler LB_STDCALL getHandler();
+        virtual lb_I_EventHandler* LB_STDCALL getHandlerInstance();
+
+	virtual lbErrCodes LB_STDCALL call(lb_I_Unknown* evData, lb_I_Unknown** evResult);
         
+        lb_I_EventHandler* _evHandlerInstance;
         lbEvHandler ev;
 };
 

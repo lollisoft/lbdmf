@@ -1,11 +1,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.12 $
+ * $Revision: 1.13 $
  * $Name:  $
- * $Id: lbErrcodes.h,v 1.12 2002/08/21 18:51:48 lothar Exp $
+ * $Id: lbErrcodes.h,v 1.13 2002/09/07 09:57:10 lothar Exp $
  *
  * $Log: lbErrcodes.h,v $
+ * Revision 1.13  2002/09/07 09:57:10  lothar
+ * First working callback function
+ *
  * Revision 1.12  2002/08/21 18:51:48  lothar
  * New err code for event manager
  *
@@ -78,6 +81,7 @@ enum lbErrCodes {
 /* Errcodes for event manager */
 
 	ERR_EVENT_EXISTS,
+	ERR_EVENT_NOTREGISTERED,
 	
 /* Errcodes for dispatcher */
 
