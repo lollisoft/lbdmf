@@ -22,7 +22,7 @@ rem Some dll and bin search Paths
 set DLLROOT=%RUNROOT%\dll
 set BINROOT=%RUNROOT%\bin;%RUNROOT%\CPP\bin
 
-set Path=C:\;%WATBIN%;%DEVBIN%;%DLLROOT%;%BINROOT%
+set Path=C:\cygwin\bin;C:\;%WATBIN%;%DEVBIN%;%DLLROOT%;%BINROOT%
 
 set MSC=%MSVCDir%\Bin;%MSVCDir%\Lib
 

@@ -11,11 +11,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.32 $
+ * $Revision: 1.33 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.32 2003/03/15 01:01:57 lollisoft Exp $
+ * $Id: mkmk.cpp,v 1.33 2003/04/28 20:42:15 lollisoft Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.33  2003/04/28 20:42:15  lollisoft
+ * Moved back to watcom
+ *
  * Revision 1.32  2003/03/15 01:01:57  lollisoft
  * Removed the problem with _chkesp() failure. But still crash in my GUI app
  *
@@ -661,7 +664,9 @@ void writeDllTarget(char* modulename) {
   printf("\t\t@echo Link %s.dll\n", ModName);
   printf("\t\t@echo NAME $(PROGRAM).dll > $(LNK)\n");
   printf("\t\t@echo $(FILE) $(LIBS) >> $(LNK)\n");
-  printf("\t\t@;if NOT \"$(LIBS)\" == \"\" echo LIBR $(LIBS) >> $(LNK)\n");
+  printf("\t\t@echo \"@if NOT \\\"$(LIBS)\\\" == \\\"\\\" echo LIBR $(LIBS) >> $(LNK)\" > doit.bat\n");
+  printf("\t\t@cmd /C \"doit\"\n");
+//  printf("\t\t@;if NOT \"$(LIBS)\" == \"\" echo LIBR $(LIBS) >> $(LNK)\n");
   printf("\t\t@$(LINK) $(LNKDLLOPS) $(LINKFLAGS)\n");
   printf("\t\t@wlib -q -n -b $(PROGRAM).lib +$(PROGRAM).dll\n");
   printf("\t\t@@cmd /C \"$(CP) $(PROGRAM).dll $(DLLDIR) > null\"\n");

@@ -25,11 +25,14 @@
 #            22453 Hamburg (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.34 $
+# * $Revision: 1.35 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.34 2003/03/15 01:01:57 lollisoft Exp $
+# * $Id: STD_MAKE,v 1.35 2003/04/28 20:39:58 lollisoft Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.35  2003/04/28 20:39:58  lollisoft
+# * Moved back to watcom
+# *
 # * Revision 1.34  2003/03/15 01:01:57  lollisoft
 # * Removed the problem with _chkesp() failure. But still crash in my GUI app
 # *
@@ -143,13 +146,16 @@ ifeq ($(OSTYPE), Windows_NT)
 DEVROOT=Q:/develop
 
 # Set standard compiler
-#COMPILER=WATCOM
-COMPILER=MICROSOFT
+COMPILER=WATCOM
+#COMPILER=MICROSOFT
 MODE=_DEBUG
 #MODE=
 
 STD_INCL_WATCOM =-i=. -i=Q:\\develop\\Tools\\WATCOM\\h -i=Q:\\develop\\Tools\\WATCOM\\h\\nt -i=Q:\\develop\\projects\\cpp\\interfaces -i=Q:\\develop\\projects\\cpp\\include -i=Q:\\develop\\projects\\dll\\include -i=Q:\\develop\\projects\\lib\\include
-STD_INCL_MICROSOFT = /I "." /I "F:\develop\NT\MSC\VC98\Include" /I "Q:\Develop\xml\xml4csrc3_3_1\src" /I "Q:\Develop\Projects\CPP\include" /I "Q:\Develop\Projects\CPP\interfaces" /I "Q:\Develop\Projects\CPP\basedevelopment\lbclasses"
+#ANAKIN
+#STD_INCL_MICROSOFT = /I "." /I "F:\develop\NT\MSC\VC98\Include" /I "Q:\Develop\xml\xml4csrc3_3_1\src" /I "Q:\Develop\Projects\CPP\include" /I "Q:\Develop\Projects\CPP\interfaces" /I "Q:\Develop\Projects\CPP\basedevelopment\lbclasses"
+#LOTHARBNOTEBOOK
+STD_INCL_MICROSOFT = /I "." /I "Q:\develop\Tools\msc\VC98\Include" /I "Q:\Develop\xml\xml4csrc3_3_1\src" /I "Q:\Develop\Projects\CPP\include" /I "Q:\Develop\Projects\CPP\interfaces" /I "Q:\Develop\Projects\CPP\basedevelopment\lbclasses"
 
 STD_INCL = $(STD_INCL_WATCOM)
 
@@ -159,11 +165,11 @@ WATCOM_OPTIMIZE=-otexan
 WATCOM_RELAX_ALIAS=-oa
 WATCOM_ERRCOUNT=-e25
 WATCOM_QUIET=-zq
-WATCOM_CALLING_CONV=-5r -zz
+WATCOM_CALLING_CONV=-5r #-zz
 WATCOM_DLLTARGET=-bd
 WATCOM_LIBTARGET=
 WATCOM_THREAD_MODEL=-bm
-WATCOM_STDDEBUG=-d1 -hd
+WATCOM_STDDEBUG=-d2 -hd
 WATCOM_STACK= #-of
 
 WATCOM_STD_C_OPS= \

@@ -60,44 +60,43 @@
 //#define LB_STDCALL
 
 #ifndef _MSC_VER
-#ifndef LB_STDCALL
- #ifdef WINDOWS
- #define LB_STDCALL __stdcall
+ #ifndef LB_STDCALL
+  #ifdef WINDOWS
+   #define LB_STDCALL __cdecl
+  #endif
+  #ifndef WINDOWS
+   #define LB_STDCALL
+  #endif
  #endif
- #ifndef WINDOWS
- #define LB_STDCALL
- #endif
-#endif
 
-#ifndef LB_FUNCTORCALL
- #ifdef WINDOWS
- #define LB_FUNCTORCALL __stdcall
+ #ifndef LB_FUNCTORCALL
+  #ifdef WINDOWS
+   #define LB_FUNCTORCALL __cdecl
+  #endif
+  #ifndef WINDOWS
+   #define LB_FUNCTORCALL
+  #endif
  #endif
- #ifndef WINDOWS
- #define LB_FUNCTORCALL
- #endif
-#endif
 #endif
 
 #ifdef _MSC_VER
-#ifndef LB_STDCALL
- #ifdef WINDOWS
- #define LB_STDCALL 
- //__stdcall
+ #ifndef LB_STDCALL
+  #ifdef WINDOWS
+   #define LB_STDCALL __cdecl
+  #endif
+  #ifndef WINDOWS
+   #define LB_STDCALL
+  #endif
  #endif
- #ifndef WINDOWS
- #define LB_STDCALL
- #endif
-#endif
 
-#ifndef LB_FUNCTORCALL
- #ifdef WINDOWS
- #define LB_FUNCTORCALL __stdcall
+ #ifndef LB_FUNCTORCALL
+  #ifdef WINDOWS
+   #define LB_FUNCTORCALL __cdecl
+  #endif
+  #ifndef WINDOWS
+   #define LB_FUNCTORCALL
+  #endif
  #endif
- #ifndef WINDOWS
- #define LB_FUNCTORCALL
- #endif
-#endif
 #endif
 
 #ifdef __WATCOMC__
@@ -603,7 +602,7 @@ public: \
 
 /*...e*/
 
-#ifndef _MSC_VER
+//#ifndef _MSC_VER
 /*...sBEGIN_IMPLEMENT_LB_UNKNOWN:0:*/
 
 
@@ -779,7 +778,8 @@ lbErrCodes LB_STDCALL classname::queryInterface(char* name, void** unknown, char
         }
 
 /*...e*/
-#endif
+//#endif
+#ifdef bla
 #ifdef _MSC_VER
 /*...sBEGIN_IMPLEMENT_LB_UNKNOWN:0:*/
 
@@ -981,6 +981,7 @@ lbErrCodes LB_STDCALL classname::queryInterface(char* name, void** unknown, char
 
 /*...e*/
 #endif
+#endif
 
 #define ADD_INTERFACE(interfaceName) \
 	buf[0] = 0; \
@@ -1018,7 +1019,7 @@ lbErrCodes LB_STDCALL classname::queryInterface(char* name, void** unknown, char
  */
 
 extern "C" { 
-typedef lbErrCodes (*T_pLB_GET_UNKNOWN_INSTANCE) (lb_I_Unknown**, lb_I_Module* m, char* file, int line);
+typedef lbErrCodes (LB_FUNCTORCALL *T_pLB_GET_UNKNOWN_INSTANCE) (lb_I_Unknown**, lb_I_Module* m, char* file, int line);
 }
 
 /**
@@ -1030,11 +1031,11 @@ typedef lbErrCodes (*T_pLB_GET_UNKNOWN_INSTANCE) (lb_I_Unknown**, lb_I_Module* m
 
 #define DECLARE_FUNCTOR(name) \
 extern "C" { \
-lbErrCodes DLLEXPORT name(lb_I_Unknown** uk, lb_I_Module* m, char* file, int line); \
+lbErrCodes DLLEXPORT LB_FUNCTORCALL name(lb_I_Unknown** uk, lb_I_Module* m, char* file, int line); \
 }
 #define IMPLEMENT_FUNCTOR(name, clsname) \
 extern "C" { \
-lbErrCodes DLLEXPORT name(lb_I_Unknown** uk, lb_I_Module* m, char* file, int line) { \
+lbErrCodes DLLEXPORT LB_FUNCTORCALL name(lb_I_Unknown** uk, lb_I_Module* m, char* file, int line) { \
 \
 	lbErrCodes err = ERR_NONE; \
         clsname* instance = new clsname(); \
@@ -1067,12 +1068,12 @@ lbErrCodes DLLEXPORT name(lb_I_Unknown** uk, lb_I_Module* m, char* file, int lin
 #define DECLARE_SINGLETON_FUNCTOR(name) \
 extern "C" { \
 extern lb_I_Unknown* name##_singleton; \
-lbErrCodes DLLEXPORT name(lb_I_Unknown** uk, lb_I_Module* m, char* file, int line); \
+lbErrCodes DLLEXPORT LB_FUNCTORCALL name(lb_I_Unknown** uk, lb_I_Module* m, char* file, int line); \
 } 
 #define IMPLEMENT_SINGLETON_FUNCTOR(name, clsname) \
 extern "C" { \
 lb_I_Unknown* name##_singleton = NULL; \
-lbErrCodes DLLEXPORT name(lb_I_Unknown** uk, lb_I_Module* m, char* file, int line) { \
+lbErrCodes DLLEXPORT LB_FUNCTORCALL name(lb_I_Unknown** uk, lb_I_Module* m, char* file, int line) { \
 \
 	lbErrCodes err = ERR_NONE; \
 	if (name##_singleton == NULL) { \
