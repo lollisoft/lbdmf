@@ -10,9 +10,7 @@
   <Modules>
     <Module>
 <!--...sModuleName:8:-->
-      <ModuleName>
-         Name="lbclasses"
-      </ModuleName>
+      <ModuleName Name="lbclasses"/>
 <!--...e-->
 <!--...sFunctions:8:-->
       <Functions>
@@ -33,8 +31,7 @@
     </Module>
     <Module>
 <!--...sModuleName:8:-->
-      <ModuleName>
-         Name="library2"
+      <ModuleName Name="library2">
       </ModuleName>
 <!--...e-->
 <!--...sFunctions:8:-->
