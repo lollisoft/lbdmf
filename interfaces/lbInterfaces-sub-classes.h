@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.45 $
+ * $Revision: 1.46 $
  * $Name:  $
- * $Id: lbInterfaces-sub-classes.h,v 1.45 2005/03/14 18:59:04 lollisoft Exp $
+ * $Id: lbInterfaces-sub-classes.h,v 1.46 2005/03/19 16:50:00 lollisoft Exp $
  *
  * $Log: lbInterfaces-sub-classes.h,v $
+ * Revision 1.46  2005/03/19 16:50:00  lollisoft
+ * Changed i18n interface.
+ *
  * Revision 1.45  2005/03/14 18:59:04  lollisoft
  * Various changes and additions to make plugins also work with database forms
  *
@@ -344,7 +347,7 @@ public:
 	 * The given text would be handled as the default text and therefore the
 	 * key for searching.
 	 */
-	virtual void LB_STDCALL translate(char const * text) = 0;
+	virtual void LB_STDCALL translate(char ** text, char const * to_translate) = 0;
 };
 
 // Keyable interfaces
