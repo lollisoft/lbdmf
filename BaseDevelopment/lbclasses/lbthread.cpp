@@ -335,7 +335,7 @@ _CL_LOG << "lbLock::~lbLock(...) leave critical section" LOG_
 #endif
 /*...e*/
 	cso->leave();
-	delete[] name;
+	free(name);
 /*...sTHREAD_VERBOSE:0:*/
 #ifdef THREAD_VERBOSE
 //cout << "lbLock::~lbLock(...) leaved" << endl;

@@ -47,7 +47,7 @@ LOGENABLE("lbAppBus::lbAppBus()");
 /*...e*/
 /*...slbAppBus\58\\58\\126\lbAppBus\40\\41\:0:*/
 lbAppBus::~lbAppBus() {
-//	if (!bus_master_adr) delete[] bus_master_adr;
+//	if (!bus_master_adr) delete[] bus_master_adr; // ATTENTION !!
 }
 /*...e*/
 

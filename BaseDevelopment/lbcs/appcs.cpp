@@ -147,7 +147,7 @@ lbConnection::lbConnection(char* host, int _pid, int _tid) {
 }
 
 lbConnection::~lbConnection() {
-	delete[] hostname;
+	free(hostname);
 }
 
 void lbConnection::setType() {
