@@ -28,11 +28,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.34 $
+ * $Revision: 1.35 $
  * $Name:  $
- * $Id: lbInterfaces-sub-classes.h,v 1.34 2003/12/13 10:56:26 lollisoft Exp $
+ * $Id: lbInterfaces-sub-classes.h,v 1.35 2004/01/24 16:48:20 lollisoft Exp $
  *
  * $Log: lbInterfaces-sub-classes.h,v $
+ * Revision 1.35  2004/01/24 16:48:20  lollisoft
+ * Added access to makeInstance (lbMetaApplication)
+ *
  * Revision 1.34  2003/12/13 10:56:26  lollisoft
  * Database improovements and changes in my licence adress.
  * The database part is still not working by updating columns
@@ -403,7 +406,7 @@ classname::classname(const lb_I_Unknown* o, const lb_I_KeyBase* _key, lb_I_Eleme
     if (_next != NULL) { \
         _next->queryInterface("lb_I_Element", (void**) &next, __FILE__, __LINE__); \
     } \
-    if (o == NULL) _CL_LOG << "Error! Can't clone a NULL pointer" LOG_ \
+    if (o == NULL) _CL_LOG << "Error! Can't clone a NULL pointer" << __FILE__ ":" << __LINE__ LOG_ \
     data = o->clone(__FILE__, __LINE__); \
     char ptr[20] = ""; \
     sprintf(ptr, "%p", (void*) data); \
@@ -934,6 +937,8 @@ public:
         
         //virtual lbErrCodes getObjectInstance(char* name, lb_I_Requestable*& inst) = 0; 
         virtual lbErrCodes LB_STDCALL getObjectInstance(const char* name, lb_I_Container*& inst) = 0;
+        
+        virtual lbErrCodes LB_STDCALL makeInstance(char* functor, char* module, lb_I_Unknown** instance) = 0;
 };
 /*...e*/
 /*...sclass lb_I_Instance:0:*/
