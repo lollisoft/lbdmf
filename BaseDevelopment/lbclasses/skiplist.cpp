@@ -2,11 +2,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.6 $
+ * $Revision: 1.7 $
  * $Name:  $
- * $Id: skiplist.cpp,v 1.6 2002/09/07 09:57:13 lolli Exp $
+ * $Id: skiplist.cpp,v 1.7 2002/09/12 18:36:12 lolli Exp $
  *
  * $Log: skiplist.cpp,v $
+ * Revision 1.7  2002/09/12 18:36:12  lolli
+ * Removed some log messages
+ *
  * Revision 1.6  2002/09/07 09:57:13  lolli
  * First working callback function
  *
@@ -131,15 +134,8 @@ int LB_STDCALL SkipList::exists(lb_I_KeyBase** const key) {
 lbErrCodes LB_STDCALL SkipList::insert(lb_I_Unknown** const e, lb_I_KeyBase** const key) { 
         lbErrCodes err = ERR_NONE; 
 
-	char msg[100] = "";
-	sprintf(msg, "Insert data with key %s into skiplist", (*key)->charrep());
-	LOG(msg)
-        
         lbSkipListElement* el = new lbSkipListElement(*e, *key);
         el->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
-
-	sprintf(msg, "Have created a skiplist element with key %s", el->getKey()->charrep());
-	LOG(msg)
 
         insert(el);
         if (search(*key) == NULL) LOG("Error: SkipList::insert(...) failed")
@@ -300,24 +296,14 @@ lb_I_Unknown* SkipList::search(lb_I_KeyBase* searchKey) { // Skiplist Search
   
   for (int i=level; i>=0; i--) {
     while ((x->forward[i] != NULL) && (*(x->forward[i]->value->getKey()) < searchKey)) {
-      char msg[100] = "";
-      sprintf(msg, "Search on key '%s'", x->forward[i]->value->getKey()->charrep());
-      LOG(msg)
       x = x->forward[i];
     }
   }
   x = x->forward[0];  // Move to actual record, if it exists
 
-  if (x != NULL) {
-    char msg[100] = "";
-    sprintf(msg, "Search on key '%s'", x->value->getKey()->charrep());
-    LOG(msg)
-  }
   if ((x != NULL) && (*(x->value->getKey()) == searchKey)) {
-  	LOG("SkipList::search(lb_I_KeyBase* searchKey) returns x->value->getObject();")
   	return x->value->getObject();
   } else {
-  	LOG("SkipList::search(lb_I_KeyBase* searchKey) returns NULL")
   	return NULL;
   }
 }
