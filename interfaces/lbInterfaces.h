@@ -16,16 +16,72 @@
 #ifndef __LB_INTERFACES__
 #define __LB_INTERFACES__
 
+#include <lbErrCodes.h>
+
+//#define LB_STDCALL
+
+#ifndef LB_STDCALL
+#define LB_STDCALL __stdcall
+#endif
+
+#ifndef __BASE_TYPES_DEFINED__
+#define __BASE_TYPES_DEFINED__
+/*...sbase types:0:*/
+#ifndef __WATCOMC__
+typedef unsigned short byte;
+typedef unsigned short u_short;
+#endif
+typedef byte LB_DATA;
+/*...e*/
+#endif // __BASE_TYPES_DEFINED__
+
 class lb_I_CallbackTarget;
 class lb_I_ProtocolTarget;
+
+#include <lbInterfaces-sub-transfer.h>
+
 
 /**
  * This is a base class for all callback able objects
  */
 ///////////////////////////////////////////////////////////////
 // Type for lb protocol callback functions. This should be an interface.
-typedef lbErrCodes (lb_I_ProtocolTarget::*lbProtocolCallback)( lb_Transfer_Data, lb_Transfer_Data&);
-typedef lbErrCodes (lb_I_CallbackTarget::*lbMemberCallback)( const char* handlername, lb_Transfer_Data&);
+typedef lbErrCodes (lb_I_ProtocolTarget::*lbProtocolCallback)( lb_I_Transfer_Data const &, lb_I_Transfer_Data&);
+typedef lbErrCodes (lb_I_CallbackTarget::*lbMemberCallback)( const char* handlername, lb_I_Transfer_Data&);
+
+/**
+ * The base interface, that currently implements only release.
+ * A query interface should be added. But is M$'s solution usable ?
+ */
+ 
+class lb_I_gcManager;
+ 
+/*...sclass lb_I_Unknown:0:*/
+#define STARTREF 0
+
+class lb_I_Unknown {
+public:
+	lb_I_Unknown() {}
+	virtual ~lb_I_Unknown() {}
+
+	virtual lbErrCodes LB_STDCALL release() = 0;
+	
+	virtual lbErrCodes LB_STDCALL queryInterface(char* name, void** unknown) = 0;
+
+//friend class lb_I_gcManager;	
+};
+/*...e*/
+/*...sclass lb_I_gcManager:0:*/
+class lb_I_gcManager {
+protected:
+	lb_I_gcManager() {}
+	virtual ~lb_I_gcManager() {}
+	
+public:
+	virtual lbErrCodes toTrash(lb_I_Unknown * inst) = 0;
+};
+/*...e*/
+
 
 /*...sclass lb_I_ErrorDescription:0:*/
 class lb_I_ErrorDescription {// Every interface may produce errors
@@ -43,16 +99,16 @@ public:
  */
 /*...e*/
 /*...sclass lb_I_Requestable:0:*/
-class lb_I_Requestable : public lb_I_ErrorDescription {
+class lb_I_Requestable {
 public:
 	virtual lbErrCodes initialize() = 0;
-	virtual lbErrCodes request(const char* request, lb_Transfer_Data& result) = 0;
-	virtual lbErrCodes release() = 0;
+	virtual lbErrCodes request(const char* request, lb_I_Unknown*& result) = 0;
+	virtual lbErrCodes uninitialize() = 0;
 };
 /*...e*/
 
 /*...sclass lb_I_CallbackManager:0:*/
-class lb_I_CallbackManager : public lb_I_ErrorDescription {
+class lb_I_CallbackManager {
 public:
 /*...sdocu:0:*/
 	
@@ -67,9 +123,9 @@ public:
 };
 /*...e*/
 /*...sclass lb_I_CallbackDispatcher dispatches over names:0:*/
-class lb_I_CallbackDispatcher : public lb_I_ErrorDescription {
+class lb_I_CallbackDispatcher {
 public:
-	virtual lbErrCodes dispatch(const char* request, lb_Transfer_Data& result) = 0;
+	virtual lbErrCodes dispatch(const char* request, lb_I_Transfer_Data& result) = 0;
 };
 /*...e*/
 /*...sclass lb_I_CallbackTarget:0:*/
@@ -95,7 +151,7 @@ public:
 
 /*...e*/
 /*...sclass lb_I_ProtocolManager:0:*/
-class lb_I_ProtocolManager : public lb_I_ErrorDescription {
+class lb_I_ProtocolManager {
 public:
 /*...sdocu:0:*/
 	
@@ -110,9 +166,9 @@ public:
 };
 /*...e*/
 /*...sclass lb_I_ProtocolDispatcher dispatches over protocol haeder:0:*/
-class lb_I_ProtocolDispatcher : public lb_I_ErrorDescription {
+class lb_I_ProtocolDispatcher {
 public:
-	virtual lbErrCodes dispatch(lb_Transfer_Data request, lb_Transfer_Data& result) = 0;
+	virtual lbErrCodes dispatch(const lb_I_Transfer_Data& request, lb_I_Transfer_Data& result) = 0;
 };
 /*...e*/
 /*...sdocu:0:*/
@@ -134,6 +190,8 @@ public:
 	virtual lbErrCodes registerProtocols() = 0; 
 };
 /*...e*/
-	
+
+#include <lbInterfaces-sub-xml.h>
+#include <lbInterfaces-sub-classes.h>	
 
 #endif // __LB_INTERFACES__
