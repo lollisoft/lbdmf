@@ -19,7 +19,7 @@ CREATE TABLE Anwendungen
   Functor VARCHAR(100),
   Interface VARCHAR(100),
   PRIMARY KEY (id)
-) TYPE = INNODB;
+);
 
 -- +---------------------------------------------------------
 -- | TABLE: Anwendungs_Parameter
@@ -32,7 +32,7 @@ CREATE TABLE Anwendungs_Parameter
   ParameterValue VARCHAR(255),
   AnwendungID INTEGER,
   PRIMARY KEY (id)
-) TYPE = INNODB;
+);
 
 
 
@@ -50,10 +50,10 @@ CREATE TABLE Formulare
   Typ INTEGER NOT NULL,
   PRIMARY KEY (id),
   FOREIGN KEY FK_AnwendungID (AnwendungID) REFERENCES Anwendungen (id)
-) TYPE = INNODB;
+);
 
 
-ALTER TABLE `formulare` ADD FOREIGN KEY `FK_Typ` (`Typ`)
+ALTER TABLE `Formulare` ADD FOREIGN KEY `FK_Typ` (`Typ`)
     REFERENCES `Formulartypen` (`id`);
 
 -- +---------------------------------------------------------
@@ -66,9 +66,9 @@ CREATE TABLE Formular_Parameters
   ParameterValue VARCHAR(255),
   FormularID INTEGER,
   PRIMARY KEY (id)
-) TYPE = INNODB;
+);
 
-ALTER TABLE `lbdmf`.`Formular_Parameters` ADD FOREIGN KEY `FK_FormularID` (`FormularID`)
+ALTER TABLE `Formular_Parameters` ADD FOREIGN KEY `FK_FormularID` (`FormularID`)
     REFERENCES `Formulare` (`id`);
 
 -- +---------------------------------------------------------
@@ -83,7 +83,7 @@ CREATE TABLE ForeignKey_VisibleData_Mapping
   PKName	VARCHAR(100),
   PKTable	VARCHAR(100),
   PRIMARY KEY (id)
-) TYPE = INNODB;
+);
 
 -- +---------------------------------------------------------
 -- | TABLE: Anwendungen_Formulare
@@ -94,12 +94,12 @@ CREATE TABLE Anwendungen_Formulare
   AnwendungID INTEGER NOT NULL,
   FormularID INTEGER NOT NULL,
   PRIMARY KEY (id)
-) TYPE = INNODB;
+);
 
-ALTER TABLE `lbdmf`.`Anwendungen_Formulare` ADD FOREIGN KEY `FK_AnwendungID` (`AnwendungID`)
+ALTER TABLE `Anwendungen_Formulare` ADD FOREIGN KEY `FK_AnwendungID` (`AnwendungID`)
     REFERENCES `Anwendungen` (`id`);
 
-ALTER TABLE `lbdmf`.`Anwendungen_Formulare` ADD FOREIGN KEY `FK_FormularID` (`FormularID`)
+ALTER TABLE `Anwendungen_Formulare` ADD FOREIGN KEY `FK_FormularID` (`FormularID`)
     REFERENCES `Formulare` (`id`);
 
 -- +---------------------------------------------------------
@@ -111,12 +111,12 @@ CREATE TABLE Anwendungsberechtigungen
   idUser INTEGER,
   idFormular INTEGER,
   PRIMARY KEY (id)
-) TYPE = INNODB;
+);
 
-ALTER TABLE `lbdmf`.`Anwendungsberechtigungen` ADD FOREIGN KEY `FK_idUser` (`idUser`)
+ALTER TABLE `Anwendungsberechtigungen` ADD FOREIGN KEY `FK_idUser` (`idUser`)
     REFERENCES `Users` (`id`);
 
-ALTER TABLE `lbdmf`.`Anwendungsberechtigungen` ADD FOREIGN KEY `FK_idFormular` (`idFormular`)
+ALTER TABLE `Anwendungsberechtigungen` ADD FOREIGN KEY `FK_idFormular` (`idFormular`)
     REFERENCES `Formulare` (`id`);
 
 -- +---------------------------------------------------------
@@ -130,7 +130,7 @@ CREATE TABLE Formulartypen
   HandlerInterface VARCHAR(100),
   Beschreibung VARCHAR(254),
   PRIMARY KEY (id)
-) TYPE = INNODB;
+);
 
 -- +---------------------------------------------------------
 -- | TABLE: User
@@ -143,7 +143,7 @@ CREATE TABLE Users
   userid VARCHAR(30),
   passwort VARCHAR(30),
   PRIMARY KEY (id)
-) TYPE = INNODB;
+);
 
 -- +---------------------------------------------------------
 -- | TABLE: User_Anwendungen
@@ -154,12 +154,12 @@ CREATE TABLE User_Anwendungen
   userid INTEGER NOT NULL,
   AnwendungenId INTEGER NOT NULL,
   PRIMARY KEY (id)
-) TYPE = INNODB;
+);
 
-ALTER TABLE `lbdmf`.`User_Anwendungen` ADD FOREIGN KEY `FK_userid` (`userid`)
+ALTER TABLE `User_Anwendungen` ADD FOREIGN KEY `FK_userid` (`userid`)
     REFERENCES `Users` (`id`);
 
-ALTER TABLE `lbdmf`.`User_Anwendungen` ADD FOREIGN KEY `FK_AnwendungenId` (`AnwendungenId`)
+ALTER TABLE `User_Anwendungen` ADD FOREIGN KEY `FK_AnwendungenId` (`AnwendungenId`)
     REFERENCES `Anwendungen` (`id`);
 
 -- +---------------------------------------------------------
