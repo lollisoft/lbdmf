@@ -4,10 +4,13 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.7 $
+ * $Revision: 1.8 $
  * $Name:  $
- * $Id: lbcontainer.h,v 1.7 2001/06/21 06:32:55 lolli Exp $
+ * $Id: lbcontainer.h,v 1.8 2001/06/23 07:18:54 lolli Exp $
  * $Log: lbcontainer.h,v $
+ * Revision 1.8  2001/06/23 07:18:54  lolli
+ * Interface repository now works with the basic test
+ *
  * Revision 1.7  2001/06/21 06:32:55  lolli
  * Using IMPLEMENT_FUNCTOR(instanceOfContainer, lbContainer)
  *
@@ -101,8 +104,19 @@ public:
 };
 /*...e*/
 
+
 extern lbCritSect critsect;
 
+/*...sifdef __cplusplus:0:*/
+#ifdef __cplusplus
+extern "C" {
+#endif
+/*...e*/
 DECLARE_FUNCTOR(instanceOfContainer)
+/*...sendif __cplusplus:0:*/
+#ifdef __cplusplus
+}
+#endif
+/*...e*/
 
 #endif //LB_CONTAINER
