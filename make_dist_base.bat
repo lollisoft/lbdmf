@@ -1,6 +1,9 @@
 
 xcopy /E /I /Y %1 %DEVROOT%\%1
 cd %DEVROOT%\%1
+del /Y /S CVS
+del /S *.bsc
+del /S *.sbr
 del /S *.exe
 del /S *.obj
 del /S *.bak
