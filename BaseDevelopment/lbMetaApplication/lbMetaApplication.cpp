@@ -28,11 +28,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.21 $
+ * $Revision: 1.22 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.21 2003/01/19 17:31:31 lothar Exp $
+ * $Id: lbMetaApplication.cpp,v 1.22 2003/01/27 21:18:04 lothar Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.22  2003/01/27 21:18:04  lothar
+ * Missed STARTREF setup
+ *
  * Revision 1.21  2003/01/19 17:31:31  lothar
  * Runs now with MSC
  *
@@ -414,6 +417,7 @@ END_IMPLEMENT_LB_UNKNOWN()
 lb_EventManager::lb_EventManager() {
 	_LOG << "lb_EventManager::lb_EventManager() called" LOG_
 	maxEvId = 0;
+	ref = STARTREF;
 }
 
 lb_EventManager::~lb_EventManager() {
