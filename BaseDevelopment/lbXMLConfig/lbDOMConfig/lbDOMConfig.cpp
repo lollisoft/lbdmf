@@ -1,11 +1,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.1 $
+ * $Revision: 1.2 $
  * $Name:  $
- * $Id: lbDOMConfig.cpp,v 1.1 2000/10/20 04:28:07 lothar Exp $
+ * $Id: lbDOMConfig.cpp,v 1.2 2000/10/20 04:36:31 lothar Exp $
  *
  * $Log: lbDOMConfig.cpp,v $
+ * Revision 1.2  2000/10/20 04:36:31  lothar
+ * Minor changes
+ *
  * Revision 1.1  2000/10/20 04:28:07  lothar
  * Initial
  *
@@ -104,6 +107,7 @@ void DOMTreeErrorReporter::resetErrors()
 
 /*...e*/
 
+// ??
 class lbDOMNode : public lb_I_ConfigObject {
 };
 
