@@ -72,7 +72,51 @@ extern "C" {
 void process(void);
 void dbError( LPSTR lp, HENV henv,HDBC hdbc,HSTMT hstmt);
 
+/*...sclass lbDBView:0:*/
+class lbDBView: public lb_I_MVC_View
+{
+public:
+	lbDBView() {}
+	virtual ~lbDBView() {}
+	
+	DECLARE_LB_UNKNOWN()
+	
+/*...svirtual lbErrCodes LB_STDCALL updateView\40\\41\\59\:8:*/
+        /*------ MVC variant ------------*/
+        /* Data is available, I can read it out ... */
+        virtual lbErrCodes LB_STDCALL updateView();
+/*...e*/
+        
+/*...svirtual lbErrCodes LB_STDCALL setViewSource\40\lb_I_Unknown\42\ q\41\\59\:8:*/
+        /* The view source is the data, that should be displayed.
+         * As this would be a database view, the function tries to get
+         * a lb_I_Query source.
+         */
+        virtual lbErrCodes LB_STDCALL setViewSource(lb_I_Unknown* q);
+/*...e*/
+};
 
+BEGIN_IMPLEMENT_LB_UNKNOWN(lbDBView)
+        ADD_INTERFACE(lb_I_MVC_View)
+END_IMPLEMENT_LB_UNKNOWN()
+
+IMPLEMENT_FUNCTOR(instanceOfDBView, lbDBView)
+
+
+lbErrCodes LB_STDCALL lbDBView::setData(lb_I_Unknown* uk) {
+	_CL_LOG << "lbDBView::setData(...) not implemented yet" LOG_
+	return ERR_NOT_IMPLEMENTED;
+}
+
+
+lbErrCodes LB_STDCALL lbDBView::updateView() {
+	return ERR_NONE;
+}
+
+lbErrCodes LB_STDCALL lbDBView::setViewSource(lb_I_Unknown* q) {
+	return ERR_NONE;
+}
+/*...e*/
 /*...sclass lbQuery:0:*/
 class lbQuery :
 public lb_I_Query
@@ -289,7 +333,12 @@ lb_I_Query* LB_STDCALL lbDatabase::getQuery() {
 
 	if (query->init(henv, hdbc) != ERR_NONE) return NULL;
 
-	return NULL;
+	query->setModuleManager(*&manager, __FILE__, __LINE__);
+	lb_I_Query* q;
+	
+	query->queryInterface("lb_I_Query", (void**) &q, __FILE__, __LINE__);
+
+	return q;
 }
 /*...e*/
 /*...svoid process\40\void\41\:0:*/
