@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.41 $
+ * $Revision: 1.42 $
  * $Name:  $
- * $Id: lbInterfaces-sub-classes.h,v 1.41 2004/08/16 05:09:16 lollisoft Exp $
+ * $Id: lbInterfaces-sub-classes.h,v 1.42 2004/12/14 16:08:05 lollisoft Exp $
  *
  * $Log: lbInterfaces-sub-classes.h,v $
+ * Revision 1.42  2004/12/14 16:08:05  lollisoft
+ * An attempt for i18n.
+ *
  * Revision 1.41  2004/08/16 05:09:16  lollisoft
  * New locale interface
  *
@@ -310,10 +313,29 @@ void LB_STDCALL classname::setType() {              \
 /*...e*/
 /*...e*/
 
+/**
+ * An attempt for i18n.
+ *
+ * It should be implemented as a singleton functor to be sure have the right
+ * language set once.
+ */
 class lb_I_Locale : public lb_I_Unknown {
 public:
-
+	
+	/** 
+	 * Set the desired language. English is assumed as default.
+	 * The orginal texts should be stored in a default field, because
+	 * there may be developers not aware of english.
+	 */
 	virtual void LB_STDCALL setLanguage(char const * lang) = 0;
+	
+	/**
+	 * Translate the given text.
+	 *
+	 * The given text would be handled as the default text and therefore the
+	 * key for searching.
+	 */
+	virtual void LB_STDCALL translate(char const * text) = 0;
 };
 
 // Keyable interfaces
