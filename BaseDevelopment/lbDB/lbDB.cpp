@@ -996,7 +996,10 @@ int   LB_STDCALL lbQuery::getColumns() {
 int LB_STDCALL lbQuery::hasFKColumn(char* FKName) {
 	lbErrCodes err = ERR_NONE;
 
-	if (skipFKCollections == 1) return 0;
+	if (skipFKCollections == 1) {
+		_CL_LOG << "Warning: Skipping for checking of foreign columns." LOG_
+		return 0;
+	}
 	
 	UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, s)
@@ -1815,6 +1818,10 @@ char* pos = strstr(lpszTable, "where");
 
 if (pos) pos[0] = 0;
 
+
+pos = strstr(lpszTable, " order");
+
+if (pos) pos[0] = 0;
 
 int a = 0;
 int b = 0;
