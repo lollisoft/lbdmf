@@ -33,12 +33,13 @@ SLASH=/
 WATCOMLIBS=$(DEVROOT_MAKE_INTERNAL)$(SLASH)Tools$(SLASH)watcom$(SLASH)lib386$(SLASH)nt
 wxBase=..$(SLASH)..$(SLASH)..$(SLASH)..$(SLASH)..$(SLASH)wxwin$(SLASH)wx$(SLASH)lib
 LIBS = $(DEVROOT_MAKE_INTERNAL)$(SLASH)projects$(SLASH)dll$(SLASH)libs$(SLASH)lbhook.lib, \
-	$(wxBase)$(SLASH)png_w.lib, \
-	$(wxBase)$(SLASH)jpeg_w.lib, \
-	$(wxBase)$(SLASH)tiff_w.lib, \
-	$(wxBase)$(SLASH)regex_w.lib, \
-	$(wxBase)$(SLASH)wxmswd_w.lib, \
-	$(wxBase)$(SLASH)zlib_w.lib
+	$(wxBase)$(SLASH)wxmswd_w.lib
+	
+#	$(wxBase)$(SLASH)png_w.lib, \
+#	$(wxBase)$(SLASH)jpeg_w.lib, \
+#	$(wxBase)$(SLASH)tiff_w.lib, \
+#	$(wxBase)$(SLASH)regex_w.lib, \
+#	$(wxBase)$(SLASH)zlib_w.lib
 	
 LIBRS =	libr $(WATCOMLIBS)$(SLASH)kernel32.lib \
 	libr $(WATCOMLIBS)$(SLASH)user32.lib \
@@ -76,7 +77,7 @@ LINKFLAGS = $(L_EXEOPS_MICROSOFT) $(LIBS) $(OBJS) \
 endif
 ifeq ($(COMPILER), WATCOM)
 MOD_INCL = $(STD_INCL_WATCOM) -i=../../../../../wxwin/wx/include
-C_EXEOPS= $(C_EXEOPS_WATCOM$(MODE)) /D__WIN32__ /DWINVER=0x0400 /D__WINDOWS95__ /D__WINDOWS__ /D__WXMSW__ /DLB_I_EXTENTIONS /D__WXDEBUG__
+C_EXEOPS= $(C_EXEOPS_WATCOM$(MODE)) /DWXUSINGDLL /D__WIN32__ /DWINVER=0x0400 /D__WINDOWS95__ /D__WINDOWS__ /D__WXMSW__ /DLB_I_EXTENTIONS /D__WXDEBUG__
 LINKFLAGS = $(L_EXEOPS)
 endif
 

@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.48 2005/02/20 18:01:23 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.49 2005/03/02 20:02:47 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.48 $
+ * $Revision: 1.49 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.48 2005/02/20 18:01:23 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.49 2005/03/02 20:02:47 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.49  2005/03/02 20:02:47  lollisoft
+ * Now using DLL version of wxWidgets library
+ *
  * Revision 1.48  2005/02/20 18:01:23  lollisoft
  * Bugfix due to buffer overflow affecting GUI sample under Linux
  *
@@ -2572,8 +2575,7 @@ END_IMPLEMENT_LB_UNKNOWN()
 
 
 // Create a new application object
-IMPLEMENT_APP  (MyApp)
-
+//IMPLEMENT_APP  (MyApp)
 
 int MyApp::OnExit() {
 	//wxGUI->cleanup();
@@ -3437,3 +3439,26 @@ void lb_wxFrame::OnDispatch(wxCommandEvent& event ) {
 /*...e*/
 /*...e*/
 #endif
+
+wxApp *wxCreateApp()
+    {
+        wxApp::CheckBuildOptions(wxBuildOptions());
+        return new MyApp;
+    }
+
+//wxAppInitializer wxTheAppInitializer((wxAppInitializerFunction) &wxCreateApp);
+MyApp& wxGetApp() { return *(MyApp *)wxTheApp; }
+
+wxApp* _app = NULL;
+
+int PASCAL WinMain(HINSTANCE hInstance,
+                   HINSTANCE hPrevInstance,
+                   LPSTR lpCmdLine,
+                   int nCmdShow)
+{
+    //wxAppInitializer wxTheAppInitializer((wxAppInitializerFunction) wxCreateApp);
+    
+    MyApp::SetInitializerFunction(wxCreateApp);
+    
+    return wxEntry((WXHINSTANCE) hInstance, (WXHINSTANCE) hPrevInstance, lpCmdLine, nCmdShow);
+}
