@@ -125,12 +125,6 @@
            </Functor>
         </Function>
         <Function>
-           <FunctionName Name="_instanceOfParameter"/>
-           <Functor>
-              <InterfaceName Name="lb_I_Parameter" Version="1.0"/>
-           </Functor>
-        </Function>
-        <Function>
            <FunctionName Name="Function2"/>
            <SimpleFn     Return="lbString"/>
         </Function>
