@@ -1,6 +1,5 @@
 /*
-    DMF Distributed Multiplatform Framework (the initial goal of this library)
-    lbModule.h is part of DMF.
+    DMF Distributed Multiplatform Framework
     Copyright (C) 2002  Lothar Behrens (lothar.behrens@lollisoft.de)
 
     This library is free software; you can redistribute it and/or
@@ -20,19 +19,32 @@
 
     The author of this work will be reached by e-Mail or paper mail.
     e-Mail: lothar.behrens@lollisoft.de
-    p-Mail: Lothar Behrens
+    p-Mail: 
+    	    Old
+    	    Lothar Behrens
             Borsteler Bogen 4
 
             22453 Hamburg (germany)
+            
+            New
+            Lothar Behrens
+            Rosmarinstra·e 3
+            
+            40235 DÅsseldorf
+            
 */
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.59 $
+ * $Revision: 1.60 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.59 2003/08/08 16:35:17 lollisoft Exp $
+ * $Id: lbModule.cpp,v 1.60 2003/08/16 17:59:07 lollisoft Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.60  2003/08/16 17:59:07  lollisoft
+ * Added usage for new interface repository, but deactivated
+ * (//#define USE_INTERFACE_REPOSITORY)
+ *
  * Revision 1.59  2003/08/08 16:35:17  lollisoft
  * New implementation of interface repository works, but I have problems with multiple module loading in lbhook
  *
@@ -1959,6 +1971,10 @@ void LB_STDCALL lbModule::getXMLConfigObject(lb_I_InterfaceRepository** inst) {
         libname = "lbDOMConfig"; // The same now
         ftrname = "instanceOfInterfaceRepository";
 
+
+	HINSTANCE h = getModuleHandle();
+	setModuleHandle(h);
+
         if (newInterfaceRepository == NULL) {
                 UAP(lb_I_Unknown, result, __FILE__, __LINE__)
                 makeInstance(ftrname, libname, &result);
@@ -2688,6 +2704,9 @@ lbErrCodes err = ERR_NONE;
                          * ModuleHandle is the result for this loaded module.
                          */
          		HINSTANCE h = getModuleHandle();
+         		
+         		printf("Have this handle before loading module; %d\n", h);
+         		
 			#ifdef LINUX
 			if (strchr(module, '.') == NULL) strcat(module, ".so");
 			#endif
@@ -2700,6 +2719,7 @@ lbErrCodes err = ERR_NONE;
                                 // return error if loading is impossible
                         }
                         setModuleHandle(h);
+                        printf("Have this handle after loading module; %d\n", h);
                         
                         if (getModuleHandle() == 0) _CL_LOG << "Error: Module could not be loaded '" << module << "'" LOG_
 
@@ -2932,6 +2952,7 @@ lbErrCodes LB_STDCALL lbModule::request(const char* request, lb_I_Unknown** resu
 		
 		//QI(result, lb_I_InterfaceRepository, newInterfaceRepository, __FILE__, __LINE__)		
 		*result = _result.getPtr();
+		(*result)->setModuleManager(this, __FILE__, __LINE__);
 		
 	} else {
 		printf("Error: Have no interface repository to locate configuration for %s\n", request); 
@@ -2949,16 +2970,13 @@ printf("Get unknown interface of XMLConfig object\n");
 /*...e*/
         else {
 /*...sget any interface:8:*/
-/*...sdoc:8:*/
         /**
          * Here should be created an unknown object. The mapping of a real
          * instance is done in the xml file instead of if blocks.
          */
-/*...e*/
                 char* node = "#document/dtdHostCfgDoc/Modules/Module/Functions/Function/Functor/InterfaceName";
                 int count = 0;
                                         // request is a functor
-/*...sdoc:8:*/
                 /**
                  * Get the nodes that match the path in 'node'. It may simple to change this
                  * to get all 'InterfaceName' entries. It should work the same way.
@@ -2976,38 +2994,28 @@ printf("Get unknown interface of XMLConfig object\n");
                  * The only thing, that must not appear, is an interfacename is the same as a
                  * functor !
                  */
-/*...e*/
                 if (xml_Instance->hasConfigObject(node, count) == ERR_NONE) {
-/*...svars:32:*/
                         char* moduleName = NULL;
                         lb_I_ConfigObject* implementations = NULL;
                         char* value = NULL;
-/*...e*/
-/*...sdoc:8:*/
                         /**
                          * Get the list of found objects as a list.
                          * The result is a view of notes in a max deep
                          * of one level.
                          */
-/*...e*/
                         xml_Instance->getConfigObject(&config, node);
                         track_Object(*&config, "Test object given by xml_Instance->getConfigObject()");
-/*...sVERBOSE:32:*/
                         #ifdef VERBOSE
                         printf("The config object has %d references\n", config->getRefCount());
 			#endif
-/*...e*/
-/*...sdoc:8:*/
                         /**
                          * Check, which element implements the requested interface.
                          * If there are more than one for an interface, get the first.
                          * Later, get the default.
                          */
-/*...e*/
                         // May be the same bug as in internal ...
                         // It was the self pointed parent member
                         // config++;
-/*...sfind the needed node:32:*/
                         if ((err = config->getFirstChildren(&impl)) == ERR_NONE) {
                                 impl.setLine(__LINE__);
                                 impl.setFile(__FILE__);
@@ -3016,7 +3024,6 @@ printf("Get unknown interface of XMLConfig object\n");
                                 if (strcmp(value, request) == 0) {
                                         //impl is the needed object     
                                 } else {
-/*...ssuche weiter:72:*/
                                         int stop = 1;
                                         while (stop == 1) {
                                                 RELEASE(impl);
@@ -3043,18 +3050,13 @@ printf("Get unknown interface of XMLConfig object\n");
                                                         stop = 0;
                                                 }
                                         }
-/*...e*/
                                 }
                         }
-/*...e*/
 
-/*...sreturn error if value \61\ NULL:32:*/
                         if (value == NULL) {
                                 _CL_LOG << "return ERR_MODULE_NO_INTERFACE" LOG_
                                 return ERR_MODULE_NO_INTERFACE;
                         }
-/*...e*/
-/*...sreturn error \40\no implementation for that interface\41\:32:*/
                         if (strcmp(request, value) != 0) {
                                 _CL_LOG << "Error: There is no implementation for wanted interface" LOG_
                                 
@@ -3063,35 +3065,24 @@ printf("Get unknown interface of XMLConfig object\n");
                                 }
                                 return ERR_MODULE_NO_INTERFACE;
                         }
-/*...e*/
-/*...sclean up \63\\63\\63\:32:*/
                         if (value != NULL) {
                                 impl->deleteValue(value);
                         }
-/*...e*/
-/*...sfind up names:32:*/
                         moduleName = findFunctorModule(&impl);
                         functorName = findFunctorName(&impl);
-/*...e*/
-/*...sclean up \63\\63\\63\:32:*/
                         if (value != NULL) {
                                 impl->deleteValue(value);
                         }
-/*...e*/
                         makeInstance(functorName, moduleName, result);
-/*...sLog error:32:*/
                         if ((*result) == NULL) {
                         	_CL_LOG << "Error: makeInstance has been failed for '" <<
                         	request << "', '" << functorName << "', '" << moduleName << "'" LOG_
 				printf("Error: Instance is a NULL pointer %s\n", functorName);
                         }
-/*...e*/
                         (*result)->setModuleManager(this, __FILE__, __LINE__);
                         notify_create(*result, (*result)->getClassName());
-/*...sclean up:32:*/
                         if (moduleName != NULL) impl->deleteValue(moduleName);
                         if (functorName != NULL) impl->deleteValue(functorName);
-/*...e*/
                 } else {
                         cout << "Something goes wrong!" << endl;
                         cout << "xml_Instance->hasConfigObject() returns <> ERR_NONE!" << endl;
@@ -3110,6 +3101,7 @@ IMPLEMENT_SINGLETON_FUNCTOR(getlb_ModuleInstance, lbModule)
 
 /*...slbErrCodes lbModule\58\\58\load\40\char\42\ name\41\:0:*/
 lbErrCodes lbModule::load(char* name) {
+printf("lbModule::load(%s) called\n", name);
 #ifndef USE_INTERFACE_REPOSITORY
         UAP(lb_I_XMLConfig, xml_Instance, __FILE__, __LINE__)
 
