@@ -113,6 +113,12 @@
            </Functor>
         </Function>
         <Function>
+           <FunctionName Name="_instanceOfParameter"/>
+           <Functor>
+              <InterfaceName Name="lb_I_Parameter" Version="1.0"/>
+           </Functor>
+        </Function>
+        <Function>
            <FunctionName Name="_instanceOfReference"/>
            <Functor>
               <InterfaceName Name="lb_I_Reference" Version="1.0"/>
