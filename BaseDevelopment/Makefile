@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.32 $
+# * $Revision: 1.33 $
 # * $Name:  $
-# * $Id: Makefile,v 1.32 2005/03/06 00:43:56 lollisoft Exp $
+# * $Id: Makefile,v 1.33 2005/03/06 11:53:46 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.33  2005/03/06 11:53:46  lollisoft
+# * Changes to automatically make dosdir
+# *
 # * Revision 1.32  2005/03/06 00:43:56  lollisoft
 # * Minor changes to auto compile mkmk as bootstrap
 # *
@@ -144,6 +147,7 @@ TARGETDLL=so
 TARGETEXE=elf
 
 ALLTARGETS = \
+	../vendor/dosdir \
 	../vendor/mkmk \
 	lbHook \
 	lbModule \
@@ -239,6 +243,10 @@ dummy:
 	$(MAKE) -C $@
 
 ifeq ($(OSTYPE), osx)
+../vendor/dosdir: dummy
+	$@/make-osx.sh $@
+	cd ../Basedevelopment
+
 ../vendor/mkmk: dummy
 	$@/make-osx.sh $@
 	cp $@/mkmk $(HOME)/bin
