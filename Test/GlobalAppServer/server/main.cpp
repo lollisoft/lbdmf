@@ -18,7 +18,7 @@ LOG("GlobalAppServer::_request(): Handle a request");
 
 	char buf[100];
 /*...sVERBOSE:0:*/
-#ifdef VERBOSE
+#ifdef NOVERBOSE
 	sprintf(buf, "GlobalAppServer::_request(): Packetcount = %d", count);
 	printf("%s\n", buf);
 	LOG(buf);
@@ -39,7 +39,7 @@ LOG("GlobalAppServer::_request(): Handle a request");
 				request.get(buffer);
 
 /*...sVERBOSE:32:*/
-				#ifdef VERBOSE
+				#ifdef NOVERBOSE
 				printf("Char value = %s\n", buffer); 
 				sprintf(msg, "Char value = %s", buffer); 
 				LOG(msg);
@@ -101,7 +101,7 @@ int GlobalAppServer::_service() {
 		
 		waitForRequest(request);
 /*...sVERBOSE:0:*/
-#ifdef VERBOSE
+#ifdef NOVERBOSE
 LOG("GlobalAppServer::_service(): Got a request, handle it");
 #endif
 /*...e*/
@@ -113,7 +113,7 @@ LOG("GlobalAppServer::_service(): Got a request, handle it");
 		exit++;
 		printf("GlobalAppServer::_service(): Got a request\n");
 /*...sVERBOSE:0:*/
-#ifdef VERBOSE
+#ifdef NOVERBOSE
 		LOG("GlobalAppServer::_service(): Got a request");
 #endif
 /*...e*/
@@ -123,6 +123,7 @@ LOG("GlobalAppServer::_service(): Got a request, handle it");
 }
 /*...e*/
 /*...e*/
+#endif
 
 /*...sclass GASThread:0:*/
 class GASThread : public lbThread {
@@ -147,83 +148,48 @@ GASThread::~GASThread() {
 
 /*...svoid\42\ GASThread\58\\58\Entry\40\\41\:0:*/
 void* GASThread::Entry() {
-	GlobalAppServer server;
-	
-	server.run();
 
 	for (int i=0; i<5; i++) {
 		printf("GASThread::Entry - Loop at %d\n", i);
 		Beep(200, 50);
 		lb_sleep(1000);
 	}
+
+	int count = 0;
+	LOG("-------------- Testing Server---------------");
+	lbAppBusClient client;
+	LOG("------- Must be connected to Server --------");
+	cout << "Begin tesing Anounce user in 1 sec..." << endl;
+	lb_sleep(1000);
+	while (count++ < 100) {
+	LOG("--------------- Anounce user ---------------");
+		client.AnounceUser("lothar", "wuff");
+	LOG("--------------- User anounced --------------");
+	}
+	
+	cout << "Ending server test thread" << endl;
+	getch();
 	return NULL;
 }
 /*...e*/
 /*...e*/
-#endif
+
 /*...smain:0:*/
 void main(int argc, char** argv) {
-LOGPREFIX("GlobalAppServer");
+LOGPREFIX("GlobalAppServer: ");
+
 	printf("Global application server is starting...\n");
-
-/*...sBla:0:*/
-#ifdef bla
-	GASThread *thread;
-	thread = new GASThread();
-	
-	lbThreadError err = thread->create();
-	//lb_sleep(1000);
-/*...sCheck and print errors:8:*/
-	switch (err) {
-		case LB_THREAD_NO_ERROR:
-			printf("Thread is created...\n");
-			break;
-		case LB_THREAD_ERROR:
-			printf("Thread run returns some error\n");
-			break;
-		default:
-			printf("Thread run returns unknown error\n");
+/*
+	if (TRUE) {	
+		GASThread *thread = new GASThread;
+		
+		thread->create();
+		thread->run();
 	}
-/*...e*/
-	err = thread->run();
-	lb_sleep(10);
-/*...sOutput of main:8:*/
-	int i = 0;
-	while (1) {
-		i++;
-		lb_sleep(1000);
-/*		
-		if (i == 100) {
-		  thread = new myThread();
-		  lbThreadError err = thread->create();
-		  err = thread->run();
-		}
-*/		
-		printf("Main is at %d\n", i);
-	}
-/*...e*/
-	lb_sleep(1000);	
-/*...sCheck and print errors:8:*/
-	switch (err) {
-		case LB_THREAD_NO_ERROR:
-			printf("Thread is running...\n");
-			break;
-		case LB_THREAD_ERROR:
-			printf("Thread run returns some error\n");
-			break;
-		default:
-			printf("Thread run returns unknown error\n");
-	}
-/*...e*/
-	printf("Global application server is ending...\n");
-	lb_sleep(1000);
-	getch();
-#endif
-/*...e*/
-
+*/
 	lbAppBusServer server;
-	
-	server.run();
-
+ 	server.run();
+	printf("Global application server is ending...\n");
+	getch();
 }
 /*...e*/
