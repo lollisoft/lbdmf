@@ -3,11 +3,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.24 $
+ * $Revision: 1.25 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.24 2002/04/18 19:23:43 lothar Exp $
+ * $Id: lbModule.cpp,v 1.25 2002/04/24 18:36:19 lothar Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.25  2002/04/24 18:36:19  lothar
+ * Dump references and print references
+ *
  * Revision 1.24  2002/04/18 19:23:43  lothar
  * Does not compile ???
  *
@@ -324,7 +327,7 @@ public:
         
 	char* LB_STDCALL getCreationLoc(char* addr);
 	void LB_STDCALL printReferences(char* addr);	
-
+	void LB_STDCALL dumpReference(instanceList* i);
 
 	void LB_STDCALL loadContainer(lb_I_Module* m);
         
@@ -335,6 +338,8 @@ public:
         UAP(lb_I_Container, lb_cList, __FILE__, __LINE__)
 private:
 	int loadedContainer;
+	int instances;
+	int references;
 };
 /*...e*/
 /*...sInstanceRepository\58\\58\InstanceRepository\40\\41\:0:*/
@@ -342,6 +347,8 @@ InstanceRepository::InstanceRepository() {
         iList = NULL;
         cList = NULL;
         loadedContainer = 0;
+        instances = 0;
+        references = 0;
 }
 /*...e*/
 /*...sInstanceRepository\58\\58\\126\InstanceRepository\40\\41\:0:*/
@@ -349,6 +356,7 @@ InstanceRepository::~InstanceRepository() {
         while (iList != NULL) {
                 instanceList* temp = iList;
                 iList = iList->next;
+                dumpReference(temp);
                 delete temp;
         }
         
@@ -364,6 +372,7 @@ InstanceRepository::~InstanceRepository() {
 void LB_STDCALL InstanceRepository::createInstance(char* addr, char* classname, char* file, int line) {
 	// First check, if there is no instance
 	instanceList* temp = iList;
+	instances++;
 	
 /*...sfirst element:8:*/
 	if (iList == NULL) {
@@ -403,30 +412,6 @@ void LB_STDCALL InstanceRepository::createInstance(char* addr, char* classname, 
 		temp = temp->next;
 	}
 /*...e*/
-#ifdef bla
-/*...sone element is in the list:8:*/
-	if (temp->next == NULL) {
-		instanceList* neu = new instanceList;
-		
-		neu->next = NULL;
-		neu->rList = NULL;
-		neu->addr = strdup(addr);
-		neu->classname = strdup(classname);
-		neu->file = strdup(file);
-		neu->line = line;
-	
-		if (strcmp(iList->addr, addr) > 0) {
-			// Append
-			iList->next = neu;
-		} else {
-			// Prepend
-			instanceList* temp = iList;
-			iList = neu;
-			iList->next = temp;
-		}
-	}
-/*...e*/
-#endif
 }
 /*...e*/
 /*...sInstanceRepository\58\\58\addReference\40\char\42\ addr\44\ char\42\ classname\44\ char\42\ file\44\ int line\41\:0:*/
@@ -488,7 +473,9 @@ void LB_STDCALL InstanceRepository::delReference(char* addr, char* classname, ch
 				if (rList == NULL) printf("Error: Reference list is NULL\n");
 /*...sSearch in the references:32:*/
 				while (rList != NULL) {
+					#ifdef VERBOSE
 					printf("Stored reference is in %s at %d\n", rList->file, rList->line);
+					#endif
 					if ((strcmp(rList->file, file) == 0) && (rList->line == line)) {
 						foundReference = 1;
 						if (rList->count > 1) {
@@ -533,7 +520,10 @@ void LB_STDCALL InstanceRepository::delReference(char* addr, char* classname, ch
 					char buf[1000] = "";
 					sprintf(buf, "Error: Reference was not registered (classname=%s, file=%s, line=%d)", 
 					classname, file, line);
+					#ifdef VERBOSE
 					CL_LOG(buf)
+					getch();
+					#endif
 				}
 			} else {
 				CL_LOG("Error: InstanceRepository::delReference() classname differs");
@@ -661,9 +651,10 @@ char* LB_STDCALL InstanceRepository::getCreationLoc(char* addr) {
 	return strdup("No location stored");	
 }
 /*...e*/
-void InstanceRepository::printReferences(char* addr) {
+/*...sInstanceRepository\58\\58\printReferences\40\char\42\ addr\41\:0:*/
+void LB_STDCALL InstanceRepository::printReferences(char* addr) {
 	instanceList* temp = iList;
-	
+CL_LOG("InstanceRepository::printReferences(char* addr) called")	
 	while(temp != NULL) {
 		if (strcmp(Upper(temp->addr), Upper(addr)) == 0) {
 			referenceList* rTemp = temp->rList;
@@ -676,7 +667,20 @@ void InstanceRepository::printReferences(char* addr) {
 		}
 		temp = temp->next;
 	}
+CL_LOG("InstanceRepository::printReferences(char* addr) leaving")
 }
+/*...e*/
+/*...sInstanceRepository\58\\58\dumpReference\40\instanceList\42\ i\41\:0:*/
+void LB_STDCALL InstanceRepository::dumpReference(instanceList* i) {
+	referenceList* rTemp = i->rList;
+	while(rTemp != NULL) {
+		printf("Instance for %s has a reference in %s at %d\n", 
+			i->classname, rTemp->file, rTemp->line);
+		rTemp = rTemp->next;
+	}
+}
+/*...e*/
+/*...sInstanceRepository\58\\58\loadContainer\40\lb_I_Module\42\ m\41\:0:*/
 void LB_STDCALL InstanceRepository::loadContainer(lb_I_Module* m) {
 	if (loadedContainer == 1) return;
 	loadedContainer = 1;
@@ -696,6 +700,7 @@ printf("LoadContainer for instance repository\n");
 
 printf("Loaded\n");	
 }
+/*...e*/
 /*...e*/
 
 T_pLB_GET_UNKNOWN_INSTANCE DLL_LB_GET_UNKNOWN_INSTANCE;
@@ -900,6 +905,7 @@ void LB_STDCALL lbModule::getXMLConfigObject(lb_I_XMLConfig** inst) {
 
 
 /*...sdebug helper:0:*/
+/*...schar\42\ LB_STDCALL lbModule\58\\58\getCreationLoc\40\char\42\ addr\41\:0:*/
 char* LB_STDCALL lbModule::getCreationLoc(char* addr) {
 #ifdef IR_USAGE
 	if (IR != NULL) {
@@ -913,13 +919,17 @@ char* LB_STDCALL lbModule::getCreationLoc(char* addr) {
 	return "IR is deactivated!";
 #endif
 }
-
+/*...e*/
+/*...svoid LB_STDCALL lbModule\58\\58\printReferences\40\char\42\ addr\41\:0:*/
 void LB_STDCALL lbModule::printReferences(char* addr) {
 	if (IR != NULL) {
+	#ifdef VERBOSE
 		IR->printReferences(addr);
+	#endif
 	}
 }
-
+/*...e*/
+/*...svoid LB_STDCALL lbModule\58\\58\notify_create\40\lb_I_Unknown\42\ that\44\ char\42\ implName\44\ char\42\ file\44\ int line\41\:0:*/
 void LB_STDCALL lbModule::notify_create(lb_I_Unknown* that, char* implName, char* file, int line) {
 #ifdef IR_USAGE
         char buf[1000] = "";
@@ -929,14 +939,14 @@ void LB_STDCALL lbModule::notify_create(lb_I_Unknown* that, char* implName, char
         if (IR == NULL) {
         	IR = new InstanceRepository;
         }
-        
         IR->createInstance(addr, implName, file, line);
 #ifdef VERBOSE
         CL_LOG("lbModule::notify_create() called")
 #endif
 #endif
 }
-
+/*...e*/
+/*...svoid LB_STDCALL lbModule\58\\58\notify_add\40\lb_I_Unknown\42\ that\44\ char\42\ implName\44\ char\42\ file\44\ int line\41\:0:*/
 void LB_STDCALL lbModule::notify_add(lb_I_Unknown* that, char* implName, char* file, int line) {
 #ifdef IR_USAGE
         char buf[1000] = "";
@@ -952,7 +962,8 @@ void LB_STDCALL lbModule::notify_add(lb_I_Unknown* that, char* implName, char* f
 	IR->addReference(addr, implName, file, line);
 #endif
 }
-
+/*...e*/
+/*...svoid LB_STDCALL lbModule\58\\58\notify_release\40\lb_I_Unknown\42\ that\44\ char\42\ implName\44\ char\42\ file\44\ int line\41\:0:*/
 void LB_STDCALL lbModule::notify_release(lb_I_Unknown* that, char* implName, char* file, int line) {
 	/**
 	 * A buffer with to few bytes may result in crashes. Because I do not make strlen checks,
@@ -966,13 +977,15 @@ void LB_STDCALL lbModule::notify_release(lb_I_Unknown* that, char* implName, cha
  	IR->delReference(addr, implName, file, line);       
 #endif
 }
-
+/*...e*/
+/*...sint  LB_STDCALL lbModule\58\\58\can_delete\40\lb_I_Unknown\42\ that\44\ char\42\ implName\44\ char\42\ file\44\ int line\41\:0:*/
 int  LB_STDCALL lbModule::can_delete(lb_I_Unknown* that, char* implName, char* file, int line) {
 #ifdef IR_USAGE
 
 #endif
         return 1;
 }
+/*...e*/
 /*...e*/
 
 /*...slbErrCodes lbModule\58\\58\setData\40\lb_I_Unknown\42\ uk\41\:0:*/
