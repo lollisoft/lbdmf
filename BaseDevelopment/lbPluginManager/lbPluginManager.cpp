@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.14 $
+ * $Revision: 1.15 $
  * $Name:  $
- * $Id: lbPluginManager.cpp,v 1.14 2005/03/31 09:00:55 lollisoft Exp $
+ * $Id: lbPluginManager.cpp,v 1.15 2005/04/02 12:49:06 lollisoft Exp $
  *
  * $Log: lbPluginManager.cpp,v $
+ * Revision 1.15  2005/04/02 12:49:06  lollisoft
+ * Bugfix, if PLUGIN_DIR is not configured
+ *
  * Revision 1.14  2005/03/31 09:00:55  lollisoft
  * Copyright text problems under linux.
  *
@@ -195,6 +198,11 @@ lbErrCodes LB_STDCALL lbPluginManager::setData(lb_I_Unknown* uk) {
 bool LB_STDCALL lbPluginManager::tryLoad(char* module) {
 	lbErrCodes err = ERR_NONE;
 	char* pluginDir = getenv("PLUGIN_DIR");
+	
+	if (pluginDir == NULL) {
+		printf("ERROR: No plugin directory configured. Please create one and set environment PLUGIN_DIR properly.\n");
+		exit(1);
+	}
 				
 /*...sbuild PREFIX:0:*/
 #ifndef LINUX
@@ -297,6 +305,12 @@ void LB_STDCALL lbPluginManager::initialize() {
 #endif
 
 	char* pluginDir = getenv("PLUGIN_DIR");
+	
+	if (pluginDir == NULL) {
+		printf("ERROR: No plugin directory configured. Please create one and set environment PLUGIN_DIR properly.\n");
+		exit(1);
+	}
+	
 	char* toFind = new char[strlen(mask)+strlen(pluginDir)+2];
 	toFind[0] = 0;
 	
