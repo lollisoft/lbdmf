@@ -138,8 +138,9 @@ public:
         lbErrCodes	LB_STDCALL getString(char* column, lb_I_String* instance);
         lbErrCodes      LB_STDCALL setString(char* column, lb_I_String* instance);
 
-	int		LB_STDCALL getColumnType(char* name);
-
+	bool		LB_STDCALL isNull(int pos);
+	lb_I_Query::lbDBColumnTypes LB_STDCALL getColumnType(int pos);
+	
 	int LB_STDCALL getArraySize() { return ArraySize; }
 
 private:
@@ -225,7 +226,7 @@ public:
 	virtual lbErrCodes LB_STDCALL update();
 
 
-	/**
+	/*
 	 * General information based on the given query.
 	 */
 
@@ -234,7 +235,9 @@ public:
 
 	virtual int		LB_STDCALL hasFKColumn(char* FKName);
 
-	virtual int		LB_STDCALL getColumnType(char* name);
+	virtual bool		LB_STDCALL isNull(int pos);
+
+	virtual lb_I_Query::lbDBColumnTypes LB_STDCALL getColumnType(int pos);
         
         /* Navigation */
         virtual lbErrCodes	LB_STDCALL first();
@@ -246,6 +249,7 @@ public:
         virtual char* 		LB_STDCALL getChar(int column);
 #endif
 #ifndef UNBOUND       
+	virtual bool		LB_STDCALL isNull(int column);
         virtual lb_I_String*	LB_STDCALL getAsString(int column);
 	virtual lbErrCodes	LB_STDCALL setString(lb_I_String* columnName, lb_I_String* value);
 #endif        
@@ -362,6 +366,9 @@ public:
 	DECLARE_LB_UNKNOWN()
 
 
+
+	virtual bool LB_STDCALL isNull();
+	virtual lb_I_Query::lbDBColumnTypes LB_STDCALL getType();
 	virtual lb_I_Unknown* LB_STDCALL getData();
 	virtual lbErrCodes LB_STDCALL getAsString(lb_I_String* result, int asParameter = 0);
 	virtual lbErrCodes LB_STDCALL setFromString(lb_I_String* set, int mode);
@@ -394,6 +401,13 @@ protected:
 	SQLSMALLINT     _DataType;
 	void*		buffer;
 	int		buffersize;
+	
+	
+	/** \brief SQL_NULL_DATA indicator.
+	 *
+	 * This normally contains the buffer length of the filled data. If there is NULL data,
+	 * it will indicated by SQL_NULL_DATA.
+	 */
 	long		cbBufferLength;
 	SQLUINTEGER     ColumnSize; //new (long);
 	int		rows;
@@ -450,8 +464,51 @@ lbErrCodes      LB_STDCALL lbBoundColumns::setBoundColumns(lb_I_Container* bc) {
 	return ERR_NONE;
 }
 
-int		LB_STDCALL lbBoundColumns::getColumnType(char* name) {
-	return 0;
+bool LB_STDCALL lbBoundColumns::isNull(int pos) {
+
+	lbErrCodes err = ERR_NONE;
+	if (boundColumns != NULL) {
+		REQUEST(manager.getPtr(), lb_I_Integer, integerKey) 
+		integerKey->setData(pos);
+		UAP(lb_I_Unknown, ukdata, __FILE__, __LINE__)
+		UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
+		
+		QI(integerKey, lb_I_KeyBase, key, __FILE__, __LINE__)
+
+		ukdata = boundColumns->getElement(&key);
+		if (ukdata == NULL) printf("NULL pointer!\n");
+
+		UAP(lb_I_BoundColumn, bc, __FILE__, __LINE__)
+		lbErrCodes err = ukdata->queryInterface("lb_I_BoundColumn", (void**) &bc, __FILE__, __LINE__);
+
+		return bc->isNull();
+	}
+
+	// What to answer here ??
+	return false;
+}
+
+lb_I_Query::lbDBColumnTypes LB_STDCALL lbBoundColumns::getColumnType(int pos) {
+
+	lbErrCodes err = ERR_NONE;
+	if (boundColumns != NULL) {
+		REQUEST(manager.getPtr(), lb_I_Integer, integerKey) 
+		integerKey->setData(pos);
+		UAP(lb_I_Unknown, ukdata, __FILE__, __LINE__)
+		UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
+		
+		QI(integerKey, lb_I_KeyBase, key, __FILE__, __LINE__)
+
+		ukdata = boundColumns->getElement(&key);
+		if (ukdata == NULL) printf("NULL pointer!\n");
+
+		UAP(lb_I_BoundColumn, bc, __FILE__, __LINE__)
+		lbErrCodes err = ukdata->queryInterface("lb_I_BoundColumn", (void**) &bc, __FILE__, __LINE__);
+
+		return bc->getType();
+	}
+
+	return lb_I_Query::lbDBColumnUnknown;
 }
 
 /*...slb_I_BoundColumn\42\ LB_STDCALL lbBoundColumns\58\\58\getBoundColumn\40\int column\41\:0:*/
@@ -1197,8 +1254,12 @@ void LB_STDCALL lbQuery::prepareFKList() {
 }
 /*...e*/
 
-int LB_STDCALL lbQuery::getColumnType(char* name) {
-	return boundColumns->getColumnType(name);
+bool LB_STDCALL lbQuery::isNull(int pos) {
+	return boundColumns->isNull(pos);
+}
+
+lb_I_Query::lbDBColumnTypes LB_STDCALL lbQuery::getColumnType(int pos) {
+	return boundColumns->getColumnType(pos);
 }
 
 /*...schar\42\ LB_STDCALL lbQuery\58\\58\getColumnName\40\int col\41\:0:*/
@@ -1591,11 +1652,8 @@ lbErrCodes LB_STDCALL lbQuery::setString(lb_I_String* columnName, lb_I_String* v
 
 	if (_readonly == 1) return ERR_DB_READONLY;
 	if (mode == 1) {
-		// Not supported yet
-		//printf("lbQuery::setString(lb_I_String* columnName, lb_I_String* value) Error: Append data not supported yet\n");
 		boundColumns->setString(columnName->charrep(), value);
 	} else {
-		//printf("Call boundColumns->setString('%s', '%s')\n", columnName->charrep(), value->charrep());
 		boundColumns->setString(columnName->charrep(), value);
 	}
 
@@ -1684,7 +1742,6 @@ lbErrCodes LB_STDCALL lbQuery::update() {
 	CursorName[0] = 0;
 
 	if (mode == 1) {
-		printf("Insert the new record\n");
 		retcode = SQLSetPos(hstmt, 2, SQL_ADD, SQL_LOCK_NO_CHANGE);
 		
 		if (retcode != SQL_SUCCESS)
@@ -1696,7 +1753,6 @@ lbErrCodes LB_STDCALL lbQuery::update() {
 
 		mode = 0;
 	} else {
-		printf("Update the record\n");
 #ifdef USE_CURRENT_OF
 /*...susing WHERE CURRENT OF \46\\46\\46\:0:*/
 		// Update the existing record
@@ -1954,6 +2010,30 @@ BEGIN_IMPLEMENT_LB_UNKNOWN(lbBoundColumn)
         ADD_INTERFACE(lb_I_BoundColumn)
 END_IMPLEMENT_LB_UNKNOWN()
 
+bool LB_STDCALL lbBoundColumn::isNull() {
+	return (cbBufferLength == SQL_NULL_DATA);
+}
+/*...slb_I_Query\58\\58\lbDBColumnTypes LB_STDCALL lbBoundColumn\58\\58\getType\40\\41\:0:*/
+lb_I_Query::lbDBColumnTypes LB_STDCALL lbBoundColumn::getType() {
+
+	switch (_DataType) {
+	
+		case SQL_BIT:
+			return lb_I_Query::lbDBColumnBit;
+			
+		case SQL_CHAR:
+		case SQL_VARCHAR:
+		case SQL_LONGVARCHAR: 
+			return lb_I_Query::lbDBColumnChar;
+			
+		case SQL_INTEGER: 
+			return lb_I_Query::lbDBColumnInteger;
+		
+		default: return lb_I_Query::lbDBColumnUnknown;
+	}
+
+}
+/*...e*/
 /*...slbErrCodes LB_STDCALL lbBoundColumn\58\\58\setData\40\lb_I_Unknown\42\ uk\41\:0:*/
 lbErrCodes LB_STDCALL lbBoundColumn::setData(lb_I_Unknown* uk) {
         lbErrCodes err = ERR_NONE;
@@ -2020,14 +2100,24 @@ lbErrCodes LB_STDCALL lbBoundColumn::getAsString(lb_I_String* result, int asPara
 	        	} else {
 	        		result->setData((char*) buffer);
 	        	}
+	        	
 	        	break;
 	        case SQL_INTEGER:
 			{
 	        		char charrep[100] = "";
 	        		sprintf(charrep, "%d", *(long*) buffer);
 	        		result->setData(charrep);
-	        		//printf("Bound column returns '%s'\n", charrep);
 			}
+	        	break;
+	        case SQL_BIT:
+	        	{
+	        		bool b = *(bool*) buffer;
+	        	
+	        		if (b == true)
+		        		result->setData("true");
+		        	else
+		        		result->setData("false");	
+	        	}
 	        	break;
 	        default:
 	        	_CL_LOG << "lbBoundColumn::bindColumn(...) failed: Unknown or not supported datatype" LOG_
@@ -2065,6 +2155,20 @@ lbErrCodes LB_STDCALL lbBoundColumn::setFromString(lb_I_String* set, int mode) {
 					memcpy(b, &l, sizeof(l));
 				}
 				break;
+			case SQL_BIT:
+				{
+					bool l = false;
+					if (strcmp(set->charrep(), "true") == 0) {
+						l = true;
+					}
+			
+					bool* pl = (bool*) buffer;
+					
+					void* b = pl+1;
+					
+					memcpy(b, &l, sizeof(l));
+				}
+				break;
 		}
 
 	} else {
@@ -2081,6 +2185,16 @@ lbErrCodes LB_STDCALL lbBoundColumn::setFromString(lb_I_String* set, int mode) {
 				{
 					long l = 0;
 					l = atol(set->getData());
+					memcpy(buffer, &l, sizeof(l));
+				}
+				break;
+			case SQL_BIT:
+				{
+					bool l = false;
+					if (strcmp(set->charrep(), "true") == 0) {
+						l = true;
+					}
+
 					memcpy(buffer, &l, sizeof(l));
 				}
 				break;
@@ -2118,6 +2232,7 @@ lbErrCodes LB_STDCALL lbBoundColumn::prepareBoundColumn(lb_I_Query* q, int colum
 
 	REQUEST(manager.getPtr(), lb_I_String, colName)
 	colName->setData((char*) ColumnName);
+
 	return err;
 }
 /*...e*/
@@ -2191,6 +2306,17 @@ lbErrCodes LB_STDCALL lbBoundColumn::bindColumn(lb_I_Query* q, int column) {
 			        q->dbError("SQLBindCol()");
 			}
 /*...e*/
+			break;
+		case SQL_BIT:
+			buffer = malloc((sizeof(bool))*rows);
+			_DataType = DataType;
+			bound = 1;
+			memset(buffer, 0, sizeof(bool)*rows);
+			SQLBindCol(hstmt, column, DataType, buffer, sizeof(bool), &cbBufferLength);
+			if (ret != SQL_SUCCESS) {
+			        printf("Error while binding a column!\n");
+			        q->dbError("SQLBindCol()");
+			}
 			break;
 		default:
 			_CL_LOG << "lbBoundColumn::bindColumn(...) failed: Unknown or not supported datatype" LOG_
@@ -2308,7 +2434,7 @@ lb_I_String* LB_STDCALL lbBoundColumn::getColumnName() {
 	return colName.getPtr();
 }
 /*...e*/
-
+/*...sclass lbConnection:0:*/
 class lbConnection : public lb_I_Connection
 {
 public:
@@ -2360,7 +2486,9 @@ protected:
 	
 	HDBC     hdbc;
 };
+/*...e*/
 
+/*...sclass lbConnection implementation:0:*/
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbConnection)
 	ADD_INTERFACE(lb_I_Connection)
 END_IMPLEMENT_LB_UNKNOWN()
@@ -2383,6 +2511,7 @@ lbErrCodes LB_STDCALL lbConnection::setData(lb_I_Unknown* uk) {
 	
 	return ERR_NOT_IMPLEMENTED;
 }
+/*...e*/
 
 
 /*...sclass lbDatabase:0:*/

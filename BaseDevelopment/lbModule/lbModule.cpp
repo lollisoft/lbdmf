@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.80 $
+ * $Revision: 1.81 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.80 2005/03/04 10:47:10 lollisoft Exp $
+ * $Id: lbModule.cpp,v 1.81 2005/03/14 18:59:01 lollisoft Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.81  2005/03/14 18:59:01  lollisoft
+ * Various changes and additions to make plugins also work with database forms
+ *
  * Revision 1.80  2005/03/04 10:47:10  lollisoft
  * Little changes for my new Mac OS X
  *
@@ -701,6 +704,10 @@ void SkipList::remove(Elem searchKey) {
 
 /*...e*/
 /*...sSkipList\58\\58\can_dump\40\\41\:0:*/
+void SkipList::finishIteration() {
+	iteration = 0;
+}
+
 int SkipList::can_dump() {
 	if (iteration == 0) { 
         	iteration = 1; 

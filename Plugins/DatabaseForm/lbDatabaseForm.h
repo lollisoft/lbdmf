@@ -33,11 +33,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.2 $
+ * $Revision: 1.3 $
  * $Name:  $
- * $Id: lbDatabaseForm.h,v 1.2 2004/06/16 22:17:27 lollisoft Exp $
+ * $Id: lbDatabaseForm.h,v 1.3 2005/03/14 18:59:03 lollisoft Exp $
  *
  * $Log: lbDatabaseForm.h,v $
+ * Revision 1.3  2005/03/14 18:59:03  lollisoft
+ * Various changes and additions to make plugins also work with database forms
+ *
  * Revision 1.2  2004/06/16 22:17:27  lollisoft
  * First plugin beginnings
  *
@@ -59,7 +62,9 @@ extern "C" {
 #endif
 /*...e*/
 
-DECLARE_FUNCTOR(instanceOfPluginModule)
+DECLARE_SINGLETON_FUNCTOR(instanceOfPluginModule)
+
+DECLARE_FUNCTOR(instanceOflbDatabaseDialog)
 DECLARE_FUNCTOR(instanceOflbPluginDatabaseDialog)
 
 /*...s\35\ifdef __cplusplus \125\:0:*/

@@ -26,32 +26,72 @@
 #
 #            22453 Hamburg (germany)
 
-
 ifeq ($(OSTYPE), Windows_NT)
 MOD_INCL=$(STD_INCL)
-LIBS = $(DEVROOT_MAKE)/projects/dll/libs/lbhook.lib
+OBJDEP=
+SLASH=/
+WATCOMLIBS=$(DEVROOT_MAKE_INTERNAL)$(SLASH)Tools$(SLASH)watcom$(SLASH)lib386$(SLASH)nt
+wxBase=$(DEVROOT_MAKE_INTERNAL)$(SLASH)wxwin$(SLASH)wx$(SLASH)lib
+LIBS = $(DEVROOT_MAKE_INTERNAL)$(SLASH)projects$(SLASH)dll$(SLASH)libs$(SLASH)lbhook.lib, \
+	$(wxBase)$(SLASH)png_w.lib, \
+	$(wxBase)$(SLASH)jpeg_w.lib, \
+	$(wxBase)$(SLASH)tiff_w.lib, \
+	$(wxBase)$(SLASH)regex_w.lib, \
+	$(wxBase)$(SLASH)wxmswd_w.lib, \
+	$(wxBase)$(SLASH)zlib_w.lib
+	
+LIBRS =	libr $(WATCOMLIBS)$(SLASH)kernel32.lib \
+	libr $(WATCOMLIBS)$(SLASH)user32.lib \
+	libr $(WATCOMLIBS)$(SLASH)gdi32.lib \
+	libr $(WATCOMLIBS)$(SLASH)comdlg32.lib \
+	libr $(WATCOMLIBS)$(SLASH)comctl32.lib \
+	libr $(WATCOMLIBS)$(SLASH)advapi32.lib \
+	libr $(WATCOMLIBS)$(SLASH)shell32.lib \
+	libr $(WATCOMLIBS)$(SLASH)ole32.lib \
+	libr $(WATCOMLIBS)$(SLASH)oleaut32.lib \
+	libr $(WATCOMLIBS)$(SLASH)uuid.lib \
+	libr $(WATCOMLIBS)$(SLASH)rpcrt4.lib \
+	libr $(WATCOMLIBS)$(SLASH)wsock32.lib \
+	libr $(WATCOMLIBS)$(SLASH)winmm.lib
+
 
 # use global setup
 #COMPILER=MICROSOFT
 ifeq ($(COMPILER), MICROSOFT)
-MOD_INCL = $(STD_INCL_MICROSOFT)
+MOD_INCL = $(STD_INCL_MICROSOFT) /I $(DEVROOT_MAKE)/wxwin/wx/include
 MOD_INCL += $(foreach s, $(INCLS), /I "$s")
-LIBS =
 CC=Cl
 C_DLLOPS= $(C_DLLOPS_MICROSOFT$(MODE))
-C_EXEOPS= $(C_EXEOPS_MICROSOFT$(MODE))
+C_EXEOPS= $(C_EXEOPS_MICROSOFT$(MODE)) /D__WIN32__ /DWINVER=0x0400 /D__WINDOWS95__ /D__WINDOWS__ /D__WXMSW__ /DLB_I_EXTENTIONS /D__WXDEBUG__
 C_LIBOPS= $(C_LIBOPS_MICROSOFT$(MODE))
 LINK=  $(LINK_MICROSOFT)
-L_DLLOPS= $(L_DLLOPS_MICROSOFT)
-LNKDLLOPS = $(L_DLLOPS_MICROSOFT)
+LNKDLLOPS = $(L_DLLOPS_MICROSOFT) /NODEFAULT:MSVCRTD
+MODULE=wxwrapper
+APPVER=3.50 # 4.0
+CPU=i386
+LINKFLAGS = $(L_EXEOPS_MICROSOFT) $(LIBS) $(OBJS) \
+/pdb:"$(OUTDIR)\$(MODULE).pdb" \
+/out:"$(OUTDIR)\$(MODULE).exe" \
+/INCREMENTAL:NO /DEBUG /NOLOGO -machine:$(CPU) -subsystem:windows,$(APPVER)
+endif
+ifeq ($(COMPILER), WATCOM)
+MOD_INCL = $(STD_INCL_WATCOM) -i=$(DEVROOT_MAKE)/wxwin/wx/include
+
+C_EXEOPS= $(C_EXEOPS_WATCOM$(MODE)) /D__WIN32__ /DWINVER=0x0400 /D__WINDOWS95__ \
+		/D__WINDOWS__ /D__WXMSW__ /DLB_I_EXTENTIONS /D__WXDEBUG__
+		
+C_DLLOPS= $(C_DLLOPS_WATCOM$(MODE)) /D__WIN32__ /DWINVER=0x0400 /D__WINDOWS95__ \
+		/D__WINDOWS__ /D__WXMSW__ /DLB_I_EXTENTIONS /D__WXDEBUG__ /D_WINDLL /DWXUSINGDLL
+		
+LINKFLAGS = $(L_EXEOPS)
 endif
 
-#OBJDEP=../lbHook/lbHook.o
-# ../lbHook/conio.o
 endif
 
 ifeq ($(OSTYPE), linux)
 MOD_INCL=$(STD_INCL)
 OBJDEP=
-VENDORLIBS=/libdev/lib/lbhook.so
+C_ELFOPS_WX = -DUNIX -DLINUX -D__WXGTK__ -DLB_I_EXTENTIONS -D__WXDEBUG__
+C_ELFOPS= $(C_ELFOPS_WX)
+VENDORLIBS=/libdev/lib/lbHook.so 
 endif    

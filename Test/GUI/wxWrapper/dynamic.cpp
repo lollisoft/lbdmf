@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.55 2005/03/10 09:02:34 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.56 2005/03/14 18:59:03 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.55 $
+ * $Revision: 1.56 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.55 2005/03/10 09:02:34 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.56 2005/03/14 18:59:03 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.56  2005/03/14 18:59:03  lollisoft
+ * Various changes and additions to make plugins also work with database forms
+ *
  * Revision 1.55  2005/03/10 09:02:34  lollisoft
  * Plugin code complete until real loading.
  *
@@ -772,6 +775,7 @@ char const * LB_STDCALL wxLogonPage::getTextValue(char* _name) {
 /*...e*/
 /*...e*/
 
+#ifdef bla
 /*...sdoc:0:*/
 /*
 	This database dialog sample uses a fixed query yet.
@@ -982,6 +986,7 @@ void lbDatabaseDialog::init(wxWindow* parent, wxString formName, wxString SQLStr
 
 	SetTitle(formName);
 
+/*...ssizers:8:*/
 	wxBoxSizer* sizerMain  = new wxBoxSizer(wxVERTICAL);
 	
 	wxBoxSizer* sizerHor   = new wxBoxSizer(wxHORIZONTAL);
@@ -991,6 +996,7 @@ void lbDatabaseDialog::init(wxWindow* parent, wxString formName, wxString SQLStr
 	
 	wxBoxSizer* sizerLeft  = new wxBoxSizer(wxVERTICAL);	
 	wxBoxSizer* sizerRight = new wxBoxSizer(wxVERTICAL);
+/*...e*/
 
 	REQUEST(manager.getPtr(), lb_I_Database, database)
 
@@ -1004,12 +1010,14 @@ void lbDatabaseDialog::init(wxWindow* parent, wxString formName, wxString SQLStr
 
 	sampleQuery = database->getQuery(0);
 		
+/*...svariables:8:*/
 	int DatabaseFirst;
 	int DatabaseNext;
 	int DatabasePrev;
 	int DatabaseLast;
 	int DatabaseAdd;
 	int DatabaseDelete;
+/*...e*/
 	
 	UAP_REQUEST(manager.getPtr(), lb_I_EventManager, eman)
 	UAP_REQUEST(manager.getPtr(), lb_I_Dispatcher, dispatcher)
@@ -1050,11 +1058,13 @@ void lbDatabaseDialog::init(wxWindow* parent, wxString formName, wxString SQLStr
 
 	sampleQuery->first();
 	
-/*...screate database form elements:0:*/
+/*...screate database form elements:8:*/
 	REQUEST(manager.getPtr(), lb_I_Container, ComboboxMapperList)
 
 	for(int i = 1; i <= columns; i++) {
 		char* name = NULL;
+
+		bool createdControl = false;
 
 		UAP(lb_I_Query, FKColumnQuery, __FILE__, __LINE__)
 		
@@ -1065,7 +1075,7 @@ void lbDatabaseDialog::init(wxWindow* parent, wxString formName, wxString SQLStr
 		*/ 
 
 		if (sampleQuery->hasFKColumn(name) == 1) {
-/*...sCreate a combobox:24:*/
+/*...sCreate a combobox:32:*/
 			lbErrCodes err = ERR_NONE;
 			
 			// Create a mapping instance for this combo box
@@ -1099,7 +1109,7 @@ void lbDatabaseDialog::init(wxWindow* parent, wxString formName, wxString SQLStr
 			err = FKColumnQuery->first();
 			
 			if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
-/*...sHave mapping to visible data for the combobox:56:*/
+/*...sHave mapping to visible data for the combobox:64:*/
 				UAP_REQUEST(manager.getPtr(), lb_I_String, PKName)
 				UAP_REQUEST(manager.getPtr(), lb_I_String, PKTable)
 				
@@ -1126,7 +1136,7 @@ void lbDatabaseDialog::init(wxWindow* parent, wxString formName, wxString SQLStr
 				int cbox_pos = 0;
 				
 				if ((DBerr == ERR_NONE) || (DBerr == WARN_DB_NODATA)) {
-/*...sHave data to fill into the combobox and create mappings:96:*/
+/*...sHave data to fill into the combobox and create mappings:104:*/
 					UAP_REQUEST(manager.getPtr(), lb_I_String, data)
 					UAP_REQUEST(manager.getPtr(), lb_I_String, possible_fk)
 					
@@ -1190,39 +1200,64 @@ void lbDatabaseDialog::init(wxWindow* parent, wxString formName, wxString SQLStr
 				
 				sizerRight->Add(cbox, 1, wxEXPAND | wxALL, 5);
 				
+				createdControl = true;
 /*...e*/
 			}
 
 			free(buffer);
 /*...e*/
 		} else {
-		
-			int coltype = sampleQuery->getColumnType(name);
-			
-			wxTextCtrl *text = new wxTextCtrl(this, -1, sampleQuery->getAsString(i)->charrep(), wxPoint());
-		
-			text->SetName(name);
-		
-			sizerRight->Add(text, 1, wxEXPAND | wxALL, 5);
-		
-		
+/*...sCreate controls based on database type:32:*/
+			lb_I_Query::lbDBColumnTypes coltype = sampleQuery->getColumnType(i);
+
+			switch (coltype) {
+				case lb_I_Query::lbDBColumnBit:
+					{
+						printf("Creating a checkbox control.\n");
+						
+						wxCheckBox *check = new wxCheckBox(this, -1, 
+							"", wxPoint());
+						check->SetName(name);
+						sizerRight->Add(check, 1, wxEXPAND | wxALL, 5);	
+
+						createdControl = true;
+					}
+					break;
+					
+				case lb_I_Query::lbDBColumnChar:
+					{
+						wxTextCtrl *text = new wxTextCtrl(this, -1, 
+							sampleQuery->getAsString(i)->charrep(), wxPoint());
+						text->SetName(name);
+						sizerRight->Add(text, 1, wxEXPAND | wxALL, 5);
+
+						createdControl = true;
+					}
+					break;
+					
+				case lb_I_Query::lbDBColumnInteger:
+				case lb_I_Query::lbDBColumnUnknown:
+					break;
+			}
+/*...e*/
 		}
 		
-		char* tLabel = new char[strlen(name) + 1];
+		if (createdControl) {
+			char* tLabel = new char[strlen(name) + 1];
 		
-		tLabel[0] = 0;
+			tLabel[0] = 0;
 		
-		tLabel = strcat(tLabel, name); 
+			tLabel = strcat(tLabel, name); 
 		
-		wxStaticText *label = new wxStaticText(this, -1, tLabel, wxPoint());
-		sizerLeft->Add(label, 1, wxEXPAND | wxALL, 5);
-		
+			wxStaticText *label = new wxStaticText(this, -1, tLabel, wxPoint());
+			sizerLeft->Add(label, 1, wxEXPAND | wxALL, 5);
+		}	
 		
 		free(name);
 	}
 /*...e*/
 
-/*...screate dialog:0:*/
+/*...screate dialog:8:*/
 	sizerHor->Add(sizerLeft, 1, wxEXPAND | wxALL, 5);
 	sizerHor->Add(sizerRight, 1, wxEXPAND | wxALL, 5);
 
@@ -1308,6 +1343,7 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBUpdate() {
 
 		if (w != NULL) {
 			if (sampleQuery->hasFKColumn(name) == 1) {
+/*...sUpdate drop down box:32:*/
 				wxComboBox* cbox = (wxComboBox*) w;
 				
 				int pos = cbox->GetSelection();
@@ -1359,24 +1395,63 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBUpdate() {
 						sampleQuery->setString(*&col, *&val);
 					}
 				}
+/*...e*/
 			} else {
-				wxTextCtrl* tx = (wxTextCtrl*) w;
-			
-				wxString v = tx->GetValue();
-			
-				col->setData(name);
-				val->setData(v.c_str());
+/*...sUpdate controls:32:*/
+				lb_I_Query::lbDBColumnTypes coltype = sampleQuery->getColumnType(i);
 
-				sampleQuery->setString(*&col, *&val);
+				switch (coltype) {
+					case lb_I_Query::lbDBColumnBit:
+						{
+							wxCheckBox *check = (wxCheckBox*) w;
+							if (check->GetValue() == TRUE) {
+								wxString v = "true";
+								col->setData(name);
+								val->setData(v.c_str());
+								
+								sampleQuery->setString(*&col, *&val);
+							} else {
+								wxString v = "false";
+								col->setData(name);
+								val->setData(v.c_str());
+								
+								sampleQuery->setString(*&col, *&val);
+							}
+						}
+						break;
+					
+					case lb_I_Query::lbDBColumnChar:
+						{
+							wxTextCtrl* tx = (wxTextCtrl*) w;
+			
+							wxString v = tx->GetValue();
+			
+							col->setData(name);
+							val->setData(v.c_str());
+
+							sampleQuery->setString(*&col, *&val);
+						}
+						break;
+					
+					case lb_I_Query::lbDBColumnInteger:
+					case lb_I_Query::lbDBColumnUnknown:
+						break;
+				}
+
+				
+/*...e*/
 			}
 		} else {
-			printf("Control not found\n");
+			_CL_VERBOSE << "Control '" << name << "' nicht gefunden." LOG_
 		}
 		
 		free(name);
 	}
 
-	if (sampleQuery->update() != ERR_NONE) return ERR_UPDATE_FAILED;
+	if (sampleQuery->update() != ERR_NONE) {
+		printf("sampleQuery->update() failed.\n");
+		return ERR_UPDATE_FAILED;
+	}
 	
 	return ERR_NONE;
 }
@@ -1393,6 +1468,7 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBRead() {
 		
 		if (w != NULL) {
 			if (sampleQuery->hasFKColumn(name) == 1) {
+/*...sfill combo box with data:32:*/
 				wxComboBox* cbox = (wxComboBox*) w;
 				
 				lbErrCodes err = ERR_NONE;
@@ -1447,10 +1523,46 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBRead() {
 				    free(newFK);
 				    newFK = NULL;
 				}
+/*...e*/
 			} else {
-				wxTextCtrl* tx = (wxTextCtrl*) w;
-				tx->SetValue(wxString(sampleQuery->getAsString(i)->charrep()));
+/*...sfill controls with data:32:*/
+				lb_I_Query::lbDBColumnTypes coltype = sampleQuery->getColumnType(i);
+
+				switch (coltype) {
+					case lb_I_Query::lbDBColumnBit:
+						{
+							wxCheckBox *check = (wxCheckBox*) w;
+							
+							if (sampleQuery->isNull(i)) {
+								check->SetValue(false);
+							} else {
+								if (strcmp(sampleQuery->getAsString(i)->charrep(), "true") == 0) {
+									printf("Read data for checkbox is true.\n");
+									check->SetValue(true);
+								} else {
+									printf("Read data for checkbox is false.\n");
+									check->SetValue(false);
+								}
+							}
+						}
+						break;
+					
+					case lb_I_Query::lbDBColumnChar:
+						{
+							wxTextCtrl* tx = (wxTextCtrl*) w;
+							tx->SetValue(wxString(sampleQuery->getAsString(i)->charrep()));
+						}
+						break;
+					
+					case lb_I_Query::lbDBColumnInteger:
+					case lb_I_Query::lbDBColumnUnknown:
+						break;
+				}
+
+/*...e*/
 			}
+		} else {
+			_CL_VERBOSE << "Control '" << name << "' nicht gefunden." LOG_
 		}
 		
 		free(name);
@@ -1462,7 +1574,6 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBRead() {
 
 /*...slbErrCodes LB_STDCALL lbDatabaseDialog\58\\58\lbDBFirst\40\lb_I_Unknown\42\ uk\41\:0:*/
 lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBFirst(lb_I_Unknown* uk) {
-printf("Move first\n");
 	lbDBUpdate();
 
 	sampleQuery->first();
@@ -1479,7 +1590,6 @@ printf("Move first\n");
 /*...e*/
 /*...slbErrCodes LB_STDCALL lbDatabaseDialog\58\\58\lbDBNext\40\lb_I_Unknown\42\ uk\41\:0:*/
 lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBNext(lb_I_Unknown* uk) {
-printf("Move next\n");
 	lbDBUpdate();
 
 	if (sampleQuery->next() == WARN_DB_NODATA) {
@@ -1497,7 +1607,6 @@ printf("Move next\n");
 /*...e*/
 /*...slbErrCodes LB_STDCALL lbDatabaseDialog\58\\58\lbDBPrev\40\lb_I_Unknown\42\ uk\41\:0:*/
 lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBPrev(lb_I_Unknown* uk) {
-printf("Move previous\n");
 	lbDBUpdate();
 
 	if (sampleQuery->previous() == WARN_DB_NODATA) {
@@ -1515,7 +1624,6 @@ printf("Move previous\n");
 /*...e*/
 /*...slbErrCodes LB_STDCALL lbDatabaseDialog\58\\58\lbDBLast\40\lb_I_Unknown\42\ uk\41\:0:*/
 lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBLast(lb_I_Unknown* uk) {
-printf("Move last\n");
 	lbDBUpdate();
 
 	sampleQuery->last();
@@ -1533,7 +1641,6 @@ printf("Move last\n");
 
 /*...slbErrCodes LB_STDCALL lbDatabaseDialog\58\\58\lbDBAdd\40\lb_I_Unknown\42\ uk\41\:0:*/
 lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBAdd(lb_I_Unknown* uk) {
-printf("Add a new record\n");
 	lbDBUpdate();
 
 	sampleQuery->add();
@@ -1545,7 +1652,6 @@ printf("Add a new record\n");
 /*...e*/
 /*...slbErrCodes LB_STDCALL lbDatabaseDialog\58\\58\lbDBDelete\40\lb_I_Unknown\42\ uk\41\:0:*/
 lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBDelete(lb_I_Unknown* uk) {
-printf("Delete a record\n");
 	//lbDBUpdate();
 
 	sampleQuery->remove();
@@ -1556,6 +1662,7 @@ printf("Delete a record\n");
 }
 /*...e*/
 /*...e*/
+#endif
 
 /*...sclass lbLoginDialog:0:*/
 /**
@@ -2023,7 +2130,7 @@ public:
         
         bool handlersInitialized;
         
-        lbDatabaseDialog* dialog;
+        lb_I_DatabaseForm* dialog;
 
         // The frame has the main dispatcher and is a wxEventHandler subclass
         lb_wxFrame* frame;
@@ -2149,15 +2256,22 @@ lbErrCodes LB_STDCALL lb_wxGUI::cleanup() {
 	
 	// destroy all still created forms that are hidden.
 
-	if (forms == NULL) return ERR_NONE; 
+	if (forms == NULL) {
+		_CL_LOG << "lb_wxGUI::cleanup() has nothing to clean up." LOG_
+		return ERR_NONE;
+	} 
 
 	while (forms->hasMoreElements()) {
-		
+		lbErrCodes err = ERR_NONE;
+				
 		lb_I_Unknown* form = forms->nextElement();
+
+		UAP(lb_I_DatabaseForm, d, __FILE__, __LINE__)		
+		QI(form, lb_I_DatabaseForm, d, __FILE__, __LINE__)
 		
-		lbDatabaseDialog* d = (lbDatabaseDialog*) form;
+		_CL_LOG << "Destroy a form..." LOG_
 		
-		d->Destroy();
+		d->destroy();
 	}
 
 
@@ -2265,7 +2379,7 @@ lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::createDBForm(char* formName, char* query
 
 	// Locate the form instance in the container
 	
-	lbDatabaseDialog* _dialog = NULL;
+	UAP(lb_I_DatabaseForm, _dialog, __FILE__, __LINE__)
 	
 	if (forms == NULL) {
 		REQUEST(getModuleManager(), lb_I_Container, forms)
@@ -2282,30 +2396,41 @@ lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::createDBForm(char* formName, char* query
 	uk = forms->getElement(&key);	
 	
 	if (uk != NULL) {
-		_dialog = (lbDatabaseDialog*) *&uk;
+		QI(uk, lb_I_DatabaseForm, _dialog, __FILE__, __LINE__)
 	}
 
-	if (_dialog) {
-		_dialog->Show(TRUE);
+	if (_dialog.getPtr() != NULL) {
+		_dialog->show();
 	} else {
-		_dialog = new lbDatabaseDialog();
-		_dialog->setModuleManager(getModuleManager(), __FILE__, __LINE__);
+		UAP_REQUEST(manager.getPtr(), lb_I_PluginManager, PM)
 		
-		QI(_dialog, lb_I_Unknown, uk, __FILE__, __LINE__)
+		UAP(lb_I_Plugin, pl, __FILE__, __LINE__)
+		
+		pl = PM->getFirstMatchingPlugin("lb_I_DatabaseForm");
+		
+		uk = pl->getImplementation();
 		
 		forms->insert(&uk, &key);
 		
-		delete _dialog;
-		_dialog = NULL;
+		//-------------------------------------------------------
+		// The form has been cloned. Destroy the unused instance.
+		// This avoids application hang at exit.
+		
+		UAP(lb_I_DatabaseForm, form, __FILE__, __LINE__)
+		QI(uk, lb_I_DatabaseForm, form, __FILE__, __LINE__)
+		
+		form->destroy();
+		//-------------------------------------------------------
+		
 		
 		uk = forms->getElement(&key);
 		
 		if (uk != NULL) {
-		        _dialog = (lbDatabaseDialog*) *&uk;
+		        QI(uk, lb_I_DatabaseForm, _dialog, __FILE__, __LINE__)
 		}
 		
-		_dialog->init(frame, wxString(formName), wxString(queryString), DBName, DBUser, DBPass);
-		_dialog->Show(TRUE);
+		_dialog->init(formName, queryString, DBName, DBUser, DBPass);
+		_dialog->show();
 	}
 	return NULL;
 }
@@ -2973,6 +3098,8 @@ _LOG << "Initialized metaapplication" LOG_
 
 	UAP_REQUEST(mm.getPtr(), lb_I_PluginManager, PM)
 	printf("Test plugin manager\n");
+
+	PM->initialize();
 
 	if (PM->beginEnumPlugins()) {
 	

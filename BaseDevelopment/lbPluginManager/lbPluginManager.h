@@ -33,11 +33,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.2 $
+ * $Revision: 1.3 $
  * $Name:  $
- * $Id: lbPluginManager.h,v 1.2 2004/06/16 22:12:32 lollisoft Exp $
+ * $Id: lbPluginManager.h,v 1.3 2005/03/14 18:59:02 lollisoft Exp $
  *
  * $Log: lbPluginManager.h,v $
+ * Revision 1.3  2005/03/14 18:59:02  lollisoft
+ * Various changes and additions to make plugins also work with database forms
+ *
  * Revision 1.2  2004/06/16 22:12:32  lollisoft
  * More code for plugin management
  *
@@ -56,7 +59,7 @@ extern "C" {
 #endif
 /*...e*/
 
-DECLARE_FUNCTOR(instanceOfPluginManager)
+DECLARE_SINGLETON_FUNCTOR(instanceOfPluginManager)
 DECLARE_FUNCTOR(instanceOfPlugin)
 
 /*...s\35\ifdef __cplusplus \125\:0:*/

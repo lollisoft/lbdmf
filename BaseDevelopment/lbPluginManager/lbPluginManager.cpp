@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.10 $
+ * $Revision: 1.11 $
  * $Name:  $
- * $Id: lbPluginManager.cpp,v 1.10 2005/03/10 16:48:27 lollisoft Exp $
+ * $Id: lbPluginManager.cpp,v 1.11 2005/03/14 18:59:02 lollisoft Exp $
  *
  * $Log: lbPluginManager.cpp,v $
+ * Revision 1.11  2005/03/14 18:59:02  lollisoft
+ * Various changes and additions to make plugins also work with database forms
+ *
  * Revision 1.10  2005/03/10 16:48:27  lollisoft
  * Fully implemented plugin functionality
  *
@@ -114,10 +117,14 @@ public:
 
 	DECLARE_LB_UNKNOWN()
 
+	void LB_STDCALL initialize();
         bool LB_STDCALL beginEnumPlugins();
+
+	lb_I_Plugin* LB_STDCALL getFirstMatchingPlugin(char* match);
         lb_I_Plugin* LB_STDCALL nextPlugin();
-        bool LB_STDCALL attach(lb_I_Plugin* toAttach);
-        bool LB_STDCALL detach(lb_I_Plugin* toAttach);
+
+        bool LB_STDCALL attach(lb_I_PluginModule* toAttach);
+        bool LB_STDCALL detach(lb_I_PluginModule* toAttach);
         
 private:
 
@@ -137,11 +144,11 @@ private:
 };
 /*...e*/
 /*...simplementation of class lbPluginManager:0:*/
-BEGIN_IMPLEMENT_LB_UNKNOWN(lbPluginManager)
+BEGIN_IMPLEMENT_SINGLETON_LB_UNKNOWN(lbPluginManager)
         ADD_INTERFACE(lb_I_PluginManager)
 END_IMPLEMENT_LB_UNKNOWN()
 
-IMPLEMENT_FUNCTOR(instanceOfPluginManager, lbPluginManager)
+IMPLEMENT_SINGLETON_FUNCTOR(instanceOfPluginManager, lbPluginManager)
 
 
 lbPluginManager::lbPluginManager() {
@@ -233,20 +240,13 @@ bool LB_STDCALL lbPluginManager::tryLoad(char* module) {
 	return true;
 }
 /*...e*/
-
-/*...sbool LB_STDCALL lbPluginManager\58\\58\beginEnumPlugins\40\\41\:0:*/
-bool LB_STDCALL lbPluginManager::beginEnumPlugins() {
+/*...svoid LB_STDCALL lbPluginManager\58\\58\initialize\40\\41\:0:*/
+void LB_STDCALL lbPluginManager::initialize() {
 	if (!firstEnumerate) {
 		firstEnumerate = TRUE;
 		
 		REQUEST(manager.getPtr(), lb_I_Container, PluginModules)
 	}
-	
-	// Scan the plugin directory for DLL's or so's and try to get the plugin module instance.
-	// If the instance could be loaded, insert its plugin definitions into the container.
-	
-	// ...
-	
 	
 	_finddata_t find;
 
@@ -260,7 +260,6 @@ bool LB_STDCALL lbPluginManager::beginEnumPlugins() {
 	strcat(toFind, mask);
 	
 	long handle = _findfirst(toFind, &find);
-
 
 #ifndef LINUX
         #ifdef __WATCOMC__
@@ -311,15 +310,23 @@ bool LB_STDCALL lbPluginManager::beginEnumPlugins() {
 	}
 	
 	delete [] toFind;
+}
+/*...e*/
+/*...sbool LB_STDCALL lbPluginManager\58\\58\beginEnumPlugins\40\\41\:0:*/
+bool LB_STDCALL lbPluginManager::beginEnumPlugins() {
+	printf("lbPluginManager::beginEnumPlugins() with %d modules\n", PluginModules->Count());
+	printf("--------------------------------------------------\n");
+
+	PluginModules->finishIteration();
 	
 	if (PluginModules->hasMoreElements()) {
-		begunEnumerate = TRUE;
+		begunEnumerate = true;
+		firstPlugin = true;
 		return TRUE;
 	}
 	return FALSE;
 }
 /*...e*/
-
 /*...slb_I_Plugin\42\ LB_STDCALL lbPluginManager\58\\58\nextPlugin\40\\41\:0:*/
 lb_I_Plugin* LB_STDCALL lbPluginManager::nextPlugin() {
 	lbErrCodes err = ERR_NONE;
@@ -331,7 +338,7 @@ lb_I_Plugin* LB_STDCALL lbPluginManager::nextPlugin() {
 		
 		if (firstPlugin) {
 
-			// Have first Plugin of one module
+			printf("Have first Plugin of one module.\n");
 	
 			firstPlugin = FALSE;
 		
@@ -345,7 +352,7 @@ lb_I_Plugin* LB_STDCALL lbPluginManager::nextPlugin() {
 			
 			
 			while (PluginModules->hasMoreElements()) {
-
+				printf("Get next module...\n");
 				uk = PluginModules->nextElement();
 		
 				QI(uk, lb_I_PluginModule, plM, __FILE__, __LINE__)
@@ -353,22 +360,23 @@ lb_I_Plugin* LB_STDCALL lbPluginManager::nextPlugin() {
 				// Get all plugins of this module
 
 				if (PluginContainer != NULL) {
-			
-					// Cleanup old one
-			
+					printf("Cleanup last PluginContainer from a module.\n");
 					PluginContainer->release(__FILE__, __LINE__);
 				}
-
+				
+				printf("Initialize plugins in module.\n");
 				plM->initialize();
 
 				PluginContainer = plM->getPlugins();
 			
 				if (PluginContainer->hasMoreElements()) {
+					printf("Have a plugin in module...\n");
 					uk = PluginContainer->nextElement();
 				
 					UAP(lb_I_Plugin, plugin, __FILE__, __LINE__)
 					QI(uk, lb_I_Plugin, plugin, __FILE__, __LINE__)
 				
+					printf("Plugin is %s in %s\n", plugin->getName(), plugin->getModule());
 					return plugin.getPtr();
 				}
 			}
@@ -378,11 +386,13 @@ lb_I_Plugin* LB_STDCALL lbPluginManager::nextPlugin() {
 		
 			if (!lastPlugin) {
 				if (PluginContainer->hasMoreElements()) {
+					printf("Have a plugin in module...\n");
 				        uk = PluginContainer->nextElement();
 
 				        UAP(lb_I_Plugin, plugin, __FILE__, __LINE__)
 				        QI(uk, lb_I_Plugin, plugin, __FILE__, __LINE__)
 
+					printf("Plugin is %s in %s\n", plugin->getName(), plugin->getModule());
 				        return plugin.getPtr();
 				} else {
 					firstPlugin = TRUE;
@@ -399,12 +409,38 @@ lb_I_Plugin* LB_STDCALL lbPluginManager::nextPlugin() {
 	return NULL;
 }
 /*...e*/
+/*...slb_I_Plugin\42\ LB_STDCALL lbPluginManager\58\\58\getFirstMatchingPlugin\40\char\42\ match\41\:0:*/
+lb_I_Plugin* LB_STDCALL lbPluginManager::getFirstMatchingPlugin(char* match) {
+	
+	if (beginEnumPlugins()) {
 
-bool LB_STDCALL lbPluginManager::attach(lb_I_Plugin* toAttach) {
+        	while (TRUE) {
+
+	                UAP(lb_I_Plugin, pl, __FILE__, __LINE__)
+
+	                pl = nextPlugin();
+
+                	if (pl == NULL) break;
+
+			lb_I_Unknown* uk;
+
+        	        if (pl->hasInterface(match)) {
+        	        	return pl.getPtr();
+        	        }
+
+	        }
+
+		return NULL;
+	}
+	return NULL;
+}
+/*...e*/
+
+bool LB_STDCALL lbPluginManager::attach(lb_I_PluginModule* toAttach) {
 	return FALSE;
 }
 
-bool LB_STDCALL lbPluginManager::detach(lb_I_Plugin* toAttach) {
+bool LB_STDCALL lbPluginManager::detach(lb_I_PluginModule* toAttach) {
 	return FALSE;
 }
 /*...e*/
@@ -417,6 +453,11 @@ public:
         virtual ~lbPlugin();
 
         DECLARE_LB_UNKNOWN()
+
+	lb_I_Unknown* LB_STDCALL getImplementation();
+	bool LB_STDCALL hasInterface(char* name);
+
+	void LB_STDCALL preinitialize();
 
 	void LB_STDCALL initialize();
 	bool LB_STDCALL run();
@@ -435,19 +476,28 @@ public:
 		_name = strdup(name);
 	}
 	
-	void LB_STDCALL setScope(char* scope) {
-		free(_scope);
-		_scope = strdup(scope);
+	void LB_STDCALL setNamespace(char* __namespace) {
+		free(_namespace);
+		_namespace = strdup(__namespace);
 	}
 
 	char* LB_STDCALL getModule() { return _module; }
 	char* LB_STDCALL getName() { return _name; }
-	char* LB_STDCALL getScope() { return _scope; }
+	char* LB_STDCALL getNamespace() { return _namespace; }
+
+private:
+	lb_I_Unknown* LB_STDCALL peekImplementation();
 
 	char* _name;
-	char* _scope;
+	char* _namespace;
 	char* _module;
 	UAP(lb_I_PluginManager, _plM, __FILE__, __LINE__)
+
+	UAP(lb_I_Unknown, implementation, __FILE__, __LINE__)
+
+	bool isPreInitialized;
+	bool postInitialized;
+
 };
 /*...e*/
 /*...simplementation of class lbPlugin:0:*/
@@ -457,31 +507,48 @@ BEGIN_IMPLEMENT_LB_UNKNOWN(lbPlugin)
         ADD_INTERFACE(lb_I_Plugin)
 END_IMPLEMENT_LB_UNKNOWN()
 
+/*...slbPlugin\58\\58\lbPlugin\40\\41\:0:*/
 lbPlugin::lbPlugin() {
 	_module = NULL;
 	_name = NULL;
-	_scope = NULL;
+	_namespace = NULL;
 	ref = STARTREF;
+	
+	implementation = NULL;
+	isPreInitialized = false;
+	
 	printf("lbPlugin::lbPlugin() called.\n");
 }
-
+/*...e*/
+/*...slbPlugin\58\\58\\126\lbPlugin\40\\41\:0:*/
 lbPlugin::~lbPlugin() {
 	free(_module);
 	free(_name);
-	free(_scope);
+	free(_namespace);
 	
 	printf("lbPlugin::~lbPlugin() called.\n");
 }
-
+/*...e*/
+/*...slbErrCodes LB_STDCALL lbPlugin\58\\58\setData\40\lb_I_Unknown\42\ uk\41\:0:*/
 lbErrCodes LB_STDCALL lbPlugin::setData(lb_I_Unknown* uk) {
-        _CL_LOG << "lbPlugin::setData(...) not implemented yet" LOG_
+	lbErrCodes err = ERR_NONE;
+	
+	UAP(lb_I_Plugin, pl, __FILE__, __LINE__)
+	QI(uk, lb_I_Plugin, pl, __FILE__, __LINE__)
+	
+	setName(pl->getName());
+	setModule(pl->getModule());
+	setNamespace(pl->getNamespace());
+
         return ERR_NOT_IMPLEMENTED;
 }
-
+/*...e*/
+/*...svoid LB_STDCALL lbPlugin\58\\58\setPluginManager\40\lb_I_PluginManager\42\ plM\41\:0:*/
 void LB_STDCALL lbPlugin::setPluginManager(lb_I_PluginManager* plM) {
 	_plM = plM;
 	_plM++;
 }
+/*...e*/
 
 void LB_STDCALL lbPlugin::setAttached(lb_I_PluginImpl* impl) {
 
@@ -491,52 +558,55 @@ void LB_STDCALL lbPlugin::uninitialize() {
 
 }
 
-void LB_STDCALL lbPlugin::initialize() {
+/*...svoid LB_STDCALL lbPlugin\58\\58\preinitialize\40\\41\:0:*/
+void LB_STDCALL lbPlugin::preinitialize() {
 	lbErrCodes err = ERR_NONE;
-
-/*...sbuild PREFIX:0:*/
-#ifndef LINUX
-        #ifdef __WATCOMC__
-        #define PREFIX "_"
-        #endif
-        #ifdef _MSC_VER
-        #define PREFIX ""
-        #endif
-#endif
-#ifdef LINUX
-#define PREFIX ""
-#endif
-/*...e*/
-	
-	printf("lbPlugin::initialize() called. Module: %s, name: %s, scope: %s\n", _module, _name, _scope);
+	if (isPreInitialized) return;
 
 	UAP(lb_I_Unknown, ukPlugin, __FILE__, __LINE__)
 
 	char* name = (char*) malloc(strlen(PREFIX)+strlen("instanceOf")+strlen(_name)+1);
-	
+
 	name[0] = 0;
 	strcat(name, PREFIX);
 	strcat(name, "instanceOf");
 	strcat(name, _name);
 
-	if (manager->makeInstance(name, _module, &ukPlugin) == ERR_NONE) {	
-	
-		UAP(lb_I_PluginImpl, impl, __FILE__, __LINE__)
-		QI(ukPlugin, lb_I_PluginImpl, impl, __FILE__, __LINE__)
-		impl++;
+	if (manager.getPtr() == NULL) {
+		_CL_LOG << "FATAL: lbPlugin::preinitialize() uses a NULL pointer for the manager!" LOG_
+	}
+
+	if (manager->makeInstance(name, _module, &ukPlugin) == ERR_NONE) {
+
+		ukPlugin->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+
+	        UAP(lb_I_PluginImpl, impl, __FILE__, __LINE__)
+	        QI(ukPlugin, lb_I_PluginImpl, impl, __FILE__, __LINE__)
+	        impl++;
+
+	        QI(ukPlugin, lb_I_Unknown, implementation, __FILE__, __LINE__)
+	        implementation++;
 		
-		impl->initialize();
+		isPreInitialized = true;
+
 	} else {
 		name[0] = 0;
 		strcat(name, "instanceOf");
 		strcat(name, _name);
-	
+
 		if (manager->makeInstance(name, _module, &ukPlugin) == ERR_NONE) {
+		
+			ukPlugin->setModuleManager(manager.getPtr(), __FILE__, __LINE__);;
+		
 			UAP(lb_I_PluginImpl, impl, __FILE__, __LINE__)
 			QI(ukPlugin, lb_I_PluginImpl, impl, __FILE__, __LINE__)
 			impl++;
 		
-			impl->initialize();
+			QI(ukPlugin, lb_I_Unknown, implementation, __FILE__, __LINE__)
+			implementation++;
+
+			isPreInitialized = true;
+
 		} else {
 			printf("lbPlugin::initialize() failed to forward call!\n");
 		}
@@ -544,8 +614,122 @@ void LB_STDCALL lbPlugin::initialize() {
 
 	free(name);
 }
+/*...e*/
+
+void LB_STDCALL lbPlugin::initialize() {
+	lbErrCodes err = ERR_NONE;
+
+	preinitialize();
+
+	if (isPreInitialized && !postInitialized) {
+		UAP(lb_I_PluginImpl, impl, __FILE__, __LINE__)		
+		QI(implementation, lb_I_PluginImpl, impl, __FILE__, __LINE__)
+
+		impl->initialize();
+	}
+}
 
 bool LB_STDCALL lbPlugin::run() {
 	return true;
 }
+
+/*...slb_I_Unknown\42\ LB_STDCALL lbPlugin\58\\58\peekImplementation\40\\41\:0:*/
+lb_I_Unknown* LB_STDCALL lbPlugin::peekImplementation() {
+	/*
+	   This would give back the plugin implementation class, but possibly not the
+	   underlying class. The reason may be the fact, that the plugin is implemented
+	   in two parts.
+	   The first may be the lb_I_PluginImpl and the second may be the real implementation
+	   of any interface. May be, this would be a database form (lb_I_DatabaseForm).
+	   
+	   In such a case, it is better to call the lb_I_PluginImpl::getImplementation() function.
+	   It would eventually return another instance, where it not would be the lb_I_PluginImpl.
+	 */
+	
+	lbErrCodes err = ERR_NONE;
+	
+	UAP(lb_I_PluginImpl, impl, __FILE__, __LINE__)
+	QI(implementation, lb_I_PluginImpl, impl, __FILE__, __LINE__)
+
+	lb_I_Unknown* uk = impl->peekImplementation();
+
+/*	
+	if (uk && (uk->getModuleManager() == NULL)) {
+		_CL_LOG << "ERROR: lb_I_PluginImpl returns an instance not having a module manager!" LOG_
+		uk->setModuleManager(getModuleInstance(), __FILE__, __LINE__);
+	}
+*/	
+
+	return uk;
+}
+/*...e*/
+/*...slb_I_Unknown\42\ LB_STDCALL lbPlugin\58\\58\getImplementation\40\\41\:0:*/
+lb_I_Unknown* LB_STDCALL lbPlugin::getImplementation() {
+	/*
+	   This would give back the plugin implementation class, but possibly not the
+	   underlying class. The reason may be the fact, that the plugin is implemented
+	   in two parts.
+	   The first may be the lb_I_PluginImpl and the second may be the real implementation
+	   of any interface. May be, this would be a database form (lb_I_DatabaseForm).
+	   
+	   In such a case, it is better to call the lb_I_PluginImpl::getImplementation() function.
+	   It would eventually return another instance, where it not would be the lb_I_PluginImpl.
+	 */
+	
+	lbErrCodes err = ERR_NONE;
+	
+	UAP(lb_I_PluginImpl, impl, __FILE__, __LINE__)
+	QI(implementation, lb_I_PluginImpl, impl, __FILE__, __LINE__)
+
+	lb_I_Unknown* uk = impl->getImplementation();
+
+/*	
+	if (uk && (uk->getModuleManager() == NULL)) {
+		_CL_LOG << "ERROR: lb_I_PluginImpl returns an instance not having a module manager!" LOG_
+		uk->setModuleManager(getModuleInstance(), __FILE__, __LINE__);
+	}
+*/	
+
+	return uk;
+}
+/*...e*/
+/*...sbool LB_STDCALL lbPlugin\58\\58\hasInterface\40\char\42\ name\41\:0:*/
+bool LB_STDCALL lbPlugin::hasInterface(char* name) {
+	lb_I_Unknown* temp;
+	
+	if (implementation == NULL) preinitialize();
+	
+	UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
+
+	/*
+		This function firstly creates an instance of the implementation behind
+		the plugin. So the reference count is at STARTREF. The above UAP variable
+		then would release the instance.
+	
+		This should not be this way, because the lb_I_PluginImpl stores only one
+		reverence to the instance.
+		
+		So, at this point, we need to increment the reference count manually!
+	*/
+	
+	uk = peekImplementation();
+	
+	/*
+		It may be a combined plugin implementation. Currently these, could not have
+		any other interface than lb_I_PluginImpl. This is due to multible inheritation
+		problems and the same base class lb_I_Unknown.
+        */
+        
+	if (uk == NULL) return false;
+
+	uk++;
+	
+	if (uk->queryInterface(name, (void**) &temp, __FILE__, __LINE__) == ERR_NONE) {
+		temp->release(__FILE__, __LINE__);
+		return true;
+	}
+	
+	return false;
+}
+/*...e*/
 /*...e*/

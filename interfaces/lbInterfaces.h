@@ -37,7 +37,7 @@
  */
 
 /*...sMain page documentation:0:*/
-/** \mainpage DMF - Version 0.4.1
+/** \mainpage Distributed Multiplatform Framework
  * \section intro_sec Introduction to DMF - Distributed Multiplatform Framework
  *
  * This is the introduction for the users of DMF after the first installation.
@@ -1260,7 +1260,7 @@ lbErrCodes LB_STDCALL classname::queryInterface(char* name, void** unknown, char
         }
 
 /*...e*/
-
+	
 /** \def ADD_INTERFACE Adds support for a specific interface.
  *  This could be used multiple times for having more than one interface.
  */
@@ -1272,7 +1272,8 @@ lbErrCodes LB_STDCALL classname::queryInterface(char* name, void** unknown, char
                 *unknown = (interfaceName*) this; \
                 if (manager != NULL) { \
                 	interfaceName* that = (interfaceName*) this; \
-                	manager->notify_add(that, _classname, file, line); \
+                	lb_I_Unknown* uk = (lb_I_Unknown*) this; \
+                	manager->notify_add(uk, _classname, file, line); \
                 } \
 		else { \
 		        setFurtherLock(1); \
@@ -1285,7 +1286,7 @@ lbErrCodes LB_STDCALL classname::queryInterface(char* name, void** unknown, char
 
 #define END_IMPLEMENT_LB_UNKNOWN() \
 	_CL_LOG << "Error: Requested interface '" << name << "' not found! File: " << file << " Line: " << line LOG_ \
-	return ERR_NONE; \
+	return ERR_NO_INTERFACE; \
 }
 
 /*...e*/
@@ -1805,7 +1806,9 @@ public:
 class lb_I_DatabaseForm;
 
 /*...sclass lb_I_Form:0:*/
-class lb_I_Form : public lb_I_Unknown  {
+class lb_I_Form : 
+	public lb_I_Unknown, 
+	public lb_I_EventHandler {
 public:
 
 	virtual lbErrCodes LB_STDCALL addButton(char* buttonText, char* evHandler, int x, int y, int w, int h) = 0;
@@ -1813,6 +1816,7 @@ public:
 	virtual lbErrCodes LB_STDCALL addTextField(char* name, int x, int y, int w, int h) = 0;
 
 	virtual void LB_STDCALL show() = 0;
+	virtual void LB_STDCALL destroy() = 0;
 };
 /*...e*/
 /*...sclass lb_I_GUI:0:*/
@@ -2038,6 +2042,7 @@ public:
 
 class lb_I_Plugin;
 class lb_I_PluginImpl;
+class lb_I_PluginModule;
 class lb_I_String;
 
 /** \brief The plugin manager
@@ -2049,14 +2054,23 @@ class lb_I_String;
 class lb_I_PluginManager : public lb_I_Unknown {
 public:
 
-	/**
-	 * Starts listing of plugins.
+	/** \brief Starts initializing plugins.
 	 *
-	 * Currently this function is used to find and load the plugins.
+	 * This function reads out the plugin directory and tries to load
+	 * it by the standard plugin module functor. If it exists, it will
+	 * succeed. If not, the module will be ignored.
+	 */
+	virtual void LB_STDCALL initialize() = 0;
+
+	/** \brief Starts listing of plugins.
+	 *
+	 * As of lb_I_Container interface, this is similar to the beginning of
+	 * enumerating its objects.
 	 */
 	virtual bool LB_STDCALL beginEnumPlugins() = 0;
 	
-	/**
+	/** \brief Get the next plugin.
+	 *
 	 * Gets the next plugin handle instance. This does not
 	 * load an instance of the plugin implementation. But it
 	 * loads the module.
@@ -2064,19 +2078,29 @@ public:
 	 * To finally use the plugin, you must attach to it.
 	 */
 	virtual lb_I_Plugin* LB_STDCALL nextPlugin() = 0;
+
+	/** \brief Find first matching plugin.
+	 *
+	 * This function searches for a plugin, that matches the match string.
+	 *
+	 * The match string could be a functor name, an interface name or partial of them.
+	 * The order, in that this function will search is decided by the match string.
+	 */
+	virtual lb_I_Plugin* LB_STDCALL getFirstMatchingPlugin(char* match) = 0;
 	
-	/**
+	/** \brief Put in a plugin (via DnD as an example).
+	 *
 	 * Attach the plugin implementation to the plugin handle.
 	 * After attaching the plugin, you will be able to init
 	 * the plugin via the initialize() function.
 	 */
-	virtual bool LB_STDCALL attach(lb_I_Plugin* toAttach) = 0;
+	virtual bool LB_STDCALL attach(lb_I_PluginModule* toAttach) = 0;
 	
 	/** 
 	 * Detach it. If it returns true, it could be destroyed or
 	 * stored permanently for replacing with other implementation.
 	 */
-	virtual bool LB_STDCALL detach(lb_I_Plugin* toAttach) = 0;
+	virtual bool LB_STDCALL detach(lb_I_PluginModule* toAttach) = 0;
 };
 /*...e*/
 
@@ -2137,31 +2161,32 @@ void LB_STDCALL cls::enumPlugins() { \
 	lbErrCodes err = ERR_NONE; \
 	REQUEST(manager.getPtr(), lb_I_Container, Plugins)
 
-#define ADD_PLUGIN(plugin, scope) \
-	printf("Add a plugin %s, scope %s\n", #plugin, #scope); \
-	UAP_REQUEST(manager.getPtr(), lb_I_Plugin, P##plugin##scope) \
+#define ADD_PLUGIN(plugin, namespace) \
+	printf("Add a plugin %s, namespace %s\n", #plugin, #namespace); \
+	UAP_REQUEST(manager.getPtr(), lb_I_Plugin, P##plugin##namespace) \
 	\
-	P##plugin##scope->setModule(_module->getData()); \
-	P##plugin##scope->setName(#plugin); \
-	P##plugin##scope->setScope(#scope); \
+	printf("Initialize Plugin %s:%s:%s\n", _module->getData(), #plugin, #namespace); \
+	P##plugin##namespace->setModule(_module->getData()); \
+	P##plugin##namespace->setName(#plugin); \
+	P##plugin##namespace->setNamespace(#namespace); \
 	\
-	UAP_REQUEST(manager.getPtr(), lb_I_String, s##plugin##scope) \
-	UAP(lb_I_KeyBase, Key##plugin##scope, __FILE__, __LINE__) \
-	UAP(lb_I_Unknown, ukPlugin##plugin##scope, __FILE__, __LINE__) \
+	UAP_REQUEST(manager.getPtr(), lb_I_String, s##plugin##namespace) \
+	UAP(lb_I_KeyBase, Key##plugin##namespace, __FILE__, __LINE__) \
+	UAP(lb_I_Unknown, ukPlugin##plugin##namespace, __FILE__, __LINE__) \
 	\
-	s##plugin##scope->setData(#plugin); \
-	QI(s##plugin##scope, lb_I_KeyBase, Key##plugin##scope, __FILE__, __LINE__) \
-	QI(P##plugin##scope, lb_I_Unknown, ukPlugin##plugin##scope, __FILE__, __LINE__) \
-	Plugins->insert(&ukPlugin##plugin##scope, &Key##plugin##scope); \
+	s##plugin##namespace->setData(#plugin); \
+	QI(s##plugin##namespace, lb_I_KeyBase, Key##plugin##namespace, __FILE__, __LINE__) \
+	QI(P##plugin##namespace, lb_I_Unknown, ukPlugin##plugin##namespace, __FILE__, __LINE__) \
+	Plugins->insert(&ukPlugin##plugin##namespace, &Key##plugin##namespace); \
 	\
-	UAP(lb_I_Unknown, ukPl##plugin##scope, __FILE__, __LINE__) \
-	UAP(lb_I_Plugin, Pl##plugin##scope, __FILE__, __LINE__) \
-	ukPl##plugin##scope = Plugins->getElement(&Key##plugin##scope); \
-	printf("Got back the plugin at %p\n", ukPl##plugin##scope.getPtr()); \
-	QI(ukPl##plugin##scope, lb_I_Plugin, Pl##plugin##scope, __FILE__, __LINE__) \
-	Pl##plugin##scope->setModule(_module->getData()); \
-	Pl##plugin##scope->setName(#plugin); \
-	Pl##plugin##scope->setScope(#scope);
+	UAP(lb_I_Unknown, ukPl##plugin##namespace, __FILE__, __LINE__) \
+	UAP(lb_I_Plugin, Pl##plugin##namespace, __FILE__, __LINE__) \
+	ukPl##plugin##namespace = Plugins->getElement(&Key##plugin##namespace); \
+	printf("Got back the plugin at %p\n", ukPl##plugin##namespace.getPtr()); \
+	QI(ukPl##plugin##namespace, lb_I_Plugin, Pl##plugin##namespace, __FILE__, __LINE__) \
+	Pl##plugin##namespace->setModule(_module->getData()); \
+	Pl##plugin##namespace->setName(#plugin); \
+	Pl##plugin##namespace->setNamespace(#namespace);
 
 
 #define END_PLUGINS() }
@@ -2192,6 +2217,22 @@ public:
 	 * Let the plugin implementation run.
 	 */
 	virtual bool LB_STDCALL run() = 0;
+
+	/** \brief Check for given interface.
+	 *
+	 * This function instantiate the underlying implementation and
+	 * checks, if it contains the requested interface. If this is true,
+	 * the instance will stay alive. If not, it will be released.
+	 */
+	virtual bool LB_STDCALL hasInterface(char* name) = 0;
+	
+	/** \brief Returns the underlying implementation as unknown instance.
+	 *
+	 * This function returns the instance of the implementation and left the
+	 * owning by the caller. It does not clean up the instance by it self.
+	 */
+	 
+	virtual lb_I_Unknown* LB_STDCALL getImplementation() = 0; 
 
 /*...slb_I_Plugin management API:0:*/
 	/**
@@ -2232,12 +2273,13 @@ public:
 	 *
 	 * This means, propably a server, where no user interaction is available.
 	 */
-	virtual void LB_STDCALL setScope(char* scope) = 0;
+	virtual void LB_STDCALL setNamespace(char* __namespace) = 0;
 	
 	
 	virtual char* LB_STDCALL getModule() = 0;
 	virtual char* LB_STDCALL getName() = 0;
-	virtual char* LB_STDCALL getScope() = 0;
+	virtual char* LB_STDCALL getNamespace() = 0;
+
 /*...e*/
 	
 };
@@ -2259,6 +2301,20 @@ public:
 	 * Run the plugin.
 	 */
 	virtual bool LB_STDCALL run() = 0;
+
+	/** \brief Creates an instance once.
+	 *
+	 * This function creates an instance once and holds it created until getImplementation
+	 * is called. This enables checking for interfaces before real usage.
+	 */
+	virtual lb_I_Unknown* LB_STDCALL peekImplementation() = 0;
+	
+	/** \brief Get the internal implementation.
+	 *
+	 * Returns the implementation class as an unknown interface. Internally it releases the
+	 * instance to be able to create new instances.
+	 */
+	virtual lb_I_Unknown* LB_STDCALL getImplementation() = 0; 
 };
 /*...e*/
 

@@ -38,11 +38,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.23 $
+ * $Revision: 1.24 $
  * $Name:  $
- * $Id: skiplist.cpp,v 1.23 2005/02/10 17:02:33 lollisoft Exp $
+ * $Id: skiplist.cpp,v 1.24 2005/03/14 18:59:02 lollisoft Exp $
  *
  * $Log: skiplist.cpp,v $
+ * Revision 1.24  2005/03/14 18:59:02  lollisoft
+ * Various changes and additions to make plugins also work with database forms
+ *
  * Revision 1.23  2005/02/10 17:02:33  lollisoft
  * Changes for Mac OS X
  *
@@ -465,6 +468,11 @@ void SkipList::remove(Elem searchKey) {
   }
 
 
+/*...e*/
+/*...sSkipList\58\\58\finishIteration\40\\41\:0:*/
+void SkipList::finishIteration() {
+	iteration = 0;
+}
 /*...e*/
 /*...sSkipList\58\\58\can_dump\40\\41\:0:*/
 int SkipList::can_dump() {

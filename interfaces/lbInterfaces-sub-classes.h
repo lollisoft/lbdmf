@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.44 $
+ * $Revision: 1.45 $
  * $Name:  $
- * $Id: lbInterfaces-sub-classes.h,v 1.44 2005/02/13 19:01:50 lollisoft Exp $
+ * $Id: lbInterfaces-sub-classes.h,v 1.45 2005/03/14 18:59:04 lollisoft Exp $
  *
  * $Log: lbInterfaces-sub-classes.h,v $
+ * Revision 1.45  2005/03/14 18:59:04  lollisoft
+ * Various changes and additions to make plugins also work with database forms
+ *
  * Revision 1.44  2005/02/13 19:01:50  lollisoft
  * Skiplist element does not check for data NULL pointer.
  *
@@ -687,21 +690,59 @@ int LB_STDCALL classname::lessthan(const lb_I_KeyBase* _key) const { \
 }
 /*...e*/
 /*...sclass lb_I_Container:0:*/
+/** \brief Storage for other objects.
+ *
+ * A container can store other objects. It is filled while making a copy of
+ * the object to be inserted! 
+ *
+ * Note: The documention is not complete!
+ */
 class lb_I_Container : public lb_I_Unknown {
-/*
-protected:
-    lb_I_Container() {}
-    virtual ~lb_I_Container() {}
-*/
 public:
+	/** \brief Number of objects in the container.
+	 *
+	 */
     virtual int LB_STDCALL Count() = 0;
 
+	/** \brief Insert an object.
+	 * 
+	 * Creates a copy of the given object and holds it in the container.
+	 * To identify it, it is passed in conjunction with a key object.
+	 *
+	 * The key may be a lb_I_KeyBase instance.
+	 */
     virtual lbErrCodes LB_STDCALL insert(lb_I_Unknown** const e, lb_I_KeyBase** const key) = 0;
+
+	/** \brief Remove by given key.
+	 *
+	 * Remove an object having the given key. It may be that there are multible objects
+	 * with that key. Remove affects only one of them. Not sure, if this is really so.
+	 */
     virtual lbErrCodes LB_STDCALL remove(lb_I_KeyBase** const key) = 0;
+
+	/** \brief Existence check for an object by key.
+	 *
+	 * Checks, if an object with the given key is in the container.
+	 */
     virtual int LB_STDCALL exists(lb_I_KeyBase** const e) = 0;
+
+	/** \brief
+	 *
+	 */
     virtual int LB_STDCALL hasMoreElements() = 0;
+
+	/** \brief
+	 *
+	 */
     virtual lb_I_Unknown* LB_STDCALL nextElement() = 0;
 
+	/** \brief Stops the iteration modus, begun with hasMoreElements.
+	 *
+	 * Use this function to stop the iteration. You must use this function to
+	 * be able to restart iteration. If hasMoreElements returns 0, the
+	 * iteration is finished automatically.
+	 */
+    virtual void LB_STDCALL finishIteration() = 0;
 
     virtual lb_I_Unknown* LB_STDCALL getElementAt(int i) = 0;
     virtual lb_I_KeyBase* LB_STDCALL getKeyAt(int i) = 0;
@@ -757,6 +798,7 @@ protected: \
         \
         virtual lb_I_Unknown* LB_STDCALL getElement(lb_I_KeyBase** const key); \
         virtual lb_I_Unknown* LB_STDCALL nextElement(); \
+	virtual void LB_STDCALL finishIteration(); \
         \
 	virtual lb_I_Unknown* LB_STDCALL getElementAt(int i); \
 	virtual lb_I_KeyBase* LB_STDCALL getKeyAt(int i); \
@@ -1034,6 +1076,10 @@ lbErrCodes LB_STDCALL classname::_remove(lb_I_KeyBase** const key) { \
     return ERR_CONTAINER_REMOVE; \
 } \
 \
+void LB_STDCALL classname::finishIteration() { \
+	iterator = NULL; \
+	iteration = 0; \
+} \
 int LB_STDCALL classname::hasMoreElements() { \
     if (iteration == 0) { \
                 iteration = 1; \

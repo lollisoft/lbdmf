@@ -64,11 +64,15 @@
 /*...e*/
 #include <lbLoginWizard.h>
 
-class lbPluginModule : public lb_I_PluginModule {
+/** \brief This is the plugin module definition class for the login wizard.
+ *
+ */
+class lbPluginModuleLoginWizard :
+	public lb_I_PluginModule {
 public:
 
-	lbPluginModule();
-	virtual ~lbPluginModule();
+	lbPluginModuleLoginWizard();
+	virtual ~lbPluginModuleLoginWizard();
 
 	DECLARE_LB_UNKNOWN()
 	
@@ -77,30 +81,30 @@ public:
 	DECLARE_PLUGINS()
 };
 
-/*...sclass lbPluginModule implementation:0:*/
-BEGIN_IMPLEMENT_LB_UNKNOWN(lbPluginModule)
+/*...sclass lbPluginModuleLoginWizard implementation:0:*/
+BEGIN_IMPLEMENT_LB_UNKNOWN(lbPluginModuleLoginWizard)
         ADD_INTERFACE(lb_I_PluginModule)
 END_IMPLEMENT_LB_UNKNOWN()
 
-IMPLEMENT_SINGLETON_FUNCTOR(instanceOfPluginModule, lbPluginModule)
+IMPLEMENT_SINGLETON_FUNCTOR(instanceOfPluginModule, lbPluginModuleLoginWizard)
 
-BEGIN_PLUGINS(lbPluginModule)
+BEGIN_PLUGINS(lbPluginModuleLoginWizard)
 	ADD_PLUGIN(lbPluginLoginWizard, GUI)
 END_PLUGINS()
 
-lbPluginModule::lbPluginModule() {
+lbPluginModuleLoginWizard::lbPluginModuleLoginWizard() {
 	ref = STARTREF;
 }
 
-lbPluginModule::~lbPluginModule() {
+lbPluginModuleLoginWizard::~lbPluginModuleLoginWizard() {
 }
 
-void LB_STDCALL lbPluginModule::initialize() {
+void LB_STDCALL lbPluginModuleLoginWizard::initialize() {
 	enumPlugins();
 }
 
-lbErrCodes LB_STDCALL lbPluginModule::setData(lb_I_Unknown* uk) {
-        _LOG << "lbPluginModule::setData(...) not implemented yet" LOG_
+lbErrCodes LB_STDCALL lbPluginModuleLoginWizard::setData(lb_I_Unknown* uk) {
+        _LOG << "lbPluginModuleLoginWizard::setData(...) not implemented yet" LOG_
         
         return ERR_NOT_IMPLEMENTED;
 }
@@ -492,7 +496,10 @@ char const * LB_STDCALL wxLogonPage::getTextValue(char* _name) {
 /*...e*/
 /*...e*/
 
-class lbPluginLoginWizard : 
+/** \brief Implements a wizard based login plugin.
+ *
+ */
+class lbPluginLoginWizard :
 	public lb_I_PluginImpl,
 	public lb_I_EventHandler
 {
@@ -503,10 +510,35 @@ public:
 
 	DECLARE_LB_UNKNOWN()
 
+	/** \brief Registers internally needed event handlers.
+	 *
+	 * This function registers one event handler, that let the GUI invoke it from
+	 * menu actions.
+	 */
 	virtual lbErrCodes LB_STDCALL registerEventHandler(lb_I_Dispatcher* disp);
 	
+	/** \brief Init the menu emtries.
+	 *
+	 * This connects the login feature to a menu.
+	 */
 	virtual void LB_STDCALL initialize();
+	
+	/** \brief Run the login manually.
+	 *
+	 * This let the login wizard appear manually without invoking it from
+	 * the menu entry. You could use this to start the login wizard automatically.
+	 */
 	virtual bool LB_STDCALL run();
+
+	/** \brief Get the underlying implementation.
+	 *
+	 * Not needed in this implementation. This implementation has no separate
+	 * class with the implementation. This is due to the not existing problem
+	 * of multible base class inheritation of lb_I_Unknown.
+	 *
+	 * If multible intarfaces could be queried, then each
+	 */
+	virtual lb_I_Unknown* LB_STDCALL getImplementation() { return NULL; }
 
 	lbErrCodes LB_STDCALL runLogin(lb_I_Unknown* uk);
 	
@@ -530,12 +562,10 @@ lbErrCodes LB_STDCALL lbPluginLoginWizard::setData(lb_I_Unknown* uk) {
 lbPluginLoginWizard::lbPluginLoginWizard() {
 	wizard = NULL;
 	page1 = NULL;
-	printf("lbPluginLoginWizard::lbPluginLoginWizard() called.\n");
 }
 
 lbPluginLoginWizard::~lbPluginLoginWizard() {
 	if (wizard) wizard->Destroy();
-	printf("lbPluginLoginWizard::~lbPluginLoginWizard() called.\n");
 }
 	
 	
