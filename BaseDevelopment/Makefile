@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.16 $
+# * $Revision: 1.17 $
 # * $Name:  $
-# * $Id: Makefile,v 1.16 2005/01/22 11:59:42 lollisoft Exp $
+# * $Id: Makefile,v 1.17 2005/01/22 15:01:25 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.17  2005/01/22 15:01:25  lollisoft
+# * Commented out lbhook
+# *
 # * Revision 1.16  2005/01/22 11:59:42  lollisoft
 # * Restructuring
 # *
@@ -162,9 +165,9 @@ lbHook: dummy
 	$(MAKE) -C $@ -e MODULE=$@ -e TARGET=$(TARGETDLL) -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
 	$(MAKE) -C $@
 
-lbhook: dummy
-	$(MAKE) -C $@ -e MODULE=$@ -e TARGET=$(TARGETDLL) -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
-	$(MAKE) -C $@
+#lbhook: dummy
+#	$(MAKE) -C $@ -e MODULE=$@ -e TARGET=$(TARGETDLL) -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
+#	$(MAKE) -C $@
 
 lbDB: dummy
 	$(MAKE) -C $@ -e MODULE=$@ -e TARGET=$(TARGETDLL) -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
