@@ -7,4 +7,4 @@ cat makefile.module >> makefile
 echo all: Application >> makefile
 echo >> makefile
 
-mkmk SO Application ../dosdir,../include,../interfaces *.cpp >> makefile
+mkmk SO Application ../../Basedevelopment/dosdir,../../Basedevelopment/include,../../Basedevelopment/interfaces *.cpp >> makefile
