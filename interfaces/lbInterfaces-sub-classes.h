@@ -1,11 +1,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.10 $
+ * $Revision: 1.11 $
  * $Name:  $
- * $Id: lbInterfaces-sub-classes.h,v 1.10 2001/05/08 20:55:12 lothar Exp $
+ * $Id: lbInterfaces-sub-classes.h,v 1.11 2001/06/21 06:41:56 lothar Exp $
  *
  * $Log: lbInterfaces-sub-classes.h,v $
+ * Revision 1.11  2001/06/21 06:41:56  lothar
+ * Changed lb_I_String base
+ *
  * Revision 1.10  2001/05/08 20:55:12  lothar
  * Change of lb_I_KeyBase interface
  *
@@ -44,6 +47,7 @@ public:
     virtual char* LB_STDCALL charrep() = 0;
 };
 /*...e*/
+
 /*
 	Must have a type information of the key, because a string could not be compared
 	with an integer (directly). For a key, it is simply one type of interface, that
@@ -132,8 +136,10 @@ void LB_STDCALL classname::setType() {              \
 
 /*...e*/
 /*...e*/
+
+// Keyable interfaces
 /*...sclass lb_I_String:0:*/
-class lb_I_String : public lb_I_Unknown {
+class lb_I_String : public lb_I_KeyBase {
 protected:
 	lb_I_String() {}
 	virtual ~lb_I_String() {}
@@ -145,6 +151,33 @@ public:
 	
 };
 /*...e*/
+/*...sclass lb_I_Integer:0:*/
+class lb_I_Integer : public lb_I_KeyBase {
+protected:
+	lb_I_Integer() {}
+	virtual ~lb_I_Integer() {}
+
+public:
+	
+	virtual void LB_STDCALL setData(int p) = 0;
+	virtual int LB_STDCALL getData() const = 0;
+	
+};
+/*...e*/
+/*...sclass lb_I_Long:0:*/
+class lb_I_Long : public lb_I_KeyBase {
+protected:
+	lb_I_Long() {}
+	virtual ~lb_I_Long() {}
+
+public:
+	
+	virtual void LB_STDCALL setData(long p) = 0;
+	virtual long LB_STDCALL getData() const = 0;
+	
+};
+/*...e*/
+
 /*...sclass lb_I_Element:0:*/
 class lb_I_Element : public lb_I_Unknown {
 protected:
@@ -542,6 +575,11 @@ int classname::hasMoreElements() { \
 \
 lb_I_Unknown* classname::nextElement() { \
     lb_I_Element *temp = iterator; \
+    if (temp == NULL) { \
+        CL_LOG("Error: Please call hasMoreElements first to check if any elements are available!"); \
+        getch(); \
+        return NULL; \
+    } \
     iterator = iterator->getNext(); \
 \
     if (temp == NULL) cout << "Temporary iterator object is NULL!" << endl; \
@@ -589,7 +627,26 @@ public:
 	 * automatically unloaded (the array/list).
 	 */
 	virtual lbErrCodes load(char* name) = 0;
+	
+	
+	/**
+	 * The module manager is responsible for creating any instances, that are
+	 * available. This implementation knows that the directory of functors
+	 * for instances are stored in an XML file (DTD file v1.3).
+	 *
+	 * The current implementation for this in the function request is not the
+	 * intention for the interface lb_I_Requestable.
+	 *
+	 * The new function for this may be:
+	 */
 
+
+	/**
+	 * get back a lb_I_String for a functor or a lb_I_Container for a list of
+	 * them. The errcode helps to decide.
+	 */
+	virtual lbErrCodes getFunctors(char* interfacename, lb_I_ConfigObject* node, lb_I_Unknown*& uk) = 0;
+	virtual lbErrCodes getInstance(char* functorname, lb_I_ConfigObject* node, lb_I_Unknown*& uk) = 0;
 	
 	/**
 	 *
