@@ -155,7 +155,9 @@
 #ifndef __MISC
 #define _CL_LOG \
 { \
-        COUT \
+	OFSTREAM of; \
+	of.open("C:\\log\\wsmaster.log", IOS::app); \
+        of \
         
 #endif
 #ifdef __MISC
@@ -352,16 +354,16 @@ private:
 };
 /*...e*/
 /*...sclass lbKey \58\ public lb_I_KeyBase:0:*/
-class DLLEXPORT lbKey : public lb_I_KeyBase {
+class DLLEXPORT lbKey_ : public lb_I_KeyBase {
 public:
 #ifdef _MSC_VER
-	lbKey(char* file, int line); // { key = 0; strcpy(keyType, "int"); }
+	lbKey_(char* file, int line); // { key = 0; strcpy(keyType, "int"); }
 #endif
 
-	lbKey();
-	lbKey(int _key);
-	lbKey(const lb_I_KeyBase* k);
-	virtual ~lbKey();
+	lbKey_();
+	lbKey_(int _key);
+	lbKey_(const lb_I_KeyBase* k);
+	virtual ~lbKey_();
 
 	DECLARE_LB_UNKNOWN()
 
