@@ -342,6 +342,83 @@ if (a == b) {
 	getch();
 /*...e*/
 
+
+	printf("Test for database deletion with cursor\n");
+
+
+	UAP_REQUEST(mm, lb_I_Database, database1)
+	UAP_REQUEST(mm, lb_I_Database, database2)
+	UAP(lb_I_Query, query1, __FILE__, __LINE__)
+	UAP(lb_I_Query, query2, __FILE__, __LINE__)
+	
+	database1->init();
+	database1->connect("trainres", "dba", "trainres");
+	database2->init();
+	database2->connect("trainres", "dba", "trainres");
+	
+	query1 = database1->getQuery(0);
+	
+	UAP_REQUEST(mm, lb_I_String, t1)
+	UAP_REQUEST(mm, lb_I_String, t2)
+
+//	query1->query("drop table test");
+
+printf("Dropped table test\n");	
+
+//	query1->query("create table test (text char(300), id int)");
+
+printf("Created table test\n");
+
+	query1->query("delete from test");
+
+	query1->query("insert into test values ('Test1', 1)");
+	query1->query("insert into test values ('Test2', 2)");
+	query1->query("insert into test values ('Test3', 3)");
+	query1->query("insert into test values ('Test4', 4)");
+	query1->query("insert into test values ('Test5', 5)");
+	query1->query("insert into test values ('Test6', 6)");
+
+	query2 = database2->getQuery(0);
+
+	query2->query("select text, id from test");
+
+	query2->first();
+	t1 = query2->getAsString(1);
+	t2 = query2->getAsString(2);
+	printf("%s;%s\n", t1->charrep(), t2->charrep());
+	query2->next();
+	t1 = query2->getAsString(1);
+	t2 = query2->getAsString(2);
+	printf("%s;%s\n", t1->charrep(), t2->charrep());
+	query2->next();
+	t1 = query2->getAsString(1);
+	t2 = query2->getAsString(2);
+	printf("%s;%s\n", t1->charrep(), t2->charrep());
+	query2->remove();
+	t1 = query2->getAsString(1);
+	t2 = query2->getAsString(2);
+	printf("%s;%s\n", t1->charrep(), t2->charrep());
+
+printf("Deleted a row\n");
+	
+	query2->first();
+	t1 = query2->getAsString(1);
+	t2 = query2->getAsString(2);
+	printf("%s;%s\n", t1->charrep(), t2->charrep());
+	query2->next();
+	t1 = query2->getAsString(1);
+	t2 = query2->getAsString(2);
+	printf("%s;%s\n", t1->charrep(), t2->charrep());
+	query2->next();
+	t1 = query2->getAsString(1);
+	t2 = query2->getAsString(2);
+	printf("%s;%s\n", t1->charrep(), t2->charrep());
+	query2->next();
+	t1 = query2->getAsString(1);
+	t2 = query2->getAsString(2);
+	printf("%s;%s\n", t1->charrep(), t2->charrep());
+	query2->next();
+
 	printf("Tested database cleanup\n");
 	getch();	
 }
