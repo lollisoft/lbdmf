@@ -537,6 +537,19 @@ public:
 	uk##variable.setFile(__FILE__); \
 	uk##variable.setLine(__LINE__);
 
+#define DEBUG_REQUEST(mm, interface, variable) \
+  	UAP(lb_I_Unknown, uk##variable, __FILE__, __LINE__) \
+	printf("Step 1\n"); \
+  	mm->request(#interface, &uk##variable); \
+	printf("Step 2\n"); \
+  	uk##variable->setModuleManager(mm, __FILE__, __LINE__); \
+	printf("Step 3\n"); \
+  	uk##variable->queryInterface(#interface, (void**) &variable, __FILE__, __LINE__); \
+	printf("Step 4\n"); \
+	uk##variable.setFile(__FILE__); \
+	printf("Step 5\n"); \
+	uk##variable.setLine(__LINE__);
+
 /*...e*/
 
 /*...sUAP_REQUEST Use this for an stack like environment\46\:0:*/

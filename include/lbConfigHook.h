@@ -325,4 +325,10 @@ private:
 
 DLLEXPORT void LB_STDCALL CL_doLog(char* f, char* msg);
 
+#ifdef LINUX
+#ifndef INCLUDED_BY_LBDMF 
+#undef HINSTANCE
+#endif
+#endif
+
 #endif // __LB_CONFIG_HOOK__

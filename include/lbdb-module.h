@@ -50,3 +50,5 @@
 #endif
 
 #endif
+
+#define INCLUDED_BY_LBDMF

@@ -4,7 +4,7 @@
 
 cat $DEVROOT/Projects/CPP/make/makefile.template > makefile
 cat makefile.module >> makefile
-echo all: Test >> makefile
+echo all: wxWrapper >> makefile
 echo >> makefile
 
-mkmk elf Test ../dosdir,../include,../interfaces test.cpp >> makefile
+mkmk elf wxWrapper ../dosdir,../include,../interfaces dynamic.cpp >> makefile
