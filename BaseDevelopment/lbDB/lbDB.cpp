@@ -336,6 +336,9 @@ lbErrCodes      LB_STDCALL lbBoundColumns::setBoundColumns(lb_I_Container* bc) {
 /*...slbErrCodes      LB_STDCALL lbBoundColumns\58\\58\setQuery\40\lbQuery\42\ q\41\:0:*/
 lbErrCodes      LB_STDCALL lbBoundColumns::setQuery(lbQuery* q) {
 	HSTMT hstmt = q->getCurrentStatement();
+
+/*
+Bug ???
 	const int ArraySize = 1;
 	SQLUSMALLINT RowStatusArray[ArraySize];
 
@@ -349,6 +352,7 @@ lbErrCodes      LB_STDCALL lbBoundColumns::setQuery(lbQuery* q) {
 	SQLSetStmtAttr(hstmt, SQL_ATTR_ROW_BIND_TYPE, SQL_BIND_BY_COLUMN, 0);
 	SQLSetStmtAttr(hstmt, SQL_ATTR_ROW_STATUS_PTR, RowStatusArray, 0);
 
+*/
 
 	/*
 	 * Get the number of columns for this query.
