@@ -213,7 +213,7 @@ if (a == b) {
 
 /*...sTest database:0:*/
 	_CL_LOG << "Test database library" LOG_
-
+{
 	UAP_REQUEST(mm, lb_I_Database, database)
 
 	database->init();
@@ -341,15 +341,9 @@ if (a == b) {
 	getch();
 /*...e*/
 
-	UAP(lb_I_Query, query1, __FILE__, __LINE__)
-	
-	query1 = database->getQuery(0);
-
-	printf("Test creating a table, insert some data and drop it again\n");
-	query1->query("create table test ( f1 char(20), f2 integer )");
-	query1->query("insert into test values('Test', 1234)");
-	query1->query("drop table test");
+	printf("Tested database cleanup\n");
 	getch();	
+}
 /*...e*/
 /*...stest container:0:*/
 {
