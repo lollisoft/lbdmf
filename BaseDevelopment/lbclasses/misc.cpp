@@ -2,10 +2,13 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.15 $
+ * $Revision: 1.16 $
  * $Name:  $
- * $Id: misc.cpp,v 1.15 2002/04/15 18:24:33 lolli Exp $
+ * $Id: misc.cpp,v 1.16 2002/09/19 19:34:14 lolli Exp $
  * $Log: misc.cpp,v $
+ * Revision 1.16  2002/09/19 19:34:14  lolli
+ * Buggy version - only, if menu is really created
+ *
  * Revision 1.15  2002/04/15 18:24:33  lolli
  * Huge changes - works good
  *
@@ -266,7 +269,9 @@ void LB_STDCALL lbLog::logdirect(const char *msg, char *f, int level) {
 /*...slbLog\58\\58\log\40\\46\\46\\46\\41\:0:*/
 void LB_STDCALL lbLog::log(const char *msg, long line, char* file) {
 //lbLock lbLock(sect, "lbLockSection");
-        if (firstlog == 0) lbLog log = lbLog();
+        if (firstlog == 0) {
+        	lbLog log;// = lbLog();
+        }
         mutex->enter(); 
         
         if (doLog == TRUE) {
@@ -274,14 +279,16 @@ void LB_STDCALL lbLog::log(const char *msg, long line, char* file) {
 
                 sprintf(m, "%s: %d - %s", file, line, msg);
                 logdirect(m, f, level);
-                free(m);
+                free((void*) m);
         }
         mutex->release();
 }
 /*...e*/
 /*...slbLog\58\\58\log\40\int log\41\:0:*/
 void LB_STDCALL lbLog::log(int log) {
-        if (firstlog == 0) lbLog log = lbLog();
+        if (firstlog == 0) {
+        	lbLog log;// = lbLog();
+        }
         doLog = log;
 }
 /*...e*/
@@ -299,7 +306,9 @@ void LB_STDCALL lbLog::enable(char *where) {
         char buf[100];
         doLog = TRUE;
         
-        if (firstlog == 0) lbLog log = lbLog();
+        if (firstlog == 0) {
+        	lbLog log;// = lbLog();
+        }
         
         mutex->enter();
 
@@ -315,7 +324,9 @@ void LB_STDCALL lbLog::enable(char *where) {
 void LB_STDCALL lbLog::disable(char *where) {
         char buf[100];
         
-        if (firstlog == 0) lbLog log = lbLog();
+        if (firstlog == 0) {
+        	lbLog log;// = lbLog();
+        }
         
         mutex->enter();
         
@@ -335,7 +346,9 @@ void LB_STDCALL lbLog::disable(char *where) {
 /*...e*/
 /*...slbLog\58\\58\event_begin\40\char \42\event\41\:0:*/
 void LB_STDCALL lbLog::event_begin(char *event) {
-        if (firstlog == 0) lbLog log = lbLog();
+        if (firstlog == 0) {
+        	lbLog log;// = lbLog();
+        }
         if (doLog == TRUE) {
             beinlog = 1;
             start_time = clock();
@@ -346,8 +359,10 @@ void LB_STDCALL lbLog::event_begin(char *event) {
 /*...e*/
 /*...slbLog\58\\58\event_end\40\char \42\event\41\:0:*/
 void LB_STDCALL lbLog::event_end(char *event) {
-        char buf[100];
-        if (firstlog == 0) lbLog log = lbLog();
+       char buf[100];
+       if (firstlog == 0) {
+        	lbLog log;// = lbLog();
+       }
 
         if (doLog == TRUE) {
                 beinlog = 0;
