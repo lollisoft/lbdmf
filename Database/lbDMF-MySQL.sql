@@ -19,7 +19,7 @@ CREATE TABLE Anwendungen
   Functor VARCHAR(100),
   Interface VARCHAR(100),
   PRIMARY KEY (id)
-);
+) TYPE = INNODB;
 
 -- +---------------------------------------------------------
 -- | TABLE: Anwendungs_Parameter
@@ -32,7 +32,9 @@ CREATE TABLE Anwendungs_Parameter
   ParameterValue VARCHAR(255),
   AnwendungID INTEGER,
   PRIMARY KEY (id)
-);
+) TYPE = INNODB;
+
+
 
 -- +---------------------------------------------------------
 -- | TABLE: Formulare
@@ -46,8 +48,13 @@ CREATE TABLE Formulare
   MenuHilfe VARCHAR(100),
   AnwendungID INTEGER,
   Typ INTEGER NOT NULL,
-  PRIMARY KEY (id)
-);
+  PRIMARY KEY (id),
+  FOREIGN KEY FK_AnwendungID (AnwendungID) REFERENCES Anwendungen (id)
+) TYPE = INNODB;
+
+
+ALTER TABLE `formulare` ADD FOREIGN KEY `FK_Typ` (`Typ`)
+    REFERENCES `Formulartypen` (`id`);
 
 -- +---------------------------------------------------------
 -- | TABLE: Formular_Parameters
@@ -59,7 +66,10 @@ CREATE TABLE Formular_Parameters
   ParameterValue VARCHAR(255),
   FormularID INTEGER,
   PRIMARY KEY (id)
-);
+) TYPE = INNODB;
+
+ALTER TABLE `lbdmf`.`Formular_Parameters` ADD FOREIGN KEY `FK_FormularID` (`FormularID`)
+    REFERENCES `Formulare` (`id`);
 
 -- +---------------------------------------------------------
 -- | TABLE: ForeignKey_VisibleData_Mapping
@@ -73,7 +83,7 @@ CREATE TABLE ForeignKey_VisibleData_Mapping
   PKName	VARCHAR(100),
   PKTable	VARCHAR(100),
   PRIMARY KEY (id)
-);
+) TYPE = INNODB;
 
 -- +---------------------------------------------------------
 -- | TABLE: Anwendungen_Formulare
@@ -84,7 +94,13 @@ CREATE TABLE Anwendungen_Formulare
   AnwendungID INTEGER NOT NULL,
   FormularID INTEGER NOT NULL,
   PRIMARY KEY (id)
-);
+) TYPE = INNODB;
+
+ALTER TABLE `lbdmf`.`Anwendungen_Formulare` ADD FOREIGN KEY `FK_AnwendungID` (`AnwendungID`)
+    REFERENCES `Anwendungen` (`id`);
+
+ALTER TABLE `lbdmf`.`Anwendungen_Formulare` ADD FOREIGN KEY `FK_FormularID` (`FormularID`)
+    REFERENCES `Formulare` (`id`);
 
 -- +---------------------------------------------------------
 -- | TABLE: Anwendungsberechtigungen
@@ -95,7 +111,13 @@ CREATE TABLE Anwendungsberechtigungen
   idUser INTEGER,
   idFormular INTEGER,
   PRIMARY KEY (id)
-);
+) TYPE = INNODB;
+
+ALTER TABLE `lbdmf`.`Anwendungsberechtigungen` ADD FOREIGN KEY `FK_idUser` (`idUser`)
+    REFERENCES `Users` (`id`);
+
+ALTER TABLE `lbdmf`.`Anwendungsberechtigungen` ADD FOREIGN KEY `FK_idFormular` (`idFormular`)
+    REFERENCES `Formulare` (`id`);
 
 -- +---------------------------------------------------------
 -- | TABLE: Formulartypen
@@ -108,7 +130,7 @@ CREATE TABLE Formulartypen
   HandlerInterface VARCHAR(100),
   Beschreibung VARCHAR(254),
   PRIMARY KEY (id)
-);
+) TYPE = INNODB;
 
 -- +---------------------------------------------------------
 -- | TABLE: User
@@ -121,7 +143,7 @@ CREATE TABLE Users
   userid VARCHAR(30),
   passwort VARCHAR(30),
   PRIMARY KEY (id)
-);
+) TYPE = INNODB;
 
 -- +---------------------------------------------------------
 -- | TABLE: User_Anwendungen
@@ -132,39 +154,13 @@ CREATE TABLE User_Anwendungen
   userid INTEGER NOT NULL,
   AnwendungenId INTEGER NOT NULL,
   PRIMARY KEY (id)
-);
+) TYPE = INNODB;
 
--- +---------------------------------------------------------
--- | FOREIGN KEYS
--- +---------------------------------------------------------
+ALTER TABLE `lbdmf`.`User_Anwendungen` ADD FOREIGN KEY `FK_userid` (`userid`)
+    REFERENCES `Users` (`id`);
 
-ALTER TABLE Anwendungen_Formulare 
-ADD CONSTRAINT cst_Anwendungen_Formulare_AnwendungID FOREIGN KEY ( AnwendungID )
-   REFERENCES Anwendungen ( id );
-ALTER TABLE Anwendungen_Formulare 
-ADD CONSTRAINT cst_Anwendungen_Formulare_FormularID FOREIGN KEY ( FormularID )
-   REFERENCES Formulare ( id );
-ALTER TABLE Anwendungsberechtigungen 
-ADD CONSTRAINT cst_Anwendungsberechtigungen_idFormular FOREIGN KEY ( idFormular )
-   REFERENCES Formulare ( id );
-ALTER TABLE Anwendungsberechtigungen 
-ADD CONSTRAINT cst_Anwendungsberechtigungen_idUser FOREIGN KEY ( idUser )
-   REFERENCES Users ( id );
-ALTER TABLE Formulare 
-ADD CONSTRAINT cst_Formulare_Typ FOREIGN KEY ( Typ )
-   REFERENCES Formulartypen ( id );
-ALTER TABLE Formulare 
-ADD CONSTRAINT cst_Formulare_AnwendungID FOREIGN KEY ( AnwendungID )
-   REFERENCES Anwendungen ( id );
-ALTER TABLE User_Anwendungen 
-ADD CONSTRAINT cst_User_Anwendungen_userid FOREIGN KEY ( userid )
-   REFERENCES Users ( id );
-ALTER TABLE User_Anwendungen 
-ADD CONSTRAINT cst_User_Anwendungen_AnwendungenId FOREIGN KEY ( AnwendungenId )
-   REFERENCES Anwendungen ( id );
-ALTER TABLE Formular_Parameters
-ADD CONSTRAINT cst_Formular_Parameters_FormularID FOREIGN KEY ( FormularID )
-   REFERENCES Formulare (id );
+ALTER TABLE `lbdmf`.`User_Anwendungen` ADD FOREIGN KEY `FK_AnwendungenId` (`AnwendungenId`)
+    REFERENCES `Anwendungen` (`id`);
 
 -- +---------------------------------------------------------
 -- | DATA
@@ -187,8 +183,8 @@ insert into Formulare Values (4, 'Reservierungen', 'Reservierungen verwalten', '
 insert into Formulare Values (5, 'DynKunden', 'Kunden verwalten', 'manageCustomers', 'Bietet Verwaltungsmöglichkeiten für Kunden',3 , 1);
 insert into Formulare Values (6, 'DynReservierungen', 'Reservierungen verwalten', 'manageReservations', 'Bietet Verwaltungsmöglichkeiten für Reservierungen von Fahrkarten',3 , 1);
 
-insert into ForeignKey_VisibleData_Mapping (FKName, FKTable, PKName, PKTable) Values ('AnwendungID', 'Formulare', 'Name', 'Anwendungen');
-insert into ForeignKey_VisibleData_Mapping (FKName, FKTable, PKName, PKTable) Values ('Typ', 'Formulare', 'Beschreibung', 'Formulartypen');
+insert into ForeignKey_VisibleData_Mapping (FKName, FKTable, PKName, PKTable) Values ('Formulare.AnwendungID', 'Formulare', 'Anwendungen.Name', 'Anwendungen');
+insert into ForeignKey_VisibleData_Mapping (FKName, FKTable, PKName, PKTable) Values ('Formulare.Typ', 'Formulare', 'Formulartypen.Beschreibung', 'Formulartypen');
 insert into ForeignKey_VisibleData_Mapping (FKName, FKTable, PKName, PKTable) Values ('FormularID', 'Formular_Parameters', 'Name', 'Formulare');
 insert into ForeignKey_VisibleData_Mapping (FKName, FKTable, PKName, PKTable) Values ('AnwendungID', 'Anwendungs_Parameter', 'Name', 'Anwendungen');
 insert into ForeignKey_VisibleData_Mapping (FKName, FKTable, PKName, PKTable) Values ('userid', 'User_Anwendungen', 'userid', 'Users');
