@@ -54,7 +54,7 @@ extern int isInitializing;
 				\
 				if (modMan != NULL) { \
 					lb_I_Unknown *Unknown = NULL; \
-					lbErrCodes err = modMan->request("_instanceOfLogger@4", Unknown); \
+					lbErrCodes err = modMan->request("lb_I_Log", Unknown); \
 					\
 					if (Unknown != NULL) { \
 						Unknown->queryInterface("lb_I_Log", (void**) &log); \
