@@ -88,6 +88,7 @@ These headers must define the per module (DLL) EXPORT variable
 /*...vlbclasses\47\MAKE_AFTER:0:*/
 /*...vlbclasses\47\STD_MAKE:0:*/
 
+/*...vlbclasses\47\lbclasses\46\lnk:0:*/
 /*...vlbclasses\47\makefile:0:*/
 /*...vlbclasses\47\makefile\46\bat:0:*/
 /*...vlbclasses\47\makefile\46\module:0:*/
@@ -96,6 +97,7 @@ These headers must define the per module (DLL) EXPORT variable
 /*...vlbclasses\47\lb_misc\46\h:0:*/
 /*...vlbclasses\47\misc\46\cpp:0:*/
 /*...vlbclasses\47\lbObject\46\h:0:*/
+/*...vlbclasses\47\dllmain\46\cpp:0:*/
 /*...vlbclasses\47\lbObject\46\cpp:0:*/
 /*...vlbclasses\47\lbKey\46\h:0:*/
 /*...vlbclasses\47\lbKey\46\cpp:0:*/
@@ -107,6 +109,8 @@ These headers must define the per module (DLL) EXPORT variable
 
 /*...vlbclasses\47\skiplist\46\h:0:*/
 /*...vlbclasses\47\skiplist\46\cpp:0:*/
+
+
 /*...e*/
 /*...slbTransfer:0:*/
 /*...vlbtransfer\47\module\46\h:0:*/
@@ -116,6 +120,10 @@ These headers must define the per module (DLL) EXPORT variable
 /*...vlbtransfer\47\transfer\46\cpp:0:*/
 
 
+/*...e*/
+/*...sskiplist:0:*/
+/*...vskiplist\47\skiplist\46\h:0:*/
+/*...vskiplist\47\skiplist\46\cpp:0:*/
 /*...e*/
 
 callorder:
