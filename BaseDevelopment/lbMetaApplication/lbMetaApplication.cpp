@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.46 $
+ * $Revision: 1.47 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.46 2005/01/27 12:53:27 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.47 2005/02/02 13:30:29 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.47  2005/02/02 13:30:29  lollisoft
+ * Latest changes for version 0.4.1
+ *
  * Revision 1.46  2005/01/27 12:53:27  lollisoft
  * Changed SQL query not to use " in it
  *
@@ -438,7 +441,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::Initialize(char* user, char* app) {
 	addMenuBar("Help");
 
 	if (getenv("TARGET_APPLICATION") == NULL) {
-		addMenuEntry("File", "Anmelden", "getLoginData", "");
+		addMenuEntry("File", "Login", "getLoginData", "");
 	}
 	
 	addMenuEntry("Help", "MainModuleInfo", "getMainModuleInfo", "");

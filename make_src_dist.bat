@@ -15,7 +15,6 @@ call make_dist_base.bat AppDevelopmentDemo
 call make_dist_base.bat AppDevelopmentDemo\App
 call make_dist_base.bat AppDevelopmentDemo\DynamicApp
 call make_dist_base.bat AppDevelopmentDemo\DynamicApp\App
-call make_dist_base.bat AppDevelopmentDemo\DynamicApp\Database
 call make_dist_base.bat AppDevelopmentDemo\DynamicApp\Doc
 call make_dist_base.bat BaseDevelopment\lbHook 
 call make_dist_base.bat BaseDevelopment\lbclasses 
@@ -34,7 +33,6 @@ call make_dist_base.bat test\GUI\wxwrapper
 call make_dist_base.bat test\console\xml
 call make_dist_base.bat Compilers
 call make_dist_base.bat Database
-call make_dist_base.bat Doc
 
 copy README %DEVROOT%
 copy COPYING %DEVROOT%
@@ -45,6 +43,6 @@ copy q:\develop\Projects\CPP\watcomenv.bat.lnk dist
 copy q:\develop\ide.bat %DEVROOT%
 del *.idb
 
-tar cvzf lbDBF-Source.tgz dist\
+tar cvzf Output\lbDMF-Source-0.4.1.tgz dist\
 
 rem xcopy /I /E /Y dist q:\dist

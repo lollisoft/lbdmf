@@ -36,9 +36,9 @@ MOD_INCL=$(STD_INCL) -i=..\dosdir
 
 #
 # What is to do after the compile job ?
-#
+# Can do copy a file ...
 
-POST_PROCESS=cp $(DEVROOT)/Projects/CPP/BaseDevelopment/lbHook/*.lib $(DEVROOT)/Projects/dll/lib
+POST_PROCESS=#cp $(DEVROOT)/Projects/CPP/BaseDevelopment/lbHook/*.lib $(DEVROOT)/Projects/dll/libs
 
 ifeq ($(COMPILER), MICROSOFT)
 MOD_INCL = $(STD_INCL_MICROSOFT)

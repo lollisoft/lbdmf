@@ -36,7 +36,7 @@
  *  lbConfigHook.h includes this file for you.
  */
 
-/** \mainpage DMF - Version 0.4.0
+/** \mainpage DMF - Version 0.4.1
  * \section intro_sec Introduction to DMF - Distributed Multiplatform Framework
  *
  * This is the introduction for the users of DMF after the first installation.
@@ -46,6 +46,8 @@
  * To start programming, you could start at the quickstart at the Start programming section below.
  *
  * Prerequirements:
+ *
+ * My latest version of binary build tools. <a href="http://sourceforge.net/project/showfiles.php?group_id=70545&package_id=69806">Binary Build Tools</a>
  *
  * Open Watcom compiler, at least version 1.2. <a href="http://www.openwatcom.org">Open Watcom</a>
  * 
@@ -87,34 +89,66 @@
  * \section PSetup2 lbDMF Develop link
  *
  *	If you start the lbDMF Develop link on the desktop, you get opened a text file with
- *	a hint text. It explains once to read these instructions for post installation. Here
- *	are the same instructions of post installation.
+ *	a hint text. It explains once to read these instructions for post installation.
  *
  * \section PSetup3 Drive letter
+ *
+ *	If you have installed lbDMF to C:\\lbDMF, you can skip this step.
  *
  *	Right click on lbDMF Develop symbol to edit it. Change the drive letter, pointing to
  *	your actual installation. Sample here would drive D: and not the standard C: drive letter.
  *	In this sample installation scenario, simply change the lines set DEVLW=<driveletter> to DEVLW=D:
  *
- * \section PSetup4 Setup and make wxWidgets source tree
+ *	Note: There are two locations of setting DEVLW. Change the line after :DISTMODE
  *
- *	Start a normal MSDOS console (cmd) and type these lines:
- *	set WXWIN=D:\lbDMF\Develop\wxwin\wx
- *	D:
+ * \section PSetup4 Setup wxWidgets
+ *
+ *	Install the wxWidgets distribution into [C/D]:\\lbDMF\\Develop\\wxwin\\wx.
+ *
+ *	After installation: Check, if inside exists a src directory and all else of the distribution.  
+ *
+ * \section PSetup5 Setup Open Watcom
+ *
+ *	Install the Open Watcom distribution into [C/D]:\\lbDMF\\Develop\\tools\\watcom.
+ *
+ *	After installation: Check, if inside exists a src directory and all else of the distribution.  
+ *
+ * \section PSetup6 Make wxWidgets source tree
+ *
+ *	Start a normal MSDOS console (cmd) and type these lines (C:):
+ *
+ *	\code
+ *	set DRIVE=C:
+ *	set WXWIN=%DRIVE%\lbDMF\Develop\wxwin\wx
+ *	%DRIVE%
  *	cd %WXWIN%\src\msw
  *	copy %WXWIN%\include\wx\msw\setup.h %WXWIN%\include\wx
  *	wmake -f makefile.wat all
+ *	\endcode
+ *
+ *	or
+ *
+ *	Start a normal MSDOS console (cmd) and type these lines (D:):
+ *
+ *	\code
+ *	set DRIVE=D:
+ *	set WXWIN=%DRIVE%\lbDMF\Develop\wxwin\wx
+ *	%DRIVE%
+ *	cd %WXWIN%\src\msw
+ *	copy %WXWIN%\include\wx\msw\setup.h %WXWIN%\include\wx
+ *	wmake -f makefile.wat all
+ *	\endcode
  *
  *	This should start compiling the wxWidgets code.
  *
- * \sechtion PSetup5 Start compiling DMF source tree
+ * \section PSetup7 Start compiling lbDMF source tree
  *
  *	If you have done this, you can restart the lbDMF Develop link and a simple console window
  *	starts.
  *
  *	Type make
  *
- * \section PSetup6 Database setup
+ * \section PSetup8 Database setup
  *
  *	To be able to run the sample applications, you need to create at least one database.
  *	Do this with the tools, provided from the database vendors.
@@ -122,10 +156,19 @@
  *	The first database, needed should be named lbdmf and a correct ODBC configuration should
  *	be set up.
  *
+ *	The database scripts are located in [C/D]:\\lbDMF\\Develop\\Projects\\CPP\\Database.
+ *
  *	NOTE: The database login function is used with hardcoded ODBC DSN name and also user with password.
  *	The functions could be found by a search for ->connect(
  *
  *	Create at least an use to have rights to change data.
+ *
+ * \section PSetup9 Run the sample GUI application
+ *
+ *	Simply after compiling the sources, let the build window open and type wxwrapper. Go to menu
+ *	File->Login and login as behrens over the wizard and use password as the password.
+ *
+ *	After successfull login you should be able to select an application. Choose lbDMF Manager.
  *
  */
 

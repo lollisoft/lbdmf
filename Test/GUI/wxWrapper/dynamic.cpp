@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.42 2005/01/27 12:59:11 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.43 2005/02/02 13:30:30 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.42 $
+ * $Revision: 1.43 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.42 2005/01/27 12:59:11 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.43 2005/02/02 13:30:30 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.43  2005/02/02 13:30:30  lollisoft
+ * Latest changes for version 0.4.1
+ *
  * Revision 1.42  2005/01/27 12:59:11  lollisoft
  * Changed logging messages and SQL query to not use " in it
  *
@@ -327,7 +330,7 @@ lbErrCodes LB_STDCALL lb_wxFrame::createEventsource(lb_I_EventConnector* object)
   // Make a menubar
   wxMenu *file_menu = new wxMenu;
   
-  file_menu->Append(DYNAMIC_BUILDMENU, "&Build menu");  
+  //file_menu->Append(DYNAMIC_BUILDMENU, "&Build menu");  
   file_menu->Append(DYNAMIC_ABOUT, "&About");
   file_menu->Append(DYNAMIC_QUIT, "E&xit");
   file_menu->Append(DYNAMIC_VERBOSE, "&Verbose");

@@ -4,7 +4,8 @@ cd %DEVROOT%\%1
 del /Y /S CVS
 del /S *.bsc
 del /S *.sbr
-del /S *.exe
+del /S wxwrapper.exe
+del /S test.exe
 del /S *.obj
 del /S *.bak
 del /S .#*

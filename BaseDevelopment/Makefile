@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.22 $
+# * $Revision: 1.23 $
 # * $Name:  $
-# * $Id: Makefile,v 1.22 2005/01/27 12:47:21 lollisoft Exp $
+# * $Id: Makefile,v 1.23 2005/02/02 13:30:15 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.23  2005/02/02 13:30:15  lollisoft
+# * Latest changes for version 0.4.1
+# *
 # * Revision 1.22  2005/01/27 12:47:21  lollisoft
 # * Minor bugfixes
 # *
@@ -121,7 +124,7 @@ ifeq ($(OSTYPE), Windows_NT)
 TARGETDLL=dll
 TARGETEXE=exe
 
-ALLTARGETS = ../../dll/libs \
+ALLTARGETS = \
 	lbHook \
 	lbDB \
 	lbModule \
@@ -141,6 +144,8 @@ all_targets: $(ALLTARGETS)
 
 ../../dll/libs:
 	mkdir ../../dll/libs
+	#chmod 0777 ../../dll/libs
+	#echo "clean: dummy" > Makefile
 
 clean:
 	@for d in $(ALLTARGETS); do \

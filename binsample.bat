@@ -10,8 +10,8 @@ goto BEGINENVIRONMENT:
 :DISTMODE
 
 set DEVLW=c:
-set BASE=lbDMF/develop
-set BASE_MAKE=lbDMF/develop
+set BASE=develop
+set BASE_MAKE=develop
 
 :BEGINENVIRONMENT
 
@@ -20,8 +20,8 @@ set BASE_MAKE=lbDMF/develop
 @rem *                          End config                          *
 @rem ----------------------------------------------------------------
 
-set DEVROOT=%DEVLW%/%BASE%
-set DEVROOT_MAKE=%DEVLW%/%BASE_MAKE%
+set DEVROOT=./%BASE%
+set DEVROOT_MAKE=./%BASE_MAKE%
 
 set PLUGIN_DIR=%DEVROOT%/Projects/plugins
 

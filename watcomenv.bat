@@ -22,13 +22,30 @@ if NOT "%COMPUTERNAME%"=="ANAKIN" goto DISTMODE:
 set DEVLW=q:
 set BASE=develop
 set BASE_MAKE=develop
+
+set DEVROOT=%DEVLW%/%BASE%
+set DEVROOT_MAKE=%DEVLW%/%BASE_MAKE%
+
 goto BEGINENVIRONMENT:
 
 :DISTMODE
 
-set DEVLW=d:
-set BASE=lbDMF\develop
+set DEVLW=c:
+set BASE=lbDMF/develop
 set BASE_MAKE=lbDMF/develop
+
+set BASE=lbDMF\develop
+
+set DEVROOT=%DEVLW%\%BASE%
+set DEVROOT_MAKE=%DEVLW%/%BASE_MAKE%
+
+cd %DEVROOT%\Projects\dll
+if not exist "libs" mkdir libs
+cd %DEVROOT%\Projects\cpp\basedevelopment
+set BASE=lbDMF/develop
+
+set DEVROOT=%DEVLW%/%BASE%
+
 
 :BEGINENVIRONMENT
 
@@ -36,10 +53,6 @@ set BASE_MAKE=lbDMF/develop
 @rem ----------------------------------------------------------------
 @rem *                          End config                          *
 @rem ----------------------------------------------------------------
-
-
-set DEVROOT=%DEVLW%\%BASE%
-set DEVROOT_MAKE=%DEVLW%/%BASE_MAKE%
 
 set PLUGIN_DIR=%DEVROOT%/Projects/plugins
 
@@ -116,10 +129,6 @@ REM ------------------------------------------------------------
 
 set BISON_SIMPLE=%DEVLW%/cygwin/usr/share/bison.simple
 set path=%path%;%DEVLW%/develop/Tools/Perl/bin/
-
-cd %DEVROOT%\Projects\dll
-if not exist "libs" mkdir libs
-cd %DEVROOT%\Projects\cpp\basedevelopment
 
 start %1
 exit
