@@ -1117,9 +1117,11 @@ lbErrCodes LB_STDCALL lbBoundColumn::getAsString(lb_I_String* result) {
 	        	result->setData((char*) buffer);
 	        	break;
 	        case SQL_INTEGER:
-	        	char charrep[100] = "";
-	        	sprintf(charrep, "%d", *(long*) buffer);
-	        	result->setData(charrep);
+			{
+	        		char charrep[100] = "";
+	        		sprintf(charrep, "%d", *(long*) buffer);
+	        		result->setData(charrep);
+			}
 	        	break;
 	        default:
 	        	_CL_LOG << "lbBoundColumn::bindColumn(...) failed: Unknown or not supported datatype" LOG_
@@ -1147,7 +1149,8 @@ lbErrCodes LB_STDCALL lbBoundColumn::setFromString(lb_I_String* set, int mode) {
 	return ERR_NONE;
 }
 /*...e*/
-/*...slbErrCodes LB_STDCALL lbBoundColumn\58\\58\bindColumn\40\lbQuery\42\ q\44\ int column\41\:0:*/
+/*...slbErrCodes LB_STDC
+			}ALL lbBoundColumn\58\\58\bindColumn\40\lbQuery\42\ q\44\ int column\41\:0:*/
 lbErrCodes LB_STDCALL lbBoundColumn::bindColumn(lbQuery* q, int column) {
 
 	HSTMT hstmt = q->getCurrentStatement();
@@ -1178,6 +1181,7 @@ lbErrCodes LB_STDCALL lbBoundColumn::bindColumn(lbQuery* q, int column) {
 		colName->setData((char*) ColumnName);
 	}
 
+	int rows = 2;
 
 	switch (DataType) {
 		case SQL_CHAR:
@@ -1189,8 +1193,6 @@ lbErrCodes LB_STDCALL lbBoundColumn::bindColumn(lbQuery* q, int column) {
 				_CL_LOG << 
 				"Warning: BufferLength is smaller than ColumnSize. Data would be truncated." LOG_
 			}
-			
-			int rows = 2;
 			
 			buffersize = (ColumnSize == 0) ? (BufferLength+1)*rows : (ColumnSize+1)*rows;
 			if (buffersize == 0) printf("Fatal: Calculated bufferzize is zero!!\n");

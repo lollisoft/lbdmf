@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.45 $
+ * $Revision: 1.46 $
  * $Name:  $
- * $Id: lbDOMConfig.cpp,v 1.45 2003/12/13 10:56:25 lollisoft Exp $
+ * $Id: lbDOMConfig.cpp,v 1.46 2003/12/13 21:15:10 lollisoft Exp $
  *
  * $Log: lbDOMConfig.cpp,v $
+ * Revision 1.46  2003/12/13 21:15:10  lollisoft
+ * Compiles again under Linux using iODBC aka libiodbc.so
+ *
  * Revision 1.45  2003/12/13 10:56:25  lollisoft
  * Database improovements and changes in my licence adress.
  * The database part is still not working by updating columns
@@ -2061,8 +2064,8 @@ lb_I_FunctorEntity* LB_STDCALL lbInterfaceRepository::getFirstEntity() {
 			DOM_Node moduleNameNode;
 
 	                // Find module name
-	                for (index = 0; index < nodeList.getLength(); index++) {
-	                        moduleNameNode = nodeList.item(index);
+	                for (int i = 0; i < nodeList.getLength(); i++) {
+	                        moduleNameNode = nodeList.item(i);
 	                        if (moduleNameNode.getNodeName().equals(DOMString("ModuleName"))) break;
 	                }			
 
