@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.49 $
+ * $Revision: 1.50 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.49 2005/02/12 15:46:32 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.50 2005/02/13 09:13:16 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.50  2005/02/13 09:13:16  lollisoft
+ * Using applicationName to load not a hardcoded application
+ *
  * Revision 1.49  2005/02/12 15:46:32  lollisoft
  * Changed SQL queries, enabled optional user and password settings via
  * environment.
@@ -535,6 +538,8 @@ lbErrCodes LB_STDCALL lb_MetaApplication::loadApplication(char* user, char* appl
 		 * First, only handle lb_I_MetaApplication types.
 		 */
 
+		_CL_LOG << "Query for the application data to be able to load it" LOG_
+
 		sampleQuery->query(buffer);
 
 		// Fill up the available applications for that user.
@@ -609,7 +614,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::loadApplication(char* user, char* appl
                 if (dispatcher.getPtr() == NULL) _LOG << "Error: dispatcher is NULL" LOG_
 
                 app->setGUI(gui);
-		_CL_VERBOSE << "Initialize the loaded application" LOG_
+		_CL_LOG << "Initialize the loaded application" LOG_
                 app->Initialize(user, application);
 
                 if (dispatcher.getPtr() == NULL) _LOG << "Error: dispatcher has been set to NULL" LOG_
@@ -633,7 +638,10 @@ lbErrCodes LB_STDCALL lb_MetaApplication::loadApplication(char* user, char* appl
 		manager->makeInstance(PREFIX "instanceOfApplication", applicationName, &a);
 		#endif
 		#ifdef LINUX
-		manager->makeInstance(PREFIX "instanceOfApplication", "Application.so", &a);
+		char name[80] = "";
+		strcpy(name, applicationName);
+		strcat(name, ".so");
+		manager->makeInstance(PREFIX "instanceOfApplication", name, &a);
 		#endif	
 		if (a == NULL) {
 			_LOG << "ERROR: Application could not be loaded - either not found or not configured." LOG_
