@@ -25,11 +25,14 @@
 #            40235 DÅsseldorf (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.50 $
+# * $Revision: 1.51 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.50 2005/01/24 22:21:27 lollisoft Exp $
+# * $Id: STD_MAKE,v 1.51 2005/01/25 12:28:36 lollisoft Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.51  2005/01/25 12:28:36  lollisoft
+# * Changes for linux due to several reasons. The GUI sample has still problems with database access. Crash in lbDB.cpp while creating bound columns. Console works
+# *
 # * Revision 1.50  2005/01/24 22:21:27  lollisoft
 # * Changes on Linux to get database access running. Login and selecting / loading an application works. But the application would not load
 # *
@@ -358,8 +361,8 @@ C_OPS   = -c -DUNIX -DLINUX
 C_SOOPS = $(C_OPS)
 C_ELFOPS= $(C_OPS)
 L_OPS   = -o
-LIBS    = -ldl -lstdc++
-# -lefence
+LIBS    = -ldl -lstdc++ 
+#-lefence
 CC =cc
 LD =cc
 CP =cp

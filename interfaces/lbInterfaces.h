@@ -801,11 +801,13 @@ lb_I_Module* LB_STDCALL classname::getModuleManager() { \
 } \
 \
 void LB_STDCALL classname::setModuleManager(lb_I_Module* m, char* file, int line) { \
+	_CL_VERBOSE << #classname << "::setModuleManager(lb_I_Module* m, char* file, int line) called" LOG_ \
 	if (m == NULL) { \
 		_CL_LOG << "Error: Set module manager with a NULL pointer in " << #classname << " while setModuleManager(...)!" LOG_ \
 		return; \
 	} \
 	\
+	_CL_VERBOSE << "Query for interface lb_I_Module" LOG_ \
 	further_lock = 0; \
 	if (m != manager.getPtr()) { \
 	    if (m != NULL) m->queryInterface("lb_I_Module", (void**) &manager, file, line); \
@@ -813,12 +815,16 @@ void LB_STDCALL classname::setModuleManager(lb_I_Module* m, char* file, int line
 	manager.setLine(__LINE__); \
 	manager.setFile(__FILE__); \
 	\
+	_CL_VERBOSE << "Is Module there ?" LOG_ \
+	\
 	if (manager != NULL) { \
+		_CL_VERBOSE << "Create filename for logging" LOG_ \
 		char *datei = strrchr(file, '\\'); \
 		if (datei == NULL) \
 			datei = file; \
 		else \
 			datei++; \
+		_CL_VERBOSE << "call managers notify_create" LOG_ \
 		manager->notify_create(this, #classname, datei, line); \
 	} else { \
 		_CL_LOG << "Error: Query interface failed for manager in " << #classname << " while setModuleManager(...)!" LOG_ \

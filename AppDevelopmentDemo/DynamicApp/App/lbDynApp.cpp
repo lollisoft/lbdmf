@@ -374,8 +374,10 @@ lbErrCodes LB_STDCALL lbDynamicApplication::Initialize(char* user, char* app) {
 
 	printf("%s\n", buffer);
 
-	sampleQuery->query(buffer);
+	if (sampleQuery == NULL) printf("NULL pointer !\n");
 
+	sampleQuery->query(buffer);
+printf("Query executed\n");
 	// Fill up the available applications for that user.
 	UAP_REQUEST(manager.getPtr(), lb_I_String, EventName)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, MenuName)
@@ -384,7 +386,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::Initialize(char* user, char* app) {
 	addMenuBar("Dynamic Forms", "Edit");
 
 	lbErrCodes DBerr = sampleQuery->first();
-
+printf("Check if I have data\n");
 	if ((DBerr == ERR_NONE) || (DBerr == WARN_DB_NODATA)) {
 
 	        EventName = sampleQuery->getAsString(1);
@@ -400,7 +402,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::Initialize(char* user, char* app) {
 		if (DBerr == WARN_DB_NODATA) return ERR_NONE;
 #define TRUE 1
 		while (TRUE) {
-			
+			printf("Have data\n");
 			DBerr = sampleQuery->next();
 		
 			if ((DBerr == ERR_NONE) || (DBerr == WARN_DB_NODATA)) {

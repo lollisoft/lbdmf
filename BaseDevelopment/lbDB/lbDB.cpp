@@ -303,6 +303,7 @@ private:
 class lbBoundColumn: public lb_I_BoundColumn {
 public:	
 	lbBoundColumn() {
+		_CL_VERBOSE << "lbBoundColumn::lbBoundColumn() called" LOG_
 		ref = STARTREF;
 		bound = 0;
 		cbBufferLength = 0;
@@ -310,8 +311,12 @@ public:
 		colName = NULL;
 		ColumnSize = 0;
 		rows = 2;
+		_CL_VERBOSE << "lbBoundColumn::lbBoundColumn() leaving" LOG_
 	}
+	
 	virtual ~lbBoundColumn() {
+		_CL_VERBOSE << "lbBoundColumn::~lbBoundColumn() called" LOG_
+
 		switch (_DataType) {
 			case SQL_CHAR:
 			case SQL_VARCHAR:
@@ -329,6 +334,8 @@ public:
 			free(buffer);
 			buffer = NULL;
 		}
+		_CL_VERBOSE << "lbBoundColumn::~lbBoundColumn() leaving" LOG_
+
 	}
 	
 	lbBoundColumn(const lbBoundColumn& _ref) {
@@ -486,6 +493,9 @@ lbErrCodes      LB_STDCALL lbBoundColumns::setQuery(lbQuery* q) {
 	 */
 	SQLSMALLINT num = 0;	
 	SQLRETURN sqlreturn = SQLNumResultCols(hstmt, &num);
+	
+	_CL_VERBOSE << "Have " << (int) num << " columns" LOG_
+	
 /*...e*/
 	
 /*...sdocs:0:*/
@@ -515,11 +525,30 @@ Therefore I need an indicator, set by the user of this library to know, which on
 	for (int i = 1; i <= num; i++) {
 		lbErrCodes err = ERR_NONE;
 		
+		_CL_VERBOSE << "Column loop..." LOG_
+		
 		// Create the instance ...
+		
+		char puffer1[100];
 		lbBoundColumn* bc = new lbBoundColumn();
+		char puffer2[100];
 
-		bc->setModuleManager(*&manager, __FILE__, __LINE__);
+		_CL_VERBOSE << "Have lbBoundColumn" LOG_
+		char ptr[20] = "";
 
+		if (bc) {
+			sprintf(ptr, "%p", bc);
+			_CL_VERBOSE << "bc instance pointer is good: " << ptr LOG_
+		}
+
+		sprintf(ptr, "%p", manager.getPtr());
+		if (manager.getPtr()) _CL_VERBOSE << "Manager instance pointer is good: " << ptr LOG_
+
+		lb_I_Module *man = manager.getPtr();
+
+		bc->setModuleManager(man, "lbDB.cpp", __LINE__);
+
+		_CL_VERBOSE << "Column loop... 1" LOG_
 		bc->prepareBoundColumn(q, i);
 
 		integerKey->setData(i);
@@ -530,13 +559,17 @@ Therefore I need an indicator, set by the user of this library to know, which on
 		bc->queryInterface("lb_I_Unknown", (void**) &uk, __FILE__, __LINE__);
 		integerKey->queryInterface("lb_I_KeyBase", (void**) &key, __FILE__, __LINE__);		
 
+		_CL_VERBOSE << "Column loop... 2" LOG_
 		boundColumns->insert(&uk, &key);
 
 		UAP(lb_I_BoundColumn, bc1, __FILE__, __LINE__)
 
+		_CL_VERBOSE << "Column loop... 3" LOG_
 		bc1 = getBoundColumn(i);
 
 		bc1->bindColumn(q, i);
+
+		_CL_VERBOSE << "Bound a column" LOG_
 		
 /*...sGet the column name for this column and add an index to it\39\s column id\46\:16:*/
 
@@ -560,6 +593,8 @@ Therefore I need an indicator, set by the user of this library to know, which on
 		if (ColumnNameMapping.getPtr() == NULL) printf("Error: NULL pointer at ColumnNameMapping detected\n");
 		if (ivalue.getPtr() == NULL) printf("Error: NULL pointer at ivalue detected\n");
 		if (skey.getPtr() == NULL) printf("Error: NULL pointer at skey detected\n");
+		
+		_CL_VERBOSE << "Insert into ColumnNameMapping" LOG_
 		
 		ColumnNameMapping->insert(&ivalue, &skey);
 /*...e*/
@@ -682,6 +717,11 @@ lbErrCodes LB_STDCALL lbQuery::init(HENV _henv, HDBC _hdbc, int readonly) {
 
 	retcode = SQLSetStmtOption(hstmt, SQL_CURSOR_TYPE, SQL_CURSOR_KEYSET_DRIVEN);
 
+
+	if (retcode == SQL_SUCCESS_WITH_INFO) {
+                dbError( "SQLSetStmtOption()");
+                _LOG << "lbDatabase::getQuery() failed due to setting cursor type." LOG_
+	} else
         if (retcode != SQL_SUCCESS)
         {
                 dbError( "SQLSetStmtOption()");
@@ -822,10 +862,13 @@ Using SQLSetPos
 	retcode = SQLSetCursorName(hstmt, cursorname, SQL_NTS);
 */	
 /*...e*/
-
+	_CL_VERBOSE << "Call prepareFKList()" LOG_
 	prepareFKList();
-
+	_CL_VERBOSE  << "Called" LOG_
+	
 	retcode = SQLExecDirect(hstmt, (unsigned char*) szSql, SQL_NTS);
+
+_CL_VERBOSE << "Executed SQLExecDirect()" LOG_
 
 	if ((retcode != SQL_SUCCESS) && (retcode != SQL_SUCCESS_WITH_INFO))
         {
@@ -835,6 +878,8 @@ Using SQLSetPos
         }
 
 	retcode = SQLNumResultCols(hstmt, &cols);
+
+_CL_VERBOSE << "Called SQLNumResultCols()" LOG_
 	
 	if (retcode != SQL_SUCCESS)
 	{
@@ -846,7 +891,11 @@ Using SQLSetPos
 		lbBoundColumns* boundcols = new lbBoundColumns();
 		boundcols->setModuleManager(*&manager, __FILE__, __LINE__);
 		
+		_CL_VERBOSE << "Create bound columns" LOG_
+		
 		boundcols->setQuery(this);
+		
+		_CL_VERBOSE << "Created" LOG_
 		
 		boundColumns = boundcols;
 		

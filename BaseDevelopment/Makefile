@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.19 $
+# * $Revision: 1.20 $
 # * $Name:  $
-# * $Id: Makefile,v 1.19 2005/01/24 22:21:01 lollisoft Exp $
+# * $Id: Makefile,v 1.20 2005/01/25 12:28:34 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.20  2005/01/25 12:28:34  lollisoft
+# * Changes for linux due to several reasons. The GUI sample has still problems with database access. Crash in lbDB.cpp while creating bound columns. Console works
+# *
 # * Revision 1.19  2005/01/24 22:21:01  lollisoft
 # * Changes on Linux to get database access running. Login and selecting / loading an application works. But the application would not load
 # *
@@ -99,13 +102,12 @@ TARGETEXE=elf
 ALLTARGETS = lbHook \
 	lbDB \
 	lbModule \
-	lbClasses \
+	lbclasses \
 	lbMetaApplication \
 	../AppDevelopmentDemo/App \
 	../AppDevelopmentDemo/DynamicApp/App \
 	../Test/Console/XML \
 	../Test/GUI/wxWrapper \
-	../AppDevelopment \
 	../Doc/html
 endif
 ifeq ($(OSTYPE), Windows_NT)
@@ -199,8 +201,8 @@ lbModule: dummy
 	$(MAKE) -C $@ -e MODULE=$@ -e TARGET=$(TARGETDLL) -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
 	$(MAKE) -C $@
 
-lbClasses: dummy
-	$(MAKE) -C lbclasses -e MODULE=$@ -e TARGET=$(TARGETDLL) -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
+lbclasses: dummy
+	$(MAKE) -C lbclasses -e MODULE=lbClasses -e TARGET=$(TARGETDLL) -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
 	$(MAKE) -C lbclasses
 
 lbMetaApplication: dummy
