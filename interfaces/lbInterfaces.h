@@ -338,17 +338,8 @@ public:
 				} \
 				if (_line == -1) { \
 				} \
-				if (strcmp(#interface, "lb_I_Container") == 0) { \
-				    printf("Destroy an lb_I_Container (1)\n"); \
-				}\
 				RELEASE_1(_autoPtr, _file, _line); \
 			} \
-			if (strcmp(#interface, "lb_I_Container") == 0) { \
-			    printf("Destroy an lb_I_Container (2)\n"); \
-			}\
-			if (strcmp(#interface, "lb_I_Container") == 0) { \
-			    printf("Destroy an lb_I_Container (3)\n"); \
-			}\
 		} \
 		void LB_STDCALL setFile(char* __file) { \
 			if (_file != NULL) delete [] _file; \
@@ -1042,9 +1033,7 @@ lbErrCodes DLLEXPORT LB_FUNCTORCALL name(lb_I_Unknown** uk, lb_I_Module* m, char
         *uk = NULL; \
         instance->setFurtherLock(0); \
         if (m != NULL) { \
-		if (strcmp(#clsname, "lb_MetaApplication") == 0) printf("Functor calls setModuleManager\n"); \
         	instance->setModuleManager(m, __FILE__, __LINE__); \
-		if (strcmp(#clsname, "lb_MetaApplication") == 0) printf("Functor called setModuleManager\n"); \
         } else { \
         	_CL_LOG << "Error: Functor gets no manager. This is only possible for a manager it self." LOG_ \
         } \
