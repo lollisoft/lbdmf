@@ -25,15 +25,24 @@
 
             22453 Hamburg (germany)
 */
+#ifdef _MSC_VER
+
+#pragma warning( disable: 4101 )
+
+#endif
+
 // skiplist.cpp
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.12 $
+ * $Revision: 1.13 $
  * $Name:  $
- * $Id: skiplist.cpp,v 1.12 2003/01/19 17:31:25 lolli Exp $
+ * $Id: skiplist.cpp,v 1.13 2003/02/17 21:34:41 lollisoft Exp $
  *
  * $Log: skiplist.cpp,v $
+ * Revision 1.13  2003/02/17 21:34:41  lollisoft
+ * Much problems with compilation solved, bu wy came this ??
+ *
  * Revision 1.12  2003/01/19 17:31:25  lolli
  * Runs now with MSC
  *

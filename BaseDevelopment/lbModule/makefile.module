@@ -29,7 +29,7 @@
 
 ifeq ($(OSTYPE), Windows_NT)
 MOD_INCL=$(STD_INCL)
-LIBS = $(DEVROOT)\projects\dll\libs\lbhook.lib
+LIBS = $(DEVROOT)/projects/dll/libs/lbhook.lib
 COMPILER=MICROSOFT
 ifeq ($(COMPILER), MICROSOFT)
 MOD_INCL = $(STD_INCL_MICROSOFT)

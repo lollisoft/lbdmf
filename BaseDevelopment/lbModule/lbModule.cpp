@@ -28,11 +28,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.48 $
+ * $Revision: 1.49 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.48 2003/01/27 21:18:34 lothar Exp $
+ * $Id: lbModule.cpp,v 1.49 2003/02/17 21:34:35 lollisoft Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.49  2003/02/17 21:34:35  lollisoft
+ * Much problems with compilation solved, bu wy came this ??
+ *
  * Revision 1.48  2003/01/27 21:18:34  lothar
  * More logging
  *
@@ -156,7 +159,9 @@
 /*...e*/
 
 #pragma warning( disable: 4101 )
-
+#pragma warning( disable: 4018 )
+#pragma warning( disable: 4229 )
+#pragma warning( disable: 4102 )
 
 //#define IR_USAGE
 

@@ -25,11 +25,14 @@
 #            22453 Hamburg (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.32 $
+# * $Revision: 1.33 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.32 2003/01/27 21:20:18 lothar Exp $
+# * $Id: STD_MAKE,v 1.33 2003/02/17 21:34:43 lollisoft Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.33  2003/02/17 21:34:43  lollisoft
+# * Much problems with compilation solved, bu wy came this ??
+# *
 # * Revision 1.32  2003/01/27 21:20:18  lothar
 # * May not help
 # *
@@ -134,13 +137,22 @@
 
 ifeq ($(OSTYPE), Windows_NT)
 
+DEVROOT=Q:/develop
+
 # Set standard compiler
 COMPILER=WATCOM
 #COMPILER=MICROSOFT
 MODE=_DEBUG
 #MODE=
 
-STD_INCL_WATCOM = -i=.;Q:\develop\Tools\WATCOM\h;Q:\develop\Tools\WATCOM\h\nt;Q:\develop\projects\cpp\interfaces;Q:\develop\projects\cpp\include;Q:\develop\projects\dll\include;Q:\develop\projects\lib\include
+STD_INCL_WATCOM = \
+-i=. \
+-i=Q:\develop\Tools\WATCOM\h \
+-i=Q:\develop\Tools\WATCOM\h\nt \
+-i=Q:\develop\projects\cpp\interfaces \
+-i=Q:\develop\projects\cpp\include \
+-i=Q:\develop\projects\dll\include \
+-i=Q:\develop\projects\lib\include
 STD_INCL_MICROSOFT = /I "." /I "F:\develop\NT\MSC\VC98\Include" /I "Q:\Develop\xml\xml4csrc3_3_1\src" /I "Q:\Develop\Projects\CPP\include" /I "Q:\Develop\Projects\CPP\interfaces" /I "Q:\Develop\Projects\CPP\basedevelopment\lbclasses"
 
 STD_INCL = $(STD_INCL_WATCOM)
@@ -171,7 +183,7 @@ $(WATCOM_STACK)
 
 OBJ =obj
 # Watcom -zp4
-C_EXEOPS_WATCOM_DEBUG= $(WATCOM_STD_C_OPS) $(WATCOM_STDDEBUG)                      -ei -zp4 -bt=nt -mf -hd
+C_EXEOPS_WATCOM_DEBUG= $(WATCOM_STD_C_OPS) $(WATCOM_STDDEBUG) -ei -zp4 -bt=nt -mf -hd
 
 C_DLLOPS_WATCOM   =  $(WATCOM_STD_C_OPS) $(WATCOM_DLLTARGET)                       -ei -zp4 -bt=nt -mf -hd
 

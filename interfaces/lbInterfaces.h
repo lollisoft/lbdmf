@@ -25,6 +25,17 @@
 
             22453 Hamburg (germany)
 */
+
+#ifdef _MSC_VER
+
+#pragma warning( disable: 4275 )
+#pragma warning( disable: 4101 )
+#pragma warning( disable: 4102 )
+#pragma warning( disable: 4172 )
+#pragma warning( disable: 4251 )
+
+#endif
+
 /*...sdocu:0:*/
 /**
  * For all Interfaces are factories needed. How should I design these

@@ -25,13 +25,23 @@
 
             22453 Hamburg (germany)
 */
+
+#ifdef _MSC_VER
+
+#pragma warning( disable: 4101 )
+
+#endif
+
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.19 $
+ * $Revision: 1.20 $
  * $Name:  $
- * $Id: lbcontainer.cpp,v 1.19 2003/01/15 22:42:22 lolli Exp $
+ * $Id: lbcontainer.cpp,v 1.20 2003/02/17 21:34:39 lollisoft Exp $
  * $Log: lbcontainer.cpp,v $
+ * Revision 1.20  2003/02/17 21:34:39  lollisoft
+ * Much problems with compilation solved, bu wy came this ??
+ *
  * Revision 1.19  2003/01/15 22:42:22  lolli
  * Compiles with MSC
  *

@@ -28,11 +28,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.23 $
+ * $Revision: 1.24 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.23 2003/02/09 13:22:50 lothar Exp $
+ * $Id: lbMetaApplication.cpp,v 1.24 2003/02/17 21:34:34 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.24  2003/02/17 21:34:34  lollisoft
+ * Much problems with compilation solved, bu wy came this ??
+ *
  * Revision 1.23  2003/02/09 13:22:50  lothar
  * Different log usage
  *
@@ -103,6 +106,12 @@
  **************************************************************/
 /*...e*/
 #define LB_METAAPP_DLL
+
+#ifdef _MSC_VER
+
+#pragma warning( disable: 4101 )
+
+#endif
 
 /*...sincludes:0:*/
 

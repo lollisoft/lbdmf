@@ -11,11 +11,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.30 $
+ * $Revision: 1.31 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.30 2003/01/15 22:44:30 lothar Exp $
+ * $Id: mkmk.cpp,v 1.31 2003/02/17 21:34:44 lollisoft Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.31  2003/02/17 21:34:44  lollisoft
+ * Much problems with compilation solved, bu wy came this ??
+ *
  * Revision 1.30  2003/01/15 22:44:30  lothar
  * Added handling of MSC compiler
  *
@@ -120,10 +123,10 @@
   #define dd_findnext _dos_findnext
   #define dd_ffblk find_t
   #define dd_name name
+
 #else
 
   #include <dosdir.h>
-
 #endif
 /*...e*/
 
@@ -152,7 +155,6 @@
   #define MoreChar '\\'
 #endif
 /*...e*/
-
 #define EXE_TARGET 1
 #define DLL_TARGET 2
 #define LIB_TARGET 3
@@ -625,7 +627,7 @@ void writeExeTarget(char* modulename) {
   printf("\t\t@echo NAME $(PROGRAM).exe > $(LNK)\n");
   printf("\t\t@echo $(FILE) $(LIBS) >> $(LNK)\n");
   printf("\t\t@$(LINK) $(LINKFLAGS) $(COMPILERFLAGS)\n");
-  printf("\t\t@$(CP) $(PROGRAM).exe $(EXEDIR) > null\n");
+  printf("\t\t@cmd /C $(CP) $(PROGRAM).exe $(EXEDIR) > null\n");
 #endif
 }
 /*...e*/
@@ -668,10 +670,12 @@ void writeDllTarget(char* modulename) {
   printf("\t\t@echo Link %s.dll\n", ModName);
   printf("\t\t@echo NAME $(PROGRAM).dll > $(LNK)\n");
   printf("\t\t@echo $(FILE) $(LIBS) >> $(LNK)\n");
-  printf("\t\t@;if NOT \"$(LIBS)\" == \"\" echo LIBR $(LIBS) >> $(LNK)\n");
+// Don know, why this doesn't work now ??
+//  printf("\t\t@;if NOT \"$(LIBS)\" == \"\" echo LIBR $(LIBS) >> $(LNK)\n");
   printf("\t\t@$(LINK) $(LNKDLLOPS) $(LINKFLAGS)\n");
-  printf("\t\t@$(CP) $(PROGRAM).dll $(DLLDIR) > null\n");
-  printf("\t\t@$(CP) $(PROGRAM).lib $(DLLLIBDIR) > null\n");
+// Hack for copy not found ??  
+  printf("\t\t@cmd /C $(CP) $(PROGRAM).dll $(DLLDIR) > null\n");
+  printf("\t\t@cmd /C $(CP) $(PROGRAM).lib $(DLLLIBDIR) > null\n");
   printf("endif\n");
 #endif
 }
@@ -870,15 +874,15 @@ void WriteDep(FILE *f, char *Name, TIncludeParser *p)
 
   switch (targettype) {
   	case LIB_TARGET:
-  		printf("\t\t@echo Build %s\n",Name);
+//  		printf("\t\t@echo Build %s\n",Name);
 		printf("\t\t@$(CC) $(C_LIBOPS) $(MOD_INCL) %s\n\n",Name);
 		break;
   	case DLL_TARGET:
-  		printf("\t\t@echo Build %s\n",Name);
+//  		printf("\t\t@echo Build %s\n",Name);
 		printf("\t\t@$(CC) $(C_DLLOPS) $(MOD_INCL) %s\n\n",Name);
 		break;
 	case EXE_TARGET:
-  		printf("\t\t@echo Build %s\n",Name);
+//  		printf("\t\t@echo Build %s\n",Name);
 		printf("\t\t@$(CC) $(C_EXEOPS) $(MOD_INCL) %s\n\n",Name);
 		break;
 	case ELF_TARGET:

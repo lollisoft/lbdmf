@@ -25,6 +25,14 @@
 
             22453 Hamburg (germany)
 */
+
+#ifdef _MSC_VER
+
+#pragma warning( disable: 4101 )
+#pragma warning( disable: 4172 )
+
+#endif
+
 #include <stdio.h>
 #include <string.h>
 #include <lbInterfaces.h>

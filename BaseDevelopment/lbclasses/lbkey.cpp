@@ -25,13 +25,22 @@
 
             22453 Hamburg (germany)
 */
+#ifdef _MSC_VER
+
+#pragma warning( disable: 4101 )
+
+#endif
+
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.14 $
+ * $Revision: 1.15 $
  * $Name:  $
- * $Id: lbkey.cpp,v 1.14 2003/01/15 22:42:22 lolli Exp $
+ * $Id: lbkey.cpp,v 1.15 2003/02/17 21:34:40 lollisoft Exp $
  * $Log: lbkey.cpp,v $
+ * Revision 1.15  2003/02/17 21:34:40  lollisoft
+ * Much problems with compilation solved, bu wy came this ??
+ *
  * Revision 1.14  2003/01/15 22:42:22  lolli
  * Compiles with MSC
  *

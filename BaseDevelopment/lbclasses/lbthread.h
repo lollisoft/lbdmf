@@ -29,6 +29,12 @@
 #ifndef LB_TOOLS
 #define LB_TOOLS
 
+#ifdef _MSC_VER
+
+#pragma warning( disable: 4275 )
+
+#endif
+
 #ifdef WINDOWS
 #include <windows.h>
 #endif
