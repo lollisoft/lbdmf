@@ -3,6 +3,11 @@ call makefile.bat
 make
 cd ..
 
+cd lbDB
+call makefile.bat
+make
+cd ..
+
 cd lbModule
 call makefile.bat
 make
