@@ -44,7 +44,7 @@ DLLEXPORT void LB_STDCALL CL_doLog(char* f, char* msg) {
                 fp = fopen( f, "a" );
                 if( fp != NULL ) {
                         char *buf = NULL;
-                        buf = (char*) malloc(500);
+                        buf = (char*) malloc(10000);
                         buf[0] = 0;
                         fprintf( fp, "%s%s", buf, msg);
                         free((void*) buf);

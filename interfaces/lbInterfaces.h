@@ -269,6 +269,7 @@ public:
 			free(_file); \
 		} \
 		void setFile(char* __file) { \
+			if (_file != NULL) free(_file); \
 			if (__file != NULL) _file = strdup(__file); \
 		} \
 		void setLine(int __line) { \
@@ -359,7 +360,135 @@ public:
 #endif
 /*...e*/
 /*...e*/
+/*...sDebug AutoPointer:0:*/
+/**
+ * Is it possible to create an automatic pointer without templates ?
+ * An Unknown auto pointer.
+ */
 
+#define DEBUG_UAP(interface, Unknown_Reference, file, line) \
+		class UAP##Unknown_Reference { \
+\
+		private: \
+		UAP##Unknown_Reference(UAP##Unknown_Reference& from) { \
+			LOG("Copy constructor called!") \
+		} \
+		public: \
+	        UAP##Unknown_Reference() { \
+	        	_autoPtr = NULL; \
+	        	_line = -1; \
+	        	_file = strdup(""); \
+	        	allowDelete = 1; \
+		} \
+		virtual ~UAP##Unknown_Reference() { \
+			if (_autoPtr != NULL) { \
+				if (allowDelete != 1) { \
+					if (_autoPtr->deleteState() == 1) { \
+						LOG("Error: Instance would be deleted, but it's not allowed !!"); \
+					} \
+				} \
+				if (_line == -1) { \
+				char buf[1000] = ""; \
+					sprintf(buf, "Warning: No reference has been taken in %s at %d (UAP is in %s at %d", _file, _line, file, line); \
+					LOG(buf); \
+				} \
+				RELEASE_1(_autoPtr, _file, _line); \
+			} \
+			free(_file); \
+		} \
+		void setFile(char* __file) { \
+			if (__file != NULL) _file = strdup(__file); \
+		} \
+		void setLine(int __line) { \
+			_line = __line; \
+		} \
+		\
+		interface* getPtr() const { return _autoPtr; } \
+		void setPtr(interface*& source) { \
+			if (_autoPtr != NULL) { \
+				LOG("Error: UAP object still initialized!"); \
+			} \
+			_autoPtr = source; \
+		} \
+		\
+		interface& operator * () { \
+		char buf[1000] = ""; \
+		sprintf(buf, "Warning: Using reference to UAP pointer in %s at %d", file, line); \
+		LOG(buf) \
+		return *_autoPtr; } \
+		interface* operator -> () const { \
+			if (_autoPtr == NULL) { \
+				char buf[1000] = ""; \
+				sprintf(buf, "Error: UAP pointer (%s) for interface %s is NULL!", #Unknown_Reference, #interface); \
+				LOG(buf); \
+			} \
+			return _autoPtr; \
+		} \
+		interface* operator -> () { \
+			if (_autoPtr == NULL) { \
+				char buf[1000] = ""; \
+				sprintf(buf, "Error: UAP pointer (%s) for interface %s is NULL!", #Unknown_Reference, #interface); \
+				LOG(buf); \
+			} \
+			char ptr[20] = ""; \
+			sprintf(ptr, "%p", (void*) _autoPtr); \
+			if (strcmp(ptr, "cdcdcdcd") == 0) { \
+			        LOG("Error: Uninitialized pointer will be used!"); \
+			} \
+			return _autoPtr; \
+		} \
+		UAP##Unknown_Reference& operator++(int) { \
+			interface* temp = NULL; \
+			_autoPtr->queryInterface(#interface, (void**) &temp, file, line); \
+			return *this; \
+		} \
+		UAP##Unknown_Reference& operator--(int) { \
+			interface* temp = NULL; \
+			if (_autoPtr->release(file, line) == ERR_RELEASED) _autoPtr = NULL; \
+			return *this; \
+		} \
+		interface ** operator & () { \
+			return &_autoPtr; \
+		} \
+		\
+		UAP##Unknown_Reference& operator = (interface* autoPtr) { \
+			char ptr[20] = ""; \
+			sprintf(ptr, "%p", (void*) autoPtr); \
+			if (strcmp(ptr, "cdcdcdcd") == 0) { \
+				LOG("Error: Uninitialized pointer will be set!"); \
+				_autoPtr = NULL; \
+			} else _autoPtr = autoPtr; \
+			return *this; \
+		} \
+		int operator == (const interface* b) const { \
+			return _autoPtr == b; \
+		} \
+		int operator != (const interface* b) const { \
+			return _autoPtr != b; \
+		} \
+		void setDelete(int _allow) { allowDelete = _allow; } \
+		\
+		protected: \
+	        interface* _autoPtr; \
+	        int _line; \
+	        char* _file; \
+	        int allowDelete; \
+		}; \
+	\
+        interface* _UAP##Unknown_Reference; \
+        UAP##Unknown_Reference Unknown_Reference;
+
+
+/*...sbla \40\geht nicht\41\:0:*/
+#ifdef bla
+#define UNKNOWN_AUTO_PTR(interface, Unknown_Referene) \
+	interface* Unknown_Referene = NULL; \
+	UAP UAP##Unknown_Referene((lb_I_Unknown**) &Unknown_Referene);
+#endif
+/*...e*/
+/*...e*/
+
+/*...sREQUEST Use this for a predefined UAP\46\:0:*/
 // Use this for a predefined UAP. It will automatically deleted, if scope is gone.
 #define REQUEST(mm, interface, variable) \
   	UAP(lb_I_Unknown, uk##variable, __FILE__, __LINE__) \
@@ -367,14 +496,18 @@ public:
   	uk##variable->setModuleManager(mm, __FILE__, __LINE__); \
   	uk##variable->queryInterface(#interface, (void**) &variable, __FILE__, __LINE__);
 
+/*...e*/
 
+/*...sUAP_REQUEST Use this for an stack like environment\46\:0:*/
 // Use this for an stack like environment. It will automatically deleted, if scope is gone.
 #define UAP_REQUEST(mm, interface, variable) \
   	UAP(lb_I_Unknown, uk##variable, __FILE__, __LINE__) \
-  	mm->request(#interface, &uk##variable); \
+  	if (mm->request(#interface, &uk##variable) == ERR_MODULE_NO_INTERFACE) LOG("Error: Interface not defined"); \
   	UAP(interface, variable, __FILE__, __LINE__) \
   	uk##variable->setModuleManager(mm, __FILE__, __LINE__); \
   	uk##variable->queryInterface(#interface, (void**) &variable, __FILE__, __LINE__);
+
+/*...e*/
 
 /**
  * This is an replacement for a normal pointer. It has one reference, that you can use.
@@ -1352,6 +1485,7 @@ public:
 
 	virtual lbErrCodes LB_STDCALL setGUI(lb_I_GUI* gui) = 0;
 	virtual lbErrCodes LB_STDCALL Initialize() = 0;
+	virtual lbErrCodes LB_STDCALL run() = 0;
 	
 	virtual lbErrCodes LB_STDCALL getGUI(lb_I_GUI** gui) = 0;
 	

@@ -1,11 +1,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.5 $
+ * $Revision: 1.6 $
  * $Name:  $
- * $Id: lbMetaApplication.h,v 1.5 2002/08/21 18:00:28 lothar Exp $
+ * $Id: lbMetaApplication.h,v 1.6 2002/09/04 17:52:12 lothar Exp $
  *
  * $Log: lbMetaApplication.h,v $
+ * Revision 1.6  2002/09/04 17:52:12  lothar
+ * Problems with stack cleanup
+ *
  * Revision 1.5  2002/08/21 18:00:28  lothar
  * Added UAP variables
  *
@@ -49,6 +52,7 @@ public:
 	 * be able to dispatch that events.
 	 */
 	virtual lbErrCodes LB_STDCALL Initialize();
+	virtual lbErrCodes LB_STDCALL run();
 	virtual lbErrCodes LB_STDCALL getGUI(lb_I_GUI** _gui);
 
 	virtual lb_I_EventManager * getEVManager( void );
@@ -64,6 +68,8 @@ public:
 
 protected:
 	lb_I_GUI* gui;
+	UAP(lb_I_EventManager, eman, __FILE__, __LINE__)
+	UAP(lb_I_Dispatcher, dispatcher, __FILE__, __LINE__)
 };
 /*...e*/
 /*...sclass lb_EventMapper:0:*/
@@ -115,7 +121,7 @@ public:
 	/**
 	 * ID variant
 	 */
-	virtual lbErrCodes LB_STDCALL dispatchEvent(int EvNr, lb_I_Unknown* EvData);
+	virtual lbErrCodes LB_STDCALL dispatch(int EvNr, lb_I_Unknown* EvData, lb_I_Unknown** EvResult);
 	/**
 	 * Name variant
 	 *
@@ -127,7 +133,7 @@ public:
 	 * EvName = "AnnounceHandler"
 	 * EvData = lb_I_HandlerAddress
 	 */
-	virtual lbErrCodes LB_STDCALL queryEvent(char* EvName, lb_I_Unknown* EvData);
+	virtual lbErrCodes LB_STDCALL dispatch(char* EvName, lb_I_Unknown* EvData, lb_I_Unknown** EvResult);
 	
 	virtual lb_I_DispatchResponce* dispatch(lb_I_DispatchRequest* req);
 	
@@ -159,7 +165,18 @@ protected:
 };
 /*...e*/
 
+class lb_EvHandler : public lb_I_EvHandler {
+public:
+	lb_EvHandler();
+	virtual ~lb_EvHandler();
 
+	DECLARE_LB_UNKNOWN()
+        
+	virtual lbErrCodes LB_STDCALL setHandler(lbEvHandler evHandler);
+        virtual lbEvHandler LB_STDCALL getHandler();
+        
+        lbEvHandler ev;
+};
 
 /*...sifdef __cplusplus:0:*/
 #ifdef __cplusplus
@@ -169,6 +186,7 @@ extern "C" {
 
 DECLARE_FUNCTOR(instanceOfMetaApplication)
 DECLARE_FUNCTOR(instanceOfEventMapper)
+DECLARE_FUNCTOR(instanceOfEvHandler)
 
 DECLARE_SINGLETON_FUNCTOR(instanceOfDispatcher)
 DECLARE_SINGLETON_FUNCTOR(instanceOfEventManager)

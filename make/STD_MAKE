@@ -1,10 +1,13 @@
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.19 $
+# * $Revision: 1.20 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.19 2002/07/23 17:55:13 lothar Exp $
+# * $Id: STD_MAKE,v 1.20 2002/09/04 17:52:12 lothar Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.20  2002/09/04 17:52:12  lothar
+# * Problems with stack cleanup
+# *
 # * Revision 1.19  2002/07/23 17:55:13  lothar
 # * Current version runs
 # *
@@ -88,6 +91,7 @@ WATCOM_DLLTARGET=-bd
 WATCOM_LIBTARGET=
 WATCOM_THREAD_MODEL=-bm
 WATCOM_STDDEBUG=-d2
+WATCOM_STACK= #-of
 
 WATCOM_STD_C_OPS= \
 -DWINDOWS \
@@ -97,7 +101,8 @@ $(WATCOM_QUIET) \
 $(WATCOM_OPTIMIZE) \
 $(WATCOM_RELAX_ALIAS) \
 $(WATCOM_THREAD_MODEL) \
-$(WATCOM_CALLING_CONV)
+$(WATCOM_CALLING_CONV) \
+$(WATCOM_STACK)
 
 
 #-w4 -e25 -dWINDOWS -ei -zp4 -zq -otexan -d2 -bm -5r -bt=nt -mf

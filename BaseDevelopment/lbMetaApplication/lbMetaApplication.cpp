@@ -1,11 +1,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.6 $
+ * $Revision: 1.7 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.6 2002/08/21 17:59:42 lothar Exp $
+ * $Id: lbMetaApplication.cpp,v 1.7 2002/09/04 17:52:12 lothar Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.7  2002/09/04 17:52:12  lothar
+ * Problems with stack cleanup
+ *
  * Revision 1.6  2002/08/21 17:59:42  lothar
  * More functions implemented
  *
@@ -63,6 +66,7 @@ extern "C" {
 
 IMPLEMENT_FUNCTOR(instanceOfMetaApplication, lb_MetaApplication)
 IMPLEMENT_FUNCTOR(instanceOfEventMapper, lb_EventMapper)
+IMPLEMENT_FUNCTOR(instanceOfEvHandler, lb_EvHandler)
 
 IMPLEMENT_SINGLETON_FUNCTOR(instanceOfDispatcher, lb_Dispatcher)
 IMPLEMENT_SINGLETON_FUNCTOR(instanceOfEventManager, lb_EventManager)
@@ -72,21 +76,7 @@ IMPLEMENT_SINGLETON_FUNCTOR(instanceOfEventManager, lb_EventManager)
 #endif            
 /*...e*/
 
-/*...sclass lb_EvHandler and implementation:0:*/
-class lb_EvHandler : public lb_I_EvHandler {
-public:
-        lb_EvHandler();
-        virtual ~lb_EvHandler();
-
-        DECLARE_LB_UNKNOWN()
-
-public:
-        virtual lbErrCodes LB_STDCALL setHandler(lbEvHandler evHandler);
-        virtual lbEvHandler LB_STDCALL getHandler();
-        
-        lbEvHandler ev;
-};
-
+/*...slb_EvHandler:0:*/
 BEGIN_IMPLEMENT_LB_UNKNOWN(lb_EvHandler)
 	ADD_INTERFACE(lb_I_EvHandler)
 END_IMPLEMENT_LB_UNKNOWN()
@@ -96,6 +86,7 @@ lb_EvHandler::lb_EvHandler() {
 }
 
 lb_EvHandler::~lb_EvHandler() {
+	LOG("lb_EvHandler::~lb_EvHandler() called")
 }
 
 lbErrCodes LB_STDCALL lb_EvHandler::setData(lb_I_Unknown* uk) {
@@ -121,6 +112,7 @@ lb_MetaApplication::lb_MetaApplication() {
 }
 
 lb_MetaApplication::~lb_MetaApplication() {
+	LOG("Instance of lb_I_MetaApplication destroyed")
 }
 
 
@@ -196,10 +188,12 @@ lbErrCodes LB_STDCALL lb_MetaApplication::Initialize() {
 	 */
 	
 	lb_I_Module* m = *&manager;
+
+	REQUEST(m, lb_I_EventManager, eman)
+	eman->setModuleManager(m, __FILE__, __LINE__);
 	
 	// Step 1
 /*...sregister a basic event \40\getBasicApplicationInfo\41\ by the event manager:8:*/
-	UAP_REQUEST(m, lb_I_EventManager, eman)
 	 
 	eman->registerEvent("getBasicApplicationInfo", getBasicApplicationInfo);
 	eman->registerEvent("getMainModuleInfo", getMainModuleInfo);
@@ -252,7 +246,10 @@ lbErrCodes LB_STDCALL lb_MetaApplication::Initialize() {
 /*...e*/
 	
 	// Step 2
-	UAP_REQUEST(m, lb_I_Dispatcher, dispatcher)
+	REQUEST(m, lb_I_Dispatcher, dispatcher)
+
+	dispatcher->setEventManager(eman.getPtr());
+	dispatcher->setModuleManager(m, __FILE__, __LINE__);
 		
 	registerEventHandler(dispatcher.getPtr());
 	
@@ -260,6 +257,16 @@ lbErrCodes LB_STDCALL lb_MetaApplication::Initialize() {
 	// Let the GUI show a message box
 	
 	gui->msgBox("Information", "Meta application started up");
+
+	return ERR_NONE;
+}
+/*...e*/
+/*...slbErrCodes LB_STDCALL lb_MetaApplication\58\\58\run\40\\41\:0:*/
+lbErrCodes LB_STDCALL lb_MetaApplication::run() {
+
+	lb_I_Unknown* result;
+
+	dispatcher->dispatch("AddMenu", NULL, &result);	
 
 	return ERR_NONE;
 }
@@ -319,6 +326,7 @@ lb_EventManager::lb_EventManager() {
 }
 
 lb_EventManager::~lb_EventManager() {
+	LOG("lb_EventManager::~lb_EventManager() called")
 }
 	
 lbErrCodes LB_STDCALL lb_EventManager::setData(lb_I_Unknown* uk) {
@@ -348,7 +356,7 @@ lbErrCodes LB_STDCALL lb_EventManager::registerEvent(char* EvName, int & EvNr) {
 	sprintf(buf, "lb_EventManager::registerEvent(%s)", EvName);
 	LOG(buf)
 	
-/*...sSetup key:8:*/
+/*...sSetup key \40\get a string\44\ store the char\42\ value and get a key from it\41\:8:*/
 	UAP_REQUEST(manager.getPtr(), lb_I_String, stringKey)
 	stringKey->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
 	stringKey->setData(EvName);
@@ -405,6 +413,28 @@ lbErrCodes LB_STDCALL lb_EventManager::registerEvent(char* EvName, int & EvNr) {
 /*...e*/
 
 lbErrCodes LB_STDCALL lb_EventManager::resolveEvent(char* EvName, int & evNr) {
+	lbErrCodes err = ERR_NONE;
+#ifdef bla
+/*...sSetup key \40\get a string\44\ store the char\42\ value and get a key from it\41\:8:*/
+	UAP_REQUEST(manager.getPtr(), lb_I_String, stringKey)
+	stringKey->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+	stringKey->setData(EvName);
+	
+	UAP(lb_I_KeyBase, kk, __FILE__, __LINE__)
+	QI(stringKey, lb_I_Unknown, kk, __FILE__, __LINE__)
+/*...e*/
+
+
+	if (events->exists(&kk) == 1) {
+		UAP(lb_I_Unknown, object, __FILE__, __LINE__)
+		UAP(lb_I_Integer, i, __FILE__, __LINE__)
+		
+		object = events->getElement(&kk);
+		QI(object, lb_I_Integer, i, __FILE__, __LINE__)
+		
+		evNr = i->getData();
+	}
+#endif
 	return ERR_NONE;
 }
 /*...e*/
@@ -445,8 +475,11 @@ lbErrCodes LB_STDCALL lb_Dispatcher::addEventHandlerFn(lbEvHandler evHandler, ch
 	
 	int id = 0;
 	evManager->resolveEvent(EvName, id);
+	LOG("Resolved EvName")
 
 	addEventHandlerFn(evHandler, id);	
+
+	LOG("Added event handler id")
 	
 	return ERR_NONE;
 }
@@ -458,7 +491,6 @@ lbErrCodes LB_STDCALL lb_Dispatcher::addEventHandlerFn(lbEvHandler evHandler, in
 	LOG("lb_Dispatcher::addEventHandlerFn(lbEvHandler evHandler, int EvNr) called")
 	
 	if (dispatcher == NULL) {
-		LOG("Create the instance of dispatch container")
 		// Create the instance, that holds the events mapping
 		REQUEST(manager.getPtr(), lb_I_Container, dispatcher)
 		dispatcher->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
@@ -471,17 +503,20 @@ lbErrCodes LB_STDCALL lb_Dispatcher::addEventHandlerFn(lbEvHandler evHandler, in
 	i->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
 	i->setData(EvNr);
 
-	UAP(lb_I_KeyBase, k, __FILE__, __LINE__)
+	  UAP(lb_I_KeyBase, k, __FILE__, __LINE__)
 	QI(i, lb_I_KeyBase, k, __FILE__, __LINE__)
 
-	UAP(lb_I_Unknown, e, __FILE__, __LINE__)
+	    UAP(lb_I_Unknown, e, __FILE__, __LINE__)
 	QI(evH, lb_I_Unknown, e, __FILE__, __LINE__)
 
 	if (dispatcher->exists(&k) == 1) {
+		LOG("Warning: Overwriting existing event handler")
         	dispatcher->remove(&k);
+        	LOG("Removed old event handler")
 	}
-
+	LOG("Insert a dispatch handler")
 	dispatcher->insert(&e, &k);
+	LOG("Inserted")
 	
 	return ERR_NONE;
 }
@@ -502,13 +537,13 @@ lb_I_DispatchResponce* lb_Dispatcher::dispatch(lb_I_DispatchRequest* req) {
 	return NULL;
 }
 
-lbErrCodes LB_STDCALL lb_Dispatcher::dispatchEvent(int EvNr, lb_I_Unknown* EvData) {
+lbErrCodes LB_STDCALL lb_Dispatcher::dispatch(int EvNr, lb_I_Unknown* EvData, lb_I_Unknown** EvResult) {
 	LOG("lb_Dispatcher::dispatchEvent() called")
 	return ERR_NONE;
 }
 
-lbErrCodes LB_STDCALL lb_Dispatcher::queryEvent(char* EvName, lb_I_Unknown* EvData) {
-	LOG("lb_Dispatcher::queryEvent() called")
+lbErrCodes LB_STDCALL lb_Dispatcher::dispatch(char* EvName, lb_I_Unknown* EvData, lb_I_Unknown** EvResult) {
+	LOG("lb_Dispatcher::dispatch() called (not implemented yet")
 	return ERR_NONE;
 }
 /*...e*/

@@ -138,6 +138,14 @@
            </Functor>
         </Function>
 <!--...e-->
+<!--...sFunction instanceOfEvHandler:16:-->
+        <Function>
+           <FunctionName Name="_instanceOfEvHandler"/>
+           <Functor>
+              <InterfaceName Name="lb_I_EvHandler" Version="1.0"/>
+           </Functor>
+        </Function>
+<!--...e-->
       </Functions>
 <!--...e-->
     </Module>

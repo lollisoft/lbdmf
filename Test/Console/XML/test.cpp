@@ -1,3 +1,4 @@
+/*...sincludes:0:*/
 #ifdef WINDOWS
 #include <windows.h>
 #endif
@@ -18,6 +19,7 @@ extern "C" {
 //#include "testdll.h"
 
 #include <lbConfigHook.h>
+/*...e*/
 
 /*...sbla:0:*/
 #ifdef bla
@@ -87,6 +89,7 @@ void main(int argc, char *argv[]) {
 	}
 }
 /*...e*/
+	CL_LOG("Tested container")
 /*...stest logger:0:*/
 	mm->request("lb_I_Log", &unknown);
 	
