@@ -1,4 +1,4 @@
-#define APPBUS_DLL
+#define APPCS_DLL
 
 #include <lbInclude.h>
 

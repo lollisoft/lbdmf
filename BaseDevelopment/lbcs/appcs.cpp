@@ -81,20 +81,54 @@ char* RemoteAppRes::getEntryName(int i) {
 /*...slbAppServer:0:*/
 /*...slbAppServer\58\\58\lbAppServer\40\\41\:0:*/
 lbAppServer::lbAppServer() {
+	LOGENABLE("lbAppServer::lbAppServer()");
+/*
+	LOG("lbAppServer::lbAppServer(): Initialize lbTransfer object");
+	transfer = new lbTransfer();
+	transfer->init("localhost/busmaster");
+	LOG("lbAppServer::lbAppServer(): Initialized");
+*/
 }
 /*...e*/
 /*...slbAppServer\58\\58\\126\lbAppServer\40\\41\:0:*/
 lbAppServer::~lbAppServer() {
 }
 /*...e*/
-/*...slbAppServer\58\\58\operator\60\\60\ \40\const RemoteAppReq\38\ req\41\:0:*/
-void lbAppServer::operator<< (const RemoteAppReq& req) {
+/*...slbAppServer\58\\58\send \40\const RemoteAppRes\38\ res\41\:0:*/
+// This sends a result to the client
+void lbAppServer::send (const RemoteAppRes& res) {
 }
 /*...e*/
-/*...slbAppServer\58\\58\operator\62\\62\ \40\RemoteAppRes\38\ res\41\:0:*/
-void lbAppServer::operator>> (RemoteAppRes& res) {
+/*...slbAppServer\58\\58\recv \40\RemoteAppReq\38\ req\41\:0:*/
+// Wait for a request
+void lbAppServer::recv (RemoteAppReq& req) {
+LOGENABLE("lbAppServer::recv (RemoteAppReq& req)");
+	lb_Transfer_Data transferItem;
+LOG("lbAppServer::recv (RemoteAppReq& req): Get any data");	
+	if (transfer != NULL) {
+	LOG("lbAppServer::recv (RemoteAppReq& req): Transfer is not null - do work");
+
+		*transfer >> transferItem;
+
+	LOG("lbAppServer::recv (RemoteAppReq& req): Transfer is not null - done work");
+	}
+	else LOG("lbAppServer::recv (RemoteAppReq& req): transfer is null");
+LOG("lbAppServer::recv (RemoteAppReq& req): Got any data");	
 }
 /*...e*/
+/*...slbAppServer\58\\58\run\40\\41\:0:*/
+int lbAppServer::run() { 
+	LOG("lbAppServer::run() called");
+
+        LOG("lbAppServer::run(): Initialize lbTransfer object");
+        transfer = new lbTransfer();
+        transfer->init("localhost/busmaster");
+        LOG("lbAppServer::run(): Initialized");
+
+	return _service(); 
+};
+/*...e*/
+
 
 // Threads, that should be started by the application
 

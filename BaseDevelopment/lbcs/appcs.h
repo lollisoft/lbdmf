@@ -65,8 +65,21 @@ public:
 	lbAppServer();
 	virtual ~lbAppServer();
 
-	void operator<< (const RemoteAppReq& req);
-	void operator>> (RemoteAppRes& res);
+	int run();
+	
+	// Implement this service function
+	
+	virtual int _service() = 0;
+
+protected:
+	// Server sends a result
+	void send (const RemoteAppRes& res);
+
+	// Server gets a request
+	void recv (RemoteAppReq& req);
+
+private:
+	lbTransfer *transfer;		
 };
 
 class DLLEXPORT lbAppClient {

@@ -3,8 +3,8 @@
 
 #undef DLLEXPORT
 
-/*...s\35\ifdef APPBUS_DLL:0:*/
-#ifdef APPBUS_DLL
+/*...s\35\ifdef APPCS_DLL:0:*/
+#ifdef APPCS_DLL
 
 #ifdef WINDOWS
 #define DLLEXPORT __declspec(dllexport)
@@ -13,8 +13,8 @@
 #endif
 /*...e*/
 
-/*...s\35\ifndef APPBUS_DLL:0:*/
-#ifndef APPBUS_DLL
+/*...s\35\ifndef APPCS_DLL:0:*/
+#ifndef APPCS_DLL
 
 #ifdef WINDOWS
 #define DLLEXPORT __declspec(dllimport)
@@ -32,9 +32,9 @@ enum {
 #endif
 /*...e*/
 /*...slbAppBus:0:*/
-class lbTransfer;
+class DLLEXPORT lbTransfer;
 
-class lbAppBus {
+class DLLEXPORT lbAppBus {
 
 public:
 	lbAppBus();
@@ -65,6 +65,8 @@ class lbAppBusServer : public lbAppBus {
 public:
 	lbAppBusServer();
 	virtual ~lbAppBusServer();
+
+	
 };
 /*...e*/
 #endif

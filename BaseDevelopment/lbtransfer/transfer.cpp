@@ -1,4 +1,4 @@
-#define LB_TRANSFER_DLL
+#include "module.h"
 
 #include <lbInclude.h>
 
@@ -94,7 +94,9 @@ void lb_Transfer_Data::add(const char* c) {
 /*...slbTransfer:0:*/
 /*...slbTransfer\58\\58\lbTransfer\40\\41\:0:*/
 lbTransfer::lbTransfer() {
+printf("lbTransfer::lbTransfer() initializing...\n");
 LOGENABLE("lbTransfer::lbTransfer()");
+LOG("lbTransfer::lbTransfer() initializing...");
 	sock = new lbSocket();
 	laststate = 1;
 	connected = 0;
@@ -120,18 +122,21 @@ void lbTransfer::init(char *target) {
 	char *service;
 	char *subservice;
 
+printf("lbTransfer::init(char *target) called\n");
+LOG("lbTransfer::init(char *target) called");
+
 	strcpy(token, strtok(target, "/"));
 	machine = strdup(token);
 	strcpy(token, strtok(NULL, "/"));
 	service = strdup(token);
 
 	if (service == NULL) {
-		LOG("Service name couldn't retrieved from target string!");
+		LOG("lbTransfer::init(char *target): Service name couldn't retrieved from target string!");
 		// Handle error
 	}
 
 	if (machine == NULL) {
-		LOG("Machine name couldn't retrieved from target string!");
+		LOG("lbTransfer::init(char *target): Machine name couldn't retrieved from target string!");
 	}
 
 	subservice = strtok(NULL, "/");
@@ -147,10 +152,11 @@ void lbTransfer::init(char *target) {
 		LOG("Subservices currently not supported");
 		// Handle special cases with subservices
 	}
+	LOG("lbTransfer::init(char *target) returns");
 }
 /*...e*/
 
-/*...sProtokol helper:0:*/
+/*...sProtocol helper:0:*/
 /*...slbTransfer\58\\58\resetServerStateMachine\40\\41\:0:*/
 int lbTransfer::resetServerStateMachine() {
 	char buf[100];
@@ -240,6 +246,21 @@ int lbTransfer::sendBuffer(void* buf, int len) {
 	return 1;
 }
 /*...e*/
+
+/*...slbTransfer\58\\58\waitForDatatype\40\char\42\ \38\ result\41\:0:*/
+int lbTransfer::waitForDatatype(char* &result) {
+        static char buf[MAXBUFLEN];
+        int err;
+        
+        if ((err = sock->recv_charbuf(buf)) == 0)
+        {
+                LOG("lbSocket: Failed to get any datatype");
+                result = '\0';
+        } else result = strdup(buf);
+        
+        return err;
+}
+/*...e*/
 /*...e*/
 
 /*...slbTransfer\58\\58\operator\60\\60\ \40\const lb_Transfer_Data\38\ req\41\:0:*/
@@ -252,6 +273,8 @@ void lbTransfer::operator<< (const lb_Transfer_Data& req) {
 /*...e*/
 /*...slbTransfer\58\\58\operator\62\\62\ \40\lb_Transfer_Data\38\ res\41\:0:*/
 void lbTransfer::operator>> (lb_Transfer_Data& res) {
+printf("lbTransfer::operator>> (lb_Transfer_Data& res) called\n");
+LOGENABLE("lbTransfer::operator>> (lb_Transfer_Data& res) called");
 	if (laststate == 1)
 		laststate = recv(res);
 	else
@@ -283,7 +306,19 @@ int lbTransfer::send(const lb_Transfer_Data & data) {
 /*...e*/
 /*...slbTransfer\58\\58\recv\40\lb_Transfer_Data \38\ data\41\:0:*/
 int lbTransfer::recv(lb_Transfer_Data & data) {
-
+	char* result = NULL;
+	int err;
+printf("lbTransfer::recv(lb_Transfer_Data & data): waitForDatatype(result)...\n");
+LOGENABLE("lbTransfer::recv(lb_Transfer_Data & data)");
+LOG("lbTransfer::recv(lb_Transfer_Data & data): waitForDatatype(result)...");	
+	if ((err = waitForDatatype(result)) == 1) {
+		if (strcmp(result, "lb_Transfer_Data") == 0)
+			LOG("lbTransfer::recv(lb_Transfer_Data & data): Got wanted datatype");
+	} else LOG("lbTransfer::recv(lb_Transfer_Data & data): Could not get data type");
+	
+	
+	
+	
 	return 1;
 }
 /*...e*/

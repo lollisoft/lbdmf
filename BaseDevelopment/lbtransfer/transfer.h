@@ -4,7 +4,8 @@
 /*...sDLLEXPORT:0:*/
 #undef DLLEXPORT
 
-#ifdef LB_TRANSFER_DLL
+
+#ifdef MODULE_EXPORT
 
 #ifdef WINDOWS
 #define DLLEXPORT __declspec(dllexport)
@@ -12,7 +13,7 @@
 
 #endif
 
-#ifndef LB_TRANSFER_DLL
+#ifndef MODULE_EXPORT
 
 #ifdef WINDOWS
 #define DLLEXPORT __declspec(dllimport)
@@ -134,6 +135,8 @@ private:
 	int waitforAnswer(char* answer);
 	int sendDataCount(int c);
 	int sendBuffer(void* buf, int len);
+	
+	int waitForDatatype(char* & result);
 
 	lbSocket* sock;
 	int laststate;

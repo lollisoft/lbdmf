@@ -12,16 +12,50 @@ protected:
 };
 
 myThread::myThread() {
-	printf("myThread::myThread() called\n");
 	LOG("myThread::myThread() called");
 }
 
 myThread::~myThread() {
-	printf("myThread::~myThread() called\n");
+	LOG("myThread::~myThread() called\n");
+}
+
+class GlobalAppServer : public lbAppServer {
+public:
+	GlobalAppServer() 
+	{
+		LOG("GlobalAppServer::GlobalAppServer() called");
+	};
+	virtual ~GlobalAppServer() {};
+	
+	int _service();
+};
+
+
+int GlobalAppServer::_service() {
+	LOG("GlobalAppServer::_service() called");
+	
+	int exit = 0;
+	RemoteAppReq req;
+	RemoteAppRes res;
+	
+	while (exit == 0) {
+		LOG("GlobalAppServer::_service(): Waiting for a request");
+		recv(req);
+		LOG("GlobalAppServer::_service(): Got a request");
+	}	
+	
+	return 0;
 }
 
 void* myThread::Entry() {
 	LOG("myThread::Entry() called");
+
+	GlobalAppServer server;
+	
+	LOG("myThread::Entry(): Start server");
+	server.run();
+
+
 	for (int i=0; i<5; i++) {
 		printf("myThread::Entry - Loop at %d\n", i);
 		Beep(200, 50);
@@ -63,6 +97,7 @@ LOGENABLE("main(...)");
 		}
 		
 		printf("Main is at %d\n", i);
+		getch();
 	}
 /*...e*/
 	lb_sleep(1000);	

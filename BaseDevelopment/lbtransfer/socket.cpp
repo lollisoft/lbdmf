@@ -1,3 +1,4 @@
+#include "module.h"
 /*...sinclude:0:*/
 /*...sifdef WINDOWS:0:*/
 #ifdef WINDOWS
@@ -8,9 +9,6 @@
 /*...e*/
 
 #include <iostream.h>
-
-#define LB_SOCKET_DLL
-
 #include <lbInclude.h>
 
 /*...s\35\ifdef __WXGTK__:0:*/
@@ -25,7 +23,7 @@
 /*...e*/
 
 lbSocket::lbSocket() {
-//LOGENABLE("lbSocket::lbSocket()");
+LOGENABLE("lbSocket::lbSocket()");
 	startupflag = 0;
 }
 /*...slbSocket\58\\58\connect\40\\41\:0:*/
@@ -194,10 +192,15 @@ void lbSocket::reinit(char *mysockaddr)
 /*...slbSocket\58\\58\initSymbolic\40\char\42\ host\44\ char\42\ service\41\:0:*/
 void lbSocket::initSymbolic(char* host, char* service) {
 	char msg[100];
-
+	int serverMode = 0;
 	startup();
 	
+	if (strcmp(host, "localhost") == 0)
+		serverMode = 1;
+LOG("lbSocket::initSymbolic(char* host, char* service) called");
+
 	hostent *entry = gethostbyname(host);
+	
 	servent* s = getservbyname(service, NULL);
  
 /*...sStruct definition:0:*/
@@ -219,8 +222,12 @@ void lbSocket::initSymbolic(char* host, char* service) {
 
  	char* hostaddr = strdup(entry->h_addr_list[0]);
  	u_short port = s->s_port;
+
+LOG("lbSocket::init(char* hostaddr, char* port) calling");
  
- 	init(hostaddr, port);
+ 	init((serverMode == 1) ? "" : hostaddr, port);
+
+LOG("lbSocket::init(char* hostaddr, char* port) called");
 }
 /*...e*/
 /*...slbSocket\58\\58\init\40\char \42\mysockaddr\44\ u_short port\41\:0:*/
