@@ -406,7 +406,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::Initialize(char* user, char* app) {
 	UAP_REQUEST(manager.getPtr(), lb_I_String, EventName)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, MenuName)
 
-	addMenuBar("Dynamic Forms", "Edit");
+	addMenuBar(_trans("D&ynamic-Forms"), _trans("&Edit"));
 
 	lbErrCodes DBerr = sampleQuery->first();
 	if ((DBerr == ERR_NONE) || (DBerr == WARN_DB_NODATA)) {
@@ -419,7 +419,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::Initialize(char* user, char* app) {
 		dispatcher->addEventHandlerFn(this, 
 				(lbEvHandler) &lbDynamicApplication::getDynamicDBForm, EventName->charrep());
 
-		addMenuEntry("Dynamic Forms", MenuName->charrep(), EventName->charrep(), "");
+		addMenuEntry(_trans("D&ynamic-Forms"), MenuName->charrep(), EventName->charrep(), "");
 
 		if (DBerr == WARN_DB_NODATA) return ERR_NONE;
 #define TRUE 1
@@ -435,7 +435,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::Initialize(char* user, char* app) {
 				dispatcher->addEventHandlerFn(this,
 						(lbEvHandler) &lbDynamicApplication::getDynamicDBForm, EventName->charrep());
 				
-				addMenuEntry("Dynamic Forms", MenuName->charrep(), EventName->charrep(), "");
+				addMenuEntry(_trans("D&ynamic-Forms"), MenuName->charrep(), EventName->charrep(), "");
 				
 		        	if (DBerr == WARN_DB_NODATA) break;
 		        }
