@@ -1,3 +1,4 @@
+/*...sLGPL Licence:0:*/
 /*
     DMF Distributed Multiplatform Framework
     Copyright (C) 2002  Lothar Behrens (lothar.behrens@lollisoft.de)
@@ -33,6 +34,7 @@
             40235 DÅsseldorf
 
 */
+/*...e*/
 
 /*...sincludes:0:*/
 #ifdef WINDOWS
@@ -58,6 +60,8 @@ extern "C" {
 #include <lbInterfaces.h>
 #include <lbConfigHook.h>
 
+
+
 /*...sLB_DATABASE_DLL scope:0:*/
 #define LB_DB_DLL
 #include <lbdb-module.h>
@@ -80,7 +84,11 @@ extern "C" {
 void process(void);
 void dbError( LPSTR lp, HENV henv,HDBC hdbc,HSTMT hstmt);
 
-/*...sclass lbDBView:0:*/
+
+
+class lbQuery;
+
+/*...sclass def lbDBView:0:*/
 class lbDBView: public lb_I_MVC_View
 {
 public:
@@ -103,35 +111,44 @@ public:
         virtual lbErrCodes LB_STDCALL setViewSource(lb_I_Unknown* q);
 /*...e*/
 };
-
-BEGIN_IMPLEMENT_LB_UNKNOWN(lbDBView)
-        ADD_INTERFACE(lb_I_MVC_View)
-END_IMPLEMENT_LB_UNKNOWN()
-
-IMPLEMENT_FUNCTOR(instanceOfDBView, lbDBView)
-
-
-lbErrCodes LB_STDCALL lbDBView::setData(lb_I_Unknown* uk) {
-	_CL_LOG << "lbDBView::setData(...) not implemented yet" LOG_
-	return ERR_NOT_IMPLEMENTED;
-}
-
-
-lbErrCodes LB_STDCALL lbDBView::updateView() {
-	return ERR_NONE;
-}
-
-lbErrCodes LB_STDCALL lbDBView::setViewSource(lb_I_Unknown* q) {
-	return ERR_NONE;
-}
 /*...e*/
-/*...sclass lbQuery:0:*/
-/*...sclass lbQuery:0:*/
+/*...sclass def lbBoundColumns:0:*/
+class lbBoundColumns: public lb_I_ColumnBinding {
+public:	
+	lbBoundColumns() {}
+	virtual ~lbBoundColumns() {}
+	
+	DECLARE_LB_UNKNOWN()
+
+        lb_I_Container* LB_STDCALL getBoundColumns();
+        lbErrCodes      LB_STDCALL setBoundColumns(lb_I_Container* bc);
+
+        /**
+         * Set a currently used query to bind their columns.
+         */
+        lbErrCodes      LB_STDCALL setQuery(lbQuery* q);
+        
+        char*		LB_STDCALL getChar(int column);
+
+
+	UAP(lb_I_Container, boundColumns, __FILE__, __LINE__)
+
+};
+/*...e*/
+/*...sclass def lbQuery:0:*/
 class lbQuery :
 public lb_I_Query
 {
 public:
-	lbQuery() { hdbc = 0; hstmt = 0; databound = 0; count = 0; firstfetched = 0; }
+	lbQuery(int readonly = 1) { 
+		_readonly = readonly; 
+		hdbc = 0; 
+		hstmt = 0; 
+		databound = 0; 
+		count = 0; 
+		firstfetched = 0;
+	}
+	
 	virtual ~lbQuery() {}
 	
 	DECLARE_LB_UNKNOWN()
@@ -164,6 +181,19 @@ public:
 	lbErrCodes LB_STDCALL init(HENV henv, HDBC _hdbc);
 	int LB_STDCALL getColCount();
 
+
+	/**
+	 * Get the statement for creation of bound columns in lb_I_ColumnBinding.
+	 * This function is public in class level, not on interface level.
+	 */
+	HSTMT LB_STDCALL getCurrentStatement() {
+		return hstmt;
+	}
+
+	int LB_STDCALL isReadonly() {
+		return _readonly;
+	}
+
 private:
 	HENV    henv;
 	HDBC    hdbc;
@@ -172,11 +202,136 @@ private:
 	char    szSql[256];
 	int	databound;
 	int     firstfetched;
+	int	_readonly;
 	
 	UAP(lb_I_Container, boundColumns, __FILE__, __LINE__)
 	int count;
 };
 /*...e*/
+/*...sclass def lbBoundColumn:0:*/
+class lbBoundColumn: public lb_I_BoundColumn {
+public:	
+	lbBoundColumn() {
+		bound = 0;
+		buffer = NULL;
+	}
+	virtual ~lbBoundColumn() {}
+	
+	DECLARE_LB_UNKNOWN()
+
+
+	virtual lb_I_Unknown* LB_STDCALL getData();
+	virtual lbErrCodes LB_STDCALL getAsString(lb_I_String* result);
+	virtual lbErrCodes LB_STDCALL setFromString(lb_I_String* set);
+
+	lbErrCodes LB_STDCALL bindColumn(lbQuery* q, int column);
+	
+protected:
+	int		bound;
+	SQLSMALLINT     _DataType;
+	void*		buffer;
+};
+/*...e*/
+
+
+
+/*...sclass lbDBView:0:*/
+
+BEGIN_IMPLEMENT_LB_UNKNOWN(lbDBView)
+        ADD_INTERFACE(lb_I_MVC_View)
+END_IMPLEMENT_LB_UNKNOWN()
+
+IMPLEMENT_FUNCTOR(instanceOfDBView, lbDBView)
+
+
+lbErrCodes LB_STDCALL lbDBView::setData(lb_I_Unknown* uk) {
+	_CL_LOG << "lbDBView::setData(...) not implemented yet" LOG_
+	return ERR_NOT_IMPLEMENTED;
+}
+
+
+lbErrCodes LB_STDCALL lbDBView::updateView() {
+	return ERR_NONE;
+}
+
+lbErrCodes LB_STDCALL lbDBView::setViewSource(lb_I_Unknown* q) {
+	return ERR_NONE;
+}
+/*...e*/
+/*...sclass lbBoundColumns:0:*/
+
+BEGIN_IMPLEMENT_LB_UNKNOWN(lbBoundColumns)
+        ADD_INTERFACE(lb_I_ColumnBinding)
+END_IMPLEMENT_LB_UNKNOWN()
+
+// lbBoundColumns does not need a functor, because lbQuery acts as a factory
+
+lbErrCodes LB_STDCALL lbBoundColumns::setData(lb_I_Unknown* uk) {
+        _CL_LOG << "lbBoundColumns::setData(...) not implemented yet" LOG_
+        return ERR_NOT_IMPLEMENTED;
+}
+
+lb_I_Container* LB_STDCALL lbBoundColumns::getBoundColumns() {
+	return NULL;
+}
+
+lbErrCodes      LB_STDCALL lbBoundColumns::setBoundColumns(lb_I_Container* bc) {
+	return ERR_NONE;
+}
+
+lbErrCodes      LB_STDCALL lbBoundColumns::setQuery(lbQuery* q) {
+
+	HSTMT hstmt = q->getCurrentStatement();
+
+	/*
+	 * Get the number of columns for this query.
+	 */
+	SQLSMALLINT num = 0;	
+	SQLRETURN sqlreturn = SQLNumResultCols(hstmt, &num);
+	
+/*...sdocs:0:*/
+#ifdef bla
+
+MSDN:
+
+	Many applications, especially ones that only display data, only require the metadata returned by 
+	SQLDescribeCol. 
+	For these applications, it is faster to use SQLDescribeCol than SQLColAttribute because the information is 
+	returned in a single call. 
+
+
+Therefore I need an indicator, set by the user of this library to know, which one I should use.
+
+#endif
+/*...e*/
+/* Done in lbBoundColumns later ...
+	if (q->isReadonly() == 1) {
+*/
+	REQUEST(manager.getPtr(), lb_I_Container, boundColumns)
+
+	// For each column create a bound column instance.
+	// The instance will bind the column.
+	for (int i = 1; i <= num; i++) {
+
+		// Create the instance ...
+		
+		lbBoundColumn* bc = new lbBoundColumn();
+		
+		bc->setModuleManager(*&manager, __FILE__, __LINE__);
+printf("Bind column %d.\n", i);
+		bc->bindColumn(q, i);
+		
+	}
+/*
+	} else {
+	
+	}
+*/
+
+	return ERR_NONE;
+}
+/*...e*/
+/*...sclass lbQuery:0:*/
 
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbQuery)
         ADD_INTERFACE(lb_I_Query)
@@ -261,6 +416,31 @@ lbErrCodes LB_STDCALL lbQuery::query(char* q) {
 
 	lstrcpy(szSql, q);
 
+/*...sdoc:0:*/
+#ifdef bla
+
+Using SQLSetPos
+	Before an application calls SQLSetPos, it must perform the following sequence of steps: 
+
+	If the application will call SQLSetPos with Operation set to SQL_UPDATE, call SQLBindCol 
+	(or SQLSetDescRec) for each column to specify its data type and bind buffers for the columns data and length.
+
+
+	If the application will call SQLSetPos with Operation set to SQL_DELETE or SQL_UPDATE, 
+	call SQLColAttribute to make sure that the columns to be deleted or updated are updatable.
+
+
+	Call SQLExecDirect, SQLExecute, or a catalog function to create a result set.
+
+
+	Call SQLFetch or SQLFetchScroll to retrieve the data.
+	Note In ODBC 3.x, SQLSetPos can be called before SQLFetch or SQLFetchScroll. For more information, 
+	see the Block Cursors, Scrollable Cursors, and Backward Compatibility section in Appendix G, 
+	Driver Guidelines for Backward Compatibility.
+
+#endif
+/*...e*/
+
 	retcode = SQLExecDirect(hstmt, (unsigned char*) szSql, SQL_NTS);
 
 	if (retcode != SQL_SUCCESS)
@@ -269,6 +449,26 @@ lbErrCodes LB_STDCALL lbQuery::query(char* q) {
 		_LOG << "lbQuery::query(...) failed." LOG_
 		return ERR_DB_QUERYFAILED;
         }
+
+	SQLSMALLINT cols;
+	
+	retcode = SQLNumResultCols(hstmt, &cols);
+	
+	if (retcode != SQL_SUCCESS)
+	{
+	        dbError( "SQLNumResultCols()",henv,hdbc,hstmt);
+	        _LOG << "lbQuery::query(...) failed." LOG_
+	        return ERR_DB_QUERYFAILED;
+	} else {
+		printf("Have %d columns\n", cols);
+
+
+		lbBoundColumns* boundcols = new lbBoundColumns();
+		boundcols->setModuleManager(*&manager, __FILE__, __LINE__);
+		
+		boundcols->setQuery(this);
+		printf("Have %d columns bound\n", cols);
+	}
 
 	return ERR_NONE;
 }
@@ -282,6 +482,7 @@ int LB_STDCALL lbQuery::getColCount() {
 }
 /*...e*/
 /*...svirtual char\42\ LB_STDCALL lbQuery\58\\58\getChar\40\int column\41\:0:*/
+#ifdef UNBOUND
 char* LB_STDCALL lbQuery::getChar(int column) {
 	SDWORD cbobjecttyp;
 	char   szobjecttyp[SZLEN+100];
@@ -350,6 +551,12 @@ char* LB_STDCALL lbQuery::getChar(int column) {
 
 	return string->getData();
 }
+#endif
+#ifndef UNBOUND
+char* LB_STDCALL lbQuery::getChar(int column) {
+	return NULL;
+}
+#endif
 /*...e*/
 /*...slbErrCodes LB_STDCALL lbQuery\58\\58\first\40\\41\:0:*/
 lbErrCodes LB_STDCALL lbQuery::first() {
@@ -365,6 +572,10 @@ lbErrCodes LB_STDCALL lbQuery::first() {
                 _LOG << "lbQuery::first(): Error while fetching next row" LOG_
                 printf("Error in lbQuery::first()\n");
                 dbError( "SQLExtendedFetch()",henv,hdbc,hstmt);
+                
+                // Unsave !!
+                if (retcode == SQL_SUCCESS_WITH_INFO) return ERR_NONE;
+                
                 return ERR_DB_FETCHFIRST;
         }
         
@@ -387,6 +598,10 @@ lbErrCodes LB_STDCALL lbQuery::next() {
 		_LOG << "lbQuery::next(): Error while fetching next row" LOG_
 		printf("Error in lbQuery::next()\n");
 		dbError( "SQLExtendedFetch()",henv,hdbc,hstmt);
+
+		// Unsave !!
+		if (retcode == SQL_SUCCESS_WITH_INFO) return ERR_NONE;
+		
 		return ERR_DB_NODATA;
         }
 
@@ -409,6 +624,10 @@ lbErrCodes LB_STDCALL lbQuery::previous() {
                 _LOG << "lbQuery::previous(): Error while fetching next row" LOG_
                 printf("Error in lbQuery::previous()\n");
                 dbError( "SQLExtendedFetch()",henv,hdbc,hstmt);
+
+		// Unsave !!
+		if (retcode == SQL_SUCCESS_WITH_INFO) return ERR_NONE;
+		
                 return ERR_DB_NODATA;
         }
         
@@ -430,7 +649,29 @@ lbErrCodes LB_STDCALL lbQuery::last() {
         if (retcode == SQL_ERROR || retcode == SQL_SUCCESS_WITH_INFO) {
                 _LOG << "lbQuery::last(): Error while fetching next row" LOG_
                 printf("Error in lbQuery::last()\n");
+
                 dbError( "SQLExtendedFetch()",henv,hdbc,hstmt);
+/*
+
+SQLCHAR  SqlState[6], SQLStmt[100], Msg[SQL_MAX_MESSAGE_LENGTH];
+SQLINTEGER NativeError;
+SQLSMALLINT i, MsgLen;
+SQLRETURN  rc1, rc2;
+
+
+	 // Get the status records.
+	 i = 1;
+	 while ((rc2 = SQLGetDiagRec(SQL_HANDLE_STMT, hstmt, i, SqlState, &NativeError,
+	      Msg, sizeof(Msg), &MsgLen)) != SQL_NO_DATA) {
+	  printf("%s, %i, %s, %i\n", SqlState,NativeError,Msg,MsgLen);
+	  i++;
+	 }
+
+*/
+
+		// Unsave !!
+		if (retcode == SQL_SUCCESS_WITH_INFO) return ERR_NONE;
+		
                 return ERR_DB_FETCHLAST;
         }
         
@@ -439,7 +680,269 @@ lbErrCodes LB_STDCALL lbQuery::last() {
 	return ERR_NONE;
 }
 /*...e*/
+
+
+#ifdef bla
+/*...sbla:0:*/
+
+#define POSITIONED_UPDATE 100
+#define POSITIONED_DELETE 101
+
+SQLUINTEGER  CustIDArray[10];
+SQLCHAR	NameArray[10][51], 
+	AddressArray[10][51],
+	PhoneArray[10][11];
+
+SQLINTEGER
+	CustIDIndArray[10],
+	NameLenOrIndArray[10],
+	AddressLenOrIndArray[10],
+	PhoneLenOrIndArray[10];
+
+SQLUSMALLINT RowStatusArray[10], Action, RowNum;
+SQLHSTMT   hstmtCust, hstmtUpdate, hstmtDelete;
+
+
+
+
+
+
+
+// Set the SQL_ATTR_BIND_TYPE statement attribute to use column-wise binding. Declare
+// the rowset size with the SQL_ATTR_ROW_ARRAY_SIZE statement attribute. Set the
+// SQL_ATTR_ROW_STATUS_PTR statement attribute to point to the row status array.
+SQLSetStmtAttr(hstmtCust, SQL_ATTR_ROW_BIND_TYPE, SQL_BIND_BY_COLUMN, 0);
+SQLSetStmtAttr(hstmtCust, SQL_ATTR_ROW_ARRAY_SIZE, 10, 0);
+SQLSetStmtAttr(hstmtCust, SQL_ATTR_ROW_STATUS_PTR, RowStatusArray, 0);
+
+
+
+
+
+
+
+
+
+
+// Bind arrays to the CustID, Name, Address, and Phone columns.
+SQLBindCol(hstmtCust, 1, SQL_C_ULONG, CustIDArray, 0, CustIDIndArray);
+SQLBindCol(hstmtCust, 2, SQL_C_CHAR, NameArray, sizeof(NameArray[0]),
+     NameLenOrIndArray);
+SQLBindCol(hstmtCust, 3, SQL_C_CHAR, AddressArray, sizeof(AddressArray[0]),
+     AddressLenOrIndArray);
+SQLBindCol(hstmtCust, 4, SQL_C_CHAR, PhoneArray, sizeof(PhoneArray[0]),
+     PhoneLenOrIndArray);
+
+
+
+
+// Set the cursor name to Cust.
+SQLSetCursorName(hstmtCust, "Cust", SQL_NTS);
+
+
+
+
+
+
+// Prepare positioned update and delete statements.
+SQLPrepare(hstmtUpdate,
+ "UPDATE Customers SET Address = ?, Phone = ? WHERE CURRENT OF Cust",
+ SQL_NTS);
+SQLPrepare(hstmtDelete, "DELETE FROM Customers WHERE CURRENT OF Cust", SQL_NTS);
+
+
+
+
+
+
+
+// Execute a statement to retrieve rows from the Customers table.
+SQLExecDirect(hstmtCust,
+ "SELECT CustID, Name, Address, Phone FROM Customers FOR UPDATE OF Address, Phone",
+ SQL_NTS);
+
+
+
+
+
+
+
+// Fetch and display the first 10 rows.
+SQLFetchScroll(hstmtCust, SQL_FETCH_NEXT, 0);
+DisplayData(CustIDArray, CustIDIndArray, NameArray, NameLenOrIndArray, AddressArray,
+    AddressLenOrIndArray, PhoneArray, PhoneLenOrIndArray, RowStatusArray);
+
+
+
+
+
+
+// Call GetAction to get an action and a row number from the user.
+while (GetAction(&Action, &RowNum)) {
+ switch (Action) {
+
+  case SQL_FETCH_NEXT:
+  case SQL_FETCH_PRIOR:
+  case SQL_FETCH_FIRST:
+  case SQL_FETCH_LAST:
+  case SQL_FETCH_ABSOLUTE:
+  case SQL_FETCH_RELATIVE:
+   // Fetch and display the requested data.
+   SQLFetchScroll(hstmtCust, Action, RowNum);
+   DisplayData(CustIDArray, CustIDIndArray, NameArray, NameLenOrIndArray,
+       AddressArray, AddressLenOrIndArray, PhoneArray,
+       PhoneLenOrIndArray, RowStatusArray);
+   break;
+
+  case POSITIONED_UPDATE:
+   // Get the new data and place it in the rowset buffers.
+   GetNewData(AddressArray[RowNum - 1], &AddressLenOrIndArray[RowNum - 1],
+        PhoneArray[RowNum - 1], &PhoneLenOrIndArray[RowNum - 1]);
+
+   // Bind the elements of the arrays at position RowNum-1 to the parameters
+   // of the positioned update statement.
+   SQLBindParameter(hstmtUpdate, 1, SQL_PARAM_INPUT, SQL_C_CHAR, SQL_CHAR,
+          50, 0, AddressArray[RowNum - 1], sizeof(AddressArray[0]),
+          &AddressLenOrIndArray[RowNum - 1]);
+   SQLBindParameter(hstmtUpdate, 2, SQL_PARAM_INPUT, SQL_C_CHAR, SQL_CHAR,
+          10, 0, PhoneArray[RowNum - 1], sizeof(PhoneArray[0]),
+          &PhoneLenOrIndArray[RowNum - 1]);
+
+   // Position the rowset cursor. The rowset is 1-based.
+   SQLSetPos(hstmtCust, RowNum, SQL_POSITION, SQL_LOCK_NO_CHANGE);
+
+   // Execute the positioned update statement to update the row.
+   SQLExecute(hstmtUpdate);
+   break;
+
+  case POSITIONED_DELETE:
+   // Position the rowset cursor. The rowset is 1-based.
+   SQLSetPos(hstmtCust, RowNum, SQL_POSITION, SQL_LOCK_NO_CHANGE);
+
+   // Execute the positioned delete statement to delete the row.
+   SQLExecute(hstmtDelete);
+   break;
+ }
+}
+
+// Close the cursor.
+SQLCloseCursor(hstmtCust);
+
+
+
 /*...e*/
+#endif
+/*...e*/
+/*...sclass lbBoundColumn:0:*/
+
+BEGIN_IMPLEMENT_LB_UNKNOWN(lbBoundColumn)
+        ADD_INTERFACE(lb_I_BoundColumn)
+END_IMPLEMENT_LB_UNKNOWN()
+
+lbErrCodes LB_STDCALL lbBoundColumn::setData(lb_I_Unknown* uk) {
+        _CL_LOG << "lbBoundColumn::setData(...) not implemented yet" LOG_
+        return ERR_NOT_IMPLEMENTED;
+}
+
+lb_I_Unknown* LB_STDCALL lbBoundColumn::getData() {
+	_CL_LOG << "lbBoundColumn::getData(...) not implemented yet" LOG_
+	return NULL;
+}
+
+lbErrCodes LB_STDCALL lbBoundColumn::getAsString(lb_I_String* result) {
+	_CL_LOG << "lbBoundColumn::getAsString(...) not implemented yet" LOG_
+	return ERR_NONE;
+}
+
+lbErrCodes LB_STDCALL lbBoundColumn::setFromString(lb_I_String* set) {
+	_CL_LOG << "lbBoundColumn::setFromString(...) not implemented yet" LOG_
+	return ERR_NONE;
+}
+
+lbErrCodes LB_STDCALL lbBoundColumn::bindColumn(lbQuery* q, int column) {
+        _CL_LOG << "lbBoundColumn::bindColumn(...) not implemented yet" LOG_
+
+	HSTMT hstmt = q->getCurrentStatement();
+
+/*...svars:8:*/
+	SQLSMALLINT     ColumnNumber = 0;
+	SQLCHAR         ColumnName[1000] = "";
+	SQLSMALLINT     BufferLength = 500;
+	SQLSMALLINT     NameLength = 0;
+	SQLSMALLINT     DataType = 0;
+	SQLUINTEGER     ColumnSize = 0;
+	SQLSMALLINT     DecimalDigits = 0;
+	SQLSMALLINT     Nullable = 0;
+/*...e*/
+
+// Assume readonly for now ...
+
+	SQLRETURN ret = SQLDescribeCol( hstmt, column, ColumnName,
+	                                BufferLength, &NameLength, &DataType,
+	                                &ColumnSize, &DecimalDigits, &Nullable);
+
+	long cbBufferLength;
+	
+	switch (DataType) {
+		case SQL_CHAR:
+		case SQL_VARCHAR:
+		case SQL_LONGVARCHAR:
+/*...sbind a character array:24:*/
+			//        100    <      ?
+			if (BufferLength < ColumnSize) {
+				_CL_LOG << 
+				"Warning: BufferLength is smaller than ColumnSize. Data would be truncated." LOG_
+			}
+			
+			buffer = malloc((ColumnSize == 0) ? BufferLength+1 : ColumnSize+1);
+			_DataType = DataType;
+			bound = 1;
+
+			ret = SQLBindCol(hstmt, column, DataType, buffer, (ColumnSize == 0) ? 
+				BufferLength+1 : ColumnSize+1, &cbBufferLength);
+			
+			if (ret != SQL_SUCCESS) {
+				printf("Error while binding a column!\n");
+			}
+/*...e*/
+			break;
+/*...slater:16:*/
+/*			
+		case SQL_WCHAR:
+		case SQL_WVARCHAR:
+		case SQL_WLONGVARCHAR:
+			break;
+*/			
+/*...e*/
+		case SQL_INTEGER:
+/*...sbind an integer:24:*/
+			//        100    <      ?
+			if (BufferLength < ColumnSize) {
+				_CL_LOG << "Warning: BufferLength is smaller than ColumnSize. Data would be truncated." LOG_
+			}
+			
+			buffer = malloc((ColumnSize == 0) ? BufferLength+1 : ColumnSize+1);
+			_DataType = DataType;
+			bound = 1;
+			
+			SQLBindCol(hstmt, column, DataType, buffer, (ColumnSize == 0) ? BufferLength+1 : ColumnSize+1, &cbBufferLength);
+			
+			if (ret != SQL_SUCCESS) {
+			        printf("Error while binding a column!\n");
+			}
+			
+/*...e*/
+			break;
+		default:
+			_CL_LOG << "lbBoundColumn::bindColumn(...) failed: Unknown or not supported datatype" LOG_
+			break;
+	}
+	
+
+	return ERR_NONE;
+}
+/*...e*/
+
 /*...sclass lbDatabase:0:*/
 class lbDatabase :
 public lb_I_Database
@@ -463,7 +966,7 @@ public:
 	 *		passwd	database password
 	 */
 	virtual lbErrCodes LB_STDCALL connect(char* DSN, char* user, char* passwd);
-	virtual lb_I_Query* LB_STDCALL getQuery();
+	virtual lb_I_Query* LB_STDCALL getQuery(int readonly = 1);
 	
 	
 	
@@ -560,7 +1063,7 @@ lbErrCodes LB_STDCALL lbDatabase::connect(char* DSN, char* user, char* passwd) {
 	return ERR_NONE;
 }
 /*...e*/
-lb_I_Query* LB_STDCALL lbDatabase::getQuery() {
+lb_I_Query* LB_STDCALL lbDatabase::getQuery(int readoly) {
 	lbQuery* query = new lbQuery;
 
 	if (query->init(henv, hdbc) != ERR_NONE) return NULL;
