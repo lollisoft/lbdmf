@@ -6,7 +6,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.23 2004/07/22 23:36:38 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.24 2004/07/26 22:00:40 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -44,11 +44,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.23 $
+ * $Revision: 1.24 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.23 2004/07/22 23:36:38 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.24 2004/07/26 22:00:40 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.24  2004/07/26 22:00:40  lollisoft
+ * Better layout and resizeable database form
+ *
  * Revision 1.23  2004/07/22 23:36:38  lollisoft
  * Different database forms now working. Cleanup handled correctly and
  * the app always quits correctly.
@@ -333,7 +336,7 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::setData(lb_I_Unknown* uk) {
 
 
 lbDatabaseDialog::lbDatabaseDialog()
-	: wxDialog(NULL, -1, wxString(_T("Database dialog")))
+	: wxDialog(NULL, -1, wxString(_T("Database dialog")), wxDefaultPosition, wxDefaultSize, wxRESIZE_BORDER|wxDEFAULT_DIALOG_STYLE)
 {
 }
 /*...slbErrCodes LB_STDCALL lbDatabaseDialog\58\\58\registerEventHandler\40\lb_I_Dispatcher\42\ dispatcher\41\:0:*/
@@ -363,7 +366,11 @@ void lbDatabaseDialog::init(wxWindow* parent, wxString formName, wxString SQLStr
 
 	SetTitle(formName);
 
+	wxBoxSizer* sizerMain  = new wxBoxSizer(wxVERTICAL);
+	
 	wxBoxSizer* sizerHor   = new wxBoxSizer(wxHORIZONTAL);
+	wxBoxSizer* sizerNavi  = new wxBoxSizer(wxHORIZONTAL);
+	
 	wxBoxSizer* sizerLeft  = new wxBoxSizer(wxVERTICAL);	
 	wxBoxSizer* sizerRight = new wxBoxSizer(wxVERTICAL);
 
@@ -441,15 +448,17 @@ void lbDatabaseDialog::init(wxWindow* parent, wxString formName, wxString SQLStr
 	sizerHor->Add(sizerLeft, 1, wxEXPAND | wxALL, 5);
 	sizerHor->Add(sizerRight, 1, wxEXPAND | wxALL, 5);
 
-	wxButton *button1 = new wxButton(this, DatabaseFirst, "First", wxPoint(), wxSize());
-	wxButton *button2 = new wxButton(this, DatabaseNext, "Next", wxPoint(), wxSize());
-	wxButton *button3 = new wxButton(this, DatabasePrev, "Prev", wxPoint(), wxSize());
-	wxButton *button4 = new wxButton(this, DatabaseLast, "Last", wxPoint(), wxSize());
+	wxButton *button1 = new wxButton(this, DatabaseFirst, "First", wxPoint(), wxSize(100,20));
+	wxButton *button2 = new wxButton(this, DatabaseNext, "Next", wxPoint(), wxSize(100,20));
+	wxButton *button3 = new wxButton(this, DatabasePrev, "Prev", wxPoint(), wxSize(100,20));
+	wxButton *button4 = new wxButton(this, DatabaseLast, "Last", wxPoint(), wxSize(100,20));
 
-	sizerLeft->Add(button1, 1, wxEXPAND | wxALL, 5);
-	sizerLeft->Add(button3, 1, wxEXPAND | wxALL, 5);
-	sizerRight->Add(button2, 1, wxEXPAND | wxALL, 5);
-	sizerRight->Add(button4, 1, wxEXPAND | wxALL, 5);
+	sizerNavi->Add(button1, 1, wxALL, 5);
+	sizerNavi->Add(button3, 1, wxALL, 5);
+	sizerNavi->Add(button2, 1, wxALL, 5);
+	sizerNavi->Add(button4, 1, wxALL, 5);
+
+	//sizerNavi->SetAutoLayout(FALSE);
 
 //#define CONNECTOR ((wxFrame*) frame)
 #define CONNECTOR this
@@ -465,10 +474,14 @@ void lbDatabaseDialog::init(wxWindow* parent, wxString formName, wxString SQLStr
 
 
 	SetAutoLayout(TRUE);
-	SetSizer(sizerHor);
+	
+	sizerMain->Add(sizerHor, 0, wxEXPAND | wxALL, 5);
+	sizerMain->Add(sizerNavi, 0, wxEXPAND | wxALL, 5);
+	
+	SetSizer(sizerMain);
 
-	sizerHor->SetSizeHints(this);
-	sizerHor->Fit(this);
+	sizerMain->SetSizeHints(this);
+	sizerMain->Fit(this);
 	
 	Centre();
 /*...e*/
