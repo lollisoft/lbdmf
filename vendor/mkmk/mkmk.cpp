@@ -11,11 +11,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.43 $
+ * $Revision: 1.44 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.43 2004/11/02 19:02:06 lollisoft Exp $
+ * $Id: mkmk.cpp,v 1.44 2005/01/22 05:55:31 lollisoft Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.44  2005/01/22 05:55:31  lollisoft
+ * Minor code changes
+ *
  * Revision 1.43  2004/11/02 19:02:06  lollisoft
  * Replated del with rm
  *
@@ -165,14 +168,14 @@
   #include <dosdir.h>
 #endif
 /*...e*/
-
+/*...sdefs:0:*/
 //#define WATCOM_MAKE
 
 #ifdef LINUX
 #define UNIX
 #undef WATCOM_MAKE
 #endif
-
+/*...e*/
 /*...sdefs:0:*/
 #ifdef UNIX
   #define PathChar '/'
@@ -191,6 +194,7 @@
   #define MoreChar '\\'
 #endif
 /*...e*/
+/*...sdefs:0:*/
 #define EXE_TARGET 1
 #define DLL_TARGET 2
 #define LIB_TARGET 3
@@ -198,6 +202,7 @@
 #define SO_TARGET  5
 #define PLUGIN_TARGET 6
 #define SOPLUGIN_TARGET 7
+/*...e*/
 
 int targettype=EXE_TARGET;
 
@@ -704,7 +709,6 @@ void writeDllTarget(char* modulename) {
 
   printf("\t\t@cmd /C \"doit >> $(LNK)\"\n");
   printf("\t\t@cmd /C \"rm doit.bat\"\n");
-//  printf("\t\t@;if NOT \"$(LIBS)\" == \"\" echo LIBR $(LIBS) >> $(LNK)\n");
   printf("\t\t-@cmd /C \"attrib -r *.bak\"\n");
   printf("\t\t@$(LINK) $(LNKDLLOPS) $(LINKFLAGS)\n");
   printf("\t\t@wlib -q -n -b $(PROGRAM).lib +$(PROGRAM).dll\n");
@@ -822,25 +826,8 @@ void writeLibTarget(char* modulename, TDepList* l) {
 #endif
 }
 /*...e*/
-#ifdef bla
-/*...swriteLibTarget\40\char\42\ modulename\41\:0:*/
-void writeLibTarget(char* modulename) {
-#ifdef UNIX
-  printf("\n%s: $(OBJS)\n", modulename);
-  printf("\t\t$(CC) $(L_OPS) %s $(OBJS) $(OBJDEP)\n",modulename);
-#endif
-#ifdef __WATCOMC__
-  #ifdef VERBOSE
-  printf("Making a lib target\n");
-  #endif
-  printf("%s: $(OBJS) $(LIBS)\n",modulename);
-  printf("\t\t*$(WLIB) $(LIB_OPS_LIB) %s \\\n", modulename);
-  printf("\t\t$(OBJS)\n");
-#endif
-}
-/*...e*/
-#endif
 
+/*...swrite_clean\40\char\42\ modulename \61\ NULL\41\:0:*/
 void write_clean(char* modulename = NULL) {
 #ifdef __WATCOMC__
     // Write the normal clean rule
@@ -899,6 +886,7 @@ void write_clean(char* modulename = NULL) {
     }
 #endif //UNIX
 }
+/*...e*/
 
 /*...swrite_so_Target\40\char\42\ modulename\41\ create a UNIX shared library:0:*/
 void write_so_Target(char* modulename) {
@@ -941,7 +929,7 @@ void write_soPlugin_Target(char* modulename) {
 /*...svoid ShowHelp\40\\41\:0:*/
 void ShowHelp()
 {
-  fprintf(stderr, "MKMK: makefile generator");
+  fprintf(stderr, "MKMK: makefile generator $Revision: 1.44 $");
   fprintf(stderr, "Usage: MKMK lib|exe|dll modulname includepath,[includepath,...] file1 [file2 file3...]\n");
 }
 /*...e*/
