@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.1 $
+ * $Revision: 1.2 $
  * $Name:  $
- * $Id: lbPluginManager.cpp,v 1.1 2004/06/06 12:31:21 lollisoft Exp $
+ * $Id: lbPluginManager.cpp,v 1.2 2004/06/06 12:53:29 lollisoft Exp $
  *
  * $Log: lbPluginManager.cpp,v $
+ * Revision 1.2  2004/06/06 12:53:29  lollisoft
+ * Include file lower case
+ *
  * Revision 1.1  2004/06/06 12:31:21  lollisoft
  * Initial
  *
@@ -70,7 +73,7 @@ extern "C" {
 
 /*...sLB_PLUGINMANAGER_DLL scope:0:*/
 #define LB_PLUGINMANAGER_DLL
-#include <lbPluginManager-module.h>
+#include <lbpluginmanager-module.h>
 /*...e*/
 
 #include <lbPluginManager.h>
