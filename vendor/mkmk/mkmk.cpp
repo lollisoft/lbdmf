@@ -11,11 +11,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.42 $
+ * $Revision: 1.43 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.42 2004/10/16 12:01:05 lollisoft Exp $
+ * $Id: mkmk.cpp,v 1.43 2004/11/02 19:02:06 lollisoft Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.43  2004/11/02 19:02:06  lollisoft
+ * Replated del with rm
+ *
  * Revision 1.42  2004/10/16 12:01:05  lollisoft
  * Adopted new make system to linux
  *
@@ -842,36 +845,36 @@ void write_clean(char* modulename = NULL) {
 #ifdef __WATCOMC__
     // Write the normal clean rule
     printf("clean:\n");
-    printf("\t\t-@del *.exp\n");
-    printf("\t\t-@del *.err\n");
-    printf("\t\t-@del *.ilk\n");
-    printf("\t\t-@del *.lib\n");
-    printf("\t\t-@del *.lk1\n");
-    printf("\t\t-@del *.mk1\n");
-    printf("\t\t-@del *.map\n");
-    printf("\t\t-@del *.mk\n");
-    printf("\t\t-@del *.mk1\n");
-    printf("\t\t-@del *.sym\n");
-    printf("\t\t-@del *.obj\n");
-    printf("\t\t-@del *.bak\n");
-    printf("\t\t-@del *.idb\n");
-    printf("\t\t-@del *.pch\n");
-    printf("\t\t-@del *.pdb\n");
+    printf("\t\t-@rm *.exp\n");
+    printf("\t\t-@rm *.err\n");
+    printf("\t\t-@rm *.ilk\n");
+    printf("\t\t-@rm *.lib\n");
+    printf("\t\t-@rm *.lk1\n");
+    printf("\t\t-@rm *.mk1\n");
+    printf("\t\t-@rm *.map\n");
+    printf("\t\t-@rm *.mk\n");
+    printf("\t\t-@rm *.mk1\n");
+    printf("\t\t-@rm *.sym\n");
+    printf("\t\t-@rm *.obj\n");
+    printf("\t\t-@rm *.bak\n");
+    printf("\t\t-@rm *.idb\n");
+    printf("\t\t-@rm *.pch\n");
+    printf("\t\t-@rm *.pdb\n");
     if (modulename == NULL) {
-        printf("\t\t-@del *.dll\n");
+        printf("\t\t-@rm *.dll\n");
     } else {
-	printf("\t\t-@del %s.exe\n", modulename);
+	printf("\t\t-@rm %s.exe\n", modulename);
     }
     
     // Write the distclean rule
     printf("distclean:\n");
-    printf("\t\t-@del *.o\n");
-    printf("\t\t-@del makefile\n");
-    printf("\t\t-@del *.log\n");
+    printf("\t\t-@rm *.o\n");
+    printf("\t\t-@rm makefile\n");
+    printf("\t\t-@rm *.log\n");
     if (modulename == NULL) {
-        printf("\t\t-@del *.so.*\n");
+        printf("\t\t-@rm *.so.*\n");
     } else {
-	printf("\t\t-@del %s\n", modulename);
+	printf("\t\t-@rm %s\n", modulename);
     }
 #endif //__WATCOMC__
 #ifdef UNIX
