@@ -24,17 +24,20 @@
     p-Mail: Lothar Behrens
             Rosmarinstr. 3
             
-            40235 DÅsseldorf (germany)
+            40235 Duesseldorf (germany)
 */
 /*...e*/
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.13 $
+ * $Revision: 1.14 $
  * $Name:  $
- * $Id: lbPluginManager.cpp,v 1.13 2005/03/15 22:26:40 lollisoft Exp $
+ * $Id: lbPluginManager.cpp,v 1.14 2005/03/31 09:00:55 lollisoft Exp $
  *
  * $Log: lbPluginManager.cpp,v $
+ * Revision 1.14  2005/03/31 09:00:55  lollisoft
+ * Copyright text problems under linux.
+ *
  * Revision 1.13  2005/03/15 22:26:40  lollisoft
  * More changes on OSX to compile plugins
  *

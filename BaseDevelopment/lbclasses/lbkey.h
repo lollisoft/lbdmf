@@ -24,17 +24,20 @@
     p-Mail: Lothar Behrens
             Rosmarinstr. 3
             
-            40235 DÅsseldorf (germany)
+            40235 Duesseldorf (germany)
 */
 /*...e*/
 
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.21 $
+ * $Revision: 1.22 $
  * $Name:  $
- * $Id: lbkey.h,v 1.21 2005/02/12 13:57:34 lollisoft Exp $
+ * $Id: lbkey.h,v 1.22 2005/03/31 09:02:42 lollisoft Exp $
  * $Log: lbkey.h,v $
+ * Revision 1.22  2005/03/31 09:02:42  lollisoft
+ * Copyright text problems under linux.
+ *
  * Revision 1.21  2005/02/12 13:57:34  lollisoft
  * Changed lbKey to lbKey_ to enable built on Mac
  *

@@ -24,17 +24,20 @@
     p-Mail: Lothar Behrens
             Rosmarinstr. 3
             
-            40235 DÅsseldorf (germany)
+            40235 Duesseldorf (germany)
 */
 /*...e*/
 
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.33 $
+ * $Revision: 1.34 $
  * $Name:  $
- * $Id: misc.cpp,v 1.33 2005/01/24 22:49:30 lollisoft Exp $
+ * $Id: misc.cpp,v 1.34 2005/03/31 09:02:45 lollisoft Exp $
  * $Log: misc.cpp,v $
+ * Revision 1.34  2005/03/31 09:02:45  lollisoft
+ * Copyright text problems under linux.
+ *
  * Revision 1.33  2005/01/24 22:49:30  lollisoft
  * Logging is unclean...
  *

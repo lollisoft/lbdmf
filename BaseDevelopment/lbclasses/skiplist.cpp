@@ -24,7 +24,7 @@
     p-Mail: Lothar Behrens
             Rosmarinstr. 3
             
-            40235 DÅsseldorf (germany)
+            40235 Duesseldorf (germany)
 */
 /*...e*/
 
@@ -38,11 +38,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.25 $
+ * $Revision: 1.26 $
  * $Name:  $
- * $Id: skiplist.cpp,v 1.25 2005/03/19 16:38:54 lollisoft Exp $
+ * $Id: skiplist.cpp,v 1.26 2005/03/31 09:02:45 lollisoft Exp $
  *
  * $Log: skiplist.cpp,v $
+ * Revision 1.26  2005/03/31 09:02:45  lollisoft
+ * Copyright text problems under linux.
+ *
  * Revision 1.25  2005/03/19 16:38:54  lollisoft
  * Bugfix, if iterate an empty container.
  *

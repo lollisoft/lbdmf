@@ -24,17 +24,20 @@
     p-Mail: Lothar Behrens
             Rosmarinstr. 3
             
-            40235 DÅsseldorf (germany)
+            40235 Duesseldorf (germany)
 */
 /*...e*/
 
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.12 $
+ * $Revision: 1.13 $
  * $Name:  $
- * $Id: lbelement.h,v 1.12 2003/12/13 10:56:25 lollisoft Exp $
+ * $Id: lbelement.h,v 1.13 2005/03/31 09:02:42 lollisoft Exp $
  * $Log: lbelement.h,v $
+ * Revision 1.13  2005/03/31 09:02:42  lollisoft
+ * Copyright text problems under linux.
+ *
  * Revision 1.12  2003/12/13 10:56:25  lollisoft
  * Database improovements and changes in my licence adress.
  * The database part is still not working by updating columns

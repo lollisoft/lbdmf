@@ -24,7 +24,7 @@
     p-Mail: Lothar Behrens
             Rosmarinstr. 3
             
-            40235 DÅsseldorf (germany)
+            40235 Duesseldorf (germany)
 */
 /*...e*/
 
@@ -33,11 +33,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.3 $
+ * $Revision: 1.4 $
  * $Name:  $
- * $Id: lbPluginManager.h,v 1.3 2005/03/14 18:59:02 lollisoft Exp $
+ * $Id: lbPluginManager.h,v 1.4 2005/03/31 09:00:55 lollisoft Exp $
  *
  * $Log: lbPluginManager.h,v $
+ * Revision 1.4  2005/03/31 09:00:55  lollisoft
+ * Copyright text problems under linux.
+ *
  * Revision 1.3  2005/03/14 18:59:02  lollisoft
  * Various changes and additions to make plugins also work with database forms
  *

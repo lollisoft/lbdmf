@@ -24,7 +24,7 @@
     p-Mail: Lothar Behrens
             Rosmarinstr. 3
             
-            40235 DÅsseldorf (germany)
+            40235 Duesseldorf (germany)
 */
 /*...e*/
 #ifdef _MSC_VER
@@ -36,10 +36,13 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.24 $
+ * $Revision: 1.25 $
  * $Name:  $
- * $Id: lbcontainer.cpp,v 1.24 2005/01/23 13:43:05 lollisoft Exp $
+ * $Id: lbcontainer.cpp,v 1.25 2005/03/31 09:02:42 lollisoft Exp $
  * $Log: lbcontainer.cpp,v $
+ * Revision 1.25  2005/03/31 09:02:42  lollisoft
+ * Copyright text problems under linux.
+ *
  * Revision 1.24  2005/01/23 13:43:05  lollisoft
  * std:: is only under linux working
  *

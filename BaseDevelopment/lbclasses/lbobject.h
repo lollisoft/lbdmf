@@ -24,17 +24,20 @@
     p-Mail: Lothar Behrens
             Rosmarinstr. 3
             
-            40235 DÅsseldorf (germany)
+            40235 Duesseldorf (germany)
 */
 /*...e*/
 
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.22 $
+ * $Revision: 1.23 $
  * $Name:  $
- * $Id: lbobject.h,v 1.22 2005/03/19 16:39:25 lollisoft Exp $
+ * $Id: lbobject.h,v 1.23 2005/03/31 09:02:44 lollisoft Exp $
  * $Log: lbobject.h,v $
+ * Revision 1.23  2005/03/31 09:02:44  lollisoft
+ * Copyright text problems under linux.
+ *
  * Revision 1.22  2005/03/19 16:39:25  lollisoft
  * Implemented i18n.
  *

@@ -24,7 +24,7 @@
     p-Mail: Lothar Behrens
             Rosmarinstr. 3
             
-            40235 DÅsseldorf (germany)
+            40235 Duesseldorf (germany)
 */
 /*...e*/
 
@@ -33,11 +33,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.15 $
+ * $Revision: 1.16 $
  * $Name:  $
- * $Id: lbModule.h,v 1.15 2004/03/20 11:36:20 lollisoft Exp $
+ * $Id: lbModule.h,v 1.16 2005/03/31 09:00:17 lollisoft Exp $
  *
  * $Log: lbModule.h,v $
+ * Revision 1.16  2005/03/31 09:00:17  lollisoft
+ * Copyright text problems under linux.
+ *
  * Revision 1.15  2004/03/20 11:36:20  lollisoft
  * Added a hardcoded repository as an alternative to XML
  *
