@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.26 $
+# * $Revision: 1.27 $
 # * $Name:  $
-# * $Id: Makefile,v 1.26 2005/02/10 16:59:05 lollisoft Exp $
+# * $Id: Makefile,v 1.27 2005/02/10 19:14:11 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.27  2005/02/10 19:14:11  lollisoft
+# * Why ?
+# *
 # * Revision 1.26  2005/02/10 16:59:05  lollisoft
 # * Changes for Mac OS X
 # *
@@ -99,6 +102,10 @@ ifeq ($(OSTYPE), osx)
 DEVROOT_MAKE=$(DEVROOT)
 endif
 
+
+ifeq ($(OSTYPE), Windows_NT)
+DEVROOT_MAKE=$(DEVROOT)
+endif
 
 Path=$(PATH)
 
