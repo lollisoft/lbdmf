@@ -77,28 +77,28 @@ void main(int argc, char *argv[]) {
 /*...e*/
 /*...stest container:0:*/
 {	if (mm->request("lb_I_Container", &uk) != ERR_NONE) {
-		CL_LOG("Error: Could not get needed instance!");
+		_CL_LOG << "Error: Could not get needed instance!" LOG_
 		getch();
 	}
 	
 	lb_I_Container* c = NULL;
 
 	if (uk->queryInterface("lb_I_Container", (void**) &c, __FILE__, __LINE__) != ERR_NONE) {
-		CL_LOG("Error: Could not get needed interface!");
+		_CL_LOG << "Error: Could not get needed interface!" LOG_
 		getch();
 	}
 }
 /*...e*/
-	CL_LOG("Tested container")
+	_CL_LOG << "Tested container" LOG_
 /*...stest logger:0:*/
 	mm->request("lb_I_Log", &unknown);
 	
-	CL_LOG("Requested a instance for interface lb_I_Log")
+	_CL_LOG << "Requested a instance for interface lb_I_Log" LOG_
 	
 	if (unknown != NULL) {
 		lb_I_Log* logger = NULL;
 		if (unknown->queryInterface("lb_I_Log", (void**) &logger, __FILE__, __LINE__) != ERR_NONE) {
-			CL_LOG("Getting a logger failed !!!!!!!!");
+			_CL_LOG << "Getting a logger failed !!!!!!!!" LOG_
 		}
 
 		if (logger != NULL) {
@@ -109,20 +109,20 @@ void main(int argc, char *argv[]) {
 /*...e*/
 /*...stest container:0:*/
 	if (mm->request("lb_I_Container", &uk) != ERR_NONE) {
-		CL_LOG("Error: Could not get needed instance!");
+		_CL_LOG << "Error: Could not get needed instance!" LOG_
 		getch();
 	}
 	
 	lb_I_Container* c = NULL;
 
 	if (uk->queryInterface("lb_I_Container", (void**) &c, __FILE__, __LINE__) != ERR_NONE) {
-		CL_LOG("Error: Could not get needed interface!");
+		_CL_LOG << "Error: Could not get needed interface!" LOG_
 		getch();
 	}
 /*...e*/
 /*...stest integer:0:*/
 	if (mm->request("lb_I_Integer", &uk) != ERR_NONE) {
-		CL_LOG("Error: Could not get needed instance!");
+		_CL_LOG << "Error: Could not get needed instance!" LOG_
 		getch();
 	}
 /*...e*/
@@ -134,22 +134,22 @@ void main(int argc, char *argv[]) {
 /*...e*/
 /*...stest after unloading:0:*/
 	mm = getModuleInstance();
-	_LOG << "Test logging after initializing the second one" LOG_
-	CL_LOG("Tested logging after initializing the second one")
+	_CL_LOG << "Test logging after initializing the second one" LOG_
+	_CL_LOG << "Tested logging after initializing the second one" LOG_
 /*...e*/
 	
 	uk = NULL;
 
 /*...stest countainer:0:*/
 	if (mm->request("lb_I_Container", &uk) != ERR_NONE) {
-		CL_LOG("Error: Could not get needed instance!");
+		_CL_LOG << "Error: Could not get needed instance!" LOG_
 		getch();
 	}
 	
 	c = NULL;
 
 	if (uk->queryInterface("lb_I_Container", (void**) &c, __FILE__, __LINE__) != ERR_NONE) {
-		CL_LOG("Error: Could not get needed interface!");
+		_CL_LOG << "Error: Could not get needed interface!" LOG_
 		getch();
 	}
 	
@@ -157,7 +157,7 @@ void main(int argc, char *argv[]) {
 
 /*...stest integer:0:*/
 	if (mm->request("lb_I_Integer", &uk) != ERR_NONE) {
-		CL_LOG("Error: Could not get needed instance!");
+		_CL_LOG << "Error: Could not get needed instance!" LOG_
 		getch();
 	}
 /*...e*/
@@ -166,16 +166,16 @@ void main(int argc, char *argv[]) {
 		UAP(lb_I_Unknown, theVariable, __FILE__, __LINE__)
 		UAP(lb_I_String, string, __FILE__, __LINE__)
 		
-		if (theVariable.getPtr() != NULL) CL_LOG("Error: UAP does not correctly work");
+		if (theVariable.getPtr() != NULL) _CL_LOG << "Error: UAP does not correctly work" LOG_
 
 		if (mm->request("lb_I_String", &theVariable) != NULL) {
-			CL_LOG("Error: Failed to get an instance lb_I_String");
+			_CL_LOG << "Error: Failed to get an instance lb_I_String" LOG_
 		}
 		
-		if (theVariable == NULL) CL_LOG("Error: UAP is not initialized!");
+		if (theVariable == NULL) _CL_LOG << "Error: UAP is not initialized!" LOG_
 
 		if (theVariable->queryInterface("lb_I_String", (void**) &string, __FILE__, __LINE__) != ERR_NONE) {
-			CL_LOG("Error: Failed to get a reference to the interface lb_I_String");
+			_CL_LOG << "Error: Failed to get a reference to the interface lb_I_String" LOG_
 		}
 		if (string != NULL) {
 			string->setData("Blubber\n");
@@ -188,7 +188,7 @@ void main(int argc, char *argv[]) {
 		}
 /*...e*/
 
-	CL_LOG("Test metaapplication");
+	_CL_LOG << "Test metaapplication" LOG_
 	UAP_REQUEST(mm, lb_I_MetaApplication, meta)
 	
 	if (meta != NULL) {
@@ -196,14 +196,14 @@ void main(int argc, char *argv[]) {
 	}
 	
 	
-	CL_LOG("Tested metaapplication");
+	_CL_LOG << "Tested metaapplication" LOG_
 
 	mm->uninitialize();
 	RELEASE(mm)
-	CL_LOG("Basic tests ended");
+	_CL_LOG << "Basic tests ended" LOG_
 	getch();
 
-	CL_LOG("Memory test ------------------------------------------");
+	_CL_LOG << "Memory test ------------------------------------------" LOG_
 	getch();
 	
         /**
@@ -229,7 +229,7 @@ void main(int argc, char *argv[]) {
 				UAP(lb_I_Container, container, __FILE__, __LINE__)
 
 				if (uk->queryInterface("lb_I_Container", (void**) &container, __FILE__, __LINE__) != ERR_NONE) {
-					CL_LOG("Error: Could not query for interface lb_I_Container");
+					_CL_LOG << "Error: Could not query for interface lb_I_Container" LOG_
 				}
 			
 				if (modMan->request("lb_I_String", &uk1) != ERR_NONE) {
@@ -238,13 +238,13 @@ void main(int argc, char *argv[]) {
 				}
 
 				if (uk1 != NULL) {
-					CL_LOG("Test the container");
+					_CL_LOG << "Test the container" LOG_
 					UAP(lb_I_String, string, __FILE__, __LINE__)
 					if (uk1->queryInterface("lb_I_String", (void**) &string, __FILE__, __LINE__) != ERR_NONE) {
 						printf("Error: Could not get needed interface!\n");
 						getch();
 					}
-					CL_LOG("Have the string interface, insert data");
+					_CL_LOG << "Have the string interface, insert data" LOG_
 					if (string != NULL) {
 						// Fill up the container
 						for (long i = 0; i < 10000000; i++) {
@@ -258,16 +258,15 @@ void main(int argc, char *argv[]) {
 							uk->setDebug(1);
 						
 							string->setData("Bla");
-							CL_LOG("Insert first element");
+							_CL_LOG << "Insert first element" LOG_
 						
 						
-							if (container == NULL) CL_LOG("Container is NULL");
+							if (container == NULL) _CL_LOG << "Container is NULL" LOG_
 							
-							sprintf(buf, "RefCount of uk and key is %d, %d", uk->getRefCount(), key->getRefCount());
-							CL_LOG(buf);
+							_CL_LOG << "RefCount of uk and key is " << uk->getRefCount() << ", " << key->getRefCount() LOG_
 						
 							container->insert(&uk, &key);
-							CL_LOG("Inserted first element");
+							_CL_LOG << "Inserted first element" LOG_
 							
 							lb_I_Unknown* ukdata = container->getElement(&key);
 							printf("Have searched for an element\n");
@@ -354,7 +353,7 @@ void main(int argc, char *argv[]) {
 							}
 	
 							container->deleteAll();
-							CL_LOG("Deleted all container data");
+							_CL_LOG << "Deleted all container data" LOG_
 							getch();
 /*...e*/
 						}
@@ -362,7 +361,7 @@ void main(int argc, char *argv[]) {
 				}
 				
 			} else {
-				CL_LOG("Here must be an object!!!");
+				_CL_LOG << "Here must be an object!!!" LOG_
 				getch();
 			}
 
@@ -371,20 +370,20 @@ void main(int argc, char *argv[]) {
 	#endif
 /*...e*/
 
-        CL_LOG("End test lb_I_Container loop");
+        _CL_LOG << "End test lb_I_Container loop" LOG_
 		getch();
 
 #ifdef LOOP
         for (long ii = 0; ii < 10000000; ii++) {
 #endif
 printf("Test LOG macro\n");
-	_LOG << "Call lb_I_Module->load()" LOG_
+	_CL_LOG << "Call lb_I_Module->load()" LOG_
 getch();
 
 		
 
 		if (modMan->request("lb_I_Integer", &uk) != ERR_NONE) {
-			CL_LOG("Error: Could not get needed instance!");
+			_CL_LOG << "Error: Could not get needed instance!" LOG_
 		}
         	
         	
