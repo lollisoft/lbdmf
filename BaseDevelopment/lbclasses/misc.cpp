@@ -1,10 +1,12 @@
-
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.2 $
+ * $Revision: 1.3 $
  * $Name:  $
- * $Id: misc.cpp,v 1.2 2000/10/20 06:04:08 lolli Exp $
+ * $Id: misc.cpp,v 1.3 2000/10/20 06:07:56 lolli Exp $
  * $Log: misc.cpp,v $
+ * Revision 1.3  2000/10/20 06:07:56  lolli
+ * test1
+ *
  * Revision 1.2  2000/10/20 06:04:08  lolli
  * test
  *
