@@ -11,11 +11,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.34 $
+ * $Revision: 1.35 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.34 2003/05/29 08:41:19 lollisoft Exp $
+ * $Id: mkmk.cpp,v 1.35 2003/07/15 22:00:44 lollisoft Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.35  2003/07/15 22:00:44  lollisoft
+ * Use libr define for system libraries
+ *
  * Revision 1.34  2003/05/29 08:41:19  lollisoft
  * Corrected makefile generation for watcom
  *
@@ -635,7 +638,7 @@ void writeExeTarget(char* modulename) {
   printf("\t\t@echo Link %s.exe\n", ModName);
   printf("\t\t@echo NAME $(PROGRAM).exe > $(LNK)\n");
   printf("\t\t@echo $(FILE) $(LIBS) >> $(LNK)\n");
-  printf("\t\t@$(LINK) $(LINKFLAGS) $(COMPILERFLAGS)\n");
+  printf("\t\t@$(LINK) $(LINKFLAGS) $(LIBRS) $(COMPILERFLAGS)\n");
   printf("\t\t@cmd /C \"$(CP) $(PROGRAM).exe $(EXEDIR) > null\"\n");
 #endif
 }
