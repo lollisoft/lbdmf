@@ -346,19 +346,19 @@ DLLEXPORT void LB_STDCALL unHookAll() {
 }
 /*...e*/
 
+char* translated = NULL;
+
 DLLEXPORT char* LB_STDCALL translateText(char* text) {
 	lb_I_Module* mm = NULL;
 
-	printf("Translating the following text %s\n", text);      
 	mm = getModuleInstance();
 	mm->setModuleManager(mm, __FILE__, __LINE__);
 
-/*
 	UAP_REQUEST(mm, lb_I_Locale, locale)
-*/
-	
 
-	return text;
+	locale->translate(&translated, text);
+
+	return translated;
 }
 
 /**

@@ -595,8 +595,14 @@ void LB_STDCALL lbPluginLoginWizard::initialize() {
 	registerEventHandler(*&disp);
 
 	UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
+
+	char* file = strdup(_trans("&File"));
+	char* entry = strdup(_trans("Login via &Plugin\tCtrl-P"));
 	
-	meta->addMenuEntry("File", "Login via Plugin", "RunLogin", "");
+	meta->addMenuEntry(file, entry, "RunLogin", "");
+	
+	free(file);
+	free(entry);
 }
 
 bool LB_STDCALL lbPluginLoginWizard::run() {

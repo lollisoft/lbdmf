@@ -74,11 +74,100 @@ IMPLEMENT_FUNCTOR(instanceOfString, lbString)
 IMPLEMENT_FUNCTOR(instanceOfReference, lbReference)
 IMPLEMENT_FUNCTOR(instanceOfParameter, lbParameter)
 
+IMPLEMENT_SINGLETON_FUNCTOR(instanceOfLocale, lbLocale)
 
 #ifdef __cplusplus
 }
 #endif            
 
+
+/*...slbLocale:0:*/
+BEGIN_IMPLEMENT_SINGLETON_LB_UNKNOWN(lbLocale)
+        ADD_INTERFACE(lb_I_Locale)
+END_IMPLEMENT_LB_UNKNOWN()
+
+lbErrCodes LB_STDCALL lbLocale::setData(lb_I_Unknown* uk) {
+	return ERR_NONE;
+}
+
+lbLocale::lbLocale() {
+	ref = STARTREF;
+	_lang = (char*) malloc(100);
+	_lang[0] = 0;
+	strcpy(_lang, "german");
+}
+
+lbLocale::~lbLocale() {
+	free(_lang);
+}
+
+void LB_STDCALL lbLocale::setLanguage(char const * lang) {
+	free(_lang);
+	_lang = strdup(lang);
+}
+
+/*...svoid LB_STDCALL lbLocale\58\\58\translate\40\char \42\\42\ text\44\ char const \42\ to_translate\41\:0:*/
+void LB_STDCALL lbLocale::translate(char ** text, char const * to_translate) {
+
+
+	UAP_REQUEST(manager.getPtr(), lb_I_Database, database)
+
+	database->init();
+
+	char* lbDMFPasswd = getenv("lbDMFPasswd");
+	char* lbDMFUser   = getenv("lbDMFUser");
+
+	if (!lbDMFUser) lbDMFUser = "dba";
+	if (!lbDMFPasswd) lbDMFPasswd = "trainres";
+
+	database->connect("lbDMF", lbDMFUser, lbDMFPasswd);
+
+	UAP(lb_I_Query, sampleQuery, __FILE__, __LINE__)
+
+	sampleQuery = database->getQuery(0);
+
+	char buffer[800] = "";
+
+	sprintf(buffer, "select translated from translations where language = '%s' and text = '%s'", _lang, to_translate);
+
+	sampleQuery->skipFKCollecting();
+	sampleQuery->query(buffer);
+	sampleQuery->enableFKCollecting();
+
+	// Fill up the available applications for that user.
+	
+	lbErrCodes err = sampleQuery->first();
+
+	if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
+
+	        UAP_REQUEST(manager.getPtr(), lb_I_String, s1)
+
+	        s1 = sampleQuery->getAsString(1);
+
+		*text = (char*) realloc((void*) (*text), strlen(s1->charrep()) + 1);
+		*text[0] = 0;
+
+		if (strcmp(s1->charrep(), "") == 0) 
+			strcpy(*text, to_translate);
+		else
+			strcpy(*text, s1->charrep());
+	} else {
+		*text = (char*) realloc(*text, strlen(to_translate) + 1);
+		*text[0] = 0;
+
+		_CL_LOG << "šbersetzung fr '" << to_translate << "' nicht gefunden!" LOG_
+
+		buffer[0] = 0;
+		
+		sprintf(buffer, "insert into translations (text, translated) values('%s', '%s')", to_translate, to_translate);
+		
+		sampleQuery->query(buffer);
+
+		strcpy(*text, to_translate);
+	}
+}
+/*...e*/
+/*...e*/
 /*...slbParameter:0:*/
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbParameter)
 	ADD_INTERFACE(lb_I_Parameter)

@@ -31,10 +31,13 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.21 $
+ * $Revision: 1.22 $
  * $Name:  $
- * $Id: lbobject.h,v 1.21 2005/01/05 13:41:36 lollisoft Exp $
+ * $Id: lbobject.h,v 1.22 2005/03/19 16:39:25 lollisoft Exp $
  * $Log: lbobject.h,v $
+ * Revision 1.22  2005/03/19 16:39:25  lollisoft
+ * Implemented i18n.
+ *
  * Revision 1.21  2005/01/05 13:41:36  lollisoft
  * New dynamic application implementation works
  *
@@ -192,6 +195,25 @@ protected:
 /*...e*/
 #endif
 
+/*...sclass lbLocale:0:*/
+class lbLocale : public lb_I_Locale
+{
+public:
+        lbLocale();
+        virtual ~lbLocale();
+
+        DECLARE_LB_UNKNOWN()
+
+        virtual void LB_STDCALL setLanguage(char const * lang);
+
+        virtual void LB_STDCALL translate(char ** text, char const * to_translate);
+        
+        
+        char* _lang;
+};
+/*...e*/
+
+
 /*...sclass lbParameter:0:*/
 class lbParameter : public lb_I_Parameter {
 public:
@@ -323,6 +345,7 @@ extern "C" {
 DECLARE_FUNCTOR(instanceOfInteger)
 DECLARE_FUNCTOR(instanceOfString)
 DECLARE_FUNCTOR(instanceOfReference)
+DECLARE_SINGLETON_FUNCTOR(instanceOfLocale)
 
 /*...sendif __cplusplus:0:*/
 #ifdef __cplusplus

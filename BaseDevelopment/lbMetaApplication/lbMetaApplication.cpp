@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.53 $
+ * $Revision: 1.54 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.53 2005/02/20 18:01:23 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.54 2005/03/19 16:40:59 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.54  2005/03/19 16:40:59  lollisoft
+ * Implemented i18n.
+ *
  * Revision 1.53  2005/02/20 18:01:23  lollisoft
  * Bugfix due to buffer overflow affecting GUI sample under Linux
  *
@@ -451,20 +454,23 @@ lbErrCodes LB_STDCALL lb_MetaApplication::Initialize(char* user, char* app) {
 	 */
 /*...e*/
 	
-	addMenuBar("Edit");
+	addMenuBar(_trans("&Edit"));
 
 	if (getenv("TARGET_APPLICATION") != NULL) {
 		loadApplication("", "");
 	}
 	
-	addMenuBar("Help");
+	addMenuBar(_trans("&Help"));
 
 	if (getenv("TARGET_APPLICATION") == NULL) {
-		addMenuEntry("File", "Login", "getLoginData", "");
+		char* login = strdup(_trans("&Login\tCtrl-L"));
+		addMenuEntry(_trans("&File"), login, "getLoginData", "");
+		free(login);
 	}
 	
-	addMenuEntry("Help", "MainModuleInfo", "getMainModuleInfo", "");
-	//addMenuEntry("Help", "Debug application", "enterDebugger", "");
+	char* mm = strdup(_trans("MainModule&Info\tCtrl-I"));
+	addMenuEntry(_trans("&Help"), mm, "getMainModuleInfo", "");
+	free(mm);
 
 #ifdef bla	
 /*...sMain module demos and their help:8:*/

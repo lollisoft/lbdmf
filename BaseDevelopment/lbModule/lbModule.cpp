@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.81 $
+ * $Revision: 1.82 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.81 2005/03/14 18:59:01 lollisoft Exp $
+ * $Id: lbModule.cpp,v 1.82 2005/03/19 16:41:49 lollisoft Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.82  2005/03/19 16:41:49  lollisoft
+ * Implemented i18n.
+ *
  * Revision 1.81  2005/03/14 18:59:01  lollisoft
  * Various changes and additions to make plugins also work with database forms
  *
@@ -1994,6 +1997,11 @@ lb_I_FunctorEntity* LB_STDCALL lbHCInterfaceRepository::getFirstEntity() {
 	if (strcmp(searchArgument, "lb_I_EvHandler") == 0) {
 		functor = PREFIX "instanceOfEvHandler";
 		module = "lbMetaApplication";
+	}
+
+	if (strcmp(searchArgument, "lb_I_Locale") == 0) {
+		functor = PREFIX "instanceOfLocale";
+		module = "lbClasses";
 	}
 	
 
