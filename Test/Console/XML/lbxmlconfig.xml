@@ -8,7 +8,7 @@
     <Module>
 <!--...sModuleName:8:-->
       <ModuleName>
-         ModuleName="library1"
+         Name="library1"
       </ModuleName>
 <!--...e-->
 <!--...sFunctions:8:-->
@@ -31,7 +31,7 @@
     <Module>
 <!--...sModuleName:8:-->
       <ModuleName>
-         ModuleName="library2"
+         Name="library2"
       </ModuleName>
 <!--...e-->
 <!--...sFunctions:8:-->

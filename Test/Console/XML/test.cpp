@@ -64,7 +64,15 @@ cout << "pUnknown->queryInterface('lb_I_XMLConfig', (void**) &XMLinst)" << endl;
                         return;
                 }
                 
-                if (XMLinst->hasConfigObject("dtdHostCfgDoc/Modules/Module/ModuleName") != ERR_NONE) {
+                cout << "Call XMLinst->parse() ('" << hex << (void*) XMLinst << "') ..." << endl;
+                
+		if (XMLinst->parse() != ERR_NONE) {
+                	printf("Error while parsing XML document\n");
+		}
+                
+                cout << "Called XMLinst->parse()" << endl;
+                
+                if (XMLinst->hasConfigObject("Module" /*"dtdHostCfgDoc/Modules/Module/ModuleName"*/) != ERR_NONE) {
                         printf("Object not found\n");
                 } else {
                         printf("Object was found\n");
