@@ -25,11 +25,14 @@
 #            40235 DÅsseldorf (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.49 $
+# * $Revision: 1.50 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.49 2005/01/23 11:35:00 lollisoft Exp $
+# * $Id: STD_MAKE,v 1.50 2005/01/24 22:21:27 lollisoft Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.50  2005/01/24 22:21:27  lollisoft
+# * Changes on Linux to get database access running. Login and selecting / loading an application works. But the application would not load
+# *
 # * Revision 1.49  2005/01/23 11:35:00  lollisoft
 # * Now the code compiles under SuSE Linux 9.1 except wx. It has link problems
 # *
@@ -192,8 +195,8 @@ DEVROOT_MAKE_INTERNAL=$(DEVROOT_MAKE)
 # Set standard compiler
 COMPILER=WATCOM
 #COMPILER=MICROSOFT
-#MODE=_DEBUG
-MODE=
+MODE=_DEBUG
+#MODE=
 
 STD_INCL_WATCOM =-i=. -i=$(DEVROOT)\\Tools\\WATCOM\\h -i=$(DEVROOT)\\Tools\\WATCOM\\h\\nt -i=$(DEVROOT)\\projects\\cpp\\interfaces -i=$(DEVROOT)\\projects\\cpp\\include -i=$(DEVROOT)\\projects\\dll\\include -i=$(DEVROOT)\\projects\\lib\\include
 #ANAKIN

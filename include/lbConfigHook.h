@@ -168,6 +168,12 @@
         of \
         
 #endif
+
+#define _CL_VERBOSE \
+    if (isVerbose()) { \
+	COUT \
+
+
 /*...sLOG\40\msg\41\:0:*/
 #define LOG(msg)	\
 			if (isInitializing() != 0) { \
@@ -270,6 +276,9 @@
 DLLEXPORT void LB_STDCALL set_trackObject(char* track);
 DLLEXPORT char* LB_STDCALL get_trackObject();
 DLLEXPORT void LB_STDCALL track_Object(lb_I_Unknown* o, char* msg);
+
+DLLEXPORT void LB_STDCALL setVerbose(bool what);
+DLLEXPORT bool LB_STDCALL isVerbose();
 
 DLLEXPORT HINSTANCE LB_STDCALL getModuleHandle();
 DLLEXPORT HINSTANCE LB_STDCALL getLBModuleHandle();

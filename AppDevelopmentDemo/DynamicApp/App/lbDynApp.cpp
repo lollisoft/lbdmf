@@ -286,7 +286,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::getDynamicDBForm(lb_I_Unknown* uk) {
 	        
 	        
 	} else {
-	        cout << "KundenDetails" << endl;
+	        COUT << "KundenDetails" << ENDL;
 	}
 
         return ERR_NONE;
@@ -398,7 +398,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::Initialize(char* user, char* app) {
 		addMenuEntry("Dynamic Forms", MenuName->charrep(), EventName->charrep(), "");
 
 		if (DBerr == WARN_DB_NODATA) return ERR_NONE;
-
+#define TRUE 1
 		while (TRUE) {
 			
 			DBerr = sampleQuery->next();

@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.38 2005/01/23 17:30:56 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.39 2005/01/24 22:21:24 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.38 $
+ * $Revision: 1.39 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.38 2005/01/23 17:30:56 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.39 2005/01/24 22:21:24 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.39  2005/01/24 22:21:24  lollisoft
+ * Changes on Linux to get database access running. Login and selecting / loading an application works. But the application would not load
+ *
  * Revision 1.38  2005/01/23 17:30:56  lollisoft
  * Some problems under Linux
  *
@@ -160,6 +163,7 @@
 #define DYNAMIC_BUILDMENU	1003
 #define DYNAMIC_TEST1		1004
 #define DYNAMIC_TEST2           1005
+#define DYNAMIC_VERBOSE		1006
 
 class lb_wxGUI;
 
@@ -207,6 +211,7 @@ public:
 
 public:
         void OnQuit(wxCommandEvent& event);
+        void OnVerbose(wxCommandEvent& event);
         
         /**
          * Displays the about form of the application.
@@ -298,6 +303,11 @@ lbErrCodes LB_STDCALL lb_wxFrame::registerEvents(lb_I_EventConnector* object) {
 	          (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
                   &lb_wxFrame::OnDispatch );
 
+	((wxFrame*) peer)->Connect( DYNAMIC_VERBOSE, -1, wxEVT_COMMAND_MENU_SELECTED,
+	          (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
+                  &lb_wxFrame::OnVerbose );
+
+
         return ERR_NONE;
 }
 /*...e*/
@@ -311,6 +321,7 @@ lbErrCodes LB_STDCALL lb_wxFrame::createEventsource(lb_I_EventConnector* object)
   file_menu->Append(DYNAMIC_BUILDMENU, "&Build menu");  
   file_menu->Append(DYNAMIC_ABOUT, "&About");
   file_menu->Append(DYNAMIC_QUIT, "E&xit");
+  file_menu->Append(DYNAMIC_VERBOSE, "&Verbose");
 
 //  file_menu->Append(GUI->useEvent("DYNAMIC_ABOUT"), "&About");
 //  file_menu->Append(GUI->useEvent("DYNAMIC_QUIT"), "E&xit");
@@ -545,11 +556,14 @@ DECLARE_LB_UNKNOWN()
 /*...svirtual bool TransferDataFromWindow\40\\41\:8:*/
 	virtual bool TransferDataFromWindow()
 	{
+		lbErrCodes err = ERR_NONE;
+		
 		printf("wxLogonPage::OnWizardPageChanging() called\n");
 		REQUEST(manager.getPtr(), lb_I_Database, database)
-
+printf("Do init Database\n");
 		database->init();
-		database->connect("lbDMF", "dba", "trainres");
+printf("Connect to the database server\n");
+		err = database->connect("lbDMF", "dba", "trainres");
 
 printf("Database initialized\n");
 
@@ -574,7 +588,7 @@ printf("---- %s ####\n", buffer);
 
 printf("Execute query\n");
 
-		lbErrCodes err = sampleQuery->first();
+		err = sampleQuery->first();
 
 		if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
 		        printf("User authenticated correctly (%s)\n", user);
@@ -2489,6 +2503,7 @@ class MyFrame: public wxFrame
     MyFrame(wxFrame *frame, char *title, int x, int y, int w, int h);
 
  public:
+    void OnVerbose(wxCommandEvent& event);
     void OnQuit(wxCommandEvent& event);
     void OnAbout(wxCommandEvent& event);
 };
@@ -2663,6 +2678,10 @@ bool MyApp::OnInit(void)
   frame->Connect( DYNAMIC_ABOUT, -1, wxEVT_COMMAND_MENU_SELECTED,
                   (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
                   &MyFrame::OnAbout );
+  frame->Connect( DYNAMIC_VERBOSE, -1, wxEVT_COMMAND_MENU_SELECTED,
+                  (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
+                  &MyFrame::OnVerbose );
+		  
 #endif
 /*...e*/
 /*...sDelegated event registration\9\\40\peer does this for us\41\:0:*/
@@ -2723,6 +2742,7 @@ bool MyApp::OnInit(void)
   
   file_menu->Append(DYNAMIC_ABOUT, "&About");
   file_menu->Append(DYNAMIC_QUIT, "E&xit");
+  file_menu->Append(DYNAMIC_VERBOSE, "&Verbose");
 
 //  file_menu->Append(GUI->useEvent("DYNAMIC_ABOUT"), "&About");
 //  file_menu->Append(GUI->useEvent("DYNAMIC_QUIT"), "E&xit");
@@ -2929,15 +2949,6 @@ lbErrCodes LB_STDCALL MyApp::HandleAddMenu(lb_I_Unknown* uk) {
 	    
 	wxMenuBar* mBar = frame_peer->getMenuBar();
 	mBar->Append(menu, "&Edit");
-
-#ifdef bla
-	wxMenu *menu = new wxMenu;
-	
-	menu->Append(DYNAMIC_ABOUT, "&About");
-	menu->Append(DYNAMIC_QUIT, "E&xit");
-	    
-	frame_peer->getMenuBar()->Append(menu, "Edit");
-#endif
 
         return ERR_NONE;
 }
@@ -3205,6 +3216,11 @@ MyFrame::MyFrame(wxFrame *frame, char *title, int x, int y, int w, int h):
   wxFrame(frame, -1, title, wxPoint(x, y), wxSize(w, h))
 {}
 
+void MyFrame::OnVerbose(wxCommandEvent& WXUNUSED(event) )
+{
+  setVerbose(!isVerbose());
+}
+
 /*...sMyFrame\58\\58\OnQuit\40\wxCommandEvent\38\ WXUNUSED\40\event\41\ \41\:0:*/
 void MyFrame::OnQuit(wxCommandEvent& WXUNUSED(event) )
 {
@@ -3283,6 +3299,11 @@ void lb_wxFrame::OnQuit(wxCommandEvent& WXUNUSED(event) )
 	
 	Close(TRUE);
 }
+
+void lb_wxFrame::OnVerbose(wxCommandEvent& WXUNUSED(event) ) {
+    setVerbose(!isVerbose());
+}
+
 /*...e*/
 /*...slb_wxFrame\58\\58\OnAbout\40\wxCommandEvent\38\ WXUNUSED\40\event\41\ \41\:0:*/
 void lb_wxFrame::OnAbout(wxCommandEvent& WXUNUSED(event) )
@@ -3329,6 +3350,9 @@ void lb_wxFrame::OnDispatch(wxCommandEvent& event ) {
         case DYNAMIC_ABOUT:
                 OnAbout(event);
                 break;
+	case DYNAMIC_VERBOSE:
+		OnVerbose(event);
+		break;
         case DYNAMIC_BUILDMENU:
         	{
         		char ptr[20] = "";

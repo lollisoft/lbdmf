@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.18 $
+# * $Revision: 1.19 $
 # * $Name:  $
-# * $Id: Makefile,v 1.18 2005/01/23 15:23:43 lollisoft Exp $
+# * $Id: Makefile,v 1.19 2005/01/24 22:21:01 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.19  2005/01/24 22:21:01  lollisoft
+# * Changes on Linux to get database access running. Login and selecting / loading an application works. But the application would not load
+# *
 # * Revision 1.18  2005/01/23 15:23:43  lollisoft
 # * Last changes before release 0.4.0
 # *
@@ -99,6 +102,7 @@ ALLTARGETS = lbHook \
 	lbClasses \
 	lbMetaApplication \
 	../AppDevelopmentDemo/App \
+	../AppDevelopmentDemo/DynamicApp/App \
 	../Test/Console/XML \
 	../Test/GUI/wxWrapper \
 	../AppDevelopment \
@@ -115,6 +119,7 @@ ALLTARGETS = lbhook \
 	lbclasses \
 	lbMetaApplication \
 	../AppDevelopmentDemo/App \
+	../AppDevelopmentDemo/DynamicApp/App \
 	../Test/Console/XML \
 	../Test/GUI/wxWrapper \
 	../AppDevelopment \
@@ -168,6 +173,10 @@ endif
 
 ../AppDevelopmentDemo/App: dummy
 	$(MAKE) -C $@ -e MODULE=Application -e TARGET=$(TARGETDLL) -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
+	$(MAKE) -C $@
+
+../AppDevelopmentDemo/DynamicApp/App: dummy
+	$(MAKE) -C $@ -e MODULE=lbDynApp -e TARGET=$(TARGETDLL) -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
 	$(MAKE) -C $@
 
 lbHook: dummy

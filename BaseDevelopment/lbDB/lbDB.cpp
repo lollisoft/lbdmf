@@ -691,7 +691,7 @@ lbErrCodes LB_STDCALL lbQuery::init(HENV _henv, HDBC _hdbc, int readonly) {
         }
 
         SQLINTEGER size = 1;
-
+/*
 	retcode = SQLSetStmtAttr(hstmt, SQL_ATTR_ROW_ARRAY_SIZE, (SQLPOINTER) &size, 0);
 
         if (retcode != SQL_SUCCESS)
@@ -701,7 +701,7 @@ lbErrCodes LB_STDCALL lbQuery::init(HENV _henv, HDBC _hdbc, int readonly) {
                 SQLFreeEnv(henv);
                 return ERR_DB_ALLOCSTATEMENT;
         }
-
+*/
 // Unneccesary
 //	retcode = SQLSetStmtAttr(hstmt, SQL_ATTR_CURSOR_SCROLLABLE, (SQLPOINTER) SQL_SCROLLABLE, 0);
 
@@ -2248,6 +2248,8 @@ lbErrCodes LB_STDCALL lbDatabase::setData(lb_I_Unknown* uk) {
 /*...e*/
 /*...slbErrCodes LB_STDCALL lbDatabase\58\\58\connect\40\char\42\ DSN\44\ char\42\ user\44\ char\42\ passwd\41\:0:*/
 lbErrCodes LB_STDCALL lbDatabase::connect(char* DSN, char* user, char* passwd) {
+_CL_VERBOSE << "SQLAllocConnect(henv, &hdbc);" LOG_
+
 	retcode = SQLAllocConnect(henv, &hdbc); /* Connection handle */
 
 	if (retcode != SQL_SUCCESS)
@@ -2257,6 +2259,7 @@ lbErrCodes LB_STDCALL lbDatabase::connect(char* DSN, char* user, char* passwd) {
         	return ERR_DB_CONNECT;
         }	
         
+_CL_VERBOSE << "SQLSetConnectOption(hdbc, SQL_LOGIN_TIMEOUT, 15);" LOG_
 	retcode = SQLSetConnectOption(hdbc, SQL_LOGIN_TIMEOUT, 15); /* Set login timeout to 15 seconds. */
 
         if (retcode != SQL_SUCCESS)
@@ -2265,6 +2268,8 @@ lbErrCodes LB_STDCALL lbDatabase::connect(char* DSN, char* user, char* passwd) {
                 SQLFreeEnv(henv);
                 return ERR_DB_CONNECT;
         }
+
+_CL_VERBOSE << "SQLSetConnectAttr(hdbc, SQL_ATTR_ODBC_CURSORS, SQL_CUR_USE_IF_NEEDED, 0);" LOG_
 
 	retcode = SQLSetConnectAttr(hdbc, SQL_ATTR_ODBC_CURSORS, SQL_CUR_USE_IF_NEEDED, 0);
 
@@ -2275,9 +2280,13 @@ lbErrCodes LB_STDCALL lbDatabase::connect(char* DSN, char* user, char* passwd) {
                 return ERR_DB_CONNECT;
         }
 
+_CL_VERBOSE << "SQLConnect(hdbc, ...);" LOG_
+
 	retcode = SQLConnect(hdbc, (unsigned char*) DSN, SQL_NTS, 
 				   (unsigned char*) user, SQL_NTS, 
 				   (unsigned char*) passwd, SQL_NTS); /* Connect to data source */
+
+_CL_VERBOSE << "Called." LOG_
 
 	if (retcode != SQL_SUCCESS && retcode != SQL_SUCCESS_WITH_INFO)
         {
@@ -2286,6 +2295,8 @@ lbErrCodes LB_STDCALL lbDatabase::connect(char* DSN, char* user, char* passwd) {
         	SQLFreeEnv(henv);
         	return ERR_DB_CONNECT;
         }
+
+_CL_VERBOSE << "SQLSetConnectOption(hdbc, SQL_AUTOCOMMIT, SQL_AUTOCOMMIT_ON);" LOG_
 
         retcode = SQLSetConnectOption(hdbc, SQL_AUTOCOMMIT, SQL_AUTOCOMMIT_ON);
 

@@ -88,6 +88,15 @@ extern lb_I_Log *lb_log;
 extern int lb_isInitializing;
 #endif
 
+bool lbVerbose = FALSE;
+
+DLLEXPORT void LB_STDCALL setVerbose(bool what) {
+    lbVerbose = what;
+}
+
+DLLEXPORT bool LB_STDCALL isVerbose() {
+	return lbVerbose;
+}
 
 /*...sHelpers:0:*/
 DLLEXPORT int LB_STDCALL isInitializing() {
