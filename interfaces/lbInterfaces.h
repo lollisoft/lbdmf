@@ -969,7 +969,7 @@ lbErrCodes LB_STDCALL classname::queryInterface(char* name, void** unknown, char
         }
 
 #define END_IMPLEMENT_LB_UNKNOWN() \
-	_CL_LOG << "Error: Requested interface '" << name << "' not found!" LOG_ \
+	_CL_LOG << "Error: Requested interface '" << name << "' not found! File: " << file << " Line: " << line LOG_ \
 	return ERR_NONE; \
 }
 
