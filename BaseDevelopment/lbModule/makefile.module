@@ -1,11 +1,14 @@
 # Define your module based settings
 
-OBJDEP=../lbHook/lbHook.o ../lbHook/conio.o
 
 ifeq ($(OSTYPE), Windows_NT)
 MOD_INCL=$(STD_INCL)
+LIBS = $(DEVROOT)\projects\dll\libs\lbhook.lib
+OBJDEP=../lbHook/lbHook.o
+# ../lbHook/conio.o
 endif
 
 ifeq ($(OSTYPE), linux)
 MOD_INCL=$(STD_INCL)
+OBJDEP=../lbHook/lbHook.o ../lbHook/conio.o
 endif    
