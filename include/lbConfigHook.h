@@ -37,6 +37,10 @@
 
 #endif
 
+// Object tracking
+DLLEXPORT void LB_STDCALL set_trackObject(char* track);
+DLLEXPORT char* LB_STDCALL get_trackObject();
+DLLEXPORT void LB_STDCALL track_Object(lb_I_Unknown* o, char* msg);
 
 DLLEXPORT HINSTANCE LB_STDCALL getModuleHandle();
 DLLEXPORT HINSTANCE LB_STDCALL getLBModuleHandle();
