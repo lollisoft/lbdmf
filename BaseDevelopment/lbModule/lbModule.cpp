@@ -3,11 +3,15 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.10 $
+ * $Revision: 1.11 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.10 2001/07/11 16:04:33 lothar Exp $
+ * $Id: lbModule.cpp,v 1.11 2001/07/12 20:45:46 lothar Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.11  2001/07/12 20:45:46  lothar
+ * Test UNKNOWN_AUTO_PTR, but a declaration does not
+ * work in a class, because of the explicit reference argument.
+ *
  * Revision 1.10  2001/07/11 16:04:33  lothar
  * First version of module management that hold's a little stresstest
  *
@@ -103,9 +107,9 @@ protected:
 
         lbErrCodes LB_STDCALL makeInstance(char* functor, char* module, lb_I_Unknown*& instance);
         
-        lb_I_Container* loadedModules;
         int internalInstanceRequest;
-        lb_I_XMLConfig* xml_Instance;
+        UNKNOWN_AUTO_PTR(lb_I_Container, loadedModules)
+        UNKNOWN_AUTO_PTR(lb_I_XMLConfig, xml_Instance)
 };
 /*...e*/
 
@@ -122,7 +126,8 @@ void lbModule::getXMLConfigObject(lb_I_XMLConfig*& inst) {
         char *libname = getenv("LBXMLLIB");
         char *ftrname = getenv("LBXMLFUNCTOR");
         char *cfgname = getenv("LBHOSTCFGFILE");
-        lb_I_XMLConfig* xml_I = NULL;
+
+        UNKNOWN_AUTO_PTR(lb_I_XMLConfig, xml_I)
 
         if (libname == NULL) return;
         if (ftrname == NULL) return;
@@ -147,7 +152,15 @@ void lbModule::getXMLConfigObject(lb_I_XMLConfig*& inst) {
             CL_LOG("Konnte XML Konfigurationsinstanz nicht bekommen.\n");
             exit(1);
         }
-        inst = xml_I;
+        /**
+         * Because of UNKNOWN_AUTO_PTR, here I must ensure, having one reference more than
+         * it is returned by the functor. Increase it by a dummy call.
+         *
+         * The functor *MUST* call queryInterface it self. Using the macro, it should.
+         */
+         
+         
+        xml_I->queryInterface("lb_I_XMLConfig", (void**) & inst);
 }
 /*...e*/
 
@@ -162,7 +175,9 @@ lbErrCodes LB_STDCALL lbModule::initialize() {
 #ifdef VERBOSE
         CL_LOG("lbModule::initialize() called");
 #endif
-        xml_Instance = NULL;
+	// Should be NULL because of UNKNOWN_AUTO_PTR
+        // xml_Instance = NULL;
+        
         if (moduleList != NULL) {
                 CL_LOG("Warning: lbModule::initialize() called more than once!");
                 return ERR_NONE;
@@ -176,12 +191,16 @@ lbErrCodes LB_STDCALL lbModule::initialize() {
 /*...slbErrCodes LB_STDCALL uninitialize\40\\41\:0:*/
 lbErrCodes LB_STDCALL lbModule::uninitialize() {
         if (xml_Instance != NULL) {
+        #ifndef USE_UAP
         	RELEASE(xml_Instance);
         	xml_Instance = NULL;
+        #endif
         }
         if (moduleList != NULL) {
+	#ifndef USE_UAP
                 RELEASE(moduleList);
                 moduleList = NULL;
+        #endif
         }
         return ERR_NONE;
 }
@@ -199,10 +218,14 @@ lbErrCodes LB_STDCALL lbModule::uninitialize() {
  * Output:      Only one node from the list in a new view
  */
 lb_I_ConfigObject* LB_STDCALL lbModule::findFunctorNode(lb_I_ConfigObject* node, const char* request) {
-        lb_I_ConfigObject* temp_node = NULL;
+        UNKNOWN_AUTO_PTR(lb_I_ConfigObject, temp_node)
+
+
         lbErrCodes err = ERR_NONE;
+
+
         if ((err = node->getFirstChildren(temp_node)) == ERR_NONE) {
-                lb_I_Attribute* attribute;
+//                lb_I_Attribute* attribute;
                 
                 //temp_node->getAttribute("Functor", attribute);
                 
@@ -223,45 +246,21 @@ lb_I_ConfigObject* LB_STDCALL lbModule::findFunctorNode(lb_I_ConfigObject* node,
                         getch();
                 } 
                 if ((strcmp(temp_node->getName(), "Functor")) == 0) {
-#ifdef bla                      
-/*...sWith this test the result in parent\39\s child\39\s is ok:0:*/
-                        
-lb_I_ConfigObject* _node = NULL;
-lbErrCodes err = ERR_NONE;
-
-if ((err = temp_node->getParent(_node)) != ERR_NONE) {
-        CL_LOG("Some errors have ocured while getting a parent node!");
-}                       
-        if (_node != NULL) {
-                lb_I_ConfigObject* __node = NULL;
-#ifdef VERBOSE
-                CL_LOG("DEBUG PAUSE 1");
-#endif          
-
-                err = _node->getFirstChildren(__node);
-#ifdef VERBOSE          
-                CL_LOG("DEBUG PAUSE 2");
-#endif          
-                
-                if (err != ERR_NONE) {
-                        CL_LOG("Error. Children expected");
-                        
-                        return NULL;
-                }
-#ifdef VERBOSE
-                CL_LOG("No error found!");
-#endif
-}
-/*...e*/
-#endif                  
-                        return temp_node;
+                	/**
+                	 * If I get a return value. It is a new reference.
+                	 * If I get a value by reference. It is a new reference.
+                	 *
+                	 * If I return a pointer from any interface reference,
+                	 * I *MUST* add a reference.
+                	 */
+                        return ADD_REF(lb_I_ConfigObject, temp_node)
                 }
                 
         } else CL_LOG("Get first child failed");
 
         while ((err = node->getNextChildren(temp_node)) == ERR_NONE) {
                 if ((strcmp(temp_node->getName(), "Functor")) == 0) {
-                        return temp_node;
+                        return ADD_REF(lb_I_ConfigObject, temp_node)
                 }
         }
         
@@ -269,7 +268,9 @@ if ((err = temp_node->getParent(_node)) != ERR_NONE) {
                 CL_LOG("No more childs found");
         }
 
+	#ifdef USE_UAP
         if (temp_node != NULL) RELEASE(temp_node);
+        #endif
         
         CL_LOG("Returning a NULL value");
         getch();        
@@ -279,16 +280,20 @@ if ((err = temp_node->getParent(_node)) != ERR_NONE) {
 /*...slbModule\58\\58\findFunctorModule\40\\46\\46\\46\\41\:0:*/
 char* LB_STDCALL lbModule::findFunctorModule(lb_I_ConfigObject* node) {
         lbErrCodes err = ERR_NONE;
-        lb_I_ConfigObject* temp_node = node;
+        UNKNOWN_AUTO_PTR(lb_I_ConfigObject, temp_node)
 
         if (node == NULL) {
                 CL_LOG("NULL pointer detected!");
                 return "NULL";
         }
+        
+        temp_node = ADD_REF(lb_I_ConfigObject, node)
+
 
         if (strcmp (node->getName(), "Module") == 0) {
                 
                 if ((err = node->getFirstChildren(temp_node)) == ERR_NONE) {
+/*...swork on temp_node:24:*/
                         if ((strcmp(temp_node->getName(), "ModuleName")) == 0) {
                                 char* value = NULL;
                                 err = temp_node->getAttributeValue("Name", value);
@@ -301,9 +306,11 @@ char* LB_STDCALL lbModule::findFunctorModule(lb_I_ConfigObject* node) {
                                         return value;
                                 }
                         }               
+/*...e*/
                 }
 
                 while ((err = node->getNextChildren(temp_node)) == ERR_NONE) {
+/*...swork on temp_node:24:*/
                         if ((strcmp(temp_node->getName(), "ModuleName")) == 0) {
                                 char* value = NULL;
 
@@ -316,6 +323,7 @@ char* LB_STDCALL lbModule::findFunctorModule(lb_I_ConfigObject* node) {
                                         return value;
                                 }
                         }
+/*...e*/
                 }
         }
         else {
@@ -786,7 +794,7 @@ lbErrCodes LB_STDCALL lbModule::request(const char* request, lb_I_Unknown*& resu
         }
 
 	char* functorName = NULL;
-        lb_I_ConfigObject* impl = NULL;
+        UNKNOWN_AUTO_PTR(lb_I_ConfigObject, imp)
 
 /*...sget my unknown interface:8:*/
         if (strcmp(request, "instance/XMLConfig") == 0) {
@@ -974,6 +982,68 @@ lbErrCodes LB_STDCALL lbModule::request(const char* request, lb_I_Unknown*& resu
                         
                                         lb_I_Unknown* instances = moduleList->getElement(stringKey);
                                         if (instances == NULL) {
+/*...sCreate the new module entry:80:*/
+                                        	/**
+                                        	 * This module is loaded the first time. Make an entry in the
+                                        	 * moduleList with the key(modulename) and as an element an
+                                        	 * instance of a container.
+                                        	 */
+                                        	 
+                                        	lb_I_Container* c = NULL;
+                                        	lbModuleContainer* _instanceList = new lbModuleContainer();
+                                        	if (_instanceList->queryInterface("lb_I_Container", (void**) &c) != ERR_NONE) {
+                                        		CL_LOG("Error: Could not get reference to interface lb_I_Container!");
+                                        	} else {
+                                        		/**
+                                        		 * Note: All input is cloned. 
+                                        		 * Use getElement(stringKey) for manipulation.
+                                        		 */
+                                        		moduleList->insert(c, stringKey);
+                                        		
+                                        		// Cleanup
+                                        		RELEASE(c);
+                                        	}
+/*...e*/
+                                        }
+                                        
+                                        instances = moduleList->getElement(stringKey);
+                                        
+                                        if (instances == NULL) {
+                                        	CL_LOG("Error: After inserting the element, it's not possible to manipulate it");
+                                        } else {
+                                        	lb_I_Container* instanceList = NULL;
+                                        	if (instances->queryInterface("lb_I_Container", (void**) &instanceList) != ERR_NONE) {
+                                        		CL_LOG("Error: The element in the module container is not a container!");
+                                        	} else {
+/*...sdocu for avoiding double deletion of the same pointer:88:*/
+      		/**
+      		 * Store for each instance one enty in the list with the 
+   		 * following contents:
+    		 *
+   		 * The interface name,
+ 		 * the functor name, 
+       		 * the reference count, 
+       		 * the pointer to the instance.
+		 *
+  		 * The key for each of this object will be the pointer to
+   		 * the instance.
+  		 *
+      		 * If instance->release() is called. It would first check if the
+    		 * object was deleted before. This checks that it does not delete
+   		 * an undefined pointer. This leads in much data overhead about the
+   		 * deleted instances.
+   		 *
+   		 * To avoid this, I will suggest this:
+   		 * 
+   		 * A macro like INSTANCE_REF(interfacename, variablename) may be used instead of
+   		 * directly declare the reference pointer. (A normal pointer, not a reference).
+   		 *
+   		 * The macro can use an inatance on the stack of a specific class that tells to the
+   		 * module management, when the used reference is out of scope.
+   		 *
+   		 */
+/*...e*/
+                                        	}
                                         }
 
 /*...sclean up:72:*/
