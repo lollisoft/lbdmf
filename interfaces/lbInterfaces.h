@@ -1544,7 +1544,7 @@ class lb_I_String;
 
 #include <lbInterfaces-sub-xml.h>
 #include <lbInterfaces-sub-classes.h>	
-
+#include <lbInterfaces-sub-db.h>
 #include <lbInterfaces-sub-wxWrapper.h>
 
 #endif // __LB_INTERFACES__
