@@ -178,6 +178,8 @@ int lb_isInitializing = 0;
 /*...slbErrCodes LB_STDCALL lbLoadModule\40\const char\42\ name\44\ HINSTANCE \38\ hinst\41\:0:*/
 lbErrCodes LB_STDCALL lbLoadModule(const char* name, HINSTANCE & hinst) {
 #ifdef WINDOWS
+	printf("Lade Modul %s.\n", name);
+
         if ((hinst = LoadLibrary(name)) == NULL)
         {
             printf("Kann DLL '%s' nicht laden.\n", name); 

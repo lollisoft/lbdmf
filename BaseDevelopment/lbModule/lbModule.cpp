@@ -28,11 +28,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.58 $
+ * $Revision: 1.59 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.58 2003/07/17 19:41:41 lollisoft Exp $
+ * $Id: lbModule.cpp,v 1.59 2003/08/08 16:35:17 lollisoft Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.59  2003/08/08 16:35:17  lollisoft
+ * New implementation of interface repository works, but I have problems with multiple module loading in lbhook
+ *
  * Revision 1.58  2003/07/17 19:41:41  lollisoft
  * removed some log messages
  *
@@ -192,6 +195,8 @@
 //#pragma warning( disable: 4102 )
 
 //#define IR_USAGE
+
+//#define USE_INTERFACE_REPOSITORY
 
 /*...sincludes:0:*/
 #ifdef WINDOWS
@@ -1726,16 +1731,22 @@ public:
         virtual void LB_STDCALL notify_destroy(lb_I_Unknown* that, char* implName, char* file, int line);
         virtual int  LB_STDCALL can_delete(lb_I_Unknown* that, char* implName, char* file = "", int line = 0);
         
-        virtual lbErrCodes LB_STDCALL load(char* name);
         virtual lbErrCodes LB_STDCALL getObjectInstance(const char* name, lb_I_Container*& inst);
 
         virtual lbErrCodes LB_STDCALL getFunctors(char* interfacename, lb_I_ConfigObject* node, lb_I_Unknown*& uk);
         virtual lbErrCodes LB_STDCALL getInstance(char* functorname, lb_I_ConfigObject* node, lb_I_Unknown*& uk);
         virtual lbErrCodes LB_STDCALL getDefaultImpl(char* interfacename, lb_I_ConfigObject** node, char*& implTor, char*& module);
+	virtual lbErrCodes LB_STDCALL load(char* name);
         
 protected:
 
+#ifndef USE_INTERFACE_REPOSITORY
         void LB_STDCALL getXMLConfigObject(lb_I_XMLConfig** inst);
+#endif
+#ifdef USE_INTERFACE_REPOSITORY
+        void LB_STDCALL getXMLConfigObject(lb_I_InterfaceRepository** inst);
+#endif
+
         lb_I_ConfigObject* LB_STDCALL findFunctorNode(lb_I_ConfigObject** _node, const char* request);
         char* LB_STDCALL findFunctorModule(lb_I_ConfigObject** _node);
         char* LB_STDCALL findFunctorName(lb_I_ConfigObject** ___node);
@@ -1745,6 +1756,8 @@ protected:
         int internalInstanceRequest;
         UAP(lb_I_Container, loadedModules, __FILE__, __LINE__)
         UAP(lb_I_XMLConfig, xml_Instance, __FILE__, __LINE__)
+	UAP(lb_I_InterfaceRepository, newInterfaceRepository, __FILE__, __LINE__)
+
         int system_up;
         int initializing;
 };
@@ -1933,12 +1946,37 @@ typedef lbErrCodes LB_FUNCTORCALL (* T_pLB_GETXML_CONFIG_INSTANCE) (lb_I_XMLConf
 T_pLB_GETXML_CONFIG_INSTANCE DLL_LB_GETXML_CONFIG_INSTANCE;
 }
 
+#ifdef USE_INTERFACE_REPOSITORY
+void LB_STDCALL lbModule::getXMLConfigObject(lb_I_InterfaceRepository** inst) {
+        lbErrCodes err = ERR_NONE;
+        char *libname = getenv("LBXMLLIB");
+        char *ftrname = getenv("LBXMLFUNCTOR");
+        char *cfgname = getenv("LBHOSTCFGFILE");
+/*
+ * Overwrite functor name and module name to use new interface repository. Config is done later.
+ */
+
+        libname = "lbDOMConfig"; // The same now
+        ftrname = "instanceOfInterfaceRepository";
+
+        if (newInterfaceRepository == NULL) {
+                UAP(lb_I_Unknown, result, __FILE__, __LINE__)
+                makeInstance(ftrname, libname, &result);
+		result->queryInterface("lb_I_InterfaceRepository", (void**) inst, __FILE__, __LINE__);
+        }
+                                
+}                             
+#endif
+
+#ifndef USE_INTERFACE_REPOSITORY 
 
 void LB_STDCALL lbModule::getXMLConfigObject(lb_I_XMLConfig** inst) {
 	lbErrCodes err = ERR_NONE;
         char *libname = getenv("LBXMLLIB");
         char *ftrname = getenv("LBXMLFUNCTOR");
         char *cfgname = getenv("LBHOSTCFGFILE");
+
+/*...sold style itreface repository:0:*/
 	/**
 	 * The UAP seems to try release it self. Because of the macro, it couldn't
 	 * register a reference. The instance is not created yet!
@@ -2045,7 +2083,10 @@ printf("Increased\n");
         if (*inst == NULL) { 
         	_CL_LOG << "Error: queryInterface() does not return a pointer!" LOG_
         }
+/*...e*/
 }
+
+#endif
 /*...e*/
 
 
@@ -2181,7 +2222,8 @@ lbErrCodes LB_STDCALL lbModule::initialize() {
                 _CL_LOG << "Warning: lbModule::initialize() called more than once!" LOG_
                 return ERR_NONE;
         }
-        
+
+#ifndef USE_INTERFACE_REPOSITORY        
         if (xml_Instance == NULL) {
                 getXMLConfigObject(&xml_Instance);
                 if (xml_Instance == NULL) {
@@ -2189,6 +2231,16 @@ lbErrCodes LB_STDCALL lbModule::initialize() {
                 	exit(1);
                 }
 	}
+#endif
+#ifdef USE_INTERFACE_REPOSITORY
+        if (newInterfaceRepository == NULL) {
+                getXMLConfigObject(&newInterfaceRepository);
+                if (newInterfaceRepository == NULL) {
+                        _CL_LOG << "Error: Functor has not returned a pointer!" LOG_
+                        exit(1);
+                }
+        }
+#endif
         lbModuleContainer* MList = new lbModuleContainer();
                
         MList->setModuleManager(this, __FILE__, __LINE__);
@@ -2866,9 +2918,30 @@ lbErrCodes LB_STDCALL lbModule::request(const char* request, lb_I_Unknown** resu
          * impl is not returned in any way, I think, so it is allowed to delete the object
          * at lost of focus.
          */
+         
+#ifdef USE_INTERFACE_REPOSITORY
+	if (newInterfaceRepository != NULL) {
+		newInterfaceRepository->setCurrentSearchInterface(request);
+		lb_I_FunctorEntity* e = newInterfaceRepository->getFirstEntity();
+
+		char* functor = e->getFunctor();
+		char* module  = e->getModule();
+		
+		UAP(lb_I_Unknown, _result, __FILE__, __LINE__)
+		makeInstance(functor, module, &_result);
+		
+		//QI(result, lb_I_InterfaceRepository, newInterfaceRepository, __FILE__, __LINE__)		
+		*result = _result.getPtr();
+		
+	} else {
+		printf("Error: Have no interface repository to locate configuration for %s\n", request); 
+	}
+
+#endif
+#ifndef USE_INTERFACE_REPOSITORY        
 /*...sget my unknown interface:8:*/
         if (strcmp(request, "instance/XMLConfig") == 0) {
-                
+printf("Get unknown interface of XMLConfig object\n");                
                 xml_Instance->queryInterface("lb_I_Unknown", (void**) result, __FILE__, __LINE__);
                 
                 return ERR_NONE;
@@ -3028,6 +3101,7 @@ lbErrCodes LB_STDCALL lbModule::request(const char* request, lb_I_Unknown** resu
 /*...e*/
         }
         if (functorName != NULL) impl->deleteValue(functorName);
+#endif
         return ERR_NONE;
 }
 /*...e*/
@@ -3036,6 +3110,7 @@ IMPLEMENT_SINGLETON_FUNCTOR(getlb_ModuleInstance, lbModule)
 
 /*...slbErrCodes lbModule\58\\58\load\40\char\42\ name\41\:0:*/
 lbErrCodes lbModule::load(char* name) {
+#ifndef USE_INTERFACE_REPOSITORY
         UAP(lb_I_XMLConfig, xml_Instance, __FILE__, __LINE__)
 
         getXMLConfigObject(&xml_Instance);
@@ -3047,6 +3122,7 @@ lbErrCodes lbModule::load(char* name) {
                 _CL_LOG << "Error while parsing XML document\n" LOG_
             }
         }
+#endif
         
         return ERR_NONE;
 }

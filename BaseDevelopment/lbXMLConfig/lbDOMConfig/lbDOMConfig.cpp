@@ -28,11 +28,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.41 $
+ * $Revision: 1.42 $
  * $Name:  $
- * $Id: lbDOMConfig.cpp,v 1.41 2003/07/31 20:12:30 lollisoft Exp $
+ * $Id: lbDOMConfig.cpp,v 1.42 2003/08/08 16:35:17 lollisoft Exp $
  *
  * $Log: lbDOMConfig.cpp,v $
+ * Revision 1.42  2003/08/08 16:35:17  lollisoft
+ * New implementation of interface repository works, but I have problems with multiple module loading in lbhook
+ *
  * Revision 1.41  2003/07/31 20:12:30  lollisoft
  * Added new interface repository -  not complete yet
  *
@@ -1824,7 +1827,75 @@ lbErrCodes LB_STDCALL lbDOMConfig::getConfigObject(lb_I_ConfigObject** cfgObj,
 /*...e*/
 /*...e*/
 
+/*...sclass lbFunctorEntity:0:*/
+class lbFunctorEntity : public lb_I_FunctorEntity
+{
+public:
 
+        lbFunctorEntity() {
+        	_functor = NULL;
+        	_module = NULL;
+        	_interface = NULL;
+        }
+        
+        virtual ~lbFunctorEntity() {
+        	if (_functor) free(_functor);
+        	if (_module) free(_module);
+        	if (_interface) free(_interface);
+        }
+
+public:
+
+        virtual void LB_STDCALL setFunctor(char* functor) {
+        	_functor = strdup(functor);
+        }
+        
+        virtual void LB_STDCALL setModule(char* module) {
+        	_module = strdup(module);
+        }
+        
+        virtual void LB_STDCALL setInterface(char* iface) {
+        	_interface = strdup(iface);
+        }
+
+	
+public:
+
+	DECLARE_LB_UNKNOWN()
+
+
+        virtual char* LB_STDCALL getFunctor() {
+        	return _functor;
+        }
+        
+        virtual char* LB_STDCALL getModule() {
+        	return _module;
+        }
+        
+        virtual char* LB_STDCALL getInterface() {
+        	return _interface;
+	}
+
+        friend class lb_I_InterfaceRepository;
+
+	char* _functor;
+	char* _module;
+	char* _interface;
+};
+
+BEGIN_IMPLEMENT_LB_UNKNOWN(lbFunctorEntity)
+        ADD_INTERFACE(lb_I_FunctorEntity)
+END_IMPLEMENT_LB_UNKNOWN()
+
+
+
+lbErrCodes lbFunctorEntity::setData(lb_I_Unknown* uk) {
+        _CL_LOG << "lbFunctorEntity::setData(...) not implemented yet" LOG_
+        return ERR_NOT_IMPLEMENTED;
+}
+/*...e*/
+
+/*...sclass lbInterfaceRepository:0:*/
 class lbInterfaceRepository : public lb_I_InterfaceRepository
 {
 public:
@@ -1833,7 +1904,7 @@ public:
 
         DECLARE_LB_UNKNOWN()
 
-	void LB_STDCALL setCurrentSearchInterface(char* iface);
+	void LB_STDCALL setCurrentSearchInterface(const char* iface);
 	lb_I_FunctorEntity* LB_STDCALL getFirstEntity();
 
 	lbErrCodes LB_STDCALL parse();
@@ -1879,7 +1950,7 @@ lbInterfaceRepository::lbInterfaceRepository() {
 	ref = STARTREF;
 	errReporter = new DOMTreeErrorReporter();
 	_CL_LOG << "DOMTreeErrorReporter() created" LOG_
-#ifdef bla	
+
 	if (initialized == 0) {
 /*...sInitialize the DOM4C2 system:16:*/
 		    // Initialize the DOM4C2 system
@@ -1896,7 +1967,7 @@ lbInterfaceRepository::lbInterfaceRepository() {
 		    }		
 /*...e*/
 	}
-#endif
+
 printf("Calling parse()\n");
 	parse();
 printf("Called parse()\n");
@@ -1911,7 +1982,7 @@ lbErrCodes lbInterfaceRepository::setData(lb_I_Unknown* uk) {
         return ERR_NOT_IMPLEMENTED;
 }
 
-void LB_STDCALL lbInterfaceRepository::setCurrentSearchInterface(char* iface) {
+void LB_STDCALL lbInterfaceRepository::setCurrentSearchInterface(const char* iface) {
 	searchArgument = DOMString(iface);
 	interfaces = 0;
 	CurrentSearchMode = 1;
@@ -1919,6 +1990,7 @@ void LB_STDCALL lbInterfaceRepository::setCurrentSearchInterface(char* iface) {
 	initIntefaceList();
 }
 
+/*...slb_I_FunctorEntity\42\ LB_STDCALL lbInterfaceRepository\58\\58\getFirstEntity\40\\41\:0:*/
 lb_I_FunctorEntity* LB_STDCALL lbInterfaceRepository::getFirstEntity() {
 	printf("lbInterfaceRepository::getFirstEntity() called\n");
 	
@@ -1941,20 +2013,12 @@ lb_I_FunctorEntity* LB_STDCALL lbInterfaceRepository::getFirstEntity() {
 		
 		DOM_Node InterfaceName = attributeMap.getNamedItem(DOMString("Name"));
 		
-		/*
-		printf("Check for ");
-		InterfaceName.getNodeValue().print();
-		printf(" == ");
-		DOMString(searchArgument).println();
-		*/
-		
 		if (InterfaceName.getNodeValue().equals(DOMString(searchArgument))) {
 		
 			DOMString nodename = node.getNodeName();
 		
-			printf("Check for that node: ");
-			nodename.print();
-			printf("\n");
+			char* module = NULL;
+			char* functor = NULL;
 		
 			// Navidate to the Function node to get the functor name
 			node = node.getParentNode().getParentNode();
@@ -1967,10 +2031,6 @@ lb_I_FunctorEntity* LB_STDCALL lbInterfaceRepository::getFirstEntity() {
 			if (node.getNodeName().equals(DOMString("FunctionName"))) break;
 		}
 				
-		printf("Check that node ");
-		node.getNodeName().print();
-		printf("\n");
-		
 		attributeMap = node.getAttributes();
 
 /*		if (attributeMap == NULL) {
@@ -1994,7 +2054,6 @@ lb_I_FunctorEntity* LB_STDCALL lbInterfaceRepository::getFirstEntity() {
 			DOM_Node moduleNode = node.getParentNode().getParentNode().getParentNode();
 			nodeList = moduleNode.getChildNodes();
 			
-			printf("Check for ModuleNode ");
 			moduleNode.getNodeName().println();
 			
 /*...sfind module for that functor:24:*/
@@ -2007,15 +2066,8 @@ lb_I_FunctorEntity* LB_STDCALL lbInterfaceRepository::getFirstEntity() {
 	                        if (moduleNameNode.getNodeName().equals(DOMString("ModuleName"))) break;
 	                }			
 
-			printf("Have moduleNameNode ");
-			moduleNameNode.getNodeName().println();
-			
 			attributeMap = moduleNameNode.getAttributes();
-			printf("Get name of moduleNode ");
-			moduleNode.getNodeName().println();
 			an_attr = attributeMap.getNamedItem(DOMString("Name"));
-			
-			printf("Have an_attr\n");
 			
 			if (an_attr == NULL) {
 			        printf("Error: Attribute not found\n"); //" LOG_
@@ -2035,13 +2087,26 @@ lb_I_FunctorEntity* LB_STDCALL lbInterfaceRepository::getFirstEntity() {
 
 			DOMString moduleName = an_attr.getNodeValue();
 
-			printf("Try to print result\n");
-			printf("Found the following module ");
-			moduleName.print();
-			printf(" with functor ");
-			functorName.println();
-			printf("---------------------------------------------------------------\n");		
-			break;
+			char* temp = functorName.transcode();
+			functor = strdup(temp);
+			functorName.deletetranscoded(temp);
+			
+			temp = moduleName.transcode();
+			module = strdup(temp);
+			moduleName.deletetranscoded(temp);
+			
+			
+			lbFunctorEntity* fe = new lbFunctorEntity;
+			fe->setModuleManager(this->getModuleManager(), __FILE__, __LINE__);
+			lb_I_FunctorEntity* _fe = NULL;
+			fe->queryInterface("lb_I_FunctorEntity", (void**) &_fe, __FILE__, __LINE__);
+			
+			_fe->setModule(module);
+			_fe->setFunctor(functor);
+			
+			
+			return _fe;
+			
 		}
 /*...sRubbish:0:*/
 #ifdef bla
@@ -2142,7 +2207,7 @@ lb_I_FunctorEntity* LB_STDCALL lbInterfaceRepository::getFirstEntity() {
 
 	return NULL;
 }
-
+/*...e*/
 /*...slbErrCodes LB_STDCALL lbInterfaceRepository\58\\58\parse\40\\41\:0:*/
 lbErrCodes LB_STDCALL lbInterfaceRepository::parse() {
 	lbErrCodes err = ERR_NONE;
@@ -2194,19 +2259,19 @@ lbErrCodes LB_STDCALL lbInterfaceRepository::parse() {
 void lbInterfaceRepository::initIntefaceList() {
 	char* name = NULL;
 	char* savename = NULL;
-	
         savename = strdup("#document/dtdHostCfgDoc/Modules/Module/Functions/Function/Functor/InterfaceName");
         name = strrchr(savename, '/');
         if (name == NULL) name = savename;
-                
         DOMlist = doc.getElementsByTagName(((name[0] == '/') ? &name[1] : name));
         len = DOMlist.getLength();
         // Cleanup
         delete [] savename;
 }
 /*...e*/
+/*...e*/
 
-IMPLEMENT_SINGLETON_FUNCTOR(getlbDOMConfigInstance, lbDOMConfig)
+// IMPLEMENT_SINGLETON_FUNCTOR does not work
+IMPLEMENT_FUNCTOR(getlbDOMConfigInstance, lbDOMConfig)
 #ifdef bla
 /*...s:0:*/
 lbErrCodes DLLEXPORT LB_FUNCTORCALL getlbDOMConfigInstance(lb_I_Unknown** uk, lb_I_Module* m, char* file, int line) {

@@ -180,11 +180,11 @@ protected:
 	lb_I_FunctorEntity() {}
 	virtual ~lb_I_FunctorEntity() {}
 	
+public:
 	virtual void LB_STDCALL setFunctor(char* functor) = 0;
 	virtual void LB_STDCALL setModule(char* module) = 0;
 	virtual void LB_STDCALL setInterface(char* iface) = 0;
 
-public:
 	virtual char* LB_STDCALL getFunctor() = 0;
 	virtual char* LB_STDCALL getModule() = 0;
 	virtual char* LB_STDCALL getInterface() = 0;
@@ -204,7 +204,7 @@ public:
 	 * Set an actual search argument as interface to be searched. This resets the internal
 	 * index over all interfaces to zero.
 	 */
-	virtual void LB_STDCALL setCurrentSearchInterface(char* iface) = 0;
+	virtual void LB_STDCALL setCurrentSearchInterface(const char* iface) = 0;
 	virtual lb_I_FunctorEntity* LB_STDCALL getFirstEntity() = 0;
 };
 /*...e*/
