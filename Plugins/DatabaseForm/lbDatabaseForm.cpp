@@ -76,8 +76,7 @@ public:
 	DECLARE_PLUGINS()
 };
 
-
-
+/*...sclass lbPluginModule implementation:0:*/
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbPluginModule)
         ADD_INTERFACE(lb_I_PluginModule)
 END_IMPLEMENT_LB_UNKNOWN()
@@ -86,7 +85,7 @@ IMPLEMENT_SINGLETON_FUNCTOR(instanceOfPluginModule, lbPluginModule)
 
 
 BEGIN_PLUGINS(lbPluginModule)
-	ADD_PLUGIN(databaseForm, GUI)
+	ADD_PLUGIN(lbPluginDatabaseDialog, GUI)
 END_PLUGINS()
 
 lbPluginModule::lbPluginModule() {
@@ -99,10 +98,53 @@ lbPluginModule::~lbPluginModule() {
 }
 
 void LB_STDCALL lbPluginModule::initialize() {
+	printf("lbPluginModule::initialize() called\n");
 	enumPlugins();
+	printf("lbPluginModule::initialize() enumerated plugins\n");
 }
 
 lbErrCodes LB_STDCALL lbPluginModule::setData(lb_I_Unknown* uk) {
         _CL_LOG << "lbPluginModule::setData(...) not implemented yet" LOG_
+        
+        
+        
+        
+        
+        
         return ERR_NOT_IMPLEMENTED;
+}
+/*...e*/
+
+class lbPluginDatabaseDialog : public lb_I_PluginImpl {
+public:
+	lbPluginDatabaseDialog();
+	virtual ~lbPluginDatabaseDialog();
+	
+	DECLARE_LB_UNKNOWN()
+	
+	virtual void LB_STDCALL initialize();
+};
+
+BEGIN_IMPLEMENT_LB_UNKNOWN(lbPluginDatabaseDialog)
+        ADD_INTERFACE(lb_I_PluginImpl)
+END_IMPLEMENT_LB_UNKNOWN()
+
+IMPLEMENT_FUNCTOR(instanceOflbPluginDatabaseDialog, lbPluginDatabaseDialog)
+
+lbErrCodes LB_STDCALL lbPluginDatabaseDialog::setData(lb_I_Unknown* uk) {
+        _CL_LOG << "lbPluginDatabaseDialog::setData(...) not implemented yet" LOG_
+
+        return ERR_NOT_IMPLEMENTED;
+}
+
+lbPluginDatabaseDialog::lbPluginDatabaseDialog() {
+
+}
+
+lbPluginDatabaseDialog::~lbPluginDatabaseDialog() {
+
+}
+
+void LB_STDCALL lbPluginDatabaseDialog::initialize() {
+
 }

@@ -33,11 +33,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.1 $
+ * $Revision: 1.2 $
  * $Name:  $
- * $Id: lbDatabaseForm.h,v 1.1 2004/06/07 20:04:45 lollisoft Exp $
+ * $Id: lbDatabaseForm.h,v 1.2 2004/06/16 22:17:27 lollisoft Exp $
  *
  * $Log: lbDatabaseForm.h,v $
+ * Revision 1.2  2004/06/16 22:17:27  lollisoft
+ * First plugin beginnings
+ *
  * Revision 1.1  2004/06/07 20:04:45  lollisoft
  * Initial
  *
@@ -57,6 +60,7 @@ extern "C" {
 /*...e*/
 
 DECLARE_FUNCTOR(instanceOfPluginModule)
+DECLARE_FUNCTOR(instanceOflbPluginDatabaseDialog)
 
 /*...s\35\ifdef __cplusplus \125\:0:*/
 #ifdef __cplusplus
