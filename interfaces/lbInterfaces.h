@@ -22,12 +22,21 @@
 //#define LB_STDCALL
 
 #ifndef LB_STDCALL
-#ifdef WINDOWS
-#define LB_STDCALL __cdecl
+ #ifdef WINDOWS
+ #define LB_STDCALL __stdcall
+ #endif
+ #ifndef WINDOWS
+ #define LB_STDCALL
+ #endif
 #endif
-#ifndef WINDOWS
-#define LB_STDCALL
-#endif
+
+#ifndef LB_FUNCTORCALL
+ #ifdef WINDOWS
+ #define LB_FUNCTORCALL __stdcall
+ #endif
+ #ifndef WINDOWS
+ #define LB_FUNCTORCALL
+ #endif
 #endif
 
 #ifdef __WATCOMC__
@@ -940,10 +949,12 @@ typedef lbErrCodes (LB_STDCALL *T_pLB_GET_UNKNOWN_INSTANCE) (lb_I_Unknown**, lb_
  */
 
 #define DECLARE_FUNCTOR(name) \
-lbErrCodes DLLEXPORT LB_STDCALL name(lb_I_Unknown** uk, lb_I_Module* m, char* file, int line);
-
+extern "C" { \
+lbErrCodes DLLEXPORT LB_FUNCTORCALL name(lb_I_Unknown** uk, lb_I_Module* m, char* file, int line); \
+}
 #define IMPLEMENT_FUNCTOR(name, clsname) \
-lbErrCodes DLLEXPORT LB_STDCALL name(lb_I_Unknown** uk, lb_I_Module* m, char* file, int line) { \
+extern "C" { \
+lbErrCodes DLLEXPORT LB_FUNCTORCALL name(lb_I_Unknown** uk, lb_I_Module* m, char* file, int line) { \
 \
 	lbErrCodes err = ERR_NONE; \
         clsname* instance = new clsname(); \
@@ -966,15 +977,18 @@ lbErrCodes DLLEXPORT LB_STDCALL name(lb_I_Unknown** uk, lb_I_Module* m, char* fi
         } \
 \
         return ERR_NONE; \
+} \
 }
 
 #define DECLARE_SINGLETON_FUNCTOR(name) \
+extern "C" { \
 extern lb_I_Unknown* name##_singleton; \
-lbErrCodes DLLEXPORT LB_STDCALL name(lb_I_Unknown** uk, lb_I_Module* m, char* file, int line);
-
+lbErrCodes DLLEXPORT LB_FUNCTORCALL name(lb_I_Unknown** uk, lb_I_Module* m, char* file, int line); \
+} 
 #define IMPLEMENT_SINGLETON_FUNCTOR(name, clsname) \
+extern "C" { \
 lb_I_Unknown* name##_singleton = NULL; \
-lbErrCodes DLLEXPORT LB_STDCALL name(lb_I_Unknown** uk, lb_I_Module* m, char* file, int line) { \
+lbErrCodes DLLEXPORT LB_FUNCTORCALL name(lb_I_Unknown** uk, lb_I_Module* m, char* file, int line) { \
 \
 	lbErrCodes err = ERR_NONE; \
 	if (name##_singleton == NULL) { \
@@ -1016,6 +1030,7 @@ lbErrCodes DLLEXPORT LB_STDCALL name(lb_I_Unknown** uk, lb_I_Module* m, char* fi
         } \
 \
         return ERR_NONE; \
+} \
 }
 /*...e*/
 
