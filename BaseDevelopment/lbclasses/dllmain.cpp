@@ -9,27 +9,27 @@ BOOL WINAPI DllMain(HINSTANCE dllHandle, DWORD reason, LPVOID situation) {
         switch (reason) {
                 case DLL_PROCESS_ATTACH:
                         if (situation) {
-                                CL_LOG("DLL statically loaded.\n");
+                                _LOG << "DLL statically loaded." LOG_
                         }
                         else {
-                                CL_LOG("DLL dynamically loaded.\n");
+                                _LOG << "DLL dynamically loaded." LOG_
                         }
                         break;
                 case DLL_THREAD_ATTACH:
-                        CL_LOG("New thread starting.\n");
+                        _LOG << "New thread starting." LOG_
                         break;
                 case DLL_PROCESS_DETACH:                        
                         if (situation)
                         {
-                                CL_LOG("DLL released by system.\n");
+                                _LOG << "DLL released by system." LOG_
                         }
                         else
                         {
-                                CL_LOG("DLL released by program.\n");
+                                _LOG << "DLL released by program." LOG_
                         }
                         break;
                 case DLL_THREAD_DETACH:
-                        CL_LOG("Thread terminating.\n");
+                        _LOG << "Thread terminating." LOG_
                 derault:
                         return FALSE;
         }
