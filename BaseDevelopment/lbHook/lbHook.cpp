@@ -53,7 +53,7 @@ lbErrCodes LB_STDCALL lbGetFunctionPtr(const char* name, const HINSTANCE & hinst
 
 /*...slb_I_Module\42\ LB_STDCALL getModuleInstance\40\\41\:0:*/
 lb_I_Module* LB_STDCALL getModuleInstance() {
-typedef lbErrCodes (* __cdecl T_p_getlbModuleInstance) (lb_I_Module*&);
+typedef lbErrCodes (LB_STDCALL *T_p_getlbModuleInstance) (lb_I_Module*&);
 T_p_getlbModuleInstance DLL_GETMODULEINSTANCE;
 
 	lb_I_Module* module = NULL;
@@ -70,14 +70,18 @@ T_p_getlbModuleInstance DLL_GETMODULEINSTANCE;
 	if (lbGetFunctionPtr(functor, LB_Module_Handle, (void**) &DLL_GETMODULEINSTANCE) != ERR_NONE) {
 		exit(1);
 	}
+	printf("Calling functor %s\n", functor);
+
 	DLL_GETMODULEINSTANCE(module);
+
+	printf("Called functor\n");
 	
 	return module;
 }
 /*...e*/
 /*...slbErrCodes LB_STDCALL releaseInstance\40\lb_I_Unknown\42\ inst\41\:0:*/
 lbErrCodes LB_STDCALL releaseInstance(lb_I_Unknown* inst) {
-	typedef lbErrCodes (* __cdecl T_p_releaseInstance) (lb_I_Unknown*);
+	typedef lbErrCodes (LB_STDCALL *T_p_releaseInstance) (lb_I_Unknown*);
 	T_p_releaseInstance DLL_RELEASEINSTANCE;
 	
 	if (lbGetFunctionPtr("_lb_releaseInstance", LB_Module_Handle, (void**) &DLL_RELEASEINSTANCE) != ERR_NONE) {
@@ -100,5 +104,7 @@ void LB_STDCALL unHookAll() {
 		FreeLibrary(LB_Module_Handle);
 		LB_Module_Handle = NULL;
 	}
+	
+	log = NULL;
 }
 /*...e*/

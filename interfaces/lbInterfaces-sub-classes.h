@@ -1,11 +1,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.11 $
+ * $Revision: 1.12 $
  * $Name:  $
- * $Id: lbInterfaces-sub-classes.h,v 1.11 2001/06/21 06:41:56 lothar Exp $
+ * $Id: lbInterfaces-sub-classes.h,v 1.12 2001/07/11 16:03:13 lothar Exp $
  *
  * $Log: lbInterfaces-sub-classes.h,v $
+ * Revision 1.12  2001/07/11 16:03:13  lothar
+ * First version of module management that hold's a little stresstest
+ *
  * Revision 1.11  2001/06/21 06:41:56  lothar
  * Changed lb_I_String base
  *
@@ -29,14 +32,17 @@
 
 /*...sclass lb_I_KeyBase:0:*/
 class lb_I_KeyBase : public lb_I_Unknown {
+protected:
+        lb_I_KeyBase() {}
+        virtual ~lb_I_KeyBase() {}
 public:
 
     virtual int LB_STDCALL operator == (const lb_I_KeyBase* _key) const {
-	return this->equals(_key);
+        return this->equals(_key);
     }
     
     virtual int LB_STDCALL operator > (const lb_I_KeyBase* _key) const {
-    	return this->greater(_key);
+        return this->greater(_key);
     }
 
     virtual int LB_STDCALL equals(const lb_I_KeyBase* _key) const = 0;
@@ -49,17 +55,17 @@ public:
 /*...e*/
 
 /*
-	Must have a type information of the key, because a string could not be compared
-	with an integer (directly). For a key, it is simply one type of interface, that
-	will be returned as their type information.
-	
-	Here, for keys, a key can be compared with another key of the same type. It is
-	simple to implement the compare function, having the type of the object.
-	
-	Where to define the type information function ?
-	
-	I tent to use a type check in the lb_I_KeyBase interface. So it is not neccesary
-	to implement a typecheck for each equals/greater function.
+        Must have a type information of the key, because a string could not be compared
+        with an integer (directly). For a key, it is simply one type of interface, that
+        will be returned as their type information.
+        
+        Here, for keys, a key can be compared with another key of the same type. It is
+        simple to implement the compare function, having the type of the object.
+        
+        Where to define the type information function ?
+        
+        I tent to use a type check in the lb_I_KeyBase interface. So it is not neccesary
+        to implement a typecheck for each equals/greater function.
 */
 /*...sclass lb_I_Object:0:*/
 /*...sdefinition of object types may cange:0:*/
@@ -84,8 +90,8 @@ class lb_I_Object {
 protected:
     lb_I_Object() {}
     lb_I_Object(const lb_I_Object &o) {
-		setName(o.getName());
-	}
+                setName(o.getName());
+        }
     
     virtual ~lb_I_Object() {}
 
@@ -116,7 +122,7 @@ protected: \
 /*...sIMPLEMENT_LB_OBJECT\40\classname\44\ classtype\41\:0:*/
 #define IMPLEMENT_LB_OBJECT(classname, classtype)    \
 void LB_STDCALL classname::setName(const char* d) { \
-	if (name != NULL) delete name;    \
+        if (name != NULL) delete name;    \
     name = strdup(d);                     \
 }                                         \
 \
@@ -125,13 +131,13 @@ const char* LB_STDCALL classname::getName() const { \
 }                                         \
 \
 ObjectTyp LB_STDCALL classname::getType() const {   \
-	if (OTyp == LB_OBJECT) {          \
-		LOG("Derived object has not been initialized correctly!"); \
-	}                                 \
-	return OTyp;                      \
+        if (OTyp == LB_OBJECT) {          \
+                LOG("Derived object has not been initialized correctly!"); \
+        }                                 \
+        return OTyp;                      \
 }                                         \
 void LB_STDCALL classname::setType() {              \
-	OTyp = classtype;                 \
+        OTyp = classtype;                 \
 }                                         \
 
 /*...e*/
@@ -141,73 +147,73 @@ void LB_STDCALL classname::setType() {              \
 /*...sclass lb_I_String:0:*/
 class lb_I_String : public lb_I_KeyBase {
 protected:
-	lb_I_String() {}
-	virtual ~lb_I_String() {}
+        lb_I_String() {}
+        virtual ~lb_I_String() {}
 
 public:
-	
-	virtual void LB_STDCALL setData(char* p) = 0;
-	virtual char* LB_STDCALL getData() const = 0;
-	
+        
+        virtual void LB_STDCALL setData(char* p) = 0;
+        virtual char* LB_STDCALL getData() const = 0;
+        
 };
 /*...e*/
 /*...sclass lb_I_Integer:0:*/
 class lb_I_Integer : public lb_I_KeyBase {
 protected:
-	lb_I_Integer() {}
-	virtual ~lb_I_Integer() {}
+        lb_I_Integer() {}
+        virtual ~lb_I_Integer() {}
 
 public:
-	
-	virtual void LB_STDCALL setData(int p) = 0;
-	virtual int LB_STDCALL getData() const = 0;
-	
+        
+        virtual void LB_STDCALL setData(int p) = 0;
+        virtual int LB_STDCALL getData() const = 0;
+        
 };
 /*...e*/
 /*...sclass lb_I_Long:0:*/
 class lb_I_Long : public lb_I_KeyBase {
 protected:
-	lb_I_Long() {}
-	virtual ~lb_I_Long() {}
+        lb_I_Long() {}
+        virtual ~lb_I_Long() {}
 
 public:
-	
-	virtual void LB_STDCALL setData(long p) = 0;
-	virtual long LB_STDCALL getData() const = 0;
-	
+        
+        virtual void LB_STDCALL setData(long p) = 0;
+        virtual long LB_STDCALL getData() const = 0;
+        
 };
 /*...e*/
 
 /*...sclass lb_I_Element:0:*/
 class lb_I_Element : public lb_I_Unknown {
 protected:
-	lb_I_Element() {}
-	virtual ~lb_I_Element() {}
+        lb_I_Element() {}
+        virtual ~lb_I_Element() {}
 
 public:
 
-	virtual lb_I_Element* LB_STDCALL getNext() const = 0;
-	virtual void LB_STDCALL setNext(lb_I_Element *e) = 0;
-	virtual lb_I_Unknown* LB_STDCALL getObject() const = 0;
-	
-	/**
-	 * Do a full compare. Data and key must be equal.
-	 */
-	virtual int LB_STDCALL equals(const lb_I_Element* a) const = 0;
-	/**
-	 * Do a key compare.
-	 */
-	virtual int LB_STDCALL equals(const lb_I_KeyBase* _key) const = 0;
+        virtual lb_I_Element* LB_STDCALL getNext() const = 0;
+        virtual void LB_STDCALL setNext(lb_I_Element *e) = 0;
+        virtual lb_I_Unknown* LB_STDCALL getObject() const = 0;
+        
+        /**
+         * Do a full compare. Data and key must be equal.
+         */
+        virtual int LB_STDCALL equals(const lb_I_Element* a) const = 0;
+        /**
+         * Do a key compare.
+         */
+        virtual int LB_STDCALL equals(const lb_I_KeyBase* _key) const = 0;
 
-	virtual lb_I_KeyBase* LB_STDCALL getKey() const = 0;
+        virtual lb_I_KeyBase* LB_STDCALL getKey() const = 0;
 
-	int LB_STDCALL operator == (const lb_I_Element* a) const {
-    		return (this->equals(a) == 1);
-	}
+        int LB_STDCALL operator == (const lb_I_Element* a) const {
+                return (this->equals(a) == 1);
+        }
 
-	int LB_STDCALL operator == (const lb_I_KeyBase* _key) const {
-		return (this->equals(_key) == 1);
-	}
+        int LB_STDCALL operator == (const lb_I_KeyBase* _key) const {
+                return (this->equals(_key) == 1);
+        }
 };
 
 #define DECLARE_LB_ELEMENT(classname) \
@@ -226,11 +232,15 @@ private: \
 #define IMPLEMENT_LB_ELEMENT(classname) \
 \
 classname::classname(const lb_I_Unknown* o, const lb_I_KeyBase* _key, lb_I_Element *_next) { \
-    next = _next; \
+    ref = STARTREF; \
+    if (_next == NULL) next = _next; \
+    if (_next != NULL) { \
+        _next->queryInterface("lb_I_Element", (void**) &next); \
+    } \
     if (o == NULL) CL_LOG("Error! Can't clone a NULL pointer"); \
     lb_I_Unknown *uk_data = o->clone(); \
-    if (uk_data->queryInterface("lb_I_Object", (void**) &data) != ERR_NONE) { \
-    	CL_LOG("Error while cloning"); \
+    if (uk_data->queryInterface("lb_I_Unknown", (void**) &data) != ERR_NONE) { \
+        CL_LOG("Error while cloning"); \
     } \
     lb_I_Unknown* uk_key = NULL; \
     uk_key = _key->clone(); \
@@ -239,22 +249,30 @@ classname::classname(const lb_I_Unknown* o, const lb_I_KeyBase* _key, lb_I_Eleme
 } \
 \
 classname::~classname() { \
+        if (key != NULL) RELEASE(key); \
+        if (data != NULL) RELEASE(data); \
+        key = NULL; \
+        data = NULL; \
 } \
 \
 lb_I_Unknown* classname::getObject() const { \
-    return data; \
+    lb_I_Unknown* uk = NULL; \
+    data->queryInterface("lb_I_Unknown", (void**) &uk); \
+    return uk; \
 } \
 \
 lb_I_KeyBase* LB_STDCALL classname::getKey() const { \
-	return key; \
+        lb_I_KeyBase* kbase = NULL; \
+        key->queryInterface("lb_I_KeyBase", (void**) &kbase); \
+        return kbase; \
 } \
 \
 void LB_STDCALL classname::setNext(lb_I_Element *e) { \
-	next = e; \
+        e->queryInterface("lb_I_Element", (void**) &next); \
 } \
 \
 lb_I_Element* LB_STDCALL classname::getNext() const { \
-	return next; \
+        return next; \
 }
 /*...e*/
 /*...sclass lb_I_Container:0:*/
@@ -278,9 +296,9 @@ public:
     virtual int LB_STDCALL hasMoreElements() = 0;
     virtual lb_I_Unknown* LB_STDCALL nextElement() = 0;
 
-	/**
-	 * Direct access over key
-	 */
+        /**
+         * Direct access over key
+         */
     virtual lb_I_Unknown* LB_STDCALL getElement(const lb_I_KeyBase* key) = 0;
     virtual void LB_STDCALL setElement(lb_I_KeyBase* key, const lb_I_Unknown* e) = 0;
 
@@ -289,25 +307,25 @@ public:
 
 /*...sDECLARE_LB_I_CONTAINER_IMPL_CO \40\co_Interface\41\:0:*/
 #define DECLARE_LB_I_CONTAINER_IMPL_CO(co_Interface) \
-	virtual lb_I_Unknown* LB_STDCALL nextObject(); \
-	virtual int LB_STDCALL hasMoreElements(); \
-	virtual int LB_STDCALL exists(const lb_I_KeyBase* e); \
-	virtual int LB_STDCALL Count(); \
-	\
-	virtual lbErrCodes LB_STDCALL insert(const co_Interface* e, const lb_I_KeyBase* key); \
-	virtual lbErrCodes LB_STDCALL _insert(const lb_I_Unknown* e, const lb_I_KeyBase* key); \
-	virtual lbErrCodes LB_STDCALL insert(const lb_I_Unknown* e, const lb_I_KeyBase* key); \
-	\
-	virtual lbErrCodes LB_STDCALL remove(const lb_I_KeyBase* key); \
-	\
-	virtual lb_I_Unknown* LB_STDCALL getElement(const lb_I_KeyBase* key); \
-	virtual lb_I_Unknown* LB_STDCALL nextElement(); \
-	\
-	\
-	virtual void LB_STDCALL setElement(lb_I_KeyBase* key, const co_Interface* e); \
-	virtual void LB_STDCALL setElement(lb_I_KeyBase* key, const lb_I_Unknown* e); \
-	\
-	virtual void LB_STDCALL deleteAll(); \
+        virtual lb_I_Unknown* LB_STDCALL nextObject(); \
+        virtual int LB_STDCALL hasMoreElements(); \
+        virtual int LB_STDCALL exists(const lb_I_KeyBase* e); \
+        virtual int LB_STDCALL Count(); \
+        \
+        virtual lbErrCodes LB_STDCALL insert(const co_Interface* e, const lb_I_KeyBase* key); \
+        virtual lbErrCodes LB_STDCALL _insert(const lb_I_Unknown* e, const lb_I_KeyBase* key); \
+        virtual lbErrCodes LB_STDCALL insert(const lb_I_Unknown* e, const lb_I_KeyBase* key); \
+        \
+        virtual lbErrCodes LB_STDCALL remove(const lb_I_KeyBase* key); \
+        \
+        virtual lb_I_Unknown* LB_STDCALL getElement(const lb_I_KeyBase* key); \
+        virtual lb_I_Unknown* LB_STDCALL nextElement(); \
+        \
+        \
+        virtual void LB_STDCALL setElement(lb_I_KeyBase* key, const co_Interface* e); \
+        virtual void LB_STDCALL setElement(lb_I_KeyBase* key, const lb_I_Unknown* e); \
+        \
+        virtual void LB_STDCALL deleteAll(); \
 protected: \
     int count; \
     int iteration; \
@@ -315,23 +333,23 @@ protected: \
 /*...e*/
 /*...sDECLARE_LB_I_CONTAINER_IMPL \40\\41\:0:*/
 #define DECLARE_LB_I_CONTAINER_IMPL() \
-	virtual int LB_STDCALL hasMoreElements(); \
-	virtual int LB_STDCALL exists(const lb_I_KeyBase* e); \
-	virtual int LB_STDCALL Count(); \
-	\
-	virtual lbErrCodes LB_STDCALL _insert(const lb_I_Unknown* e, const lb_I_KeyBase* key); \
-	virtual lbErrCodes LB_STDCALL insert(const lb_I_Unknown* e, const lb_I_KeyBase* key); \
-	\
-	virtual lbErrCodes LB_STDCALL remove(const lb_I_KeyBase* key); \
-	virtual lbErrCodes LB_STDCALL _remove(const lb_I_KeyBase* key); \
-	\
-	virtual lb_I_Unknown* LB_STDCALL getElement(const lb_I_KeyBase* key); \
-	virtual lb_I_Unknown* LB_STDCALL nextElement(); \
-	\
-	\
-	virtual void LB_STDCALL setElement(lb_I_KeyBase* key, const lb_I_Unknown* e); \
-	\
-	virtual void LB_STDCALL deleteAll(); \
+        virtual int LB_STDCALL hasMoreElements(); \
+        virtual int LB_STDCALL exists(const lb_I_KeyBase* e); \
+        virtual int LB_STDCALL Count(); \
+        \
+        virtual lbErrCodes LB_STDCALL _insert(const lb_I_Unknown* e, const lb_I_KeyBase* key); \
+        virtual lbErrCodes LB_STDCALL insert(const lb_I_Unknown* e, const lb_I_KeyBase* key); \
+        \
+        virtual lbErrCodes LB_STDCALL remove(const lb_I_KeyBase* key); \
+        virtual lbErrCodes LB_STDCALL _remove(const lb_I_KeyBase* key); \
+        \
+        virtual lb_I_Unknown* LB_STDCALL getElement(const lb_I_KeyBase* key); \
+        virtual lb_I_Unknown* LB_STDCALL nextElement(); \
+        \
+        \
+        virtual void LB_STDCALL setElement(lb_I_KeyBase* key, const lb_I_Unknown* e); \
+        \
+        virtual void LB_STDCALL deleteAll(); \
 protected: \
     int count; \
     int iteration; \
@@ -358,47 +376,47 @@ classname::classname() { \
 classname::~classname() { \
 } \
 int classname::Count() { \
-	return count; \
+        return count; \
 } \
 lbErrCodes classname::insert(const co_Interface* e, const lb_I_KeyBase* key) { \
-	lbErrCodes err = ERR_NONE; \
+        lbErrCodes err = ERR_NONE; \
 \
-	if ((err = insert((lb_I_Unknown*) e, key)) != ERR_NONE) { \
-		LOG("lbContainer::insert(...) Failed!"); \
-		return err; \
-	} \
+        if ((err = insert((lb_I_Unknown*) e, key)) != ERR_NONE) { \
+                LOG("lbContainer::insert(...) Failed!"); \
+                return err; \
+        } \
 \
-	count++; \
-	return err; \
+        count++; \
+        return err; \
 } \
 \
 lbErrCodes classname::insert(const lb_I_Unknown* e, const lb_I_KeyBase* key) { \
-	lbErrCodes err = ERR_NONE; \
+        lbErrCodes err = ERR_NONE; \
 \
-	if ((err = _insert(e, key)) != ERR_NONE) { \
-		LOG("lbContainer::insert(...) Failed!"); \
-		return err; \
-	} \
+        if ((err = _insert(e, key)) != ERR_NONE) { \
+                LOG("lbContainer::insert(...) Failed!"); \
+                return err; \
+        } \
 \
-	count++; \
-	return err; \
+        count++; \
+        return err; \
 } \
 \
 lbErrCodes classname::remove(const lb_I_KeyBase* key) { \
-	lbErrCodes err = ERR_NONE; \
+        lbErrCodes err = ERR_NONE; \
 \
-	if ((err = _remove(key)) != ERR_NONE) { \
-		LOG("lbContainer::remove(...) Failed!"); \
-		return err; \
-	} \
+        if ((err = _remove(key)) != ERR_NONE) { \
+                LOG("lbContainer::remove(...) Failed!"); \
+                return err; \
+        } \
 \
-	count--; \
-	return err; \
+        count--; \
+        return err; \
 } \
 \
 int classname::hasMoreElements() { \
     if (iteration == 0) { \
-		iteration = 1; \
+                iteration = 1; \
         iterator = data; \
     } \
 \
@@ -462,12 +480,24 @@ classname::~classname() { \
 /*...sIMPLEMENT_LB_I_CONTAINER_IMPL base \40\classname\41\ \47\\47\ only base lb_I_Unknown:0:*/
 #define IMPLEMENT_LB_I_CONTAINER_IMPL(classname) \
 int classname::Count() { \
-	return count; \
+        return count; \
 } \
 \
 void LB_STDCALL classname::deleteAll() { \
 \
-	LOG(#classname"::deleteAll() has not been implemented"); \
+    if (container_data == NULL) { \
+        CL_LOG("Error: Can't remove from empty container!"); \
+        return ;\
+    } \
+\
+    lb_I_Element* pre = NULL; \
+\
+    while (container_data->getNext() != NULL) { \
+        pre = container_data; \
+        container_data = container_data->getNext(); \
+        RELEASE(pre); \
+    } \
+    RELEASE(container_data); \
 \
 } \
 \
@@ -478,27 +508,27 @@ int classname::exists(const lb_I_KeyBase* key) { \
 } \
 \
 lbErrCodes LB_STDCALL classname::insert(const lb_I_Unknown* e, const lb_I_KeyBase* key) { \
-	lbErrCodes err = ERR_NONE; \
+        lbErrCodes err = ERR_NONE; \
 \
-	if ((err = _insert(e, key)) != ERR_NONE) { \
-		CL_LOG("lbContainer::insert(...) Failed!"); \
-		return err; \
-	} \
+        if ((err = _insert(e, key)) != ERR_NONE) { \
+                CL_LOG("lbContainer::insert(...) Failed!"); \
+                return err; \
+        } \
 \
-	count++; \
-	return err; \
+        count++; \
+        return err; \
 } \
 \
 lbErrCodes classname::remove(const lb_I_KeyBase* key) { \
-	lbErrCodes err = ERR_NONE; \
+        lbErrCodes err = ERR_NONE; \
 \
-	if ((err = _remove(key)) != ERR_NONE) { \
-		LOG("lbContainer::remove(...) Failed!"); \
-		return err; \
-	} \
+        if ((err = _remove(key)) != ERR_NONE) { \
+                LOG("lbContainer::remove(...) Failed!"); \
+                return err; \
+        } \
 \
-	count--; \
-	return err; \
+        count--; \
+        return err; \
 } \
 \
 lbErrCodes classname::_insert(const lb_I_Unknown* e, const lb_I_KeyBase* key) { \
@@ -507,12 +537,13 @@ lbErrCodes classname::_insert(const lb_I_Unknown* e, const lb_I_KeyBase* key) { 
         lbElement* _data = new lbElement(e, key); \
 \
         _data->queryInterface("lb_I_Element", (void**) &container_data); \
-    	if (container_data == NULL) CL_LOG("Could not get unknown interface of lbElement!"); \
+        if (container_data == NULL) CL_LOG("Could not get unknown interface of lbElement!"); \
 \
-	if (container_data->getObject() == NULL) { \
-		LOG("Failed to insert first element in classname::insert"); \
-		return ERR_CONTAINER_INSERT; \
-	} \
+        lb_I_Unknown* uk_o = NULL; \
+        if ((uk_o = container_data->getObject()) == NULL) { \
+                LOG("Failed to insert first element in classname::insert"); \
+                return ERR_CONTAINER_INSERT; \
+        } else RELEASE(uk_o); \
     } \
     else { \
         lb_I_Element* temp; \
@@ -536,22 +567,22 @@ lbErrCodes classname::_insert(const lb_I_Unknown* e, const lb_I_KeyBase* key) { 
 lbErrCodes classname::_remove(const lb_I_KeyBase* key) { \
 \
     if (container_data == NULL) { \
-    	LOG("Error: Can't remove from empty container!"); \
-    	return ERR_CONTAINER_REMOVE; \
+        LOG("Error: Can't remove from empty container!"); \
+        return ERR_CONTAINER_REMOVE; \
     } \
 \
     lb_I_Element* pre = container_data; \
     container_data = container_data->getNext(); \
 \
     if (pre->getKey() == key) { \
-        pre->release(); \
+        RELEASE(pre); \
         return ERR_NONE; \
     } \
 \
     for (lb_I_Element* temp = container_data; temp != NULL; temp = container_data->getNext()) { \
         if (temp->getKey() == key) { \
             pre->setNext(temp->getNext()); \
-            temp->release(); \
+            RELEASE(temp); \
             return ERR_NONE; \
         } \
     } \
@@ -561,7 +592,7 @@ lbErrCodes classname::_remove(const lb_I_KeyBase* key) { \
 \
 int classname::hasMoreElements() { \
     if (iteration == 0) { \
-		iteration = 1; \
+                iteration = 1; \
         iterator = container_data; \
     } \
 \
@@ -588,7 +619,7 @@ lb_I_Unknown* classname::nextElement() { \
 \
     if (o == NULL) cout << "Temporary object o is NULL!" << endl; \
 \
-    return temp->getObject(); \
+    return o; \
 } \
 \
 lb_I_Unknown* classname::getElement(const lb_I_KeyBase* key) { \
@@ -613,47 +644,47 @@ void classname::setElement(lb_I_KeyBase* key, lb_I_Unknown const* e) { \
 /*...e*/
 /*...sclass lb_I_Module:0:*/
 class lb_I_Module : 
-		public lb_I_Unknown,
-		public lb_I_Requestable 
+                public lb_I_Unknown,
+                public lb_I_Requestable 
 {
 protected:
-	lb_I_Module() {}
-	virtual ~lb_I_Module() {}
+        lb_I_Module() {}
+        virtual ~lb_I_Module() {}
 public:
 
-	/**
-	 * This function loads a module and stores the modulehandle in an array
-	 * or a list. If the object is destroyed, the loaded modules are
-	 * automatically unloaded (the array/list).
-	 */
-	virtual lbErrCodes load(char* name) = 0;
-	
-	
-	/**
-	 * The module manager is responsible for creating any instances, that are
-	 * available. This implementation knows that the directory of functors
-	 * for instances are stored in an XML file (DTD file v1.3).
-	 *
-	 * The current implementation for this in the function request is not the
-	 * intention for the interface lb_I_Requestable.
-	 *
-	 * The new function for this may be:
-	 */
+        /**
+         * This function loads a module and stores the modulehandle in an array
+         * or a list. If the object is destroyed, the loaded modules are
+         * automatically unloaded (the array/list).
+         */
+        virtual lbErrCodes LB_STDCALL load(char* name) = 0;
+        
+        
+        /**
+         * The module manager is responsible for creating any instances, that are
+         * available. This implementation knows that the directory of functors
+         * for instances are stored in an XML file (DTD file v1.3).
+         *
+         * The current implementation for this in the function request is not the
+         * intention for the interface lb_I_Requestable.
+         *
+         * The new function for this may be:
+         */
 
 
-	/**
-	 * get back a lb_I_String for a functor or a lb_I_Container for a list of
-	 * them. The errcode helps to decide.
-	 */
-	virtual lbErrCodes getFunctors(char* interfacename, lb_I_ConfigObject* node, lb_I_Unknown*& uk) = 0;
-	virtual lbErrCodes getInstance(char* functorname, lb_I_ConfigObject* node, lb_I_Unknown*& uk) = 0;
-	
-	/**
-	 *
-	 */
-	
-	//virtual lbErrCodes getObjectInstance(char* name, lb_I_Requestable*& inst) = 0; 
-	virtual lbErrCodes getObjectInstance(const char* name, lb_I_Container*& inst) = 0;
+        /**
+         * get back a lb_I_String for a functor or a lb_I_Container for a list of
+         * them. The errcode helps to decide.
+         */
+        virtual lbErrCodes LB_STDCALL getFunctors(char* interfacename, lb_I_ConfigObject* node, lb_I_Unknown*& uk) = 0;
+        virtual lbErrCodes LB_STDCALL getInstance(char* functorname, lb_I_ConfigObject* node, lb_I_Unknown*& uk) = 0;
+        
+        /**
+         *
+         */
+        
+        //virtual lbErrCodes getObjectInstance(char* name, lb_I_Requestable*& inst) = 0; 
+        virtual lbErrCodes LB_STDCALL getObjectInstance(const char* name, lb_I_Container*& inst) = 0;
 };
 /*...e*/
 /*...sclass lb_I_Log:0:*/
@@ -668,32 +699,36 @@ protected:
 /*...e*/
 
 public:
-    virtual void log(const char *msg, long line, char* file) = 0;
-    virtual void logdirect(const char *msg, char *f, int level) = 0;
-    virtual void log(int log) = 0;
-    virtual void enable(char *where) = 0;
-    virtual void disable(char *where) = 0;
-    virtual void event_begin(char *event) = 0;
-    virtual void event_end(char *event) = 0;
-    virtual void setPrefix(char* p) = 0;
+
+// This order does not work with visual C++ !!??
+//    virtual void LB_STDCALL log(const char *msg, long line, char* file) = 0;
+    virtual void LB_STDCALL logdirect(const char *msg, char *f, int level) = 0;
+// Take it here...    
+    virtual void LB_STDCALL log(const char *msg, long line, char* file) = 0;
+    virtual void LB_STDCALL log(int log) = 0;
+    virtual void LB_STDCALL enable(char *where) = 0;
+    virtual void LB_STDCALL disable(char *where) = 0;
+    virtual void LB_STDCALL event_begin(char *event) = 0;
+    virtual void LB_STDCALL event_end(char *event) = 0;
+    virtual void LB_STDCALL setPrefix(char* p) = 0;
 };
 /*...e*/
 
 /*...sclass lb_I_Thread:0:*/
 class lb_I_Thread : public lb_I_Unknown {
 protected:
-	lb_I_Thread() {}
-	virtual ~lb_I_Thread() {}
+        lb_I_Thread() {}
+        virtual ~lb_I_Thread() {}
 
-public:	
+public: 
 
-	virtual lbErrCodes LB_STDCALL create() = 0;
+        virtual lbErrCodes LB_STDCALL create() = 0;
 
-	virtual lbErrCodes LB_STDCALL run() = 0; 
-	virtual lbErrCodes LB_STDCALL stop() = 0;
-	
-	virtual lbErrCodes LB_STDCALL pause() = 0;
-	virtual lbErrCodes LB_STDCALL resume() = 0;
+        virtual lbErrCodes LB_STDCALL run() = 0; 
+        virtual lbErrCodes LB_STDCALL stop() = 0;
+        
+        virtual lbErrCodes LB_STDCALL pause() = 0;
+        virtual lbErrCodes LB_STDCALL resume() = 0;
 
 
 private:
@@ -705,15 +740,15 @@ private:
 /*...sclass lb_I_Mutex:0:*/
 class lb_I_Mutex {
 protected:
-	lb_I_Mutex() {}
-	virtual ~lb_I_Mutex() {}
+        lb_I_Mutex() {}
+        virtual ~lb_I_Mutex() {}
 
 public:
         virtual void createMutex(int name) = 0;
         virtual void deleteMutex(int name) = 0;
         virtual void enter() = 0;
         virtual void release() = 0;
-	
+        
 };
 /*...e*/
 
@@ -721,24 +756,24 @@ class lb_I_Lock;
 /*...sclass lb_I_CriticalSection:0:*/
 class lb_I_CriticalSection {
 protected:
-	lb_I_CriticalSection() {}
-	virtual ~lb_I_CriticalSection() {}
+        lb_I_CriticalSection() {}
+        virtual ~lb_I_CriticalSection() {}
 
 protected:
-	virtual lbErrCodes enter() = 0;
-	virtual lbErrCodes leave() = 0;
-	
-	friend class lb_I_Lock;
+        virtual lbErrCodes enter() = 0;
+        virtual lbErrCodes leave() = 0;
+        
+        friend class lb_I_Lock;
 };
 /*...e*/
 /*...sclass lb_I_Lock:0:*/
 class lb_I_Lock {
 protected:
-	lb_I_Lock(lb_I_CriticalSection*& _cso, char* _name) {}
-	virtual ~lb_I_Lock() {}
+        lb_I_Lock(lb_I_CriticalSection*& _cso, char* _name) {}
+        virtual ~lb_I_Lock() {}
 
-	lb_I_Lock() {}
-	lb_I_Lock(const lb_I_Lock&) {}
+        lb_I_Lock() {}
+        lb_I_Lock(const lb_I_Lock&) {}
 };
 /*...e*/
 
@@ -750,31 +785,31 @@ protected:
 
 class DLLEXPORT lbCritSect {
 public:
-	lbCritSect();
-	virtual ~lbCritSect();
+        lbCritSect();
+        virtual ~lbCritSect();
 
 private:
-	//lbCritSect(const lbCritSect&) {}
+        //lbCritSect(const lbCritSect&) {}
 
 protected:
-	lbErrCodes enter();
-	lbErrCodes leave();
-	
-	void* critsect;	
-	
-	friend class lbLock;
+        lbErrCodes enter();
+        lbErrCodes leave();
+        
+        void* critsect; 
+        
+        friend class lbLock;
 };
 
 class DLLEXPORT lbLock {
 public:
-	lbLock(lbCritSect& _cso, char* _name);
-	virtual ~lbLock();
+        lbLock(lbCritSect& _cso, char* _name);
+        virtual ~lbLock();
 private:
-	lbLock() {}
-	lbLock(const lbLock&) {}
+        lbLock() {}
+        lbLock(const lbLock&) {}
 
-	char* name;
-	lbCritSect* cso;
+        char* name;
+        lbCritSect* cso;
 };
 
 #endif // bla

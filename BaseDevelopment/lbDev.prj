@@ -1,16 +1,32 @@
+/*...v\46\\46\\47\make\47\STD_MAKE \45\ The global makefile definitions:0:*/
+
 /*...sBaseDevelopment:0:*/
 /*...v\46\\46\\47\\46\\46\\47\\46\\46\\47\tools\47\watcom\47\h\47\nt\47\windef\46\h:0:*/
 /*...v\46\\46\\47\\46\\46\\47\\46\\46\\47\tools\47\watcom\47\h\47\nt\47\winbase\46\h:0:*/
 /*...v\46\\46\\47\\46\\46\\47\\46\\46\\47\tools\47\watcom\47\h\47\nt\47\windows\46\h:0:*/
 
-/*...vF\58\\92\develop\92\NT\92\MSC\92\Include\92\winnt\46\h:0:*/
 
 
 /*...v\46\\46\\47\include\47\lbInclude\46\h:0:*/
 /*...v\46\\46\\47\include\47\lbGlobal\46\h:0:*/
 /*...v\46\\46\\47\include\47\lbErrcodes\46\h:0:*/
 
+These headers must define the per module (DLL) EXPORT variable
+
+/*...v\46\\46\\47\include\47\lbclasses\45\module\46\h:0:*/
+/*...v\46\\46\\47\include\47\lbmodule\45\module\46\h:0:*/
+/*...v\46\\46\\47\include\47\lbdomconfig\45\module\46\h:0:*/
+
+
+
+
+
+
+
 /*...v\46\\46\\47\include\47\lbConfigHook\46\h:0:*/
+/*...vlbHook\47\MAKE_BEFORE:0:*/
+/*...vlbHook\47\MAKE_AFTER:0:*/
+/*...vlbHook\47\STD_MAKE:0:*/
 /*...vlbHook\47\lbHook\46\cpp:0:*/
 
 /*...v\46\\46\\47\interfaces\47\lbInterfaces\46\h:0:*/
@@ -45,6 +61,9 @@
 
 /*...e*/
 /*...slbModule:0:*/
+/*...vlbModule\47\MAKE_BEFORE:0:*/
+/*...vlbModule\47\MAKE_AFTER:0:*/
+/*...vlbModule\47\STD_MAKE:0:*/
 /*...vlbModule\47\lbModule\46\h:0:*/
 /*...vlbModule\47\lbModule\46\cpp:0:*/
 /*...e*/
@@ -63,6 +82,10 @@
 
 /*...e*/
 /*...slbClasses:0:*/
+/*...vlbclasses\47\MAKE_BEFORE:0:*/
+/*...vlbclasses\47\MAKE_AFTER:0:*/
+/*...vlbclasses\47\STD_MAKE:0:*/
+
 /*...vlbclasses\47\lb_misc\46\h:0:*/
 /*...vlbclasses\47\misc\46\cpp:0:*/
 /*...vlbclasses\47\lbObject\46\h:0:*/
@@ -112,12 +135,38 @@ findfunctorname
 /*...sConsole:0:*/
 /*...v\46\\46\\47\AppDevelopment\47\Console\47\GlobalAppServer\47\servertest\46\cpp:0:*/
 /*...v\46\\46\\47\AppDevelopment\47\Console\47\GlobalAppServer\47\main\46\cpp:0:*/
+
+/*...v\46\\46\\47\AppDevelopment\47\Console\47\xml\47\MAKE_BEFORE:0:*/
+/*...v\46\\46\\47\AppDevelopment\47\Console\47\xml\47\MAKE_AFTER:0:*/
+/*...v\46\\46\\47\AppDevelopment\47\Console\47\xml\47\STD_MAKE:0:*/
 /*...v\46\\46\\47\AppDevelopment\47\Console\47\xml\47\test\46\cpp:0:*/
 /*...e*/
 
 /*...e*/
 /*...sServiceDevelopment:0:*/
 /*...e*/
+
+/*...smkmk a makefile make tool:0:*/
+/*...v\46\\46\\47\vendor\47\mkmk\47\contain\46\h:0:*/
+/*...v\46\\46\\47\vendor\47\mkmk\47\contain\46\cpp:0:*/
+/*...v\46\\46\\47\vendor\47\mkmk\47\mkmk\46\cpp:0:*/
+/*...e*/
+
+/*...sXML4C\43\\43\:0:*/
+/*...v\46\\46\\47\\46\\46\\47\\46\\46\\47\xml\47\xml4csrc3_3_1\47\src\47\util\47\NetAccessors\92\WinSock\92\WinSockNetAccessor\46\cpp:0:*/
+/*...v\46\\46\\47\\46\\46\\47\\46\\46\\47\xml\47\xml4csrc3_3_1\47\src\47\util\47\Platforms\47\win32\47\Win32PlatformUtils\46\cpp:0:*/
+/*...v\46\\46\\47\\46\\46\\47\\46\\46\\47\xml\47\xml4csrc3_3_1\47\src\47\util\47\Transcoders\47\Win32\47\Win32TransService\46\hpp:0:*/
+/*...v\46\\46\\47\\46\\46\\47\\46\\46\\47\xml\47\xml4csrc3_3_1\47\src\47\util\47\Transcoders\47\Win32\47\Win32TransService\46\cpp:0:*/
+/*...v\46\\46\\47\\46\\46\\47\\46\\46\\47\xml\47\xml4csrc3_3_1\47\src\47\util\47\RefHashTableOf\46\c:0:*/
+/*...v\46\\46\\47\\46\\46\\47\\46\\46\\47\xml\47\xml4csrc3_3_1\47\src\47\util\47\XMLString\46\cpp:0:*/
+
+
+
+
+/*...vf\58\\47\develop\47\NT\47\MSC\47\include\47\basetsd\46\h:0:*/
+
+/*...e*/
+
 
 /*...sMy old code:0:*/
 /*...smailslot:0:*/

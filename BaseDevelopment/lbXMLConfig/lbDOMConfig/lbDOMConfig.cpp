@@ -1,11 +1,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.11 $
+ * $Revision: 1.12 $
  * $Name:  $
- * $Id: lbDOMConfig.cpp,v 1.11 2001/06/23 07:18:53 lothar Exp $
+ * $Id: lbDOMConfig.cpp,v 1.12 2001/07/11 16:04:33 lothar Exp $
  *
  * $Log: lbDOMConfig.cpp,v $
+ * Revision 1.12  2001/07/11 16:04:33  lothar
+ * First version of module management that hold's a little stresstest
+ *
  * Revision 1.11  2001/06/23 07:18:53  lothar
  * Interface repository now works with the basic test
  *
@@ -43,6 +46,12 @@
  **************************************************************/
 
 /*...e*/
+
+/*...sLB_DOMCONFIG_DLL scope:0:*/
+#define LB_DOMCONFIG_DLL
+#include <lbdomconfig-module.h>
+/*...e*/
+
 /*...sincludes:0:*/
 #include <sax/SAXParseException.hpp>
 #include <sax/ErrorHandler.hpp>
@@ -60,13 +69,12 @@
 
 #include <conio.h>
 
-//#include <lbInclude.h>
-
 #include <windows.h>
 
 #include <lbConfigHook.h>
 
 #include <lbInterfaces.h>
+
 #include <lbDOMConfig.h>
 
 #include <lbKey.h>
@@ -100,16 +108,19 @@ class lbDOMContainer;
 /*...slbKey:0:*/
 /*...sc\39\tors and d\39\tors:0:*/
 lbKey::lbKey() {
+    ref = STARTREF;
     key = 0;
     strcpy(keyType, "int");
 }
 
 lbKey::lbKey(int _key) {
+    ref = STARTREF;
     key = _key;
     strcpy(keyType, "int");
 }
 
 lbKey::lbKey(const lb_I_KeyBase* k) {
+    ref = STARTREF;
     key = ((lbKey) k).key;
 }
 
@@ -145,23 +156,26 @@ char* lbKey::charrep() {
 
     itoa(key, buf, 10);
     
-    return buf;
+    return strdup(buf);
 }
 /*...e*/
 /*...slbKeyUL:0:*/
 
 
 lbKeyUL::lbKeyUL() {
+    ref = STARTREF;
     key = 0;
     strcpy(keyType, "UL");
 }
 
 lbKeyUL::lbKeyUL(unsigned long _key) {
+    ref = STARTREF;
     key = _key;
     strcpy(keyType, "UL");
 }
 
 lbKeyUL::lbKeyUL(const lb_I_KeyBase* k) {
+    ref = STARTREF;
     key = ((lbKeyUL*) k)->key;
 }
 
@@ -196,24 +210,30 @@ char* lbKeyUL::charrep() {
 
     itoa(key, buf, 10);
     
-    return buf;
+    return strdup(buf);
 }
 /*...e*/
 /*...slbStringKey:0:*/
 lbStringKey::lbStringKey() {
+    ref = STARTREF;
     key = "";
 }
 
 lbStringKey::lbStringKey(const char* _key) {
+    ref = STARTREF;
     key = strdup(_key);
 }
 
 lbStringKey::lbStringKey(const lb_I_KeyBase* k) {
+    ref = STARTREF;
     key = strdup(((lbStringKey*) k)->key);
 }
 
 
 lbStringKey::~lbStringKey(){
+	if (key != NULL) {
+		delete key;
+	}
 }
 
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbStringKey)
@@ -307,9 +327,9 @@ void DOMTreeErrorReporter::resetErrors()
 /*...e*/
 /*...sclass lbDOMNode \58\ public lb_I_ConfigObject:0:*/
 class lbDOMNode : public lb_I_ConfigObject
-//		  , public lb_I_Object // For container usage
-		  //public lb_I_Unknown
 {
+private:
+	lbDOMNode(lbDOMNode & n) { printf("lbDOMNode(lbDOMNode & n) called\n"); }
 public:
 	lbDOMNode();
 	virtual ~lbDOMNode();
@@ -332,6 +352,7 @@ public:
 
 	virtual lbErrCodes LB_STDCALL getAttribute(const char* name, lb_I_Attribute*& attr);
 	virtual lbErrCodes LB_STDCALL getAttributeValue(const char* name, char*& attr);
+	virtual lbErrCodes LB_STDCALL deleteValue(char*& attr);
 	virtual char*      LB_STDCALL getName();
 /*...e*/
 
@@ -349,7 +370,7 @@ protected:
 	DOM_Node   node;
 	lbDOMNode*   parent;
 	
-	lbDOMContainer* lbDOMchilds;
+	lb_I_Container* lbDOMchilds;
 	
 //	int currentChildIndex;
 	
@@ -382,42 +403,27 @@ public:
 /*...sclass lbElement:0:*/
 class lbElement : public lb_I_Element {
 public:
-    lbElement() { next = NULL; data = NULL; key = NULL; }
+    lbElement() { ref = STARTREF; next = NULL; data = NULL; key = NULL; }
     virtual ~lbElement();
 	
 //    lbElement(const lb_I_Object &o, const lb_I_KeyBase &_key, lb_I_Element *_next=NULL);
-    lbElement(const lb_I_Element &e) { next = e.getNext(); }
+    lbElement(const lb_I_Element &e) { ref = STARTREF; next = e.getNext(); }
 
     DECLARE_LB_UNKNOWN()
 
     DECLARE_LB_ELEMENT(lbElement)
 
-#ifdef bla
-    void setNext(lb_I_Element *e){ next = e; }
-    lb_I_Unknown* getObject() const;
-
-//    lbKeyBase &getKey() const { return *key; }
-    lb_I_KeyBase LB_STDCALL *getKey() const
-    {
-        if (!key) CL_LOG("Key in lbElement is null");
-        return key;
-    }
-
-    int operator == (const lb_I_Element &a) const;
-
-    int operator == (const lb_I_KeyBase &key) const;
-#endif
-
 };
 /*...e*/
 
+/*...scontainer:0:*/
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbDOMContainer)
 	ADD_INTERFACE(lb_I_Container)
 END_IMPLEMENT_LB_UNKNOWN()
 
 lbDOMContainer::lbDOMContainer() {
     iteration = 0;
-    ref = 0;
+    ref = STARTREF;
     iterator = NULL;
     count = 0;
     container_data = NULL;
@@ -436,8 +442,9 @@ lbErrCodes LB_STDCALL lbDOMContainer::setData(lb_I_Unknown* data) {
 
 
 IMPLEMENT_LB_I_CONTAINER_IMPL(lbDOMContainer)
+/*...e*/
 
-
+/*...selement:0:*/
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbElement)
         ADD_INTERFACE(lb_I_Element)
 END_IMPLEMENT_LB_UNKNOWN()
@@ -458,6 +465,7 @@ int LB_STDCALL lbElement::equals(const lb_I_Element* a) const {
 int LB_STDCALL lbElement::equals(const lb_I_KeyBase* key) const {
 	return 0;
 }
+/*...e*/
 /*...e*/
 
 /*...sclass lbDOMAttribute \58\ public lb_I_Attribute:0:*/
@@ -501,8 +509,6 @@ lbErrCodes lbDOMAttribute::setData(lb_I_Unknown* uk) {
 
 
 /*...sclass lbDOMNode implementation:0:*/
-//IMPLEMENT_LB_OBJECT(lbDOMNode, LB_DOM_NODE)
-
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbDOMNode)
 	ADD_INTERFACE(lb_I_Object)
 	ADD_INTERFACE(lb_I_ConfigObject)
@@ -510,6 +516,7 @@ END_IMPLEMENT_LB_UNKNOWN()
 
 /*...slbErrCodes lbDOMNode\58\\58\setData\40\lb_I_Unknown\42\ uk\41\:0:*/
 lbErrCodes lbDOMNode::setData(lb_I_Unknown* uk) {
+	
 	lbDOMNode* _node = NULL;
 
 	if (uk->queryInterface("lb_I_ConfigObject", (void**) &_node) != ERR_NONE) {
@@ -518,6 +525,8 @@ lbErrCodes lbDOMNode::setData(lb_I_Unknown* uk) {
 	}
 	
 	node = _node->node;
+	if (_node->lbDOMchilds != NULL)
+		_node->lbDOMchilds->queryInterface("lb_I_Container", (void**) & lbDOMchilds);
 	
 	if (_node->parent == _node) {
 #ifdef VERBOSE
@@ -536,7 +545,7 @@ lbErrCodes lbDOMNode::setData(lb_I_Unknown* uk) {
 /*...e*/
 /*...slbDOMNode\58\\58\lbDOMNode\40\\41\:0:*/
 lbDOMNode::lbDOMNode() {
-	ref = STARTREF;
+	resetRefcount();
 //	currentChildIndex = 0;
 	lbDOMchilds = NULL;
 	parent = this;
@@ -549,6 +558,12 @@ lbDOMNode::lbDOMNode() {
 lbDOMNode::~lbDOMNode() {
 	if (ref != STARTREF) 
 		CL_LOG("Error: Reference count mismatch");
+	
+	if (lbDOMchilds != NULL) {
+		lbDOMchilds->deleteAll();
+		RELEASE(lbDOMchilds);
+		lbDOMchilds = NULL;
+	}
 }
 /*...e*/
 /*...slbErrCodes LB_STDCALL lbDOMNode\58\\58\setChildrens\40\lbNodeList\42\ _childs\41\:0:*/
@@ -590,8 +605,13 @@ lbErrCodes LB_STDCALL lbDOMNode::setNode(DOM_Node _node) {
 		getch();
 	}
 
-	lbDOMchilds = createAbstractedChildList(_node);
+	lb_I_Container* c = createAbstractedChildList(_node);
 
+	if (c != NULL)
+		c->queryInterface("lb_I_Container", (void**) &lbDOMchilds);
+	else
+		CL_LOG("Error: Creation of abstracted childs returns NULL");
+		
 	if (lbDOMchilds == NULL) {
 		CL_LOG("Error: Here must be a result!");
 		
@@ -611,7 +631,7 @@ lbErrCodes LB_STDCALL lbDOMNode::setNode(DOM_Node _node) {
 			CL_LOG("Previous parent node will be overwritten!");
 #endif			
 		}
-		parent = new lbDOMNode;
+		parent = new lbDOMNode();
 		parent->setNode(pnode);
 	} else {
 		if (parent != NULL) {
@@ -623,33 +643,6 @@ lbErrCodes LB_STDCALL lbDOMNode::setNode(DOM_Node _node) {
 	return ERR_NONE;
 }
 /*...e*/
-#ifdef bla
-// Body already defined (macro)
-/*...slbDOMNode\58\\58\clone\40\\41\:0:*/
-lb_I_Unknown* LB_STDCALL lbDOMNode::clone() const {
-	lbDOMNode* _node = new lbDOMNode();
-	
-	_node->node = node;
-	if (_node->node.isNull()) {
-		CL_LOG("Error: Cloning failed due to NULL pointer in node!");
-		getch();
-	}
-	
-	lb_I_Container* cloned= lbDOMchilds->clone();
-	_node->lbDOMchilds = (lbNodeList*) cloned;
-
-	/**
-	 * Return an unknown object pointer
-	 */	
-	lb_I_Unknown* ret = NULL;
-	_node->queryInterface("lb_I_Unknown", (void**) ret);
-	
-	//QI(_node, "lb_I_Unknown", ret);
-	
-	return ret;
-}
-/*...e*/
-#endif
 /*...slbDOMNode\58\\58\getParam\40\\46\\46\\46\\41\:0:*/
 lbErrCodes LB_STDCALL lbDOMNode::getParam(const char* name, lb_I_String*& value) {
 	CL_LOG("Not implemented yet");
@@ -693,7 +686,7 @@ lbErrCodes LB_STDCALL lbDOMNode::getFirstChildren(lb_I_ConfigObject*& children) 
 
 	unknown->queryInterface("lb_I_ConfigObject", (void**) &children);
 
-	unknown->release();
+	RELEASE(unknown)
 
 	return ERR_NONE;
 }
@@ -741,7 +734,7 @@ lbErrCodes LB_STDCALL lbDOMNode::getNextChildren(lb_I_ConfigObject*& children) {
 		getch();
 	}
 	
-	unknown->release();
+	RELEASE(unknown)
 	
 	return ERR_NONE;
 }
@@ -757,43 +750,29 @@ lbDOMContainer* LB_STDCALL lbDOMNode::createAbstractedChildList(DOM_Node _node) 
 
 	for (int i = 0; i < len; i++) {
 	        DOM_Node child = DOMlist.item(i);	
-	        lbDOMNode* lbNode = new lbDOMNode;
+	        lbDOMNode* lbNode = new lbDOMNode();
 	        
 	        lbNode->node = child;
-	        lb_I_ConfigObject* test = NULL;
-
 		lb_I_Unknown* unknown = NULL;
-
-debug_macro = 0;
-
-if (debug_macro == 1) cout << "query interface" << endl;
 
 		if (lbNode->queryInterface("lb_I_Unknown", (void**) &unknown) != ERR_NONE) {
 		        CL_LOG("lbNode->queryInterface() Failed!");
 		}
-
-if (debug_macro == 1) cout << "queried interface" << endl;
-
-if (debug_macro == 1) cout << "test query interface 'lb_I_ConfigObject'" << endl;
-
-		if (lbNode->queryInterface("lb_I_ConfigObject", (void**) &test) != ERR_NONE) {
-		        CL_LOG("lbNode->queryInterface() Failed!");
+		
+		if (unknown != lbNode) {
+			CL_LOG("Error: Pointer of unknown instance differs from created instance");
+			getch();
 		}
-
-if (debug_macro == 1) cout << "tested query" << endl;
-
 
 		lbKey* key = new lbKey(i);
 		if (unknown == NULL) CL_LOG("Error: Inserting a null pointer!");
 
-if (debug_macro == 1) cout << "insert into the container" << endl;
-
 		list->insert(unknown, key);
-
-if (debug_macro == 1) cout << "done insert" << endl;
-
-debug_macro = 0;
 		
+		// Container makes a copy of the object
+		
+		if (unknown != NULL) RELEASE(unknown);
+
 	}
 
 	return list;
@@ -829,8 +808,25 @@ lbErrCodes LB_STDCALL lbDOMNode::getAttributeValue(const char* name, char*& attr
 	}
 	
 	DOMString value = an_attr.getValue();
-		
+
 	attr = value.transcode();
+	
+	char buf[100] = "";
+	
+	if (attr != NULL) value.deletetranscoded(attr);
+	attr = NULL;
+	char* result = value.transcode();
+	
+	attr = strdup(result);
+	value.deletetranscoded(result);
+		
+	return ERR_NONE;
+}
+/*...e*/
+/*...slbDOMNode\58\\58\deleteValue\40\\46\\46\\46\\41\:0:*/
+lbErrCodes LB_STDCALL lbDOMNode::deleteValue(char*& attr) {
+	DOMString value = DOMString();
+	value.deletetranscoded(attr);
 	
 	return ERR_NONE;
 }
@@ -863,219 +859,16 @@ char* LB_STDCALL lbDOMNode::getName() {
 	return temp;
 }
 /*...e*/
-
-
-
-#ifdef bla
-/*...slbDOMNode\58\\58\release\40\\41\:0:*/
-lbErrCodes LB_STDCALL lbDOMNode::release() {
-        ref--;
-
-        if (ref == STARTREF) delete this;
-	
-	return ERR_NONE;
-}
 /*...e*/
-/*...slbDOMNode\58\\58\queryInterface\40\char\42\ name\44\ void\42\\42\ unknown\41\:0:*/
-lbErrCodes LB_STDCALL lbDOMNode::queryInterface(char* name, void** unknown) {
-cout << "lbDOMNode::queryInterface(char* name, void** unknown) called" << endl;
-        if (strcmp(name, "lb_I_Unknown") == 0) {
-                ref++;
-                *unknown = (lb_I_Unknown*) this;
-                return ERR_NONE;
-        }
-
-        if (strcmp(name, "lb_I_Object") == 0) {
-                ref++;
-                *unknown = (lb_I_Object*) this;
-                return ERR_NONE;
-        }
-
-        if (strcmp(name, "lb_I_ConfigObject") == 0) {
-                ref++;
-                *unknown = (lb_I_ConfigObject*) this;
-                return ERR_NONE;
-        }
-
-
-        return ERR_NO_INTERFACE;
-}
-/*...e*/
-#endif
-/*...e*/
-#ifdef bla
-/*...sclass lbNodeList implementation:0:*/
-
-/**
- * What can be stored in a node list ?
- * 
- */
-
-/*...slbNodeList\58\\58\clone\40\\41\:0:*/
-lb_I_Container* lbNodeList::clone() const {
-	lbNodeList* list = new lbNodeList();
-	lb_I_Unknown *u = parent->clone();
-	u->queryInterface("lb_I_NodeList", (void**) list->parent);
-	u->release();
-
-CL_LOG("lbNodeList::clone() called");
-
-
-	/**
-	 * The content of 'childs' must be copied sequential.
-	 */
-	
-	_plbDOMNodeList temp = childs;
-	_plbDOMNodeList tempother = list->childs;
-	list->childs = new _lbDOMNodeList;
-	list->childs->next = NULL;
-	
-	while (temp != NULL) {
-		lb_I_Unknown *u = temp->element->clone();
-		u->queryInterface("lb_I_DOMNode", (void**) list->childs->element);
-		u->release();
-		
-		list->childs->next = new _lbDOMNodeList;
-		list->childs->next->next = NULL;
-		list->childs = list->childs->next;
-	}
-	
-	list->childs = tempother;
-	
-	return NULL;
-}
-/*...e*/
-/*...slbNodeList\58\\58\setParent\40\lb_I_Unknown \42\_parent\41\:0:*/
-lbErrCodes lbNodeList::setParent(lb_I_Unknown *_parent) {
-	/**
-	 * Check if the given object has a lb_I_ConfigObject interface
-	 */
-
-	_parent->queryInterface("lb_I_ConfigObject", (void**) parent);
-
-	if (parent != NULL) 
-		return ERR_NONE;
-	else
-		cout << "Error: The parent object has no lb_I_ConfigObject interface" << endl;
-		return ERR_NO_INTERFACE;
-}
-/*...e*/
-/*...slbNodeList\58\\58\insert\40\lb_I_Unknown \42\node\41\:0:*/
-lbErrCodes lbNodeList::insert(lb_I_Unknown *node) {
-	_plbDOMNodeList list = childs;
-	lb_I_Object* object = NULL;
-	lbDOMNode* newNode = NULL;
-	
-	node->queryInterface("lb_I_Object", (void**) &object);
-
-	if (object == NULL) {
-		cout << "Try to log" << endl;
-		cout << "Error: Only objects, that provide a lb_I_Object interface, could be stored" << endl;
-		cout << "Logged" << endl;
-		node->release();
-		return ERR_NO_INTERFACE;
-	}
-	
-	// The lb_I_Object reference is no more used now
-	node->release();
-	
-	node->queryInterface("lb_I_ConfigObject", (void**) &newNode);
-	
-	if (newNode == NULL) {
-		cout << "Error: This container can only store lb_I_ConfigObjects" << endl;
-		return ERR_NO_INTERFACE;
-	} 
-	
-	if (list == NULL) {
-		childs = list = new _lbDOMNodeList;
-		list->next = NULL;
-		list->element = newNode;
-	} else {
-		while (list->next != NULL) list = list->next;
-	
-		list->next = new _lbDOMNodeList;
-		list = list->next;
-	
-		list->element = newNode;
-		list->next = NULL;
-	}
-
-	if (childs == NULL) {
-		CL_LOG("Error: childs is still a NULL pointer !!");
-		
-	}
-	
-	count++;
-		
-	return ERR_NONE;
-}
-/*...e*/
-/*...slbNodeList\58\\58\remove\40\int i\41\:0:*/
-lbErrCodes lbNodeList::remove(int i) {
-	cout << "lbNodeList::remove(...) not implemented!" << endl;
-	return ERR_NONE;
-}
-/*...e*/
-/*...slbNodeList\58\\58\find\40\const char \42\nodeName\44\ int \38\ i\41\:0:*/
-lbErrCodes lbNodeList::find(const char *nodeName, int & i) {
-	cout << "lbNodeList::find(const char* '" << nodeName << "', int i) not implemented!" << endl;
-	_plbDOMNodeList list = childs;
-	return ERR_NONE;
-}
-/*...e*/
-/*...slbNodeList\58\\58\get\40\lb_I_Unknown\42\\38\ node\44\ int i\41\:0:*/
-lbErrCodes lbNodeList::get(lb_I_Unknown*& node, int i) {
-	if (childs == NULL) {
-		CL_LOG("Container lbNodeList is empty !");
-		return ERR_CONFIG_EMPTY_CONTAINER;
-	}
-	
-	if (i >= count) {
-		CL_LOG("Container lbNodeList bounds !");
-		return ERR_CONFIG_CONTAINER_BOUND;
-	}
-	
-	_plbDOMNodeList list = childs;
-	
-	for (int ii = 0; ii < i; ii++) {
-		if (list == NULL) {
-			CL_LOG("Found a bug at lbNodeList::get(lb_I_Unknown*& node, int i)");
-			
-		}
-		
-		list = list->next;
-	}
-	if (list == NULL) {
-		CL_LOG("list is NULL!");
-		
-	}
-	
-	if (list->element == NULL) {
-		CL_LOG("list->element is NULL!");
-		
-	}	
-	
-	list->element->queryInterface("lb_I_Unknown", (void**) &node);
-	
-	if (node == NULL) {
-		cout << "Error, stored object has no lb_I_Unknown interface!" << endl;
-		return ERR_CONFIG_INTERNAL;
-	}
-	
-	return ERR_NONE;
-}
-/*...e*/
-/*...e*/
-#endif
 /*...sclass lbDOMConfig \58\ public lb_I_XMLConfig:0:*/
 /*...sclass lbDOMConfig:0:*/
 class lbDOMConfig : 
 		public lb_I_XMLConfig
 {
-public:
-	lbDOMConfig();
-	~lbDOMConfig();
+protected:
 	lbDOMConfig(const lbDOMConfig & t) {
+		CL_LOG("lbDOMConfig::lbDOMConfig(const lbDOMConfig & t) called !!!");
+		getch();
 		ref = STARTREF;
 		errReporter = NULL;
 /*...sVERBOSE:0:*/
@@ -1085,7 +878,9 @@ public:
 #endif	
 /*...e*/
 	}
-
+public:
+	lbDOMConfig();
+	virtual ~lbDOMConfig();
 	DECLARE_LB_UNKNOWN()
 
 	virtual lbErrCodes LB_STDCALL parse();
@@ -1093,8 +888,15 @@ public:
 	virtual lbErrCodes LB_STDCALL getConfigObject(lb_I_ConfigObject*& cfgObj, const char* const cfgObjectName);
 
 protected:
-	lbDOMContainer* LB_STDCALL findNodesAtTreePos(const char* treePos);
-	lbDOMContainer* LB_STDCALL createAbstractedChildList(const DOM_Node node);
+	/**
+	 * These members must return a previously queried interface. So the caller becomes it's
+	 * own reference to the object. He must be responsible for release the returned reference.
+	 *
+	 * A Bug (no reference returned) in findNodesAtTreePos caused, that the lbDOMNode contained
+	 * the same instance as this class (with one reference count less than it must be.
+	 */
+	lb_I_Container* LB_STDCALL findNodesAtTreePos(const char* treePos);
+	lb_I_Container* LB_STDCALL createAbstractedChildList(const DOM_Node node);
 
 	int interface_used;
 	ErrorHandler *errReporter;
@@ -1102,7 +904,7 @@ protected:
 	int errorsOccured;
 	DOM_Document doc;
 	
-	lbDOMContainer* lastResult;
+	lb_I_Container* lastResult;
 };
 /*...e*/
 
@@ -1118,6 +920,7 @@ lbErrCodes lbDOMConfig::setData(lb_I_Unknown* uk) {
 /*...slbDOMConfig\58\\58\lbDOMConfig\40\\41\:0:*/
 lbDOMConfig::lbDOMConfig() {
 	ref = STARTREF;
+	lastResult = NULL;
 	interface_used = 0;
 	errReporter = new DOMTreeErrorReporter();
 	
@@ -1137,7 +940,7 @@ lbDOMConfig::lbDOMConfig() {
 		    }		
 /*...e*/
 	    }
-	    
+
 	parse();	
 }
 /*...e*/
@@ -1149,9 +952,12 @@ lbDOMConfig::~lbDOMConfig() {
 #endif
 /*...e*/
 	if (ref != STARTREF) cout << "Error: Reference count mismatch!" << endl;
-	
 	if (errReporter != NULL) {
 		delete errReporter;
+	}
+	if (lastResult != NULL) {
+		lastResult->deleteAll();
+		RELEASE(lastResult);
 	}
 }
 /*...e*/
@@ -1166,25 +972,6 @@ lbErrCodes LB_STDCALL lbDOMConfig::parse() {
 /*...e*/
 
 	if (filename != NULL) {
-#ifdef bla
-	    if (initialized == 0) {
-/*...sInitialize the DOM4C2 system:20:*/
-		    // Initialize the DOM4C2 system
-		    try
-		    {
-				XMLPlatformUtils::Initialize();
-		    }
-
-			catch (const XMLException& toCatch)
-		    {
-				cout << "Error during initialization! :\n"
-		                 << toCatch.getMessage() << endl;
-		         return ERR_XML_INIT;
-		    }		
-/*...e*/
-	    }
-#endif
-//for (long i = 0; i < 1000000; i++) {
 
 /*...sSetup objects:12:*/
 	    // Begin parsing...
@@ -1216,24 +1003,31 @@ lbErrCodes LB_STDCALL lbDOMConfig::parse() {
 
 	    // Clean up our parser and handler
 	    //delete handler;
-//}	
 
 	} else return ERR_NO_ENVIRONMENT;
 	return err;
 }
 /*...e*/
 /*...slbDOMContainer\42\ lbDOMConfig\58\\58\findNodesAtTreePos\40\const char\42\ treePos\41\:0:*/
-lbDOMContainer* LB_STDCALL lbDOMConfig::findNodesAtTreePos(const char* treePos) {
+lb_I_Container* LB_STDCALL lbDOMConfig::findNodesAtTreePos(const char* treePos) {
 	char* part = NULL;
 	char* name = NULL;
 	char* savename = NULL;
+	DOMString path;
 	int count = 1;
-	
-/*...sPrepare search:8:*/
 	/**
 	 * Use a lb_I_Container (implemented here)
 	 */
-	lbDOMContainer* list = new lbDOMContainer;
+	lbDOMContainer* DOM_list = new lbDOMContainer;
+	lb_I_Container* list = NULL;
+	
+	if (DOM_list->queryInterface("lb_I_Container", (void**) &list) != NULL) {
+		CL_LOG("Error: Could not generate a reference with interface lb_I_Container");
+		if (list != NULL) CL_LOG("Obviously failed queryInterface, instance pointer is not NULL!!!!");
+		return NULL;
+	}
+	
+/*...sPrepare search:8:*/
 
 	if (treePos == NULL) {
 		cout << "Null pointer detected!" << endl;
@@ -1245,16 +1039,15 @@ lbDOMContainer* LB_STDCALL lbDOMConfig::findNodesAtTreePos(const char* treePos) 
 	name = strrchr(savename, '/');
 	if (name == NULL) name = savename;
 	
-	cout << "Search for nodename '" << ((name[0] == '/') ? &name[1] : name) << "'" << endl;
-	
 	DOM_NodeList DOMlist = doc.getElementsByTagName(((name[0] == '/') ? &name[1] : name));
 	int len = DOMlist.getLength();
 
-	DOMString path;
+	// Cleanup
+	
+	delete [] savename;
+
 /*...e*/
 
-	if (len == 0) cout << "Nothing found" << endl;
-	
 	for (int i = 0; i < len; i++) {
 		path = "";
 		DOM_Node node = DOMlist.item(i);
@@ -1354,7 +1147,7 @@ lbErrCodes LB_STDCALL lbDOMConfig::hasConfigObject(const char* cfgObjectName, in
 	DOMString name = DOMString(cfgObjectName);
 
 	if (errorsOccured == 0) {
-		
+		char buf[100] = "";
 		lastResult = findNodesAtTreePos(cfgObjectName);
 
 		count = lastResult->Count(); //= lastResult->getChildrenCount();
@@ -1363,30 +1156,6 @@ lbErrCodes LB_STDCALL lbDOMConfig::hasConfigObject(const char* cfgObjectName, in
 	} else cout << "Any errors while parsing has been occured!" << endl;
 	
 	return err;
-/*...sbla:0:*/
-#ifdef bla		
-		
-		
-		if (len == 0) {
-			err = ERR_NO_OBJECT;
-			cout << "No object found" << endl;
-			return err;
-		}
-		
-		if (len > 1) {
-			err = ERR_MORE_OBJECTS;
-			cout << "Found " << len << " objects" << endl;
-			return err;
-		}
-		
-		
-		err = ERR_SINGLE_OBJECT;
-		cout << "Found 1 object" << endl;
-	} else cout << "Any errors while parsing has been occured!" << endl;
-
-	return err;
-#endif
-/*...e*/
 }
 /*...e*/
 /*...slbErrCodes lbDOMConfig\58\\58\getConfigObject\40\lb_I_ConfigObject\42\\38\ \44\ const char\42\ const\41\:0:*/
@@ -1399,48 +1168,34 @@ lbErrCodes LB_STDCALL lbDOMConfig::getConfigObject(lb_I_ConfigObject*& cfgObj,
 	 * Create the view for this result.
 	 */
 	 
-	lbDOMNode *node = new lbDOMNode;
-	node->lbDOMchilds = lastResult;
+	lbDOMNode *node = new lbDOMNode();
+	lb_I_Container* c = NULL;
+	
+	if (lastResult == NULL) {
+		CL_LOG("Error: Function sequence may be wrong. Please call hasConfigObject first!");
+		return ERR_FUNCTION_SEQUENCE;
+	}
+	
+	if ((lastResult != NULL) && (lastResult->queryInterface("lb_I_Container", (void**) &c)) != ERR_NONE) {
+		CL_LOG("Error: Could not get interface lb_I_Container");
+		getch();
+	}
+	
+	if (c == NULL) CL_LOG("Error: Failed to get container instance of lastResult");
+	
+	node->lbDOMchilds = c;
 	node->node = NULL; // See null pointer operator
 	
 	// This interface is needed:
 	node->queryInterface("lb_I_ConfigObject", (void**) &cfgObj);
 
-#ifdef bla
-	cout << "lbDOMConfig::getConfigObject(...) called" << endl;
-
-	if ((err = gTopLevel->m_plbConfigObject->findObject(cfgObjectName, cfgObj)) != ERR_NONE) {
-		return err;
-	}
-#endif	
 	return err;
 }
 /*...e*/
 /*...e*/
-/*...sLBDOMCONFIG_API getlbDOMConfigInstance\40\lb_I_XMLConfig\42\\38\ inst\41\:0:*/
-lbErrCodes LBDOMCONFIG_API __cdecl getlbDOMConfigInstance(lb_I_XMLConfig*& inst) {
-/*...sMEMTEST:0:*/
-#ifdef MEMTEST	
-	cout << "Initialize lbXMLConfig object" << endl;
-	
-	
-	for (long i = 0; i < 1000000; i++) { 
-#endif
-/*...e*/
-		inst = new lbDOMConfig();
-		
-/*...sMEMTEST:0:*/
-#ifdef MEMTEST		
-		inst->release();
-	}
-	
-	cout << "Done it" << endl;
-	
-#endif
-/*...e*/
-	return ERR_NONE;
-}
-/*...e*/
+
+IMPLEMENT_FUNCTOR(getlbDOMConfigInstance, lbDOMConfig)
+
 /*...sostream\38\ operator\60\\60\\40\ostream\38\ target\44\ const DOMString\38\ s\41\:0:*/
 // ---------------------------------------------------------------------------
 //
@@ -1603,6 +1358,7 @@ cout << "Check done" << endl;
 //                   is suppressed by the command line option.
 //
 // ---------------------------------------------------------------------------
+
 /*...soutputContent\40\ostream\38\ target\44\ const DOMString \38\toWrite\41\:0:*/
 void outputContent(ostream& target, const DOMString &toWrite)
 {
@@ -1615,7 +1371,7 @@ void outputContent(ostream& target, const DOMString &toWrite)
     {
         int            length = toWrite.length();
         const XMLCh*   chars  = toWrite.rawBuffer();
-        
+#ifdef bla        
         int index;
         for (index = 0; index < length; index++)
         {
@@ -1643,9 +1399,9 @@ void outputContent(ostream& target, const DOMString &toWrite)
                 break;
             }
         }
+#endif
     }
 
     return;
 }
 /*...e*/
-

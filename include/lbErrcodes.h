@@ -1,11 +1,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.7 $
+ * $Revision: 1.8 $
  * $Name:  $
- * $Id: lbErrcodes.h,v 1.7 2001/05/01 15:51:49 lothar Exp $
+ * $Id: lbErrcodes.h,v 1.8 2001/07/11 16:03:03 lothar Exp $
  *
  * $Log: lbErrcodes.h,v $
+ * Revision 1.8  2001/07/11 16:03:03  lothar
+ * First version of module management that hold's a little stresstest
+ *
  * Revision 1.7  2001/05/01 15:51:49  lothar
  * First instance could be loaded over the new module management
  *
@@ -48,6 +51,15 @@ enum lbErrCodes {
 	ERR_SINGLE_OBJECT,
 	ERR_NO_INTERFACE,
 	ERR_FUNCTOR,
+
+/* General error codes (semantics like function sequence handling) */
+
+	ERR_FUNCTION_SEQUENCE,
+
+/* Errcodes for reference counting */
+	
+	ERR_REFERENCE_COUNTING,
+	ERR_INSTANCE_STILL_USED,
 	
 /* Errcodes for dispatcher */
 
@@ -66,6 +78,7 @@ enum lbErrCodes {
 
 	ERR_MODULE_NOT_FOUND,
 	ERR_FUNCTION_NOT_FOUND,
+	ERR_MODULE_NO_INTERFACE,
 	
 /* Errcodes for dealing with XML */
 

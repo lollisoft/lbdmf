@@ -12,138 +12,229 @@
 #define LOOP
 
 void main() {
-        char* hostname = NULL;
-        char* port = NULL;
-        int count = 0;
-
-/*...sbla:0:*/
-#ifdef bla
-        lb_I_test *t = NULL;
-
-        getInstance(t);
-        
-        t->release();
-#endif
+/*...svars:0:*/
+    char* hostname = NULL;
+    char* port = NULL;
+    char buf[100] = "";
+    int count = 0;
+    lb_I_Unknown* unknown = NULL;
+    lb_I_Unknown* uk = NULL;
 /*...e*/
+/*...sinit:0:*/
+	printf("Program starting...\n");
 	getch();
 
 	lb_I_Module* mm = getModuleInstance();
-
 	mm->initialize();
-LOG("Test using logger before loading module manager");
+/*...e*/
+/*...stest string:0:*/
+	CL_LOG("Test using lb_I_String");
+	mm->request("lb_I_String", unknown);
+	if (unknown != NULL) {
+		lb_I_String* string = NULL;
+		lbErrCodes err = ERR_NONE;
 
-        LOG("Test has been started");
-        LOG("Test has been started");
+		CL_LOG("Try to get interface lb_I_String");
+		getch();
+		if ((err = unknown->queryInterface("lb_I_String", (void**) &string)) != ERR_NONE) {
+			sprintf(buf, "Getting a string failed (string instance is %x, ErrCode = %d) !!!!!!!!", string, err);
+			CL_LOG(buf);
+		}
 
-	mm->uninitialize();
-        mm->release();
-        unHookAll();
-        getch();
+		if (string != NULL) {
+			CL_LOG("Using the string :-)");
+			string->setData("müll");
+		}
 
-	CL_LOG("Test container implementation");
-	getch();
-	
-	mm = getModuleInstance();
-	mm->initialize();
-	lb_I_Unknown* uk = NULL;
-	
+		CL_LOG("Unknown instance of lb_I_String is no more needed!");
+		unknown->release();
+		getch();
+
+		CL_LOG("Now release the string");
+		string->release();
+		getch();
+
+	}
+/*...e*/
+/*...stest logger:0:*/
+	CL_LOG("Test invoking logger interface directly (requesting)...");
+	mm->request("lb_I_Log", unknown);
+
+	if (unknown != NULL) {
+		lb_I_Log* logger = NULL;
+		if (unknown->queryInterface("lb_I_Log", (void**) &logger) != ERR_NONE) {
+			CL_LOG("Getting a logger failed !!!!!!!!");
+		}
+
+		if (logger != NULL) {
+				logger->enable("Bla");
+				logger->log("Test logging", 100L, "Blubber");
+		}
+	}
+/*...e*/
+/*...stest container:0:*/
 	if (mm->request("lb_I_Container", uk) != ERR_NONE) {
 		CL_LOG("Error: Could not get needed instance!");
+		getch();
 	}
 	
 	lb_I_Container* c = NULL;
-	
+
 	if (uk->queryInterface("lb_I_Container", (void**) &c) != ERR_NONE) {
 		CL_LOG("Error: Could not get needed interface!");
+		getch();
 	}
 	
 	CL_LOG("Container requested");
 	getch();
-
+/*...e*/
+/*...stest integer:0:*/
 	if (mm->request("lb_I_Integer", uk) != ERR_NONE) {
 		CL_LOG("Error: Could not get needed instance!");
+		getch();
 	}
-#ifdef bla
-	lb_I_KeyBase* key = NULL;
-	if (uk->queryInterface("lb_I_KeyBase", (void**) &key) != ERR_NONE) {
+/*...e*/
+
+/*...stest unloading module manager:0:*/
+	CL_LOG("Test unloading module manager");
+	mm->uninitialize();
+	mm->release();
+	unHookAll();
+	getch();
+/*...e*/
+/*...stest after unloading:0:*/
+	mm = getModuleInstance();
+	mm->initialize();
+	LOG("Test logging after initializing the second one");
+/*...e*/
+	
+	uk = NULL;
+
+/*...stest countainer:0:*/
+	if (mm->request("lb_I_Container", uk) != ERR_NONE) {
+		CL_LOG("Error: Could not get needed instance!");
+		getch();
+	}
+	
+	c = NULL;
+
+	if (uk->queryInterface("lb_I_Container", (void**) &c) != ERR_NONE) {
 		CL_LOG("Error: Could not get needed interface!");
+		getch();
 	}
-#endif
+	
+	CL_LOG("Container requested");
+	getch();
+/*...e*/
+
+/*...stest integer:0:*/
+	if (mm->request("lb_I_Integer", uk) != ERR_NONE) {
+		CL_LOG("Error: Could not get needed instance!");
+		getch();
+	}
+/*...e*/
+
 	mm->uninitialize();
 	mm->release();
 
 	CL_LOG("Basic tests ended");
 	getch();
 
+
+	CL_LOG("Memory test ------------------------------------------");
+	getch();
+	
         /**
          * Get module manager
          */
-#ifdef LOOP
-        for (long i = 0; i < 10000000; i++) {
-#endif
-                lb_I_Module* modMan = getModuleInstance();
-                modMan->initialize();
+        lb_I_Module* modMan = getModuleInstance();
+        modMan->initialize();
 
+	
+	#ifdef LOOP
+        for (long i = 0; i < 10000000; i++) {
+    #endif
+			if (modMan->request("lb_I_Container", uk) != ERR_NONE) {
+				printf("Error: Could not get needed instance!\n");
+				getch();
+			}
+
+			if (uk != NULL) {
+
+				lb_I_Container* container = NULL;
+
+				if (uk->queryInterface("lb_I_Container", (void**) &container) != ERR_NONE) {
+					CL_LOG("Error: Could not query for interface lb_I_Container");
+				}
+				RELEASE(uk);
+
+				if (modMan->request("lb_I_String", uk) != ERR_NONE) {
+					printf("Error: Could not get needed instance!\n");
+					getch();
+				}
+
+				if (uk != NULL) {
+					lb_I_String* string = NULL;
+
+					if (uk->queryInterface("lb_I_String", (void**) &string) != ERR_NONE) {
+						printf("Error: Could not get needed interface!\n");
+						getch();
+					}
+
+					if (string != NULL) {
+						// Fill up the container
+						
+						string->setData("Bla");
+						container->insert(string, string);
+						string->setData("Bla1");
+						container->insert(string, string);
+						string->setData("Bla2");
+						container->insert(string, string);
+						string->setData("Bla3");
+						container->insert(string, string);
+						string->setData("Bla4");
+						container->insert(string, string);
+					}
+				}
+
+				container->deleteAll();
+				RELEASE(container);
+				
+			} else {
+				CL_LOG("Here must be an object!!!");
+				getch();
+			}
+
+	#ifdef LOOP
+		}
+	#endif
+
+        CL_LOG("End test lb_I_Container loop");
+		getch();
+
+#ifdef LOOP
+        for (i = 0; i < 10000000; i++) {
+
+#endif
+printf("Test LOG macro\n");
 LOG("Call lb_I_Module->load()");
-        
-                modMan->load("Test");
-                
+getch();
+
+		if (modMan->request("lb_I_Integer", uk) != ERR_NONE) {
+			CL_LOG("Error: Could not get needed instance!");
+		}
+        	
+        	uk->release();
+        	
                 lb_I_Unknown* pUnknown;
                 lb_I_XMLConfig* XMLinst;
-                
-                /**
-                 * Getting an instance of a precreated object is not possible,
-                 * because this object must also be created the same way.
-                 */
-/*...sVERBOSE:0:*/
-#ifdef VERBOSE
-cout << "modMan->request('instance/XMLConfig', pUnknown)" << endl;
-#endif
-/*...e*/
-		/**
-		 * Get an instance from anywhere by an indirect request.
-		 * (From the lb_I_Requestable interface)
-		 */
-                if (modMan->request("instance/XMLConfig", pUnknown) != ERR_NONE) {
-                        // error
-                }
-/*...sVERBOSE:0:*/
-#ifdef VERBOSE
-cout << "pUnknown->queryInterface('lb_I_XMLConfig', (void**) &XMLinst)" << endl;                
-#endif
-/*...e*/
-                pUnknown->queryInterface("lb_I_XMLConfig", (void**) &XMLinst);
-                
-                if (XMLinst == NULL) {
-                        printf("Could not get XML instance!\n");
-                        getch();
-                        return;
-                }
-                
-                cout << "Call XMLinst->parse() ('" << hex << (void*) XMLinst << "') ..." << endl;
-                
-		if (XMLinst->parse() != ERR_NONE) {
-                	printf("Error while parsing XML document\n");
-		}
-                
-                cout << "Called XMLinst->parse()" << endl;
-                
-                if (XMLinst->hasConfigObject("#document/dtdHostCfgDoc/Modules/Module/ModuleName", count) != ERR_NONE) {
-                        printf("Object not found\n");
-                } else {
-                        printf("Object was found\n");
-                }
-                
-                XMLinst->release();
-                pUnknown->release();
-		modMan->uninitialize();
-                modMan->release();
-                
-              
+        
                         
 #ifdef LOOP
         }
 #endif
+	modMan->uninitialize();
+        modMan->release();
         unHookAll();
         getch();
 }

@@ -1,11 +1,14 @@
 #...sRevision history:0:
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.2 $
+# * $Revision: 1.3 $
 # * $Name:  $
-# * $Id: lbDOMConfig.mak,v 1.2 2001/04/13 07:39:27 lothar Exp $
+# * $Id: lbDOMConfig.mak,v 1.3 2001/07/11 16:04:33 lothar Exp $
 # *
 # * $Log: lbDOMConfig.mak,v $
+# * Revision 1.3  2001/07/11 16:04:33  lothar
+# * First version of module management that hold's a little stresstest
+# *
 # * Revision 1.2  2001/04/13 07:39:27  lothar
 # * Commit for backup
 # *
@@ -17,7 +20,8 @@
 
 # Microsoft Developer Studio Generated NMAKE File, Based on lbDOMConfig.dsp
 !IF "$(CFG)" == ""
-CFG=lbDOMConfig - Win32 Debug
+CFG=lbDOMConfig - Win32 Release
+# CFG=lbDOMConfig - Win32 Debug
 !MESSAGE No configuration specified. Defaulting to lbDOMConfig - Win32 Debug.
 !ENDIF 
 
@@ -44,29 +48,32 @@ NULL=
 NULL=nul
 !ENDIF 
 
-#...sRelease build:0:
+# Begin Custom Macros
+OutDir=.\Debug
+HOOKDIR=.
+LB_DEFINES=/D WINDOWS /D LB_RUNTIME_LINK
+LB_INCLUDE=	/I "E:\develop\projects\lothar\XML\xml4c3_1_0-win32\include" \
+		/I q:\develop\projects\cpp\include \
+		/I Q:\Develop\Projects\CPP\BaseDevelopment\lbclasses \
+		/I "Q:\Develop\Projects\CPP\interfaces"
+# End Custom Macros
+
+
 !IF  "$(CFG)" == "lbDOMConfig - Win32 Release"
+#...sRelease build:0:
 
 OUTDIR=.\Release
 INTDIR=.\Release
-# Begin Custom Macros
-OutDir=.\Release
-LB_DEFINES=/D WINDOWS /D LB_RUNTIME_LINK
-LB_INCLUDE=/I q:\develop\projects\cpp\include /I Q:\Develop\Projects\CPP\BaseDevelopment\lbclasses
-#HOOKDIR=..\..\lbHook
-HOOKDIR=.
-
-# End Custom Macros
 
 ALL : "$(OUTDIR)\lbDOMConfig.dll"
 
 
 CLEAN :
--@erase "$(INTDIR)\lbDOMConfig.obj"
--@erase "$(INTDIR)\vc60.idb"
--@erase "$(OUTDIR)\lbDOMConfig.dll"
--@erase "$(OUTDIR)\lbDOMConfig.exp"
--@erase "$(OUTDIR)\lbDOMConfig.lib"
+	-@erase "$(INTDIR)\lbDOMConfig.obj"
+	-@erase "$(INTDIR)\vc60.idb"
+	-@erase "$(OUTDIR)\lbDOMConfig.dll"
+	-@erase "$(OUTDIR)\lbDOMConfig.exp"
+	-@erase "$(OUTDIR)\lbDOMConfig.lib"
 
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
@@ -118,7 +125,41 @@ BSC32_SBRS= \
 
 LINK32=link.exe
 #LINK32_FLAGS=..\..\..\..\dll\libs\lbhook.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /incremental:no /pdb:"$(OUTDIR)\lbDOMConfig.pdb" /machine:I386 /out:"$(OUTDIR)\lbDOMConfig.dll" /implib:"$(OUTDIR)\lbDOMConfig.lib" 
-LINK32_FLAGS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /incremental:no /pdb:"$(OUTDIR)\lbDOMConfig.pdb" /machine:I386 /out:"$(OUTDIR)\lbDOMConfig.dll" /implib:"$(OUTDIR)\lbDOMConfig.lib" 
+#LINK32_FLAGS=	kernel32.lib \
+#		user32.lib \
+#		gdi32.lib \
+#		winspool.lib \
+#		comdlg32.lib \
+#		advapi32.lib \
+#		shell32.lib \
+#		ole32.lib \
+#		oleaut32.lib \
+#		uuid.lib \
+#		odbc32.lib \
+#		odbccp32.lib 
+#		/nologo /dll \
+#		/incremental:no /pdb:"$(OUTDIR)\lbDOMConfig.pdb" 
+#		/machine:I386 /out:"$(OUTDIR)\lbDOMConfig.dll" 
+#		/implib:"$(OUTDIR)\lbDOMConfig.lib" 
+LINK32_FLAGS=	kernel32.lib \
+		user32.lib \
+		gdi32.lib \
+		winspool.lib \
+		comdlg32.lib \
+		advapi32.lib \
+		shell32.lib \
+		ole32.lib \
+		oleaut32.lib \
+		uuid.lib \
+		odbc32.lib \
+		odbccp32.lib \
+		E:\develop\projects\lothar\XML\xml4c3_1_0-win32\lib\xerces-c_1.lib \
+		E:\develop\projects\lothar\XML\xml4c3_1_0-win32\lib\icuuc.lib \
+		/nologo /dll \
+		/incremental:yes /pdb:"$(OUTDIR)\lbDOMConfig.pdb" \
+		/debug /machine:I386 /out:"$(OUTDIR)\lbDOMConfig.dll" \
+		/implib:"$(OUTDIR)\lbDOMConfig.lib" /pdbtype:sept 
+
 LINK32_OBJS= \
 "$(INTDIR)\lbDOMConfig.obj" \
 "$(INTDIR)\lbHook.obj"
@@ -127,18 +168,24 @@ LINK32_OBJS= \
     $(LINK32) @<<
   $(LINK32_FLAGS) $(LINK32_OBJS)
 <<
+
+
+SOURCE="$(InputPath)"
+DS_POSTBUILD_DEP=$(INTDIR)\postbld.dep
+
+ALL : $(DS_POSTBUILD_DEP)
+
+$(DS_POSTBUILD_DEP) : "$(OUTDIR)\lbDOMConfig.dll"
+   copy debug\*.dll q:\develop\xml
+   copy debug\*.dll q:\develop\projects\dll
+   copy lbDOMConfig.h q:\develop\projects\cpp\include
+   echo Helper for Post-build step > "$(DS_POSTBUILD_DEP)"
 #...e
 !ELSEIF  "$(CFG)" == "lbDOMConfig - Win32 Debug"
 #...sDebug build:0:
 
 OUTDIR=.\Debug
 INTDIR=.\Debug
-# Begin Custom Macros
-OutDir=.\Debug
-HOOKDIR=.
-LB_DEFINES=/D WINDOWS /D LB_RUNTIME_LINK
-LB_INCLUDE=/I q:\develop\projects\cpp\include /I Q:\Develop\Projects\CPP\BaseDevelopment\lbclasses
-# End Custom Macros
 
 ALL : "$(OUTDIR)\lbDOMConfig.dll"
 
@@ -157,7 +204,7 @@ CLEAN :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
 CPP=cl.exe
-CPP_PROJ=/nologo $(LB_DEFINES) $(LB_INCLUDE) /MTd /W3 /Gm /GX /ZI /Od /I "E:\develop\projects\lothar\XML\xml4c3_1_0-win32\include" /I "Q:\Develop\Projects\CPP\include" /I "Q:\Develop\Projects\CPP\interfaces" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "LBDOMCONFIG_EXPORTS" /Fp"$(INTDIR)\lbDOMConfig.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /GZ /c 
+CPP_PROJ=/nologo $(LB_DEFINES) $(LB_INCLUDE) /MTd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "LBDOMCONFIG_EXPORTS" /Fp"$(INTDIR)\lbDOMConfig.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /GZ /c 
 
 !MESSAGE Includes:
 !MESSAGE $(LB_INCLUDE)
@@ -207,7 +254,24 @@ BSC32_SBRS= \
 
 LINK32=link.exe
 #LINK32_FLAGS=..\..\..\..\dll\libs\lbhook.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib E:\develop\projects\lothar\XML\xml4c3_1_0-win32\lib\xerces-c_1.lib E:\develop\projects\lothar\XML\xml4c3_1_0-win32\lib\icuuc.lib /nologo /dll /incremental:yes /pdb:"$(OUTDIR)\lbDOMConfig.pdb" /debug /machine:I386 /out:"$(OUTDIR)\lbDOMConfig.dll" /implib:"$(OUTDIR)\lbDOMConfig.lib" /pdbtype:sept 
-LINK32_FLAGS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib E:\develop\projects\lothar\XML\xml4c3_1_0-win32\lib\xerces-c_1.lib E:\develop\projects\lothar\XML\xml4c3_1_0-win32\lib\icuuc.lib /nologo /dll /incremental:yes /pdb:"$(OUTDIR)\lbDOMConfig.pdb" /debug /machine:I386 /out:"$(OUTDIR)\lbDOMConfig.dll" /implib:"$(OUTDIR)\lbDOMConfig.lib" /pdbtype:sept 
+LINK32_FLAGS=	kernel32.lib \
+		user32.lib \
+		gdi32.lib \
+		winspool.lib \
+		comdlg32.lib \
+		advapi32.lib \
+		shell32.lib \
+		ole32.lib \
+		oleaut32.lib \
+		uuid.lib \
+		odbc32.lib \
+		odbccp32.lib \
+		E:\develop\projects\lothar\XML\xml4c3_1_0-win32\lib\xerces-c_1.lib \
+		E:\develop\projects\lothar\XML\xml4c3_1_0-win32\lib\icuuc.lib \
+		/nologo /dll \
+		/incremental:yes /pdb:"$(OUTDIR)\lbDOMConfig.pdb" \
+		/debug /machine:I386 /out:"$(OUTDIR)\lbDOMConfig.dll" \
+		/implib:"$(OUTDIR)\lbDOMConfig.lib" /pdbtype:sept 
 LINK32_OBJS= \
 "$(INTDIR)\lbDOMConfig.obj" \
 "$(INTDIR)\lbHook.obj"
@@ -216,7 +280,7 @@ LINK32_OBJS= \
     $(LINK32) @<<
   $(LINK32_FLAGS) $(LINK32_OBJS)
 <<
-#...e
+
 
 SOURCE="$(InputPath)"
 DS_POSTBUILD_DEP=$(INTDIR)\postbld.dep
@@ -232,7 +296,8 @@ $(DS_POSTBUILD_DEP) : "$(OUTDIR)\lbDOMConfig.dll"
    copy debug\*.dll q:\develop\projects\dll
    copy lbDOMConfig.h q:\develop\projects\cpp\include
    echo Helper for Post-build step > "$(DS_POSTBUILD_DEP)"
-
+ 
+#...e
 !ENDIF 
 
 

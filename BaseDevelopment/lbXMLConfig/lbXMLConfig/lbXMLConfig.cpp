@@ -47,7 +47,7 @@ class lbXMLConfig :
 {
 public:
 	lbXMLConfig();
-	~lbXMLConfig();
+	virtual ~lbXMLConfig();
 	lbXMLConfig(const lbXMLConfig & t) {
 		ref = STARTREF;
 		handler = NULL;

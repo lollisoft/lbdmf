@@ -22,7 +22,7 @@ class lb_I_ConfigObject : public lb_I_Unknown {
 /*...sprotected ctor\39\s and dtor\39\s:0:*/
 protected:
 	lb_I_ConfigObject() {}
-	~lb_I_ConfigObject() {}
+	virtual ~lb_I_ConfigObject() {}
 /*...e*/
 public:
 /*...sSimple access:8:*/
@@ -106,6 +106,7 @@ public:
 	 */
 	virtual lbErrCodes LB_STDCALL getAttribute(const char* name, lb_I_Attribute*& attr) = 0;
 	virtual lbErrCodes LB_STDCALL getAttributeValue(const char* name, char*& attr) = 0;
+	virtual lbErrCodes LB_STDCALL deleteValue(char*& attr) = 0;
 //	virtual lbErrCodes getDefaultImpl(char* interfacename, lb_I_ConfigObject* node, char*& implTor, char*& module) = 0;
 	virtual char*      LB_STDCALL getName() = 0;
 
@@ -117,7 +118,7 @@ class lb_I_XMLConfig : public lb_I_Unknown
 {
 protected:
 	lb_I_XMLConfig() {}
-	~lb_I_XMLConfig() {}
+	virtual ~lb_I_XMLConfig() {}
 public:
 	
 	virtual lbErrCodes LB_STDCALL parse() = 0;

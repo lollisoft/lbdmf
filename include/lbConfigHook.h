@@ -61,6 +61,7 @@ extern int isInitializing;
 						if (log == NULL) { \
 							CL_LOG("Unknown object has no interface for lb_I_Log"); \
 							exit (1); \
+						} else { \
 						} \
 					} else { \
 						char buf[100] = ""; \
@@ -85,9 +86,7 @@ extern int isInitializing;
 				"Msg: " << msg << " File: " << __FILE__ << " Line: " << __LINE__ << endl; \
 			} else { \
 				GET_LOG_INSTANCE \
-				cout << "Log a message: " << msg << endl; \
 				log->log(msg, __LINE__, __FILE__); \
-				cout << "Logged." << endl; \
 			}
 /*...e*/
 /*...sLOGENABLE:0:*/
