@@ -166,9 +166,42 @@ public:
 	virtual lbErrCodes LB_STDCALL getConfigObject(lb_I_ConfigObject** cfgObj, const char* const cfgObjectName) = 0;
 };
 /*...e*/
+/*...sclass lb_I_FunctorEntity:0:*/
+/**
+ * This interface will replace the recent approach of getting functors from
+ * interfaces. This is because I have produced a big memory leak. The best winn
+ * be to build a new repository code base.
+ */
 
-// A directory for all	 interfaces
-/*...sclass lb_I_InterfaceDirectory:0:*/
+
+class lb_I_FunctorEntity : public lb_I_Unknown
+{
+protected:
+	lb_I_FunctorEntity() {}
+	virtual ~lb_I_FunctorEntity() {}
+	
+	virtual void LB_STDCALL setFunctor(char* functor) = 0;
+	virtual void LB_STDCALL setModule(char* module) = 0;
+	virtual void LB_STDCALL setInterface(char* iface) = 0;
+
+public:
+	virtual char* LB_STDCALL getFunctor() = 0;
+	virtual char* LB_STDCALL getModule() = 0;
+	virtual char* LB_STDCALL getInterface() = 0;
+
+	friend class lb_I_InterfaceRepository;
+};
+/*...e*/
+/*...sclass lb_I_InterfaceRepository:0:*/
+class lb_I_InterfaceRepository : public lb_I_Unknown
+{
+protected:
+        lb_I_InterfaceRepository() {}
+        virtual ~lb_I_InterfaceRepository() {}
+public:
+
+	virtual lb_I_FunctorEntity* LB_STDCALL getFirstEntity(char* iface) = 0;
+};
 /*...e*/
 
 
