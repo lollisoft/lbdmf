@@ -11,11 +11,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.16 $
+ * $Revision: 1.17 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.16 2001/11/06 21:38:30 lothar Exp $
+ * $Id: mkmk.cpp,v 1.17 2001/11/08 20:47:13 lothar Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.17  2001/11/08 20:47:13  lothar
+ * Added writing dll targets (tested on lbmodule)
+ *
  * Revision 1.16  2001/11/06 21:38:30  lothar
  * Added writeExeTarget function to be able building my self under windows
  *
@@ -538,6 +541,7 @@ char* TIncludeParser::BasicParse(char *FileName)
 /*...e*/
 /*...e*/
 
+/*...swriteExeTarget\40\char\42\ modulename\41\:0:*/
 void writeExeTarget(char* modulename) {
 #ifdef UNIX
   printf("\n%s: $(OBJS)\n", modulename);
@@ -555,10 +559,37 @@ void writeExeTarget(char* modulename) {
   
   printf("\n%s.exe: $(OBJS)\n", ModName);
   printf("\t\techo NAME $(PROGRAM).exe > $(LNK)\n");
-  printf("\t\techo $(FILE) >> $(LNK)\n");
+  printf("\t\techo $(FILE) $(LIBS) >> $(LNK)\n");
   printf("\t\t$(LINK) @$(LNK)\n");
+  printf("\t\t$(CP) $(PROGRAM).exe $(EXEDIR)\n");
 #endif
 }
+/*...e*/
+/*...swriteDllTarget\40\char\42\ modulename\41\:0:*/
+void writeDllTarget(char* modulename) {
+#ifdef UNIX
+  printf("\n%s: $(OBJS)\n", modulename);
+  printf("\t\t$(CC) $(L_OPS) %s $(OBJS) $(OBJDEP)\n",modulename);
+#endif
+#ifdef __WATCOMC__
+  char* ModName = strdup(modulename);
+  char** array;
+  int count = split('.', ModName, &array);
+
+  printf("FILE = FIL\n");
+  printf("FILE += $(foreach s, $(OBJS),$s, )\n");
+  printf("LNK=%s.lnk\n", ModName);
+  printf("PROGRAM=%s\n", ModName);
+  
+  printf("\n%s.dll: $(OBJS)\n", ModName);
+  printf("\t\techo NAME $(PROGRAM).dll > $(LNK)\n");
+  printf("\t\techo $(FILE) $(LIBS) >> $(LNK)\n");
+  printf("\t\techo LIBR $(LIBS) >> $(LNK)\n");
+  printf("\t\t$(LINK) $(LNKDLLOPS) @$(LNK)\n");
+  printf("\t\t$(CP) $(PROGRAM).dll $(DLLDIR)\n");
+#endif
+}
+/*...e*/
 
 //------------------------------ Main code ------------------------------
 /*...svoid ShowHelp\40\\41\:0:*/
@@ -680,7 +711,7 @@ void WriteEnding(FILE *f, char *ModuleName, TDepList *l)
   ListFiles(f,Line,l,true);
 
 #ifndef UNIX
-  printf("LIBS = $(%%DEVROOT)\\projects\\dll\\libs\\lbHook.lib \n\n");
+  printf("LIBS = $(DEVROOT)\\projects\\dll\\libs\\lbhook.lib \n");
 #endif
 
 #ifdef WATCOM_MAKE
@@ -721,7 +752,16 @@ void WriteEnding(FILE *f, char *ModuleName, TDepList *l)
 /*...e*/
 #else
 
-  writeExeTarget(ModuleName);
+  switch (targettype) {
+  	case DLL_TARGET:
+		writeDllTarget(ModuleName);
+		break;
+	case EXE_TARGET:
+		writeExeTarget(ModuleName);
+		break;
+	default:
+		break;
+  }
   
 #endif
 }
