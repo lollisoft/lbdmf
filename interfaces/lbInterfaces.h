@@ -218,7 +218,10 @@ typedef lbErrCodes (LB_STDCALL lb_I_EventHandler::*lbEvHandler)(lb_I_Unknown* uk
 	{ lbErrCodes err; \
 		if ((err = instance->release(__MACRO_FILE__, __MACRO_LINE__)) != ERR_NONE) { \
 			if (err == ERR_REFERENCE_COUNTING ) { \
+				printf("Error in reference counting!\n"); \
+				if (__MACRO_FILE__ != NULL) { \
 				_CL_LOG << "RELEASE_1(...) Reference count mismatch at" << __MACRO_LINE__ << " in " << __MACRO_FILE__ << " for instance " << instance->getClassName() LOG_ \
+				} \
 			} else { \
 			} \
 		} \
@@ -347,9 +350,7 @@ public:
 				} \
 				if (_line == -1) { \
 				} \
-				printf("Release instance " #Unknown_Reference "\n"); \
 				RELEASE_1(_autoPtr, _file, _line); \
-				printf("Released\n"); \
 			} \
 		} \
 		void LB_STDCALL setFile(char* __file) { \
