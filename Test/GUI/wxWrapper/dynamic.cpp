@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.53 2005/03/07 20:09:34 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.54 2005/03/07 20:27:25 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.53 $
+ * $Revision: 1.54 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.53 2005/03/07 20:09:34 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.54 2005/03/07 20:27:25 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.54  2005/03/07 20:27:25  lollisoft
+ * Minor compile problem fixed due to Linux changes
+ *
  * Revision 1.53  2005/03/07 20:09:34  lollisoft
  * Minor changes to compile under Linux
  *
@@ -2591,8 +2594,11 @@ END_IMPLEMENT_LB_UNKNOWN()
 IMPLEMENT_APP  (MyApp)
 #endif
 #ifdef LINUX
+#ifndef OSX
 IMPLEMENT_APP  (MyApp)
 #endif
+#endif
+
 int MyApp::OnExit() {
 	//wxGUI->cleanup();
 	return 0;
