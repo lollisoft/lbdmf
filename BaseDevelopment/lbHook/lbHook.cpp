@@ -39,6 +39,11 @@ HINSTANCE LB_Module_Handle = NULL;
 
 char* trackObject = NULL;
 
+DLLEXPORT char* LB_STDCALL ltoa(void* ptr) {
+        static char buf[20] = "";
+        return ltoa((long) ptr, buf, 10);
+}
+
 DLLEXPORT void LB_STDCALL CL_doLog(char* f, char* msg) {
                 FILE *fp;
                 fp = fopen( f, "a" );
@@ -59,14 +64,6 @@ DLLEXPORT void LB_STDCALL set_trackObject(char* track) {
 }
 
 DLLEXPORT void LB_STDCALL track_Object(lb_I_Unknown* o, char* msg) {
-	char ptr[100] = "";
-	sprintf(ptr, "%p", o);
-	if (strcmp(ptr, (get_trackObject() == NULL) ? "" : get_trackObject()) == 0) {
-		char *message = (char*) malloc(strlen(msg)+100);
-		sprintf(message, "Track object: %s\n", msg);
-		CL_LOG(message);
-		free((void*) message);
-	}
 }
 
 DLLEXPORT char* LB_STDCALL get_trackObject() {
@@ -132,9 +129,7 @@ lbErrCodes LB_STDCALL lbGetFunctionPtr(const char* name, HINSTANCE hinst, void**
 #ifdef WINDOWS	
         if ((*pfn = (void*) GetProcAddress(hinst, name)) == NULL)
         {
-            sprintf(msg, "Kann Funktion '%s' nicht finden.", name);
-            CL_LOG(msg); 
-            getch(); 
+            _LOG << "Kann Funktion '" << name << "' nicht finden." LOG_
             return ERR_FUNCTION_NOT_FOUND;
         }
 #endif
@@ -186,12 +181,12 @@ T_p_getlbModuleInstance DLL_GETMODULEINSTANCE;
 	if (lbGetFunctionPtr(functor, 
 			     LB_Module_Handle, 
 			     (void **) &DLL_GETMODULEINSTANCE) != ERR_NONE) {
-		CL_LOG("Fatal: Could not get functor for the module manager!")
+		_CL_LOG << "Fatal: Could not get functor for the module manager!" LOG_
 		exit(1);
 	}
 	
 	if ((err = DLL_GETMODULEINSTANCE(&module, NULL, __FILE__, __LINE__)) == ERR_STATE_FURTHER_LOCK) {
-		CL_LOG("Instance is locked. Must set module manager first");
+		_CL_LOG << "Instance is locked. Must set module manager first" LOG_
 		module->setModuleManager(module.getPtr(), __FILE__, __LINE__);
 	} 
 	
@@ -334,7 +329,7 @@ BEGIN_IMPLEMENT_LB_UNKNOWN(lbKeyUL)
 END_IMPLEMENT_LB_UNKNOWN()
 
 lbErrCodes LB_STDCALL lbKeyUL::setData(lb_I_Unknown* uk) {
-	CL_LOG("lbKey::setData() not implemented yet");
+	_CL_LOG << "lbKey::setData() not implemented yet" LOG_
 	return ERR_NONE;
 }
 
@@ -400,7 +395,7 @@ lbErrCodes LB_STDCALL lbStringKey::setData(lb_I_Unknown* uk) {
 	lb_I_KeyBase* string = NULL;
 	
 	if (uk->queryInterface("lb_I_KeyBase", (void**) &string, __FILE__, __LINE__) != ERR_NONE) {
-		CL_LOG("Error: Could not get interface lb_I_KeyBase");
+		_CL_LOG << "Error: Could not get interface lb_I_KeyBase" LOG_
 	}
 	
 	if (string != NULL) {
