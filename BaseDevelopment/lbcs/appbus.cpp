@@ -191,7 +191,7 @@ LOG("lbAppBusClient::AnounceClient() called");
 #ifdef APPBUS_CLT_VERBOSE
 		while(client.hasMorePackets()) {
 			pLB_TRANSFER_DATA data = client.getNextPacket();
-			sprintf(buf, "Datapaket's address is %x", data);
+			sprintf(buf, "Datapaket's address is %p", (void*) data);
 		}
 #endif
 /*...e*/
@@ -356,7 +356,7 @@ LOG("lbAppBusClient::AnounceClient() called");
 #ifdef APPBUS_CLT_VERBOSE
 		while(client.hasMorePackets()) {
 			pLB_TRANSFER_DATA data = client.getNextPacket();
-			sprintf(buf, "Datapaket's address is %x", data);
+			sprintf(buf, "Datapaket's address is %p", (void*) data);
 		}
 #endif
 /*...e*/
@@ -439,7 +439,7 @@ LOG("lbAppBusClient::AnounceClient() called");
 #ifdef APPBUS_CLT_VERBOSE
 		while(client.hasMorePackets()) {
 			pLB_TRANSFER_DATA data = client.getNextPacket();
-			sprintf(buf, "Datapaket's address is %x", data);
+			sprintf(buf, "Datapaket's address is %p", (void*) data);
 		}
 #endif
 /*...e*/

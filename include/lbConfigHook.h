@@ -94,6 +94,7 @@ extern int isInitializing;
 				\
 				if (modMan != NULL) { \
 					lb_I_Unknown *Unknown = NULL; \
+					modMan->initialize(); \
 					lbErrCodes err = modMan->request("lb_I_Log", &Unknown); \
 					\
 					if (Unknown != NULL) { \

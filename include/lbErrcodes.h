@@ -1,11 +1,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.10 $
+ * $Revision: 1.11 $
  * $Name:  $
- * $Id: lbErrcodes.h,v 1.10 2002/02/25 06:36:48 lothar Exp $
+ * $Id: lbErrcodes.h,v 1.11 2002/04/15 18:25:16 lothar Exp $
  *
  * $Log: lbErrcodes.h,v $
+ * Revision 1.11  2002/04/15 18:25:16  lothar
+ * Huge changes - works good
+ *
  * Revision 1.10  2002/02/25 06:36:48  lothar
  * Added some codes
  *
@@ -66,6 +69,8 @@ enum lbErrCodes {
 	
 	ERR_REFERENCE_COUNTING,
 	ERR_INSTANCE_STILL_USED,
+	// To see if the instance was deleted, not released
+	ERR_RELEASED,
 	
 /* Errcodes for dispatcher */
 

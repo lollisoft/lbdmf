@@ -4,7 +4,7 @@
 ifeq ($(OSTYPE), Windows_NT)
 MOD_INCL=$(STD_INCL)
 LIBS = $(DEVROOT)\projects\dll\libs\lbhook.lib
-OBJDEP=../lbHook/lbHook.o
+#OBJDEP=../lbHook/lbHook.o
 # ../lbHook/conio.o
 endif
 

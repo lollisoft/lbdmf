@@ -11,11 +11,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.24 $
+ * $Revision: 1.25 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.24 2001/12/16 17:41:43 lothar Exp $
+ * $Id: mkmk.cpp,v 1.25 2002/04/15 18:25:16 lothar Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.25  2002/04/15 18:25:16  lothar
+ * Huge changes - works good
+ *
  * Revision 1.24  2001/12/16 17:41:43  lothar
  * Added VENDORLIBS
  *
@@ -635,7 +638,7 @@ void writeDllTarget(char* modulename) {
   printf("\n%s.dll: $(OBJS)\n", ModName);
   printf("\t\techo NAME $(PROGRAM).dll > $(LNK)\n");
   printf("\t\techo $(FILE) $(LIBS) >> $(LNK)\n");
-  printf("\t\techo LIBR $(LIBS) >> $(LNK)\n");
+  printf("\t\t;if NOT \"$(LIBS)\" == \"\" echo LIBR $(LIBS) >> $(LNK)\n");
   printf("\t\t$(LINK) $(LNKDLLOPS) $(LINKFLAGS)\n");
   printf("\t\t$(CP) $(PROGRAM).dll $(DLLDIR)\n");
 #endif

@@ -1,11 +1,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.2 $
+ * $Revision: 1.3 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.2 2002/02/25 06:13:07 lothar Exp $
+ * $Id: lbMetaApplication.cpp,v 1.3 2002/04/15 18:24:31 lothar Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.3  2002/04/15 18:24:31  lothar
+ * Huge changes - works good
+ *
  * Revision 1.2  2002/02/25 06:13:07  lothar
  * Much changes
  * Program seems to run, but performance is very slow
@@ -106,9 +109,18 @@ lbErrCodes LB_STDCALL lb_MetaApplication::Initialize() {
 	 * Registrieren eines Events, der auch auf der GUI Seite bekannt ist.
 	 */
 	
-	REQUEST(manager, lb_I_EventManager, eman)
+	lb_I_Module* m = *&manager;
+	
+	UAP_REQUEST(m, lb_I_EventManager, eman)
 	 
 	eman->registerEvent("getBasicApplicationInfo", getBasicApplicationInfo);
+
+	char buf[100] = "";
+	
+	sprintf(buf, "Registered an event 'getBasicApplicationInfo' as %d", getBasicApplicationInfo);
+	
+	LOG(buf)
+	
 
 	UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
 	
@@ -181,6 +193,7 @@ BEGIN_IMPLEMENT_LB_UNKNOWN(lb_EventManager)
 END_IMPLEMENT_LB_UNKNOWN()
 
 lb_EventManager::lb_EventManager() {
+	LOG("lb_EventManager::lb_EventManager() called")
 }
 
 lb_EventManager::~lb_EventManager() {

@@ -62,10 +62,9 @@ void main() {
 	getch();
 
 	lb_I_Module* mm = getModuleInstance();
-	printf("Initialize module manager\n");
-	mm->setModuleManager(mm);
-	mm->initialize();
-	printf("Have initialized module manager\n");
+	CL_LOG("Got a module instance")
+	mm->setModuleManager(mm, __FILE__, __LINE__);
+	CL_LOG("Set the module manager")
 /*...e*/
 #ifdef bla
 /*...stest string:0:*/
@@ -80,7 +79,7 @@ void main() {
 		CL_LOG("Try to get interface lb_I_String");
 		getch();
 		if ((err = unknown->queryInterface("lb_I_String", (void**) &string)) != ERR_NONE) {
-			sprintf(buf, "Getting a string failed (string instance is %x, ErrCode = %d) !!!!!!!!", string, err);
+			sprintf(buf, "Getting a string failed (string instance is %p, ErrCode = %d) !!!!!!!!", (void*) string, err);
 			CL_LOG(buf);
 		}
 
@@ -103,7 +102,7 @@ void main() {
 		}
 
 		CL_LOG("Unknown instance of lb_I_String is no more needed!");
-		unknown->release();
+		RELEASE(unknown);
 		getch();
 
 		CL_LOG("Now release the string");
@@ -115,6 +114,9 @@ void main() {
 #endif
 /*...stest logger:0:*/
 	mm->request("lb_I_Log", &unknown);
+	
+	CL_LOG("Requested a instance for interface lb_I_Log")
+	
 	if (unknown != NULL) {
 		lb_I_Log* logger = NULL;
 		if (unknown->queryInterface("lb_I_Log", (void**) &logger, __FILE__, __LINE__) != ERR_NONE) {
@@ -149,15 +151,14 @@ void main() {
 /*...e*/
 
 /*...stest unloading module manager:0:*/
-	CL_LOG("Test unloading module manager");
 	mm->uninitialize();
-	mm->release(__FILE__, __LINE__);
+	RELEASE(mm)
 	unHookAll();
 /*...e*/
 /*...stest after unloading:0:*/
 	mm = getModuleInstance();
-	mm->initialize();
-	LOG("Test logging after initializing the second one");
+	LOG("Test logging after initializing the second one")
+	CL_LOG("Tested logging after initializing the second one")
 /*...e*/
 	
 	uk = NULL;
@@ -185,21 +186,14 @@ void main() {
 /*...e*/
 
 /*...stest unknown auto pointer:0:*/
-	if (1)
-	{
 		UAP(lb_I_Unknown, theVariable, __FILE__, __LINE__)
 		UAP(lb_I_String, string, __FILE__, __LINE__)
 		
 		if (theVariable.getPtr() != NULL) CL_LOG("Error: UAP does not correctly work");
 
-		lb_I_Unknown* uk = NULL;
-		lb_I_String* s = NULL;
-
-		if (mm->request("lb_I_String", &uk) != NULL) {
+		if (mm->request("lb_I_String", &theVariable) != NULL) {
 			CL_LOG("Error: Failed to get an instance lb_I_String");
 		}
-		
-		theVariable = uk;
 		
 		if (theVariable == NULL) CL_LOG("Error: UAP is not initialized!");
 
@@ -215,13 +209,11 @@ void main() {
 			
 			printf(buf);
 		}
-	}
 /*...e*/
 
 
 	mm->uninitialize();
-	mm->release(__FILE__, __LINE__);
-
+	RELEASE(mm)
 	CL_LOG("Basic tests ended");
 	getch();
 
@@ -270,39 +262,117 @@ void main() {
 					CL_LOG("Have the string interface, insert data");
 					if (string != NULL) {
 						// Fill up the container
-for (long i = 0; i < 10000000; i++) {
-						UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
-						UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
+						for (long i = 0; i < 10000000; i++) {
+/*...sand delete it after that again:56:*/
+							UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
+							UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
 						
-						string->queryInterface("lb_I_Unknown", (void**) &uk, __FILE__, __LINE__);
-						string->queryInterface("lb_I_KeyBase", (void**) &key, __FILE__, __LINE__);
+							string->queryInterface("lb_I_Unknown", (void**) &uk, __FILE__, __LINE__);
+							string->queryInterface("lb_I_KeyBase", (void**) &key, __FILE__, __LINE__);
 						
-						uk->setDebug(1);
+							uk->setDebug(1);
 						
-						string->setData("Bla");
-						CL_LOG("Insert first element");
+							string->setData("Bla");
+							CL_LOG("Insert first element");
 						
 						
-						if (container == NULL) CL_LOG("Container is NULL");
+							if (container == NULL) CL_LOG("Container is NULL");
+							
+							sprintf(buf, "RefCount of uk and key is %d, %d", uk->getRefCount(), key->getRefCount());
+							CL_LOG(buf);
 						
-						sprintf(buf, "RefCount of uk and key is %d, %d", uk->getRefCount(), key->getRefCount());
-						CL_LOG(buf);
-						
-						container->insert(&uk, &key);
-						CL_LOG("Inserted first element");
-						string->setData("Bla1---------------------------------------------");
-						container->insert(&uk, &key);
-						string->setData("Bla2---------------------------------------------");
-						container->insert(&uk, &key);
-						string->setData("Bla3---------------------------------------------");
-						container->insert(&uk, &key);
-						string->setData("Bla4---------------------------------------------");
-						container->insert(&uk, &key);
-
-				container->deleteAll();
-				CL_LOG("Deleted all container data");
-				getch();
-}
+							container->insert(&uk, &key);
+							CL_LOG("Inserted first element");
+							
+							lb_I_Unknown* ukdata = container->getElement(&key);
+							printf("Have searched for an element\n");
+							if (ukdata == NULL) printf("NULL pointer while searching for first element (search for '%s')!\n", key->charrep());
+							
+							string->setData("Bla1");
+							container->insert(&uk, &key);
+							string->setData("Bla2");
+							container->insert(&uk, &key);
+							string->setData("Bla3");
+							container->insert(&uk, &key);
+							string->setData("Bla4");
+							container->insert(&uk, &key);
+							
+							
+/*...sfind an element:112:*/
+							string->setData("Bla3");
+							ukdata = container->getElement(&key);
+							
+							if (ukdata == NULL) printf("NULL pointer!\n");
+							
+							lb_I_String* s = NULL;
+							lbErrCodes err = ukdata->queryInterface("lb_I_String", (void**) &s, __FILE__, __LINE__);
+							
+							if (err == ERR_NONE) printf("Found string %s\n", s->getData());
+/*...e*/
+/*...sfind an element:112:*/
+							string->setData("Bla2");
+							ukdata = container->getElement(&key);
+							
+							if (ukdata == NULL) printf("NULL pointer!\n");
+							
+							s = NULL;
+							err = ukdata->queryInterface("lb_I_String", (void**) &s, __FILE__, __LINE__);
+							
+							if (err == ERR_NONE) printf("Found string %s\n", s->getData());
+/*...e*/
+/*...sfind an element:112:*/
+							string->setData("Bla1");
+							ukdata = container->getElement(&key);
+							
+							if (ukdata == NULL) printf("NULL pointer!\n");
+							
+							s = NULL;
+							err = ukdata->queryInterface("lb_I_String", (void**) &s, __FILE__, __LINE__);
+							
+							if (err == ERR_NONE) printf("Found string %s\n", s->getData());
+/*...e*/
+/*...sfind an element:112:*/
+							string->setData("Bla4");
+							ukdata = container->getElement(&key);
+							
+							if (ukdata == NULL) printf("NULL pointer!\n");
+							
+							s = NULL;
+							err = ukdata->queryInterface("lb_I_String", (void**) &s, __FILE__, __LINE__);
+							
+							if (err == ERR_NONE) printf("Found string %s\n", s->getData());
+/*...e*/
+/*...sfind an element:112:*/
+							string->setData("Bla");
+							ukdata = container->getElement(&key);
+							
+							if (ukdata == NULL) printf("NULL pointer!\n");
+							
+							s = NULL;
+							err = ukdata->queryInterface("lb_I_String", (void**) &s, __FILE__, __LINE__);
+							
+							if (err == ERR_NONE) printf("Found string %s\n", s->getData());
+/*...e*/
+	
+							printf("Try to dump content of container\n");	
+							while (container->hasMoreElements() == 1) {
+								lb_I_Unknown* e = container->nextElement();
+								printf("Dump it\n");
+								if (e != NULL) {
+									lb_I_String* s;
+									if (e->queryInterface("lb_I_String", (void**) &s, __FILE__, __LINE__) != ERR_NONE) {
+										printf("Something goes wrong :-(\n");
+									}
+									
+									printf("String is: %s\n", s->getData());
+								}
+							}
+	
+							container->deleteAll();
+							CL_LOG("Deleted all container data");
+							getch();
+/*...e*/
+						}
 					}
 				}
 				
@@ -341,7 +411,7 @@ getch();
         }
 #endif
 	modMan->uninitialize();
-        modMan->release(__FILE__, __LINE__);
+        RELEASE(modMan)
         unHookAll();
         getch();
 }

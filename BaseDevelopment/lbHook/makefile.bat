@@ -3,6 +3,6 @@
 
 type %DEVROOT%\Projects\cpp\make\makefile.template > makefile
 type makefile.module >> makefile
-echo all: lbhook.lib >> makefile
+echo all: lbhook.dll >> makefile
 
-mkmk lib lbhook ..\dosdir *.cpp >> makefile
+mkmk dll lbhook ..\dosdir *.cpp >> makefile

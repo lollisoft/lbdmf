@@ -4,6 +4,6 @@
 type %DEVROOT%\Projects\cpp\make\makefile.template > makefile
 type makefile.module >> makefile
 echo all: lbDOMConfig.dll >> makefile
-
+copy ..\..\lbHook\lbHook.cpp .
 mkmk dll lbDOMConfig %DEVROOT%\include,%DEVROOT%\interfaces *.cpp >> makefile
 

@@ -1,11 +1,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.20 $
+ * $Revision: 1.21 $
  * $Name:  $
- * $Id: lbInterfaces-sub-classes.h,v 1.20 2002/02/27 21:00:35 lothar Exp $
+ * $Id: lbInterfaces-sub-classes.h,v 1.21 2002/04/15 18:25:16 lothar Exp $
  *
  * $Log: lbInterfaces-sub-classes.h,v $
+ * Revision 1.21  2002/04/15 18:25:16  lothar
+ * Huge changes - works good
+ *
  * Revision 1.20  2002/02/27 21:00:35  lothar
  * Unused code
  *
@@ -62,21 +65,41 @@ protected:
         virtual ~lb_I_KeyBase() {}
 public:
 
-    virtual int LB_STDCALL operator == (const lb_I_KeyBase* _key) const {
-        return this->equals(_key);
-    }
-    
-    virtual int LB_STDCALL operator > (const lb_I_KeyBase* _key) const {
-        return this->greater(_key);
-    }
+    virtual int LB_STDCALL operator == (const lb_I_KeyBase* _key) const = 0;
+    virtual int LB_STDCALL operator > (const lb_I_KeyBase* _key) const = 0;
+    virtual int LB_STDCALL operator < (const lb_I_KeyBase* _key) const = 0;
 
     virtual int LB_STDCALL equals(const lb_I_KeyBase* _key) const = 0;
     virtual int LB_STDCALL greater(const lb_I_KeyBase* _key) const = 0;
+    virtual int LB_STDCALL lessthan(const lb_I_KeyBase* _key) const = 0;
 
-    virtual char* LB_STDCALL getKeyType() = 0;
+    virtual char* LB_STDCALL getKeyType() const = 0;
 
-    virtual char* LB_STDCALL charrep() = 0;
+    virtual char* LB_STDCALL charrep() const = 0;
 };
+
+
+#define DECLARE_LB_KEYBASE() \
+public: \
+    virtual int LB_STDCALL operator == (const lb_I_KeyBase* _key) const { \
+    	if (strcmp(this->getKeyType(), _key->getKeyType()) != 0) return 0; \
+        return this->equals(_key); \
+    } \
+    virtual int LB_STDCALL operator > (const lb_I_KeyBase* _key) const { \
+    	if (strcmp(this->getKeyType(), _key->getKeyType()) != 0) return 0; \
+        return this->greater(_key); \
+    } \
+    virtual int LB_STDCALL operator < (const lb_I_KeyBase* _key) const { \
+    	if (strcmp(this->getKeyType(), _key->getKeyType()) != 0) return 0; \
+        return this->lessthan(_key); \
+    } \
+    virtual int LB_STDCALL equals(const lb_I_KeyBase* _key) const; \
+    virtual int LB_STDCALL greater(const lb_I_KeyBase* _key) const; \
+    virtual int LB_STDCALL lessthan(const lb_I_KeyBase* _key) const; \
+\
+    virtual char* LB_STDCALL getKeyType() const; \
+\
+    virtual char* LB_STDCALL charrep() const;
 /*...e*/
 
 /*
@@ -229,15 +252,21 @@ public:
          * Do a key compare.
          */
         virtual int LB_STDCALL equals(const lb_I_KeyBase* _key) const = 0;
+	virtual int LB_STDCALL lessthan(const lb_I_KeyBase* _key) const = 0;
+
 
         virtual lb_I_KeyBase* LB_STDCALL getKey() const = 0;
 
         int LB_STDCALL operator == (const lb_I_Element* a) const {
-                return (this->equals(a) == 1);
+                return this->equals(a);
         }
 
         int LB_STDCALL operator == (const lb_I_KeyBase* _key) const {
-                return (this->equals(_key) == 1);
+                return this->equals(_key);
+        }
+
+        int LB_STDCALL operator < (const lb_I_KeyBase* _key) const {
+        	return this->lessthan(_key);
         }
 };
 
@@ -248,6 +277,7 @@ virtual void LB_STDCALL setNext(lb_I_Element *e); \
 virtual lb_I_Unknown* LB_STDCALL getObject() const; \
 virtual int LB_STDCALL equals(const lb_I_Element* a) const; \
 virtual int LB_STDCALL equals(const lb_I_KeyBase* _key) const; \
+virtual int LB_STDCALL lessthan(const lb_I_KeyBase* _key) const; \
 virtual lb_I_KeyBase* LB_STDCALL getKey() const; \
 private: \
 \
@@ -265,9 +295,6 @@ classname::classname(const lb_I_Unknown* o, const lb_I_KeyBase* _key, lb_I_Eleme
     } \
     if (o == NULL) CL_LOG("Error! Can't clone a NULL pointer"); \
     data = o->clone(__FILE__, __LINE__); \
-    char ptr[20] = ""; \
-    sprintf(ptr, "%x", data); \
-    if (strcmp(ptr, "d693d0") == 0) CL_LOG("Object d693d0 cloned"); \
     if (data->getRefCount() > 1) { \
         CL_LOG("Refcount after cloning is more than 1 !!!"); \
     } \
@@ -285,20 +312,21 @@ classname::~classname() { \
         } \
         if (data != NULL) { \
                 if (data->deleteState() != 1) { \
-                /* \
-                	if (strcmp(data->getClassName(), "lbDOMNode") == 0) { \
-                		lb_I_ConfigObject* cO = NULL; \
-                		data->queryInterface("lb_I_ConfigObject", (void**) &cO, __FILE__, __LINE__); \
-                		printf("Name von lbDOMNode: %s.\n", cO->getName()); \
-                		RELEASE(cO); \
-                	} \
-                	*/ \
-                        sprintf(buf, "Data (at %x) (created at: %s) (refcount=%d) (classname='%s') wouldn't deleted in container element!", data, data->getCreationLoc(), data->getRefCount(), data->getClassName()); \
+                        lb_I_ConfigObject* node; \
+                        data->queryInterface("lb_I_ConfigObject", (void**) &node, __FILE__, __LINE__); \
+                        if (node != NULL) { \
+	                        sprintf(buf, "Data (at %p) (created at: %s) (refcount=%d) (classname='%s', tagname='%s') wouldn't deleted in container element!", \
+        	                (void*) data, data->getCreationLoc(), data->getRefCount(), data->getClassName(), node->getName()); \
+        	                node->release(__FILE__, __LINE__); \
+                        } else { \
+	                        sprintf(buf, "Data (at %p) (created at: %s) (refcount=%d) (classname='%s') wouldn't deleted in container element!", \
+        	                (void*) data, data->getCreationLoc(), data->getRefCount(), data->getClassName()); \
+        	        } \
                         CL_LOG(buf); \
                         getch(); \
-                        RELEASE(data); \
-                        getch(); \
                 } \
+                RELEASE(data); \
+                getch(); \
         } \
         key = NULL; \
         data = NULL; \
@@ -321,6 +349,16 @@ void LB_STDCALL classname::setNext(lb_I_Element *e) { \
 \
 lb_I_Element* LB_STDCALL classname::getNext() const { \
         return next; \
+} \
+int LB_STDCALL classname::equals(const lb_I_Element* a) const { \
+	return 0; \
+} \
+\
+int LB_STDCALL classname::equals(const lb_I_KeyBase* _key) const { \
+	return (*key == _key); \
+} \
+int LB_STDCALL classname::lessthan(const lb_I_KeyBase* _key) const { \
+	return (*key < _key); \
 }
 /*...e*/
 /*...sclass lb_I_Container:0:*/
@@ -578,7 +616,7 @@ lbErrCodes LB_STDCALL classname::_insert(lb_I_Unknown** const e, lb_I_KeyBase** 
 \
     if (container_data == NULL) { \
         lbElement* _data = new lbElement(*e, *key); \
-        _data->setModuleManager(manager.getPtr()); \
+        _data->setModuleManager(manager.getPtr(), __FILE__, __LINE__); \
 \
         _data->queryInterface("lb_I_Element", (void**) &container_data, __FILE__, __LINE__); \
         if (container_data == NULL) CL_LOG("Could not get unknown interface of lbElement!"); \
@@ -597,14 +635,14 @@ lbErrCodes LB_STDCALL classname::_insert(lb_I_Unknown** const e, lb_I_KeyBase** 
             if (next != NULL) { \
                 if (next->getKey() < *key) { \
                     lbElement* el = new lbElement(*e, *key, next); \
-                    el->setModuleManager(manager.getPtr()); \
+                    el->setModuleManager(manager.getPtr(), __FILE__, __LINE__); \
                     temp->setNext(el); \
                     return ERR_NONE; \
                 } \
             } \
             else { \
             	lbElement* el = new lbElement(*e, *key, next); \
-            	el->setModuleManager(manager.getPtr()); \
+            	el->setModuleManager(manager.getPtr(), __FILE__, __LINE__); \
                 temp->setNext(el); \
                 return ERR_NONE; \
             } \

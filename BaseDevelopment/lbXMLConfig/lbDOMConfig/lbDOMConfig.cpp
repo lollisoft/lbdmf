@@ -1,11 +1,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.20 $
+ * $Revision: 1.21 $
  * $Name:  $
- * $Id: lbDOMConfig.cpp,v 1.20 2002/02/25 06:17:43 lothar Exp $
+ * $Id: lbDOMConfig.cpp,v 1.21 2002/04/15 18:24:31 lothar Exp $
  *
  * $Log: lbDOMConfig.cpp,v $
+ * Revision 1.21  2002/04/15 18:24:31  lothar
+ * Huge changes - works good
+ *
  * Revision 1.20  2002/02/25 06:17:43  lothar
  * Much changes
  * Program seems to run, but performance is very slow
@@ -122,7 +125,7 @@ int initialized = 0;
 void checkPtr(void* addr, int line, char* file, char* cmp) {
 	char buf[20] = "";
 	
-	sprintf(buf, "%x", addr);
+	sprintf(buf, "%p", (void*) addr);
 	
 	if (strcmp(buf, cmp) == 0) {
 		char msg[1000] = "";
@@ -190,19 +193,23 @@ lbErrCodes LB_STDCALL lbKey::setData(lb_I_Unknown* uk) {
 }
 /*...e*/
 
-char* LB_STDCALL lbKey::getKeyType() {
+char* LB_STDCALL lbKey::getKeyType() const {
     return "int";
 }
 
-int lbKey::equals(const lb_I_KeyBase* _key) const {
+int LB_STDCALL lbKey::equals(const lb_I_KeyBase* _key) const {
     return key == ((lbKey*) _key)->key;
 }
 
-int lbKey::greater(const lb_I_KeyBase* _key) const {
+int LB_STDCALL lbKey::greater(const lb_I_KeyBase* _key) const {
     return key > ((lbKey*) _key)->key;
 }
 
-char* lbKey::charrep() {
+int LB_STDCALL lbKey::lessthan(const lb_I_KeyBase* _key) const {
+    return key < ((lbKey*) _key)->key;
+}
+
+char* LB_STDCALL lbKey::charrep() const {
     char buf[100];
 #ifdef WINDOWS
     itoa(key, buf, 10);
@@ -247,19 +254,23 @@ lbErrCodes LB_STDCALL lbKeyUL::setData(lb_I_Unknown* uk) {
 }
 
 
-char* LB_STDCALL lbKeyUL::getKeyType() {
+char* LB_STDCALL lbKeyUL::getKeyType() const {
     return "UL";
 }
 
-int lbKeyUL::equals(const lb_I_KeyBase* _key) const {
+int LB_STDCALL lbKeyUL::equals(const lb_I_KeyBase* _key) const {
     return key == ((lbKeyUL*) _key)->key;
 }
 
-int lbKeyUL::greater(const lb_I_KeyBase* _key) const {
+int LB_STDCALL lbKeyUL::greater(const lb_I_KeyBase* _key) const {
     return key > ((lbKeyUL*) _key)->key;
 }
 
-char* lbKeyUL::charrep() {
+int LB_STDCALL lbKeyUL::lessthan(const lb_I_KeyBase* _key) const {
+    return key < ((lbKeyUL*) _key)->key;
+}
+
+char* LB_STDCALL lbKeyUL::charrep() const {
     char buf[100];
 
 #ifdef WINDOWS
@@ -304,19 +315,23 @@ lbErrCodes LB_STDCALL lbStringKey::setData(lb_I_Unknown* uk) {
 	return ERR_NONE;
 }
 
-char* LB_STDCALL lbStringKey::getKeyType() {
+char* LB_STDCALL lbStringKey::getKeyType() const {
     return "string";
 }
 
-int lbStringKey::equals(const lb_I_KeyBase* _key) const {
+int LB_STDCALL lbStringKey::equals(const lb_I_KeyBase* _key) const {
     return (strcmp(key, ((const lbStringKey*) _key)->key) == 0);
 }
 
-int lbStringKey::greater(const lb_I_KeyBase* _key) const {
+int LB_STDCALL lbStringKey::greater(const lb_I_KeyBase* _key) const {
     return (strcmp(key, ((const lbStringKey*) _key)->key) > 0);
 }
 
-char* lbStringKey::charrep() {
+int LB_STDCALL lbStringKey::lessthan(const lb_I_KeyBase* _key) const {
+    return (strcmp(key, ((const lbStringKey*) _key)->key) < 0);
+}
+
+char* LB_STDCALL lbStringKey::charrep() const {
     return key;
 }
 /*...e*/
@@ -500,6 +515,7 @@ lbDOMContainer::lbDOMContainer() {
 }
 
 lbDOMContainer::~lbDOMContainer() {
+	deleteAll();
 }
 
 lbErrCodes LB_STDCALL lbDOMContainer::setData(lb_I_Unknown* data) {
@@ -526,13 +542,6 @@ lbErrCodes LB_STDCALL lbElement::setData(lb_I_Unknown* data) {
 	return ERR_NONE;
 }
 
-int LB_STDCALL lbElement::equals(const lb_I_Element* a) const {
-	return 0;
-}
-
-int LB_STDCALL lbElement::equals(const lb_I_KeyBase* key) const {
-	return 0;
-}
 /*...e*/
 /*...e*/
 
@@ -578,7 +587,6 @@ lbErrCodes lbDOMAttribute::setData(lb_I_Unknown* uk) {
 
 /*...sclass lbDOMNode implementation:0:*/
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbDOMNode)
-	ADD_INTERFACE(lb_I_Object)
 	ADD_INTERFACE(lb_I_ConfigObject)
 END_IMPLEMENT_LB_UNKNOWN()
 
@@ -591,7 +599,18 @@ lbErrCodes lbDOMNode::setData(lb_I_Unknown* uk) {
 		CL_LOG("Error: Cloning interface not present!");
 		getch();
 	}
+/*...sVERBOSE:0:*/
+#ifdef VERBOSE
+	if (strcmp(_node->getName(), "InterfaceName") == 0) {
 	
+		char buf[1000] = "";
+		sprintf(buf, "Cloned lbDOMNode at %p gets data from %p.\nCloned: %s\nOrginal: %s", 
+			(void*) this, (void*) uk, getCreationLoc(), uk->getCreationLoc());
+		CL_LOG(buf)
+	
+	}
+#endif	
+/*...e*/
 	node = _node->node;
 	if (_node->lbDOMchilds != NULL)
 		_node->lbDOMchilds->queryInterface("lb_I_Container", (void**) & lbDOMchilds, __FILE__, __LINE__);
@@ -617,13 +636,18 @@ lbDOMNode::lbDOMNode() {
 //	currentChildIndex = 0;
 	lbDOMchilds = NULL;
 
-	char ptr[20] = "";
-	sprintf(ptr, "%x", this);
-	
 	parent = NULL;
 	
 	manager = NULL;
 	
+
+	parent.setFile(__FILE__);
+	parent.setLine(__LINE__);
+
+	lbDOMchilds.setFile(__FILE__);
+	lbDOMchilds.setLine(__LINE__);
+
+
 	// This was the bug for the wrong deletion while leave scope
 	//parent++;
 #ifdef VERBOSE
@@ -634,10 +658,14 @@ lbDOMNode::lbDOMNode() {
 /*...slbDOMNode\58\\58\\126\lbDOMNode\40\\41\:0:*/
 lbDOMNode::~lbDOMNode() {
 	char ptr[20] = "";
-	sprintf(ptr, "%x", this);
+	sprintf(ptr, "%p", (void*) this);
 
 	if (ref != STARTREF) 
 		CL_LOG("Error: Reference count mismatch");
+
+
+	// Bugfix (in createAbstractedChildList)
+	lbDOMchilds--;
 /*
 // No more because UAP	
 	if (lbDOMchilds != NULL) {
@@ -718,7 +746,11 @@ lbErrCodes LB_STDCALL lbDOMNode::setNode(DOM_Node _node) {
 		
 		_parent->setFurtherLock(0);
 		if (manager == NULL) CL_LOG("Error: Set manager in parent with a NULL pointer!");
-		_parent->setModuleManager(manager.getPtr());
+		_parent->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+		
+		
+		//printf("lbDOMNode::setNode() called: node='%s',pnode='%s'\n", 
+		//_node.getNodeName().transcode(), pnode.getNodeName().transcode());
 		
 		_parent->setNode(pnode);
 		parent = _parent;
@@ -730,6 +762,16 @@ lbErrCodes LB_STDCALL lbDOMNode::setNode(DOM_Node _node) {
 		#endif	
 		}
 	}
+
+	char ptr[20] = "";
+	sprintf(ptr, "%p", (void*) this);
+
+	if (strcmp(ptr, "00C81D60") == 0) {
+		char buf[1000] = "";
+		sprintf(buf, "This is the node with %s and tagname %s", ptr, getName());
+		CL_LOG(buf)
+	}
+
 	return ERR_NONE;
 }
 /*...e*/
@@ -761,6 +803,9 @@ lbErrCodes LB_STDCALL lbDOMNode::getFirstChildren(lb_I_ConfigObject** children) 
 //	currentChildIndex = 0;
 	
 	UAP(lb_I_Unknown, unknown, __FILE__, __LINE__)
+
+	unknown.setFile(__FILE__);
+	unknown.setLine(__LINE__);
 
 	if (lbDOMchilds->hasMoreElements() == 1) {
 		unknown = lbDOMchilds->nextElement();
@@ -807,6 +852,8 @@ lbErrCodes LB_STDCALL lbDOMNode::getNextChildren(lb_I_ConfigObject** children) {
 	//currentChildIndex++;
 
 	UAP(lb_I_Unknown, unknown, __FILE__, __LINE__)
+	unknown.setFile(__FILE__);
+	unknown.setLine(__LINE__);
 
 	unknown = lbDOMchilds->nextElement();
 
@@ -848,26 +895,35 @@ lbDOMContainer* LB_STDCALL lbDOMNode::createAbstractedChildList(DOM_Node _node) 
 	
 	if (manager == NULL) CL_LOG("Error: Setting in lbDOMNode::createAbstractedChildList() a NULL pointer as manager");
 	
-	list->setModuleManager(manager.getPtr());
+	list->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+	
+	// Create an instance and create one reference. Then give it out.	
+	// This is the bug - see in lbDOMNode destructor
+	lb_I_Unknown* temp;
+	list->queryInterface("lb_I_Unknown", (void**) &temp, __FILE__, __LINE__);
 	
 	char buf[100] = "";
 
 	for (int i = 0; i < len; i++) {
 		DOM_Node child = DOMlist.item(i);	
+
 		lbDOMNode* lbNode = new lbDOMNode();
 		
-		checkPtr(lbNode, __LINE__, __FILE__, "d693d0");
-		
 		lbNode->setFurtherLock(0);
-		lbNode->setModuleManager(manager.getPtr());
+		lbNode->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
 	        
 		lbNode->node = child;
+		
 		UAP(lb_I_Unknown, unknown, __FILE__, __LINE__)
 
+		QI(lbNode, lb_I_Unknown, unknown, __FILE__, __LINE__)
+		
+		/*
 		if (lbNode->queryInterface("lb_I_Unknown", (void**) &unknown, __FILE__, __LINE__) != ERR_NONE) {
 		        CL_LOG("lbNode->queryInterface() Failed!");
 		}
-
+		*/
+		
 		if (unknown == NULL) CL_LOG("Error: The unknown pointer must not be NULL!");
 		
 		if (unknown != lbNode) {
@@ -877,22 +933,27 @@ lbDOMContainer* LB_STDCALL lbDOMNode::createAbstractedChildList(DOM_Node _node) 
 
 		UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
 		key = new lbKey(i);
+
+		char addr[20] = "";
+		sprintf(addr, "%p", (void*) key.getPtr());
+		char buf[1000] = "";
+		sprintf(buf, "Created an instance for lbKey at %s", addr);
+		if (strcmp(addr, "011f4440") == 0) CL_LOG(buf)
 		
-		key->setModuleManager(manager.getPtr());
+		sprintf(addr, "%p", (void*) &key);
+		sprintf(buf, "Created an instance for lbKey at %p", (void*) &key);
+		if (strcmp(addr, "011f4440") == 0) CL_LOG(buf)
 		
+		key->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
 		key++;
-		
 		if (unknown == NULL) CL_LOG("Error: Inserting a null pointer!");
-
 		list->insert(&unknown, &key);
-		
-		// Container makes a copy of the object
-		
-
+		key--;
 	}
 
 	return list;
 }
+
 /*...e*/
 /*...slbDOMNode\58\\58\getAttribute\40\\46\\46\\46\\41\:0:*/
 lbErrCodes LB_STDCALL lbDOMNode::getAttribute(const char* name, lb_I_Attribute*& attr) {
@@ -1152,7 +1213,7 @@ lb_I_Container* LB_STDCALL lbDOMConfig::findNodesAtTreePos(const char* treePos) 
 	lbDOMContainer* DOM_list = new lbDOMContainer;
 	lb_I_Container* list = NULL;
 
-	DOM_list->setModuleManager(manager.getPtr());
+	DOM_list->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
 
 	if (DOM_list->queryInterface("lb_I_Container", (void**) &list, __FILE__, __LINE__) != NULL) {
 		CL_LOG("Error: Could not generate a reference with interface lb_I_Container");
@@ -1217,7 +1278,7 @@ lb_I_Container* LB_STDCALL lbDOMConfig::findNodesAtTreePos(const char* treePos) 
 			
 			checkPtr(lbNode, __LINE__, __FILE__, "d693d0");
 			
-			lbNode->setModuleManager(manager.getPtr());
+			lbNode->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
 			lbNode->setNode(currentnode);
 /*...sbla:16:*/
 #ifdef bla
@@ -1258,10 +1319,17 @@ lb_I_Container* LB_STDCALL lbDOMConfig::findNodesAtTreePos(const char* treePos) 
 
 			if (lbNode->queryInterface("lb_I_Unknown", (void**) &unknown, __FILE__, __LINE__) != ERR_NONE) {
 				CL_LOG("lbNode->queryInterface() Failed!");
+			} else {
+				unknown.setLine(__LINE__);
+				unknown.setFile(__FILE__);
 			}
 			
 			key = new lbKey(count++);
-			key->setModuleManager(manager.getPtr());
+			
+			key.setLine(__LINE__);
+			key.setFile(__FILE__);
+			
+			key->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
 			key++;
 			list->insert(&unknown, &key);
 /*...sVERBOSE:16:*/
@@ -1308,14 +1376,16 @@ lbErrCodes LB_STDCALL lbDOMConfig::getConfigObject(lb_I_ConfigObject** cfgObj,
 	
 	checkPtr(node, __LINE__, __FILE__, "d693d0");
 
-	node->setModuleManager(manager.getPtr());
+	if (manager.getPtr() == NULL) CL_LOG("Error: Manager in lbDOMConfig is a NULL pointer!")
+
+	node->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
 	
 	if (lastResult == NULL) {
 		CL_LOG("Error: Function sequence may be wrong. Please call hasConfigObject first!");
 		return ERR_FUNCTION_SEQUENCE;
 	}
 	
-	lastResult->setModuleManager(manager.getPtr());
+	lastResult->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
 	
 	if ((lastResult != NULL) && (lastResult->queryInterface("lb_I_Container", (void**) &c, __FILE__, __LINE__)) != ERR_NONE) {
 		CL_LOG("Error: Could not get interface lb_I_Container");

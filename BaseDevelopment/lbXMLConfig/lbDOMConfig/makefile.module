@@ -3,7 +3,7 @@
 # Use compiler MICROSOFT here
 COMPILER=MICROSOFT
 
-OBJDEP=../../lbHook/lbHook.o ../../lbHook/conio.o
+OBJDEP=../../lbHook/conio.o
 
 ifeq ($(OSTYPE), Windows_NT)
 

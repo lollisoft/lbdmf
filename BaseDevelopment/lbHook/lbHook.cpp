@@ -99,10 +99,10 @@ lbErrCodes LB_STDCALL lbGetFunctionPtr(const char* name, HINSTANCE hinst, void**
 
 /*...slb_I_Module\42\ LB_STDCALL getModuleInstance\40\\41\:0:*/
 lb_I_Module* LB_STDCALL getModuleInstance() {
-typedef lbErrCodes (LB_STDCALL *T_p_getlbModuleInstance) (lb_I_Module*&, lb_I_Module* m, char* file, int line);
+typedef lbErrCodes (LB_STDCALL *T_p_getlbModuleInstance) (lb_I_Module**, lb_I_Module* m, char* file, int line);
 T_p_getlbModuleInstance DLL_GETMODULEINSTANCE;
 	lbErrCodes err = ERR_NONE;
-	lb_I_Module* module = NULL;
+	UAP(lb_I_Module, module, __FILE__, __LINE__)
 
 	char* libname = getenv("MODULELIB");
 	char* functor = getenv("LBMODULEFUNCTOR");
@@ -117,29 +117,27 @@ T_p_getlbModuleInstance DLL_GETMODULEINSTANCE;
 		}
 	}
 
-    if (LB_Module_Handle == NULL) {
-	printf("Error: Could not load shared library %s\n", libname);
-    }
-	
-#ifdef bla	
-	if (lbGetFunctionPtr(functor, 
-			     LB_Module_Handle, 
-			     reinterpret_cast<void **>(&DLL_GETMODULEINSTANCE)) != ERR_NONE) {
-		exit(1);
+	if (LB_Module_Handle == NULL) {
+		printf("Error: Could not load shared library %s\n", libname);
 	}
-#endif
+	
 	if (lbGetFunctionPtr(functor, 
 			     LB_Module_Handle, 
 			     (void **) &DLL_GETMODULEINSTANCE) != ERR_NONE) {
+		CL_LOG("Fatal: Could not get functor for the module manager!")
 		exit(1);
 	}
 	
-	if ((err = DLL_GETMODULEINSTANCE(module, NULL, __FILE__, __LINE__)) == ERR_STATE_FURTHER_LOCK) {
+	if ((err = DLL_GETMODULEINSTANCE(&module, NULL, __FILE__, __LINE__)) == ERR_STATE_FURTHER_LOCK) {
 		CL_LOG("Instance is locked. Must set module manager first");
-		module->setModuleManager(module, __FILE__, __LINE__);
+		module->setModuleManager(module.getPtr(), __FILE__, __LINE__);
 	} 
 	
-	return module;
+	UAP(lb_I_Module, inst, __FILE__, __LINE__)
+	
+	QI(module, lb_I_Module, inst, __FILE__, __LINE__)
+	
+	return inst.getPtr();
 }
 /*...e*/
 /*...slbErrCodes LB_STDCALL releaseInstance\40\lb_I_Unknown\42\ inst\41\:0:*/

@@ -1,10 +1,13 @@
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.15 $
+# * $Revision: 1.16 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.15 2002/02/25 06:39:08 lothar Exp $
+# * $Id: STD_MAKE,v 1.16 2002/04/15 18:25:16 lothar Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.16  2002/04/15 18:25:16  lothar
+# * Huge changes - works good
+# *
 # * Revision 1.15  2002/02/25 06:39:08  lothar
 # * Bugfix in msc make part
 # *
@@ -72,6 +75,7 @@ WATCOM_ERRCOUNT=-e25
 WATCOM_QUIET=-zq
 WATCOM_CALLING_CONV=-5r
 WATCOM_DLLTARGET=-bd
+WATCOM_LIBTARGET=
 WATCOM_THREAD_MODEL=-bm
 WATCOM_STDDEBUG=-d2
 
@@ -95,6 +99,10 @@ C_EXEOPS_WATCOM_DEBUG= $(WATCOM_STD_C_OPS) $(WATCOM_STDDEBUG) -ei -zp4 -bt=nt -m
 C_DLLOPS_WATCOM   =  $(WATCOM_STD_C_OPS) $(WATCOM_DLLTARGET) -ei -zp4 -bt=nt -mf
 
 C_DLLOPS_WATCOM_DEBUG = $(WATCOM_STD_C_OPS) $(WATCOM_STDDEBUG) $(WATCOM_DLLTARGET) -ei -zp4 -bt=nt -mf
+
+C_LIBOPS_WATCOM   =  $(WATCOM_STD_C_OPS) $(WATCOM_LIBTARGET) -ei -zp4 -bt=nt -mf
+
+C_LIBOPS_WATCOM_DEBUG = $(WATCOM_STD_C_OPS) $(WATCOM_STDDEBUG) $(WATCOM_LIBTARGET) -ei -zp4 -bt=nt -mf
 
 CC =wpp386
 RM =del

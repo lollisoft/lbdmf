@@ -110,17 +110,6 @@ public:
 		m_plbConfigObject = new lbConfigObject; 
 	}
 	virtual ~TopLevel() { 
-/*...sVERBOSE:0:*/
-#ifdef VERBOSE
-		cout << "~TopLevel() called" << endl;
-#endif
-/*...e*/
-		m_plbConfigObject->release();
-/*...sVERBOSE:0:*/
-#ifdef VERBOSE
-		cout << "~TopLevel() returns" << endl; 
-#endif
-/*...e*/
 	}
 	
 	virtual XMLHandler* startElement(const   XMLCh* const    name,
@@ -129,7 +118,7 @@ public:
 	virtual void test();
 	// Hardcoded for a single instance, but that
 	// is easy to fix if desired.
-	lbConfigObject*	m_plbConfigObject;
+	UAP(lbConfigObject, m_plbConfigObject)
 };
 /*...e*/
 

@@ -42,7 +42,7 @@
            -->
 <!--...sFunction instanceOfContainer:16:-->
         <Function>
-           <FunctionName Name="_instanceOfContainer"/>
+           <FunctionName Name="_instanceOfSkipList"/>
            <Functor>
               <InterfaceName Name="lb_I_Container" Version="1.0"/>
            </Functor>

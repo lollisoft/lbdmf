@@ -60,7 +60,7 @@ lbObject* lbTransferDataObject::clone() const {
         o->setData(pData);
 /*...sTRANSFER_VERBOSE:0:*/
 #ifdef TRANSFER_VERBOSE
-        sprintf(msg, "Cloned lbTransferDataObject (pData) to address %x", pData);
+        sprintf(msg, "Cloned lbTransferDataObject (pData) to address %p", (void*) pData);
         LOG(msg);
 #endif  
 /*...e*/
@@ -163,7 +163,7 @@ pLB_TRANSFER_DATA lb_Transfer_Data::getNextPacket() const {
 
 /*...sTRANSFER_VERBOSE:0:*/
 #ifdef TRANSFER_VERBOSE 
-        sprintf(msg, "lb_Transfer_Data::getNextPacket() returns this address: %x", o->getData());
+        sprintf(msg, "lb_Transfer_Data::getNextPacket() returns this address: %p", (void*) (o->getData()));
         LOG(msg);
 #endif
 /*...e*/
@@ -413,7 +413,7 @@ LOG(msg);
                 data->packet_no = ++packet_count;
 /*...sTRANSFER_VERBOSE:0:*/
 #ifdef TRANSFER_VERBOSE
-sprintf(msg, "Do memcpy from %x to %x", buf, data->data);
+sprintf(msg, "Do memcpy from %p to %", (void*) buf, (void*) (data->data));
 LOG(msg);
 #endif
 /*...e*/
@@ -431,7 +431,7 @@ LOG("Done memcpy");
                 else {
 /*...sTRANSFER_VERBOSE:0:*/
 #ifdef TRANSFER_VERBOSE 
-                  sprintf(msg, "lbTransferDataObject has it's data pointer at %x", o.getData());
+                  sprintf(msg, "lbTransferDataObject has it's data pointer at %p", (void*) (o.getData()));
                   LOG(msg);
 #endif  
 /*...e*/
@@ -449,7 +449,7 @@ LOG("Created");
 #endif
 /*...e*/
 /*
-                sprintf(msg, "Address of elements now is 0x%x", elements);
+                sprintf(msg, "Address of elements now is 0x%p", (void*) elements);
                 LOG(msg);
                 if ((void*)elements != (void*)elementscopy) 
                   LOG("Error: elements pointer has been overwritten!");
@@ -477,7 +477,7 @@ LOG("Inserted");
                         if (e != NULL) {
 /*...sTRANSFER_VERBOSE:0:*/
 #ifdef TRANSFER_VERBOSE
-                                sprintf(msg, "lb_Transfer_Data::add() Have added this address: %x", e->getData());
+                                sprintf(msg, "lb_Transfer_Data::add() Have added this address: %p", (void*) (e->getData()));
                                 LOG(msg);
 #endif                  
 /*...e*/
@@ -901,7 +901,7 @@ LOG(msg);
 
 /*...sTRANSFER_VERBOSE:0:*/
 #ifdef TRANSFER_VERBOSE
-sprintf(msg, "Calculated values: peaces = %d, currbufferpos = %x", peaces, currbufferpos);
+sprintf(msg, "Calculated values: peaces = %d, currbufferpos = %p", peaces, (void*) currbufferpos);
 LOG(msg);
 #endif
 /*...e*/
@@ -958,7 +958,7 @@ LOG("Recieving remaining");
         int wanted_peace_size = (buflen-peaces*MAXBUFLEN);
 /*...sTRANSFER_VERBOSE:0:*/
 #ifdef TRANSFER_VERBOSE
-sprintf(msg, "Calculated values: peaces = %d, currbufferpos = %x, torecv = %d", peaces, currbufferpos, wanted_peace_size);
+sprintf(msg, "Calculated values: peaces = %d, currbufferpos = %p, torecv = %d", peaces, (void*) currbufferpos, wanted_peace_size);
 LOG(msg);
 #endif
 /*...e*/
@@ -1188,7 +1188,7 @@ LOG("lbTransfer::send(...) Call waitforAnswer('Datatype ok')");
                 pLB_TRANSFER_DATA pData = data.getNextPacket();
 /*...sTRANSFER_VERBOSE:0:*/
 #ifdef TRANSFER_VERBOSE
-                sprintf(msg, "Send a packet (pData) with address %x", pData);
+                sprintf(msg, "Send a packet (pData) with address %p", (void*) pData);
                 LOG(msg);
 #endif
 /*...e*/
@@ -1200,7 +1200,7 @@ LOG("lbTransfer::send(...) Call waitforAnswer('Datatype ok')");
 /*...sTRANSFER_VERBOSE:0:*/
 #ifdef TRANSFER_VERBOSE
                         LOG("Send a packet from LB_TRANSFER_DATA");
-                        sprintf(msg, "Try to copy buffer to a char buffer. It's address: %x, it's size %d", &pData->data, pData->packet_size);
+                        sprintf(msg, "Try to copy buffer to a char buffer. It's address: %p, it's size %d", (void*) (pData->data), pData->packet_size);
                         LOG(msg);
                         char sendbuffer[100];
                         strncpy(sendbuffer, (char*) &(pData->data), pData->packet_size);
