@@ -1081,6 +1081,7 @@ lbErrCodes LB_STDCALL lbQuery::setString(lb_I_String* columnName, lb_I_String* v
 	if (mode == 1) {
 		// Not supported yet
 		printf("lbQuery::setString(lb_I_String* columnName, lb_I_String* value) Error: Append data not supported yet\n");
+		boundColumns->setString(columnName->charrep(), value);
 	} else {
 		//printf("Call boundColumns->setString('%s', '%s')\n", columnName->charrep(), value->charrep());
 		boundColumns->setString(columnName->charrep(), value);
@@ -1120,6 +1121,7 @@ lbErrCodes LB_STDCALL lbQuery::update() {
 	if (mode == 1) {
 		printf("Insert the new record\n");
 		SQLSetPos(hstmt, 2, SQL_ADD, SQL_LOCK_NO_CHANGE);
+		mode = 0;
 	} else {
 		printf("Update the record\n");
 #ifdef USE_CURRENT_OF
@@ -1573,6 +1575,27 @@ lbErrCodes LB_STDCALL lbBoundColumn::setFromString(lb_I_String* set, int mode) {
 		// Not supported yet
 		_LOG << "lbBoundColumn::setFromString(...) if (mode == 1) not implemented yet" LOG_
 		printf("lbBoundColumn::setFromString(...) if (mode == 1) not implemented yet\n");
+		// This would overwrite the pointer, not the data !!!
+
+		switch (_DataType) {
+			case SQL_CHAR:
+			case SQL_VARCHAR:
+			case SQL_LONGVARCHAR:
+				{
+					// Must set an offset for the insert buffer
+					char* b = strcpy((char*) buffer, set->getData());
+					cbBufferLength = strlen((char*) buffer);
+				}
+				break;
+			case SQL_INTEGER:
+				{
+					long l = 0;
+					l = atol(set->getData());
+					memcpy(buffer, &l, sizeof(l));
+				}
+				break;
+		}
+
 	} else {
 		// This would overwrite the pointer, not the data !!!
 /*
