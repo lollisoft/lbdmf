@@ -6,7 +6,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.13 2004/04/11 07:50:38 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.14 2004/05/08 10:45:23 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -352,6 +352,7 @@ END_IMPLEMENT_LB_UNKNOWN()
  * events.
  */
 
+/*...sUnimplemented code:0:*/
 /*...slbErrCodes LB_STDCALL lb_wxGUI\58\\58\setDispatcher\40\lb_I_Dispatcher\42\ disp\41\:0:*/
 lbErrCodes LB_STDCALL lb_wxGUI::setDispatcher(lb_I_Dispatcher* disp) {
        _LOG << "lb_wxGUI::setDispatcher() not implemented yet" LOG_
@@ -403,21 +404,6 @@ lbErrCodes LB_STDCALL lb_wxGUI::setData(lb_I_Unknown* uk) {
 }
 /*...e*/
 
-/*...slb_I_Unknown\42\ LB_STDCALL lb_wxGUI\58\\58\createFrame\40\\41\:0:*/
-lb_I_Unknown* LB_STDCALL lb_wxGUI::createFrame() {
-        lb_wxFrame* frame = new lb_wxFrame();
-        
-        frame->setModuleManager(getModuleManager(), __FILE__, __LINE__);
-        frame->queryInterface("lb_I_Unknown", (void**) &_main_frame, __FILE__, __LINE__);
-
-	char ptr[20] = "";
-	sprintf(ptr, "%p", frame);
-	
-	_LOG << "Created a lb_wxFrame object at " << ptr LOG_
-        
-        return frame;
-}
-/*...e*/
 /*...slb_I_Unknown\42\ LB_STDCALL lb_wxGUI\58\\58\createMenu\40\\41\:0:*/
 lb_I_Unknown* LB_STDCALL lb_wxGUI::createMenu() {
        _LOG << "Error: Function has not been implemented!" LOG_
@@ -436,17 +422,6 @@ lb_I_Unknown* LB_STDCALL lb_wxGUI::createMenuEntry() {
         return NULL;
 }
 /*...e*/
-
-/*...slb_I_Frame\42\ LB_STDCALL lb_wxGUI\58\\58\getFrame\40\\41\:0:*/
-lb_I_Frame* LB_STDCALL lb_wxGUI::getFrame() {
-        lb_I_Frame* f = NULL;
-        
-        _main_frame->queryInterface("lb_I_Frame", (void**) &f, __FILE__, __LINE__);
-        
-        return f;
-}
-/*...e*/
-
 /*...slbErrCodes LB_STDCALL lb_wxGUI\58\\58\deactivateMenuEntry\40\\41\:0:*/
 lbErrCodes LB_STDCALL lb_wxGUI::deactivateMenuEntry() {
        _LOG << "Error: Function has not been implemented!" LOG_
@@ -463,6 +438,44 @@ lbErrCodes LB_STDCALL lb_wxGUI::activateMenuEntry() {
 lbErrCodes LB_STDCALL lb_wxGUI::gotoMenuRoot() {
        _LOG << "Error: Function has not been implemented!" LOG_
         return ERR_NONE;
+}
+/*...e*/
+/*...slbErrCodes LB_STDCALL lb_wxGUI\58\\58\addMenuEntry\40\lb_I_Unknown\42\ entry\41\:0:*/
+lbErrCodes LB_STDCALL lb_wxGUI::addMenuEntry(lb_I_Unknown* entry) {
+       _LOG << "Error: Function has not been implemented!" LOG_
+        return ERR_NONE;
+}
+/*...e*/
+/*...slbErrCodes LB_STDCALL lb_wxGUI\58\\58\insertMenuEntry\40\lb_I_Unknown\42\ entry\41\:0:*/
+lbErrCodes LB_STDCALL lb_wxGUI::insertMenuEntry(lb_I_Unknown* entry) {
+       _LOG << "Error: Function has not been implemented!" LOG_
+        return ERR_NONE;
+}
+/*...e*/
+/*...e*/
+
+/*...slb_I_Unknown\42\ LB_STDCALL lb_wxGUI\58\\58\createFrame\40\\41\:0:*/
+lb_I_Unknown* LB_STDCALL lb_wxGUI::createFrame() {
+        lb_wxFrame* frame = new lb_wxFrame();
+        
+        frame->setModuleManager(getModuleManager(), __FILE__, __LINE__);
+        frame->queryInterface("lb_I_Unknown", (void**) &_main_frame, __FILE__, __LINE__);
+
+	char ptr[20] = "";
+	sprintf(ptr, "%p", frame);
+	
+	_LOG << "Created a lb_wxFrame object at " << ptr LOG_
+        
+        return frame;
+}
+/*...e*/
+/*...slb_I_Frame\42\ LB_STDCALL lb_wxGUI\58\\58\getFrame\40\\41\:0:*/
+lb_I_Frame* LB_STDCALL lb_wxGUI::getFrame() {
+        lb_I_Frame* f = NULL;
+        
+        _main_frame->queryInterface("lb_I_Frame", (void**) &f, __FILE__, __LINE__);
+        
+        return f;
 }
 /*...e*/
 /*...slbErrCodes LB_STDCALL lb_wxGUI\58\\58\gotoMenuEntry\40\char\42\ entry\41\:0:*/
@@ -503,19 +516,6 @@ lbErrCodes LB_STDCALL lb_wxGUI::gotoMenuEntry(char* entry) {
                 currentMenuEntry = strdup(entry);
         }
 */
-        return ERR_NONE;
-}
-/*...e*/
-
-/*...slbErrCodes LB_STDCALL lb_wxGUI\58\\58\addMenuEntry\40\lb_I_Unknown\42\ entry\41\:0:*/
-lbErrCodes LB_STDCALL lb_wxGUI::addMenuEntry(lb_I_Unknown* entry) {
-       _LOG << "Error: Function has not been implemented!" LOG_
-        return ERR_NONE;
-}
-/*...e*/
-/*...slbErrCodes LB_STDCALL lb_wxGUI\58\\58\insertMenuEntry\40\lb_I_Unknown\42\ entry\41\:0:*/
-lbErrCodes LB_STDCALL lb_wxGUI::insertMenuEntry(lb_I_Unknown* entry) {
-       _LOG << "Error: Function has not been implemented!" LOG_
         return ERR_NONE;
 }
 /*...e*/
@@ -586,6 +586,9 @@ class MyApp: public wxApp
 	lbErrCodes LB_STDCALL lbEvHandler1(lb_I_Unknown* uk);
 	lbErrCodes LB_STDCALL lbEvHandler2(lb_I_Unknown* uk);
 	lbErrCodes LB_STDCALL lbEvHandler3(lb_I_Unknown* uk);	
+	
+	// These event handlers are canditates for an API replacement
+	
 	lbErrCodes LB_STDCALL addButton(lb_I_Unknown* uk);
 	lbErrCodes LB_STDCALL addLabel(lb_I_Unknown* uk);
 	lbErrCodes LB_STDCALL addTextField(lb_I_Unknown* uk);
@@ -607,6 +610,8 @@ protected:
 /*...e*/
         lb_wxGUI* wxGUI;
         lb_wxFrame* frame_peer;
+
+	// Storage for event ID's generated on the fly
         
         int AddMenu;
         int AddMenuBar;
