@@ -87,11 +87,7 @@ typedef lbErrCodes (lb_I_CallbackTarget::*lbMemberCallback)( const char* handler
  */
  
 class lb_I_gcManager;
-
-	/* setData must check the type of this ! */
-	/* = may also be possible */
-/*...sclass lb_I_Unknown:0:*/
-#define STARTREF 0
+class lb_I_Unknown;
 
 /*
 	CL_LOG("Releasing instance"); \
@@ -118,6 +114,17 @@ class lb_I_gcManager;
 		} \
 	}
 /*...e*/
+
+
+// UNKNOWN_AUTO_PTR was tested, use it.
+
+#define USE_UAP
+
+	/* setData must check the type of this ! */
+	/* = may also be possible */
+/*...sclass lb_I_Unknown:0:*/
+#define STARTREF 0
+
 
 class lb_I_Unknown {
 protected:
@@ -156,6 +163,86 @@ public:
 
 //friend class lb_I_gcManager;	
 };
+
+/*...sAutoPointer:0:*/
+/**
+ * Is it possible to create an automatic pointer without templates ?
+ */
+/*...sbla \40\geht nicht\41\:0:*/
+#ifdef bla
+class UAP {
+public:
+	UAP(lb_I_Unknown *& autoPtr) {
+                _autoPtr = autoPtr;
+        }
+        virtual ~UAP() { RELEASE(_autoPtr); }
+protected:
+lb_I_Unknown* _autoPtr;
+};
+#endif
+/*...e*/
+
+#define UAP(interface, Unknown_Reference) \
+		class UAP##Unknown_Reference { \
+		public: \
+	        UAP##Unknown_Reference() { \
+	        	CL_LOG("UAP init"); \
+	        	getch(); \
+	        	_autoPtr = NULL; \
+		} \
+		virtual ~UAP##Unknown_Reference() { \
+			CL_LOG("UAP destroy"); \
+			getch(); \
+			if (_autoPtr != NULL) RELEASE(_autoPtr); \
+		} \
+		\
+		interface* getPtr() const { return _autoPtr; } \
+		void setPtr(interface*& source) { \
+			if (_autoPtr != NULL) { \
+				CL_LOG("Error: UAP object still initialized!"); \
+			} \
+			_autoPtr = source; \
+		} \
+		\
+		interface& operator * () { CL_LOG("OP * called"); return *_autoPtr; } \
+		interface* operator -> () { \
+			CL_LOG("OP -> called"); \
+			if (_autoPtr == NULL) CL_LOG("Error: UAP pointer is NULL!"); \
+			return _autoPtr; \
+		} \
+		interface** operator & () { \
+			CL_LOG("OP & called"); \
+			return &_autoPtr; \
+		} \
+		\
+		UAP##Unknown_Reference& operator = (interface*& autoPtr) { \
+			CL_LOG("Operator = called"); \
+			_autoPtr = autoPtr; return *this; \
+		} \
+		int operator ==(const interface* b) { \
+			return _autoPtr == b; \
+		} \
+		int operator !=(const interface* b) { \
+			return _autoPtr != b; \
+		} \
+		\
+		protected: \
+	        interface* _autoPtr; \
+		}; \
+	\
+        interface* _UAP##Unknown_Reference; \
+        UAP##Unknown_Reference Unknown_Reference;
+
+
+/*...sbla \40\geht nicht\41\:0:*/
+#ifdef bla
+#define UNKNOWN_AUTO_PTR(interface, Unknown_Referene) \
+	interface* Unknown_Referene = NULL; \
+	UAP UAP##Unknown_Referene((lb_I_Unknown**) &Unknown_Referene);
+#endif
+/*...e*/
+/*...e*/
+
 
 #define DECLARE_LB_UNKNOWN() \
 private: \
@@ -220,6 +307,9 @@ lb_I_Unknown* LB_STDCALL classname::clone() const { \
 lbErrCodes LB_STDCALL classname::queryInterface(char* name, void** unknown) { \
 	char buf[100] = ""; \
 	char iFaces[1000] = ""; \
+\
+	CL_LOG(#classname "::queryInterface(char* name, void** unknown) called"); \
+	if (unknown == NULL) CL_LOG("Error: Got NULL pointer reference!"); \
 \
 	if (debug_macro == 1) { \
 		sprintf(buf, #classname"::queryInterface('%s', void** unknown)\n", name); \
