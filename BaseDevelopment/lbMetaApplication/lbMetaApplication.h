@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.16 $
+ * $Revision: 1.17 $
  * $Name:  $
- * $Id: lbMetaApplication.h,v 1.16 2004/01/24 16:17:29 lollisoft Exp $
+ * $Id: lbMetaApplication.h,v 1.17 2004/07/16 20:24:41 lollisoft Exp $
  *
  * $Log: lbMetaApplication.h,v $
+ * Revision 1.17  2004/07/16 20:24:41  lollisoft
+ * Added handler to enter into the debugger
+ *
  * Revision 1.16  2004/01/24 16:17:29  lollisoft
  * Added support for loading application
  *
@@ -128,6 +131,8 @@ public:
 	 * Load the real application.
 	 */
 	lbErrCodes LB_STDCALL loadApplication();
+
+	lbErrCodes LB_STDCALL enterDebugger(lb_I_Unknown* uk);
 
 	lbErrCodes LB_STDCALL lbEvHandler1(lb_I_Unknown* uk);
 	lbErrCodes LB_STDCALL lbEvHandler2(lb_I_Unknown* uk);

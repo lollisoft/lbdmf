@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.34 $
+ * $Revision: 1.35 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.34 2004/06/29 16:35:50 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.35 2004/07/16 20:24:41 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.35  2004/07/16 20:24:41  lollisoft
+ * Added handler to enter into the debugger
+ *
  * Revision 1.34  2004/06/29 16:35:50  lollisoft
  * Removed some log messages
  *
@@ -212,6 +215,7 @@ lb_MetaApplication::~lb_MetaApplication() {
 /*...sregister event handlers:0:*/
 lbErrCodes LB_STDCALL lb_MetaApplication::registerEventHandler(lb_I_Dispatcher* disp) {
 
+	disp->addEventHandlerFn(this, (lbEvHandler) &lb_MetaApplication::enterDebugger, "enterDebugger");
 	disp->addEventHandlerFn(this, (lbEvHandler) &lb_MetaApplication::lbEvHandler1, "getBasicApplicationInfo");
 	disp->addEventHandlerFn(this, (lbEvHandler) &lb_MetaApplication::lbEvHandler2, "getMainModuleInfo");
 	disp->addEventHandlerFn(this, (lbEvHandler) &lb_MetaApplication::lbButtonTestHandler, "Button Test pressed");
@@ -220,6 +224,11 @@ lbErrCodes LB_STDCALL lb_MetaApplication::registerEventHandler(lb_I_Dispatcher* 
 /*...e*/
 
 /*...sevent handlers\44\ that can be registered:0:*/
+lbErrCodes LB_STDCALL lb_MetaApplication::enterDebugger(lb_I_Unknown* uk) {
+	DebugBreak();
+	return ERR_NONE;
+}
+
 lbErrCodes LB_STDCALL lb_MetaApplication::lbEvHandler1(lb_I_Unknown* uk) {
 	_LOG << "lb_MetaApplication::lbEvHandler1() called" LOG_
 	return ERR_NONE;
@@ -299,6 +308,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::Initialize() {
 	int getBasicApplicationInfo;
 	int getMainModuleInfo;
 	int testPressed;
+	int enterDebugger;
 /*...e*/
 
 /*...sget the event manager:8:*/
@@ -307,16 +317,14 @@ lbErrCodes LB_STDCALL lb_MetaApplication::Initialize() {
 	 */
 	
 	lb_I_Module* m = *&manager;
-	printf("Get an event manager\n");
 	REQUEST(m, lb_I_EventManager, eman)
 /*...e*/
 	
 /*...sregister a basic event \40\getBasicApplicationInfo\41\ by the event manager:8:*/
-	printf("Register some events\n"); 
+	eman->registerEvent("enterDebugger", enterDebugger);
 	eman->registerEvent("getBasicApplicationInfo", getBasicApplicationInfo);
 	eman->registerEvent("getMainModuleInfo", getMainModuleInfo);
 	eman->registerEvent("Button Test pressed", testPressed);
-	printf("Registered some events\n");
 
 /*...e*/
 
@@ -324,9 +332,8 @@ lbErrCodes LB_STDCALL lb_MetaApplication::Initialize() {
 	REQUEST(m, lb_I_Dispatcher, dispatcher)
 	dispatcher->setEventManager(eman.getPtr());
 /*...e*/
-	printf("Connect the event handlers to the dispatcher\n");	
+
 	registerEventHandler(dispatcher.getPtr());
-	printf("Connected\n");
 
 	// Step 3 (Load sub components, handling menus and else needed for an UI)
 	loadSubModules();
@@ -368,6 +375,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::Initialize() {
 	
 /*...sMain module demos and their help:8:*/
 	addMenuEntry("Help", "MainModuleInfo", "getMainModuleInfo", "");
+	addMenuEntry("Help", "Debug application", "enterDebugger", "");
 
 	addButton("Press me for test", "Button Test pressed", 10, 30, 100, 20);
 	
