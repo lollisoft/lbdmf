@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.45 2005/02/12 15:56:27 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.46 2005/02/14 16:37:14 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.45 $
+ * $Revision: 1.46 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.45 2005/02/12 15:56:27 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.46 2005/02/14 16:37:14 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.46  2005/02/14 16:37:14  lollisoft
+ * Much tries to get foreign key handling work under linux. But there might be some magic bugs, that don't let them use
+ *
  * Revision 1.45  2005/02/12 15:56:27  lollisoft
  * Changed SQL queries and enabled user and password settings via
  * environment.
@@ -413,7 +416,7 @@ public:
 
 		sampleQuery = database->getQuery(0);
 
-		char buffer[1000] = "";
+		char buffer[800] = "";
 
 		sprintf(buffer, 
 			"select Anwendungen.name from Anwendungen inner join User_Anwendungen on "
@@ -425,7 +428,8 @@ public:
 
 		sampleQuery->skipFKCollecting();
 		sampleQuery->query(buffer);
-
+		sampleQuery->enableFKCollecting();
+		
 		// Fill up the available applications for that user.
 
 		lbErrCodes err = sampleQuery->first();
@@ -614,7 +618,7 @@ DECLARE_LB_UNKNOWN()
 
 		sampleQuery = database->getQuery(0);
 
-		char buffer[1000] = "";
+		char buffer[800] = "";
 
 		char* pass = strdup(getTextValue("Passwort:"));
 		char* user = strdup(getTextValue("Benutzer:"));
@@ -629,8 +633,11 @@ _CL_VERBOSE << "Query for user " << user LOG_
 
 		if (sampleQuery->query(buffer) != ERR_NONE) {
 		    printf("Query for user and password failed\n");
+		    sampleQuery->enableFKCollecting();
 		    return FALSE;
 		}
+		
+		sampleQuery->enableFKCollecting();
 
 _CL_VERBOSE << "Move to first row" LOG_
 
@@ -1034,7 +1041,9 @@ void lbDatabaseDialog::init(wxWindow* parent, wxString formName, wxString SQLStr
 
 /*...e*/
 	
+	sampleQuery->enableFKCollecting();
 	sampleQuery->query(_q);
+
 	free(_q);
 
 	int columns = sampleQuery->getColumns();
@@ -1055,7 +1064,14 @@ void lbDatabaseDialog::init(wxWindow* parent, wxString formName, wxString SQLStr
 		   configured column to show instead.
 		*/ 
 
+		if (sampleQuery->hasFKColumn(name) == 0) {
+		    _CL_LOG << "WARNING: No foreign columns for formular" LOG_
+		}
+
+		_CL_LOG << "Check for foreign column: " << name LOG_
+
 		if (sampleQuery->hasFKColumn(name) == 1) {
+			_CL_LOG << "Build Dropdown list" LOG_
 /*...sCreate a combobox:24:*/
 			lbErrCodes err = ERR_NONE;
 			
@@ -1082,6 +1098,8 @@ void lbDatabaseDialog::init(wxWindow* parent, wxString formName, wxString SQLStr
 			
 			sprintf(buffer, "select PKName, PKTable	from ForeignKey_VisibleData_Mapping "
 					"where FKName = '%s' and FKTable = '%s'", name, sampleQuery->getTableName());
+
+			printf("%s\n", buffer);
 
 			FKColumnQuery = database->getQuery(0);
 			

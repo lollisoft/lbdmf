@@ -374,7 +374,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::Initialize(char* user, char* app) {
 	char buffer[1000] = "";
 
 	sprintf(buffer,
-	        "select eventname, menuname from Formulare inner join Anwendungen_Formulare on "
+	        "select Formulare.eventname, Formulare.menuname from Formulare inner join Anwendungen_Formulare on "
 	        "Formulare.id = Anwendungen_Formulare.formularid "
 	        "inner join Anwendungen on Anwendungen_Formulare.anwendungid = Anwendungen.id inner join "
 	        "User_Anwendungen on Anwendungen.id = User_Anwendungen.anwendungenid inner join Users on "
@@ -384,12 +384,12 @@ lbErrCodes LB_STDCALL lbDynamicApplication::Initialize(char* user, char* app) {
 
 	_CL_LOG << "Query for all events and their menu names of the current user (" << user << ") for " << app LOG_
 	
+	printf("Size of query: %d\n", strlen(buffer));
+	
 	// Save user and app internally
 	
 	userName = strdup(user);
 	applicationName = strdup(app);
-
-	printf("%s\n", buffer);
 
 	if (sampleQuery == NULL) printf("NULL pointer !\n");
 

@@ -227,7 +227,8 @@ lbErrCodes LB_STDCALL lbLoadModule(const char* name, HINSTANCE & hinst) {
 #ifdef LINUX
 	if ((hinst = dlopen(name, RTLD_LAZY)) == NULL)
 	{
-	    printf("Kann SO module '%s' nicht laden.\n", name);
+	    printf("Kann SO module '%s' nicht laden. Error: %s\n", name, dlerror());
+	    
 	    //getch();
 	    return ERR_MODULE_NOT_FOUND;
 	}

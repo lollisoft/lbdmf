@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.50 $
+ * $Revision: 1.51 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.50 2005/02/13 09:13:16 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.51 2005/02/14 16:37:14 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.51  2005/02/14 16:37:14  lollisoft
+ * Much tries to get foreign key handling work under linux. But there might be some magic bugs, that don't let them use
+ *
  * Revision 1.50  2005/02/13 09:13:16  lollisoft
  * Using applicationName to load not a hardcoded application
  *
@@ -540,7 +543,10 @@ lbErrCodes LB_STDCALL lb_MetaApplication::loadApplication(char* user, char* appl
 
 		_CL_LOG << "Query for the application data to be able to load it" LOG_
 
+		sampleQuery->skipFKCollecting();
 		sampleQuery->query(buffer);
+		sampleQuery->enableFKCollecting();
+		
 
 		// Fill up the available applications for that user.
 		UAP_REQUEST(manager.getPtr(), lb_I_String, ModuleName)

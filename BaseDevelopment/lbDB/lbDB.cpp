@@ -164,13 +164,6 @@ public:
 //		lpszTable = NULL;
 		cols = 0;
 		
-		#ifdef WINDOWS
-		skipFKCollections = 0;
-		#endif
-		
-		#ifdef UNIX
-		skipFKCollections = 0;
-		#endif
 		fetchstatus = 0;
 	}
 	
@@ -202,6 +195,7 @@ public:
 /*...e*/
 
 	virtual void LB_STDCALL skipFKCollecting();
+	virtual void LB_STDCALL enableFKCollecting();
 	void LB_STDCALL prepareFKList();
 
 	virtual char* LB_STDCALL getTableName();
@@ -285,7 +279,7 @@ private:
 	int	mode;  // insert = 1, select = 0
 //	char* lpszTable;
 
-	int     skipFKCollections;
+	static int     skipFKCollections;
 	
 	// Number of columns for the query
 	SQLSMALLINT cols;
@@ -311,6 +305,9 @@ private:
 	 */
 	int fetchstatus;
 };
+
+int lbQuery::skipFKCollections = 0;
+
 /*...e*/
 /*...sclass def lbBoundColumn:0:*/
 class lbBoundColumn: public lb_I_BoundColumn {
@@ -686,6 +683,12 @@ void LB_STDCALL lbQuery::skipFKCollecting() {
 	skipFKCollections = 1;
 }
 
+void LB_STDCALL lbQuery::enableFKCollecting() {
+	skipFKCollections = 0;
+}
+
+
+
 /*...slbErrCodes LB_STDCALL lbQuery\58\\58\init\40\HENV _henv\44\ HDBC _hdbc\41\:0:*/
 lbErrCodes LB_STDCALL lbQuery::init(HENV _henv, HDBC _hdbc, int readonly) {
 	hdbc = _hdbc;
@@ -1009,6 +1012,7 @@ int   LB_STDCALL lbQuery::getColumns() {
 int LB_STDCALL lbQuery::hasFKColumn(char* FKName) {
 	lbErrCodes err = ERR_NONE;
 
+
 	if (skipFKCollections == 1) {
 		_CL_LOG << "Warning: Skipping for checking of foreign columns." LOG_
 		return 0;
@@ -1034,8 +1038,14 @@ void LB_STDCALL lbQuery::prepareFKList() {
 
 	REQUEST(manager.getPtr(), lb_I_Container, ForeignColumns)
 
-	if (skipFKCollections == 1) return;
+	if (skipFKCollections == 1) {
+	    _CL_LOG << "==========================================" LOG_
+	    _CL_LOG << "Do not collect foreign column information!" LOG_
+	    _CL_LOG << "==========================================" LOG_
 
+	    return;
+	}
+	
 #ifdef WINDOWS
 
 	unsigned char*   szTable;     /* Table to display   */
@@ -1122,16 +1132,6 @@ _CL_VERBOSE << "Have one definition" LOG_
 #ifdef UNIX
 	lbErrCodes err = ERR_NONE;
 	
-	UAP_REQUEST(manager.getPtr(), lb_I_Database, db)
-	db->init();
-	
-	char* user = getenv("lbDMFUser");
-	char* pass = getenv("lbDMFPasswd");
-	
-	if (!user) user = "dba";
-	if (!pass) pass = "trainres";
-	
-	db->connect("lbDMF", user, pass);
 	char buffer[1000] = "";
 	
 	/* For each column in the table for the current query try to select the PKTable and associate it to
@@ -1141,9 +1141,21 @@ _CL_VERBOSE << "Have one definition" LOG_
 	char* table = getTableName();
 	
 	printf("Try to get foreign columns for table %s. Columns = %d\n", table, getColumns());
+
+        UAP_REQUEST(manager.getPtr(), lb_I_Database, db)
+        db->init();
+	
+        char* user = getenv("lbDMFUser");
+        char* pass = getenv("lbDMFPasswd");
+	
+        if (!user) user = "dba";
+        if (!pass) pass = "trainres";
+	
+        db->connect("lbDMF", user, pass);
+
 	
 	for (int i = 1; i <= getColumns(); i++) { 
-    	    UAP(lb_I_Query, q, __FILE__, __LINE__)
+    	    lb_I_Query* q;
 
 	    buffer[0] = 0;
 	    
@@ -1152,6 +1164,8 @@ _CL_VERBOSE << "Have one definition" LOG_
 	    printf("Check for column %s\n", column);
 	    
 	    sprintf(buffer, "select PKTable from ForeignKey_VisibleData_Mapping where FKTable = '%s' and FKName = '%s'", table, column);
+
+	    printf("%s\n", buffer);
 	
 	    q = db->getQuery(0);
 	
@@ -1185,7 +1199,7 @@ _CL_VERBOSE << "Have one definition" LOG_
 
 #endif
 
-_CL_VERBOSE << "Leave lbQuery::prepareFKList()" LOG_
+    _CL_VERBOSE << "Leave lbQuery::prepareFKList()" LOG_
 }
 /*...e*/
 
@@ -2299,8 +2313,6 @@ lb_I_String* LB_STDCALL lbBoundColumn::getColumnName() {
 
 class lbConnection : public lb_I_Connection
 {
-	DECLARE_LB_UNKNOWN()
-
 public:
         lbConnection()  {
 	    ref = STARTREF;
@@ -2311,6 +2323,9 @@ public:
 	    if (_dbname) free(_dbname);
 	    if (_dbuser) free(_dbuser);
 	}
+
+	DECLARE_LB_UNKNOWN()
+
 
 	virtual char* LB_STDCALL getDBName() { return _dbname; }
 	virtual char* LB_STDCALL getDBUser() { return _dbuser; }
@@ -2352,7 +2367,26 @@ BEGIN_IMPLEMENT_LB_UNKNOWN(lbConnection)
 	ADD_INTERFACE(lb_I_Connection)
 END_IMPLEMENT_LB_UNKNOWN()
 
-//IMPLEMENT_FUNCTOR(instanceOfConnection, lbConnection)
+IMPLEMENT_FUNCTOR(instanceOfConnection, lbConnection)
+
+lbErrCodes LB_STDCALL lbConnection::setData(lb_I_Unknown* uk) {
+	_CL_LOG << "lbConnection::setData(...) not implemented yet" LOG_
+	
+	lbErrCodes err = ERR_NONE;
+	
+	UAP(lb_I_Connection, con, __FILE__, __LINE__)
+	QI(uk, lb_I_Connection, con, __FILE__, __LINE__)
+	
+	lbConnection* connection; 
+	
+	if (con.getPtr() != NULL) {
+	    connection = (lbConnection*) con.getPtr();
+	    
+	    hdbc = connection->getConnection();
+	}
+	
+	return ERR_NOT_IMPLEMENTED;
+}
 
 
 /*...sclass lbDatabase:0:*/

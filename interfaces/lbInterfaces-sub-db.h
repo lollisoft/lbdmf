@@ -259,6 +259,8 @@ public:
 //        virtual lbErrCodes      LB_STDCALL setQuery(lb_I_Query* q) = 0;
 #endif
 
+	virtual lbErrCodes		LB_STDCALL setQuery(lb_I_Query* q) = 0;
+
 	/**
 	 * \brief Indicator, if the current column is an adding column.
 	 *
@@ -397,11 +399,33 @@ public:
 	 * \brief Skip foreign column informations.
 	 *
 	 * This disables the collecting of foreign keys. There are some problems on
-	 * my test system (Windows 2000 / english). My development system is german
+	 * my test system (Windows 2000 / german). My development system is english
 	 * and works !
+	 *
+	 * The implementation under linux has problems, if SQLForeignColumns is used. There
+	 * an alternative implementation is used.
+	 *
+	 * WARNING: The affecting variable is static and affects all instances of this class.
 	 */
 
 	virtual void LB_STDCALL skipFKCollecting() = 0;
+
+	/**
+	 * \brief Enable foreign column informations.
+	 *
+	 * This enables the collecting of foreign keys. There are some problems on
+	 * my test system (Windows 2000 / german). My development system is english
+	 * and works !
+	 *
+	 * The implementation under linux has problems, if SQLForeignColumns is used. There
+	 * an alternative implementation is used.
+	 *
+	 * WARNING: The affecting variable is static and affects all instances of this class.
+	 */
+
+	virtual void LB_STDCALL enableFKCollecting() = 0;
+
+
 
 	/**
 	 * \brief Determines occurence of foreign column.
@@ -476,6 +500,25 @@ public:
 #endif
 };
 /*...e*/
+
+/**
+ * \brief This is the storage for one connection per db name and user name.
+ */
+class lb_I_Connection : public lb_I_Unknown
+{
+public:
+
+	/**
+	 * \brief Get the name of the db connection.
+	 */
+	virtual char* LB_STDCALL getDBName() = 0;
+
+	/**
+	 * \brief Get the user of the db connection.
+	 */
+	virtual char* LB_STDCALL getDBUser() = 0;
+};
+
 /*...sclass lb_I_Database:0:*/
 /**
  * \brief The main class for operating with databases.
