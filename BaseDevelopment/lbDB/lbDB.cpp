@@ -433,8 +433,6 @@ END_IMPLEMENT_LB_UNKNOWN()
 lbErrCodes LB_STDCALL lbBoundColumns::setData(lb_I_Unknown* uk) {
         _CL_LOG << "lbBoundColumns::setData(...) not implemented yet" LOG_
         
-        printf("lbBoundColumns::setData(lb_I_Unknown* uk) called\n");
-        
         return ERR_NOT_IMPLEMENTED;
 }
 
@@ -462,8 +460,6 @@ lb_I_BoundColumn* LB_STDCALL lbBoundColumns::getBoundColumn(int column) {
 		UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
 		
 		QI(integerKey, lb_I_KeyBase, key, __FILE__, __LINE__)
-
-		printf("Have %d columns in boundColumns and search for %s\n", boundColumns->Count(), key->charrep());
 
 		ukdata = boundColumns->getElement(&key);
 		if (ukdata == NULL) printf("NULL pointer!\n");
@@ -581,8 +577,6 @@ Therefore I need an indicator, set by the user of this library to know, which on
 		UAP(lb_I_String, string, __FILE__, __LINE__)
 
 		string = bc1->getColumnName();
-
-		_CL_LOG << "Have Column '" << string->charrep() << "'" LOG_
 
 		string->queryInterface("lb_I_KeyBase", (void**) &skey, __FILE__, __LINE__);
 
@@ -833,9 +827,7 @@ lbErrCodes LB_STDCALL lbQuery::init(HENV _henv, HDBC _hdbc, int readonly) {
 /*...e*/
 /*...slbErrCodes LB_STDCALL lbQuery\58\\58\query\40\char\42\ q\41\:0:*/
 lbErrCodes LB_STDCALL lbQuery::query(char* q) {
-	char buf[100] = "";
 	lbBoundColumns* boundcols = NULL;
-	char buf1[100] = "";
 	
 	if (strlen(q) >= 1000) printf("WARNING: Bufferoverflow in %s at %d\n", __FILE__, __LINE__);
 
@@ -876,8 +868,6 @@ Using SQLSetPos
 /*...e*/
 
 	retcode = SQLExecDirect(hstmt, (unsigned char*) szSql, SQL_NTS);
-	_CL_VERBOSE << "Executed SQLExecDirect()" LOG_
-
 
 	if ((retcode != SQL_SUCCESS) && (retcode != SQL_SUCCESS_WITH_INFO))
         {
@@ -888,26 +878,19 @@ Using SQLSetPos
 
 	retcode = SQLNumResultCols(hstmt, &cols);
 
-	_CL_VERBOSE << "Called SQLNumResultCols() and have " << cols << " columns" LOG_
-	
 	if (retcode != SQL_SUCCESS)
 	{
 	        dbError( "SQLNumResultCols()");
-	        _LOG << "lbQuery::query(...) failed." LOG_
 	        return ERR_DB_QUERYFAILED;
 	} else {
 
-		_CL_VERBOSE << "Create bound columns" LOG_
-		
 		boundcols = new lbBoundColumns();
 		boundcols->setModuleManager(*&manager, __FILE__, __LINE__);
 		boundColumns = boundcols;
 		
 		boundColumns->setQuery(this);
 		
-		_CL_VERBOSE << "Call prepareFKList()" LOG_
 		prepareFKList();
-		_CL_VERBOSE  << "Called" LOG_
 	}
 
 	return ERR_NONE;
@@ -1017,7 +1000,7 @@ int LB_STDCALL lbQuery::hasFKColumn(char* FKName) {
 
 
 	if (skipFKCollections == 1) {
-		_CL_LOG << "Warning: Skipping for checking of foreign columns." LOG_
+		_CL_VERBOSE << "Warning: Skipping for checking of foreign columns." LOG_
 		return 0;
 	}
 	
@@ -1042,9 +1025,9 @@ void LB_STDCALL lbQuery::prepareFKList() {
 	REQUEST(manager.getPtr(), lb_I_Container, ForeignColumns)
 
 	if (skipFKCollections == 1) {
-	    _CL_LOG << "==========================================" LOG_
-	    _CL_LOG << "Do not collect foreign column information!" LOG_
-	    _CL_LOG << "==========================================" LOG_
+	    _CL_VERBOSE << "==========================================" LOG_
+	    _CL_VERBOSE << "Do not collect foreign column information!" LOG_
+	    _CL_VERBOSE << "==========================================" LOG_
 
 	    return;
 	}
@@ -1094,8 +1077,6 @@ void LB_STDCALL lbQuery::prepareFKList() {
 
 	while ((retcode == SQL_SUCCESS) || (retcode == SQL_SUCCESS_WITH_INFO)) {
 
-_CL_VERBOSE << "In loop to get foreign columns ..." LOG_
-
 	/* Fetch and display the result set. This will be all of the */
 	/* foreign keys in other tables that refer to the ORDERS */
 	/* primary key.                 */
@@ -1105,8 +1086,6 @@ _CL_VERBOSE << "In loop to get foreign columns ..." LOG_
 	   if (retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO) {
 	      lbErrCodes err = ERR_NONE;
 
-_CL_VERBOSE << "Have one definition" LOG_
-	      
 	      printf("%-s ( %-s ) <-- %-s ( %-s )\n", szPkTable, szPkCol, szFkTable, szFkCol);
 	      
 	      
@@ -1133,7 +1112,7 @@ _CL_VERBOSE << "Have one definition" LOG_
 /*...e*/
 	#endif
 		
-	#ifdef WINDOWS
+	#ifdef UNIX
 /*...sOriginally for Linux:8:*/
 	lbErrCodes err = ERR_NONE;
 	
@@ -1145,9 +1124,13 @@ _CL_VERBOSE << "Have one definition" LOG_
 	
 	char* table = getTableName();
 	
-	printf("Try to get foreign columns for table %s. Columns = %d\n", table, getColumns());
+	lb_I_Module* m = getModuleManager();
 
-        UAP_REQUEST(manager.getPtr(), lb_I_Database, db)
+	if (m != manager.getPtr()) {
+	    _CL_LOG << "ERROR: Existing manager pointer is not the same as a fresh initialized one!" LOG_ 
+	}
+	
+        UAP_REQUEST(m, lb_I_Database, db)
         db->init();
 	
         char* user = getenv("lbDMFUser");
@@ -1166,12 +1149,8 @@ _CL_VERBOSE << "Have one definition" LOG_
 	    
 	    char* column = getColumnName(i);
 
-	    printf("Check for column %s\n", column);
-	    
 	    sprintf(buffer, "select PKTable from ForeignKey_VisibleData_Mapping where FKTable = '%s' and FKName = '%s'", table, column);
 
-	    printf("%s\n", buffer);
-	
 	    q = db->getQuery(0);
 
 	    skipFKCollections = 1;
@@ -1180,14 +1159,10 @@ _CL_VERBOSE << "Have one definition" LOG_
 	    
 	    err = q->first();
 
-	    _CL_LOG << "Try to get the data for foreign columns" LOG_
-	    
 	    if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
 		UAP_REQUEST(manager.getPtr(), lb_I_String, FKName)
 	        UAP_REQUEST(manager.getPtr(), lb_I_String, PKTable)
 	
-		_CL_LOG << "Fill in from result column" LOG_
-	        
 		PKTable = q->getAsString(1);
 		
 	        FKName->setData(column);
@@ -1198,8 +1173,6 @@ _CL_VERBOSE << "Have one definition" LOG_
 	        QI(FKName, lb_I_KeyBase, key_FKName, __FILE__, __LINE__)
 	        QI(PKTable, lb_I_Unknown, uk_PKTable, __FILE__, __LINE__)
 
-		_CL_LOG << "Insert " << PKTable->charrep() << " for " << FKName->charrep() << " into ForeignColumns" LOG_
-
 	        ForeignColumns->insert(&uk_PKTable, &key_FKName);
 	    }
 	}
@@ -1207,7 +1180,6 @@ _CL_VERBOSE << "Have one definition" LOG_
 	#endif
 	
 
-    _CL_VERBOSE << "Leave lbQuery::prepareFKList()" LOG_
 }
 /*...e*/
 
@@ -1429,14 +1401,12 @@ lbErrCodes LB_STDCALL lbQuery::previous() {
         databound = 0;
         
 #ifndef USE_FETCH_SCROLL
-	printf("Try to fetch prev.\n");
         retcode = SQLExtendedFetch(hstmt, SQL_FETCH_PREV, 0, &RowsFetched, RowStat);
 
 	/* Check for having no data.
 	 * This could only happen, if really no data is in the resultset.
 	 */
 	if (retcode == SQL_NO_DATA) {
-		printf("Have no data, go back to next.\n");
 		retcode = SQLExtendedFetch(hstmt, SQL_FETCH_NEXT, 0, &RowsFetched, RowStat);
 		
 		fetchstatus = -1;
@@ -1447,8 +1417,6 @@ lbErrCodes LB_STDCALL lbQuery::previous() {
 		
 // These check and error output solved pSQLODBC driver bug
 		
-		printf("Check for warnings or errors.\n");
-		
 		if ((retcode == SQL_SUCCESS_WITH_INFO) || (retcode == SQL_ERROR)) {
 			_LOG << "lbQuery::next() - SQLExtendedFetch failed" LOG_
 			
@@ -1456,14 +1424,12 @@ lbErrCodes LB_STDCALL lbQuery::previous() {
 			if (retcode == SQL_ERROR) dbError( "SQLExtendedFetch() failed with SQL_ERROR");
 		}
 		
-		printf("Peek for having more data in prev direction.\n");
 		retcode = SQLExtendedFetch(hstmt, SQL_FETCH_PREV, 0, &RowsFetched, RowStat);
 
-char buf[100] = "";
+//char buf[100] = "";
 		
 		if (retcode == SQL_NO_DATA) {
 			// Indicate for no data and go back
-			printf("No, we don't have more.\n");
 			retcode = SQLExtendedFetch(hstmt, SQL_FETCH_NEXT, 0, &RowsFetched, RowStat);
 			
 			if (retcode == SQL_NO_DATA) {
@@ -1478,7 +1444,6 @@ char buf[100] = "";
 			
 			return WARN_DB_NODATA;
 		} else {
-			printf("Yes, we have.\n");
 			retcode = SQLExtendedFetch(hstmt, SQL_FETCH_NEXT, 0, &RowsFetched, RowStat);
 			
 			if (retcode == SQL_NO_DATA) {
@@ -1845,13 +1810,18 @@ free(buffer);
 #define ISWHITE(x)      (ISBLANK(x) || ISTAB(x) || ISRETURN(x))
 
 
-char lpszTable[100] = "";
+// This possibly causes a crash in wxWidgets sample application
+char *lpszTable = NULL;
 
 char* LB_STDCALL lbQuery::getTableName() {
    LPCSTR   lpsz;
    int      cp;
    int      cb;
 
+    if (lpszTable == NULL) {
+	lpszTable = (char*) malloc(1000);
+    }
+    
    lpszTable[0] = 0;
 
    cb = strlen("from");
@@ -1889,6 +1859,11 @@ char* LB_STDCALL lbQuery::getTableName() {
 int i = 0;
 while (lpsz[i++] != ' ') i++;
 
+if (strlen(lpsz) > 999) {
+    lpszTable = (char*) realloc(lpszTable, strlen(lpsz)+1);
+    lpszTable[0] = 0;
+}
+
 strcpy(lpszTable, lpsz);
 
 char* pos = strstr(lpszTable, "where");
@@ -1920,6 +1895,7 @@ while (b <= strlen((char const*) lpszTable)) {
                 b++;
         }
 }
+
 lpszTable[0] = 0;
 strcpy(lpszTable, temp);
 
@@ -2378,8 +2354,6 @@ END_IMPLEMENT_LB_UNKNOWN()
 IMPLEMENT_FUNCTOR(instanceOfConnection, lbConnection)
 
 lbErrCodes LB_STDCALL lbConnection::setData(lb_I_Unknown* uk) {
-	_CL_LOG << "lbConnection::setData(...) not implemented yet" LOG_
-	
 	lbErrCodes err = ERR_NONE;
 	
 	UAP(lb_I_Connection, con, __FILE__, __LINE__)
@@ -2441,7 +2415,6 @@ END_IMPLEMENT_LB_UNKNOWN()
 IMPLEMENT_FUNCTOR(instanceOfDatabase, lbDatabase)
 
 lbDatabase::lbDatabase() {
-	_CL_LOG << "lbDatabase::lbDatabase() called" LOG_
 	ref = STARTREF;
 	henv = 0;
 	hdbc = 0;
@@ -2483,8 +2456,6 @@ lbErrCodes LB_STDCALL lbDatabase::connect(char* DSN, char* user, char* passwd) {
 	if (connPooling == NULL) {
 	    UAP_REQUEST(manager.getPtr(), lb_I_Container, container)
 	    container->queryInterface("lb_I_Container", (void**) &connPooling, __FILE__, __LINE__);
-	    
-	    _CL_LOG << "Initialize connection pooling" LOG_
 	}
 
 	char* DSN_user = (char*) malloc(strlen(DSN)+1+strlen(user)+1);
@@ -2579,8 +2550,6 @@ lbErrCodes LB_STDCALL lbDatabase::connect(char* DSN, char* user, char* passwd) {
         	SQLFreeEnv(henv);
         	return ERR_DB_CONNECT;
             }
-
-	    _CL_VERBOSE << "SQLSetConnectOption(hdbc, SQL_AUTOCOMMIT, SQL_AUTOCOMMIT_ON);" LOG_
 
             retcode = SQLSetConnectOption(hdbc, SQL_AUTOCOMMIT, SQL_AUTOCOMMIT_ON);
 
@@ -2966,7 +2935,7 @@ lb_I_FunctorEntity* LB_STDCALL lbDBInterfaceRepository::getFirstEntity() {
 			an_attr = attributeMap.getNamedItem(DOMString("Name"));
 			
 			if (an_attr == NULL) {
-			        printf("Error: Attribute not found\n"); //" LOG_
+			        printf("Error: Attribute not found\n"); 
 			        for (unsigned int l = 0; l < attributeMap.getLength(); l++) {
 			        	DOM_Node n = attributeMap.item(l);
 			        	printf("Debug of Node ");

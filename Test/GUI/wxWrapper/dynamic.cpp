@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.47 2005/02/20 09:38:44 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.48 2005/02/20 18:01:23 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.47 $
+ * $Revision: 1.48 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.47 2005/02/20 09:38:44 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.48 2005/02/20 18:01:23 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.48  2005/02/20 18:01:23  lollisoft
+ * Bugfix due to buffer overflow affecting GUI sample under Linux
+ *
  * Revision 1.47  2005/02/20 09:38:44  lollisoft
  * Removed unneeded menu entries.
  *
@@ -376,7 +379,7 @@ public:
 	}
 	
 	virtual ~wxAppSelectPage() {
-	
+	    _CL_VERBOSE << "wxAppSelectPage::~wxAppSelectPage() called" LOG_
 	}
 
 
@@ -397,7 +400,6 @@ public:
 
 /*...svoid setLoggedOnUser\40\char\42\ user\41\:8:*/
 	void setLoggedOnUser(char* user) {
-		printf("setLoggedOnUser(char* user)");;
 		userid = strdup(user);
 		 
 		REQUEST(manager.getPtr(), lb_I_Database, database)
@@ -471,20 +473,7 @@ public:
 		
 			char* _app = strdup(app.c_str());
 			
-			#ifdef LINUX
-			setVerbose(true);
-			#endif
-			char ptr[20] = "";
-			
-			sprintf(ptr, "%p", manager.getPtr());
-			
-			_CL_VERBOSE << "meta->loadApplication(userid, _app) with manager at: " << ptr LOG_	
 			meta->loadApplication(userid, _app);
-			_CL_VERBOSE << "Called" LOG_
-			
-			#ifdef LINUX
-			setVerbose(false);
-			#endif
 			
 			free(_app);
 		}
@@ -543,7 +532,6 @@ DECLARE_LB_UNKNOWN()
 	}
 	
 	virtual ~wxLogonPage() {
-	
 	}
 
 	wxLogonPage(wxWizard *parent) : wxWizardPageSimple(parent)
@@ -601,7 +589,6 @@ DECLARE_LB_UNKNOWN()
 	{
 		lbErrCodes err = ERR_NONE;
 		
-		printf("wxLogonPage::OnWizardPageChanging() called\n");
 		REQUEST(manager.getPtr(), lb_I_Database, database)
 
 		database->init();
@@ -637,15 +624,9 @@ _CL_VERBOSE << "Query for user " << user LOG_
 		
 		sampleQuery->enableFKCollecting();
 
-_CL_VERBOSE << "Move to first row" LOG_
-
 		err = sampleQuery->first();
 
-_CL_VERBOSE << "Moved" LOG_
-
 		if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
-		        printf("User authenticated correctly (%s)\n", user);
-
 			appselect->setLoggedOnUser(user);
 
 			if (pass) free(pass);
@@ -1062,14 +1043,7 @@ void lbDatabaseDialog::init(wxWindow* parent, wxString formName, wxString SQLStr
 		   configured column to show instead.
 		*/ 
 
-		if (sampleQuery->hasFKColumn(name) == 0) {
-		    _CL_LOG << "WARNING: No foreign columns for formular" LOG_
-		}
-
-		_CL_LOG << "Check for foreign column: " << name LOG_
-
 		if (sampleQuery->hasFKColumn(name) == 1) {
-			_CL_LOG << "Build Dropdown list" LOG_
 /*...sCreate a combobox:24:*/
 			lbErrCodes err = ERR_NONE;
 			
@@ -1096,8 +1070,6 @@ void lbDatabaseDialog::init(wxWindow* parent, wxString formName, wxString SQLStr
 			
 			sprintf(buffer, "select PKName, PKTable	from ForeignKey_VisibleData_Mapping "
 					"where FKName = '%s' and FKTable = '%s'", name, sampleQuery->getTableName());
-
-			printf("%s\n", buffer);
 
 			FKColumnQuery = database->getQuery(0);
 			
@@ -1421,11 +1393,12 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBRead() {
 				
 				int count = cbMapper->Count();
 				
-				char newFK[20] = "";
-				
+				char *newFK = NULL;
+
+				newFK = (char*) malloc(strlen(sampleQuery->getAsString(i)->charrep()) + 1);
+				newFK[0] = 0;
+								
 				strcpy(newFK, sampleQuery->getAsString(i)->charrep());
-				
-				printf("Get Position from FK %s\n", newFK);
 				
 				key->setData(atoi(newFK));
 				
@@ -1447,6 +1420,11 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBRead() {
 				        	cbox->SetSelection(cbPos);
 				        }
 				        cbPos++;
+				}
+				
+				if (newFK) {
+				    free(newFK);
+				    newFK = NULL;
 				}
 			} else {
 				wxTextCtrl* tx = (wxTextCtrl*) w;
@@ -2427,7 +2405,6 @@ class MyApp: public wxApp
 /*
  * It seems, that frame was deleted prior !!
  */
-//		_CL_LOG << "frame has " << frame->getRefCount() LOG_
 
 		if (wxGUI) delete wxGUI;
 
@@ -2852,10 +2829,6 @@ bool MyApp::OnInit(void)
 /*...e*/
 
   err = frame_peer->createEventsource(this);
-  
-  #ifdef VERBOSE
-  _LOG << "Called frame_peer->createEventsource(this)" LOG_
-  #endif
   
   if (err != ERR_NONE) _LOG << "Have some problems to set up menu event sources" LOG_
   
@@ -3417,9 +3390,7 @@ void lb_wxFrame::OnBuildMenu(wxCommandEvent& WXUNUSED(event) ) {
 void lb_wxFrame::OnDispatch(wxCommandEvent& event ) {
         switch (event.GetId()) {
         case DYNAMIC_QUIT:
-        	_LOG << "Call OnQuit()" LOG_
                 OnQuit(event);
-                _LOG << "Called OnQuit()" LOG_
                 break;
         case DYNAMIC_ABOUT:
                 OnAbout(event);
@@ -3429,9 +3400,6 @@ void lb_wxFrame::OnDispatch(wxCommandEvent& event ) {
 		break;
         case DYNAMIC_BUILDMENU:
         	{
-        		char ptr[20] = "";
-        		sprintf(ptr, "%p", this);
-        		_LOG << "lb_wxFrame this pointer is " << ptr LOG_
         		OnBuildMenu(event);
         	}
         	break;
@@ -3441,15 +3409,11 @@ void lb_wxFrame::OnDispatch(wxCommandEvent& event ) {
                 	lbErrCodes err = ERR_NONE;
 			lb_I_Module* m = getModuleInstance();
 			
-			printf("Have modul manager at %p\n", m);
-			
 			//if (eman == NULL) {
-				printf("Get an event manager\n");
 				REQUEST(m, lb_I_EventManager, eman)
 			//}
 		
 			//if (dispatcher == NULL) {
-				printf("Get a dispatcher\n");
 				REQUEST(m, lb_I_Dispatcher, dispatcher)
 				dispatcher->setEventManager(eman.getPtr());
 			//}				

@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.52 $
+ * $Revision: 1.53 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.52 2005/02/20 09:39:33 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.53 2005/02/20 18:01:23 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.53  2005/02/20 18:01:23  lollisoft
+ * Bugfix due to buffer overflow affecting GUI sample under Linux
+ *
  * Revision 1.52  2005/02/20 09:39:33  lollisoft
  * Deactivated unneeded menu entries.
  *
@@ -544,8 +547,6 @@ lbErrCodes LB_STDCALL lb_MetaApplication::loadApplication(char* user, char* appl
 		 * First, only handle lb_I_MetaApplication types.
 		 */
 
-		_CL_LOG << "Query for the application data to be able to load it" LOG_
-
 		sampleQuery->skipFKCollecting();
 		sampleQuery->query(buffer);
 		sampleQuery->enableFKCollecting();
@@ -614,16 +615,16 @@ lbErrCodes LB_STDCALL lb_MetaApplication::loadApplication(char* user, char* appl
                 #endif
                 if (a == NULL) {
                         _LOG << "ERROR: Application could not be loaded - either not found or not configured." LOG_
-                        printf("ERROR: Application could not be loaded - either not found or not configured.\n");
                         return ERR_NONE;
                 }
+
+		a->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
 
                 QI(a, lb_I_MetaApplication, app, __FILE__, __LINE__)
 
                 if (dispatcher.getPtr() == NULL) _LOG << "Error: dispatcher is NULL" LOG_
 
                 app->setGUI(gui);
-		_CL_LOG << "Initialize the loaded application" LOG_
                 app->Initialize(user, application);
 
                 if (dispatcher.getPtr() == NULL) _LOG << "Error: dispatcher has been set to NULL" LOG_
@@ -654,7 +655,6 @@ lbErrCodes LB_STDCALL lb_MetaApplication::loadApplication(char* user, char* appl
 		#endif	
 		if (a == NULL) {
 			_LOG << "ERROR: Application could not be loaded - either not found or not configured." LOG_
-			printf("ERROR: Application could not be loaded - either not found or not configured.\n");
 			return ERR_NONE;
 		}
 		
@@ -663,7 +663,6 @@ lbErrCodes LB_STDCALL lb_MetaApplication::loadApplication(char* user, char* appl
 		if (dispatcher.getPtr() == NULL) _LOG << "Error: dispatcher is NULL" LOG_
 
 		app->setGUI(gui);
-		printf("Initialize subsequential application\n");
 		app->Initialize();
 
 		if (dispatcher.getPtr() == NULL) _LOG << "Error: dispatcher has been set to NULL" LOG_

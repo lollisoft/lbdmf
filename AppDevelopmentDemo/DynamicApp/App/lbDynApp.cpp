@@ -115,12 +115,9 @@ protected:
 lbDynamicApplication::lbDynamicApplication() {
 	ref = STARTREF;
 	gui = NULL;
-	printf("Instance of lb_I_DynamicApplication created\n");
-	_LOG << "Instance of lb_I_DynamicApplication created" LOG_
 }
 
 lbDynamicApplication::~lbDynamicApplication() {
-	_LOG << "Instance of lb_I_DynamicApplication destroyed" LOG_
 }
 /*...e*/
 
@@ -340,8 +337,6 @@ lbErrCodes LB_STDCALL lbDynamicApplication::Initialize(char* user, char* app) {
 
 	// Get the event manager
 
-	_CL_LOG << "lbDynamicApplication::Initialize(" << user << ", " << app << ") called" LOG_
-
 	lb_I_Module* m = *&manager;
 
 	REQUEST(m, lb_I_EventManager, eman)
@@ -382,10 +377,6 @@ lbErrCodes LB_STDCALL lbDynamicApplication::Initialize(char* user, char* app) {
 	        "Users.userid = '%s' and Anwendungen.name = '%s'"
 	                , user, app);
 
-	_CL_LOG << "Query for all events and their menu names of the current user (" << user << ") for " << app LOG_
-	
-	printf("Size of query: %d\n", strlen(buffer));
-	
 	// Save user and app internally
 	
 	userName = strdup(user);
@@ -393,19 +384,17 @@ lbErrCodes LB_STDCALL lbDynamicApplication::Initialize(char* user, char* app) {
 
 	if (sampleQuery == NULL) printf("NULL pointer !\n");
 
+	sampleQuery->skipFKCollecting();
 	sampleQuery->query(buffer);
+	sampleQuery->enableFKCollecting();
 	
-printf("Query executed\n");
-
 	// Fill up the available applications for that user.
 	UAP_REQUEST(manager.getPtr(), lb_I_String, EventName)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, MenuName)
 
-
 	addMenuBar("Dynamic Forms", "Edit");
 
 	lbErrCodes DBerr = sampleQuery->first();
-printf("Check if I have data\n");
 	if ((DBerr == ERR_NONE) || (DBerr == WARN_DB_NODATA)) {
 
 	        EventName = sampleQuery->getAsString(1);
@@ -421,7 +410,6 @@ printf("Check if I have data\n");
 		if (DBerr == WARN_DB_NODATA) return ERR_NONE;
 #define TRUE 1
 		while (TRUE) {
-			printf("Have data\n");
 			DBerr = sampleQuery->next();
 		
 			if ((DBerr == ERR_NONE) || (DBerr == WARN_DB_NODATA)) {

@@ -896,7 +896,6 @@ private: \
 protected: \
 public: \
 	virtual void 		LB_STDCALL setFurtherLock(int state) { \
-	    printf("Called setFurtherLock\n"); \
 	    further_lock = state; \
 	} \
 	virtual void 		LB_STDCALL setModuleManager(lb_I_Module* m, char* file, int line); \
@@ -1330,21 +1329,15 @@ extern "C" { \
 lbErrCodes DLLEXPORT LB_FUNCTORCALL name(lb_I_Unknown** uk, lb_I_Module* m, char* file, int line) { \
 \
 	lbErrCodes err = ERR_NONE; \
-        if (strcmp("lbDatabase", #clsname) == 0) _CL_VERBOSE << "Create  " << #clsname << " instance" LOG_ \
 	clsname* instance = new clsname(); \
-	if (strcmp("lbDatabase", #clsname) == 0) _CL_VERBOSE << "Created " << #clsname << " instance" LOG_ \
         *uk = NULL; \
-	if (strcmp("lbDatabase", #clsname) == 0) _CL_LOG << "Call setFurtherLock" LOG_ \
         instance->setFurtherLock(0); \
         if (m != NULL) { \
-		if (strcmp("lbDatabase", #clsname) == 0) _CL_LOG << "Call setModuleManager" LOG_ \
         	instance->setModuleManager(m, __FILE__, __LINE__); \
-		if (strcmp("lbDatabase", #clsname) == 0) _CL_LOG << "Called setModuleManager" LOG_ \
         } else { \
         	_CL_LOG << "Error: Functor gets no manager. This is only possible for a manager it self." LOG_ \
         } \
         \
-	if (strcmp("lbDatabase", #clsname) == 0) _CL_VERBOSE << "Try to get unknown database interface" LOG_ \
         if ((err = instance->queryInterface("lb_I_Unknown", (void**) uk, file, line)) != ERR_NONE) { \
                 _CL_LOG << "Failed to create unknown reference to instance of " << \
                 #clsname << ". Errcode is " << err LOG_ \
