@@ -2,10 +2,13 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.19 $
+ * $Revision: 1.20 $
  * $Name:  $
- * $Id: misc.cpp,v 1.19 2002/10/08 16:00:29 lolli Exp $
+ * $Id: misc.cpp,v 1.20 2002/10/11 17:20:59 lolli Exp $
  * $Log: misc.cpp,v $
+ * Revision 1.20  2002/10/11 17:20:59  lolli
+ * Before CL_LOG change
+ *
  * Revision 1.19  2002/10/08 16:00:29  lolli
  * Logging macro works now also for misc.cpp
  *
@@ -228,6 +231,12 @@ IMPLEMENT_FUNCTOR(instanceOfLogger, lbLog)
 #ifdef __cplusplus
 }
 #endif            
+
+// Logging macro does not work recursively
+#undef _LOG
+#define _LOG cerr
+#undef LOG_
+#define LOG_ << "";
 
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbLog)
         ADD_INTERFACE(lb_I_Log)
