@@ -64,6 +64,7 @@ These headers must define the per module (DLL) EXPORT variable
 /*...vlbModule\47\lbModule\46\lnk:0:*/
 /*...vlbModule\47\makefile:0:*/
 /*...vlbModule\47\makefile\46\module:0:*/
+/*...vlbModule\47\makefile\46\bat:0:*/
 /*...vlbModule\47\lbModule\46\h:0:*/
 /*...vlbModule\47\lbModule\46\cpp:0:*/
 /*...e*/
@@ -163,6 +164,7 @@ findfunctorname
 /*...e*/
 /*...sTest:0:*/
 /*...v\46\\46\\47\Test\47\GUI\47\wxwrapper\47\dynamic\46\cpp:0:*/
+/*...v\46\\46\\47\Test\47\console\47\xml\47\lbxmlconfig\46\xml:0:*/
 /*...e*/
 
 
