@@ -387,6 +387,17 @@ public:
 	 */
 	virtual char* LB_STDCALL getTableName() = 0;
 
+
+	/**
+	 * \brief Skip foreign column informations.
+	 *
+	 * This disables the collecting of foreign keys. There are some problems on
+	 * my test system (Windows 2000 / english). My development system is german
+	 * and works !
+	 */
+
+	virtual void LB_STDCALL skipFKCollecting() = 0;
+
 	/**
 	 * \brief Determines occurence of foreign column.
 	 *
