@@ -1234,24 +1234,16 @@ public:
 
 /*...sdispatching:8:*/
 	/**
-	 * ID variant
-	 */
-	virtual lbErrCodes LB_STDCALL dispatch(int EvNr, lb_I_Unknown* EvData) = 0;
-	/**
-	 * Name variant
+	 * Any dispatch function should provided with the information of what type to be dispatched.
+	 * An input is required - possibly NULL.
+	 * A result will be generated, if succeeded.
 	 *
-	 * This variant let's the programmer issue any events from his/her module.
-	 * As a sample, it must be possible to query from an event name an id.
-	 * Also it must be possible to call this function to announce a handler.
-	 * 
-	 * This may be solved this way:
-	 * EvName = "AnnounceHandler"
-	 * EvData = lb_I_HandlerAddress
 	 */
-	virtual lbErrCodes LB_STDCALL dispatch(char* EvName, lb_I_Unknown* EvData) = 0;
+	virtual lbErrCodes LB_STDCALL dispatch(int EvNr, lb_I_Unknown* EvData, lb_I_Unknown** EvResult) = 0;
+	virtual lbErrCodes LB_STDCALL dispatch(char* EvName, lb_I_Unknown* EvData, lb_I_Unknown** EvResult) = 0;
 	
 	/**
-	 * lb_I_DispatchRequest variant
+	 * lb_I_DispatchRequest variant. Parameter contains all needed data for the dispatch request.
 	 */
 	 
 	virtual lb_I_DispatchResponce* LB_STDCALL dispatch(lb_I_DispatchRequest* req) = 0; 
