@@ -32,9 +32,12 @@ lbErrCodes LB_STDCALL lbLoadModule(const char* name, HINSTANCE & hinst) {
 /*...e*/
 /*...slbErrCodes LB_STDCALL lbGetFunctionPtr\40\const char\42\ name\44\ const HINSTANCE \38\ hinst\44\ void\42\\42\ pfn\41\:0:*/
 lbErrCodes LB_STDCALL lbGetFunctionPtr(const char* name, const HINSTANCE & hinst, void** pfn) {
+        char msg[100] = "";
+        sprintf(msg, "Lade Funktion '%s'.", name);
+        CL_LOG(msg); 
+	
         if ((*pfn = (void*) GetProcAddress(hinst, name)) == NULL)
         {
-            char msg[100] = "";
             sprintf(msg, "Kann Funktion '%s' nicht finden.", name);
             CL_LOG(msg); 
             getch(); 
@@ -69,7 +72,6 @@ T_p_getlbModuleInstance DLL_GETMODULEINSTANCE;
 	if (lbGetFunctionPtr(functor, LB_Module_Handle, (void**) &DLL_GETMODULEINSTANCE) != ERR_NONE) {
 		exit(1);
 	}
-CL_LOG("DLL_GETMODULEINSTANCE(module)...")	
 	DLL_GETMODULEINSTANCE(module);
 	
 	return module;
@@ -91,7 +93,14 @@ lbErrCodes LB_STDCALL releaseInstance(lb_I_Unknown* inst) {
 /*...e*/
 /*...svoid LB_STDCALL unHookAll\40\\41\:0:*/
 void LB_STDCALL unHookAll() {
-	if (ModuleHandle != NULL) FreeLibrary(ModuleHandle);
-	if (LB_Module_Handle != NULL) FreeLibrary(LB_Module_Handle);
+	if (ModuleHandle != NULL) {
+		FreeLibrary(ModuleHandle);
+		ModuleHandle = NULL;
+	}
+	
+	if (LB_Module_Handle != NULL) {
+		FreeLibrary(LB_Module_Handle);
+		LB_Module_Handle = NULL;
+	}
 }
 /*...e*/
