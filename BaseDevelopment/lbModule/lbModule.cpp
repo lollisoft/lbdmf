@@ -1,11 +1,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.29 $
+ * $Revision: 1.30 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.29 2002/06/01 09:16:06 lothar Exp $
+ * $Id: lbModule.cpp,v 1.30 2002/06/20 21:04:29 lothar Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.30  2002/06/20 21:04:29  lothar
+ * Using tracking for better debugging
+ *
  * Revision 1.29  2002/06/01 09:16:06  lothar
  * Removed some unneccesary code
  *
@@ -1616,13 +1619,7 @@ lb_I_ConfigObject* LB_STDCALL lbModule::findFunctorNode(lb_I_ConfigObject** _nod
         /**
          * This gets a reference for me. Autodeleted, if scope is leaved.
          */
-        CL_LOG("Call node->getFirstChildren()"); 
         if ((err = node->getFirstChildren(&temp_node)) == ERR_NONE) {
-        	CL_LOG("Called node->getFirstChildren()");
-//                lb_I_Attribute* attribute;
-                
-                //temp_node->getAttribute("Functor", attribute);
-                
                 /**
                  * This is the functor node !! It has no attributes. All parents also contains
                  * the 'FunctionName' node, where the search criteria is stored. So the following
@@ -1923,6 +1920,7 @@ lbErrCodes LB_STDCALL lbModule::getDefaultImpl(char* interfacename, lb_I_ConfigO
 /*...e*/
 /*...slbErrCodes lbModule\58\\58\getFunctors\40\char\42\ interfacename\44\ lb_I_ConfigObject\42\ node\44\ lb_I_Unknown\42\\38\ uk\41\:0:*/
 lbErrCodes LB_STDCALL lbModule::getFunctors(char* interfacename, lb_I_ConfigObject* node, lb_I_Unknown*& uk) {
+/*...sbla:0:*/
 #ifdef bla
         lbModuleContainer* functors = new lbModuleContainer();
 
@@ -1997,6 +1995,7 @@ lbErrCodes LB_STDCALL lbModule::getFunctors(char* interfacename, lb_I_ConfigObje
 
         if (temp_node != NULL) RELEASE(temp_node);
 #endif
+/*...e*/
         CL_LOG("lbModule::getFunctors(...) not implemented");
         return ERR_NONE;
 }
@@ -2225,7 +2224,9 @@ lbErrCodes LB_STDCALL lbModule::request(const char* request, lb_I_Unknown** resu
                 initialize();
         }
         char* functorName = NULL;
-
+	sprintf(buf, "lbModule::request(...) for %s", request);
+	CL_LOG(buf);
+	buf[0] = 0;
         UAP(lb_I_ConfigObject, impl, __FILE__, __LINE__)
         /**
          * impl is not returned in any way, I think, so it is allowed to delete the object
@@ -2290,7 +2291,12 @@ lbErrCodes LB_STDCALL lbModule::request(const char* request, lb_I_Unknown** resu
                          */
 /*...e*/
                         xml_Instance->getConfigObject(&config, node);
-
+                        track_Object(*&config, "Test object given by xml_Instance->getConfigObject()");
+/*...sVERBOSE:32:*/
+                        #ifdef VERBOSE
+                        printf("The config object has %d references\n", config->getRefCount());
+			#endif
+/*...e*/
 /*...sdoc:8:*/
                         /**
                          * Check, which element implements the requested interface.
@@ -2378,11 +2384,13 @@ lbErrCodes LB_STDCALL lbModule::request(const char* request, lb_I_Unknown** resu
 /*...e*/
 
                         makeInstance(functorName, moduleName, result);
+/*...sLog error:32:*/
                         if ((*result) == NULL) {
                         	char buf[1000] = "";
                         	sprintf(buf, "Error: makeInstance has been failed for '%s', '%s', '%s'", request, functorName, moduleName);
                         	LOG(buf)
                         }
+/*...e*/
                         (*result)->setModuleManager(this, __FILE__, __LINE__);
 
                         if (strcmp((*result)->getClassName(), "lbDOMNode") == 0)
@@ -2410,9 +2418,8 @@ lbErrCodes LB_STDCALL lbModule::request(const char* request, lb_I_Unknown** resu
                 
 /*...e*/
         }
-
+	CL_LOG("Leave lbModule::request(...)")
         if (functorName != NULL) impl->deleteValue(functorName);
-
         return ERR_NONE;
 }
 /*...e*/
