@@ -1055,7 +1055,6 @@ lb_I_Unknown* LB_STDCALL classname::clone(char* file, int line) const { \
 \
 lbErrCodes LB_STDCALL classname::queryInterface(char* name, void** unknown, char* file, int line) { \
 	char buf[1000] = ""; \
-	char iFaces[1000] = ""; \
 	char _classname[100] = #classname; \
 	if (further_lock == 1) { \
 		_CL_LOG <<"Error: Object has been locked due to missing module manager (call setModuleManager(...) on me first)!" LOG_ \
@@ -1066,7 +1065,6 @@ lbErrCodes LB_STDCALL classname::queryInterface(char* name, void** unknown, char
 		name << " ! Did you coded it this way: (void**) &variable ?" LOG_ \
 	} \
 \
-	strcat(iFaces, "lb_I_Unknown, "); \
         if (strcmp(name, "lb_I_Unknown") == 0) { \
         	if (ref < STARTREF) { \
         		_CL_LOG << "Reference count error in queryInterface (" #classname ")" LOG_ \
@@ -1233,7 +1231,6 @@ lb_I_Unknown* LB_STDCALL classname::clone(char* file, int line) const { \
 \
 lbErrCodes LB_STDCALL classname::queryInterface(char* name, void** unknown, char* file, int line) { \
 	char buf[1000] = ""; \
-	char iFaces[1000] = ""; \
 	char _classname[100] = #classname; \
 	if (further_lock == 1) { \
 		_CL_LOG <<"Error: Object has been locked due to missing module manager (call setModuleManager(...) on me first)!" LOG_ \
@@ -1244,7 +1241,6 @@ lbErrCodes LB_STDCALL classname::queryInterface(char* name, void** unknown, char
 		name << " ! Did you coded it this way: (void**) &variable ?" LOG_ \
 	} \
 \
-	strcat(iFaces, "lb_I_Unknown, "); \
         if (strcmp(name, "lb_I_Unknown") == 0) { \
         	if (ref < STARTREF) { \
         		_CL_LOG << "Reference count error in queryInterface (" #classname ")" LOG_ \
@@ -1271,10 +1267,6 @@ lbErrCodes LB_STDCALL classname::queryInterface(char* name, void** unknown, char
 #define ADD_INTERFACE(interfaceName) \
 	buf[0] = 0; \
 \
-	if ((strlen(iFaces)+strlen(#interfaceName)) > 1000) { \
-		_CL_LOG << "String size exceeds fixed len!" LOG_ \
-	} \
-	strcat(iFaces, #interfaceName ", "); \
         if (strcmp(name, #interfaceName) == 0) { \
                 ref++; \
                 *unknown = (interfaceName*) this; \

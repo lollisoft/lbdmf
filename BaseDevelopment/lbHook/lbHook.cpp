@@ -137,13 +137,8 @@ DLLEXPORT void LB_STDCALL CL_doLog(char* f, char* msg) {
                 FILE *fp;
                 fp = fopen( f, "a" );
                 if( fp != NULL ) {
-                        char *buf = NULL;
-                        buf = (char*) malloc(10000);
-                        buf[0] = 0;
-                        fprintf( fp, "%s%s", buf, msg);
-                        free((void*) buf);
+                        fprintf( fp, "%s", msg);
                 }
-        
                 fclose( fp );
 }
 
@@ -238,9 +233,7 @@ lbErrCodes LB_STDCALL lbLoadModule(const char* name, HINSTANCE & hinst) {
 /*...e*/
 /*...slbErrCodes LB_STDCALL lbGetFunctionPtr\40\const char\42\ name\44\ const HINSTANCE \38\ hinst\44\ void\42\\42\ pfn\41\:0:*/
 lbErrCodes LB_STDCALL lbGetFunctionPtr(const char* name, HINSTANCE hinst, void** pfn) {
-        char msg[1000] = "";
 #ifdef WINDOWS
-	
         if ((*pfn = (void*) GetProcAddress(hinst, name)) == NULL)
         {
             _LOG << "Kann Funktion '" << name << "' nicht finden." LOG_
@@ -248,12 +241,9 @@ lbErrCodes LB_STDCALL lbGetFunctionPtr(const char* name, HINSTANCE hinst, void**
         }
 #endif
 #ifdef LINUX
-	
 	if ((*pfn = dlsym(hinst, name)) == NULL)
 	{
-	    printf("Handle for library is %p\n", (void*) hinst);
-            sprintf(msg, "Kann Funktion '%s' nicht finden.", name);
-            _LOG << msg LOG_ 
+            _LOG << "Kann Funktion '" << name << "' nicht finden." LOG_
             return ERR_FUNCTION_NOT_FOUND;	    
 	}
 #endif
