@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.43 2005/02/02 13:30:30 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.44 2005/02/10 19:16:23 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.43 $
+ * $Revision: 1.44 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.43 2005/02/02 13:30:30 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.44 2005/02/10 19:16:23 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.44  2005/02/10 19:16:23  lollisoft
+ * Begun with new database types, removed messages
+ *
  * Revision 1.43  2005/02/02 13:30:30  lollisoft
  * Latest changes for version 0.4.1
  *
@@ -1166,11 +1169,16 @@ void lbDatabaseDialog::init(wxWindow* parent, wxString formName, wxString SQLStr
 			free(buffer);
 /*...e*/
 		} else {
+		
+			int coltype = sampleQuery->getColumnType(name);
+			
 			wxTextCtrl *text = new wxTextCtrl(this, -1, sampleQuery->getAsString(i)->charrep(), wxPoint());
 		
 			text->SetName(name);
 		
 			sizerRight->Add(text, 1, wxEXPAND | wxALL, 5);
+		
+		
 		}
 		
 		char* tLabel = new char[strlen(name) + 1];
@@ -1279,7 +1287,7 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBUpdate() {
 				
 				if (pos != -1) {
 					lbErrCodes err = ERR_NONE;
-				printf("Update a combo box\n");
+
 					UAP_REQUEST(manager.getPtr(), lb_I_Integer, key)
 					UAP_REQUEST(manager.getPtr(), lb_I_String, cbName)
 					
@@ -1302,8 +1310,6 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBUpdate() {
 					QI(key, lb_I_KeyBase, key_pos, __FILE__, __LINE__)
 				
 					UAP(lb_I_Unknown, uk_mapping, __FILE__, __LINE__)
-					
-					printf("Have %d mappings and search for %d\n", cbMapper->Count(), key->getData());
 					
 					uk_mapping = cbMapper->getElement(&key_pos);
 					
