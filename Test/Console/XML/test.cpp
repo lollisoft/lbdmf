@@ -55,33 +55,6 @@ extern "C" {
 #include <lbConfigHook.h>
 /*...e*/
 
-/*...sbla:0:*/
-#ifdef bla
-		class UAP_theVariable {
-		public:
-	        UAP_theVariable() {
-	        	_autoPtr = NULL;
-			}
-			virtual ~UAP_theVariable() { RELEASE(_autoPtr); }
-			
-		lb_I_Unknown& operator * () { return *_autoPtr; }
-		lb_I_Unknown* operator -> () { return _autoPtr; }
-		lb_I_Unknown*& operator & () { return _autoPtr; }
-		
-		UAP_theVariable& operator = (lb_I_Unknown*& autoPtr) { _autoPtr = autoPtr; return *this; }
-		friend int operator ==(const UAP_theVariable& a, const lb_I_Unknown* b) {
-			return a._autoPtr == b;
-		}
-		friend int operator !=(const UAP_theVariable& a, const lb_I_Unknown* b) {
-			return a._autoPtr != b;
-		}
-		
-		protected:
-	        lb_I_Unknown* _autoPtr;
-		};
-#endif
-/*...e*/
-
 #define LOOP
 
 
@@ -103,8 +76,6 @@ void PrintData(lb_I_Query* q) {
 	    
 	}
 }
-
-
 
 // (trackObject == NULL) ? "" : trackObject int argc, char *argv[]
 int main(int argc, char *argv[]) {
