@@ -30,10 +30,13 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.14 $
+ * $Revision: 1.15 $
  * $Name:  $
- * $Id: lbobject.h,v 1.14 2002/12/29 16:05:10 lolli Exp $
+ * $Id: lbobject.h,v 1.15 2003/07/10 21:14:35 lollisoft Exp $
  * $Log: lbobject.h,v $
+ * Revision 1.15  2003/07/10 21:14:35  lollisoft
+ * Implemented parameter class
+ *
  * Revision 1.14  2002/12/29 16:05:10  lolli
  * Intent to go public
  *
@@ -169,6 +172,21 @@ protected:
 /*...e*/
 #endif
 
+/*...sclass lbParameter:0:*/
+class lbParameter : public lb_I_Parameter {
+public:
+	lbParameter() {}
+	virtual ~lbParameter() {}
+
+	DECLARE_LB_UNKNOWN()
+	
+	virtual void LB_STDCALL setUAPString(lb_I_String*& parameter, lb_I_String*& p);
+	virtual lbErrCodes LB_STDCALL getUAPString(lb_I_String*& parameter, lb_I_String*& p);
+protected:
+
+	UAP(lb_I_Container, parameters, __FILE__, __LINE__)
+};
+/*...e*/
 /*...sclass lbReference:0:*/
 class lbReference : public lb_I_Reference {
 public:

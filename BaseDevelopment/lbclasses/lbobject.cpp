@@ -70,11 +70,64 @@ extern "C" {
 IMPLEMENT_FUNCTOR(instanceOfInteger, lbInteger)
 IMPLEMENT_FUNCTOR(instanceOfString, lbString)
 IMPLEMENT_FUNCTOR(instanceOfReference, lbReference)
+IMPLEMENT_FUNCTOR(instanceOfParameter, lbParameter)
+
 
 #ifdef __cplusplus
 }
 #endif            
 
+/*...slbParameter:0:*/
+BEGIN_IMPLEMENT_LB_UNKNOWN(lbParameter)
+	ADD_INTERFACE(lb_I_Parameter)
+END_IMPLEMENT_LB_UNKNOWN()
+
+lbErrCodes LB_STDCALL lbParameter::setData(lb_I_Unknown* uk) {
+	_CL_LOG << "lbParameter::setData(...) not implemented yet" LOG_
+	return ERR_NOT_IMPLEMENTED;
+}
+
+void LB_STDCALL lbParameter::setUAPString(lb_I_String*& parameter, lb_I_String*& p) {
+	lbErrCodes err = ERR_NONE;
+	if (parameters == NULL) {
+		REQUEST(manager.getPtr(), lb_I_Container, parameters)
+		if (parameters == NULL) {
+			_LOG << "Error: Could not get container instance for parameres" LOG_
+			return;
+		}
+	}	
+	
+	UAP(lb_I_KeyBase, k_parameter, __FILE__, __LINE__)
+	QI(parameter, lb_I_KeyBase, k_parameter, __FILE__, __LINE__)
+
+	UAP(lb_I_Unknown, uk_p, __FILE__, __LINE__)
+	QI(p, lb_I_Unknown, uk_p, __FILE__, __LINE__)
+	
+	
+	parameters->insert(&uk_p, &k_parameter);
+}
+
+lbErrCodes LB_STDCALL lbParameter::getUAPString(lb_I_String*& parameter, lb_I_String*& p) {
+	lbErrCodes err = ERR_NONE;
+	
+	lb_I_String* pp = parameter;
+	UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
+	QI(pp, lb_I_KeyBase, key, __FILE__, __LINE__)
+	
+	UAP(lb_I_Unknown, uk_p_string, __FILE__, __LINE__)
+
+	uk_p_string = parameters->getElement(&key);
+
+	UAP(lb_I_String, string, __FILE__, __LINE__)
+	QI(uk_p_string, lb_I_String, string, __FILE__, __LINE__)
+	
+	
+	p->setData(string->getData());
+	
+	
+	return ERR_NONE;
+}
+/*...e*/
 /*...slbReference:0:*/
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbReference)
 	ADD_INTERFACE(lb_I_Reference)
