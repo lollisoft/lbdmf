@@ -52,6 +52,11 @@ These headers must define the per module (DLL) EXPORT variable
 /*...v\46\\46\\47\AppDevelopment\47\Trainres\47\App\47\Application\46\h:0:*/
 /*...v\46\\46\\47\AppDevelopment\47\Trainres\47\App\47\makefile\46\module:0:*/
 /*...v\46\\46\\47\AppDevelopment\47\Trainres\47\App\47\makefile\46\bat:0:*/
+
+
+
+
+/*...v\46\\46\\47\AppDevelopment\47\lbDMF\45\IDE\47\App:0:*/
 /*...e*/
 /*...sBaseDevelopment:0:*/
 /*...vmake\46\bat:0:*/
@@ -140,12 +145,13 @@ These headers must define the per module (DLL) EXPORT variable
 
 
 /*...e*/
-
-callorder:
-
-getfunctornode
-findfunctormodule
-findfunctorname
+/*...slbPluginManager:0:*/
+/*...vlbPluginManager\47\makefile\46\bat:0:*/
+/*...vlbPluginManager\47\makefile\46\module:0:*/
+/*...vlbPluginManager\47\makefile\46\sh:0:*/
+/*...vlbPluginManager\47\lbPluginManager\46\h:0:*/
+/*...vlbPluginManager\47\lbPluginManager\46\cpp:0:*/
+/*...e*/
 
 /*...sGUI Interface:0:*/
 /*...vlbgui\47\lb_I_GUI\46\h:0:*/
@@ -156,6 +162,14 @@ findfunctorname
 /*...e*/
 
 
+/*...e*/
+/*...sPlugins:0:*/
+/*...v\46\\46\\47\plugins\47\databaseform\47\lbDatabaseForm\46\h:0:*/
+/*...v\46\\46\\47\plugins\47\databaseform\47\lbDatabaseForm\46\cpp:0:*/
+/*...v\46\\46\\47\plugins\47\databaseform\47\makefile\46\bat:0:*/
+/*...v\46\\46\\47\plugins\47\databaseform\47\makefile\46\module:0:*/
+/*...v\46\\46\\47\plugins\47\databaseform\47\makefile\46\sh:0:*/
+/*...v\46\\46\\47\plugins\47\databaseform\47\makefile:0:*/
 /*...e*/
 /*...sTest:0:*/
 /*...v\46\\46\\47\Test\47\GUI\47\wxwrapper\47\wxwrapper\46\lnk:0:*/
