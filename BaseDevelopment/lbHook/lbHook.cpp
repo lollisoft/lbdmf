@@ -21,6 +21,23 @@ extern int isInitializing = 0;
  
 /*...slbErrCodes LB_STDCALL lbLoadModule\40\const char\42\ name\44\ HINSTANCE \38\ hinst\41\:0:*/
 lbErrCodes LB_STDCALL lbLoadModule(const char* name, HINSTANCE & hinst) {
+
+
+
+	class test {
+	public:
+		test() { printf("Test inline class\n"); }
+		~test() {}
+	};
+
+
+	test t;
+
+
+
+
+
+
         if ((hinst = LoadLibrary(name)) == NULL)
         {
             printf("Kann DLL '%s.dll' nicht laden.\n", name); 
