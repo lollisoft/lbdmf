@@ -1,14 +1,18 @@
 
 
 
+/*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.1 $
+ * $Revision: 1.2 $
  * $Name:  $
- * $Id: lbcontainer.h,v 1.1 2000/03/06 20:54:58 lolli Exp $
+ * $Id: lbcontainer.h,v 1.2 2000/04/27 01:36:24 lolli Exp $
  * $Log: lbcontainer.h,v $
- * Revision 1.1  2000/03/06 20:54:58  lolli
- * Initial revision
+ * Revision 1.2  2000/04/27 01:36:24  lolli
+ * Commit in order of data GAU
+ *
+ * Revision 1.1.1.1  2000/03/06 20:54:58  lolli
+ * Imported
  *
  * Revision 1.3  1999/12/14 21:07:38  lolli
  * Many changes, also bugfixes
@@ -20,10 +24,12 @@
  * Initial
  *
  ************************************************************************************************************/
+/*...e*/
 
 #ifndef LB_CONTAINER
 #define LB_CONTAINER
 
+/*...sDLLEXPORT:0:*/
 #undef DLLEXPORT
 
 #ifdef LB_CONTAINER_DLL
@@ -41,6 +47,7 @@
 #endif
 
 #endif
+/*...e*/
 
 /**
  * lbContainer represents the interface to all containers used.
@@ -54,6 +61,7 @@ class lbObject; // THE base class
 class lbElement; // Container for one lbObject
 class lbKey; // Search criteria
 
+/*...sclass DLLEXPORT lbContainer:0:*/
 class DLLEXPORT lbContainer {
 
 public:
@@ -72,7 +80,8 @@ public:
 	 * Iterator (forward only)
 	 */
     virtual int hasMoreElements() = 0;
-    virtual lbObject* nextElement() = 0;
+    virtual lbObject* nextObject() = 0;
+    virtual lbElement* nextElement() = 0;
 
 	/**
 	 * Direct access over key
@@ -80,14 +89,18 @@ public:
     virtual lbObject* getElement(const lbKeyBase &key) = 0;
     virtual void setElement(lbKeyBase &key, const lbObject &e) = 0;
 
+    virtual lbContainer* clone() = 0;
+
+    virtual void deleteAll() = 0;
+
 protected:
     int iteration; // This shows, if iteration has begun
     lbElement* iterator;
 private:
 };
+/*...e*/
 
-
-
+/*...sclass DLLEXPORT lbComponentDictionary:0:*/
 class DLLEXPORT lbComponentDictionary: public lbContainer {
 
 public:
@@ -101,7 +114,12 @@ public:
     virtual int exists(const lbKeyBase &key);
 
     virtual int hasMoreElements();
-    virtual lbObject* nextElement();
+    virtual lbObject* nextObject();
+    virtual lbElement* nextElement();
+
+    virtual lbContainer* clone();
+
+    virtual void deleteAll();
 
     virtual lbObject* getElement(const lbKeyBase &key);
     virtual void setElement(lbKeyBase &key, const lbObject &e);
@@ -113,5 +131,7 @@ private:
 
     lbElement* data;    
 };
+/*...e*/
+
 
 #endif //LB_CONTAINER

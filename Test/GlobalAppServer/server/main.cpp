@@ -1,24 +1,8 @@
 #include <lbinclude.h>
 #include <conio.h>
 
+#ifdef bla
 /*...sclass GlobalAppServer:0:*/
-class GlobalAppServer : public lbAppBusServer {
-public:
-	GlobalAppServer() 
-	{
-		LOG("GlobalAppServer::GlobalAppServer() called");
-	};
-
-	virtual ~GlobalAppServer() 
-	{
-	};
-	
-	int _service();
-	
-	int _request(char * servertype,
-                     lb_Transfer_Data request,
-                     lb_Transfer_Data & result);
-};
 
 /**
  * Per request invoked
@@ -53,15 +37,37 @@ LOG("GlobalAppServer::_request(): Handle a request");
 		switch (type) {
 			case LB_CHAR:
 				request.get(buffer);
+
+/*...sVERBOSE:32:*/
+				#ifdef VERBOSE
 				printf("Char value = %s\n", buffer); 
 				sprintf(msg, "Char value = %s", buffer); 
 				LOG(msg);
-				break;
-			case LB_INT: 
-				request.get(i);
-				printf("Integer value = %d\n", i);
-				sprintf(msg, "Integer value = %d", i);
-				LOG(msg);
+				#endif
+/*...e*/
+				
+				if (strcmp(buffer, "login") == 0) {
+					int res = login(request, result);
+					
+					if (res == 1) 
+						isLoggedIn = TRUE;
+					else
+						isLoggedIn = FALSE;
+						
+					return res;
+				}
+				
+				if (strcmp(buffer, "logout") == 0) {
+					int res = logout(request, result);
+					
+					isLoggedIn = FALSE;
+					
+					return res;
+				}
+				
+				if (isLoggedIn == TRUE) 
+					return handleAuthRequest(request, result);
+
 				break;
 				
 			default:
@@ -76,9 +82,6 @@ LOG("GlobalAppServer::_request(): Handle a request");
 	return 1;                              
 }
 /*...e*/
-
-// GlobalAppServer::_login(request, result)
-
 
 /**
  * Per run invoked
@@ -157,11 +160,14 @@ void* GASThread::Entry() {
 }
 /*...e*/
 /*...e*/
-
+#endif
 /*...smain:0:*/
 void main(int argc, char** argv) {
 LOGPREFIX("GlobalAppServer");
 	printf("Global application server is starting...\n");
+
+/*...sBla:0:*/
+#ifdef bla
 	GASThread *thread;
 	thread = new GASThread();
 	
@@ -212,5 +218,12 @@ LOGPREFIX("GlobalAppServer");
 	printf("Global application server is ending...\n");
 	lb_sleep(1000);
 	getch();
+#endif
+/*...e*/
+
+	lbAppBusServer server;
+	
+	server.run();
+
 }
 /*...e*/

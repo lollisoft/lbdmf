@@ -29,6 +29,10 @@ LOGENABLE("lbSocket::lbSocket()");
 /*...slbSocket\58\\58\connect\40\\41\:0:*/
 int lbSocket::connect()
 {
+      if (state == LB_SOCK_CONNECTED) {
+      	LOG("lbSocket::connect(): ERROR: Illegal state for this function");
+      	return 0;
+      }
 #ifdef WINDOWS
       status=::connect(serverSocket, (LPSOCKADDR) &serverSockAddr, sizeof(serverSockAddr));
       if (status == SOCKET_ERROR)
@@ -73,6 +77,11 @@ int lbSocket::close()
 /*...slbSocket\58\\58\listen\40\\41\:0:*/
 int lbSocket::listen()
 {
+LOGENABLE("lbSocket::listen()");
+      if (state == LB_SOCK_CONNECTED) {
+      	LOG("lbSocket::listen(): ERROR: Illegal state for this function");
+      	return 0;
+      }
     /* allow the socket to take connections */
 #ifdef WINDOWS
     status=::listen(serverSocket, 1);
@@ -87,9 +96,15 @@ int lbSocket::listen()
     return 1;
 }
 /*...e*/
-/*...slbSocket\58\\58\accept\40\\41\:0:*/
-int lbSocket::accept()
+/*...slbSocket\58\\58\accept\40\lbSocket\42\\38\ s\41\:0:*/
+int lbSocket::accept(lbSocket *& s)
 {
+LOGENABLE("lbSocket::accept(lbSocket *& s)");
+
+      if (state == LB_SOCK_CONNECTED) {
+      	LOG("lbSocket::accept(lbSocket** s): ERROR: Illegal state for this function");
+      	return 0;
+      }
 #ifdef WINDOWS
     /* accept the connection request when one
        is received */
@@ -98,6 +113,14 @@ int lbSocket::accept()
 #ifdef __WXGTK__
     clientSocket=::accept(serverSocket, (sockaddr*) &clientSockAddr, &addrLen); 
 #endif
+    if (clientSocket == INVALID_SOCKET) {
+    	s = NULL;
+    	LOG("lbSocket::accept(lbSocket** s): Created clientSocket is invalid");
+    	return 0;
+    }
+    LOG("lbSocket::accept(lbSocket*& s): Create a new lbSocket for the client");    
+    s = new lbSocket();
+    s->setSockConnection(clientSocket);
     return 1;
 }
 /*...e*/
@@ -135,6 +158,13 @@ int lbSocket::socket()
   return 1;  
 }
 /*...e*/
+
+int lbSocket::setSockConnection(SOCKET s) {
+	state = LB_SOCK_CONNECTED;
+	clientSocket = s;
+	_isServer = 1;
+	return 1;
+}
 
 int lbSocket::gethostname(char * & name) {
 	char buf[100];
@@ -181,7 +211,8 @@ int lbSocket::startup()
 	if (startupflag == 0) {
 		/* initialize the Windows Socket DLL */
 		status=WSAStartup(MAKEWORD(1, 1), &Data);
-		if (status != 0) LOG("lbSocket::startup(): ERROR: WSAStartup unsuccessful");
+		if (status != 0) 
+		  LOG("lbSocket::startup(): ERROR: WSAStartup unsuccessful");
 		/* zero the sockaddr_in structure */
 		memset(&serverSockAddr, 0, sizeof(serverSockAddr));
 		startupflag = 1;
@@ -195,10 +226,14 @@ int lbSocket::startup()
 /*...slbSocket\58\\58\reinit\40\char \42\mysockaddr\41\:0:*/
 void lbSocket::reinit(char *mysockaddr)
 {
+LOG("lbSocket::reinit(char *mysockaddr): This function should not be used");
 #ifdef WINDOWS
   if (strcmp(mysockaddr, "") == 0)
   {
-    accept();
+  #ifdef bla 
+    SOCKET s;
+    accept(s);
+  #endif 
   }
   else
   {
@@ -233,6 +268,7 @@ void lbSocket::initSymbolic(char* host, char* service) {
 	char msg[100];
 	int serverMode = 0;
 	startup();
+	cout << "Initialize for host '" << host << "'" << endl;
 /*...sVERBOSE:0:*/
 #ifdef VERBOSE
 	sprintf(msg, "void lbSocket::initSymbolic(char* host, char* service): Init for %s %s", host, service);
@@ -285,7 +321,7 @@ void lbSocket::initSymbolic(char* host, char* service) {
 void lbSocket::init( unsigned long mysockaddr, u_short port)
 {
   char buf[100];
-  
+#define VERBOSE  
   (mysockaddr == 0) ? _isServer = 1 : _isServer = 0;
 
 /*...sWINDOWS:0:*/
@@ -407,6 +443,7 @@ LOG("lbSocket::init( unsigned long mysockaddr, u_short port): Initializing as se
   }
 #endif
 /*...e*/
+#undef VERBOSE
 }
 /*...e*/
 

@@ -1,10 +1,14 @@
+/*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.1 $
+ * $Revision: 1.2 $
  * $Name:  $
- * $Id: lb_i_wxgui.h,v 1.1 2000/03/05 17:14:14 lolli Exp $
+ * $Id: lb_i_wxgui.h,v 1.2 2000/04/27 01:36:06 lolli Exp $
  *
  * $Log: lb_i_wxgui.h,v $
+ * Revision 1.2  2000/04/27 01:36:06  lolli
+ * Commit in order of data GAU
+ *
  * Revision 1.1  2000/03/05 17:14:14  lolli
  * Moved to AppDevelopment/GUI/wxGUI
  *
@@ -15,12 +19,14 @@
  * Initial version
  *
  **************************************************************/
+/*...e*/
 
 
 #ifndef LB_I_WXGUIAPPLICATION
 #define LB_I_WXGUIAPPLICATION
 
 
+/*...sDLLEXPORT:0:*/
 #undef DLLEXPORT
 
 #ifdef LB_I_WXGUI_DLL
@@ -38,7 +44,9 @@
 #endif
 
 #endif
+/*...e*/
 
+/*...swxWindows stuff:0:*/
 // ============================================================================
 // declarations
 // ============================================================================
@@ -72,40 +80,90 @@
 #if defined(__WXGTK__) || defined(__WXMOTIF__)
     #include "mondrian.xpm"
 #endif
+/*...e*/
 
 
 
 class wxMenu;
 class wxMenuBar;
 class wxEvtHandler;
+class lb_I_GUIApplication;
+class lb_I_wxGUIApplication;
+class lb_Transfer_Data;
 
-
+/*...sclass DLLEXPORT lb_I_wxGUIComponent:0:*/
 class DLLEXPORT lb_I_wxGUIComponent {
 public:
         lb_I_wxGUIComponent();
-		virtual ~lb_I_wxGUIComponent();
-
-        enum GUITypes { LB_MENUBAR, LB_MENU, LB_MENUENTRY, LB_APP_TITLE };
+	virtual ~lb_I_wxGUIComponent();
 
         GUITypes getType();
 
-        void setApplicationName(wxString name);
 
 protected:
         virtual void setType() = 0;
         GUITypes typ;
-        // This GUI component is associated to this application,
-        // so request's are also possible from here.
-        wxString forApplication; 
-};
 
+/*...sMarshalling:8:*/
+	/**
+	 * A component may have various parameters not known by
+	 * an application. This parameters must be asked by the
+	 * application. Implement a function that returns a list
+	 * of parameters. This may be done with lb_Transfer_Data.
+	 */
+	 
+	/**
+	 * This can be used to create user interfaces for the data.
+	 */ 
+	virtual lb_Transfer_Data* getParameterInfo() = 0;
+	
+	/**
+	 * Load the data.
+	 */
+	virtual int setParameters(lb_Transfer_Data* data) = 0; 
+/*...e*/
+
+/*...sParent and child handling:8:*/
+	/**
+	 * A Child is mostly created later than a parent. Then only
+	 * this function is needed.
+	 */
+	 
+	int setParent(lb_I_wxGUIComponent* const _parent); 
+
+	/**
+	 * A component can have a parent. Like a window, this is a basic
+	 * functionality, needed by the real GUI interface implementation.
+	 */
+	lb_I_wxGUIComponent* getParent();
+	
+	/**
+	 * This is also necesary for a normal GUI interface.
+	 */
+	lbComponentDictionary* getChildren();
+/*...e*/
+
+        /**
+         * Every component has a pointer to the main lb_I_wxGUIApplication 
+         * instance. So every component can get the instance of the application
+         * bus.
+         */
+
+
+	/**
+	 * All the parent and child handling is mapped over wxGUIApplication
+	 */         
+        static lb_I_wxGUIApplication* wxGUIApplication;
+        
+        friend class lb_I_wxGUIApplication;
+};
+/*...e*/
+
+/*...sclass DLLEXPORT lb_I_wxGUIMenuBar\58\ public lb_I_wxGUIComponent:0:*/
 class DLLEXPORT lb_I_wxGUIMenuBar: public lb_I_wxGUIComponent {
 public:
-    lb_I_wxGUIMenuBar(wxString &applicationName);
-	virtual ~lb_I_wxGUIMenuBar();
-
-// Application specific
-    wxString getAppName();
+    lb_I_wxGUIMenuBar();
+    virtual ~lb_I_wxGUIMenuBar();
 
 // MenuBar specific
     wxMenuBar* getMenuBar(wxEvtHandler* evtHandle, wxObjectEventFunction func);
@@ -113,38 +171,47 @@ public:
 protected:
     void setType();
 
+/*...sMarshalling:4:*/
+	lb_Transfer_Data* getParameterInfo();
+	int setParameters(lb_Transfer_Data* data);
+/*...e*/
+    
+
     // A list of  (File, View, Help...)
     lbComponentDictionary* Menus;
-
-    // The name of the application (used to get menu setup from remote server
-
-    wxString appName;
 };
+/*...e*/
 
+/*...sclass DLLEXPORT lb_I_wxGUIMenu\58\ public lb_I_wxGUIComponent:0:*/
 class DLLEXPORT lb_I_wxGUIMenu: public lb_I_wxGUIComponent {
 public:
     lb_I_wxGUIMenu();
-	virtual ~lb_I_wxGUIMenu();
+    virtual ~lb_I_wxGUIMenu();
         
-//    GUITypes getType();
     wxMenu* getMenu(wxEvtHandler* evtHandle, wxObjectEventFunction func);
+
     wxString getName();
     void setName(wxString n);
 
 protected:
     void setType();
 
-    lbComponentDictionary* menuEntries;
+/*...sMarshalling:8:*/
+	lb_Transfer_Data* getParameterInfo();
+	int setParameters(lb_Transfer_Data* data);
+/*...e*/
+
+//    lbComponentDictionary* menuEntries;
     wxString name;
 };
+/*...e*/
 
+/*...sclass DLLEXPORT lb_I_wxGUIMenuEntry\58\ public lb_I_wxGUIComponent:0:*/
 class DLLEXPORT lb_I_wxGUIMenuEntry: public lb_I_wxGUIComponent {
 public:
     lb_I_wxGUIMenuEntry();
-	virtual ~lb_I_wxGUIMenuEntry();
+    virtual ~lb_I_wxGUIMenuEntry();
         
-//    GUITypes getType();
-
     int getId();
     wxString getTxt();
     wxString getHlp();
@@ -153,36 +220,90 @@ public:
 protected:
     void setType();
 
+/*...sMarshalling:8:*/
+	lb_Transfer_Data* getParameterInfo();
+	int setParameters(lb_Transfer_Data* data);
+/*...e*/
+
     wxString MenuTxt;
     wxString MenuHlp;
     int MenuId;
 };
+/*...e*/
 
+/*...sclass DLLEXPORT lb_I_wxGUIApplication:0:*/
 class DLLEXPORT lb_I_wxGUIApplication {
 public:
     lb_I_wxGUIApplication();
-	virtual ~lb_I_wxGUIApplication();
+    virtual ~lb_I_wxGUIApplication();
 
+    int _callback(lb_Transfer_Data&, lb_Transfer_Data&);
 
     int isFirstStart();
 
     void InstallClient();
-    
-    char* getAppTitle();
 
+    /**
+     * The main loader for an application
+     */
+    int Load();
+
+    /**
+     * Set the handler to a member for handling the callback
+     */
+    int set_wxCallback(wxObjectEventFunction fn);
+
+    /**
+     * Callback for lb_I_GUIApplication
+     */
+    
+    wxMenu* loadMenu();
+
+/*...sComponent handling:0:*/
+    lb_I_wxGUIComponent* getParent(lb_I_wxGUIComponent* from);
+    
+    /**
+     * Get all childrens.
+     */
+    lbComponentDictionary* getChildrens(lb_I_wxGUIComponent* from);
+
+    /**
+     * Get all childs from this type
+     */
+
+    lbComponentDictionary* getChildrens(lb_I_wxGUIComponent* from, GUITypes type);
+
+    /**
+     * An application may have several components, wich it self may have subcomponents.
+     * For an example, an application has a menu (a visual component).
+     */
     int hasMoreComponents();
     lb_I_wxGUIComponent* nextComponent();
 
-    //GUITypes getNext();
+/*...e*/
+/*...sComponent dependency handling:0:*/
+    int setParent(lb_I_wxGUIComponent* const _this, lb_I_wxGUIComponent* const _parent);
+/*...e*/
 
-    wxMenu* loadMenu();
-
-    // updateMenu(...);
-    // updateHook
 
 protected:    
+
     char* title;
     int componentCount;
+    
+    /**
+     * In this container I store the wxGUI components with an associated
+     * Id as the key.
+     */
+    lbComponentDictionary* components;
+
+    lb_I_GUIApplication* GUIApplication;
+    
+    /**
+     * Handler for all callback events.
+     */
+    wxObjectEventFunction m_fn;
 };
+/*...e*/
 
 #endif // LB_I_WXGUIAPPLICATION

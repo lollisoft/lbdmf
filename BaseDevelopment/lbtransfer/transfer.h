@@ -51,6 +51,11 @@ typedef struct {
 class lbComponentDictionary;
 class lbSocket;
 
+enum LB_TRANSFER_STATE {
+	LB_STATE_UNINITIALIZED,
+	LB_STATE_CONNECTED,
+};
+
 /*...slbTransferDataObject:0:*/
 /**
  * This class is needed for the container
@@ -151,7 +156,7 @@ public:
 	/**
 	 * Got a connection...
 	 */
-	void accept();
+	int accept(lbTransfer*& t);
 
 	void operator<< (const lb_Transfer_Data& req);
 
@@ -160,8 +165,13 @@ public:
 
 	int gethostname(char* &name);
 private:
+	lbTransfer(lbTransfer* t);
+
 	int recv(lb_Transfer_Data & data);
 	int send(const lb_Transfer_Data & data);
+
+	int setSockConnection(lbSocket* s);
+
 
 	int resetServerStateMachine();
 	int sendDatatype(char* type);
@@ -177,6 +187,15 @@ private:
 	lbSocket* sock;
 	int laststate;
 	int connected;
+	
+	LB_TRANSFER_STATE state;
+	
+	/**
+	 * This authentification parameters are initialized once per
+	 * thread. Then it is used when ever data is transferred.
+	 */
+	char AuthUser[100];
+	char AuthPass[100];
 };
 /*...e*/
 

@@ -3,12 +3,15 @@
 
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.1 $
+ * $Revision: 1.2 $
  * $Name:  $
- * $Id: lbkey.cpp,v 1.1 2000/03/06 20:54:58 lolli Exp $
+ * $Id: lbkey.cpp,v 1.2 2000/04/27 01:36:24 lolli Exp $
  * $Log: lbkey.cpp,v $
- * Revision 1.1  2000/03/06 20:54:58  lolli
- * Initial revision
+ * Revision 1.2  2000/04/27 01:36:24  lolli
+ * Commit in order of data GAU
+ *
+ * Revision 1.1.1.1  2000/03/06 20:54:58  lolli
+ * Imported
  *
  * Revision 1.3  1999/12/14 21:09:38  lolli
  * Many changes
@@ -39,6 +42,9 @@ int lbKeyBase::operator > (const lbKeyBase &_key) {
     return (greater(_key));
 }
 
+lbKey::lbKey() {
+    key = 0;
+}
 
 lbKey::lbKey(int _key) {
     key = _key;

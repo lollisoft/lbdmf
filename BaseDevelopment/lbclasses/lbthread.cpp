@@ -93,6 +93,8 @@ lbThreadError lbThreadInternal::Create(lbThread *thread) {
 
         return LB_THREAD_ERROR;
     }
+
+    // lb_ThreadId must be associated with the current clt
     
     if ( ::SetThreadPriority(lb_hThread, THREAD_PRIORITY_NORMAL) == 0 )
     {

@@ -11,6 +11,7 @@
 
 
 
+/*...sDLLEXPORT:0:*/
 #undef DLLEXPORT
 
 #ifdef LB_SOCKET_DLL
@@ -28,9 +29,10 @@
 #endif
 
 #endif
+/*...e*/
 
 
-
+/*...sinclude:0:*/
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
@@ -55,7 +57,12 @@
 #define PORT (u_short) 44965
 #define MAXBUFLEN 256
 #endif //WINDOWS
+/*...e*/
 
+enum LB_SOCK_STATE {
+	LB_SOCK_UNINITIALIZED,
+	LB_SOCK_CONNECTED,
+};
 
 class lb_Transfer_Data;
 
@@ -87,14 +94,19 @@ public:
         int recv_charbuf(char *buf);
         int send_charbuf(char *buf, int len);
 
-		/**
-		 * Send and recieve a data buffer and automatically split off to
-		 * the max amount of packet size.
-		 */
-		int recv(lb_Transfer_Data & data);
-		int send(lb_Transfer_Data & data);
+	/**
+	 * Send and recieve a data buffer and automatically split off to
+	 * the max amount of packet size.
+	 */
+	int recv(lb_Transfer_Data & data);
+	int send(lb_Transfer_Data & data);
 
-        int accept();
+
+	/**
+	 * Like the lbTransfer, here I must provide a lbSocket as a result.
+	 * At this time you have to delete the instance after use.
+	 */
+        int accept(lbSocket *& s);
 
 private:
 
@@ -104,6 +116,7 @@ private:
         int socket();
 	int close();
         int connect();
+        int setSockConnection(SOCKET s);
 
 	unsigned long inet_addrFromString(char* addr);
 
@@ -136,6 +149,7 @@ private:
   unsigned long destAddr; // for client init
 #endif
   int _isServer;
+  LB_SOCK_STATE state;
 };
 
 #endif // _LB_SOCKET_

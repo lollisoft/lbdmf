@@ -248,6 +248,7 @@ LOGENABLE("lbTransfer::lbTransfer()");
 	sock = new lbSocket();
 	laststate = 1;
 	connected = 0;
+	state = LB_STATE_UNINITIALIZED;
 }
 /*...e*/
 /*...slbTransfer\58\\58\\126\lbTransfer\40\\41\:0:*/
@@ -279,12 +280,12 @@ LOG("lbTransfer::init(char *target) called");
 	machine = strdup(token);
 	strcpy(token, strtok(NULL, "/"));
 	service = strdup(token);
-
+cout << "Check for service" << endl;
 	if (service == NULL) {
 		LOG("lbTransfer::init(char *target): Service name couldn't retrieved from target string!");
 		// Handle error
 	}
-
+cout << "Check for machine" << endl;
 	if (machine == NULL) {
 		LOG("lbTransfer::init(char *target): Machine name couldn't retrieved from target string!");
 	}
@@ -303,6 +304,8 @@ sprintf(buf, "void lbTransfer::init(char *target): sock->initSymbolic(%s, %s);",
 LOG(buf);
 #endif
 /*...e*/
+		cout << "Init with symbolic name" << endl;
+
 		sock->initSymbolic(machine, service);
 		strcpy(prefix, (sock->isServer() == 1) ? "Server: " : "Client: ");
 		LOGPREFIX(prefix);
@@ -310,6 +313,8 @@ LOG(buf);
 		LOG("Subservices currently not supported");
 		// Handle special cases with subservices
 	}
+	LOG("lbTransfer::init(char *target): lbTransfer has been initialized");
+	
 }
 /*...e*/
 
@@ -325,6 +330,7 @@ LB_VOID,
 LB_OBJECT,
 */
 
+/*...schar\42\ getStringFromEnumeration\40\LB_PACKET_TYPE type\41\:0:*/
 char* getStringFromEnumeration(LB_PACKET_TYPE type) {
 	if (type == LB_CHAR) return "LB_CHAR";
 	if (type == LB_INT) return "LB_INT";
@@ -336,7 +342,9 @@ char* getStringFromEnumeration(LB_PACKET_TYPE type) {
 	if (type == LB_OBJECT) return "LB_OBJECT";
 	return "LB_INVALIDTYPE";
 }
+/*...e*/
 
+/*...sLB_PACKET_TYPE getEnumerationFromString\40\char\42\ typeAsString\41\:0:*/
 LB_PACKET_TYPE getEnumerationFromString(char* typeAsString) {
 	if (strcmp(typeAsString, "LB_CHAR") == 0) {
 		LOG("getEnumerationFromString(...) returns LB_CHAR");
@@ -351,6 +359,7 @@ LB_PACKET_TYPE getEnumerationFromString(char* typeAsString) {
 	if (strcmp(typeAsString, "LB_OBJECT") == 0) return LB_OBJECT;
 	return LB_INVALIDTYPE;
 }
+/*...e*/
 
 /*...sProtocol helper:0:*/
 /*...slbTransfer\58\\58\resetServerStateMachine\40\\41\:0:*/
@@ -716,12 +725,33 @@ int lbTransfer::waitForDatatype(char* &result) {
 int lbTransfer::gethostname(char* &name) {
 	return sock->gethostname(name);
 }
+/*...slbTransfer\58\\58\setSockConnection\40\lbSocket\42\ s\41\:0:*/
+int lbTransfer::setSockConnection(lbSocket* s) {
+	state = LB_STATE_CONNECTED;
+	sock = s;	
+	return 1;
+}
+/*...e*/
 
 /*...slbTransfer\58\\58\accept\40\\41\:0:*/
-void lbTransfer::accept() {
+int lbTransfer::accept(lbTransfer*& t) {
+	if (state == LB_STATE_CONNECTED) return NULL;
 	fprintf(stderr, "Waiting for a connection...\n");
-	sock->accept();
-	fprintf(stderr, "Got a connection.");
+	lbSocket *s = NULL;
+	if (sock->accept(s) == 1) {
+		fprintf(stderr, "Got a connection.");
+	
+		t = new lbTransfer();
+		/**
+		 * This sets the lbTransfer to socket mode
+		 */
+		t->setSockConnection(s);
+		state = LB_STATE_CONNECTED;
+		return 1;
+	} else {
+		LOG("lbTransfer::accept(lbTransfer*& t): Error, failed to accept on serversocket");
+		return 0;
+	}
 }
 /*...e*/
 

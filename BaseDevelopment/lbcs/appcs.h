@@ -21,111 +21,117 @@
 #endif
 /*...e*/
 
-
-
 /**
- * Base class for communication 
+ * This is a base class for all servers
  */
 
-class DLLEXPORT RemoteAppCS {
-};
-
-/*...sclass RemoteAppReq:0:*/
-class DLLEXPORT RemoteAppReq {
-public:
-	RemoteAppReq();
-	virtual ~RemoteAppReq();
-
-	void setIssue(char* what);
-	void setValue(const char* param);
-	
-	char* getIssue();
-	char* getValue();
-
-private:
-	char* issue;
-	char* parameter;
-};
-/*...e*/
-
-/**
- * RemoteAppRes represents a list with one or more results. The list ha a name, wich can be get
- * with getResultName. A result number indicates the request number.
- */
-
-/*...sclass RemoteAppRes:0:*/
-class DLLEXPORT RemoteAppRes {
-public:
-        RemoteAppRes();
-		virtual ~RemoteAppRes();
-
-        int isError();
-        void reportError();
-
-		char* getResultName();
-
-        int getEntries();
-        char* getEntryName(int i);
-};
-/*...e*/
-
+/*...sclass DLLEXPORT lbAppServer:0:*/
 class DLLEXPORT lbAppServer {
 public:
 	lbAppServer();
 	virtual ~lbAppServer();
 
-//	int run();
-	
+
+/*...sFunctions needed to encapsulate the transfer class:8:*/
 	/**
-	 * This function must be implemented by the specific 
-	 * server implementation.
+	 * Functions needed to encapsulate the transfer class
 	 */
+	 
+	int waitForRequest(lbTransfer* _clt, lb_Transfer_Data &request);
 	
-	virtual int _service() = 0;
+	int handleRequest(lb_Transfer_Data request, lb_Transfer_Data &result);
+	                  
+	int answerRequest(lbTransfer* _clt, lb_Transfer_Data result);
+/*...e*/
+
+	int run(); // called from main or thread
+
+	// Called from HandleRequest()
+/*...svirtual int _request\40\lb_Transfer_Data request\44\ lb_Transfer_Data \38\result\41\ \61\ 0\59\:8:*/
+	/**
+	 * _service is called by HandleRequest.
+	 */
+	virtual int _request(lb_Transfer_Data request, 
+	                     lb_Transfer_Data &result) = 0;
+/*...e*/
+	
+	// Called from run() and gives a lbTransfer instance
+/*...svirtual int _connected\40\lbTransfer _clt\41\ \61\ 0\59\:8:*/
+	/**
+	 * Implement this for your connected state. It is called per request.
+	 * I mean, that a socket connection has been opened and the
+	 * function is being called. So I am able to put in more logic
+	 * before and after the call of this function, like an 
+	 * authentication, or a load checking an the ability to react.
+	 * You can do what you want in your implementation, but you have
+	 * to call the three functions for waiting for, handling and sending
+	 * back an answer from the request.
+	 * If you do nothig, because you don't need, you don't need to write
+	 * a server.
+	 * By letting you have to implement this function, you will be able
+	 * to do your own stuff between the stages of a request. You may add
+	 * some dispatching stuff to divide your service. I will be able to
+	 * add some overhead to the request packets like encryption or so.
+	 */
+	virtual int _connected(lbTransfer* _clt) = 0; 
+/*...e*/
+
+/*...svirtual char\42\ getServiceName\40\\41\ \61\ 0\59\:8:*/
+	/**
+	 * Implement your "servername"
+	 */
+	virtual char* getServiceName() = 0;
+/*...e*/
 
 protected:
 
-#ifdef bla
-	// Server sends a result
-	void send (const RemoteAppRes& res);
+	/**
+	 * User management
+	 */
+	int addToUserList(lb_Transfer_Data request);
+	int removeFromUserList(lb_Transfer_Data request);
+	int AuthUser(char* user, char* passwd);
 
-	// Server gets a request
-	void recv (RemoteAppReq& req);
-#endif
+	int initTransfer(char* host_servicename);
 
+	lbTransfer *transfer;		
 };
+/*...e*/
 
+/**
+ * Base class for all distributed objects. This class can't be instanciated
+ * directly. Use lbAppBusClient instead. Also deletion is inhibed. Use
+ * dismiss() instead.
+ */
+/*...sclass DLLEXPORT lbAppClient:0:*/
 class DLLEXPORT lbAppClient {
-public:
+private:
         lbAppClient();
         virtual ~lbAppClient();
+        
+        /**
+         * Only lbAppBusClient should be able to create and delete instances
+         * of client connections to a specific server
+         */
+        void* operator new(size_t size);
+        void operator delete(void* ptr);
+public:
 
-		/**
-		 * Establish a connection to an application server. The Server knows of the application
-		 * name and from who the connection request comes from. The dataflow of this function
-		 * is like this:
-		 *
-		 * All the data should be encrypted!
-		 *
-		 * Client		->		"Begin Connect" 						->		Server (or a proxy)
-		 * Client		<-		"Ack: convID"							<-		Server (convID is the conversation id known by the server now)
-		 * Client		->		"Connect as <Appname> <convID>"			->		Server
-		 *
-		 * Client		<-		"Ack: Application not known"			<-		Server (Server don't know any of this application)
-		 * Client returns with error
-		 * or
-		 * Client		<-		"Ack: Need password"					<-		Server
-		 * Client		->		"Password: <pw>"						->		Server
-		 * Client		<-		"Ack" or "Fail"							<-		Server
-		 *
-		 */
+/*
         void Connect(const char* application);
         void Disconnect();
+*/
+        lbObject* requestObject(const char* type, const char* name);
 
-        RemoteAppRes& requestObject(const char* name);
-#ifdef bla
-        RemoteAppRes& subObject(const RemoteAppRes& res, const char* name);
-#endif
+	/**
+	 * Use this function to indicate, that this instance is no longer
+	 * in your use.
+	 */
+	void dismiss();
+	
+	// lbAppBusClient must be able to create objects of this class
+	friend class lbAppBusClient;
 };
+/*...e*/
 
 #endif //LB_APPCS

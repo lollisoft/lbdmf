@@ -1,5 +1,6 @@
 /*...sBaseDevelopment:0:*/
 /*...v\46\\46\\47\include\47\lbInclude\46\h:0:*/
+/*...v\46\\46\\47\include\47\lbGlobal\46\h:0:*/
 /*...slbCS:0:*/
 /*...vlbcs\47\appbus\46\h:0:*/
 /*...vlbcs\47\appbus\46\cpp:0:*/
@@ -34,7 +35,10 @@
 /*...e*/
 
 /*...sGUI Interface:0:*/
+/*...v\46\\46\\47\appdevelopment\47\gui\47\wxgui\47\lb_I_GUI\46\h:0:*/
 /*...v\46\\46\\47\appdevelopment\47\gui\47\wxgui\47\lb_I_GUI\46\cpp:0:*/
+
+/*...v\46\\46\\47\appdevelopment\47\gui\47\wxgui\47\lb_I_wxGUI\46\h:0:*/
 /*...v\46\\46\\47\appdevelopment\47\gui\47\wxgui\47\lb_I_wxGUI\46\cpp:0:*/
 /*...e*/
 
@@ -46,6 +50,7 @@
 /*...e*/
 /*...sConsole:0:*/
 /*...v\46\\46\\47\AppDevelopment\47\Console\47\GlobalAppServer\47\main\46\cpp:0:*/
+/*...vd\58\\47\src\47\main\47\http_request\46\c:0:*/
 /*...e*/
 
 /*...e*/

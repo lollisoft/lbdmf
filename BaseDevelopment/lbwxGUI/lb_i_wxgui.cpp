@@ -11,6 +11,8 @@
 #include <lbelement.h>
 #include <lbContainer.h>
 
+#include <lbInclude.h>
+
 // Include base lb GUI interface
 #include <lb_I_GUI.h>
 
@@ -18,9 +20,12 @@
 #include <lb_I_wxGUI.h>
 /*...e*/
 
+lb_I_wxGUIApplication* wxAppBus;
+
 /*...slb_wxComponent:0:*/
 // Class, that holds a GUI component. An object of this class could be stored
 // in lbComponentDictionary
+/*...sclass lb_wxComponent\58\ public lbObject:0:*/
 class lb_wxComponent: public lbObject {
 public:
         lb_wxComponent() {
@@ -50,32 +55,38 @@ public:
 
         lb_I_wxGUIComponent* theObject;    
 };
+/*...e*/
+/*...e*/
 
-
+/*...slb_I_wxGUIComponent:0:*/
 lb_I_wxGUIComponent::lb_I_wxGUIComponent() {
 }
 
 lb_I_wxGUIComponent::~lb_I_wxGUIComponent() {
 }
 
-lb_I_wxGUIComponent::GUITypes lb_I_wxGUIComponent::getType() {
+GUITypes lb_I_wxGUIComponent::getType() {
     return typ;
-}
-
-void lb_I_wxGUIComponent::setApplicationName(wxString name) {
-    forApplication = name;
 }
 /*...e*/
 
 /*...slb_I_wxMenuEntry:0:*/
 lb_I_wxGUIMenuEntry::lb_I_wxGUIMenuEntry() {
-    MenuId  = -1;
-    MenuTxt = "";
-    MenuHlp = "";
 }
 
 lb_I_wxGUIMenuEntry::~lb_I_wxGUIMenuEntry() {
 }
+
+/*...sMarshalling:0:*/
+lb_Transfer_Data* lb_I_wxGUIMenuEntry::getParameterInfo() {
+	return NULL;
+}
+	
+int lb_I_wxGUIMenuEntry::setParameters(lb_Transfer_Data* data) {
+	return 1;
+}
+/*...e*/
+
 
 void lb_I_wxGUIMenuEntry::setType() {
     typ = LB_MENUENTRY;
@@ -101,6 +112,17 @@ lb_I_wxGUIMenu::lb_I_wxGUIMenu(/*lb_I_GUIMenu& menu*/) {
 
 lb_I_wxGUIMenu::~lb_I_wxGUIMenu() {
 }
+
+/*...sMarshalling:0:*/
+lb_Transfer_Data* lb_I_wxGUIMenu::getParameterInfo() {
+	return NULL;
+}
+	
+int lb_I_wxGUIMenu::setParameters(lb_Transfer_Data* data) {
+	return 1;
+}
+/*...e*/
+
 
 void lb_I_wxGUIMenu::setType() {
     typ = LB_MENU;
@@ -153,9 +175,10 @@ void lb_I_wxGUIMenu::setName(wxString n) {
 /*...e*/
 
 /*...slb_I_wxGUIMenuBar:0:*/
-/*...slb_I_wxGUIMenuBar\58\\58\lb_I_wxGUIMenuBar\40\wxString \38\applicationName\41\:0:*/
-lb_I_wxGUIMenuBar::lb_I_wxGUIMenuBar(wxString &applicationName) {
-
+/*...slb_I_wxGUIMenuBar\58\\58\lb_I_wxGUIMenuBar\40\\41\:0:*/
+lb_I_wxGUIMenuBar::lb_I_wxGUIMenuBar() {
+/*...sBla:0:*/
+#ifdef bla
     setType();
         
     lb_wxComponent aGUIElement;
@@ -220,11 +243,23 @@ lb_I_wxGUIMenuBar::lb_I_wxGUIMenuBar(wxString &applicationName) {
 
 		lbObject *o = Menus->getElement(key);
     }
+#endif
+/*...e*/
 }
 /*...e*/
 
 lb_I_wxGUIMenuBar::~lb_I_wxGUIMenuBar() {
 }
+
+/*...sMarshalling:0:*/
+lb_Transfer_Data* lb_I_wxGUIMenuBar::getParameterInfo() {
+	return NULL;
+}
+	
+int lb_I_wxGUIMenuBar::setParameters(lb_Transfer_Data* data) {
+	return 1;
+}
+/*...e*/
 
 void lb_I_wxGUIMenuBar::setType() {
     typ = LB_MENUBAR;
@@ -233,62 +268,60 @@ void lb_I_wxGUIMenuBar::setType() {
 wxMenuBar* lb_I_wxGUIMenuBar::getMenuBar(wxEvtHandler* evtHandle, wxObjectEventFunction func) {
     wxMenuBar *menuBar = new wxMenuBar;
 
-    /**
-     * In the constructor I fill the Menus list. Here I get out this
-     * elements. This is done to be able to cache information on local
-     * the machine. Later I can check a timestamp for the menubar and load
-     * the local information instead (done in constructor).
-     */
-    while (Menus->hasMoreElements()) {
-        lb_wxComponent* Element = (lb_wxComponent*) Menus->nextElement();
-
-	if(Element == NULL) 
-	{
-	  LOG("lb_I_wxGUIMenuBar::getMenuBar(...) Element is NULL! Where a non NULL was excepted.");
-	  break;
-        }
-               
-        lb_I_wxGUIComponent* comp = Element->getObject();
-                
-        wxMenu* menu;
-
-        if (comp->getType() == lb_I_wxGUIComponent::LB_MENU)
-        {
-		wxString menuName = ((lb_I_wxGUIMenu*) comp)->getName();
-		wxString msg = wxString("lb_I_wxGUIMenuBar::getMenuBar(...) Add a menu to the menubar(") + menuName + wxString(")");
-			
-		LOG(msg.GetData());
-
-/*...sOld code:0:*/
-/*
-    evtHandle->Connect(1, -1, wxEVT_COMMAND_MENU_SELECTED,
-                       (wxObjectEventFunction)
-                       (wxEventFunction)
-                       (wxCommandEventFunction) func );
-    menuFile->Append(1, "E&xit", "Quit this program");
-    menuBar->Append(menuFile, "&File");
-
-*/
-/*...e*/
-		menu = ((lb_I_wxGUIMenu*) comp)->getMenu(evtHandle, func);
-		menuBar->Append(menu, menuName);
-        }
-        else
-        {
-            LOG("Error while creating the menu. Submenu type is not LB_MENU");
-        }
-    }
     return menuBar;
 }
 /*...e*/
 
 /*...slb_I_wxGUIApplication:0:*/
 lb_I_wxGUIApplication::lb_I_wxGUIApplication() {
+    LOGENABLE("lb_I_wxGUIApplication::lb_I_wxGUIApplication()");
     title = strdup("Generic wxGUIApp by Lothar Behrens");
     componentCount = 1;
+    components = new lbComponentDictionary();
 }
 
 lb_I_wxGUIApplication::~lb_I_wxGUIApplication() {
+    if (components != NULL) components->deleteAll();
+}
+
+int lb_I_wxGUIApplication::_callback(lb_Transfer_Data&, lb_Transfer_Data&) {
+	LOG("lb_I_wxGUIApplication::_callback(...): Error, have no instance for a wrapper");
+	return 0;
+}
+
+
+/*...sComponent handling:0:*/
+lb_I_wxGUIComponent* lb_I_wxGUIApplication::getParent(lb_I_wxGUIComponent* from) {
+	return NULL;
+}
+    
+lbComponentDictionary* lb_I_wxGUIApplication::getChildrens(lb_I_wxGUIComponent* from) {
+	return NULL;
+}
+
+lbComponentDictionary* lb_I_wxGUIApplication::getChildrens(lb_I_wxGUIComponent* from, GUITypes type) {
+	return NULL;
+}
+
+int lb_I_wxGUIApplication::hasMoreComponents() {
+    return 0;
+}
+
+lb_I_wxGUIComponent* lb_I_wxGUIApplication::nextComponent() {
+    return NULL;
+}
+/*...e*/
+/*...sComponent dependency handling:0:*/
+    int setParent(lb_I_wxGUIComponent* const _this, lb_I_wxGUIComponent* const _parent);
+/*...e*/
+
+
+int lb_I_wxGUIApplication::Load() {
+	if (GUIApplication->Load() == 0) {
+		LOG("lb_I_wxGUIApplication::Load(): Call to GUIApplication->Load() failed");
+	}
+
+	return 1;
 }
 
 int lb_I_wxGUIApplication::isFirstStart() {
@@ -297,42 +330,6 @@ int lb_I_wxGUIApplication::isFirstStart() {
 
 void lb_I_wxGUIApplication::InstallClient() {
 }
-
-char* lb_I_wxGUIApplication::getAppTitle() {
-    return title;
-}
-
-/*
-lb_I_wxGUIApplication::GUITypes lb_I_wxGUIApplication::getNext() {
-    return GUITypes(LB_APP_TITLE);
-}
-*/
-
-int lb_I_wxGUIApplication::hasMoreComponents() {
-    return componentCount > 0;
-}
-
-lb_I_wxGUIComponent* lb_I_wxGUIApplication::nextComponent() {
-    componentCount--;
-    char* appname = strdup("Minimal");
-/*...sNOT YET VERBOSE:0:*/
-LOGENABLE("lb_I_wxGUIApplication::nextComponent()");
-LOG("Create new lb_I_wxGUIMenuBar(wxString(appname));");
-//LOGDISABLE("lb_I_wxGUIApplication::nextComponent()");
-/*...e*/
-    lb_I_wxGUIMenuBar *mb = new lb_I_wxGUIMenuBar(wxString(appname));
-/*...sNOT YET VERBOSE:0:*/
-LOG("Created");
-/*...e*/
-
-    /**
-     * Construct a menubar as a sample. The name here should be from any
-     * config file, loaded by the lb_I_GUIApplication. The menubar then
-     * should be generated from remote information through the given name.
-     */
-    return mb;
-}
-
 
 wxMenu* lb_I_wxGUIApplication::loadMenu() {
     return NULL;

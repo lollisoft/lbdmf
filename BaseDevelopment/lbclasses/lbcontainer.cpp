@@ -4,10 +4,13 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.2 $
+ * $Revision: 1.3 $
  * $Name:  $
- * $Id: lbcontainer.cpp,v 1.2 2000/03/06 22:55:50 lolli Exp $
+ * $Id: lbcontainer.cpp,v 1.3 2000/04/27 01:36:24 lolli Exp $
  * $Log: lbcontainer.cpp,v $
+ * Revision 1.3  2000/04/27 01:36:24  lolli
+ * Commit in order of data GAU
+ *
  * Revision 1.2  2000/03/06 22:55:50  lolli
  * Fold in revision log
  *
@@ -55,6 +58,25 @@ lbComponentDictionary::lbComponentDictionary() {
 }
 
 lbComponentDictionary::~lbComponentDictionary() {
+}
+
+lbContainer* lbComponentDictionary::clone() {
+	lbComponentDictionary* dic = new lbComponentDictionary();
+	
+	while (hasMoreElements()) {
+		lbElement* e = nextElement();
+
+		dic->insert(*(e->getObject()), *(e->getKey()));
+	}	
+	return dic;
+}
+
+void lbComponentDictionary::deleteAll() {
+	while (hasMoreElements()) {
+		lbElement* e = nextElement();
+
+		remove(*(e->getKey()));
+        }
 }
 
 void lbComponentDictionary::insert(const lbObject &e, const lbKeyBase &key) {
@@ -122,7 +144,14 @@ int lbComponentDictionary::hasMoreElements() {
     return 1;
 }
 
-lbObject* lbComponentDictionary::nextElement() {
+lbElement* lbComponentDictionary::nextElement() {
+	lbElement *temp = iterator;
+	iterator = iterator->getNext();
+	
+	return temp;
+}
+
+lbObject* lbComponentDictionary::nextObject() {
     lbElement *temp = iterator;
 	iterator = iterator->getNext();
 

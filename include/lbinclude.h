@@ -6,6 +6,10 @@
 #include <lb_misc.h> // Helpers collected here
 
 #include <lbObject.h>
+#include <lbKey.h>
+
+// Global definitions like GUITypes and so on
+#include <lbGlobal.h>
 
 /**
  * LB_CS_DLL_INC needs LB_CLASSES_DLL_INC and LB_TRANSFER_DLL_INC
@@ -25,7 +29,9 @@
 
 #ifdef LB_WX_APP_INC
 #define LB_CLASSES_DLL_INC
-#define LB_CS_DLL_INC
+// Include only lb_I_wxGUI.h
+#define LB_WX_I_INC
+//#define LB_CS_DLL_INC
 #endif
 
 /**
@@ -52,12 +58,14 @@
 #endif
 
 #ifdef LB_CLASSES_DLL_INC
+#include <lbObject.h>
 #include <lbKey.h>
 #include <lbContainer.h>
 #include <lbThread.h>
 #endif
 
 #ifdef LB_CS_DLL_INC
+#include <lbObject.h>
 #include <appcs.h>
 #include <transfer.h>
 #include <appbus.h>

@@ -24,15 +24,16 @@
 /*...e*/
 
 /*...slbAppBus:0:*/
-class DLLEXPORT lbTransfer;
+class DLLEXPORT lbAppClient;
 
+/**
+ * This defines the properties for both AppBus classes (Client and Server)
+ */
 class DLLEXPORT lbAppBus {
 
 public:
 	lbAppBus();
 	virtual ~lbAppBus();
-
-	lbTransfer* getServerConnection(const char* server);
 
 protected:
 
@@ -45,62 +46,72 @@ protected:
 
 class DLLEXPORT lbAppBusClient : public lbAppBus {
 public:
+
+	/**
+	 * Initialize a connection to the appbus server.
+	 * Later this is a local dispatcher.
+	 */
 	lbAppBusClient();
 	virtual ~lbAppBusClient();
 
 	/**
+	 * The AppBusClient searches the server behind the scope. He is
+	 * doing this by asking the AppBusServer about the server with
+	 * that scope. Then the AppBusClient creates the desired client-
+	 * connection object.
+	 */
+	lbAppClient* getClientInstance(char* scope);
+	int release(lbAppClient*& cl) { delete cl; cl = NULL; return 1; }
+
+	int AnounceUser(char* user, char* passwd);
+
+protected:
+	/**
 	 * Make this client visible to the bus
 	 */
-	void AnounceClient();
+	int AnounceClient(); // Called by ctor
 	
 	/**
 	 * Remove the client from the bus
 	 */
-	void RemoveClient();
+	void RemoveClient(); // Called by dtor
+	
+
+	// user_info stores the username and password for reanouncement
+	lb_Transfer_Data* user_info;
+	// client_info stores the data for the host
+	lb_Transfer_Data* client_info;
+	
+	/**
+	 * This should be a singleton of a connection to the
+	 * AppBus server.
+	 */
+	static lbTransfer* ABSConnection;
+	static char curruser[100];
+	static int instanceCount;
 };
 /*...e*/
 
 /*...slbAppBusServer:0:*/
 class lb_Transfer_Data;
-class DLLEXPORT lbAppBusServer : public lbAppBus {
+class DLLEXPORT lbAppBusServer : public lbAppBus,
+                                 public lbAppServer {
 public:
 	lbAppBusServer();
 	virtual ~lbAppBusServer();
 
-	/**
-	 * Functions needed to encapsulate the transfer class
-	 */
-	 
-	int waitForRequest(lb_Transfer_Data & request);
+	char* getServiceName();	
+
+	int _connected(lbTransfer* _clt);
 	
-	int handleRequest(char * servertype, 
-	                  lb_Transfer_Data request, 
-	                  lb_Transfer_Data & result);
-	                  
-	int answerRequest(lb_Transfer_Data result);
-
-	/**
-	 * Call this function in your main application or your thread.
-	 */
-
-	int run();
-
-	/**
-	 * Implement this for your request.
-	 * It is called per request.
-	 */
-	 
-	virtual int _request(char * servertype,
-	                     lb_Transfer_Data request,
-	                     lb_Transfer_Data & result) = 0; 
-
-	/**
-	 * Implement this for your service.
-	 * It is called per run()
-	 */
-	virtual int _service() = 0;
-
-	lbTransfer *transfer;		
+	
+	int _request(	lb_Transfer_Data request,
+			lb_Transfer_Data & result);
+			
+protected:
+	// This let the client authenticate by user
+	int UserAnouncement(lb_Transfer_Data request,
+			    lb_Transfer_Data & result);
 };
 /*...e*/
 #endif

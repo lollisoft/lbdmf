@@ -3,87 +3,42 @@
 #include <string.h>
 #include <lbInclude.h>
 
-/*...sRemoteAppReq:0:*/
-/*...sRemoteAppReq\58\\58\RemoteAppReq\40\\41\:0:*/
-RemoteAppReq::RemoteAppReq() {
-	issue = NULL;
-	parameter = NULL;
-}
-/*...e*/
-/*...sRemoteAppReq\58\\58\\126\RemoteAppReq\40\\41\:0:*/
-RemoteAppReq::~RemoteAppReq() {
-}
-/*...e*/
-/*...sRemoteAppReq\58\\58\setIssue\40\char\42\ what\41\:0:*/
-void RemoteAppReq::setIssue(char* what) {
-	issue = strdup(what);
-}
-/*...e*/
-/*...sRemoteAppReq\58\\58\setValue\40\const char\42\ param\41\:0:*/
-void RemoteAppReq::setValue(const char* param) {
-	parameter = strdup(param);
-}
-/*...e*/
-char* RemoteAppReq::getIssue() {
-	return issue;
-}
+/*...sclass lbAppServerThread:0:*/
+class lbAppServerThread : public lbThread {
+public:
+	lbAppServerThread(lbTransfer* _clt, lbAppServer* _server);
+	
+	virtual ~lbAppServerThread();
+	
+protected:
+	void* Entry();
+	lbTransfer* clt;
+	lbAppServer* server;
+};
 
-char* RemoteAppReq::getValue() {
-	return parameter;
+/*...svoid\42\ lbAppServerThread\58\\58\Entry\40\\41\:0:*/
+void* lbAppServerThread::Entry() {
+
+	server->_connected(clt);
+	
+	return NULL;
 }
 /*...e*/
-/*...sRemoteAppRes:0:*/
-/*...sRemoteAppRes\58\\58\RemoteAppRes\40\\41\:0:*/
-RemoteAppRes::RemoteAppRes() {
-//	LOGVERBOSE("RemoteAppRes::RemoteAppRes() called");
+
+/*...slbAppServerThread\58\\58\lbAppServerThread\40\lbTransfer\42\ _clt\44\ lbAppServer\42\ _server\41\:0:*/
+lbAppServerThread::lbAppServerThread(lbTransfer* _clt, lbAppServer* _server) {
+	clt = _clt;
+	server = _server;
 }
 /*...e*/
-/*...sRemoteAppRes\58\\58\\126\RemoteAppRes\40\\41\:0:*/
-RemoteAppRes::~RemoteAppRes() {
-//	LOGVERBOSE("RemoteAppRes::~RemoteAppRes() called");
+
+/*...slbAppServerThread\58\\58\\126\lbAppServerThread\40\\41\:0:*/
+lbAppServerThread::~lbAppServerThread() {
 }
 /*...e*/
-/*...sRemoteAppRes\58\\58\isError\40\\41\:0:*/
-int RemoteAppRes::isError() {
-	return 0;
-}
+
 /*...e*/
-/*...sRemoteAppRes\58\\58\reportError\40\\41\:0:*/
-void RemoteAppRes::reportError() {
-	LOG("There is an error result arrived!");
-}
-/*...e*/
-/*...sRemoteAppRes\58\\58\getResultName\40\\41\:0:*/
-char* RemoteAppRes::getResultName() {
-	return "A result";
-}
-/*...e*/
-/*...sRemoteAppRes\58\\58\getEntries\40\\41\:0:*/
-int RemoteAppRes::getEntries() {
-	return 3;
-}
-/*...e*/
-/*...sRemoteAppRes\58\\58\getEntryName\40\int i\41\:0:*/
-char* RemoteAppRes::getEntryName(int i) {
-// Moved to server later:
-	switch (i) {
-		case 1:
-			// Mainmenu File
-			return "&File";
-		case 2:
-			// Mainmenu Edit
-			return "&Edit";
-		case 3:
-			// Mainmenu Help
-			return "&Help";
-		default:
-			break;
-	}
-	LOG("RemoteAppRes::getEntryName(int) no name found");
-	return "No name found";
-}
-/*...e*/
-/*...e*/
+
 
 /*...slbAppServer:0:*/
 /*...slbAppServer\58\\58\lbAppServer\40\\41\:0:*/
@@ -103,67 +58,92 @@ lbAppServer::lbAppServer() {
 lbAppServer::~lbAppServer() {
 }
 /*...e*/
-#ifdef bla
-/*...slbAppServer\58\\58\send \40\const RemoteAppRes\38\ res\41\:0:*/
-// This sends a result to the client
-void lbAppServer::send (const RemoteAppRes& res) {
-}
-/*...e*/
-/*...slbAppServer\58\\58\recv \40\RemoteAppReq\38\ req\41\:0:*/
-// Wait for a request
-void lbAppServer::recv (RemoteAppReq& req) {
-LOGENABLE("lbAppServer::recv (RemoteAppReq& req)");
-	lb_Transfer_Data transferItem;
-/*...sVERBOSE:0:*/
-#ifdef VERBOSE
-LOG("lbAppServer::recv (RemoteAppReq& req): Get any data");	
-#endif
-/*...e*/
-	if (transfer != NULL) {
-#define VERBOSE
-/*...sVERBOSE:0:*/
-#ifdef VERBOSE
-	LOG("lbAppServer::recv (RemoteAppReq& req): Transfer is not null - do work");
-#endif
-/*...e*/
-		*transfer >> transferItem;
-/*...sVERBOSE:0:*/
-#ifdef VERBOSE
-	LOG("lbAppServer::recv (RemoteAppReq& req): Transfer is not null - done work");
-#endif
-/*...e*/
-#undef VERBOSE
-	}
-	else LOG("lbAppServer::recv (RemoteAppReq& req): transfer is null");
-/*...sVERBOSE:0:*/
-#ifdef VERBOSE
-LOG("lbAppServer::recv (RemoteAppReq& req): Got any data");	
-#endif
-/*...e*/
-}
-/*...e*/
-#endif
+
+
 /*...slbAppServer\58\\58\run\40\\41\:0:*/
-/*
 int lbAppServer::run() { 
+	cout << "lbAppServer::run() called" << endl;
 	LOG("lbAppServer::run() called");
 
         LOG("lbAppServer::run(): Initialize lbTransfer object");
-        transfer = new lbTransfer();
-        transfer->init("localhost/busmaster");
-        LOG("lbAppServer::run(): Initialized");
-
-	appBus = new lbAppBusServer();
-
-	while (1) {
-		transfer->accept();
-
-		if(_service() == 0) return 0; 
+	if (initTransfer(getServiceName()) == 0) {
+		LOG("lbAppServer::run(): Error, failed to initialize transfer");
+		return 0;
 	}
-};
-*/
+        LOG("lbAppServer::run(): Initialized");
+        cout << "initTransfer(getServiceName()); called" << endl;
+
+	// Here should be called the function listen() (Not in initTransfer())
+
+	// Here should be started a thread, that do this
+	while (1) {
+		/**
+		 * Like socket accept returns a client socket, here I have to
+		 * get a client transfer object. A client transfer object can
+		 * only created by the accept method, because the state at this
+		 * point.
+		 */
+		lbTransfer* clt;
+		cout << "Wait for a connection" << endl;
+		if (transfer->accept(clt) == 0) 
+		{
+			LOG("lbAppServer::run() error while accepting on a socket");
+			return 0;
+		}
+		cout << "Got a connection" << endl;
+		/**
+		 * here I can begin a thread with is calling _connected.
+		 * Like the documentation from Win32 System Services p366.
+		 * But the new client socket must be associated to that 
+		 * thread, because
+		 */
+		
+		lbAppServerThread* thread = new lbAppServerThread(clt, this);
+		cout << "Create a thread for the connection" << endl;
+		thread->create();
+		cout << "Run the thread" << endl;
+		thread->run();
+	}
+}
 /*...e*/
 
+/*...slbAppServer\58\\58\waitForRequest\40\lbTransfer\42\ _clt\44\ lb_Transfer_Data \38\ request\41\:0:*/
+int lbAppServer::waitForRequest(lbTransfer* _clt, lb_Transfer_Data & request) 
+{
+	*_clt >> request;
+	char buf[100];
+	
+	sprintf(buf, "lbAppServer::waitForRequest(): Got a request with %d packets", request.getPacketCount());
+	LOG(buf);
+	
+	return 0;
+}
+/*...e*/
+	
+/*...slbAppServer\58\\58\handleRequest\40\\46\\46\\46\\41\:0:*/
+int lbAppServer::handleRequest(lb_Transfer_Data request, 
+                               lb_Transfer_Data & result)
+{// Dispatching were possible here with servertype...
+	return _request(request, result);
+}
+/*...e*/
+	                  
+/*...slbAppServer\58\\58\answerRequest\40\lbTransfer\42\ _clt\44\ lb_Transfer_Data result\41\:0:*/
+int lbAppServer::answerRequest(lbTransfer* _clt, lb_Transfer_Data result) 
+{
+	*_clt << result;
+	return 0;
+}
+/*...e*/
+
+int lbAppServer::initTransfer(char* host_servicename) {
+	cout << "lbAppServer::initTransfer(char* host_servicename) called" << endl;
+	transfer = new lbTransfer();
+	cout << "Created instance of lbTransfer" << endl;
+	transfer->init(host_servicename);
+	
+	return 1;
+}
 
 // Threads, that should be started by the application
 
@@ -185,6 +165,7 @@ lbAppClient::~lbAppClient() {
 }
 /*...e*/
 /*...slbAppClient\58\\58\Connect\40\const char\42\ application\41\:0:*/
+#ifdef bla
 void lbAppClient::Connect(const char* application) {
 /*...sVars:8:*/
 	lb_Transfer_Data request;
@@ -210,7 +191,7 @@ LOG("lbAppClient::Connect(const char* application): Announce me as client");
 #endif
 /*...e*/
 
-	bus.AnounceClient(); // Announce me as a new application on the bus
+	//bus.AnounceClient(); // Announce me as a new application on the bus
 	
 /*...sDoc:8:*/
 	/**
@@ -244,20 +225,36 @@ LOG("lbAppClient::Connect(const char* application): Announce me as client");
 	 */
 /*...e*/
 }
+#endif
 /*...e*/
 /*...slbAppClient\58\\58\Disconnect\40\\41\:0:*/
+#ifdef bla
 void lbAppClient::Disconnect() {
 }
+#endif
 /*...e*/
 /*...slbAppClient\58\\58\requestObject\40\const char\42\ name\41\:0:*/
-RemoteAppRes& lbAppClient::requestObject(const char* name) {
+lbObject* lbAppClient::requestObject(const char* type, const char* name) {
 	/**
 	 * The result depends on the name given by the parameter.
 	 * Simply, this is only a forwarding of the request (to anywhere).
 	 */
 	
-	RemoteAppRes *res = new RemoteAppRes();
-	return *res;
+	lbString object;
+	object.setData("Test");
+	
+	return object.clone();
+}
+/*...e*/
+/*...slbAppClient\58\\58\delete\40\void\42\ ptr\41\:0:*/
+void lbAppClient::operator delete(void* ptr) {
+	::delete ptr;
+}
+/*...e*/
+/*...slbAppClient\58\\58\operator new\40\size_t size\41\:0:*/
+void* lbAppClient::operator new(size_t size) {
+	if (size == sizeof(lbAppClient)) return malloc(size);
+	return NULL;
 }
 /*...e*/
 /*...e*/

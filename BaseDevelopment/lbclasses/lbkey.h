@@ -3,12 +3,15 @@
 
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.1 $
+ * $Revision: 1.2 $
  * $Name:  $
- * $Id: lbkey.h,v 1.1 2000/03/06 20:54:58 lolli Exp $
+ * $Id: lbkey.h,v 1.2 2000/04/27 01:36:24 lolli Exp $
  * $Log: lbkey.h,v $
- * Revision 1.1  2000/03/06 20:54:58  lolli
- * Initial revision
+ * Revision 1.2  2000/04/27 01:36:24  lolli
+ * Commit in order of data GAU
+ *
+ * Revision 1.1.1.1  2000/03/06 20:54:58  lolli
+ * Imported
  *
  * Revision 1.4  2000/01/23 14:32:55  lolli
  * Corrected error in revision conflict
@@ -57,6 +60,7 @@ public:
 
 class DLLEXPORT lbKey : public lbKeyBase {
 public:
+    lbKey();
     lbKey(int _key);
     lbKey(const lbKeyBase & k);
     virtual ~lbKey();
