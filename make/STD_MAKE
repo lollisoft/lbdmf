@@ -1,10 +1,13 @@
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.12 $
+# * $Revision: 1.13 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.12 2001/12/12 17:27:54 lothar Exp $
+# * $Id: STD_MAKE,v 1.13 2001/12/15 18:17:10 lothar Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.13  2001/12/15 18:17:10  lothar
+# * Many changes to let compile my project (watcom and m$)
+# *
 # * Revision 1.12  2001/12/12 17:27:54  lothar
 # * Hehe - runs under linux
 # *
@@ -45,22 +48,95 @@
 
 ifeq ($(OSTYPE), Windows_NT)
 
-STD_INCL = -i=.;Q:\develop\Tools\WATCOM\h;Q:\develop\Tools\WATCOM\h\nt;Q:\develop\projects\cpp\interfaces;Q:\develop\projects\cpp\include;Q:\develop\projects\dll\include;Q:\develop\projects\lib\include
+# Set standard compiler
+COMPILER=WATCOM
+MODE=_DEBUG
+
+
+STD_INCL_WATCOM = -i=.;Q:\develop\Tools\WATCOM\h;Q:\develop\Tools\WATCOM\h\nt;Q:\develop\projects\cpp\interfaces;Q:\develop\projects\cpp\include;Q:\develop\projects\dll\include;Q:\develop\projects\lib\include
+STD_INCL_MICROSOFT = /I "F:\develop\NT\MSC\VC98\Include" /I "Q:\Develop\xml\xml4csrc3_3_1\src" /I "Q:\Develop\Projects\CPP\include" /I "Q:\Develop\Projects\CPP\interfaces" /I "Q:\Develop\Projects\CPP\basedevelopment\lbclasses"
+
+STD_INCL = $(STD_INCL_WATCOM)
+
+
+WATCOM_WARN=-w0
+WATCOM_OPTIMIZE=-otexan
+WATCOM_RELAX_ALIAS=-oa
+WATCOM_ERRCOUNT=-e25
+WATCOM_QUIET=-zq
+WATCOM_CALLING_CONV=-5r
+WATCOM_DLLTARGET=-bd
+WATCOM_THREAD_MODEL=-bm
+WATCOM_STDDEBUG=-d2
+
+WATCOM_STD_C_OPS= \
+-DWINDOWS \
+$(WATCOM_WARN) \
+$(WATCOM_ERRCOUNT) \
+$(WATCOM_QUIET) \
+$(WATCOM_OPTIMIZE) \
+$(WATCOM_RELAX_ALIAS) \
+$(WATCOM_THREAD_MODEL) \
+$(WATCOM_CALLING_CONV)
+
+
+#-w4 -e25 -dWINDOWS -ei -zp4 -zq -otexan -d2 -bm -5r -bt=nt -mf
 
 OBJ =obj
-C_OPS = -DWINDOWS
-L_OPS = -o
+# Watcom
+C_EXEOPS_WATCOM_DEBUG= $(WATCOM_STD_C_OPS) $(WATCOM_STDDEBUG) -ei -zp4 -bt=nt -mf
+
+C_DLLOPS_WATCOM   =  $(WATCOM_STD_C_OPS) $(WATCOM_DLLTARGET) -ei -zp4 -bt=nt -mf
+
+C_DLLOPS_WATCOM_DEBUG = $(WATCOM_STD_C_OPS) $(WATCOM_STDDEBUG) $(WATCOM_DLLTARGET) -ei -zp4 -bt=nt -mf
 
 CC =wpp386
 RM =del
-LINK =wlink
+
+# Microsoft
+OUTDIR=.
+INTDIR=.
+C_EXEOPS_MICROSOFT = /Gd /nologo /MT /W3 /GX /O2  /D "WINDOWS" /D "LB_RUNTIME_LINK" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "LBDOMCONFIG_EXPORTS" /Fp"$(INTDIR)\lbDOMConfig.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+C_EXEOPS_MICROSOFT_DEBUG = /Gd /nologo /MDd /W3 /Gm /GX /ZI /Od /D "WINDOWS" /D "LB_RUNTIME_LINK" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "LBDOMCONFIG_EXPORTS" /Fp"$(INTDIR)\lbDOMConfig.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+C_DLLOPS_MICROSOFT = /Gd /nologo /MT /W3 /GX /O2  /D "WINDOWS" /D "LB_RUNTIME_LINK" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "LBDOMCONFIG_EXPORTS" /Fp"$(INTDIR)\lbDOMConfig.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+C_DLLOPS_MICROSOFT_DEBUG = /nologo /MDd /W3 /Gm /GX /ZI /Od /D "WINDOWS" /I "Q:\Develop\xml\xml4csrc3_3_1\src" /I "Q:\Develop\Projects\CPP\include" /I "Q:\Develop\Projects\CPP\interfaces" /I "Q:\Develop\Projects\CPP\basedevelopment\lbclasses" /D "LB_RUNTIME_LINK" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "LBDOMCONFIG_EXPORTS" /Fp"Debug/lbDOMConfig.pch" /YX /Fo"Debug/" /Fd"Debug/" /FD /GZ /c 
+#                       /Gd /nologo /MDd /W3 /Gm /GX /ZI /Od /D "WINDOWS" /D "LB_RUNTIME_LINK" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "LBDOMCONFIG_EXPORTS" /Fp"$(INTDIR)\lbDOMConfig.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+LINK_MICROSOFT=link.exe
+ 
+LINK_MICROSOFT_OBJS= \
+	"$(INTDIR)\lbDOMConfig.obj" \
+	"..\..\..\..\..\..\XML\XML4CSRC3_3_1\Build\Win32\VC6\Release\xerces-c_1.lib"
+
+
+C_EXEOPS = $(C_EXEOPS_WATCOM$(MODE))
+C_DLLOPS = $(C_DLLOPS_WATCOM$(MODE))
+C_LIBOPS = $(C_LIBOPS_WATCOM$(MODE))
+
+# Watcom
+L_EXEOPS_WATCOM = -o
+LINK_WATCOM =wlink
+L_DLLOPS_WATCOM =d all SYS nt_dll op m op maxe=25 op q op symf
+
+# Microsoft
+L_DLLOPS_MICROSOFT =kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib \
+shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo \
+/dll /incremental:yes /pdb:"$(OUTDIR)\lbDOMConfig.pdb" /debug /machine:I386 \
+/out:"$(OUTDIR)\lbDOMConfig.dll" /implib:"$(OUTDIR)\lbDOMConfig.lib" \
+/libpath:"Q:\Develop\xml\xml4csrc3_3_1\Build\Win32\VC6" \
+/libpath:"F:\develop\NT\MSC\VC98\Lib"
+
+# Standard link ops
+#L_OPS   = $(L_EXEOPS_WATCOM)
+LINK     = $(LINK_WATCOM)
+L_DLLOPS = $(L_DLLOPS_WATCOM)
+LNKDLLOPS = $(L_DLLOPS_WATCOM)
+
 CP =copy
 EXEDIR =Q:\Develop\Projects\bin
 DLLDIR =Q:\Develop\Projects\dll
 LIBDIR =Q:\Develop\Projects\lib
 DLLLIBDIR =Q:\Develop\Projects\dll\libs
 
-LNKDLLOPS =d all SYS nt_dll op m op maxe=25 op q op symf
 
 endif
 
