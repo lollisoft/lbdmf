@@ -223,11 +223,11 @@ typedef lbErrCodes (LB_STDCALL lb_I_EventHandler::*lbEvHandler)(lb_I_Unknown* uk
 /*...sdefine RELEASE_1\40\instance\44\ __MACRO_FILE__\44\ __MACRO_LINE__\41\:0:*/
 #define RELEASE_1(instance, __MACRO_FILE__, __MACRO_LINE__) \
 	{ lbErrCodes err; \
-		if ((err = instance->release(__MACRO_FILE__, __MACRO_LINE__)) != ERR_NONE) { \
+		if ((err = instance->release(#__MACRO_FILE__, __MACRO_LINE__)) != ERR_NONE) { \
 			if (err == ERR_REFERENCE_COUNTING ) { \
-				printf("Error in reference counting!\n"); \
+				printf("Error in reference counting (%s in %s, %d)!\n", #instance, #__MACRO_FILE__, __MACRO_LINE__); \
 				if (__MACRO_FILE__ != NULL) { \
-				_CL_LOG << "RELEASE_1(...) Reference count mismatch at" << __MACRO_LINE__ << " in " << __MACRO_FILE__ << " for instance " << instance->getClassName() LOG_ \
+				_CL_LOG << "RELEASE_1(...) Reference count mismatch at " << __MACRO_LINE__ << " in " << #__MACRO_FILE__ << " for instance " << instance->getClassName() LOG_ \
 				} \
 			} else { \
 			} \
@@ -379,7 +379,10 @@ public:
 			} \
 		} \
 		void LB_STDCALL setFile(char* __file) { \
-			if (_file != NULL) delete [] _file; \
+			if (_file != NULL) { \
+				delete [] _file; \
+				_file = NULL; \
+			} \
 			if (__file != NULL) { \
 				_file = new char [strlen(__file) + 1]; \
 				_file = strcpy(_file, __file); \
