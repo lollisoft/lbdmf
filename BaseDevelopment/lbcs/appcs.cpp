@@ -31,7 +31,7 @@ void* lbAppServerThread::Entry() {
 	LOG("lbAppServerThread::Entry(): Done request");
 #endif
 /*...e*/
-	cout << "lbAppServerThread::Entry(): Done request" << endl;	
+	//cout << "lbAppServerThread::Entry(): Done request" << endl;	
 	return NULL;
 }
 /*...e*/
@@ -59,6 +59,7 @@ lbAppServerThread::lbAppServerThread(lbTransfer* _clt, lbAppServer* _server) {
 
 /*...slbAppServerThread\58\\58\\126\lbAppServerThread\40\\41\:0:*/
 lbAppServerThread::~lbAppServerThread() {
+	cout << "lbAppServerThread::~lbAppServerThread() called" << endl;
 }
 /*...e*/
 
@@ -112,9 +113,9 @@ lbAppServer::~lbAppServer() {
 /*...e*/
 /*...slbAppServer\58\\58\initTransfer\40\char\42\ host_servicename\41\:0:*/
 int lbAppServer::initTransfer(char* host_servicename) {
-	cout << "lbAppServer::initTransfer(char* host_servicename) called" << endl;
+	//cout << "lbAppServer::initTransfer(char* host_servicename) called" << endl;
 	transfer = new lbTransfer();
-	cout << "Created instance of lbTransfer" << endl;
+	//cout << "Created instance of lbTransfer" << endl;
 	transfer->init(host_servicename);
 	
 	return 1;
@@ -148,8 +149,7 @@ char* buffer = NULL;
 		return ERR_APP_SERVER_REQUEST_CHAR;
 	}
 char msg[100] = "";	
-sprintf(msg, "lbAppServer::requestString(...) Got %s and need %s", buffer, ident);
-LOG(msg);
+
 	if (strcmp(buffer, ident) != 0) {
 		LOG("Error: Identifer not wanted");
 		return ERR_APP_SERVER_REQUEST_CHAR;
@@ -232,7 +232,12 @@ int lbAppServer::run() {
         LOG("lbAppServer::run(): Initialize lbTransfer object");
 #endif
 /*...e*/
-	if (initTransfer(getServiceName()) == 0) {
+	char srvname[100] = "";
+	strcpy(srvname, getServiceName());
+
+
+
+	if (initTransfer(srvname) == 0) {
 		LOG("lbAppServer::run(): Error, failed to initialize transfer");
 		return 0;
 	}
@@ -261,6 +266,7 @@ int lbAppServer::run() {
 
 
 		if (transfer == NULL) LOG("lbAppServer::run() Error: transfer object pointer is NULL!");
+		cout << "Wait for connection..." << endl;
 		if (transfer->accept(clt) == 0) 
 		{
 			LOG("lbAppServer::run() error while accepting on a socket");
@@ -295,6 +301,12 @@ int lbAppServer::run() {
 lbErrCodes lbAppServer::waitForRequest(lbTransfer* _clt, lb_Transfer_Data & request) 
 {
 	*_clt >> request;
+	
+	if (_clt->getLastError() != ERR_NONE) {
+	    LOG("Error while waiting for request");
+	    return ERR_APP_SERVER_WAIT_REQUEST;
+	}
+	
 	char buf[100];
 /*...sAPPCS_VERBOSE:0:*/
 #ifdef APPCS_VERBOSE	
@@ -339,6 +351,13 @@ lbErrCodes lbAppServer::answerRequest(lbTransfer* _clt, lb_Transfer_Data result)
 //	lb_sleep(1000);
 
 	*_clt << result;
+
+	if (_clt->getLastError() != ERR_NONE) {
+	    LOG("Error while sending request");
+	    return ERR_APP_SERVER_SEND_REQUEST;
+	}
+
+
 	return ERR_NONE;
 }
 /*...e*/
@@ -399,7 +418,7 @@ LOG("lbAppServer::HandleConnect(...) called");
 	}
 /*...e*/
 
-	cout << "Got hostname: " << clienthost << ", pid: " << pid << ", tid: " << tid << endl;
+	//cout << "Got hostname: " << clienthost << ", pid: " << pid << ", tid: " << tid << endl;
 	
 	if (connections->exists(lbKeyUL(tid)) == 0) {
 		result.add("Accept");
@@ -413,7 +432,7 @@ LOG("lbAppServer::HandleConnect(...) called");
 		LOG("lbAppServer::HandleConnect(...) Error: already connected!");
 		return ERR_APP_SERVER_HANDLECONNECT;
 	}
-cout << "lbAppServer::HandleConnect(...) Succeeded" << endl;	
+//cout << "lbAppServer::HandleConnect(...) Succeeded" << endl;	
 	return ERR_NONE;
 }
 /*...e*/
@@ -470,7 +489,7 @@ LOG("lbAppServer::HandleConnect(...) called");
 	}
 /*...e*/
 
-	cout << "Got hostname: " << clienthost << ", pid: " << pid << ", tid: " << tid << endl;
+	//cout << "Got hostname: " << clienthost << ", pid: " << pid << ", tid: " << tid << endl;
 	
 	result.add("Accept");
 	result.add(clienthost);
@@ -521,6 +540,7 @@ lbAppClient::lbAppClient(lbTransfer* clConn) {
 /*...e*/
 /*...slbAppClient\58\\58\\126\lbAppClient\40\\41\:0:*/
 lbAppClient::~lbAppClient() {
+cout << "Cleanup lbAppClient" << endl;
 }
 /*...e*/
 /*...slbAppClient\58\\58\requestObject\40\const char\42\ name\41\:0:*/
