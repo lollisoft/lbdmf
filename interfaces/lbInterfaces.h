@@ -1454,6 +1454,51 @@ public:
 	
 	virtual lbErrCodes LB_STDCALL addMenuEntry(lb_I_Unknown* entry) = 0; 
 /*...e*/
+
+
+
+/*
+ * This will fasten up the current sample. It is not really needed to use
+ * parameter based dispatching, if the target GUI interface provides the desired
+ * functionality.
+ *
+ * So here, the GUI interface should provide some primitives handling code in its
+ * interface.
+ * 
+ * These are buttons, labels, textfields, menus and so on.
+ *
+ * The handling code should include creation, removement, hiding and so on.
+ */
+/*...sfunctions that had been implemented in metaapplication:0:*/
+
+	/* The menubar is still present in the demo. At the
+	   first time, a new menubar should not be used.
+	*/
+	virtual lbErrCodes LB_STDCALL addMenuBar(char* name);
+
+	/**
+	 * Add a menu behind the last.
+	 */
+	virtual lbErrCodes LB_STDCALL addMenu(char* name);
+	
+	/**
+	 * Add a menu entry in the named menu after given entry,
+	 * if provided. The handler must be registered.
+	 * 
+	 * Input:
+	 *	char* in_menu:		Which menu to add to (File/Edit/Help/...)
+	 *	char* entry:		The text for that entry
+	 *	char* evHandler:	The name of a registered event handler, that handle this
+	 *	char* afterentry:	Insert the entry after an exsisting entry
+	 */
+	virtual lbErrCodes LB_STDCALL addMenuEntry(char* in_menu, char* entry, char* evHandler, char* afterentry = NULL);
+	virtual lbErrCodes LB_STDCALL addButton(char* buttonText, char* evHandler, int x, int y, int w, int h);
+	virtual lbErrCodes LB_STDCALL addLabel(char* text, int x, int y, int w, int h);
+	virtual lbErrCodes LB_STDCALL addTextField(char* name, int x, int y, int w, int h);
+/*...e*/
+
+
+
 	
 	/**
 	 * Let the GUI server show a dialog box
