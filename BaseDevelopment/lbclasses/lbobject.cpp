@@ -6,14 +6,38 @@
 #include <stdio.h>
 #include <string.h>
 #include <lbInterfaces.h>
+#ifndef UNIX
 #include <windows.h>
+#endif
+#ifdef UNIX
+
+#ifdef __cplusplus
+extern "C" {      
+#endif            
+
+#include <conio.h>
+
+#ifdef __cplusplus
+}      
+#endif            
+
+#endif
+
 #include <lbConfigHook.h>
 
-#include <lbObject.h>
-#include <lbKey.h>
+#include <lbobject.h>
+#include <lbkey.h>
+
+#ifdef __cplusplus
+extern "C" {       
+#endif            
 
 IMPLEMENT_FUNCTOR(instanceOfInteger, lbInteger)
 IMPLEMENT_FUNCTOR(instanceOfString, lbString)
+
+#ifdef __cplusplus
+}
+#endif            
 
 #ifdef bla
 /*...slbObject:0:*/
@@ -215,7 +239,12 @@ int lbInteger::greater(const lb_I_KeyBase* _key) const {
 char* lbInteger::charrep() {
     char buf[100];
 
+#ifndef UNIX
     itoa(key, buf, 10);
+#endif
+#ifdef UNIX
+    sprintf(buf, "%d", key);
+#endif
     
     return buf;
 }
@@ -266,7 +295,12 @@ int lbLong::greater(const lb_I_KeyBase* _key) const {
 char* lbLong::charrep() {
     char buf[100];
 
+#ifndef UNIX
     itoa(key, buf, 10);
+#endif
+#ifdef UNIX
+    sprintf(buf, "%d", key);
+#endif
     
     return buf;
 }

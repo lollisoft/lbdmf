@@ -1,13 +1,16 @@
-//#define VERBOSE
+#define VERBOSE
 #define LB_MODULE_DLL
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.18 $
+ * $Revision: 1.19 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.18 2001/10/08 20:11:22 lothar Exp $
+ * $Id: lbModule.cpp,v 1.19 2001/12/12 17:12:44 lothar Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.19  2001/12/12 17:12:44  lothar
+ * Hehe - runs on linux
+ *
  * Revision 1.18  2001/10/08 20:11:22  lothar
  * This module now compiles under linux
  *
@@ -49,7 +52,16 @@
 #include <windows.h>
 #endif
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <conio.h>
+
+#ifdef __cplusplus
+}
+#endif
+
 #include <stdio.h>
 #include <malloc.h>
 
@@ -1543,7 +1555,16 @@ lbErrCodes LB_STDCALL lbModule::request(const char* request, lb_I_Unknown** resu
 }
 /*...e*/
 
+//#ifdef __cplusplus
+//extern "C" {
+//#endif
+
 IMPLEMENT_FUNCTOR(getlb_ModuleInstance, lbModule)
+
+//#ifdef __cplusplus
+//}
+//#endif
+
 
 /*...slbErrCodes lbModule\58\\58\load\40\char\42\ name\41\:0:*/
 lbErrCodes lbModule::load(char* name) {

@@ -7,7 +7,17 @@
 #endif
 #ifdef LINUX
 #include <dlfcn.h>
+
+#ifdef __cplusplus
+extern "C" {      
+#endif            
+
 #include <conio.h>
+
+#ifdef __cplusplus
+}
+#endif            
+
 #endif
 
 
@@ -38,7 +48,7 @@ lbErrCodes LB_STDCALL lbLoadModule(const char* name, HINSTANCE & hinst) {
 #ifdef WINDOWS
         if ((hinst = LoadLibrary(name)) == NULL)
         {
-            printf("Kann DLL '%s.dll' nicht laden.\n", name); 
+            printf("Kann DLL '%s' nicht laden.\n", name); 
             getch(); 
             return ERR_MODULE_NOT_FOUND;
         }
@@ -46,7 +56,7 @@ lbErrCodes LB_STDCALL lbLoadModule(const char* name, HINSTANCE & hinst) {
 #ifdef LINUX
 	if ((hinst = dlopen(name, RTLD_LAZY)) == NULL)
 	{
-	    printf("Kann SO module '%s.so' nicht laden.\n", name);
+	    printf("Kann SO module '%s' nicht laden.\n", name);
 	    getch();
 	    return ERR_MODULE_NOT_FOUND;
 	}
@@ -67,8 +77,10 @@ lbErrCodes LB_STDCALL lbGetFunctionPtr(const char* name, HINSTANCE hinst, void**
         }
 #endif
 #ifdef LINUX
+	
 	if ((*pfn = dlsym(hinst, name)) == NULL)
 	{
+	    printf("Handle for library is %x\n", hinst);
             sprintf(msg, "Kann Funktion '%s' nicht finden.", name);
             CL_LOG(msg); 
             getch(); 
@@ -95,11 +107,21 @@ T_p_getlbModuleInstance DLL_GETMODULEINSTANCE;
 	char* libname = getenv("MODULELIB");
 	char* functor = getenv("LBMODULEFUNCTOR");
 
+	if (functor == NULL) printf("Error: Have no functor!\n");
+
+
+printf("Try to load module manager\n");
 	if (LB_Module_Handle == NULL) {
 		if (lbLoadModule(libname, LB_Module_Handle) != ERR_NONE) {
 			exit(1);
 		}
+		printf("Handle for library is %x\n", LB_Module_Handle);
 	}
+printf("Tried\n");
+
+    if (LB_Module_Handle == NULL) {
+	printf("Error: Could not load shared library %s\n", libname);
+    }
 	
 #ifdef bla	
 	if (lbGetFunctionPtr(functor, 
@@ -108,6 +130,8 @@ T_p_getlbModuleInstance DLL_GETMODULEINSTANCE;
 		exit(1);
 	}
 #endif
+	printf("Try to load functor: '%s'\n", functor);
+	
 
 	if (lbGetFunctionPtr(functor, 
 			     LB_Module_Handle, 

@@ -1,11 +1,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.3 $
+ * $Revision: 1.4 $
  * $Name:  $
- * $Id: lbDOMConfig.h,v 1.3 2001/12/08 11:51:12 lothar Exp $
+ * $Id: lbDOMConfig.h,v 1.4 2001/12/12 17:12:45 lothar Exp $
  *
  * $Log: lbDOMConfig.h,v $
+ * Revision 1.4  2001/12/12 17:12:45  lothar
+ * Hehe - runs on linux
+ *
  * Revision 1.3  2001/12/08 11:51:12  lothar
  * Modified line 896 due to compilation errors
  *
@@ -30,7 +33,9 @@
 
 /*...s\35\ifdef __cplusplus \123\:0:*/
 #ifdef __cplusplus
+#ifdef WINDOWS
 extern "C" {
+#endif
 #endif
 /*...e*/
 
@@ -38,7 +43,9 @@ DECLARE_FUNCTOR(getlbDOMConfigInstance)
 
 /*...s\35\ifdef __cplusplus \125\:0:*/
 #ifdef __cplusplus
+#ifdef WINDOWS
 }
+#endif
 #endif
 /*...e*/
 

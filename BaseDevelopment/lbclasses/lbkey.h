@@ -2,10 +2,13 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.9 $
+ * $Revision: 1.10 $
  * $Name:  $
- * $Id: lbkey.h,v 1.9 2001/07/11 16:04:35 lolli Exp $
+ * $Id: lbkey.h,v 1.10 2001/12/12 17:12:45 lothar Exp $
  * $Log: lbkey.h,v $
+ * Revision 1.10  2001/12/12 17:12:45  lothar
+ * Hehe - runs on linux
+ *
  * Revision 1.9  2001/07/11 16:04:35  lolli
  * First version of module management that hold's a little stresstest
  *
@@ -121,6 +124,14 @@ private:
 };
 /*...e*/
 
+#ifdef __cplusplus
+extern "C" {
+#endif            
+
 DECLARE_FUNCTOR(instanceOfIntegerKey)
+
+#ifdef __cplusplus
+}
+#endif            
 
 #endif //LB_ELEMENT

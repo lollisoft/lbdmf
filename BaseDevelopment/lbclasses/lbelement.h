@@ -4,10 +4,13 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.7 $
+ * $Revision: 1.8 $
  * $Name:  $
- * $Id: lbelement.h,v 1.7 2001/08/18 07:34:48 lolli Exp $
+ * $Id: lbelement.h,v 1.8 2001/12/12 17:12:45 lothar Exp $
  * $Log: lbelement.h,v $
+ * Revision 1.8  2001/12/12 17:12:45  lothar
+ * Hehe - runs on linux
+ *
  * Revision 1.7  2001/08/18 07:34:48  lolli
  * Current version runs again. Module management is not ready.
  *
@@ -72,9 +75,9 @@ public:
     DECLARE_LB_UNKNOWN()
 
     DECLARE_LB_ELEMENT(lbElement)
-
+#ifndef UNIX
     lb_I_Unknown* getObject() const;
-
+#endif
     int operator == (const lb_I_Element &a) const;
 
     int operator == (const lb_I_KeyBase &key) const;

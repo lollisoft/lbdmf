@@ -365,5 +365,6 @@ char *getpass(const char *prompt);
 
    return(puffer);
 }
+
 #endif
 #endif  /* __CONIO_H */

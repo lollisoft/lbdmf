@@ -1,10 +1,13 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.14 $
+ * $Revision: 1.15 $
  * $Name:  $
- * $Id: lbcontainer.cpp,v 1.14 2001/10/04 19:28:34 lolli Exp $
+ * $Id: lbcontainer.cpp,v 1.15 2001/12/12 17:12:45 lothar Exp $
  * $Log: lbcontainer.cpp,v $
+ * Revision 1.15  2001/12/12 17:12:45  lothar
+ * Hehe - runs on linux
+ *
  * Revision 1.14  2001/10/04 19:28:34  lolli
  * Current version seems to work good (without big memory holes)
  *
@@ -65,22 +68,41 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <conio.h>
+
+#ifdef __cplusplus
+}
+#endif
+
 #include <iostream.h>
 
 //#include <lbInclude.h>
 #include <lbInterfaces.h>
-
-#include <lbThread.h>
+#ifndef UNIX
+#include <lbthread.h>
+#endif
 #include <lbConfigHook.h>
-#include <lbElement.h>
-#include <lbContainer.h>
-
+#include <lbelement.h>
+#include <lbcontainer.h>
+#ifndef UNIX
 lbCritSect containerSection;
+#endif
 
-
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 IMPLEMENT_FUNCTOR(instanceOfContainer, lbContainer)
+
+#ifdef __cplusplus
+}
+#endif
+
 
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbContainer)
 	ADD_INTERFACE(lb_I_Container)

@@ -1,10 +1,13 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.11 $
+ * $Revision: 1.12 $
  * $Name:  $
- * $Id: misc.cpp,v 1.11 2001/10/04 19:28:34 lolli Exp $
+ * $Id: misc.cpp,v 1.12 2001/12/12 17:12:45 lothar Exp $
  * $Log: misc.cpp,v $
+ * Revision 1.12  2001/12/12 17:12:45  lothar
+ * Hehe - runs on linux
+ *
  * Revision 1.11  2001/10/04 19:28:34  lolli
  * Current version seems to work good (without big memory holes)
  *
@@ -66,13 +69,28 @@
 //#include <lbInclude.h>
 
 #include <stdarg.h>
+#ifdef WINDOWS
 #include <windows.h>
+#endif
+#ifdef UNIX
+
+#ifdef __cplusplus
+extern "C" {      
+#endif            
+
+#include <conio.h>
+
+#ifdef __cplusplus
+}      
+#endif            
+
+#endif
 //#include <windef.h>
 //#include <winbase.h>
 
 #include <lbInterfaces.h>
 #include <lbConfigHook.h>
-#include <lbThread.h>
+#include <lbthread.h>
 #include <lb_misc.h>
 
 /*...sclass lbLog:0:*/
@@ -157,7 +175,15 @@ lbErrCodes DLLEXPORT LB_STDCALL instanceOfLogger(lb_I_Unknown*& uk) {
 #endif
 /*...e*/
 
+#ifdef __cplusplus
+extern "C" {       
+#endif            
+
 IMPLEMENT_FUNCTOR(instanceOfLogger, lbLog)
+
+#ifdef __cplusplus
+}
+#endif            
 
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbLog)
         ADD_INTERFACE(lb_I_Log)
@@ -326,7 +352,7 @@ void LB_STDCALL lbLog::event_end(char *event) {
                                 // rest of code goes here
         
                                 fprintf( fp, "Message %s: Duration\tProcess\t%d\t%u\n",
-                                event, GetCurrentProcessId(), end_time - start_time);
+                                event, lbGetCurrentProcessId(), end_time - start_time);
                         }
                         fclose( fp );
                 }

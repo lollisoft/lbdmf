@@ -1,10 +1,13 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.9 $
+ * $Revision: 1.10 $
  * $Name:  $
- * $Id: lbkey.cpp,v 1.9 2001/10/04 19:28:34 lolli Exp $
+ * $Id: lbkey.cpp,v 1.10 2001/12/12 17:12:45 lothar Exp $
  * $Log: lbkey.cpp,v $
+ * Revision 1.10  2001/12/12 17:12:45  lothar
+ * Hehe - runs on linux
+ *
  * Revision 1.9  2001/10/04 19:28:34  lolli
  * Current version seems to work good (without big memory holes)
  *
@@ -48,7 +51,23 @@
 #include <lbclasses-module.h>
 /*...e*/
 
+#ifndef UNIX
 #include <windows.h>
+#endif
+#ifdef UNIX
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+#include <conio.h>
+
+#ifdef __cplusplus
+}
+#endif
+
+
+#endif
 
 #include <string.h>
 #include <stdio.h>
@@ -57,9 +76,17 @@
 #include <lbInterfaces.h>
 #include <lbConfigHook.h>
 
-#include <lbKey.h>
+#include <lbkey.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 IMPLEMENT_FUNCTOR(instanceOfIntegerKey, lbKey)
+
+#ifdef __cplusplus
+}        
+#endif            
 
 /*...slbKey:0:*/
 /*...sc\39\tors and d\39\tors:0:*/
@@ -108,7 +135,12 @@ int lbKey::greater(const lb_I_KeyBase* _key) const {
 char* lbKey::charrep() {
     char buf[100];
 
+#ifndef UNIX
     itoa(key, buf, 10);
+#endif
+#ifdef UNIX
+    sprintf(buf, "%d", key);
+#endif
     
     return buf;
 }
@@ -159,7 +191,12 @@ int lbKeyUL::greater(const lb_I_KeyBase* _key) const {
 char* lbKeyUL::charrep() {
     char buf[100];
 
+#ifndef UNIX
     itoa(key, buf, 10);
+#endif
+#ifdef UNIX
+    sprintf(buf, "%d", key);
+#endif
     
     return buf;
 }

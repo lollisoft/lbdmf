@@ -4,11 +4,21 @@
 /*...e*/
 
 #include <stdio.h>
+
+#ifdef __cplusplus
+extern "C" {      
+#endif            
+
 #include <conio.h>
+
+#ifdef __cplusplus
+}      
+#endif            
+
 #include <iostream.h>
 
 #include <lbInterfaces.h>
-#include <lbThread.h>
+#include <lbthread.h>
 #include <lbConfigHook.h>
 
 int lbThread::threadCount = 0;
@@ -188,7 +198,7 @@ void lbMutex::release()
 /*...e*/
 /*...e*/
 
-
+#ifdef WINDOWS
 
 /*...slbCritSect:0:*/
 //#define USE_CRITICAL_SECTION
@@ -264,7 +274,6 @@ CL_LOG("lbCritSect::leave() leave");
 	return ERR_NONE;
 }
 /*...e*/
-
 
 /*...slbLock:0:*/
 lbLock::lbLock(lbCritSect& _cso, char* _name) {
@@ -508,6 +517,9 @@ printf("lbThreadInternal::WinThreadStart: Returning from (DWORD)thread->Entry()\
 }
 /*...e*/
 /*...e*/
+
+#endif
+#ifdef WINDOWS
 /*...slbThread:0:*/
 lbThread::lbThread() {
 /*...sTHREAD_VERBOSE:0:*/
@@ -676,6 +688,8 @@ CL_LOG("lbThread::OnExit() leave");
 /*...e*/
 /*...e*/
 
+#endif
+
 /*...sextern C begin:0:*/
 #ifdef __cplusplus
 extern "C" {
@@ -686,7 +700,7 @@ DWORD DLLEXPORT LB_STDCALL lbGetCurrentThreadId() {
 #ifdef WINDOWS
 	return ::GetCurrentThreadId();
 #else
-#error "Only Windows target is supported"
+//#error "Only Windows target is supported"
 #endif
 }
 
@@ -694,7 +708,7 @@ DWORD DLLEXPORT LB_STDCALL lbGetCurrentProcessId() {
 #ifdef WINDOWS
 	return ::GetCurrentProcessId();
 #else
-#error "Only Windows target is supported"
+//#error "Only Windows target is supported"
 #endif
 }
 

@@ -1,11 +1,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.18 $
+ * $Revision: 1.19 $
  * $Name:  $
- * $Id: lbDOMConfig.cpp,v 1.18 2001/12/08 13:03:58 lothar Exp $
+ * $Id: lbDOMConfig.cpp,v 1.19 2001/12/12 17:12:45 lothar Exp $
  *
  * $Log: lbDOMConfig.cpp,v $
+ * Revision 1.19  2001/12/12 17:12:45  lothar
+ * Hehe - runs on linux
+ *
  * Revision 1.18  2001/12/08 13:03:58  lothar
  * Changes under linux also working here.
  * But the xerces library is still the version 1.3
@@ -86,7 +89,15 @@
 #include <string.h>
 #include <stdlib.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <conio.h>
+
+#ifdef __cplusplus
+}      
+#endif            
 
 #ifdef WINDOWS
 #include <windows.h>
