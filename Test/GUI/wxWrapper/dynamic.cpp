@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.30 2004/08/16 05:11:29 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.31 2004/10/05 22:19:54 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,15 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.30 $
+ * $Revision: 1.31 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.30 2004/08/16 05:11:29 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.31 2004/10/05 22:19:54 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.31  2004/10/05 22:19:54  lollisoft
+ * Corrected a bug in enabling/disabling the right buttons in the RIGHT windows.
+ * Attention: There is a documented bugfix.
+ *
  * Revision 1.30  2004/08/16 05:11:29  lollisoft
  * Better handling of database navigation.
  *
@@ -349,32 +353,115 @@ lbErrCodes LB_STDCALL lb_wxFrame::createEventsource(lb_I_EventConnector* object)
 */
 /*...e*/
 /*...sclass lbDatabaseDialog:0:*/
+/**
+ * This is the sample database dialog for a wxWidgets based GUI.
+ */
 class lbDatabaseDialog :
 	public lb_I_Unknown,
 	public lb_I_EventHandler,
 	public wxDialog {
 public:
+	/**
+	 * Default constructor - implemented in BEGIN_IMPLEMENT_LB_UNKNOWN(lbDatabaseDialog)
+	 */
 	lbDatabaseDialog();
+	
+	/**
+	 * This function creates the dialog on the fly.
+	 *
+	 * It builds the layout, navigation elements and instanciate the needed
+	 * database classes.
+	 */
 	void init(wxWindow* parent, wxString formName, wxString SQLString);
+	
+	/**
+	 * Destructor
+	 */
 	virtual ~lbDatabaseDialog();
 
+	/**
+	 * Database navigation
+	 * 
+	 * Moves to the first row.
+	 */
 	lbErrCodes LB_STDCALL lbDBFirst(lb_I_Unknown* uk);
+
+	/**
+	 * Database navigation
+	 * 
+	 * Moves to the next row.
+	 */
 	lbErrCodes LB_STDCALL lbDBNext(lb_I_Unknown* uk);
+
+	/**
+	 * Database navigation
+	 * 
+	 * Moves to the previous row.
+	 */
 	lbErrCodes LB_STDCALL lbDBPrev(lb_I_Unknown* uk);
+
+	/**
+	 * Database navigation
+	 * 
+	 * Moves to the last row.
+	 */
 	lbErrCodes LB_STDCALL lbDBLast(lb_I_Unknown* uk);
 	
+	/**
+	 * Database manipulation
+	 * 
+	 * This adds a new row, while it copies the values of the actual form into the row.
+	 */
 	lbErrCodes LB_STDCALL lbDBAdd(lb_I_Unknown* uk);
+
+	/**
+	 * Database manipulation
+	 * 
+	 * Deletes the current row.
+	 */
 	lbErrCodes LB_STDCALL lbDBDelete(lb_I_Unknown* uk);
 
+	/**
+	 * Database manipulation
+	 * 
+	 * Internally used to update the current row.
+	 */
 	lbErrCodes LB_STDCALL lbDBUpdate();
+
+	/**
+	 * Database manipulation
+	 * 
+	 * Internally used to read data from the cursor to the current row.
+	 */
 	lbErrCodes LB_STDCALL lbDBRead();
 
+
+	/**
+	 * This function acts in a special way for registering the above navigation handlers
+	 *
+	 * It uses a string of the this pointer + a name for the respective eventhandler.
+	 * This is neccessary for handling more than one database dialog per application.
+	 *
+	 * This is a good sample, if you need to be able to handle more than one instance of
+	 * your registered event handlers.
+	 */
 	lbErrCodes LB_STDCALL registerEventHandler(lb_I_Dispatcher* dispatcher);
 
 	DECLARE_LB_UNKNOWN()
 
 	UAP(lb_I_Database, database, __FILE__, __LINE__)
 	UAP(lb_I_Query, sampleQuery, __FILE__, __LINE__)	
+	
+
+	// l gets overwritten, while assigning a lb_I_Query* pointer to sampleQuery !!
+	// l and buf are therefore as a bugfix.
+	long l;
+	char buf[100];
+	
+	wxWindow* firstButton;
+	wxWindow* prevButton;
+	wxWindow* nextButton;
+	wxWindow* lastButton;
 };
 /*...e*/
 /*...sclass lbDatabaseDialog implementation:0:*/
@@ -390,6 +477,9 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::setData(lb_I_Unknown* uk) {
 lbDatabaseDialog::lbDatabaseDialog()
 	: wxDialog(NULL, -1, wxString(_T("Database dialog")), wxDefaultPosition, wxDefaultSize, wxRESIZE_BORDER|wxDEFAULT_DIALOG_STYLE)
 {
+	l = 0L;
+	strcpy(buf, "Test buffer\n");
+
 }
 /*...slbErrCodes LB_STDCALL lbDatabaseDialog\58\\58\registerEventHandler\40\lb_I_Dispatcher\42\ dispatcher\41\:0:*/
 lbErrCodes LB_STDCALL lbDatabaseDialog::registerEventHandler(lb_I_Dispatcher* dispatcher) {
@@ -521,6 +611,11 @@ void lbDatabaseDialog::init(wxWindow* parent, wxString formName, wxString SQLStr
 	wxButton *button3 = new wxButton(this, DatabaseNext, "Next", wxPoint(), wxSize(100,20));
 	wxButton *button4 = new wxButton(this, DatabaseLast, "Last", wxPoint(), wxSize(100,20));
 
+	firstButton = button1;
+	prevButton = button2;
+	nextButton = button3;
+	lastButton = button4;
+
 	button1->Disable();
 	button2->Disable();
 
@@ -643,17 +738,10 @@ printf("Move first\n");
 
 	lbDBRead();
 
-	wxWindow* w = FindWindowByName(wxString("Prev"));
-	w->Disable();
-	
-	w = FindWindowByName(wxString("First"));
-	w->Disable();
-
-	w = FindWindowByName(wxString("Last"));
-	w->Enable();
-	
-	w = FindWindowByName(wxString("Next"));
-	w->Enable();
+	prevButton->Disable();
+	firstButton->Disable();
+	lastButton->Enable();
+	nextButton->Enable();
 
 	return ERR_NONE;
 }
@@ -664,18 +752,12 @@ printf("Move next\n");
 	lbDBUpdate();
 
 	if (sampleQuery->next() == WARN_DB_NODATA) {
-		wxWindow* w = FindWindowByName(wxString("Next"));
-		w->Disable();
-		
-		w = FindWindowByName(wxString("Last"));
-		w->Disable();
+		nextButton->Disable();
+		lastButton->Disable();
 	}
 
-	wxWindow* w = FindWindowByName(wxString("Prev"));
-	w->Enable();
-
-	w = FindWindowByName(wxString("First"));
-	w->Enable();
+	prevButton->Enable();
+	firstButton->Enable();
 
 	lbDBRead();
 
@@ -688,18 +770,12 @@ printf("Move previous\n");
 	lbDBUpdate();
 
 	if (sampleQuery->previous() == WARN_DB_NODATA) {
-	        wxWindow* w = FindWindowByName(wxString("Prev"));
-	        w->Disable();
-
-		w = FindWindowByName(wxString("First"));
-		w->Disable();
+	        prevButton->Disable();
+		firstButton->Disable();
 	}
 
-	wxWindow* w = FindWindowByName(wxString("Next"));
-	w->Enable();
-
-	w = FindWindowByName(wxString("Last"));
-	w->Enable();
+	nextButton->Enable();
+	lastButton->Enable();
 		
 	lbDBRead();
 
@@ -715,17 +791,10 @@ printf("Move last\n");
 
 	lbDBRead();
 
-	wxWindow* w = FindWindowByName(wxString("Next"));
-	w->Disable();
-	
-	w = FindWindowByName(wxString("Last"));
-	w->Disable();
-
-	w = FindWindowByName(wxString("First"));
-	w->Enable();
-	
-	w = FindWindowByName(wxString("Prev"));
-	w->Enable();
+	nextButton->Disable();
+	lastButton->Disable();
+	firstButton->Enable();
+	prevButton->Enable();
 	
 	return ERR_NONE;
 }
