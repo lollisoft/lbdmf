@@ -6,10 +6,11 @@
 #include <stdio.h>
 #include <string.h>
 #include <lbInterfaces.h>
-#include <lbObject.h>
-#include <lbKey.h>
 #include <windows.h>
 #include <lbConfigHook.h>
+
+#include <lbObject.h>
+#include <lbKey.h>
 
 IMPLEMENT_FUNCTOR(instanceOfInteger, lbInteger)
 IMPLEMENT_FUNCTOR(instanceOfString, lbString)
@@ -112,7 +113,7 @@ lbErrCodes LB_STDCALL lbString::setData(lb_I_Unknown* uk) {
 	
 	lb_I_String* string = NULL;
 	
-	if (uk->queryInterface("lb_I_String", (void**) &string) != ERR_NONE) {
+	if (uk->queryInterface("lb_I_String", (void**) &string, __FILE__, __LINE__) != ERR_NONE) {
 		CL_LOG("Error: Could not get interface lb_I_String");
 	}
 	

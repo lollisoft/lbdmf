@@ -1,10 +1,13 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.8 $
+ * $Revision: 1.9 $
  * $Name:  $
- * $Id: lbkey.cpp,v 1.8 2001/07/11 16:04:35 lolli Exp $
+ * $Id: lbkey.cpp,v 1.9 2001/10/04 19:28:34 lolli Exp $
  * $Log: lbkey.cpp,v $
+ * Revision 1.9  2001/10/04 19:28:34  lolli
+ * Current version seems to work good (without big memory holes)
+ *
  * Revision 1.8  2001/07/11 16:04:35  lolli
  * First version of module management that hold's a little stresstest
  *
@@ -85,7 +88,7 @@ END_IMPLEMENT_LB_UNKNOWN()
 
 
 lbErrCodes LB_STDCALL lbKey::setData(lb_I_Unknown* uk) {
-	LOG("lbKey::setData() not implemented yet");
+	CL_LOG("lbKey::setData() not implemented yet");
 	return ERR_NONE;
 }
 /*...e*/
@@ -136,7 +139,7 @@ BEGIN_IMPLEMENT_LB_UNKNOWN(lbKeyUL)
 END_IMPLEMENT_LB_UNKNOWN()
 
 lbErrCodes LB_STDCALL lbKeyUL::setData(lb_I_Unknown* uk) {
-	LOG("lbKey::setData() not implemented yet");
+	CL_LOG("lbKey::setData() not implemented yet");
 	return ERR_NONE;
 }
 

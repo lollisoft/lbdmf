@@ -1,10 +1,13 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.13 $
+ * $Revision: 1.14 $
  * $Name:  $
- * $Id: lbcontainer.cpp,v 1.13 2001/07/11 16:04:35 lolli Exp $
+ * $Id: lbcontainer.cpp,v 1.14 2001/10/04 19:28:34 lolli Exp $
  * $Log: lbcontainer.cpp,v $
+ * Revision 1.14  2001/10/04 19:28:34  lolli
+ * Current version seems to work good (without big memory holes)
+ *
  * Revision 1.13  2001/07/11 16:04:35  lolli
  * First version of module management that hold's a little stresstest
  *
@@ -89,6 +92,12 @@ lbContainer::lbContainer() {
     iterator = NULL;
     count = 0;
     container_data = NULL;
+/*...sVERBOSE:0:*/
+#ifdef VERBOSE
+    CL_LOG("Set manager to NULL must be done automatically!");
+#endif
+/*...e*/
+    manager = NULL;
 }
 
 lbContainer::~lbContainer() {

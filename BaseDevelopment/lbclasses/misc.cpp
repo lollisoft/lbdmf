@@ -1,10 +1,13 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.10 $
+ * $Revision: 1.11 $
  * $Name:  $
- * $Id: misc.cpp,v 1.10 2001/08/18 07:34:48 lolli Exp $
+ * $Id: misc.cpp,v 1.11 2001/10/04 19:28:34 lolli Exp $
  * $Log: misc.cpp,v $
+ * Revision 1.11  2001/10/04 19:28:34  lolli
+ * Current version seems to work good (without big memory holes)
+ *
  * Revision 1.10  2001/08/18 07:34:48  lolli
  * Current version runs again. Module management is not ready.
  *
@@ -170,23 +173,17 @@ lbErrCodes LB_STDCALL lbLog::setData(lb_I_Unknown* uk) {
 lbLog::lbLog() {
 //lbLock lbLock(sect);
 	manager = NULL;
-	printf("Try to log direct\n");
         strcpy(f, "c:\\log\\wsmaster.log");
-        printf("Created formatted string\n");
         logdirect("lbLog::lbLog(): Creating mutex for logfile", f, level);
-	printf("Logged\n");
         if (firstlog == 0) {
-        	printf("Create mutex\n");
                 mutex = new lbMutex();
                 mutex->createMutex(LB_LOGFILE_MUTEX);
-        	printf("Created\n");
         }
 
         firstlog = 1;
         doLog = 1;
 
 	char buf[100] = "";
-	printf("Leave ctor\n");
 }
 /*...e*/
 /*...slbLog\58\\58\lbLog\40\int l\41\:0:*/
@@ -210,7 +207,7 @@ void LB_STDCALL lbLog::logdirect(const char *msg, char *f, int level) {
                 FILE *fp;
                 fp = fopen( f, "a" );
                 if( fp != NULL ) {
-                        char buf[100];
+                        char buf[1000] = "";
                         buf[0] = 0;
                         
                         int l = level;
@@ -239,9 +236,7 @@ printf("Entered mutex\n");
                 char *m = (char*) malloc(strlen(msg)+sizeof(line)+strlen(file)+10);
 
                 sprintf(m, "%s: %d - %s", file, line, msg);
-                printf("Call logdirect\n");
                 logdirect(m, f, level);
-                printf("Called logdirect\n");
                 free(m);
         }
         mutex->release();
