@@ -73,25 +73,123 @@ void process(void);
 void dbError( LPSTR lp, HENV henv,HDBC hdbc,HSTMT hstmt);
 
 
-/*
-class lbStatement :
-public lb_I_SQLStatement
+/*...sclass lbQuery:0:*/
+class lbQuery :
+public lb_I_Query
 {
-        lbStatement();
-        virtual ~lbStatement();
-private:
-
+public:
+	lbQuery() { hdbc = 0; hstmt = 0; }
+	virtual ~lbQuery() {}
+	
 	DECLARE_LB_UNKNOWN()
 
-public:
-	lb_I_Column* getColumn(int pos);
+	/* Column binding mode */
+        virtual lbErrCodes LB_STDCALL setView(lb_I_ColumnBinding* cb);
+
+/*...svirtual lbErrCodes LB_STDCALL \40\un\41\registerView\40\lb_I_MVC_View\42\ view\41\\59\:8:*/
+	/* MVC View mode */
+	/*
+	 * As a sample may be a graphical view for the result of the interpreted
+	 * graphics and the textual view. The controller then might use one button
+	 * for updating the model and the model then informs its views.
+	 */
+	virtual lbErrCodes LB_STDCALL registerView(lb_I_MVC_View* view);
+	virtual lbErrCodes LB_STDCALL unregisterView(lb_I_MVC_View* view);
+/*...e*/
+
+        /* Set the SQL query */
+        virtual lbErrCodes LB_STDCALL query(char* q);
+        
+        /* Navigation */
+        virtual lbErrCodes LB_STDCALL first();
+        virtual lbErrCodes LB_STDCALL next();
+        virtual lbErrCodes LB_STDCALL previous();
+        virtual lbErrCodes LB_STDCALL last();
+	
+	lbErrCodes LB_STDCALL init(HENV henv, HDBC _hdbc);
+
+private:
+	HENV    henv;
+	HDBC    hdbc;
+	HSTMT   hstmt;
+	RETCODE retcode;
+	char    szSql[256];
 };
 
-class lbColumn;
-class lbBoundColumn;
+BEGIN_IMPLEMENT_LB_UNKNOWN(lbQuery)
+        ADD_INTERFACE(lb_I_Query)
+END_IMPLEMENT_LB_UNKNOWN()
 
-*/
+lbErrCodes LB_STDCALL lbQuery::setData(lb_I_Unknown * uk) {
+	_LOG << "lbQuery::setData(...): Not implemented yet" LOG_
+	return ERR_NONE;
+}
 
+lbErrCodes LB_STDCALL lbQuery::setView(lb_I_ColumnBinding* cb) {
+	_LOG << "lbQuery::setView(...): Not implemented yet" LOG_
+	return ERR_NONE;
+}
+
+lbErrCodes LB_STDCALL lbQuery::registerView(lb_I_MVC_View* view) {
+	_LOG << "lbQuery::registerView(...): Not implemented yet" LOG_
+	return ERR_NONE;
+}
+
+lbErrCodes LB_STDCALL lbQuery::unregisterView(lb_I_MVC_View* view) {
+	_LOG << "lbQuery::unregisterView(...): Not implemented yet" LOG_
+        return ERR_NONE;
+}
+
+lbErrCodes LB_STDCALL lbQuery::init(HENV henv, HDBC _hdbc) {
+	hdbc = _hdbc;
+
+	retcode = SQLAllocStmt(hdbc, &hstmt); /* Statement handle */
+
+	if (retcode != SQL_SUCCESS)
+	{
+	        dbError( "SQLAllocStmt()",henv,hdbc,hstmt);
+	        _LOG << "lbDatabase::getQuery() failed due to statement allocation." LOG_
+	        SQLFreeEnv(henv);
+        	return ERR_DB_ALLOCSTATEMENT;
+	}
+	
+	//retcode = SQLSetStmtOption(hstmt, SQL_CURSOR_TYPE, SQL_CURSOR_STATIC);
+	return ERR_NONE;
+}
+
+lbErrCodes LB_STDCALL lbQuery::query(char* q) {
+
+	lstrcpy(szSql, q);
+
+	retcode = SQLExecDirect(hstmt, (unsigned char*) szSql, SQL_NTS);
+
+	if (retcode != SQL_SUCCESS)
+        {
+        	dbError( "SQLExecDirect()",henv,hdbc,hstmt);
+		_LOG << "lbQuery::query(...) failed." LOG_
+		return ERR_DB_QUERYFAILED;
+        }
+
+	return ERR_NONE;
+}
+
+lbErrCodes LB_STDCALL lbQuery::first() {
+	return ERR_NONE;
+}
+
+lbErrCodes LB_STDCALL lbQuery::next() {
+	return ERR_NONE;
+}
+
+lbErrCodes LB_STDCALL lbQuery::previous() {
+	return ERR_NONE;
+}
+
+lbErrCodes LB_STDCALL lbQuery::last() {
+	return ERR_NONE;
+}
+/*...e*/
+/*...sclass lbDatabase:0:*/
 class lbDatabase :
 public lb_I_Database
 {
@@ -102,6 +200,8 @@ private:
 public:
         lbDatabase();
         virtual ~lbDatabase();
+
+	virtual lbErrCodes LB_STDCALL init();
 	
 	/**
 	 * Makes a connection to the specified database. For ODBC database drivers,
@@ -113,6 +213,13 @@ public:
 	 */
 	virtual lbErrCodes LB_STDCALL connect(char* DSN, char* user, char* passwd);
 	virtual lb_I_Query* LB_STDCALL getQuery();
+	
+	
+	
+private:
+	RETCODE  retcode;
+	HENV     henv;	
+	HDBC     hdbc;
 };
 
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbDatabase)
@@ -122,28 +229,73 @@ END_IMPLEMENT_LB_UNKNOWN()
 IMPLEMENT_FUNCTOR(instanceOfDatabase, lbDatabase)
 
 lbDatabase::lbDatabase() {
+	henv = 0;
+	hdbc = 0;
 }
 
 lbDatabase::~lbDatabase() {
 }
 
+/*...slbErrCodes LB_STDCALL lbDatabase\58\\58\init\40\\41\:0:*/
+lbErrCodes LB_STDCALL lbDatabase::init() {
+	retcode = SQLAllocEnv(&henv);
+	if (retcode != SQL_SUCCESS) {
+        	dbError( "SQLAllocEnv()",henv,0,0);
+        	_LOG << "Database initializion failed." LOG_
+        	return ERR_DB_INIT;
+        }
+	return ERR_NONE;
+}
+/*...e*/
+/*...slbErrCodes LB_STDCALL lbDatabase\58\\58\setData\40\lb_I_Unknown\42\ uk\41\:0:*/
 lbErrCodes LB_STDCALL lbDatabase::setData(lb_I_Unknown* uk) {
 	_CL_LOG << "lbInstanceReference::setData(...) not implemented yet" LOG_
 	return ERR_NOT_IMPLEMENTED;
 }
-
+/*...e*/
+/*...slbErrCodes LB_STDCALL lbDatabase\58\\58\connect\40\char\42\ DSN\44\ char\42\ user\44\ char\42\ passwd\41\:0:*/
 lbErrCodes LB_STDCALL lbDatabase::connect(char* DSN, char* user, char* passwd) {
-    process();
-    return ERR_NONE;
-}
+	retcode = SQLAllocConnect(henv, &hdbc); /* Connection handle */
 
+	if (retcode != SQL_SUCCESS)
+        {
+        	dbError( "SQLAllocConnect()",henv,hdbc,0);
+        	SQLFreeEnv(henv);
+        	return ERR_DB_CONNECT;
+        }	
+	
+	SQLSetConnectOption(hdbc, SQL_LOGIN_TIMEOUT, 15); /* Set login timeout to 15 seconds. */
+
+	retcode = SQLConnect(hdbc, (unsigned char*) DSN, SQL_NTS, 
+				   (unsigned char*) user, SQL_NTS, 
+				   (unsigned char*) passwd, SQL_NTS); /* Connect to data source */
+
+	if (retcode != SQL_SUCCESS && retcode != SQL_SUCCESS_WITH_INFO)
+        {
+        	dbError( "SQLConnect()",henv,hdbc,0);
+		_LOG << "Connection to database failed." LOG_
+        	SQLFreeEnv(henv);
+        	return ERR_DB_CONNECT;
+        } else {
+		SQLFreeEnv(henv);
+		printf("Connection succeeded.\n");
+        }
+
+	return ERR_NONE;
+}
+/*...e*/
 lb_I_Query* LB_STDCALL lbDatabase::getQuery() {
-    return NULL;
-}
+	lbQuery* query = new lbQuery;
 
+	if (query->init(henv, hdbc) != ERR_NONE) return NULL;
+
+	return NULL;
+}
+/*...e*/
 /*...svoid process\40\void\41\:0:*/
 void process(void)
 {
+/*...svars:0:*/
 SDWORD cbempno;
 SDWORD cbename;
 SDWORD cbobjecttyp;
@@ -178,6 +330,7 @@ HDBC       hdbc = 0;
 char       szSql[256];
 char       szout[256];
 TIMESTAMP_STRUCT ts;
+/*...e*/
 
 retcode = SQLAllocEnv(&henv);              /* Environment handle */
 
