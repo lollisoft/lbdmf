@@ -1,11 +1,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.16 $
+ * $Revision: 1.17 $
  * $Name:  $
- * $Id: lbInterfaces-sub-classes.h,v 1.16 2001/10/06 11:20:54 lothar Exp $
+ * $Id: lbInterfaces-sub-classes.h,v 1.17 2001/12/12 17:27:54 lothar Exp $
  *
  * $Log: lbInterfaces-sub-classes.h,v $
+ * Revision 1.17  2001/12/12 17:27:54  lothar
+ * Hehe - runs under linux
+ *
  * Revision 1.16  2001/10/06 11:20:54  lothar
  * Compiles module lbHook under linux now
  *
@@ -760,6 +763,41 @@ public:
     virtual void LB_STDCALL setPrefix(char* p) = 0;
 };
 /*...e*/
+
+class lb_I_Runnable : public lb_I_Unknown {
+protected:
+    lb_I_Runnable() {}
+    virtual ~lb_I_Runnable() {}
+
+public:
+    virtual lbErrCodes run() = 0;
+};    
+
+class lb_I_ZThread : public lb_I_Runnable {
+protected:
+    lb_I_ZThread() {}
+    virtual ~lb_I_ZThread() {}
+    
+public:
+    virtual lb_I_ZThread* operator->() = 0;
+    virtual bool equals(const lb_I_ZThread* t) const = 0;
+    virtual bool operator==(const lb_I_ZThread* t) const = 0;
+    virtual lbErrCodes kill() = 0;
+    virtual lbErrCodes join() = 0;
+    virtual lbErrCodes run(lb_I_Runnable* target) = 0;
+    virtual lbErrCodes interrupt() = 0;
+    // The set/getPriority functions are not implemented yet
+    virtual bool isInterrupted() = 0;
+    virtual bool isKilled() = 0;
+    virtual bool isDaemon() = 0;
+    virtual lbErrCodes setDaemon(bool flag) = 0;
+    virtual lbErrCodes setNotify(bool flag) = 0;
+    virtual bool wantNotify() = 0;
+    virtual lbErrCodes sleep(unsigned long s) = 0;
+    virtual lbErrCodes yield() = 0;
+    // current is not implemented yet
+    // FastThreadLocal is not implemented yet
+};
 
 /*...sclass lb_I_Thread:0:*/
 class lb_I_Thread : public lb_I_Unknown {

@@ -1,10 +1,13 @@
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.11 $
+# * $Revision: 1.12 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.11 2001/11/21 21:59:42 lothar Exp $
+# * $Id: STD_MAKE,v 1.12 2001/12/12 17:27:54 lothar Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.12  2001/12/12 17:27:54  lothar
+# * Hehe - runs under linux
+# *
 # * Revision 1.11  2001/11/21 21:59:42  lothar
 # * Added RM variable
 # *
@@ -46,7 +49,7 @@ STD_INCL = -i=.;Q:\develop\Tools\WATCOM\h;Q:\develop\Tools\WATCOM\h\nt;Q:\develo
 
 OBJ =obj
 C_OPS = -DWINDOWS
-L_OPS =-o
+L_OPS = -o
 
 CC =wpp386
 RM =del
@@ -63,18 +66,18 @@ endif
 
 ifeq ($(OSTYPE), linux)
 
-STD_INCL = -I $(DEVROOT)/BaseDevelopment/lbHook/linuxCode \
-	-I $(DEVROOT)/interfaces \
-	-I $(DEVROOT)/include \
-	-I $(DEVROOT)/BaseDevelopment/lbclasses \
+STD_INCL = -I $(DEVROOT)/CPP/BaseDevelopment/lbHook/linuxCode \
+	-I $(DEVROOT)/CPP/interfaces \
+	-I $(DEVROOT)/CPP/include \
+	-I $(DEVROOT)/CPP/BaseDevelopment/lbclasses \
 	-I /usr/include \
 	-I /usr/include/sys \
 	-I . 
 
 OBJ =o
-C_OPS =-c -DUNIX -DLINUX
-L_OPS =-o
-
+C_OPS = -c -DUNIX -DLINUX
+L_OPS = -o
+LIBS  = -ldl -lstdc++
 CC =cc
 LD =cc
 CP =cp

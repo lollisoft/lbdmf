@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<!DOCTYPE dtdHostCfgDoc SYSTEM "lbXMLConfig.dtd">
+<!DOCTYPE dtdHostCfgDoc SYSTEM "lbxmlconfig.dtd">
 
 <dtdHostCfgDoc VERSION="1.0.0">
   <Busmaster ID="ID1" Hostname="localhost" Port="5001" Description="Any description" />
@@ -33,13 +33,13 @@
   <Modules>
     <Module>
 <!--...sModuleName lbclasses:8:-->
-      <ModuleName Name="lbclasses"/>
+      <ModuleName Name="lbClasses.so"/>
 <!--...e-->
 <!--...sFunctions:8:-->
       <Functions>
 <!--...sFunction instanceOfContainer:16:-->
         <Function>
-           <FunctionName Name="_instanceOfContainer"/>
+           <FunctionName Name="instanceOfContainer"/>
            <Functor>
               <InterfaceName Name="lb_I_Container" Version="1.0"/>
            </Functor>
@@ -47,7 +47,7 @@
 <!--...e-->
 <!--...sFunction instanceOfLogger:16:-->
         <Function>
-           <FunctionName Name="_instanceOfLogger"/>
+           <FunctionName Name="instanceOfLogger"/>
            <Functor>
               <InterfaceName Name="lb_I_Log" Version="1.0"/>
            </Functor>
@@ -55,7 +55,7 @@
 <!--...e-->
 <!--...sFunction instanceOfIntegerKey:16:-->
         <Function>
-           <FunctionName Name="_instanceOfIntegerKey"/>
+           <FunctionName Name="instanceOfIntegerKey"/>
            <Functor>
               <InterfaceName Name="lb_I_KeyBase" Version="1.0"/>
            </Functor>
@@ -63,7 +63,7 @@
 <!--...e-->
 <!--...sFunction instanceOfInteger:16:-->
         <Function>
-           <FunctionName Name="_instanceOfInteger"/>
+           <FunctionName Name="instanceOfInteger"/>
            <Functor>
               <InterfaceName Name="lb_I_Integer" Version="1.0"/>
            </Functor>
@@ -71,7 +71,7 @@
 <!--...e-->
 <!--...sFunction instanceOfString:16:-->
         <Function>
-           <FunctionName Name="_instanceOfString"/>
+           <FunctionName Name="instanceOfString"/>
            <Functor>
               <InterfaceName Name="lb_I_String" Version="1.0"/>
            </Functor>

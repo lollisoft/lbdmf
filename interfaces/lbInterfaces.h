@@ -48,7 +48,12 @@
 
 #ifndef DLLEXPORT
 // Default to import. Modules redefine this in general.
+#ifdef WINDOWS
 #define DLLEXPORT
+#endif
+#ifdef LINUX
+#define DLLEXPORT
+#endif
 #endif
 
 #ifndef __BASE_TYPES_DEFINED__

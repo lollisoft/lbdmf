@@ -1,5 +1,16 @@
+#ifdef WINDOWS
 #include <windows.h>
+#endif
+
+#ifdef __cplusplus
+extern "C" {      
+#endif            
 #include <conio.h>
+
+#ifdef __cplusplus
+}
+#endif            
+
 #include <stdio.h>
 #include <iostream.h>
 #include <malloc.h>
@@ -51,8 +62,10 @@ void main() {
 	getch();
 
 	lb_I_Module* mm = getModuleInstance();
+	printf("Initialize module manager\n");
 	mm->setModuleManager(mm);
 	mm->initialize();
+	printf("Have initialized module manager\n");
 /*...e*/
 #ifdef bla
 /*...stest string:0:*/
@@ -307,8 +320,7 @@ for (long i = 0; i < 10000000; i++) {
 		getch();
 
 #ifdef LOOP
-        for (i = 0; i < 10000000; i++) {
-
+        for (long ii = 0; ii < 10000000; ii++) {
 #endif
 printf("Test LOG macro\n");
 LOG("Call lb_I_Module->load()");
