@@ -5,8 +5,51 @@
 		I also will discuss some problems while the development stages.
 		
 		
+
+		01.02.2005	Problems to port the framework to Mac OS X 10 and hints for solutions found.
 		
-		29.01.2005	Found some unimplemented features in the MYSQL database
+				--------------------------------------------------------------------------
+				Try to compile code under Mac OS X 10 makes some problems. Try with lbHook
+				--------------------------------------------------------------------------
+
+				copy lbkey.h from lbclasses directory to the include directory in CPP
+	
+				export path=$(path):~/bin geht unter MAC OS X 10 nicht ???
+				=> makefile.configure: Change @mkmk to ~/bin/mkmk
+	
+				lbHook.cpp:45: dlfcn.h: No such file or directory ???
+				=> found one in /sw/include
+	
+				lbConfigHook.h:72: malloc.h: No such file or directory ???
+				=> found one in /usr/include/sys
+				=> Makes this problems with wxWidgets include path ???
+	
+				cc: cannot specify -o with -c or -S and multiple compilations ???
+				=> removed the -o (Possible only in OS X and not in Linux)
+			
+				/usr/bin/ld: Undefined symbols: ???
+				_main
+				__._8ofstream
+				___8ofstreami
+				___builtin_delete
+				___builtin_new
+				___builtin_vec_delete
+				___builtin_vec_new
+				___ls__7ostreamPCc
+				___ls__7ostreamc
+				___ls__7ostreami
+				___pure_virtual
+				___rtti_si
+				___rtti_user
+				___throw
+				_dlclose
+				_dlopen
+				_dlsym
+				_open__8ofstreamPCcii
+				_terminate__Fv
+		
+		29.01.2005	Database problems and other things
+				Found some unimplemented features in the MYSQL database
 				engine, or the workaround dows not work.
 				
 				The database does not support foreign keys in tables not of
