@@ -192,7 +192,7 @@ if (retcode != SQL_SUCCESS)
         }
 
 SQLSetConnectOption(hdbc, SQL_LOGIN_TIMEOUT, 15); /* Set login timeout to 15 seconds. */
-retcode = SQLConnect(hdbc, (unsigned char*) "trainres", SQL_NTS, (unsigned char*) "trainres", SQL_NTS, (unsigned char*) "", SQL_NTS); /* Connect to data source */
+retcode = SQLConnect(hdbc, (unsigned char*) "trainres", SQL_NTS, (unsigned char*) "dba", SQL_NTS, (unsigned char*) "", SQL_NTS); /* Connect to data source */
 
 if (retcode != SQL_SUCCESS && retcode != SQL_SUCCESS_WITH_INFO)
         {
@@ -241,16 +241,6 @@ if (retcode == SQL_SUCCESS)
 
                 if (retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO)
                         {
-/*
-                        SQLGetData(hstmt, 1,SQL_C_DOUBLE, &dblempno,    0,     &cbempno);
-                        SQLGetData(hstmt, 2,SQL_C_CHAR,   szename,      SZLEN, &cbename);
-                        SQLGetData(hstmt, 3,SQL_C_CHAR,   szjob,        SZLEN, &cbjob);
-                        SQLGetData(hstmt, 4,SQL_C_DOUBLE, &dblmgr,      0,     &cbmgr);
-                        SQLGetData(hstmt, 5,SQL_C_DATE,   &ts,   16, &cbhiredate);
-                        SQLGetData(hstmt, 6,SQL_C_DOUBLE, &dblsal,      0,     &cbsal);
-                        SQLGetData(hstmt, 7,SQL_C_DOUBLE, &dblcomm,     0,     &cbcomm);
-                        SQLGetData(hstmt, 8,SQL_C_DOUBLE, &dbldeptno,   0,     &cbdeptno);
-*/
                         SQLGetData(hstmt, 1,SQL_C_CHAR,   szobjecttyp,      SZLEN, &cbobjecttyp);
                         SQLGetData(hstmt, 2,SQL_C_LONG, &X,      0,     &cbX);
                         SQLGetData(hstmt, 3,SQL_C_LONG, &Y,      0,     &cbY);
@@ -258,10 +248,7 @@ if (retcode == SQL_SUCCESS)
                         SQLGetData(hstmt, 5,SQL_C_LONG, &H,      0,     &cbH);
 
 
-//                        sprintf( szhiredate,"%d-%d-%d",ts.month,ts.day,ts.year);
-//                        sprintf(szout,"%6.0f\t%s\t%s\t%6.0f\t%s\t%6.0f\t%6.0f\t%6.0f\n",dblempno,szename,szjob,dblmgr,szhiredate,dblsal,dblcomm,dbldeptno);
                         printf("%10s\t%d\t%d\t%d\t%d\n", szobjecttyp, X, Y, W, H);
-//                        puts(szout);
                         }
                 else
                         {
