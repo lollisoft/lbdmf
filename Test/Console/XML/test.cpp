@@ -14,6 +14,7 @@
 void main() {
         char* hostname = NULL;
         char* port = NULL;
+        int count = 0;
 
 /*...sbla:0:*/
 #ifdef bla
@@ -24,6 +25,11 @@ void main() {
         t->release();
 #endif
 /*...e*/
+	getch();
+	lb_I_Module* modMan1 = getModuleInstance();
+        LOG("Test has been started");
+        modMan1->release();
+        unHookAll();
         getch();
 
         /**
@@ -48,6 +54,10 @@ void main() {
 cout << "modMan->request('instance/XMLConfig', pUnknown)" << endl;
 #endif
 /*...e*/
+		/**
+		 * Get an instance from anywhere by an indirect request.
+		 * (From the lb_I_Requestable interface)
+		 */
                 if (modMan->request("instance/XMLConfig", pUnknown) != ERR_NONE) {
                         // error
                 }
@@ -72,7 +82,7 @@ cout << "pUnknown->queryInterface('lb_I_XMLConfig', (void**) &XMLinst)" << endl;
                 
                 cout << "Called XMLinst->parse()" << endl;
                 
-                if (XMLinst->hasConfigObject("#document/dtdHostCfgDoc/Modules/Module/ModuleName") != ERR_NONE) {
+                if (XMLinst->hasConfigObject("#document/dtdHostCfgDoc/Modules/Module/ModuleName", count) != ERR_NONE) {
                         printf("Object not found\n");
                 } else {
                         printf("Object was found\n");
