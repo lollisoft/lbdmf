@@ -153,6 +153,29 @@
  *
  *	This should start compiling the wxWidgets code.
  *
+ *	After you have built wxWitgets, you must copy the created DLL to the place where it should be
+ *	installed:
+ *
+ *	From drive C:
+ *
+ *	\code
+ *	set DRIVE=C:
+ *	set WXWIN=%DRIVE%\lbDMF\Develop\wxwin\wx
+ *	%DRIVE%
+ *	cd %WXWIN%\src\msw
+ *	copy /Y %WXWIN%\include\wx\lib\wxmsw_d.dll %WXWIN%\..\..\Projects\dll
+ *	\endcode
+ *
+ *	From Drive D:
+ *
+ *	\code
+ *	set DRIVE=D:
+ *	set WXWIN=%DRIVE%\lbDMF\Develop\wxwin\wx
+ *	%DRIVE%
+ *	cd %WXWIN%\src\msw
+ *	copy /Y %WXWIN%\lib\wxmswd_w.dll %WXWIN%\..\..\Projects\dll
+ *	\endcode
+ *
  * \section PSetup7 Start compiling lbDMF source tree
  *
  *	If you have done this, you can restart the lbDMF Develop link and a simple console window
