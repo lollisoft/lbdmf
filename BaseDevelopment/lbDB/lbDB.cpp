@@ -280,6 +280,7 @@ public:
 			free(buffer);
 			buffer = NULL;
 		}
+		printf("Bound column %s has been destroyed\n", colName->charrep());
 	}
 	
 	DECLARE_LB_UNKNOWN()
@@ -372,34 +373,19 @@ lbErrCodes      LB_STDCALL lbBoundColumns::setBoundColumns(lb_I_Container* bc) {
 /*...slb_I_BoundColumn\42\ LB_STDCALL lbBoundColumns\58\\58\getBoundColumn\40\int column\41\:0:*/
 lb_I_BoundColumn* LB_STDCALL lbBoundColumns::getBoundColumn(int column) {
 	lbErrCodes err = ERR_NONE;
-#ifdef DEBUG
-printf("lbBoundColumns::getBoundColumn(int column) called\n");
-#endif
 	if (boundColumns != NULL) {
 		REQUEST(manager.getPtr(), lb_I_Integer, integerKey) 
 		integerKey->setData(column);
-#ifdef DEBUG
-printf("lbBoundColumns::getBoundColumn(int column)-integerKey->setData(column) called\n");
-#endif
 		UAP(lb_I_Unknown, ukdata, __FILE__, __LINE__)
 		UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
 		
 		QI(integerKey, lb_I_KeyBase, key, __FILE__, __LINE__)
 		ukdata = boundColumns->getElement(&key);
-#ifdef DEBUG
-printf("Have bound column 'ukdata'\n");
-#endif
 		if (ukdata == NULL) printf("NULL pointer!\n");
 
 		UAP(lb_I_BoundColumn, bc, __FILE__, __LINE__)
-#ifdef DEBUG
-printf("Query interface lb_I_BoundColumn\n");
-#endif
 		lbErrCodes err = ukdata->queryInterface("lb_I_BoundColumn", (void**) &bc, __FILE__, __LINE__);
 		bc++;
-#ifdef DEBUG
-printf("Return the pointer of a bound column\n");
-#endif
 		return bc.getPtr();
 	}
 	return NULL;
@@ -483,16 +469,12 @@ Therefore I need an indicator, set by the user of this library to know, which on
 		bc->queryInterface("lb_I_Unknown", (void**) &uk, __FILE__, __LINE__);
 		integerKey->queryInterface("lb_I_KeyBase", (void**) &key, __FILE__, __LINE__);		
 
-printf("Insert the bound column\n");		
-
 		boundColumns->insert(&uk, &key);
 
 		UAP(lb_I_BoundColumn, bc1, __FILE__, __LINE__)
 
-printf("Get the bound column back\n");
-		
 		bc1 = getBoundColumn(i);
-		
+
 		bc1->bindColumn(q, i);
 		
 /*...sGet the column name for this column and add an index to it\39\s column id\46\:16:*/
@@ -508,11 +490,7 @@ printf("Get the bound column back\n");
 
 		string = bc1->getColumnName();
 		
-		printf("Create a key for the column\n");
-		
 		string->queryInterface("lb_I_KeyBase", (void**) &skey, __FILE__, __LINE__);
-		
-		printf("Have created it\n");
 		
 		UAP(lb_I_Unknown, ivalue, __FILE__, __LINE__)
 		
@@ -1442,7 +1420,7 @@ lbErrCodes LB_STDCALL lbBoundColumn::setData(lb_I_Unknown* uk) {
         UAP(lb_I_BoundColumn, column, __FILE__, __LINE__)
         
         QI(uk, lb_I_BoundColumn, column, __FILE__, __LINE__)
-        
+	        
         /**
          * I cannot use normal use of setData, because the internal pointers would
          * be copied to others. The ODBC bound column instead uses the old pointer.
@@ -1455,15 +1433,9 @@ lbErrCodes LB_STDCALL lbBoundColumn::setData(lb_I_Unknown* uk) {
 
 	REQUEST(manager.getPtr(), lb_I_String, colName)
 
-	printf("Copy the column name......................\n");
-
 	if (column->getColumnName() != NULL) colName->setData(column->getColumnName()->getData());
 
-	printf("Copied the column name......................\n");
-
 	leaveOwnership(*&column, this);
-
-	printf("Leaved the ownership\n");
         
         return ERR_NOT_IMPLEMENTED;
 }
@@ -1473,6 +1445,8 @@ lbErrCodes LB_STDCALL lbBoundColumn::leaveOwnership(lb_I_BoundColumn* oldOwner, 
 
 	lbBoundColumn* oO = (lbBoundColumn*) oldOwner;
 	lbBoundColumn* nO = (lbBoundColumn*) newOwner;
+
+	printf("Buffer pointer is at %p\n", oO->buffer);	
 
 	nO->setData(oO->bound, oO->_DataType, oO->buffer, oO->colName.getPtr());
 	oO->bound = 0;
@@ -1569,7 +1543,7 @@ lbErrCodes LB_STDCALL lbBoundColumn::prepareBoundColumn(lb_I_Query* q, int colum
 /*...e*/
 /*...slbErrCodes LB_STDCALL lbBoundColumn\58\\58\bindColumn\40\lbQuery\42\ q\44\ int column\41\:0:*/
 lbErrCodes LB_STDCALL lbBoundColumn::bindColumn(lb_I_Query* q, int column) {
-
+printf("lbBoundColumn::bindColumn(...) called\n");
 	HSTMT hstmt = ((lbQuery*) q)->getCurrentStatement();
 
 /*...svars:8:*/
