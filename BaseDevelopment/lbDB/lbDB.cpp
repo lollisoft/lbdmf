@@ -107,7 +107,7 @@ public:
 /*...sclass def lbBoundColumns:0:*/
 class lbBoundColumns: public lb_I_ColumnBinding {
 public:	
-	lbBoundColumns() { ArraySize = 1; }
+	lbBoundColumns() { ref = STARTREF; ArraySize = 1; }
 	virtual ~lbBoundColumns() {}
 	
 	DECLARE_LB_UNKNOWN()
@@ -149,6 +149,7 @@ public lb_I_Query
 {
 public:
 	lbQuery(int readonly = 1) { 
+		ref = STARTREF;
 		_readonly = readonly; 
 		hdbc = 0; 
 		hstmt = 0; 
@@ -269,6 +270,7 @@ private:
 class lbBoundColumn: public lb_I_BoundColumn {
 public:	
 	lbBoundColumn() {
+		ref = STARTREF;
 		bound = 0;
 		buffer = NULL;
 	}
@@ -1815,6 +1817,7 @@ END_IMPLEMENT_LB_UNKNOWN()
 IMPLEMENT_FUNCTOR(instanceOfDatabase, lbDatabase)
 
 lbDatabase::lbDatabase() {
+	ref = STARTREF;
 	henv = 0;
 	hdbc = 0;
 }
