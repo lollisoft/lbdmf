@@ -37,6 +37,10 @@
 
 #endif
 
+#ifdef __WATCOMC__
+#pragma warning 14 9;
+#endif
+
 /*...sdocu:0:*/
 /**
  * For all Interfaces are factories needed. How should I design these
@@ -616,6 +620,7 @@ char* LB_STDCALL classname::getClassName() { \
 } \
 char* LB_STDCALL classname::_queryInterface(char* name, void** unknown, char* file, int line) { \
 	char* ID = new char[strlen(name)+strlen(#classname)+strlen(file)+1]; \
+	ID[0] = 0; \
 	strcat(ID, name); \
 	strcat(ID, #classname); \
 	strcat(ID, file); \
@@ -791,6 +796,7 @@ char* LB_STDCALL classname::getClassName() { \
 } \
 char* LB_STDCALL classname::_queryInterface(char* name, void** unknown, char* file, int line) { \
 	char* ID = new char[strlen(name)+strlen(#classname)+strlen(file)+1]; \
+	ID[0] = 0; \
 	strcat(ID, name); \
 	strcat(ID, #classname); \
 	strcat(ID, file); \
