@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.41 $
+ * $Revision: 1.42 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.41 2005/01/05 13:41:36 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.42 2005/01/21 14:58:47 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.42  2005/01/21 14:58:47  lollisoft
+ * Removed some unused log messages, changed SQL case to lower
+ *
  * Revision 1.41  2005/01/05 13:41:36  lollisoft
  * New dynamic application implementation works
  *
@@ -221,12 +224,9 @@ IMPLEMENT_SINGLETON_FUNCTOR(instanceOfEventManager, lb_EventManager)
 lb_MetaApplication::lb_MetaApplication() {
 	ref = STARTREF;
 	gui = NULL;
-	printf("Instance of lb_I_MetaApplication created\n");
-	_LOG << "Instance of lb_I_MetaApplication created" LOG_
 }
 
 lb_MetaApplication::~lb_MetaApplication() {
-	_LOG << "Instance of lb_I_MetaApplication destroyed" LOG_
 }
 /*...e*/
 
@@ -266,7 +266,6 @@ lbErrCodes LB_STDCALL lb_MetaApplication::lbEvHandler1(lb_I_Unknown* uk) {
 /*...e*/
 /*...slbErrCodes LB_STDCALL lb_MetaApplication\58\\58\lbEvHandler2\40\lb_I_Unknown\42\ uk\41\ \47\\47\ Show a simple message box:0:*/
 lbErrCodes LB_STDCALL lb_MetaApplication::lbEvHandler2(lb_I_Unknown* uk) {
-	_LOG << "lb_MetaApplication::lbEvHandler2() called" LOG_
 
 	if (gui != NULL) {
 	        gui->msgBox("Information", "The main module of this application is a DLL and creates a basic functionality.\nThe real application will be loaded from configuraton and then the control\nwill be delegated to it.");
@@ -279,7 +278,6 @@ lbErrCodes LB_STDCALL lb_MetaApplication::lbEvHandler2(lb_I_Unknown* uk) {
 /*...e*/
 /*...slbErrCodes LB_STDCALL lb_MetaApplication\58\\58\lbButtonTestHandler\40\lb_I_Unknown\42\ uk\41\:0:*/
 lbErrCodes LB_STDCALL lb_MetaApplication::lbButtonTestHandler(lb_I_Unknown* uk) {
-        _LOG << "lb_MetaApplication::lbEvHandler2() called" LOG_
 
         if (gui != NULL) {
                 gui->msgBox("Information", "Test button has been pressed");
@@ -433,6 +431,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::Initialize(char* user, char* app) {
 	
 	addMenuEntry("Help", "MainModuleInfo", "getMainModuleInfo", "");
 	addMenuEntry("Help", "Debug application", "enterDebugger", "");
+
 #ifdef bla	
 /*...sMain module demos and their help:8:*/
 
@@ -451,6 +450,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::Initialize(char* user, char* app) {
 	}
 /*...e*/
 #endif
+
 	return ERR_NONE;
 }
 /*...e*/
@@ -496,10 +496,10 @@ lbErrCodes LB_STDCALL lb_MetaApplication::loadApplication(char* user, char* appl
 		char buffer[1000] = "";
 
 		sprintf(buffer,
-		        "select \"Anwendungen\".\"ModuleName\", \"Anwendungen\".\"Functor\", \"Anwendungen\".\"Interface\" from \"Anwendungen\" inner join \"User_Anwendungen\" on "
-		        "\"Anwendungen\".id = \"User_Anwendungen\".\"AnwendungenId\" "
-		        "inner join \"Users\" on \"User_Anwendungen\".userid = \"Users\".id where "
-		        "\"Users\".userid = '%s' and \"Anwendungen\".\"Name\" = '%s'"
+		        "select \"anwendungen\".\"modulename\", \"anwendungen\".\"functor\", \"anwendungen\".\"interface\" from \"anwendungen\" inner join \"user_anwendungen\" on "
+		        "\"anwendungen\".id = \"user_anwendungen\".\"anwendungenid\" "
+		        "inner join \"users\" on \"user_anwendungen\".userid = \"users\".id where "
+		        "\"users\".userid = '%s' and \"anwendungen\".\"name\" = '%s'"
 		                , user, application);
 
 		/*
@@ -634,6 +634,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::loadApplication(char* user, char* appl
 lbErrCodes LB_STDCALL lb_MetaApplication::addMenuBar(char* name, char* after) {
 	lbErrCodes err = ERR_NONE;
 
+/*...sbla:0:*/
 /*
 
 	UAP_REQUEST(manager.getPtr(), lb_I_String, string)
@@ -651,6 +652,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::addMenuBar(char* name, char* after) {
 	if (uk == NULL) _LOG << "Error: Cannot call with a null pointer!" LOG_
 
 */
+/*...e*/
 
 	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
@@ -660,14 +662,10 @@ lbErrCodes LB_STDCALL lb_MetaApplication::addMenuBar(char* name, char* after) {
 	value->setData(name);
 	param->setUAPString(*&parameter, *&value);
 
-printf("Added first parameter for menu\n");
-
 	if (after != NULL) {
 		parameter->setData("after");
 		value->setData(after);
 		param->setUAPString(*&parameter, *&value);
-
-printf("Added second parameter for menu\n");
 
 	}
 
@@ -678,8 +676,6 @@ printf("Added second parameter for menu\n");
 	UAP_REQUEST(manager.getPtr(), lb_I_String, result)
 	UAP(lb_I_Unknown, uk_result, __FILE__, __LINE__)
 	QI(result, lb_I_Unknown, uk_result, __FILE__, __LINE__)
-	
-printf("Dispatch \"AddMenuBar\"\n");	
 	
 	dispatcher->dispatch("AddMenuBar", uk.getPtr(), &uk_result);
 
@@ -926,8 +922,6 @@ lbErrCodes LB_STDCALL lb_EventManager::registerEvent(char* EvName, int & EvNr) {
 	lbErrCodes err = ERR_NONE;
 	int newId = maxEvId + 1;
 
-	printf("Register an event '%s'.\n", EvName);
-
 /*...sInit containers:8:*/
 	if (events == NULL) {
 		// Create the instance, that holds the events mapping
@@ -1064,7 +1058,7 @@ BEGIN_IMPLEMENT_LB_UNKNOWN(lb_Dispatcher)
 END_IMPLEMENT_LB_UNKNOWN()
 
 lb_Dispatcher::lb_Dispatcher() {
-	_LOG << "lb_Dispatcher::lb_Dispatcher() called" LOG_
+
 	ref = STARTREF;
 }
 
