@@ -59,7 +59,7 @@ rem Some dll and bin search Paths
 set DLLROOT=%RUNROOT%\dll
 set BINROOT=%RUNROOT%\bin;%RUNROOT%\CPP\bin
 
-set Path=%SystemRoot%\system32;C:\cygwin\bin;C:\;%WATBIN%;%DEVBIN%;%DLLROOT%;%BINROOT%
+set Path=%DEVLW%\%BASE%\bin;%SystemRoot%\system32;C:\cygwin\bin;C:\;%WATBIN%;%DEVBIN%;%DLLROOT%;%BINROOT%
 
 set MSC=%MSVCDir%\Bin;%MSVCDir%\Lib
 
