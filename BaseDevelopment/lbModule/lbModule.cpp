@@ -3,11 +3,15 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.21 $
+ * $Revision: 1.22 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.21 2001/12/15 17:53:26 lothar Exp $
+ * $Id: lbModule.cpp,v 1.22 2002/02/25 06:17:19 lothar Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.22  2002/02/25 06:17:19  lothar
+ * Much changes
+ * Program seems to run, but performance is very slow
+ *
  * Revision 1.21  2001/12/15 17:53:26  lothar
  * Reactivated deleteValue usage
  *
@@ -395,7 +399,7 @@ public:
         
 protected:
 
-        void getXMLConfigObject(lb_I_XMLConfig** inst);
+        void LB_STDCALL getXMLConfigObject(lb_I_XMLConfig** inst);
         lb_I_ConfigObject* LB_STDCALL findFunctorNode(lb_I_ConfigObject** _node, const char* request);
         char* LB_STDCALL findFunctorModule(lb_I_ConfigObject** _node);
         char* LB_STDCALL findFunctorName(lb_I_ConfigObject** ___node);
@@ -412,11 +416,11 @@ BEGIN_IMPLEMENT_LB_UNKNOWN(lbModule)
         ADD_INTERFACE(lb_I_Module)
 END_IMPLEMENT_LB_UNKNOWN()
 
-/*...slb_I_XMLConfig\42\ lbModule\58\\58\getXMLConfigObject\40\\41\:0:*/
+/*...slb_I_XMLConfig\42\ LB_STDCALL lbModule\58\\58\getXMLConfigObject\40\\41\:0:*/
 typedef lbErrCodes (* LB_STDCALL T_pLB_GETXML_CONFIG_INSTANCE) (lb_I_XMLConfig** inst, lb_I_Module* m, char* file, int line);
 T_pLB_GETXML_CONFIG_INSTANCE DLL_LB_GETXML_CONFIG_INSTANCE;
 
-void lbModule::getXMLConfigObject(lb_I_XMLConfig** inst) {
+void LB_STDCALL lbModule::getXMLConfigObject(lb_I_XMLConfig** inst) {
 	lbErrCodes err = ERR_NONE;
         char *libname = getenv("LBXMLLIB");
         char *ftrname = getenv("LBXMLFUNCTOR");
@@ -469,12 +473,17 @@ void lbModule::getXMLConfigObject(lb_I_XMLConfig** inst) {
         xml_I->setModuleManager(this);
         
         QI(xml_I, lb_I_XMLConfig, inst, __FILE__, __LINE__) 
+        
 //        xml_I->queryInterface("lb_I_XMLConfig", (void**) inst);
-        if (inst == NULL) CL_LOG("Error: queryInterface() does not return a pointer!");
+        if (inst == NULL) { 
+        	CL_LOG("Error: queryInterface() does not return a pointer!")
+        }
+        
 }
 /*...e*/
 
 
+/*...sdebug helper:0:*/
 char* LB_STDCALL lbModule::getCreationLoc(char* addr) {
 	if (IR != NULL) {
 		return IR->getCreationLoc(addr);
@@ -538,6 +547,7 @@ int  LB_STDCALL lbModule::can_delete(lb_I_Unknown* that, char* implName, char* f
         }
         return 1;
 }
+/*...e*/
 
 /*...slbErrCodes lbModule\58\\58\setData\40\lb_I_Unknown\42\ uk\41\:0:*/
 lbErrCodes LB_STDCALL lbModule::setData(lb_I_Unknown* uk) {
@@ -985,27 +995,30 @@ lbErrCodes LB_STDCALL lbModule::getFunctors(char* interfacename, lb_I_ConfigObje
 lbErrCodes LB_STDCALL lbModule::makeInstance(char* functor, char* module, lb_I_Unknown** instance) {
 char msg[1000] = "";
 lbErrCodes err = ERR_NONE;
-
+LOG("lbModule::makeInstance() called")
                         /**
                          * ModuleHandle is the result for this loaded module.
                          */
          
                         if ((err = lbLoadModule(module, ModuleHandle)) != ERR_NONE) {
                                 // report error if still loaded
+                                LOG("Error: Could not load the module")
                                 
                                 // return error if loading is impossible
                         }
+                        
+                        if (ModuleHandle == 0) LOG("Error: Module could not be loaded");
 
                         if ((err = lbGetFunctionPtr(functor, ModuleHandle, (void**) &DLL_LB_GET_UNKNOWN_INSTANCE)) != ERR_NONE) {
-                                CL_LOG("Error while loading a functionpointer!");
+                                LOG("Error while loading a functionpointer!");
                         } else {
                                 err = DLL_LB_GET_UNKNOWN_INSTANCE(instance, this, __FILE__, __LINE__);
 
                                 if (err != ERR_NONE) 
                                 {
-                                        CL_LOG("Could not get the instance!");
+                                	LOG("Could not get the instance!");
                                 }
-                                if (instance == NULL) CL_LOG("Something goes wrong while calling functor");
+                                if ((*instance) == NULL) LOG("Something goes wrong while calling functor");
                         }
 
         return ERR_NONE;
@@ -1529,6 +1542,11 @@ lbErrCodes LB_STDCALL lbModule::request(const char* request, lb_I_Unknown** resu
 /*...e*/
 #endif
                         makeInstance(functorName, moduleName, result);
+                        if ((*result) == NULL) {
+                        	char buf[1000] = "";
+                        	sprintf(buf, "Error: makeInstance has been failed for '%s', '%s', '%s'", request, functorName, moduleName);
+                        	LOG(buf)
+                        }
                         (*result)->setModuleManager(this);
 
                         if (strcmp((*result)->getClassName(), "lbDOMNode") == 0)
@@ -1547,6 +1565,7 @@ lbErrCodes LB_STDCALL lbModule::request(const char* request, lb_I_Unknown** resu
                 
 /*...e*/
         }
+        LOG("Release some references")
         RELEASE(impl);
         RELEASE(xml_Instance);
         xml_Instance = NULL;

@@ -1,11 +1,15 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.18 $
+ * $Revision: 1.19 $
  * $Name:  $
- * $Id: lbInterfaces-sub-classes.h,v 1.18 2001/12/15 18:19:39 lothar Exp $
+ * $Id: lbInterfaces-sub-classes.h,v 1.19 2002/02/25 06:18:31 lothar Exp $
  *
  * $Log: lbInterfaces-sub-classes.h,v $
+ * Revision 1.19  2002/02/25 06:18:31  lothar
+ * Much changes
+ * Program seems to run, but performance is very slow
+ *
  * Revision 1.18  2001/12/15 18:19:39  lothar
  * ZThread not on windows
  *
@@ -766,6 +770,7 @@ public:
     virtual void LB_STDCALL setPrefix(char* p) = 0;
 };
 /*...e*/
+/*...sZThread interfaces:0:*/
 #ifndef WINDOWS
 class lb_I_Runnable : public lb_I_Unknown {
 protected:
@@ -802,6 +807,7 @@ public:
     // FastThreadLocal is not implemented yet
 };
 #endif
+/*...e*/
 /*...sclass lb_I_Thread:0:*/
 class lb_I_Thread : public lb_I_Unknown {
 protected:

@@ -1,11 +1,15 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.19 $
+ * $Revision: 1.20 $
  * $Name:  $
- * $Id: lbDOMConfig.cpp,v 1.19 2001/12/12 17:12:45 lothar Exp $
+ * $Id: lbDOMConfig.cpp,v 1.20 2002/02/25 06:17:43 lothar Exp $
  *
  * $Log: lbDOMConfig.cpp,v $
+ * Revision 1.20  2002/02/25 06:17:43  lothar
+ * Much changes
+ * Program seems to run, but performance is very slow
+ *
  * Revision 1.19  2001/12/12 17:12:45  lothar
  * Hehe - runs on linux
  *
@@ -1050,8 +1054,8 @@ lbDOMConfig::lbDOMConfig() {
 	interface_used = 0;
 	errReporter = new DOMTreeErrorReporter();
 	
-	    if (initialized == 0) {
-/*...sInitialize the DOM4C2 system:20:*/
+	if (initialized == 0) {
+/*...sInitialize the DOM4C2 system:16:*/
 		    // Initialize the DOM4C2 system
 		    try
 		    {
@@ -1065,9 +1069,9 @@ lbDOMConfig::lbDOMConfig() {
 		         //return ERR_XML_INIT;
 		    }		
 /*...e*/
-	    }
+	}
 
-	parse();	
+	parse();
 }
 /*...e*/
 /*...slbDOMConfig\58\\58\\126\lbDOMConfig\40\\41\:0:*/
