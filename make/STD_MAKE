@@ -25,11 +25,14 @@
 #            22453 Hamburg (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.40 $
+# * $Revision: 1.41 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.40 2003/09/05 15:46:22 lollisoft Exp $
+# * $Id: STD_MAKE,v 1.41 2003/09/10 19:33:59 lollisoft Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.41  2003/09/10 19:33:59  lollisoft
+# * Bug in using absolute path solved
+# *
 # * Revision 1.40  2003/09/05 15:46:22  lollisoft
 # * Last changes to try to make setup distribution and before moving to Düsseldorf
 # *
@@ -167,11 +170,11 @@ COMPILER=WATCOM
 MODE=_DEBUG
 #MODE=
 
-STD_INCL_WATCOM =-i=. -i=Q:\\develop\\Tools\\WATCOM\\h -i=Q:\\develop\\Tools\\WATCOM\\h\\nt -i=Q:\\develop\\projects\\cpp\\interfaces -i=Q:\\develop\\projects\\cpp\\include -i=Q:\\develop\\projects\\dll\\include -i=Q:\\develop\\projects\\lib\\include
+STD_INCL_WATCOM =-i=. -i=$(DEVROOT)\\Tools\\WATCOM\\h -i=$(DEVROOT)\\Tools\\WATCOM\\h\\nt -i=$(DEVROOT)\\projects\\cpp\\interfaces -i=$(DEVROOT)\\projects\\cpp\\include -i=$(DEVROOT)\\projects\\dll\\include -i=$(DEVROOT)\\projects\\lib\\include
 #ANAKIN
 #STD_INCL_MICROSOFT = /I "." /I "F:\develop\NT\MSC\VC98\Include" /I "Q:\Develop\xml\xml4csrc3_3_1\src" /I "Q:\Develop\Projects\CPP\include" /I "Q:\Develop\Projects\CPP\interfaces" /I "Q:\Develop\Projects\CPP\basedevelopment\lbclasses"
 #LOTHARBNOTEBOOK
-STD_INCL_MICROSOFT = /I "." /I "Q:\develop\Tools\msc\VC98\Include" /I "Q:\Develop\xml\xml4csrc3_3_1\src" /I "Q:\Develop\Projects\CPP\include" /I "Q:\Develop\Projects\CPP\interfaces" /I "Q:\Develop\Projects\CPP\basedevelopment\lbclasses"
+STD_INCL_MICROSOFT = /I "." /I "$(DEVROOT)\Tools\msc\VC98\Include" /I "$(DEVROOT)\xml\xml4csrc3_3_1\src" /I "$(DEVROOT)\Projects\CPP\include" /I "$(DEVROOT)\Projects\CPP\interfaces" /I "$(DEVROOT)\Projects\CPP\basedevelopment\lbclasses"
 
 STD_INCL = $(STD_INCL_WATCOM)
 

@@ -6,7 +6,7 @@ type makefile.module >> makefile
 echo Path=$(PATH) >> makefile
 echo all: premake lbClasses.dll >> makefile
 echo premake: >> makefile
-set echodef=copy lbKey.h q:\develop\projects\dll\include > null
+set echodef=copy lbKey.h %DEVROOT%\projects\dll\include > null
 echo			@cmd /C %echodef% >> makefile
 echo clean: >> makefile
 echo 		@del *.obj >> makefile
