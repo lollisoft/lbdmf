@@ -1,11 +1,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.9 $
+ * $Revision: 1.10 $
  * $Name:  $
- * $Id: lbErrcodes.h,v 1.9 2001/08/18 07:38:55 lothar Exp $
+ * $Id: lbErrcodes.h,v 1.10 2002/02/25 06:36:48 lothar Exp $
  *
  * $Log: lbErrcodes.h,v $
+ * Revision 1.10  2002/02/25 06:36:48  lothar
+ * Added some codes
+ *
  * Revision 1.9  2001/08/18 07:38:55  lothar
  * Current version runs again. Module management is not ready.
  *
@@ -67,6 +70,7 @@ enum lbErrCodes {
 /* Errcodes for dispatcher */
 
 	ERR_DISP_HANDLER_EXSISTS,
+	ERR_REGISTER_HANDLER,
 
 /* Errcodes for appbus dispatcher in connected state */
 
