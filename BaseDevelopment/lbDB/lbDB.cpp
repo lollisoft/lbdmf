@@ -159,6 +159,7 @@ public:
 		count = 0; 
 		firstfetched = 0;
 		lpszTable = NULL;
+		cols = 0;
 	}
 	
 	virtual ~lbQuery() {}
@@ -207,6 +208,14 @@ public:
 	 * Updates the modified data or stores new data (added via add())
 	 */
 	virtual lbErrCodes LB_STDCALL update();
+
+
+	/**
+	 * General information based on the given query.
+	 */
+
+	virtual int		LB_STDCALL getColumns();
+	virtual char*		LB_STDCALL getColumnName(int col);
         
         /* Navigation */
         virtual lbErrCodes	LB_STDCALL first();
@@ -256,6 +265,9 @@ private:
 	int	_readonly; // readonly = 1, else = 0
 	int	mode;  // insert = 1, select = 0
 	char* lpszTable;
+	
+	// Number of columns for the query
+	SQLSMALLINT cols;
 
 #ifdef UNBOUND	
 	UAP(lb_I_Container, boundColumns, __FILE__, __LINE__)
@@ -784,8 +796,6 @@ Using SQLSetPos
 		return ERR_DB_QUERYFAILED;
         }
 
-	SQLSMALLINT cols;
-	
 	retcode = SQLNumResultCols(hstmt, &cols);
 	
 	if (retcode != SQL_SUCCESS)
@@ -902,6 +912,30 @@ lb_I_String* LB_STDCALL lbQuery::getAsString(int column) {
 #endif
 /*...e*/
 //#define USE_FETCH_SCROLL
+
+virtual int   LB_STDCALL lbQuery::getColumns() {
+	return cols;
+}
+
+virtual char* LB_STDCALL lbQuery::getColumnName(int col) {
+	
+	UAP(lb_I_BoundColumn, column, __FILE__, __LINE__)
+	
+	column = boundColumns->getBoundColumn(col);
+	
+	UAP(lb_I_String, name, __FILE__, __LINE__)
+	
+	name = column->getColumnName();
+
+	static char* _name = NULL;
+	
+	_name = strdup(name->getData());
+
+	printf("Return column name %s\n", name->getData());
+	
+	return _name;
+}
+
 /*...slbErrCodes LB_STDCALL lbQuery\58\\58\first\40\\41\:0:*/
 lbErrCodes LB_STDCALL lbQuery::first() {
         UWORD   RowStat[20];

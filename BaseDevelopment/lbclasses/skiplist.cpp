@@ -38,11 +38,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.20 $
+ * $Revision: 1.21 $
  * $Name:  $
- * $Id: skiplist.cpp,v 1.20 2004/06/16 22:13:52 lollisoft Exp $
+ * $Id: skiplist.cpp,v 1.21 2004/06/21 06:32:02 lollisoft Exp $
  *
  * $Log: skiplist.cpp,v $
+ * Revision 1.21  2004/06/21 06:32:02  lollisoft
+ * Implemented GUI database form creation, but updating fails.
+ *
  * Revision 1.20  2004/06/16 22:13:52  lollisoft
  * Logs for debug - skip list may be memory leaky
  *
@@ -159,14 +162,11 @@ SkipNode::SkipNode(lb_I_Element* r, int level) {
             forward[i] = NULL;
 }
 SkipNode::~SkipNode() { 
-printf("SkipNode::~SkipNode() called\n");
       delete [] forward; 
       
       if (value != NULL) {
       	printf("Delete object in SkipNode: RefCount %d\n", value->getRefCount());
       	RELEASE(value)
-      } else {
-      	printf("SkipNode::~SkipNode() value is a NULL pointer!\n");
       }
 }
 /*...e*/
@@ -191,9 +191,7 @@ SkipList::SkipList() {
 }
 
 SkipList::~SkipList() {
-	printf("SkipList::~SkipList() called\n");
 	delete head;
-	printf("SkipList::~SkipList() elements deleted\n");
 }
 /*...sSkipList\58\\58\Count\40\\41\:0:*/
 int LB_STDCALL SkipList::Count() { 

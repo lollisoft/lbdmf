@@ -233,6 +233,10 @@ public:
 	 * Updates the modified data or stores the new data added via add().
 	 */
 	virtual lbErrCodes LB_STDCALL update() = 0;
+
+
+	virtual int        LB_STDCALL getColumns() = 0;
+	virtual char*      LB_STDCALL getColumnName(int col) = 0;
         
         /* Navigation */
         virtual lbErrCodes LB_STDCALL first() = 0;

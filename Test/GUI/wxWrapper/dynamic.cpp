@@ -6,7 +6,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.15 2004/06/16 22:16:00 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.16 2004/06/21 06:32:02 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -228,6 +228,8 @@ public:
         lb_wxGUI() {
                 _LOG << "lb_I_wxGUI object will be created and initialized" LOG_;
                 eventCount = 0;
+                sampleQuery = NULL;
+                handlersInitialized = FALSE;
         }
 
 	virtual ~lb_wxGUI() { }
@@ -338,10 +340,24 @@ public:
 	virtual lbErrCodes LB_STDCALL addTextField(char* name, int x, int y, int w, int h) { return ERR_NONE; };
 /*...e*/
         
+	lbErrCodes LB_STDCALL lbDBFirst(lb_I_Unknown* uk);
+	lbErrCodes LB_STDCALL lbDBNext(lb_I_Unknown* uk);
+	lbErrCodes LB_STDCALL lbDBPrev(lb_I_Unknown* uk);
+	lbErrCodes LB_STDCALL lbDBLast(lb_I_Unknown* uk);
+
+	void OnDispatch(wxCommandEvent& event );
+
         int eventCount;
         
         lb_I_Unknown* _main_frame;
         lb_I_Dispatcher* myDispatcher;
+        
+        lb_I_Query* sampleQuery;
+        
+        bool handlersInitialized;
+        
+        wxDialog* dialog;
+
 };
 /*...e*/
 
@@ -456,8 +472,286 @@ lbErrCodes LB_STDCALL lb_wxGUI::insertMenuEntry(lb_I_Unknown* entry) {
 /*...e*/
 /*...e*/
 
+
+
+lbErrCodes LB_STDCALL lb_wxGUI::lbDBFirst(lb_I_Unknown* uk) {
+	printf("lbDBFirst(lb_I_Unknown* uk) called\n");
+
+printf("Pointer for query is %p\n", sampleQuery);
+
+	int columns = sampleQuery->getColumns();
+
+printf("Have %d columns\n", columns);
+	
+	for (int i = 1; i <= columns; i++) {
+		char* name = strdup(sampleQuery->getColumnName(i));
+
+		// Find the corresponding window
+		
+		wxWindow* w = dialog->FindWindowByName(wxString(name));
+		
+		if (w != NULL) {
+			wxTextCtrl* tx = (wxTextCtrl*) w;
+			
+			wxString v = tx->GetValue();
+			
+			UAP_REQUEST(manager.getPtr(), lb_I_String, col)
+			UAP_REQUEST(manager.getPtr(), lb_I_String, val)
+			
+			char* cc = strdup(tx->GetName().c_str());
+			col->setData(cc);
+			char* t = strdup(v.c_str());
+			val->setData(t);
+
+			sampleQuery->setString(*&col, *&val);
+			
+			free(cc);
+			free(t);
+		}
+		
+		free(name);
+	}
+
+	sampleQuery->update();
+
+	sampleQuery->first();
+printf("Have first row\n");
+	for (i = 1; i <= columns; i++) {
+		char* name = strdup(sampleQuery->getColumnName(i));
+printf("Have updated data for %s\n", name);
+		// Find the corresponding window
+		
+		wxWindow* w = dialog->FindWindowByName(wxString(name));
+		
+		if (w != NULL) {
+			wxTextCtrl* tx = (wxTextCtrl*) w;
+printf("Set text control\n");
+			tx->SetValue(wxString(sampleQuery->getAsString(i)->charrep()));
+		}
+		
+		free(name);
+	}
+	
+	return ERR_NONE;
+}
+
+lbErrCodes LB_STDCALL lb_wxGUI::lbDBNext(lb_I_Unknown* uk) {
+	printf("lbDBNext(lb_I_Unknown* uk) called\n");
+
+printf("Pointer for query is %p\n", sampleQuery);
+
+	int columns = sampleQuery->getColumns();
+
+printf("Have %d columns\n", columns);
+	
+	for (int i = 1; i <= columns; i++) {
+		char* name = strdup(sampleQuery->getColumnName(i));
+
+		// Find the corresponding window
+		
+		wxWindow* w = dialog->FindWindowByName(wxString(name));
+		
+		if (w != NULL) {
+			wxTextCtrl* tx = (wxTextCtrl*) w;
+			
+			wxString v = tx->GetValue();
+			
+			UAP_REQUEST(manager.getPtr(), lb_I_String, col)
+			UAP_REQUEST(manager.getPtr(), lb_I_String, val)
+			
+			char* cc = strdup(tx->GetName().c_str());
+			col->setData(cc);
+			char* t = strdup(v.c_str());
+			val->setData(t);
+
+			sampleQuery->setString(*&col, *&val);
+			
+			free(cc);
+			free(t);
+		}
+		
+		free(name);
+	}
+
+	sampleQuery->update();
+
+	sampleQuery->next();
+printf("Have first row\n");
+	for (i = 1; i <= columns; i++) {
+		char* name = strdup(sampleQuery->getColumnName(i));
+printf("Have updated data for %s\n", name);
+		// Find the corresponding window
+		
+		wxWindow* w = dialog->FindWindowByName(wxString(name));
+		
+		if (w != NULL) {
+			wxTextCtrl* tx = (wxTextCtrl*) w;
+printf("Set text control\n");
+			tx->SetValue(wxString(sampleQuery->getAsString(i)->charrep()));
+		}
+		
+		free(name);
+	}
+	return ERR_NONE;
+}
+
+lbErrCodes LB_STDCALL lb_wxGUI::lbDBPrev(lb_I_Unknown* uk) {
+	printf("lbDBPrev(lb_I_Unknown* uk) called\n");
+	return ERR_NONE;
+}
+
+lbErrCodes LB_STDCALL lb_wxGUI::lbDBLast(lb_I_Unknown* uk) {
+	printf("lbDBLast(lb_I_Unknown* uk) called\n");
+	return ERR_NONE;
+}
+
+void lb_wxGUI::OnDispatch(wxCommandEvent& event ) {
+        switch (event.GetId()) {
+        default:
+                // Delegate all other events
+                {
+                	lbErrCodes err = ERR_NONE;
+                	
+                	UAP(lb_I_Module, mm, __FILE__, __LINE__)
+                	mm = getModuleInstance();
+                	mm->setModuleManager(mm.getPtr(), __FILE__, __LINE__);
+                	
+			UAP_REQUEST(mm.getPtr(), lb_I_EventManager, eman)
+		
+			UAP_REQUEST(mm.getPtr(), lb_I_Dispatcher, dispatcher)
+
+			dispatcher->setEventManager(eman.getPtr());
+
+			UAP_REQUEST(mm.getPtr(), lb_I_String, param)
+			param->setData("wxWindows app calls dynamically assigned handler");
+			UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
+			QI(param, lb_I_Unknown, uk, __FILE__, __LINE__)
+		
+			UAP_REQUEST(mm.getPtr(), lb_I_String, result)
+			UAP(lb_I_Unknown, uk_result, __FILE__, __LINE__)
+			QI(result, lb_I_Unknown, uk_result, __FILE__, __LINE__)
+		
+			dispatcher->dispatch(event.GetId(), uk.getPtr(), &uk_result);
+                }
+                break;
+        }
+}
+
+
 /*...slb_I_DatabaseForm\42\ LB_STDCALL lb_wxGUI\58\\58\createDBForm\40\char\42\ formName\41\:0:*/
 lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::createDBForm(char* formName) {
+
+	dialog = new wxDialog(NULL, -1, wxString(formName));
+	
+	wxBoxSizer* sizerHor   = new wxBoxSizer(wxHORIZONTAL);
+	wxBoxSizer* sizerLeft  = new wxBoxSizer(wxVERTICAL);	
+	wxBoxSizer* sizerRight = new wxBoxSizer(wxVERTICAL);
+
+	UAP_REQUEST(manager.getPtr(), lb_I_Database, database)
+
+	database->init();
+	database->connect("trainres", "dba", "trainres");
+
+	UAP(lb_I_Query, query, __FILE__, __LINE__)
+
+	query = database->getQuery(0);
+		
+	int DatabaseFirst;
+	int DatabaseNext;
+	int DatabasePrev;
+	int DatabaseLast;
+	
+	sampleQuery = query.getPtr();
+	
+	printf("sampleQuery is %p\n", sampleQuery);
+
+	UAP_REQUEST(manager.getPtr(), lb_I_EventManager, eman)
+	UAP_REQUEST(manager.getPtr(), lb_I_Dispatcher, dispatcher)
+
+	if (!handlersInitialized) {
+		handlersInitialized = TRUE;
+	
+	
+		eman->registerEvent("DatabaseFirst", DatabaseFirst);
+		eman->registerEvent("DatabaseNext",  DatabaseNext);
+		eman->registerEvent("DatabasePrev",  DatabasePrev);
+		eman->registerEvent("DatabaseLast",  DatabaseLast);
+
+		dispatcher->setEventManager(eman.getPtr());
+
+		dispatcher->addEventHandlerFn(this, (lbEvHandler) &lb_wxGUI::lbDBFirst, "DatabaseFirst");
+		dispatcher->addEventHandlerFn(this, (lbEvHandler) &lb_wxGUI::lbDBNext, "DatabaseNext");
+		dispatcher->addEventHandlerFn(this, (lbEvHandler) &lb_wxGUI::lbDBPrev, "DatabasePrev");
+		dispatcher->addEventHandlerFn(this, (lbEvHandler) &lb_wxGUI::lbDBLast, "DatabaseLast");
+	}
+	
+	query->query("select objecttyp, x, y, w, h from world order by id");	
+
+
+	int columns = query->getColumns();
+
+	query->first();
+	
+/*...screate database form elements:0:*/
+	for(int i = 1; i <= columns; i++) {
+		char* name = NULL;
+		
+		name = strdup(query->getColumnName(i));
+		
+		printf("Prepare column %s for the form\n", name);
+
+		wxTextCtrl *text = new wxTextCtrl(dialog, -1, query->getAsString(i)->charrep(), wxPoint());
+		
+		text->SetName(name);
+		
+		sizerRight->Add(text, 1, wxEXPAND | wxALL, 5);
+		
+		char* tLabel = new char[strlen(name) + 1];
+		
+		tLabel[0] = 0;
+		
+		tLabel = strcat(tLabel, name); 
+		
+		wxStaticText *label = new wxStaticText(dialog, -1, tLabel, wxPoint());
+		sizerLeft->Add(label, 1, wxEXPAND | wxALL, 5);
+	}
+/*...e*/
+
+	sizerHor->Add(sizerLeft, 1, wxEXPAND | wxALL, 5);
+	sizerHor->Add(sizerRight, 1, wxEXPAND | wxALL, 5);
+
+	wxButton *button1 = new wxButton(dialog, DatabaseFirst, "First", wxPoint(), wxSize());
+	wxButton *button2 = new wxButton(dialog, DatabaseNext, "Next", wxPoint(), wxSize());
+	wxButton *button3 = new wxButton(dialog, DatabasePrev, "Prev", wxPoint(), wxSize());
+	wxButton *button4 = new wxButton(dialog, DatabaseLast, "Last", wxPoint(), wxSize());
+
+	sizerLeft->Add(button1, 1, wxEXPAND | wxALL, 5);
+	sizerLeft->Add(button3, 1, wxEXPAND | wxALL, 5);
+	sizerRight->Add(button2, 1, wxEXPAND | wxALL, 5);
+	sizerRight->Add(button4, 1, wxEXPAND | wxALL, 5);
+
+	dialog->Connect( DatabaseFirst,  -1, wxEVT_COMMAND_BUTTON_CLICKED,
+	  (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) &lb_wxGUI::OnDispatch);
+	dialog->Connect( DatabaseNext,  -1, wxEVT_COMMAND_BUTTON_CLICKED,
+	  (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) &lb_wxGUI::OnDispatch);
+	dialog->Connect( DatabasePrev,  -1, wxEVT_COMMAND_BUTTON_CLICKED,
+	  (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) &lb_wxGUI::OnDispatch);
+	dialog->Connect( DatabaseLast,  -1, wxEVT_COMMAND_BUTTON_CLICKED,
+	  (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) &lb_wxGUI::OnDispatch);
+
+
+	dialog->SetAutoLayout(TRUE);
+	dialog->SetSizer(sizerHor);
+
+	sizerHor->SetSizeHints(dialog);
+	sizerHor->Fit(dialog);
+	
+	dialog->Centre();
+
+	dialog->ShowModal();
+	
+	dialog->Destroy();
+printf("dialog->Destroy() called\n");
 	return NULL;
 }
 /*...e*/
@@ -528,7 +822,7 @@ lbErrCodes LB_STDCALL lb_wxGUI::gotoMenuEntry(char* entry) {
 /*...e*/
 /*...slbErrCodes LB_STDCALL lb_wxGUI\58\\58\msgBox\40\char\42\ windowTitle\44\ char\42\ msg\41\:0:*/
 lbErrCodes LB_STDCALL lb_wxGUI::msgBox(char* windowTitle, char* msg) {
-        wxMessageDialog dialog(NULL, msg, windowTitle, wxYES_NO|wxCANCEL);
+        wxMessageDialog dialog(NULL, msg, windowTitle, wxOK);
 
         dialog.ShowModal();
 
@@ -972,12 +1266,16 @@ _LOG << "Made panel" LOG_
 /*...sShow the window:0:*/
 #ifdef LB_I_EXTENTIONS
   // Show the frame
+  
+  frame_peer->Centre();
   frame_peer->Show(TRUE);
 
   SetTopWindow(frame_peer);
 #endif
 #ifndef LB_I_EXTENTIONS
   // Show the frame
+  
+  frame->Centre();
   frame->Show(TRUE);
 
   SetTopWindow(frame);
@@ -1169,10 +1467,6 @@ lbErrCodes LB_STDCALL MyApp::addButton(lb_I_Unknown* uk) {
 	_LOG << "MyApp::lbEvHandler3 called" LOG_
 	lbErrCodes err = ERR_NONE;
 
-
-//addButton("Press me for test", "Button Test pressed", 10, 10, 100, 20);
-
-
 	UAP_REQUEST(manager.getPtr(), lb_I_EventManager, ev_manager)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, buttontext)
@@ -1182,11 +1476,9 @@ lbErrCodes LB_STDCALL MyApp::addButton(lb_I_Unknown* uk) {
 	UAP_REQUEST(manager.getPtr(), lb_I_Integer, w)
 	UAP_REQUEST(manager.getPtr(), lb_I_Integer, h)	
 	
-	
 	UAP(lb_I_Parameter, param, __FILE__, __LINE__)
 
 	QI(uk, lb_I_Parameter, param, __FILE__, __LINE__)
-
 
 	parameter->setData("buttontext");
 	param->getUAPString(*&parameter, *&buttontext);
@@ -1204,8 +1496,6 @@ lbErrCodes LB_STDCALL MyApp::addButton(lb_I_Unknown* uk) {
 	int EvNr = 0;
 	ev_manager->resolveEvent(handlername->getData(), EvNr);
 
-
-
 	lb_wxFrame* f = frame_peer->getPeer();
 	
 	_LOG "Create a button" LOG_
@@ -1219,20 +1509,6 @@ lbErrCodes LB_STDCALL MyApp::addButton(lb_I_Unknown* uk) {
 	((wxFrame*) frame_peer)->Connect( EvNr,  -1, wxEVT_COMMAND_BUTTON_CLICKED,
 	  (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
 	    &lb_wxFrame::OnDispatch );
-
-/*
-	wxMenuBar* mbar = frame_peer->getMenuBar();
-	wxMenu* menu = mbar->GetMenu(mbar->FindMenu(wxString(menubar->getData())));
-
-	menu->Append(EvNr, menuname->getData());
-
-
-	((wxFrame*) frame_peer)->Connect( EvNr,  -1, wxEVT_COMMAND_MENU_SELECTED,
-          (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
-          &lb_wxFrame::OnDispatch );
-*/
-
-
 
 	return ERR_NONE;
 /*...e*/
