@@ -28,11 +28,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.20 $
+ * $Revision: 1.21 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.20 2003/01/15 22:42:20 lothar Exp $
+ * $Id: lbMetaApplication.cpp,v 1.21 2003/01/19 17:31:31 lothar Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.21  2003/01/19 17:31:31  lothar
+ * Runs now with MSC
+ *
  * Revision 1.20  2003/01/15 22:42:20  lothar
  * Compiles with MSC
  *
@@ -147,6 +150,7 @@ IMPLEMENT_SINGLETON_FUNCTOR(instanceOfEventManager, lb_EventManager)
 /*...sctors\47\dtors:0:*/
 lb_MetaApplication::lb_MetaApplication() {
 	ref = STARTREF;
+	gui = NULL;
 	printf("Instance of lb_I_MetaApplication created\n");
 	_LOG << "Instance of lb_I_MetaApplication created" LOG_
 }
@@ -252,8 +256,9 @@ lbErrCodes LB_STDCALL lb_MetaApplication::Initialize() {
 	REQUEST(m, lb_I_Dispatcher, dispatcher)
 	dispatcher->setEventManager(eman.getPtr());
 /*...e*/
-	printf("Connet the event handlers to the dispatcher\n");	
+	printf("Connect the event handlers to the dispatcher\n");	
 	registerEventHandler(dispatcher.getPtr());
+	printf("Connected\n");
 
 	// Step 3 (Load sub components, handling menus and else needed for an UI)
 	loadSubModules();
@@ -295,6 +300,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::Initialize() {
 	
 	if (gui != NULL) {
 		gui->msgBox("Information", "Meta application started up");
+		//cout << "lb_MetaApplication::Initialize() called in console mode" << endl;
 	} else {
 		cout << "lb_MetaApplication::Initialize() called in console mode" << endl;
 	}
@@ -423,6 +429,7 @@ lbErrCodes LB_STDCALL lb_EventManager::setData(lb_I_Unknown* uk) {
 /*...slb_EventManager\58\\58\registerEvent\40\char\42\ EvName\44\ int \38\ EvNr\41\:0:*/
 lbErrCodes LB_STDCALL lb_EventManager::registerEvent(char* EvName, int & EvNr) {
 	lbErrCodes err = ERR_NONE;
+	int newId = maxEvId + 1;
 
 /*...sInit containers:8:*/
 	if (events == NULL) {
@@ -460,19 +467,30 @@ lbErrCodes LB_STDCALL lb_EventManager::registerEvent(char* EvName, int & EvNr) {
 printf("determine id\n");	
 /*...sdetermine id:8:*/
 	if (freeIds->Count() == 0) {
+		printf("Increase maxEvId\n");
 		maxEvId++;
 	} else {
+		printf("Reuse an id\n");
 		UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
 		UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
+
+		printf("Get key from element at %d\n", freeIds->Count());
 		
-		uk = freeIds->getElementAt(0);
-		key = freeIds->getKeyAt(0);
+		key = freeIds->getKeyAt(freeIds->Count());
+		uk = freeIds->getElementAt(freeIds->Count());
 		
+		printf("Remove free id\n");
+			
 		freeIds->remove(&key);
-		
+			
+		printf("Get the new maxEvId\n");
+			
 		UAP(lb_I_Integer, i, __FILE__, __LINE__)
 		QI(uk, lb_I_Integer, i, __FILE__, __LINE__)
-		maxEvId = i->getData();
+
+		newId = i->getData();
+			
+		printf("Got %d. MaxEvId is %d\n", newId, maxEvId);
 	}
 /*...e*/
 printf("insert new event\n");
@@ -541,6 +559,7 @@ END_IMPLEMENT_LB_UNKNOWN()
 
 lb_Dispatcher::lb_Dispatcher() {
 	_LOG << "lb_Dispatcher::lb_Dispatcher() called" LOG_
+	ref = STARTREF;
 }
 
 lb_Dispatcher::~lb_Dispatcher() {
@@ -571,10 +590,11 @@ lbErrCodes LB_STDCALL lb_Dispatcher::addEventHandlerFn(lb_I_EventHandler* evHand
 	 */
 	
 	int id = 0;
+	printf("Resolve eventId\n");
 	evManager->resolveEvent(EvName, id);
-
+	printf("Resolved\n");
 	addEventHandlerFn(evHandlerInstance, evHandler, id);	
-
+	printf("Added\n");
 	return ERR_NONE;
 }
 /*...e*/
@@ -599,19 +619,21 @@ lbErrCodes LB_STDCALL lb_Dispatcher::addEventHandlerFn(lb_I_EventHandler* evHand
 
 	    UAP(lb_I_Unknown, e, __FILE__, __LINE__)
 	QI(evH, lb_I_Unknown, e, __FILE__, __LINE__)
-
+printf("Be here\n");
 	if (dispatcher->exists(&k) == 1) {
         	dispatcher->remove(&k);
 	}
 
 	if ((err = dispatcher->insert(&e, &k)) != ERR_NONE) _LOG << "Error: Inserting new container element failed" LOG_
+printf("And now here\n");
 
 	UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
 
 	uk = dispatcher->getElement(&k);
 	
 	if (uk == NULL) _LOG << "Error: Adding event handler failed (not stored)" LOG_
-	
+
+printf("Return now\n");	
 	return ERR_NONE;
 }
 /*...e*/
@@ -695,6 +717,7 @@ END_IMPLEMENT_LB_UNKNOWN()
 
 lb_EvHandler::lb_EvHandler() {
 	ev = NULL;
+	ref = STARTREF;
 }
 
 lb_EvHandler::~lb_EvHandler() {
