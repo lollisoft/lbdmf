@@ -232,6 +232,20 @@ void main(int argc, char *argv[]) {
 
 	query->query("select ObjectTyp, X, Y, W, H from World");
 
+// Second run fails ??
+/*...sforward:8:*/
+	if (query->first() != ERR_NONE) 
+		printf("Error while get next\n");
+	else
+		printf("%s;%s;%s;%s;%s\n", query->getChar(1), query->getChar(2), query->getChar(3), query->getChar(4), query->getChar(5));
+
+
+	while (query->next() == ERR_NONE) {
+		printf("%s;%s;%s;%s;%s\n", query->getChar(1), query->getChar(2), query->getChar(3), query->getChar(4), query->getChar(5));
+	}
+	printf("Ended foreward test\n");
+	getch();
+/*...e*/
 /*...sreverse:8:*/
 	if (query->last() != ERR_NONE)
 		printf("Error while get next\n");
@@ -244,18 +258,6 @@ void main(int argc, char *argv[]) {
 	}
 	printf("Ended backward test\n");
 	getch();
-/*...e*/
-// Second run fails ??
-/*...sforward:8:*/
-	if (query->first() != ERR_NONE) 
-		printf("Error while get next\n");
-	else
-		printf("%s;%s;%s;%s;%s\n", query->getChar(1), query->getChar(2), query->getChar(3), query->getChar(4), query->getChar(5));
-
-
-	while (query->next() == ERR_NONE) {
-		printf("%s;%s;%s;%s;%s\n", query->getChar(1), query->getChar(2), query->getChar(3), query->getChar(4), query->getChar(5));
-	}
 /*...e*/
 
 	
@@ -309,6 +311,123 @@ void main(int argc, char *argv[]) {
 		_CL_LOG << "Error: Could not get needed interface!" LOG_
 	}
 	printf("---- have lb_I_Container interface\n");
+/*...e*/
+/*...sTest container with inserting strings and manipulate one reference to show changes in other reference:0:*/
+{
+		UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
+    			
+		if (mm->request("lb_I_Container", &uk) != ERR_NONE) {
+			printf("Error: Could not get needed instance!\n");
+		}
+
+		if (uk != NULL) {
+			UAP(lb_I_Unknown, uk1, __FILE__, __LINE__)
+			UAP(lb_I_Container, container, __FILE__, __LINE__)
+
+			if (uk->queryInterface("lb_I_Container", (void**) &container, __FILE__, __LINE__) != ERR_NONE) {
+				_CL_LOG << "Error: Could not query for interface lb_I_Container" LOG_
+			}
+			
+			if (mm->request("lb_I_String", &uk1) != ERR_NONE) {
+				printf("Error: Could not get needed instance!\n");
+			}
+
+			if (uk1 != NULL) {
+				_CL_LOG << "Test the container" LOG_
+				UAP(lb_I_String, string, __FILE__, __LINE__)
+				if (uk1->queryInterface("lb_I_String", (void**) &string, __FILE__, __LINE__) != ERR_NONE) {
+					printf("Error: Could not get needed interface!\n");
+				}
+				_CL_LOG << "Have the string interface, insert data" LOG_
+				if (string != NULL) {
+					// Fill up the container
+/*...sand delete it after that again:40:*/
+/*...screate key and uk for the container filling:40:*/
+							UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
+							UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
+						
+							string->queryInterface("lb_I_Unknown", (void**) &uk, __FILE__, __LINE__);
+							string->queryInterface("lb_I_KeyBase", (void**) &key, __FILE__, __LINE__);
+/*...e*/
+						
+/*...sfill data into the container \40\insert clones the given instance\41\:40:*/
+							uk->setDebug(1);
+						
+							string->setData("Bla");
+							_CL_LOG << "Insert first element" LOG_
+						
+						
+							if (container == NULL) _CL_LOG << "Container is NULL" LOG_
+							
+							_CL_LOG << "RefCount of uk and key is " << uk->getRefCount() << ", " << key->getRefCount() LOG_
+						
+							container->insert(&uk, &key);
+							_CL_LOG << "Inserted first element" LOG_
+							
+							lb_I_Unknown* ukdata = container->getElement(&key);
+							printf("Have searched for an element\n");
+							if (ukdata == NULL) printf("NULL pointer while searching for first element (search for '%s')!\n", key->charrep());
+							
+							string->setData("Bla1");
+							container->insert(&uk, &key);
+							string->setData("Bla2");
+							container->insert(&uk, &key);
+							string->setData("Bla3");
+							container->insert(&uk, &key);
+							string->setData("Bla4");
+							container->insert(&uk, &key);
+/*...e*/
+							
+							
+/*...sfind an element for reference testing:40:*/
+							string->setData("Bla3");
+							
+							lb_I_String* s = NULL;
+							ukdata = container->getElement(&key);
+							if (ukdata == NULL) printf("NULL pointer!\n");
+							lbErrCodes err = ukdata->queryInterface("lb_I_String", (void**) &s, __FILE__, __LINE__);
+
+							lb_I_String* s1 = NULL;
+							ukdata = container->getElement(&key);
+							if (ukdata == NULL) printf("NULL pointer!\n");
+							err = ukdata->queryInterface("lb_I_String", (void**) &s1, __FILE__, __LINE__);
+							
+							s1->setData("Changed");
+							char* cp1 = s1->getData();
+							char* cp = s->getData();
+							
+							printf("Have changed s1 from Bla3 to %s. s is %s\n", cp1, cp);
+							if (err == ERR_NONE) printf("Found string %s\n", s->getData());
+/*...e*/
+	
+/*...sdump content:40:*/
+							printf("Try to dump content of container\n");	
+							while (container->hasMoreElements() == 1) {
+								lb_I_Unknown* e = container->nextElement();
+								printf("Dump it\n");
+								if (e != NULL) {
+									lb_I_String* s;
+									if (e->queryInterface("lb_I_String", (void**) &s, __FILE__, __LINE__) != ERR_NONE) {
+										printf("Something goes wrong :-(\n");
+									}
+									
+									printf("String is: %s\n", s->getData());
+								}
+							}
+/*...e*/
+	
+		container->deleteAll();
+		_CL_LOG << "Deleted all container data" LOG_
+/*...e*/
+				}
+			}
+			printf("Have tested container reference handling\n");
+			printf("----------------------------------------\n");
+			getch();
+		} else {
+			_CL_LOG << "Here must be an object!!!" LOG_
+		}
+}
 /*...e*/
 /*...stest integer:0:*/
 
