@@ -6,7 +6,9 @@ if not EXIST "dist" mkdir dist
 if not EXIST "dist\Develop" mkdir dist\Develop
 if not EXIST "dist\Develop\Projects" mkdir dist\Develop\Projects
 if not EXIST "dist\Develop\Projects\dll" mkdir dist\Develop\Projects\dll
+if not EXIST "dist\Develop\Projects\dll\libs" mkdir dist\Develop\Projects\dll\libs
 if not EXIST "dist\Develop\Projects\Plugins" mkdir dist\Develop\Projects\Plugins
+if not EXIST "dist\Develop\Projects\Plugins\libs" mkdir dist\Develop\Projects\Plugins\libs
 if not EXIST "dist\Develop\Projects\bin" mkdir dist\Develop\Projects\bin
 if not EXIST "dist\Develop\Projects\lib" mkdir dist\Develop\Projects\lib
 if not EXIST "dist\Develop\Projects\dll\include" mkdir dist\Develop\Projects\dll\include
@@ -30,8 +32,7 @@ call make_dist_base.bat vendor\dosdir
 call make_dist_base.bat include 
 call make_dist_base.bat interfaces 
 call make_dist_base.bat make
-call make_dist_base.bat test\GUI\wxwrapper
-call make_dist_base.bat test\console\xml
+call make_dist_base.bat test
 call make_dist_base.bat Compilers
 call make_dist_base.bat Database
 
