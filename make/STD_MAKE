@@ -25,11 +25,14 @@
 #            40235 DÅsseldorf (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.52 $
+# * $Revision: 1.53 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.52 2005/02/10 17:04:15 lollisoft Exp $
+# * $Id: STD_MAKE,v 1.53 2005/02/13 08:55:45 lollisoft Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.53  2005/02/13 08:55:45  lollisoft
+# * Activated debug again
+# *
 # * Revision 1.52  2005/02/10 17:04:15  lollisoft
 # * Changes for Mac OS X
 # *
@@ -360,7 +363,7 @@ STD_INCL = -I $(DEVROOT)/Projects/CPP/BaseDevelopment/lbHook/linuxCode \
 	-I . 
 
 OBJ =o
-C_OPS   = -c -DUNIX -DLINUX
+C_OPS   = -c -g -DUNIX -DLINUX
 C_SOOPS = $(C_OPS)
 C_ELFOPS= $(C_OPS)
 L_OPS   = -o
