@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.7 $
+# * $Revision: 1.8 $
 # * $Name:  $
-# * $Id: Makefile,v 1.7 2004/08/17 20:04:02 lollisoft Exp $
+# * $Id: Makefile,v 1.8 2004/10/09 16:52:46 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.8  2004/10/09 16:52:46  lollisoft
+# * Enhancements for cleaning up
+# *
 # * Revision 1.7  2004/08/17 20:04:02  lollisoft
 # * Deactivated parts, that do not compile under Linux and added demo app module including sample apps
 # *
@@ -47,7 +50,7 @@ MAKEWXSAMPLE= \
 	make -f makefile.wx-sample; \
 	)
 
-all_targets: lbHook \
+ALLTARGETS = lbHook \
 	lbDB \
 	lbModule \
 	lbclasses \
@@ -55,6 +58,17 @@ all_targets: lbHook \
 	../AppDevelopmentDemo/App \
 	../Test/Console/XML \
 	../Test/GUI/wxWrapper
+
+
+all_targets: $(ALLTARGETS)
+
+
+
+clean:
+	@for d in $(ALLTARGETS); do \
+	    $(MAKE) -C $$d clean || exit $? ; \
+	done
+
 
 #	Doesn't compile yet under linux
 #	lbPluginManager \
@@ -67,7 +81,9 @@ dummy:
 	$(MAKESUBDIR)
 
 ../Test/GUI/wxWrapper: dummy
-	$(MAKEWXSAMPLE)
+	$(MAKESUBDIR)
+
+#$(MAKEWXSAMPLE)
 
 ../AppDevelopmentDemo/App: dummy
 	$(MAKESUBDIR)
