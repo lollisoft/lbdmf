@@ -65,6 +65,8 @@ typedef unsigned short byte;
 typedef unsigned short u_short;
 #endif
 
+typedef unsigned long DWORD;
+
 typedef unsigned short LB_DATA;
 typedef unsigned short u_short;
 /*...e*/
