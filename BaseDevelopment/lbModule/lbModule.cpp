@@ -1,11 +1,15 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.30 $
+ * $Revision: 1.31 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.30 2002/06/20 21:04:29 lothar Exp $
+ * $Id: lbModule.cpp,v 1.31 2002/06/20 22:16:47 lothar Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.31  2002/06/20 22:16:47  lothar
+ * Found bug (really not a bug) about container deletion message.
+ * Message removed by another order of UAP instances.
+ *
  * Revision 1.30  2002/06/20 21:04:29  lothar
  * Using tracking for better debugging
  *
@@ -2224,10 +2228,12 @@ lbErrCodes LB_STDCALL lbModule::request(const char* request, lb_I_Unknown** resu
                 initialize();
         }
         char* functorName = NULL;
-	sprintf(buf, "lbModule::request(...) for %s", request);
-	CL_LOG(buf);
 	buf[0] = 0;
+        UAP(lb_I_ConfigObject, config, __FILE__, __LINE__)
         UAP(lb_I_ConfigObject, impl, __FILE__, __LINE__)
+        config.setLine(__LINE__);
+        config.setFile(__FILE__);
+
         /**
          * impl is not returned in any way, I think, so it is allowed to delete the object
          * at lost of focus.
@@ -2253,9 +2259,6 @@ lbErrCodes LB_STDCALL lbModule::request(const char* request, lb_I_Unknown** resu
          */
 /*...e*/
                 char* node = "#document/dtdHostCfgDoc/Modules/Module/Functions/Function/Functor/InterfaceName";
-                UAP(lb_I_ConfigObject, config, __FILE__, __LINE__)
-                config.setLine(__LINE__);
-                config.setFile(__FILE__);
                 int count = 0;
                                         // request is a functor
 /*...sdoc:8:*/
@@ -2418,7 +2421,6 @@ lbErrCodes LB_STDCALL lbModule::request(const char* request, lb_I_Unknown** resu
                 
 /*...e*/
         }
-	CL_LOG("Leave lbModule::request(...)")
         if (functorName != NULL) impl->deleteValue(functorName);
         return ERR_NONE;
 }
