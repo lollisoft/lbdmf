@@ -1,6 +1,6 @@
 cd lbHook
-rem call ../make.sh
-
+call makefile.bat
+make
 cd ..
 
 cd lbModule

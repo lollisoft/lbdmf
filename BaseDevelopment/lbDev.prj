@@ -89,6 +89,7 @@ These headers must define the per module (DLL) EXPORT variable
 /*...vlbclasses\47\STD_MAKE:0:*/
 
 /*...vlbclasses\47\makefile:0:*/
+/*...vlbclasses\47\makefile\46\bat:0:*/
 /*...vlbclasses\47\makefile\46\module:0:*/
 
 
@@ -238,4 +239,10 @@ findfunctorname
 
 /*...sweb:0:*/
 /*...v\46\\46\\47\\46\\46\\47\web\47\index\46\html:0:*/
+/*...v\46\\46\\47\\46\\46\\47\web\47\logo\46\html:0:*/
+/*...v\46\\46\\47\\46\\46\\47\web\47\main\46\html:0:*/
+/*...v\46\\46\\47\\46\\46\\47\web\47\navi\46\html:0:*/
+/*...v\46\\46\\47\\46\\46\\47\web\47\wolle\47\wolle\46\html:0:*/
+/*...v\46\\46\\47\\46\\46\\47\web\47\beitanja\47\tanja\46\html:0:*/
+
 /*...e*/

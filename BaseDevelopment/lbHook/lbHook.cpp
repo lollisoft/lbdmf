@@ -1,3 +1,5 @@
+#define HOOK_DLL
+
 #include <stdarg.h>
 
 // Where should I define standard switches to choose the correct code ?
@@ -21,17 +23,33 @@ extern "C" {
 #endif
 
 
-//#include <windef.h>
-//#include <winbase.h>
-
 #include <lbConfigHook.h>
 #include <lbKey.h>
 
 
 HINSTANCE ModuleHandle = NULL;
 HINSTANCE LB_Module_Handle = NULL;
+
+DLLEXPORT HINSTANCE LB_STDCALL getModuleHandle() {
+	return ModuleHandle;
+}
+
+DLLEXPORT HINSTANCE LB_STDCALL getLBModuleHandle() {
+	return LB_Module_Handle;
+}
+
+DLLEXPORT void LB_STDCALL setModuleHandle(HINSTANCE h) {
+	ModuleHandle = h;
+}
+
+DLLEXPORT void LB_STDCALL setLBModuleHandle(HINSTANCE h) {
+	LB_Module_Handle = h;
+}
+
+#ifdef bla
 lb_I_Log *log = NULL;
 int isInitializing = 0;
+#endif
 
 /**
  * Platform independend module loader
@@ -97,8 +115,8 @@ lbErrCodes LB_STDCALL lbGetFunctionPtr(const char* name, HINSTANCE hinst, void**
  * of registered modules.
  */
 
-/*...slb_I_Module\42\ LB_STDCALL getModuleInstance\40\\41\:0:*/
-lb_I_Module* LB_STDCALL getModuleInstance() {
+/*...sDLLEXPORT lb_I_Module\42\ LB_STDCALL getModuleInstance\40\\41\:0:*/
+DLLEXPORT lb_I_Module* LB_STDCALL getModuleInstance() {
 typedef lbErrCodes (LB_STDCALL *T_p_getlbModuleInstance) (lb_I_Module**, lb_I_Module* m, char* file, int line);
 T_p_getlbModuleInstance DLL_GETMODULEINSTANCE;
 	lbErrCodes err = ERR_NONE;
@@ -155,7 +173,7 @@ lbErrCodes LB_STDCALL releaseInstance(lb_I_Unknown* inst) {
 }
 /*...e*/
 /*...svoid LB_STDCALL unHookAll\40\\41\:0:*/
-void LB_STDCALL unHookAll() {
+DLLEXPORT void LB_STDCALL unHookAll() {
 	if (ModuleHandle != NULL) {
 	#ifdef WINDOWS
 		FreeLibrary(ModuleHandle);
@@ -334,7 +352,18 @@ BEGIN_IMPLEMENT_LB_UNKNOWN(lbStringKey)
 END_IMPLEMENT_LB_UNKNOWN()
 
 lbErrCodes LB_STDCALL lbStringKey::setData(lb_I_Unknown* uk) {
-	CL_LOG("lbKey::setData() not implemented yet");
+	
+	lb_I_KeyBase* string = NULL;
+	
+	if (uk->queryInterface("lb_I_KeyBase", (void**) &string, __FILE__, __LINE__) != ERR_NONE) {
+		CL_LOG("Error: Could not get interface lb_I_KeyBase");
+	}
+	
+	if (string != NULL) {
+		if (key != NULL) free(key);
+		key = strdup(((lbStringKey*) string)->key);
+	}
+	
 	return ERR_NONE;
 }
 

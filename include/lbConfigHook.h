@@ -19,18 +19,39 @@
 #define HINSTANCE void*
 #endif
 
-extern HINSTANCE ModuleHandle;
-extern HINSTANCE LB_Module_Handle;
+#define DLLEXPORT
 
+#ifdef HOOK_DLL
+#undef DLLEXPORT
+#ifdef WINDOWS
+#define DLLEXPORT LB_DLLEXPORT
+#endif
+
+#endif
+
+#ifndef HOOK_DLL
+#undef DLLEXPORT
+#ifdef WINDOWS
+#define DLLEXPORT LB_DLLIMPORT
+#endif
+
+#endif
+
+
+DLLEXPORT HINSTANCE LB_STDCALL getModuleHandle();
+DLLEXPORT HINSTANCE LB_STDCALL getLBModuleHandle();
+
+DLLEXPORT void LB_STDCALL setModuleHandle(HINSTANCE h);
+DLLEXPORT void LB_STDCALL setLBModuleHandle(HINSTANCE h);
 
 /**
  * Platform independend module loader
  */
 /*...slbErrCodes LB_STDCALL lbLoadModule\40\const char\42\ name\44\ HINSTANCE \38\ hinst\41\:0:*/
-lbErrCodes LB_STDCALL lbLoadModule(const char* name, HINSTANCE & hinst);
+lbErrCodes DLLEXPORT LB_STDCALL lbLoadModule(const char* name, HINSTANCE & hinst);
 /*...e*/
 /*...slbErrCodes LB_STDCALL lbGetFunctionPtr\40\const char\42\ name\44\ const HINSTANCE \38\ hinst\44\ void\42\\42\ pfn\41\:0:*/
-lbErrCodes LB_STDCALL lbGetFunctionPtr(const char* name, HINSTANCE hinst, void** pfn);
+lbErrCodes DLLEXPORT LB_STDCALL lbGetFunctionPtr(const char* name, HINSTANCE hinst, void** pfn);
 /*...e*/
 
 
@@ -40,18 +61,18 @@ lbErrCodes LB_STDCALL lbGetFunctionPtr(const char* name, HINSTANCE hinst, void**
  */
 
 /*...slb_I_Module\42\ LB_STDCALL getModuleInstance\40\\41\:0:*/
-lb_I_Module* LB_STDCALL getModuleInstance();
+DLLEXPORT lb_I_Module* LB_STDCALL getModuleInstance();
 /*...e*/
 /*...slbErrCodes LB_STDCALL releaseInstance\40\lb_I_Unknown\42\ inst\41\:0:*/
 lbErrCodes LB_STDCALL releaseInstance(lb_I_Unknown* inst);
 /*...e*/
 /*...svoid LB_STDCALL unHookAll\40\\41\:0:*/
-void LB_STDCALL unHookAll();
+DLLEXPORT void LB_STDCALL unHookAll();
 /*...e*/
 
 /*...sLogging macros:0:*/
-extern lb_I_Log *log;
-extern int isInitializing;
+DLLEXPORT lb_I_Log *log;
+DLLEXPORT int isInitializing;
 
 #ifndef LOG_DEFINED
 /*...sCL_LOG:0:*/

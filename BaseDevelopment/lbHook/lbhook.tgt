@@ -7,12 +7,12 @@ MComponent
 0
 2
 WString
-3
-LIB
+4
+NDLL
 3
 WString
 5
-n_2sn
+n_2dn
 1
 0
 1
@@ -21,18 +21,19 @@ MCommand
 0
 5
 MCommand
-209
+246
 copy *.lib $(%DEVROOT)\projects\dll\libs
+copy *.dll $(%DEVROOT)\projects\dll
 attrib -r $(%DEVROOT)\projects\CPP\BaseDevelopment\lbXMLConfig\lbDOMConfig\lbHook.cpp
 copy lbHook.cpp $(%DEVROOT)\projects\CPP\BaseDevelopment\lbXMLConfig\lbDOMConfig
 6
 MItem
 10
-lbhook.lib
+lbhook.dll
 7
 WString
-3
-LIB
+4
+NDLL
 8
 WVList
 0

@@ -1,11 +1,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.22 $
+ * $Revision: 1.23 $
  * $Name:  $
- * $Id: lbInterfaces-sub-classes.h,v 1.22 2002/05/01 14:17:11 lothar Exp $
+ * $Id: lbInterfaces-sub-classes.h,v 1.23 2002/05/30 17:53:47 lothar Exp $
  *
  * $Log: lbInterfaces-sub-classes.h,v $
+ * Revision 1.23  2002/05/30 17:53:47  lothar
+ * Current development seems to run
+ *
  * Revision 1.22  2002/05/01 14:17:11  lothar
  * This version does not compile
  *
@@ -784,6 +787,30 @@ public:
         
         //virtual lbErrCodes getObjectInstance(char* name, lb_I_Requestable*& inst) = 0; 
         virtual lbErrCodes LB_STDCALL getObjectInstance(const char* name, lb_I_Container*& inst) = 0;
+};
+/*...e*/
+/*...sclass lb_I_Instance:0:*/
+class lb_I_Instance : public lb_I_KeyBase {
+
+/*...sprotected:0:*/
+protected:
+
+    lb_I_Instance() {}
+    virtual ~lb_I_Instance() {}
+
+/*...e*/
+
+public:
+
+	virtual char* LB_STDCALL getAddress() = 0;
+	virtual char* LB_STDCALL getInstanceClassname() = 0;
+	virtual char* LB_STDCALL getFile() = 0;
+	virtual int LB_STDCALL getLine() = 0;
+	
+	virtual void LB_STDCALL setAddress(char* a) = 0;
+	virtual void LB_STDCALL setClassname(char* c) = 0;
+	virtual void LB_STDCALL setFile(char* f) = 0;
+	virtual void LB_STDCALL setLine(int l) = 0;
 };
 /*...e*/
 /*...sclass lb_I_Log:0:*/

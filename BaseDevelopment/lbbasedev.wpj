@@ -4,8 +4,8 @@ projectIdent
 VpeMain
 1
 WRect
-1820
-1720
+810
+2000
 8360
 7280
 2
@@ -59,7 +59,7 @@ WFileName
 23
 lbclasses\lbclasses.tgt
 3
-6
+4
 15
 VComponent
 16
@@ -123,7 +123,7 @@ WFileName
 17
 lbhook\lbhook.tgt
 0
-1
+0
 27
 VComponent
 28

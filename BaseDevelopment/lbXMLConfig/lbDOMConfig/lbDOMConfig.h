@@ -1,11 +1,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.4 $
+ * $Revision: 1.5 $
  * $Name:  $
- * $Id: lbDOMConfig.h,v 1.4 2001/12/12 17:12:45 lothar Exp $
+ * $Id: lbDOMConfig.h,v 1.5 2002/05/30 17:53:02 lothar Exp $
  *
  * $Log: lbDOMConfig.h,v $
+ * Revision 1.5  2002/05/30 17:53:02  lothar
+ * Current development seems to run
+ *
  * Revision 1.4  2001/12/12 17:12:45  lothar
  * Hehe - runs on linux
  *
@@ -24,6 +27,9 @@
 
 #ifndef __LB_DOM_CONFIG__
 #define __LB_DOM_CONFIG__
+
+#pragma warning( disable : C4101 )
+
 
 /*...sincludes:0:*/
 #include <lbErrcodes.h>
