@@ -249,8 +249,8 @@ lbErrCodes LB_STDCALL lbApplication::Initialize() {
 	addMenuBar("Bahnhoefe");
 	
 	
-	addMenuEntry("Kunden", "KundenDetails", "getKundenDetails", "");
-	addMenuEntry("Kunden", "KundenListe", "getKundenListe", "");
+	addMenuEntry("Kunden", "Elemente in World", "getKundenDetails", "");
+	addMenuEntry("Kunden", "Kunden", "getKundenListe", "");
 	
 	return ERR_NONE;
 }
