@@ -3,7 +3,7 @@
 
 [Setup]
 AppName=lbDMF development environment
-AppVerName=lbDMF development environment 0.3.2
+AppVerName=lbDMF development environment 0.3.2.3
 AppPublisher=Lothar Behrens
 AppPublisherURL=http://www.lollisoft.de
 AppSupportURL=http://www.sourceforge.net/projects/lbdmf
@@ -17,14 +17,20 @@ DefaultGroupName=lbDMF
 Name: "desktopicon"; Description: "Create a &desktop icon"; GroupDescription: "Additional icons:"; MinVersion: 4,4
 
 [Files]
+Source: "Q:\develop\Tools\cygwin\bin\sh.exe"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
+Source: "Q:\develop\Tools\cygwin\bin\cp.exe"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
+Source: "Q:\develop\Tools\cygwin\bin\cat.exe"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
+Source: "Q:\develop\Tools\cygwin\bin\echo.exe"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
+Source: "Q:\develop\Tools\cygwin\bin\rm.exe"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
+Source: "Q:\develop\Tools\cygwin\bin\cy*.dll"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
 Source: "Q:\Develop\Projects\CPP\watcomenv.bat"; DestDir: "{app}"; CopyMode: alwaysoverwrite
 Source: "Q:\develop\Projects\bin\mkmk.exe"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
 Source: "Q:\develop\Tools\cygwin\bin\cygwin1.dll"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
 Source: "Q:\develop\Projects\bin\make.exe"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
 Source: "Q:\Develop\Projects\CPP\dist\*.*"; DestDir: "{app}"; CopyMode: alwaysoverwrite; Flags: recursesubdirs;
 Source: "Q:\Develop\Projects\dll\mspdb60.dll"; DestDir: "{app}\Develop\Projects\dll"; CopyMode: alwaysoverwrite;
-Source: "Q:\Develop\Projects\dll\libs\xerces-c_1D.lib"; DestDir: "{app}\Develop\Projects\dll\libs"; CopyMode: alwaysoverwrite;
-Source: "Q:\Develop\Projects\dll\xerces-c_1_3.dll"; DestDir: "{app}\Develop\Projects\dll"; CopyMode: alwaysoverwrite;
+;Source: "Q:\Develop\Projects\dll\libs\xerces-c_1D.lib"; DestDir: "{app}\Develop\Projects\dll\libs"; CopyMode: alwaysoverwrite;
+;Source: "Q:\Develop\Projects\dll\xerces-c_1_3.dll"; DestDir: "{app}\Develop\Projects\dll"; CopyMode: alwaysoverwrite;
 ;Source: "Q:\Develop\Projects\dll\wx22_7d.dll"; DestDir: "{app}\Develop\Projects\dll"; CopyMode: alwaysoverwrite;
 Source: "Q:\Develop\Projects\plugins\*.dll"; DestDir: "{app}\Develop\Projects\plugins"; CopyMode: alwaysoverwrite;
 Source: "Q:\develop\Projects\CPP\Compilers\MSVC\lbDMF MSVC IDE.lnk"; DestDir: "{userdesktop}"; CopyMode: alwaysoverwrite;
@@ -33,6 +39,7 @@ Source: "Q:\develop\Projects\CPP\Compilers\MSVC\lbDMF MSVC IDE.lnk"; DestDir: "{
 [Icons]
 Name: "{group}\lbDMF"; Filename: "{app}\watcomenv.bat"; WorkingDir: "{app}\develop\projects\cpp\BaseDevelopment"
 Name: "{userdesktop}\lbDMF"; Filename: "{app}\watcomenv.bat"; MinVersion: 4,4; Tasks: desktopicon; WorkingDir: "{app}\develop\projects\cpp\BaseDevelopment"
+Name: "{userdesktop}\lbDMF Help"; Filename: "{app}\develop\projects\cpp\Doc\html\index.html"; MinVersion: 4,4; Tasks: desktopicon; WorkingDir: "{app}\develop\projects\cpp\BaseDevelopment"
 
 [Run]
 ;Filename: "{app}\watcomenv.bat"; Description: "Launch My Program"; Flags: shellexec postinstall skipifsilent
