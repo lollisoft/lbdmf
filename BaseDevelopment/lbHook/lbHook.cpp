@@ -110,14 +110,12 @@ T_p_getlbModuleInstance DLL_GETMODULEINSTANCE;
 	if (functor == NULL) printf("Error: Have no functor!\n");
 
 
-printf("Try to load module manager\n");
 	if (LB_Module_Handle == NULL) {
 		if (lbLoadModule(libname, LB_Module_Handle) != ERR_NONE) {
+			printf("Failed to load module manager\n");
 			exit(1);
 		}
-		printf("Handle for library is %x\n", LB_Module_Handle);
 	}
-printf("Tried\n");
 
     if (LB_Module_Handle == NULL) {
 	printf("Error: Could not load shared library %s\n", libname);
@@ -130,17 +128,12 @@ printf("Tried\n");
 		exit(1);
 	}
 #endif
-	printf("Try to load functor: '%s'\n", functor);
-	
-
 	if (lbGetFunctionPtr(functor, 
 			     LB_Module_Handle, 
 			     (void **) &DLL_GETMODULEINSTANCE) != ERR_NONE) {
 		exit(1);
 	}
 	
-	printf("Calling functor %s\n", functor);
-
 	if ((err = DLL_GETMODULEINSTANCE(module, NULL, __FILE__, __LINE__)) == ERR_STATE_FURTHER_LOCK) {
 		CL_LOG("Instance is locked. Must set module manager first");
 		module->setModuleManager(module);
