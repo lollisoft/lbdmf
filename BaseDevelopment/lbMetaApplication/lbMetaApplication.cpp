@@ -1,11 +1,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.17 $
+ * $Revision: 1.18 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.17 2002/12/08 17:07:23 lothar Exp $
+ * $Id: lbMetaApplication.cpp,v 1.18 2002/12/12 20:59:38 lothar Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.18  2002/12/12 20:59:38  lothar
+ * Now it runs under Linux again
+ *
  * Revision 1.17  2002/12/08 17:07:23  lothar
  * More tries to run under linux
  *
@@ -220,6 +223,25 @@ lbErrCodes LB_STDCALL lb_MetaApplication::Initialize() {
 
 	// Step 3 (Load sub components, handling menus and else needed for an UI)
 	loadSubModules();
+
+	/**
+	 * After initializion of all event handlers, we need to get up all
+	 * GUI accessible handlers - like menus or else.
+	 * This class, as an example, provides two handlers
+	 * getBasicApplicationInfo and getMainModuleInfo
+	 * 
+	 * The handler depends on some capabilities:
+	 *
+	 * 	1. A basic dialog to show text
+	 *		This may be a container of capabilities
+	 *		 must:SimpleTextDialog
+	 *		 optional:PictureElements
+	 *
+	 * It provides these capabilities:
+	 *
+	 *	1. An information about menu creation
+	 *		This may be a simple string - lb_I_String
+	 */
 
 
 	/**
