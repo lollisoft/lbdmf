@@ -5,6 +5,72 @@
 -- +---------------------------------------------------------
 
 -- +---------------------------------------------------------
+-- | TABLE: Actions
+-- | This defines custom actions for an application. These
+-- | actions may be displayed in formulars as buttons or later
+-- | as detail views in a tab view manner.
+-- +---------------------------------------------------------
+
+CREATE TABLE actions
+(
+  id INTEGER NOT NULL AUTO_INCREMENT,
+  name char(20) NOT NULL,
+  typ  INTEGER,
+  source char(100),
+  target INTEGER,
+  PRIMARY KEY (id)
+);
+
+-- +---------------------------------------------------------
+-- | TABLE: action_types
+-- | This table defines general action types, that could be
+-- | used for actions. This may be 'button press'
+-- | 
+-- +---------------------------------------------------------
+
+CREATE TABLE action_types
+(
+  id INTEGER NOT NULL AUTO_INCREMENT,
+  bezeichnung char(100),
+  PRIMARY KEY (id)
+);
+
+-- +---------------------------------------------------------
+-- | TABLE: action_target
+-- | 
+-- | 
+-- | 
+-- +---------------------------------------------------------
+
+CREATE TABLE action_target
+(
+  id INTEGER NOT NULL AUTO_INCREMENT,
+  bezeichnung	char(100),
+  a_order_nr	INTEGER,
+  what		char(100),
+  PRIMARY KEY (id)
+);
+
+CREATE TABLE formular_actions
+(
+  id INTEGER NOT NULL AUTO_INCREMENT,
+  formular	INTEGER,
+  action	INTEGER,
+  PRIMARY KEY (id)
+);
+
+
+insert into action_types (bezeichnung) values('Buttonpress');
+
+insert into action_target (bezeichnung, a_order_nr, what) 
+
+	values('reserve_trip', 1, 'evt_Reserve_Customer_Trip');
+
+insert into actions (name, typ, source, target) values('Reserve a trip', 1, 'KundenNr', 1);
+
+insert into formular_actions (formular, action) values(1, 1);
+
+-- +---------------------------------------------------------
 -- | TABLE: Translations
 -- +---------------------------------------------------------
 

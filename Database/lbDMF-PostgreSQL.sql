@@ -7,6 +7,89 @@
 --USE jedi;
 
 -- +---------------------------------------------------------
+-- | TABLE: Actions
+-- | This defines custom actions for an application. These
+-- | actions may be displayed in formulars as buttons or later
+-- | as detail views in a tab view manner.
+-- +---------------------------------------------------------
+
+CREATE TABLE actions
+(
+  id SERIAL,
+  name char(20) NOT NULL,
+  typ  INTEGER,
+  source char(100),
+  target INTEGER,
+  PRIMARY KEY (id)
+);
+
+-- +---------------------------------------------------------
+-- | TABLE: action_types
+-- | This table defines general action types, that could be
+-- | used for actions. This may be 'button press'
+-- | 
+-- +---------------------------------------------------------
+
+CREATE TABLE action_types
+(
+  id SERIAL,
+  bezeichnung char(100),
+  PRIMARY KEY (id)
+);
+
+ALTER TABLE actions
+ADD CONSTRAINT cst_action_types_TypID FOREIGN KEY ( typ )
+   REFERENCES action_types ( id );
+
+
+-- +---------------------------------------------------------
+-- | TABLE: action_target
+-- | 
+-- | 
+-- | 
+-- +---------------------------------------------------------
+
+CREATE TABLE action_target
+(
+  id 		SERIAL,
+  bezeichnung	char(100),
+  a_order_nr	INTEGER,
+  what		char(100),
+  PRIMARY KEY (id)
+);
+
+ALTER TABLE actions
+ADD CONSTRAINT cst_action_target_TargetID FOREIGN KEY ( target )
+   REFERENCES action_target ( id );
+
+-- +---------------------------------------------------------
+-- | TABLE: formular_actions
+-- | 
+-- | This table defines, what actions should be accessible in
+-- | a form. The application should begin reading this table
+-- | to build its action elements.
+-- +---------------------------------------------------------
+
+
+CREATE TABLE formular_actions
+(
+  id 		SERIAL,
+  formular	INTEGER,
+  action	INTEGER,
+  PRIMARY KEY (id)
+);
+
+insert into action_types (bezeichnung) values('Buttonpress');
+
+insert into action_target (bezeichnung, a_order_nr, what) 
+
+	values('reserve_trip', 1, 'evt_Reserve_Customer_Trip');
+
+insert into actions (name, typ, source, target) values('Reserve a trip', 1, 'KundenNr', 1);
+
+insert into formular_actions (formular, action) values(1, 1);
+
+-- +---------------------------------------------------------
 -- | TABLE: Translations
 -- +---------------------------------------------------------
 
