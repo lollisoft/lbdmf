@@ -183,17 +183,20 @@ lbErrCodes LB_STDCALL lbDynamicApplication::getDynamicDBForm(lb_I_Unknown* uk) {
 	
 		sampleQuery = database->getQuery(0);	
 
-		char buffer[1000] = "";
-
-		sprintf(buffer,
+		char b =
 		        "select Formulare.id, Formulare.name from Formulare inner join Anwendungen_Formulare on "
 		        "Formulare.id = Anwendungen_Formulare.formularid "
 		        "inner join Anwendungen on Anwendungen_Formulare.anwendungid = Anwendungen.id inner join "
 		        "User_Anwendungen on Anwendungen.id = User_Anwendungen.anwendungenid inner join Users on "
 		        " User_Anwendungen.userid = Users.id where "
 		        "Users.userid = '%s' and Anwendungen.name = '%s' and "
-		        "Formulare.eventname = '%s'"
-		                , userName, applicationName, eventName);
+		        "Formulare.eventname = '%s'";
+
+		char* buffer = malloc(strlen(b)+strlen(userName)+strlen(applicationName)+strlen(eventName)+1);
+
+		buffer[0] = 0;
+
+		sprintf(buffer, b, userName, applicationName, eventName);
 
 		// Get the ID and Name of the intented formular
 
@@ -209,12 +212,16 @@ lbErrCodes LB_STDCALL lbDynamicApplication::getDynamicDBForm(lb_I_Unknown* uk) {
 
 		//- Internal formular implementation ------------------------------------------------
 
+		b =
+		"select Formular_Parameters.parametervalue from Formular_Parameters "
+		"where Formular_Parameters.parametername = 'query' and "
+		"Formular_Parameters.formularid = %s";
+		
+		realloc(buffer, strlen(b)+strlen(formID->charrep())+1);
+
 		buffer[0] = 0;
 
-		sprintf(buffer,
-			"select Formular_Parameters.parametervalue from Formular_Parameters "
-			"where Formular_Parameters.parametername = 'query' and "
-			"Formular_Parameters.formularid = %s", formID->charrep());
+		sprintf(buffer, b, formID->charrep());
 
 		UAP(lb_I_Query, formularQuery, __FILE__, __LINE__)
 
@@ -235,12 +242,16 @@ lbErrCodes LB_STDCALL lbDynamicApplication::getDynamicDBForm(lb_I_Unknown* uk) {
 		UAP_REQUEST(manager.getPtr(), lb_I_String, DBUser)
 		UAP_REQUEST(manager.getPtr(), lb_I_String, DBPass)
 		
-		buffer[0] = 0;
-		
-		sprintf(buffer,
+		b = 
 			"select parametername, parametervalue from Anwendungs_Parameter inner join "
 			"Anwendungen on Anwendungs_Parameter.anwendungid = Anwendungen.id where "
-			"Anwendungen.name = '%s'", applicationName);
+			"Anwendungen.name = '%s'";
+
+		realloc(buffer, strlen(b)+strlen(applicationName)+1);
+
+		buffer[0] = 0;
+		
+		sprintf(buffer, b, applicationName);
 
 		UAP(lb_I_Query, DBConnQuery, __FILE__, __LINE__)
 
@@ -288,7 +299,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::getDynamicDBForm(lb_I_Unknown* uk) {
 	        //- Would load an external module and optionally use other parameters from configuratoin
 	        //--------------------------------------------------------------------------------------
 	        
-	        
+	        free(buffer);
 	} else {
 	        COUT << "KundenDetails" << ENDL;
 	}
@@ -366,16 +377,17 @@ lbErrCodes LB_STDCALL lbDynamicApplication::Initialize(char* user, char* app) {
 	
 	sampleQuery = database->getQuery(0);	
 
-	char buffer[1000] = "";
-
-	sprintf(buffer,
+	char* b =
 	        "select Formulare.eventname, Formulare.menuname from Formulare inner join Anwendungen_Formulare on "
 	        "Formulare.id = Anwendungen_Formulare.formularid "
 	        "inner join Anwendungen on Anwendungen_Formulare.anwendungid = Anwendungen.id inner join "
 	        "User_Anwendungen on Anwendungen.id = User_Anwendungen.anwendungenid inner join Users on "
 	        " User_Anwendungen.userid = Users.id where "
-	        "Users.userid = '%s' and Anwendungen.name = '%s'"
-	                , user, app);
+	        "Users.userid = '%s' and Anwendungen.name = '%s'";
+
+	char* buffer = malloc(strlen(b)+strlen(user)+strlen(app)+1);
+
+	sprintf(buffer, b, user, app);
 
 	// Save user and app internally
 	
@@ -387,6 +399,8 @@ lbErrCodes LB_STDCALL lbDynamicApplication::Initialize(char* user, char* app) {
 	sampleQuery->skipFKCollecting();
 	sampleQuery->query(buffer);
 	sampleQuery->enableFKCollecting();
+	
+	free(buffer);
 	
 	// Fill up the available applications for that user.
 	UAP_REQUEST(manager.getPtr(), lb_I_String, EventName)
