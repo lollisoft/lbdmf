@@ -31,10 +31,13 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.29 $
+ * $Revision: 1.30 $
  * $Name:  $
- * $Id: misc.cpp,v 1.29 2003/12/13 10:56:25 lollisoft Exp $
+ * $Id: misc.cpp,v 1.30 2005/01/21 14:56:44 lollisoft Exp $
  * $Log: misc.cpp,v $
+ * Revision 1.30  2005/01/21 14:56:44  lollisoft
+ * Removed some unused log messages
+ *
  * Revision 1.29  2003/12/13 10:56:25  lollisoft
  * Database improovements and changes in my licence adress.
  * The database part is still not working by updating columns
@@ -272,7 +275,6 @@ lbErrCodes DLLEXPORT LB_FUNCTORCALL instanceOfLogger(lb_I_Unknown** uk, lb_I_Mod
 
 	lbErrCodes err = ERR_NONE; 
         lbLog* instance = new lbLog(); 
-        printf("Have an instance for %s at %p\n", "lbLog", instance); 
         *uk = NULL; 
         instance->setFurtherLock(0); 
         if (m != NULL) { 
@@ -293,7 +295,6 @@ lbErrCodes DLLEXPORT LB_FUNCTORCALL instanceOfLogger(lb_I_Unknown** uk, lb_I_Mod
                 return ERR_FUNCTOR; 
         } 
 
-	printf("Have an unknown interface for %s at %p\n", "lbLog", *uk); 
         return ERR_NONE; 
 } 
 
@@ -335,9 +336,6 @@ lbLog::lbLog() {
         doLog = 1;
         logmessage = NULL;
         lastsize = 0;
-
-	char buf[100] = "";
-	printf("lbLog::lbLog() leaving\n");
 }
 /*...e*/
 /*...slbLog\58\\58\lbLog\40\int l\41\:0:*/

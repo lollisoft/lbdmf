@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.74 $
+ * $Revision: 1.75 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.74 2004/08/10 18:25:00 lollisoft Exp $
+ * $Id: lbModule.cpp,v 1.75 2005/01/21 14:59:29 lollisoft Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.75  2005/01/21 14:59:29  lollisoft
+ * Removed some unused log messages
+ *
  * Revision 1.74  2004/08/10 18:25:00  lollisoft
  * Lesser logging messages.
  *
@@ -3528,7 +3531,7 @@ lbErrCodes DLLEXPORT LB_STDCALL lb_releaseInstance(lb_I_Unknown * inst) {
 /*...sDllMain:0:*/
 BOOL WINAPI DllMain(HINSTANCE dllHandle, DWORD reason, LPVOID situation) {
         char buf[100]="";
-	printf("lbModule.cpp DllMain(HINSTANCE dllHandle, DWORD reason, LPVOID situation) called\n");
+
         switch (reason) {
                 case DLL_PROCESS_ATTACH:
                         if (situation) {
