@@ -236,7 +236,7 @@ ADD CONSTRAINT cst_Formular_Parameters_FormularID FOREIGN KEY ( FormularID )
 -- | DATA
 -- +---------------------------------------------------------
 
-insert into Users Values (1, 'Behrens', 'Lothar', 'behrens', 'password');
+insert into Users Values (1, 'User', 'Test', 'user', 'TestUser');
 
 insert into Anwendungen Values (1, 'lbDMF Manager', 'Dynamic App Manager', 'lbDynApp', 'instanceOfApplication', 'lb_I_Application');
 insert into Anwendungen Values (2, 'Demo application', 'Demonstration', 'Application', 'instanceOfApplication', 'lb_I_Application');
