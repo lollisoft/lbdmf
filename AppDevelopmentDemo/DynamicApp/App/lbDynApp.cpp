@@ -215,7 +215,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::getDynamicDBForm(lb_I_Unknown* uk) {
 		buffer[0] = 0;
 
 		sprintf(buffer,
-			"select Formular_Parameters.parametervalue from Formular_parameters "
+			"select Formular_Parameters.parametervalue from Formular_Parameters "
 			"where Formular_Parameters.parametername = 'query' and "
 			"Formular_Parameters.formularid = %s", formID->charrep());
 
@@ -340,8 +340,10 @@ lbErrCodes LB_STDCALL lbDynamicApplication::Initialize(char* user, char* app) {
 
 	// Get the event manager
 
+	_CL_LOG << "lbDynamicApplication::Initialize(" << user << ", " << app << ") called" LOG_
+
 	lb_I_Module* m = *&manager;
-	printf("Get an event manager\n");
+
 	REQUEST(m, lb_I_EventManager, eman)
 
 
@@ -372,7 +374,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::Initialize(char* user, char* app) {
 	char buffer[1000] = "";
 
 	sprintf(buffer,
-	        "select Formulare.eventname, Formulare.menuname from Formulare inner join Anwendungen_Formulare on "
+	        "select eventname, menuname from Formulare inner join Anwendungen_Formulare on "
 	        "Formulare.id = Anwendungen_Formulare.formularid "
 	        "inner join Anwendungen on Anwendungen_Formulare.anwendungid = Anwendungen.id inner join "
 	        "User_Anwendungen on Anwendungen.id = User_Anwendungen.anwendungenid inner join Users on "
@@ -380,6 +382,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::Initialize(char* user, char* app) {
 	        "Users.userid = '%s' and Anwendungen.name = '%s'"
 	                , user, app);
 
+	_CL_LOG << "Query for all events and their menu names of the current user (" << user << ") for " << app LOG_
 	
 	// Save user and app internally
 	
@@ -391,7 +394,9 @@ lbErrCodes LB_STDCALL lbDynamicApplication::Initialize(char* user, char* app) {
 	if (sampleQuery == NULL) printf("NULL pointer !\n");
 
 	sampleQuery->query(buffer);
+	
 printf("Query executed\n");
+
 	// Fill up the available applications for that user.
 	UAP_REQUEST(manager.getPtr(), lb_I_String, EventName)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, MenuName)
