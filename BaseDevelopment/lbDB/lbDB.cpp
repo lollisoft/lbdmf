@@ -123,7 +123,7 @@ class lbQuery :
 public lb_I_Query
 {
 public:
-	lbQuery() { hdbc = 0; hstmt = 0; databound = 0; count = 0; }
+	lbQuery() { hdbc = 0; hstmt = 0; databound = 0; count = 0; firstfetched = 0; }
 	virtual ~lbQuery() {}
 	
 	DECLARE_LB_UNKNOWN()
@@ -163,6 +163,7 @@ private:
 	RETCODE retcode;
 	char    szSql[256];
 	int	databound;
+	int     firstfetched;
 	
 	UAP(lb_I_Container, boundColumns, __FILE__, __LINE__)
 	int count;
@@ -172,6 +173,8 @@ private:
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbQuery)
         ADD_INTERFACE(lb_I_Query)
 END_IMPLEMENT_LB_UNKNOWN()
+
+UAP(lb_I_Integer, key, __FILE__, __LINE__)
 
 /*...sto be implemented:0:*/
 lbErrCodes LB_STDCALL lbQuery::setData(lb_I_Unknown * uk) {
@@ -209,7 +212,18 @@ lbErrCodes LB_STDCALL lbQuery::init(HENV henv, HDBC _hdbc) {
         	return ERR_DB_ALLOCSTATEMENT;
 	}
 	
-	retcode = SQLSetStmtOption(hstmt, SQL_CURSOR_TYPE, SQL_CURSOR_STATIC);
+	retcode = SQLSetStmtOption(hstmt, SQL_CURSOR_TYPE, SQL_CURSOR_STATIC); //KEYSET_DRIVEN);
+
+// Unneccesary
+//	retcode = SQLSetStmtAttr(hstmt, SQL_ATTR_CURSOR_SCROLLABLE, (SQLPOINTER) SQL_SCROLLABLE, 0);
+
+	if (retcode != SQL_SUCCESS) {
+		dbError( "SQLSetStmtAttr()",henv,hdbc,hstmt);
+		_LOG << "lbDatabase::getQuery() failed due to set statement attributes." LOG_
+		//SQLFreeEnv(henv);
+		return ERR_DB_ALLOCSTATEMENT;
+	}	
+	
 	return ERR_NONE;
 }
 /*...e*/
@@ -230,78 +244,15 @@ lbErrCodes LB_STDCALL lbQuery::query(char* q) {
 	return ERR_NONE;
 }
 /*...e*/
-
-
-#ifdef bla
-/*...s:0:*/
-#define STR_LEN 128+1
-#define REM_LEN 254+1
-
-/* Declare storage locations for result set data */
-
-UCHAR  szQualifier[STR_LEN], szOwner[STR_LEN];
-UCHAR  szTableName[STR_LEN], szColName[STR_LEN];
-UCHAR  szTypeName[STR_LEN], szRemarks[REM_LEN];
-SDWORD Precision, Length;
-SWORD  DataType, Scale, Radix, Nullable;
-
-/* Declare storage locations for bytes available to return */
-
-SDWORD cbQualifier, cbOwner, cbTableName, cbColName;
-SDWORD cbTypeName, cbRemarks, cbDataType, cbPrecision;
-SDWORD cbLength, cbScale, cbRadix, cbNullable;
-
-retcode = SQLColumns(hstmt,
-                     NULL, 0,              /* All qualifiers */
-
-                     NULL, 0,              /* All owners     */
-                     "EMPLOYEE", SQL_NTS,  /* EMPLOYEE table */
-                     NULL, 0);             /* All columns    */
-
-if (retcode == SQL_SUCCESS) {
-
-	/* Bind columns in result set to storage locations */
-
-	SQLBindCol(hstmt, 1, SQL_C_CHAR, szQualifier, STR_LEN,&cbQualifier);
-	SQLBindCol(hstmt, 2, SQL_C_CHAR, szOwner, STR_LEN, &cbOwner);
-	SQLBindCol(hstmt, 3, SQL_C_CHAR, szTableName, STR_LEN,&cbTableName);
-	SQLBindCol(hstmt, 4, SQL_C_CHAR, szColName, STR_LEN, &cbColName);
-	SQLBindCol(hstmt, 5, SQL_C_SSHORT, &DataType, 0, &cbDataType);
-	SQLBindCol(hstmt, 6, SQL_C_CHAR, szTypeName, STR_LEN, &cbTypeName);
-
-SQLBindCol(hstmt, 7, SQL_C_SLONG, &Precision, 0, &cbPrecision);
-	SQLBindCol(hstmt, 8, SQL_C_SLONG, &Length, 0, &cbLength);
-	SQLBindCol(hstmt, 9, SQL_C_SSHORT, &Scale, 0, &cbScale);
-	SQLBindCol(hstmt, 10, SQL_C_SSHORT, &Radix, 0, &cbRadix);
-	SQLBindCol(hstmt, 11, SQL_C_SSHORT, &Nullable, 0, &cbNullable);
-	SQLBindCol(hstmt, 12, SQL_C_CHAR, szRemarks, REM_LEN, &cbRemarks);
-
-	while(TRUE) {
-		retcode = SQLFetch(hstmt);
-		if (retcode == SQL_ERROR || retcode == SQL_SUCCESS_WITH_INFO) {
-			show_error( );
-		}
-		if (retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO){
-			...;  /* Process fetched data */
-		} else {
-			break;
-		}
-	}
-}
-/*...e*/
-#endif
-
-
+/*...sint LB_STDCALL lbQuery\58\\58\getColCount\40\\41\:0:*/
 int LB_STDCALL lbQuery::getColCount() {
 	SWORD count;
 	retcode = SQLNumResultCols(hstmt, &count);
 	
 	return count;
 }
-
-UAP(lb_I_Integer, key, __FILE__, __LINE__)
-
-
+/*...e*/
+/*...svirtual char\42\ LB_STDCALL lbQuery\58\\58\getChar\40\int column\41\:0:*/
 virtual char* LB_STDCALL lbQuery::getChar(int column) {
 	SDWORD cbobjecttyp;
 	char   szobjecttyp[SZLEN+100];
@@ -319,8 +270,11 @@ virtual char* LB_STDCALL lbQuery::getChar(int column) {
 		}
 		
 		if (boundColumns == NULL) _LOG << "Error: Unable to prebind columns!" LOG_
-		count = getColCount();
-		
+		if (firstfetched != 1) {
+			firstfetched = 1; 
+			count = getColCount();
+		}
+			
 		UAP_REQUEST(manager.getPtr(), lb_I_Integer, key)
 		UAP_REQUEST(manager.getPtr(), lb_I_String, string)
 		
@@ -367,10 +321,11 @@ virtual char* LB_STDCALL lbQuery::getChar(int column) {
 
 	return string->getData();
 }
-
+/*...e*/
+/*...slbErrCodes LB_STDCALL lbQuery\58\\58\first\40\\41\:0:*/
 lbErrCodes LB_STDCALL lbQuery::first() {
         UWORD   RowStat[20];
-        UDWORD  RowsFetched;
+        UDWORD  RowsFetched = 0;
 
         // Indicate, that data must prebound to a buffer
         databound = 0;
@@ -381,14 +336,18 @@ lbErrCodes LB_STDCALL lbQuery::first() {
                 _LOG << "lbQuery::first(): Error while fetching next row" LOG_
                 printf("Error in lbQuery::first()\n");
                 dbError( "SQLExtendedFetch()",henv,hdbc,hstmt);
-                return ERR_DB_FETCHNEXT;
+                return ERR_DB_FETCHFIRST;
         }
+        
+        if (RowsFetched == 0) return ERR_DB_FETCHFIRST;
+        
 	return ERR_NONE;
 }
-
+/*...e*/
+/*...slbErrCodes LB_STDCALL lbQuery\58\\58\next\40\\41\:0:*/
 lbErrCodes LB_STDCALL lbQuery::next() {
 	UWORD   RowStat[20];
-	UDWORD  RowsFetched;
+	UDWORD  RowsFetched = 0;
 	
 	// Indicate, that data must prebound to a buffer
 	databound = 0;
@@ -399,15 +358,18 @@ lbErrCodes LB_STDCALL lbQuery::next() {
 		_LOG << "lbQuery::next(): Error while fetching next row" LOG_
 		printf("Error in lbQuery::next()\n");
 		dbError( "SQLExtendedFetch()",henv,hdbc,hstmt);
-		return ERR_DB_FETCHNEXT;
+		return ERR_DB_NODATA;
         }
+
+	if (RowsFetched == 0) return ERR_DB_NODATA;
 
 	return ERR_NONE;
 }
-
+/*...e*/
+/*...slbErrCodes LB_STDCALL lbQuery\58\\58\previous\40\\41\:0:*/
 lbErrCodes LB_STDCALL lbQuery::previous() {
         UWORD   RowStat[20];
-        UDWORD  RowsFetched;
+        UDWORD  RowsFetched = 0;
 
         // Indicate, that data must prebound to a buffer
         databound = 0;
@@ -418,14 +380,18 @@ lbErrCodes LB_STDCALL lbQuery::previous() {
                 _LOG << "lbQuery::previous(): Error while fetching next row" LOG_
                 printf("Error in lbQuery::previous()\n");
                 dbError( "SQLExtendedFetch()",henv,hdbc,hstmt);
-                return ERR_DB_FETCHNEXT;
+                return ERR_DB_NODATA;
         }
+        
+	if (RowsFetched == 0) return ERR_DB_NODATA;
+        
 	return ERR_NONE;
 }
-
+/*...e*/
+/*...slbErrCodes LB_STDCALL lbQuery\58\\58\last\40\\41\:0:*/
 lbErrCodes LB_STDCALL lbQuery::last() {
         UWORD   RowStat[20];
-        UDWORD  RowsFetched;
+        UDWORD  RowsFetched = 0;
 
         // Indicate, that data must prebound to a buffer
         databound = 0;
@@ -436,10 +402,14 @@ lbErrCodes LB_STDCALL lbQuery::last() {
                 _LOG << "lbQuery::last(): Error while fetching next row" LOG_
                 printf("Error in lbQuery::last()\n");
                 dbError( "SQLExtendedFetch()",henv,hdbc,hstmt);
-                return ERR_DB_FETCHNEXT;
+                return ERR_DB_FETCHLAST;
         }
+        
+        if (RowsFetched == 0) return ERR_DB_FETCHLAST;
+                      
 	return ERR_NONE;
 }
+/*...e*/
 /*...e*/
 /*...sclass lbDatabase:0:*/
 class lbDatabase :
