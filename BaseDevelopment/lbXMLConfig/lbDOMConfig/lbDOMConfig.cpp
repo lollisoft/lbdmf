@@ -28,11 +28,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.35 $
+ * $Revision: 1.36 $
  * $Name:  $
- * $Id: lbDOMConfig.cpp,v 1.35 2003/01/27 21:18:54 lothar Exp $
+ * $Id: lbDOMConfig.cpp,v 1.36 2003/03/14 16:00:50 lollisoft Exp $
  *
  * $Log: lbDOMConfig.cpp,v $
+ * Revision 1.36  2003/03/14 16:00:50  lollisoft
+ * Removed the problem with _chkesp() failure. But still crash in my GUI app
+ *
  * Revision 1.35  2003/01/27 21:18:54  lothar
  * More logging
  *
@@ -147,9 +150,9 @@
 
 // As in http://groups.google.com/groups?q=how+to+disable+warning+C4275&hl=en&lr=&selm=uGr0NDca%23GA.248%40uppssnewspub04.moswest.msn.net&rnum=1
 // documented
-#pragma warning( disable: 4275 )
-#pragma warning( disable: 4251 )
-#pragma warning( disable: 4101 )
+//#pragma warning( disable: 4275 )
+//#pragma warning( disable: 4251 )
+//#pragma warning( disable: 4101 )
 
 
 /*...sincludes:0:*/
@@ -200,7 +203,7 @@ extern "C" {
 
 int initialized = 0;
 /*...scheckPtr\40\void\42\ addr\44\ int line\44\ char\42\ file\44\ char\42\ cmp\41\:0:*/
-void checkPtr(void* addr, int line, char* file, char* cmp) {
+void LB_STDCALL checkPtr(void* addr, int line, char* file, char* cmp) {
 	char buf[20] = "";
 	
 	sprintf(buf, "%p", (void*) addr);

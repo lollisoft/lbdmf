@@ -28,11 +28,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.11 $
+ * $Revision: 1.12 $
  * $Name:  $
- * $Id: lbMetaApplication.h,v 1.11 2002/12/29 16:09:29 lothar Exp $
+ * $Id: lbMetaApplication.h,v 1.12 2003/03/14 16:00:38 lollisoft Exp $
  *
  * $Log: lbMetaApplication.h,v $
+ * Revision 1.12  2003/03/14 16:00:38  lollisoft
+ * Removed the problem with _chkesp() failure. But still crash in my GUI app
+ *
  * Revision 1.11  2002/12/29 16:09:29  lothar
  * Intent to go public
  *
@@ -228,13 +231,13 @@ protected:
 	friend class lb_I_Dispatcher;
 
 	// Maps id to event name	
-	DEBUG_UAP(lb_I_Container, events, __FILE__, __LINE__)
+	UAP(lb_I_Container, events, __FILE__, __LINE__)
 	
 	// Holds free id
-	DEBUG_UAP(lb_I_Container, freeIds, __FILE__, __LINE__)
+	UAP(lb_I_Container, freeIds, __FILE__, __LINE__)
 	
 	// Reverse mapping name -> id
-	DEBUG_UAP(lb_I_Container, reverse_events, __FILE__, __LINE__)
+	UAP(lb_I_Container, reverse_events, __FILE__, __LINE__)
 	
 	int maxEvId;
 };

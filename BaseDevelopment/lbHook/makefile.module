@@ -30,7 +30,9 @@ OBJDEP=
 
 ifeq ($(OSTYPE), Windows_NT)
 MOD_INCL=$(STD_INCL) -i=..\dosdir
-COMPILER=MICROSOFT
+
+# use global setup
+#COMPILER=MICROSOFT
 
 ifeq ($(COMPILER), MICROSOFT)
 MOD_INCL = $(STD_INCL_MICROSOFT)

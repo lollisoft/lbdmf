@@ -28,11 +28,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.24 $
+ * $Revision: 1.25 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.24 2003/02/17 21:34:34 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.25 2003/03/14 16:00:36 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.25  2003/03/14 16:00:36  lollisoft
+ * Removed the problem with _chkesp() failure. But still crash in my GUI app
+ *
  * Revision 1.24  2003/02/17 21:34:34  lollisoft
  * Much problems with compilation solved, bu wy came this ??
  *
@@ -109,7 +112,7 @@
 
 #ifdef _MSC_VER
 
-#pragma warning( disable: 4101 )
+//#pragma warning( disable: 4101 )
 
 #endif
 

@@ -28,11 +28,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.49 $
+ * $Revision: 1.50 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.49 2003/02/17 21:34:35 lollisoft Exp $
+ * $Id: lbModule.cpp,v 1.50 2003/03/14 16:00:42 lollisoft Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.50  2003/03/14 16:00:42  lollisoft
+ * Removed the problem with _chkesp() failure. But still crash in my GUI app
+ *
  * Revision 1.49  2003/02/17 21:34:35  lollisoft
  * Much problems with compilation solved, bu wy came this ??
  *
@@ -158,10 +161,10 @@
  **************************************************************/
 /*...e*/
 
-#pragma warning( disable: 4101 )
-#pragma warning( disable: 4018 )
-#pragma warning( disable: 4229 )
-#pragma warning( disable: 4102 )
+//#pragma warning( disable: 4101 )
+//#pragma warning( disable: 4018 )
+//#pragma warning( disable: 4229 )
+//#pragma warning( disable: 4102 )
 
 //#define IR_USAGE
 
@@ -1724,8 +1727,11 @@ BEGIN_IMPLEMENT_LB_UNKNOWN(lbModule)
 END_IMPLEMENT_LB_UNKNOWN()
 
 /*...slb_I_XMLConfig\42\ LB_STDCALL lbModule\58\\58\getXMLConfigObject\40\\41\:0:*/
-typedef lbErrCodes (* LB_STDCALL T_pLB_GETXML_CONFIG_INSTANCE) (lb_I_XMLConfig** inst, lb_I_Module* m, char* file, int line);
+extern "C" {
+typedef lbErrCodes (* T_pLB_GETXML_CONFIG_INSTANCE) (lb_I_XMLConfig** inst, lb_I_Module* m, char* file, int line);
 T_pLB_GETXML_CONFIG_INSTANCE DLL_LB_GETXML_CONFIG_INSTANCE;
+}
+
 
 void LB_STDCALL lbModule::getXMLConfigObject(lb_I_XMLConfig** inst) {
 	lbErrCodes err = ERR_NONE;
@@ -1774,8 +1780,9 @@ printf("Get function pointer\n");
 	
 	
 	// !!!!
-	
+_CL_LOG << "Lade XML Config DLL" LOG_	
         err = DLL_LB_GETXML_CONFIG_INSTANCE(&xml_I, this, __FILE__, __LINE__);
+_CL_LOG << "XML Config DLL geladen" LOG_
         // Debug helper
 printf("Set up location\n");        
         xml_I.setLine(__LINE__);

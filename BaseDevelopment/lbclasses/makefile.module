@@ -34,7 +34,9 @@ C_OPS+= -DLB_CLASSES_DLL_INC
 ifeq ($(OSTYPE), Windows_NT)
 MOD_INCL=$(STD_INCL)
 LIBS = $(DEVROOT)/projects/dll/libs/lbhook.lib
-COMPILER=MICROSOFT
+
+# use global setup
+#COMPILER=MICROSOFT
 ifeq ($(COMPILER), MICROSOFT)
 MOD_INCL = $(STD_INCL_MICROSOFT)
 MOD_INCL += $(foreach s, $(INCLS), /I "$s")

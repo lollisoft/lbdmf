@@ -40,10 +40,6 @@ These headers must define the per module (DLL) EXPORT variable
 /*...e*/
 
 /*...sBaseDevelopment:0:*/
-/*...vlbHook\47\MAKE_BEFORE:0:*/
-/*...vlbHook\47\MAKE_AFTER:0:*/
-/*...vlbHook\47\STD_MAKE:0:*/
-
 /*...sMSC based XML parser:0:*/
 /*...vQ\58\\92\Develop\92\Projects\92\CPP\92\AppDevelopment\92\Console\92\XML\47\lbxmlconfig\46\dtd:0:*/
 /*...vQ\58\\92\Develop\92\Projects\92\CPP\92\AppDevelopment\92\Console\92\XML\47\lbxmlconfig\46\xml:0:*/
@@ -66,9 +62,6 @@ These headers must define the per module (DLL) EXPORT variable
 /*...vlbModule\47\lbModule\46\lnk:0:*/
 /*...vlbModule\47\makefile:0:*/
 /*...vlbModule\47\makefile\46\module:0:*/
-/*...vlbModule\47\MAKE_BEFORE:0:*/
-/*...vlbModule\47\MAKE_AFTER:0:*/
-/*...vlbModule\47\STD_MAKE:0:*/
 /*...vlbModule\47\lbModule\46\h:0:*/
 /*...vlbModule\47\lbModule\46\cpp:0:*/
 /*...e*/
@@ -90,10 +83,6 @@ These headers must define the per module (DLL) EXPORT variable
 
 /*...e*/
 /*...slbClasses:0:*/
-/*...vlbclasses\47\MAKE_BEFORE:0:*/
-/*...vlbclasses\47\MAKE_AFTER:0:*/
-/*...vlbclasses\47\STD_MAKE:0:*/
-
 /*...vlbclasses\47\lbclasses\46\lnk:0:*/
 /*...vlbclasses\47\makefile:0:*/
 /*...vlbclasses\47\makefile\46\bat:0:*/
@@ -145,7 +134,9 @@ findfunctorname
 /*...sAppDevelopment:0:*/
 /*...sGUI:0:*/
 /*...v\46\\46\\47\AppDevelopment\47\GUI\47\wxgui\47\minimal\46\cpp:0:*/
+
 /*...v\46\\46\\47\AppDevelopment\47\GUI\47\wxwrapper\47\dynamic\46\cpp:0:*/
+/*...v\46\\46\\47\AppDevelopment\47\GUI\47\wxwrapper\47\makefile\46\module:0:*/
 /*...e*/
 /*...sConsole:0:*/
 /*...v\46\\46\\47\AppDevelopment\47\Console\47\GlobalAppServer\47\servertest\46\cpp:0:*/
