@@ -11,11 +11,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.46 $
+ * $Revision: 1.47 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.46 2005/01/23 11:35:00 lollisoft Exp $
+ * $Id: mkmk.cpp,v 1.47 2005/01/27 13:01:07 lollisoft Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.47  2005/01/27 13:01:07  lollisoft
+ * Added POST_PROCESS functionality
+ *
  * Revision 1.46  2005/01/23 11:35:00  lollisoft
  * Now the code compiles under SuSE Linux 9.1 except wx. It has link problems
  *
@@ -720,6 +723,7 @@ void writeDllTarget(char* modulename) {
   printf("\t\t@wlib -q -n -b $(PROGRAM).lib +$(PROGRAM).dll\n");
   printf("\t\t@$(CP) $(PROGRAM).dll $(DLLDIR) > null\n");
   printf("\t\t@$(CP) $(PROGRAM).lib $(DLLLIBDIR) > null\n");
+  printf("\t\t@$(POST_PROCESS) \n");
   printf("endif\n");
 
   printf("ifeq ($(COMPILER), MICROSOFT)\n");
@@ -733,6 +737,7 @@ void writeDllTarget(char* modulename) {
 // Hack for copy not found ??  
   printf("\t\t$(CP) $(PROGRAM).dll $(DLLDIR) > null\n");
   printf("\t\t$(CP) $(PROGRAM).lib $(DLLLIBDIR) > null\n");
+  printf("\t\t@$(POST_PROCESS) \n");
   printf("endif\n");
 #endif
 }
@@ -940,7 +945,7 @@ void ShowHelp()
 
   fprintf(stderr, "Enhanced by Lothar Behrens (lothar.behrens@lollisoft.de)\n\n");
 
-  fprintf(stderr, "MKMK: makefile generator $Revision: 1.46 $\n");
+  fprintf(stderr, "MKMK: makefile generator $Revision: 1.47 $\n");
   fprintf(stderr, "Usage: MKMK lib|exe|dll|so modulname includepath,[includepath,...] file1 [file2 file3...]\n");
 }
 /*...e*/
@@ -1240,7 +1245,7 @@ int main(int argc, char *argv[])
     return 0;
 #endif
 #ifdef __WATCOMC__
-    return;
+    return 0;
 #endif
   }
 /*...sbla:0:*/
@@ -1342,5 +1347,6 @@ int main(int argc, char *argv[])
   for (i=0; i<Sources.Count; i++) DoDep(f,(TDepItem*)Sources[i], copyIPathList, count);
   WriteEnding(f,targetname,&Sources);
 //  fclose(f);
+  return 0;
 }
 /*...e*/
