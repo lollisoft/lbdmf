@@ -1,6 +1,5 @@
 /*
-    DMF Distributed Multiplatform Framework (the initial goal of this library)
-    lbModule.h is part of DMF.
+    DMF Distributed Multiplatform Framework
     Copyright (C) 2002  Lothar Behrens (lothar.behrens@lollisoft.de)
 
     This library is free software; you can redistribute it and/or
@@ -20,10 +19,19 @@
 
     The author of this work will be reached by e-Mail or paper mail.
     e-Mail: lothar.behrens@lollisoft.de
-    p-Mail: Lothar Behrens
+    p-Mail:
+            Old
+            Lothar Behrens
             Borsteler Bogen 4
 
             22453 Hamburg (germany)
+
+            New
+            Lothar Behrens
+            Rosmarinstra·e 3
+
+            40235 DÅsseldorf
+
 */
 
 #ifdef WINDOWS
@@ -40,32 +48,15 @@ int isInitializing;
 
 /*...sDllMain:0:*/
 BOOL WINAPI DllMain(HINSTANCE dllHandle, DWORD reason, LPVOID situation) {
-        char buf[100]="";
-        
         switch (reason) {
                 case DLL_PROCESS_ATTACH:
-                        if (situation) {
-                                _LOG << "DLL statically loaded." LOG_
-                        }
-                        else {
-                                _LOG << "DLL dynamically loaded." LOG_
-                        }
                         break;
                 case DLL_THREAD_ATTACH:
-                        _LOG << "New thread starting." LOG_
                         break;
                 case DLL_PROCESS_DETACH:                        
-                        if (situation)
-                        {
-                                _LOG << "DLL released by system." LOG_
-                        }
-                        else
-                        {
-                                _LOG << "DLL released by program." LOG_
-                        }
                         break;
                 case DLL_THREAD_DETACH:
-                        _LOG << "Thread terminating." LOG_
+                        break;
                 derault:
                         return FALSE;
         }

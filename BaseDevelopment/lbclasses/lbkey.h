@@ -1,6 +1,5 @@
 /*
-    DMF Distributed Multiplatform Framework (the initial goal of this library)
-    lbModule.h is part of DMF.
+    DMF Distributed Multiplatform Framework
     Copyright (C) 2002  Lothar Behrens (lothar.behrens@lollisoft.de)
 
     This library is free software; you can redistribute it and/or
@@ -20,18 +19,31 @@
 
     The author of this work will be reached by e-Mail or paper mail.
     e-Mail: lothar.behrens@lollisoft.de
-    p-Mail: Lothar Behrens
+    p-Mail:
+            Old
+            Lothar Behrens
             Borsteler Bogen 4
 
             22453 Hamburg (germany)
+
+            New
+            Lothar Behrens
+            Rosmarinstra·e 3
+
+            40235 DÅsseldorf
+
 */
+
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.17 $
+ * $Revision: 1.18 $
  * $Name:  $
- * $Id: lbkey.h,v 1.17 2003/01/19 18:07:46 lothar Exp $
+ * $Id: lbkey.h,v 1.18 2003/08/16 18:07:00 lollisoft Exp $
  * $Log: lbkey.h,v $
+ * Revision 1.18  2003/08/16 18:07:00  lollisoft
+ * Added my new address due to move
+ *
  * Revision 1.17  2003/01/19 18:07:46  lothar
  * MSC variant runs now under Linux
  *
