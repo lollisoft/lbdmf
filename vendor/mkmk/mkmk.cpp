@@ -11,11 +11,15 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.10 $
+ * $Revision: 1.11 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.10 2001/10/21 13:08:45 lothar Exp $
+ * $Id: mkmk.cpp,v 1.11 2001/10/22 21:28:51 lothar Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.11  2001/10/22 21:28:51  lothar
+ * It may work now with include directory paths, but not in the
+ * case if there are #ifdefs ...
+ *
  * Revision 1.10  2001/10/21 13:08:45  lothar
  * Added includepath parameter
  *
@@ -44,16 +48,23 @@
 
 #include "DEFS.H"
 #include "contain.h"
+
+#ifdef __WATCOMC__
+#include <malloc.h>
+#endif
 /*...e*/
 /*...sdefs:0:*/
 #ifdef __WATCOMC__
+
   #include <dos.h>
-  #define findfirst(x,y,z) _dos_findfirst(x,z,y)
-  #define findnext _dos_findnext
-  #define ffblk find_t
-  #define ff_name name
+  #define dd_findfirst(x,y,z) _dos_findfirst(x,z,y)
+  #define dd_findnext _dos_findnext
+  #define dd_ffblk find_t
+  #define dd_name name
 #else
+
   #include "dosdir.h"
+
 #endif
 /*...e*/
 
@@ -87,6 +98,53 @@
 #define LIB_TARGET 3
 
 int targettype=EXE_TARGET;
+
+char** IncPathList;
+
+/*...sint split\40\const char split_char\44\ char \42\string\44\ char \42\\42\\42\array\41\:0:*/
+int split(const char split_char, char *string, char ***array)
+{
+        char *block;            /* current item block */
+        int index;              /* position in array */
+        int count;              /* number of items in array */
+        char split_string[2];   /* string to hold split character */
+
+        /* generate string for strtok() from split_char */
+        sprintf(split_string, "%c", split_char);
+
+        /* count number of blocks; if only one, return it as sole item */
+        count = 0;
+        block = strchr(string, split_char);
+        if ( block == NULL) count = 1;
+        while ( block != NULL )
+        {
+                block = strchr(block + 1, split_char);
+                count++;
+        }
+
+        /* allocate enough memory to hold pointers to copies of all items */
+
+        *array = (char**) malloc(sizeof(char *) * count);
+        
+        if ( *array == NULL )
+        {
+                /* can't allocate memory, so fail */
+                return 0;
+        }
+        
+        /* find each item, copy, and insert pointer to item in array */
+        index = 0;
+        for ( block = strtok(string, split_string); block != NULL; 
+	      block = strtok(NULL, split_string) )
+              {
+	  	(*array)[index] = block;
+       		index++;
+              }
+
+        /* returnt the number of items in the array */
+        return index;
+}
+/*...e*/
 
 /*...shelpers:0:*/
 /*...sclass TDepList:0:*/
@@ -170,7 +228,9 @@ void TDepList::AddMask(char *Mask)
   char Path[80],Name[80];
 
   memset(&i,0,sizeof(i));
+
   FSplit(Mask,Path,Name);
+
   strcpy(i.Name,Name);
   strcpy(i.Path,Path);
 
@@ -195,37 +255,103 @@ void TDepList::AddMask(char *Mask)
 class TIncludeParser {
   public:
     bool Parse(char *FileName, bool CPP=true);
+    void setIncludes(char** iPathList, int _count);
     TDepList l;
   private:
     char FilePath[80];
     bool Comment,bCPP;
-    bool BasicParse(char *FileName);
+    char** InclPathList;
+    int count;
+    char* BasicParse(char *FileName);
     void ParseComments(char *s);
     void ParseCLine(char *s);
     void AddInclude(char *IncName);
 };
 /*...e*/
+void TIncludeParser::setIncludes(char** iPathList, int _count) {
+	InclPathList = iPathList;
+	count = _count;
+}
 /*...svoid TIncludeParser\58\\58\AddInclude\40\char \42\IncName\41\:0:*/
 void TIncludeParser::AddInclude(char *IncName)
 {
   char s[160];
-  bool Found;
+  char* Found;
+  char Path[255] = "";
+  char realfile[1000] = "";
+  
+/*...sSearch the real place:0:*/
+  // Search on std include path's (First occurence fits)
+  int foundStdPath = 0;
+    
+  for (int i = 0; i < count; i++) {
+  	FILE* f;
+  	strcpy(s, InclPathList[i]);
+  	strcat(s, IncName);
+  	
+  	f = fopen(s, "rt");
+  	
+  	if (f != NULL) {
+  		strcpy(realfile, s);
+  		fclose(f);
+  		foundStdPath = 1;
+  		break;
+  	}
+  }
 
-  if (l.Search(IncName)) return;
+  if (foundStdPath == 0) {
+  	FILE* f;
+  	
+  	f = fopen(IncName, "rt");
+  	
+  	if (f != NULL) {
+        	strcpy(realfile, IncName);
+        	fclose(f);
+	} else { printf("Error: No standard path has this file, and this rule does not match for %s\n", IncName); }
+  }
+/*...e*/
+
+  if (l.Search(realfile)) {
+//	printf("File %s has already been added!\n", realfile);
+	return;
+  }
+
+  if (strcmp(realfile,"") != 0)  {
+    FSplit(realfile, Path, IncName);
+    l.Insert(IncName,Path);
+  }
+    
+/*...sVERBOSE:0:*/
 #ifdef VERBOSE
   printf("    '%s'\n",IncName);
 #endif
+/*...e*/
+
   Found=BasicParse(IncName);
-  if (Found) l.Insert(IncName,"");
+/*...sbla:0:*/
+/*  
+  if (Found) {
+  	FSplit(Found, Path, IncName);
+  	printf("Insert include file %s%s\n", Path, IncName);
+  	l.Insert(IncName,Path);
+  }
   else if (FilePath[0]!=0)
   {
     strcpy(s,FilePath);
     strcat(s,IncName);
     Found=BasicParse(s);
-    l.Insert(IncName,FilePath);
+    FSplit(Found, Path, IncName);
+    printf("Insert include file %s%s\n", Path, IncName);
+    l.Insert(IncName,Path);
   }
+*/  
+/*...e*/
+/*...sVERBOSE:0:*/
+#ifdef VERBOSE
   if (!Found)
-    fprintf(stderr,"WARNING: %s could not be opened\n",IncName);
+    fprintf(stderr,"AddInclude: WARNING: %s could not be opened\n",IncName);
+#endif
+/*...e*/
 }
 /*...e*/
 /*...svoid TIncludeParser\58\\58\ParseCLine\40\char \42\s\41\:0:*/
@@ -234,6 +360,7 @@ void TIncludeParser::ParseCLine(char *s)
   char *t,*p1,*p2;
 
   t=strstr(s,"#include");
+  
   if (t)
   {
     p1=strchr(t,'"');
@@ -244,7 +371,17 @@ void TIncludeParser::ParseCLine(char *s)
       if (p2)
       {
         *p2=0;
+/*...sVERBOSE:0:*/
+        #ifdef VERBOSE
+        printf("Add the include %s\n", p1);
+        #endif
+/*...e*/
         AddInclude(p1);
+/*...sVERBOSE:0:*/
+        #ifdef VERBOSE
+        printf("Added\n");
+        #endif
+/*...e*/
       }
     }
   }
@@ -257,24 +394,72 @@ void TIncludeParser::ParseComments(char *s)
 
   i=0;
   do {
+  #ifdef VERBOSE
+    if (i == 20) printf("Char at %d, strlen is %d\n", i, strlen(s));
+  #endif
     if (Comment)
     {
+    #ifdef VERBOSE
+      if (i == 20) printf("Comment state\n");
+    #endif
+      if (strlen(s)-1 < i) return;
+      if (strlen(s)-1 < i+1) return;
       if (s[i]=='*' && s[i+1]=='/')
       {
         Comment=false;
         i++;
       }
-      else (s[i]='*');
+      else {
+        if (strlen(s)-1 < i) return;
+        (s[i]='*');
+      }
     }
-    else if (s[i]=='/')
-    {
-      switch (s[i+1])
+    else {
+      #ifdef VERBOSE
+      if (i >= 20) printf("No comment state at %d\n", i);
+      #endif
+      if (strlen(s)-1 <= i) {
+        #ifdef VERBOSE
+        if (i >= 20) printf("Return 1\n");
+      	#endif
+      	return;
+      }
+      if (strlen(s)-1 <= i+1) {
+      	#ifdef VERBOSE
+      	if (i >= 20) printf("Return 2\n");
+      	#endif
+      	return;
+      }
+      #ifdef VERBOSE
+      if (i >= 20) printf("Check for /\n");
+      #endif
+      if (s[i]=='/')
       {
-        case '*': Comment=true; i++; break;
-        case '/': s[i]=0; i--; break;
+      #ifdef VERBOSE
+        if (i >= 20) printf("Do switch\n");
+      #endif
+       if (strlen(s) == i+1) {
+         printf("Buffer overflow\n");
+         return;
+       }
+        switch (s[i+1])
+        {
+          case '*': Comment=true; i++; break;
+          case '/': 
+       #ifdef VERBOSE
+          	if (i >= 20) printf("Switch (/)\n");
+       #endif
+          	s[i]=0; 
+          	i--; 
+          	break;
+        }
       }
     }
     i++;
+    if (strlen(s)-1 == i) return;
+#ifdef VERBOSE
+    if (i >= 20) printf("Do the while now\n");
+#endif
   } while (s[i]);
 }
 /*...e*/
@@ -284,6 +469,7 @@ bool TIncludeParser::Parse(char *FileName, bool CPP)
   Comment=false;
   bCPP=CPP;
   GetPath(FileName,FilePath,sizeof(FilePath));
+
   if (!BasicParse(FileName))
   {
     fprintf(stderr,"WARNING: %s could not be opened\n",FileName);
@@ -293,13 +479,33 @@ bool TIncludeParser::Parse(char *FileName, bool CPP)
 }
 /*...e*/
 /*...sbool TIncludeParser\58\\58\BasicParse\40\char \42\FileName\41\:0:*/
-bool TIncludeParser::BasicParse(char *FileName)
+char* TIncludeParser::BasicParse(char *FileName)
 {
   FILE *f;
   char Line[256];
+  static char realfile[1000] = "";
+  int success = 0;
 
-  f=fopen(FileName,"rt");
-  if (!f) return false;
+/*...sfind file in standard include path:0:*/
+  for (int i = 0; i < count; i++) {
+    char file[1000] = "";
+    strcat(file, InclPathList[i]);
+    strcat(file, FileName);
+    f=fopen(file,"rt");
+    if (f != NULL) {
+    	success = 1;
+    	strcpy(realfile, file);
+    	break;
+    }
+  }
+/*...e*/
+  
+  if (success == 0) {
+  	f=fopen(FileName, "rt");
+ 	if (f == NULL) return NULL;
+ 	strcpy(realfile, FileName);
+  }
+  
   do {
     fgets(Line,sizeof(Line)-1,f);
     if (Line[0]!=0)
@@ -309,7 +515,8 @@ bool TIncludeParser::BasicParse(char *FileName)
     }
   } while (!feof(f));
   fclose(f);
-  return true;
+
+  return realfile;
 }
 /*...e*/
 /*...e*/
@@ -359,6 +566,7 @@ void WriteHeader(FILE *f, char *ExeName)
   printf("LIB_OPS  = -b -c -n -q -p=512\n");
   printf("L_OPS_EXE    = D all SYS nt op m op maxe=25 op q\n\n");
   printf("L_OPS_DLL    = D all SYS nt_dll op m op maxe=25 op q\n\n");
+
   printf("L_OPS_LIB    = D all SYS nt_lib op m op maxe=25 op q\n\n");
 #else
   printf("CC       = your favorite C/CPP compiler\n");
@@ -476,13 +684,16 @@ void WriteEnding(FILE *f, char *ModuleName, TDepList *l)
 }
 /*...e*/
 /*...svoid DoDep\40\FILE \42\f\44\ TDepItem \42\d\41\:0:*/
-void DoDep(FILE *f, TDepItem *d)
+void DoDep(FILE *f, TDepItem *d, char** iPathList, int count)
 {
   TIncludeParser p;
   char FileName[256];
 
   strcpy(FileName,d->Path);
   strcat(FileName,d->Name);
+  
+  p.setIncludes(iPathList, count);
+  
   p.Parse(FileName);
   char fullName[1000] = "";
   
@@ -503,19 +714,20 @@ void main(int argc, char *argv[])
   FILE *f;
   TDepList Sources;
   int i;
-
   if (argc<4)
   {
     ShowHelp();
-    return 0;
+    return;
   }
+/*...sbla:0:*/
 /*  f=fopen("makefile","wt");
   if (!f)
   {
 	  fputs("ERROR: could not create makefile",stderr);
-    return 0;
+    return;
   }
 */  
+/*...e*/
 /*...sdetermine target type:0:*/
   char *target = strdup(argv[1]);
   char *targetname = strdup(argv[2]);
@@ -543,9 +755,37 @@ void main(int argc, char *argv[])
   
 //  WriteHeader(f,targetname);
   char *inclPaths = strdup(argv[3]);
-  printf("Parameter include path: %s\n", inclPaths);
+  
+  //const char split_char, char *string, char ***array
+  int count = split(',', inclPaths, &IncPathList);
+  
+/*...sVERBOSE:0:*/
+#ifdef VERBOSE  
+  for (i = 0; i < count; i++) {
+  	printf("Path: %s\n", IncPathList[i]);
+  }
+#endif
+/*...e*/
+  char** copyIPathList = NULL;
+  
+  copyIPathList = new char*[count];
+
+  for (i = 0; i < count; i++) {
+  	char temp[1000] = "";
+  	strcpy(temp, IncPathList[i]);
+  	if(temp[strlen(temp)] != '\\') strcat(temp, "\\");
+  	copyIPathList[i] = strdup(temp);
+  }
+/*...sVERBOSE:0:*/
+#ifdef VERBOSE
+  for (i = 0; i < count; i++) {
+  	printf("Have copied this entry: %s\n", copyIPathList[i]);
+  }
+#endif
+/*...e*/
+  
   for (i=4; i<argc; i++) Sources.AddMask(argv[i]);
-  for (i=0; i<Sources.Count; i++) DoDep(f,(TDepItem*)Sources[i]);
+  for (i=0; i<Sources.Count; i++) DoDep(f,(TDepItem*)Sources[i], copyIPathList, count);
   WriteEnding(f,targetname,&Sources);
 //  fclose(f);
 }
