@@ -11,11 +11,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.11 $
+ * $Revision: 1.12 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.11 2001/10/22 21:28:51 lothar Exp $
+ * $Id: mkmk.cpp,v 1.12 2001/10/23 20:17:56 lothar Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.12  2001/10/23 20:17:56  lothar
+ * Changed hardcoded path seperator
+ *
  * Revision 1.11  2001/10/22 21:28:51  lothar
  * It may work now with include directory paths, but not in the
  * case if there are #ifdefs ...
@@ -472,7 +475,7 @@ bool TIncludeParser::Parse(char *FileName, bool CPP)
 
   if (!BasicParse(FileName))
   {
-    fprintf(stderr,"WARNING: %s could not be opened\n",FileName);
+    fprintf(stderr,"TIncludeParser::Parser() WARNING: %s could not be opened\n",FileName);
     return false;
   }
   else return true;
@@ -717,7 +720,7 @@ void main(int argc, char *argv[])
   if (argc<4)
   {
     ShowHelp();
-    return;
+    return 0;
   }
 /*...sbla:0:*/
 /*  f=fopen("makefile","wt");
@@ -772,8 +775,13 @@ void main(int argc, char *argv[])
 
   for (i = 0; i < count; i++) {
   	char temp[1000] = "";
+	char pc[2] = "";
+	sprintf(pc, "%c", PathChar);
+	
   	strcpy(temp, IncPathList[i]);
-  	if(temp[strlen(temp)] != '\\') strcat(temp, "\\");
+  	if(temp[strlen(temp)] != PathChar) strcat(temp, pc);
+	
+	printf("Prepared include directory %s\n", temp);
   	copyIPathList[i] = strdup(temp);
   }
 /*...sVERBOSE:0:*/
