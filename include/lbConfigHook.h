@@ -76,6 +76,8 @@ lbErrCodes LB_STDCALL releaseInstance(lb_I_Unknown* inst);
 DLLEXPORT void LB_STDCALL unHookAll();
 /*...e*/
 
+DLLEXPORT char* LB_STDCALL ltoa(void* ptr);
+
 /*...sLogging macros:0:*/
 DLLEXPORT lb_I_Log *log;
 DLLEXPORT int isInitializing;
@@ -113,26 +115,6 @@ DLLEXPORT int isInitializing;
 /*...e*/
 #endif
 #endif
-
-/*...sbla:0:*/
-#ifdef bla
-#define CL_LOG(msg) \
-{ \
-	char *datei = strrchr(__FILE__, '\\'); \
-	char *buf = NULL; \
-	buf = (char*) malloc(1000); \
-	if (datei == NULL) { \
-		datei = __FILE__; \
-	} \
-	else { \
-		datei++; \
-	} \
-	sprintf(buf, "File: %s, Line: %d, Msg: %s\n", datei, __LINE__, msg); \
-	CL_doLog("c:\\log\\lbDMF.log", buf); \
-	free((void*) buf); \
-}
-#endif
-/*...e*/
 
 /*...sLOG_INSTANCE:0:*/
 #define LOG_INSTANCE \
@@ -175,19 +157,18 @@ DLLEXPORT int isInitializing;
 #ifndef __MISC
 #define _CL_LOG \
 { \
-	ofstream of("C:\\log\\wsmaster.log"); \
-	
-        of << msg LOG_ \
+	ofstream of; \
+	of.open("C:\\log\\wsmaster.log", ios::app); \
+        of \
         
 #endif
 #ifdef __MISC
 #define _CL_LOG \
 { \
-	ofstream of("C:\\log\\wsmaster.log"); \
-	
-        of << msg LOG_ \
+	ofstream of; \
+	of.open("C:\\log\\wsmaster.log", ios::app); \
+        of \
         
-#endif
 #endif
 /*...sLOG\40\msg\41\:0:*/
 #define LOG(msg)	\
@@ -195,7 +176,7 @@ DLLEXPORT int isInitializing;
 				cout << "Tried to log while initializing the logger." << \
 				"Msg: " << msg << " File: " << __FILE__ << " Line: " << __LINE__ << endl; \
 			} else { \
-				GET_ LOG_INSTANCE \
+				LOG_INSTANCE \
 				log->log(msg, __LINE__, __FILE__); \
 			}
 /*...e*/
@@ -204,7 +185,7 @@ DLLEXPORT int isInitializing;
 			if (isInitializing != 0) { \
 				cout << "Tried to log while initializing the logger." << endl; \
 			} else { \
-				GET_ LOG_INSTANCE \
+				LOG_INSTANCE \
 				log->enable(); \
 			}
 /*...e*/
@@ -213,7 +194,7 @@ DLLEXPORT int isInitializing;
 			if (isInitializing != 0) { \
 				cout << "Tried to log while initializing the logger." << endl; \
 			} else { \
-				GET_ LOG_INSTANCE \
+				LOG_INSTANCE \
 				log->disable(); \
 			}
 /*...e*/
@@ -222,7 +203,7 @@ DLLEXPORT int isInitializing;
 			if (isInitializing != 0) { \
 				cout << "Tried to log while initializing the logger." << endl; \
 			} else { \
-				GET_ LOG_INSTANCE \
+				LOG_INSTANCE \
 				log->event_begin(); \
 			}
 /*...e*/
@@ -231,7 +212,7 @@ DLLEXPORT int isInitializing;
 			if (isInitializing != 0) { \
 				cout << "Tried to log while initializing the logger." << endl; \
 			} else { \
-				GET_ LOG_INSTANCE \
+				LOG_INSTANCE \
 				log->event_end(); \
 			}
 /*...e*/
@@ -240,7 +221,7 @@ DLLEXPORT int isInitializing;
 			if (isInitializing != 0) { \
 				cout << "Tried to log while initializing the logger." << endl; \
 			} else { \
-				GET_ LOG_INSTANCE \
+				LOG_INSTANCE \
 				log->setPrefix(a); \
 			}
 /*...e*/

@@ -1,11 +1,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.13 $
+ * $Revision: 1.14 $
  * $Name:  $
- * $Id: lbErrcodes.h,v 1.13 2002/09/07 09:57:10 lothar Exp $
+ * $Id: lbErrcodes.h,v 1.14 2002/10/28 18:38:07 lothar Exp $
  *
  * $Log: lbErrcodes.h,v $
+ * Revision 1.14  2002/10/28 18:38:07  lothar
+ * Current version works
+ *
  * Revision 1.13  2002/09/07 09:57:10  lothar
  * First working callback function
  *
@@ -87,6 +90,7 @@ enum lbErrCodes {
 
 	ERR_DISP_HANDLER_EXSISTS,
 	ERR_REGISTER_HANDLER,
+	ERR_DISPATCH_FAILS,
 
 /* Errcodes for appbus dispatcher in connected state */
 

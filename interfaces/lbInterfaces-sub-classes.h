@@ -1,14 +1,17 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.28 $
+ * $Revision: 1.29 $
  * $Name:  $
- * $Id: lbInterfaces-sub-classes.h,v 1.28 2002/10/04 16:53:12 lothar Exp $
+ * $Id: lbInterfaces-sub-classes.h,v 1.29 2002/10/28 18:38:07 lothar Exp $
  *
  * $Log: lbInterfaces-sub-classes.h,v $
+ * Revision 1.29  2002/10/28 18:38:07  lothar
+ * Current version works
+ *
  * Revision 1.28  2002/10/04 16:53:12  lothar
  * Replaced old LOG macro with the new
- * _LOG << "text" << integer value LOG_
+ * _CL_LOG << "text" << integer value LOG_
  * combination. This makes sprintf obsolete.
  *
  * Revision 1.27  2002/10/01 19:23:12  lothar
@@ -203,7 +206,7 @@ const char* LB_STDCALL classname::getName() const { \
 \
 ObjectTyp LB_STDCALL classname::getType() const {   \
         if (OTyp == LB_OBJECT) {          \
-                _LOG << "Derived object has not been initialized correctly!" LOG_ \
+                _CL_LOG << "Derived object has not been initialized correctly!" LOG_ \
         }                                 \
         return OTyp;                      \
 }                                         \
@@ -316,26 +319,25 @@ classname::classname(const lb_I_Unknown* o, const lb_I_KeyBase* _key, lb_I_Eleme
     if (_next != NULL) { \
         _next->queryInterface("lb_I_Element", (void**) &next, __FILE__, __LINE__); \
     } \
-    if (o == NULL) CL_LOG("Error! Can't clone a NULL pointer"); \
+    if (o == NULL) _CL_LOG << "Error! Can't clone a NULL pointer" LOG_ \
     data = o->clone(__FILE__, __LINE__); \
     char ptr[20] = ""; \
     sprintf(ptr, "%p", (void*) data); \
     if (strcmp(ptr, "019a30c0") == 0) { \
-    	CL_LOG("Mysterious object found") \
+    	_CL_LOG << "Mysterious object found" LOG_ \
     } \
     if (data->getRefCount() > 1) { \
-        CL_LOG("Refcount after cloning is more than 1 !!!"); \
+        _CL_LOG << "Refcount after cloning is more than 1 !!!" LOG_ \
     } \
     lb_I_Unknown* uk_key = NULL; \
     key = (lb_I_KeyBase*) _key->clone(__FILE__, __LINE__); \
-    if (key == NULL) CL_LOG("Key cloning in constructor failed. May be a memory problem"); \
+    if (key == NULL) _CL_LOG << "Key cloning in constructor failed. May be a memory problem" LOG_ \
 } \
 \
 classname::~classname() { \
-        char buf[1000] = ""; \
         if (key != NULL) { \
                 key->setDebug(1); \
-                if (key->deleteState() != 1) CL_LOG("Key wouldn't deleted in container element!"); \
+                if (key->deleteState() != 1) _CL_LOG << "Key wouldn't deleted in container element!" LOG_ \
                 RELEASE(key); \
         } \
         if (data != NULL) { \
@@ -343,14 +345,21 @@ classname::~classname() { \
                         lb_I_ConfigObject* node; \
                         data->queryInterface("lb_I_ConfigObject", (void**) &node, __FILE__ ": " #classname "::~" #classname, __LINE__); \
                         if (node != NULL) { \
-	                        sprintf(buf, "Data (lb_I_Unknown at %p) (created at: %s) (refcount=%d) (classname='%s', tagname='%s') wouldn't deleted in container element!", \
-        	                (void*) data, data->getCreationLoc(), data->getRefCount(), data->getClassName(), node->getName()); \
+	                        _CL_LOG << "Data (lb_I_Unknown at " << \
+	                        ltoa((void*) data) << \
+	                        ") (created at: " << data->getCreationLoc() << \
+	                        ") (refcount=" << data->getRefCount() << \
+	                        ") (classname='" << data->getClassName() << \
+	                        "', tagname='" << node->getName() << "') wouldn't deleted in container element!" LOG_ \
         	                node->release(__FILE__, __LINE__); \
                         } else { \
-	                        sprintf(buf, "Data (at %p) (created at: %s) (refcount=%d) (classname='%s') wouldn't deleted in container element!", \
-        	                (void*) data, data->getCreationLoc(), data->getRefCount(), data->getClassName()); \
+	                        _CL_LOG << "Data (lb_I_Unknown at " << \
+	                        ltoa((void*) data) << \
+	                        ") (created at: " << data->getCreationLoc() << \
+	                        ") (refcount=" << data->getRefCount() << \
+	                        ") (classname='" << data->getClassName() << \
+	                        "', tagname='" << node->getName() << "') wouldn't deleted in container element!" LOG_ \
         	        } \
-                        CL_LOG(buf); \
                         char ptr[20] = ""; \
                         sprintf(ptr, "%p", (void*) data); \
                         manager->printReferences(ptr); \
@@ -508,7 +517,7 @@ lbErrCodes classname::insert(const co_Interface* e, const lb_I_KeyBase* key) { \
         lbErrCodes err = ERR_NONE; \
 \
         if ((err = insert((lb_I_Unknown*) e, key)) != ERR_NONE) { \
-                _LOG << "lbContainer::insert(...) Failed!" LOG_ \
+                _CL_LOG << "lbContainer::insert(...) Failed!" LOG_ \
                 return err; \
         } \
 \
@@ -520,7 +529,7 @@ lbErrCodes classname::insert(const lb_I_Unknown* e, const lb_I_KeyBase* key) { \
         lbErrCodes err = ERR_NONE; \
 \
         if ((err = _insert(e, key)) != ERR_NONE) { \
-                _LOG << "lbContainer::insert(...) Failed!" LOG_ \
+                _CL_LOG << "lbContainer::insert(...) Failed!" LOG_ \
                 return err; \
         } \
 \
@@ -532,7 +541,7 @@ lbErrCodes classname::remove(const lb_I_KeyBase* key) { \
         lbErrCodes err = ERR_NONE; \
 \
         if ((err = _remove(key)) != ERR_NONE) { \
-                _LOG << "lbContainer::remove(...) Failed!" LOG_ \
+                _CL_LOG << "lbContainer::remove(...) Failed!" LOG_ \
                 return err; \
         } \
 \
@@ -558,11 +567,11 @@ lb_I_Unknown* classname::nextElement() { \
     lb_I_Element *temp = iterator; \
     iterator = iterator->getNext(); \
 \
-    if (temp == NULL) _LOG << "Temporary iterator object is NULL!" LOG_ \
+    if (temp == NULL) _CL_LOG << "Temporary iterator object is NULL!" LOG_ \
 \
     lb_I_Object *o = temp->getObject(); \
 \
-    if (o == NULL) _LOG << "Temporary object o is NULL!" LOG_ \
+    if (o == NULL) _CL_LOG << "Temporary object o is NULL!" LOG_ \
 \
     return temp->getObject(); \
 } \
@@ -572,7 +581,7 @@ lb_I_Unknown* classname::getElement(const co_Key* key) { \
     while (temp) { \
         if ((temp) && (*(temp->getKey()) == key)) { \
           lb_I_Unknown *o = temp->getObject(); \
-          if (o == NULL) _LOG << "Temporary object o is NULL!") LOG_ \
+          if (o == NULL) _CL_LOG << "Temporary object o is NULL!") LOG_ \
           return o; \
         } \
 \
@@ -630,7 +639,7 @@ lb_I_KeyBase* LB_STDCALL classname::getKeyAt(int i) { \
 void LB_STDCALL classname::deleteAll() { \
 \
     if (container_data == NULL) { \
-        CL_LOG("Error: Can't remove from empty container!"); \
+        _CL_LOG << "Error: Can't remove from empty container!" LOG_ \
         return ;\
     } \
 \
@@ -654,7 +663,7 @@ lbErrCodes LB_STDCALL classname::insert(lb_I_Unknown** const e, lb_I_KeyBase** c
         lbErrCodes err = ERR_NONE; \
 \
         if ((err = _insert(e, key)) != ERR_NONE) { \
-                CL_LOG("lbContainer::insert(...) Failed!"); \
+                _CL_LOG << "lbContainer::insert(...) Failed!" LOG_ \
                 return err; \
         } \
 \
@@ -666,7 +675,7 @@ lbErrCodes LB_STDCALL classname::remove(lb_I_KeyBase** const key) { \
         lbErrCodes err = ERR_NONE; \
 \
         if ((err = _remove(key)) != ERR_NONE) { \
-                CL_LOG("lbContainer::remove(...) Failed!"); \
+                _CL_LOG  << "lbContainer::remove(...) Failed!" LOG_ \
                 return err; \
         } \
 \
@@ -681,11 +690,11 @@ lbErrCodes LB_STDCALL classname::_insert(lb_I_Unknown** const e, lb_I_KeyBase** 
         _data->setModuleManager(manager.getPtr(), __FILE__, __LINE__); \
 \
         _data->queryInterface("lb_I_Element", (void**) &container_data, __FILE__, __LINE__); \
-        if (container_data == NULL) CL_LOG("Could not get unknown interface of lbElement!"); \
+        if (container_data == NULL) _CL_LOG << "Could not get unknown interface of lbElement!" LOG_ \
 \
         lb_I_Unknown* uk_o = NULL; \
         if ((uk_o = container_data->getObject()) == NULL) { \
-                CL_LOG("Failed to insert first element in classname::insert"); \
+                _CL_LOG << "Failed to insert first element in classname::insert" LOG_ \
                 return ERR_CONTAINER_INSERT; \
         } else RELEASE(uk_o); \
     } \
@@ -715,7 +724,7 @@ lbErrCodes LB_STDCALL classname::_insert(lb_I_Unknown** const e, lb_I_KeyBase** 
 lbErrCodes LB_STDCALL classname::_remove(lb_I_KeyBase** const key) { \
 \
     if (container_data == NULL) { \
-        CL_LOG("Error: Can't remove from empty container!"); \
+        _CL_LOG << "Error: Can't remove from empty container!" LOG_ \
         return ERR_CONTAINER_REMOVE; \
     } \
 \
@@ -734,7 +743,7 @@ lbErrCodes LB_STDCALL classname::_remove(lb_I_KeyBase** const key) { \
             return ERR_NONE; \
         } \
     } \
-    CL_LOG("Error: No object with that key"); \
+    _CL_LOG << "Error: No object with that key" LOG_ \
     return ERR_CONTAINER_REMOVE; \
 } \
 \
@@ -755,16 +764,16 @@ int LB_STDCALL classname::hasMoreElements() { \
 lb_I_Unknown* LB_STDCALL classname::nextElement() { \
     lb_I_Element *temp = iterator; \
     if (temp == NULL) { \
-        CL_LOG("Error: Please call hasMoreElements first to check if any elements are available!"); \
+        _CL_LOG << "Error: Please call hasMoreElements first to check if any elements are available!" LOG_ \
         return NULL; \
     } \
     iterator = iterator->getNext(); \
 \
-    if (temp == NULL) cout << "Temporary iterator object is NULL!" << endl; \
+    if (temp == NULL) _CL_LOG << "Temporary iterator object is NULL!" LOG_ \
 \
     lb_I_Unknown *o = temp->getObject(); \
 \
-    if (o == NULL) cout << "Temporary object o is NULL!" << endl; \
+    if (o == NULL) _CL_LOG << "Temporary object o is NULL!" LOG_ \
 \
     return o; \
 } \
@@ -803,6 +812,7 @@ public:
         virtual void LB_STDCALL notify_create(lb_I_Unknown* that, char* implName, char* file = "", int line = 0) = 0;
         virtual void LB_STDCALL notify_add(lb_I_Unknown* that, char* implName, char* file, int line) = 0;
         virtual void LB_STDCALL notify_release(lb_I_Unknown* that, char* implName, char* file, int line) = 0;
+        virtual void LB_STDCALL notify_destroy(lb_I_Unknown* that, char* implName, char* file, int line) = 0;
 
         virtual int  LB_STDCALL can_delete(lb_I_Unknown* that, char* implName, char* file = "", int line = 0) = 0;
 
