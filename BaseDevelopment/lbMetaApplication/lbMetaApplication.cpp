@@ -1,11 +1,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.5 $
+ * $Revision: 1.6 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.5 2002/08/06 05:41:39 lothar Exp $
+ * $Id: lbMetaApplication.cpp,v 1.6 2002/08/21 17:59:42 lothar Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.6  2002/08/21 17:59:42  lothar
+ * More functions implemented
+ *
  * Revision 1.5  2002/08/06 05:41:39  lothar
  * More special Dispatcher and EventManager interface.
  * Empty bodies compiling
@@ -53,6 +56,7 @@ extern "C" {
 #include <lbMetaApplication.h>
 /*...e*/
 
+/*...sFunctors:0:*/
 #ifdef __cplusplus
 extern "C" {       
 #endif            
@@ -66,6 +70,49 @@ IMPLEMENT_SINGLETON_FUNCTOR(instanceOfEventManager, lb_EventManager)
 #ifdef __cplusplus
 }
 #endif            
+/*...e*/
+
+/*...sclass lb_EvHandler and implementation:0:*/
+class lb_EvHandler : public lb_I_EvHandler {
+public:
+        lb_EvHandler();
+        virtual ~lb_EvHandler();
+
+        DECLARE_LB_UNKNOWN()
+
+public:
+        virtual lbErrCodes LB_STDCALL setHandler(lbEvHandler evHandler);
+        virtual lbEvHandler LB_STDCALL getHandler();
+        
+        lbEvHandler ev;
+};
+
+BEGIN_IMPLEMENT_LB_UNKNOWN(lb_EvHandler)
+	ADD_INTERFACE(lb_I_EvHandler)
+END_IMPLEMENT_LB_UNKNOWN()
+
+lb_EvHandler::lb_EvHandler() {
+	ev = NULL;
+}
+
+lb_EvHandler::~lb_EvHandler() {
+}
+
+lbErrCodes LB_STDCALL lb_EvHandler::setData(lb_I_Unknown* uk) {
+	LOG("lb_EvHandler::setData() has not been implemented");
+	
+	return ERR_NONE;
+}
+
+lbErrCodes LB_STDCALL lb_EvHandler::setHandler(lbEvHandler evHandler) {
+	ev = evHandler;
+	return ERR_NONE;
+}
+
+lbEvHandler LB_STDCALL lb_EvHandler::getHandler() {
+	return ev;
+}
+/*...e*/
 
 /*...slb_MetaApplication:0:*/
 lb_MetaApplication::lb_MetaApplication() {
@@ -80,12 +127,18 @@ lb_MetaApplication::~lb_MetaApplication() {
 lbErrCodes LB_STDCALL lb_MetaApplication::registerEventHandler(lb_I_Dispatcher* disp) {
 
 	disp->addEventHandlerFn((lbEvHandler) lbEvHandler1, "getBasicApplicationInfo");
+	disp->addEventHandlerFn((lbEvHandler) lbEvHandler2, "getMainModuleInfo");
 
 	return ERR_NONE;
 }
 
 lbErrCodes LB_STDCALL lb_MetaApplication::lbEvHandler1(lb_I_Unknown* uk) {
 	LOG("lb_MetaApplication::lbEvHandler1() called")
+	return ERR_NONE;
+}
+
+lbErrCodes LB_STDCALL lb_MetaApplication::lbEvHandler2(lb_I_Unknown* uk) {
+	LOG("lb_MetaApplication::lbEvHandler2() called")
 	return ERR_NONE;
 }
 
@@ -136,6 +189,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::Initialize() {
 	 * It should moved into the class declatation and used in the dispatch functions.
 	 */
 	int getBasicApplicationInfo;
+	int getMainModuleInfo;
 
 	/**
 	 * Registrieren eines Events, der auch auf der GUI Seite bekannt ist.
@@ -148,11 +202,15 @@ lbErrCodes LB_STDCALL lb_MetaApplication::Initialize() {
 	UAP_REQUEST(m, lb_I_EventManager, eman)
 	 
 	eman->registerEvent("getBasicApplicationInfo", getBasicApplicationInfo);
-
+	eman->registerEvent("getMainModuleInfo", getMainModuleInfo);
 
 	char buf[1000] = "";
 	
 	sprintf(buf, "Registered an event 'getBasicApplicationInfo' as %d", getBasicApplicationInfo);
+	
+	LOG(buf)
+
+	sprintf(buf, "Registered an event 'getMainModuleInfo' as %d", getMainModuleInfo);
 	
 	LOG(buf)
 /*...e*/
@@ -257,6 +315,7 @@ END_IMPLEMENT_LB_UNKNOWN()
 
 lb_EventManager::lb_EventManager() {
 	LOG("lb_EventManager::lb_EventManager() called")
+	maxEvId = 0;
 }
 
 lb_EventManager::~lb_EventManager() {
@@ -268,14 +327,82 @@ lbErrCodes LB_STDCALL lb_EventManager::setData(lb_I_Unknown* uk) {
 	return ERR_NONE;
 }
 
+/*...slb_EventManager\58\\58\registerEvent\40\char\42\ EvName\44\ int \38\ EvNr\41\:0:*/
 lbErrCodes LB_STDCALL lb_EventManager::registerEvent(char* EvName, int & EvNr) {
 	char buf[100] = "";
+	lbErrCodes err = ERR_NONE;
+
+/*...sInit containers:8:*/
+	if (events == NULL) {
+		LOG("Create the instance of event containers")
+		// Create the instance, that holds the events mapping
+		REQUEST(manager.getPtr(), lb_I_Container, events)
+		events->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+
+		// For housekeeping	
+		REQUEST(manager.getPtr(), lb_I_Container, freeIds)
+		freeIds->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+	}
+/*...e*/
 	
 	sprintf(buf, "lb_EventManager::registerEvent(%s)", EvName);
 	LOG(buf)
 	
+/*...sSetup key:8:*/
+	UAP_REQUEST(manager.getPtr(), lb_I_String, stringKey)
+	stringKey->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+	stringKey->setData(EvName);
+	
+	UAP(lb_I_KeyBase, kk, __FILE__, __LINE__)
+	QI(stringKey, lb_I_Unknown, kk, __FILE__, __LINE__)
+/*...e*/
+	
+	LOG("Test if event is still registered")
+	
+/*...sError handling:8:*/
+	if (events == NULL) LOG("Nullpointer detected (events)!")
+	if (*&kk == NULL) LOG("Nullpointer detected (kk)!")
+	if (events->exists(&kk) == 1) {
+		LOG("lb_EventManager::registerEvent(): Error: Event schon registriert")
+		return ERR_EVENT_EXISTS;
+	}
+/*...e*/
+	
+	LOG("Determine id")
+/*...sdetermine id:8:*/
+	if (freeIds->Count() == 0) {
+		maxEvId++;
+	} else {
+		UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
+		UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
+		
+		uk = freeIds->getElementAt(0);
+		key = freeIds->getKeyAt(0);
+		
+		freeIds->remove(&key);
+		
+		UAP(lb_I_Integer, i, __FILE__, __LINE__)
+		QI(uk, lb_I_Integer, i, __FILE__, __LINE__)
+		maxEvId = i->getData();
+	}
+/*...e*/
+	
+	LOG("Insert new")
+/*...sinsert new event:8:*/
+	UAP_REQUEST(manager.getPtr(), lb_I_Integer, newKey)
+	newKey->setData(maxEvId);
+	
+	UAP(lb_I_Unknown, k, __FILE__, __LINE__)
+	QI(newKey, lb_I_Unknown, k, __FILE__, __LINE__)
+
+	events->insert(&k, &kk);
+	
+	EvNr = maxEvId;
+/*...e*/
+	
 	return ERR_NONE;
 }
+/*...e*/
 
 lbErrCodes LB_STDCALL lb_EventManager::resolveEvent(char* EvName, int & evNr) {
 	return ERR_NONE;
@@ -301,18 +428,64 @@ lbErrCodes LB_STDCALL lb_Dispatcher::setData(lb_I_Unknown* uk) {
 
 lbErrCodes LB_STDCALL lb_Dispatcher::setEventManager(lb_I_EventManager* EvManager) {
 	LOG("lb_Dispatcher::setEventManager() called")
+	
+	evManager = EvManager;
+	
 	return ERR_NONE;
 }
 
+/*...slbErrCodes LB_STDCALL lb_Dispatcher\58\\58\addEventHandlerFn\40\lbEvHandler evHandler\44\ char\42\ EvName\41\:0:*/
 lbErrCodes LB_STDCALL lb_Dispatcher::addEventHandlerFn(lbEvHandler evHandler, char* EvName) {
 	LOG("lb_Dispatcher::addEventHandlerFn(lbEvHandler evHandler, char* EvName) called")
-	return ERR_NONE;
-}
+	
 
-lbErrCodes LB_STDCALL lb_Dispatcher::addEventHandlerFn(lbEvHandler evHandler, int EvNr) {
-	LOG("lb_Dispatcher::addEventHandlerFn(lbEvHandler evHandler, int EvNr) called")
+	/*
+	 * Create an instance of a function pointer object
+	 */
+	
+	int id = 0;
+	evManager->resolveEvent(EvName, id);
+
+	addEventHandlerFn(evHandler, id);	
+	
 	return ERR_NONE;
 }
+/*...e*/
+/*...slbErrCodes LB_STDCALL lb_Dispatcher\58\\58\addEventHandlerFn\40\lbEvHandler evHandler\44\ int EvNr\41\:0:*/
+lbErrCodes LB_STDCALL lb_Dispatcher::addEventHandlerFn(lbEvHandler evHandler, int EvNr) {
+	lbErrCodes err = ERR_NONE;
+	
+	LOG("lb_Dispatcher::addEventHandlerFn(lbEvHandler evHandler, int EvNr) called")
+	
+	if (dispatcher == NULL) {
+		LOG("Create the instance of dispatch container")
+		// Create the instance, that holds the events mapping
+		REQUEST(manager.getPtr(), lb_I_Container, dispatcher)
+		dispatcher->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+	}
+
+	UAP_REQUEST(manager.getPtr(), lb_I_EvHandler, evH)
+	evH->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+
+	UAP_REQUEST(manager.getPtr(), lb_I_Integer, i)
+	i->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+	i->setData(EvNr);
+
+	UAP(lb_I_KeyBase, k, __FILE__, __LINE__)
+	QI(i, lb_I_KeyBase, k, __FILE__, __LINE__)
+
+	UAP(lb_I_Unknown, e, __FILE__, __LINE__)
+	QI(evH, lb_I_Unknown, e, __FILE__, __LINE__)
+
+	if (dispatcher->exists(&k) == 1) {
+        	dispatcher->remove(&k);
+	}
+
+	dispatcher->insert(&e, &k);
+	
+	return ERR_NONE;
+}
+/*...e*/
 
 lbErrCodes LB_STDCALL lb_Dispatcher::addDispatcher(lb_I_Dispatcher* disp) {
 	LOG("lb_Dispatcher::addDispatcher() called")
