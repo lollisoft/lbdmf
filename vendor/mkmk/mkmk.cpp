@@ -12,11 +12,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.51 $
+ * $Revision: 1.52 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.51 2005/03/15 22:17:52 lollisoft Exp $
+ * $Id: mkmk.cpp,v 1.52 2005/03/16 00:27:53 lollisoft Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.52  2005/03/16 00:27:53  lollisoft
+ * Last changes to full automatic compiling under OSX.
+ *
  * Revision 1.51  2005/03/15 22:17:52  lollisoft
  * mkmk and make process under linux improoved
  *
@@ -226,12 +229,17 @@
 #define EXE_TARGET 1
 #define DLL_TARGET 2
 #define LIB_TARGET 3
+
 #define ELF_TARGET 4
-#define SO_TARGET  5
-#define WXSO_TARGET  6
-#define PLUGIN_TARGET 7
-#define SOPLUGIN_TARGET 8
-#define WXSOPLUGIN_TARGET 9
+#define WXELF_TARGET 5
+
+#define SO_TARGET  6
+#define WXSO_TARGET  7
+
+#define PLUGIN_TARGET 8
+
+#define SOPLUGIN_TARGET 9
+#define WXSOPLUGIN_TARGET 10
 /*...e*/
 
 int targettype=EXE_TARGET;
@@ -940,15 +948,15 @@ void write_so_Target(char* modulename) {
   printf("MAJOR=0\n");
   printf("MINOR=0\n");
   printf("MICRO=1\n");
-  printf("\n%s.so: $(OBJS)\n", modulename);
+  printf("\n%s: $(OBJS)\n", modulename);
 
 // Patch to create dynamic libraries under Mac OS X
 #ifdef OSX
-  printf("\t\t$(CC) -dynamiclib -WL,soname,$(PROGRAM).so.$(MAJOR) -o $(PROGRAM).so.$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) -lc $(VENDORLIBS)\n");
+  printf("\t\t$(CC) -dynamiclib -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) -lc $(VENDORLIBS)\n");
 #undef UNIX  
 #endif
 #ifdef UNIX
-  printf("\t\t$(CC) -shared -WL,soname,$(PROGRAM).so.$(MAJOR) -o $(PROGRAM).so.$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) -lc $(VENDORLIBS)\n");
+  printf("\t\t$(CC) -shared -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) -lc $(VENDORLIBS)\n");
 #endif
 #ifdef OSX
 #define UNIX
@@ -956,15 +964,15 @@ void write_so_Target(char* modulename) {
 
 
 #ifdef OSX
-  printf("\t\tcp $(PROGRAM).so.$(MAJOR).$(MINOR).$(MICRO) $(HOME)/lib\n");
-  printf("\t\tln -sf $(HOME)/lib/$(PROGRAM).so.$(MAJOR).$(MINOR).$(MICRO) $(HOME)/lib/$(PROGRAM).so.$(MAJOR)\n");
-  printf("\t\tln -sf $(HOME)/lib/$(PROGRAM).so.$(MAJOR) $(HOME)/lib/$(PROGRAM).so\n");
+  printf("\t\tcp $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(HOME)/lib\n");
+  printf("\t\tln -sf $(HOME)/lib/$(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(HOME)/lib/$(PROGRAM).$(MAJOR)\n");
+  printf("\t\tln -sf $(HOME)/lib/$(PROGRAM).$(MAJOR) $(HOME)/lib/$(PROGRAM)\n");
 #undef UNIX  
 #endif
 #ifdef UNIX
-  printf("\t\tcp $(PROGRAM).so.$(MAJOR).$(MINOR).$(MICRO) /libdev/lib\n");
-  printf("\t\tln -sf /libdev/lib/$(PROGRAM).so.$(MAJOR).$(MINOR).$(MICRO) /libdev/lib/$(PROGRAM).so.$(MAJOR)\n");
-  printf("\t\tln -sf /libdev/lib/$(PROGRAM).so.$(MAJOR) /libdev/lib/$(PROGRAM).so\n");
+  printf("\t\tcp $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) /libdev/lib\n");
+  printf("\t\tln -sf /libdev/lib/$(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) /libdev/lib/$(PROGRAM).$(MAJOR)\n");
+  printf("\t\tln -sf /libdev/lib/$(PROGRAM).$(MAJOR) /libdev/lib/$(PROGRAM)\n");
 #endif
 #ifdef OSX
 #define UNIX
@@ -982,15 +990,15 @@ void write_wx_so_Target(char* modulename) {
   printf("MAJOR=0\n");
   printf("MINOR=0\n");
   printf("MICRO=1\n");
-  printf("\n%s.so: $(OBJS)\n", modulename);
+  printf("\n%s: $(OBJS)\n", modulename);
 
 // Patch to create dynamic libraries under Mac OS X
 #ifdef OSX
-  printf("\t\t$(CC) -dynamiclib -WL,soname,$(PROGRAM).so.$(MAJOR) -o $(PROGRAM).so.$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) -lc $(VENDORLIBS)\n");
+  printf("\t\t$(CC) -dynamiclib -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) `wx-config --libs` $(OBJS) $(OBJDEP) -lc $(VENDORLIBS)\n");
 #undef UNIX  
 #endif
 #ifdef UNIX
-  printf("\t\t$(CC) -shared -WL,soname,$(PROGRAM).so.$(MAJOR) -o $(PROGRAM).so.$(MAJOR).$(MINOR).$(MICRO) `wx-config --libs` $(OBJS) $(OBJDEP) -lc $(VENDORLIBS)\n");
+  printf("\t\t$(CC) -shared -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) `wx-config --libs` $(OBJS) $(OBJDEP) -lc $(VENDORLIBS)\n");
 #endif
 #ifdef OSX
 #define UNIX
@@ -998,15 +1006,15 @@ void write_wx_so_Target(char* modulename) {
 
 
 #ifdef OSX
-  printf("\t\tcp $(PROGRAM).so.$(MAJOR).$(MINOR).$(MICRO) $(HOME)/lib\n");
-  printf("\t\tln -sf $(HOME)/lib/$(PROGRAM).so.$(MAJOR).$(MINOR).$(MICRO) $(HOME)/lib/$(PROGRAM).so.$(MAJOR)\n");
-  printf("\t\tln -sf $(HOME)/lib/$(PROGRAM).so.$(MAJOR) $(HOME)/lib/$(PROGRAM).so\n");
+  printf("\t\tcp $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(HOME)/lib\n");
+  printf("\t\tln -sf $(HOME)/lib/$(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(HOME)/lib/$(PROGRAM).$(MAJOR)\n");
+  printf("\t\tln -sf $(HOME)/lib/$(PROGRAM).$(MAJOR) $(HOME)/lib/$(PROGRAM)\n");
 #undef UNIX  
 #endif
 #ifdef UNIX
-  printf("\t\tcp $(PROGRAM).so.$(MAJOR).$(MINOR).$(MICRO) /libdev/lib\n");
-  printf("\t\tln -sf /libdev/lib/$(PROGRAM).so.$(MAJOR).$(MINOR).$(MICRO) /libdev/lib/$(PROGRAM).so.$(MAJOR)\n");
-  printf("\t\tln -sf /libdev/lib/$(PROGRAM).so.$(MAJOR) /libdev/lib/$(PROGRAM).so\n");
+  printf("\t\tcp $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) /libdev/lib\n");
+  printf("\t\tln -sf /libdev/lib/$(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) /libdev/lib/$(PROGRAM).$(MAJOR)\n");
+  printf("\t\tln -sf /libdev/lib/$(PROGRAM).$(MAJOR) /libdev/lib/$(PROGRAM)\n");
 #endif
 #ifdef OSX
 #define UNIX
@@ -1025,10 +1033,18 @@ void write_soPlugin_Target(char* modulename) {
   printf("MINOR=0\n");
   printf("MICRO=1\n");
   printf("\n%s: $(OBJS)\n", modulename);
-  printf("\t\t$(CC) -shared -WL,soname,$(PROGRAM).so.$(MAJOR) -o $(PROGRAM).so.$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) -lc $(VENDORLIBS)\n");
-  printf("\t\tcp $(PROGRAM).so.$(MAJOR).$(MINOR).$(MICRO) /libdev/plugins\n");
-  printf("\t\tln -sf /libdev/plugins/$(PROGRAM).so.$(MAJOR).$(MINOR).$(MICRO) /libdev/plugins/$(PROGRAM).so.$(MAJOR)\n");
-  printf("\t\tln -sf /libdev/plugins/$(PROGRAM).so.$(MAJOR) /libdev/plugins/$(PROGRAM).so\n");
+
+#ifdef OSX  
+  printf("\t\t$(CC) -dynamiclib -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) -lc $(VENDORLIBS)\n");
+#endif
+
+#ifndef OSX
+  printf("\t\t$(CC) -shared -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) -lc $(VENDORLIBS)\n");
+#endif
+
+  printf("\t\tcp $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) /libdev/plugins\n");
+  printf("\t\tln -sf /libdev/plugins/$(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) /libdev/plugins/$(PROGRAM).$(MAJOR)\n");
+  printf("\t\tln -sf /libdev/plugins/$(PROGRAM).$(MAJOR) /libdev/plugins/$(PROGRAM)\n");
 #endif
 #ifdef __WATCOMC__
   fprintf(stderr, "Warning: Creating a so library under Windows is not possible with Watcom !!\n");
@@ -1036,7 +1052,7 @@ void write_soPlugin_Target(char* modulename) {
 }
 /*...e*/
 
-/*...swrite_soPlugin_Target\40\char\42\ modulename\41\ create a UNIX shared library:0:*/
+/*...swrite_wx_soPlugin_Target\40\char\42\ modulename\41\ create a UNIX shared library:0:*/
 void write_wx_soPlugin_Target(char* modulename) {
 #ifdef UNIX
   printf("PROGRAM=%s\n", modulename);
@@ -1044,10 +1060,21 @@ void write_wx_soPlugin_Target(char* modulename) {
   printf("MINOR=0\n");
   printf("MICRO=1\n");
   printf("\n%s: $(OBJS)\n", modulename);
-  printf("\t\t$(CC) -shared -WL,soname,$(PROGRAM).so.$(MAJOR) -o $(PROGRAM).so.$(MAJOR).$(MINOR).$(MICRO) `wx-config --libs` $(OBJS) $(OBJDEP) -lc $(VENDORLIBS)\n");
-  printf("\t\tcp $(PROGRAM).so.$(MAJOR).$(MINOR).$(MICRO) /libdev/plugins\n");
-  printf("\t\tln -sf /libdev/plugins/$(PROGRAM).so.$(MAJOR).$(MINOR).$(MICRO) /libdev/plugins/$(PROGRAM).so.$(MAJOR)\n");
-  printf("\t\tln -sf /libdev/plugins/$(PROGRAM).so.$(MAJOR) /libdev/plugins/$(PROGRAM).so\n");
+
+#ifdef OSX
+  printf("\t\t$(CC) -dynamiclib -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) `wx-config --libs` $(OBJS) $(OBJDEP) -lc $(VENDORLIBS)\n");
+  printf("\t\tcp $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(HOME)/plugins\n");
+  printf("\t\tln -sf $(HOME)/plugins/$(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(HOME)/plugins/$(PROGRAM).$(MAJOR)\n");
+  printf("\t\tln -sf $(HOME)/plugins/$(PROGRAM).$(MAJOR) $(HOME)/plugins/$(PROGRAM)\n");
+#endif
+
+#ifndef OSX
+  printf("\t\t$(CC) -shared -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) `wx-config --libs` $(OBJS) $(OBJDEP) -lc $(VENDORLIBS)\n");
+  printf("\t\tcp $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) /libdev/plugins\n");
+  printf("\t\tln -sf /libdev/plugins/$(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) /libdev/plugins/$(PROGRAM).$(MAJOR)\n");
+  printf("\t\tln -sf /libdev/plugins/$(PROGRAM).$(MAJOR) /libdev/plugins/$(PROGRAM)\n");
+#endif
+
 #endif
 #ifdef __WATCOMC__
   fprintf(stderr, "Warning: Creating a so library under Windows is not possible with Watcom !!\n");
@@ -1064,7 +1091,7 @@ void ShowHelp()
 
   fprintf(stderr, "Enhanced by Lothar Behrens (lothar.behrens@lollisoft.de)\n\n");
 
-  fprintf(stderr, "MKMK: makefile generator $Revision: 1.51 $\n");
+  fprintf(stderr, "MKMK: makefile generator $Revision: 1.52 $\n");
   fprintf(stderr, "Usage: MKMK lib|exe|dll|so modulname includepath,[includepath,...] file1 [file2 file3...]\n");
 }
 /*...e*/
@@ -1241,7 +1268,7 @@ void WriteDep(FILE *f, char *Name, TIncludeParser *p)
 			break;
 		    }
 		}
-		printf("\t\t@$(CC) -c -fPIC -g $(C_SOOPS) `wx-config --cxx-flags` $(MOD_INCL) %s -o %s.o\n\n",Name, ObjName);
+		printf("\t\t@$(CC) -c -fPIC -g $(C_SOOPS) $(MOD_INCL) %s -o %s.o\n\n",Name, ObjName);
 		}
 		break;
 	default:
@@ -1321,6 +1348,10 @@ void WriteEnding(FILE *f, char *ModuleName, TDepList *l)
 		writeExeTarget(ModuleName);
 		write_clean(ModuleName);
 		break;
+	case WXELF_TARGET:
+		writeExeTarget(ModuleName);
+		write_clean(ModuleName);
+		break;
 	case ELF_TARGET:
 		writeExeTarget(ModuleName);
 		write_clean(ModuleName);
@@ -1329,12 +1360,18 @@ void WriteEnding(FILE *f, char *ModuleName, TDepList *l)
 		write_so_Target(ModuleName);
 		write_clean();
 		break;
+	case WXSO_TARGET:
+		write_wx_so_Target(ModuleName);
+		write_clean();
+		break;
 	case SOPLUGIN_TARGET:
 		write_soPlugin_Target(ModuleName);
 		write_clean();
+		break;
 	case WXSOPLUGIN_TARGET:
 		write_wx_soPlugin_Target(ModuleName);
 		write_clean();
+		break;
 	default:
 		break;
   }
@@ -1411,7 +1448,12 @@ int main(int argc, char *argv[])
   
   if (strcmp(target, "SO") == 0) {
   	targettype = SO_TARGET;
-  	target_ext = strdup("");
+  	target_ext = strdup(".so");
+  }
+  
+  if (strcmp(target, "WXSO") == 0) {
+  	targettype = WXSO_TARGET;
+  	target_ext = strdup(".so");
   }
   
   if (strcmp(target, "LIB") == 0) {
@@ -1431,6 +1473,11 @@ int main(int argc, char *argv[])
   
   if (strcmp(target, "SOPLUGIN") == 0) {
         targettype = SOPLUGIN_TARGET;
+        target_ext = strdup(".so");
+  }
+  
+  if (strcmp(target, "WXSOPLUGIN") == 0) {
+        targettype = WXSOPLUGIN_TARGET;
         target_ext = strdup(".so");
   }
   

@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.37 $
+# * $Revision: 1.38 $
 # * $Name:  $
-# * $Id: Makefile,v 1.37 2005/03/15 22:26:39 lollisoft Exp $
+# * $Id: Makefile,v 1.38 2005/03/16 00:27:36 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.38  2005/03/16 00:27:36  lollisoft
+# * Last changes to full automatic compiling under OSX.
+# *
 # * Revision 1.37  2005/03/15 22:26:39  lollisoft
 # * More changes on OSX to compile plugins
 # *
@@ -158,6 +161,7 @@ ifeq ($(OSTYPE), osx)
 TARGETDLL=so
 TARGETEXE=elf
 TARGETPLUGIN=soplugin
+TARGETWXPLUGIN=wxsoplugin
 
 ALLTARGETS = \
 	../include/lbkey.h \
@@ -209,6 +213,7 @@ ifeq ($(OSTYPE), Windows_NT)
 TARGETDLL=dll
 TARGETEXE=exe
 TARGETPLUGIN=plugin
+TARGETWXPLUGIN=wxplugin
 
 ALLTARGETS = \
 	lbHook \
@@ -307,7 +312,7 @@ ifeq ($(OSTYPE), Windows_NT)
 	$(MAKE) -C $@
 
 ../Test/GUI/wxPlugins/lbLoginWizard: dummy
-	$(MAKE) -C $@ -e MODULE=lbLoginWizard -e TARGET=$(TARGETPLUGIN) -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
+	$(MAKE) -C $@ -e MODULE=lbLoginWizard -e TARGET=$(TARGETWXPLUGIN) -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
 	$(MAKE) -C $@
 endif
 
@@ -323,7 +328,7 @@ endif
 	$(MAKE) -C $@
 
 ../Plugins/DatabaseForm: dummy
-	$(MAKE) -C $@ -e MODULE=lbDatabaseForm -e TARGET=$(TARGETDLL) -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
+	$(MAKE) -C $@ -e MODULE=lbDatabaseForm -e TARGET=$(TARGETWXPLUGIN) -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
 	$(MAKE) -C $@
 
 lbHook: dummy
