@@ -25,7 +25,7 @@ Source: "Q:\Develop\Projects\CPP\dist\*.*"; DestDir: "{app}"; CopyMode: alwaysov
 Source: "Q:\Develop\Projects\dll\mspdb60.dll"; DestDir: "{app}\Develop\Projects\dll"; CopyMode: alwaysoverwrite;
 Source: "Q:\Develop\Projects\dll\libs\xerces-c_1D.lib"; DestDir: "{app}\Develop\Projects\dll\libs"; CopyMode: alwaysoverwrite;
 Source: "Q:\Develop\Projects\dll\xerces-c_1_3.dll"; DestDir: "{app}\Develop\Projects\dll"; CopyMode: alwaysoverwrite;
-Source: "Q:\Develop\Projects\dll\wx22_7d.dll"; DestDir: "{app}\Develop\Projects\dll"; CopyMode: alwaysoverwrite;
+;Source: "Q:\Develop\Projects\dll\wx22_7d.dll"; DestDir: "{app}\Develop\Projects\dll"; CopyMode: alwaysoverwrite;
 Source: "Q:\Develop\Projects\plugins\*.dll"; DestDir: "{app}\Develop\Projects\plugins"; CopyMode: alwaysoverwrite;
 Source: "Q:\develop\Projects\CPP\Compilers\MSVC\lbDMF MSVC IDE.lnk"; DestDir: "{userdesktop}"; CopyMode: alwaysoverwrite;
 
