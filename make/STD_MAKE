@@ -1,10 +1,13 @@
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.6 $
+# * $Revision: 1.7 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.6 2001/11/06 21:52:25 lothar Exp $
+# * $Id: STD_MAKE,v 1.7 2001/11/08 20:48:16 lothar Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.7  2001/11/08 20:48:16  lothar
+# * More standard settings
+# *
 # * Revision 1.6  2001/11/06 21:52:25  lothar
 # * no message
 # *
@@ -30,11 +33,17 @@ ifeq ($(OSTYPE), Windows_NT)
 STD_INCL = -i=.;Q:\develop\Tools\WATCOM\h;Q:\develop\Tools\WATCOM\h\nt;Q:\develop\projects\cpp\interfaces;Q:\develop\projects\cpp\include;Q:\develop\projects\dll\include;Q:\develop\projects\lib\include
 
 OBJ =obj
-C_OPS =
+C_OPS = -DWINDOWS
 L_OPS =-o
 
 CC =wpp386
 LINK =wlink
+CP =copy
+EXEDIR =Q:\Develop\Projects\bin
+DLLDIR =Q:\Develop\Projects\dll
+DLLLIBDIR =Q:\Develop\Projects\dll\libs
+
+LNKDLLOPS =d all SYS nt_dll op m op maxe=25 op q op symf
 
 endif
 
@@ -54,5 +63,7 @@ L_OPS =-o
 
 CC =cc
 LD =cc
+CP =cp
+EXEDIR =
 endif
 
