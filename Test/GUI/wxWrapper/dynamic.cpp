@@ -6,7 +6,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.22 2004/07/21 22:21:10 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.23 2004/07/22 23:36:38 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -44,11 +44,15 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.22 $
+ * $Revision: 1.23 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.22 2004/07/21 22:21:10 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.23 2004/07/22 23:36:38 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.23  2004/07/22 23:36:38  lollisoft
+ * Different database forms now working. Cleanup handled correctly and
+ * the app always quits correctly.
+ *
  * Revision 1.22  2004/07/21 22:21:10  lollisoft
  * Hang on exit solved by providing lb_wxGUI instance to lb_wxFrame. The
  * frame then can cleanup on exit.
@@ -116,12 +120,10 @@ public:
         	printf("lb_wxFrame::lb_wxFrame() called.\n");
         	menu_bar = NULL; 
         	gui = NULL;
+        	guiCleanedUp = 0;
         }
         
-        virtual ~lb_wxFrame() {
-        	_LOG << "Closing GUI frame" LOG_
-        	printf("lb_wxFrame::~lb_wxFrame() called.\n");
-        }
+        virtual ~lb_wxFrame();
 /*...e*/
 public:
         lb_wxFrame(wxFrame *frame, char *title, int x, int y, int w, int h);
@@ -174,6 +176,7 @@ public:
         wxMenuBar* menu_bar;
         
         lb_wxGUI* gui;
+        int guiCleanedUp;
         
         UAP(lb_I_EventManager, eman, __FILE__, __LINE__)
         UAP(lb_I_Dispatcher, dispatcher, __FILE__, __LINE__)
@@ -300,7 +303,7 @@ class lbDatabaseDialog :
 	public wxDialog {
 public:
 	lbDatabaseDialog();
-	void init(wxWindow* parent, wxString SQLString);
+	void init(wxWindow* parent, wxString formName, wxString SQLString);
 	virtual ~lbDatabaseDialog();
 
 	lbErrCodes LB_STDCALL lbDBFirst(lb_I_Unknown* uk);
@@ -335,17 +338,30 @@ lbDatabaseDialog::lbDatabaseDialog()
 }
 /*...slbErrCodes LB_STDCALL lbDatabaseDialog\58\\58\registerEventHandler\40\lb_I_Dispatcher\42\ dispatcher\41\:0:*/
 lbErrCodes LB_STDCALL lbDatabaseDialog::registerEventHandler(lb_I_Dispatcher* dispatcher) {
+
+	char eventName[100] = "";
 	
-	dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDatabaseDialog::lbDBFirst, "DatabaseFirst");
-	dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDatabaseDialog::lbDBNext, "DatabaseNext");
-	dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDatabaseDialog::lbDBPrev, "DatabasePrev");
-	dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDatabaseDialog::lbDBLast, "DatabaseLast");
+	sprintf(eventName, "%pDatabaseFirst", this);
+	dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDatabaseDialog::lbDBFirst, eventName);
+
+	sprintf(eventName, "%pDatabaseNext", this);
+	dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDatabaseDialog::lbDBNext,  eventName);
+
+	sprintf(eventName, "%pDatabasePrev", this);
+	dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDatabaseDialog::lbDBPrev,  eventName);
+
+	sprintf(eventName, "%pDatabaseLast", this);
+	dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDatabaseDialog::lbDBLast,  eventName);
 	
 	return ERR_NONE;
 }
 /*...e*/
-/*...svoid lbDatabaseDialog\58\\58\init\40\wxWindow\42\ parent\44\ wxString SQLString\41\:0:*/
-void lbDatabaseDialog::init(wxWindow* parent, wxString SQLString) {
+/*...svoid lbDatabaseDialog\58\\58\init\40\wxWindow\42\ parent\44\ wxString formName\44\ wxString SQLString\41\:0:*/
+void lbDatabaseDialog::init(wxWindow* parent, wxString formName, wxString SQLString) {
+	char prefix[100] = "";
+	sprintf(prefix, "%p", this);
+
+	SetTitle(formName);
 
 	wxBoxSizer* sizerHor   = new wxBoxSizer(wxHORIZONTAL);
 	wxBoxSizer* sizerLeft  = new wxBoxSizer(wxVERTICAL);	
@@ -356,7 +372,7 @@ void lbDatabaseDialog::init(wxWindow* parent, wxString SQLString) {
 	database->init();
 	database->connect("trainres", "dba", "trainres");
 
-	char const * _q = SQLString.c_str();
+	char* _q = strdup(SQLString.c_str());
 
 	sampleQuery = database->getQuery(0);
 		
@@ -365,16 +381,23 @@ void lbDatabaseDialog::init(wxWindow* parent, wxString SQLString) {
 	int DatabasePrev;
 	int DatabaseLast;
 	
-	//sampleQuery = query.getPtr();
-
 	UAP_REQUEST(manager.getPtr(), lb_I_EventManager, eman)
 	UAP_REQUEST(manager.getPtr(), lb_I_Dispatcher, dispatcher)
 
 /*...sInitialize navigation handlers:8:*/
-		eman->registerEvent("DatabaseFirst", DatabaseFirst);
-		eman->registerEvent("DatabaseNext",  DatabaseNext);
-		eman->registerEvent("DatabasePrev",  DatabasePrev);
-		eman->registerEvent("DatabaseLast",  DatabaseLast);
+		char eventName[100] = "";
+		
+		sprintf(eventName, "%pDatabaseFirst", this);
+		eman->registerEvent(eventName, DatabaseFirst);
+
+		sprintf(eventName, "%pDatabaseNext", this);
+		eman->registerEvent(eventName,  DatabaseNext);
+
+		sprintf(eventName, "%pDatabasePrev", this);
+		eman->registerEvent(eventName,  DatabasePrev);
+
+		sprintf(eventName, "%pDatabaseLast", this);
+		eman->registerEvent(eventName,  DatabaseLast);
 
 		dispatcher->setEventManager(eman.getPtr());
 
@@ -382,7 +405,8 @@ void lbDatabaseDialog::init(wxWindow* parent, wxString SQLString) {
 
 /*...e*/
 	
-	sampleQuery->query("select objecttyp, x, y, w, h from world order by id");	
+	sampleQuery->query(_q);
+	free(_q);
 
 	int columns = sampleQuery->getColumns();
 
@@ -608,7 +632,7 @@ public:
         virtual lb_I_Unknown* LB_STDCALL createMenuBar();
         virtual lb_I_Unknown* LB_STDCALL createMenuEntry();
 
-	virtual lb_I_DatabaseForm* LB_STDCALL createDBForm(char* formName);
+	virtual lb_I_DatabaseForm* LB_STDCALL createDBForm(char* formName, char* queryString);
 /*...e*/
 
 /*...sGUI element getter functions:8:*/
@@ -726,10 +750,11 @@ public:
         bool handlersInitialized;
         
         lbDatabaseDialog* dialog;
-        
+
         // The frame has the main dispatcher and is a wxEventHandler subclass
         lb_wxFrame* frame;
-
+	
+	UAP(lb_I_Container, forms, __FILE__, __LINE__)
 };
 /*...e*/
 
@@ -849,25 +874,68 @@ lbErrCodes LB_STDCALL lb_wxGUI::cleanup() {
 	
 	// destroy all still created forms that are hidden.
 
-	if (dialog) {
-		dialog->Destroy();
-		delete dialog;
-		dialog = NULL;
+	if (forms == NULL) return ERR_NONE; 
+
+	while (forms->hasMoreElements()) {
+		
+		lb_I_Unknown* form = forms->nextElement();
+		
+		lbDatabaseDialog* d = (lbDatabaseDialog*) form;
+		
+		d->Destroy();
 	}
+
 
         return ERR_NONE;
 }
 
-/*...slb_I_DatabaseForm\42\ LB_STDCALL lb_wxGUI\58\\58\createDBForm\40\char\42\ formName\41\:0:*/
-lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::createDBForm(char* SQLQuery) {
+/*...slb_I_DatabaseForm\42\ LB_STDCALL lb_wxGUI\58\\58\createDBForm\40\char\42\ formName\44\ char\42\ queryString\41\:0:*/
+lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::createDBForm(char* formName, char* queryString) {
+	lbErrCodes err = ERR_NONE;
 
-	if (dialog) {
-		dialog->ShowModal();
+	// Locate the form instance in the container
+	
+	lbDatabaseDialog* _dialog = NULL;
+	
+	if (forms == NULL) {
+		REQUEST(getModuleManager(), lb_I_Container, forms)
+	}	
+
+	UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
+	UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
+	
+	UAP_REQUEST(getModuleManager(), lb_I_String, fName)
+	fName->setData(formName);
+	
+	QI(fName, lb_I_KeyBase, key, __FILE__, __LINE__)
+	
+	uk = forms->getElement(&key);	
+	
+	if (uk != NULL) {
+		_dialog = (lbDatabaseDialog*) *&uk;
+	}
+
+	if (_dialog) {
+		_dialog->Show();
 	} else {
-		dialog = new lbDatabaseDialog();
-		dialog->setModuleManager(getModuleManager(), __FILE__, __LINE__);
-		dialog->init(frame, wxString(SQLQuery));
-		dialog->ShowModal();
+		_dialog = new lbDatabaseDialog();
+		_dialog->setModuleManager(getModuleManager(), __FILE__, __LINE__);
+		
+		QI(_dialog, lb_I_Unknown, uk, __FILE__, __LINE__)
+		
+		forms->insert(&uk, &key);
+		
+		delete _dialog;
+		_dialog = NULL;
+		
+		uk = forms->getElement(&key);
+		
+		if (uk != NULL) {
+		        _dialog = (lbDatabaseDialog*) *&uk;
+		}
+		
+		_dialog->init(frame, wxString(formName), wxString(queryString));
+		_dialog->Show();
 	}
 	return NULL;
 }
@@ -983,6 +1051,7 @@ class MyApp: public wxApp
 	}
 
     bool OnInit(void);
+    int  OnExit();
 
 #ifdef LB_I_EXTENTIONS
 /*...ssome docs:0:*/
@@ -1102,6 +1171,11 @@ END_IMPLEMENT_LB_UNKNOWN()
 // Create a new application object
 IMPLEMENT_APP  (MyApp)
 
+
+int MyApp::OnExit() {
+	//wxGUI->cleanup();
+	return 0;
+}
 /*...sMyApp\58\\58\OnInit\40\void\41\:0:*/
 // `Main program' equivalent, creating windows and returning main app frame
 /*...stestthis:0:*/
@@ -1773,7 +1847,19 @@ lb_wxFrame::lb_wxFrame(wxFrame *frame, char *title, int x, int y, int w, int h):
   wxFrame(frame, -1, title, wxPoint(x, y), wxSize(w, h))
 {
 	menu_bar = NULL;
+	guiCleanedUp = 0;
 }
+
+lb_wxFrame::~lb_wxFrame() {
+        _LOG << "Closing GUI frame" LOG_
+        printf("lb_wxFrame::~lb_wxFrame() called.\n");
+
+        if (guiCleanedUp == 0) {
+                if (gui) gui->cleanup();
+                guiCleanedUp = 1;
+        }
+}
+
 
 /*...slb_wxFrame\58\\58\OnQuit\40\wxCommandEvent\38\ WXUNUSED\40\event\41\ \41\:0:*/
 void lb_wxFrame::OnQuit(wxCommandEvent& WXUNUSED(event) )
@@ -1784,7 +1870,11 @@ void lb_wxFrame::OnQuit(wxCommandEvent& WXUNUSED(event) )
   	 * problem, if it is not destroyed here.
   	 */
   	 
-	if (gui) gui->cleanup();
+  	 
+	if (guiCleanedUp == 0) {
+        	if (gui) gui->cleanup();
+        	guiCleanedUp = 1;
+	}
 	
 	Close(TRUE);
 }
