@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.48 $
+ * $Revision: 1.49 $
  * $Name:  $
- * $Id: lbDOMConfig.cpp,v 1.48 2004/05/08 10:53:11 lollisoft Exp $
+ * $Id: lbDOMConfig.cpp,v 1.49 2005/01/23 13:43:04 lollisoft Exp $
  *
  * $Log: lbDOMConfig.cpp,v $
+ * Revision 1.49  2005/01/23 13:43:04  lollisoft
+ * std:: is only under linux working
+ *
  * Revision 1.48  2004/05/08 10:53:11  lollisoft
  * minor change
  *
@@ -500,7 +503,7 @@ void DOMTreeErrorReporter::error(const SAXParseException& toCatch)
     cerr << "Error at file \"" << DOMString(toCatch.getSystemId())
 		 << "\", line " << toCatch.getLineNumber()
 		 << ", column " << toCatch.getColumnNumber()
-         << "   Message: " << DOMString(toCatch.getMessage()) << endl;
+         << "   Message: " << DOMString(toCatch.getMessage()) << ENDL;
 }
 /*...e*/
 /*...sDOMTreeErrorReporter\58\\58\fatalError\40\\46\\46\\46\\41\:0:*/
@@ -509,7 +512,7 @@ void DOMTreeErrorReporter::fatalError(const SAXParseException& toCatch)
     cerr << "Fatal Error at file \"" << DOMString(toCatch.getSystemId())
 		 << "\", line " << toCatch.getLineNumber()
 		 << ", column " << toCatch.getColumnNumber()
-         << "   Message: " << DOMString(toCatch.getMessage()) << endl;
+         << "   Message: " << DOMString(toCatch.getMessage()) << ENDL;
 }
 /*...e*/
 /*...sDOMTreeErrorReporter\58\\58\resetErrors\40\\41\:0:*/
@@ -1328,7 +1331,7 @@ protected:
 		if (lastResult.getPtr() != NULL) printf("ERROR: Setting lastResult to NULL failed!\n");
 /*...sVERBOSE:0:*/
 #ifdef VERBOSE
-	cout << "lbDOMConfig(const lbDOMConfig* & t) called" << endl;
+	COUT << "lbDOMConfig(const lbDOMConfig* & t) called" << ENDL;
 	
 #endif	
 /*...e*/
@@ -1571,8 +1574,8 @@ lbDOMConfig::lbDOMConfig(char* file, int line) {
 
 			catch (const XMLException& toCatch)
 		    {
-				cout << "Error during initialization! :\n"
-		                 << toCatch.getMessage() << endl;
+				COUT << "Error during initialization! :\n"
+		                 << toCatch.getMessage() << ENDL;
 		         //return ERR_XML_INIT;
 		    }		
 /*...e*/
@@ -1601,8 +1604,8 @@ lbDOMConfig::lbDOMConfig() {
 
 			catch (const XMLException& toCatch)
 		    {
-				cout << "Error during initialization! :\n"
-		                 << toCatch.getMessage() << endl;
+				COUT << "Error during initialization! :\n"
+		                 << toCatch.getMessage() << ENDL;
 		         //return ERR_XML_INIT;
 		    }		
 /*...e*/
@@ -1614,10 +1617,10 @@ lbDOMConfig::lbDOMConfig() {
 /*...slbDOMConfig\58\\58\\126\lbDOMConfig\40\\41\:0:*/
 lbDOMConfig::~lbDOMConfig() {
 /*...sVERBOSE:0:*/
-	cout << "lbDOMConfig::~lbDOMConfig() called" << endl;
+	COUT << "lbDOMConfig::~lbDOMConfig() called" << ENDL;
 /*...e*/
 
-	if (ref != STARTREF) cout << "Error: Reference count mismatch!" << endl;
+	if (ref != STARTREF) COUT << "Error: Reference count mismatch!" << ENDL;
 	if (errReporter != NULL) {
 		delete errReporter;
 	}
@@ -1634,7 +1637,7 @@ lbErrCodes LB_STDCALL lbDOMConfig::parse() {
 	char *filename = getenv("LBHOSTCFGFILE");
 /*...sVERBOSE:0:*/
 #ifdef VERBOSE
-	cout << "Parse file '" << filename << "'..." << endl;
+	COUT << "Parse file '" << filename << "'..." << ENDL;
 #endif
 /*...e*/
 
@@ -1662,7 +1665,7 @@ lbErrCodes LB_STDCALL lbDOMConfig::parse() {
 
 		catch (const XMLException& )
 	        {
-			cout << "Parse error\n" << endl;
+			COUT << "Parse error\n" << ENDL;
 			errorsOccured = 1;
 			return ERR_XML_NOFILE;
 		}
@@ -1697,7 +1700,7 @@ lb_I_Container* LB_STDCALL lbDOMConfig::findNodesAtTreePos(const char* treePos) 
 /*...sPrepare search:8:*/
 
 	if (treePos == NULL) {
-		cout << "Null pointer detected!" << endl;
+		COUT << "Null pointer detected!" << ENDL;
 		
 		exit(1);
 	}	
@@ -1729,17 +1732,17 @@ lb_I_Container* LB_STDCALL lbDOMConfig::findNodesAtTreePos(const char* treePos) 
 /*...e*/
 /*...sVERBOSE:0:*/
 #ifdef VERBOSE
-		cout << "Node XPointer: '" << path << "'" << endl
-		     << "Search for   : '" << DOMString(treePos) << "'" << endl;
+		COUT << "Node XPointer: '" << path << "'" << ENDL
+		     << "Search for   : '" << DOMString(treePos) << "'" << ENDL;
 #endif
 /*...e*/
 /*...sFound a entry \63\ insert in list:16:*/
-//		cout << path << endl;
+//		COUT << path << ENDL;
 		if (path.equals(treePos)) {
-//			cout << "match" << endl;
+//			COUT << "match" << ENDL;
 /*...sVERBOSE:16:*/
 #ifdef VERBOSE
-			cout << "Found a entry." << endl;
+			COUT << "Found a entry." << ENDL;
 #endif		
 /*...e*/
 			/**
@@ -1773,10 +1776,10 @@ lb_I_Container* LB_STDCALL lbDOMConfig::findNodesAtTreePos(const char* treePos) 
 			list->insert(&unknown, &key);
 /*...sVERBOSE:16:*/
 #ifdef VERBOSE
-			cout << "Inserted the entry" << endl;
+			COUT << "Inserted the entry" << ENDL;
 #endif
 /*...e*/
-		} else cout << "Path '" << path << "' does not match" << endl;
+		} else COUT << "Path '" << path << "' does not match" << ENDL;
 /*...e*/
 	}
 
@@ -1799,7 +1802,7 @@ lbErrCodes LB_STDCALL lbDOMConfig::hasConfigObject(const char* cfgObjectName, in
 		//}
 		count = lastResult->Count(); //= lastResult->getChildrenCount();
 		return err;
-	} else cout << "Any errors while parsing has been occured!" << endl;
+	} else COUT << "Any errors while parsing has been occured!" << ENDL;
 	return err;
 }
 /*...e*/
@@ -1984,8 +1987,8 @@ lbInterfaceRepository::lbInterfaceRepository() {
 
 			catch (const XMLException& toCatch)
 		    {
-				cout << "Error during initialization! :\n"
-		                 << toCatch.getMessage() << endl;
+				COUT << "Error during initialization! :\n"
+		                 << toCatch.getMessage() << ENDL;
 		         //return ERR_XML_INIT;
 		    }		
 /*...e*/
@@ -2224,7 +2227,7 @@ lbErrCodes LB_STDCALL lbInterfaceRepository::parse() {
 	char *filename = getenv("LBHOSTCFGFILE");
 /*...sVERBOSE:0:*/
 #ifdef VERBOSE
-	cout << "Parse file '" << filename << "'..." << endl;
+	COUT << "Parse file '" << filename << "'..." << ENDL;
 #endif
 /*...e*/
 
@@ -2252,7 +2255,7 @@ lbErrCodes LB_STDCALL lbInterfaceRepository::parse() {
 
 		catch (const XMLException& )
 	        {
-			cout << "Parse error\n" << endl;
+			COUT << "Parse error\n" << ENDL;
 			errorsOccured = 1;
 			return ERR_XML_NOFILE;
 		}
@@ -2354,18 +2357,18 @@ ostream& operator<<(ostream& target, DOM_Node& toWrite)
     DOMString   nodeValue = toWrite.getNodeValue();
 /*...sVERBOSE:0:*/
 #ifdef VERBOSE
-cout << "Got node name and value" << endl;
+COUT << "Got node name and value" << ENDL;
 if (nodeValue == NULL) 
-	cout << "Value is NULL" << endl;
+	COUT << "Value is NULL" << ENDL;
 else
-	cout << "Value is " << nodeValue << endl;
+	COUT << "Value is " << nodeValue << ENDL;
 	
 if (nodeName == NULL) 
-	cout << "Name is NULL" << endl;
+	COUT << "Name is NULL" << ENDL;
 else
-	cout << "Name is " << nodeName << endl;
+	COUT << "Name is " << nodeName << ENDL;
 
-cout << "Check done" << endl;
+COUT << "Check done" << ENDL;
 #endif
 /*...e*/
 	switch (toWrite.getNodeType())
@@ -2396,7 +2399,7 @@ cout << "Check done" << endl;
             DOM_Node child = toWrite.getFirstChild();
             while( child != 0)
             {
-                target << child << endl;
+                target << child << ENDL;
                 child = child.getNextSibling();
             }
 
@@ -2473,7 +2476,7 @@ cout << "Check done" << endl;
 
         default:
             cerr << "Unrecognized node type = "
-                 << (long)toWrite.getNodeType() << endl;
+                 << (long)toWrite.getNodeType() << ENDL;
     }
 	return target;
 }

@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.43 $
+ * $Revision: 1.44 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.43 2005/01/23 11:29:27 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.44 2005/01/23 13:43:04 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.44  2005/01/23 13:43:04  lollisoft
+ * std:: is only under linux working
+ *
  * Revision 1.43  2005/01/23 11:29:27  lollisoft
  * Now the code compiles under SuSE Linux 9.1
  *
@@ -273,7 +276,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::lbEvHandler2(lb_I_Unknown* uk) {
 	if (gui != NULL) {
 	        gui->msgBox("Information", "The main module of this application is a DLL and creates a basic functionality.\nThe real application will be loaded from configuraton and then the control\nwill be delegated to it.");
 	} else {
-	        std::cout << "lb_MetaApplication::Initialize() called in console mode" << std::endl;
+	        COUT << "lb_MetaApplication::Initialize() called in console mode" << ENDL;
 	}
 
 	return ERR_NONE;
@@ -285,7 +288,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::lbButtonTestHandler(lb_I_Unknown* uk) 
         if (gui != NULL) {
                 gui->msgBox("Information", "Test button has been pressed");
         } else {
-                std::cout << "lb_MetaApplication::Initialize() called in console mode" << std::endl;
+                COUT << "lb_MetaApplication::Initialize() called in console mode" << ENDL;
         }
 
         return ERR_NONE;
@@ -299,7 +302,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::getLoginData(lb_I_Unknown* uk) {
 
                 loginForm = gui->createLoginForm();
         } else {
-                std::cout << "Login form on console not supported" << std::endl;
+                COUT << "Login form on console not supported" << ENDL;
         }
 
 	return ERR_NONE;

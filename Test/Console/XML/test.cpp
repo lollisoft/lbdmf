@@ -867,4 +867,5 @@ printf("Test LOG macro\n");
 	modMan->uninitialize();
         RELEASE(modMan)
         unHookAll();
+        return 0;
 }

@@ -61,7 +61,7 @@ void* lbAppServerThread::Entry() {
 	LOG("lbAppServerThread::Entry(): Done request");
 #endif
 /*...e*/
-	//cout << "lbAppServerThread::Entry(): Done request" << endl;	
+	//COUT << "lbAppServerThread::Entry(): Done request" << ENDL;	
 	return NULL;
 }
 /*...e*/
@@ -89,7 +89,7 @@ lbAppServerThread::lbAppServerThread(lbTransfer* _clt, lbAppServer* _server) {
 
 /*...slbAppServerThread\58\\58\\126\lbAppServerThread\40\\41\:0:*/
 lbAppServerThread::~lbAppServerThread() {
-	cout << "lbAppServerThread::~lbAppServerThread() called" << endl;
+	COUT << "lbAppServerThread::~lbAppServerThread() called" << ENDL;
 }
 /*...e*/
 
@@ -189,9 +189,9 @@ lbAppServer::~lbAppServer() {
 /*...e*/
 /*...slbAppServer\58\\58\initTransfer\40\char\42\ host_servicename\41\:0:*/
 int lbAppServer::initTransfer(char* host_servicename) {
-	//cout << "lbAppServer::initTransfer(char* host_servicename) called" << endl;
+	//COUT << "lbAppServer::initTransfer(char* host_servicename) called" << ENDL;
 	transfer = new lbTransfer();
-	//cout << "Created instance of lbTransfer" << endl;
+	//COUT << "Created instance of lbTransfer" << ENDL;
 	transfer->init(host_servicename);
 
 	/**
@@ -347,7 +347,7 @@ int lbAppServer::run() {
 
 
 		if (transfer == NULL) LOG("lbAppServer::run() Error: transfer object pointer is NULL!");
-		cout << "Wait for connection..." << endl;
+		COUT << "Wait for connection..." << ENDL;
 		if (transfer->accept(clt) == 0) 
 		{
 			LOG("lbAppServer::run() error while accepting on a socket");
@@ -386,7 +386,7 @@ lbErrCodes lbAppServer::_connected(lbTransfer* _clt) {
 
 	lbErrCodes rc = ERR_NONE;	 
 	lbErrCodes rcin = ERR_NONE;
-	lbErrCodes rcout = ERR_NONE;
+	lbErrCodes rCOUT = ERR_NONE;
 	lbErrCodes rc_handler = ERR_NONE; 
 	
 	// This objects must be clean for each request!
@@ -411,7 +411,7 @@ lbErrCodes lbAppServer::_connected(lbTransfer* _clt) {
 LOG("lbAppBusServer::_connected(lbTransfer* _clt) Request handled, send answer");
 #endif
 /*...e*/
-		if ((rcout = answerRequest(_clt, result)) != ERR_NONE) {
+		if ((rCOUT = answerRequest(_clt, result)) != ERR_NONE) {
 			LOG("answerRequest(_clt, result) failed");
 		}
 /*...sAPPBUS_SVR_VERBOSE:8:*/
@@ -427,11 +427,11 @@ LOG("lbAppBusServer::_connected(lbTransfer* _clt) Answer sent");
 	 */
 	} while ((isConnected(request) == 1) // Must disconnect before closing transfer 
 		&& (rcin == ERR_NONE) // Recieving failed
-		&& (rcout == ERR_NONE)); // Sendback failed
+		&& (rCOUT == ERR_NONE)); // Sendback failed
 
 	LOG("Handle connection tests case of ending loop...");
 	if (rcin != ERR_NONE)  LOG("Thread will be ended because recieving data has failed");
-	if (rcout != ERR_NONE) LOG("Thread will be ended because sending data has failed");
+	if (rCOUT != ERR_NONE) LOG("Thread will be ended because sending data has failed");
 	if (rc_handler != ERR_NONE) LOG("Handling request failed");
 	LOG("Tested");
 /*...e*/
@@ -617,7 +617,7 @@ LOG("lbAppServer::HandleConnect(...) called");
 	}
 /*...e*/
 
-	//cout << "Got hostname: " << clienthost << ", pid: " << pid << ", tid: " << tid << endl;
+	//COUT << "Got hostname: " << clienthost << ", pid: " << pid << ", tid: " << tid << ENDL;
 	
 	if (connections->exists(lbKeyUL(tid)) == 0) {
 		result.add("Accept");
@@ -631,7 +631,7 @@ LOG("lbAppServer::HandleConnect(...) called");
 		LOG("lbAppServer::HandleConnect(...) Error: already connected!");
 		return ERR_APP_SERVER_HANDLECONNECT;
 	}
-//cout << "lbAppServer::HandleConnect(...) Succeeded" << endl;	
+//COUT << "lbAppServer::HandleConnect(...) Succeeded" << ENDL;	
 	return ERR_NONE;
 }
 /*...e*/
@@ -688,7 +688,7 @@ LOG("lbAppServer::HandleConnect(...) called");
 	}
 /*...e*/
 
-	//cout << "Got hostname: " << clienthost << ", pid: " << pid << ", tid: " << tid << endl;
+	//COUT << "Got hostname: " << clienthost << ", pid: " << pid << ", tid: " << tid << ENDL;
 	
 	result.add("Accept");
 	result.add(clienthost);
@@ -739,7 +739,7 @@ lbAppClient::lbAppClient(lbTransfer* clConn) {
 /*...e*/
 /*...slbAppClient\58\\58\\126\lbAppClient\40\\41\:0:*/
 lbAppClient::~lbAppClient() {
-cout << "Cleanup lbAppClient" << endl;
+COUT << "Cleanup lbAppClient" << ENDL;
 }
 /*...e*/
 /*...slbAppClient\58\\58\requestObject\40\const char\42\ name\41\:0:*/

@@ -2818,7 +2818,7 @@ lbErrCodes LB_STDCALL lbDBInterfaceRepository::parse() {
 	char *filename = getenv("LBHOSTCFGFILE");
 /*...sVERBOSE:0:*/
 #ifdef VERBOSE
-	cout << "Parse file '" << filename << "'..." << endl;
+	COUT << "Parse file '" << filename << "'..." << ENDL;
 #endif
 /*...e*/
 
@@ -2846,7 +2846,7 @@ lbErrCodes LB_STDCALL lbDBInterfaceRepository::parse() {
 
 		catch (const XMLException& )
 	        {
-			cout << "Parse error\n" << endl;
+			COUT << "Parse error\n" << ENDL;
 			errorsOccured = 1;
 			return ERR_XML_NOFILE;
 		}

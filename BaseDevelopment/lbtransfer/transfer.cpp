@@ -37,7 +37,7 @@ lbCritSect transferSection;
 
 
 void handler(int sig) {
-        cout << "Oops" << flush << endl;
+        COUT << "Oops" << flush << ENDL;
         
 }
 
@@ -53,7 +53,7 @@ public:
                 signal(SIGILL, handler);
         }
         virtual ~lbTransferModule() {
-                cout << "Deinit transfer module" << endl;
+                COUT << "Deinit transfer module" << ENDL;
         }
 };
 /*...e*/
@@ -541,7 +541,7 @@ LOGENABLE("lbTransfer::lbTransfer()");
 /*...e*/
 /*...slbTransfer\58\\58\\126\lbTransfer\40\\41\:0:*/
 lbTransfer::~lbTransfer() {
-        cout << "lbTransfer::~lbTransfer() called" << endl;
+        COUT << "lbTransfer::~lbTransfer() called" << ENDL;
         if (sock != NULL) {
                 LOG("lbTransfer::~lbTransfer() Deletes sock instance");
                 delete sock;
@@ -573,12 +573,12 @@ LOG("lbTransfer::init(char *target) called");
         machine = strdup(token);
         strcpy(token, strtok(NULL, "/"));
         service = strdup(token);
-//cout << "Check for service" << endl;
+//COUT << "Check for service" << ENDL;
         if (service == NULL) {
                 LOG("lbTransfer::init(char *target): Service name couldn't retrieved from target string!");
                 // Handle error
         }
-//cout << "Check for machine" << endl;
+//COUT << "Check for machine" << ENDL;
         if (machine == NULL) {
                 LOG("lbTransfer::init(char *target): Machine name couldn't retrieved from target string!");
         }
@@ -597,7 +597,7 @@ sprintf(buf, "void lbTransfer::init(char *target): sock->initSymbolic(%s, %s);",
 LOG(buf);
 #endif
 /*...e*/
-                //cout << "Init with symbolic name" << endl;
+                //COUT << "Init with symbolic name" << ENDL;
 
                 sock->initSymbolic(machine, service);
                 //strcpy(prefix, (sock->isServer() == 1) ? "Server: " : "Client: ");

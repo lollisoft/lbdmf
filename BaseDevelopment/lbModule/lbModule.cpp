@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.75 $
+ * $Revision: 1.76 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.75 2005/01/21 14:59:29 lollisoft Exp $
+ * $Id: lbModule.cpp,v 1.76 2005/01/23 13:43:04 lollisoft Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.76  2005/01/23 13:43:04  lollisoft
+ * std:: is only under linux working
+ *
  * Revision 1.75  2005/01/21 14:59:29  lollisoft
  * Removed some unused log messages
  *
@@ -735,14 +738,14 @@ void dump() {
     int flag = 1;
 
     for ( ; temp!= NULL; temp = temp->forward[0]) {
-        cout << "temp->value is " << temp->value << endl;
+        COUT << "temp->value is " << temp->value << ENDL;
         for(int i=0; i<=temp->myLevel && flag != 0; i++)
             if (temp->forward[i] == NULL){
-                cout << " rest of list is empty" << endl;
+                COUT << " rest of list is empty" << ENDL;
                 flag = 0;
             }
             else
-                cout<<"  point to "<<temp->forward[i]->value<<"\n";
+                COUT<<"  point to "<<temp->forward[i]->value<<"\n";
     }
 }
 #endif
@@ -1990,7 +1993,7 @@ lbErrCodes LB_STDCALL lbHCInterfaceRepository::parse() {
 	char *filename = getenv("LBHOSTCFGFILE");
 /*...sVERBOSE:0:*/
 #ifdef VERBOSE
-	cout << "Parse file '" << filename << "'..." << endl;
+	COUT << "Parse file '" << filename << "'..." << ENDL;
 #endif
 /*...e*/
 
@@ -2018,7 +2021,7 @@ lbErrCodes LB_STDCALL lbHCInterfaceRepository::parse() {
 
 		catch (const XMLException& )
 	        {
-			cout << "Parse error\n" << endl;
+			COUT << "Parse error\n" << ENDL;
 			errorsOccured = 1;
 			return ERR_XML_NOFILE;
 		}
@@ -2076,7 +2079,7 @@ public:
         }
         
         virtual ~lbModule() {
-                if (ref != STARTREF) cout << "Error: Reference count mismatch" << endl;
+                if (ref != STARTREF) COUT << "Error: Reference count mismatch" << ENDL;
 /*...sVERBOSE:0:*/
 #ifdef VERBOSE
                 _CL_LOG << "lbModule::~lbModule() called" LOG_
@@ -2903,7 +2906,7 @@ char* LB_STDCALL lbModule::findFunctorName(lb_I_ConfigObject** ___node) {
                                         return NULL;
                                 } else {
                                 #ifdef VERBOSE
-                                        cout << "Found function name '" << value << "'" << endl;
+                                        COUT << "Found function name '" << value << "'" << ENDL;
                                         getch();
                                 #endif
                                         return value;
@@ -3479,8 +3482,8 @@ printf("Get unknown interface of XMLConfig object\n");
                         if (moduleName != NULL) impl->deleteValue(moduleName);
                         if (functorName != NULL) impl->deleteValue(functorName);
                 } else {
-                        cout << "Something goes wrong!" << endl;
-                        cout << "xml_Instance->hasConfigObject() returns <> ERR_NONE!" << endl;
+                        COUT << "Something goes wrong!" << ENDL;
+                        COUT << "xml_Instance->hasConfigObject() returns <> ERR_NONE!" << ENDL;
                 }
                 
                 
@@ -3502,7 +3505,7 @@ printf("lbModule::load(%s) called\n", name);
 
         getXMLConfigObject(&xml_Instance);
         
-        cout << "lbModule::load(char* name) called" << endl;
+        COUT << "lbModule::load(char* name) called" << ENDL;
 
         if (xml_Instance != NULL) {
             if (xml_Instance->parse() != ERR_NONE) {

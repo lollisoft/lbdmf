@@ -154,7 +154,7 @@ lbErrCodes LB_STDCALL lbApplication::getDynamicDBForm(lb_I_Unknown* uk) {
 	        dbForm = gui->createDBForm("<Load title from database>", "<Load SQL query from database>",
 	        "trainres", "dba", "trainres");
 	} else {
-	        std::cout << "KundenDetails" << std::endl;
+	        COUT << "KundenDetails" << ENDL;
 	}
 
         return ERR_NONE;
@@ -168,7 +168,7 @@ lbErrCodes LB_STDCALL lbApplication::getLoginData(lb_I_Unknown* uk) {
 		
 		loginForm = gui->createLoginForm();
 	} else {
-		std::cout << "Login form on console not supported" << std::endl;
+		COUT << "Login form on console not supported" << ENDL;
 	}
 
 	return ERR_NONE;
@@ -184,7 +184,7 @@ lbErrCodes LB_STDCALL lbApplication::getKundenDetails(lb_I_Unknown* uk) {
 		dbForm = gui->createDBForm("Elemente in World", "select objecttyp, x, y, w, h from world order by id",
 		"trainres", "dba", "trainres");
 	} else {
-	        std::cout << "KundenDetails" << std::endl;
+	        COUT << "KundenDetails" << ENDL;
 	}
 
 	return ERR_NONE;
@@ -200,7 +200,7 @@ lbErrCodes LB_STDCALL lbApplication::getKundenListe(lb_I_Unknown* uk) {
 		dbForm = gui->createDBForm("Kunden", "select Firma, Name, Vorname, Strasse, Hausnummer, Ort, Plz, Vorwahl, Telefon from Kunden",
 		"trainres", "dba", "trainres");
 	} else {
-	        std::cout << "KundenDetails" << std::endl;
+	        COUT << "KundenDetails" << ENDL;
 	}
 
 

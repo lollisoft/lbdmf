@@ -36,10 +36,13 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.23 $
+ * $Revision: 1.24 $
  * $Name:  $
- * $Id: lbcontainer.cpp,v 1.23 2004/06/09 07:03:23 lollisoft Exp $
+ * $Id: lbcontainer.cpp,v 1.24 2005/01/23 13:43:05 lollisoft Exp $
  * $Log: lbcontainer.cpp,v $
+ * Revision 1.24  2005/01/23 13:43:05  lollisoft
+ * std:: is only under linux working
+ *
  * Revision 1.23  2004/06/09 07:03:23  lollisoft
  * Still problems with undeleted container data ??
  *
@@ -96,7 +99,7 @@
  * Most changes are interface issues
  *
  * Revision 1.5  2000/06/28 20:33:08  lolli
- * Deactivated some cout messages
+ * Deactivated some COUT messages
  *
  * Revision 1.4  2000/06/24 21:32:07  lolli
  * Socket bugfix

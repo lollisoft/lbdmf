@@ -112,7 +112,7 @@ char* lbAppBusClient::curruser = NULL;
 /*...slbAppBusClient\58\\58\lbAppBusClient\40\\41\:0:*/
 lbAppBusClient::lbAppBusClient() {
 	// Set up a connection
-cout << "Init lbAppBusClient" << endl;	
+COUT << "Init lbAppBusClient" << ENDL;	
 	if (ABSConnection == NULL) {
 	/**
 	 * Initialize the tcp connection...
@@ -123,13 +123,13 @@ cout << "Init lbAppBusClient" << endl;
 	}
 
 	if (instanceCount == 0) {
-		cout << "Call Connect()" << endl;
+		COUT << "Call Connect()" << ENDL;
 		Connect();
 		
 		//AnounceClient();
 		curruser = NULL;
 	}
-cout << "Initialized" << endl;	
+COUT << "Initialized" << ENDL;	
 	instanceCount++;
 }
 /*...e*/
@@ -139,7 +139,7 @@ cout << "Initialized" << endl;
  */
 /*...slbAppBusClient\58\\58\\126\lbAppBusClient\40\\41\:0:*/
 lbAppBusClient::~lbAppBusClient() {
-cout << "Cleanup Appbus client" << endl;	
+COUT << "Cleanup Appbus client" << ENDL;	
 	if (instanceCount == 0) {
 LOG("lbAppBusClient::~lbAppBusClient() Delete ABSConnection");
 		// Disconnect from AppBusServer
@@ -225,14 +225,14 @@ LOG("lbAppBusClient::AnounceClient() called");
 #endif
 /*...e*/
 /*...e*/
-//cout << "lbAppBusClient::AnounceClient() sends " << client.getPacketCount() << " packets" << endl;
+//COUT << "lbAppBusClient::AnounceClient() sends " << client.getPacketCount() << " packets" << ENDL;
 /*...sAPPBUS_CLT_VERBOSE:0:*/
 #ifdef APPBUS_CLT_VERBOSE
 	LOG("lbAppBusClient::AnounceClient() Sending the data");        
 #endif
 /*...e*/
         *ABSConnection << client;
-        //cout << "AppBus Client now waits for answer..." << endl;
+        //COUT << "AppBus Client now waits for answer..." << ENDL;
 /*...sAPPBUS_CLT_VERBOSE:0:*/
 #ifdef APPBUS_CLT_VERBOSE
 	LOG("lbAppBusClient::AnounceClient() ready to get answer");        
@@ -241,7 +241,7 @@ LOG("lbAppBusClient::AnounceClient() called");
         *ABSConnection >> result;
 	// Handle the request
 	int count = result.getPacketCount();
-        //cout << "Returned data (packet count: " << count << ") is:" << endl;        
+        //COUT << "Returned data (packet count: " << count << ") is:" << ENDL;        
 
 	result.resetPositionCount();
 		
@@ -283,7 +283,7 @@ int lbAppBusClient::AnounceUser(char* user, char* passwd) {
 /*...sprepare proto:8:*/
 	if (curruser == NULL) {
 		LOG("First call to Anounce user");
-		//cout << "First call to Anounce user" << endl;
+		//COUT << "First call to Anounce user" << ENDL;
 		curruser = strdup(user);
 		ABSConnection->gethostname(temp);
 		user_info = new lb_Transfer_Data();
@@ -325,7 +325,7 @@ int lbAppBusClient::Echo(char* msg) {
 /*...shandle result:8:*/
 	// Handle the request
 	int count = result.getPacketCount();
-        //cout << "Returned data (packet count: " << count << ") is:" << endl;        
+        //COUT << "Returned data (packet count: " << count << ") is:" << ENDL;        
 
 	result.resetPositionCount();
 		
@@ -396,7 +396,7 @@ LOG("lbAppBusClient::AnounceClient() called");
 #endif
 /*...e*/
         *ABSConnection << client;
-        //cout << "AppBus Client now waits for answer..." << endl;
+        //COUT << "AppBus Client now waits for answer..." << ENDL;
 /*...sAPPBUS_CLT_VERBOSE:0:*/
 #ifdef APPBUS_CLT_VERBOSE
 	LOG("lbAppBusClient::AnounceClient() ready to get answer");        
@@ -406,7 +406,7 @@ LOG("lbAppBusClient::AnounceClient() called");
 
 	// Handle the request
 	int count = result.getPacketCount();
-        //cout << "Returned data (packet count: " << count << ") is:" << endl;        
+        //COUT << "Returned data (packet count: " << count << ") is:" << ENDL;        
 
 	result.resetPositionCount();
 		
@@ -424,11 +424,11 @@ LOG("lbAppBusClient::AnounceClient() called");
 				//printf("Char value = %s\n", buffer); 
 				
 				if (strcmp(buffer, "Accept") == 0) {
-					//cout << "Connected successfull" << endl;
+					//COUT << "Connected successfull" << ENDL;
 					connected = 1;
 					return 1;
 				} else {
-					//cout << "Connection failed!" << endl;
+					//COUT << "Connection failed!" << ENDL;
 					connected = 0;
 					return 0;
 				}
@@ -479,7 +479,7 @@ LOG("lbAppBusClient::AnounceClient() called");
 #endif
 /*...e*/
         *ABSConnection << client;
-        //cout << "AppBus Client now waits for answer..." << endl;
+        //COUT << "AppBus Client now waits for answer..." << ENDL;
 /*...sAPPBUS_CLT_VERBOSE:0:*/
 #ifdef APPBUS_CLT_VERBOSE
 	LOG("lbAppBusClient::AnounceClient() ready to get answer");        
@@ -489,7 +489,7 @@ LOG("lbAppBusClient::AnounceClient() called");
 
 	// Handle the request
 	int count = result.getPacketCount();
-        //cout << "Returned data (packet count: " << count << ") is:" << endl;        
+        //COUT << "Returned data (packet count: " << count << ") is:" << ENDL;        
 
 	result.resetPositionCount();
 		
@@ -507,11 +507,11 @@ LOG("lbAppBusClient::AnounceClient() called");
 				//printf("Char value = %s\n", buffer); 
 				
 				if (strcmp(buffer, "Succeed") == 0) {
-					//cout << "Disconnected successfull" << endl;
+					//COUT << "Disconnected successfull" << ENDL;
 					connected = 0;
 					return 1;
 				} else {
-					//cout << "Disconnection failed!" << endl;
+					//COUT << "Disconnection failed!" << ENDL;
 					return 0;
 				}
 				
@@ -535,7 +535,7 @@ LOG("lbAppBusClient::AnounceClient() called");
 /*...slbAppBusServer:0:*/
 /*...slbAppBusServer\58\\58\lbAppBusServer\40\\41\:0:*/
 lbAppBusServer::lbAppBusServer() {
-	//cout << "lbAppBusServer::lbAppBusServer() called" << endl;
+	//COUT << "lbAppBusServer::lbAppBusServer() called" << ENDL;
 }
 /*...e*/
 
@@ -615,7 +615,7 @@ LOG("lbAppBusServer::_request(): Handle a request");
 /*...e*/
 		}
 	}
-	//cout << "GlobalAppServer::_request(): Request handled" << endl;
+	//COUT << "GlobalAppServer::_request(): Request handled" << ENDL;
 /*...sAPPBUS_SVR_VERBOSE:0:*/
 //#ifdef APPBUS_SVR_VERBOSE
 	LOG("GlobalAppServer::_request(): Request handled");
@@ -635,7 +635,7 @@ lbErrCodes lbAppBusServer::_connected(lbTransfer* _clt) {
 
 	lbErrCodes rc = ERR_NONE;	 
 	lbErrCodes rcin = ERR_NONE;
-	lbErrCodes rcout = ERR_NONE;
+	lbErrCodes rCOUT = ERR_NONE;
 	lbErrCodes rc_handler = ERR_NONE; 
 	
 	// This objects must be clean for each request!
@@ -660,7 +660,7 @@ lbErrCodes lbAppBusServer::_connected(lbTransfer* _clt) {
 LOG("lbAppBusServer::_connected(lbTransfer* _clt) Request handled, send answer");
 #endif
 /*...e*/
-		if ((rcout = answerRequest(_clt, result)) != ERR_NONE) {
+		if ((rCOUT = answerRequest(_clt, result)) != ERR_NONE) {
 			LOG("answerRequest(_clt, result) failed");
 		}
 /*...sAPPBUS_SVR_VERBOSE:8:*/
@@ -676,11 +676,11 @@ LOG("lbAppBusServer::_connected(lbTransfer* _clt) Answer sent");
 	 */
 	} while ((isConnected(request) == 1) // Must disconnect before closing transfer 
 		&& (rcin == ERR_NONE) // Recieving failed
-		&& (rcout == ERR_NONE)); // Sendback failed
+		&& (rCOUT == ERR_NONE)); // Sendback failed
 
 	LOG("Handle connection tests case of ending loop...");
 	if (rcin != ERR_NONE)  LOG("Thread will be ended because recieving data has failed");
-	if (rcout != ERR_NONE) LOG("Thread will be ended because sending data has failed");
+	if (rCOUT != ERR_NONE) LOG("Thread will be ended because sending data has failed");
 	if (rc_handler != ERR_NONE) LOG("Handling request failed");
 	LOG("Tested");
 /*...e*/
@@ -730,14 +730,14 @@ lbErrCodes lbAppBusServer::HandleEcho(lb_Transfer_Data request,
 		makeProtoErrAnswer(result, 
 				   "Error: Echo parameter not sent",
 				   "lbAppServer::HandleEcho(...)");
-		cout << "Fehler ..." << endl;
+		COUT << "Fehler ..." << ENDL;
 		return ERR_APPBUS_ECHO;
 	}
 
 
 	result.add("Echoed");
 	result.add(echostring);
-cout << "Echo this: " << echostring << endl;
+COUT << "Echo this: " << echostring << ENDL;
 	return ERR_NONE;
 }
 /*...e*/

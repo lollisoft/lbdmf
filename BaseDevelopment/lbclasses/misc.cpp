@@ -31,10 +31,13 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.31 $
+ * $Revision: 1.32 $
  * $Name:  $
- * $Id: misc.cpp,v 1.31 2005/01/22 11:52:24 lollisoft Exp $
+ * $Id: misc.cpp,v 1.32 2005/01/23 13:43:05 lollisoft Exp $
  * $Log: misc.cpp,v $
+ * Revision 1.32  2005/01/23 13:43:05  lollisoft
+ * std:: is only under linux working
+ *
  * Revision 1.31  2005/01/22 11:52:24  lollisoft
  * Removed log messages
  *
@@ -410,7 +413,7 @@ void LB_STDCALL lbLog::log(int log) {
 /*...e*/
 /*...slbLog\58\\58\setPrefix\40\char\42\ p\41\:0:*/
 void LB_STDCALL lbLog::setPrefix(char* p) {
-//cout << "lbLog::setPrefix(char* p) called" << endl;
+//COUT << "lbLog::setPrefix(char* p) called" << ENDL;
         {
                 //lbLock lbLock(sect, "lbLockSection");
                 strcpy(prefix, p);

@@ -66,7 +66,7 @@ public:
 		recvMutex.CreateMutex(LB_RECV_MUTEX);
 	}
 	virtual ~lbSocketModule() {
-		cout << "Deinit socket module" << endl;
+		COUT << "Deinit socket module" << ENDL;
 	}
 };
 /*...e*/
@@ -158,7 +158,7 @@ lbSocket::lbSocket(const lbSocket& s) {
 /*...e*/
 
 lbSocket::~lbSocket() {
-	cout << "lbSocket::~lbSocket() called" << endl;
+	COUT << "lbSocket::~lbSocket() called" << ENDL;
 	LOG("lbSocket::~lbSocket() called");
 	
 	if (lbSockState == LB_SOCK_CONNECTED) close();
@@ -167,7 +167,7 @@ lbSocket::~lbSocket() {
 	if (sockUse == 0) {
 		if (WSACleanup() == SOCKET_ERROR) {
 			LOG("Winsock library could not be unloaded - how ever?");
-			cout << "Winsock library could not be unloaded - how ever?" << endl;
+			COUT << "Winsock library could not be unloaded - how ever?" << ENDL;
 		}
 	}
 }
@@ -306,7 +306,7 @@ int lbSocket::close()
         status=::shutdown(serverSocket, 2);
         if (status < 0)
         {
-          cerr << "ERROR: closesocket unsuccessful" << endl;
+          cerr << "ERROR: closesocket unsuccessful" << ENDL;
           return 0;
         }
 #endif
@@ -569,7 +569,7 @@ void lbSocket::initSymbolic(char* host, char* service) {
 	char msg[100];
 	int serverMode = 0;
 	startup();
-	//cout << "Initialize for host '" << host << "'" << endl;
+	//COUT << "Initialize for host '" << host << "'" << ENDL;
 /*...sSOCKET_VERBOSE:0:*/
 #ifdef SOCKET_VERBOSE
 	sprintf(msg, "void lbSocket::initSymbolic(char* host, char* service): Init for %s %s", host, service);
@@ -920,7 +920,7 @@ LOG("lbSocket::recv(void* buf, int & len): Enter");
 #ifdef bla
         close();
         status=WSACleanup();
-        cerr << "ERROR: WSACleanup unsuccessful" << endl;
+        cerr << "ERROR: WSACleanup unsuccessful" << ENDL;
 #endif
       return 0;
     }
@@ -1025,7 +1025,7 @@ if (_isServer == 1) {
       close();
       status=WSACleanup();
       if (status < 0)
-        cerr << "ERROR: WSACleanup unsuccessful" << endl;
+        cerr << "ERROR: WSACleanup unsuccessful" << ENDL;
 #endif
       return 0;  
     }
@@ -1155,7 +1155,7 @@ LOG(msg);
 #ifdef bla
         close();
         status=WSACleanup();
-        cerr << "ERROR: WSACleanup unsuccessful" << endl;
+        cerr << "ERROR: WSACleanup unsuccessful" << ENDL;
 #endif
       return 0;
     }
@@ -1270,7 +1270,7 @@ if (_isServer == 1) {
       close();
       status=WSACleanup();
       if (status < 0)
-        cerr << "ERROR: WSACleanup unsuccessful" << endl;
+        cerr << "ERROR: WSACleanup unsuccessful" << ENDL;
 #endif
       return err;  
     }

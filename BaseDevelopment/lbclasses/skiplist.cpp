@@ -38,11 +38,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.21 $
+ * $Revision: 1.22 $
  * $Name:  $
- * $Id: skiplist.cpp,v 1.21 2004/06/21 06:32:02 lollisoft Exp $
+ * $Id: skiplist.cpp,v 1.22 2005/01/23 13:43:05 lollisoft Exp $
  *
  * $Log: skiplist.cpp,v $
+ * Revision 1.22  2005/01/23 13:43:05  lollisoft
+ * std:: is only under linux working
+ *
  * Revision 1.21  2004/06/21 06:32:02  lollisoft
  * Implemented GUI database form creation, but updating fails.
  *
@@ -514,14 +517,14 @@ void dump() {
     int flag = 1;
 
     for ( ; temp!= NULL; temp = temp->forward[0]) {
-        cout << "temp->value is " << temp->value << endl;
+        COUT << "temp->value is " << temp->value << ENDL;
         for(int i=0; i<=temp->myLevel && flag != 0; i++)
             if (temp->forward[i] == NULL){
-                cout << " rest of list is empty" << endl;
+                COUT << " rest of list is empty" << ENDL;
                 flag = 0;
             }
             else
-                cout<<"  point to "<<temp->forward[i]->value<<"\n";
+                COUT<<"  point to "<<temp->forward[i]->value<<"\n";
     }
 }
 #endif

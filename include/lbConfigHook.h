@@ -48,10 +48,21 @@
 
 #include <stdio.h>
 #ifdef WINDOWS
+
+#define COUT cout
+#define ENDL endl
+#define OFSTREAM ofstream
+
  #include <iostream.h>
  #include <fstream.h>
 #endif
 #ifdef LINUX
+
+#define COUT std::cout
+#define ENDL std::endl
+#define OFSTREAM std::ofstream
+
+
  #include <iostream>
  #include <fstream>
 #endif
@@ -74,7 +85,7 @@
 	else { \
 		datei++; \
 	} \
-	cout << "File: " << datei << ", Line: " << __LINE__ << ", Msg: " << msg << endl; \
+	COUT << "File: " << datei << ", Line: " << __LINE__ << ", Msg: " << msg << ENDL; \
 }
 /*...e*/
 #endif
@@ -89,12 +100,13 @@
 	else { \
 		datei++; \
 	} \
-	cout << "File: " << datei << ", Line: " << __LINE__ << ", Msg: " << msg << endl; \
+	COUT << "File: " << datei << ", Line: " << __LINE__ << ", Msg: " << msg << ENDL; \
 	if (log != NULL) log->log(msg, __LINE__, __FILE__); \
 }
 /*...e*/
 #endif
 #endif
+
 
 /*...sLOG_INSTANCE:0:*/
 #define LOG_INSTANCE \
@@ -140,24 +152,24 @@
 #ifndef __MISC
 #define _CL_LOG \
 { \
-	std::ofstream of; \
-	of.open("C:\\log\\wsmaster.log", std::ios::app); \
+	OFSTREAM of; \
+	of.open("C:\\log\\wsmaster.log", ios::app); \
         of \
         
 #endif
 #ifdef __MISC
 #define _CL_LOG \
 { \
-	std::ofstream of; \
-	of.open("C:\\log\\wsmaster.log", std::ios::app); \
+	OFSTREAM of; \
+	of.open("C:\\log\\wsmaster.log", ios::app); \
         of \
         
 #endif
 /*...sLOG\40\msg\41\:0:*/
 #define LOG(msg)	\
 			if (isInitializing() != 0) { \
-				cout << "Tried to log while initializing the logger." << \
-				"Msg: " << msg << " File: " << __FILE__ << " Line: " << __LINE__ << endl; \
+				COUT << "Tried to log while initializing the logger." << \
+				"Msg: " << msg << " File: " << __FILE__ << " Line: " << __LINE__ << ENDL; \
 			} else { \
 				LOG_INSTANCE \
 				getLoggerInstance()->log(msg, __LINE__, __FILE__); \
@@ -166,7 +178,7 @@
 /*...sLOGENABLE:0:*/
 #define LOGENABLE       \
 			if (isInitializing() != 0) { \
-				cout << "Tried to log while initializing the logger." << endl; \
+				COUT << "Tried to log while initializing the logger." << ENDL; \
 			} else { \
 				LOG_INSTANCE \
 				getLoggerInstance()->enable(); \
@@ -175,7 +187,7 @@
 /*...sLOGDISABLE:0:*/
 #define LOGDISABLE      \
 			if (isInitializing() != 0) { \
-				cout << "Tried to log while initializing the logger." << endl; \
+				COUT << "Tried to log while initializing the logger." << ENDL; \
 			} else { \
 				LOG_INSTANCE \
 				getLoggerInstance()->disable(); \
@@ -184,7 +196,7 @@
 /*...sLOGSTART:0:*/
 #define LOGSTART        \
 			if (isInitializing != 0) { \
-				cout << "Tried to log while initializing the logger." << endl; \
+				COUT << "Tried to log while initializing the logger." << ENDL; \
 			} else { \
 				LOG_INSTANCE \
 				getLoggerInstance()->event_begin(); \
@@ -193,7 +205,7 @@
 /*...sLOGEND:0:*/
 #define LOGEND          \
 			if (isInitializing() != 0) { \
-				cout << "Tried to log while initializing the logger." << endl; \
+				COUT << "Tried to log while initializing the logger." << ENDL; \
 			} else { \
 				LOG_INSTANCE \
 				getLoggerInstance()->event_end(); \
@@ -202,7 +214,7 @@
 /*...sLOGPREFIX:0:*/
 #define LOGPREFIX(a)    \
 			if (isInitializing() != 0) { \
-				cout << "Tried to log while initializing the logger." << endl; \
+				COUT << "Tried to log while initializing the logger." << ENDL; \
 			} else { \
 				LOG_INSTANCE \
 				getLoggerInstance()->setPrefix(a); \
