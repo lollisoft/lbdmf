@@ -130,7 +130,41 @@ void main(int argc, char *argv[]) {
 
 	UAP_REQUEST(mm, lb_I_Database, database)
 
-	database->connect("", "", "");
+	database->init();
+	database->connect("trainres", "dba", "trainres");
+	
+	UAP(lb_I_Query, query, __FILE__, __LINE__)
+	
+	query = database->getQuery();
+
+	query->query("select ObjectTyp, X, Y, W, H from World");
+
+	query->next();
+
+	char ObjectTyp[1000];
+	char X[100];
+	char Y[100];
+	char W[100];
+	char H[100];
+
+	strcpy(ObjectTyp, query->getChar(1));
+	strcpy(X, query->getChar(2));
+	strcpy(Y, query->getChar(3));
+	strcpy(W, query->getChar(4));
+	strcpy(H, query->getChar(5));
+
+
+	printf("%s;%s;%s;%s;%s\n", ObjectTyp, X, Y, W, H);
+
+
+	/* Todo:
+	 * Create a viewer instance for the current query and
+	 * test navigation.
+	 */
+
+
+
+
 	
 	_CL_LOG << "Tested database" LOG_
 	getch();
