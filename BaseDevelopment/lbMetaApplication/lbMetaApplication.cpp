@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.35 $
+ * $Revision: 1.36 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.35 2004/07/16 20:24:41 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.36 2004/07/17 08:47:57 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.36  2004/07/17 08:47:57  lollisoft
+ * Bugfix for MSVC
+ *
  * Revision 1.35  2004/07/16 20:24:41  lollisoft
  * Added handler to enter into the debugger
  *
@@ -455,15 +458,30 @@ lbErrCodes LB_STDCALL lb_MetaApplication::loadApplication() {
 	lbErrCodes err = ERR_NONE;
         char* applicationName = getenv("TARGET_APPLICATION");
 
-	lb_I_Unknown* a;
-#ifdef WINDOWS	
-	manager->makeInstance("_instanceOfApplication", applicationName, &a);
+	lb_I_Unknown* a = NULL;
+
+#ifndef LINUX
+	#ifdef __WATCOMC__
+	#define PREFIX "_"
+	#endif
+	#ifdef _MSC_VER
+	#define PREFIX ""
+	#endif
 #endif
 #ifdef LINUX
-	manager->makeInstance("instanceOfApplication", "Application.so", &a);
+#define PREFIX ""
+#endif
+
+#ifdef WINDOWS	
+	manager->makeInstance(PREFIX "instanceOfApplication", applicationName, &a);
+#endif
+#ifdef LINUX
+	manager->makeInstance(PREFIX "instanceOfApplication", "Application.so", &a);
 #endif	
 	if (a == NULL) {
 		_LOG << "ERROR: Application could not be loaded - either not found or not configured." LOG_
+		printf("ERROR: Application could not be loaded - either not found or not configured.\n");
+		getch();
 		return ERR_NONE;
 	}
 	
