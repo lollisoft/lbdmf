@@ -199,9 +199,17 @@ void main(int argc, char *argv[]) {
 
 /*...e*/
 
+int a = 1;
+int b = 1;
+
+if (a == b) {
 	UAP_REQUEST(mm, lb_I_PluginManager, PM)
-	
+	printf("Test plugin manager\n");	
 	PM->beginEnumPlugins();
+	printf("Tested plugin manager\n");	
+}
+	getch();
+
 
 /*...sTest database:0:*/
 	_CL_LOG << "Test database library" LOG_
