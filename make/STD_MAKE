@@ -25,11 +25,14 @@
 #            22453 Hamburg (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.33 $
+# * $Revision: 1.34 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.33 2003/02/17 21:34:43 lollisoft Exp $
+# * $Id: STD_MAKE,v 1.34 2003/03/15 01:01:57 lollisoft Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.34  2003/03/15 01:01:57  lollisoft
+# * Removed the problem with _chkesp() failure. But still crash in my GUI app
+# *
 # * Revision 1.33  2003/02/17 21:34:43  lollisoft
 # * Much problems with compilation solved, bu wy came this ??
 # *
@@ -140,19 +143,12 @@ ifeq ($(OSTYPE), Windows_NT)
 DEVROOT=Q:/develop
 
 # Set standard compiler
-COMPILER=WATCOM
-#COMPILER=MICROSOFT
+#COMPILER=WATCOM
+COMPILER=MICROSOFT
 MODE=_DEBUG
 #MODE=
 
-STD_INCL_WATCOM = \
--i=. \
--i=Q:\develop\Tools\WATCOM\h \
--i=Q:\develop\Tools\WATCOM\h\nt \
--i=Q:\develop\projects\cpp\interfaces \
--i=Q:\develop\projects\cpp\include \
--i=Q:\develop\projects\dll\include \
--i=Q:\develop\projects\lib\include
+STD_INCL_WATCOM =-i=. -i=Q:\\develop\\Tools\\WATCOM\\h -i=Q:\\develop\\Tools\\WATCOM\\h\\nt -i=Q:\\develop\\projects\\cpp\\interfaces -i=Q:\\develop\\projects\\cpp\\include -i=Q:\\develop\\projects\\dll\\include -i=Q:\\develop\\projects\\lib\\include
 STD_INCL_MICROSOFT = /I "." /I "F:\develop\NT\MSC\VC98\Include" /I "Q:\Develop\xml\xml4csrc3_3_1\src" /I "Q:\Develop\Projects\CPP\include" /I "Q:\Develop\Projects\CPP\interfaces" /I "Q:\Develop\Projects\CPP\basedevelopment\lbclasses"
 
 STD_INCL = $(STD_INCL_WATCOM)
@@ -202,16 +198,54 @@ INTDIR=.
 #/D "LBDOMCONFIG_EXPORTS" /Fp"$(INTDIR)\lbDOMConfig.pch"
 MSC_BASIC_EXE      = /MT  /nologo /W3 /GX /O2  /D "WINDOWS" /D "LB_RUNTIME_LINK" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
 MSC_BASIC_EXE_NODBG= /O2         
-MSC_BASIC_EXE_DEBUG= /Gm /ZI /Od /YX 
+MSC_BASIC_EXE_DEBUG= /Gm /ZI /Od /YX /W3 
 
 
 
 #/Fp"$(INTDIR)\lbDOMConfig.pch"
-#/D "LBDOMCONFIG_EXPORTS"       /Gd         /MTd
-C_EXEOPS_MICROSOFT =        /Ge     /nologo /MT  /W3     /GX /O2          /D "WINDOWS" /D "LB_RUNTIME_LINK" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
-C_EXEOPS_MICROSOFT_DEBUG =  /Ge     /nologo /MDd /W3     /GX /O2  /ZI     /D "WINDOWS" /D "LB_RUNTIME_LINK" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
-C_DLLOPS_MICROSOFT =        /Ge     /nologo /MT  /W3     /GX /O2          /D "WINDOWS" /D "LB_RUNTIME_LINK" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
-C_DLLOPS_MICROSOFT_DEBUG =  /Ge     /nologo /MDd /W3     /GX /O2          /D "WINDOWS" /D "LB_RUNTIME_LINK" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+#/D "LBDOMCONFIG_EXPORTS"   /Ge    /Gd         /MTd          /O2   
+
+# alt
+#STD_MICROSOFT=\
+#/D "WINDOWS" \
+#/D "LB_RUNTIME_LINK" \
+#/D "WIN32" \
+#/D "NDEBUG" \
+#/D "_WINDOWS" \
+#/D "_MBCS" \
+#/D "_USRDLL" \
+#/YX \
+#/Fo"$(INTDIR)\\" \
+#/Fd"$(INTDIR)\\" \
+#/FD /c 
+
+
+#?/D__WINDOWS95__ 
+
+STD_MICROSOFT=\
+/D "WIN32" \
+/D "WINDOWS" \
+/D "_WINDOWS" \
+/D "__WINDOWS__" \
+/D "__WXMSW__" \
+/D "__WIN95__" \
+/D "__WIN32__" \
+/D WINVER=0x0400 \
+/D "STRICT" \
+/D "LB_RUNTIME_LINK" \
+/D "_MBCS" \
+/D "_USRDLL" \
+/YX \
+/Fo"$(INTDIR)\\" \
+/Fd"$(INTDIR)\\" \
+/FD /c 
+
+
+#                           /GZ
+C_EXEOPS_MICROSOFT =                                   /nologo /MT  /W3     /GX           $(STD_MICROSOFT)
+C_EXEOPS_MICROSOFT_DEBUG =  /F100000      /D __WXDEBUG__ /D DEBUG=1 /D _DEBUG /nologo /MDd /W3 /Od /GX   /ZI     $(STD_MICROSOFT)
+C_DLLOPS_MICROSOFT =                                   /nologo /MT  /W3     /GX           $(STD_MICROSOFT)
+C_DLLOPS_MICROSOFT_DEBUG =  /F100000      /D __WXDEBUG__ /D DEBUG=1 /D _DEBUG /nologo /MDd /W3 /Od /GX   /ZI     $(STD_MICROSOFT)
 
 LINK_MICROSOFT=link.exe
  
@@ -244,11 +278,11 @@ L_DLLOPS = $(L_DLLOPS_WATCOM)
 LNKDLLOPS = $(L_DLLOPS_WATCOM)
 
 CP =copy
-EXEDIR =Q:\Develop\Projects\bin
-DLLDIR =Q:\Develop\Projects\dll
-DLLLIBDIR =Q:\Develop\Projects\dll\lib
-LIBDIR =Q:\Develop\Projects\lib
-DLLLIBDIR =Q:\Develop\Projects\dll\libs
+EXEDIR =Q:\\Develop\\Projects\\bin
+DLLDIR =Q:\\Develop\\Projects\\dll
+DLLLIBDIR =Q:\\Develop\\Projects\\dll\\lib
+LIBDIR =Q:\\Develop\\Projects\\lib
+DLLLIBDIR =Q:\\Develop\\Projects\\dll\\libs
 
 
 endif

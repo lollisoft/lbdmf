@@ -350,62 +350,62 @@ public:
 			    printf("Destroy an lb_I_Container (3)\n"); \
 			}\
 		} \
-		void setFile(char* __file) { \
+		void LB_STDCALL setFile(char* __file) { \
 			if (_file != NULL) delete [] _file; \
 			if (__file != NULL) { \
 				_file = new char [strlen(__file) + 1]; \
 				_file = strcpy(_file, __file); \
 			} \
 		} \
-		void setLine(int __line) { \
+		void LB_STDCALL setLine(int __line) { \
 			_line = __line; \
 		} \
 		\
-		interface* getPtr() const { return _autoPtr; } \
-		void setPtr(interface*& source) { \
+		interface* LB_STDCALL getPtr() const { return _autoPtr; } \
+		void LB_STDCALL setPtr(interface*& source) { \
 			if (_autoPtr != NULL) { \
 				_CL_LOG << "Error: UAP object still initialized!" LOG_ \
 			} \
 			_autoPtr = source; \
 		} \
 		\
-		interface& operator * () { \
+		interface& LB_STDCALL operator * () { \
 		return *_autoPtr; } \
-		interface* operator -> () const { \
+		interface* LB_STDCALL operator -> () const { \
 			if (_autoPtr == NULL) { \
 			} \
 			return _autoPtr; \
 		} \
-		interface* operator -> () { \
+		interface* LB_STDCALL operator -> () { \
 			if (_autoPtr == NULL) { \
 			} \
 			return _autoPtr; \
 		} \
-		UAP##Unknown_Reference& operator++(int) { \
+		UAP##Unknown_Reference& LB_STDCALL operator++(int) { \
 			interface* temp = NULL; \
 			_autoPtr->queryInterface(#interface, (void**) &temp, file, line); \
 			return *this; \
 		} \
-		UAP##Unknown_Reference& operator--(int) { \
+		UAP##Unknown_Reference& LB_STDCALL operator--(int) { \
 			interface* temp = NULL; \
 			if (_autoPtr->release(file, line) == ERR_RELEASED) _autoPtr = NULL; \
 			return *this; \
 		} \
-		interface ** operator & () { \
+		interface ** LB_STDCALL operator & () { \
 			return &_autoPtr; \
 		} \
 		\
-		UAP##Unknown_Reference& operator = (interface* autoPtr) { \
+		UAP##Unknown_Reference& LB_STDCALL operator = (interface* autoPtr) { \
 			_autoPtr = autoPtr; \
 			return *this; \
 		} \
-		int operator == (const interface* b) const { \
+		int LB_STDCALL operator == (const interface* b) const { \
 			return _autoPtr == b; \
 		} \
-		int operator != (const interface* b) const { \
+		int LB_STDCALL operator != (const interface* b) const { \
 			return _autoPtr != b; \
 		} \
-		void setDelete(int _allow) { allowDelete = _allow; } \
+		void LB_STDCALL setDelete(int _allow) { allowDelete = _allow; } \
 		\
 		protected: \
 	        interface* _autoPtr; \
@@ -459,61 +459,61 @@ public:
 			} \
 			free(_file); \
 		} \
-		void setFile(char* __file) { \
+		void LB_STDCALL setFile(char* __file) { \
 			if (__file != NULL) _file = strdup(__file); \
 		} \
-		void setLine(int __line) { \
+		void LB_STDCALL setLine(int __line) { \
 			_line = __line; \
 		} \
 		\
-		interface* getPtr() const { return _autoPtr; } \
-		void setPtr(interface*& source) { \
+		interface* LB_STDCALL getPtr() const { return _autoPtr; } \
+		void LB_STDCALL setPtr(interface*& source) { \
 			if (_autoPtr != NULL) { \
 				_CL_LOG << "Error: UAP object still initialized!" LOG_ \
 			} \
 			_autoPtr = source; \
 		} \
 		\
-		interface& operator * () { \
+		interface& LB_STDCALL operator * () { \
 		_LOG << "Warning: Using reference to UAP pointer in " << file << " at " <<  line LOG_ \
 		return *_autoPtr; } \
-		interface* operator -> () const { \
+		interface* LB_STDCALL operator -> () const { \
 			if (_autoPtr == NULL) { \
 				_CL_LOG << "Error: UAP pointer (" << #Unknown_Reference << ") for interface " << #interface << " is NULL!" LOG_ \
 			} \
 			return _autoPtr; \
 		} \
-		interface* operator -> () { \
+		interface* LB_STDCALL operator -> () { \
 			if (_autoPtr == NULL) { \
 				_CL_LOG << "Error: UAP pointer (" << #Unknown_Reference << ") for interface " << #interface << " is NULL!" LOG_ \
 			} \
 			return _autoPtr; \
 		} \
-		UAP##Unknown_Reference& operator++(int) { \
+		UAP##Unknown_Reference& LB_STDCALL operator++(int) { \
 			interface* temp = NULL; \
 			_autoPtr->queryInterface(#interface, (void**) &temp, file, line); \
 			return *this; \
 		} \
-		UAP##Unknown_Reference& operator--(int) { \
+		UAP##Unknown_Reference& LB_STDCALL operator--(int) { \
 			interface* temp = NULL; \
 			if (_autoPtr->release(file, line) == ERR_RELEASED) _autoPtr = NULL; \
 			return *this; \
 		} \
-		interface ** operator & () { \
+		interface ** LB_STDCALL operator & () { \
 			return &_autoPtr; \
 		} \
 		\
-		UAP##Unknown_Reference& operator = (interface* autoPtr) { \
+		UAP##Unknown_Reference& LB_STDCALL operator = (interface* autoPtr) { \
 			_autoPtr = autoPtr; \
 			return *this; \
 		} \
-		int operator == (const interface* b) const { \
+		int LB_STDCALL operator == (const interface* b) const { \
 			return _autoPtr == b; \
 		} \
-		int operator != (const interface* b) const { \
+		int LB_STDCALL operator != (const interface* b) const { \
 			return _autoPtr != b; \
 		} \
-		void setDelete(int _allow) { allowDelete = _allow; } \
+		void LB_STDCALL setDelete(int _allow) { allowDelete = _allow; } \
 		\
 		protected: \
 	        interface* _autoPtr; \
@@ -1017,7 +1017,7 @@ lbErrCodes LB_STDCALL classname::queryInterface(char* name, void** unknown, char
  */
 
 extern "C" { 
-typedef lbErrCodes (LB_STDCALL *T_pLB_GET_UNKNOWN_INSTANCE) (lb_I_Unknown**, lb_I_Module* m, char* file, int line);
+typedef lbErrCodes (*T_pLB_GET_UNKNOWN_INSTANCE) (lb_I_Unknown**, lb_I_Module* m, char* file, int line);
 }
 
 /**
@@ -1029,11 +1029,11 @@ typedef lbErrCodes (LB_STDCALL *T_pLB_GET_UNKNOWN_INSTANCE) (lb_I_Unknown**, lb_
 
 #define DECLARE_FUNCTOR(name) \
 extern "C" { \
-lbErrCodes DLLEXPORT LB_FUNCTORCALL name(lb_I_Unknown** uk, lb_I_Module* m, char* file, int line); \
+lbErrCodes DLLEXPORT name(lb_I_Unknown** uk, lb_I_Module* m, char* file, int line); \
 }
 #define IMPLEMENT_FUNCTOR(name, clsname) \
 extern "C" { \
-lbErrCodes DLLEXPORT LB_FUNCTORCALL name(lb_I_Unknown** uk, lb_I_Module* m, char* file, int line) { \
+lbErrCodes DLLEXPORT name(lb_I_Unknown** uk, lb_I_Module* m, char* file, int line) { \
 \
 	lbErrCodes err = ERR_NONE; \
         clsname* instance = new clsname(); \
@@ -1066,12 +1066,12 @@ lbErrCodes DLLEXPORT LB_FUNCTORCALL name(lb_I_Unknown** uk, lb_I_Module* m, char
 #define DECLARE_SINGLETON_FUNCTOR(name) \
 extern "C" { \
 extern lb_I_Unknown* name##_singleton; \
-lbErrCodes DLLEXPORT LB_FUNCTORCALL name(lb_I_Unknown** uk, lb_I_Module* m, char* file, int line); \
+lbErrCodes DLLEXPORT name(lb_I_Unknown** uk, lb_I_Module* m, char* file, int line); \
 } 
 #define IMPLEMENT_SINGLETON_FUNCTOR(name, clsname) \
 extern "C" { \
 lb_I_Unknown* name##_singleton = NULL; \
-lbErrCodes DLLEXPORT LB_FUNCTORCALL name(lb_I_Unknown** uk, lb_I_Module* m, char* file, int line) { \
+lbErrCodes DLLEXPORT name(lb_I_Unknown** uk, lb_I_Module* m, char* file, int line) { \
 \
 	lbErrCodes err = ERR_NONE; \
 	if (name##_singleton == NULL) { \

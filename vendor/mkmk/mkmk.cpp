@@ -11,11 +11,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.31 $
+ * $Revision: 1.32 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.31 2003/02/17 21:34:44 lollisoft Exp $
+ * $Id: mkmk.cpp,v 1.32 2003/03/15 01:01:57 lollisoft Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.32  2003/03/15 01:01:57  lollisoft
+ * Removed the problem with _chkesp() failure. But still crash in my GUI app
+ *
  * Revision 1.31  2003/02/17 21:34:44  lollisoft
  * Much problems with compilation solved, bu wy came this ??
  *
@@ -627,7 +630,7 @@ void writeExeTarget(char* modulename) {
   printf("\t\t@echo NAME $(PROGRAM).exe > $(LNK)\n");
   printf("\t\t@echo $(FILE) $(LIBS) >> $(LNK)\n");
   printf("\t\t@$(LINK) $(LINKFLAGS) $(COMPILERFLAGS)\n");
-  printf("\t\t@cmd /C $(CP) $(PROGRAM).exe $(EXEDIR) > null\n");
+  printf("\t\t@cmd /C \"$(CP) $(PROGRAM).exe $(EXEDIR) > null\"\n");
 #endif
 }
 /*...e*/
@@ -661,8 +664,8 @@ void writeDllTarget(char* modulename) {
   printf("\t\t@;if NOT \"$(LIBS)\" == \"\" echo LIBR $(LIBS) >> $(LNK)\n");
   printf("\t\t@$(LINK) $(LNKDLLOPS) $(LINKFLAGS)\n");
   printf("\t\t@wlib -q -n -b $(PROGRAM).lib +$(PROGRAM).dll\n");
-  printf("\t\t@$(CP) $(PROGRAM).dll $(DLLDIR) > null\n");
-  printf("\t\t@$(CP) $(PROGRAM).lib $(DLLLIBDIR) > null\n");
+  printf("\t\t@@cmd /C \"$(CP) $(PROGRAM).dll $(DLLDIR) > null\"\n");
+  printf("\t\t@@cmd /C \"$(CP) $(PROGRAM).lib $(DLLLIBDIR) > null\"\n");
   printf("endif\n");
 
   printf("ifeq ($(COMPILER), MICROSOFT)\n");
@@ -674,8 +677,8 @@ void writeDllTarget(char* modulename) {
 //  printf("\t\t@;if NOT \"$(LIBS)\" == \"\" echo LIBR $(LIBS) >> $(LNK)\n");
   printf("\t\t@$(LINK) $(LNKDLLOPS) $(LINKFLAGS)\n");
 // Hack for copy not found ??  
-  printf("\t\t@cmd /C $(CP) $(PROGRAM).dll $(DLLDIR) > null\n");
-  printf("\t\t@cmd /C $(CP) $(PROGRAM).lib $(DLLLIBDIR) > null\n");
+  printf("\t\t@cmd /C \"$(CP) $(PROGRAM).dll $(DLLDIR) > null\"\n");
+  printf("\t\t@cmd /C \"$(CP) $(PROGRAM).lib $(DLLLIBDIR) > null\"\n");
   printf("endif\n");
 #endif
 }

@@ -4,6 +4,28 @@ OBJDEP=../dosdir/match.o ../dosdir/dosdir.o
 
 ifeq ($(OSTYPE), Windows_NT)
 MOD_INCL=$(STD_INCL) -i=..\dosdir
+
+# use global setup
+COMPILER=WATCOM
+
+ifeq ($(COMPILER), MICROSOFT)
+MOD_INCL = $(STD_INCL_MICROSOFT)
+MOD_INCL += $(foreach s, $(INCLS), /I "$s")
+MOD_INCL += /I ../dosdir
+CC=Cl
+C_DLLOPS= $(C_DLLOPS_MICROSOFT$(MODE))
+C_EXEOPS= $(C_EXEOPS_MICROSOFT$(MODE))
+C_LIBOPS= $(C_LIBOPS_MICROSOFT$(MODE))
+LINK=  $(LINK_MICROSOFT)
+L_DLLOPS= $(L_DLLOPS_MICROSOFT)
+LNKDLLOPS = $(L_DLLOPS_MICROSOFT)
+COMPILERFLAGS = test.obj $(LIBS)
+endif
+
+ifeq ($(COMPILER), WATCOM)
+MOD_INCL = $(STD_INCL_WATCOM)
+endif
+
 endif
 
 ifeq ($(OSTYPE), linux)
