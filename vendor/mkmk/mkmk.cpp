@@ -11,11 +11,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.17 $
+ * $Revision: 1.18 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.17 2001/11/08 20:47:13 lothar Exp $
+ * $Id: mkmk.cpp,v 1.18 2001/11/09 19:28:49 lothar Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.18  2001/11/09 19:28:49  lothar
+ * Added first attempt of building so targets
+ *
  * Revision 1.17  2001/11/08 20:47:13  lothar
  * Added writing dll targets (tested on lbmodule)
  *
@@ -116,6 +119,7 @@
 #define DLL_TARGET 2
 #define LIB_TARGET 3
 #define ELF_TARGET 4
+#define SO_TARGET  5
 
 int targettype=EXE_TARGET;
 
@@ -590,6 +594,17 @@ void writeDllTarget(char* modulename) {
 #endif
 }
 /*...e*/
+/*...swrite_so_Target\40\char\42\ modulename\41\ create a UNIX shared library:0:*/
+void write_so_Target(char* modulename) {
+#ifdef UNIX
+  printf("\n%s: $(OBJS)\n", modulename);
+  printf("\t\t$(CC) $(L_OPS) %s $(OBJS) $(OBJDEP)\n",modulename);
+#endif
+#ifdef __WATCOMC__
+  fprintf(stderr, "Warning: Creating a so library under Windows is not possible with Watcom !!\n");
+#endif
+}
+/*...e*/
 
 //------------------------------ Main code ------------------------------
 /*...svoid ShowHelp\40\\41\:0:*/
@@ -699,7 +714,19 @@ void WriteDep(FILE *f, char *Name, TIncludeParser *p)
   ObjExt(Name,ObjName,sizeof(ObjName));
   sprintf(Line,"%s: makefile %s",ObjName,Name);
   ListFiles(f,Line,&p->l);
-  printf("\t\t$(CC) $(C_OPS) $(MOD_INCL) %s\n\n",Name);
+
+  switch (targettype) {
+  	case DLL_TARGET:
+		printf("\t\t$(CC) $(C_OPS) $(MOD_INCL) %s\n\n",Name);
+		break;
+	case EXE_TARGET:
+		printf("\t\t$(CC) $(C_OPS) $(MOD_INCL) %s\n\n",Name);
+		break;
+	case SO_TARGET:
+		printf("\t\t$(CC) -fPIC -Wall -g -c $(C_OPS) $(MOD_INCL) %s\n\n",Name);
+	default:
+		break;
+  }
 }
 /*...e*/
 /*...svoid WriteEnding\40\FILE \42\f\44\ char \42\ExeName\44\ TDepList \42\l\41\:0:*/
@@ -759,6 +786,8 @@ void WriteEnding(FILE *f, char *ModuleName, TDepList *l)
 	case EXE_TARGET:
 		writeExeTarget(ModuleName);
 		break;
+	case SO_TARGET:
+		write_so_Target(ModuleName);
 	default:
 		break;
   }
