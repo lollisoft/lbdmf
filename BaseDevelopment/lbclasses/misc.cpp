@@ -1,10 +1,13 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.5 $
+ * $Revision: 1.6 $
  * $Name:  $
- * $Id: misc.cpp,v 1.5 2001/03/14 20:52:51 lolli Exp $
+ * $Id: misc.cpp,v 1.6 2001/04/13 07:39:29 lolli Exp $
  * $Log: misc.cpp,v $
+ * Revision 1.6  2001/04/13 07:39:29  lolli
+ * Commit for backup
+ *
  * Revision 1.5  2001/03/14 20:52:51  lolli
  * Compiles and links now, but it will not run
  *
@@ -332,10 +335,6 @@ void lbLog::event_end(char *event) {
     }
 /*...e*/
 
-lbErrCodes LB_STDCALL lbLog::setData(lb_I_Unknown* uk) {
-	 CL_LOG("Error: Not implemented");
-	 return ERR_NONE;
-}
 
 #endif // LOG_DEFINED
 

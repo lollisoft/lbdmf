@@ -4,10 +4,13 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.9 $
+ * $Revision: 1.10 $
  * $Name:  $
- * $Id: lbcontainer.cpp,v 1.9 2001/03/14 20:52:51 lolli Exp $
+ * $Id: lbcontainer.cpp,v 1.10 2001/04/13 07:39:29 lolli Exp $
  * $Log: lbcontainer.cpp,v $
+ * Revision 1.10  2001/04/13 07:39:29  lolli
+ * Commit for backup
+ *
  * Revision 1.9  2001/03/14 20:52:51  lolli
  * Compiles and links now, but it will not run
  *
@@ -79,6 +82,18 @@ BEGIN_IMPLEMENT_LB_UNKNOWN(lbContainer)
 	ADD_INTERFACE(lb_I_Container)
 END_IMPLEMENT_LB_UNKNOWN()
 
+lbContainer::lbContainer() {
+    iteration = 0;
+    ref = 0;
+    iterator = NULL;
+    count = 0;
+    container_data = NULL;
+}
+
+lbContainer::~lbContainer() {
+}
+
+
 IMPLEMENT_LB_I_CONTAINER_IMPL(lbContainer)
 
 
@@ -91,10 +106,6 @@ BEGIN_IMPLEMENT_LB_UNKNOWN(lbElement)
 END_IMPLEMENT_LB_UNKNOWN()
 
 IMPLEMENT_LB_ELEMENT(lbElement)
-
-lbErrCodes LB_STDCALL lbElement::setData(lb_I_Unknown* data) {
-	return ERR_NONE;
-}
 
 int LB_STDCALL lbElement::equals(const lb_I_Element* a) const {
 	return 0;

@@ -28,11 +28,6 @@ void lbObject::setType() {
 	LOG("Error: Base object has no object type");
 }
 
-lbErrCodes lbObject::setData(lb_I_Unknown* uk) {
-	LOG("Error: Not implemented");
-	return ERR_NONE;
-}
-
 
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbObject)
 	ADD_INTERFACE(lb_I_Object)
@@ -49,11 +44,6 @@ lbString::~lbString() {
 
 void lbString::setData(char* p) {
 	stringdata = strdup(p);
-}
-
-lbErrCodes lbString::setData(lb_I_Unknown* uk) {
-	LOG("Error: Not implemented");
-	return ERR_NONE;
 }
 
 char* lbString::getData() const {
