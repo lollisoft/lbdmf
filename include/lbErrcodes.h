@@ -1,11 +1,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.11 $
+ * $Revision: 1.12 $
  * $Name:  $
- * $Id: lbErrcodes.h,v 1.11 2002/04/15 18:25:16 lothar Exp $
+ * $Id: lbErrcodes.h,v 1.12 2002/08/21 18:51:48 lothar Exp $
  *
  * $Log: lbErrcodes.h,v $
+ * Revision 1.12  2002/08/21 18:51:48  lothar
+ * New err code for event manager
+ *
  * Revision 1.11  2002/04/15 18:25:16  lothar
  * Huge changes - works good
  *
@@ -71,6 +74,10 @@ enum lbErrCodes {
 	ERR_INSTANCE_STILL_USED,
 	// To see if the instance was deleted, not released
 	ERR_RELEASED,
+
+/* Errcodes for event manager */
+
+	ERR_EVENT_EXISTS,
 	
 /* Errcodes for dispatcher */
 
