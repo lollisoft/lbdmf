@@ -12,11 +12,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.52 $
+ * $Revision: 1.53 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.52 2005/03/16 00:27:53 lollisoft Exp $
+ * $Id: mkmk.cpp,v 1.53 2005/03/16 01:56:25 lollisoft Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.53  2005/03/16 01:56:25  lollisoft
+ * Added wxplugin make rules. Suddenly reformatted the code.
+ *
  * Revision 1.52  2005/03/16 00:27:53  lollisoft
  * Last changes to full automatic compiling under OSX.
  *
@@ -237,9 +240,10 @@
 #define WXSO_TARGET  7
 
 #define PLUGIN_TARGET 8
+#define WXPLUGIN_TARGET 9
 
-#define SOPLUGIN_TARGET 9
-#define WXSOPLUGIN_TARGET 10
+#define SOPLUGIN_TARGET 10
+#define WXSOPLUGIN_TARGET 11
 /*...e*/
 
 int targettype=EXE_TARGET;
@@ -280,10 +284,10 @@ int split(const char split_char, char *string, char ***array)
         /* find each item, copy, and insert pointer to item in array */
         index = 0;
         for ( block = strtok(string, split_string); block != NULL; 
-	      block = strtok(NULL, split_string) )
+              block = strtok(NULL, split_string) )
               {
-	  	(*array)[index] = block;
-       		index++;
+                (*array)[index] = block;
+                index++;
               }
 
         /* returnt the number of items in the array */
@@ -414,8 +418,8 @@ class TIncludeParser {
 };
 /*...e*/
 void TIncludeParser::setIncludes(char** iPathList, int _count) {
-	InclPathList = iPathList;
-	count = _count;
+        InclPathList = iPathList;
+        count = _count;
 }
 /*...svoid TIncludeParser\58\\58\AddInclude\40\char \42\IncName\41\:0:*/
 void TIncludeParser::AddInclude(char *IncName)
@@ -430,35 +434,35 @@ void TIncludeParser::AddInclude(char *IncName)
   int foundStdPath = 0;
     
   for (int i = 0; i < count; i++) {
-  	FILE* f;
-  	strcpy(s, InclPathList[i]);
-  	strcat(s, IncName);
-  	
-  	f = fopen(s, "rt");
-  	
-  	if (f != NULL) {
-  		strcpy(realfile, s);
-  		fclose(f);
-  		foundStdPath = 1;
-  		break;
-  	}
+        FILE* f;
+        strcpy(s, InclPathList[i]);
+        strcat(s, IncName);
+        
+        f = fopen(s, "rt");
+        
+        if (f != NULL) {
+                strcpy(realfile, s);
+                fclose(f);
+                foundStdPath = 1;
+                break;
+        }
   }
 
   if (foundStdPath == 0) {
-  	FILE* f;
-  	
-  	f = fopen(IncName, "rt");
-  	
-  	if (f != NULL) {
-        	strcpy(realfile, IncName);
-        	fclose(f);
-	} else { printf("Error: No standard path has this file, and this rule does not match for %s\n", IncName); }
+        FILE* f;
+        
+        f = fopen(IncName, "rt");
+        
+        if (f != NULL) {
+                strcpy(realfile, IncName);
+                fclose(f);
+        } else { printf("Error: No standard path has this file, and this rule does not match for %s\n", IncName); }
   }
 /*...e*/
 
   if (l.Search(realfile)) {
-//	printf("File %s has already been added!\n", realfile);
-	return;
+//      printf("File %s has already been added!\n", realfile);
+        return;
   }
 
   if (strcmp(realfile,"") != 0)  {
@@ -476,9 +480,9 @@ void TIncludeParser::AddInclude(char *IncName)
 /*...sbla:0:*/
 /*  
   if (Found) {
-  	FSplit(Found, Path, IncName);
-  	printf("Insert include file %s%s\n", Path, IncName);
-  	l.Insert(IncName,Path);
+        FSplit(Found, Path, IncName);
+        printf("Insert include file %s%s\n", Path, IncName);
+        l.Insert(IncName,Path);
   }
   else if (FilePath[0]!=0)
   {
@@ -566,14 +570,14 @@ void TIncludeParser::ParseComments(char *s)
       if (strlen(s)-1 <= i) {
         #ifdef VERBOSE
         if (i >= 20) printf("Return 1\n");
-      	#endif
-      	return;
+        #endif
+        return;
       }
       if (strlen(s)-1 <= i+1) {
-      	#ifdef VERBOSE
-      	if (i >= 20) printf("Return 2\n");
-      	#endif
-      	return;
+        #ifdef VERBOSE
+        if (i >= 20) printf("Return 2\n");
+        #endif
+        return;
       }
       #ifdef VERBOSE
       if (i >= 20) printf("Check for /\n");
@@ -592,11 +596,11 @@ void TIncludeParser::ParseComments(char *s)
           case '*': Comment=true; i++; break;
           case '/': 
        #ifdef VERBOSE
-          	if (i >= 20) printf("Switch (/)\n");
+                if (i >= 20) printf("Switch (/)\n");
        #endif
-          	s[i]=0; 
-          	i--; 
-          	break;
+                s[i]=0; 
+                i--; 
+                break;
         }
       }
     }
@@ -638,17 +642,17 @@ char* TIncludeParser::BasicParse(char *FileName)
     strcat(file, FileName);
     f=fopen(file,"rt");
     if (f != NULL) {
-    	success = 1;
-    	strcpy(realfile, file);
-    	break;
+        success = 1;
+        strcpy(realfile, file);
+        break;
     }
   }
 /*...e*/
   
   if (success == 0) {
-  	f=fopen(FileName, "rt");
- 	if (f == NULL) return NULL;
- 	strcpy(realfile, FileName);
+        f=fopen(FileName, "rt");
+        if (f == NULL) return NULL;
+        strcpy(realfile, FileName);
   }
   
   do {
@@ -903,7 +907,7 @@ void write_clean(char* modulename = NULL) {
     if (modulename == NULL) {
         printf("\t\t-@rm *.dll\n");
     } else {
-	printf("\t\t-@rm %s.exe\n", modulename);
+        printf("\t\t-@rm %s.exe\n", modulename);
     }
     
     // Write the distclean rule
@@ -914,7 +918,7 @@ void write_clean(char* modulename = NULL) {
     if (modulename == NULL) {
         printf("\t\t-@rm *.so.*\n");
     } else {
-	printf("\t\t-@rm %s\n", modulename);
+        printf("\t\t-@rm %s\n", modulename);
     }
 #endif //__WATCOMC__
 #ifdef UNIX
@@ -924,7 +928,7 @@ void write_clean(char* modulename = NULL) {
     if (modulename == NULL) {
         printf("\t\t-rm *.so.*\n");
     } else {
-	printf("\t\t-rm %s\n", modulename);
+        printf("\t\t-rm %s\n", modulename);
     }
     
     // Write the distclean rule
@@ -935,7 +939,7 @@ void write_clean(char* modulename = NULL) {
     if (modulename == NULL) {
         printf("\t\t-rm *.so.*\n");
     } else {
-	printf("\t\t-rm %s\n", modulename);
+        printf("\t\t-rm %s\n", modulename);
     }
 #endif //UNIX
 }
@@ -1091,7 +1095,7 @@ void ShowHelp()
 
   fprintf(stderr, "Enhanced by Lothar Behrens (lothar.behrens@lollisoft.de)\n\n");
 
-  fprintf(stderr, "MKMK: makefile generator $Revision: 1.52 $\n");
+  fprintf(stderr, "MKMK: makefile generator $Revision: 1.53 $\n");
   fprintf(stderr, "Usage: MKMK lib|exe|dll|so modulname includepath,[includepath,...] file1 [file2 file3...]\n");
 }
 /*...e*/
@@ -1180,8 +1184,8 @@ void ListFiles(FILE *f, char *Line, TDepList *l, bool IsObj=false)
       sprintf(Line,"\t\t%s",s);
     }
     else {
-//	if (i!=0) strcat(Line,", ");
-    	strcat(Line,s);
+//      if (i!=0) strcat(Line,", ");
+        strcat(Line,s);
     }
   }
   printf("%s\n",Line);
@@ -1214,8 +1218,8 @@ void ListFilesWithComma(FILE *f, char *Line, TDepList *l, bool IsObj=false)
       sprintf(Line,"\t\t%s",s);
     }
     else {
-//	if (i!=0) strcat(Line,", ");
-    	strcat(Line,s);
+//      if (i!=0) strcat(Line,", ");
+        strcat(Line,s);
     }
   }
   printf("%s\n",Line);
@@ -1232,47 +1236,48 @@ void WriteDep(FILE *f, char *Name, TIncludeParser *p)
   ListFiles(f,Line,&p->l);
 
   switch (targettype) {
-  	case LIB_TARGET:
-		printf("\t\t@$(CC) $(C_LIBOPS) $(MOD_INCL) %s\n\n",Name);
-		break;
-  	case DLL_TARGET:
-	case PLUGIN_TARGET:
-		printf("\t\t@$(CC) $(C_DLLOPS) $(MOD_INCL) %s\n\n",Name);
-		break;
-	case EXE_TARGET:
-		printf("\t\t@$(CC) $(C_EXEOPS) $(MOD_INCL) %s\n\n",Name);
-		break;
-	case ELF_TARGET:
-	    	printf("\t\t@$(CC) $(C_ELFOPS) $(MOD_INCL) %s\n\n",Name);
-		break;
-	case SO_TARGET:
-	case SOPLUGIN_TARGET:
-		{
-		int pos = 0;
-		for (int i = 0; i < strlen(ObjName); i++) {
-		    if (ObjName[i] == '.') {
-			ObjName[i] = 0;
-			break;
-		    }
-		}
-		printf("\t\t@$(CC) -c -fPIC -g $(C_SOOPS) $(MOD_INCL) %s -o %s.o\n\n",Name, ObjName);
-		}
-		break;
-	case WXSO_TARGET:
-	case WXSOPLUGIN_TARGET:
-		{
-		int pos = 0;
-		for (int i = 0; i < strlen(ObjName); i++) {
-		    if (ObjName[i] == '.') {
-			ObjName[i] = 0;
-			break;
-		    }
-		}
-		printf("\t\t@$(CC) -c -fPIC -g $(C_SOOPS) $(MOD_INCL) %s -o %s.o\n\n",Name, ObjName);
-		}
-		break;
-	default:
-		break;
+        case LIB_TARGET:
+                printf("\t\t@$(CC) $(C_LIBOPS) $(MOD_INCL) %s\n\n",Name);
+                break;
+        case DLL_TARGET:
+        case PLUGIN_TARGET:
+        case WXPLUGIN_TARGET:
+                printf("\t\t@$(CC) $(C_DLLOPS) $(MOD_INCL) %s\n\n",Name);
+                break;
+        case EXE_TARGET:
+                printf("\t\t@$(CC) $(C_EXEOPS) $(MOD_INCL) %s\n\n",Name);
+                break;
+        case ELF_TARGET:
+                printf("\t\t@$(CC) $(C_ELFOPS) $(MOD_INCL) %s\n\n",Name);
+                break;
+        case SO_TARGET:
+        case SOPLUGIN_TARGET:
+                {
+                int pos = 0;
+                for (int i = 0; i < strlen(ObjName); i++) {
+                    if (ObjName[i] == '.') {
+                        ObjName[i] = 0;
+                        break;
+                    }
+                }
+                printf("\t\t@$(CC) -c -fPIC -g $(C_SOOPS) $(MOD_INCL) %s -o %s.o\n\n",Name, ObjName);
+                }
+                break;
+        case WXSO_TARGET:
+        case WXSOPLUGIN_TARGET:
+                {
+                int pos = 0;
+                for (int i = 0; i < strlen(ObjName); i++) {
+                    if (ObjName[i] == '.') {
+                        ObjName[i] = 0;
+                        break;
+                    }
+                }
+                printf("\t\t@$(CC) -c -fPIC -g $(C_SOOPS) $(MOD_INCL) %s -o %s.o\n\n",Name, ObjName);
+                }
+                break;
+        default:
+                break;
   }
 }
 /*...e*/
@@ -1296,32 +1301,32 @@ void WriteEnding(FILE *f, char *ModuleName, TDepList *l)
 #ifdef WATCOM_MAKE
 /*...swrite a wmake makefile:0:*/
   switch (targettype) {
-  	case DLL_TARGET:
-  		#ifdef VERBOSE
-  		printf("Making a dll target\n");
-  		#endif
-		printf("%s: $(OBJS) $(LIBS)\n",ModuleName);
-		printf("\t\t*$(LINK) $(L_OPS_DLL) name %s file $(OBJS) library $(LIBS)\n",ModuleName);
-  		break;
-  	case LIB_TARGET:
-  		#ifdef VERBOSE
-  		printf("Making a lib target\n");
-  		#endif
-  		printf("%s: $(OBJS) $(LIBS)\n",ModuleName);
-  		printf("\t\t*$(WLIB) $(LIB_OPS_LIB) %s &\n", ModuleName);
-  		printf("	$(OBJS)\n");
-  		break;
-  	case EXE_TARGET:
-  		#ifdef VERBOSE
-  		printf("Making a exe target\n");
-  		#endif
-  		printf("%s: $(OBJS) $(LIBS)\n",ModuleName);
-  		printf("\t\t*$(LINK) $(L_OPS_EXE) name %s ",ModuleName);
-  		printf("file {$(OBJS)} library {$(LIBS)}\n");
-  		    
-  		break;
-  	default:
-  		break;
+        case DLL_TARGET:
+                #ifdef VERBOSE
+                printf("Making a dll target\n");
+                #endif
+                printf("%s: $(OBJS) $(LIBS)\n",ModuleName);
+                printf("\t\t*$(LINK) $(L_OPS_DLL) name %s file $(OBJS) library $(LIBS)\n",ModuleName);
+                break;
+        case LIB_TARGET:
+                #ifdef VERBOSE
+                printf("Making a lib target\n");
+                #endif
+                printf("%s: $(OBJS) $(LIBS)\n",ModuleName);
+                printf("\t\t*$(WLIB) $(LIB_OPS_LIB) %s &\n", ModuleName);
+                printf("        $(OBJS)\n");
+                break;
+        case EXE_TARGET:
+                #ifdef VERBOSE
+                printf("Making a exe target\n");
+                #endif
+                printf("%s: $(OBJS) $(LIBS)\n",ModuleName);
+                printf("\t\t*$(LINK) $(L_OPS_EXE) name %s ",ModuleName);
+                printf("file {$(OBJS)} library {$(LIBS)}\n");
+                    
+                break;
+        default:
+                break;
   }
 #ifndef UNIX
   printf(".AFTER\n");
@@ -1332,48 +1337,52 @@ void WriteEnding(FILE *f, char *ModuleName, TDepList *l)
 #else
 
   switch (targettype) {
-  	case DLL_TARGET:
-		writeDllTarget(ModuleName);
-		write_clean();
-		break;
-  	case PLUGIN_TARGET:
-		writePluginTarget(ModuleName);
-		write_clean();
-		break;
-  	case LIB_TARGET:
-		writeLibTarget(ModuleName, l);
-		write_clean();
-		break;
-	case EXE_TARGET:
-		writeExeTarget(ModuleName);
-		write_clean(ModuleName);
-		break;
-	case WXELF_TARGET:
-		writeExeTarget(ModuleName);
-		write_clean(ModuleName);
-		break;
-	case ELF_TARGET:
-		writeExeTarget(ModuleName);
-		write_clean(ModuleName);
-		break;
-	case SO_TARGET:
-		write_so_Target(ModuleName);
-		write_clean();
-		break;
-	case WXSO_TARGET:
-		write_wx_so_Target(ModuleName);
-		write_clean();
-		break;
-	case SOPLUGIN_TARGET:
-		write_soPlugin_Target(ModuleName);
-		write_clean();
-		break;
-	case WXSOPLUGIN_TARGET:
-		write_wx_soPlugin_Target(ModuleName);
-		write_clean();
-		break;
-	default:
-		break;
+        case DLL_TARGET:
+                writeDllTarget(ModuleName);
+                write_clean();
+                break;
+        case PLUGIN_TARGET:
+                writePluginTarget(ModuleName);
+                write_clean();
+                break;
+        case WXPLUGIN_TARGET:
+                writePluginTarget(ModuleName);
+                write_clean();
+                break;
+        case LIB_TARGET:
+                writeLibTarget(ModuleName, l);
+                write_clean();
+                break;
+        case EXE_TARGET:
+                writeExeTarget(ModuleName);
+                write_clean(ModuleName);
+                break;
+        case WXELF_TARGET:
+                writeExeTarget(ModuleName);
+                write_clean(ModuleName);
+                break;
+        case ELF_TARGET:
+                writeExeTarget(ModuleName);
+                write_clean(ModuleName);
+                break;
+        case SO_TARGET:
+                write_so_Target(ModuleName);
+                write_clean();
+                break;
+        case WXSO_TARGET:
+                write_wx_so_Target(ModuleName);
+                write_clean();
+                break;
+        case SOPLUGIN_TARGET:
+                write_soPlugin_Target(ModuleName);
+                write_clean();
+                break;
+        case WXSOPLUGIN_TARGET:
+                write_wx_soPlugin_Target(ModuleName);
+                write_clean();
+                break;
+        default:
+                break;
   }
   
 #endif
@@ -1424,7 +1433,7 @@ int main(int argc, char *argv[])
 /*  f=fopen("makefile","wt");
   if (!f)
   {
-	  fputs("ERROR: could not create makefile",stderr);
+          fputs("ERROR: could not create makefile",stderr);
     return;
   }
 */  
@@ -1437,37 +1446,42 @@ int main(int argc, char *argv[])
   for(int c = 0; c < strlen(target); c++) target[c] = toupper(target[c]);
   
   if (strcmp(target, "-") == 0) {
-  	targettype = ELF_TARGET;
-  	target_ext = strdup("");
+        targettype = ELF_TARGET;
+        target_ext = strdup("");
   }
   
   if (strcmp(target, "ELF") == 0) {
-  	targettype = ELF_TARGET;
-  	target_ext = strdup("");
+        targettype = ELF_TARGET;
+        target_ext = strdup("");
   }
   
   if (strcmp(target, "SO") == 0) {
-  	targettype = SO_TARGET;
-  	target_ext = strdup(".so");
+        targettype = SO_TARGET;
+        target_ext = strdup(".so");
   }
   
   if (strcmp(target, "WXSO") == 0) {
-  	targettype = WXSO_TARGET;
-  	target_ext = strdup(".so");
+        targettype = WXSO_TARGET;
+        target_ext = strdup(".so");
   }
   
   if (strcmp(target, "LIB") == 0) {
-  	targettype = LIB_TARGET;
-  	target_ext = strdup(".lib");
+        targettype = LIB_TARGET;
+        target_ext = strdup(".lib");
   }
   
   if (strcmp(target, "DLL") == 0) {
-  	targettype = DLL_TARGET;
-  	target_ext = strdup(".dll");
+        targettype = DLL_TARGET;
+        target_ext = strdup(".dll");
   }
 
   if (strcmp(target, "PLUGIN") == 0) {
         targettype = PLUGIN_TARGET;
+        target_ext = strdup(".dll");
+  }
+  
+  if (strcmp(target, "WXPLUGIN") == 0) {
+        targettype = WXPLUGIN_TARGET;
         target_ext = strdup(".dll");
   }
   
@@ -1482,8 +1496,8 @@ int main(int argc, char *argv[])
   }
   
   if (strcmp(target, "EXE") == 0) {
-  	targettype = EXE_TARGET;
-  	target_ext = strdup(".exe");
+        targettype = EXE_TARGET;
+        target_ext = strdup(".exe");
   }
   
   if (strchr(targetname, '.') == NULL) targetname = strcat(targetname, target_ext);
@@ -1498,7 +1512,7 @@ int main(int argc, char *argv[])
 /*...sVERBOSE:0:*/
 #ifdef VERBOSE  
   for (i = 0; i < count; i++) {
-  	printf("Path: %s\n", IncPathList[i]);
+        printf("Path: %s\n", IncPathList[i]);
   }
 #endif
 /*...e*/
@@ -1507,20 +1521,20 @@ int main(int argc, char *argv[])
   copyIPathList = new char*[count];
 
   for (i = 0; i < count; i++) {
-  	char temp[1000] = "";
-	char pc[2] = "";
-	sprintf(pc, "%c", PathChar);
-	
-  	strcpy(temp, IncPathList[i]);
-  	if(temp[strlen(temp)] != PathChar) strcat(temp, pc);
-	
-	//printf("Prepared include directory %s\n", temp);
-  	copyIPathList[i] = strdup(temp);
+        char temp[1000] = "";
+        char pc[2] = "";
+        sprintf(pc, "%c", PathChar);
+        
+        strcpy(temp, IncPathList[i]);
+        if(temp[strlen(temp)] != PathChar) strcat(temp, pc);
+        
+        //printf("Prepared include directory %s\n", temp);
+        copyIPathList[i] = strdup(temp);
   }
 /*...sVERBOSE:0:*/
 #ifdef VERBOSE
   for (i = 0; i < count; i++) {
-  	printf("Have copied this entry: %s\n", copyIPathList[i]);
+        printf("Have copied this entry: %s\n", copyIPathList[i]);
   }
 #endif
 /*...e*/
