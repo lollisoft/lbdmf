@@ -163,8 +163,14 @@ public:
 		firstfetched = 0;
 //		lpszTable = NULL;
 		cols = 0;
-		skipFKCollections = 1;
 		
+		#ifdef WINDOWS
+		skipFKCollections = 0;
+		#endif
+		
+		#ifdef UNIX
+		skipFKCollections = 1;
+		#endif
 		fetchstatus = 0;
 	}
 	
@@ -882,7 +888,7 @@ Using SQLSetPos
 	
 	retcode = SQLExecDirect(hstmt, (unsigned char*) szSql, SQL_NTS);
 
-_CL_VERBOSE << "Executed SQLExecDirect()" LOG_
+	_CL_VERBOSE << "Executed SQLExecDirect()" LOG_
 
 	if ((retcode != SQL_SUCCESS) && (retcode != SQL_SUCCESS_WITH_INFO))
         {
@@ -893,7 +899,7 @@ _CL_VERBOSE << "Executed SQLExecDirect()" LOG_
 
 	retcode = SQLNumResultCols(hstmt, &cols);
 
-_CL_VERBOSE << "Called SQLNumResultCols()" LOG_
+	_CL_VERBOSE << "Called SQLNumResultCols()" LOG_
 	
 	if (retcode != SQL_SUCCESS)
 	{
@@ -902,13 +908,10 @@ _CL_VERBOSE << "Called SQLNumResultCols()" LOG_
 	        return ERR_DB_QUERYFAILED;
 	} else {
 
+		_CL_VERBOSE << "Create bound columns" LOG_
+		
 		boundcols = new lbBoundColumns();
-		
-		printf("Bound columns is at %p\n", boundcols);
-		
 		boundcols->setModuleManager(*&manager, __FILE__, __LINE__);
-		
-		printf("Bound columns is at %p\n", boundcols);
 		boundcols->setQuery(this);
 		
 		_CL_VERBOSE << "Created" LOG_
@@ -1081,6 +1084,11 @@ _CL_VERBOSE << "Bound columns" LOG_
 	}
 
 	szTable = (unsigned char*) strdup(getTableName());
+	
+	if (strlen((char* const) szTable) > 99) {
+		_CL_LOG << "ERROR: Possible buffer overflows!" LOG_
+	}
+	
 /*...sbla:0:*/
 /*
 	int a = 0;
