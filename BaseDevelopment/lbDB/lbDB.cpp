@@ -733,23 +733,6 @@ lbErrCodes LB_STDCALL lbQuery::last() {
                 printf("Error in lbQuery::last()\n");
 
                 dbError( "SQLExtendedFetch()",henv,hdbc,hstmt);
-/*
-
-SQLCHAR  SqlState[6], SQLStmt[100], Msg[SQL_MAX_MESSAGE_LENGTH];
-SQLINTEGER NativeError;
-SQLSMALLINT i, MsgLen;
-SQLRETURN  rc1, rc2;
-
-
-	 // Get the status records.
-	 i = 1;
-	 while ((rc2 = SQLGetDiagRec(SQL_HANDLE_STMT, hstmt, i, SqlState, &NativeError,
-	      Msg, sizeof(Msg), &MsgLen)) != SQL_NO_DATA) {
-	  printf("%s, %i, %s, %i\n", SqlState,NativeError,Msg,MsgLen);
-	  i++;
-	 }
-
-*/
 
 		// Unsave !!
 		if (retcode == SQL_SUCCESS_WITH_INFO) return ERR_NONE;
@@ -923,8 +906,6 @@ END_IMPLEMENT_LB_UNKNOWN()
 
 /*...slbErrCodes LB_STDCALL lbBoundColumn\58\\58\setData\40\lb_I_Unknown\42\ uk\41\:0:*/
 lbErrCodes LB_STDCALL lbBoundColumn::setData(lb_I_Unknown* uk) {
-        _CL_LOG << "lbBoundColumn::setData(...) not implemented yet" LOG_
-        
         lbErrCodes err = ERR_NONE;
         
         UAP(lb_I_BoundColumn, column, __FILE__, __LINE__)
@@ -974,11 +955,13 @@ lbErrCodes LB_STDCALL lbBoundColumn::getAsString(lb_I_String* result) {
 	        case SQL_CHAR:
 	        case SQL_VARCHAR:
 	        case SQL_LONGVARCHAR:
+	        	printf("Get bound column at %p\n", (void*) buffer);
 	        	result->setData((char*) buffer);
 	        	break;
 	        case SQL_INTEGER:
 	        	char charrep[100] = "";
-	        	sprintf(charrep, "%d", buffer);
+	        	printf("Get bound column at %p\n", (void*) buffer);
+	        	sprintf(charrep, "%d", *(long*) buffer);
 	        	result->setData(charrep);
 	        	break;
 	        default:
@@ -996,7 +979,6 @@ lbErrCodes LB_STDCALL lbBoundColumn::setFromString(lb_I_String* set) {
 
 /*...slbErrCodes LB_STDCALL lbBoundColumn\58\\58\bindColumn\40\lbQuery\42\ q\44\ int column\41\:0:*/
 lbErrCodes LB_STDCALL lbBoundColumn::bindColumn(lbQuery* q, int column) {
-//        _CL_LOG << "lbBoundColumn::bindColumn(...) not implemented yet" LOG_
 
 	HSTMT hstmt = q->getCurrentStatement();
 
@@ -1033,7 +1015,8 @@ lbErrCodes LB_STDCALL lbBoundColumn::bindColumn(lbQuery* q, int column) {
 			buffer = malloc((ColumnSize == 0) ? BufferLength+1 : ColumnSize+1);
 			_DataType = DataType;
 			bound = 1;
-
+			((char*) buffer)[0] = 0;
+			
 			ret = SQLBindCol(hstmt, column, DataType, buffer, (ColumnSize == 0) ? 
 				BufferLength+1 : ColumnSize+1, &cbBufferLength);
 			
@@ -1060,7 +1043,8 @@ lbErrCodes LB_STDCALL lbBoundColumn::bindColumn(lbQuery* q, int column) {
 			buffer = malloc((ColumnSize == 0) ? BufferLength+1 : ColumnSize+1);
 			_DataType = DataType;
 			bound = 1;
-			
+			memset(buffer, 0, sizeof(long));
+
 			SQLBindCol(hstmt, column, DataType, buffer, (ColumnSize == 0) ? BufferLength+1 : ColumnSize+1, &cbBufferLength);
 			
 			if (ret != SQL_SUCCESS) {
