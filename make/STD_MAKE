@@ -1,10 +1,13 @@
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.22 $
+# * $Revision: 1.23 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.22 2002/09/19 19:34:12 lothar Exp $
+# * $Id: STD_MAKE,v 1.23 2002/10/01 19:23:12 lothar Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.23  2002/10/01 19:23:12  lothar
+# * Broken
+# *
 # * Revision 1.22  2002/09/19 19:34:12  lothar
 # * Buggy version - only, if menu is really created
 # *
@@ -97,7 +100,7 @@ WATCOM_CALLING_CONV=-5r
 WATCOM_DLLTARGET=-bd
 WATCOM_LIBTARGET=
 WATCOM_THREAD_MODEL=-bm
-WATCOM_STDDEBUG=-d2
+WATCOM_STDDEBUG=-d2 -hd
 WATCOM_STACK= #-of
 
 WATCOM_STD_C_OPS= \
@@ -150,9 +153,9 @@ C_DLLOPS = $(C_DLLOPS_WATCOM$(MODE))
 C_LIBOPS = $(C_LIBOPS_WATCOM$(MODE))
 
 # Watcom
-L_EXEOPS_WATCOM = -o #d dwarf
+L_EXEOPS_WATCOM = -o d dwarf
 LINK_WATCOM =wlink op q
-L_DLLOPS_WATCOM =SYS nt_dll op m op maxe=25 op q op symf #d dwarf
+L_DLLOPS_WATCOM =SYS nt_dll op m op maxe=25 op q op symf d dwarf
 
 # Microsoft
 L_DLLOPS_MICROSOFT =kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib \

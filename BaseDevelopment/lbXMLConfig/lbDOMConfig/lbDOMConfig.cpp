@@ -1,11 +1,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.28 $
+ * $Revision: 1.29 $
  * $Name:  $
- * $Id: lbDOMConfig.cpp,v 1.28 2002/08/31 10:51:34 lothar Exp $
+ * $Id: lbDOMConfig.cpp,v 1.29 2002/10/01 19:22:59 lothar Exp $
  *
  * $Log: lbDOMConfig.cpp,v $
+ * Revision 1.29  2002/10/01 19:22:59  lothar
+ * Broken
+ *
  * Revision 1.28  2002/08/31 10:51:34  lothar
  * Use a member variable for char* return. Delete buffer before create new buffer
  *
@@ -1073,6 +1076,7 @@ lbErrCodes LB_STDCALL lbDOMNode::getAttributeValue(const char* name, char*& attr
 	DOMString value = an_attr.getNodeValue();
 	char* result = value.transcode();
 
+#ifdef bla
 	if (debug == 0) {
 		debug = 1;
 		DOMString string = getName();
@@ -1088,12 +1092,12 @@ lbErrCodes LB_STDCALL lbDOMNode::getAttributeValue(const char* name, char*& attr
 /*...e*/
 		debug = 0;
 	}
-	
+#endif	
 	attr = strdup(result);
 #ifdef WINDOWS
 //	value.deletetranscoded(result);
 #endif		
-	delete result;
+//	free((void*) result);
 	return ERR_NONE;
 }
 /*...e*/
@@ -1102,7 +1106,7 @@ lbErrCodes LB_STDCALL lbDOMNode::deleteValue(char*& attr) {
 	DOMString value = DOMString();
 #ifdef WINDOWS
 //	value.deletetranscoded(attr);
-	delete attr;
+	delete [] attr;
 	attr = NULL;
 #endif
 #ifdef LINUX

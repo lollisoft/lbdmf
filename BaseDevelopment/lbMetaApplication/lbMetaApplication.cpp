@@ -1,11 +1,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.11 $
+ * $Revision: 1.12 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.11 2002/09/19 19:34:12 lothar Exp $
+ * $Id: lbMetaApplication.cpp,v 1.12 2002/10/01 19:22:59 lothar Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.12  2002/10/01 19:22:59  lothar
+ * Broken
+ *
  * Revision 1.11  2002/09/19 19:34:12  lothar
  * Buggy version - only, if menu is really created
  *
@@ -254,10 +257,10 @@ lbErrCodes LB_STDCALL lb_MetaApplication::Initialize() {
 	 * environment variable (TARGET_APPLICATION)
 	 */
 	
-	addMenuBar("Edit");
-	LOG("Added first menu bar")
-	addMenuBar("Help");
-	LOG("Added second menu bar")
+//	addMenuBar("Edit");
+//	LOG("Added first menu bar")
+//	addMenuBar("Help");
+//	LOG("Added second menu bar")
 
 	// Let the GUI show a message box
 	
@@ -318,8 +321,6 @@ lbErrCodes LB_STDCALL lb_MetaApplication::addMenuEntry(char* in_menu, char* entr
 	return ERR_NONE;
 }
 /*...e*/
-
-
 /*...e*/
 /*...slb_EventMapper:0:*/
 lb_EventMapper::lb_EventMapper() {
@@ -376,6 +377,7 @@ lb_EventManager::lb_EventManager() {
 
 lb_EventManager::~lb_EventManager() {
 	LOG("lb_EventManager::~lb_EventManager() called")
+	DebugBreak();
 }
 	
 lbErrCodes LB_STDCALL lb_EventManager::setData(lb_I_Unknown* uk) {
@@ -565,8 +567,6 @@ lbErrCodes LB_STDCALL lb_Dispatcher::addEventHandlerFn(lb_I_EventHandler* evHand
         	dispatcher->remove(&k);
 	}
 
-	char msg[100] = "";
-	
 	if ((err = dispatcher->insert(&e, &k)) != ERR_NONE) LOG("Error: Inserting new container element failed")
 
 	UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
@@ -628,19 +628,22 @@ lbErrCodes LB_STDCALL lb_Dispatcher::dispatch(char* EvName, lb_I_Unknown* EvData
 	
 	LOG("Get the handler out from the dispatcher")
 	
-	if (dispatcher == NULL) LOG("Error: Have no dispatcher")
+	if (dispatcher == NULL) {
+		LOG("Error: Have no dispatcher")
+	} else {
 	
-	uk = dispatcher->getElement(&ik);
+		uk = dispatcher->getElement(&ik);
 	
-	if (uk == NULL) LOG("Error: Could not get the handler from the id")
+		if (uk == NULL) LOG("Error: Could not get the handler from the id")
 	
-	QI(uk, lb_I_EvHandler, ev, __FILE__, __LINE__)
+		QI(uk, lb_I_EvHandler, ev, __FILE__, __LINE__)
 
-	LOG("Call handler now")
+		LOG("Call handler now")
 	
-	ev->call(EvData, EvResult);
+		ev->call(EvData, EvResult);
 	
-	LOG("Called handler now")
+		LOG("Called handler now")
+	}
 
 	return ERR_NONE;
 }

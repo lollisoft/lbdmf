@@ -1,11 +1,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.26 $
+ * $Revision: 1.27 $
  * $Name:  $
- * $Id: lbInterfaces-sub-classes.h,v 1.26 2002/08/21 18:53:07 lothar Exp $
+ * $Id: lbInterfaces-sub-classes.h,v 1.27 2002/10/01 19:23:12 lothar Exp $
  *
  * $Log: lbInterfaces-sub-classes.h,v $
+ * Revision 1.27  2002/10/01 19:23:12  lothar
+ * Broken
+ *
  * Revision 1.26  2002/08/21 18:53:07  lothar
  * New direct container access implementation
  *
@@ -856,8 +859,30 @@ public:
 	virtual void LB_STDCALL setClassname(char* c) = 0;
 	virtual void LB_STDCALL setFile(char* f) = 0;
 	virtual void LB_STDCALL setLine(int l) = 0;
+
+
+	/**
+	 * Build a string with classname + _ + file + _ + line as a key for the reference.
+	 * If the release function is used directly, it shows me an unregistered reference,
+	 * so I will find all non UAP pointers.
+	 */
+	virtual void LB_STDCALL addReference(char* classname, char* file, int line) = 0;
+	virtual void LB_STDCALL delReference(char* classname, char* file, int line) = 0;
 };
 /*...e*/
+class lb_I_InstanceReference :
+public lb_I_Unknown
+{
+public:
+        virtual char* LB_STDCALL getFile() = 0;
+        virtual int LB_STDCALL getLine() = 0;
+        virtual int LB_STDCALL getCount() = 0;
+
+        virtual void LB_STDCALL setFile(char* f) = 0;
+        virtual void LB_STDCALL setLine(int l) = 0;
+        virtual void LB_STDCALL setCount(int c) = 0;
+
+};
 /*...sclass lb_I_Log:0:*/
 class lb_I_Log : public lb_I_Unknown {
 

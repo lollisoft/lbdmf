@@ -249,7 +249,7 @@ public:
 	        UAP##Unknown_Reference() { \
 	        	_autoPtr = NULL; \
 	        	_line = -1; \
-	        	_file = strdup(""); \
+	        	_file = NULL; \
 	        	allowDelete = 1; \
 		} \
 		virtual ~UAP##Unknown_Reference() { \
@@ -260,17 +260,20 @@ public:
 					} \
 				} \
 				if (_line == -1) { \
-				char buf[1000] = ""; \
-					sprintf(buf, "Warning: No reference has been taken in %s at %d (UAP is in %s at %d", _file, _line, file, line); \
+				char buf[200] = ""; \
+					sprintf(buf, "Warning: No reference has been taken in %s at %d (UAP is in %s at %d", #Unknown_Reference, _line, file, line); \
 					CL_LOG(buf); \
 				} \
 				RELEASE_1(_autoPtr, _file, _line); \
 			} \
-			free(_file); \
+			if (_file) delete [] _file; \
 		} \
 		void setFile(char* __file) { \
-			if (_file != NULL) free(_file); \
-			if (__file != NULL) _file = strdup(__file); \
+			if (_file != NULL) delete [] _file; \
+			if (__file != NULL) { \
+				_file = new char [strlen(__file) + 1]; \
+				_file = strcpy(_file, __file); \
+			} \
 		} \
 		void setLine(int __line) { \
 			_line = __line; \
@@ -285,13 +288,13 @@ public:
 		} \
 		\
 		interface& operator * () { \
-		char buf[1000] = ""; \
+		char buf[200] = ""; \
 		sprintf(buf, "Warning: Using reference to UAP pointer in %s at %d", file, line); \
 		CL_LOG(buf) \
 		return *_autoPtr; } \
 		interface* operator -> () const { \
 			if (_autoPtr == NULL) { \
-				char buf[1000] = ""; \
+				char buf[200] = ""; \
 				sprintf(buf, "Error: UAP pointer (%s) for interface %s is NULL!", #Unknown_Reference, #interface); \
 				CL_LOG(buf); \
 			} \
@@ -299,14 +302,9 @@ public:
 		} \
 		interface* operator -> () { \
 			if (_autoPtr == NULL) { \
-				char buf[1000] = ""; \
+				char buf[200] = ""; \
 				sprintf(buf, "Error: UAP pointer (%s) for interface %s is NULL!", #Unknown_Reference, #interface); \
 				CL_LOG(buf); \
-			} \
-			char ptr[20] = ""; \
-			sprintf(ptr, "%p", (void*) _autoPtr); \
-			if (strcmp(ptr, "cdcdcdcd") == 0) { \
-			        CL_LOG("Error: Uninitialized pointer will be used!"); \
 			} \
 			return _autoPtr; \
 		} \
@@ -325,12 +323,7 @@ public:
 		} \
 		\
 		UAP##Unknown_Reference& operator = (interface* autoPtr) { \
-			char ptr[20] = ""; \
-			sprintf(ptr, "%p", (void*) autoPtr); \
-			if (strcmp(ptr, "cdcdcdcd") == 0) { \
-				CL_LOG("Error: Uninitialized pointer will be set!"); \
-				_autoPtr = NULL; \
-			} else _autoPtr = autoPtr; \
+			_autoPtr = autoPtr; \
 			return *this; \
 		} \
 		int operator == (const interface* b) const { \
@@ -381,7 +374,6 @@ public:
 	        	allowDelete = 1; \
 		} \
 		virtual ~UAP##Unknown_Reference() { \
-			LOG("Destroy " #interface " at " #Unknown_Reference) \
 			if (_autoPtr != NULL) { \
 				if (allowDelete != 1) { \
 					if (_autoPtr->deleteState() == 1) { \
@@ -389,8 +381,8 @@ public:
 					} \
 				} \
 				if (_line == -1) { \
-				char buf[1000] = ""; \
-					sprintf(buf, "Warning: No reference has been taken in %s at %d (UAP is in %s at %d", _file, _line, file, line); \
+				char buf[200] = ""; \
+					sprintf(buf, "Warning: No reference has been taken in %s at %d (UAP is in %s at %d", #Unknown_Reference, _line, file, line); \
 					LOG(buf); \
 				} \
 				RELEASE_1(_autoPtr, _file, _line); \
@@ -413,13 +405,13 @@ public:
 		} \
 		\
 		interface& operator * () { \
-		char buf[1000] = ""; \
+		char buf[200] = ""; \
 		sprintf(buf, "Warning: Using reference to UAP pointer in %s at %d", file, line); \
 		LOG(buf) \
 		return *_autoPtr; } \
 		interface* operator -> () const { \
 			if (_autoPtr == NULL) { \
-				char buf[1000] = ""; \
+				char buf[200] = ""; \
 				sprintf(buf, "Error: UAP pointer (%s) for interface %s is NULL!", #Unknown_Reference, #interface); \
 				LOG(buf); \
 			} \
@@ -427,7 +419,7 @@ public:
 		} \
 		interface* operator -> () { \
 			if (_autoPtr == NULL) { \
-				char buf[1000] = ""; \
+				char buf[200] = ""; \
 				sprintf(buf, "Error: UAP pointer (%s) for interface %s is NULL!", #Unknown_Reference, #interface); \
 				LOG(buf); \
 			} \
@@ -495,7 +487,9 @@ public:
   	UAP(lb_I_Unknown, uk##variable, __FILE__, __LINE__) \
   	mm->request(#interface, &uk##variable); \
   	uk##variable->setModuleManager(mm, __FILE__, __LINE__); \
-  	uk##variable->queryInterface(#interface, (void**) &variable, __FILE__, __LINE__);
+  	uk##variable->queryInterface(#interface, (void**) &variable, __FILE__, __LINE__); \
+	uk##variable.setFile(__FILE__); \
+	uk##variable.setLine(__LINE__);
 
 /*...e*/
 
@@ -622,6 +616,9 @@ char*      LB_STDCALL classname::getCreationLoc() const { \
 } \
 lbErrCodes LB_STDCALL classname::release(char* file, int line) { \
         ref--; \
+        if (strcmp("lb_EventManager", #classname) == 0) { \
+        	CL_LOG("lb_EventManager::release() called"); \
+        } \
 	char ptr[20] = ""; \
 	sprintf(ptr, "%p", this); \
 	if (strcmp(ptr, (get_trackObject() == NULL) ? "" : get_trackObject()) == 0) { \
@@ -1025,7 +1022,7 @@ lbErrCodes DLLEXPORT LB_STDCALL name(lb_I_Unknown** uk, lb_I_Module* m, char* fi
         } \
         \
         if ((err = instance->queryInterface("lb_I_Unknown", (void**) uk, file, line)) != ERR_NONE) { \
-                char buf[100] = ""; \
+                char buf[1000] = ""; \
                 sprintf(buf, "Failed to create unknown reference to instance of %s. Errcode is %d", #clsname, err); \
                 CL_LOG(buf); \
                 if (err == ERR_STATE_FURTHER_LOCK) { \

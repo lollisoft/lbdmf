@@ -1,11 +1,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.35 $
+ * $Revision: 1.36 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.35 2002/09/19 19:34:12 lothar Exp $
+ * $Id: lbModule.cpp,v 1.36 2002/10/01 19:22:59 lothar Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.36  2002/10/01 19:22:59  lothar
+ * Broken
+ *
  * Revision 1.35  2002/09/19 19:34:12  lothar
  * Buggy version - only, if menu is really created
  *
@@ -88,7 +91,7 @@
 /*...e*/
 
 
-//#define IR_USAGE
+#define IR_USAGE
 
 /*...sincludes:0:*/
 #ifdef WINDOWS
@@ -633,6 +636,7 @@ class InstanceRepository;
 InstanceRepository* IR = NULL;
 
 /*...sclass lbInstance:0:*/
+/*...sclass lbInstance:0:*/
 class lbInstance : 
 public lb_I_Instance
 {
@@ -659,7 +663,19 @@ public:
 	virtual void LB_STDCALL setClassname(char* c);
 	virtual void LB_STDCALL setFile(char* f);
 	virtual void LB_STDCALL setLine(int l);
+	
+	/**
+	 * Build a string with classname + _ + file + _ + line as a key for the reference.
+	 * If the release function is used directly, it shows me an unregistered reference,
+	 * so I will find all non UAP pointers.
+	 */
+	virtual void LB_STDCALL addReference(char* classname, char* file, int line);
+	virtual void LB_STDCALL delReference(char* classname, char* file, int line);
+	
+	UAP(lb_I_Container, references, __FILE__, __LINE__)
+	lbErrCodes err;
 };
+/*...e*/
 
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbInstance)
 	ADD_INTERFACE(lb_I_KeyBase)
@@ -678,6 +694,74 @@ lbInstance::~lbInstance() {
 	
 }
 
+/*...svoid LB_STDCALL lbInstance\58\\58\addReference\40\char\42\ classname\44\ char\42\ file\44\ int line\41\:0:*/
+void LB_STDCALL lbInstance::addReference(char* classname, char* file, int line) {
+	if (references == NULL) {
+		REQUEST(manager.getPtr(), lb_I_Container, references)
+	}
+	char* buf = new char[strlen(classname)+strlen(file)+10];
+	buf[0] = 0;
+	
+	sprintf(buf, "%s_%s_%d", classname, file, line);
+	
+	lbStringKey* key = new lbStringKey(buf);
+
+	if (manager == NULL) LOG("Error: InstanceRepository has got a NULL pointer for the manager");
+	key->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+	UAP(lb_I_KeyBase, _key, __FILE__, __LINE__)
+	QI(key, lb_I_KeyBase, _key, __FILE__, __LINE__)
+
+	UAP(lb_I_Unknown, element, __FILE__, __LINE__)
+	element = references->getElement(&_key);
+	
+	if (element != NULL) {
+		UAP(lb_I_InstanceReference, instance, __FILE__, __LINE__)
+		QI(element, lb_I_InstanceReference, instance, __FILE__, __LINE__)
+		if (instance != NULL) {
+			instance->setCount(instance->getCount() + 1);
+		}
+	}
+	
+	delete [] buf;
+}
+/*...e*/
+/*...svoid LB_STDCALL lbInstance\58\\58\delReference\40\char\42\ classname\44\ char\42\ file\44\ int line\41\:0:*/
+void LB_STDCALL lbInstance::delReference(char* classname, char* file, int line) {
+        if (references == NULL) {
+                REQUEST(manager.getPtr(), lb_I_Container, references)
+        }
+
+	char* buf = new char[strlen(classname)+strlen(file)+10];
+	buf[0] = 0;
+	
+	sprintf(buf, "%s_%s_%d", classname, file, line);
+	
+	lbStringKey* key = new lbStringKey(buf);
+
+	if (manager == NULL) LOG("Error: InstanceRepository has got a NULL pointer for the manager");
+	key->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+	UAP(lb_I_KeyBase, _key, __FILE__, __LINE__)
+	QI(key, lb_I_KeyBase, _key, __FILE__, __LINE__)
+
+	UAP(lb_I_Unknown, element, __FILE__, __LINE__)
+	element = references->getElement(&_key);
+
+	if (element != NULL) {
+		UAP(lb_I_InstanceReference, instance, __FILE__, __LINE__)
+		QI(element, lb_I_InstanceReference, instance, __FILE__, __LINE__)
+		if (instance != NULL) {
+			if (instance->getCount() == 0) {
+				//LOG("Warning: Reference count goes under 0!")
+				DebugBreak();
+			}
+			instance->setCount(instance->getCount() - 1);
+		}
+	}
+	
+	delete [] buf;
+}
+/*...e*/
+/*...sper instance functions:0:*/
 char* LB_STDCALL lbInstance::getAddress() {
 	return addr;
 }
@@ -709,6 +793,11 @@ void LB_STDCALL lbInstance::setFile(char* f) {
 	file = strdup(f);
 }
 
+void LB_STDCALL lbInstance::setLine(int l) {
+	line = l;
+}
+/*...e*/
+/*...slbErrCodes LB_STDCALL lbInstance\58\\58\setData\40\lb_I_Unknown\42\ uk\41\:0:*/
 lbErrCodes LB_STDCALL lbInstance::setData(lb_I_Unknown* uk) {
 
 	if (strcmp("lbInstance", uk->getClassName()) == 0) {
@@ -729,11 +818,8 @@ lbErrCodes LB_STDCALL lbInstance::setData(lb_I_Unknown* uk) {
 	
 	return ERR_NOT_IMPLEMENTED;
 }
-
-void LB_STDCALL lbInstance::setLine(int l) {
-	line = l;
-}
-
+/*...e*/
+/*...sImplementation for key:0:*/
 // Implementation for key
 
 char* LB_STDCALL lbInstance::getKeyType() const {
@@ -756,20 +842,18 @@ char* LB_STDCALL lbInstance::charrep() const {
     return addr;
 }
 /*...e*/
+/*...e*/
 /*...sclass lbInstanceReference:0:*/
 class lbInstanceReference : 
-public lb_I_Unknown
+public lb_I_InstanceReference
 {
 private:
         char* file;
         int line;
         int count;
-        //char* key;
 
 	DECLARE_LB_UNKNOWN()
 	
-//        DECLARE_LB_KEYBASE()
-
 public:
         lbInstanceReference();
         virtual ~lbInstanceReference();	
@@ -785,7 +869,7 @@ public:
 };
 
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbInstanceReference)
-	ADD_INTERFACE(lb_I_KeyBase)
+	ADD_INTERFACE(lb_I_InstanceReference)
 END_IMPLEMENT_LB_UNKNOWN()
 
 lbInstanceReference::lbInstanceReference() {
@@ -883,6 +967,7 @@ private:
 	int instances;
 	int references;
 	lb_I_Module* manager;
+	int skip;
 };
 /*...e*/
 /*...sInstanceRepository\58\\58\InstanceRepository\40\lb_I_Module\42\ m\41\:0:*/
@@ -893,6 +978,7 @@ InstanceRepository::InstanceRepository(lb_I_Module* m) {
         loadedContainer = 0;
         instances = 0;
         references = 0;
+        skip = 0;
         lb_iList = NULL;
 }
 /*...e*/
@@ -916,6 +1002,9 @@ InstanceRepository::~InstanceRepository() {
 /*...sInstanceRepository\58\\58\createInstance\40\char\42\ addr\44\ char\42\ classname\44\ char\42\ file\44\ int line\41\:0:*/
 void LB_STDCALL InstanceRepository::createInstance(char* addr, char* classname, char* file, int line) {
 	// First check, if there is no instance
+	
+	if (skip == 1) return;
+	
 	instanceList* temp = iList;
 	instances++;
 	
@@ -923,6 +1012,9 @@ void LB_STDCALL InstanceRepository::createInstance(char* addr, char* classname, 
 	if (strcmp("lbStringKey", classname) == 0) return;
 	
 	if (loadedContainer == 1) {
+		
+		//DebugBreak();
+		
 		lbInstance* inst = new lbInstance();
 		inst->setModuleManager(manager, __FILE__, __LINE__);
 	
@@ -935,8 +1027,11 @@ void LB_STDCALL InstanceRepository::createInstance(char* addr, char* classname, 
 
 		if (manager == NULL) LOG("Error: InstanceRepository has got a NULL pointer for the manager");		
 		key->setModuleManager(manager, __FILE__, __LINE__);
-		
+
+		//Stack overflow, because key get's cloned.
+		skip = 1;		
 		lb_iList->insert((lb_I_Unknown**) &inst, (lb_I_KeyBase**) &key);
+		skip = 0;
 	} else {
 /*...sfirst element:8:*/
 	if (iList == NULL) {
@@ -983,9 +1078,33 @@ void LB_STDCALL InstanceRepository::createInstance(char* addr, char* classname, 
 /*...e*/
 /*...sInstanceRepository\58\\58\addReference\40\char\42\ addr\44\ char\42\ classname\44\ char\42\ file\44\ int line\41\:0:*/
 void LB_STDCALL InstanceRepository::addReference(char* addr, char* classname, char* file, int line) {
+	if (skip == 1) return;
+	skip = 1;
 	instanceList* temp = iList;
+	lbErrCodes err;
 	int foundReference = 0;
-
+	
+	if (strcmp(classname, "lbModule") == 0) return;
+	if (loadedContainer == 1) {
+		//DebugBreak();
+		lbStringKey *key = new lbStringKey(addr);
+		
+		if (manager == NULL) LOG("Error: InstanceRepository has got a NULL pointer for the manager");
+		key->setModuleManager(manager, __FILE__, __LINE__);
+		UAP(lb_I_KeyBase, _key, __FILE__, __LINE__)
+		QI(key, lb_I_KeyBase, _key, __FILE__, __LINE__)
+		
+		UAP(lb_I_Unknown, element, __FILE__, __LINE__)
+		element = lb_iList->getElement(&_key);
+		
+		if (element != NULL) {
+			UAP(lb_I_Instance, instance, __FILE__, __LINE__)
+			QI(element, lb_I_Instance, instance, __FILE__, __LINE__)
+			if (instance != NULL) {
+				//instance->addReference(classname, file, line);
+			}
+		}
+	} else
 	while (temp != NULL) {
 /*...ssearch instance address:16:*/
 		if (strcmp(Upper(temp->addr), Upper(addr)) == 0) {
@@ -1025,15 +1144,43 @@ void LB_STDCALL InstanceRepository::addReference(char* addr, char* classname, ch
 /*...e*/
 		temp = temp->next;
 	}
+	
+	skip = 0;
+	
 }
 /*...e*/
 /*...sInstanceRepository\58\\58\delReference\40\char\42\ addr\44\ char\42\ classname\44\ char\42\ file\44\ int line\41\:0:*/
 void LB_STDCALL InstanceRepository::delReference(char* addr, char* classname, char* file, int line) {
+	if (skip == 1) return;
+	skip = 1;
 	instanceList* temp = iList;
 	instanceList* prev = NULL;
-	int foundReference = 0;
+        lbErrCodes err;
+        int foundReference = 0;
 
+	if (strcmp(classname, "lbStringKey") == 0) return;
+
+        if (loadedContainer == 1) {
+                lbStringKey *key = new lbStringKey(addr);
+
+                if (manager == NULL) LOG("Error: InstanceRepository has got a NULL pointer for the manager");
+                key->setModuleManager(manager, __FILE__, __LINE__);
+                UAP(lb_I_KeyBase, _key, __FILE__, __LINE__)
+                QI(key, lb_I_KeyBase, _key, __FILE__, __LINE__)
+
+                UAP(lb_I_Unknown, element, __FILE__, __LINE__)
+                element = lb_iList->getElement(&_key);
+
+                if (element != NULL) {
+                        UAP(lb_I_Instance, instance, __FILE__, __LINE__)
+                        QI(element, lb_I_Instance, instance, __FILE__, __LINE__)
+                        if (instance != NULL) {
+                                //instance->delReference(classname, file, line);
+                        }
+                }
+        } else
 	while (temp != NULL) {
+/*...ssearch instance address:16:*/
 		if (strcmp(Upper(temp->addr), Upper(addr)) == 0) {
 			// Found the entry for this instance
 			if (strcmp(temp->classname, classname) == 0) {
@@ -1041,7 +1188,7 @@ void LB_STDCALL InstanceRepository::delReference(char* addr, char* classname, ch
 				referenceList* rPrev = NULL;
 				
 				if (rList == NULL) printf("Error: Reference list is NULL\n");
-/*...sSearch in the references:32:*/
+/*...sSearch in the references:48:*/
 				while (rList != NULL) {
 					#ifdef VERBOSE
 					printf("Stored reference is in %s at %d\n", rList->file, rList->line);
@@ -1108,14 +1255,20 @@ void LB_STDCALL InstanceRepository::delReference(char* addr, char* classname, ch
 		}
 		prev = temp;
 		temp = temp->next;
+/*...e*/
 	}
+	skip = 0;
 }
 /*...e*/
 /*...sInstanceRepository\58\\58\destroyInstance\40\char\42\ addr\44\ char\42\ classname\44\ char\42\ file\44\ int line\41\:0:*/
 void LB_STDCALL InstanceRepository::destroyInstance(char* addr, char* classname, char* file, int line) {
+	if (skip == 1) return;
+	skip = 1;
 	instanceList* temp = iList;
 	instanceList* prev = NULL;
 	LOG("InstanceRepository::destroyInstance(...) called")
+
+	//DebugBreak();
 	
 	while (temp != NULL) {
 		if ((strcmp(Upper(temp->addr), Upper(addr)) == 0) && (strcmp(temp->classname, classname) == 0)) {
@@ -1203,6 +1356,7 @@ void LB_STDCALL InstanceRepository::destroyInstance(char* addr, char* classname,
 		prev = temp;
 		temp = temp->next;
 	}
+	skip = 0;
 }
 /*...e*/
 
@@ -1556,8 +1710,14 @@ void LB_STDCALL lbModule::notify_release(lb_I_Unknown* that, char* implName, cha
         char addr[20] = "";
 
         sprintf(addr, "%p", (void*) that);
- 
- 	IR->delReference(addr, implName, file, line);       
+
+
+	if (that->getRefCount() == 0) {
+		//DebugBreak();
+		IR->delReference(addr, implName, file, line);
+	} else {
+	 	IR->delReference(addr, implName, file, line);       
+	}
 #endif
 }
 /*...e*/

@@ -9,7 +9,7 @@
 
 #include <stdio.h>
 #include <iostream.h>
-
+#include <malloc.h>
 #include <lbInterfaces.h>
 
 #ifndef __LB_CONFIG_HOOK__
@@ -112,6 +112,7 @@ DLLEXPORT int isInitializing;
 /*...e*/
 #endif
 #endif
+
 #ifdef bla
 #define CL_LOG(msg) \
 { \
@@ -130,9 +131,12 @@ DLLEXPORT int isInitializing;
 }
 #endif
 
+//#ifdef bla
 #define CL_LOG(msg) \
 { \
 } 
+//#endif
+
 /*...sGET_LOG_INSTANCE:0:*/
 #define GET_LOG_INSTANCE \
 			if (log == NULL) { \

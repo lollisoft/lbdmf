@@ -59,7 +59,7 @@ DLLEXPORT void LB_STDCALL set_trackObject(char* track) {
 }
 
 DLLEXPORT void LB_STDCALL track_Object(lb_I_Unknown* o, char* msg) {
-	char ptr[20] = "";
+	char ptr[100] = "";
 	sprintf(ptr, "%p", o);
 	if (strcmp(ptr, (get_trackObject() == NULL) ? "" : get_trackObject()) == 0) {
 		char *message = (char*) malloc(strlen(msg)+100);
