@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.55 $
+ * $Revision: 1.56 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.55 2005/03/31 08:59:34 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.56 2005/04/02 09:52:37 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.56  2005/04/02 09:52:37  lollisoft
+ * Put optional parameter into paramater list.
+ *
  * Revision 1.55  2005/03/31 08:59:34  lollisoft
  * Copyright text problems under linux.
  *
@@ -891,6 +894,12 @@ lbErrCodes LB_STDCALL lb_MetaApplication::addMenuEntry(char* in_menu, char* entr
 	parameter->setData("handlername");
 	value->setData(evHandler);
 	param->setUAPString(*&parameter, *&value);
+	
+	if (afterentry && (strcmp(afterentry, "") != 0)) {
+		parameter->setData("after");
+		value->setData(afterentry);
+		param->setUAPString(*&parameter, *&value);
+	}
 
 	UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
 	QI(param, lb_I_Unknown, uk, __FILE__, __LINE__)
