@@ -36,6 +36,99 @@
  *  lbConfigHook.h includes this file for you.
  */
 
+/** \mainpage DMF - Version 0.4.0
+ * \section intro_sec Introduction to DMF - Distributed Multiplatform Framework
+ *
+ * This is the introduction for the users of DMF after the first installation.
+ * Here the post installation will be explained in short and other important things,
+ * that have to do with installation and different usage as of databases.
+ *
+ * To start programming, you could start at the quickstart at the Start programming section below.
+ *
+ * Prerequirements:
+ *
+ * Open Watcom compiler, at least version 1.2. <a href="http://www.openwatcom.org">Open Watcom</a>
+ * 
+ * The wxWidgets source code. Tested version is 2.4.2. <a href="http://www.wxwidgets.org">wxWidgets</a>
+ * 
+ * One of the following databases: <a href="http://www.mysql.com">MySQL</a>, <a href="http://www.postgresql.org">PostgreSQL</a> or <a href="http://www.sybase.com">Sybase</a>.
+ * Other databases may be possible, but there is not yet a SQL script to setup the database.
+ *
+ * \ref Postsetup "Post setup instructions."
+ *
+ * \ref Quickstart "Start programming."
+ */
+
+/** \page Quickstart Beginning programming in DMF environment.
+ *
+ * \section Introduction
+ * Here we will learn to create simple console applications.
+ *
+ * \section HelloWorld A simple application like the famous Hello world application.
+ * As the most programming environments, showing a first sample application, I will do the same.
+ * We will start to create a new simple Hello world application, showing a 'Hello world' text.
+ * But we do not use prinf's or cout's.
+ *
+ * We would use the console logging feature of DMF and a string class that will be loaded from
+ * anywhere else using an interface.
+ *
+ */
+
+/** \page Postsetup Post setup instructions.
+ *
+ * \section Introduction
+ * You do need to post setup your installation. These includes minimal changes in files, installing
+ * software, databases, ODBC drivers and setup ODBC configurations.
+ *
+ * \section PSetup1 Post setup
+ *
+ *	The post setup uses a scenary of an installation to drive D: where afterwards a directory lbDMF exists.
+ *
+ * \section PSetup2 lbDMF Develop link
+ *
+ *	If you start the lbDMF Develop link on the desktop, you get opened a text file with
+ *	a hint text. It explains once to read these instructions for post installation. Here
+ *	are the same instructions of post installation.
+ *
+ * \section PSetup3 Drive letter
+ *
+ *	Right click on lbDMF Develop symbol to edit it. Change the drive letter, pointing to
+ *	your actual installation. Sample here would drive D: and not the standard C: drive letter.
+ *	In this sample installation scenario, simply change the lines set DEVLW=<driveletter> to DEVLW=D:
+ *
+ * \section PSetup4 Setup and make wxWidgets source tree
+ *
+ *	Start a normal MSDOS console (cmd) and type these lines:
+ *	set WXWIN=D:\lbDMF\Develop\wxwin\wx
+ *	D:
+ *	cd %WXWIN%\src\msw
+ *	copy %WXWIN%\include\wx\msw\setup.h %WXWIN%\include\wx
+ *	wmake -f makefile.wat all
+ *
+ *	This should start compiling the wxWidgets code.
+ *
+ * \sechtion PSetup5 Start compiling DMF source tree
+ *
+ *	If you have done this, you can restart the lbDMF Develop link and a simple console window
+ *	starts.
+ *
+ *	Type make
+ *
+ * \section PSetup6 Database setup
+ *
+ *	To be able to run the sample applications, you need to create at least one database.
+ *	Do this with the tools, provided from the database vendors.
+ *	
+ *	The first database, needed should be named lbdmf and a correct ODBC configuration should
+ *	be set up.
+ *
+ *	NOTE: The database login function is used with hardcoded ODBC DSN name and also user with password.
+ *	The functions could be found by a search for ->connect(
+ *
+ *	Create at least an use to have rights to change data.
+ *
+ */
+
 #ifdef _MSC_VER
 
 #pragma warning( disable: 4275 )
