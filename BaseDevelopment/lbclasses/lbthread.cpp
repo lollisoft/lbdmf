@@ -1,6 +1,11 @@
 #define LB_CONTAINER_DLL
 
-#include <lbInclude.h>
+#include <conio.h>
+#include <iostream.h>
+
+#include <lbInterfaces.h>
+#include <lbThread.h>
+#include <lbConfigHook.h>
 
 int lbThread::threadCount = 0;
 
@@ -98,8 +103,8 @@ lbMutex::~lbMutex()
 {
 }
 
-/*...sDeleteMutex:0:*/
-void lbMutex::DeleteMutex(int name)
+/*...sdeleteMutex:0:*/
+void lbMutex::deleteMutex(int name)
 {
 #ifdef WINDOWS
         CloseHandle(mutex);
@@ -110,8 +115,8 @@ void lbMutex::DeleteMutex(int name)
 #endif
 }
 /*...e*/
-/*...sCreateMutex:0:*/
-void lbMutex::CreateMutex(int name)
+/*...screateMutex:0:*/
+void lbMutex::createMutex(int name)
 {
 /*...sWINDOWS:0:*/
 #ifdef WINDOWS
@@ -155,8 +160,8 @@ void lbMutex::CreateMutex(int name)
 }
 /*...e*/
 
-/*...sEnter:0:*/
-void lbMutex::Enter()
+/*...senter:0:*/
+void lbMutex::enter()
 {
 #ifdef WINDOWS
         WaitForSingleObject(mutex, INFINITE);
@@ -166,8 +171,8 @@ void lbMutex::Enter()
 #endif
 }
 /*...e*/
-/*...sRelease:0:*/
-void lbMutex::Release()
+/*...srelease:0:*/
+void lbMutex::release()
 {
 #ifdef WINDOWS
         ReleaseMutex(mutex);
@@ -178,6 +183,8 @@ void lbMutex::Release()
 } 
 /*...e*/
 /*...e*/
+
+
 
 /*...slbCritSect:0:*/
 //#define USE_CRITICAL_SECTION
@@ -311,11 +318,11 @@ public:
     }
 
     // create a new (suspended) thread (for the given thread object)
-    lbThreadError Create(lbThread *thread);
+    lbErrCodes Create(lbThread *thread);
 	
     // suspend/resume/terminate
-    lbThreadError suspend();
-    lbThreadError resume();
+    lbErrCodes suspend();
+    lbErrCodes resume();
     // thread state
 
     // thread handle and id
@@ -349,7 +356,7 @@ private:
 /*...e*/
 
 /*...slbThreadInternal\58\\58\Create\40\lbThread \42\thread\41\:0:*/
-lbThreadError lbThreadInternal::Create(lbThread *thread) {
+lbErrCodes lbThreadInternal::Create(lbThread *thread) {
 /*...sTHREAD_VERBOSE:0:*/
 	#ifdef THREAD_VERBOSE
 	LOG("lbThreadInternal::Create called");
@@ -394,12 +401,12 @@ lbThreadError lbThreadInternal::Create(lbThread *thread) {
     	return LB_THREAD_ERROR;
     }
     
-    return LB_THREAD_NO_ERROR;
+    return ERR_NONE;
 }
 /*...e*/
 
 /*...slbThreadInternal\58\\58\suspend\40\\41\:0:*/
-lbThreadError lbThreadInternal::suspend() {
+lbErrCodes lbThreadInternal::suspend() {
     DWORD nSuspendCount = ::SuspendThread(lb_hThread);
     if ( nSuspendCount == (DWORD)-1 )
     {
@@ -410,12 +417,12 @@ lbThreadError lbThreadInternal::suspend() {
 
 //    m_state = STATE_PAUSED;
 
-    return LB_THREAD_NO_ERROR;
+    return ERR_NONE;
 }
 /*...e*/
 
 /*...slbThreadInternal\58\\58\resume\40\\41\:0:*/
-lbThreadError lbThreadInternal::resume() {
+lbErrCodes lbThreadInternal::resume() {
     DWORD nSuspendCount = ::ResumeThread(lb_hThread);
     if ( nSuspendCount == (DWORD)-1 )
     {
@@ -432,7 +439,7 @@ lbThreadError lbThreadInternal::resume() {
 
 //    m_state = STATE_RUNNING;
 
-    return LB_THREAD_NO_ERROR;
+    return ERR_NONE;
 }
 /*...e*/
 
@@ -532,8 +539,8 @@ lbThread::~lbThread() {
 	if (pThreadImpl != NULL) delete pThreadImpl;
 }
 
-lbThreadError lbThread::create() {
-  lbThreadError err;
+lbErrCodes LB_STDCALL lbThread::create() {
+  lbErrCodes err;
 /*...sCreate if needed:2:*/
   if (pThreadImpl == NULL) LOG("lbThread::create() Error: Have a NULL pointer (pThreadImpl)!");
   if (pThreadImpl->getHandle() == NULL) {
@@ -552,7 +559,7 @@ lbThreadError lbThread::create() {
 #endif
 /*...e*/
 
-  	if ((err = pThreadImpl->Create(this)) != LB_THREAD_NO_ERROR) {
+  	if ((err = pThreadImpl->Create(this)) != ERR_NONE) {
 		printf("lbThread::run creation of thread failed\n");
 		LOG("lbThread::run creation of thread failed");
 		return err;
@@ -562,10 +569,10 @@ lbThreadError lbThread::create() {
   return err;
 }
 
-lbThreadError lbThread::run() {
-  lbThreadError err;
+lbErrCodes LB_STDCALL lbThread::run() {
+  lbErrCodes err;
 /*...sLet it run:2:*/
-  if ((err = pThreadImpl->resume()) != LB_THREAD_NO_ERROR) {
+  if ((err = pThreadImpl->resume()) != ERR_NONE) {
 	printf("lbThread::resume failed\n");
   }
 /*...sTHREAD_VERBOSE:2:*/
@@ -578,9 +585,21 @@ LOG  ("lbThread::resume done");
 /*...e*/
 }
 
-lbThreadError lbThread::stop() {
-  return LB_THREAD_ERROR;
+lbErrCodes LB_STDCALL lbThread::stop() {
+	LOG("Error: Not implemented");
+	return LB_THREAD_ERROR;
 }
+
+lbErrCodes LB_STDCALL lbThread::pause() {
+	LOG("Error: Not implemented");
+	return LB_THREAD_ERROR;
+}
+
+lbErrCodes LB_STDCALL lbThread::resume() {
+	LOG("Error: Not implemented");
+	return LB_THREAD_ERROR;
+}
+
 /*...e*/
 /*...slbThreadModule:0:*/
 /*...sint lbThread\58\\58\OnInit\40\\41\:0:*/

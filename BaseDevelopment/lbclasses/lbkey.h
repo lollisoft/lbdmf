@@ -2,10 +2,13 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.5 $
+ * $Revision: 1.6 $
  * $Name:  $
- * $Id: lbkey.h,v 1.5 2000/10/05 22:56:45 lothar Exp $
+ * $Id: lbkey.h,v 1.6 2001/03/14 20:52:51 lolli Exp $
  * $Log: lbkey.h,v $
+ * Revision 1.6  2001/03/14 20:52:51  lolli
+ * Compiles and links now, but it will not run
+ *
  * Revision 1.5  2000/10/05 22:56:45  lothar
  * Most changes are interface issues
  *
@@ -63,8 +66,8 @@ public:
 //    virtual int operator == (const lb_I_KeyBase &_key) const;
 //    virtual int operator > (const lb_I_KeyBase &_key) const;
 
-    virtual int equals(const lb_I_KeyBase &_key) const = 0;
-    virtual int greater(const lb_I_KeyBase &_key) const = 0;
+    virtual int equals(const lb_I_KeyBase* _key) const = 0;
+    virtual int greater(const lb_I_KeyBase* _key) const = 0;
     virtual lb_I_KeyBase* clone() const = 0;
 
     virtual char* charrep() = 0;
@@ -75,15 +78,16 @@ class DLLEXPORT lbKey : public lbKeyBase {
 public:
     lbKey();
     lbKey(int _key);
-    lbKey(const lb_I_KeyBase & k);
+    lbKey(const lb_I_KeyBase* k);
     virtual ~lbKey();
 
     // Must be implemented
-    virtual int equals(const lb_I_KeyBase &_key) const;
-    virtual int greater(const lb_I_KeyBase &_key) const;
+    virtual int equals(const lb_I_KeyBase* _key) const;
+    virtual int greater(const lb_I_KeyBase* _key) const;
     lb_I_KeyBase* clone() const;
 
     virtual char* charrep();
+    virtual char* getMainInterface() const { return "intKey"; }
 private:
 
     int key;
@@ -94,15 +98,16 @@ class DLLEXPORT lbKeyUL : public lbKeyBase {
 public:
     lbKeyUL();
     lbKeyUL(unsigned long _key);
-    lbKeyUL(const lb_I_KeyBase & k);
+    lbKeyUL(const lb_I_KeyBase* k);
     virtual ~lbKeyUL();
 
     // Must be implemented
-    virtual int equals(const lb_I_KeyBase &_key) const;
-    virtual int greater(const lb_I_KeyBase &_key) const;
+    virtual int equals(const lb_I_KeyBase* _key) const;
+    virtual int greater(const lb_I_KeyBase* _key) const;
     lb_I_KeyBase* clone() const;
 
     virtual char* charrep();
+    virtual char* getMainInterface() const { return "ULKey"; }
 private:
 
     unsigned long key;
@@ -112,15 +117,16 @@ private:
 class DLLEXPORT lbStringKey : public lbKeyBase {
 public:
     lbStringKey(const char* _key);
-    lbStringKey(const lbStringKey & k);
+    lbStringKey(const lb_I_KeyBase* k);
     virtual ~lbStringKey();
 
     // Must be implemented
-    virtual int equals(const lb_I_KeyBase &_key) const;
-    virtual int greater(const lb_I_KeyBase &_key) const;
+    virtual int equals(const lb_I_KeyBase* _key) const;
+    virtual int greater(const lb_I_KeyBase* _key) const;
     lb_I_KeyBase* clone() const;
 
     virtual char* charrep();
+    virtual char* getMainInterface() const { return "stringKey"; }
 private:
     char* key;    
 };

@@ -1,10 +1,13 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.2 $
+ * $Revision: 1.3 $
  * $Name:  $
- * $Id: lb_misc.h,v 1.2 2001/02/06 20:38:18 lolli Exp $
+ * $Id: lb_misc.h,v 1.3 2001/03/14 20:52:51 lolli Exp $
  * $Log: lb_misc.h,v $
+ * Revision 1.3  2001/03/14 20:52:51  lolli
+ * Compiles and links now, but it will not run
+ *
  * Revision 1.2  2001/02/06 20:38:18  lolli
  * Commit for backup the data
  *
@@ -70,52 +73,6 @@ void DLLEXPORT lb_sleep(int ms);
 
 class lbMutex;
 
-/*...sclass lbLog:0:*/
-class DLLEXPORT lbLog : public lb_I_Log {
-
-/*...spublic:0:*/
-public:
-
-    lbLog();
-    lbLog(int l);
-
-    void log(const char *msg, long line, char* file);
-
-    void logdirect(const char *msg, char *f, int level);
-    
-    void log(int log);
-
-    void enable(char *where);
-    
-    void disable(char *where);
-    
-    void event_begin(char *event);
-
-    void event_end(char *event);
-
-    void setPrefix(char* p);
-/*...e*/
-
-/*...sprivate:0:*/
-    private:
-
-    char prefix[100];
-    int level;    
-    int doLog;
-    int firstlog;
-    clock_t start_time, end_time;
-    char lastevent[100];
-    int beinlog;
-    char f[100];
-    lbMutex* mutex;
-/*...e*/
-
-/*...slb_I_Log:0:*/
-/*...e*/
-
-
-};
-/*...e*/
 
 
 extern lbCritSect sect;

@@ -4,10 +4,13 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.5 $
+ * $Revision: 1.6 $
  * $Name:  $
- * $Id: lbkey.cpp,v 1.5 2000/10/05 22:56:45 lothar Exp $
+ * $Id: lbkey.cpp,v 1.6 2001/03/14 20:52:51 lolli Exp $
  * $Log: lbkey.cpp,v $
+ * Revision 1.6  2001/03/14 20:52:51  lolli
+ * Compiles and links now, but it will not run
+ *
  * Revision 1.5  2000/10/05 22:56:45  lothar
  * Most changes are interface issues
  *
@@ -39,11 +42,16 @@
 
 #define LB_CONTAINER_DLL
 
+#include <windows.h>
+
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
 
-#include <lbInclude.h>
+#include <lbInterfaces.h>
+#include <lbConfigHook.h>
+
+#include <lbKey.h>
 
 #ifdef bla
 int lbKeyBase::operator == (const lb_I_KeyBase &_key) const {
@@ -54,6 +62,7 @@ int lbKeyBase::operator > (const lb_I_KeyBase &_key) const {
     return (greater(_key));
 }
 #endif
+
 /*...slbKey:0:*/
 lbKey::lbKey() {
     key = 0;
@@ -63,7 +72,7 @@ lbKey::lbKey(int _key) {
     key = _key;
 }
 
-lbKey::lbKey(const lb_I_KeyBase & k) {
+lbKey::lbKey(const lb_I_KeyBase* k) {
     key = ((lbKey) k).key;
 }
 
@@ -71,12 +80,12 @@ lbKey::lbKey(const lb_I_KeyBase & k) {
 lbKey::~lbKey(){
 }
 
-int lbKey::equals(const lb_I_KeyBase &_key) const {
-    return key == ((lbKey) _key).key;
+int lbKey::equals(const lb_I_KeyBase* _key) const {
+    return key == ((lbKey*) _key)->key;
 }
 
-int lbKey::greater(const lb_I_KeyBase &_key) const {
-    return key > ((lbKey) _key).key;
+int lbKey::greater(const lb_I_KeyBase* _key) const {
+    return key > ((lbKey*) _key)->key;
 }
 
 lb_I_KeyBase* lbKey::clone() const{
@@ -102,20 +111,20 @@ lbKeyUL::lbKeyUL(unsigned long _key) {
     key = _key;
 }
 
-lbKeyUL::lbKeyUL(const lb_I_KeyBase & k) {
-    key = ((lbKeyUL) k).key;
+lbKeyUL::lbKeyUL(const lb_I_KeyBase* k) {
+    key = ((lbKeyUL*) k)->key;
 }
 
 
 lbKeyUL::~lbKeyUL(){
 }
 
-int lbKeyUL::equals(const lb_I_KeyBase &_key) const {
-    return key == ((lbKeyUL) _key).key;
+int lbKeyUL::equals(const lb_I_KeyBase* _key) const {
+    return key == ((lbKeyUL*) _key)->key;
 }
 
-int lbKeyUL::greater(const lb_I_KeyBase &_key) const {
-    return key > ((lbKeyUL) _key).key;
+int lbKeyUL::greater(const lb_I_KeyBase* _key) const {
+    return key > ((lbKeyUL*) _key)->key;
 }
 
 lb_I_KeyBase* lbKeyUL::clone() const{
@@ -137,20 +146,20 @@ lbStringKey::lbStringKey(const char* _key) {
     key = strdup(_key);
 }
 
-lbStringKey::lbStringKey(const lbStringKey & k) {
-    key = strdup(((lbStringKey) k).key);
+lbStringKey::lbStringKey(const lb_I_KeyBase* k) {
+    key = strdup(((lbStringKey*) k)->key);
 }
 
 
 lbStringKey::~lbStringKey(){
 }
 
-int lbStringKey::equals(const lb_I_KeyBase &_key) const {
-    return (strcmp(key, ((const lbStringKey &) _key).key) == 0);
+int lbStringKey::equals(const lb_I_KeyBase* _key) const {
+    return (strcmp(key, ((const lbStringKey*) _key)->key) == 0);
 }
 
-int lbStringKey::greater(const lb_I_KeyBase &_key) const {
-    return (strcmp(key, ((const lbStringKey &) _key).key) > 0);
+int lbStringKey::greater(const lb_I_KeyBase* _key) const {
+    return (strcmp(key, ((const lbStringKey*) _key)->key) > 0);
 }
 
 lb_I_KeyBase* lbStringKey::clone() const {

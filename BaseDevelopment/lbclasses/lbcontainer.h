@@ -4,10 +4,13 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.5 $
+ * $Revision: 1.6 $
  * $Name:  $
- * $Id: lbcontainer.h,v 1.5 2001/03/04 18:30:25 lolli Exp $
+ * $Id: lbcontainer.h,v 1.6 2001/03/14 20:52:51 lolli Exp $
  * $Log: lbcontainer.h,v $
+ * Revision 1.6  2001/03/14 20:52:51  lolli
+ * Compiles and links now, but it will not run
+ *
  * Revision 1.5  2001/03/04 18:30:25  lolli
  * Compiles now with interface support
  *
@@ -60,7 +63,6 @@
 
 
 #include <lbInterfaces-sub-classes.h>
-
 /**
  * lbContainer represents the interface to all containers used.
  * 
@@ -72,6 +74,29 @@
 class lbObject; // THE base class
 class lbElement; // Container for one lbObject
 class lbKey; // Search criteria
+
+
+/*...sclass lbContainer:0:*/
+class lbContainer : 	public lb_I_Container
+{
+
+public:
+    lbContainer(const lb_I_Container* c);
+    lb_I_Container* operator= (const lb_I_Container* c);
+
+public:
+
+    lbContainer();
+    virtual ~lbContainer();
+
+    DECLARE_LB_UNKNOWN()
+
+// This may be a string container
+
+    DECLARE_LB_I_CONTAINER_IMPL()
+
+};
+/*...e*/
 
 extern lbCritSect critsect;
 

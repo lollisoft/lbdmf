@@ -4,10 +4,13 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.2 $
+ * $Revision: 1.3 $
  * $Name:  $
- * $Id: lbelement.h,v 1.2 2000/10/05 22:56:45 lothar Exp $
+ * $Id: lbelement.h,v 1.3 2001/03/14 20:52:51 lolli Exp $
  * $Log: lbelement.h,v $
+ * Revision 1.3  2001/03/14 20:52:51  lolli
+ * Compiles and links now, but it will not run
+ *
  * Revision 1.2  2000/10/05 22:56:45  lothar
  * Most changes are interface issues
  *
@@ -51,27 +54,32 @@
 
 
 #include <stdlib.h>
-
-/**
- * lbContainer represents the interface to all containers used.
- * 
- *
- *
- *
- */
+#include <lbInterfaces-sub-classes.h>
 
 class lbKeyBase;
 class lbObject;
 
-class DLLEXPORT lbElement {
-public:
-    lbElement(const lb_I_Object &o, const lb_I_KeyBase &_key, lbElement *_next=NULL);
-    lbElement(const lbElement &e) { next = e.getNext(); }
-    virtual ~lbElement();
+class DLLEXPORT lbElement : public lb_I_Element {
+private:
 
-    lbElement* getNext() const {return next; }
-    void setNext(lbElement *e){ next = e; }
-    lb_I_Object* getObject() const;
+    lb_I_Element* next;
+    lb_I_Unknown* data;
+    lb_I_KeyBase* key;
+
+public:
+    lbElement() { next = NULL; data = NULL; key = NULL; }
+    virtual ~lbElement();
+	
+//    lbElement(const lb_I_Object &o, const lb_I_KeyBase &_key, lbElement *_next=NULL);
+    lbElement(const lb_I_Element &e) { next = e.getNext(); }
+
+    DECLARE_LB_UNKNOWN()
+
+    DECLARE_LB_ELEMENT(lbElement)
+
+    lb_I_Element* getNext() const { return next; }
+    void setNext(lb_I_Element *e){ next = e; }
+    lb_I_Unknown* getObject() const;
 
 //    lbKeyBase &getKey() const { return *key; }
     lb_I_KeyBase *getKey() const
@@ -80,14 +88,9 @@ public:
         return key;
     }
 
-    int operator == (const lbElement &a) const;
+    int operator == (const lb_I_Element &a) const;
 
     int operator == (const lb_I_KeyBase &key) const;
 
-private:
-
-    lbElement* next;
-    lb_I_Object* data;
-    lb_I_KeyBase* key;
 };
 #endif //LB_ELEMENT

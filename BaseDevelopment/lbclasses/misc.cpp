@@ -1,10 +1,13 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.4 $
+ * $Revision: 1.5 $
  * $Name:  $
- * $Id: misc.cpp,v 1.4 2000/11/14 22:40:52 lolli Exp $
+ * $Id: misc.cpp,v 1.5 2001/03/14 20:52:51 lolli Exp $
  * $Log: misc.cpp,v $
+ * Revision 1.5  2001/03/14 20:52:51  lolli
+ * Compiles and links now, but it will not run
+ *
  * Revision 1.4  2000/11/14 22:40:52  lolli
  * Minor changes
  *
@@ -36,7 +39,70 @@
 
 #include <iostream.h>
 #include <stdio.h>
-#include <lbInclude.h>
+#include <time.h>
+
+//#include <lbInclude.h>
+
+#include <stdarg.h>
+#include <windef.h>
+#include <winbase.h>
+
+#include <lbInterfaces.h>
+#include <lbConfigHook.h>
+#include <lbThread.h>
+
+/*...sclass lbLog:0:*/
+class lbLog : public lb_I_Log {
+
+/*...spublic:0:*/
+public:
+
+    lbLog();
+    lbLog(int l);
+
+    void log(const char *msg, long line, char* file);
+
+    void logdirect(const char *msg, char *f, int level);
+    
+    void log(int log);
+
+    void enable(char *where);
+    
+    void disable(char *where);
+    
+    void event_begin(char *event);
+
+    void event_end(char *event);
+
+    void setPrefix(char* p);
+/*...e*/
+
+/*...sprivate:0:*/
+    private:
+
+    static char prefix[100];
+    static int level;    
+    static int doLog;
+    static int firstlog;
+    static clock_t start_time, end_time;
+    static char lastevent[100];
+    static int beinlog;
+    static char f[100];
+    static lb_I_Mutex* mutex;
+/*...e*/
+
+    DECLARE_LB_UNKNOWN()
+
+/*...slb_I_Log:0:*/
+/*...e*/
+
+
+};
+/*...e*/
+
+#ifndef LOG_DEFINED
+#define LOG_DEFINED
+
 int lbLog::level = 0;
 int lbLog::firstlog = 0;
 int lbLog::beinlog = 0;
@@ -44,10 +110,67 @@ char lbLog::f[100];
 clock_t lbLog::start_time, lbLog::end_time;
 int lbLog::doLog = FALSE;
 char lbLog::prefix[100];
-lbMutex* lbLog::mutex;
+lb_I_Mutex* lbLog::mutex;
 
-lbCritSect sect;
+//lb_I_CritSect sect;
 
+void gol() {
+/*...sGET_LOG_INSTANCE:0:*/
+			if (log == NULL) {
+				isInitializing = 1;
+				CL_LOG("Getting a log instance...");
+				lb_I_Module* modMan = getModuleInstance();
+				getch();
+
+				if (modMan != NULL) {
+					lb_I_Unknown *Unknown = NULL;
+					lbErrCodes err = modMan->request("instanceOfLogger", Unknown);
+
+					if (Unknown != NULL) {
+						Unknown->queryInterface("lb_I_Log", (void**) &log);
+						if (log == NULL) {
+							CL_LOG("Unknown object has no interface for lb_I_Log");
+							getch();
+							exit (1);
+						}
+						CL_LOG("Now have a log instance");
+					} else {
+						char buf[100] = "";
+						sprintf(buf, "%s %d %s", "Instance could not be created, errcode is ", err, ".");
+						CL_LOG(buf);
+						getch();
+						exit(1);
+					}
+				} else {
+					CL_LOG("Module manager could not be created");
+					getch();
+					exit(1);
+				}
+			}
+			isInitializing = 0;
+/*...e*/
+}
+
+void dlog(char* msg) {
+/*...sLOG:0:*/
+			if (isInitializing != 0) {
+				cout << "Tried to log while initializing the logger." <<
+				"Msg: " << msg << " File: " << __FILE__ << " Line: " << __LINE__ << endl;
+			} else {
+				gol();
+				cout << "Log a message: " << msg << endl;
+				log->log(msg, __LINE__, __FILE__);
+				cout << "Logged." << endl;
+			}
+/*...e*/
+}
+
+
+BEGIN_IMPLEMENT_LB_UNKNOWN(lbLog)
+	ADD_INTERFACE(lb_I_Log)
+END_IMPLEMENT_LB_UNKNOWN()
+
+/*...slbLog\58\\58\lbLog\40\\41\:0:*/
 lbLog::lbLog() {
 //lbLock lbLock(sect);
         strcpy(f, "c:\\log\\wsmaster.log");
@@ -55,14 +178,16 @@ lbLog::lbLog() {
 
 	if (firstlog == 0) {
         	mutex = new lbMutex();
-        	mutex->CreateMutex(LB_LOGFILE_MUTEX);
+        	mutex->createMutex(LB_LOGFILE_MUTEX);
         }
 
         firstlog = 1;
         doLog = 1;
-	LOG("lbLog::lbLog(): Creating mutex for logfile");
+        
+	CL_LOG("Creating mutex for logfile");
     }
-    
+/*...e*/
+/*...slbLog\58\\58\lbLog\40\int l\41\:0:*/
 lbLog::lbLog(int l) {
 //lbLock lbLock(sect);
         strcpy(f, "c:\\log\\wsmaster.log");
@@ -70,14 +195,15 @@ lbLog::lbLog(int l) {
 
 	if (firstlog == 0) {
         	mutex = new lbMutex();
-        	mutex->CreateMutex(LB_LOGFILE_MUTEX);
+        	mutex->createMutex(LB_LOGFILE_MUTEX);
         }
 
         firstlog = 1;
         doLog = l;
-        LOG("lbLog::lbLog(): Creating mutex for logfile");
+        CL_LOG("lbLog::lbLog(): Creating mutex for logfile");
     }
-
+/*...e*/
+/*...slbLog\58\\58\logdirect\40\\46\\46\\46\\41\:0:*/
 void lbLog::logdirect(const char *msg, char *f, int level) {
                 FILE *fp;
                 fp = fopen( f, "a" );
@@ -97,12 +223,13 @@ void lbLog::logdirect(const char *msg, char *f, int level) {
         
                 fclose( fp );
 }
-
+/*...e*/
+/*...slbLog\58\\58\log\40\\46\\46\\46\\41\:0:*/
 void lbLog::log(const char *msg, long line, char* file) {
 //lbLock lbLock(sect, "lbLockSection");
 	if (firstlog == 0) lbLog log = lbLog();
 
-	mutex->Enter();	
+	mutex->enter();	
 	
 	if (doLog == TRUE) {
 		char *m = (char*) malloc(strlen(msg)+sizeof(line)+strlen(file)+10);
@@ -111,44 +238,48 @@ void lbLog::log(const char *msg, long line, char* file) {
 		logdirect(m, f, level);
 		free(m);
 	}
-	mutex->Release();
+	mutex->release();
 }
-
+/*...e*/
+/*...slbLog\58\\58\log\40\int log\41\:0:*/
 void lbLog::log(int log) {
 	if (firstlog == 0) lbLog log = lbLog();
 	doLog = log;
 }
-
+/*...e*/
+/*...slbLog\58\\58\setPrefix\40\char\42\ p\41\:0:*/
 void lbLog::setPrefix(char* p) {
 //cout << "lbLog::setPrefix(char* p) called" << endl;
 	{
-		lbLock lbLock(sect, "lbLockSection");
+		//lbLock lbLock(sect, "lbLockSection");
 		strcpy(prefix, p);
 	}
 }
-
+/*...e*/
+/*...slbLog\58\\58\enable\40\char \42\where\41\:0:*/
 void lbLog::enable(char *where) {
 	char buf[100];
 	doLog = TRUE;
 	
 	if (firstlog == 0) lbLog log = lbLog();
 	
-	mutex->Enter();
+	mutex->enter();
 
 	sprintf(buf, "Log is enabled at %s", where);
 //	level++;
 	logdirect(buf, f, level);
 //	level++;
 	
-	mutex->Release();
+	mutex->release();
 }
-
+/*...e*/
+/*...slbLog\58\\58\disable\40\char \42\where\41\:0:*/
 void lbLog::disable(char *where) {
 	char buf[100];
 	
 	if (firstlog == 0) lbLog log = lbLog();
 	
-	mutex->Enter();
+	mutex->enter();
 	
 	if (level <= 0) {
 		logdirect("lbLog: Function sequence error. Disable called before enable!", f, 0);
@@ -161,19 +292,21 @@ void lbLog::disable(char *where) {
 	logdirect(buf, f, level);
 //	level--;
 
-	mutex->Release();
+	mutex->release();
 }
-
+/*...e*/
+/*...slbLog\58\\58\event_begin\40\char \42\event\41\:0:*/
 void lbLog::event_begin(char *event) {
 	if (firstlog == 0) lbLog log = lbLog();
 	if (doLog == TRUE) {
             beinlog = 1;
             start_time = clock();
 
-            LOG(event);
+            CL_LOG(event);
     }
 }
-
+/*...e*/
+/*...slbLog\58\\58\event_end\40\char \42\event\41\:0:*/
 void lbLog::event_end(char *event) {
         char buf[100];
 	if (firstlog == 0) lbLog log = lbLog();
@@ -197,6 +330,14 @@ void lbLog::event_end(char *event) {
                 }
         }
     }
+/*...e*/
+
+lbErrCodes LB_STDCALL lbLog::setData(lb_I_Unknown* uk) {
+	 CL_LOG("Error: Not implemented");
+	 return ERR_NONE;
+}
+
+#endif // LOG_DEFINED
 
 #ifdef __WXGTK__
 void delay(long mikrosek)

@@ -21,6 +21,12 @@
 #endif
 /*...e*/
 
+#ifdef WINDOWS
+#include <windows.h>
+#endif
+
+#include <lbInterfaces.h>
+
 /*...stypedef lbMutexError:0:*/
 typedef enum
 {
@@ -29,29 +35,18 @@ typedef enum
 } lbMutexError;
 /*...e*/
 
-/*...stypedef lbThreadError:0:*/
-typedef enum
-{
-  LB_THREAD_NO_ERROR = 0,
-  LB_THREAD_ERROR
-} lbThreadError;
-/*...e*/
-
 /*...sclass DLLEXPORT lbMutex:0:*/
-#ifdef WINDOWS
-#include <windows.h>
-#endif
 
-class DLLEXPORT lbMutex
+class lbMutex : public lb_I_Mutex
 {
 public:
         lbMutex();
         virtual ~lbMutex();
 
-        void CreateMutex(int name);
-        void DeleteMutex(int name);
-        void Enter();
-        void Release();
+        virtual void createMutex(int name);
+        virtual void deleteMutex(int name);
+        virtual void enter();
+        virtual void release();
 private:
 
 #ifdef WINDOWS
@@ -64,11 +59,10 @@ private:
 };
 /*...e*/
 
-
-
+/*...sclass lbCritSect\44\ lbLock:0:*/
 class DLLEXPORT lbLock;
 
-class DLLEXPORT lbCritSect {
+class lbCritSect : public lb_I_CriticalSection {
 public:
 	lbCritSect();
 	virtual ~lbCritSect();
@@ -85,44 +79,46 @@ protected:
 	friend class lbLock;
 };
 
-class DLLEXPORT lbLock {
+class lbLock : public lb_I_Lock {
 public:
 	lbLock(lbCritSect& _cso, char* _name);
 	virtual ~lbLock();
-private:
+protected:
 	lbLock() {}
 	lbLock(const lbLock&) {}
 
 	char* name;
 	lbCritSect* cso;
 };
+/*...e*/
+
 
 class lbThreadInternal; // For various operating systems
 
 /*...sclass DLLEXPORT lbThread:0:*/
-class DLLEXPORT lbThread {
+class DLLEXPORT lbThread : public lb_I_Thread {
 public:
 	lbThread();
 	virtual ~lbThread();
 	
 
-	lbThreadError create();
+	virtual lbErrCodes LB_STDCALL create();
 
-	lbThreadError run(); 
-	lbThreadError stop();
+	virtual lbErrCodes LB_STDCALL run(); 
+	virtual lbErrCodes LB_STDCALL stop();
 	
-	lbThreadError pause();
-	lbThreadError resume();
+	virtual lbErrCodes LB_STDCALL pause();
+	virtual lbErrCodes LB_STDCALL resume();
 
 	/**
 	 * Call this function once a process
 	 */
-	int OnInit();
+	int LB_STDCALL OnInit();
 	
 	/**
 	 * Cleanup at process end
 	 */
-	void OnExit();
+	void LB_STDCALL OnExit();
 	
 	/**
 	 * Implementation of a specific thread must implement this
