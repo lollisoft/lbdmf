@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.31 $
+# * $Revision: 1.32 $
 # * $Name:  $
-# * $Id: Makefile,v 1.31 2005/03/05 23:28:05 lollisoft Exp $
+# * $Id: Makefile,v 1.32 2005/03/06 00:43:56 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.32  2005/03/06 00:43:56  lollisoft
+# * Minor changes to auto compile mkmk as bootstrap
+# *
 # * Revision 1.31  2005/03/05 23:28:05  lollisoft
 # * Initial wx plugin attempt
 # *
@@ -140,7 +143,9 @@ ifeq ($(OSTYPE), osx)
 TARGETDLL=so
 TARGETEXE=elf
 
-ALLTARGETS = lbHook \
+ALLTARGETS = \
+	../vendor/mkmk \
+	lbHook \
 	lbModule \
 	lbMetaApplication \
 	lbclasses \
@@ -210,7 +215,10 @@ clean:
 
 distclean:
 	@for d in $(ALLTARGETS); do \
-	    $(MAKE) -C $$d distclean || exit $? ; \
+	    echo $$d ; \
+	    cp $$d/makefile $$d/makefile.clean; \
+	    $(MAKE) -C $$d distclean -f makefile.clean || exit $? ; \
+	    rm $$d/makefile.clean; \
 	done
 
 mkrelease:
@@ -227,12 +235,18 @@ mkrelease:
 dummy:
 
 ../Test/Console/XML: dummy
-	$(MAKE) -C $@ -e MODULE=Test -e TARGET=$(TARGETEXE) -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
+	$(MAKE) -C $@ -e MODULE=console-test -e TARGET=$(TARGETEXE) -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
 	$(MAKE) -C $@
 
 ifeq ($(OSTYPE), osx)
+../vendor/mkmk: dummy
+	$@/make-osx.sh $@
+	cp $@/mkmk $(HOME)/bin
+	cd ../Basedevelopment
+
 ../Test/GUI/wxWrapper: dummy
 	$(MAKE) -C $@ -f makefile.osx
+	cp ../Test/GUI/wxWrapper/wxWrapper $(HOME)/bin
 endif
 
 ifeq ($(OSTYPE), linux)

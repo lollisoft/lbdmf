@@ -1,4 +1,5 @@
 #!/bin/sh
+cd $1
 c++ mkmk.cpp -c -DUNIX -DOSX \
     -I /usr/include \
     -I ../dosdir
