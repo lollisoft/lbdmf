@@ -62,9 +62,7 @@ void main() {
 	getch();
 
 	lb_I_Module* mm = getModuleInstance();
-	CL_LOG("Set module manager");
 	mm->setModuleManager(mm, __FILE__, __LINE__);
-	CL_LOG("Have set module manager");
 /*...e*/
 /*...stest logger:0:*/
 	mm->request("lb_I_Log", &unknown);
