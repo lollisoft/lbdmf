@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.40 2005/01/25 12:28:35 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.41 2005/01/25 12:52:56 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.40 $
+ * $Revision: 1.41 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.40 2005/01/25 12:28:35 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.41 2005/01/25 12:52:56 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.41  2005/01/25 12:52:56  lollisoft
+ * Be only on linux verbose
+ *
  * Revision 1.40  2005/01/25 12:28:35  lollisoft
  * Changes for linux due to several reasons. The GUI sample has still problems with database access. Crash in lbDB.cpp while creating bound columns. Console works
  *
@@ -444,8 +447,9 @@ public:
 		
 			char* _app = strdup(app.c_str());
 			
+			#ifdef LINUX
 			setVerbose(true);
-			
+			#endif
 			char ptr[20] = "";
 			
 			sprintf(ptr, "%p", manager.getPtr());
@@ -454,8 +458,10 @@ public:
 			meta->loadApplication(userid, _app);
 			_CL_VERBOSE << "Called" LOG_
 			
+			#ifdef LINUX
 			setVerbose(false);
-		
+			#endif
+			
 			free(_app);
 		}
 	
