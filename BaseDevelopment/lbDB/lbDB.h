@@ -35,6 +35,22 @@
 
 #include <iostream.h>
 
+/**
+ * \brief lbFakeDelete - Does not directly delete rows, only mark it as deleted.
+ *
+ * This class is intented to avoid crashes due to ODBC drivers, that may crash
+ * my application when deleting rows over the cursor library.
+ */
+class lbFakeDelete {
+public:
+
+	lbFakeDelete() {}
+	virtual ~lbFakeDelete() {}
+
+	
+}
+
+
 /*...s\35\ifdef __cplusplus \123\:0:*/
 #ifdef __cplusplus
 extern "C" {
