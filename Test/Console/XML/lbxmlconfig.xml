@@ -33,13 +33,16 @@
   <Modules>
     <Module>
 <!--...sModuleName lbclasses:8:-->
-      <ModuleName Name="lbClasses.so"/>
+      <ModuleName Name="lbClasses"/>
 <!--...e-->
 <!--...sFunctions:8:-->
       <Functions>
+           <!-- Windows prefix : _
+                Linux   postfix: 
+           -->
 <!--...sFunction instanceOfContainer:16:-->
         <Function>
-           <FunctionName Name="instanceOfContainer"/>
+           <FunctionName Name="_instanceOfContainer"/>
            <Functor>
               <InterfaceName Name="lb_I_Container" Version="1.0"/>
            </Functor>
@@ -47,7 +50,7 @@
 <!--...e-->
 <!--...sFunction instanceOfLogger:16:-->
         <Function>
-           <FunctionName Name="instanceOfLogger"/>
+           <FunctionName Name="_instanceOfLogger"/>
            <Functor>
               <InterfaceName Name="lb_I_Log" Version="1.0"/>
            </Functor>
@@ -55,7 +58,7 @@
 <!--...e-->
 <!--...sFunction instanceOfIntegerKey:16:-->
         <Function>
-           <FunctionName Name="instanceOfIntegerKey"/>
+           <FunctionName Name="_instanceOfIntegerKey"/>
            <Functor>
               <InterfaceName Name="lb_I_KeyBase" Version="1.0"/>
            </Functor>
@@ -63,7 +66,7 @@
 <!--...e-->
 <!--...sFunction instanceOfInteger:16:-->
         <Function>
-           <FunctionName Name="instanceOfInteger"/>
+           <FunctionName Name="_instanceOfInteger"/>
            <Functor>
               <InterfaceName Name="lb_I_Integer" Version="1.0"/>
            </Functor>
@@ -71,9 +74,17 @@
 <!--...e-->
 <!--...sFunction instanceOfString:16:-->
         <Function>
-           <FunctionName Name="instanceOfString"/>
+           <FunctionName Name="_instanceOfString"/>
            <Functor>
               <InterfaceName Name="lb_I_String" Version="1.0"/>
+           </Functor>
+        </Function>
+<!--...e-->
+<!--...sFunction instanceOfReference:16:-->
+        <Function>
+           <FunctionName Name="_instanceOfReference"/>
+           <Functor>
+              <InterfaceName Name="lb_I_Reference" Version="1.0"/>
            </Functor>
         </Function>
 <!--...e-->
@@ -81,6 +92,50 @@
         <Function>
            <FunctionName Name="Function2"/>
            <SimpleFn     Return="lbString"/>
+        </Function>
+<!--...e-->
+      </Functions>
+<!--...e-->
+    </Module>
+    <Module>
+<!--...sModuleName lbMetaApp:8:-->
+      <ModuleName Name="lbMetaApp"/>
+<!--...e-->
+<!--...sFunctions:8:-->
+      <Functions>
+           <!-- Windows prefix : _
+                Linux   postfix: 
+           -->
+<!--...sFunction instanceOfMetaApplication:16:-->
+        <Function>
+           <FunctionName Name="_instanceOfMetaApplication"/>
+           <Functor>
+              <InterfaceName Name="lb_I_MetaApplication" Version="1.0"/>
+           </Functor>
+        </Function>
+<!--...e-->
+<!--...sFunction instanceOfEventMapper:16:-->
+        <Function>
+           <FunctionName Name="_instanceOfEventMapper"/>
+           <Functor>
+              <InterfaceName Name="lb_I_EventMapper" Version="1.0"/>
+           </Functor>
+        </Function>
+<!--...e-->
+<!--...sFunction instanceOfEventManager:16:-->
+        <Function>
+           <FunctionName Name="_instanceOfEventManager"/>
+           <Functor>
+              <InterfaceName Name="lb_I_EventManager" Version="1.0"/>
+           </Functor>
+        </Function>
+<!--...e-->
+<!--...sFunction instanceOfDispatcher:16:-->
+        <Function>
+           <FunctionName Name="_instanceOfDispatcher"/>
+           <Functor>
+              <InterfaceName Name="lb_I_Dispatcher" Version="1.0"/>
+           </Functor>
         </Function>
 <!--...e-->
       </Functions>
