@@ -1,3 +1,4 @@
+//#define VERBOSE
 #define LB_MODULE_DLL
 
 /*...sincludes:0:*/
@@ -7,10 +8,10 @@
 #include <stdio.h>
 
 #include <lbInterfaces.h>
+#include <lbKey.h>
 #include <lbModule.h>
 #include <lbXMLConfig.h>
 #include <lbConfigHook.h>
-#include <lbKey.h>
 /*...e*/
 
 /*...slb_I_XMLConfig\42\ getXMLConfigObject\40\\41\:0:*/
@@ -34,13 +35,17 @@ lb_I_XMLConfig* getXMLConfigObject() {
         if ((DLL_LB_GETXML_CONFIG_INSTANCE = (T_pLB_GETXML_CONFIG_INSTANCE)
                GetProcAddress(ModuleHandle, ftrname)) == NULL)
         {
-            printf("Kann Funktion '%s' nicht finden.\n", ftrname);  exit(1);
+            char buf[100] = "";
+            sprintf(buf, "Kann Funktion '%s' nicht finden.\n", ftrname);  
+            CL_LOG(buf);
+            exit(1);
         }
 
         lbErrCodes err = DLL_LB_GETXML_CONFIG_INSTANCE(xml_Instance);
 
         if (xml_Instance == NULL) {
-            printf("Konnte XML Konfigurationsinstanz nicht bekommen.\n");  exit(1);
+            CL_LOG("Konnte XML Konfigurationsinstanz nicht bekommen.\n");
+            exit(1);
         }
 
         return xml_Instance;
@@ -94,6 +99,7 @@ public:
 
 };
 /*...e*/
+lb_I_Container* moduleList = NULL;
 /*...sclass lbModule and implementation:0:*/
 /*...sclass lbModule:0:*/
 class lbModule : 
@@ -103,6 +109,7 @@ public:
         lbModule() {
                 ref = STARTREF;
                 loadedModules = NULL;
+                internalInstanceRequest = 0;
         }
         
         virtual ~lbModule() {
@@ -120,14 +127,22 @@ public:
         
         virtual lbErrCodes load(char* name);
         virtual lbErrCodes getObjectInstance(const char* name, lb_I_Container*& inst);
+
+	virtual lbErrCodes getFunctors(char* interfacename, lb_I_ConfigObject* node, lb_I_Unknown*& uk);
+	virtual lbErrCodes getInstance(char* functorname, lb_I_ConfigObject* node, lb_I_Unknown*& uk);
+	virtual lbErrCodes getDefaultImpl(char* interfacename, lb_I_ConfigObject* node, char*& implTor, char*& module);
         
 protected:
 
 	lb_I_ConfigObject* findFunctorNode(lb_I_ConfigObject* node, const char* request);
 	char* findFunctorModule(lb_I_ConfigObject* node);
 	char* findFunctorName(lb_I_ConfigObject* node);
+
+	lbErrCodes makeInstance(char* functor, char* module, lb_I_Unknown*& instance);
 	
 	lb_I_Container* loadedModules;
+	int internalInstanceRequest;
+	lb_I_XMLConfig* xml_Instance;
 };
 /*...e*/
 
@@ -135,15 +150,22 @@ BEGIN_IMPLEMENT_LB_UNKNOWN(lbModule)
 	ADD_INTERFACE(lb_I_Module)
 END_IMPLEMENT_LB_UNKNOWN()
 
+/*...slbErrCodes lbModule\58\\58\setData\40\lb_I_Unknown\42\ uk\41\:0:*/
 lbErrCodes lbModule::setData(lb_I_Unknown* uk) {
 	CL_LOG("lbModule::setData(...) not implemented yet");
 	return ERR_NOT_IMPLEMENTED;
 }
-
+/*...e*/
+/*...slbErrCodes lbModule\58\\58\initialize\40\\41\:0:*/
 lbErrCodes lbModule::initialize() {
+#ifdef VERBOSE
+	CL_LOG("lbModule::initialize() called");
+#endif
+	xml_Instance = NULL;
+	moduleList = new lbModuleContainer();
         return ERR_NONE;
 }
-
+/*...e*/
 // Helpers to abstract XML structure
 /*...slbModule\58\\58\findFunctorNode\40\\46\\46\\46\\41\:0:*/
 /**
@@ -192,20 +214,23 @@ if ((err = temp_node->getParent(_node)) != ERR_NONE) {
 }			
 	if (_node != NULL) {
 		lb_I_ConfigObject* __node = NULL;
+#ifdef VERBOSE
 		CL_LOG("DEBUG PAUSE 1");
-		
+#endif		
 
 		err = _node->getFirstChildren(__node);
-		
+#ifdef VERBOSE		
 		CL_LOG("DEBUG PAUSE 2");
-		
+#endif		
 		
 		if (err != ERR_NONE) {
 			CL_LOG("Error. Children expected");
 			
 			return NULL;
 		}
+#ifdef VERBOSE
 		CL_LOG("No error found!");
+#endif
 }
 /*...e*/
 #endif			
@@ -326,6 +351,10 @@ char* lbModule::findFunctorName(lb_I_ConfigObject* node) {
 					CL_LOG("Error while getting attribute value");
 					return NULL;
 				} else {
+				#ifdef VERBOSE
+					cout << "Found function name '" << value << "'" << endl;
+					getch();
+				#endif
 					return value;
 				}
 			}
@@ -341,6 +370,219 @@ char* lbModule::findFunctorName(lb_I_ConfigObject* node) {
 	return "NULL";
 }
 /*...e*/
+/*...slbErrCodes lbModule\58\\58\getDefaultImpl\40\char\42\ interfacename\44\ lb_I_ConfigObject\42\ node\44\ char\42\\38\ implTor\44\ char\42\\38\ module\41\:0:*/
+lbErrCodes lbModule::getDefaultImpl(char* interfacename, lb_I_ConfigObject* node, char*& implTor, char*& module) {
+//	lbModuleContainer* functors = new lbModuleContainer();
+	lb_I_ConfigObject* temp_node = NULL;
+	lbErrCodes err = ERR_NONE;
+	int count = 0;
+
+	implTor = new char[100];
+	module = new char[100];
+
+
+/*...sget first children:0:*/
+	if ((err = node->getFirstChildren(temp_node)) == ERR_NONE) {
+		if (temp_node == NULL) {
+			CL_LOG("temp_node is NULL!");
+			getch();
+		} 
+		
+		if ((strcmp(temp_node->getName(), "StandardFunctor")) == 0) {
+			lb_I_Unknown* uk = NULL;
+			char* attr = NULL;
+			
+			temp_node->getAttributeValue("Interface", attr);
+			
+			if (strcmp(interfacename, attr) == 0) {
+				CL_LOG("Got the standard implementation.");
+				
+				temp_node->getAttributeValue("Module", module);
+				temp_node->getAttributeValue("Functor", implTor);
+			}
+			
+		}
+	} else CL_LOG("Get first child failed");
+/*...e*/
+
+/*...sget next children:0:*/
+	while ((err = node->getNextChildren(temp_node)) == ERR_NONE) {
+		if (temp_node == NULL) {
+			CL_LOG("temp_node is NULL!");
+			getch();
+		} 
+		
+		if ((strcmp(temp_node->getName(), "StandardFunctor")) == 0) {
+			lb_I_Unknown* uk = NULL;
+			char* attr = NULL;
+			
+			temp_node->getAttributeValue("Interface", attr);
+			
+			if (strcmp(interfacename, attr) == 0) {
+				CL_LOG("Got the standard implementation.");
+				
+				temp_node->getAttributeValue("Module", module);
+				temp_node->getAttributeValue("Functor", implTor);
+			}
+			
+		}
+	}
+
+/*...e*/
+
+#ifdef VERBOSE
+CL_LOG("Really leaved next children!");
+getch();
+#endif
+	
+	if (err == ERR_CONFIG_NO_MORE_CHILDS) {
+		CL_LOG("No more childs found");
+	}
+#ifdef VERBOSE
+CL_LOG("Done lbModule::getDefaultImpl(...)");
+getch();
+#endif
+	if (temp_node != NULL) temp_node->release();
+
+	return ERR_NONE;
+}
+/*...e*/
+/*...slbErrCodes lbModule\58\\58\getFunctors\40\char\42\ interfacename\44\ lb_I_ConfigObject\42\ node\44\ lb_I_Unknown\42\\38\ uk\41\:0:*/
+lbErrCodes lbModule::getFunctors(char* interfacename, lb_I_ConfigObject* node, lb_I_Unknown*& uk) {
+	lbModuleContainer* functors = new lbModuleContainer();
+	lb_I_ConfigObject* temp_node = NULL;
+	lbErrCodes err = ERR_NONE;
+	int count = 0;
+
+	if ((err = node->getFirstChildren(temp_node)) == ERR_NONE) {
+		lb_I_Attribute* attribute;
+		
+		if (temp_node == NULL) {
+			CL_LOG("temp_node is NULL!");
+			getch();
+		} 
+		
+		if ((strcmp(temp_node->getName(), "InterfaceName")) == 0) {
+			//return temp_node;
+			lb_I_Unknown* uk = NULL;
+			
+			if (temp_node->queryInterface("lb_I_Unknown", (void**) &uk) != ERR_NONE) {
+				CL_LOG("Error: Could not get unknown interface!");
+				exit(1);
+			}
+			
+			if (uk == NULL) {
+				CL_LOG("Error: Don't expect a NULL pointer here!");
+				exit(1);
+			}
+			
+			char* functor = NULL;
+			char* module = NULL;
+			
+			if ((err == getDefaultImpl("lb_I_Integer", node, functor, module)) != ERR_NONE) {
+				CL_LOG("Oops!");
+			}
+			
+			
+			
+			//lbKey* key = new lbKey(++count);
+			
+			//functors->insert(uk, key);
+		}
+		
+	} else CL_LOG("Get first child failed");
+
+	while ((err = node->getNextChildren(temp_node)) == ERR_NONE) {
+		if ((strcmp(temp_node->getName(), "InterfaceName")) == 0) {
+			//return temp_node;
+
+			lb_I_Unknown* uk = NULL;
+			
+			if (temp_node->queryInterface("lb_I_Unknown", (void**) &uk) != ERR_NONE) {
+				CL_LOG("Error: Could not get unknown interface!");
+				exit(1);
+			}
+			
+			if (uk == NULL) {
+				CL_LOG("Error: Don't expect a NULL pointer here!");
+				exit(1);
+			}
+			
+			//lbKey* key = new lbKey(++count);
+			
+			//functors->insert(uk, key);
+		}
+	}
+	
+	if (err == ERR_CONFIG_NO_MORE_CHILDS) {
+		CL_LOG("No more childs found");
+	}
+
+	if (temp_node != NULL) temp_node->release();
+
+	return ERR_NONE;
+}
+/*...e*/
+/*...slbErrCodes lbModule\58\\58\makeInstance\40\char\42\ functor\44\ char\42\ module\44\ lb_I_Unknown\42\\38\ instance\41\:0:*/
+lbErrCodes lbModule::makeInstance(char* functor, char* module, lb_I_Unknown*& instance) {
+char msg[100] = "";
+lbErrCodes err = ERR_NONE;
+
+#ifdef VERBOSE
+sprintf(msg, "Begin loading module %s", module);
+CL_LOG(msg);
+getch();		
+#endif
+			/**
+			 * ModuleHandle is the result for this loaded module.
+			 */
+	 
+			if ((err = lbLoadModule(module, ModuleHandle)) != ERR_NONE) {
+				// report error if still loaded
+				
+				// return error if loading is impossible
+			}
+#ifdef VERBOSE
+CL_LOG("End loading module");
+getch();
+#endif		
+
+#ifdef VERBOSE
+			msg[0] = 0;
+			sprintf(msg, "Create instance with functor '%s'.", functor);
+			CL_LOG(msg);
+#endif
+			
+			if ((err = lbGetFunctionPtr(functor, ModuleHandle, (void**) &DLL_LB_GET_UNKNOWN_INSTANCE)) != ERR_NONE) {
+				CL_LOG("Error while loading a functionpointer!");
+			} else {
+				err = DLL_LB_GET_UNKNOWN_INSTANCE(instance);
+				if (err == ERR_NONE) 
+				{
+				#ifdef VERBOSE
+					CL_LOG("Got the requested instance!");
+				#endif
+				}
+				else
+				{
+					CL_LOG("Could not get the instance!");
+				}
+				
+				if (instance != NULL) {
+				#ifdef VERBOSE
+					CL_LOG("Instancepointer is available");
+				#endif
+				}
+				
+			}
+
+	return ERR_NONE;
+}
+/*...e*/
+
+lbErrCodes lbModule::getInstance(char* functorname, lb_I_ConfigObject* node, lb_I_Unknown*& uk) {
+	return ERR_NONE;
+}
 /*...e*/
 
 /*...sclass lbNamedValue:0:*/
@@ -482,7 +724,15 @@ lbErrCodes lbNamedValue::getValue(lb_I_Unknown* & _value) {
 /*...e*/
 
 lbNamedValue* namedValue = NULL;
-lb_I_Container* moduleList = NULL;
+//lb_I_Container* moduleList = NULL;
+
+typedef struct instances_of_module {
+	char* moduleName;
+	int   count;
+} instModule;
+
+
+
 
 /*...sDocu for Module management:0:*/
 /**
@@ -525,12 +775,19 @@ lb_I_Container* moduleList = NULL;
  * language.
  */
 lbErrCodes lbModule::request(const char* request, lb_I_Unknown*& result) {
-        lb_I_XMLConfig* xml_Instance = NULL;
+        //lb_I_XMLConfig* xml_Instance = NULL;
         lbErrCodes err = ERR_NONE;
+        char buf[100] = "";
 
-CL_LOG("Get a XML config object");
-        xml_Instance = getXMLConfigObject();
-CL_LOG("Got it!");
+	if (moduleList == NULL) {
+		CL_LOG("Error: Module manager is not initialized!");
+		getch();
+	}
+	
+	sprintf(buf, "Request interface %s\n", request);
+	CL_LOG(buf);
+	
+        if (xml_Instance == NULL) xml_Instance = getXMLConfigObject();
         
 /*...sget my unknown interface:8:*/
         if (strcmp(request, "instance/XMLConfig") == 0) {
@@ -549,40 +806,64 @@ CL_LOG("Got it!");
 	 * instance is done in the xml file instead of if blocks.
 	 */
 	
-		cout << "Requested a unknown instance for this interface: " << request << ". Try to get one." << endl;
 		char* node = "#document/dtdHostCfgDoc/Modules/Module/Functions/Function/Functor";
 		lb_I_ConfigObject* config = NULL;
 		int count = 0;
 					// request is a functor
+		if (internalInstanceRequest == 1) {
+			CL_LOG("xml_Instance->hasConfigObject(node, count):");
+		}
+		
 		if (xml_Instance->hasConfigObject(node, count) == ERR_NONE) {
+			if (internalInstanceRequest == 1) {
+				CL_LOG("xml_Instance->getConfigObject(config, node):");
+			}
 			/**
 			 * Get the list of found objects as a list.
 			 * The result is a view of notes in a max deep
 			 * of one level.
 			 */
+/*...sVERBOSE:32:*/
 #ifdef VERBOSE
 CL_LOG("Try to get the config object");			
 #endif
+/*...e*/
 			xml_Instance->getConfigObject(config, node);
+/*...sVERBOSE:32:*/
 #ifdef VERBOSE
 CL_LOG("Got a config object (will the next crash ?)");
 #endif
+/*...e*/
+			if (internalInstanceRequest == 1) {
+				CL_LOG("findFunctorNode(config, request):");
+			}
 			
 			lb_I_ConfigObject* functorNode = findFunctorNode(config, request);
+/*...sVERBOSE:32:*/
 #ifdef VERBOSE
 CL_LOG("Not crashed!");
 #endif			
+/*...e*/
+			if (internalInstanceRequest == 1) {
+				CL_LOG("findFunctorModule(functorNode):");
+			}
 			
 			if (functorNode == NULL) {
 				cout << "Couldn't find the desired functor (nullpointer)!" << endl;
 				
 			}
+getch();
 			char* moduleName = findFunctorModule(functorNode);
+			if (internalInstanceRequest == 1) {
+				CL_LOG("findFunctorName(functorNode):");
+			}
+			cout << "Search for this name '" << request << "'" << endl;
 			char* functorName = findFunctorName(functorNode);
 
 			CL_LOG("Got this functor name:");
 			CL_LOG(functorName);
-
+getch();
+/*...sdoc:32:*/
 			/**
 			 * Now I should have all my information, create the instance.
 			 *
@@ -602,10 +883,134 @@ CL_LOG("Not crashed!");
 			 * How to count used instances ?
 			 */
 			 
-			// Check, if module is already loaded 
+			/** 
+			 * Check, if module is already loaded. Therefore it is necessary to make
+			 * a key from the given string. My current thinking about the key interface
+			 * is as follows: I should not create interfaces with functionality, wich
+			 * would be availabe in other interfaces. A key is responsible for comparsion,
+			 * but not to manipulate it's value. The type of the value is unknown.
+			 *
+			 * A better way is to use base types like integer and string interfaces to
+			 * manipulate or set a value and then get the key interface of it.
+			 * Better - put the value directly.
+			 */
+/*...e*/
 			 
-//			lbStringKey* key = new lbStringKey(moduleName);
+#ifdef bla			
+/*...sbla:8:*/
+			/**
+			 * If a request want's to get any of these interface instances, I should not try
+			 * to call recursive my own function.
+			 * 
+			 * lb_I_String, lb_I_Container
+			 *
+			 * To manage loaded modules and instances I should use internal implementations.
+			 * 
+			 * So, use a struct containing the module name and a count of instances,
+			 * use a instance pointer map to the containing module, to be able to decrease
+			 * the correct module instance counter
+			 */
+			if (internalInstanceRequest == 1) {
+				CL_LOG("Did I have am instance of my string?");
+			}
+			 			 
+			if (internalInstanceRequest == 0) { 
+				internalInstanceRequest = 1;
+				CL_LOG("------------------- Begin recursive call! ----------------------");
+				if ((err = this->request("lb_I_String", key)) != ERR_NONE) {
+					CL_LOG("Error: Could not get a lb_I_String instance!");
+					getch();
+				}
+				CL_LOG("-------------------- End recursive call! -----------------------");
+				internalInstanceRequest = 0;
+			}
+/*...e*/
+#endif bla
+		
+/*...sinternal recursive call \63\:32:*/
+#ifdef bla
+			if (internalInstanceRequest == 0) {
+#endif
+				// Set the value of the object
+			
+				CL_LOG("Try to get the string instance");
+				getch();
+			
+				lb_I_String* stringKey = NULL;
 
+				/**
+				 * Get a default implementation - needed here to avoid recursive
+				 * calls of request.
+				 */
+
+				lb_I_Unknown* key = NULL;
+				char* defaultFunctor = NULL;
+				char* defaultModule = NULL;
+			
+
+				char* node = "#document/dtdHostCfgDoc/StandardFunctor";
+				lb_I_ConfigObject* config = NULL;
+
+				if (xml_Instance->hasConfigObject(node, count) == ERR_NONE) {
+					xml_Instance->getConfigObject(config, node);
+
+					getDefaultImpl("lb_I_String", config, defaultFunctor, defaultModule);
+					CL_LOG("Called getDefaultImpl(...)");
+					getch();
+					makeInstance(defaultFunctor, defaultModule, key);
+					CL_LOG("Made an instance ?");
+					getch();
+				
+					if (key == NULL) {
+						CL_LOG("Error: Key is NULL!");
+						getch();
+					}
+				
+					if (key->queryInterface("lb_I_String", (void**) & stringKey) != ERR_NONE) {
+						CL_LOG("Error: Unknown has not the requested interface!");
+						getch();
+					}
+				
+					CL_LOG("Try to set the c string into lb_I_String instance");
+					getch();
+				
+					if (stringKey == NULL) {
+						CL_LOG("Error: NULL pointer detected at stringKey!");
+						getch();
+					}
+				
+					stringKey->setData(moduleName);
+				
+					CL_LOG("Have set data in the string :-)");
+					getch();
+				
+/*...sdoc:64:*/
+			/**
+			 * Get element in the loaded modules list. It returns the existing instances
+			 * of the module. If the result is a NULL pointer, there is no loaded module.
+			 */
+/*...e*/
+			
+					lb_I_Unknown* instances = moduleList->getElement(stringKey);
+					if (instances == NULL) {
+						CL_LOG("Module is loaded at first time!");
+						getch();
+					}
+					
+					CL_LOG("Got the element");
+					getch();
+				}
+
+#ifdef bla
+			} else {
+				CL_LOG("Skipping code in recursive mode");
+			}		
+#endif
+/*...e*/
+			
+			makeInstance(functorName, moduleName, result);
+/*...sbla:8:*/
+#ifdef bla
 char msg[100] = "";
 sprintf(msg, "Begin loading module %s", moduleName);
 CL_LOG(msg);
@@ -619,10 +1024,14 @@ getch();
 				
 				// return error if loading is impossible
 			}
-CL_LOG("End loading module");	
+CL_LOG("End loading module");
 getch();		
 
 			lbNamedValue* nv = new lbNamedValue;
+			
+			msg[0] = 0;
+			sprintf(msg, "Create instance with functor '%s'.", functorName);
+			CL_LOG(msg);
 			
 			if ((err = lbGetFunctionPtr(functorName, ModuleHandle, (void**) &DLL_LB_GET_UNKNOWN_INSTANCE)) != ERR_NONE) {
 				CL_LOG("Error while loading a functionpointer!");
@@ -643,6 +1052,9 @@ getch();
 				
 				getch();
 			}
+
+#endif
+/*...e*/
 		} else {
 			cout << "Something goes wrong!" << endl;
 			cout << "xml_Instance->hasConfigObject() returns <> ERR_NONE!" << endl;
@@ -660,6 +1072,7 @@ getch();
 /*...e*/
 
 lbErrCodes lbModule::uninitialize() {
+	if (xml_Instance != NULL) xml_Instance->release();
         return ERR_NONE;
 }
 
@@ -674,7 +1087,7 @@ lbErrCodes lbModule::load(char* name) {
 
         if (xml_Instance) {
             if (xml_Instance->parse() != ERR_NONE) {
-                printf("Error while parsing XML document\n");
+                CL_LOG("Error while parsing XML document\n");
             }
         }
         
@@ -689,16 +1102,16 @@ lbErrCodes lbModule::getObjectInstance(const char* name, lb_I_Container*& inst) 
 }
 /*...e*/
 
-/*...slbErrCodes DLLEXPORT __cdecl getlb_ModuleInstance\40\lb_I_Module\42\\38\ inst\41\:0:*/
-lbErrCodes DLLEXPORT __cdecl getlb_ModuleInstance(lb_I_Module*& inst) {
+/*...slbErrCodes DLLEXPORT LB_STDCALL getlb_ModuleInstance\40\lb_I_Module\42\\38\ inst\41\:0:*/
+lbErrCodes DLLEXPORT LB_STDCALL getlb_ModuleInstance(lb_I_Module*& inst) {
         inst = (lb_I_Module*) new lbModule();
         //inst->release();
         //inst = NULL;
         return ERR_NONE;
 }
 /*...e*/
-/*...slbErrCodes DLLEXPORT __cdecl lb_releaseInstance\40\lb_I_Unknown \42\ inst\41\:0:*/
-lbErrCodes DLLEXPORT __cdecl lb_releaseInstance(lb_I_Unknown * inst) {
+/*...slbErrCodes DLLEXPORT LB_STDCALL lb_releaseInstance\40\lb_I_Unknown \42\ inst\41\:0:*/
+lbErrCodes DLLEXPORT LB_STDCALL lb_releaseInstance(lb_I_Unknown * inst) {
         delete inst;
         return ERR_NONE;
 }
@@ -710,22 +1123,28 @@ BOOL WINAPI DllMain(HINSTANCE dllHandle, DWORD reason, LPVOID situation) {
         
         switch (reason) {
                 case DLL_PROCESS_ATTACH:
-                        if (situation)
-                                printf("DLL statically loaded.\n");
-                        else
-                                printf("DLL dynamically loaded.\n");
+                        if (situation) {
+                                CL_LOG("DLL statically loaded.\n");
+                        }
+                        else {
+                                CL_LOG("DLL dynamically loaded.\n");
+                        }
                         break;
                 case DLL_THREAD_ATTACH:
-                        printf("New thread starting.\n");
+                        CL_LOG("New thread starting.\n");
                         break;
                 case DLL_PROCESS_DETACH:                        
                         if (situation)
-                                printf("DLL released by system.\n");
+                        {
+                                CL_LOG("DLL released by system.\n");
+                        }
                         else
-                                printf("DLL released by program.\n");
+                        {
+                                CL_LOG("DLL released by program.\n");
+                        }
                         break;
                 case DLL_THREAD_DETACH:
-                        printf("Thread terminating.\n");
+                        CL_LOG("Thread terminating.\n");
                 derault:
                         return FALSE;
         }

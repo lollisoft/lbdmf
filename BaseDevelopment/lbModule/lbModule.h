@@ -30,8 +30,8 @@ extern "C" {
 #endif
 /*...e*/
 
-lbErrCodes DLLEXPORT __cdecl getlb_ModuleInstance(lb_I_Module*& inst);
-lbErrCodes DLLEXPORT __cdecl lb_releaseInstance(lb_I_Unknown * inst);
+lbErrCodes DLLEXPORT LB_STDCALL getlb_ModuleInstance(lb_I_Module*& inst);
+lbErrCodes DLLEXPORT LB_STDCALL lb_releaseInstance(lb_I_Unknown * inst);
 
 /*...s\35\ifdef __cplusplus \125\:0:*/
 #ifdef __cplusplus
