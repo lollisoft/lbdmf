@@ -6,7 +6,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.20 2004/07/17 22:25:37 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.21 2004/07/18 07:28:26 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -44,11 +44,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.20 $
+ * $Revision: 1.21 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.20 2004/07/17 22:25:37 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.21 2004/07/18 07:28:26 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.21  2004/07/18 07:28:26  lollisoft
+ * Now the database sample works also under linux. Some bugs solved and minor changes
+ *
  * Revision 1.20  2004/07/17 22:25:37  lollisoft
  * GUI demo now works for one database form. I have still one problem: where
  * to cleanup the instances. The app stays running. You will see it at the cmd
@@ -560,6 +563,7 @@ public:
                 sampleQuery = NULL;
                 handlersInitialized = FALSE;
                 frame = NULL;
+		dialog = NULL;
         }
 
 	virtual ~lb_wxGUI() { 

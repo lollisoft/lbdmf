@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.36 $
+ * $Revision: 1.37 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.36 2004/07/17 08:47:57 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.37 2004/07/18 07:28:25 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.37  2004/07/18 07:28:25  lollisoft
+ * Now the database sample works also under linux. Some bugs solved and minor changes
+ *
  * Revision 1.36  2004/07/17 08:47:57  lollisoft
  * Bugfix for MSVC
  *
@@ -228,7 +231,12 @@ lbErrCodes LB_STDCALL lb_MetaApplication::registerEventHandler(lb_I_Dispatcher* 
 
 /*...sevent handlers\44\ that can be registered:0:*/
 lbErrCodes LB_STDCALL lb_MetaApplication::enterDebugger(lb_I_Unknown* uk) {
+#ifdef WINDOWS
 	DebugBreak();
+#endif
+#ifdef LINUX
+	// How do I this under linux ??
+#endif
 	return ERR_NONE;
 }
 

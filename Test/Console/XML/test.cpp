@@ -274,7 +274,7 @@ if (a == b) {
 		UAP_REQUEST(mm, lb_I_String, val)
 		
 		col->setData("objecttyp");
-		val->setData("12345 Test");
+		val->setData("Test");
 		
 		query->setString(*&col, *&val);
 		query->update();

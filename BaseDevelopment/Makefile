@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.5 $
+# * $Revision: 1.6 $
 # * $Name:  $
-# * $Id: Makefile,v 1.5 2004/06/06 12:55:58 lollisoft Exp $
+# * $Id: Makefile,v 1.6 2004/07/18 07:28:25 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.6  2004/07/18 07:28:25  lollisoft
+# * Now the database sample works also under linux. Some bugs solved and minor changes
+# *
 # * Revision 1.5  2004/06/06 12:55:58  lollisoft
 # * Added new module lbPluginManager
 # *
@@ -42,7 +45,6 @@ all_targets: lbHook lbDB lbPluginManager lbModule lbclasses lbMetaApplication lb
 dummy:
 
 lbHook: dummy
-	echo "Make with Makefile"
 	$(MAKESUBDIR)
 
 lbDB: dummy
