@@ -11,11 +11,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.45 $
+ * $Revision: 1.46 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.45 2005/01/22 11:37:43 lollisoft Exp $
+ * $Id: mkmk.cpp,v 1.46 2005/01/23 11:35:00 lollisoft Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.46  2005/01/23 11:35:00  lollisoft
+ * Now the code compiles under SuSE Linux 9.1 except wx. It has link problems
+ *
  * Revision 1.45  2005/01/22 11:37:43  lollisoft
  * Changed the about text
  *
@@ -937,7 +940,7 @@ void ShowHelp()
 
   fprintf(stderr, "Enhanced by Lothar Behrens (lothar.behrens@lollisoft.de)\n\n");
 
-  fprintf(stderr, "MKMK: makefile generator $Revision: 1.45 $\n");
+  fprintf(stderr, "MKMK: makefile generator $Revision: 1.46 $\n");
   fprintf(stderr, "Usage: MKMK lib|exe|dll|so modulname includepath,[includepath,...] file1 [file2 file3...]\n");
 }
 /*...e*/
@@ -1225,7 +1228,7 @@ void DoDep(FILE *f, TDepItem *d, char** iPathList, int count)
 /*...e*/
 
 /*...svoid main\40\int argc\44\ char \42\argv\91\\93\\41\:0:*/
-void main(int argc, char *argv[])
+int main(int argc, char *argv[])
 {
   FILE *f;
   TDepList Sources;

@@ -25,11 +25,14 @@
 #            40235 DÅsseldorf (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.48 $
+# * $Revision: 1.49 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.48 2005/01/22 11:56:22 lollisoft Exp $
+# * $Id: STD_MAKE,v 1.49 2005/01/23 11:35:00 lollisoft Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.49  2005/01/23 11:35:00  lollisoft
+# * Now the code compiles under SuSE Linux 9.1 except wx. It has link problems
+# *
 # * Revision 1.48  2005/01/22 11:56:22  lollisoft
 # * Little bug in non debug version / deactivated debug version
 # *
@@ -345,7 +348,6 @@ STD_INCL = -I $(DEVROOT)/Projects/CPP/BaseDevelopment/lbHook/linuxCode \
 	-I $(DEVROOT)/Projects/CPP/include \
 	-I $(DEVROOT)/Projects/CPP/BaseDevelopment/lbclasses \
 	-I /usr/include \
-	-I /usr/include/sys \
 	-I . 
 
 OBJ =o

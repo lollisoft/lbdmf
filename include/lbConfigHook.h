@@ -36,19 +36,25 @@
  */
 
 #ifdef WINDOWS
-#ifndef LB_DMF_POWER
-#include <windows.h>
-#endif
+ #ifndef LB_DMF_POWER
+  #include <windows.h>
+ #endif
 #endif
 #include <stdlib.h>
 
-#ifdef WINDOWS
-#include <conio.h>
-#endif
+//#ifdef WINDOWS
+ #include <conio.h>
+//#endif
 
 #include <stdio.h>
-#include <iostream.h>
-#include <fstream.h>
+#ifdef WINDOWS
+ #include <iostream.h>
+ #include <fstream.h>
+#endif
+#ifdef LINUX
+ #include <iostream>
+ #include <fstream>
+#endif
 #include <malloc.h>
 
 
@@ -134,16 +140,16 @@
 #ifndef __MISC
 #define _CL_LOG \
 { \
-	ofstream of; \
-	of.open("C:\\log\\wsmaster.log", ios::app); \
+	std::ofstream of; \
+	of.open("C:\\log\\wsmaster.log", std::ios::app); \
         of \
         
 #endif
 #ifdef __MISC
 #define _CL_LOG \
 { \
-	ofstream of; \
-	of.open("C:\\log\\wsmaster.log", ios::app); \
+	std::ofstream of; \
+	of.open("C:\\log\\wsmaster.log", std::ios::app); \
         of \
         
 #endif

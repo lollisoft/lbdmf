@@ -84,7 +84,7 @@ extern "C" {
 
 #define LOOP
 // (trackObject == NULL) ? "" : trackObject int argc, char *argv[]
-void main(int argc, char *argv[]) {
+int main(int argc, char *argv[]) {
 	char* file = "";
 	int line = 0;
 	lbErrCodes err = ERR_NONE;
@@ -110,7 +110,6 @@ void main(int argc, char *argv[]) {
 #ifdef bla
 /*...stest lbHook Memory usage:0:*/
 	lb_I_Module* mm = getModuleInstance();
-	getch();
 	mm->setModuleManager(mm, __FILE__, __LINE__);
 
 	printf("Uninitialize module manager\n");
@@ -120,11 +119,9 @@ void main(int argc, char *argv[]) {
 	printf("Unhook all modules\n");
 	unHookAll();
 
-	getch();
 /*...e*/
 /*...stest lbHook Memory usage:0:*/
 	mm = getModuleInstance();
-	getch();
 	mm->setModuleManager(mm, __FILE__, __LINE__);
 
 	printf("Uninitialize module manager\n");
@@ -134,11 +131,9 @@ void main(int argc, char *argv[]) {
 	printf("Unhook all modules\n");
 	unHookAll();
 
-	getch();
 /*...e*/
 /*...stest lbHook Memory usage:0:*/
 	mm = getModuleInstance();
-	getch();
 	mm->setModuleManager(mm, __FILE__, __LINE__);
 
 	printf("Uninitialize module manager\n");
@@ -148,11 +143,9 @@ void main(int argc, char *argv[]) {
 	printf("Unhook all modules\n");
 	unHookAll();
 
-	getch();
 /*...e*/
 /*...stest lbHook Memory usage:0:*/
 	mm = getModuleInstance();
-	getch();
 	mm->setModuleManager(mm, __FILE__, __LINE__);
 
 	printf("Uninitialize module manager\n");
@@ -162,11 +155,9 @@ void main(int argc, char *argv[]) {
 	printf("Unhook all modules\n");
 	unHookAll();
 
-	getch();
 /*...e*/
 /*...stest lbHook Memory usage:0:*/
 	mm = getModuleInstance();
-	getch();
 	mm->setModuleManager(mm, __FILE__, __LINE__);
 
 	printf("Uninitialize module manager\n");
@@ -176,11 +167,9 @@ void main(int argc, char *argv[]) {
 	printf("Unhook all modules\n");
 	unHookAll();
 
-	getch();
 /*...e*/
 /*...stest lbHook Memory usage:0:*/
 	mm = getModuleInstance();
-	getch();
 	mm->setModuleManager(mm, __FILE__, __LINE__);
 
 	printf("Uninitialize module manager\n");
@@ -190,11 +179,9 @@ void main(int argc, char *argv[]) {
 	printf("Unhook all modules\n");
 	unHookAll();
 
-	getch();
 /*...e*/
 #endif
 	mm = getModuleInstance();
-	getch();
 	mm->setModuleManager(mm, __FILE__, __LINE__);
 
 /*...e*/
@@ -209,7 +196,6 @@ if (a == b) {
 	PM->beginEnumPlugins();
 	printf("Tested plugin manager\n");	
 }
-	getch();
 #endif
 
 /*...sTest database:0:*/
@@ -303,7 +289,6 @@ if (a == b) {
 #endif	
 	}
 	printf("Ended foreward test\n");
-	getch();
 	
 /*...e*/
 /*...sreverse:8:*/
@@ -339,7 +324,6 @@ if (a == b) {
 #endif
 	}
 	printf("Ended backward test\n");
-	getch();
 /*...e*/
 
 
@@ -420,7 +404,6 @@ printf("Deleted a row\n");
 	query2->next();
 
 	printf("Tested database cleanup\n");
-	getch();	
 }
 /*...e*/
 /*...stest container:0:*/
@@ -432,7 +415,6 @@ printf("Deleted a row\n");
 	}
 
 	printf("Requested container\n");
-	getch();
 	
 	lb_I_Container* c = NULL;
 	printf("test container 1\n");
@@ -442,7 +424,6 @@ printf("Deleted a row\n");
 	printf("Interface queried for container\n");
 	RELEASE(c)
 	printf("Released Container\n");
-	getch();
 }
 /*...e*/
 
@@ -456,7 +437,6 @@ printf("Deleted a row\n");
 
 	
 	_CL_LOG << "Tested database" LOG_
-	getch();
 #ifdef bla
 	UAP_REQUEST(mm, lb_I_InterfaceRepository, ir)
 //DebugBreak();	
@@ -607,7 +587,6 @@ printf("Deleted a row\n");
 			}
 			printf("Have tested container reference handling\n");
 			printf("----------------------------------------\n");
-			getch();
 		} else {
 			_CL_LOG << "Here must be an object!!!" LOG_
 		}

@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.36 2005/01/22 11:54:57 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.37 2005/01/23 11:35:00 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.36 $
+ * $Revision: 1.37 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.36 2005/01/22 11:54:57 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.37 2005/01/23 11:35:00 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.37  2005/01/23 11:35:00  lollisoft
+ * Now the code compiles under SuSE Linux 9.1 except wx. It has link problems
+ *
  * Revision 1.36  2005/01/22 11:54:57  lollisoft
  * Removed log messages
  *
@@ -1259,7 +1262,8 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBUpdate() {
 						int p = FK_id->getData();
 					
 						char pp[20] = "";
-						itoa(p, pp, 10);
+						
+						sprintf(pp, "%d", p);
 					
 						col->setData(name);
 						val->setData(pp);

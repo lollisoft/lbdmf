@@ -85,5 +85,7 @@ endif
 ifeq ($(OSTYPE), linux)
 MOD_INCL=$(STD_INCL)
 OBJDEP=
-VENDORLIBS=/libdev/lib/lbhook.so
+C_ELFOPS_WX = -DUNIX -DLINUX -D__WXGTK__ -DLB_I_EXTENTIONS -D__WXDEBUG__
+C_ELFOPS= $(C_ELFOPS_WX)
+VENDORLIBS=/libdev/lib/lbHook.so 
 endif    
