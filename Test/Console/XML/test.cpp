@@ -26,11 +26,47 @@ void main() {
 #endif
 /*...e*/
 	getch();
-	lb_I_Module* modMan1 = getModuleInstance();
+LOG("Test using logger before loading module manager");
+
+	lb_I_Module* mm = getModuleInstance();
+
         LOG("Test has been started");
-        modMan1->release();
+        LOG("Test has been started");
+
+        mm->release();
         unHookAll();
         getch();
+
+	CL_LOG("Test container implementation");
+	getch();
+	
+	mm = getModuleInstance();
+	lb_I_Unknown* uk = NULL;
+	
+	if (mm->request("_instanceOfContainer@4", uk) != ERR_NONE) {
+		CL_LOG("Error: Could not get needed instance!");
+	}
+	
+	lb_I_Container* c = NULL;
+	
+	if (uk->queryInterface("lb_I_Container", (void**) &c) != ERR_NONE) {
+		CL_LOG("Error: Could not get needed interface!");
+	}
+	
+	CL_LOG("Container requested");
+	getch();
+
+	if (mm->request("_instanceOfIntegerKey@4", uk) != ERR_NONE) {
+		CL_LOG("Error: Could not get needed instance!");
+	}
+	
+	lb_I_KeyBase* key = NULL;
+	if (uk->queryInterface("lb_I_KeyBase", (void**) &key) != ERR_NONE) {
+		CL_LOG("Error: Could not get needed interface!");
+	}
+
+	CL_LOG("Key requested");
+	getch();
 
         /**
          * Get module manager
@@ -39,6 +75,8 @@ void main() {
         for (long i = 0; i < 10000000; i++) {
 #endif
                 lb_I_Module* modMan = getModuleInstance();
+
+LOG("Call lb_I_Module->load()");
         
                 modMan->load("Test");
                 
