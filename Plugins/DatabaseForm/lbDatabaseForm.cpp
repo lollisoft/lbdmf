@@ -268,6 +268,14 @@ public:
 
 	/**
 	 * Database manipulation
+	 *
+	 * Clear the form.
+	 */
+
+	lbErrCodes LB_STDCALL lbDBClear();
+
+	/**
+	 * Database manipulation
 	 * 
 	 * Internally used to read data from the cursor to the current row.
 	 */
@@ -776,6 +784,58 @@ void lbDatabaseDialog::init(char* formName, char* SQLString, char* DBName, char*
 }
 /*...e*/
 
+lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBClear() {
+	int columns = sampleQuery->getColumns();
+
+	for (int i = 1; i <= columns; i++) {
+		char* name = strdup(sampleQuery->getColumnName(i));
+
+		wxWindow* w = FindWindowByName(wxString(name), this);
+
+		if (w != NULL) {
+			if (sampleQuery->hasFKColumn(name) == 1) {
+/*...sUpdate drop down box:32:*/
+				wxComboBox* cbox = (wxComboBox*) w;
+				
+				cbox->SetSelection(-1);
+/*...e*/
+			} else {
+/*...sUpdate controls:32:*/
+				lb_I_Query::lbDBColumnTypes coltype = sampleQuery->getColumnType(i);
+
+				switch (coltype) {
+					case lb_I_Query::lbDBColumnBit:
+						{
+							wxCheckBox *check = (wxCheckBox*) w;
+							
+							check->SetValue(false);
+						}
+						break;
+					
+					case lb_I_Query::lbDBColumnChar:
+						{
+							wxTextCtrl* tx = (wxTextCtrl*) w;
+			
+							tx->SetValue(wxString(""));
+						}
+						break;
+					
+					case lb_I_Query::lbDBColumnInteger:
+					case lb_I_Query::lbDBColumnUnknown:
+						break;
+				}
+
+				
+/*...e*/
+			}
+		} else {
+			_CL_VERBOSE << "Control '" << name << "' nicht gefunden." LOG_
+		}
+		
+		free(name);
+	}
+}
+
 /*...slbErrCodes LB_STDCALL lbDatabaseDialog\58\\58\lbDBUpdate\40\\41\:0:*/
 lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBUpdate() {
 	int columns = sampleQuery->getColumns();
@@ -1091,6 +1151,8 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBLast(lb_I_Unknown* uk) {
 /*...slbErrCodes LB_STDCALL lbDatabaseDialog\58\\58\lbDBAdd\40\lb_I_Unknown\42\ uk\41\:0:*/
 lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBAdd(lb_I_Unknown* uk) {
 	lbDBUpdate();
+
+	lbDBClear();
 
 	sampleQuery->add();
 
