@@ -24,17 +24,20 @@
     p-Mail: Lothar Behrens
             Rosmarinstr. 3
             
-            40235 DÅsseldorf (germany)
+            40235 Duesseldorf (germany)
 */
 /*...e*/
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.46 $
+ * $Revision: 1.47 $
  * $Name:  $
- * $Id: lbInterfaces-sub-classes.h,v 1.46 2005/03/19 16:50:00 lollisoft Exp $
+ * $Id: lbInterfaces-sub-classes.h,v 1.47 2005/03/31 09:08:35 lollisoft Exp $
  *
  * $Log: lbInterfaces-sub-classes.h,v $
+ * Revision 1.47  2005/03/31 09:08:35  lollisoft
+ * Copyright text problems under linux.
+ *
  * Revision 1.46  2005/03/19 16:50:00  lollisoft
  * Changed i18n interface.
  *

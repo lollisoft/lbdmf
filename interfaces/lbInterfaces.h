@@ -25,7 +25,7 @@
     p-Mail: Lothar Behrens
             Rosmarinstr. 3
 
-            40235 DÅsseldorf (germany)
+            40235 Duesseldorf (germany)
 */
 /*...e*/
 

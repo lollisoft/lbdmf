@@ -24,17 +24,20 @@
     p-Mail: Lothar Behrens
             Rosmarinstr. 3
             
-            40235 DÅsseldorf (germany)
+            40235 Duesseldorf (germany)
 */
 /*...e*/
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.21 $
+ * $Revision: 1.22 $
  * $Name:  $
- * $Id: lbErrcodes.h,v 1.21 2004/08/16 05:10:00 lollisoft Exp $
+ * $Id: lbErrcodes.h,v 1.22 2005/03/31 09:14:35 lollisoft Exp $
  *
  * $Log: lbErrcodes.h,v $
+ * Revision 1.22  2005/03/31 09:14:35  lollisoft
+ * Copyright text problems under linux.
+ *
  * Revision 1.21  2004/08/16 05:10:00  lollisoft
  * New error codes for database class
  *

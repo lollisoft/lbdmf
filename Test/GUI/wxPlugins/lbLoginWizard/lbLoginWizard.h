@@ -24,7 +24,7 @@
     p-Mail: Lothar Behrens
             Rosmarinstr. 3
             
-            40235 DÅsseldorf (germany)
+            40235 Duesseldorf (germany)
 */
 /*...e*/
 
@@ -33,11 +33,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.1 $
+ * $Revision: 1.2 $
  * $Name:  $
- * $Id: lbLoginWizard.h,v 1.1 2005/03/05 23:25:30 lollisoft Exp $
+ * $Id: lbLoginWizard.h,v 1.2 2005/03/31 09:21:02 lollisoft Exp $
  *
  * $Log: lbLoginWizard.h,v $
+ * Revision 1.2  2005/03/31 09:21:02  lollisoft
+ * Copyright text problems under linux.
+ *
  * Revision 1.1  2005/03/05 23:25:30  lollisoft
  * Initial wx plugin attempt
  *
