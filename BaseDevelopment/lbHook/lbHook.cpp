@@ -351,7 +351,8 @@ DLLEXPORT void LB_STDCALL unHookAll() {
 
 DLLEXPORT char* LB_STDCALL translateText(char* text) {
 	lb_I_Module* mm = NULL;
-      
+
+	printf("Translating the following text %s\n", text);      
 	mm = getModuleInstance();
 	mm->setModuleManager(mm, __FILE__, __LINE__);
 
