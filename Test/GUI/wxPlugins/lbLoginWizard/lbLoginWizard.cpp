@@ -538,7 +538,9 @@ public:
 	 *
 	 * If multible intarfaces could be queried, then each
 	 */
-	virtual lb_I_Unknown* LB_STDCALL getImplementation() { return NULL; }
+	virtual lb_I_Unknown* LB_STDCALL getImplementation();
+
+	virtual lb_I_Unknown* LB_STDCALL peekImplementation();
 
 	lbErrCodes LB_STDCALL runLogin(lb_I_Unknown* uk);
 	
@@ -635,6 +637,21 @@ bool LB_STDCALL lbPluginLoginWizard::run() {
 
 	return true;
 }
+
+/*...slb_I_Unknown\42\ LB_STDCALL lbPluginLoginWizard\58\\58\peekImplementation\40\\41\:0:*/
+lb_I_Unknown* LB_STDCALL lbPluginLoginWizard::peekImplementation() {
+	lbErrCodes err = ERR_NONE;
+
+	return this;
+}
+/*...e*/
+/*...slb_I_Unknown\42\ LB_STDCALL lbPluginLoginWizard\58\\58\getImplementation\40\\41\:0:*/
+lb_I_Unknown* LB_STDCALL lbPluginLoginWizard::getImplementation() {
+	lbErrCodes err = ERR_NONE;
+
+	return this;
+}
+/*...e*/
 
 
 #ifdef WINDOWS
