@@ -11,11 +11,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.44 $
+ * $Revision: 1.45 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.44 2005/01/22 05:55:31 lollisoft Exp $
+ * $Id: mkmk.cpp,v 1.45 2005/01/22 11:37:43 lollisoft Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.45  2005/01/22 11:37:43  lollisoft
+ * Changed the about text
+ *
  * Revision 1.44  2005/01/22 05:55:31  lollisoft
  * Minor code changes
  *
@@ -929,8 +932,13 @@ void write_soPlugin_Target(char* modulename) {
 /*...svoid ShowHelp\40\\41\:0:*/
 void ShowHelp()
 {
-  fprintf(stderr, "MKMK: makefile generator $Revision: 1.44 $");
-  fprintf(stderr, "Usage: MKMK lib|exe|dll modulname includepath,[includepath,...] file1 [file2 file3...]\n");
+  fprintf(stderr, "MKMK by Luis Crespo (lcrespo@ergos.es or lcrespo@dccp.dret.ub.es).\n");
+  fprintf(stderr, "Published at http://www.cubic.org/~submissive/sourcerer/mkmk.htm\n\n");
+
+  fprintf(stderr, "Enhanced by Lothar Behrens (lothar.behrens@lollisoft.de)\n\n");
+
+  fprintf(stderr, "MKMK: makefile generator $Revision: 1.45 $\n");
+  fprintf(stderr, "Usage: MKMK lib|exe|dll|so modulname includepath,[includepath,...] file1 [file2 file3...]\n");
 }
 /*...e*/
 /*...svoid WriteHeader\40\FILE \42\f\44\ char \42\ExeName\41\:0:*/
