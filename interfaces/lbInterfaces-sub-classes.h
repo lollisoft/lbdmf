@@ -1,11 +1,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.19 $
+ * $Revision: 1.20 $
  * $Name:  $
- * $Id: lbInterfaces-sub-classes.h,v 1.19 2002/02/25 06:18:31 lothar Exp $
+ * $Id: lbInterfaces-sub-classes.h,v 1.20 2002/02/27 21:00:35 lothar Exp $
  *
  * $Log: lbInterfaces-sub-classes.h,v $
+ * Revision 1.20  2002/02/27 21:00:35  lothar
+ * Unused code
+ *
  * Revision 1.19  2002/02/25 06:18:31  lothar
  * Much changes
  * Program seems to run, but performance is very slow
@@ -324,15 +327,10 @@ lb_I_Element* LB_STDCALL classname::getNext() const { \
 class lb_I_Container : public lb_I_Unknown {
 
 protected:
-//    lb_I_Container(const lb_I_Container & c);
-//    lb_I_Container& operator= (const lb_I_Container & c);
-
     lb_I_Container() {}
     virtual ~lb_I_Container() {}
 
 public:
-
-
     virtual int LB_STDCALL Count() = 0;
 
     virtual lbErrCodes LB_STDCALL insert(lb_I_Unknown** const e, lb_I_KeyBase** const key) = 0;
