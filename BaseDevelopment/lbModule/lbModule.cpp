@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.64 $
+ * $Revision: 1.65 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.64 2004/01/24 16:19:03 lollisoft Exp $
+ * $Id: lbModule.cpp,v 1.65 2004/02/02 22:07:50 lollisoft Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.65  2004/02/02 22:07:50  lollisoft
+ * Libraries compiles again under linux and most of the test application works. But have problems with database test.
+ *
  * Revision 1.64  2004/01/24 16:19:03  lollisoft
  * minor change
  *
@@ -1975,9 +1978,10 @@ void LB_STDCALL lbModule::getXMLConfigObject(lb_I_InterfaceRepository** inst) {
  * Overwrite functor name and module name to use new interface repository. Config is done later.
  */
 
+#ifndef linux
         libname = "lbDOMConfig"; // The same now
         ftrname = "instanceOfInterfaceRepository";
-
+#endif
 
 	HINSTANCE h = getModuleHandle();
 	setModuleHandle(h);
@@ -2728,7 +2732,7 @@ lbErrCodes err = ERR_NONE;
                         if (getModuleHandle() == 0) _CL_LOG << "Error: Module could not be loaded '" << module << "'" LOG_
 
                         if ((err = lbGetFunctionPtr(functor, getModuleHandle(), (void**) &DLL_LB_GET_UNKNOWN_INSTANCE)) != ERR_NONE) {
-                                _CL_LOG << "Error while loading a functionpointer!" LOG_
+                                _CL_LOG << "Error while loading a functionpointer! (" << functor << ")" LOG_
                         } else {
                                 err = DLL_LB_GET_UNKNOWN_INSTANCE(instance, this, __FILE__, __LINE__);
 

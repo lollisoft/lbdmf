@@ -53,5 +53,5 @@ endif
 ifeq ($(OSTYPE), linux)
 MOD_INCL=$(STD_INCL)
 OBJDEP=
-VENDORLIBS=/libdev/lib/lbhook.so /usr/lib/libiodbc.so
+VENDORLIBS=/libdev/lib/lbhook.so /usr/lib/libodbc.so
 endif    

@@ -590,7 +590,7 @@ lbErrCodes LB_STDCALL lbQuery::init(HENV henv, HDBC _hdbc, int readonly) {
         	return ERR_DB_ALLOCSTATEMENT;
 	}
 
-
+printf("SQLAllocStmt(...) called successfully\n");
 	if (readonly == 0) {
 	// Compare values before updating
 		retcode = SQLSetStmtOption(hstmt, SQL_ATTR_CONCURRENCY, SQL_CONCUR_ROWVER);
@@ -1174,7 +1174,7 @@ char* LB_STDCALL lbQuery::getTableName() {
    if (lpszTable == NULL) lpszTable = new char[100];
    lpszTable[0] = 0;
 
-   cb = lstrlen("from");
+   cb = strlen("from");
 
    char        g_szQuoteChar[2];      // Identifier quote char
 
@@ -1190,7 +1190,7 @@ char* LB_STDCALL lbQuery::getTableName() {
 
       while (*lpsz && ISWHITE(*lpsz)) lpsz++;
 
-      if (!cp && !_fstrnicmp(lpsz, "from", cb) && ISWHITE(*(lpsz+cb)))
+      if (!cp && !strncmp(lpsz, "from", cb) && ISWHITE(*(lpsz+cb)))
          break;
 
       if (ISLPAREN(*lpsz))
@@ -1516,11 +1516,23 @@ lbErrCodes LB_STDCALL lbBoundColumn::bindColumn(lbQuery* q, int column) {
 	       "BufferLength is %d\n"
 	       "Returned ColumnSize is %d\n"
 	       , ColumnName, BufferLength, ColumnSize);
+printf("Get a string instance\n");
+
+if (manager.getPtr() == NULL) {
+    printf("FATAL: Manager is not set up correctly!\n");
+}
 
 	REQUEST(manager.getPtr(), lb_I_String, colName)
-		
+printf("Have a string instance\n");		
+printf("Have a string instance\n");		
+printf("Have a string instance\n");		
+printf("Have a string instance\n");		
+printf("Have a string instance\n");		
+printf("Have a string instance\n");		
+printf("Have a string instance\n");		
+printf("Have a string instance\n");		
 	colName->setData((char*) ColumnName);
-
+printf("Have set column name\n");
 	int rows = 2;
 
 	switch (DataType) {
@@ -1552,14 +1564,15 @@ lbErrCodes LB_STDCALL lbBoundColumn::bindColumn(lbQuery* q, int column) {
 /*...e*/
 		case SQL_INTEGER:
 /*...sbind an integer:24:*/
+printf("Bind an integer (malloc)\n");
 			buffer = malloc((sizeof(long))*rows);
-			
+printf("Bind an integer\n");			
 			_DataType = DataType;
 			bound = 1;
 			memset(buffer, 0, sizeof(long)*rows);
-
+printf("Call SQLBindCol\n");
 			SQLBindCol(hstmt, column, DataType, buffer, sizeof(long), &cbBufferLength);
-			
+printf("Called\n");			
 			if (ret != SQL_SUCCESS) {
 			        printf("Error while binding a column!\n");
 			}
