@@ -1,11 +1,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.12 $
+ * $Revision: 1.13 $
  * $Name:  $
- * $Id: lbInterfaces-sub-classes.h,v 1.12 2001/07/11 16:03:13 lothar Exp $
+ * $Id: lbInterfaces-sub-classes.h,v 1.13 2001/07/18 05:52:57 lothar Exp $
  *
  * $Log: lbInterfaces-sub-classes.h,v $
+ * Revision 1.13  2001/07/18 05:52:57  lothar
+ * Seems to work now (lbDOMNode::parent - refcount must be corrected)
+ *
  * Revision 1.12  2001/07/11 16:03:13  lothar
  * First version of module management that hold's a little stresstest
  *
@@ -290,17 +293,17 @@ public:
 
     virtual int LB_STDCALL Count() = 0;
 
-    virtual lbErrCodes LB_STDCALL insert(const lb_I_Unknown* e, const lb_I_KeyBase* key) = 0;
-    virtual lbErrCodes LB_STDCALL remove(const lb_I_KeyBase* key) = 0;
-    virtual int LB_STDCALL exists(const lb_I_KeyBase* e) = 0;
+    virtual lbErrCodes LB_STDCALL insert(lb_I_Unknown** const e, lb_I_KeyBase** const key) = 0;
+    virtual lbErrCodes LB_STDCALL remove(lb_I_KeyBase** const key) = 0;
+    virtual int LB_STDCALL exists(lb_I_KeyBase** const e) = 0;
     virtual int LB_STDCALL hasMoreElements() = 0;
     virtual lb_I_Unknown* LB_STDCALL nextElement() = 0;
 
         /**
          * Direct access over key
          */
-    virtual lb_I_Unknown* LB_STDCALL getElement(const lb_I_KeyBase* key) = 0;
-    virtual void LB_STDCALL setElement(lb_I_KeyBase* key, const lb_I_Unknown* e) = 0;
+    virtual lb_I_Unknown* LB_STDCALL getElement(lb_I_KeyBase** const key) = 0;
+    virtual void LB_STDCALL setElement(lb_I_KeyBase** key, lb_I_Unknown** const e) = 0;
 
     virtual void LB_STDCALL deleteAll() = 0;
 };
@@ -334,20 +337,20 @@ protected: \
 /*...sDECLARE_LB_I_CONTAINER_IMPL \40\\41\:0:*/
 #define DECLARE_LB_I_CONTAINER_IMPL() \
         virtual int LB_STDCALL hasMoreElements(); \
-        virtual int LB_STDCALL exists(const lb_I_KeyBase* e); \
+        virtual int LB_STDCALL exists(lb_I_KeyBase** const e); \
         virtual int LB_STDCALL Count(); \
         \
-        virtual lbErrCodes LB_STDCALL _insert(const lb_I_Unknown* e, const lb_I_KeyBase* key); \
-        virtual lbErrCodes LB_STDCALL insert(const lb_I_Unknown* e, const lb_I_KeyBase* key); \
+        virtual lbErrCodes LB_STDCALL _insert(lb_I_Unknown** const e, lb_I_KeyBase** const key); \
+        virtual lbErrCodes LB_STDCALL insert(lb_I_Unknown** const e, lb_I_KeyBase** const key); \
         \
-        virtual lbErrCodes LB_STDCALL remove(const lb_I_KeyBase* key); \
-        virtual lbErrCodes LB_STDCALL _remove(const lb_I_KeyBase* key); \
+        virtual lbErrCodes LB_STDCALL remove(lb_I_KeyBase** const key); \
+        virtual lbErrCodes LB_STDCALL _remove(lb_I_KeyBase** const key); \
         \
-        virtual lb_I_Unknown* LB_STDCALL getElement(const lb_I_KeyBase* key); \
+        virtual lb_I_Unknown* LB_STDCALL getElement(lb_I_KeyBase** const key); \
         virtual lb_I_Unknown* LB_STDCALL nextElement(); \
         \
         \
-        virtual void LB_STDCALL setElement(lb_I_KeyBase* key, const lb_I_Unknown* e); \
+        virtual void LB_STDCALL setElement(lb_I_KeyBase** key, lb_I_Unknown** const e); \
         \
         virtual void LB_STDCALL deleteAll(); \
 protected: \
@@ -501,13 +504,13 @@ void LB_STDCALL classname::deleteAll() { \
 \
 } \
 \
-int classname::exists(const lb_I_KeyBase* key) { \
+int classname::exists(lb_I_KeyBase** const key) { \
     LOG(#classname"::deleteAll() has not been implemented completly"); \
     if (getElement(key) == NULL) return 0; \
     return 1; \
 } \
 \
-lbErrCodes LB_STDCALL classname::insert(const lb_I_Unknown* e, const lb_I_KeyBase* key) { \
+lbErrCodes LB_STDCALL classname::insert(lb_I_Unknown** const e, lb_I_KeyBase** const key) { \
         lbErrCodes err = ERR_NONE; \
 \
         if ((err = _insert(e, key)) != ERR_NONE) { \
@@ -519,7 +522,7 @@ lbErrCodes LB_STDCALL classname::insert(const lb_I_Unknown* e, const lb_I_KeyBas
         return err; \
 } \
 \
-lbErrCodes classname::remove(const lb_I_KeyBase* key) { \
+lbErrCodes classname::remove(lb_I_KeyBase** const key) { \
         lbErrCodes err = ERR_NONE; \
 \
         if ((err = _remove(key)) != ERR_NONE) { \
@@ -531,10 +534,10 @@ lbErrCodes classname::remove(const lb_I_KeyBase* key) { \
         return err; \
 } \
 \
-lbErrCodes classname::_insert(const lb_I_Unknown* e, const lb_I_KeyBase* key) { \
+lbErrCodes classname::_insert(lb_I_Unknown** const e, lb_I_KeyBase** const key) { \
 \
     if (container_data == NULL) { \
-        lbElement* _data = new lbElement(e, key); \
+        lbElement* _data = new lbElement(*e, *key); \
 \
         _data->queryInterface("lb_I_Element", (void**) &container_data); \
         if (container_data == NULL) CL_LOG("Could not get unknown interface of lbElement!"); \
@@ -551,20 +554,20 @@ lbErrCodes classname::_insert(const lb_I_Unknown* e, const lb_I_KeyBase* key) { 
             lb_I_Element* next = temp->getNext(); \
 \
             if (next != NULL) { \
-                if (next->getKey() < key) { \
-                    temp->setNext(new lbElement(e, key, next)); \
+                if (next->getKey() < *key) { \
+                    temp->setNext(new lbElement(*e, *key, next)); \
                     return ERR_NONE; \
                 } \
             } \
             else { \
-                temp->setNext(new lbElement(e, key)); \
+                temp->setNext(new lbElement(*e, *key)); \
                 return ERR_NONE; \
             } \
         } \
     } \
     return ERR_NONE; \
 } \
-lbErrCodes classname::_remove(const lb_I_KeyBase* key) { \
+lbErrCodes classname::_remove(lb_I_KeyBase** const key) { \
 \
     if (container_data == NULL) { \
         LOG("Error: Can't remove from empty container!"); \
@@ -574,13 +577,13 @@ lbErrCodes classname::_remove(const lb_I_KeyBase* key) { \
     lb_I_Element* pre = container_data; \
     container_data = container_data->getNext(); \
 \
-    if (pre->getKey() == key) { \
+    if (pre->getKey() == *key) { \
         RELEASE(pre); \
         return ERR_NONE; \
     } \
 \
     for (lb_I_Element* temp = container_data; temp != NULL; temp = container_data->getNext()) { \
-        if (temp->getKey() == key) { \
+        if (temp->getKey() == *key) { \
             pre->setNext(temp->getNext()); \
             RELEASE(temp); \
             return ERR_NONE; \
@@ -622,10 +625,10 @@ lb_I_Unknown* classname::nextElement() { \
     return o; \
 } \
 \
-lb_I_Unknown* classname::getElement(const lb_I_KeyBase* key) { \
+lb_I_Unknown* classname::getElement(lb_I_KeyBase** const key) { \
     lb_I_Element* temp = container_data; \
     while (temp) { \
-        if ((temp) && (*(temp->getKey()) == key)) { \
+        if ((temp) && (*(temp->getKey()) == *key)) { \
           lb_I_Unknown *o = temp->getObject(); \
           return o; \
         } \
@@ -635,7 +638,7 @@ lb_I_Unknown* classname::getElement(const lb_I_KeyBase* key) { \
     return NULL; \
 } \
 \
-void classname::setElement(lb_I_KeyBase* key, lb_I_Unknown const* e) { \
+void classname::setElement(lb_I_KeyBase** key, lb_I_Unknown ** const e) { \
     remove(key); \
     insert(e, key); \
 }

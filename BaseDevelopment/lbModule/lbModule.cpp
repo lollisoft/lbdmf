@@ -3,11 +3,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.11 $
+ * $Revision: 1.12 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.11 2001/07/12 20:45:46 lothar Exp $
+ * $Id: lbModule.cpp,v 1.12 2001/07/18 05:50:18 lothar Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.12  2001/07/18 05:50:18  lothar
+ * Seems to work now (lbDOMNode::parent - refcount must be corrected)
+ *
  * Revision 1.11  2001/07/12 20:45:46  lothar
  * Test UNKNOWN_AUTO_PTR, but a declaration does not
  * work in a class, because of the explicit reference argument.
@@ -85,7 +88,7 @@ public:
         DECLARE_LB_UNKNOWN()
 
         virtual lbErrCodes LB_STDCALL initialize();
-        virtual lbErrCodes LB_STDCALL request(const char* request, lb_I_Unknown*& result);
+        virtual lbErrCodes LB_STDCALL request(const char* request, lb_I_Unknown** result);
         virtual lbErrCodes LB_STDCALL uninitialize();
         
         
@@ -100,16 +103,16 @@ public:
         
 protected:
 
-        void getXMLConfigObject(lb_I_XMLConfig*& inst);
-        lb_I_ConfigObject* LB_STDCALL findFunctorNode(lb_I_ConfigObject* node, const char* request);
-        char* LB_STDCALL findFunctorModule(lb_I_ConfigObject* node);
-        char* LB_STDCALL findFunctorName(lb_I_ConfigObject* node);
+        void getXMLConfigObject(lb_I_XMLConfig** inst);
+        lb_I_ConfigObject* LB_STDCALL findFunctorNode(lb_I_ConfigObject** _node, const char* request);
+        char* LB_STDCALL findFunctorModule(lb_I_ConfigObject** _node);
+        char* LB_STDCALL findFunctorName(lb_I_ConfigObject** ___node);
 
-        lbErrCodes LB_STDCALL makeInstance(char* functor, char* module, lb_I_Unknown*& instance);
+        lbErrCodes LB_STDCALL makeInstance(char* functor, char* module, lb_I_Unknown** instance);
         
         int internalInstanceRequest;
-        UNKNOWN_AUTO_PTR(lb_I_Container, loadedModules)
-        UNKNOWN_AUTO_PTR(lb_I_XMLConfig, xml_Instance)
+        UAP(lb_I_Container, loadedModules)
+        UAP(lb_I_XMLConfig, xml_Instance)
 };
 /*...e*/
 
@@ -118,16 +121,16 @@ BEGIN_IMPLEMENT_LB_UNKNOWN(lbModule)
 END_IMPLEMENT_LB_UNKNOWN()
 
 /*...slb_I_XMLConfig\42\ lbModule\58\\58\getXMLConfigObject\40\\41\:0:*/
-typedef lbErrCodes (* LB_STDCALL T_pLB_GETXML_CONFIG_INSTANCE) (lb_I_XMLConfig*& inst);
+typedef lbErrCodes (* LB_STDCALL T_pLB_GETXML_CONFIG_INSTANCE) (lb_I_XMLConfig** inst);
 T_pLB_GETXML_CONFIG_INSTANCE DLL_LB_GETXML_CONFIG_INSTANCE;
 
-void lbModule::getXMLConfigObject(lb_I_XMLConfig*& inst) {
+void lbModule::getXMLConfigObject(lb_I_XMLConfig** inst) {
      
         char *libname = getenv("LBXMLLIB");
         char *ftrname = getenv("LBXMLFUNCTOR");
         char *cfgname = getenv("LBHOSTCFGFILE");
 
-        UNKNOWN_AUTO_PTR(lb_I_XMLConfig, xml_I)
+        UAP(lb_I_XMLConfig, xml_I)
 
         if (libname == NULL) return;
         if (ftrname == NULL) return;
@@ -146,7 +149,7 @@ void lbModule::getXMLConfigObject(lb_I_XMLConfig*& inst) {
             exit(1);
         }
 
-        lbErrCodes err = DLL_LB_GETXML_CONFIG_INSTANCE(xml_I);
+        lbErrCodes err = DLL_LB_GETXML_CONFIG_INSTANCE(&xml_I);
 
         if (xml_I == NULL) {
             CL_LOG("Konnte XML Konfigurationsinstanz nicht bekommen.\n");
@@ -160,7 +163,7 @@ void lbModule::getXMLConfigObject(lb_I_XMLConfig*& inst) {
          */
          
          
-        xml_I->queryInterface("lb_I_XMLConfig", (void**) & inst);
+        xml_I->queryInterface("lb_I_XMLConfig", (void**) inst);
 }
 /*...e*/
 
@@ -217,14 +220,19 @@ lbErrCodes LB_STDCALL lbModule::uninitialize() {
  *
  * Output:      Only one node from the list in a new view
  */
-lb_I_ConfigObject* LB_STDCALL lbModule::findFunctorNode(lb_I_ConfigObject* node, const char* request) {
-        UNKNOWN_AUTO_PTR(lb_I_ConfigObject, temp_node)
+lb_I_ConfigObject* LB_STDCALL lbModule::findFunctorNode(lb_I_ConfigObject** _node, const char* request) {
+        UAP(lb_I_ConfigObject, temp_node)
+        lb_I_ConfigObject* node = *_node;
+        
+        temp_node.setDelete(0);
 
 
         lbErrCodes err = ERR_NONE;
 
-
-        if ((err = node->getFirstChildren(temp_node)) == ERR_NONE) {
+	/**
+	 * This gets a reference for me. Autodeleted, if scope is leaved.
+	 */
+        if ((err = node->getFirstChildren(&temp_node)) == ERR_NONE) {
 //                lb_I_Attribute* attribute;
                 
                 //temp_node->getAttribute("Functor", attribute);
@@ -253,14 +261,16 @@ lb_I_ConfigObject* LB_STDCALL lbModule::findFunctorNode(lb_I_ConfigObject* node,
                 	 * If I return a pointer from any interface reference,
                 	 * I *MUST* add a reference.
                 	 */
-                        return ADD_REF(lb_I_ConfigObject, temp_node)
+                	temp_node++;
+                        return *&temp_node;
                 }
                 
         } else CL_LOG("Get first child failed");
 
-        while ((err = node->getNextChildren(temp_node)) == ERR_NONE) {
+        while ((err = node->getNextChildren(&temp_node)) == ERR_NONE) {
                 if ((strcmp(temp_node->getName(), "Functor")) == 0) {
-                        return ADD_REF(lb_I_ConfigObject, temp_node)
+                        temp_node++;
+                        return *&temp_node;
                 }
         }
         
@@ -278,22 +288,29 @@ lb_I_ConfigObject* LB_STDCALL lbModule::findFunctorNode(lb_I_ConfigObject* node,
 }
 /*...e*/
 /*...slbModule\58\\58\findFunctorModule\40\\46\\46\\46\\41\:0:*/
-char* LB_STDCALL lbModule::findFunctorModule(lb_I_ConfigObject* node) {
+char* LB_STDCALL lbModule::findFunctorModule(lb_I_ConfigObject** _node) {
         lbErrCodes err = ERR_NONE;
-        UNKNOWN_AUTO_PTR(lb_I_ConfigObject, temp_node)
+        lb_I_ConfigObject* node = *_node;
+
+	char buf[100] = "";
+	
+	sprintf(buf, "findFunctorModule(%x) called", node);
+	CL_LOG(buf);
 
         if (node == NULL) {
                 CL_LOG("NULL pointer detected!");
                 return "NULL";
         }
         
-        temp_node = ADD_REF(lb_I_ConfigObject, node)
-
-
+        CL_LOG("lbModule::findFunctorModule(...) called");
+        
         if (strcmp (node->getName(), "Module") == 0) {
-                
-                if ((err = node->getFirstChildren(temp_node)) == ERR_NONE) {
-/*...swork on temp_node:24:*/
+        	CL_LOG("Got a module");
+                { 
+                UAP(lb_I_ConfigObject, temp_node)
+                temp_node.setDelete(0);
+                	if ((err = node->getFirstChildren(&temp_node)) == ERR_NONE) {
+/*...swork on temp_node:32:*/
                         if ((strcmp(temp_node->getName(), "ModuleName")) == 0) {
                                 char* value = NULL;
                                 err = temp_node->getAttributeValue("Name", value);
@@ -307,9 +324,13 @@ char* LB_STDCALL lbModule::findFunctorModule(lb_I_ConfigObject* node) {
                                 }
                         }               
 /*...e*/
+                	}
                 }
 
-                while ((err = node->getNextChildren(temp_node)) == ERR_NONE) {
+                do {
+                UAP(lb_I_ConfigObject, temp_node)
+                temp_node.setDelete(0);
+                	err = node->getNextChildren(&temp_node);
 /*...swork on temp_node:24:*/
                         if ((strcmp(temp_node->getName(), "ModuleName")) == 0) {
                                 char* value = NULL;
@@ -324,29 +345,43 @@ char* LB_STDCALL lbModule::findFunctorModule(lb_I_ConfigObject* node) {
                                 }
                         }
 /*...e*/
-                }
+                } while (err == ERR_NONE);
         }
         else {
-                while ((err = node->getParent(temp_node)) == ERR_NONE) {
-                        if (temp_node == NULL) {
-                                CL_LOG("Error: No parent");
-                                getch();
-                        }
-                        return findFunctorModule(temp_node);
-                } 
+                UAP(lb_I_ConfigObject, temp_node)
+                temp_node.setDelete(0);
+                
+                sprintf(buf, "Try to get parent from node %s", node->getName());
+                CL_LOG(buf);
+                
+               	err = node->getParent(&temp_node);
+                temp_node++;
+
+		if (err == ERR_NONE) {
+			char* result = findFunctorModule(&temp_node);
+			
+			return result;
+		}
+                
         }
 
         return "NULL";
 }
 /*...e*/
 /*...slbModule\58\\58\findFunctorName\40\\46\\46\\46\\41\:0:*/
-char* LB_STDCALL lbModule::findFunctorName(lb_I_ConfigObject* node) {
+char* LB_STDCALL lbModule::findFunctorName(lb_I_ConfigObject** ___node) {
         /**
          * Go up one level and get the children 'FunctionName'
          */
          
-        lb_I_ConfigObject* _node = NULL;
+        UAP(lb_I_ConfigObject, _node)
+        _node.setDelete(0);
+        UAP(lb_I_ConfigObject, __node)
+        __node.setDelete(0);
+        
         lbErrCodes err = ERR_NONE;
+        lb_I_ConfigObject* node = *___node;
+        char buf[100] = "";
         
         /**
          * Warning!
@@ -354,36 +389,51 @@ char* LB_STDCALL lbModule::findFunctorName(lb_I_ConfigObject* node) {
          * This is hard coded moving in a tree of a xml document.
          */
         
-        if ((err = node->getParent(_node)) != ERR_NONE) {
+        sprintf(buf, "Get parent of node %s", node->getName());
+        CL_LOG(buf);
+        
+        if ((err = node->getParent(&_node)) != ERR_NONE) {
                 CL_LOG("Some errors have ocured while getting a parent node!");
         } 
         
-        if ((err = _node->getParent(_node)) != ERR_NONE) {
+        sprintf(buf, "Get parent of parent-node %s", _node->getName());
+        CL_LOG(buf);
+        
+        if ((err = _node->getParent(&__node)) != ERR_NONE) {
                 CL_LOG("Some errors have ocured while getting a parent node!");
         }
         
         if (_node != NULL) {
-                lb_I_ConfigObject* __node = NULL;
+                int first = 1;
 
-                err = _node->getFirstChildren(__node);
                 
-                if (err != ERR_NONE) {
-                        CL_LOG("Error. Children expected");
-                        return NULL;
-                }
                 while (err == ERR_NONE) {
-
+                	UAP(lb_I_ConfigObject, child)
+                	child.setDelete(0);
+                        
+                        if (first == 1) {
+		                err = __node->getFirstChildren(&child);
+		                
+		                if (err != ERR_NONE) {
+		                        CL_LOG("Error. Children expected");
+		                        return NULL;
+		                }
+		                first = 0;
+                        } else err = __node->getNextChildren(&child);
+                        
                         /**
                          * Check that node...
                          */
+                         
+                        if (err != ERR_NONE) break; 
                  
-                        if (strcmp(__node->getName(), "FunctionName") == 0) {
+                        if (strcmp(child->getName(), "FunctionName") == 0) {
                                 /**
                                  * Have the node. Here I must get an attribute...
                                  */
                                  
                                 char* value = NULL; 
-                                err = __node->getAttributeValue("Name", value); 
+                                err = child->getAttributeValue("Name", value); 
                                 
                                 if (err != ERR_NONE) {
                                         CL_LOG("Error while getting attribute value");
@@ -393,16 +443,9 @@ char* LB_STDCALL lbModule::findFunctorName(lb_I_ConfigObject* node) {
                                         cout << "Found function name '" << value << "'" << endl;
                                         getch();
                                 #endif
-                                        if (__node != NULL) RELEASE(__node);
                                         return value;
                                 }
                         }
-
-                        if (__node != NULL) RELEASE(__node);
-                
-                        err = _node->getNextChildren(__node);
-                
-                        //err = ERR_CONFIG_NO_MORE_CHILDS;
                 }
         } else {
                 CL_LOG("A parent node was not found!?");
@@ -415,47 +458,67 @@ char* LB_STDCALL lbModule::findFunctorName(lb_I_ConfigObject* node) {
 /*...e*/
 /*...slbErrCodes lbModule\58\\58\getDefaultImpl\40\char\42\ interfacename\44\ lb_I_ConfigObject\42\ node\44\ char\42\\38\ implTor\44\ char\42\\38\ module\41\:0:*/
 lbErrCodes LB_STDCALL lbModule::getDefaultImpl(char* interfacename, lb_I_ConfigObject* node, char*& implTor, char*& module) {
-        lb_I_ConfigObject* temp_node = NULL;
         lbErrCodes err = ERR_NONE;
         int count = 0;
+	UAP(lb_I_ConfigObject, _node)
+	_node = node;
+	_node++; // UAP must check the pointer here too
 
         implTor = new char[100];
         module = new char[100];
 
-
-/*...sget first children:0:*/
-        if ((err = node->getFirstChildren(temp_node)) == ERR_NONE) {
+{
+	UAP(lb_I_ConfigObject, temp_node)
+	
+	/**
+	 * Use _node instead of the interface pointer. Later UAP will be able to check
+	 * if the interface pointer is valid. (Inside the -> operator)
+	 */
+	
+/*...sget first children:8:*/
+        if ((err = _node->getFirstChildren(&temp_node)) == ERR_NONE) {
                 if (temp_node == NULL) {
                         CL_LOG("temp_node is NULL!");
                         getch();
                 } 
-                
+
                 if ((strcmp(temp_node->getName(), "StandardFunctor")) == 0) {
                         lb_I_Unknown* uk = NULL;
                         char* attr = NULL;
                         
                         temp_node->getAttributeValue("Interface", attr);
+
+			printf("getDefaultImpl() looks at %s for %s and have %s\n", temp_node->getName(), interfacename, attr);
+                
                         
                         if (strcmp(interfacename, attr) == 0) {
-                                
+                                printf("Get the results and return\n");
                                 temp_node->getAttributeValue("Module", module);
                                 temp_node->getAttributeValue("Functor", implTor);
+                                temp_node->deleteValue(attr);
+                                printf("Return ERR_NONE\n");
+                                return ERR_NONE;
                         }
                         
                         temp_node->deleteValue(attr);
                         
                 }
                 
-                RELEASE(temp_node);
-                
         } else CL_LOG("Get first child failed");
 /*...e*/
+}
 
 /*...sget next children:0:*/
-        while ((err = node->getNextChildren(temp_node)) == ERR_NONE) {
+	err = ERR_NONE;
+        while (err == ERR_NONE) {
+        	UAP(lb_I_ConfigObject, temp_node)
+        	
+        	err = _node->getNextChildren(&temp_node);
+        	
                 if (temp_node == NULL) {
                         CL_LOG("temp_node is NULL!");
                         getch();
+                        continue;
                 } 
                 
                 if ((strcmp(temp_node->getName(), "StandardFunctor")) == 0) {
@@ -469,11 +532,12 @@ lbErrCodes LB_STDCALL lbModule::getDefaultImpl(char* interfacename, lb_I_ConfigO
                                 
                                 temp_node->getAttributeValue("Module", module);
                                 temp_node->getAttributeValue("Functor", implTor);
+                                temp_node->deleteValue(attr);
+                                
+                                return ERR_NONE;
                         }
                         temp_node->deleteValue(attr);
                 }
-                
-                RELEASE(temp_node);
         }
 
 /*...e*/
@@ -483,12 +547,15 @@ lbErrCodes LB_STDCALL lbModule::getDefaultImpl(char* interfacename, lb_I_ConfigO
 /*...e*/
 /*...slbErrCodes lbModule\58\\58\getFunctors\40\char\42\ interfacename\44\ lb_I_ConfigObject\42\ node\44\ lb_I_Unknown\42\\38\ uk\41\:0:*/
 lbErrCodes LB_STDCALL lbModule::getFunctors(char* interfacename, lb_I_ConfigObject* node, lb_I_Unknown*& uk) {
+#ifdef bla
         lbModuleContainer* functors = new lbModuleContainer();
-        lb_I_ConfigObject* temp_node = NULL;
+
+        UAP(lb_I_ConfigObject, temp_node)
+
         lbErrCodes err = ERR_NONE;
         int count = 0;
 
-        if ((err = node->getFirstChildren(temp_node)) == ERR_NONE) {
+        if ((err = node->getFirstChildren(&temp_node)) == ERR_NONE) {
                 lb_I_Attribute* attribute;
                 
                 if (temp_node == NULL) {
@@ -553,12 +620,13 @@ lbErrCodes LB_STDCALL lbModule::getFunctors(char* interfacename, lb_I_ConfigObje
         }
 
         if (temp_node != NULL) RELEASE(temp_node);
-
+#endif
+	CL_LOG("lbModule::getFunctors(...) not implemented");
         return ERR_NONE;
 }
 /*...e*/
-/*...slbErrCodes lbModule\58\\58\makeInstance\40\char\42\ functor\44\ char\42\ module\44\ lb_I_Unknown\42\\38\ instance\41\:0:*/
-lbErrCodes LB_STDCALL lbModule::makeInstance(char* functor, char* module, lb_I_Unknown*& instance) {
+/*...slbErrCodes lbModule\58\\58\makeInstance\40\char\42\ functor\44\ char\42\ module\44\ lb_I_Unknown\42\\42\ instance\41\:0:*/
+lbErrCodes LB_STDCALL lbModule::makeInstance(char* functor, char* module, lb_I_Unknown** instance) {
 char msg[100] = "";
 lbErrCodes err = ERR_NONE;
 
@@ -781,7 +849,7 @@ typedef struct instances_of_module {
  * With this, a requestable object may be instructable by a simple script
  * language.
  */
-lbErrCodes LB_STDCALL lbModule::request(const char* request, lb_I_Unknown*& result) {
+lbErrCodes LB_STDCALL lbModule::request(const char* request, lb_I_Unknown** result) {
         lbErrCodes err = ERR_NONE;
         char buf[100] = "";
         if (moduleList == NULL) {
@@ -790,19 +858,22 @@ lbErrCodes LB_STDCALL lbModule::request(const char* request, lb_I_Unknown*& resu
         }
         
         if (xml_Instance == NULL) {
-                getXMLConfigObject(xml_Instance);
+                getXMLConfigObject(&xml_Instance);
         }
 
 	char* functorName = NULL;
-        UNKNOWN_AUTO_PTR(lb_I_ConfigObject, imp)
 
+        UAP(lb_I_ConfigObject, impl)
+        impl.setDelete(0);
+
+CL_LOG("Begin dispatch the request");
 /*...sget my unknown interface:8:*/
         if (strcmp(request, "instance/XMLConfig") == 0) {
                 //xml_Instance->hasConfigObject("Dat/object");
                 //result = (lb_I_Unknown*) xml_Instance;
                 
                 CL_LOG("Query unknown interface of xml_Interface!");
-                xml_Instance->queryInterface("lb_I_Unknown", (void**) &result);
+                xml_Instance->queryInterface("lb_I_Unknown", (void**) result);
                 
                 return ERR_NONE;
         }
@@ -859,9 +930,11 @@ lbErrCodes LB_STDCALL lbModule::request(const char* request, lb_I_Unknown*& resu
                          * Later, get the default.
                          */
 /*...e*/
+			CL_LOG("Find the needed node");
 /*...sfind the needed node:32:*/
-                        if ((err = config->getFirstChildren(impl)) == ERR_NONE) {
+                        if ((err = config->getFirstChildren(&impl)) == ERR_NONE) {
                                 char buf[100] = "";
+                                CL_LOG("Get an attribute of impl");
                                 err = impl->getAttributeValue("Name", value);
 
                                 if (strcmp(value, request) == 0) {
@@ -870,20 +943,22 @@ lbErrCodes LB_STDCALL lbModule::request(const char* request, lb_I_Unknown*& resu
 /*...ssuche weiter:72:*/
                                         int stop = 1;
                                         while (stop == 1) {
-                                                if (impl != NULL) {
-                                                        RELEASE(impl)
-                                                }
-                                                if ((err = config->getNextChildren(impl)) != ERR_NONE) {
+						CL_LOG("RELEASE(impl)");
+                                        	RELEASE(impl);
+                                        	CL_LOG("RELEASED");
+                                        	
+                                                if ((err = config->getNextChildren(&impl)) != ERR_NONE) {
                                                         stop = 0;
-                                                        impl = NULL;
                                                         break;
                                                 }
+
 
                                                 if (value != NULL) 
                                                 {
                                                         char buf[100] = "";
-                                                        
+                                                        CL_LOG("Delete a value using impl");
                                                         impl->deleteValue(value);
+                                                        CL_LOG("Deleted");
                                                         value = NULL;
                                                 }
                                                 
@@ -900,7 +975,6 @@ lbErrCodes LB_STDCALL lbModule::request(const char* request, lb_I_Unknown*& resu
 /*...sreturn error if value \61\ NULL:32:*/
                         if (value == NULL) {
                                 CL_LOG("return ERR_MODULE_NO_INTERFACE");
-                                RELEASE(xml_Instance);
                                 return ERR_MODULE_NO_INTERFACE;
                         }
 /*...e*/
@@ -911,19 +985,22 @@ lbErrCodes LB_STDCALL lbModule::request(const char* request, lb_I_Unknown*& resu
                                 if (value != NULL) {
                                         impl->deleteValue(value);
                                 }
-                                RELEASE(xml_Instance);
                                 return ERR_MODULE_NO_INTERFACE;
                         }
 /*...e*/
                         char buf[100] = "";
 /*...sclean up \63\\63\\63\:32:*/
                         if (value != NULL) {
+				CL_LOG("Delete a value using impl");
                                 impl->deleteValue(value);
                         }
 /*...e*/
 /*...sfind up names:32:*/
-                        functorName = findFunctorName(impl);
-                        moduleName = findFunctorModule(impl);
+                        CL_LOG("Find up module name");
+                        moduleName = findFunctorModule(&impl);
+			CL_LOG("Find up functor name");
+                        functorName = findFunctorName(&impl);
+			CL_LOG("Found any");
 /*...e*/
 /*...sclean up \63\\63\\63\:32:*/
                         if (value != NULL) {
@@ -934,14 +1011,16 @@ lbErrCodes LB_STDCALL lbModule::request(const char* request, lb_I_Unknown*& resu
 /*...svars:64:*/
                                 // Set the value of the object
                         
-                                lb_I_String* stringKey = NULL;
+                                UAP(lb_I_String, string)
+                                UAP(lb_I_KeyBase, stringKey)
 
                                 /**
                                  * Get a default implementation - needed here to avoid recursive
                                  * calls of request.
                                  */
 
-                                lb_I_Unknown* key = NULL;
+                                UAP(lb_I_Unknown, key)
+
                                 char* defaultFunctor = NULL;
                                 char* defaultModule = NULL;
 /*...e*/
@@ -952,15 +1031,31 @@ lbErrCodes LB_STDCALL lbModule::request(const char* request, lb_I_Unknown*& resu
                                         xml_Instance->getConfigObject(i_config, node);
 
                                         getDefaultImpl("lb_I_String", i_config, defaultFunctor, defaultModule);
-                                        makeInstance(defaultFunctor, defaultModule, key);
+                                        makeInstance(defaultFunctor, defaultModule, &key);
                                 
+/*...sprepare for string:72:*/
+                                        if (key == NULL) {
+                                                CL_LOG("Error: Key is NULL!");
+                                                getch();
+                                        }
+                                
+                                        if (key->queryInterface("lb_I_String", (void**) & string) != ERR_NONE) {
+                                                CL_LOG("Error: Unknown has not the requested interface!");
+                                                getch();
+                                        }
+                                
+                                        if (string == NULL) {
+                                                CL_LOG("Error: NULL pointer detected at stringKey!");
+                                                getch();
+                                        }
+/*...e*/
 /*...sprepare for stringKey:72:*/
                                         if (key == NULL) {
                                                 CL_LOG("Error: Key is NULL!");
                                                 getch();
                                         }
                                 
-                                        if (key->queryInterface("lb_I_String", (void**) & stringKey) != ERR_NONE) {
+                                        if (key->queryInterface("lb_I_KeyBase", (void**) & stringKey) != ERR_NONE) {
                                                 CL_LOG("Error: Unknown has not the requested interface!");
                                                 getch();
                                         }
@@ -971,7 +1066,7 @@ lbErrCodes LB_STDCALL lbModule::request(const char* request, lb_I_Unknown*& resu
                                         }
 /*...e*/
                                 
-                                        stringKey->setData(moduleName);
+                                        string->setData(moduleName);
                                 
 /*...sdoc:72:*/
                         /**
@@ -980,7 +1075,9 @@ lbErrCodes LB_STDCALL lbModule::request(const char* request, lb_I_Unknown*& resu
                          */
 /*...e*/
                         
-                                        lb_I_Unknown* instances = moduleList->getElement(stringKey);
+                        		UAP(lb_I_Unknown, instances)
+                        		
+                                        instances = moduleList->getElement(&stringKey);
                                         if (instances == NULL) {
 /*...sCreate the new module entry:80:*/
                                         	/**
@@ -989,8 +1086,10 @@ lbErrCodes LB_STDCALL lbModule::request(const char* request, lb_I_Unknown*& resu
                                         	 * instance of a container.
                                         	 */
                                         	 
-                                        	lb_I_Container* c = NULL;
+                                        	UAP(lb_I_Unknown, c)
+
                                         	lbModuleContainer* _instanceList = new lbModuleContainer();
+                                        	
                                         	if (_instanceList->queryInterface("lb_I_Container", (void**) &c) != ERR_NONE) {
                                         		CL_LOG("Error: Could not get reference to interface lb_I_Container!");
                                         	} else {
@@ -998,15 +1097,14 @@ lbErrCodes LB_STDCALL lbModule::request(const char* request, lb_I_Unknown*& resu
                                         		 * Note: All input is cloned. 
                                         		 * Use getElement(stringKey) for manipulation.
                                         		 */
-                                        		moduleList->insert(c, stringKey);
+                                        		moduleList->insert(&c, &stringKey);
                                         		
                                         		// Cleanup
-                                        		RELEASE(c);
                                         	}
 /*...e*/
                                         }
                                         
-                                        instances = moduleList->getElement(stringKey);
+                                        instances = moduleList->getElement(&stringKey);
                                         
                                         if (instances == NULL) {
                                         	CL_LOG("Error: After inserting the element, it's not possible to manipulate it");
@@ -1073,13 +1171,12 @@ lbErrCodes LB_STDCALL lbModule::request(const char* request, lb_I_Unknown*& resu
                 
 /*...e*/
         }
-
+CL_LOG("End dispatch the request");
         RELEASE(xml_Instance);
         xml_Instance = NULL;
 
 
         if (functorName != NULL) impl->deleteValue(functorName);
-        if (impl != NULL) RELEASE(impl);
 
         return ERR_NONE;
 }
@@ -1089,19 +1186,17 @@ IMPLEMENT_FUNCTOR(getlb_ModuleInstance, lbModule)
 
 /*...slbErrCodes lbModule\58\\58\load\40\char\42\ name\41\:0:*/
 lbErrCodes lbModule::load(char* name) {
-        lb_I_XMLConfig* xml_Instance = NULL;
+        UAP(lb_I_XMLConfig, xml_Instance)
 
-        getXMLConfigObject(xml_Instance);
+        getXMLConfigObject(&xml_Instance);
         
         cout << "lbModule::load(char* name) called" << endl;
 
-        if (xml_Instance) {
+        if (xml_Instance != NULL) {
             if (xml_Instance->parse() != ERR_NONE) {
                 CL_LOG("Error while parsing XML document\n");
             }
         }
-        
-        RELEASE(xml_Instance);        
         
         return ERR_NONE;
 }

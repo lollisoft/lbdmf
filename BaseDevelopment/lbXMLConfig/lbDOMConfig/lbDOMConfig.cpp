@@ -1,11 +1,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.12 $
+ * $Revision: 1.13 $
  * $Name:  $
- * $Id: lbDOMConfig.cpp,v 1.12 2001/07/11 16:04:33 lothar Exp $
+ * $Id: lbDOMConfig.cpp,v 1.13 2001/07/18 05:52:27 lothar Exp $
  *
  * $Log: lbDOMConfig.cpp,v $
+ * Revision 1.13  2001/07/18 05:52:27  lothar
+ * Seems to work now (lbDOMNode::parent - refcount must be corrected)
+ *
  * Revision 1.12  2001/07/11 16:04:33  lothar
  * First version of module management that hold's a little stresstest
  *
@@ -343,10 +346,10 @@ public:
 
 
 	virtual lbErrCodes LB_STDCALL findObject(const char* name, lb_I_ConfigObject*& object);
-	virtual lbErrCodes LB_STDCALL getParent(lb_I_ConfigObject*& _parent);
+	virtual lbErrCodes LB_STDCALL getParent(lb_I_ConfigObject** _parent);
 	
-	virtual lbErrCodes LB_STDCALL getFirstChildren(lb_I_ConfigObject*& children);
-	virtual lbErrCodes LB_STDCALL getNextChildren(lb_I_ConfigObject*& children);
+	virtual lbErrCodes LB_STDCALL getFirstChildren(lb_I_ConfigObject** children);
+	virtual lbErrCodes LB_STDCALL getNextChildren(lb_I_ConfigObject** children);
 	
 	virtual int LB_STDCALL getChildrenCount();
 
@@ -558,6 +561,13 @@ lbDOMNode::lbDOMNode() {
 lbDOMNode::~lbDOMNode() {
 	if (ref != STARTREF) 
 		CL_LOG("Error: Reference count mismatch");
+
+//	if (strcmp(getName(), "Function") == 0) {
+		char buf[100] = "";
+		
+		sprintf(buf, "Delete lbDOMNode at %x with name = '%s'\n", this, getName());
+		printf(buf);
+//	}
 	
 	if (lbDOMchilds != NULL) {
 		lbDOMchilds->deleteAll();
@@ -574,15 +584,19 @@ lbErrCodes LB_STDCALL lbDOMNode::setChildrens(lbNodeList* _childs) {
 }
 /*...e*/
 /*...slbDOMNode\58\\58\getParent\40\\46\\46\\46\\41\:0:*/
-lbErrCodes LB_STDCALL lbDOMNode::getParent(lb_I_ConfigObject*& _parent) {
+lbErrCodes LB_STDCALL lbDOMNode::getParent(lb_I_ConfigObject** _parent) {
 	if (parent == NULL) {
 		CL_LOG("Error: lbDOMNode is not correctly set up. Parent is NULL!");
 		getch();
 	}
-	parent->queryInterface("lb_I_ConfigObject", (void**) &_parent);
 
-
-
+	char buf[100] = "";
+	sprintf(buf, "lbDOMNode::getParent(...) relies on parent at %x", parent);
+	CL_LOG(buf);
+	
+	parent->queryInterface("lb_I_ConfigObject", (void**) _parent);
+	
+	CL_LOG("lbDOMNode::getParent() returns no error");
 	return ERR_NONE;
 }
 /*...e*/
@@ -661,8 +675,8 @@ lbErrCodes LB_STDCALL lbDOMNode::findObject(const char* name, lb_I_ConfigObject*
 	return ERR_NONE;
 }
 /*...e*/
-/*...slbDOMNode\58\\58\getFirstChildren\40\lb_I_ConfigObject\42\\38\ children\41\:0:*/
-lbErrCodes LB_STDCALL lbDOMNode::getFirstChildren(lb_I_ConfigObject*& children) {
+/*...slbDOMNode\58\\58\getFirstChildren\40\lb_I_ConfigObject\42\\42\ children\41\:0:*/
+lbErrCodes LB_STDCALL lbDOMNode::getFirstChildren(lb_I_ConfigObject** children) {
 	if (lbDOMchilds == NULL) {
 		CL_LOG("Error, no childrens in config object");
 		return ERR_CONFIG_NO_CHILDS;
@@ -670,7 +684,7 @@ lbErrCodes LB_STDCALL lbDOMNode::getFirstChildren(lb_I_ConfigObject*& children) 
 	
 //	currentChildIndex = 0;
 	
-	lb_I_Unknown* unknown = NULL;
+	UAP(lb_I_Unknown, unknown)
 
 	if (lbDOMchilds->hasMoreElements() == 1) {
 		unknown = lbDOMchilds->nextElement();
@@ -684,15 +698,18 @@ lbErrCodes LB_STDCALL lbDOMNode::getFirstChildren(lb_I_ConfigObject*& children) 
 		CL_LOG("Fatal: Must have a children here!");
 	}
 
-	unknown->queryInterface("lb_I_ConfigObject", (void**) &children);
-
-	RELEASE(unknown)
+	unknown->queryInterface("lb_I_ConfigObject", (void**) children);
+	
+	/**
+	 * Return a reference! So increment my own because of UAP
+	 */
+	unknown++;
 
 	return ERR_NONE;
 }
 /*...e*/
-/*...slbDOMNode\58\\58\getNextChildren\40\lb_I_ConfigObject\42\\38\ children\41\:0:*/
-lbErrCodes LB_STDCALL lbDOMNode::getNextChildren(lb_I_ConfigObject*& children) {
+/*...slbDOMNode\58\\58\getNextChildren\40\lb_I_ConfigObject\42\\42\ children\41\:0:*/
+lbErrCodes LB_STDCALL lbDOMNode::getNextChildren(lb_I_ConfigObject** children) {
 	lbErrCodes err = ERR_NONE;
 	
 	if (lbDOMchilds == NULL) {
@@ -718,7 +735,7 @@ lbErrCodes LB_STDCALL lbDOMNode::getNextChildren(lb_I_ConfigObject*& children) {
 	
 	//currentChildIndex++;
 
-	lb_I_Unknown* unknown;
+	UAP(lb_I_Unknown, unknown)
 
 	unknown = lbDOMchilds->nextElement();
 
@@ -727,14 +744,17 @@ lbErrCodes LB_STDCALL lbDOMNode::getNextChildren(lb_I_ConfigObject*& children) {
 		getch();
 	}
 
-	unknown->queryInterface("lb_I_ConfigObject", (void**) &children);
+	unknown->queryInterface("lb_I_ConfigObject", (void**) children);
+
+	/**
+	 * Return a reference! So increment my own because of UAP
+	 */
+	unknown++;
 
 	if (children == NULL) {
 		CL_LOG("Error: queryInterface creates a NULL pointer!");
 		getch();
 	}
-	
-	RELEASE(unknown)
 	
 	return ERR_NONE;
 }
@@ -749,11 +769,11 @@ lbDOMContainer* LB_STDCALL lbDOMNode::createAbstractedChildList(DOM_Node _node) 
 	lbErrCodes err = ERR_NONE;
 
 	for (int i = 0; i < len; i++) {
-	        DOM_Node child = DOMlist.item(i);	
-	        lbDOMNode* lbNode = new lbDOMNode();
+		DOM_Node child = DOMlist.item(i);	
+		lbDOMNode* lbNode = new lbDOMNode();
 	        
-	        lbNode->node = child;
-		lb_I_Unknown* unknown = NULL;
+		lbNode->node = child;
+		UAP(lb_I_Unknown, unknown)
 
 		if (lbNode->queryInterface("lb_I_Unknown", (void**) &unknown) != ERR_NONE) {
 		        CL_LOG("lbNode->queryInterface() Failed!");
@@ -764,14 +784,16 @@ lbDOMContainer* LB_STDCALL lbDOMNode::createAbstractedChildList(DOM_Node _node) 
 			getch();
 		}
 
-		lbKey* key = new lbKey(i);
+		UAP(lb_I_KeyBase, key)
+		key = new lbKey(i);
+		key++;
+		
 		if (unknown == NULL) CL_LOG("Error: Inserting a null pointer!");
 
-		list->insert(unknown, key);
+		list->insert(&unknown, &key);
 		
 		// Container makes a copy of the object
 		
-		if (unknown != NULL) RELEASE(unknown);
 
 	}
 
@@ -903,8 +925,9 @@ protected:
 	
 	int errorsOccured;
 	DOM_Document doc;
-	
-	lb_I_Container* lastResult;
+
+
+	UAP(lb_I_Container, lastResult)
 };
 /*...e*/
 
@@ -1119,14 +1142,17 @@ lb_I_Container* LB_STDCALL lbDOMConfig::findNodesAtTreePos(const char* treePos) 
 			//lbNode->childs = NULL;
 #endif
 /*...e*/
-			lb_I_Unknown* unknown = NULL;
+			UAP(lb_I_Unknown, unknown)
+			UAP(lb_I_KeyBase, key)
+
 			if (lbNode->queryInterface("lb_I_Unknown", (void**) &unknown) != ERR_NONE) {
 				CL_LOG("lbNode->queryInterface() Failed!");
 			}
 			
-			lbKey* key = new lbKey(count++);
+			key = new lbKey(count++);
+			key++;
 			
-			list->insert(unknown, key);
+			list->insert(&unknown, &key);
 /*...sVERBOSE:16:*/
 #ifdef VERBOSE
 			cout << "Inserted the entry" << endl;

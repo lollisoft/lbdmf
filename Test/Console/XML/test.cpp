@@ -8,6 +8,30 @@
 
 #include <lbConfigHook.h>
 
+#ifdef bla
+		class UAP_theVariable {
+		public:
+	        UAP_theVariable() {
+	        	_autoPtr = NULL;
+			}
+			virtual ~UAP_theVariable() { RELEASE(_autoPtr); }
+			
+		lb_I_Unknown& operator * () { return *_autoPtr; }
+		lb_I_Unknown* operator -> () { return _autoPtr; }
+		lb_I_Unknown*& operator & () { return _autoPtr; }
+		
+		UAP_theVariable& operator = (lb_I_Unknown*& autoPtr) { _autoPtr = autoPtr; return *this; }
+		friend int operator ==(const UAP_theVariable& a, const lb_I_Unknown* b) {
+			return a._autoPtr == b;
+		}
+		friend int operator !=(const UAP_theVariable& a, const lb_I_Unknown* b) {
+			return a._autoPtr != b;
+		}
+		
+		protected:
+	        lb_I_Unknown* _autoPtr;
+		};
+#endif
 
 #define LOOP
 
@@ -17,8 +41,8 @@ void main() {
     char* port = NULL;
     char buf[100] = "";
     int count = 0;
-    lb_I_Unknown* unknown = NULL;
-    lb_I_Unknown* uk = NULL;
+    UAP(lb_I_Unknown, unknown)
+    UAP(lb_I_Unknown, uk)
 /*...e*/
 /*...sinit:0:*/
 	printf("Program starting...\n");
@@ -29,7 +53,9 @@ void main() {
 /*...e*/
 /*...stest string:0:*/
 	CL_LOG("Test using lb_I_String");
-	mm->request("lb_I_String", unknown);
+	mm->request("lb_I_String", &unknown);
+	CL_LOG("Requested the string instance as unknown");
+	
 	if (unknown != NULL) {
 		lb_I_String* string = NULL;
 		lbErrCodes err = ERR_NONE;
@@ -58,7 +84,7 @@ void main() {
 /*...e*/
 /*...stest logger:0:*/
 	CL_LOG("Test invoking logger interface directly (requesting)...");
-	mm->request("lb_I_Log", unknown);
+	mm->request("lb_I_Log", &unknown);
 
 	if (unknown != NULL) {
 		lb_I_Log* logger = NULL;
@@ -73,7 +99,7 @@ void main() {
 	}
 /*...e*/
 /*...stest container:0:*/
-	if (mm->request("lb_I_Container", uk) != ERR_NONE) {
+	if (mm->request("lb_I_Container", &uk) != ERR_NONE) {
 		CL_LOG("Error: Could not get needed instance!");
 		getch();
 	}
@@ -89,7 +115,7 @@ void main() {
 	getch();
 /*...e*/
 /*...stest integer:0:*/
-	if (mm->request("lb_I_Integer", uk) != ERR_NONE) {
+	if (mm->request("lb_I_Integer", &uk) != ERR_NONE) {
 		CL_LOG("Error: Could not get needed instance!");
 		getch();
 	}
@@ -111,7 +137,7 @@ void main() {
 	uk = NULL;
 
 /*...stest countainer:0:*/
-	if (mm->request("lb_I_Container", uk) != ERR_NONE) {
+	if (mm->request("lb_I_Container", &uk) != ERR_NONE) {
 		CL_LOG("Error: Could not get needed instance!");
 		getch();
 	}
@@ -128,33 +154,50 @@ void main() {
 /*...e*/
 
 /*...stest integer:0:*/
-	if (mm->request("lb_I_Integer", uk) != ERR_NONE) {
+	if (mm->request("lb_I_Integer", &uk) != ERR_NONE) {
 		CL_LOG("Error: Could not get needed instance!");
 		getch();
 	}
 /*...e*/
 
 /*...stest unknown auto pointer:0:*/
+	if (1)
 	{
-		UNKNOWN_AUTO_PTR(lb_I_Unknown, theVariable)
-		UNKNOWN_AUTO_PTR(lb_I_String, string)
+		UAP(lb_I_Unknown, theVariable)
+		UAP(lb_I_String, string)
 		
-		if (theVariable != NULL) CL_LOG("Error: UAP does not correctly work");
+		class A {
+		protected:
+			UAP(lb_I_Unknown, test)
+		};
+		
+		A a;
+		
+		
+		if (theVariable.getPtr() != NULL) CL_LOG("Error: UAP does not correctly work");
 
 		CL_LOG("Test unknown auto pointer");
 		getch();
+		lb_I_Unknown* uk = NULL;
+		lb_I_String* s = NULL;
 
-		if (mm->request("lb_I_String", theVariable) != NULL) {
+		if (mm->request("lb_I_String", &uk) != NULL) {
 			CL_LOG("Error: Failed to get an instance lb_I_String");
 		}
 		
+		theVariable = uk;
+		
+CL_LOG("Query interface lb_I_String");		
+
+		if (theVariable == NULL) CL_LOG("Error: UAP is not initialized!");
+
 		if (theVariable->queryInterface("lb_I_String", (void**) &string) != ERR_NONE) {
 			CL_LOG("Error: Failed to get a reference to the interface lb_I_String");
 		}
-		
+CL_LOG("Query done");		
 		if (string != NULL) {
 			CL_LOG("Test the created unknown autopointer !!!");
-			
+	
 			string->setData("Blubber\n");
 			
 			char* buf = NULL;
@@ -188,30 +231,32 @@ void main() {
         modMan->initialize();
 
 	
+/*...sTest container with inserting strings:0:*/
 	#ifdef LOOP
         for (long i = 0; i < 10000000; i++) {
-    #endif
-			if (modMan->request("lb_I_Container", uk) != ERR_NONE) {
+    	#endif
+    			UAP(lb_I_Unknown, uk)
+    			
+			if (modMan->request("lb_I_Container", &uk) != ERR_NONE) {
 				printf("Error: Could not get needed instance!\n");
 				getch();
 			}
 
 			if (uk != NULL) {
-
-				lb_I_Container* container = NULL;
+				UAP(lb_I_Unknown, uk1)
+				UAP(lb_I_Container, container)
 
 				if (uk->queryInterface("lb_I_Container", (void**) &container) != ERR_NONE) {
 					CL_LOG("Error: Could not query for interface lb_I_Container");
 				}
-				RELEASE(uk);
-
-				if (modMan->request("lb_I_String", uk) != ERR_NONE) {
+			
+				if (modMan->request("lb_I_String", &uk1) != ERR_NONE) {
 					printf("Error: Could not get needed instance!\n");
 					getch();
 				}
 
-				if (uk != NULL) {
-					lb_I_String* string = NULL;
+				if (uk1 != NULL) {
+					UAP(lb_I_String, string)
 
 					if (uk->queryInterface("lb_I_String", (void**) &string) != ERR_NONE) {
 						printf("Error: Could not get needed interface!\n");
@@ -220,22 +265,26 @@ void main() {
 
 					if (string != NULL) {
 						// Fill up the container
+						UAP(lb_I_Unknown, uk)
+						UAP(lb_I_KeyBase, key)
+						
+						string->queryInterface("lb_I_Unknown", (void**) &uk);
+						string->queryInterface("lb_I_KeyBase", (void**) &key);
 						
 						string->setData("Bla");
-						container->insert(string, string);
+						container->insert(&uk, &key);
 						string->setData("Bla1");
-						container->insert(string, string);
+						container->insert(&uk, &key);
 						string->setData("Bla2");
-						container->insert(string, string);
+						container->insert(&uk, &key);
 						string->setData("Bla3");
-						container->insert(string, string);
+						container->insert(&uk, &key);
 						string->setData("Bla4");
-						container->insert(string, string);
+						container->insert(&uk, &key);
 					}
 				}
 
 				container->deleteAll();
-				RELEASE(container);
 				
 			} else {
 				CL_LOG("Here must be an object!!!");
@@ -245,6 +294,7 @@ void main() {
 	#ifdef LOOP
 		}
 	#endif
+/*...e*/
 
         CL_LOG("End test lb_I_Container loop");
 		getch();
@@ -257,11 +307,12 @@ printf("Test LOG macro\n");
 LOG("Call lb_I_Module->load()");
 getch();
 
-		if (modMan->request("lb_I_Integer", uk) != ERR_NONE) {
+		
+
+		if (modMan->request("lb_I_Integer", &uk) != ERR_NONE) {
 			CL_LOG("Error: Could not get needed instance!");
 		}
         	
-        	uk->release();
         	
                 lb_I_Unknown* pUnknown;
                 lb_I_XMLConfig* XMLinst;

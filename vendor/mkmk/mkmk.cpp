@@ -371,6 +371,7 @@ void WriteDep(FILE *f, char *Name, TIncludeParser *p)
   char ObjName[80];
   char Line[120];
 
+  printf("WriteDep with '%s'\n", Name);
   ObjExt(Name,ObjName,sizeof(ObjName));
   sprintf(Line,"%s: makefile %s",ObjName,Name);
   ListFiles(f,Line,&p->l);
@@ -428,7 +429,14 @@ void DoDep(FILE *f, TDepItem *d)
   strcat(FileName,d->Name);
   printf("\n%s\n",FileName);
   p.Parse(FileName);
-  WriteDep(f,d->Name,&p);
+  printf("Write a dependency: %s\n", d->Name);
+  char fullName[1000] = "";
+  
+  strcpy(fullName, d->Path);
+  strcat(fullName, d->Name);
+  
+  WriteDep(f,fullName,&p);
+  delete[] fullName;
 }
 /*...e*/
 /*...e*/

@@ -135,6 +135,11 @@ protected:
 	virtual void LB_STDCALL resetRefcount() = 0;
 public:
 	virtual lbErrCodes LB_STDCALL release() = 0;
+	/**
+	 * This function indicates, if the object will be deleted on a call
+	 * of release().
+	 */
+	virtual int LB_STDCALL deleteState() = 0;
 	
 	virtual lbErrCodes LB_STDCALL queryInterface(char* name, void** unknown) = 0;
         
@@ -186,14 +191,18 @@ lb_I_Unknown* _autoPtr;
 		class UAP##Unknown_Reference { \
 		public: \
 	        UAP##Unknown_Reference() { \
-	        	CL_LOG("UAP init"); \
-	        	getch(); \
 	        	_autoPtr = NULL; \
+	        	allowDelete = 1; \
 		} \
 		virtual ~UAP##Unknown_Reference() { \
-			CL_LOG("UAP destroy"); \
-			getch(); \
-			if (_autoPtr != NULL) RELEASE(_autoPtr); \
+			if (_autoPtr != NULL) { \
+				if (allowDelete != 1) { \
+					if (_autoPtr->deleteState() == 1) { \
+						CL_LOG("Error: Instance would be deleted, but it's not allowed !!"); \
+					} \
+				} \
+				RELEASE(_autoPtr); \
+			} \
 		} \
 		\
 		interface* getPtr() const { return _autoPtr; } \
@@ -204,20 +213,27 @@ lb_I_Unknown* _autoPtr;
 			_autoPtr = source; \
 		} \
 		\
-		interface& operator * () { CL_LOG("OP * called"); return *_autoPtr; } \
+		interface& operator * () { return *_autoPtr; } \
 		interface* operator -> () { \
-			CL_LOG("OP -> called"); \
-			if (_autoPtr == NULL) CL_LOG("Error: UAP pointer is NULL!"); \
+			if (_autoPtr == NULL) { \
+				char buf[100] = ""; \
+				sprintf(buf, "Error: UAP pointer (%s) for interface %s is NULL!", #Unknown_Reference, #interface); \
+				CL_LOG(buf); \
+			} \
 			return _autoPtr; \
 		} \
-		interface** operator & () { \
-			CL_LOG("OP & called"); \
+		UAP##Unknown_Reference& operator++(int) { \
+			interface* temp = NULL; \
+			_autoPtr->queryInterface(#interface, (void**) &temp); \
+			return *this; \
+		} \
+		interface ** operator & () { \
 			return &_autoPtr; \
 		} \
 		\
-		UAP##Unknown_Reference& operator = (interface*& autoPtr) { \
-			CL_LOG("Operator = called"); \
-			_autoPtr = autoPtr; return *this; \
+		UAP##Unknown_Reference& operator = (interface* autoPtr) { \
+			_autoPtr = autoPtr; \
+			return *this; \
 		} \
 		int operator ==(const interface* b) { \
 			return _autoPtr == b; \
@@ -225,9 +241,11 @@ lb_I_Unknown* _autoPtr;
 		int operator !=(const interface* b) { \
 			return _autoPtr != b; \
 		} \
+		void setDelete(int _allow) { allowDelete = _allow; } \
 		\
 		protected: \
 	        interface* _autoPtr; \
+	        int allowDelete; \
 		}; \
 	\
         interface* _UAP##Unknown_Reference; \
@@ -254,12 +272,16 @@ protected: \
 public: \
 	virtual void setDebug(int i = 1) { debug_macro = i; } \
 	virtual lbErrCodes LB_STDCALL release(); \
+	virtual int LB_STDCALL deleteState(); \
 	virtual lbErrCodes LB_STDCALL queryInterface(char* name, void** unknown); \
 	virtual lb_I_Unknown* LB_STDCALL clone() const; \
 	virtual lbErrCodes LB_STDCALL setData(lb_I_Unknown* u);
 
 #define BEGIN_IMPLEMENT_LB_UNKNOWN(classname) \
 void LB_STDCALL classname::resetRefcount() { ref = STARTREF; } \
+int LB_STDCALL classname::deleteState() { \
+	return (ref == STARTREF) ? 1 : 0; \
+} \
 lbErrCodes LB_STDCALL classname::release() { \
 	if ((debug_macro == 1) && (strcmp(#classname, "lbDOMNode")) != 0) { \
 		char buf[100] = ""; \
@@ -308,8 +330,10 @@ lbErrCodes LB_STDCALL classname::queryInterface(char* name, void** unknown) { \
 	char buf[100] = ""; \
 	char iFaces[1000] = ""; \
 \
-	CL_LOG(#classname "::queryInterface(char* name, void** unknown) called"); \
-	if (unknown == NULL) CL_LOG("Error: Got NULL pointer reference!"); \
+	if (unknown == NULL) { \
+		sprintf(buf, "Error: Got NULL pointer reference while queryInterface() called for %s !", name); \
+		CL_LOG(buf); \
+	} \
 \
 	if (debug_macro == 1) { \
 		sprintf(buf, #classname"::queryInterface('%s', void** unknown)\n", name); \
@@ -361,21 +385,21 @@ lbErrCodes LB_STDCALL classname::queryInterface(char* name, void** unknown) { \
  * Base of all instances - the functor
  */
  
-typedef lbErrCodes (LB_STDCALL *T_pLB_GET_UNKNOWN_INSTANCE) (lb_I_Unknown*&);
+typedef lbErrCodes (LB_STDCALL *T_pLB_GET_UNKNOWN_INSTANCE) (lb_I_Unknown**);
 
 /*...sstandard functor:0:*/
 
 #define DECLARE_FUNCTOR(name) \
-lbErrCodes DLLEXPORT LB_STDCALL name(lb_I_Unknown*& uk);
+lbErrCodes DLLEXPORT LB_STDCALL name(lb_I_Unknown** uk);
 
 #define IMPLEMENT_FUNCTOR(name, clsname) \
-lbErrCodes DLLEXPORT LB_STDCALL name(lb_I_Unknown*& uk) { \
+lbErrCodes DLLEXPORT LB_STDCALL name(lb_I_Unknown** uk) { \
 \
         clsname* instance = new clsname(); \
-        uk = NULL; \
+        *uk = NULL; \
         char buf[100] = ""; \
 \
-        if (instance->queryInterface("lb_I_Unknown", (void**) &uk) != ERR_NONE) { \
+        if (instance->queryInterface("lb_I_Unknown", (void**) uk) != ERR_NONE) { \
                 CL_LOG("Failed to create unknown reference to instance of "#clsname"!"); \
                 return ERR_FUNCTOR; \
         } \
@@ -426,7 +450,7 @@ public:
 class lb_I_Requestable {
 public:
 	virtual lbErrCodes LB_STDCALL initialize() = 0;
-	virtual lbErrCodes LB_STDCALL request(const char* request, lb_I_Unknown*& result) = 0;
+	virtual lbErrCodes LB_STDCALL request(const char* request, lb_I_Unknown** result) = 0;
 	virtual lbErrCodes LB_STDCALL uninitialize() = 0;
 };
 /*...e*/

@@ -44,7 +44,7 @@ public:
 	 * In a view of search result may be more than one parent available.
 	 */
 /*...e*/
-	virtual lbErrCodes LB_STDCALL getParent(lb_I_ConfigObject*& _parent) = 0;
+	virtual lbErrCodes LB_STDCALL getParent(lb_I_ConfigObject** _parent) = 0;
 /*...sdoc:8:*/
 	/**
 	 * A config object may be only a view. So the internal childrens may
@@ -59,8 +59,8 @@ public:
 	virtual int LB_STDCALL getChildrenCount() = 0;
 
 	// Simple list access functions
-	virtual lbErrCodes LB_STDCALL getFirstChildren(lb_I_ConfigObject*& children) = 0;
-	virtual lbErrCodes LB_STDCALL getNextChildren(lb_I_ConfigObject*& children) = 0;
+	virtual lbErrCodes LB_STDCALL getFirstChildren(lb_I_ConfigObject** children) = 0;
+	virtual lbErrCodes LB_STDCALL getNextChildren(lb_I_ConfigObject** children) = 0;
 	
 /*...sdoc:8:*/
 	/**
