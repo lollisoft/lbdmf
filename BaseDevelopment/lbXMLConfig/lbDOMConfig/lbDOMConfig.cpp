@@ -1,11 +1,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.2 $
+ * $Revision: 1.3 $
  * $Name:  $
- * $Id: lbDOMConfig.cpp,v 1.2 2000/10/20 04:36:31 lothar Exp $
+ * $Id: lbDOMConfig.cpp,v 1.3 2000/10/27 12:18:59 lothar Exp $
  *
  * $Log: lbDOMConfig.cpp,v $
+ * Revision 1.3  2000/10/27 12:18:59  lothar
+ * Added DOM list abstraction
+ *
  * Revision 1.2  2000/10/20 04:36:31  lothar
  * Minor changes
  *
@@ -107,9 +110,60 @@ void DOMTreeErrorReporter::resetErrors()
 
 /*...e*/
 
-// ??
-class lbDOMNode : public lb_I_ConfigObject {
+class lbDOMNode;
+
+typedef struct __lbDOMNodeList {
+	lbDOMNode* element;
+	__lbDOMNodeList* next;
+} _lbDOMNodeList, * _plbDOMNodeList;
+
+/*...sclass lbNodeList:0:*/
+class lbNodeList {
+protected:
+	lbNodeList() {}
+	virtual ~lbNodeList() {}
+
+public:
+
+	lbErrCodes setParent(lbDOMNode *_parent);
+	lbErrCodes insert(lbDOMNode *node);
+	lbErrCodes remove(int i);
+	lbErrCodes find(const char *nodeName, int & i);
+	lbErrCodes get(lbDOMNode*& node, int i);
+
+protected:
+	lbDOMNode* parent;
+	_plbDOMNodeList childs;
 };
+
+lbErrCodes lbNodeList::setParent(lbDOMNode *_parent) {
+	return ERR_NONE;
+}
+
+lbErrCodes lbNodeList::insert(lbDOMNode *node) {
+	return ERR_NONE;
+}
+
+lbErrCodes lbNodeList::remove(int i) {
+	return ERR_NONE;
+}
+
+lbErrCodes lbNodeList::find(const char *nodeName, int & i) {
+	return ERR_NONE;
+}
+
+lbErrCodes lbNodeList::get(lbDOMNode*& node, int i) {
+	return ERR_NONE;
+}
+/*...e*/
+
+// ??
+/*...sclass lbDOMNode \58\ public lb_I_ConfigObject:0:*/
+class lbDOMNode : public lb_I_ConfigObject {
+
+	lbNodeList childs;
+};
+/*...e*/
 
 /*...sclass lbDOMConfig \58\ public lb_I_XMLConfig:0:*/
 /*...sclass lbDOMConfig:0:*/
@@ -139,6 +193,8 @@ public:
 	virtual lbErrCodes LB_STDCALL getConfigObject(lb_I_ConfigObject*& cfgObj, const char* const cfgObjectName);
 
 protected:
+		lbNodeList* findNodesAtTreePos(const char* treePos);
+
 	int ref;
 	int interface_used;
 	ErrorHandler *errReporter;
@@ -276,6 +332,30 @@ cout << "lbDOMConfig::parse() called ('" << hex << (void*) this << dec << "')" <
 
 	} else return ERR_NO_ENVIRONMENT;
 	return err;
+}
+/*...e*/
+/*...slbNodeList\42\ lbDOMConfig\58\\58\findNodesAtTreePos\40\DOM_Node node\44\ const char\42\ treePos\41\:0:*/
+lbNodeList* lbDOMConfig::findNodesAtTreePos(const char* treePos) {
+	char* part = NULL;
+	char* name = NULL;
+	lbNodeList* list = NULL;
+	
+	name = strdup(treePos);
+	name = strrchr(name, '/');
+	
+	
+	DOM_NodeList DOMlist = doc.getElementsByTagName(name);
+	int len = DOMlist.getLength();
+
+	DOMString path;
+	
+	for (int i = 0; i < len; i++) {
+		DOM_Node node = DOMlist.item(i);
+		DOMString name = node.getNodeName();
+		path = name + path;
+	}
+	
+	return list;
 }
 /*...e*/
 /*...slbErrCodes lbDOMConfig\58\\58\hasConfigObject\40\\46\\46\\46\\41\:0:*/
