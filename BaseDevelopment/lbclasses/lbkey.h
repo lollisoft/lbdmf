@@ -2,10 +2,13 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.6 $
+ * $Revision: 1.7 $
  * $Name:  $
- * $Id: lbkey.h,v 1.6 2001/03/14 20:52:51 lolli Exp $
+ * $Id: lbkey.h,v 1.7 2001/03/30 20:08:07 lolli Exp $
  * $Log: lbkey.h,v $
+ * Revision 1.7  2001/03/30 20:08:07  lolli
+ * Commit due to possible head crash on anakin (Linux)
+ *
  * Revision 1.6  2001/03/14 20:52:51  lolli
  * Compiles and links now, but it will not run
  *
@@ -39,6 +42,7 @@
 #ifndef LB_KEY
 #define LB_KEY
 
+#ifdef bla
 /*...sDLLEXPORT:0:*/
 #undef DLLEXPORT
 
@@ -58,23 +62,24 @@
 
 #endif
 /*...e*/
+#endif
 
-/*...sclass DLLEXPORT lbKeyBase:0:*/
-class DLLEXPORT lbKeyBase : public lb_I_KeyBase {
+/*...sclass lbKeyBase:0:*/
+class lbKeyBase : public lb_I_KeyBase {
 public:
 
 //    virtual int operator == (const lb_I_KeyBase &_key) const;
 //    virtual int operator > (const lb_I_KeyBase &_key) const;
 
-    virtual int equals(const lb_I_KeyBase* _key) const = 0;
-    virtual int greater(const lb_I_KeyBase* _key) const = 0;
-    virtual lb_I_KeyBase* clone() const = 0;
+    virtual int LB_STDCALL equals(const lb_I_KeyBase* _key) const = 0;
+    virtual int LB_STDCALL greater(const lb_I_KeyBase* _key) const = 0;
+    virtual lb_I_KeyBase* LB_STDCALL clone() const = 0;
 
-    virtual char* charrep() = 0;
+    virtual char* LB_STDCALL charrep() = 0;
 };
 /*...e*/
-/*...sclass DLLEXPORT lbKey \58\ public lbKeyBase:0:*/
-class DLLEXPORT lbKey : public lbKeyBase {
+/*...sclass lbKey \58\ public lbKeyBase:0:*/
+class lbKey : public lbKeyBase {
 public:
     lbKey();
     lbKey(int _key);
@@ -82,19 +87,19 @@ public:
     virtual ~lbKey();
 
     // Must be implemented
-    virtual int equals(const lb_I_KeyBase* _key) const;
-    virtual int greater(const lb_I_KeyBase* _key) const;
-    lb_I_KeyBase* clone() const;
+    virtual int LB_STDCALL equals(const lb_I_KeyBase* _key) const;
+    virtual int LB_STDCALL greater(const lb_I_KeyBase* _key) const;
+    lb_I_KeyBase* LB_STDCALL clone() const;
 
-    virtual char* charrep();
-    virtual char* getMainInterface() const { return "intKey"; }
+    virtual char* LB_STDCALL charrep();
+    virtual char* LB_STDCALL getMainInterface() const { return "intKey"; }
 private:
 
     int key;
 };
 /*...e*/
-/*...sclass DLLEXPORT lbKeyUL \58\ public lbKeyBase:0:*/
-class DLLEXPORT lbKeyUL : public lbKeyBase {
+/*...sclass lbKeyUL \58\ public lbKeyBase:0:*/
+class lbKeyUL : public lbKeyBase {
 public:
     lbKeyUL();
     lbKeyUL(unsigned long _key);
@@ -102,31 +107,31 @@ public:
     virtual ~lbKeyUL();
 
     // Must be implemented
-    virtual int equals(const lb_I_KeyBase* _key) const;
-    virtual int greater(const lb_I_KeyBase* _key) const;
-    lb_I_KeyBase* clone() const;
+    virtual int LB_STDCALL equals(const lb_I_KeyBase* _key) const;
+    virtual int LB_STDCALL greater(const lb_I_KeyBase* _key) const;
+    lb_I_KeyBase* LB_STDCALL clone() const;
 
-    virtual char* charrep();
-    virtual char* getMainInterface() const { return "ULKey"; }
+    virtual char* LB_STDCALL charrep();
+    virtual char* LB_STDCALL getMainInterface() const { return "ULKey"; }
 private:
 
     unsigned long key;
 };
 /*...e*/
-/*...sclass DLLEXPORT lbStringKey \58\ public lbKeyBase:0:*/
-class DLLEXPORT lbStringKey : public lbKeyBase {
+/*...sclass lbStringKey \58\ public lbKeyBase:0:*/
+class lbStringKey : public lbKeyBase {
 public:
     lbStringKey(const char* _key);
     lbStringKey(const lb_I_KeyBase* k);
     virtual ~lbStringKey();
 
     // Must be implemented
-    virtual int equals(const lb_I_KeyBase* _key) const;
-    virtual int greater(const lb_I_KeyBase* _key) const;
-    lb_I_KeyBase* clone() const;
+    virtual int LB_STDCALL equals(const lb_I_KeyBase* _key) const;
+    virtual int LB_STDCALL greater(const lb_I_KeyBase* _key) const;
+    lb_I_KeyBase* LB_STDCALL clone() const;
 
-    virtual char* charrep();
-    virtual char* getMainInterface() const { return "stringKey"; }
+    virtual char* LB_STDCALL charrep();
+    virtual char* LB_STDCALL getMainInterface() const { return "stringKey"; }
 private:
     char* key;    
 };
