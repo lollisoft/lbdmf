@@ -6,7 +6,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.6 2003/07/04 19:12:11 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.7 2003/07/10 21:55:04 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -636,15 +636,16 @@ IMPLEMENT_APP  (MyApp)
 /*...sMyApp\58\\58\OnInit\40\void\41\:0:*/
 // `Main program' equivalent, creating windows and returning main app frame
 void testthis(void* t) {
+#ifdef bla
 	char ptr[20] = "";
 	sprintf(ptr, "%p", t);
 	_LOG << "This is " << ptr LOG_
+#endif
 }
 
 bool MyApp::OnInit(void)
 {
     char b[100] = "";
-//testthis(this);
 /*...sCreate the frame:0:*/
 #ifndef LB_I_EXTENTIONS
   // Create the main frame window
@@ -705,6 +706,19 @@ bool MyApp::OnInit(void)
 
 	ev_manager->registerEvent("AddMenu", AddMenu);
 	ev_manager->registerEvent("AddMenuBar", AddMenuBar);
+	
+	
+	
+	/*
+	 * Registering an AddMenuEntry handler is a more specific handler,
+	 * that need special handler data. This means herefore, an information,
+	 * who is responsible for that event and what event should be issued to
+	 * the targed handler. It might be these parameters:
+	 *
+	 * target	= target handler for handling id 
+	 * event	= event id to be issued
+	 */
+	
 	ev_manager->registerEvent("AddMenuEntry", AddMenuEntry);
 
         /**
@@ -738,7 +752,6 @@ bool MyApp::OnInit(void)
 #endif
 /*...e*/
 
-testthis(this);
 
 #ifdef LB_I_EXTENTIONS
 #endif
@@ -940,12 +953,9 @@ _LOG << "Initialized metaapplication" LOG_
 #endif
 
 /*...e*/
-testthis(this);
 #ifdef LB_I_EXTENTIONS
   if (metaApp != NULL) metaApp->run();
 #endif
-  sprintf(ptr, "%p", frame_peer);
-testthis(this);
   return TRUE;
 }
 /*...e*/
@@ -1049,25 +1059,35 @@ lbErrCodes LB_STDCALL MyApp::lbEvHandler2(lb_I_Unknown* uk) {
  */
 lbErrCodes LB_STDCALL MyApp::lbEvHandler3(lb_I_Unknown* uk) {
 	_LOG << "MyApp::lbEvHandler3 called" LOG_
+	lbErrCodes err = ERR_NONE;
 
-
-	/*
-	 * Create an id for the append method, that also is the id
-	 * for the dispatcher handling that event.
-	 */
-
-/*
-	UAP_REQUEST(lb_I_EventManager, ev_manager)
-
-	int event = 0;
+	UAP_REQUEST(manager.getPtr(), lb_I_EventManager, ev_manager)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, menubar)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, menuname)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, handlername)
 	
 	
-	UAP(lb_I_Container, c, __FILE__, __LINE__)
-	QI(uk, lb_I_Container, c, __FILE__, __LINE__)
-	
-	ev_manager->registerEvent("", event);
-*/
+	UAP(lb_I_Parameter, param, __FILE__, __LINE__)
 
+	QI(uk, lb_I_Parameter, param, __FILE__, __LINE__)
+
+
+	parameter->setData("menubar");
+	param->getUAPString(*&parameter, *&menubar);
+	parameter->setData("menuname");
+	param->getUAPString(*&parameter, *&menuname);
+	parameter->setData("handlername");
+	param->getUAPString(*&parameter, *&handlername);
+	
+	
+	int EvNr = 0;
+	ev_manager->registerEvent(handlername->getData(), EvNr);	
+
+	wxMenuBar* mbar = frame_peer->getMenuBar();
+	wxMenu* menu = mbar->GetMenu(mbar->FindMenu(wxString(menubar->getData())));
+
+	menu->Append(EvNr, menuname->getData());
 
 	return ERR_NONE;
 }
