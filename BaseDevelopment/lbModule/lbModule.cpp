@@ -28,11 +28,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.53 $
+ * $Revision: 1.54 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.53 2003/06/09 14:50:33 lollisoft Exp $
+ * $Id: lbModule.cpp,v 1.54 2003/06/16 21:48:06 lollisoft Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.54  2003/06/16 21:48:06  lollisoft
+ * Removed debug messages
+ *
  * Revision 1.53  2003/06/09 14:50:33  lollisoft
  * Minor changes
  *
@@ -2641,9 +2644,7 @@ lbErrCodes err = ERR_NONE;
                         if ((err = lbGetFunctionPtr(functor, getModuleHandle(), (void**) &DLL_LB_GET_UNKNOWN_INSTANCE)) != ERR_NONE) {
                                 _CL_LOG << "Error while loading a functionpointer!" LOG_
                         } else {
-				printf("Get an unknown instance for %s\n", functor);
                                 err = DLL_LB_GET_UNKNOWN_INSTANCE(instance, this, __FILE__, __LINE__);
-				printf("Got an unknown instance\n");
 
                                 if (err != ERR_NONE) 
                                 {
@@ -2911,7 +2912,6 @@ _CL_LOG << "Requested for an interface " << request LOG_
                          * of one level.
                          */
 /*...e*/
-			cout << "Get a config object" << endl;
                         xml_Instance->getConfigObject(&config, node);
                         track_Object(*&config, "Test object given by xml_Instance->getConfigObject()");
 /*...sVERBOSE:32:*/
@@ -2929,7 +2929,6 @@ _CL_LOG << "Requested for an interface " << request LOG_
                         // May be the same bug as in internal ...
                         // It was the self pointed parent member
                         // config++;
-                        cout << "Find the needed node" << endl;
 /*...sfind the needed node:32:*/
                         if ((err = config->getFirstChildren(&impl)) == ERR_NONE) {
                                 impl.setLine(__LINE__);
@@ -3002,7 +3001,6 @@ _CL_LOG << "Requested for an interface " << request LOG_
                                 impl->deleteValue(value);
                         }
 /*...e*/
-			cout << "Make the instance: " << functorName << endl;
                         makeInstance(functorName, moduleName, result);
 /*...sLog error:32:*/
                         if ((*result) == NULL) {
