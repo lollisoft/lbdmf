@@ -163,6 +163,8 @@ public:
 		firstfetched = 0;
 //		lpszTable = NULL;
 		cols = 0;
+
+		preparingFKColumns = 0;
 		
 		fetchstatus = 0;
 	}
@@ -280,6 +282,7 @@ private:
 //	char* lpszTable;
 
 	static int     skipFKCollections;
+	int	preparingFKColumns;
 	
 	// Number of columns for the query
 	SQLSMALLINT cols;
@@ -1045,8 +1048,9 @@ void LB_STDCALL lbQuery::prepareFKList() {
 
 	    return;
 	}
-	
-#ifdef WINDOWS
+
+	#ifdef bla
+/*...sOriginally for windows:8:*/
 
 	unsigned char*   szTable;     /* Table to display   */
 
@@ -1126,10 +1130,11 @@ _CL_VERBOSE << "Have one definition" LOG_
 	/* Close the cursor (the hstmt is still allocated). */
 
 	SQLFreeStmt(hstmt, SQL_DROP);
-
-#endif
-
-#ifdef UNIX
+/*...e*/
+	#endif
+		
+	#ifdef WINDOWS
+/*...sOriginally for Linux:8:*/
 	lbErrCodes err = ERR_NONE;
 	
 	char buffer[1000] = "";
@@ -1168,8 +1173,10 @@ _CL_VERBOSE << "Have one definition" LOG_
 	    printf("%s\n", buffer);
 	
 	    q = db->getQuery(0);
-	
+
+	    skipFKCollections = 1;
 	    err = q->query(buffer);
+	    skipFKCollections = 0;
 	    
 	    err = q->first();
 
@@ -1196,8 +1203,9 @@ _CL_VERBOSE << "Have one definition" LOG_
 	        ForeignColumns->insert(&uk_PKTable, &key_FKName);
 	    }
 	}
-
-#endif
+/*...e*/
+	#endif
+	
 
     _CL_VERBOSE << "Leave lbQuery::prepareFKList()" LOG_
 }
