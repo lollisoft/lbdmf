@@ -134,6 +134,8 @@ public:
         lbErrCodes	LB_STDCALL getString(char* column, lb_I_String* instance);
         lbErrCodes      LB_STDCALL setString(char* column, lb_I_String* instance);
 
+	int		LB_STDCALL getColumnType(char* name);
+
 	int LB_STDCALL getArraySize() { return ArraySize; }
 
 private:
@@ -226,6 +228,7 @@ public:
 
 	virtual int		LB_STDCALL hasFKColumn(char* FKName);
 
+	virtual int		LB_STDCALL getColumnType(char* name);
         
         /* Navigation */
         virtual lbErrCodes	LB_STDCALL first();
@@ -437,6 +440,10 @@ lb_I_Container* LB_STDCALL lbBoundColumns::getBoundColumns() {
 lbErrCodes      LB_STDCALL lbBoundColumns::setBoundColumns(lb_I_Container* bc) {
         _CL_LOG << "lbBoundColumns::setBoundColumns() not implemented yet" LOG_
 	return ERR_NONE;
+}
+
+int		LB_STDCALL lbBoundColumns::getColumnType(char* name) {
+	return 0;
 }
 
 /*...slb_I_BoundColumn\42\ LB_STDCALL lbBoundColumns\58\\58\getBoundColumn\40\int column\41\:0:*/
@@ -1123,6 +1130,10 @@ _CL_VERBOSE << "Have one definition" LOG_
 _CL_VERBOSE << "Leave lbQuery::prepareFKList()" LOG_
 }
 /*...e*/
+
+int LB_STDCALL lbQuery::getColumnType(char* name) {
+	return boundColumns->getColumnType(name);
+}
 
 /*...schar\42\ LB_STDCALL lbQuery\58\\58\getColumnName\40\int col\41\:0:*/
 char lbQuery_column_Name[100] = "";

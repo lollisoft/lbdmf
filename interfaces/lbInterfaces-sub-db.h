@@ -209,6 +209,11 @@ public:
 	 * \param column Index of the column
 	 */
 	virtual lb_I_BoundColumn* LB_STDCALL getBoundColumn(int column) = 0;
+
+	/**
+	 * \brief Get the type of a column.
+	 */
+	virtual int		  LB_STDCALL getColumnType(char* name) = 0;
 	
 	/**
 	 * \brief Get the amound of columns.
@@ -404,6 +409,14 @@ public:
 	 * Returns 1 if true. 0 if false.
 	 */
 	virtual int	   LB_STDCALL hasFKColumn(char* FKName) = 0;
+
+
+	/**
+	 * \brief Gets the type of the column.
+	 *
+	 * Type definitions not defined yet.
+	 */
+	virtual int	   LB_STDCALL getColumnType(char* name) = 0;
         
         /* Navigation */
         
