@@ -6,7 +6,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.12 2004/02/02 23:23:11 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.13 2004/04/11 07:50:38 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -302,11 +302,39 @@ public:
         
         virtual lbErrCodes LB_STDCALL addMenuEntry(lb_I_Unknown* entry);
         virtual lbErrCodes LB_STDCALL insertMenuEntry(lb_I_Unknown* entry);
+
 /*...e*/
         
         virtual lbErrCodes LB_STDCALL msgBox(char* windowTitle, char* msg);
         
         virtual lbErrCodes LB_STDCALL setDispatcher(lb_I_Dispatcher* disp);
+
+/*...sTypical GUI handler\44\ that do not need to be dispatched:8:*/
+	/* The menubar is still present in the demo. At the
+	   first time, a new menubar should not be used.
+	*/
+	virtual lbErrCodes LB_STDCALL addMenuBar(char* name) { return ERR_NONE; };
+
+	/**
+	 * Add a menu behind the last.
+	 */
+	virtual lbErrCodes LB_STDCALL addMenu(char* name) { return ERR_NONE; };
+	
+	/**
+	 * Add a menu entry in the named menu after given entry,
+	 * if provided. The handler must be registered.
+	 * 
+	 * Input:
+	 *	char* in_menu:		Which menu to add to (File/Edit/Help/...)
+	 *	char* entry:		The text for that entry
+	 *	char* evHandler:	The name of a registered event handler, that handle this
+	 *	char* afterentry:	Insert the entry after an exsisting entry
+	 */
+	virtual lbErrCodes LB_STDCALL addMenuEntry(char* in_menu, char* entry, char* evHandler, char* afterentry = NULL) { return ERR_NONE; };
+	virtual lbErrCodes LB_STDCALL addButton(char* buttonText, char* evHandler, int x, int y, int w, int h) { return ERR_NONE; };
+	virtual lbErrCodes LB_STDCALL addLabel(char* text, int x, int y, int w, int h) { return ERR_NONE; };
+	virtual lbErrCodes LB_STDCALL addTextField(char* name, int x, int y, int w, int h) { return ERR_NONE; };
+/*...e*/
         
         int eventCount;
         
@@ -1336,12 +1364,15 @@ void lb_wxFrame::OnAbout(wxCommandEvent& WXUNUSED(event) )
   dialog.ShowModal();
 }
 /*...e*/
+/*...slb_wxFrame\58\\58\OnCheck\40\wxCommandEvent\38\ WXUNUSED\40\event\41\ \41\:0:*/
 void lb_wxFrame::OnCheck(wxCommandEvent& WXUNUSED(event) ) {
 	char ptr[200] = "";
 	sprintf(ptr, "%p for instance %p", menu_bar, this);
 	
 	_LOG << "Have this instance now: " << ptr LOG_
 }
+/*...e*/
+/*...slb_wxFrame\58\\58\OnBuildMenu\40\wxCommandEvent\38\ WXUNUSED\40\event\41\ \41\:0:*/
 void lb_wxFrame::OnBuildMenu(wxCommandEvent& WXUNUSED(event) ) {
 	wxMenu *menu = new wxMenu;
 	wxMenuBar* mbar = NULL;
@@ -1357,6 +1388,8 @@ void lb_wxFrame::OnBuildMenu(wxCommandEvent& WXUNUSED(event) ) {
 	if (menu_bar) menu_bar->Append(menu, "T&est");
 
 }
+/*...e*/
+/*...slb_wxFrame\58\\58\OnDispatch\40\wxCommandEvent\38\ event \41\:0:*/
 void lb_wxFrame::OnDispatch(wxCommandEvent& event ) {
         switch (event.GetId()) {
         case DYNAMIC_QUIT:
@@ -1405,5 +1438,6 @@ void lb_wxFrame::OnDispatch(wxCommandEvent& event ) {
                 break;
         }
 }
+/*...e*/
 /*...e*/
 #endif
