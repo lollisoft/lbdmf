@@ -105,6 +105,9 @@ void main(int argc, char *argv[]) {
 		printf("Running in tracking mode\n");
 		//set_trackObject(strdup(argv[2]));
 	}
+
+	lb_I_Module* mm = NULL;
+#ifdef bla
 /*...stest lbHook Memory usage:0:*/
 	lb_I_Module* mm = getModuleInstance();
 	getch();
@@ -119,7 +122,6 @@ void main(int argc, char *argv[]) {
 
 	getch();
 /*...e*/
-#ifdef bla
 /*...stest lbHook Memory usage:0:*/
 	mm = getModuleInstance();
 	getch();

@@ -1472,7 +1472,7 @@ lbErrCodes LB_STDCALL lbBoundColumn::leaveOwnership(lb_I_BoundColumn* oldOwner, 
 	lbBoundColumn* oO = (lbBoundColumn*) oldOwner;
 	lbBoundColumn* nO = (lbBoundColumn*) newOwner;
 
-	printf("Buffer pointer is at %p\n", oO->buffer);	
+//	printf("Buffer pointer is at %p\n", oO->buffer);	
 
 	nO->setData(oO->bound, oO->_DataType, oO->buffer, oO->colName.getPtr());
 	oO->bound = 0;
@@ -1569,7 +1569,7 @@ lbErrCodes LB_STDCALL lbBoundColumn::prepareBoundColumn(lb_I_Query* q, int colum
 /*...e*/
 /*...slbErrCodes LB_STDCALL lbBoundColumn\58\\58\bindColumn\40\lbQuery\42\ q\44\ int column\41\:0:*/
 lbErrCodes LB_STDCALL lbBoundColumn::bindColumn(lb_I_Query* q, int column) {
-printf("lbBoundColumn::bindColumn(...) called\n");
+//printf("lbBoundColumn::bindColumn(...) called\n");
 	HSTMT hstmt = ((lbQuery*) q)->getCurrentStatement();
 
 /*...svars:8:*/
@@ -1597,13 +1597,13 @@ printf("lbBoundColumn::bindColumn(...) called\n");
 	                                BufferLength, &NameLength, &DataType,
 	                                &ColumnSize, &DecimalDigits, &Nullable);
 
-
+/*
 	printf("SQLDescribeCol(...) gave me the following information:\n"
 	       "ColumnName is: %s\n"
 	       "BufferLength is %d\n"
 	       "Returned ColumnSize is %d\n"
 	       , ColumnName, BufferLength, ColumnSize);
-
+*/
 
 	REQUEST(manager.getPtr(), lb_I_String, colName)
 	colName->setData((char*) ColumnName);
@@ -1619,7 +1619,7 @@ printf("lbBoundColumn::bindColumn(...) called\n");
 		case SQL_LONGVARCHAR:
 /*...sbind a character array:24:*/
 			buffer = malloc((ColumnSize+1)*rows);
-			printf("Buffer pointer is at %p with size %d\n", buffer, (ColumnSize+1)*rows);
+//			printf("Buffer pointer is at %p with size %d\n", buffer, (ColumnSize+1)*rows);
 			
 			_DataType = DataType;
 			bound = 1;
@@ -1643,15 +1643,15 @@ printf("lbBoundColumn::bindColumn(...) called\n");
 /*...e*/
 		case SQL_INTEGER:
 /*...sbind an integer:24:*/
-printf("Bind an integer (malloc)\n");
+//printf("Bind an integer (malloc)\n");
 			buffer = malloc((sizeof(long))*rows);
-printf("Bind an integer\n");			
+//printf("Bind an integer\n");			
 			_DataType = DataType;
 			bound = 1;
 			memset(buffer, 0, sizeof(long)*rows);
-printf("Call SQLBindCol\n");
+//printf("Call SQLBindCol\n");
 			SQLBindCol(hstmt, column, DataType, buffer, sizeof(long), &cbBufferLength);
-printf("Called\n");			
+//printf("Called\n");			
 			if (ret != SQL_SUCCESS) {
 			        printf("Error while binding a column!\n");
 			        q->dbError("SQLBindCol()");

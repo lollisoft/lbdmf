@@ -257,6 +257,10 @@ class lb_I_Unknown {
 protected:
 	lb_I_Unknown() {}
 	virtual ~lb_I_Unknown() {}
+
+private:
+	lb_I_Unknown& operator=(const lb_I_Unknown& rhs);
+	lb_I_Unknown* operator=(const lb_I_Unknown* rhs);
 	
 public:
 	virtual lbErrCodes LB_STDCALL release(char* file, int line) = 0;
@@ -338,12 +342,14 @@ public:
 			if (_autoPtr != NULL) { \
 				if (allowDelete != 1) { \
 					if (_autoPtr->deleteState() == 1) { \
-						_CL_LOG << "Error: Instance would be deleted, but it's not allowed !!" LOG_ \
+						printf("Error: Instance would be deleted, but it's not allowed !!\n"); \
 					} \
 				} \
 				if (_line == -1) { \
 				} \
+				printf("Release instance " #Unknown_Reference "\n"); \
 				RELEASE_1(_autoPtr, _file, _line); \
+				printf("Released\n"); \
 			} \
 		} \
 		void LB_STDCALL setFile(char* __file) { \

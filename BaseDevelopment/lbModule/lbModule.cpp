@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.70 $
+ * $Revision: 1.71 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.70 2004/05/08 10:54:17 lollisoft Exp $
+ * $Id: lbModule.cpp,v 1.71 2004/05/27 08:14:53 lollisoft Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.71  2004/05/27 08:14:53  lollisoft
+ * Implemented complete MSVC IDE project. It compiles, but has runtime errors. The project files have no clear location layout.
+ *
  * Revision 1.70  2004/05/08 10:54:17  lollisoft
  * free memory bug, variable uninitialized
  *
@@ -1871,7 +1874,12 @@ lb_I_FunctorEntity* LB_STDCALL lbHCInterfaceRepository::getFirstEntity() {
 // Add code here to overload exsisting interface definitions by custom repository
 
 #ifndef LINUX
-#define PREFIX "_"
+	#ifdef __WATCOMC__
+	#define PREFIX "_"
+	#endif
+	#ifdef _MSC_VER
+	#define PREFIX ""
+	#endif
 #endif
 #ifdef LINUX
 #define PREFIX ""
@@ -2282,8 +2290,8 @@ END_IMPLEMENT_LB_UNKNOWN()
 
 /*...slb_I_XMLConfig\42\ LB_STDCALL lbModule\58\\58\getXMLConfigObject\40\\41\:0:*/
 extern "C" {
-typedef lbErrCodes LB_FUNCTORCALL (* T_pLB_GETXML_CONFIG_INSTANCE) (lb_I_XMLConfig** inst, lb_I_Module* m, char* file, int line);
-T_pLB_GETXML_CONFIG_INSTANCE DLL_LB_GETXML_CONFIG_INSTANCE;
+typedef lbErrCodes LB_FUNCTORCALL T_LB_GETXML_CONFIG_INSTANCE (lb_I_XMLConfig** inst, lb_I_Module* m, char* file, int line);
+T_LB_GETXML_CONFIG_INSTANCE* DLL_LB_GETXML_CONFIG_INSTANCE;
 }
 
 #ifdef USE_INTERFACE_REPOSITORY
@@ -2296,7 +2304,12 @@ void LB_STDCALL lbModule::getXMLConfigObject(lb_I_InterfaceRepository** inst) {
 #define USE_HARDCODED_REPOSITORY        
 #ifdef USE_HARDCODED_REPOSITORY        
 #ifndef LINUX
-#define PREFIX "_"
+	#ifdef __WATCOMC__
+	#define PREFIX "_"
+	#endif
+	#ifdef _MSC_VER
+	#define PREFIX ""
+	#endif
 #endif
 #ifdef LINUX
 #define PREFIX ""

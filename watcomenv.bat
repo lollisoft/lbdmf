@@ -103,7 +103,7 @@ REM __stdcall convention
 REM set LBMODULEFUNCTOR=_getlb_ModuleInstance@4
 
 REM __cdecl convention
-set LBMODULEFUNCTOR=_getlb_ModuleInstance
+set LBMODULEFUNCTOR=getlb_ModuleInstance
 
 start %1
 exit
