@@ -222,7 +222,7 @@ lbErrCodes LB_STDCALL lbQuery::init(HENV henv, HDBC _hdbc) {
                 return ERR_DB_ALLOCSTATEMENT;
         }
 
-	retcode = SQLSetStmtAttr(hstmt, SQL_ATTR_CURSOR_SCROLLABLE, (void*) SQL_SCROLLABLE, 0);
+	//retcode = SQLSetStmtAttr(hstmt, SQL_ATTR_CURSOR_SCROLLABLE, (void*) SQL_SCROLLABLE, 0);
 
         if (retcode != SQL_SUCCESS)
         {
