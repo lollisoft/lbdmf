@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.9 $
+# * $Revision: 1.10 $
 # * $Name:  $
-# * $Id: Makefile,v 1.9 2004/10/09 17:22:51 lollisoft Exp $
+# * $Id: Makefile,v 1.10 2004/10/09 18:01:27 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.10  2004/10/09 18:01:27  lollisoft
+# * Added distclean feature
+# *
 # * Revision 1.9  2004/10/09 17:22:51  lollisoft
 # * Changed make process for wx based apps
 # *
@@ -71,6 +74,11 @@ all_targets: $(ALLTARGETS)
 clean:
 	@for d in $(ALLTARGETS); do \
 	    $(MAKE) -C $$d clean || exit $? ; \
+	done
+
+distclean:
+	@for d in $(ALLTARGETS); do \
+	    $(MAKE) -C $$d distclean || exit $? ; \
 	done
 
 

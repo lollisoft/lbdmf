@@ -11,11 +11,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.39 $
+ * $Revision: 1.40 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.39 2004/10/09 16:16:44 lollisoft Exp $
+ * $Id: mkmk.cpp,v 1.40 2004/10/09 18:00:24 lollisoft Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.40  2004/10/09 18:00:24  lollisoft
+ * Added distclean feature
+ *
  * Revision 1.39  2004/10/09 16:16:44  lollisoft
  * Added clean feature for linux
  *
@@ -825,6 +828,7 @@ void writeLibTarget(char* modulename) {
 #endif
 
 void write_clean(char* modulename = NULL) {
+    // Write the normal clean rule
     printf("clean:\n");
     printf("\t\t-rm *.o\n");
     if (modulename == NULL) {
@@ -832,6 +836,18 @@ void write_clean(char* modulename = NULL) {
     } else {
 	printf("\t\t-rm %s\n", modulename);
     }
+    
+    // Write the distclean rule
+    printf("distclean:\n");
+    printf("\t\t-rm *.o\n");
+    printf("\t\t-rm makefile\n");
+    printf("\t\t-rm *.log\n");
+    if (modulename == NULL) {
+        printf("\t\t-rm *.so.*\n");
+    } else {
+	printf("\t\t-rm %s\n", modulename);
+    }
+    
 }
 
 /*...swrite_so_Target\40\char\42\ modulename\41\ create a UNIX shared library:0:*/
