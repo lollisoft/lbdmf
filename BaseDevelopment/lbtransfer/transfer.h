@@ -114,7 +114,6 @@ public:
 	 */
 
 	void add(int i);
-	void add(unsigned long ul);
 	void add(const char* c);
 	void add(short s);
 	void add(long l);
@@ -125,7 +124,6 @@ public:
 
 /*...sgetters:8:*/
 	lbErrCodes get(int& i);
-	lbErrCodes get(unsigned long& ul);
 	lbErrCodes get(char* & c);
 	lbErrCodes get(short & s);
 	lbErrCodes get(long & l);
@@ -161,7 +159,7 @@ public:
 class DLLEXPORT lbTransfer {
 public:
 	lbTransfer();
-	~lbTransfer();
+	virtual ~lbTransfer();
 
 	/**
 	 * The target parameter is build up like an internet address.
@@ -177,7 +175,6 @@ public:
 	int accept(lbTransfer*& t);
 
 	void operator<< (const lb_Transfer_Data& req);
-
 	void operator>> (lb_Transfer_Data& res);
 
 	/**
@@ -186,6 +183,8 @@ public:
 	int isValid();
 
 	int gethostname(char* &name);
+	
+	lbErrCodes getLastError();
 private:
 	lbTransfer(lbTransfer* t);
 
@@ -211,6 +210,8 @@ private:
 	int connected;
 	
 	LB_TRANSFER_STATE state;
+	
+	lbErrCodes lastError;
 	
 	/**
 	 * This authentification parameters are initialized once per
