@@ -134,7 +134,7 @@ void main(int argc, char *argv[]) {
 /*...e*/
 /*...stest after unloading:0:*/
 	mm = getModuleInstance();
-	LOG("Test logging after initializing the second one")
+	_LOG << "Test logging after initializing the second one" LOG_
 	CL_LOG("Tested logging after initializing the second one")
 /*...e*/
 	
@@ -378,7 +378,7 @@ void main(int argc, char *argv[]) {
         for (long ii = 0; ii < 10000000; ii++) {
 #endif
 printf("Test LOG macro\n");
-LOG("Call lb_I_Module->load()");
+	_LOG << "Call lb_I_Module->load()" LOG_
 getch();
 
 		

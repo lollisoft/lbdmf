@@ -260,9 +260,6 @@ public:
 					} \
 				} \
 				if (_line == -1) { \
-				char buf[200] = ""; \
-					sprintf(buf, "Warning: No reference has been taken in %s at %d (UAP is in %s at %d", #Unknown_Reference, _line, file, line); \
-					CL_LOG(buf); \
 				} \
 				RELEASE_1(_autoPtr, _file, _line); \
 			} \
@@ -288,23 +285,14 @@ public:
 		} \
 		\
 		interface& operator * () { \
-		char buf[200] = ""; \
-		sprintf(buf, "Warning: Using reference to UAP pointer in %s at %d", file, line); \
-		CL_LOG(buf) \
 		return *_autoPtr; } \
 		interface* operator -> () const { \
 			if (_autoPtr == NULL) { \
-				char buf[200] = ""; \
-				sprintf(buf, "Error: UAP pointer (%s) for interface %s is NULL!", #Unknown_Reference, #interface); \
-				CL_LOG(buf); \
 			} \
 			return _autoPtr; \
 		} \
 		interface* operator -> () { \
 			if (_autoPtr == NULL) { \
-				char buf[200] = ""; \
-				sprintf(buf, "Error: UAP pointer (%s) for interface %s is NULL!", #Unknown_Reference, #interface); \
-				CL_LOG(buf); \
 			} \
 			return _autoPtr; \
 		} \
@@ -364,7 +352,6 @@ public:
 \
 		private: \
 		UAP##Unknown_Reference(UAP##Unknown_Reference& from) { \
-			LOG("Copy constructor called!") \
 		} \
 		public: \
 	        UAP##Unknown_Reference() { \
@@ -377,13 +364,11 @@ public:
 			if (_autoPtr != NULL) { \
 				if (allowDelete != 1) { \
 					if (_autoPtr->deleteState() == 1) { \
-						LOG("Error: Instance would be deleted, but it's not allowed !!"); \
+						_LOG << "Error: Instance would be deleted, but it's not allowed !!" LOG_ \
 					} \
 				} \
 				if (_line == -1) { \
-				char buf[200] = ""; \
-					sprintf(buf, "Warning: No reference has been taken in %s at %d (UAP is in %s at %d", #Unknown_Reference, _line, file, line); \
-					LOG(buf); \
+					_LOG << "Warning: No reference has been taken in " << #Unknown_Reference << " at " << _line << " (UAP is in " << file << " at " << line LOG_ \
 				} \
 				RELEASE_1(_autoPtr, _file, _line); \
 			} \
@@ -399,34 +384,23 @@ public:
 		interface* getPtr() const { return _autoPtr; } \
 		void setPtr(interface*& source) { \
 			if (_autoPtr != NULL) { \
-				LOG("Error: UAP object still initialized!"); \
+				_LOG << "Error: UAP object still initialized!" LOG_ \
 			} \
 			_autoPtr = source; \
 		} \
 		\
 		interface& operator * () { \
-		char buf[200] = ""; \
-		sprintf(buf, "Warning: Using reference to UAP pointer in %s at %d", file, line); \
-		LOG(buf) \
+		_LOG << "Warning: Using reference to UAP pointer in " << file << " at " <<  line LOG_ \
 		return *_autoPtr; } \
 		interface* operator -> () const { \
 			if (_autoPtr == NULL) { \
-				char buf[200] = ""; \
-				sprintf(buf, "Error: UAP pointer (%s) for interface %s is NULL!", #Unknown_Reference, #interface); \
-				LOG(buf); \
+				_LOG << "Error: UAP pointer (" << #Unknown_Reference << ") for interface " << #interface << " is NULL!" LOG_ \
 			} \
 			return _autoPtr; \
 		} \
 		interface* operator -> () { \
 			if (_autoPtr == NULL) { \
-				char buf[200] = ""; \
-				sprintf(buf, "Error: UAP pointer (%s) for interface %s is NULL!", #Unknown_Reference, #interface); \
-				LOG(buf); \
-			} \
-			char ptr[20] = ""; \
-			sprintf(ptr, "%p", (void*) _autoPtr); \
-			if (strcmp(ptr, "cdcdcdcd") == 0) { \
-			        LOG("Error: Uninitialized pointer will be used!"); \
+				_LOG << "Error: UAP pointer (" << #Unknown_Reference << ") for interface " << #interface << " is NULL!" LOG_ \
 			} \
 			return _autoPtr; \
 		} \
@@ -445,12 +419,7 @@ public:
 		} \
 		\
 		UAP##Unknown_Reference& operator = (interface* autoPtr) { \
-			char ptr[20] = ""; \
-			sprintf(ptr, "%p", (void*) autoPtr); \
-			if (strcmp(ptr, "cdcdcdcd") == 0) { \
-				LOG("Error: Uninitialized pointer will be set!"); \
-				_autoPtr = NULL; \
-			} else _autoPtr = autoPtr; \
+			_autoPtr = autoPtr; \
 			return *this; \
 		} \
 		int operator == (const interface* b) const { \
@@ -497,7 +466,7 @@ public:
 // Use this for an stack like environment. It will automatically deleted, if scope is gone.
 #define UAP_REQUEST(mm, interface, variable) \
   	UAP(lb_I_Unknown, uk##variable, __FILE__, __LINE__) \
-  	if (mm->request(#interface, &uk##variable) == ERR_MODULE_NO_INTERFACE) LOG("Error: Interface not defined"); \
+  	if (mm->request(#interface, &uk##variable) == ERR_MODULE_NO_INTERFACE) _LOG << "Error: Interface not defined" LOG_ \
   	UAP(interface, variable, __FILE__, __LINE__) \
   	uk##variable->setModuleManager(mm, __FILE__, __LINE__); \
   	uk##variable->queryInterface(#interface, (void**) &variable, __FILE__, __LINE__);
@@ -552,9 +521,10 @@ char* LB_STDCALL classname::getClassName() { \
 	return #classname; \
 } \
 char* LB_STDCALL classname::_queryInterface(char* name, void** unknown, char* file, int line) { \
-	static char ID[1000] = ""; \
-	sprintf(ID, "FILE:%s,LINE:%d", file, line); \
-	\
+	char* ID = new char[strlen(name)+strlen(#classname)+strlen(file)+1]; \
+	strcat(ID, name); \
+	strcat(ID, #classname); \
+	strcat(ID, file); \
 	lbErrCodes err = ERR_NONE; \
 	if ((err = queryInterface(name, unknown, file, line)) != ERR_NONE) { \
 		CL_LOG("Error: queryInterface failed (in _queryInterface)!") \

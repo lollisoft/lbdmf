@@ -1,10 +1,15 @@
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.23 $
+# * $Revision: 1.24 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.23 2002/10/01 19:23:12 lothar Exp $
+# * $Id: STD_MAKE,v 1.24 2002/10/04 16:53:12 lothar Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.24  2002/10/04 16:53:12  lothar
+# * Replaced old LOG macro with the new
+# * _LOG << "text" << integer value LOG_
+# * combination. This makes sprintf obsolete.
+# *
 # * Revision 1.23  2002/10/01 19:23:12  lothar
 # * Broken
 # *
@@ -114,18 +119,15 @@ $(WATCOM_THREAD_MODEL) \
 $(WATCOM_CALLING_CONV) \
 $(WATCOM_STACK)
 
-
-#-w4 -e25 -dWINDOWS -ei -zp4 -zq -otexan -d2 -bm -5r -bt=nt -mf
-
 OBJ =obj
 # Watcom
-C_EXEOPS_WATCOM_DEBUG= $(WATCOM_STD_C_OPS) $(WATCOM_STDDEBUG) -ei -zp4 -bt=nt -mf -hd
+C_EXEOPS_WATCOM_DEBUG= $(WATCOM_STD_C_OPS) $(WATCOM_STDDEBUG)                      -ei -zp4 -bt=nt -mf -hd
 
-C_DLLOPS_WATCOM   =  $(WATCOM_STD_C_OPS) $(WATCOM_DLLTARGET) -ei -zp4 -bt=nt -mf -hd
+C_DLLOPS_WATCOM   =  $(WATCOM_STD_C_OPS) $(WATCOM_DLLTARGET)                       -ei -zp4 -bt=nt -mf -hd
 
 C_DLLOPS_WATCOM_DEBUG = $(WATCOM_STD_C_OPS) $(WATCOM_STDDEBUG) $(WATCOM_DLLTARGET) -ei -zp4 -bt=nt -mf -hd
 
-C_LIBOPS_WATCOM   =  $(WATCOM_STD_C_OPS) $(WATCOM_LIBTARGET) -ei -zp4 -bt=nt -mf -hd
+C_LIBOPS_WATCOM   =  $(WATCOM_STD_C_OPS) $(WATCOM_LIBTARGET)                       -ei -zp4 -bt=nt -mf -hd
 
 C_LIBOPS_WATCOM_DEBUG = $(WATCOM_STD_C_OPS) $(WATCOM_STDDEBUG) $(WATCOM_LIBTARGET) -ei -zp4 -bt=nt -mf -hd
 
@@ -135,12 +137,18 @@ RM =del
 # Microsoft
 OUTDIR=.
 INTDIR=.
-C_EXEOPS_MICROSOFT = /Gd /nologo /MT /W3 /GX /O2  /D "WINDOWS" /D "LB_RUNTIME_LINK" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "LBDOMCONFIG_EXPORTS" /Fp"$(INTDIR)\lbDOMConfig.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
-C_EXEOPS_MICROSOFT_DEBUG = /Gd /nologo /MDd /W3 /Gm /GX /ZI /Od /D "WINDOWS" /D "LB_RUNTIME_LINK" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "LBDOMCONFIG_EXPORTS" /Fp"$(INTDIR)\lbDOMConfig.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
-C_DLLOPS_MICROSOFT = /Gd /nologo /MT /W3 /GX /O2  /D "WINDOWS" /D "LB_RUNTIME_LINK" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "LBDOMCONFIG_EXPORTS" /Fp"$(INTDIR)\lbDOMConfig.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
-C_DLLOPS_MICROSOFT_DEBUG = /Gd /nologo /MT /W3 /GX /O2  /D "WINDOWS" /D "LB_RUNTIME_LINK" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "LBDOMCONFIG_EXPORTS" /Fp"$(INTDIR)\lbDOMConfig.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
-#C_DLLOPS_MICROSOFT_DEBUG = /nologo /MDd /W3 /Gm /GX /ZI /Od /D "WINDOWS" /I "Q:\Develop\xml\xml4csrc3_3_1\src" /I "Q:\Develop\Projects\CPP\include" /I "Q:\Develop\Projects\CPP\interfaces" /I "Q:\Develop\Projects\CPP\basedevelopment\lbclasses" /D "LB_RUNTIME_LINK" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "LBDOMCONFIG_EXPORTS" /Fp"./lbDOMConfig.pch" /YX /Fo"./" /Fd"./" /FD /GZ /c 
-#                       /Gd /nologo /MDd /W3 /Gm /GX /ZI /Od /D "WINDOWS" /D "LB_RUNTIME_LINK" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "LBDOMCONFIG_EXPORTS" /Fp"$(INTDIR)\lbDOMConfig.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+MSC_BASIC_EXE      = /Gd /nologo /W3 /GX /O2  /D "WINDOWS" /D "LB_RUNTIME_LINK" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "LBDOMCONFIG_EXPORTS" /Fp"$(INTDIR)\lbDOMConfig.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+MSC_BASIC_EXE_NODBG= /MT  /O2         
+MSC_BASIC_EXE_DEBUG= /MDd /Gm /ZI /Od /YX 
+
+
+
+
+C_EXEOPS_MICROSOFT =        /Gd /nologo /MT  /W3     /GX /O2          /D "WINDOWS" /D "LB_RUNTIME_LINK" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "LBDOMCONFIG_EXPORTS" /Fp"$(INTDIR)\lbDOMConfig.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+C_EXEOPS_MICROSOFT_DEBUG =  /Gd /nologo /MDd /W3 /Gm /GX      /ZI /Od /D "WINDOWS" /D "LB_RUNTIME_LINK" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "LBDOMCONFIG_EXPORTS" /Fp"$(INTDIR)\lbDOMConfig.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+C_DLLOPS_MICROSOFT =        /Gd /nologo /MT  /W3     /GX /O2          /D "WINDOWS" /D "LB_RUNTIME_LINK" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "LBDOMCONFIG_EXPORTS" /Fp"$(INTDIR)\lbDOMConfig.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+C_DLLOPS_MICROSOFT_DEBUG =  /Gd /nologo /MDd /W3     /GX /O2          /D "WINDOWS" /D "LB_RUNTIME_LINK" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "LBDOMCONFIG_EXPORTS" /Fp"$(INTDIR)\lbDOMConfig.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+
 LINK_MICROSOFT=link.exe
  
 LINK_MICROSOFT_OBJS= \

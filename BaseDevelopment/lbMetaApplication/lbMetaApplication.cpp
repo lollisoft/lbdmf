@@ -1,11 +1,16 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.12 $
+ * $Revision: 1.13 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.12 2002/10/01 19:22:59 lothar Exp $
+ * $Id: lbMetaApplication.cpp,v 1.13 2002/10/04 16:53:11 lothar Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.13  2002/10/04 16:53:11  lothar
+ * Replaced old LOG macro with the new
+ * _LOG << "text" << integer value LOG_
+ * combination. This makes sprintf obsolete.
+ *
  * Revision 1.12  2002/10/01 19:22:59  lothar
  * Broken
  *
@@ -101,7 +106,7 @@ lb_EvHandler::lb_EvHandler() {
 }
 
 lb_EvHandler::~lb_EvHandler() {
-	LOG("lb_EvHandler::~lb_EvHandler() called")
+	_LOG << "lb_EvHandler::~lb_EvHandler() called" LOG_
 }
 
 lbErrCodes LB_STDCALL lb_EvHandler::setData(lb_I_Unknown* uk) {
@@ -141,11 +146,11 @@ lbErrCodes LB_STDCALL lb_EvHandler::call(lb_I_Unknown* evData, lb_I_Unknown** ev
 /*...sctors\47\dtors:0:*/
 lb_MetaApplication::lb_MetaApplication() {
 	ref = STARTREF;
-	LOG("Instance of lb_I_MetaApplication created")
+	_LOG << "Instance of lb_I_MetaApplication created" LOG_
 }
 
 lb_MetaApplication::~lb_MetaApplication() {
-	LOG("Instance of lb_I_MetaApplication destroyed")
+	_LOG << "Instance of lb_I_MetaApplication destroyed" LOG_
 }
 /*...e*/
 
@@ -161,12 +166,12 @@ lbErrCodes LB_STDCALL lb_MetaApplication::registerEventHandler(lb_I_Dispatcher* 
 
 /*...sevent handlers\44\ that can be registered:0:*/
 lbErrCodes LB_STDCALL lb_MetaApplication::lbEvHandler1(lb_I_Unknown* uk) {
-	LOG("lb_MetaApplication::lbEvHandler1() called")
+	_LOG << "lb_MetaApplication::lbEvHandler1() called" LOG_
 	return ERR_NONE;
 }
 
 lbErrCodes LB_STDCALL lb_MetaApplication::lbEvHandler2(lb_I_Unknown* uk) {
-	LOG("lb_MetaApplication::lbEvHandler2() called")
+	_LOG << "lb_MetaApplication::lbEvHandler2() called" LOG_
 	return ERR_NONE;
 }
 /*...e*/
@@ -178,7 +183,7 @@ END_IMPLEMENT_LB_UNKNOWN()
 
 /*...slbErrCodes LB_STDCALL lb_MetaApplication\58\\58\setData\40\lb_I_Unknown\42\ uk\41\:0:*/
 lbErrCodes LB_STDCALL lb_MetaApplication::setData(lb_I_Unknown* uk) {
-	LOG("lb_MetaApplication::setData() has not been implemented");
+	_LOG << "lb_MetaApplication::setData() has not been implemented" LOG_
 	
 	return ERR_NONE;
 }
@@ -257,10 +262,10 @@ lbErrCodes LB_STDCALL lb_MetaApplication::Initialize() {
 	 * environment variable (TARGET_APPLICATION)
 	 */
 	
-//	addMenuBar("Edit");
-//	LOG("Added first menu bar")
-//	addMenuBar("Help");
-//	LOG("Added second menu bar")
+	addMenuBar("Edit");
+	_LOG << "Added first menu bar" LOG_
+	addMenuBar("Help");
+	_LOG << "Added second menu bar" LOG_
 
 	// Let the GUI show a message box
 	
@@ -304,11 +309,11 @@ lbErrCodes LB_STDCALL lb_MetaApplication::addMenuBar(char* name) {
 	UAP(lb_I_Unknown, uk_result, __FILE__, __LINE__)
 	QI(result, lb_I_Unknown, uk_result, __FILE__, __LINE__)
 
-	if (uk == NULL) LOG("Error: Cannot call with a null pointer!")	
+	if (uk == NULL) _LOG << "Error: Cannot call with a null pointer!" LOG_
 	
-	LOG("Begin dispatch function")	
+	_LOG << "Begin dispatch function" LOG_
 	dispatcher->dispatch("AddMenuBar", uk.getPtr(), &uk_result);
-	LOG("Have dispatched function")
+	_LOG << "Have dispatched function" LOG_
 	
 	return err;
 }
@@ -325,7 +330,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::addMenuEntry(char* in_menu, char* entr
 /*...slb_EventMapper:0:*/
 lb_EventMapper::lb_EventMapper() {
 	ref = STARTREF;
-	LOG("Instance of lb_I_EventMapper created")
+	_LOG << "Instance of lb_I_EventMapper created" LOG_
 	_name = NULL;
 }
 
@@ -340,7 +345,7 @@ BEGIN_IMPLEMENT_LB_UNKNOWN(lb_EventMapper)
 END_IMPLEMENT_LB_UNKNOWN()
 
 lbErrCodes LB_STDCALL lb_EventMapper::setData(lb_I_Unknown* uk) {
-	LOG("lb_EventMapper::setData() has not been implemented");
+	_LOG << "lb_EventMapper::setData() has not been implemented" LOG_
 	
 	return ERR_NONE;
 }
@@ -371,17 +376,17 @@ BEGIN_IMPLEMENT_LB_UNKNOWN(lb_EventManager)
 END_IMPLEMENT_LB_UNKNOWN()
 
 lb_EventManager::lb_EventManager() {
-	LOG("lb_EventManager::lb_EventManager() called")
+	_LOG << "lb_EventManager::lb_EventManager() called" LOG_
 	maxEvId = 0;
 }
 
 lb_EventManager::~lb_EventManager() {
-	LOG("lb_EventManager::~lb_EventManager() called")
+	_LOG << "lb_EventManager::~lb_EventManager() called" LOG_
 	DebugBreak();
 }
 	
 lbErrCodes LB_STDCALL lb_EventManager::setData(lb_I_Unknown* uk) {
-	LOG("lb_EventManager::setData() has not been implemented");
+	_LOG << "lb_EventManager::setData() has not been implemented" LOG_
 	
 	return ERR_NONE;
 }
@@ -413,10 +418,10 @@ lbErrCodes LB_STDCALL lb_EventManager::registerEvent(char* EvName, int & EvNr) {
 /*...e*/
 	
 /*...sError handling:8:*/
-	if (events == NULL) LOG("Nullpointer detected (events)!")
-	if (*&sk == NULL) LOG("Nullpointer detected (sk)!")
+	if (events == NULL) _LOG << "Nullpointer detected (events)!" LOG_
+	if (*&sk == NULL) _LOG << "Nullpointer detected (sk)!" LOG_
 	if (events->exists(&sk) == 1) {
-		LOG("lb_EventManager::registerEvent(): Error: Event schon registriert")
+		_LOG << "lb_EventManager::registerEvent(): Error: Event schon registriert" LOG_
 		return ERR_EVENT_EXISTS;
 	}
 /*...e*/
@@ -461,7 +466,7 @@ lbErrCodes LB_STDCALL lb_EventManager::registerEvent(char* EvName, int & EvNr) {
 
 
 	if (events->exists(&sk) != 1) {
-		LOG("lb_EventManager::registerEvent(): Error: Event could not be registered")
+		_LOG << "lb_EventManager::registerEvent(): Error: Event could not be registered" LOG_
 		return ERR_EVENT_NOTREGISTERED;
 	}
 	
@@ -490,7 +495,7 @@ lbErrCodes LB_STDCALL lb_EventManager::resolveEvent(char* EvName, int & evNr) {
 		QI(object, lb_I_Integer, i, __FILE__, __LINE__)
 		evNr = i->getData();
 	} else {
-		LOG("Error: Event name not registered")
+		_LOG << "Error: Event name not registered" LOG_
 	}
 /*...e*/
 
@@ -503,23 +508,23 @@ BEGIN_IMPLEMENT_LB_UNKNOWN(lb_Dispatcher)
 END_IMPLEMENT_LB_UNKNOWN()
 
 lb_Dispatcher::lb_Dispatcher() {
-	LOG("lb_Dispatcher::lb_Dispatcher() called")
+	_LOG << "lb_Dispatcher::lb_Dispatcher() called" LOG_
 }
 
 lb_Dispatcher::~lb_Dispatcher() {
-	LOG("lb_Dispatcher::~lb_Dispatcher() called")
+	_LOG << "lb_Dispatcher::~lb_Dispatcher() called" LOG_
 }
 
 /*...slbErrCodes LB_STDCALL lb_Dispatcher\58\\58\setData\40\lb_I_Unknown\42\ uk\41\:0:*/
 lbErrCodes LB_STDCALL lb_Dispatcher::setData(lb_I_Unknown* uk) {
-	LOG("lb_Dispatcher::setData() has not been implemented");
+	_LOG << "lb_Dispatcher::setData() has not been implemented" LOG_
 	
 	return ERR_NONE;
 }
 /*...e*/
 /*...slbErrCodes LB_STDCALL lb_Dispatcher\58\\58\setEventManager\40\lb_I_EventManager\42\ EvManager\41\:0:*/
 lbErrCodes LB_STDCALL lb_Dispatcher::setEventManager(lb_I_EventManager* EvManager) {
-	LOG("lb_Dispatcher::setEventManager() called")
+	_LOG << "lb_Dispatcher::setEventManager() called" LOG_
 	
 	evManager = EvManager;
 	evManager++;
@@ -567,13 +572,13 @@ lbErrCodes LB_STDCALL lb_Dispatcher::addEventHandlerFn(lb_I_EventHandler* evHand
         	dispatcher->remove(&k);
 	}
 
-	if ((err = dispatcher->insert(&e, &k)) != ERR_NONE) LOG("Error: Inserting new container element failed")
+	if ((err = dispatcher->insert(&e, &k)) != ERR_NONE) _LOG << "Error: Inserting new container element failed" LOG_
 
 	UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
 
 	uk = dispatcher->getElement(&k);
 	
-	if (uk == NULL) LOG("Error: Adding event handler failed (not stored)")
+	if (uk == NULL) _LOG << "Error: Adding event handler failed (not stored)" LOG_
 	
 	return ERR_NONE;
 }
@@ -581,25 +586,25 @@ lbErrCodes LB_STDCALL lb_Dispatcher::addEventHandlerFn(lb_I_EventHandler* evHand
 
 /*...slbErrCodes LB_STDCALL lb_Dispatcher\58\\58\addDispatcher\40\lb_I_Dispatcher\42\ disp\41\:0:*/
 lbErrCodes LB_STDCALL lb_Dispatcher::addDispatcher(lb_I_Dispatcher* disp) {
-	LOG("lb_Dispatcher::addDispatcher() called")
+	_LOG << "lb_Dispatcher::addDispatcher() called" LOG_
 	return ERR_NONE;
 }
 /*...e*/
 /*...slbErrCodes LB_STDCALL lb_Dispatcher\58\\58\delDispatcher\40\lb_I_Dispatcher\42\ disp\41\:0:*/
 lbErrCodes LB_STDCALL lb_Dispatcher::delDispatcher(lb_I_Dispatcher* disp) {
-	LOG("lb_Dispatcher::delDispatcher() called")
+	_LOG << "lb_Dispatcher::delDispatcher() called" LOG_
 	return ERR_NONE;
 }
 /*...e*/
 /*...slb_I_DispatchResponce\42\ lb_Dispatcher\58\\58\dispatch\40\lb_I_DispatchRequest\42\ req\41\:0:*/
 lb_I_DispatchResponce* lb_Dispatcher::dispatch(lb_I_DispatchRequest* req) {
-	LOG("lb_Dispatcher::dispatch() called")
+	_LOG << "lb_Dispatcher::dispatch() called" LOG_
 	return NULL;
 }
 /*...e*/
 /*...slbErrCodes LB_STDCALL lb_Dispatcher\58\\58\dispatch\40\int EvNr\44\ lb_I_Unknown\42\ EvData\44\ lb_I_Unknown\42\\42\ EvResult\41\:0:*/
 lbErrCodes LB_STDCALL lb_Dispatcher::dispatch(int EvNr, lb_I_Unknown* EvData, lb_I_Unknown** EvResult) {
-	LOG("lb_Dispatcher::dispatchEvent() called")
+	_LOG << "lb_Dispatcher::dispatchEvent() called" LOG_
 	return ERR_NONE;
 }
 /*...e*/
@@ -611,13 +616,11 @@ lbErrCodes LB_STDCALL lb_Dispatcher::dispatch(char* EvName, lb_I_Unknown* EvData
 	
 	evManager->resolveEvent(EvName, id);
 
-	char buf[100] = "";
-	sprintf(buf, "Resolved this event id (%d) from %s", id, EvName);
-	LOG(buf)
+	_LOG << "Resolved this event id (" << id << ") from " << EvName LOG_
 
 	UAP_REQUEST(manager.getPtr(), lb_I_Integer, i)
 	i->setData(id);
-	LOG("Set the event id")
+	_LOG << "Set the event id" LOG_
 	
 	UAP(lb_I_KeyBase, ik, __FILE__, __LINE__)
 	QI(i, lb_I_KeyBase, ik, __FILE__, __LINE__)
@@ -626,23 +629,23 @@ lbErrCodes LB_STDCALL lb_Dispatcher::dispatch(char* EvName, lb_I_Unknown* EvData
 	UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
 	UAP(lb_I_EvHandler, ev, __FILE__, __LINE__)
 	
-	LOG("Get the handler out from the dispatcher")
+	_LOG <<"Get the handler out from the dispatcher" LOG_
 	
 	if (dispatcher == NULL) {
-		LOG("Error: Have no dispatcher")
+		_LOG << "Error: Have no dispatcher" LOG_
 	} else {
 	
 		uk = dispatcher->getElement(&ik);
 	
-		if (uk == NULL) LOG("Error: Could not get the handler from the id")
+		if (uk == NULL) _LOG << "Error: Could not get the handler from the id" LOG_
 	
 		QI(uk, lb_I_EvHandler, ev, __FILE__, __LINE__)
 
-		LOG("Call handler now")
+		_LOG << "Call handler now" LOG_
 	
 		ev->call(EvData, EvResult);
 	
-		LOG("Called handler now")
+		_LOG << "Called handler now" LOG_
 	}
 
 	return ERR_NONE;

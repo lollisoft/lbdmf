@@ -155,7 +155,7 @@ lbAppClient* lbAppBusClient::getClientInstance(char* scope) {
 	 * Create the client with the needed data here.
 	 */
 
-	if (cl == NULL) LOG("lbAppBusClient::getClientInstance(...) returns a NULL pointer !!!");
+	if (cl == NULL) _LOG << "lbAppBusClient::getClientInstance(...) returns a NULL pointer !!!" LOG_
 	return cl;
 }
 /*...e*/
@@ -288,10 +288,10 @@ int lbAppBusClient::Echo(char* msg) {
 
 	*ABSConnection << data;
 	if (ABSConnection->getLastError() != ERR_NONE) 
-	    LOG("Error in sending echo data");
+	    _LOG << "Error in sending echo data" LOG_
 	*ABSConnection >> result;
 	if (ABSConnection->getLastError() != ERR_NONE)
-	    LOG("Error in recieving echo answer");
+	    _LOG << "Error in recieving echo answer" LOG_
 	
 /*...shandle result:8:*/
 	// Handle the request

@@ -1,11 +1,16 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.27 $
+ * $Revision: 1.28 $
  * $Name:  $
- * $Id: lbInterfaces-sub-classes.h,v 1.27 2002/10/01 19:23:12 lothar Exp $
+ * $Id: lbInterfaces-sub-classes.h,v 1.28 2002/10/04 16:53:12 lothar Exp $
  *
  * $Log: lbInterfaces-sub-classes.h,v $
+ * Revision 1.28  2002/10/04 16:53:12  lothar
+ * Replaced old LOG macro with the new
+ * _LOG << "text" << integer value LOG_
+ * combination. This makes sprintf obsolete.
+ *
  * Revision 1.27  2002/10/01 19:23:12  lothar
  * Broken
  *
@@ -198,7 +203,7 @@ const char* LB_STDCALL classname::getName() const { \
 \
 ObjectTyp LB_STDCALL classname::getType() const {   \
         if (OTyp == LB_OBJECT) {          \
-                LOG("Derived object has not been initialized correctly!"); \
+                _LOG << "Derived object has not been initialized correctly!" LOG_ \
         }                                 \
         return OTyp;                      \
 }                                         \
@@ -487,11 +492,11 @@ classname::classname() { \
 } \
 \
 lb_I_Unknown* LB_STDCALL classname::getElementAt(int i) { \
-	LOG(#classname "::getElementAt(int i) not implemented") \
+	_LOG << #classname << "::getElementAt(int i) not implemented" LOG_ \
 	return NULL; \
 } \
 lb_I_Unknown* LB_STDCALL getKeyAt(int i) { \
-	LOG(#classname "::getKeyAt(int i) not implemented") \
+	_LOG << #classname << "::getKeyAt(int i) not implemented" LOG_ \
 	return NULL; \
 } \
 classname::~classname() { \
@@ -503,7 +508,7 @@ lbErrCodes classname::insert(const co_Interface* e, const lb_I_KeyBase* key) { \
         lbErrCodes err = ERR_NONE; \
 \
         if ((err = insert((lb_I_Unknown*) e, key)) != ERR_NONE) { \
-                LOG("lbContainer::insert(...) Failed!"); \
+                _LOG << "lbContainer::insert(...) Failed!" LOG_ \
                 return err; \
         } \
 \
@@ -515,7 +520,7 @@ lbErrCodes classname::insert(const lb_I_Unknown* e, const lb_I_KeyBase* key) { \
         lbErrCodes err = ERR_NONE; \
 \
         if ((err = _insert(e, key)) != ERR_NONE) { \
-                LOG("lbContainer::insert(...) Failed!"); \
+                _LOG << "lbContainer::insert(...) Failed!" LOG_ \
                 return err; \
         } \
 \
@@ -527,7 +532,7 @@ lbErrCodes classname::remove(const lb_I_KeyBase* key) { \
         lbErrCodes err = ERR_NONE; \
 \
         if ((err = _remove(key)) != ERR_NONE) { \
-                LOG("lbContainer::remove(...) Failed!"); \
+                _LOG << "lbContainer::remove(...) Failed!" LOG_ \
                 return err; \
         } \
 \
@@ -553,11 +558,11 @@ lb_I_Unknown* classname::nextElement() { \
     lb_I_Element *temp = iterator; \
     iterator = iterator->getNext(); \
 \
-    if (temp == NULL) cout << "Temporary iterator object is NULL!" << endl; \
+    if (temp == NULL) _LOG << "Temporary iterator object is NULL!" LOG_ \
 \
     lb_I_Object *o = temp->getObject(); \
 \
-    if (o == NULL) cout << "Temporary object o is NULL!" << endl; \
+    if (o == NULL) _LOG << "Temporary object o is NULL!" LOG_ \
 \
     return temp->getObject(); \
 } \
@@ -567,7 +572,7 @@ lb_I_Unknown* classname::getElement(const co_Key* key) { \
     while (temp) { \
         if ((temp) && (*(temp->getKey()) == key)) { \
           lb_I_Unknown *o = temp->getObject(); \
-          if (o == NULL) LOG("Temporary object o is NULL!"); \
+          if (o == NULL) _LOG << "Temporary object o is NULL!") LOG_ \
           return o; \
         } \
 \
@@ -907,6 +912,12 @@ public:
     virtual void LB_STDCALL event_begin(char *event) = 0;
     virtual void LB_STDCALL event_end(char *event) = 0;
     virtual void LB_STDCALL setPrefix(char* p) = 0;
+    
+    
+    virtual lb_I_Log& LB_STDCALL operator<< (const int i) = 0;
+    virtual lb_I_Log& LB_STDCALL operator<< (const char c) = 0;
+    virtual lb_I_Log& LB_STDCALL operator<< (const char* string) = 0;
+    
 };
 /*...e*/
 /*...sZThread interfaces:0:*/
