@@ -144,6 +144,9 @@ public:
         virtual lb_I_Container* LB_STDCALL getBoundColumns() = 0;
         virtual lbErrCodes      LB_STDCALL setBoundColumns(lb_I_Container* bc) = 0;
 
+	virtual lb_I_BoundColumn* LB_STDCALL getBoundColumn(int column) = 0;
+	virtual int               LB_STDCALL getColumnCount() = 0;
+
         virtual lbErrCodes      LB_STDCALL getString(int column, lb_I_String* instance) = 0;
         virtual lbErrCodes      LB_STDCALL getString(char* column, lb_I_String* instance) = 0;
 	virtual lbErrCodes      LB_STDCALL setString(char* column, lb_I_String* instance) = 0;        

@@ -79,7 +79,7 @@ void dbError( LPSTR lp, HENV henv,HDBC hdbc,HSTMT hstmt);
 
 
 class lbQuery;
-
+class lbBoundColumn;
 /*...sclass def lbDBView:0:*/
 class lbDBView: public lb_I_MVC_View
 {
@@ -114,6 +114,9 @@ public:
 
         lb_I_Container* LB_STDCALL getBoundColumns();
         lbErrCodes      LB_STDCALL setBoundColumns(lb_I_Container* bc);
+
+	lb_I_BoundColumn* LB_STDCALL getBoundColumn(int column);
+	int		  LB_STDCALL getColumnCount();
 
         /**
          * Set a currently used query to bind their columns.
@@ -152,6 +155,7 @@ public:
 		databound = 0; 
 		count = 0; 
 		firstfetched = 0;
+		lpszTable = NULL;
 	}
 	
 	virtual ~lbQuery() {}
@@ -171,6 +175,8 @@ public:
 	virtual lbErrCodes LB_STDCALL registerView(lb_I_MVC_View* view);
 	virtual lbErrCodes LB_STDCALL unregisterView(lb_I_MVC_View* view);
 /*...e*/
+
+	char* LB_STDCALL getTableName();
 
         /* Set the SQL query */
         virtual lbErrCodes LB_STDCALL query(char* q);
@@ -234,6 +240,7 @@ private:
 	int     firstfetched;
 	int	_readonly; // readonly = 1, else = 0
 	int	mode;  // insert = 1, select = 0
+	char* lpszTable;
 
 #ifdef UNBOUND	
 	UAP(lb_I_Container, boundColumns, __FILE__, __LINE__)
@@ -328,12 +335,58 @@ lbErrCodes LB_STDCALL lbBoundColumns::setData(lb_I_Unknown* uk) {
 }
 
 lb_I_Container* LB_STDCALL lbBoundColumns::getBoundColumns() {
+        _CL_LOG << "lbBoundColumns::getBoundColumns() not implemented yet" LOG_
 	return NULL;
 }
 
 lbErrCodes      LB_STDCALL lbBoundColumns::setBoundColumns(lb_I_Container* bc) {
+        _CL_LOG << "lbBoundColumns::setBoundColumns() not implemented yet" LOG_
 	return ERR_NONE;
 }
+
+/*...slb_I_BoundColumn\42\ LB_STDCALL lbBoundColumns\58\\58\getBoundColumn\40\int column\41\:0:*/
+lb_I_BoundColumn* LB_STDCALL lbBoundColumns::getBoundColumn(int column) {
+	lbErrCodes err = ERR_NONE;
+#ifdef DEBUG
+printf("lbBoundColumns::getBoundColumn(int column) called\n");
+#endif
+	if (boundColumns != NULL) {
+		REQUEST(manager.getPtr(), lb_I_Integer, integerKey) 
+		integerKey->setData(column);
+#ifdef DEBUG
+printf("lbBoundColumns::getBoundColumn(int column)-integerKey->setData(column) called\n");
+#endif
+		UAP(lb_I_Unknown, ukdata, __FILE__, __LINE__)
+		UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
+		
+		QI(integerKey, lb_I_KeyBase, key, __FILE__, __LINE__)
+		ukdata = boundColumns->getElement(&key);
+#ifdef DEBUG
+printf("Have bound column 'ukdata'\n");
+#endif
+		if (ukdata == NULL) printf("NULL pointer!\n");
+
+		UAP(lb_I_BoundColumn, bc, __FILE__, __LINE__)
+#ifdef DEBUG
+printf("Query interface lb_I_BoundColumn\n");
+#endif
+		lbErrCodes err = ukdata->queryInterface("lb_I_BoundColumn", (void**) &bc, __FILE__, __LINE__);
+		bc++;
+#ifdef DEBUG
+printf("Return the pointer of a bound column\n");
+#endif
+		return bc.getPtr();
+	}
+	return NULL;
+}
+/*...e*/
+
+/*...sint             LB_STDCALL lbBoundColumns\58\\58\getColumnCount\40\\41\:0:*/
+int               LB_STDCALL lbBoundColumns::getColumnCount() {
+	return boundColumns->Count();
+}
+/*...e*/
+
 
 /*...slbErrCodes      LB_STDCALL lbBoundColumns\58\\58\setQuery\40\lbQuery\42\ q\41\:0:*/
 lbErrCodes      LB_STDCALL lbBoundColumns::setQuery(lbQuery* q) {
@@ -449,22 +502,11 @@ Therefore I need an indicator, set by the user of this library to know, which on
 lbErrCodes	LB_STDCALL lbBoundColumns::getString(int column, lb_I_String* instance) {
 	lbErrCodes err = ERR_NONE;
 
-	if (boundColumns != NULL) {
-		integerKey->setData(column);
-		
-		UAP(lb_I_Unknown, ukdata, __FILE__, __LINE__)
-		UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
-		
-		QI(integerKey, lb_I_KeyBase, key, __FILE__, __LINE__)
-		ukdata = boundColumns->getElement(&key);
+	UAP(lb_I_BoundColumn, bc, __FILE__, __LINE__)
 
-		if (ukdata == NULL) printf("NULL pointer!\n");
-
-		UAP(lb_I_BoundColumn, bc, __FILE__, __LINE__)
-		lbErrCodes err = ukdata->queryInterface("lb_I_BoundColumn", (void**) &bc, __FILE__, __LINE__);
-
-		bc->getAsString(instance);
-	}
+	bc = getBoundColumn(column);
+	bc++;
+	bc->getAsString(instance);
 
 	return ERR_NONE;
 }
@@ -472,9 +514,9 @@ lbErrCodes	LB_STDCALL lbBoundColumns::getString(int column, lb_I_String* instanc
 lbErrCodes	LB_STDCALL lbBoundColumns::getString(char* column, lb_I_String* instance) {
 	return ERR_NONE;
 }
+/*...slbErrCodes      LB_STDCALL lbBoundColumns\58\\58\setString\40\char\42\ column\44\ lb_I_String\42\ instance\41\:0:*/
 lbErrCodes      LB_STDCALL lbBoundColumns::setString(char* column, lb_I_String* instance) {
 	lbErrCodes err = ERR_NONE;
-printf("lbBoundColumns::setString(char* column, lb_I_String* instance) called\n");	
 	UAP(lb_I_Unknown, ukdata, __FILE__, __LINE__)
 	UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
 	
@@ -499,6 +541,7 @@ printf("lbBoundColumns::setString(char* column, lb_I_String* instance) called\n"
 
 	return ERR_NONE;
 }
+/*...e*/
 
 int		LB_STDCALL lbBoundColumns::getMode() {
 	return query->isAdding();
@@ -753,7 +796,7 @@ lb_I_String* LB_STDCALL lbQuery::getAsString(int column) {
 	string++;
 	boundColumns->getString(column, *&string);
 	
-	return string.getPtr();;
+	return string.getPtr();
 }
 #endif
 /*...e*/
@@ -908,13 +951,88 @@ lbErrCodes LB_STDCALL lbQuery::remove() {
 /*...e*/
 /*...slbErrCodes LB_STDCALL lbQuery\58\\58\update\40\\41\:0:*/
 lbErrCodes LB_STDCALL lbQuery::update() {
-
+	lbErrCodes err = ERR_NONE;
+printf("lbQuery::update() called\n");	
 	if (mode == 1) {
 		// Insert the new record
 		SQLSetPos(hstmt, 2, SQL_ADD, SQL_LOCK_NO_CHANGE);
 	} else {
+#ifdef bla
 		// Update the existing record
-		printf("Update the existing record\n");
+
+		// Now I am able to begin the update statement
+		
+		char buffer[2000] = "";
+
+		char* Update = "UPDATE ";
+		char* Table  = getTableName();
+		char* Set    = " SET ";
+		printf("Update table '%s'\n", Table);
+
+		/* Get the updateable columns, that I have bound.
+		   That means, primary and foreign keys should not
+		   updated here, because this is intented for the
+		   simplest forms without dropdown boxes that may
+		   handle it correctly.
+		   And why should I change a primary key ?
+		*/
+		
+		sprintf(buffer, "%s%s%s", Update, Table, Set);
+		printf("Created first statement part for update\n");
+		printf("Create %d set statements\n", boundColumns->getColumnCount());
+		
+		for (int i = 1; i <= boundColumns->getColumnCount()-1; i++) {
+			UAP(lb_I_BoundColumn, bc, __FILE__, __LINE__)
+			
+			printf("Get bound Column at %d\n", i);
+			bc = boundColumns->getBoundColumn(i);
+			
+			if (bc == NULL) {
+				_LOG << "ERROR: boundColumns->getBoundColumn(" << i << ") returns NULL pointer" LOG_
+				printf("Nullpointer logged\n");
+			}
+			
+		printf("Build set clause for %s\n", bc->getColumnName()->getData());
+			
+			char* tempbuffer = strdup(buffer);
+			
+			UAP(lb_I_Unknown, uks, __FILE__, __LINE__)
+			UAP(lb_I_String, s, __FILE__, __LINE__)
+			
+			uks = bc->getData();
+			
+			QI(uks, lb_I_String, s, __FILE__, __LINE__)
+			
+			sprintf(buffer, "%s%s=%s, ", tempbuffer, bc->getColumnName()->getData(), s->getData());
+			
+			free(tempbuffer);
+		}
+		
+		{
+			UAP(lb_I_BoundColumn, bc, __FILE__, __LINE__)
+			bc = boundColumns->getBoundColumn(boundColumns->getColumnCount());
+		printf("Build set clause for %s\n", bc->getColumnName()->charrep());
+			
+			char* tempbuffer = strdup(buffer);
+			
+			UAP(lb_I_Unknown, uks, __FILE__, __LINE__)
+			UAP(lb_I_String, s, __FILE__, __LINE__)
+			
+			uks = bc->getData();
+			
+			QI(uks, lb_I_String, s, __FILE__, __LINE__)
+			
+			sprintf(buffer, "%s%s=%s, ", tempbuffer, bc->getColumnName()->getData(), s->getData());
+			
+			free(tempbuffer);
+			
+		}
+		
+printf("Query is: '%s'\n", buffer);
+
+
+#endif
+
 		retcode = SQLSetPos(hstmt, 1, SQL_UPDATE, SQL_LOCK_NO_CHANGE);
 		
 		if (retcode != SQL_SUCCESS)
@@ -923,10 +1041,85 @@ lbErrCodes LB_STDCALL lbQuery::update() {
 		        _LOG << "lbQuery::update(...) failed." LOG_
 		        return ERR_DB_UPDATEFAILED;
 		}		
+
 	}
 
 
 	return ERR_NONE;
+}
+/*...e*/
+/*...schar\42\ LB_STDCALL lbQuery\58\\58\getTableName\40\\41\:0:*/
+#define ISBLANK(x)      ((x) == ' ')
+#define ISCOMMA(x)      ((x) == ',')
+#define ISNUM(x)        (((x) >= '0') && ((x) <= '9'))
+#define ISLPAREN(x)     ((x) == '(')
+#define ISRPAREN(x)     ((x) == ')')
+#define ISPERIOD(x)     ((x) == '.')
+#define ISRETURN(x)     (((x) == '\n') || ((x) == '\r'))
+#define ISTAB(x)        ((x) == '\t')
+#define ISWHITE(x)      (ISBLANK(x) || ISTAB(x) || ISRETURN(x))
+
+
+char* LB_STDCALL lbQuery::getTableName() {
+   LPCSTR   lpsz;
+   int      cp;
+   int      cb;
+
+   if (lpszTable == NULL) lpszTable = new char[100];
+   lpszTable[0] = 0;
+
+   cb = lstrlen("from");
+
+   char        g_szQuoteChar[2];      // Identifier quote char
+
+// Get identifier quote character
+      SQLGetInfo(hdbc, SQL_IDENTIFIER_QUOTE_CHAR,
+                                    g_szQuoteChar, sizeof(g_szQuoteChar), NULL);
+         //*g_szQuoteChar = ' ';
+
+
+
+
+   for (lpsz=szSql, cp=0; *lpsz; ) {
+
+      while (*lpsz && ISWHITE(*lpsz)) lpsz++;
+
+      if (!cp && !_fstrnicmp(lpsz, "from", cb) && ISWHITE(*(lpsz+cb)))
+         break;
+
+      if (ISLPAREN(*lpsz))
+         cp++;
+      else if (ISRPAREN(*lpsz))
+         cp--;
+
+      while (*lpsz && !ISWHITE(*lpsz)) lpsz++;
+   }
+
+   while (*lpsz && !ISWHITE(*lpsz)) lpsz++;
+   while (*lpsz && ISWHITE(*lpsz))  lpsz++;
+
+printf("Preendscan at %s\n", lpsz);
+
+// There may be a bug in the last lines and here I have my table...
+
+return strdup(lpsz); //!!!
+
+   if (*lpsz == *g_szQuoteChar) {
+      *lpszTable++ = *lpsz++; // Copy beginning quote
+      while (*lpsz && *lpsz != *g_szQuoteChar) *lpszTable++ = *lpsz++;
+      *lpszTable++ = *lpsz++; // Copy ending quote
+   }
+   else  // Not a quoted identifier
+      while (*lpsz && !ISCOMMA(*lpsz) && !ISWHITE(*lpsz)) {
+      	printf("%s\n", lpsz);
+      	*lpszTable++ = *lpsz++;
+      }
+
+printf("Endscan at '%s'\n", lpszTable);
+
+   //*lpszTable = '\0';
+
+   return lpszTable;
 }
 /*...e*/
 
@@ -1156,7 +1349,6 @@ lbErrCodes LB_STDCALL lbBoundColumn::getAsString(lb_I_String* result) {
 /*...e*/
 /*...slbErrCodes LB_STDCALL lbBoundColumn\58\\58\setFromString\40\lb_I_String\42\ set\44\ int mode\41\:0:*/
 lbErrCodes LB_STDCALL lbBoundColumn::setFromString(lb_I_String* set, int mode) {
-	_LOG << "lbBoundColumn::setFromString(...) not implemented yet" LOG_
 
 	if (mode == 1) {
 		// Not supported yet
@@ -1196,6 +1388,12 @@ lbErrCodes LB_STDCALL lbBoundColumn::bindColumn(lbQuery* q, int column) {
 	                                &ColumnSize, &DecimalDigits, &Nullable);
 
 	long cbBufferLength = 0; //(long*) malloc(sizeof(long));
+
+	printf("SQLDescribeCol(...) gave me the following information:\n"
+	       "ColumnName is: %s\n"
+	       "BufferLength is %d\n"
+	       "Returned ColumnSize is %d\n"
+	       , ColumnName, BufferLength, ColumnSize);
 
 
 	if (colName == NULL) {
