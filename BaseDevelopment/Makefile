@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.13 $
+# * $Revision: 1.14 $
 # * $Name:  $
-# * $Id: Makefile,v 1.13 2004/10/16 11:59:30 lollisoft Exp $
+# * $Id: Makefile,v 1.14 2004/12/14 16:15:06 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.14  2004/12/14 16:15:06  lollisoft
+# * Also make wxWrapper with mkmk and the like.
+# *
 # * Revision 1.13  2004/10/16 11:59:30  lollisoft
 # * Adopted new make system to linux
 # *
@@ -137,7 +140,10 @@ dummy:
 	$(MAKE) -C $@
 
 ../Test/GUI/wxWrapper: dummy
-	$(MAKEWXSAMPLE)
+	$(MAKE) -C $@ -e MODULE=wxWrapper -e TARGET=$(TARGETEXE) -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
+	$(MAKE) -C $@
+
+#	$(MAKEWXSAMPLE)
 
 #$(MAKEWXSAMPLE)
 
