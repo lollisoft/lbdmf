@@ -249,7 +249,7 @@ typedef lbErrCodes (LB_STDCALL lb_I_EventHandler::*lbEvHandler)(lb_I_Unknown* uk
 
 
 /*...sclass lb_I_Unknown:0:*/
-class DLLEXPORT lb_I_Unknown {
+class lb_I_Unknown {
 protected:
 	lb_I_Unknown() {}
 	virtual ~lb_I_Unknown() {}
@@ -1496,6 +1496,9 @@ public:
 	virtual lbErrCodes LB_STDCALL addMenuBar(char* name) = 0;
 	virtual lbErrCodes LB_STDCALL addMenu(char* name) = 0;
 	virtual lbErrCodes LB_STDCALL addMenuEntry(char* in_menu, char* entry, char* evHandler, char* afterentry = NULL) = 0;
+	virtual lbErrCodes LB_STDCALL addButton(char* buttonText, char* evHandler, int x, int y, int w, int h) = 0;
+	virtual lbErrCodes LB_STDCALL addLabel(char* text, int x, int y, int w, int h) = 0;
+	virtual lbErrCodes LB_STDCALL addTextField(char* name, int x, int y, int w, int h) = 0;
 };
 /*...e*/
 
