@@ -6,7 +6,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.19 2004/07/16 20:19:10 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.20 2004/07/17 22:25:37 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -41,7 +41,21 @@
 */
 /*...e*/
 /*...e*/
-
+/*...sHistory:0:*/
+/**************************************************************
+ * $Locker:  $
+ * $Revision: 1.20 $
+ * $Name:  $
+ * $Id: dynamic.cpp,v 1.20 2004/07/17 22:25:37 lollisoft Exp $
+ *
+ * $Log: dynamic.cpp,v $
+ * Revision 1.20  2004/07/17 22:25:37  lollisoft
+ * GUI demo now works for one database form. I have still one problem: where
+ * to cleanup the instances. The app stays running. You will see it at the cmd
+ * promt. It doesn't reappear. Press CTRL+C.
+ *
+ **************************************************************/
+/*...e*/
 /*...smisc and includes:0:*/
 #ifdef __GNUG__
 #pragma implementation "dynamic.cpp"
@@ -86,11 +100,13 @@ class lb_wxFrame :
 		public wxFrame
 { 
 public:
+/*...sctors\47\dtors:8:*/
         lb_wxFrame():
         wxFrame(NULL, -1, "Dynamic sample", wxPoint(50, 50), wxSize(450, 340)) { menu_bar = NULL; }
         virtual ~lb_wxFrame() {
         	_LOG << "Closing GUI frame" LOG_
         }
+/*...e*/
 public:
         lb_wxFrame(wxFrame *frame, char *title, int x, int y, int w, int h);
 
@@ -214,6 +230,319 @@ lbErrCodes LB_STDCALL lb_wxFrame::createEventsource(lb_I_EventConnector* object)
 /*...e*/
 #endif
 
+
+/*...sdoc:0:*/
+/*
+	This database dialog sample uses a fixed query yet.
+	It is used as the only dialog from lb_wxGUI::createDBForm(char* formName).
+	
+	It should be changed in any way, if there are more different sample queries.
+	Handling creation and usage of form elements directly in wxDialog failed
+	anyhow.
+	
+	So I decided to use a derivation of it and put the handlers for the navigation
+	into this class and use it only by this class.
+	
+	I am not sure, if it will work if I create more than one dialog. The peoblem
+	may be my event handling mechanism.
+	
+	Here I use the following code to register my handlers:
+	
+	dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDatabaseDialog::lbDBFirst, "DatabaseFirst");
+	
+	It registers the event "DatabaseFirst" for this instance, because the this pointer is used inside
+	my dispatching functionality.
+	
+	The identifer used here - "DatabaseFirst" - is a logical one. To be sure to get a free ID that
+	also works inside wxWidgets, eman registers ID's above 5000 - I think.
+	
+	To get a different ID for the second 'different' dialog - showing other data, It would be the best
+	idea to use the following unique things:
+	
+	process ID, thread ID optional, this pointer and the hostname.
+	
+	This leads into difficult code to build up the unique identifer, but macros would help.
+	
+	
+	At least:
+	
+	It would be easy to implement the native wxWidgets event handling mechanism, but then I am not
+	able to do a programmatical navigation from outside wxWidgets.
+	
+	This is only an idea - a remote control at application level.
+*/
+/*...e*/
+/*...sclass lbDatabaseDialog:0:*/
+class lbDatabaseDialog :
+	public lb_I_Unknown,
+	public lb_I_EventHandler,
+	public wxDialog {
+public:
+	lbDatabaseDialog();
+	void init(wxWindow* parent, wxString SQLString);
+	virtual ~lbDatabaseDialog();
+
+	lbErrCodes LB_STDCALL lbDBFirst(lb_I_Unknown* uk);
+	lbErrCodes LB_STDCALL lbDBNext(lb_I_Unknown* uk);
+	lbErrCodes LB_STDCALL lbDBPrev(lb_I_Unknown* uk);
+	lbErrCodes LB_STDCALL lbDBLast(lb_I_Unknown* uk);
+
+	lbErrCodes LB_STDCALL lbDBUpdate();
+	lbErrCodes LB_STDCALL lbDBRead();
+
+	lbErrCodes LB_STDCALL registerEventHandler(lb_I_Dispatcher* dispatcher);
+
+	DECLARE_LB_UNKNOWN()
+
+	UAP(lb_I_Database, database, __FILE__, __LINE__)
+	UAP(lb_I_Query, sampleQuery, __FILE__, __LINE__)	
+};
+/*...e*/
+/*...sclass lbDatabaseDialog implementation:0:*/
+BEGIN_IMPLEMENT_LB_UNKNOWN(lbDatabaseDialog)
+END_IMPLEMENT_LB_UNKNOWN()
+
+lbErrCodes LB_STDCALL lbDatabaseDialog::setData(lb_I_Unknown* uk) {
+        _LOG << "lbDatabaseDialog::setData(...) not implemented yet" LOG_
+        return ERR_NOT_IMPLEMENTED;
+}
+
+
+lbDatabaseDialog::lbDatabaseDialog()
+	: wxDialog(NULL, -1, wxString(_T("Database dialog")))
+{
+
+}
+/*...slbErrCodes LB_STDCALL lbDatabaseDialog\58\\58\registerEventHandler\40\lb_I_Dispatcher\42\ dispatcher\41\:0:*/
+lbErrCodes LB_STDCALL lbDatabaseDialog::registerEventHandler(lb_I_Dispatcher* dispatcher) {
+	
+	dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDatabaseDialog::lbDBFirst, "DatabaseFirst");
+	dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDatabaseDialog::lbDBNext, "DatabaseNext");
+	dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDatabaseDialog::lbDBPrev, "DatabasePrev");
+	dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDatabaseDialog::lbDBLast, "DatabaseLast");
+	
+	return ERR_NONE;
+}
+/*...e*/
+/*...svoid lbDatabaseDialog\58\\58\init\40\wxWindow\42\ parent\44\ wxString SQLString\41\:0:*/
+void lbDatabaseDialog::init(wxWindow* parent, wxString SQLString) {
+
+	wxBoxSizer* sizerHor   = new wxBoxSizer(wxHORIZONTAL);
+	wxBoxSizer* sizerLeft  = new wxBoxSizer(wxVERTICAL);	
+	wxBoxSizer* sizerRight = new wxBoxSizer(wxVERTICAL);
+
+	REQUEST(manager.getPtr(), lb_I_Database, database)
+
+	database->init();
+	database->connect("trainres", "dba", "trainres");
+
+	char const * _q = SQLString.c_str();
+
+	sampleQuery = database->getQuery(0);
+		
+	int DatabaseFirst;
+	int DatabaseNext;
+	int DatabasePrev;
+	int DatabaseLast;
+	
+	//sampleQuery = query.getPtr();
+
+	UAP_REQUEST(manager.getPtr(), lb_I_EventManager, eman)
+	UAP_REQUEST(manager.getPtr(), lb_I_Dispatcher, dispatcher)
+
+/*...sInitialize navigation handlers:8:*/
+		eman->registerEvent("DatabaseFirst", DatabaseFirst);
+		eman->registerEvent("DatabaseNext",  DatabaseNext);
+		eman->registerEvent("DatabasePrev",  DatabasePrev);
+		eman->registerEvent("DatabaseLast",  DatabaseLast);
+
+		dispatcher->setEventManager(eman.getPtr());
+
+		registerEventHandler(dispatcher.getPtr());
+
+/*...e*/
+	
+	sampleQuery->query("select objecttyp, x, y, w, h from world order by id");	
+
+	int columns = sampleQuery->getColumns();
+
+	sampleQuery->first();
+	
+/*...screate database form elements:0:*/
+	for(int i = 1; i <= columns; i++) {
+		char* name = NULL;
+		
+		name = strdup(sampleQuery->getColumnName(i));
+		
+		wxTextCtrl *text = new wxTextCtrl(this, -1, sampleQuery->getAsString(i)->charrep(), wxPoint());
+		
+		text->SetName(name);
+		
+		sizerRight->Add(text, 1, wxEXPAND | wxALL, 5);
+		
+		char* tLabel = new char[strlen(name) + 1];
+		
+		tLabel[0] = 0;
+		
+		tLabel = strcat(tLabel, name); 
+		
+		wxStaticText *label = new wxStaticText(this, -1, tLabel, wxPoint());
+		sizerLeft->Add(label, 1, wxEXPAND | wxALL, 5);
+		
+		free(name);
+	}
+/*...e*/
+
+/*...screate dialog:0:*/
+	sizerHor->Add(sizerLeft, 1, wxEXPAND | wxALL, 5);
+	sizerHor->Add(sizerRight, 1, wxEXPAND | wxALL, 5);
+
+	wxButton *button1 = new wxButton(this, DatabaseFirst, "First", wxPoint(), wxSize());
+	wxButton *button2 = new wxButton(this, DatabaseNext, "Next", wxPoint(), wxSize());
+	wxButton *button3 = new wxButton(this, DatabasePrev, "Prev", wxPoint(), wxSize());
+	wxButton *button4 = new wxButton(this, DatabaseLast, "Last", wxPoint(), wxSize());
+
+	sizerLeft->Add(button1, 1, wxEXPAND | wxALL, 5);
+	sizerLeft->Add(button3, 1, wxEXPAND | wxALL, 5);
+	sizerRight->Add(button2, 1, wxEXPAND | wxALL, 5);
+	sizerRight->Add(button4, 1, wxEXPAND | wxALL, 5);
+
+//#define CONNECTOR ((wxFrame*) frame)
+#define CONNECTOR this
+
+	CONNECTOR->Connect( DatabaseFirst,  -1, wxEVT_COMMAND_BUTTON_CLICKED,
+	  (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) &lb_wxFrame::OnDispatch);
+	CONNECTOR->Connect( DatabaseNext,  -1, wxEVT_COMMAND_BUTTON_CLICKED,
+	  (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) &lb_wxFrame::OnDispatch);
+	CONNECTOR->Connect( DatabasePrev,  -1, wxEVT_COMMAND_BUTTON_CLICKED,
+	  (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) &lb_wxFrame::OnDispatch);
+	CONNECTOR->Connect( DatabaseLast,  -1, wxEVT_COMMAND_BUTTON_CLICKED,
+	  (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) &lb_wxFrame::OnDispatch);
+
+
+	SetAutoLayout(TRUE);
+	SetSizer(sizerHor);
+
+	sizerHor->SetSizeHints(this);
+	sizerHor->Fit(this);
+	
+	Centre();
+/*...e*/
+
+}
+/*...e*/
+
+
+lbDatabaseDialog::~lbDatabaseDialog() {
+
+}
+
+/*...slbErrCodes LB_STDCALL lbDatabaseDialog\58\\58\lbDBUpdate\40\\41\:0:*/
+lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBUpdate() {
+	int columns = sampleQuery->getColumns();
+
+	UAP_REQUEST(manager.getPtr(), lb_I_String, col)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, val)
+					
+	for (int i = 1; i <= columns; i++) {
+		char* name = strdup(sampleQuery->getColumnName(i));
+
+		// Find the corresponding window
+		
+		wxWindow* w = FindWindowByName(wxString(name));
+
+		if (w != NULL) {
+			wxTextCtrl* tx = (wxTextCtrl*) w;
+			
+			wxString v = tx->GetValue();
+			
+			col->setData(name);
+			val->setData(v.c_str());
+
+			sampleQuery->setString(*&col, *&val);
+		} else {
+			printf("Control not found\n");
+		}
+		
+		free(name);
+	}
+
+	sampleQuery->update();
+	
+	return ERR_NONE;
+}
+/*...e*/
+/*...slbErrCodes LB_STDCALL lbDatabaseDialog\58\\58\lbDBRead\40\\41\:0:*/
+lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBRead() {
+	int columns = sampleQuery->getColumns();
+	
+	for (int i = 1; i <= columns; i++) {
+		char* name = strdup(sampleQuery->getColumnName(i));
+		// Find the corresponding window
+		
+		wxWindow* w = FindWindowByName(wxString(name));
+		
+		if (w != NULL) {
+			wxTextCtrl* tx = (wxTextCtrl*) w;
+			tx->SetValue(wxString(sampleQuery->getAsString(i)->charrep()));
+		}
+		
+		free(name);
+	}
+	
+	return ERR_NONE;
+}
+/*...e*/
+
+/*...slbErrCodes LB_STDCALL lbDatabaseDialog\58\\58\lbDBFirst\40\lb_I_Unknown\42\ uk\41\:0:*/
+lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBFirst(lb_I_Unknown* uk) {
+printf("Move first\n");
+	lbDBUpdate();
+
+	sampleQuery->first();
+
+	lbDBRead();
+
+	return ERR_NONE;
+}
+/*...e*/
+/*...slbErrCodes LB_STDCALL lbDatabaseDialog\58\\58\lbDBNext\40\lb_I_Unknown\42\ uk\41\:0:*/
+lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBNext(lb_I_Unknown* uk) {
+printf("Move next\n");
+	lbDBUpdate();
+
+	sampleQuery->next();
+
+	lbDBRead();
+
+	return ERR_NONE;
+}
+/*...e*/
+/*...slbErrCodes LB_STDCALL lbDatabaseDialog\58\\58\lbDBPrev\40\lb_I_Unknown\42\ uk\41\:0:*/
+lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBPrev(lb_I_Unknown* uk) {
+printf("Move previous\n");
+	lbDBUpdate();
+
+	sampleQuery->previous();
+
+	lbDBRead();
+
+	return ERR_NONE;
+}
+/*...e*/
+/*...slbErrCodes LB_STDCALL lbDatabaseDialog\58\\58\lbDBLast\40\lb_I_Unknown\42\ uk\41\:0:*/
+lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBLast(lb_I_Unknown* uk) {
+printf("Move last\n");
+	lbDBUpdate();
+
+	sampleQuery->last();
+
+	lbDBRead();
+
+	return ERR_NONE;
+}
+/*...e*/
+/*...e*/
 /*...sclass lb_wxGUI:0:*/
 #ifdef LB_I_EXTENTIONS
 
@@ -233,7 +562,14 @@ public:
                 frame = NULL;
         }
 
-	virtual ~lb_wxGUI() { }
+	virtual ~lb_wxGUI() { 
+	
+		if (dialog) {
+			dialog->Destroy();
+			delete dialog;
+			dialog = NULL;
+		}
+	}
 /*...e*/
 
         DECLARE_LB_UNKNOWN()
@@ -341,13 +677,6 @@ public:
 	virtual lbErrCodes LB_STDCALL addTextField(char* name, int x, int y, int w, int h) { return ERR_NONE; };
 /*...e*/
         
-	lbErrCodes LB_STDCALL lbDBFirst(lb_I_Unknown* uk);
-	lbErrCodes LB_STDCALL lbDBNext(lb_I_Unknown* uk);
-	lbErrCodes LB_STDCALL lbDBPrev(lb_I_Unknown* uk);
-	lbErrCodes LB_STDCALL lbDBLast(lb_I_Unknown* uk);
-
-	lbErrCodes LB_STDCALL lbDBUpdate();
-	lbErrCodes LB_STDCALL lbDBRead();
 
         int eventCount;
         
@@ -358,7 +687,7 @@ public:
         
         bool handlersInitialized;
         
-        wxDialog* dialog;
+        lbDatabaseDialog* dialog;
         
         // The frame has the main dispatcher and is a wxEventHandler subclass
         lb_wxFrame* frame;
@@ -376,62 +705,6 @@ END_IMPLEMENT_LB_UNKNOWN()
  */
 
 
-/*...slbErrCodes LB_STDCALL lb_wxGUI\58\\58\lbDBUpdate\40\\41\:0:*/
-lbErrCodes LB_STDCALL lb_wxGUI::lbDBUpdate() {
-	int columns = sampleQuery->getColumns();
-
-	UAP_REQUEST(manager.getPtr(), lb_I_String, col)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, val)
-					
-	for (int i = 1; i <= columns; i++) {
-		char* name = strdup(sampleQuery->getColumnName(i));
-
-		// Find the corresponding window
-		
-		wxWindow* w = dialog->FindWindowByName(wxString(name));
-
-		if (w != NULL) {
-			wxTextCtrl* tx = (wxTextCtrl*) w;
-			
-			wxString v = tx->GetValue();
-			
-			col->setData(name);
-			val->setData(v.c_str());
-
-			sampleQuery->setString(*&col, *&val);
-		} else {
-			printf("Control not found\n");
-		}
-		
-		free(name);
-	}
-
-	sampleQuery->update();
-	
-	return ERR_NONE;
-}
-/*...e*/
-/*...slbErrCodes LB_STDCALL lb_wxGUI\58\\58\lbDBRead\40\\41\:0:*/
-lbErrCodes LB_STDCALL lb_wxGUI::lbDBRead() {
-	int columns = sampleQuery->getColumns();
-	
-	for (int i = 1; i <= columns; i++) {
-		char* name = strdup(sampleQuery->getColumnName(i));
-		// Find the corresponding window
-		
-		wxWindow* w = dialog->FindWindowByName(wxString(name));
-		
-		if (w != NULL) {
-			wxTextCtrl* tx = (wxTextCtrl*) w;
-			tx->SetValue(wxString(sampleQuery->getAsString(i)->charrep()));
-		}
-		
-		free(name);
-	}
-	
-	return ERR_NONE;
-}
-/*...e*/
 
 /*...sUnimplemented code:0:*/
 /*...slbErrCodes LB_STDCALL lb_wxGUI\58\\58\setDispatcher\40\lb_I_Dispatcher\42\ disp\41\:0:*/
@@ -534,176 +807,18 @@ lbErrCodes LB_STDCALL lb_wxGUI::insertMenuEntry(lb_I_Unknown* entry) {
 }
 /*...e*/
 /*...e*/
-/*...slbErrCodes LB_STDCALL lb_wxGUI\58\\58\lbDBFirst\40\lb_I_Unknown\42\ uk\41\:0:*/
-lbErrCodes LB_STDCALL lb_wxGUI::lbDBFirst(lb_I_Unknown* uk) {
-printf("Move first\n");
-	lbDBUpdate();
-
-	sampleQuery->first();
-
-	lbDBRead();
-
-	return ERR_NONE;
-}
-/*...e*/
-/*...slbErrCodes LB_STDCALL lb_wxGUI\58\\58\lbDBNext\40\lb_I_Unknown\42\ uk\41\:0:*/
-lbErrCodes LB_STDCALL lb_wxGUI::lbDBNext(lb_I_Unknown* uk) {
-printf("Move next\n");
-	lbDBUpdate();
-
-	sampleQuery->next();
-
-	lbDBRead();
-
-	return ERR_NONE;
-}
-/*...e*/
-/*...slbErrCodes LB_STDCALL lb_wxGUI\58\\58\lbDBPrev\40\lb_I_Unknown\42\ uk\41\:0:*/
-lbErrCodes LB_STDCALL lb_wxGUI::lbDBPrev(lb_I_Unknown* uk) {
-printf("Move previous\n");
-	lbDBUpdate();
-
-	sampleQuery->previous();
-
-	lbDBRead();
-
-	return ERR_NONE;
-}
-/*...e*/
-/*...slbErrCodes LB_STDCALL lb_wxGUI\58\\58\lbDBLast\40\lb_I_Unknown\42\ uk\41\:0:*/
-lbErrCodes LB_STDCALL lb_wxGUI::lbDBLast(lb_I_Unknown* uk) {
-printf("Move last\n");
-	lbDBUpdate();
-
-	sampleQuery->last();
-
-	lbDBRead();
-
-	return ERR_NONE;
-}
-/*...e*/
 
 /*...slb_I_DatabaseForm\42\ LB_STDCALL lb_wxGUI\58\\58\createDBForm\40\char\42\ formName\41\:0:*/
-lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::createDBForm(char* formName) {
+lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::createDBForm(char* SQLQuery) {
 
-	dialog = new wxDialog(NULL, -1, wxString(formName));
-	
-	wxBoxSizer* sizerHor   = new wxBoxSizer(wxHORIZONTAL);
-	wxBoxSizer* sizerLeft  = new wxBoxSizer(wxVERTICAL);	
-	wxBoxSizer* sizerRight = new wxBoxSizer(wxVERTICAL);
-
-	UAP_REQUEST(manager.getPtr(), lb_I_Database, database)
-
-	database->init();
-	database->connect("trainres", "dba", "trainres");
-
-	UAP(lb_I_Query, query, __FILE__, __LINE__)
-
-	query = database->getQuery(0);
-		
-	int DatabaseFirst;
-	int DatabaseNext;
-	int DatabasePrev;
-	int DatabaseLast;
-	
-	sampleQuery = query.getPtr();
-	
-	printf("sampleQuery is %p\n", sampleQuery);
-
-	UAP_REQUEST(manager.getPtr(), lb_I_EventManager, eman)
-	UAP_REQUEST(manager.getPtr(), lb_I_Dispatcher, dispatcher)
-
-/*...sInitialize navigation handlers:8:*/
-	if (!handlersInitialized) {
-		handlersInitialized = TRUE;
-	
-		eman->registerEvent("DatabaseFirst", DatabaseFirst);
-		eman->registerEvent("DatabaseNext",  DatabaseNext);
-		eman->registerEvent("DatabasePrev",  DatabasePrev);
-		eman->registerEvent("DatabaseLast",  DatabaseLast);
-
-		dispatcher->setEventManager(eman.getPtr());
-
-		dispatcher->addEventHandlerFn(this, (lbEvHandler) &lb_wxGUI::lbDBFirst, "DatabaseFirst");
-		dispatcher->addEventHandlerFn(this, (lbEvHandler) &lb_wxGUI::lbDBNext, "DatabaseNext");
-		dispatcher->addEventHandlerFn(this, (lbEvHandler) &lb_wxGUI::lbDBPrev, "DatabasePrev");
-		dispatcher->addEventHandlerFn(this, (lbEvHandler) &lb_wxGUI::lbDBLast, "DatabaseLast");
+	if (dialog) {
+		dialog->ShowModal();
+	} else {
+		dialog = new lbDatabaseDialog();
+		dialog->setModuleManager(getModuleManager(), __FILE__, __LINE__);
+		dialog->init(frame, wxString(SQLQuery));
+		dialog->ShowModal();
 	}
-/*...e*/
-	
-	query->query("select objecttyp, x, y, w, h from world order by id");	
-
-	int columns = query->getColumns();
-
-	query->first();
-	
-/*...screate database form elements:0:*/
-	for(int i = 1; i <= columns; i++) {
-		char* name = NULL;
-		
-		name = strdup(query->getColumnName(i));
-		
-		wxTextCtrl *text = new wxTextCtrl(dialog, -1, query->getAsString(i)->charrep(), wxPoint());
-		
-		text->SetName(name);
-		
-		sizerRight->Add(text, 1, wxEXPAND | wxALL, 5);
-		
-		char* tLabel = new char[strlen(name) + 1];
-		
-		tLabel[0] = 0;
-		
-		tLabel = strcat(tLabel, name); 
-		
-		wxStaticText *label = new wxStaticText(dialog, -1, tLabel, wxPoint());
-		sizerLeft->Add(label, 1, wxEXPAND | wxALL, 5);
-		
-		free(name);
-	}
-/*...e*/
-
-/*...screate dialog:0:*/
-	sizerHor->Add(sizerLeft, 1, wxEXPAND | wxALL, 5);
-	sizerHor->Add(sizerRight, 1, wxEXPAND | wxALL, 5);
-
-	wxButton *button1 = new wxButton(dialog, DatabaseFirst, "First", wxPoint(), wxSize());
-	wxButton *button2 = new wxButton(dialog, DatabaseNext, "Next", wxPoint(), wxSize());
-	wxButton *button3 = new wxButton(dialog, DatabasePrev, "Prev", wxPoint(), wxSize());
-	wxButton *button4 = new wxButton(dialog, DatabaseLast, "Last", wxPoint(), wxSize());
-
-	sizerLeft->Add(button1, 1, wxEXPAND | wxALL, 5);
-	sizerLeft->Add(button3, 1, wxEXPAND | wxALL, 5);
-	sizerRight->Add(button2, 1, wxEXPAND | wxALL, 5);
-	sizerRight->Add(button4, 1, wxEXPAND | wxALL, 5);
-
-//#define CONNECTOR ((wxFrame*) frame)
-#define CONNECTOR dialog
-
-	CONNECTOR->Connect( DatabaseFirst,  -1, wxEVT_COMMAND_BUTTON_CLICKED,
-	  (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) &lb_wxFrame::OnDispatch);
-	CONNECTOR->Connect( DatabaseNext,  -1, wxEVT_COMMAND_BUTTON_CLICKED,
-	  (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) &lb_wxFrame::OnDispatch);
-	CONNECTOR->Connect( DatabasePrev,  -1, wxEVT_COMMAND_BUTTON_CLICKED,
-	  (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) &lb_wxFrame::OnDispatch);
-	CONNECTOR->Connect( DatabaseLast,  -1, wxEVT_COMMAND_BUTTON_CLICKED,
-	  (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) &lb_wxFrame::OnDispatch);
-
-
-	dialog->SetAutoLayout(TRUE);
-	dialog->SetSizer(sizerHor);
-
-	sizerHor->SetSizeHints(dialog);
-	sizerHor->Fit(dialog);
-	
-	dialog->Centre();
-/*...e*/
-
-	dialog->ShowModal();
-	
-_LOG << "Database dialog has been showed" LOG_	
-	
-	dialog->Destroy();
-	
 	return NULL;
 }
 /*...e*/
@@ -808,6 +923,9 @@ class MyApp: public wxApp
  * It seems, that frame was deleted prior !!
  */
 //		_CL_LOG << "frame has " << frame->getRefCount() LOG_
+
+		if (wxGUI) delete wxGUI;
+
 	}
 
     bool OnInit(void);
