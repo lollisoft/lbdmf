@@ -1,4 +1,4 @@
-/*...v\46\\46\\47\make\47\STD_MAKE \45\ The global makefile definitions:0:*/
+/*...v\46\\46\\47\make\47\Std_make \45\ The global makefile definitions:0:*/
 
 /*...sInterfaces:0:*/
 /*...v\46\\46\\47\interfaces\47\lbInterfaces\46\h:0:*/
@@ -228,7 +228,6 @@ findfunctorname
 /*...vE\58\\92\develop\92\projects\92\lothar\92\XML\92\SalesOrder1\92\lbHostCfg\92\XMLHostCfgHandlers\46\cpp:0:*/
 
 /*...sPowWow Deutschland GmbH:0:*/
-/*...ve\58\\92\powwow\92\projects\92\exakt\92\exact\46\aut:0:*/
 /*...ve\58\\92\powwow\92\projects\92\waterboy\45\SQL\92\waterboy\45\07\45\02\45\2001\46\sql:0:*/
 /*...ve\58\\92\powwow\92\projects\92\waterboy\45\SQL\92\SQLAbfragen\92\abfrage\46\sql:0:*/
 
