@@ -1,11 +1,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.29 $
+ * $Revision: 1.30 $
  * $Name:  $
- * $Id: lbDOMConfig.cpp,v 1.29 2002/10/01 19:22:59 lothar Exp $
+ * $Id: lbDOMConfig.cpp,v 1.30 2002/10/28 18:36:55 lothar Exp $
  *
  * $Log: lbDOMConfig.cpp,v $
+ * Revision 1.30  2002/10/28 18:36:55  lothar
+ * Using _CL_LOG ... LOG_
+ *
  * Revision 1.29  2002/10/01 19:22:59  lothar
  * Broken
  *
@@ -158,9 +161,7 @@ void checkPtr(void* addr, int line, char* file, char* cmp) {
 	sprintf(buf, "%p", (void*) addr);
 	
 	if (strcmp(buf, cmp) == 0) {
-		char msg[1000] = "";
-		sprintf(msg, "Object created at File: %s, Line: %d\n", file, line);
-		CL_LOG(msg);
+		_CL_LOG << "Object created at File: " << file << ", Line: " << line LOG_
 	}
 }
 /*...e*/
@@ -280,7 +281,7 @@ BEGIN_IMPLEMENT_LB_UNKNOWN(lbKeyUL)
 END_IMPLEMENT_LB_UNKNOWN()
 
 lbErrCodes LB_STDCALL lbKeyUL::setData(lb_I_Unknown* uk) {
-	CL_LOG("lbKey::setData() not implemented yet");
+	_CL_LOG << "lbKey::setData() not implemented yet" LOG_
 	return ERR_NONE;
 }
 
@@ -342,7 +343,7 @@ BEGIN_IMPLEMENT_LB_UNKNOWN(lbStringKey)
 END_IMPLEMENT_LB_UNKNOWN()
 
 lbErrCodes LB_STDCALL lbStringKey::setData(lb_I_Unknown* uk) {
-	CL_LOG("lbKey::setData() not implemented yet");
+	_CL_LOG << "lbKey::setData() not implemented yet" LOG_
 	return ERR_NONE;
 }
 
@@ -382,7 +383,7 @@ public:
     {
     }
 
-    ~DOMTreeErrorReporter()
+    virtual ~DOMTreeErrorReporter()
     {
     } 
 
@@ -410,7 +411,7 @@ void DOMTreeErrorReporter::error(const SAXParseException& toCatch)
     cerr << "Error at file \"" << DOMString(toCatch.getSystemId())
 		 << "\", line " << toCatch.getLineNumber()
 		 << ", column " << toCatch.getColumnNumber()
-         << "\n   Message: " << DOMString(toCatch.getMessage()) << endl;
+         << "   Message: " << DOMString(toCatch.getMessage()) << endl;
 }
 /*...e*/
 /*...sDOMTreeErrorReporter\58\\58\fatalError\40\\46\\46\\46\\41\:0:*/
@@ -419,7 +420,7 @@ void DOMTreeErrorReporter::fatalError(const SAXParseException& toCatch)
     cerr << "Fatal Error at file \"" << DOMString(toCatch.getSystemId())
 		 << "\", line " << toCatch.getLineNumber()
 		 << ", column " << toCatch.getColumnNumber()
-         << "\n   Message: " << DOMString(toCatch.getMessage()) << endl;
+         << "   Message: " << DOMString(toCatch.getMessage()) << endl;
 }
 /*...e*/
 /*...sDOMTreeErrorReporter\58\\58\resetErrors\40\\41\:0:*/
@@ -571,7 +572,7 @@ lbDOMContainer::~lbDOMContainer() {
 }
 
 lbErrCodes LB_STDCALL lbDOMContainer::setData(lb_I_Unknown* data) {
-	CL_LOG("lbDOMContainer::setData(lb_I_Unknown* data) called");
+	_CL_LOG << "lbDOMContainer::setData(lb_I_Unknown* data) called" LOG_
 	getch();
 
 	return ERR_NONE;
@@ -589,7 +590,7 @@ END_IMPLEMENT_LB_UNKNOWN()
 IMPLEMENT_LB_ELEMENT(lbElement)
 lbErrCodes LB_STDCALL lbElement::setData(lb_I_Unknown* data) {
 #ifdef VERBOSE
-	CL_LOG("lbElement::setData(lb_I_Unknown* data) called");
+	_CL_LOG << "lbElement::setData(lb_I_Unknown* data) called" LOG_
 #endif	
 	return ERR_NONE;
 }
@@ -629,7 +630,7 @@ BEGIN_IMPLEMENT_LB_UNKNOWN(lbDOMAttribute)
 END_IMPLEMENT_LB_UNKNOWN()
 
 lbErrCodes lbDOMAttribute::setData(lb_I_Unknown* uk) {
-	CL_LOG("lbDOMAttribute::setData(...) not implemented yet");
+	_CL_LOG << "lbDOMAttribute::setData(...) not implemented yet" LOG_
 	return ERR_NOT_IMPLEMENTED;
 }
 
@@ -650,17 +651,14 @@ lbErrCodes lbDOMNode::setData(lb_I_Unknown* uk) {
 	lbErrCodes err = ERR_NONE;
 
 	if (uk->queryInterface("lb_I_ConfigObject", (void**) &_node, __FILE__, __LINE__) != ERR_NONE) {
-		CL_LOG("Error: Cloning interface not present!");
+		_CL_LOG << "Error: Cloning interface not present!" LOG_
 		getch();
 	}
 /*...sVERBOSE:0:*/
 #ifdef VERBOSE
 	if (strcmp(_node->getName(), "InterfaceName") == 0) {
-	
-		char buf[1000] = "";
-		sprintf(buf, "Cloned lbDOMNode at %p gets data from %p.\nCloned: %s\nOrginal: %s", 
-			(void*) this, (void*) uk, getCreationLoc(), uk->getCreationLoc());
-		CL_LOG(buf)
+		_CL_LOG << "Cloned lbDOMNode at " << ltoa(this) << " gets data from " << 
+		ltoa(uk) << ". Cloned: " << getCreationLoc() << " Orginal: " << uk->getCreationLoc() LOG_ 
 	
 	}
 #endif	
@@ -676,16 +674,14 @@ lbErrCodes lbDOMNode::setData(lb_I_Unknown* uk) {
  */
 	if (_node->parent == NULL) {
 #ifdef VERBOSE
-		CL_LOG("Warning: Cloning a object without parent pointing to a real parent!");
+		_CL_LOG << "Warning: Cloning a object without parent pointing to a real parent!" LOG_
 #endif
 	}
 	else
 	if (_node->parent->queryInterface("lb_I_Unknown", (void**) &parent, __FILE__, __LINE__) != ERR_NONE) {
-		CL_LOG("Error: Cloning lbDOMNode failed due to increment refcount of source's parent!");
+		_CL_LOG << "Error: Cloning lbDOMNode failed due to increment refcount of source's parent!" LOG_
 		getch();
 	}
-	
-//	_node->release(__FILE__, __LINE__);
 	
 	return ERR_NONE;
 }
@@ -721,7 +717,7 @@ lbDOMNode::lbDOMNode(char* file, int line) {
 	// This was the bug for the wrong deletion while leave scope
 	//parent++;
 #ifdef VERBOSE
-	CL_LOG("Warning: Parent is set to my self in c'tor");
+	_CL_LOG << "Warning: Parent is set to my self in c'tor" LOG_
 #endif
 }
 /*...e*/
@@ -752,7 +748,7 @@ lbDOMNode::lbDOMNode() {
 	// This was the bug for the wrong deletion while leave scope
 	//parent++;
 #ifdef VERBOSE
-	CL_LOG("Warning: Parent is set to my self in c'tor");
+	_CL_LOG << "Warning: Parent is set to my self in c'tor" LOG_
 #endif
 }
 /*...e*/
@@ -767,7 +763,7 @@ lbDOMNode::~lbDOMNode() {
 	}
 
 	if (ref != STARTREF) 
-		CL_LOG("Error: Reference count mismatch");
+		_CL_LOG << "Error: Reference count mismatch" LOG_
 
 
 	// Bugfix (in createAbstractedChildList)
@@ -784,14 +780,14 @@ lbDOMNode::~lbDOMNode() {
 /*...e*/
 /*...slbErrCodes LB_STDCALL lbDOMNode\58\\58\setChildrens\40\lbNodeList\42\ _childs\41\:0:*/
 lbErrCodes LB_STDCALL lbDOMNode::setChildrens(lbNodeList* _childs) {
-	CL_LOG("Error: Not implemented yet");
+	_CL_LOG << "Error: Not implemented yet" LOG_
 	return ERR_NONE;
 }
 /*...e*/
 /*...slbDOMNode\58\\58\getParent\40\\46\\46\\46\\41\:0:*/
 lbErrCodes LB_STDCALL lbDOMNode::getParent(lb_I_ConfigObject** _parent) {
 	if (parent == NULL) {
-		CL_LOG("Error: lbDOMNode is not correctly set up. Parent is NULL!");
+		_CL_LOG << "Error: lbDOMNode is not correctly set up. Parent is NULL!" LOG_
 	}
 
 	parent->queryInterface("lb_I_ConfigObject", (void**) _parent, __FILE__, __LINE__);
@@ -800,7 +796,7 @@ lbErrCodes LB_STDCALL lbDOMNode::getParent(lb_I_ConfigObject** _parent) {
 }
 /*...e*/
 lbErrCodes LB_STDCALL lbDOMNode::setParent(lb_I_ConfigObject* _parent) {
-	CL_LOG("lbDOMNode::setParent(...) not implemented yet");
+	_CL_LOG << "lbDOMNode::setParent(...) not implemented yet" LOG_
 	return ERR_NONE;
 }
 
@@ -812,7 +808,7 @@ lbErrCodes LB_STDCALL lbDOMNode::setNode(DOM_Node _node) {
 	 * requests, the abstracted childs of that node are created now.
 	 */
 	if (_node.isNull()) {
-		CL_LOG("Error: Null node could not be set!");
+		_CL_LOG << "Error: Null node could not be set!" LOG_
 		getch();
 	}
 	lb_I_Container* c = createAbstractedChildList(_node);
@@ -820,16 +816,16 @@ lbErrCodes LB_STDCALL lbDOMNode::setNode(DOM_Node _node) {
 	if (c != NULL)
 		c->queryInterface("lb_I_Container", (void**) &lbDOMchilds, __FILE__, __LINE__);
 	else
-		CL_LOG("Error: Creation of abstracted childs returns NULL");
+		_CL_LOG << "Error: Creation of abstracted childs returns NULL" LOG_
 
 	if (lbDOMchilds == NULL) {
-		CL_LOG("Error: Here must be a result!");
+		_CL_LOG << "Error: Here must be a result!" LOG_
 		
 	}
 	
 	node = _node; 
 	if (node.isNull()) {
-		CL_LOG("Error: Null node could not be set!");
+		_CL_LOG << "Error: Null node could not be set!" LOG_
 		getch();
 	}
 	
@@ -838,12 +834,12 @@ lbErrCodes LB_STDCALL lbDOMNode::setNode(DOM_Node _node) {
 	if (pnode != NULL) {
 		
 		if (parent != NULL) {
-			CL_LOG("Previous parent node will be overwritten!");
+			_CL_LOG << "Previous parent node will be overwritten!" LOG_
 		}
 		lbDOMNode* _parent = new lbDOMNode(__FILE__, __LINE__);
 		
 		_parent->setFurtherLock(0);
-		if (manager == NULL) CL_LOG("Error: Set manager in parent with a NULL pointer!");
+		if (manager == NULL) _LOG << "Error: Set manager in parent with a NULL pointer!" LOG_
 		_parent->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
 		
 		_parent->setNode(pnode);
@@ -852,18 +848,9 @@ lbErrCodes LB_STDCALL lbDOMNode::setNode(DOM_Node _node) {
 	} else {
 		if (parent != NULL) {
 		#ifdef VERBOSE
-			CL_LOG("Previous parent node must be deleted!");
+			_CL_LOG << "Previous parent node must be deleted!" LOG_
 		#endif	
 		}
-	}
-
-	char ptr[20] = "";
-	sprintf(ptr, "%p", (void*) this);
-
-	if (strcmp(ptr, "00C81D60") == 0) {
-		char buf[1000] = "";
-		sprintf(buf, "This is the node with %s and tagname %s", ptr, getName());
-		CL_LOG(buf)
 	}
 
 	return ERR_NONE;
@@ -871,26 +858,26 @@ lbErrCodes LB_STDCALL lbDOMNode::setNode(DOM_Node _node) {
 /*...e*/
 /*...slbDOMNode\58\\58\getParam\40\\46\\46\\46\\41\:0:*/
 lbErrCodes LB_STDCALL lbDOMNode::getParam(const char* name, lb_I_String*& value) {
-	CL_LOG("Not implemented yet");
+	_CL_LOG << "Not implemented yet" LOG_
 	return ERR_NONE;
 }
 /*...e*/
 /*...slbDOMNode\58\\58\getChildrenCount\40\\41\:0:*/
 int LB_STDCALL lbDOMNode::getChildrenCount() {
-	CL_LOG("Not implemented yet");
+	_CL_LOG << "Not implemented yet" LOG_
 	return 0;
 }
 /*...e*/
 /*...slbDOMNode\58\\58\findObject\40\\46\\46\\46\\41\:0:*/
 lbErrCodes LB_STDCALL lbDOMNode::findObject(const char* name, lb_I_ConfigObject*& object) {
-	CL_LOG("Not implemented yet");
+	_CL_LOG << "Not implemented yet" LOG_
 	return ERR_NONE;
 }
 /*...e*/
 /*...slbDOMNode\58\\58\getFirstChildren\40\lb_I_ConfigObject\42\\42\ children\41\:0:*/
 lbErrCodes LB_STDCALL lbDOMNode::getFirstChildren(lb_I_ConfigObject** children) {
 	if (lbDOMchilds == NULL) {
-		CL_LOG("Error, no childrens in config object");
+		_CL_LOG << "Error, no childrens in config object" LOG_
 		return ERR_CONFIG_NO_CHILDS;
 	}
 	
@@ -905,12 +892,12 @@ lbErrCodes LB_STDCALL lbDOMNode::getFirstChildren(lb_I_ConfigObject** children) 
 		unknown = lbDOMchilds->nextElement();
 //		currentChildIndex++;
 	} else {
-		CL_LOG("ERROR: No child found");
+		_CL_LOG << "ERROR: No child found" LOG_
 		return ERR_CONFIG_EMPTY_CONTAINER;
 	}
 	
 	if (unknown == NULL) {
-		CL_LOG("Fatal: Must have a children here!");
+		_CL_LOG << "Fatal: Must have a children here!" LOG_
 	}
 
 	unknown->queryInterface("lb_I_ConfigObject", (void**) children, __FILE__, __LINE__);
@@ -929,7 +916,7 @@ lbErrCodes LB_STDCALL lbDOMNode::getNextChildren(lb_I_ConfigObject** children) {
 	
 /*...sreturn state no childs:8:*/
 	if (lbDOMchilds == NULL) {
-		CL_LOG("Error: Returning ERR_CONFIG_NO_CHILDS");
+		_CL_LOG << "Error: Returning ERR_CONFIG_NO_CHILDS" LOG_
 		getch();
 		return ERR_CONFIG_NO_CHILDS;
 	}
@@ -953,7 +940,7 @@ lbErrCodes LB_STDCALL lbDOMNode::getNextChildren(lb_I_ConfigObject** children) {
 
 /*...serror unknown \61\ NULL:8:*/
 	if (unknown == NULL) {
-		CL_LOG("Fatal: Must have a children here!");
+		_CL_LOG << "Fatal: Must have a children here!" LOG_
 		getch();
 	}
 /*...e*/
@@ -967,7 +954,7 @@ lbErrCodes LB_STDCALL lbDOMNode::getNextChildren(lb_I_ConfigObject** children) {
 	//unknown++;
 
 	if (children == NULL) {
-		CL_LOG("Error: queryInterface creates a NULL pointer!");
+		_CL_LOG << "Error: queryInterface creates a NULL pointer!" LOG_
 		getch();
 	}
 	
@@ -983,7 +970,7 @@ lbDOMContainer* LB_STDCALL lbDOMNode::createAbstractedChildList(DOM_Node _node) 
 	lbDOMContainer* list = new lbDOMContainer;
 	lbErrCodes err = ERR_NONE;
 
-	if (manager == NULL) CL_LOG("Error: Setting in lbDOMNode::createAbstractedChildList() a NULL pointer as manager");
+	if (manager == NULL) _LOG << "Error: Setting in lbDOMNode::createAbstractedChildList() a NULL pointer as manager" LOG_
 	
 	list->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
 	
@@ -1007,34 +994,18 @@ lbDOMContainer* LB_STDCALL lbDOMNode::createAbstractedChildList(DOM_Node _node) 
 
 		QI(lbNode, lb_I_Unknown, unknown, __FILE__, __LINE__)
 		
-		/*
-		if (lbNode->queryInterface("lb_I_Unknown", (void**) &unknown, __FILE__, __LINE__) != ERR_NONE) {
-		        CL_LOG("lbNode->queryInterface() Failed!");
-		}
-		*/
-		
-		if (unknown == NULL) CL_LOG("Error: The unknown pointer must not be NULL!");
+		if (unknown == NULL) _LOG << "Error: The unknown pointer must not be NULL!" LOG_
 		
 		if (unknown != lbNode) {
-			CL_LOG("Error: Pointer of unknown instance differs from created instance");
+			_CL_LOG << "Error: Pointer of unknown instance differs from created instance" LOG_
 			getch();
 		}
 		UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
 		key = new lbKey(i);
 
-		char addr[20] = "";
-		sprintf(addr, "%p", (void*) key.getPtr());
-		char buf[1000] = "";
-		sprintf(buf, "Created an instance for lbKey at %s", addr);
-		if (strcmp(addr, "011f4440") == 0) CL_LOG(buf)
-		
-		sprintf(addr, "%p", (void*) &key);
-		sprintf(buf, "Created an instance for lbKey at %p", (void*) &key);
-		if (strcmp(addr, "011f4440") == 0) CL_LOG(buf)
-		
 		key->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
 		key++;
-		if (unknown == NULL) CL_LOG("Error: Inserting a null pointer!");
+		if (unknown == NULL) _LOG << "Error: Inserting a null pointer!" LOG_
 		list->insert(&unknown, &key);
 		key--;
 	}
@@ -1050,7 +1021,7 @@ lbErrCodes LB_STDCALL lbDOMNode::getAttribute(const char* name, lb_I_Attribute*&
 	/**
 	 * In the first use of this function, I like to get a functor as an attribute.
 	 */
-	CL_LOG("lbDOMNode::getAttribute(...): Not implemented yet");
+	_CL_LOG << "lbDOMNode::getAttribute(...): Not implemented yet" LOG_
 	return ERR_NONE;
 }
 /*...e*/
@@ -1060,7 +1031,7 @@ lbErrCodes LB_STDCALL lbDOMNode::getAttributeValue(const char* name, char*& attr
 	DOM_NamedNodeMap attributeMap = node.getAttributes();
 	
 	if (attributeMap == NULL) {
-		CL_LOG("Error: This node is not of type ELEMENT");
+		_CL_LOG << "Error: This node is not of type ELEMENT" LOG_
 		
 		return ERR_UNSPECIFIED;
 	}
@@ -1068,7 +1039,7 @@ lbErrCodes LB_STDCALL lbDOMNode::getAttributeValue(const char* name, char*& attr
 	DOM_Node an_attr = attributeMap.getNamedItem(DOMString(name));	
 	
 	if (an_attr == NULL) {
-		CL_LOG("Error: Attribute not found");
+		_CL_LOG << "Error: Attribute not found" LOG_
 		
 		return ERR_UNSPECIFIED;
 	}
@@ -1119,13 +1090,13 @@ lbErrCodes LB_STDCALL lbDOMNode::deleteValue(char*& attr) {
 /*...slbDOMNode\58\\58\getName\40\\41\:0:*/
 char* LB_STDCALL lbDOMNode::getName() {
 #ifdef VERBOSE
-	CL_LOG("lbDOMNode::getName() called");
+	_CL_LOG << "lbDOMNode::getName() called" LOG_
 	getch();
 #endif
 	if (node.isNull()) {
 /*...sVERBOSE:0:*/
 	#ifdef VERBOSE
-		CL_LOG("node is NULL!");
+		_CL_LOG << "node is NULL!" LOG_
 	#endif
 /*...e*/
 		return "Internal node not defined!";
@@ -1134,7 +1105,7 @@ char* LB_STDCALL lbDOMNode::getName() {
 	DOMString string = node.getNodeName();
 
 #ifdef VERBOSE
-	CL_LOG("Got the DOMString");
+	_CL_LOG << "Got the DOMString" LOG_
 	getch();
 #endif
 
@@ -1142,7 +1113,7 @@ char* LB_STDCALL lbDOMNode::getName() {
 	getNameValue = string.transcode();
 
 #ifdef VERBOSE
-	CL_LOG("Got the node name");
+	_CL_LOG << "Got the node name" LOG_
 	getch();
 #endif	
 	return getNameValue;
@@ -1156,7 +1127,7 @@ class lbDOMConfig :
 {
 protected:
 	lbDOMConfig(const lbDOMConfig & t) {
-		CL_LOG("lbDOMConfig::lbDOMConfig(const lbDOMConfig & t) called !!!");
+		_CL_LOG << "lbDOMConfig::lbDOMConfig(const lbDOMConfig & t) called !!!" LOG_
 		ref = STARTREF;
 		errReporter = NULL;
 /*...sVERBOSE:0:*/
@@ -1203,7 +1174,7 @@ BEGIN_IMPLEMENT_LB_UNKNOWN(lbDOMConfig)
 END_IMPLEMENT_LB_UNKNOWN()
 
 lbErrCodes lbDOMConfig::setData(lb_I_Unknown* uk) {
-	CL_LOG("lbDOMConfig::setData(...) not implemented yet");
+	_CL_LOG << "lbDOMConfig::setData(...) not implemented yet" LOG_
 	return ERR_NOT_IMPLEMENTED;
 }
 
@@ -1345,8 +1316,8 @@ lb_I_Container* LB_STDCALL lbDOMConfig::findNodesAtTreePos(const char* treePos) 
 	DOM_list->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
 
 	if (DOM_list->queryInterface("lb_I_Container", (void**) &list, __FILE__, __LINE__) != NULL) {
-		CL_LOG("Error: Could not generate a reference with interface lb_I_Container");
-		if (list != NULL) CL_LOG("Obviously failed queryInterface, instance pointer is not NULL!!!!");
+		_CL_LOG << "Error: Could not generate a reference with interface lb_I_Container" LOG_
+		if (list != NULL) _LOG << "Obviously failed queryInterface, instance pointer is not NULL!!!!" LOG_
 		return NULL;
 	}
 /*...sPrepare search:8:*/
@@ -1448,7 +1419,7 @@ lb_I_Container* LB_STDCALL lbDOMConfig::findNodesAtTreePos(const char* treePos) 
 			UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
 
 			if (lbNode->queryInterface("lb_I_Unknown", (void**) &unknown, __FILE__, __LINE__) != ERR_NONE) {
-				CL_LOG("lbNode->queryInterface() Failed!");
+				_CL_LOG << "lbNode->queryInterface() Failed!" LOG_
 			} else {
 				unknown.setLine(__LINE__);
 				unknown.setFile(__FILE__);
@@ -1506,23 +1477,23 @@ lbErrCodes LB_STDCALL lbDOMConfig::getConfigObject(lb_I_ConfigObject** cfgObj,
 	
 	lb_I_Container* c = NULL;
 	
-	if (manager.getPtr() == NULL) CL_LOG("Error: Manager in lbDOMConfig is a NULL pointer!")
+	if (manager.getPtr() == NULL) _LOG << "Error: Manager in lbDOMConfig is a NULL pointer!" LOG_
 
 	node->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
 	
 	if (lastResult == NULL) {
-		CL_LOG("Error: Function sequence may be wrong. Please call hasConfigObject first!");
+		_CL_LOG << "Error: Function sequence may be wrong. Please call hasConfigObject first!" LOG_
 		return ERR_FUNCTION_SEQUENCE;
 	}
 	
 	lastResult->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
 	
 	if ((lastResult != NULL) && (lastResult->queryInterface("lb_I_Container", (void**) &c, __FILE__, __LINE__)) != ERR_NONE) {
-		CL_LOG("Error: Could not get interface lb_I_Container");
+		_CL_LOG << "Error: Could not get interface lb_I_Container" LOG_
 		getch();
 	}
 	
-	if (c == NULL) CL_LOG("Error: Failed to get container instance of lastResult");
+	if (c == NULL) _LOG << "Error: Failed to get container instance of lastResult" LOG_
 	
 	node->lbDOMchilds = c;
 	node->node = NULL; // See null pointer operator (this results in the error in the destructor)
