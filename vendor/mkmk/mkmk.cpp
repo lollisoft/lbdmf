@@ -11,11 +11,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.19 $
+ * $Revision: 1.20 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.19 2001/11/10 07:22:32 lothar Exp $
+ * $Id: mkmk.cpp,v 1.20 2001/11/20 20:05:15 lothar Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.20  2001/11/20 20:05:15  lothar
+ * Changed linking object files
+ *
  * Revision 1.19  2001/11/10 07:22:32  lothar
  * Building so targets works now
  *
@@ -607,7 +610,7 @@ void write_so_Target(char* modulename) {
   printf("MINOR=0\n");
   printf("MICRO=1\n");
   printf("\n%s: $(OBJS)\n", modulename);
-  printf("\t\t$(CC) -shared -WL,soname,$(PROGRAM).so.$(MAJOR) -o $(PROGRAM).so.$(MAJOR).$(MINOR).$(MICRO) %s.o $(OBJDEP) -lc\n",modulename);
+  printf("\t\t$(CC) -shared -WL,soname,$(PROGRAM).so.$(MAJOR) -o $(PROGRAM).so.$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) -lc\n",modulename);
 #endif
 #ifdef __WATCOMC__
   fprintf(stderr, "Warning: Creating a so library under Windows is not possible with Watcom !!\n");
