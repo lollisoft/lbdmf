@@ -161,6 +161,7 @@ public:
 		firstfetched = 0;
 //		lpszTable = NULL;
 		cols = 0;
+		skipFKCollections = 0;
 		
 		fetchstatus = 0;
 	}
@@ -192,6 +193,7 @@ public:
 	virtual lbErrCodes LB_STDCALL unregisterView(lb_I_MVC_View* view);
 /*...e*/
 
+	virtual void LB_STDCALL skipFKCollecting();
 	void LB_STDCALL prepareFKList();
 
 	virtual char* LB_STDCALL getTableName();
@@ -273,6 +275,8 @@ private:
 	int	_readonly; // readonly = 1, else = 0
 	int	mode;  // insert = 1, select = 0
 //	char* lpszTable;
+
+	int     skipFKCollections;
 	
 	// Number of columns for the query
 	SQLSMALLINT cols;
@@ -303,7 +307,6 @@ private:
 class lbBoundColumn: public lb_I_BoundColumn {
 public:	
 	lbBoundColumn() {
-		_CL_VERBOSE << "lbBoundColumn::lbBoundColumn() called" LOG_
 		ref = STARTREF;
 		bound = 0;
 		cbBufferLength = 0;
@@ -311,11 +314,9 @@ public:
 		colName = NULL;
 		ColumnSize = 0;
 		rows = 2;
-		_CL_VERBOSE << "lbBoundColumn::lbBoundColumn() leaving" LOG_
 	}
 	
 	virtual ~lbBoundColumn() {
-		_CL_VERBOSE << "lbBoundColumn::~lbBoundColumn() called" LOG_
 
 		switch (_DataType) {
 			case SQL_CHAR:
@@ -334,7 +335,6 @@ public:
 			free(buffer);
 			buffer = NULL;
 		}
-		_CL_VERBOSE << "lbBoundColumn::~lbBoundColumn() leaving" LOG_
 
 	}
 	
@@ -494,8 +494,6 @@ lbErrCodes      LB_STDCALL lbBoundColumns::setQuery(lbQuery* q) {
 	SQLSMALLINT num = 0;	
 	SQLRETURN sqlreturn = SQLNumResultCols(hstmt, &num);
 	
-	_CL_VERBOSE << "Have " << (int) num << " columns" LOG_
-	
 /*...e*/
 	
 /*...sdocs:0:*/
@@ -525,30 +523,18 @@ Therefore I need an indicator, set by the user of this library to know, which on
 	for (int i = 1; i <= num; i++) {
 		lbErrCodes err = ERR_NONE;
 		
-		_CL_VERBOSE << "Column loop..." LOG_
-		
 		// Create the instance ...
 		
 		char puffer1[100];
 		lbBoundColumn* bc = new lbBoundColumn();
 		char puffer2[100];
 
-		_CL_VERBOSE << "Have lbBoundColumn" LOG_
 		char ptr[20] = "";
-
-		if (bc) {
-			sprintf(ptr, "%p", bc);
-			_CL_VERBOSE << "bc instance pointer is good: " << ptr LOG_
-		}
-
-		sprintf(ptr, "%p", manager.getPtr());
-		if (manager.getPtr()) _CL_VERBOSE << "Manager instance pointer is good: " << ptr LOG_
 
 		lb_I_Module *man = manager.getPtr();
 
 		bc->setModuleManager(man, "lbDB.cpp", __LINE__);
 
-		_CL_VERBOSE << "Column loop... 1" LOG_
 		bc->prepareBoundColumn(q, i);
 
 		integerKey->setData(i);
@@ -559,18 +545,14 @@ Therefore I need an indicator, set by the user of this library to know, which on
 		bc->queryInterface("lb_I_Unknown", (void**) &uk, __FILE__, __LINE__);
 		integerKey->queryInterface("lb_I_KeyBase", (void**) &key, __FILE__, __LINE__);		
 
-		_CL_VERBOSE << "Column loop... 2" LOG_
 		boundColumns->insert(&uk, &key);
 
 		UAP(lb_I_BoundColumn, bc1, __FILE__, __LINE__)
 
-		_CL_VERBOSE << "Column loop... 3" LOG_
 		bc1 = getBoundColumn(i);
 
 		bc1->bindColumn(q, i);
 
-		_CL_VERBOSE << "Bound a column" LOG_
-		
 /*...sGet the column name for this column and add an index to it\39\s column id\46\:16:*/
 
 		if (ColumnNameMapping == NULL) {
@@ -593,8 +575,6 @@ Therefore I need an indicator, set by the user of this library to know, which on
 		if (ColumnNameMapping.getPtr() == NULL) printf("Error: NULL pointer at ColumnNameMapping detected\n");
 		if (ivalue.getPtr() == NULL) printf("Error: NULL pointer at ivalue detected\n");
 		if (skey.getPtr() == NULL) printf("Error: NULL pointer at skey detected\n");
-		
-		_CL_VERBOSE << "Insert into ColumnNameMapping" LOG_
 		
 		ColumnNameMapping->insert(&ivalue, &skey);
 /*...e*/
@@ -682,6 +662,10 @@ lbErrCodes LB_STDCALL lbQuery::unregisterView(lb_I_MVC_View* view) {
         return ERR_NONE;
 }
 /*...e*/
+
+void LB_STDCALL lbQuery::skipFKCollecting() {
+	skipFKCollections = 1;
+}
 
 /*...slbErrCodes LB_STDCALL lbQuery\58\\58\init\40\HENV _henv\44\ HDBC _hdbc\41\:0:*/
 lbErrCodes LB_STDCALL lbQuery::init(HENV _henv, HDBC _hdbc, int readonly) {
@@ -1004,6 +988,8 @@ int   LB_STDCALL lbQuery::getColumns() {
 /*...sint LB_STDCALL lbQuery\58\\58\hasFKColumn\40\char\42\ FKName\41\:0:*/
 int LB_STDCALL lbQuery::hasFKColumn(char* FKName) {
 	lbErrCodes err = ERR_NONE;
+
+	if (skipFKCollections == 1) return 0;
 	
 	UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, s)
@@ -1023,6 +1009,10 @@ void LB_STDCALL lbQuery::prepareFKList() {
 	#define TAB_LEN 100
 	#define COL_LEN 100
 
+	REQUEST(manager.getPtr(), lb_I_Container, ForeignColumns)
+
+	if (skipFKCollections == 1) return;
+
 	unsigned char*   szTable;     /* Table to display   */
 
 	UCHAR   szPkTable[TAB_LEN];  /* Primary key table name */
@@ -1035,9 +1025,11 @@ void LB_STDCALL lbQuery::prepareFKList() {
 	SQLSMALLINT      iKeySeq;
 	SQLRETURN         retcode;
 
+_CL_VERBOSE << "Call SQLAllocStmt(...)" LOG_
+
 	retcode = SQLAllocStmt(hdbc, &hstmt); /* Statement handle */
 
-
+_CL_VERBOSE << "Bind collumns" LOG_
 
 	SQLBindCol(hstmt, 3, SQL_C_CHAR, szPkTable, TAB_LEN, &cbPkTable);
 	SQLBindCol(hstmt, 4, SQL_C_CHAR, szPkCol, COL_LEN, &cbPkCol);
@@ -1046,8 +1038,7 @@ void LB_STDCALL lbQuery::prepareFKList() {
 	SQLBindCol(hstmt, 8, SQL_C_CHAR, szFkCol, COL_LEN, &cbFkCol);
 
 
-	REQUEST(manager.getPtr(), lb_I_Container, ForeignColumns)
-
+_CL_VERBOSE << "Bound columns" LOG_
 	
 	if (retcode != SQL_SUCCESS)
 	{
@@ -1079,6 +1070,8 @@ void LB_STDCALL lbQuery::prepareFKList() {
 */
 /*...e*/
 
+_CL_VERBOSE << "Call SQLForeignKeys(...) for table " << szTable LOG_
+
 	retcode = SQLForeignKeys(hstmt,
 	         NULL, 0,      /* Primary catalog   */
 	         NULL, 0,      /* Primary schema   */
@@ -1086,8 +1079,12 @@ void LB_STDCALL lbQuery::prepareFKList() {
 	         NULL, 0,      /* Foreign catalog   */
 	         NULL, 0,      /* Foreign schema   */
 	         szTable, SQL_NTS);      /* Foreign table   */
-	                    
+
+_CL_VERBOSE << "Try to fetch out the foreign keys" LOG_
+
 	while ((retcode == SQL_SUCCESS) || (retcode == SQL_SUCCESS_WITH_INFO)) {
+
+_CL_VERBOSE << "In loop ..." LOG_
 
 	/* Fetch and display the result set. This will be all of the */
 	/* foreign keys in other tables that refer to the ORDERS */
@@ -1096,6 +1093,8 @@ void LB_STDCALL lbQuery::prepareFKList() {
 	   retcode = SQLFetch(hstmt);
 	   if (retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO) {
 	      lbErrCodes err = ERR_NONE;
+
+_CL_VERBOSE << "Have one definition" LOG_
 	      
 	      printf("%-s ( %-s ) <-- %-s ( %-s )\n", szPkTable, szPkCol, szFkTable, szFkCol);
 	      
@@ -1121,7 +1120,7 @@ void LB_STDCALL lbQuery::prepareFKList() {
 
 	SQLFreeStmt(hstmt, SQL_DROP);
 
-                                  
+_CL_VERBOSE << "Leave lbQuery::prepareFKList()" LOG_
 }
 /*...e*/
 
