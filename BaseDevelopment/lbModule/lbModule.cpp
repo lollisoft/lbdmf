@@ -28,11 +28,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.52 $
+ * $Revision: 1.53 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.52 2003/05/24 02:11:47 lollisoft Exp $
+ * $Id: lbModule.cpp,v 1.53 2003/06/09 14:50:33 lollisoft Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.53  2003/06/09 14:50:33  lollisoft
+ * Minor changes
+ *
  * Revision 1.52  2003/05/24 02:11:47  lollisoft
  * Linux don't know DebugBreak()
  *
@@ -2999,7 +3002,7 @@ _CL_LOG << "Requested for an interface " << request LOG_
                                 impl->deleteValue(value);
                         }
 /*...e*/
-			cout << "Make the instance" << endl;
+			cout << "Make the instance: " << functorName << endl;
                         makeInstance(functorName, moduleName, result);
 /*...sLog error:32:*/
                         if ((*result) == NULL) {
