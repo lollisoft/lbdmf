@@ -129,6 +129,7 @@ class lb_I_Module;
 #define STARTREF 0
 
 
+/*...sclass lb_I_Unknown:0:*/
 class lb_I_Unknown {
 protected:
 	lb_I_Unknown() {}
@@ -174,6 +175,7 @@ public:
 
 //friend class lb_I_gcManager;	
 };
+/*...e*/
 
 /*...sAutoPointer:0:*/
 /**
@@ -488,12 +490,14 @@ lbErrCodes DLLEXPORT LB_STDCALL name(lb_I_Unknown** uk) { \
         char buf[100] = ""; \
         \
         instance->setFurtherLock(0); \
+	CL_LOG("Reseted locking"); \
         \
         if ((err = instance->queryInterface("lb_I_Unknown", (void**) uk)) != ERR_NONE) { \
                 CL_LOG("Failed to create unknown reference to instance of "#clsname"!"); \
                 if (err == ERR_STATE_FURTHER_LOCK) return err; \
                 return ERR_FUNCTOR; \
         } \
+        CL_LOG("Called queryInterface()"); \
 \
         return ERR_NONE; \
 }
