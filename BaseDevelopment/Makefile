@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.6 $
+# * $Revision: 1.7 $
 # * $Name:  $
-# * $Id: Makefile,v 1.6 2004/07/18 07:28:25 lollisoft Exp $
+# * $Id: Makefile,v 1.7 2004/08/17 20:04:02 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.7  2004/08/17 20:04:02  lollisoft
+# * Deactivated parts, that do not compile under Linux and added demo app module including sample apps
+# *
 # * Revision 1.6  2004/07/18 07:28:25  lollisoft
 # * Now the database sample works also under linux. Some bugs solved and minor changes
 # *
@@ -34,15 +37,40 @@
 MAKESUBDIR= \
 	@( \
 	cd $@; \
-	pwd; \
 	./makefile.sh; \
 	make; \
-	cd ..; \
 	)
 
-all_targets: lbHook lbDB lbPluginManager lbModule lbclasses lbMetaApplication lbXMLConfig/lbDOMConfig
+MAKEWXSAMPLE= \
+	@( \
+	cd $@; \
+	make -f makefile.wx-sample; \
+	)
+
+all_targets: lbHook \
+	lbDB \
+	lbModule \
+	lbclasses \
+	lbMetaApplication \
+	../AppDevelopmentDemo/App \
+	../Test/Console/XML \
+	../Test/GUI/wxWrapper
+
+#	Doesn't compile yet under linux
+#	lbPluginManager \
+#	Doesn't compile if XML dependend module XML4C (alphaworks) is not installed
+#	lbXMLConfig/lbDOMConfig \
 
 dummy:
+
+../Test/Console/XML: dummy
+	$(MAKESUBDIR)
+
+../Test/GUI/wxWrapper: dummy
+	$(MAKEWXSAMPLE)
+
+../AppDevelopmentDemo/App: dummy
+	$(MAKESUBDIR)
 
 lbHook: dummy
 	$(MAKESUBDIR)
@@ -62,5 +90,5 @@ lbclasses: dummy
 lbMetaApplication: dummy
 	$(MAKESUBDIR)
 
-lbXMLConfig/lbDOMConfig:dummy
+lbXMLConfig/lbDOMConfig: dummy
 	$(MAKESUBDIR)
