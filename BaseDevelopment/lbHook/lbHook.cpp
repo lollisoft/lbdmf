@@ -152,12 +152,10 @@ DLLEXPORT HINSTANCE LB_STDCALL getLBModuleHandle() {
 }
 
 DLLEXPORT void LB_STDCALL setModuleHandle(HINSTANCE h) {
-	printf("setModuleHandle(HINSTANCE h) called.\n");
 	ModuleHandle = h;
 }
 
 DLLEXPORT void LB_STDCALL setLBModuleHandle(HINSTANCE h) {
-	printf("setLBModuleHandle(HINSTANCE h) called.\n");
 	LB_Module_Handle = h;
 }
 
@@ -179,7 +177,6 @@ int lb_isInitializing = 0;
  
 /*...slbErrCodes LB_STDCALL lbLoadModule\40\const char\42\ name\44\ HINSTANCE \38\ hinst\41\:0:*/
 lbErrCodes LB_STDCALL lbLoadModule(const char* name, HINSTANCE & hinst) {
-	printf("Lade Modul %s.\n", name);
 #ifdef WINDOWS
         if ((hinst = LoadLibrary(name)) == NULL)
         {
@@ -217,7 +214,6 @@ lbErrCodes LB_STDCALL lbLoadModule(const char* name, HINSTANCE & hinst) {
 	    return ERR_MODULE_NOT_FOUND;
 	}
 #endif
-        printf("Modul erfolgreich geladen\n");
         return ERR_NONE;
 }
 /*...e*/
