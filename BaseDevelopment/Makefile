@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.35 $
+# * $Revision: 1.36 $
 # * $Name:  $
-# * $Id: Makefile,v 1.35 2005/03/15 14:43:51 lollisoft Exp $
+# * $Id: Makefile,v 1.36 2005/03/15 22:17:52 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.36  2005/03/15 22:17:52  lollisoft
+# * mkmk and make process under linux improoved
+# *
 # * Revision 1.35  2005/03/15 14:43:51  lollisoft
 # * Changes for linux to build and let GUI running with plugins
 # *
@@ -177,7 +180,11 @@ TARGETDLL=so
 TARGETEXE=elf
 TARGETPLUGIN=soplugin
 
-ALLTARGETS = lbHook \
+ALLTARGETS = \
+	../include/lbkey.h \
+	../vendor/dosdir \
+	../vendor/mkmk \
+	lbHook \
 	lbDB \
 	lbModule \
 	lbclasses \
@@ -255,18 +262,29 @@ dummy:
 	$(MAKE) -C $@ -e MODULE=console-test -e TARGET=$(TARGETEXE) -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
 	$(MAKE) -C $@
 
-ifeq ($(OSTYPE), osx)
 ../include/lbkey.h: dummy
 	touch ../include/lbkey.h
 
+ifeq ($(OSTYPE), linux)
+../vendor/dosdir: dummy
+	$@/make.sh $@
+	cd ../BaseDevelopment
+
+../vendor/mkmk: dummy
+	$@/make.sh $@
+	cp $@/mkmk $(HOME)/bin
+	cd ../BaseDevelopment
+endif
+
+ifeq ($(OSTYPE), osx)
 ../vendor/dosdir: dummy
 	$@/make-osx.sh $@
-	cd ../Basedevelopment
+	cd ../BaseDevelopment
 
 ../vendor/mkmk: dummy
 	$@/make-osx.sh $@
 	cp $@/mkmk $(HOME)/bin
-	cd ../Basedevelopment
+	cd ../BaseDevelopment
 
 ../Test/GUI/wxWrapper: dummy
 	$(MAKE) -C $@ -f makefile.osx
