@@ -28,11 +28,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.15 $
+ * $Revision: 1.16 $
  * $Name:  $
- * $Id: lbErrcodes.h,v 1.15 2002/12/29 16:09:29 lothar Exp $
+ * $Id: lbErrcodes.h,v 1.16 2003/06/10 21:24:10 lollisoft Exp $
  *
  * $Log: lbErrcodes.h,v $
+ * Revision 1.16  2003/06/10 21:24:10  lollisoft
+ * lbDB additions
+ *
  * Revision 1.15  2002/12/29 16:09:29  lothar
  * Intent to go public
  *
@@ -191,7 +194,12 @@ enum lbErrCodes {
 	ERR_SOCKET_SERVER_S_INVALID,
 	ERR_SOCKET_RECV,
 	ERR_SOCKET_UNCONNECTED,
-	ERR_SOCKET_CLOSED
+	ERR_SOCKET_CLOSED,
+	
+	ERR_DB_INIT,
+	ERR_DB_ALLOCSTATEMENT,
+	ERR_DB_QUERYFAILED,
+	ERR_DB_CONNECT
 };
 /*...e*/
 
