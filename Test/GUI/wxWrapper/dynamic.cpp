@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.35 2005/01/05 13:40:02 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.36 2005/01/22 11:54:57 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.35 $
+ * $Revision: 1.36 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.35 2005/01/05 13:40:02 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.36 2005/01/22 11:54:57 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.36  2005/01/22 11:54:57  lollisoft
+ * Removed log messages
+ *
  * Revision 1.35  2005/01/05 13:40:02  lollisoft
  * New dynamic application implementation works
  *
@@ -173,7 +176,6 @@ public:
         lb_wxFrame():
         	wxFrame(NULL, -1, "Dynamic sample", wxPoint(50, 50), wxSize(450, 340))
         {
-        	printf("lb_wxFrame::lb_wxFrame() called.\n");
         	menu_bar = NULL; 
         	gui = NULL;
         	guiCleanedUp = 0;
@@ -274,8 +276,8 @@ lbErrCodes LB_STDCALL lb_wxFrame::setData(lb_I_Unknown* uk) {
 /*...e*/
 /*...slbErrCodes lb_wxFrame\58\\58\registerEvents\40\lb_I_EventConnector\42\ object\41\:0:*/
 lbErrCodes LB_STDCALL lb_wxFrame::registerEvents(lb_I_EventConnector* object) {
-       _LOG << "lb_wxFrame::registerEvents(...)" LOG_
         lb_wxFrame* peer = getPeer();
+
 
         
         ((wxFrame*) peer)->Connect( DYNAMIC_QUIT,  -1, wxEVT_COMMAND_MENU_SELECTED,
@@ -295,7 +297,7 @@ lbErrCodes LB_STDCALL lb_wxFrame::registerEvents(lb_I_EventConnector* object) {
 /*...e*/
 /*...slbErrCodes lb_wxFrame\58\\58\createEventsource\40\lb_I_EventConnector\42\ object\41\:0:*/
 lbErrCodes LB_STDCALL lb_wxFrame::createEventsource(lb_I_EventConnector* object) {
-       _LOG << "lb_wxFrame::createEventsource(...)" LOG_
+
 /*...screate a menu:0:*/
   // Make a menubar
   wxMenu *file_menu = new wxMenu;
@@ -307,22 +309,16 @@ lbErrCodes LB_STDCALL lb_wxFrame::createEventsource(lb_I_EventConnector* object)
 //  file_menu->Append(GUI->useEvent("DYNAMIC_ABOUT"), "&About");
 //  file_menu->Append(GUI->useEvent("DYNAMIC_QUIT"), "E&xit");
 
-  _LOG << "Create MenuBar" LOG_
+
   menu_bar = new wxMenuBar;
   menu_bar->Append(file_menu, "&File");
   
-  
-  char ptr[20] = "";
-  sprintf(ptr, "%p", menu_bar);
-  _LOG << "Return a menu pointer: " << ptr LOG_
-  
-  _LOG << "Appended File menu" LOG_
 /*...e*/
 
 /*...sset the created menubar:0:*/
-  _LOG << "Set the menubar" LOG_
+
   SetMenuBar(menu_bar);
-  _LOG << "Set up menubar" LOG_
+
 /*...e*/
         return ERR_NONE;
 }
@@ -376,10 +372,10 @@ public:
 		char buffer[1000] = "";
 
 		sprintf(buffer, 
-			"select \"Anwendungen\".\"Name\" from \"Anwendungen\" inner join \"User_Anwendungen\" on "
-			"\"Anwendungen\".id = \"User_Anwendungen\".\"AnwendungenId\" "
-			"inner join \"Users\" on \"User_Anwendungen\".userid = \"Users\".id where "
-			"\"Users\".userid = '%s'"
+			"select \"anwendungen\".\"name\" from \"anwendungen\" inner join \"user_anwendungen\" on "
+			"\"anwendungen\".id = \"user_anwendungen\".\"anwendungenid\" "
+			"inner join \"users\" on \"user_anwendungen\".userid = \"users\".id where "
+			"\"users\".userid = '%s'"
 				, userid);
 
 		sampleQuery->query(buffer);
@@ -556,7 +552,7 @@ DECLARE_LB_UNKNOWN()
 		char* user = strdup(getTextValue("Benutzer:"));
 	
 
-		sprintf(buffer, "select userid, passwort from \"Users\" where userid = '%s' and passwort = '%s'",
+		sprintf(buffer, "select userid, passwort from \"users\" where userid = '%s' and passwort = '%s'",
                 	user, pass);
 
 		sampleQuery->query(buffer);
@@ -1108,6 +1104,8 @@ void lbDatabaseDialog::init(wxWindow* parent, wxString formName, wxString SQLStr
 				
 /*...e*/
 			}
+
+			free(buffer);
 /*...e*/
 		} else {
 			wxTextCtrl *text = new wxTextCtrl(this, -1, sampleQuery->getAsString(i)->charrep(), wxPoint());
@@ -1748,9 +1746,9 @@ class lb_wxGUI
 public:
 /*...sctor\47\dtor:8:*/
         lb_wxGUI() {
-        	printf("lb_wxGUI::lb_wxGUI() called.\n");
-        	
-                _LOG << "lb_I_wxGUI object will be created and initialized" LOG_;
+		#ifdef VERBOSE        	
+                _LOG << "lb_I_wxGUI object will be created and initialized" LOG_
+		#endif                
                 
                 eventCount = 0;
                 sampleQuery = NULL;
@@ -1760,6 +1758,7 @@ public:
         }
 
 	virtual ~lb_wxGUI() { 
+/*...sbla:8:*/
 /* 
 	Handled in cleanup event handler	
 	
@@ -1769,7 +1768,10 @@ public:
 			dialog = NULL;
 		}
 */
-		printf("lb_wxGUI::~lb_wxGUI() called.\n");
+/*...e*/
+		#ifdef VERBOSE
+	        _LOG << "lb_wxGUI::~lb_wxGUI() called.\n" LOG_
+	        #endif
 	}
 /*...e*/
 
@@ -2087,9 +2089,9 @@ lb_I_Form* LB_STDCALL lb_wxGUI::createLoginForm() {
 
 	wizard->SetPageSize(size);
 
-	if ( wizard->RunWizard(page1) )
+	if ( ! wizard->RunWizard(page1) )
 	{
-	    wxMessageBox(_T("The wizard successfully completed"), _T("That's all"),
+	    wxMessageBox(_T("Anmeldung fehlgeschlagen"), _T("That's all"),
             wxICON_INFORMATION | wxOK);
         }
 
@@ -2212,10 +2214,12 @@ lb_I_Unknown* LB_STDCALL lb_wxGUI::createFrame() {
 
 	frame->setGUI(this);
 
+	#ifdef VERBOSE
 	char ptr[20] = "";
 	sprintf(ptr, "%p", frame);
 	
 	_LOG << "Created a lb_wxFrame object at " << ptr LOG_
+        #endif
         
         return frame;
 }
@@ -2308,7 +2312,6 @@ class MyApp: public wxApp
 	  metaApp = NULL;
 #endif
 	 panel = NULL;
-	 printf("MyApp::MyApp() called.\n");
 	}
 
 	/**
@@ -2604,11 +2607,14 @@ bool MyApp::OnInit(void)
 /*...sload the frame \40\peer is the frame \63\\63\\41\:0:*/
 
 	lb_I_Unknown *uk = wxGUI->createFrame();
+
+	#ifdef VERBOSE
 	char ptr[20] = "";
 	sprintf(ptr, "%p", uk);
   
 	_LOG << "Have got a frame: " << ptr LOG_
-  
+  	#endif
+  	
 	/**
 	 * A Peer interface to get the derived class
 	 */
@@ -2621,7 +2627,6 @@ bool MyApp::OnInit(void)
 	
 	frame_peer = frame->getPeer();
   
-	sprintf(ptr, "%p", frame_peer);
   
 /*...e*/
   
@@ -2735,7 +2740,11 @@ bool MyApp::OnInit(void)
 /*...e*/
 
   err = frame_peer->createEventsource(this);
+  
+  #ifdef VERBOSE
   _LOG << "Called frame_peer->createEventsource(this)" LOG_
+  #endif
+  
   if (err != ERR_NONE) _LOG << "Have some problems to set up menu event sources" LOG_
   
 /*...sa text edit sample:0:*/
@@ -2787,7 +2796,9 @@ bool MyApp::OnInit(void)
 #endif
 /*...e*/
 #ifdef LB_I_EXTENTIONS
+#ifdef VERBOSE
 _LOG << "Made panel" LOG_
+#endif
 #endif
 /*...sShow the window:0:*/
 #ifdef LB_I_EXTENTIONS
@@ -2808,7 +2819,9 @@ _LOG << "Made panel" LOG_
 #endif
 /*...e*/
 #ifdef LB_I_EXTENTIONS
+#ifdef VERBOSE
 _LOG << "Showed the window" LOG_
+#endif
 #endif
 
 
@@ -2832,7 +2845,9 @@ _LOG << "Showed the window" LOG_
 /*...e*/
 
 #ifdef LB_I_EXTENTIONS
+#ifdef VERBOSE
 _LOG << "Initialized metaapplication" LOG_
+#endif
 #endif
 
 #ifdef LB_I_EXTENTIONS
@@ -2852,8 +2867,9 @@ lbErrCodes LB_STDCALL MyApp::setData(lb_I_Unknown* uk) {
 
 /*...sMyApp\58\\58\registerEventHandler\40\lb_I_Dispatcher\42\ disp\41\:0:*/
 lbErrCodes LB_STDCALL MyApp::registerEventHandler(lb_I_Dispatcher* disp) {
-       _LOG << "Register event handler" LOG_;
-        
+        #ifdef VERBOSE
+        _LOG << "Register event handler" LOG_;
+        #endif
         // We provide some menu manipulation
         disp->addEventHandlerFn(this, (lbEvHandler) &MyApp::lbEvHandler1, "AddMenu");
         disp->addEventHandlerFn(this, (lbEvHandler) &MyApp::lbEvHandler2, "AddMenuBar");
@@ -2926,8 +2942,6 @@ lbErrCodes LB_STDCALL MyApp::lbEvHandler2(lb_I_Unknown* uk) {
 	QI(uk, lb_I_String, string, __FILE__, __LINE__)
 
 */
-
-	printf("lbErrCodes LB_STDCALL MyApp::lbEvHandler2(lb_I_Unknown* uk) called\n");
 
 	UAP_REQUEST(manager.getPtr(), lb_I_EventManager, ev_manager)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
@@ -3073,7 +3087,9 @@ lbErrCodes LB_STDCALL MyApp::addButton(lb_I_Unknown* uk) {
 /*...e*/
 
 lbErrCodes LB_STDCALL MyApp::addLabel(lb_I_Unknown* uk) {
+#ifdef VERBOSE
 	_LOG << "lbErrCodes LB_STDCALL MyApp::addLabel(lb_I_Unknown* uk) called" LOG_
+#endif
 /*...scode:0:*/
 	_LOG << "MyApp::addLabel called" LOG_
 	lbErrCodes err = ERR_NONE;
@@ -3117,11 +3133,11 @@ lbErrCodes LB_STDCALL MyApp::addLabel(lb_I_Unknown* uk) {
 }
 
 lbErrCodes LB_STDCALL MyApp::addTextField(lb_I_Unknown* uk) {
+#ifdef VERBOSE
 	_LOG << "lbErrCodes LB_STDCALL MyApp::addTextField(lb_I_Unknown* uk) called" LOG_
+#endif
 /*...scode:0:*/
-	_LOG << "MyApp::addTextField called" LOG_
 	lbErrCodes err = ERR_NONE;
-
 
 	UAP_REQUEST(manager.getPtr(), lb_I_EventManager, ev_manager)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
@@ -3150,8 +3166,9 @@ lbErrCodes LB_STDCALL MyApp::addTextField(lb_I_Unknown* uk) {
 	
 	lb_wxFrame* f = frame_peer->getPeer();
 	
+#ifdef VERBOSE
 	_LOG "Create a static text" LOG_
-
+#endif
 
 	wxTextCtrl *text = new 
 	

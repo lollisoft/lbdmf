@@ -825,8 +825,6 @@ Using SQLSetPos
 
 	retcode = SQLExecDirect(hstmt, (unsigned char*) szSql, SQL_NTS);
 
-//	retcode = SQLPrepare(hstmtDelete, "DELETE FROM Customers WHERE CURRENT OF Cust", SQL_NTS);
-
 	if ((retcode != SQL_SUCCESS) && (retcode != SQL_SUCCESS_WITH_INFO))
         {
         	dbError( "SQLExecDirect()");
@@ -842,8 +840,6 @@ Using SQLSetPos
 	        _LOG << "lbQuery::query(...) failed." LOG_
 	        return ERR_DB_QUERYFAILED;
 	} else {
-//		printf("Have %d columns\n", cols);
-
 
 		lbBoundColumns* boundcols = new lbBoundColumns();
 		boundcols->setModuleManager(*&manager, __FILE__, __LINE__);
@@ -852,7 +848,6 @@ Using SQLSetPos
 		
 		boundColumns = boundcols;
 		
-//		printf("Have %d columns bound\n", cols);
 	}
 
 	return ERR_NONE;
@@ -1009,6 +1004,7 @@ void LB_STDCALL lbQuery::prepareFKList() {
 	}
 
 	szTable = strdup(getTableName());
+/*...sbla:0:*/
 /*
 	int a = 0;
 	int b = 0;
@@ -1030,8 +1026,7 @@ void LB_STDCALL lbQuery::prepareFKList() {
 	free(szTable);
 	szTable = temp;
 */
-
-printf("Get foreign keys for table %s\n", szTable);
+/*...e*/
 
 	retcode = SQLForeignKeys(hstmt,
 	         NULL, 0,      /* Primary catalog   */
@@ -1046,8 +1041,6 @@ printf("Get foreign keys for table %s\n", szTable);
 	/* Fetch and display the result set. This will be all of the */
 	/* foreign keys in other tables that refer to the ORDERS */
 	/* primary key.                 */
-
-printf("Try to print out the foreign columns\n");
 
 	   retcode = SQLFetch(hstmt);
 	   if (retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO) {
@@ -1068,8 +1061,6 @@ printf("Try to print out the foreign columns\n");
 	      QI(FKName, lb_I_KeyBase, key_FKName, __FILE__, __LINE__)
 	      QI(PKTable, lb_I_Unknown, uk_PKTable, __FILE__, __LINE__)
 
-	      printf("Try to insert foreign key data\n");
-	      
 	      ForeignColumns->insert(&uk_PKTable, &key_FKName);
 	      
 	   }
@@ -1194,23 +1185,15 @@ lbErrCodes LB_STDCALL lbQuery::next() {
 #ifndef USE_FETCH_SCROLL
 	retcode = SQLExtendedFetch(hstmt, SQL_FETCH_NEXT, 0, &RowsFetched, RowStat);
 
-_LOG << "Have fetched next (step 1)" LOG_	
-	
 	/* Check for having no data.
 	 * This could only happen, if really no data is in the resultset.
 	 */
 	 
-	 
-	 
-	printf("Fehlercode fr SQLExtendedFetch(): %d\n", retcode); 
-	 
 	if (retcode == SQL_NO_DATA) {
-
-	_LOG << "Fetch (step 1) failed" LOG_
 
 		retcode = SQLExtendedFetch(hstmt, SQL_FETCH_PREV, 0, &RowsFetched, RowStat);
 
-	_LOG << "Return error" LOG_	
+		_LOG << "Return error" LOG_	
 
 		fetchstatus = 1;
 		
@@ -1228,19 +1211,11 @@ _LOG << "Have fetched next (step 1)" LOG_
 		}
 		
 
-_LOG << "Fetch checks for next row (step 2)" LOG_
-		
 		retcode = SQLExtendedFetch(hstmt, SQL_FETCH_NEXT, 0, &RowsFetched, RowStat);
 
-char buf[100] = "";
-
-_LOG << "Fetch checked (step 2)" LOG_
-		
 		if (retcode == SQL_NO_DATA) {
 			// Indicate for no data and go back
 
-_LOG << "Fetch gave no more data. Return a warning." LOG_
-			
 			retcode = SQLExtendedFetch(hstmt, SQL_FETCH_PREV, 0, &RowsFetched, RowStat);
 			
 			if (retcode == SQL_NO_DATA) {
@@ -1255,8 +1230,6 @@ _LOG << "Fetch gave no more data. Return a warning." LOG_
 			
 			return WARN_DB_NODATA;
 		} else {
-
-_LOG << "Fetch gave no error, so all would be good." LOG_
 
 			retcode = SQLExtendedFetch(hstmt, SQL_FETCH_PREV, 0, &RowsFetched, RowStat);
 			
@@ -1864,7 +1837,6 @@ lbErrCodes LB_STDCALL lbBoundColumn::setData(lb_I_Unknown* uk) {
 
 	if (column->getColumnName() != NULL) {
 		colName->setData(column->getColumnName()->getData());
-		printf("SetData for colName results in %s\n", column->getColumnName()->getData());
 	}
 
 	leaveOwnership(*&column, this);
@@ -2311,9 +2283,6 @@ lbErrCodes LB_STDCALL lbDatabase::connect(char* DSN, char* user, char* passwd) {
 		_LOG << "Connection to database failed." LOG_
         	SQLFreeEnv(henv);
         	return ERR_DB_CONNECT;
-        } else {
-//		SQLFreeEnv(henv);
-		printf("Connection succeeded.\n");
         }
 
         retcode = SQLSetConnectOption(hdbc, SQL_AUTOCOMMIT, SQL_AUTOCOMMIT_ON);
@@ -2414,9 +2383,6 @@ if (retcode != SQL_SUCCESS && retcode != SQL_SUCCESS_WITH_INFO)
         return;
         } else {
             SQLFreeEnv(henv);
-            printf("Connection succeeded.\n");
-//            getch();
-//            return;
         }
 
 

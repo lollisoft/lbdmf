@@ -31,10 +31,13 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.30 $
+ * $Revision: 1.31 $
  * $Name:  $
- * $Id: misc.cpp,v 1.30 2005/01/21 14:56:44 lollisoft Exp $
+ * $Id: misc.cpp,v 1.31 2005/01/22 11:52:24 lollisoft Exp $
  * $Log: misc.cpp,v $
+ * Revision 1.31  2005/01/22 11:52:24  lollisoft
+ * Removed log messages
+ *
  * Revision 1.30  2005/01/21 14:56:44  lollisoft
  * Removed some unused log messages
  *
@@ -278,9 +281,7 @@ lbErrCodes DLLEXPORT LB_FUNCTORCALL instanceOfLogger(lb_I_Unknown** uk, lb_I_Mod
         *uk = NULL; 
         instance->setFurtherLock(0); 
         if (m != NULL) { 
-		if (strcmp("lbLog", "lb_MetaApplication") == 0) printf("Functor calls setModuleManager\n"); 
         	instance->setModuleManager(m, __FILE__, __LINE__); 
-		if (strcmp("lbLog", "lb_MetaApplication") == 0) printf("Functor called setModuleManager\n"); 
         } else { 
         	_CL_LOG << "Error: Functor gets no manager. This is only possible for a manager it self." LOG_ 
         } 
