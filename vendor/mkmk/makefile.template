@@ -1,0 +1,6 @@
+# Standard template
+
+include $(DEVROOT)/CPP/make/STD_MAKE
+
+
+

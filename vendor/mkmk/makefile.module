@@ -1,0 +1,7 @@
+# Define your module based settings
+
+OBJDEP=../dosdir/match.o ../dosdir/dosdir.o
+
+MOD_INCL=$(STD_INCL) \
+    -I ../dosdir
+    
