@@ -1,11 +1,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.17 $
+ * $Revision: 1.18 $
  * $Name:  $
- * $Id: lbInterfaces-sub-classes.h,v 1.17 2001/12/12 17:27:54 lothar Exp $
+ * $Id: lbInterfaces-sub-classes.h,v 1.18 2001/12/15 18:19:39 lothar Exp $
  *
  * $Log: lbInterfaces-sub-classes.h,v $
+ * Revision 1.18  2001/12/15 18:19:39  lothar
+ * ZThread not on windows
+ *
  * Revision 1.17  2001/12/12 17:27:54  lothar
  * Hehe - runs under linux
  *
@@ -763,7 +766,7 @@ public:
     virtual void LB_STDCALL setPrefix(char* p) = 0;
 };
 /*...e*/
-
+#ifndef WINDOWS
 class lb_I_Runnable : public lb_I_Unknown {
 protected:
     lb_I_Runnable() {}
@@ -798,7 +801,7 @@ public:
     // current is not implemented yet
     // FastThreadLocal is not implemented yet
 };
-
+#endif
 /*...sclass lb_I_Thread:0:*/
 class lb_I_Thread : public lb_I_Unknown {
 protected:
