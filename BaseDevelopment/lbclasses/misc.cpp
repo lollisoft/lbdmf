@@ -2,10 +2,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.13 $
+ * $Revision: 1.14 $
  * $Name:  $
- * $Id: misc.cpp,v 1.13 2001/12/12 18:44:09 lothar Exp $
+ * $Id: misc.cpp,v 1.14 2002/02/25 06:15:35 lolli Exp $
  * $Log: misc.cpp,v $
+ * Revision 1.14  2002/02/25 06:15:35  lolli
+ * Much changes
+ * Program seems to run, but performance is very slow
+ *
  * Revision 1.13  2001/12/12 18:44:09  lothar
  * Test group users under linux
  *
@@ -93,9 +97,14 @@ extern "C" {
 //#include <winbase.h>
 
 #include <lbInterfaces.h>
+
 #include <lbConfigHook.h>
 #include <lbthread.h>
 #include <lb_misc.h>
+
+
+#ifndef LOG_DEFINED
+#define LOG_DEFINED
 
 /*...sclass lbLog:0:*/
 class lbLog : public lb_I_Log {
@@ -147,8 +156,6 @@ public:
 };
 /*...e*/
 
-#ifndef LOG_DEFINED
-#define LOG_DEFINED
 
 int lbLog::level = 0;
 int lbLog::firstlog = 0;

@@ -34,6 +34,7 @@ extern "C" {
 
 IMPLEMENT_FUNCTOR(instanceOfInteger, lbInteger)
 IMPLEMENT_FUNCTOR(instanceOfString, lbString)
+IMPLEMENT_FUNCTOR(instanceOfReference, lbReference)
 
 #ifdef __cplusplus
 }
@@ -73,6 +74,30 @@ END_IMPLEMENT_LB_UNKNOWN()
 /*...e*/
 #endif
 
+/*...slbReference:0:*/
+BEGIN_IMPLEMENT_LB_UNKNOWN(lbReference)
+	ADD_INTERFACE(lb_I_Reference)
+END_IMPLEMENT_LB_UNKNOWN()
+
+lbErrCodes LB_STDCALL lbReference::setData(lb_I_Unknown* uk) {
+	CL_LOG("lbReference::setData(...) not implemented yet");
+	return ERR_NOT_IMPLEMENTED;
+}
+
+lbErrCodes LB_STDCALL lbReference::set(lb_I_Unknown* r) {
+	
+	_r = r;
+	
+	return ERR_NONE;
+}
+
+lbErrCodes LB_STDCALL lbReference::get(lb_I_Unknown*& r) {
+	
+	r = _r.getPtr();
+	
+	return ERR_NONE;
+}
+/*...e*/
 /*...slbString:0:*/
 lbString::lbString() {
 	ref = STARTREF;

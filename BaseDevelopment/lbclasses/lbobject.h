@@ -4,10 +4,14 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.11 $
+ * $Revision: 1.12 $
  * $Name:  $
- * $Id: lbobject.h,v 1.11 2001/08/18 07:34:48 lolli Exp $
+ * $Id: lbobject.h,v 1.12 2002/02/25 06:14:43 lolli Exp $
  * $Log: lbobject.h,v $
+ * Revision 1.12  2002/02/25 06:14:43  lolli
+ * Much changes
+ * Program seems to run, but performance is very slow
+ *
  * Revision 1.11  2001/08/18 07:34:48  lolli
  * Current version runs again. Module management is not ready.
  *
@@ -133,6 +137,21 @@ protected:
 /*...e*/
 #endif
 
+/*...sclass lbReference:0:*/
+class lbReference : public lb_I_Reference {
+public:
+	lbReference() { _r = NULL; }
+	virtual ~lbReference() {}
+
+	DECLARE_LB_UNKNOWN()
+	
+	virtual lbErrCodes LB_STDCALL set(lb_I_Unknown* r);
+	virtual lbErrCodes LB_STDCALL get(lb_I_Unknown*& r);
+	
+protected:
+	UAP(lb_I_Unknown, _r, __FILE__, __LINE__)
+};
+/*...e*/
 /*...sclass lbString:0:*/
 class lbString : public lb_I_String
 {
@@ -243,6 +262,7 @@ extern "C" {
 
 DECLARE_FUNCTOR(instanceOfInteger)
 DECLARE_FUNCTOR(instanceOfString)
+DECLARE_FUNCTOR(instanceOfReference)
 
 /*...sendif __cplusplus:0:*/
 #ifdef __cplusplus
