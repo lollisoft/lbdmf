@@ -4,10 +4,13 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.11 $
+ * $Revision: 1.12 $
  * $Name:  $
- * $Id: lbcontainer.cpp,v 1.11 2001/05/01 15:51:52 lolli Exp $
+ * $Id: lbcontainer.cpp,v 1.12 2001/06/21 06:32:40 lolli Exp $
  * $Log: lbcontainer.cpp,v $
+ * Revision 1.12  2001/06/21 06:32:40  lolli
+ * Using IMPLEMENT_FUNCTOR(instanceOfContainer, lbContainer)
+ *
  * Revision 1.11  2001/05/01 15:51:52  lolli
  * First instance could be loaded over the new module management
  *
@@ -73,12 +76,7 @@ lbCritSect containerSection;
 
 
 
-lbErrCodes DLLEXPORT instanceOf_lb_I_Container(lb_I_Container*& inst) {
-	inst = new lbContainer();
-	
-	return ERR_NONE;
-}
-
+IMPLEMENT_FUNCTOR(instanceOfContainer, lbContainer)
 
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbContainer)
 	ADD_INTERFACE(lb_I_Container)

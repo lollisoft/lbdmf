@@ -4,10 +4,13 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.6 $
+ * $Revision: 1.7 $
  * $Name:  $
- * $Id: lbcontainer.h,v 1.6 2001/03/14 20:52:51 lolli Exp $
+ * $Id: lbcontainer.h,v 1.7 2001/06/21 06:32:55 lolli Exp $
  * $Log: lbcontainer.h,v $
+ * Revision 1.7  2001/06/21 06:32:55  lolli
+ * Using IMPLEMENT_FUNCTOR(instanceOfContainer, lbContainer)
+ *
  * Revision 1.6  2001/03/14 20:52:51  lolli
  * Compiles and links now, but it will not run
  *
@@ -100,6 +103,6 @@ public:
 
 extern lbCritSect critsect;
 
-lbErrCodes DLLEXPORT instanceOf_lb_I_Container(lb_I_Container*& inst);
+DECLARE_FUNCTOR(instanceOfContainer)
 
 #endif //LB_CONTAINER
