@@ -3,13 +3,13 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.16 $
+ * $Revision: 1.17 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.16 2001/10/08 19:32:47 lothar Exp $
+ * $Id: lbModule.cpp,v 1.17 2001/10/08 19:34:27 lothar Exp $
  *
  * $Log: lbModule.cpp,v $
- * Revision 1.16  2001/10/08 19:32:47  lothar
- * Little changes further linux compileability
+ * Revision 1.17  2001/10/08 19:34:27  lothar
+ * Include lbXMLConfig.h no longer used
  *
  * Revision 1.15  2001/10/04 19:28:32  lothar
  * Current version seems to work good (without big memory holes)
@@ -42,10 +42,7 @@
 /*...e*/
 
 /*...sincludes:0:*/
-
-#ifdef WINDOWS
 #include <windows.h>
-#endif
 
 #include <conio.h>
 #include <stdio.h>
@@ -53,7 +50,7 @@
 
 #include <lbInterfaces.h>
 #include <lbModule.h>
-#include <lbXMLConfig.h>
+//#include <lbXMLConfig.h>
 #include <lbConfigHook.h>
 #include <lbKey.h>
 /*...e*/
