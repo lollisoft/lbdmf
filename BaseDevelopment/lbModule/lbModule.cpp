@@ -36,11 +36,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.61 $
+ * $Revision: 1.62 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.61 2003/08/18 22:05:56 lollisoft Exp $
+ * $Id: lbModule.cpp,v 1.62 2003/08/22 17:33:16 lollisoft Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.62  2003/08/22 17:33:16  lollisoft
+ * removed debuging
+ *
  * Revision 1.61  2003/08/18 22:05:56  lollisoft
  * Bug in new interface repository solved
  *
@@ -2708,8 +2711,6 @@ lbErrCodes err = ERR_NONE;
                          */
          		HINSTANCE h = getModuleHandle();
          		
-         		printf("Have this handle before loading module; %d\n", h);
-         		
 			#ifdef LINUX
 			if (strchr(module, '.') == NULL) strcat(module, ".so");
 			#endif
@@ -2722,7 +2723,6 @@ lbErrCodes err = ERR_NONE;
                                 // return error if loading is impossible
                         }
                         setModuleHandle(h);
-                        printf("Have this handle after loading module; %d\n", h);
                         
                         if (getModuleHandle() == 0) _CL_LOG << "Error: Module could not be loaded '" << module << "'" LOG_
 
