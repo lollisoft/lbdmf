@@ -1292,7 +1292,7 @@ UDWORD  RowsFetched = 0;
 
 	SQLSetPos(hstmt, 1, SQL_DELETE, SQL_LOCK_NO_CHANGE);
 	
-	//SQLSetPos(hstmt, 1, SQL_REFRESH, SQL_LOCK_NO_CHANGE);
+	SQLSetPos(hstmt, 1, SQL_REFRESH, SQL_LOCK_NO_CHANGE);
 	
 
 	if (fetchstatus == 1) return previous();
