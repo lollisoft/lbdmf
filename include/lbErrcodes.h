@@ -1,11 +1,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.2 $
+ * $Revision: 1.3 $
  * $Name:  $
- * $Id: lbErrcodes.h,v 1.2 2000/08/01 05:55:08 lolli Exp $
+ * $Id: lbErrcodes.h,v 1.3 2000/10/05 23:07:20 lothar Exp $
  *
  * $Log: lbErrcodes.h,v $
+ * Revision 1.3  2000/10/05 23:07:20  lothar
+ * Much changes
+ *
  * Revision 1.2  2000/08/01 05:55:08  lolli
  * Currently runs with new interface
  *
@@ -23,6 +26,10 @@
 /*...slbErrCodes:0:*/
 enum lbErrCodes { 
 	ERR_NONE = 0,
+	ERR_NOT_IMPLEMENTED,
+	ERR_NO_OBJECT,
+	ERR_NO_INTERFACE,
+	
 /* Errcodes for dispatcher */
 	ERR_DISP_HANDLER_EXSISTS,
 
@@ -30,6 +37,20 @@ enum lbErrCodes {
 	ERR_APPBUS_DISPATCH, 		// Haeder found, but unknown identifer
 	ERR_APPBUS_DISPATCH_HAEDER,	// No dispatch haeder found
 	ERR_APPBUS_ECHO,		// Test server for echo
+
+
+	ERR_NO_ENVIRONMENT,		// Any needed env var is not set
+
+/* Module error codes */
+
+	ERR_MODULE_NOT_FOUND,
+	ERR_FUNCTION_NOT_FOUND,
+	
+/* Errcodes for dealing with XML */
+
+	ERR_XML_NOFILE,	
+	ERR_XML_INIT,
+	ERR_XML_GENERAL_PARSE_FAILED,
 	
 /* Errcodes for container */
 	ERR_CONTAINER_INSERT,
