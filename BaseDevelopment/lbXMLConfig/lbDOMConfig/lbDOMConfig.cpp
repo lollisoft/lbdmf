@@ -1,11 +1,15 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.17 $
+ * $Revision: 1.18 $
  * $Name:  $
- * $Id: lbDOMConfig.cpp,v 1.17 2001/12/08 11:51:12 lothar Exp $
+ * $Id: lbDOMConfig.cpp,v 1.18 2001/12/08 13:03:58 lothar Exp $
  *
  * $Log: lbDOMConfig.cpp,v $
+ * Revision 1.18  2001/12/08 13:03:58  lothar
+ * Changes under linux also working here.
+ * But the xerces library is still the version 1.3
+ *
  * Revision 1.17  2001/12/08 11:51:12  lothar
  * Modified line 896 due to compilation errors
  *
@@ -917,8 +921,9 @@ lbErrCodes LB_STDCALL lbDOMNode::getAttributeValue(const char* name, char*& attr
 	
 	attr = strdup(result);
 #ifdef WINDOWS
-	value.deletetranscoded(result);
+//	value.deletetranscoded(result);
 #endif		
+	delete result;
 	return ERR_NONE;
 }
 /*...e*/
@@ -926,7 +931,9 @@ lbErrCodes LB_STDCALL lbDOMNode::getAttributeValue(const char* name, char*& attr
 lbErrCodes LB_STDCALL lbDOMNode::deleteValue(char*& attr) {
 	DOMString value = DOMString();
 #ifdef WINDOWS
-	value.deletetranscoded(attr);
+//	value.deletetranscoded(attr);
+	delete attr;
+	attr = NULL;
 #endif
 #ifdef LINUX
 	delete attr;
