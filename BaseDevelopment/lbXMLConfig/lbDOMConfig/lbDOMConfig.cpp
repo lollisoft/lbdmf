@@ -28,11 +28,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.37 $
+ * $Revision: 1.38 $
  * $Name:  $
- * $Id: lbDOMConfig.cpp,v 1.37 2003/04/28 20:32:49 lollisoft Exp $
+ * $Id: lbDOMConfig.cpp,v 1.38 2003/06/16 21:50:37 lollisoft Exp $
  *
  * $Log: lbDOMConfig.cpp,v $
+ * Revision 1.38  2003/06/16 21:50:37  lollisoft
+ * Removed debug message
+ *
  * Revision 1.37  2003/04/28 20:32:49  lollisoft
  * Moved back to watcom
  *
@@ -1847,7 +1850,6 @@ lbErrCodes DLLEXPORT LB_FUNCTORCALL getlbDOMConfigInstance(lb_I_Unknown** uk, lb
                 return ERR_FUNCTOR;
         }
 
-	printf("Have an unknown interface for %s at %p\n", "lbDOMConfig", *uk);
         return ERR_NONE;
 }
 /*...e*/

@@ -1039,7 +1039,6 @@ lbErrCodes DLLEXPORT LB_FUNCTORCALL name(lb_I_Unknown** uk, lb_I_Module* m, char
 \
 	lbErrCodes err = ERR_NONE; \
         clsname* instance = new clsname(); \
-        printf("Have an instance for %s at %p\n", #clsname, instance); \
         *uk = NULL; \
         instance->setFurtherLock(0); \
         if (m != NULL) { \
@@ -1060,7 +1059,6 @@ lbErrCodes DLLEXPORT LB_FUNCTORCALL name(lb_I_Unknown** uk, lb_I_Module* m, char
                 return ERR_FUNCTOR; \
         } \
 \
-	printf("Have an unknown interface for %s at %p\n", #clsname, *uk); \
         return ERR_NONE; \
 } \
 }
