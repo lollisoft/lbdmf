@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.33 $
+# * $Revision: 1.34 $
 # * $Name:  $
-# * $Id: Makefile,v 1.33 2005/03/06 11:53:46 lollisoft Exp $
+# * $Id: Makefile,v 1.34 2005/03/06 12:02:45 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.34  2005/03/06 12:02:45  lollisoft
+# * Added touching lbkey.h in include directory to avoid build failures (osx)
+# *
 # * Revision 1.33  2005/03/06 11:53:46  lollisoft
 # * Changes to automatically make dosdir
 # *
@@ -147,6 +150,7 @@ TARGETDLL=so
 TARGETEXE=elf
 
 ALLTARGETS = \
+	../include/lbkey.h \
 	../vendor/dosdir \
 	../vendor/mkmk \
 	lbHook \
@@ -243,6 +247,9 @@ dummy:
 	$(MAKE) -C $@
 
 ifeq ($(OSTYPE), osx)
+../include/lbkey.h: dummy
+	touch ../include/lbkey.h
+
 ../vendor/dosdir: dummy
 	$@/make-osx.sh $@
 	cd ../Basedevelopment
