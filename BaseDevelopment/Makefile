@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.12 $
+# * $Revision: 1.13 $
 # * $Name:  $
-# * $Id: Makefile,v 1.12 2004/10/16 10:10:38 lollisoft Exp $
+# * $Id: Makefile,v 1.13 2004/10/16 11:59:30 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.13  2004/10/16 11:59:30  lollisoft
+# * Adopted new make system to linux
+# *
 # * Revision 1.12  2004/10/16 10:10:38  lollisoft
 # * Added the doxygen rule depending on lbInterfaces.h
 # *
@@ -49,6 +52,11 @@
 #
 #.PHONY: dummy
 
+ifeq ($(OSTYPE), linux)
+DEVROOT_MAKE=$(DEVROOT)
+endif
+
+
 Path=$(PATH)
 
 MAKESUBDIR= \
@@ -65,6 +73,26 @@ MAKEWXSAMPLE= \
 	make; \
 	)
 
+ifeq ($(OSTYPE), linux)
+
+TARGETDLL=so
+TARGETEXE=elf
+
+ALLTARGETS = lbHook \
+	lbDB \
+	lbModule \
+	lbclasses \
+	lbMetaApplication \
+	../AppDevelopmentDemo/App \
+	../Test/Console/XML \
+	../Test/GUI/wxWrapper \
+	../Doc/html
+endif
+ifeq ($(OSTYPE), Windows_NT)
+
+TARGETDLL=dll
+TARGETEXE=exe
+
 ALLTARGETS = lbhook \
 	lbDB \
 	lbModule \
@@ -74,6 +102,7 @@ ALLTARGETS = lbhook \
 	../Test/Console/XML \
 	../Test/GUI/wxWrapper \
 	../Doc/html
+endif
 
 
 all_targets: $(ALLTARGETS)
@@ -90,6 +119,11 @@ distclean:
 	    $(MAKE) -C $$d distclean || exit $? ; \
 	done
 
+mkrelease:
+	@for d in $(ALLTARGETS); do \
+	    $(MAKE) -C $$d clean || exit $? ; \
+	done
+	cd ../..; tar cvzf lbDMF-0.3.2.3.tgz CPP; cd CPP/BaseDevelopment
 
 #	Doesn't compile yet under linux
 #	lbPluginManager \
@@ -99,7 +133,7 @@ distclean:
 dummy:
 
 ../Test/Console/XML: dummy
-	$(MAKE) -C $@ -e MODULE=Test -e TARGET="exe" -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
+	$(MAKE) -C $@ -e MODULE=Test -e TARGET=$(TARGETEXE) -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
 	$(MAKE) -C $@
 
 ../Test/GUI/wxWrapper: dummy
@@ -108,35 +142,39 @@ dummy:
 #$(MAKEWXSAMPLE)
 
 ../AppDevelopmentDemo/App: dummy
-	$(MAKE) -C $@ -e MODULE=Application -e TARGET="dll" -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
+	$(MAKE) -C $@ -e MODULE=Application -e TARGET=$(TARGETDLL) -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
+	$(MAKE) -C $@
+
+lbHook: dummy
+	$(MAKE) -C $@ -e MODULE=$@ -e TARGET=$(TARGETDLL) -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
 	$(MAKE) -C $@
 
 lbhook: dummy
-	$(MAKE) -C $@ -e MODULE=$@ -e TARGET="dll" -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
+	$(MAKE) -C $@ -e MODULE=$@ -e TARGET=$(TARGETDLL) -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
 	$(MAKE) -C $@
 
 lbDB: dummy
-	$(MAKE) -C $@ -e MODULE=$@ -e TARGET="dll" -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
+	$(MAKE) -C $@ -e MODULE=$@ -e TARGET=$(TARGETDLL) -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
 	$(MAKE) -C $@
 
 lbPluginManager: dummy
-	$(MAKE) -C $@ -e MODULE=$@ -e TARGET="dll" -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
+	$(MAKE) -C $@ -e MODULE=$@ -e TARGET=$(TARGETDLL) -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
 	$(MAKE) -C $@
 
 lbModule: dummy
-	$(MAKE) -C $@ -e MODULE=$@ -e TARGET="dll" -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
+	$(MAKE) -C $@ -e MODULE=$@ -e TARGET=$(TARGETDLL) -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
 	$(MAKE) -C $@
 
 lbclasses: dummy
-	$(MAKE) -C $@ -e MODULE=$@ -e TARGET="dll" -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
+	$(MAKE) -C $@ -e MODULE=$@ -e TARGET=$(TARGETDLL) -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
 	$(MAKE) -C $@
 
 lbMetaApplication: dummy
-	$(MAKE) -C $@ -e MODULE=$@ -e TARGET="dll" -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
+	$(MAKE) -C $@ -e MODULE=$@ -e TARGET=$(TARGETDLL) -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
 	$(MAKE) -C $@
 
 lbXMLConfig/lbDOMConfig: dummy
-	$(MAKE) -C $@ -e MODULE=$@ -e TARGET="dll" -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
+	$(MAKE) -C $@ -e MODULE=$@ -e TARGET=$(TARGETDLL) -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
 	$(MAKE) -C $@
 
 ../Doc/html: ../doxygen.conf ../interfaces/lbInterfaces.h

@@ -11,11 +11,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.41 $
+ * $Revision: 1.42 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.41 2004/10/16 09:47:38 lollisoft Exp $
+ * $Id: mkmk.cpp,v 1.42 2004/10/16 12:01:05 lollisoft Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.42  2004/10/16 12:01:05  lollisoft
+ * Adopted new make system to linux
+ *
  * Revision 1.41  2004/10/16 09:47:38  lollisoft
  * New make system works nearly perfect. It does not longer build unnessesary.
  *
@@ -636,7 +639,7 @@ void writeExeTarget(char* modulename) {
 #ifdef UNIX
   fprintf(stderr, "Writing exe target\n");
   printf("PROGRAM=%s\n", modulename);
-  printf("\n%s: $(OBJS)\n", modulename);
+  printf("\n%s.elf: $(OBJS)\n", modulename);
   printf("\t\t$(CC) $(L_OPS) %s $(OBJS) $(OBJDEP) $(LIBS) -lc $(VENDORLIBS)\n",modulename);
   printf("\t\t$(CP) $(PROGRAM) $(HOME)/bin\n");
   fprintf(stderr, "Written exe target\n");
@@ -901,7 +904,7 @@ void write_so_Target(char* modulename) {
   printf("MAJOR=0\n");
   printf("MINOR=0\n");
   printf("MICRO=1\n");
-  printf("\n%s: $(OBJS)\n", modulename);
+  printf("\n%s.so: $(OBJS)\n", modulename);
   printf("\t\t$(CC) -shared -WL,soname,$(PROGRAM).so.$(MAJOR) -o $(PROGRAM).so.$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) -lc $(VENDORLIBS)\n");
   printf("\t\tcp $(PROGRAM).so.$(MAJOR).$(MINOR).$(MICRO) /libdev/lib\n");
   printf("\t\tln -sf /libdev/lib/$(PROGRAM).so.$(MAJOR).$(MINOR).$(MICRO) /libdev/lib/$(PROGRAM).so.$(MAJOR)\n");
