@@ -25,11 +25,14 @@
 #            22453 Hamburg (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.30 $
+# * $Revision: 1.31 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.30 2003/01/15 22:42:45 lothar Exp $
+# * $Id: STD_MAKE,v 1.31 2003/01/27 19:31:55 lothar Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.31  2003/01/27 19:31:55  lothar
+# * Changes do not work with GUI variant
+# *
 # * Revision 1.30  2003/01/15 22:42:45  lothar
 # * Compiles with MSC
 # *
@@ -182,18 +185,18 @@ RM =del
 OUTDIR=.
 INTDIR=.
 #/D "LBDOMCONFIG_EXPORTS" /Fp"$(INTDIR)\lbDOMConfig.pch"
-MSC_BASIC_EXE      = /Gd /nologo /W3 /GX /O2  /D "WINDOWS" /D "LB_RUNTIME_LINK" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
-MSC_BASIC_EXE_NODBG= /MT  /O2         
-MSC_BASIC_EXE_DEBUG= /MDd /Gm /ZI /Od /YX 
+MSC_BASIC_EXE      = /MT  /nologo /W3 /GX /O2  /D "WINDOWS" /D "LB_RUNTIME_LINK" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+MSC_BASIC_EXE_NODBG= /O2         
+MSC_BASIC_EXE_DEBUG= /Gm /ZI /Od /YX 
 
 
 
 #/Fp"$(INTDIR)\lbDOMConfig.pch"
-#/D "LBDOMCONFIG_EXPORTS"
-C_EXEOPS_MICROSOFT =        /Gd /nologo /MT  /W3     /GX /O2          /D "WINDOWS" /D "LB_RUNTIME_LINK" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
-C_EXEOPS_MICROSOFT_DEBUG =  /Gd /nologo /MDd /W3 /Gm /GX      /ZI /Od /D "WINDOWS" /D "LB_RUNTIME_LINK" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
-C_DLLOPS_MICROSOFT =        /Gd /nologo /MT  /W3     /GX /O2          /D "WINDOWS" /D "LB_RUNTIME_LINK" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
-C_DLLOPS_MICROSOFT_DEBUG =  /Gd /nologo /MDd /W3     /GX /O2          /D "WINDOWS" /D "LB_RUNTIME_LINK" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+#/D "LBDOMCONFIG_EXPORTS"       /Gd         /MTd
+C_EXEOPS_MICROSOFT =        /Ge     /nologo /MT  /W3     /GX /O2          /D "WINDOWS" /D "LB_RUNTIME_LINK" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+C_EXEOPS_MICROSOFT_DEBUG =  /Ge     /nologo /MDd /W3 /Gm /GX      /ZI /Od /D "WINDOWS" /D "LB_RUNTIME_LINK" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+C_DLLOPS_MICROSOFT =        /Ge     /nologo /MT  /W3     /GX /O2          /D "WINDOWS" /D "LB_RUNTIME_LINK" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+C_DLLOPS_MICROSOFT_DEBUG =  /Ge     /nologo /MDd /W3     /GX /O2          /D "WINDOWS" /D "LB_RUNTIME_LINK" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
 
 LINK_MICROSOFT=link.exe
  
