@@ -97,6 +97,8 @@
  *	If you start the lbDMF Develop link on the desktop, you get opened a text file with
  *	a hint text. It explains once to read these instructions for post installation.
  *
+ *	If you don't have downloaded the source distribution yet, do this before continuing.
+ *
  * \section PSetup3 Drive letter
  *
  *	If you have installed lbDMF to C:\\lbDMF, you can skip this step.
@@ -128,7 +130,9 @@
  *	set WXWIN=%DRIVE%\lbDMF\Develop\wxwin\wx
  *	%DRIVE%
  *	cd %WXWIN%\src\msw
- *	copy %WXWIN%\include\wx\msw\setup.h %WXWIN%\include\wx
+ *	copy /Y %WXWIN%\include\wx\msw\setup.h %WXWIN%\include\wx
+ *	copy /Y %WXWIN%\..\..\Projects\CPP\makewat.env %WXWIN%\src
+ *	copy /Y %WXWIN%\..\..\Projects\CPP\makefile.wat %WXWIN%\src\msw
  *	wmake -f makefile.wat all
  *	\endcode
  *
@@ -141,7 +145,9 @@
  *	set WXWIN=%DRIVE%\lbDMF\Develop\wxwin\wx
  *	%DRIVE%
  *	cd %WXWIN%\src\msw
- *	copy %WXWIN%\include\wx\msw\setup.h %WXWIN%\include\wx
+ *	copy /Y %WXWIN%\include\wx\msw\setup.h %WXWIN%\include\wx
+ *	copy /Y %WXWIN%\..\..\Projects\CPP\makewat.env %WXWIN%\src
+ *	copy /Y %WXWIN%\..\..\Projects\CPP\makefile.wat %WXWIN%\src\msw
  *	wmake -f makefile.wat all
  *	\endcode
  *
