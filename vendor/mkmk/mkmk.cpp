@@ -11,11 +11,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.23 $
+ * $Revision: 1.24 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.23 2001/12/15 18:15:48 lothar Exp $
+ * $Id: mkmk.cpp,v 1.24 2001/12/16 17:41:43 lothar Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.24  2001/12/16 17:41:43  lothar
+ * Added VENDORLIBS
+ *
  * Revision 1.23  2001/12/15 18:15:48  lothar
  * More support for different compilers im one makefile.
  * Separated compiler and linker options for different
@@ -708,7 +711,7 @@ void write_so_Target(char* modulename) {
   printf("MINOR=0\n");
   printf("MICRO=1\n");
   printf("\n%s: $(OBJS)\n", modulename);
-  printf("\t\t$(CC) -shared -WL,soname,$(PROGRAM).so.$(MAJOR) -o $(PROGRAM).so.$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) -lc\n",modulename);
+  printf("\t\t$(CC) -shared -WL,soname,$(PROGRAM).so.$(MAJOR) -o $(PROGRAM).so.$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) -lc $(VENDORLIBS)\n",modulename);
 #endif
 #ifdef __WATCOMC__
   fprintf(stderr, "Warning: Creating a so library under Windows is not possible with Watcom !!\n");
