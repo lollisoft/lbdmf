@@ -1,10 +1,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.7 $
+ * $Revision: 1.8 $
  * $Name:  $
- * $Id: misc.cpp,v 1.7 2001/05/01 15:51:52 lolli Exp $
+ * $Id: misc.cpp,v 1.8 2001/05/04 17:16:25 lolli Exp $
  * $Log: misc.cpp,v $
+ * Revision 1.8  2001/05/04 17:16:25  lolli
+ * Use of MACRO DECLARE_FUNCTOR works.
+ * Removed unused code
+ *
  * Revision 1.7  2001/05/01 15:51:52  lolli
  * First instance could be loaded over the new module management
  *
@@ -120,59 +124,9 @@ char lbLog::prefix[100];
 lb_I_Mutex* lbLog::mutex;
 
 //lb_I_CritSect sect;
+
+/*...sbla:0:*/
 #ifdef bla
-void gol() {
-/*...sGET_LOG_INSTANCE:0:*/
-                        if (log == NULL) {
-                                isInitializing = 1;
-                                CL_LOG("Getting a log instance...");
-                                lb_I_Module* modMan = getModuleInstance();
-                                
-
-                                if (modMan != NULL) {
-                                        lb_I_Unknown *Unknown = NULL;
-                                        lbErrCodes err = modMan->request("instanceOfLogger", Unknown);
-
-                                        if (Unknown != NULL) {
-                                                Unknown->queryInterface("lb_I_Log", (void**) &log);
-                                                if (log == NULL) {
-                                                        CL_LOG("Unknown object has no interface for lb_I_Log");
-                                                        
-                                                        exit (1);
-                                                }
-                                                CL_LOG("Now have a log instance");
-                                        } else {
-                                                char buf[100] = "";
-                                                sprintf(buf, "%s %d %s", "Instance could not be created, errcode is ", err, ".");
-                                                CL_LOG(buf);
-                                                
-                                                exit(1);
-                                        }
-                                } else {
-                                        CL_LOG("Module manager could not be created");
-                                        
-                                        exit(1);
-                                }
-                        }
-                        isInitializing = 0;
-/*...e*/
-}
-
-void dlog(char* msg) {
-/*...sLOG:0:*/
-                        if (isInitializing != 0) {
-                                cout << "Tried to log while initializing the logger." <<
-                                "Msg: " << msg << " File: " << __FILE__ << " Line: " << __LINE__ << endl;
-                        } else {
-                                gol();
-                                cout << "Log a message: " << msg << endl;
-                                log->log(msg, __LINE__, __FILE__);
-                                cout << "Logged." << endl;
-                        }
-/*...e*/
-}
-#endif
-
 lbErrCodes DLLEXPORT LB_STDCALL instanceOfLogger(lb_I_Unknown*& uk) {
         CL_LOG("instanceOfLogger() called and will create the requested instance");
         
@@ -186,6 +140,10 @@ lbErrCodes DLLEXPORT LB_STDCALL instanceOfLogger(lb_I_Unknown*& uk) {
         
         return ERR_NONE;
 }
+#endif
+/*...e*/
+
+IMPLEMENT_FUNCTOR(instanceOfLogger, lbLog)
 
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbLog)
         ADD_INTERFACE(lb_I_Log)
