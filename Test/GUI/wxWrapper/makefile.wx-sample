@@ -80,7 +80,7 @@ OBJECTS = dynamic.o
 
 # implementation
 
-endif
+
 
 .SUFFIXES:	.o .cpp
 
@@ -100,7 +100,7 @@ clean:
 
 distclean: clean
 
-
+endif
 ifeq ($(OSTYPE), osx)
 
 
@@ -116,8 +116,6 @@ OBJECTS = dynamic.o
 
 # implementation
 
-endif
-
 .SUFFIXES:	.o .cpp
 
 .cpp.o : $(DEVROOT)/Projects/CPP/interfaces/*.h $(DEVROOT)/Projects/CPP/include/*.h
@@ -135,3 +133,4 @@ clean:
 	-rm *.log
 
 distclean: clean
+endif

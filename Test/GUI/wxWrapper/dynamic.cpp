@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.51 2005/03/05 23:13:33 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.52 2005/03/07 19:30:22 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.51 $
+ * $Revision: 1.52 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.51 2005/03/05 23:13:33 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.52 2005/03/07 19:30:22 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.52  2005/03/07 19:30:22  lollisoft
+ * Changes to again build correctly under linux
+ *
  * Revision 1.51  2005/03/05 23:13:33  lollisoft
  * More changes to build source tree under Mac OS X
  *
@@ -2584,6 +2587,9 @@ END_IMPLEMENT_LB_UNKNOWN()
 #ifdef OSX
 IMPLEMENT_APP  (MyApp)
 #endif
+#ifdef LINUX
+IMPLEMENT_APP  (MyApp)
+#endif
 int MyApp::OnExit() {
 	//wxGUI->cleanup();
 	return 0;
@@ -3462,7 +3468,7 @@ void lb_wxFrame::OnDispatch(wxCommandEvent& event ) {
 #endif
 
 #ifndef OSX
-
+#ifndef LINUX
 wxApp *wxCreateApp()
     {
         wxApp::CheckBuildOptions(wxBuildOptions());
@@ -3485,4 +3491,5 @@ int PASCAL WinMain(HINSTANCE hInstance,
     
     return wxEntry((WXHINSTANCE) hInstance, (WXHINSTANCE) hPrevInstance, lpCmdLine, nCmdShow);
 }
+#endif
 #endif
