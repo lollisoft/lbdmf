@@ -11,11 +11,16 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.22 $
+ * $Revision: 1.23 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.22 2001/12/12 17:20:20 lothar Exp $
+ * $Id: mkmk.cpp,v 1.23 2001/12/15 18:15:48 lothar Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.23  2001/12/15 18:15:48  lothar
+ * More support for different compilers im one makefile.
+ * Separated compiler and linker options for different
+ * targets.
+ *
  * Revision 1.22  2001/12/12 17:20:20  lothar
  * Works on elf now
  *
@@ -589,12 +594,15 @@ void writeExeTarget(char* modulename) {
   printf("FILE = FIL\n");
   printf("FILE += $(foreach s, $(OBJS),$s, )\n");
   printf("LNK=%s.lnk\n", ModName);
+  printf("ifeq ($(COMPILER), WATCOM)\n");
+  printf("COMPILERFLAGS=@$(LNK)\n");
+  printf("endif\n");
   printf("PROGRAM=%s\n", ModName);
   
   printf("\n%s.exe: $(OBJS)\n", ModName);
   printf("\t\techo NAME $(PROGRAM).exe > $(LNK)\n");
   printf("\t\techo $(FILE) $(LIBS) >> $(LNK)\n");
-  printf("\t\t$(LINK) @$(LNK)\n");
+  printf("\t\t$(LINK) $(COMPILERFLAGS)\n");
   printf("\t\t$(CP) $(PROGRAM).exe $(EXEDIR)\n");
 #endif
 }
@@ -613,13 +621,19 @@ void writeDllTarget(char* modulename) {
   printf("FILE = FIL\n");
   printf("FILE += $(foreach s, $(OBJS),$s, )\n");
   printf("LNK=%s.lnk\n", ModName);
+  printf("ifeq ($(COMPILER), WATCOM)\n");
+  printf("LINKFLAGS=@$(LNK)\n");
+  printf("endif\n");
+  printf("ifeq ($(COMPILER), MICROSOFT)\n");
+  printf("LINKFLAGS=$(OBJS) $(VENDORLIBS) $(LIBS)\n");
+  printf("endif\n");
   printf("PROGRAM=%s\n", ModName);
   
   printf("\n%s.dll: $(OBJS)\n", ModName);
   printf("\t\techo NAME $(PROGRAM).dll > $(LNK)\n");
   printf("\t\techo $(FILE) $(LIBS) >> $(LNK)\n");
   printf("\t\techo LIBR $(LIBS) >> $(LNK)\n");
-  printf("\t\t$(LINK) $(LNKDLLOPS) @$(LNK)\n");
+  printf("\t\t$(LINK) $(LNKDLLOPS) $(LINKFLAGS)\n");
   printf("\t\t$(CP) $(PROGRAM).dll $(DLLDIR)\n");
 #endif
 }
@@ -800,19 +814,19 @@ void WriteDep(FILE *f, char *Name, TIncludeParser *p)
 
   switch (targettype) {
   	case LIB_TARGET:
-		printf("\t\t$(CC) $(C_OPS) $(MOD_INCL) %s\n\n",Name);
+		printf("\t\t$(CC) $(C_LIBOPS) $(MOD_INCL) %s\n\n",Name);
 		break;
   	case DLL_TARGET:
-		printf("\t\t$(CC) $(C_OPS) $(MOD_INCL) %s\n\n",Name);
+		printf("\t\t$(CC) $(C_DLLOPS) $(MOD_INCL) %s\n\n",Name);
 		break;
 	case EXE_TARGET:
-		printf("\t\t$(CC) $(C_OPS) $(MOD_INCL) %s\n\n",Name);
+		printf("\t\t$(CC) $(C_EXEOPS) $(MOD_INCL) %s\n\n",Name);
 		break;
 	case ELF_TARGET:
-	    	printf("\t\t$(CC) $(C_OPS) $(MOD_INCL) %s\n\n",Name);
+	    	printf("\t\t$(CC) $(C_ELFOPS) $(MOD_INCL) %s\n\n",Name);
 		break;
 	case SO_TARGET:
-		printf("\t\t$(CC) -fPIC -g $(C_OPS) $(MOD_INCL) %s\n\n",Name);
+		printf("\t\t$(CC) -fPIC -g $(C_SOOPS) $(MOD_INCL) %s\n\n",Name);
 	default:
 		break;
   }
@@ -827,7 +841,7 @@ void WriteEnding(FILE *f, char *ModuleName, TDepList *l)
   ListFiles(f,Line,l,true);
 
 #ifndef UNIX
-  printf("LIBS = $(DEVROOT)\\projects\\lib\\lbhook.lib \n");
+//  printf("LIBS = $(DEVROOT)\\projects\\lib\\lbhook.lib \n");
 #endif
 
 #ifdef WATCOM_MAKE
