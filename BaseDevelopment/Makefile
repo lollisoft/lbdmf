@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.23 $
+# * $Revision: 1.24 $
 # * $Name:  $
-# * $Id: Makefile,v 1.23 2005/02/02 13:30:15 lollisoft Exp $
+# * $Id: Makefile,v 1.24 2005/02/03 19:56:41 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.24  2005/02/03 19:56:41  lollisoft
+# * Samples and more dependencies in documentation
+# *
 # * Revision 1.23  2005/02/02 13:30:15  lollisoft
 # * Latest changes for version 0.4.1
 # *
@@ -135,7 +138,8 @@ ALLTARGETS = \
 	../Test/Console/XML \
 	../Test/GUI/wxWrapper \
 	../AppDevelopment \
-	../Doc/html
+	../Doc/html \
+	../Samples/HelloWorld
 endif
 
 
@@ -223,6 +227,11 @@ lbXMLConfig/lbDOMConfig: dummy
 	$(MAKE) -C $@ -e MODULE=$@ -e TARGET=$(TARGETDLL) -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
 	$(MAKE) -C $@
 
-../Doc/html: ../doxygen.conf ../interfaces/lbInterfaces.h
+../Doc/html: ../doxygen.conf \
+	../interfaces/lbInterfaces.h \
+	../Samples/HelloWorld/helloworld.cpp
 	@doxygen ../doxygen.conf
 
+../Samples/HelloWorld: dummy
+	$(MAKE) -C $@ -e MODULE=HelloWorld -e TARGET=$(TARGETEXE) -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
+	$(MAKE) -C $@
