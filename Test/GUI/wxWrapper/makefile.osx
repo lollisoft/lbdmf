@@ -1,0 +1,27 @@
+# Generated automatically from Makefile.in by configure.
+#
+# File:		makefile.unx
+# Author:	Julian Smart
+# Created:	1998
+# Updated:	
+# Copyright:	(c) 1998 Julian Smart
+#
+# "%W% %G%"
+#
+# Makefile for dynamic example (UNIX).
+
+top_srcdir = $(HOME)/develop/wxwin/wxMac-2.4.2.1
+top_builddir = $(HOME)/develop/wxwin/wxMac-2.4.2.1
+program_dir = .
+
+PROGRAM=wxWrapper
+
+OBJECTS =dynamic.o
+DEPFILES=dynamic.d
+
+LIBRARIES=$(HOME)/lib/lbHook.so -bind_at_load
+EXTRADEFS=-I$(DEVROOT)/Projects/CPP/interfaces -I$(DEVROOT)/Projects/CPP/include -DLB_I_EXTENTIONS -DOSX -DUNIX -DLINUX
+
+include $(HOME)/develop/wxwin/wxMac-2.4.2.1/src/makeprog.env
+
+-include $(DEPFILES)
