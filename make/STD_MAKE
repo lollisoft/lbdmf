@@ -1,10 +1,13 @@
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.20 $
+# * $Revision: 1.21 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.20 2002/09/04 17:52:12 lothar Exp $
+# * $Id: STD_MAKE,v 1.21 2002/09/05 20:12:48 lothar Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.21  2002/09/05 20:12:48  lothar
+# * Using dwarf debug format
+# *
 # * Revision 1.20  2002/09/04 17:52:12  lothar
 # * Problems with stack cleanup
 # *
@@ -72,6 +75,7 @@ ifeq ($(OSTYPE), Windows_NT)
 
 # Set standard compiler
 COMPILER=WATCOM
+#COMPILER=MICROSOFT
 MODE=_DEBUG
 #MODE=
 
@@ -109,15 +113,15 @@ $(WATCOM_STACK)
 
 OBJ =obj
 # Watcom
-C_EXEOPS_WATCOM_DEBUG= $(WATCOM_STD_C_OPS) $(WATCOM_STDDEBUG) -ei -zp4 -bt=nt -mf -hc
+C_EXEOPS_WATCOM_DEBUG= $(WATCOM_STD_C_OPS) $(WATCOM_STDDEBUG) -ei -zp4 -bt=nt -mf -hd
 
-C_DLLOPS_WATCOM   =  $(WATCOM_STD_C_OPS) $(WATCOM_DLLTARGET) -ei -zp4 -bt=nt -mf -hc
+C_DLLOPS_WATCOM   =  $(WATCOM_STD_C_OPS) $(WATCOM_DLLTARGET) -ei -zp4 -bt=nt -mf -hd
 
-C_DLLOPS_WATCOM_DEBUG = $(WATCOM_STD_C_OPS) $(WATCOM_STDDEBUG) $(WATCOM_DLLTARGET) -ei -zp4 -bt=nt -mf -hc
+C_DLLOPS_WATCOM_DEBUG = $(WATCOM_STD_C_OPS) $(WATCOM_STDDEBUG) $(WATCOM_DLLTARGET) -ei -zp4 -bt=nt -mf -hd
 
-C_LIBOPS_WATCOM   =  $(WATCOM_STD_C_OPS) $(WATCOM_LIBTARGET) -ei -zp4 -bt=nt -mf -hc
+C_LIBOPS_WATCOM   =  $(WATCOM_STD_C_OPS) $(WATCOM_LIBTARGET) -ei -zp4 -bt=nt -mf -hd
 
-C_LIBOPS_WATCOM_DEBUG = $(WATCOM_STD_C_OPS) $(WATCOM_STDDEBUG) $(WATCOM_LIBTARGET) -ei -zp4 -bt=nt -mf -hc
+C_LIBOPS_WATCOM_DEBUG = $(WATCOM_STD_C_OPS) $(WATCOM_STDDEBUG) $(WATCOM_LIBTARGET) -ei -zp4 -bt=nt -mf -hd
 
 CC =wpp386
 RM =del
@@ -143,9 +147,9 @@ C_DLLOPS = $(C_DLLOPS_WATCOM$(MODE))
 C_LIBOPS = $(C_LIBOPS_WATCOM$(MODE))
 
 # Watcom
-L_EXEOPS_WATCOM = -o
+L_EXEOPS_WATCOM = -o d dwarf
 LINK_WATCOM =wlink op q
-L_DLLOPS_WATCOM =d all SYS nt_dll op m op maxe=25 op q op symf
+L_DLLOPS_WATCOM =SYS nt_dll op m op maxe=25 op q op symf d dwarf
 
 # Microsoft
 L_DLLOPS_MICROSOFT =kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib \
