@@ -25,11 +25,14 @@
 #            22453 Hamburg (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.39 $
+# * $Revision: 1.40 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.39 2003/07/31 20:31:35 lollisoft Exp $
+# * $Id: STD_MAKE,v 1.40 2003/09/05 15:46:22 lollisoft Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.40  2003/09/05 15:46:22  lollisoft
+# * Last changes to try to make setup distribution and before moving to Düsseldorf
+# *
 # * Revision 1.39  2003/07/31 20:31:35  lollisoft
 # * EXE also with sym file
 # *
@@ -155,7 +158,8 @@
 
 ifeq ($(OSTYPE), Windows_NT)
 
-DEVROOT=Q:/develop
+DEVROOT_MAKE_INTERNAL=$(DEVROOT_MAKE)
+
 
 # Set standard compiler
 COMPILER=WATCOM
@@ -296,11 +300,11 @@ L_DLLOPS = $(L_DLLOPS_WATCOM)
 LNKDLLOPS = $(L_DLLOPS_WATCOM)
 
 CP =copy
-EXEDIR =Q:\\Develop\\Projects\\bin
-DLLDIR =Q:\\Develop\\Projects\\dll
-DLLLIBDIR =Q:\\Develop\\Projects\\dll\\lib
-LIBDIR =Q:\\Develop\\Projects\\lib
-DLLLIBDIR =Q:\\Develop\\Projects\\dll\\libs
+EXEDIR =$(DEVROOT)\Projects\bin
+DLLDIR =$(DEVROOT)\Projects\dll
+DLLLIBDIR =$(DEVROOT)\Projects\dll\lib
+LIBDIR =$(DEVROOT)\Projects\lib
+DLLLIBDIR =$(DEVROOT)\Projects\dll\libs
 
 
 endif

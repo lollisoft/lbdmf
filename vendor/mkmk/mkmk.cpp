@@ -11,11 +11,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.35 $
+ * $Revision: 1.36 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.35 2003/07/15 22:00:44 lollisoft Exp $
+ * $Id: mkmk.cpp,v 1.36 2003/09/05 15:46:22 lollisoft Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.36  2003/09/05 15:46:22  lollisoft
+ * Last changes to try to make setup distribution and before moving to Düsseldorf
+ *
  * Revision 1.35  2003/07/15 22:00:44  lollisoft
  * Use libr define for system libraries
  *
@@ -639,7 +642,7 @@ void writeExeTarget(char* modulename) {
   printf("\t\t@echo NAME $(PROGRAM).exe > $(LNK)\n");
   printf("\t\t@echo $(FILE) $(LIBS) >> $(LNK)\n");
   printf("\t\t@$(LINK) $(LINKFLAGS) $(LIBRS) $(COMPILERFLAGS)\n");
-  printf("\t\t@cmd /C \"$(CP) $(PROGRAM).exe $(EXEDIR) > null\"\n");
+  printf("\t\t@cmd      /C \"$(CP) $(PROGRAM).exe $(EXEDIR) > null\"\n");
 #endif
 }
 /*...e*/
@@ -676,8 +679,8 @@ void writeDllTarget(char* modulename) {
 //  printf("\t\t@;if NOT \"$(LIBS)\" == \"\" echo LIBR $(LIBS) >> $(LNK)\n");
   printf("\t\t@$(LINK) $(LNKDLLOPS) $(LINKFLAGS)\n");
   printf("\t\t@wlib -q -n -b $(PROGRAM).lib +$(PROGRAM).dll\n");
-  printf("\t\t@@cmd /C \"$(CP) $(PROGRAM).dll $(DLLDIR) > null\"\n");
-  printf("\t\t@@cmd /C \"$(CP) $(PROGRAM).lib $(DLLLIBDIR) > null\"\n");
+  printf("\t\t@cmd /C \"$(CP) $(PROGRAM).dll $(DLLDIR) > null\"\n");
+  printf("\t\t@cmd /C \"$(CP) $(PROGRAM).lib $(DLLLIBDIR) > null\"\n");
   printf("endif\n");
 
   printf("ifeq ($(COMPILER), MICROSOFT)\n");
@@ -713,12 +716,6 @@ void writeLibTarget(char* modulename, TDepList* l) {
   
   printf("\n%s.lib: $(OBJS)\n", ModName);
   printf("\t\t@echo Link %s.lib\n", ModName);
-//  printf("\t\techo $(PROGRAM).$(OBJ) > $(LNK)\n");
-//  printf("\t\techo $(FILE) $(LIBS) >> $(LNK)\n");
-//  printf("\t\techo LIBR $(LIBS) >> $(LNK)\n");
-
-
-//  printf("\t\twlib -b -c -n -q -p=512 lbhook.lib @lbhook.lb1
 
   TDepItem *d;
   char FName[80] = "";
@@ -735,8 +732,7 @@ void writeLibTarget(char* modulename, TDepList* l) {
   }
   
   printf("\t\t@wlib -b -c -n -q -p=512 $(PROGRAM).lib @$(LNK)\n");
-//  printf("\t\t$(LINK) $(LNKDLLOPS) @$(LNK)\n");
-  printf("\t\t@$(CP) $(PROGRAM).lib $(LIBDIR) > null\n");
+  printf("\t\t@cmd /C \"$(CP) $(PROGRAM).lib $(LIBDIR) > null\"\n");
 #endif
 }
 /*...e*/

@@ -23,7 +23,7 @@ Source: "Q:\develop\Projects\bin\make.exe"; DestDir: "C:\cygwin\bin"; CopyMode: 
 Source: "Q:\Develop\Projects\CPP\dist\*.*"; DestDir: "{app}"; CopyMode: alwaysoverwrite; Flags: recursesubdirs;
 Source: "Q:\Develop\Projects\dll\mspdb60.dll"; DestDir: "{app}\Develop\Projects\dll"; CopyMode: alwaysoverwrite;
 Source: "Q:\Develop\Projects\dll\libs\xerces-c_1D.lib"; DestDir: "{app}\Develop\Projects\dll\libs"; CopyMode: alwaysoverwrite;
-Source: "Q:\Develop\Projects\dll\xerces-c_1_3D.dll"; DestDir: "{app}\Develop\Projects\dll"; CopyMode: alwaysoverwrite;
+Source: "Q:\Develop\Projects\dll\xerces-c_1_3.dll"; DestDir: "{app}\Develop\Projects\dll"; CopyMode: alwaysoverwrite;
 Source: "Q:\Develop\Projects\dll\wx22_7d.dll"; DestDir: "{app}\Develop\Projects\dll"; CopyMode: alwaysoverwrite;
 
 
