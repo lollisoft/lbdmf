@@ -2,7 +2,7 @@
 
 # This script creates a makefile based on templates
 
-cat makefile.template > makefile
+cat ../../make/makefile.template > makefile
 cat makefile.module >> makefile
 echo all: mkmk >> makefile
 echo >> makefile

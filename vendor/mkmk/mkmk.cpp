@@ -11,11 +11,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.18 $
+ * $Revision: 1.19 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.18 2001/11/09 19:28:49 lothar Exp $
+ * $Id: mkmk.cpp,v 1.19 2001/11/10 07:22:32 lothar Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.19  2001/11/10 07:22:32  lothar
+ * Building so targets works now
+ *
  * Revision 1.18  2001/11/09 19:28:49  lothar
  * Added first attempt of building so targets
  *
@@ -548,8 +551,10 @@ char* TIncludeParser::BasicParse(char *FileName)
 /*...swriteExeTarget\40\char\42\ modulename\41\:0:*/
 void writeExeTarget(char* modulename) {
 #ifdef UNIX
+  printf("PROGRAM=%s\n", modulename);
   printf("\n%s: $(OBJS)\n", modulename);
   printf("\t\t$(CC) $(L_OPS) %s $(OBJS) $(OBJDEP)\n",modulename);
+  printf("\t\t$(CP) $(PROGRAM) $(HOME)/bin\n");
 #endif
 #ifdef __WATCOMC__
   char* ModName = strdup(modulename);
@@ -597,8 +602,12 @@ void writeDllTarget(char* modulename) {
 /*...swrite_so_Target\40\char\42\ modulename\41\ create a UNIX shared library:0:*/
 void write_so_Target(char* modulename) {
 #ifdef UNIX
+  printf("PROGRAM=%s\n", modulename);
+  printf("MAJOR=0\n");
+  printf("MINOR=0\n");
+  printf("MICRO=1\n");
   printf("\n%s: $(OBJS)\n", modulename);
-  printf("\t\t$(CC) $(L_OPS) %s $(OBJS) $(OBJDEP)\n",modulename);
+  printf("\t\t$(CC) -shared -WL,soname,$(PROGRAM).so.$(MAJOR) -o $(PROGRAM).so.$(MAJOR).$(MINOR).$(MICRO) %s.o $(OBJDEP) -lc\n",modulename);
 #endif
 #ifdef __WATCOMC__
   fprintf(stderr, "Warning: Creating a so library under Windows is not possible with Watcom !!\n");
@@ -722,8 +731,11 @@ void WriteDep(FILE *f, char *Name, TIncludeParser *p)
 	case EXE_TARGET:
 		printf("\t\t$(CC) $(C_OPS) $(MOD_INCL) %s\n\n",Name);
 		break;
+	case ELF_TARGET:
+	    	printf("\t\t$(CC) $(C_OPS) $(MOD_INCL) %s\n\n",Name);
+		break;
 	case SO_TARGET:
-		printf("\t\t$(CC) -fPIC -Wall -g -c $(C_OPS) $(MOD_INCL) %s\n\n",Name);
+		printf("\t\t$(CC) -fPIC -g $(C_OPS) $(MOD_INCL) %s\n\n",Name);
 	default:
 		break;
   }
@@ -784,6 +796,9 @@ void WriteEnding(FILE *f, char *ModuleName, TDepList *l)
 		writeDllTarget(ModuleName);
 		break;
 	case EXE_TARGET:
+		writeExeTarget(ModuleName);
+		break;
+	case ELF_TARGET:
 		writeExeTarget(ModuleName);
 		break;
 	case SO_TARGET:
@@ -854,6 +869,11 @@ void main(int argc, char *argv[])
   
   if (strcmp(target, "-") == 0) {
   	targettype = ELF_TARGET;
+  	target_ext = strdup("");
+  }
+  
+  if (strcmp(target, "SO") == 0) {
+  	targettype = SO_TARGET;
   	target_ext = strdup("");
   }
   
