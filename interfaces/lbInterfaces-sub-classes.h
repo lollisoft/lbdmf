@@ -151,7 +151,7 @@ public:
 	/**
 	 * Do a key compare.
 	 */
-	virtual int LB_STDCALL equals(const lb_I_KeyBase* key) const = 0;
+	virtual int LB_STDCALL equals(const lb_I_KeyBase* _key) const = 0;
 
 	virtual lb_I_KeyBase* LB_STDCALL getKey() const = 0;
 
@@ -159,8 +159,8 @@ public:
     		return (this->equals(a) == 1);
 	}
 
-	int LB_STDCALL operator == (const lb_I_KeyBase* key) const {
-		return (this->equals(key) == 1);
+	int LB_STDCALL operator == (const lb_I_KeyBase* _key) const {
+		return (this->equals(_key) == 1);
 	}
 };
 
@@ -170,8 +170,13 @@ virtual lb_I_Element* LB_STDCALL getNext() const; \
 virtual void LB_STDCALL setNext(lb_I_Element *e); \
 virtual lb_I_Unknown* LB_STDCALL getObject() const; \
 virtual int LB_STDCALL equals(const lb_I_Element* a) const; \
-virtual int LB_STDCALL equals(const lb_I_KeyBase* key) const; \
-virtual lb_I_KeyBase* LB_STDCALL getKey() const;
+virtual int LB_STDCALL equals(const lb_I_KeyBase* _key) const; \
+virtual lb_I_KeyBase* LB_STDCALL getKey() const; \
+private: \
+\
+    lb_I_Element* next; \
+    lb_I_Unknown* data; \
+    lb_I_KeyBase* key; 
 
 #define IMPLEMENT_LB_ELEMENT(classname) \
 \
@@ -190,6 +195,21 @@ classname::~classname() { \
 \
 lb_I_Unknown* classname::getObject() const { \
     return data; \
+} \
+\
+lb_I_KeyBase* LB_STDCALL classname::getKey() { \
+	return key; \
+} \
+\
+void LB_STDCALL classname::setNext(lb_I_Element *e) { \
+	next = e; \
+} \
+\
+lbErrCodes LB_STDCALL lbElement::setData(lb_I_Unknown* _data) { \
+	data = _data->clone(); \
+\
+	if (data == NULL) CL_LOG("Container element could not be copied"); \
+	return ERR_NONE; \
 }
 
 /*...e*/
