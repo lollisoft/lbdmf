@@ -28,7 +28,7 @@ exit
 
 :WEITER
 
-set TARGET_APPLICATION=Q:\develop\Projects\CPP\AppDevelopment\Trainres\App\trainres
+set TARGET_APPLICATION=Application
 
 set DEVLW=q:
 set BASE=develop
