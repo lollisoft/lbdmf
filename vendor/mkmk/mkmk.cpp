@@ -11,11 +11,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.13 $
+ * $Revision: 1.14 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.13 2001/10/23 20:23:16 lothar Exp $
+ * $Id: mkmk.cpp,v 1.14 2001/11/04 19:07:49 lothar Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.14  2001/11/04 19:07:49  lothar
+ * Produces it's own makefile that work's (using templates)
+ *
  * Revision 1.13  2001/10/23 20:23:16  lothar
  * What is that ???
  *
@@ -74,7 +77,8 @@
 #endif
 /*...e*/
 
-#define WATCOM_MAKE
+//#define WATCOM_MAKE
+
 #ifdef LINUX
 #define UNIX
 #undef WATCOM_MAKE
@@ -102,6 +106,7 @@
 #define EXE_TARGET 1
 #define DLL_TARGET 2
 #define LIB_TARGET 3
+#define ELF_TARGET 4
 
 int targettype=EXE_TARGET;
 
@@ -531,7 +536,7 @@ char* TIncludeParser::BasicParse(char *FileName)
 void ShowHelp()
 {
   fprintf(stderr, "MKMK: makefile generator");
-  fprintf(stderr, "Usage: MKMK lib|exe|dll modulname file1 [file2 file3...]\n");
+  fprintf(stderr, "Usage: MKMK lib|exe|dll modulname includepath,[includepath,...] file1 [file2 file3...]\n");
 }
 /*...e*/
 /*...svoid WriteHeader\40\FILE \42\f\44\ char \42\ExeName\41\:0:*/
@@ -614,8 +619,8 @@ void ListFiles(FILE *f, char *Line, TDepList *l, bool IsObj=false)
 
     if (strlen(s)+strlen(Line)>74)
     {
-      printf("%s, %c\n",Line,MoreChar);
-      sprintf(Line," %s",s);
+      printf("%s %c\n",Line,MoreChar);
+      sprintf(Line,"\t\t%s",s);
     }
     else {
 //	if (i!=0) strcat(Line,", ");
@@ -634,7 +639,7 @@ void WriteDep(FILE *f, char *Name, TIncludeParser *p)
   ObjExt(Name,ObjName,sizeof(ObjName));
   sprintf(Line,"%s: makefile %s",ObjName,Name);
   ListFiles(f,Line,&p->l);
-  printf("\t\t$(CC) $(C_OPS) $(STD_INCL) %s\n\n",Name);
+  printf("\t\t$(CC) $(C_OPS) $(MOD_INCL) %s\n\n",Name);
 }
 /*...e*/
 /*...svoid WriteEnding\40\FILE \42\f\44\ char \42\ExeName\44\ TDepList \42\l\41\:0:*/
@@ -685,7 +690,8 @@ void WriteEnding(FILE *f, char *ModuleName, TDepList *l)
 #endif
 
 #else
-  printf("  $(LINK) $(L_OPS) %s $(OBJS) $(LIBS)\n",ModuleName);
+  printf("\n%s: $(OBJS)\n", ModuleName);
+  printf("\t\t$(CC) $(L_OPS) %s $(OBJS) $(OBJDEP)\n",ModuleName);
 #endif
 }
 /*...e*/
@@ -746,6 +752,11 @@ void main(int argc, char *argv[])
   
   for(int c = 0; c < strlen(target); c++) target[c] = toupper(target[c]);
   
+  if (strcmp(target, "-") == 0) {
+  	targettype = ELF_TARGET;
+  	target_ext = strdup("");
+  }
+  
   if (strcmp(target, "LIB") == 0) {
   	targettype = LIB_TARGET;
   	target_ext = strdup(".lib");
@@ -789,7 +800,7 @@ void main(int argc, char *argv[])
   	strcpy(temp, IncPathList[i]);
   	if(temp[strlen(temp)] != PathChar) strcat(temp, pc);
 	
-	printf("Prepared include directory %s\n", temp);
+	//printf("Prepared include directory %s\n", temp);
   	copyIPathList[i] = strdup(temp);
   }
 /*...sVERBOSE:0:*/
