@@ -8,8 +8,11 @@ lbAppBus::lbAppBus() {
 	bus_master_adr = strdup("127.0.0.1");
 	bus_master_port = 5000;
 */
+/*...sVERBOSE:0:*/
+#ifdef VERBOSE
 LOGENABLE("lbAppBus::lbAppBus()");
-
+#endif
+/*...e*/
 }
 /*...e*/
 /*...slbAppBus\58\\58\\126\lbAppBus\40\\41\:0:*/

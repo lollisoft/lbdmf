@@ -59,6 +59,7 @@
 
 #ifdef LB_CS_DLL_INC
 #include <appcs.h>
+#include <transfer.h>
 #include <appbus.h>
 #include <lbthread.h>
 #endif

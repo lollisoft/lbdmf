@@ -61,6 +61,7 @@ public:
 /*...e*/
 
 /*...slbAppBusServer:0:*/
+class lb_Transfer_Data;
 class DLLEXPORT lbAppBusServer : public lbAppBus {
 public:
 	lbAppBusServer();

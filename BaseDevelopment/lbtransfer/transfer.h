@@ -24,6 +24,7 @@
 
 /*...senum LB_PACKET_TYPE:0:*/
 typedef enum {
+	LB_INVALIDTYPE,
 	LB_INT,
 	LB_CHAR,
 	LB_SHORT,

@@ -33,42 +33,52 @@ LOG("GlobalAppServer::_request(): Handle a request");
 	int count = request.getPacketCount();
 
 	char buf[100];
+/*...sVERBOSE:0:*/
+#ifdef VERBOSE
 	sprintf(buf, "GlobalAppServer::_request(): Packetcount = %d", count);
 	printf("%s\n", buf);
-	
 	LOG(buf);
-		
+#endif		
+/*...e*/
+
 	request.resetPositionCount();
 		
 	while (count--) {
-	LOG("GlobalAppServer::_request(): Handle a packet");
 		LB_PACKET_TYPE type;
 		int i = 0;
 		char *buffer;
+		char msg[100];
 		request.getPacketType(type);
 
 		switch (type) {
 			case LB_CHAR:
 				request.get(buffer);
 				printf("Char value = %s\n", buffer); 
+				sprintf(msg, "Char value = %s", buffer); 
+				LOG(msg);
 				break;
 			case LB_INT: 
 				request.get(i);
 				printf("Integer value = %d\n", i);
+				sprintf(msg, "Integer value = %d", i);
+				LOG(msg);
 				break;
 				
 			default:
 				printf("Unknown packet type!\n"); 
+				LOG("Unknown packet type!"); 
 				break;
 		}
 			
 		request.incrementPosition();
-	LOG("GlobalAppServer::_request(): Packet handled");
 	}
-LOG("GlobalAppServer::_request(): Request handled");
+	LOG("GlobalAppServer::_request(): Request handled");
 	return 1;                              
 }
 /*...e*/
+
+// GlobalAppServer::_login(request, result)
+
 
 /**
  * Per run invoked
@@ -87,7 +97,11 @@ int GlobalAppServer::_service() {
 		lb_Transfer_Data result;
 		
 		waitForRequest(request);
+/*...sVERBOSE:0:*/
+#ifdef VERBOSE
 LOG("GlobalAppServer::_service(): Got a request, handle it");
+#endif
+/*...e*/
 		// Check request for service type
 		handleRequest("GlobalAppServer", request, result);
 
@@ -95,7 +109,11 @@ LOG("GlobalAppServer::_service(): Got a request, handle it");
 
 		exit++;
 		printf("GlobalAppServer::_service(): Got a request\n");
+/*...sVERBOSE:0:*/
+#ifdef VERBOSE
 		LOG("GlobalAppServer::_service(): Got a request");
+#endif
+/*...e*/
 	}	
 	
 	return 0;
@@ -116,25 +134,19 @@ protected:
 
 /*...sGASThread\58\\58\GASThread\40\\41\:0:*/
 GASThread::GASThread() {
-	LOG("myThread::myThread() called");
 }
 /*...e*/
 
 /*...sGASThread\58\\58\\126\GASThread\40\\41\:0:*/
 GASThread::~GASThread() {
-	LOG("myThread::~myThread() called");
 }
 /*...e*/
 
 /*...svoid\42\ GASThread\58\\58\Entry\40\\41\:0:*/
 void* GASThread::Entry() {
-	LOG("GASThread::Entry() called");
-
 	GlobalAppServer server;
 	
-	LOG("GASThread::Entry(): Start server");
 	server.run();
-
 
 	for (int i=0; i<5; i++) {
 		printf("GASThread::Entry - Loop at %d\n", i);
@@ -149,7 +161,6 @@ void* GASThread::Entry() {
 /*...smain:0:*/
 void main(int argc, char** argv) {
 LOGPREFIX("GlobalAppServer");
-LOGENABLE("main(...)");
 	printf("Global application server is starting...\n");
 	GASThread *thread;
 	thread = new GASThread();

@@ -4,8 +4,8 @@ projectIdent
 VpeMain
 1
 WRect
-300
-2360
+360
+2120
 8360
 7280
 2
@@ -50,7 +50,7 @@ WFileName
 23
 lbclasses\lbclasses.tgt
 0
-0
+10
 12
 VComponent
 13
@@ -66,7 +66,7 @@ WFileName
 13
 lbcs\lbcs.tgt
 0
-0
+6
 15
 VComponent
 16
@@ -82,5 +82,5 @@ WFileName
 25
 lbtransfer\lbtransfer.tgt
 0
-2
-15
+8
+9

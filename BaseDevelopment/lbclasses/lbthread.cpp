@@ -15,7 +15,6 @@ class lbThreadInternal {
 public:
     lbThreadInternal()
     {
-    	LOG("lbThreadInternal::lbThreadInternal() called");
         lb_hThread = 0;
     }
 
@@ -29,14 +28,22 @@ public:
 
     // thread handle and id
     HANDLE getHandle() const { 
+/*...sVERBOSE:0:*/
+#ifdef VERBOSE
         char buf[100];
         
         sprintf(buf, "lbThreadInternal::getHandle returns %s" , (lb_hThread == NULL) ? "NULL" : "Not NULL");
         LOG(buf);
+#endif
+/*...e*/
     	return lb_hThread; 
     }
     DWORD  getId() const { 
+/*...sVERBOSE:0:*/
+#ifdef VERBOSE
     	LOG("lbThreadInternal::getId called");
+#endif
+/*...e*/
     	return lb_ThreadId; 
     }
 
@@ -51,12 +58,14 @@ private:
 
 /*...slbThreadInternal\58\\58\Create\40\lbThread \42\thread\41\:0:*/
 lbThreadError lbThreadInternal::Create(lbThread *thread) {
+/*...sVERBOSE:0:*/
 	#ifdef VERBOSE
 	LOG("lbThreadInternal::Create called");
 	if (thread == NULL) {
 		printf("lbThreadInternal::Create: Got a null pointer.\n");
 	}
 	#endif
+/*...e*/
     lb_hThread = ::CreateThread
                   (
                     NULL,                               // default security
@@ -67,12 +76,15 @@ lbThreadError lbThreadInternal::Create(lbThread *thread) {
                     CREATE_SUSPENDED,                   // flags
                     &lb_ThreadId                        // [out] thread id
                   );
-
+/*...sVERBOSE:0:*/
+#ifdef VERBOSE
     char buf[100];
     sprintf(buf, "Thread with id %d created", lb_ThreadId);
     LOG(buf);
     printf(buf);
     printf("\n");
+#endif
+/*...e*/
 
     if ( lb_hThread == NULL )
     {
@@ -118,9 +130,11 @@ lbThreadError lbThreadInternal::resume() {
         return LB_THREAD_ERROR;
     }
 
+/*...sVERBOSE:0:*/
 #ifdef VERBOSE
     printf("lbThreadInternal::resume, thread resumed\n");
 #endif
+/*...e*/
 
 //    m_state = STATE_RUNNING;
 
@@ -189,7 +203,9 @@ printf("lbThreadInternal::WinThreadStart: Returning from (DWORD)thread->Entry()\
 lbThread::lbThread() {
 LOGENABLE("lbThread::lbThread()");
 	if (threadCount == 0) {
+#ifdef VERBOSE
 		LOG("lbThread::lbThread(): OnInit() must be called");
+#endif
 		if (OnInit() == 0) {
 			LOG("lbThread::lbThread could not init module");
 		} else {
@@ -213,22 +229,28 @@ lbThreadError lbThread::create() {
   lbThreadError err;
 /*...sCreate if needed:2:*/
   if (pThreadImpl->getHandle() == NULL) {
+/*...sVERBOSE:2:*/
 #ifdef VERBOSE
 	printf("lbThread::run will create a new thread\n");
 	LOG("lbThread::run will create a new thread");
 #endif
+/*...e*/
 
+/*...sVERBOSE:2:*/
 #ifdef VERBOSE
 	if (this == NULL) {
 		printf("lbThreadInternal::Create: Got a null pointer (this).\n");
 	}
 #endif
+/*...e*/
 
   	if ((err = pThreadImpl->Create(this)) != LB_THREAD_NO_ERROR) {
+/*...sVERBOSE:2:*/
 #ifdef VERBOSE
 	printf("lbThread::run creation of thread failed\n");
 	LOG("lbThread::run creation of thread failed");
 #endif
+/*...e*/
 		return err;
   	}
   } else printf("Creation of thread not needed\n");
@@ -240,12 +262,18 @@ lbThreadError lbThread::run() {
   lbThreadError err;
 /*...sLet it run:2:*/
   if ((err = pThreadImpl->resume()) != LB_THREAD_NO_ERROR) {
+/*...sVERBOSE:2:*/
 #ifdef VERBOSE
 	printf("lbThread::resume failed\n");
 #endif
+/*...e*/
   }
+/*...sVERBOSE:2:*/
+#ifdef VERBOSE
 printf  ("lbThread::resume done");
 LOG  ("lbThread::resume done");
+#endif
+/*...e*/
   return err;
 /*...e*/
 }

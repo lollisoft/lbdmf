@@ -458,11 +458,11 @@ LOG("lbSocket::recv(void* buf, int & len): Enter");
 #ifdef WINDOWS
   if (_isServer == 1)
     numrcv=::recv(clientSocket, (char*) buf,
-      len, NO_FLAGS_SET);
+      MAXBUFLEN, NO_FLAGS_SET);
       
   if (_isServer == 0)
     numrcv=::recv(serverSocket, (char*) buf,
-      len, NO_FLAGS_SET);
+      MAXBUFLEN, NO_FLAGS_SET);
       
     if ((numrcv == 0) || (numrcv == SOCKET_ERROR))
     {
@@ -483,11 +483,11 @@ LOG("lbSocket::recv(void* buf, int & len): Enter");
 #ifdef __WXGTK__
   if (_isServer == 1)
     numrcv=::recv(clientSocket, buf,
-      len, NO_FLAGS_SET);
+      MAXBUFLEN, NO_FLAGS_SET);
       
   if (_isServer == 0)
     numrcv=::recv(serverSocket, buf,
-      len, NO_FLAGS_SET);
+      MAXBUFLEN, NO_FLAGS_SET);
 
     if ((numrcv == 0) || (numrcv < 0))
     {
@@ -523,7 +523,7 @@ if (_isServer == 0) {
 #endif
 /*...e*/
     numsnt=::send(serverSocket,
-                (char const*) buf, len + 1,
+                (char const*) buf, len,
                 NO_FLAGS_SET);
 }
 if (_isServer == 1) {
@@ -534,11 +534,11 @@ if (_isServer == 1) {
 #endif
 /*...e*/
     numsnt=::send(clientSocket,
-                (char const*) buf, len + 1,
+                (char const*) buf, len,
                 NO_FLAGS_SET);
 }
                 
-    if (numsnt != len + 1)
+    if (numsnt != len)
     {
       LOG("lbSocket::send(void *buf, int len): Connection terminated");
       status=closesocket(serverSocket);
