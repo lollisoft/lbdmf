@@ -6,7 +6,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.10 2003/12/13 10:56:26 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.11 2004/01/24 16:54:35 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -559,6 +559,8 @@ class MyApp: public wxApp
 	lbErrCodes LB_STDCALL lbEvHandler2(lb_I_Unknown* uk);
 	lbErrCodes LB_STDCALL lbEvHandler3(lb_I_Unknown* uk);	
 	lbErrCodes LB_STDCALL addButton(lb_I_Unknown* uk);
+	lbErrCodes LB_STDCALL addLabel(lb_I_Unknown* uk);
+	lbErrCodes LB_STDCALL addTextField(lb_I_Unknown* uk);
 
         lbErrCodes LB_STDCALL HandleGetFrame(lb_I_Unknown* uk); // Thread parameter as output
         lbErrCodes LB_STDCALL HandleAddMenu(lb_I_Unknown* uk);  // Thread parameter as input
@@ -581,6 +583,8 @@ protected:
         int AddMenu;
         int AddMenuBar;
         int AddMenuEntry;
+        int AddLabel;
+        int AddTextField;
         
         
 /*...sevent manager:8:*/
@@ -727,6 +731,8 @@ bool MyApp::OnInit(void)
 	 */
 	
 	ev_manager->registerEvent("AddMenuEntry", AddMenuEntry);
+	ev_manager->registerEvent("AddLabel", AddLabel);
+	ev_manager->registerEvent("AddTextField", AddTextField);
 
         /**
          * Register any event handler from this instance by the wxGUI wrapper.
@@ -984,6 +990,8 @@ lbErrCodes LB_STDCALL MyApp::registerEventHandler(lb_I_Dispatcher* disp) {
         disp->addEventHandlerFn(this, (lbEvHandler) &MyApp::lbEvHandler2, "AddMenuBar");
         disp->addEventHandlerFn(this, (lbEvHandler) &MyApp::lbEvHandler3, "AddMenuEntry");
 	disp->addEventHandlerFn(this, (lbEvHandler) &MyApp::addButton, "AddButton");
+	disp->addEventHandlerFn(this, (lbEvHandler) &MyApp::addLabel, "AddLabel");
+	disp->addEventHandlerFn(this, (lbEvHandler) &MyApp::addTextField, "AddTextField");
 
         return ERR_NONE;
 }
@@ -1047,9 +1055,6 @@ lbErrCodes LB_STDCALL MyApp::lbEvHandler2(lb_I_Unknown* uk) {
 	
 	wxMenu *menu = new wxMenu;
 
-	menu->Append(DYNAMIC_ABOUT, "&About");
-	menu->Append(DYNAMIC_QUIT, "E&xit");
-	    
 	wxMenuBar* mbar = frame_peer->getMenuBar();
 	if (mbar) mbar->Append(menu, string->getData());
 
@@ -1187,6 +1192,16 @@ lbErrCodes LB_STDCALL MyApp::addButton(lb_I_Unknown* uk) {
 
 	return ERR_NONE;
 /*...e*/
+}
+
+lbErrCodes LB_STDCALL MyApp::addLabel(lb_I_Unknown* uk) {
+	_LOG << "lbErrCodes LB_STDCALL MyApp::addLabel(lb_I_Unknown* uk) called" LOG_
+	return ERR_NONE;
+}
+
+lbErrCodes LB_STDCALL MyApp::addTextField(lb_I_Unknown* uk) {
+	_LOG << "lbErrCodes LB_STDCALL MyApp::addTextField(lb_I_Unknown* uk) called" LOG_
+	return ERR_NONE;
 }
 /*...e*/
 #endif
