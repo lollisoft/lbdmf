@@ -13,6 +13,7 @@ protected:
         virtual ~lb_I_BoundColumn() {}
 public:
 
+/*...sdoc:8:*/
 	/**
 	 * Universal access to the column.
 	 *
@@ -33,6 +34,7 @@ public:
 	 *
 	 * The setData is still defined in the base class - to be implemented here.
 	 */
+/*...e*/
 	virtual lb_I_Unknown* LB_STDCALL getData() = 0;
 	
 	/**
@@ -43,6 +45,22 @@ public:
 	virtual lbErrCodes LB_STDCALL getAsString(lb_I_String* result) = 0;
 	virtual lbErrCodes LB_STDCALL setFromString(lb_I_String* set) = 0;
 
+protected:
+	/**
+	 * This function will be used in setData to take the ownership of the internal
+	 * data to the given instance.
+	 *
+	 * This is needed to store the instance in a container. Due to the container's
+	 * call of clone, the new instance in the container must have the same data, not
+	 * a copy. In this case a bound column has an allocated memory area, that must not
+	 * be copied. Instead the clone must get ownership of the cloned instance data.
+	 *
+	 * This means, the cloned memory pointer must be set to NULL and must not be deleted.
+	 * The clone get's the pointer to the memory area.
+	 */
+	virtual lbErrCodes LB_STDCALL leaveOwnership(lb_I_BoundColumn* oldOwner, lb_I_BoundColumn* newOwner) = 0;
+
+/*...s:0:*/
 #ifdef bla	
 	virtual lbErrCodes LB_STDCALL bindColumn(
 	SQLSMALLINT	stmt,
@@ -65,6 +83,7 @@ BufferLength,
 &Nullable
 
 #endif
+/*...e*/
 
 
 };
@@ -90,6 +109,9 @@ public:
          */
         virtual lb_I_Container* LB_STDCALL getBoundColumns() = 0;
         virtual lbErrCodes      LB_STDCALL setBoundColumns(lb_I_Container* bc) = 0;
+
+        virtual lbErrCodes      LB_STDCALL getString(int column, lb_I_String* instance) = 0;
+        virtual lbErrCodes      LB_STDCALL getString(char* column, lb_I_String* instance) = 0;
         
         /**
          * Set a currently used query to bind their columns.
@@ -149,8 +171,12 @@ public:
         virtual lbErrCodes LB_STDCALL last() = 0;
         
         /* Accessors */
-        
+#ifdef UNBOUND        
         virtual char* LB_STDCALL getChar(int column) = 0;
+#endif
+#ifndef UNBOUND       
+        virtual lb_I_String*    LB_STDCALL getAsString(int column) = 0;
+#endif
 };
 
 class lb_I_Database : public lb_I_Unknown
