@@ -25,11 +25,14 @@
 #            22453 Hamburg (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.35 $
+# * $Revision: 1.36 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.35 2003/04/28 20:39:58 lollisoft Exp $
+# * $Id: STD_MAKE,v 1.36 2003/05/29 08:31:30 lollisoft Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.36  2003/05/29 08:31:30  lollisoft
+# * Tried to compile lbDB, but may be also compilable with prior version
+# *
 # * Revision 1.35  2003/04/28 20:39:58  lollisoft
 # * Moved back to watcom
 # *
@@ -161,16 +164,16 @@ STD_INCL = $(STD_INCL_WATCOM)
 
 
 WATCOM_WARN=-w0
-WATCOM_OPTIMIZE=-otexan
-WATCOM_RELAX_ALIAS=-oa
+WATCOM_OPTIMIZE=-od#-otexan
+WATCOM_RELAX_ALIAS=#-oa
 WATCOM_ERRCOUNT=-e25
 WATCOM_QUIET=-zq
 WATCOM_CALLING_CONV=-5r #-zz
 WATCOM_DLLTARGET=-bd
 WATCOM_LIBTARGET=
-WATCOM_THREAD_MODEL=-bm
-WATCOM_STDDEBUG=-d2 -hd
-WATCOM_STACK= #-of
+WATCOM_THREAD_MODEL=#-bm
+WATCOM_STDDEBUG=-d2# -hd
+WATCOM_STACK=#-of
 
 WATCOM_STD_C_OPS= \
 -DWINDOWS \
@@ -185,15 +188,15 @@ $(WATCOM_STACK)
 
 OBJ =obj
 # Watcom -zp4
-C_EXEOPS_WATCOM_DEBUG= $(WATCOM_STD_C_OPS) $(WATCOM_STDDEBUG) -ei -zp4 -bt=nt -mf -hd
+C_EXEOPS_WATCOM_DEBUG= $(WATCOM_STD_C_OPS) $(WATCOM_STDDEBUG) -bt=nt -mf #-hd
 
-C_DLLOPS_WATCOM   =  $(WATCOM_STD_C_OPS) $(WATCOM_DLLTARGET)                       -ei -zp4 -bt=nt -mf -hd
+C_DLLOPS_WATCOM   =  $(WATCOM_STD_C_OPS) $(WATCOM_DLLTARGET)                       -bt=nt -mf #-hd
 
-C_DLLOPS_WATCOM_DEBUG = $(WATCOM_STD_C_OPS) $(WATCOM_STDDEBUG) $(WATCOM_DLLTARGET) -ei -zp4 -bt=nt -mf -hd
+C_DLLOPS_WATCOM_DEBUG = $(WATCOM_STD_C_OPS) $(WATCOM_STDDEBUG) $(WATCOM_DLLTARGET) -bt=nt -mf #-hd
 
-C_LIBOPS_WATCOM   =  $(WATCOM_STD_C_OPS) $(WATCOM_LIBTARGET)                       -ei -zp4 -bt=nt -mf -hd
+C_LIBOPS_WATCOM   =  $(WATCOM_STD_C_OPS) $(WATCOM_LIBTARGET)                       -bt=nt -mf #-hd
 
-C_LIBOPS_WATCOM_DEBUG = $(WATCOM_STD_C_OPS) $(WATCOM_STDDEBUG) $(WATCOM_LIBTARGET) -ei -zp4 -bt=nt -mf -hd
+C_LIBOPS_WATCOM_DEBUG = $(WATCOM_STD_C_OPS) $(WATCOM_STDDEBUG) $(WATCOM_LIBTARGET) -bt=nt -mf #-hd
 
 CC =wpp386
 RM =del
@@ -264,8 +267,8 @@ C_LIBOPS = $(C_LIBOPS_WATCOM$(MODE))
 
 # Watcom
 L_EXEOPS_WATCOM = -o d dwarf
-LINK_WATCOM =wlink op q
-L_DLLOPS_WATCOM =SYS nt_dll op m op maxe=25 op q op symf d dwarf
+LINK_WATCOM =wlink op q 
+L_DLLOPS_WATCOM =SYS nt_dll op m op maxe=25 op q op symf# d dwarf
 
 # Microsoft
 #/pdb:"$(OUTDIR)\lbDOMConfig.pdb"
