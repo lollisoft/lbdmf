@@ -1,0 +1,81 @@
+
+
+
+
+DMF - Distributed Multiplatform (GUI) Framework
+
+
+
+
+
+
+DMF
+
+DMF is a framework or a class library, written in C++, to enable you to write applications or modules
+in a manner of not to be depend on the platform or the compiler.
+
+It helps you to write modular applications in a similar way like Microsoft's COM. But the idea here
+is not to use a registry to get the informations related to how to or where from do you loading
+an instance.
+
+The information on how or where to load an instance for a specific interface is stored in a XML
+file. This is not a must, you can configure how you store these information by replacing the module
+that handles this - even you can use a database for it.
+
+
+
+
+
+Technical Overview
+
+DMF is based on COM - using interfaces to declare exact interaction definitions of how the interface
+can be used. In DMF I do not yet use any IDL compiler for it. It is simly a pure abstract class.
+
+This means pure abstract classes does not contain any data and therefore an abstract class implementation
+compiled by compiler A can be used by compiler B.
+
+Means:
+
+1. Independend from compiler
+2. Module would be loaded at runtime
+
+
+
+Multiplatformability
+
+This framework is designed to be used on multiple platforms (currently Windows and Linux).
+The code that is currently platform dependent is really small. It is located in my bootstrap
+module used by each module or application.
+
+
+Distributed part of this framework
+
+This is currently not implemented. But thinking about interfaces, this is a plugin facility and
+can maybe CORBA or anything else. The framework in it self is complex but mostly complete.
+Using the bridge pattern, you will be able to adopt to mostly all other frameworks or standards
+like MFC or CORBA.
+
+
+Conclusion
+
+Using pure abstract classes (interfaces) and loading at runtime makes you able to develop applications
+independent from compilers.
+You can unload a module, if you no longer need it or replace it by another module.
+Using the bridge pattern you can add the distributed facility that I have not implemented yet.
+
+And finally, using a repository how and where to load an instance for an interface, you have nearly
+the same as COM.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
