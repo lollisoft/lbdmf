@@ -168,7 +168,7 @@ void lbAppClient::Connect(const char* application) {
 	 * The Target for any anouncements must be configured by a configuration file.
 	 */
 /*...e*/
-
+#define VERBOSE
 /*...sVERBOSE:8:*/
 #ifdef VERBOSE
 LOG("lbAppClient::Connect(const char* application): Announce me as client");
@@ -208,6 +208,7 @@ LOG("lbAppClient::Connect(const char* application): Announce me as client");
 	 * state.
 	 */
 /*...e*/
+#undef VERBOSE
 }
 /*...e*/
 /*...slbAppClient\58\\58\Disconnect\40\\41\:0:*/

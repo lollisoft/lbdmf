@@ -8,6 +8,8 @@ lbAppBus::lbAppBus() {
 	bus_master_adr = strdup("127.0.0.1");
 	bus_master_port = 5000;
 */
+LOGENABLE("lbAppBus::lbAppBus()");
+
 }
 /*...e*/
 /*...slbAppBus\58\\58\\126\lbAppBus\40\\41\:0:*/
@@ -58,7 +60,7 @@ void lbAppBusClient::AnounceClient() {
 	/**
 	 * Connect to the busmaster port.
 	 */
-	
+LOG("lbAppBusClient::AnounceClient(): call transfer.init(\"//anakin/busmaster\");");
 	transfer.init("//anakin/busmaster");
 LOG("lbAppBusClient::AnounceClient(): sendConnect(transfer)");
 	answer = strdup(sendConnect(transfer));

@@ -33,7 +33,7 @@ int lbSocket::connect()
       status=::connect(serverSocket, (LPSOCKADDR) &serverSockAddr, sizeof(serverSockAddr));
       if (status == SOCKET_ERROR)
       {
-        LOG("lbSocket::connect(): ERROR: connect unsuccessful");
+        LOG("lbSocket::connect(): ERROR: connect to unsuccessful");
         status=closesocket(serverSocket);
         if (status == SOCKET_ERROR)
           LOG("lbSocket::connect(): ERROR: closesocket unsuccessful");
@@ -135,6 +135,59 @@ int lbSocket::socket()
   return 1;  
 }
 /*...e*/
+
+/*...slbSocked\58\\58\inet_addrFromString\40\char\42\ addr\41\:0:*/
+unsigned long lbSocket::inet_addrFromString(char* w) {
+    struct hostent *hep;
+    unsigned long my_addr;
+    char *p;
+/*
+    p = strchr(w, ':');
+    if (ports != NULL) {
+        *ports = 0;
+        if (p != NULL && strcmp(p + 1, "*") != 0)
+            *ports = atoi(p + 1);
+    }
+*/
+/*
+    if (p != NULL)
+        *p = '\0';
+    if (strcmp(w, "*") == 0) {
+        if (p != NULL)
+            *p = ':';
+        return htonl(INADDR_ANY);
+    }
+*/
+/*
+    my_addr = ap_inet_addr((char *)w);
+    if (my_addr != INADDR_NONE) {
+        if (p != NULL)
+            *p = ':';
+        return my_addr;
+    }
+*/
+    hep = gethostbyname(w);
+
+    if ((!hep) || (hep->h_addrtype != AF_INET || !hep->h_addr_list[0])) {
+        fprintf(stderr, "Cannot resolve host name %s --- exiting!\n", w);
+        exit(1);
+    }
+
+    if (hep->h_addr_list[1]) {
+        fprintf(stderr, "Host %s has multiple addresses ---\n", w);
+        fprintf(stderr, "you must choose one explicitly for use as\n");
+        fprintf(stderr, "a virtual host.  Exiting!!!\n");
+        exit(1);
+    }
+/*
+    if (p != NULL)
+        *p = ':';
+*/
+    return ((struct in_addr *) (hep->h_addr))->s_addr;
+}
+/*...e*/
+
+
 /*...slbSocket\58\\58\startup\40\\41\:0:*/
 int lbSocket::startup()
 {
@@ -194,12 +247,19 @@ void lbSocket::initSymbolic(char* host, char* service) {
 	char msg[100];
 	int serverMode = 0;
 	startup();
+
+	sprintf(msg, "void lbSocket::initSymbolic(char* host, char* service): Init for %s %s", host, service);
+	LOG(msg);	
 	
 	if (strcmp(host, "localhost") == 0)
+	{
+		LOG("Socket initializing as server");
 		serverMode = 1;
-LOG("lbSocket::initSymbolic(char* host, char* service) called");
+	}
+	
+	LOG("lbSocket::initSymbolic(char* host, char* service) called");
 
-	hostent *entry = gethostbyname(host);
+//	hostent *entry = gethostbyname(host);
 	
 	servent* s = getservbyname(service, NULL);
  
@@ -215,38 +275,47 @@ LOG("lbSocket::initSymbolic(char* host, char* service) called");
  */
 /*...e*/
 
- 	if (entry == NULL) LOG("lbSocket::initSymbolic(char* host, char* service): No host address found");
-	if ((entry != NULL) && (entry->h_addr_list == NULL)) LOG("lbSocket::initSymbolic(char* host, char* service): Host list is a NULL pointer!");
+// 	if (entry == NULL) LOG("lbSocket::initSymbolic(char* host, char* service): No host address found");
+//	if ((entry != NULL) && (entry->h_addr_list == NULL)) LOG("lbSocket::initSymbolic(char* host, char* service): Host list is a NULL pointer!");
 
 	if(s == NULL) LOG("lbSocket::initSymbolic(char* host, char* service): No service entry found");
 
- 	char* hostaddr = strdup(entry->h_addr_list[0]);
+	// List !
+	LOG("Get hostaddress");
+	
+	
+// 	unsigned long hostaddr = *(entry->h_addr_list);
+
+ 	sprintf(msg, "Got hostaddress: %d", inet_addrFromString(host));
+ 	LOG(msg);
+
  	u_short port = s->s_port;
 
-LOG("lbSocket::init(char* hostaddr, char* port) calling");
+	sprintf(msg, "lbSocket::init(char* hostaddr, char* port) with %s %d calling", host, port);
+	LOG(msg); 
  
- 	init((serverMode == 1) ? "" : hostaddr, port);
+ 	init((serverMode == 1) ? 0 : inet_addrFromString(host), port);
 
 LOG("lbSocket::init(char* hostaddr, char* port) called");
 }
 /*...e*/
-/*...slbSocket\58\\58\init\40\char \42\mysockaddr\44\ u_short port\41\:0:*/
-void lbSocket::init(char *mysockaddr, u_short port)
+/*...slbSocket\58\\58\init\40\unsigned long mysockaddr\44\ u_short port\41\:0:*/
+void lbSocket::init( unsigned long mysockaddr, u_short port)
 {
-  if (strcmp(mysockaddr, "") != 0)
-    isServer = 0;
-  else
-    isServer = 1;
+  char buf[100];
+  
+  (mysockaddr == 0) ? isServer = 1 : isServer = 0;
 
+/*...sWINDOWS:0:*/
 #ifdef WINDOWS
   addrLen=sizeof(SOCKADDR_IN);
 
   startup();    
 
-  if (strcmp(mysockaddr, "") != 0)
+  if (isServer == 0)
   {// Address given, assume this as client initialition
     /* convert IP address into in_addr form */
-    destAddr=inet_addr(mysockaddr);
+    destAddr= mysockaddr; // inet_addr(...)
     /* copy destAddr into sockaddr_in structure */
     memcpy(&serverSockAddr.sin_addr, &destAddr, sizeof(destAddr));
   }
@@ -256,31 +325,35 @@ void lbSocket::init(char *mysockaddr, u_short port)
   /* specify the address family as Internet */
   serverSockAddr.sin_family=AF_INET;
 
-  if (strcmp(mysockaddr, "") == 0)
+  if (isServer == 1)
   {// No address given, server can be connected from all
     /* specify that the address does not matter */
     serverSockAddr.sin_addr.s_addr=htonl(INADDR_ANY);
+LOG("lbSocket::init( unsigned long mysockaddr, u_short port): Initializing as server");
   }
 
   socket();
 
-  if (strcmp(mysockaddr, "") == 0)
+  if (isServer == 1)
   {
+    LOG("lbSocket::init(char *mysockaddr, u_short port) bind...");
     bind();
-    
+    LOG("lbSocket::init(char *mysockaddr, u_short port) listen...");
     listen();
-    
-    accept();
   }
   else
   {
+    LOG("lbSocket::init(char *mysockaddr, u_short port) connect...");
     connect();
+    LOG("lbSocket::init(char *mysockaddr, u_short port) connected");
   }
 #endif
+/*...e*/
+/*...s__WXGTK__:0:*/
 #ifdef __WXGTK__
   addrLen=sizeof(sockaddr);
 
-  if (strcmp(mysockaddr, "") != 0)
+  if (isServer == 1)
   {// Address given, assume this as client initialition
     /* convert IP address into in_addr form */
     destAddr=inet_addr(mysockaddr);
@@ -293,7 +366,7 @@ void lbSocket::init(char *mysockaddr, u_short port)
   /* specify the address family as Internet */
   serverSockAddr.sin_family=AF_INET;
 
-  if (strcmp(mysockaddr, "") == 0)
+  if (isServer == 1)
   {// No address given, server can be connected from all
     /* specify that the address does not matter */
     serverSockAddr.sin_addr.s_addr=htonl(INADDR_ANY);
@@ -301,21 +374,25 @@ void lbSocket::init(char *mysockaddr, u_short port)
 
   socket();
 
-  if (strcmp(mysockaddr, "") == 0)
+  if (isServer == 1)
   {
+    LOG("lbSocket::init(char *mysockaddr, u_short port) bind...");
     bind();
-    
+    LOG("lbSocket::init(char *mysockaddr, u_short port) listen...");
     listen();
-    
-    accept();
   }
   else
   {
+    LOG("lbSocket::init(char *mysockaddr, u_short port) connect...");
     connect();
+    LOG("lbSocket::init(char *mysockaddr, u_short port) connected");
   }
 #endif
+/*...e*/
 }
 /*...e*/
+
+
 /*...slbSocket\58\\58\sendInteger\40\int i\41\:0:*/
 int lbSocket::sendInteger(int i) {
 	char buf[MAXBUFLEN];
@@ -334,6 +411,8 @@ int lbSocket::sendInteger(int i) {
 /*...slbSocket\58\\58\recvInteger\40\int\38\ i\41\:0:*/
 int lbSocket::recvInteger(int& i) {
 	char buf[MAXBUFLEN];
+        // Wait for a datapacket
+        accept();
 
 	if (recv_charbuf(buf) == 1) {
 		int number = atoi(buf);
@@ -345,9 +424,14 @@ int lbSocket::recvInteger(int& i) {
 	return 1;
 }
 /*...e*/
+
 /*...slbSocket\58\\58\recv_charbuf\40\char \42\buf\41\:0:*/
 int lbSocket::recv_charbuf(char *buf)
 {
+    // Wait for a datapacket
+    accept();
+
+/*...sWINDOWS:0:*/
 #ifdef WINDOWS
   if (isServer == 1)
     numrcv=::recv(clientSocket, buf,
@@ -372,6 +456,8 @@ int lbSocket::recv_charbuf(char *buf)
       return 0;
     }
 #endif
+/*...e*/
+/*...s__WXGTK__:0:*/
 #ifdef __WXGTK__
   if (isServer == 1)
     numrcv=::recv(clientSocket, buf,
@@ -391,6 +477,8 @@ int lbSocket::recv_charbuf(char *buf)
       return 0;
     }
 #endif
+/*...e*/
+    
     return 1;
 }
 /*...e*/
@@ -447,6 +535,7 @@ if (isServer == 1)
     return 1;
 }
 /*...e*/
+
 /*...slbSocket\58\\58\recv\40\lb_Transfer_Data \38\ data\41\:0:*/
 int lbSocket::recv(lb_Transfer_Data & data) {
 	int i;

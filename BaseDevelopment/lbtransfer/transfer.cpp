@@ -146,7 +146,9 @@ LOG("lbTransfer::init(char *target) called");
 		 * machine is the computername. Service is the name of a service
 		 * mapped to a port.
 		 */
-
+char buf[100];
+sprintf(buf, "void lbTransfer::init(char *target): sock->initSymbolic(%s, %s);", machine, service);
+LOG(buf);
 		sock->initSymbolic(machine, service);
 	} else {
 		LOG("Subservices currently not supported");
@@ -308,9 +310,10 @@ int lbTransfer::send(const lb_Transfer_Data & data) {
 int lbTransfer::recv(lb_Transfer_Data & data) {
 	char* result = NULL;
 	int err;
-printf("lbTransfer::recv(lb_Transfer_Data & data): waitForDatatype(result)...\n");
+
 LOGENABLE("lbTransfer::recv(lb_Transfer_Data & data)");
 LOG("lbTransfer::recv(lb_Transfer_Data & data): waitForDatatype(result)...");	
+
 	if ((err = waitForDatatype(result)) == 1) {
 		if (strcmp(result, "lb_Transfer_Data") == 0)
 			LOG("lbTransfer::recv(lb_Transfer_Data & data): Got wanted datatype");

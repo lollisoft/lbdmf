@@ -67,12 +67,12 @@ public:
         ~lbSocket() {}
 
 
-		void initSymbolic(char *host, char* service);
-        void init(char *mysockaddr="", u_short port = PORT);
+	void initSymbolic(char *host, char* service);
+        void init(unsigned long mysockaddr, u_short port = PORT);
         void reinit(char *mysockaddr="");
 
-		int recvInteger(int& i);
-		int sendInteger(int i);
+	int recvInteger(int& i);
+	int sendInteger(int i);
 		
         int recv_charbuf(char *buf);
         int send_charbuf(char *buf, int len);
@@ -91,8 +91,11 @@ private:
         int listen();
         int accept();
         int socket();
-		int close();
+	int close();
         int connect();
+
+	unsigned long inet_addrFromString(char* addr);
+
 
 #ifdef WINDOWS
 
