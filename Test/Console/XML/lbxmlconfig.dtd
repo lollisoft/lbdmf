@@ -26,6 +26,9 @@ must be described in that tag.
 <!ELEMENT Function       (FunctionName, (Functor|SimpleFn))>
 <!ATTLIST Function       Description      CDATA #FIXED "No description yet" >
 
+<!ELEMENT Functor        (InterfaceName)>
+<!ATTLIST Functor        Description      CDATA #FIXED "No description yet" >
+
 <!--...sBusmaster:0:-->
 <!ELEMENT Busmaster      (#PCDATA)>
 <!ATTLIST Busmaster         ID             ID         #IMPLIED 
@@ -42,12 +45,14 @@ must be described in that tag.
 <!ATTLIST FunctionName       Name     CDATA       #IMPLIED 
                              IDPtr    CDATA       #FIXED "Name" >
 <!--...e-->
+<!--...sInterfaceName:0:-->
+<!ELEMENT InterfaceName          (#PCDATA)>
+<!ATTLIST InterfaceName      Name     CDATA       #IMPLIED 
+                             Version  CDATA       #IMPLIED
+                             IDPtr    CDATA       #FIXED "Name" >
+<!--...e-->
 <!--...sSimpleFn:0:-->
 <!ELEMENT SimpleFn       (#PCDATA)>
 <!ATTLIST SimpleFn       Return    CDATA      #IMPLIED >
-<!--...e-->
-<!--...sFunctor:0:-->
-<!ELEMENT Functor        (#PCDATA)>
-<!ATTLIST Functor        Return    CDATA      #FIXED "lbErrCodes" >
 <!--...e-->
 
