@@ -60,5 +60,10 @@ endif
 endif
 
 ifeq ($(OSTYPE), linux)
-MOD_INCL=$(STD_INCL) -I ../linuxCode
+MOD_INCL=$(STD_INCL) -I ../linuxCode -I /sw/include
+endif    
+
+ifeq ($(OSTYPE), osx)
+OBJDEP=libdl.a
+MOD_INCL=$(STD_INCL) -I ../linuxCode -I /sw/include
 endif    
