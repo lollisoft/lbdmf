@@ -186,14 +186,14 @@ lbCritSect::lbCritSect() {
 /*...sTHREAD_VERBOSE:0:*/
 #ifdef THREAD_VERBOSE
 LOG("lbCritSect::lbCritSect() called");
-cout << "lbCritSect::lbCritSect() called" << endl;
+//cout << "lbCritSect::lbCritSect() called" << endl;
 #endif
 /*...e*/
 	critsect = new CRITICAL_SECTION;
 	InitializeCriticalSection((CRITICAL_SECTION*)critsect);
 /*...sTHREAD_VERBOSE:0:*/
 #ifdef THREAD_VERBOSE
-cout << "lbCritSect::lbCritSect() leave" << endl;
+//cout << "lbCritSect::lbCritSect() leave" << endl;
 LOG("lbCritSect::lbCritSect() leave");
 #endif
 /*...e*/
@@ -202,14 +202,14 @@ LOG("lbCritSect::lbCritSect() leave");
 lbCritSect::~lbCritSect() {
 /*...sTHREAD_VERBOSE:0:*/
 #ifdef THREAD_VERBOSE
-cout << "lbCritSect::~lbCritSect() called" << endl << flush;
+//cout << "lbCritSect::~lbCritSect() called" << endl << flush;
 LOG("lbCritSect::~lbCritSect() called");
 #endif
 /*...e*/
 	DeleteCriticalSection((CRITICAL_SECTION*)critsect);
 /*...sTHREAD_VERBOSE:0:*/
 #ifdef THREAD_VERBOSE
-cout << "lbCritSect::~lbCritSect() leave" << endl;
+//cout << "lbCritSect::~lbCritSect() leave" << endl;
 LOG("lbCritSect::~lbCritSect() leave");
 #endif
 /*...e*/
@@ -220,13 +220,13 @@ lbErrCodes lbCritSect::enter() {
 /*...sTHREAD_VERBOSE:0:*/
 #ifdef THREAD_VERBOSE
 LOG("lbCritSect::enter() called");
-cout << "lbCritSect::enter() called" << endl;
+//cout << "lbCritSect::enter() called" << endl;
 #endif
 /*...e*/
 	EnterCriticalSection((CRITICAL_SECTION*)critsect);
 /*...sTHREAD_VERBOSE:0:*/
 #ifdef THREAD_VERBOSE
-cout << "lbCritSect::enter() leave" << endl;	
+//cout << "lbCritSect::enter() leave" << endl;	
 LOG("lbCritSect::enter() leave");
 #endif
 /*...e*/
@@ -239,14 +239,14 @@ lbErrCodes lbCritSect::leave() {
 /*...sTHREAD_VERBOSE:0:*/
 #ifdef THREAD_VERBOSE
 LOG("lbCritSect::leave() called");
-cout << "lbCritSect::leave() called" << endl;
+//cout << "lbCritSect::leave() called" << endl;
 #endif
 /*...e*/
 	LeaveCriticalSection((CRITICAL_SECTION*)critsect);
 /*...sTHREAD_VERBOSE:0:*/
 #ifdef THREAD_VERBOSE
 LOG("lbCritSect::leave() leave");
-cout << "lbCritSect::leave() leave" << endl;
+//cout << "lbCritSect::leave() leave" << endl;
 #endif
 /*...e*/
 #endif
@@ -260,7 +260,7 @@ lbLock::lbLock(lbCritSect& _cso, char* _name) {
 #ifdef USE_CRITICAL_SECTION
 /*...sTHREAD_VERBOSE:0:*/
 #ifdef THREAD_VERBOSE
-cout << "lbLock::lbLock(...) enter critical section: " << _name << endl;
+//cout << "lbLock::lbLock(...) enter critical section: " << _name << endl;
 LOG("lbLock::lbLock(...) enter critical section");
 #endif
 /*...e*/
@@ -270,7 +270,7 @@ LOG("lbLock::lbLock(...) enter critical section");
 /*...sTHREAD_VERBOSE:0:*/
 #ifdef THREAD_VERBOSE
 LOG("lbLock::lbLock(...) entered");
-cout << "lbLock::lbLock(...) entered" << endl;
+//cout << "lbLock::lbLock(...) entered" << endl;
 #endif
 /*...e*/
 #endif
@@ -280,7 +280,7 @@ lbLock::~lbLock() {
 #ifdef USE_CRITICAL_SECTION
 /*...sTHREAD_VERBOSE:0:*/
 #ifdef THREAD_VERBOSE
-cout << "lbLock::~lbLock(...) leave critical section: " << name << endl;
+//cout << "lbLock::~lbLock(...) leave critical section: " << name << endl;
 LOG("lbLock::~lbLock(...) leave critical section");
 #endif
 /*...e*/
@@ -288,7 +288,7 @@ LOG("lbLock::~lbLock(...) leave critical section");
 	delete[] name;
 /*...sTHREAD_VERBOSE:0:*/
 #ifdef THREAD_VERBOSE
-cout << "lbLock::~lbLock(...) leaved" << endl;
+//cout << "lbLock::~lbLock(...) leaved" << endl;
 LOG("lbLock::~lbLock(...) leaved");
 #endif
 /*...e*/

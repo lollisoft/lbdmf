@@ -4,10 +4,13 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.4 $
+ * $Revision: 1.5 $
  * $Name:  $
- * $Id: lbcontainer.cpp,v 1.4 2000/06/24 21:32:07 lolli Exp $
+ * $Id: lbcontainer.cpp,v 1.5 2000/06/28 20:33:08 lolli Exp $
  * $Log: lbcontainer.cpp,v $
+ * Revision 1.5  2000/06/28 20:33:08  lolli
+ * Deactivated some cout messages
+ *
  * Revision 1.4  2000/06/24 21:32:07  lolli
  * Socket bugfix
  *
@@ -149,13 +152,13 @@ lbContainer* lbComponentDictionary::clone() {
 void lbComponentDictionary::deleteAll() {
 /*...sCLASSES_VERBOSE:0:*/
 #ifdef CLASSES_VERBOSE
-cout << "lbComponentDictionary::deleteAll() called" << endl;
+//cout << "lbComponentDictionary::deleteAll() called" << endl;
 #endif
 /*...e*/
 //lbLock lock(containerSection, "containerSection");
 /*...sCLASSES_VERBOSE:0:*/
 #ifdef CLASSES_VERBOSE
-cout << "containerSection locked" << endl;
+//cout << "containerSection locked" << endl;
 #endif
 /*...e*/
 	while (hasMoreElements()) {
@@ -251,7 +254,7 @@ lbErrCodes lbComponentDictionary::_remove(const lbKeyBase &key) {
 int lbComponentDictionary::exists(const lbKeyBase &key) {
 /*...sCLASSES_VERBOSE:0:*/
 #ifdef CLASSES_VERBOSE
-    cout << "lbComponentDictionary::exists(const lbKeyBase &key) called" << endl;
+    //cout << "lbComponentDictionary::exists(const lbKeyBase &key) called" << endl;
 #endif
 /*...e*/
     if (getElement(key) == NULL) return 0;
@@ -302,13 +305,13 @@ lbObject* lbComponentDictionary::nextObject() {
 lbObject* lbComponentDictionary::getElement(const lbKeyBase &key) {
 /*...sCLASSES_VERBOSE:0:*/
 #ifdef CLASSES_VERBOSE
-    cout << "lbComponentDictionary::getElement(...) called" << endl;
+    //cout << "lbComponentDictionary::getElement(...) called" << endl;
 #endif
 /*...e*/
 //    lbLock lock(containerSection, "containerSection");
 /*...sCLASSES_VERBOSE:0:*/
 #ifdef CLASSES_VERBOSE
-    cout << "lbLock lock(containerSection) Is locked" << endl;
+    //cout << "lbLock lock(containerSection) Is locked" << endl;
 #endif    
 /*...e*/
     lbElement* temp = data;
