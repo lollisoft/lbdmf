@@ -3,8 +3,8 @@
 
 [Setup]
 AppName=lbDMF Documentation
-AppVerName=lbDMF Documentation 0.4.2
-OutputBaseFilename=lbDMF-Docs-0.4.2
+AppVerName=lbDMF Documentation 0.4.4
+OutputBaseFilename=lbDMF-Docs-0.4.4
 AppPublisher=Lothar Behrens
 AppPublisherURL=http://www.lollisoft.de
 AppSupportURL=http://www.sourceforge.net/projects/lbdmf

@@ -3,8 +3,8 @@
 
 [Setup]
 AppName=lbDMF Binary Samples
-AppVerName=lbDMF Binary Samples 0.4.2
-OutputBaseFilename=lbDMF-BinSamples-0.4.2
+AppVerName=lbDMF Binary Samples 0.4.4
+OutputBaseFilename=lbDMF-BinSamples-0.4.4
 AppPublisher=Lothar Behrens
 AppPublisherURL=http://www.lollisoft.de
 AppSupportURL=http://www.sourceforge.net/projects/lbdmf
@@ -22,6 +22,7 @@ Source: "Q:\Develop\Projects\bin\wxwrapper.exe"; DestDir: "{app}"; CopyMode: alw
 Source: "Q:\Develop\Projects\CPP\watcomenv.bat"; DestDir: "{app}"; CopyMode: alwaysoverwrite
 Source: "Q:\Develop\Projects\CPP\binsample.bat"; DestDir: "{app}"; CopyMode: alwaysoverwrite
 Source: "Q:\Develop\Projects\dll\mspdb60.dll"; DestDir: "{app}\Develop\Projects\dll"; CopyMode: alwaysoverwrite;
+Source: "Q:\Develop\Projects\dll\wxmswd_w.dll"; DestDir: "{app}\Develop\Projects\dll"; CopyMode: alwaysoverwrite;
 ;Source: "Q:\Develop\Projects\CPP\Doc\*.*"; DestDir: "{app}\Doc"; CopyMode: alwaysoverwrite; Flags: recursesubdirs;
 Source: "Q:\Develop\Projects\CPP\Database\*.*"; DestDir: "{app}\Database"; CopyMode: alwaysoverwrite; Flags: recursesubdirs;
 ; --- My current binary only file

@@ -1,11 +1,12 @@
 set DEVROOT=dist\Develop\Projects\CPP
 
-del /Y /S dist
+del /Q /S dist
 
 if not EXIST "dist" mkdir dist
 if not EXIST "dist\Develop" mkdir dist\Develop
 if not EXIST "dist\Develop\Projects" mkdir dist\Develop\Projects
 if not EXIST "dist\Develop\Projects\dll" mkdir dist\Develop\Projects\dll
+if not EXIST "dist\Develop\Projects\Plugins" mkdir dist\Develop\Projects\Plugins
 if not EXIST "dist\Develop\Projects\bin" mkdir dist\Develop\Projects\bin
 if not EXIST "dist\Develop\Projects\lib" mkdir dist\Develop\Projects\lib
 if not EXIST "dist\Develop\Projects\dll\include" mkdir dist\Develop\Projects\dll\include
@@ -34,6 +35,8 @@ call make_dist_base.bat test\console\xml
 call make_dist_base.bat Compilers
 call make_dist_base.bat Database
 
+copy makewat.env %DEVROOT%
+copy makefile.wat %DEVROOT%
 copy README %DEVROOT%
 copy COPYING %DEVROOT%
 copy BaseDevelopment\makefile %DEVROOT%\BaseDevelopment

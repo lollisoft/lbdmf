@@ -3,8 +3,8 @@
 
 [Setup]
 AppName=lbDMF Binary Build Tools
-AppVerName=lbDMF Binary Build Tools 0.4.2
-OutputBaseFilename=lbDMF-BinbuildTools-0.4.2
+AppVerName=lbDMF Binary Build Tools 0.4.4
+OutputBaseFilename=lbDMF-BinbuildTools-0.4.4
 AppPublisher=Lothar Behrens
 AppPublisherURL=http://www.lollisoft.de
 AppSupportURL=http://www.sourceforge.net/projects/lbdmf
