@@ -234,7 +234,7 @@ public:
 	virtual char*		LB_STDCALL getColumnName(int col);
 
 	virtual int		LB_STDCALL hasFKColumn(char* FKName);
-	virtual lb_I_String*	LB_STDCALL getPKTable(char* FKName);
+	virtual lb_I_String*	LB_STDCALL getPKTable(char const * FKName);
 
 	virtual bool		LB_STDCALL isNull(int pos);
 
@@ -1078,7 +1078,8 @@ int LB_STDCALL lbQuery::hasFKColumn(char* FKName) {
 }
 /*...e*/
 
-lb_I_String* LB_STDCALL lbQuery::getPKTable(char* FKName) {
+/*...slb_I_String\42\ LB_STDCALL lbQuery\58\\58\getPKTable\40\char const \42\ FKName\41\:0:*/
+lb_I_String* LB_STDCALL lbQuery::getPKTable(char const * FKName) {
 	lbErrCodes err = ERR_NONE;
 
 
@@ -1109,6 +1110,7 @@ lb_I_String* LB_STDCALL lbQuery::getPKTable(char* FKName) {
 
 	return NULL;
 }
+/*...e*/
 
 /*...svoid LB_STDCALL lbQuery\58\\58\prepareFKList\40\\41\:0:*/
 void LB_STDCALL lbQuery::prepareFKList() {
@@ -2050,6 +2052,9 @@ lb_I_Query::lbDBColumnTypes LB_STDCALL lbBoundColumn::getType() {
 			
 		case SQL_INTEGER: 
 			return lb_I_Query::lbDBColumnInteger;
+			
+		case SQL_BINARY:
+			return lb_I_Query::lbDBColumnBinary;
 		
 		default: return lb_I_Query::lbDBColumnUnknown;
 	}
@@ -2124,6 +2129,9 @@ lbErrCodes LB_STDCALL lbBoundColumn::getAsString(lb_I_String* result, int asPara
 	        	}
 	        	
 	        	break;
+	        case SQL_BINARY:
+	        	_CL_LOG << "lbBoundColumn::getAsString(...) failed: Binary data not supported" LOG_
+	        	break;
 	        case SQL_INTEGER:
 			{
 	        		char charrep[100] = "";
@@ -2142,7 +2150,7 @@ lbErrCodes LB_STDCALL lbBoundColumn::getAsString(lb_I_String* result, int asPara
 	        	}
 	        	break;
 	        default:
-	        	_CL_LOG << "lbBoundColumn::bindColumn(...) failed: Unknown or not supported datatype" LOG_
+	        	_CL_LOG << "lbBoundColumn::getAsString(...) failed: Unknown or not supported datatype" LOG_
 	        	break;
 	}
 	return ERR_NONE;
@@ -2177,6 +2185,9 @@ lbErrCodes LB_STDCALL lbBoundColumn::setFromString(lb_I_String* set, int mode) {
 					memcpy(b, &l, sizeof(l));
 				}
 				break;
+			case SQL_BINARY:
+				_CL_LOG << "lbBoundColumn::setFromString(...) failed: Binary data not supported" LOG_
+				break;
 			case SQL_BIT:
 				{
 					bool l = false;
@@ -2209,6 +2220,9 @@ lbErrCodes LB_STDCALL lbBoundColumn::setFromString(lb_I_String* set, int mode) {
 					l = atol(set->getData());
 					memcpy(buffer, &l, sizeof(l));
 				}
+				break;
+			case SQL_BINARY:
+				_CL_LOG << "lbBoundColumn::setFromString(...) failed: Binary data not supported" LOG_
 				break;
 			case SQL_BIT:
 				{
@@ -2298,6 +2312,22 @@ lbErrCodes LB_STDCALL lbBoundColumn::bindColumn(lb_I_Query* q, int column) {
 		case SQL_VARCHAR:
 		case SQL_LONGVARCHAR:
 /*...sbind a character array:24:*/
+			buffer = malloc((ColumnSize+1)*rows+20);
+
+			_DataType = DataType;
+			bound = 1;			     // Try a spacer for bugfix
+			memset(buffer, 0, (ColumnSize+1)*rows+20);
+			
+			ret = SQLBindCol(hstmt, column, SQL_C_DEFAULT, buffer, (ColumnSize+1), &cbBufferLength);
+			
+			if (ret != SQL_SUCCESS) {
+				printf("Error while binding a column!\n");
+				q->dbError("SQLBindCol()");
+			}
+/*...e*/
+			break;
+		case SQL_BINARY:
+/*...sbind a binary array:24:*/
 			buffer = malloc((ColumnSize+1)*rows+20);
 
 			_DataType = DataType;
