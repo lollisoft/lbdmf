@@ -421,6 +421,12 @@ lbErrCodes LB_STDCALL lbDynamicApplication::Initialize(char* user, char* app) {
 	        EventName = sampleQuery->getAsString(1);
 		MenuName = sampleQuery->getAsString(2);
 
+		_CL_LOG << "Register event name '" << 
+		EventName->charrep() << 
+		"' to menu '" <<
+		MenuName->charrep() <<
+		"'" LOG_
+
 		eman->registerEvent(EventName->charrep(), unused);
 		
 		dispatcher->addEventHandlerFn(this, 
@@ -431,11 +437,18 @@ lbErrCodes LB_STDCALL lbDynamicApplication::Initialize(char* user, char* app) {
 		if (DBerr == WARN_DB_NODATA) return ERR_NONE;
 #define TRUE 1
 		while (TRUE) {
+/*...sget rest of menu entries:24:*/
 			DBerr = sampleQuery->next();
 		
 			if ((DBerr == ERR_NONE) || (DBerr == WARN_DB_NODATA)) {
 		        	EventName = sampleQuery->getAsString(1);
 				MenuName = sampleQuery->getAsString(2);
+				
+				_CL_LOG << "Register event name '" << 
+				EventName->charrep() << 
+				"' to menu '" <<
+				MenuName->charrep() <<
+				"'" LOG_
 				
 				eman->registerEvent(EventName->charrep(), unused);
 				
@@ -446,6 +459,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::Initialize(char* user, char* app) {
 				
 		        	if (DBerr == WARN_DB_NODATA) break;
 		        }
+/*...e*/
 		}
 
 	}
