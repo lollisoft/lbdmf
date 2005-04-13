@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.42 $
+# * $Revision: 1.43 $
 # * $Name:  $
-# * $Id: Makefile,v 1.42 2005/03/16 23:38:07 lollisoft Exp $
+# * $Id: Makefile,v 1.43 2005/04/13 21:32:37 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.43  2005/04/13 21:32:37  lollisoft
+# * Restructuring making of subdirectories.
+# *
 # * Revision 1.42  2005/03/16 23:38:07  lollisoft
 # * Missing define to build wx so plugins
 # *
@@ -148,12 +151,24 @@ ifeq ($(OSTYPE), osx)
 DEVROOT_MAKE=$(DEVROOT)
 endif
 
-
 ifeq ($(OSTYPE), Windows_NT)
 DEVROOT_MAKE=$(DEVLW)/$(BASE_MAKE)
 endif
 
 Path=$(PATH)
+
+#
+# The BASEDIRECTORIES is intended to hook in other projects into the directory structure.
+# This means, that these directories are for general intent. I would create some modules,
+# plugins or even different applications.
+#
+# To enable one build process, these directories are predefined or checked for it's existence.
+
+BASEDIRECTORIES= \
+	../Plugins \
+	../Modules \
+	../AppDevelopment
+
 
 MAKESUBDIR= \
 	@( \
@@ -190,9 +205,8 @@ ALLTARGETS = \
 	../AppDevelopmentDemo/App \
 	../AppDevelopmentDemo/DynamicApp/App \
 	../Test/GUI/wxWrapper \
-	../Test/Console/XML
-#	../Doc/html
-#	lbPluginManager \
+	../Test/Console/XML \
+	$(BASEDIRECTORIES)
 
 endif
 
@@ -219,7 +233,8 @@ ALLTARGETS = \
 	../Test/Console/XML \
 	../Test/GUI/wxWrapper \
 	../Test/GUI/wxPlugins/lbLoginWizard \
-	../Doc/html
+	../Doc/html \
+	$(BASEDIRECTORIES)
 endif
 
 ifeq ($(OSTYPE), Windows_NT)
@@ -244,9 +259,9 @@ ALLTARGETS = \
 	../Test/Console/XML \
 	../Test/GUI/wxWrapper \
 	../Test/GUI/wxPlugins/lbLoginWizard \
-	../AppDevelopment \
 	../Samples/HelloWorld \
-	../Doc/html
+	../Doc/html \
+	$(BASEDIRECTORIES)
 endif
 
 
@@ -335,6 +350,12 @@ ifeq ($(OSTYPE), Windows_NT)
 endif
 
 ../AppDevelopment: dummy
+	$(MAKE) -C $@
+
+../Plugins: dummy
+	$(MAKE) -C $@
+
+../AppDevelopmentDemo: dummy
 	$(MAKE) -C $@
 
 ../AppDevelopmentDemo/App: dummy
