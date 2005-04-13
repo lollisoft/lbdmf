@@ -193,23 +193,27 @@ public:
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbConfigure_FK_PK_MappingDialog)
 END_IMPLEMENT_LB_UNKNOWN()
 
+/*...slbConfigure_FK_PK_MappingDialog\58\\58\lbConfigure_FK_PK_MappingDialog\40\\41\:0:*/
 lbConfigure_FK_PK_MappingDialog::lbConfigure_FK_PK_MappingDialog() 
 : wxDialog(NULL, -1, wxString(_T("lbConfigure_FK_PK_MappingDialog dialog")), wxDefaultPosition,
 wxDefaultSize, wxRESIZE_BORDER|wxDEFAULT_DIALOG_STYLE)
 {
 	ref = STARTREF;
 }
-
+/*...e*/
+/*...slbConfigure_FK_PK_MappingDialog\58\\58\\126\lbConfigure_FK_PK_MappingDialog\40\\41\:0:*/
 lbConfigure_FK_PK_MappingDialog::~lbConfigure_FK_PK_MappingDialog() {
 
 }
-
+/*...e*/
+/*...slbErrCodes LB_STDCALL lbConfigure_FK_PK_MappingDialog\58\\58\setData\40\lb_I_Unknown\42\ uk\41\:0:*/
 lbErrCodes LB_STDCALL lbConfigure_FK_PK_MappingDialog::setData(lb_I_Unknown* uk) {
         _CL_LOG << "lbConfigure_FK_PK_MappingDialog::setData(...) not implemented yet" LOG_
 
         return ERR_NOT_IMPLEMENTED;
 }
-
+/*...e*/
+/*...svoid lbConfigure_FK_PK_MappingDialog\58\\58\OnFKComboBoxSelected\40\ wxCommandEvent \38\event \41\:0:*/
 void lbConfigure_FK_PK_MappingDialog::OnFKComboBoxSelected( wxCommandEvent &event ) {
 	wxString s = cBoxFKNames->GetStringSelection();
 	
@@ -227,17 +231,12 @@ void lbConfigure_FK_PK_MappingDialog::OnFKComboBoxSelected( wxCommandEvent &even
 	
 	database->connect("lbDMF", lbDMFUser, lbDMFPasswd);
 	
-	char buf[] = "select * from %s";
-	char* buffer = (char*) malloc(strlen(buf)+s.Length()+1);
-	
 	UAP(lb_I_String, PKTable, __FILE__, __LINE__)
 	
-	char* p = strdup(s.c_str());
+	PKTable = sourceQuery->getPKTable(s.c_str());
 	
-	PKTable = sourceQuery->getPKTable(p);
-	
-	free(p);
-	
+	char buf[] = "select * from %s";
+	char* buffer = (char*) malloc(strlen(buf)+strlen(PKTable->charrep())+1);
 	sprintf(buffer, buf, PKTable->charrep());
 	
 	UAP(lb_I_Query, sampleQuery, __FILE__, __LINE__)
@@ -253,7 +252,8 @@ void lbConfigure_FK_PK_MappingDialog::OnFKComboBoxSelected( wxCommandEvent &even
 	
 	cBoxPKNames->Enable();
 }
-
+/*...e*/
+/*...svoid lbConfigure_FK_PK_MappingDialog\58\\58\OnPKComboBoxSelected\40\ wxCommandEvent \38\event \41\:0:*/
 void lbConfigure_FK_PK_MappingDialog::OnPKComboBoxSelected( wxCommandEvent &event ) {
 	wxString PKName = cBoxPKNames->GetStringSelection();
 	wxString FKName = cBoxFKNames->GetStringSelection();
@@ -318,6 +318,7 @@ void lbConfigure_FK_PK_MappingDialog::OnPKComboBoxSelected( wxCommandEvent &even
 	}
 	
 }
+/*...e*/
 
 lbErrCodes LB_STDCALL lbConfigure_FK_PK_MappingDialog::selectedColumn(lb_I_Unknown* uk) {
 	EndModal(wxID_OK);
@@ -325,6 +326,7 @@ lbErrCodes LB_STDCALL lbConfigure_FK_PK_MappingDialog::selectedColumn(lb_I_Unkno
 	return ERR_NONE;
 }
 
+/*...sint lbConfigure_FK_PK_MappingDialog\58\\58\prepareDialogHandler\40\\41\:0:*/
 int lbConfigure_FK_PK_MappingDialog::prepareDialogHandler() {
 	int SelectedColumn;
 	int cbFKSel;
@@ -340,12 +342,15 @@ int lbConfigure_FK_PK_MappingDialog::prepareDialogHandler() {
 
 	dispatcher->setEventManager(eman.getPtr());
 
-	registerEventHandler(dispatcher.getPtr());
+	// Register lbDMF dispatched event handler
 
+	registerEventHandler(dispatcher.getPtr());
 
 	this->Connect( SelectedColumn,  -1, wxEVT_COMMAND_BUTTON_CLICKED, 
 		(wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) 
 			&lbConfigure_FK_PK_MappingDialog::OnDispatch);
+
+	// Register normal wxWidgets event handler
 
 	this->Connect( cBoxFKNames->GetId(),  -1, wxEVT_COMMAND_TEXT_UPDATED, 
 		(wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) 
@@ -365,7 +370,7 @@ int lbConfigure_FK_PK_MappingDialog::prepareDialogHandler() {
 
 	return SelectedColumn;
 }
-
+/*...e*/
 /*...slbErrCodes LB_STDCALL lbConfigure_FK_PK_MappingDialog\58\\58\registerEventHandler\40\lb_I_Dispatcher\42\ dispatcher\41\:0:*/
 lbErrCodes LB_STDCALL lbConfigure_FK_PK_MappingDialog::registerEventHandler(lb_I_Dispatcher* dispatcher) {
 	lbErrCodes err = ERR_NONE;
@@ -577,6 +582,8 @@ public:
 	lbErrCodes LB_STDCALL addLabel(char* text, int x, int y, int w, int h) { return ERR_NONE; };
 	lbErrCodes LB_STDCALL addTextField(char* name, int x, int y, int w, int h) { return ERR_NONE; };
 
+	lbErrCodes LB_STDCALL addOwnerDrawn(char* name, int x, int y, int w, int h) { return ERR_NONE; };
+
 	void LB_STDCALL show() { Show (TRUE); };
 	void LB_STDCALL destroy() { Destroy(); };
 	
@@ -670,6 +677,17 @@ public:
 /*...e*/
 
 	void OnDispatch(wxCommandEvent& event);
+
+	/** \brief Paint the control.
+	 *
+	 * This handler should be used to paint an 'ownerdrawn' control.
+	 * As in my Power++ code 'EditSymbol', this should also work under
+	 * wxWidgets.
+	 *
+	 * The only problem would be the selection of which control currently
+	 * fires the event. 'EditSymbol' only handles one such control.
+	 */
+	void OnPaint(wxCommandEvent& event);
 
 	DECLARE_LB_UNKNOWN()
 
@@ -1035,6 +1053,9 @@ printf("Create a drop down box for '%s'\n", name);
 					}
 					break;
 					
+				case lb_I_Query::lbDBColumnBinary:
+					break;
+
 				case lb_I_Query::lbDBColumnInteger:
 				case lb_I_Query::lbDBColumnUnknown:
 					break;
@@ -1172,6 +1193,19 @@ printf("Create a drop down box for '%s'\n", name);
 		(wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) &lbDatabaseDialog::OnDispatch);
 	CONNECTOR->Connect( DatabaseDelete, -1, wxEVT_COMMAND_BUTTON_CLICKED, 
 		(wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) &lbDatabaseDialog::OnDispatch);
+
+
+	/*
+	 * Connect the 'ownerdrawn' controls to the OnPaint handler.
+	 *
+	 * This would be a loop for all controls. The data for that
+	 * control should be in any format. The drawing handler must
+	 * be capable to handle it independently.
+	 */
+
+
+	
+	
 
 	SetAutoLayout(TRUE);
 	
@@ -1613,6 +1647,18 @@ void lbDatabaseDialog::OnDispatch(wxCommandEvent& event ) {
                 }
                 break;
         }
+}
+/*...e*/
+/*...slbDatabaseDialog\58\\58\OnPaint\40\wxCommandEvent\38\ event \41\:0:*/
+void lbDatabaseDialog::OnPaint(wxCommandEvent& event ) {
+
+	// Paint an object at the given control
+
+
+
+
+
+
 }
 /*...e*/
 /*...e*/
