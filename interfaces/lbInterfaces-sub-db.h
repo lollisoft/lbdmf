@@ -185,7 +185,7 @@ public:
 	 * 
 	 * Returns a NULL pointer, if no primary table name could be found.
 	 */
-	virtual lb_I_String*	LB_STDCALL getPKTable(char* FKName) = 0;
+	virtual lb_I_String*	LB_STDCALL getPKTable(char const * FKName) = 0;
 
 
 
@@ -201,6 +201,7 @@ public:
 		lbDBColumnBit,
 		lbDBColumnChar,
 		lbDBColumnInteger,
+		lbDBColumnBinary,
 		lbDBColumnUnknown
 	};
 
