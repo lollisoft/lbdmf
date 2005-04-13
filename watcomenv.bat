@@ -84,6 +84,7 @@ set LIB=%MSVCDir%\LIB;%MSVCDir%\MFC\LIB;%LIB%
 rem Watcom stuff
 
 SET INCLUDE=%DEVLW%\%BASE%\wxwin\wx\src\msw;%DEVLW%\%BASE%\Tools\WATCOM\;%MSVCDir%\Include
+SET INCLUDE=%INCLUDE%;"C:\Program Files\Microsoft Visual Studio\VC98\MFC\Include"
 
 rem ???;D:\Develop\Tools\WATCOM\H\NT
 rem SET INCLUDE=
