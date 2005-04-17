@@ -186,6 +186,7 @@ public:
 	wxWindow* prevButton;
 	wxWindow* nextButton;
 	wxWindow* lastButton;
+	int pass;
 /*...e*/
 };
 /*...e*/
@@ -199,6 +200,7 @@ lbConfigure_FK_PK_MappingDialog::lbConfigure_FK_PK_MappingDialog()
 wxDefaultSize, wxRESIZE_BORDER|wxDEFAULT_DIALOG_STYLE)
 {
 	ref = STARTREF;
+	pass = 0;
 }
 /*...e*/
 /*...slbConfigure_FK_PK_MappingDialog\58\\58\\126\lbConfigure_FK_PK_MappingDialog\40\\41\:0:*/
@@ -230,7 +232,7 @@ void lbConfigure_FK_PK_MappingDialog::OnFKComboBoxSelected( wxCommandEvent &even
 	if (!lbDMFPasswd) lbDMFPasswd = "trainres";
 	
 	database->connect("lbDMF", lbDMFUser, lbDMFPasswd);
-	
+
 	UAP(lb_I_String, PKTable, __FILE__, __LINE__)
 	
 	PKTable = sourceQuery->getPKTable(s.c_str());
@@ -251,12 +253,25 @@ void lbConfigure_FK_PK_MappingDialog::OnFKComboBoxSelected( wxCommandEvent &even
 	}
 	
 	cBoxPKNames->Enable();
+	cBoxPKNames->SetSelection(-1);
 }
 /*...e*/
 /*...svoid lbConfigure_FK_PK_MappingDialog\58\\58\OnPKComboBoxSelected\40\ wxCommandEvent \38\event \41\:0:*/
 void lbConfigure_FK_PK_MappingDialog::OnPKComboBoxSelected( wxCommandEvent &event ) {
 	wxString PKName = cBoxPKNames->GetStringSelection();
 	wxString FKName = cBoxFKNames->GetStringSelection();
+
+	REQUEST(manager.getPtr(), lb_I_Database, database)
+	
+	database->init();
+	
+	char* lbDMFPasswd = getenv("lbDMFPasswd");
+	char* lbDMFUser   = getenv("lbDMFUser");
+	
+	if (!lbDMFUser) lbDMFUser = "dba";
+	if (!lbDMFPasswd) lbDMFPasswd = "trainres";
+	
+	database->connect("lbDMF", lbDMFUser, lbDMFPasswd);
 
 	UAP(lb_I_String, PKTable, __FILE__, __LINE__)
 	
@@ -268,71 +283,34 @@ void lbConfigure_FK_PK_MappingDialog::OnPKComboBoxSelected( wxCommandEvent &even
 	
 	free(p);
 	
-	cBoxPKNames->Disable();
-	
 	// Delete the entry, we now will put into the configuration
 	
 	cBoxFKNames->Delete(cBoxFKNames->GetSelection());
 	
-	
-	REQUEST(manager.getPtr(), lb_I_Database, database)
 	UAP(lb_I_Query, query, __FILE__, __LINE__)
-	
-	database->init();
-	
-	char* lbDMFPasswd = getenv("lbDMFPasswd");
-	char* lbDMFUser   = getenv("lbDMFUser");
-	
-	if (!lbDMFUser) lbDMFUser = "dba";
-	if (!lbDMFPasswd) lbDMFPasswd = "trainres";
-	
-	database->connect("lbDMF", lbDMFUser, lbDMFPasswd);
 	
 	char buf[] = "insert into ForeignKey_VisibleData_Mapping (FKName, FKTable, PKName, PKTable) values('%s','%s', '%s', '%s')";
 
-	int size = strlen(buf)+
-					PKName.Length()+
-					strlen(fkTable)+
-					FKName.Length()+
-					strlen(PKTable->charrep())+1;
+	int size = strlen(buf)+	PKName.Length()+ strlen(fkTable)+ FKName.Length()+ strlen(PKTable->charrep())+ 1;
 
-	char* buffer = (char*) malloc(	strlen(buf)+
-					PKName.Length()+
-					strlen(fkTable)+
-					FKName.Length()+
-					strlen(PKTable->charrep())+1);
+	char* buffer = (char*) malloc(size);
 
 	buffer[0] = 0;
 
-	printf("Size of buffer is %d and size of text is %d\n", size, strlen(buf)+
-								      strlen(FKName.c_str())+ 
-								      strlen(fkTable)+ 
-								      strlen(PKName.c_str())+ 
-								      strlen(PKTable->charrep())+1);
-
 	sprintf(buffer, buf, FKName.c_str(), fkTable, PKName.c_str(), PKTable->charrep());
 
-	printf("%s\n", buffer);
+	printf("Len of buffer: %d\n", strlen(buffer));
 	
 	query = database->getQuery(0);
 	
 	query->query(buffer);
 	
 	if (cBoxFKNames->GetCount() > 0) {
-		_CL_LOG << "Clear combo box and refill with remaining data" LOG_
 		cBoxFKNames->SetSelection(-1);
-		_CL_LOG << "1..." LOG_
 		cBoxFKNames->Enable();
-		_CL_LOG << "2..." LOG_
-		
 		cBoxPKNames->Clear();
-		_CL_LOG << "3..." LOG_
-		
 		cBoxPKNames->Disable();
-		_CL_LOG << "4..." LOG_
-
 	} else {
-
 		cBoxPKNames->Disable();
 		cBoxFKNames->Disable();
 
@@ -374,14 +352,14 @@ int lbConfigure_FK_PK_MappingDialog::prepareDialogHandler() {
 
 	// Register normal wxWidgets event handler
 
-	this->Connect( cBoxFKNames->GetId(),  -1, wxEVT_COMMAND_TEXT_UPDATED, 
+	this->Connect( cBoxFKNames->GetId(),  -1, wxEVT_COMMAND_COMBOBOX_SELECTED, 
 		(wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) 
 			&lbConfigure_FK_PK_MappingDialog::OnFKComboBoxSelected);
 
-	this->Connect( cBoxPKNames->GetId(),  -1, wxEVT_COMMAND_TEXT_UPDATED, 
+	this->Connect( cBoxPKNames->GetId(),  -1, wxEVT_COMMAND_COMBOBOX_SELECTED, 
 		(wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) 
 			&lbConfigure_FK_PK_MappingDialog::OnPKComboBoxSelected);
-
+/*
 	this->Connect( cBoxFKNames->GetId(),  -1, wxEVT_COMMAND_TEXT_ENTER, 
 		(wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) 
 			&lbConfigure_FK_PK_MappingDialog::OnFKComboBoxSelected);
@@ -389,7 +367,7 @@ int lbConfigure_FK_PK_MappingDialog::prepareDialogHandler() {
 	this->Connect( cBoxPKNames->GetId(),  -1, wxEVT_COMMAND_TEXT_ENTER, 
 		(wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) 
 			&lbConfigure_FK_PK_MappingDialog::OnPKComboBoxSelected);
-
+*/
 	return SelectedColumn;
 }
 /*...e*/
@@ -433,14 +411,16 @@ void LB_STDCALL lbConfigure_FK_PK_MappingDialog::init(lb_I_Query* query) {
 
 	label = new wxStaticText(this, -1, "Dropdown Element:", wxPoint());
 	sizerLeft->Add(label, 1, wxALL, 5);
+
+	wxString choices[] = {};
 	
-	cBoxFKNames = new wxComboBox(this, -1);
+	cBoxFKNames = new wxComboBox(this, -1, "", wxDefaultPosition, wxDefaultSize, 0, choices, wxCB_READONLY | wxPROCESS_ENTER);
 	sizerLeft->Add(cBoxFKNames, 1, wxALL, 5);
 
 	labelF = new wxStaticText(this, -1, "Feld anzuzeigen:", wxPoint());
 	sizerRight->Add(labelF, 1, wxALL, 5);
 	
-	cBoxPKNames = new wxComboBox(this, -1);
+	cBoxPKNames = new wxComboBox(this, -1, "", wxDefaultPosition, wxDefaultSize, 0, choices, wxCB_READONLY | wxPROCESS_ENTER);
 	sizerRight->Add(cBoxPKNames, 1, wxALL, 5);
 
 	int SelectedColumn = prepareDialogHandler();
@@ -454,6 +434,8 @@ void LB_STDCALL lbConfigure_FK_PK_MappingDialog::init(lb_I_Query* query) {
 			cBoxFKNames->Append(wxString(name));
 		}
 	}
+
+	cBoxFKNames->SetSelection(-1);
 
 	firstButton = new wxButton(this, SelectedColumn, "Ready", wxPoint(), wxSize(100,20));
 	firstButton->Disable();
