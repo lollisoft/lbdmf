@@ -12,11 +12,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.53 $
+ * $Revision: 1.54 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.53 2005/03/16 01:56:25 lollisoft Exp $
+ * $Id: mkmk.cpp,v 1.54 2005/04/17 14:04:29 lollisoft Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.54  2005/04/17 14:04:29  lollisoft
+ * Changed target path for linux
+ *
  * Revision 1.53  2005/03/16 01:56:25  lollisoft
  * Added wxplugin make rules. Suddenly reformatted the code.
  *
@@ -962,25 +965,10 @@ void write_so_Target(char* modulename) {
 #ifdef UNIX
   printf("\t\t$(CC) -shared -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) -lc $(VENDORLIBS)\n");
 #endif
-#ifdef OSX
-#define UNIX
-#endif
 
-
-#ifdef OSX
   printf("\t\tcp $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(HOME)/lib\n");
   printf("\t\tln -sf $(HOME)/lib/$(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(HOME)/lib/$(PROGRAM).$(MAJOR)\n");
   printf("\t\tln -sf $(HOME)/lib/$(PROGRAM).$(MAJOR) $(HOME)/lib/$(PROGRAM)\n");
-#undef UNIX  
-#endif
-#ifdef UNIX
-  printf("\t\tcp $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) /libdev/lib\n");
-  printf("\t\tln -sf /libdev/lib/$(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) /libdev/lib/$(PROGRAM).$(MAJOR)\n");
-  printf("\t\tln -sf /libdev/lib/$(PROGRAM).$(MAJOR) /libdev/lib/$(PROGRAM)\n");
-#endif
-#ifdef OSX
-#define UNIX
-#endif
 #endif
 #ifdef __WATCOMC__
   fprintf(stderr, "Warning: Creating a so library under Windows is not possible with Watcom !!\n");
@@ -1008,21 +996,9 @@ void write_wx_so_Target(char* modulename) {
 #define UNIX
 #endif
 
-
-#ifdef OSX
   printf("\t\tcp $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(HOME)/lib\n");
   printf("\t\tln -sf $(HOME)/lib/$(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(HOME)/lib/$(PROGRAM).$(MAJOR)\n");
   printf("\t\tln -sf $(HOME)/lib/$(PROGRAM).$(MAJOR) $(HOME)/lib/$(PROGRAM)\n");
-#undef UNIX  
-#endif
-#ifdef UNIX
-  printf("\t\tcp $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) /libdev/lib\n");
-  printf("\t\tln -sf /libdev/lib/$(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) /libdev/lib/$(PROGRAM).$(MAJOR)\n");
-  printf("\t\tln -sf /libdev/lib/$(PROGRAM).$(MAJOR) /libdev/lib/$(PROGRAM)\n");
-#endif
-#ifdef OSX
-#define UNIX
-#endif
 #endif
 #ifdef __WATCOMC__
   fprintf(stderr, "Warning: Creating a so library under Windows is not possible with Watcom !!\n");
@@ -1046,9 +1022,9 @@ void write_soPlugin_Target(char* modulename) {
   printf("\t\t$(CC) -shared -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) -lc $(VENDORLIBS)\n");
 #endif
 
-  printf("\t\tcp $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) /libdev/plugins\n");
-  printf("\t\tln -sf /libdev/plugins/$(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) /libdev/plugins/$(PROGRAM).$(MAJOR)\n");
-  printf("\t\tln -sf /libdev/plugins/$(PROGRAM).$(MAJOR) /libdev/plugins/$(PROGRAM)\n");
+  printf("\t\tcp $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(HOME)/lib/plugins\n");
+  printf("\t\tln -sf $(HOME)/lib/plugins/$(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(HOME)/lib/plugins/$(PROGRAM).$(MAJOR)\n");
+  printf("\t\tln -sf $(HOME)/lib/plugins/$(PROGRAM).$(MAJOR) $(HOME)/lib/plugins/$(PROGRAM)\n");
 #endif
 #ifdef __WATCOMC__
   fprintf(stderr, "Warning: Creating a so library under Windows is not possible with Watcom !!\n");
@@ -1065,19 +1041,16 @@ void write_wx_soPlugin_Target(char* modulename) {
   printf("MICRO=1\n");
   printf("\n%s: $(OBJS)\n", modulename);
 
-#ifdef OSX
-  printf("\t\t$(CC) -dynamiclib -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) `wx-config --libs` $(OBJS) $(OBJDEP) -lc $(VENDORLIBS)\n");
-  printf("\t\tcp $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(HOME)/plugins\n");
-  printf("\t\tln -sf $(HOME)/plugins/$(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(HOME)/plugins/$(PROGRAM).$(MAJOR)\n");
-  printf("\t\tln -sf $(HOME)/plugins/$(PROGRAM).$(MAJOR) $(HOME)/plugins/$(PROGRAM)\n");
+#ifdef OSX  
+  printf("\t\t$(CC) -dynamiclib -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) -lc $(VENDORLIBS)\n");
 #endif
 
 #ifndef OSX
-  printf("\t\t$(CC) -shared -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) `wx-config --libs` $(OBJS) $(OBJDEP) -lc $(VENDORLIBS)\n");
-  printf("\t\tcp $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) /libdev/plugins\n");
-  printf("\t\tln -sf /libdev/plugins/$(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) /libdev/plugins/$(PROGRAM).$(MAJOR)\n");
-  printf("\t\tln -sf /libdev/plugins/$(PROGRAM).$(MAJOR) /libdev/plugins/$(PROGRAM)\n");
+  printf("\t\t$(CC) -shared -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) -lc $(VENDORLIBS)\n");
 #endif
+  printf("\t\tcp $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(HOME)/plugins\n");
+  printf("\t\tln -sf $(HOME)/plugins/$(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(HOME)/plugins/$(PROGRAM).$(MAJOR)\n");
+  printf("\t\tln -sf $(HOME)/plugins/$(PROGRAM).$(MAJOR) $(HOME)/plugins/$(PROGRAM)\n");
 
 #endif
 #ifdef __WATCOMC__
@@ -1095,7 +1068,7 @@ void ShowHelp()
 
   fprintf(stderr, "Enhanced by Lothar Behrens (lothar.behrens@lollisoft.de)\n\n");
 
-  fprintf(stderr, "MKMK: makefile generator $Revision: 1.53 $\n");
+  fprintf(stderr, "MKMK: makefile generator $Revision: 1.54 $\n");
   fprintf(stderr, "Usage: MKMK lib|exe|dll|so modulname includepath,[includepath,...] file1 [file2 file3...]\n");
 }
 /*...e*/
