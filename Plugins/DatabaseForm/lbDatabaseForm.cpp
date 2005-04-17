@@ -877,9 +877,9 @@ void lbDatabaseDialog::init(char* formName, char* SQLString, char* DBName, char*
 
 	SetTitle(formName);
 
-	testComboBox t = testComboBox();
+	testComboBox* t = new testComboBox();
 
-	t.ShowModal();
+	t->ShowModal();
 
 /*...sSizers:8:*/
 	wxBoxSizer* sizerMain  = new wxBoxSizer(wxVERTICAL);
