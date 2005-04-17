@@ -289,6 +289,13 @@ void lbConfigure_FK_PK_MappingDialog::OnPKComboBoxSelected( wxCommandEvent &even
 	database->connect("lbDMF", lbDMFUser, lbDMFPasswd);
 	
 	char buf[] = "insert into ForeignKey_VisibleData_Mapping (FKName, FKTable, PKName, PKTable) values('%s','%s', '%s', '%s')";
+
+	int size = strlen(buf)+
+					PKName.Length()+
+					strlen(fkTable)+
+					FKName.Length()+
+					strlen(PKTable->charrep())+1;
+
 	char* buffer = (char*) malloc(	strlen(buf)+
 					PKName.Length()+
 					strlen(fkTable)+
@@ -296,6 +303,12 @@ void lbConfigure_FK_PK_MappingDialog::OnPKComboBoxSelected( wxCommandEvent &even
 					strlen(PKTable->charrep())+1);
 
 	buffer[0] = 0;
+
+	printf("Size of buffer is %d and size of text is %d\n", size, strlen(buf)+
+								      strlen(FKName.c_str())+ 
+								      strlen(fkTable)+ 
+								      strlen(PKName.c_str())+ 
+								      strlen(PKTable->charrep())+1);
 
 	sprintf(buffer, buf, FKName.c_str(), fkTable, PKName.c_str(), PKTable->charrep());
 
@@ -306,11 +319,20 @@ void lbConfigure_FK_PK_MappingDialog::OnPKComboBoxSelected( wxCommandEvent &even
 	query->query(buffer);
 	
 	if (cBoxFKNames->GetCount() > 0) {
+		_CL_LOG << "Clear combo box and refill with remaining data" LOG_
 		cBoxFKNames->SetSelection(-1);
+		_CL_LOG << "1..." LOG_
 		cBoxFKNames->Enable();
+		_CL_LOG << "2..." LOG_
+		
 		cBoxPKNames->Clear();
+		_CL_LOG << "3..." LOG_
+		
 		cBoxPKNames->Disable();
+		_CL_LOG << "4..." LOG_
+
 	} else {
+
 		cBoxPKNames->Disable();
 		cBoxFKNames->Disable();
 
