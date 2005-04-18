@@ -427,13 +427,19 @@ lbErrCodes LB_STDCALL lbDynamicApplication::Initialize(char* user, char* app) {
 		MenuName->charrep() <<
 		"'" LOG_
 
-		eman->registerEvent(EventName->charrep(), unused);
+		if (eman->resolveEvent(EventName->charrep(), unused) == ERR_EVENT_NOTREGISTERED) {
+
+			eman->registerEvent(EventName->charrep(), unused);
 		
-		dispatcher->addEventHandlerFn(this, 
-				(lbEvHandler) &lbDynamicApplication::getDynamicDBForm, EventName->charrep());
+			dispatcher->addEventHandlerFn(this, 
+					(lbEvHandler) &lbDynamicApplication::getDynamicDBForm, EventName->charrep());
 
-		addMenuEntry(_trans("D&ynamic-Forms"), MenuName->charrep(), EventName->charrep(), "");
+			addMenuEntry(_trans("D&ynamic-Forms"), MenuName->charrep(), EventName->charrep(), "");
 
+		} else {
+			_CL_LOG << "WARNING: Event name already reserved. Ignore it for menucreation." LOG_
+		}
+		
 		if (DBerr == WARN_DB_NODATA) return ERR_NONE;
 #define TRUE 1
 		while (TRUE) {
@@ -450,13 +456,16 @@ lbErrCodes LB_STDCALL lbDynamicApplication::Initialize(char* user, char* app) {
 				MenuName->charrep() <<
 				"'" LOG_
 				
-				eman->registerEvent(EventName->charrep(), unused);
+				if (eman->resolveEvent(EventName->charrep(), unused) == ERR_EVENT_NOTREGISTERED) {
+					eman->registerEvent(EventName->charrep(), unused);
 				
-				dispatcher->addEventHandlerFn(this,
-						(lbEvHandler) &lbDynamicApplication::getDynamicDBForm, EventName->charrep());
+					dispatcher->addEventHandlerFn(this,
+							(lbEvHandler) &lbDynamicApplication::getDynamicDBForm, EventName->charrep());
 				
-				addMenuEntry(_trans("D&ynamic-Forms"), MenuName->charrep(), EventName->charrep(), "");
-				
+					addMenuEntry(_trans("D&ynamic-Forms"), MenuName->charrep(), EventName->charrep(), "");
+				} else {
+					_CL_LOG << "WARNING: Event name already reserved. Ignore it for menucreation." LOG_
+				}
 		        	if (DBerr == WARN_DB_NODATA) break;
 		        }
 /*...e*/
