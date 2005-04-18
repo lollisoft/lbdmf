@@ -93,6 +93,126 @@ extern "C" {
 #include "wx/wizard.h"
 /*...e*/
 
+/*...sclass FormularActions:0:*/
+/*...sclass definition of FormularActions:0:*/
+/** \brief Management of formular actions.
+ *
+ * This class is used to concentrate the code for formular actions.
+ */
+class FormularActions {
+
+public:
+
+	FormularActions() {}
+	virtual ~FormularActions() {}
+	
+	/** \brief ID of action target.
+	 *
+	 * Get the ID of the action target based on the 'what' data field.
+	 * This is needed, when 
+	 */
+	char* getActionTargetID(char* what);
+	
+	/** \brief Source field of the action.
+	 *
+	 *
+	 */
+	char* getActionSourceDataField(char* what);
+
+};
+/*...e*/
+
+/*...schar\42\ FormularActions\58\\58\getActionTargetID\40\char\42\ what\41\:0:*/
+char* FormularActions::getActionTargetID(char* what) {
+	lbErrCodes err = ERR_NONE;
+	
+	UAP_REQUEST(getModuleInstance(), lb_I_Database, database)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, What)
+	
+	What->setData(what);
+	What->trim();
+
+	_CL_LOG << "Have trimmed the what field: '" << What->charrep() << "'" LOG_
+	
+	database->init();
+	
+	char* lbDMFPasswd = getenv("lbDMFPasswd");
+	char* lbDMFUser   = getenv("lbDMFUser");
+	
+	if (!lbDMFUser) lbDMFUser = "dba";
+	if (!lbDMFPasswd) lbDMFPasswd = "trainres";
+	
+	database->connect("lbDMF", lbDMFUser, lbDMFPasswd);	
+
+	UAP(lb_I_Query, query, __FILE__, __LINE__)
+	
+	query = database->getQuery(0);
+	
+	char buf[] = "select id from action_target where what = '%s'";
+	
+	char* buffer = (char*) malloc(strlen(buf)+strlen(What->charrep())+1);
+	
+	sprintf(buffer, buf, What->charrep());
+	
+	query->query(buffer);
+	
+	if (((err = query->first()) == ERR_NONE) || (err == WARN_DB_NODATA)) {
+	
+		UAP(lb_I_String, source, __FILE__, __LINE__)
+		
+		source = query->getAsString(1);
+		
+		return strdup(source->charrep());
+	}
+	
+	return strdup("");
+}
+/*...e*/
+/*...schar\42\ FormularActions\58\\58\getActionSourceDataField\40\char\42\ what\41\:0:*/
+char* FormularActions::getActionSourceDataField(char* what) {
+	lbErrCodes err = ERR_NONE;
+	
+	UAP_REQUEST(getModuleInstance(), lb_I_Database, database)
+	
+	database->init();
+	
+	char* lbDMFPasswd = getenv("lbDMFPasswd");
+	char* lbDMFUser   = getenv("lbDMFUser");
+	
+	if (!lbDMFUser) lbDMFUser = "dba";
+	if (!lbDMFPasswd) lbDMFPasswd = "trainres";
+	
+	database->connect("lbDMF", lbDMFUser, lbDMFPasswd);	
+
+	UAP(lb_I_Query, query, __FILE__, __LINE__)
+	
+	query = database->getQuery(0);
+	
+	char buf[] = "select source from actions where target = %s";
+	
+	char* buffer = (char*) malloc(strlen(buf)+20);
+	
+	sprintf(buffer, buf, getActionTargetID(what));
+
+	query->query(buffer);
+	
+	if (((err = query->first()) == ERR_NONE) || (err == WARN_DB_NODATA)) {
+	
+		UAP(lb_I_String, source, __FILE__, __LINE__)
+		
+		source = query->getAsString(1);
+		
+		source->trim();
+				
+		return strdup(source->charrep());
+	}
+	
+	return strdup("");
+}
+/*...e*/
+/*...e*/
+
+/*...sclass lbPluginModuleDatabaseForm:0:*/
 class lbPluginModuleDatabaseForm : public lb_I_PluginModule {
 public:
 
@@ -105,6 +225,7 @@ public:
 	
 	DECLARE_PLUGINS()
 };
+/*...e*/
 
 /*...sclass lbConfigure_FK_PK_MappingDialog:0:*/
 /*...sclass testComboBox:0:*/
@@ -683,6 +804,13 @@ public:
 	 */
 	virtual ~lbDatabaseDialog();
 
+	lbErrCodes LB_STDCALL setName(char const * name) {
+		free(formName);
+		formName = strdup(name);	
+		
+		return ERR_NONE;
+	}
+
 	lbErrCodes LB_STDCALL addButton(char* buttonText, char* evHandler, int x, int y, int w, int h) { return ERR_NONE; };
 	lbErrCodes LB_STDCALL addLabel(char* text, int x, int y, int w, int h) { return ERR_NONE; };
 	lbErrCodes LB_STDCALL addTextField(char* name, int x, int y, int w, int h) { return ERR_NONE; };
@@ -699,7 +827,7 @@ public:
 	 * It builds the layout, navigation elements and instanciate the needed
 	 * database classes.
 	 */
-	void LB_STDCALL init(char* formName, char* SQLString, char* DBName, char* DBUser, char* DBPass);
+	void LB_STDCALL init(char* SQLString, char* DBName, char* DBUser, char* DBPass);
 /*...e*/
 
 /*...sData navigation and other handlers:8:*/
@@ -781,6 +909,12 @@ public:
 	lbErrCodes LB_STDCALL registerEventHandler(lb_I_Dispatcher* dispatcher);
 /*...e*/
 
+	/** \brief Handler for button actions
+	 *
+	 * This handler should be used if a button action will be added to the form.
+	 */
+	lbErrCodes LB_STDCALL OnActionButton(lb_I_Unknown* uk);
+
 	void OnDispatch(wxCommandEvent& event);
 
 	/** \brief Paint the control.
@@ -817,6 +951,7 @@ public:
 	wxWindow* prevButton;
 	wxWindow* nextButton;
 	wxWindow* lastButton;
+	char* formName;
 /*...e*/
 };
 /*...e*/
@@ -827,22 +962,28 @@ END_IMPLEMENT_LB_UNKNOWN()
 
 IMPLEMENT_FUNCTOR(instanceOflbDatabaseDialog, lbDatabaseDialog)
 
+/*...slbErrCodes LB_STDCALL lbDatabaseDialog\58\\58\setData\40\lb_I_Unknown\42\ uk\41\:0:*/
 lbErrCodes LB_STDCALL lbDatabaseDialog::setData(lb_I_Unknown* uk) {
         _CL_LOG << "lbDatabaseDialog::setData(...) not implemented yet" LOG_
 
         return ERR_NOT_IMPLEMENTED;
 }
+/*...e*/
 
+/*...slbDatabaseDialog\58\\58\lbDatabaseDialog\40\\41\:0:*/
 lbDatabaseDialog::lbDatabaseDialog() 
 	: wxDialog(NULL, -1, wxString(_T("Database dialog")), wxDefaultPosition,
 	wxDefaultSize, wxRESIZE_BORDER|wxDEFAULT_DIALOG_STYLE)
 {
 	_CL_LOG << "lbDatabaseDialog::lbDatabaseDialog() called." LOG_
+	formName = strdup("Database dialog");
 }
-
+/*...e*/
+/*...slbDatabaseDialog\58\\58\\126\lbDatabaseDialog\40\\41\:0:*/
 lbDatabaseDialog::~lbDatabaseDialog() {
 	_CL_LOG << "lbDatabaseDialog::~lbDatabaseDialog() called." LOG_
 }
+/*...e*/
 
 /*...slbErrCodes LB_STDCALL lbDatabaseDialog\58\\58\registerEventHandler\40\lb_I_Dispatcher\42\ dispatcher\41\:0:*/
 lbErrCodes LB_STDCALL lbDatabaseDialog::registerEventHandler(lb_I_Dispatcher* dispatcher) {
@@ -870,17 +1011,18 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::registerEventHandler(lb_I_Dispatcher* di
 	return ERR_NONE;
 }
 /*...e*/
-/*...svoid lbDatabaseDialog\58\\58\init\40\char\42\ formName\44\ char\42\ SQLString\44\ char\42\ DBName\44\ char\42\ DBUser\44\ char\42\ DBPass\41\:0:*/
-void lbDatabaseDialog::init(char* formName, char* SQLString, char* DBName, char* DBUser, char* DBPass) {
+/*...svoid lbDatabaseDialog\58\\58\init\40\char\42\ SQLString\44\ char\42\ DBName\44\ char\42\ DBUser\44\ char\42\ DBPass\41\:0:*/
+void lbDatabaseDialog::init(char* SQLString, char* DBName, char* DBUser, char* DBPass) {
 	char prefix[100] = "";
 	sprintf(prefix, "%p", this);
 
 	SetTitle(formName);
 
+/* Tests the combo box and shows the difference between Linux and Windows
 	testComboBox* t = new testComboBox();
 
 	t->ShowModal();
-
+*/
 /*...sSizers:8:*/
 	wxBoxSizer* sizerMain  = new wxBoxSizer(wxVERTICAL);
 	
@@ -1139,6 +1281,9 @@ printf("Create a drop down box for '%s'\n", name);
 /*...e*/
 		} else {
 		#ifdef bla
+			/* Don't extend the query interface with such a specific
+			   function. */
+		
 			if (sampleQuery->isSpecialColumn()) {
 /*...sCreate controls based on configuration in a database:40:*/
 /*...e*/
@@ -1176,6 +1321,15 @@ printf("Create a drop down box for '%s'\n", name);
 					break;
 
 				case lb_I_Query::lbDBColumnInteger:
+					{
+						wxTextCtrl *text = new wxTextCtrl(this, -1,
+						        sampleQuery->getAsString(i)->charrep(), wxPoint());
+					        text->SetName(name);
+					        sizerRight->Add(text, 1, wxEXPAND | wxALL, 5);
+						        
+					        createdControl = true;
+					}
+					break;
 				case lb_I_Query::lbDBColumnUnknown:
 					break;
 			}
@@ -1233,18 +1387,26 @@ printf("Create a drop down box for '%s'\n", name);
 	 * Create action elements as configured.
 	 */
 
+	UAP_REQUEST(manager.getPtr(), lb_I_Database, actionsDatabase)
+
+	actionsDatabase->init();
+
+	char* lbDMFPasswd = getenv("lbDMFPasswd");
+	char* lbDMFUser   = getenv("lbDMFUser");
+
+	if (!lbDMFUser) lbDMFUser = "dba";
+	if (!lbDMFPasswd) lbDMFPasswd = "trainres";
+
+	actionsDatabase->connect("lbDMF", lbDMFUser, lbDMFPasswd);
+
 	UAP(lb_I_Query, actionQuery, __FILE__, __LINE__)
 	
-	actionQuery = database->getQuery(0);
+	actionQuery = actionsDatabase->getQuery(0);
 
 	char *_actionquery = "select actions.name, action_target.what from actions "
-			     
 			     "inner join action_target on actions.id = action_target.id "
-			     
 			     "inner join formular_actions on actions.id = formular_actions.action "
-			     
 			     "inner join formulare on formular_actions.formular = formulare.id "
-			     
 			     "where formulare.name = '%s'";
 
 	char *buf = (char*) malloc(strlen(_actionquery) + strlen(formName) + 1);
@@ -1257,6 +1419,7 @@ printf("Create a drop down box for '%s'\n", name);
 	actionQuery->query(buf);
 	lbErrCodes err = actionQuery->first();
 	
+/*...sloop through and find actions:8:*/
 	while (err == ERR_NONE) {
 		UAP(lb_I_String, action, __FILE__, __LINE__)
 		UAP(lb_I_String, actionWhat, __FILE__, __LINE__)
@@ -1266,18 +1429,29 @@ printf("Create a drop down box for '%s'\n", name);
 
 		int actionID = 0;
 		
-		char eventName[100] = "";
+		char *eventName = (char*) malloc(strlen(actionWhat->charrep()) + 20);
 		
-		sprintf(eventName, "%s", this, actionWhat->charrep());
+		sprintf(eventName, "%p(%s)", this, actionWhat->charrep());
+		
+		printf("Register action event '%s'\n", eventName);
+		
 		eman->registerEvent(eventName, actionID);
 		
 		wxButton *actionButton = new wxButton(this, actionID, action->charrep(), wxPoint(), wxSize(100,20));
 		
-		sizerActions->Add(actionButton);
+		dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDatabaseDialog::OnActionButton, eventName);
+		
+		this->Connect( actionID,  -1, wxEVT_COMMAND_BUTTON_CLICKED,
+		        (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) &lbDatabaseDialog::OnDispatch);
+	
+		sizerActions->Add(actionButton, 1, wxALL, 5);
+
+		free(eventName);
 
 		err = actionQuery->next();
 	}
-	
+/*...e*/
+/*...sget last action:8:*/
 	if (err == WARN_DB_NODATA) {
 		UAP(lb_I_String, action, __FILE__, __LINE__)
 		UAP(lb_I_String, actionWhat, __FILE__, __LINE__)
@@ -1287,18 +1461,28 @@ printf("Create a drop down box for '%s'\n", name);
 
 		int actionID = 0;
 		
-		char eventName[100] = "";
+		char *eventName = (char*) malloc(strlen(actionWhat->charrep()) + 20);
 		
-		sprintf(eventName, "%s", this, actionWhat->charrep());
+		sprintf(eventName, "%p(%s)", this, actionWhat->charrep());
+
+		printf("Register action event '%s'\n", eventName);
+		
 		eman->registerEvent(eventName, actionID);
 		
 		wxButton *actionButton = new wxButton(this, actionID, action->charrep(), wxPoint(), wxSize(100,20));
+
+		dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDatabaseDialog::OnActionButton, eventName);
 		
-		sizerActions->Add(actionButton);
+		this->Connect( actionID,  -1, wxEVT_COMMAND_BUTTON_CLICKED,
+		        (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) &lbDatabaseDialog::OnDispatch);
+		
+		sizerActions->Add(actionButton, 1, wxALL, 5);
+		
+		free(eventName);
 	
 	}
-
-
+/*...e*/
+/*...sconnect event handlers:8:*/
 //#define CONNECTOR ((wxFrame*) frame)
 #define CONNECTOR this
 
@@ -1315,7 +1499,7 @@ printf("Create a drop down box for '%s'\n", name);
 		(wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) &lbDatabaseDialog::OnDispatch);
 	CONNECTOR->Connect( DatabaseDelete, -1, wxEVT_COMMAND_BUTTON_CLICKED, 
 		(wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) &lbDatabaseDialog::OnDispatch);
-
+/*...e*/
 
 	/*
 	 * Connect the 'ownerdrawn' controls to the OnPaint handler.
@@ -1402,7 +1586,6 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBClear() {
 	return ERR_NONE;
 }
 /*...e*/
-
 /*...slbErrCodes LB_STDCALL lbDatabaseDialog\58\\58\lbDBUpdate\40\\41\:0:*/
 lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBUpdate() {
 	int columns = sampleQuery->getColumns();
@@ -1413,11 +1596,16 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBUpdate() {
 	for (int i = 1; i <= columns; i++) {
 		char* name = strdup(sampleQuery->getColumnName(i));
 
+		_CL_VERBOSE << "Update column " << name LOG_
+
 		// Find the corresponding window
 		
 		wxWindow* w = FindWindowByName(wxString(name), this);
 
 		if (w != NULL) {
+		
+			_CL_VERBOSE << "Have a control to be updated" LOG_
+		
 			if (sampleQuery->hasFKColumn(name) == 1) {
 /*...sUpdate drop down box:32:*/
 				wxComboBox* cbox = (wxComboBox*) w;
@@ -1510,7 +1698,21 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBUpdate() {
 						break;
 					
 					case lb_I_Query::lbDBColumnInteger:
+						{
+							wxTextCtrl* tx = (wxTextCtrl*) w;
+			
+							wxString v = tx->GetValue();
+			
+							col->setData(name);
+							val->setData(v.c_str());
+
+							sampleQuery->setString(*&col, *&val);
+						}
+						break;
+					
+					
 					case lb_I_Query::lbDBColumnUnknown:
+					
 						break;
 				}
 
@@ -1521,13 +1723,18 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBUpdate() {
 			_CL_VERBOSE << "Control '" << name << "' nicht gefunden." LOG_
 		}
 		
+		_CL_VERBOSE << "Updated column " << name LOG_
 		free(name);
 	}
+
+	_CL_VERBOSE << "Call sampleQuery->update()" LOG_
 
 	if (sampleQuery->update() != ERR_NONE) {
 		printf("sampleQuery->update() failed.\n");
 		return ERR_UPDATE_FAILED;
 	}
+	
+	_CL_VERBOSE << "Called sampleQuery->update()" LOG_
 	
 	return ERR_NONE;
 }
@@ -1631,6 +1838,11 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBRead() {
 						break;
 					
 					case lb_I_Query::lbDBColumnInteger:
+						{
+							wxTextCtrl* tx = (wxTextCtrl*) w;
+							tx->SetValue(wxString(sampleQuery->getAsString(i)->charrep()));
+						}
+						break;
 					case lb_I_Query::lbDBColumnUnknown:
 						break;
 				}
@@ -1700,14 +1912,19 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBPrev(lb_I_Unknown* uk) {
 /*...e*/
 /*...slbErrCodes LB_STDCALL lbDatabaseDialog\58\\58\lbDBLast\40\lb_I_Unknown\42\ uk\41\:0:*/
 lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBLast(lb_I_Unknown* uk) {
+	_CL_LOG << "lbDBUpdate()" LOG_
 	lbDBUpdate();
 
+	_CL_LOG << "Call sampleQuery->last()" LOG_
 	sampleQuery->last();
 
+	_CL_LOG << "Call lbDBRead()" LOG_
 	lbDBRead();
 
+	_CL_LOG << "Reinit active / inactive controls" LOG_
 	nextButton->Disable();
 	lastButton->Disable();
+	firstButton->Enable();
 	firstButton->Enable();
 	prevButton->Enable();
 	
@@ -1740,7 +1957,133 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBDelete(lb_I_Unknown* uk) {
 }
 /*...e*/
 
-/*...slbDatabaseDialog\58\\58\OnDispatch\40\wxCommandEvent\38\ event \41\:0:*/
+/*...slbErrCodes LB_STDCALL lbDatabaseDialog\58\\58\OnActionButton\40\lb_I_Unknown\42\ uk\41\:0:*/
+lbErrCodes LB_STDCALL lbDatabaseDialog::OnActionButton(lb_I_Unknown* uk) {
+	lbErrCodes err = ERR_NONE;
+	
+	_CL_LOG << "lbDatabaseDialog::OnActionButton(...) called" LOG_
+
+/*...sDoc:8:*/
+	/*
+		An action button event may need some additional data to proceed.
+		If a user presses, for sample, 'reserve a trip' in a customer form,
+		the action will need the customer number to be added to the event,
+		that would be generated.
+		
+		So, for this sample I need the field that must be forwarded as additional
+		data.
+		
+		The 'action' is 'Reserve a trip', having a target with id = 1 and 
+		bezeichnung = 'Customer want to reserve a trip'.
+		
+		So the Button has the text 'Reserve a trip' and maybe have a help text of
+		'Customer want to reserve a trip'.
+		
+		To get the source data field for that action, I will need the action_target.id field.
+		ID would be retrieved in two steps. The retrival is implemented in FormularActions class.
+	 */
+/*...e*/
+
+	if (uk != NULL) {
+		_CL_LOG << "OnActionButton parameter given." LOG_
+		
+		char* reversedEvent = NULL;
+		
+/*...sReverse the event ID:16:*/
+		/* The parameter is the id of the event, that has been emitted.
+		   Resolve the name of that id. */
+		
+		UAP(lb_I_Integer, eventID, __FILE__, __LINE__)
+		QI(uk, lb_I_Integer, eventID, __FILE__, __LINE__)
+		
+		UAP_REQUEST(manager.getPtr(), lb_I_EventManager, eman)
+		
+		char* eventName = (char*) strdup(eman->reverseEvent(eventID->getData()));
+		
+		/*
+		  This event name has a prefix of the pointer for the instance of the form.
+		  
+		  That pointer must be removed in any way, before I can get other data from
+		  the configuration database.
+		 */
+
+		reversedEvent = strdup(strtok(eventName, "("));
+
+		free(reversedEvent);
+
+		reversedEvent = strdup(strtok(NULL, ")"));
+	
+		_CL_LOG << "Have these event: " << reversedEvent << "." LOG_
+/*...e*/
+
+		// Regarding to the event name, we must get back some information from the database.
+
+		FormularActions fa;
+
+		char* s = fa.getActionSourceDataField(reversedEvent);
+
+		_CL_LOG << "Have got source field: " << s << "." LOG_
+
+		/*
+		  Now I can get the data from the source field and put it into the event parameters.
+		 */
+
+		wxWindow* w = FindWindowByName(wxString(s), this);
+		
+		wxString value;
+		
+/*...sGet the content:16:*/
+				lb_I_Query::lbDBColumnTypes coltype = sampleQuery->getColumnType(s);
+
+				switch (coltype) {
+					case lb_I_Query::lbDBColumnBit:
+						{
+							wxCheckBox *check = (wxCheckBox*) w;
+							if (check->GetValue() == TRUE) {
+								value = "true";
+							} else {
+								value = "false";
+							}
+						}
+						break;
+					
+					case lb_I_Query::lbDBColumnChar:
+						{
+							wxTextCtrl* tx = (wxTextCtrl*) w;
+			
+							value = tx->GetValue();
+						}
+						break;
+					
+					case lb_I_Query::lbDBColumnInteger:
+						{
+							wxTextCtrl* tx = (wxTextCtrl*) w;
+			
+							value = tx->GetValue();
+						}
+						break;
+					
+					
+					case lb_I_Query::lbDBColumnUnknown:
+					
+						break;
+				}
+/*...e*/
+		
+		_CL_LOG << "The value for the field is " << value.c_str() << "." LOG_		
+		
+		free(s);
+		
+		free(eventName);
+		
+	}
+
+
+	return ERR_NONE;
+}
+/*...e*/
+
+/*...svoid \9\\9\  lbDatabaseDialog\58\\58\OnDispatch\40\wxCommandEvent\38\ event \41\:0:*/
 void lbDatabaseDialog::OnDispatch(wxCommandEvent& event ) {
         switch (event.GetId()) {
         default:
@@ -1771,7 +2114,7 @@ void lbDatabaseDialog::OnDispatch(wxCommandEvent& event ) {
         }
 }
 /*...e*/
-/*...slbDatabaseDialog\58\\58\OnPaint\40\wxCommandEvent\38\ event \41\:0:*/
+/*...svoid\9\\9\  lbDatabaseDialog\58\\58\OnPaint\40\wxCommandEvent\38\ event \41\:0:*/
 void lbDatabaseDialog::OnPaint(wxCommandEvent& event ) {
 
 	// Paint an object at the given control
