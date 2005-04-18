@@ -310,6 +310,14 @@ void LB_STDCALL lbString::setData(char const * p) {
 	key = strdup(p);
 }
 
+void LB_STDCALL lbString::trim() {
+	while (stringdata[strlen(stringdata)-1] == ' ') 
+		stringdata[strlen(stringdata)-1] = 0;
+		
+	if (key != NULL) free(key);
+	key = strdup(stringdata);	
+}
+
 char* LB_STDCALL lbString::getData() const {
 	return stringdata;
 }

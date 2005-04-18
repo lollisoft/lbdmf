@@ -31,10 +31,13 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.23 $
+ * $Revision: 1.24 $
  * $Name:  $
- * $Id: lbobject.h,v 1.23 2005/03/31 09:02:44 lollisoft Exp $
+ * $Id: lbobject.h,v 1.24 2005/04/18 19:03:08 lollisoft Exp $
  * $Log: lbobject.h,v $
+ * Revision 1.24  2005/04/18 19:03:08  lollisoft
+ * Added trim.
+ *
  * Revision 1.23  2005/03/31 09:02:44  lollisoft
  * Copyright text problems under linux.
  *
@@ -263,8 +266,9 @@ public:
 	DECLARE_LB_UNKNOWN()
 
 public:	
-	virtual void LB_STDCALL setData(char const * p);
-	virtual char* LB_STDCALL getData() const;
+	void LB_STDCALL trim();
+	void LB_STDCALL setData(char const * p);
+	char* LB_STDCALL getData() const;
 
 	DECLARE_LB_KEYBASE()
 
