@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.56 $
+ * $Revision: 1.57 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.56 2005/04/02 09:52:37 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.57 2005/04/18 19:04:22 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.57  2005/04/18 19:04:22  lollisoft
+ * Returning proper error code.
+ *
  * Revision 1.56  2005/04/02 09:52:37  lollisoft
  * Put optional parameter into paramater list.
  *
@@ -1081,6 +1084,7 @@ lbErrCodes LB_STDCALL lb_EventManager::resolveEvent(char* EvName, int & evNr) {
 		evNr = i->getData();
 	} else {
 		_LOG << "Error: Event name not registered: " << EvName LOG_
+		return ERR_EVENT_NOTREGISTERED;
 	}
 /*...e*/
 
