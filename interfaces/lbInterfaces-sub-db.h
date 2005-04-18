@@ -208,9 +208,14 @@ public:
 	/**
 	 * \brief Gets the type of the column.
 	 *
-	 * Type definitions not defined yet.
 	 */
 	virtual lbDBColumnTypes	   LB_STDCALL getColumnType(int pos) = 0;
+
+	/**
+	 * \brief Gets the type of the column.
+	 *
+	 */
+	virtual lbDBColumnTypes	   LB_STDCALL getColumnType(char* name) = 0;
 
         /* Navigation */
         
@@ -225,6 +230,11 @@ public:
 	 * \brief Move to next row.
 	 *
 	 * Sets the cursor position to the next of the result set.
+	 *
+	 * Return:
+	 *
+	 *	WARN_DB_NODATA if only one more row will be present.
+	 *	ERR_DB_NODATA if no more data is available.
 	 */        
         virtual lbErrCodes LB_STDCALL next() = 0;
 
@@ -468,6 +478,11 @@ public:
 	 * \brief Get the type of a column.
 	 */
 	virtual lb_I_Query::lbDBColumnTypes  LB_STDCALL getColumnType(int pos) = 0;
+
+	/**
+	 * \brief Get the type of a column.
+	 */
+	virtual lb_I_Query::lbDBColumnTypes  LB_STDCALL getColumnType(char* name) = 0;
 	
 	/**
 	 * \brief Get the amound of columns.
@@ -630,7 +645,7 @@ public:
 	 * A database form needs a query object, from whom it should
 	 * show the data.
 	 */
-	virtual void LB_STDCALL init(char* formName, char* SQLString, char* DBName, char* DBUser, char* DBPass) = 0;
+	virtual void LB_STDCALL init(char* SQLString, char* DBName, char* DBUser, char* DBPass) = 0;
 	
 };
 /*...e*/
