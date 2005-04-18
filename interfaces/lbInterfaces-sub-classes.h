@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.47 $
+ * $Revision: 1.48 $
  * $Name:  $
- * $Id: lbInterfaces-sub-classes.h,v 1.47 2005/03/31 09:08:35 lollisoft Exp $
+ * $Id: lbInterfaces-sub-classes.h,v 1.48 2005/04/18 18:55:49 lollisoft Exp $
  *
  * $Log: lbInterfaces-sub-classes.h,v $
+ * Revision 1.48  2005/04/18 18:55:49  lollisoft
+ * Added trim
+ *
  * Revision 1.47  2005/03/31 09:08:35  lollisoft
  * Copyright text problems under linux.
  *
@@ -372,6 +375,12 @@ protected:
         virtual ~lb_I_String() {}
 
 public:
+	/** \brief Trim trailing spaces.
+	 *
+	 * Removes the trailing spaces in the string.
+	 */
+	virtual void LB_STDCALL trim() = 0;
+
         /**
          * \brief Set the string data from char*
          * 
