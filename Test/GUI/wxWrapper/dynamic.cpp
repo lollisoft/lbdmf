@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.66 2005/04/03 22:10:08 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.67 2005/04/18 19:01:59 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.66 $
+ * $Revision: 1.67 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.66 2005/04/03 22:10:08 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.67 2005/04/18 19:01:59 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.67  2005/04/18 19:01:59  lollisoft
+ * Changes due to interface changings in lb_I_Form and lb_I_DatabaseForm.
+ *
  * Revision 1.66  2005/04/03 22:10:08  lollisoft
  * Form gets destroyed and - so - self deleted. UAP is not really needed.
  *
@@ -1302,7 +1305,8 @@ lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::createDBForm(char* formName, char* query
 		        QI(uk, lb_I_DatabaseForm, _dialog, __FILE__, __LINE__)
 		}
 		
-		_dialog->init(formName, queryString, DBName, DBUser, DBPass);
+		_dialog->setName(formName);
+		_dialog->init(queryString, DBName, DBUser, DBPass);
 		_dialog->show();
 	}
 	
