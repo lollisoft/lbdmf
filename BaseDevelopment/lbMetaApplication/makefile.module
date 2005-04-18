@@ -52,7 +52,7 @@ endif
 
 ifeq ($(OSTYPE), linux)
 MOD_INCL=$(STD_INCL) -I../lbHook/linuxCode
-VENDORLIBS=/libdev/lib/lbHook.so
+VENDORLIBS=$(HOME)/lib/lbHook.so
 endif    
 ifeq ($(OSTYPE), osx)
 MOD_INCL=$(STD_INCL) -I../lbHook/linuxCode

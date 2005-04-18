@@ -53,7 +53,7 @@ endif
 ifeq ($(OSTYPE), linux)
 MOD_INCL=$(STD_INCL)
 OBJDEP=
-VENDORLIBS=/libdev/lib/lbHook.so /usr/lib/libodbc.so
+VENDORLIBS=$(HOME)/lib/lbHook.so /usr/lib/libodbc.so
 endif    
 
 ifeq ($(OSTYPE), osx)

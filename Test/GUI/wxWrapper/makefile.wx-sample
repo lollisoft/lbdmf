@@ -70,7 +70,7 @@ ifeq ($(OSTYPE), linux)
 
 MOD_INCL=$(STD_INCL)
 OBJDEP=
-VENDORLIBS=/libdev/lib/lbHook.so
+VENDORLIBS=$(HOME)/lib/lbHook.so
 
 CXX = $(shell wx-config --cxx)
 
@@ -106,7 +106,7 @@ ifeq ($(OSTYPE), osx)
 
 MOD_INCL=$(STD_INCL)
 OBJDEP=
-VENDORLIBS=/libdev/lib/lbHook.so
+VENDORLIBS=$(HOME)/lib/lbHook.so
 
 CXX = $(shell wx-config --cxx)
 
