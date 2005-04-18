@@ -140,7 +140,8 @@ public:
 
 	bool		LB_STDCALL isNull(int pos);
 	lb_I_Query::lbDBColumnTypes LB_STDCALL getColumnType(int pos);
-	
+	lb_I_Query::lbDBColumnTypes LB_STDCALL getColumnType(char* name);
+		
 	int LB_STDCALL getArraySize() { return ArraySize; }
 
 private:
@@ -239,6 +240,7 @@ public:
 	virtual bool		LB_STDCALL isNull(int pos);
 
 	virtual lb_I_Query::lbDBColumnTypes LB_STDCALL getColumnType(int pos);
+	virtual lb_I_Query::lbDBColumnTypes LB_STDCALL getColumnType(char* name);
         
         /* Navigation */
         virtual lbErrCodes	LB_STDCALL first();
@@ -464,6 +466,7 @@ lbErrCodes      LB_STDCALL lbBoundColumns::setBoundColumns(lb_I_Container* bc) {
 	return ERR_NONE;
 }
 
+/*...sbool LB_STDCALL lbBoundColumns\58\\58\isNull\40\int pos\41\:0:*/
 bool LB_STDCALL lbBoundColumns::isNull(int pos) {
 
 	lbErrCodes err = ERR_NONE;
@@ -487,12 +490,14 @@ bool LB_STDCALL lbBoundColumns::isNull(int pos) {
 	// What to answer here ??
 	return false;
 }
+/*...e*/
 
+/*...slb_I_Query\58\\58\lbDBColumnTypes LB_STDCALL lbBoundColumns\58\\58\getColumnType\40\int pos\41\:0:*/
 lb_I_Query::lbDBColumnTypes LB_STDCALL lbBoundColumns::getColumnType(int pos) {
 
 	lbErrCodes err = ERR_NONE;
 	if (boundColumns != NULL) {
-		REQUEST(manager.getPtr(), lb_I_Integer, integerKey) 
+		UAP_REQUEST(manager.getPtr(), lb_I_Integer, integerKey) 
 		integerKey->setData(pos);
 		UAP(lb_I_Unknown, ukdata, __FILE__, __LINE__)
 		UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
@@ -510,6 +515,33 @@ lb_I_Query::lbDBColumnTypes LB_STDCALL lbBoundColumns::getColumnType(int pos) {
 
 	return lb_I_Query::lbDBColumnUnknown;
 }
+/*...e*/
+/*...slb_I_Query\58\\58\lbDBColumnTypes LB_STDCALL lbBoundColumns\58\\58\getColumnType\40\char\42\ name\41\:0:*/
+lb_I_Query::lbDBColumnTypes LB_STDCALL lbBoundColumns::getColumnType(char* name) {
+
+	lbErrCodes err = ERR_NONE;
+	if (boundColumns != NULL) {
+		UAP_REQUEST(manager.getPtr(), lb_I_String, stringKey) 
+		stringKey->setData(name);
+		UAP(lb_I_Unknown, ukdata, __FILE__, __LINE__)
+		UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
+		
+		QI(stringKey, lb_I_KeyBase, key, __FILE__, __LINE__)
+
+		ukdata = ColumnNameMapping->getElement(&key);
+		if (ukdata == NULL) printf("NULL pointer!\n");
+
+		UAP(lb_I_BoundColumn, bc, __FILE__, __LINE__)
+		UAP(lb_I_Integer, pos, __FILE__, __LINE__)
+		
+		lbErrCodes err = ukdata->queryInterface("lb_I_Integer", (void**) &pos, __FILE__, __LINE__);
+		
+		return getColumnType(pos->getData());
+	}
+
+	return lb_I_Query::lbDBColumnUnknown;
+}
+/*...e*/
 
 /*...slb_I_BoundColumn\42\ LB_STDCALL lbBoundColumns\58\\58\getBoundColumn\40\int column\41\:0:*/
 lb_I_BoundColumn* LB_STDCALL lbBoundColumns::getBoundColumn(int column) {
@@ -1284,6 +1316,10 @@ bool LB_STDCALL lbQuery::isNull(int pos) {
 
 lb_I_Query::lbDBColumnTypes LB_STDCALL lbQuery::getColumnType(int pos) {
 	return boundColumns->getColumnType(pos);
+}
+
+lb_I_Query::lbDBColumnTypes LB_STDCALL lbQuery::getColumnType(char* name) {
+	return boundColumns->getColumnType(name);
 }
 
 /*...schar\42\ LB_STDCALL lbQuery\58\\58\getColumnName\40\int col\41\:0:*/
