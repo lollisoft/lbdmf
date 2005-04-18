@@ -1840,14 +1840,47 @@ public:
 class lb_I_DatabaseForm;
 
 /*...sclass lb_I_Form:0:*/
+/**
+ * \brief Base for formulars.
+ *
+ * This class enables you to create formulars with any layout caractaristics.
+ */
 class lb_I_Form : 
 	public lb_I_Unknown, 
 	public lb_I_EventHandler {
 public:
 
+	
+	/** \brief Set the name of the form
+	 *
+	 */
+	virtual lbErrCodes LB_STDCALL setName(char const * name) = 0;
+
+	/** \brief Add a button
+	 *
+	 * Add a new button at the given position and size.
+	 */
 	virtual lbErrCodes LB_STDCALL addButton(char* buttonText, char* evHandler, int x, int y, int w, int h) = 0;
+	
+	/** \brief Add a label
+	 *
+	 * Add a new label at the given position and size.
+	 */
 	virtual lbErrCodes LB_STDCALL addLabel(char* text, int x, int y, int w, int h) = 0;
+	
+	/** \brief Add a text field
+	 *
+	 * Add a new text field at the given position and size.
+	 */
 	virtual lbErrCodes LB_STDCALL addTextField(char* name, int x, int y, int w, int h) = 0;
+	
+	/** \brief Add an ownerdrawn control
+	 *
+	 * Add a new ownerdrawn control at the given position and size.
+	 *
+	 * This aims to draw various symbols or drawings based on an interpreted language.
+	 */
+	virtual lbErrCodes LB_STDCALL addOwnerDrawn(char* name, int x, int y, int w, int h) = 0;
 
 	virtual void LB_STDCALL show() = 0;
 	virtual void LB_STDCALL destroy() = 0;
