@@ -31,10 +31,13 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.24 $
+ * $Revision: 1.25 $
  * $Name:  $
- * $Id: lbobject.h,v 1.24 2005/04/18 19:03:08 lollisoft Exp $
+ * $Id: lbobject.h,v 1.25 2005/04/19 19:17:25 lollisoft Exp $
  * $Log: lbobject.h,v $
+ * Revision 1.25  2005/04/19 19:17:25  lollisoft
+ * Bugfix
+ *
  * Revision 1.24  2005/04/18 19:03:08  lollisoft
  * Added trim.
  *
@@ -223,7 +226,9 @@ public:
 /*...sclass lbParameter:0:*/
 class lbParameter : public lb_I_Parameter {
 public:
-	lbParameter() {}
+	lbParameter() {
+		ref = STARTREF;
+	}
 	virtual ~lbParameter() {}
 
 	DECLARE_LB_UNKNOWN()
