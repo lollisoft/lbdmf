@@ -1735,6 +1735,12 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBClear() {
 						break;
 					
 					case lb_I_Query::lbDBColumnInteger:
+						{
+							wxTextCtrl* tx = (wxTextCtrl*) w;
+			
+							tx->SetValue(wxString(""));
+						}
+						break;
 					case lb_I_Query::lbDBColumnUnknown:
 						break;
 				}
