@@ -138,6 +138,9 @@ public:
         lbErrCodes	LB_STDCALL getString(char* column, lb_I_String* instance);
         lbErrCodes      LB_STDCALL setString(char* column, lb_I_String* instance);
 
+	void		LB_STDCALL unbindReadonlyColumns();
+	void		LB_STDCALL rebindReadonlyColumns();
+
 	bool		LB_STDCALL isNull(int pos);
 	lb_I_Query::lbDBColumnTypes LB_STDCALL getColumnType(int pos);
 	lb_I_Query::lbDBColumnTypes LB_STDCALL getColumnType(char* name);
@@ -393,6 +396,9 @@ public:
 
 	lbErrCodes LB_STDCALL prepareBoundColumn(lb_I_Query* q, int column);
 	lbErrCodes LB_STDCALL bindColumn(lb_I_Query* q, int column, bool ro);
+
+	void	   LB_STDCALL unbindReadonlyColumns();
+	void	   LB_STDCALL rebindReadonlyColumns();
 	
 protected:
 
@@ -416,8 +422,10 @@ protected:
 	int		bound;
 	bool		isUpdateable;
 	SQLSMALLINT     _DataType;
+	int 		_column;
 	void*		buffer;
 	int		buffersize;
+	lbQuery*	query;
 	
 	
 	/** \brief SQL_NULL_DATA indicator.
@@ -428,6 +436,7 @@ protected:
 	long		cbBufferLength;
 	SQLUINTEGER     ColumnSize; //new (long);
 	int		rows;
+	HSTMT 		hstmt;
 	UAP(lb_I_String, colName, __FILE__, __LINE__)
 };
 /*...e*/
@@ -506,6 +515,40 @@ bool LB_STDCALL lbBoundColumns::isNull(int pos) {
 	return false;
 }
 /*...e*/
+
+void LB_STDCALL lbBoundColumns::unbindReadonlyColumns() {
+	lbErrCodes err = ERR_NONE;
+	
+	if (boundColumns != NULL) {
+		while (boundColumns->hasMoreElements() == 1) {
+			UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
+			UAP(lb_I_BoundColumn, bc, __FILE__, __LINE__)
+			
+			uk = boundColumns->nextElement();
+			
+			QI(uk, lb_I_BoundColumn, bc, __FILE__, __LINE__)
+			
+			bc->unbindReadonlyColumns();
+		}
+	}
+}
+
+void LB_STDCALL lbBoundColumns::rebindReadonlyColumns() {
+	lbErrCodes err = ERR_NONE;
+	
+	if (boundColumns != NULL) {
+		while (boundColumns->hasMoreElements() == 1) {
+			UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
+			UAP(lb_I_BoundColumn, bc, __FILE__, __LINE__)
+			
+			uk = boundColumns->nextElement();
+			
+			QI(uk, lb_I_BoundColumn, bc, __FILE__, __LINE__)
+			
+			bc->rebindReadonlyColumns();
+		}
+	}
+}
 
 /*...slb_I_Query\58\\58\lbDBColumnTypes LB_STDCALL lbBoundColumns\58\\58\getColumnType\40\int pos\41\:0:*/
 lb_I_Query::lbDBColumnTypes LB_STDCALL lbBoundColumns::getColumnType(int pos) {
@@ -1921,6 +1964,15 @@ lbErrCodes LB_STDCALL lbQuery::update() {
 	CursorName[0] = 0;
 
 	if (mode == 1) {
+	
+	
+		if (ReadOnlyColumns->Count() > 0) {
+			_CL_LOG << "Try to unbind readonly columns while adding a row." LOG_
+			
+			boundColumns->unbindReadonlyColumns();
+			
+		}
+	
 		retcode = SQLSetPos(hstmt, 2, SQL_ADD, SQL_LOCK_NO_CHANGE);
 		
 		if (retcode != SQL_SUCCESS)
@@ -1928,6 +1980,12 @@ lbErrCodes LB_STDCALL lbQuery::update() {
 		        dbError( "SQLSetPos()");
 		        _LOG << "lbQuery::update(...) adding failed." LOG_
 		        return ERR_DB_UPDATEFAILED;
+		}
+
+		if (ReadOnlyColumns->Count() > 0) {
+			_CL_LOG << "Try to rebind readonly columns after adding a row." LOG_
+			
+			boundColumns->rebindReadonlyColumns();
 		}
 
 		mode = 0;
@@ -2255,6 +2313,7 @@ lbErrCodes LB_STDCALL lbBoundColumn::leaveOwnership(lb_I_BoundColumn* oldOwner, 
 
 	nO->setData(oO->bound, oO->_DataType, oO->buffer, oO->colName.getPtr());
 	oO->bound = 0;
+	nO->isUpdateable = oO->isUpdateable;
 	if (oO->buffer != NULL) oO->buffer = NULL;
 
 	return ERR_NONE;
@@ -2435,7 +2494,11 @@ lbErrCodes LB_STDCALL lbBoundColumn::prepareBoundColumn(lb_I_Query* q, int colum
 /*...slbErrCodes LB_STDCALL lbBoundColumn\58\\58\bindColumn\40\lbQuery\42\ q\44\ int column\44\ bool ro\41\:0:*/
 lbErrCodes LB_STDCALL lbBoundColumn::bindColumn(lb_I_Query* q, int column, bool ro) {
 //printf("lbBoundColumn::bindColumn(...) called\n");
-	HSTMT hstmt = ((lbQuery*) q)->getCurrentStatement();
+	hstmt = ((lbQuery*) q)->getCurrentStatement();
+
+	query = (lbQuery*) q;
+
+	_column = column;
 
 /*...svars:8:*/
 	SQLSMALLINT     ColumnNumber = 0;
@@ -2456,9 +2519,7 @@ lbErrCodes LB_STDCALL lbBoundColumn::bindColumn(lb_I_Query* q, int column, bool 
 	if (ro) {
 		_CL_LOG << "Bind a column that is read only !" LOG_
 		cbBufferLength = SQL_COLUMN_IGNORE;
-		if (SQL_COLUMN_IGNORE != -6) {
-			_CL_LOG << "There is a problem with the definitions !!" LOG_
-		}
+		isUpdateable = false;
 	}
 
 
@@ -2653,6 +2714,154 @@ SQLCloseCursor(hstmt);
 #endif
 /*...e*/
 /*...e*/
+void LB_STDCALL lbBoundColumn::unbindReadonlyColumns() {
+	SQLRETURN ret;
+	if (!isUpdateable) {
+		_CL_LOG << "Really unbind column '" << colName->charrep() << "'" LOG_
+/*...sUnbind:16:*/
+	switch (_DataType) {
+		case SQL_CHAR:
+		case SQL_VARCHAR:
+		case SQL_LONGVARCHAR:
+			_CL_LOG << "Unbind char" LOG_
+/*...sbind a character array:40:*/
+			bound = 0;
+
+			ret = SQLBindCol(hstmt, _column, SQL_C_DEFAULT, NULL, (ColumnSize+1), &cbBufferLength);
+			
+			if (ret != SQL_SUCCESS) {
+				printf("Error while binding a column!\n");
+				query->dbError("SQLBindCol()");
+			}
+/*...e*/
+			break;
+		case SQL_BINARY:
+			_CL_LOG << "Unbind binary" LOG_
+/*...sbind a binary array:40:*/
+			bound = 0;
+			
+			ret = SQLBindCol(hstmt, _column, SQL_C_DEFAULT, NULL, (ColumnSize+1), &cbBufferLength);
+			
+			if (ret != SQL_SUCCESS) {
+				printf("Error while binding a column!\n");
+				query->dbError("SQLBindCol()");
+			}
+/*...e*/
+			break;
+/*...slater:32:*/
+/*			
+		case SQL_WCHAR:
+		case SQL_WVARCHAR:
+		case SQL_WLONGVARCHAR:
+			break;
+*/			
+/*...e*/
+		case SQL_INTEGER:
+			_CL_LOG << "Unbind integer" LOG_
+/*...sbind an integer:40:*/
+			bound = 0;
+
+			SQLBindCol(hstmt, _column, _DataType, NULL, sizeof(long), &cbBufferLength);
+
+			if (ret != SQL_SUCCESS) {
+			        printf("Error while binding a column!\n");
+			        query->dbError("SQLBindCol()");
+			}
+/*...e*/
+			break;
+		case SQL_BIT:
+			_CL_LOG << "Unbind bit" LOG_
+			bound = 0;
+
+			SQLBindCol(hstmt, _column, _DataType, NULL, sizeof(bool), &cbBufferLength);
+
+			if (ret != SQL_SUCCESS) {
+			        printf("Error while binding a column!\n");
+			        query->dbError("SQLBindCol()");
+			}
+			break;
+		default:
+			_CL_LOG << "lbBoundColumn::bindColumn(...) failed: Unknown or not supported datatype" << _DataType LOG_
+			break;
+	}
+/*...e*/
+	}
+}
+
+void LB_STDCALL lbBoundColumn::rebindReadonlyColumns() {
+	SQLRETURN ret;
+	if (!isUpdateable) {
+		_CL_LOG << "Really rebind column '" << colName->charrep() << "'" LOG_
+/*...sRebind:16:*/
+	switch (_DataType) {
+		case SQL_CHAR:
+		case SQL_VARCHAR:
+		case SQL_LONGVARCHAR:
+			_CL_LOG << "Rebind char" LOG_
+/*...sbind a character array:40:*/
+			bound = 1;
+
+			ret = SQLBindCol(hstmt, _column, SQL_C_DEFAULT, buffer, (ColumnSize+1), &cbBufferLength);
+			
+			if (ret != SQL_SUCCESS) {
+				printf("Error while binding a column!\n");
+				query->dbError("SQLBindCol()");
+			}
+/*...e*/
+			break;
+		case SQL_BINARY:
+			_CL_LOG << "Rebind binary" LOG_
+/*...sbind a binary array:40:*/
+			bound = 1;
+			
+			ret = SQLBindCol(hstmt, _column, SQL_C_DEFAULT, buffer, (ColumnSize+1), &cbBufferLength);
+			
+			if (ret != SQL_SUCCESS) {
+				printf("Error while binding a column!\n");
+				query->dbError("SQLBindCol()");
+			}
+/*...e*/
+			break;
+/*...slater:32:*/
+/*			
+		case SQL_WCHAR:
+		case SQL_WVARCHAR:
+		case SQL_WLONGVARCHAR:
+			break;
+*/			
+/*...e*/
+		case SQL_INTEGER:
+			_CL_LOG << "Rebind integer" LOG_
+/*...sbind an integer:40:*/
+			bound = 1;
+
+			SQLBindCol(hstmt, _column, _DataType, buffer, sizeof(long), &cbBufferLength);
+
+			if (ret != SQL_SUCCESS) {
+			        printf("Error while binding a column!\n");
+			        query->dbError("SQLBindCol()");
+			}
+/*...e*/
+			break;
+		case SQL_BIT:
+			_CL_LOG << "Rebind bit" LOG_
+			bound = 1;
+
+			SQLBindCol(hstmt, _column, _DataType, buffer, sizeof(bool), &cbBufferLength);
+
+			if (ret != SQL_SUCCESS) {
+			        printf("Error while binding a column!\n");
+			        query->dbError("SQLBindCol()");
+			}
+			break;
+		default:
+			_CL_LOG << "lbBoundColumn::bindColumn(...) failed: Unknown or not supported datatype" << _DataType LOG_
+			break;
+	}
+/*...e*/
+	}
+}
+
 lb_I_String* LB_STDCALL lbBoundColumn::getColumnName() {
 	if (colName.getPtr() == NULL) printf("ERROR lbBoundColumn::getColumnName(): returning a null pointer\n");
 	return colName.getPtr();
