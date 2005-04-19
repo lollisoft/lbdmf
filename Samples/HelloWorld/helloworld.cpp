@@ -78,6 +78,16 @@ extern "C" {
  *		string->setData("Console logging...");
  *		_CL_LOG << string->charrep() LOG_
  *		
+ *		UAP_REQUEST(mm, lb_I_String, string1)
+ *
+ *		string1->setData("Console logging...");
+ *
+ *		if (&string == &string) {
+ *		        _CL_LOG << "Strings are identical" LOG_
+ *		} else {
+ *			_CL_LOG << "Strings are not identical" LOG_
+ *		}
+ *
  *		return 0;
  *	}
  * \endcode
@@ -117,6 +127,16 @@ int main(int argc, char *argv[]) {
 	
 	string->setData("Console logging...");
 	_CL_LOG << string->charrep() LOG_
+
+	UAP_REQUEST(mm, lb_I_String, string1)
+
+	string1->setData("Console logging...");
+	
+	if (&string == &string) {
+		_CL_LOG << "Strings are identical" LOG_
+	} else {
+		_CL_LOG << "Strings are not identical" LOG_
+	}
 
         return 0;
 }
