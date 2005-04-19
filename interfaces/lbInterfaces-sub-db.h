@@ -394,7 +394,10 @@ public:
 	 * \param column The number of the column to bind.
 	 */
 	virtual lbErrCodes   LB_STDCALL bindColumn(lb_I_Query* q, int column, bool ro) = 0;
+
+	virtual void	     LB_STDCALL unbindReadonlyColumns() = 0;	
 	
+	virtual void	     LB_STDCALL rebindReadonlyColumns() = 0;	
 
 protected:
 	/**
@@ -494,6 +497,18 @@ public:
 	 * \brief NULL indicator for pos column.
 	 */
 	virtual bool LB_STDCALL isNull(int pos) = 0;
+
+	/**
+	 * \brief Unbind readonly columns.
+	 */
+
+	virtual void LB_STDCALL unbindReadonlyColumns() = 0;
+
+	/**
+	 * \brief Rebind readonly columns.
+	 */
+
+	virtual void LB_STDCALL rebindReadonlyColumns() = 0;
 
 	/**
 	 * \brief Get the type of a column.
