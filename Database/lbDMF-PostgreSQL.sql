@@ -6,6 +6,16 @@
 
 --USE jedi;
 
+CREATE TABLE column_types
+(
+  id SERIAL,
+  name char(30) NOT NULL,
+  tablename char(30) NOT NULL,
+  ro BOOL DEFAULT false
+);
+
+insert into column_types (name, tablename, ro) values('kundennr', 'kunden', TRUE);
+
 -- +---------------------------------------------------------
 -- | TABLE: Actions
 -- | This defines custom actions for an application. These
@@ -82,12 +92,15 @@ CREATE TABLE formular_actions
 insert into action_types (bezeichnung) values('Buttonpress');
 
 insert into action_target (bezeichnung, a_order_nr, what) 
+	values('Customer want to reserve a trip', 1, 'evt_Reserve_Customer_Trip');
+insert into action_target (bezeichnung, a_order_nr, what) 
+	values('some test action', 1, 'evt_Some_Test_Action');
 
-	values('reserve_trip', 1, 'evt_Reserve_Customer_Trip');
-
-insert into actions (name, typ, source, target) values('Reserve a trip', 1, 'KundenNr', 1);
+insert into actions (name, typ, source, target) values('Reserve a trip', 1, 'kundennr', 1);
+insert into actions (name, typ, source, target) values('Remove a reserved trip', 1, 'kundennr', 2);
 
 insert into formular_actions (formular, action) values(1, 1);
+insert into formular_actions (formular, action) values(1, 2);
 
 -- +---------------------------------------------------------
 -- | TABLE: Translations
@@ -422,5 +435,5 @@ Values (
 'Create an application module for lbDMF Framework', 
 'ModullbDMFAppgen',
 'instanceOflbDMFAppwriter',
-'lb_I_odeGenerator'
+'lb_I_CodeGenerator'
 );

@@ -212,6 +212,143 @@ char* FormularActions::getActionSourceDataField(char* what) {
 /*...e*/
 /*...e*/
 
+/*...sclass FormularFieldInformation:0:*/
+/*...sclass declaration FormularFieldInformation:0:*/
+/** \brief Management of formular fields.
+ *
+ * This class is used to concentrate the code for formular field informations.
+ */
+
+class FormularFieldInformation {
+public:
+
+	FormularFieldInformation(char const * formularname, lb_I_Query* query);
+	virtual ~FormularFieldInformation() {}
+	
+	/** \brief Get readonly status.
+	 *
+	 * Returns true, if the specifed field is readonly.
+	 */
+	bool isReadonly(char* field);
+	
+protected:
+
+	lb_I_Query* _query;
+
+	UAP(lb_I_Container, ROFields, __FILE__, __LINE__)	
+};
+/*...e*/
+
+FormularFieldInformation::FormularFieldInformation(char const * formularname, lb_I_Query* query) {
+
+	lbErrCodes err = ERR_NONE;
+
+	UAP_REQUEST(getModuleInstance(), lb_I_Database, database)
+
+	REQUEST(getModuleInstance(), lb_I_Container, ROFields)
+
+	database->init();
+
+	char* lbDMFPasswd = getenv("lbDMFPasswd");
+	char* lbDMFUser   = getenv("lbDMFUser");
+
+	if (!lbDMFUser) lbDMFUser = "dba";
+	if (!lbDMFPasswd) lbDMFPasswd = "trainres";
+
+	database->connect("lbDMF", lbDMFUser, lbDMFPasswd);
+
+	UAP(lb_I_Query, ROquery, __FILE__, __LINE__)
+
+	ROquery = database->getQuery(0);
+
+	char buf[] = "select tablename, name from column_types where ro = true";
+
+//	DebugBreak();
+
+	ROquery->query(buf);
+
+	err = ROquery->first();
+
+	while (err == ERR_NONE) {
+	
+	        UAP(lb_I_String, tablename, __FILE__, __LINE__)
+	        UAP(lb_I_String, fieldname, __FILE__, __LINE__)
+
+	        tablename = ROquery->getAsString(1);
+		fieldname = ROquery->getAsString(2);
+
+		fieldname->trim();
+
+		for (int i = 1; i < query->getColumns(); i++) {
+			UAP_REQUEST(getModuleInstance(), lb_I_String, col)
+			
+			col->setData(query->getColumnName(i));
+
+			if (strcmp(col->charrep(), fieldname->charrep()) == 0) {
+				UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
+				UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
+				
+				QI(col, lb_I_KeyBase, key, __FILE__, __LINE__)
+				QI(col, lb_I_Unknown, uk, __FILE__, __LINE__)
+				
+				_CL_LOG << "Have a readonly field: " << fieldname->charrep() << "." LOG_
+				
+				ROFields->insert(&uk, &key);
+			}
+		}		
+		err = ROquery->next();
+	}
+	
+	if (err == WARN_DB_NODATA) {
+                UAP(lb_I_String, tablename, __FILE__, __LINE__)
+                UAP(lb_I_String, fieldname, __FILE__, __LINE__)
+
+                tablename = ROquery->getAsString(1);
+                fieldname = ROquery->getAsString(2);
+
+		fieldname->trim();
+
+                for (int i = 1; i < query->getColumns(); i++) {
+                        UAP_REQUEST(getModuleInstance(), lb_I_String, col)
+
+                        col->setData(query->getColumnName(i));
+
+                        if (strcmp(col->charrep(), fieldname->charrep()) == 0) {
+                                UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
+                                UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
+
+                                QI(col, lb_I_KeyBase, key, __FILE__, __LINE__)
+                                QI(col, lb_I_Unknown, uk, __FILE__, __LINE__)
+
+				_CL_LOG << "Have a readonly field: " << fieldname->charrep() << "." LOG_
+
+                                ROFields->insert(&uk, &key);
+                        }
+                }
+	}
+}
+
+bool FormularFieldInformation::isReadonly(char* field) {
+	lbErrCodes err = ERR_NONE;
+	
+	UAP_REQUEST(getModuleInstance(), lb_I_String, f)
+	f->setData(field);
+	
+	f->trim();
+	
+	UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
+	QI(f, lb_I_KeyBase, key, __FILE__, __LINE__)
+	
+	if (ROFields->exists(&key) == 1) {
+		return true;
+	}
+	else {
+		return false;
+	}
+	
+}
+/*...e*/
+
 /*...sclass lbPluginModuleDatabaseForm:0:*/
 class lbPluginModuleDatabaseForm : public lb_I_PluginModule {
 public:
@@ -952,6 +1089,8 @@ public:
 	wxWindow* nextButton;
 	wxWindow* lastButton;
 	char* formName;
+
+	FormularFieldInformation* ROFields;
 /*...e*/
 };
 /*...e*/
@@ -1091,13 +1230,28 @@ void lbDatabaseDialog::init(char* SQLString, char* DBName, char* DBUser, char* D
 /*...e*/
 	
 	sampleQuery->enableFKCollecting();
-	sampleQuery->query(_q);
+	sampleQuery->query(_q, false);
 
 	free(_q);
+
+	ROFields = new FormularFieldInformation(formName, sampleQuery.getPtr());
 
 	int columns = sampleQuery->getColumns();
 
 	printf("Create %d formular elements.\n", columns);
+
+	for (int co = 1; co <= columns; co++) {
+		char* name = NULL;
+		name = strdup(sampleQuery->getColumnName(co));
+		
+		if (ROFields->isReadonly(name)) {
+		        sampleQuery->setUpdateable(name);
+		}
+		
+		free(name);
+	}
+
+	sampleQuery->bind();
 
 	sampleQuery->first();
 	
@@ -1302,6 +1456,10 @@ printf("Create a drop down box for '%s'\n", name);
 						check->SetName(name);
 						sizerRight->Add(check, 1, wxEXPAND | wxALL, 5);	
 
+						if (ROFields->isReadonly(name)) {
+						        check->Disable();
+						}
+
 						createdControl = true;
 					}
 					break;
@@ -1312,6 +1470,10 @@ printf("Create a drop down box for '%s'\n", name);
 							sampleQuery->getAsString(i)->charrep(), wxPoint());
 						text->SetName(name);
 						sizerRight->Add(text, 1, wxEXPAND | wxALL, 5);
+						
+						if (ROFields->isReadonly(name)) {
+							text->Disable();
+						}
 
 						createdControl = true;
 					}
@@ -1326,7 +1488,11 @@ printf("Create a drop down box for '%s'\n", name);
 						        sampleQuery->getAsString(i)->charrep(), wxPoint());
 					        text->SetName(name);
 					        sizerRight->Add(text, 1, wxEXPAND | wxALL, 5);
-						        
+						
+						if (ROFields->isReadonly(name)) {
+ 							text->Disable();
+						}
+
 					        createdControl = true;
 					}
 					break;
@@ -1667,46 +1833,52 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBUpdate() {
 				switch (coltype) {
 					case lb_I_Query::lbDBColumnBit:
 						{
-							wxCheckBox *check = (wxCheckBox*) w;
-							if (check->GetValue() == TRUE) {
-								wxString v = "true";
-								col->setData(name);
-								val->setData(v.c_str());
+							if (!ROFields->isReadonly(name)) {
+								wxCheckBox *check = (wxCheckBox*) w;
+								if (check->GetValue() == TRUE) {
+									wxString v = "true";
+									col->setData(name);
+									val->setData(v.c_str());
 								
-								sampleQuery->setString(*&col, *&val);
-							} else {
-								wxString v = "false";
-								col->setData(name);
-								val->setData(v.c_str());
+									sampleQuery->setString(*&col, *&val);
+								} else {
+									wxString v = "false";
+									col->setData(name);
+									val->setData(v.c_str());
 								
-								sampleQuery->setString(*&col, *&val);
+									sampleQuery->setString(*&col, *&val);
+								}
 							}
 						}
 						break;
 					
 					case lb_I_Query::lbDBColumnChar:
 						{
-							wxTextCtrl* tx = (wxTextCtrl*) w;
+							if (!ROFields->isReadonly(name)) {
+								wxTextCtrl* tx = (wxTextCtrl*) w;
 			
-							wxString v = tx->GetValue();
+								wxString v = tx->GetValue();
 			
-							col->setData(name);
-							val->setData(v.c_str());
+								col->setData(name);
+								val->setData(v.c_str());
 
-							sampleQuery->setString(*&col, *&val);
+								sampleQuery->setString(*&col, *&val);
+							}
 						}
 						break;
 					
 					case lb_I_Query::lbDBColumnInteger:
 						{
-							wxTextCtrl* tx = (wxTextCtrl*) w;
+							if (!ROFields->isReadonly(name)) {
+								wxTextCtrl* tx = (wxTextCtrl*) w;
 			
-							wxString v = tx->GetValue();
+								wxString v = tx->GetValue();
 			
-							col->setData(name);
-							val->setData(v.c_str());
+								col->setData(name);
+								val->setData(v.c_str());
 
-							sampleQuery->setString(*&col, *&val);
+								sampleQuery->setString(*&col, *&val);
+							}
 						}
 						break;
 					

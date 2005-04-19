@@ -94,7 +94,16 @@ public:
          *
          * Set the SQL query string to be used.
          */
-        virtual lbErrCodes LB_STDCALL query(char* q) = 0;
+        virtual lbErrCodes LB_STDCALL query(char* q, bool bind = true) = 0;
+
+	/**
+	 * \brief Bind columns, if not yet have bound.
+	 *
+	 * This function should be used, if query would explicitly called to not
+	 * bind the columns. This enables setup some readonly columns, that must
+	 * bound differently.
+	 */
+	virtual lbErrCodes LB_STDCALL bind() = 0;
 
 	/* Manipulation */
 	/**
@@ -217,6 +226,13 @@ public:
 	 */
 	virtual lbDBColumnTypes	   LB_STDCALL getColumnType(char* name) = 0;
 
+
+	/** \brief Set updateability of column.
+	 *
+	 * Set the column 'column' to be updateable or not.
+	 */
+	virtual void		   LB_STDCALL setUpdateable(char* column, bool updateable = false) = 0;
+
         /* Navigation */
         
 	/**
@@ -310,6 +326,11 @@ public:
 	 */
 	virtual lb_I_Query::lbDBColumnTypes LB_STDCALL getType() = 0;
 
+	/**
+	 * \brief Set the column updateability.
+	 */
+	virtual void                        LB_STDCALL setUpdateable(bool updateable) = 0;
+
 /*...sdoc:8:*/
 	/**
 	 * \brief Universal access to the column.
@@ -372,7 +393,7 @@ public:
 	 * \param q The query.
 	 * \param column The number of the column to bind.
 	 */
-	virtual lbErrCodes   LB_STDCALL bindColumn(lb_I_Query* q, int column) = 0;
+	virtual lbErrCodes   LB_STDCALL bindColumn(lb_I_Query* q, int column, bool ro) = 0;
 	
 
 protected:
@@ -483,6 +504,11 @@ public:
 	 * \brief Get the type of a column.
 	 */
 	virtual lb_I_Query::lbDBColumnTypes  LB_STDCALL getColumnType(char* name) = 0;
+
+	/**
+	 * \brief Set the column updateability.
+	 */
+	virtual void 			     LB_STDCALL setUpdateable(char* column, bool updateable) = 0;
 	
 	/**
 	 * \brief Get the amound of columns.
@@ -528,7 +554,7 @@ public:
 //        virtual lbErrCodes      LB_STDCALL setQuery(lb_I_Query* q) = 0;
 #endif
 
-	virtual lbErrCodes		LB_STDCALL setQuery(lb_I_Query* q) = 0;
+	virtual lbErrCodes		LB_STDCALL setQuery(lb_I_Query* q, lb_I_Container* ReadonlyColumns) = 0;
 
 	/**
 	 * \brief Indicator, if the current column is an adding column.

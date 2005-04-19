@@ -126,7 +126,7 @@ public:
         /**
          * Set a currently used query to bind their columns.
          */
-        lbErrCodes      LB_STDCALL setQuery(lb_I_Query* q);
+        lbErrCodes      LB_STDCALL setQuery(lb_I_Query* q, lb_I_Container* ReadonlyColumns);
 
 	int		LB_STDCALL getMode();
 
@@ -141,6 +141,8 @@ public:
 	bool		LB_STDCALL isNull(int pos);
 	lb_I_Query::lbDBColumnTypes LB_STDCALL getColumnType(int pos);
 	lb_I_Query::lbDBColumnTypes LB_STDCALL getColumnType(char* name);
+
+	void		LB_STDCALL setUpdateable(char* column, bool updateable);
 		
 	int LB_STDCALL getArraySize() { return ArraySize; }
 
@@ -173,6 +175,10 @@ public:
 		preparingFKColumns = 0;
 		
 		fetchstatus = 0;
+		
+		if (ReadOnlyColumns == NULL) {
+		        REQUEST(getModuleInstance(), lb_I_Container, ReadOnlyColumns)
+		}
 	}
 	
 	virtual ~lbQuery() {}
@@ -211,7 +217,9 @@ public:
 	void LB_STDCALL dbError(char* lp);
 
         /* Set the SQL query */
-        virtual lbErrCodes LB_STDCALL query(char* q);
+        virtual lbErrCodes LB_STDCALL query(char* q, bool bind);
+        
+        lbErrCodes LB_STDCALL bind();
 
 	virtual lbErrCodes LB_STDCALL add();
 	int LB_STDCALL isAdding() { return mode; }
@@ -232,6 +240,7 @@ public:
 	 */
 
 	virtual int		LB_STDCALL getColumns();
+
 	virtual char*		LB_STDCALL getColumnName(int col);
 
 	virtual int		LB_STDCALL hasFKColumn(char* FKName);
@@ -241,6 +250,8 @@ public:
 
 	virtual lb_I_Query::lbDBColumnTypes LB_STDCALL getColumnType(int pos);
 	virtual lb_I_Query::lbDBColumnTypes LB_STDCALL getColumnType(char* name);
+
+	void               LB_STDCALL setUpdateable(char* column, bool updateable = false);
         
         /* Navigation */
         virtual lbErrCodes	LB_STDCALL first();
@@ -257,8 +268,6 @@ public:
 #endif        
 	
 	lbErrCodes LB_STDCALL init(HENV _henv, HDBC _hdbc, int readonly = 1);
-	int LB_STDCALL getColCount();
-
 
 	/**
 	 * Get the statement for creation of bound columns in lb_I_ColumnBinding.
@@ -299,6 +308,8 @@ private:
 
 	UAP(lb_I_Container, ForeignColumns, __FILE__, __LINE__)
 
+	UAP(lb_I_Container, ReadOnlyColumns, __FILE__, __LINE__)
+
 #ifdef UNBOUND	
 	UAP(lb_I_Container, boundColumns, __FILE__, __LINE__)
 #endif
@@ -333,6 +344,7 @@ public:
 		colName = NULL;
 		ColumnSize = 0;
 		rows = 2;
+		isUpdateable = true;
 	}
 	
 	virtual ~lbBoundColumn() {
@@ -375,10 +387,12 @@ public:
 	virtual lbErrCodes LB_STDCALL getAsString(lb_I_String* result, int asParameter = 0);
 	virtual lbErrCodes LB_STDCALL setFromString(lb_I_String* set, int mode);
 
+	void 		   LB_STDCALL setUpdateable(bool updateable);
+
 	lb_I_String* LB_STDCALL getColumnName();
 
 	lbErrCodes LB_STDCALL prepareBoundColumn(lb_I_Query* q, int column);
-	lbErrCodes LB_STDCALL bindColumn(lb_I_Query* q, int column);
+	lbErrCodes LB_STDCALL bindColumn(lb_I_Query* q, int column, bool ro);
 	
 protected:
 
@@ -400,6 +414,7 @@ protected:
 	virtual lbErrCodes LB_STDCALL leaveOwnership(lb_I_BoundColumn* oldOwner, lb_I_BoundColumn* newOwner);
 
 	int		bound;
+	bool		isUpdateable;
 	SQLSMALLINT     _DataType;
 	void*		buffer;
 	int		buffersize;
@@ -542,7 +557,40 @@ lb_I_Query::lbDBColumnTypes LB_STDCALL lbBoundColumns::getColumnType(char* name)
 	return lb_I_Query::lbDBColumnUnknown;
 }
 /*...e*/
+void LB_STDCALL lbBoundColumns::setUpdateable(char* column, bool updateable) {
 
+	lbErrCodes err = ERR_NONE;
+	if (boundColumns != NULL) {
+		UAP_REQUEST(manager.getPtr(), lb_I_String, stringKey) 
+		stringKey->setData(column);
+		UAP(lb_I_Unknown, ukdata, __FILE__, __LINE__)
+		UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
+		
+		QI(stringKey, lb_I_KeyBase, key, __FILE__, __LINE__)
+
+		ukdata = ColumnNameMapping->getElement(&key);
+		if (ukdata == NULL) printf("NULL pointer!\n");
+
+		UAP(lb_I_Integer, pos, __FILE__, __LINE__)
+		
+		lbErrCodes err = ukdata->queryInterface("lb_I_Integer", (void**) &pos, __FILE__, __LINE__);
+		
+		UAP_REQUEST(manager.getPtr(), lb_I_Integer, integerKey) 
+		integerKey->setData(pos.getPtr());
+		UAP(lb_I_Unknown, ukdata1, __FILE__, __LINE__)
+		UAP(lb_I_KeyBase, key1, __FILE__, __LINE__)
+		
+		QI(integerKey, lb_I_KeyBase, key1, __FILE__, __LINE__)
+
+		ukdata1 = boundColumns->getElement(&key1);
+		if (ukdata1 == NULL) printf("NULL pointer!\n");
+
+		UAP(lb_I_BoundColumn, bc, __FILE__, __LINE__)
+		err = ukdata1->queryInterface("lb_I_BoundColumn", (void**) &bc, __FILE__, __LINE__);
+
+		bc->setUpdateable(updateable);
+	}
+}
 /*...slb_I_BoundColumn\42\ LB_STDCALL lbBoundColumns\58\\58\getBoundColumn\40\int column\41\:0:*/
 lb_I_BoundColumn* LB_STDCALL lbBoundColumns::getBoundColumn(int column) {
 	lbErrCodes err = ERR_NONE;
@@ -575,8 +623,8 @@ int               LB_STDCALL lbBoundColumns::getColumnCount() {
 
 class lbQuery;
 
-/*...slbErrCodes      LB_STDCALL lbBoundColumns\58\\58\setQuery\40\lbQuery\42\ q\41\:0:*/
-lbErrCodes      LB_STDCALL lbBoundColumns::setQuery(lb_I_Query* q) {
+/*...slbErrCodes      LB_STDCALL lbBoundColumns\58\\58\setQuery\40\lbQuery\42\ q\44\ lb_I_Container\42\ ReadonlyColumns\41\:0:*/
+lbErrCodes      LB_STDCALL lbBoundColumns::setQuery(lb_I_Query* q, lb_I_Container* ReadonlyColumns) {
 /*...spreparements:0:*/
 
 	lbQuery* qq = (lbQuery*) q;
@@ -656,7 +704,16 @@ Therefore I need an indicator, set by the user of this library to know, which on
 		UAP(lb_I_BoundColumn, bc1, __FILE__, __LINE__)
 		bc1 = getBoundColumn(i);
 
-		bc1->bindColumn(q, i);
+		UAP_REQUEST(manager.getPtr(), lb_I_String, colName)
+		UAP(lb_I_KeyBase, key1, __FILE__, __LINE__)
+		colName->setData(qq->getColumnName(i));
+		QI(colName, lb_I_KeyBase, key1, __FILE__, __LINE__)
+
+		bool Readonly = false;
+
+		if (ReadonlyColumns->exists(&key1) == 1) Readonly = true;
+
+		bc1->bindColumn(q, i, Readonly);
 
 /*...sGet the column name for this column and add an index to it\39\s column id\46\:16:*/
 
@@ -918,10 +975,43 @@ lbErrCodes LB_STDCALL lbQuery::init(HENV _henv, HDBC _hdbc, int readonly) {
 	return ERR_NONE;
 }
 /*...e*/
-/*...slbErrCodes LB_STDCALL lbQuery\58\\58\query\40\char\42\ q\41\:0:*/
-lbErrCodes LB_STDCALL lbQuery::query(char* q) {
-	lbBoundColumns* boundcols = NULL;
+/*...slbErrCodes LB_STDCALL lbQuery\58\\58\bind\40\\41\:0:*/
+lbErrCodes LB_STDCALL lbQuery::bind() {
+	if (databound == 0) {
+		
+		_CL_LOG << "lbQuery::bind() binds columns..." LOG_
+		
+		retcode = SQLNumResultCols(hstmt, &cols);
 	
+		if (retcode != SQL_SUCCESS)
+		{
+		        dbError( "SQLNumResultCols()");
+		        return ERR_DB_QUERYFAILED;
+		} else {
+			lbBoundColumns* boundcols = NULL;
+			
+			boundcols = new lbBoundColumns();
+			boundcols->setModuleManager(*&manager, __FILE__, __LINE__);
+			boundColumns = boundcols;
+		
+			_CL_LOG << "Bind columns with " << ReadOnlyColumns->Count() << " readonly elements" LOG_
+		
+			boundColumns->setQuery(this, ReadOnlyColumns.getPtr());
+			
+			prepareFKList();
+		}
+		
+		databound = 1;
+	}
+	
+	return ERR_NONE;
+}
+/*...e*/
+
+/*...slbErrCodes LB_STDCALL lbQuery\58\\58\query\40\char\42\ q\44\ bool bind\41\:0:*/
+lbErrCodes LB_STDCALL lbQuery::query(char* q, bool bind) {
+	lbBoundColumns* boundcols = NULL;
+
 	if (strlen(q) >= 1000) printf("WARNING: Bufferoverflow in %s at %d\n", __FILE__, __LINE__);
 
 	lstrcpy(szSql, q);
@@ -969,32 +1059,30 @@ Using SQLSetPos
 		return ERR_DB_QUERYFAILED;
         }
 
-	retcode = SQLNumResultCols(hstmt, &cols);
+	if (bind) {
+		retcode = SQLNumResultCols(hstmt, &cols);
+	
+		if (retcode != SQL_SUCCESS)
+		{
+		        dbError( "SQLNumResultCols()");
+		        return ERR_DB_QUERYFAILED;
+		} else {
 
-	if (retcode != SQL_SUCCESS)
-	{
-	        dbError( "SQLNumResultCols()");
-	        return ERR_DB_QUERYFAILED;
+			boundcols = new lbBoundColumns();
+			boundcols->setModuleManager(*&manager, __FILE__, __LINE__);
+			boundColumns = boundcols;
+		
+			boundColumns->setQuery(this, ReadOnlyColumns.getPtr());
+			
+			prepareFKList();
+		}
+		
+		databound = 1;
 	} else {
-
-		boundcols = new lbBoundColumns();
-		boundcols->setModuleManager(*&manager, __FILE__, __LINE__);
-		boundColumns = boundcols;
-		
-		boundColumns->setQuery(this);
-		
-		prepareFKList();
+		_CL_LOG << "Do not prebind columns. You must call bind()." LOG_
 	}
 
 	return ERR_NONE;
-}
-/*...e*/
-/*...sint LB_STDCALL lbQuery\58\\58\getColCount\40\\41\:0:*/
-int LB_STDCALL lbQuery::getColCount() {
-	SWORD count;
-	retcode = SQLNumResultCols(hstmt, &count);
-	
-	return count;
 }
 /*...e*/
 /*...svirtual char\42\ LB_STDCALL lbQuery\58\\58\getChar\40\int column\41\:0:*/
@@ -1084,7 +1172,10 @@ lb_I_String* LB_STDCALL lbQuery::getAsString(int column) {
 //#define USE_FETCH_SCROLL
 
 int   LB_STDCALL lbQuery::getColumns() {
-	return cols;
+	SWORD count;
+	retcode = SQLNumResultCols(hstmt, &count);
+	
+	return count;
 }
 
 /*...sint LB_STDCALL lbQuery\58\\58\hasFKColumn\40\char\42\ FKName\41\:0:*/
@@ -1322,19 +1413,47 @@ lb_I_Query::lbDBColumnTypes LB_STDCALL lbQuery::getColumnType(char* name) {
 	return boundColumns->getColumnType(name);
 }
 
+void LB_STDCALL lbQuery::setUpdateable(char* column, bool updateable) {
+	lbErrCodes err = ERR_NONE;
+	
+	UAP_REQUEST(manager.getPtr(), lb_I_String, col)
+	
+	UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
+	UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
+	
+	QI(col, lb_I_KeyBase, key, __FILE__, __LINE__)
+	QI(col, lb_I_Unknown, uk, __FILE__, __LINE__)
+	
+	col->setData(column);
+
+	if (ReadOnlyColumns == NULL) {
+		REQUEST(manager.getPtr(), lb_I_Container, ReadOnlyColumns)
+	}
+
+	ReadOnlyColumns->insert(&uk, &key);
+
+	if (boundColumns.getPtr() != NULL) boundColumns->setUpdateable(column, updateable);
+}
+
 /*...schar\42\ LB_STDCALL lbQuery\58\\58\getColumnName\40\int col\41\:0:*/
 char lbQuery_column_Name[100] = "";
 
 char* LB_STDCALL lbQuery::getColumnName(int col) {
-	UAP(lb_I_BoundColumn, column, __FILE__, __LINE__)
-	column = boundColumns->getBoundColumn(col);
-	
-	UAP(lb_I_String, name, __FILE__, __LINE__)
-	
-	name = column->getColumnName();
-	name++;
+	SQLSMALLINT     ColumnNumber = 0;
+	SQLCHAR         ColumnName[1000] = "";
+	SQLSMALLINT     BufferLength = 500;
+	SQLSMALLINT     DataType = 0;
+	SQLSMALLINT     NameLength = 0;
 
-	strcpy(lbQuery_column_Name, (char*) name->getData());
+	SQLSMALLINT     DecimalDigits = 0;
+	SQLSMALLINT     Nullable = 0;
+	SQLUINTEGER     ColumnSize;
+
+	SQLRETURN ret = SQLDescribeCol( hstmt, col, ColumnName,
+                      BufferLength, &NameLength, &DataType,
+                      &ColumnSize, &DecimalDigits, &Nullable);
+
+	strcpy(lbQuery_column_Name, (char*) ColumnName);
 	
 	return lbQuery_column_Name;
 }
@@ -2195,6 +2314,11 @@ lbErrCodes LB_STDCALL lbBoundColumn::getAsString(lb_I_String* result, int asPara
 /*...slbErrCodes LB_STDCALL lbBoundColumn\58\\58\setFromString\40\lb_I_String\42\ set\44\ int mode\41\:0:*/
 lbErrCodes LB_STDCALL lbBoundColumn::setFromString(lb_I_String* set, int mode) {
 
+	if (!isUpdateable) {
+		_CL_LOG << "Warning: Updating a column '" << colName->charrep() << "' with readonly status skipped." LOG_
+		return ERR_NONE;
+	}
+
 	if (mode == 1) {
 		switch (_DataType) {
 			case SQL_CHAR:
@@ -2308,8 +2432,8 @@ lbErrCodes LB_STDCALL lbBoundColumn::prepareBoundColumn(lb_I_Query* q, int colum
 	return err;
 }
 /*...e*/
-/*...slbErrCodes LB_STDCALL lbBoundColumn\58\\58\bindColumn\40\lbQuery\42\ q\44\ int column\41\:0:*/
-lbErrCodes LB_STDCALL lbBoundColumn::bindColumn(lb_I_Query* q, int column) {
+/*...slbErrCodes LB_STDCALL lbBoundColumn\58\\58\bindColumn\40\lbQuery\42\ q\44\ int column\44\ bool ro\41\:0:*/
+lbErrCodes LB_STDCALL lbBoundColumn::bindColumn(lb_I_Query* q, int column, bool ro) {
 //printf("lbBoundColumn::bindColumn(...) called\n");
 	HSTMT hstmt = ((lbQuery*) q)->getCurrentStatement();
 
@@ -2328,6 +2452,14 @@ lbErrCodes LB_STDCALL lbBoundColumn::bindColumn(lb_I_Query* q, int column) {
 
 	cbBufferLength = 0;
 	SQLRETURN ret;
+
+	if (ro) {
+		_CL_LOG << "Bind a column that is read only !" LOG_
+		cbBufferLength = SQL_COLUMN_IGNORE;
+		if (SQL_COLUMN_IGNORE != -6) {
+			_CL_LOG << "There is a problem with the definitions !!" LOG_
+		}
+	}
 
 
 	ret = SQLDescribeCol( hstmt, column, ColumnName,
@@ -2353,7 +2485,7 @@ lbErrCodes LB_STDCALL lbBoundColumn::bindColumn(lb_I_Query* q, int column) {
 			_DataType = DataType;
 			bound = 1;			     // Try a spacer for bugfix
 			memset(buffer, 0, (ColumnSize+1)*rows+20);
-			
+
 			ret = SQLBindCol(hstmt, column, SQL_C_DEFAULT, buffer, (ColumnSize+1), &cbBufferLength);
 			
 			if (ret != SQL_SUCCESS) {
@@ -2524,6 +2656,10 @@ SQLCloseCursor(hstmt);
 lb_I_String* LB_STDCALL lbBoundColumn::getColumnName() {
 	if (colName.getPtr() == NULL) printf("ERROR lbBoundColumn::getColumnName(): returning a null pointer\n");
 	return colName.getPtr();
+}
+
+void lbBoundColumn::setUpdateable(bool updateable) {
+	isUpdateable = updateable;
 }
 /*...e*/
 /*...sclass lbConnection:0:*/
