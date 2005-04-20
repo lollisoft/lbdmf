@@ -1155,7 +1155,7 @@ void lbDatabaseDialog::init(char* SQLString, char* DBName, char* DBUser, char* D
 	char prefix[100] = "";
 	sprintf(prefix, "%p", this);
 
-	SetTitle(formName);
+	SetTitle(_trans(formName));
 
 /* Tests the combo box and shows the difference between Linux and Windows
 	testComboBox* t = new testComboBox();
@@ -1510,7 +1510,7 @@ printf("Create a drop down box for '%s'\n", name);
 		
 			tLabel = strcat(tLabel, name); 
 		
-			wxStaticText *label = new wxStaticText(this, -1, tLabel, wxPoint());
+			wxStaticText *label = new wxStaticText(this, -1, _trans(tLabel), wxPoint());
 			sizerLeft->Add(label, 1, wxEXPAND | wxALL, 5);
 			
 			delete [] tLabel;
@@ -1523,10 +1523,10 @@ printf("Create a drop down box for '%s'\n", name);
 	sizerHor->Add(sizerLeft, 1, wxEXPAND | wxALL, 5);
 	sizerHor->Add(sizerRight, 1, wxEXPAND | wxALL, 5);
 
-	wxButton *button1 = new wxButton(this, DatabaseFirst, "First"); //, wxPoint(), wxSize(100,20));
-	wxButton *button2 = new wxButton(this, DatabasePrev, "Prev"); //, wxPoint(), wxSize(100,20));
-	wxButton *button3 = new wxButton(this, DatabaseNext, "Next"); //, wxPoint(), wxSize(100,20));
-	wxButton *button4 = new wxButton(this, DatabaseLast, "Last"); //, wxPoint(), wxSize(100,20));
+	wxButton *button1 = new wxButton(this, DatabaseFirst, _trans("First")); //, wxPoint(), wxSize(100,20));
+	wxButton *button2 = new wxButton(this, DatabasePrev, _trans("Prev")); //, wxPoint(), wxSize(100,20));
+	wxButton *button3 = new wxButton(this, DatabaseNext, _trans("Next")); //, wxPoint(), wxSize(100,20));
+	wxButton *button4 = new wxButton(this, DatabaseLast, _trans("Last")); //, wxPoint(), wxSize(100,20));
 
 	firstButton = button1;
 	prevButton = button2;
@@ -1541,8 +1541,8 @@ printf("Create a drop down box for '%s'\n", name);
 	sizerNavi->Add(button3, 1, wxEXPAND | wxALL, 5);
 	sizerNavi->Add(button4, 1, wxEXPAND | wxALL, 5);
 
-	wxButton *buttonAdd = new wxButton(this, DatabaseAdd, "Add"); //, wxPoint(), wxSize(100,20));
-	wxButton *buttonDelete = new wxButton(this, DatabaseDelete, "Delete"); //, wxPoint(), wxSize(100,20));
+	wxButton *buttonAdd = new wxButton(this, DatabaseAdd, _trans("Add")); //, wxPoint(), wxSize(100,20));
+	wxButton *buttonDelete = new wxButton(this, DatabaseDelete, _trans("Delete")); //, wxPoint(), wxSize(100,20));
 
 
 	sizerAddRem->Add(buttonAdd, 1, wxEXPAND | wxALL, 5);
@@ -1603,7 +1603,7 @@ printf("Create a drop down box for '%s'\n", name);
 		
 		eman->registerEvent(eventName, actionID);
 		
-		wxButton *actionButton = new wxButton(this, actionID, action->charrep()); //, wxPoint(), wxSize(100,20));
+		wxButton *actionButton = new wxButton(this, actionID, _trans(action->charrep())); //, wxPoint(), wxSize(100,20));
 		
 		dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDatabaseDialog::OnActionButton, eventName);
 		
@@ -1635,7 +1635,7 @@ printf("Create a drop down box for '%s'\n", name);
 		
 		eman->registerEvent(eventName, actionID);
 		
-		wxButton *actionButton = new wxButton(this, actionID, action->charrep()); //, wxPoint(), wxSize(100,20));
+		wxButton *actionButton = new wxButton(this, actionID, _trans(action->charrep())); //, wxPoint(), wxSize(100,20));
 
 		dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDatabaseDialog::OnActionButton, eventName);
 		
