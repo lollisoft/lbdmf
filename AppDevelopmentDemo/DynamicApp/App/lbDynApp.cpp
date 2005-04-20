@@ -408,7 +408,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::Initialize(char* user, char* app) {
 
 	char* ed = strdup(_trans("&Edit"));
 
-	char* menu = strdup(_trans("D&ynamic-Forms"));
+	char* menu = strdup(_trans(app));
 
 	addMenuBar(menu, ed);
 
@@ -434,7 +434,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::Initialize(char* user, char* app) {
 			dispatcher->addEventHandlerFn(this, 
 					(lbEvHandler) &lbDynamicApplication::getDynamicDBForm, EventName->charrep());
 
-			addMenuEntry(_trans("D&ynamic-Forms"), MenuName->charrep(), EventName->charrep(), "");
+			addMenuEntry(_trans(app), MenuName->charrep(), EventName->charrep(), "");
 
 		} else {
 			_CL_LOG << "WARNING: Event name already reserved. Ignore it for menucreation." LOG_
@@ -462,7 +462,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::Initialize(char* user, char* app) {
 					dispatcher->addEventHandlerFn(this,
 							(lbEvHandler) &lbDynamicApplication::getDynamicDBForm, EventName->charrep());
 				
-					addMenuEntry(_trans("D&ynamic-Forms"), MenuName->charrep(), EventName->charrep(), "");
+					addMenuEntry(_trans(app), MenuName->charrep(), EventName->charrep(), "");
 				} else {
 					_CL_LOG << "WARNING: Event name already reserved. Ignore it for menucreation." LOG_
 				}
