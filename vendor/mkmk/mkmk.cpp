@@ -12,11 +12,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.54 $
+ * $Revision: 1.55 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.54 2005/04/17 14:04:29 lollisoft Exp $
+ * $Id: mkmk.cpp,v 1.55 2005/04/23 10:49:56 lollisoft Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.55  2005/04/23 10:49:56  lollisoft
+ * Try to include tvision built. Added copying sym file to a place where wdw find it.
+ *
  * Revision 1.54  2005/04/17 14:04:29  lollisoft
  * Changed target path for linux
  *
@@ -217,7 +220,7 @@
 #ifdef UNIX
   #define PathChar '/'
 #else
-  #define PathChar '\\'
+  #define PathChar '/'
 #endif
 
 #ifdef UNIX
@@ -231,7 +234,7 @@
   #define MoreChar '\\'
 #endif
 /*...e*/
-/*...sdefs:0:*/
+/*...starget defs:0:*/
 #define EXE_TARGET 1
 #define DLL_TARGET 2
 #define LIB_TARGET 3
@@ -247,6 +250,7 @@
 
 #define SOPLUGIN_TARGET 10
 #define WXSOPLUGIN_TARGET 11
+#define TVISION_DLL 12
 /*...e*/
 
 int targettype=EXE_TARGET;
@@ -289,7 +293,7 @@ int split(const char split_char, char *string, char ***array)
         for ( block = strtok(string, split_string); block != NULL; 
               block = strtok(NULL, split_string) )
               {
-                (*array)[index] = block;
+                (*array)[index] = strdup(block);
                 index++;
               }
 
@@ -377,7 +381,8 @@ void TDepList::AddMask(char *Mask)
   TDepItem i;
   dd_ffblk _ffblk;
   bool Done;
-  char Path[80],Name[80];
+  char Path[80] = "";
+  char Name[80] = "";
 
   memset(&i,0,sizeof(i));
 
@@ -730,6 +735,7 @@ void writeExeTarget(char* modulename) {
   printf("\t\t-@cmd /C \"attrib -r *.bak\"\n");
   printf("\t\t@$(LINK) $(LINKFLAGS) $(LIBRS) $(COMPILERFLAGS)\n");
   printf("\t\t@$(CP) $(PROGRAM).exe $(EXEDIR) > null\n");
+  printf("\t\t@$(CP) $(PROGRAM).sym $(EXEDIR) > null\n");
 #endif
 }
 /*...e*/
@@ -771,6 +777,7 @@ void writeDllTarget(char* modulename) {
   printf("\t\t@$(LINK) $(LNKDLLOPS) $(LINKFLAGS)\n");
   printf("\t\t@wlib -q -n -b $(PROGRAM).lib +$(PROGRAM).dll\n");
   printf("\t\t@$(CP) $(PROGRAM).dll $(DLLDIR) > null\n");
+  printf("\t\t@$(CP) $(PROGRAM).sym $(EXEDIR) > null\n");
   printf("\t\t@$(CP) $(PROGRAM).lib $(DLLLIBDIR) > null\n");
   printf("\t\t@$(POST_PROCESS) \n");
   printf("endif\n");
@@ -829,8 +836,9 @@ void writePluginTarget(char* modulename) {
   printf("\t\t-@cmd /C \"attrib -r *.bak\"\n");
   printf("\t\t@$(LINK) $(LNKDLLOPS) $(LINKFLAGS)\n");
   printf("\t\t@wlib -q -n -b $(PROGRAM).lib +$(PROGRAM).dll\n");
-  printf("\t\t$(CP) $(PROGRAM).dll $(PLUGINDIR) > null\n");
-  printf("\t\t$(CP) $(PROGRAM).lib $(PLUGINLIBDIR) > null\n");
+  printf("\t\t@$(CP) $(PROGRAM).sym $(EXEDIR) > null\n");
+  printf("\t\t@$(CP) $(PROGRAM).dll $(PLUGINDIR) > null\n");
+  printf("\t\t@$(CP) $(PROGRAM).lib $(PLUGINLIBDIR) > null\n");
   printf("endif\n");
 
   printf("ifeq ($(COMPILER), MICROSOFT)\n");
@@ -1068,7 +1076,7 @@ void ShowHelp()
 
   fprintf(stderr, "Enhanced by Lothar Behrens (lothar.behrens@lollisoft.de)\n\n");
 
-  fprintf(stderr, "MKMK: makefile generator $Revision: 1.54 $\n");
+  fprintf(stderr, "MKMK: makefile generator $Revision: 1.55 $\n");
   fprintf(stderr, "Usage: MKMK lib|exe|dll|so modulname includepath,[includepath,...] file1 [file2 file3...]\n");
 }
 /*...e*/
@@ -1179,7 +1187,7 @@ void ListFilesWithComma(FILE *f, char *Line, TDepList *l, bool IsObj=false)
     if (IsObj) ObjExt(d->Name,FName,sizeof(FName));
     else strcpy(FName,d->Name);
     strcat(s,FName);
-
+    
     /* Append ',' if i is less than l->Count */
     /* Because of problems in watcom linking */
 
@@ -1215,6 +1223,7 @@ void WriteDep(FILE *f, char *Name, TIncludeParser *p)
         case DLL_TARGET:
         case PLUGIN_TARGET:
         case WXPLUGIN_TARGET:
+        case TVISION_DLL:
                 printf("\t\t@$(CC) $(C_DLLOPS) $(MOD_INCL) %s\n\n",Name);
                 break;
         case EXE_TARGET:
@@ -1314,6 +1323,10 @@ void WriteEnding(FILE *f, char *ModuleName, TDepList *l)
                 writeDllTarget(ModuleName);
                 write_clean();
                 break;
+        case TVISION_DLL:
+                writeDllTarget(ModuleName);
+                write_clean();
+                break;
         case PLUGIN_TARGET:
                 writePluginTarget(ModuleName);
                 write_clean();
@@ -1369,7 +1382,7 @@ void DoDep(FILE *f, TDepItem *d, char** iPathList, int count)
 
   strcpy(FileName,d->Path);
   strcat(FileName,d->Name);
-  
+
   p.setIncludes(iPathList, count);
   
   p.Parse(FileName);
@@ -1421,6 +1434,11 @@ int main(int argc, char *argv[])
   if (strcmp(target, "-") == 0) {
         targettype = ELF_TARGET;
         target_ext = strdup("");
+  }
+
+  if (strcmp(target, "TVISION_DLL") == 0) {
+  	targettype = TVISION_DLL;
+  	target_ext = strdup(".dll");
   }
   
   if (strcmp(target, "ELF") == 0) {
@@ -1478,7 +1496,7 @@ int main(int argc, char *argv[])
   
 //  WriteHeader(f,targetname);
   char *inclPaths = strdup(argv[3]);
-  
+
   //const char split_char, char *string, char ***array
   int count = split(',', inclPaths, &IncPathList);
   
@@ -1492,6 +1510,7 @@ int main(int argc, char *argv[])
   char** copyIPathList = NULL;
   
   copyIPathList = new char*[count];
+
 
   for (i = 0; i < count; i++) {
         char temp[1000] = "";
@@ -1513,6 +1532,9 @@ int main(int argc, char *argv[])
 /*...e*/
   
   for (i=4; i<argc; i++) Sources.AddMask(argv[i]);
+  
+  if (Sources.Count == 0) fprintf(stderr, "ERROR: No source files to write!\n");
+  
   for (i=0; i<Sources.Count; i++) DoDep(f,(TDepItem*)Sources[i], copyIPathList, count);
   WriteEnding(f,targetname,&Sources);
 //  fclose(f);

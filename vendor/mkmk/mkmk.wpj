@@ -4,8 +4,8 @@ projectIdent
 VpeMain
 1
 WRect
-870
-1360
+1430
+720
 8360
 7280
 2
@@ -15,8 +15,7 @@ MCommand
 0
 4
 MCommand
-30
-copy mkmk.exe $(%WATCOM)\binnt
+0
 1
 5
 WFileName
@@ -40,5 +39,5 @@ WFileName
 8
 mkmk.tgt
 0
-2
+1
 7
