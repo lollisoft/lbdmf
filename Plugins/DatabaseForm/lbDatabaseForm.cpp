@@ -230,15 +230,26 @@ public:
 	 * Returns true, if the specifed field is readonly.
 	 */
 	bool isReadonly(char* field);
+
+	/** \brief Check, if there must be used a special control.
+	 *
+	 * Returns true, if the configuration says, that there must be used a special
+	 * control. This is the case if I like to use an ownerdrawn control.
+	 */
+	bool isSpecialColumn(char* field);
+
+	char* getControlType(char* name);
 	
 protected:
 
 	lb_I_Query* _query;
 
 	UAP(lb_I_Container, ROFields, __FILE__, __LINE__)	
+	UAP(lb_I_Container, SCFields, __FILE__, __LINE__)
 };
 /*...e*/
 
+/*...sFormularFieldInformation\58\\58\FormularFieldInformation\40\char const \42\ formularname\44\ lb_I_Query\42\ query\41\:0:*/
 FormularFieldInformation::FormularFieldInformation(char const * formularname, lb_I_Query* query) {
 
 	lbErrCodes err = ERR_NONE;
@@ -246,6 +257,7 @@ FormularFieldInformation::FormularFieldInformation(char const * formularname, lb
 	UAP_REQUEST(getModuleInstance(), lb_I_Database, database)
 
 	REQUEST(getModuleInstance(), lb_I_Container, ROFields)
+	REQUEST(getModuleInstance(), lb_I_Container, SCFields)
 
 	database->init();
 
@@ -261,30 +273,40 @@ FormularFieldInformation::FormularFieldInformation(char const * formularname, lb
 
 	ROquery = database->getQuery(0);
 
-	char buf[] = "select tablename, name from column_types where ro = true";
-
-//	DebugBreak();
+	char buf[] = "select tablename, name, \"specialColumn\", \"controlType\", ro from column_types";
 
 	ROquery->query(buf);
 
 	err = ROquery->first();
 
 	while (err == ERR_NONE) {
-	
+/*...sGet row data:16:*/
 	        UAP(lb_I_String, tablename, __FILE__, __LINE__)
 	        UAP(lb_I_String, fieldname, __FILE__, __LINE__)
+	        UAP(lb_I_String, specialColumn, __FILE__, __LINE__)
+	        UAP(lb_I_String, columnType, __FILE__, __LINE__)
+	        UAP(lb_I_String, ro, __FILE__, __LINE__)
 
 	        tablename = ROquery->getAsString(1);
 		fieldname = ROquery->getAsString(2);
+		specialColumn = ROquery->getAsString(3);
+		columnType = ROquery->getAsString(4);
+		ro = ROquery->getAsString(5);
 
 		fieldname->trim();
+		columnType->trim();
 
-		for (int i = 1; i < query->getColumns(); i++) {
+/*...e*/
+
+		for (int i = 1; i <= query->getColumns(); i++) {
 			UAP_REQUEST(getModuleInstance(), lb_I_String, col)
 			
 			col->setData(query->getColumnName(i));
 
-			if (strcmp(col->charrep(), fieldname->charrep()) == 0) {
+			_CL_LOG << "'" << col->charrep() << "'" << "=" << "'" << fieldname->charrep() << "'" << ", '" << specialColumn->charrep() << "'" LOG_
+
+/*...sCheck for readonly column:24:*/
+			if ((strcmp(col->charrep(), fieldname->charrep()) == 0) && (strcmp("true", ro->charrep()) == 0)) {
 				UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
 				UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
 				
@@ -295,25 +317,55 @@ FormularFieldInformation::FormularFieldInformation(char const * formularname, lb
 				
 				ROFields->insert(&uk, &key);
 			}
+/*...e*/
+
+			_CL_LOG << "'" << col->charrep() << "'" << "=" << "'" << fieldname->charrep() << "'" << ", '" << specialColumn->charrep() << "'" LOG_
+			
+/*...sCheck for special column:24:*/
+			if ((strcmp(col->charrep(), fieldname->charrep()) == 0) && (strcmp("true", specialColumn->charrep()) == 0)) {
+				UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
+				UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
+				
+				QI(col, lb_I_KeyBase, key, __FILE__, __LINE__)
+				QI(columnType, lb_I_Unknown, uk, __FILE__, __LINE__)
+				
+				_CL_LOG << "Have a special column " << col->charrep() << ": " << columnType->charrep() << "." LOG_
+				
+				SCFields->insert(&uk, &key);
+			}
+/*...e*/
 		}		
 		err = ROquery->next();
 	}
 	
 	if (err == WARN_DB_NODATA) {
+/*...sGet row data:16:*/
                 UAP(lb_I_String, tablename, __FILE__, __LINE__)
                 UAP(lb_I_String, fieldname, __FILE__, __LINE__)
-
+		UAP(lb_I_String, specialColumn, __FILE__, __LINE__)
+		UAP(lb_I_String, columnType, __FILE__, __LINE__)
+		UAP(lb_I_String, ro, __FILE__, __LINE__)
+		
                 tablename = ROquery->getAsString(1);
                 fieldname = ROquery->getAsString(2);
+		specialColumn = ROquery->getAsString(3);
+		columnType = ROquery->getAsString(4);
+		ro = ROquery->getAsString(5);
 
 		fieldname->trim();
+		columnType->trim();
 
-                for (int i = 1; i < query->getColumns(); i++) {
+/*...e*/
+		
+                for (int i = 1; i <= query->getColumns(); i++) {
                         UAP_REQUEST(getModuleInstance(), lb_I_String, col)
 
                         col->setData(query->getColumnName(i));
-
-                        if (strcmp(col->charrep(), fieldname->charrep()) == 0) {
+			
+			_CL_LOG << "'" << col->charrep() << "'" << "=" << "'" << fieldname->charrep() << "'" << ", '" << specialColumn->charrep() << "'" LOG_
+			
+/*...sCheck for readonly column:24:*/
+			if ((strcmp(col->charrep(), fieldname->charrep()) == 0) && (strcmp("true", ro->charrep()) == 0)) {
                                 UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
                                 UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
 
@@ -324,10 +376,29 @@ FormularFieldInformation::FormularFieldInformation(char const * formularname, lb
 
                                 ROFields->insert(&uk, &key);
                         }
+/*...e*/
+
+			_CL_LOG << "'" << col->charrep() << "'" << "=" << "'" << fieldname->charrep() << "'" << ", '" << specialColumn->charrep() << "'" LOG_
+
+/*...sCheck for special column:24:*/
+			if ((strcmp(col->charrep(), fieldname->charrep()) == 0) && (strcmp("true", specialColumn->charrep()) == 0)) {
+				UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
+				UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
+				
+				QI(col, lb_I_KeyBase, key, __FILE__, __LINE__)
+				QI(columnType, lb_I_Unknown, uk, __FILE__, __LINE__)
+				
+				_CL_LOG << "Have a special column " << col->charrep() << ": " << columnType->charrep() << "." LOG_
+				
+				SCFields->insert(&uk, &key);
+			}
+/*...e*/
                 }
 	}
 }
+/*...e*/
 
+/*...sbool FormularFieldInformation\58\\58\isReadonly\40\char\42\ field\41\:0:*/
 bool FormularFieldInformation::isReadonly(char* field) {
 	lbErrCodes err = ERR_NONE;
 	
@@ -346,6 +417,50 @@ bool FormularFieldInformation::isReadonly(char* field) {
 		return false;
 	}
 	
+}
+/*...e*/
+
+bool FormularFieldInformation::isSpecialColumn(char* field) {
+	lbErrCodes err = ERR_NONE;
+	
+	UAP_REQUEST(getModuleInstance(), lb_I_String, f)
+	f->setData(field);
+	
+	f->trim();
+
+	_CL_LOG << "Check for special column: '" << field << "'" LOG_
+	
+	UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
+	QI(f, lb_I_KeyBase, key, __FILE__, __LINE__)
+	
+	if (SCFields->exists(&key) == 1) {
+		return true;
+	}
+
+	return false;
+}
+
+char* FormularFieldInformation::getControlType(char* name) {
+	lbErrCodes err = ERR_NONE;
+	
+	UAP_REQUEST(getModuleInstance(), lb_I_String, f)
+	f->setData(name);
+	
+	f->trim();
+	
+	UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
+	QI(f, lb_I_KeyBase, key, __FILE__, __LINE__)
+
+	if (SCFields->exists(&key) == 1) {
+		UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, type)
+		uk = SCFields->getElement(&key);
+		QI(uk, lb_I_String, type, __FILE__, __LINE__)
+		
+		return strdup(type->charrep());
+	}
+	
+	return "";
 }
 /*...e*/
 
@@ -486,7 +601,7 @@ public:
 
 	int prepareDialogHandler();
 
-	void LB_STDCALL init(lb_I_Query* query);
+	void LB_STDCALL init(lb_I_Database* _queryDB, lb_I_Query* query);
 
 	void LB_STDCALL show() { ShowModal (); };
 	void LB_STDCALL destroy() { Destroy(); };
@@ -529,7 +644,8 @@ public:
 	 */
 	UAP(lb_I_Container, ComboboxMapperList, __FILE__, __LINE__)
 	UAP(lb_I_Query, sourceQuery, __FILE__, __LINE__)
-	
+	UAP(lb_I_Database, queryDB, __FILE__, __LINE__)
+
 
 	// l gets overwritten, while assigning a lb_I_Query* pointer to sampleQuery !!
 	// l and buf are therefore as a bugfix.
@@ -604,7 +720,7 @@ void lbConfigure_FK_PK_MappingDialog::OnFKComboBoxSelected( wxCommandEvent &even
 	
 	UAP(lb_I_Query, sampleQuery, __FILE__, __LINE__)
 	
-	sampleQuery = database->getQuery(0);
+	sampleQuery = queryDB->getQuery(0);
 
 	sampleQuery->query(buffer);
 	
@@ -744,14 +860,15 @@ lbErrCodes LB_STDCALL lbConfigure_FK_PK_MappingDialog::registerEventHandler(lb_I
 	return err;
 }
 /*...e*/
-/*...svoid LB_STDCALL lbConfigure_FK_PK_MappingDialog\58\\58\init\40\lb_I_Query\42\ query\41\:0:*/
-void LB_STDCALL lbConfigure_FK_PK_MappingDialog::init(lb_I_Query* query) {
+/*...svoid LB_STDCALL lbConfigure_FK_PK_MappingDialog\58\\58\init\40\lb_I_Database\42\ _queryDB\44\ lb_I_Query\42\ query\41\:0:*/
+void LB_STDCALL lbConfigure_FK_PK_MappingDialog::init(lb_I_Database* _queryDB, lb_I_Query* query) {
 	lbErrCodes err = ERR_NONE;
 	char prefix[100] = "";
 	sprintf(prefix, "%p", this);
 
 	QI(query, lb_I_Query, sourceQuery, __FILE__, __LINE__)
-	sourceQuery++;
+	QI(_queryDB, lb_I_Database, queryDB, __FILE__, __LINE__)
+	
 	
 /*...ssizers:0:*/
 	wxBoxSizer* sizerMain  = new wxBoxSizer(wxVERTICAL);
@@ -859,6 +976,8 @@ BEGIN_PLUGINS(lbPluginModuleDatabaseForm)
 	ADD_PLUGIN(lbPluginDatabaseDialog, GUI)
 END_PLUGINS()
 
+//	ADD_PLUGIN(lbOwnerDrawControl, GUI)
+
 lbPluginModuleDatabaseForm::lbPluginModuleDatabaseForm() {
 	ref = STARTREF;
 }
@@ -878,8 +997,6 @@ lbErrCodes LB_STDCALL lbPluginModuleDatabaseForm::setData(lb_I_Unknown* uk) {
 }
 /*...e*/
 
-/*...sclass lbPluginDatabaseDialog and lbDatabaseDialog implementation:0:*/
-/*...slbDatabaseDialog:0:*/
 /*...sdoc:0:*/
 /*
 	This database dialog sample uses a fixed query yet.
@@ -1090,16 +1207,79 @@ public:
 	wxWindow* lastButton;
 	char* formName;
 
-	FormularFieldInformation* ROFields;
+	FormularFieldInformation* FFI;
 /*...e*/
 };
 /*...e*/
+
+/*...sclass lbOwnerDrawControl:0:*/
+class lbOwnerDrawControl :
+        public lb_I_Control,
+        public wxStaticBox {
+        
+public:
+	lbOwnerDrawControl();
+	
+	virtual ~lbOwnerDrawControl();
+	
+	void LB_STDCALL init(lb_I_Window* parent);
+	
+	void OnPaint(wxPaintEvent &event);
+	
+	DECLARE_LB_UNKNOWN()
+	
+	DECLARE_EVENT_TABLE()
+};
+
+BEGIN_EVENT_TABLE(lbOwnerDrawControl, wxStaticBox)
+    EVT_PAINT  (lbOwnerDrawControl::OnPaint)
+END_EVENT_TABLE()
+   
+
+BEGIN_IMPLEMENT_LB_UNKNOWN(lbOwnerDrawControl)
+        ADD_INTERFACE(lb_I_Control)
+END_IMPLEMENT_LB_UNKNOWN()
+
+IMPLEMENT_FUNCTOR(instanceOflbOwnerDrawControl, lbOwnerDrawControl)
+
+lbOwnerDrawControl::lbOwnerDrawControl() : wxStaticBox() {
+	ref = STARTREF;
+}
+
+lbOwnerDrawControl::~lbOwnerDrawControl() {
+
+}
+
+lbErrCodes LB_STDCALL lbOwnerDrawControl::setData(lb_I_Unknown* uk) {
+	_CL_LOG << "lbOwnerDrawControl::setData(lb_I_Unknown* uk) not implemented." LOG_
+
+	return ERR_NOT_IMPLEMENTED;
+}
+
+void LB_STDCALL lbOwnerDrawControl::init(lb_I_Window* parent) {
+	lbDatabaseDialog* p = (lbDatabaseDialog*) parent;
+	Create(p, -1, "", wxPoint(), wxSize(40,40)); 
+}
+
+void lbOwnerDrawControl::OnPaint(wxPaintEvent &WXUNUSED(event)) {
+	wxPaintDC dc(this);
+	PrepareDC(dc);
+        
+        dc.SetPen(*wxMEDIUM_GREY_PEN);
+        for ( int i = 1; i <= 4; i++ )
+ 	       dc.DrawLine(0, i*10, i*10, 0);
+}
+/*...e*/
+
+/*...sclass lbPluginDatabaseDialog and lbDatabaseDialog implementation:0:*/
+/*...slbDatabaseDialog:0:*/
 
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbDatabaseDialog)
         ADD_INTERFACE(lb_I_DatabaseForm)
 END_IMPLEMENT_LB_UNKNOWN()
 
 IMPLEMENT_FUNCTOR(instanceOflbDatabaseDialog, lbDatabaseDialog)
+
 
 /*...slbErrCodes LB_STDCALL lbDatabaseDialog\58\\58\setData\40\lb_I_Unknown\42\ uk\41\:0:*/
 lbErrCodes LB_STDCALL lbDatabaseDialog::setData(lb_I_Unknown* uk) {
@@ -1234,22 +1414,22 @@ void lbDatabaseDialog::init(char* SQLString, char* DBName, char* DBUser, char* D
 
 	free(_q);
 
-	ROFields = new FormularFieldInformation(formName, sampleQuery.getPtr());
+/*...sDetermine readonly fields:8:*/
+	FFI = new FormularFieldInformation(formName, sampleQuery.getPtr());
 
 	int columns = sampleQuery->getColumns();
-
-	printf("Create %d formular elements.\n", columns);
 
 	for (int co = 1; co <= columns; co++) {
 		char* name = NULL;
 		name = strdup(sampleQuery->getColumnName(co));
 		
-		if (ROFields->isReadonly(name)) {
+		if (FFI->isReadonly(name)) {
 		        sampleQuery->setUpdateable(name);
 		}
 		
 		free(name);
 	}
+/*...e*/
 
 	sampleQuery->bind();
 
@@ -1304,7 +1484,19 @@ printf("Create a drop down box for '%s'\n", name);
 			sprintf(buffer, "select PKName, PKTable	from ForeignKey_VisibleData_Mapping "
 					"where FKName = '%s' and FKTable = '%s'", name, sampleQuery->getTableName());
 
-			FKColumnQuery = database->getQuery(0);
+			UAP_REQUEST(manager.getPtr(), lb_I_Database, db)
+			db->init();
+
+			char* lbDMFPasswd = getenv("lbDMFPasswd");
+			char* lbDMFUser   = getenv("lbDMFUser");
+
+			if (!lbDMFUser) lbDMFUser = "dba";
+			if (!lbDMFPasswd) lbDMFPasswd = "trainres";
+
+			db->connect("lbDMF", lbDMFUser, lbDMFPasswd);
+
+
+			FKColumnQuery = db->getQuery(0);
 			
 			FKColumnQuery->query(buffer);
 			
@@ -1318,7 +1510,7 @@ printf("Create a drop down box for '%s'\n", name);
 				
 				fkpkDialog->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
 				
-				fkpkDialog->init(sampleQuery.getPtr());
+				fkpkDialog->init(database.getPtr(), sampleQuery.getPtr());
 				
 				fkpkDialog->show();
 				
@@ -1434,15 +1626,25 @@ printf("Create a drop down box for '%s'\n", name);
 			free(buffer);
 /*...e*/
 		} else {
-		#ifdef bla
-			/* Don't extend the query interface with such a specific
-			   function. */
-		
-			if (sampleQuery->isSpecialColumn()) {
+			if (FFI->isSpecialColumn(name)) {
 /*...sCreate controls based on configuration in a database:40:*/
+				printf("Creating a special control. (%s)\n", FFI->getControlType(name));
+
+				lbOwnerDrawControl *ownerdraw = new lbOwnerDrawControl();
+				ownerdraw->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+				ownerdraw->init(this);
+				
+				ownerdraw->SetName(name);
+				
+				sizerRight->Add(ownerdraw, 1, 0, 5);
+
+				if (FFI->isReadonly(name)) {
+				        ownerdraw->Disable();
+				}
+
+				createdControl = true;
 /*...e*/
 			} else {
-		#endif
 /*...sCreate controls based on database type:40:*/
 			lb_I_Query::lbDBColumnTypes coltype = sampleQuery->getColumnType(i);
 
@@ -1456,7 +1658,7 @@ printf("Create a drop down box for '%s'\n", name);
 						check->SetName(name);
 						sizerRight->Add(check, 1, wxEXPAND | wxALL, 5);	
 
-						if (ROFields->isReadonly(name)) {
+						if (FFI->isReadonly(name)) {
 						        check->Disable();
 						}
 
@@ -1471,7 +1673,7 @@ printf("Create a drop down box for '%s'\n", name);
 						text->SetName(name);
 						sizerRight->Add(text, 1, wxEXPAND | wxALL, 5);
 						
-						if (ROFields->isReadonly(name)) {
+						if (FFI->isReadonly(name)) {
 							text->Disable();
 						}
 
@@ -1489,7 +1691,7 @@ printf("Create a drop down box for '%s'\n", name);
 					        text->SetName(name);
 					        sizerRight->Add(text, 1, wxEXPAND | wxALL, 5);
 						
-						if (ROFields->isReadonly(name)) {
+						if (FFI->isReadonly(name)) {
  							text->Disable();
 						}
 
@@ -1500,7 +1702,7 @@ printf("Create a drop down box for '%s'\n", name);
 					break;
 			}
 /*...e*/
-		//	}
+			}
 		}
 		
 		if (createdControl) {
@@ -1714,7 +1916,9 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBClear() {
 				cbox->SetSelection(-1);
 /*...e*/
 			} else {
-/*...sUpdate controls:32:*/
+				if (FFI->isSpecialColumn(name)) {
+				} else {
+/*...sUpdate controls:40:*/
 				lb_I_Query::lbDBColumnTypes coltype = sampleQuery->getColumnType(i);
 
 				switch (coltype) {
@@ -1747,6 +1951,7 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBClear() {
 
 				
 /*...e*/
+				}
 			}
 		} else {
 			_CL_VERBOSE << "Control '" << name << "' nicht gefunden." LOG_
@@ -1833,13 +2038,15 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBUpdate() {
 				}
 /*...e*/
 			} else {
-/*...sUpdate controls:32:*/
+				if (FFI->isSpecialColumn(name)) {
+				} else {
+/*...sUpdate controls:40:*/
 				lb_I_Query::lbDBColumnTypes coltype = sampleQuery->getColumnType(i);
 
 				switch (coltype) {
 					case lb_I_Query::lbDBColumnBit:
 						{
-							if (!ROFields->isReadonly(name)) {
+							if (!FFI->isReadonly(name)) {
 								wxCheckBox *check = (wxCheckBox*) w;
 								if (check->GetValue() == TRUE) {
 									wxString v = "true";
@@ -1860,7 +2067,7 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBUpdate() {
 					
 					case lb_I_Query::lbDBColumnChar:
 						{
-							if (!ROFields->isReadonly(name)) {
+							if (!FFI->isReadonly(name)) {
 								wxTextCtrl* tx = (wxTextCtrl*) w;
 			
 								wxString v = tx->GetValue();
@@ -1875,7 +2082,7 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBUpdate() {
 					
 					case lb_I_Query::lbDBColumnInteger:
 						{
-							if (!ROFields->isReadonly(name)) {
+							if (!FFI->isReadonly(name)) {
 								wxTextCtrl* tx = (wxTextCtrl*) w;
 			
 								wxString v = tx->GetValue();
@@ -1896,6 +2103,7 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBUpdate() {
 
 				
 /*...e*/
+				}
 			}
 		} else {
 			_CL_VERBOSE << "Control '" << name << "' nicht gefunden." LOG_
@@ -1986,7 +2194,9 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBRead() {
 				}
 /*...e*/
 			} else {
-/*...sfill controls with data:32:*/
+				if (FFI->isSpecialColumn(name)) {
+				} else {
+/*...sfill controls with data:40:*/
 				lb_I_Query::lbDBColumnTypes coltype = sampleQuery->getColumnType(i);
 
 				switch (coltype) {
@@ -2026,6 +2236,7 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBRead() {
 				}
 
 /*...e*/
+				}
 			}
 		} else {
 			_CL_VERBOSE << "Control '" << name << "' nicht gefunden." LOG_
@@ -2090,16 +2301,12 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBPrev(lb_I_Unknown* uk) {
 /*...e*/
 /*...slbErrCodes LB_STDCALL lbDatabaseDialog\58\\58\lbDBLast\40\lb_I_Unknown\42\ uk\41\:0:*/
 lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBLast(lb_I_Unknown* uk) {
-	_CL_LOG << "lbDBUpdate()" LOG_
 	lbDBUpdate();
 
-	_CL_LOG << "Call sampleQuery->last()" LOG_
 	sampleQuery->last();
 
-	_CL_LOG << "Call lbDBRead()" LOG_
 	lbDBRead();
 
-	_CL_LOG << "Reinit active / inactive controls" LOG_
 	nextButton->Disable();
 	lastButton->Disable();
 	firstButton->Enable();
@@ -2406,4 +2613,5 @@ lb_I_Unknown* LB_STDCALL lbPluginDatabaseDialog::getImplementation() {
 /*...e*/
 /*...e*/
 /*...e*/
+
 

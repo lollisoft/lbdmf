@@ -33,11 +33,15 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.4 $
+ * $Revision: 1.5 $
  * $Name:  $
- * $Id: lbDatabaseForm.h,v 1.4 2005/03/31 09:07:40 lollisoft Exp $
+ * $Id: lbDatabaseForm.h,v 1.5 2005/04/23 10:44:31 lollisoft Exp $
  *
  * $Log: lbDatabaseForm.h,v $
+ * Revision 1.5  2005/04/23 10:44:31  lollisoft
+ * OwnerDrawControl basically implemented and usable.
+ * Some bugfixes in selecting from correct database connection.
+ *
  * Revision 1.4  2005/03/31 09:07:40  lollisoft
  * Copyright text problems under linux.
  *
@@ -69,6 +73,9 @@ DECLARE_SINGLETON_FUNCTOR(instanceOfPluginModule)
 
 DECLARE_FUNCTOR(instanceOflbDatabaseDialog)
 DECLARE_FUNCTOR(instanceOflbPluginDatabaseDialog)
+
+// Based on the 'group box' this control can be used to draw lines and so on.
+DECLARE_FUNCTOR(instanceOflbOwnerDrawControl)
 
 /*...s\35\ifdef __cplusplus \125\:0:*/
 #ifdef __cplusplus
