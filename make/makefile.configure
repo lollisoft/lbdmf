@@ -14,6 +14,20 @@ MKMK=mkmk
 endif
 _MODULE=$(MODULE)
 
+ifeq ($(TARGET), tvision_dll)
+makefile: makefile.module \
+$(DEVROOT_MAKE)/Projects/CPP/BaseDevelopment/Makefile \
+$(DEVROOT_MAKE)/Projects/CPP/make/makefile.template \
+$(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
+	@cat $(DEVROOT_MAKE)/Projects/CPP/make/makefile.template > makefile
+	@cat makefile.module >> makefile
+	@echo Path=$(PATH) >> makefile
+	@echo all: $(_MODULE).dll >> makefile
+	@rm -f $(DEVROOT_MAKE)/Projects/CPP/include/lbkey.h
+	@cp -f $(DEVROOT_MAKE)/Projects/CPP/BaseDevelopment/lbclasses/lbkey.h $(DEVROOT_MAKE)/Projects/CPP/include
+	$(MKMK) $(TARGET) $(_MODULE) include,include/tv,include/cl,include/win32 classes/*.cc >> makefile
+endif
+
 ifeq ($(TARGET), plugin)
 
 makefile: makefile.module \
