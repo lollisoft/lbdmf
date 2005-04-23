@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.43 $
+# * $Revision: 1.44 $
 # * $Name:  $
-# * $Id: Makefile,v 1.43 2005/04/13 21:32:37 lollisoft Exp $
+# * $Id: Makefile,v 1.44 2005/04/23 10:52:07 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.44  2005/04/23 10:52:07  lollisoft
+# * Try to add tvision target
+# *
 # * Revision 1.43  2005/04/13 21:32:37  lollisoft
 # * Restructuring making of subdirectories.
 # *
@@ -244,6 +247,8 @@ TARGETEXE=exe
 TARGETPLUGIN=plugin
 TARGETWXPLUGIN=wxplugin
 
+TARGET_TV_DLL=tvision_dll
+
 ALLTARGETS = \
 	../../dll/libs \
 	../../plugins/libs \
@@ -262,6 +267,9 @@ ALLTARGETS = \
 	../Samples/HelloWorld \
 	../Doc/html \
 	$(BASEDIRECTORIES)
+
+#tvision: ../vendor/tvision
+
 endif
 
 
@@ -300,6 +308,10 @@ mkrelease:
 #	lbXMLConfig/lbDOMConfig \
 
 dummy:
+
+../vendor/tvision: dummy
+	$(MAKE) -C $@ -e MODULE=tvision -e TARGET=$(TARGET_TV_DLL) -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
+	$(MAKE) -C $@
 
 ../Test/Console/XML: dummy
 	$(MAKE) -C $@ -e MODULE=console-test -e TARGET=$(TARGETEXE) -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
