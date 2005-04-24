@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.83 $
+ * $Revision: 1.84 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.83 2005/03/31 09:00:17 lollisoft Exp $
+ * $Id: lbModule.cpp,v 1.84 2005/04/24 18:48:41 lollisoft Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.84  2005/04/24 18:48:41  lollisoft
+ * Little memory leak fixed.
+ *
  * Revision 1.83  2005/03/31 09:00:17  lollisoft
  * Copyright text problems under linux.
  *
@@ -1789,14 +1792,17 @@ public:
 public:
 
         virtual void LB_STDCALL setFunctor(char* functor) {
+        	free(_functor);
         	_functor = strdup(functor);
         }
         
         virtual void LB_STDCALL setModule(char* module) {
+        	free(_module);
         	_module = strdup(module);
         }
         
         virtual void LB_STDCALL setInterface(char* iface) {
+        	free(_interface);
         	_interface = strdup(iface);
         }
 
@@ -1882,9 +1888,11 @@ IMPLEMENT_FUNCTOR(instanceOfHCInterfaceRepository, lbHCInterfaceRepository)
 lbHCInterfaceRepository::lbHCInterfaceRepository() {	
 	manager = NULL;
 	ref = STARTREF;
+	searchArgument = NULL;
 }
 
 lbHCInterfaceRepository::~lbHCInterfaceRepository() {
+	free(searchArgument);
 }
 
 lbErrCodes lbHCInterfaceRepository::setData(lb_I_Unknown* uk) {
@@ -1893,6 +1901,7 @@ lbErrCodes lbHCInterfaceRepository::setData(lb_I_Unknown* uk) {
 }
 
 void LB_STDCALL lbHCInterfaceRepository::setCurrentSearchInterface(const char* iface) {
+	free(searchArgument);
 	searchArgument = strdup(iface);
 	interfaces = 0;
 	CurrentSearchMode = 1;
@@ -3382,6 +3391,8 @@ lbErrCodes LB_STDCALL lbModule::request(const char* request, lb_I_Unknown** resu
 		*result = _result.getPtr();
 		(*result)->setModuleManager(this, __FILE__, __LINE__);
 		_result++;
+		
+		e->release(__FILE__, __LINE__);
 	} else {
 		printf("Error: Have no interface repository to locate configuration for %s\n", request); 
 	}
