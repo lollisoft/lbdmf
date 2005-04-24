@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.44 $
+# * $Revision: 1.45 $
 # * $Name:  $
-# * $Id: Makefile,v 1.44 2005/04/23 10:52:07 lollisoft Exp $
+# * $Id: Makefile,v 1.45 2005/04/24 18:46:31 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.45  2005/04/24 18:46:31  lollisoft
+# * New modules
+# *
 # * Revision 1.44  2005/04/23 10:52:07  lollisoft
 # * Try to add tvision target
 # *
@@ -170,6 +173,7 @@ Path=$(PATH)
 BASEDIRECTORIES= \
 	../Plugins \
 	../Modules \
+	../RegressionTests \
 	../AppDevelopment
 
 
@@ -367,7 +371,13 @@ endif
 ../Plugins: dummy
 	$(MAKE) -C $@
 
+../Modules: dummy
+	$(MAKE) -C $@
+
 ../AppDevelopmentDemo: dummy
+	$(MAKE) -C $@
+
+../RegressionTests: dummy
 	$(MAKE) -C $@
 
 ../AppDevelopmentDemo/App: dummy
@@ -378,9 +388,9 @@ endif
 	$(MAKE) -C $@ -e MODULE=lbDynApp -e TARGET=$(TARGETDLL) -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
 	$(MAKE) -C $@
 
-../Plugins/DatabaseForm: dummy
-	$(MAKE) -C $@ -e MODULE=lbDatabaseForm -e TARGET=$(TARGETWXPLUGIN) -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
-	$(MAKE) -C $@
+#../Plugins/DatabaseForm: dummy
+#	$(MAKE) -C $@ -e MODULE=lbDatabaseForm -e TARGET=$(TARGETWXPLUGIN) -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
+#	$(MAKE) -C $@
 
 lbHook: dummy
 	$(MAKE) -C $@ -e MODULE=$@ -e TARGET=$(TARGETDLL) -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
@@ -412,7 +422,8 @@ lbXMLConfig/lbDOMConfig: dummy
 
 ../Doc/html: ../doxygen.conf \
 	../interfaces/lbInterfaces.h \
-	../Samples/HelloWorld/helloworld.cpp
+	../Samples/HelloWorld/helloworld.cpp \
+	../RegressionTests/Database/dbTest.cpp
 	@doxygen ../doxygen.conf
 
 ../Samples/HelloWorld: dummy
