@@ -1215,7 +1215,7 @@ public:
 /*...sclass lbOwnerDrawControl:0:*/
 class lbOwnerDrawControl :
         public lb_I_Control,
-        public wxStaticBox {
+        public wxControl {
         
 public:
 	lbOwnerDrawControl();
@@ -1231,7 +1231,7 @@ public:
 	DECLARE_EVENT_TABLE()
 };
 
-BEGIN_EVENT_TABLE(lbOwnerDrawControl, wxStaticBox)
+BEGIN_EVENT_TABLE(lbOwnerDrawControl, wxControl)
     EVT_PAINT  (lbOwnerDrawControl::OnPaint)
 END_EVENT_TABLE()
    
@@ -1242,7 +1242,7 @@ END_IMPLEMENT_LB_UNKNOWN()
 
 IMPLEMENT_FUNCTOR(instanceOflbOwnerDrawControl, lbOwnerDrawControl)
 
-lbOwnerDrawControl::lbOwnerDrawControl() : wxStaticBox() {
+lbOwnerDrawControl::lbOwnerDrawControl() : wxControl() {
 	ref = STARTREF;
 }
 
@@ -1258,7 +1258,7 @@ lbErrCodes LB_STDCALL lbOwnerDrawControl::setData(lb_I_Unknown* uk) {
 
 void LB_STDCALL lbOwnerDrawControl::init(lb_I_Window* parent) {
 	lbDatabaseDialog* p = (lbDatabaseDialog*) parent;
-	Create(p, -1, "", wxPoint(), wxSize(40,40)); 
+	Create(p, -1, wxPoint(), wxSize(40,40)); 
 }
 
 void lbOwnerDrawControl::OnPaint(wxPaintEvent &WXUNUSED(event)) {
