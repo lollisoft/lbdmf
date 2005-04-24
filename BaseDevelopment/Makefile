@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.45 $
+# * $Revision: 1.46 $
 # * $Name:  $
-# * $Id: Makefile,v 1.45 2005/04/24 18:46:31 lollisoft Exp $
+# * $Id: Makefile,v 1.46 2005/04/24 19:26:42 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.46  2005/04/24 19:26:42  lollisoft
+# * Moved making of help files to the end of make process
+# *
 # * Revision 1.45  2005/04/24 18:46:31  lollisoft
 # * New modules
 # *
@@ -240,7 +243,6 @@ ALLTARGETS = \
 	../Test/Console/XML \
 	../Test/GUI/wxWrapper \
 	../Test/GUI/wxPlugins/lbLoginWizard \
-	../Doc/html \
 	$(BASEDIRECTORIES)
 endif
 
