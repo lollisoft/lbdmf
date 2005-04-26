@@ -87,14 +87,18 @@ int main(int argc, char *argv[]) {
 
 	_CL_LOG << "Database regression tests..." LOG_
 	
-	for (int i = 0; i < 1000000; i++) {
+	for (int i = 0; i < 10; i++) {
 	
 		UAP_REQUEST(mm, lb_I_String, string)
 	
 		string->setData("Test");
 	}
+
+	char* t = (char*) malloc(100);
+
+	printf("Ready.\n");
 	
-	getch();
+	getchar();
 	
 	return 0;
 }

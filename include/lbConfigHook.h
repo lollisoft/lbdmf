@@ -34,6 +34,9 @@
  *
  * This file must be included by each file to be able to use lbDMF.
  */
+#ifdef USE_MPATROL
+#include <mpatrol.h>
+#endif
 
 #ifdef WINDOWS
  #ifndef LB_DMF_POWER

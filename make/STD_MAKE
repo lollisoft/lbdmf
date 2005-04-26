@@ -25,11 +25,14 @@
 #            40235 Duesseldorf (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.57 $
+# * $Revision: 1.58 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.57 2005/03/31 09:25:22 lollisoft Exp $
+# * $Id: STD_MAKE,v 1.58 2005/04/26 17:18:04 lollisoft Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.58  2005/04/26 17:18:04  lollisoft
+# * Much changes to include correct libraries, preparements for memory debugging, tests changed and more
+# *
 # * Revision 1.57  2005/03/31 09:25:22  lollisoft
 # * NC.
 # *
@@ -384,7 +387,8 @@ C_OPS   = -c -g -DUNIX -DLINUX
 C_SOOPS = $(C_OPS)
 C_ELFOPS= $(C_OPS)
 L_OPS   = -o
-LIBS    = -ldl -lstdc++ 
+LIBS    = -ldl -lstdc++ #-lc $(HOME)/mpatrol/build/unix/libmpatrol.a 
+#-lc $(HOME)/mpatrol/build/unix/libmpatrol.a
 #-lefence
 CC =cc
 LD =cc

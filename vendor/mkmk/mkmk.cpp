@@ -12,11 +12,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.55 $
+ * $Revision: 1.56 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.55 2005/04/23 10:49:56 lollisoft Exp $
+ * $Id: mkmk.cpp,v 1.56 2005/04/26 17:18:04 lollisoft Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.56  2005/04/26 17:18:04  lollisoft
+ * Much changes to include correct libraries, preparements for memory debugging, tests changed and more
+ *
  * Revision 1.55  2005/04/23 10:49:56  lollisoft
  * Try to include tvision built. Added copying sym file to a place where wdw find it.
  *
@@ -967,11 +970,11 @@ void write_so_Target(char* modulename) {
 
 // Patch to create dynamic libraries under Mac OS X
 #ifdef OSX
-  printf("\t\t$(CC) -dynamiclib -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) -lc $(VENDORLIBS)\n");
+  printf("\t\t$(CC) -dynamiclib -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) $(LIBS) -lc $(VENDORLIBS)\n");
 #undef UNIX  
 #endif
 #ifdef UNIX
-  printf("\t\t$(CC) -shared -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) -lc $(VENDORLIBS)\n");
+  printf("\t\t$(CC) -shared -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) $(LIBS) -lc $(VENDORLIBS)\n");
 #endif
 
   printf("\t\tcp $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(HOME)/lib\n");
@@ -994,11 +997,11 @@ void write_wx_so_Target(char* modulename) {
 
 // Patch to create dynamic libraries under Mac OS X
 #ifdef OSX
-  printf("\t\t$(CC) -dynamiclib -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) `wx-config --libs` $(OBJS) $(OBJDEP) -lc $(VENDORLIBS)\n");
+  printf("\t\t$(CC) -dynamiclib -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) `wx-config --libs` $(OBJS) $(OBJDEP) $(LIBS) -lc $(VENDORLIBS)\n");
 #undef UNIX  
 #endif
 #ifdef UNIX
-  printf("\t\t$(CC) -shared -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) `wx-config --libs` $(OBJS) $(OBJDEP) -lc $(VENDORLIBS)\n");
+  printf("\t\t$(CC) -shared -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) `wx-config --libs` $(OBJS) $(OBJDEP) $(LIBS) -lc $(VENDORLIBS)\n");
 #endif
 #ifdef OSX
 #define UNIX
@@ -1023,11 +1026,11 @@ void write_soPlugin_Target(char* modulename) {
   printf("\n%s: $(OBJS)\n", modulename);
 
 #ifdef OSX  
-  printf("\t\t$(CC) -dynamiclib -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) -lc $(VENDORLIBS)\n");
+  printf("\t\t$(CC) -dynamiclib -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) $(LIBS) -lc $(VENDORLIBS)\n");
 #endif
 
 #ifndef OSX
-  printf("\t\t$(CC) -shared -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) -lc $(VENDORLIBS)\n");
+  printf("\t\t$(CC) -shared -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) $(LIBS) -lc $(VENDORLIBS)\n");
 #endif
 
   printf("\t\tcp $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(HOME)/lib/plugins\n");
@@ -1050,11 +1053,11 @@ void write_wx_soPlugin_Target(char* modulename) {
   printf("\n%s: $(OBJS)\n", modulename);
 
 #ifdef OSX  
-  printf("\t\t$(CC) -dynamiclib -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) -lc $(VENDORLIBS)\n");
+  printf("\t\t$(CC) -dynamiclib -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) $(LIBS) -lc $(VENDORLIBS)\n");
 #endif
 
 #ifndef OSX
-  printf("\t\t$(CC) -shared -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) -lc $(VENDORLIBS)\n");
+  printf("\t\t$(CC) -shared -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) $(LIBS) -lc $(VENDORLIBS)\n");
 #endif
   printf("\t\tcp $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(HOME)/plugins\n");
   printf("\t\tln -sf $(HOME)/plugins/$(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(HOME)/plugins/$(PROGRAM).$(MAJOR)\n");
@@ -1076,7 +1079,7 @@ void ShowHelp()
 
   fprintf(stderr, "Enhanced by Lothar Behrens (lothar.behrens@lollisoft.de)\n\n");
 
-  fprintf(stderr, "MKMK: makefile generator $Revision: 1.55 $\n");
+  fprintf(stderr, "MKMK: makefile generator $Revision: 1.56 $\n");
   fprintf(stderr, "Usage: MKMK lib|exe|dll|so modulname includepath,[includepath,...] file1 [file2 file3...]\n");
 }
 /*...e*/
