@@ -54,3 +54,9 @@ OBJDEP=
 VENDORLIBS=$(HOME)/lib/lbHook.so
 endif    
 
+ifeq ($(OSTYPE), osx)
+MOD_INCL=$(STD_INCL)
+OBJDEP=
+VENDORLIBS=$(HOME)/lib/lbHook.so
+endif    
+

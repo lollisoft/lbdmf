@@ -40,16 +40,18 @@
 #ifdef __cplusplus
 extern "C" {      
 #endif            
+#ifndef OSX
 #include <conio.h>
-
+#endif
 #ifdef __cplusplus
 }
 #endif            
 
 #include <stdio.h>
 #include <iostream.h>
+#ifndef OSX
 #include <malloc.h>
-
+#endif
 //#include "testdll.h"
 
 #include <lbConfigHook.h>

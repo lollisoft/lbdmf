@@ -12,10 +12,23 @@ ifeq ($(OSTYPE), linux)
 DEVROOT_MAKE=$(DEVROOT)
 endif
 
+ifeq ($(OSTYPE), osx)
+DEVROOT_MAKE=$(DEVROOT)
+endif
+
 
 Path=$(PATH)
 
 ifeq ($(OSTYPE), linux)
+
+TARGETDLL=so
+TARGETEXE=elf
+
+ALLTARGETS = \
+	DatabaseForm
+endif
+
+ifeq ($(OSTYPE), osx)
 
 TARGETDLL=so
 TARGETEXE=elf

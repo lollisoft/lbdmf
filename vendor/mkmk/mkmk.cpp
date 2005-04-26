@@ -12,11 +12,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.56 $
+ * $Revision: 1.57 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.56 2005/04/26 17:18:04 lollisoft Exp $
+ * $Id: mkmk.cpp,v 1.57 2005/04/26 20:51:14 lollisoft Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.57  2005/04/26 20:51:14  lollisoft
+ * Changes for OSX
+ *
  * Revision 1.56  2005/04/26 17:18:04  lollisoft
  * Much changes to include correct libraries, preparements for memory debugging, tests changed and more
  *
@@ -977,6 +980,10 @@ void write_so_Target(char* modulename) {
   printf("\t\t$(CC) -shared -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) $(LIBS) -lc $(VENDORLIBS)\n");
 #endif
 
+#ifdef OSX
+#define UNIX
+#endif
+
   printf("\t\tcp $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(HOME)/lib\n");
   printf("\t\tln -sf $(HOME)/lib/$(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(HOME)/lib/$(PROGRAM).$(MAJOR)\n");
   printf("\t\tln -sf $(HOME)/lib/$(PROGRAM).$(MAJOR) $(HOME)/lib/$(PROGRAM)\n");
@@ -1059,9 +1066,10 @@ void write_wx_soPlugin_Target(char* modulename) {
 #ifndef OSX
   printf("\t\t$(CC) -shared -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) $(LIBS) -lc $(VENDORLIBS)\n");
 #endif
-  printf("\t\tcp $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(HOME)/plugins\n");
-  printf("\t\tln -sf $(HOME)/plugins/$(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(HOME)/plugins/$(PROGRAM).$(MAJOR)\n");
-  printf("\t\tln -sf $(HOME)/plugins/$(PROGRAM).$(MAJOR) $(HOME)/plugins/$(PROGRAM)\n");
+
+  printf("\t\tcp $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(HOME)/lib/plugins\n");
+  printf("\t\tln -sf $(HOME)/lib/plugins/$(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(HOME)/lib/plugins/$(PROGRAM).$(MAJOR)\n");
+  printf("\t\tln -sf $(HOME)/lib/plugins/$(PROGRAM).$(MAJOR) $(HOME)/lib/plugins/$(PROGRAM)\n");
 
 #endif
 #ifdef __WATCOMC__
@@ -1079,7 +1087,7 @@ void ShowHelp()
 
   fprintf(stderr, "Enhanced by Lothar Behrens (lothar.behrens@lollisoft.de)\n\n");
 
-  fprintf(stderr, "MKMK: makefile generator $Revision: 1.56 $\n");
+  fprintf(stderr, "MKMK: makefile generator $Revision: 1.57 $\n");
   fprintf(stderr, "Usage: MKMK lib|exe|dll|so modulname includepath,[includepath,...] file1 [file2 file3...]\n");
 }
 /*...e*/

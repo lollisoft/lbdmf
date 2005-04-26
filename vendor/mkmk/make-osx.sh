@@ -1,4 +1,5 @@
 #!/bin/sh
+echo Make MKMK for OSX
 cd $1
 c++ mkmk.cpp -c -DUNIX -DOSX \
     -I /usr/include \

@@ -1,5 +1,7 @@
 #!/bin/sh
 
+echo Make MKMK for Linux
+
 cd $1
 
 c++ mkmk.cpp -c -DUNIX \
