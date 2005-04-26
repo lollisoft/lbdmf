@@ -2164,7 +2164,7 @@ char* LB_STDCALL lbQuery::getTableName() {
 // There may be a bug in the last lines and here I have my table...
 
 int i = 0;
-while (lpsz[i++] != ' ') i++;
+while (lpsz[i] != 0 && lpsz[i] != ' ') i++;
 
 if (strlen(lpsz) > 999) {
     lpszTable = (char*) realloc(lpszTable, strlen(lpsz)+1);
@@ -2355,9 +2355,14 @@ lbErrCodes LB_STDCALL lbBoundColumn::getAsString(lb_I_String* result, int asPara
 	        	break;
 	        case SQL_BIT:
 	        	{
+			#ifdef OSX
 				int bi = *(int*) buffer;
-	
 	        		if (bi != 0)
+			#endif
+			#ifndef OSX
+				bool b = *(bool*) buffer;
+	        		if (b == true)
+			#endif
 		        		result->setData("true");
 		        	else
 		        		result->setData("false");	
