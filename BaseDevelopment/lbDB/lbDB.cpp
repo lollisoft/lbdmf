@@ -2355,9 +2355,9 @@ lbErrCodes LB_STDCALL lbBoundColumn::getAsString(lb_I_String* result, int asPara
 	        	break;
 	        case SQL_BIT:
 	        	{
-	        		bool b = *(bool*) buffer;
-	        	
-	        		if (b == true)
+				int bi = *(int*) buffer;
+	
+	        		if (bi != 0)
 		        		result->setData("true");
 		        	else
 		        		result->setData("false");	
