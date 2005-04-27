@@ -89,6 +89,11 @@ public:
 	 */
 	virtual void LB_STDCALL dbError(char* lp) = 0;
 
+	/** \brief Print the resulting query data to the console. 
+	 *
+	 */
+	virtual void LB_STDCALL PrintData() = 0;
+
         /**
          * \brief Set the SQL query.
          *
