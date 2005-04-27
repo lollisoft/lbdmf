@@ -32,6 +32,7 @@ ifeq ($(OSTYPE), osx)
 
 TARGETDLL=so
 TARGETEXE=elf
+TARGETWXSOPLUGIN=wxsoplugin
 
 ALLTARGETS = \
 	DatabaseForm
@@ -70,6 +71,6 @@ mkrelease:
 dummy:
 
 DatabaseForm: dummy
-	$(MAKE) -C $@ -e MODULE=lbDatabaseForm -e TARGET=$(TARGETDLL) -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
+	$(MAKE) -C $@ -e MODULE=lbDatabaseForm -e TARGET=$(TARGETWXSOPLUGIN) -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
 	$(MAKE) -C $@
 	
