@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.16 $
+ * $Revision: 1.17 $
  * $Name:  $
- * $Id: lbPluginManager.cpp,v 1.16 2005/04/03 22:08:10 lollisoft Exp $
+ * $Id: lbPluginManager.cpp,v 1.17 2005/04/27 12:44:42 lollisoft Exp $
  *
  * $Log: lbPluginManager.cpp,v $
+ * Revision 1.17  2005/04/27 12:44:42  lollisoft
+ * Ignoring *.so.* files and .
+ *
  * Revision 1.16  2005/04/03 22:08:10  lollisoft
  * Removed much logging messages.
  *
@@ -200,6 +203,12 @@ lbErrCodes LB_STDCALL lbPluginManager::setData(lb_I_Unknown* uk) {
 /*...sbool LB_STDCALL lbPluginManager\58\\58\tryLoad\40\char\42\ module\41\:0:*/
 bool LB_STDCALL lbPluginManager::tryLoad(char* module) {
 	lbErrCodes err = ERR_NONE;
+	
+	if (strcmp(".", module) == 0) return false;
+	if (strstr(module, "so.") != NULL) return false;
+	
+	_CL_LOG << "Try to load module '" << module << "'" LOG_
+	
 	char* pluginDir = getenv("PLUGIN_DIR");
 	
 	if (pluginDir == NULL) {
