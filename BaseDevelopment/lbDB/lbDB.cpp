@@ -219,6 +219,8 @@ public:
 
 	void LB_STDCALL dbError(char* lp);
 
+	void LB_STDCALL PrintData();
+
         /* Set the SQL query */
         virtual lbErrCodes LB_STDCALL query(char* q, bool bind);
         
@@ -359,8 +361,10 @@ public:
 				break;
 			case SQL_INTEGER:
 				break;
+			case SQL_BIT:
+				break;
 			default:
-				_CL_LOG << "lbBoundColumn::bindColumn(...) failed: Unknown or not supported datatype" LOG_
+				_CL_LOG << "lbBoundColumn::~lbBoundColumn() failed: Unknown or not supported datatype for column '" << colName->charrep() << "'" LOG_
 				break;
 		}
 		
@@ -877,6 +881,48 @@ void LB_STDCALL lbQuery::enableFKCollecting() {
 	skipFKCollections = 0;
 }
 
+void LB_STDCALL lbQuery::PrintData() {
+	lbErrCodes err = ERR_NONE;
+	
+	lb_I_Query* q = this;
+	
+	if (q->first() == ERR_NONE) {
+		UAP(lb_I_String, s, __FILE__, __LINE__)
+		s = q->getAsString(q->getColumns());
+		s->trim();
+
+	    for (int cols = 1; cols <= q->getColumns()-1; cols++) {
+			UAP(lb_I_String, s1, __FILE__, __LINE__)
+			s1 = q->getAsString(cols);
+			s1->trim();
+			printf("%s;", s1->charrep());
+	    };
+	    
+	    printf("%s\n", s->charrep());
+	    
+	    while ((err = q->next()) == ERR_NONE) {
+			for (int cols = 1; cols <= q->getColumns()-1; cols++) { 
+				s = q->getAsString(cols);
+				s->trim();
+				printf("%s;", s->charrep());
+			};
+			s = q->getAsString(q->getColumns());
+			s->trim();
+			printf("%s\n", s->charrep());
+	    };	    
+		
+	    if (err == WARN_DB_NODATA) {
+			for (int cols = 1; cols <= q->getColumns()-1; cols++) { 
+				s = q->getAsString(cols);
+				s->trim();
+				printf("%s;", s->charrep());
+			};
+			s = q->getAsString(q->getColumns());
+			s->trim();
+			printf("%s\n", s->charrep());
+	    };	    
+	}
+}
 
 
 /*...slbErrCodes LB_STDCALL lbQuery\58\\58\init\40\HENV _henv\44\ HDBC _hdbc\41\:0:*/
@@ -2344,7 +2390,7 @@ lbErrCodes LB_STDCALL lbBoundColumn::getAsString(lb_I_String* result, int asPara
 	        	
 	        	break;
 	        case SQL_BINARY:
-	        	_CL_LOG << "lbBoundColumn::getAsString(...) failed: Binary data not supported" LOG_
+	        	_CL_LOG << "lbBoundColumn::getAsString(...) failed: Binary data not supported for column '" << colName->charrep() << "'" LOG_
 	        	break;
 	        case SQL_INTEGER:
 			{
@@ -2356,20 +2402,24 @@ lbErrCodes LB_STDCALL lbBoundColumn::getAsString(lb_I_String* result, int asPara
 	        case SQL_BIT:
 	        	{
 			#ifdef OSX
-				int bi = *(int*) buffer;
-	        		if (bi != 0)
+				int bi = 0;
+				bi = *(int*) buffer;
+
+	        		if (bi != 0) {
 			#endif
 			#ifndef OSX
 				bool b = *(bool*) buffer;
-	        		if (b == true)
+	        		if (b == true) {
 			#endif
 		        		result->setData("true");
-		        	else
-		        		result->setData("false");	
+				}
+		        	else {
+		        		result->setData("false");
+				}	
 	        	}
 	        	break;
 	        default:
-	        	_CL_LOG << "lbBoundColumn::getAsString(...) failed: Unknown or not supported datatype" LOG_
+	        	_CL_LOG << "lbBoundColumn::getAsString(...) failed: Unknown or not supported datatype for column '" << colName->charrep() << "'"  LOG_
 	        	break;
 	}
 	return ERR_NONE;
@@ -2410,7 +2460,7 @@ lbErrCodes LB_STDCALL lbBoundColumn::setFromString(lb_I_String* set, int mode) {
 				}
 				break;
 			case SQL_BINARY:
-				_CL_LOG << "lbBoundColumn::setFromString(...) failed: Binary data not supported" LOG_
+				_CL_LOG << "lbBoundColumn::setFromString(...) failed: Binary data not supported for column '" << colName->charrep() << "'"  LOG_
 				break;
 			case SQL_BIT:
 				{
@@ -2446,7 +2496,7 @@ lbErrCodes LB_STDCALL lbBoundColumn::setFromString(lb_I_String* set, int mode) {
 				}
 				break;
 			case SQL_BINARY:
-				_CL_LOG << "lbBoundColumn::setFromString(...) failed: Binary data not supported" LOG_
+				_CL_LOG << "lbBoundColumn::setFromString(...) failed: Binary data not supported for column '" << colName->charrep() << "'" LOG_
 				break;
 			case SQL_BIT:
 				{
@@ -2498,7 +2548,6 @@ lbErrCodes LB_STDCALL lbBoundColumn::prepareBoundColumn(lb_I_Query* q, int colum
 /*...e*/
 /*...slbErrCodes LB_STDCALL lbBoundColumn\58\\58\bindColumn\40\lbQuery\42\ q\44\ int column\44\ bool ro\41\:0:*/
 lbErrCodes LB_STDCALL lbBoundColumn::bindColumn(lb_I_Query* q, int column, bool ro) {
-//printf("lbBoundColumn::bindColumn(...) called\n");
 	hstmt = ((lbQuery*) q)->getCurrentStatement();
 
 	query = (lbQuery*) q;
@@ -2609,7 +2658,7 @@ lbErrCodes LB_STDCALL lbBoundColumn::bindColumn(lb_I_Query* q, int column, bool 
 			}
 			break;
 		default:
-			_CL_LOG << "lbBoundColumn::bindColumn(...) failed: Unknown or not supported datatype" << DataType LOG_
+			_CL_LOG << "lbBoundColumn::bindColumn(...) failed: Unknown or not supported datatype for column '" << colName->charrep() << "': " << DataType LOG_
 			break;
 	}
 	
@@ -2786,7 +2835,7 @@ void LB_STDCALL lbBoundColumn::unbindReadonlyColumns() {
 			}
 			break;
 		default:
-			_CL_LOG << "lbBoundColumn::bindColumn(...) failed: Unknown or not supported datatype" << _DataType LOG_
+			_CL_LOG << "lbBoundColumn::unbindReadonlyColumns(...) failed: Unknown or not supported datatype for column '" << colName->charrep() << "': " << _DataType LOG_
 			break;
 	}
 /*...e*/
@@ -2860,7 +2909,7 @@ void LB_STDCALL lbBoundColumn::rebindReadonlyColumns() {
 			}
 			break;
 		default:
-			_CL_LOG << "lbBoundColumn::bindColumn(...) failed: Unknown or not supported datatype" << _DataType LOG_
+			_CL_LOG << "lbBoundColumn::rebindReadonlyColumns(...) failed: Unknown or not supported datatype for column '" << colName->charrep() << "': " << _DataType LOG_
 			break;
 	}
 /*...e*/
