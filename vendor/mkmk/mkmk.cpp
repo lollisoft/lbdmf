@@ -12,11 +12,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.57 $
+ * $Revision: 1.58 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.57 2005/04/26 20:51:14 lollisoft Exp $
+ * $Id: mkmk.cpp,v 1.58 2005/04/27 12:58:02 lollisoft Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.58  2005/04/27 12:58:02  lollisoft
+ * Linking with L_OPS options instead of LIBS
+ *
  * Revision 1.57  2005/04/26 20:51:14  lollisoft
  * Changes for OSX
  *
@@ -1060,11 +1063,11 @@ void write_wx_soPlugin_Target(char* modulename) {
   printf("\n%s: $(OBJS)\n", modulename);
 
 #ifdef OSX  
-  printf("\t\t$(CC) -dynamiclib -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) $(LIBS) -lc $(VENDORLIBS)\n");
+  printf("\t\t$(CC) -dynamiclib -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) $(L_OPS) -lc $(VENDORLIBS)\n");
 #endif
 
 #ifndef OSX
-  printf("\t\t$(CC) -shared -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) $(LIBS) -lc $(VENDORLIBS)\n");
+  printf("\t\t$(CC) -shared -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) $(L_OPS) -lc $(VENDORLIBS)\n");
 #endif
 
   printf("\t\tcp $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(HOME)/lib/plugins\n");
@@ -1087,7 +1090,7 @@ void ShowHelp()
 
   fprintf(stderr, "Enhanced by Lothar Behrens (lothar.behrens@lollisoft.de)\n\n");
 
-  fprintf(stderr, "MKMK: makefile generator $Revision: 1.57 $\n");
+  fprintf(stderr, "MKMK: makefile generator $Revision: 1.58 $\n");
   fprintf(stderr, "Usage: MKMK lib|exe|dll|so modulname includepath,[includepath,...] file1 [file2 file3...]\n");
 }
 /*...e*/
