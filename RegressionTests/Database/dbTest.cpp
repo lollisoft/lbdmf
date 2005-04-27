@@ -70,8 +70,6 @@ int main(int argc, char *argv[]) {
 	lbErrCodes err = ERR_NONE;
 	lb_I_Module* mm = NULL;
 	
-	// Get the module manager
-	
 	mm = getModuleInstance();
 	mm->setModuleManager(mm, __FILE__, __LINE__);
 
@@ -98,27 +96,23 @@ int main(int argc, char *argv[]) {
 
 	char buf[] = "create table regressiontest ("
 			"test char(100) DEFAULT 'Nothing',\n"
-			"btest bool DEFAULT false);";
+			"btest bool DEFAULT false, "
+			"btest1 bool DEFAULT false"
+			");";
 
 	query->query(buf);
 
 	query1 = database->getQuery(0);
 	query1->query("insert into regressiontest (test) values('Nix')");
 	query1->query("insert into regressiontest (btest) values(true)");
+	query1->query("insert into regressiontest (btest1) values(true)");
 
 	query2 = database->getQuery(0);
-	query2->query("select btest, test from regressiontest");
+	query2->query("select test, btest, btest1 from regressiontest");
 
 	err = query2->first();
 
-	while (err == ERR_NONE || err == WARN_DB_NODATA) {
-		_CL_LOG << "Values are '" << 
-			query2->getAsString(1)->charrep() << 
-			"' and '" << 
-			query2->getAsString(2)->charrep() << "'" LOG_	
-		
-		err = query2->next();
-	}
+	query2->PrintData();
 	
 	query3 = database->getQuery(0);
 	
@@ -163,31 +157,29 @@ int main(int argc, char *argv[]) {
 
 	char buf[] = "create table regressiontest ("
 			"test char(100) DEFAULT 'Nothing',\n"
-			"btest bool DEFAULT false);";
+			"btest bool DEFAULT false, "
+			"btest1 bool DEFAULT false"
+			");";
 
 	query->query(buf);
 
 	query1 = database->getQuery(0);
 	query1->query("insert into regressiontest (test) values('Nix')");
 	query1->query("insert into regressiontest (btest) values(true)");
+	query1->query("insert into regressiontest (btest1) values(true)");
 
 	query2 = database->getQuery(0);
-	query2->query("select btest, test from regressiontest");
+	query2->query("select test, btest, btest1 from regressiontest");
 
 	err = query2->first();
 
-	while (err == ERR_NONE || err == WARN_DB_NODATA) {
-		_CL_LOG << "Values are '" << 
-			query2->getAsString(1)->charrep() << 
-			"' and '" << 
-			query2->getAsString(2)->charrep() << "'" LOG_	
-		
-		err = query2->next();
-	}
+	query2->PrintData();
 	
 	query3 = database->getQuery(0);
 	
 	query3->query("drop table regressiontest");
+	query3->query("select tablename, name, \"specialColumn\", \"controlType\", ro from column_types");
+	query3->PrintData();
 
         return 0;
 }
