@@ -132,8 +132,6 @@ char* FormularActions::getActionTargetID(char* what) {
 	What->setData(what);
 	What->trim();
 
-	_CL_LOG << "Have trimmed the what field: '" << What->charrep() << "'" LOG_
-	
 	database->init();
 	
 	char* lbDMFPasswd = getenv("lbDMFPasswd");
@@ -276,7 +274,7 @@ FormularFieldInformation::FormularFieldInformation(char const * formularname, lb
 	char buf[] = "select tablename, name, \"specialColumn\", \"controlType\", ro from column_types";
 
 	ROquery->query(buf);
-
+	
 	err = ROquery->first();
 
 	while (err == ERR_NONE) {
@@ -303,8 +301,6 @@ FormularFieldInformation::FormularFieldInformation(char const * formularname, lb
 			
 			col->setData(query->getColumnName(i));
 
-			_CL_LOG << "'" << col->charrep() << "'" << "=" << "'" << fieldname->charrep() << "'" << ", '" << specialColumn->charrep() << "'" LOG_
-
 /*...sCheck for readonly column:24:*/
 			if ((strcmp(col->charrep(), fieldname->charrep()) == 0) && (strcmp("true", ro->charrep()) == 0)) {
 				UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
@@ -313,14 +309,10 @@ FormularFieldInformation::FormularFieldInformation(char const * formularname, lb
 				QI(col, lb_I_KeyBase, key, __FILE__, __LINE__)
 				QI(col, lb_I_Unknown, uk, __FILE__, __LINE__)
 				
-				_CL_LOG << "Have a readonly field: " << fieldname->charrep() << "." LOG_
-				
 				ROFields->insert(&uk, &key);
 			}
 /*...e*/
 
-			_CL_LOG << "'" << col->charrep() << "'" << "=" << "'" << fieldname->charrep() << "'" << ", '" << specialColumn->charrep() << "'" LOG_
-			
 /*...sCheck for special column:24:*/
 			if ((strcmp(col->charrep(), fieldname->charrep()) == 0) && (strcmp("true", specialColumn->charrep()) == 0)) {
 				UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
@@ -328,8 +320,6 @@ FormularFieldInformation::FormularFieldInformation(char const * formularname, lb
 				
 				QI(col, lb_I_KeyBase, key, __FILE__, __LINE__)
 				QI(columnType, lb_I_Unknown, uk, __FILE__, __LINE__)
-				
-				_CL_LOG << "Have a special column " << col->charrep() << ": " << columnType->charrep() << "." LOG_
 				
 				SCFields->insert(&uk, &key);
 			}
@@ -362,8 +352,6 @@ FormularFieldInformation::FormularFieldInformation(char const * formularname, lb
 
                         col->setData(query->getColumnName(i));
 			
-			_CL_LOG << "'" << col->charrep() << "'" << "=" << "'" << fieldname->charrep() << "'" << ", '" << specialColumn->charrep() << "'" LOG_
-			
 /*...sCheck for readonly column:24:*/
 			if ((strcmp(col->charrep(), fieldname->charrep()) == 0) && (strcmp("true", ro->charrep()) == 0)) {
                                 UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
@@ -372,13 +360,9 @@ FormularFieldInformation::FormularFieldInformation(char const * formularname, lb
                                 QI(col, lb_I_KeyBase, key, __FILE__, __LINE__)
                                 QI(col, lb_I_Unknown, uk, __FILE__, __LINE__)
 
-				_CL_LOG << "Have a readonly field: " << fieldname->charrep() << "." LOG_
-
                                 ROFields->insert(&uk, &key);
                         }
 /*...e*/
-
-			_CL_LOG << "'" << col->charrep() << "'" << "=" << "'" << fieldname->charrep() << "'" << ", '" << specialColumn->charrep() << "'" LOG_
 
 /*...sCheck for special column:24:*/
 			if ((strcmp(col->charrep(), fieldname->charrep()) == 0) && (strcmp("true", specialColumn->charrep()) == 0)) {
@@ -387,8 +371,6 @@ FormularFieldInformation::FormularFieldInformation(char const * formularname, lb
 				
 				QI(col, lb_I_KeyBase, key, __FILE__, __LINE__)
 				QI(columnType, lb_I_Unknown, uk, __FILE__, __LINE__)
-				
-				_CL_LOG << "Have a special column " << col->charrep() << ": " << columnType->charrep() << "." LOG_
 				
 				SCFields->insert(&uk, &key);
 			}
@@ -428,8 +410,6 @@ bool FormularFieldInformation::isSpecialColumn(char* field) {
 	
 	f->trim();
 
-	_CL_LOG << "Check for special column: '" << field << "'" LOG_
-	
 	UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
 	QI(f, lb_I_KeyBase, key, __FILE__, __LINE__)
 	
@@ -776,8 +756,6 @@ void lbConfigure_FK_PK_MappingDialog::OnPKComboBoxSelected( wxCommandEvent &even
 
 	sprintf(buffer, buf, FKName.c_str(), fkTable, PKName.c_str(), PKTable->charrep());
 
-	printf("Len of buffer: %d\n", strlen(buffer));
-	
 	query = database->getQuery(0);
 	
 	query->query(buffer);
@@ -1360,9 +1338,6 @@ void lbDatabaseDialog::init(char* SQLString, char* DBName, char* DBUser, char* D
 	REQUEST(manager.getPtr(), lb_I_Database, database)
 
 	database->init();
-	
-	printf("Connecting to %s as %s\n", DBName, DBUser);
-	
 	database->connect(DBName, DBUser, DBPass);
 
 	char* _q = strdup(SQLString);
@@ -1447,8 +1422,6 @@ void lbDatabaseDialog::init(char* SQLString, char* DBName, char* DBUser, char* D
 		UAP(lb_I_Query, FKColumnQuery1, __FILE__, __LINE__)
 		
 		name = strdup(sampleQuery->getColumnName(i));
-
-		printf("Setup form element for '%s'\n", name);
 
 		/* Determine, if the column is a foreign key. If so try to get the
 		   configured column to show instead.
@@ -1782,8 +1755,6 @@ printf("Create a drop down box for '%s'\n", name);
 	
 	sprintf(buf, _actionquery, formName);
 	
-	printf("%s\n", buf);
-	
 	actionQuery->query(buf);
 	lbErrCodes err = actionQuery->first();
 	
@@ -1795,13 +1766,13 @@ printf("Create a drop down box for '%s'\n", name);
 		action = actionQuery->getAsString(1);
 		actionWhat = actionQuery->getAsString(2);
 
+		actionWhat->trim();
+
 		int actionID = 0;
 		
 		char *eventName = (char*) malloc(strlen(actionWhat->charrep()) + 20);
 		
 		sprintf(eventName, "%p(%s)", this, actionWhat->charrep());
-		
-		printf("Register action event '%s'\n", eventName);
 		
 		eman->registerEvent(eventName, actionID);
 		
@@ -1827,14 +1798,14 @@ printf("Create a drop down box for '%s'\n", name);
 		action = actionQuery->getAsString(1);
 		actionWhat = actionQuery->getAsString(2);
 
+		actionWhat->trim();
+
 		int actionID = 0;
 		
 		char *eventName = (char*) malloc(strlen(actionWhat->charrep()) + 20);
 		
 		sprintf(eventName, "%p(%s)", this, actionWhat->charrep());
 
-		printf("Register action event '%s'\n", eventName);
-		
 		eman->registerEvent(eventName, actionID);
 		
 		wxButton *actionButton = new wxButton(this, actionID, _trans(action->charrep())); //, wxPoint(), wxSize(100,20));
@@ -1876,10 +1847,6 @@ printf("Create a drop down box for '%s'\n", name);
 	 * control should be in any format. The drawing handler must
 	 * be capable to handle it independently.
 	 */
-
-
-	
-	
 
 	SetAutoLayout(TRUE);
 	
