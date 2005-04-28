@@ -300,6 +300,10 @@ DLLEXPORT char* LB_STDCALL ltoa(void* ptr);
 DLLEXPORT char* LB_STDCALL itoa(int ptr);
 
 
+DLLEXPORT void LB_STDCALL InstanceCount(int inst);
+DLLEXPORT void LB_STDCALL Instances();
+
+
 
 /*...sclass lbStringKey \58\ public lb_I_KeyBase:0:*/
 class DLLEXPORT
