@@ -359,6 +359,32 @@ DECLARE_LB_UNKNOWN()
 		return ERR_NONE;
 	}
 /*...e*/
+/*...slbErrCodes LB_STDCALL createPasswdCtrl\40\char\42\ _name\41\:8:*/
+	lbErrCodes LB_STDCALL createPasswdCtrl(char* _name) {
+		char* name = NULL;
+
+		name = strdup(_name);
+
+		wxTextCtrl *text = new wxTextCtrl(this, -1, "", wxPoint(), wxDefaultSize, wxTE_PASSWORD);
+
+		text->SetName(name);
+
+		sizerRight->Add(text, 1, wxEXPAND | wxALL, 5);
+
+		char* tLabel = new char[strlen(name) + 1];
+
+		tLabel[0] = 0;
+
+		tLabel = strcat(tLabel, name);
+
+		wxStaticText *label = new wxStaticText(this, -1, tLabel, wxPoint());
+		sizerLeft->Add(label, 1, wxEXPAND | wxALL, 5);
+	
+		free(name);
+
+		return ERR_NONE;
+	}
+/*...e*/
 /*...svirtual bool TransferDataFromWindow\40\\41\:8:*/
 	virtual bool TransferDataFromWindow()
 	{
@@ -448,7 +474,7 @@ _CL_VERBOSE << "Query for user " << user LOG_
 		sizerHor->Add(sizerRight, 1, wxEXPAND | wxALL, 5);
 	
 		createTextCtrl("Benutzer:");
-		createTextCtrl("Passwort:");
+		createPasswdCtrl("Passwort:");
 
 		//#define CONNECTOR ((wxFrame*) frame)
 		#define CONNECTOR this

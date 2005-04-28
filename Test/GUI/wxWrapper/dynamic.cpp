@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.69 2005/04/28 09:46:30 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.70 2005/04/28 10:20:19 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.69 $
+ * $Revision: 1.70 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.69 2005/04/28 09:46:30 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.70 2005/04/28 10:20:19 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.70  2005/04/28 10:20:19  lollisoft
+ * Made password field hide characters.
+ *
  * Revision 1.69  2005/04/28 09:46:30  lollisoft
  * Some changes under Linux to built correctly
  *
@@ -622,6 +625,32 @@ DECLARE_LB_UNKNOWN()
 
 	lbErrCodes LB_STDCALL registerEventHandler(lb_I_Dispatcher* dispatcher);
 
+/*...slbErrCodes LB_STDCALL createPasswdCtrl\40\char\42\ _name\41\:8:*/
+	lbErrCodes LB_STDCALL createPasswdCtrl(char* _name) {
+		char* name = NULL;
+
+		name = strdup(_name);
+
+		wxTextCtrl *text = new wxTextCtrl(this, -1, "", wxPoint(), wxDefaultSize, wxTE_PASSWORD);
+
+		text->SetName(name);
+
+		sizerRight->Add(text, 1, wxEXPAND | wxALL, 5);
+
+		char* tLabel = new char[strlen(name) + 1];
+
+		tLabel[0] = 0;
+
+		tLabel = strcat(tLabel, name);
+
+		wxStaticText *label = new wxStaticText(this, -1, tLabel, wxPoint());
+		sizerLeft->Add(label, 1, wxEXPAND | wxALL, 5);
+	
+		free(name);
+
+		return ERR_NONE;
+	}
+/*...e*/
 /*...slbErrCodes LB_STDCALL createTextCtrl\40\char\42\ _name\41\:8:*/
 	lbErrCodes LB_STDCALL createTextCtrl(char* _name) {
 		char* name = NULL;
@@ -737,7 +766,7 @@ _CL_VERBOSE << "Query for user " << user LOG_
 		sizerHor->Add(sizerRight, 1, wxEXPAND | wxALL, 5);
 	
 		createTextCtrl("Benutzer:");
-		createTextCtrl("Passwort:");
+		createPasswdCtrl("Passwort:");
 
 		//#define CONNECTOR ((wxFrame*) frame)
 		#define CONNECTOR this
