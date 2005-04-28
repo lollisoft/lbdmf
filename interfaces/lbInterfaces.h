@@ -925,6 +925,7 @@ private: \
 	lb_I_Unknown* data; \
 	int debug_macro; \
 	int further_lock; \
+	volatile int instance_counted; \
 protected: \
 public: \
 	virtual void 		LB_STDCALL setFurtherLock(int state) { \
@@ -1029,6 +1030,12 @@ lbErrCodes LB_STDCALL classname::release(char* file, int line) { \
         	if (manager != NULL) { \
         		if (manager->can_delete(this, #classname) == 1)	{ \
         			manager->notify_destroy(this, #classname, file, line); \
+        			\
+        			if (instance_counted == 112233) { \
+        				InstanceCount(-1); \
+        			} else { \
+        				_CL_LOG << "There may be a problem with the instance count system !" LOG_ \
+        			} \
         			delete this; \
         			return ERR_RELEASED; \
         		} \
@@ -1089,9 +1096,16 @@ lb_I_Unknown* LB_STDCALL classname::clone(char* file, int line) const { \
 lbErrCodes LB_STDCALL classname::queryInterface(char* name, void** unknown, char* file, int line) { \
 	char buf[1000] = ""; \
 	char _classname[100] = #classname; \
+	\
+	if (instance_counted != 112233) { \
+		instance_counted = 112233; \
+		InstanceCount(1); \
+	} \
+	\
 	if (further_lock == 1) { \
 		_CL_LOG <<"Error: Object has been locked due to missing module manager (call setModuleManager(...) on me first)!" LOG_ \
 		return ERR_STATE_FURTHER_LOCK; \
+	} else { \
 	} \
 	if (unknown == NULL) { \
 		_CL_LOG << "Error: Got NULL pointer reference while queryInterface() called for " << \
