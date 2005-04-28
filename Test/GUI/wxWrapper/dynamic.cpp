@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.67 2005/04/18 19:01:59 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.68 2005/04/28 07:25:56 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.67 $
+ * $Revision: 1.68 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.67 2005/04/18 19:01:59 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.68 2005/04/28 07:25:56 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.68  2005/04/28 07:25:56  lollisoft
+ * Freeing console problem solved.
+ *
  * Revision 1.67  2005/04/18 19:01:59  lollisoft
  * Changes due to interface changings in lb_I_Form and lb_I_DatabaseForm.
  *
@@ -1639,6 +1642,9 @@ bool MyApp::OnInit(void)
   mm = getModuleInstance();
   mm->setModuleManager(mm.getPtr(), __FILE__, __LINE__);
   setModuleManager(mm.getPtr(), __FILE__, __LINE__);
+
+
+  FreeConsole();
 /*...e*/
 
 /*...sget the event manager:0:*/
