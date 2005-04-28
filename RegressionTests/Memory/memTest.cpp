@@ -81,24 +81,38 @@ int main(int argc, char *argv[]) {
 /*...e*/
 
 int main(int argc, char *argv[]) {
-	lbErrCodes err = ERR_NONE;
-	lb_I_Module* mm = NULL;
-	
-	mm = getModuleInstance();
-	mm->setModuleManager(mm, __FILE__, __LINE__);
+	{
+		lbErrCodes err = ERR_NONE;
+		lb_I_Module* mm = NULL;
 
-	_CL_LOG << "Database regression tests..." LOG_
+		Instances();
 	
-	for (int i = 0; i < 10; i++) {
+		mm = getModuleInstance();
+		
+		Instances();
+		
+		mm->setModuleManager(mm, __FILE__, __LINE__);
+
+		Instances();
+
+		_CL_LOG << "Database regression tests..." LOG_
 	
-		UAP_REQUEST(mm, lb_I_String, string)
+		Instances();
 	
-		string->setData("Test");
+		for (int i = 0; i < 10; i++) {
+			UAP_REQUEST(mm, lb_I_String, string)
+			string->setData("Test");
+
+			Instances();
+		}
+
+		char* t = (char*) malloc(100);
+	
+		printf("Ready.\n");
+		Instances();
 	}
 
-	char* t = (char*) malloc(100);
-
-	printf("Ready.\n");
+	Instances();
 	
 	getchar();
 	
