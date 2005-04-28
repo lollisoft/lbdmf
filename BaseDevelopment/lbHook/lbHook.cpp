@@ -89,6 +89,16 @@ extern int lb_isInitializing;
 #endif
 
 bool lbVerbose = FALSE;
+int instances = 0;
+
+DLLEXPORT void LB_STDCALL InstanceCount(int inst) {
+	instances += inst;
+}
+
+DLLEXPORT void LB_STDCALL Instances() {
+	printf("Current instances are %d.\n", instances);
+}
+
 
 DLLEXPORT void LB_STDCALL setVerbose(bool what) {
     lbVerbose = what;
