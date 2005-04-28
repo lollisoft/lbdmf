@@ -685,14 +685,22 @@ class lb_I_DatabaseForm :
 	public lb_I_Form
 	{
 public:
-	/**
-	 * \brief Set the query object.
+	/** \brief Set the query object.
 	 *
 	 * A database form needs a query object, from whom it should
 	 * show the data.
 	 */
 	virtual void LB_STDCALL init(char* SQLString, char* DBName, char* DBUser, char* DBPass) = 0;
 	
+	/** \brief Set a filter for the form.
+	 *
+	 * Setup a filter to be used in the form. The filter must specify a typical where clause or
+	 * a part of it. To reset the filter, you need a call to this function without a parameter.
+	 *
+	 * Sample to show only data for one customer: kdnummer = 100001
+	 */
+	 virtual void LB_STDCALL setFilter(char* filter = NULL) = 0;
+
 };
 /*...e*/
 #endif // __LB_DATABASE__
