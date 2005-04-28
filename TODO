@@ -5,6 +5,24 @@
 		I also will discuss some problems while the development stages.
 		
 		
+		27.04.2005	There is a problem in the new configuration dialog, that let the user select
+				the correct column to show for a foreign key.
+				
+				If the table is only, say, a connection table for other entries, the real data
+				to be shown would be in the master table of the referred entry.
+				
+				Slave table
+				    Master table to be referrenced by entries of slave table.
+				A-> location A
+				|
+				B-> location B
+				|
+				C-> location C
+				
+				
+		19.04.2005	There was a problem with readonly columns and the bound column for it.
+				
+			19.04.2004 Solution was to shortly unbind the column. -> API enhancement.
 
 		01.02.2005	Problems to port the framework to Mac OS X 10 and hints for solutions found.
 		
