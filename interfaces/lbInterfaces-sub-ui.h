@@ -29,7 +29,11 @@
 #ifndef __LB_INTERFACES_SUB_UI__
 #define __LB_INTERFACES_SUB_UI__
 
-
+/** \brief Base class for all windows and controls.
+ *
+ * This is an attempt to have an universal base interface for all windows like it
+ * is in wxWidgets and other frameworks.
+ */
 class lb_I_Window : public lb_I_Unknown
 {
 
@@ -237,9 +241,16 @@ public:
 };
 /*...e*/
 
+/** \brief Base class for a control.
+ *
+ */
 class lb_I_Control : public lb_I_Window
 {
 public:
+	/** \brief Initialize the control.
+	 *
+	 * The control must know its parent window.
+	 */
 	virtual void LB_STDCALL init(lb_I_Window* parent) = 0;
 };
 
