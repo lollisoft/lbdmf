@@ -1060,6 +1060,9 @@ public:
 	 * database classes.
 	 */
 	void LB_STDCALL init(char* SQLString, char* DBName, char* DBUser, char* DBPass);
+
+
+	void LB_STDCALL setFilter(char* filter);
 /*...e*/
 
 /*...sData navigation and other handlers:8:*/
@@ -1165,6 +1168,8 @@ public:
 /*...svariables:8:*/
 	UAP(lb_I_Database, database, __FILE__, __LINE__)
 	UAP(lb_I_Query, sampleQuery, __FILE__, __LINE__)
+	UAP(lb_I_String, SQLString, __FILE__, __LINE__)
+	UAP(lb_I_String, SQLWhere, __FILE__, __LINE__)
 	
 	/**
 	 * \brief Maps positions to id's for each displayed combo box.
@@ -1308,8 +1313,8 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::registerEventHandler(lb_I_Dispatcher* di
 	return ERR_NONE;
 }
 /*...e*/
-/*...svoid lbDatabaseDialog\58\\58\init\40\char\42\ SQLString\44\ char\42\ DBName\44\ char\42\ DBUser\44\ char\42\ DBPass\41\:0:*/
-void lbDatabaseDialog::init(char* SQLString, char* DBName, char* DBUser, char* DBPass) {
+/*...svoid LB_STDCALL lbDatabaseDialog\58\\58\init\40\char\42\ SQLString\44\ char\42\ DBName\44\ char\42\ DBUser\44\ char\42\ DBPass\41\:0:*/
+void LB_STDCALL lbDatabaseDialog::init(char* _SQLString, char* DBName, char* DBUser, char* DBPass) {
 	char prefix[100] = "";
 	sprintf(prefix, "%p", this);
 
@@ -1339,8 +1344,6 @@ void lbDatabaseDialog::init(char* SQLString, char* DBName, char* DBUser, char* D
 
 	database->init();
 	database->connect(DBName, DBUser, DBPass);
-
-	char* _q = strdup(SQLString);
 
 	sampleQuery = database->getQuery(0);
 /*...e*/
@@ -1385,9 +1388,13 @@ void lbDatabaseDialog::init(char* SQLString, char* DBName, char* DBUser, char* D
 /*...e*/
 	
 	sampleQuery->enableFKCollecting();
-	sampleQuery->query(_q, false);
 
-	free(_q);
+	if (SQLString == NULL) {
+		REQUEST(manager.getPtr(), lb_I_String, SQLString)
+		SQLString->setData(_SQLString);
+	}
+	
+	sampleQuery->query(SQLString->charrep(), false);
 
 /*...sDetermine readonly fields:8:*/
 	FFI = new FormularFieldInformation(formName, sampleQuery.getPtr());
@@ -1865,6 +1872,13 @@ printf("Create a drop down box for '%s'\n", name);
 
 }
 /*...e*/
+
+void LB_STDCALL lbDatabaseDialog::setFilter(char* filter) {
+	if (SQLWhere == NULL) {
+		REQUEST(manager.getPtr(), lb_I_String, SQLWhere)
+		if (filter != NULL) SQLWhere->setData(filter);
+	}
+}
 
 /*...slbErrCodes LB_STDCALL lbDatabaseDialog\58\\58\lbDBClear\40\\41\:0:*/
 lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBClear() {
