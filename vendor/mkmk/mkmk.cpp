@@ -12,11 +12,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.58 $
+ * $Revision: 1.59 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.58 2005/04/27 12:58:02 lollisoft Exp $
+ * $Id: mkmk.cpp,v 1.59 2005/04/28 09:46:37 lollisoft Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.59  2005/04/28 09:46:37  lollisoft
+ * Some changes under Linux to built correctly
+ *
  * Revision 1.58  2005/04/27 12:58:02  lollisoft
  * Linking with L_OPS options instead of LIBS
  *
@@ -1043,9 +1046,9 @@ void write_soPlugin_Target(char* modulename) {
   printf("\t\t$(CC) -shared -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) $(LIBS) -lc $(VENDORLIBS)\n");
 #endif
 
-  printf("\t\tcp $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(HOME)/lib/plugins\n");
-  printf("\t\tln -sf $(HOME)/lib/plugins/$(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(HOME)/lib/plugins/$(PROGRAM).$(MAJOR)\n");
-  printf("\t\tln -sf $(HOME)/lib/plugins/$(PROGRAM).$(MAJOR) $(HOME)/lib/plugins/$(PROGRAM)\n");
+  printf("\t\tcp $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(HOME)/plugins\n");
+  printf("\t\tln -sf $(HOME)/plugins/$(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(HOME)/plugins/$(PROGRAM).$(MAJOR)\n");
+  printf("\t\tln -sf $(HOME)/plugins/$(PROGRAM).$(MAJOR) $(HOME)/plugins/$(PROGRAM)\n");
 #endif
 #ifdef __WATCOMC__
   fprintf(stderr, "Warning: Creating a so library under Windows is not possible with Watcom !!\n");
@@ -1070,9 +1073,9 @@ void write_wx_soPlugin_Target(char* modulename) {
   printf("\t\t$(CC) -shared -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) $(L_OPS) -lc $(VENDORLIBS)\n");
 #endif
 
-  printf("\t\tcp $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(HOME)/lib/plugins\n");
-  printf("\t\tln -sf $(HOME)/lib/plugins/$(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(HOME)/lib/plugins/$(PROGRAM).$(MAJOR)\n");
-  printf("\t\tln -sf $(HOME)/lib/plugins/$(PROGRAM).$(MAJOR) $(HOME)/lib/plugins/$(PROGRAM)\n");
+  printf("\t\tcp $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(HOME)/plugins\n");
+  printf("\t\tln -sf $(HOME)/plugins/$(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(HOME)/plugins/$(PROGRAM).$(MAJOR)\n");
+  printf("\t\tln -sf $(HOME)/plugins/$(PROGRAM).$(MAJOR) $(HOME)/plugins/$(PROGRAM)\n");
 
 #endif
 #ifdef __WATCOMC__
@@ -1090,7 +1093,7 @@ void ShowHelp()
 
   fprintf(stderr, "Enhanced by Lothar Behrens (lothar.behrens@lollisoft.de)\n\n");
 
-  fprintf(stderr, "MKMK: makefile generator $Revision: 1.58 $\n");
+  fprintf(stderr, "MKMK: makefile generator $Revision: 1.59 $\n");
   fprintf(stderr, "Usage: MKMK lib|exe|dll|so modulname includepath,[includepath,...] file1 [file2 file3...]\n");
 }
 /*...e*/

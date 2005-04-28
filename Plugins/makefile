@@ -23,6 +23,7 @@ ifeq ($(OSTYPE), linux)
 
 TARGETDLL=so
 TARGETEXE=elf
+TARGETWXPLUGIN=wxsoplugin
 
 ALLTARGETS = \
 	DatabaseForm

@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.68 2005/04/28 07:25:56 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.69 2005/04/28 09:46:30 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.68 $
+ * $Revision: 1.69 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.68 2005/04/28 07:25:56 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.69 2005/04/28 09:46:30 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.69  2005/04/28 09:46:30  lollisoft
+ * Some changes under Linux to built correctly
+ *
  * Revision 1.68  2005/04/28 07:25:56  lollisoft
  * Freeing console problem solved.
  *
@@ -1643,8 +1646,10 @@ bool MyApp::OnInit(void)
   mm->setModuleManager(mm.getPtr(), __FILE__, __LINE__);
   setModuleManager(mm.getPtr(), __FILE__, __LINE__);
 
-
+#ifdef WINDOWS
+// Only windows makes problems with the open console output window
   FreeConsole();
+#endif  
 /*...e*/
 
 /*...sget the event manager:0:*/
