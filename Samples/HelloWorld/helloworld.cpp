@@ -63,33 +63,22 @@ extern "C" {
  * The sample is located in Samples/HelloWorld.
  *
  * \code
- *	int main(int argc, char *argv[]) {
- *		lbErrCodes err = ERR_NONE;
- *		lb_I_Module* mm = NULL;
- *
- *		// Get the repository.
- *		mm = getModuleInstance();
- *		mm->setModuleManager(mm, __FILE__, __LINE__);
- *
- *		_CL_LOG << "Hello world" LOG_
- *
- *		UAP_REQUEST(mm, lb_I_String, string)
- *
- *		string->setData("Console logging...");
- *		_CL_LOG << string->charrep() LOG_
- *		
- *		UAP_REQUEST(mm, lb_I_String, string1)
- *
- *		string1->setData("Console logging...");
- *
- *		if (&string == &string) {
- *		        _CL_LOG << "Strings are identical" LOG_
- *		} else {
- *			_CL_LOG << "Strings are not identical" LOG_
- *		}
- *
- *		return 0;
- *	}
+int main(int argc, char *argv[]) {
+	lbErrCodes err = ERR_NONE;
+	lb_I_Module* mm = NULL;
+	
+	mm = getModuleInstance();
+	mm->setModuleManager(mm, __FILE__, __LINE__);
+
+	_CL_LOG << "Hello world" LOG_
+	
+	UAP_REQUEST(mm, lb_I_String, string)
+	
+	string->setData("Console logging...");
+	_CL_LOG << string->charrep() LOG_
+
+        return 0;
+}
  * \endcode
  *
  * \section Details
@@ -127,16 +116,6 @@ int main(int argc, char *argv[]) {
 	
 	string->setData("Console logging...");
 	_CL_LOG << string->charrep() LOG_
-
-	UAP_REQUEST(mm, lb_I_String, string1)
-
-	string1->setData("Console logging...");
-	
-	if (&string == &string) {
-		_CL_LOG << "Strings are identical" LOG_
-	} else {
-		_CL_LOG << "Strings are not identical" LOG_
-	}
 
         return 0;
 }
