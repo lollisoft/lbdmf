@@ -181,5 +181,32 @@ int main(int argc, char *argv[]) {
 	query3->query("select tablename, name, \"specialColumn\", \"controlType\", ro from column_types");
 	query3->PrintData();
 
+
+	lb_I_Query::lbDBColumnTypes coltype = query3->getColumnType(5);
+
+	switch (coltype) {
+		case lb_I_Query::lbDBColumnBit:
+			_CL_LOG << "lb_I_Query::lbDBColumnBit" LOG_
+			break;
+					
+		case lb_I_Query::lbDBColumnChar:
+			_CL_LOG << "lb_I_Query::lbDBColumnChar" LOG_
+			break;
+					
+		case lb_I_Query::lbDBColumnBinary:
+			_CL_LOG << "lb_I_Query::lbDBColumn" LOG_
+			break;
+
+		case lb_I_Query::lbDBColumnInteger:
+			_CL_LOG << "lb_I_Query::lbDBColumnInteger" LOG_
+			break;
+					
+		case lb_I_Query::lbDBColumnUnknown:
+			_CL_LOG << "lb_I_Query::lbDBColumnUnknown" LOG_
+			break;
+	}
+
+
+
         return 0;
 }
