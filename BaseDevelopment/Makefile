@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.46 $
+# * $Revision: 1.47 $
 # * $Name:  $
-# * $Id: Makefile,v 1.46 2005/04/24 19:26:42 lollisoft Exp $
+# * $Id: Makefile,v 1.47 2005/04/29 20:49:41 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.47  2005/04/29 20:49:41  lollisoft
+# * Added more files in dependency to help generation
+# *
 # * Revision 1.46  2005/04/24 19:26:42  lollisoft
 # * Moved making of help files to the end of make process
 # *
@@ -425,7 +428,9 @@ lbXMLConfig/lbDOMConfig: dummy
 ../Doc/html: ../doxygen.conf \
 	../interfaces/lbInterfaces.h \
 	../Samples/HelloWorld/helloworld.cpp \
-	../RegressionTests/Database/dbTest.cpp
+	../RegressionTests/Database/dbTest.cpp \
+	../RegressionTests/Basetypes/Basetypes.cpp \
+	../RegressionTests/Memory/memTest.cpp
 	@doxygen ../doxygen.conf
 
 ../Samples/HelloWorld: dummy
