@@ -401,7 +401,7 @@ bool FormularFieldInformation::isReadonly(char* field) {
 	
 }
 /*...e*/
-
+/*...sbool FormularFieldInformation\58\\58\isSpecialColumn\40\char\42\ field\41\:0:*/
 bool FormularFieldInformation::isSpecialColumn(char* field) {
 	lbErrCodes err = ERR_NONE;
 	
@@ -419,7 +419,8 @@ bool FormularFieldInformation::isSpecialColumn(char* field) {
 
 	return false;
 }
-
+/*...e*/
+/*...schar\42\ FormularFieldInformation\58\\58\getControlType\40\char\42\ name\41\:0:*/
 char* FormularFieldInformation::getControlType(char* name) {
 	lbErrCodes err = ERR_NONE;
 	
@@ -442,6 +443,7 @@ char* FormularFieldInformation::getControlType(char* name) {
 	
 	return "";
 }
+/*...e*/
 /*...e*/
 
 /*...sclass lbPluginModuleDatabaseForm:0:*/
@@ -1395,7 +1397,7 @@ void LB_STDCALL lbDatabaseDialog::init(char* _SQLString, char* DBName, char* DBU
 	}
 	
 	sampleQuery->query(SQLString->charrep(), false);
-
+	
 /*...sDetermine readonly fields:8:*/
 	FFI = new FormularFieldInformation(formName, sampleQuery.getPtr());
 
