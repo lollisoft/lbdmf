@@ -58,24 +58,57 @@ extern "C" {
 /*...e*/
 
 /*...sDocumentation:0:*/
-/** \page Regressiontests1 Testing DMF environment - Test table creation, char's and bool's.
+/** \page Memorytest Testing DMF environment - memory test.
  *
  * \section Introduction
  *
- * This test is intented to show the proper function of usual queries like table creation, select's
- * and also getting back correct data.
+ * Test the framework for memory usage and insatance usages.
  *
  * \code
 int main(int argc, char *argv[]) {
-	lbErrCodes err = ERR_NONE;
-	lb_I_Module* mm = NULL;
-	
+	{
+		lbErrCodes err = ERR_NONE;
+		lb_I_Module* mm = NULL;
 
-        return 0;
+		Instances();
+	
+		mm = getModuleInstance();
+		
+		Instances();
+		
+		mm->setModuleManager(mm, __FILE__, __LINE__);
+
+		Instances();
+
+		_CL_LOG << "Memory regression tests..." LOG_
+	
+		Instances();
+	
+		for (int i = 0; i < 10; i++) {
+			UAP_REQUEST(mm, lb_I_String, string)
+			string->setData("Test");
+
+			Instances();
+		}
+
+		char* t = (char*) malloc(100);
+	
+		printf("Ready.\n");
+		Instances();
+	}
+
+	Instances();
+	
+	getchar();
+	
+	return 0;
 }
  * \endcode
  *
  * \section Details
+ *
+ * This test is aimed to detect memory leaks and a try to get the amount of instances for
+ * all classes in use of this test.
  *
  */
 /*...e*/
@@ -95,7 +128,7 @@ int main(int argc, char *argv[]) {
 
 		Instances();
 
-		_CL_LOG << "Database regression tests..." LOG_
+		_CL_LOG << "Memory regression tests..." LOG_
 	
 		Instances();
 	

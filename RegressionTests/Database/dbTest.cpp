@@ -58,7 +58,7 @@ extern "C" {
 /*...e*/
 
 /*...sDocumentation:0:*/
-/** \page Regressiontests1 Testing DMF environment - Test table creation, char's and bool's.
+/** \page Databasetests Testing DMF environment - Test table creation, char's and bool's.
  *
  * \section Introduction
  *
@@ -110,19 +110,21 @@ int main(int argc, char *argv[]) {
 	query2 = database->getQuery(0);
 	query2->query("select test, btest, btest1 from regressiontest");
 
-	err = query2->first();
-
 	query2->PrintData();
 	
 	query3 = database->getQuery(0);
 	
 	query3->query("drop table regressiontest");
+	query3->query("select tablename, name, \"specialColumn\", \"controlType\", ro from column_types");
+	query3->PrintData();
 
         return 0;
 }
  * \endcode
  *
  * \section Details
+ *
+ * The test also checks the handling of default values.
  *
  */
 /*...e*/
@@ -170,8 +172,6 @@ int main(int argc, char *argv[]) {
 
 	query2 = database->getQuery(0);
 	query2->query("select test, btest, btest1 from regressiontest");
-
-	err = query2->first();
 
 	query2->PrintData();
 	

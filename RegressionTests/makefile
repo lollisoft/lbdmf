@@ -26,6 +26,7 @@ TARGETEXE=elf
 
 ALLTARGETS = \
 	Database \
+	Basetypes \
 	Memory
 endif
 
@@ -36,6 +37,7 @@ TARGETEXE=elf
 
 ALLTARGETS = \
 	Database \
+	Basetypes \
 	Memory
 endif
 
@@ -46,6 +48,7 @@ TARGETEXE=exe
 
 ALLTARGETS = \
 	Database \
+	Basetypes \
 	Memory
 endif
 
@@ -76,8 +79,11 @@ Database: dummy
 	$(MAKE) -C $@ -e MODULE=dbTest -e TARGET=$(TARGETEXE) -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
 	$(MAKE) -C $@
 	
-
 Memory: dummy
 	$(MAKE) -C $@ -e MODULE=memTest -e TARGET=$(TARGETEXE) -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
+	$(MAKE) -C $@
+
+Basetypes: dummy
+	$(MAKE) -C $@ -e MODULE=Basetypes -e TARGET=$(TARGETEXE) -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
 	$(MAKE) -C $@
 
