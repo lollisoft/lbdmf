@@ -478,6 +478,7 @@ END_IMPLEMENT_LB_UNKNOWN()
 
 // lbBoundColumns does not need a functor, because lbQuery acts as a factory
 
+/*...sunimplemented:0:*/
 lbErrCodes LB_STDCALL lbBoundColumns::setData(lb_I_Unknown* uk) {
         _CL_LOG << "lbBoundColumns::setData(...) not implemented yet" LOG_
         
@@ -493,6 +494,7 @@ lbErrCodes      LB_STDCALL lbBoundColumns::setBoundColumns(lb_I_Container* bc) {
         _CL_LOG << "lbBoundColumns::setBoundColumns() not implemented yet" LOG_
 	return ERR_NONE;
 }
+/*...e*/
 
 /*...sbool LB_STDCALL lbBoundColumns\58\\58\isNull\40\int pos\41\:0:*/
 bool LB_STDCALL lbBoundColumns::isNull(int pos) {
@@ -519,7 +521,7 @@ bool LB_STDCALL lbBoundColumns::isNull(int pos) {
 	return false;
 }
 /*...e*/
-
+/*...svoid LB_STDCALL lbBoundColumns\58\\58\unbindReadonlyColumns\40\\41\:0:*/
 void LB_STDCALL lbBoundColumns::unbindReadonlyColumns() {
 	lbErrCodes err = ERR_NONE;
 	
@@ -536,7 +538,8 @@ void LB_STDCALL lbBoundColumns::unbindReadonlyColumns() {
 		}
 	}
 }
-
+/*...e*/
+/*...svoid LB_STDCALL lbBoundColumns\58\\58\rebindReadonlyColumns\40\\41\:0:*/
 void LB_STDCALL lbBoundColumns::rebindReadonlyColumns() {
 	lbErrCodes err = ERR_NONE;
 	
@@ -553,6 +556,7 @@ void LB_STDCALL lbBoundColumns::rebindReadonlyColumns() {
 		}
 	}
 }
+/*...e*/
 
 /*...slb_I_Query\58\\58\lbDBColumnTypes LB_STDCALL lbBoundColumns\58\\58\getColumnType\40\int pos\41\:0:*/
 lb_I_Query::lbDBColumnTypes LB_STDCALL lbBoundColumns::getColumnType(int pos) {
@@ -604,6 +608,7 @@ lb_I_Query::lbDBColumnTypes LB_STDCALL lbBoundColumns::getColumnType(char* name)
 	return lb_I_Query::lbDBColumnUnknown;
 }
 /*...e*/
+/*...svoid LB_STDCALL lbBoundColumns\58\\58\setUpdateable\40\char\42\ column\44\ bool updateable\41\:0:*/
 void LB_STDCALL lbBoundColumns::setUpdateable(char* column, bool updateable) {
 
 	lbErrCodes err = ERR_NONE;
@@ -638,6 +643,7 @@ void LB_STDCALL lbBoundColumns::setUpdateable(char* column, bool updateable) {
 		bc->setUpdateable(updateable);
 	}
 }
+/*...e*/
 /*...slb_I_BoundColumn\42\ LB_STDCALL lbBoundColumns\58\\58\getBoundColumn\40\int column\41\:0:*/
 lb_I_BoundColumn* LB_STDCALL lbBoundColumns::getBoundColumn(int column) {
 	lbErrCodes err = ERR_NONE;
@@ -1582,13 +1588,9 @@ lbErrCodes LB_STDCALL lbQuery::first() {
 
 char buf[100] = "";
 
-_LOG << "Fetch checked (step 2)" LOG_
-		
 		if (retcode == SQL_NO_DATA) {
 			// Indicate for no data and go back
 
-_LOG << "Fetch gave no more data. Return a warning." LOG_
-			
 			retcode = SQLExtendedFetch(hstmt, SQL_FETCH_PREV, 0, &RowsFetched, RowStat);
 			
 			if (retcode == SQL_NO_DATA) {
@@ -2298,7 +2300,6 @@ bool LB_STDCALL lbBoundColumn::isNull() {
 }
 /*...slb_I_Query\58\\58\lbDBColumnTypes LB_STDCALL lbBoundColumn\58\\58\getType\40\\41\:0:*/
 lb_I_Query::lbDBColumnTypes LB_STDCALL lbBoundColumn::getType() {
-
 	switch (_DataType) {
 	
 		case SQL_BIT:
@@ -2768,6 +2769,7 @@ SQLCloseCursor(hstmt);
 #endif
 /*...e*/
 /*...e*/
+/*...svoid LB_STDCALL lbBoundColumn\58\\58\unbindReadonlyColumns\40\\41\:0:*/
 void LB_STDCALL lbBoundColumn::unbindReadonlyColumns() {
 	SQLRETURN ret;
 	if (!isUpdateable) {
@@ -2841,7 +2843,8 @@ void LB_STDCALL lbBoundColumn::unbindReadonlyColumns() {
 /*...e*/
 	}
 }
-
+/*...e*/
+/*...svoid LB_STDCALL lbBoundColumn\58\\58\rebindReadonlyColumns\40\\41\:0:*/
 void LB_STDCALL lbBoundColumn::rebindReadonlyColumns() {
 	SQLRETURN ret;
 	if (!isUpdateable) {
@@ -2915,15 +2918,18 @@ void LB_STDCALL lbBoundColumn::rebindReadonlyColumns() {
 /*...e*/
 	}
 }
-
+/*...e*/
+/*...slb_I_String\42\ LB_STDCALL lbBoundColumn\58\\58\getColumnName\40\\41\:0:*/
 lb_I_String* LB_STDCALL lbBoundColumn::getColumnName() {
 	if (colName.getPtr() == NULL) printf("ERROR lbBoundColumn::getColumnName(): returning a null pointer\n");
 	return colName.getPtr();
 }
-
+/*...e*/
+/*...svoid lbBoundColumn\58\\58\setUpdateable\40\bool updateable\41\:0:*/
 void lbBoundColumn::setUpdateable(bool updateable) {
 	isUpdateable = updateable;
 }
+/*...e*/
 /*...e*/
 /*...sclass lbConnection:0:*/
 class lbConnection : public lb_I_Connection
@@ -3775,11 +3781,3 @@ void lbDBInterfaceRepository::initIntefaceList() {
 }
 /*...e*/
 /*...e*/
-
-#ifdef bla
-IMPLEMENT_FUNCTOR(instanceOfDatabaseForm, lbDatabaseForm)
-
-class lbDatabaseForm : public lb_I_Form {
-
-};
-#endif
