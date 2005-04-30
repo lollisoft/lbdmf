@@ -118,6 +118,52 @@ int main(int argc, char *argv[]) {
 	query3->query("select tablename, name, \"specialColumn\", \"controlType\", ro from column_types");
 	query3->PrintData();
 
+
+	lb_I_Query::lbDBColumnTypes coltype = query3->getColumnType(5);
+
+	switch (coltype) {
+		case lb_I_Query::lbDBColumnBit:
+			_CL_LOG << "lb_I_Query::lbDBColumnBit" LOG_
+			break;
+					
+		case lb_I_Query::lbDBColumnChar:
+			_CL_LOG << "lb_I_Query::lbDBColumnChar" LOG_
+			break;
+					
+		case lb_I_Query::lbDBColumnBinary:
+			_CL_LOG << "lb_I_Query::lbDBColumn" LOG_
+			break;
+
+		case lb_I_Query::lbDBColumnInteger:
+			_CL_LOG << "lb_I_Query::lbDBColumnInteger" LOG_
+			break;
+					
+		case lb_I_Query::lbDBColumnUnknown:
+			_CL_LOG << "lb_I_Query::lbDBColumnUnknown" LOG_
+			break;
+	}
+
+	query3->first();
+
+	UAP_REQUEST(mm, lb_I_String, col)
+	UAP_REQUEST(mm, lb_I_String, val)
+	
+	col->setData("ro");
+	val->setData("true");
+
+	query3->setString(*&col, *&val);	
+	
+	_CL_LOG << "Try update:" LOG_
+	
+	query3->update();
+	
+	_CL_LOG << "Try move first" LOG_
+	
+	query3->first();
+
+	_CL_LOG << "Print out changed data:" LOG_	
+	query3->PrintData();
+
         return 0;
 }
  * \endcode
@@ -206,7 +252,26 @@ int main(int argc, char *argv[]) {
 			break;
 	}
 
+	query3->first();
 
+	UAP_REQUEST(mm, lb_I_String, col)
+	UAP_REQUEST(mm, lb_I_String, val)
+	
+	col->setData("ro");
+	val->setData("true");
+
+	query3->setString(*&col, *&val);	
+	
+	_CL_LOG << "Try update:" LOG_
+	
+	query3->update();
+	
+	_CL_LOG << "Try move first" LOG_
+	
+	query3->first();
+
+	_CL_LOG << "Print out changed data:" LOG_	
+	query3->PrintData();
 
         return 0;
 }
