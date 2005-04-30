@@ -1571,6 +1571,10 @@ lbErrCodes LB_STDCALL lbQuery::first() {
 	retcode = SQLFetchScroll(hstmt, SQL_FETCH_FIRST, 0);
 #endif
 
+	if (retcode == SQL_NO_DATA) {
+		return ERR_DB_NODATA;
+	}
+
         if (retcode == SQL_ERROR || retcode == SQL_SUCCESS_WITH_INFO) {
                 _LOG << "lbQuery::first(): Error while fetching next row" LOG_
                 printf("Error in lbQuery::first()\n");
@@ -1605,8 +1609,6 @@ char buf[100] = "";
 			
 			return WARN_DB_NODATA;
 		} else {
-
-_LOG << "Fetch gave no error, so all would be good." LOG_
 
 			retcode = SQLExtendedFetch(hstmt, SQL_FETCH_PREV, 0, &RowsFetched, RowStat);
 			
@@ -1856,6 +1858,10 @@ lbErrCodes LB_STDCALL lbQuery::last() {
 #ifdef USE_FETCH_SCROLL
 	retcode = SQLFetchScroll(hstmt, SQL_FETCH_LAST, 0);
 #endif
+
+	if (retcode == SQL_NO_DATA) {
+	        return ERR_DB_NODATA;
+	}
 
         if (retcode == SQL_ERROR || retcode == SQL_SUCCESS_WITH_INFO) {
                 _LOG << "lbQuery::last(): Error while fetching next row" LOG_
@@ -2506,7 +2512,8 @@ lbErrCodes LB_STDCALL lbBoundColumn::setFromString(lb_I_String* set, int mode) {
 						l = true;
 					}
 
-					memcpy(buffer, &l, sizeof(l));
+					*((bool*) buffer) = l;
+					//memcpy(buffer, &l, sizeof(bool));
 				}
 				break;
 		}
@@ -2572,7 +2579,7 @@ lbErrCodes LB_STDCALL lbBoundColumn::bindColumn(lb_I_Query* q, int column, bool 
 	SQLRETURN ret;
 
 	if (ro) {
-		_CL_LOG << "Bind a column that is read only !" LOG_
+		_LOG << "Bind a column that is read only (" << colName->charrep() << ")" LOG_
 		cbBufferLength = SQL_COLUMN_IGNORE;
 		isUpdateable = false;
 	}
@@ -2652,9 +2659,10 @@ lbErrCodes LB_STDCALL lbBoundColumn::bindColumn(lb_I_Query* q, int column, bool 
 			_DataType = DataType;
 			bound = 1;
 			memset(buffer, 0, sizeof(bool)*rows);
-			SQLBindCol(hstmt, column, DataType, buffer, sizeof(bool), &cbBufferLength);
+			ret = SQLBindCol(hstmt, column, DataType, buffer, sizeof(bool), &cbBufferLength);
 			if (ret != SQL_SUCCESS) {
-			        printf("Error while binding a column!\n");
+				_LOG << "Error: Binding column '" << colName->charrep() << "' failed!" LOG_
+				
 			        q->dbError("SQLBindCol()");
 			}
 			break;
