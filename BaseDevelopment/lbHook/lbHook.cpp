@@ -261,6 +261,8 @@ lbErrCodes LB_STDCALL lbGetFunctionPtr(const char* name, HINSTANCE hinst, void**
 }
 /*...e*/
 
+static int memTrackerInit = 0;
+
 /*...sDLLEXPORT lb_I_Module\42\ LB_STDCALL getModuleInstance\40\\41\:0:*/
 DLLEXPORT lb_I_Module* LB_STDCALL getModuleInstance() {
 typedef lbErrCodes (LB_STDCALL *T_p_getlbModuleInstance) (lb_I_Module**, lb_I_Module* m, char* file, int line);
@@ -268,6 +270,12 @@ T_p_getlbModuleInstance DLL_GETMODULEINSTANCE;
 	lbErrCodes err = ERR_NONE;
 	UAP(lb_I_Module, module, __FILE__, __LINE__)
 
+	if (memTrackerInit == 0) {
+		//DebugBreak();
+		memTrackerInit = 1;
+		TRMemOpen();
+	}
+	
 	char* libname = getenv("MODULELIB");
 	char* functor = getenv("LBMODULEFUNCTOR");
 
@@ -276,7 +284,8 @@ T_p_getlbModuleInstance DLL_GETMODULEINSTANCE;
 #ifdef WINDOWS
 #ifndef _MSC_VER
 	char* temp = new char [strlen(functor)+2];
-	temp[0] = '_';
+	temp[0] = 0;
+	strcat(temp, "_");
 	strcat(temp, functor);
 	functor = temp;
 #endif
@@ -466,6 +475,7 @@ char* LB_STDCALL lbKey::charrep() const {
 #ifdef LINUX
     sprintf(buf, "%d", key);
 #endif    
+    _CL_LOG << "lbKey::charrep() in lbHook.cpp" LOG_
     return strdup(buf);
 }
 /*...e*/

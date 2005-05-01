@@ -25,11 +25,18 @@
 #            40235 Duesseldorf (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.58 $
+# * $Revision: 1.59 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.58 2005/04/26 17:18:04 lollisoft Exp $
+# * $Id: STD_MAKE,v 1.59 2005/05/01 01:12:36 lollisoft Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.59  2005/05/01 01:12:36  lollisoft
+# * Found a really big memory leak. It happens due to missing setup of ref variable
+# * in lbFunctorEntity class of lbModule.cpp.
+# *
+# * Due to the fact, that I use this class for each instance retrival, it wasted
+# * much memory. More: See documentation in that class.
+# *
 # * Revision 1.58  2005/04/26 17:18:04  lollisoft
 # * Much changes to include correct libraries, preparements for memory debugging, tests changed and more
 # *
@@ -227,13 +234,16 @@ STD_INCL_WATCOM =-i=.   -i=$(DEVROOT_MAKE)$(WATCOM_SLASH)Tools$(WATCOM_SLASH)WAT
 			-i=$(DEVROOT_MAKE)$(WATCOM_SLASH)projects$(WATCOM_SLASH)cpp$(WATCOM_SLASH)interfaces \
 			-i=$(DEVROOT_MAKE)$(WATCOM_SLASH)projects$(WATCOM_SLASH)cpp$(WATCOM_SLASH)include \
 			-i=$(DEVROOT_MAKE)$(WATCOM_SLASH)projects$(WATCOM_SLASH)dll$(WATCOM_SLASH)include \
-			-i=$(DEVROOT_MAKE)$(WATCOM_SLASH)projects$(WATCOM_SLASH)lib$(WATCOM_SLASH)include
+			-i=$(DEVROOT_MAKE)$(WATCOM_SLASH)projects$(WATCOM_SLASH)lib$(WATCOM_SLASH)include \
+			-i=$(DEVROOT_MAKE)/projects/CPP/vendor/trmem
 #ANAKIN
 #STD_INCL_MICROSOFT = /I "." /I "F:\develop\NT\MSC\VC98\Include" /I "Q:\Develop\xml\xml4csrc3_3_1\src" /I "Q:\Develop\Projects\CPP\include" /I "Q:\Develop\Projects\CPP\interfaces" /I "Q:\Develop\Projects\CPP\basedevelopment\lbclasses"
 #LOTHARBNOTEBOOK
 STD_INCL_MICROSOFT = /I "." /I "$(DEVROOT)\Tools\msc\VC98\Include" /I "$(DEVROOT)\xml\xml4csrc3_3_1\src" /I "$(DEVROOT)\Projects\CPP\include" /I "$(DEVROOT)\Projects\CPP\interfaces" /I "$(DEVROOT)\Projects\CPP\basedevelopment\lbclasses"
 
 STD_INCL = $(STD_INCL_WATCOM)
+
+BASE_LIBS = $(DEVROOT_MAKE)/projects/lib/trmem.lib,
 
 
 WATCOM_WARN=-w3
@@ -246,7 +256,7 @@ WATCOM_DLLTARGET=-bd
 WATCOM_LIBTARGET=
 WATCOM_THREAD_MODEL=#-bm
 WATCOM_STDDEBUG=-d2 -hd
-WATCOM_STACK=#-of
+WATCOM_STACK=-of+
 
 WATCOM_STD_C_OPS= \
 -DWINDOWS \

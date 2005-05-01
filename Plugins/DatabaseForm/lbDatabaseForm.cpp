@@ -2598,3 +2598,41 @@ lb_I_Unknown* LB_STDCALL lbPluginDatabaseDialog::getImplementation() {
 /*...e*/
 
 
+#ifdef WINDOWS
+/*...sDllMain:0:*/
+BOOL WINAPI DllMain(HINSTANCE dllHandle, DWORD reason, LPVOID situation) {
+        char buf[100]="";
+
+        switch (reason) {
+                case DLL_PROCESS_ATTACH:
+                	TRMemOpen();
+                        if (situation) {
+                                _CL_VERBOSE << "DLL statically loaded." LOG_
+                        }
+                        else {
+                                _CL_VERBOSE << "DLL dynamically loaded.\n" LOG_
+                        }
+                        break;
+                case DLL_THREAD_ATTACH:
+                        _CL_VERBOSE << "New thread starting.\n" LOG_
+                        break;
+                case DLL_PROCESS_DETACH:                        
+                        if (situation)
+                        {
+                                _CL_VERBOSE << "DLL released by system." LOG_
+                        }
+                        else
+                        {
+                                _CL_VERBOSE << "DLL released by program.\n" LOG_
+                        }
+                        break;
+                case DLL_THREAD_DETACH:
+                        _CL_VERBOSE << "Thread terminating.\n" LOG_
+                default:
+                        return FALSE;
+        }
+        
+        return TRUE;
+}
+/*...e*/
+#endif

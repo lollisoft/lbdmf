@@ -38,6 +38,10 @@
 #include <mpatrol.h>
 #endif
 
+#define TRACKER
+
+
+
 #ifdef WINDOWS
  #ifndef LB_DMF_POWER
   #include <windows.h>
@@ -80,6 +84,18 @@
 #ifndef OSX
 #include <malloc.h>
 #endif
+
+/*...sMemory tracker:0:*/
+extern "C" {
+#include "trmemcvr.h"
+}
+
+#undef malloc
+#undef free
+
+#define malloc TRMemAlloc
+#define free TRMemFree
+/*...e*/
 
 #define _trans(text) translateText(text)
 

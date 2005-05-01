@@ -30,11 +30,18 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.84 $
+ * $Revision: 1.85 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.84 2005/04/24 18:48:41 lollisoft Exp $
+ * $Id: lbModule.cpp,v 1.85 2005/05/01 01:12:35 lollisoft Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.85  2005/05/01 01:12:35  lollisoft
+ * Found a really big memory leak. It happens due to missing setup of ref variable
+ * in lbFunctorEntity class of lbModule.cpp.
+ *
+ * Due to the fact, that I use this class for each instance retrival, it wasted
+ * much memory. More: See documentation in that class.
+ *
  * Revision 1.84  2005/04/24 18:48:41  lollisoft
  * Little memory leak fixed.
  *
@@ -972,6 +979,7 @@ lbInstance::lbInstance() {
 	file = NULL;
 	line = -1;
 	key = NULL;
+	_CL_LOG << "lbInstance::lbInstance() called." LOG_
 }
 
 lbInstance::~lbInstance() {
@@ -1778,6 +1786,17 @@ class lbFunctorEntity : public lb_I_FunctorEntity
 public:
 
         lbFunctorEntity() {
+        
+        	// The missing setup of ref has been resulting in to a really
+        	// memory leak. Since this module and all its needed code, is
+        	// used at every place, where an instance must be created.
+        	//
+        	// ref should go into a simple integer class with ++ and -- operators
+        	// to handle refcounting correctly, even the ref is not setup like this
+        	// construct.
+        
+        
+        	ref = STARTREF;
         	_functor = NULL;
         	_module = NULL;
         	_interface = NULL;
@@ -1793,17 +1812,23 @@ public:
 
         virtual void LB_STDCALL setFunctor(char* functor) {
         	free(_functor);
-        	_functor = strdup(functor);
+        	_functor = (char*) malloc(strlen(functor)+1);
+        	_functor[0] = 0;
+        	strcpy(_functor, functor);
         }
         
         virtual void LB_STDCALL setModule(char* module) {
         	free(_module);
-        	_module = strdup(module);
+        	_module = (char*) malloc(strlen(module)+1);
+        	_module[0] = 0;
+        	strcpy(_module, module);
         }
         
         virtual void LB_STDCALL setInterface(char* iface) {
         	free(_interface);
-        	_interface = strdup(iface);
+        	_interface = (char*) malloc(strlen(iface)+1);
+        	_interface[0] = 0;
+        	strcpy(_interface, iface);
         }
 
 	
@@ -1880,6 +1905,188 @@ private:
 };
 
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbHCInterfaceRepository)
+#ifdef bla
+/*...s:0:*/
+char* LB_STDCALL lbHCInterfaceRepository::getClassName() { 
+	return "lbHCInterfaceRepository"; 
+} 
+char* LB_STDCALL lbHCInterfaceRepository::_queryInterface(char* name, void** unknown, char* file, int line) { 
+	char* ID = new char[strlen(name)+strlen("lbHCInterfaceRepository")+strlen(file)+1];
+	ID[0] = 0;
+	strcat(ID, name); 
+	strcat(ID, "lbHCInterfaceRepository"); 
+	strcat(ID, file); 
+	lbErrCodes err = ERR_NONE; 
+	if ((err = queryInterface(name, unknown, file, line)) != ERR_NONE) { 
+		_CL_LOG <<"Error: queryInterface failed (in _queryInterface)!" LOG_ 
+		return ""; 
+	} 
+	
+	return ID; 
+} 
+lb_I_Module* LB_STDCALL lbHCInterfaceRepository::getModuleManager() { 
+		lbErrCodes err = ERR_NONE; 
+		UAP(lb_I_Module, _mm, __FILE__, __LINE__) 
+		if (manager == NULL) { 
+			_CL_LOG << "Error: Can't return module manager. Call setModuleManager(...) on me first!" LOG_ 
+			return NULL; 
+		} 
+
+		_mm.setFile(__FILE__);
+		_mm.setLine(__LINE__);
+		{
+		        char* iface = (char*) malloc(strlen("lb_I_Module")+1);
+		        strcpy(iface, "lb_I_Module");
+		        err = manager->queryInterface(iface, (void**) &_mm, __FILE__, __LINE__);
+		        free(iface);
+		        iface = NULL;
+		}
+
+//     		QI(manager, lb_I_Module, _mm, __FILE__, __LINE__) 
+		return _mm.getPtr(); 
+} 
+
+void LB_STDCALL lbHCInterfaceRepository::setModuleManager(lb_I_Module* m, char* file, int line) { 
+	if (m == NULL) { 
+		_CL_LOG << "Error: Set module manager with a NULL pointer in " << "lbHCInterfaceRepository" << " while setModuleManager(...)!" LOG_ 
+		return; 
+	} 
+	
+	further_lock = 0; 
+	if (debug_macro == 1) { 
+		_CL_LOG << "Warning: setModuleManager() must be enhanced by module manager use" LOG_ 
+	} 
+	if (m != manager.getPtr()) { 
+	    if (m != NULL) m->queryInterface("lb_I_Module", (void**) &manager, file, line); 
+	} 
+	manager.setLine(__LINE__); 
+	manager.setFile(__FILE__); 
+	
+	if (manager != NULL) { 
+		char *datei = strrchr(file, '#'); 
+		if (datei == NULL) 
+			datei = file; 
+		else 
+			datei++; 
+		manager->notify_create(this, "lbHCInterfaceRepository", datei, line); 
+	} else { 
+		_CL_LOG << "Error: Query interface failed for manager in " << "lbHCInterfaceRepository" << " while setModuleManager(...)!" LOG_ 
+	} 
+} 
+
+void LB_STDCALL lbHCInterfaceRepository::resetRefcount() { ref = STARTREF; } 
+int LB_STDCALL lbHCInterfaceRepository::deleteState() { 
+	return (ref-1 == STARTREF) ? 1 : 0; 
+} 
+char*      LB_STDCALL lbHCInterfaceRepository::getCreationLoc() const { 
+	char buf[20] = ""; 
+	sprintf(buf, "%p", (void*) this); 
+	if (manager != NULL) return manager->getCreationLoc(buf); 
+	return strdup("Have no manager - location can't be found"); 
+} 
+lbErrCodes LB_STDCALL lbHCInterfaceRepository::release(char* file, int line) { 
+        ref--; 
+        if (strcmp("lb_EventManager", "lbHCInterfaceRepository") == 0) { 
+        	_CL_LOG << "lb_EventManager::release() called" LOG_ 
+        } 
+	char ptr[20] = ""; 
+        if (manager != NULL) { 
+        	manager->notify_release(this, "lbHCInterfaceRepository", file, line); 
+        } 
+	
+        if (ref == STARTREF) { 
+        	if (manager != NULL) { 
+        		if (manager->can_delete(this, "lbHCInterfaceRepository") == 1)	{ 
+        			manager->notify_destroy(this, "lbHCInterfaceRepository", file, line); 
+        			delete this; 
+        			return ERR_RELEASED; 
+        		} 
+        		else 
+        			_CL_LOG << "Error: Instance has been deleted prior!" LOG_ 
+        	} 
+        	return ERR_NONE; 
+        } 
+        if (ref < STARTREF) { 
+        	_CL_LOG << "Error: Reference count of instance " << ptr << " of object type " << "lbHCInterfaceRepository" << " is less than " << STARTREF << " (" << ref << ") !!!" LOG_ 
+        	return ERR_REFERENCE_COUNTING; 
+        } 
+        return ERR_INSTANCE_STILL_USED; 
+} 
+
+lb_I_Unknown* LB_STDCALL lbHCInterfaceRepository::clone(char* file, int line) const { 
+
+	lbHCInterfaceRepository* cloned = new lbHCInterfaceRepository(); 
+	cloned->setDebug(0); 
+	lb_I_Unknown* uk_this; 
+
+	lb_I_Unknown* uk_cloned = NULL; 
+
+	cloned->setFurtherLock(0); 
+	if (manager == NULL) _CL_LOG << "lbHCInterfaceRepository" << "::clone() can't be used because manager is a NULL pointer!" LOG_ 
+	cloned->setModuleManager(manager.getPtr(), file, line); 
+	if (cloned->queryInterface("lb_I_Unknown", (void**) &uk_cloned, file, line) != ERR_NONE) { 
+		_CL_LOG << "Error while getting interface" LOG_ 
+	} 
+
+	uk_cloned->setData((lb_I_Unknown*) this); 
+
+	cloned->resetRefcount(); 
+	
+	if (manager != NULL) { 
+		lb_I_Unknown* that = (lb_I_Unknown*) cloned; 
+	        manager->notify_add(that, cloned->getClassName(), file, line); 
+	} 
+        else 
+		if (debug_macro == 1) { 
+                	_CL_LOG << "Module manager was not set!" LOG_ 
+		} 
+	
+	lb_I_Unknown* uk = NULL; 
+	if (uk_cloned->queryInterface("lb_I_Unknown", (void**) &uk, file, line) != ERR_NONE) { 
+		_CL_LOG << "Error while getting unknown interface of cloned object" LOG_ 
+	} 
+
+	if (uk->getRefCount() > 1) { 
+		_CL_LOG << "Cloned object has %d references" << uk->getRefCount() LOG_ 
+	} 
+	return uk; 
+
+} 
+
+lbErrCodes LB_STDCALL lbHCInterfaceRepository::queryInterface(char* name, void** unknown, char* file, int line) { 
+	char buf[1000] = ""; 
+	char iFaces[1000] = ""; 
+	char _classname[100] = "lbHCInterfaceRepository"; 
+	if (further_lock == 1) { 
+		_CL_LOG <<"Error: Object has been locked due to missing module manager (call setModuleManager(...) on me first)!" LOG_ 
+		return ERR_STATE_FURTHER_LOCK; 
+	} 
+	if (unknown == NULL) { 
+		_CL_LOG << "Error: Got NULL pointer reference while queryInterface() called for " << 
+		name << " ! Did you coded it this way: (void**) &variable ?" LOG_ 
+	} 
+
+	strcat(iFaces, "lb_I_Unknown, "); 
+        if (strcmp(name, "lb_I_Unknown") == 0) { 
+        	if (ref < STARTREF) { 
+        		_CL_LOG << "Reference count error in queryInterface (" << "lbHCInterfaceRepository" << ")" LOG_ 
+        	} 
+                ref++; 
+                *unknown = (lb_I_Unknown*) this; 
+                if (manager != NULL) { 
+                	lb_I_Unknown* that = (lb_I_Unknown*) this; 
+		        manager->notify_add(that, _classname, file, line); 
+		} 
+		else { 
+	        	setFurtherLock(1); 
+	        	_CL_LOG << "Lock object due to missing manager!" LOG_ 
+	        	return ERR_STATE_FURTHER_LOCK; 
+		} 
+                return ERR_NONE; 
+        }
+
+/*...e*/
+#endif
         ADD_INTERFACE(lb_I_InterfaceRepository)
 END_IMPLEMENT_LB_UNKNOWN()
 
@@ -1889,9 +2096,11 @@ lbHCInterfaceRepository::lbHCInterfaceRepository() {
 	manager = NULL;
 	ref = STARTREF;
 	searchArgument = NULL;
+	_CL_LOG << "lbHCInterfaceRepository::lbHCInterfaceRepository() called." LOG_
 }
 
 lbHCInterfaceRepository::~lbHCInterfaceRepository() {
+	_CL_LOG << "lbHCInterfaceRepository::~lbHCInterfaceRepository() called." LOG_
 	free(searchArgument);
 }
 
@@ -1902,7 +2111,10 @@ lbErrCodes lbHCInterfaceRepository::setData(lb_I_Unknown* uk) {
 
 void LB_STDCALL lbHCInterfaceRepository::setCurrentSearchInterface(const char* iface) {
 	free(searchArgument);
-	searchArgument = strdup(iface);
+	searchArgument = (char*) malloc (strlen(iface)+1);
+	searchArgument[0] = 0;
+	strcpy(searchArgument, iface);
+
 	interfaces = 0;
 	CurrentSearchMode = 1;
 }
@@ -2016,9 +2228,9 @@ lb_I_FunctorEntity* LB_STDCALL lbHCInterfaceRepository::getFirstEntity() {
 		module = "lbClasses";
 	}
 	
-
 	lbFunctorEntity* fe = new lbFunctorEntity;
-	fe->setModuleManager(this->getModuleManager(), __FILE__, __LINE__);
+	fe->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+
 	lb_I_FunctorEntity* _fe = NULL;
 	fe->queryInterface("lb_I_FunctorEntity", (void**) &_fe, __FILE__, __LINE__);
 
@@ -2346,7 +2558,6 @@ lbErrCodes LB_STDCALL lbModule::queryInterface(char* name, void** unknown, char*
         }
 
 /*...e*/
-
         ADD_INTERFACE(lb_I_Module)
 END_IMPLEMENT_LB_UNKNOWN()
 
@@ -3357,6 +3568,7 @@ lbErrCodes LB_STDCALL lbModule::request(const char* request, lb_I_Unknown** resu
         lbErrCodes err = ERR_NONE;
         char buf[1000] = "";
         if (moduleList == NULL) {
+        	_CL_LOG << "lbModule::request(...) calls initialize()." LOG_
                 initialize();
         }
 	
@@ -3364,8 +3576,10 @@ lbErrCodes LB_STDCALL lbModule::request(const char* request, lb_I_Unknown** resu
 	buf[0] = 0;
         UAP(lb_I_ConfigObject, config, __FILE__, __LINE__)
         UAP(lb_I_ConfigObject, impl, __FILE__, __LINE__)
-        config.setLine(__LINE__);
-        config.setFile(__FILE__);
+
+// Using this has been resulted in memory leak
+//        config.setLine(__LINE__);
+//        config.setFile(__FILE__);
         /**
          * impl is not returned in any way, I think, so it is allowed to delete the object
          * at lost of focus.
@@ -3373,16 +3587,13 @@ lbErrCodes LB_STDCALL lbModule::request(const char* request, lb_I_Unknown** resu
          
 #ifdef USE_INTERFACE_REPOSITORY
 	if (newInterfaceRepository != NULL) {
-		//printf("Using new interface repository '%p' to request '%s'\n", newInterfaceRepository.getPtr(), request);
 		newInterfaceRepository->setCurrentSearchInterface(request);
-		//printf("Get first entity\n");
-		lb_I_FunctorEntity* e = newInterfaceRepository->getFirstEntity();
+		UAP(lb_I_FunctorEntity, e, __FILE__, __LINE__)
 		
-		//printf("Get functor and module\n");
+		e = newInterfaceRepository->getFirstEntity();
+		
 		char* functor = e->getFunctor();
 		char* module  = e->getModule();
-		
-		//printf("Have functor '%s' and module '%s'\n", functor, module);
 		
 		UAP(lb_I_Unknown, _result, __FILE__, __LINE__)
 		makeInstance(functor, module, &_result);
@@ -3392,7 +3603,6 @@ lbErrCodes LB_STDCALL lbModule::request(const char* request, lb_I_Unknown** resu
 		(*result)->setModuleManager(this, __FILE__, __LINE__);
 		_result++;
 		
-		e->release(__FILE__, __LINE__);
 	} else {
 		printf("Error: Have no interface repository to locate configuration for %s\n", request); 
 	}
@@ -3578,6 +3788,11 @@ BOOL WINAPI DllMain(HINSTANCE dllHandle, DWORD reason, LPVOID situation) {
 
         switch (reason) {
                 case DLL_PROCESS_ATTACH:
+                	TRMemOpen();
+                	
+                	// Most of the leaks for this module are found now.
+                	//TRMemSetAdrBreakPoint("007c1120");
+                	
                         if (situation) {
                                 _CL_VERBOSE << "DLL statically loaded." LOG_
                         }

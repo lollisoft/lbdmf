@@ -425,7 +425,8 @@ typedef lbErrCodes (LB_STDCALL lb_I_EventHandler::*lbEvHandler)(lb_I_Unknown* uk
 	target.setFile(file); \
 	target.setLine(line); \
 	{ \
-		char* iface = strdup(#interface); \
+		char* iface = (char*) malloc(strlen(#interface)+1); \
+		strcpy(iface, #interface); \
 	 	err = source->queryInterface(iface, (void**) &target, file, line); \
 	 	free(iface); \
 	 	iface = NULL; \
@@ -644,7 +645,7 @@ public:
 			} \
 			if (__file != NULL) { \
 				_file = new char [strlen(__file) + 1]; \
-				_file = strcpy(_file, __file); \
+				strcpy(_file, __file); \
 			} \
 		} \
 		void LB_STDCALL setLine(int __line) { \
@@ -731,7 +732,7 @@ public:
 	        UAP##Unknown_Reference() { \
 	        	_autoPtr = NULL; \
 	        	_line = -1; \
-	        	_file = strdup(""); \
+	        	_file = NULL; \
 	        	allowDelete = 1; \
 		} \
 		UAP##Unknown_Reference(const UAP##Unknown_Reference& _ref) { \
@@ -768,7 +769,14 @@ public:
 			free(_file); \
 		} \
 		void LB_STDCALL setFile(char* __file) { \
-			if (__file != NULL) _file = strdup(__file); \
+			if (_file != NULL) { \
+				delete [] _file; \
+				_file = NULL; \
+			} \
+			if (__file != NULL) { \
+				_file = new char [strlen(__file) + 1]; \
+				_file = strcpy(_file, __file); \
+			} \
 		} \
 		void LB_STDCALL setLine(int __line) { \
 			_line = __line; \
@@ -1036,7 +1044,9 @@ lbErrCodes LB_STDCALL classname::release(char* file, int line) { \
         			} else { \
         				_CL_LOG << "There may be a problem with the instance count system !" LOG_ \
         			} \
+        			_CL_VERBOSE << "Delete instance '" << #classname << "'" LOG_ \
         			delete this; \
+        			_CL_VERBOSE << "Deleted" LOG_ \
         			return ERR_RELEASED; \
         		} \
         		else { \

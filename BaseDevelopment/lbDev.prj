@@ -3,6 +3,7 @@
 
 /*...v\46\\46\\47\Appdevelopment\47\projects:0:*/
 
+
 /*...sSamples:0:*/
 /*...sHello World:0:*/
 /*...v\46\\46\\47\Samples\47\Helloworld\47\makefile\46\module:0:*/
@@ -111,6 +112,7 @@ These headers must define the per module (DLL) EXPORT variable
 /*...v\46\\46\\47\AppDevelopmentDemo\47\App\47\makefile:0:*/
 /*...v\46\\46\\47\AppDevelopmentDemo\47\App\47\makefile\46\module:0:*/
 
+/*...v\46\\46\\47\AppDevelopmentDemo\47\DynamicApp\47\App\47\makefile\46\module:0:*/
 /*...v\46\\46\\47\AppDevelopmentDemo\47\DynamicApp\47\App\47\lbDynApp\46\cpp:0:*/
 
 

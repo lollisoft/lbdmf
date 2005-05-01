@@ -117,6 +117,8 @@ int main(int argc, char *argv[]) {
 	{
 		lbErrCodes err = ERR_NONE;
 		lb_I_Module* mm = NULL;
+		
+		TRMemOpen();
 
 		Instances();
 	
@@ -132,22 +134,27 @@ int main(int argc, char *argv[]) {
 	
 		Instances();
 	
-		for (int i = 0; i < 10; i++) {
+		for (int i = 0; i < 50; i++) {
 			UAP_REQUEST(mm, lb_I_String, string)
 			string->setData("Test");
 
 			Instances();
 		}
 
-		char* t = (char*) malloc(100);
+		char* t = (char*) new char[100];
+		t[0] = 0;
+		
+		sprintf(t, "Unfreed memory :-)\n");
 	
 		printf("Ready.\n");
 		Instances();
+		mm->release(__FILE__, __LINE__);
 	}
 
 	Instances();
 	
 	getchar();
+	
 	
 	return 0;
 }

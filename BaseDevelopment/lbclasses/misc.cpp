@@ -31,10 +31,17 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.34 $
+ * $Revision: 1.35 $
  * $Name:  $
- * $Id: misc.cpp,v 1.34 2005/03/31 09:02:45 lollisoft Exp $
+ * $Id: misc.cpp,v 1.35 2005/05/01 01:12:36 lollisoft Exp $
  * $Log: misc.cpp,v $
+ * Revision 1.35  2005/05/01 01:12:36  lollisoft
+ * Found a really big memory leak. It happens due to missing setup of ref variable
+ * in lbFunctorEntity class of lbModule.cpp.
+ *
+ * Due to the fact, that I use this class for each instance retrival, it wasted
+ * much memory. More: See documentation in that class.
+ *
  * Revision 1.34  2005/03/31 09:02:45  lollisoft
  * Copyright text problems under linux.
  *
@@ -604,4 +611,6 @@ void lb_sleep(int ms)
         delay(ms * 1000);
 #endif
 }
+
+
 

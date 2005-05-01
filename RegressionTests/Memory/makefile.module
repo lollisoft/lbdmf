@@ -29,8 +29,7 @@
 ifeq ($(OSTYPE), Windows_NT)
 MOD_INCL=$(STD_INCL)
 OBJDEP=
-LIBS = $(DEVROOT_MAKE)/projects/dll/libs/lbhook.lib
-
+LIBS = $(BASE_LIBS) $(DEVROOT_MAKE)/projects/dll/libs/lbhook.lib
 # use global setup
 #COMPILER=MICROSOFT
 ifeq ($(COMPILER), MICROSOFT)

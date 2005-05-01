@@ -29,7 +29,7 @@
 
 ifeq ($(OSTYPE), Windows_NT)
 MOD_INCL=$(STD_INCL)
-LIBS = $(DEVROOT_MAKE)/projects/dll/libs/lbhook.lib,../../../../tools/watcom/lib386/nt/odbc32.lib
+LIBS = $(BASE_LIBS) $(DEVROOT_MAKE)/projects/dll/libs/lbhook.lib,../../../../tools/watcom/lib386/nt/odbc32.lib
 
 # use global setup
 #COMPILER=MICROSOFT

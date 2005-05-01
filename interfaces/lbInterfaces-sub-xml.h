@@ -176,9 +176,11 @@ public:
 
 class lb_I_FunctorEntity : public lb_I_Unknown
 {
+#ifdef bla
 protected:
 	lb_I_FunctorEntity() {}
 	virtual ~lb_I_FunctorEntity() {}
+#endif
 	
 public:
 	virtual void LB_STDCALL setFunctor(char* functor) = 0;

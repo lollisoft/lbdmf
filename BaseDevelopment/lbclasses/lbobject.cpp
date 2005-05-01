@@ -305,9 +305,15 @@ lbString::~lbString() {
 
 void LB_STDCALL lbString::setData(char const * p) {
 	if (stringdata != NULL) free(stringdata);
-	stringdata = strdup(p);
+	
+	stringdata = (char*) malloc(strlen(p)+1);
+	stringdata[0] = 0;
+	stringdata = strcpy(stringdata, p);
+	
 	if (key != NULL) free(key);
-	key = strdup(p);
+	key = (char*) malloc(strlen(p)+1);
+	key[0] = 0;
+	key = strcpy(key, p);
 }
 
 void LB_STDCALL lbString::trim() {
@@ -315,7 +321,9 @@ void LB_STDCALL lbString::trim() {
 		stringdata[strlen(stringdata)-1] = 0;
 		
 	if (key != NULL) free(key);
-	key = strdup(stringdata);	
+	key = (char*) malloc(strlen(stringdata)+1);
+	key[0] = 0;
+	key = strcpy(key, stringdata);	
 }
 
 char* LB_STDCALL lbString::getData() const {

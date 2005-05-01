@@ -251,7 +251,8 @@ int main(int argc, char *argv[]) {
 			_CL_LOG << "lb_I_Query::lbDBColumnUnknown" LOG_
 			break;
 	}
-
+	
+#ifdef bla
 	query3->first();
 
 	UAP_REQUEST(mm, lb_I_String, col)
@@ -272,6 +273,6 @@ int main(int argc, char *argv[]) {
 
 	_CL_LOG << "Print out changed data:" LOG_	
 	query3->PrintData();
-
+#endif
         return 0;
 }

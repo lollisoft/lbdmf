@@ -31,11 +31,18 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.57 $
+ * $Revision: 1.58 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.57 2005/04/18 19:04:22 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.58 2005/05/01 01:12:35 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.58  2005/05/01 01:12:35  lollisoft
+ * Found a really big memory leak. It happens due to missing setup of ref variable
+ * in lbFunctorEntity class of lbModule.cpp.
+ *
+ * Due to the fact, that I use this class for each instance retrival, it wasted
+ * much memory. More: See documentation in that class.
+ *
  * Revision 1.57  2005/04/18 19:04:22  lollisoft
  * Returning proper error code.
  *
@@ -1304,3 +1311,42 @@ lbErrCodes LB_STDCALL lb_EvHandler::call(lb_I_Unknown* evData, lb_I_Unknown** ev
 	return ERR_NONE;
 }
 /*...e*/
+
+#ifdef WINDOWS
+/*...sDllMain:0:*/
+BOOL WINAPI DllMain(HINSTANCE dllHandle, DWORD reason, LPVOID situation) {
+        char buf[100]="";
+
+        switch (reason) {
+                case DLL_PROCESS_ATTACH:
+                	TRMemOpen();
+                        if (situation) {
+                                _CL_VERBOSE << "DLL statically loaded." LOG_
+                        }
+                        else {
+                                _CL_VERBOSE << "DLL dynamically loaded.\n" LOG_
+                        }
+                        break;
+                case DLL_THREAD_ATTACH:
+                        _CL_VERBOSE << "New thread starting.\n" LOG_
+                        break;
+                case DLL_PROCESS_DETACH:                        
+                        if (situation)
+                        {
+                                _CL_VERBOSE << "DLL released by system." LOG_
+                        }
+                        else
+                        {
+                                _CL_VERBOSE << "DLL released by program.\n" LOG_
+                        }
+                        break;
+                case DLL_THREAD_DETACH:
+                        _CL_VERBOSE << "Thread terminating.\n" LOG_
+                default:
+                        return FALSE;
+        }
+        
+        return TRUE;
+}
+/*...e*/
+#endif
