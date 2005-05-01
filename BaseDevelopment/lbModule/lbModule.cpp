@@ -30,11 +30,17 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.85 $
+ * $Revision: 1.86 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.85 2005/05/01 01:12:35 lollisoft Exp $
+ * $Id: lbModule.cpp,v 1.86 2005/05/01 21:27:09 lollisoft Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.86  2005/05/01 21:27:09  lollisoft
+ * Added informative filename to show when printing memory leaks.
+ * One more debug line.
+ *
+ * Thanks to the trmem code from Open Watcom.
+ *
  * Revision 1.85  2005/05/01 01:12:35  lollisoft
  * Found a really big memory leak. It happens due to missing setup of ref variable
  * in lbFunctorEntity class of lbModule.cpp.
@@ -439,6 +445,7 @@ SkipList::SkipList() {
 	skipiterator = NULL;
 	flag = 1;
 	level = MAXLEVEL;
+	_CL_LOG << "SkipList::SkipList() in " << __FILE__ << " called" LOG_
 }
 
 SkipList::~SkipList() {
@@ -3789,6 +3796,7 @@ BOOL WINAPI DllMain(HINSTANCE dllHandle, DWORD reason, LPVOID situation) {
         switch (reason) {
                 case DLL_PROCESS_ATTACH:
                 	TRMemOpen();
+                	TRMemSetModuleName(__FILE__);
                 	
                 	// Most of the leaks for this module are found now.
                 	//TRMemSetAdrBreakPoint("007c1120");
