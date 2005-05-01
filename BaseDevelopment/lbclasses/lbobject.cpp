@@ -301,6 +301,7 @@ lbString::~lbString() {
 	if (key != NULL) free(key);
 	stringdata = NULL;
 	key = NULL;
+	_CL_LOG << "lbString::~lbString() called" LOG_
 }
 
 void LB_STDCALL lbString::setData(char const * p) {
@@ -368,15 +369,14 @@ BEGIN_IMPLEMENT_LB_UNKNOWN(lbString)
 END_IMPLEMENT_LB_UNKNOWN()
 
 lbErrCodes LB_STDCALL lbString::setData(lb_I_Unknown* uk) {
+	lbErrCodes err = ERR_NONE;
+		
+	UAP(lb_I_String, string, __FILE__, __LINE__)
 	
-	lb_I_String* string = NULL;
-	
-	if (uk->queryInterface("lb_I_String", (void**) &string, __FILE__, __LINE__) != ERR_NONE) {
-		_CL_LOG << "Error: Could not get interface lb_I_String" LOG_
-	}
+	QI(uk, lb_I_String, string, __FILE__, __LINE__)
 	
 	if (string != NULL) {
-		setData(string->getData());
+		setData(string->charrep());
 	}
 	
 	return ERR_NONE;
