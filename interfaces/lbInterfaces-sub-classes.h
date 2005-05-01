@@ -30,11 +30,15 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.48 $
+ * $Revision: 1.49 $
  * $Name:  $
- * $Id: lbInterfaces-sub-classes.h,v 1.48 2005/04/18 18:55:49 lollisoft Exp $
+ * $Id: lbInterfaces-sub-classes.h,v 1.49 2005/05/01 21:16:16 lollisoft Exp $
  *
  * $Log: lbInterfaces-sub-classes.h,v $
+ * Revision 1.49  2005/05/01 21:16:16  lollisoft
+ * lb_I_Element implementation macro changed due to memory leak tests.
+ * My old reference counting system is no more used.
+ *
  * Revision 1.48  2005/04/18 18:55:49  lollisoft
  * Added trim
  *
@@ -639,36 +643,16 @@ classname::classname(const lb_I_Unknown* o, const lb_I_KeyBase* _key, lb_I_Eleme
 } \
 \
 classname::~classname() { \
+	_CL_LOG << #classname << "::~" << #classname << "() called." LOG_ \
         if (key != NULL) { \
                 key->setDebug(1); \
                 if (key->deleteState() != 1) _CL_LOG << "Key wouldn't deleted in container element!" LOG_ \
                 RELEASE(key); \
         } \
         if (data != NULL) { \
-                if (data->deleteState() != 1) { \
-                        lb_I_ConfigObject* node; \
-                        data->queryInterface("lb_I_ConfigObject", (void**) &node, __FILE__ ": " #classname "::~" #classname, __LINE__); \
-                        if (node != NULL) { \
-	                        _CL_LOG << "Data (lb_I_Unknown at " << \
-	                        ltoa((void*) data) << \
-	                        ") (created at: " << data->getCreationLoc() << \
-	                        ") (refcount=" << data->getRefCount() << \
-	                        ") (classname='" << data->getClassName() << \
-	                        "', tagname='" << node->getName() << "') wouldn't deleted in container element!" LOG_ \
-        	                node->release(__FILE__, __LINE__); \
-                        } else { \
-	                        _CL_LOG << "Data (lb_I_Unknown at " << \
-	                        ltoa((void*) data) << \
-	                        ") (created at: " << data->getCreationLoc() << \
-	                        ") (refcount=" << data->getRefCount() << \
-	                        ") (classname='" << data->getClassName() << \
-	                        "', tagname='" << node->getName() << "') wouldn't deleted in container element!" LOG_ \
-        	        } \
-                        char ptr[20] = ""; \
-                        sprintf(ptr, "%p", (void*) data); \
-                        manager->printReferences(ptr); \
-                } \
+        	if (data->deleteState() != 1) _CL_LOG << "Data wouldn't deleted in container element!" LOG_ \
                 RELEASE(data); \
+                _CL_LOG << "Data released ?" << __FILE__ << ":" << __LINE__ LOG_ \
         } \
         key = NULL; \
         data = NULL; \
@@ -940,20 +924,6 @@ void classname::setElement(co_Key* key, co_Interface const* e) { \
 } \
 
 
-/*...e*/
-
-/*...sbla \40\Does not work in VC if it is in next macro\41\:0:*/
-/*
-classname::classname() { \
-    iteration = 0; \
-    ref = 0; \
-    iterator = NULL; \
-    count = 0; \
-} \
-\
-classname::~classname() { \
-} \
-*/
 /*...e*/
 
 /*...sIMPLEMENT_LB_I_CONTAINER_IMPL base \40\classname\41\ \47\\47\ only base lb_I_Unknown:0:*/
