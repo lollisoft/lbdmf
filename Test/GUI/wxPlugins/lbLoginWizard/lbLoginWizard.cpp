@@ -724,6 +724,8 @@ BOOL WINAPI DllMain(HINSTANCE dllHandle, DWORD reason, LPVOID situation) {
         switch (reason) {
                 case DLL_PROCESS_ATTACH:
                 	TRMemOpen();
+                	TRMemSetModuleName(__FILE__);
+                	
                         if (situation) {
                                 _CL_VERBOSE << "DLL statically loaded." LOG_
                         }
