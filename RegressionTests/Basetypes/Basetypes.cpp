@@ -120,12 +120,18 @@ int main(int argc, char *argv[]) {
 	mm->setModuleManager(mm, __FILE__, __LINE__);
 
 	_CL_LOG << "Test basetypes" LOG_
-	
-	UAP_REQUEST(mm, lb_I_String, string1)
-	UAP_REQUEST(mm, lb_I_String, string2)
 
-	string1->setData("Test basetypes...");
-	string2->setData("Test basetypes...");
+	{	
+		UAP_REQUEST(mm, lb_I_String, string1)
+		char buf1[100] = "";
+		UAP_REQUEST(mm, lb_I_String, string2)
+		char buf2[100] = "";
+
+		string1->setData("Test basetypes...");
+		string2->setData("Test basetypes...");
+	}
+	
+#ifdef bla	
 	
 	if (*&string1 == *&string2) {
 		_CL_LOG << "Strings are identical" LOG_
@@ -153,6 +159,7 @@ int main(int argc, char *argv[]) {
         } else {
                 _CL_LOG << "Strings are not identical" LOG_
         }
+#endif
 
         return 0;
 }
