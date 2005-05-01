@@ -41,6 +41,7 @@ class SkipNode {
   public:
     int myLevel;
     UAP(lb_I_Element, value, __FILE__, __LINE__)
+    char buffer[100];
     SkipNode** forward;
     
     SkipNode();
@@ -48,6 +49,12 @@ class SkipNode {
     SkipNode(const SkipNode &s) {
     	printf("Copy constructor for SkipNode called\n");
     }
+
+    void resetForward() {
+    	delete [] forward;
+    	forward = NULL;
+    }
+
     virtual ~SkipNode();
     
 };
@@ -93,6 +100,7 @@ public:
     	key = NULL; 
     	manager = NULL;
     }
+
     virtual ~lbSkipListElement();
 	
     lbSkipListElement(const lb_I_Element &e) { 

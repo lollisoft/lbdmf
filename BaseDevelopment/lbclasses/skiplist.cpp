@@ -38,11 +38,17 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.26 $
+ * $Revision: 1.27 $
  * $Name:  $
- * $Id: skiplist.cpp,v 1.26 2005/03/31 09:02:45 lollisoft Exp $
+ * $Id: skiplist.cpp,v 1.27 2005/05/01 21:23:56 lollisoft Exp $
  *
  * $Log: skiplist.cpp,v $
+ * Revision 1.27  2005/05/01 21:23:56  lollisoft
+ * Bugfix in much parts of skiplist implementation. This came from porting
+ * of a free java based skiplist :-(
+ *
+ * Thanks to the trmem code from Open Watcom.
+ *
  * Revision 1.26  2005/03/31 09:02:45  lollisoft
  * Copyright text problems under linux.
  *
@@ -162,6 +168,8 @@ IMPLEMENT_FUNCTOR(instanceOfSkipList, SkipList)
 SkipNode::SkipNode() {
     	myLevel = MAXLEVEL;
     	value = NULL;
+    	_CL_LOG << "SkipNode::SkipNode() called" LOG_
+    	
     	forward = new SkipNode* [myLevel+1];
     	for (int i=0; i<=myLevel; i++)
     	    forward[i] = NULL;
@@ -170,19 +178,40 @@ SkipNode::SkipNode() {
 SkipNode::SkipNode(lb_I_Element* r, int level) {
         myLevel = level;
         value = r;
+
+	_CL_LOG << "SkipNode::SkipNode(lb_I_Element* r, int level) called" LOG_
         
         if (value == NULL) printf("ERROR: Constructor got a NULL pointer as data\n");
         forward = new SkipNode* [level+1];
+
         for (int i=0; i<=level; i++)
             forward[i] = NULL;
+
 }
 SkipNode::~SkipNode() { 
-      delete [] forward; 
-      
-      if (value != NULL) {
-      	printf("Delete object in SkipNode: RefCount %d\n", value->getRefCount());
-      	RELEASE(value)
-      }
+	char ptr[20] = "";
+
+	sprintf(ptr, "%p", this);
+
+	_CL_LOG << "SkipNode::~SkipNode() called. This is " << ptr LOG_
+	
+	if (forward) {
+		for (int i=0; i<=myLevel; i++)
+		    forward[i] = NULL;
+		delete [] forward; 
+	}
+
+
+	if (value != NULL) {
+	      	_CL_LOG << "Release object..." LOG_
+	      	
+	      	// getObject() increases the refcount for uk.
+	      	// So call release twice ! :-!
+	      	
+      		lb_I_Unknown* uk = value->getObject();
+      		uk->release(__FILE__, __LINE__);
+      		uk->release(__FILE__, __LINE__);
+	}
 }
 /*...e*/
 
@@ -206,7 +235,25 @@ SkipList::SkipList() {
 }
 
 SkipList::~SkipList() {
-	delete head;
+	char ptr[20] = "";
+	
+	sprintf(ptr, "%p", this);
+	
+	_CL_LOG << "SkipList::~SkipList() called. This is " << ptr LOG_
+
+	if (can_dump() == 1) {
+	
+		while (skipiterator) {
+			SkipNode* temp = skipiterator;
+			skipiterator = skipiterator->forward[0];
+	
+			delete temp;		
+		}
+		
+		head = NULL;
+	}
+	
+	_CL_LOG << "SkipList::~SkipList() leaving" LOG_
 }
 /*...sSkipList\58\\58\Count\40\\41\:0:*/
 int LB_STDCALL SkipList::Count() { 
@@ -215,7 +262,18 @@ int LB_STDCALL SkipList::Count() {
 /*...e*/
 /*...sSkipList\58\\58\deleteAll\40\\41\:0:*/
 void LB_STDCALL SkipList::deleteAll() { 
-	delete head;
+	if (can_dump() == 1) {
+	
+		while (skipiterator) {
+			SkipNode* temp = skipiterator;
+			skipiterator = skipiterator->forward[0];
+	
+			delete temp;		
+		}
+		
+		head = NULL;
+	}
+
 	head = new SkipNode();
 	level = MAXLEVEL;
 
@@ -349,6 +407,7 @@ void LB_STDCALL SkipList::setElement(lb_I_KeyBase** key, lb_I_Unknown ** const e
     insert(e, key); 
 }
 /*...e*/
+/*...slb_I_Unknown\42\ LB_STDCALL SkipList\58\\58\getElementAt\40\int i\41\:0:*/
 lb_I_Unknown* LB_STDCALL SkipList::getElementAt(int i) {
         _LOG << "SkipList::getElementAt(int i) not implemented" LOG_
         int ii = 0;
@@ -359,6 +418,8 @@ lb_I_Unknown* LB_STDCALL SkipList::getElementAt(int i) {
         }
         return NULL;
 }
+/*...e*/
+/*...slb_I_KeyBase\42\ LB_STDCALL SkipList\58\\58\getKeyAt\40\int i\41\:0:*/
 lb_I_KeyBase* LB_STDCALL SkipList::getKeyAt(int i) {
         _LOG << "SkipList::getKeyAt(int i) not implemented" LOG_
         int ii = 0;
@@ -370,6 +431,7 @@ lb_I_KeyBase* LB_STDCALL SkipList::getKeyAt(int i) {
         }
         return NULL;
 }
+/*...e*/
 
 /*...srandomLevel\40\void\41\:0:*/
 int randomLevel(void) { // Pick a level on exponential distribution
@@ -421,12 +483,25 @@ void SkipList::insert(Elem newValue) { // Insert into skiplist
     }
     update[i] = x;              // Keep track of end at level i
   }
+
+  UAP(lb_I_Element, el, __FILE__, __LINE__)
+  el = newValue;
+  el++;
+  el++;
+
+  
   
   x = new SkipNode(newValue, newLevel); // Create new node
   
   for (i=0; i<=newLevel; i++) { // Splice into list
     x->forward[i] = update[i]->forward[i]; // Who x points to
     update[i]->forward[i] = x;             // Who y points to
+  }
+
+  if (update) {
+          for (int i=0; i<=level; i++)
+              update[i] = NULL;
+          delete [] update;
   }
 }
 /*...e*/
@@ -452,7 +527,14 @@ void SkipList::remove(Elem searchKey) {
     x = x->forward[0];  // Move to actual record, if it exists
     
     if ((x != NULL) && (*(x->value) == searchKey->getKey())) found = x;
-    else return;
+    else {
+	if (update) {
+	        for (int i=0; i<=level; i++)
+	            update[i] = NULL;
+	        delete [] update;
+	}
+    	return;
+    }
 
     // element found, so rebuild list without node:
     if (*(found->value) == searchKey->getKey()) {
@@ -463,6 +545,7 @@ void SkipList::remove(Elem searchKey) {
       }
       
       // element can be freed now (would happen automatically):
+      found->resetForward();
       delete found;
       
       // maybe we have to downcorrect the level of the list: 
@@ -471,7 +554,14 @@ void SkipList::remove(Elem searchKey) {
       }
     }
     count--;
-  }
+  
+	if (update) {
+	        for (int i=0; i<=level; i++)
+	            update[i] = NULL;
+	        delete [] update;
+	}
+
+}
 
 
 /*...e*/
