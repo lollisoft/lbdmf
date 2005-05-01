@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.70 2005/04/28 10:20:19 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.71 2005/05/01 21:34:12 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,17 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.70 $
+ * $Revision: 1.71 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.70 2005/04/28 10:20:19 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.71 2005/05/01 21:34:12 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.71  2005/05/01 21:34:12  lollisoft
+ * Added informative filename to show when printing memory leaks.
+ * Deactivated FreeConsole for memory tests.
+ *
+ * Thanks to the trmem code from Open Watcom.
+ *
  * Revision 1.70  2005/04/28 10:20:19  lollisoft
  * Made password field hide characters.
  *
@@ -1677,7 +1683,7 @@ bool MyApp::OnInit(void)
 
 #ifdef WINDOWS
 // Only windows makes problems with the open console output window
-  FreeConsole();
+//  FreeConsole();
 #endif  
 /*...e*/
 
@@ -2563,6 +2569,9 @@ int PASCAL WinMain(HINSTANCE hInstance,
                    int nCmdShow)
 {
     //wxAppInitializer wxTheAppInitializer((wxAppInitializerFunction) wxCreateApp);
+
+    TRMemOpen();
+    TRMemSetModuleName(__FILE__);
     
     MyApp::SetInitializerFunction(wxCreateApp);
     
