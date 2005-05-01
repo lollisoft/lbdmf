@@ -48,6 +48,14 @@ BOOL WINAPI DllMain(HINSTANCE dllHandle, DWORD reason, LPVOID situation) {
         switch (reason) {
                 case DLL_PROCESS_ATTACH:
                 	TRMemOpen();
+			char param[100] = "";
+			
+			cout << "Please give me an address to break at: ";
+			cin >> param;
+
+                	TRMemSetAdrBreakPoint(param);
+                	TRMemSetModuleName(__FILE__);
+                	
                         if (situation) {
                                 _CL_VERBOSE << "DLL statically loaded." LOG_
                         }
