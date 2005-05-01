@@ -274,6 +274,7 @@ T_p_getlbModuleInstance DLL_GETMODULEINSTANCE;
 		//DebugBreak();
 		memTrackerInit = 1;
 		TRMemOpen();
+		TRMemSetModuleName(__FILE__);
 	}
 	
 	char* libname = getenv("MODULELIB");

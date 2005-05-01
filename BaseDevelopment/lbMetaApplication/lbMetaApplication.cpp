@@ -31,11 +31,16 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.58 $
+ * $Revision: 1.59 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.58 2005/05/01 01:12:35 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.59 2005/05/01 21:26:15 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.59  2005/05/01 21:26:15  lollisoft
+ * Added informative filename to show when printing memory leaks.
+ *
+ * Thanks to the trmem code from Open Watcom.
+ *
  * Revision 1.58  2005/05/01 01:12:35  lollisoft
  * Found a really big memory leak. It happens due to missing setup of ref variable
  * in lbFunctorEntity class of lbModule.cpp.
@@ -1320,7 +1325,9 @@ BOOL WINAPI DllMain(HINSTANCE dllHandle, DWORD reason, LPVOID situation) {
         switch (reason) {
                 case DLL_PROCESS_ATTACH:
                 	TRMemOpen();
-                        if (situation) {
+                	TRMemSetModuleName(__FILE__);
+                	
+                	if (situation) {
                                 _CL_VERBOSE << "DLL statically loaded." LOG_
                         }
                         else {
