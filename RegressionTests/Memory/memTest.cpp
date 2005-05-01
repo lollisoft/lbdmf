@@ -62,43 +62,155 @@ extern "C" {
  *
  * \section Introduction
  *
- * Test the framework for memory usage and insatance usages.
+ * Test the framework for memory usage and insatance usages:
  *
  * \code
 int main(int argc, char *argv[]) {
-	{
-		lbErrCodes err = ERR_NONE;
-		lb_I_Module* mm = NULL;
+	lbErrCodes err = ERR_NONE;
+	lb_I_Module* mm = NULL;
 
-		Instances();
+	TRMemOpen();
+	TRMemSetModuleName(__FILE__);
 	
-		mm = getModuleInstance();
-		
-		Instances();
-		
-		mm->setModuleManager(mm, __FILE__, __LINE__);
+	mm = getModuleInstance();
+	mm->setModuleManager(mm, __FILE__, __LINE__);
 
-		Instances();
+#define MEM_TEST
+#define CONTAINER_TEST
+#define ACCESS_TEST
 
+#ifdef MEM_TEST
+	{
 		_CL_LOG << "Memory regression tests..." LOG_
 	
-		Instances();
-	
-		for (int i = 0; i < 10; i++) {
+		for (int i = 0; i < 50; i++) {
 			UAP_REQUEST(mm, lb_I_String, string)
 			string->setData("Test");
-
-			Instances();
 		}
 
-		char* t = (char*) malloc(100);
+		char* t = (char*) new char[100];
+		t[0] = 0;
+		
+		sprintf(t, "Unfreed memory :-)\n");
 	
 		printf("Ready.\n");
-		Instances();
 	}
 
 	Instances();
+#endif
+	{
+
+	UAP_REQUEST(mm, lb_I_Container, container)
+	UAP_REQUEST(mm, lb_I_String, string)
+
+
+	UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
+	UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
+
+	QI(string, lb_I_Unknown, uk, __FILE__, __LINE__)
+	QI(string, lb_I_KeyBase, key, __FILE__, __LINE__)
+
+	string->setData("Bla");
+
+	container->insert(&uk, &key);
+	string->setData("Bla1");
+	container->insert(&uk, &key);
 	
+	container->deleteAll();
+
+#ifdef CONTAINER_TEST
+
+	container->insert(&uk, &key);
+	string->setData("Bla1");
+	container->insert(&uk, &key);
+	string->setData("Bla2");
+	container->insert(&uk, &key);
+	string->setData("Bla3");
+	container->insert(&uk, &key);
+	string->setData("Bla4");
+	container->insert(&uk, &key);
+
+	container->deleteAll();
+	
+	string->setData("Bla");
+	container->insert(&uk, &key);
+	string->setData("Bla1");
+	container->insert(&uk, &key);
+	string->setData("Bla2");
+	container->insert(&uk, &key);
+	string->setData("Bla3");
+	container->insert(&uk, &key);
+	string->setData("Bla4");
+	container->insert(&uk, &key);
+	
+	string->setData("Bla3");
+#endif
+
+#ifdef ACCESS_TEST
+
+	\endcode
+
+	\section UsingUAP Using automatic pointers
+
+	These brackets are nessesary due to the fact, that the memory leak printer in the
+	destructor ~Memory prints a not yet deleted object.
+	The object is stored in a container, who does not delete an entry, that has been
+	referenced here.
+	This shows the functioning reference counting, if automatic pointers (UAP's) are
+	used.
+	
+	There is an order of when the automatic pointers in maim and the static Memory instance
+	from trmem gets deleted.
+	
+	So the brackets are more for demonstration.
+	
+	\code	
+{
+	UAP(lb_I_Unknown, ukdata, __FILE__, __LINE__)
+
+	UAP(lb_I_String, s, __FILE__, __LINE__)
+
+	ukdata = container->getElement(&key);
+	if (ukdata == NULL) printf("NULL pointer!\n");
+
+	QI(ukdata, lb_I_String, s, __FILE__, __LINE__)
+
+	UAP(lb_I_String, s1, __FILE__, __LINE__)
+
+	ukdata = container->getElement(&key);
+	if (ukdata == NULL) printf("NULL pointer!\n");
+
+	QI(ukdata, lb_I_String, s1, __FILE__, __LINE__)
+
+	s1->setData("Changed");
+	char* cp1 = s1->getData();
+	char* cp = s->getData();
+
+	printf("Have changed s1 from Bla3 to %s. s is %s\n", cp1, cp);
+	if (s != NULL) printf("Found string %s\n", s->getData());
+
+	printf("Try to dump content of container\n");	
+	while (container->hasMoreElements() == 1) {
+		UAP(lb_I_Unknown, e, __FILE__, __LINE__)
+		e = container->nextElement();
+		if (e != NULL) {
+			UAP(lb_I_String, s, __FILE__, __LINE__)
+			
+			QI(e, lb_I_String, s, __FILE__, __LINE__)
+						
+			printf("String is: %s\n", s->getData());
+		}
+	}
+}
+
+
+#endif
+
+	container->deleteAll();
+
+	}
+	
+	mm->release(__FILE__, __LINE__);
 	getchar();
 	
 	return 0;
@@ -111,34 +223,35 @@ int main(int argc, char *argv[]) {
  * all classes in use of this test.
  *
  */
+
+
 /*...e*/
 
 int main(int argc, char *argv[]) {
-	{
-		lbErrCodes err = ERR_NONE;
-		lb_I_Module* mm = NULL;
-		
-		TRMemOpen();
+	lbErrCodes err = ERR_NONE;
+	lb_I_Module* mm = NULL;
 
-		Instances();
+	TRMemOpen();
+	TRMemSetModuleName(__FILE__);
 	
-		mm = getModuleInstance();
-		
-		Instances();
-		
-		mm->setModuleManager(mm, __FILE__, __LINE__);
+	mm = getModuleInstance();
+	mm->setModuleManager(mm, __FILE__, __LINE__);
 
-		Instances();
+#define MEM_TEST
+#define CONTAINER_TEST
+//#define ACCESS_TEST
+
+#ifdef MEM_TEST
+/*...sMemory test:0:*/
+
+	{
+		
 
 		_CL_LOG << "Memory regression tests..." LOG_
-	
-		Instances();
 	
 		for (int i = 0; i < 50; i++) {
 			UAP_REQUEST(mm, lb_I_String, string)
 			string->setData("Test");
-
-			Instances();
 		}
 
 		char* t = (char*) new char[100];
@@ -147,14 +260,112 @@ int main(int argc, char *argv[]) {
 		sprintf(t, "Unfreed memory :-)\n");
 	
 		printf("Ready.\n");
-		Instances();
-		mm->release(__FILE__, __LINE__);
 	}
 
 	Instances();
+/*...e*/
+#endif
+	{
+
+	UAP_REQUEST(mm, lb_I_Container, container)
+	UAP_REQUEST(mm, lb_I_String, string)
+
+
+	UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
+	UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
+
+	QI(string, lb_I_Unknown, uk, __FILE__, __LINE__)
+	QI(string, lb_I_KeyBase, key, __FILE__, __LINE__)
+
+	string->setData("Bla");
+
+	container->insert(&uk, &key);
+	string->setData("Bla1");
+	container->insert(&uk, &key);
 	
+	container->deleteAll();
+
+#ifdef CONTAINER_TEST
+/*...sContainer test:0:*/
+
+	container->insert(&uk, &key);
+	string->setData("Bla1");
+	container->insert(&uk, &key);
+	string->setData("Bla2");
+	container->insert(&uk, &key);
+	string->setData("Bla3");
+	container->insert(&uk, &key);
+	string->setData("Bla4");
+	container->insert(&uk, &key);
+
+	container->deleteAll();
+	
+	string->setData("Bla");
+	container->insert(&uk, &key);
+	string->setData("Bla1");
+	container->insert(&uk, &key);
+	string->setData("Bla2");
+	container->insert(&uk, &key);
+	string->setData("Bla3");
+	container->insert(&uk, &key);
+	string->setData("Bla4");
+	container->insert(&uk, &key);
+	
+	string->setData("Bla3");
+/*...e*/
+#endif
+
+
+
+#ifdef ACCESS_TEST
+/*...sContainer access and search test:0:*/
+{
+	UAP(lb_I_Unknown, ukdata, __FILE__, __LINE__)
+
+	UAP(lb_I_String, s, __FILE__, __LINE__)
+
+	ukdata = container->getElement(&key);
+	if (ukdata == NULL) printf("NULL pointer!\n");
+
+	QI(ukdata, lb_I_String, s, __FILE__, __LINE__)
+
+	UAP(lb_I_String, s1, __FILE__, __LINE__)
+
+	ukdata = container->getElement(&key);
+	if (ukdata == NULL) printf("NULL pointer!\n");
+
+	QI(ukdata, lb_I_String, s1, __FILE__, __LINE__)
+
+	s1->setData("Changed");
+	char* cp1 = s1->getData();
+	char* cp = s->getData();
+
+	printf("Have changed s1 from Bla3 to %s. s is %s\n", cp1, cp);
+	if (s != NULL) printf("Found string %s\n", s->getData());
+
+	printf("Try to dump content of container\n");	
+	while (container->hasMoreElements() == 1) {
+		UAP(lb_I_Unknown, e, __FILE__, __LINE__)
+		e = container->nextElement();
+		if (e != NULL) {
+			UAP(lb_I_String, s, __FILE__, __LINE__)
+			
+			QI(e, lb_I_String, s, __FILE__, __LINE__)
+						
+			printf("String is: %s\n", s->getData());
+		}
+	}
+}
+
+/*...e*/
+#endif
+
+	container->deleteAll();
+
+	}
+	
+	mm->release(__FILE__, __LINE__);
 	getchar();
-	
 	
 	return 0;
 }
