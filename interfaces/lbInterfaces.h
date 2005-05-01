@@ -457,16 +457,6 @@ typedef lbErrCodes (LB_STDCALL lb_I_EventHandler::*lbEvHandler)(lb_I_Unknown* uk
  * All classes, that needs to be loaded dynamically, must inherid from this class.
  */
 class lb_I_Unknown {
-protected:
-	/**
-	 * Remove this.
-	 */
-	lb_I_Unknown() {}
-
-	/**
-	 * Remove this.
-	 */
-	virtual ~lb_I_Unknown() {}
 
 private:
 	/**
@@ -604,6 +594,7 @@ public:
 		} \
 		\
 		UAP##Unknown_Reference(const UAP##Unknown_Reference& _ref) { \
+			if (_file != NULL) delete [] _file; \
 			_file = NULL; \
 			if (_ref._file) { \
 				_file = new char [strlen(_ref._file) + 1]; \
@@ -755,6 +746,7 @@ public:
 		} \
 		\
 		virtual ~UAP##Unknown_Reference() { \
+			_CL_VERBOSE << "UAP destructor ~UAP" << #Unknown_Reference << "() at " << __FILE__ << " called" LOG_ \
 			if (_autoPtr != NULL) { \
 				if (allowDelete != 1) { \
 					if (_autoPtr->deleteState() == 1) { \
@@ -765,8 +757,9 @@ public:
 					_CL_LOG << "Warning: No reference has been taken in " << #Unknown_Reference << " at " << _line << " (UAP is in " << file << " at " << line LOG_ \
 				} \
 				RELEASE_1(_autoPtr, _file, _line); \
+				if (_file) delete [] _file; \
 			} \
-			free(_file); \
+			_CL_VERBOSE << "UAP destructor ~UAP" << #Unknown_Reference << "() ready" LOG_ \
 		} \
 		void LB_STDCALL setFile(char* __file) { \
 			if (_file != NULL) { \
@@ -1027,6 +1020,7 @@ char*      LB_STDCALL classname::getCreationLoc() const { \
 	return strdup("Have no manager - location can't be found"); \
 } \
 lbErrCodes LB_STDCALL classname::release(char* file, int line) { \
+	_CL_VERBOSE << #classname << "::release(" << file << ", " << line << ") with ref = " << ref << " called." LOG_ \
         ref--; \
 	char ptr[20] = ""; \
 	sprintf(ptr, "%p", this); \
@@ -1106,6 +1100,7 @@ lb_I_Unknown* LB_STDCALL classname::clone(char* file, int line) const { \
 lbErrCodes LB_STDCALL classname::queryInterface(char* name, void** unknown, char* file, int line) { \
 	char buf[1000] = ""; \
 	char _classname[100] = #classname; \
+	_CL_VERBOSE << #classname << "::queryInterface(" << file << ", " << line << ") with ref = " << ref << " called." LOG_ \
 	\
 	if (instance_counted != 112233) { \
 		instance_counted = 112233; \
