@@ -254,6 +254,17 @@
 #define FALSE false
 #endif
 
+#ifdef TVISION
+ #ifndef LB_STDCALL
+  #ifdef WINDOWS
+   #define LB_STDCALL
+  #endif
+  #ifndef WINDOWS
+   #define LB_STDCALL
+  #endif
+ #endif
+#endif
+
 #ifndef _MSC_VER
  #ifndef LB_STDCALL
   #ifdef WINDOWS
@@ -328,8 +339,10 @@
 /*...sbase types:0:*/
 #ifndef __WATCOMC__
 #ifndef _MSC_VER
+#ifndef TVISION
 typedef unsigned short byte;
 typedef unsigned short u_short;
+#endif
 #endif
 #endif
 #ifdef __POWERPP

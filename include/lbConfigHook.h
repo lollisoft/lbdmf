@@ -38,8 +38,10 @@
 #include <mpatrol.h>
 #endif
 
+#ifndef TVISION
 #define TRACKER
-
+#define MEMTRACK
+#endif
 
 
 #ifdef WINDOWS
@@ -50,7 +52,9 @@
 #include <stdlib.h>
 
 //#ifdef WINDOWS
+#ifndef TVISION
  #include <conio.h>
+#endif
 //#endif
 
 #include <stdio.h>
@@ -86,6 +90,8 @@
 #endif
 
 /*...sMemory tracker:0:*/
+#ifdef MEMTRACK
+
 extern "C" {
 #include "trmemcvr.h"
 }
@@ -95,6 +101,8 @@ extern "C" {
 
 #define malloc TRMemAlloc
 #define free TRMemFree
+
+#endif
 /*...e*/
 
 #define _trans(text) translateText(text)
@@ -262,6 +270,28 @@ extern "C" {
 DLLEXPORT void LB_STDCALL set_trackObject(char* track);
 DLLEXPORT char* LB_STDCALL get_trackObject();
 DLLEXPORT void LB_STDCALL track_Object(lb_I_Unknown* o, char* msg);
+
+/*...sMEMTRACKER:0:*/
+/** \brief Checks wether if a memory track breakpoint is set.
+ */
+DLLEXPORT bool LB_STDCALL isSetTRMemTrackBreak();
+
+/** \brief Set the break address.
+ *
+ * This sets the memory breakpoint address and flags isSetTRMemTrackBreak() to true.
+ */
+DLLEXPORT void LB_STDCALL setTRMemTrackBreak(char* brk);
+
+/** \brief Get the break address.
+ *
+ * This is used in all DLL modules to get the same address, if it is set.
+ */
+DLLEXPORT char* LB_STDCALL getTRMemTrackBreak();
+
+#ifndef TRACKER
+#define TRMemTrackOpen isSetTRMemTrackBreak
+#endif 
+/*...e*/
 
 DLLEXPORT void LB_STDCALL setVerbose(bool what);
 DLLEXPORT bool LB_STDCALL isVerbose();
