@@ -725,6 +725,8 @@ BOOL WINAPI DllMain(HINSTANCE dllHandle, DWORD reason, LPVOID situation) {
                 case DLL_PROCESS_ATTACH:
                 	TRMemOpen();
                 	TRMemSetModuleName(__FILE__);
+
+			if (isSetTRMemTrackBreak()) TRMemSetAdrBreakPoint(getTRMemTrackBreak());
                 	
                         if (situation) {
                                 _CL_VERBOSE << "DLL statically loaded." LOG_
@@ -737,6 +739,7 @@ BOOL WINAPI DllMain(HINSTANCE dllHandle, DWORD reason, LPVOID situation) {
                         _CL_VERBOSE << "New thread starting.\n" LOG_
                         break;
                 case DLL_PROCESS_DETACH:                        
+                	_CL_LOG << "DLL_PROCESS_DETACH for " << __FILE__ LOG_
                         if (situation)
                         {
                                 _CL_VERBOSE << "DLL released by system." LOG_
