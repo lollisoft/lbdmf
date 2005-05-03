@@ -48,12 +48,9 @@ BOOL WINAPI DllMain(HINSTANCE dllHandle, DWORD reason, LPVOID situation) {
         switch (reason) {
                 case DLL_PROCESS_ATTACH:
                 	TRMemOpen();
-			char param[100] = "";
-			
-			cout << "Please give me an address to break at: ";
-			cin >> param;
-
-                	TRMemSetAdrBreakPoint(param);
+                	
+			if (isSetTRMemTrackBreak()) TRMemSetAdrBreakPoint(getTRMemTrackBreak());
+                	
                 	TRMemSetModuleName(__FILE__);
                 	
                         if (situation) {
@@ -67,6 +64,7 @@ BOOL WINAPI DllMain(HINSTANCE dllHandle, DWORD reason, LPVOID situation) {
                         _CL_VERBOSE << "New thread starting.\n" LOG_
                         break;
                 case DLL_PROCESS_DETACH:                        
+                	_CL_LOG << "DLL_PROCESS_DETACH for " << __FILE__ LOG_
                         if (situation)
                         {
                                 _CL_VERBOSE << "DLL released by system." LOG_

@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.59 $
+ * $Revision: 1.60 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.59 2005/05/01 21:26:15 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.60 2005/05/03 21:15:49 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.60  2005/05/03 21:15:49  lollisoft
+ * Better memtrack support
+ *
  * Revision 1.59  2005/05/01 21:26:15  lollisoft
  * Added informative filename to show when printing memory leaks.
  *
@@ -1325,6 +1328,9 @@ BOOL WINAPI DllMain(HINSTANCE dllHandle, DWORD reason, LPVOID situation) {
         switch (reason) {
                 case DLL_PROCESS_ATTACH:
                 	TRMemOpen();
+                	
+                	if (isSetTRMemTrackBreak()) TRMemSetAdrBreakPoint(getTRMemTrackBreak());
+                	
                 	TRMemSetModuleName(__FILE__);
                 	
                 	if (situation) {
@@ -1340,10 +1346,12 @@ BOOL WINAPI DllMain(HINSTANCE dllHandle, DWORD reason, LPVOID situation) {
                 case DLL_PROCESS_DETACH:                        
                         if (situation)
                         {
+                        	_CL_LOG << "DLL_PROCESS_DETACH for " << __FILE__ LOG_
                                 _CL_VERBOSE << "DLL released by system." LOG_
                         }
                         else
                         {
+                        	_CL_LOG << "DLL_PROCESS_DETACH for " << __FILE__ LOG_
                                 _CL_VERBOSE << "DLL released by program.\n" LOG_
                         }
                         break;

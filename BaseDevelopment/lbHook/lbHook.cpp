@@ -366,6 +366,34 @@ DLLEXPORT void LB_STDCALL unHookAll() {
 }
 /*...e*/
 
+static bool _isSetTRMemTrackBreak = false;
+static char TRMemTrackBreakAddr[21] = "";
+
+DLLEXPORT bool LB_STDCALL isSetTRMemTrackBreak() {
+	return _isSetTRMemTrackBreak;
+}
+
+DLLEXPORT void LB_STDCALL setTRMemTrackBreak(char* brk) {
+	if ((brk != NULL) && (strlen(brk) != 0)) {
+		_isSetTRMemTrackBreak = true;
+		strncpy(TRMemTrackBreakAddr, brk, 20);
+		
+		// Call TRMemSetAdrBreakPoint for lbHook it self.
+		
+		TRMemSetAdrBreakPoint(TRMemTrackBreakAddr);
+		TRMemSetModuleName(__FILE__);
+	} else {
+		_isSetTRMemTrackBreak = false;
+		// Using any string other than a pointer string let all strcmp fail.
+		strncpy(TRMemTrackBreakAddr, "unset", 20);
+		TRMemSetAdrBreakPoint("unset");
+	}
+}
+
+DLLEXPORT char* LB_STDCALL getTRMemTrackBreak() {
+	return TRMemTrackBreakAddr;
+}
+
 char* translated = NULL;
 
 DLLEXPORT char* LB_STDCALL translateText(char* text) {
@@ -608,3 +636,49 @@ char* LB_STDCALL lbStringKey::charrep() const {
     return key;
 }
 /*...e*/
+
+
+#ifdef WINDOWS
+/*...sDllMain:0:*/
+BOOL WINAPI DllMain(HINSTANCE dllHandle, DWORD reason, LPVOID situation) {
+        char buf[100]="";
+
+        switch (reason) {
+                case DLL_PROCESS_ATTACH:
+                	TRMemOpen();
+
+			if (isSetTRMemTrackBreak()) setTRMemTrackBreak(getTRMemTrackBreak());
+			
+                	TRMemSetModuleName(__FILE__);
+                	
+                        if (situation) {
+                                _CL_VERBOSE << "DLL statically loaded." LOG_
+                        }
+                        else {
+                                _CL_VERBOSE << "DLL dynamically loaded.\n" LOG_
+                        }
+                        break;
+                case DLL_THREAD_ATTACH:
+                        _CL_VERBOSE << "New thread starting.\n" LOG_
+                        break;
+                case DLL_PROCESS_DETACH:                        
+                	_CL_LOG << "DLL_PROCESS_DETACH for " << __FILE__ LOG_
+                        if (situation)
+                        {
+                                _CL_VERBOSE << "DLL released by system." LOG_
+                        }
+                        else
+                        {
+                                _CL_VERBOSE << "DLL released by program.\n" LOG_
+                        }
+                        break;
+                case DLL_THREAD_DETACH:
+                        _CL_VERBOSE << "Thread terminating.\n" LOG_
+                default:
+                        return FALSE;
+        }
+        
+        return TRUE;
+}
+/*...e*/
+#endif

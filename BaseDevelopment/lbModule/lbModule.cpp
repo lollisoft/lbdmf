@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.86 $
+ * $Revision: 1.87 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.86 2005/05/01 21:27:09 lollisoft Exp $
+ * $Id: lbModule.cpp,v 1.87 2005/05/03 21:16:22 lollisoft Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.87  2005/05/03 21:16:22  lollisoft
+ * Better memtrack support
+ *
  * Revision 1.86  2005/05/01 21:27:09  lollisoft
  * Added informative filename to show when printing memory leaks.
  * One more debug line.
@@ -2243,7 +2246,7 @@ lb_I_FunctorEntity* LB_STDCALL lbHCInterfaceRepository::getFirstEntity() {
 
 	_fe->setModule(module);
 	_fe->setFunctor(functor);
-			
+
 	return _fe;
 }
 /*...e*/
@@ -3604,12 +3607,12 @@ lbErrCodes LB_STDCALL lbModule::request(const char* request, lb_I_Unknown** resu
 		
 		UAP(lb_I_Unknown, _result, __FILE__, __LINE__)
 		makeInstance(functor, module, &_result);
-		
+
 		//QI(result, lb_I_InterfaceRepository, newInterfaceRepository, __FILE__, __LINE__)		
 		*result = _result.getPtr();
 		(*result)->setModuleManager(this, __FILE__, __LINE__);
 		_result++;
-		
+
 	} else {
 		printf("Error: Have no interface repository to locate configuration for %s\n", request); 
 	}
@@ -3796,6 +3799,9 @@ BOOL WINAPI DllMain(HINSTANCE dllHandle, DWORD reason, LPVOID situation) {
         switch (reason) {
                 case DLL_PROCESS_ATTACH:
                 	TRMemOpen();
+                	
+                	if (isSetTRMemTrackBreak()) setTRMemTrackBreak(getTRMemTrackBreak());
+                	
                 	TRMemSetModuleName(__FILE__);
                 	
                 	// Most of the leaks for this module are found now.
@@ -3811,7 +3817,8 @@ BOOL WINAPI DllMain(HINSTANCE dllHandle, DWORD reason, LPVOID situation) {
                 case DLL_THREAD_ATTACH:
                         _CL_VERBOSE << "New thread starting.\n" LOG_
                         break;
-                case DLL_PROCESS_DETACH:                        
+                case DLL_PROCESS_DETACH:
+                	_CL_LOG << "DLL_PROCESS_DETACH for " << __FILE__ LOG_                        
                         if (situation)
                         {
                                 _CL_VERBOSE << "DLL released by system." LOG_

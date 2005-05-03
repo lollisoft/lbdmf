@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.19 $
+ * $Revision: 1.20 $
  * $Name:  $
- * $Id: lbPluginManager.cpp,v 1.19 2005/05/01 21:27:39 lollisoft Exp $
+ * $Id: lbPluginManager.cpp,v 1.20 2005/05/03 21:16:51 lollisoft Exp $
  *
  * $Log: lbPluginManager.cpp,v $
+ * Revision 1.20  2005/05/03 21:16:51  lollisoft
+ * Better memtrack support
+ *
  * Revision 1.19  2005/05/01 21:27:39  lollisoft
  * Added informative filename to show when printing memory leaks.
  *
@@ -833,6 +836,8 @@ BOOL WINAPI DllMain(HINSTANCE dllHandle, DWORD reason, LPVOID situation) {
                 case DLL_PROCESS_ATTACH:
                 	TRMemOpen();
                 	TRMemSetModuleName(__FILE__);
+
+			if (isSetTRMemTrackBreak()) TRMemSetAdrBreakPoint(getTRMemTrackBreak());
                 	
                         if (situation) {
                                 _CL_VERBOSE << "DLL statically loaded." LOG_
@@ -845,6 +850,7 @@ BOOL WINAPI DllMain(HINSTANCE dllHandle, DWORD reason, LPVOID situation) {
                         _CL_VERBOSE << "New thread starting.\n" LOG_
                         break;
                 case DLL_PROCESS_DETACH:                        
+                	_CL_LOG << "DLL_PROCESS_DETACH for " << __FILE__ LOG_
                         if (situation)
                         {
                                 _CL_VERBOSE << "DLL released by system." LOG_
