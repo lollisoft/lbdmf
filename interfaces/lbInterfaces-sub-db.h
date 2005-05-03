@@ -649,6 +649,9 @@ public:
 	 */
 	virtual lbErrCodes LB_STDCALL init() = 0;
 
+	virtual lbErrCodes LB_STDCALL setUser(char* _user) = 0;
+	virtual lbErrCodes LB_STDCALL setDB(char* _db) = 0;
+
 	/**
 	 * \brief Connect to the database.
 	 *
@@ -663,6 +666,8 @@ public:
 	 * \param passwd The passord. 
 	 */
 	virtual lbErrCodes LB_STDCALL connect(char* DSN, char* user, char* passwd) = 0;
+
+	virtual lbErrCodes LB_STDCALL connect(char* pass) = 0;
 
 	/**
 	 * \brief Get a query instance.

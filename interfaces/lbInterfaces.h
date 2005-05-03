@@ -257,7 +257,8 @@
 #ifdef TVISION
  #ifndef LB_STDCALL
   #ifdef WINDOWS
-   #define LB_STDCALL
+   #define LB_STDCALL __cdecl 
+   //__attribute__((cdecl))
   #endif
   #ifndef WINDOWS
    #define LB_STDCALL
@@ -399,7 +400,12 @@ typedef lbErrCodes (lb_I_CallbackTarget::*lbMemberCallback)( const char* handler
 
 typedef lbErrCodes (lb_I_EventSink::*lb_I_EventCallback)(lb_I_Unknown* question, lb_I_Unknown* answer); 
 
+#ifndef TVISION
 typedef lbErrCodes (LB_STDCALL lb_I_EventHandler::*lbEvHandler)(lb_I_Unknown* uk);
+#endif
+#ifdef TVISION
+typedef lbErrCodes ( lb_I_EventHandler::*lbEvHandler)(lb_I_Unknown* uk);
+#endif
 /*...e*/
 
 /*
