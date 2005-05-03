@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.47 $
+# * $Revision: 1.48 $
 # * $Name:  $
-# * $Id: Makefile,v 1.47 2005/04/29 20:49:41 lollisoft Exp $
+# * $Id: Makefile,v 1.48 2005/05/03 21:07:18 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.48  2005/05/03 21:07:18  lollisoft
+# * More dependency to doxygen
+# *
 # * Revision 1.47  2005/04/29 20:49:41  lollisoft
 # * Added more files in dependency to help generation
 # *
@@ -427,6 +430,7 @@ lbXMLConfig/lbDOMConfig: dummy
 
 ../Doc/html: ../doxygen.conf \
 	../interfaces/lbInterfaces.h \
+	../include/lbConfigHook.h \
 	../Samples/HelloWorld/helloworld.cpp \
 	../RegressionTests/Database/dbTest.cpp \
 	../RegressionTests/Basetypes/Basetypes.cpp \
