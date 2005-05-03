@@ -31,10 +31,13 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.35 $
+ * $Revision: 1.36 $
  * $Name:  $
- * $Id: misc.cpp,v 1.35 2005/05/01 01:12:36 lollisoft Exp $
+ * $Id: misc.cpp,v 1.36 2005/05/03 21:11:35 lollisoft Exp $
  * $Log: misc.cpp,v $
+ * Revision 1.36  2005/05/03 21:11:35  lollisoft
+ * Try using logger class as singleton.
+ *
  * Revision 1.35  2005/05/01 01:12:36  lollisoft
  * Found a really big memory leak. It happens due to missing setup of ref variable
  * in lbFunctorEntity class of lbModule.cpp.
@@ -295,8 +298,8 @@ lb_I_Mutex* lbLog::mutex;
 extern "C" {       
 #endif            
 
-//IMPLEMENT_FUNCTOR(instanceOfLogger, lbLog)
-
+IMPLEMENT_SINGLETON_FUNCTOR(instanceOfLogger, lbLog)
+#ifdef bla
 /*...s:0:*/
 lbErrCodes DLLEXPORT LB_FUNCTORCALL instanceOfLogger(lb_I_Unknown** uk, lb_I_Module* m, char* file, int line) { 
 
@@ -324,7 +327,7 @@ lbErrCodes DLLEXPORT LB_FUNCTORCALL instanceOfLogger(lb_I_Unknown** uk, lb_I_Mod
 } 
 
 /*...e*/
-
+#endif
 
 #ifdef __cplusplus
 }
@@ -349,6 +352,7 @@ lbErrCodes LB_STDCALL lbLog::setData(lb_I_Unknown* uk) {
 /*...slbLog\58\\58\lbLog\40\\41\:0:*/
 lbLog::lbLog() {
 //lbLock lbLock(sect);
+	ref = STARTREF;
 	manager = NULL;
         strcpy(f, LOGFILE);
         logdirect("lbLog::lbLog(): Creating mutex for logfile\n", f, level);
@@ -361,6 +365,7 @@ lbLog::lbLog() {
         doLog = 1;
         logmessage = NULL;
         lastsize = 0;
+        _CL_LOG << "lbLog::lbLog() leaving" LOG_
 }
 /*...e*/
 /*...slbLog\58\\58\lbLog\40\int l\41\:0:*/
@@ -406,6 +411,9 @@ void LB_STDCALL lbLog::logdirect(const char *msg, char *f, int level) {
 /*...slbLog\58\\58\log\40\\46\\46\\46\\41\:0:*/
 void LB_STDCALL lbLog::log(const char *msg, long line, char* file) {
 //lbLock lbLock(sect, "lbLockSection");
+
+_CL_LOG << "Do log a line..." LOG_
+
         if (firstlog == 0) {
         	lbLog log;// = lbLog();
         }
@@ -422,6 +430,7 @@ void LB_STDCALL lbLog::log(const char *msg, long line, char* file) {
 		printf("Have freed up memory of logging message\n");
         }
         mutex->release();
+_CL_LOG << "Done log a line..." LOG_
 }
 /*...e*/
 /*...slbLog\58\\58\log\40\int log\41\:0:*/
@@ -548,7 +557,7 @@ void LB_STDCALL lbLog::realloc(int add_size) {
 } 
  
 lb_I_Log& LB_STDCALL lbLog::operator<< (/*lb_I_Log* logger,*/ const int i) {
-	char s[100] = "";
+	char s[1000] = "";
 	realloc(strlen(itoa(i)) + 1);
 	lastsize = lastsize + strlen(itoa(i)) + 1;
 	strcat(logmessage, itoa(i));
