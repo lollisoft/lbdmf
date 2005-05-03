@@ -178,11 +178,30 @@ int main(int argc, char *argv[]) {
 int main(int argc, char *argv[]) {
 	lbErrCodes err = ERR_NONE;
 	lb_I_Module* mm = NULL;
+
+{
+
+	char brk[100] = "";
+	
+	cout << "Please enter TRMem breakpoint address: ";
+	cin >> brk;
+	
+	TRMemOpen();
+	TRMemSetModuleName(__FILE__);
+	TRMemSetAdrBreakPoint(brk);
+
+	// Tell other modules the same breakpoint.
+	setTRMemTrackBreak(brk);
+	
 	
 	mm = getModuleInstance();
 	mm->setModuleManager(mm, __FILE__, __LINE__);
 
 	_CL_LOG << "Database regression tests..." LOG_
+
+	UAP_REQUEST(mm, lb_I_String, preload)
+	
+	// Try preload lbClasses
 	
 	UAP_REQUEST(mm, lb_I_Database, database)
 
@@ -274,5 +293,13 @@ int main(int argc, char *argv[]) {
 	_CL_LOG << "Print out changed data:" LOG_	
 	query3->PrintData();
 #endif
+
+//_CL_LOG << "Check cleanup of main.................................." LOG_
+//	setVerbose(true);
+}
+//setVerbose(false);
+//_CL_LOG << "Checked cleanup of main................................" LOG_
+
+
         return 0;
 }
