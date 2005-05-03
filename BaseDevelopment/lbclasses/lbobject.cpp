@@ -301,7 +301,6 @@ lbString::~lbString() {
 	if (key != NULL) free(key);
 	stringdata = NULL;
 	key = NULL;
-	_CL_LOG << "lbString::~lbString() called" LOG_
 }
 
 void LB_STDCALL lbString::setData(char const * p) {
