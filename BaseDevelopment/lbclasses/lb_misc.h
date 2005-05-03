@@ -31,10 +31,13 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.10 $
+ * $Revision: 1.11 $
  * $Name:  $
- * $Id: lb_misc.h,v 1.10 2005/03/31 09:02:42 lollisoft Exp $
+ * $Id: lb_misc.h,v 1.11 2005/05/03 21:12:56 lollisoft Exp $
  * $Log: lb_misc.h,v $
+ * Revision 1.11  2005/05/03 21:12:56  lollisoft
+ * Try using singleton for logger class
+ *
  * Revision 1.10  2005/03/31 09:02:42  lollisoft
  * Copyright text problems under linux.
  *
@@ -98,7 +101,7 @@ extern "C" {
 /*...e*/
 void lb_sleep(int ms);
 
-DECLARE_FUNCTOR(instanceOfLogger)
+DECLARE_SINGLETON_FUNCTOR(instanceOfLogger)
 
 /*...sendif __cplusplus:0:*/
 #ifdef __cplusplus
