@@ -113,6 +113,7 @@ class lbBoundColumns: public lb_I_ColumnBinding {
 public:	
 	lbBoundColumns() { ref = STARTREF; ArraySize = 1; }
 	virtual ~lbBoundColumns() {
+		_CL_VERBOSE << "lbBoundColumns::~lbBoundColumns() called." LOG_
 	}
 	
 	DECLARE_LB_UNKNOWN()
@@ -184,7 +185,9 @@ public:
 		}
 	}
 	
-	virtual ~lbQuery() {}
+	virtual ~lbQuery() {
+		_CL_VERBOSE << "lbQuery::~lbQuery() called." LOG_
+	}
 	
 	DECLARE_LB_UNKNOWN()
 
@@ -371,9 +374,10 @@ public:
 		if ((bound != 0) && (buffer != NULL)) {
 			printf("Free buffer in lbBoundColumn\n");
 			free(buffer);
+			printf("Freed buffer in lbBoundColumn\n");
 			buffer = NULL;
 		}
-
+		_CL_LOG << "lbBoundColumn::~lbBoundColumn(" << colName->charrep() << ") called." LOG_
 	}
 	
 	lbBoundColumn(const lbBoundColumn& _ref) {
@@ -410,13 +414,14 @@ protected:
 		bound = b;
 		_DataType = dt;
 		buffer = bu;
+		
 		REQUEST(manager.getPtr(), lb_I_String, colName)
 
 		if (name == NULL) {
 			printf("ERROR: Cloning data with NULL pointer\n");
 		}
 
-		colName->setData(name->getData());
+		colName->setData(name->charrep());
 		return ERR_NONE;
 	}
 
@@ -442,6 +447,7 @@ protected:
 	int		rows;
 	HSTMT 		hstmt;
 	UAP(lb_I_String, colName, __FILE__, __LINE__)
+	char*		bufcolName[100];
 };
 /*...e*/
 
@@ -807,7 +813,8 @@ lbErrCodes	LB_STDCALL lbBoundColumns::getString(int column, lb_I_String* instanc
 	UAP(lb_I_BoundColumn, bc, __FILE__, __LINE__)
 
 	bc = getBoundColumn(column);
-	bc++;
+	// getBoundColumn(column); increases refcount
+	//bc++;
 	bc->getAsString(instance);
 
 	return ERR_NONE;
@@ -893,6 +900,7 @@ void LB_STDCALL lbQuery::PrintData() {
 	lb_I_Query* q = this;
 	
 	if (q->first() == ERR_NONE) {
+	setVerbose(false);
 		UAP(lb_I_String, s, __FILE__, __LINE__)
 		s = q->getAsString(q->getColumns());
 		s->trim();
@@ -929,7 +937,6 @@ void LB_STDCALL lbQuery::PrintData() {
 	    };	    
 	}
 }
-
 
 /*...slbErrCodes LB_STDCALL lbQuery\58\\58\init\40\HENV _henv\44\ HDBC _hdbc\41\:0:*/
 lbErrCodes LB_STDCALL lbQuery::init(HENV _henv, HDBC _hdbc, int readonly) {
@@ -1162,10 +1169,12 @@ Using SQLSetPos
 		        dbError( "SQLNumResultCols()");
 		        return ERR_DB_QUERYFAILED;
 		} else {
-
+			lbErrCodes err = ERR_NONE;
+			
 			boundcols = new lbBoundColumns();
 			boundcols->setModuleManager(*&manager, __FILE__, __LINE__);
-			boundColumns = boundcols;
+
+			QI(boundcols, lb_I_ColumnBinding, boundColumns, __FILE__, __LINE__)
 		
 			boundColumns->setQuery(this, ReadOnlyColumns.getPtr());
 			
@@ -1180,7 +1189,7 @@ Using SQLSetPos
 	return ERR_NONE;
 }
 /*...e*/
-/*...svirtual char\42\ LB_STDCALL lbQuery\58\\58\getChar\40\int column\41\:0:*/
+/*...svirtual char\42\ LB_STDCALL lbQuery\58\\58\getAsString\40\int column\41\:0:*/
 #ifdef UNBOUND
 char* LB_STDCALL lbQuery::getChar(int column) {
 	SDWORD cbobjecttyp;
@@ -1347,7 +1356,7 @@ void LB_STDCALL lbQuery::prepareFKList() {
 
 /*...sOriginally for windows:8:*/
 
-	unsigned char*   szTable;     /* Table to display   */
+	unsigned char*   szTable = NULL;     /* Table to display   */
 
 	UCHAR   szPkTable[TAB_LEN];  /* Primary key table name */
 	UCHAR   szFkTable[TAB_LEN];  /* Foreign key table name */
@@ -1372,7 +1381,10 @@ void LB_STDCALL lbQuery::prepareFKList() {
 	        _dbError( "SQLAllocStmt()",henv,hdbc,hstmt);
 	}
 
-	szTable = (unsigned char*) strdup(getTableName());
+	char* temp = (char*) getTableName();
+	szTable = (unsigned char*) malloc(strlen(temp)+1);
+	szTable[0] = 0;
+	strcpy((char*) szTable, temp);
 	
 	if (strlen((char* const) szTable) > 99) {
 		_CL_LOG << "ERROR: Possible buffer overflows!" LOG_
@@ -1418,6 +1430,8 @@ void LB_STDCALL lbQuery::prepareFKList() {
 	   }
 	}
 
+	free(szTable);
+
 	/* Close the cursor (the hstmt is still allocated). */
 
 	SQLFreeStmt(hstmt, SQL_DROP);
@@ -1458,7 +1472,8 @@ void LB_STDCALL lbQuery::prepareFKList() {
 
 	
 	for (int i = 1; i <= getColumns(); i++) { 
-    	    lb_I_Query* q;
+	setVerbose(false);
+    	    UAP(lb_I_Query, q, __FILE__, __LINE__)
 
 	    buffer[0] = 0;
 	    
@@ -1490,7 +1505,9 @@ void LB_STDCALL lbQuery::prepareFKList() {
 
 	        ForeignColumns->insert(&uk_PKTable, &key_FKName);
 	    }
+	    setVerbose(true);
 	}
+	setVerbose(false);
 /*...e*/
 	}
 }
@@ -2949,8 +2966,9 @@ public:
 	    _dbuser = NULL;
 	}
         virtual ~lbConnection() {
-	    if (_dbname) free(_dbname);
-	    if (_dbuser) free(_dbuser);
+        	_CL_VERBOSE << "lbConnection::~lbConnection() called" LOG_
+		if (_dbname) free(_dbname);
+		if (_dbuser) free(_dbuser);
 	}
 
 	DECLARE_LB_UNKNOWN()
@@ -2966,7 +2984,9 @@ public:
 		_dbname = NULL;
 	    }
 	    
-	    if (name) _dbname = strdup(name);
+	    _dbname = (char*) malloc(strlen(name)+1);
+	    
+	    if (name) strcpy(_dbname, name);
 	}
 	
 	virtual void LB_STDCALL setDBUser(char* name) {
@@ -2975,7 +2995,9 @@ public:
 		_dbuser = NULL;
 	    }
 	    
-	    if (name) _dbuser = strdup(name);
+	    _dbuser = (char*) malloc(strlen(name)+1);
+	    
+	    if (name) strcpy(_dbuser, name);
 	}
 	
 	virtual void LB_STDCALL setConnection(HDBC _hdbc) {
@@ -3043,14 +3065,21 @@ public:
 	 */
 	virtual lbErrCodes LB_STDCALL connect(char* DSN, char* user, char* passwd);
 	virtual lb_I_Query* LB_STDCALL getQuery(int readonly = 1);
-	
+
+	virtual lbErrCodes LB_STDCALL connect(char* pass);
+
+	virtual lbErrCodes LB_STDCALL setUser(char* _user);
+	virtual lbErrCodes LB_STDCALL setDB(char* _db);	
 	
 	
 private:
 	RETCODE  retcode;
 	HENV     henv;	
 	HDBC     hdbc;
-	
+	char*	 user;
+	char*	 db;
+
+public:	
 	static lb_I_Container* connPooling;
 };
 
@@ -3066,27 +3095,33 @@ lbDatabase::lbDatabase() {
 	ref = STARTREF;
 	henv = 0;
 	hdbc = 0;
+	user = NULL;
+	db = NULL;
+	_CL_LOG << "lbDatabase::lbDatabase() called." LOG_
 }
 
 lbDatabase::~lbDatabase() {
+	_CL_LOG << "lbDatabase::~lbDatabase() called." LOG_
 }
 
 /*...slbErrCodes LB_STDCALL lbDatabase\58\\58\init\40\\41\:0:*/
 lbErrCodes LB_STDCALL lbDatabase::init() {
 	retcode = SQLAllocEnv(&henv);
 	if (retcode != SQL_SUCCESS) {
-        	_dbError( "SQLAllocEnv()",henv,0,0);
-        	_LOG << "Database initializion failed." LOG_
+        	//_dbError( "SQLAllocEnv()",henv,0,0);
+        	_CL_LOG << "lbDatabase::init(): Database initializion failed." LOG_
         	return ERR_DB_INIT;
         }
 
 	retcode = SQLSetEnvAttr(henv, SQL_ATTR_ODBC_VERSION, (void*) SQL_OV_ODBC3, 0);
 
 	if (retcode != SQL_SUCCESS) {
-        	_dbError( "SQLSetEnvAttr()",henv,0,0);
-        	_LOG << "Database version initializion failed." LOG_
+        	//_dbError( "SQLSetEnvAttr()",henv,0,0);
+        	_CL_LOG << "lbDatabase::init(): Database version initializion failed." LOG_
         	return ERR_DB_INIT;
 	}
+
+	_LOG << "lbDatabase::init() succeeded" LOG_
 
 	return ERR_NONE;
 }
@@ -3097,9 +3132,35 @@ lbErrCodes LB_STDCALL lbDatabase::setData(lb_I_Unknown* uk) {
 	return ERR_NOT_IMPLEMENTED;
 }
 /*...e*/
+
+lbErrCodes LB_STDCALL lbDatabase::setUser(char* _user) {
+	if (user != NULL) free(user);
+	user = (char*) malloc(strlen(_user)+1);
+	user[0] = 0;
+	strcpy(user, _user);
+	_CL_LOG << "lbDatabase::setUser('" << user << "') called." LOG_
+	return ERR_NONE;
+}
+
+lbErrCodes LB_STDCALL lbDatabase::setDB(char* _db) {
+	if (db != NULL) free(db);
+	db = (char*) malloc(strlen(_db)+1);
+	db[0] = 0;
+	strcpy(db, _db);
+	_CL_LOG << "lbDatabase::setDB('" << db << "') called." LOG_
+	return ERR_NONE;
+}
+
+lbErrCodes LB_STDCALL lbDatabase::connect(char* pass) {
+	_CL_LOG << "lbDatabase::connect(char* pass) called. DB:" << db << ", U:" << user << ", P:" << pass LOG_
+	return connect(db, user, pass);
+}
+
 /*...slbErrCodes LB_STDCALL lbDatabase\58\\58\connect\40\char\42\ DSN\44\ char\42\ user\44\ char\42\ passwd\41\:0:*/
 lbErrCodes LB_STDCALL lbDatabase::connect(char* DSN, char* user, char* passwd) {
 	lbErrCodes err = ERR_NONE;
+
+	_CL_LOG << "Connect to database " << DSN << " as " << user << " with passwd=" << passwd LOG_
 	
 	if (connPooling == NULL) {
 	    UAP_REQUEST(manager.getPtr(), lb_I_Container, container)
@@ -3183,7 +3244,7 @@ lbErrCodes LB_STDCALL lbDatabase::connect(char* DSN, char* user, char* passwd) {
                 return ERR_DB_CONNECT;
 	    }
 
-	    _CL_VERBOSE << "SQLConnect(hdbc, '" << DSN << "', '" << user << "');" LOG_
+	    _CL_LOG << "SQLConnect(hdbc, '" << DSN << "', '" << user << "', '" << passwd << "');" LOG_
 
 	    retcode = SQLConnect(hdbc, (unsigned char*) DSN, SQL_NTS, 
 				       (unsigned char*) user, SQL_NTS, 
@@ -3222,7 +3283,7 @@ lb_I_Query* LB_STDCALL lbDatabase::getQuery(int readonly) {
 		//return NULL;
 	}
 
-	lb_I_Query* q;
+	lb_I_Query* q = NULL;
 	
 	query->queryInterface("lb_I_Query", (void**) &q, __FILE__, __LINE__);
 
@@ -3797,7 +3858,12 @@ BOOL WINAPI DllMain(HINSTANCE dllHandle, DWORD reason, LPVOID situation) {
         switch (reason) {
                 case DLL_PROCESS_ATTACH:
                 	TRMemOpen();
+
+			if (isSetTRMemTrackBreak()) TRMemSetAdrBreakPoint(getTRMemTrackBreak());
+			
                 	TRMemSetModuleName(__FILE__);
+                	
+                	_CL_LOG << "DLL lbDB loaded." LOG_
                 	
                         if (situation) {
                                 _CL_VERBOSE << "DLL statically loaded." LOG_
@@ -3810,12 +3876,19 @@ BOOL WINAPI DllMain(HINSTANCE dllHandle, DWORD reason, LPVOID situation) {
                         _CL_VERBOSE << "New thread starting.\n" LOG_
                         break;
                 case DLL_PROCESS_DETACH:                        
+                       	_CL_LOG << "DLL_PROCESS_DETACH for " << __FILE__ LOG_
                         if (situation)
                         {
+                        	if (lbDatabase::connPooling != NULL) lbDatabase::connPooling->release(__FILE__, __LINE__);
+
                                 _CL_VERBOSE << "DLL released by system." LOG_
                         }
                         else
                         {
+                        	// Cleanup the static container holding open connections.
+                        	
+                        	if (lbDatabase::connPooling != NULL) lbDatabase::connPooling->release(__FILE__, __LINE__);
+                                
                                 _CL_VERBOSE << "DLL released by program.\n" LOG_
                         }
                         break;
