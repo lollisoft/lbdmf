@@ -273,8 +273,10 @@ T_p_getlbModuleInstance DLL_GETMODULEINSTANCE;
 	if (memTrackerInit == 0) {
 		//DebugBreak();
 		memTrackerInit = 1;
+		#ifdef WINDOWS
 		TRMemOpen();
 		TRMemSetModuleName(__FILE__);
+		#endif
 	}
 	
 	char* libname = getenv("MODULELIB");
@@ -367,13 +369,14 @@ DLLEXPORT void LB_STDCALL unHookAll() {
 /*...e*/
 
 static bool _isSetTRMemTrackBreak = false;
-static char TRMemTrackBreakAddr[21] = "";
+static char TRMemTrackBreakAddr[21] = "DoNotBreak";
 
 DLLEXPORT bool LB_STDCALL isSetTRMemTrackBreak() {
 	return _isSetTRMemTrackBreak;
 }
 
 DLLEXPORT void LB_STDCALL setTRMemTrackBreak(char* brk) {
+#ifdef WINDOWS
 	if ((brk != NULL) && (strlen(brk) != 0)) {
 		_isSetTRMemTrackBreak = true;
 		strncpy(TRMemTrackBreakAddr, brk, 20);
@@ -388,6 +391,7 @@ DLLEXPORT void LB_STDCALL setTRMemTrackBreak(char* brk) {
 		strncpy(TRMemTrackBreakAddr, "unset", 20);
 		TRMemSetAdrBreakPoint("unset");
 	}
+#endif
 }
 
 DLLEXPORT char* LB_STDCALL getTRMemTrackBreak() {
