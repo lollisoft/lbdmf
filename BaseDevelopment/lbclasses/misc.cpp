@@ -31,10 +31,13 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.36 $
+ * $Revision: 1.37 $
  * $Name:  $
- * $Id: misc.cpp,v 1.36 2005/05/03 21:11:35 lollisoft Exp $
+ * $Id: misc.cpp,v 1.37 2005/05/04 22:07:34 lollisoft Exp $
  * $Log: misc.cpp,v $
+ * Revision 1.37  2005/05/04 22:07:34  lollisoft
+ * _CL_LOG replaced with _CL_VERBOSE
+ *
  * Revision 1.36  2005/05/03 21:11:35  lollisoft
  * Try using logger class as singleton.
  *
@@ -86,7 +89,7 @@
  * Compiles again under linux, but some problems at runtime with DOMString
  *
  * Revision 1.21  2002/10/17 17:34:44  lolli
- * Use of _CL_LOG macro
+ * Use of _CL_VERBOSE macro
  *
  * Revision 1.20  2002/10/11 17:20:59  lolli
  * Before CL_LOG change
@@ -99,7 +102,7 @@
  *
  * Revision 1.17  2002/10/04 16:53:14  lolli
  * Replaced old LOG macro with the new
- * _CL_LOG << "text" << integer value LOG_
+ * _CL_VERBOSE << "text" << integer value LOG_
  * combination. This makes sprintf obsolete.
  *
  * Revision 1.16  2002/09/19 19:34:14  lolli
@@ -310,14 +313,14 @@ lbErrCodes DLLEXPORT LB_FUNCTORCALL instanceOfLogger(lb_I_Unknown** uk, lb_I_Mod
         if (m != NULL) { 
         	instance->setModuleManager(m, __FILE__, __LINE__); 
         } else { 
-        	_CL_LOG << "Error: Functor gets no manager. This is only possible for a manager it self." LOG_ 
+        	_CL_VERBOSE << "Error: Functor gets no manager. This is only possible for a manager it self." LOG_ 
         } 
         
         if ((err = instance->queryInterface("lb_I_Unknown", (void**) uk, file, line)) != ERR_NONE) { 
-                _CL_LOG << "Failed to create unknown reference to instance of " << 
+                _CL_VERBOSE << "Failed to create unknown reference to instance of " << 
                 "lbLog" << ". Errcode is " << err LOG_ 
                 if (err == ERR_STATE_FURTHER_LOCK) { 
-                	_CL_LOG << "ERR_STATE_FURTHER_LOCK" LOG_ 
+                	_CL_VERBOSE << "ERR_STATE_FURTHER_LOCK" LOG_ 
                 	return err; 
                 } 
                 return ERR_FUNCTOR; 
@@ -334,8 +337,8 @@ lbErrCodes DLLEXPORT LB_FUNCTORCALL instanceOfLogger(lb_I_Unknown** uk, lb_I_Mod
 #endif            
 
 // Logging macro does not work recursively
-//#undef _CL_LOG
-//#define _CL_LOG cerr
+//#undef _CL_VERBOSE
+//#define _CL_VERBOSE cerr
 //#undef LOG_
 //#define LOG_ << ""; }
 
@@ -344,7 +347,7 @@ BEGIN_IMPLEMENT_LB_UNKNOWN(lbLog)
 END_IMPLEMENT_LB_UNKNOWN()
 
 lbErrCodes LB_STDCALL lbLog::setData(lb_I_Unknown* uk) {
-        _CL_LOG << "lbLog::setData(...) not implemented yet" LOG_
+        _CL_VERBOSE << "lbLog::setData(...) not implemented yet" LOG_
         return ERR_NOT_IMPLEMENTED;
 }
 
@@ -365,7 +368,7 @@ lbLog::lbLog() {
         doLog = 1;
         logmessage = NULL;
         lastsize = 0;
-        _CL_LOG << "lbLog::lbLog() leaving" LOG_
+        _CL_VERBOSE << "lbLog::lbLog() leaving" LOG_
 }
 /*...e*/
 /*...slbLog\58\\58\lbLog\40\int l\41\:0:*/
@@ -383,7 +386,7 @@ lbLog::lbLog(int l) {
 
         firstlog = 1;
         doLog = l;
-        _CL_LOG << "lbLog::lbLog(): Creating mutex for logfile" LOG_
+        _CL_VERBOSE << "lbLog::lbLog(): Creating mutex for logfile" LOG_
 	printf("lbLog::lbLog(int l) leaving\n");
     }
 /*...e*/
@@ -412,7 +415,7 @@ void LB_STDCALL lbLog::logdirect(const char *msg, char *f, int level) {
 void LB_STDCALL lbLog::log(const char *msg, long line, char* file) {
 //lbLock lbLock(sect, "lbLockSection");
 
-_CL_LOG << "Do log a line..." LOG_
+_CL_VERBOSE << "Do log a line..." LOG_
 
         if (firstlog == 0) {
         	lbLog log;// = lbLog();
@@ -430,7 +433,7 @@ _CL_LOG << "Do log a line..." LOG_
 		printf("Have freed up memory of logging message\n");
         }
         mutex->release();
-_CL_LOG << "Done log a line..." LOG_
+_CL_VERBOSE << "Done log a line..." LOG_
 }
 /*...e*/
 /*...slbLog\58\\58\log\40\int log\41\:0:*/
@@ -502,7 +505,7 @@ void LB_STDCALL lbLog::event_begin(char *event) {
             beinlog = 1;
             start_time = clock();
 
-            _CL_LOG << event LOG_
+            _CL_VERBOSE << event LOG_
     }
 }
 /*...e*/
