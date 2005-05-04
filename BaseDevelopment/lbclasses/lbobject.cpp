@@ -155,7 +155,7 @@ void LB_STDCALL lbLocale::translate(char ** text, char const * to_translate) {
 		*text = (char*) realloc(*text, strlen(to_translate) + 1);
 		*text[0] = 0;
 
-		_CL_LOG << "šbersetzung fr '" << to_translate << "' nicht gefunden!" LOG_
+		_CL_VERBOSE << "šbersetzung fr '" << to_translate << "' nicht gefunden!" LOG_
 
 		buffer[0] = 0;
 		
@@ -174,7 +174,7 @@ BEGIN_IMPLEMENT_LB_UNKNOWN(lbParameter)
 END_IMPLEMENT_LB_UNKNOWN()
 
 lbErrCodes LB_STDCALL lbParameter::setData(lb_I_Unknown* uk) {
-	_CL_LOG << "lbParameter::setData(...) not implemented yet" LOG_
+	_CL_VERBOSE << "lbParameter::setData(...) not implemented yet" LOG_
 	return ERR_NOT_IMPLEMENTED;
 }
 
@@ -270,7 +270,7 @@ BEGIN_IMPLEMENT_LB_UNKNOWN(lbReference)
 END_IMPLEMENT_LB_UNKNOWN()
 
 lbErrCodes LB_STDCALL lbReference::setData(lb_I_Unknown* uk) {
-	_CL_LOG << "lbReference::setData(...) not implemented yet" LOG_
+	_CL_VERBOSE << "lbReference::setData(...) not implemented yet" LOG_
 	return ERR_NOT_IMPLEMENTED;
 }
 
@@ -296,6 +296,12 @@ lbString::lbString() {
 }
 
 lbString::~lbString() {
+
+	char ptr[20] = "";
+	sprintf(ptr, "%p", this);
+
+	_CL_VERBOSE << "lbString::~lbString() called. Data is " << stringdata << ", this is " << ptr LOG_
+
 	if (stringdata != NULL) free(stringdata);
 	
 	if (key != NULL) free(key);
@@ -308,12 +314,13 @@ void LB_STDCALL lbString::setData(char const * p) {
 	
 	stringdata = (char*) malloc(strlen(p)+1);
 	stringdata[0] = 0;
-	stringdata = strcpy(stringdata, p);
+	strcpy(stringdata, p);
 	
 	if (key != NULL) free(key);
+	
 	key = (char*) malloc(strlen(p)+1);
 	key[0] = 0;
-	key = strcpy(key, p);
+	strcpy(key, p);
 }
 
 void LB_STDCALL lbString::trim() {
@@ -321,6 +328,7 @@ void LB_STDCALL lbString::trim() {
 		stringdata[strlen(stringdata)-1] = 0;
 		
 	if (key != NULL) free(key);
+	
 	key = (char*) malloc(strlen(stringdata)+1);
 	key[0] = 0;
 	key = strcpy(key, stringdata);	
@@ -346,7 +354,7 @@ lb_I_Unknown* lbString::clone() const {
 	lb_I_Unknown* uk_cloned = NULL;
 	
 	if (cloned->queryInterface("lb_I_Unknown", (void**) &uk_cloned) != ERR_NONE) {
-		_CL_LOG << "Error while getting interface" LOG_
+		_CL_VERBOSE << "Error while getting interface" LOG_
 	}
 	
 	return uk_cloned;
@@ -517,7 +525,7 @@ BEGIN_IMPLEMENT_LB_UNKNOWN(lbLong)
 END_IMPLEMENT_LB_UNKNOWN()
 
 lbErrCodes LB_STDCALL lbLong::setData(lb_I_Unknown* uk) {
-	_CL_LOG << "lbLong::setData(...) not implemented yet" LOG_
+	_CL_VERBOSE << "lbLong::setData(...) not implemented yet" LOG_
 	return ERR_NOT_IMPLEMENTED;
 }
 
@@ -581,7 +589,7 @@ lb_I_Unknown* lbStringList::clone() const {
 	lb_I_Unknown* uk_cloned = NULL;
 	
 	if (cloned->queryInterface("lb_I_Unknown", (void**) &uk_cloned) != ERR_NONE) {
-		_CL_LOG << "Error: query interface failed" LOG_
+		_CL_VERBOSE << "Error: query interface failed" LOG_
 	}
 	
 	return uk_cloned;
@@ -624,7 +632,7 @@ lb_I_String* lbStringList::nextElement() {
 	uk_object = list->nextElement();
 	
 	if (uk_object->queryInterface("lb_I_String", (void**) &s) != ERR_NONE) {
-		_CL_LOG << "Error: query interface failed" LOG_
+		_CL_VERBOSE << "Error: query interface failed" LOG_
 	}
 	
 	return s;

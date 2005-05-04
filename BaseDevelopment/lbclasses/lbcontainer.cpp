@@ -36,10 +36,13 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.25 $
+ * $Revision: 1.26 $
  * $Name:  $
- * $Id: lbcontainer.cpp,v 1.25 2005/03/31 09:02:42 lollisoft Exp $
+ * $Id: lbcontainer.cpp,v 1.26 2005/05/04 22:09:39 lollisoft Exp $
  * $Log: lbcontainer.cpp,v $
+ * Revision 1.26  2005/05/04 22:09:39  lollisoft
+ * Many memory leaks fixed. Changed _CL_LOG to _CL_VERBOSE.
+ *
  * Revision 1.25  2005/03/31 09:02:42  lollisoft
  * Copyright text problems under linux.
  *
@@ -66,7 +69,7 @@
  * Intent to go public
  *
  * Revision 1.17  2002/10/17 17:33:27  lolli
- * Use of _CL_LOG macro
+ * Use of _CL_VERBOSE macro
  *
  * Revision 1.16  2002/04/15 18:24:33  lolli
  * Huge changes - works good
@@ -197,7 +200,7 @@ lbContainer::~lbContainer() {
 }
 
 lbErrCodes LB_STDCALL lbContainer::setData(lb_I_Unknown* uk) {
-	_CL_LOG << "lbContainer::setData(...) not implemented yet" LOG_
+	_CL_VERBOSE << "lbContainer::setData(...) not implemented yet" LOG_
 	return ERR_NOT_IMPLEMENTED;
 }
 
@@ -216,6 +219,6 @@ END_IMPLEMENT_LB_UNKNOWN()
 IMPLEMENT_LB_ELEMENT(lbElement)
 
 lbErrCodes LB_STDCALL lbElement::setData(lb_I_Unknown* uk) {
-	_CL_LOG << "lbElement::setData(...) not implemented yet" LOG_
+	_CL_VERBOSE << "lbElement::setData(...) not implemented yet" LOG_
 	return ERR_NOT_IMPLEMENTED;
 }

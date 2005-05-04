@@ -308,7 +308,7 @@ T_p_getlbModuleInstance DLL_GETMODULEINSTANCE;
 	if (lbGetFunctionPtr(functor, 
 			     LB_Module_Handle, 
 			     (void **) &DLL_GETMODULEINSTANCE) != ERR_NONE) {
-		_CL_LOG << "Fatal: Could not get functor for the module manager!" LOG_
+		_CL_VERBOSE << "Fatal: Could not get functor for the module manager!" LOG_
 		exit(1);
 	}
 	
@@ -320,7 +320,7 @@ T_p_getlbModuleInstance DLL_GETMODULEINSTANCE;
 #endif
 	
 	if ((err = DLL_GETMODULEINSTANCE(&module, NULL, __FILE__, __LINE__)) == ERR_STATE_FURTHER_LOCK) {
-		_CL_LOG << "Instance is locked. Must set module manager first" LOG_
+		_CL_VERBOSE << "Instance is locked. Must set module manager first" LOG_
 		module->setModuleManager(module.getPtr(), __FILE__, __LINE__);
 	} 
 	UAP(lb_I_Module, inst, __FILE__, __LINE__)
@@ -508,7 +508,7 @@ char* LB_STDCALL lbKey::charrep() const {
 #ifdef LINUX
     sprintf(buf, "%d", key);
 #endif    
-    _CL_LOG << "lbKey::charrep() in lbHook.cpp" LOG_
+    _CL_VERBOSE << "lbKey::charrep() in lbHook.cpp" LOG_
     return strdup(buf);
 }
 /*...e*/
@@ -542,7 +542,7 @@ BEGIN_IMPLEMENT_LB_UNKNOWN(lbKeyUL)
 END_IMPLEMENT_LB_UNKNOWN()
 
 lbErrCodes LB_STDCALL lbKeyUL::setData(lb_I_Unknown* uk) {
-	_CL_LOG << "lbKey::setData() not implemented yet" LOG_
+	_CL_VERBOSE << "lbKey::setData() not implemented yet" LOG_
 	return ERR_NONE;
 }
 
@@ -609,7 +609,7 @@ lbErrCodes LB_STDCALL lbStringKey::setData(lb_I_Unknown* uk) {
 	lb_I_KeyBase* string = NULL;
 	
 	if (uk->queryInterface("lb_I_KeyBase", (void**) &string, __FILE__, __LINE__) != ERR_NONE) {
-		_CL_LOG << "Error: Could not get interface lb_I_KeyBase" LOG_
+		_CL_VERBOSE << "Error: Could not get interface lb_I_KeyBase" LOG_
 	}
 	
 	if (string != NULL) {
@@ -666,7 +666,7 @@ BOOL WINAPI DllMain(HINSTANCE dllHandle, DWORD reason, LPVOID situation) {
                         _CL_VERBOSE << "New thread starting.\n" LOG_
                         break;
                 case DLL_PROCESS_DETACH:                        
-                	_CL_LOG << "DLL_PROCESS_DETACH for " << __FILE__ LOG_
+                	_CL_VERBOSE << "DLL_PROCESS_DETACH for " << __FILE__ LOG_
                         if (situation)
                         {
                                 _CL_VERBOSE << "DLL released by system." LOG_

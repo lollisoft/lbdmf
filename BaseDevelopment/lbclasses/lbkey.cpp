@@ -37,10 +37,13 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.21 $
+ * $Revision: 1.22 $
  * $Name:  $
- * $Id: lbkey.cpp,v 1.21 2005/03/31 09:02:42 lollisoft Exp $
+ * $Id: lbkey.cpp,v 1.22 2005/05/04 22:09:40 lollisoft Exp $
  * $Log: lbkey.cpp,v $
+ * Revision 1.22  2005/05/04 22:09:40  lollisoft
+ * Many memory leaks fixed. Changed _CL_LOG to _CL_VERBOSE.
+ *
  * Revision 1.21  2005/03/31 09:02:42  lollisoft
  * Copyright text problems under linux.
  *
@@ -67,7 +70,7 @@
  * Intent to go public
  *
  * Revision 1.12  2002/10/17 17:33:40  lolli
- * Use of _CL_LOG macro
+ * Use of _CL_VERBOSE macro
  *
  * Revision 1.11  2002/04/15 18:24:33  lolli
  * Huge changes - works good
@@ -184,7 +187,7 @@ END_IMPLEMENT_LB_UNKNOWN()
 
 
 lbErrCodes LB_STDCALL lbKey_::setData(lb_I_Unknown* uk) {
-	_CL_LOG << "lbKey_::setData() not implemented yet" LOG_
+	_CL_VERBOSE << "lbKey_::setData() not implemented yet" LOG_
 	return ERR_NONE;
 }
 /*...e*/
@@ -249,7 +252,7 @@ BEGIN_IMPLEMENT_LB_UNKNOWN(lbKeyUL)
 END_IMPLEMENT_LB_UNKNOWN()
 
 lbErrCodes LB_STDCALL lbKeyUL::setData(lb_I_Unknown* uk) {
-	_CL_LOG << "lbKey::setData() not implemented yet" LOG_
+	_CL_VERBOSE << "lbKey::setData() not implemented yet" LOG_
 	return ERR_NONE;
 }
 

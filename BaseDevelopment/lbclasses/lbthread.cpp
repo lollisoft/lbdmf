@@ -236,7 +236,7 @@ void lbMutex::release()
 lbCritSect::lbCritSect() {
 /*...sTHREAD_VERBOSE:0:*/
 #ifdef THREAD_VERBOSE
-_CL_LOG << "lbCritSect::lbCritSect() called" LOG_
+_CL_VERBOSE << "lbCritSect::lbCritSect() called" LOG_
 //COUT << "lbCritSect::lbCritSect() called" << ENDL;
 #endif
 /*...e*/
@@ -245,7 +245,7 @@ _CL_LOG << "lbCritSect::lbCritSect() called" LOG_
 /*...sTHREAD_VERBOSE:0:*/
 #ifdef THREAD_VERBOSE
 //COUT << "lbCritSect::lbCritSect() leave" << ENDL;
-_CL_LOG << "lbCritSect::lbCritSect() leave" LOG_
+_CL_VERBOSE << "lbCritSect::lbCritSect() leave" LOG_
 #endif
 /*...e*/
 }
@@ -254,14 +254,14 @@ lbCritSect::~lbCritSect() {
 /*...sTHREAD_VERBOSE:0:*/
 #ifdef THREAD_VERBOSE
 //COUT << "lbCritSect::~lbCritSect() called" << ENDL << flush;
-_CL_LOG << "lbCritSect::~lbCritSect() called" LOG_
+_CL_VERBOSE << "lbCritSect::~lbCritSect() called" LOG_
 #endif
 /*...e*/
 	DeleteCriticalSection((CRITICAL_SECTION*)critsect);
 /*...sTHREAD_VERBOSE:0:*/
 #ifdef THREAD_VERBOSE
 //COUT << "lbCritSect::~lbCritSect() leave" << ENDL;
-_CL_LOG << "lbCritSect::~lbCritSect() leave" LOG_
+_CL_VERBOSE << "lbCritSect::~lbCritSect() leave" LOG_
 #endif
 /*...e*/
 }
@@ -270,7 +270,7 @@ lbErrCodes lbCritSect::enter() {
 #ifdef USE_CRITICAL_SECTION
 /*...sTHREAD_VERBOSE:0:*/
 #ifdef THREAD_VERBOSE
-_CL_LOG << "lbCritSect::enter() called" LOG_
+_CL_VERBOSE << "lbCritSect::enter() called" LOG_
 //COUT << "lbCritSect::enter() called" << ENDL;
 #endif
 /*...e*/
@@ -278,7 +278,7 @@ _CL_LOG << "lbCritSect::enter() called" LOG_
 /*...sTHREAD_VERBOSE:0:*/
 #ifdef THREAD_VERBOSE
 //COUT << "lbCritSect::enter() leave" << ENDL;	
-_CL_LOG << "lbCritSect::enter() leave" LOG_
+_CL_VERBOSE << "lbCritSect::enter() leave" LOG_
 #endif
 /*...e*/
 #endif
@@ -289,14 +289,14 @@ lbErrCodes lbCritSect::leave() {
 #ifdef USE_CRITICAL_SECTION
 /*...sTHREAD_VERBOSE:0:*/
 #ifdef THREAD_VERBOSE
-_CL_LOG << "lbCritSect::leave() called" LOG_
+_CL_VERBOSE << "lbCritSect::leave() called" LOG_
 //COUT << "lbCritSect::leave() called" << ENDL;
 #endif
 /*...e*/
 	LeaveCriticalSection((CRITICAL_SECTION*)critsect);
 /*...sTHREAD_VERBOSE:0:*/
 #ifdef THREAD_VERBOSE
-_CL_LOG << "lbCritSect::leave() leave" LOG_
+_CL_VERBOSE << "lbCritSect::leave() leave" LOG_
 //COUT << "lbCritSect::leave() leave" << ENDL;
 #endif
 /*...e*/
@@ -311,7 +311,7 @@ lbLock::lbLock(lbCritSect& _cso, char* _name) {
 /*...sTHREAD_VERBOSE:0:*/
 #ifdef THREAD_VERBOSE
 //COUT << "lbLock::lbLock(...) enter critical section: " << _name << ENDL;
-_CL_LOG << "lbLock::lbLock(...) enter critical section" LOG_
+_CL_VERBOSE << "lbLock::lbLock(...) enter critical section" LOG_
 #endif
 /*...e*/
 	_cso.enter();
@@ -319,7 +319,7 @@ _CL_LOG << "lbLock::lbLock(...) enter critical section" LOG_
 	name = strdup(_name);
 /*...sTHREAD_VERBOSE:0:*/
 #ifdef THREAD_VERBOSE
-_CL_LOG << "lbLock::lbLock(...) entered" LOG_
+_CL_VERBOSE << "lbLock::lbLock(...) entered" LOG_
 //COUT << "lbLock::lbLock(...) entered" << ENDL;
 #endif
 /*...e*/
@@ -331,7 +331,7 @@ lbLock::~lbLock() {
 /*...sTHREAD_VERBOSE:0:*/
 #ifdef THREAD_VERBOSE
 //COUT << "lbLock::~lbLock(...) leave critical section: " << name << ENDL;
-_CL_LOG << "lbLock::~lbLock(...) leave critical section" LOG_
+_CL_VERBOSE << "lbLock::~lbLock(...) leave critical section" LOG_
 #endif
 /*...e*/
 	cso->leave();
@@ -339,7 +339,7 @@ _CL_LOG << "lbLock::~lbLock(...) leave critical section" LOG_
 /*...sTHREAD_VERBOSE:0:*/
 #ifdef THREAD_VERBOSE
 //COUT << "lbLock::~lbLock(...) leaved" << ENDL;
-_CL_LOG << "lbLock::~lbLock(...) leaved" LOG_
+_CL_VERBOSE << "lbLock::~lbLock(...) leaved" LOG_
 #endif
 /*...e*/
 #endif	
@@ -381,7 +381,7 @@ public:
     DWORD  getId() const { 
 /*...sTHREAD_VERBOSE:0:*/
 #ifdef THREAD_VERBOSE
-    	_CL_LOG << "lbThreadInternal::getId called" LOG_
+    	_CL_VERBOSE << "lbThreadInternal::getId called" LOG_
 #endif
 /*...e*/
     	return lb_ThreadId; 
@@ -400,7 +400,7 @@ private:
 lbErrCodes lbThreadInternal::Create(lbThread *thread) {
 /*...sTHREAD_VERBOSE:0:*/
 	#ifdef THREAD_VERBOSE
-	_CL_LOG << "lbThreadInternal::Create called" LOG_
+	_CL_VERBOSE << "lbThreadInternal::Create called" LOG_
 	if (thread == NULL) {
 		printf("lbThreadInternal::Create: Got a null pointer.\n");
 	}
@@ -425,7 +425,7 @@ lbErrCodes lbThreadInternal::Create(lbThread *thread) {
     if ( lb_hThread == NULL )
     {
     	// Do some logging
-    	_CL_LOG << "lbThreadInternal: Could not create a thread" LOG_
+    	_CL_VERBOSE << "lbThreadInternal: Could not create a thread" LOG_
 
         return LB_THREAD_ERROR;
     }
@@ -434,7 +434,7 @@ lbErrCodes lbThreadInternal::Create(lbThread *thread) {
     
     if ( ::SetThreadPriority(lb_hThread, THREAD_PRIORITY_NORMAL) == 0 )
     {
-    	_CL_LOG << "lbThreadInternal: Could not set ThreadPriority" LOG_
+    	_CL_VERBOSE << "lbThreadInternal: Could not set ThreadPriority" LOG_
     	return LB_THREAD_ERROR;
     }
     
@@ -504,14 +504,14 @@ DWORD lbThreadInternal::WinThreadStart(lbThread *thread)
 #undef bla
 /*...sTHREAD_VERBOSE:0:*/
 #ifdef THREAD_VERBOSE
-_CL_LOG << "lbThreadInternal::WinThreadStart: Calling (DWORD)thread->Entry()" LOG_
+_CL_VERBOSE << "lbThreadInternal::WinThreadStart: Calling (DWORD)thread->Entry()" LOG_
 #endif
 /*...e*/
 
     if (thread == NULL) {
 /*...sTHREAD_VERBOSE:0:*/
 #ifdef THREAD_VERBOSE
-_CL_LOG << "lbThreadInternal::WinThreadStart: Null pointer: thread" LOG_
+_CL_VERBOSE << "lbThreadInternal::WinThreadStart: Null pointer: thread" LOG_
 #endif
 /*...e*/
     }
@@ -520,7 +520,7 @@ _CL_LOG << "lbThreadInternal::WinThreadStart: Null pointer: thread" LOG_
 
 /*...sTHREAD_VERBOSE:0:*/
 #ifdef THREAD_VERBOSE
-_CL_LOG << "lbThreadInternal::WinThreadStart: Returning from (DWORD)thread->Entry()\n" LOG_
+_CL_VERBOSE << "lbThreadInternal::WinThreadStart: Returning from (DWORD)thread->Entry()\n" LOG_
 #endif
 /*...e*/
 
@@ -552,11 +552,11 @@ LOGENABLE("lbThread::lbThread()");
 
 /*...sTHREAD_VERBOSE:0:*/
 #ifdef THREAD_VERBOSE
-		_CL_LOG << "lbThread::lbThread(): OnInit() must be called" LOG_
+		_CL_VERBOSE << "lbThread::lbThread(): OnInit() must be called" LOG_
 #endif
 /*...e*/
 		if (OnInit() == 0) {
-			_CL_LOG << "lbThread::lbThread could not init module" LOG_
+			_CL_VERBOSE << "lbThread::lbThread could not init module" LOG_
 		} else {
 			threadCount++;
 		}
@@ -566,12 +566,12 @@ LOGENABLE("lbThread::lbThread()");
 
 lbThread::~lbThread() {
 	if (threadCount == 0) {
-		_CL_LOG << "lbThread::~lbThread(): Fatal error, threadCount error. Module may not be initialized - ignoring OnExit()" LOG_
+		_CL_VERBOSE << "lbThread::~lbThread(): Fatal error, threadCount error. Module may not be initialized - ignoring OnExit()" LOG_
 	} else {
 		threadCount--;
-		_CL_LOG << "lbThread::~lbThread() calling OnExit()" LOG_
+		_CL_VERBOSE << "lbThread::~lbThread() calling OnExit()" LOG_
 		OnExit();
-		_CL_LOG << "lbThread::~lbThread() called OnExit()" LOG_
+		_CL_VERBOSE << "lbThread::~lbThread() called OnExit()" LOG_
 	}
 	if (pThreadImpl != NULL) delete pThreadImpl;
 }
@@ -583,20 +583,20 @@ lbErrCodes LB_STDCALL lbThread::create() {
   if (pThreadImpl->getHandle() == NULL) {
 /*...sTHREAD_VERBOSE:2:*/
 #ifdef THREAD_VERBOSE
-	_CL_LOG << "lbThread::run will create a new thread" LOG_
+	_CL_VERBOSE << "lbThread::run will create a new thread" LOG_
 #endif
 /*...e*/
 
 /*...sTHREAD_VERBOSE:2:*/
 #ifdef THREAD_VERBOSE
 	if (this == NULL) {
-		_CL_LOG << "lbThreadInternal::Create: Got a null pointer (this)." LOG_
+		_CL_VERBOSE << "lbThreadInternal::Create: Got a null pointer (this)." LOG_
 	}
 #endif
 /*...e*/
 
   	if ((err = pThreadImpl->Create(this)) != ERR_NONE) {
-		_CL_LOG << "lbThread::run creation of thread failed" LOG_
+		_CL_VERBOSE << "lbThread::run creation of thread failed" LOG_
 		return err;
   	}
   } else printf("Creation of thread not needed\n");
@@ -612,7 +612,7 @@ lbErrCodes LB_STDCALL lbThread::run() {
   }
 /*...sTHREAD_VERBOSE:2:*/
 #ifdef THREAD_VERBOSE
-_CL_LOG << "lbThread::resume done" LOG_
+_CL_VERBOSE << "lbThread::resume done" LOG_
 #endif
 /*...e*/
   return err;
@@ -620,17 +620,17 @@ _CL_LOG << "lbThread::resume done" LOG_
 }
 
 lbErrCodes LB_STDCALL lbThread::stop() {
-	_CL_LOG << "Error: Not implemented" LOG_
+	_CL_VERBOSE << "Error: Not implemented" LOG_
 	return LB_THREAD_ERROR;
 }
 
 lbErrCodes LB_STDCALL lbThread::pause() {
-	_CL_LOG << "Error: Not implemented" LOG_
+	_CL_VERBOSE << "Error: Not implemented" LOG_
 	return LB_THREAD_ERROR;
 }
 
 lbErrCodes LB_STDCALL lbThread::resume() {
-	_CL_LOG << "Error: Not implemented" LOG_
+	_CL_VERBOSE << "Error: Not implemented" LOG_
 	return LB_THREAD_ERROR;
 }
 
@@ -682,14 +682,14 @@ int lbThread::OnInit()
 void lbThread::OnExit()
 {
 #ifdef THREAD_VERBOSE
-_CL_LOG << "lbThread::OnExit() called" LOG_
+_CL_VERBOSE << "lbThread::OnExit() called" LOG_
 #endif
     if ( !::TlsFree(s_tlsThisThread) )
     {
         _LOG << "lbThreadModule::OnExit: TlsFree failed." LOG_
     }
 #ifdef THREAD_VERBOSE
-_CL_LOG << "lbThread::OnExit() leave" LOG_
+_CL_VERBOSE << "lbThread::OnExit() leave" LOG_
 #endif
 /*...sbla:0:*/
 #ifdef bla

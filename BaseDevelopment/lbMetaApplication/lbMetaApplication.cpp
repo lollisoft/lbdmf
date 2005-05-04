@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.60 $
+ * $Revision: 1.61 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.60 2005/05/03 21:15:49 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.61 2005/05/04 22:09:38 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.61  2005/05/04 22:09:38  lollisoft
+ * Many memory leaks fixed. Changed _CL_LOG to _CL_VERBOSE.
+ *
  * Revision 1.60  2005/05/03 21:15:49  lollisoft
  * Better memtrack support
  *
@@ -1346,12 +1349,12 @@ BOOL WINAPI DllMain(HINSTANCE dllHandle, DWORD reason, LPVOID situation) {
                 case DLL_PROCESS_DETACH:                        
                         if (situation)
                         {
-                        	_CL_LOG << "DLL_PROCESS_DETACH for " << __FILE__ LOG_
+                        	_CL_VERBOSE << "DLL_PROCESS_DETACH for " << __FILE__ LOG_
                                 _CL_VERBOSE << "DLL released by system." LOG_
                         }
                         else
                         {
-                        	_CL_LOG << "DLL_PROCESS_DETACH for " << __FILE__ LOG_
+                        	_CL_VERBOSE << "DLL_PROCESS_DETACH for " << __FILE__ LOG_
                                 _CL_VERBOSE << "DLL released by program.\n" LOG_
                         }
                         break;

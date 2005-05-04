@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.20 $
+ * $Revision: 1.21 $
  * $Name:  $
- * $Id: lbPluginManager.cpp,v 1.20 2005/05/03 21:16:51 lollisoft Exp $
+ * $Id: lbPluginManager.cpp,v 1.21 2005/05/04 22:09:39 lollisoft Exp $
  *
  * $Log: lbPluginManager.cpp,v $
+ * Revision 1.21  2005/05/04 22:09:39  lollisoft
+ * Many memory leaks fixed. Changed _CL_LOG to _CL_VERBOSE.
+ *
  * Revision 1.20  2005/05/03 21:16:51  lollisoft
  * Better memtrack support
  *
@@ -211,7 +214,7 @@ lbPluginManager::~lbPluginManager() {
 }
 
 lbErrCodes LB_STDCALL lbPluginManager::setData(lb_I_Unknown* uk) {
-        _CL_LOG << "lbPluginManager::setData(...) not implemented yet" LOG_
+        _CL_VERBOSE << "lbPluginManager::setData(...) not implemented yet" LOG_
         return ERR_NOT_IMPLEMENTED;
 }
 
@@ -222,7 +225,7 @@ bool LB_STDCALL lbPluginManager::tryLoad(char* module) {
 	if (strcmp(".", module) == 0) return false;
 	if (strstr(module, "so.") != NULL) return false;
 	
-	_CL_LOG << "Try to load module '" << module << "'" LOG_
+	_CL_VERBOSE << "Try to load module '" << module << "'" LOG_
 	
 	char* pluginDir = getenv("PLUGIN_DIR");
 	
@@ -499,7 +502,7 @@ lb_I_Plugin* LB_STDCALL lbPluginManager::nextPlugin() {
 		}	
 	
 	} else {
-		_CL_LOG << "ERROR: Not begun with enumeration!" LOG_
+		_CL_VERBOSE << "ERROR: Not begun with enumeration!" LOG_
 	}
 
 	return NULL;
@@ -665,7 +668,7 @@ void LB_STDCALL lbPlugin::preinitialize() {
 	strcat(name, _name);
 
 	if (manager.getPtr() == NULL) {
-		_CL_LOG << "FATAL: lbPlugin::preinitialize() uses a NULL pointer for the manager!" LOG_
+		_CL_VERBOSE << "FATAL: lbPlugin::preinitialize() uses a NULL pointer for the manager!" LOG_
 	}
 
 	if (manager->makeInstance(name, _module, &ukPlugin) == ERR_NONE) {
@@ -747,7 +750,7 @@ lb_I_Unknown* LB_STDCALL lbPlugin::peekImplementation() {
 
 /*	
 	if (uk && (uk->getModuleManager() == NULL)) {
-		_CL_LOG << "ERROR: lb_I_PluginImpl returns an instance not having a module manager!" LOG_
+		_CL_VERBOSE << "ERROR: lb_I_PluginImpl returns an instance not having a module manager!" LOG_
 		uk->setModuleManager(getModuleInstance(), __FILE__, __LINE__);
 	}
 */	
@@ -777,7 +780,7 @@ lb_I_Unknown* LB_STDCALL lbPlugin::getImplementation() {
 
 /*	
 	if (uk && (uk->getModuleManager() == NULL)) {
-		_CL_LOG << "ERROR: lb_I_PluginImpl returns an instance not having a module manager!" LOG_
+		_CL_VERBOSE << "ERROR: lb_I_PluginImpl returns an instance not having a module manager!" LOG_
 		uk->setModuleManager(getModuleInstance(), __FILE__, __LINE__);
 	}
 */	
@@ -850,7 +853,7 @@ BOOL WINAPI DllMain(HINSTANCE dllHandle, DWORD reason, LPVOID situation) {
                         _CL_VERBOSE << "New thread starting.\n" LOG_
                         break;
                 case DLL_PROCESS_DETACH:                        
-                	_CL_LOG << "DLL_PROCESS_DETACH for " << __FILE__ LOG_
+                	_CL_VERBOSE << "DLL_PROCESS_DETACH for " << __FILE__ LOG_
                         if (situation)
                         {
                                 _CL_VERBOSE << "DLL released by system." LOG_
