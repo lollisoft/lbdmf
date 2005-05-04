@@ -353,10 +353,15 @@ public:
 		ColumnSize = 0;
 		rows = 2;
 		isUpdateable = true;
+		columnName = NULL;
 	}
 	
 	virtual ~lbBoundColumn() {
-
+		if (columnName != NULL) {
+			_CL_VERBOSE << "~lbBoundColumn('" << columnName << "') called." LOG_
+		} else {
+			_CL_VERBOSE << "~lbBoundColumn(?) called." LOG_
+		}
 		switch (_DataType) {
 			case SQL_CHAR:
 			case SQL_VARCHAR:
@@ -367,17 +372,20 @@ public:
 			case SQL_BIT:
 				break;
 			default:
-				_CL_LOG << "lbBoundColumn::~lbBoundColumn() failed: Unknown or not supported datatype for column '" << colName->charrep() << "'" LOG_
+				_CL_VERBOSE << "lbBoundColumn::~lbBoundColumn() failed: Unknown or not supported datatype for column '" << colName->charrep() << "'" LOG_
 				break;
 		}
 		
 		if ((bound != 0) && (buffer != NULL)) {
-			printf("Free buffer in lbBoundColumn\n");
+			_CL_VERBOSE << "Free buffer in lbBoundColumn" LOG_
 			free(buffer);
-			printf("Freed buffer in lbBoundColumn\n");
+			_CL_VERBOSE << "Freed buffer in lbBoundColumn" LOG_
 			buffer = NULL;
 		}
-		_CL_LOG << "lbBoundColumn::~lbBoundColumn(" << colName->charrep() << ") called." LOG_
+		char ptr[20] = "";
+		sprintf(ptr, "%p", colName.getPtr());
+		
+		_CL_VERBOSE << "lbBoundColumn::~lbBoundColumn(" << ptr << ") called." LOG_
 	}
 	
 	lbBoundColumn(const lbBoundColumn& _ref) {
@@ -415,7 +423,7 @@ protected:
 		_DataType = dt;
 		buffer = bu;
 		
-		_CL_LOG << "lbBoundColumn::setData(...) called." LOG_
+		_CL_VERBOSE << "lbBoundColumn::setData('" << name->charrep() << "') called." LOG_
 		
 		REQUEST(manager.getPtr(), lb_I_String, colName)
 
@@ -423,12 +431,27 @@ protected:
 			_LOG << "ERROR: Cloning data with NULL pointer" LOG_
 		}
 
+		setColumn(name->charrep());
+
 		colName->setData(name->charrep());
 		return ERR_NONE;
 	}
 
 	// I call my self to leave my ownership
 	virtual lbErrCodes LB_STDCALL leaveOwnership(lb_I_BoundColumn* oldOwner, lb_I_BoundColumn* newOwner);
+
+
+	virtual void LB_STDCALL setColumn(char* col) {
+		if (columnName != NULL) free(columnName);
+		
+		_CL_VERBOSE << "lbBoundColumn::setColumn('" << col << "') called." LOG_
+		
+		columnName = (char*) malloc(strlen(col)+1);
+		columnName[0] = 0;
+		strcpy(columnName, col);
+	}
+
+	char*		columnName;
 
 	int		bound;
 	bool		isUpdateable;
@@ -451,6 +474,7 @@ protected:
 	UAP(lb_I_String, colName, __FILE__, __LINE__)
 	char*		bufcolName[100];
 };
+
 /*...e*/
 
 
@@ -465,7 +489,7 @@ IMPLEMENT_FUNCTOR(instanceOfDBView, lbDBView)
 
 
 lbErrCodes LB_STDCALL lbDBView::setData(lb_I_Unknown* uk) {
-	_CL_LOG << "lbDBView::setData(...) not implemented yet" LOG_
+	_CL_VERBOSE << "lbDBView::setData(...) not implemented yet" LOG_
 	return ERR_NOT_IMPLEMENTED;
 }
 
@@ -488,18 +512,18 @@ END_IMPLEMENT_LB_UNKNOWN()
 
 /*...sunimplemented:0:*/
 lbErrCodes LB_STDCALL lbBoundColumns::setData(lb_I_Unknown* uk) {
-        _CL_LOG << "lbBoundColumns::setData(...) not implemented yet" LOG_
+        _CL_VERBOSE << "lbBoundColumns::setData(...) not implemented yet" LOG_
         
         return ERR_NOT_IMPLEMENTED;
 }
 
 lb_I_Container* LB_STDCALL lbBoundColumns::getBoundColumns() {
-        _CL_LOG << "lbBoundColumns::getBoundColumns() not implemented yet" LOG_
+        _CL_VERBOSE << "lbBoundColumns::getBoundColumns() not implemented yet" LOG_
 	return NULL;
 }
 
 lbErrCodes      LB_STDCALL lbBoundColumns::setBoundColumns(lb_I_Container* bc) {
-        _CL_LOG << "lbBoundColumns::setBoundColumns() not implemented yet" LOG_
+        _CL_VERBOSE << "lbBoundColumns::setBoundColumns() not implemented yet" LOG_
 	return ERR_NONE;
 }
 /*...e*/
@@ -896,25 +920,25 @@ void LB_STDCALL lbQuery::enableFKCollecting() {
 	skipFKCollections = 0;
 }
 
+/*...svoid LB_STDCALL lbQuery\58\\58\PrintData\40\\41\:0:*/
 void LB_STDCALL lbQuery::PrintData() {
 	lbErrCodes err = ERR_NONE;
 	
 	lb_I_Query* q = this;
 	
 	if (q->first() == ERR_NONE) {
-	setVerbose(false);
 		UAP(lb_I_String, s, __FILE__, __LINE__)
 		s = q->getAsString(q->getColumns());
 		s->trim();
 
-	    for (int cols = 1; cols <= q->getColumns()-1; cols++) {
+		for (int cols = 1; cols <= q->getColumns()-1; cols++) {
 			UAP(lb_I_String, s1, __FILE__, __LINE__)
 			s1 = q->getAsString(cols);
 			s1->trim();
 			printf("%s;", s1->charrep());
-	    };
+		};
 	    
-	    printf("%s\n", s->charrep());
+		printf("%s\n", s->charrep());
 	    
 	    while ((err = q->next()) == ERR_NONE) {
 			for (int cols = 1; cols <= q->getColumns()-1; cols++) { 
@@ -939,6 +963,7 @@ void LB_STDCALL lbQuery::PrintData() {
 	    };	    
 	}
 }
+/*...e*/
 
 /*...slbErrCodes LB_STDCALL lbQuery\58\\58\init\40\HENV _henv\44\ HDBC _hdbc\41\:0:*/
 lbErrCodes LB_STDCALL lbQuery::init(HENV _henv, HDBC _hdbc, int readonly) {
@@ -1083,7 +1108,7 @@ lbErrCodes LB_STDCALL lbQuery::init(HENV _henv, HDBC _hdbc, int readonly) {
 lbErrCodes LB_STDCALL lbQuery::bind() {
 	if (databound == 0) {
 		
-		_CL_LOG << "lbQuery::bind() binds columns..." LOG_
+		_CL_VERBOSE << "lbQuery::bind() binds columns..." LOG_
 		
 		retcode = SQLNumResultCols(hstmt, &cols);
 	
@@ -1098,7 +1123,7 @@ lbErrCodes LB_STDCALL lbQuery::bind() {
 			boundcols->setModuleManager(*&manager, __FILE__, __LINE__);
 			boundColumns = boundcols;
 		
-			_CL_LOG << "Bind columns with " << ReadOnlyColumns->Count() << " readonly elements" LOG_
+			_CL_VERBOSE << "Bind columns with " << ReadOnlyColumns->Count() << " readonly elements" LOG_
 		
 			boundColumns->setQuery(this, ReadOnlyColumns.getPtr());
 			
@@ -1173,6 +1198,16 @@ Using SQLSetPos
 		} else {
 			lbErrCodes err = ERR_NONE;
 			
+			if (boundColumns != NULL) {
+				_CL_LOG << "Unbind columns of previous query." LOG_
+				boundColumns--;
+				boundColumns = NULL;
+			}
+			
+			if (ReadOnlyColumns != NULL) {
+				ReadOnlyColumns->deleteAll();
+			}
+
 			boundcols = new lbBoundColumns();
 			boundcols->setModuleManager(*&manager, __FILE__, __LINE__);
 
@@ -1185,7 +1220,7 @@ Using SQLSetPos
 		
 		databound = 1;
 	} else {
-		_CL_LOG << "Do not prebind columns. You must call bind()." LOG_
+		_CL_VERBOSE << "Do not prebind columns. You must call bind()." LOG_
 	}
 
 	return ERR_NONE;
@@ -1277,12 +1312,14 @@ lb_I_String* LB_STDCALL lbQuery::getAsString(int column) {
 /*...e*/
 //#define USE_FETCH_SCROLL
 
-int   LB_STDCALL lbQuery::getColumns() {
+/*...sint LB_STDCALL lbQuery\58\\58\getColumns\40\\41\:0:*/
+int LB_STDCALL lbQuery::getColumns() {
 	SWORD count;
 	retcode = SQLNumResultCols(hstmt, &count);
 	
 	return count;
 }
+/*...e*/
 
 /*...sint LB_STDCALL lbQuery\58\\58\hasFKColumn\40\char\42\ FKName\41\:0:*/
 int LB_STDCALL lbQuery::hasFKColumn(char* FKName) {
@@ -1346,7 +1383,11 @@ void LB_STDCALL lbQuery::prepareFKList() {
 	#define TAB_LEN 100
 	#define COL_LEN 100
 
-	REQUEST(manager.getPtr(), lb_I_Container, ForeignColumns)
+	if (ForeignColumns == NULL) {
+		REQUEST(manager.getPtr(), lb_I_Container, ForeignColumns)
+	} else {
+		ForeignColumns->deleteAll();
+	}
 
 	if (skipFKCollections == 1) {
 	    _CL_VERBOSE << "==========================================" LOG_
@@ -1389,7 +1430,7 @@ void LB_STDCALL lbQuery::prepareFKList() {
 	strcpy((char*) szTable, temp);
 	
 	if (strlen((char* const) szTable) > 99) {
-		_CL_LOG << "ERROR: Possible buffer overflows!" LOG_
+		_CL_VERBOSE << "ERROR: Possible buffer overflows!" LOG_
 	}
 	
 	retcode = SQLForeignKeys(hstmt,
@@ -1458,7 +1499,7 @@ void LB_STDCALL lbQuery::prepareFKList() {
 	lb_I_Module* m = getModuleManager();
 
 	if (m != manager.getPtr()) {
-	    _CL_LOG << "ERROR: Existing manager pointer is not the same as a fresh initialized one!" LOG_ 
+	    _CL_VERBOSE << "ERROR: Existing manager pointer is not the same as a fresh initialized one!" LOG_ 
 	}
 	
         UAP_REQUEST(m, lb_I_Database, db)
@@ -1474,7 +1515,6 @@ void LB_STDCALL lbQuery::prepareFKList() {
 
 	
 	for (int i = 1; i <= getColumns(); i++) { 
-	setVerbose(false);
     	    UAP(lb_I_Query, q, __FILE__, __LINE__)
 
 	    buffer[0] = 0;
@@ -1507,9 +1547,7 @@ void LB_STDCALL lbQuery::prepareFKList() {
 
 	        ForeignColumns->insert(&uk_PKTable, &key_FKName);
 	    }
-	    setVerbose(true);
 	}
-	setVerbose(false);
 /*...e*/
 	}
 }
@@ -1527,6 +1565,7 @@ lb_I_Query::lbDBColumnTypes LB_STDCALL lbQuery::getColumnType(char* name) {
 	return boundColumns->getColumnType(name);
 }
 
+/*...svoid LB_STDCALL lbQuery\58\\58\setUpdateable\40\char\42\ column\44\ bool updateable\41\:0:*/
 void LB_STDCALL lbQuery::setUpdateable(char* column, bool updateable) {
 	lbErrCodes err = ERR_NONE;
 	
@@ -1548,6 +1587,7 @@ void LB_STDCALL lbQuery::setUpdateable(char* column, bool updateable) {
 
 	if (boundColumns.getPtr() != NULL) boundColumns->setUpdateable(column, updateable);
 }
+/*...e*/
 
 /*...schar\42\ LB_STDCALL lbQuery\58\\58\getColumnName\40\int col\41\:0:*/
 char lbQuery_column_Name[100] = "";
@@ -2040,7 +2080,7 @@ lbErrCodes LB_STDCALL lbQuery::update() {
 	
 	
 		if (ReadOnlyColumns->Count() > 0) {
-			_CL_LOG << "Try to unbind readonly columns while adding a row." LOG_
+			_CL_VERBOSE << "Try to unbind readonly columns while adding a row." LOG_
 			
 			boundColumns->unbindReadonlyColumns();
 			
@@ -2056,7 +2096,7 @@ lbErrCodes LB_STDCALL lbQuery::update() {
 		}
 
 		if (ReadOnlyColumns->Count() > 0) {
-			_CL_LOG << "Try to rebind readonly columns after adding a row." LOG_
+			_CL_VERBOSE << "Try to rebind readonly columns after adding a row." LOG_
 			
 			boundColumns->rebindReadonlyColumns();
 		}
@@ -2364,10 +2404,12 @@ lbErrCodes LB_STDCALL lbBoundColumn::setData(lb_I_Unknown* uk) {
          * would write to an deleted pointer.
          */
 
+	setColumn(column->getColumnName()->getData());
+
 	REQUEST(manager.getPtr(), lb_I_String, colName)
 
 	if (column->getColumnName() != NULL) {
-		colName->setData(column->getColumnName()->getData());
+		colName->setData(column->getColumnName()->charrep());
 	}
 
 	leaveOwnership(*&column, this);
@@ -2381,11 +2423,12 @@ lbErrCodes LB_STDCALL lbBoundColumn::leaveOwnership(lb_I_BoundColumn* oldOwner, 
 	lbBoundColumn* oO = (lbBoundColumn*) oldOwner;
 	lbBoundColumn* nO = (lbBoundColumn*) newOwner;
 
-//	printf("Leave ownership: Buffer pointer is at %p\n", oO->buffer);	
+	_CL_VERBOSE << "Leave ownership for column '" << oO->colName->charrep() << "'" LOG_
 
 	nO->setData(oO->bound, oO->_DataType, oO->buffer, oO->colName.getPtr());
 	oO->bound = 0;
 	nO->isUpdateable = oO->isUpdateable;
+	//oO->colName = NULL;
 	if (oO->buffer != NULL) oO->buffer = NULL;
 
 	return ERR_NONE;
@@ -2393,7 +2436,7 @@ lbErrCodes LB_STDCALL lbBoundColumn::leaveOwnership(lb_I_BoundColumn* oldOwner, 
 /*...e*/
 /*...slb_I_Unknown\42\ LB_STDCALL lbBoundColumn\58\\58\getData\40\\41\:0:*/
 lb_I_Unknown* LB_STDCALL lbBoundColumn::getData() {
-	_CL_LOG << "lbBoundColumn::getData(...) not implemented yet" LOG_
+	_CL_VERBOSE << "lbBoundColumn::getData(...) not implemented yet" LOG_
 	return NULL;
 }
 /*...e*/
@@ -2416,7 +2459,7 @@ lbErrCodes LB_STDCALL lbBoundColumn::getAsString(lb_I_String* result, int asPara
 	        	
 	        	break;
 	        case SQL_BINARY:
-	        	_CL_LOG << "lbBoundColumn::getAsString(...) failed: Binary data not supported for column '" << colName->charrep() << "'" LOG_
+	        	_CL_VERBOSE << "lbBoundColumn::getAsString(...) failed: Binary data not supported for column '" << colName->charrep() << "'" LOG_
 	        	break;
 	        case SQL_INTEGER:
 			{
@@ -2445,7 +2488,7 @@ lbErrCodes LB_STDCALL lbBoundColumn::getAsString(lb_I_String* result, int asPara
 	        	}
 	        	break;
 	        default:
-	        	_CL_LOG << "lbBoundColumn::getAsString(...) failed: Unknown or not supported datatype for column '" << colName->charrep() << "'"  LOG_
+	        	_CL_VERBOSE << "lbBoundColumn::getAsString(...) failed: Unknown or not supported datatype for column '" << colName->charrep() << "'"  LOG_
 	        	break;
 	}
 	return ERR_NONE;
@@ -2455,7 +2498,7 @@ lbErrCodes LB_STDCALL lbBoundColumn::getAsString(lb_I_String* result, int asPara
 lbErrCodes LB_STDCALL lbBoundColumn::setFromString(lb_I_String* set, int mode) {
 
 	if (!isUpdateable) {
-		_CL_LOG << "Warning: Updating a column '" << colName->charrep() << "' with readonly status skipped." LOG_
+		_CL_VERBOSE << "Warning: Updating a column '" << colName->charrep() << "' with readonly status skipped." LOG_
 		return ERR_NONE;
 	}
 
@@ -2486,7 +2529,7 @@ lbErrCodes LB_STDCALL lbBoundColumn::setFromString(lb_I_String* set, int mode) {
 				}
 				break;
 			case SQL_BINARY:
-				_CL_LOG << "lbBoundColumn::setFromString(...) failed: Binary data not supported for column '" << colName->charrep() << "'"  LOG_
+				_CL_VERBOSE << "lbBoundColumn::setFromString(...) failed: Binary data not supported for column '" << colName->charrep() << "'"  LOG_
 				break;
 			case SQL_BIT:
 				{
@@ -2522,7 +2565,7 @@ lbErrCodes LB_STDCALL lbBoundColumn::setFromString(lb_I_String* set, int mode) {
 				}
 				break;
 			case SQL_BINARY:
-				_CL_LOG << "lbBoundColumn::setFromString(...) failed: Binary data not supported for column '" << colName->charrep() << "'" LOG_
+				_CL_VERBOSE << "lbBoundColumn::setFromString(...) failed: Binary data not supported for column '" << colName->charrep() << "'" LOG_
 				break;
 			case SQL_BIT:
 				{
@@ -2567,7 +2610,10 @@ lbErrCodes LB_STDCALL lbBoundColumn::prepareBoundColumn(lb_I_Query* q, int colum
 
 	_DataType = DataType;
 
-	REQUEST(manager.getPtr(), lb_I_String, colName)
+	if (colName == NULL) {
+		REQUEST(manager.getPtr(), lb_I_String, colName)
+	}
+	
 	colName->setData((char*) ColumnName);
 
 	return err;
@@ -2613,7 +2659,10 @@ lbErrCodes LB_STDCALL lbBoundColumn::bindColumn(lb_I_Query* q, int column, bool 
 		q->dbError("SQLDescribeCol()");
 	}
 
-	REQUEST(manager.getPtr(), lb_I_String, colName)
+	if (colName == NULL) {
+		REQUEST(manager.getPtr(), lb_I_String, colName)
+	}
+	
 	colName->setData((char*) ColumnName);
 	
 
@@ -2686,7 +2735,7 @@ lbErrCodes LB_STDCALL lbBoundColumn::bindColumn(lb_I_Query* q, int column, bool 
 			}
 			break;
 		default:
-			_CL_LOG << "lbBoundColumn::bindColumn(...) failed: Unknown or not supported datatype for column '" << colName->charrep() << "': " << DataType LOG_
+			_CL_VERBOSE << "lbBoundColumn::bindColumn(...) failed: Unknown or not supported datatype for column '" << colName->charrep() << "': " << DataType LOG_
 			break;
 	}
 	
@@ -2800,13 +2849,13 @@ SQLCloseCursor(hstmt);
 void LB_STDCALL lbBoundColumn::unbindReadonlyColumns() {
 	SQLRETURN ret;
 	if (!isUpdateable) {
-		_CL_LOG << "Really unbind column '" << colName->charrep() << "'" LOG_
+		_CL_VERBOSE << "Really unbind column '" << colName->charrep() << "'" LOG_
 /*...sUnbind:16:*/
 	switch (_DataType) {
 		case SQL_CHAR:
 		case SQL_VARCHAR:
 		case SQL_LONGVARCHAR:
-			_CL_LOG << "Unbind char" LOG_
+			_CL_VERBOSE << "Unbind char" LOG_
 /*...sbind a character array:40:*/
 			bound = 0;
 
@@ -2819,7 +2868,7 @@ void LB_STDCALL lbBoundColumn::unbindReadonlyColumns() {
 /*...e*/
 			break;
 		case SQL_BINARY:
-			_CL_LOG << "Unbind binary" LOG_
+			_CL_VERBOSE << "Unbind binary" LOG_
 /*...sbind a binary array:40:*/
 			bound = 0;
 			
@@ -2840,7 +2889,7 @@ void LB_STDCALL lbBoundColumn::unbindReadonlyColumns() {
 */			
 /*...e*/
 		case SQL_INTEGER:
-			_CL_LOG << "Unbind integer" LOG_
+			_CL_VERBOSE << "Unbind integer" LOG_
 /*...sbind an integer:40:*/
 			bound = 0;
 
@@ -2853,7 +2902,7 @@ void LB_STDCALL lbBoundColumn::unbindReadonlyColumns() {
 /*...e*/
 			break;
 		case SQL_BIT:
-			_CL_LOG << "Unbind bit" LOG_
+			_CL_VERBOSE << "Unbind bit" LOG_
 			bound = 0;
 
 			SQLBindCol(hstmt, _column, _DataType, NULL, sizeof(bool), &cbBufferLength);
@@ -2864,7 +2913,7 @@ void LB_STDCALL lbBoundColumn::unbindReadonlyColumns() {
 			}
 			break;
 		default:
-			_CL_LOG << "lbBoundColumn::unbindReadonlyColumns(...) failed: Unknown or not supported datatype for column '" << colName->charrep() << "': " << _DataType LOG_
+			_CL_VERBOSE << "lbBoundColumn::unbindReadonlyColumns(...) failed: Unknown or not supported datatype for column '" << colName->charrep() << "': " << _DataType LOG_
 			break;
 	}
 /*...e*/
@@ -2875,13 +2924,13 @@ void LB_STDCALL lbBoundColumn::unbindReadonlyColumns() {
 void LB_STDCALL lbBoundColumn::rebindReadonlyColumns() {
 	SQLRETURN ret;
 	if (!isUpdateable) {
-		_CL_LOG << "Really rebind column '" << colName->charrep() << "'" LOG_
+		_CL_VERBOSE << "Really rebind column '" << colName->charrep() << "'" LOG_
 /*...sRebind:16:*/
 	switch (_DataType) {
 		case SQL_CHAR:
 		case SQL_VARCHAR:
 		case SQL_LONGVARCHAR:
-			_CL_LOG << "Rebind char" LOG_
+			_CL_VERBOSE << "Rebind char" LOG_
 /*...sbind a character array:40:*/
 			bound = 1;
 
@@ -2894,7 +2943,7 @@ void LB_STDCALL lbBoundColumn::rebindReadonlyColumns() {
 /*...e*/
 			break;
 		case SQL_BINARY:
-			_CL_LOG << "Rebind binary" LOG_
+			_CL_VERBOSE << "Rebind binary" LOG_
 /*...sbind a binary array:40:*/
 			bound = 1;
 			
@@ -2915,7 +2964,7 @@ void LB_STDCALL lbBoundColumn::rebindReadonlyColumns() {
 */			
 /*...e*/
 		case SQL_INTEGER:
-			_CL_LOG << "Rebind integer" LOG_
+			_CL_VERBOSE << "Rebind integer" LOG_
 /*...sbind an integer:40:*/
 			bound = 1;
 
@@ -2928,7 +2977,7 @@ void LB_STDCALL lbBoundColumn::rebindReadonlyColumns() {
 /*...e*/
 			break;
 		case SQL_BIT:
-			_CL_LOG << "Rebind bit" LOG_
+			_CL_VERBOSE << "Rebind bit" LOG_
 			bound = 1;
 
 			SQLBindCol(hstmt, _column, _DataType, buffer, sizeof(bool), &cbBufferLength);
@@ -2939,7 +2988,7 @@ void LB_STDCALL lbBoundColumn::rebindReadonlyColumns() {
 			}
 			break;
 		default:
-			_CL_LOG << "lbBoundColumn::rebindReadonlyColumns(...) failed: Unknown or not supported datatype for column '" << colName->charrep() << "': " << _DataType LOG_
+			_CL_VERBOSE << "lbBoundColumn::rebindReadonlyColumns(...) failed: Unknown or not supported datatype for column '" << colName->charrep() << "': " << _DataType LOG_
 			break;
 	}
 /*...e*/
@@ -2949,7 +2998,16 @@ void LB_STDCALL lbBoundColumn::rebindReadonlyColumns() {
 /*...slb_I_String\42\ LB_STDCALL lbBoundColumn\58\\58\getColumnName\40\\41\:0:*/
 lb_I_String* LB_STDCALL lbBoundColumn::getColumnName() {
 	if (colName.getPtr() == NULL) printf("ERROR lbBoundColumn::getColumnName(): returning a null pointer\n");
-	_CL_LOG << "lbBoundColumn::getColumnName() called for '" << colName->charrep() << "'" LOG_ 
+	_CL_VERBOSE << "lbBoundColumn::getColumnName() called for '" << colName->charrep() << "'" LOG_ 
+	
+	/* Bug! 
+	   This line was missing. 
+	   The caller - here my code to bind columns near ColumnNameMapping in lbBoundColumns::setQuery(...)
+	   takes the return of this function into an auto pointer. This, then is shortly deleted so that this
+	   member instance is a dangling pointer.
+	 */
+	colName++;
+	
 	return colName.getPtr();
 }
 /*...e*/
@@ -3100,11 +3158,11 @@ lbDatabase::lbDatabase() {
 	hdbc = 0;
 	user = NULL;
 	db = NULL;
-	_CL_LOG << "lbDatabase::lbDatabase() called." LOG_
+	_CL_VERBOSE << "lbDatabase::lbDatabase() called." LOG_
 }
 
 lbDatabase::~lbDatabase() {
-	_CL_LOG << "lbDatabase::~lbDatabase() called." LOG_
+	_CL_VERBOSE << "lbDatabase::~lbDatabase() called." LOG_
 }
 
 /*...slbErrCodes LB_STDCALL lbDatabase\58\\58\init\40\\41\:0:*/
@@ -3112,7 +3170,7 @@ lbErrCodes LB_STDCALL lbDatabase::init() {
 	retcode = SQLAllocEnv(&henv);
 	if (retcode != SQL_SUCCESS) {
         	//_dbError( "SQLAllocEnv()",henv,0,0);
-        	_CL_LOG << "lbDatabase::init(): Database initializion failed." LOG_
+        	_CL_VERBOSE << "lbDatabase::init(): Database initializion failed." LOG_
         	return ERR_DB_INIT;
         }
 
@@ -3120,7 +3178,7 @@ lbErrCodes LB_STDCALL lbDatabase::init() {
 
 	if (retcode != SQL_SUCCESS) {
         	//_dbError( "SQLSetEnvAttr()",henv,0,0);
-        	_CL_LOG << "lbDatabase::init(): Database version initializion failed." LOG_
+        	_CL_VERBOSE << "lbDatabase::init(): Database version initializion failed." LOG_
         	return ERR_DB_INIT;
 	}
 
@@ -3131,7 +3189,7 @@ lbErrCodes LB_STDCALL lbDatabase::init() {
 /*...e*/
 /*...slbErrCodes LB_STDCALL lbDatabase\58\\58\setData\40\lb_I_Unknown\42\ uk\41\:0:*/
 lbErrCodes LB_STDCALL lbDatabase::setData(lb_I_Unknown* uk) {
-	_CL_LOG << "lbInstanceReference::setData(...) not implemented yet" LOG_
+	_CL_VERBOSE << "lbInstanceReference::setData(...) not implemented yet" LOG_
 	return ERR_NOT_IMPLEMENTED;
 }
 /*...e*/
@@ -3141,7 +3199,7 @@ lbErrCodes LB_STDCALL lbDatabase::setUser(char* _user) {
 	user = (char*) malloc(strlen(_user)+1);
 	user[0] = 0;
 	strcpy(user, _user);
-	_CL_LOG << "lbDatabase::setUser('" << user << "') called." LOG_
+	_CL_VERBOSE << "lbDatabase::setUser('" << user << "') called." LOG_
 	return ERR_NONE;
 }
 
@@ -3150,12 +3208,12 @@ lbErrCodes LB_STDCALL lbDatabase::setDB(char* _db) {
 	db = (char*) malloc(strlen(_db)+1);
 	db[0] = 0;
 	strcpy(db, _db);
-	_CL_LOG << "lbDatabase::setDB('" << db << "') called." LOG_
+	_CL_VERBOSE << "lbDatabase::setDB('" << db << "') called." LOG_
 	return ERR_NONE;
 }
 
 lbErrCodes LB_STDCALL lbDatabase::connect(char* pass) {
-	_CL_LOG << "lbDatabase::connect(char* pass) called. DB:" << db << ", U:" << user << ", P:" << pass LOG_
+	_CL_VERBOSE << "lbDatabase::connect(char* pass) called. DB:" << db << ", U:" << user << ", P:" << pass LOG_
 	return connect(db, user, pass);
 }
 
@@ -3163,7 +3221,7 @@ lbErrCodes LB_STDCALL lbDatabase::connect(char* pass) {
 lbErrCodes LB_STDCALL lbDatabase::connect(char* DSN, char* user, char* passwd) {
 	lbErrCodes err = ERR_NONE;
 
-	_CL_LOG << "Connect to database " << DSN << " as " << user << " with passwd=" << passwd LOG_
+	_CL_VERBOSE << "Connect to database " << DSN << " as " << user << " with passwd=" << passwd LOG_
 	
 	if (connPooling == NULL) {
 	    UAP_REQUEST(manager.getPtr(), lb_I_Container, container)
@@ -3247,7 +3305,7 @@ lbErrCodes LB_STDCALL lbDatabase::connect(char* DSN, char* user, char* passwd) {
                 return ERR_DB_CONNECT;
 	    }
 
-	    _CL_LOG << "SQLConnect(hdbc, '" << DSN << "', '" << user << "', '" << passwd << "');" LOG_
+	    _CL_VERBOSE << "SQLConnect(hdbc, '" << DSN << "', '" << user << "', '" << passwd << "');" LOG_
 
 	    retcode = SQLConnect(hdbc, (unsigned char*) DSN, SQL_NTS, 
 				       (unsigned char*) user, SQL_NTS, 
@@ -3566,7 +3624,7 @@ lbDBInterfaceRepository::~lbDBInterfaceRepository() {
 }
 
 lbErrCodes lbDBInterfaceRepository::setData(lb_I_Unknown* uk) {
-        _CL_LOG << "lbDBInterfaceRepository::setData(...) not implemented yet" LOG_
+        _CL_VERBOSE << "lbDBInterfaceRepository::setData(...) not implemented yet" LOG_
         return ERR_NOT_IMPLEMENTED;
 }
 
@@ -3716,7 +3774,7 @@ lb_I_FunctorEntity* LB_STDCALL lbDBInterfaceRepository::getFirstEntity() {
 					DOM_NamedNodeMap attributeMap = child.getAttributes();
 
 					if (attributeMap == NULL) {
-					        _CL_LOG << "Error: This node is not of type ELEMENT" LOG_
+					        _CL_VERBOSE << "Error: This node is not of type ELEMENT" LOG_
 
 					        return NULL;
 					}
@@ -3724,7 +3782,7 @@ lb_I_FunctorEntity* LB_STDCALL lbDBInterfaceRepository::getFirstEntity() {
 					DOM_Node an_attr = attributeMap.getNamedItem(DOMString("Name"));
 
 					if (an_attr == NULL) {
-					        _CL_LOG << "Error: Attribute not found" LOG_
+					        _CL_VERBOSE << "Error: Attribute not found" LOG_
 
 					        return NULL;
 					}
@@ -3752,7 +3810,7 @@ lb_I_FunctorEntity* LB_STDCALL lbDBInterfaceRepository::getFirstEntity() {
 					DOM_NamedNodeMap attributeMap = child.getAttributes();
 
 					if (attributeMap == NULL) {
-					        _CL_LOG << "Error: This node is not of type ELEMENT" LOG_
+					        _CL_VERBOSE << "Error: This node is not of type ELEMENT" LOG_
 
 					        return NULL;
 					}
@@ -3760,7 +3818,7 @@ lb_I_FunctorEntity* LB_STDCALL lbDBInterfaceRepository::getFirstEntity() {
 					DOM_Node an_attr = attributeMap.getNamedItem(DOMString("Name"));
 
 					if (an_attr == NULL) {
-					        _CL_LOG << "Error: Attribute not found" LOG_
+					        _CL_VERBOSE << "Error: Attribute not found" LOG_
 
 					        return NULL;
 					}
@@ -3866,7 +3924,7 @@ BOOL WINAPI DllMain(HINSTANCE dllHandle, DWORD reason, LPVOID situation) {
 			
                 	TRMemSetModuleName(__FILE__);
                 	
-                	_CL_LOG << "DLL lbDB loaded." LOG_
+                	_CL_VERBOSE << "DLL lbDB loaded." LOG_
                 	
                         if (situation) {
                                 _CL_VERBOSE << "DLL statically loaded." LOG_
@@ -3879,7 +3937,7 @@ BOOL WINAPI DllMain(HINSTANCE dllHandle, DWORD reason, LPVOID situation) {
                         _CL_VERBOSE << "New thread starting.\n" LOG_
                         break;
                 case DLL_PROCESS_DETACH:                        
-                       	_CL_LOG << "DLL_PROCESS_DETACH for " << __FILE__ LOG_
+                       	_CL_VERBOSE << "DLL_PROCESS_DETACH for " << __FILE__ LOG_
                         if (situation)
                         {
                         	if (lbDatabase::connPooling != NULL) lbDatabase::connPooling->release(__FILE__, __LINE__);
@@ -3905,3 +3963,4 @@ BOOL WINAPI DllMain(HINSTANCE dllHandle, DWORD reason, LPVOID situation) {
 }
 /*...e*/
 #endif
+
