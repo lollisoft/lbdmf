@@ -28,10 +28,9 @@
 OBJDEP=
 #../dosdir/match.o ../dosdir/dosdir.o
 
-LIBS = $(DEVROOT_MAKE)/projects/lib/trmem.lib
-
 ifeq ($(OSTYPE), Windows_NT)
 MOD_INCL=$(STD_INCL) -i=..\dosdir
+LIBS = $(DEVROOT_MAKE)/projects/lib/trmem.lib
 
 # use global setup
 #COMPILER=MICROSOFT
