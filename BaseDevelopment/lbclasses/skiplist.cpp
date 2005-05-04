@@ -38,11 +38,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.27 $
+ * $Revision: 1.28 $
  * $Name:  $
- * $Id: skiplist.cpp,v 1.27 2005/05/01 21:23:56 lollisoft Exp $
+ * $Id: skiplist.cpp,v 1.28 2005/05/04 22:06:37 lollisoft Exp $
  *
  * $Log: skiplist.cpp,v $
+ * Revision 1.28  2005/05/04 22:06:37  lollisoft
+ * Most logging messages removed and one verbose message added.
+ *
  * Revision 1.27  2005/05/01 21:23:56  lollisoft
  * Bugfix in much parts of skiplist implementation. This came from porting
  * of a free java based skiplist :-(
@@ -102,7 +105,7 @@
  * Compiles again under linux, but some problems at runtime with DOMString
  *
  * Revision 1.9  2002/10/17 17:35:13  lolli
- * Use of _CL_LOG macro
+ * Use of _CL_VERBOSE macro
  *
  * Revision 1.8  2002/10/04 16:53:14  lolli
  * Replaced old LOG macro with the new
@@ -168,7 +171,6 @@ IMPLEMENT_FUNCTOR(instanceOfSkipList, SkipList)
 SkipNode::SkipNode() {
     	myLevel = MAXLEVEL;
     	value = NULL;
-    	_CL_LOG << "SkipNode::SkipNode() called" LOG_
     	
     	forward = new SkipNode* [myLevel+1];
     	for (int i=0; i<=myLevel; i++)
@@ -179,8 +181,6 @@ SkipNode::SkipNode(lb_I_Element* r, int level) {
         myLevel = level;
         value = r;
 
-	_CL_LOG << "SkipNode::SkipNode(lb_I_Element* r, int level) called" LOG_
-        
         if (value == NULL) printf("ERROR: Constructor got a NULL pointer as data\n");
         forward = new SkipNode* [level+1];
 
@@ -193,8 +193,6 @@ SkipNode::~SkipNode() {
 
 	sprintf(ptr, "%p", this);
 
-	_CL_LOG << "SkipNode::~SkipNode() called. This is " << ptr LOG_
-	
 	if (forward) {
 		for (int i=0; i<=myLevel; i++)
 		    forward[i] = NULL;
@@ -203,8 +201,6 @@ SkipNode::~SkipNode() {
 
 
 	if (value != NULL) {
-	      	_CL_LOG << "Release object..." LOG_
-	      	
 	      	// getObject() increases the refcount for uk.
 	      	// So call release twice ! :-!
 	      	
@@ -221,7 +217,7 @@ END_IMPLEMENT_LB_UNKNOWN()
 
 
 lbErrCodes LB_STDCALL SkipList::setData(lb_I_Unknown* uk) {
-	_CL_LOG << "SkipList::setData(...) not implemented yet" LOG_
+	_CL_VERBOSE << "SkipList::setData(...) not implemented yet" LOG_
 	return ERR_NOT_IMPLEMENTED;
 }
 SkipList::SkipList() {
@@ -239,8 +235,6 @@ SkipList::~SkipList() {
 	
 	sprintf(ptr, "%p", this);
 	
-	_CL_LOG << "SkipList::~SkipList() called. This is " << ptr LOG_
-
 	if (can_dump() == 1) {
 	
 		while (skipiterator) {
@@ -252,8 +246,6 @@ SkipList::~SkipList() {
 		
 		head = NULL;
 	}
-	
-	_CL_LOG << "SkipList::~SkipList() leaving" LOG_
 }
 /*...sSkipList\58\\58\Count\40\\41\:0:*/
 int LB_STDCALL SkipList::Count() { 
