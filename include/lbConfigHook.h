@@ -92,21 +92,22 @@
 
 #ifndef OSX
 /*...sMemory tracker:0:*/
-#ifdef MEMTRACK
+ #ifdef MEMTRACK
 
-#ifdef WINDOWS
-extern "C" {
-#include "trmemcvr.h"
-}
-#endif
+  #ifdef WINDOWS
+   extern "C" {
+   #include "trmemcvr.h"
+   }
+  #endif
+ 
+  #undef malloc
+  #undef free
 
-#undef malloc
-#undef free
-
-#define malloc TRMemAlloc
-#define free TRMemFree
-#endif
+  #define malloc TRMemAlloc
+  #define free TRMemFree
+ #endif // MEMTRACK
 /*...e*/
+#endif // OSX
 
 #define _trans(text) translateText(text)
 
