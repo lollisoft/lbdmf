@@ -38,11 +38,12 @@
 #include <mpatrol.h>
 #endif
 
+#ifdef WINDOWS
 #ifndef TVISION
 #define TRACKER
 #define MEMTRACK
 #endif
-
+#endif
 
 #ifdef WINDOWS
  #ifndef LB_DMF_POWER
@@ -92,9 +93,11 @@
 /*...sMemory tracker:0:*/
 #ifdef MEMTRACK
 
+#ifdef WINDOWS
 extern "C" {
 #include "trmemcvr.h"
 }
+#endif
 
 #undef malloc
 #undef free

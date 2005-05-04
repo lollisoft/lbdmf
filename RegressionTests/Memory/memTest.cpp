@@ -231,11 +231,13 @@ int main(int argc, char *argv[]) {
 	lbErrCodes err = ERR_NONE;
 	lb_I_Module* mm = NULL;
 
+#ifdef WINDOWS
 	TRMemOpen();
 	TRMemSetModuleName(__FILE__);
 	
 	mm = getModuleInstance();
 	mm->setModuleManager(mm, __FILE__, __LINE__);
+#endif
 
 #define MEM_TEST
 #define CONTAINER_TEST
