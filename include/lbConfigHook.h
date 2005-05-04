@@ -90,6 +90,7 @@
 #include <malloc.h>
 #endif
 
+#ifndef OSX
 /*...sMemory tracker:0:*/
 #ifdef MEMTRACK
 
@@ -104,7 +105,6 @@ extern "C" {
 
 #define malloc TRMemAlloc
 #define free TRMemFree
-
 #endif
 /*...e*/
 

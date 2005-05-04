@@ -48,8 +48,9 @@ extern "C" {
 
 #include <stdio.h>
 #include <iostream.h>
+#ifndef OSX
 #include <malloc.h>
-
+#endif
 #include <lbConfigHook.h>
 /*...e*/
 

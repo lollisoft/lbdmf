@@ -2035,13 +2035,15 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBUpdate() {
 									wxString v = "true";
 									col->setData(name);
 									val->setData(v.c_str());
-								
+							
+									_CL_LOG << "Update column '" << name << "' with true" LOG_	
 									sampleQuery->setString(*&col, *&val);
 								} else {
 									wxString v = "false";
 									col->setData(name);
 									val->setData(v.c_str());
 								
+									_CL_LOG << "Update column '" << name << "' with false" LOG_	
 									sampleQuery->setString(*&col, *&val);
 								}
 							}
@@ -2186,10 +2188,11 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBRead() {
 					case lb_I_Query::lbDBColumnBit:
 						{
 							wxCheckBox *check = (wxCheckBox*) w;
-							
+#ifndef OSX	
 							if (sampleQuery->isNull(i)) {
 								check->SetValue(false);
 							} else {
+#endif
 								if (strcmp(sampleQuery->getAsString(i)->charrep(), "true") == 0) {
 									printf("Read data for checkbox is true.\n");
 									check->SetValue(true);
@@ -2197,7 +2200,9 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBRead() {
 									printf("Read data for checkbox is false.\n");
 									check->SetValue(false);
 								}
+#ifndef OSX
 							}
+#endif
 						}
 						break;
 					
