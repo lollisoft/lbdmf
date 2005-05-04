@@ -415,10 +415,12 @@ protected:
 		_DataType = dt;
 		buffer = bu;
 		
+		_CL_LOG << "lbBoundColumn::setData(...) called." LOG_
+		
 		REQUEST(manager.getPtr(), lb_I_String, colName)
 
 		if (name == NULL) {
-			printf("ERROR: Cloning data with NULL pointer\n");
+			_LOG << "ERROR: Cloning data with NULL pointer" LOG_
 		}
 
 		colName->setData(name->charrep());
@@ -2947,6 +2949,7 @@ void LB_STDCALL lbBoundColumn::rebindReadonlyColumns() {
 /*...slb_I_String\42\ LB_STDCALL lbBoundColumn\58\\58\getColumnName\40\\41\:0:*/
 lb_I_String* LB_STDCALL lbBoundColumn::getColumnName() {
 	if (colName.getPtr() == NULL) printf("ERROR lbBoundColumn::getColumnName(): returning a null pointer\n");
+	_CL_LOG << "lbBoundColumn::getColumnName() called for '" << colName->charrep() << "'" LOG_ 
 	return colName.getPtr();
 }
 /*...e*/
