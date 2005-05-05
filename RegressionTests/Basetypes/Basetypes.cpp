@@ -69,7 +69,7 @@ int main(int argc, char *argv[]) {
 	mm = getModuleInstance();
 	mm->setModuleManager(mm, __FILE__, __LINE__);
 
-	_CL_LOG << "Test basetypes" LOG_
+	_CL_VERBOSE << "Test basetypes" LOG_
 	
 	UAP_REQUEST(mm, lb_I_String, string1)
 	UAP_REQUEST(mm, lb_I_String, string2)
@@ -78,30 +78,30 @@ int main(int argc, char *argv[]) {
 	string2->setData("Test basetypes...");
 	
 	if (*&string1 == *&string2) {
-		_CL_LOG << "Strings are identical" LOG_
+		_CL_VERBOSE << "Strings are identical" LOG_
 	} else {
-		_CL_LOG << "Strings are not identical" LOG_
+		_CL_VERBOSE << "Strings are not identical" LOG_
 	}
 
 	lb_I_String* s1 = string1.getPtr();
 	lb_I_String* s2 = string2.getPtr();
 
         if (s1 == s2) {
-                _CL_LOG << "Strings are identical" LOG_
+                _CL_VERBOSE << "Strings are identical" LOG_
         } else {
-                _CL_LOG << "Strings are not identical" LOG_
+                _CL_VERBOSE << "Strings are not identical" LOG_
         }
 
 	if (string1->equals(*&string2)) {
-                _CL_LOG << "Strings are identical" LOG_
+                _CL_VERBOSE << "Strings are identical" LOG_
         } else {
-                _CL_LOG << "Strings are not identical" LOG_
+                _CL_VERBOSE << "Strings are not identical" LOG_
         }
 
 	if (string1 == s2) {
-                _CL_LOG << "Strings are identical" LOG_
+                _CL_VERBOSE << "Strings are identical" LOG_
         } else {
-                _CL_LOG << "Strings are not identical" LOG_
+                _CL_VERBOSE << "Strings are not identical" LOG_
         }
 
         return 0;
@@ -120,7 +120,7 @@ int main(int argc, char *argv[]) {
 	mm = getModuleInstance();
 	mm->setModuleManager(mm, __FILE__, __LINE__);
 
-	_CL_LOG << "Test basetypes" LOG_
+	_CL_VERBOSE << "Test basetypes" LOG_
 
 	{	
 		UAP_REQUEST(mm, lb_I_String, string1)
@@ -135,30 +135,30 @@ int main(int argc, char *argv[]) {
 #ifdef bla	
 	
 	if (*&string1 == *&string2) {
-		_CL_LOG << "Strings are identical" LOG_
+		_CL_VERBOSE << "Strings are identical" LOG_
 	} else {
-		_CL_LOG << "Strings are not identical" LOG_
+		_CL_VERBOSE << "Strings are not identical" LOG_
 	}
 
 	lb_I_String* s1 = string1.getPtr();
 	lb_I_String* s2 = string2.getPtr();
 
         if (s1 == s2) {
-                _CL_LOG << "Strings are identical" LOG_
+                _CL_VERBOSE << "Strings are identical" LOG_
         } else {
-                _CL_LOG << "Strings are not identical" LOG_
+                _CL_VERBOSE << "Strings are not identical" LOG_
         }
 
 	if (string1->equals(*&string2)) {
-                _CL_LOG << "Strings are identical" LOG_
+                _CL_VERBOSE << "Strings are identical" LOG_
         } else {
-                _CL_LOG << "Strings are not identical" LOG_
+                _CL_VERBOSE << "Strings are not identical" LOG_
         }
 
 	if (string1 == s2) {
-                _CL_LOG << "Strings are identical" LOG_
+                _CL_VERBOSE << "Strings are identical" LOG_
         } else {
-                _CL_LOG << "Strings are not identical" LOG_
+                _CL_VERBOSE << "Strings are not identical" LOG_
         }
 #endif
 

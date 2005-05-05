@@ -421,7 +421,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::Initialize(char* user, char* app) {
 	        EventName = sampleQuery->getAsString(1);
 		MenuName = sampleQuery->getAsString(2);
 
-		_CL_LOG << "Register event name '" << 
+		_CL_VERBOSE << "Register event name '" << 
 		EventName->charrep() << 
 		"' to menu '" <<
 		MenuName->charrep() <<
@@ -437,7 +437,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::Initialize(char* user, char* app) {
 			addMenuEntry(_trans(app), MenuName->charrep(), EventName->charrep(), "");
 
 		} else {
-			_CL_LOG << "WARNING: Event name already reserved. Ignore it for menucreation." LOG_
+			_CL_VERBOSE << "WARNING: Event name already reserved. Ignore it for menucreation." LOG_
 		}
 		
 		if (DBerr == WARN_DB_NODATA) return ERR_NONE;
@@ -450,7 +450,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::Initialize(char* user, char* app) {
 		        	EventName = sampleQuery->getAsString(1);
 				MenuName = sampleQuery->getAsString(2);
 				
-				_CL_LOG << "Register event name '" << 
+				_CL_VERBOSE << "Register event name '" << 
 				EventName->charrep() << 
 				"' to menu '" <<
 				MenuName->charrep() <<
@@ -464,7 +464,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::Initialize(char* user, char* app) {
 				
 					addMenuEntry(_trans(app), MenuName->charrep(), EventName->charrep(), "");
 				} else {
-					_CL_LOG << "WARNING: Event name already reserved. Ignore it for menucreation." LOG_
+					_CL_VERBOSE << "WARNING: Event name already reserved. Ignore it for menucreation." LOG_
 				}
 		        	if (DBerr == WARN_DB_NODATA) break;
 		        }

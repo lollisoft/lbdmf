@@ -669,7 +669,7 @@ lbConfigure_FK_PK_MappingDialog::~lbConfigure_FK_PK_MappingDialog() {
 /*...e*/
 /*...slbErrCodes LB_STDCALL lbConfigure_FK_PK_MappingDialog\58\\58\setData\40\lb_I_Unknown\42\ uk\41\:0:*/
 lbErrCodes LB_STDCALL lbConfigure_FK_PK_MappingDialog::setData(lb_I_Unknown* uk) {
-        _CL_LOG << "lbConfigure_FK_PK_MappingDialog::setData(...) not implemented yet" LOG_
+        _CL_VERBOSE << "lbConfigure_FK_PK_MappingDialog::setData(...) not implemented yet" LOG_
 
         return ERR_NOT_IMPLEMENTED;
 }
@@ -963,7 +963,7 @@ lbPluginModuleDatabaseForm::lbPluginModuleDatabaseForm() {
 }
 
 lbPluginModuleDatabaseForm::~lbPluginModuleDatabaseForm() {
-	_CL_LOG << "lbPluginModuleDatabaseForm::~lbPluginModuleDatabaseForm() called." LOG_
+	_CL_VERBOSE << "lbPluginModuleDatabaseForm::~lbPluginModuleDatabaseForm() called." LOG_
 }
 
 void LB_STDCALL lbPluginModuleDatabaseForm::initialize() {
@@ -1236,7 +1236,7 @@ lbOwnerDrawControl::~lbOwnerDrawControl() {
 }
 
 lbErrCodes LB_STDCALL lbOwnerDrawControl::setData(lb_I_Unknown* uk) {
-	_CL_LOG << "lbOwnerDrawControl::setData(lb_I_Unknown* uk) not implemented." LOG_
+	_CL_VERBOSE << "lbOwnerDrawControl::setData(lb_I_Unknown* uk) not implemented." LOG_
 
 	return ERR_NOT_IMPLEMENTED;
 }
@@ -1268,7 +1268,7 @@ IMPLEMENT_FUNCTOR(instanceOflbDatabaseDialog, lbDatabaseDialog)
 
 /*...slbErrCodes LB_STDCALL lbDatabaseDialog\58\\58\setData\40\lb_I_Unknown\42\ uk\41\:0:*/
 lbErrCodes LB_STDCALL lbDatabaseDialog::setData(lb_I_Unknown* uk) {
-        _CL_LOG << "lbDatabaseDialog::setData(...) not implemented yet" LOG_
+        _CL_VERBOSE << "lbDatabaseDialog::setData(...) not implemented yet" LOG_
 
         return ERR_NOT_IMPLEMENTED;
 }
@@ -1279,13 +1279,13 @@ lbDatabaseDialog::lbDatabaseDialog()
 	: wxDialog(NULL, -1, wxString(_T("Database dialog")), wxDefaultPosition,
 	wxDefaultSize, wxRESIZE_BORDER|wxDEFAULT_DIALOG_STYLE)
 {
-	_CL_LOG << "lbDatabaseDialog::lbDatabaseDialog() called." LOG_
+	_CL_VERBOSE << "lbDatabaseDialog::lbDatabaseDialog() called." LOG_
 	formName = strdup("Database dialog");
 }
 /*...e*/
 /*...slbDatabaseDialog\58\\58\\126\lbDatabaseDialog\40\\41\:0:*/
 lbDatabaseDialog::~lbDatabaseDialog() {
-	_CL_LOG << "lbDatabaseDialog::~lbDatabaseDialog() called." LOG_
+	_CL_VERBOSE << "lbDatabaseDialog::~lbDatabaseDialog() called." LOG_
 }
 /*...e*/
 
@@ -1485,7 +1485,7 @@ printf("Create a drop down box for '%s'\n", name);
 			err = FKColumnQuery->first();
 			
 			if (err == ERR_DB_NODATA) {
-				_CL_LOG << "ERROR: No data column definition to be displayed instead of primary key.\n" LOG_
+				_CL_VERBOSE << "ERROR: No data column definition to be displayed instead of primary key.\n" LOG_
 			
 	
 				lbConfigure_FK_PK_MappingDialog* fkpkDialog = new lbConfigure_FK_PK_MappingDialog();
@@ -2334,7 +2334,7 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBDelete(lb_I_Unknown* uk) {
 lbErrCodes LB_STDCALL lbDatabaseDialog::OnActionButton(lb_I_Unknown* uk) {
 	lbErrCodes err = ERR_NONE;
 	
-	_CL_LOG << "lbDatabaseDialog::OnActionButton(...) called" LOG_
+	_CL_VERBOSE << "lbDatabaseDialog::OnActionButton(...) called" LOG_
 
 /*...sDoc:8:*/
 	/*
@@ -2358,7 +2358,7 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::OnActionButton(lb_I_Unknown* uk) {
 /*...e*/
 
 	if (uk != NULL) {
-		_CL_LOG << "OnActionButton parameter given." LOG_
+		_CL_VERBOSE << "OnActionButton parameter given." LOG_
 		
 		char* reversedEvent = NULL;
 		
@@ -2386,7 +2386,7 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::OnActionButton(lb_I_Unknown* uk) {
 
 		reversedEvent = strdup(strtok(NULL, ")"));
 	
-		_CL_LOG << "Have these event: " << reversedEvent << "." LOG_
+		_CL_VERBOSE << "Have these event: " << reversedEvent << "." LOG_
 /*...e*/
 
 		// Regarding to the event name, we must get back some information from the database.
@@ -2395,7 +2395,7 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::OnActionButton(lb_I_Unknown* uk) {
 
 		char* s = fa.getActionSourceDataField(reversedEvent);
 
-		_CL_LOG << "Have got source field: " << s << "." LOG_
+		_CL_VERBOSE << "Have got source field: " << s << "." LOG_
 
 		/*
 		  Now I can get the data from the source field and put it into the event parameters.
@@ -2443,7 +2443,7 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::OnActionButton(lb_I_Unknown* uk) {
 				}
 /*...e*/
 		
-		_CL_LOG << "The value for the field is " << value.c_str() << "." LOG_		
+		_CL_VERBOSE << "The value for the field is " << value.c_str() << "." LOG_		
 		
 		free(s);
 		
@@ -2538,10 +2538,10 @@ lbErrCodes LB_STDCALL lbPluginDatabaseDialog::setData(lb_I_Unknown* uk) {
 	dbForm = pl->getImplementation();
 */
 
-	_CL_LOG << "lbPluginDatabaseDialog::setData(...) called.\n" LOG_
+	_CL_VERBOSE << "lbPluginDatabaseDialog::setData(...) called.\n" LOG_
 
 	if (dbForm == NULL) {
-		_CL_LOG << "ERROR: Cloning database form plugin without an instance to the form it self" LOG_
+		_CL_VERBOSE << "ERROR: Cloning database form plugin without an instance to the form it self" LOG_
 	}
 
         return ERR_NOT_IMPLEMENTED;
@@ -2549,12 +2549,12 @@ lbErrCodes LB_STDCALL lbPluginDatabaseDialog::setData(lb_I_Unknown* uk) {
 /*...e*/
 
 lbPluginDatabaseDialog::lbPluginDatabaseDialog() {
-	_CL_LOG << "lbPluginDatabaseDialog::lbPluginDatabaseDialog() called.\n" LOG_
+	_CL_VERBOSE << "lbPluginDatabaseDialog::lbPluginDatabaseDialog() called.\n" LOG_
 	dbForm = NULL;
 }
 
 lbPluginDatabaseDialog::~lbPluginDatabaseDialog() {
-	_CL_LOG << "lbPluginDatabaseDialog::~lbPluginDatabaseDialog() called.\n" LOG_
+	_CL_VERBOSE << "lbPluginDatabaseDialog::~lbPluginDatabaseDialog() called.\n" LOG_
 }
 
 void LB_STDCALL lbPluginDatabaseDialog::initialize() {
@@ -2574,7 +2574,7 @@ lb_I_Unknown* LB_STDCALL lbPluginDatabaseDialog::peekImplementation() {
 	
 		QI(dbDialog, lb_I_Unknown, dbForm, __FILE__, __LINE__)
 	} else {
-		_CL_LOG << "lbPluginDatabaseDialog::peekImplementation() Implementation already peeked.\n" LOG_
+		_CL_VERBOSE << "lbPluginDatabaseDialog::peekImplementation() Implementation already peeked.\n" LOG_
 	}
 	
 	return dbForm.getPtr();
@@ -2586,7 +2586,7 @@ lb_I_Unknown* LB_STDCALL lbPluginDatabaseDialog::getImplementation() {
 
 	if (dbForm == NULL) {
 
-		_CL_LOG << "Warning: peekImplementation() has not been used prior.\n" LOG_
+		_CL_VERBOSE << "Warning: peekImplementation() has not been used prior.\n" LOG_
 	
 		lbDatabaseDialog* dbDialog = new lbDatabaseDialog();
 		dbDialog->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
@@ -2626,7 +2626,7 @@ BOOL WINAPI DllMain(HINSTANCE dllHandle, DWORD reason, LPVOID situation) {
                         _CL_VERBOSE << "New thread starting.\n" LOG_
                         break;
                 case DLL_PROCESS_DETACH:                        
-                	_CL_LOG << "DLL_PROCESS_DETACH for " << __FILE__ LOG_
+                	_CL_VERBOSE << "DLL_PROCESS_DETACH for " << __FILE__ LOG_
                         if (situation)
                         {
                                 _CL_VERBOSE << "DLL released by system." LOG_
