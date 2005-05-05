@@ -633,9 +633,9 @@ public:
 		} \
 		\
 		virtual ~UAP##Unknown_Reference() { \
-			_CL_VERBOSE << "UAP destructor ~UAP" << #Unknown_Reference << "() at " << __FILE__ << " called" LOG_ \
+			_CL_LOG << "UAP destructor ~UAP" << #Unknown_Reference << "() at " << __FILE__ << " called" LOG_ \
 			if (_autoPtr != NULL) { \
-				_CL_VERBOSE << "Pointer is not NULL. Delete it." LOG_ \
+				_CL_LOG << "Pointer is not NULL. Delete it." LOG_ \
 				if (allowDelete != 1) { \
 					if (_autoPtr->deleteState() == 1) { \
 						printf("Error: Instance would be deleted, but it's not allowed !!\n"); \
@@ -646,7 +646,7 @@ public:
 				RELEASE_1(_autoPtr, _file, _line); \
 				if (_file) delete [] _file; \
 			} \
-			_CL_VERBOSE << "UAP destructor ~UAP" << #Unknown_Reference << "() ready" LOG_ \
+			_CL_LOG << "UAP destructor ~UAP" << #Unknown_Reference << "() ready" LOG_ \
 		} \
 		void LB_STDCALL setFile(char* __file) { \
 			if (_file != NULL) { \
@@ -697,6 +697,9 @@ public:
 		} \
 		\
 		UAP##Unknown_Reference& LB_STDCALL operator = (interface* autoPtr) { \
+			if (_autoPtr != NULL) { \
+				_autoPtr->release(file, line); \
+			} \
 			_autoPtr = autoPtr; \
 			return *this; \
 		} \
@@ -765,7 +768,7 @@ public:
 		} \
 		\
 		virtual ~UAP##Unknown_Reference() { \
-			_CL_VERBOSE << "UAP destructor ~UAP" << #Unknown_Reference << "() at " << __FILE__ << " called" LOG_ \
+			_CL_LOG << "UAP destructor ~UAP" << #Unknown_Reference << "() at " << __FILE__ << " called" LOG_ \
 			if (_autoPtr != NULL) { \
 				if (allowDelete != 1) { \
 					if (_autoPtr->deleteState() == 1) { \
@@ -778,7 +781,7 @@ public:
 				RELEASE_1(_autoPtr, _file, _line); \
 				if (_file) delete [] _file; \
 			} \
-			_CL_VERBOSE << "UAP destructor ~UAP" << #Unknown_Reference << "() ready" LOG_ \
+			_CL_LOG << "UAP destructor ~UAP" << #Unknown_Reference << "() ready" LOG_ \
 		} \
 		void LB_STDCALL setFile(char* __file) { \
 			if (_file != NULL) { \
@@ -1039,7 +1042,7 @@ char*      LB_STDCALL classname::getCreationLoc() const { \
 	return strdup("Have no manager - location can't be found"); \
 } \
 lbErrCodes LB_STDCALL classname::release(char* file, int line) { \
-	_CL_VERBOSE << #classname << "::release(" << file << ", " << line << ") with ref = " << ref << " called." LOG_ \
+	_CL_LOG << #classname << "::release(" << file << ", " << line << ") with ref = " << ref << " called." LOG_ \
         ref--; \
 	char ptr[20] = ""; \
 	sprintf(ptr, "%p", this); \
@@ -1057,9 +1060,9 @@ lbErrCodes LB_STDCALL classname::release(char* file, int line) { \
         			} else { \
         				_CL_LOG << "There may be a problem with the instance count system !" LOG_ \
         			} \
-        			_CL_VERBOSE << "Delete instance '" << #classname << "'" LOG_ \
+        			_CL_LOG << "Delete instance '" << #classname << "'" LOG_ \
         			delete this; \
-        			_CL_VERBOSE << "Deleted" LOG_ \
+        			_CL_LOG << "Deleted" LOG_ \
         			return ERR_RELEASED; \
         		} \
         		else { \
@@ -1070,7 +1073,7 @@ lbErrCodes LB_STDCALL classname::release(char* file, int line) { \
         	return ERR_NONE; \
         } \
         if (ref < STARTREF) { \
-        	_CL_VERBOSE << "Error: Reference count of instance " << ptr << " of object type " << #classname << " is less than " << STARTREF << " (" << ref << ") !!!" LOG_ \
+        	_CL_LOG << "Error: Reference count of instance " << ptr << " of object type " << #classname << " is less than " << STARTREF << " (" << ref << ") !!!" LOG_ \
         	return ERR_REFERENCE_COUNTING; \
         } \
         return ERR_INSTANCE_STILL_USED; \
@@ -1085,7 +1088,9 @@ lb_I_Unknown* LB_STDCALL classname::clone(char* file, int line) const { \
 	lb_I_Unknown* uk_cloned = NULL; \
 \
 	cloned->setFurtherLock(0); \
-	if (manager == NULL) _CL_LOG << #classname << "::clone() can't be used because manager is a NULL pointer!" LOG_ \
+	if (manager == NULL) { \
+		_CL_LOG << #classname << "::clone() can't be used because manager is a NULL pointer!" LOG_ \
+	} \
 	cloned->setModuleManager(manager.getPtr(), file, line); \
 	if (cloned->queryInterface("lb_I_Unknown", (void**) &uk_cloned, file, line) != ERR_NONE) { \
 		_CL_LOG << "Error while getting interface" LOG_ \
@@ -1119,7 +1124,7 @@ lb_I_Unknown* LB_STDCALL classname::clone(char* file, int line) const { \
 lbErrCodes LB_STDCALL classname::queryInterface(char* name, void** unknown, char* file, int line) { \
 	char buf[1000] = ""; \
 	char _classname[100] = #classname; \
-	_CL_VERBOSE << #classname << "::queryInterface(" << file << ", " << line << ") with ref = " << ref << " called." LOG_ \
+	_CL_LOG << #classname << "::queryInterface(" << file << ", " << line << ") with ref = " << ref << " called." LOG_ \
 	\
 	if (instance_counted != 112233) { \
 		instance_counted = 112233; \
@@ -1255,7 +1260,7 @@ lbErrCodes LB_STDCALL classname::release(char* file, int line) { \
         	return ERR_NONE; \
         } \
         if (ref < STARTREF) { \
-        	_CL_VERBOSE << "Error: Reference count of instance " << ptr << " of object type " << #classname << " is less than " << STARTREF << " (" << ref << ") !!!" LOG_ \
+        	_CL_LOG << "Error: Reference count of instance " << ptr << " of object type " << #classname << " is less than " << STARTREF << " (" << ref << ") !!!" LOG_ \
         	return ERR_REFERENCE_COUNTING; \
         } \
         return ERR_INSTANCE_STILL_USED; \
