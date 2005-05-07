@@ -12,11 +12,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.59 $
+ * $Revision: 1.60 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.59 2005/04/28 09:46:37 lollisoft Exp $
+ * $Id: mkmk.cpp,v 1.60 2005/05/07 08:49:14 lollisoft Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.60  2005/05/07 08:49:14  lollisoft
+ * Better handling of much object files (for DLL's now)
+ *
  * Revision 1.59  2005/04/28 09:46:37  lollisoft
  * Some changes under Linux to built correctly
  *
@@ -268,6 +271,8 @@
 int targettype=EXE_TARGET;
 
 char** IncPathList;
+
+char* targetname = NULL;
 
 /*...sint split\40\const char split_char\44\ char \42\string\44\ char \42\\42\\42\array\41\:0:*/
 int split(const char split_char, char *string, char ***array)
@@ -767,7 +772,7 @@ void writeDllTarget(char* modulename) {
   printf("FILE += $(OBJLIST)\n");
   printf("LNK=%s.lnk\n", ModName);
   printf("ifeq ($(COMPILER), WATCOM)\n");
-  printf("LINKFLAGS=@$(LNK)\n");
+  printf("LINKFLAGS=@%s.lnk\n", targetname);
   printf("endif\n");
   printf("ifeq ($(COMPILER), MICROSOFT)\n");
   printf("LINKFLAGS=$(OBJS) $(VENDORLIBS) $(LIBS)\n");
@@ -1093,7 +1098,7 @@ void ShowHelp()
 
   fprintf(stderr, "Enhanced by Lothar Behrens (lothar.behrens@lollisoft.de)\n\n");
 
-  fprintf(stderr, "MKMK: makefile generator $Revision: 1.59 $\n");
+  fprintf(stderr, "MKMK: makefile generator $Revision: 1.60 $\n");
   fprintf(stderr, "Usage: MKMK lib|exe|dll|so modulname includepath,[includepath,...] file1 [file2 file3...]\n");
 }
 /*...e*/
@@ -1224,6 +1229,7 @@ void ListFilesWithComma(FILE *f, char *Line, TDepList *l, bool IsObj=false)
 }
 /*...e*/
 /*...svoid WriteDep\40\FILE \42\f\44\ char \42\Name\44\ TIncludeParser \42\p\41\:0:*/
+int depCount = 0;
 void WriteDep(FILE *f, char *Name, TIncludeParser *p)
 {
   char ObjName[800];
@@ -1241,7 +1247,13 @@ void WriteDep(FILE *f, char *Name, TIncludeParser *p)
         case PLUGIN_TARGET:
         case WXPLUGIN_TARGET:
         case TVISION_DLL:
-                printf("\t\t@$(CC) $(C_DLLOPS) $(MOD_INCL) %s\n\n",Name);
+                printf("\t\t$(CC) $(C_DLLOPS) $(MOD_INCL) -Fo=%s %s\n", ObjName, Name);
+                if (depCount == 0) {
+                	printf("\t\techo NAME %s > %s.lnk\n", targetname, targetname);
+                }
+               	printf("\t\techo FIL %s >> %s.lnk\n", ObjName, targetname);
+               	depCount++;
+               	
                 break;
         case EXE_TARGET:
                 printf("\t\t@$(CC) $(C_EXEOPS) $(MOD_INCL) %s\n\n",Name);
@@ -1443,7 +1455,7 @@ int main(int argc, char *argv[])
 /*...e*/
 /*...sdetermine target type:0:*/
   char *target = strdup(argv[1]);
-  char *targetname = strdup(argv[2]);
+  targetname = strdup(argv[2]);
   char *target_ext = NULL;
   
   for(int c = 0; c < strlen(target); c++) target[c] = toupper(target[c]);
