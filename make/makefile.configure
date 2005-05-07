@@ -24,8 +24,21 @@ $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
 	@echo Path=$(PATH) >> makefile
 	@echo all: $(_MODULE).dll >> makefile
 	@rm -f $(DEVROOT_MAKE)/Projects/CPP/include/lbkey.h
+	@rm -f include/tv/configtv.h
+	@cp include/tv/configtv.watcom.h include/tv/configtv.h
 	@cp -f $(DEVROOT_MAKE)/Projects/CPP/BaseDevelopment/lbclasses/lbkey.h $(DEVROOT_MAKE)/Projects/CPP/include
-	$(MKMK) $(TARGET) $(_MODULE) include,include/tv,include/cl,include/win32 classes/*.cc >> makefile
+	$(MKMK) $(TARGET) $(_MODULE) include,include/tv,include/cl,include/win32 \
+	classes/*.cc \
+	classes/win32/*.cc \
+	compat/*.c \
+	compat/*.cc \
+	names/*.cc \
+	stream/*.cc \
+	misc.cc \
+	newstr.cc \
+	msgbox.cc \
+	histlist.cc \
+	>> makefile
 endif
 
 ifeq ($(TARGET), plugin)
