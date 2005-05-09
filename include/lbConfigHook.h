@@ -40,8 +40,10 @@
 
 #ifdef WINDOWS
 #ifndef TVISION
+#ifndef TVISION_APP
 #define TRACKER
 #define MEMTRACK
+#endif
 #endif
 #endif
 
