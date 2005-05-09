@@ -12,11 +12,15 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.60 $
+ * $Revision: 1.61 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.60 2005/05/07 08:49:14 lollisoft Exp $
+ * $Id: mkmk.cpp,v 1.61 2005/05/09 21:14:24 lollisoft Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.61  2005/05/09 21:14:24  lollisoft
+ * Adaptions to compile C code with C compiler. Not with CPP compiler.
+ * This let's the tvision library built correctly and also some pieces of OW it self.
+ *
  * Revision 1.60  2005/05/07 08:49:14  lollisoft
  * Better handling of much object files (for DLL's now)
  *
@@ -266,6 +270,7 @@
 #define SOPLUGIN_TARGET 10
 #define WXSOPLUGIN_TARGET 11
 #define TVISION_DLL 12
+#define TVISION_EXE 13
 /*...e*/
 
 int targettype=EXE_TARGET;
@@ -481,7 +486,7 @@ void TIncludeParser::AddInclude(char *IncName)
         if (f != NULL) {
                 strcpy(realfile, IncName);
                 fclose(f);
-        } else { printf("Error: No standard path has this file, and this rule does not match for %s\n", IncName); }
+        } else { fprintf(stderr, "Error: No standard path has this file, and this rule does not match for %s\n", IncName); }
   }
 /*...e*/
 
@@ -788,7 +793,7 @@ void writeDllTarget(char* modulename) {
   printf("\t\t@echo @rem Nothing > doit.bat\n");
   printf("\t\t@echo @if NOT \\\"$(LIBS)\\\" == \\\"\\\" echo LIBR $(LIBS) > doit.bat\n");
 
-  printf("\t\t@cmd /C \"doit >> $(LNK)\"\n");
+  printf("\t\t@cmd /C \"doit >> %s.lnk\"\n", targetname);
   printf("\t\t@cmd /C \"rm doit.bat\"\n");
   printf("\t\t-@cmd /C \"attrib -r *.bak\"\n");
   printf("\t\t@$(LINK) $(LNKDLLOPS) $(LINKFLAGS)\n");
@@ -1098,7 +1103,7 @@ void ShowHelp()
 
   fprintf(stderr, "Enhanced by Lothar Behrens (lothar.behrens@lollisoft.de)\n\n");
 
-  fprintf(stderr, "MKMK: makefile generator $Revision: 1.60 $\n");
+  fprintf(stderr, "MKMK: makefile generator $Revision: 1.61 $\n");
   fprintf(stderr, "Usage: MKMK lib|exe|dll|so modulname includepath,[includepath,...] file1 [file2 file3...]\n");
 }
 /*...e*/
@@ -1230,36 +1235,102 @@ void ListFilesWithComma(FILE *f, char *Line, TDepList *l, bool IsObj=false)
 /*...e*/
 /*...svoid WriteDep\40\FILE \42\f\44\ char \42\Name\44\ TIncludeParser \42\p\41\:0:*/
 int depCount = 0;
+
+void replace(char* to, char* match, char* replace) {
+	char rep[800] = "";
+	char repl[800] = "";
+	char* t;
+	strcpy(rep, to);
+
+	t = strtok(rep, match);
+	
+	while (t != NULL) {
+		strcat(repl, t);
+		strcat(repl, replace);
+		
+		t = strtok(NULL, match);
+	}
+
+	repl[strlen(repl)-2] = 0;
+
+	to[0] = 0;
+	
+	strcpy(to, repl);
+}
+
 void WriteDep(FILE *f, char *Name, TIncludeParser *p)
 {
-  char ObjName[800];
-  char Line[120];
+  char ObjName[800] = "";
+  char ObjNameC[800] = "";
+  char NameC[800] = "";
+  char SExt[100] = "";
+  char Line[120] = "";
+
+  int  CPPFlag = 0;
+
+  char Compiler[100] = "";
+
+  int pos = strlen(Name);
+
+  strcpy(NameC, Name);
+
+  replace(NameC, "/", "\\\\");
+
+  while ((pos > 0) && (Name[pos] != '.')) pos--;
+  strcpy(SExt, &Name[pos]);
+
+  for(int c = 0; c < strlen(SExt); c++) SExt[c] = toupper(SExt[c]);
+
+  if (strcmp(SExt, ".CPP") == 0) {
+  	CPPFlag = 1;
+  	strcpy(Compiler, "$(CPP)");
+  }
+  
+  if (strcmp(SExt, ".CC") == 0) {
+  	CPPFlag = 1;
+  	strcpy(Compiler, "$(CPP)");
+  }
+  
+  if (strcmp(SExt, ".C") == 0) {
+  	CPPFlag = 0;
+  	strcpy(Compiler, "$(CC)");
+  }
+  
+  fprintf(stderr, "Source extention is %s.\n", SExt);
 
   ObjExt(Name,ObjName,sizeof(ObjName));
   sprintf(Line,"%s: makefile %s",ObjName,Name);
+  
+  strcpy(ObjNameC, ObjName);
+  
+  replace(ObjNameC, "/", "\\\\");
+  
   ListFiles(f,Line,&p->l);
 
   switch (targettype) {
         case LIB_TARGET:
-                printf("\t\t@$(CC) $(C_LIBOPS) $(MOD_INCL) %s\n\n",Name);
+                printf("\t\t@%s $(C_LIBOPS) $(MOD_INCL) %s\n\n", Compiler, Name);
                 break;
         case DLL_TARGET:
         case PLUGIN_TARGET:
         case WXPLUGIN_TARGET:
         case TVISION_DLL:
-                printf("\t\t$(CC) $(C_DLLOPS) $(MOD_INCL) -Fo=%s %s\n", ObjName, Name);
+        	if (CPPFlag == 0) printf("\t\t%s $(C_DLLOPS) $(MOD_INCL) -Fo=%s %s\n", Compiler, ObjNameC, NameC);
+        	if (CPPFlag == 1) printf("\t\t%s $(CPP_DLLOPS) $(MOD_INCL_CPP) -Fo=%s %s\n", Compiler, ObjName, Name);
                 if (depCount == 0) {
-                	printf("\t\techo NAME %s > %s.lnk\n", targetname, targetname);
+                	printf("\t\t@echo NAME %s > %s.lnk\n", targetname, targetname);
                 }
-               	printf("\t\techo FIL %s >> %s.lnk\n", ObjName, targetname);
+               	printf("\t\t@echo FIL %s >> %s.lnk\n", ObjName, targetname);
                	depCount++;
                	
                 break;
         case EXE_TARGET:
-                printf("\t\t@$(CC) $(C_EXEOPS) $(MOD_INCL) %s\n\n",Name);
+        	if (CPPFlag == 0) printf("\t\t%s $(C_EXEOPS) $(MOD_INCL) -Fo=%s %s\n\n", Compiler, ObjNameC, Name);
+        	if (CPPFlag == 1) printf("\t\t%s $(CPP_EXEOPS) $(MOD_INCL_CPP) -Fo=%s %s\n\n", Compiler, ObjName, Name);
+//                printf("\t\t%s $(C_EXEOPS) $(MOD_INCL) %s\n\n", Compiler, Name);
                 break;
         case ELF_TARGET:
-                printf("\t\t@$(CC) $(C_ELFOPS) $(MOD_INCL) %s\n\n",Name);
+                printf("\t\t@%s $(C_ELFOPS) $(MOD_INCL) %s\n\n", Compiler, Name);
                 break;
         case SO_TARGET:
         case SOPLUGIN_TARGET:
@@ -1271,7 +1342,7 @@ void WriteDep(FILE *f, char *Name, TIncludeParser *p)
                         break;
                     }
                 }
-                printf("\t\t@$(CC) -c -fPIC -g $(C_SOOPS) $(MOD_INCL) %s -o %s.o\n\n",Name, ObjName);
+                printf("\t\t@%s -c -fPIC -g $(C_SOOPS) $(MOD_INCL) %s -o %s.o\n\n", Compiler, Name, ObjName);
                 }
                 break;
         case WXSO_TARGET:
@@ -1284,7 +1355,7 @@ void WriteDep(FILE *f, char *Name, TIncludeParser *p)
                         break;
                     }
                 }
-                printf("\t\t@$(CC) -c -fPIC -g $(C_SOOPS) $(MOD_INCL) %s -o %s.o\n\n",Name, ObjName);
+                printf("\t\t@%s -c -fPIC -g $(C_SOOPS) $(MOD_INCL) %s -o %s.o\n\n", Compiler, Name, ObjName);
                 }
                 break;
         default:
@@ -1354,6 +1425,10 @@ void WriteEnding(FILE *f, char *ModuleName, TDepList *l)
                 break;
         case TVISION_DLL:
                 writeDllTarget(ModuleName);
+                write_clean();
+                break;
+        case TVISION_EXE:
+                writeExeTarget(ModuleName);
                 write_clean();
                 break;
         case PLUGIN_TARGET:
@@ -1468,6 +1543,11 @@ int main(int argc, char *argv[])
   if (strcmp(target, "TVISION_DLL") == 0) {
   	targettype = TVISION_DLL;
   	target_ext = strdup(".dll");
+  }
+  
+  if (strcmp(target, "TVISION_EXE") == 0) {
+  	targettype = TVISION_EXE;
+  	target_ext = strdup(".exe");
   }
   
   if (strcmp(target, "ELF") == 0) {
