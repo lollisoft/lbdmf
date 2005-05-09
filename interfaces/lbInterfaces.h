@@ -257,7 +257,7 @@
 #ifdef TVISION
  #ifndef LB_STDCALL
   #ifdef WINDOWS
-   #define LB_STDCALL __cdecl 
+   #define LB_STDCALL __cdecl
    //__attribute__((cdecl))
   #endif
   #ifndef WINDOWS
@@ -399,6 +399,7 @@ typedef lbErrCodes (lb_I_CallbackTarget::*lbMemberCallback)( const char* handler
 
 
 typedef lbErrCodes (lb_I_EventSink::*lb_I_EventCallback)(lb_I_Unknown* question, lb_I_Unknown* answer); 
+
 
 #ifndef TVISION
 typedef lbErrCodes (LB_STDCALL lb_I_EventHandler::*lbEvHandler)(lb_I_Unknown* uk);
@@ -633,9 +634,9 @@ public:
 		} \
 		\
 		virtual ~UAP##Unknown_Reference() { \
-			_CL_LOG << "UAP destructor ~UAP" << #Unknown_Reference << "() at " << __FILE__ << " called" LOG_ \
+			_CL_VERBOSE << "UAP destructor ~UAP" << #Unknown_Reference << "() at " << __FILE__ << " called" LOG_ \
 			if (_autoPtr != NULL) { \
-				_CL_LOG << "Pointer is not NULL. Delete it." LOG_ \
+				_CL_VERBOSE << "Pointer is not NULL. Delete it." LOG_ \
 				if (allowDelete != 1) { \
 					if (_autoPtr->deleteState() == 1) { \
 						printf("Error: Instance would be deleted, but it's not allowed !!\n"); \
@@ -646,7 +647,7 @@ public:
 				RELEASE_1(_autoPtr, _file, _line); \
 				if (_file) delete [] _file; \
 			} \
-			_CL_LOG << "UAP destructor ~UAP" << #Unknown_Reference << "() ready" LOG_ \
+			_CL_VERBOSE << "UAP destructor ~UAP" << #Unknown_Reference << "() ready" LOG_ \
 		} \
 		void LB_STDCALL setFile(char* __file) { \
 			if (_file != NULL) { \
