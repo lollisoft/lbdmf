@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.48 $
+# * $Revision: 1.49 $
 # * $Name:  $
-# * $Id: Makefile,v 1.48 2005/05/03 21:07:18 lollisoft Exp $
+# * $Id: Makefile,v 1.49 2005/05/09 22:20:34 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.49  2005/05/09 22:20:34  lollisoft
+# * Changes to also compile C source code.
+# *
 # * Revision 1.48  2005/05/03 21:07:18  lollisoft
 # * More dependency to doxygen
 # *
@@ -183,7 +186,11 @@ BASEDIRECTORIES= \
 	../Plugins \
 	../Modules \
 	../RegressionTests \
-	../AppDevelopment
+	../AppDevelopment \
+	../vendor/tvision \
+	../vendor/tvision/examples/lbDMF
+
+#	../../open-watcom
 
 
 MAKESUBDIR= \
@@ -258,10 +265,17 @@ TARGETDLL=dll
 TARGETEXE=exe
 TARGETPLUGIN=plugin
 TARGETWXPLUGIN=wxplugin
-
 TARGET_TV_DLL=tvision_dll
+TARGET_TV_EXE=tvision_exe
+
+bla = \
+	../../open-watcom
 
 ALLTARGETS = \
+	../vendor/tvision \
+	../vendor/tvision/examples/lbDMF
+
+blubb = \
 	../../dll/libs \
 	../../plugins/libs \
 	lbHook \
@@ -325,6 +339,10 @@ dummy:
 	$(MAKE) -C $@ -e MODULE=tvision -e TARGET=$(TARGET_TV_DLL) -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
 	$(MAKE) -C $@
 
+../vendor/tvision/examples/lbDMF: dummy
+	$(MAKE) -C $@ -e MODULE=demo -e TARGET=tvision_exe -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
+	$(MAKE) -C $@
+
 ../Test/Console/XML: dummy
 	$(MAKE) -C $@ -e MODULE=console-test -e TARGET=$(TARGETEXE) -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
 	$(MAKE) -C $@
@@ -372,6 +390,9 @@ ifeq ($(OSTYPE), Windows_NT)
 	$(MAKE) -C $@ -e MODULE=lbLoginWizard -e TARGET=$(TARGETWXPLUGIN) -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
 	$(MAKE) -C $@
 endif
+
+../../open-watcom: dummy
+	$(MAKE) -C $@
 
 ../AppDevelopment: dummy
 	$(MAKE) -C $@
