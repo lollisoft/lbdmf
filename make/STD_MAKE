@@ -25,11 +25,14 @@
 #            40235 Duesseldorf (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.59 $
+# * $Revision: 1.60 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.59 2005/05/01 01:12:36 lollisoft Exp $
+# * $Id: STD_MAKE,v 1.60 2005/05/09 21:16:23 lollisoft Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.60  2005/05/09 21:16:23  lollisoft
+# * Added settings especially for C compiler (OW)
+# *
 # * Revision 1.59  2005/05/01 01:12:36  lollisoft
 # * Found a really big memory leak. It happens due to missing setup of ref variable
 # * in lbFunctorEntity class of lbModule.cpp.
@@ -229,18 +232,31 @@ MODE=_DEBUG
 
 WATCOM_SLASH=/
 
-STD_INCL_WATCOM =-i=.   -i=$(DEVROOT_MAKE)$(WATCOM_SLASH)Tools$(WATCOM_SLASH)WATCOM$(WATCOM_SLASH)h \
+STD_INCL_WATCOM_CPP =-i=.   -i=$(DEVROOT_MAKE)$(WATCOM_SLASH)Tools$(WATCOM_SLASH)WATCOM$(WATCOM_SLASH)h \
 			-i=$(DEVROOT_MAKE)$(WATCOM_SLASH)Tools$(WATCOM_SLASH)WATCOM$(WATCOM_SLASH)h$(WATCOM_SLASH)nt \
 			-i=$(DEVROOT_MAKE)$(WATCOM_SLASH)projects$(WATCOM_SLASH)cpp$(WATCOM_SLASH)interfaces \
 			-i=$(DEVROOT_MAKE)$(WATCOM_SLASH)projects$(WATCOM_SLASH)cpp$(WATCOM_SLASH)include \
 			-i=$(DEVROOT_MAKE)$(WATCOM_SLASH)projects$(WATCOM_SLASH)dll$(WATCOM_SLASH)include \
 			-i=$(DEVROOT_MAKE)$(WATCOM_SLASH)projects$(WATCOM_SLASH)lib$(WATCOM_SLASH)include \
-			-i=$(DEVROOT_MAKE)/projects/CPP/vendor/trmem
+			-i=$(DEVROOT_MAKE)$(WATCOM_SLASH)projects$(WATCOM_SLASH)CPP$(WATCOM_SLASH)vendor$(WATCOM_SLASH)trmem
+
+WATCOM_SLASH_CC=\\
+
+DEVROOT_CC=q:\\develop
+
+STD_INCL_WATCOM =-i=. -i=$(DEVROOT_CC)$(WATCOM_SLASH_CC)Tools$(WATCOM_SLASH_CC)WATCOM$(WATCOM_SLASH_CC)h \
+			-i=$(DEVROOT_CC)$(WATCOM_SLASH_CC)Tools$(WATCOM_SLASH_CC)WATCOM$(WATCOM_SLASH_CC)h$(WATCOM_SLASH_CC)nt \
+			-i=$(DEVROOT_CC)$(WATCOM_SLASH_CC)projects$(WATCOM_SLASH_CC)cpp$(WATCOM_SLASH_CC)interfaces \
+			-i=$(DEVROOT_CC)$(WATCOM_SLASH_CC)projects$(WATCOM_SLASH_CC)cpp$(WATCOM_SLASH_CC)include \
+			-i=$(DEVROOT_CC)$(WATCOM_SLASH_CC)projects$(WATCOM_SLASH_CC)dll$(WATCOM_SLASH_CC)include \
+			-i=$(DEVROOT_CC)$(WATCOM_SLASH_CC)projects$(WATCOM_SLASH_CC)lib$(WATCOM_SLASH_CC)include \
+			-i=$(DEVROOT_CC)$(WATCOM_SLASH_CC)projects$(WATCOM_SLASH_CC)CPP$(WATCOM_SLASH_CC)vendor$(WATCOM_SLASH_CC)trmem
 #ANAKIN
 #STD_INCL_MICROSOFT = /I "." /I "F:\develop\NT\MSC\VC98\Include" /I "Q:\Develop\xml\xml4csrc3_3_1\src" /I "Q:\Develop\Projects\CPP\include" /I "Q:\Develop\Projects\CPP\interfaces" /I "Q:\Develop\Projects\CPP\basedevelopment\lbclasses"
 #LOTHARBNOTEBOOK
 STD_INCL_MICROSOFT = /I "." /I "$(DEVROOT)\Tools\msc\VC98\Include" /I "$(DEVROOT)\xml\xml4csrc3_3_1\src" /I "$(DEVROOT)\Projects\CPP\include" /I "$(DEVROOT)\Projects\CPP\interfaces" /I "$(DEVROOT)\Projects\CPP\basedevelopment\lbclasses"
 
+STD_INCL_CPP = $(STD_INCL_WATCOM_CPP)
 STD_INCL = $(STD_INCL_WATCOM)
 
 BASE_LIBS = $(DEVROOT_MAKE)/projects/lib/trmem.lib,
@@ -269,6 +285,17 @@ $(WATCOM_THREAD_MODEL) \
 $(WATCOM_CALLING_CONV) \
 $(WATCOM_STACK)
 
+WATCOM_STD_CPP_OPS= \
+-DWINDOWS \
+$(WATCOM_WARN) \
+$(WATCOM_ERRCOUNT) \
+$(WATCOM_QUIET) \
+$(WATCOM_OPTIMIZE) \
+$(WATCOM_RELAX_ALIAS) \
+$(WATCOM_THREAD_MODEL) \
+$(WATCOM_CALLING_CONV) \
+$(WATCOM_STACK)
+
 OBJ =obj
 # Watcom -zp4
 C_EXEOPS_WATCOM=        $(WATCOM_STD_C_OPS) -bt=nt -mf #-hd
@@ -283,7 +310,21 @@ C_LIBOPS_WATCOM   =     $(WATCOM_STD_C_OPS)                     $(WATCOM_LIBTARG
 
 C_LIBOPS_WATCOM_DEBUG = $(WATCOM_STD_C_OPS) $(WATCOM_STDDEBUG)  $(WATCOM_LIBTARGET) -bt=nt -mf #-hd
 
-CC =wpp386
+
+CPP_EXEOPS_WATCOM=        $(WATCOM_STD_CPP_OPS) -bt=nt -mf #-hd
+
+CPP_EXEOPS_WATCOM_DEBUG=  $(WATCOM_STD_CPP_OPS) $(WATCOM_STDDEBUG) -bt=nt -mf #-hd
+
+CPP_DLLOPS_WATCOM   =     $(WATCOM_STD_CPP_OPS)                     $(WATCOM_DLLTARGET) -bt=nt -mf #-hd
+
+CPP_DLLOPS_WATCOM_DEBUG = $(WATCOM_STD_CPP_OPS) $(WATCOM_STDDEBUG)  $(WATCOM_DLLTARGET) -bt=nt -mf #-hd
+
+CPP_LIBOPS_WATCOM   =     $(WATCOM_STD_CPP_OPS)                     $(WATCOM_LIBTARGET) -bt=nt -mf #-hd
+
+CPP_LIBOPS_WATCOM_DEBUG = $(WATCOM_STD_CPP_OPS) $(WATCOM_STDDEBUG)  $(WATCOM_LIBTARGET) -bt=nt -mf #-hd
+
+CC =wcc386
+CPP =wpp386
 RM =del
 
 # Microsoft
@@ -349,6 +390,10 @@ LINK_MICROSOFT_OBJS=
 C_EXEOPS = $(C_EXEOPS_WATCOM$(MODE))
 C_DLLOPS = $(C_DLLOPS_WATCOM$(MODE))
 C_LIBOPS = $(C_LIBOPS_WATCOM$(MODE))
+
+CPP_EXEOPS = $(CPP_EXEOPS_WATCOM$(MODE))
+CPP_DLLOPS = $(CPP_DLLOPS_WATCOM$(MODE))
+CPP_LIBOPS = $(CPP_LIBOPS_WATCOM$(MODE))
 
 # Watcom
 L_EXEOPS_WATCOM = op symf d dwarf
