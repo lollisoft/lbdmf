@@ -30,14 +30,34 @@ $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
 	$(MKMK) $(TARGET) $(_MODULE) include,include/tv,include/cl,include/win32 \
 	classes/*.cc \
 	classes/win32/*.cc \
+	classes/wingr/*.cc \
+	classes/winnt/*.cc \
 	compat/*.c \
 	compat/*.cc \
 	names/*.cc \
 	stream/*.cc \
+	intl/dummy/*.c \
 	misc.cc \
 	newstr.cc \
 	msgbox.cc \
 	histlist.cc \
+	drivers2.cc \
+	>> makefile
+endif
+
+ifeq ($(TARGET), tvision_exe)
+makefile: makefile.module \
+$(DEVROOT_MAKE)/Projects/CPP/BaseDevelopment/Makefile \
+$(DEVROOT_MAKE)/Projects/CPP/make/makefile.template \
+$(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
+	@cat $(DEVROOT_MAKE)/Projects/CPP/make/makefile.template > makefile
+	@cat makefile.module >> makefile
+	@echo Path=$(PATH) >> makefile
+	@echo all: $(_MODULE).exe >> makefile
+	@rm -f $(DEVROOT_MAKE)/Projects/CPP/include/lbkey.h
+	@cp -f $(DEVROOT_MAKE)/Projects/CPP/BaseDevelopment/lbclasses/lbkey.h $(DEVROOT_MAKE)/Projects/CPP/include
+	$(MKMK) exe $(_MODULE) include,include/tv,include/cl,include/win32 \
+	*.cc \
 	>> makefile
 endif
 
@@ -165,7 +185,23 @@ $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
 	@echo all: $(_MODULE).exe >> makefile
 	@rm -f $(DEVROOT_MAKE)/Projects/CPP/include/lbkey.h
 	@cp -f $(DEVROOT_MAKE)/Projects/CPP/BaseDevelopment/lbclasses/lbkey.h $(DEVROOT_MAKE)/Projects/CPP/include
-	@$(MKMK) $(TARGET) $(_MODULE) ../dosdir *.cpp >> makefile
+	@$(MKMK) $(TARGET) $(_MODULE) ../h *.cpp *.c >> makefile
+
+endif
+
+ifeq ($(TARGET), wcc386)
+
+makefile: makefile.module \
+$(DEVROOT_MAKE)/Projects/CPP/BaseDevelopment/Makefile \
+$(DEVROOT_MAKE)/Projects/CPP/make/makefile.template \
+$(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
+	@cat $(DEVROOT_MAKE)/Projects/CPP/make/makefile.template > makefile
+	@cat makefile.module >> makefile
+	@echo Path=$(PATH) >> makefile
+	@echo all: $(_MODULE).exe >> makefile
+	@rm -f $(DEVROOT_MAKE)/Projects/CPP/include/lbkey.h
+	@cp -f $(DEVROOT_MAKE)/Projects/CPP/BaseDevelopment/lbclasses/lbkey.h $(DEVROOT_MAKE)/Projects/CPP/include
+	@$(MKMK) exe $(_MODULE) ../h c/*.cpp c/*.c >> makefile
 
 endif
 
