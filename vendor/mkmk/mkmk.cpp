@@ -12,11 +12,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.61 $
+ * $Revision: 1.62 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.61 2005/05/09 21:14:24 lollisoft Exp $
+ * $Id: mkmk.cpp,v 1.62 2005/05/10 21:09:43 lollisoft Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.62  2005/05/10 21:09:43  lollisoft
+ * Removed unneeded mkmk message
+ *
  * Revision 1.61  2005/05/09 21:14:24  lollisoft
  * Adaptions to compile C code with C compiler. Not with CPP compiler.
  * This let's the tvision library built correctly and also some pieces of OW it self.
@@ -1103,7 +1106,7 @@ void ShowHelp()
 
   fprintf(stderr, "Enhanced by Lothar Behrens (lothar.behrens@lollisoft.de)\n\n");
 
-  fprintf(stderr, "MKMK: makefile generator $Revision: 1.61 $\n");
+  fprintf(stderr, "MKMK: makefile generator $Revision: 1.62 $\n");
   fprintf(stderr, "Usage: MKMK lib|exe|dll|so modulname includepath,[includepath,...] file1 [file2 file3...]\n");
 }
 /*...e*/
@@ -1296,8 +1299,6 @@ void WriteDep(FILE *f, char *Name, TIncludeParser *p)
   	strcpy(Compiler, "$(CC)");
   }
   
-  fprintf(stderr, "Source extention is %s.\n", SExt);
-
   ObjExt(Name,ObjName,sizeof(ObjName));
   sprintf(Line,"%s: makefile %s",ObjName,Name);
   
