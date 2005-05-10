@@ -38,7 +38,7 @@
 #endif // WINDOWS
 /*...e*/
 
-#include <iostream.h>
+#include <iostream>
 #include <lbInclude.h>
 
 /*...s\35\ifdef __WXGTK__:0:*/

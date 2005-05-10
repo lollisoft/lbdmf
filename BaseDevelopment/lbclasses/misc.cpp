@@ -31,10 +31,13 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.37 $
+ * $Revision: 1.38 $
  * $Name:  $
- * $Id: misc.cpp,v 1.37 2005/05/04 22:07:34 lollisoft Exp $
+ * $Id: misc.cpp,v 1.38 2005/05/10 20:20:38 lollisoft Exp $
  * $Log: misc.cpp,v $
+ * Revision 1.38  2005/05/10 20:20:38  lollisoft
+ * Include files changed to be more actially language compilant
+ *
  * Revision 1.37  2005/05/04 22:07:34  lollisoft
  * _CL_LOG replaced with _CL_VERBOSE
  *
@@ -178,7 +181,7 @@
 #define __MISC
 
 /*...sIncludes:0:*/
-#include <iostream.h>
+#include <iostream>
 #include <stdio.h>
 #include <time.h>
 
@@ -205,7 +208,7 @@ extern "C" {
 
 #include <lbthread.h>
 #include <lb_misc.h>
-#include <fstream.h>
+#include <fstream>
 /*...e*/
 
 #ifndef  LOG_DEFINED

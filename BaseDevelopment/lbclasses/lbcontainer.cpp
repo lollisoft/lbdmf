@@ -36,10 +36,13 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.26 $
+ * $Revision: 1.27 $
  * $Name:  $
- * $Id: lbcontainer.cpp,v 1.26 2005/05/04 22:09:39 lollisoft Exp $
+ * $Id: lbcontainer.cpp,v 1.27 2005/05/10 20:20:38 lollisoft Exp $
  * $Log: lbcontainer.cpp,v $
+ * Revision 1.27  2005/05/10 20:20:38  lollisoft
+ * Include files changed to be more actially language compilant
+ *
  * Revision 1.26  2005/05/04 22:09:39  lollisoft
  * Many memory leaks fixed. Changed _CL_LOG to _CL_VERBOSE.
  *
@@ -148,7 +151,7 @@ extern "C" {
 }
 #endif
 
-#include <iostream.h>
+#include <iostream>
 
 //#include <lbInclude.h>
 #include <lbInterfaces.h>

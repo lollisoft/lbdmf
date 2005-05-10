@@ -31,10 +31,13 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.11 $
+ * $Revision: 1.12 $
  * $Name:  $
- * $Id: lb_misc.h,v 1.11 2005/05/03 21:12:56 lollisoft Exp $
+ * $Id: lb_misc.h,v 1.12 2005/05/10 20:20:37 lollisoft Exp $
  * $Log: lb_misc.h,v $
+ * Revision 1.12  2005/05/10 20:20:37  lollisoft
+ * Include files changed to be more actially language compilant
+ *
  * Revision 1.11  2005/05/03 21:12:56  lollisoft
  * Try using singleton for logger class
  *
@@ -87,7 +90,7 @@
 /*...sincludes:0:*/
 #include <time.h>
 #include <string.h>
-#include <iostream.h>
+#include <iostream>
 #include <stdio.h>
 
 #include <lbInterfaces.h>
@@ -109,8 +112,12 @@ DECLARE_SINGLETON_FUNCTOR(instanceOfLogger)
 #endif
 /*...e*/
 
+#ifndef TRUE
 #define TRUE 1
+#endif
+#ifndef FALSE
 #define FALSE 0
+#endif
 
 class lbMutex;
 

@@ -38,11 +38,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.28 $
+ * $Revision: 1.29 $
  * $Name:  $
- * $Id: skiplist.cpp,v 1.28 2005/05/04 22:06:37 lollisoft Exp $
+ * $Id: skiplist.cpp,v 1.29 2005/05/10 20:20:38 lollisoft Exp $
  *
  * $Log: skiplist.cpp,v $
+ * Revision 1.29  2005/05/10 20:20:38  lollisoft
+ * Include files changed to be more actially language compilant
+ *
  * Revision 1.28  2005/05/04 22:06:37  lollisoft
  * Most logging messages removed and one verbose message added.
  *
@@ -136,7 +139,7 @@
  **************************************************************/
 /*...e*/
 /*...sincludes:0:*/
-#include <iostream.h>
+#include <iostream>
 #include <stdlib.h>
 #include <stdio.h>
 #include <conio.h>

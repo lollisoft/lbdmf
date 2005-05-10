@@ -45,7 +45,7 @@ extern "C" {
 }      
 #endif            
 
-#include <iostream.h>
+#include <iostream>
 
 #include <lbInterfaces.h>
 #include <lbthread.h>

@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.52 $
+ * $Revision: 1.53 $
  * $Name:  $
- * $Id: lbDOMConfig.cpp,v 1.52 2005/05/04 22:09:39 lollisoft Exp $
+ * $Id: lbDOMConfig.cpp,v 1.53 2005/05/10 20:20:37 lollisoft Exp $
  *
  * $Log: lbDOMConfig.cpp,v $
+ * Revision 1.53  2005/05/10 20:20:37  lollisoft
+ * Include files changed to be more actially language compilant
+ *
  * Revision 1.52  2005/05/04 22:09:39  lollisoft
  * Many memory leaks fixed. Changed _CL_LOG to _CL_VERBOSE.
  *
@@ -218,7 +221,7 @@
 #include <dom/DOM_Node.hpp>
 #include <dom/DOM_NamedNodeMap.hpp>
 #include <dom/DOMString.hpp>
-#include <iostream.h>
+#include <iostream>
 #include <memory.h>
 #include <string.h>
 #include <stdlib.h>

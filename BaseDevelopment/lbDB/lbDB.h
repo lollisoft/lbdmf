@@ -33,7 +33,7 @@
 /*...sRevision history:0:*/
 /*...e*/
 
-#include <iostream.h>
+#include <iostream>
 
 /**
  * \brief lbFakeDelete - Does not directly delete rows, only mark it as deleted.

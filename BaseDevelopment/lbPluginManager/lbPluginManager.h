@@ -33,11 +33,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.4 $
+ * $Revision: 1.5 $
  * $Name:  $
- * $Id: lbPluginManager.h,v 1.4 2005/03/31 09:00:55 lollisoft Exp $
+ * $Id: lbPluginManager.h,v 1.5 2005/05/10 20:20:36 lollisoft Exp $
  *
  * $Log: lbPluginManager.h,v $
+ * Revision 1.5  2005/05/10 20:20:36  lollisoft
+ * Include files changed to be more actially language compilant
+ *
  * Revision 1.4  2005/03/31 09:00:55  lollisoft
  * Copyright text problems under linux.
  *
@@ -54,7 +57,7 @@
 
 /*...e*/
 
-#include <iostream.h>
+#include <iostream>
 
 /*...s\35\ifdef __cplusplus \123\:0:*/
 #ifdef __cplusplus

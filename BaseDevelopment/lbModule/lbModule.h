@@ -33,11 +33,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.16 $
+ * $Revision: 1.17 $
  * $Name:  $
- * $Id: lbModule.h,v 1.16 2005/03/31 09:00:17 lollisoft Exp $
+ * $Id: lbModule.h,v 1.17 2005/05/10 20:20:36 lollisoft Exp $
  *
  * $Log: lbModule.h,v $
+ * Revision 1.17  2005/05/10 20:20:36  lollisoft
+ * Include files changed to be more actially language compilant
+ *
  * Revision 1.16  2005/03/31 09:00:17  lollisoft
  * Copyright text problems under linux.
  *
@@ -75,7 +78,7 @@
  **************************************************************/
 /*...e*/
 
-#include <iostream.h>
+#include <iostream>
 
 /*...s\35\ifdef __cplusplus \123\:0:*/
 #ifdef __cplusplus
