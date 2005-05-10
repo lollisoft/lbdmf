@@ -25,11 +25,14 @@
 #            40235 Duesseldorf (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.60 $
+# * $Revision: 1.61 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.60 2005/05/09 21:16:23 lollisoft Exp $
+# * $Id: STD_MAKE,v 1.61 2005/05/10 15:11:30 lollisoft Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.61  2005/05/10 15:11:30  lollisoft
+# * Changes to build tvision elf format executable
+# *
 # * Revision 1.60  2005/05/09 21:16:23  lollisoft
 # * Added settings especially for C compiler (OW)
 # *
@@ -437,6 +440,8 @@ STD_INCL = -I $(DEVROOT)/Projects/CPP/BaseDevelopment/lbHook/linuxCode \
 	-I /usr/include \
 	-I . 
 
+STD_INCL_CPP = $(STD_INCL)
+
 OBJ =o
 C_OPS   = -c -g -DUNIX -DLINUX
 C_SOOPS = $(C_OPS)
@@ -446,7 +451,8 @@ LIBS    = -ldl -lstdc++ #-lc $(HOME)/mpatrol/build/unix/libmpatrol.a
 #-lc $(HOME)/mpatrol/build/unix/libmpatrol.a
 #-lefence
 CC =cc
-LD =cc
+CPP=cc
+LD =cc -s
 CP =cp
 EXEDIR =
 endif

@@ -61,6 +61,22 @@ $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
 	>> makefile
 endif
 
+ifeq ($(TARGET), tvision_elf)
+makefile: makefile.module \
+$(DEVROOT_MAKE)/Projects/CPP/BaseDevelopment/Makefile \
+$(DEVROOT_MAKE)/Projects/CPP/make/makefile.template \
+$(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
+	@cat $(DEVROOT_MAKE)/Projects/CPP/make/makefile.template > makefile
+	@cat makefile.module >> makefile
+	@echo Path=$(PATH) >> makefile
+	@echo all: $(_MODULE) >> makefile
+	@rm -f $(DEVROOT_MAKE)/Projects/CPP/include/lbkey.h
+	@cp -f $(DEVROOT_MAKE)/Projects/CPP/BaseDevelopment/lbclasses/lbkey.h $(DEVROOT_MAKE)/Projects/CPP/include
+	$(MKMK) elf $(_MODULE) include,include/tv,include/cl,include/win32 \
+	*.cc \
+	>> makefile
+endif
+
 ifeq ($(TARGET), plugin)
 
 makefile: makefile.module \
