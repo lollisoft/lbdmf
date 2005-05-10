@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.50 $
+# * $Revision: 1.51 $
 # * $Name:  $
-# * $Id: Makefile,v 1.50 2005/05/10 15:03:23 lollisoft Exp $
+# * $Id: Makefile,v 1.51 2005/05/10 22:37:47 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.51  2005/05/10 22:37:47  lollisoft
+# * Removed unused code.
+# *
 # * Revision 1.50  2005/05/10 15:03:23  lollisoft
 # * Made Linux make more silent
 # *
@@ -298,10 +301,6 @@ bla = \
 	../../open-watcom
 
 ALLTARGETS = \
-	../vendor/tvision \
-	../vendor/tvision/examples/lbDMF
-
-blubb = \
 	../../dll/libs \
 	../../plugins/libs \
 	lbHook \
