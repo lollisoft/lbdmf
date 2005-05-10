@@ -48,7 +48,7 @@ extern "C" {
 #endif            
 
 #include <stdio.h>
-#include <iostream.h>
+#include <iostream>
 #ifndef OSX
 #include <malloc.h>
 #endif
@@ -182,11 +182,11 @@ int main(int argc, char *argv[]) {
 {
 
 	char brk[100] = "";
-	
-	cout << "Please enter TRMem breakpoint address: ";
-	cin >> brk;
 
 #ifdef WINDOWS
+
+	cout << "Please enter TRMem breakpoint address: ";
+	cin >> brk;
 	
 	TRMemOpen();
 	TRMemSetModuleName(__FILE__);

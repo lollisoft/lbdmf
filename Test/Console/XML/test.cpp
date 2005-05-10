@@ -47,7 +47,7 @@ extern "C" {
 #endif            
 
 #include <stdio.h>
-#include <iostream.h>
+#include <iostream>
 #ifndef OSX
 #include <malloc.h>
 #endif

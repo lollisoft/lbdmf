@@ -33,11 +33,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.2 $
+ * $Revision: 1.3 $
  * $Name:  $
- * $Id: lbLoginWizard.h,v 1.2 2005/03/31 09:21:02 lollisoft Exp $
+ * $Id: lbLoginWizard.h,v 1.3 2005/05/10 21:05:42 lollisoft Exp $
  *
  * $Log: lbLoginWizard.h,v $
+ * Revision 1.3  2005/05/10 21:05:42  lollisoft
+ * Including made more actually language conform
+ *
  * Revision 1.2  2005/03/31 09:21:02  lollisoft
  * Copyright text problems under linux.
  *
@@ -57,7 +60,7 @@
 
 /*...e*/
 
-#include <iostream.h>
+#include <iostream>
 
 /*...s\35\ifdef __cplusplus \123\:0:*/
 #ifdef __cplusplus

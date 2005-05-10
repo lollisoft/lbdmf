@@ -33,11 +33,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.5 $
+ * $Revision: 1.6 $
  * $Name:  $
- * $Id: lbDatabaseForm.h,v 1.5 2005/04/23 10:44:31 lollisoft Exp $
+ * $Id: lbDatabaseForm.h,v 1.6 2005/05/10 20:59:18 lollisoft Exp $
  *
  * $Log: lbDatabaseForm.h,v $
+ * Revision 1.6  2005/05/10 20:59:18  lollisoft
+ * Including made more actually language conform
+ *
  * Revision 1.5  2005/04/23 10:44:31  lollisoft
  * OwnerDrawControl basically implemented and usable.
  * Some bugfixes in selecting from correct database connection.
@@ -61,7 +64,7 @@
 
 /*...e*/
 
-#include <iostream.h>
+#include <iostream>
 
 /*...s\35\ifdef __cplusplus \123\:0:*/
 #ifdef __cplusplus
