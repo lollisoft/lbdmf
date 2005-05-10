@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.49 $
+# * $Revision: 1.50 $
 # * $Name:  $
-# * $Id: Makefile,v 1.49 2005/05/09 22:20:34 lollisoft Exp $
+# * $Id: Makefile,v 1.50 2005/05/10 15:03:23 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.50  2005/05/10 15:03:23  lollisoft
+# * Made Linux make more silent
+# *
 # * Revision 1.49  2005/05/09 22:20:34  lollisoft
 # * Changes to also compile C source code.
 # *
@@ -182,15 +185,29 @@ Path=$(PATH)
 #
 # To enable one build process, these directories are predefined or checked for it's existence.
 
+MAKE_CONFIG_FILE=$(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
+
+
+ifeq ($(OSTYPE), linux)
 BASEDIRECTORIES= \
 	../Plugins \
 	../Modules \
 	../RegressionTests \
-	../AppDevelopment \
-	../vendor/tvision \
-	../vendor/tvision/examples/lbDMF
+	../vendor/tvision/examples/lbDMF \
+	../AppDevelopment 
 
 #	../../open-watcom
+endif
+
+ifeq ($(OSTYPE), Windows_NT)
+BASEDIRECTORIES= \
+	../Plugins \
+	../Modules \
+	../RegressionTests \
+	../vendor/tvision \
+	../vendor/tvision/examples/lbDMF \
+	../AppDevelopment 
+endif
 
 
 MAKESUBDIR= \
@@ -208,6 +225,12 @@ MAKEWXSAMPLE= \
 	)
 
 ifeq ($(OSTYPE), osx)
+
+BASEDIRECTORIES= \
+	../Plugins \
+	../Modules \
+	../RegressionTests \
+	../vendor/tvision/examples/lbDMF
 
 TARGETDLL=so
 TARGETEXE=elf
@@ -237,8 +260,11 @@ ifeq ($(OSTYPE), linux)
 
 TARGETDLL=so
 TARGETEXE=elf
+TARGET_TV_DLL=tvision_dll
+TARGET_TV_EXE=tvision_elf
 TARGETPLUGIN=soplugin
 TARGETWXPLUGIN=wxsoplugin
+
 
 ALLTARGETS = \
 	../include/lbkey.h \
@@ -336,16 +362,16 @@ mkrelease:
 dummy:
 
 ../vendor/tvision: dummy
-	$(MAKE) -C $@ -e MODULE=tvision -e TARGET=$(TARGET_TV_DLL) -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
-	$(MAKE) -C $@
+	$(MAKE) -s -C $@ -e MODULE=tvision -e TARGET=$(TARGET_TV_DLL) -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@
 
 ../vendor/tvision/examples/lbDMF: dummy
-	$(MAKE) -C $@ -e MODULE=demo -e TARGET=tvision_exe -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
-	$(MAKE) -C $@
+	$(MAKE) -s -C $@ -e MODULE=demo -e TARGET=$(TARGET_TV_EXE) -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@
 
 ../Test/Console/XML: dummy
-	$(MAKE) -C $@ -e MODULE=console-test -e TARGET=$(TARGETEXE) -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
-	$(MAKE) -C $@
+	$(MAKE) -s -C $@ -e MODULE=console-test -e TARGET=$(TARGETEXE) -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@
 
 ../include/lbkey.h: dummy
 	touch ../include/lbkey.h
@@ -372,82 +398,82 @@ ifeq ($(OSTYPE), osx)
 	cd ../BaseDevelopment
 
 ../Test/GUI/wxWrapper: dummy
-	$(MAKE) -C $@ -f makefile.osx
+	$(MAKE) -s -C $@ -f makefile.osx
 	cp ../Test/GUI/wxWrapper/wxWrapper $(HOME)/bin
 endif
 
 ifeq ($(OSTYPE), linux)
 ../Test/GUI/wxWrapper: dummy
-	$(MAKE) -C $@ -f makefile.wx-sample
+	$(MAKE) -s -C $@ -f makefile.wx-sample
 endif
 
 ifeq ($(OSTYPE), Windows_NT)
 ../Test/GUI/wxWrapper: dummy
-	$(MAKE) -C $@ -e MODULE=wxWrapper -e TARGET=$(TARGETEXE) -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
-	$(MAKE) -C $@
+	$(MAKE) -s -C $@ -e MODULE=wxWrapper -e TARGET=$(TARGETEXE) -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@
 
 ../Test/GUI/wxPlugins/lbLoginWizard: dummy
-	$(MAKE) -C $@ -e MODULE=lbLoginWizard -e TARGET=$(TARGETWXPLUGIN) -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
-	$(MAKE) -C $@
+	$(MAKE) -s -C $@ -e MODULE=lbLoginWizard -e TARGET=$(TARGETWXPLUGIN) -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@
 endif
 
 ../../open-watcom: dummy
 	$(MAKE) -C $@
 
 ../AppDevelopment: dummy
-	$(MAKE) -C $@
+	$(MAKE) -s -C $@
 
 ../Plugins: dummy
-	$(MAKE) -C $@
+	$(MAKE) -s -C $@
 
 ../Modules: dummy
-	$(MAKE) -C $@
+	$(MAKE) -s -C $@
 
 ../AppDevelopmentDemo: dummy
-	$(MAKE) -C $@
+	$(MAKE) -s -C $@
 
 ../RegressionTests: dummy
-	$(MAKE) -C $@
+	$(MAKE) -s -C $@
 
 ../AppDevelopmentDemo/App: dummy
-	$(MAKE) -C $@ -e MODULE=Application -e TARGET=$(TARGETDLL) -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
-	$(MAKE) -C $@
+	$(MAKE) -s -C $@ -e MODULE=Application -e TARGET=$(TARGETDLL) -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@
 
 ../AppDevelopmentDemo/DynamicApp/App: dummy
-	$(MAKE) -C $@ -e MODULE=lbDynApp -e TARGET=$(TARGETDLL) -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
-	$(MAKE) -C $@
+	$(MAKE) -s -C $@ -e MODULE=lbDynApp -e TARGET=$(TARGETDLL) -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@
 
 #../Plugins/DatabaseForm: dummy
-#	$(MAKE) -C $@ -e MODULE=lbDatabaseForm -e TARGET=$(TARGETWXPLUGIN) -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
-#	$(MAKE) -C $@
+#	$(MAKE) -s -C $@ -e MODULE=lbDatabaseForm -e TARGET=$(TARGETWXPLUGIN) -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
+#	$(MAKE) -s -C $@
 
 lbHook: dummy
-	$(MAKE) -C $@ -e MODULE=$@ -e TARGET=$(TARGETDLL) -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
-	$(MAKE) -C $@
+	$(MAKE) -s -C $@ -e MODULE=$@ -e TARGET=$(TARGETDLL) -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@
 
 lbDB: dummy
-	$(MAKE) -C $@ -e MODULE=$@ -e TARGET=$(TARGETDLL) -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
-	$(MAKE) -C $@
+	$(MAKE) -s -C $@ -e MODULE=$@ -e TARGET=$(TARGETDLL) -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@
 
 lbPluginManager: dummy
-	$(MAKE) -C $@ -e MODULE=$@ -e TARGET=$(TARGETDLL) -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
-	$(MAKE) -C $@
+	$(MAKE) -s -C $@ -e MODULE=$@ -e TARGET=$(TARGETDLL) -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@
 
 lbModule: dummy
-	$(MAKE) -C $@ -e MODULE=$@ -e TARGET=$(TARGETDLL) -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
-	$(MAKE) -C $@
+	$(MAKE) -s -C $@ -e MODULE=$@ -e TARGET=$(TARGETDLL) -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@
 
 lbclasses: dummy
-	$(MAKE) -C lbclasses -e MODULE=lbClasses -e TARGET=$(TARGETDLL) -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
-	$(MAKE) -C lbclasses
+	$(MAKE) -s -C lbclasses -e MODULE=lbClasses -e TARGET=$(TARGETDLL) -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C lbclasses
 
 lbMetaApplication: dummy
-	$(MAKE) -C $@ -e MODULE=$@ -e TARGET=$(TARGETDLL) -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
-	$(MAKE) -C $@
+	$(MAKE) -s -C $@ -e MODULE=$@ -e TARGET=$(TARGETDLL) -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@
 
 lbXMLConfig/lbDOMConfig: dummy
-	$(MAKE) -C $@ -e MODULE=$@ -e TARGET=$(TARGETDLL) -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
-	$(MAKE) -C $@
+	$(MAKE) -s -C $@ -e MODULE=$@ -e TARGET=$(TARGETDLL) -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@
 
 ../Doc/html: ../doxygen.conf \
 	../interfaces/lbInterfaces.h \
@@ -459,5 +485,5 @@ lbXMLConfig/lbDOMConfig: dummy
 	@doxygen ../doxygen.conf
 
 ../Samples/HelloWorld: dummy
-	$(MAKE) -C $@ -e MODULE=HelloWorld -e TARGET=$(TARGETEXE) -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
-	$(MAKE) -C $@
+	$(MAKE) -s -C $@ -e MODULE=HelloWorld -e TARGET=$(TARGETEXE) -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@
