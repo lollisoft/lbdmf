@@ -68,8 +68,9 @@
 #define ENDL endl
 #define OFSTREAM ofstream
 
- #include <iostream>
- #include <fstream>
+ #include <iostream.h>
+ #include <fstream.h>
+
 #endif
 
 #ifdef LINUX
@@ -79,9 +80,9 @@
 #define ENDL std::endl
 #define OFSTREAM std::ofstream
 
-
  #include <iostream>
  #include <fstream>
+
 #endif
 
 #ifdef OSX
