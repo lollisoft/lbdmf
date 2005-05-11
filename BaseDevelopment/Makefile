@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.51 $
+# * $Revision: 1.52 $
 # * $Name:  $
-# * $Id: Makefile,v 1.51 2005/05/10 22:37:47 lollisoft Exp $
+# * $Id: Makefile,v 1.52 2005/05/11 08:58:27 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.52  2005/05/11 08:58:27  lollisoft
+# * Little changes to get compiled tvision sample. Compiler switch changes.
+# *
 # * Revision 1.51  2005/05/10 22:37:47  lollisoft
 # * Removed unused code.
 # *
@@ -237,6 +240,8 @@ BASEDIRECTORIES= \
 
 TARGETDLL=so
 TARGETEXE=elf
+TARGET_TV_DLL=tvision_dll
+TARGET_TV_EXE=tvision_elf
 TARGETPLUGIN=soplugin
 TARGETWXPLUGIN=wxsoplugin
 

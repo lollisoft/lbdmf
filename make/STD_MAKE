@@ -25,11 +25,14 @@
 #            40235 Duesseldorf (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.61 $
+# * $Revision: 1.62 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.61 2005/05/10 15:11:30 lollisoft Exp $
+# * $Id: STD_MAKE,v 1.62 2005/05/11 08:58:27 lollisoft Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.62  2005/05/11 08:58:27  lollisoft
+# * Little changes to get compiled tvision sample. Compiler switch changes.
+# *
 # * Revision 1.61  2005/05/10 15:11:30  lollisoft
 # * Changes to build tvision elf format executable
 # *
@@ -471,9 +474,10 @@ C_OPS   = -c -DUNIX -DLINUX -DOSX
 C_SOOPS = $(C_OPS)
 C_ELFOPS= $(C_OPS)
 L_OPS   = -o
-LIBS    = -ldl #-llibstdc++
+LIBS    = -ldl -lcurses #-llibstdc++
 #-lefence
 CC =c++
+CPP =c++
 LD =c++
 CP =cp
 EXEDIR =
