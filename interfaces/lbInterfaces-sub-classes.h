@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.49 $
+ * $Revision: 1.50 $
  * $Name:  $
- * $Id: lbInterfaces-sub-classes.h,v 1.49 2005/05/01 21:16:16 lollisoft Exp $
+ * $Id: lbInterfaces-sub-classes.h,v 1.50 2005/05/11 13:19:40 lollisoft Exp $
  *
  * $Log: lbInterfaces-sub-classes.h,v $
+ * Revision 1.50  2005/05/11 13:19:40  lollisoft
+ * Bugfix for reference count error and changed back any _CL_LOG messages to be _CL_VERBOSE only
+ *
  * Revision 1.49  2005/05/01 21:16:16  lollisoft
  * lb_I_Element implementation macro changed due to memory leak tests.
  * My old reference counting system is no more used.
@@ -631,11 +634,8 @@ classname::classname(const lb_I_Unknown* o, const lb_I_KeyBase* _key, lb_I_Eleme
     data = o->clone(__FILE__, __LINE__); \
     char ptr[20] = ""; \
     sprintf(ptr, "%p", (void*) data); \
-    if (strcmp(ptr, "019a30c0") == 0) { \
-    	_CL_LOG << "Mysterious object found" LOG_ \
-    } \
     if (data->getRefCount() > 1) { \
-        _CL_LOG << "Refcount after cloning is more than 1 !!!" LOG_ \
+        _CL_LOG << "Warning: Refcount after cloning is more than 1 !!!" LOG_ \
     } \
     lb_I_Unknown* uk_key = NULL; \
     key = (lb_I_KeyBase*) _key->clone(__FILE__, __LINE__); \
@@ -643,16 +643,15 @@ classname::classname(const lb_I_Unknown* o, const lb_I_KeyBase* _key, lb_I_Eleme
 } \
 \
 classname::~classname() { \
-	_CL_LOG << #classname << "::~" << #classname << "() called." LOG_ \
+		_CL_VERBOSE << #classname << "::~" << #classname << "() called." LOG_ \
         if (key != NULL) { \
                 key->setDebug(1); \
-                if (key->deleteState() != 1) _CL_LOG << "Key wouldn't deleted in container element!" LOG_ \
+                if (key->deleteState() != 1) _CL_LOG << "Warning: Key wouldn't deleted in container element!" LOG_ \
                 RELEASE(key); \
         } \
         if (data != NULL) { \
-        	if (data->deleteState() != 1) _CL_LOG << "Data wouldn't deleted in container element!" LOG_ \
-                RELEASE(data); \
-                _CL_LOG << "Data released ?" << __FILE__ << ":" << __LINE__ LOG_ \
+        	if (data->deleteState() != 1) _CL_LOG << "Warning: Data wouldn't deleted in container element!" LOG_ \
+            RELEASE(data); \
         } \
         key = NULL; \
         data = NULL; \

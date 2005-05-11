@@ -769,7 +769,7 @@ public:
 		} \
 		\
 		virtual ~UAP##Unknown_Reference() { \
-			_CL_LOG << "UAP destructor ~UAP" << #Unknown_Reference << "() at " << __FILE__ << " called" LOG_ \
+			_CL_VERBOSE << "UAP destructor ~UAP" << #Unknown_Reference << "() at " << __FILE__ << " called" LOG_ \
 			if (_autoPtr != NULL) { \
 				if (allowDelete != 1) { \
 					if (_autoPtr->deleteState() == 1) { \
@@ -782,7 +782,7 @@ public:
 				RELEASE_1(_autoPtr, _file, _line); \
 				if (_file) delete [] _file; \
 			} \
-			_CL_LOG << "UAP destructor ~UAP" << #Unknown_Reference << "() ready" LOG_ \
+			_CL_VERBOSE << "UAP destructor ~UAP" << #Unknown_Reference << "() ready" LOG_ \
 		} \
 		void LB_STDCALL setFile(char* __file) { \
 			if (_file != NULL) { \
@@ -1043,7 +1043,7 @@ char*      LB_STDCALL classname::getCreationLoc() const { \
 	return strdup("Have no manager - location can't be found"); \
 } \
 lbErrCodes LB_STDCALL classname::release(char* file, int line) { \
-	_CL_LOG << #classname << "::release(" << file << ", " << line << ") with ref = " << ref << " called." LOG_ \
+	_CL_VERBOSE << #classname << "::release(" << file << ", " << line << ") with ref = " << ref << " called." LOG_ \
         ref--; \
 	char ptr[20] = ""; \
 	sprintf(ptr, "%p", this); \
@@ -1061,9 +1061,9 @@ lbErrCodes LB_STDCALL classname::release(char* file, int line) { \
         			} else { \
         				_CL_LOG << "There may be a problem with the instance count system !" LOG_ \
         			} \
-        			_CL_LOG << "Delete instance '" << #classname << "'" LOG_ \
+        			_CL_VERBOSE << "Delete instance '" << #classname << "'" LOG_ \
         			delete this; \
-        			_CL_LOG << "Deleted" LOG_ \
+        			_CL_VERBOSE << "Deleted" LOG_ \
         			return ERR_RELEASED; \
         		} \
         		else { \
@@ -1125,7 +1125,7 @@ lb_I_Unknown* LB_STDCALL classname::clone(char* file, int line) const { \
 lbErrCodes LB_STDCALL classname::queryInterface(char* name, void** unknown, char* file, int line) { \
 	char buf[1000] = ""; \
 	char _classname[100] = #classname; \
-	_CL_LOG << #classname << "::queryInterface(" << file << ", " << line << ") with ref = " << ref << " called." LOG_ \
+	_CL_VERBOSE << #classname << "::queryInterface(" << file << ", " << line << ") with ref = " << ref << " called." LOG_ \
 	\
 	if (instance_counted != 112233) { \
 		instance_counted = 112233; \

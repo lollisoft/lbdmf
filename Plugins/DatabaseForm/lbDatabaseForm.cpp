@@ -1397,9 +1397,13 @@ void LB_STDCALL lbDatabaseDialog::init(char* _SQLString, char* DBName, char* DBU
 	}
 	
 	sampleQuery->query(SQLString->charrep(), false);
+
+_CL_LOG << "Get new instance of FormularFieldInformation." LOG_
 	
 /*...sDetermine readonly fields:8:*/
 	FFI = new FormularFieldInformation(formName, sampleQuery.getPtr());
+
+_CL_LOG << "Got the new instance." LOG_
 
 	int columns = sampleQuery->getColumns();
 

@@ -38,11 +38,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.29 $
+ * $Revision: 1.30 $
  * $Name:  $
- * $Id: skiplist.cpp,v 1.29 2005/05/10 20:20:38 lollisoft Exp $
+ * $Id: skiplist.cpp,v 1.30 2005/05/11 13:19:40 lollisoft Exp $
  *
  * $Log: skiplist.cpp,v $
+ * Revision 1.30  2005/05/11 13:19:40  lollisoft
+ * Bugfix for reference count error and changed back any _CL_LOG messages to be _CL_VERBOSE only
+ *
  * Revision 1.29  2005/05/10 20:20:38  lollisoft
  * Include files changed to be more actially language compilant
  *
@@ -390,7 +393,7 @@ lb_I_Unknown* LB_STDCALL SkipList::getElement(lb_I_KeyBase** const key) {
     
     if (e == NULL) {
     	_LOG << "SkipList::getElement(...) returns a NULL pointer!" LOG_
-	printf("SkipList::getElement(lb_I_KeyBase** const key) searches for '%s'\n", (*key)->charrep());
+	    printf("SkipList::getElement(lb_I_KeyBase** const key) searches for '%s'\n", (*key)->charrep());
     }
     
     return e;

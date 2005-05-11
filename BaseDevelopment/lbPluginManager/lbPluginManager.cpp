@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.21 $
+ * $Revision: 1.22 $
  * $Name:  $
- * $Id: lbPluginManager.cpp,v 1.21 2005/05/04 22:09:39 lollisoft Exp $
+ * $Id: lbPluginManager.cpp,v 1.22 2005/05/11 13:19:40 lollisoft Exp $
  *
  * $Log: lbPluginManager.cpp,v $
+ * Revision 1.22  2005/05/11 13:19:40  lollisoft
+ * Bugfix for reference count error and changed back any _CL_LOG messages to be _CL_VERBOSE only
+ *
  * Revision 1.21  2005/05/04 22:09:39  lollisoft
  * Many memory leaks fixed. Changed _CL_LOG to _CL_VERBOSE.
  *
@@ -210,7 +213,6 @@ lbPluginManager::lbPluginManager() {
 }
 
 lbPluginManager::~lbPluginManager() {
-	printf("lbPluginManager::~lbPluginManager() called\n");
 }
 
 lbErrCodes LB_STDCALL lbPluginManager::setData(lb_I_Unknown* uk) {
@@ -422,9 +424,6 @@ void LB_STDCALL lbPluginManager::initialize() {
 /*...e*/
 /*...sbool LB_STDCALL lbPluginManager\58\\58\beginEnumPlugins\40\\41\:0:*/
 bool LB_STDCALL lbPluginManager::beginEnumPlugins() {
-	printf("lbPluginManager::beginEnumPlugins() with %d modules\n", PluginModules->Count());
-	printf("--------------------------------------------------\n");
-
 	PluginModules->finishIteration();
 	
 	if (PluginModules->hasMoreElements()) {
@@ -458,6 +457,7 @@ lb_I_Plugin* LB_STDCALL lbPluginManager::nextPlugin() {
 			
 			
 			while (PluginModules->hasMoreElements()) {
+			
 				uk = PluginModules->nextElement();
 		
 				QI(uk, lb_I_PluginModule, plM, __FILE__, __LINE__)
@@ -477,7 +477,8 @@ lb_I_Plugin* LB_STDCALL lbPluginManager::nextPlugin() {
 				
 					UAP(lb_I_Plugin, plugin, __FILE__, __LINE__)
 					QI(uk, lb_I_Plugin, plugin, __FILE__, __LINE__)
-				
+					plugin++;
+					
 					return plugin.getPtr();
 				}
 			}
@@ -491,7 +492,8 @@ lb_I_Plugin* LB_STDCALL lbPluginManager::nextPlugin() {
 
 				        UAP(lb_I_Plugin, plugin, __FILE__, __LINE__)
 				        QI(uk, lb_I_Plugin, plugin, __FILE__, __LINE__)
-
+						plugin++;
+						
 				        return plugin.getPtr();
 				} else {
 					firstPlugin = true;
