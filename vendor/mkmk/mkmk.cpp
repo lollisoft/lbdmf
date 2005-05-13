@@ -12,11 +12,16 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.62 $
+ * $Revision: 1.63 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.62 2005/05/10 21:09:43 lollisoft Exp $
+ * $Id: mkmk.cpp,v 1.63 2005/05/13 10:58:56 lollisoft Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.63  2005/05/13 10:58:56  lollisoft
+ * Better creation proccess for watcom link information file.
+ * It was a bug in the old one, if there were a partly build, so that
+ * the link info file would be incorrect or at least incomplete.
+ *
  * Revision 1.62  2005/05/10 21:09:43  lollisoft
  * Removed unneeded mkmk message
  *
@@ -788,23 +793,36 @@ void writeDllTarget(char* modulename) {
   printf("PROGRAM=%s\n", ModName);
   
   printf("ifeq ($(COMPILER), WATCOM)\n");
-  printf("\n%s.dll: $(OBJS)\n", ModName);
+
+  printf("\n%s.dll: $(OBJS) %s.dll.lnk\n", ModName, ModName);
   printf("\t\t@echo Link %s.dll\n", ModName);
-  printf("\t\t@echo NAME $(PROGRAM).dll > $(LNK)\n");
-  printf("\t\t@echo $(FILE) >> $(LNK)\n");
+//  printf("\t\t@echo $(FILE) >> $(LNK)\n");
 
-  printf("\t\t@echo @rem Nothing > doit.bat\n");
-  printf("\t\t@echo @if NOT \\\"$(LIBS)\\\" == \\\"\\\" echo LIBR $(LIBS) > doit.bat\n");
-
-  printf("\t\t@cmd /C \"doit >> %s.lnk\"\n", targetname);
-  printf("\t\t@cmd /C \"rm doit.bat\"\n");
-  printf("\t\t-@cmd /C \"attrib -r *.bak\"\n");
+  printf("\t\t@cmd /C if NOT \"$(LIBS)\" == \"\" echo LIBR $(LIBS) >> $@.lnk\n");
+  
   printf("\t\t@$(LINK) $(LNKDLLOPS) $(LINKFLAGS)\n");
   printf("\t\t@wlib -q -n -b $(PROGRAM).lib +$(PROGRAM).dll\n");
   printf("\t\t@$(CP) $(PROGRAM).dll $(DLLDIR) > null\n");
   printf("\t\t@$(CP) $(PROGRAM).sym $(EXEDIR) > null\n");
   printf("\t\t@$(CP) $(PROGRAM).lib $(DLLLIBDIR) > null\n");
   printf("\t\t@$(POST_PROCESS) \n");
+
+/*
+  printf("\t\t\n");
+
+  printf("%s.dll.lnk: makefile\n", ModName);
+
+  printf("\t\t@echo NAME $(PROGRAM).dll > $(LNK)\n");
+  printf("\t\t@echo FIL { $(OBJS) } >> $@\n");
+
+  printf("\t\t@cmd /C \"doit >> %s.lnk\"\n", targetname);
+  printf("\t\t@cmd /C \"rm doit.bat\"\n");
+  printf("\t\t-@cmd /C \"attrib -r *.bak\"\n");
+
+  printf("\t\t@echo @rem Nothing > doit.bat\n");
+  printf("\t\t@echo @if NOT \\\"$(LIBS)\\\" == \\\"\\\" echo LIBR $(LIBS) > doit.bat\n");
+*/
+
   printf("endif\n");
 
   printf("ifeq ($(COMPILER), MICROSOFT)\n");
@@ -1106,7 +1124,7 @@ void ShowHelp()
 
   fprintf(stderr, "Enhanced by Lothar Behrens (lothar.behrens@lollisoft.de)\n\n");
 
-  fprintf(stderr, "MKMK: makefile generator $Revision: 1.62 $\n");
+  fprintf(stderr, "MKMK: makefile generator $Revision: 1.63 $\n");
   fprintf(stderr, "Usage: MKMK lib|exe|dll|so modulname includepath,[includepath,...] file1 [file2 file3...]\n");
 }
 /*...e*/
@@ -1316,14 +1334,17 @@ void WriteDep(FILE *f, char *Name, TIncludeParser *p)
         case PLUGIN_TARGET:
         case WXPLUGIN_TARGET:
         case TVISION_DLL:
+        	printf("\t\t@echo Build %s\n", NameC);
+        	
         	if (CPPFlag == 0) printf("\t\t%s $(C_DLLOPS) $(MOD_INCL) -Fo=%s %s\n", Compiler, ObjNameC, NameC);
         	if (CPPFlag == 1) printf("\t\t%s $(CPP_DLLOPS) $(MOD_INCL_CPP) -Fo=%s %s\n", Compiler, ObjName, Name);
+/*
                 if (depCount == 0) {
                 	printf("\t\t@echo NAME %s > %s.lnk\n", targetname, targetname);
                 }
                	printf("\t\t@echo FIL %s >> %s.lnk\n", ObjName, targetname);
                	depCount++;
-               	
+*/
                 break;
         case EXE_TARGET:
         	if (CPPFlag == 0) printf("\t\t%s $(C_EXEOPS) $(MOD_INCL) -Fo=%s %s\n\n", Compiler, ObjNameC, Name);
@@ -1604,7 +1625,7 @@ int main(int argc, char *argv[])
   if (strchr(targetname, '.') == NULL) targetname = strcat(targetname, target_ext);
 /*...e*/
   
-//  WriteHeader(f,targetname);
+  //  WriteHeader(f,targetname);
   char *inclPaths = strdup(argv[3]);
 
   //const char split_char, char *string, char ***array
@@ -1644,7 +1665,27 @@ int main(int argc, char *argv[])
   for (i=4; i<argc; i++) Sources.AddMask(argv[i]);
   
   if (Sources.Count == 0) fprintf(stderr, "ERROR: No source files to write!\n");
+
+  // Here the link information file should be created
+
+#ifdef __WATCOMC__  
+  printf("%s.lnk: makefile $(OBJS)\n", targetname);
+  printf("\t\techo NAME %s > $@\n", targetname);
   
+  for (i=0; i<Sources.Count; i++) {
+
+	char FileName[256];
+	char ObjName[256];
+	
+	strcpy(FileName, ((TDepItem*)Sources[i])->Path);
+	strcat(FileName, ((TDepItem*)Sources[i])->Name);
+
+	ObjExt(FileName,ObjName,sizeof(ObjName));
+  
+	printf("\t\techo FIL %s >> $@\n", ObjName);  	
+  
+  }
+#endif  
   for (i=0; i<Sources.Count; i++) DoDep(f,(TDepItem*)Sources[i], copyIPathList, count);
   WriteEnding(f,targetname,&Sources);
 //  fclose(f);
