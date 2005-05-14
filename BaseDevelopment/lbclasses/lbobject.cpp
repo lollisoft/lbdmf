@@ -309,6 +309,35 @@ lbString::~lbString() {
 	key = NULL;
 }
 
+lb_I_String& LB_STDCALL lbString::operator += (const lb_I_String* toAppend) {
+		return *this += toAppend->charrep();
+}
+
+lb_I_String& LB_STDCALL lbString::operator += (const char* toAppend) {
+	stringdata = (char*) realloc(stringdata, strlen(stringdata)+strlen(toAppend)+1);
+	strcat(stringdata, toAppend);
+	key = (char*) realloc(key, strlen(key)+strlen(toAppend)+1);
+	strcat(key, toAppend);
+	
+	return *this;
+}
+
+lb_I_String& LB_STDCALL lbString::operator = (const lb_I_String* toAppend) {
+		return *this = toAppend->charrep();
+}
+
+lb_I_String& LB_STDCALL lbString::operator = (const char* toAppend) {
+	stringdata = (char*) realloc(stringdata, strlen(toAppend)+1);
+	stringdata[0] = 0;
+	strcpy(stringdata, toAppend);
+	
+	key = (char*) realloc(key, strlen(toAppend)+1);
+	key[0] = 0;
+	strcpy(key, toAppend);
+	
+	return *this;
+}
+
 void LB_STDCALL lbString::setData(char const * p) {
 	if (stringdata != NULL) free(stringdata);
 	

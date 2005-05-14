@@ -31,10 +31,13 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.25 $
+ * $Revision: 1.26 $
  * $Name:  $
- * $Id: lbobject.h,v 1.25 2005/04/19 19:17:25 lollisoft Exp $
+ * $Id: lbobject.h,v 1.26 2005/05/14 18:13:50 lollisoft Exp $
  * $Log: lbobject.h,v $
+ * Revision 1.26  2005/05/14 18:13:50  lollisoft
+ * Added operators += and = to the string interface.
+ *
  * Revision 1.25  2005/04/19 19:17:25  lollisoft
  * Bugfix
  *
@@ -274,6 +277,12 @@ public:
 	void LB_STDCALL trim();
 	void LB_STDCALL setData(char const * p);
 	char* LB_STDCALL getData() const;
+	
+	lb_I_String& LB_STDCALL operator += (const char* toAppend);
+	lb_I_String& LB_STDCALL operator = (const char* toAppend);
+
+	lb_I_String& LB_STDCALL operator += (const lb_I_String* toAppend);
+	lb_I_String& LB_STDCALL operator = (const lb_I_String* toAppend);
 
 	DECLARE_LB_KEYBASE()
 

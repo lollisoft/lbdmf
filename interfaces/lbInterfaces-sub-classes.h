@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.50 $
+ * $Revision: 1.51 $
  * $Name:  $
- * $Id: lbInterfaces-sub-classes.h,v 1.50 2005/05/11 13:19:40 lollisoft Exp $
+ * $Id: lbInterfaces-sub-classes.h,v 1.51 2005/05/14 18:13:14 lollisoft Exp $
  *
  * $Log: lbInterfaces-sub-classes.h,v $
+ * Revision 1.51  2005/05/14 18:13:14  lollisoft
+ * Added operators += and = to the string interface.
+ *
  * Revision 1.50  2005/05/11 13:19:40  lollisoft
  * Bugfix for reference count error and changed back any _CL_LOG messages to be _CL_VERBOSE only
  *
@@ -409,6 +412,17 @@ public:
          */
         virtual lbErrCodes LB_STDCALL setData( lb_I_Unknown * uk) = 0;
         
+		/** \brief Adds the given char* array.
+		 *
+		 */
+		virtual lb_I_String& LB_STDCALL operator += (const char* toAppend) = 0;
+		
+		virtual lb_I_String& LB_STDCALL operator = (const char* toAppend) = 0;
+
+
+		virtual lb_I_String& LB_STDCALL operator += (const lb_I_String* toAppend) = 0;
+		
+		virtual lb_I_String& LB_STDCALL operator = (const lb_I_String* toAppend) = 0;
 };
 /*...e*/
 /*...sclass lb_I_Integer:0:*/
