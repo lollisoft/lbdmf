@@ -686,6 +686,9 @@ public:
 /**
  * \brief An attempt for a database form interface.
  */
+ 
+class lb_I_MasterDetailFormDefinition;
+ 
 class lb_I_DatabaseForm : 
 	public lb_I_Form
 	{
@@ -704,8 +707,76 @@ public:
 	 *
 	 * Sample to show only data for one customer: kdnummer = 100001
 	 */
-	 virtual void LB_STDCALL setFilter(char* filter = NULL) = 0;
+	virtual void LB_STDCALL setFilter(char* filter = NULL) = 0;
 
+	/** \brief Set a master formular for this one.
+	 *
+	 * This let's you define a master form that, if the user select's another entry in the master form, the
+	 * detail form -  eg. this one - would reopen the query based on the new master - detail relation ship.
+	 * 
+	 */
+	virtual void LB_STDCALL setMasterForm(lb_I_MasterDetailFormDefinition* MD_definition) = 0;
+
+	/** \brief Update the clientforms.
+	 *
+	 * This function would be called for all client forms, contained by a master form.
+	 */
+	virtual void LB_STDCALL updateFromMaster() = 0;
+	
+	virtual const char* LB_STDCALL getControlValue(char* name) = 0;
 };
 /*...e*/
+
+/**
+ * \brief Definition of a master to detail relation.
+ */
+class lb_I_MasterDetailFormDefinition :
+	public lb_I_Unknown
+	{
+public:	
+
+	/** \brief Set the master form.
+	 *
+	 * The master form will be needed to determine the primary key control that a master form should have in it's
+	 * related tables, that are given in the 'SQLString' for the init function of the master form.
+	 *
+	 * This means, if the master has changed it's data in any way, it will inform it's detail forms about the change.
+	 * In this case each detail form performs the following steps to update it's own data:
+	 *
+	 * 1)	Saves changed data.
+	 * 2)	Get the data for each primary column, that stays in relation to the detail view.
+	 * 3)	Rebuild the where clause.
+	 * 4)	Unbinds all columns.
+	 * 5)	Opens a new query.
+	 */
+	virtual void LB_STDCALL setMasterForm(lb_I_DatabaseForm* master) = 0;
+	
+	/** \brief Adds a new column as a master.
+	 *
+	 * This could be used multiple times. It depends on how many columns may relate to the detail.
+	 */
+	virtual void LB_STDCALL addMasterColumn(char* column) = 0;
+	
+	/** \brief Get the number of master columns.
+	 *
+	 * Needed to access the column name.
+	 */
+	virtual int LB_STDCALL getMasterColumns() = 0;
+
+	/** \brief Get the column at position pos.
+	 *
+	 * Warning: You must cleanup.
+	 */
+	virtual lb_I_String* LB_STDCALL getMasterColumn(int pos) = 0;
+
+	/** \brief Get the master form.
+	 */
+	virtual lb_I_DatabaseForm* LB_STDCALL getMasterForm() = 0;
+	
+	virtual void LB_STDCALL setCharacterColumn(int pos, bool is = true) = 0;
+	
+	virtual bool LB_STDCALL isCharacterColumn(int pos) = 0;
+};
+
+
 #endif // __LB_DATABASE__

@@ -1065,6 +1065,13 @@ public:
 
 
 	void LB_STDCALL setFilter(char* filter);
+	
+	void LB_STDCALL setMasterForm(lb_I_MasterDetailFormDefinition* MD_definition);
+	
+	void LB_STDCALL updateFromMaster();
+	
+	const char* LB_STDCALL getControlValue(char* name);
+	
 /*...e*/
 
 /*...sData navigation and other handlers:8:*/
@@ -1172,6 +1179,12 @@ public:
 	UAP(lb_I_Query, sampleQuery, __FILE__, __LINE__)
 	UAP(lb_I_String, SQLString, __FILE__, __LINE__)
 	UAP(lb_I_String, SQLWhere, __FILE__, __LINE__)
+	
+	/** \brief Stores information about who is the master and holds a master column list. */
+	UAP(lb_I_MasterDetailFormDefinition, myMasterFormDefinition, __FILE__, __LINE__)
+	
+	/** \brief List of client forms. */
+	UAP(lb_I_Container, myClientForms, __FILE__, __LINE__)
 	
 	/**
 	 * \brief Maps positions to id's for each displayed combo box.
@@ -1879,6 +1892,89 @@ printf("Create a drop down box for '%s'\n", name);
 }
 /*...e*/
 
+void LB_STDCALL lbDatabaseDialog::setMasterForm(lb_I_MasterDetailFormDefinition* MD_definition) {
+	myMasterFormDefinition = MD_definition;
+	myMasterFormDefinition++;
+	
+	// Now build the where clause that sets the foreign key columns of this form as equal condition to the values of the masters pk columns.
+	
+	updateFromMaster();
+}
+
+const char* LB_STDCALL lbDatabaseDialog::getControlValue(char* name) {
+
+	wxString value;
+
+	wxWindow* w = FindWindowByName(wxString(name), this);
+
+/*...sGet the content:16:*/
+				lb_I_Query::lbDBColumnTypes coltype = sampleQuery->getColumnType(name);
+
+				switch (coltype) {
+					case lb_I_Query::lbDBColumnBit:
+						{
+							wxCheckBox *check = (wxCheckBox*) w;
+							if (check->GetValue() == TRUE) {
+								value = "true";
+							} else {
+								value = "false";
+							}
+						}
+						break;
+					
+					case lb_I_Query::lbDBColumnChar:
+						{
+							wxTextCtrl* tx = (wxTextCtrl*) w;
+			
+							value = tx->GetValue();
+						}
+						break;
+					
+					case lb_I_Query::lbDBColumnInteger:
+						{
+							wxTextCtrl* tx = (wxTextCtrl*) w;
+			
+							value = tx->GetValue();
+						}
+						break;
+					
+					
+					case lb_I_Query::lbDBColumnUnknown:
+					
+						break;
+				}
+/*...e*/
+
+	return value.c_str();
+}
+
+void LB_STDCALL lbDatabaseDialog::updateFromMaster() {
+
+	UAP_REQUEST(manager.getPtr(), lb_I_String, newWhereClause)
+	
+	// Using the new = and += operators of the string interface. Note: If used in an UAP, explizit 'dereferencing' must be used.
+	*newWhereClause = " where ";
+	
+	for (int i = 0; i < myMasterFormDefinition->getMasterColumns()-1; i++) {
+		UAP(lb_I_String, colName, __FILE__, __LINE__)
+		colName = myMasterFormDefinition->getMasterColumn(i);
+		
+		*newWhereClause += *&colName;
+		bool isChar = myMasterFormDefinition->isCharacterColumn(i); 
+
+		if (isChar) 
+			*newWhereClause += " = '";
+		else
+			*newWhereClause += " = ";
+
+		*newWhereClause += myMasterFormDefinition->getMasterForm()->getControlValue(colName->charrep());
+			
+		if (isChar) *newWhereClause += "'";
+	}
+	
+	_CL_LOG << "lbDatabaseDialog::updateFromMaster() generated new where clause: '" << newWhereClause->charrep() << "'" LOG_
+}
+
 void LB_STDCALL lbDatabaseDialog::setFilter(char* filter) {
 	if (SQLWhere == NULL) {
 		REQUEST(manager.getPtr(), lb_I_String, SQLWhere)
@@ -2026,6 +2122,7 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBUpdate() {
 /*...e*/
 			} else {
 				if (FFI->isSpecialColumn(name)) {
+					_CL_LOG << "lbDatabaseDialog::lbDBUpdate() updates special column" LOG_
 				} else {
 /*...sUpdate controls:40:*/
 				lb_I_Query::lbDBColumnTypes coltype = sampleQuery->getColumnType(i);
@@ -2362,7 +2459,7 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::OnActionButton(lb_I_Unknown* uk) {
 /*...e*/
 
 	if (uk != NULL) {
-		_CL_VERBOSE << "OnActionButton parameter given." LOG_
+		_CL_LOG << "OnActionButton parameter given." LOG_
 		
 		char* reversedEvent = NULL;
 		
@@ -2390,7 +2487,6 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::OnActionButton(lb_I_Unknown* uk) {
 
 		reversedEvent = strdup(strtok(NULL, ")"));
 	
-		_CL_VERBOSE << "Have these event: " << reversedEvent << "." LOG_
 /*...e*/
 
 		// Regarding to the event name, we must get back some information from the database.
@@ -2398,8 +2494,6 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::OnActionButton(lb_I_Unknown* uk) {
 		FormularActions fa;
 
 		char* s = fa.getActionSourceDataField(reversedEvent);
-
-		_CL_VERBOSE << "Have got source field: " << s << "." LOG_
 
 		/*
 		  Now I can get the data from the source field and put it into the event parameters.
@@ -2447,7 +2541,11 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::OnActionButton(lb_I_Unknown* uk) {
 				}
 /*...e*/
 		
-		_CL_VERBOSE << "The value for the field is " << value.c_str() << "." LOG_		
+		_CL_LOG << "Have these event: " << reversedEvent << "." LOG_		
+		_CL_LOG << "Have got source field: " << s << "." LOG_
+		_CL_LOG << "The value for the field is " << value.c_str() << "." LOG_		
+
+
 		
 		free(s);
 		
