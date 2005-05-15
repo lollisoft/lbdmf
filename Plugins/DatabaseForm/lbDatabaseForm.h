@@ -33,11 +33,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.6 $
+ * $Revision: 1.7 $
  * $Name:  $
- * $Id: lbDatabaseForm.h,v 1.6 2005/05/10 20:59:18 lollisoft Exp $
+ * $Id: lbDatabaseForm.h,v 1.7 2005/05/15 23:49:10 lollisoft Exp $
  *
  * $Log: lbDatabaseForm.h,v $
+ * Revision 1.7  2005/05/15 23:49:10  lollisoft
+ * Moved some classes to their own files.
+ *
  * Revision 1.6  2005/05/10 20:59:18  lollisoft
  * Including made more actually language conform
  *
@@ -65,6 +68,158 @@
 /*...e*/
 
 #include <iostream>
+
+/*...sclass lbConfigure_FK_PK_MappingDialog definition:0:*/
+class lbConfigure_FK_PK_MappingDialog :
+	public lb_I_EventHandler,
+	public lb_I_Unknown,
+	public wxDialog {
+public:
+	/**
+	 * Default constructor - implemented in BEGIN_IMPLEMENT_LB_UNKNOWN(lbDatabaseDialog)
+	 */
+	lbConfigure_FK_PK_MappingDialog();
+
+	/**
+	 * Destructor
+	 */
+	virtual ~lbConfigure_FK_PK_MappingDialog();
+
+	int prepareDialogHandler();
+
+	void LB_STDCALL init(lb_I_Database* _queryDB, lb_I_Query* query);
+
+	void LB_STDCALL show() { ShowModal (); };
+	void LB_STDCALL destroy() { Destroy(); };
+	
+	/**
+	 * Column has been selected.
+	 *
+	 * Store the retrieved data in the tables and destroy the form.
+	 */
+
+	lbErrCodes LB_STDCALL selectedColumn(lb_I_Unknown* uk);
+
+	/**
+	 * This function acts in a special way for registering the above navigation handlers
+	 *
+	 * It uses a string of the this pointer + a name for the respective eventhandler.
+	 * This is neccessary for handling more than one database dialog per application.
+	 *
+	 * This is a good sample, if you need to be able to handle more than one instance of
+	 * your registered event handlers.
+	 */
+	lbErrCodes LB_STDCALL registerEventHandler(lb_I_Dispatcher* dispatcher);
+
+	void OnDispatch(wxCommandEvent& event);
+
+	DECLARE_LB_UNKNOWN()
+
+
+	void OnFKComboBoxSelected( wxCommandEvent &event );
+	void OnPKComboBoxSelected( wxCommandEvent &event );
+	    
+/*...svariables:8:*/
+	UAP(lb_I_Database, database, __FILE__, __LINE__)
+	UAP(lb_I_Query, sampleQuery, __FILE__, __LINE__)
+	
+	/**
+	 * \brief Maps positions to id's for each displayed combo box.
+	 *
+	 * Store a container for each combo box with key(pos) and data(id). 
+	 */
+	UAP(lb_I_Container, ComboboxMapperList, __FILE__, __LINE__)
+	UAP(lb_I_Query, sourceQuery, __FILE__, __LINE__)
+	UAP(lb_I_Database, queryDB, __FILE__, __LINE__)
+
+
+	// l gets overwritten, while assigning a lb_I_Query* pointer to sampleQuery !!
+	// l and buf are therefore as a bugfix.
+	long l;
+	char buf[100];
+	
+	wxWindow* firstButton;
+
+	wxComboBox* cBoxFKNames;
+	wxComboBox* cBoxPKNames;
+
+	wxStaticText *label;
+	wxStaticText *labelF;
+	
+	wxWindow* prevButton;
+	wxWindow* nextButton;
+	wxWindow* lastButton;
+	int pass;
+/*...e*/
+};
+/*...e*/
+
+/*...sclass FormularActions:0:*/
+/*...sclass definition of FormularActions:0:*/
+/** \brief Management of formular actions.
+ *
+ * This class is used to concentrate the code for formular actions.
+ */
+class FormularActions {
+
+public:
+
+	FormularActions() {}
+	virtual ~FormularActions() {}
+	
+	/** \brief ID of action target.
+	 *
+	 * Get the ID of the action target based on the 'what' data field.
+	 * This is needed, when 
+	 */
+	char* getActionTargetID(char* what);
+	
+	/** \brief Source field of the action.
+	 *
+	 *
+	 */
+	char* getActionSourceDataField(char* what);
+
+};
+/*...e*/
+
+/*...sclass FormularFieldInformation:0:*/
+/*...sclass declaration FormularFieldInformation:0:*/
+/** \brief Management of formular fields.
+ *
+ * This class is used to concentrate the code for formular field informations.
+ */
+
+class FormularFieldInformation {
+public:
+
+	FormularFieldInformation(char const * formularname, lb_I_Query* query);
+	virtual ~FormularFieldInformation() {}
+	
+	/** \brief Get readonly status.
+	 *
+	 * Returns true, if the specifed field is readonly.
+	 */
+	bool isReadonly(char* field);
+
+	/** \brief Check, if there must be used a special control.
+	 *
+	 * Returns true, if the configuration says, that there must be used a special
+	 * control. This is the case if I like to use an ownerdrawn control.
+	 */
+	bool isSpecialColumn(char* field);
+
+	char* getControlType(char* name);
+	
+protected:
+
+	lb_I_Query* _query;
+
+	UAP(lb_I_Container, ROFields, __FILE__, __LINE__)	
+	UAP(lb_I_Container, SCFields, __FILE__, __LINE__)
+};
+/*...e*/
+
 
 /*...s\35\ifdef __cplusplus \123\:0:*/
 #ifdef __cplusplus
