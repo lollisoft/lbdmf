@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.72 2005/05/11 13:19:40 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.73 2005/05/15 19:27:03 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,15 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.72 $
+ * $Revision: 1.73 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.72 2005/05/11 13:19:40 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.73 2005/05/15 19:27:03 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.73  2005/05/15 19:27:03  lollisoft
+ * Catch a bug. If an event could not resolved, it could not
+ * added as an menu entry.
+ *
  * Revision 1.72  2005/05/11 13:19:40  lollisoft
  * Bugfix for reference count error and changed back any _CL_LOG messages to be _CL_VERBOSE only
  *
@@ -2201,7 +2205,6 @@ lbErrCodes LB_STDCALL MyApp::lbEvHandler3(lb_I_Unknown* uk) {
 
 	QI(uk, lb_I_Parameter, param, __FILE__, __LINE__)
 
-
 	parameter->setData("menubar");
 	param->getUAPString(*&parameter, *&menubar);
 	parameter->setData("menuname");
@@ -2209,16 +2212,19 @@ lbErrCodes LB_STDCALL MyApp::lbEvHandler3(lb_I_Unknown* uk) {
 	parameter->setData("handlername");
 	param->getUAPString(*&parameter, *&handlername);
 	
-	
 	int EvNr = 0;
-	ev_manager->resolveEvent(handlername->getData(), EvNr);
+	
+	if (ev_manager->resolveEvent(handlername->getData(), EvNr) == ERR_EVENT_NOTREGISTERED) {
+		_CL_LOG << "ERROR: Could not register a menu entry with an unregistered handler!" LOG_
+		
+		return ERR_EVENT_NOTREGISTERED;
+	}
 
 	wxMenuBar* mbar = frame_peer->getMenuBar();
 	
 	wxMenu* menu = mbar->GetMenu(mbar->FindMenu(wxString(menubar->getData())));
 
 	menu->Append(EvNr, menuname->getData());
-
 
 	((wxFrame*) frame_peer)->Connect( EvNr,  -1, wxEVT_COMMAND_MENU_SELECTED,
           (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
