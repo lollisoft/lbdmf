@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.52 $
+# * $Revision: 1.53 $
 # * $Name:  $
-# * $Id: Makefile,v 1.52 2005/05/11 08:58:27 lollisoft Exp $
+# * $Id: Makefile,v 1.53 2005/05/15 19:24:40 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.53  2005/05/15 19:24:40  lollisoft
+# * Added new target under osx.
+# *
 # * Revision 1.52  2005/05/11 08:58:27  lollisoft
 # * Little changes to get compiled tvision sample. Compiler switch changes.
 # *
@@ -236,7 +239,8 @@ BASEDIRECTORIES= \
 	../Plugins \
 	../Modules \
 	../RegressionTests \
-	../vendor/tvision/examples/lbDMF
+	../vendor/tvision/examples/lbDMF \
+	../AppDevelopment 
 
 TARGETDLL=so
 TARGETEXE=elf
