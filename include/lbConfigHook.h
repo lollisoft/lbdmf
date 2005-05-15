@@ -105,9 +105,11 @@
  
   #undef malloc
   #undef free
+  #undef realloc
 
   #define malloc TRMemAlloc
   #define free TRMemFree
+  #define realloc TRMemRealloc
  #endif // MEMTRACK
 /*...e*/
 #endif // OSX
