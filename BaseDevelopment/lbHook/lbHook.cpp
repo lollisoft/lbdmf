@@ -372,6 +372,16 @@ static bool _isSetTRMemTrackBreak = false;
 static char TRMemTrackBreakAddr[21] = "DoNotBreak";
 
 DLLEXPORT bool LB_STDCALL isSetTRMemTrackBreak() {
+	char breakPoint[100] = "";
+	
+	if (!_isSetTRMemTrackBreak) {
+		cout << "Please enter any memory address to be break at: ";
+	
+		cin >> breakPoint ;
+	
+		setTRMemTrackBreak(breakPoint);
+	}
+	
 	return _isSetTRMemTrackBreak;
 }
 
