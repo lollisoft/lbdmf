@@ -25,6 +25,7 @@ $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
 	@echo all: $(_MODULE).dll >> makefile
 	@rm -f $(DEVROOT_MAKE)/Projects/CPP/include/lbkey.h
 	@rm -f include/tv/configtv.h
+	@rm -f $(_MODULE).bak	
 	@cp include/tv/configtv.watcom.h include/tv/configtv.h
 	@cp -f $(DEVROOT_MAKE)/Projects/CPP/BaseDevelopment/lbclasses/lbkey.h $(DEVROOT_MAKE)/Projects/CPP/include
 	$(MKMK) $(TARGET) $(_MODULE) include,include/tv,include/cl,include/win32 \
@@ -54,6 +55,7 @@ $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
 	@cat makefile.module >> makefile
 	@echo Path=$(PATH) >> makefile
 	@echo all: $(_MODULE).exe >> makefile
+	@rm -f $(_MODULE).bak
 	@rm -f $(DEVROOT_MAKE)/Projects/CPP/include/lbkey.h
 	@cp -f $(DEVROOT_MAKE)/Projects/CPP/BaseDevelopment/lbclasses/lbkey.h $(DEVROOT_MAKE)/Projects/CPP/include
 	$(MKMK) exe $(_MODULE) include,include/tv,include/cl,include/win32 \
@@ -87,6 +89,7 @@ $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
 	@cat makefile.module >> makefile
 	@echo Path=$(PATH) >> makefile
 	@echo all: $(_MODULE).dll >> makefile
+	@rm -f $(_MODULE).bak
 	@rm -f $(DEVROOT_MAKE)/Projects/CPP/include/lbkey.h
 	@cp -f $(DEVROOT_MAKE)/Projects/CPP/BaseDevelopment/lbclasses/lbkey.h $(DEVROOT_MAKE)/Projects/CPP/include
 	$(MKMK) $(TARGET) $(_MODULE) ../dosdir *.cpp >> makefile
@@ -103,6 +106,7 @@ $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
 	@cat makefile.module >> makefile
 	@echo Path=$(PATH) >> makefile
 	@echo all: $(_MODULE).dll >> makefile
+	@rm -f $(_MODULE).bak
 	@rm -f $(DEVROOT_MAKE)/Projects/CPP/include/lbkey.h
 	@cp -f $(DEVROOT_MAKE)/Projects/CPP/BaseDevelopment/lbclasses/lbkey.h $(DEVROOT_MAKE)/Projects/CPP/include
 	$(MKMK) $(TARGET) $(_MODULE) ../dosdir *.cpp >> makefile
@@ -150,6 +154,7 @@ $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
 	@cat $(DEVROOT_MAKE)/Projects/CPP/make/makefile.template > makefile
 	@cat makefile.module >> makefile
 	@echo Path=$(PATH) >> makefile
+	@rm -f $(_MODULE).bak
 	@echo all: $(_MODULE).$(TARGET) >> makefile
 	@rm -f $(DEVROOT_MAKE)/Projects/CPP/include/lbkey.h
 	@cp -f $(DEVROOT_MAKE)/Projects/CPP/BaseDevelopment/lbclasses/lbkey.h $(DEVROOT_MAKE)/Projects/CPP/include
@@ -198,6 +203,7 @@ $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
 	@cat $(DEVROOT_MAKE)/Projects/CPP/make/makefile.template > makefile
 	@cat makefile.module >> makefile
 	@echo Path=$(PATH) >> makefile
+	@rm -f $(_MODULE).bak
 	@echo all: $(_MODULE).exe >> makefile
 	@rm -f $(DEVROOT_MAKE)/Projects/CPP/include/lbkey.h
 	@cp -f $(DEVROOT_MAKE)/Projects/CPP/BaseDevelopment/lbclasses/lbkey.h $(DEVROOT_MAKE)/Projects/CPP/include
@@ -214,6 +220,7 @@ $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
 	@cat $(DEVROOT_MAKE)/Projects/CPP/make/makefile.template > makefile
 	@cat makefile.module >> makefile
 	@echo Path=$(PATH) >> makefile
+	@rm -f $(_MODULE).bak
 	@echo all: $(_MODULE).exe >> makefile
 	@rm -f $(DEVROOT_MAKE)/Projects/CPP/include/lbkey.h
 	@cp -f $(DEVROOT_MAKE)/Projects/CPP/BaseDevelopment/lbclasses/lbkey.h $(DEVROOT_MAKE)/Projects/CPP/include
