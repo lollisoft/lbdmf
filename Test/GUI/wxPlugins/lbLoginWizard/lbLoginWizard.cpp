@@ -620,6 +620,7 @@ lbErrCodes LB_STDCALL lbPluginLoginWizard::setData(lb_I_Unknown* uk) {
 lbPluginLoginWizard::lbPluginLoginWizard() {
 	wizard = NULL;
 	page1 = NULL;
+	ref = STARTREF;
 }
 
 lbPluginLoginWizard::~lbPluginLoginWizard() {

@@ -1293,6 +1293,7 @@ lbDatabaseDialog::lbDatabaseDialog()
 	wxDefaultSize, wxRESIZE_BORDER|wxDEFAULT_DIALOG_STYLE)
 {
 	_CL_VERBOSE << "lbDatabaseDialog::lbDatabaseDialog() called." LOG_
+	ref = STARTREF;
 	formName = strdup("Database dialog");
 }
 /*...e*/
@@ -1948,6 +1949,7 @@ const char* LB_STDCALL lbDatabaseDialog::getControlValue(char* name) {
 	return value.c_str();
 }
 
+/*...svoid LB_STDCALL lbDatabaseDialog\58\\58\updateFromMaster\40\\41\:0:*/
 void LB_STDCALL lbDatabaseDialog::updateFromMaster() {
 
 	UAP_REQUEST(manager.getPtr(), lb_I_String, newWhereClause)
@@ -1974,6 +1976,7 @@ void LB_STDCALL lbDatabaseDialog::updateFromMaster() {
 	
 	_CL_LOG << "lbDatabaseDialog::updateFromMaster() generated new where clause: '" << newWhereClause->charrep() << "'" LOG_
 }
+/*...e*/
 
 void LB_STDCALL lbDatabaseDialog::setFilter(char* filter) {
 	if (SQLWhere == NULL) {
@@ -2653,6 +2656,7 @@ lbErrCodes LB_STDCALL lbPluginDatabaseDialog::setData(lb_I_Unknown* uk) {
 lbPluginDatabaseDialog::lbPluginDatabaseDialog() {
 	_CL_VERBOSE << "lbPluginDatabaseDialog::lbPluginDatabaseDialog() called.\n" LOG_
 	dbForm = NULL;
+	ref = STARTREF;
 }
 
 lbPluginDatabaseDialog::~lbPluginDatabaseDialog() {
