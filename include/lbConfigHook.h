@@ -65,6 +65,7 @@
 
 #define IOS ios
 #define COUT cout
+#define CIN cin
 #define ENDL endl
 #define OFSTREAM ofstream
 
@@ -77,6 +78,7 @@
 
 #define IOS  std::ios
 #define COUT std::cout
+#define CIN  std::cin
 #define ENDL std::endl
 #define OFSTREAM std::ofstream
 
