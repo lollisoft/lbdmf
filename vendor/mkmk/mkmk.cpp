@@ -12,11 +12,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.63 $
+ * $Revision: 1.64 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.63 2005/05/13 10:58:56 lollisoft Exp $
+ * $Id: mkmk.cpp,v 1.64 2005/05/16 00:00:46 lollisoft Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.64  2005/05/16 00:00:46  lollisoft
+ * Added lines to report building a source file.
+ *
  * Revision 1.63  2005/05/13 10:58:56  lollisoft
  * Better creation proccess for watcom link information file.
  * It was a bug in the old one, if there were a partly build, so that
@@ -1124,7 +1127,7 @@ void ShowHelp()
 
   fprintf(stderr, "Enhanced by Lothar Behrens (lothar.behrens@lollisoft.de)\n\n");
 
-  fprintf(stderr, "MKMK: makefile generator $Revision: 1.63 $\n");
+  fprintf(stderr, "MKMK: makefile generator $Revision: 1.64 $\n");
   fprintf(stderr, "Usage: MKMK lib|exe|dll|so modulname includepath,[includepath,...] file1 [file2 file3...]\n");
 }
 /*...e*/
@@ -1347,11 +1350,13 @@ void WriteDep(FILE *f, char *Name, TIncludeParser *p)
 */
                 break;
         case EXE_TARGET:
+        	printf("\t\t@echo Build %s\n", NameC);
         	if (CPPFlag == 0) printf("\t\t%s $(C_EXEOPS) $(MOD_INCL) -Fo=%s %s\n\n", Compiler, ObjNameC, Name);
         	if (CPPFlag == 1) printf("\t\t%s $(CPP_EXEOPS) $(MOD_INCL_CPP) -Fo=%s %s\n\n", Compiler, ObjName, Name);
 //                printf("\t\t%s $(C_EXEOPS) $(MOD_INCL) %s\n\n", Compiler, Name);
                 break;
         case ELF_TARGET:
+				printf("\t\t@echo Build %s\n", NameC);
                 printf("\t\t@%s $(C_ELFOPS) $(MOD_INCL) %s\n\n", Compiler, Name);
                 break;
         case SO_TARGET:
@@ -1364,6 +1369,7 @@ void WriteDep(FILE *f, char *Name, TIncludeParser *p)
                         break;
                     }
                 }
+	        	printf("\t\t@echo Build %s\n", NameC);
                 printf("\t\t@%s -c -fPIC -g $(C_SOOPS) $(MOD_INCL) %s -o %s.o\n\n", Compiler, Name, ObjName);
                 }
                 break;
@@ -1377,6 +1383,7 @@ void WriteDep(FILE *f, char *Name, TIncludeParser *p)
                         break;
                     }
                 }
+	        	printf("\t\t@echo Build %s\n", NameC);
                 printf("\t\t@%s -c -fPIC -g $(C_SOOPS) $(MOD_INCL) %s -o %s.o\n\n", Compiler, Name, ObjName);
                 }
                 break;
