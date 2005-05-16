@@ -867,11 +867,7 @@ printf("Create a drop down box for '%s'\n", name);
 	sizerAddRem->Add(buttonAdd, 1, wxEXPAND | wxALL, 5);
 	sizerAddRem->Add(buttonDelete, 1, wxEXPAND | wxALL, 5);
 
-
-	/*
-	 * Create action elements as configured.
-	 */
-
+/*...sAction handler initializion:8:*/
 	UAP_REQUEST(manager.getPtr(), lb_I_Database, actionsDatabase)
 
 	actionsDatabase->init();
@@ -902,7 +898,7 @@ printf("Create a drop down box for '%s'\n", name);
 	actionQuery->query(buf);
 	lbErrCodes err = actionQuery->first();
 	
-/*...sloop through and find actions:8:*/
+/*...sloop through and find actions:16:*/
 	while (err == ERR_NONE) {
 		UAP(lb_I_String, action, __FILE__, __LINE__)
 		UAP(lb_I_String, actionWhat, __FILE__, __LINE__)
@@ -934,7 +930,7 @@ printf("Create a drop down box for '%s'\n", name);
 		err = actionQuery->next();
 	}
 /*...e*/
-/*...sget last action:8:*/
+/*...sget last action:16:*/
 	if (err == WARN_DB_NODATA) {
 		UAP(lb_I_String, action, __FILE__, __LINE__)
 		UAP(lb_I_String, actionWhat, __FILE__, __LINE__)
@@ -965,6 +961,9 @@ printf("Create a drop down box for '%s'\n", name);
 	
 	}
 /*...e*/
+/*...e*/
+
+
 /*...sconnect event handlers:8:*/
 //#define CONNECTOR ((wxFrame*) frame)
 #define CONNECTOR this
@@ -983,6 +982,7 @@ printf("Create a drop down box for '%s'\n", name);
 	CONNECTOR->Connect( DatabaseDelete, -1, wxEVT_COMMAND_BUTTON_CLICKED, 
 		(wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) &lbDatabaseDialog::OnDispatch);
 /*...e*/
+
 
 	/*
 	 * Connect the 'ownerdrawn' controls to the OnPaint handler.
@@ -1665,8 +1665,69 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::OnActionButton(lb_I_Unknown* uk) {
 		_CL_LOG << "Have got source field: " << s << "." LOG_
 		_CL_LOG << "The value for the field is " << value.c_str() << "." LOG_		
 
+		/*
+		   The current database shema has no entry for an event to be used
+		   as a forwardable event. So here I suggest to add a prefix to the
+		   event name that is configured and routed to here.
+		   
+		   A handler then could be a plugin similar to the plugin version of the
+		   login wizard.
+		   
+		   The remaining problem would be the initializion of the configuration data.
+		   
+		   The plugin must take care about all the configuration data it needs to be
+		   called. It also must know, from where the events can occur.
+		   
+		   In the case of a type 1 action - eg Buttonpress, the what field contains only
+		   an event identifer. To be able to forward the event, the plugin must provide
+		   a handler for it.
+		   
+		   I suggest as prefix the type of the action. In the case of Buttonpress their ID 1.
+		   
+		   In the case of a type 2 event - eg. a 'Dynamic detail form' event ID = 2, the 'what'
+		   field does not contain only the event name that would be routed to here.
+		   
+		   It also contains the information about the form to open. As in the mailto b.allgaier@...,
+		   I have defined a sample for opening a form:
 
+		   
+			Data fields:
 		
+				'Aktion Name' char(20)
+				'Aktion Typ' int 		-> 	'ActionTypes':'id'
+									'ActionTypes':'Bezeichnung'
+				'Action Source Data' char(20) (Eigentlich die Kunden ID)
+				'Action Target' int		->	'ActionTarget':'id'
+									'ActionTarget':'Bezeichnung'
+									'ActionTarget':'A_Order_Nr'
+									'ActionTarget':'What'
+
+			Sample that issues an event handler in a plugin:
+
+				'Reserve a trip'
+				'1' int		 		-> 	'AktionTypes':'1'
+									'AktionTypes':'Buttonpress'
+
+				'kundennr'	(The customer id, not the ID of the row)
+				'1' int				->	'ActionTarget':'1'
+									'ActionTarget':'Customer want to reserve a trip'
+									'ActionTarget':'1'
+									'ActionTarget':'evt_Reserve_Customer_Trip'
+
+			Sample that opens a detail formular:
+
+				'Reserved trips ...'
+				'2' int		 		-> 	'AktionTypes':'2'
+									'AktionTypes':'Dynamic detail form'
+
+				'kundennr'	(The customer id, not the ID of the row)
+				'1' int				->	'ActionTarget':'1'
+									'ActionTarget':'Overview of the customers trips'
+									'ActionTarget':'1'
+									'ActionTarget':'OpenForm:TripsOverview'
+
+		*/
+
 		free(s);
 		
 		free(eventName);
