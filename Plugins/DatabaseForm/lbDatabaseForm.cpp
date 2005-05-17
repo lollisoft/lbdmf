@@ -416,7 +416,7 @@ lbDatabaseDialog::lbDatabaseDialog()
 /*...e*/
 /*...slbDatabaseDialog\58\\58\\126\lbDatabaseDialog\40\\41\:0:*/
 lbDatabaseDialog::~lbDatabaseDialog() {
-	_CL_VERBOSE << "lbDatabaseDialog::~lbDatabaseDialog() called." LOG_
+	_CL_LOG << "lbDatabaseDialog::~lbDatabaseDialog() called." LOG_
 }
 /*...e*/
 
@@ -611,7 +611,6 @@ printf("Create a drop down box for '%s'\n", name);
 			if (!lbDMFPasswd) lbDMFPasswd = "trainres";
 
 			db->connect("lbDMF", lbDMFUser, lbDMFPasswd);
-
 
 			FKColumnQuery = db->getQuery(0);
 			

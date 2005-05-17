@@ -30,11 +30,24 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.51 $
+ * $Revision: 1.52 $
  * $Name:  $
- * $Id: lbInterfaces-sub-classes.h,v 1.51 2005/05/14 18:13:14 lollisoft Exp $
+ * $Id: lbInterfaces-sub-classes.h,v 1.52 2005/05/17 22:59:19 lollisoft Exp $
  *
  * $Log: lbInterfaces-sub-classes.h,v $
+ * Revision 1.52  2005/05/17 22:59:19  lollisoft
+ * Bugfix in reference counting.
+ *
+ * Storing windows in a selfdeleting (UAP) container would
+ * crash. This has been overcome since the bugfix for the
+ * containers self has been taken.
+ *
+ * The wxWidgets controls or windows are not reference
+ * counted, or have its own one. So they should not be stored
+ * simply in a container of my framework.
+ *
+ * Special reference increment is done for the specific dialogs.
+ *
  * Revision 1.51  2005/05/14 18:13:14  lollisoft
  * Added operators += and = to the string interface.
  *
@@ -738,12 +751,12 @@ public:
 	 */
     virtual int LB_STDCALL exists(lb_I_KeyBase** const e) = 0;
 
-	/** \brief
+	/** \brief Returns 1 if elements are iterable.
 	 *
 	 */
     virtual int LB_STDCALL hasMoreElements() = 0;
 
-	/** \brief
+	/** \brief Get next element.
 	 *
 	 */
     virtual lb_I_Unknown* LB_STDCALL nextElement() = 0;
@@ -759,12 +772,21 @@ public:
     virtual lb_I_Unknown* LB_STDCALL getElementAt(int i) = 0;
     virtual lb_I_KeyBase* LB_STDCALL getKeyAt(int i) = 0;
 
-        /**
-         * Direct access over key
-         */
+	/**
+     * Direct access over key
+     */
     virtual lb_I_Unknown* LB_STDCALL getElement(lb_I_KeyBase** const key) = 0;
     virtual void LB_STDCALL setElement(lb_I_KeyBase** key, lb_I_Unknown** const e) = 0;
 
+	/** \brief Delete all container entries.
+	 *
+	 * This deletes all entries of the container.
+	 * 
+	 * Note: In my wxWidgets sample application are stored database dialogs. These would be deleted
+	 * by the destructor cleanup code. So they must be removed, not deleted.
+	 *
+	 * This is because of the special handling of open and hidden dialogs. 
+	 */
     virtual void LB_STDCALL deleteAll() = 0;
 };
 

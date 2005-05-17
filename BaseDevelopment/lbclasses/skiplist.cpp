@@ -38,11 +38,24 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.30 $
+ * $Revision: 1.31 $
  * $Name:  $
- * $Id: skiplist.cpp,v 1.30 2005/05/11 13:19:40 lollisoft Exp $
+ * $Id: skiplist.cpp,v 1.31 2005/05/17 22:59:19 lollisoft Exp $
  *
  * $Log: skiplist.cpp,v $
+ * Revision 1.31  2005/05/17 22:59:19  lollisoft
+ * Bugfix in reference counting.
+ *
+ * Storing windows in a selfdeleting (UAP) container would
+ * crash. This has been overcome since the bugfix for the
+ * containers self has been taken.
+ *
+ * The wxWidgets controls or windows are not reference
+ * counted, or have its own one. So they should not be stored
+ * simply in a container of my framework.
+ *
+ * Special reference increment is done for the specific dialogs.
+ *
  * Revision 1.30  2005/05/11 13:19:40  lollisoft
  * Bugfix for reference count error and changed back any _CL_LOG messages to be _CL_VERBOSE only
  *
@@ -258,6 +271,7 @@ int LB_STDCALL SkipList::Count() {
         return count; 
 } 
 /*...e*/
+
 /*...sSkipList\58\\58\deleteAll\40\\41\:0:*/
 void LB_STDCALL SkipList::deleteAll() { 
 	if (can_dump() == 1) {

@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.73 2005/05/15 19:27:03 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.74 2005/05/17 22:59:19 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,24 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.73 $
+ * $Revision: 1.74 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.73 2005/05/15 19:27:03 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.74 2005/05/17 22:59:19 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.74  2005/05/17 22:59:19  lollisoft
+ * Bugfix in reference counting.
+ *
+ * Storing windows in a selfdeleting (UAP) container would
+ * crash. This has been overcome since the bugfix for the
+ * containers self has been taken.
+ *
+ * The wxWidgets controls or windows are not reference
+ * counted, or have its own one. So they should not be stored
+ * simply in a container of my framework.
+ *
+ * Special reference increment is done for the specific dialogs.
+ *
  * Revision 1.73  2005/05/15 19:27:03  lollisoft
  * Catch a bug. If an event could not resolved, it could not
  * added as an menu entry.
@@ -1158,7 +1171,13 @@ lbErrCodes LB_STDCALL lb_wxGUI::registerEventHandler(lb_I_Dispatcher* disp) {
 /*...slbErrCodes LB_STDCALL lb_wxGUI\58\\58\cleanup\40\\41\:0:*/
 lbErrCodes LB_STDCALL lb_wxGUI::cleanup() {
 	
-	// destroy all still created forms that are hidden.
+	/* Destroy all still created forms that are hidden.
+	 * If this would not be taken, the application will hang,
+	 * because these windows are still there.
+	 *
+	 * But the container must be deleted and there seems to be
+	 * a double delete. So I need a removeAll function for the container. 
+	 */
 
 	if (forms == NULL) {
 		_CL_LOG << "lb_wxGUI::cleanup() has nothing to clean up." LOG_
@@ -1174,6 +1193,14 @@ lbErrCodes LB_STDCALL lb_wxGUI::cleanup() {
 
 		UAP(lb_I_DatabaseForm, d, __FILE__, __LINE__)		
 		QI(form, lb_I_DatabaseForm, d, __FILE__, __LINE__)
+		
+		/* Really needed here !
+		 * The wxWidgets system doesn't have a or at least has it's own reference counting system.
+		 *
+		 * So here I must ensure, that the object it self doesn't get deleted in the container.
+		 * wxWidgets should call the destructor of the form.
+		 */
+		d++;
 		
 		_CL_LOG << "Destroy a form..." LOG_
 		
@@ -2424,8 +2451,7 @@ lb_wxFrame::lb_wxFrame(wxFrame *frame, char *title, int x, int y, int w, int h):
 }
 
 lb_wxFrame::~lb_wxFrame() {
-        _LOG << "Closing GUI frame" LOG_
-        printf("lb_wxFrame::~lb_wxFrame() called.\n");
+        _CL_LOG << "lb_wxFrame::~lb_wxFrame() called.\n" LOG_
 
         if (guiCleanedUp == 0) {
                 if (gui) gui->cleanup();
