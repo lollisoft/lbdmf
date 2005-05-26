@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.74 2005/05/17 22:59:19 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.75 2005/05/26 08:30:12 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,15 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.74 $
+ * $Revision: 1.75 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.74 2005/05/17 22:59:19 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.75 2005/05/26 08:30:12 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.75  2005/05/26 08:30:12  lollisoft
+ * Removed usage of DEBUG_UAP and added some more log messages
+ * due to crashes under Windows (at exit).
+ *
  * Revision 1.74  2005/05/17 22:59:19  lollisoft
  * Bugfix in reference counting.
  *
@@ -1060,6 +1064,7 @@ public:
         lb_wxFrame* frame;
 	
 	UAP(lb_I_Container, forms, __FILE__, __LINE__)
+	char buffer[100];
 };
 /*...e*/
 
@@ -1200,11 +1205,15 @@ lbErrCodes LB_STDCALL lb_wxGUI::cleanup() {
 		 * So here I must ensure, that the object it self doesn't get deleted in the container.
 		 * wxWidgets should call the destructor of the form.
 		 */
+		 
+		 
+		_CL_LOG << "Destroy a form with " << d->getRefCount() << " references ..." LOG_
+		 
 		d++;
 		
-		_CL_LOG << "Destroy a form..." LOG_
-		
 		d->destroy();
+		
+		_CL_LOG << "Destroyed the form." LOG_
 	}
 
 
@@ -1635,14 +1644,14 @@ protected:
          * symbolic event names. First I do not handle a scope.
          */
         
-        DEBUG_UAP(lb_I_EventManager, ev_manager, __FILE__, __LINE__)
+        UAP(lb_I_EventManager, ev_manager, __FILE__, __LINE__)
 /*...e*/
 /*...smeta application:8:*/
         /*
          * I also need an instance of the meta application, that is loaded as the application wrapper.
          */
          
-        DEBUG_UAP(lb_I_MetaApplication, metaApp, __FILE__, __LINE__) 
+        UAP(lb_I_MetaApplication, metaApp, __FILE__, __LINE__) 
 /*...e*/
 /*...sframe:8:*/
 //        DEBUG_UAP(lb_I_wxFrame, frame, __FILE__, __LINE__)
@@ -2454,7 +2463,9 @@ lb_wxFrame::~lb_wxFrame() {
         _CL_LOG << "lb_wxFrame::~lb_wxFrame() called.\n" LOG_
 
         if (guiCleanedUp == 0) {
+        	_CL_LOG << "lb_wxFrame::~lb_wxFrame() cleans up GUI" LOG_
                 if (gui) gui->cleanup();
+                _CL_LOG << "lb_wxFrame::~lb_wxFrame() cleaned up GUI" LOG_
                 guiCleanedUp = 1;
         }
 }
@@ -2493,10 +2504,13 @@ void lb_wxFrame::OnQuit(wxCommandEvent& WXUNUSED(event) )
   	 * The database form sample is a modal form and may be making the
   	 * problem, if it is not destroyed here.
   	 */
-  	 
+
+	_CL_LOG << "lb_wxFrame::OnQuit(...) called." LOG_  	 
   	 
 	if (guiCleanedUp == 0) {
+		_CL_LOG << "lb_wxFrame::OnQuit(...) cleans up GUI" LOG_
         	if (gui) gui->cleanup();
+        	_CL_LOG << "lb_wxFrame::OnQuit(...) cleaned up GUI" LOG_
         	guiCleanedUp = 1;
 	}
 	
