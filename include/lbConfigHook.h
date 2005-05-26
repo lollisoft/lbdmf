@@ -41,8 +41,12 @@
 #ifdef WINDOWS
 #ifndef TVISION
 #ifndef TVISION_APP
+
+#ifdef DEBUG_MALLOC
 #define TRACKER
 #define MEMTRACK
+#endif
+
 #endif
 #endif
 #endif
@@ -113,6 +117,12 @@
   #define free TRMemFree
   #define realloc TRMemRealloc
  #endif // MEMTRACK
+
+ #ifndef MEMTRACK
+  #define TRMemOpen()
+  #define TRMemSetModuleName(name)
+  #define TRMemSetAdrBreakPoint(ptr)
+ #endif
 /*...e*/
 #endif // OSX
 
@@ -283,6 +293,7 @@ DLLEXPORT char* LB_STDCALL get_trackObject();
 DLLEXPORT void LB_STDCALL track_Object(lb_I_Unknown* o, char* msg);
 
 /*...sMEMTRACKER:0:*/
+
 /** \brief Checks wether if a memory track breakpoint is set.
  */
 DLLEXPORT bool LB_STDCALL isSetTRMemTrackBreak();
@@ -302,6 +313,7 @@ DLLEXPORT char* LB_STDCALL getTRMemTrackBreak();
 #ifndef TRACKER
 #define TRMemTrackOpen isSetTRMemTrackBreak
 #endif 
+
 /*...e*/
 
 DLLEXPORT void LB_STDCALL setVerbose(bool what);
