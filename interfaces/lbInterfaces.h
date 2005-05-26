@@ -597,6 +597,7 @@ public:
 };
 /*...e*/
 
+
 /*...sAutoPointer:0:*/
 /** \def UAP(interface, Unknown_Reference, file, line)
  *  \brief An automatic pointer implementation via macro.
@@ -610,10 +611,18 @@ public:
 	        	_autoPtr = NULL; \
 	        	_line = -1; \
 	        	_file = NULL; \
+	        	attachedClassName = NULL; \
 	        	allowDelete = 1; \
+	        	initialized = false; \
 		} \
 		\
 		UAP##Unknown_Reference(const UAP##Unknown_Reference& _ref) { \
+			attachedClassName = NULL; \
+			initialized = false; \
+			if ((_ref != NULL) && (_ref->getClassName() != NULL)) \
+				attachedClassName = strdup(_ref->getClassName()); \
+			else \
+				attachedClassName = strdup(""); \
 			if (_file != NULL) delete [] _file; \
 			_file = NULL; \
 			if (_ref._file) { \
@@ -630,11 +639,19 @@ public:
 					_file = strcpy(_file, _ref._file); \
 				} \
 			} \
+			if (attachedClassName) { \
+				free(attachedClassName); \
+			} \
+			initialized = false; \
+			if ((_ref != NULL) && (_ref->getClassName() != NULL)) \
+			        attachedClassName = strdup(_ref->getClassName()); \
+		        else \
+		                attachedClassName = strdup(""); \
 			_line = _ref._line; \
 		} \
 		\
 		virtual ~UAP##Unknown_Reference() { \
-			_CL_VERBOSE << "UAP destructor ~UAP" << #Unknown_Reference << "() at " << __FILE__ << " called" LOG_ \
+			_CL_VERBOSE << "UAP destructor ~UAP" << #Unknown_Reference << "() at " << __LINE__ << " in " << __FILE__ << " called. (holding '" << attachedClassName << "')" LOG_ \
 			if (_autoPtr != NULL) { \
 				_CL_VERBOSE << "Pointer is not NULL. Delete it." LOG_ \
 				if (allowDelete != 1) { \
@@ -679,7 +696,10 @@ public:
 			return _autoPtr; \
 		} \
 		interface* LB_STDCALL operator -> () { \
-			if (_autoPtr == NULL) { \
+			if ((initialized == false) && (_autoPtr != NULL) && (_autoPtr->getClassName() != NULL)) { \
+				initialized = true; \
+				if (attachedClassName != NULL) free(attachedClassName); \
+			        attachedClassName = strdup(_autoPtr->getClassName()); \
 			} \
 			return _autoPtr; \
 		} \
@@ -702,6 +722,14 @@ public:
 				_autoPtr->release(file, line); \
 			} \
 			_autoPtr = autoPtr; \
+			if (attachedClassName) { \
+				_CL_LOG << "Delete attachedClassName helper." LOG_ \
+				free(attachedClassName); \
+			} \
+			if ((autoPtr != NULL) && (autoPtr->getClassName() != NULL)) \
+				attachedClassName = strdup(autoPtr->getClassName()); \
+			else \
+				attachedClassName = strdup(""); \
 			return *this; \
 		} \
 		int LB_STDCALL operator == (const interface* b) const { \
@@ -717,6 +745,8 @@ public:
 	        int _line; \
 	        char* _file; \
 	        int allowDelete; \
+	        bool initialized; \
+	        char* attachedClassName; \
 		}; \
 	\
         interface* _UAP##Unknown_Reference; \
