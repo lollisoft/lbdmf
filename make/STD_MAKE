@@ -25,11 +25,14 @@
 #            40235 Duesseldorf (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.62 $
+# * $Revision: 1.63 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.62 2005/05/11 08:58:27 lollisoft Exp $
+# * $Id: STD_MAKE,v 1.63 2005/05/26 09:27:16 lollisoft Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.63  2005/05/26 09:27:16  lollisoft
+# * Added inactive switch for TRMEM usage.
+# *
 # * Revision 1.62  2005/05/11 08:58:27  lollisoft
 # * Little changes to get compiled tvision sample. Compiler switch changes.
 # *
@@ -277,7 +280,7 @@ WATCOM_CALLING_CONV=-5r #-zz
 WATCOM_DLLTARGET=-bd
 WATCOM_LIBTARGET=
 WATCOM_THREAD_MODEL=#-bm
-WATCOM_STDDEBUG=-d2 -hd
+WATCOM_STDDEBUG=-d2 -hd #-DDEBUG_MALLOC
 WATCOM_STACK=-of+
 
 WATCOM_STD_C_OPS= \
