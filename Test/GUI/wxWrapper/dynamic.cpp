@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.75 2005/05/26 08:30:12 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.76 2005/06/01 11:03:06 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.75 $
+ * $Revision: 1.76 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.75 2005/05/26 08:30:12 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.76 2005/06/01 11:03:06 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.76  2005/06/01 11:03:06  lollisoft
+ * Program exit works now.
+ *
  * Revision 1.75  2005/05/26 08:30:12  lollisoft
  * Removed usage of DEBUG_UAP and added some more log messages
  * due to crashes under Windows (at exit).
@@ -300,8 +303,8 @@ class lb_wxGUI;
  * It implements the main event handling interface via OnDispatch.
  */
 class lb_wxFrame : 
-                public lb_I_wxFrame,
-		public wxFrame
+		public wxFrame,
+                public lb_I_wxFrame
 { 
 public:
 /*...sctors\47\dtors:8:*/
@@ -898,20 +901,10 @@ public:
         }
 
 	virtual ~lb_wxGUI() { 
-/*...sbla:8:*/
-/* 
-	Handled in cleanup event handler	
-	
-		if (dialog) {
-			dialog->Destroy();
-			delete dialog;
-			dialog = NULL;
-		}
-*/
-/*...e*/
 		#ifdef VERBOSE
 	        _LOG << "lb_wxGUI::~lb_wxGUI() called.\n" LOG_
 	        #endif
+	        setVerbose(true);
 	}
 /*...e*/
 
@@ -1215,7 +1208,8 @@ lbErrCodes LB_STDCALL lb_wxGUI::cleanup() {
 		
 		_CL_LOG << "Destroyed the form." LOG_
 	}
-
+	
+	forms->detachAll();
 
         return ERR_NONE;
 }
@@ -1502,12 +1496,13 @@ class MyFrame;
  *
  * It is used to demonstrate a GUI sample application.
  */
-class MyApp: public wxApp
+class MyApp:
 #ifdef LB_I_EXTENTIONS
-, public lb_I_Unknown
+public lb_I_Unknown
 , public lb_I_EventConnector
-, public lb_I_EventHandler
+, public lb_I_EventHandler ,
 #endif
+public wxApp
 { public:
 	/**
 	 * Initialisation.
@@ -2460,13 +2455,16 @@ lb_wxFrame::lb_wxFrame(wxFrame *frame, char *title, int x, int y, int w, int h):
 }
 
 lb_wxFrame::~lb_wxFrame() {
-        _CL_LOG << "lb_wxFrame::~lb_wxFrame() called.\n" LOG_
+        _CL_LOG << "lb_wxFrame::~lb_wxFrame() called." LOG_
 
         if (guiCleanedUp == 0) {
         	_CL_LOG << "lb_wxFrame::~lb_wxFrame() cleans up GUI" LOG_
                 if (gui) gui->cleanup();
                 _CL_LOG << "lb_wxFrame::~lb_wxFrame() cleaned up GUI" LOG_
                 guiCleanedUp = 1;
+        } else {
+        	_CL_LOG << "lb_wxFrame::~lb_wxFrame() GUI has been cleaned up prior." LOG_
+        	_CL_LOG << "********************************************************" LOG_
         }
 }
 
@@ -2513,8 +2511,12 @@ void lb_wxFrame::OnQuit(wxCommandEvent& WXUNUSED(event) )
         	_CL_LOG << "lb_wxFrame::OnQuit(...) cleaned up GUI" LOG_
         	guiCleanedUp = 1;
 	}
+
+	_CL_LOG << "lb_wxFrame::OnQuit(...) calls Close(TRUE);" LOG_
 	
 	Close(TRUE);
+	
+	_CL_LOG << "lb_wxFrame::OnQuit(...) called Close(TRUE);" LOG_
 }
 
 void lb_wxFrame::OnVerbose(wxCommandEvent& WXUNUSED(event) ) {
