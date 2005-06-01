@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.52 $
+ * $Revision: 1.53 $
  * $Name:  $
- * $Id: lbInterfaces-sub-classes.h,v 1.52 2005/05/17 22:59:19 lollisoft Exp $
+ * $Id: lbInterfaces-sub-classes.h,v 1.53 2005/06/01 11:07:03 lollisoft Exp $
  *
  * $Log: lbInterfaces-sub-classes.h,v $
+ * Revision 1.53  2005/06/01 11:07:03  lollisoft
+ * Added detach function.
+ *
  * Revision 1.52  2005/05/17 22:59:19  lollisoft
  * Bugfix in reference counting.
  *
@@ -657,29 +660,35 @@ classname::classname(const lb_I_Unknown* o, const lb_I_KeyBase* _key, lb_I_Eleme
     if (_next != NULL) { \
         _next->queryInterface("lb_I_Element", (void**) &next, __FILE__, __LINE__); \
     } \
+    data = NULL; \
     if (o == NULL) _CL_LOG << "Error! Can't clone a NULL pointer" << __FILE__ ":" << __LINE__ LOG_ \
-    data = o->clone(__FILE__, __LINE__); \
-    char ptr[20] = ""; \
-    sprintf(ptr, "%p", (void*) data); \
-    if (data->getRefCount() > 1) { \
-        _CL_LOG << "Warning: Refcount after cloning is more than 1 !!!" LOG_ \
-    } \
+    if (o != NULL) { \
+	    data = o->clone(__FILE__, __LINE__); \
+	    if (data->getRefCount() > 1) { \
+	        _CL_LOG << "Warning: Refcount after cloning is more than 1 !!!" LOG_ \
+	    } \
+    } \	   
     lb_I_Unknown* uk_key = NULL; \
     key = (lb_I_KeyBase*) _key->clone(__FILE__, __LINE__); \
     if (key == NULL) _CL_LOG << "Key cloning in constructor failed. May be a memory problem" LOG_ \
 } \
 \
 classname::~classname() { \
-		_CL_VERBOSE << #classname << "::~" << #classname << "() called." LOG_ \
+	char ptr[20] = ""; \
+	sprintf(ptr, "%p", this); \
+	_CL_VERBOSE << #classname << "::~" << #classname << "() called. Pointer this is: " << ptr LOG_ \
         if (key != NULL) { \
                 key->setDebug(1); \
                 if (key->deleteState() != 1) _CL_LOG << "Warning: Key wouldn't deleted in container element!" LOG_ \
+                _CL_VERBOSE << #classname << "::~" << #classname << "() Delete the key of " #classname LOG_ \
                 RELEASE(key); \
         } \
+        _CL_VERBOSE << #classname << "::~" << #classname << "() Delete the data of " #classname LOG_ \
         if (data != NULL) { \
         	if (data->deleteState() != 1) _CL_LOG << "Warning: Data wouldn't deleted in container element!" LOG_ \
-            RELEASE(data); \
+		RELEASE(data); \
         } \
+        _CL_VERBOSE << #classname << "::~" << #classname << "() leaving" LOG_ \
         key = NULL; \
         data = NULL; \
 } \
@@ -772,7 +781,7 @@ public:
     virtual lb_I_Unknown* LB_STDCALL getElementAt(int i) = 0;
     virtual lb_I_KeyBase* LB_STDCALL getKeyAt(int i) = 0;
 
-	/**
+    /**
      * Direct access over key
      */
     virtual lb_I_Unknown* LB_STDCALL getElement(lb_I_KeyBase** const key) = 0;
@@ -788,6 +797,12 @@ public:
 	 * This is because of the special handling of open and hidden dialogs. 
 	 */
     virtual void LB_STDCALL deleteAll() = 0;
+    
+    /** \brief Elements would not deleted from container.
+     *
+     * Use this function to avoid cleanup through the container.
+     */
+    virtual void LB_STDCALL detachAll() = 0;
 };
 
 /*...sDECLARE_LB_I_CONTAINER_IMPL_CO \40\co_Interface\41\:0:*/
@@ -840,10 +855,12 @@ protected: \
         virtual void LB_STDCALL setElement(lb_I_KeyBase** key, lb_I_Unknown** const e); \
         \
         virtual void LB_STDCALL deleteAll(); \
+        virtual void LB_STDCALL detachAll() { canDeleteObjects = false; } \
 protected: \
     int count; \
     int iteration; \
     lb_I_Element* iterator; \
+    bool canDeleteObjects; \
     lb_I_Element* container_data;
 /*...e*/
 
