@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.20 $
+ * $Revision: 1.21 $
  * $Name:  $
- * $Id: lbMetaApplication.h,v 1.20 2005/03/31 08:59:34 lollisoft Exp $
+ * $Id: lbMetaApplication.h,v 1.21 2005/06/01 10:57:22 lollisoft Exp $
  *
  * $Log: lbMetaApplication.h,v $
+ * Revision 1.21  2005/06/01 10:57:22  lollisoft
+ * Replaced DEBUG_UAP with UAP
+ *
  * Revision 1.20  2005/03/31 08:59:34  lollisoft
  * Copyright text problems under linux.
  *
@@ -179,8 +182,8 @@ public:
 
 protected:
 	lb_I_GUI* gui;
-	DEBUG_UAP(lb_I_EventManager, eman, __FILE__, __LINE__)
-	DEBUG_UAP(lb_I_Dispatcher, dispatcher, __FILE__, __LINE__)
+	UAP(lb_I_EventManager, eman, __FILE__, __LINE__)
+	UAP(lb_I_Dispatcher, dispatcher, __FILE__, __LINE__)
 	UAP(lb_I_MetaApplication, app, __FILE__, __LINE__)
 	
 	char gwedgd[100];
@@ -251,8 +254,8 @@ public:
 	
 	virtual lb_I_DispatchResponse* LB_STDCALL dispatch(lb_I_DispatchRequest* req);
 	
-	DEBUG_UAP(lb_I_Container, dispatcher, __FILE__, __LINE__)
-	DEBUG_UAP(lb_I_EventManager, evManager, __FILE__, __LINE__)
+	UAP(lb_I_Container, dispatcher, __FILE__, __LINE__)
+	UAP(lb_I_EventManager, evManager, __FILE__, __LINE__)
 };
 /*...e*/
 /*...sclass lb_EventManager:0:*/
