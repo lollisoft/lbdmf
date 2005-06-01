@@ -122,17 +122,15 @@ int main(int argc, char *argv[]) {
 
 	_CL_LOG << "Test basetypes" LOG_
 
-	{	
-		UAP_REQUEST(mm, lb_I_String, string1)
-		char buf1[100] = "";
-		UAP_REQUEST(mm, lb_I_String, string2)
-		char buf2[100] = "";
+	UAP_REQUEST(mm, lb_I_String, string1)
+	char buf1[100] = "";
+	UAP_REQUEST(mm, lb_I_String, string2)
+	char buf2[100] = "";
 
-		string1->setData("Test basetypes...");
-		string2->setData("Test basetypes...");
-	}
-	
-#ifdef bla	
+	string1->setData("Test basetypes...");
+	string2->setData("Test basetypes...");
+
+	_CL_LOG << "Test (*&string1 == *&string2)" LOG_
 	
 	if (*&string1 == *&string2) {
 		_CL_LOG << "Strings are identical" LOG_
@@ -143,11 +141,15 @@ int main(int argc, char *argv[]) {
 	lb_I_String* s1 = string1.getPtr();
 	lb_I_String* s2 = string2.getPtr();
 
+	_CL_LOG << "Test (s1 == s2)" LOG_
+
         if (s1 == s2) {
                 _CL_LOG << "Strings are identical" LOG_
         } else {
                 _CL_LOG << "Strings are not identical" LOG_
         }
+
+	_CL_LOG << "Test (string1->equals(*&string2))" LOG_
 
 	if (string1->equals(*&string2)) {
                 _CL_LOG << "Strings are identical" LOG_
@@ -155,12 +157,52 @@ int main(int argc, char *argv[]) {
                 _CL_LOG << "Strings are not identical" LOG_
         }
 
+	_CL_LOG << "Test (string1 == s2)" LOG_
+
 	if (string1 == s2) {
                 _CL_LOG << "Strings are identical" LOG_
         } else {
                 _CL_LOG << "Strings are not identical" LOG_
         }
-#endif
 
+	_CL_LOG << "Test a container" LOG_
+	
+	{
+		UAP_REQUEST(mm, lb_I_Container, container)
+	
+		UAP_REQUEST(mm, lb_I_String, data)
+		UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
+		UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
+		QI(data, lb_I_KeyBase, key, __FILE__, __LINE__)
+		QI(data, lb_I_Unknown, uk, __FILE__, __LINE__)
+		
+		data->setData("Test1");
+		
+		container->insert(&uk, &key);
+		setVerbose(true);
+		
+		data->setData("Test2");
+		
+		container->insert(&uk, &key);
+		
+		data->setData("Test1");
+		
+		container->remove(&key);
+
+		UAP(lb_I_Unknown, uk1, __FILE__, __LINE__)
+		
+		data->setData("Test2");
+		
+		uk1 = container->getElement(&key);
+		
+		container->detachAll();
+
+		_CL_LOG << "Begin Verbose..." LOG_
+	}
+	_CL_LOG << "End Verbose..." LOG_
+	setVerbose(false);
+	
+	_CL_LOG << "Tested a container" LOG_
+	
         return 0;
 }
