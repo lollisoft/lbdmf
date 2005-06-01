@@ -38,11 +38,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.31 $
+ * $Revision: 1.32 $
  * $Name:  $
- * $Id: skiplist.cpp,v 1.31 2005/05/17 22:59:19 lollisoft Exp $
+ * $Id: skiplist.cpp,v 1.32 2005/06/01 10:54:57 lollisoft Exp $
  *
  * $Log: skiplist.cpp,v $
+ * Revision 1.32  2005/06/01 10:54:57  lollisoft
+ * Added the ability to detach contained objects. Ownership leaving.
+ *
  * Revision 1.31  2005/05/17 22:59:19  lollisoft
  * Bugfix in reference counting.
  *
@@ -205,28 +208,42 @@ SkipNode::SkipNode(lb_I_Element* r, int level) {
 
         for (int i=0; i<=level; i++)
             forward[i] = NULL;
-
 }
+
 SkipNode::~SkipNode() { 
-	char ptr[20] = "";
-
-	sprintf(ptr, "%p", this);
-
 	if (forward) {
 		for (int i=0; i<=myLevel; i++)
 		    forward[i] = NULL;
 		delete [] forward; 
 	}
 
-
 	if (value != NULL) {
 	      	// getObject() increases the refcount for uk.
 	      	// So call release twice ! :-!
-	      	
+
       		lb_I_Unknown* uk = value->getObject();
       		uk->release(__FILE__, __LINE__);
       		uk->release(__FILE__, __LINE__);
 	}
+}
+
+void SkipNode::detach() {
+	/* 
+		value = NULL invokes operator = who internally tries to
+		release the stored pointer.
+		
+		detach() is intented to force a membership leaving. So
+		invoking detach() is explicid done by the user of the
+		container due to the knoledge, that the container not have
+		to delete it's data.
+		
+		This is needed to detach the wxWidgets sample application's
+		database dialogs, because the wxWidgets framework worries
+		about deleting it's windows.
+	*/
+	
+    	//value = NULL;
+    	value.resetPtr();
 }
 /*...e*/
 
@@ -241,6 +258,7 @@ lbErrCodes LB_STDCALL SkipList::setData(lb_I_Unknown* uk) {
 }
 SkipList::SkipList() {
 	iteration = 0;
+	canDeleteObjects = true;
 	head = new SkipNode();
 	skipiterator = NULL;
 	flag = 1;
@@ -250,15 +268,14 @@ SkipList::SkipList() {
 }
 
 SkipList::~SkipList() {
-	char ptr[20] = "";
-	
-	sprintf(ptr, "%p", this);
-	
 	if (can_dump() == 1) {
-	
 		while (skipiterator) {
 			SkipNode* temp = skipiterator;
 			skipiterator = skipiterator->forward[0];
+	
+			if (!canDeleteObjects) {
+				temp->detach();
+			}
 	
 			delete temp;		
 		}
@@ -279,6 +296,10 @@ void LB_STDCALL SkipList::deleteAll() {
 		while (skipiterator) {
 			SkipNode* temp = skipiterator;
 			skipiterator = skipiterator->forward[0];
+
+			if (!canDeleteObjects) {
+				temp->detach();
+			}
 	
 			delete temp;		
 		}
@@ -323,6 +344,7 @@ lbErrCodes LB_STDCALL SkipList::insert(lb_I_Unknown** const e, lb_I_KeyBase** co
 /*...sSkipList\58\\58\remove\40\lb_I_KeyBase\42\\42\ const key\41\:0:*/
 lbErrCodes LB_STDCALL SkipList::remove(lb_I_KeyBase** const key) { 
         lbErrCodes err = ERR_NONE; 
+        
         lbSkipListElement* el = new lbSkipListElement(NULL, *key);
         
         remove(el);
@@ -558,6 +580,9 @@ void SkipList::remove(Elem searchKey) {
       
       // element can be freed now (would happen automatically):
       found->resetForward();
+      
+      if (!canDeleteObjects) found->detach();
+      
       delete found;
       
       // maybe we have to downcorrect the level of the list: 

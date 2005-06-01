@@ -39,24 +39,24 @@ typedef lb_I_Element* Elem;
 /*...sclass SkipNode:0:*/
 class SkipNode {
   public:
-    int myLevel;
-    UAP(lb_I_Element, value, __FILE__, __LINE__)
-    char buffer[100];
-    SkipNode** forward;
-    
     SkipNode();
     SkipNode(lb_I_Element* r, int level);
     SkipNode(const SkipNode &s) {
-    	printf("Copy constructor for SkipNode called\n");
+    	printf("SkipNode(const SkipNode &s) called.\n");
     }
+    virtual ~SkipNode();
 
+    void detach();
+    
     void resetForward() {
     	delete [] forward;
     	forward = NULL;
     }
-
-    virtual ~SkipNode();
     
+    int myLevel;
+    UAP(lb_I_Element, value, __FILE__, __LINE__)
+    char buffer[100];
+    SkipNode** forward;
 };
 /*...e*/
 /*...sclass SkipList:0:*/
@@ -104,6 +104,7 @@ public:
     virtual ~lbSkipListElement();
 	
     lbSkipListElement(const lb_I_Element &e) { 
+    	_CL_VERBOSE << "lbSkipListElement(const lb_I_Element &e) called." LOG_
     	ref = STARTREF; 
     	next = e.getNext(); 
     	data = e.getObject();
