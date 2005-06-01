@@ -617,6 +617,7 @@ public:
 		} \
 		\
 		UAP##Unknown_Reference(const UAP##Unknown_Reference& _ref) { \
+			_CL_LOG << "Copy constructor called!" LOG_ \
 			attachedClassName = NULL; \
 			initialized = false; \
 			if ((_ref != NULL) && (_ref->getClassName() != NULL)) \
@@ -630,6 +631,7 @@ public:
 				_file = strcpy(_file, _ref._file); \
 			} \
 			_line = _ref._line; \
+			_autoPtr = NULL; \
 		} \
 		void operator=(const UAP##Unknown_Reference& _ref) { \
 			if (_file != NULL) { \
@@ -648,6 +650,7 @@ public:
 		        else \
 		                attachedClassName = strdup(""); \
 			_line = _ref._line; \
+			_autoPtr = _ref._autoPtr; \
 		} \
 		\
 		virtual ~UAP##Unknown_Reference() { \
@@ -663,6 +666,7 @@ public:
 				} \
 				RELEASE_1(_autoPtr, _file, _line); \
 				if (_file) delete [] _file; \
+				_autoPtr = NULL; \
 			} \
 			_CL_VERBOSE << "UAP destructor ~UAP" << #Unknown_Reference << "() ready" LOG_ \
 		} \
@@ -681,6 +685,9 @@ public:
 		} \
 		\
 		interface* LB_STDCALL getPtr() const { return _autoPtr; } \
+		void LB_STDCALL resetPtr() { \
+			_autoPtr = NULL; \
+		} \
 		void LB_STDCALL setPtr(interface*& source) { \
 			if (_autoPtr != NULL) { \
 				_CL_LOG << "Error: UAP object still initialized!" LOG_ \
@@ -723,7 +730,6 @@ public:
 			} \
 			_autoPtr = autoPtr; \
 			if (attachedClassName) { \
-				_CL_LOG << "Delete attachedClassName helper." LOG_ \
 				free(attachedClassName); \
 			} \
 			if ((autoPtr != NULL) && (autoPtr->getClassName() != NULL)) \
