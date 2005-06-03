@@ -122,5 +122,11 @@ REM ------------------------------------------------------------
 set BISON_SIMPLE=%DEVLW%\cygwin\usr\share\bison.simple
 set path=%path%;%DEVLW%\develop\Tools\Perl\bin\
 
+REM -------------------
+REM Prepend my cvs path
+REM -------------------
+
+set path=C:\Program Files\GNU\WinCvs 1.2;%PATH%
+
 start %1
 exit
