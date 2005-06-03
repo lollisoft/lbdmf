@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.53 $
+# * $Revision: 1.54 $
 # * $Name:  $
-# * $Id: Makefile,v 1.53 2005/05/15 19:24:40 lollisoft Exp $
+# * $Id: Makefile,v 1.54 2005/06/03 12:34:43 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.54  2005/06/03 12:34:43  lollisoft
+# * Compile tvision-set instead of my version. Better to work together.
+# *
 # * Revision 1.53  2005/05/15 19:24:40  lollisoft
 # * Added new target under osx.
 # *
@@ -213,7 +216,7 @@ BASEDIRECTORIES= \
 	../Plugins \
 	../Modules \
 	../RegressionTests \
-	../vendor/tvision \
+	../vendor/tvision-set \
 	../vendor/tvision/examples/lbDMF \
 	../AppDevelopment 
 endif
@@ -370,6 +373,10 @@ mkrelease:
 dummy:
 
 ../vendor/tvision: dummy
+	$(MAKE) -s -C $@ -e MODULE=tvision -e TARGET=$(TARGET_TV_DLL) -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@
+
+../vendor/tvision-set: dummy
 	$(MAKE) -s -C $@ -e MODULE=tvision -e TARGET=$(TARGET_TV_DLL) -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@
 
