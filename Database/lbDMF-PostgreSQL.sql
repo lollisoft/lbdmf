@@ -11,7 +11,9 @@ CREATE TABLE column_types
   id SERIAL,
   name char(30) NOT NULL,
   tablename char(30) NOT NULL,
-  ro BOOL DEFAULT false
+  ro BOOL DEFAULT false,
+  specialColumn BOOL DEFAULT false,
+  controlType char(30) DEFAULT ''
 );
 
 insert into column_types (name, tablename, ro) values('kundennr', 'kunden', TRUE);

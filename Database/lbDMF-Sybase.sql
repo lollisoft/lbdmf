@@ -6,6 +6,137 @@
 
 --USE jedi;
 
+CREATE TABLE column_types
+(
+  id INTEGER NOT NULL DEFAULT AUTOINCREMENT,
+  name char(30) NOT NULL,
+  tablename char(30) NOT NULL,
+  ro BIT DEFAULT 0,
+  specialColumn BIT DEFAULT 0,
+  controlType char(30) DEFAULT ''
+);
+
+insert into column_types (name, tablename, ro) values('KundenNr', 'kunden', 1);
+
+
+-- +---------------------------------------------------------
+-- | TABLE: Actions
+-- | This defines custom actions for an application. These
+-- | actions may be displayed in formulars as buttons or later
+-- | as detail views in a tab view manner.
+-- +---------------------------------------------------------
+
+CREATE TABLE actions
+(
+  id INTEGER NOT NULL DEFAULT AUTOINCREMENT,
+  name char(20) NOT NULL,
+  typ  INTEGER,
+  source char(100),
+  target INTEGER,
+  PRIMARY KEY (id)
+);
+
+-- +---------------------------------------------------------
+-- | TABLE: action_types
+-- | This table defines general action types, that could be
+-- | used for actions. This may be 'button press'
+-- | 
+-- +---------------------------------------------------------
+
+CREATE TABLE action_types
+(
+  id INTEGER NOT NULL DEFAULT AUTOINCREMENT,
+  bezeichnung char(100),
+  PRIMARY KEY (id)
+);
+
+ALTER TABLE actions
+ADD CONSTRAINT cst_action_types_TypID FOREIGN KEY ( typ )
+   REFERENCES action_types ( id );
+
+
+-- +---------------------------------------------------------
+-- | TABLE: action_target
+-- | 
+-- | 
+-- | 
+-- +---------------------------------------------------------
+
+CREATE TABLE action_target
+(
+  id INTEGER NOT NULL DEFAULT AUTOINCREMENT,
+  bezeichnung	char(100),
+  a_order_nr	INTEGER,
+  what		char(100),
+  PRIMARY KEY (id)
+);
+
+ALTER TABLE actions
+ADD CONSTRAINT cst_action_target_TargetID FOREIGN KEY ( target )
+   REFERENCES action_target ( id );
+
+-- +---------------------------------------------------------
+-- | TABLE: formular_actions
+-- | 
+-- | This table defines, what actions should be accessible in
+-- | a form. The application should begin reading this table
+-- | to build its action elements.
+-- +---------------------------------------------------------
+
+
+CREATE TABLE formular_actions
+(
+  id INTEGER NOT NULL DEFAULT AUTOINCREMENT,
+  formular	INTEGER,
+  action	INTEGER,
+  PRIMARY KEY (id)
+);
+
+insert into action_types (bezeichnung) values('Buttonpress');
+
+insert into action_target (bezeichnung, a_order_nr, what) 
+	values('Customer want to reserve a trip', 1, 'evt_Reserve_Customer_Trip');
+insert into action_target (bezeichnung, a_order_nr, what) 
+	values('some test action', 1, 'evt_Some_Test_Action');
+
+insert into actions (name, typ, source, target) values('Reserve a trip', 1, 'KundenNr', 1);
+insert into actions (name, typ, source, target) values('Remove a reserved trip', 1, 'KundenNr', 2);
+
+insert into formular_actions (formular, action) values(1, 1);
+insert into formular_actions (formular, action) values(1, 2);
+insert into formular_actions (formular, action) values(5, 1);
+insert into formular_actions (formular, action) values(5, 2);
+
+-- +---------------------------------------------------------
+-- | TABLE: Translations
+-- +---------------------------------------------------------
+
+
+CREATE TABLE translations
+(
+  id INTEGER NOT NULL DEFAULT AUTOINCREMENT,
+  text VARCHAR(100),
+  translated VARCHAR(100),
+  language CHAR(30) default 'german',
+  PRIMARY KEY (id)
+);
+
+-- +---------------------------------------------------------
+-- | TABLE: CodegenTarget
+-- +---------------------------------------------------------
+
+CREATE TABLE CodegenTarget
+(
+  id INTEGER NOT NULL DEFAULT AUTOINCREMENT,
+  Name VARCHAR(100),
+  Titel VARCHAR(100),
+  ModuleName VARCHAR(100),
+  Functor VARCHAR(100),
+  Interface VARCHAR(100),
+  PRIMARY KEY (id)
+);
+
+
 -- +---------------------------------------------------------
 -- | TABLE: Anwendungen
 -- +---------------------------------------------------------
@@ -242,7 +373,7 @@ insert into ForeignKey_VisibleData_Mapping (FKName, FKTable, PKName, PKTable) Va
 insert into ForeignKey_VisibleData_Mapping (FKName, FKTable, PKName, PKTable) Values ('AnwendungenId', 'User_Anwendungen', 'Name', 'Anwendungen');
 
 
-insert into Formular_Parameters Values (1, 'query', 'select "Anrede", "Name", "Vorname", "Ort", "PLZ", "Strasse", "Vorwahl", "Telefon" from Kunden', 5);
+insert into Formular_Parameters Values (1, 'query', 'select "KundenNr", "Name", "Vorname", "Ort", "PLZ", "Strasse", "Vorwahl", "Telefon" from Kunden order by KundenNr', 5);
 insert into Formular_Parameters Values (2, 'query', 'select "Name", "Vorname", "Erwachsene", "Kinder" from Reservierungen inner join Kunden on Reservierungen.KundenID = Kunden.ID', 6);
 insert into Formular_Parameters Values (3, 'query', 'select "Name", "Vorname", "userid", "passwort" from "Users"', 1);
 insert into Formular_Parameters Values (4, 'query', 'select "Name", "MenuName", "EventName", "MenuHilfe", "AnwendungID", "Typ" from "Formulare"', 2);
