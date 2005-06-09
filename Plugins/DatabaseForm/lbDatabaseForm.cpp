@@ -172,14 +172,9 @@ public:
 	void LB_STDCALL destroy() { Destroy(); };
 	
 /*...sfrom DatabaseForm interface:8:*/
-	/**
-	 * This function creates the dialog on the fly.
-	 *
-	 * It builds the layout, navigation elements and instanciate the needed
-	 * database classes.
-	 */
 	void LB_STDCALL init(char* SQLString, char* DBName, char* DBUser, char* DBPass);
 
+	char* LB_STDCALL getQuery();
 
 	void LB_STDCALL setFilter(char* filter);
 	
@@ -386,7 +381,6 @@ void lbOwnerDrawControl::OnPaint(wxPaintEvent &WXUNUSED(event)) {
 }
 /*...e*/
 
-/*...sclass lbPluginDatabaseDialog and lbDatabaseDialog implementation:0:*/
 /*...slbDatabaseDialog:0:*/
 
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbDatabaseDialog)
@@ -784,6 +778,7 @@ printf("Create a drop down box for '%s'\n", name);
 					
 				case lb_I_Query::lbDBColumnChar:
 					{
+						_CL_LOG << "Create text control for '" << name << "'" LOG_
 						wxTextCtrl *text = new wxTextCtrl(this, -1, 
 							sampleQuery->getAsString(i)->charrep(), wxPoint());
 						text->SetName(name);
@@ -815,6 +810,7 @@ printf("Create a drop down box for '%s'\n", name);
 					}
 					break;
 				case lb_I_Query::lbDBColumnUnknown:
+					_CL_LOG << "lbDatabaseDialog::init(...) Creating control failed due to unknown column type" LOG_
 					break;
 			}
 /*...e*/
@@ -1008,6 +1004,10 @@ printf("Create a drop down box for '%s'\n", name);
 
 }
 /*...e*/
+
+char* LB_STDCALL lbDatabaseDialog::getQuery() {
+	return SQLString->charrep();
+}
 
 void LB_STDCALL lbDatabaseDialog::setMasterForm(lb_I_MasterDetailFormDefinition* MD_definition) {
 	myMasterFormDefinition = MD_definition;
@@ -1782,6 +1782,8 @@ void lbDatabaseDialog::OnPaint(wxCommandEvent& event ) {
 }
 /*...e*/
 /*...e*/
+
+/*...sclass lbPluginDatabaseDialog and lbDatabaseDialog implementation:0:*/
 
 /*...slbPluginDatabaseDialog:0:*/
 class lbPluginDatabaseDialog : public virtual lb_I_PluginImpl {
