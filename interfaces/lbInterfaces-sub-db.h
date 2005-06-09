@@ -683,12 +683,11 @@ public:
 };
 /*...e*/
 /*...sclass lb_I_DatabaseForm:0:*/
+class lb_I_MasterDetailFormDefinition;
+
 /**
  * \brief An attempt for a database form interface.
  */
- 
-class lb_I_MasterDetailFormDefinition;
- 
 class lb_I_DatabaseForm : 
 	public lb_I_Form
 	{
@@ -699,6 +698,14 @@ public:
 	 * show the data.
 	 */
 	virtual void LB_STDCALL init(char* SQLString, char* DBName, char* DBUser, char* DBPass) = 0;
+
+	/**
+	 * \brief Get the used SQL query.
+	 *
+	 * This function is used to compare the in used query with the query, that should be used (from the database).
+	 * Using this avoids additional usage of a container for it and enables recreation of a changed form at runtime.
+	 */
+	virtual char* LB_STDCALL getQuery() = 0;
 	
 	/** \brief Set a filter for the form.
 	 *
@@ -727,6 +734,7 @@ public:
 };
 /*...e*/
 
+/*...sclass lb_I_MasterDetailFormDefinition:0:*/
 /**
  * \brief Definition of a master to detail relation.
  */
@@ -777,6 +785,7 @@ public:
 	
 	virtual bool LB_STDCALL isCharacterColumn(int pos) = 0;
 };
+/*...e*/
 
 
 #endif // __LB_DATABASE__
