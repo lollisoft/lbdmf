@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.76 2005/06/01 11:03:06 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.77 2005/06/09 07:27:47 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.76 $
+ * $Revision: 1.77 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.76 2005/06/01 11:03:06 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.77 2005/06/09 07:27:47 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.77  2005/06/09 07:27:47  lollisoft
+ * Allow reopen the form if SQL query has been changed.
+ *
  * Revision 1.76  2005/06/01 11:03:06  lollisoft
  * Program exit works now.
  *
@@ -1335,10 +1338,21 @@ lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::createDBForm(char* formName, char* query
 		QI(uk, lb_I_DatabaseForm, _dialog, __FILE__, __LINE__)
 	}
 
-	if (_dialog.getPtr() != NULL) {
-		_dialog->show();
-	} else {
+	if ((_dialog.getPtr() != NULL) && (strcmp(queryString, _dialog->getQuery()) != 0)) {
 	
+		// SQL query from database has been changed. Recreate the dialog from scratch. 
+	
+		// Don't delete any forms inside the container
+		forms->detachAll();
+	
+		forms->remove(&key);
+		
+		_dialog->destroy();
+	
+		_dialog.resetPtr();
+	}
+
+	if (_dialog.getPtr() == NULL) {
 		/*
 		 * Try to find a database form plugin, having the interface lb_I_DatabaseForm.
 		 *
@@ -1399,8 +1413,10 @@ lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::createDBForm(char* formName, char* query
 		_CL_LOG << "Init the form." LOG_
 		
 		_dialog->init(queryString, DBName, DBUser, DBPass);
-		_dialog->show();
+		
 	}
+
+	_dialog->show();
 	
 	return NULL;
 }
