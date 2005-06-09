@@ -611,6 +611,8 @@ lb_I_Query::lbDBColumnTypes LB_STDCALL lbBoundColumns::getColumnType(int pos) {
 		return bc->getType();
 	}
 
+	_CL_LOG << "lbBoundColumns::getColumnType(int pos) returns unknown type" LOG_
+
 	return lb_I_Query::lbDBColumnUnknown;
 }
 /*...e*/
@@ -627,7 +629,11 @@ lb_I_Query::lbDBColumnTypes LB_STDCALL lbBoundColumns::getColumnType(char* name)
 		QI(stringKey, lb_I_KeyBase, key, __FILE__, __LINE__)
 
 		ukdata = ColumnNameMapping->getElement(&key);
-		if (ukdata == NULL) printf("NULL pointer!\n");
+		if (ukdata == NULL) {
+			_CL_LOG << "lbBoundColumns::getColumnType('" << name << "') returned no data !" LOG_
+			
+			return lb_I_Query::lbDBColumnUnknown;
+		}
 
 		UAP(lb_I_BoundColumn, bc, __FILE__, __LINE__)
 		UAP(lb_I_Integer, pos, __FILE__, __LINE__)
@@ -1325,6 +1331,7 @@ int LB_STDCALL lbQuery::getColumns() {
 int LB_STDCALL lbQuery::hasFKColumn(char* FKName) {
 	lbErrCodes err = ERR_NONE;
 
+	_CL_LOG << "Check if there is a foreign column for '" << FKName << "'" LOG_
 
 	if (skipFKCollections == 1) {
 		_CL_VERBOSE << "Warning: Skipping for checking of foreign columns." LOG_
@@ -1493,15 +1500,13 @@ void LB_STDCALL lbQuery::prepareFKList() {
 	/* For each column in the table for the current query try to select the PKTable and associate it to
 	   the foreign column.
 	 */
+
+	_CL_LOG << "lbQuery::prepareFKList() tries to read foreign column information from table" LOG_
 	
 	char* table = getTableName();
 	
 	lb_I_Module* m = getModuleManager();
 
-	if (m != manager.getPtr()) {
-	    _CL_VERBOSE << "ERROR: Existing manager pointer is not the same as a fresh initialized one!" LOG_ 
-	}
-	
         UAP_REQUEST(m, lb_I_Database, db)
         db->init();
 	
@@ -1521,7 +1526,9 @@ void LB_STDCALL lbQuery::prepareFKList() {
 	    
 	    char* column = getColumnName(i);
 
-	    sprintf(buffer, "select PKTable from ForeignKey_VisibleData_Mapping where FKTable = '%s' and FKName = '%s'", table, column);
+	    sprintf(buffer, "select PKTable, PKName from ForeignKey_VisibleData_Mapping where FKTable = '%s' and FKName = '%s'", table, column);
+
+	    _CL_VERBOSE << "Query: " << buffer LOG_
 
 	    q = db->getQuery(0);
 
@@ -1534,8 +1541,10 @@ void LB_STDCALL lbQuery::prepareFKList() {
 	    if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
 		UAP_REQUEST(manager.getPtr(), lb_I_String, FKName)
 	        UAP_REQUEST(manager.getPtr(), lb_I_String, PKTable)
+	        UAP_REQUEST(manager.getPtr(), lb_I_String, PKName)
 	
 		PKTable = q->getAsString(1);
+		PKName = q->getAsString(2);
 		
 	        FKName->setData(column);
 		
@@ -1545,7 +1554,11 @@ void LB_STDCALL lbQuery::prepareFKList() {
 	        QI(FKName, lb_I_KeyBase, key_FKName, __FILE__, __LINE__)
 	        QI(PKTable, lb_I_Unknown, uk_PKTable, __FILE__, __LINE__)
 
+		printf("%-s ( %-s ) <-- %-s ( %-s )\n", PKTable->charrep(), PKName->charrep(), table, FKName->charrep());
+
 	        ForeignColumns->insert(&uk_PKTable, &key_FKName);
+	    } else {
+	    	_CL_VERBOSE << "No foreign key to primary data mapping found." LOG_
 	    }
 	}
 /*...e*/
@@ -2350,7 +2363,7 @@ void LB_STDCALL lbQuery::dbError(char* lp)
 	unsigned char sqlstate[15];
 
 	SQLError( henv, hdbc, hstmt, sqlstate, NULL, buf, sizeof(buf), NULL);
-	fprintf(stderr, "%s. %s, SQLSTATE=%s\n",lp, buf, sqlstate);
+	//fprintf(stderr, "%s. %s, SQLSTATE=%s\n",lp, buf, sqlstate);
 }
 
 /*...e*/
@@ -2370,6 +2383,8 @@ lb_I_Query::lbDBColumnTypes LB_STDCALL lbBoundColumn::getType() {
 		case SQL_BIT:
 			return lb_I_Query::lbDBColumnBit;
 			
+		case SQL_DATE:
+		case SQL_TYPE_DATE:
 		case SQL_CHAR:
 		case SQL_VARCHAR:
 		case SQL_LONGVARCHAR: 
@@ -2444,6 +2459,8 @@ lb_I_Unknown* LB_STDCALL lbBoundColumn::getData() {
 lbErrCodes LB_STDCALL lbBoundColumn::getAsString(lb_I_String* result, int asParameter) {
 	
 	switch (_DataType) {
+		case SQL_DATE:
+		case SQL_TYPE_DATE:
 	        case SQL_CHAR:
 	        case SQL_VARCHAR:
 	        case SQL_LONGVARCHAR:
@@ -2469,6 +2486,7 @@ lbErrCodes LB_STDCALL lbBoundColumn::getAsString(lb_I_String* result, int asPara
 			}
 	        	break;
 	        case SQL_BIT:
+	        case SQL_TINYINT:
 	        	{
 			#ifdef OSX
 				int bi = 0;
@@ -2480,9 +2498,11 @@ lbErrCodes LB_STDCALL lbBoundColumn::getAsString(lb_I_String* result, int asPara
 				bool b = *(bool*) buffer;
 	        		if (b == true) {
 			#endif
+					_CL_LOG << "Set a BIT value as true" LOG_
 		        		result->setData("true");
 				}
 		        	else {
+		        		_CL_LOG << "Set a BIT value as false" LOG_
 		        		result->setData("false");
 				}	
 	        	}
@@ -2504,6 +2524,8 @@ lbErrCodes LB_STDCALL lbBoundColumn::setFromString(lb_I_String* set, int mode) {
 
 	if (mode == 1) {
 		switch (_DataType) {
+			case SQL_DATE:
+			case SQL_TYPE_DATE:
 			case SQL_CHAR:
 			case SQL_VARCHAR:
 			case SQL_LONGVARCHAR:
@@ -2532,6 +2554,7 @@ lbErrCodes LB_STDCALL lbBoundColumn::setFromString(lb_I_String* set, int mode) {
 				_CL_VERBOSE << "lbBoundColumn::setFromString(...) failed: Binary data not supported for column '" << colName->charrep() << "'"  LOG_
 				break;
 			case SQL_BIT:
+			case SQL_TINYINT:
 				{
 					bool l = false;
 					if (strcmp(set->charrep(), "true") == 0) {
@@ -2549,6 +2572,8 @@ lbErrCodes LB_STDCALL lbBoundColumn::setFromString(lb_I_String* set, int mode) {
 
 	} else {
 		switch (_DataType) {
+			case SQL_DATE:
+			case SQL_TYPE_DATE:
 			case SQL_CHAR:
 			case SQL_VARCHAR:
 			case SQL_LONGVARCHAR:
@@ -2568,6 +2593,7 @@ lbErrCodes LB_STDCALL lbBoundColumn::setFromString(lb_I_String* set, int mode) {
 				_CL_VERBOSE << "lbBoundColumn::setFromString(...) failed: Binary data not supported for column '" << colName->charrep() << "'" LOG_
 				break;
 			case SQL_BIT:
+			case SQL_TINYINT:
 				{
 					bool l = false;
 					if (strcmp(set->charrep(), "true") == 0) {
@@ -2667,10 +2693,14 @@ lbErrCodes LB_STDCALL lbBoundColumn::bindColumn(lb_I_Query* q, int column, bool 
 	
 
 	switch (DataType) {
+		case SQL_DATE:
+		case SQL_TYPE_DATE:
 		case SQL_CHAR:
 		case SQL_VARCHAR:
 		case SQL_LONGVARCHAR:
 /*...sbind a character array:24:*/
+			_CL_LOG << "Bind a char array '" << ColumnName << "'" LOG_
+
 			buffer = malloc((ColumnSize+1)*rows+20);
 
 			_DataType = DataType;
@@ -2723,6 +2753,7 @@ lbErrCodes LB_STDCALL lbBoundColumn::bindColumn(lb_I_Query* q, int column, bool 
 /*...e*/
 			break;
 		case SQL_BIT:
+		case SQL_TINYINT:
 			buffer = malloc((sizeof(bool))*rows);
 			_DataType = DataType;
 			bound = 1;
@@ -2852,6 +2883,8 @@ void LB_STDCALL lbBoundColumn::unbindReadonlyColumns() {
 		_CL_VERBOSE << "Really unbind column '" << colName->charrep() << "'" LOG_
 /*...sUnbind:16:*/
 	switch (_DataType) {
+		case SQL_DATE:
+		case SQL_TYPE_DATE:
 		case SQL_CHAR:
 		case SQL_VARCHAR:
 		case SQL_LONGVARCHAR:
@@ -2902,6 +2935,7 @@ void LB_STDCALL lbBoundColumn::unbindReadonlyColumns() {
 /*...e*/
 			break;
 		case SQL_BIT:
+		case SQL_TINYINT:
 			_CL_VERBOSE << "Unbind bit" LOG_
 			bound = 0;
 
@@ -2927,6 +2961,8 @@ void LB_STDCALL lbBoundColumn::rebindReadonlyColumns() {
 		_CL_VERBOSE << "Really rebind column '" << colName->charrep() << "'" LOG_
 /*...sRebind:16:*/
 	switch (_DataType) {
+		case SQL_DATE:
+		case SQL_TYPE_DATE:
 		case SQL_CHAR:
 		case SQL_VARCHAR:
 		case SQL_LONGVARCHAR:
@@ -2977,6 +3013,7 @@ void LB_STDCALL lbBoundColumn::rebindReadonlyColumns() {
 /*...e*/
 			break;
 		case SQL_BIT:
+		case SQL_TINYINT:
 			_CL_VERBOSE << "Rebind bit" LOG_
 			bound = 1;
 
