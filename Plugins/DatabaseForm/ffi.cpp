@@ -1,4 +1,3 @@
-/*...sLicence:0:*/
 /*
     DMF Distributed Multiplatform Framework (the initial goal of this library)
     This file is part of lbDMF.
@@ -26,8 +25,6 @@
             
             40235 Duesseldorf (germany)
 */
-/*...e*/
-/*...sincludes:0:*/
 #ifdef WINDOWS
 #include <windows.h>
 #include <io.h>
@@ -59,15 +56,12 @@ extern "C" {
 
 
 
-/*...sLB_PLUGINMANAGER_DLL scope:0:*/
 #define LB_PLUGINMANAGER_DLL
 #include <lbpluginmanager-module.h>
-/*...e*/
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include <wx/wxprec.h>
 
-/*...swx ifdef\39\s:0:*/
 #ifdef __BORLANDC__
 #pragma hdrstop
 #endif
@@ -79,15 +73,11 @@ extern "C" {
 #if defined(__WXGTK__) || defined(__WXMOTIF__)
 //#include "mondrian.xpm"
 #endif
-/*...e*/
 
 #include "wx/wizard.h"
-/*...e*/
 
 
 #include <lbDatabaseForm.h>
-/*...e*/
-/*...smisc and includes:0:*/
 #ifdef __GNUG__
 #pragma implementation "dynamic.cpp"
 #pragma interface "dynamic.cpp"
@@ -96,7 +86,6 @@ extern "C" {
 // For compilers that support precompilation, includes "wx/wx.h".
 #include <wx/wxprec.h>
 
-/*...swx ifdef\39\s:0:*/
 #ifdef __BORLANDC__
 #pragma hdrstop
 #endif
@@ -108,13 +97,10 @@ extern "C" {
 #if defined(__WXGTK__) || defined(__WXMOTIF__)
 //#include "mondrian.xpm"
 #endif
-/*...e*/
 
 #include "wx/wizard.h"
-/*...e*/
 
 
-/*...sFormularFieldInformation\58\\58\FormularFieldInformation\40\char const \42\ formularname\44\ lb_I_Query\42\ query\41\:0:*/
 FormularFieldInformation::FormularFieldInformation(char const * formularname, lb_I_Query* query) {
 
 	lbErrCodes err = ERR_NONE;
@@ -145,7 +131,6 @@ FormularFieldInformation::FormularFieldInformation(char const * formularname, lb
 	err = ROquery->first();
 
 	while (err == ERR_NONE) {
-/*...sGet row data:16:*/
 	        UAP(lb_I_String, tablename, __FILE__, __LINE__)
 	        UAP(lb_I_String, fieldname, __FILE__, __LINE__)
 	        UAP(lb_I_String, specialColumn, __FILE__, __LINE__)
@@ -161,14 +146,11 @@ FormularFieldInformation::FormularFieldInformation(char const * formularname, lb
 		fieldname->trim();
 		columnType->trim();
 
-/*...e*/
-
 		for (int i = 1; i <= query->getColumns(); i++) {
 			UAP_REQUEST(getModuleInstance(), lb_I_String, col)
 			
 			col->setData(query->getColumnName(i));
 
-/*...sCheck for readonly column:24:*/
 			if ((strcmp(col->charrep(), fieldname->charrep()) == 0) && (strcmp("true", ro->charrep()) == 0)) {
 				UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
 				UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
@@ -178,9 +160,7 @@ FormularFieldInformation::FormularFieldInformation(char const * formularname, lb
 				
 				ROFields->insert(&uk, &key);
 			}
-/*...e*/
 
-/*...sCheck for special column:24:*/
 			if ((strcmp(col->charrep(), fieldname->charrep()) == 0) && (strcmp("true", specialColumn->charrep()) == 0)) {
 				UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
 				UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
@@ -190,13 +170,11 @@ FormularFieldInformation::FormularFieldInformation(char const * formularname, lb
 				
 				SCFields->insert(&uk, &key);
 			}
-/*...e*/
 		}		
 		err = ROquery->next();
 	}
 	
 	if (err == WARN_DB_NODATA) {
-/*...sGet row data:16:*/
                 UAP(lb_I_String, tablename, __FILE__, __LINE__)
                 UAP(lb_I_String, fieldname, __FILE__, __LINE__)
 		UAP(lb_I_String, specialColumn, __FILE__, __LINE__)
@@ -212,14 +190,12 @@ FormularFieldInformation::FormularFieldInformation(char const * formularname, lb
 		fieldname->trim();
 		columnType->trim();
 
-/*...e*/
 		
                 for (int i = 1; i <= query->getColumns(); i++) {
                         UAP_REQUEST(getModuleInstance(), lb_I_String, col)
 
                         col->setData(query->getColumnName(i));
 			
-/*...sCheck for readonly column:24:*/
 			if ((strcmp(col->charrep(), fieldname->charrep()) == 0) && (strcmp("true", ro->charrep()) == 0)) {
                                 UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
                                 UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
@@ -229,9 +205,7 @@ FormularFieldInformation::FormularFieldInformation(char const * formularname, lb
 
                                 ROFields->insert(&uk, &key);
                         }
-/*...e*/
 
-/*...sCheck for special column:24:*/
 			if ((strcmp(col->charrep(), fieldname->charrep()) == 0) && (strcmp("true", specialColumn->charrep()) == 0)) {
 				UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
 				UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
@@ -241,13 +215,10 @@ FormularFieldInformation::FormularFieldInformation(char const * formularname, lb
 				
 				SCFields->insert(&uk, &key);
 			}
-/*...e*/
                 }
 	}
 }
-/*...e*/
 
-/*...sbool FormularFieldInformation\58\\58\isReadonly\40\char\42\ field\41\:0:*/
 bool FormularFieldInformation::isReadonly(char* field) {
 	lbErrCodes err = ERR_NONE;
 	
@@ -267,8 +238,7 @@ bool FormularFieldInformation::isReadonly(char* field) {
 	}
 	
 }
-/*...e*/
-/*...sbool FormularFieldInformation\58\\58\isSpecialColumn\40\char\42\ field\41\:0:*/
+
 bool FormularFieldInformation::isSpecialColumn(char* field) {
 	lbErrCodes err = ERR_NONE;
 	
@@ -286,8 +256,7 @@ bool FormularFieldInformation::isSpecialColumn(char* field) {
 
 	return false;
 }
-/*...e*/
-/*...schar\42\ FormularFieldInformation\58\\58\getControlType\40\char\42\ name\41\:0:*/
+
 char* FormularFieldInformation::getControlType(char* name) {
 	lbErrCodes err = ERR_NONE;
 	
@@ -310,5 +279,4 @@ char* FormularFieldInformation::getControlType(char* name) {
 	
 	return "";
 }
-/*...e*/
-/*...e*/
+
