@@ -47,6 +47,8 @@ CREATE TABLE action_types
 (
   id INTEGER NOT NULL DEFAULT AUTOINCREMENT,
   bezeichnung char(100),
+  action_handler char(100),	-- the functor with the implementation of the handler
+  module	 char(100),	-- the module with the implementation of the handler
   PRIMARY KEY (id)
 );
 
