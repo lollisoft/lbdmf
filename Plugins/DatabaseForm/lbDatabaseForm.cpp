@@ -135,192 +135,6 @@ extern "C" {
 	This is only an idea - a remote control at application level.
 */
 /*...e*/
-/*...sclass lbDatabaseDialog:0:*/
-/**
- * This is the sample database dialog for a wxWidgets based GUI.
- */
-
-
-class lbDatabaseDialog :
-	public lb_I_DatabaseForm,
-	public wxDialog {
-public:
-	/**
-	 * Default constructor - implemented in BEGIN_IMPLEMENT_LB_UNKNOWN(lbDatabaseDialog)
-	 */
-	lbDatabaseDialog();
-
-	/**
-	 * Destructor
-	 */
-	virtual ~lbDatabaseDialog();
-
-	lbErrCodes LB_STDCALL setName(char const * name) {
-		free(formName);
-		formName = strdup(name);	
-		
-		return ERR_NONE;
-	}
-
-	lbErrCodes LB_STDCALL addButton(char* buttonText, char* evHandler, int x, int y, int w, int h) { return ERR_NONE; };
-	lbErrCodes LB_STDCALL addLabel(char* text, int x, int y, int w, int h) { return ERR_NONE; };
-	lbErrCodes LB_STDCALL addTextField(char* name, int x, int y, int w, int h) { return ERR_NONE; };
-
-	lbErrCodes LB_STDCALL addOwnerDrawn(char* name, int x, int y, int w, int h) { return ERR_NONE; };
-
-	void LB_STDCALL show() { Show (TRUE); };
-	void LB_STDCALL destroy() { Destroy(); };
-	
-/*...sfrom DatabaseForm interface:8:*/
-	void LB_STDCALL init(char* SQLString, char* DBName, char* DBUser, char* DBPass);
-
-	char* LB_STDCALL getQuery();
-
-	void LB_STDCALL setFilter(char* filter);
-	
-	void LB_STDCALL setMasterForm(lb_I_MasterDetailFormDefinition* MD_definition);
-	
-	void LB_STDCALL updateFromMaster();
-	
-	const char* LB_STDCALL getControlValue(char* name);
-	
-/*...e*/
-
-/*...sData navigation and other handlers:8:*/
-	/**
-	 * Database navigation
-	 * 
-	 * Moves to the first row.
-	 */
-	lbErrCodes LB_STDCALL lbDBFirst(lb_I_Unknown* uk);
-
-	/**
-	 * Database navigation
-	 * 
-	 * Moves to the next row.
-	 */
-	lbErrCodes LB_STDCALL lbDBNext(lb_I_Unknown* uk);
-
-	/**
-	 * Database navigation
-	 * 
-	 * Moves to the previous row.
-	 */
-	lbErrCodes LB_STDCALL lbDBPrev(lb_I_Unknown* uk);
-
-	/**
-	 * Database navigation
-	 * 
-	 * Moves to the last row.
-	 */
-	lbErrCodes LB_STDCALL lbDBLast(lb_I_Unknown* uk);
-	
-	/**
-	 * Database manipulation
-	 * 
-	 * This adds a new row, while it copies the values of the actual form into the row.
-	 */
-	lbErrCodes LB_STDCALL lbDBAdd(lb_I_Unknown* uk);
-
-	/**
-	 * Database manipulation
-	 * 
-	 * Deletes the current row.
-	 */
-	lbErrCodes LB_STDCALL lbDBDelete(lb_I_Unknown* uk);
-
-	/**
-	 * Database manipulation
-	 * 
-	 * Internally used to update the current row.
-	 */
-	lbErrCodes LB_STDCALL lbDBUpdate();
-
-	/**
-	 * Database manipulation
-	 *
-	 * Clear the form.
-	 */
-
-	lbErrCodes LB_STDCALL lbDBClear();
-
-	/**
-	 * Database manipulation
-	 * 
-	 * Internally used to read data from the cursor to the current row.
-	 */
-	lbErrCodes LB_STDCALL lbDBRead();
-/*...e*/
-
-/*...sfrom EventHandler interface:8:*/
-	/**
-	 * This function acts in a special way for registering the above navigation handlers
-	 *
-	 * It uses a string of the this pointer + a name for the respective eventhandler.
-	 * This is neccessary for handling more than one database dialog per application.
-	 *
-	 * This is a good sample, if you need to be able to handle more than one instance of
-	 * your registered event handlers.
-	 */
-	lbErrCodes LB_STDCALL registerEventHandler(lb_I_Dispatcher* dispatcher);
-/*...e*/
-
-	/** \brief Handler for button actions
-	 *
-	 * This handler should be used if a button action will be added to the form.
-	 */
-	lbErrCodes LB_STDCALL OnActionButton(lb_I_Unknown* uk);
-
-	void OnDispatch(wxCommandEvent& event);
-
-	/** \brief Paint the control.
-	 *
-	 * This handler should be used to paint an 'ownerdrawn' control.
-	 * As in my Power++ code 'EditSymbol', this should also work under
-	 * wxWidgets.
-	 *
-	 * The only problem would be the selection of which control currently
-	 * fires the event. 'EditSymbol' only handles one such control.
-	 */
-	void OnPaint(wxCommandEvent& event);
-
-	DECLARE_LB_UNKNOWN()
-
-/*...svariables:8:*/
-	UAP(lb_I_Database, database, __FILE__, __LINE__)
-	UAP(lb_I_Query, sampleQuery, __FILE__, __LINE__)
-	UAP(lb_I_String, SQLString, __FILE__, __LINE__)
-	UAP(lb_I_String, SQLWhere, __FILE__, __LINE__)
-	
-	/** \brief Stores information about who is the master and holds a master column list. */
-	UAP(lb_I_MasterDetailFormDefinition, myMasterFormDefinition, __FILE__, __LINE__)
-	
-	/** \brief List of client forms. */
-	UAP(lb_I_Container, myClientForms, __FILE__, __LINE__)
-	
-	/**
-	 * \brief Maps positions to id's for each displayed combo box.
-	 *
-	 * Store a container for each combo box with key(pos) and data(id). 
-	 */
-	UAP(lb_I_Container, ComboboxMapperList, __FILE__, __LINE__)
-	
-
-	// l gets overwritten, while assigning a lb_I_Query* pointer to sampleQuery !!
-	// l and buf are therefore as a bugfix.
-	long l;
-	char buf[100];
-	
-	wxWindow* firstButton;
-	wxWindow* prevButton;
-	wxWindow* nextButton;
-	wxWindow* lastButton;
-	char* formName;
-
-	FormularFieldInformation* FFI;
-/*...e*/
-};
-/*...e*/
 
 /*...sclass lbOwnerDrawControl:0:*/
 class lbOwnerDrawControl :
@@ -381,10 +195,93 @@ void lbOwnerDrawControl::OnPaint(wxPaintEvent &WXUNUSED(event)) {
 }
 /*...e*/
 
+/*...slbAction:0:*/
+BEGIN_IMPLEMENT_LB_UNKNOWN(lbAction)
+	ADD_INTERFACE(lb_I_Action)
+END_IMPLEMENT_LB_UNKNOWN()
+
+IMPLEMENT_FUNCTOR(instanceOflbAction, lbAction)
+
+lbErrCodes LB_STDCALL lbAction::setData(lb_I_Unknown* uk) {
+        _CL_VERBOSE << "lbAction::setData(lb_I_Unknown* uk) not implemented." LOG_
+
+        return ERR_NOT_IMPLEMENTED;
+}
+
+lbAction::lbAction() {
+	ref = STARTREF;
+	myActionID = NULL;
+}
+
+lbAction::~lbAction() {
+	free(myActionID);
+}
+
+void LB_STDCALL lbAction::setActionID(char* id) {
+	_CL_LOG << "lbAction::setActionID('" << id << "')" LOG_
+	
+	free(myActionID);
+	
+	if ((id != NULL) && (strlen(id) > 0)) {
+		myActionID = strdup(id);
+	} else {
+		_CL_LOG << "Error: Got an invalid action ID!" LOG_
+	}
+}
+
+void LB_STDCALL lbAction::execute() {
+	_CL_LOG << "lbAction::execute()" LOG_
+	
+	UAP_REQUEST(manager.getPtr(), lb_I_Database, database)
+	UAP(lb_I_Query, query, __FILE__, __LINE__)
+
+	database->init();
+
+	char* lbDMFPasswd = getenv("lbDMFPasswd");
+	char* lbDMFUser   = getenv("lbDMFUser");
+
+	if (!lbDMFUser) lbDMFUser = "dba";
+	if (!lbDMFPasswd) lbDMFPasswd = "trainres";
+
+	database->connect("lbDMF", lbDMFUser, lbDMFPasswd);
+
+	query = database->getQuery(0);	
+	
+	char buf[] = "select type from action_steps where actionid = %s";
+	char* q = (char*) malloc(strlen(buf)+strlen(myActionID)+1);
+	q[0] = 0;
+	sprintf(q, buf, myActionID);
+	
+	if (query->query(q) == ERR_NONE) {
+	
+		lbErrCodes err = query->first();
+	
+		while(err == ERR_NONE) {
+			UAP_REQUEST(manager.getPtr(), lb_I_String, type)
+			
+			type = query->getAsString(1);
+			
+			printf("Have an action step of type: %s\n", type->charrep());
+			err = query->next();
+		}
+		
+		if (err == WARN_DB_NODATA) {
+			UAP_REQUEST(manager.getPtr(), lb_I_String, type)
+			
+			type = query->getAsString(1);
+			
+			printf("Have an action step of type: %s\n", type->charrep());
+		}
+	}
+}
+/*...e*/
+
 /*...slbDatabaseDialog:0:*/
 
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbDatabaseDialog)
         ADD_INTERFACE(lb_I_DatabaseForm)
+        ADD_INTERFACE(lb_I_DatabaseMasterForm)
+        ADD_INTERFACE(lb_I_DatabaseDetailForm)
 END_IMPLEMENT_LB_UNKNOWN()
 
 IMPLEMENT_FUNCTOR(instanceOflbDatabaseDialog, lbDatabaseDialog)
@@ -411,6 +308,30 @@ lbDatabaseDialog::lbDatabaseDialog()
 /*...slbDatabaseDialog\58\\58\\126\lbDatabaseDialog\40\\41\:0:*/
 lbDatabaseDialog::~lbDatabaseDialog() {
 	_CL_LOG << "lbDatabaseDialog::~lbDatabaseDialog() called." LOG_
+
+	if (detailForms == NULL) return;
+
+	while (detailForms->hasMoreElements()) {
+		lbErrCodes err = ERR_NONE;
+				
+		lb_I_Unknown* form = detailForms->nextElement();
+
+		if (!form) continue;
+
+		UAP(lb_I_DatabaseForm, d, __FILE__, __LINE__)		
+		QI(form, lb_I_DatabaseForm, d, __FILE__, __LINE__)
+		
+		/* Really needed here !
+		 * The wxWidgets system doesn't have a or at least has it's own reference counting system.
+		 *
+		 * So here I must ensure, that the object it self doesn't get deleted in the container.
+		 * wxWidgets should call the destructor of the form.
+		 */
+		 
+		d++;
+		 
+		d->destroy();
+	}
 }
 /*...e*/
 
@@ -444,6 +365,15 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::registerEventHandler(lb_I_Dispatcher* di
 void LB_STDCALL lbDatabaseDialog::init(char* _SQLString, char* DBName, char* DBUser, char* DBPass) {
 	char prefix[100] = "";
 	sprintf(prefix, "%p", this);
+
+
+	if (detailForms == NULL) {
+		// Create the instance for my detail formulars, if any.
+		REQUEST(manager.getPtr(), lb_I_Container, detailForms)
+
+		// Forbid autodeletion.
+		detailForms->detachAll();
+	}
 
 	SetTitle(_trans(formName));
 
@@ -879,8 +809,7 @@ printf("Create a drop down box for '%s'\n", name);
 	
 	actionQuery = actionsDatabase->getQuery(0);
 
-	char *_actionquery = "select actions.name, action_target.what from actions "
-			     "inner join action_target on actions.id = action_target.id "
+	char *_actionquery = "select actions.name, formular_actions.event from actions "
 			     "inner join formular_actions on actions.id = formular_actions.action "
 			     "inner join formulare on formular_actions.formular = formulare.id "
 			     "where formulare.name = '%s'";
@@ -1009,22 +938,25 @@ char* LB_STDCALL lbDatabaseDialog::getQuery() {
 	return SQLString->charrep();
 }
 
-void LB_STDCALL lbDatabaseDialog::setMasterForm(lb_I_MasterDetailFormDefinition* MD_definition) {
-	myMasterFormDefinition = MD_definition;
-	myMasterFormDefinition++;
+/*...svoid LB_STDCALL lbDatabaseDialog\58\\58\setMasterForm\40\lb_I_DatabaseMasterForm\42\ master\41\:0:*/
+void LB_STDCALL lbDatabaseDialog::setMasterForm(lb_I_DatabaseMasterForm* master) {
 	
 	// Now build the where clause that sets the foreign key columns of this form as equal condition to the values of the masters pk columns.
 	
+	_master = master;
+	
 	updateFromMaster();
 }
+/*...e*/
 
+/*...sconst char\42\ LB_STDCALL lbDatabaseDialog\58\\58\getControlValue\40\char\42\ name\41\:0:*/
 const char* LB_STDCALL lbDatabaseDialog::getControlValue(char* name) {
 
 	wxString value;
 
 	wxWindow* w = FindWindowByName(wxString(name), this);
 
-/*...sGet the content:16:*/
+/*...sGet the content:8:*/
 				lb_I_Query::lbDBColumnTypes coltype = sampleQuery->getColumnType(name);
 
 				switch (coltype) {
@@ -1064,6 +996,7 @@ const char* LB_STDCALL lbDatabaseDialog::getControlValue(char* name) {
 
 	return value.c_str();
 }
+/*...e*/
 
 /*...svoid LB_STDCALL lbDatabaseDialog\58\\58\updateFromMaster\40\\41\:0:*/
 void LB_STDCALL lbDatabaseDialog::updateFromMaster() {
@@ -1073,19 +1006,19 @@ void LB_STDCALL lbDatabaseDialog::updateFromMaster() {
 	// Using the new = and += operators of the string interface. Note: If used in an UAP, explizit 'dereferencing' must be used.
 	*newWhereClause = " where ";
 	
-	for (int i = 0; i < myMasterFormDefinition->getMasterColumns()-1; i++) {
+	for (int i = 0; i < _master->getMasterColumns()-1; i++) {
 		UAP(lb_I_String, colName, __FILE__, __LINE__)
-		colName = myMasterFormDefinition->getMasterColumn(i);
+		colName = _master->getMasterColumn(i);
 		
 		*newWhereClause += *&colName;
-		bool isChar = myMasterFormDefinition->isCharacterColumn(i); 
+		bool isChar = _master->isCharacterColumn(i); 
 
 		if (isChar) 
 			*newWhereClause += " = '";
 		else
 			*newWhereClause += " = ";
 
-		*newWhereClause += myMasterFormDefinition->getMasterForm()->getControlValue(colName->charrep());
+		*newWhereClause += _master->getControlValue(colName->charrep());
 			
 		if (isChar) *newWhereClause += "'";
 	}
@@ -1572,7 +1505,7 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::OnActionButton(lb_I_Unknown* uk) {
 		So the Button has the text 'Reserve a trip' and maybe have a help text of
 		'Customer want to reserve a trip'.
 		
-		To get the source data field for that action, I will need the action_target.id field.
+		To get the source data field for that action, I will need the action_steps.id field.
 		ID would be retrieved in two steps. The retrival is implemented in FormularActions class.
 	 */
 /*...e*/
@@ -1664,6 +1597,7 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::OnActionButton(lb_I_Unknown* uk) {
 		_CL_LOG << "Have got source field: " << s << "." LOG_
 		_CL_LOG << "The value for the field is " << value.c_str() << "." LOG_		
 
+/*...sShema doc for actions:16:*/
 		/*
 		   The current database shema has no entry for an event to be used
 		   as a forwardable event. So here I suggest to add a prefix to the
@@ -1726,7 +1660,87 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::OnActionButton(lb_I_Unknown* uk) {
 									'ActionTarget':'OpenForm:TripsOverview'
 
 		*/
+/*...e*/
 
+		// Try to abstract the action.
+
+		UAP(lb_I_Action, action, __FILE__, __LINE__)
+		
+		action = fa.getAction(fa.getActionID(reversedEvent));
+
+		action->execute();
+
+		_CL_LOG << "Action has been executed." LOG_
+
+#ifdef bla
+/*...sCreate the detail form:16:*/
+		UAP(lb_I_DatabaseForm, _dialog, __FILE__, __LINE__)
+	
+		UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
+		UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
+	
+		UAP_REQUEST(getModuleManager(), lb_I_String, fName)
+		fName->setData(detailFormName);
+	
+		QI(fName, lb_I_KeyBase, key, __FILE__, __LINE__)
+	
+		uk = detailForms->getElement(&key);	
+	
+		if (uk != NULL) {
+			QI(uk, lb_I_DatabaseForm, _dialog, __FILE__, __LINE__)
+		}
+
+		if ((_dialog.getPtr() != NULL) && (strcmp(queryString, _dialog->getQuery()) != 0)) {
+	
+			// SQL query from database has been changed. Recreate the dialog from scratch. 
+	
+			detailForms->remove(&key);
+		
+			_dialog->destroy();
+	
+			_dialog.resetPtr();
+		}
+
+		if (_dialog.getPtr() == NULL) {
+			UAP_REQUEST(manager.getPtr(), lb_I_PluginManager, PM)
+			UAP(lb_I_Plugin, pl, __FILE__, __LINE__)
+		
+			pl = PM->getFirstMatchingPlugin("lb_I_DatabaseForm");
+
+			if (pl == NULL) {
+				char* msg = (char*) malloc(200);
+				msg[0] = 0;
+				strcpy(msg, _trans("Database form plugin not found or not installed.\n\nDatabase forms are not available."));
+				msgBox(_trans("Error"), msg);
+				free(msg);
+				return NULL;
+			}
+
+			uk = pl->getImplementation();
+		
+			detailForms->insert(&uk, &key);
+		
+			UAP(lb_I_DatabaseForm, form, __FILE__, __LINE__)
+			QI(uk, lb_I_DatabaseForm, form, __FILE__, __LINE__)
+		
+			form->destroy();
+			form = NULL;
+		
+			uk = forms->getElement(&key);
+		
+			if (uk != NULL) {
+			        QI(uk, lb_I_DatabaseForm, _dialog, __FILE__, __LINE__)
+			}
+		
+			_dialog->setName(formName);
+			
+			_dialog->init(queryString, DBName, DBUser, DBPass);
+		
+		}
+
+		_dialog->show();
+/*...e*/
+#endif
 		free(s);
 		
 		free(eventName);
@@ -1781,10 +1795,24 @@ void lbDatabaseDialog::OnPaint(wxCommandEvent& event ) {
 
 }
 /*...e*/
+
+int LB_STDCALL lbDatabaseDialog::getMasterColumns()
+{
+	return 0;
+}
+	
+lb_I_String* LB_STDCALL lbDatabaseDialog::getMasterColumn(int pos)
+{
+	return NULL;
+}
+	   
+bool LB_STDCALL lbDatabaseDialog::isCharacterColumn(int pos)
+{
+	return false;
+}
 /*...e*/
 
-/*...sclass lbPluginDatabaseDialog and lbDatabaseDialog implementation:0:*/
-
+/*...sclass lbPluginDatabaseDialog implementation:0:*/
 /*...slbPluginDatabaseDialog:0:*/
 class lbPluginDatabaseDialog : public virtual lb_I_PluginImpl {
 public:

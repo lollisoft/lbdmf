@@ -94,6 +94,21 @@ extern "C" {
 #include <lbDatabaseForm.h>
 
 
+
+lb_I_Action* FormularActions::getAction(char* id) {
+	lbAction* _action = new lbAction();
+	
+	_action->setModuleManager(getModuleInstance(), __FILE__, __LINE__);
+	
+	lb_I_Action* action;
+	_action->queryInterface("lb_I_Action", (void**) &action, __FILE__, __LINE__);
+
+	// Store the id of the action for later use.
+	action->setActionID(id);
+	
+	return action;
+}
+
 /*...schar\42\ FormularActions\58\\58\getActionTargetID\40\char\42\ what\41\:0:*/
 char* FormularActions::getActionTargetID(char* what) {
 	lbErrCodes err = ERR_NONE;
@@ -118,7 +133,7 @@ char* FormularActions::getActionTargetID(char* what) {
 	
 	query = database->getQuery(0);
 	
-	char buf[] = "select id from action_target where what = '%s'";
+	char buf[] = "select id from formular_actions where event = '%s'";
 	
 	char* buffer = (char*) malloc(strlen(buf)+strlen(What->charrep())+1);
 	
@@ -180,4 +195,45 @@ char* FormularActions::getActionSourceDataField(char* what) {
 	return strdup("");
 }
 /*...e*/
+/*...schar\42\ FormularActions\58\\58\getActionID\40\char\42\ what\41\:0:*/
+char* FormularActions::getActionID(char* what) {
+	lbErrCodes err = ERR_NONE;
+	
+	UAP_REQUEST(getModuleInstance(), lb_I_Database, database)
+	
+	database->init();
+	
+	char* lbDMFPasswd = getenv("lbDMFPasswd");
+	char* lbDMFUser   = getenv("lbDMFUser");
+	
+	if (!lbDMFUser) lbDMFUser = "dba";
+	if (!lbDMFPasswd) lbDMFPasswd = "trainres";
+	
+	database->connect("lbDMF", lbDMFUser, lbDMFPasswd);	
+
+	UAP(lb_I_Query, query, __FILE__, __LINE__)
+	
+	query = database->getQuery(0);
+	
+	char buf[] = "select id from actions where target = %s";
+	
+	char* buffer = (char*) malloc(strlen(buf)+20);
+	
+	sprintf(buffer, buf, getActionTargetID(what));
+
+	query->query(buffer);
+	
+	if (((err = query->first()) == ERR_NONE) || (err == WARN_DB_NODATA)) {
+	
+		UAP(lb_I_String, source, __FILE__, __LINE__)
+		
+		source = query->getAsString(1);
+		
+		source->trim();
+				
+		return strdup(source->charrep());
+	}
+	
+	return strdup("");
+}
 /*...e*/
