@@ -1,4 +1,4 @@
-/*...sLicence:0:*/
+/*...sLicense:0:*/
 /*
     DMF Distributed Multiplatform Framework (the initial goal of this library)
     This file is part of lbDMF.
@@ -27,17 +27,17 @@
             40235 Duesseldorf (germany)
 */
 /*...e*/
-
-#ifndef __LB_DatabaseForm__
-#define __LB_DatabaseForm__
-/*...sRevision history:0:*/
+/*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.7 $
+ * $Revision: 1.8 $
  * $Name:  $
- * $Id: lbDatabaseForm.h,v 1.7 2005/05/15 23:49:10 lollisoft Exp $
+ * $Id: lbDatabaseForm.h,v 1.8 2005/06/12 10:30:55 lollisoft Exp $
  *
  * $Log: lbDatabaseForm.h,v $
+ * Revision 1.8  2005/06/12 10:30:55  lollisoft
+ * Moved some classes to here.
+ *
  * Revision 1.7  2005/05/15 23:49:10  lollisoft
  * Moved some classes to their own files.
  *
@@ -64,12 +64,14 @@
  * Initial
  *
  **************************************************************/
-
 /*...e*/
+
+#ifndef __LB_DatabaseForm__
+#define __LB_DatabaseForm__
 
 #include <iostream>
 
-/*...sclass lbConfigure_FK_PK_MappingDialog definition:0:*/
+/*...sclass lbConfigure_FK_PK_MappingDialog:0:*/
 class lbConfigure_FK_PK_MappingDialog :
 	public lb_I_EventHandler,
 	public lb_I_Unknown,
@@ -119,7 +121,6 @@ public:
 	void OnFKComboBoxSelected( wxCommandEvent &event );
 	void OnPKComboBoxSelected( wxCommandEvent &event );
 	    
-/*...svariables:8:*/
 	UAP(lb_I_Database, database, __FILE__, __LINE__)
 	UAP(lb_I_Query, sampleQuery, __FILE__, __LINE__)
 	
@@ -150,12 +151,27 @@ public:
 	wxWindow* nextButton;
 	wxWindow* lastButton;
 	int pass;
+};
 /*...e*/
+
+/*...sclass lbAction:0:*/
+class lbAction : public lb_I_Action
+{
+public:
+	lbAction();
+	virtual ~lbAction();
+
+	void LB_STDCALL setActionID(char* id);	
+	void LB_STDCALL execute();
+	
+	DECLARE_LB_UNKNOWN()
+	
+protected:
+	char* myActionID;
 };
 /*...e*/
 
 /*...sclass FormularActions:0:*/
-/*...sclass definition of FormularActions:0:*/
 /** \brief Management of formular actions.
  *
  * This class is used to concentrate the code for formular actions.
@@ -174,17 +190,18 @@ public:
 	 */
 	char* getActionTargetID(char* what);
 	
-	/** \brief Source field of the action.
-	 *
-	 *
-	 */
+	/** \brief Source field of the action. */
 	char* getActionSourceDataField(char* what);
 
+	/** \brief ID for the action. */
+	char* getActionID(char* what);
+
+	/** \brief Get the action instance. */
+	lb_I_Action* getAction(char* id);
 };
 /*...e*/
 
 /*...sclass FormularFieldInformation:0:*/
-/*...sclass declaration FormularFieldInformation:0:*/
 /** \brief Management of formular fields.
  *
  * This class is used to concentrate the code for formular field informations.
@@ -220,27 +237,247 @@ protected:
 };
 /*...e*/
 
+/*...sclass lbMasterDetailFormDefinition:0:*/
+class lbMasterDetailFormDefinition : 
+	public lb_I_MasterDetailFormDefinition {
 
-/*...s\35\ifdef __cplusplus \123\:0:*/
+public:
+	lbMasterDetailFormDefinition();
+	virtual ~lbMasterDetailFormDefinition();
+
+        void LB_STDCALL setMasterForm(lb_I_DatabaseForm* master);
+        
+        void LB_STDCALL addMasterColumn(char* column);
+         
+        int LB_STDCALL getMasterColumns();
+ 
+        lb_I_String* LB_STDCALL getMasterColumn(int pos);
+ 
+        lb_I_DatabaseForm* LB_STDCALL getMasterForm();
+         
+        void LB_STDCALL setCharacterColumn(int pos, bool is = true);
+         
+        bool LB_STDCALL isCharacterColumn(int pos);
+        
+	DECLARE_LB_UNKNOWN()        	
+	
+private:
+	lb_I_DatabaseForm* masterForm;
+	
+	UAP(lb_I_Container, masterColumns, __FILE__, __LINE__)
+};
+/*...e*/
+
+/*...sclass lbDatabaseDialog:0:*/
+/**
+ * This is the sample database dialog for a wxWidgets based GUI.
+ */
+
+
+class lbDatabaseDialog :
+	public lb_I_DatabaseForm,
+	public lb_I_DatabaseMasterForm,
+	public lb_I_DatabaseDetailForm,
+	public wxDialog {
+public:
+	/**
+	 * Default constructor - implemented in BEGIN_IMPLEMENT_LB_UNKNOWN(lbDatabaseDialog)
+	 */
+	lbDatabaseDialog();
+
+	/**
+	 * Destructor
+	 */
+	virtual ~lbDatabaseDialog();
+
+	lbErrCodes LB_STDCALL setName(char const * name) {
+		free(formName);
+		formName = strdup(name);	
+		
+		return ERR_NONE;
+	}
+
+	lbErrCodes LB_STDCALL addButton(char* buttonText, char* evHandler, int x, int y, int w, int h) { return ERR_NONE; };
+	lbErrCodes LB_STDCALL addLabel(char* text, int x, int y, int w, int h) { return ERR_NONE; };
+	lbErrCodes LB_STDCALL addTextField(char* name, int x, int y, int w, int h) { return ERR_NONE; };
+
+	lbErrCodes LB_STDCALL addOwnerDrawn(char* name, int x, int y, int w, int h) { return ERR_NONE; };
+
+	void LB_STDCALL show() { Show (TRUE); };
+	void LB_STDCALL destroy() { Destroy(); };
+	
+/*...sfrom DatabaseForm interface:8:*/
+	void LB_STDCALL init(char* SQLString, char* DBName, char* DBUser, char* DBPass);
+
+	char* LB_STDCALL getQuery();
+
+	void LB_STDCALL setFilter(char* filter);
+	
+	const char* LB_STDCALL getControlValue(char* name);
+	
+/*...e*/
+
+	void LB_STDCALL setMasterForm(lb_I_DatabaseMasterForm* master);
+	
+	void LB_STDCALL updateFromMaster();
+
+	int LB_STDCALL getMasterColumns();
+	
+	lb_I_String* LB_STDCALL getMasterColumn(int pos);
+	   
+	bool LB_STDCALL isCharacterColumn(int pos);
+
+/*...sData navigation and other handlers:8:*/
+	/**
+	 * Database navigation
+	 * 
+	 * Moves to the first row.
+	 */
+	lbErrCodes LB_STDCALL lbDBFirst(lb_I_Unknown* uk);
+
+	/**
+	 * Database navigation
+	 * 
+	 * Moves to the next row.
+	 */
+	lbErrCodes LB_STDCALL lbDBNext(lb_I_Unknown* uk);
+
+	/**
+	 * Database navigation
+	 * 
+	 * Moves to the previous row.
+	 */
+	lbErrCodes LB_STDCALL lbDBPrev(lb_I_Unknown* uk);
+
+	/**
+	 * Database navigation
+	 * 
+	 * Moves to the last row.
+	 */
+	lbErrCodes LB_STDCALL lbDBLast(lb_I_Unknown* uk);
+	
+	/**
+	 * Database manipulation
+	 * 
+	 * This adds a new row, while it copies the values of the actual form into the row.
+	 */
+	lbErrCodes LB_STDCALL lbDBAdd(lb_I_Unknown* uk);
+
+	/**
+	 * Database manipulation
+	 * 
+	 * Deletes the current row.
+	 */
+	lbErrCodes LB_STDCALL lbDBDelete(lb_I_Unknown* uk);
+
+	/**
+	 * Database manipulation
+	 * 
+	 * Internally used to update the current row.
+	 */
+	lbErrCodes LB_STDCALL lbDBUpdate();
+
+	/**
+	 * Database manipulation
+	 *
+	 * Clear the form.
+	 */
+
+	lbErrCodes LB_STDCALL lbDBClear();
+
+	/**
+	 * Database manipulation
+	 * 
+	 * Internally used to read data from the cursor to the current row.
+	 */
+	lbErrCodes LB_STDCALL lbDBRead();
+/*...e*/
+
+/*...sfrom EventHandler interface:8:*/
+	/**
+	 * This function acts in a special way for registering the above navigation handlers
+	 *
+	 * It uses a string of the this pointer + a name for the respective eventhandler.
+	 * This is neccessary for handling more than one database dialog per application.
+	 *
+	 * This is a good sample, if you need to be able to handle more than one instance of
+	 * your registered event handlers.
+	 */
+	lbErrCodes LB_STDCALL registerEventHandler(lb_I_Dispatcher* dispatcher);
+/*...e*/
+
+	/** \brief Handler for button actions
+	 *
+	 * This handler should be used if a button action will be added to the form.
+	 */
+	lbErrCodes LB_STDCALL OnActionButton(lb_I_Unknown* uk);
+
+	void OnDispatch(wxCommandEvent& event);
+
+	/** \brief Paint the control.
+	 *
+	 * This handler should be used to paint an 'ownerdrawn' control.
+	 * As in my Power++ code 'EditSymbol', this should also work under
+	 * wxWidgets.
+	 *
+	 * The only problem would be the selection of which control currently
+	 * fires the event. 'EditSymbol' only handles one such control.
+	 */
+	void OnPaint(wxCommandEvent& event);
+
+	DECLARE_LB_UNKNOWN()
+
+/*...svariables:8:*/
+	UAP(lb_I_Database, database, __FILE__, __LINE__)
+	UAP(lb_I_Query, sampleQuery, __FILE__, __LINE__)
+	UAP(lb_I_String, SQLString, __FILE__, __LINE__)
+	UAP(lb_I_String, SQLWhere, __FILE__, __LINE__)
+	
+	/**
+	 * \brief Maps positions to id's for each displayed combo box.
+	 *
+	 * Store a container for each combo box with key(pos) and data(id). 
+	 */
+	UAP(lb_I_Container, ComboboxMapperList, __FILE__, __LINE__)
+	
+	UAP(lb_I_Container, detailForms, __FILE__, __LINE__)
+	lb_I_DatabaseMasterForm* _master;
+
+	// l gets overwritten, while assigning a lb_I_Query* pointer to sampleQuery !!
+	// l and buf are therefore as a bugfix.
+	long l;
+	char buf[100];
+	
+	wxWindow* firstButton;
+	wxWindow* prevButton;
+	wxWindow* nextButton;
+	wxWindow* lastButton;
+	char* formName;
+
+	FormularFieldInformation* FFI;
+/*...e*/
+};
+/*...e*/
+
+
 #ifdef __cplusplus
 extern "C" {
 #endif
-/*...e*/
 
 DECLARE_SINGLETON_FUNCTOR(instanceOfPluginModule)
 
 DECLARE_FUNCTOR(instanceOflbDatabaseDialog)
 DECLARE_FUNCTOR(instanceOflbPluginDatabaseDialog)
+DECLARE_FUNCTOR(instanceOflbAction)
 
 // Based on the 'group box' this control can be used to draw lines and so on.
 DECLARE_FUNCTOR(instanceOflbOwnerDrawControl)
 
-/*...s\35\ifdef __cplusplus \125\:0:*/
 #ifdef __cplusplus
 }
 #endif
 
-/*...e*/
 
 #endif // __LB_DatabaseForm__
+
 
