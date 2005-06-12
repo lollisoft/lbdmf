@@ -254,6 +254,9 @@ public:
 	virtual int		LB_STDCALL hasFKColumn(char* FKName);
 	virtual lb_I_String*	LB_STDCALL getPKTable(char const * FKName);
 
+	int 			LB_STDCALL getPKColumns();
+	lb_I_String* 		LB_STDCALL getPKColumn(int pos);
+
 	virtual bool		LB_STDCALL isNull(int pos);
 
 	virtual lb_I_Query::lbDBColumnTypes LB_STDCALL getColumnType(int pos);
@@ -1331,21 +1334,23 @@ int LB_STDCALL lbQuery::getColumns() {
 int LB_STDCALL lbQuery::hasFKColumn(char* FKName) {
 	lbErrCodes err = ERR_NONE;
 
-	_CL_LOG << "Check if there is a foreign column for '" << FKName << "'" LOG_
+	if ((FKName != NULL) && (strlen(FKName) > 0)) {
 
-	if (skipFKCollections == 1) {
-		_CL_VERBOSE << "Warning: Skipping for checking of foreign columns." LOG_
-		return 0;
+		if (skipFKCollections == 1) {
+			_CL_VERBOSE << "Warning: Skipping for checking of foreign columns." LOG_
+			return 0;
+		}
+	
+		UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
+		UAP_REQUEST(manager.getPtr(), lb_I_String, s)
+	
+		s->setData(FKName);
+		
+		QI(s, lb_I_KeyBase, key, __FILE__, __LINE__)
+	
+		if (ForeignColumns->exists(&key) == 1) return 1;
+
 	}
-	
-	UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, s)
-	
-	s->setData(FKName);
-	
-	QI(s, lb_I_KeyBase, key, __FILE__, __LINE__)
-	
-	if (ForeignColumns->exists(&key) == 1) return 1;
 
 	return 0;
 }
@@ -1566,6 +1571,16 @@ void LB_STDCALL lbQuery::prepareFKList() {
 }
 /*...e*/
 
+int LB_STDCALL lbQuery::getPKColumns() {
+	_CL_LOG << "ERROR: int LB_STDCALL lbQuery::getPKColumns() not yet implemented." LOG_
+	return 0;
+}
+
+lb_I_String* LB_STDCALL lbQuery::getPKColumn(int pos) {
+	_CL_LOG << "ERROR: lb_I_String* LB_STDCALL lbQuery::getPKColumn(int pos) not yet implemented." LOG_
+	return NULL;
+}
+
 bool LB_STDCALL lbQuery::isNull(int pos) {
 	return boundColumns->isNull(pos);
 }
@@ -1619,6 +1634,10 @@ char* LB_STDCALL lbQuery::getColumnName(int col) {
 	SQLRETURN ret = SQLDescribeCol( hstmt, col, ColumnName,
                       BufferLength, &NameLength, &DataType,
                       &ColumnSize, &DecimalDigits, &Nullable);
+
+	if (ret != SQL_SUCCESS) {
+		_CL_LOG << "Error: lbQuery::getColumnName(int col) failed." LOG_
+	}
 
 	strcpy(lbQuery_column_Name, (char*) ColumnName);
 	
@@ -2359,11 +2378,16 @@ printf("Endscan at '%s'\n", lpszTable);
 
 void LB_STDCALL lbQuery::dbError(char* lp)
 {
-	unsigned char buf[1000];
+	unsigned char *buf = (unsigned char*) malloc(1000);
 	unsigned char sqlstate[15];
 
 	SQLError( henv, hdbc, hstmt, sqlstate, NULL, buf, sizeof(buf), NULL);
-	//fprintf(stderr, "%s. %s, SQLSTATE=%s\n",lp, buf, sqlstate);
+	
+	UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
+	
+	fprintf(stderr, "%s. %s, SQLSTATE=%s\n",lp, buf, sqlstate);
+	
+	free(buf);
 }
 
 /*...e*/
@@ -2699,8 +2723,6 @@ lbErrCodes LB_STDCALL lbBoundColumn::bindColumn(lb_I_Query* q, int column, bool 
 		case SQL_VARCHAR:
 		case SQL_LONGVARCHAR:
 /*...sbind a character array:24:*/
-			_CL_LOG << "Bind a char array '" << ColumnName << "'" LOG_
-
 			buffer = malloc((ColumnSize+1)*rows+20);
 
 			_DataType = DataType;
