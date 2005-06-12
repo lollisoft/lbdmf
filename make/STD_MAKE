@@ -25,11 +25,14 @@
 #            40235 Duesseldorf (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.63 $
+# * $Revision: 1.64 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.63 2005/05/26 09:27:16 lollisoft Exp $
+# * $Id: STD_MAKE,v 1.64 2005/06/12 10:54:46 lollisoft Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.64  2005/06/12 10:54:46  lollisoft
+# * Deactivated linking against TRMEM.
+# *
 # * Revision 1.63  2005/05/26 09:27:16  lollisoft
 # * Added inactive switch for TRMEM usage.
 # *
@@ -238,6 +241,7 @@ COMPILER=WATCOM
 #COMPILER=MICROSOFT
 MODE=_DEBUG
 #MODE=
+DEBUG_MEMORY=no
 
 WATCOM_SLASH=/
 
@@ -268,8 +272,13 @@ STD_INCL_MICROSOFT = /I "." /I "$(DEVROOT)\Tools\msc\VC98\Include" /I "$(DEVROOT
 STD_INCL_CPP = $(STD_INCL_WATCOM_CPP)
 STD_INCL = $(STD_INCL_WATCOM)
 
+ifeq ($(DEBUG_MEMORY), yes)
 BASE_LIBS = $(DEVROOT_MAKE)/projects/lib/trmem.lib,
+endif
 
+ifeq ($(DEBUG_MEMORY), no)
+BASE_LIBS =
+endif
 
 WATCOM_WARN=-w3
 WATCOM_OPTIMIZE=-otexan
