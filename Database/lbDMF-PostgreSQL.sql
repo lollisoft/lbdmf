@@ -66,6 +66,7 @@ CREATE TABLE action_target
   id 		SERIAL,
   bezeichnung	char(100),
   a_order_nr	INTEGER,
+  type		INTEGER,
   what		char(100),
   PRIMARY KEY (id)
 );
@@ -73,6 +74,12 @@ CREATE TABLE action_target
 ALTER TABLE actions
 ADD CONSTRAINT cst_action_target_TargetID FOREIGN KEY ( target )
    REFERENCES action_target ( id );
+
+ALTER TABLE action_target
+ADD CONSTRAINT cst_action_target_TypeID FOREIGN KEY ( type )
+   REFERENCES action_types ( id );
+
+
 
 -- +---------------------------------------------------------
 -- | TABLE: formular_actions

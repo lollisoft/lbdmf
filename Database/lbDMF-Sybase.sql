@@ -30,9 +30,9 @@ CREATE TABLE actions
 (
   id INTEGER NOT NULL DEFAULT AUTOINCREMENT,
   name char(20) NOT NULL,
-  typ  INTEGER,
-  source char(100),
-  target INTEGER,
+  typ  INTEGER,		-- Main action type
+  source char(100),	-- Source data field
+  target INTEGER,	-- Action target
   PRIMARY KEY (id)
 );
 
@@ -55,25 +55,31 @@ ADD CONSTRAINT cst_action_types_TypID FOREIGN KEY ( typ )
    REFERENCES action_types ( id );
 
 
--- +---------------------------------------------------------
--- | TABLE: action_target
+-- +------------------------------------------------------------
+-- | TABLE: action_steps
 -- | 
--- | 
--- | 
--- +---------------------------------------------------------
+-- | The target of an action may be more than one 'action'.
+-- | It may be an action to open a form, or execute a SQL query.
+-- +------------------------------------------------------------
 
-CREATE TABLE action_target
+CREATE TABLE action_steps
 (
   id INTEGER NOT NULL DEFAULT AUTOINCREMENT,
+  actionid	INTEGER,
   bezeichnung	char(100),
   a_order_nr	INTEGER,
+  type		INTEGER, -- May be NULL for the first target
   what		char(100),
   PRIMARY KEY (id)
 );
 
-ALTER TABLE actions
-ADD CONSTRAINT cst_action_target_TargetID FOREIGN KEY ( target )
-   REFERENCES action_target ( id );
+ALTER TABLE action_steps
+ADD CONSTRAINT cst_action_target_ActionID FOREIGN KEY ( actionid )
+   REFERENCES actions ( id );
+
+ALTER TABLE action_steps
+ADD CONSTRAINT cst_action_target_TypeID FOREIGN KEY ( type )
+   REFERENCES action_types ( id );
 
 -- +---------------------------------------------------------
 -- | TABLE: formular_actions
@@ -89,23 +95,31 @@ CREATE TABLE formular_actions
   id INTEGER NOT NULL DEFAULT AUTOINCREMENT,
   formular	INTEGER,
   action	INTEGER,
+  event		char(100),
   PRIMARY KEY (id)
 );
 
 insert into action_types (bezeichnung) values('Buttonpress');
-
-insert into action_target (bezeichnung, a_order_nr, what) 
-	values('Customer want to reserve a trip', 1, 'evt_Reserve_Customer_Trip');
-insert into action_target (bezeichnung, a_order_nr, what) 
-	values('some test action', 1, 'evt_Some_Test_Action');
+insert into action_types (bezeichnung) values('SQL query');
+insert into action_types (bezeichnung) values('Open form');
 
 insert into actions (name, typ, source, target) values('Reserve a trip', 1, 'KundenNr', 1);
 insert into actions (name, typ, source, target) values('Remove a reserved trip', 1, 'KundenNr', 2);
 
-insert into formular_actions (formular, action) values(1, 1);
-insert into formular_actions (formular, action) values(1, 2);
-insert into formular_actions (formular, action) values(5, 1);
-insert into formular_actions (formular, action) values(5, 2);
+insert into action_steps (bezeichnung, a_order_nr, what, type, actionid) 
+values('Add a new empty trip', 1, 'insert,TargetTable:Reservierungen,Relation:KundenID', 2, 1);
+
+insert into action_steps (bezeichnung, a_order_nr, what, type, actionid) 
+values('Customer want to reserve a trip', 2, 'DynReservations', 3, 1);
+
+insert into action_steps (bezeichnung, a_order_nr, what, type, actionid) 
+	values('some test action', 1, 'DynReservations', 3, 2);
+
+
+insert into formular_actions (formular, action, event) values(1, 1, 'evt_Reserve_Customer_Trip');
+insert into formular_actions (formular, action, event) values(1, 2, 'evt_Some_Test_Action');
+insert into formular_actions (formular, action, event) values(5, 1, 'evt_Reserve_Customer_Trip');
+insert into formular_actions (formular, action, event) values(5, 2, 'evt_Some_Test_Action');
 
 -- +---------------------------------------------------------
 -- | TABLE: Translations
@@ -373,7 +387,7 @@ insert into ForeignKey_VisibleData_Mapping (FKName, FKTable, PKName, PKTable) Va
 insert into ForeignKey_VisibleData_Mapping (FKName, FKTable, PKName, PKTable) Values ('AnwendungenId', 'User_Anwendungen', 'Name', 'Anwendungen');
 
 
-insert into Formular_Parameters Values (1, 'query', 'select "KundenNr", "Name", "Vorname", "Ort", "PLZ", "Strasse", "Vorwahl", "Telefon" from Kunden order by KundenNr', 5);
+insert into Formular_Parameters Values (1, 'query', 'select "KundenNr", "Name", "Vorname", "Ort", "PLZ", "Strasse", "Telefon" from Kunden order by KundenNr', 5);
 insert into Formular_Parameters Values (2, 'query', 'select "Name", "Vorname", "Erwachsene", "Kinder" from Reservierungen inner join Kunden on Reservierungen.KundenID = Kunden.ID', 6);
 insert into Formular_Parameters Values (3, 'query', 'select "Name", "Vorname", "userid", "passwort" from "Users"', 1);
 insert into Formular_Parameters Values (4, 'query', 'select "Name", "MenuName", "EventName", "MenuHilfe", "AnwendungID", "Typ" from "Formulare"', 2);
