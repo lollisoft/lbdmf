@@ -202,6 +202,15 @@ public:
 	virtual lb_I_String*	LB_STDCALL getPKTable(char const * FKName) = 0;
 
 
+	/**
+	 * \brief Get the count of primary columns.
+	 */
+	virtual int		LB_STDCALL getPKColumns() = 0;
+
+	/**
+	 * \brief Get the primary column at given pos.
+	 */
+	virtual lb_I_String*	LB_STDCALL getPKColumn(int pos) = 0;
 
 	/**
 	 * \brief NULL indicator for pos column.
@@ -607,6 +616,7 @@ public:
 };
 /*...e*/
 
+/*...sclass lb_I_Connection:0:*/
 /**
  * \brief This is the storage for one connection per db name and user name.
  */
@@ -624,6 +634,7 @@ public:
 	 */
 	virtual char* LB_STDCALL getDBUser() = 0;
 };
+/*...e*/
 
 /*...sclass lb_I_Database:0:*/
 /**
@@ -715,6 +726,42 @@ public:
 	 * Sample to show only data for one customer: kdnummer = 100001
 	 */
 	virtual void LB_STDCALL setFilter(char* filter = NULL) = 0;
+};
+/*...e*/
+
+/*...sclass lb_I_DatabaseMasterForm:0:*/
+/**
+ * \brief Functionality for the master form part.
+ */
+class lb_I_DatabaseMasterForm
+	{
+public:
+
+
+	/** \brief Get the number of master columns.
+	 *
+	 * Needed to access the column name.
+	 */
+	virtual int LB_STDCALL getMasterColumns() = 0;
+
+	/** \brief Get the column at position pos.
+	 *
+	 * Warning: You must cleanup.
+	 */
+	virtual lb_I_String* LB_STDCALL getMasterColumn(int pos) = 0;
+
+	virtual bool LB_STDCALL isCharacterColumn(int pos) = 0;
+
+	virtual const char* LB_STDCALL getControlValue(char* name) = 0;
+};
+/*...e*/
+/*...sclass lb_I_DatabaseDetailForm:0:*/
+/**
+ * \brief Functionality for the detail form part.
+ */
+class lb_I_DatabaseDetailForm
+	{
+public:
 
 	/** \brief Set a master formular for this one.
 	 *
@@ -722,15 +769,13 @@ public:
 	 * detail form -  eg. this one - would reopen the query based on the new master - detail relation ship.
 	 * 
 	 */
-	virtual void LB_STDCALL setMasterForm(lb_I_MasterDetailFormDefinition* MD_definition) = 0;
+	virtual void LB_STDCALL setMasterForm(lb_I_DatabaseMasterForm* master) = 0;
 
 	/** \brief Update the clientforms.
 	 *
 	 * This function would be called for all client forms, contained by a master form.
 	 */
 	virtual void LB_STDCALL updateFromMaster() = 0;
-	
-	virtual const char* LB_STDCALL getControlValue(char* name) = 0;
 };
 /*...e*/
 
