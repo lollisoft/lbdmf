@@ -1,4 +1,3 @@
-/*...sLicence:0:*/
 /*
     DMF Distributed Multiplatform Framework (the initial goal of this library)
     This file is part of lbDMF.
@@ -26,9 +25,7 @@
             
             40235 Duesseldorf (germany)
 */
-/*...e*/
 
-/*...sincludes:0:*/
 #ifdef WINDOWS
 #include <windows.h>
 #include <io.h>
@@ -60,13 +57,9 @@ extern "C" {
 
 
 
-/*...sLB_PLUGINMANAGER_DLL scope:0:*/
 #define LB_PLUGINMANAGER_DLL
 #include <lbpluginmanager-module.h>
-/*...e*/
 
-/*...e*/
-/*...smisc and includes:0:*/
 #ifdef __GNUG__
 #pragma implementation "dynamic.cpp"
 #pragma interface "dynamic.cpp"
@@ -75,7 +68,6 @@ extern "C" {
 // For compilers that support precompilation, includes "wx/wx.h".
 #include <wx/wxprec.h>
 
-/*...swx ifdef\39\s:0:*/
 #ifdef __BORLANDC__
 #pragma hdrstop
 #endif
@@ -87,17 +79,14 @@ extern "C" {
 #if defined(__WXGTK__) || defined(__WXMOTIF__)
 //#include "mondrian.xpm"
 #endif
-/*...e*/
 
 #include "wx/wizard.h"
-/*...e*/
 
 #include <lbDatabaseForm.h>
 
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbConfigure_FK_PK_MappingDialog)
 END_IMPLEMENT_LB_UNKNOWN()
 
-/*...slbConfigure_FK_PK_MappingDialog\58\\58\lbConfigure_FK_PK_MappingDialog\40\\41\:0:*/
 lbConfigure_FK_PK_MappingDialog::lbConfigure_FK_PK_MappingDialog() 
 : wxDialog(NULL, -1, wxString(_T("lbConfigure_FK_PK_MappingDialog dialog")), wxDefaultPosition,
 wxDefaultSize, wxRESIZE_BORDER|wxDEFAULT_DIALOG_STYLE)
@@ -105,20 +94,14 @@ wxDefaultSize, wxRESIZE_BORDER|wxDEFAULT_DIALOG_STYLE)
 	ref = STARTREF;
 	pass = 0;
 }
-/*...e*/
-/*...slbConfigure_FK_PK_MappingDialog\58\\58\\126\lbConfigure_FK_PK_MappingDialog\40\\41\:0:*/
 lbConfigure_FK_PK_MappingDialog::~lbConfigure_FK_PK_MappingDialog() {
 
 }
-/*...e*/
-/*...slbErrCodes LB_STDCALL lbConfigure_FK_PK_MappingDialog\58\\58\setData\40\lb_I_Unknown\42\ uk\41\:0:*/
 lbErrCodes LB_STDCALL lbConfigure_FK_PK_MappingDialog::setData(lb_I_Unknown* uk) {
         _CL_VERBOSE << "lbConfigure_FK_PK_MappingDialog::setData(...) not implemented yet" LOG_
 
         return ERR_NOT_IMPLEMENTED;
 }
-/*...e*/
-/*...svoid lbConfigure_FK_PK_MappingDialog\58\\58\OnFKComboBoxSelected\40\ wxCommandEvent \38\event \41\:0:*/
 void lbConfigure_FK_PK_MappingDialog::OnFKComboBoxSelected( wxCommandEvent &event ) {
 	wxString s = cBoxFKNames->GetStringSelection();
 	
@@ -158,8 +141,6 @@ void lbConfigure_FK_PK_MappingDialog::OnFKComboBoxSelected( wxCommandEvent &even
 	cBoxPKNames->Enable();
 	cBoxPKNames->SetSelection(-1);
 }
-/*...e*/
-/*...svoid lbConfigure_FK_PK_MappingDialog\58\\58\OnPKComboBoxSelected\40\ wxCommandEvent \38\event \41\:0:*/
 void lbConfigure_FK_PK_MappingDialog::OnPKComboBoxSelected( wxCommandEvent &event ) {
 	wxString PKName = cBoxPKNames->GetStringSelection();
 	wxString FKName = cBoxFKNames->GetStringSelection();
@@ -219,7 +200,6 @@ void lbConfigure_FK_PK_MappingDialog::OnPKComboBoxSelected( wxCommandEvent &even
 	}
 	
 }
-/*...e*/
 
 lbErrCodes LB_STDCALL lbConfigure_FK_PK_MappingDialog::selectedColumn(lb_I_Unknown* uk) {
 	EndModal(wxID_OK);
@@ -227,7 +207,6 @@ lbErrCodes LB_STDCALL lbConfigure_FK_PK_MappingDialog::selectedColumn(lb_I_Unkno
 	return ERR_NONE;
 }
 
-/*...sint lbConfigure_FK_PK_MappingDialog\58\\58\prepareDialogHandler\40\\41\:0:*/
 int lbConfigure_FK_PK_MappingDialog::prepareDialogHandler() {
 	int SelectedColumn;
 	int cbFKSel;
@@ -271,8 +250,6 @@ int lbConfigure_FK_PK_MappingDialog::prepareDialogHandler() {
 */
 	return SelectedColumn;
 }
-/*...e*/
-/*...slbErrCodes LB_STDCALL lbConfigure_FK_PK_MappingDialog\58\\58\registerEventHandler\40\lb_I_Dispatcher\42\ dispatcher\41\:0:*/
 lbErrCodes LB_STDCALL lbConfigure_FK_PK_MappingDialog::registerEventHandler(lb_I_Dispatcher* dispatcher) {
 	lbErrCodes err = ERR_NONE;
 
@@ -283,8 +260,6 @@ lbErrCodes LB_STDCALL lbConfigure_FK_PK_MappingDialog::registerEventHandler(lb_I
 
 	return err;
 }
-/*...e*/
-/*...svoid LB_STDCALL lbConfigure_FK_PK_MappingDialog\58\\58\init\40\lb_I_Database\42\ _queryDB\44\ lb_I_Query\42\ query\41\:0:*/
 void LB_STDCALL lbConfigure_FK_PK_MappingDialog::init(lb_I_Database* _queryDB, lb_I_Query* query) {
 	lbErrCodes err = ERR_NONE;
 	char prefix[100] = "";
@@ -294,7 +269,6 @@ void LB_STDCALL lbConfigure_FK_PK_MappingDialog::init(lb_I_Database* _queryDB, l
 	QI(_queryDB, lb_I_Database, queryDB, __FILE__, __LINE__)
 	
 	
-/*...ssizers:0:*/
 	wxBoxSizer* sizerMain  = new wxBoxSizer(wxVERTICAL);
 	
 	wxBoxSizer* sizerHor   = new wxBoxSizer(wxHORIZONTAL);
@@ -306,7 +280,6 @@ void LB_STDCALL lbConfigure_FK_PK_MappingDialog::init(lb_I_Database* _queryDB, l
 	
 	wxBoxSizer* sizerLeft  = new wxBoxSizer(wxVERTICAL);	
 	wxBoxSizer* sizerRight = new wxBoxSizer(wxVERTICAL);
-/*...e*/
 
 	sizerHor->Add(sizerLeft, 1, wxEXPAND | wxALL, 5);
 	sizerHor->Add(sizerRight, 1, wxEXPAND | wxALL, 5);
@@ -355,8 +328,6 @@ void LB_STDCALL lbConfigure_FK_PK_MappingDialog::init(lb_I_Database* _queryDB, l
 	Centre();
 
 }
-/*...e*/
-/*...svoid lbConfigure_FK_PK_MappingDialog\58\\58\OnDispatch\40\wxCommandEvent\38\ event \41\:0:*/
 void lbConfigure_FK_PK_MappingDialog::OnDispatch(wxCommandEvent& event ) {
         switch (event.GetId()) {
         default:
@@ -386,5 +357,3 @@ void lbConfigure_FK_PK_MappingDialog::OnDispatch(wxCommandEvent& event ) {
                 break;
         }
 }
-/*...e*/
-/*...e*/

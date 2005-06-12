@@ -1,3 +1,4 @@
+/*...sLicence:0:*/
 /*
     DMF Distributed Multiplatform Framework (the initial goal of this library)
     This file is part of lbDMF.
@@ -25,6 +26,8 @@
             
             40235 Duesseldorf (germany)
 */
+/*...e*/
+/*...sincludes:0:*/
 #ifdef WINDOWS
 #include <windows.h>
 #include <io.h>
@@ -56,28 +59,13 @@ extern "C" {
 
 
 
+/*...sLB_PLUGINMANAGER_DLL scope:0:*/
 #define LB_PLUGINMANAGER_DLL
 #include <lbpluginmanager-module.h>
+/*...e*/
 
-// For compilers that support precompilation, includes "wx/wx.h".
-#include <wx/wxprec.h>
-
-#ifdef __BORLANDC__
-#pragma hdrstop
-#endif
-
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
-
-#if defined(__WXGTK__) || defined(__WXMOTIF__)
-//#include "mondrian.xpm"
-#endif
-
-#include "wx/wizard.h"
-
-
-#include <lbDatabaseForm.h>
+/*...e*/
+/*...smisc and includes:0:*/
 #ifdef __GNUG__
 #pragma implementation "dynamic.cpp"
 #pragma interface "dynamic.cpp"
@@ -86,6 +74,7 @@ extern "C" {
 // For compilers that support precompilation, includes "wx/wx.h".
 #include <wx/wxprec.h>
 
+/*...swx ifdef\39\s:0:*/
 #ifdef __BORLANDC__
 #pragma hdrstop
 #endif
@@ -97,9 +86,12 @@ extern "C" {
 #if defined(__WXGTK__) || defined(__WXMOTIF__)
 //#include "mondrian.xpm"
 #endif
+/*...e*/
 
 #include "wx/wizard.h"
+/*...e*/
 
+#include <lbDatabaseForm.h>
 
 FormularFieldInformation::FormularFieldInformation(char const * formularname, lb_I_Query* query) {
 
