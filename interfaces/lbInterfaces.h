@@ -2264,7 +2264,18 @@ public:
 };
 /*...e*/
 
-
+/**
+ * \brief This interface is intended as a way to delegate actions.
+ * 
+ * Actions may be issued with buttons, validations or any other source like
+ * timer events. The goal of this attempt is to abstract the action so it can
+ * be simply used in a form without knowing the type of the action target.
+ */
+class lb_I_Action : public lb_I_Unknown {
+public:
+	virtual void LB_STDCALL execute() = 0;
+	virtual void LB_STDCALL setActionID(char* id) = 0;
+};
 
 #include <lbInterfaces-sub-xml.h>
 #include <lbInterfaces-sub-classes.h>	
