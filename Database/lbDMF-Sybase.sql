@@ -29,7 +29,7 @@ insert into column_types (name, tablename, ro) values('KundenNr', 'kunden', 1);
 CREATE TABLE actions
 (
   id INTEGER NOT NULL DEFAULT AUTOINCREMENT,
-  name char(20) NOT NULL,
+  name char(50) NOT NULL,
   typ  INTEGER,		-- Main action type
   source char(100),	-- Source data field
   target INTEGER,	-- Action target
@@ -101,9 +101,13 @@ CREATE TABLE formular_actions
   PRIMARY KEY (id)
 );
 
-insert into action_types (bezeichnung) values('Buttonpress');
-insert into action_types (bezeichnung) values('SQL query');
-insert into action_types (bezeichnung) values('Open form');
+insert into action_types (bezeichnung) values('Buttonpress'); -- Built in handler
+
+-- Configure predefined action types, that could be used inside a form
+
+insert into action_types (bezeichnung, action_handler, module) values('SQL query', 'instanceOflbSQLQueryAction', 'lbDatabaseForm');
+insert into action_types (bezeichnung, action_handler, module) values('Open form', 'instanceOflbFormAction', 'lbDatabaseForm');
+insert into action_types (bezeichnung, action_handler, module) values('Open detail form', 'instanceOflbDetailFormAction', 'lbDatabaseForm');
 
 insert into actions (name, typ, source, target) values('Reserve a trip', 1, 'KundenNr', 1);
 insert into actions (name, typ, source, target) values('Remove a reserved trip', 1, 'KundenNr', 2);
@@ -112,10 +116,10 @@ insert into action_steps (bezeichnung, a_order_nr, what, type, actionid)
 values('Add a new empty trip', 1, 'insert,TargetTable:Reservierungen,Relation:KundenID', 2, 1);
 
 insert into action_steps (bezeichnung, a_order_nr, what, type, actionid) 
-values('Customer want to reserve a trip', 2, 'DynReservations', 3, 1);
+values('Customer want to reserve a trip', 2, 'DynReservations', 4, 1);
 
 insert into action_steps (bezeichnung, a_order_nr, what, type, actionid) 
-	values('some test action', 1, 'DynReservations', 3, 2);
+	values('some test action', 1, 'DynReservations', 4, 2);
 
 
 insert into formular_actions (formular, action, event) values(1, 1, 'evt_Reserve_Customer_Trip');
@@ -363,7 +367,7 @@ ADD CONSTRAINT cst_Formular_Parameters_FormularID FOREIGN KEY ( FormularID )
 -- | DATA
 -- +---------------------------------------------------------
 
-insert into Users Values (1, 'Behrens', 'Lothar', 'behrens', 'password');
+insert into Users Values (1, 'Behrens', 'Lothar', 'user', 'trainres');
 
 insert into Anwendungen Values (1, 'lbDMF Manager', 'Dynamic App Manager', 'lbDynApp', 'instanceOfApplication', 'lb_I_Application');
 insert into Anwendungen Values (2, 'Demo application', 'Demonstration', 'Application', 'instanceOfApplication', 'lb_I_Application');

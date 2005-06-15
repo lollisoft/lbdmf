@@ -617,7 +617,6 @@ public:
 		} \
 		\
 		UAP##Unknown_Reference(const UAP##Unknown_Reference& _ref) { \
-			_CL_LOG << "Copy constructor called!" LOG_ \
 			attachedClassName = NULL; \
 			initialized = false; \
 			if ((_ref != NULL) && (_ref->getClassName() != NULL)) \
@@ -654,9 +653,7 @@ public:
 		} \
 		\
 		virtual ~UAP##Unknown_Reference() { \
-			_CL_VERBOSE << "UAP destructor ~UAP" << #Unknown_Reference << "() at " << __LINE__ << " in " << __FILE__ << " called. (holding '" << attachedClassName << "')" LOG_ \
 			if (_autoPtr != NULL) { \
-				_CL_VERBOSE << "Pointer is not NULL. Delete it." LOG_ \
 				if (allowDelete != 1) { \
 					if (_autoPtr->deleteState() == 1) { \
 						printf("Error: Instance would be deleted, but it's not allowed !!\n"); \
@@ -668,7 +665,6 @@ public:
 				if (_file) delete [] _file; \
 				_autoPtr = NULL; \
 			} \
-			_CL_VERBOSE << "UAP destructor ~UAP" << #Unknown_Reference << "() ready" LOG_ \
 		} \
 		void LB_STDCALL setFile(char* __file) { \
 			if (_file != NULL) { \
@@ -767,6 +763,8 @@ public:
 #endif
 /*...e*/
 /*...e*/
+
+#ifdef bla
 /*...sDebug AutoPointer:0:*/
 /** \def DEBUG_UAP(interface, Unknown_Reference, file, line)
  * \brief An automatic pointer implementation via macro. Debug version.
@@ -902,6 +900,7 @@ public:
 #endif
 /*...e*/
 /*...e*/
+#endif
 
 /*...sREQUEST Use this for a predefined UAP\46\:0:*/
 // Use this for a predefined UAP. It will automatically deleted, if scope is gone.
@@ -2264,6 +2263,8 @@ public:
 };
 /*...e*/
 
+class lb_I_Parameter;
+
 /**
  * \brief This interface is intended as a way to delegate actions.
  * 
@@ -2273,7 +2274,27 @@ public:
  */
 class lb_I_Action : public lb_I_Unknown {
 public:
-	virtual void LB_STDCALL execute() = 0;
+
+	/** \brief Execute the action with the given parameter list.
+	 */
+	virtual void LB_STDCALL execute(lb_I_Parameter* params) = 0;
+	
+	/** \brief What is my action (from the database).
+	 */
+	virtual void LB_STDCALL setActionID(char* id) = 0;
+};
+/**
+ * \brief This interface is intended as a way to delegate action steps.
+ *
+ * Means, that the main action (lb_I_Action) could have multiple steps,
+ * to be performed for one action, that may be visible with a button for
+ * example.
+ */
+class lb_I_DelegatedAction : public lb_I_Unknown {
+public:
+	/** \brief The delegated action
+	 */
+	virtual void LB_STDCALL execute(lb_I_Parameter* params) = 0;
 	virtual void LB_STDCALL setActionID(char* id) = 0;
 };
 

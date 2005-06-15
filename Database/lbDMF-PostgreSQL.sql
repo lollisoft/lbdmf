@@ -28,7 +28,7 @@ insert into column_types (name, tablename, ro) values('kundennr', 'kunden', TRUE
 CREATE TABLE actions
 (
   id SERIAL,
-  name char(20) NOT NULL,
+  name char(50) NOT NULL,
   typ  INTEGER,
   source char(100),
   target INTEGER,
@@ -46,6 +46,8 @@ CREATE TABLE action_types
 (
   id SERIAL,
   bezeichnung char(100),
+  action_handler char(100),	-- the functor with the implementation of the handler
+  module	 char(100),	-- the module with the implementation of the handler
   PRIMARY KEY (id)
 );
 
@@ -98,7 +100,13 @@ CREATE TABLE formular_actions
   PRIMARY KEY (id)
 );
 
-insert into action_types (bezeichnung) values('Buttonpress');
+insert into action_types (bezeichnung) values('Buttonpress'); -- Built in handler
+
+-- Configure predefined action types, that could be used inside a form
+
+insert into action_types (bezeichnung, action_handler, module) values('SQL query', 'instanceOflbSQLQueryAction', 'lbDatabaseForm');
+insert into action_types (bezeichnung, action_handler, module) values('Open form', 'instanceOflbFormAction', 'lbDatabaseForm');
+insert into action_types (bezeichnung, action_handler, module) values('Open detail form', 'instanceOflbDetailFormAction', 'lbDatabaseForm');
 
 insert into action_target (bezeichnung, a_order_nr, what) 
 	values('Customer want to reserve a trip', 1, 'evt_Reserve_Customer_Trip');

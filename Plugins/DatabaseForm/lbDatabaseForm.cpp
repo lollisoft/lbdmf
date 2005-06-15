@@ -217,6 +217,7 @@ lbAction::~lbAction() {
 	free(myActionID);
 }
 
+/*...svoid LB_STDCALL lbAction\58\\58\setActionID\40\char\42\ id\41\:0:*/
 void LB_STDCALL lbAction::setActionID(char* id) {
 	_CL_LOG << "lbAction::setActionID('" << id << "')" LOG_
 	
@@ -228,9 +229,279 @@ void LB_STDCALL lbAction::setActionID(char* id) {
 		_CL_LOG << "Error: Got an invalid action ID!" LOG_
 	}
 }
+/*...e*/
 
-void LB_STDCALL lbAction::execute() {
+/*...svoid LB_STDCALL lbAction\58\\58\delegate\40\lb_I_Parameter\42\ params\41\:0:*/
+void LB_STDCALL lbAction::delegate(lb_I_Parameter* params) {
+
+	/*
+		Resolve the parameters that we need here.
+		Currently only the id of the action step.
+	 */
+
+	UAP_REQUEST(manager.getPtr(), lb_I_String, id)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
+
+
+	parameter->setData("id");
+	params->getUAPString(*&parameter, *&id);
+
+	UAP(lb_I_Query, query, __FILE__, __LINE__)
+	
+	query = db->getQuery(0);
+	
+	char buf[] = "select action_handler, module from action_types inner join action_steps where action_steps.id = %s";
+	char* q = (char*) malloc(strlen(buf)+strlen(myActionID)+1);
+	q[0] = 0;
+	sprintf(q, buf, id->charrep());
+	
+	_CL_LOG << "Query is : " << q LOG_
+	
+	if (query->query(q) == ERR_NONE) {
+		lbErrCodes err = ERR_NONE;
+
+		err = query->first();
+	
+		while (err == ERR_NONE) {
+			UAP_REQUEST(manager.getPtr(), lb_I_String, action_handler)
+			UAP_REQUEST(manager.getPtr(), lb_I_String, module)
+			
+			action_handler = query->getAsString(1);
+			module = query->getAsString(2);
+
+			char* pluginDir = getenv("PLUGIN_DIR");
+
+/*...sbuild PREFIX:24:*/
+#ifndef LINUX
+        #ifdef __WATCOMC__
+        #define PREFIX "_"
+        #endif
+        #ifdef _MSC_VER
+        #define PREFIX ""
+        #endif
+#endif
+#ifdef LINUX
+#define PREFIX ""
+#endif
+/*...e*/
+
+		        char* pluginModule = new char[strlen(pluginDir)+strlen(module->charrep())+2];
+		        pluginModule[0] = 0;
+		        strcat(pluginModule, pluginDir);
+		#ifdef WINDOWS
+		        strcat(pluginModule, "\\");
+		#endif
+		#ifdef LINUX
+		        strcat(pluginModule, "/");
+		#endif
+		#ifdef OSX
+		        strcat(pluginModule, "/");
+		#endif
+		        strcat(pluginModule, module->charrep());
+
+			UAP(lb_I_Unknown, result, __FILE__, __LINE__)
+			
+			char* ah = (char*) malloc(strlen(PREFIX)+strlen(action_handler->charrep())+1);
+			ah[0] = 0;
+			
+			strcat(ah, PREFIX);
+			strcat(ah, action_handler->charrep());
+			
+			if (manager->makeInstance(ah, module->charrep(), &result) != ERR_NONE) {
+				if (manager->makeInstance(ah, pluginModule,  &result) != ERR_NONE) {
+					_CL_LOG << "ERROR: Configured module '" << pluginModule << "' could not be loaded." LOG_
+				}
+				
+			}
+			
+			result->setModuleManager(getModuleInstance(), __FILE__, __LINE__);
+			
+			UAP(lb_I_DelegatedAction, action, __FILE__, __LINE__)
+			QI(result, lb_I_DelegatedAction, action, __FILE__, __LINE__)
+			
+			action->setActionID(id->charrep());
+			action->execute(*&params);
+			
+			err = query->next();
+		}
+		
+		if (err == WARN_DB_NODATA) {
+			UAP_REQUEST(manager.getPtr(), lb_I_String, action_handler)
+			UAP_REQUEST(manager.getPtr(), lb_I_String, module)
+			
+			action_handler = query->getAsString(1);
+			module = query->getAsString(2);
+
+			char* pluginDir = getenv("PLUGIN_DIR");
+
+/*...sbuild PREFIX:24:*/
+#ifndef LINUX
+        #ifdef __WATCOMC__
+        #define PREFIX "_"
+        #endif
+        #ifdef _MSC_VER
+        #define PREFIX ""
+        #endif
+#endif
+#ifdef LINUX
+#define PREFIX ""
+#endif
+/*...e*/
+
+		        char* pluginModule = new char[strlen(pluginDir)+strlen(module->charrep())+2];
+		        pluginModule[0] = 0;
+		        strcat(pluginModule, pluginDir);
+		#ifdef WINDOWS
+		        strcat(pluginModule, "\\");
+		#endif
+		#ifdef LINUX
+		        strcat(pluginModule, "/");
+		#endif
+		#ifdef OSX
+		        strcat(pluginModule, "/");
+		#endif
+		        strcat(pluginModule, module->charrep());
+
+			UAP(lb_I_Unknown, result, __FILE__, __LINE__)
+			
+			char* ah = (char*) malloc(strlen(PREFIX)+strlen(action_handler->charrep())+1);
+			ah[0] = 0;
+			
+			strcat(ah, PREFIX);
+			strcat(ah, action_handler->charrep());
+			
+			if (manager->makeInstance(ah, module->charrep(), &result) != ERR_NONE) {
+				if (manager->makeInstance(ah, pluginModule,  &result) != ERR_NONE) {
+					_CL_LOG << "ERROR: Configured module '" << pluginModule << "' could not be loaded." LOG_
+				}
+				
+			}
+			
+			result->setModuleManager(getModuleInstance(), __FILE__, __LINE__);
+			
+			UAP(lb_I_DelegatedAction, action, __FILE__, __LINE__)
+			QI(result, lb_I_DelegatedAction, action, __FILE__, __LINE__)
+			
+			action->setActionID(id->charrep());
+			action->execute(*&params);
+		}
+	}
+}
+/*...e*/
+
+/*...svoid LB_STDCALL lbAction\58\\58\execute\40\lb_I_Parameter\42\ params\41\:0:*/
+void LB_STDCALL lbAction::execute(lb_I_Parameter* params) {
 	_CL_LOG << "lbAction::execute()" LOG_
+	
+	REQUEST(manager.getPtr(), lb_I_Database, db)
+	UAP(lb_I_Query, query, __FILE__, __LINE__)
+
+	db->init();
+
+	char* lbDMFPasswd = getenv("lbDMFPasswd");
+	char* lbDMFUser   = getenv("lbDMFUser");
+
+	if (!lbDMFUser) lbDMFUser = "dba";
+	if (!lbDMFPasswd) lbDMFPasswd = "trainres";
+
+	db->connect("lbDMF", lbDMFUser, lbDMFPasswd);
+
+	query = db->getQuery(0);	
+	
+	char buf[] = "select id from action_steps where actionid = %s";
+	char* q = (char*) malloc(strlen(buf)+strlen(myActionID)+1);
+	q[0] = 0;
+	sprintf(q, buf, myActionID);
+	
+	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
+	
+	if (query->query(q) == ERR_NONE) {
+	
+		lbErrCodes err = query->first();
+	
+		while(err == ERR_NONE) {
+			UAP_REQUEST(manager.getPtr(), lb_I_String, id)
+			
+			id = query->getAsString(1);
+			
+			parameter->setData("id");
+			params->setUAPString(*&parameter, *&id);
+			
+			delegate(*&params);
+			
+			err = query->next();
+		}
+		
+		if (err == WARN_DB_NODATA) {
+			UAP_REQUEST(manager.getPtr(), lb_I_String, id)
+			
+			id = query->getAsString(1);
+			
+			parameter->setData("id");
+			params->setUAPString(*&parameter, *&id);
+			
+			delegate(*&params);
+		}
+	}
+}
+/*...e*/
+/*...e*/
+
+/*...slbDetailFormAction:0:*/
+BEGIN_IMPLEMENT_LB_UNKNOWN(lbDetailFormAction)
+	ADD_INTERFACE(lb_I_DelegatedAction)
+END_IMPLEMENT_LB_UNKNOWN()
+
+IMPLEMENT_FUNCTOR(instanceOflbDetailFormAction, lbDetailFormAction)
+
+lbErrCodes LB_STDCALL lbDetailFormAction::setData(lb_I_Unknown* uk) {
+        _CL_VERBOSE << "lbDetailFormAction::setData(lb_I_Unknown* uk) not implemented." LOG_
+
+        return ERR_NOT_IMPLEMENTED;
+}
+
+lbDetailFormAction::lbDetailFormAction() {
+	ref = STARTREF;
+	myActionID = NULL;
+}
+
+lbDetailFormAction::~lbDetailFormAction() {
+	free(myActionID);
+}
+
+void LB_STDCALL lbDetailFormAction::setDatabase(lb_I_Database* _db) {
+	db = _db;
+	db++;
+}
+
+void LB_STDCALL lbDetailFormAction::setActionID(char* id) {
+	_CL_LOG << "lbDetailFormAction::setActionID('" << id << "')" LOG_
+	
+	free(myActionID);
+	
+	if ((id != NULL) && (strlen(id) > 0)) {
+		myActionID = strdup(id);
+	} else {
+		_CL_LOG << "Error: Got an invalid action ID!" LOG_
+	}
+}
+
+void LB_STDCALL lbDetailFormAction::openDetailForm() {
+
+}
+
+void LB_STDCALL lbDetailFormAction::execute(lb_I_Parameter* params) {
+	_CL_LOG << "lbDetailFormAction::execute()" LOG_
+
+	if (masterForm == NULL) {
+		REQUEST(manager.getPtr(), lb_I_String, masterForm)
+	}
+	if (SourceFieldName == NULL) {
+		REQUEST(manager.getPtr(), lb_I_String, SourceFieldName)
+	}
+	if (SourceFieldValue == NULL) {
+		REQUEST(manager.getPtr(), lb_I_String, SourceFieldValue)
+	}
 	
 	UAP_REQUEST(manager.getPtr(), lb_I_Database, database)
 	UAP(lb_I_Query, query, __FILE__, __LINE__)
@@ -247,7 +518,7 @@ void LB_STDCALL lbAction::execute() {
 
 	query = database->getQuery(0);	
 	
-	char buf[] = "select type from action_steps where actionid = %s";
+	char buf[] = "select what from action_steps where actionid = %s";
 	char* q = (char*) malloc(strlen(buf)+strlen(myActionID)+1);
 	q[0] = 0;
 	sprintf(q, buf, myActionID);
@@ -257,22 +528,91 @@ void LB_STDCALL lbAction::execute() {
 		lbErrCodes err = query->first();
 	
 		while(err == ERR_NONE) {
-			UAP_REQUEST(manager.getPtr(), lb_I_String, type)
+			UAP_REQUEST(manager.getPtr(), lb_I_String, what)
 			
-			type = query->getAsString(1);
+			what = query->getAsString(1);
 			
-			printf("Have an action step of type: %s\n", type->charrep());
+			UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
+
+			parameter->setData("source Form");
+			params->getUAPString(*&parameter, *&masterForm);
+			parameter->setData("source field");
+			params->getUAPString(*&parameter, *&SourceFieldName);
+			parameter->setData("source value");
+			params->getUAPString(*&parameter, *&SourceFieldValue);
+
+			_CL_LOG << "Have master form '" << masterForm->charrep() << 
+			           "', source field name '" << SourceFieldName->charrep() << 
+			           "' and source field value '" << SourceFieldValue->charrep() <<
+			           "' for detail form '" << what->charrep() << "'" LOG_
+			
 			err = query->next();
 		}
 		
 		if (err == WARN_DB_NODATA) {
-			UAP_REQUEST(manager.getPtr(), lb_I_String, type)
+			UAP_REQUEST(manager.getPtr(), lb_I_String, what)
 			
-			type = query->getAsString(1);
-			
-			printf("Have an action step of type: %s\n", type->charrep());
+			what = query->getAsString(1);
+
+			UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
+
+			parameter->setData("source Form");
+			params->getUAPString(*&parameter, *&masterForm);
+			parameter->setData("source field");
+			params->getUAPString(*&parameter, *&SourceFieldName);
+			parameter->setData("source value");
+			params->getUAPString(*&parameter, *&SourceFieldValue);
+
+			_CL_LOG << "Have master form '" << masterForm->charrep() << 
+			           "', source field name '" << SourceFieldName->charrep() << 
+			           "' and source field value '" << SourceFieldValue->charrep() <<
+			           "' for detail form '" << what->charrep() << "'" LOG_
 		}
 	}
+}
+/*...e*/
+/*...slbSQLQueryAction:0:*/
+BEGIN_IMPLEMENT_LB_UNKNOWN(lbSQLQueryAction)
+	ADD_INTERFACE(lb_I_DelegatedAction)
+END_IMPLEMENT_LB_UNKNOWN()
+
+IMPLEMENT_FUNCTOR(instanceOflbSQLQueryAction, lbSQLQueryAction)
+
+lbErrCodes LB_STDCALL lbSQLQueryAction::setData(lb_I_Unknown* uk) {
+        _CL_VERBOSE << "lbSQLQueryAction::setData(lb_I_Unknown* uk) not implemented." LOG_
+
+        return ERR_NOT_IMPLEMENTED;
+}
+
+lbSQLQueryAction::lbSQLQueryAction() {
+	ref = STARTREF;
+	myActionID = NULL;
+}
+
+lbSQLQueryAction::~lbSQLQueryAction() {
+	free(myActionID);
+}
+
+void LB_STDCALL lbSQLQueryAction::setDatabase(lb_I_Database* _db) {
+	db = _db;
+	db++;
+}
+
+void LB_STDCALL lbSQLQueryAction::setActionID(char* id) {
+	_CL_LOG << "lbSQLQueryAction::setActionID('" << id << "')" LOG_
+	
+	free(myActionID);
+	
+	if ((id != NULL) && (strlen(id) > 0)) {
+		myActionID = strdup(id);
+	} else {
+		_CL_LOG << "Error: Got an invalid action ID!" LOG_
+	}
+}
+
+void LB_STDCALL lbSQLQueryAction::execute(lb_I_Parameter* params) {
+	_CL_LOG << "lbSQLQueryAction::execute()" LOG_
+	
 }
 /*...e*/
 
@@ -1515,7 +1855,7 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::OnActionButton(lb_I_Unknown* uk) {
 		
 		char* reversedEvent = NULL;
 		
-/*...sReverse the event ID:16:*/
+/*...sReverse the event ID from given uk data:16:*/
 		/* The parameter is the id of the event, that has been emitted.
 		   Resolve the name of that id. */
 		
@@ -1668,7 +2008,24 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::OnActionButton(lb_I_Unknown* uk) {
 		
 		action = fa.getAction(fa.getActionID(reversedEvent));
 
-		action->execute();
+		UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
+		UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
+		UAP_REQUEST(manager.getPtr(), lb_I_String, v)
+		UAP_REQUEST(manager.getPtr(), lb_I_Integer, i)
+
+		parameter->setData("source Form");
+		v->setData(formName);
+		param->setUAPString(*&parameter, *&v);
+
+		parameter->setData("source field");
+		v->setData(s);
+		param->setUAPString(*&parameter, *&v);
+
+		parameter->setData("source value");
+		v->setData(value.c_str());
+		param->setUAPString(*&parameter, *&v);
+
+		action->execute(*&param);
 
 		_CL_LOG << "Action has been executed." LOG_
 

@@ -30,11 +30,16 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.8 $
+ * $Revision: 1.9 $
  * $Name:  $
- * $Id: lbDatabaseForm.h,v 1.8 2005/06/12 10:30:55 lollisoft Exp $
+ * $Id: lbDatabaseForm.h,v 1.9 2005/06/15 09:37:26 lollisoft Exp $
  *
  * $Log: lbDatabaseForm.h,v $
+ * Revision 1.9  2005/06/15 09:37:26  lollisoft
+ * Better implementation for action abstraction. Parameters that are needed
+ * to be passed are done with lb_I_Parameter. It's short before fulfill the master
+ * detail form implementation.
+ *
  * Revision 1.8  2005/06/12 10:30:55  lollisoft
  * Moved some classes to here.
  *
@@ -162,12 +167,62 @@ public:
 	virtual ~lbAction();
 
 	void LB_STDCALL setActionID(char* id);	
-	void LB_STDCALL execute();
+	void LB_STDCALL execute(lb_I_Parameter* params);
+	
+	DECLARE_LB_UNKNOWN()
+	
+protected:
+
+	void LB_STDCALL delegate(lb_I_Parameter* params);
+	
+
+	char* myActionID;
+	UAP(lb_I_Database, db, __FILE__, __LINE__)
+};
+/*...e*/
+
+/*...sclass lbDetailFormAction:0:*/
+class lbDetailFormAction : public lb_I_DelegatedAction
+{
+public:
+	lbDetailFormAction();
+	virtual ~lbDetailFormAction();
+
+	void LB_STDCALL setActionID(char* id);	
+	void LB_STDCALL execute(lb_I_Parameter* params);
+
+	void LB_STDCALL setDatabase(lb_I_Database* _db);
+	
+	DECLARE_LB_UNKNOWN()
+	
+protected:
+
+	void LB_STDCALL openDetailForm();
+
+	char* myActionID;
+	UAP(lb_I_Database, db, __FILE__, __LINE__)
+	UAP(lb_I_String, masterForm, __FILE__, __LINE__)
+	UAP(lb_I_String, SourceFieldName, __FILE__, __LINE__)
+	UAP(lb_I_String, SourceFieldValue, __FILE__, __LINE__)
+};
+/*...e*/
+/*...sclass lbSQLQueryAction:0:*/
+class lbSQLQueryAction : public lb_I_DelegatedAction
+{
+public:
+	lbSQLQueryAction();
+	virtual ~lbSQLQueryAction();
+
+	void LB_STDCALL setActionID(char* id);	
+	void LB_STDCALL execute(lb_I_Parameter* params);
+
+	void LB_STDCALL setDatabase(lb_I_Database* _db);
 	
 	DECLARE_LB_UNKNOWN()
 	
 protected:
 	char* myActionID;
+	UAP(lb_I_Database, db, __FILE__, __LINE__)
 };
 /*...e*/
 
@@ -469,6 +524,8 @@ DECLARE_SINGLETON_FUNCTOR(instanceOfPluginModule)
 DECLARE_FUNCTOR(instanceOflbDatabaseDialog)
 DECLARE_FUNCTOR(instanceOflbPluginDatabaseDialog)
 DECLARE_FUNCTOR(instanceOflbAction)
+DECLARE_FUNCTOR(instanceOflbDetailFormAction)
+DECLARE_FUNCTOR(instanceOflbSQLQueryAction)
 
 // Based on the 'group box' this control can be used to draw lines and so on.
 DECLARE_FUNCTOR(instanceOflbOwnerDrawControl)

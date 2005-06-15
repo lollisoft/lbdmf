@@ -28,7 +28,7 @@ insert into column_types (name, tablename, ro) values('kundennr', 'kunden', 'tru
 CREATE TABLE actions
 (
   id INTEGER NOT NULL AUTO_INCREMENT,
-  name char(20) NOT NULL,
+  name char(50) NOT NULL,
   typ  INTEGER,
   source char(100),
   target INTEGER,
