@@ -372,6 +372,7 @@ static bool _isSetTRMemTrackBreak = false;
 static char TRMemTrackBreakAddr[21] = "DoNotBreak";
 
 DLLEXPORT bool LB_STDCALL isSetTRMemTrackBreak() {
+#ifdef MEMTRACK
 	char breakPoint[100] = "";
 	
 	if (!_isSetTRMemTrackBreak) {
@@ -381,7 +382,7 @@ DLLEXPORT bool LB_STDCALL isSetTRMemTrackBreak() {
 	
 		setTRMemTrackBreak(breakPoint);
 	}
-	
+#endif	
 	return _isSetTRMemTrackBreak;
 }
 
