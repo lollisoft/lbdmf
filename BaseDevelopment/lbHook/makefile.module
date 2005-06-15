@@ -31,8 +31,12 @@ OBJDEP=
 ifeq ($(OSTYPE), Windows_NT)
 MOD_INCL=$(STD_INCL) -i=../dosdir
 MOD_INCL_CPP=$(STD_INCL_CPP) -i=..\dosdir
+ifeq ($(DEBUG_MEMORY), yes)
 LIBS = $(DEVROOT_MAKE)/projects/lib/trmem.lib
-
+endif
+ifeq ($(DEBUG_MEMORY), no)
+LIBS =
+endif
 # use global setup
 #COMPILER=MICROSOFT
 
