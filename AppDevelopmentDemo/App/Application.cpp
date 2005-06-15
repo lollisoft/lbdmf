@@ -97,8 +97,8 @@ public:
 
 protected:
 	lb_I_GUI* gui;
-	DEBUG_UAP(lb_I_EventManager, eman, __FILE__, __LINE__)
-	DEBUG_UAP(lb_I_Dispatcher, dispatcher, __FILE__, __LINE__)
+	UAP(lb_I_EventManager, eman, __FILE__, __LINE__)
+	UAP(lb_I_Dispatcher, dispatcher, __FILE__, __LINE__)
 };
 /*...e*/
 /*...slbApplication:0:*/
