@@ -250,7 +250,8 @@ void LB_STDCALL lbAction::delegate(lb_I_Parameter* params) {
 	
 	query = db->getQuery(0);
 	
-	char buf[] = "select action_handler, module from action_types inner join action_steps where action_steps.id = %s";
+	char buf[] = "select action_handler, module from action_types inner join action_steps on action_types.id = action_steps.type where action_steps.id = %s";
+	
 	char* q = (char*) malloc(strlen(buf)+strlen(myActionID)+1);
 	q[0] = 0;
 	sprintf(q, buf, id->charrep());
@@ -268,6 +269,9 @@ void LB_STDCALL lbAction::delegate(lb_I_Parameter* params) {
 			
 			action_handler = query->getAsString(1);
 			module = query->getAsString(2);
+
+			action_handler->trim();
+			module->trim();
 
 			char* pluginDir = getenv("PLUGIN_DIR");
 
@@ -331,6 +335,9 @@ void LB_STDCALL lbAction::delegate(lb_I_Parameter* params) {
 			
 			action_handler = query->getAsString(1);
 			module = query->getAsString(2);
+
+			action_handler->trim();
+			module->trim();
 
 			char* pluginDir = getenv("PLUGIN_DIR");
 
@@ -531,6 +538,7 @@ void LB_STDCALL lbDetailFormAction::execute(lb_I_Parameter* params) {
 			UAP_REQUEST(manager.getPtr(), lb_I_String, what)
 			
 			what = query->getAsString(1);
+			what->trim();
 			
 			UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
 
@@ -553,7 +561,8 @@ void LB_STDCALL lbDetailFormAction::execute(lb_I_Parameter* params) {
 			UAP_REQUEST(manager.getPtr(), lb_I_String, what)
 			
 			what = query->getAsString(1);
-
+			what->trim();
+			
 			UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
 
 			parameter->setData("source Form");
