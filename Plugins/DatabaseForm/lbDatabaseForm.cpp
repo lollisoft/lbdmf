@@ -1180,6 +1180,8 @@ printf("Create a drop down box for '%s'\n", name);
 		
 		eman->registerEvent(eventName, actionID);
 		
+		action->trim();
+		
 		wxButton *actionButton = new wxButton(this, actionID, _trans(action->charrep())); //, wxPoint(), wxSize(100,20));
 		
 		dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDatabaseDialog::OnActionButton, eventName);
@@ -1211,6 +1213,8 @@ printf("Create a drop down box for '%s'\n", name);
 		sprintf(eventName, "%p(%s)", this, actionWhat->charrep());
 
 		eman->registerEvent(eventName, actionID);
+		
+		action->trim();
 		
 		wxButton *actionButton = new wxButton(this, actionID, _trans(action->charrep())); //, wxPoint(), wxSize(100,20));
 
