@@ -56,28 +56,28 @@ ADD CONSTRAINT cst_action_types_TypID FOREIGN KEY ( typ )
    REFERENCES action_types ( id );
 
 
--- +---------------------------------------------------------
--- | TABLE: action_target
+-- +------------------------------------------------------------
+-- | TABLE: action_steps
 -- | 
--- | 
--- | 
--- +---------------------------------------------------------
+-- | The target of an action may be more than one 'action'.
+-- | It may be an action to open a form, or execute a SQL query.
+-- +------------------------------------------------------------
 
-CREATE TABLE action_target
+CREATE TABLE action_steps
 (
   id 		SERIAL,
   bezeichnung	char(100),
   a_order_nr	INTEGER,
-  type		INTEGER,
+  type		INTEGER, -- May be NULL for the first target
   what		char(100),
   PRIMARY KEY (id)
 );
 
-ALTER TABLE actions
-ADD CONSTRAINT cst_action_target_TargetID FOREIGN KEY ( target )
-   REFERENCES action_target ( id );
+ALTER TABLE action_steps
+ADD CONSTRAINT cst_action_target_ActionID FOREIGN KEY ( actionid )
+   REFERENCES actions ( id );
 
-ALTER TABLE action_target
+ALTER TABLE action_steps
 ADD CONSTRAINT cst_action_target_TypeID FOREIGN KEY ( type )
    REFERENCES action_types ( id );
 
@@ -97,6 +97,7 @@ CREATE TABLE formular_actions
   id 		SERIAL,
   formular	INTEGER,
   action	INTEGER,
+  event		char(100),
   PRIMARY KEY (id)
 );
 
@@ -108,16 +109,23 @@ insert into action_types (bezeichnung, action_handler, module) values('SQL query
 insert into action_types (bezeichnung, action_handler, module) values('Open form', 'instanceOflbFormAction', 'lbDatabaseForm');
 insert into action_types (bezeichnung, action_handler, module) values('Open detail form', 'instanceOflbDetailFormAction', 'lbDatabaseForm');
 
-insert into action_target (bezeichnung, a_order_nr, what) 
-	values('Customer want to reserve a trip', 1, 'evt_Reserve_Customer_Trip');
-insert into action_target (bezeichnung, a_order_nr, what) 
-	values('some test action', 1, 'evt_Some_Test_Action');
+insert into actions (name, typ, source, target) values('Reserve a trip', 1, 'KundenNr', 1);
+insert into actions (name, typ, source, target) values('Remove a reserved trip', 1, 'KundenNr', 2);
 
-insert into actions (name, typ, source, target) values('Reserve a trip', 1, 'kundennr', 1);
-insert into actions (name, typ, source, target) values('Remove a reserved trip', 1, 'kundennr', 2);
+insert into action_steps (bezeichnung, a_order_nr, what, type, actionid) 
+values('Add a new empty trip', 1, 'insert,TargetTable:Reservierungen,Relation:KundenID', 2, 1);
 
-insert into formular_actions (formular, action) values(1, 1);
-insert into formular_actions (formular, action) values(1, 2);
+insert into action_steps (bezeichnung, a_order_nr, what, type, actionid) 
+values('Customer want to reserve a trip', 2, 'DynReservations', 4, 1);
+
+insert into action_steps (bezeichnung, a_order_nr, what, type, actionid) 
+	values('some test action', 1, 'DynReservations', 4, 2);
+
+
+insert into formular_actions (formular, action, event) values(1, 1, 'evt_Reserve_Customer_Trip');
+insert into formular_actions (formular, action, event) values(1, 2, 'evt_Some_Test_Action');
+insert into formular_actions (formular, action, event) values(5, 1, 'evt_Reserve_Customer_Trip');
+insert into formular_actions (formular, action, event) values(5, 2, 'evt_Some_Test_Action');
 
 -- +---------------------------------------------------------
 -- | TABLE: Translations
