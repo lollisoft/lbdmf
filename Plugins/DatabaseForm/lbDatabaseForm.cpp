@@ -233,7 +233,6 @@ void LB_STDCALL lbAction::setActionID(char* id) {
 
 /*...svoid LB_STDCALL lbAction\58\\58\delegate\40\lb_I_Parameter\42\ params\41\:0:*/
 void LB_STDCALL lbAction::delegate(lb_I_Parameter* params) {
-
 	/*
 		Resolve the parameters that we need here.
 		Currently only the id of the action step.
@@ -242,6 +241,9 @@ void LB_STDCALL lbAction::delegate(lb_I_Parameter* params) {
 	UAP_REQUEST(manager.getPtr(), lb_I_String, id)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
 
+	if (actions == NULL) {
+		REQUEST(manager.getPtr(), lb_I_Container, actions)
+	}
 
 	parameter->setData("id");
 	params->getUAPString(*&parameter, *&id);
@@ -260,22 +262,30 @@ void LB_STDCALL lbAction::delegate(lb_I_Parameter* params) {
 	
 	if (query->query(q) == ERR_NONE) {
 		lbErrCodes err = ERR_NONE;
+		UAP_REQUEST(manager.getPtr(), lb_I_String, key)
+		UAP(lb_I_KeyBase, ukey, __FILE__, __LINE__)
 
 		err = query->first();
 	
 		while (err == ERR_NONE) {
 			UAP_REQUEST(manager.getPtr(), lb_I_String, action_handler)
 			UAP_REQUEST(manager.getPtr(), lb_I_String, module)
+			UAP(lb_I_DelegatedAction, action, __FILE__, __LINE__)
 			
 			action_handler = query->getAsString(1);
 			module = query->getAsString(2);
-
 			action_handler->trim();
 			module->trim();
 
-			char* pluginDir = getenv("PLUGIN_DIR");
+			key->setData(module->charrep());
+			*key += *&action_handler;
+			
+			QI(key, lb_I_KeyBase, ukey, __FILE__, __LINE__)
+			
+			if (actions->exists(&ukey) == 0) {
+				char* pluginDir = getenv("PLUGIN_DIR");
 
-/*...sbuild PREFIX:24:*/
+/*...sbuild PREFIX:32:*/
 #ifndef LINUX
         #ifdef __WATCOMC__
         #define PREFIX "_"
@@ -289,39 +299,51 @@ void LB_STDCALL lbAction::delegate(lb_I_Parameter* params) {
 #endif
 /*...e*/
 
-		        char* pluginModule = new char[strlen(pluginDir)+strlen(module->charrep())+2];
-		        pluginModule[0] = 0;
-		        strcat(pluginModule, pluginDir);
-		#ifdef WINDOWS
-		        strcat(pluginModule, "\\");
-		#endif
-		#ifdef LINUX
-		        strcat(pluginModule, "/");
-		#endif
-		#ifdef OSX
-		        strcat(pluginModule, "/");
-		#endif
-		        strcat(pluginModule, module->charrep());
-
-			UAP(lb_I_Unknown, result, __FILE__, __LINE__)
+/*...sBuild up pluginModule:32:*/
+			        char* pluginModule = new char[strlen(pluginDir)+strlen(module->charrep())+2];
+			        pluginModule[0] = 0;
+			        strcat(pluginModule, pluginDir);
+			#ifdef WINDOWS
+			        strcat(pluginModule, "\\");
+			#endif
+			#ifdef LINUX
+			        strcat(pluginModule, "/");
+			#endif
+			#ifdef OSX
+			        strcat(pluginModule, "/");
+			#endif
+			        strcat(pluginModule, module->charrep());
+/*...e*/
+	
+				UAP(lb_I_Unknown, result, __FILE__, __LINE__)
 			
-			char* ah = (char*) malloc(strlen(PREFIX)+strlen(action_handler->charrep())+1);
-			ah[0] = 0;
+				char* ah = (char*) malloc(strlen(PREFIX)+strlen(action_handler->charrep())+1);
+				ah[0] = 0;
 			
-			strcat(ah, PREFIX);
-			strcat(ah, action_handler->charrep());
+				strcat(ah, PREFIX);
+				strcat(ah, action_handler->charrep());
 			
-			if (manager->makeInstance(ah, module->charrep(), &result) != ERR_NONE) {
-				if (manager->makeInstance(ah, pluginModule,  &result) != ERR_NONE) {
-					_CL_LOG << "ERROR: Configured module '" << pluginModule << "' could not be loaded." LOG_
+				if (manager->makeInstance(ah, module->charrep(), &result) != ERR_NONE) {
+					if (manager->makeInstance(ah, pluginModule,  &result) != ERR_NONE) {
+						_CL_LOG << "ERROR: Configured module '" << pluginModule << "' could not be loaded." LOG_
+					}
 				}
+			
+				result->setModuleManager(getModuleInstance(), __FILE__, __LINE__);
+			
+				QI(result, lb_I_DelegatedAction, action, __FILE__, __LINE__)
+			
+				UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
+				QI(action, lb_I_Unknown, uk, __FILE__, __LINE__)
 				
+				actions->insert(&uk, &ukey);
 			}
 			
-			result->setModuleManager(getModuleInstance(), __FILE__, __LINE__);
-			
-			UAP(lb_I_DelegatedAction, action, __FILE__, __LINE__)
-			QI(result, lb_I_DelegatedAction, action, __FILE__, __LINE__)
+			UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
+				
+			uk = actions->getElement(&ukey);
+				
+			QI(uk, lb_I_DelegatedAction, action, __FILE__, __LINE__)
 			
 			action->setActionID(id->charrep());
 			action->execute(*&params);
@@ -332,16 +354,22 @@ void LB_STDCALL lbAction::delegate(lb_I_Parameter* params) {
 		if (err == WARN_DB_NODATA) {
 			UAP_REQUEST(manager.getPtr(), lb_I_String, action_handler)
 			UAP_REQUEST(manager.getPtr(), lb_I_String, module)
+			UAP(lb_I_DelegatedAction, action, __FILE__, __LINE__)
 			
 			action_handler = query->getAsString(1);
 			module = query->getAsString(2);
-
 			action_handler->trim();
 			module->trim();
 
-			char* pluginDir = getenv("PLUGIN_DIR");
+			key->setData(module->charrep());
+			*key += *&action_handler;
+			
+			QI(key, lb_I_KeyBase, ukey, __FILE__, __LINE__)
+			
+			if (actions->exists(&ukey) == 0) {
+				char* pluginDir = getenv("PLUGIN_DIR");
 
-/*...sbuild PREFIX:24:*/
+/*...sbuild PREFIX:32:*/
 #ifndef LINUX
         #ifdef __WATCOMC__
         #define PREFIX "_"
@@ -355,41 +383,49 @@ void LB_STDCALL lbAction::delegate(lb_I_Parameter* params) {
 #endif
 /*...e*/
 
-		        char* pluginModule = new char[strlen(pluginDir)+strlen(module->charrep())+2];
-		        pluginModule[0] = 0;
-		        strcat(pluginModule, pluginDir);
-		#ifdef WINDOWS
-		        strcat(pluginModule, "\\");
-		#endif
-		#ifdef LINUX
-		        strcat(pluginModule, "/");
-		#endif
-		#ifdef OSX
-		        strcat(pluginModule, "/");
-		#endif
-		        strcat(pluginModule, module->charrep());
-
-			UAP(lb_I_Unknown, result, __FILE__, __LINE__)
+/*...sBuild up pluginModule:32:*/
+			        char* pluginModule = new char[strlen(pluginDir)+strlen(module->charrep())+2];
+			        pluginModule[0] = 0;
+			        strcat(pluginModule, pluginDir);
+			#ifdef WINDOWS
+			        strcat(pluginModule, "\\");
+			#endif
+			#ifdef LINUX
+			        strcat(pluginModule, "/");
+			#endif
+			#ifdef OSX
+			        strcat(pluginModule, "/");
+			#endif
+			        strcat(pluginModule, module->charrep());
+/*...e*/
+	
+				UAP(lb_I_Unknown, result, __FILE__, __LINE__)
 			
-			char* ah = (char*) malloc(strlen(PREFIX)+strlen(action_handler->charrep())+1);
-			ah[0] = 0;
+				char* ah = (char*) malloc(strlen(PREFIX)+strlen(action_handler->charrep())+1);
+				ah[0] = 0;
 			
-			strcat(ah, PREFIX);
-			strcat(ah, action_handler->charrep());
+				strcat(ah, PREFIX);
+				strcat(ah, action_handler->charrep());
 			
-			if (manager->makeInstance(ah, module->charrep(), &result) != ERR_NONE) {
-				if (manager->makeInstance(ah, pluginModule,  &result) != ERR_NONE) {
-					_CL_LOG << "ERROR: Configured module '" << pluginModule << "' could not be loaded." LOG_
+				if (manager->makeInstance(ah, module->charrep(), &result) != ERR_NONE) {
+					if (manager->makeInstance(ah, pluginModule,  &result) != ERR_NONE) {
+						_CL_LOG << "ERROR: Configured module '" << pluginModule << "' could not be loaded." LOG_
+					}
 				}
+			
+				result->setModuleManager(getModuleInstance(), __FILE__, __LINE__);
+			
+				QI(result, lb_I_DelegatedAction, action, __FILE__, __LINE__)
+			
+				action->setActionID(id->charrep());
+			} else {
+				UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
 				
+				uk = actions->getElement(&ukey);
+				
+				QI(uk, lb_I_DelegatedAction, action, __FILE__, __LINE__)
 			}
-			
-			result->setModuleManager(getModuleInstance(), __FILE__, __LINE__);
-			
-			UAP(lb_I_DelegatedAction, action, __FILE__, __LINE__)
-			QI(result, lb_I_DelegatedAction, action, __FILE__, __LINE__)
-			
-			action->setActionID(id->charrep());
+						
 			action->execute(*&params);
 		}
 	}
@@ -470,10 +506,13 @@ lbErrCodes LB_STDCALL lbDetailFormAction::setData(lb_I_Unknown* uk) {
 lbDetailFormAction::lbDetailFormAction() {
 	ref = STARTREF;
 	myActionID = NULL;
+	detailForm = NULL;
 }
 
 lbDetailFormAction::~lbDetailFormAction() {
 	free(myActionID);
+	
+	if (detailForm != NULL) detailForm->destroy();
 }
 
 void LB_STDCALL lbDetailFormAction::setDatabase(lb_I_Database* _db) {
@@ -493,8 +532,109 @@ void LB_STDCALL lbDetailFormAction::setActionID(char* id) {
 	}
 }
 
-void LB_STDCALL lbDetailFormAction::openDetailForm() {
+void LB_STDCALL lbDetailFormAction::openDetailForm(lb_I_String* formularname) {
+	lbErrCodes err = ERR_NONE;
 
+	if (detailForm != NULL) {
+		// Show it.
+	} else {
+		UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
+		UAP(lb_I_GUI, gui, __FILE__, __LINE__)
+	
+		meta->getGUI(&gui);
+	
+		lb_I_DatabaseForm* f = gui->findDBForm(masterForm->charrep());
+
+		// Get the SQL query based on formular name, application name.
+
+		UAP_REQUEST(manager.getPtr(), lb_I_String, user)
+		meta->getUserName(&user);		
+
+		char* b =
+		        "select Formulare.id from Formulare inner join Anwendungen_Formulare on "
+		        "Formulare.id = Anwendungen_Formulare.formularid "
+		        "inner join Anwendungen on Anwendungen_Formulare.anwendungid = Anwendungen.id inner join "
+		        "User_Anwendungen on Anwendungen.id = User_Anwendungen.anwendungenid inner join Users on "
+		        " User_Anwendungen.userid = Users.id where "
+		        "Users.userid = '%s' and Anwendungen.name = '%s' and "
+		        "Formulare.name = '%s'";
+		
+		char* buffer = (char*) malloc(strlen(b)+
+						strlen(user->charrep())+
+						strlen(app->charrep())+
+						strlen(formularname->charrep())+1);
+		
+		buffer[0] = 0;
+		
+		sprintf(buffer, b, user->charrep(), app->charrep(), formularname->charrep());
+		
+		UAP_REQUEST(manager.getPtr(), lb_I_Database, database)
+		UAP(lb_I_Query, query, __FILE__, __LINE__)
+		
+		database->init();
+		
+		char* lbDMFPasswd = getenv("lbDMFPasswd");
+		char* lbDMFUser   = getenv("lbDMFUser");
+		
+		if (!lbDMFUser) lbDMFUser = "dba";
+		if (!lbDMFPasswd) lbDMFPasswd = "trainres";
+		
+		database->connect("lbDMF", lbDMFUser, lbDMFPasswd);
+		
+		query = database->getQuery(0);
+
+		if (query->query(buffer) == ERR_NONE) {
+			lbErrCodes err = query->first();
+			
+			if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
+				UAP_REQUEST(manager.getPtr(), lb_I_String, id)
+				
+				id = query->getAsString(1);
+				
+				_CL_LOG << "Have the detail form ID = " << id->charrep() LOG_
+
+				char* b = "select parametervalue from formular_parameters where formularid = %s";
+
+				char* buffer = (char*) malloc(strlen(b)+strlen(id->charrep())+1);
+				buffer[0] = 0;
+				sprintf(buffer, b, id->charrep());
+
+				_CL_LOG << buffer LOG_
+				
+				UAP(lb_I_Query, query, __FILE__, __LINE__)
+
+				query = database->getQuery(0);
+
+				err = query->query(buffer);
+				
+				if (err == ERR_NONE) {
+					UAP_REQUEST(manager.getPtr(), lb_I_PluginManager, PM)
+					UAP(lb_I_Plugin, pl, __FILE__, __LINE__)
+					UAP_REQUEST(manager.getPtr(), lb_I_String, sql)
+
+					err = query->first();
+					
+					if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
+						UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
+						
+						sql = query->getAsString(1);
+
+						pl = PM->getFirstMatchingPlugin("lb_I_DatabaseForm");
+						uk = pl->getImplementation();
+						
+						UAP(lb_I_DatabaseForm, form, __FILE__, __LINE__)
+						QI(uk, lb_I_DatabaseForm, form, __FILE__, __LINE__)
+
+						detailForm = form.getPtr();
+
+						form->init(sql->charrep(), DBName->charrep(), DBUser->charrep(), DBPass->charrep());
+						form->show();
+						form++;
+					}
+				}
+			}
+		}
+	}
 }
 
 void LB_STDCALL lbDetailFormAction::execute(lb_I_Parameter* params) {
@@ -509,7 +649,19 @@ void LB_STDCALL lbDetailFormAction::execute(lb_I_Parameter* params) {
 	if (SourceFieldValue == NULL) {
 		REQUEST(manager.getPtr(), lb_I_String, SourceFieldValue)
 	}
-	
+	if (app == NULL) {
+		REQUEST(manager.getPtr(), lb_I_String, app)
+	}
+	if (DBName == NULL) {
+		REQUEST(manager.getPtr(), lb_I_String, DBName)
+	}
+	if (DBUser == NULL) {
+		REQUEST(manager.getPtr(), lb_I_String, DBUser)
+	}
+	if (DBPass == NULL) {
+		REQUEST(manager.getPtr(), lb_I_String, DBPass)
+	}
+
 	UAP_REQUEST(manager.getPtr(), lb_I_Database, database)
 	UAP(lb_I_Query, query, __FILE__, __LINE__)
 
@@ -542,17 +694,27 @@ void LB_STDCALL lbDetailFormAction::execute(lb_I_Parameter* params) {
 			
 			UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
 
+			parameter->setData("DBName");
+			params->getUAPString(*&parameter, *&DBName);
+			parameter->setData("DBUser");
+			params->getUAPString(*&parameter, *&DBUser);
+			parameter->setData("DBPass");
+			params->getUAPString(*&parameter, *&DBPass);
 			parameter->setData("source Form");
 			params->getUAPString(*&parameter, *&masterForm);
 			parameter->setData("source field");
 			params->getUAPString(*&parameter, *&SourceFieldName);
 			parameter->setData("source value");
 			params->getUAPString(*&parameter, *&SourceFieldValue);
+			parameter->setData("application");
+			params->getUAPString(*&parameter, *&app);
 
 			_CL_LOG << "Have master form '" << masterForm->charrep() << 
 			           "', source field name '" << SourceFieldName->charrep() << 
 			           "' and source field value '" << SourceFieldValue->charrep() <<
 			           "' for detail form '" << what->charrep() << "'" LOG_
+			
+			openDetailForm(*&what);
 			
 			err = query->next();
 		}
@@ -565,17 +727,27 @@ void LB_STDCALL lbDetailFormAction::execute(lb_I_Parameter* params) {
 			
 			UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
 
+			parameter->setData("DBName");
+			params->getUAPString(*&parameter, *&DBName);
+			parameter->setData("DBUser");
+			params->getUAPString(*&parameter, *&DBUser);
+			parameter->setData("DBPass");
+			params->getUAPString(*&parameter, *&DBPass);
 			parameter->setData("source Form");
 			params->getUAPString(*&parameter, *&masterForm);
 			parameter->setData("source field");
 			params->getUAPString(*&parameter, *&SourceFieldName);
 			parameter->setData("source value");
 			params->getUAPString(*&parameter, *&SourceFieldValue);
+			parameter->setData("application");
+			params->getUAPString(*&parameter, *&app);
 
 			_CL_LOG << "Have master form '" << masterForm->charrep() << 
 			           "', source field name '" << SourceFieldName->charrep() << 
 			           "' and source field value '" << SourceFieldValue->charrep() <<
 			           "' for detail form '" << what->charrep() << "'" LOG_
+			         
+			openDetailForm(*&what);
 		}
 	}
 }
@@ -652,6 +824,8 @@ lbDatabaseDialog::lbDatabaseDialog()
 	_CL_VERBOSE << "lbDatabaseDialog::lbDatabaseDialog() called." LOG_
 	ref = STARTREF;
 	formName = strdup("Database dialog");
+
+	fa = new FormularActions();
 }
 /*...e*/
 /*...slbDatabaseDialog\58\\58\\126\lbDatabaseDialog\40\\41\:0:*/
@@ -681,6 +855,9 @@ lbDatabaseDialog::~lbDatabaseDialog() {
 		 
 		d->destroy();
 	}
+	
+	if (fa != NULL) delete fa;
+	free (formName);
 }
 /*...e*/
 
@@ -750,6 +927,20 @@ void LB_STDCALL lbDatabaseDialog::init(char* _SQLString, char* DBName, char* DBU
 
 	database->init();
 	database->connect(DBName, DBUser, DBPass);
+
+	if (_DBName == NULL) {
+		REQUEST(manager.getPtr(), lb_I_String, _DBName)
+		_DBName->setData(DBName);
+	}
+	if (_DBUser == NULL) {
+		REQUEST(manager.getPtr(), lb_I_String, _DBUser)
+		_DBUser->setData(DBUser);
+	}
+	if (_DBPass == NULL) {
+		REQUEST(manager.getPtr(), lb_I_String, _DBPass)
+		_DBPass->setData(DBPass);
+	}
+
 
 	sampleQuery = database->getQuery(0);
 /*...e*/
@@ -1896,9 +2087,7 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::OnActionButton(lb_I_Unknown* uk) {
 
 		// Regarding to the event name, we must get back some information from the database.
 
-		FormularActions fa;
-
-		char* s = fa.getActionSourceDataField(reversedEvent);
+		char* s = fa->getActionSourceDataField(reversedEvent);
 
 		/*
 		  Now I can get the data from the source field and put it into the event parameters.
@@ -2019,12 +2208,28 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::OnActionButton(lb_I_Unknown* uk) {
 
 		UAP(lb_I_Action, action, __FILE__, __LINE__)
 		
-		action = fa.getAction(fa.getActionID(reversedEvent));
+		action = fa->getAction(fa->getActionID(reversedEvent));
 
 		UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
 		UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
 		UAP_REQUEST(manager.getPtr(), lb_I_String, v)
-		UAP_REQUEST(manager.getPtr(), lb_I_Integer, i)
+
+		// I better pass the form (this) as a parameter
+
+		UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
+		QI(this, lb_I_Unknown, uk, __FILE__, __LINE__)
+		
+		parameter->setData("DBName");
+		v->setData(_DBName->charrep());
+		param->setUAPString(*&parameter, *&v);
+
+		parameter->setData("DBUser");
+		v->setData(_DBUser->charrep());
+		param->setUAPString(*&parameter, *&v);
+
+		parameter->setData("DBPass");
+		v->setData(_DBPass->charrep());
+		param->setUAPString(*&parameter, *&v);
 
 		parameter->setData("source Form");
 		v->setData(formName);
@@ -2036,6 +2241,15 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::OnActionButton(lb_I_Unknown* uk) {
 
 		parameter->setData("source value");
 		v->setData(value.c_str());
+		param->setUAPString(*&parameter, *&v);
+
+		UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
+		parameter->setData("application");
+
+		meta->getApplicationName(&v);
+
+		_CL_LOG << "Pass application name: " << v->charrep() LOG_
+
 		param->setUAPString(*&parameter, *&v);
 
 		action->execute(*&param);

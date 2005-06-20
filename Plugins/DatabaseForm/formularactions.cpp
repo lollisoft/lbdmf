@@ -96,12 +96,31 @@ extern "C" {
 
 
 lb_I_Action* FormularActions::getAction(char* id) {
-	lbAction* _action = new lbAction();
+	lbErrCodes err = ERR_NONE;
 	
-	_action->setModuleManager(getModuleInstance(), __FILE__, __LINE__);
-	
+	UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, ID)
+	UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
+	ID->setData(id);
+	QI(ID, lb_I_KeyBase, key, __FILE__, __LINE__)
+
 	lb_I_Action* action;
-	_action->queryInterface("lb_I_Action", (void**) &action, __FILE__, __LINE__);
+	
+	if (actions == NULL) {
+		REQUEST(getModuleInstance(), lb_I_Container, actions)
+	}
+	
+	if (actions->exists(&key) == 0) {
+
+		lbAction* _action = new lbAction();
+		_action->setModuleManager(getModuleInstance(), __FILE__, __LINE__);
+		_action->queryInterface("lb_I_Unknown", (void**) &uk, __FILE__, __LINE__);
+
+		actions->insert(&uk, &key);
+	}
+
+	uk = actions->getElement(&key);
+	uk->queryInterface("lb_I_Action", (void**) &action, __FILE__, __LINE__);
 
 	// Store the id of the action for later use.
 	action->setActionID(id);

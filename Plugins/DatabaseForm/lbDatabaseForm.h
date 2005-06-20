@@ -30,11 +30,15 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.9 $
+ * $Revision: 1.10 $
  * $Name:  $
- * $Id: lbDatabaseForm.h,v 1.9 2005/06/15 09:37:26 lollisoft Exp $
+ * $Id: lbDatabaseForm.h,v 1.10 2005/06/20 11:24:02 lollisoft Exp $
  *
  * $Log: lbDatabaseForm.h,v $
+ * Revision 1.10  2005/06/20 11:24:02  lollisoft
+ * Detail form implementation as far to retrieve the detail form and upen it.
+ * (Shortly).
+ *
  * Revision 1.9  2005/06/15 09:37:26  lollisoft
  * Better implementation for action abstraction. Parameters that are needed
  * to be passed are done with lb_I_Parameter. It's short before fulfill the master
@@ -178,6 +182,8 @@ protected:
 
 	char* myActionID;
 	UAP(lb_I_Database, db, __FILE__, __LINE__)
+	
+	UAP(lb_I_Container, actions, __FILE__, __LINE__)
 };
 /*...e*/
 
@@ -197,13 +203,19 @@ public:
 	
 protected:
 
-	void LB_STDCALL openDetailForm();
+	void LB_STDCALL openDetailForm(lb_I_String* formularname);
 
 	char* myActionID;
 	UAP(lb_I_Database, db, __FILE__, __LINE__)
+	UAP(lb_I_String, app, __FILE__, __LINE__)
 	UAP(lb_I_String, masterForm, __FILE__, __LINE__)
 	UAP(lb_I_String, SourceFieldName, __FILE__, __LINE__)
 	UAP(lb_I_String, SourceFieldValue, __FILE__, __LINE__)
+	UAP(lb_I_String, DBName, __FILE__, __LINE__)
+	UAP(lb_I_String, DBUser, __FILE__, __LINE__)
+	UAP(lb_I_String, DBPass, __FILE__, __LINE__)
+
+	lb_I_DatabaseForm* detailForm;
 };
 /*...e*/
 /*...sclass lbSQLQueryAction:0:*/
@@ -235,8 +247,12 @@ class FormularActions {
 
 public:
 
-	FormularActions() {}
-	virtual ~FormularActions() {}
+	FormularActions() {
+		actions = NULL;
+	}
+	
+	virtual ~FormularActions() {
+	}
 	
 	/** \brief ID of action target.
 	 *
@@ -253,6 +269,10 @@ public:
 
 	/** \brief Get the action instance. */
 	lb_I_Action* getAction(char* id);
+	
+protected:
+	UAP(lb_I_Container, actions, __FILE__, __LINE__)
+	char buffer[100];
 };
 /*...e*/
 
@@ -487,6 +507,10 @@ public:
 	UAP(lb_I_Query, sampleQuery, __FILE__, __LINE__)
 	UAP(lb_I_String, SQLString, __FILE__, __LINE__)
 	UAP(lb_I_String, SQLWhere, __FILE__, __LINE__)
+
+	UAP(lb_I_String, _DBName, __FILE__, __LINE__)
+	UAP(lb_I_String, _DBUser, __FILE__, __LINE__)
+	UAP(lb_I_String, _DBPass, __FILE__, __LINE__)
 	
 	/**
 	 * \brief Maps positions to id's for each displayed combo box.
@@ -510,6 +534,7 @@ public:
 	char* formName;
 
 	FormularFieldInformation* FFI;
+	FormularActions* fa;
 /*...e*/
 };
 /*...e*/
@@ -524,6 +549,7 @@ DECLARE_SINGLETON_FUNCTOR(instanceOfPluginModule)
 DECLARE_FUNCTOR(instanceOflbDatabaseDialog)
 DECLARE_FUNCTOR(instanceOflbPluginDatabaseDialog)
 DECLARE_FUNCTOR(instanceOflbAction)
+
 DECLARE_FUNCTOR(instanceOflbDetailFormAction)
 DECLARE_FUNCTOR(instanceOflbSQLQueryAction)
 
