@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.77 2005/06/09 07:27:47 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.78 2005/06/20 11:21:42 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,15 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.77 $
+ * $Revision: 1.78 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.77 2005/06/09 07:27:47 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.78 2005/06/20 11:21:42 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.78  2005/06/20 11:21:42  lollisoft
+ * Added feature for skipping login wizard. Added findDBForm to get master
+ * form instances.
+ *
  * Revision 1.77  2005/06/09 07:27:47  lollisoft
  * Allow reopen the form if SQL query has been changed.
  *
@@ -565,25 +569,26 @@ public:
 /*...svirtual bool TransferDataFromWindow\40\\41\:8:*/
 	virtual bool TransferDataFromWindow()
 	{
-		// The application must have been selected here by the user.
-	
-		int sel = box->GetSelection();
-		
-		app = box->GetString(sel);
-
-		if (!app.IsEmpty()) {
-			UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
-		
-			char* _app = strdup(app.c_str());
-			
-			meta->loadApplication(userid, _app);
-			
-			free(_app);
-		}
-	
 	        return TRUE;
 	}
 /*...e*/
+
+	void OnWizardPageChanging(wxWizardEvent& event) {
+		if (event.GetDirection()) {
+			int sel = box->GetSelection();
+			app = box->GetString(sel);
+
+			if (!app.IsEmpty()) {
+				UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
+		
+				char* _app = strdup(app.c_str());
+			
+				meta->loadApplication(userid, _app);
+			
+				free(_app);
+			}
+		}
+	}
 
 private:
 	wxCheckBox *m_checkbox;
@@ -1034,6 +1039,8 @@ public:
 	virtual lbErrCodes LB_STDCALL addTextField(char* name, int x, int y, int w, int h) { return ERR_NONE; };
 /*...e*/
         
+
+	lb_I_DatabaseForm* LB_STDCALL findDBForm(char* name);
 
 	/*
 	 * Cleanup. This will destroy all possible (hidden) dialogs.
@@ -1499,6 +1506,25 @@ lbErrCodes LB_STDCALL lb_wxGUI::msgBox(char* windowTitle, char* msg) {
         return ERR_NONE;
 }
 /*...e*/
+lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::findDBForm(char* name) {
+	lbErrCodes err = ERR_NONE;
+	
+	UAP_REQUEST(getModuleManager(), lb_I_String, fName)
+	UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
+	UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
+	
+	fName->setData(name);
+	
+	QI(fName, lb_I_KeyBase, key, __FILE__, __LINE__)
+	
+	uk = forms->getElement(&key);
+	
+	UAP(lb_I_DatabaseForm, w, __FILE__, __LINE__)
+	QI(uk, lb_I_DatabaseForm, w, __FILE__, __LINE__)
+	// Not really needed, because my dialogs are forced to not be smart.
+	w++;
+	return w.getPtr();
+}
 #endif
 /*...e*/
 #ifndef LB_I_EXTENTIONS
