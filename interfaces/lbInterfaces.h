@@ -1919,6 +1919,7 @@ public:
 class lb_I_DatabaseForm;
 class lb_I_GUI;
 class lb_I_Form;
+class lb_I_String;
 
 /*...sclass lb_I_Frame:0:*/
 /**
@@ -1948,6 +1949,9 @@ public:
 	 * Set the graphical user interface instance that is the wrapper side.
 	 */
 	virtual lbErrCodes LB_STDCALL setGUI(lb_I_GUI* gui) = 0;
+
+	virtual lbErrCodes LB_STDCALL setUserName(char* user) = 0;
+	virtual lbErrCodes LB_STDCALL setApplicationName(char* app) = 0;
 	
 	/**
 	 * Initialize the application module. Optionally, provide user and application name.
@@ -1961,8 +1965,14 @@ public:
 	 * a GUI.
 	 */
 	virtual lbErrCodes LB_STDCALL run() = 0;
-	
+
+	/**
+	 * \brief Get the GUI instance.
+	 */	
 	virtual lbErrCodes LB_STDCALL getGUI(lb_I_GUI** gui) = 0;
+
+	virtual lbErrCodes LB_STDCALL getUserName(lb_I_String** user) = 0;
+	virtual lbErrCodes LB_STDCALL getApplicationName(lb_I_String** app) = 0;
 	
 	/**
 	 * Get access to the main event manager, so all parts can initialize event handlers
@@ -1972,7 +1982,6 @@ public:
 
 
 	virtual lbErrCodes LB_STDCALL loadApplication(char* user, char* app) = 0;
-
 
 	/**
 	 * Basic functions to be used for a UI application
@@ -1990,7 +1999,6 @@ public:
 class lb_I_Plugin;
 class lb_I_PluginImpl;
 class lb_I_PluginModule;
-class lb_I_String;
 
 /** \brief The plugin manager
  *
