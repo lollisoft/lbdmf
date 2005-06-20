@@ -212,23 +212,6 @@ public:
 	virtual bool TransferDataFromWindow()
 	{
 		// The application must have been selected here by the user.
-#ifdef bla
-		printf("TransferDataFromWindow() called.\n");
-	
-		int sel = box->GetSelection();
-		
-		app = box->GetString(sel);
-
-		if (!app.IsEmpty()) {
-			UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
-		
-			char* _app = strdup(app.c_str());
-			
-			meta->loadApplication(userid, _app);
-			
-			free(_app);
-		}
-#endif	
 	        return TRUE;
 	}
 /*...e*/
