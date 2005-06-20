@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.61 $
+ * $Revision: 1.62 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.61 2005/05/04 22:09:38 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.62 2005/06/20 11:18:46 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.62  2005/06/20 11:18:46  lollisoft
+ * Added interface set/get User and ApplicationName
+ *
  * Revision 1.61  2005/05/04 22:09:38  lollisoft
  * Many memory leaks fixed. Changed _CL_LOG to _CL_VERBOSE.
  *
@@ -288,9 +291,11 @@ IMPLEMENT_SINGLETON_FUNCTOR(instanceOfEventManager, lb_EventManager)
 lb_MetaApplication::lb_MetaApplication() {
 	ref = STARTREF;
 	gui = NULL;
+	_CL_LOG << "lb_MetaApplication::lb_MetaApplication() called." LOG_
 }
 
 lb_MetaApplication::~lb_MetaApplication() {
+	_CL_LOG << "lb_MetaApplication::~lb_MetaApplication() called." LOG_
 }
 /*...e*/
 
@@ -369,7 +374,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::getLoginData(lb_I_Unknown* uk) {
 /*...e*/
 
 
-BEGIN_IMPLEMENT_LB_UNKNOWN(lb_MetaApplication)
+BEGIN_IMPLEMENT_SINGLETON_LB_UNKNOWN(lb_MetaApplication)
 	ADD_INTERFACE(lb_I_MetaApplication)
 END_IMPLEMENT_LB_UNKNOWN()
 
@@ -392,6 +397,32 @@ lbErrCodes LB_STDCALL lb_MetaApplication::getGUI(lb_I_GUI** _gui) {
 	return ERR_NONE;
 }
 /*...e*/
+lbErrCodes LB_STDCALL lb_MetaApplication::getUserName(lb_I_String** user) {
+	(*user)->setData(LogonUser->charrep());
+	return ERR_NONE;
+}
+
+lbErrCodes LB_STDCALL lb_MetaApplication::getApplicationName(lb_I_String** app) {
+	(*app)->setData(LogonApplication->charrep());
+	return ERR_NONE;
+}
+lbErrCodes LB_STDCALL lb_MetaApplication::setUserName(char* user) {
+	if (LogonUser == NULL) {
+        	REQUEST(manager.getPtr(), lb_I_String, LogonUser)
+	}
+
+       	LogonUser->setData(user);
+	return ERR_NONE;
+}
+
+lbErrCodes LB_STDCALL lb_MetaApplication::setApplicationName(char* app) {
+	if (LogonApplication == NULL) {
+        	REQUEST(manager.getPtr(), lb_I_String, LogonApplication)
+	}
+
+       	LogonApplication->setData(app);
+	return ERR_NONE;
+}
 /*...slb_I_EventManager \42\ lb_MetaApplication\58\\58\getEVManager\40\ void \41\:0:*/
 lb_I_EventManager * lb_MetaApplication::getEVManager( void ) {
 	return NULL;
@@ -408,6 +439,22 @@ lbErrCodes LB_STDCALL lb_MetaApplication::Initialize(char* user, char* app) {
  * resolves the functor for this application.
  */
 /*...e*/
+
+	if (user == NULL) {
+		_CL_LOG << "lb_MetaApplication::Initialize() user is NULL" LOG_
+	} else
+	if (LogonUser == NULL) {
+		REQUEST(manager.getPtr(), lb_I_String, LogonUser)
+		LogonUser->setData(user);
+	}
+	
+	if (app == NULL) {
+		_CL_LOG << "lb_MetaApplication::Initialize() app is NULL" LOG_
+	} else
+	if (LogonApplication == NULL) {
+		REQUEST(manager.getPtr(), lb_I_String, LogonApplication)
+		LogonApplication->setData(app);
+	}
 
 /*...sdispatch integer values:8:*/
 	/*
@@ -543,6 +590,24 @@ lbErrCodes LB_STDCALL lb_MetaApplication::loadSubModules() {
 /*...slbErrCodes LB_STDCALL lb_MetaApplication\58\\58\loadApplication\40\char\42\ user\44\ char\42\ app\41\:0:*/
 lbErrCodes LB_STDCALL lb_MetaApplication::loadApplication(char* user, char* application) {
 	lbErrCodes err = ERR_NONE;
+
+        if (user == NULL) {
+                _CL_LOG << "lb_MetaApplication::Initialize() user is NULL" LOG_
+        } else
+        if (LogonUser == NULL) {
+                REQUEST(manager.getPtr(), lb_I_String, LogonUser)
+                LogonUser->setData(user);
+        }
+
+        if (application == NULL) {
+                _CL_LOG << "lb_MetaApplication::Initialize() app is NULL" LOG_
+        } else
+        if (LogonApplication == NULL) {
+                REQUEST(manager.getPtr(), lb_I_String, LogonApplication)
+                LogonApplication->setData(application);
+        }
+
+
         char* applicationName = getenv("TARGET_APPLICATION");
 
 	char* lbDMFPasswd = getenv("lbDMFPasswd");
@@ -556,7 +621,6 @@ lbErrCodes LB_STDCALL lb_MetaApplication::loadApplication(char* user, char* appl
 		 * No predefined application without authentication.
 		 * Read the configuration from a database.
 		 */
-		
 
 		UAP_REQUEST(manager.getPtr(), lb_I_Database, database)
 		UAP(lb_I_Query, sampleQuery, __FILE__, __LINE__)

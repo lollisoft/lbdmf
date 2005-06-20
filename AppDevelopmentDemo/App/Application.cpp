@@ -51,7 +51,11 @@ public:
 	virtual lbErrCodes LB_STDCALL Initialize(char* user = NULL, char* app = NULL);
 	virtual lbErrCodes LB_STDCALL run();
 	virtual lbErrCodes LB_STDCALL getGUI(lb_I_GUI** _gui);
-
+	virtual lbErrCodes LB_STDCALL getUserName(lb_I_String** user);
+	virtual lbErrCodes LB_STDCALL getApplicationName(lb_I_String** app);
+	virtual lbErrCodes LB_STDCALL setUserName(char* user);
+	virtual lbErrCodes LB_STDCALL setApplicationName(char* app);
+	
 	virtual lb_I_EventManager * getEVManager( void );
 
 	virtual lbErrCodes LB_STDCALL registerEventHandler(lb_I_Dispatcher* disp);	
@@ -99,6 +103,8 @@ protected:
 	lb_I_GUI* gui;
 	UAP(lb_I_EventManager, eman, __FILE__, __LINE__)
 	UAP(lb_I_Dispatcher, dispatcher, __FILE__, __LINE__)
+	UAP(lb_I_String, LogonUser, __FILE__, __LINE__)
+	UAP(lb_I_String, LogonApplication, __FILE__, __LINE__)
 };
 /*...e*/
 /*...slbApplication:0:*/
@@ -275,6 +281,23 @@ lbErrCodes LB_STDCALL lbApplication::Initialize(char* user, char* app) {
 	printf("Get an event manager\n");
 	REQUEST(m, lb_I_EventManager, eman)
 
+
+	if (user == NULL) {
+	        _CL_LOG << "lb_MetaApplication::Initialize() user is NULL" LOG_
+	} else
+		if (LogonUser == NULL) {
+	        REQUEST(manager.getPtr(), lb_I_String, LogonUser)
+	        LogonUser->setData(user);
+	}
+	
+	if (app == NULL) {
+	        _CL_LOG << "lb_MetaApplication::Initialize() app is NULL" LOG_
+	} else
+	if (LogonApplication == NULL) {
+	        REQUEST(manager.getPtr(), lb_I_String, LogonApplication)
+	        LogonApplication->setData(app);
+	}
+
 	// Register my handler identifers
 	
 	eman->registerEvent("getKundenDetails", getKundenDetails);
@@ -336,6 +359,32 @@ lbErrCodes LB_STDCALL lbApplication::Initialize(char* user, char* app) {
 	return ERR_NONE;
 }
 /*...e*/
+lbErrCodes LB_STDCALL lbApplication::getUserName(lb_I_String** user) {
+	(*user)->setData(LogonUser->charrep());
+	return ERR_NONE;
+}
+
+lbErrCodes LB_STDCALL lbApplication::getApplicationName(lb_I_String** app) {
+	(*app)->setData(LogonApplication->charrep());
+	return ERR_NONE;
+}
+lbErrCodes LB_STDCALL lbApplication::setUserName(char* user) {
+	if (LogonUser == NULL) {
+        	REQUEST(manager.getPtr(), lb_I_String, LogonUser)
+	}
+
+       	LogonUser->setData(user);
+	return ERR_NONE;
+}
+
+lbErrCodes LB_STDCALL lbApplication::setApplicationName(char* app) {
+	if (LogonApplication == NULL) {
+        	REQUEST(manager.getPtr(), lb_I_String, LogonApplication)
+	}
+
+       	LogonApplication->setData(app);
+	return ERR_NONE;
+}
 
 
 // This starts the main application

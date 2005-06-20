@@ -51,7 +51,11 @@ public:
 	virtual lbErrCodes LB_STDCALL Initialize(char* user = NULL, char* app = NULL);
 	virtual lbErrCodes LB_STDCALL run();
 	virtual lbErrCodes LB_STDCALL getGUI(lb_I_GUI** _gui);
-
+	virtual lbErrCodes LB_STDCALL getUserName(lb_I_String** user);
+	virtual lbErrCodes LB_STDCALL getApplicationName(lb_I_String** app);
+	virtual lbErrCodes LB_STDCALL setUserName(char* user);
+	virtual lbErrCodes LB_STDCALL setApplicationName(char* app);
+	
 	virtual lb_I_EventManager * getEVManager( void );
 
 	virtual lbErrCodes LB_STDCALL registerEventHandler(lb_I_Dispatcher* disp);	
@@ -101,13 +105,10 @@ protected:
 	UAP(lb_I_Dispatcher, dispatcher, __FILE__, __LINE__)
 	UAP(lb_I_Database, database, __FILE__, __LINE__)
 	
+	UAP(lb_I_String, LogonUser, __FILE__, __LINE__)
+	UAP(lb_I_String, LogonApplication, __FILE__, __LINE__)
+		
 	char hdsihd[100];
-	
-	
-	
-	char* userName;
-	char* applicationName;
-	
 };
 /*...e*/
 /*...slbDynamicApplication:0:*/
@@ -192,13 +193,16 @@ lbErrCodes LB_STDCALL lbDynamicApplication::getDynamicDBForm(lb_I_Unknown* uk) {
 		        "Users.userid = '%s' and Anwendungen.name = '%s' and "
 		        "Formulare.eventname = '%s'";
 
-		char* buffer = (char*) malloc(strlen(b)+strlen(userName)+strlen(applicationName)+strlen(eventName)+1);
+		char* buffer = (char*) malloc(strlen(b)+strlen(LogonUser->charrep())+strlen(LogonApplication->charrep())+strlen(eventName)+1);
 
 		buffer[0] = 0;
 
-		sprintf(buffer, b, userName, applicationName, eventName);
+		sprintf(buffer, b, LogonUser->charrep(), LogonApplication->charrep(), eventName);
 
 		// Get the ID and Name of the intented formular
+
+		_CL_LOG << "Logon user is: " << LogonUser->charrep() LOG_
+		_CL_LOG << "Logon app is: " << LogonApplication->charrep() LOG_
 
 		sampleQuery->query(buffer);
 		
@@ -247,11 +251,11 @@ lbErrCodes LB_STDCALL lbDynamicApplication::getDynamicDBForm(lb_I_Unknown* uk) {
 			"Anwendungen on Anwendungs_Parameter.anwendungid = Anwendungen.id where "
 			"Anwendungen.name = '%s'";
 
-		buffer = (char*) realloc(buffer, strlen(b)+strlen(applicationName)+1);
+		buffer = (char*) realloc(buffer, strlen(b)+strlen(LogonApplication->charrep())+1);
 
 		buffer[0] = 0;
 		
-		sprintf(buffer, b, applicationName);
+		sprintf(buffer, b, LogonApplication->charrep());
 
 		UAP(lb_I_Query, DBConnQuery, __FILE__, __LINE__)
 
@@ -391,8 +395,21 @@ lbErrCodes LB_STDCALL lbDynamicApplication::Initialize(char* user, char* app) {
 
 	// Save user and app internally
 	
-	userName = strdup(user);
-	applicationName = strdup(app);
+	if (user == NULL) {
+	        _CL_LOG << "lb_MetaApplication::Initialize() user is NULL" LOG_
+	} else
+	if (LogonUser == NULL) {
+	        REQUEST(manager.getPtr(), lb_I_String, LogonUser)
+	        LogonUser->setData(user);
+	}
+	
+	if (app == NULL) {
+	        _CL_LOG << "lb_MetaApplication::Initialize() app is NULL" LOG_
+	} else
+	if (LogonApplication == NULL) {
+	        REQUEST(manager.getPtr(), lb_I_String, LogonApplication)
+	        LogonApplication->setData(app);
+	}
 
 	if (sampleQuery == NULL) printf("NULL pointer !\n");
 
@@ -477,6 +494,32 @@ lbErrCodes LB_STDCALL lbDynamicApplication::Initialize(char* user, char* app) {
 }
 
 /*...e*/
+lbErrCodes LB_STDCALL lbDynamicApplication::getUserName(lb_I_String** user) {
+	(*user)->setData(LogonUser->charrep());
+	return ERR_NONE;
+}
+
+lbErrCodes LB_STDCALL lbDynamicApplication::getApplicationName(lb_I_String** app) {
+	(*app)->setData(LogonApplication->charrep());
+	return ERR_NONE;
+}
+lbErrCodes LB_STDCALL lbDynamicApplication::setUserName(char* user) {
+	if (LogonUser == NULL) {
+        	REQUEST(manager.getPtr(), lb_I_String, LogonUser)
+	}
+
+       	LogonUser->setData(user);
+	return ERR_NONE;
+}
+
+lbErrCodes LB_STDCALL lbDynamicApplication::setApplicationName(char* app) {
+	if (LogonApplication == NULL) {
+        	REQUEST(manager.getPtr(), lb_I_String, LogonApplication)
+	}
+
+       	LogonApplication->setData(app);
+	return ERR_NONE;
+}
 
 
 // This starts the main application

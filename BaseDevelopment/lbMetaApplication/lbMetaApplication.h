@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.21 $
+ * $Revision: 1.22 $
  * $Name:  $
- * $Id: lbMetaApplication.h,v 1.21 2005/06/01 10:57:22 lollisoft Exp $
+ * $Id: lbMetaApplication.h,v 1.22 2005/06/20 11:18:46 lollisoft Exp $
  *
  * $Log: lbMetaApplication.h,v $
+ * Revision 1.22  2005/06/20 11:18:46  lollisoft
+ * Added interface set/get User and ApplicationName
+ *
  * Revision 1.21  2005/06/01 10:57:22  lollisoft
  * Replaced DEBUG_UAP with UAP
  *
@@ -129,6 +132,11 @@ public:
 	virtual lbErrCodes LB_STDCALL Initialize(char* user = NULL, char* app = NULL);
 	virtual lbErrCodes LB_STDCALL run();
 	virtual lbErrCodes LB_STDCALL getGUI(lb_I_GUI** _gui);
+	virtual lbErrCodes LB_STDCALL getUserName(lb_I_String** user);
+	virtual lbErrCodes LB_STDCALL getApplicationName(lb_I_String** app);
+
+	virtual lbErrCodes LB_STDCALL setUserName(char* user);
+	virtual lbErrCodes LB_STDCALL setApplicationName(char* app);
 
 	virtual lb_I_EventManager * getEVManager( void );
 
@@ -185,6 +193,8 @@ protected:
 	UAP(lb_I_EventManager, eman, __FILE__, __LINE__)
 	UAP(lb_I_Dispatcher, dispatcher, __FILE__, __LINE__)
 	UAP(lb_I_MetaApplication, app, __FILE__, __LINE__)
+	UAP(lb_I_String, LogonUser, __FILE__, __LINE__)
+	UAP(lb_I_String, LogonApplication, __FILE__, __LINE__)
 	
 	char gwedgd[100];
 };
@@ -313,7 +323,7 @@ extern "C" {
 #endif
 /*...e*/
 
-DECLARE_FUNCTOR(instanceOfMetaApplication)
+DECLARE_SINGLETON_FUNCTOR(instanceOfMetaApplication)
 DECLARE_FUNCTOR(instanceOfEventMapper)
 DECLARE_FUNCTOR(instanceOfEvHandler)
 
