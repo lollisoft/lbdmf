@@ -233,6 +233,13 @@ public:
 	 * We do not implement a dispatcher here, but we need one.
 	 */
 	virtual lbErrCodes LB_STDCALL setDispatcher(lb_I_Dispatcher* disp) = 0;	
+	
+	/**
+	 * \brief Find any window.
+	 *
+	 * This function finds any window by their name.
+	 */
+	virtual lb_I_DatabaseForm* LB_STDCALL findDBForm(char* name) = 0;
 };
 /*...e*/
 /*...sclass lb_I_wxGUI:0:*/
