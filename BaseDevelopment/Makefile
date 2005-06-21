@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.54 $
+# * $Revision: 1.55 $
 # * $Name:  $
-# * $Id: Makefile,v 1.54 2005/06/03 12:34:43 lollisoft Exp $
+# * $Id: Makefile,v 1.55 2005/06/21 15:15:00 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.55  2005/06/21 15:15:00  lollisoft
+# * Added login wizard plugin under Linux
+# *
 # * Revision 1.54  2005/06/03 12:34:43  lollisoft
 # * Compile tvision-set instead of my version. Better to work together.
 # *
@@ -420,6 +423,10 @@ endif
 ifeq ($(OSTYPE), linux)
 ../Test/GUI/wxWrapper: dummy
 	$(MAKE) -s -C $@ -f makefile.wx-sample
+
+../Test/GUI/wxPlugins/lbLoginWizard: dummy
+	$(MAKE) -s -C $@ -e MODULE=lbLoginWizard -e TARGET=$(TARGETWXPLUGIN) -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@
 endif
 
 ifeq ($(OSTYPE), Windows_NT)
