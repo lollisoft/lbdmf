@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.78 2005/06/20 11:21:42 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.79 2005/06/21 14:36:33 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.78 $
+ * $Revision: 1.79 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.78 2005/06/20 11:21:42 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.79 2005/06/21 14:36:33 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.79  2005/06/21 14:36:33  lollisoft
+ * Missed event table declaration for page changing event.
+ *
  * Revision 1.78  2005/06/20 11:21:42  lollisoft
  * Added feature for skipping login wizard. Added findDBForm to get master
  * form instances.
@@ -536,6 +539,10 @@ public:
 		sampleQuery->skipFKCollecting();
 		sampleQuery->query(buffer);
 		sampleQuery->enableFKCollecting();
+
+		// Clear the box, if it was previously filled due to navigation.
+		
+		box->Clear();
 		
 		// Fill up the available applications for that user.
 
@@ -599,7 +606,7 @@ private:
 	UAP(lb_I_Database, database, __FILE__, __LINE__)
 	UAP(lb_I_Query, sampleQuery, __FILE__, __LINE__)
 
-	
+	DECLARE_EVENT_TABLE()	
 	
 	
 	// l gets overwritten, while assigning a lb_I_Query* pointer to sampleQuery !!
@@ -608,6 +615,9 @@ private:
 	char buf[100];
 };
 
+BEGIN_EVENT_TABLE(wxAppSelectPage, wxWizardPageSimple)
+    EVT_WIZARD_PAGE_CHANGING(-1, wxAppSelectPage::OnWizardPageChanging)
+END_EVENT_TABLE()
 
 BEGIN_IMPLEMENT_LB_UNKNOWN(wxAppSelectPage)
 END_IMPLEMENT_LB_UNKNOWN()
