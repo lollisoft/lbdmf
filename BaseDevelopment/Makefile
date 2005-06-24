@@ -1,11 +1,20 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.55 $
+# * $Revision: 1.56 $
 # * $Name:  $
-# * $Id: Makefile,v 1.55 2005/06/21 15:15:00 lollisoft Exp $
+# * $Id: Makefile,v 1.56 2005/06/24 23:09:47 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.56  2005/06/24 23:09:47  lollisoft
+# * Changes to build with new wxWidgets version 2.6.1.
+# * Added fallback to hardcoded settings, if no environment
+# * variables are found. Logging changed to reside in a
+# * $(HOME)/log directory.
+# *
+# * GUI application build process enhanced to also make the
+# * bundle. App runs from clicking on the desktop icon.
+# *
 # * Revision 1.55  2005/06/21 15:15:00  lollisoft
 # * Added login wizard plugin under Linux
 # *
@@ -250,6 +259,7 @@ BASEDIRECTORIES= \
 
 TARGETDLL=so
 TARGETEXE=elf
+TARGETWXEXE=elf
 TARGET_TV_DLL=tvision_dll
 TARGET_TV_EXE=tvision_elf
 TARGETPLUGIN=soplugin
@@ -416,7 +426,8 @@ ifeq ($(OSTYPE), osx)
 	cd ../BaseDevelopment
 
 ../Test/GUI/wxWrapper: dummy
-	$(MAKE) -s -C $@ -f makefile.osx
+	$(MAKE) -s -C $@ -e MODULE=wxWrapper -e TARGET=$(TARGETWXEXE) -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -C $@
 	cp ../Test/GUI/wxWrapper/wxWrapper $(HOME)/bin
 endif
 

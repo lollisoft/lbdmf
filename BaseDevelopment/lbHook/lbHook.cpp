@@ -61,17 +61,17 @@
 #pragma warning( disable: 4275 )
 #pragma warning( disable: 4251 )
 #pragma warning( disable: 4101 )
-
-//#undef DLLEXPORT
-//#define DLLEXPORT
 #endif
 
 #include <lbConfigHook.h>
-//#include <lbkey.h>
 
 #ifdef LINUX
 #define HINSTANCE void*
 #endif
+
+#include <sys/types.h>
+#include <sys/stat.h>
+
 
 #ifdef WINDOWS
 #ifndef LB_CLASSES_DLL
@@ -90,6 +90,70 @@ extern int lb_isInitializing;
 
 bool lbVerbose = FALSE;
 int instances = 0;
+char* lbLogDirectory = NULL;
+char* lbLogFile = NULL;
+
+#if defined(OSX) || defined(UNIX) || defined(LINUX)
+#define SLASH "/"
+#endif
+#if defined(WINDOWS)
+#define SLASH "\\"
+#endif
+
+DLLEXPORT void logMessage(const char *msg, char *f, int level) {
+                FILE *fp;
+                fp = fopen( f, "a" );
+                if( fp != NULL ) {
+                        char buf[1000] = "";
+                        buf[0] = 0;
+                        
+                        int l = level;
+                        
+                        while (l > 0) {
+                                sprintf(buf, "%s%s", buf, "    ");
+                                l--;
+                        }
+
+#ifdef WINDOWS                        
+                        fprintf( fp, "Pid %d\t:%s%s", ::GetCurrentProcessId(), buf, msg);
+#endif
+#if defined (OSX) || defined (LINUX) || defined(UNIX)
+                        fprintf( fp, "Pid %d\t:%s%s", getpid(), buf, msg);
+#endif						
+						fclose( fp );
+                }
+}
+
+void logMessage(const char *msg) {
+	if (lbLogFile == NULL) {
+		char* logpath = getLogDirectory();
+		lbLogFile = (char*) malloc(strlen(logpath)+100);
+		lbLogFile[0] = 0;
+	
+		strcat(lbLogFile, logpath);
+		strcat(lbLogFile, SLASH);
+		strcat(lbLogFile, LOGFILE);
+	}
+
+	logMessage(msg, lbLogFile, 0);
+}
+
+DLLEXPORT char* getLogDirectory() {
+	if (lbLogDirectory == NULL) {
+		char* home = getenv("HOME");
+		
+		lbLogDirectory = (char*) malloc(strlen(home)+10);
+		lbLogDirectory[0] = 0;
+		strcat(lbLogDirectory, home);
+		strcat(lbLogDirectory, SLASH);
+		strcat(lbLogDirectory, "log");
+		
+		// Don't ask for failure.
+		mkdir(lbLogDirectory, S_IRWXU);
+	}
+
+	return lbLogDirectory;
+}
 
 DLLEXPORT void LB_STDCALL InstanceCount(int inst) {
 	instances += inst;
@@ -203,8 +267,13 @@ lbErrCodes LB_STDCALL lbLoadModule(const char* name, HINSTANCE & hinst) {
 #ifdef WINDOWS
         if ((hinst = LoadLibrary(name)) == NULL)
         {
-            printf("Kann DLL '%s' nicht laden.\n", name); 
+			char *buffer = malloc(100+strlen(name));
+			buffer[0] = 0;
+            sprintf(buffer, "Kann DLL '%s' nicht laden.\n", name); 
             
+			logMessage(buffer);
+			free(buffer);
+			
             LPVOID lpMsgBuf;
 	    if (!FormatMessage( 
 	      FORMAT_MESSAGE_ALLOCATE_BUFFER | 
@@ -232,13 +301,32 @@ lbErrCodes LB_STDCALL lbLoadModule(const char* name, HINSTANCE & hinst) {
 #ifdef LINUX
 	if ((hinst = dlopen(name, RTLD_LAZY)) == NULL)
 	{
-	    printf("Kann SO module '%s' nicht laden. Error: %s\n", name, dlerror());
-	    
-	    //getch();
-	    return ERR_MODULE_NOT_FOUND;
+			char* home = getenv("HOME");
+			char* newname = (char*) malloc(strlen(home)+strlen(name)+6);
+			
+			newname[0] = 0;
+			strcat(newname, home);
+			strcat(newname, "/lib/");
+			strcat(newname, name);
+	
+			if ((hinst = dlopen(newname, RTLD_LAZY)) != NULL) {
+				free(newname);
+				return ERR_NONE;
+			}
+			
+			free(newname);
+			
+			char *buffer = (char*) malloc(strlen(name)+100);
+			buffer[0] = 0;
+
+			sprintf(buffer, "Kann SO module '%s' nicht laden.\n", name);
+			
+			logMessage(buffer);
+			free(buffer);
+			return ERR_MODULE_NOT_FOUND;
 	}
 #endif
-        return ERR_NONE;
+	return ERR_NONE;
 }
 /*...e*/
 /*...slbErrCodes LB_STDCALL lbGetFunctionPtr\40\const char\42\ name\44\ const HINSTANCE \38\ hinst\44\ void\42\\42\ pfn\41\:0:*/
@@ -282,8 +370,20 @@ T_p_getlbModuleInstance DLL_GETMODULEINSTANCE;
 	char* libname = getenv("MODULELIB");
 	char* functor = getenv("LBMODULEFUNCTOR");
 
-	if (functor == NULL) printf("Error: Have no functor!\n");
+	if (libname == NULL) {
+		logMessage("Error: Have no module manager library name!\n");
+		#ifdef OSX
+			libname = "lbModule.so";
+		#endif
+	}
 
+	if (functor == NULL) {
+		logMessage("Error: Have no functor!\n");
+		#ifdef OSX
+			functor = "getlb_ModuleInstance";
+		#endif
+	} else logMessage(functor);
+	
 #ifdef WINDOWS
 #ifndef _MSC_VER
 	char* temp = new char [strlen(functor)+2];
@@ -296,20 +396,27 @@ T_p_getlbModuleInstance DLL_GETMODULEINSTANCE;
 
 	if (LB_Module_Handle == NULL) {
 		if (lbLoadModule(libname, LB_Module_Handle) != ERR_NONE) {
-			printf("Failed to load module manager\n");
-			exit(1);
+			char* buf = "Failed to load module manager (%s)\n";
+			char* msg = (char*) malloc(strlen(buf)+strlen(libname)+1);
+			sprintf(msg, buf, libname);
+			logMessage(msg);
+			free(msg);
+			return NULL;
 		}
 	}
 
 	if (LB_Module_Handle == NULL) {
-		printf("Error: Could not load shared library %s\n", libname);
+		logMessage("Error: Could not load shared library %s\n", libname);
+		return NULL;
 	}
+	
+	logMessage("Call lbGetFunctionPtr(...)\n");	
 	
 	if (lbGetFunctionPtr(functor, 
 			     LB_Module_Handle, 
 			     (void **) &DLL_GETMODULEINSTANCE) != ERR_NONE) {
-		_CL_VERBOSE << "Fatal: Could not get functor for the module manager!" LOG_
-		exit(1);
+		logMessage("Fatal: Could not get functor for the module manager!\n");
+		return NULL;
 	}
 	
 #ifdef WINDOWS
@@ -319,8 +426,10 @@ T_p_getlbModuleInstance DLL_GETMODULEINSTANCE;
 #endif
 #endif
 	
+	logMessage("getModuleInstance() takes a lbModule instance...\n");
+	
 	if ((err = DLL_GETMODULEINSTANCE(&module, NULL, __FILE__, __LINE__)) == ERR_STATE_FURTHER_LOCK) {
-		_CL_VERBOSE << "Instance is locked. Must set module manager first" LOG_
+		logMessage("Instance is locked. Must set module manager first\n");
 		module->setModuleManager(module.getPtr(), __FILE__, __LINE__);
 	} 
 	UAP(lb_I_Module, inst, __FILE__, __LINE__)

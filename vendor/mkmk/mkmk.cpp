@@ -12,11 +12,20 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.64 $
+ * $Revision: 1.65 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.64 2005/05/16 00:00:46 lollisoft Exp $
+ * $Id: mkmk.cpp,v 1.65 2005/06/24 23:10:02 lollisoft Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.65  2005/06/24 23:10:02  lollisoft
+ * Changes to build with new wxWidgets version 2.6.1.
+ * Added fallback to hardcoded settings, if no environment
+ * variables are found. Logging changed to reside in a
+ * $(HOME)/log directory.
+ *
+ * GUI application build process enhanced to also make the
+ * bundle. App runs from clicking on the desktop icon.
+ *
  * Revision 1.64  2005/05/16 00:00:46  lollisoft
  * Added lines to report building a source file.
  *
@@ -734,6 +743,21 @@ void writeExeTarget(char* modulename) {
   printf("\n%s: $(OBJS)\n", modulename);
   printf("\t\t$(CC) $(L_OPS) %s $(OBJS) $(OBJDEP) $(LIBS) -bind_at_load -lc $(VENDORLIBS)\n",modulename);
   printf("\t\t$(CP) $(PROGRAM) $(HOME)/bin\n");
+
+  // Write Mac OS X Bundle
+  printf("\t\t/Developer/Tools/Rez -d __DARWIN__ -t APPL -d __WXMAC__ -i . -d WXUSINGDLL -i $(HOME)/wxMac-2.6.1/samples -i $(HOME)/wxMac-2.6.1/include -o %s Carbon.r sample.r\n", modulename);
+  printf("\t\t/Developer/Tools/SetFile -a C %s\n", modulename);
+  printf("\t\t$(HOME)/wxMac-2.6.1/change-install-names $(HOME)/wxMac-2.6.1/lib /usr/local %s\n", modulename);
+  printf("\t\trm -Rf %s.app\n", modulename);
+  printf("\t\tmkdir -p %s.app\n", modulename);
+  printf("\t\tmkdir -p %s.app/Contents\n", modulename);
+  printf("\t\tmkdir -p %s.app/Contents/MacOS\n", modulename);
+  printf("\t\tmkdir -p %s.app/Contents/Resources\n", modulename);
+  printf("\t\tset -e \"s/IDENTIFIER/`echo . | sed -e 's,\\.\\./,,g' | sed -e 's,/,.,g'`/\" -e \"s/EXECUTABLE/%s/\" -e \"s/VERSION/2.6.1/\" $(HOME)/wxMac-2.6.1/src/mac/carbon/wxmac.icns %s.app/Contents/Resources/wxmac.icns\n", modulename, modulename);
+  printf("\t\tsed -e \"s/IDENTIFIER/`echo . | sed -e 's,\\.\\./,,g' | sed -e 's,/,.,g'`/\" -e \"s/EXECUTABLE/%s/\" -e \"s/VERSION/2.6.1/\" $(HOME)/wxMac-2.6.1/src/mac/carbon/Info.plist.in >%s.app/Contents/Info.plist\n", modulename, modulename);
+  printf("\t\techo -n \"APPL????\" >%s.app/Contents/PkgInfo\n", modulename);
+  printf("\t\tln -f %s %s.app/Contents/MacOS/%s\n", modulename, modulename, modulename);
+//  printf("\t\t\n", modulename);
 #endif
 
 #ifdef UNIX
@@ -1127,7 +1151,7 @@ void ShowHelp()
 
   fprintf(stderr, "Enhanced by Lothar Behrens (lothar.behrens@lollisoft.de)\n\n");
 
-  fprintf(stderr, "MKMK: makefile generator $Revision: 1.64 $\n");
+  fprintf(stderr, "MKMK: makefile generator $Revision: 1.65 $\n");
   fprintf(stderr, "Usage: MKMK lib|exe|dll|so modulname includepath,[includepath,...] file1 [file2 file3...]\n");
 }
 /*...e*/

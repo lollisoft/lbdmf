@@ -7,6 +7,7 @@
 	objects = {
 		270BA7B6086C0A0900799F65 = {
 			children = (
+				274171B3086C0BC200683CF4,
 			);
 			isa = PBXGroup;
 			refType = 4;
@@ -38,7 +39,38 @@
 			mainGroup = 270BA7B6086C0A0900799F65;
 			projectDirPath = "";
 			targets = (
+				274171B2086C0AEF00683CF4,
 			);
+		};
+		274171B2086C0AEF00683CF4 = {
+			buildArgumentsString = "$(ACTION)";
+			buildPhases = (
+			);
+			buildSettings = {
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = lbHook;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = "-Wmost -Wno-four-char-constants -Wno-unknown-pragmas";
+			};
+			buildToolPath = /usr/bin/make;
+			buildWorkingDirectory = /Users/lothar/develop/Projects/CPP/BaseDevelopment/lbHook;
+			dependencies = (
+			);
+			isa = PBXLegacyTarget;
+			name = lbHook;
+			passBuildSettingsInEnvironment = 1;
+			productName = lbHook;
+		};
+		274171B3086C0BC200683CF4 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = lbHook.cpp;
+			path = /Users/lothar/develop/Projects/CPP/BaseDevelopment/lbHook/lbHook.cpp;
+			refType = 0;
+			sourceTree = "<absolute>";
 		};
 	};
 	rootObject = 270BA7BA086C0A0900799F65;

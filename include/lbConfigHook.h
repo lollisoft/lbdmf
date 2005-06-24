@@ -262,7 +262,7 @@
 #undef DLLEXPORT
 #endif
 
-#define DLLEXPORT
+#define	 DLLEXPORT
 
 #ifdef HOOK_DLL
 #undef DLLEXPORT
@@ -316,8 +316,22 @@ DLLEXPORT char* LB_STDCALL getTRMemTrackBreak();
 
 /*...e*/
 
+/** \brief Activate or deactivate verbose messages. */
 DLLEXPORT void LB_STDCALL setVerbose(bool what);
 DLLEXPORT bool LB_STDCALL isVerbose();
+
+#define LOGFILE "lbDMF.log"
+
+/** \brief Log a message to the given file. */
+DLLEXPORT void logMessage(const char *msg, char *f, int level = 0);
+
+/** \brief Get the log directory.
+ * Returns the log directory.
+ *
+ * The directory is user based and so, located in the home directory of the user.
+ * Value is based on $(HOME)/log.
+ */
+DLLEXPORT char* getLogDirectory();
 
 DLLEXPORT HINSTANCE LB_STDCALL getModuleHandle();
 DLLEXPORT HINSTANCE LB_STDCALL getLBModuleHandle();

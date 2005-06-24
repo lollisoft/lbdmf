@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.79 2005/06/21 14:36:33 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.80 2005/06/24 23:09:51 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,20 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.79 $
+ * $Revision: 1.80 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.79 2005/06/21 14:36:33 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.80 2005/06/24 23:09:51 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.80  2005/06/24 23:09:51  lollisoft
+ * Changes to build with new wxWidgets version 2.6.1.
+ * Added fallback to hardcoded settings, if no environment
+ * variables are found. Logging changed to reside in a
+ * $(HOME)/log directory.
+ *
+ * GUI application build process enhanced to also make the
+ * bundle. App runs from clicking on the desktop icon.
+ *
  * Revision 1.79  2005/06/21 14:36:33  lollisoft
  * Missed event table declaration for page changing event.
  *
@@ -1781,7 +1790,17 @@ bool MyApp::OnInit(void)
 /*...sBasic setup:0:*/
 
   UAP(lb_I_Module, mm, __FILE__, __LINE__)
+
   mm = getModuleInstance();
+
+
+  if (mm == NULL) {
+		wxMessageDialog dialog(NULL, "Module manager not found. could not run application.", "Error", wxOK);
+
+		dialog.ShowModal();  
+		return FALSE;
+  } 
+
   mm->setModuleManager(mm.getPtr(), __FILE__, __LINE__);
   setModuleManager(mm.getPtr(), __FILE__, __LINE__);
 
@@ -1791,36 +1810,13 @@ bool MyApp::OnInit(void)
 #endif  
 /*...e*/
 
-/*...sget the event manager:0:*/
-
-/*...sbla:0:*/
-#ifdef bla
-       _LOG << "Get event manager instance" LOG_
-        lb_I_Unknown* uk_em;
-        if (mm->request("lb_I_EventManager", &uk_em) != ERR_NONE) {
-               _LOG << "Error getting the event manager. Can not initialize the application" LOG_
-        }
-        
-        uk_em->setModuleManager(mm, __FILE__, __LINE__);
-        
-	_LOG << "Query interface of event manager" LOG_        
-        QI(uk_em, lb_I_EventManager, ev_manager, __FILE__, __LINE__)
-        
-        if (ev_manager.getPtr() == NULL) _LOG << "Fatal: Got an instance not providing that interface" LOG_
-       _LOG << "Got event manager instance" LOG_
-#endif
-/*...e*/
-
 	REQUEST(mm.getPtr(), lb_I_EventManager, ev_manager)        
-//	ev_manager->setModuleManager(*&mm, __FILE__, __LINE__);
 	ev_manager++;
-/*...e*/
 /*...sget the dispatcher \40\all handlers must be registered there\41\:0:*/
-        UAP_REQUEST(mm.getPtr(), lb_I_Dispatcher, disp)
-//	disp->setModuleManager(*&mm, __FILE__, __LINE__);
+    UAP_REQUEST(mm.getPtr(), lb_I_Dispatcher, disp)
 	disp->setEventManager(ev_manager.getPtr());
 		
-        if (disp == NULL) _LOG << "Fatal: Have not got a dispatcher!" LOG_
+    if (disp == NULL) _LOG << "Fatal: Have not got a dispatcher!" LOG_
 /*...e*/
 
 //  UAP_REQUEST(mm, lb_I_Log, logger)
@@ -2109,16 +2105,10 @@ _LOG << "Showed the window" LOG_
        * application module as a first step.
        */
       metaApp->Initialize();
-      _LOG << "Initialized the meta application" LOG_
+      _CL_LOG << "Initialized the meta application" LOG_
   } 
 #endif
 /*...e*/
-
-#ifdef LB_I_EXTENTIONS
-#ifdef VERBOSE
-_LOG << "Initialized metaapplication" LOG_
-#endif
-#endif
 
 // Not yet working under Mac OS X, not yet tested under Linux
 //#ifndef OSX
@@ -2144,8 +2134,6 @@ _LOG << "Initialized metaapplication" LOG_
 			pl->initialize();
 		
 		}
-	
-	
 	}
 
 //#endif
@@ -2154,6 +2142,9 @@ _LOG << "Initialized metaapplication" LOG_
 #ifdef LB_I_EXTENTIONS
   if (metaApp != NULL) metaApp->run();
 #endif
+
+	_CL_LOG << "MyApp::OnInit() ready." LOG_
+
   return TRUE;
 }
 /*...e*/

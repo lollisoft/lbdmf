@@ -30,11 +30,20 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.22 $
+ * $Revision: 1.23 $
  * $Name:  $
- * $Id: lbPluginManager.cpp,v 1.22 2005/05/11 13:19:40 lollisoft Exp $
+ * $Id: lbPluginManager.cpp,v 1.23 2005/06/24 23:09:49 lollisoft Exp $
  *
  * $Log: lbPluginManager.cpp,v $
+ * Revision 1.23  2005/06/24 23:09:49  lollisoft
+ * Changes to build with new wxWidgets version 2.6.1.
+ * Added fallback to hardcoded settings, if no environment
+ * variables are found. Logging changed to reside in a
+ * $(HOME)/log directory.
+ *
+ * GUI application build process enhanced to also make the
+ * bundle. App runs from clicking on the desktop icon.
+ *
  * Revision 1.22  2005/05/11 13:19:40  lollisoft
  * Bugfix for reference count error and changed back any _CL_LOG messages to be _CL_VERBOSE only
  *
@@ -232,8 +241,13 @@ bool LB_STDCALL lbPluginManager::tryLoad(char* module) {
 	char* pluginDir = getenv("PLUGIN_DIR");
 	
 	if (pluginDir == NULL) {
-		printf("ERROR: No plugin directory configured. Please create one and set environment PLUGIN_DIR properly.\n");
-		exit(1);
+		_LOG << "ERROR: No plugin directory configured. Try fallback. Please create one and set environment PLUGIN_DIR properly." LOG_
+		pluginDir = (char*) malloc(strlen(getenv("HOME"))+strlen("/plugins")+1);
+		pluginDir[0] = 0;
+		strcat(pluginDir, getenv("HOME"));
+		strcat(pluginDir, "/plugins");
+	} else {
+		pluginDir = strdup(pluginDir);
 	}
 				
 /*...sbuild PREFIX:0:*/
@@ -289,11 +303,12 @@ bool LB_STDCALL lbPluginManager::tryLoad(char* module) {
 			
 			plM->setModule(pluginModule);
 			delete [] pluginModule;
-	
+			free(pluginDir);
 			return true;	
 		}
 		delete [] pluginModule;
-	
+		free(pluginDir);
+		
 		return false;
 	
 	} else {
@@ -307,6 +322,7 @@ bool LB_STDCALL lbPluginManager::tryLoad(char* module) {
 		
 		plM->setModule(pluginModule);
 		delete [] pluginModule;
+		free(pluginDir);
 	}
 
 	return true;
@@ -339,8 +355,13 @@ void LB_STDCALL lbPluginManager::initialize() {
 	char* pluginDir = getenv("PLUGIN_DIR");
 	
 	if (pluginDir == NULL) {
-		printf("ERROR: No plugin directory configured. Please create one and set environment PLUGIN_DIR properly.\n");
-		exit(1);
+		_LOG << "ERROR: No plugin directory configured. Try fallback. Please create one and set environment PLUGIN_DIR properly." LOG_
+		pluginDir = (char*) malloc(strlen(getenv("HOME"))+strlen("/plugins")+1);
+		pluginDir[0] = 0;
+		strcat(pluginDir, getenv("HOME"));
+		strcat(pluginDir, "/plugins");
+	} else {
+		pluginDir = strdup(pluginDir);
 	}
 	
 	char* toFind = new char[strlen(mask)+strlen(pluginDir)+2];
@@ -368,7 +389,8 @@ void LB_STDCALL lbPluginManager::initialize() {
 	struct dirent *dir_info;
 	
 	if ((dir = opendir(pluginDir)) == NULL) {
-	    printf("Plugin directory not found!\n");
+	    _LOG << "Plugin directory not found!" LOG_
+		free(pluginDir);
 	    return;
 	}
 	
@@ -419,6 +441,7 @@ void LB_STDCALL lbPluginManager::initialize() {
 		printf("No plugins found.\n");
 	}
 	
+	free(pluginDir);
 	delete [] toFind;
 }
 /*...e*/

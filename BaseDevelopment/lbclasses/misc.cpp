@@ -31,10 +31,19 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.38 $
+ * $Revision: 1.39 $
  * $Name:  $
- * $Id: misc.cpp,v 1.38 2005/05/10 20:20:38 lollisoft Exp $
+ * $Id: misc.cpp,v 1.39 2005/06/24 23:09:49 lollisoft Exp $
  * $Log: misc.cpp,v $
+ * Revision 1.39  2005/06/24 23:09:49  lollisoft
+ * Changes to build with new wxWidgets version 2.6.1.
+ * Added fallback to hardcoded settings, if no environment
+ * variables are found. Logging changed to reside in a
+ * $(HOME)/log directory.
+ *
+ * GUI application build process enhanced to also make the
+ * bundle. App runs from clicking on the desktop icon.
+ *
  * Revision 1.38  2005/05/10 20:20:38  lollisoft
  * Include files changed to be more actially language compilant
  *
@@ -214,14 +223,6 @@ extern "C" {
 #ifndef  LOG_DEFINED
 #define  LOG_DEFINED
 
-#ifdef WINDOWS
-#define LOGFILE "c:\\log\\lbDMF.log"
-#endif
-#ifdef LINUX
-//#define LOGFILE	"~/lbDMF.log"
-#define LOGFILE "c:\\log\\lbDMF.log"
-#endif
-
 /*...sclass lbLog:0:*/
 class lbLog : public lb_I_Log {
 
@@ -277,7 +278,7 @@ public:
     static clock_t start_time, end_time;
     static char lastevent[100];
     static int beinlog;
-    static char f[100];
+    static char f[PATH_MAX];
     static lb_I_Mutex* mutex;
     static char* logmessage;
     static int lastsize;
@@ -290,7 +291,7 @@ public:
 int lbLog::level = 0;
 int lbLog::firstlog = 0;
 int lbLog::beinlog = 0;
-char lbLog::f[100];
+char lbLog::f[PATH_MAX];
 char* lbLog::logmessage = NULL;
 int lbLog::lastsize = 0;
 clock_t lbLog::start_time, lbLog::end_time;
@@ -358,9 +359,20 @@ lbErrCodes LB_STDCALL lbLog::setData(lb_I_Unknown* uk) {
 /*...slbLog\58\\58\lbLog\40\\41\:0:*/
 lbLog::lbLog() {
 //lbLock lbLock(sect);
-	ref = STARTREF;
-	manager = NULL;
-        strcpy(f, LOGFILE);
+		ref = STARTREF;
+		manager = NULL;
+        
+		f[0] = 0;
+		strcat(f, getLogDirectory());
+#if defined (LINUX) || defined (OSX) || defined (UNIX)
+		strcat(f, "/");
+#endif
+#if defined (WINDOWS)
+		strcat(f, "\\");
+#endif
+		strcat(f, LOGFILE);
+		
+		
         logdirect("lbLog::lbLog(): Creating mutex for logfile\n", f, level);
         if (firstlog == 0) {
                 mutex = new lbMutex();
@@ -395,23 +407,7 @@ lbLog::lbLog(int l) {
 /*...e*/
 /*...slbLog\58\\58\logdirect\40\\46\\46\\46\\41\:0:*/
 void LB_STDCALL lbLog::logdirect(const char *msg, char *f, int level) {
-                FILE *fp;
-                fp = fopen( f, "a" );
-                if( fp != NULL ) {
-                        char buf[1000] = "";
-                        buf[0] = 0;
-                        
-                        int l = level;
-                        
-                        while (l > 0) {
-                                sprintf(buf, "%s%s", buf, "    ");
-                                l--;
-                        }
-                        
-                        fprintf( fp, "Thread %d\t:%s%s%s", lbGetCurrentThreadId(), prefix, buf, msg);
-                }
-        
-                fclose( fp );
+	logMessage(msg, f, level);
 }
 /*...e*/
 /*...slbLog\58\\58\log\40\\46\\46\\46\\41\:0:*/
