@@ -1,0 +1,45 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 39;
+	objects = {
+		270BA7B6086C0A0900799F65 = {
+			children = (
+			);
+			isa = PBXGroup;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		270BA7B8086C0A0900799F65 = {
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+			};
+			isa = PBXBuildStyle;
+			name = Development;
+		};
+		270BA7B9086C0A0900799F65 = {
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+			};
+			isa = PBXBuildStyle;
+			name = Deployment;
+		};
+		270BA7BA086C0A0900799F65 = {
+			buildSettings = {
+			};
+			buildStyles = (
+				270BA7B8086C0A0900799F65,
+				270BA7B9086C0A0900799F65,
+			);
+			hasScannedForEncodings = 0;
+			isa = PBXProject;
+			mainGroup = 270BA7B6086C0A0900799F65;
+			projectDirPath = "";
+			targets = (
+			);
+		};
+	};
+	rootObject = 270BA7BA086C0A0900799F65;
+}
