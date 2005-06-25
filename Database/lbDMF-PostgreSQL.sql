@@ -427,7 +427,7 @@ insert into Formulare Values (15, 'DynKunden',               'Kunden verwalten',
 
 insert into Formulare Values (16, 'DynReservierungen',       'Reservierungen verwalten',            'manageDynReservations', 'Bietet Verwaltungsmöglichkeiten für Reservierungen von Fahrkarten',4 , 1);
 
-insert into Formulare Values (17, 'Formulare -> Benutzer', 'Formulare Anwendungen zuordnen', 'manageFormularsToApps', 'Einrichtung der Formulare zu Anwendungen',1 , 1);
+insert into Formulare Values (17, 'Formulare -> Anwendung', 'Formulare Anwendungen zuordnen', 'manageFormularsToApps', 'Einrichtung der Formulare zu Anwendungen',1 , 1);
 
 
 insert into ForeignKey_VisibleData_Mapping (FKName, FKTable, PKName, PKTable) Values ('anwendungid', 'formulare', 'name', 'anwendungen');
@@ -444,7 +444,7 @@ insert into Formular_Parameters Values (3, 'query', 'select "name", "vorname", "
 insert into Formular_Parameters Values (4, 'query', 'select "name", "menuname", "eventname", "menuhilfe", "anwendungid", "typ" from "formulare"', 2);
 insert into Formular_Parameters Values (5, 'query', 'select "parametername", "parametervalue", "formularid" from "formular_parameters"', 7);
 insert into Formular_Parameters Values (6, 'query', 'select "anwendungenid", "userid" from "user_anwendungen"', 8);
-insert into Formular_Parameters Values (7, 'query', 'select * from "anwendungen_formulare"', 17);
+insert into Formular_Parameters Values (7, 'query', 'select anwendungid, formularid from "anwendungen_formulare"', 17);
 
 
 
