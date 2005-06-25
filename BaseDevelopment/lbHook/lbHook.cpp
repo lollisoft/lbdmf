@@ -71,7 +71,9 @@
 
 #include <sys/types.h>
 #include <sys/stat.h>
-
+#ifdef __WATCOMC__
+#include <direct.h>
+#endif
 
 #ifdef WINDOWS
 #ifndef LB_CLASSES_DLL
@@ -140,7 +142,13 @@ void logMessage(const char *msg) {
 
 DLLEXPORT char* getLogDirectory() {
 	if (lbLogDirectory == NULL) {
-		char* home = getenv("HOME");
+		char* home = 
+		#if defined(WINDOWS)
+		getenv("USERPROFILE");
+		#endif
+		#if defined(UNIX) || defined(LINUX) || defined(OSX)
+		getenv("HOME");
+		#endif
 		
 		lbLogDirectory = (char*) malloc(strlen(home)+10);
 		lbLogDirectory[0] = 0;
@@ -149,7 +157,12 @@ DLLEXPORT char* getLogDirectory() {
 		strcat(lbLogDirectory, "log");
 		
 		// Don't ask for failure.
+		#ifdef __WATCOMC__
+		mkdir(lbLogDirectory);
+		#endif
+		#if defined(OSX) || defined(LINUX) || defined(UNIX)
 		mkdir(lbLogDirectory, S_IRWXU);
+		#endif
 	}
 
 	return lbLogDirectory;
@@ -267,12 +280,12 @@ lbErrCodes LB_STDCALL lbLoadModule(const char* name, HINSTANCE & hinst) {
 #ifdef WINDOWS
         if ((hinst = LoadLibrary(name)) == NULL)
         {
-			char *buffer = malloc(100+strlen(name));
-			buffer[0] = 0;
-            sprintf(buffer, "Kann DLL '%s' nicht laden.\n", name); 
+		char *buffer = (char*) malloc(100+strlen(name));
+		buffer[0] = 0;
+		sprintf(buffer, "Kann DLL '%s' nicht laden.\n", name); 
             
-			logMessage(buffer);
-			free(buffer);
+		logMessage(buffer);
+		free(buffer);
 			
             LPVOID lpMsgBuf;
 	    if (!FormatMessage( 
@@ -301,12 +314,21 @@ lbErrCodes LB_STDCALL lbLoadModule(const char* name, HINSTANCE & hinst) {
 #ifdef LINUX
 	if ((hinst = dlopen(name, RTLD_LAZY)) == NULL)
 	{
-			char* home = getenv("HOME");
+			char* home = 
+			#if defined(WINDOWS)
+			getenv("USERPROFILE");
+			#endif
+			#if defined(UNIX) || defined(LINUX) || defined(OSX)
+			getenv("HOME");
+			#endif
+
 			char* newname = (char*) malloc(strlen(home)+strlen(name)+6);
 			
 			newname[0] = 0;
 			strcat(newname, home);
-			strcat(newname, "/lib/");
+			strcat(newname, SLASH);
+			strcat(newname, "lib");
+			strcat(newname, SLASH);
 			strcat(newname, name);
 	
 			if ((hinst = dlopen(newname, RTLD_LAZY)) != NULL) {
