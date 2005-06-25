@@ -66,6 +66,7 @@ ADD CONSTRAINT cst_action_types_TypID FOREIGN KEY ( typ )
 CREATE TABLE action_steps
 (
   id 		SERIAL,
+  actionid	INTEGER,
   bezeichnung	char(100),
   a_order_nr	INTEGER,
   type		INTEGER, -- May be NULL for the first target
@@ -398,6 +399,7 @@ insert into Formulare Values (13, 'Kunden',                  'Kunden verwalten',
 insert into Formulare Values (14, 'Reservierungen',          'Reservierungen verwalten',            'manageReservations', 'Bietet Verwaltungsmöglichkeiten für Reservierungen von Fahrkarten',4 , 1);
 insert into Formulare Values (15, 'DynKunden',               'Kunden verwalten',                    'manageDynCustomers', 'Bietet Verwaltungsmöglichkeiten für Kunden',3 , 1);
 insert into Formulare Values (16, 'DynReservierungen',       'Reservierungen verwalten',            'manageDynReservations', 'Bietet Verwaltungsmöglichkeiten für Reservierungen von Fahrkarten',4 , 1);
+insert into Formulare Values (17, 'Formulare -> Benutzer', 'Formulare Anwendungen zuordnen', 'manageFormularsToApps', 'Einrichtung der Formulare zu Anwendungen',1 , 1);
 
 
 insert into ForeignKey_VisibleData_Mapping (FKName, FKTable, PKName, PKTable) Values ('anwendungid', 'formulare', 'name', 'anwendungen');
@@ -414,6 +416,9 @@ insert into Formular_Parameters Values (3, 'query', 'select "name", "vorname", "
 insert into Formular_Parameters Values (4, 'query', 'select "name", "menuname", "eventname", "menuhilfe", "anwendungid", "typ" from "formulare"', 2);
 insert into Formular_Parameters Values (5, 'query', 'select "parametername", "parametervalue", "formularid" from "formular_parameters"', 7);
 insert into Formular_Parameters Values (6, 'query', 'select "anwendungenid", "userid" from "user_anwendungen"', 8);
+insert into Formular_Parameters Values (7, 'query', 'select * from "anwendungen_formulare"', 17);
+
+
 
 insert into Anwendungs_Parameter Values (1, 'DBName', 'trainres', 3);
 insert into Anwendungs_Parameter Values (2, 'DBUser', 'dba', 3);
@@ -429,19 +434,22 @@ insert into Anwendungen_Formulare Values (1, 1, 1);
 insert into Anwendungen_Formulare Values (2, 1, 2);
 insert into Anwendungen_Formulare Values (3, 1, 7);
 insert into Anwendungen_Formulare Values (4, 1, 8);
-insert into Anwendungen_Formulare Values (5, 2, 1);
-insert into Anwendungen_Formulare Values (6, 2, 2);
-insert into Anwendungen_Formulare Values (7, 3, 5);
-insert into Anwendungen_Formulare Values (8, 3, 6);
 
-insert into Anwendungen_Formulare Values (9, 4, 9);
-insert into Anwendungen_Formulare Values (10, 4, 10);
-insert into Anwendungen_Formulare Values (11, 4, 11);
-insert into Anwendungen_Formulare Values (12, 4, 12);
-insert into Anwendungen_Formulare Values (13, 4, 13);
-insert into Anwendungen_Formulare Values (14, 4, 14);
-insert into Anwendungen_Formulare Values (15, 4, 15);
-insert into Anwendungen_Formulare Values (16, 4, 16);
+insert into Anwendungen_Formulare Values (6, 2, 1);
+insert into Anwendungen_Formulare Values (7, 2, 2);
+
+insert into Anwendungen_Formulare Values (8, 3, 5);
+insert into Anwendungen_Formulare Values (9, 3, 6);
+
+insert into Anwendungen_Formulare Values (10, 4, 9);
+insert into Anwendungen_Formulare Values (12, 4, 10);
+insert into Anwendungen_Formulare Values (13, 4, 11);
+insert into Anwendungen_Formulare Values (14, 4, 12);
+insert into Anwendungen_Formulare Values (15, 4, 13);
+insert into Anwendungen_Formulare Values (16, 4, 14);
+insert into Anwendungen_Formulare Values (17, 4, 15);
+insert into Anwendungen_Formulare Values (18, 4, 16);
+insert into Anwendungen_Formulare Values (19, 1, 17);
 
 insert into User_Anwendungen Values (1, 1, 1);
 insert into User_Anwendungen Values (2, 1, 2);
