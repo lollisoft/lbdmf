@@ -110,17 +110,17 @@ insert into action_types (bezeichnung, action_handler, module) values('SQL query
 insert into action_types (bezeichnung, action_handler, module) values('Open form', 'instanceOflbFormAction', 'lbDatabaseForm');
 insert into action_types (bezeichnung, action_handler, module) values('Open detail form', 'instanceOflbDetailFormAction', 'lbDatabaseForm');
 
-insert into actions (name, typ, source, target) values('Reserve a trip', 1, 'KundenNr', 1);
-insert into actions (name, typ, source, target) values('Remove a reserved trip', 1, 'KundenNr', 2);
+insert into actions (name, typ, source, target) values('Reserve a trip', 1, 'kundennr', 1);
+insert into actions (name, typ, source, target) values('Remove a reserved trip', 1, 'kundennr', 2);
 
 insert into action_steps (bezeichnung, a_order_nr, what, type, actionid) 
 values('Add a new empty trip', 1, 'insert,TargetTable:Reservierungen,Relation:KundenID', 2, 1);
 
 insert into action_steps (bezeichnung, a_order_nr, what, type, actionid) 
-values('Customer want to reserve a trip', 2, 'DynReservations', 4, 1);
+values('Customer want to reserve a trip', 2, 'DynReservierungen', 4, 1);
 
 insert into action_steps (bezeichnung, a_order_nr, what, type, actionid) 
-	values('some test action', 1, 'DynReservations', 4, 2);
+	values('some test action', 1, 'DynReservierungen', 4, 2);
 
 
 insert into formular_actions (formular, action, event) values(1, 1, 'evt_Reserve_Customer_Trip');
@@ -425,7 +425,7 @@ insert into Formulare Values (14, 'Reservierungen',          'Reservierungen ver
 
 insert into Formulare Values (15, 'DynKunden',               'Kunden verwalten',                    'manageDynCustomers', 'Bietet Verwaltungsmöglichkeiten für Kunden',3 , 1);
 
-insert into Formulare Values (16, 'DynReservierungen',       'Reservierungen verwalten',            'manageDynReservations', 'Bietet Verwaltungsmöglichkeiten für Reservierungen von Fahrkarten',4 , 1);
+insert into Formulare Values (16, 'DynReservierungen',       'Reservierungen verwalten',            'manageDynReservierungen', 'Bietet Verwaltungsmöglichkeiten für Reservierungen von Fahrkarten',4 , 1);
 
 insert into Formulare Values (17, 'Formulare -> Anwendung', 'Formulare Anwendungen zuordnen', 'manageFormularsToApps', 'Einrichtung der Formulare zu Anwendungen',1 , 1);
 
@@ -438,7 +438,7 @@ insert into ForeignKey_VisibleData_Mapping (FKName, FKTable, PKName, PKTable) Va
 insert into ForeignKey_VisibleData_Mapping (FKName, FKTable, PKName, PKTable) Values ('anwendungenid', 'user_anwendungen', 'name', 'anwendungen');
 
 
-insert into Formular_Parameters Values (1, 'query', 'select "anrede", "name", "vorname", "ort", "plz", "strasse", "vorwahl", "telefon" from kunden', 5);
+insert into Formular_Parameters Values (1, 'query', 'select "kundennr", "name", "vorname", "ort", "plz", "strasse", "vorwahl", "telefon" from kunden order by kundennr', 5);
 insert into Formular_Parameters Values (2, 'query', 'select "name", "vorname", "erwachsene", "kinder" from reservierungen inner join kunden on reservierungen.kundenid = kunden.id', 6);
 insert into Formular_Parameters Values (3, 'query', 'select "name", "vorname", "userid", "passwort" from "users"', 1);
 insert into Formular_Parameters Values (4, 'query', 'select "name", "menuname", "eventname", "menuhilfe", "anwendungid", "typ" from "formulare"', 2);
