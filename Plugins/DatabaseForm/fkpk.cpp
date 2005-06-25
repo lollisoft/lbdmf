@@ -232,11 +232,11 @@ int lbConfigure_FK_PK_MappingDialog::prepareDialogHandler() {
 
 	// Register normal wxWidgets event handler
 
-	this->Connect( cBoxFKNames->GetId(),  -1, wxEVT_COMMAND_COMBOBOX_SELECTED, 
+	this->Connect( cBoxFKNames->GetId(),  -1, wxEVT_COMMAND_CHOICE_SELECTED, 
 		(wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) 
 			&lbConfigure_FK_PK_MappingDialog::OnFKComboBoxSelected);
 
-	this->Connect( cBoxPKNames->GetId(),  -1, wxEVT_COMMAND_COMBOBOX_SELECTED, 
+	this->Connect( cBoxPKNames->GetId(),  -1, wxEVT_COMMAND_CHOICE_SELECTED, 
 		(wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) 
 			&lbConfigure_FK_PK_MappingDialog::OnPKComboBoxSelected);
 /*
