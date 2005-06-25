@@ -1115,7 +1115,7 @@ printf("Create a drop down box for '%s'\n", name);
 				PKName = FKColumnQuery->getAsString(1);
 				PKTable = FKColumnQuery->getAsString(2);
 					
-				wxComboBox *cbox = new wxComboBox(this, -1, wxString(""));
+				wxChoice *cbox = new wxChoice(this, -1);
 				cbox->SetName(name);
 				
 				int old_fk = atoi(sampleQuery->getAsString(i)->charrep());
@@ -1590,7 +1590,7 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBClear() {
 		if (w != NULL) {
 			if (sampleQuery->hasFKColumn(name) == 1) {
 /*...sUpdate drop down box:32:*/
-				wxComboBox* cbox = (wxComboBox*) w;
+				wxChoice* cbox = (wxChoice*) w;
 				
 				cbox->SetSelection(-1);
 /*...e*/
@@ -1664,7 +1664,7 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBUpdate() {
 		
 			if (sampleQuery->hasFKColumn(name) == 1) {
 /*...sUpdate drop down box:32:*/
-				wxComboBox* cbox = (wxComboBox*) w;
+				wxChoice* cbox = (wxChoice*) w;
 				
 				int pos = cbox->GetSelection();
 				
@@ -1820,7 +1820,7 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBRead() {
 		if (w != NULL) {
 			if (sampleQuery->hasFKColumn(name) == 1) {
 /*...sfill combo box with data:32:*/
-				wxComboBox* cbox = (wxComboBox*) w;
+				wxChoice* cbox = (wxChoice*) w;
 				
 				lbErrCodes err = ERR_NONE;
 

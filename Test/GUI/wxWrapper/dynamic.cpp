@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.80 2005/06/24 23:09:51 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.81 2005/06/25 12:44:16 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.80 $
+ * $Revision: 1.81 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.80 2005/06/24 23:09:51 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.81 2005/06/25 12:44:16 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.81  2005/06/25 12:44:16  lollisoft
+ * Changed wxComboBox to wxChoice.
+ *
  * Revision 1.80  2005/06/24 23:09:51  lollisoft
  * Changes to build with new wxWidgets version 2.6.1.
  * Added fallback to hardcoded settings, if no environment
@@ -509,7 +512,7 @@ public:
 	{
 	        //m_bitmap = wxBITMAP(wiztest2);
 
-	        box = new wxComboBox(this, -1);
+	        box = new wxChoice(this, -1);
 	}
 
 /*...e*/
@@ -609,7 +612,7 @@ public:
 private:
 	wxCheckBox *m_checkbox;
 	char* userid;
-	wxComboBox* box;
+	wxChoice* box;
 	wxString app;
 
 	UAP(lb_I_Database, database, __FILE__, __LINE__)

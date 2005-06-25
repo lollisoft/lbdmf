@@ -287,13 +287,13 @@ void LB_STDCALL lbConfigure_FK_PK_MappingDialog::init(lb_I_Database* _queryDB, l
 	label = new wxStaticText(this, -1, "Dropdown Element:", wxPoint());
 	sizerLeft->Add(label, 1, wxALL, 5);
 
-	cBoxFKNames = new wxComboBox(this, -1);
+	cBoxFKNames = new wxChoice(this, -1);
 	sizerLeft->Add(cBoxFKNames, 1, wxALL, 5);
 
 	labelF = new wxStaticText(this, -1, "Feld anzuzeigen:", wxPoint());
 	sizerRight->Add(labelF, 1, wxALL, 5);
 	
-	cBoxPKNames = new wxComboBox(this, -1);
+	cBoxPKNames = new wxChoice(this, -1);
 	sizerRight->Add(cBoxPKNames, 1, wxALL, 5);
 
 	int SelectedColumn = prepareDialogHandler();

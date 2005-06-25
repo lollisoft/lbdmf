@@ -30,11 +30,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.10 $
+ * $Revision: 1.11 $
  * $Name:  $
- * $Id: lbDatabaseForm.h,v 1.10 2005/06/20 11:24:02 lollisoft Exp $
+ * $Id: lbDatabaseForm.h,v 1.11 2005/06/25 12:44:50 lollisoft Exp $
  *
  * $Log: lbDatabaseForm.h,v $
+ * Revision 1.11  2005/06/25 12:44:50  lollisoft
+ * Changed wxComboBox to wxChoice.
+ *
  * Revision 1.10  2005/06/20 11:24:02  lollisoft
  * Detail form implementation as far to retrieve the detail form and upen it.
  * (Shortly).
@@ -150,8 +153,8 @@ public:
 	
 	wxWindow* firstButton;
 
-	wxComboBox* cBoxFKNames;
-	wxComboBox* cBoxPKNames;
+	wxChoice* cBoxFKNames;
+	wxChoice* cBoxPKNames;
 
 	wxStaticText *label;
 	wxStaticText *labelF;

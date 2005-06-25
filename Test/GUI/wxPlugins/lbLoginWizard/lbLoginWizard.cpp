@@ -135,7 +135,7 @@ public:
 	{
 	        //m_bitmap = wxBITMAP(wiztest2);
 
-	        box = new wxComboBox(this, -1);
+	        box = new wxChoice(this, -1);
 	}
 
 /*...e*/
@@ -236,7 +236,7 @@ public:
 private:
 	wxCheckBox *m_checkbox;
 	char* userid;
-	wxComboBox* box;
+	wxChoice* box;
 	wxString app;
 
 	DECLARE_EVENT_TABLE()
