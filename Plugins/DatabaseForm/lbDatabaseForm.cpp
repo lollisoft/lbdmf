@@ -632,6 +632,8 @@ void LB_STDCALL lbDetailFormAction::openDetailForm(lb_I_String* formularname) {
 						form++;
 					}
 				}
+			} else {
+				_CL_LOG << "ERROR: Expected query for the formular ID failed:\n" << buffer LOG_
 			}
 		}
 	}
