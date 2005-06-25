@@ -903,11 +903,6 @@ void LB_STDCALL lbDatabaseDialog::init(char* _SQLString, char* DBName, char* DBU
 
 	SetTitle(_trans(formName));
 
-/* Tests the combo box and shows the difference between Linux and Windows
-	testComboBox* t = new testComboBox();
-
-	t->ShowModal();
-*/
 /*...sSizers:8:*/
 	wxBoxSizer* sizerMain  = new wxBoxSizer(wxVERTICAL);
 	
@@ -940,7 +935,6 @@ void LB_STDCALL lbDatabaseDialog::init(char* _SQLString, char* DBName, char* DBU
 		REQUEST(manager.getPtr(), lb_I_String, _DBPass)
 		_DBPass->setData(DBPass);
 	}
-
 
 	sampleQuery = database->getQuery(0);
 /*...e*/
@@ -993,8 +987,6 @@ void LB_STDCALL lbDatabaseDialog::init(char* _SQLString, char* DBName, char* DBU
 	
 	sampleQuery->query(SQLString->charrep(), false);
 
-_CL_LOG << "Get new instance of FormularFieldInformation." LOG_
-	
 /*...sDetermine readonly fields:8:*/
 	FFI = new FormularFieldInformation(formName, sampleQuery.getPtr());
 
@@ -1039,8 +1031,6 @@ _CL_LOG << "Got the new instance." LOG_
 /*...sCreate a combobox:32:*/
 			lbErrCodes err = ERR_NONE;
 
-printf("Create a drop down box for '%s'\n", name);
-			
 			// Create a mapping instance for this combo box
 			UAP_REQUEST(manager.getPtr(), lb_I_Container, _ComboboxMapper)
 			UAP_REQUEST(manager.getPtr(), lb_I_Container, ComboboxMapper)
@@ -1098,12 +1088,12 @@ printf("Create a drop down box for '%s'\n", name);
 
 				FKColumnQuery1 = FKColumnQuery.getPtr();
 			
-				FKColumnQuery = NULL;
-				
+				FKColumnQuery.resetPtr();
+
 				FKColumnQuery = database->getQuery(0);
-			
+
 				FKColumnQuery->query(buffer);
-				
+
 				err = FKColumnQuery->first();
 			}
 
@@ -1119,6 +1109,7 @@ printf("Create a drop down box for '%s'\n", name);
 				cbox->SetName(name);
 				
 				int old_fk = atoi(sampleQuery->getAsString(i)->charrep());
+				
 				
 				buffer[0] = 0;
 				
@@ -1303,7 +1294,7 @@ printf("Create a drop down box for '%s'\n", name);
 		free(name);
 	}
 /*...e*/
-
+	
 	sizerHor->Add(sizerLeft, 1, wxEXPAND | wxALL, 5);
 	sizerHor->Add(sizerRight, 1, wxEXPAND | wxALL, 5);
 
