@@ -379,26 +379,54 @@ insert into Anwendungen Values (2, 'Demo application', 'Demonstration', 'Applica
 insert into Anwendungen Values (3, 'FRS', 'Fahrkarten Reservierungssystem', 'lbDynApp', 'instanceOfApplication', 'lb_I_Application');
 insert into Anwendungen Values (4, 'lbDMF Codegenerator', 'Generiert Code von lbDMF Daten', 'lbDMFAppWriter', 'instanceOfApplication', 'lb_I_Application');
 
-insert into Formulartypen Values (1, '-',                   '-',        'lb_I_DatabaseForm', 'Dynamisch aufgebautes Datenbankformular');
+insert into Formulartypen Values (1, '-',                   '-',        'lb_I_DatabaseForm', 
+'Dynamisch aufgebautes Datenbankformular');
 insert into Formulartypen Values (2, 'lbTrainresBaseForms', 'lbKunden', 'lb_I_FixWiredForm', 'Fest verdrahtetes Formular');
 
-insert into Formulare Values (1, 'Benutzer', 'Benutzer verwalten', 'manageUser', 'Verwaltung der Benutzer in lbDMF',1 , 1);
-insert into Formulare Values (2, 'Formulare', 'Formulare verwalten', 'manageFormulars', 'Verwaltung der Formulare in lbDMF',1 , 1);
-insert into Formulare Values (7, 'Formular_Parameter', 'Formularparameter verwalten', 'manageFormularparameters', 'Verwaltung der Formularparameter in lbDMF',1 , 1);
-insert into Formulare Values (8, 'Benutzer -> Anwendungen', 'Anwendungen Benutzern zuordnen', 'manageAppsUsers', 'Verwaltung der Zuordnung von Benutzern zu Anwendungen', 1, 1);
-insert into Formulare Values (3, 'Kunden', 'Kunden verwalten', 'manageCustomers', 'Bietet Verwaltungsmöglichkeiten für Kunden',2 , 1);
-insert into Formulare Values (4, 'Reservierungen', 'Reservierungen verwalten', 'manageReservations', 'Bietet Verwaltungsmöglichkeiten für Reservierungen von Fahrkarten',2 , 1);
-insert into Formulare Values (5, 'DynKunden', 'Kunden verwalten', 'manageCustomers', 'Bietet Verwaltungsmöglichkeiten für Kunden',3 , 1);
-insert into Formulare Values (6, 'DynReservierungen', 'Reservierungen verwalten', 'manageReservations', 'Bietet Verwaltungsmöglichkeiten für Reservierungen von Fahrkarten',3 , 1);
+insert into Formulare 
+Values (1, 'Benutzer', 'Benutzer verwalten', 'manageUser', 'Verwaltung der Benutzer in lbDMF',1 , 1);
+
+insert into Formulare 
+Values (2, 'Formulare', 'Formulare verwalten', 'manageFormulars', 'Verwaltung der Formulare in lbDMF',1 , 1);
+
+insert into Formulare 
+Values (7, 'Formular_Parameter', 
+	'Formularparameter verwalten', 
+	'manageFormularparameters', 'Verwaltung der Formularparameter in lbDMF',1 , 1);
+
+insert into Formulare 
+Values (8, 'Benutzer -> Anwendungen', 'Anwendungen Benutzern zuordnen', 'manageAppsUsers', 'Verwaltung der Zuordnung von Benutzern zu Anwendungen', 1, 1);
+
+insert into Formulare 
+Values (3, 'Kunden', 'Kunden verwalten', 'manageCustomers', 'Bietet Verwaltungsmöglichkeiten für Kunden',2 , 1);
+
+insert into Formulare 
+Values (4, 'Reservierungen', 'Reservierungen verwalten', 'manageReservations', 
+'Bietet Verwaltungsmöglichkeiten für Reservierungen von Fahrkarten',2 , 1);
+
+insert into Formulare 
+Values (5, 'DynKunden', 'Kunden verwalten', 'manageCustomers', 'Bietet Verwaltungsmöglichkeiten für Kunden',3 , 1);
+
+insert into Formulare 
+Values (6, 'DynReservierungen', 'Reservierungen verwalten', 'manageReservations', 
+'Bietet Verwaltungsmöglichkeiten für Reservierungen von Fahrkarten',3 , 1);
 
 insert into Formulare Values (9,  'Benutzer',                'Benutzer verwalten',                  'manageUser',      'Verwaltung der Benutzer in lbDMF',4 , 1);
+
 insert into Formulare Values (10, 'Formulare',               'Formulare verwalten',                 'manageFormulars', 'Verwaltung der Formulare in lbDMF',4 , 1);
+
 insert into Formulare Values (11, 'Formular_Parameter',      'Formularparameter verwalten',         'manageFormularparameters', 'Verwaltung der Formularparameter in lbDMF',4 , 1);
+
 insert into Formulare Values (12, 'Benutzer -> Anwendungen', 'Anwendungen Benutzern zuordnen',      'manageAppsUsers', 'Verwaltung der Zuordnung von Benutzern zu Anwendungen', 4, 1);
+
 insert into Formulare Values (13, 'Kunden',                  'Kunden verwalten',                    'manageCustomers', 'Bietet Verwaltungsmöglichkeiten für Kunden',2 , 1);
+
 insert into Formulare Values (14, 'Reservierungen',          'Reservierungen verwalten',            'manageReservations', 'Bietet Verwaltungsmöglichkeiten für Reservierungen von Fahrkarten',4 , 1);
+
 insert into Formulare Values (15, 'DynKunden',               'Kunden verwalten',                    'manageDynCustomers', 'Bietet Verwaltungsmöglichkeiten für Kunden',3 , 1);
+
 insert into Formulare Values (16, 'DynReservierungen',       'Reservierungen verwalten',            'manageDynReservations', 'Bietet Verwaltungsmöglichkeiten für Reservierungen von Fahrkarten',4 , 1);
+
 insert into Formulare Values (17, 'Formulare -> Benutzer', 'Formulare Anwendungen zuordnen', 'manageFormularsToApps', 'Einrichtung der Formulare zu Anwendungen',1 , 1);
 
 
