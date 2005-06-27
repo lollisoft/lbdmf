@@ -7,7 +7,21 @@
 	objects = {
 		270BA7B6086C0A0900799F65 = {
 			children = (
-				274171B3086C0BC200683CF4,
+				27AEFF83086F5FC3005A0A3D,
+				27AEFF81086F5F9B005A0A3D,
+				27AEFF7F086F5F75005A0A3D,
+				27AEFF7D086F5F3F005A0A3D,
+				2790ECC2086F2D4600DA24CB,
+				27C52501086F1EC1005DB6C8,
+				27C524FF086F1EAA005DB6C8,
+				27C524FD086F1E6D005DB6C8,
+				27C524FB086F1E54005DB6C8,
+				27C524F9086F1E3D005DB6C8,
+				27C524F7086F1E06005DB6C8,
+				27C524F5086F1D66005DB6C8,
+				27B91DB1086EEA3300DB17D6,
+				2764970D086ED80A000EB62C,
+				27B91DA9086EE5CE00DB17D6,
 			);
 			isa = PBXGroup;
 			refType = 4;
@@ -16,6 +30,9 @@
 		270BA7B8086C0A0900799F65 = {
 			buildSettings = {
 				COPY_PHASE_STRIP = NO;
+				HEADER_SEARCH_PATHS = "${SYMROOT}/Projects/CPP/include ${SYMROOT}/Projects/CPP/interfaces /usr/include";
+				REZ_PREPROCESSOR_DEFINITIONS = "";
+				SYMROOT = "${HOME}/develop";
 			};
 			isa = PBXBuildStyle;
 			name = Development;
@@ -37,16 +54,55 @@
 			hasScannedForEncodings = 0;
 			isa = PBXProject;
 			mainGroup = 270BA7B6086C0A0900799F65;
+			productRefGroup = 2764970D086ED80A000EB62C;
 			projectDirPath = "";
 			targets = (
-				274171B2086C0AEF00683CF4,
+				2764970B086ED80A000EB62C,
+				27C524D1086F1C61005DB6C8,
+				27C524D9086F1C7A005DB6C8,
+				27C524DF086F1CA1005DB6C8,
+				27C524E9086F1CFA005DB6C8,
+				27C524EF086F1D13005DB6C8,
+				2790ED5A086F5AE300DA24CB,
 			);
 		};
-		274171B2086C0AEF00683CF4 = {
-			buildArgumentsString = "$(ACTION)";
+		27649708086ED80A000EB62C = {
+			buildActionMask = 2147483647;
+			files = (
+			);
+			isa = PBXHeadersBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		27649709086ED80A000EB62C = {
+			buildActionMask = 2147483647;
+			files = (
+				2790ECC3086F2D4600DA24CB,
+			);
+			isa = PBXSourcesBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2764970A086ED80A000EB62C = {
+			buildActionMask = 2147483647;
+			files = (
+			);
+			isa = PBXFrameworksBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2764970B086ED80A000EB62C = {
 			buildPhases = (
+				27649708086ED80A000EB62C,
+				27649709086ED80A000EB62C,
+				2764970A086ED80A000EB62C,
+			);
+			buildRules = (
 			);
 			buildSettings = {
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				GCC_PREPROCESSOR_DEFINITIONS = "LINUX OSX UNIX TVISION";
+				HEADER_SEARCH_PATHS = "";
+				INSTALL_PATH = /usr/local/lib;
+				LIBRARY_STYLE = DYNAMIC;
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "";
 				OTHER_REZFLAGS = "";
@@ -54,16 +110,38 @@
 				SECTORDER_FLAGS = "";
 				WARNING_CFLAGS = "-Wmost -Wno-four-char-constants -Wno-unknown-pragmas";
 			};
-			buildToolPath = /usr/bin/make;
-			buildWorkingDirectory = /Users/lothar/develop/Projects/CPP/BaseDevelopment/lbHook;
 			dependencies = (
 			);
-			isa = PBXLegacyTarget;
+			isa = PBXNativeTarget;
 			name = lbHook;
-			passBuildSettingsInEnvironment = 1;
 			productName = lbHook;
+			productReference = 2764970C086ED80A000EB62C;
+			productType = "com.apple.product-type.library.dynamic";
 		};
-		274171B3086C0BC200683CF4 = {
+		2764970C086ED80A000EB62C = {
+			explicitFileType = "compiled.mach-o.dylib";
+			includeInIndex = 0;
+			isa = PBXFileReference;
+			path = lbHook.dylib;
+			refType = 3;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		2764970D086ED80A000EB62C = {
+			children = (
+				2764970C086ED80A000EB62C,
+				27C524D6086F1C61005DB6C8,
+				27C524DE086F1C7A005DB6C8,
+				27C524E3086F1CA1005DB6C8,
+				27C524ED086F1CFA005DB6C8,
+				27C524F3086F1D13005DB6C8,
+				2790ED5B086F5AE300DA24CB,
+			);
+			isa = PBXGroup;
+			name = Products;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		2790ECC2086F2D4600DA24CB = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
@@ -71,6 +149,734 @@
 			path = /Users/lothar/develop/Projects/CPP/BaseDevelopment/lbHook/lbHook.cpp;
 			refType = 0;
 			sourceTree = "<absolute>";
+		};
+		2790ECC3086F2D4600DA24CB = {
+			fileRef = 2790ECC2086F2D4600DA24CB;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2790ED01086F44C100DA24CB = {
+			containerPortal = 270BA7BA086C0A0900799F65;
+			isa = PBXContainerItemProxy;
+			proxyType = 1;
+			remoteGlobalIDString = 2764970B086ED80A000EB62C;
+			remoteInfo = lbHook;
+		};
+		2790ED02086F44C100DA24CB = {
+			isa = PBXTargetDependency;
+			target = 2764970B086ED80A000EB62C;
+			targetProxy = 2790ED01086F44C100DA24CB;
+		};
+		2790ED03086F44DF00DA24CB = {
+			containerPortal = 270BA7BA086C0A0900799F65;
+			isa = PBXContainerItemProxy;
+			proxyType = 1;
+			remoteGlobalIDString = 2764970B086ED80A000EB62C;
+			remoteInfo = lbHook;
+		};
+		2790ED04086F44DF00DA24CB = {
+			isa = PBXTargetDependency;
+			target = 2764970B086ED80A000EB62C;
+			targetProxy = 2790ED03086F44DF00DA24CB;
+		};
+		2790ED05086F44EB00DA24CB = {
+			containerPortal = 270BA7BA086C0A0900799F65;
+			isa = PBXContainerItemProxy;
+			proxyType = 1;
+			remoteGlobalIDString = 2764970B086ED80A000EB62C;
+			remoteInfo = lbHook;
+		};
+		2790ED06086F44EB00DA24CB = {
+			isa = PBXTargetDependency;
+			target = 2764970B086ED80A000EB62C;
+			targetProxy = 2790ED05086F44EB00DA24CB;
+		};
+		2790ED07086F44F400DA24CB = {
+			containerPortal = 270BA7BA086C0A0900799F65;
+			isa = PBXContainerItemProxy;
+			proxyType = 1;
+			remoteGlobalIDString = 2764970B086ED80A000EB62C;
+			remoteInfo = lbHook;
+		};
+		2790ED08086F44F400DA24CB = {
+			isa = PBXTargetDependency;
+			target = 2764970B086ED80A000EB62C;
+			targetProxy = 2790ED07086F44F400DA24CB;
+		};
+		2790ED09086F450100DA24CB = {
+			containerPortal = 270BA7BA086C0A0900799F65;
+			isa = PBXContainerItemProxy;
+			proxyType = 1;
+			remoteGlobalIDString = 2764970B086ED80A000EB62C;
+			remoteInfo = lbHook;
+		};
+		2790ED0A086F450100DA24CB = {
+			isa = PBXTargetDependency;
+			target = 2764970B086ED80A000EB62C;
+			targetProxy = 2790ED09086F450100DA24CB;
+		};
+		2790ED57086F5AE300DA24CB = {
+			buildActionMask = 2147483647;
+			files = (
+			);
+			isa = PBXResourcesBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2790ED58086F5AE300DA24CB = {
+			buildActionMask = 2147483647;
+			files = (
+				27AEFF7C086F5EDE005A0A3D,
+			);
+			isa = PBXSourcesBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2790ED59086F5AE300DA24CB = {
+			buildActionMask = 2147483647;
+			files = (
+			);
+			isa = PBXFrameworksBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2790ED5A086F5AE300DA24CB = {
+			buildPhases = (
+				2790ED57086F5AE300DA24CB,
+				2790ED58086F5AE300DA24CB,
+				2790ED59086F5AE300DA24CB,
+			);
+			buildRules = (
+			);
+			buildSettings = {
+				GCC_OPTIMIZATION_LEVEL = 3;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Carbon.framework/Headers/Carbon.h";
+				GCC_PREPROCESSOR_DEFINITIONS = "UNIX OSX LINUX TVISION LB_I_EXTENTIONS";
+				INFOPLIST_FILE = "wxWrapper-Info.plist";
+				INSTALL_PATH = "$(USER_APPS_DIR)";
+				LIBRARY_STYLE = STATIC;
+				OTHER_CFLAGS = "";
+				OTHER_CPLUSPLUSFLAGS = "-I/Users/lothar/wxMac-2.6.1/lib/wx/include/mac-ansi-debug-2.6 -I/Users/lothar/wxMac-2.6.1/include -I/Users/lothar/wxMac-2.6.1/contrib/include -D__WXDEBUG__ -D__WXMAC__ -D_FILE_OFFSET_BITS=64 -D_LARGE_FILES -DNO_GCC_PRAGMA";
+				OTHER_LDFLAGS = "-L/Users/lothar/wxMac-2.6.1/lib   -framework QuickTime -framework IOKit -framework Carbon -framework Cocoa -framework System  -lwx_macd_xrc-2.6 -lwx_macd_qa-2.6 -lwx_macd_html-2.6 -lwx_macd_adv-2.6 -lwx_macd_core-2.6 -lwx_base_carbond_xml-2.6 -lwx_base_carbond_net-2.6 -lwx_base_carbond-2.6 -lc $(HOME)/lib/lbHook.so";
+				OTHER_REZFLAGS = "";
+				PREBINDING = YES;
+				PRODUCT_NAME = wxWrapper;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = "-Wmost -Wno-four-char-constants -Wno-unknown-pragmas";
+				WRAPPER_EXTENSION = app;
+			};
+			dependencies = (
+				2790ED5E086F5AED00DA24CB,
+				2790ED60086F5AED00DA24CB,
+				2790ED62086F5AED00DA24CB,
+				2790ED64086F5AED00DA24CB,
+				2790ED66086F5AED00DA24CB,
+				2790ED68086F5AED00DA24CB,
+			);
+			isa = PBXNativeTarget;
+			name = wxWrapper;
+			productName = wxWrapper;
+			productReference = 2790ED5B086F5AE300DA24CB;
+			productSettingsXML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
+<!DOCTYPE plist PUBLIC \"-//Apple Computer//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">
+<plist version=\"1.0\">
+<dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>English</string>
+	<key>CFBundleExecutable</key>
+	<string>wxWrapper</string>
+	<key>CFBundleIdentifier</key>
+	<string>com.yourcompany.wxWrapper</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleSignature</key>
+	<string>????</string>
+	<key>CFBundleVersion</key>
+	<string>1.0</string>
+</dict>
+</plist>
+";
+			productType = "com.apple.product-type.application";
+		};
+		2790ED5B086F5AE300DA24CB = {
+			explicitFileType = wrapper.application;
+			includeInIndex = 0;
+			isa = PBXFileReference;
+			path = wxWrapper.app;
+			refType = 3;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		2790ED5D086F5AED00DA24CB = {
+			containerPortal = 270BA7BA086C0A0900799F65;
+			isa = PBXContainerItemProxy;
+			proxyType = 1;
+			remoteGlobalIDString = 2764970B086ED80A000EB62C;
+			remoteInfo = lbHook;
+		};
+		2790ED5E086F5AED00DA24CB = {
+			isa = PBXTargetDependency;
+			target = 2764970B086ED80A000EB62C;
+			targetProxy = 2790ED5D086F5AED00DA24CB;
+		};
+		2790ED5F086F5AED00DA24CB = {
+			containerPortal = 270BA7BA086C0A0900799F65;
+			isa = PBXContainerItemProxy;
+			proxyType = 1;
+			remoteGlobalIDString = 27C524D1086F1C61005DB6C8;
+			remoteInfo = lbClasses;
+		};
+		2790ED60086F5AED00DA24CB = {
+			isa = PBXTargetDependency;
+			target = 27C524D1086F1C61005DB6C8;
+			targetProxy = 2790ED5F086F5AED00DA24CB;
+		};
+		2790ED61086F5AED00DA24CB = {
+			containerPortal = 270BA7BA086C0A0900799F65;
+			isa = PBXContainerItemProxy;
+			proxyType = 1;
+			remoteGlobalIDString = 27C524D9086F1C7A005DB6C8;
+			remoteInfo = lbModule;
+		};
+		2790ED62086F5AED00DA24CB = {
+			isa = PBXTargetDependency;
+			target = 27C524D9086F1C7A005DB6C8;
+			targetProxy = 2790ED61086F5AED00DA24CB;
+		};
+		2790ED63086F5AED00DA24CB = {
+			containerPortal = 270BA7BA086C0A0900799F65;
+			isa = PBXContainerItemProxy;
+			proxyType = 1;
+			remoteGlobalIDString = 27C524DF086F1CA1005DB6C8;
+			remoteInfo = lbDB;
+		};
+		2790ED64086F5AED00DA24CB = {
+			isa = PBXTargetDependency;
+			target = 27C524DF086F1CA1005DB6C8;
+			targetProxy = 2790ED63086F5AED00DA24CB;
+		};
+		2790ED65086F5AED00DA24CB = {
+			containerPortal = 270BA7BA086C0A0900799F65;
+			isa = PBXContainerItemProxy;
+			proxyType = 1;
+			remoteGlobalIDString = 27C524E9086F1CFA005DB6C8;
+			remoteInfo = lbPluginManager;
+		};
+		2790ED66086F5AED00DA24CB = {
+			isa = PBXTargetDependency;
+			target = 27C524E9086F1CFA005DB6C8;
+			targetProxy = 2790ED65086F5AED00DA24CB;
+		};
+		2790ED67086F5AED00DA24CB = {
+			containerPortal = 270BA7BA086C0A0900799F65;
+			isa = PBXContainerItemProxy;
+			proxyType = 1;
+			remoteGlobalIDString = 27C524EF086F1D13005DB6C8;
+			remoteInfo = lbMetaApplication;
+		};
+		2790ED68086F5AED00DA24CB = {
+			isa = PBXTargetDependency;
+			target = 27C524EF086F1D13005DB6C8;
+			targetProxy = 2790ED67086F5AED00DA24CB;
+		};
+		27AEFF7C086F5EDE005A0A3D = {
+			fileRef = 27B91DB1086EEA3300DB17D6;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		27AEFF7D086F5F3F005A0A3D = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = lbModule.cpp;
+			path = /Users/lothar/develop/Projects/CPP/BaseDevelopment/lbModule/lbModule.cpp;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		27AEFF7E086F5F3F005A0A3D = {
+			fileRef = 27AEFF7D086F5F3F005A0A3D;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		27AEFF7F086F5F75005A0A3D = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = lbDB.cpp;
+			path = /Users/lothar/develop/Projects/CPP/BaseDevelopment/lbDB/lbDB.cpp;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		27AEFF80086F5F75005A0A3D = {
+			fileRef = 27AEFF7F086F5F75005A0A3D;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		27AEFF81086F5F9B005A0A3D = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = lbPluginManager.cpp;
+			path = /Users/lothar/develop/Projects/CPP/BaseDevelopment/lbPluginManager/lbPluginManager.cpp;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		27AEFF82086F5F9B005A0A3D = {
+			fileRef = 27AEFF81086F5F9B005A0A3D;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		27AEFF83086F5FC3005A0A3D = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = lbMetaApplication.cpp;
+			path = /Users/lothar/develop/Projects/CPP/BaseDevelopment/lbMetaApplication/lbMetaApplication.cpp;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		27AEFF84086F5FC3005A0A3D = {
+			fileRef = 27AEFF83086F5FC3005A0A3D;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		27B91DA9086EE5CE00DB17D6 = {
+			isa = PBXFileReference;
+			lastKnownFileType = text.xml;
+			name = "wxWrapper-Info.plist";
+			path = "/Users/lothar/develop/Projects/CPP/Compilers/XCode/DMF/wxWrapper-Info.plist";
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		27B91DB1086EEA3300DB17D6 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = dynamic.cpp;
+			path = /Users/lothar/develop/Projects/CPP/Test/GUI/wxWrapper/dynamic.cpp;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		27C524D1086F1C61005DB6C8 = {
+			buildPhases = (
+				27C524D2086F1C61005DB6C8,
+				27C524D3086F1C61005DB6C8,
+				27C524D5086F1C61005DB6C8,
+			);
+			buildRules = (
+			);
+			buildSettings = {
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				GCC_PREPROCESSOR_DEFINITIONS = "LINUX OSX UNIX TVISION";
+				HEADER_SEARCH_PATHS = "";
+				INSTALL_PATH = /usr/local/lib;
+				LIBRARY_STYLE = DYNAMIC;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "-lc ${SYMROOT}/lbHook.dylib";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = lbClasses;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = "-Wmost -Wno-four-char-constants -Wno-unknown-pragmas";
+			};
+			dependencies = (
+				2790ED02086F44C100DA24CB,
+			);
+			isa = PBXNativeTarget;
+			name = lbClasses;
+			productName = lbHook;
+			productReference = 27C524D6086F1C61005DB6C8;
+			productType = "com.apple.product-type.library.dynamic";
+		};
+		27C524D2086F1C61005DB6C8 = {
+			buildActionMask = 2147483647;
+			files = (
+			);
+			isa = PBXHeadersBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		27C524D3086F1C61005DB6C8 = {
+			buildActionMask = 2147483647;
+			files = (
+				27C524F6086F1D66005DB6C8,
+				27C524F8086F1E06005DB6C8,
+				27C524FA086F1E3D005DB6C8,
+				27C524FC086F1E54005DB6C8,
+				27C524FE086F1E6D005DB6C8,
+				27C52500086F1EAA005DB6C8,
+				27C52502086F1EC1005DB6C8,
+			);
+			isa = PBXSourcesBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		27C524D5086F1C61005DB6C8 = {
+			buildActionMask = 2147483647;
+			files = (
+			);
+			isa = PBXFrameworksBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		27C524D6086F1C61005DB6C8 = {
+			explicitFileType = "compiled.mach-o.dylib";
+			includeInIndex = 0;
+			isa = PBXFileReference;
+			path = lbClasses.dylib;
+			refType = 3;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		27C524D9086F1C7A005DB6C8 = {
+			buildPhases = (
+				27C524DA086F1C7A005DB6C8,
+				27C524DB086F1C7A005DB6C8,
+				27C524DD086F1C7A005DB6C8,
+			);
+			buildRules = (
+			);
+			buildSettings = {
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				GCC_PREPROCESSOR_DEFINITIONS = "LINUX OSX UNIX TVISION";
+				HEADER_SEARCH_PATHS = "";
+				INSTALL_PATH = /usr/local/lib;
+				LIBRARY_STYLE = DYNAMIC;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "-lc ${SYMROOT}/lbHook.dylib";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = lbModule;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = "-Wmost -Wno-four-char-constants -Wno-unknown-pragmas";
+			};
+			dependencies = (
+				2790ED04086F44DF00DA24CB,
+			);
+			isa = PBXNativeTarget;
+			name = lbModule;
+			productName = lbHook;
+			productReference = 27C524DE086F1C7A005DB6C8;
+			productType = "com.apple.product-type.library.dynamic";
+		};
+		27C524DA086F1C7A005DB6C8 = {
+			buildActionMask = 2147483647;
+			files = (
+			);
+			isa = PBXHeadersBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		27C524DB086F1C7A005DB6C8 = {
+			buildActionMask = 2147483647;
+			files = (
+				27AEFF7E086F5F3F005A0A3D,
+			);
+			isa = PBXSourcesBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		27C524DD086F1C7A005DB6C8 = {
+			buildActionMask = 2147483647;
+			files = (
+			);
+			isa = PBXFrameworksBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		27C524DE086F1C7A005DB6C8 = {
+			explicitFileType = "compiled.mach-o.dylib";
+			includeInIndex = 0;
+			isa = PBXFileReference;
+			path = lbModule.dylib;
+			refType = 3;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		27C524DF086F1CA1005DB6C8 = {
+			buildPhases = (
+				27C524E0086F1CA1005DB6C8,
+				27C524E1086F1CA1005DB6C8,
+				27C524E2086F1CA1005DB6C8,
+			);
+			buildRules = (
+			);
+			buildSettings = {
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				GCC_PREPROCESSOR_DEFINITIONS = "LINUX OSX UNIX TVISION";
+				HEADER_SEARCH_PATHS = "";
+				INSTALL_PATH = /usr/local/lib;
+				LIBRARY_STYLE = DYNAMIC;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "-lc ${SYMROOT}/lbHook.dylib /usr/lib/libiodbc.dylib";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = lbDB;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = "-Wmost -Wno-four-char-constants -Wno-unknown-pragmas";
+			};
+			dependencies = (
+				2790ED06086F44EB00DA24CB,
+			);
+			isa = PBXNativeTarget;
+			name = lbDB;
+			productName = lbHook;
+			productReference = 27C524E3086F1CA1005DB6C8;
+			productType = "com.apple.product-type.library.dynamic";
+		};
+		27C524E0086F1CA1005DB6C8 = {
+			buildActionMask = 2147483647;
+			files = (
+			);
+			isa = PBXHeadersBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		27C524E1086F1CA1005DB6C8 = {
+			buildActionMask = 2147483647;
+			files = (
+				27AEFF80086F5F75005A0A3D,
+			);
+			isa = PBXSourcesBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		27C524E2086F1CA1005DB6C8 = {
+			buildActionMask = 2147483647;
+			files = (
+			);
+			isa = PBXFrameworksBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		27C524E3086F1CA1005DB6C8 = {
+			explicitFileType = "compiled.mach-o.dylib";
+			includeInIndex = 0;
+			isa = PBXFileReference;
+			path = lbDB.dylib;
+			refType = 3;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		27C524E9086F1CFA005DB6C8 = {
+			buildPhases = (
+				27C524EA086F1CFA005DB6C8,
+				27C524EB086F1CFA005DB6C8,
+				27C524EC086F1CFA005DB6C8,
+			);
+			buildRules = (
+			);
+			buildSettings = {
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				GCC_PREPROCESSOR_DEFINITIONS = "LINUX OSX UNIX TVISION";
+				HEADER_SEARCH_PATHS = "";
+				INSTALL_PATH = /usr/local/lib;
+				LIBRARY_STYLE = DYNAMIC;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "-lc ${SYMROOT}/lbHook.dylib";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = lbPluginManager;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = "-Wmost -Wno-four-char-constants -Wno-unknown-pragmas";
+			};
+			dependencies = (
+				2790ED08086F44F400DA24CB,
+			);
+			isa = PBXNativeTarget;
+			name = lbPluginManager;
+			productName = lbHook;
+			productReference = 27C524ED086F1CFA005DB6C8;
+			productType = "com.apple.product-type.library.dynamic";
+		};
+		27C524EA086F1CFA005DB6C8 = {
+			buildActionMask = 2147483647;
+			files = (
+			);
+			isa = PBXHeadersBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		27C524EB086F1CFA005DB6C8 = {
+			buildActionMask = 2147483647;
+			files = (
+				27AEFF82086F5F9B005A0A3D,
+			);
+			isa = PBXSourcesBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		27C524EC086F1CFA005DB6C8 = {
+			buildActionMask = 2147483647;
+			files = (
+			);
+			isa = PBXFrameworksBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		27C524ED086F1CFA005DB6C8 = {
+			explicitFileType = "compiled.mach-o.dylib";
+			includeInIndex = 0;
+			isa = PBXFileReference;
+			path = lbPluginManager.dylib;
+			refType = 3;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		27C524EF086F1D13005DB6C8 = {
+			buildPhases = (
+				27C524F0086F1D13005DB6C8,
+				27C524F1086F1D13005DB6C8,
+				27C524F2086F1D13005DB6C8,
+			);
+			buildRules = (
+			);
+			buildSettings = {
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				GCC_PREPROCESSOR_DEFINITIONS = "LINUX OSX UNIX TVISION";
+				HEADER_SEARCH_PATHS = "";
+				INSTALL_PATH = /usr/local/lib;
+				LIBRARY_STYLE = DYNAMIC;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "-lc ${SYMROOT}/lbHook.dylib";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = lbMetaApplication;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = "-Wmost -Wno-four-char-constants -Wno-unknown-pragmas";
+			};
+			dependencies = (
+				2790ED0A086F450100DA24CB,
+			);
+			isa = PBXNativeTarget;
+			name = lbMetaApplication;
+			productName = lbHook;
+			productReference = 27C524F3086F1D13005DB6C8;
+			productType = "com.apple.product-type.library.dynamic";
+		};
+		27C524F0086F1D13005DB6C8 = {
+			buildActionMask = 2147483647;
+			files = (
+			);
+			isa = PBXHeadersBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		27C524F1086F1D13005DB6C8 = {
+			buildActionMask = 2147483647;
+			files = (
+				27AEFF84086F5FC3005A0A3D,
+			);
+			isa = PBXSourcesBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		27C524F2086F1D13005DB6C8 = {
+			buildActionMask = 2147483647;
+			files = (
+			);
+			isa = PBXFrameworksBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		27C524F3086F1D13005DB6C8 = {
+			explicitFileType = "compiled.mach-o.dylib";
+			includeInIndex = 0;
+			isa = PBXFileReference;
+			path = lbMetaApplication.dylib;
+			refType = 3;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		27C524F5086F1D66005DB6C8 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = dllmain.cpp;
+			path = /Users/lothar/develop/Projects/CPP/BaseDevelopment/lbclasses/dllmain.cpp;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		27C524F6086F1D66005DB6C8 = {
+			fileRef = 27C524F5086F1D66005DB6C8;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		27C524F7086F1E06005DB6C8 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = lbcontainer.cpp;
+			path = /Users/lothar/develop/Projects/CPP/BaseDevelopment/lbclasses/lbcontainer.cpp;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		27C524F8086F1E06005DB6C8 = {
+			fileRef = 27C524F7086F1E06005DB6C8;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		27C524F9086F1E3D005DB6C8 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = lbkey.cpp;
+			path = /Users/lothar/develop/Projects/CPP/BaseDevelopment/lbclasses/lbkey.cpp;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		27C524FA086F1E3D005DB6C8 = {
+			fileRef = 27C524F9086F1E3D005DB6C8;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		27C524FB086F1E54005DB6C8 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = lbobject.cpp;
+			path = /Users/lothar/develop/Projects/CPP/BaseDevelopment/lbclasses/lbobject.cpp;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		27C524FC086F1E54005DB6C8 = {
+			fileRef = 27C524FB086F1E54005DB6C8;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		27C524FD086F1E6D005DB6C8 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = lbthread.cpp;
+			path = /Users/lothar/develop/Projects/CPP/BaseDevelopment/lbclasses/lbthread.cpp;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		27C524FE086F1E6D005DB6C8 = {
+			fileRef = 27C524FD086F1E6D005DB6C8;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		27C524FF086F1EAA005DB6C8 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = misc.cpp;
+			path = /Users/lothar/develop/Projects/CPP/BaseDevelopment/lbclasses/misc.cpp;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		27C52500086F1EAA005DB6C8 = {
+			fileRef = 27C524FF086F1EAA005DB6C8;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		27C52501086F1EC1005DB6C8 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = skiplist.cpp;
+			path = /Users/lothar/develop/Projects/CPP/BaseDevelopment/lbclasses/skiplist.cpp;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		27C52502086F1EC1005DB6C8 = {
+			fileRef = 27C52501086F1EC1005DB6C8;
+			isa = PBXBuildFile;
+			settings = {
+			};
 		};
 	};
 	rootObject = 270BA7BA086C0A0900799F65;
