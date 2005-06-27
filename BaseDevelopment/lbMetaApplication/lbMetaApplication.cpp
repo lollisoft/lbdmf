@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.62 $
+ * $Revision: 1.63 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.62 2005/06/20 11:18:46 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.63 2005/06/27 10:32:08 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.63  2005/06/27 10:32:08  lollisoft
+ * Mostly changes to conio.h conflicts while XCode build
+ *
  * Revision 1.62  2005/06/20 11:18:46  lollisoft
  * Added interface set/get User and ApplicationName
  *
@@ -253,7 +256,7 @@
 extern "C" {      
 #endif            
 
-#include <conio.h>
+//#include <conio.h>
 
 #ifdef __cplusplus
 }      

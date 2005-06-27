@@ -30,11 +30,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.11 $
+ * $Revision: 1.12 $
  * $Name:  $
- * $Id: lbDatabaseForm.h,v 1.11 2005/06/25 12:44:50 lollisoft Exp $
+ * $Id: lbDatabaseForm.h,v 1.12 2005/06/27 10:32:10 lollisoft Exp $
  *
  * $Log: lbDatabaseForm.h,v $
+ * Revision 1.12  2005/06/27 10:32:10  lollisoft
+ * Mostly changes to conio.h conflicts while XCode build
+ *
  * Revision 1.11  2005/06/25 12:44:50  lollisoft
  * Changed wxComboBox to wxChoice.
  *
@@ -255,6 +258,7 @@ public:
 	}
 	
 	virtual ~FormularActions() {
+		_CL_LOG << "FormularActions::~FormularActions() called." LOG_
 	}
 	
 	/** \brief ID of action target.
@@ -522,7 +526,9 @@ public:
 	 */
 	UAP(lb_I_Container, ComboboxMapperList, __FILE__, __LINE__)
 	
-	UAP(lb_I_Container, detailForms, __FILE__, __LINE__)
+	/** \brief Storage for all yet loaded actions. */
+	UAP(lb_I_Container, actions, __FILE__, __LINE__)
+	
 	lb_I_DatabaseMasterForm* _master;
 
 	// l gets overwritten, while assigning a lb_I_Query* pointer to sampleQuery !!

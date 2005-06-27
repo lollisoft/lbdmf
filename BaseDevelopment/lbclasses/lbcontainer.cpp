@@ -36,10 +36,13 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.27 $
+ * $Revision: 1.28 $
  * $Name:  $
- * $Id: lbcontainer.cpp,v 1.27 2005/05/10 20:20:38 lollisoft Exp $
+ * $Id: lbcontainer.cpp,v 1.28 2005/06/27 10:32:09 lollisoft Exp $
  * $Log: lbcontainer.cpp,v $
+ * Revision 1.28  2005/06/27 10:32:09  lollisoft
+ * Mostly changes to conio.h conflicts while XCode build
+ *
  * Revision 1.27  2005/05/10 20:20:38  lollisoft
  * Include files changed to be more actially language compilant
  *
@@ -145,7 +148,7 @@
 extern "C" {
 #endif
 
-#include <conio.h>
+//#include <conio.h>
 
 #ifdef __cplusplus
 }

@@ -39,7 +39,7 @@
 extern "C" {      
 #endif            
 
-#include <conio.h>
+//#include <conio.h>
 
 #ifdef __cplusplus
 }      

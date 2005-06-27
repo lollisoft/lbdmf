@@ -215,6 +215,7 @@ lbAction::lbAction() {
 
 lbAction::~lbAction() {
 	free(myActionID);
+	_CL_LOG << "lbAction::~lbAction() called." LOG_
 }
 
 /*...svoid LB_STDCALL lbAction\58\\58\setActionID\40\char\42\ id\41\:0:*/
@@ -344,6 +345,7 @@ void LB_STDCALL lbAction::delegate(lb_I_Parameter* params) {
 			uk = actions->getElement(&ukey);
 				
 			QI(uk, lb_I_DelegatedAction, action, __FILE__, __LINE__)
+			uk++;
 			
 			action->setActionID(id->charrep());
 			action->execute(*&params);
@@ -620,14 +622,21 @@ void LB_STDCALL lbDetailFormAction::openDetailForm(lb_I_String* formularname) {
 						sql = query->getAsString(1);
 
 						pl = PM->getFirstMatchingPlugin("lb_I_DatabaseForm");
+						pl++;
 						uk = pl->getImplementation();
+						uk++;
 						
 						UAP(lb_I_DatabaseForm, form, __FILE__, __LINE__)
 						QI(uk, lb_I_DatabaseForm, form, __FILE__, __LINE__)
 
 						detailForm = form.getPtr();
 
+						_CL_LOG << "Open detailform with SQL query:\n" << sql->charrep() << 
+						", database = " << DBName->charrep() <<
+						", user = " << DBUser->charrep() LOG_
+
 						form->init(sql->charrep(), DBName->charrep(), DBUser->charrep(), DBPass->charrep());
+						form->setName(formularname->charrep());
 						form->show();
 						form++;
 					}
@@ -812,8 +821,16 @@ IMPLEMENT_FUNCTOR(instanceOflbDatabaseDialog, lbDatabaseDialog)
 
 /*...slbErrCodes LB_STDCALL lbDatabaseDialog\58\\58\setData\40\lb_I_Unknown\42\ uk\41\:0:*/
 lbErrCodes LB_STDCALL lbDatabaseDialog::setData(lb_I_Unknown* uk) {
+		lbErrCodes err = ERR_NONE;
+		
         _CL_VERBOSE << "lbDatabaseDialog::setData(...) not implemented yet" LOG_
 
+		UAP(lb_I_DatabaseForm, dbForm, __FILE__, __LINE__)
+		QI(uk, lb_I_DatabaseForm, dbForm, __FILE__, __LINE__)
+		
+		fa = ((lbDatabaseDialog*) dbForm.getPtr())->fa;
+		((lbDatabaseDialog*) dbForm.getPtr())->fa = NULL;
+		
         return ERR_NOT_IMPLEMENTED;
 }
 /*...e*/
@@ -827,13 +844,14 @@ lbDatabaseDialog::lbDatabaseDialog()
 	ref = STARTREF;
 	formName = strdup("Database dialog");
 
-	fa = new FormularActions();
+	fa = NULL;
 }
 /*...e*/
 /*...slbDatabaseDialog\58\\58\\126\lbDatabaseDialog\40\\41\:0:*/
 lbDatabaseDialog::~lbDatabaseDialog() {
 	_CL_LOG << "lbDatabaseDialog::~lbDatabaseDialog() called." LOG_
 
+#ifdef bla
 	if (detailForms == NULL) return;
 
 	while (detailForms->hasMoreElements()) {
@@ -857,6 +875,7 @@ lbDatabaseDialog::~lbDatabaseDialog() {
 		 
 		d->destroy();
 	}
+#endif //bla	
 	
 	if (fa != NULL) delete fa;
 	free (formName);
@@ -894,7 +913,7 @@ void LB_STDCALL lbDatabaseDialog::init(char* _SQLString, char* DBName, char* DBU
 	char prefix[100] = "";
 	sprintf(prefix, "%p", this);
 
-
+#ifdef bla
 	if (detailForms == NULL) {
 		// Create the instance for my detail formulars, if any.
 		REQUEST(manager.getPtr(), lb_I_Container, detailForms)
@@ -902,6 +921,7 @@ void LB_STDCALL lbDatabaseDialog::init(char* _SQLString, char* DBName, char* DBU
 		// Forbid autodeletion.
 		detailForms->detachAll();
 	}
+#endif
 
 	SetTitle(_trans(formName));
 
@@ -2024,7 +2044,7 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBDelete(lb_I_Unknown* uk) {
 lbErrCodes LB_STDCALL lbDatabaseDialog::OnActionButton(lb_I_Unknown* uk) {
 	lbErrCodes err = ERR_NONE;
 	
-	_CL_VERBOSE << "lbDatabaseDialog::OnActionButton(...) called" LOG_
+	_CL_LOG << "lbDatabaseDialog::OnActionButton(...) called" LOG_
 
 /*...sDoc:8:*/
 	/*
@@ -2079,6 +2099,8 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::OnActionButton(lb_I_Unknown* uk) {
 /*...e*/
 
 		// Regarding to the event name, we must get back some information from the database.
+
+		if (fa == NULL) fa = new FormularActions;	
 
 		char* s = fa->getActionSourceDataField(reversedEvent);
 
@@ -2197,8 +2219,13 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::OnActionButton(lb_I_Unknown* uk) {
 		*/
 /*...e*/
 
-		// Try to abstract the action.
-
+		/*	Try to abstract the action.
+			
+			This, firstly implemented, is not good. It would be the first candidate for the immediately
+			closing of the detail form.
+			
+			Here should be used a container storing the actions with their action ID as key.
+		*/
 		UAP(lb_I_Action, action, __FILE__, __LINE__)
 		
 		action = fa->getAction(fa->getActionID(reversedEvent));
@@ -2246,84 +2273,14 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::OnActionButton(lb_I_Unknown* uk) {
 		param->setUAPString(*&parameter, *&v);
 
 		action->execute(*&param);
+		action++;
 
 		_CL_LOG << "Action has been executed." LOG_
 
-#ifdef bla
-/*...sCreate the detail form:16:*/
-		UAP(lb_I_DatabaseForm, _dialog, __FILE__, __LINE__)
-	
-		UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
-		UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
-	
-		UAP_REQUEST(getModuleManager(), lb_I_String, fName)
-		fName->setData(detailFormName);
-	
-		QI(fName, lb_I_KeyBase, key, __FILE__, __LINE__)
-	
-		uk = detailForms->getElement(&key);	
-	
-		if (uk != NULL) {
-			QI(uk, lb_I_DatabaseForm, _dialog, __FILE__, __LINE__)
-		}
-
-		if ((_dialog.getPtr() != NULL) && (strcmp(queryString, _dialog->getQuery()) != 0)) {
-	
-			// SQL query from database has been changed. Recreate the dialog from scratch. 
-	
-			detailForms->remove(&key);
-		
-			_dialog->destroy();
-	
-			_dialog.resetPtr();
-		}
-
-		if (_dialog.getPtr() == NULL) {
-			UAP_REQUEST(manager.getPtr(), lb_I_PluginManager, PM)
-			UAP(lb_I_Plugin, pl, __FILE__, __LINE__)
-		
-			pl = PM->getFirstMatchingPlugin("lb_I_DatabaseForm");
-
-			if (pl == NULL) {
-				char* msg = (char*) malloc(200);
-				msg[0] = 0;
-				strcpy(msg, _trans("Database form plugin not found or not installed.\n\nDatabase forms are not available."));
-				msgBox(_trans("Error"), msg);
-				free(msg);
-				return NULL;
-			}
-
-			uk = pl->getImplementation();
-		
-			detailForms->insert(&uk, &key);
-		
-			UAP(lb_I_DatabaseForm, form, __FILE__, __LINE__)
-			QI(uk, lb_I_DatabaseForm, form, __FILE__, __LINE__)
-		
-			form->destroy();
-			form = NULL;
-		
-			uk = forms->getElement(&key);
-		
-			if (uk != NULL) {
-			        QI(uk, lb_I_DatabaseForm, _dialog, __FILE__, __LINE__)
-			}
-		
-			_dialog->setName(formName);
-			
-			_dialog->init(queryString, DBName, DBUser, DBPass);
-		
-		}
-
-		_dialog->show();
-/*...e*/
-#endif
 		free(s);
 		
 		free(eventName);
-		
 	}
-
 
 	return ERR_NONE;
 }

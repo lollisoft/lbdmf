@@ -111,7 +111,7 @@ lb_I_Action* FormularActions::getAction(char* id) {
 	}
 	
 	if (actions->exists(&key) == 0) {
-
+		_CL_LOG << "Action is not in the container. Insert it." LOG_
 		lbAction* _action = new lbAction();
 		_action->setModuleManager(getModuleInstance(), __FILE__, __LINE__);
 		_action->queryInterface("lb_I_Unknown", (void**) &uk, __FILE__, __LINE__);

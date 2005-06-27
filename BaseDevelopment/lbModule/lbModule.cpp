@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.88 $
+ * $Revision: 1.89 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.88 2005/05/04 22:09:38 lollisoft Exp $
+ * $Id: lbModule.cpp,v 1.89 2005/06/27 10:32:09 lollisoft Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.89  2005/06/27 10:32:09  lollisoft
+ * Mostly changes to conio.h conflicts while XCode build
+ *
  * Revision 1.88  2005/05/04 22:09:38  lollisoft
  * Many memory leaks fixed. Changed _CL_LOG to _CL_VERBOSE.
  *
@@ -305,7 +308,7 @@
 extern "C" {
 #endif
 
-#include <conio.h>
+//#include <conio.h>
 
 #ifdef __WATCOMC__
 #include <ctype.h>

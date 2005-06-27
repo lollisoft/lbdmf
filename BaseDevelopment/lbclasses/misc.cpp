@@ -31,10 +31,13 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.39 $
+ * $Revision: 1.40 $
  * $Name:  $
- * $Id: misc.cpp,v 1.39 2005/06/24 23:09:49 lollisoft Exp $
+ * $Id: misc.cpp,v 1.40 2005/06/27 10:32:10 lollisoft Exp $
  * $Log: misc.cpp,v $
+ * Revision 1.40  2005/06/27 10:32:10  lollisoft
+ * Mostly changes to conio.h conflicts while XCode build
+ *
  * Revision 1.39  2005/06/24 23:09:49  lollisoft
  * Changes to build with new wxWidgets version 2.6.1.
  * Added fallback to hardcoded settings, if no environment
@@ -204,7 +207,7 @@
 extern "C" {      
 #endif            
 #include <stdlib.h>
-#include <conio.h>
+//#include <conio.h>
 
 #ifdef __cplusplus
 }      

@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.23 $
+ * $Revision: 1.24 $
  * $Name:  $
- * $Id: lbPluginManager.cpp,v 1.23 2005/06/24 23:09:49 lollisoft Exp $
+ * $Id: lbPluginManager.cpp,v 1.24 2005/06/27 10:32:09 lollisoft Exp $
  *
  * $Log: lbPluginManager.cpp,v $
+ * Revision 1.24  2005/06/27 10:32:09  lollisoft
+ * Mostly changes to conio.h conflicts while XCode build
+ *
  * Revision 1.23  2005/06/24 23:09:49  lollisoft
  * Changes to build with new wxWidgets version 2.6.1.
  * Added fallback to hardcoded settings, if no environment
@@ -127,7 +130,7 @@
 extern "C" {
 #endif
 
-#include <conio.h>
+//#include <conio.h>
 
 #ifdef __WATCOMC__
 #include <ctype.h>

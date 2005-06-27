@@ -37,10 +37,13 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.22 $
+ * $Revision: 1.23 $
  * $Name:  $
- * $Id: lbkey.cpp,v 1.22 2005/05/04 22:09:40 lollisoft Exp $
+ * $Id: lbkey.cpp,v 1.23 2005/06/27 10:32:10 lollisoft Exp $
  * $Log: lbkey.cpp,v $
+ * Revision 1.23  2005/06/27 10:32:10  lollisoft
+ * Mostly changes to conio.h conflicts while XCode build
+ *
  * Revision 1.22  2005/05/04 22:09:40  lollisoft
  * Many memory leaks fixed. Changed _CL_LOG to _CL_VERBOSE.
  *
@@ -130,7 +133,7 @@
 extern "C" {
 #endif
 
-#include <conio.h>
+//#include <conio.h>
 
 #ifdef __cplusplus
 }

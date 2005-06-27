@@ -426,20 +426,6 @@ typedef lbErrCodes ( lb_I_EventHandler::*lbEvHandler)(lb_I_Unknown* uk);
 	}
 
 /*...e*/
-/*...sdefine RELEASE_1\40\instance\44\ __MACRO_FILE__\44\ __MACRO_LINE__\41\:0:*/
-#define RELEASE_1(instance, __MACRO_FILE__, __MACRO_LINE__) \
-	{ lbErrCodes err; \
-		if ((err = instance->release(#__MACRO_FILE__, __MACRO_LINE__)) != ERR_NONE) { \
-			if (err == ERR_REFERENCE_COUNTING ) { \
-				if (__MACRO_FILE__ != NULL) { \
-				_CL_LOG << "RELEASE_1(...) Reference count mismatch at " << __MACRO_LINE__ << " in " << #__MACRO_FILE__ << " for instance " << instance->getClassName() LOG_ \
-				} \
-			} else { \
-			} \
-		} \
-	}
-
-/*...e*/
 /*...sdefine QI\40\source\44\ interface\44\ target\44\ file\44\ line\41\:0:*/
 #define QI(source, interface, target, file, line) \
 	target.setFile(file); \
@@ -661,7 +647,7 @@ public:
 				} \
 				if (_line == -1) { \
 				} \
-				RELEASE_1(_autoPtr, _file, _line); \
+				_autoPtr->release(_file, _line); \
 				if (_file) delete [] _file; \
 				_autoPtr = NULL; \
 			} \
@@ -803,7 +789,7 @@ public:
 		} \
 		\
 		virtual ~UAP##Unknown_Reference() { \
-			_CL_VERBOSE << "UAP destructor ~UAP" << #Unknown_Reference << "() at " << __FILE__ << " called" LOG_ \
+			_CL_LOG << "UAP destructor ~UAP" << #Unknown_Reference << "() at " << _file << " called" LOG_ \
 			if (_autoPtr != NULL) { \
 				if (allowDelete != 1) { \
 					if (_autoPtr->deleteState() == 1) { \
@@ -813,7 +799,7 @@ public:
 				if (_line == -1) { \
 					_CL_LOG << "Warning: No reference has been taken in " << #Unknown_Reference << " at " << _line << " (UAP is in " << file << " at " << line LOG_ \
 				} \
-				RELEASE_1(_autoPtr, _file, _line); \
+				_autoPtr->release(_file, _line); \
 				if (_file) delete [] _file; \
 			} \
 			_CL_VERBOSE << "UAP destructor ~UAP" << #Unknown_Reference << "() ready" LOG_ \
@@ -1078,8 +1064,8 @@ char*      LB_STDCALL classname::getCreationLoc() const { \
 	return strdup("Have no manager - location can't be found"); \
 } \
 lbErrCodes LB_STDCALL classname::release(char* file, int line) { \
-	_CL_VERBOSE << #classname << "::release(" << file << ", " << line << ") with ref = " << ref << " called." LOG_ \
-        ref--; \
+	_CL_VERBOSE << #classname << "::release(" << __FILE__ << ", " << line << ") with ref = " << ref << " called." LOG_ \
+	ref--; \
 	char ptr[20] = ""; \
 	sprintf(ptr, "%p", this); \
         if (manager != NULL) { \

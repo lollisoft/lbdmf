@@ -37,7 +37,7 @@
 extern "C" {
 #endif
 
-#include <conio.h>
+//#include <conio.h>
 
 #ifdef __WATCOMC__
 #include <ctype.h>

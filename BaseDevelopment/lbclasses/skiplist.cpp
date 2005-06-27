@@ -38,11 +38,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.32 $
+ * $Revision: 1.33 $
  * $Name:  $
- * $Id: skiplist.cpp,v 1.32 2005/06/01 10:54:57 lollisoft Exp $
+ * $Id: skiplist.cpp,v 1.33 2005/06/27 10:32:10 lollisoft Exp $
  *
  * $Log: skiplist.cpp,v $
+ * Revision 1.33  2005/06/27 10:32:10  lollisoft
+ * Mostly changes to conio.h conflicts while XCode build
+ *
  * Revision 1.32  2005/06/01 10:54:57  lollisoft
  * Added the ability to detach contained objects. Ownership leaving.
  *
@@ -161,7 +164,7 @@
 #include <iostream>
 #include <stdlib.h>
 #include <stdio.h>
-#include <conio.h>
+//#include <conio.h>
 
 #ifdef LINUX
 #include <string.h>
