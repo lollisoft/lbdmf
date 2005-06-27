@@ -380,15 +380,9 @@ public:
 		}
 		
 		if ((bound != 0) && (buffer != NULL)) {
-			_CL_VERBOSE << "Free buffer in lbBoundColumn" LOG_
 			free(buffer);
-			_CL_VERBOSE << "Freed buffer in lbBoundColumn" LOG_
 			buffer = NULL;
 		}
-		char ptr[20] = "";
-		sprintf(ptr, "%p", colName.getPtr());
-		
-		_CL_VERBOSE << "lbBoundColumn::~lbBoundColumn(" << ptr << ") called." LOG_
 	}
 	
 	lbBoundColumn(const lbBoundColumn& _ref) {
@@ -426,8 +420,6 @@ protected:
 		_DataType = dt;
 		buffer = bu;
 		
-		_CL_VERBOSE << "lbBoundColumn::setData('" << name->charrep() << "') called." LOG_
-		
 		REQUEST(manager.getPtr(), lb_I_String, colName)
 
 		if (name == NULL) {
@@ -446,8 +438,6 @@ protected:
 
 	virtual void LB_STDCALL setColumn(char* col) {
 		if (columnName != NULL) free(columnName);
-		
-		_CL_VERBOSE << "lbBoundColumn::setColumn('" << col << "') called." LOG_
 		
 		columnName = (char*) malloc(strlen(col)+1);
 		columnName[0] = 0;
@@ -614,7 +604,7 @@ lb_I_Query::lbDBColumnTypes LB_STDCALL lbBoundColumns::getColumnType(int pos) {
 		return bc->getType();
 	}
 
-	_CL_LOG << "lbBoundColumns::getColumnType(int pos) returns unknown type" LOG_
+	_LOG << "lbBoundColumns::getColumnType(int pos) returns unknown type" LOG_
 
 	return lb_I_Query::lbDBColumnUnknown;
 }
@@ -633,7 +623,7 @@ lb_I_Query::lbDBColumnTypes LB_STDCALL lbBoundColumns::getColumnType(char* name)
 
 		ukdata = ColumnNameMapping->getElement(&key);
 		if (ukdata == NULL) {
-			_CL_LOG << "lbBoundColumns::getColumnType('" << name << "') returned no data !" LOG_
+			_LOG << "lbBoundColumns::getColumnType('" << name << "') returned no data !" LOG_
 			
 			return lb_I_Query::lbDBColumnUnknown;
 		}
@@ -1506,7 +1496,7 @@ void LB_STDCALL lbQuery::prepareFKList() {
 	   the foreign column.
 	 */
 
-	_CL_LOG << "lbQuery::prepareFKList() tries to read foreign column information from table" LOG_
+	_CL_VERBOSE << "lbQuery::prepareFKList() tries to read foreign column information from table" LOG_
 	
 	char* table = getTableName();
 	
@@ -1559,7 +1549,7 @@ void LB_STDCALL lbQuery::prepareFKList() {
 	        QI(FKName, lb_I_KeyBase, key_FKName, __FILE__, __LINE__)
 	        QI(PKTable, lb_I_Unknown, uk_PKTable, __FILE__, __LINE__)
 
-		printf("%-s ( %-s ) <-- %-s ( %-s )\n", PKTable->charrep(), PKName->charrep(), table, FKName->charrep());
+		//printf("%-s ( %-s ) <-- %-s ( %-s )\n", PKTable->charrep(), PKName->charrep(), table, FKName->charrep());
 
 	        ForeignColumns->insert(&uk_PKTable, &key_FKName);
 	    } else {
