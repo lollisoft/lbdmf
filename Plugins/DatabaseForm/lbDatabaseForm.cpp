@@ -259,8 +259,6 @@ void LB_STDCALL lbAction::delegate(lb_I_Parameter* params) {
 	q[0] = 0;
 	sprintf(q, buf, id->charrep());
 	
-	_CL_LOG << "Query is : " << q LOG_
-	
 	if (query->query(q) == ERR_NONE) {
 		lbErrCodes err = ERR_NONE;
 		UAP_REQUEST(manager.getPtr(), lb_I_String, key)
@@ -332,12 +330,7 @@ void LB_STDCALL lbAction::delegate(lb_I_Parameter* params) {
 			
 				result->setModuleManager(getModuleInstance(), __FILE__, __LINE__);
 			
-				QI(result, lb_I_DelegatedAction, action, __FILE__, __LINE__)
-			
-				UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
-				QI(action, lb_I_Unknown, uk, __FILE__, __LINE__)
-				
-				actions->insert(&uk, &ukey);
+				actions->insert(&result, &ukey);
 			}
 			
 			UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
@@ -417,16 +410,15 @@ void LB_STDCALL lbAction::delegate(lb_I_Parameter* params) {
 			
 				result->setModuleManager(getModuleInstance(), __FILE__, __LINE__);
 			
-				QI(result, lb_I_DelegatedAction, action, __FILE__, __LINE__)
-			
-				action->setActionID(id->charrep());
-			} else {
-				UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
-				
-				uk = actions->getElement(&ukey);
-				
-				QI(uk, lb_I_DelegatedAction, action, __FILE__, __LINE__)
+				actions->insert(&result, &ukey);
 			}
+			
+			UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
+				
+			uk = actions->getElement(&ukey);
+				
+			QI(uk, lb_I_DelegatedAction, action, __FILE__, __LINE__)
+			action->setActionID(id->charrep());
 						
 			action->execute(*&params);
 		}
@@ -513,6 +505,8 @@ lbDetailFormAction::lbDetailFormAction() {
 
 lbDetailFormAction::~lbDetailFormAction() {
 	free(myActionID);
+
+	_CL_LOG << "lbDetailFormAction::~lbDetailFormAction() called" LOG_
 	
 	if (detailForm != NULL) detailForm->destroy();
 }
@@ -539,6 +533,7 @@ void LB_STDCALL lbDetailFormAction::openDetailForm(lb_I_String* formularname) {
 
 	if (detailForm != NULL) {
 		// Show it.
+		detailForm->show();	
 	} else {
 		UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
 		UAP(lb_I_GUI, gui, __FILE__, __LINE__)
@@ -593,16 +588,12 @@ void LB_STDCALL lbDetailFormAction::openDetailForm(lb_I_String* formularname) {
 				
 				id = query->getAsString(1);
 				
-				_CL_LOG << "Have the detail form ID = " << id->charrep() LOG_
-
 				char* b = "select parametervalue from formular_parameters where formularid = %s";
 
 				char* buffer = (char*) malloc(strlen(b)+strlen(id->charrep())+1);
 				buffer[0] = 0;
 				sprintf(buffer, b, id->charrep());
 
-				_CL_LOG << buffer LOG_
-				
 				UAP(lb_I_Query, query, __FILE__, __LINE__)
 
 				query = database->getQuery(0);
@@ -622,9 +613,7 @@ void LB_STDCALL lbDetailFormAction::openDetailForm(lb_I_String* formularname) {
 						sql = query->getAsString(1);
 
 						pl = PM->getFirstMatchingPlugin("lb_I_DatabaseForm");
-						pl++;
 						uk = pl->getImplementation();
-						uk++;
 						
 						UAP(lb_I_DatabaseForm, form, __FILE__, __LINE__)
 						QI(uk, lb_I_DatabaseForm, form, __FILE__, __LINE__)
@@ -1244,8 +1233,6 @@ _CL_LOG << "Got the new instance." LOG_
 			switch (coltype) {
 				case lb_I_Query::lbDBColumnBit:
 					{
-						printf("Creating a checkbox control.\n");
-						
 						wxCheckBox *check = new wxCheckBox(this, -1, 
 							"", wxPoint());
 						check->SetName(name);
@@ -1261,7 +1248,6 @@ _CL_LOG << "Got the new instance." LOG_
 					
 				case lb_I_Query::lbDBColumnChar:
 					{
-						_CL_LOG << "Create text control for '" << name << "'" LOG_
 						wxTextCtrl *text = new wxTextCtrl(this, -1, 
 							sampleQuery->getAsString(i)->charrep(), wxPoint());
 						text->SetName(name);
@@ -2273,7 +2259,6 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::OnActionButton(lb_I_Unknown* uk) {
 		param->setUAPString(*&parameter, *&v);
 
 		action->execute(*&param);
-		action++;
 
 		_CL_LOG << "Action has been executed." LOG_
 
