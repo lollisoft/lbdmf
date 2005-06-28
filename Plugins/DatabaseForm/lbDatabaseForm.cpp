@@ -215,12 +215,10 @@ lbAction::lbAction() {
 
 lbAction::~lbAction() {
 	free(myActionID);
-	_CL_LOG << "lbAction::~lbAction() called." LOG_
 }
 
 /*...svoid LB_STDCALL lbAction\58\\58\setActionID\40\char\42\ id\41\:0:*/
 void LB_STDCALL lbAction::setActionID(char* id) {
-	_CL_LOG << "lbAction::setActionID('" << id << "')" LOG_
 	
 	free(myActionID);
 	
@@ -329,7 +327,6 @@ void LB_STDCALL lbAction::delegate(lb_I_Parameter* params) {
 				}
 			
 				result->setModuleManager(getModuleInstance(), __FILE__, __LINE__);
-			
 				actions->insert(&result, &ukey);
 			}
 			
@@ -338,7 +335,6 @@ void LB_STDCALL lbAction::delegate(lb_I_Parameter* params) {
 			uk = actions->getElement(&ukey);
 				
 			QI(uk, lb_I_DelegatedAction, action, __FILE__, __LINE__)
-			uk++;
 			
 			action->setActionID(id->charrep());
 			action->execute(*&params);
@@ -409,7 +405,6 @@ void LB_STDCALL lbAction::delegate(lb_I_Parameter* params) {
 				}
 			
 				result->setModuleManager(getModuleInstance(), __FILE__, __LINE__);
-			
 				actions->insert(&result, &ukey);
 			}
 			
@@ -428,8 +423,6 @@ void LB_STDCALL lbAction::delegate(lb_I_Parameter* params) {
 
 /*...svoid LB_STDCALL lbAction\58\\58\execute\40\lb_I_Parameter\42\ params\41\:0:*/
 void LB_STDCALL lbAction::execute(lb_I_Parameter* params) {
-	_CL_LOG << "lbAction::execute()" LOG_
-	
 	REQUEST(manager.getPtr(), lb_I_Database, db)
 	UAP(lb_I_Query, query, __FILE__, __LINE__)
 
@@ -506,9 +499,9 @@ lbDetailFormAction::lbDetailFormAction() {
 lbDetailFormAction::~lbDetailFormAction() {
 	free(myActionID);
 
-	_CL_LOG << "lbDetailFormAction::~lbDetailFormAction() called" LOG_
-	
-	if (detailForm != NULL) detailForm->destroy();
+	if (detailForm != NULL) { 
+	    detailForm->destroy();
+	}
 }
 
 void LB_STDCALL lbDetailFormAction::setDatabase(lb_I_Database* _db) {
@@ -517,8 +510,6 @@ void LB_STDCALL lbDetailFormAction::setDatabase(lb_I_Database* _db) {
 }
 
 void LB_STDCALL lbDetailFormAction::setActionID(char* id) {
-	_CL_LOG << "lbDetailFormAction::setActionID('" << id << "')" LOG_
-	
 	free(myActionID);
 	
 	if ((id != NULL) && (strlen(id) > 0)) {
@@ -620,12 +611,15 @@ void LB_STDCALL lbDetailFormAction::openDetailForm(lb_I_String* formularname) {
 
 						detailForm = form.getPtr();
 
-						_CL_LOG << "Open detailform with SQL query:\n" << sql->charrep() << 
+						_CL_VERBOSE << "Open detailform with SQL query:\n" << sql->charrep() << 
 						", database = " << DBName->charrep() <<
 						", user = " << DBUser->charrep() LOG_
 
-						form->init(sql->charrep(), DBName->charrep(), DBUser->charrep(), DBPass->charrep());
 						form->setName(formularname->charrep());
+						
+						// Set the other information of master / detail form here
+						
+						form->init(sql->charrep(), DBName->charrep(), DBUser->charrep(), DBPass->charrep());
 						form->show();
 						form++;
 					}
@@ -638,8 +632,6 @@ void LB_STDCALL lbDetailFormAction::openDetailForm(lb_I_String* formularname) {
 }
 
 void LB_STDCALL lbDetailFormAction::execute(lb_I_Parameter* params) {
-	_CL_LOG << "lbDetailFormAction::execute()" LOG_
-
 	if (masterForm == NULL) {
 		REQUEST(manager.getPtr(), lb_I_String, masterForm)
 	}
@@ -709,7 +701,7 @@ void LB_STDCALL lbDetailFormAction::execute(lb_I_Parameter* params) {
 			parameter->setData("application");
 			params->getUAPString(*&parameter, *&app);
 
-			_CL_LOG << "Have master form '" << masterForm->charrep() << 
+			_CL_VERBOSE << "Have master form '" << masterForm->charrep() << 
 			           "', source field name '" << SourceFieldName->charrep() << 
 			           "' and source field value '" << SourceFieldValue->charrep() <<
 			           "' for detail form '" << what->charrep() << "'" LOG_
@@ -742,7 +734,7 @@ void LB_STDCALL lbDetailFormAction::execute(lb_I_Parameter* params) {
 			parameter->setData("application");
 			params->getUAPString(*&parameter, *&app);
 
-			_CL_LOG << "Have master form '" << masterForm->charrep() << 
+			_CL_VERBOSE << "Have master form '" << masterForm->charrep() << 
 			           "', source field name '" << SourceFieldName->charrep() << 
 			           "' and source field value '" << SourceFieldValue->charrep() <<
 			           "' for detail form '" << what->charrep() << "'" LOG_
@@ -780,8 +772,6 @@ void LB_STDCALL lbSQLQueryAction::setDatabase(lb_I_Database* _db) {
 }
 
 void LB_STDCALL lbSQLQueryAction::setActionID(char* id) {
-	_CL_LOG << "lbSQLQueryAction::setActionID('" << id << "')" LOG_
-	
 	free(myActionID);
 	
 	if ((id != NULL) && (strlen(id) > 0)) {
@@ -840,32 +830,6 @@ lbDatabaseDialog::lbDatabaseDialog()
 lbDatabaseDialog::~lbDatabaseDialog() {
 	_CL_LOG << "lbDatabaseDialog::~lbDatabaseDialog() called." LOG_
 
-#ifdef bla
-	if (detailForms == NULL) return;
-
-	while (detailForms->hasMoreElements()) {
-		lbErrCodes err = ERR_NONE;
-				
-		lb_I_Unknown* form = detailForms->nextElement();
-
-		if (!form) continue;
-
-		UAP(lb_I_DatabaseForm, d, __FILE__, __LINE__)		
-		QI(form, lb_I_DatabaseForm, d, __FILE__, __LINE__)
-		
-		/* Really needed here !
-		 * The wxWidgets system doesn't have a or at least has it's own reference counting system.
-		 *
-		 * So here I must ensure, that the object it self doesn't get deleted in the container.
-		 * wxWidgets should call the destructor of the form.
-		 */
-		 
-		d++;
-		 
-		d->destroy();
-	}
-#endif //bla	
-	
 	if (fa != NULL) delete fa;
 	free (formName);
 }
@@ -901,16 +865,6 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::registerEventHandler(lb_I_Dispatcher* di
 void LB_STDCALL lbDatabaseDialog::init(char* _SQLString, char* DBName, char* DBUser, char* DBPass) {
 	char prefix[100] = "";
 	sprintf(prefix, "%p", this);
-
-#ifdef bla
-	if (detailForms == NULL) {
-		// Create the instance for my detail formulars, if any.
-		REQUEST(manager.getPtr(), lb_I_Container, detailForms)
-
-		// Forbid autodeletion.
-		detailForms->detachAll();
-	}
-#endif
 
 	SetTitle(_trans(formName));
 
@@ -1000,8 +954,6 @@ void LB_STDCALL lbDatabaseDialog::init(char* _SQLString, char* DBName, char* DBU
 
 /*...sDetermine readonly fields:8:*/
 	FFI = new FormularFieldInformation(formName, sampleQuery.getPtr());
-
-_CL_LOG << "Got the new instance." LOG_
 
 	int columns = sampleQuery->getColumns();
 
@@ -1732,14 +1684,12 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBUpdate() {
 									col->setData(name);
 									val->setData(v.c_str());
 							
-									_CL_LOG << "Update column '" << name << "' with true" LOG_	
 									sampleQuery->setString(*&col, *&val);
 								} else {
 									wxString v = "false";
 									col->setData(name);
 									val->setData(v.c_str());
 								
-									_CL_LOG << "Update column '" << name << "' with false" LOG_	
 									sampleQuery->setString(*&col, *&val);
 								}
 							}
@@ -2030,8 +1980,6 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBDelete(lb_I_Unknown* uk) {
 lbErrCodes LB_STDCALL lbDatabaseDialog::OnActionButton(lb_I_Unknown* uk) {
 	lbErrCodes err = ERR_NONE;
 	
-	_CL_LOG << "lbDatabaseDialog::OnActionButton(...) called" LOG_
-
 /*...sDoc:8:*/
 	/*
 		An action button event may need some additional data to proceed.
@@ -2054,8 +2002,6 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::OnActionButton(lb_I_Unknown* uk) {
 /*...e*/
 
 	if (uk != NULL) {
-		_CL_LOG << "OnActionButton parameter given." LOG_
-		
 		char* reversedEvent = NULL;
 		
 /*...sReverse the event ID from given uk data:16:*/
@@ -2216,14 +2162,16 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::OnActionButton(lb_I_Unknown* uk) {
 		
 		action = fa->getAction(fa->getActionID(reversedEvent));
 
+//		while (action->getRefCount() > 3) action--;
+
 		UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
 		UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
 		UAP_REQUEST(manager.getPtr(), lb_I_String, v)
 
 		// I better pass the form (this) as a parameter
 
-		UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
-		QI(this, lb_I_Unknown, uk, __FILE__, __LINE__)
+//		UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
+//		QI(this, lb_I_Unknown, uk, __FILE__, __LINE__)
 		
 		parameter->setData("DBName");
 		v->setData(_DBName->charrep());
@@ -2254,13 +2202,9 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::OnActionButton(lb_I_Unknown* uk) {
 
 		meta->getApplicationName(&v);
 
-		_CL_LOG << "Pass application name: " << v->charrep() LOG_
-
 		param->setUAPString(*&parameter, *&v);
 
 		action->execute(*&param);
-
-		_CL_LOG << "Action has been executed." LOG_
 
 		free(s);
 		
