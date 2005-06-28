@@ -135,7 +135,18 @@ public:
 	{
 	        //m_bitmap = wxBITMAP(wiztest2);
 
+		sizerMain  = new wxBoxSizer(wxVERTICAL);
+
 	        box = new wxChoice(this, -1);
+
+		sizerMain->Add(box, 0, wxEXPAND | wxALL, 5);
+
+		SetSizer(sizerMain);
+
+		sizerMain->SetSizeHints(this);
+		sizerMain->Fit(this);
+
+		Centre();
 	}
 
 /*...e*/
@@ -199,10 +210,15 @@ public:
 					
 					box->Append(wxString(s1->charrep()));
 					
-					if (err == WARN_DB_NODATA) break;
+					if (err == WARN_DB_NODATA) {
+						box->SetSelection(0);
+						break;
+					}
 				}
 			}
 		}
+
+		sizerMain->Fit(this);
 
 		return;
 	}
@@ -238,6 +254,7 @@ private:
 	char* userid;
 	wxChoice* box;
 	wxString app;
+	wxBoxSizer* sizerMain;
 
 	DECLARE_EVENT_TABLE()
 

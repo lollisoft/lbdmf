@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.81 2005/06/25 12:44:16 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.82 2005/06/28 15:50:07 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.81 $
+ * $Revision: 1.82 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.81 2005/06/25 12:44:16 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.82 2005/06/28 15:50:07 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.82  2005/06/28 15:50:07  lollisoft
+ * Better layout of application selector.
+ *
  * Revision 1.81  2005/06/25 12:44:16  lollisoft
  * Changed wxComboBox to wxChoice.
  *
@@ -512,7 +515,18 @@ public:
 	{
 	        //m_bitmap = wxBITMAP(wiztest2);
 
+		sizerMain  = new wxBoxSizer(wxVERTICAL);
+
 	        box = new wxChoice(this, -1);
+	        
+	        sizerMain->Add(box, 0, wxEXPAND | wxALL, 5);
+	        
+	        SetSizer(sizerMain);
+	        
+	        sizerMain->SetSizeHints(this);
+	        sizerMain->Fit(this);
+	        
+	        Centre();
 	}
 
 /*...e*/
@@ -576,10 +590,15 @@ public:
 					
 					box->Append(wxString(s1->charrep()));
 					
-					if (err == WARN_DB_NODATA) break;
+					if (err == WARN_DB_NODATA) {
+						box->SetSelection(0);
+						break;
+					}
 				}
 			}
 		}
+
+		sizerMain->Fit(this);
 
 		return;
 	}
@@ -614,6 +633,7 @@ private:
 	char* userid;
 	wxChoice* box;
 	wxString app;
+	wxBoxSizer* sizerMain;
 
 	UAP(lb_I_Database, database, __FILE__, __LINE__)
 	UAP(lb_I_Query, sampleQuery, __FILE__, __LINE__)
