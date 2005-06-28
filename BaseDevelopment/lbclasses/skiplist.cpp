@@ -38,11 +38,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.33 $
+ * $Revision: 1.34 $
  * $Name:  $
- * $Id: skiplist.cpp,v 1.33 2005/06/27 10:32:10 lollisoft Exp $
+ * $Id: skiplist.cpp,v 1.34 2005/06/28 12:04:02 lollisoft Exp $
  *
  * $Log: skiplist.cpp,v $
+ * Revision 1.34  2005/06/28 12:04:02  lollisoft
+ * Bugfix in skiplist::exists(). Search increases the reference. Must be decreased again.
+ *
  * Revision 1.33  2005/06/27 10:32:10  lollisoft
  * Mostly changes to conio.h conflicts while XCode build
  *
@@ -320,7 +323,9 @@ void LB_STDCALL SkipList::deleteAll() {
 /*...e*/
 /*...sSkipList\58\\58\exists\40\lb_I_KeyBase\42\\42\ const key\41\:0:*/
 int LB_STDCALL SkipList::exists(lb_I_KeyBase** const key) { 
-    lb_I_Unknown* s = search(*key);
+    UAP(lb_I_Unknown, s, __FILE__, __LINE__)
+    
+    s = search(*key);
     
     if (s == NULL) return 0;	
 
