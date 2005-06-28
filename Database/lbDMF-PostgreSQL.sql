@@ -17,6 +17,7 @@ CREATE TABLE column_types
 );
 
 insert into column_types (name, tablename, ro) values('kundennr', 'kunden', TRUE);
+insert into column_types (name, tablename, ro) values('id', 'chart', TRUE);
 
 -- +---------------------------------------------------------
 -- | TABLE: Actions
@@ -312,6 +313,7 @@ CREATE TABLE Users
   Vorname VARCHAR(30),
   userid VARCHAR(30),
   passwort VARCHAR(30),
+  lastapp INTEGER,
   PRIMARY KEY (id)
 );
 
@@ -361,6 +363,11 @@ ADD CONSTRAINT cst_Formulare_AnwendungID FOREIGN KEY ( AnwendungID )
 ALTER TABLE User_Anwendungen 
 ADD CONSTRAINT cst_User_Anwendungen_userid FOREIGN KEY ( userid )
    REFERENCES Users ( id );
+
+ALTER TABLE Users
+ADD CONSTRAINT cst_Users_lastapp FOREIGN KEY ( lastapp )
+   REFERENCES Anwendungen ( id );
+
 ALTER TABLE User_Anwendungen 
 ADD CONSTRAINT cst_User_Anwendungen_AnwendungenId FOREIGN KEY ( AnwendungenId )
    REFERENCES Anwendungen ( id );
@@ -378,6 +385,7 @@ insert into Anwendungen Values (1, 'lbDMF Manager', 'Dynamic App Manager', 'lbDy
 insert into Anwendungen Values (2, 'Demo application', 'Demonstration', 'Application', 'instanceOfApplication', 'lb_I_Application');
 insert into Anwendungen Values (3, 'FRS', 'Fahrkarten Reservierungssystem', 'lbDynApp', 'instanceOfApplication', 'lb_I_Application');
 insert into Anwendungen Values (4, 'lbDMF Codegenerator', 'Generiert Code von lbDMF Daten', 'lbDMFAppWriter', 'instanceOfApplication', 'lb_I_Application');
+insert into Anwendungen Values (5, 'SQL Ledger', 'Warenwirtschafts System', 'lbDynApp', 'instanceOfApplication', 'lb_I_Application');
 
 insert into Formulartypen Values (1, '-',                   '-',        'lb_I_DatabaseForm', 
 'Dynamisch aufgebautes Datenbankformular');
@@ -429,6 +437,8 @@ insert into Formulare Values (16, 'DynReservierungen',       'Reservierungen ver
 
 insert into Formulare Values (17, 'Formulare -> Anwendung', 'Formulare Anwendungen zuordnen', 'manageFormularsToApps', 'Einrichtung der Formulare zu Anwendungen',1 , 1);
 
+insert into Formulare Values (18, 'Sachkonten', 'Sachkontenverwaltung', 'manageGeneralLedger', '-',5 , 1);
+
 
 insert into ForeignKey_VisibleData_Mapping (FKName, FKTable, PKName, PKTable) Values ('anwendungid', 'formulare', 'name', 'anwendungen');
 insert into ForeignKey_VisibleData_Mapping (FKName, FKTable, PKName, PKTable) Values ('typ', 'formulare', 'beschreibung', 'formulartypen');
@@ -445,6 +455,7 @@ insert into Formular_Parameters Values (4, 'query', 'select "name", "menuname", 
 insert into Formular_Parameters Values (5, 'query', 'select "parametername", "parametervalue", "formularid" from "formular_parameters"', 7);
 insert into Formular_Parameters Values (6, 'query', 'select "anwendungenid", "userid" from "user_anwendungen"', 8);
 insert into Formular_Parameters Values (7, 'query', 'select anwendungid, formularid from "anwendungen_formulare"', 17);
+insert into Formular_Parameters Values (8, 'query', 'select * from chart order by id', 18);
 
 
 
@@ -457,6 +468,9 @@ insert into Anwendungs_Parameter Values (6, 'DBPass', 'trainres', 1);
 insert into Anwendungs_Parameter Values (7, 'DBName', 'lbDMF', 4);
 insert into Anwendungs_Parameter Values (8, 'DBUser', 'dba', 4);
 insert into Anwendungs_Parameter Values (9, 'DBPass', 'trainres', 4);
+insert into Anwendungs_Parameter Values (10, 'DBName', 'sql-ledger', 5);
+insert into Anwendungs_Parameter Values (11, 'DBUser', 'dba', 5);
+insert into Anwendungs_Parameter Values (12, 'DBPass', 'trainres', 5);
 
 insert into Anwendungen_Formulare Values (1, 1, 1);
 insert into Anwendungen_Formulare Values (2, 1, 2);
@@ -477,12 +491,13 @@ insert into Anwendungen_Formulare Values (15, 4, 13);
 insert into Anwendungen_Formulare Values (16, 4, 14);
 insert into Anwendungen_Formulare Values (17, 4, 15);
 insert into Anwendungen_Formulare Values (18, 4, 16);
-insert into Anwendungen_Formulare Values (19, 1, 17);
+insert into Anwendungen_Formulare Values (19, 5, 18);
 
 insert into User_Anwendungen Values (1, 1, 1);
 insert into User_Anwendungen Values (2, 1, 2);
 insert into User_Anwendungen Values (3, 1, 3);
 insert into User_Anwendungen Values (4, 1, 4);
+insert into User_Anwendungen Values (5, 1, 5);
 
 
 -- +----------------------------------------
