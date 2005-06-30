@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.56 $
+# * $Revision: 1.57 $
 # * $Name:  $
-# * $Id: Makefile,v 1.56 2005/06/24 23:09:47 lollisoft Exp $
+# * $Id: Makefile,v 1.57 2005/06/30 07:30:33 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.57  2005/06/30 07:30:33  lollisoft
+# * Added building of login wizard plugin under Mac OS X.
+# *
 # * Revision 1.56  2005/06/24 23:09:47  lollisoft
 # * Changes to build with new wxWidgets version 2.6.1.
 # * Added fallback to hardcoded settings, if no environment
@@ -279,6 +282,7 @@ ALLTARGETS = \
 	../AppDevelopmentDemo/App \
 	../AppDevelopmentDemo/DynamicApp/App \
 	../Test/GUI/wxWrapper \
+	../Test/GUI/wxPlugins/lbLoginWizard \
 	../Test/Console/XML \
 	$(BASEDIRECTORIES)
 
@@ -425,9 +429,13 @@ ifeq ($(OSTYPE), osx)
 	cp $@/mkmk $(HOME)/bin
 	cd ../BaseDevelopment
 
+../Test/GUI/wxPlugins/lbLoginWizard: dummy
+	$(MAKE) -s -C $@ -e MODULE=lbLoginWizard -e TARGET=$(TARGETWXPLUGIN) -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@
+
 ../Test/GUI/wxWrapper: dummy
 	$(MAKE) -s -C $@ -e MODULE=wxWrapper -e TARGET=$(TARGETWXEXE) -f $(MAKE_CONFIG_FILE)
-	$(MAKE) -C $@
+	$(MAKE) -s -C $@
 	cp ../Test/GUI/wxWrapper/wxWrapper $(HOME)/bin
 endif
 
