@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.82 2005/06/28 15:50:07 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.83 2005/06/30 07:28:55 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.82 $
+ * $Revision: 1.83 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.82 2005/06/28 15:50:07 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.83 2005/06/30 07:28:55 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.83  2005/06/30 07:28:55  lollisoft
+ * Added a static text to the application selector.
+ *
  * Revision 1.82  2005/06/28 15:50:07  lollisoft
  * Better layout of application selector.
  *
@@ -513,20 +516,24 @@ public:
 /*...swxAppSelectPage\40\wxWizard \42\parent\41\:8:*/
 	wxAppSelectPage(wxWizard *parent) : wxWizardPageSimple(parent)
 	{
-	        //m_bitmap = wxBITMAP(wiztest2);
+			//m_bitmap = wxBITMAP(wiztest2);
 
-		sizerMain  = new wxBoxSizer(wxVERTICAL);
+			sizerMain  = new wxBoxSizer(wxVERTICAL);
 
-	        box = new wxChoice(this, -1);
+			wxStaticText* text = new wxStaticText(this, -1, _trans("Application:"));
+			box = new wxChoice(this, -1);
 	        
-	        sizerMain->Add(box, 0, wxEXPAND | wxALL, 5);
+			sizerMain->Add(text, 0, wxEXPAND | wxALL, 5);
+			sizerMain->Add(box, 0, wxEXPAND | wxALL, 5);
 	        
-	        SetSizer(sizerMain);
+			SetSizer(sizerMain);
 	        
-	        sizerMain->SetSizeHints(this);
-	        sizerMain->Fit(this);
+			sizerMain->SetSizeHints(this);
+			sizerMain->Fit(this);
 	        
-	        Centre();
+			box->SetFocusFromKbd();
+			
+			Centre();
 	}
 
 /*...e*/

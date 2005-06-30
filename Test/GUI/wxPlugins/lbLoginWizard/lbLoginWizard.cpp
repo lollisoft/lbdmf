@@ -133,20 +133,24 @@ public:
 /*...swxAppSelectPage\40\wxWizard \42\parent\41\:8:*/
 	wxAppSelectPage(wxWizard *parent) : wxWizardPageSimple(parent)
 	{
-	        //m_bitmap = wxBITMAP(wiztest2);
+			//m_bitmap = wxBITMAP(wiztest2);
 
-		sizerMain  = new wxBoxSizer(wxVERTICAL);
+			sizerMain  = new wxBoxSizer(wxVERTICAL);
 
-	        box = new wxChoice(this, -1);
-
-		sizerMain->Add(box, 0, wxEXPAND | wxALL, 5);
-
-		SetSizer(sizerMain);
-
-		sizerMain->SetSizeHints(this);
-		sizerMain->Fit(this);
-
-		Centre();
+			wxStaticText* text = new wxStaticText(this, -1, _trans("Application:"));
+			box = new wxChoice(this, -1);
+	        
+			sizerMain->Add(text, 0, wxEXPAND | wxALL, 5);
+			sizerMain->Add(box, 0, wxEXPAND | wxALL, 5);
+	        
+			SetSizer(sizerMain);
+	        
+			sizerMain->SetSizeHints(this);
+			sizerMain->Fit(this);
+	        
+			box->SetFocusFromKbd();
+			
+			Centre();
 	}
 
 /*...e*/
