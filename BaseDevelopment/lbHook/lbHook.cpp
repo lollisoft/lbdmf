@@ -393,14 +393,14 @@ T_p_getlbModuleInstance DLL_GETMODULEINSTANCE;
 	char* functor = getenv("LBMODULEFUNCTOR");
 
 	if (libname == NULL) {
-		logMessage("Error: Have no module manager library name!\n");
+//		logMessage("Error: Have no module manager library name!\n");
 		#ifdef OSX
 			libname = "lbModule.so";
 		#endif
 	}
 
 	if (functor == NULL) {
-		logMessage("Error: Have no functor!\n");
+//		logMessage("Error: Have no functor!\n");
 		#ifdef OSX
 			functor = "getlb_ModuleInstance";
 		#endif
@@ -432,8 +432,6 @@ T_p_getlbModuleInstance DLL_GETMODULEINSTANCE;
 		return NULL;
 	}
 	
-	logMessage("Call lbGetFunctionPtr(...)\n");	
-	
 	if (lbGetFunctionPtr(functor, 
 			     LB_Module_Handle, 
 			     (void **) &DLL_GETMODULEINSTANCE) != ERR_NONE) {
@@ -447,8 +445,6 @@ T_p_getlbModuleInstance DLL_GETMODULEINSTANCE;
 	functor = NULL;
 #endif
 #endif
-	
-	logMessage("getModuleInstance() takes a lbModule instance...\n");
 	
 	if ((err = DLL_GETMODULEINSTANCE(&module, NULL, __FILE__, __LINE__)) == ERR_STATE_FURTHER_LOCK) {
 		logMessage("Instance is locked. Must set module manager first\n");
