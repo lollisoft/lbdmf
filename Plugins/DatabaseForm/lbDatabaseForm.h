@@ -30,11 +30,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.12 $
+ * $Revision: 1.13 $
  * $Name:  $
- * $Id: lbDatabaseForm.h,v 1.12 2005/06/27 10:32:10 lollisoft Exp $
+ * $Id: lbDatabaseForm.h,v 1.13 2005/07/07 05:35:46 lollisoft Exp $
  *
  * $Log: lbDatabaseForm.h,v $
+ * Revision 1.13  2005/07/07 05:35:46  lollisoft
+ * No MI usage (with one baseclass).
+ *
  * Revision 1.12  2005/06/27 10:32:10  lollisoft
  * Mostly changes to conio.h conflicts while XCode build
  *
@@ -358,8 +361,6 @@ private:
 
 class lbDatabaseDialog :
 	public lb_I_DatabaseForm,
-	public lb_I_DatabaseMasterForm,
-	public lb_I_DatabaseDetailForm,
 	public wxDialog {
 public:
 	/**
@@ -399,7 +400,7 @@ public:
 	
 /*...e*/
 
-	void LB_STDCALL setMasterForm(lb_I_DatabaseMasterForm* master);
+	void LB_STDCALL setMasterForm(lb_I_DatabaseForm* master);
 	
 	void LB_STDCALL updateFromMaster();
 
@@ -529,7 +530,7 @@ public:
 	/** \brief Storage for all yet loaded actions. */
 	UAP(lb_I_Container, actions, __FILE__, __LINE__)
 	
-	lb_I_DatabaseMasterForm* _master;
+	lb_I_DatabaseForm* _master;
 
 	// l gets overwritten, while assigning a lb_I_Query* pointer to sampleQuery !!
 	// l and buf are therefore as a bugfix.

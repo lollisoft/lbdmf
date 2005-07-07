@@ -620,6 +620,21 @@ void LB_STDCALL lbDetailFormAction::openDetailForm(lb_I_String* formularname) {
 						// Set the other information of master / detail form here
 						
 						form->init(sql->charrep(), DBName->charrep(), DBUser->charrep(), DBPass->charrep());
+						
+						UAP(lb_I_DatabaseForm, f, __FILE__, __LINE__)
+						UAP(lb_I_DatabaseForm, master, __FILE__, __LINE__)
+						
+						UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
+						UAP(lb_I_GUI, gui, __FILE__, __LINE__)
+						
+						meta->getGUI(&gui);
+						
+						f = gui->findDBForm(masterForm->charrep());
+						
+						QI(f, lb_I_DatabaseForm, master, __FILE__, __LINE__)
+						
+						form->setMasterForm(*&master);
+						
 						form->show();
 						form++;
 					}
@@ -791,8 +806,6 @@ void LB_STDCALL lbSQLQueryAction::execute(lb_I_Parameter* params) {
 
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbDatabaseDialog)
         ADD_INTERFACE(lb_I_DatabaseForm)
-        ADD_INTERFACE(lb_I_DatabaseMasterForm)
-        ADD_INTERFACE(lb_I_DatabaseDetailForm)
 END_IMPLEMENT_LB_UNKNOWN()
 
 IMPLEMENT_FUNCTOR(instanceOflbDatabaseDialog, lbDatabaseDialog)
@@ -1434,7 +1447,7 @@ char* LB_STDCALL lbDatabaseDialog::getQuery() {
 }
 
 /*...svoid LB_STDCALL lbDatabaseDialog\58\\58\setMasterForm\40\lb_I_DatabaseMasterForm\42\ master\41\:0:*/
-void LB_STDCALL lbDatabaseDialog::setMasterForm(lb_I_DatabaseMasterForm* master) {
+void LB_STDCALL lbDatabaseDialog::setMasterForm(lb_I_DatabaseForm* master) {
 	
 	// Now build the where clause that sets the foreign key columns of this form as equal condition to the values of the masters pk columns.
 	
@@ -1519,6 +1532,8 @@ void LB_STDCALL lbDatabaseDialog::updateFromMaster() {
 	}
 	
 	_CL_LOG << "lbDatabaseDialog::updateFromMaster() generated new where clause: '" << newWhereClause->charrep() << "'" LOG_
+
+
 }
 /*...e*/
 

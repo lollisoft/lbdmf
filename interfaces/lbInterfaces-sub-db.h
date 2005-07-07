@@ -726,18 +726,8 @@ public:
 	 * Sample to show only data for one customer: kdnummer = 100001
 	 */
 	virtual void LB_STDCALL setFilter(char* filter = NULL) = 0;
-};
-/*...e*/
 
-/*...sclass lb_I_DatabaseMasterForm:0:*/
-/**
- * \brief Functionality for the master form part.
- */
-class lb_I_DatabaseMasterForm
-	{
-public:
-
-
+/*...sMaster Detail form interface part:8:*/
 	/** \brief Get the number of master columns.
 	 *
 	 * Needed to access the column name.
@@ -753,15 +743,6 @@ public:
 	virtual bool LB_STDCALL isCharacterColumn(int pos) = 0;
 
 	virtual const char* LB_STDCALL getControlValue(char* name) = 0;
-};
-/*...e*/
-/*...sclass lb_I_DatabaseDetailForm:0:*/
-/**
- * \brief Functionality for the detail form part.
- */
-class lb_I_DatabaseDetailForm
-	{
-public:
 
 	/** \brief Set a master formular for this one.
 	 *
@@ -769,13 +750,14 @@ public:
 	 * detail form -  eg. this one - would reopen the query based on the new master - detail relation ship.
 	 * 
 	 */
-	virtual void LB_STDCALL setMasterForm(lb_I_DatabaseMasterForm* master) = 0;
+	virtual void LB_STDCALL setMasterForm(lb_I_DatabaseForm* master) = 0;
 
 	/** \brief Update the clientforms.
 	 *
 	 * This function would be called for all client forms, contained by a master form.
 	 */
 	virtual void LB_STDCALL updateFromMaster() = 0;
+/*...e*/
 };
 /*...e*/
 
