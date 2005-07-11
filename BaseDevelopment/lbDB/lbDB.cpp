@@ -317,6 +317,7 @@ private:
 	// Number of columns for the query
 	SQLSMALLINT cols;
 
+	UAP(lb_I_Container, primaryColumns, __FILE__, __LINE__)
 	UAP(lb_I_Container, ForeignColumns, __FILE__, __LINE__)
 
 	UAP(lb_I_Container, ReadOnlyColumns, __FILE__, __LINE__)
@@ -1561,15 +1562,119 @@ void LB_STDCALL lbQuery::prepareFKList() {
 }
 /*...e*/
 
+/*...sint LB_STDCALL lbQuery\58\\58\getPKColumns\40\\41\:0:*/
 int LB_STDCALL lbQuery::getPKColumns() {
-	_CL_LOG << "ERROR: int LB_STDCALL lbQuery::getPKColumns() not yet implemented." LOG_
-	return 0;
-}
+	
+	if (primaryColumns == NULL) {
+		REQUEST(manager.getPtr(), lb_I_Container, primaryColumns)
+        } else {
+                primaryColumns->deleteAll();
+        }
 
+	unsigned char*   szTable = NULL;     /* Table to display   */
+
+	UCHAR   szPkTable[TAB_LEN];  /* Primary key table name */
+	UCHAR   szFkTable[TAB_LEN];  /* Foreign key table name */
+	UCHAR   szPkCol[COL_LEN];  /* Primary key column   */
+	UCHAR   szFkCol[COL_LEN];  /* Foreign key column   */
+
+	SQLHSTMT         hstmt;
+	SQLINTEGER      cbPkTable, cbPkCol, cbFkTable, cbFkCol, cbKeySeq;
+	SQLSMALLINT      iKeySeq;
+	SQLRETURN         retcode;
+
+	retcode = SQLAllocStmt(hdbc, &hstmt); /* Statement handle */
+
+	SQLBindCol(hstmt, 3, SQL_C_CHAR, szPkTable, TAB_LEN, &cbPkTable);
+	SQLBindCol(hstmt, 4, SQL_C_CHAR, szPkCol, COL_LEN, &cbPkCol);
+	SQLBindCol(hstmt, 5, SQL_C_SSHORT, &iKeySeq, TAB_LEN, &cbKeySeq);
+
+	if (retcode != SQL_SUCCESS)
+	{
+	        _dbError( "SQLAllocStmt()",henv,hdbc,hstmt);
+	}
+
+	char* temp = (char*) getTableName();
+	szTable = (unsigned char*) malloc(strlen(temp)+1);
+	szTable[0] = 0;
+	strcpy((char*) szTable, temp);
+	
+	retcode = SQLPrimaryKeys(hstmt,
+	         NULL, 0,      		/* Primary catalog   */
+	         NULL, 0,      		/* Primary schema   */
+	         szTable, SQL_NTS);	/* Primary table   */
+
+	int columns = 0;
+
+	while ((retcode == SQL_SUCCESS) || (retcode == SQL_SUCCESS_WITH_INFO)) {
+
+	/* Fetch and display the result set. This will be all of the */
+	/* foreign keys in other tables that refer to the ORDERS */
+	/* primary key.                 */
+
+	   retcode = SQLFetch(hstmt);
+	   
+	   if (retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO) {
+		lbErrCodes err = ERR_NONE;
+
+		printf("%s ( %s ) seq: %hd\n", szPkTable, szPkCol, iKeySeq);
+	      
+		columns++;
+	      
+		UAP_REQUEST(manager.getPtr(), lb_I_Integer, KeyPosition)
+		UAP_REQUEST(manager.getPtr(), lb_I_String, PKName)
+	      
+		KeyPosition->setData(columns);
+		PKName->setData((char*) szPkCol);
+	      
+		UAP(lb_I_Unknown, uk_PKName, __FILE__, __LINE__)
+		UAP(lb_I_KeyBase, key_Pos, __FILE__, __LINE__)
+		
+		QI(PKName, lb_I_Unknown, uk_PKName, __FILE__, __LINE__)
+		QI(KeyPosition, lb_I_KeyBase, key_Pos, __FILE__, __LINE__)
+
+
+		// Store the position as they appear
+		primaryColumns->insert(&uk_PKName, &key_Pos);
+	   }
+	}
+
+	free(szTable);
+
+	/* Close the cursor (the hstmt is still allocated). */
+
+	SQLFreeStmt(hstmt, SQL_DROP);
+	
+	return columns;
+}
+/*...e*/
+
+/*...slb_I_String\42\ LB_STDCALL lbQuery\58\\58\getPKColumn\40\int pos\41\:0:*/
 lb_I_String* LB_STDCALL lbQuery::getPKColumn(int pos) {
-	_CL_LOG << "ERROR: lb_I_String* LB_STDCALL lbQuery::getPKColumn(int pos) not yet implemented." LOG_
+	lbErrCodes err = ERR_NONE;
+	
+	UAP_REQUEST(manager.getPtr(), lb_I_Integer, Position)
+
+	UAP(lb_I_KeyBase, key_Position, __FILE__, __LINE__)
+	QI(Position, lb_I_KeyBase, key_Position, __FILE__, __LINE__)
+
+	Position->setData(pos);
+
+	if (primaryColumns->exists(&key_Position) != 0) {
+		UAP(lb_I_String, column, __FILE__, __LINE__)
+		UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
+		
+		uk = primaryColumns->getElement(&key_Position);
+		QI(uk, lb_I_String, column, __FILE__, __LINE__)
+		column++;
+		
+		return column.getPtr();
+	
+	}
+
 	return NULL;
 }
+/*...e*/
 
 bool LB_STDCALL lbQuery::isNull(int pos) {
 	return boundColumns->isNull(pos);
