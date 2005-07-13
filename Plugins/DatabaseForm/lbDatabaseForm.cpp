@@ -281,6 +281,16 @@ void LB_STDCALL lbAction::delegate(lb_I_Parameter* params) {
 			
 			if (actions->exists(&ukey) == 0) {
 				char* pluginDir = getenv("PLUGIN_DIR");
+				if (pluginDir == NULL) {
+					_LOG << "ERROR: No plugin directory configured. Try fallback. Please create one and set environment PLUGIN_DIR properly." LOG_
+					pluginDir = (char*) malloc(strlen(getenv("HOME"))+strlen("/plugins")+1);
+					pluginDir[0] = 0;
+					strcat(pluginDir, getenv("HOME"));
+					strcat(pluginDir, "/plugins");
+				} else {
+					pluginDir = strdup(pluginDir);
+				}
+				
 
 /*...sbuild PREFIX:32:*/
 #ifndef LINUX
@@ -359,7 +369,16 @@ void LB_STDCALL lbAction::delegate(lb_I_Parameter* params) {
 			
 			if (actions->exists(&ukey) == 0) {
 				char* pluginDir = getenv("PLUGIN_DIR");
-
+				if (pluginDir == NULL) {
+					_LOG << "ERROR: No plugin directory configured. Try fallback. Please create one and set environment PLUGIN_DIR properly." LOG_
+					pluginDir = (char*) malloc(strlen(getenv("HOME"))+strlen("/plugins")+1);
+					pluginDir[0] = 0;
+					strcat(pluginDir, getenv("HOME"));
+					strcat(pluginDir, "/plugins");
+				} else {
+					pluginDir = strdup(pluginDir);
+				}
+				
 /*...sbuild PREFIX:32:*/
 #ifndef LINUX
         #ifdef __WATCOMC__
@@ -1610,6 +1629,9 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBClear() {
 /*...e*/
 /*...slbErrCodes LB_STDCALL lbDatabaseDialog\58\\58\lbDBUpdate\40\\41\:0:*/
 lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBUpdate() {
+
+	SetTitle(formName);
+
 	int columns = sampleQuery->getColumns();
 
 	UAP_REQUEST(manager.getPtr(), lb_I_String, col)
@@ -1752,27 +1774,34 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBUpdate() {
 				}
 			}
 		} else {
-			_CL_VERBOSE << "Control '" << name << "' nicht gefunden." LOG_
+			_LOG << "Control '" << name << "' nicht gefunden." LOG_
 		}
 		
-		_CL_VERBOSE << "Updated column " << name LOG_
 		free(name);
 	}
 
-	_CL_VERBOSE << "Call sampleQuery->update()" LOG_
-
 	if (sampleQuery->update() != ERR_NONE) {
-		printf("sampleQuery->update() failed.\n");
+		UAP_REQUEST(manager.getPtr(), lb_I_String, newTitle)
+
+		newTitle->setData(formName);
+		
+		*newTitle += ": Update failed !";
+
+		SetTitle(_trans(newTitle->charrep()));
+		
+		_LOG << "Update a database record failed." LOG_
+
 		return ERR_UPDATE_FAILED;
 	}
-	
-	_CL_VERBOSE << "Called sampleQuery->update()" LOG_
 	
 	return ERR_NONE;
 }
 /*...e*/
 /*...slbErrCodes LB_STDCALL lbDatabaseDialog\58\\58\lbDBRead\40\\41\:0:*/
 lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBRead() {
+
+	SetTitle(formName);
+
 	int columns = sampleQuery->getColumns();
 	
 	for (int i = 1; i <= columns; i++) {
@@ -1972,7 +2001,15 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBAdd(lb_I_Unknown* uk) {
 
 	lbDBClear();
 
-	sampleQuery->add();
+	if (sampleQuery->add() != ERR_NONE) {
+		UAP_REQUEST(manager.getPtr(), lb_I_String, newTitle)
+
+		newTitle->setData(formName);
+		
+		*newTitle += ": Add failed !";
+
+		SetTitle(_trans(newTitle->charrep()));
+	}
 
 //	lbDBRead();
 
