@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.57 $
+# * $Revision: 1.58 $
 # * $Name:  $
-# * $Id: Makefile,v 1.57 2005/06/30 07:30:33 lollisoft Exp $
+# * $Id: Makefile,v 1.58 2005/07/13 20:12:54 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.58  2005/07/13 20:12:54  lollisoft
+# * Changed wxWidgets built to bundle type.
+# *
 # * Revision 1.57  2005/06/30 07:30:33  lollisoft
 # * Added building of login wizard plugin under Mac OS X.
 # *
@@ -262,7 +265,7 @@ BASEDIRECTORIES= \
 
 TARGETDLL=so
 TARGETEXE=elf
-TARGETWXEXE=elf
+TARGETWXEXE=bundle
 TARGET_TV_DLL=tvision_dll
 TARGET_TV_EXE=tvision_elf
 TARGETPLUGIN=soplugin
