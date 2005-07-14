@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.58 $
+# * $Revision: 1.59 $
 # * $Name:  $
-# * $Id: Makefile,v 1.58 2005/07/13 20:12:54 lollisoft Exp $
+# * $Id: Makefile,v 1.59 2005/07/14 19:36:50 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.59  2005/07/14 19:36:50  lollisoft
+# * Compiling SET's version of my tvision test application.
+# *
 # * Revision 1.58  2005/07/13 20:12:54  lollisoft
 # * Changed wxWidgets built to bundle type.
 # *
@@ -235,7 +238,7 @@ BASEDIRECTORIES= \
 	../Modules \
 	../RegressionTests \
 	../vendor/tvision-set \
-	../vendor/tvision/examples/lbDMF \
+	../vendor/tvision-set/examples/lbDMF \
 	../AppDevelopment 
 endif
 
@@ -400,7 +403,7 @@ dummy:
 	$(MAKE) -s -C $@ -e MODULE=tvision -e TARGET=$(TARGET_TV_DLL) -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@
 
-../vendor/tvision/examples/lbDMF: dummy
+../vendor/tvision-set/examples/lbDMF: dummy
 	$(MAKE) -s -C $@ -e MODULE=demo -e TARGET=$(TARGET_TV_EXE) -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@
 
