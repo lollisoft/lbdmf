@@ -552,8 +552,7 @@ void LB_STDCALL lbDetailFormAction::openDetailForm(lb_I_String* formularname) {
 	
 		lb_I_DatabaseForm* f = gui->findDBForm(masterForm->charrep());
 
-		// Get the SQL query based on formular name, application name.
-
+/*...sGet the SQL query based on formular name\44\ application name\46\:16:*/
 		UAP_REQUEST(manager.getPtr(), lb_I_String, user)
 		meta->getUserName(&user);		
 
@@ -589,6 +588,7 @@ void LB_STDCALL lbDetailFormAction::openDetailForm(lb_I_String* formularname) {
 		database->connect("lbDMF", lbDMFUser, lbDMFPasswd);
 		
 		query = database->getQuery(0);
+/*...e*/
 
 		if (query->query(buffer) == ERR_NONE) {
 			lbErrCodes err = query->first();
@@ -596,6 +596,7 @@ void LB_STDCALL lbDetailFormAction::openDetailForm(lb_I_String* formularname) {
 			if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
 				UAP_REQUEST(manager.getPtr(), lb_I_String, id)
 				
+/*...sPrepare query to get parameter value based on given ID:32:*/
 				id = query->getAsString(1);
 				
 				char* b = "select parametervalue from formular_parameters where formularid = %s";
@@ -609,8 +610,10 @@ void LB_STDCALL lbDetailFormAction::openDetailForm(lb_I_String* formularname) {
 				query = database->getQuery(0);
 
 				err = query->query(buffer);
+/*...e*/
 				
 				if (err == ERR_NONE) {
+/*...sTake result as the SQL query parameter for the detail form:40:*/
 					UAP_REQUEST(manager.getPtr(), lb_I_PluginManager, PM)
 					UAP(lb_I_Plugin, pl, __FILE__, __LINE__)
 					UAP_REQUEST(manager.getPtr(), lb_I_String, sql)
@@ -618,6 +621,7 @@ void LB_STDCALL lbDetailFormAction::openDetailForm(lb_I_String* formularname) {
 					err = query->first();
 					
 					if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
+/*...sTry load the detail form and make basic setup:88:*/
 						UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
 						
 						sql = query->getAsString(1);
@@ -629,10 +633,6 @@ void LB_STDCALL lbDetailFormAction::openDetailForm(lb_I_String* formularname) {
 						QI(uk, lb_I_DatabaseForm, form, __FILE__, __LINE__)
 
 						detailForm = form.getPtr();
-
-						_CL_VERBOSE << "Open detailform with SQL query:\n" << sql->charrep() << 
-						", database = " << DBName->charrep() <<
-						", user = " << DBUser->charrep() LOG_
 
 						form->setName(formularname->charrep());
 						
@@ -653,13 +653,36 @@ void LB_STDCALL lbDetailFormAction::openDetailForm(lb_I_String* formularname) {
 						QI(f, lb_I_DatabaseForm, master, __FILE__, __LINE__)
 						
 						form->setMasterForm(*&master);
+/*...e*/
+						
+/*...sSome thesis on how to go ahead:88:*/
+/*
+ * What should I do to 'interconnect' the forms over the
+ * relation 'customer number' ?
+ *
+ * lbDetailFormAction could manage these information and
+ * control the form class over the existing interface.
+ *
+ * These are the setFilter and setMasterForm functions.
+ *
+ * With these functions, it is possible to only show data,
+ * that is related to both, the master form and detail form
+ * data.
+ *
+ * setFilter could set the following value:
+ *
+ * " where customerid = 
+ *     (select id from <table of masterForm> where <SourceFieldName> = '<SourceFieldValue>')"
+ */
+/*...e*/
 						
 						form->show();
 						form++;
 					}
+/*...e*/
+				} else {
+					_CL_LOG << "ERROR: Expected query for the formular ID failed:\n" << buffer LOG_
 				}
-			} else {
-				_CL_LOG << "ERROR: Expected query for the formular ID failed:\n" << buffer LOG_
 			}
 		}
 	}
@@ -2313,12 +2336,25 @@ void lbDatabaseDialog::OnPaint(wxCommandEvent& event ) {
 
 int LB_STDCALL lbDatabaseDialog::getMasterColumns()
 {
-	return 0;
+	/*
+	   Directly forward the request to the formular field information class.
+	   
+	   But it would not simply be the primary columns, that are logically
+	   the master columns.
+	   For sample, a customer relationship management (CRM) system may have
+	   a customer number, wich is not the internal ID of the customer entry.
+	   
+	   So for the database form, it may be the readonly field - the customer
+	   number, that has not to be changed.
+	   
+	 */
+	
+	return sampleQuery->getPKColumns();
 }
 	
 lb_I_String* LB_STDCALL lbDatabaseDialog::getMasterColumn(int pos)
 {
-	return NULL;
+	return sampleQuery->getPKColumn(pos);
 }
 	   
 bool LB_STDCALL lbDatabaseDialog::isCharacterColumn(int pos)
