@@ -150,7 +150,7 @@ public:
 	 *
 	 * This is still buggy, if the query has joins.
 	 */
-	virtual char* LB_STDCALL getTableName() = 0;
+	virtual char* LB_STDCALL getTableName(char* columnName = NULL) = 0;
 
 
 	/**
@@ -535,6 +535,11 @@ public:
 	virtual lb_I_Query::lbDBColumnTypes  LB_STDCALL getColumnType(char* name) = 0;
 
 	/**
+	 * \brief Get the index of the bound column.
+	 */
+	virtual int             LB_STDCALL getColumnIndex(char* name) = 0;
+
+	/**
 	 * \brief Set the column updateability.
 	 */
 	virtual void 			     LB_STDCALL setUpdateable(char* column, bool updateable) = 0;
@@ -727,18 +732,24 @@ public:
 	 */
 	virtual void LB_STDCALL setFilter(char* filter = NULL) = 0;
 
+	/** \brief Get the table name based on column name.
+	 *
+	 * Return the related table name, that contains the given column name.
+	 */
+	virtual lb_I_String* getTableName(char* columnName) = 0;
+
 /*...sMaster Detail form interface part:8:*/
 	/** \brief Get the number of master columns.
 	 *
 	 * Needed to access the column name.
 	 */
-	virtual int LB_STDCALL getMasterColumns() = 0;
+	virtual int LB_STDCALL getPrimaryColumns() = 0;
 
 	/** \brief Get the column at position pos.
 	 *
 	 * Warning: You must cleanup.
 	 */
-	virtual lb_I_String* LB_STDCALL getMasterColumn(int pos) = 0;
+	virtual lb_I_String* LB_STDCALL getPrimaryColumn(int pos) = 0;
 
 	virtual bool LB_STDCALL isCharacterColumn(int pos) = 0;
 
@@ -750,7 +761,7 @@ public:
 	 * detail form -  eg. this one - would reopen the query based on the new master - detail relation ship.
 	 * 
 	 */
-	virtual void LB_STDCALL setMasterForm(lb_I_DatabaseForm* master) = 0;
+	virtual void LB_STDCALL setMasterForm(lb_I_DatabaseForm* master, lb_I_Parameter* params) = 0;
 
 	/** \brief Update the clientforms.
 	 *
