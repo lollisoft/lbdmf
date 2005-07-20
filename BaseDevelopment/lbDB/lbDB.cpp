@@ -145,6 +145,7 @@ public:
 	bool		LB_STDCALL isNull(int pos);
 	lb_I_Query::lbDBColumnTypes LB_STDCALL getColumnType(int pos);
 	lb_I_Query::lbDBColumnTypes LB_STDCALL getColumnType(char* name);
+	int 		LB_STDCALL getColumnIndex(char* name);
 
 	void		LB_STDCALL setUpdateable(char* column, bool updateable);
 		
@@ -218,7 +219,7 @@ public:
 	virtual void LB_STDCALL enableFKCollecting();
 	void LB_STDCALL prepareFKList();
 
-	virtual char* LB_STDCALL getTableName();
+	virtual char* LB_STDCALL getTableName(char* columnName = NULL);
 
 	void LB_STDCALL dbError(char* lp);
 
@@ -608,6 +609,35 @@ lb_I_Query::lbDBColumnTypes LB_STDCALL lbBoundColumns::getColumnType(int pos) {
 	_LOG << "lbBoundColumns::getColumnType(int pos) returns unknown type" LOG_
 
 	return lb_I_Query::lbDBColumnUnknown;
+}
+/*...e*/
+/*...sint LB_STDCALL lbBoundColumns\58\\58\getColumnIndex\40\char\42\ name\41\:0:*/
+int LB_STDCALL lbBoundColumns::getColumnIndex(char* name) {
+
+	lbErrCodes err = ERR_NONE;
+	if (boundColumns != NULL) {
+		UAP_REQUEST(manager.getPtr(), lb_I_String, stringKey) 
+		stringKey->setData(name);
+		UAP(lb_I_Unknown, ukdata, __FILE__, __LINE__)
+		UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
+		
+		QI(stringKey, lb_I_KeyBase, key, __FILE__, __LINE__)
+
+		ukdata = ColumnNameMapping->getElement(&key);
+		if (ukdata == NULL) {
+			_LOG << "lbBoundColumns::getColumnIndex('" << name << "') returned no data !" LOG_
+			
+			return -1;
+		}
+
+		UAP(lb_I_Integer, pos, __FILE__, __LINE__)
+		
+		lbErrCodes err = ukdata->queryInterface("lb_I_Integer", (void**) &pos, __FILE__, __LINE__);
+		
+		return pos->getData();
+	}
+
+	return -1;
 }
 /*...e*/
 /*...slb_I_Query\58\\58\lbDBColumnTypes LB_STDCALL lbBoundColumns\58\\58\getColumnType\40\char\42\ name\41\:0:*/
@@ -1427,7 +1457,7 @@ void LB_STDCALL lbQuery::prepareFKList() {
 	        _dbError( "SQLAllocStmt()",henv,hdbc,hstmt);
 	}
 
-	char* temp = (char*) getTableName();
+	char* temp = (char*) getTableName(getColumnName(1));
 	szTable = (unsigned char*) malloc(strlen(temp)+1);
 	szTable[0] = 0;
 	strcpy((char*) szTable, temp);
@@ -1499,7 +1529,7 @@ void LB_STDCALL lbQuery::prepareFKList() {
 
 	_CL_VERBOSE << "lbQuery::prepareFKList() tries to read foreign column information from table" LOG_
 	
-	char* table = getTableName();
+	char* table = getTableName(getColumnName(1));
 	
 	lb_I_Module* m = getModuleManager();
 
@@ -2345,7 +2375,11 @@ free(buffer);
 	return ERR_NONE;
 }
 /*...e*/
-/*...schar\42\ LB_STDCALL lbQuery\58\\58\getTableName\40\\41\:0:*/
+/*...schar\42\ LB_STDCALL lbQuery\58\\58\getTableName\40\char\42\ columnName\41\:0:*/
+char *lpszTable = NULL;
+char* LB_STDCALL lbQuery::getTableName(char* columnName) {
+/*...sbla SQL analysing:0:*/
+#ifdef bla
 #define ISBLANK(x)      ((x) == ' ')
 #define ISCOMMA(x)      ((x) == ',')
 #define ISNUM(x)        (((x) >= '0') && ((x) <= '9'))
@@ -2360,7 +2394,7 @@ free(buffer);
 // This possibly causes a crash in wxWidgets sample application
 char *lpszTable = NULL;
 
-char* LB_STDCALL lbQuery::getTableName() {
+char* LB_STDCALL lbQuery::getTableName(char* columnName) {
    LPCSTR   lpsz;
    int      cp;
    int      cb;
@@ -2449,25 +2483,46 @@ strcpy(lpszTable, temp);
 delete[] temp;
 
 return lpszTable; //!!!
+#endif // bla
+/*...e*/
+  
+	SQLHSTMT	StatementHandle;
+	SQLUSMALLINT	ColumnNumber;
+	SQLUSMALLINT	FieldIdentifier;
+	SQLPOINTER	CharacterAttributePtr;
+	SQLSMALLINT	BufferLength;
+	SQLSMALLINT	StringLengthPtr = 0;
+	SQLPOINTER	NumericAttributePtr;
 
-#ifdef bla
-   if (*lpsz == *g_szQuoteChar) {
-      *lpszTable++ = *lpsz++; // Copy beginning quote
-      while (*lpsz && *lpsz != *g_szQuoteChar) *lpszTable++ = *lpsz++;
-      *lpszTable++ = *lpsz++; // Copy ending quote
-   }
-   else  // Not a quoted identifier
-      while (*lpsz && !ISCOMMA(*lpsz) && !ISWHITE(*lpsz)) {
-      	printf("%s\n", lpsz);
-      	*lpszTable++ = *lpsz++;
-      }
+	SQLINTEGER	Int = 0;
 
-printf("Endscan at '%s'\n", lpszTable);
+	CharacterAttributePtr = (void*) malloc(101);
+	memset(CharacterAttributePtr, 0, 101);
 
-   //*lpszTable = '\0';
+	NumericAttributePtr = &Int;
 
-   return lpszTable;
-#endif
+
+	SQLRETURN retcode;
+
+	retcode = SQLColAttribute(
+			hstmt,
+			boundColumns->getColumnIndex(columnName), 
+			SQL_DESC_BASE_TABLE_NAME, 
+			CharacterAttributePtr,
+			100,
+			&StringLengthPtr,
+			NumericAttributePtr);
+
+	_CL_LOG << "Have got this table name: '" << (char*) CharacterAttributePtr << "'" LOG_
+    
+	if (lpszTable == NULL)
+		lpszTable = (char*) strdup((char*) CharacterAttributePtr);
+	else {
+		lpszTable[0] = 0;
+		strcpy((char*) lpszTable, (char*) CharacterAttributePtr);
+	}
+    
+	return lpszTable;
 }
 /*...e*/
 
