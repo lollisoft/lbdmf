@@ -1624,7 +1624,7 @@ int LB_STDCALL lbQuery::getPKColumns() {
 	        _dbError( "SQLAllocStmt()",henv,hdbc,hstmt);
 	}
 
-	char* temp = (char*) getTableName();
+	char* temp = (char*) getTableName(getColumnName(1));
 	szTable = (unsigned char*) malloc(strlen(temp)+1);
 	szTable[0] = 0;
 	strcpy((char*) szTable, temp);
