@@ -538,7 +538,8 @@ void LB_STDCALL lbDetailFormAction::setActionID(char* id) {
 	}
 }
 
-void LB_STDCALL lbDetailFormAction::openDetailForm(lb_I_String* formularname) {
+/*...svoid LB_STDCALL lbDetailFormAction\58\\58\openDetailForm\40\lb_I_String\42\ formularname\44\ lb_I_Parameter\42\ params\41\:0:*/
+void LB_STDCALL lbDetailFormAction::openDetailForm(lb_I_String* formularname, lb_I_Parameter* params) {
 	lbErrCodes err = ERR_NONE;
 
 	if (detailForm != NULL) {
@@ -550,6 +551,24 @@ void LB_STDCALL lbDetailFormAction::openDetailForm(lb_I_String* formularname) {
 	
 		meta->getGUI(&gui);
 	
+
+	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
+
+	parameter->setData("DBName");
+	params->getUAPString(*&parameter, *&DBName);
+	parameter->setData("DBUser");
+	params->getUAPString(*&parameter, *&DBUser);
+	parameter->setData("DBPass");
+	params->getUAPString(*&parameter, *&DBPass);
+	parameter->setData("source Form");
+	params->getUAPString(*&parameter, *&masterForm);
+//	parameter->setData("source field");
+//	params->getUAPString(*&parameter, *&SourceFieldName);
+//	parameter->setData("source value");
+//	params->getUAPString(*&parameter, *&SourceFieldValue);
+	parameter->setData("application");
+	params->getUAPString(*&parameter, *&app);
+
 		lb_I_DatabaseForm* f = gui->findDBForm(masterForm->charrep());
 
 /*...sGet the SQL query based on formular name\44\ application name\46\:16:*/
@@ -564,7 +583,7 @@ void LB_STDCALL lbDetailFormAction::openDetailForm(lb_I_String* formularname) {
 		        " User_Anwendungen.userid = Users.id where "
 		        "Users.userid = '%s' and Anwendungen.name = '%s' and "
 		        "Formulare.name = '%s'";
-		
+
 		char* buffer = (char*) malloc(strlen(b)+
 						strlen(user->charrep())+
 						strlen(app->charrep())+
@@ -652,10 +671,11 @@ void LB_STDCALL lbDetailFormAction::openDetailForm(lb_I_String* formularname) {
 						
 						QI(f, lb_I_DatabaseForm, master, __FILE__, __LINE__)
 						
-						form->setMasterForm(*&master);
+						// Pass the collected parameters to the form
+						
+						form->setMasterForm(*&master, *&params);
 /*...e*/
 						
-/*...sSome thesis on how to go ahead:88:*/
 /*
  * What should I do to 'interconnect' the forms over the
  * relation 'customer number' ?
@@ -674,7 +694,8 @@ void LB_STDCALL lbDetailFormAction::openDetailForm(lb_I_String* formularname) {
  * " where customerid = 
  *     (select id from <table of masterForm> where <SourceFieldName> = '<SourceFieldValue>')"
  */
-/*...e*/
+						
+						// Get the related table for the source field
 						
 						form->show();
 						form++;
@@ -687,8 +708,11 @@ void LB_STDCALL lbDetailFormAction::openDetailForm(lb_I_String* formularname) {
 		}
 	}
 }
+/*...e*/
 
+/*...svoid LB_STDCALL lbDetailFormAction\58\\58\execute\40\lb_I_Parameter\42\ params\41\:0:*/
 void LB_STDCALL lbDetailFormAction::execute(lb_I_Parameter* params) {
+/*...sInit variables for params:8:*/
 	if (masterForm == NULL) {
 		REQUEST(manager.getPtr(), lb_I_String, masterForm)
 	}
@@ -710,6 +734,7 @@ void LB_STDCALL lbDetailFormAction::execute(lb_I_Parameter* params) {
 	if (DBPass == NULL) {
 		REQUEST(manager.getPtr(), lb_I_String, DBPass)
 	}
+/*...e*/
 
 	UAP_REQUEST(manager.getPtr(), lb_I_Database, database)
 	UAP(lb_I_Query, query, __FILE__, __LINE__)
@@ -736,70 +761,31 @@ void LB_STDCALL lbDetailFormAction::execute(lb_I_Parameter* params) {
 		lbErrCodes err = query->first();
 	
 		while(err == ERR_NONE) {
+/*...sFor each row open the detail form with given params:24:*/
 			UAP_REQUEST(manager.getPtr(), lb_I_String, what)
 			
 			what = query->getAsString(1);
 			what->trim();
 			
-			UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
-
-			parameter->setData("DBName");
-			params->getUAPString(*&parameter, *&DBName);
-			parameter->setData("DBUser");
-			params->getUAPString(*&parameter, *&DBUser);
-			parameter->setData("DBPass");
-			params->getUAPString(*&parameter, *&DBPass);
-			parameter->setData("source Form");
-			params->getUAPString(*&parameter, *&masterForm);
-			parameter->setData("source field");
-			params->getUAPString(*&parameter, *&SourceFieldName);
-			parameter->setData("source value");
-			params->getUAPString(*&parameter, *&SourceFieldValue);
-			parameter->setData("application");
-			params->getUAPString(*&parameter, *&app);
-
-			_CL_VERBOSE << "Have master form '" << masterForm->charrep() << 
-			           "', source field name '" << SourceFieldName->charrep() << 
-			           "' and source field value '" << SourceFieldValue->charrep() <<
-			           "' for detail form '" << what->charrep() << "'" LOG_
-			
-			openDetailForm(*&what);
+			openDetailForm(*&what, *&params);
 			
 			err = query->next();
+/*...e*/
 		}
 		
 		if (err == WARN_DB_NODATA) {
+/*...sOpen the detail form with given params:24:*/
 			UAP_REQUEST(manager.getPtr(), lb_I_String, what)
 			
 			what = query->getAsString(1);
 			what->trim();
 			
-			UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
-
-			parameter->setData("DBName");
-			params->getUAPString(*&parameter, *&DBName);
-			parameter->setData("DBUser");
-			params->getUAPString(*&parameter, *&DBUser);
-			parameter->setData("DBPass");
-			params->getUAPString(*&parameter, *&DBPass);
-			parameter->setData("source Form");
-			params->getUAPString(*&parameter, *&masterForm);
-			parameter->setData("source field");
-			params->getUAPString(*&parameter, *&SourceFieldName);
-			parameter->setData("source value");
-			params->getUAPString(*&parameter, *&SourceFieldValue);
-			parameter->setData("application");
-			params->getUAPString(*&parameter, *&app);
-
-			_CL_VERBOSE << "Have master form '" << masterForm->charrep() << 
-			           "', source field name '" << SourceFieldName->charrep() << 
-			           "' and source field value '" << SourceFieldValue->charrep() <<
-			           "' for detail form '" << what->charrep() << "'" LOG_
-			         
-			openDetailForm(*&what);
+			openDetailForm(*&what, *&params);
+/*...e*/
 		}
 	}
 }
+/*...e*/
 /*...e*/
 /*...slbSQLQueryAction:0:*/
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbSQLQueryAction)
@@ -1488,12 +1474,36 @@ char* LB_STDCALL lbDatabaseDialog::getQuery() {
 	return SQLString->charrep();
 }
 
-/*...svoid LB_STDCALL lbDatabaseDialog\58\\58\setMasterForm\40\lb_I_DatabaseMasterForm\42\ master\41\:0:*/
-void LB_STDCALL lbDatabaseDialog::setMasterForm(lb_I_DatabaseForm* master) {
+/*...svoid LB_STDCALL lbDatabaseDialog\58\\58\setMasterForm\40\lb_I_DatabaseMasterForm\42\ master\44\ lb_I_Parameter\42\ params\41\:0:*/
+void LB_STDCALL lbDatabaseDialog::setMasterForm(lb_I_DatabaseForm* master, lb_I_Parameter* params) {
 	
 	// Now build the where clause that sets the foreign key columns of this form as equal condition to the values of the masters pk columns.
 	
 	_master = master;
+	_params = params;
+
+	if (masterForm == NULL) {
+		REQUEST(manager.getPtr(), lb_I_String, masterForm)
+	}
+	if (SourceFieldName == NULL) {
+		REQUEST(manager.getPtr(), lb_I_String, SourceFieldName)
+	}
+	if (SourceFieldValue == NULL) {
+		REQUEST(manager.getPtr(), lb_I_String, SourceFieldValue)
+	}
+	if (app == NULL) {
+		REQUEST(manager.getPtr(), lb_I_String, app)
+	}
+	if (DBName == NULL) {
+		REQUEST(manager.getPtr(), lb_I_String, DBName)
+	}
+	if (DBUser == NULL) {
+		REQUEST(manager.getPtr(), lb_I_String, DBUser)
+	}
+	if (DBPass == NULL) {
+		REQUEST(manager.getPtr(), lb_I_String, DBPass)
+	}
+
 	
 	updateFromMaster();
 }
@@ -1552,30 +1562,102 @@ const char* LB_STDCALL lbDatabaseDialog::getControlValue(char* name) {
 void LB_STDCALL lbDatabaseDialog::updateFromMaster() {
 
 	UAP_REQUEST(manager.getPtr(), lb_I_String, newWhereClause)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, newMasterIDQuery)
 	
-	// Using the new = and += operators of the string interface. Note: If used in an UAP, explizit 'dereferencing' must be used.
+	// Using the new = and += operators of the string interface. 
+	// Note: If used in an UAP, explizit 'dereferencing' must be used.
+	
 	*newWhereClause = " where ";
+
+	// Build the query to get the ID from the given *&SourceFieldName
 	
-	for (int i = 0; i < _master->getMasterColumns()-1; i++) {
-		UAP(lb_I_String, colName, __FILE__, __LINE__)
-		colName = _master->getMasterColumn(i);
+	*newMasterIDQuery = "select ";
+	
+	// Add the primary key names from the table, that are related to *&SourceFieldName
+
+	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
+
+/*...sRetrieve parameter values:8:*/
+	parameter->setData("DBName");
+	_params->getUAPString(*&parameter, *&DBName);
+	parameter->setData("DBUser");
+	_params->getUAPString(*&parameter, *&DBUser);
+	parameter->setData("DBPass");
+	_params->getUAPString(*&parameter, *&DBPass);
+	parameter->setData("source Form");
+	_params->getUAPString(*&parameter, *&masterForm);
+	parameter->setData("source field");
+	_params->getUAPString(*&parameter, *&SourceFieldName);
+	parameter->setData("source value");
+	_params->getUAPString(*&parameter, *&SourceFieldValue);
+	parameter->setData("application");
+	_params->getUAPString(*&parameter, *&app);
+/*...e*/
+
+	_CL_VERBOSE << "Have master form '" << masterForm->charrep() << 
+	           "', source field name '" << SourceFieldName->charrep() << 
+	           "' and source field value '" << SourceFieldValue->charrep() <<
+	           "' for detail form '" << formName << "'" LOG_
+
+
+/*...sDetermine the primary key values of the current master entry\44\ based on the value of the \42\\38\SourceFieldName\46\:8:*/
+	UAP(lb_I_String, colName, __FILE__, __LINE__)
+	int columns = _master->getPrimaryColumns();
+	bool isChar = _master->isCharacterColumn(SourceFieldName->charrep());
+	
+	for (int i = 1; i <= columns-1; i++) {
+		colName = _master->getPrimaryColumn(i);
 		
-		*newWhereClause += *&colName;
-		bool isChar = _master->isCharacterColumn(i); 
+		*newMasterIDQuery += colName->charrep();
+		*newMasterIDQuery += ", ";
+	}
+
+	colName = _master->getPrimaryColumn(columns);
+		
+	*newMasterIDQuery += colName->charrep();
+
+	
+	*newMasterIDQuery += " from ";
+	*newMasterIDQuery += _master->getTableName(SourceFieldName->charrep());
+	*newMasterIDQuery += " where ";
+	*newMasterIDQuery += SourceFieldName->charrep();
+
+	if (isChar) 
+		*newMasterIDQuery += " = '";
+	else
+		*newMasterIDQuery += " = ";
+	
+	*newMasterIDQuery += SourceFieldValue->charrep();
+
+	if (isChar) *newMasterIDQuery += "'";
+/*...e*/
+	
+	_CL_LOG << "lbDatabaseDialog::updateFromMaster() generated new master id query: \n'" <<
+		newMasterIDQuery->charrep() << "'" LOG_
+
+	
+		
+/*		
+	for (int i = 1; i <= _master->getPrimaryColumns(); i++) {
+		UAP(lb_I_String, colName, __FILE__, __LINE__)
+		colName = _master->getPrimaryColumn(i);
+		
+		*newMasterIDQuery += SourceFieldName->charrep();
+		bool isChar = _master->isCharacterColumn(SourceFieldName->charrep()); 
 
 		if (isChar) 
-			*newWhereClause += " = '";
+			*newMasterIDQuery += " = '";
 		else
-			*newWhereClause += " = ";
+			*newMasterIDQuery += " = ";
 
-		*newWhereClause += _master->getControlValue(colName->charrep());
+		*newMasterIDQuery += SourceFieldValue->charrep();
 			
-		if (isChar) *newWhereClause += "'";
+		if (isChar) *newMasterIDQuery += "'";
 	}
 	
-	_CL_LOG << "lbDatabaseDialog::updateFromMaster() generated new where clause: '" << newWhereClause->charrep() << "'" LOG_
-
-
+	_CL_LOG << "lbDatabaseDialog::updateFromMaster() generated new master id query: \n'" << 
+		newMasterIDQuery->charrep() << "'" LOG_
+*/
 }
 /*...e*/
 
@@ -1584,6 +1666,15 @@ void LB_STDCALL lbDatabaseDialog::setFilter(char* filter) {
 		REQUEST(manager.getPtr(), lb_I_String, SQLWhere)
 		if (filter != NULL) SQLWhere->setData(filter);
 	}
+}
+
+lb_I_String* lbDatabaseDialog::getTableName(char* columnName) {
+	UAP_REQUEST(manager.getPtr(), lb_I_String, name)
+	
+	name->setData(sampleQuery->getTableName(columnName));
+	name++;
+	
+	return name.getPtr();
 }
 
 /*...slbErrCodes LB_STDCALL lbDatabaseDialog\58\\58\lbDBClear\40\\41\:0:*/
@@ -2334,7 +2425,7 @@ void lbDatabaseDialog::OnPaint(wxCommandEvent& event ) {
 }
 /*...e*/
 
-int LB_STDCALL lbDatabaseDialog::getMasterColumns()
+int LB_STDCALL lbDatabaseDialog::getPrimaryColumns()
 {
 	/*
 	   Directly forward the request to the formular field information class.
@@ -2348,18 +2439,22 @@ int LB_STDCALL lbDatabaseDialog::getMasterColumns()
 	   number, that has not to be changed.
 	   
 	 */
+
+	int PKColumns = sampleQuery->getPKColumns();
 	
-	return sampleQuery->getPKColumns();
+	_CL_LOG << "lbDatabaseDialog::getPrimaryColumns() returns " << PKColumns << " primary columns" LOG_
+	
+	return PKColumns;
 }
 	
-lb_I_String* LB_STDCALL lbDatabaseDialog::getMasterColumn(int pos)
+lb_I_String* LB_STDCALL lbDatabaseDialog::getPrimaryColumn(int pos)
 {
 	return sampleQuery->getPKColumn(pos);
 }
 	   
-bool LB_STDCALL lbDatabaseDialog::isCharacterColumn(int pos)
+bool LB_STDCALL lbDatabaseDialog::isCharacterColumn(char* name)
 {
-	return false;
+	return sampleQuery->getColumnType(name) == lb_I_Query::lbDBColumnChar;
 }
 /*...e*/
 
