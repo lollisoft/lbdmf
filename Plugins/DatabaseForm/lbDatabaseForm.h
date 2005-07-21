@@ -30,11 +30,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.13 $
+ * $Revision: 1.14 $
  * $Name:  $
- * $Id: lbDatabaseForm.h,v 1.13 2005/07/07 05:35:46 lollisoft Exp $
+ * $Id: lbDatabaseForm.h,v 1.14 2005/07/21 17:03:19 lollisoft Exp $
  *
  * $Log: lbDatabaseForm.h,v $
+ * Revision 1.14  2005/07/21 17:03:19  lollisoft
+ * Moved some code for master detail form management.
+ *
  * Revision 1.13  2005/07/07 05:35:46  lollisoft
  * No MI usage (with one baseclass).
  *
@@ -212,7 +215,7 @@ public:
 	
 protected:
 
-	void LB_STDCALL openDetailForm(lb_I_String* formularname);
+	void LB_STDCALL openDetailForm(lb_I_String* formularname, lb_I_Parameter* params);
 
 	char* myActionID;
 	UAP(lb_I_Database, db, __FILE__, __LINE__)
@@ -400,15 +403,17 @@ public:
 	
 /*...e*/
 
-	void LB_STDCALL setMasterForm(lb_I_DatabaseForm* master);
+	void LB_STDCALL setMasterForm(lb_I_DatabaseForm* master, lb_I_Parameter* params);
 	
 	void LB_STDCALL updateFromMaster();
 
-	int LB_STDCALL getMasterColumns();
+	int LB_STDCALL getPrimaryColumns();
 	
-	lb_I_String* LB_STDCALL getMasterColumn(int pos);
+	lb_I_String* LB_STDCALL getPrimaryColumn(int pos);
 	   
-	bool LB_STDCALL isCharacterColumn(int pos);
+	bool LB_STDCALL isCharacterColumn(char* name);
+
+	lb_I_String* getTableName(char* columnName);
 
 /*...sData navigation and other handlers:8:*/
 	/**
@@ -520,17 +525,27 @@ public:
 	UAP(lb_I_String, _DBUser, __FILE__, __LINE__)
 	UAP(lb_I_String, _DBPass, __FILE__, __LINE__)
 	
-	/**
-	 * \brief Maps positions to id's for each displayed combo box.
+	/*
+	 * Maps positions to id's for each displayed combo box.
 	 *
 	 * Store a container for each combo box with key(pos) and data(id). 
 	 */
 	UAP(lb_I_Container, ComboboxMapperList, __FILE__, __LINE__)
 	
-	/** \brief Storage for all yet loaded actions. */
+	/* Storage for all yet loaded actions. */
 	UAP(lb_I_Container, actions, __FILE__, __LINE__)
 	
 	lb_I_DatabaseForm* _master;
+	lb_I_Parameter* _params;
+
+	UAP(lb_I_String, app, __FILE__, __LINE__)
+	UAP(lb_I_String, masterForm, __FILE__, __LINE__)
+	UAP(lb_I_String, SourceFieldName, __FILE__, __LINE__)
+	UAP(lb_I_String, SourceFieldValue, __FILE__, __LINE__)
+	UAP(lb_I_String, DBName, __FILE__, __LINE__)
+	UAP(lb_I_String, DBUser, __FILE__, __LINE__)
+	UAP(lb_I_String, DBPass, __FILE__, __LINE__)
+
 
 	// l gets overwritten, while assigning a lb_I_Query* pointer to sampleQuery !!
 	// l and buf are therefore as a bugfix.
