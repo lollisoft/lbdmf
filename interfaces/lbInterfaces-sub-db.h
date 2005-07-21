@@ -751,7 +751,7 @@ public:
 	 */
 	virtual lb_I_String* LB_STDCALL getPrimaryColumn(int pos) = 0;
 
-	virtual bool LB_STDCALL isCharacterColumn(int pos) = 0;
+	virtual bool LB_STDCALL isCharacterColumn(char* name) = 0;
 
 	virtual const char* LB_STDCALL getControlValue(char* name) = 0;
 
