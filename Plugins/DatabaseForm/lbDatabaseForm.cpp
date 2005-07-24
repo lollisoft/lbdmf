@@ -564,8 +564,8 @@ void LB_STDCALL lbDetailFormAction::openDetailForm(lb_I_String* formularname, lb
 	params->getUAPString(*&parameter, *&masterForm);
 //	parameter->setData("source field");
 //	params->getUAPString(*&parameter, *&SourceFieldName);
-//	parameter->setData("source value");
-//	params->getUAPString(*&parameter, *&SourceFieldValue);
+	parameter->setData("source value");
+	params->getUAPString(*&parameter, *&SourceFieldValue);
 	parameter->setData("application");
 	params->getUAPString(*&parameter, *&app);
 
@@ -653,27 +653,48 @@ void LB_STDCALL lbDetailFormAction::openDetailForm(lb_I_String* formularname, lb
 
 						detailForm = form.getPtr();
 
+						*formularname += " - ";
+						*formularname += SourceFieldValue->charrep();
+
 						form->setName(formularname->charrep());
 						
-						// Set the other information of master / detail form here
+						/* Set the other information of master / detail form here
+						
+						   There is a problem for forms, if the foreign key is not
+						   shown in it. In that case the relation could not full filled
+						   by the add action.
+						   
+						   The only way may be any kind of temporal default value.
+						*/
+						
+						UAP(lb_I_DatabaseForm, f, __FILE__, __LINE__)
+
+						UAP(lb_I_DatabaseForm, master, __FILE__, __LINE__)
+
+						UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
+						UAP(lb_I_GUI, gui, __FILE__, __LINE__)
+
+						meta->getGUI(&gui);
+
+						f = gui->findDBForm(masterForm->charrep());
+
+						QI(f, lb_I_DatabaseForm, master, __FILE__, __LINE__)						
+						
+						UAP(lb_I_String, table, __FILE__, __LINE__)
+						
+						master->getPrimaryColumns();
+						
+						table = master->getTableName(master->getColumnName(1));
+						
+						_CL_LOG << "Set ignoring foreign keys for " << table->charrep() LOG_
+						
+						form->ignoreForeignKeys(table->charrep());
 						
 						form->init(sql->charrep(), DBName->charrep(), DBUser->charrep(), DBPass->charrep());
 						
-						UAP(lb_I_DatabaseForm, f, __FILE__, __LINE__)
-						UAP(lb_I_DatabaseForm, master, __FILE__, __LINE__)
-						
-						UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
-						UAP(lb_I_GUI, gui, __FILE__, __LINE__)
-						
-						meta->getGUI(&gui);
-						
-						f = gui->findDBForm(masterForm->charrep());
-						
-						QI(f, lb_I_DatabaseForm, master, __FILE__, __LINE__)
-						
-						// Pass the collected parameters to the form
-						
 						form->setMasterForm(*&master, *&params);
+						
+						//form->setDefault(<column>, <value>);
 /*...e*/
 						
 /*
@@ -1001,7 +1022,7 @@ void LB_STDCALL lbDatabaseDialog::init(char* _SQLString, char* DBName, char* DBU
 	for (int co = 1; co <= columns; co++) {
 		char* name = NULL;
 		name = strdup(sampleQuery->getColumnName(co));
-		
+
 		if (FFI->isReadonly(name)) {
 		        sampleQuery->setUpdateable(name);
 		}
@@ -1031,6 +1052,8 @@ void LB_STDCALL lbDatabaseDialog::init(char* _SQLString, char* DBName, char* DBU
 		   configured column to show instead.
 		*/ 
 
+		bool hideThisColumn = false;
+
 		if (sampleQuery->hasFKColumn(name) == 1) {
 /*...sCreate a combobox:32:*/
 			lbErrCodes err = ERR_NONE;
@@ -1047,6 +1070,19 @@ void LB_STDCALL lbDatabaseDialog::init(char* _SQLString, char* DBName, char* DBU
 
 			cbName->setData(name);
 			
+			UAP_REQUEST(manager.getPtr(), lb_I_String, table)
+			UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
+	
+			UAP(lb_I_String, t, __FILE__, __LINE__)
+	
+			t = sampleQuery->getPKTable(name);
+	
+			table->setData(t->charrep());
+	
+			QI(table, lb_I_KeyBase, key, __FILE__, __LINE__)
+	
+			if (ignoredPKTables->exists(&key) == 1) hideThisColumn = true;
+			
 			ComboboxMapperList->insert(&uk_ComboboxMapper, &key_cbName);
 
 			ukComboboxMapper = ComboboxMapperList->getElement(&key_cbName);
@@ -1057,7 +1093,7 @@ void LB_STDCALL lbDatabaseDialog::init(char* _SQLString, char* DBName, char* DBU
 			buffer[0] = 0;
 			
 			sprintf(buffer, "select PKName, PKTable	from ForeignKey_VisibleData_Mapping "
-					"where FKName = '%s' and FKTable = '%s'", name, sampleQuery->getTableName());
+					"where FKName = '%s' and FKTable = '%s'", name, sampleQuery->getTableName(name));
 
 			UAP_REQUEST(manager.getPtr(), lb_I_Database, db)
 			db->init();
@@ -1192,7 +1228,7 @@ void LB_STDCALL lbDatabaseDialog::init(char* _SQLString, char* DBName, char* DBU
 /*...e*/
 				}
 				
-				sizerRight->Add(cbox, 1, wxEXPAND | wxALL, 5);
+				if (hideThisColumn == false) sizerRight->Add(cbox, 1, wxEXPAND | wxALL, 5);
 				
 				createdControl = true;
 /*...e*/
@@ -1280,14 +1316,19 @@ void LB_STDCALL lbDatabaseDialog::init(char* _SQLString, char* DBName, char* DBU
 		}
 		
 		if (createdControl) {
-			char* tLabel = new char[strlen(name) + 1];
+			char* tLabel = new char[strlen(name) + 6];
 		
 			tLabel[0] = 0;
-		
+			
 			tLabel = strcat(tLabel, name); 
-		
+						
 			wxStaticText *label = new wxStaticText(this, -1, _trans(tLabel), wxPoint());
-			sizerLeft->Add(label, 1, wxEXPAND | wxALL, 5);
+
+			tLabel = strcat(tLabel, "_lbl");
+						
+			label->SetName(tLabel);
+			
+			if (hideThisColumn == false) sizerLeft->Add(label, 1, wxEXPAND | wxALL, 5);
 			
 			delete [] tLabel;
 		}	
@@ -1295,7 +1336,7 @@ void LB_STDCALL lbDatabaseDialog::init(char* _SQLString, char* DBName, char* DBU
 		free(name);
 	}
 /*...e*/
-	
+
 	sizerHor->Add(sizerLeft, 1, wxEXPAND | wxALL, 5);
 	sizerHor->Add(sizerRight, 1, wxEXPAND | wxALL, 5);
 
@@ -1474,6 +1515,10 @@ char* LB_STDCALL lbDatabaseDialog::getQuery() {
 	return SQLString->charrep();
 }
 
+char* LB_STDCALL lbDatabaseDialog::getColumnName(int pos) {
+	return sampleQuery->getColumnName(pos);
+}
+
 /*...svoid LB_STDCALL lbDatabaseDialog\58\\58\setMasterForm\40\lb_I_DatabaseMasterForm\42\ master\44\ lb_I_Parameter\42\ params\41\:0:*/
 void LB_STDCALL lbDatabaseDialog::setMasterForm(lb_I_DatabaseForm* master, lb_I_Parameter* params) {
 	
@@ -1558,6 +1603,27 @@ const char* LB_STDCALL lbDatabaseDialog::getControlValue(char* name) {
 }
 /*...e*/
 
+/*...svoid LB_STDCALL lbDatabaseDialog\58\\58\ignoreForeignKeys\40\char\42\ toTable\41\:0:*/
+void LB_STDCALL lbDatabaseDialog::ignoreForeignKeys(char* toTable) {
+	lbErrCodes err = ERR_NONE;
+	
+	if (ignoredPKTables == NULL) {
+		REQUEST(manager.getPtr(), lb_I_Container, ignoredPKTables)
+	}
+
+	UAP_REQUEST(manager.getPtr(), lb_I_String, string)
+	UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
+	UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
+	
+	string->setData(toTable);
+	
+	QI(string, lb_I_Unknown, uk, __FILE__, __LINE__)
+	QI(string, lb_I_KeyBase, key, __FILE__, __LINE__)
+	
+	ignoredPKTables->insert(&uk, &key);
+}
+/*...e*/
+
 /*...svoid LB_STDCALL lbDatabaseDialog\58\\58\updateFromMaster\40\\41\:0:*/
 void LB_STDCALL lbDatabaseDialog::updateFromMaster() {
 
@@ -1635,29 +1701,175 @@ void LB_STDCALL lbDatabaseDialog::updateFromMaster() {
 	_CL_LOG << "lbDatabaseDialog::updateFromMaster() generated new master id query: \n'" <<
 		newMasterIDQuery->charrep() << "'" LOG_
 
-	
-		
-/*		
-	for (int i = 1; i <= _master->getPrimaryColumns(); i++) {
-		UAP(lb_I_String, colName, __FILE__, __LINE__)
-		colName = _master->getPrimaryColumn(i);
-		
-		*newMasterIDQuery += SourceFieldName->charrep();
-		bool isChar = _master->isCharacterColumn(SourceFieldName->charrep()); 
+/*...sRetrieve the values from the primary keys and build up the where clause to be used in detail form:8:*/
+	REQUEST(manager.getPtr(), lb_I_Database, database)
+	UAP(lb_I_Query, PKQuery, __FILE__, __LINE__)
 
-		if (isChar) 
-			*newMasterIDQuery += " = '";
-		else
-			*newMasterIDQuery += " = ";
+	database->init();
+	database->connect(DBName->charrep(), DBUser->charrep(), DBPass->charrep());
 
-		*newMasterIDQuery += SourceFieldValue->charrep();
+	PKQuery = database->getQuery(0);
+
+	lbErrCodes err = PKQuery->query(newMasterIDQuery->charrep());
+
+	if (err == ERR_NONE) {
+
+		UAP_REQUEST(manager.getPtr(), lb_I_String, colName)
+		UAP(lb_I_String, colValue, __FILE__, __LINE__)
+
+		err = PKQuery->first();
+
+		int columns = PKQuery->getColumns();
+
+
+		while (err == ERR_NONE) {
+			*newWhereClause += "(";
 			
-		if (isChar) *newMasterIDQuery += "'";
-	}
+			for (int i = 1; i <= columns-1; i++) {
+/*...sBuild expression for one column:40:*/
+				*colName = PKQuery->getColumnName(i);
+				colValue = PKQuery->getAsString(i);
+		
+				bool isChar = PKQuery->getColumnType(i) == lb_I_Query::lbDBColumnChar;
+		
+				UAP(lb_I_String, fk, __FILE__, __LINE__)
+		
+				fk = sampleQuery->getFKColumn(
+						PKQuery->getTableName(colName->charrep()),
+						colName->charrep()
+						);
+		
+				*newWhereClause += fk->charrep();
+
+				wxWindow* w = FindWindowByName(wxString(fk->charrep()), this);
+				if (w) w->Hide();
+				w = FindWindowByName(wxString(fk->charrep())+wxString("_lbl"), this);
+				if (w) w->Hide();
+
+				if (isChar) 
+					*newWhereClause += " = '";
+				else
+					*newWhereClause += " = ";
 	
-	_CL_LOG << "lbDatabaseDialog::updateFromMaster() generated new master id query: \n'" << 
-		newMasterIDQuery->charrep() << "'" LOG_
-*/
+				*newWhereClause += colValue->charrep();
+			
+				if (isChar) *newWhereClause += "'";
+			
+				*newWhereClause += " and ";
+/*...e*/
+			}
+
+/*...sBuild expression for last column:32:*/
+			*colName = PKQuery->getColumnName(columns);
+			colValue = PKQuery->getAsString(columns);
+		
+			bool isChar = PKQuery->getColumnType(columns) == lb_I_Query::lbDBColumnChar;
+		
+			UAP(lb_I_String, fk, __FILE__, __LINE__)
+		
+			fk = sampleQuery->getFKColumn(
+					PKQuery->getTableName(colName->charrep()),
+					colName->charrep()
+					);
+		
+			*newWhereClause += fk->charrep();
+
+			wxWindow* w = FindWindowByName(wxString(fk->charrep()), this);
+			if (w) w->Hide();
+			w = FindWindowByName(wxString(fk->charrep())+wxString("_lbl"), this);
+			if (w) w->Hide();
+			
+			if (isChar) 
+				*newWhereClause += " = '";
+			else
+				*newWhereClause += " = ";
+	
+			*newWhereClause += colValue->charrep();
+			
+			if (isChar) *newWhereClause += "'";
+/*...e*/
+			
+			*newWhereClause += ") or ";
+	
+			err = PKQuery->next();
+		}
+		
+		if (err == WARN_DB_NODATA) {
+			*newWhereClause += "(";
+			
+			for (int i = 1; i <= columns-1; i++) {
+/*...sBuild expression for one column:40:*/
+				*colName = PKQuery->getColumnName(i);
+				colValue = PKQuery->getAsString(i);
+		
+				bool isChar = PKQuery->getColumnType(i) == lb_I_Query::lbDBColumnChar;
+		
+				UAP(lb_I_String, fk, __FILE__, __LINE__)
+		
+				fk = sampleQuery->getFKColumn(
+						PKQuery->getTableName(colName->charrep()),
+						colName->charrep()
+						);
+		
+				*newWhereClause += fk->charrep();
+
+				wxWindow* w = FindWindowByName(wxString(fk->charrep()), this);
+				if (w) w->Hide();
+				w = FindWindowByName(wxString(fk->charrep())+wxString("_lbl"), this);
+				if (w) w->Hide();
+
+				if (isChar) 
+					*newWhereClause += " = '";
+				else
+					*newWhereClause += " = ";
+	
+				*newWhereClause += colValue->charrep();
+			
+				if (isChar) *newWhereClause += "'";
+			
+				*newWhereClause += " and ";
+/*...e*/
+			}
+			
+/*...sBuild expression for last column:32:*/
+			*colName = PKQuery->getColumnName(columns);
+			colValue = PKQuery->getAsString(columns);
+		
+			bool isChar = PKQuery->getColumnType(columns) == lb_I_Query::lbDBColumnChar;
+		
+			UAP(lb_I_String, fk, __FILE__, __LINE__)
+		
+			fk = sampleQuery->getFKColumn(
+					PKQuery->getTableName(colName->charrep()),
+					colName->charrep()
+					);
+		
+			*newWhereClause += fk->charrep();
+
+			wxWindow* w = FindWindowByName(wxString(fk->charrep()), this);
+			if (w) w->Hide();
+			w = FindWindowByName(wxString(fk->charrep())+wxString("_lbl"), this);
+			if (w) w->Hide();
+
+			if (isChar) 
+				*newWhereClause += " = '";
+			else
+				*newWhereClause += " = ";
+	
+			*newWhereClause += colValue->charrep();
+			
+			if (isChar) *newWhereClause += "'";
+/*...e*/
+
+			*newWhereClause += ")";
+		}
+
+		Layout();		
+		
+	}
+/*...e*/
+
+	_CL_LOG << "Have where clause for detail form: " << newWhereClause->charrep() LOG_
 }
 /*...e*/
 
@@ -1673,6 +1885,8 @@ lb_I_String* lbDatabaseDialog::getTableName(char* columnName) {
 	
 	name->setData(sampleQuery->getTableName(columnName));
 	name++;
+	
+	_CL_LOG << "lbDatabaseDialog::getTableName('" << columnName << "') returns '" << name->charrep() << "'" LOG_
 	
 	return name.getPtr();
 }

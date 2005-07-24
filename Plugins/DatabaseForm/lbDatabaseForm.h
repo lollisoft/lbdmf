@@ -30,11 +30,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.14 $
+ * $Revision: 1.15 $
  * $Name:  $
- * $Id: lbDatabaseForm.h,v 1.14 2005/07/21 17:03:19 lollisoft Exp $
+ * $Id: lbDatabaseForm.h,v 1.15 2005/07/24 16:58:29 lollisoft Exp $
  *
  * $Log: lbDatabaseForm.h,v $
+ * Revision 1.15  2005/07/24 16:58:29  lollisoft
+ * Much changes to get master detail forms nearly run.
+ *
  * Revision 1.14  2005/07/21 17:03:19  lollisoft
  * Moved some code for master detail form management.
  *
@@ -413,7 +416,11 @@ public:
 	   
 	bool LB_STDCALL isCharacterColumn(char* name);
 
+	void LB_STDCALL ignoreForeignKeys(char* toTable);
+
 	lb_I_String* getTableName(char* columnName);
+	
+	char* LB_STDCALL getColumnName(int pos);
 
 /*...sData navigation and other handlers:8:*/
 	/**
@@ -534,9 +541,6 @@ public:
 	
 	/* Storage for all yet loaded actions. */
 	UAP(lb_I_Container, actions, __FILE__, __LINE__)
-	
-	lb_I_DatabaseForm* _master;
-	lb_I_Parameter* _params;
 
 	UAP(lb_I_String, app, __FILE__, __LINE__)
 	UAP(lb_I_String, masterForm, __FILE__, __LINE__)
@@ -546,6 +550,8 @@ public:
 	UAP(lb_I_String, DBUser, __FILE__, __LINE__)
 	UAP(lb_I_String, DBPass, __FILE__, __LINE__)
 
+
+	UAP(lb_I_Container, ignoredPKTables, __FILE__, __LINE__)
 
 	// l gets overwritten, while assigning a lb_I_Query* pointer to sampleQuery !!
 	// l and buf are therefore as a bugfix.
@@ -560,6 +566,9 @@ public:
 
 	FormularFieldInformation* FFI;
 	FormularActions* fa;
+
+	lb_I_DatabaseForm* _master;
+	lb_I_Parameter* _params;
 /*...e*/
 };
 /*...e*/

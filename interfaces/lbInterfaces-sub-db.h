@@ -152,7 +152,6 @@ public:
 	 */
 	virtual char* LB_STDCALL getTableName(char* columnName = NULL) = 0;
 
-
 	/**
 	 * \brief Skip foreign column informations.
 	 *
@@ -191,6 +190,11 @@ public:
 	 * Returns 1 if true. 0 if false.
 	 */
 	virtual int	LB_STDCALL hasFKColumn(char* FKName) = 0;
+
+	/**
+	 * \brief Get the foreign key based on given primary table and primary key name.
+	 */
+	virtual lb_I_String* LB_STDCALL getFKColumn(char* table, char* primary) = 0;
 
 	/**
 	 * \brief Get primary table name.
@@ -768,6 +772,13 @@ public:
 	 * This function would be called for all client forms, contained by a master form.
 	 */
 	virtual void LB_STDCALL updateFromMaster() = 0;
+
+	/**
+	 * \brief Do not include foreign keys into the layout.
+	 */
+	virtual void LB_STDCALL ignoreForeignKeys(char* toTable) = 0;
+
+	virtual char* LB_STDCALL getColumnName(int pos) = 0;
 /*...e*/
 };
 /*...e*/
