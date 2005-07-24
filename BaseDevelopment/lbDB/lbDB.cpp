@@ -215,45 +215,48 @@ public:
 	virtual lbErrCodes LB_STDCALL unregisterView(lb_I_MVC_View* view);
 /*...e*/
 
-	virtual void LB_STDCALL skipFKCollecting();
-	virtual void LB_STDCALL enableFKCollecting();
+	void LB_STDCALL skipFKCollecting();
+	void LB_STDCALL enableFKCollecting();
 	void LB_STDCALL prepareFKList();
 
-	virtual char* LB_STDCALL getTableName(char* columnName = NULL);
+	char* LB_STDCALL getTableName(char* columnName = NULL);
 
 	void LB_STDCALL dbError(char* lp);
 
 	void LB_STDCALL PrintData();
 
         /* Set the SQL query */
-        virtual lbErrCodes LB_STDCALL query(char* q, bool bind);
+        lbErrCodes LB_STDCALL query(char* q, bool bind);
         
         lbErrCodes LB_STDCALL bind();
 
-	virtual lbErrCodes LB_STDCALL add();
+	lbErrCodes LB_STDCALL add();
 	int LB_STDCALL isAdding() { return mode; }
 
 	/**
 	 * Deletes the current entry.
 	 */
-	virtual lbErrCodes LB_STDCALL remove();
+	lbErrCodes LB_STDCALL remove();
 	
 	/**
 	 * Updates the modified data or stores new data (added via add())
 	 */
-	virtual lbErrCodes LB_STDCALL update();
+	lbErrCodes LB_STDCALL update();
 
 
 	/*
 	 * General information based on the given query.
 	 */
 
-	virtual int		LB_STDCALL getColumns();
+	int		LB_STDCALL getColumns();
 
-	virtual char*		LB_STDCALL getColumnName(int col);
+	char*		LB_STDCALL getColumnName(int col);
 
-	virtual int		LB_STDCALL hasFKColumn(char* FKName);
-	virtual lb_I_String*	LB_STDCALL getPKTable(char const * FKName);
+	int		LB_STDCALL hasFKColumn(char* FKName);
+	
+	lb_I_String*	LB_STDCALL getFKColumn(char* table, char* primary);
+	
+	lb_I_String*	LB_STDCALL getPKTable(char const * FKName);
 
 	int 			LB_STDCALL getPKColumns();
 	lb_I_String* 		LB_STDCALL getPKColumn(int pos);
@@ -320,6 +323,8 @@ private:
 
 	UAP(lb_I_Container, primaryColumns, __FILE__, __LINE__)
 	UAP(lb_I_Container, ForeignColumns, __FILE__, __LINE__)
+	
+	UAP(lb_I_Container, mapPKTable_PKColumns_To_FKName, __FILE__, __LINE__)
 
 	UAP(lb_I_Container, ReadOnlyColumns, __FILE__, __LINE__)
 
@@ -1377,6 +1382,29 @@ int LB_STDCALL lbQuery::hasFKColumn(char* FKName) {
 }
 /*...e*/
 
+lb_I_String* LB_STDCALL lbQuery::getFKColumn(char* table, char* primary) {
+	lbErrCodes err = ERR_NONE;
+	
+	UAP_REQUEST(manager.getPtr(), lb_I_String, PKTable_PKName)
+	UAP(lb_I_KeyBase, key_PKTable_PKName, __FILE__, __LINE__)
+	
+	*PKTable_PKName = table;
+	*PKTable_PKName += primary;
+	
+	QI(PKTable_PKName, lb_I_KeyBase, key_PKTable_PKName, __FILE__, __LINE__)
+
+	UAP(lb_I_Unknown, result, __FILE__, __LINE__)
+	UAP(lb_I_String, FKName, __FILE__, __LINE__)
+
+	result = mapPKTable_PKColumns_To_FKName->getElement(&key_PKTable_PKName);
+
+	QI(result, lb_I_String, FKName, __FILE__, __LINE__)
+
+	FKName++;
+	
+	return FKName.getPtr();
+}
+
 /*...slb_I_String\42\ LB_STDCALL lbQuery\58\\58\getPKTable\40\char const \42\ FKName\41\:0:*/
 lb_I_String* LB_STDCALL lbQuery::getPKTable(char const * FKName) {
 	lbErrCodes err = ERR_NONE;
@@ -1416,6 +1444,13 @@ void LB_STDCALL lbQuery::prepareFKList() {
 	#define TAB_LEN 100
 	#define COL_LEN 100
 
+	if (mapPKTable_PKColumns_To_FKName == NULL) {
+		REQUEST(manager.getPtr(), lb_I_Container, mapPKTable_PKColumns_To_FKName)
+	} else {
+		mapPKTable_PKColumns_To_FKName->deleteAll();
+	}
+
+
 	if (ForeignColumns == NULL) {
 		REQUEST(manager.getPtr(), lb_I_Container, ForeignColumns)
 	} else {
@@ -1446,16 +1481,16 @@ void LB_STDCALL lbQuery::prepareFKList() {
 
 	retcode = SQLAllocStmt(hdbc, &hstmt); /* Statement handle */
 
+	if (retcode != SQL_SUCCESS)
+	{
+	        _dbError( "SQLAllocStmt()",henv,hdbc,hstmt);
+	}
+
 	SQLBindCol(hstmt, 3, SQL_C_CHAR, szPkTable, TAB_LEN, &cbPkTable);
 	SQLBindCol(hstmt, 4, SQL_C_CHAR, szPkCol, COL_LEN, &cbPkCol);
 	SQLBindCol(hstmt, 5, SQL_C_SSHORT, &iKeySeq, TAB_LEN, &cbKeySeq);
 	SQLBindCol(hstmt, 7, SQL_C_CHAR, szFkTable, TAB_LEN, &cbFkTable);
 	SQLBindCol(hstmt, 8, SQL_C_CHAR, szFkCol, COL_LEN, &cbFkCol);
-
-	if (retcode != SQL_SUCCESS)
-	{
-	        _dbError( "SQLAllocStmt()",henv,hdbc,hstmt);
-	}
 
 	char* temp = (char*) getTableName(getColumnName(1));
 	szTable = (unsigned char*) malloc(strlen(temp)+1);
@@ -1465,6 +1500,8 @@ void LB_STDCALL lbQuery::prepareFKList() {
 	if (strlen((char* const) szTable) > 99) {
 		_CL_VERBOSE << "ERROR: Possible buffer overflows!" LOG_
 	}
+
+	_CL_LOG << "Try to get foreign keys from SQLForeignKeys with '" << temp << "'" LOG_
 	
 	retcode = SQLForeignKeys(hstmt,
 	         NULL, 0,      /* Primary catalog   */
@@ -1472,7 +1509,11 @@ void LB_STDCALL lbQuery::prepareFKList() {
 	         NULL, 0,      /* Primary table   */
 	         NULL, 0,      /* Foreign catalog   */
 	         NULL, 0,      /* Foreign schema   */
-	         szTable, SQL_NTS);      /* Foreign table   */
+	         szTable, SQL_NTS); /* Foreign table   */
+
+	if ((retcode != SQL_SUCCESS) && (retcode != SQL_SUCCESS_WITH_INFO)) {
+		_CL_LOG << "SQLForeignKeys(...) failed!" LOG_
+	}
 
 
 	while ((retcode == SQL_SUCCESS) || (retcode == SQL_SUCCESS_WITH_INFO)) {
@@ -1492,17 +1533,55 @@ void LB_STDCALL lbQuery::prepareFKList() {
 	      UAP_REQUEST(manager.getPtr(), lb_I_String, FKName)
 	      UAP_REQUEST(manager.getPtr(), lb_I_String, PKTable)
 	      
+	      UAP_REQUEST(manager.getPtr(), lb_I_String, PKTable_PKName)
+	      
 	      FKName->setData((char*) szFkCol);
 	      PKTable->setData((char*) szPkTable);
 	      
 	      UAP(lb_I_Unknown, uk_PKTable, __FILE__, __LINE__)
 	      UAP(lb_I_KeyBase, key_FKName, __FILE__, __LINE__)
 	      
+	      UAP(lb_I_Unknown, uk_FKName, __FILE__, __LINE__)
+	      UAP(lb_I_KeyBase, key_PKTable_PKName, __FILE__, __LINE__)
+	      
 	      QI(FKName, lb_I_KeyBase, key_FKName, __FILE__, __LINE__)
 	      QI(PKTable, lb_I_Unknown, uk_PKTable, __FILE__, __LINE__)
 
 	      ForeignColumns->insert(&uk_PKTable, &key_FKName);
 	      
+	      *PKTable_PKName = (char*) szPkTable;
+	      *PKTable_PKName += (char*) szPkCol;
+	      
+	      QI(PKTable_PKName, lb_I_KeyBase, key_PKTable_PKName, __FILE__, __LINE__)
+	      QI(FKName, lb_I_Unknown, uk_FKName, __FILE__, __LINE__)
+	      
+	      mapPKTable_PKColumns_To_FKName->insert(&uk_FKName, &key_PKTable_PKName);
+	   } else {
+	   	_CL_LOG << "SQLFetch(hstmt) for SQLForeignKeys(...) failed." LOG_
+	
+		_dbError( "SQLAllocStmt()",henv,hdbc,hstmt);
+		   	
+	   	switch (retcode) {
+	   	
+	   		case SQL_SUCCESS: 
+	   			printf("SQL_SUCCESS\n");
+	   			break;
+	   		case SQL_SUCCESS_WITH_INFO:
+	   			printf("SQL_SUCCESS_WITH_INFO\n");
+	   			break;
+	   		case SQL_NO_DATA:
+	   			printf("SQL_NO_DATA\n");
+	   			break;
+	   		case SQL_STILL_EXECUTING:
+	   			printf("SQL_STILL_EXECUTING\n");
+	   			break;
+	   		case SQL_ERROR:
+	   			printf("SQL_ERROR\n");
+	   			break;
+	   		case SQL_INVALID_HANDLE:
+	   			printf("SQL_INVALID_HANDLE\n");
+	   			break;
+	   	}
 	   }
 	}
 
@@ -1527,7 +1606,7 @@ void LB_STDCALL lbQuery::prepareFKList() {
 	   the foreign column.
 	 */
 
-	_CL_VERBOSE << "lbQuery::prepareFKList() tries to read foreign column information from table" LOG_
+	_CL_LOG << "lbQuery::prepareFKList() tries to read foreign column information from table" LOG_
 	
 	char* table = getTableName(getColumnName(1));
 	
@@ -1568,6 +1647,7 @@ void LB_STDCALL lbQuery::prepareFKList() {
 		UAP_REQUEST(manager.getPtr(), lb_I_String, FKName)
 	        UAP_REQUEST(manager.getPtr(), lb_I_String, PKTable)
 	        UAP_REQUEST(manager.getPtr(), lb_I_String, PKName)
+		UAP_REQUEST(manager.getPtr(), lb_I_String, PKTable_PKName)
 	
 		PKTable = q->getAsString(1);
 		PKName = q->getAsString(2);
@@ -1576,13 +1656,26 @@ void LB_STDCALL lbQuery::prepareFKList() {
 		
 		UAP(lb_I_Unknown, uk_PKTable, __FILE__, __LINE__)
 		UAP(lb_I_KeyBase, key_FKName, __FILE__, __LINE__)
+
+		UAP(lb_I_Unknown, uk_FKName, __FILE__, __LINE__)
+		UAP(lb_I_KeyBase, key_PKTable_PKName, __FILE__, __LINE__)
 	      
 	        QI(FKName, lb_I_KeyBase, key_FKName, __FILE__, __LINE__)
 	        QI(PKTable, lb_I_Unknown, uk_PKTable, __FILE__, __LINE__)
 
-		//printf("%-s ( %-s ) <-- %-s ( %-s )\n", PKTable->charrep(), PKName->charrep(), table, FKName->charrep());
+
+		printf("%-s ( %-s ) <-- %-s ( %-s )\n", PKTable->charrep(), PKName->charrep(), table, FKName->charrep());
 
 	        ForeignColumns->insert(&uk_PKTable, &key_FKName);
+	        
+	        *PKTable_PKName = (char*) szPkTable;
+	        *PKTable_PKName += (char*) szPkCol;
+	        
+	        QI(PKTable_PKName, lb_I_KeyBase, key_PKTable_PKName, __FILE__, __LINE__)
+	        QI(FKName, lb_I_Unknown, uk_FKName, __FILE__, __LINE__)
+	        
+	        mapPKTable_PKColumns_To_FKName->insert(&uk_FKName, &key_PKTable_PKName);
+	        
 	    } else {
 	    	_CL_VERBOSE << "No foreign key to primary data mapping found." LOG_
 	    }
