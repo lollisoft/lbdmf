@@ -159,7 +159,7 @@ void lbConfigure_FK_PK_MappingDialog::OnPKComboBoxSelected( wxCommandEvent &even
 
 	UAP(lb_I_String, PKTable, __FILE__, __LINE__)
 	
-	char* fkTable = strdup(sourceQuery->getTableName());
+	char* fkTable = strdup(sourceQuery->getTableName((char*) FKName.c_str()));
 	
 	char* p = strdup(FKName.c_str());
 	
