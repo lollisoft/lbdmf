@@ -1701,6 +1701,10 @@ void LB_STDCALL lbDatabaseDialog::updateFromMaster() {
 	_CL_LOG << "lbDatabaseDialog::updateFromMaster() generated new master id query: \n'" <<
 		newMasterIDQuery->charrep() << "'" LOG_
 
+	if (MasterDetailRelationData == NULL) {
+		REQUEST(manager.getPtr(), lb_I_Container, MasterDetailRelationData)
+	}
+
 /*...sRetrieve the values from the primary keys and build up the where clause to be used in detail form:8:*/
 	REQUEST(manager.getPtr(), lb_I_Database, database)
 	UAP(lb_I_Query, PKQuery, __FILE__, __LINE__)
@@ -1756,6 +1760,14 @@ void LB_STDCALL lbDatabaseDialog::updateFromMaster() {
 				if (isChar) *newWhereClause += "'";
 			
 				*newWhereClause += " and ";
+
+				UAP(lb_I_Unknown, uk_colValue, __FILE__, __LINE__)
+				UAP(lb_I_KeyBase, key_fk, __FILE__, __LINE__)
+				
+				QI(colValue, lb_I_Unknown, uk_colValue, __FILE__, __LINE__)
+				QI(fk, lb_I_KeyBase, key_fk, __FILE__, __LINE__)
+
+				MasterDetailRelationData->insert(&uk_colValue, &key_fk);
 /*...e*/
 			}
 
@@ -1787,6 +1799,14 @@ void LB_STDCALL lbDatabaseDialog::updateFromMaster() {
 			*newWhereClause += colValue->charrep();
 			
 			if (isChar) *newWhereClause += "'";
+
+			UAP(lb_I_Unknown, uk_colValue, __FILE__, __LINE__)
+			UAP(lb_I_KeyBase, key_fk, __FILE__, __LINE__)
+				
+			QI(colValue, lb_I_Unknown, uk_colValue, __FILE__, __LINE__)
+			QI(fk, lb_I_KeyBase, key_fk, __FILE__, __LINE__)
+
+			MasterDetailRelationData->insert(&uk_colValue, &key_fk);
 /*...e*/
 			
 			*newWhereClause += ") or ";
@@ -1828,6 +1848,14 @@ void LB_STDCALL lbDatabaseDialog::updateFromMaster() {
 				if (isChar) *newWhereClause += "'";
 			
 				*newWhereClause += " and ";
+
+				UAP(lb_I_Unknown, uk_colValue, __FILE__, __LINE__)
+				UAP(lb_I_KeyBase, key_fk, __FILE__, __LINE__)
+				
+				QI(colValue, lb_I_Unknown, uk_colValue, __FILE__, __LINE__)
+				QI(fk, lb_I_KeyBase, key_fk, __FILE__, __LINE__)
+
+				MasterDetailRelationData->insert(&uk_colValue, &key_fk);
 /*...e*/
 			}
 			
@@ -1859,6 +1887,14 @@ void LB_STDCALL lbDatabaseDialog::updateFromMaster() {
 			*newWhereClause += colValue->charrep();
 			
 			if (isChar) *newWhereClause += "'";
+
+			UAP(lb_I_Unknown, uk_colValue, __FILE__, __LINE__)
+			UAP(lb_I_KeyBase, key_fk, __FILE__, __LINE__)
+				
+			QI(colValue, lb_I_Unknown, uk_colValue, __FILE__, __LINE__)
+			QI(fk, lb_I_KeyBase, key_fk, __FILE__, __LINE__)
+
+			MasterDetailRelationData->insert(&uk_colValue, &key_fk);
 /*...e*/
 
 			*newWhereClause += ")";
@@ -2337,6 +2373,10 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBAdd(lb_I_Unknown* uk) {
 		*newTitle += ": Add failed !";
 
 		SetTitle(_trans(newTitle->charrep()));
+	}
+
+	if (MasterDetailRelationData != NULL) {
+		
 	}
 
 //	lbDBRead();

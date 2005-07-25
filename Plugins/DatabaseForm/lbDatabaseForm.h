@@ -30,11 +30,17 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.15 $
+ * $Revision: 1.16 $
  * $Name:  $
- * $Id: lbDatabaseForm.h,v 1.15 2005/07/24 16:58:29 lollisoft Exp $
+ * $Id: lbDatabaseForm.h,v 1.16 2005/07/25 20:56:12 lollisoft Exp $
  *
  * $Log: lbDatabaseForm.h,v $
+ * Revision 1.16  2005/07/25 20:56:12  lollisoft
+ * Collect the master detail relation data to be used as default values,
+ * when new data will be added in the detail form.
+ *
+ * So hidden fields gets set up correctly without user interaction.
+ *
  * Revision 1.15  2005/07/24 16:58:29  lollisoft
  * Much changes to get master detail forms nearly run.
  *
@@ -552,6 +558,7 @@ public:
 
 
 	UAP(lb_I_Container, ignoredPKTables, __FILE__, __LINE__)
+	UAP(lb_I_Container, MasterDetailRelationData, __FILE__, __LINE__)
 
 	// l gets overwritten, while assigning a lb_I_Query* pointer to sampleQuery !!
 	// l and buf are therefore as a bugfix.
