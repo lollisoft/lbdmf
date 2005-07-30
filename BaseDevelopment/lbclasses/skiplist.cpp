@@ -38,11 +38,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.34 $
+ * $Revision: 1.35 $
  * $Name:  $
- * $Id: skiplist.cpp,v 1.34 2005/06/28 12:04:02 lollisoft Exp $
+ * $Id: skiplist.cpp,v 1.35 2005/07/30 15:56:10 lollisoft Exp $
  *
  * $Log: skiplist.cpp,v $
+ * Revision 1.35  2005/07/30 15:56:10  lollisoft
+ * Bugfix in get ... At functions.
+ *
  * Revision 1.34  2005/06/28 12:04:02  lollisoft
  * Bugfix in skiplist::exists(). Search increases the reference. Must be decreased again.
  *
@@ -451,27 +454,46 @@ void LB_STDCALL SkipList::setElement(lb_I_KeyBase** key, lb_I_Unknown ** const e
 /*...e*/
 /*...slb_I_Unknown\42\ LB_STDCALL SkipList\58\\58\getElementAt\40\int i\41\:0:*/
 lb_I_Unknown* LB_STDCALL SkipList::getElementAt(int i) {
-        _LOG << "SkipList::getElementAt(int i) not implemented" LOG_
-        int ii = 0;
-        lb_I_Element* temp = container_data;
-        while (temp != NULL) {
-                if (ii == i) return temp->getObject();
-                temp = temp->getNext();
-        }
-        return NULL;
+        int ii = 1;
+
+	Elem e;
+	
+	if (can_dump() == 1) {
+		e = dump_next();
+
+		while ((e != NULL) && (ii < i)) {
+			ii++;
+			e = dump_next();
+		}
+
+		finishIteration();
+		
+		if (ii == i) return e->getObject();
+	}
+	
+	return NULL;
 }
 /*...e*/
 /*...slb_I_KeyBase\42\ LB_STDCALL SkipList\58\\58\getKeyAt\40\int i\41\:0:*/
 lb_I_KeyBase* LB_STDCALL SkipList::getKeyAt(int i) {
-        _LOG << "SkipList::getKeyAt(int i) not implemented" LOG_
-        int ii = 0;
-        lb_I_Element* temp = container_data;
-        while (temp != NULL) {
-                if (ii == i) return temp->getKey();
-                temp = temp->getNext();
-                ii++;
-        }
-        return NULL;
+        int ii = 1;
+
+	Elem e;
+
+	if (can_dump() == 1) {
+		e = dump_next();
+
+		while ((e != NULL) && (ii < i)) {
+			ii++;
+			e = dump_next();
+		}
+
+		finishIteration();
+
+		if (ii == i) return e->getKey();
+	}
+
+	return NULL;
 }
 /*...e*/
 
