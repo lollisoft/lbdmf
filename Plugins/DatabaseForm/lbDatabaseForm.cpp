@@ -1768,6 +1768,8 @@ void LB_STDCALL lbDatabaseDialog::updateFromMaster() {
 				QI(fk, lb_I_KeyBase, key_fk, __FILE__, __LINE__)
 
 				MasterDetailRelationData->insert(&uk_colValue, &key_fk);
+
+				_CL_LOG << "Set control '" << fk->charrep() << "' to '" << colValue->charrep() << "'" LOG_
 /*...e*/
 			}
 
@@ -1807,6 +1809,7 @@ void LB_STDCALL lbDatabaseDialog::updateFromMaster() {
 			QI(fk, lb_I_KeyBase, key_fk, __FILE__, __LINE__)
 
 			MasterDetailRelationData->insert(&uk_colValue, &key_fk);
+			_CL_LOG << "Set control '" << fk->charrep() << "' to '" << colValue->charrep() << "'" LOG_
 /*...e*/
 			
 			*newWhereClause += ") or ";
@@ -1856,6 +1859,7 @@ void LB_STDCALL lbDatabaseDialog::updateFromMaster() {
 				QI(fk, lb_I_KeyBase, key_fk, __FILE__, __LINE__)
 
 				MasterDetailRelationData->insert(&uk_colValue, &key_fk);
+				_CL_LOG << "Set control '" << fk->charrep() << "' to '" << colValue->charrep() << "'" LOG_
 /*...e*/
 			}
 			
@@ -1895,12 +1899,14 @@ void LB_STDCALL lbDatabaseDialog::updateFromMaster() {
 			QI(fk, lb_I_KeyBase, key_fk, __FILE__, __LINE__)
 
 			MasterDetailRelationData->insert(&uk_colValue, &key_fk);
+			_CL_LOG << "Set control '" << fk->charrep() << "' to '" << colValue->charrep() << "'" LOG_
 /*...e*/
 
 			*newWhereClause += ")";
 		}
 
 		Layout();		
+		
 		
 	}
 /*...e*/
@@ -2198,38 +2204,40 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBRead() {
 				
 				int count = cbMapper->Count();
 				
-				char *newFK = NULL;
+				if (count != 0) {
+					char *newFK = NULL;
 
-				newFK = (char*) malloc(strlen(sampleQuery->getAsString(i)->charrep()) + 1);
-				newFK[0] = 0;
+					newFK = (char*) malloc(strlen(sampleQuery->getAsString(i)->charrep()) + 1);
+					newFK[0] = 0;
 								
-				strcpy(newFK, sampleQuery->getAsString(i)->charrep());
+					strcpy(newFK, sampleQuery->getAsString(i)->charrep());
 				
-				key->setData(atoi(newFK));
+					key->setData(atoi(newFK));
 				
-				UAP(lb_I_KeyBase, key_FK_id, __FILE__, __LINE__)
+					UAP(lb_I_KeyBase, key_FK_id, __FILE__, __LINE__)
 				
-				QI(key, lb_I_KeyBase, key_FK_id, __FILE__, __LINE__)
+					QI(key, lb_I_KeyBase, key_FK_id, __FILE__, __LINE__)
 				
-				UAP(lb_I_Unknown, uk_cbBoxPosition, __FILE__, __LINE__)
-				UAP(lb_I_Integer, cbBoxPosition, __FILE__, __LINE__)
+					UAP(lb_I_Unknown, uk_cbBoxPosition, __FILE__, __LINE__)
+					UAP(lb_I_Integer, cbBoxPosition, __FILE__, __LINE__)
 				
-				int cbPos = 0;
+					int cbPos = 0;
 				
-				while (cbMapper->hasMoreElements() == 1) {
-					UAP(lb_I_Integer, sel, __FILE__, __LINE__)
-				        lb_I_Unknown* e = cbMapper->nextElement();
-				        QI(e, lb_I_Integer, sel, __FILE__, __LINE__)
+					while (cbMapper->hasMoreElements() == 1) {
+						UAP(lb_I_Integer, sel, __FILE__, __LINE__)
+					        lb_I_Unknown* e = cbMapper->nextElement();
+					        QI(e, lb_I_Integer, sel, __FILE__, __LINE__)
 				        
-				        if (sel->getData() == atoi(newFK)) {
-				        	cbox->SetSelection(cbPos);
-				        }
-				        cbPos++;
-				}
+					        if (sel->getData() == atoi(newFK)) {
+					        	cbox->SetSelection(cbPos);
+					        }
+					        cbPos++;
+					}
 				
-				if (newFK) {
-				    free(newFK);
-				    newFK = NULL;
+					if (newFK) {
+					    free(newFK);
+					    newFK = NULL;
+					}
 				}
 /*...e*/
 			} else {
@@ -2376,7 +2384,26 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBAdd(lb_I_Unknown* uk) {
 	}
 
 	if (MasterDetailRelationData != NULL) {
+	
+		_CL_LOG << "Have " << MasterDetailRelationData->Count() << " elements in list." LOG_
+	
+		for (int i = 1; i <= MasterDetailRelationData->Count(); i++) {
+			lbErrCodes err = ERR_NONE;
 		
+			UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
+			UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
+			
+			UAP(lb_I_String, value, __FILE__, __LINE__)
+			
+			uk = MasterDetailRelationData->getElementAt(i);
+			key = MasterDetailRelationData->getKeyAt(i);
+			
+			QI(uk, lb_I_String, value, __FILE__, __LINE__)
+			
+			_CL_LOG << "Set control '" << key->charrep() << "' to '" << value->charrep() << "'" LOG_
+			
+		
+		}
 	}
 
 //	lbDBRead();
