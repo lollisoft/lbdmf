@@ -1716,6 +1716,8 @@ int LB_STDCALL lbQuery::getPKColumns() {
 	{
 	        _dbError( "SQLAllocStmt()",henv,hdbc,hstmt);
 	}
+	
+	_CL_LOG << "Call getTableName('" << getColumnName(1) << "')" LOG_
 
 	char* temp = (char*) getTableName(getColumnName(1));
 	szTable = (unsigned char*) malloc(strlen(temp)+1);
@@ -1728,6 +1730,14 @@ int LB_STDCALL lbQuery::getPKColumns() {
 	         szTable, SQL_NTS);	/* Primary table   */
 
 	int columns = 0;
+
+	if ((retcode != SQL_SUCCESS) && (retcode != SQL_SUCCESS_WITH_INFO))
+	{
+		_CL_LOG << "lbQuery::getPKColumns() SQLPrimaryKeys failed." LOG_
+		
+		_dbError( "SQLPrimaryKeys()",henv,hdbc,hstmt);
+	}
+	
 
 	while ((retcode == SQL_SUCCESS) || (retcode == SQL_SUCCESS_WITH_INFO)) {
 
@@ -2471,153 +2481,51 @@ free(buffer);
 /*...schar\42\ LB_STDCALL lbQuery\58\\58\getTableName\40\char\42\ columnName\41\:0:*/
 char *lpszTable = NULL;
 char* LB_STDCALL lbQuery::getTableName(char* columnName) {
-/*...sbla SQL analysing:0:*/
-#ifdef bla
-#define ISBLANK(x)      ((x) == ' ')
-#define ISCOMMA(x)      ((x) == ',')
-#define ISNUM(x)        (((x) >= '0') && ((x) <= '9'))
-#define ISLPAREN(x)     ((x) == '(')
-#define ISRPAREN(x)     ((x) == ')')
-#define ISPERIOD(x)     ((x) == '.')
-#define ISRETURN(x)     (((x) == '\n') || ((x) == '\r'))
-#define ISTAB(x)        ((x) == '\t')
-#define ISWHITE(x)      (ISBLANK(x) || ISTAB(x) || ISRETURN(x))
-
-
-// This possibly causes a crash in wxWidgets sample application
-char *lpszTable = NULL;
-
-char* LB_STDCALL lbQuery::getTableName(char* columnName) {
-   LPCSTR   lpsz;
-   int      cp;
-   int      cb;
-
-    if (lpszTable == NULL) {
-	lpszTable = (char*) malloc(1000);
-    }
-    
-   lpszTable[0] = 0;
-
-   cb = strlen("from");
-
-   char        g_szQuoteChar[2];      // Identifier quote char
-
-// Get identifier quote character
-      SQLGetInfo(hdbc, SQL_IDENTIFIER_QUOTE_CHAR,
-                                    g_szQuoteChar, sizeof(g_szQuoteChar), NULL);
-         //*g_szQuoteChar = ' ';
-
-
-
-
-   for (lpsz=szSql, cp=0; *lpsz; ) {
-
-      while (*lpsz && ISWHITE(*lpsz)) lpsz++;
-
-      if (!cp && !strncmp(lpsz, "from", cb) && ISWHITE(*(lpsz+cb)))
-         break;
-
-      if (ISLPAREN(*lpsz))
-         cp++;
-      else if (ISRPAREN(*lpsz))
-         cp--;
-
-      while (*lpsz && !ISWHITE(*lpsz)) lpsz++;
-   }
-
-   while (*lpsz && !ISWHITE(*lpsz)) lpsz++;
-   while (*lpsz && ISWHITE(*lpsz))  lpsz++;
-
-// There may be a bug in the last lines and here I have my table...
-
-int i = 0;
-while (lpsz[i] != 0 && lpsz[i] != ' ') i++;
-
-if (strlen(lpsz) > 999) {
-    lpszTable = (char*) realloc(lpszTable, strlen(lpsz)+1);
-    lpszTable[0] = 0;
-}
-
-strcpy(lpszTable, lpsz);
-
-char* pos = strstr(lpszTable, "where");
-
-if (pos) pos[0] = 0;
-
-
-pos = strstr(lpszTable, " order");
-
-if (pos) pos[0] = 0;
-
-pos = strstr(lpszTable, " inner");
-
-if (pos) pos[0] = 0;
-
-int a = 0;
-int b = 0;
-
-char* temp;
-
-temp = new char[strlen((char const*) lpszTable)+1];
-
-while (b <= strlen((char const*) lpszTable)) {
-        if (lpszTable[b] != '\"') {
-                temp[a] = lpszTable[b];
-                a++;
-                b++;
-        } else {
-                b++;
-        }
-}
-
-lpszTable[0] = 0;
-strcpy(lpszTable, temp);
-
-delete[] temp;
-
-return lpszTable; //!!!
-#endif // bla
-/*...e*/
-  
-	SQLHSTMT	StatementHandle;
-	SQLUSMALLINT	ColumnNumber;
-	SQLUSMALLINT	FieldIdentifier;
-	SQLPOINTER	CharacterAttributePtr;
-	SQLSMALLINT	BufferLength;
-	SQLSMALLINT	StringLengthPtr = 0;
-	SQLPOINTER	NumericAttributePtr;
-
-	SQLINTEGER	Int = 0;
-
-	CharacterAttributePtr = (void*) malloc(101);
-	memset(CharacterAttributePtr, 0, 101);
-
-	NumericAttributePtr = &Int;
-
-
-	SQLRETURN retcode;
-
-	retcode = SQLColAttribute(
-			hstmt,
-			boundColumns->getColumnIndex(columnName), 
-			SQL_DESC_BASE_TABLE_NAME, 
-			CharacterAttributePtr,
-			100,
-			&StringLengthPtr,
-			NumericAttributePtr);
-
-	_CL_LOG << "Have got this table name: '" << (char*) CharacterAttributePtr << "'" LOG_
-    
-	if (lpszTable == NULL)
-		lpszTable = (char*) strdup((char*) CharacterAttributePtr);
-	else {
-		lpszTable[0] = 0;
-		strcpy((char*) lpszTable, (char*) CharacterAttributePtr);
+		
+		SQLHSTMT	StatementHandle;
+		SQLUSMALLINT	ColumnNumber;
+		SQLUSMALLINT	FieldIdentifier;
+		SQLPOINTER	CharacterAttributePtr;
+		SQLSMALLINT	BufferLength;
+		SQLSMALLINT	StringLengthPtr = 0;
+		SQLPOINTER	NumericAttributePtr;
+		
+		SQLINTEGER	Int = 0;
+		
+		CharacterAttributePtr = (void*) malloc(101);
+		memset(CharacterAttributePtr, 0, 101);
+		
+		NumericAttributePtr = &Int;
+		
+		SQLRETURN retcode;
+		int index = boundColumns->getColumnIndex(columnName);
+		
+		retcode = SQLColAttribute(
+								  hstmt,
+								  index, 
+								  SQL_DESC_TABLE_NAME, 
+								  // SQL_DESC_BASE_TABLE_NAME would make problems
+								  // under Mac OS X and Linux
+								  CharacterAttributePtr,
+								  100,
+								  &StringLengthPtr	,
+								  NumericAttributePtr);
+			
+		if ((retcode == SQL_ERROR) || (retcode == SQL_SUCCESS_WITH_INFO)) {
+			_CL_LOG << "ERROR: SQLColAttribute(...) failed." LOG_
+			_dbError("", henv, hdbc, hstmt);
+		}
+		
+		if (lpszTable == NULL)
+			lpszTable = (char*) strdup((char*) CharacterAttributePtr);
+		else {
+			lpszTable[0] = 0;
+			strcpy((char*) lpszTable, (char*) CharacterAttributePtr);
+		}
+		
+		return lpszTable;
 	}
-    
-	return lpszTable;
-}
-/*...e*/
+	/*...e*/
 
 void LB_STDCALL lbQuery::dbError(char* lp)
 {
