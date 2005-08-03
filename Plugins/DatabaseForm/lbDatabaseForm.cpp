@@ -2383,6 +2383,7 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBAdd(lb_I_Unknown* uk) {
 		SetTitle(_trans(newTitle->charrep()));
 	}
 
+/*...sPrefill data to hidden fields\46\ This would mostly be combo boxes\46\:8:*/
 	if (MasterDetailRelationData != NULL) {
 	
 		_CL_LOG << "Have " << MasterDetailRelationData->Count() << " elements in list." LOG_
@@ -2402,9 +2403,137 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBAdd(lb_I_Unknown* uk) {
 			
 			_CL_LOG << "Set control '" << key->charrep() << "' to '" << value->charrep() << "'" LOG_
 			
+			
+			wxWindow* w = FindWindowByName(wxString(key->charrep()), this);
 		
+			if (w != NULL) {
+				if (sampleQuery->hasFKColumn(key->charrep()) == 1) {
+					_CL_LOG << "Set dropdown control '" << 
+						key->charrep() << 
+						"' to '" << 
+						value->charrep() << "'" LOG_
+/*...sfill combo box with data:48:*/
+				wxChoice* cbox = (wxChoice*) w;
+				
+				lbErrCodes err = ERR_NONE;
+
+				UAP_REQUEST(manager.getPtr(), lb_I_Integer, key1)
+				UAP_REQUEST(manager.getPtr(), lb_I_String, cbName)
+
+				cbName->setData(key->charrep());
+
+				UAP(lb_I_KeyBase, key_cbName, __FILE__, __LINE__)
+				UAP(lb_I_Unknown, uk_cbMapper, __FILE__, __LINE__)
+				UAP(lb_I_Container, cbMapper, __FILE__, __LINE__)
+
+				QI(cbName, lb_I_KeyBase, key_cbName, __FILE__, __LINE__)
+
+				uk_cbMapper = ComboboxMapperList->getElement(&key_cbName);
+
+				QI(uk_cbMapper, lb_I_Container, cbMapper, __FILE__, __LINE__)
+				
+				int count = cbMapper->Count();
+				
+				if (count != 0) {
+					char *newFK = NULL;
+
+					newFK = (char*) malloc(strlen(value->charrep()) + 1);
+					newFK[0] = 0;
+								
+					strcpy(newFK, value->charrep());
+				
+					key1->setData(atoi(newFK));
+				
+					UAP(lb_I_KeyBase, key_FK_id, __FILE__, __LINE__)
+				
+					QI(key1, lb_I_KeyBase, key_FK_id, __FILE__, __LINE__)
+				
+					UAP(lb_I_Unknown, uk_cbBoxPosition, __FILE__, __LINE__)
+					UAP(lb_I_Integer, cbBoxPosition, __FILE__, __LINE__)
+				
+					int cbPos = 0;
+				
+					while (cbMapper->hasMoreElements() == 1) {
+						UAP(lb_I_Integer, sel, __FILE__, __LINE__)
+					        lb_I_Unknown* e = cbMapper->nextElement();
+					        QI(e, lb_I_Integer, sel, __FILE__, __LINE__)
+				        
+					        if (sel->getData() == atoi(newFK)) {
+					        	cbox->SetSelection(cbPos);
+					        }
+					        cbPos++;
+					}
+				
+					if (newFK) {
+					    free(newFK);
+					    newFK = NULL;
+					}
+				}
+/*...e*/
+				} else {
+					if (FFI->isSpecialColumn(key->charrep())) {
+						_CL_LOG << "Set special control '" << 
+							key->charrep() << 
+							"' to '" << 
+							value->charrep() << "'" LOG_
+					} else {
+						_CL_LOG << "Set text control '" << 
+							key->charrep() << 
+							"' to '" << 
+							value->charrep() << "'" LOG_
+					#ifdef bla
+/*...sfill controls with data:56:*/
+				lb_I_Query::lbDBColumnTypes coltype = sampleQuery->getColumnType(i);
+
+				switch (coltype) {
+					case lb_I_Query::lbDBColumnBit:
+						{
+							wxCheckBox *check = (wxCheckBox*) w;
+#ifndef OSX	
+							if (sampleQuery->isNull(i)) {
+								check->SetValue(false);
+							} else {
+#endif
+								if (strcmp(sampleQuery->getAsString(i)->charrep(), "true") == 0) {
+									printf("Read data for checkbox is true.\n");
+									check->SetValue(true);
+								} else {
+									printf("Read data for checkbox is false.\n");
+									check->SetValue(false);
+								}
+#ifndef OSX
+							}
+#endif
+						}
+						break;
+					
+					case lb_I_Query::lbDBColumnChar:
+						{
+							wxTextCtrl* tx = (wxTextCtrl*) w;
+							tx->SetValue(wxString(sampleQuery->getAsString(i)->charrep()));
+						}
+						break;
+					
+					case lb_I_Query::lbDBColumnInteger:
+						{
+							wxTextCtrl* tx = (wxTextCtrl*) w;
+							tx->SetValue(wxString(sampleQuery->getAsString(i)->charrep()));
+						}
+						break;
+					case lb_I_Query::lbDBColumnUnknown:
+						break;
+				}
+
+/*...e*/
+					#endif
+					}
+				}
+			} else {
+			_CL_VERBOSE << "Control '" << key->charrep() << "' not found." LOG_
+			}
 		}
 	}
+/*...e*/
 
 //	lbDBRead();
 
