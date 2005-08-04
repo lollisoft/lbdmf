@@ -543,7 +543,30 @@ void LB_STDCALL lbDetailFormAction::openDetailForm(lb_I_String* formularname, lb
 	lbErrCodes err = ERR_NONE;
 
 	if (detailForm != NULL) {
-		// Show it.
+		_CL_LOG << "Show previously created form." LOG_
+	
+		UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
+		
+		parameter->setData("source value");
+		params->getUAPString(*&parameter, *&SourceFieldValue);
+		parameter->setData("source Form");
+		params->getUAPString(*&parameter, *&masterForm);
+		
+		*formularname += " - ";
+		*formularname += SourceFieldValue->charrep();
+		
+		detailForm->setName(formularname->charrep());
+
+		UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
+		UAP(lb_I_GUI, gui, __FILE__, __LINE__)
+		
+		meta->getGUI(&gui);
+
+		lb_I_DatabaseForm* f = gui->findDBForm(masterForm->charrep());
+
+		detailForm->setMasterForm(f, *&params);
+		
+		detailForm->updateFromMaster();
 		detailForm->show();	
 	} else {
 		UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
@@ -1630,6 +1653,8 @@ void LB_STDCALL lbDatabaseDialog::updateFromMaster() {
 	UAP_REQUEST(manager.getPtr(), lb_I_String, newWhereClause)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, newMasterIDQuery)
 	
+	UAP_REQUEST(manager.getPtr(), lb_I_String, newQuery)
+	
 	// Using the new = and += operators of the string interface. 
 	// Note: If used in an UAP, explizit 'dereferencing' must be used.
 	
@@ -1698,7 +1723,7 @@ void LB_STDCALL lbDatabaseDialog::updateFromMaster() {
 	if (isChar) *newMasterIDQuery += "'";
 /*...e*/
 	
-	_CL_LOG << "lbDatabaseDialog::updateFromMaster() generated new master id query: \n'" <<
+	_CL_VERBOSE << "lbDatabaseDialog::updateFromMaster() generated new master id query: \n'" <<
 		newMasterIDQuery->charrep() << "'" LOG_
 
 	if (MasterDetailRelationData == NULL) {
@@ -1911,7 +1936,19 @@ void LB_STDCALL lbDatabaseDialog::updateFromMaster() {
 	}
 /*...e*/
 
-	_CL_LOG << "Have where clause for detail form: " << newWhereClause->charrep() LOG_
+	newQuery->setData(getQuery());
+	
+	*newQuery += newWhereClause->charrep();
+	
+	_CL_VERBOSE << "Have new query for detail form: '" << newQuery->charrep() << "'" LOG_
+	
+	sampleQuery = database->getQuery(0);
+
+	sampleQuery->query(newQuery->charrep());
+	
+	lbDBFirst(NULL);
+	
+	SetTitle(_trans(formName));
 }
 /*...e*/
 
@@ -1927,8 +1964,6 @@ lb_I_String* lbDatabaseDialog::getTableName(char* columnName) {
 	
 	name->setData(sampleQuery->getTableName(columnName));
 	name++;
-	
-	_CL_LOG << "lbDatabaseDialog::getTableName('" << columnName << "') returns '" << name->charrep() << "'" LOG_
 	
 	return name.getPtr();
 }
@@ -2851,8 +2886,6 @@ int LB_STDCALL lbDatabaseDialog::getPrimaryColumns()
 	 */
 
 	int PKColumns = sampleQuery->getPKColumns();
-	
-	_CL_LOG << "lbDatabaseDialog::getPrimaryColumns() returns " << PKColumns << " primary columns" LOG_
 	
 	return PKColumns;
 }
