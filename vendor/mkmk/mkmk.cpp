@@ -12,11 +12,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.65 $
+ * $Revision: 1.66 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.65 2005/06/24 23:10:02 lollisoft Exp $
+ * $Id: mkmk.cpp,v 1.66 2005/08/04 18:06:45 lollisoft Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.66  2005/08/04 18:06:45  lollisoft
+ * Added creating bundle target on Mac OS X.
+ *
  * Revision 1.65  2005/06/24 23:10:02  lollisoft
  * Changes to build with new wxWidgets version 2.6.1.
  * Added fallback to hardcoded settings, if no environment
@@ -291,6 +294,7 @@
 #define WXSOPLUGIN_TARGET 11
 #define TVISION_DLL 12
 #define TVISION_EXE 13
+#define ELF_BUNDLE_TARGET 15
 /*...e*/
 
 int targettype=EXE_TARGET;
@@ -735,7 +739,7 @@ void ObjExt(char *s, char *ObjName, int Len)
 /*...e*/
 
 /*...swriteExeTarget\40\char\42\ modulename\41\:0:*/
-void writeExeTarget(char* modulename) {
+void writeBundleTarget(char* modulename) {
 #ifdef OSX
 #undef UNIX
   fprintf(stderr, "Writing osx executable target\n");
@@ -747,7 +751,7 @@ void writeExeTarget(char* modulename) {
   // Write Mac OS X Bundle
   printf("\t\t/Developer/Tools/Rez -d __DARWIN__ -t APPL -d __WXMAC__ -i . -d WXUSINGDLL -i $(HOME)/wxMac-2.6.1/samples -i $(HOME)/wxMac-2.6.1/include -o %s Carbon.r sample.r\n", modulename);
   printf("\t\t/Developer/Tools/SetFile -a C %s\n", modulename);
-  printf("\t\t$(HOME)/wxMac-2.6.1/change-install-names $(HOME)/wxMac-2.6.1/lib /usr/local %s\n", modulename);
+  printf("\t\t-$(HOME)/wxMac-2.6.1/change-install-names $(HOME)/wxMac-2.6.1/lib /usr/local %s\n", modulename);
   printf("\t\trm -Rf %s.app\n", modulename);
   printf("\t\tmkdir -p %s.app\n", modulename);
   printf("\t\tmkdir -p %s.app/Contents\n", modulename);
@@ -758,6 +762,55 @@ void writeExeTarget(char* modulename) {
   printf("\t\techo -n \"APPL????\" >%s.app/Contents/PkgInfo\n", modulename);
   printf("\t\tln -f %s %s.app/Contents/MacOS/%s\n", modulename, modulename, modulename);
 //  printf("\t\t\n", modulename);
+#endif
+
+#ifdef UNIX
+  fprintf(stderr, "Writing linux executable target\n");
+  printf("PROGRAM=%s\n", modulename);
+  printf("\n%s: $(OBJS)\n", modulename);
+  printf("\t\t$(CC) $(L_OPS) %s $(OBJS) $(OBJDEP) $(LIBS) -lc $(VENDORLIBS)\n",modulename);
+  printf("\t\t$(CP) $(PROGRAM) $(HOME)/bin\n");
+#endif
+
+#ifdef OSX
+#define UNIX
+#endif
+
+#ifdef __WATCOMC__
+  char* ModName = strdup(modulename);
+  char** array;
+  int count = split('.', ModName, &array);
+
+  printf("FILE = FIL\n");
+  printf("FILE += $(foreach s, $(OBJS),$s, )\n");
+  printf("LNK=%s.lnk\n", ModName);
+  printf("ifeq ($(COMPILER), WATCOM)\n");
+  printf("COMPILERFLAGS=@$(LNK)\n");
+  printf("endif\n");
+  printf("PROGRAM=%s\n", ModName);
+  
+  printf("\n%s.exe: $(OBJS)\n", ModName);
+  printf("\t\t@echo Link %s.exe\n", ModName);
+  printf("\t\t@echo NAME $(PROGRAM).exe > $(LNK)\n");
+  printf("\t\t@echo $(FILE) $(LIBS) >> $(LNK)\n");
+  printf("\t\t-@cmd /C \"attrib -r *.bak\"\n");
+  printf("\t\t@$(LINK) $(LINKFLAGS) $(LIBRS) $(COMPILERFLAGS)\n");
+  printf("\t\t@$(CP) $(PROGRAM).exe $(EXEDIR) > null\n");
+  printf("\t\t@$(CP) $(PROGRAM).sym $(EXEDIR) > null\n");
+#endif
+}
+/*...e*/
+
+
+/*...swriteExeTarget\40\char\42\ modulename\41\:0:*/
+void writeExeTarget(char* modulename) {
+#ifdef OSX
+#undef UNIX
+  fprintf(stderr, "Writing osx executable target\n");
+  printf("PROGRAM=%s\n", modulename);
+  printf("\n%s: $(OBJS)\n", modulename);
+  printf("\t\t$(CC) $(L_OPS) %s $(OBJS) $(OBJDEP) $(LIBS) -bind_at_load -lc $(VENDORLIBS)\n",modulename);
+  printf("\t\t$(CP) $(PROGRAM) $(HOME)/bin\n");
 #endif
 
 #ifdef UNIX
@@ -1151,7 +1204,7 @@ void ShowHelp()
 
   fprintf(stderr, "Enhanced by Lothar Behrens (lothar.behrens@lollisoft.de)\n\n");
 
-  fprintf(stderr, "MKMK: makefile generator $Revision: 1.65 $\n");
+  fprintf(stderr, "MKMK: makefile generator $Revision: 1.66 $\n");
   fprintf(stderr, "Usage: MKMK lib|exe|dll|so modulname includepath,[includepath,...] file1 [file2 file3...]\n");
 }
 /*...e*/
@@ -1380,6 +1433,7 @@ void WriteDep(FILE *f, char *Name, TIncludeParser *p)
 //                printf("\t\t%s $(C_EXEOPS) $(MOD_INCL) %s\n\n", Compiler, Name);
                 break;
         case ELF_TARGET:
+		case ELF_BUNDLE_TARGET:
 				printf("\t\t@echo Build %s\n", NameC);
                 printf("\t\t@%s $(C_ELFOPS) $(MOD_INCL) %s\n\n", Compiler, Name);
                 break;
@@ -1508,6 +1562,10 @@ void WriteEnding(FILE *f, char *ModuleName, TDepList *l)
                 writeExeTarget(ModuleName);
                 write_clean(ModuleName);
                 break;
+        case ELF_BUNDLE_TARGET:
+                writeBundleTarget(ModuleName);
+                write_clean(ModuleName);
+                break;
         case SO_TARGET:
                 write_so_Target(ModuleName);
                 write_clean();
@@ -1605,6 +1663,11 @@ int main(int argc, char *argv[])
   
   if (strcmp(target, "ELF") == 0) {
         targettype = ELF_TARGET;
+        target_ext = strdup("");
+  }
+  
+  if (strcmp(target, "BUNDLE") == 0) {
+        targettype = ELF_BUNDLE_TARGET;
         target_ext = strdup("");
   }
   
