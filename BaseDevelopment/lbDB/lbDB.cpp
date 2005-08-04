@@ -1501,7 +1501,7 @@ void LB_STDCALL lbQuery::prepareFKList() {
 		_CL_VERBOSE << "ERROR: Possible buffer overflows!" LOG_
 	}
 
-	_CL_LOG << "Try to get foreign keys from SQLForeignKeys with '" << temp << "'" LOG_
+	_CL_VERBOSE << "Try to get foreign keys from SQLForeignKeys with '" << temp << "'" LOG_
 	
 	retcode = SQLForeignKeys(hstmt,
 	         NULL, 0,      /* Primary catalog   */
@@ -1557,8 +1557,10 @@ void LB_STDCALL lbQuery::prepareFKList() {
 	      
 	      mapPKTable_PKColumns_To_FKName->insert(&uk_FKName, &key_PKTable_PKName);
 	   } else {
-	   	_CL_LOG << "SQLFetch(hstmt) for SQLForeignKeys(...) failed." LOG_
-	
+	   	_CL_VERBOSE << "SQLFetch(hstmt) for SQLForeignKeys(...) failed." LOG_
+
+		#ifdef bla
+		
 		_dbError( "SQLAllocStmt()",henv,hdbc,hstmt);
 		   	
 	   	switch (retcode) {
@@ -1582,6 +1584,8 @@ void LB_STDCALL lbQuery::prepareFKList() {
 	   			printf("SQL_INVALID_HANDLE\n");
 	   			break;
 	   	}
+		#endif
+	   
 	   }
 	}
 
@@ -1606,7 +1610,7 @@ void LB_STDCALL lbQuery::prepareFKList() {
 	   the foreign column.
 	 */
 
-	_CL_LOG << "lbQuery::prepareFKList() tries to read foreign column information from table" LOG_
+	_CL_VERBOSE << "lbQuery::prepareFKList() tries to read foreign column information from table" LOG_
 	
 	char* table = getTableName(getColumnName(1));
 	
@@ -1717,7 +1721,7 @@ int LB_STDCALL lbQuery::getPKColumns() {
 	        _dbError( "SQLAllocStmt()",henv,hdbc,hstmt);
 	}
 	
-	_CL_LOG << "Call getTableName('" << getColumnName(1) << "')" LOG_
+	_CL_VERBOSE << "Call getTableName('" << getColumnName(1) << "')" LOG_
 
 	char* temp = (char*) getTableName(getColumnName(1));
 	szTable = (unsigned char*) malloc(strlen(temp)+1);
@@ -1735,7 +1739,7 @@ int LB_STDCALL lbQuery::getPKColumns() {
 	{
 		_CL_LOG << "lbQuery::getPKColumns() SQLPrimaryKeys failed." LOG_
 		
-		_dbError( "SQLPrimaryKeys()",henv,hdbc,hstmt);
+		//_dbError( "SQLPrimaryKeys()",henv,hdbc,hstmt);
 	}
 	
 
@@ -2542,6 +2546,8 @@ void LB_STDCALL lbQuery::dbError(char* lp)
 }
 
 /*...e*/
+
+/*...e*/
 /*...sclass lbBoundColumn:0:*/
 
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbBoundColumn)
@@ -2673,11 +2679,11 @@ lbErrCodes LB_STDCALL lbBoundColumn::getAsString(lb_I_String* result, int asPara
 				bool b = *(bool*) buffer;
 	        		if (b == true) {
 			#endif
-					_CL_LOG << "Set a BIT value as true" LOG_
+					_CL_VERBOSE << "Set a BIT value as true" LOG_
 		        		result->setData("true");
 				}
 		        	else {
-		        		_CL_LOG << "Set a BIT value as false" LOG_
+		        		_CL_VERBOSE << "Set a BIT value as false" LOG_
 		        		result->setData("false");
 				}	
 	        	}
