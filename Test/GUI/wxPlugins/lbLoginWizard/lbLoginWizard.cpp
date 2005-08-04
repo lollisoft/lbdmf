@@ -146,9 +146,10 @@ public:
 			SetSizer(sizerMain);
 	        
 			sizerMain->SetSizeHints(this);
-			sizerMain->Fit(this);
+			//sizerMain->Fit(this);
 	        
 			box->SetFocusFromKbd();
+			Layout();
 			
 			Centre();
 	}
@@ -223,6 +224,7 @@ public:
 		}
 
 		sizerMain->Fit(this);
+		//Fit();
 
 		return;
 	}
