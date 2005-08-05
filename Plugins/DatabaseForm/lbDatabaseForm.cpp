@@ -951,6 +951,10 @@ void LB_STDCALL lbDatabaseDialog::init(char* _SQLString, char* DBName, char* DBU
 	char prefix[100] = "";
 	sprintf(prefix, "%p", this);
 
+	if (ignoredPKTables == NULL) {
+		REQUEST(manager.getPtr(), lb_I_Container, ignoredPKTables)
+	}
+
 	SetTitle(_trans(formName));
 
 /*...sSizers:8:*/
@@ -1952,13 +1956,16 @@ void LB_STDCALL lbDatabaseDialog::updateFromMaster() {
 }
 /*...e*/
 
+/*...svoid LB_STDCALL lbDatabaseDialog\58\\58\setFilter\40\char\42\ filter\41\:0:*/
 void LB_STDCALL lbDatabaseDialog::setFilter(char* filter) {
 	if (SQLWhere == NULL) {
 		REQUEST(manager.getPtr(), lb_I_String, SQLWhere)
 		if (filter != NULL) SQLWhere->setData(filter);
 	}
 }
+/*...e*/
 
+/*...slb_I_String\42\ lbDatabaseDialog\58\\58\getTableName\40\char\42\ columnName\41\:0:*/
 lb_I_String* lbDatabaseDialog::getTableName(char* columnName) {
 	UAP_REQUEST(manager.getPtr(), lb_I_String, name)
 	
@@ -1967,6 +1974,7 @@ lb_I_String* lbDatabaseDialog::getTableName(char* columnName) {
 	
 	return name.getPtr();
 }
+/*...e*/
 
 /*...slbErrCodes LB_STDCALL lbDatabaseDialog\58\\58\lbDBClear\40\\41\:0:*/
 lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBClear() {
@@ -2870,6 +2878,7 @@ void lbDatabaseDialog::OnPaint(wxCommandEvent& event ) {
 }
 /*...e*/
 
+/*...sint LB_STDCALL lbDatabaseDialog\58\\58\getPrimaryColumns\40\\41\:0:*/
 int LB_STDCALL lbDatabaseDialog::getPrimaryColumns()
 {
 	/*
@@ -2889,6 +2898,7 @@ int LB_STDCALL lbDatabaseDialog::getPrimaryColumns()
 	
 	return PKColumns;
 }
+/*...e*/
 	
 lb_I_String* LB_STDCALL lbDatabaseDialog::getPrimaryColumn(int pos)
 {
