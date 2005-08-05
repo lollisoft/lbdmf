@@ -1527,7 +1527,7 @@ void LB_STDCALL lbQuery::prepareFKList() {
 	   if (retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO) {
 	      lbErrCodes err = ERR_NONE;
 
-	      printf("%-s ( %-s ) <-- %-s ( %-s )\n", szPkTable, szPkCol, szFkTable, szFkCol);
+	      if (isVerbose()) printf("%-s ( %-s ) <-- %-s ( %-s )\n", szPkTable, szPkCol, szFkTable, szFkCol);
 	      
 	      
 	      UAP_REQUEST(manager.getPtr(), lb_I_String, FKName)
@@ -1668,7 +1668,7 @@ void LB_STDCALL lbQuery::prepareFKList() {
 	        QI(PKTable, lb_I_Unknown, uk_PKTable, __FILE__, __LINE__)
 
 
-		printf("%-s ( %-s ) <-- %-s ( %-s )\n", PKTable->charrep(), PKName->charrep(), table, FKName->charrep());
+			if (isVerbose()) printf("%-s ( %-s ) <-- %-s ( %-s )\n", PKTable->charrep(), PKName->charrep(), table, FKName->charrep());
 
 	        ForeignColumns->insert(&uk_PKTable, &key_FKName);
 	        
@@ -2188,7 +2188,6 @@ lbErrCodes LB_STDCALL lbQuery::last() {
 
         if (retcode == SQL_ERROR || retcode == SQL_SUCCESS_WITH_INFO) {
                 _LOG << "lbQuery::last(): Error while fetching next row" LOG_
-                printf("Error in lbQuery::last()\n");
 
                 dbError( "SQLExtendedFetch()");
 
@@ -2205,7 +2204,6 @@ char buf[100] = "";
 		
 		if (retcode == SQL_NO_DATA) {
 			// Indicate for no data and go back
-			printf("No, we don't have more.\n");
 			retcode = SQLExtendedFetch(hstmt, SQL_FETCH_NEXT, 0, &RowsFetched, RowStat);
 			
 			if (retcode == SQL_NO_DATA) {
@@ -2220,7 +2218,6 @@ char buf[100] = "";
 			
 			return WARN_DB_NODATA;
 		} else {
-			printf("Yes, we have.\n");
 			retcode = SQLExtendedFetch(hstmt, SQL_FETCH_NEXT, 0, &RowsFetched, RowStat);
 			
 			if (retcode == SQL_NO_DATA) {

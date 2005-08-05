@@ -543,7 +543,7 @@ void LB_STDCALL lbDetailFormAction::openDetailForm(lb_I_String* formularname, lb
 	lbErrCodes err = ERR_NONE;
 
 	if (detailForm != NULL) {
-		_CL_LOG << "Show previously created form." LOG_
+		_CL_VERBOSE << "Show previously created form." LOG_
 	
 		UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
 		
@@ -1798,7 +1798,7 @@ void LB_STDCALL lbDatabaseDialog::updateFromMaster() {
 
 				MasterDetailRelationData->insert(&uk_colValue, &key_fk);
 
-				_CL_LOG << "Set control '" << fk->charrep() << "' to '" << colValue->charrep() << "'" LOG_
+				_CL_VERBOSE << "Set control '" << fk->charrep() << "' to '" << colValue->charrep() << "'" LOG_
 /*...e*/
 			}
 
@@ -1838,7 +1838,7 @@ void LB_STDCALL lbDatabaseDialog::updateFromMaster() {
 			QI(fk, lb_I_KeyBase, key_fk, __FILE__, __LINE__)
 
 			MasterDetailRelationData->insert(&uk_colValue, &key_fk);
-			_CL_LOG << "Set control '" << fk->charrep() << "' to '" << colValue->charrep() << "'" LOG_
+			_CL_VERBOSE << "Set control '" << fk->charrep() << "' to '" << colValue->charrep() << "'" LOG_
 /*...e*/
 			
 			*newWhereClause += ") or ";
@@ -1888,7 +1888,7 @@ void LB_STDCALL lbDatabaseDialog::updateFromMaster() {
 				QI(fk, lb_I_KeyBase, key_fk, __FILE__, __LINE__)
 
 				MasterDetailRelationData->insert(&uk_colValue, &key_fk);
-				_CL_LOG << "Set control '" << fk->charrep() << "' to '" << colValue->charrep() << "'" LOG_
+				_CL_VERBOSE << "Set control '" << fk->charrep() << "' to '" << colValue->charrep() << "'" LOG_
 /*...e*/
 			}
 			
@@ -1928,7 +1928,7 @@ void LB_STDCALL lbDatabaseDialog::updateFromMaster() {
 			QI(fk, lb_I_KeyBase, key_fk, __FILE__, __LINE__)
 
 			MasterDetailRelationData->insert(&uk_colValue, &key_fk);
-			_CL_LOG << "Set control '" << fk->charrep() << "' to '" << colValue->charrep() << "'" LOG_
+			_CLVERBOSE << "Set control '" << fk->charrep() << "' to '" << colValue->charrep() << "'" LOG_
 /*...e*/
 
 			*newWhereClause += ")";
@@ -2299,10 +2299,8 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBRead() {
 							} else {
 #endif
 								if (strcmp(sampleQuery->getAsString(i)->charrep(), "true") == 0) {
-									printf("Read data for checkbox is true.\n");
 									check->SetValue(true);
 								} else {
-									printf("Read data for checkbox is false.\n");
 									check->SetValue(false);
 								}
 #ifndef OSX
@@ -2429,7 +2427,7 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBAdd(lb_I_Unknown* uk) {
 /*...sPrefill data to hidden fields\46\ This would mostly be combo boxes\46\:8:*/
 	if (MasterDetailRelationData != NULL) {
 	
-		_CL_LOG << "Have " << MasterDetailRelationData->Count() << " elements in list." LOG_
+		_CL_VERBOSE << "Have " << MasterDetailRelationData->Count() << " elements in list." LOG_
 	
 		for (int i = 1; i <= MasterDetailRelationData->Count(); i++) {
 			lbErrCodes err = ERR_NONE;
@@ -2444,14 +2442,14 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBAdd(lb_I_Unknown* uk) {
 			
 			QI(uk, lb_I_String, value, __FILE__, __LINE__)
 			
-			_CL_LOG << "Set control '" << key->charrep() << "' to '" << value->charrep() << "'" LOG_
+			_CL_VERBOSE << "Set control '" << key->charrep() << "' to '" << value->charrep() << "'" LOG_
 			
 			
 			wxWindow* w = FindWindowByName(wxString(key->charrep()), this);
 		
 			if (w != NULL) {
 				if (sampleQuery->hasFKColumn(key->charrep()) == 1) {
-					_CL_LOG << "Set dropdown control '" << 
+					_CL_VERBOSE << "Set dropdown control '" << 
 						key->charrep() << 
 						"' to '" << 
 						value->charrep() << "'" LOG_
@@ -2515,12 +2513,12 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBAdd(lb_I_Unknown* uk) {
 /*...e*/
 				} else {
 					if (FFI->isSpecialColumn(key->charrep())) {
-						_CL_LOG << "Set special control '" << 
+						_CL_VERBOSE << "Set special control '" << 
 							key->charrep() << 
 							"' to '" << 
 							value->charrep() << "'" LOG_
 					} else {
-						_CL_LOG << "Set text control '" << 
+						_CL_VERBOSE << "Set text control '" << 
 							key->charrep() << 
 							"' to '" << 
 							value->charrep() << "'" LOG_
@@ -2538,10 +2536,8 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBAdd(lb_I_Unknown* uk) {
 							} else {
 #endif
 								if (strcmp(sampleQuery->getAsString(i)->charrep(), "true") == 0) {
-									printf("Read data for checkbox is true.\n");
 									check->SetValue(true);
 								} else {
-									printf("Read data for checkbox is false.\n");
 									check->SetValue(false);
 								}
 #ifndef OSX
@@ -2701,9 +2697,9 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::OnActionButton(lb_I_Unknown* uk) {
 				}
 /*...e*/
 		
-		_CL_LOG << "Have these event: " << reversedEvent << "." LOG_		
-		_CL_LOG << "Have got source field: " << s << "." LOG_
-		_CL_LOG << "The value for the field is " << value.c_str() << "." LOG_		
+		_CL_VERBOSE << "Have these event: " << reversedEvent << "." LOG_		
+		_CL_VERBOSE << "Have got source field: " << s << "." LOG_
+		_CL_VERBOSE << "The value for the field is " << value.c_str() << "." LOG_		
 
 /*...sShema doc for actions:16:*/
 		/*
