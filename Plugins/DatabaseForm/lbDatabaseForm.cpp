@@ -1928,7 +1928,7 @@ void LB_STDCALL lbDatabaseDialog::updateFromMaster() {
 			QI(fk, lb_I_KeyBase, key_fk, __FILE__, __LINE__)
 
 			MasterDetailRelationData->insert(&uk_colValue, &key_fk);
-			_CLVERBOSE << "Set control '" << fk->charrep() << "' to '" << colValue->charrep() << "'" LOG_
+			_CL_VERBOSE << "Set control '" << fk->charrep() << "' to '" << colValue->charrep() << "'" LOG_
 /*...e*/
 
 			*newWhereClause += ")";
