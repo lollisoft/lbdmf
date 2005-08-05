@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.83 2005/06/30 07:28:55 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.84 2005/08/05 19:54:59 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.83 $
+ * $Revision: 1.84 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.83 2005/06/30 07:28:55 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.84 2005/08/05 19:54:59 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.84  2005/08/05 19:54:59  lollisoft
+ * Removed verbosity.
+ *
  * Revision 1.83  2005/06/30 07:28:55  lollisoft
  * Added a static text to the application selector.
  *
@@ -961,7 +964,6 @@ public:
 		#ifdef VERBOSE
 	        _LOG << "lb_wxGUI::~lb_wxGUI() called.\n" LOG_
 	        #endif
-	        setVerbose(true);
 	}
 /*...e*/
 
