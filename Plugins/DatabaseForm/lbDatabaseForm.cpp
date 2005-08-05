@@ -1198,6 +1198,9 @@ void LB_STDCALL lbDatabaseDialog::init(char* _SQLString, char* DBName, char* DBU
 					UAP_REQUEST(manager.getPtr(), lb_I_String, possible_fk)
 					
 					data = ReplacementColumnQuery->getAsString(1);
+					
+					data->trim();
+					
 					possible_fk = ReplacementColumnQuery->getAsString(2);
 					
 					int possible_fk_pos = atoi(possible_fk->charrep());
@@ -1229,6 +1232,9 @@ void LB_STDCALL lbDatabaseDialog::init(char* _SQLString, char* DBName, char* DBU
 						DBerr = ReplacementColumnQuery->next();
 						
 						data = ReplacementColumnQuery->getAsString(1);
+						
+						data->trim();
+						
 						possible_fk = ReplacementColumnQuery->getAsString(2);
 					
 						possible_fk_pos = atoi(possible_fk->charrep());
