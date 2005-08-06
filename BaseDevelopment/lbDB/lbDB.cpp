@@ -1382,6 +1382,7 @@ int LB_STDCALL lbQuery::hasFKColumn(char* FKName) {
 }
 /*...e*/
 
+/*...slb_I_String\42\ LB_STDCALL lbQuery\58\\58\getFKColumn\40\char\42\ table\44\ char\42\ primary\41\:0:*/
 lb_I_String* LB_STDCALL lbQuery::getFKColumn(char* table, char* primary) {
 	lbErrCodes err = ERR_NONE;
 	
@@ -1404,6 +1405,7 @@ lb_I_String* LB_STDCALL lbQuery::getFKColumn(char* table, char* primary) {
 	
 	return FKName.getPtr();
 }
+/*...e*/
 
 /*...slb_I_String\42\ LB_STDCALL lbQuery\58\\58\getPKTable\40\char const \42\ FKName\41\:0:*/
 lb_I_String* LB_STDCALL lbQuery::getPKTable(char const * FKName) {
@@ -2872,7 +2874,37 @@ lbErrCodes LB_STDCALL lbBoundColumn::bindColumn(lb_I_Query* q, int column, bool 
 
 	switch (DataType) {
 		case SQL_DATE:
+/*...sbind a character array:24:*/
+			buffer = malloc((ColumnSize+1)*rows+20);
+
+			_DataType = DataType;
+			bound = 1;			     // Try a spacer for bugfix
+			memset(buffer, 0, (ColumnSize+1)*rows+20);
+
+			ret = SQLBindCol(hstmt, column, SQL_C_CHAR, buffer, (ColumnSize+1), &cbBufferLength);
+			
+			if (ret != SQL_SUCCESS) {
+				printf("Error while binding a column!\n");
+				q->dbError("SQLBindCol()");
+			}
+/*...e*/
+			break;
 		case SQL_TYPE_DATE:
+/*...sbind a character array:24:*/
+			buffer = malloc((ColumnSize+1)*rows+20);
+
+			_DataType = DataType;
+			bound = 1;			     // Try a spacer for bugfix
+			memset(buffer, 0, (ColumnSize+1)*rows+20);
+
+			ret = SQLBindCol(hstmt, column, SQL_C_CHAR, buffer, (ColumnSize+1), &cbBufferLength);
+			
+			if (ret != SQL_SUCCESS) {
+				printf("Error while binding a column!\n");
+				q->dbError("SQLBindCol()");
+			}
+/*...e*/
+			break;
 		case SQL_CHAR:
 		case SQL_VARCHAR:
 		case SQL_LONGVARCHAR:
@@ -2942,7 +2974,7 @@ lbErrCodes LB_STDCALL lbBoundColumn::bindColumn(lb_I_Query* q, int column, bool 
 			}
 			break;
 		default:
-			_CL_VERBOSE << "lbBoundColumn::bindColumn(...) failed: Unknown or not supported datatype for column '" << colName->charrep() << "': " << DataType LOG_
+			_CL_LOG << "lbBoundColumn::bindColumn(...) failed: Unknown or not supported datatype for column '" << colName->charrep() << "': " << DataType LOG_
 			break;
 	}
 	
