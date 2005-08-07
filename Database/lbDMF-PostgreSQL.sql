@@ -122,6 +122,11 @@ insert into action_types (bezeichnung, action_handler, module) values(
 'instanceOflbDetailFormAction',
 'lbDatabaseForm');
 
+insert into action_types (bezeichnung, action_handler, module) values(
+'Open master form',
+'instanceOflbMasterFormAction',
+'lbDatabaseForm');
+
 insert into actions (name, typ, source, target) values(
 'Reserve a trip',
 1,
@@ -162,7 +167,7 @@ insert into action_steps (bezeichnung, a_order_nr, what, type, actionid) values(
 'Open train plan name',
 1,
 'Streckennamen',
-4, 3);
+5, 3);
 
 
 insert into formular_actions (formular, action, event) values(1, 1, 'evt_Reserve_Customer_Trip');
@@ -710,7 +715,7 @@ insert into Formular_Parameters Values (
 insert into Formular_Parameters Values (
 2,
 'query',
-'select "name", "vorname", "erwachsene", "kinder" from reservierungen inner join kunden on reservierungen.kundenid = kunden.id',
+'select "erwachsene", "kinder", "planfahrtid" from reservierungen',
 6);
 
 insert into Formular_Parameters Values (
