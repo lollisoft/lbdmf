@@ -1683,8 +1683,6 @@ void LB_STDCALL lbQuery::prepareFKList() {
 		"' to '" << FKName->charrep() << "'" LOG_
 	      
 	      mapPKTable_PKColumns_To_FKName->insert(&uk_FKName, &key_PKTable_PKName);
-	   } else {
-	   	_CL_LOG << "SQLFetch(hstmt) for SQLForeignKeys(...) failed." LOG_
 	   }
 	}
 
@@ -1783,8 +1781,6 @@ void LB_STDCALL lbQuery::prepareFKList() {
 		"' to '" << FKName->charrep() << "'" LOG_
 	      
 	      mapPKTable_PKColumns_To_FKName->insert(&uk_FKName, &key_PKTable_PKName);
-	   } else {
-	   	_CL_LOG << "SQLFetch(hstmt) for SQLForeignKeys(...) failed." LOG_
 	   }
 	}
 
