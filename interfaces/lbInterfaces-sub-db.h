@@ -192,6 +192,16 @@ public:
 	virtual int	LB_STDCALL hasFKColumn(char* FKName) = 0;
 
 	/**
+	 * \brief Return number of foreign columns.
+	 */
+	virtual int	LB_STDCALL getFKColumns() = 0;
+	
+	/**
+	 * \brief Return foreign column at pos.
+	 */
+	virtual lb_I_String* LB_STDCALL getFKColumn(int pos) = 0;
+
+	/**
 	 * \brief Get the foreign key based on given primary table and primary key name.
 	 */
 	virtual lb_I_String* LB_STDCALL getFKColumn(char* table, char* primary) = 0;
@@ -205,6 +215,7 @@ public:
 	 */
 	virtual lb_I_String*	LB_STDCALL getPKTable(char const * FKName) = 0;
 
+	virtual lb_I_String* 	LB_STDCALL getPKColumn(char const * FKName) = 0;
 
 	/**
 	 * \brief Get the count of primary columns.
@@ -740,7 +751,7 @@ public:
 	 *
 	 * Return the related table name, that contains the given column name.
 	 */
-	virtual lb_I_String* getTableName(char* columnName) = 0;
+	virtual char* LB_STDCALL getTableName(char* columnName) = 0;
 
 /*...sMaster Detail form interface part:8:*/
 	/** \brief Get the number of master columns.
@@ -749,11 +760,23 @@ public:
 	 */
 	virtual int LB_STDCALL getPrimaryColumns() = 0;
 
-	/** \brief Get the column at position pos.
+	/** \brief Get the number of foreign columns related to given primary tables.
+	 *
+	 * Needed to access the column name.
+	 */
+	virtual int LB_STDCALL getForeignColumns(char* primaryTable = NULL) = 0;
+
+	/** \brief Get the primary column at position pos.
 	 *
 	 * Warning: You must cleanup.
 	 */
 	virtual lb_I_String* LB_STDCALL getPrimaryColumn(int pos) = 0;
+
+	/** \brief Get the foreign column at position pos.
+	 *
+	 * Warning: You must cleanup.
+	 */
+	virtual lb_I_String* LB_STDCALL getForeignColumn(int pos) = 0;
 
 	virtual bool LB_STDCALL isCharacterColumn(char* name) = 0;
 
@@ -767,11 +790,15 @@ public:
 	 */
 	virtual void LB_STDCALL setMasterForm(lb_I_DatabaseForm* master, lb_I_Parameter* params) = 0;
 
+	virtual void LB_STDCALL setDetailForm(lb_I_DatabaseForm* detail, lb_I_Parameter* params) = 0;
+
 	/** \brief Update the clientforms.
 	 *
 	 * This function would be called for all client forms, contained by a master form.
 	 */
 	virtual void LB_STDCALL updateFromMaster() = 0;
+
+	virtual void LB_STDCALL updateFromDetail() = 0;
 
 	/**
 	 * \brief Do not include foreign keys into the layout.

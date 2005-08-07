@@ -134,6 +134,12 @@ insert into actions (name, typ, source, target) values(
 'kundennr',
 2);
 
+insert into actions (name, typ, source, target) values(
+'Strecke bearbeiten',
+1,
+'bezeichnung',
+3);
+
 insert into action_steps (bezeichnung, a_order_nr, what, type, actionid) values(
 'Add a new empty trip',
 1,
@@ -152,11 +158,19 @@ insert into action_steps (bezeichnung, a_order_nr, what, type, actionid) values(
 'DynReservierungen',
 4, 2);
 
+insert into action_steps (bezeichnung, a_order_nr, what, type, actionid) values(
+'Open train plan name',
+1,
+'Streckennamen',
+4, 3);
+
 
 insert into formular_actions (formular, action, event) values(1, 1, 'evt_Reserve_Customer_Trip');
 insert into formular_actions (formular, action, event) values(1, 2, 'evt_Some_Test_Action');
 insert into formular_actions (formular, action, event) values(5, 1, 'evt_Reserve_Customer_Trip');
 insert into formular_actions (formular, action, event) values(5, 2, 'evt_Some_Test_Action');
+
+insert into formular_actions (formular, action, event) values(21, 3, 'evt_Manage_Train_Trip_Name');
 
 -- +---------------------------------------------------------
 -- | TABLE: Translations
@@ -622,7 +636,33 @@ insert into Formulare Values (
 'Anwendungen -> Formulare',
 'manageAnwendungenFormulare',
 '-',
-1 , 1);
+1, 1);
+
+insert into Formulare Values (
+21,
+'Planfahrten',
+'Planfahrten verwalten',
+'managePlanfahrten',
+'-',
+3, 1);
+
+insert into Formulare Values (
+22,
+'Planstrecken',
+'Planstrecken verwalten',
+'managePlanstrecken',
+'-',
+3, 1);
+
+insert into Formulare Values (
+23,
+'Streckennamen',
+'Streckennamen verwalten',
+'manageStreckennamen',
+'-',
+3, 1);
+
+
 
 insert into ForeignKey_VisibleData_Mapping (FKName, FKTable, PKName, PKTable) Values (
 'anwendungid',
@@ -721,6 +761,23 @@ insert into Formular_Parameters Values (
 'select anwendungid, formularid from anwendungen_formulare order by id',
 20);
 
+insert into Formular_Parameters Values (
+11,
+'query',
+'select bezeichnung, streckenid, datum from planfahrten order by datum',
+21);
+
+insert into Formular_Parameters Values (
+12,
+'query',
+'select zubahnhofa, bahnhofid, zubahnhofb, streckenid from planstrecken order by bahnhofid',
+22);
+
+insert into Formular_Parameters Values (
+13,
+'query',
+'select * from planstreckennamen',
+23);
 
 
 insert into Anwendungs_Parameter Values (1, 'DBName', 'trainres', 3);
@@ -760,6 +817,9 @@ insert into Anwendungen_Formulare Values (19, 5, 18);
 
 insert into Anwendungen_Formulare Values (20, 1, 19);
 insert into Anwendungen_Formulare Values (21, 1, 20);
+insert into Anwendungen_Formulare Values (22, 3, 21);
+insert into Anwendungen_Formulare Values (23, 3, 22);
+insert into Anwendungen_Formulare Values (24, 3, 23);
 
 insert into User_Anwendungen Values (1, 1, 1);
 insert into User_Anwendungen Values (2, 1, 2);
