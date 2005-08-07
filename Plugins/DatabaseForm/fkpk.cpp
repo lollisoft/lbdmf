@@ -185,7 +185,9 @@ void lbConfigure_FK_PK_MappingDialog::OnPKComboBoxSelected( wxCommandEvent &even
 
 	query = database->getQuery(0);
 	
+	query->skipFKCollecting();
 	query->query(buffer);
+	query->enableFKCollecting();
 	
 	if (cBoxFKNames->GetCount() > 0) {
 		cBoxFKNames->SetSelection(-1);
