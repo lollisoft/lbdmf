@@ -30,11 +30,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.16 $
+ * $Revision: 1.17 $
  * $Name:  $
- * $Id: lbDatabaseForm.h,v 1.16 2005/07/25 20:56:12 lollisoft Exp $
+ * $Id: lbDatabaseForm.h,v 1.17 2005/08/07 15:31:14 lollisoft Exp $
  *
  * $Log: lbDatabaseForm.h,v $
+ * Revision 1.17  2005/08/07 15:31:14  lollisoft
+ * Added functions needed to implement detail -> master formulars.
+ *
  * Revision 1.16  2005/07/25 20:56:12  lollisoft
  * Collect the master detail relation data to be used as default values,
  * when new data will be added in the detail form.
@@ -239,6 +242,37 @@ protected:
 	lb_I_DatabaseForm* detailForm;
 };
 /*...e*/
+/*...sclass lbMasterFormAction:0:*/
+class lbMasterFormAction : public lb_I_DelegatedAction
+{
+public:
+	lbMasterFormAction();
+	virtual ~lbMasterFormAction();
+
+	void LB_STDCALL setActionID(char* id);	
+	void LB_STDCALL execute(lb_I_Parameter* params);
+
+	void LB_STDCALL setDatabase(lb_I_Database* _db);
+	
+	DECLARE_LB_UNKNOWN()
+	
+protected:
+
+	void LB_STDCALL openMasterForm(lb_I_String* formularname, lb_I_Parameter* params);
+
+	char* myActionID;
+	UAP(lb_I_Database, db, __FILE__, __LINE__)
+	UAP(lb_I_String, app, __FILE__, __LINE__)
+	UAP(lb_I_String, detailForm, __FILE__, __LINE__)
+	UAP(lb_I_String, SourceFieldName, __FILE__, __LINE__)
+	UAP(lb_I_String, SourceFieldValue, __FILE__, __LINE__)
+	UAP(lb_I_String, DBName, __FILE__, __LINE__)
+	UAP(lb_I_String, DBUser, __FILE__, __LINE__)
+	UAP(lb_I_String, DBPass, __FILE__, __LINE__)
+
+	lb_I_DatabaseForm* masterForm;
+};
+/*...e*/
 /*...sclass lbSQLQueryAction:0:*/
 class lbSQLQueryAction : public lb_I_DelegatedAction
 {
@@ -413,18 +447,26 @@ public:
 /*...e*/
 
 	void LB_STDCALL setMasterForm(lb_I_DatabaseForm* master, lb_I_Parameter* params);
+
+	void LB_STDCALL setDetailForm(lb_I_DatabaseForm* master, lb_I_Parameter* params);
 	
 	void LB_STDCALL updateFromMaster();
+	
+	void LB_STDCALL updateFromDetail();
 
 	int LB_STDCALL getPrimaryColumns();
 	
 	lb_I_String* LB_STDCALL getPrimaryColumn(int pos);
 	   
+	int LB_STDCALL getForeignColumns(char* primaryTable);
+	
+	lb_I_String* LB_STDCALL getForeignColumn(int pos);
+	   
 	bool LB_STDCALL isCharacterColumn(char* name);
 
 	void LB_STDCALL ignoreForeignKeys(char* toTable);
 
-	lb_I_String* getTableName(char* columnName);
+	char* LB_STDCALL getTableName(char* columnName);
 	
 	char* LB_STDCALL getColumnName(int pos);
 
@@ -550,6 +592,7 @@ public:
 
 	UAP(lb_I_String, app, __FILE__, __LINE__)
 	UAP(lb_I_String, masterForm, __FILE__, __LINE__)
+	UAP(lb_I_String, detailForm, __FILE__, __LINE__)
 	UAP(lb_I_String, SourceFieldName, __FILE__, __LINE__)
 	UAP(lb_I_String, SourceFieldValue, __FILE__, __LINE__)
 	UAP(lb_I_String, DBName, __FILE__, __LINE__)
@@ -575,6 +618,7 @@ public:
 	FormularActions* fa;
 
 	lb_I_DatabaseForm* _master;
+	lb_I_DatabaseForm* _detail;
 	lb_I_Parameter* _params;
 /*...e*/
 };
