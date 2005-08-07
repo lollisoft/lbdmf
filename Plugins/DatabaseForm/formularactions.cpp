@@ -122,6 +122,9 @@ lb_I_Action* FormularActions::getAction(char* id) {
 	uk->queryInterface("lb_I_Action", (void**) &action, __FILE__, __LINE__);
 
 	// Store the id of the action for later use.
+	
+	_CL_VERBOSE << "Create an action object with id = '" << id << "'" LOG_
+	
 	action->setActionID(id);
 
 	return action;
@@ -151,7 +154,7 @@ char* FormularActions::getActionTargetID(char* what) {
 	
 	query = database->getQuery(0);
 	
-	char buf[] = "select id from formular_actions where event = '%s'";
+	char buf[] = "select action from formular_actions where event = '%s'";
 	
 	char* buffer = (char*) malloc(strlen(buf)+strlen(What->charrep())+1);
 	
@@ -165,9 +168,14 @@ char* FormularActions::getActionTargetID(char* what) {
 		
 		source = query->getAsString(1);
 		
+		_CL_VERBOSE << "FormularActions::getActionTargetID('" << What->charrep() << 
+		"') returns '" << source->charrep() << "'" LOG_
+		
 		return strdup(source->charrep());
 	}
 	
+	_CL_LOG << "FormularActions::getActionTargetID('" << What->charrep() << "') failed!" LOG_
+		
 	return strdup("");
 }
 /*...e*/
@@ -216,7 +224,7 @@ char* FormularActions::getActionSourceDataField(char* what) {
 /*...schar\42\ FormularActions\58\\58\getActionID\40\char\42\ what\41\:0:*/
 char* FormularActions::getActionID(char* what) {
 	lbErrCodes err = ERR_NONE;
-	
+
 	UAP_REQUEST(getModuleInstance(), lb_I_Database, database)
 	
 	database->init();
@@ -251,6 +259,8 @@ char* FormularActions::getActionID(char* what) {
 				
 		return strdup(source->charrep());
 	}
+
+	_CL_LOG << "FormularActions::getActionID('" << what << "') failed!" LOG_
 	
 	return strdup("");
 }
