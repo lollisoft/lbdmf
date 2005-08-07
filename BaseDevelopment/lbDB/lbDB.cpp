@@ -2067,7 +2067,6 @@ char* LB_STDCALL lbQuery::getColumnName(int col) {
 
 	if (ret != SQL_SUCCESS) {
 		_CL_LOG << "Error: lbQuery::getColumnName('" << col << "') failed. (" << ColumnName << ")" LOG_
-		DebugBreak();
 	}
 
 	strcpy(lbQuery_column_Name, (char*) ColumnName);
