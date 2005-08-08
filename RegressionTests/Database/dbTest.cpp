@@ -229,7 +229,9 @@ int main(int argc, char *argv[]) {
 			"btest bool DEFAULT false, "
 			"btest1 bool DEFAULT false"
 			");";
-
+	
+	// I have problems which collecting foreign key data, if no result sets are there.
+	query->skipFKCollecting();
 	query->query(buf);
 
 	query1 = database->getQuery(0);
@@ -245,10 +247,11 @@ int main(int argc, char *argv[]) {
 	query3 = database->getQuery(0);
 	
 	query3->query("drop table regressiontest");
-	query3->query("select tablename, name, \"specialColumn\", \"controlType\", ro from column_types");
+	
+	query3->query("select tablename, name, 'specialColumn', 'controlType', ro from column_types");
 	query3->PrintData();
 
-
+	_CL_LOG << "Test datatypes..." LOG_
 	lb_I_Query::lbDBColumnTypes coltype = query3->getColumnType(5);
 
 	switch (coltype) {
@@ -272,36 +275,8 @@ int main(int argc, char *argv[]) {
 			_CL_LOG << "lb_I_Query::lbDBColumnUnknown" LOG_
 			break;
 	}
-	
-#ifdef bla
-	query3->first();
 
-	UAP_REQUEST(mm, lb_I_String, col)
-	UAP_REQUEST(mm, lb_I_String, val)
-	
-	col->setData("ro");
-	val->setData("true");
-
-	query3->setString(*&col, *&val);	
-	
-	_CL_LOG << "Try update:" LOG_
-	
-	query3->update();
-	
-	_CL_LOG << "Try move first" LOG_
-	
-	query3->first();
-
-	_CL_LOG << "Print out changed data:" LOG_	
-	query3->PrintData();
-#endif
-
-//_CL_LOG << "Check cleanup of main.................................." LOG_
-//	setVerbose(true);
 }
-//setVerbose(false);
-//_CL_LOG << "Checked cleanup of main................................" LOG_
-
 
         return 0;
 }
