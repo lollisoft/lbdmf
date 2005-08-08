@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.59 $
+# * $Revision: 1.60 $
 # * $Name:  $
-# * $Id: Makefile,v 1.59 2005/07/14 19:36:50 lollisoft Exp $
+# * $Id: Makefile,v 1.60 2005/08/08 19:18:44 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.60  2005/08/08 19:18:44  lollisoft
+# * Minor changes.
+# *
 # * Revision 1.59  2005/07/14 19:36:50  lollisoft
 # * Compiling SET's version of my tvision test application.
 # *
@@ -226,7 +229,8 @@ BASEDIRECTORIES= \
 	../Plugins \
 	../Modules \
 	../RegressionTests \
-	../vendor/tvision/examples/lbDMF \
+	../vendor/tvision-set \
+	../vendor/tvision-set/examples/lbDMF \
 	../AppDevelopment 
 
 #	../../open-watcom
