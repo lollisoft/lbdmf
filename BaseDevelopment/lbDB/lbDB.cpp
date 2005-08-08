@@ -1523,7 +1523,6 @@ lb_I_String* LB_STDCALL lbQuery::getPKColumn(char const * FKName) {
 		_CL_LOG << "SQLForeignKeys(...) failed!" LOG_
 	}
 
-
 	while ((retcode == SQL_SUCCESS) || (retcode == SQL_SUCCESS_WITH_INFO)) {
 
 	/* Fetch and display the result set. This will be all of the */
@@ -1531,7 +1530,7 @@ lb_I_String* LB_STDCALL lbQuery::getPKColumn(char const * FKName) {
 	/* primary key.                 */
 
 	   retcode = SQLFetch(hstmt);
-	   
+
 	   if (retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO) {
 	      lbErrCodes err = ERR_NONE;
 
@@ -1625,7 +1624,7 @@ void LB_STDCALL lbQuery::prepareFKList() {
 		_CL_VERBOSE << "ERROR: Possible buffer overflows!" LOG_
 	}
 
-	_CL_LOG << "Try to get foreign keys with '" << temp << "' as primary table" LOG_
+	_CL_VERBOSE << "Try to get foreign keys with '" << temp << "' as primary table" LOG_
 	
 	retcode = SQLForeignKeys(hstmt,
 	         NULL, 0,      /* Primary catalog   */
@@ -1639,7 +1638,6 @@ void LB_STDCALL lbQuery::prepareFKList() {
 		_CL_LOG << "SQLForeignKeys(...) failed!" LOG_
 	}
 
-
 	while ((retcode == SQL_SUCCESS) || (retcode == SQL_SUCCESS_WITH_INFO)) {
 
 	/* Fetch and display the result set. This will be all of the */
@@ -1647,7 +1645,7 @@ void LB_STDCALL lbQuery::prepareFKList() {
 	/* primary key.                 */
 
 	   retcode = SQLFetch(hstmt);
-	   
+
 	   if (retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO) {
 	      lbErrCodes err = ERR_NONE;
 
@@ -1685,40 +1683,9 @@ void LB_STDCALL lbQuery::prepareFKList() {
 	      mapPKTable_PKColumns_To_FKName->insert(&uk_FKName, &key_PKTable_PKName);
 	   }
 	}
-
-	free(szTable);
-
-	/* Close the cursor (the hstmt is still allocated). */
-
-	SQLFreeStmt(hstmt, SQL_DROP);
 /*...e*/
 
 /*...sOriginally for windows \40\foreign table\41\:8:*/
-/*...sVariables:16:*/
-	free(szTable);
-	szTable = NULL;     /* Table to display   */
-/*...e*/
-
-	retcode = SQLAllocStmt(hdbc, &hstmt); /* Statement handle */
-
-	if (retcode != SQL_SUCCESS)
-	{
-	        _dbError( "SQLAllocStmt()",henv,hdbc,hstmt);
-	}
-
-/*...sBind columns:16:*/
-	SQLBindCol(hstmt, 3, SQL_C_CHAR, szPkTable, TAB_LEN, &cbPkTable);
-	SQLBindCol(hstmt, 4, SQL_C_CHAR, szPkCol, COL_LEN, &cbPkCol);
-	SQLBindCol(hstmt, 5, SQL_C_SSHORT, &iKeySeq, TAB_LEN, &cbKeySeq);
-	SQLBindCol(hstmt, 7, SQL_C_CHAR, szFkTable, TAB_LEN, &cbFkTable);
-	SQLBindCol(hstmt, 8, SQL_C_CHAR, szFkCol, COL_LEN, &cbFkCol);
-/*...e*/
-
-	temp = (char*) getTableName(getColumnName(1));
-	szTable = (unsigned char*) malloc(strlen(temp)+1);
-	szTable[0] = 0;
-	strcpy((char*) szTable, temp);
-	
 	if (strlen((char* const) szTable) > 99) {
 		_CL_VERBOSE << "ERROR: Possible buffer overflows!" LOG_
 	}
