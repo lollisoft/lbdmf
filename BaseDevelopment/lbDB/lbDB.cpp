@@ -187,7 +187,7 @@ public:
 	}
 	
 	virtual ~lbQuery() {
-		_CL_VERBOSE << "lbQuery::~lbQuery() called." LOG_
+		_CL_VERBOSE << "lbQuery::~lbQuery() called. (" << szSql << ")" LOG_
 	}
 	
 	DECLARE_LB_UNKNOWN()
@@ -1400,7 +1400,12 @@ lb_I_String* LB_STDCALL lbQuery::getFKColumn(int pos) {
 	UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
 	UAP(lb_I_String,  s, __FILE__, __LINE__)
 	
+	// getKeyAt returns it's reference.
+	// Bugfix: increment reference here.
+	// Implementation of lb_I_Element should be fixed.
+	
 	uk = ForeignColumns->getKeyAt(pos);
+	uk++;
 	
 	QI(uk, lb_I_String, s, __FILE__, __LINE__)
 	s++;
