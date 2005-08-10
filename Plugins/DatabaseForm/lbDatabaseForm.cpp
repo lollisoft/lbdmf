@@ -561,10 +561,10 @@ void LB_STDCALL lbDetailFormAction::openDetailForm(lb_I_String* formularname, lb
 		parameter->setData("source Form");
 		params->getUAPString(*&parameter, *&masterForm);
 		
-		*formularname += " - ";
-		*formularname += SourceFieldValue->charrep();
+		*parameter = " - ";
+		*parameter += SourceFieldValue->charrep();
 		
-		detailForm->setName(formularname->charrep());
+		detailForm->setName(formularname->charrep(), parameter->charrep());
 
 		UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
 		UAP(lb_I_GUI, gui, __FILE__, __LINE__)
@@ -685,11 +685,11 @@ void LB_STDCALL lbDetailFormAction::openDetailForm(lb_I_String* formularname, lb
 
 						detailForm = form.getPtr();
 
-						*formularname += " - ";
-						*formularname += SourceFieldValue->charrep();
-
-						form->setName(formularname->charrep());
+						*parameter = " - ";
+						*parameter += SourceFieldValue->charrep();
 						
+						form->setName(formularname->charrep(), parameter->charrep());
+
 						/* Set the other information of master / detail form here
 						
 						   There is a problem for forms, if the foreign key is not
@@ -821,7 +821,7 @@ void LB_STDCALL lbDetailFormAction::execute(lb_I_Parameter* params) {
 			
 			what = query->getAsString(1);
 			what->trim();
-			
+
 			openDetailForm(*&what, *&params);
 			
 			err = query->next();
@@ -897,12 +897,12 @@ void LB_STDCALL lbMasterFormAction::openMasterForm(lb_I_String* formularname, lb
 		params->getUAPString(*&parameter, *&SourceFieldValue);
 		parameter->setData("source Form");
 		params->getUAPString(*&parameter, *&detailForm);
-		
-		*formularname += " - ";
-		*formularname += SourceFieldValue->charrep();
-		
-		masterForm->setName(formularname->charrep());
 
+		*parameter = " - ";
+		*parameter += SourceFieldValue->charrep();
+		
+		masterForm->setName(formularname->charrep(), parameter->charrep());
+				
 		UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
 		UAP(lb_I_GUI, gui, __FILE__, __LINE__)
 		
@@ -1022,11 +1022,11 @@ void LB_STDCALL lbMasterFormAction::openMasterForm(lb_I_String* formularname, lb
 
 						masterForm = form.getPtr();
 
-						*formularname += " - ";
-						*formularname += SourceFieldValue->charrep();
-
-						form->setName(formularname->charrep());
+						*parameter = " - ";
+						*parameter += SourceFieldValue->charrep();
 						
+						form->setName(formularname->charrep(), parameter->charrep());
+
 						/* Set the other information of master / detail form here
 						
 						   There is a problem for forms, if the foreign key is not
@@ -1158,7 +1158,7 @@ void LB_STDCALL lbMasterFormAction::execute(lb_I_Parameter* params) {
 			
 			what = query->getAsString(1);
 			what->trim();
-			
+
 			openMasterForm(*&what, *&params);
 			
 			err = query->next();
@@ -1171,7 +1171,7 @@ void LB_STDCALL lbMasterFormAction::execute(lb_I_Parameter* params) {
 			
 			what = query->getAsString(1);
 			what->trim();
-			
+
 			openMasterForm(*&what, *&params);
 /*...e*/
 		}
@@ -1255,6 +1255,7 @@ lbDatabaseDialog::lbDatabaseDialog()
 	_CL_VERBOSE << "lbDatabaseDialog::lbDatabaseDialog() called." LOG_
 	ref = STARTREF;
 	formName = strdup("Database dialog");
+	untranslated_formName = NULL;
 
 	fa = NULL;
 }
@@ -1303,7 +1304,7 @@ void LB_STDCALL lbDatabaseDialog::init(char* _SQLString, char* DBName, char* DBU
 		REQUEST(manager.getPtr(), lb_I_Container, ignoredPKTables)
 	}
 
-	SetTitle(_trans(formName));
+	SetTitle(formName);
 
 /*...sSizers:8:*/
 	wxBoxSizer* sizerMain  = new wxBoxSizer(wxVERTICAL);
@@ -1505,7 +1506,7 @@ void LB_STDCALL lbDatabaseDialog::init(char* _SQLString, char* DBName, char* DBU
 			
 				FKColumnQuery.resetPtr();
 
-				FKColumnQuery = database->getQuery(0);
+				FKColumnQuery = db->getQuery(0);
 
 				FKColumnQuery->query(buffer);
 
@@ -1707,7 +1708,7 @@ void LB_STDCALL lbDatabaseDialog::init(char* _SQLString, char* DBName, char* DBU
 
 			tLabel = strcat(tLabel, "_lbl");
 						
-			label->SetName(tLabel);
+			label->SetName(_trans(tLabel));
 			
 			if (hideThisColumn == false) sizerLeft->Add(label, 1, wxEXPAND | wxALL, 5);
 			
@@ -1768,10 +1769,10 @@ void LB_STDCALL lbDatabaseDialog::init(char* _SQLString, char* DBName, char* DBU
 			     "inner join formulare on formular_actions.formular = formulare.id "
 			     "where formulare.name = '%s'";
 
-	char *buf = (char*) malloc(strlen(_actionquery) + strlen(formName) + 1);
+	char *buf = (char*) malloc(strlen(_actionquery) + strlen(untranslated_formName) + 1);
 	buf[0] = 0;
 	
-	sprintf(buf, _actionquery, formName);
+	sprintf(buf, _actionquery, untranslated_formName);
 	
 	actionQuery->query(buf);
 	lbErrCodes err = actionQuery->first();
@@ -1889,6 +1890,34 @@ void LB_STDCALL lbDatabaseDialog::init(char* _SQLString, char* DBName, char* DBU
 	Centre();
 
 
+}
+/*...e*/
+
+/*...slbErrCodes LB_STDCALL lbDatabaseDialog\58\\58\setName\40\char const \42\ name\44\ char const \42\ appention\41\:0:*/
+lbErrCodes LB_STDCALL lbDatabaseDialog::setName(char const * name, char const * appention) {
+	free(formName);
+	free(untranslated_formName);
+		
+	char* temp = strdup(_trans((char*) name));
+
+	if (appention) {
+		formName = (char*) malloc(1+strlen(temp)+strlen(appention));
+		untranslated_formName = (char*) malloc(1+strlen(name)+strlen(appention));
+	} else {
+		formName = (char*) malloc(1+strlen(temp));
+		untranslated_formName = (char*) malloc(1+strlen(name));
+	}
+	
+	formName[0] = 0;
+	strcat(formName, temp);
+	if (appention) strcat(formName, appention);
+	free(temp);
+		
+	untranslated_formName[0] = 0;
+	strcat(untranslated_formName, name);
+	if (appention) strcat(untranslated_formName, appention);
+		
+	return ERR_NONE;
 }
 /*...e*/
 
@@ -2347,7 +2376,7 @@ void LB_STDCALL lbDatabaseDialog::updateFromMaster() {
 	
 	lbDBFirst(NULL);
 	
-	SetTitle(_trans(formName));
+	SetTitle(formName);
 }
 /*...e*/
 
@@ -2659,7 +2688,7 @@ void LB_STDCALL lbDatabaseDialog::updateFromDetail() {
 	
 	lbDBFirst(NULL);
 	
-	SetTitle(_trans(formName));
+	SetTitle(formName);
 }
 /*...e*/
 
@@ -3319,9 +3348,10 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::OnActionButton(lb_I_Unknown* uk) {
 /*...e*/
 
 	if (uk != NULL) {
+/*...sResolve the related data for the action button \40\to be cached later\41\:16:*/
 		char* reversedEvent = NULL;
 //DebugBreak();		
-/*...sReverse the event ID from given uk data:16:*/
+/*...sReverse the event ID from given uk data:32:*/
 		/* The parameter is the id of the event, that has been emitted.
 		   Resolve the name of that id. */
 		
@@ -3361,7 +3391,7 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::OnActionButton(lb_I_Unknown* uk) {
 		
 		wxString value;
 		
-/*...sGet the content:16:*/
+/*...sGet the content:32:*/
 				lb_I_Query::lbDBColumnTypes coltype = sampleQuery->getColumnType(s);
 
 				switch (coltype) {
@@ -3397,6 +3427,7 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::OnActionButton(lb_I_Unknown* uk) {
 					
 						break;
 				}
+/*...e*/
 /*...e*/
 		
 		_CL_LOG << "Have these event: " << reversedEvent << "." LOG_		
@@ -3468,28 +3499,14 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::OnActionButton(lb_I_Unknown* uk) {
 		*/
 /*...e*/
 
-		/*	Try to abstract the action.
-			
-			This, firstly implemented, is not good. It would be the first candidate for the immediately
-			closing of the detail form.
-			
-			Here should be used a container storing the actions with their action ID as key.
-		*/
 		UAP(lb_I_Action, action, __FILE__, __LINE__)
-		
 		action = fa->getAction(fa->getActionID(reversedEvent));
 
-//		while (action->getRefCount() > 3) action--;
-
+/*...sBuild up parameter list:16:*/
 		UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
 		UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
 		UAP_REQUEST(manager.getPtr(), lb_I_String, v)
 
-		// I better pass the form (this) as a parameter
-
-//		UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
-//		QI(this, lb_I_Unknown, uk, __FILE__, __LINE__)
-		
 		parameter->setData("DBName");
 		v->setData(_DBName->charrep());
 		param->setUAPString(*&parameter, *&v);
@@ -3503,7 +3520,7 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::OnActionButton(lb_I_Unknown* uk) {
 		param->setUAPString(*&parameter, *&v);
 
 		parameter->setData("source Form");
-		v->setData(formName);
+		v->setData(untranslated_formName);
 		param->setUAPString(*&parameter, *&v);
 
 		parameter->setData("source field");
@@ -3520,6 +3537,7 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::OnActionButton(lb_I_Unknown* uk) {
 		meta->getApplicationName(&v);
 
 		param->setUAPString(*&parameter, *&v);
+/*...e*/
 
 		action->execute(*&param);
 

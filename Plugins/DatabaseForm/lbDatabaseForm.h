@@ -30,11 +30,15 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.17 $
+ * $Revision: 1.18 $
  * $Name:  $
- * $Id: lbDatabaseForm.h,v 1.17 2005/08/07 15:31:14 lollisoft Exp $
+ * $Id: lbDatabaseForm.h,v 1.18 2005/08/10 21:54:37 lollisoft Exp $
  *
  * $Log: lbDatabaseForm.h,v $
+ * Revision 1.18  2005/08/10 21:54:37  lollisoft
+ * Translation works correctly. There was a lookup problem with translated
+ * formular names.
+ *
  * Revision 1.17  2005/08/07 15:31:14  lollisoft
  * Added functions needed to implement detail -> master formulars.
  *
@@ -297,6 +301,16 @@ protected:
 /** \brief Management of formular actions.
  *
  * This class is used to concentrate the code for formular actions.
+ *
+ * These includes opening detail or master forms, performing validations,
+ * calculating combined values and so on.
+ *
+ * All  these actions should be configurable and activated at initializion
+ * time.
+ *
+ * Upon the fact, that this class knows about open detail/master forms, it
+ * should be also responsible to update the detail/master views when the user
+ * changes the peer.
  */
 class FormularActions {
 
@@ -323,8 +337,25 @@ public:
 	/** \brief ID for the action. */
 	char* getActionID(char* what);
 
-	/** \brief Get the action instance. */
+	/** \brief Get the action instance. 
+	 *
+	 * This function creates the requested action instance, stores it for caching and
+	 * then returns a reference to it.
+	 */
 	lb_I_Action* getAction(char* id);
+	
+	/** \brief Validate the form.
+	 *
+	 * Use this function to check, if the data has a correct state.
+	 */
+	bool validate() { return true; }
+	
+	/** \brief Update master/detail views and related views.
+	 *
+	 * Use this function to update related views. This may master/detail views and
+	 * possibly views, containing data fields related to any open views.
+	 */
+	bool update() { return true; }
 	
 protected:
 	UAP(lb_I_Container, actions, __FILE__, __LINE__)
@@ -419,12 +450,7 @@ public:
 	 */
 	virtual ~lbDatabaseDialog();
 
-	lbErrCodes LB_STDCALL setName(char const * name) {
-		free(formName);
-		formName = strdup(name);	
-		
-		return ERR_NONE;
-	}
+	lbErrCodes LB_STDCALL setName(char const * name, char const * appention);
 
 	lbErrCodes LB_STDCALL addButton(char* buttonText, char* evHandler, int x, int y, int w, int h) { return ERR_NONE; };
 	lbErrCodes LB_STDCALL addLabel(char* text, int x, int y, int w, int h) { return ERR_NONE; };
@@ -613,6 +639,7 @@ public:
 	wxWindow* nextButton;
 	wxWindow* lastButton;
 	char* formName;
+	char* untranslated_formName;
 
 	FormularFieldInformation* FFI;
 	FormularActions* fa;
