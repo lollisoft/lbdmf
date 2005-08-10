@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.89 $
+ * $Revision: 1.90 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.89 2005/06/27 10:32:09 lollisoft Exp $
+ * $Id: lbModule.cpp,v 1.90 2005/08/10 22:01:49 lollisoft Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.90  2005/08/10 22:01:49  lollisoft
+ * Reactivated macro.
+ *
  * Revision 1.89  2005/06/27 10:32:09  lollisoft
  * Mostly changes to conio.h conflicts while XCode build
  *
@@ -2404,7 +2407,8 @@ protected:
 };
 /*...e*/
 
-//BEGIN_IMPLEMENT_LB_UNKNOWN(lbModule)
+BEGIN_IMPLEMENT_LB_UNKNOWN(lbModule)
+#ifdef bla
 /*...s:0:*/
 char* LB_STDCALL lbModule::getClassName() { 
 	return "lbModule"; 
@@ -2574,6 +2578,7 @@ lbErrCodes LB_STDCALL lbModule::queryInterface(char* name, void** unknown, char*
         }
 
 /*...e*/
+#endif
         ADD_INTERFACE(lb_I_Module)
 END_IMPLEMENT_LB_UNKNOWN()
 
