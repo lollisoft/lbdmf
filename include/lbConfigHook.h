@@ -164,7 +164,6 @@
 	if (isInitializing() != 0) { \
 	} else { \
 	        LOG_INSTANCE \
-		if (getLoggerInstance() == NULL) printf("Fatal: log instance is NULL !!\n"); \
 		*(getLoggerInstance()) << "Datei: " << __FILE__ << " Zeile: " << __LINE__ << " Message: "
 
 /*...e*/

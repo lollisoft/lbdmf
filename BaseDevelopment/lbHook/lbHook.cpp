@@ -393,18 +393,16 @@ T_p_getlbModuleInstance DLL_GETMODULEINSTANCE;
 	char* functor = getenv("LBMODULEFUNCTOR");
 
 	if (libname == NULL) {
-//		logMessage("Error: Have no module manager library name!\n");
 		#ifdef OSX
 			libname = "lbModule.so";
 		#endif
 	}
 
 	if (functor == NULL) {
-//		logMessage("Error: Have no functor!\n");
 		#ifdef OSX
 			functor = "getlb_ModuleInstance";
 		#endif
-	} else logMessage(functor);
+	}
 	
 #ifdef WINDOWS
 #ifndef _MSC_VER
