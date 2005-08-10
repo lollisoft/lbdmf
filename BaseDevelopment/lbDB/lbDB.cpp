@@ -2126,14 +2126,6 @@ char buf[100] = "";
 			
 			return ERR_NONE;
 		}
-
-
-
-#ifndef USE_FETCH_SCROLL        
-        if (RowsFetched == 0) return ERR_DB_FETCHFIRST;
-#endif
-        
-	return ERR_NONE;
 }
 /*...e*/
 /*...slbErrCodes LB_STDCALL lbQuery\58\\58\next\40\\41\:0:*/
@@ -2411,14 +2403,6 @@ char buf[100] = "";
 			
 			return ERR_NONE;
 		}
-
-
-
-#ifndef USE_FETCH_SCROLL        
-        if (RowsFetched == 0) return ERR_DB_FETCHLAST;
-#endif
-                      
-	return ERR_NONE;
 }
 /*...e*/
 /*...slbErrCodes LB_STDCALL lbQuery\58\\58\setString\40\lb_I_String\42\ columnName\44\ lb_I_String\42\ value\41\:0:*/
@@ -3602,8 +3586,6 @@ lbErrCodes LB_STDCALL lbDatabase::init() {
         	_CL_VERBOSE << "lbDatabase::init(): Database version initializion failed." LOG_
         	return ERR_DB_INIT;
 	}
-
-	_LOG << "lbDatabase::init() succeeded" LOG_
 
 	return ERR_NONE;
 }
