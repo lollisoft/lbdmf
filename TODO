@@ -4,6 +4,15 @@
 		
 		I also will discuss some problems while the development stages.
 		
+		09.08.2005	Master -> detail and detail -> master dialogs have been implemented.
+				
+				Missing functionality are direct update events, if an user select a
+				different row in the master dialog (customers for example). The update
+				could be fired by pressing the action button after the data has been
+				displayed.
+				
+				
+
 		
 		27.04.2005	There is a problem in the new configuration dialog, that let the user select
 				the correct column to show for a foreign key.
