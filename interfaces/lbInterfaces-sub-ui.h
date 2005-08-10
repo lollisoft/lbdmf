@@ -54,7 +54,7 @@ public:
 	/** \brief Set the name of the form
 	 *
 	 */
-	virtual lbErrCodes LB_STDCALL setName(char const * name) = 0;
+	virtual lbErrCodes LB_STDCALL setName(char const * name, char const * appention = NULL) = 0;
 
 	/** \brief Add a button
 	 *
