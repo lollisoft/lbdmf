@@ -1377,7 +1377,16 @@ int LB_STDCALL lbQuery::hasFKColumn(char* FKName) {
 		
 		QI(s, lb_I_KeyBase, key, __FILE__, __LINE__)
 	
-		if (ForeignColumns->exists(&key) == 1) return 1;
+		if (ForeignColumns->exists(&key) == 1) {
+			UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
+			UAP(lb_I_String, s, __FILE__, __LINE__)
+			
+			uk = ForeignColumns->getElement(&key);
+			QI(uk, lb_I_String, s, __FILE__, __LINE__)
+			
+			// Check, if FKName does not point from other table to me
+			if (strcmp(s->charrep(), getTableName(FKName)) != 0) return 1;
+		}
 
 	}
 
