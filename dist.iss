@@ -3,8 +3,8 @@
 
 [Setup]
 AppName=lbDMF Development Environment
-AppVerName=lbDMF Development Environment 0.4.4
-OutputBaseFilename=lbDMF-Source-0.4.4
+AppVerName=lbDMF Development Environment 0.5.0
+OutputBaseFilename=lbDMF-Source-0.5.0
 AppPublisher=Lothar Behrens
 AppPublisherURL=http://www.lollisoft.de
 AppSupportURL=http://www.sourceforge.net/projects/lbdmf
@@ -18,7 +18,7 @@ DefaultGroupName=lbDMF
 Name: "desktopicon"; Description: "Create a &desktop icon"; GroupDescription: "Additional icons:"; MinVersion: 4,4
 
 [Files]
-Source: "c:\log\*.*"; DestDir: "c:\log"; CopyMode: alwaysoverwrite
+;Source: "c:\log\*.*"; DestDir: "c:\log"; CopyMode: alwaysoverwrite
 Source: "Q:\Develop\Projects\CPP\watcomenv.bat"; DestDir: "{app}"; CopyMode: alwaysoverwrite
 Source: "Q:\Develop\Projects\CPP\dist\*.*"; DestDir: "{app}"; CopyMode: alwaysoverwrite; Flags: recursesubdirs;
 

@@ -3,8 +3,8 @@
 
 [Setup]
 AppName=lbDMF Binary Build Tools
-AppVerName=lbDMF Binary Build Tools 0.4.4
-OutputBaseFilename=lbDMF-BinbuildTools-0.4.4
+AppVerName=lbDMF Binary Build Tools 0.5.0
+OutputBaseFilename=lbDMF-BinbuildTools-0.5.0
 AppPublisher=Lothar Behrens
 AppPublisherURL=http://www.lollisoft.de
 AppSupportURL=http://www.sourceforge.net/projects/lbdmf
@@ -18,7 +18,7 @@ DefaultGroupName=lbDMF
 ;Name: "desktopicon"; Description: "Create a &desktop icon"; GroupDescription: "Additional icons:"; MinVersion: 4,4
 
 [Files]
-Source: "c:\log\*.*"; DestDir: "c:\log"; CopyMode: alwaysoverwrite
+;Source: "c:\log\*.*"; DestDir: "c:\log"; CopyMode: alwaysoverwrite
 Source: "Q:\develop\Tools\cygwin\bin\sh.exe"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
 Source: "Q:\develop\Tools\cygwin\bin\cp.exe"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
 Source: "Q:\develop\Tools\cygwin\bin\cat.exe"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
