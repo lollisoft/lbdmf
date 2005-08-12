@@ -257,9 +257,6 @@ void LB_STDCALL lbAction::delegate(lb_I_Parameter* params) {
 	q[0] = 0;
 	sprintf(q, buf, id->charrep());
 
-	_CL_LOG << "Delegate: " << q LOG_
-
-	
 	if (query->query(q) == ERR_NONE) {
 		lbErrCodes err = ERR_NONE;
 		UAP_REQUEST(manager.getPtr(), lb_I_String, key)
@@ -348,8 +345,6 @@ void LB_STDCALL lbAction::delegate(lb_I_Parameter* params) {
 			uk = actions->getElement(&ukey);
 				
 			QI(uk, lb_I_DelegatedAction, action, __FILE__, __LINE__)
-			
-			_CL_LOG << "Execute delegated action..." LOG_
 			
 			action->setActionID(id->charrep());
 			action->execute(*&params);
@@ -471,8 +466,6 @@ void LB_STDCALL lbAction::execute(lb_I_Parameter* params) {
 	
 	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
 
-	_CL_LOG << "lbAction::execute(...): " << q LOG_
-	
 	if (query->query(q) == ERR_NONE) {
 	
 		lbErrCodes err = query->first();
@@ -718,15 +711,12 @@ void LB_STDCALL lbDetailFormAction::openDetailForm(lb_I_String* formularname, lb
 						
 						*table = master->getTableName(master->getColumnName(1));
 						
-						_CL_LOG << "Set ignoring foreign keys for " << table->charrep() LOG_
-						
 						form->ignoreForeignKeys(table->charrep());
 						
 						form->init(sql->charrep(), DBName->charrep(), DBUser->charrep(), DBPass->charrep());
 						
 						form->setMasterForm(*&master, *&params);
 						
-						//form->setDefault(<column>, <value>);
 /*...e*/
 						
 /*
@@ -809,8 +799,6 @@ void LB_STDCALL lbDetailFormAction::execute(lb_I_Parameter* params) {
 	q[0] = 0;
 	sprintf(q, buf, myActionID);
 
-	_CL_LOG << "lbDetailFormAction::execute(...): " << q LOG_
-	
 	if (query->query(q) == ERR_NONE) {
 	
 		lbErrCodes err = query->first();
@@ -1055,15 +1043,11 @@ void LB_STDCALL lbMasterFormAction::openMasterForm(lb_I_String* formularname, lb
 						
 						*table = detail->getTableName(detail->getColumnName(1));
 						
-						_CL_LOG << "Set ignoring foreign keys for " << table->charrep() LOG_
-						
 						form->ignoreForeignKeys(table->charrep());
 						
 						form->init(sql->charrep(), DBName->charrep(), DBUser->charrep(), DBPass->charrep());
 						
 						form->setDetailForm(*&detail, *&params);
-						
-						//form->setDefault(<column>, <value>);
 /*...e*/
 						
 /*
@@ -1146,8 +1130,6 @@ void LB_STDCALL lbMasterFormAction::execute(lb_I_Parameter* params) {
 	q[0] = 0;
 	sprintf(q, buf, myActionID);
 
-	_CL_LOG << "lbMasterFormAction::execute(...): " << q LOG_
-	
 	if (query->query(q) == ERR_NONE) {
 	
 		lbErrCodes err = query->first();

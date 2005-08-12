@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.84 2005/08/05 19:54:59 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.85 2005/08/12 15:44:08 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.84 $
+ * $Revision: 1.85 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.84 2005/08/05 19:54:59 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.85 2005/08/12 15:44:08 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.85  2005/08/12 15:44:08  lollisoft
+ * Removed log messages.
+ *
  * Revision 1.84  2005/08/05 19:54:59  lollisoft
  * Removed verbosity.
  *
@@ -1421,16 +1424,10 @@ lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::createDBForm(char* formName, char* query
 		 * framework.
 		 */
 
-		_CL_LOG << "Create the plugin manager instance." LOG_
-
 		UAP_REQUEST(manager.getPtr(), lb_I_PluginManager, PM)
 		UAP(lb_I_Plugin, pl, __FILE__, __LINE__)
 		
-		_CL_LOG << "Get any instance of a database form implementation." LOG_
-		
 		pl = PM->getFirstMatchingPlugin("lb_I_DatabaseForm");
-
-		_CL_LOG << "Got an instance." LOG_
 
 		if (pl == NULL) {
 			char* msg = (char*) malloc(200);
@@ -1443,8 +1440,6 @@ lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::createDBForm(char* formName, char* query
 
 		uk = pl->getImplementation();
 		
-		_CL_LOG << "Insert the newly created form instance into a container." LOG_
-		
 		forms->insert(&uk, &key);
 		
 		//-------------------------------------------------------
@@ -1453,8 +1448,6 @@ lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::createDBForm(char* formName, char* query
 		
 		UAP(lb_I_DatabaseForm, form, __FILE__, __LINE__)
 		QI(uk, lb_I_DatabaseForm, form, __FILE__, __LINE__)
-		
-		_CL_LOG << "Destroy the form." LOG_
 		
 		form->destroy();
 		form = NULL;
@@ -1467,8 +1460,6 @@ lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::createDBForm(char* formName, char* query
 		}
 		
 		_dialog->setName(formName);
-		
-		_CL_LOG << "Init the form." LOG_
 		
 		_dialog->init(queryString, DBName, DBUser, DBPass);
 		

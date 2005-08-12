@@ -2103,7 +2103,6 @@ void LB_STDCALL cls::enumPlugins() { \
 	REQUEST(manager.getPtr(), lb_I_Container, Plugins)
 
 #define ADD_PLUGIN(plugin, namespace) \
-	printf("Add a plugin %s, namespace %s\n", #plugin, #namespace); \
 	UAP_REQUEST(manager.getPtr(), lb_I_Plugin, P##plugin##namespace) \
 	\
 	P##plugin##namespace->setModule(_module->getData()); \
