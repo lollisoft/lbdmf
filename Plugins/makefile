@@ -26,7 +26,8 @@ TARGETEXE=elf
 TARGETWXPLUGIN=wxsoplugin
 
 ALLTARGETS = \
-	DatabaseForm
+	DatabaseForm \
+	DatabaseReport
 endif
 
 ifeq ($(OSTYPE), osx)
@@ -36,7 +37,8 @@ TARGETEXE=elf
 TARGETWXPLUGIN=wxsoplugin
 
 ALLTARGETS = \
-	DatabaseForm
+	DatabaseForm \
+	DatabaseReport
 endif
 
 ifeq ($(OSTYPE), Windows_NT)
@@ -47,7 +49,8 @@ TARGETWXPLUGIN=wxplugin
 
 
 ALLTARGETS = \
-	DatabaseForm
+	DatabaseForm \
+	DatabaseReport
 endif
 
 
@@ -75,5 +78,9 @@ dummy:
 
 DatabaseForm: dummy
 	$(MAKE) -C $@ -e MODULE=lbDatabaseForm -e TARGET=$(TARGETWXPLUGIN) -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
+	$(MAKE) -C $@
+	
+DatabaseReport: dummy
+	$(MAKE) -C $@ -e MODULE=lbDatabaseReport -e TARGET=$(TARGETWXPLUGIN) -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
 	$(MAKE) -C $@
 	
