@@ -44,7 +44,9 @@
  * Here the post installation will be explained in short and other important things,
  * that have to do with installation and different usage as of databases.
  *
- * To start programming, you could start \ref Quickstart "Here."
+ * To start programming, you could start \ref Quickstart "here".
+ *
+ * The main sample application and it's documentation will be found \ref PrototypeGUI "here".
  *
  * Prerequirements:
  *
@@ -209,6 +211,24 @@
  *
  *	After successfull login you should be able to select an application. Choose lbDMF Manager.
  *
+ */
+/*...e*/
+
+/*...sDatabase Prototype GUI:0:*/
+/** \page PrototypeGUI Database prototype GUI documentation
+ *
+ * \section Introducion
+ *
+ * The main sample application, distributed also as binary sample, is aimed to be a prototype
+ * for any kind of database applications. You could define forms and related information in a
+ * configuration database.
+ *
+ * If you have a target database model for a specific application, then it is easy to build up
+ * a prototype for it in minutes.
+ *
+ * \section Application
+ *
+ * Let us start with an application - say - we have a small CD collection database. 
  */
 /*...e*/
 
