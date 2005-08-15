@@ -30,11 +30,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.18 $
+ * $Revision: 1.19 $
  * $Name:  $
- * $Id: lbDatabaseForm.h,v 1.18 2005/08/10 21:54:37 lollisoft Exp $
+ * $Id: lbDatabaseForm.h,v 1.19 2005/08/15 17:48:04 lollisoft Exp $
  *
  * $Log: lbDatabaseForm.h,v $
+ * Revision 1.19  2005/08/15 17:48:04  lollisoft
+ * Access to all controls.
+ *
  * Revision 1.18  2005/08/10 21:54:37  lollisoft
  * Translation works correctly. There was a lookup problem with translated
  * formular names.
@@ -481,6 +484,9 @@ public:
 	void LB_STDCALL updateFromDetail();
 
 	int LB_STDCALL getPrimaryColumns();
+	
+	const char* LB_STDCALL getControlValue(int pos);
+	int LB_STDCALL getControls();
 	
 	lb_I_String* LB_STDCALL getPrimaryColumn(int pos);
 	   
