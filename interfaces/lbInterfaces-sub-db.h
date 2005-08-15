@@ -778,9 +778,27 @@ public:
 	 */
 	virtual lb_I_String* LB_STDCALL getForeignColumn(int pos) = 0;
 
+	/** \brief Return if the control is of type char.
+	 *
+	 */
 	virtual bool LB_STDCALL isCharacterColumn(char* name) = 0;
 
+	/** \brief Get the value of a control.
+	 *
+	 */
 	virtual const char* LB_STDCALL getControlValue(char* name) = 0;
+
+	/** \brief Get the value of a control.
+	 *
+	 */
+	virtual const char* LB_STDCALL getControlValue(int pos) = 0;
+
+	/** \brief Get the number of controls.
+	 *
+	 * Return the number of controls in the form. This includes all
+	 * controls.
+	 */
+	virtual int LB_STDCALL getControls() = 0;
 
 	/** \brief Set a master formular for this one.
 	 *
@@ -807,6 +825,60 @@ public:
 
 	virtual char* LB_STDCALL getColumnName(int pos) = 0;
 /*...e*/
+};
+/*...e*/
+/*...sclass lb_I_DatabaseReport:0:*/
+/**
+ * \brief An attempt for a report based on database queries.
+ *
+ * Based on the wxReportWriter project from http://www.daily.de/RepWrt/,
+ * this is an adaption to my framework.
+ */
+class lb_I_DatabaseReport :
+	public lb_I_Unknown
+{
+public:
+	/** \brief Set the report data.
+	 *
+	 * A database report needs a query object, from whom it should
+	 * report the data.
+	 */
+	virtual void LB_STDCALL init(char* SQLString, char* DBName, char* DBUser, char* DBPass) = 0;
+	
+	/** \brief Update the data for the report.
+	 *
+	 * The instance should reread the data from the data source.
+	 *
+	 * There may be different datasources. 
+	 * 
+	 * On the one hand, it would be a SQL query, given by the init function.
+	 *
+	 * On the other hand, it may be a row of a current result set. May be from
+	 * a database form.
+	 *
+	 * Both may have sub reports, depending of it's configuration.
+	 */
+	virtual void LB_STDCALL update() = 0;
+
+	/**
+	 * \brief Show the preview of the report.
+	 */	
+	virtual void LB_STDCALL show() = 0;
+
+	/**
+	 * \brief Destroy the preview of the report.
+	 */
+	virtual void LB_STDCALL destroy() = 0;
+	
+	/**
+	 * \brief Print the report.
+	 */
+	virtual void LB_STDCALL print() = 0;
+	
+	/**
+	 * \brief Set the name for the report.
+	 */
+	virtual lbErrCodes LB_STDCALL setName(char const * name, char const * appention = NULL) = 0;
 };
 /*...e*/
 
