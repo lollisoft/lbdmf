@@ -3,6 +3,20 @@
 		This file describes some things that should be done in the next time.
 		
 		I also will discuss some problems while the development stages.
+
+		14.08.2005	Mac OS X:
+		
+				Debug Malloc functionality should be integrated, if there is anything
+				to integrate.
+				http://developer.apple.com/releasenotes/DeveloperTools/MallocOptions.html
+
+				There still is a problem with check boxes.
+				
+				Database scripts:
+				
+				There is still a bad thing with database model scripts for different
+				database systems. Isn't there a solution for it in one file of any
+				format ?
 		
 		09.08.2005	Master -> detail and detail -> master dialogs have been implemented.
 				
@@ -10,9 +24,6 @@
 				different row in the master dialog (customers for example). The update
 				could be fired by pressing the action button after the data has been
 				displayed.
-				
-				
-
 		
 		27.04.2005	There is a problem in the new configuration dialog, that let the user select
 				the correct column to show for a foreign key.
@@ -28,12 +39,13 @@
 				|
 				C-> location C
 				
-				
 		19.04.2005	There was a problem with readonly columns and the bound column for it.
 				
 			19.04.2004 Solution was to shortly unbind the column. -> API enhancement.
 
 		01.02.2005	Problems to port the framework to Mac OS X 10 and hints for solutions found.
+
+			?	Any solution has been found.
 		
 				--------------------------------------------------------------------------
 				Try to compile code under Mac OS X 10 makes some problems. Try with lbHook
