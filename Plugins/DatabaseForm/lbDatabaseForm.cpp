@@ -1983,6 +1983,16 @@ void LB_STDCALL lbDatabaseDialog::setDetailForm(lb_I_DatabaseForm* detail, lb_I_
 }
 /*...e*/
 
+/*...sint LB_STDCALL lbDatabaseDialog\58\\58\getControls\40\\41\:0:*/
+int LB_STDCALL lbDatabaseDialog::getControls() {
+	return sampleQuery->getColumns();
+}
+/*...e*/
+/*...sconst char\42\ LB_STDCALL lbDatabaseDialog\58\\58\getControlValue\40\int pos\41\:0:*/
+const char* LB_STDCALL lbDatabaseDialog::getControlValue(int pos) {
+	return getControlValue(getColumnName(pos));
+}
+/*...e*/
 /*...sconst char\42\ LB_STDCALL lbDatabaseDialog\58\\58\getControlValue\40\char\42\ name\41\:0:*/
 const char* LB_STDCALL lbDatabaseDialog::getControlValue(char* name) {
 
@@ -3373,7 +3383,60 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::OnActionButton(lb_I_Unknown* uk) {
 		
 		wxString value;
 		
-/*...sGet the content:32:*/
+		if (sampleQuery->hasFKColumn(s) == 1) {
+/*...sGet the content from choice control:40:*/
+				wxChoice* cbox = (wxChoice*) w;		
+			
+				int pos = cbox->GetSelection();
+				
+				if (pos != -1) {
+					lbErrCodes err = ERR_NONE;
+
+					UAP_REQUEST(manager.getPtr(), lb_I_Integer, key)
+					UAP_REQUEST(manager.getPtr(), lb_I_String, cbName)
+					
+					cbName->setData(s);
+					
+					UAP(lb_I_KeyBase, key_cbName, __FILE__, __LINE__)
+					UAP(lb_I_Unknown, uk_cbMapper, __FILE__, __LINE__)
+					UAP(lb_I_Container, cbMapper, __FILE__, __LINE__)
+					
+					QI(cbName, lb_I_KeyBase, key_cbName, __FILE__, __LINE__)
+					
+					uk_cbMapper = ComboboxMapperList->getElement(&key_cbName);
+					
+					QI(uk_cbMapper, lb_I_Container, cbMapper, __FILE__, __LINE__)
+					
+					key->setData(pos);
+					
+					UAP(lb_I_KeyBase, key_pos, __FILE__, __LINE__)
+					
+					QI(key, lb_I_KeyBase, key_pos, __FILE__, __LINE__)
+				
+					UAP(lb_I_Unknown, uk_mapping, __FILE__, __LINE__)
+					
+					uk_mapping = cbMapper->getElement(&key_pos);
+					
+					if (uk_mapping == NULL)  { 
+						printf("ERROR: cbMapper didn't found an entry for above search argument\n");
+					} else {
+						UAP(lb_I_Integer, FK_id, __FILE__, __LINE__)
+					
+						QI(uk_mapping, lb_I_Integer, FK_id, __FILE__, __LINE__)
+					
+						int p = FK_id->getData();
+					
+						char pp[20] = "";
+						
+						sprintf(pp, "%d", p);
+					
+						value = pp;
+					
+					}
+				}
+/*...e*/
+		} else {
+/*...sGet the content from text control:40:*/
 				lb_I_Query::lbDBColumnTypes coltype = sampleQuery->getColumnType(s);
 
 				switch (coltype) {
@@ -3410,6 +3473,7 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::OnActionButton(lb_I_Unknown* uk) {
 						break;
 				}
 /*...e*/
+		}
 /*...e*/
 		
 		_CL_LOG << "Have these event: " << reversedEvent << "." LOG_		
