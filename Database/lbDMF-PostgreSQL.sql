@@ -170,6 +170,12 @@ insert into actions (name, typ, source, target) values(
 'name',
 5);
 
+insert into actions (name, typ, source, target) values(
+'Parameter',
+1,
+'name',
+6);
+
 -- Let print a reservation based on customers id for master report data.
 -- The customer would have more than one reservation. In general, these
 -- reservation entries should be the sub reports.
@@ -178,7 +184,7 @@ insert into actions (name, typ, source, target) values(
 'Reservierungen drucken',
 1,
 'kundenid',
-6);
+7);
 --...e
 --...sFill action_steps:0:
 insert into action_steps (bezeichnung, a_order_nr, what, type, actionid) values(
@@ -218,10 +224,16 @@ insert into action_steps (bezeichnung, a_order_nr, what, type, actionid) values(
 4, 5);
 
 insert into action_steps (bezeichnung, a_order_nr, what, type, actionid) values(
+'Open parameters for formulars',
+1,
+'Formular_Parameter',
+4, 6);
+
+insert into action_steps (bezeichnung, a_order_nr, what, type, actionid) values(
 'Print reservations for customers',
 1,
 'DynReservierungen',
-6, 6);
+6, 7);
 --...e
 --...sFill formular_actions:0:
 insert into formular_actions (formular, action, event) values(5, 1, 'evt_Reserve_Customer_Trip');
@@ -229,12 +241,14 @@ insert into formular_actions (formular, action, event) values(5, 2, 'evt_Some_Te
 
 insert into formular_actions (formular, action, event) values(21, 3, 'evt_Manage_Train_Trip_Name');
 
-insert into formular_actions (formular, action, event) values(6, 6, 'evt_Print_Customer_Reservations');
+insert into formular_actions (formular, action, event) values(6, 7, 'evt_Print_Customer_Reservations');
 
 -- Actions for 'lbDMF Manager' application
 
 insert into formular_actions (formular, action, event) values(1, 4, 'evt_Manage_User_Apps');
-insert into formular_actions (formular, action, event) values(2, 5, 'evt_Manage_Apps_Forms');
+insert into formular_actions (formular, action, event) values(19, 5, 'evt_Manage_Apps_Forms');
+insert into formular_actions (formular, action, event) values(2, 6, 'evt_Manage_Form_Parameters');
+
 --...e
 --...e
 
