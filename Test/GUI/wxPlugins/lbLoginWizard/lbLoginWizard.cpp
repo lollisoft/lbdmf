@@ -603,6 +603,7 @@ public:
 	virtual lb_I_Unknown* LB_STDCALL getImplementation();
 
 	virtual lb_I_Unknown* LB_STDCALL peekImplementation();
+	void LB_STDCALL releaseImplementation();
 
 	lbErrCodes LB_STDCALL runLogin(lb_I_Unknown* uk);
 	
@@ -721,7 +722,9 @@ lb_I_Unknown* LB_STDCALL lbPluginLoginWizard::getImplementation() {
 	return this;
 }
 /*...e*/
+void LB_STDCALL lbPluginLoginWizard::releaseImplementation() {
 
+}
 
 #ifdef WINDOWS
 /*...sDllMain:0:*/
