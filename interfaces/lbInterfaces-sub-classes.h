@@ -30,11 +30,15 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.54 $
+ * $Revision: 1.55 $
  * $Name:  $
- * $Id: lbInterfaces-sub-classes.h,v 1.54 2005/06/02 21:13:12 lollisoft Exp $
+ * $Id: lbInterfaces-sub-classes.h,v 1.55 2005/08/21 23:16:47 lollisoft Exp $
  *
  * $Log: lbInterfaces-sub-classes.h,v $
+ * Revision 1.55  2005/08/21 23:16:47  lollisoft
+ * Minor change to show the class name of container element, that would not
+ * deleted.
+ *
  * Revision 1.54  2005/06/02 21:13:12  lollisoft
  * Small problem with backslash and space.
  *
@@ -688,7 +692,9 @@ classname::~classname() { \
         } \
         _CL_VERBOSE << #classname << "::~" << #classname << "() Delete the data of " #classname LOG_ \
         if (data != NULL) { \
-        	if (data->deleteState() != 1) _CL_LOG << "Warning: Data wouldn't deleted in container element!" LOG_ \
+        	if (data->deleteState() != 1) { \
+        		_CL_LOG << "Warning: Data wouldn't deleted in container element! (" << data->getClassName() << ")" LOG_ \
+        	} \
 		RELEASE(data); \
         } \
         _CL_VERBOSE << #classname << "::~" << #classname << "() leaving" LOG_ \
