@@ -845,6 +845,11 @@ public:
 	 */
 	virtual void LB_STDCALL init(char* SQLString, char* DBName, char* DBUser, char* DBPass) = 0;
 	
+	/** \brief Set the parent window for the report.
+	 *
+	 */
+	virtual void LB_STDCALL setFrame(lb_I_Unknown* _frame) = 0;
+	
 	/** \brief Update the data for the report.
 	 *
 	 * The instance should reread the data from the data source.
