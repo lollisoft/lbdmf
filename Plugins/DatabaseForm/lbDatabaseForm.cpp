@@ -215,6 +215,12 @@ lbAction::lbAction() {
 
 lbAction::~lbAction() {
 	free(myActionID);
+	_CL_LOG << "lbAction::~lbAction() called." LOG_
+	if (actions != NULL) {
+		_CL_LOG << "Have " << actions->Count() << " elements in action list." LOG_
+		actions->deleteAll();
+	}
+	_CL_LOG << "Deleted all delegation actions." LOG_
 }
 
 /*...svoid LB_STDCALL lbAction\58\\58\setActionID\40\char\42\ id\41\:0:*/
@@ -280,6 +286,7 @@ void LB_STDCALL lbAction::delegate(lb_I_Parameter* params) {
 			QI(key, lb_I_KeyBase, ukey, __FILE__, __LINE__)
 			
 			if (actions->exists(&ukey) == 0) {
+/*...sInstanciate one and insert into actions:32:*/
 				char* pluginDir = getenv("PLUGIN_DIR");
 				if (pluginDir == NULL) {
 					_LOG << "ERROR: No plugin directory configured. Try fallback. Please create one and set environment PLUGIN_DIR properly." LOG_
@@ -292,7 +299,7 @@ void LB_STDCALL lbAction::delegate(lb_I_Parameter* params) {
 				}
 				
 
-/*...sbuild PREFIX:32:*/
+/*...sbuild PREFIX:64:*/
 #ifndef LINUX
         #ifdef __WATCOMC__
         #define PREFIX "_"
@@ -306,7 +313,7 @@ void LB_STDCALL lbAction::delegate(lb_I_Parameter* params) {
 #endif
 /*...e*/
 
-/*...sBuild up pluginModule:32:*/
+/*...sBuild up pluginModule:64:*/
 			        char* pluginModule = new char[strlen(pluginDir)+strlen(module->charrep())+2];
 			        pluginModule[0] = 0;
 			        strcat(pluginModule, pluginDir);
@@ -338,6 +345,7 @@ void LB_STDCALL lbAction::delegate(lb_I_Parameter* params) {
 			
 				result->setModuleManager(getModuleInstance(), __FILE__, __LINE__);
 				actions->insert(&result, &ukey);
+/*...e*/
 			}
 			
 			UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
@@ -348,6 +356,8 @@ void LB_STDCALL lbAction::delegate(lb_I_Parameter* params) {
 			
 			action->setActionID(id->charrep());
 			action->execute(*&params);
+			
+			_CL_LOG << "References for delegated action are " << action->getRefCount() << "." LOG_
 			
 			err = query->next();
 		}
@@ -368,6 +378,7 @@ void LB_STDCALL lbAction::delegate(lb_I_Parameter* params) {
 			QI(key, lb_I_KeyBase, ukey, __FILE__, __LINE__)
 			
 			if (actions->exists(&ukey) == 0) {
+/*...sInstanciate one and insert into actions:32:*/
 				char* pluginDir = getenv("PLUGIN_DIR");
 				if (pluginDir == NULL) {
 					_LOG << "ERROR: No plugin directory configured. Try fallback. Please create one and set environment PLUGIN_DIR properly." LOG_
@@ -379,7 +390,7 @@ void LB_STDCALL lbAction::delegate(lb_I_Parameter* params) {
 					pluginDir = strdup(pluginDir);
 				}
 				
-/*...sbuild PREFIX:32:*/
+/*...sbuild PREFIX:64:*/
 #ifndef LINUX
         #ifdef __WATCOMC__
         #define PREFIX "_"
@@ -393,7 +404,7 @@ void LB_STDCALL lbAction::delegate(lb_I_Parameter* params) {
 #endif
 /*...e*/
 
-/*...sBuild up pluginModule:32:*/
+/*...sBuild up pluginModule:64:*/
 			        char* pluginModule = new char[strlen(pluginDir)+strlen(module->charrep())+2];
 			        pluginModule[0] = 0;
 			        strcat(pluginModule, pluginDir);
@@ -425,6 +436,7 @@ void LB_STDCALL lbAction::delegate(lb_I_Parameter* params) {
 			
 				result->setModuleManager(getModuleInstance(), __FILE__, __LINE__);
 				actions->insert(&result, &ukey);
+/*...e*/
 			}
 			
 			UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
@@ -1234,7 +1246,7 @@ lbDatabaseDialog::lbDatabaseDialog()
 	: wxDialog(NULL, -1, wxString(_T("Database dialog")), wxDefaultPosition,
 	wxDefaultSize, wxRESIZE_BORDER|wxDEFAULT_DIALOG_STYLE)
 {
-	_CL_VERBOSE << "lbDatabaseDialog::lbDatabaseDialog() called." LOG_
+	_CL_LOG << "lbDatabaseDialog::lbDatabaseDialog() called." LOG_
 	ref = STARTREF;
 	formName = strdup("Database dialog");
 	untranslated_formName = NULL;
@@ -3716,6 +3728,7 @@ public:
 
 	lb_I_Unknown* LB_STDCALL peekImplementation();
 	lb_I_Unknown* LB_STDCALL getImplementation();
+	void LB_STDCALL releaseImplementation();
 /*...e*/
 
 	DECLARE_LB_UNKNOWN()
@@ -3801,6 +3814,17 @@ lb_I_Unknown* LB_STDCALL lbPluginDatabaseDialog::getImplementation() {
 	return r;
 }
 /*...e*/
+void LB_STDCALL lbPluginDatabaseDialog::releaseImplementation() {
+	lbErrCodes err = ERR_NONE;
+	
+	if (dbForm != NULL) {
+		UAP(lb_I_DatabaseForm, form, __FILE__, __LINE__)
+		QI(dbForm, lb_I_DatabaseForm, form, __FILE__, __LINE__)
+	
+		form->destroy();
+	}
+	
+}
 /*...e*/
 /*...e*/
 
