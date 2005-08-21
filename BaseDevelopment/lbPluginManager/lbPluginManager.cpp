@@ -30,11 +30,15 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.24 $
+ * $Revision: 1.25 $
  * $Name:  $
- * $Id: lbPluginManager.cpp,v 1.24 2005/06/27 10:32:09 lollisoft Exp $
+ * $Id: lbPluginManager.cpp,v 1.25 2005/08/21 23:09:36 lollisoft Exp $
  *
  * $Log: lbPluginManager.cpp,v $
+ * Revision 1.25  2005/08/21 23:09:36  lollisoft
+ * Bugfix: Plugins, that are not found will stay open.
+ * For this a releaseImplementation has been added.
+ *
  * Revision 1.24  2005/06/27 10:32:09  lollisoft
  * Mostly changes to conio.h conflicts while XCode build
  *
@@ -818,6 +822,7 @@ lb_I_Unknown* LB_STDCALL lbPlugin::getImplementation() {
 /*...e*/
 /*...sbool LB_STDCALL lbPlugin\58\\58\hasInterface\40\char\42\ name\41\:0:*/
 bool LB_STDCALL lbPlugin::hasInterface(char* name) {
+	lbErrCodes err = ERR_NONE;
 	lb_I_Unknown* temp;
 	
 	if (implementation == NULL) preinitialize();
@@ -851,6 +856,11 @@ bool LB_STDCALL lbPlugin::hasInterface(char* name) {
 		temp->release(__FILE__, __LINE__);
 		return true;
 	}
+
+	UAP(lb_I_PluginImpl, impl, __FILE__, __LINE__)
+	QI(implementation, lb_I_PluginImpl, impl, __FILE__, __LINE__)
+	
+	impl->releaseImplementation();
 	
 	return false;
 }
