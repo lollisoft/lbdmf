@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.85 2005/08/12 15:44:08 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.86 2005/08/21 23:23:53 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.85 $
+ * $Revision: 1.86 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.85 2005/08/12 15:44:08 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.86 2005/08/21 23:23:53 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.86  2005/08/21 23:23:53  lollisoft
+ * Moving code to wxWrapper DLL/so module.
+ *
  * Revision 1.85  2005/08/12 15:44:08  lollisoft
  * Removed log messages.
  *
@@ -327,6 +330,12 @@
 #define DYNAMIC_TEST2           1005
 #define DYNAMIC_VERBOSE		1006
 
+#ifdef USE_WXWRAPPER_DLL
+#include <wxWrapperDLL.h>
+#endif
+
+#ifndef USE_WXWRAPPER_DLL
+
 class lb_wxGUI;
 
 #ifdef LB_I_EXTENTIONS
@@ -498,6 +507,8 @@ lbErrCodes LB_STDCALL lb_wxFrame::createEventsource(lb_I_EventConnector* object)
 }
 /*...e*/
 /*...e*/
+#endif
+
 #endif
 
 /*...swxAppSelectPage:0:*/
@@ -679,6 +690,7 @@ lbErrCodes LB_STDCALL wxAppSelectPage::registerEventHandler(lb_I_Dispatcher* dis
 }
 /*...e*/
 /*...e*/
+
 /*...swxLogonPage:0:*/
 class wxLogonPage :
 public lb_I_Unknown,
@@ -940,6 +952,7 @@ char const * LB_STDCALL wxLogonPage::getTextValue(char* _name) {
 /*...e*/
 /*...e*/
 
+#ifndef USE_WXWRAPPER_DLL
 /*...sclass lb_wxGUI:0:*/
 #ifdef LB_I_EXTENTIONS
 
@@ -1569,9 +1582,11 @@ lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::findDBForm(char* name) {
 }
 #endif
 /*...e*/
+#endif
 #ifndef LB_I_EXTENTIONS
 class MyFrame;
 #endif
+
 /*...sclass MyApp:0:*/
 // Define a new application type
 
@@ -2510,6 +2525,9 @@ void MyFrame::OnAbout(wxCommandEvent& WXUNUSED(event) )
 }
 /*...e*/
 #endif
+
+#ifndef USE_WXWRAPPER_DLL
+
 #ifdef LB_I_EXTENTIONS
 /*...slb_wxFrame:0:*/
 // My frame constructor
@@ -2677,7 +2695,20 @@ void lb_wxFrame::OnDispatch(wxCommandEvent& event ) {
         }
 }
 /*...e*/
+
+/*
+void lb_wxFrame::OnPluginTest(wxCommandEvent& WXUNUSED(event) ) {
+
+	UAP_REQUEST(manager.getPtr(), lb_I_PluginManager, PM)
+	UAP(lb_I_Plugin, pl, __FILE__, __LINE__)
+
+	pl = PM->getFirstMatchingPlugin("lb_I_DatabaseReport");
+
+}
+*/
 /*...e*/
+#endif
+
 #endif
 
 /*...sWindows based WinMain implementation:0:*/

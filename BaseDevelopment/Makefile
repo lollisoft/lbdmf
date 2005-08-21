@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.60 $
+# * $Revision: 1.61 $
 # * $Name:  $
-# * $Id: Makefile,v 1.60 2005/08/08 19:18:44 lollisoft Exp $
+# * $Id: Makefile,v 1.61 2005/08/21 23:25:50 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.61  2005/08/21 23:25:50  lollisoft
+# * Moving code to wxWrapper DLL/so module.
+# *
 # * Revision 1.60  2005/08/08 19:18:44  lollisoft
 # * Minor changes.
 # *
@@ -352,7 +355,9 @@ ALLTARGETS = \
 	../AppDevelopmentDemo/App \
 	../AppDevelopmentDemo/DynamicApp/App \
 	../Test/Console/XML \
+	../Test/GUI/wxWrapperDLL \
 	../Test/GUI/wxWrapper \
+	$(DEVROOT_MAKE)/wxwin/wx/samples/report \
 	../Test/GUI/wxPlugins/lbLoginWizard \
 	../Samples/HelloWorld \
 	../Doc/html \
@@ -461,6 +466,14 @@ endif
 ifeq ($(OSTYPE), Windows_NT)
 ../Test/GUI/wxWrapper: dummy
 	$(MAKE) -s -C $@ -e MODULE=wxWrapper -e TARGET=$(TARGETEXE) -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@
+
+$(DEVROOT_MAKE)/wxwin/wx/samples/report: dummy
+	$(MAKE) -s -C $@ -e MODULE=report -e TARGET=$(TARGETEXE) -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@
+
+../Test/GUI/wxWrapperDLL: dummy
+	$(MAKE) -s -C $@ -e MODULE=wxWrapperDLL -e TARGET=$(TARGETDLL) -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@
 
 ../Test/GUI/wxPlugins/lbLoginWizard: dummy
