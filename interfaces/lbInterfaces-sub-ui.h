@@ -137,7 +137,7 @@ public:
 	 * Returns the main frame for the GUI application.
 	 */
 	 
-	virtual lb_I_Frame* LB_STDCALL getFrame() = 0; 
+	virtual lb_I_Unknown* LB_STDCALL getFrame() = 0; 
 /*...e*/
 /*...sMenu manipulation:8:*/
 	/**
