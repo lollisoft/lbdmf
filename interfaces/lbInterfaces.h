@@ -2266,6 +2266,20 @@ public:
 	 * is called. This enables checking for interfaces before real usage.
 	 */
 	virtual lb_I_Unknown* LB_STDCALL peekImplementation() = 0;
+
+	/**
+	 * \brief Release unused implementation.
+	 *
+	 * This function i'must be used to release the temporary instance.
+	 *
+	 * It has been occured, that a wxDialog based window - or even wxWindow,
+	 * that will not be used by the program, eg. later Destroyed, will hang
+	 * the application at exit.
+	 *
+	 * The lb_I_PluginImpl implementation then should call Destroy in the case
+	 * of a wxWindow based class.
+	 */
+	virtual void LB_STDCALL releaseImplementation() = 0;
 	
 	/** \brief Get the internal implementation.
 	 *
