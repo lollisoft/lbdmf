@@ -91,6 +91,10 @@ extern "C" {
 #include "wx/wizard.h"
 /*...e*/
 
+#ifndef OSX
+#include <wx/repwrt.h>
+#endif
+
 #include <lbDatabaseReport.h>
 
 /*...sclass lbPluginModuleDatabaseReport:0:*/

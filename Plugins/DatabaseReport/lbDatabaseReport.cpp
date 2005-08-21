@@ -96,6 +96,7 @@ extern "C" {
 #include <wx/repwrt.h>
 #endif
 
+#include <wxWrapperDLL.h>
 #include <lbDatabaseReport.h>
 
 
@@ -119,10 +120,12 @@ lbDBReportAction::lbDBReportAction() {
 }
 
 lbDBReportAction::~lbDBReportAction() {
+	_CL_LOG << "lbDBReportAction::~lbDBReportAction() called." LOG_
 	free(myActionID);
 
 	if (report != NULL) { 
-	    report->destroy();
+		_CL_LOG << "Destroy a report..." LOG_
+		report->destroy();
 	}
 }
 
@@ -146,6 +149,8 @@ void LB_STDCALL lbDBReportAction::openReport(lb_I_String* reportname, lb_I_Param
 	lbErrCodes err = ERR_NONE;
 
 	if (report != NULL) {
+		#ifdef bla
+		
 		_CL_VERBOSE << "Show previously created form." LOG_
 	
 		UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
@@ -171,14 +176,10 @@ void LB_STDCALL lbDBReportAction::openReport(lb_I_String* reportname, lb_I_Param
 		//detailForm->setForm(f, *&params);
 		
 		report->update();
+		#endif
+		
 		report->show();	
 	} else {
-		UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
-		UAP(lb_I_GUI, gui, __FILE__, __LINE__)
-	
-		meta->getGUI(&gui);
-	
-
 		UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
 
 		parameter->setData("DBName");
@@ -200,11 +201,14 @@ void LB_STDCALL lbDBReportAction::openReport(lb_I_String* reportname, lb_I_Param
 		parameter->setData("application");
 		params->getUAPString(*&parameter, *&app);
 
+/*...sGet the SQL query based on formular name\44\ application name\46\:16:*/
+		UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
+
 		// Do I only print the report for current row (SourceFieldValue) ?
 
-	//	lb_I_DatabaseForm* f = gui->findDBForm(masterForm->charrep());
+		// This report needs it's parent form. (Unsave cast)
+		//lb_I_DatabaseForm* f = gui->findDBForm(masterForm->charrep());
 
-/*...sGet the SQL query based on formular name\44\ application name\46\:16:*/
 		UAP_REQUEST(manager.getPtr(), lb_I_String, user)
 		meta->getUserName(&user);		
 
@@ -259,11 +263,11 @@ void LB_STDCALL lbDBReportAction::openReport(lb_I_String* reportname, lb_I_Param
 				buffer[0] = 0;
 				sprintf(buffer, b, id->charrep());
 
-				UAP(lb_I_Query, query, __FILE__, __LINE__)
+				UAP(lb_I_Query, query1, __FILE__, __LINE__)
 
-				query = database->getQuery(0);
+				query1 = database->getQuery(0);
 
-				err = query->query(buffer);
+				err = query1->query(buffer);
 /*...e*/
 				
 				if (err == ERR_NONE) {
@@ -272,15 +276,16 @@ void LB_STDCALL lbDBReportAction::openReport(lb_I_String* reportname, lb_I_Param
 					UAP(lb_I_Plugin, pl, __FILE__, __LINE__)
 					UAP_REQUEST(manager.getPtr(), lb_I_String, sql)
 
-					err = query->first();
+					err = query1->first();
 					
 					if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
 /*...sTry load the report and make basic setup:88:*/
 						UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
 						
-						sql = query->getAsString(1);
+						sql = query1->getAsString(1);
 
 						pl = PM->getFirstMatchingPlugin("lb_I_DatabaseReport");
+						
 						uk = pl->getImplementation();
 						
 						UAP(lb_I_DatabaseReport, DBReport, __FILE__, __LINE__)
@@ -305,42 +310,15 @@ void LB_STDCALL lbDBReportAction::openReport(lb_I_String* reportname, lb_I_Param
 						   
 						   The only way may be any kind of temporal default value.
 						*/
-						
-
-			// Either form data or SQL query
-			#ifdef bla 
-/*...s:136:*/
-			
-						UAP(lb_I_DatabaseForm, f, __FILE__, __LINE__)
-
-						UAP(lb_I_DatabaseForm, master, __FILE__, __LINE__)
 
 						UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
 						UAP(lb_I_GUI, gui, __FILE__, __LINE__)
 
 						meta->getGUI(&gui);
 
-						f = gui->findDBForm(masterForm->charrep());
-
-						QI(f, lb_I_DatabaseForm, master, __FILE__, __LINE__)						
-						
-						UAP_REQUEST(manager.getPtr(), lb_I_String, table)
-						
-						master->getPrimaryColumns();
-						
-						*table = master->getTableName(master->getColumnName(1));
-						
-						form->ignoreForeignKeys(table->charrep());
-/*...e*/
-			#endif			
-						// Init with current row of database form
-						//report->init(master);
+						report->setFrame(gui->getFrame());
 						
 						report->init(sql->charrep(), DBName->charrep(), DBUser->charrep(), DBPass->charrep());
-						
-						//form->setMasterForm(*&master, *&params);
-						
-						//report->setFilter("unprinted future reservations");
 /*...e*/
 						
 						// Get the related table for the source field
@@ -408,6 +386,7 @@ void LB_STDCALL lbDBReportAction::execute(lb_I_Parameter* params) {
 		lbErrCodes err = query->first();
 	
 		while(err == ERR_NONE) {
+			_CL_LOG << "Open report in while loop." LOG_
 /*...sFor each row open the report with given params:24:*/
 			UAP_REQUEST(manager.getPtr(), lb_I_String, what)
 			
@@ -421,6 +400,7 @@ void LB_STDCALL lbDBReportAction::execute(lb_I_Parameter* params) {
 		}
 		
 		if (err == WARN_DB_NODATA) {
+			_CL_LOG << "Open report in WARN_DB_NODATA." LOG_
 /*...sOpen the report with given params:24:*/
 			UAP_REQUEST(manager.getPtr(), lb_I_String, what)
 			
@@ -450,6 +430,7 @@ public:
 
 	lb_I_Unknown* LB_STDCALL peekImplementation();
 	lb_I_Unknown* LB_STDCALL getImplementation();
+	void LB_STDCALL releaseImplementation();
 /*...e*/
 
 	DECLARE_LB_UNKNOWN()
@@ -497,6 +478,8 @@ bool LB_STDCALL lbPluginDatabaseReport::run() {
 /*...slb_I_Unknown\42\ LB_STDCALL lbPluginDatabaseReport\58\\58\peekImplementation\40\\41\:0:*/
 lb_I_Unknown* LB_STDCALL lbPluginDatabaseReport::peekImplementation() {
 	lbErrCodes err = ERR_NONE;
+	
+	_CL_LOG << "lb_I_Unknown* LB_STDCALL lbPluginDatabaseReport::peekImplementation() called." LOG_
 
 	if (dbReport == NULL) {
 		lbDatabaseReport* _dbReport = new lbDatabaseReport();
@@ -513,7 +496,9 @@ lb_I_Unknown* LB_STDCALL lbPluginDatabaseReport::peekImplementation() {
 /*...slb_I_Unknown\42\ LB_STDCALL lbPluginDatabaseReport\58\\58\getImplementation\40\\41\:0:*/
 lb_I_Unknown* LB_STDCALL lbPluginDatabaseReport::getImplementation() {
 	lbErrCodes err = ERR_NONE;
-
+	
+	_CL_LOG << "lb_I_Unknown* LB_STDCALL lbPluginDatabaseReport::getImplementation() called." LOG_
+	
 	if (dbReport == NULL) {
 
 		_CL_VERBOSE << "Warning: peekImplementation() has not been used prior.\n" LOG_
@@ -529,6 +514,8 @@ lb_I_Unknown* LB_STDCALL lbPluginDatabaseReport::getImplementation() {
 	return r;
 }
 /*...e*/
+void LB_STDCALL lbPluginDatabaseReport::releaseImplementation() {
+}
 /*...e*/
 /*...e*/
 
@@ -538,6 +525,7 @@ END_IMPLEMENT_LB_UNKNOWN()
 
 IMPLEMENT_FUNCTOR(instanceOflbDatabaseReport, lbDatabaseReport)
 
+/*...sColumn positions:0:*/
 #define   LPI6      4.23
 #define   COL1X     0
 #define   COL2X     13
@@ -553,7 +541,7 @@ IMPLEMENT_FUNCTOR(instanceOflbDatabaseReport, lbDatabaseReport)
 #define   COL6WID   40
 #define   COLHDRY   18
 #define   COLY      25
-
+/*...e*/
 
 /*...slbErrCodes LB_STDCALL lbDatabaseReport\58\\58\setData\40\lb_I_Unknown\42\ uk\41\:0:*/
 lbErrCodes LB_STDCALL lbDatabaseReport::setData(lb_I_Unknown* uk) {
@@ -565,24 +553,33 @@ lbErrCodes LB_STDCALL lbDatabaseReport::setData(lb_I_Unknown* uk) {
 }
 /*...e*/
 
+/*...slbDatabaseReport\58\\58\lbDatabaseReport\40\\41\:0:*/
 lbDatabaseReport::lbDatabaseReport() {
 	ref = STARTREF;
-	pReport = NULL;
+	frame = NULL;
 	ReportName = NULL;
 	ReportFileName = NULL;
 	untranslated_ReportName = NULL;
 	
 	_CL_LOG << "lbDatabaseReport::lbDatabaseReport() called." LOG_
 }
+/*...e*/
 
+/*...slbDatabaseReport\58\\58\\126\lbDatabaseReport\40\\41\:0:*/
 lbDatabaseReport::~lbDatabaseReport() {
-	if (pReport != NULL) delete pReport;	
+	_CL_LOG << "lbDatabaseReport::~lbDatabaseReport() called." LOG_
 }
+/*...e*/
 
 void LB_STDCALL lbDatabaseReport::destroy() {
-
 }
 
+void LB_STDCALL lbDatabaseReport::setFrame(lb_I_Unknown* _frame) {
+	lb_wxFrame* __frame = (lb_wxFrame*) _frame;
+	frame = __frame->getPeer();
+}
+
+/*...svoid LB_STDCALL lbDatabaseReport\58\\58\init\40\char\42\ SQLString\44\ char\42\ DBName\44\ char\42\ DBUser\44\ char\42\ DBPass\41\:0:*/
 void LB_STDCALL lbDatabaseReport::init(char* SQLString, char* DBName, char* DBUser, char* DBPass) {
 	_CL_LOG << "lbDatabaseReport::init('" << 
 			SQLString << "', '" << 
@@ -597,9 +594,11 @@ void LB_STDCALL lbDatabaseReport::init(char* SQLString, char* DBName, char* DBUs
 	wxFont			fntSmall( 6, wxSWISS,      wxNORMAL, wxNORMAL     );
 	wxFont			fntHdr(  10, wxSWISS,      wxNORMAL, wxBOLD, true );
 
-	pReport = new wxReportWriter( 0, wxT("Test Report"), wxPoint(10,10), wxSize( 100, 100 ) );
+	wxReportWriter* pReport = new wxReportWriter(0, wxT("Test Report"), wxPoint(10,10), wxSize( 100, 100 ) );
 	pReport->SetPath( wxT(".") );
 
+
+/*...sHeader:8:*/
 	// -----------------------
 	//  HEADER (on each page)
 	// -----------------------
@@ -617,6 +616,7 @@ void LB_STDCALL lbDatabaseReport::init(char* SQLString, char* DBName, char* DBUs
 	pObj->SetPgNum( wxT("Page") );
 	pObj->SetRightAlign();
 	pReport->AddHeaderObj( pObj );
+/*...e*/
 
 	// Column header
 
@@ -744,46 +744,61 @@ void LB_STDCALL lbDatabaseReport::init(char* SQLString, char* DBName, char* DBUs
 				// -----------------------
 				//  DATA...
 				// -----------------------
-				
-				strValue[i-1]->Printf("%s", value->charrep());
+
+				*(strValue[i-1]) = value->charrep();
 				
 			}
+			
 			pReport->SaveData();
 		}
 /*...e*/
 		
-		pReport->HorizLine();
-				
-		pReport->FinishSection();
-		pReport->FinishReport();
-		
-		ReportFileName = strdup(pReport->FinalDestination().c_str());
+		for (int i = 1; i < cols; i++) {
+			delete strValue[cols-1];
+		}
 
-		delete pReport;
+		delete [] strValue;
 /*...e*/
 	} else {
 		_CL_LOG << "Error: Query returns no data!" LOG_
 	}
+
+	pReport->HorizLine();
+				
+	pReport->FinishSection();
+
+	pReport->FinishReport();
+		
+	ReportFileName = strdup(pReport->FinalDestination().c_str());
+
+	_CL_LOG << "Created a report file: '" << ReportFileName << "'" LOG_
+
+	delete pReport;
+	pReport = NULL;
 }
+/*...e*/
 
 void LB_STDCALL lbDatabaseReport::update() {
 
 }
 
+/*...svoid LB_STDCALL lbDatabaseReport\58\\58\show\40\\41\:0:*/
 void LB_STDCALL lbDatabaseReport::show() {
-	pReport = new wxReportWriter(
-		0,
+	wxReportWriter* pReport = new wxReportWriter(
+		frame,
 		ReportFileName,
 		wxPoint(10,10),
 		wxSize( 100, 100 ) );
 	
 	pReport->SetupReport( ReportFileName );
 	pReport->PrintPreview();
+	
 }
+/*...e*/
 
 void LB_STDCALL lbDatabaseReport::print() {
-	pReport->Print();
-	pReport->FinishReport();
+//	pReport->Print();
+//	pReport->FinishReport();
 }
 
 /*...slbErrCodes LB_STDCALL lbDatabaseReport\58\\58\setName\40\char const \42\ name\44\ char const \42\ appention\41\:0:*/

@@ -61,7 +61,7 @@ protected:
 	UAP(lb_I_String, DBUser, __FILE__, __LINE__)
 	UAP(lb_I_String, DBPass, __FILE__, __LINE__)
 
-	lb_I_DatabaseReport* report;
+	UAP(lb_I_DatabaseReport, report, __FILE__, __LINE__)
 };
 /*...e*/
 /*...sclass lbDatabaseReport:0:*/
@@ -79,6 +79,8 @@ public:
 	virtual ~lbDatabaseReport();
 	
 	void LB_STDCALL init(char* SQLString, char* DBName, char* DBUser, char* DBPass);
+
+	void LB_STDCALL setFrame(lb_I_Unknown* _frame);
 	
 	void LB_STDCALL destroy();
 	void LB_STDCALL update();
@@ -95,9 +97,10 @@ public:
 	char* untranslated_ReportName;
 	
 	// ------ wxReportWriter code ------
+
+	wxFrame		*frame;
 	
 	wxReportObj	*pObj;
-	wxReportWriter	*pReport;
 
 	// Array of report values
 	wxString**	strValue;
