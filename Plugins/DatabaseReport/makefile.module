@@ -98,7 +98,7 @@ endif
 endif
 
 ifeq ($(OSTYPE), linux)
-MOD_INCL=$(STD_INCL)
+MOD_INCL=$(STD_INCL) - $(DEVROOT_MAKE)/Projects/CPP/Test/GUI/wxWrapperDLL
 OBJDEP=
 C_SOOPS_WX = -DUNIX -DLINUX -DLB_I_EXTENTIONS `wx-config --cxxflags`
 C_SOOPS= $(C_SOOPS_WX)
@@ -106,7 +106,7 @@ VENDORLIBS=$(HOME)/lib/lbHook.so
 L_OPS=$(L_SOOPS) `wx-config --libs`
 endif    
 ifeq ($(OSTYPE), osx)
-MOD_INCL=$(STD_INCL)
+MOD_INCL=$(STD_INCL) -I $(DEVROOT)/Projects/CPP/Test/GUI/wxWrapperDLL
 OBJDEP=
 C_SOOPS_WX = -DOSX -DUNIX -DLINUX -DLB_I_EXTENTIONS `wx-config --inplace --cxxflags` 
 C_SOOPS= $(C_SOOPS_WX)
