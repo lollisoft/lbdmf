@@ -109,16 +109,16 @@ endif
 endif
 
 ifeq ($(OSTYPE), linux)
-MOD_INCL=$(STD_INCL)
+MOD_INCL=$(STD_INCL) -I ../wxWrapperDLL
 OBJDEP=
 C_ELFOPS += -DUNIX -DLINUX -D__WXGTK__ -DLB_I_EXTENTIONS -D__WXDEBUG__
 VENDORLIBS=$(HOME)/lib/lbHook.so 
 endif    
 
 ifeq ($(OSTYPE), osx)
-MOD_INCL=$(STD_INCL)
+MOD_INCL=$(STD_INCL) -I ../wxWrapperDLL
 OBJDEP=
-C_ELFOPS += -DOSX -DUNIX -DLINUX -DLB_I_EXTENTIONS `wx-config --inplace --cxxflags`
+C_ELFOPS += -DUSE_WXWRAPPER_DLL -DOSX -DUNIX -DLINUX -DLB_I_EXTENTIONS `wx-config --inplace --cxxflags`
 LIBS+= `wx-config --inplace --libs`
-VENDORLIBS=$(HOME)/lib/lbHook.so 
+VENDORLIBS=$(HOME)/lib/lbHook.so $(HOME)/lib/wxWrapperDLL.so 
 endif
