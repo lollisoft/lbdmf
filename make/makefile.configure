@@ -210,6 +210,22 @@ $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
 
 endif
 
+ifeq ($(TARGET), wxso)
+
+makefile: makefile.module \
+$(DEVROOT_MAKE)/Projects/CPP/BaseDevelopment/Makefile \
+$(DEVROOT_MAKE)/Projects/CPP/make/makefile.template \
+$(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
+	@cat $(DEVROOT_MAKE)/Projects/CPP/make/makefile.template > makefile
+	@cat makefile.module >> makefile
+	@echo Path=$(PATH) >> makefile
+	@echo all: $(_MODULE).so >> makefile
+	@rm -f $(DEVROOT_MAKE)/Projects/CPP/include/lbkey.h
+	@cp -f $(DEVROOT_MAKE)/Projects/CPP/BaseDevelopment/lbclasses/lbkey.h $(DEVROOT_MAKE)/Projects/CPP/include
+	@$(MKMK) $(TARGET) $(_MODULE) ../dosdir *.cpp >> makefile
+
+endif
+
 ifeq ($(TARGET), exe)
 
 makefile: makefile.module \
