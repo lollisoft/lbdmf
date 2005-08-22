@@ -12,11 +12,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.66 $
+ * $Revision: 1.67 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.66 2005/08/04 18:06:45 lollisoft Exp $
+ * $Id: mkmk.cpp,v 1.67 2005/08/22 16:31:33 lollisoft Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.67  2005/08/22 16:31:33  lollisoft
+ * Write L_OPS in wxWidgets so target for OSX.
+ *
  * Revision 1.66  2005/08/04 18:06:45  lollisoft
  * Added creating bundle target on Mac OS X.
  *
@@ -1121,7 +1124,7 @@ void write_wx_so_Target(char* modulename) {
 
 // Patch to create dynamic libraries under Mac OS X
 #ifdef OSX
-  printf("\t\t$(CC) -dynamiclib -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) `wx-config --libs` $(OBJS) $(OBJDEP) $(LIBS) -lc $(VENDORLIBS)\n");
+  printf("\t\t$(CC) -dynamiclib -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) `wx-config --libs` $(OBJS) $(OBJDEP) $(L_OPS) -lc $(VENDORLIBS)\n");
 #undef UNIX  
 #endif
 #ifdef UNIX
@@ -1204,7 +1207,7 @@ void ShowHelp()
 
   fprintf(stderr, "Enhanced by Lothar Behrens (lothar.behrens@lollisoft.de)\n\n");
 
-  fprintf(stderr, "MKMK: makefile generator $Revision: 1.66 $\n");
+  fprintf(stderr, "MKMK: makefile generator $Revision: 1.67 $\n");
   fprintf(stderr, "Usage: MKMK lib|exe|dll|so modulname includepath,[includepath,...] file1 [file2 file3...]\n");
 }
 /*...e*/
