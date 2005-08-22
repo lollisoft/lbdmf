@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.86 2005/08/21 23:23:53 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.87 2005/08/22 16:35:10 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.86 $
+ * $Revision: 1.87 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.86 2005/08/21 23:23:53 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.87 2005/08/22 16:35:10 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.87  2005/08/22 16:35:10  lollisoft
+ * Wrong conditional compiling.
+ *
  * Revision 1.86  2005/08/21 23:23:53  lollisoft
  * Moving code to wxWrapper DLL/so module.
  *
@@ -509,8 +512,6 @@ lbErrCodes LB_STDCALL lb_wxFrame::createEventsource(lb_I_EventConnector* object)
 /*...e*/
 #endif
 
-#endif
-
 /*...swxAppSelectPage:0:*/
 class wxAppSelectPage :
 public lb_I_Unknown,
@@ -951,6 +952,7 @@ char const * LB_STDCALL wxLogonPage::getTextValue(char* _name) {
 }
 /*...e*/
 /*...e*/
+#endif
 
 #ifndef USE_WXWRAPPER_DLL
 /*...sclass lb_wxGUI:0:*/
