@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.61 $
+# * $Revision: 1.62 $
 # * $Name:  $
-# * $Id: Makefile,v 1.61 2005/08/21 23:25:50 lollisoft Exp $
+# * $Id: Makefile,v 1.62 2005/08/22 16:33:03 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.62  2005/08/22 16:33:03  lollisoft
+# * Added wxWrapperDLL target for OSX.
+# *
 # * Revision 1.61  2005/08/21 23:25:50  lollisoft
 # * Moving code to wxWrapper DLL/so module.
 # *
@@ -279,6 +282,7 @@ TARGETWXEXE=bundle
 TARGET_TV_DLL=tvision_dll
 TARGET_TV_EXE=tvision_elf
 TARGETPLUGIN=soplugin
+TARGETWXSO=wxso
 TARGETWXPLUGIN=wxsoplugin
 
 ALLTARGETS = \
@@ -294,6 +298,7 @@ ALLTARGETS = \
 	../Plugins/DatabaseForm \
 	../AppDevelopmentDemo/App \
 	../AppDevelopmentDemo/DynamicApp/App \
+	../Test/GUI/wxWrapperDLL \
 	../Test/GUI/wxWrapper \
 	../Test/GUI/wxPlugins/lbLoginWizard \
 	../Test/Console/XML \
@@ -325,6 +330,7 @@ ALLTARGETS = \
 	../AppDevelopmentDemo/App \
 	../AppDevelopmentDemo/DynamicApp/App \
 	../Test/Console/XML \
+	../Test/GUI/wxWrapperDLL \
 	../Test/GUI/wxWrapper \
 	../Test/GUI/wxPlugins/lbLoginWizard \
 	$(BASEDIRECTORIES)
@@ -452,6 +458,10 @@ ifeq ($(OSTYPE), osx)
 	$(MAKE) -s -C $@ -e MODULE=wxWrapper -e TARGET=$(TARGETWXEXE) -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@
 	cp ../Test/GUI/wxWrapper/wxWrapper $(HOME)/bin
+
+../Test/GUI/wxWrapperDLL: dummy
+	$(MAKE) -s -C $@ -e MODULE=wxWrapperDLL -e TARGET=$(TARGETWXSO) -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@
 endif
 
 ifeq ($(OSTYPE), linux)
