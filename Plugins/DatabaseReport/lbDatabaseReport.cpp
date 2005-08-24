@@ -196,6 +196,9 @@ void LB_STDCALL lbDBReportAction::openReport(lb_I_String* reportname, lb_I_Param
 		 */
 
 		params->getUAPString(*&parameter, *&masterForm); 
+		
+		parameter->setData("source field");
+		params->getUAPString(*&parameter, *&SourceFieldName);
 		parameter->setData("source value");
 		params->getUAPString(*&parameter, *&SourceFieldValue);
 		parameter->setData("application");
@@ -317,6 +320,16 @@ void LB_STDCALL lbDBReportAction::openReport(lb_I_String* reportname, lb_I_Param
 						meta->getGUI(&gui);
 
 						report->setFrame(gui->getFrame());
+						
+						/* Here it would be better to preset the where clause columns
+						   and values. Then the internal proccess of building the report
+						   could be done only once. */
+						
+						// As a sample, here the reservations for customer with id = 4
+						// should be printed.
+						//report->addCondition("kundenid", "4");
+						
+						report->addAndCondition(SourceFieldName->charrep(), SourceFieldValue->charrep());
 						
 						report->init(sql->charrep(), DBName->charrep(), DBUser->charrep(), DBPass->charrep());
 /*...e*/
@@ -560,6 +573,7 @@ lbDatabaseReport::lbDatabaseReport() {
 	ReportName = NULL;
 	ReportFileName = NULL;
 	untranslated_ReportName = NULL;
+	hasConditions = false;
 	
 	_CL_LOG << "lbDatabaseReport::lbDatabaseReport() called." LOG_
 }
@@ -630,6 +644,30 @@ void LB_STDCALL lbDatabaseReport::init(char* SQLString, char* DBName, char* DBUs
 	query = database->getQuery(0);
 	
 	lbErrCodes err = query->query(SQLString);
+
+	if ((hasConditions) && (err == ERR_NONE)) {
+		UAP_REQUEST(manager.getPtr(), lb_I_String, newQuery)
+		
+		bool isChar = query->getColumnType(AndConditionColumn->charrep()) == lb_I_Query::lbDBColumnChar;
+		
+		*newQuery = SQLString;
+		*newQuery += " where ";
+		*newQuery += AndConditionColumn->charrep();
+
+		if (isChar) 
+			*newQuery += " = '";
+		else
+			*newQuery += " = ";
+
+		*newQuery += AndConditionValue->charrep();
+
+		if (isChar) 
+			*newQuery += "'";
+			
+		query = database->getQuery(0);
+		
+		err = query->query(newQuery->charrep());
+	}
 	
 	if (err == ERR_NONE) {
 /*...sBuild the report:16:*/
@@ -777,6 +815,20 @@ void LB_STDCALL lbDatabaseReport::init(char* SQLString, char* DBName, char* DBUs
 	pReport = NULL;
 }
 /*...e*/
+
+void LB_STDCALL lbDatabaseReport::addAndCondition(char* column, char* value) {
+	// This is for simplicy only.
+
+	hasConditions = true;
+	
+	if (AndConditionColumn == NULL) {
+		REQUEST(manager.getPtr(), lb_I_String, AndConditionColumn)
+		REQUEST(manager.getPtr(), lb_I_String, AndConditionValue)
+	}
+	
+	*AndConditionColumn = column;
+	*AndConditionValue = value;
+}
 
 void LB_STDCALL lbDatabaseReport::update() {
 

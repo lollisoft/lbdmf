@@ -80,6 +80,12 @@ public:
 	
 	void LB_STDCALL init(char* SQLString, char* DBName, char* DBUser, char* DBPass);
 
+	void LB_STDCALL addAndCondition(char* column, char* value);
+	void LB_STDCALL addOrCondition(char* column, char* value) { }
+	void LB_STDCALL beginBracket() { }
+	void LB_STDCALL endBracket() { }
+
+
 	void LB_STDCALL setFrame(lb_I_Unknown* _frame);
 	
 	void LB_STDCALL destroy();
@@ -104,6 +110,11 @@ public:
 
 	// Array of report values
 	wxString**	strValue;
+
+	bool		hasConditions;
+	
+	UAP(lb_I_String, AndConditionColumn, __FILE__, __LINE__)
+	UAP(lb_I_String, AndConditionValue, __FILE__, __LINE__)
 };
 /*...e*/
 

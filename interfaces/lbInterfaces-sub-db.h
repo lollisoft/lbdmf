@@ -844,6 +844,32 @@ public:
 	 * report the data.
 	 */
 	virtual void LB_STDCALL init(char* SQLString, char* DBName, char* DBUser, char* DBPass) = 0;
+
+	/** \brief Add a where clause and condition.
+	 *
+	 * This function is used to preset where clause conditions. The name/value pair
+	 * would be added to a list of 'ANDed' condition rules. 
+	 */
+	virtual void LB_STDCALL addAndCondition(char* column, char* value) = 0;
+	
+	/** \brief Add a where clause or condition.
+	 *
+	 * This function is used to preset where clause conditions. The name/value pair
+	 * would be added to a list of 'ORed' condition rules. 
+	 */
+	virtual void LB_STDCALL addOrCondition(char* column, char* value) = 0;
+	
+	/** \brief Begin a bracket condition block.
+	 *
+	 * Use this function to set a list of conditions in a bracket.
+	 */
+	virtual void LB_STDCALL beginBracket() = 0;
+	
+	/** \brief End a bracket condition block.
+	 *
+	 * Use this function to end a list of conditions in a bracket.
+	 */
+	virtual void LB_STDCALL endBracket() = 0;
 	
 	/** \brief Set the parent window for the report.
 	 *
