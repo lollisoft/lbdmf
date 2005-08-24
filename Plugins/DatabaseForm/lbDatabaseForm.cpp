@@ -1250,6 +1250,7 @@ lbDatabaseDialog::lbDatabaseDialog()
 	ref = STARTREF;
 	formName = strdup("Database dialog");
 	untranslated_formName = NULL;
+	base_formName = NULL;
 
 	fa = NULL;
 }
@@ -1260,6 +1261,8 @@ lbDatabaseDialog::~lbDatabaseDialog() {
 
 	if (fa != NULL) delete fa;
 	free (formName);
+	free (base_formName);
+	free (untranslated_formName);
 }
 /*...e*/
 
@@ -1763,10 +1766,12 @@ void LB_STDCALL lbDatabaseDialog::init(char* _SQLString, char* DBName, char* DBU
 			     "inner join formulare on formular_actions.formular = formulare.id "
 			     "where formulare.name = '%s'";
 
-	char *buf = (char*) malloc(strlen(_actionquery) + strlen(untranslated_formName) + 1);
+	char *buf = (char*) malloc(strlen(_actionquery) + strlen(base_formName) + 1);
 	buf[0] = 0;
 	
-	sprintf(buf, _actionquery, untranslated_formName);
+	sprintf(buf, _actionquery, base_formName);
+
+	_CL_LOG << "Have action query: '" << buf << "'" LOG_ 
 	
 	actionQuery->query(buf);
 	lbErrCodes err = actionQuery->first();
@@ -1896,9 +1901,13 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::setName(char const * name, char const * 
 
 	if (appention) {
 		formName = (char*) malloc(1+strlen(temp)+strlen(appention));
+		
+		base_formName = (char*) malloc(1+strlen(name));
 		untranslated_formName = (char*) malloc(1+strlen(name)+strlen(appention));
 	} else {
 		formName = (char*) malloc(1+strlen(temp));
+		
+		base_formName = (char*) malloc(1+strlen(name));
 		untranslated_formName = (char*) malloc(1+strlen(name));
 	}
 	
@@ -1910,6 +1919,9 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::setName(char const * name, char const * 
 	untranslated_formName[0] = 0;
 	strcat(untranslated_formName, name);
 	if (appention) strcat(untranslated_formName, appention);
+		
+	base_formName[0] = 0;
+	strcat(base_formName, name);
 		
 	return ERR_NONE;
 }

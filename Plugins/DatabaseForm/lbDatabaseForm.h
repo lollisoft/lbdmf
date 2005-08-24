@@ -30,11 +30,15 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.19 $
+ * $Revision: 1.20 $
  * $Name:  $
- * $Id: lbDatabaseForm.h,v 1.19 2005/08/15 17:48:04 lollisoft Exp $
+ * $Id: lbDatabaseForm.h,v 1.20 2005/08/24 20:41:46 lollisoft Exp $
  *
  * $Log: lbDatabaseForm.h,v $
+ * Revision 1.20  2005/08/24 20:41:46  lollisoft
+ * Bugfix in selecting actions based on untranslated,
+ * but with some text appended formular name.
+ *
  * Revision 1.19  2005/08/15 17:48:04  lollisoft
  * Access to all controls.
  *
@@ -644,6 +648,8 @@ public:
 	wxWindow* prevButton;
 	wxWindow* nextButton;
 	wxWindow* lastButton;
+	
+	char* base_formName;
 	char* formName;
 	char* untranslated_formName;
 
