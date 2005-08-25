@@ -600,7 +600,14 @@ void LB_STDCALL lbDatabaseReport::init(char* SQLString, char* DBName, char* DBUs
 			DBName << "', '" << 
 			DBUser << "', '*****') for '" << untranslated_ReportName << "' called." LOG_
 
+	int colstepHDR = 41;
+
+#ifdef OSX
+	int colstep = 30;
+#endif
+#ifndef OSX
 	int colstep = 40;
+#endif
 	
 	wxLogNull		logNull;
 
@@ -679,7 +686,7 @@ void LB_STDCALL lbDatabaseReport::init(char* SQLString, char* DBName, char* DBUs
 		strValue = new wxString* [cols];
 
 		for (int i = 1; i <= cols; i++) {
-			pObj = new wxReportObj( colstep * i - colstep, COLHDRY, colstep, 5 );
+			pObj = new wxReportObj( colstepHDR * i - colstepHDR, COLHDRY, colstepHDR, 5 );
 			pObj->SetData(query->getColumnName(i));
 			pObj->SetFont( &fntHdr );
 			pObj->SetRightAlign();
@@ -721,13 +728,19 @@ void LB_STDCALL lbDatabaseReport::init(char* SQLString, char* DBName, char* DBUs
 		// -----------------------
 		pReport->SetDateFormat( wxT("%d.%m.%Y  %H:%M:%S") );
 		pReport->SetDate( wxDateTime::Now() );
-		pReport->SetUser( wxT("Juergen") );
+		pReport->SetUser( wxT("Lothar Behrens") );
 		pReport->SetInfo( wxT("A Test Report") );
 								
 		pReport->DefineSection();
+
+		pObj = new wxReportObj( colstep * 1 - colstep, COLY, colstep, 6 );
+		pObj->SetRef( strValue[0] );
+		pObj->SetIncrements( 0.0, LPI6 );
+		pObj->SetRightAlign();
+		pReport->AddDataObj( pObj );
 	
-		for (int i = 1; i <= cols; i++) {
-			pObj = new wxReportObj( colstep * i - colstep, COLY, colstep, 6 );
+		for (int i = 2; i <= cols; i++) {
+			pObj = new wxReportObj( (colstep * i - colstep) + 1, COLY, colstep, 6 );
 			pObj->SetRef( strValue[i-1] );
 			pObj->SetIncrements( 0.0, LPI6 );
 			pObj->SetRightAlign();
