@@ -518,7 +518,7 @@ ADD CONSTRAINT cst_Formular_Parameters_FormularID FOREIGN KEY ( FormularID )
 -- | DATA
 -- +---------------------------------------------------------
 
-insert into Users Values (1, 'User', 'Test', 'user', 'TestUser');
+insert into Users (Name, Vorname, userid, passwort) Values ('User', 'Test', 'user', 'TestUser');
 
 --...sFill Anwendungen:0:
 insert into Anwendungen (Name, Titel, ModuleName, Functor, Interface) Values (
