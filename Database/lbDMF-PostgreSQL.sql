@@ -521,40 +521,35 @@ ADD CONSTRAINT cst_Formular_Parameters_FormularID FOREIGN KEY ( FormularID )
 insert into Users Values (1, 'User', 'Test', 'user', 'TestUser');
 
 --...sFill Anwendungen:0:
-insert into Anwendungen Values (
-1,
+insert into Anwendungen (Name, Titel, ModuleName, Functor, Interface) Values (
 'lbDMF Manager',
 'Dynamic App Manager',
 'lbDynApp',
 'instanceOfApplication',
 'lb_I_Application');
 
-insert into Anwendungen Values (
-2,
+insert into Anwendungen (Name, Titel, ModuleName, Functor, Interface) Values (
 'Demo application',
 'Demonstration',
 'Application',
 'instanceOfApplication',
 'lb_I_Application');
 
-insert into Anwendungen Values (
-3,
+insert into Anwendungen (Name, Titel, ModuleName, Functor, Interface) Values (
 'FRS',
 'Fahrkarten Reservierungssystem',
 'lbDynApp',
 'instanceOfApplication',
 'lb_I_Application');
 
-insert into Anwendungen Values (
-4,
+insert into Anwendungen (Name, Titel, ModuleName, Functor, Interface) Values (
 'lbDMF Codegenerator',
 'Generiert Code von lbDMF Daten',
 'lbDMFAppWriter',
 'instanceOfApplication',
 'lb_I_Application');
 
-insert into Anwendungen Values (
-5,
+insert into Anwendungen (Name, Titel, ModuleName, Functor, Interface) Values (
 'SQL Ledger',
 'Warenwirtschafts System',
 'lbDynApp',
@@ -562,199 +557,174 @@ insert into Anwendungen Values (
 'lb_I_Application');
 --...e
 --...sFill Formulartypen:0:
-insert into Formulartypen Values (
-1,
+insert into Formulartypen (HandlerModule, HandlerFunctor, HandlerInterface, Beschreibung) Values (
 '-',
 '-',
 'lb_I_DatabaseForm',
 'Dynamisch aufgebautes Datenbankformular');
 
-insert into Formulartypen Values (
-2,
+insert into Formulartypen (HandlerModule, HandlerFunctor, HandlerInterface, Beschreibung) Values (
 'lbTrainresBaseForms',
 'lbKunden',
 'lb_I_FixWiredForm',
 'Fest verdrahtetes Formular');
 --...e
 --...sFill Formulare:0:
-insert into Formulare Values (
-1, 
+insert into Formulare (Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
 'Benutzer', 
 'Benutzer verwalten', 
 'manageUser', 
 'Verwaltung der Benutzer in lbDMF',
 1 , 1);
 
-insert into Formulare Values (
-2, 
+insert into Formulare (Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
 'Formulare', 
 'Formulare verwalten', 
 'manageFormulars', 
 'Verwaltung der Formulare in lbDMF',
 1, 1);
 
-insert into Formulare Values (
-7, 
-'Formular_Parameter',
-'Formularparameter verwalten', 
-'manageFormularparameters', 
-'Verwaltung der Formularparameter in lbDMF',
-1, 1);
-
-insert into Formulare Values (
-8, 
-'Benutzer -> Anwendungen', 
-'Anwendungen Benutzern zuordnen', 
-'manageAppsUsers', 
-'Verwaltung der Zuordnung von Benutzern zu Anwendungen',
-1, 1);
-
-insert into Formulare Values (
-3, 
+insert into Formulare (Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
 'Kunden', 
 'Kunden verwalten',
 'manageCustomers', 
 'Bietet Verwaltungsmöglichkeiten für Kunden',
 2 , 1);
 
-insert into Formulare Values (
-4, 
+insert into Formulare (Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
 'Reservierungen', 
 'Reservierungen verwalten', 
 'manageReservations', 
 'Bietet Verwaltungsmöglichkeiten für Reservierungen von Fahrkarten',
 2, 1);
 
-insert into Formulare Values (
-5, 
+insert into Formulare (Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
 'DynKunden', 
 'Kunden verwalten', 
 'manageCustomers', 
 'Bietet Verwaltungsmöglichkeiten für Kunden',
 3, 1);
 
-insert into Formulare Values (
-6, 
+insert into Formulare (Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
 'DynReservierungen', 
 'Reservierungen verwalten', 
 'manageReservations', 
 'Bietet Verwaltungsmöglichkeiten für Reservierungen von Fahrkarten',
 3, 1);
 
-insert into Formulare Values (
-9,
+insert into Formulare (Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
+'Formular_Parameter',
+'Formularparameter verwalten', 
+'manageFormularparameters', 
+'Verwaltung der Formularparameter in lbDMF',
+1, 1);
+
+insert into Formulare (Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
+'Benutzer -> Anwendungen', 
+'Anwendungen Benutzern zuordnen', 
+'manageAppsUsers', 
+'Verwaltung der Zuordnung von Benutzern zu Anwendungen',
+1, 1);
+
+insert into Formulare (Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
 'Benutzer',
 'Benutzer verwalten',
 'manageUser',
 'Verwaltung der Benutzer in lbDMF',
 4, 1);
 
-insert into Formulare Values (
-10,
+insert into Formulare (Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
 'Formulare',
 'Formulare verwalten',
 'manageFormulars',
 'Verwaltung der Formulare in lbDMF',
 4, 1);
 
-insert into Formulare Values (
-11,
+insert into Formulare (Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
 'Formular_Parameter',
 'Formularparameter verwalten',
 'manageFormularparameters',
 'Verwaltung der Formularparameter in lbDMF',
 4, 1);
 
-insert into Formulare Values (
-12,
+insert into Formulare (Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
 'Benutzer -> Anwendungen',
 'Anwendungen Benutzern zuordnen',
 'manageAppsUsers',
 'Verwaltung der Zuordnung von Benutzern zu Anwendungen',
 4, 1);
 
-insert into Formulare Values (
-13,
+insert into Formulare (Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
 'Kunden',
 'Kunden verwalten',
 'manageCustomers',
 'Bietet Verwaltungsmöglichkeiten für Kunden',
 2, 1);
 
-insert into Formulare Values (
-14,
+insert into Formulare (Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
 'Reservierungen',
 'Reservierungen verwalten',
 'manageReservations',
 'Bietet Verwaltungsmöglichkeiten für Reservierungen von Fahrkarten',
 4, 1);
 
-insert into Formulare Values (
-15,
+insert into Formulare (Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
 'DynKunden',
 'Kunden verwalten',
 'manageDynCustomers',
 'Bietet Verwaltungsmöglichkeiten für Kunden',
 3, 1);
 
-insert into Formulare Values (
-16,
+insert into Formulare (Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
 'DynReservierungen',
 'Reservierungen verwalten',
 'manageDynReservierungen',
 'Bietet Verwaltungsmöglichkeiten für Reservierungen von Fahrkarten',
 4, 1);
 
-insert into Formulare Values (
-17,
+insert into Formulare (Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
 'Formulare -> Anwendung',
 'Formulare Anwendungen zuordnen',
 'manageFormularsToApps',
 'Einrichtung der Formulare zu Anwendungen',
 1, 1);
 
-insert into Formulare Values (
-18,
+insert into Formulare (Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
 'Sachkonten',
 'Sachkontenverwaltung',
 'manageGeneralLedger',
 '-',
 5 , 1);
 
-insert into Formulare Values (
-19,
+insert into Formulare (Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
 'Anwendungen',
 'Anwendungen',
 'manageAnwendungen',
 '-',
 1 , 1);
 
-insert into Formulare Values (
-20,
+insert into Formulare (Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
 'Anwendungen -> Formulare',
 'Anwendungen -> Formulare',
 'manageAnwendungenFormulare',
 '-',
 1, 1);
 
-insert into Formulare Values (
-21,
+insert into Formulare (Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
 'Planfahrten',
 'Planfahrten verwalten',
 'managePlanfahrten',
 '-',
 3, 1);
 
-insert into Formulare Values (
-22,
+insert into Formulare (Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
 'Planstrecken',
 'Planstrecken verwalten',
 'managePlanstrecken',
 '-',
 3, 1);
 
-insert into Formulare Values (
-23,
+insert into Formulare (Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
 'Streckennamen',
 'Streckennamen verwalten',
 'manageStreckennamen',
@@ -799,133 +769,120 @@ insert into ForeignKey_VisibleData_Mapping (FKName, FKTable, PKName, PKTable) Va
 'anwendungen');
 --...e
 --...sFill Formular_Parameters:0:
-insert into Formular_Parameters Values (
-1,
+insert into Formular_Parameters (ParameterName, ParameterValue, FormularID) Values (
 'query',
 'select "kundennr", "name", "vorname", "ort", "plz", "strasse", "vorwahl", "telefon" from kunden order by kundennr',
 5);
 
-insert into Formular_Parameters Values (
-2,
+insert into Formular_Parameters (ParameterName, ParameterValue, FormularID) Values (
 'query',
 'select "erwachsene", "kinder", "planfahrtid", "kundenid" from reservierungen',
 6);
 
-insert into Formular_Parameters Values (
-3,
+insert into Formular_Parameters (ParameterName, ParameterValue, FormularID) Values (
 'query',
 'select "name", "vorname", "userid", "passwort" from "users"',
 1);
 
-insert into Formular_Parameters Values (
-4,
+insert into Formular_Parameters (ParameterName, ParameterValue, FormularID) Values (
 'query',
 'select "name", "menuname", "eventname", "menuhilfe", "anwendungid", "typ" from "formulare"',
 2);
 
-insert into Formular_Parameters Values (
-5,
+insert into Formular_Parameters (ParameterName, ParameterValue, FormularID) Values (
 'query',
-'select "parametername", "parametervalue", "formularid" from "formular_parameters"',
+'select "parametername", "parametervalue", "formularid" from "Formular_Parameters"',
 7);
 
-insert into Formular_Parameters Values (
-6,
+insert into Formular_Parameters (ParameterName, ParameterValue, FormularID) Values (
 'query',
 'select "userid", "anwendungenid" from "user_anwendungen"',
 8);
 
-insert into Formular_Parameters Values (
-7,
+insert into Formular_Parameters (ParameterName, ParameterValue, FormularID) Values (
 'query',
 'select anwendungid, formularid from "anwendungen_formulare"',
 17);
 
-insert into Formular_Parameters Values (
-8,
+insert into Formular_Parameters (ParameterName, ParameterValue, FormularID) Values (
 'query',
 'select * from chart order by id',
 18);
 
-insert into Formular_Parameters Values (
-9,
+insert into Formular_Parameters (ParameterName, ParameterValue, FormularID) Values (
 'query',
 'select name, titel, modulename, functor, interface from anwendungen order by id',
 19);
 
-insert into Formular_Parameters Values (
-10,
+insert into Formular_Parameters (ParameterName, ParameterValue, FormularID) Values (
 'query',
 'select anwendungid, formularid from anwendungen_formulare order by id',
 20);
 
-insert into Formular_Parameters Values (
-11,
+insert into Formular_Parameters (ParameterName, ParameterValue, FormularID) Values (
 'query',
 'select bezeichnung, streckenid, datum from planfahrten order by datum',
 21);
 
-insert into Formular_Parameters Values (
-12,
+insert into Formular_Parameters (ParameterName, ParameterValue, FormularID) Values (
 'query',
 'select zubahnhofa, bahnhofid, zubahnhofb, streckenid from planstrecken order by bahnhofid',
 22);
 
-insert into Formular_Parameters Values (
-13,
+insert into Formular_Parameters (ParameterName, ParameterValue, FormularID) Values (
 'query',
 'select * from planstreckennamen',
 23);
 --...e
 --...sFill Anwendungs_Parameter:0:
-insert into Anwendungs_Parameter Values (1, 'DBName', 'trainres', 3);
-insert into Anwendungs_Parameter Values (2, 'DBUser', 'dba', 3);
-insert into Anwendungs_Parameter Values (3, 'DBPass', 'trainres', 3);
-insert into Anwendungs_Parameter Values (4, 'DBName', 'lbDMF', 1);
-insert into Anwendungs_Parameter Values (5, 'DBUser', 'dba', 1);
-insert into Anwendungs_Parameter Values (6, 'DBPass', 'trainres', 1);
-insert into Anwendungs_Parameter Values (7, 'DBName', 'lbDMF', 4);
-insert into Anwendungs_Parameter Values (8, 'DBUser', 'dba', 4);
-insert into Anwendungs_Parameter Values (9, 'DBPass', 'trainres', 4);
-insert into Anwendungs_Parameter Values (10, 'DBName', 'sql-ledger', 5);
-insert into Anwendungs_Parameter Values (11, 'DBUser', 'dba', 5);
-insert into Anwendungs_Parameter Values (12, 'DBPass', 'trainres', 5);
+insert into Anwendungs_Parameter (ParameterName, ParameterValue, AnwendungID) Values ('DBName', 'trainres', 3);
+insert into Anwendungs_Parameter (ParameterName, ParameterValue, AnwendungID) Values ('DBUser', 'dba', 3);
+insert into Anwendungs_Parameter (ParameterName, ParameterValue, AnwendungID) Values ('DBPass', 'trainres', 3);
+insert into Anwendungs_Parameter (ParameterName, ParameterValue, AnwendungID) Values ('DBName', 'lbDMF', 1);
+insert into Anwendungs_Parameter (ParameterName, ParameterValue, AnwendungID) Values ('DBUser', 'dba', 1);
+insert into Anwendungs_Parameter (ParameterName, ParameterValue, AnwendungID) Values ('DBPass', 'trainres', 1);
+insert into Anwendungs_Parameter (ParameterName, ParameterValue, AnwendungID) Values ('DBName', 'lbDMF', 4);
+insert into Anwendungs_Parameter (ParameterName, ParameterValue, AnwendungID) Values ('DBUser', 'dba', 4);
+insert into Anwendungs_Parameter (ParameterName, ParameterValue, AnwendungID) Values ('DBPass', 'trainres', 4);
+insert into Anwendungs_Parameter (ParameterName, ParameterValue, AnwendungID) Values ('DBName', 'sql-ledger', 5);
+insert into Anwendungs_Parameter (ParameterName, ParameterValue, AnwendungID) Values ('DBUser', 'dba', 5);
+insert into Anwendungs_Parameter (ParameterName, ParameterValue, AnwendungID) Values ('DBPass', 'trainres', 5);
 --...e
 --...sFill Anwendungen_Formulare:0:
-insert into Anwendungen_Formulare Values (1, 1, 1);
-insert into Anwendungen_Formulare Values (2, 1, 2);
-insert into Anwendungen_Formulare Values (3, 1, 7);
-insert into Anwendungen_Formulare Values (4, 1, 8);
+insert into Anwendungen_Formulare (AnwendungID,FormularID) Values (1, 1);
+insert into Anwendungen_Formulare (AnwendungID,FormularID) Values (1, 2);
+insert into Anwendungen_Formulare (AnwendungID,FormularID) Values (1, 7);
+insert into Anwendungen_Formulare (AnwendungID,FormularID) Values (1, 8);
 
-insert into Anwendungen_Formulare Values (6, 2, 1);
-insert into Anwendungen_Formulare Values (7, 2, 2);
+insert into Anwendungen_Formulare (AnwendungID,FormularID) Values (2, 1);
+insert into Anwendungen_Formulare (AnwendungID,FormularID) Values (2, 2);
 
-insert into Anwendungen_Formulare Values (8, 3, 5);
-insert into Anwendungen_Formulare Values (9, 3, 6);
+insert into Anwendungen_Formulare (AnwendungID,FormularID) Values (3, 5);
+insert into Anwendungen_Formulare (AnwendungID,FormularID) Values (3, 6);
 
-insert into Anwendungen_Formulare Values (10, 4, 9);
-insert into Anwendungen_Formulare Values (12, 4, 10);
-insert into Anwendungen_Formulare Values (13, 4, 11);
-insert into Anwendungen_Formulare Values (14, 4, 12);
-insert into Anwendungen_Formulare Values (15, 4, 13);
-insert into Anwendungen_Formulare Values (16, 4, 14);
-insert into Anwendungen_Formulare Values (17, 4, 15);
-insert into Anwendungen_Formulare Values (18, 4, 16);
+insert into Anwendungen_Formulare (AnwendungID,FormularID) Values (4, 9);
+insert into Anwendungen_Formulare (AnwendungID,FormularID) Values (4, 10);
+insert into Anwendungen_Formulare (AnwendungID,FormularID) Values (4, 11);
+insert into Anwendungen_Formulare (AnwendungID,FormularID) Values (4, 12);
+insert into Anwendungen_Formulare (AnwendungID,FormularID) Values (4, 13);
+insert into Anwendungen_Formulare (AnwendungID,FormularID) Values (4, 14);
+insert into Anwendungen_Formulare (AnwendungID,FormularID) Values (4, 15);
+insert into Anwendungen_Formulare (AnwendungID,FormularID) Values (4, 16);
 
-insert into Anwendungen_Formulare Values (19, 5, 18);
+insert into Anwendungen_Formulare (AnwendungID,FormularID) Values (5, 18);
 
-insert into Anwendungen_Formulare Values (20, 1, 19);
-insert into Anwendungen_Formulare Values (21, 1, 20);
-insert into Anwendungen_Formulare Values (22, 3, 21);
-insert into Anwendungen_Formulare Values (23, 3, 22);
-insert into Anwendungen_Formulare Values (24, 3, 23);
+insert into Anwendungen_Formulare (AnwendungID,FormularID) Values (1, 19);
+insert into Anwendungen_Formulare (AnwendungID,FormularID) Values (1, 20);
+insert into Anwendungen_Formulare (AnwendungID,FormularID) Values (3, 21);
+insert into Anwendungen_Formulare (AnwendungID,FormularID) Values (3, 22);
+insert into Anwendungen_Formulare (AnwendungID,FormularID) Values (3, 23);
 --...e
 --...sFill User_Anwendungen:0:
-insert into User_Anwendungen Values (1, 1, 1);
-insert into User_Anwendungen Values (2, 1, 2);
-insert into User_Anwendungen Values (3, 1, 3);
-insert into User_Anwendungen Values (4, 1, 4);
-insert into User_Anwendungen Values (5, 1, 5);
+insert into User_Anwendungen (userid, AnwendungenId) Values (1, 1);
+insert into User_Anwendungen (userid, AnwendungenId) Values (1, 2);
+insert into User_Anwendungen (userid, AnwendungenId) Values (1, 3);
+insert into User_Anwendungen (userid, AnwendungenId) Values (1, 4);
+insert into User_Anwendungen (userid, AnwendungenId) Values (1, 5);
 --...e
 
 --...sFill CodegenTarget:0:
@@ -933,9 +890,8 @@ insert into User_Anwendungen Values (5, 1, 5);
 -- | Setup for the codgeneration Target
 -- +----------------------------------------
 
-insert into CodegenTarget 
+insert into CodegenTarget (Name, Titel, ModuleName, Functor, Interface) 
 Values (
-1, 
 'lbDMFAppwriter', 
 'Create an application module for lbDMF Framework', 
 'ModullbDMFAppgen',
