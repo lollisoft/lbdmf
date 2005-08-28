@@ -129,6 +129,14 @@ public:
 	 */
 	virtual lb_I_DatabaseForm* LB_STDCALL createDBForm(char* formName, char* queryString, char* DBName, char* DBUser, char* DBPass) = 0;
 
+	/** \brief Register a form.
+	 *
+	 * This function must be used to register a database form, that has not been created
+	 * by an instance of this interface.
+	 *
+	 * It will be used in the master detail form implementations. 
+	 */
+	virtual void LB_STDCALL registerDBForm(char* formName, lb_I_DatabaseForm* form) = 0;
 
 	virtual lb_I_Form* LB_STDCALL createLoginForm() = 0;
 /*...e*/

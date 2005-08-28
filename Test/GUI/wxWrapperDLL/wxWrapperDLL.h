@@ -33,11 +33,15 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.1 $
+ * $Revision: 1.2 $
  * $Name:  $
- * $Id: wxWrapperDLL.h,v 1.1 2005/08/21 23:24:59 lollisoft Exp $
+ * $Id: wxWrapperDLL.h,v 1.2 2005/08/28 11:05:05 lollisoft Exp $
  *
  * $Log: wxWrapperDLL.h,v $
+ * Revision 1.2  2005/08/28 11:05:05  lollisoft
+ * Registering database forms, that are not created by lb_I_GUI implementation
+ * is intented. A centralized registry of forms would be a goal.
+ *
  * Revision 1.1  2005/08/21 23:24:59  lollisoft
  * Moving code to wxWrapper DLL/so module.
  *
@@ -335,6 +339,7 @@ public:
 	virtual lbErrCodes LB_STDCALL addTextField(char* name, int x, int y, int w, int h) { return ERR_NONE; };
 /*...e*/
         
+	void LB_STDCALL registerDBForm(char* formName, lb_I_DatabaseForm* form);
 
 	lb_I_DatabaseForm* LB_STDCALL findDBForm(char* name);
 
