@@ -532,9 +532,10 @@ lbDetailFormAction::lbDetailFormAction() {
 lbDetailFormAction::~lbDetailFormAction() {
 	free(myActionID);
 
-	if (detailForm != NULL) { 
-	    detailForm->destroy();
-	}
+// lb_I_GUI implementation does this from now
+//	if (detailForm != NULL) { 
+//	    detailForm->destroy();
+//	}
 }
 
 void LB_STDCALL lbDetailFormAction::setDatabase(lb_I_Database* _db) {
@@ -587,26 +588,25 @@ void LB_STDCALL lbDetailFormAction::openDetailForm(lb_I_String* formularname, lb
 		UAP(lb_I_GUI, gui, __FILE__, __LINE__)
 	
 		meta->getGUI(&gui);
-	
 
-	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
+		UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
 
-	parameter->setData("DBName");
-	params->getUAPString(*&parameter, *&DBName);
-	parameter->setData("DBUser");
-	params->getUAPString(*&parameter, *&DBUser);
-	parameter->setData("DBPass");
-	params->getUAPString(*&parameter, *&DBPass);
-	parameter->setData("source Form");
-	params->getUAPString(*&parameter, *&masterForm);
-//	parameter->setData("source field");
-//	params->getUAPString(*&parameter, *&SourceFieldName);
-	parameter->setData("source value");
-	params->getUAPString(*&parameter, *&SourceFieldValue);
-	parameter->setData("application");
-	params->getUAPString(*&parameter, *&app);
+		parameter->setData("DBName");
+		params->getUAPString(*&parameter, *&DBName);
+		parameter->setData("DBUser");
+		params->getUAPString(*&parameter, *&DBUser);
+		parameter->setData("DBPass");
+		params->getUAPString(*&parameter, *&DBPass);
+		parameter->setData("source Form");
+		params->getUAPString(*&parameter, *&masterForm);
+	//	parameter->setData("source field");
+	//	params->getUAPString(*&parameter, *&SourceFieldName);
+		parameter->setData("source value");
+		params->getUAPString(*&parameter, *&SourceFieldValue);
+		parameter->setData("application");
+		params->getUAPString(*&parameter, *&app);
 
-		lb_I_DatabaseForm* f = gui->findDBForm(masterForm->charrep());
+		//lb_I_DatabaseForm* f = gui->findDBForm(masterForm->charrep());
 
 /*...sGet the SQL query based on formular name\44\ application name\46\:16:*/
 		UAP_REQUEST(manager.getPtr(), lb_I_String, user)
@@ -682,12 +682,17 @@ void LB_STDCALL lbDetailFormAction::openDetailForm(lb_I_String* formularname, lb
 						
 						sql = query->getAsString(1);
 
-						pl = PM->getFirstMatchingPlugin("lb_I_DatabaseForm");
-						uk = pl->getImplementation();
-						
 						UAP(lb_I_DatabaseForm, form, __FILE__, __LINE__)
-						QI(uk, lb_I_DatabaseForm, form, __FILE__, __LINE__)
 
+						UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
+						UAP(lb_I_GUI, gui, __FILE__, __LINE__)
+						meta->getGUI(&gui);
+						
+						form = gui->createDBForm(formularname->charrep(),
+									sql->charrep(),
+									DBName->charrep(), 
+									DBUser->charrep(), 
+									DBPass->charrep());
 						detailForm = form.getPtr();
 
 						*parameter = " - ";
@@ -695,6 +700,7 @@ void LB_STDCALL lbDetailFormAction::openDetailForm(lb_I_String* formularname, lb
 						
 						form->setName(formularname->charrep(), parameter->charrep());
 
+/*...sDocs:136:*/
 						/* Set the other information of master / detail form here
 						
 						   There is a problem for forms, if the foreign key is not
@@ -703,17 +709,17 @@ void LB_STDCALL lbDetailFormAction::openDetailForm(lb_I_String* formularname, lb
 						   
 						   The only way may be any kind of temporal default value.
 						*/
+/*...e*/
 						
 						UAP(lb_I_DatabaseForm, f, __FILE__, __LINE__)
-
 						UAP(lb_I_DatabaseForm, master, __FILE__, __LINE__)
 
-						UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
-						UAP(lb_I_GUI, gui, __FILE__, __LINE__)
-
-						meta->getGUI(&gui);
-
 						f = gui->findDBForm(masterForm->charrep());
+
+						if (f == NULL) {
+							_CL_LOG << "Error: Bail out, no master form found." LOG_
+							return; 
+						}
 
 						QI(f, lb_I_DatabaseForm, master, __FILE__, __LINE__)						
 						
@@ -725,12 +731,13 @@ void LB_STDCALL lbDetailFormAction::openDetailForm(lb_I_String* formularname, lb
 						
 						form->ignoreForeignKeys(table->charrep());
 						
-						form->init(sql->charrep(), DBName->charrep(), DBUser->charrep(), DBPass->charrep());
+						//form->init(sql->charrep(), DBName->charrep(), DBUser->charrep(), DBPass->charrep());
 						
 						form->setMasterForm(*&master, *&params);
 						
 /*...e*/
 						
+/*...sSome docs:88:*/
 /*
  * What should I do to 'interconnect' the forms over the
  * relation 'customer number' ?
@@ -749,6 +756,7 @@ void LB_STDCALL lbDetailFormAction::openDetailForm(lb_I_String* formularname, lb
  * " where customerid = 
  *     (select id from <table of masterForm> where <SourceFieldName> = '<SourceFieldValue>')"
  */
+/*...e*/
 						
 						// Get the related table for the source field
 						
@@ -864,9 +872,10 @@ lbMasterFormAction::lbMasterFormAction() {
 lbMasterFormAction::~lbMasterFormAction() {
 	free(myActionID);
 
-	if (masterForm != NULL) { 
-	    masterForm->destroy();
-	}
+// lb_I_GUI implementation does this from now
+//	if (masterForm != NULL) { 
+//	    masterForm->destroy();
+//	}
 }
 
 void LB_STDCALL lbMasterFormAction::setDatabase(lb_I_Database* _db) {
@@ -1013,14 +1022,20 @@ void LB_STDCALL lbMasterFormAction::openMasterForm(lb_I_String* formularname, lb
 						UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
 						
 						sql = query->getAsString(1);
-
-						pl = PM->getFirstMatchingPlugin("lb_I_DatabaseForm");
-						uk = pl->getImplementation();
 						
 						UAP(lb_I_DatabaseForm, form, __FILE__, __LINE__)
-						QI(uk, lb_I_DatabaseForm, form, __FILE__, __LINE__)
+						UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
+						UAP(lb_I_GUI, gui, __FILE__, __LINE__)
 
-						masterForm = form.getPtr();
+						meta->getGUI(&gui);
+
+						form = gui->createDBForm(formularname->charrep(),
+					                        sql->charrep(),
+		                                                DBName->charrep(),
+                                                                DBUser->charrep(),
+                                                                DBPass->charrep());
+
+                                                masterForm = form.getPtr();
 
 						*parameter = " - ";
 						*parameter += SourceFieldValue->charrep();
@@ -1040,11 +1055,6 @@ void LB_STDCALL lbMasterFormAction::openMasterForm(lb_I_String* formularname, lb
 
 						UAP(lb_I_DatabaseForm, detail, __FILE__, __LINE__)
 
-						UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
-						UAP(lb_I_GUI, gui, __FILE__, __LINE__)
-
-						meta->getGUI(&gui);
-
 						f = gui->findDBForm(detailForm->charrep());
 
 						QI(f, lb_I_DatabaseForm, detail, __FILE__, __LINE__)						
@@ -1057,7 +1067,7 @@ void LB_STDCALL lbMasterFormAction::openMasterForm(lb_I_String* formularname, lb
 						
 						form->ignoreForeignKeys(table->charrep());
 						
-						form->init(sql->charrep(), DBName->charrep(), DBUser->charrep(), DBPass->charrep());
+						//form->init(sql->charrep(), DBName->charrep(), DBUser->charrep(), DBPass->charrep());
 						
 						form->setDetailForm(*&detail, *&params);
 /*...e*/
@@ -3590,7 +3600,7 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::OnActionButton(lb_I_Unknown* uk) {
 		param->setUAPString(*&parameter, *&v);
 
 		parameter->setData("source Form");
-		v->setData(untranslated_formName);
+		v->setData(base_formName);
 		param->setUAPString(*&parameter, *&v);
 
 		parameter->setData("source field");
