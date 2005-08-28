@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.87 2005/08/22 16:35:10 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.88 2005/08/28 11:01:55 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,15 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.87 $
+ * $Revision: 1.88 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.87 2005/08/22 16:35:10 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.88 2005/08/28 11:01:55 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.88  2005/08/28 11:01:55  lollisoft
+ * Changed the lb_I_GUI implementation not to show the created form.
+ * Form will be returned now.
+ *
  * Revision 1.87  2005/08/22 16:35:10  lollisoft
  * Wrong conditional compiling.
  *
@@ -1480,9 +1484,10 @@ lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::createDBForm(char* formName, char* query
 		
 	}
 
-	_dialog->show();
+	//_dialog->show();
+	_dialog++;
 	
-	return NULL;
+	return _dialog.getPtr();
 }
 /*...e*/
 /*...slb_I_Unknown\42\ LB_STDCALL lb_wxGUI\58\\58\createFrame\40\\41\:0:*/

@@ -854,6 +854,7 @@ lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::createDBForm(char* formName, char* query
 		QI(uk, lb_I_DatabaseForm, _dialog, __FILE__, __LINE__)
 	}
 
+/*...sCheck for recreation of the form:8:*/
 	if ((_dialog.getPtr() != NULL) && (strcmp(queryString, _dialog->getQuery()) != 0)) {
 	
 		// SQL query from database has been changed. Recreate the dialog from scratch. 
@@ -867,7 +868,9 @@ lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::createDBForm(char* formName, char* query
 	
 		_dialog.resetPtr();
 	}
+/*...e*/
 
+/*...sCreate new\44\ if not yet done:8:*/
 	if (_dialog.getPtr() == NULL) {
 		/*
 		 * Try to find a database form plugin, having the interface lb_I_DatabaseForm.
@@ -919,10 +922,11 @@ lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::createDBForm(char* formName, char* query
 		_dialog->init(queryString, DBName, DBUser, DBPass);
 		
 	}
+/*...e*/
 
-	_dialog->show();
+	_dialog++;
 	
-	return NULL;
+	return _dialog.getPtr();
 }
 /*...e*/
 /*...slb_I_Unknown\42\ LB_STDCALL lb_wxGUI\58\\58\createFrame\40\\41\:0:*/
@@ -1016,11 +1020,20 @@ lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::findDBForm(char* name) {
 	
 	uk = forms->getElement(&key);
 	
+	if (uk == NULL) {
+		_CL_LOG << "Error: No form with name '" << name << "' found." LOG_
+		return NULL;
+	}
+	
 	UAP(lb_I_DatabaseForm, w, __FILE__, __LINE__)
 	QI(uk, lb_I_DatabaseForm, w, __FILE__, __LINE__)
 	// Not really needed, because my dialogs are forced to not be smart.
 	w++;
 	return w.getPtr();
+}
+
+void LB_STDCALL lb_wxGUI::registerDBForm(char* formName, lb_I_DatabaseForm* form) {
+
 }
 #endif
 /*...e*/
