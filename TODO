@@ -4,6 +4,14 @@
 		
 		I also will discuss some problems while the development stages.
 
+		26.08.2005	There is a problem with queries, that don't result in data.
+				The form then has no result set and probably could not add
+				new data.
+				
+				28.08.2005: Adding works, but the app crashes after adding
+				by navigating to any other data. This must be tested a little
+				more.
+
 		14.08.2005	Mac OS X:
 		
 				Debug Malloc functionality should be integrated, if there is anything
