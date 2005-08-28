@@ -791,7 +791,7 @@ insert into Formular_Parameters (ParameterName, ParameterValue, FormularID) Valu
 
 insert into Formular_Parameters (ParameterName, ParameterValue, FormularID) Values (
 'query',
-'select "parametername", "parametervalue", "formularid" from "Formular_Parameters"',
+'select "parametername", "parametervalue", "formularid" from formular_parameters',
 7);
 
 insert into Formular_Parameters (ParameterName, ParameterValue, FormularID) Values (
@@ -844,7 +844,7 @@ insert into Anwendungs_Parameter (ParameterName, ParameterValue, AnwendungID) Va
 insert into Anwendungs_Parameter (ParameterName, ParameterValue, AnwendungID) Values ('DBName', 'lbDMF', 4);
 insert into Anwendungs_Parameter (ParameterName, ParameterValue, AnwendungID) Values ('DBUser', 'dba', 4);
 insert into Anwendungs_Parameter (ParameterName, ParameterValue, AnwendungID) Values ('DBPass', 'trainres', 4);
-insert into Anwendungs_Parameter (ParameterName, ParameterValue, AnwendungID) Values ('DBName', 'sql-ledger', 5);
+insert into Anwendungs_Parameter (ParameterName, ParameterValue, AnwendungID) Values ('DBName', 'sqlledger', 5);
 insert into Anwendungs_Parameter (ParameterName, ParameterValue, AnwendungID) Values ('DBUser', 'dba', 5);
 insert into Anwendungs_Parameter (ParameterName, ParameterValue, AnwendungID) Values ('DBPass', 'trainres', 5);
 --...e
