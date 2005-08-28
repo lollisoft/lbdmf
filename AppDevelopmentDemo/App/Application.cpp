@@ -165,6 +165,8 @@ lbErrCodes LB_STDCALL lbApplication::getDynamicDBForm(lb_I_Unknown* uk) {
 
 	        dbForm = gui->createDBForm("<Load title from database>", "<Load SQL query from database>",
 	        "trainres", lbDMFUser, lbDMFPasswd);
+	        
+	        dbForm->show();
 	} else {
 	        COUT << "KundenDetails" << ENDL;
 	}
@@ -195,6 +197,8 @@ lbErrCodes LB_STDCALL lbApplication::getKundenDetails(lb_I_Unknown* uk) {
 		
 		dbForm = gui->createDBForm("Elemente in World", "select objecttyp, x, y, w, h from world order by id",
 		"trainres", "dba", "trainres");
+		
+		dbForm->show();
 	} else {
 	        COUT << "KundenDetails" << ENDL;
 	}
@@ -211,6 +215,8 @@ lbErrCodes LB_STDCALL lbApplication::getKundenListe(lb_I_Unknown* uk) {
 		
 		dbForm = gui->createDBForm("Kunden", "select Firma, Name, Vorname, Strasse, Hausnummer, Ort, Plz, Vorwahl, Telefon from Kunden",
 		"trainres", "dba", "trainres");
+		
+		dbForm->show();
 	} else {
 	        COUT << "KundenDetails" << ENDL;
 	}
@@ -227,6 +233,8 @@ lbErrCodes LB_STDCALL lbApplication::getCustomFormsConfig(lb_I_Unknown* uk) {
 		
 		dbForm = gui->createDBForm("Formulare", "select Name, MenuName, EventName, query from DBForms",
 		"trainres", "dba", "trainres");
+		
+		dbForm->show();
 	}
 
 	return ERR_NONE;

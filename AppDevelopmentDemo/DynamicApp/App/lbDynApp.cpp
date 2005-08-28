@@ -299,6 +299,8 @@ lbErrCodes LB_STDCALL lbDynamicApplication::getDynamicDBForm(lb_I_Unknown* uk) {
 	        dbForm = gui->createDBForm(formName->charrep(), query->charrep(), 
 	        				DBName->charrep(), DBUser->charrep(), DBPass->charrep());
 
+		dbForm->show();
+
 		//- External formular implementation ---------------------------------------------------
 	        //- Would load an external module and optionally use other parameters from configuratoin
 	        //--------------------------------------------------------------------------------------
