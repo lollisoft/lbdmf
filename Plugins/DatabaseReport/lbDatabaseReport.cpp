@@ -329,7 +329,10 @@ void LB_STDCALL lbDBReportAction::openReport(lb_I_String* reportname, lb_I_Param
 						// should be printed.
 						//report->addCondition("kundenid", "4");
 						
-						report->addAndCondition(SourceFieldName->charrep(), SourceFieldValue->charrep());
+						SourceFieldName->trim();
+						
+						if (strcmp(SourceFieldName->charrep(), "") != 0)
+							report->addAndCondition(SourceFieldName->charrep(), SourceFieldValue->charrep());
 						
 						report->init(sql->charrep(), DBName->charrep(), DBUser->charrep(), DBPass->charrep());
 /*...e*/
@@ -650,12 +653,25 @@ void LB_STDCALL lbDatabaseReport::init(char* SQLString, char* DBName, char* DBUs
 	
 	query = database->getQuery(0);
 	
-	lbErrCodes err = query->query(SQLString);
+	lbErrCodes err;
+	err = query->query(SQLString);
 
 	if ((hasConditions) && (err == ERR_NONE)) {
 		UAP_REQUEST(manager.getPtr(), lb_I_String, newQuery)
 		
 		bool isChar = query->getColumnType(AndConditionColumn->charrep()) == lb_I_Query::lbDBColumnChar;
+		
+		// Could not set whole string to lower case, because there may be a case where
+		// the case sensity of columns is relevant.
+		
+		char* temp = NULL;
+
+		char* order = strstr(SQLString, "order");
+		
+		if (order) {
+			char* temp = strdup(order);
+			order[0] = 0;
+		}
 		
 		*newQuery = SQLString;
 		*newQuery += " where ";
@@ -670,10 +686,21 @@ void LB_STDCALL lbDatabaseReport::init(char* SQLString, char* DBName, char* DBUs
 
 		if (isChar) 
 			*newQuery += "'";
+
+		if (temp) {
+			*newQuery += " ";
+			*newQuery += temp;
+			
+			free(temp);
+		}
 			
 		query = database->getQuery(0);
 		
+		_CL_LOG << "SQL string: " << newQuery->charrep() LOG_ 
+		
 		err = query->query(newQuery->charrep());
+	} else {
+		_CL_LOG << "SQL string: " << SQLString LOG_
 	}
 	
 	if (err == ERR_NONE) {
