@@ -185,12 +185,12 @@ int main(int argc, char *argv[]) {
 
 #ifdef WINDOWS
 
-	cout << "Please enter TRMem breakpoint address: ";
-	cin >> brk;
+//	cout << "Please enter TRMem breakpoint address: ";
+//	cin >> brk;
 	
 	TRMemOpen();
 	TRMemSetModuleName(__FILE__);
-	TRMemSetAdrBreakPoint(brk);
+//	TRMemSetAdrBreakPoint(brk);
 
 	// Tell other modules the same breakpoint.
 	setTRMemTrackBreak(brk);

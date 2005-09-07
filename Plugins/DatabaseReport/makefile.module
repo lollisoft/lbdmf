@@ -35,12 +35,12 @@ WATCOMLIBS=$(DEVROOT_MAKE)$(SLASH)Tools$(SLASH)watcom$(SLASH)lib386$(SLASH)nt
 wxBase=$(DEVROOT_MAKE)$(SLASH)wxwin$(SLASH)wx$(SLASH)lib
 LIBS = $(BASE_LIBS) $(DEVROOT_MAKE)$(SLASH)projects$(SLASH)dll$(SLASH)libs$(SLASH)lbhook.lib, \
 	$(DEVROOT_MAKE)$(SLASH)projects$(SLASH)dll$(SLASH)libs$(SLASH)wxWrapperDLL.lib, \
-	$(wxBase)$(SLASH)png_w.lib, \
-	$(wxBase)$(SLASH)jpeg_w.lib, \
-	$(wxBase)$(SLASH)tiff_w.lib, \
-	$(wxBase)$(SLASH)regex_w.lib, \
-	$(wxBase)$(SLASH)wxmswd_w.lib, \
-	$(wxBase)$(SLASH)zlib_w.lib
+        $(wxBase)$(SLASH)wat_dll$(SLASH)wxpngd.lib, \
+        $(wxBase)$(SLASH)wat_dll$(SLASH)wxjpegd.lib, \
+        $(wxBase)$(SLASH)wat_dll$(SLASH)wxtiffd.lib, \
+        $(wxBase)$(SLASH)wat_dll$(SLASH)wxregexd.lib, \
+        $(wxBase)$(SLASH)wat_dll$(SLASH)wxmsw26d.lib, \
+        $(wxBase)$(SLASH)wat_dll$(SLASH)wxzlibd.lib
 	
 LIBRS =	libr $(WATCOMLIBS)$(SLASH)kernel32.lib \
 	libr $(WATCOMLIBS)$(SLASH)user32.lib \

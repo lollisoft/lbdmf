@@ -25,11 +25,14 @@
 #            40235 Duesseldorf (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.64 $
+# * $Revision: 1.65 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.64 2005/06/12 10:54:46 lollisoft Exp $
+# * $Id: STD_MAKE,v 1.65 2005/09/07 20:49:46 lollisoft Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.65  2005/09/07 20:49:46  lollisoft
+# * Minor changes due to wxWidgets 2.6.1 usage under Windows.
+# *
 # * Revision 1.64  2005/06/12 10:54:46  lollisoft
 # * Deactivated linking against TRMEM.
 # *
@@ -291,6 +294,7 @@ WATCOM_LIBTARGET=
 WATCOM_THREAD_MODEL=#-bm
 WATCOM_STDDEBUG=-d2 -hd #-DDEBUG_MALLOC
 WATCOM_STACK=-of+
+WATCOM_PROFILING=-db -en -s
 
 WATCOM_STD_C_OPS= \
 -DWINDOWS \
@@ -301,7 +305,8 @@ $(WATCOM_OPTIMIZE) \
 $(WATCOM_RELAX_ALIAS) \
 $(WATCOM_THREAD_MODEL) \
 $(WATCOM_CALLING_CONV) \
-$(WATCOM_STACK)
+$(WATCOM_STACK) \
+$(WATCOM_PROFILING)
 
 WATCOM_STD_CPP_OPS= \
 -DWINDOWS \
@@ -312,7 +317,8 @@ $(WATCOM_OPTIMIZE) \
 $(WATCOM_RELAX_ALIAS) \
 $(WATCOM_THREAD_MODEL) \
 $(WATCOM_CALLING_CONV) \
-$(WATCOM_STACK)
+$(WATCOM_STACK) \
+$(WATCOM_PROFILING)
 
 OBJ =obj
 # Watcom -zp4

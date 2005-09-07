@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.62 $
+# * $Revision: 1.63 $
 # * $Name:  $
-# * $Id: Makefile,v 1.62 2005/08/22 16:33:03 lollisoft Exp $
+# * $Id: Makefile,v 1.63 2005/09/07 20:49:46 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.63  2005/09/07 20:49:46  lollisoft
+# * Minor changes due to wxWidgets 2.6.1 usage under Windows.
+# *
 # * Revision 1.62  2005/08/22 16:33:03  lollisoft
 # * Added wxWrapperDLL target for OSX.
 # *
@@ -249,6 +252,7 @@ BASEDIRECTORIES= \
 	../RegressionTests \
 	../vendor/tvision-set \
 	../vendor/tvision-set/examples/lbDMF \
+	../vendor/wxReportWriter \
 	../AppDevelopment 
 endif
 
@@ -363,13 +367,14 @@ ALLTARGETS = \
 	../Test/Console/XML \
 	../Test/GUI/wxWrapperDLL \
 	../Test/GUI/wxWrapper \
-	$(DEVROOT_MAKE)/wxwin/wx/samples/report \
 	../Test/GUI/wxPlugins/lbLoginWizard \
 	../Samples/HelloWorld \
 	../Doc/html \
 	$(BASEDIRECTORIES)
 
+#$(DEVROOT_MAKE)/wxwin/wx/samples/report \
 #tvision: ../vendor/tvision
+#	Q:/develop/wxwin/wx/contrib/wxCode/components/wxxml2/thirdparty/libxml2 \
 
 endif
 
@@ -420,6 +425,9 @@ dummy:
 
 ../vendor/tvision-set/examples/lbDMF: dummy
 	$(MAKE) -s -C $@ -e MODULE=demo -e TARGET=$(TARGET_TV_EXE) -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@
+
+../vendor/wxReportWriter: dummy
 	$(MAKE) -s -C $@
 
 ../Test/Console/XML: dummy
@@ -547,6 +555,10 @@ lbMetaApplication: dummy
 
 lbXMLConfig/lbDOMConfig: dummy
 	$(MAKE) -s -C $@ -e MODULE=$@ -e TARGET=$(TARGETDLL) -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@
+
+Q:/develop/wxwin/wx/contrib/wxCode/components/wxxml2/thirdparty/libxml2: dummy
+	$(MAKE) -s -C $@ -e MODULE=libxml2 -e TARGET=$(TARGETDLL) -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@
 
 ../Doc/html: ../doxygen.conf \

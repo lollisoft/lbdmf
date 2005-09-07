@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.88 2005/08/28 11:01:55 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.89 2005/09/07 20:46:34 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.88 $
+ * $Revision: 1.89 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.88 2005/08/28 11:01:55 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.89 2005/09/07 20:46:34 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.89  2005/09/07 20:46:34  lollisoft
+ * Minor changes due to wxWidgets 2.6.1 usage under Windows.
+ *
  * Revision 1.88  2005/08/28 11:01:55  lollisoft
  * Changed the lb_I_GUI implementation not to show the created form.
  * Form will be returned now.
@@ -2721,7 +2724,7 @@ void lb_wxFrame::OnPluginTest(wxCommandEvent& WXUNUSED(event) ) {
 /*...sWindows based WinMain implementation:0:*/
 #ifndef OSX
 #ifndef LINUX
-wxApp *wxCreateApp()
+wxAppConsole *wxCreateApp()
     {
         wxApp::CheckBuildOptions(wxBuildOptions());
         return new MyApp;

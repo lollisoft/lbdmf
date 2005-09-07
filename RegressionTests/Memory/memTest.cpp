@@ -367,7 +367,7 @@ int main(int argc, char *argv[]) {
 	}
 	
 	mm->release(__FILE__, __LINE__);
-	getchar();
+//	getchar();
 	
 	return 0;
 }
