@@ -12,11 +12,16 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.67 $
+ * $Revision: 1.68 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.67 2005/08/22 16:31:33 lollisoft Exp $
+ * $Id: mkmk.cpp,v 1.68 2005/09/09 18:00:16 lollisoft Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.68  2005/09/09 18:00:16  lollisoft
+ * Added printout of given commandline in help mode.
+ * Added -o option in bundle target to put object file
+ * in same directory as the source file is.
+ *
  * Revision 1.67  2005/08/22 16:31:33  lollisoft
  * Write L_OPS in wxWidgets so target for OSX.
  *
@@ -1200,15 +1205,19 @@ void write_wx_soPlugin_Target(char* modulename) {
 
 //------------------------------ Main code ------------------------------
 /*...svoid ShowHelp\40\\41\:0:*/
-void ShowHelp()
+void ShowHelp(int argc, char *argv[])
 {
   fprintf(stderr, "MKMK by Luis Crespo (lcrespo@ergos.es or lcrespo@dccp.dret.ub.es).\n");
   fprintf(stderr, "Published at http://www.cubic.org/~submissive/sourcerer/mkmk.htm\n\n");
 
   fprintf(stderr, "Enhanced by Lothar Behrens (lothar.behrens@lollisoft.de)\n\n");
 
-  fprintf(stderr, "MKMK: makefile generator $Revision: 1.67 $\n");
+  fprintf(stderr, "MKMK: makefile generator $Revision: 1.68 $\n");
   fprintf(stderr, "Usage: MKMK lib|exe|dll|so modulname includepath,[includepath,...] file1 [file2 file3...]\n");
+  
+  fprintf(stderr, "Your parameters are: ");
+  for (int i = 0; i < argc-1; i++) fprintf(stderr, "%s ", argv[i]);
+  fprintf(stderr, "%s\n", argv[argc-1]);
 }
 /*...e*/
 /*...svoid WriteHeader\40\FILE \42\f\44\ char \42\ExeName\41\:0:*/
@@ -1438,7 +1447,7 @@ void WriteDep(FILE *f, char *Name, TIncludeParser *p)
         case ELF_TARGET:
 		case ELF_BUNDLE_TARGET:
 				printf("\t\t@echo Build %s\n", NameC);
-                printf("\t\t@%s $(C_ELFOPS) $(MOD_INCL) %s\n\n", Compiler, Name);
+                printf("\t\t@%s $(C_ELFOPS) $(MOD_INCL) %s -o %s\n\n", Compiler, Name, ObjName);
                 break;
         case SO_TARGET:
         case SOPLUGIN_TARGET:
@@ -1625,7 +1634,7 @@ int main(int argc, char *argv[])
   int i;
   if (argc<4)
   {
-    ShowHelp();
+    ShowHelp(argc, argv);
 #ifdef UNIX
     return 0;
 #endif
