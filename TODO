@@ -4,6 +4,23 @@
 		
 		I also will discuss some problems while the development stages.
 
+		28.08.2005	There is a design problem or a visual problem with foreign key
+				values, when they should show names that could appear multiple
+				times. In this case it is unclear what the user should select.
+
+				As a sample, the formular_parameters form points to it's formular
+				table, in which case the additional information about the application
+				is missing.
+
+				There were two solutions for that:
+
+				Show the application at the second name in the drop down list.
+
+				Let the list depent it's values on another dropdown's selected value.
+				In that case the selected application. If the application for the current
+				entry has been changed, the form value becomes invalid, because the containing
+				list of forms has been chaned too.
+
 		26.08.2005	There is a problem with queries, that don't result in data.
 				The form then has no result set and probably could not add
 				new data.
