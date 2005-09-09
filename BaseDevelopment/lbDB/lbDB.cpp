@@ -1437,6 +1437,11 @@ lb_I_String* LB_STDCALL lbQuery::getFKColumn(char* table, char* primary) {
 	UAP(lb_I_Unknown, result, __FILE__, __LINE__)
 	UAP(lb_I_String, FKName, __FILE__, __LINE__)
 
+	if (mapPKTable_PKColumns_To_FKName == NULL) {
+		_CL_LOG << "Error: There were no foreign keys collected. (" << table << ", " << primary << ")" LOG_
+		return NULL;
+	}
+
 	result = mapPKTable_PKColumns_To_FKName->getElement(&key_PKTable_PKName);
 
 	if (result == NULL) return NULL;
