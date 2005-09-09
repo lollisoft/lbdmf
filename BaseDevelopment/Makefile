@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.63 $
+# * $Revision: 1.64 $
 # * $Name:  $
-# * $Id: Makefile,v 1.63 2005/09/07 20:49:46 lollisoft Exp $
+# * $Id: Makefile,v 1.64 2005/09/09 18:06:18 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.64  2005/09/09 18:06:18  lollisoft
+# * Commented out libxml2.
+# *
 # * Revision 1.63  2005/09/07 20:49:46  lollisoft
 # * Minor changes due to wxWidgets 2.6.1 usage under Windows.
 # *
@@ -557,9 +560,9 @@ lbXMLConfig/lbDOMConfig: dummy
 	$(MAKE) -s -C $@ -e MODULE=$@ -e TARGET=$(TARGETDLL) -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@
 
-Q:/develop/wxwin/wx/contrib/wxCode/components/wxxml2/thirdparty/libxml2: dummy
-	$(MAKE) -s -C $@ -e MODULE=libxml2 -e TARGET=$(TARGETDLL) -f $(MAKE_CONFIG_FILE)
-	$(MAKE) -s -C $@
+#Q:/develop/wxwin/wx/contrib/wxCode/components/wxxml2/thirdparty/libxml2: dummy
+#	$(MAKE) -s -C $@ -e MODULE=libxml2 -e TARGET=$(TARGETDLL) -f $(MAKE_CONFIG_FILE)
+#	$(MAKE) -s -C $@
 
 ../Doc/html: ../doxygen.conf \
 	../interfaces/lbInterfaces.h \
