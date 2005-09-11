@@ -122,6 +122,6 @@ ifeq ($(OSTYPE), osx)
 MOD_INCL=$(STD_INCL) -I ../wxWrapperDLL
 OBJDEP=
 C_ELFOPS += `wx-config --inplace --cxxflags` -DUSE_WXWRAPPER_DLL -DOSX -DUNIX -DLINUX -DLB_I_EXTENTIONS -D__WXDEBUG__
-L_OPS+= `wx-config --inplace --libs`
+L_OPS = `wx-config --inplace --libs` -o
 VENDORLIBS=$(HOME)/lib/lbHook.so $(HOME)/lib/wxWrapperDLL.so 
 endif
