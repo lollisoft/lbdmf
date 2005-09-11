@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.64 $
+# * $Revision: 1.65 $
 # * $Name:  $
-# * $Id: Makefile,v 1.64 2005/09/09 18:06:18 lollisoft Exp $
+# * $Id: Makefile,v 1.65 2005/09/11 06:33:11 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.65  2005/09/11 06:33:11  lollisoft
+# * Using stdandard make for wx sample app. Added wxWrapperDLL target.
+# *
 # * Revision 1.64  2005/09/09 18:06:18  lollisoft
 # * Commented out libxml2.
 # *
@@ -317,6 +320,8 @@ ifeq ($(OSTYPE), linux)
 
 TARGETDLL=so
 TARGETEXE=elf
+TARGETWXEXE=elf
+TARGETWXSO=wxso
 TARGET_TV_DLL=tvision_dll
 TARGET_TV_EXE=tvision_elf
 TARGETPLUGIN=soplugin
@@ -476,8 +481,17 @@ ifeq ($(OSTYPE), osx)
 endif
 
 ifeq ($(OSTYPE), linux)
+../Test/GUI/wxWrapperDLL: dummy
+	$(MAKE) -s -C $@ -e MODULE=wxWrapperDLL -e TARGET=$(TARGETWXSO) -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@
+
 ../Test/GUI/wxWrapper: dummy
-	$(MAKE) -s -C $@ -f makefile.wx-sample
+	$(MAKE) -s -C $@ -e MODULE=wxWrapper -e TARGET=$(TARGETWXEXE) -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@
+	cp ../Test/GUI/wxWrapper/wxWrapper $(HOME)/bin
+
+#../Test/GUI/wxWrapper: dummy
+#	$(MAKE) -s -C $@ -f makefile.wx-sample
 
 ../Test/GUI/wxPlugins/lbLoginWizard: dummy
 	$(MAKE) -s -C $@ -e MODULE=lbLoginWizard -e TARGET=$(TARGETWXPLUGIN) -f $(MAKE_CONFIG_FILE)
