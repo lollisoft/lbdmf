@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.90 2005/09/11 06:27:29 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.91 2005/09/11 19:07:48 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.90 $
+ * $Revision: 1.91 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.90 2005/09/11 06:27:29 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.91 2005/09/11 19:07:48 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.91  2005/09/11 19:07:48  lollisoft
+ * Missing registerDBForm when compiled without wxWrapperDLL.
+ *
  * Revision 1.90  2005/09/11 06:27:29  lollisoft
  * Precomp problems.
  *
@@ -1006,9 +1009,11 @@ public:
         virtual lb_I_Unknown* LB_STDCALL createMenuBar();
         virtual lb_I_Unknown* LB_STDCALL createMenuEntry();
 
-	virtual lb_I_DatabaseForm* LB_STDCALL createDBForm(char* formName, char* queryString, char* DBName, char* DBUser, char* DBPass);
+	lb_I_DatabaseForm* LB_STDCALL createDBForm(char* formName, char* queryString, char* DBName, char* DBUser, char* DBPass);
 
-	virtual lb_I_Form* LB_STDCALL createLoginForm();
+	void LB_STDCALL registerDBForm(char* formName, lb_I_DatabaseForm* form);
+
+	lb_I_Form* LB_STDCALL createLoginForm();
 /*...e*/
 
 /*...sGUI element getter functions:8:*/
@@ -1499,6 +1504,11 @@ lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::createDBForm(char* formName, char* query
 	return _dialog.getPtr();
 }
 /*...e*/
+
+void LB_STDCALL lb_wxGUI::registerDBForm(char* formName, lb_I_DatabaseForm* form) {
+
+}
+
 /*...slb_I_Unknown\42\ LB_STDCALL lb_wxGUI\58\\58\createFrame\40\\41\:0:*/
 lb_I_Unknown* LB_STDCALL lb_wxGUI::createFrame() {
         frame = new lb_wxFrame();
