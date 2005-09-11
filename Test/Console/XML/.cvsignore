@@ -26,3 +26,5 @@ Debug
 *.mbr
 *.dbr
 *.err
+*.so.*
+makefile
