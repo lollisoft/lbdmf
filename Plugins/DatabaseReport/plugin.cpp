@@ -92,7 +92,12 @@ extern "C" {
 /*...e*/
 
 #ifndef OSX
+#ifdef LINUX
 #include <repwrt.h>
+#endif
+#ifdef WINDOWS
+#include <wx/repwrt.h>
+#endif
 #endif
 
 #include <lbDatabaseReport.h>
