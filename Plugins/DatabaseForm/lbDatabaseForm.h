@@ -30,11 +30,20 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.20 $
+ * $Revision: 1.21 $
  * $Name:  $
- * $Id: lbDatabaseForm.h,v 1.20 2005/08/24 20:41:46 lollisoft Exp $
+ * $Id: lbDatabaseForm.h,v 1.21 2005/09/11 22:10:24 lollisoft Exp $
  *
  * $Log: lbDatabaseForm.h,v $
+ * Revision 1.21  2005/09/11 22:10:24  lollisoft
+ * Better handling of inserting data on empty result set.
+ * If the result set is empty, the navigation buttons are
+ * deactivated and adding/updating added data is done
+ * with the add button.
+ *
+ * All other buttons else should also be deactivated in
+ * adding mode.
+ *
  * Revision 1.20  2005/08/24 20:41:46  lollisoft
  * Bugfix in selecting actions based on untranslated,
  * but with some text appended formular name.
@@ -648,6 +657,9 @@ public:
 	wxWindow* prevButton;
 	wxWindow* nextButton;
 	wxWindow* lastButton;
+	
+	bool noDataAvailable;
+	bool isAdding;
 	
 	char* base_formName;
 	char* formName;

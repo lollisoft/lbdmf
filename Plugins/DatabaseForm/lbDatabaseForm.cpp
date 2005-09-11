@@ -1261,6 +1261,7 @@ lbDatabaseDialog::lbDatabaseDialog()
 	formName = strdup("Database dialog");
 	untranslated_formName = NULL;
 	base_formName = NULL;
+	noDataAvailable = false;
 
 	fa = NULL;
 }
@@ -2399,8 +2400,13 @@ void LB_STDCALL lbDatabaseDialog::updateFromMaster() {
 	sampleQuery = database->getQuery(0);
 
 	sampleQuery->query(newQuery->charrep());
-	
-	lbDBFirst(NULL);
+
+	if (lbDBFirst(NULL) == ERR_DB_NODATA) {
+		// Assume no data available
+		noDataAvailable = true;
+		lbDBClear();
+		noDataAvailable = false;	
+	}
 	
 	SetTitle(formName);
 }
@@ -2711,8 +2717,13 @@ void LB_STDCALL lbDatabaseDialog::updateFromDetail() {
 	sampleQuery = database->getQuery(0);
 
 	sampleQuery->query(newQuery->charrep());
-	
-	lbDBFirst(NULL);
+
+	if (lbDBFirst(NULL) == ERR_DB_NODATA) {
+		// Assume no data available
+		noDataAvailable = true;
+		lbDBClear();
+		noDataAvailable = false;	
+	}
 	
 	SetTitle(formName);
 }
@@ -2799,6 +2810,8 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBClear() {
 /*...e*/
 /*...slbErrCodes LB_STDCALL lbDatabaseDialog\58\\58\lbDBUpdate\40\\41\:0:*/
 lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBUpdate() {
+
+	if (noDataAvailable) return ERR_NONE;
 
 	SetTitle(formName);
 
@@ -3101,8 +3114,15 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBRead() {
 lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBFirst(lb_I_Unknown* uk) {
 	lbDBUpdate();
 
-	sampleQuery->first();
+	if (sampleQuery->first() == ERR_DB_NODATA) {
+		prevButton->Disable();
+		firstButton->Disable();
+		lastButton->Disable();
+		nextButton->Disable();
 
+		return ERR_DB_NODATA;
+	}
+	
 	lbDBRead();
 
 	prevButton->Disable();
@@ -3115,16 +3135,25 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBFirst(lb_I_Unknown* uk) {
 /*...e*/
 /*...slbErrCodes LB_STDCALL lbDatabaseDialog\58\\58\lbDBNext\40\lb_I_Unknown\42\ uk\41\:0:*/
 lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBNext(lb_I_Unknown* uk) {
+	lbErrCodes err;
 	lbDBUpdate();
 
-	if (sampleQuery->next() == WARN_DB_NODATA) {
+	err = sampleQuery->next();
+	
+	if (err == WARN_DB_NODATA) {
 		nextButton->Disable();
 		lastButton->Disable();
 	}
 
-	prevButton->Enable();
-	firstButton->Enable();
-
+	if (err == ERR_DB_NODATA) {
+		prevButton->Disable();
+		firstButton->Disable();
+		return ERR_DB_NODATA;
+	} else {
+		prevButton->Enable();
+		firstButton->Enable();
+	}
+	
 	lbDBRead();
 
 	return ERR_NONE;
@@ -3133,15 +3162,22 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBNext(lb_I_Unknown* uk) {
 /*...slbErrCodes LB_STDCALL lbDatabaseDialog\58\\58\lbDBPrev\40\lb_I_Unknown\42\ uk\41\:0:*/
 lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBPrev(lb_I_Unknown* uk) {
 	lbDBUpdate();
+	lbErrCodes err;
 
-	if (sampleQuery->previous() == WARN_DB_NODATA) {
-	        prevButton->Disable();
+	if ((err = sampleQuery->previous()) == WARN_DB_NODATA) {
+		prevButton->Disable();
 		firstButton->Disable();
 	}
 
-	nextButton->Enable();
-	lastButton->Enable();
-		
+	if (err == ERR_DB_NODATA) {
+		nextButton->Disable();
+		lastButton->Disable();
+		return ERR_DB_NODATA;
+	} else {
+		nextButton->Enable();
+		lastButton->Enable();
+	}
+
 	lbDBRead();
 
 	return ERR_NONE;
@@ -3151,13 +3187,19 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBPrev(lb_I_Unknown* uk) {
 lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBLast(lb_I_Unknown* uk) {
 	lbDBUpdate();
 
-	sampleQuery->last();
+	if (sampleQuery->last() == ERR_DB_NODATA) {
+		prevButton->Disable();
+		firstButton->Disable();
+		lastButton->Disable();
+		nextButton->Disable();
+
+		return ERR_DB_NODATA;
+	}
 
 	lbDBRead();
 
 	nextButton->Disable();
 	lastButton->Disable();
-	firstButton->Enable();
 	firstButton->Enable();
 	prevButton->Enable();
 	
@@ -3167,9 +3209,22 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBLast(lb_I_Unknown* uk) {
 
 /*...slbErrCodes LB_STDCALL lbDatabaseDialog\58\\58\lbDBAdd\40\lb_I_Unknown\42\ uk\41\:0:*/
 lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBAdd(lb_I_Unknown* uk) {
+	if (isAdding) {
+		isAdding = false;
+		if (noDataAvailable) {
+			// Goto first data, because there was no data before.
+			return lbDBFirst(NULL);
+		}
+		return lbDBLast(NULL);
+	}
+
+	isAdding = true;
+
 	lbDBUpdate();
 
 	lbDBClear();
+
+	noDataAvailable = false;
 
 	if (sampleQuery->add() != ERR_NONE) {
 		UAP_REQUEST(manager.getPtr(), lb_I_String, newTitle)
