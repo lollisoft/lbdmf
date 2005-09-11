@@ -99,6 +99,7 @@
 			buildSettings = {
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
+				EXECUTABLE_EXTENSION = so;
 				GCC_PREPROCESSOR_DEFINITIONS = "LINUX OSX UNIX TVISION";
 				HEADER_SEARCH_PATHS = "";
 				INSTALL_PATH = /usr/local/lib;
@@ -122,7 +123,7 @@
 			explicitFileType = "compiled.mach-o.dylib";
 			includeInIndex = 0;
 			isa = PBXFileReference;
-			path = lbHook.dylib;
+			path = lbHook.so;
 			refType = 3;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
@@ -253,12 +254,12 @@
 				GCC_PREPROCESSOR_DEFINITIONS = "UNIX OSX LINUX TVISION LB_I_EXTENTIONS";
 				INFOPLIST_FILE = "wxWrapper-Info.plist";
 				INSTALL_PATH = "$(USER_APPS_DIR)";
-				LIBRARY_STYLE = STATIC;
+				LIBRARY_STYLE = BUNDLE;
 				OTHER_CFLAGS = "";
-				OTHER_CPLUSPLUSFLAGS = "-I/Users/lothar/wxMac-2.6.1/lib/wx/include/mac-ansi-debug-2.6 -I/Users/lothar/wxMac-2.6.1/include -I/Users/lothar/wxMac-2.6.1/contrib/include -D__WXDEBUG__ -D__WXMAC__ -D_FILE_OFFSET_BITS=64 -D_LARGE_FILES -DNO_GCC_PRAGMA";
-				OTHER_LDFLAGS = "-L/Users/lothar/wxMac-2.6.1/lib   -framework QuickTime -framework IOKit -framework Carbon -framework Cocoa -framework System  -lwx_macd_xrc-2.6 -lwx_macd_qa-2.6 -lwx_macd_html-2.6 -lwx_macd_adv-2.6 -lwx_macd_core-2.6 -lwx_base_carbond_xml-2.6 -lwx_base_carbond_net-2.6 -lwx_base_carbond-2.6 -lc $(HOME)/lib/lbHook.so";
+				OTHER_CPLUSPLUSFLAGS = "-I$(HOME)/develop/Projects/CPP/Test/GUI/wxWrapperDLL -I$(HOME)/wxMac-2.6.1/lib/wx/include/mac-ansi-debug-2.6 -I$(HOME)/wxMac-2.6.1/include -I$(HOME)/wxMac-2.6.1/contrib/include -D__WXDEBUG__ -D__WXMAC__ -D_FILE_OFFSET_BITS=64 -D_LARGE_FILES -DNO_GCC_PRAGMA -DUSE_WXWRAPPER_DLL";
+				OTHER_LDFLAGS = "-L/usr/local/lib   -framework QuickTime -framework IOKit -framework Carbon -framework Cocoa -framework System  -lwx_macd-2.6 -ldl -bind_at_load -lc $(HOME)/lib/lbHook.so $(HOME)/lib/wxWrapperDLL.so";
 				OTHER_REZFLAGS = "";
-				PREBINDING = YES;
+				PREBINDING = NO;
 				PRODUCT_NAME = wxWrapper;
 				SECTORDER_FLAGS = "";
 				WARNING_CFLAGS = "-Wmost -Wno-four-char-constants -Wno-unknown-pragmas";
@@ -473,6 +474,7 @@
 			buildSettings = {
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
+				EXECUTABLE_EXTENSION = so;
 				GCC_PREPROCESSOR_DEFINITIONS = "LINUX OSX UNIX TVISION";
 				HEADER_SEARCH_PATHS = "";
 				INSTALL_PATH = /usr/local/lib;
@@ -525,7 +527,7 @@
 			explicitFileType = "compiled.mach-o.dylib";
 			includeInIndex = 0;
 			isa = PBXFileReference;
-			path = lbClasses.dylib;
+			path = lbClasses.so;
 			refType = 3;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
@@ -540,6 +542,7 @@
 			buildSettings = {
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
+				EXECUTABLE_EXTENSION = so;
 				GCC_PREPROCESSOR_DEFINITIONS = "LINUX OSX UNIX TVISION";
 				HEADER_SEARCH_PATHS = "";
 				INSTALL_PATH = /usr/local/lib;
@@ -586,7 +589,7 @@
 			explicitFileType = "compiled.mach-o.dylib";
 			includeInIndex = 0;
 			isa = PBXFileReference;
-			path = lbModule.dylib;
+			path = lbModule.so;
 			refType = 3;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
@@ -601,6 +604,7 @@
 			buildSettings = {
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
+				EXECUTABLE_EXTENSION = so;
 				GCC_PREPROCESSOR_DEFINITIONS = "LINUX OSX UNIX TVISION";
 				HEADER_SEARCH_PATHS = "";
 				INSTALL_PATH = /usr/local/lib;
@@ -647,7 +651,7 @@
 			explicitFileType = "compiled.mach-o.dylib";
 			includeInIndex = 0;
 			isa = PBXFileReference;
-			path = lbDB.dylib;
+			path = lbDB.so;
 			refType = 3;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
@@ -662,6 +666,7 @@
 			buildSettings = {
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
+				EXECUTABLE_EXTENSION = so;
 				GCC_PREPROCESSOR_DEFINITIONS = "LINUX OSX UNIX TVISION";
 				HEADER_SEARCH_PATHS = "";
 				INSTALL_PATH = /usr/local/lib;
@@ -708,7 +713,7 @@
 			explicitFileType = "compiled.mach-o.dylib";
 			includeInIndex = 0;
 			isa = PBXFileReference;
-			path = lbPluginManager.dylib;
+			path = lbPluginManager.so;
 			refType = 3;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
@@ -723,6 +728,7 @@
 			buildSettings = {
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
+				EXECUTABLE_EXTENSION = so;
 				GCC_PREPROCESSOR_DEFINITIONS = "LINUX OSX UNIX TVISION";
 				HEADER_SEARCH_PATHS = "";
 				INSTALL_PATH = /usr/local/lib;
@@ -769,7 +775,7 @@
 			explicitFileType = "compiled.mach-o.dylib";
 			includeInIndex = 0;
 			isa = PBXFileReference;
-			path = lbMetaApplication.dylib;
+			path = lbMetaApplication.so;
 			refType = 3;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
