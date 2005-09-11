@@ -93,8 +93,11 @@ extern "C" {
 /*...e*/
 
 #ifndef OSX
+#ifndef LINUX
 #include <wx/repwrt.h>
 #endif
+#endif
+
 
 #include <wxWrapperDLL.h>
 #include <lbDatabaseReport.h>
@@ -876,6 +879,7 @@ void LB_STDCALL lbDatabaseReport::update() {
 
 /*...svoid LB_STDCALL lbDatabaseReport\58\\58\show\40\\41\:0:*/
 void LB_STDCALL lbDatabaseReport::show() {
+	_CL_LOG << "Try to show the report..." LOG_
 	wxReportWriter* pReport = new wxReportWriter(
 		frame,
 		ReportFileName,

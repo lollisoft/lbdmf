@@ -32,7 +32,9 @@
 #ifdef OSX
 #include <repwrt.h>
 #endif
-
+#ifdef LINUX
+#include <repwrt.h>
+#endif
 
 class lbDBReportAction : public lb_I_DelegatedAction
 {
