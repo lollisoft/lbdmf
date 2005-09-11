@@ -52,7 +52,7 @@
 #endif
 
 #if defined(__WXGTK__) || defined(__WXMOTIF__)
-#include "mondrian.xpm"
+//#include "mondrian.xpm"
 #endif
 /*...e*/
 
