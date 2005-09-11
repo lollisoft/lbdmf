@@ -63,6 +63,8 @@
 #include <lbloginwizard-module.h>
 /*...e*/
 
+#include <lbConfigHook.h>
+#include <lbInterfaces.h>
 #include <wxWrapperDLL.h>
 
 /*...swxAppSelectPage:0:*/
