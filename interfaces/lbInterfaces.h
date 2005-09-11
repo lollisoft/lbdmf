@@ -266,6 +266,11 @@
 #ifndef __LB_INTERFACES__
 #define __LB_INTERFACES__
 
+// If NULL is undefined, let it define by stddef.h
+#ifndef NULL
+#include <stddef.h>
+#endif
+
 #include <lbErrcodes.h>
 
 //#define LB_STDCALL
