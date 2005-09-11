@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.89 2005/09/07 20:46:34 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.90 2005/09/11 06:27:29 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.89 $
+ * $Revision: 1.90 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.89 2005/09/07 20:46:34 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.90 2005/09/11 06:27:29 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.90  2005/09/11 06:27:29  lollisoft
+ * Precomp problems.
+ *
  * Revision 1.89  2005/09/07 20:46:34  lollisoft
  * Minor changes due to wxWidgets 2.6.1 usage under Windows.
  *
@@ -307,7 +310,10 @@
 #endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
+
+#ifdef WX_PRECOMP
 #include <wx/wxprec.h>
+#endif
 
 /*...swx ifdef\39\s:0:*/
 #ifdef __BORLANDC__
