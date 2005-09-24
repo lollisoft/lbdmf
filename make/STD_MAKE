@@ -25,11 +25,17 @@
 #            40235 Duesseldorf (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.65 $
+# * $Revision: 1.66 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.65 2005/09/07 20:49:46 lollisoft Exp $
+# * $Id: STD_MAKE,v 1.66 2005/09/24 21:35:55 lollisoft Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.66  2005/09/24 21:35:55  lollisoft
+# * Stack frame creation (-of+) removed. Problems in tvision build process was
+# * the problem and it is not really needed.
+# *
+# * Browsing information creation deactivated.
+# *
 # * Revision 1.65  2005/09/07 20:49:46  lollisoft
 # * Minor changes due to wxWidgets 2.6.1 usage under Windows.
 # *
@@ -293,8 +299,8 @@ WATCOM_DLLTARGET=-bd
 WATCOM_LIBTARGET=
 WATCOM_THREAD_MODEL=#-bm
 WATCOM_STDDEBUG=-d2 -hd #-DDEBUG_MALLOC
-WATCOM_STACK=-of+
-WATCOM_PROFILING=-db -en -s
+WATCOM_STACK=#-of+
+WATCOM_PROFILING=#-db -en -s
 
 WATCOM_STD_C_OPS= \
 -DWINDOWS \
