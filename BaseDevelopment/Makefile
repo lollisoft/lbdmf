@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.65 $
+# * $Revision: 1.66 $
 # * $Name:  $
-# * $Id: Makefile,v 1.65 2005/09/11 06:33:11 lollisoft Exp $
+# * $Id: Makefile,v 1.66 2005/09/24 21:41:32 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.66  2005/09/24 21:41:32  lollisoft
+# * Deactivated building tvision stuff. Not yet part of an usable sample.
+# *
 # * Revision 1.65  2005/09/11 06:33:11  lollisoft
 # * Using stdandard make for wx sample app. Added wxWrapperDLL target.
 # *
@@ -256,26 +259,15 @@ BASEDIRECTORIES= \
 	../Plugins \
 	../Modules \
 	../RegressionTests \
-	../vendor/tvision-set \
-	../vendor/tvision-set/examples/lbDMF \
-	../vendor/wxReportWriter \
 	../AppDevelopment 
+
+# Don't compile these every time.
+#	../vendor/tvision-set \
+#	../vendor/tvision-set/examples/lbDMF \
+#	../vendor/wxReportWriter \
+
 endif
 
-
-MAKESUBDIR= \
-	@( \
-	cd $@; \
-	./makefile.sh; \
-	make; \
-	)
-
-MAKEWXSAMPLE= \
-	@( \
-	cd $@; \
-	cp makefile.wx-sample makefile; \
-	make; \
-	)
 
 ifeq ($(OSTYPE), osx)
 
@@ -393,8 +385,10 @@ all_targets: $(ALLTARGETS)
 ../../dll/libs:
 	mkdir ../../dll/libs
 
-../../plugins/libs:
+../../plugins:
 	mkdir ../../plugins
+
+../../plugins/libs: ../../plugins
 	mkdir ../../plugins/libs
 
 clean:
@@ -424,11 +418,11 @@ mkrelease:
 dummy:
 
 ../vendor/tvision: dummy
-	$(MAKE) -s -C $@ -e MODULE=tvision -e TARGET=$(TARGET_TV_DLL) -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@ -e MODULE=librhtv -e TARGET=$(TARGET_TV_DLL) -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@
 
 ../vendor/tvision-set: dummy
-	$(MAKE) -s -C $@ -e MODULE=tvision -e TARGET=$(TARGET_TV_DLL) -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@ -e MODULE=librhtv -e TARGET=$(TARGET_TV_DLL) -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@
 
 ../vendor/tvision-set/examples/lbDMF: dummy
