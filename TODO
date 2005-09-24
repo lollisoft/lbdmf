@@ -4,6 +4,30 @@
 		
 		I also will discuss some problems while the development stages.
 
+		24.09.2005	If the binary samples downloaded and no database configuration
+				has been set up (ODBC setup), the application crashes with a
+				NULL pointer exeption.
+				
+				24.09.2005: 
+					Need to create an assistant for ODBC setup,
+					need to extend the database classes to support
+					with ODBC setup API.
+					
+				24.09.2005:
+					Fallback to a file based configuration. This is in
+					work, but no decision has been made.
+					
+					A first step would be streaming, then syncing with
+					the database.
+
+				24.09.2005:
+					There may be a bug in the current ODBC driver. Uninstalling
+					it and reinstalling the 7.03.0200 driver fails, because the
+					old driver isn't uninstalled properly.
+					
+					This may have to do with the database installer's optional
+					ODBC driver installing step. 
+
 		28.08.2005	There is a design problem or a visual problem with foreign key
 				values, when they should show names that could appear multiple
 				times. In this case it is unclear what the user should select.
