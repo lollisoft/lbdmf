@@ -195,7 +195,9 @@
  *
  *	The database scripts are located in [C/D]:\\lbDMF\\Develop\\Projects\\CPP\\Database.
  *
- *	Create at least an use to have rights to change data.
+ *	Create at least an user to have rights to change data. For the PostgreSQL database, create
+ *	the user and create the tables with that user logged on. If you set up the tables with the
+ *	database system user, your user has not the correct rigths.
  *
  *	Set the environment variables to connect with the correct user and password. If not, default values from
  *	my private database are used:
@@ -228,7 +230,35 @@
  *
  * \section Application
  *
- * Let us start with an application - say - we have a small CD collection database. 
+ * Let us start with an application - say - we have a small CD collection database.
+ *
+ * \section Database Setup
+ *
+ * The CD collection database will consist interprets, album and and title tables. To create
+ * the database, please copy the SQL code below to your database query editor.
+ *
+ * \code
+ 	CREATE TABLE interpret (
+ 		id SERIAL,
+ 		name CHAR(50),
+ 		country CHAR(3)
+ 	);
+ 	
+ 	CREATE TABLE album (
+ 		id SERIAL,
+ 		interpretid INT,
+ 		name CHAR(50),
+ 		go_public_date DATETIME
+ 	);
+ 	
+ 	CREATE TABLE title (
+ 		id SERIAL,
+ 		albumid INT,
+ 		songid INT,
+ 		name CHAR(50),
+ 		time TIME
+ 	);
+ * \endcode
  */
 /*...e*/
 
