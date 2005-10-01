@@ -1639,7 +1639,7 @@ void LB_STDCALL lbDatabaseDialog::init(char* _SQLString, char* DBName, char* DBU
 				
 				sizerRight->Add(ownerdraw, 1, 0, 5);
 
-				if (FFI->isReadonly(name)) {
+				if (!sampleQuery->getUpdateable(name) || FFI->isReadonly(name)) {
 				        ownerdraw->Disable();
 				}
 
@@ -1657,7 +1657,7 @@ void LB_STDCALL lbDatabaseDialog::init(char* _SQLString, char* DBName, char* DBU
 						check->SetName(name);
 						sizerRight->Add(check, 1, wxEXPAND | wxALL, 5);	
 
-						if (FFI->isReadonly(name)) {
+						if (!sampleQuery->getUpdateable(name) || FFI->isReadonly(name)) {
 						        check->Disable();
 						}
 
@@ -1672,7 +1672,7 @@ void LB_STDCALL lbDatabaseDialog::init(char* _SQLString, char* DBName, char* DBU
 						text->SetName(name);
 						sizerRight->Add(text, 1, wxEXPAND | wxALL, 5);
 						
-						if (FFI->isReadonly(name)) {
+						if (!sampleQuery->getUpdateable(name) || FFI->isReadonly(name)) {
 							text->Disable();
 						}
 
@@ -1683,6 +1683,7 @@ void LB_STDCALL lbDatabaseDialog::init(char* _SQLString, char* DBName, char* DBU
 				case lb_I_Query::lbDBColumnBinary:
 					break;
 
+				case lb_I_Query::lbDBColumnBigInteger:
 				case lb_I_Query::lbDBColumnInteger:
 					{
 						wxTextCtrl *text = new wxTextCtrl(this, -1,
@@ -1690,7 +1691,7 @@ void LB_STDCALL lbDatabaseDialog::init(char* _SQLString, char* DBName, char* DBU
 					        text->SetName(name);
 					        sizerRight->Add(text, 1, wxEXPAND | wxALL, 5);
 						
-						if (FFI->isReadonly(name)) {
+						if (!sampleQuery->getUpdateable(name) || FFI->isReadonly(name)) {
  							text->Disable();
 						}
 
@@ -2782,7 +2783,8 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBClear() {
 							tx->SetValue(wxString(""));
 						}
 						break;
-					
+			
+					case lb_I_Query::lbDBColumnBigInteger:		
 					case lb_I_Query::lbDBColumnInteger:
 						{
 							wxTextCtrl* tx = (wxTextCtrl*) w;
@@ -2897,7 +2899,7 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBUpdate() {
 				switch (coltype) {
 					case lb_I_Query::lbDBColumnBit:
 						{
-							if (!FFI->isReadonly(name)) {
+							if (!sampleQuery->getUpdateable(name) || !FFI->isReadonly(name)) {
 								wxCheckBox *check = (wxCheckBox*) w;
 								if (check->GetValue() == TRUE) {
 									wxString v = "true";
@@ -2918,7 +2920,7 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBUpdate() {
 					
 					case lb_I_Query::lbDBColumnChar:
 						{
-							if (!FFI->isReadonly(name)) {
+							if (!sampleQuery->getUpdateable(name) || !FFI->isReadonly(name)) {
 								wxTextCtrl* tx = (wxTextCtrl*) w;
 			
 								wxString v = tx->GetValue();
@@ -2931,9 +2933,10 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBUpdate() {
 						}
 						break;
 					
+					case lb_I_Query::lbDBColumnBigInteger:
 					case lb_I_Query::lbDBColumnInteger:
 						{
-							if (!FFI->isReadonly(name)) {
+							if (!sampleQuery->getUpdateable(name) || !FFI->isReadonly(name)) {
 								wxTextCtrl* tx = (wxTextCtrl*) w;
 			
 								wxString v = tx->GetValue();
@@ -3086,6 +3089,7 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBRead() {
 						}
 						break;
 					
+					case lb_I_Query::lbDBColumnBigInteger:
 					case lb_I_Query::lbDBColumnInteger:
 						{
 							wxTextCtrl* tx = (wxTextCtrl*) w;
