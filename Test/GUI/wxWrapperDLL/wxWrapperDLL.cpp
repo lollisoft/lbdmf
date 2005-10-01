@@ -835,6 +835,10 @@ lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::createDBForm(char* formName, char* query
 	lbErrCodes err = ERR_NONE;
 
 	// Locate the form instance in the container
+
+	if (panelUsage) {
+		notebook = new wxNotebook(frame, -1);
+	}
 	
 	UAP(lb_I_DatabaseForm, _dialog, __FILE__, __LINE__)
 	
@@ -886,8 +890,12 @@ lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::createDBForm(char* formName, char* query
 
 		UAP_REQUEST(manager.getPtr(), lb_I_PluginManager, PM)
 		UAP(lb_I_Plugin, pl, __FILE__, __LINE__)
-		
-		pl = PM->getFirstMatchingPlugin("lb_I_DatabaseForm");
+
+		if (panelUsage) {
+			pl = PM->getFirstMatchingPlugin("lb_I_DatabaseForm", "GUIPanel");
+		} else {
+			pl = PM->getFirstMatchingPlugin("lb_I_DatabaseForm", "GUIDialog");
+		}
 
 		if (pl == NULL) {
 			char* msg = (char*) malloc(200);
@@ -920,6 +928,10 @@ lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::createDBForm(char* formName, char* query
 		}
 		
 		_dialog->setName(formName);
+
+		if (panelUsage) {
+			((wxPanel*) _dialog.getPtr())->Create(frame, -1, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, "Database Panel");
+		}
 		
 		_dialog->init(queryString, DBName, DBUser, DBPass);
 		
@@ -927,6 +939,11 @@ lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::createDBForm(char* formName, char* query
 /*...e*/
 
 	_dialog++;
+	
+	if (panelUsage) {
+		wxWindow* w = ((wxWindow*)_dialog.getPtr());
+		notebook->AddPage(w, formName, true);
+	}
 	
 	return _dialog.getPtr();
 }
@@ -1215,7 +1232,7 @@ void lb_wxFrame::OnPluginTest(wxCommandEvent& WXUNUSED(event) ) {
 	UAP_REQUEST(manager.getPtr(), lb_I_PluginManager, PM)
 	UAP(lb_I_Plugin, pl, __FILE__, __LINE__)
 
-	pl = PM->getFirstMatchingPlugin("lb_I_DatabaseNixfind");
+	pl = PM->getFirstMatchingPlugin("lb_I_DatabaseNixfind", "bla");
 }
 
 
