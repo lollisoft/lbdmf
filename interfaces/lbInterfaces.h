@@ -2082,7 +2082,7 @@ public:
 	 * The match string could be a functor name, an interface name or partial of them.
 	 * The order, in that this function will search is decided by the match string.
 	 */
-	virtual lb_I_Plugin* LB_STDCALL getFirstMatchingPlugin(char* match) = 0;
+	virtual lb_I_Plugin* LB_STDCALL getFirstMatchingPlugin(char* match, char* _namespace) = 0;
 	
 	/** \brief Put in a plugin (via DnD as an example).
 	 *

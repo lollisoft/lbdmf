@@ -290,7 +290,7 @@ void LB_STDCALL lbDBReportAction::openReport(lb_I_String* reportname, lb_I_Param
 						
 						sql = query1->getAsString(1);
 
-						pl = PM->getFirstMatchingPlugin("lb_I_DatabaseReport");
+						pl = PM->getFirstMatchingPlugin("lb_I_DatabaseReport", "GUI");
 						
 						uk = pl->getImplementation();
 						

@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.25 $
+ * $Revision: 1.26 $
  * $Name:  $
- * $Id: lbPluginManager.cpp,v 1.25 2005/08/21 23:09:36 lollisoft Exp $
+ * $Id: lbPluginManager.cpp,v 1.26 2005/10/01 21:44:08 lollisoft Exp $
  *
  * $Log: lbPluginManager.cpp,v $
+ * Revision 1.26  2005/10/01 21:44:08  lollisoft
+ * Added handling of namespaces.
+ *
  * Revision 1.25  2005/08/21 23:09:36  lollisoft
  * Bugfix: Plugins, that are not found will stay open.
  * For this a releaseImplementation has been added.
@@ -190,7 +193,7 @@ public:
 	void LB_STDCALL initialize();
         bool LB_STDCALL beginEnumPlugins();
 
-	lb_I_Plugin* LB_STDCALL getFirstMatchingPlugin(char* match);
+	lb_I_Plugin* LB_STDCALL getFirstMatchingPlugin(char* match, char* _namespace);
         lb_I_Plugin* LB_STDCALL nextPlugin();
 
         bool LB_STDCALL attach(lb_I_PluginModule* toAttach);
@@ -540,8 +543,8 @@ lb_I_Plugin* LB_STDCALL lbPluginManager::nextPlugin() {
 	return NULL;
 }
 /*...e*/
-/*...slb_I_Plugin\42\ LB_STDCALL lbPluginManager\58\\58\getFirstMatchingPlugin\40\char\42\ match\41\:0:*/
-lb_I_Plugin* LB_STDCALL lbPluginManager::getFirstMatchingPlugin(char* match) {
+/*...slb_I_Plugin\42\ LB_STDCALL lbPluginManager\58\\58\getFirstMatchingPlugin\40\char\42\ match\44\ char\42\ _namespace\41\:0:*/
+lb_I_Plugin* LB_STDCALL lbPluginManager::getFirstMatchingPlugin(char* match, char* _namespace) {
 	
 	if (beginEnumPlugins()) {
 
@@ -555,7 +558,7 @@ lb_I_Plugin* LB_STDCALL lbPluginManager::getFirstMatchingPlugin(char* match) {
 
 			lb_I_Unknown* uk;
 
-        	        if (pl->hasInterface(match)) {
+        	        if ((strcmp(pl->getNamespace(), _namespace) == 0) && pl->hasInterface(match)) {
         	        	return pl.getPtr();
         	        }
 
