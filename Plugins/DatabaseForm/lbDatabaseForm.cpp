@@ -181,7 +181,7 @@ lbErrCodes LB_STDCALL lbOwnerDrawControl::setData(lb_I_Unknown* uk) {
 }
 
 void LB_STDCALL lbOwnerDrawControl::init(lb_I_Window* parent) {
-	lbDatabaseDialog* p = (lbDatabaseDialog*) parent;
+	lbDatabasePanel* p = (lbDatabasePanel*) parent;
 	Create(p, -1, wxPoint(), wxSize(40,40)); 
 }
 
@@ -1226,37 +1226,37 @@ void LB_STDCALL lbSQLQueryAction::execute(lb_I_Parameter* params) {
 }
 /*...e*/
 
-/*...slbDatabaseDialog:0:*/
+/*...slbDatabasePanel:0:*/
 
-BEGIN_IMPLEMENT_LB_UNKNOWN(lbDatabaseDialog)
+BEGIN_IMPLEMENT_LB_UNKNOWN(lbDatabasePanel)
         ADD_INTERFACE(lb_I_DatabaseForm)
 END_IMPLEMENT_LB_UNKNOWN()
 
-IMPLEMENT_FUNCTOR(instanceOflbDatabaseDialog, lbDatabaseDialog)
+IMPLEMENT_FUNCTOR(instanceOflbDatabasePanel, lbDatabasePanel)
 
 
-/*...slbErrCodes LB_STDCALL lbDatabaseDialog\58\\58\setData\40\lb_I_Unknown\42\ uk\41\:0:*/
-lbErrCodes LB_STDCALL lbDatabaseDialog::setData(lb_I_Unknown* uk) {
+/*...slbErrCodes LB_STDCALL lbDatabasePanel\58\\58\setData\40\lb_I_Unknown\42\ uk\41\:0:*/
+lbErrCodes LB_STDCALL lbDatabasePanel::setData(lb_I_Unknown* uk) {
 		lbErrCodes err = ERR_NONE;
 		
-        _CL_VERBOSE << "lbDatabaseDialog::setData(...) not implemented yet" LOG_
+        _CL_VERBOSE << "lbDatabasePanel::setData(...) not implemented yet" LOG_
 
 		UAP(lb_I_DatabaseForm, dbForm, __FILE__, __LINE__)
 		QI(uk, lb_I_DatabaseForm, dbForm, __FILE__, __LINE__)
 		
-		fa = ((lbDatabaseDialog*) dbForm.getPtr())->fa;
-		((lbDatabaseDialog*) dbForm.getPtr())->fa = NULL;
+		fa = ((lbDatabasePanel*) dbForm.getPtr())->fa;
+		((lbDatabasePanel*) dbForm.getPtr())->fa = NULL;
 		
         return ERR_NOT_IMPLEMENTED;
 }
 /*...e*/
 
-/*...slbDatabaseDialog\58\\58\lbDatabaseDialog\40\\41\:0:*/
-lbDatabaseDialog::lbDatabaseDialog() 
-	: wxDialog(NULL, -1, wxString(_T("Database dialog")), wxDefaultPosition,
-	wxDefaultSize, wxRESIZE_BORDER|wxDEFAULT_DIALOG_STYLE)
+/*...slbDatabasePanel\58\\58\lbDatabasePanel\40\\41\:0:*/
+lbDatabasePanel::lbDatabasePanel() 
+//	: wxPanel(NULL, -1, wxString(_T("Database dialog")), wxDefaultPosition,
+//	wxDefaultSize, wxRESIZE_BORDER|wxDEFAULT_DIALOG_STYLE)
 {
-	_CL_LOG << "lbDatabaseDialog::lbDatabaseDialog() called." LOG_
+	_CL_LOG << "lbDatabasePanel::lbDatabasePanel() called." LOG_
 	ref = STARTREF;
 	formName = strdup("Database dialog");
 	untranslated_formName = NULL;
@@ -1266,9 +1266,9 @@ lbDatabaseDialog::lbDatabaseDialog()
 	fa = NULL;
 }
 /*...e*/
-/*...slbDatabaseDialog\58\\58\\126\lbDatabaseDialog\40\\41\:0:*/
-lbDatabaseDialog::~lbDatabaseDialog() {
-	_CL_LOG << "lbDatabaseDialog::~lbDatabaseDialog() called." LOG_
+/*...slbDatabasePanel\58\\58\\126\lbDatabasePanel\40\\41\:0:*/
+lbDatabasePanel::~lbDatabasePanel() {
+	_CL_LOG << "lbDatabasePanel::~lbDatabasePanel() called." LOG_
 
 	if (fa != NULL) delete fa;
 	free (formName);
@@ -1277,34 +1277,34 @@ lbDatabaseDialog::~lbDatabaseDialog() {
 }
 /*...e*/
 
-/*...slbErrCodes LB_STDCALL lbDatabaseDialog\58\\58\registerEventHandler\40\lb_I_Dispatcher\42\ dispatcher\41\:0:*/
-lbErrCodes LB_STDCALL lbDatabaseDialog::registerEventHandler(lb_I_Dispatcher* dispatcher) {
+/*...slbErrCodes LB_STDCALL lbDatabasePanel\58\\58\registerEventHandler\40\lb_I_Dispatcher\42\ dispatcher\41\:0:*/
+lbErrCodes LB_STDCALL lbDatabasePanel::registerEventHandler(lb_I_Dispatcher* dispatcher) {
 
 	char eventName[100] = "";
 	
 	sprintf(eventName, "%pDatabaseFirst", this);
-	dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDatabaseDialog::lbDBFirst, eventName);
+	dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDatabasePanel::lbDBFirst, eventName);
 
 	sprintf(eventName, "%pDatabaseNext", this);
-	dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDatabaseDialog::lbDBNext,  eventName);
+	dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDatabasePanel::lbDBNext,  eventName);
 
 	sprintf(eventName, "%pDatabasePrev", this);
-	dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDatabaseDialog::lbDBPrev,  eventName);
+	dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDatabasePanel::lbDBPrev,  eventName);
 
 	sprintf(eventName, "%pDatabaseLast", this);
-	dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDatabaseDialog::lbDBLast,  eventName);
+	dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDatabasePanel::lbDBLast,  eventName);
 	
 	sprintf(eventName, "%pDatabaseAdd", this);
-	dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDatabaseDialog::lbDBAdd,  eventName);
+	dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDatabasePanel::lbDBAdd,  eventName);
 	
 	sprintf(eventName, "%pDatabaseDelete", this);
-	dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDatabaseDialog::lbDBDelete,  eventName);
+	dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDatabasePanel::lbDBDelete,  eventName);
 	
 	return ERR_NONE;
 }
 /*...e*/
-/*...svoid LB_STDCALL lbDatabaseDialog\58\\58\init\40\char\42\ SQLString\44\ char\42\ DBName\44\ char\42\ DBUser\44\ char\42\ DBPass\41\:0:*/
-void LB_STDCALL lbDatabaseDialog::init(char* _SQLString, char* DBName, char* DBUser, char* DBPass) {
+/*...svoid LB_STDCALL lbDatabasePanel\58\\58\init\40\char\42\ SQLString\44\ char\42\ DBName\44\ char\42\ DBUser\44\ char\42\ DBPass\41\:0:*/
+void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUser, char* DBPass) {
 	char prefix[100] = "";
 	sprintf(prefix, "%p", this);
 
@@ -1500,15 +1500,15 @@ void LB_STDCALL lbDatabaseDialog::init(char* _SQLString, char* DBName, char* DBU
 				_CL_VERBOSE << "ERROR: No data column definition to be displayed instead of primary key.\n" LOG_
 			
 	
-				lbConfigure_FK_PK_MappingDialog* fkpkDialog = new lbConfigure_FK_PK_MappingDialog();
+				lbConfigure_FK_PK_MappingDialog* fkpkPanel = new lbConfigure_FK_PK_MappingDialog();
 				
-				fkpkDialog->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+				fkpkPanel->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
 				
-				fkpkDialog->init(database.getPtr(), sampleQuery.getPtr());
+				fkpkPanel->init(database.getPtr(), sampleQuery.getPtr());
 				
-				fkpkDialog->show();
+				fkpkPanel->show();
 				
-				fkpkDialog->destroy();
+				fkpkPanel->destroy();
 
 				FKColumnQuery1 = FKColumnQuery.getPtr();
 			
@@ -1699,7 +1699,7 @@ void LB_STDCALL lbDatabaseDialog::init(char* _SQLString, char* DBName, char* DBU
 					}
 					break;
 				case lb_I_Query::lbDBColumnUnknown:
-					_CL_LOG << "lbDatabaseDialog::init(...) Creating control failed due to unknown column type" LOG_
+					_CL_LOG << "lbDatabasePanel::init(...) Creating control failed due to unknown column type" LOG_
 					break;
 			}
 /*...e*/
@@ -1810,10 +1810,10 @@ void LB_STDCALL lbDatabaseDialog::init(char* _SQLString, char* DBName, char* DBU
 		
 		wxButton *actionButton = new wxButton(this, actionID, _trans(action->charrep())); //, wxPoint(), wxSize(100,20));
 		
-		dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDatabaseDialog::OnActionButton, eventName);
+		dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDatabasePanel::OnActionButton, eventName);
 		
 		this->Connect( actionID,  -1, wxEVT_COMMAND_BUTTON_CLICKED,
-		        (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) &lbDatabaseDialog::OnDispatch);
+		        (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) &lbDatabasePanel::OnDispatch);
 	
 		sizerActions->Add(actionButton, 1, wxEXPAND | wxALL, 5);
 
@@ -1844,10 +1844,10 @@ void LB_STDCALL lbDatabaseDialog::init(char* _SQLString, char* DBName, char* DBU
 		
 		wxButton *actionButton = new wxButton(this, actionID, _trans(action->charrep())); //, wxPoint(), wxSize(100,20));
 
-		dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDatabaseDialog::OnActionButton, eventName);
+		dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDatabasePanel::OnActionButton, eventName);
 		
 		this->Connect( actionID,  -1, wxEVT_COMMAND_BUTTON_CLICKED,
-		        (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) &lbDatabaseDialog::OnDispatch);
+		        (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) &lbDatabasePanel::OnDispatch);
 		
 		sizerActions->Add(actionButton, 1, wxEXPAND | wxALL, 5);
 		
@@ -1863,18 +1863,18 @@ void LB_STDCALL lbDatabaseDialog::init(char* _SQLString, char* DBName, char* DBU
 #define CONNECTOR this
 
 	CONNECTOR->Connect( DatabaseFirst,  -1, wxEVT_COMMAND_BUTTON_CLICKED, 
-		(wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) &lbDatabaseDialog::OnDispatch);
+		(wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) &lbDatabasePanel::OnDispatch);
 	CONNECTOR->Connect( DatabaseNext,  -1, wxEVT_COMMAND_BUTTON_CLICKED,  
-		(wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) &lbDatabaseDialog::OnDispatch);
+		(wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) &lbDatabasePanel::OnDispatch);
 	CONNECTOR->Connect( DatabasePrev,  -1, wxEVT_COMMAND_BUTTON_CLICKED,  
-		(wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) &lbDatabaseDialog::OnDispatch);
+		(wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) &lbDatabasePanel::OnDispatch);
 	CONNECTOR->Connect( DatabaseLast,  -1, wxEVT_COMMAND_BUTTON_CLICKED,  
-		(wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) &lbDatabaseDialog::OnDispatch);
+		(wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) &lbDatabasePanel::OnDispatch);
 
 	CONNECTOR->Connect( DatabaseAdd,  -1, wxEVT_COMMAND_BUTTON_CLICKED,   
-		(wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) &lbDatabaseDialog::OnDispatch);
+		(wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) &lbDatabasePanel::OnDispatch);
 	CONNECTOR->Connect( DatabaseDelete, -1, wxEVT_COMMAND_BUTTON_CLICKED, 
-		(wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) &lbDatabaseDialog::OnDispatch);
+		(wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) &lbDatabasePanel::OnDispatch);
 /*...e*/
 
 
@@ -1904,8 +1904,8 @@ void LB_STDCALL lbDatabaseDialog::init(char* _SQLString, char* DBName, char* DBU
 }
 /*...e*/
 
-/*...slbErrCodes LB_STDCALL lbDatabaseDialog\58\\58\setName\40\char const \42\ name\44\ char const \42\ appention\41\:0:*/
-lbErrCodes LB_STDCALL lbDatabaseDialog::setName(char const * name, char const * appention) {
+/*...slbErrCodes LB_STDCALL lbDatabasePanel\58\\58\setName\40\char const \42\ name\44\ char const \42\ appention\41\:0:*/
+lbErrCodes LB_STDCALL lbDatabasePanel::setName(char const * name, char const * appention) {
 	free(formName);
 	free(untranslated_formName);
 		
@@ -1939,19 +1939,19 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::setName(char const * name, char const * 
 }
 /*...e*/
 
-/*...schar\42\ LB_STDCALL lbDatabaseDialog\58\\58\getQuery\40\\41\:0:*/
-char* LB_STDCALL lbDatabaseDialog::getQuery() {
+/*...schar\42\ LB_STDCALL lbDatabasePanel\58\\58\getQuery\40\\41\:0:*/
+char* LB_STDCALL lbDatabasePanel::getQuery() {
 	return SQLString->charrep();
 }
 /*...e*/
-/*...schar\42\ LB_STDCALL lbDatabaseDialog\58\\58\getColumnName\40\int pos\41\:0:*/
-char* LB_STDCALL lbDatabaseDialog::getColumnName(int pos) {
+/*...schar\42\ LB_STDCALL lbDatabasePanel\58\\58\getColumnName\40\int pos\41\:0:*/
+char* LB_STDCALL lbDatabasePanel::getColumnName(int pos) {
 	return sampleQuery->getColumnName(pos);
 }
 /*...e*/
 
-/*...svoid LB_STDCALL lbDatabaseDialog\58\\58\setMasterForm\40\lb_I_DatabaseMasterForm\42\ master\44\ lb_I_Parameter\42\ params\41\:0:*/
-void LB_STDCALL lbDatabaseDialog::setMasterForm(lb_I_DatabaseForm* master, lb_I_Parameter* params) {
+/*...svoid LB_STDCALL lbDatabasePanel\58\\58\setMasterForm\40\lb_I_DatabaseMasterForm\42\ master\44\ lb_I_Parameter\42\ params\41\:0:*/
+void LB_STDCALL lbDatabasePanel::setMasterForm(lb_I_DatabaseForm* master, lb_I_Parameter* params) {
 	
 	// Now build the where clause that sets the foreign key columns of this form as equal condition to the values of the masters pk columns.
 	
@@ -1984,8 +1984,8 @@ void LB_STDCALL lbDatabaseDialog::setMasterForm(lb_I_DatabaseForm* master, lb_I_
 	updateFromMaster();
 }
 /*...e*/
-/*...svoid LB_STDCALL lbDatabaseDialog\58\\58\setDetailForm\40\lb_I_DatabaseMasterForm\42\ detail\44\ lb_I_Parameter\42\ params\41\:0:*/
-void LB_STDCALL lbDatabaseDialog::setDetailForm(lb_I_DatabaseForm* detail, lb_I_Parameter* params) {
+/*...svoid LB_STDCALL lbDatabasePanel\58\\58\setDetailForm\40\lb_I_DatabaseMasterForm\42\ detail\44\ lb_I_Parameter\42\ params\41\:0:*/
+void LB_STDCALL lbDatabasePanel::setDetailForm(lb_I_DatabaseForm* detail, lb_I_Parameter* params) {
 	
 	// Now build the where clause that sets the foreign key columns of this form as equal condition to the values of the masters pk columns.
 	
@@ -2019,18 +2019,18 @@ void LB_STDCALL lbDatabaseDialog::setDetailForm(lb_I_DatabaseForm* detail, lb_I_
 }
 /*...e*/
 
-/*...sint LB_STDCALL lbDatabaseDialog\58\\58\getControls\40\\41\:0:*/
-int LB_STDCALL lbDatabaseDialog::getControls() {
+/*...sint LB_STDCALL lbDatabasePanel\58\\58\getControls\40\\41\:0:*/
+int LB_STDCALL lbDatabasePanel::getControls() {
 	return sampleQuery->getColumns();
 }
 /*...e*/
-/*...sconst char\42\ LB_STDCALL lbDatabaseDialog\58\\58\getControlValue\40\int pos\41\:0:*/
-const char* LB_STDCALL lbDatabaseDialog::getControlValue(int pos) {
+/*...sconst char\42\ LB_STDCALL lbDatabasePanel\58\\58\getControlValue\40\int pos\41\:0:*/
+const char* LB_STDCALL lbDatabasePanel::getControlValue(int pos) {
 	return getControlValue(getColumnName(pos));
 }
 /*...e*/
-/*...sconst char\42\ LB_STDCALL lbDatabaseDialog\58\\58\getControlValue\40\char\42\ name\41\:0:*/
-const char* LB_STDCALL lbDatabaseDialog::getControlValue(char* name) {
+/*...sconst char\42\ LB_STDCALL lbDatabasePanel\58\\58\getControlValue\40\char\42\ name\41\:0:*/
+const char* LB_STDCALL lbDatabasePanel::getControlValue(char* name) {
 
 	wxString value;
 
@@ -2078,8 +2078,8 @@ const char* LB_STDCALL lbDatabaseDialog::getControlValue(char* name) {
 }
 /*...e*/
 
-/*...svoid LB_STDCALL lbDatabaseDialog\58\\58\ignoreForeignKeys\40\char\42\ toTable\41\:0:*/
-void LB_STDCALL lbDatabaseDialog::ignoreForeignKeys(char* toTable) {
+/*...svoid LB_STDCALL lbDatabasePanel\58\\58\ignoreForeignKeys\40\char\42\ toTable\41\:0:*/
+void LB_STDCALL lbDatabasePanel::ignoreForeignKeys(char* toTable) {
 	lbErrCodes err = ERR_NONE;
 	
 	if (ignoredPKTables == NULL) {
@@ -2099,8 +2099,8 @@ void LB_STDCALL lbDatabaseDialog::ignoreForeignKeys(char* toTable) {
 }
 /*...e*/
 
-/*...svoid LB_STDCALL lbDatabaseDialog\58\\58\updateFromMaster\40\\41\:0:*/
-void LB_STDCALL lbDatabaseDialog::updateFromMaster() {
+/*...svoid LB_STDCALL lbDatabasePanel\58\\58\updateFromMaster\40\\41\:0:*/
+void LB_STDCALL lbDatabasePanel::updateFromMaster() {
 
 	UAP_REQUEST(manager.getPtr(), lb_I_String, newWhereClause)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, newMasterIDQuery)
@@ -2179,7 +2179,7 @@ void LB_STDCALL lbDatabaseDialog::updateFromMaster() {
 	if (isChar) *newMasterIDQuery += "'";
 /*...e*/
 	
-	_CL_LOG << "lbDatabaseDialog::updateFromMaster() generated new master id query: \n'" <<
+	_CL_LOG << "lbDatabasePanel::updateFromMaster() generated new master id query: \n'" <<
 		newMasterIDQuery->charrep() << "'" LOG_
 
 	if (MasterDetailRelationData == NULL) {
@@ -2413,8 +2413,8 @@ void LB_STDCALL lbDatabaseDialog::updateFromMaster() {
 }
 /*...e*/
 
-/*...svoid LB_STDCALL lbDatabaseDialog\58\\58\updateFromDetail\40\\41\:0:*/
-void LB_STDCALL lbDatabaseDialog::updateFromDetail() {
+/*...svoid LB_STDCALL lbDatabasePanel\58\\58\updateFromDetail\40\\41\:0:*/
+void LB_STDCALL lbDatabasePanel::updateFromDetail() {
 	UAP_REQUEST(manager.getPtr(), lb_I_String, newWhereClause)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, newMasterIDQuery)
 	
@@ -2470,7 +2470,7 @@ void LB_STDCALL lbDatabaseDialog::updateFromDetail() {
 	for (int i = 1; i <= columns-1; i++) {
 		colName = _detail->getForeignColumn(i);
 
-		_CL_LOG << "lbDatabaseDialog::updateFromDetail() creates query column '" << 
+		_CL_LOG << "lbDatabasePanel::updateFromDetail() creates query column '" << 
 			colName->charrep() << "'" LOG_
 		
 		if (strcmp(sourceTable, _detail->getTableName(colName->charrep())) == 0) {
@@ -2481,7 +2481,7 @@ void LB_STDCALL lbDatabaseDialog::updateFromDetail() {
 
 	colName = _detail->getForeignColumn(columns);
 		
-	_CL_LOG << "lbDatabaseDialog::updateFromDetail() creates query column '" <<
+	_CL_LOG << "lbDatabasePanel::updateFromDetail() creates query column '" <<
 		colName->charrep() << "'" LOG_
 		
 	if (strcmp(sourceTable, _detail->getTableName(colName->charrep())) == 0) {
@@ -2505,7 +2505,7 @@ void LB_STDCALL lbDatabaseDialog::updateFromDetail() {
 	if (isChar) *newMasterIDQuery += "'";
 /*...e*/
 	
-	_CL_LOG << "lbDatabaseDialog::updateFromDetail() generated new master id query: \n'" <<
+	_CL_LOG << "lbDatabasePanel::updateFromDetail() generated new master id query: \n'" <<
 		newMasterIDQuery->charrep() << "'" LOG_
 
 	if (MasterDetailRelationData == NULL) {
@@ -2730,8 +2730,8 @@ void LB_STDCALL lbDatabaseDialog::updateFromDetail() {
 }
 /*...e*/
 
-/*...svoid LB_STDCALL lbDatabaseDialog\58\\58\setFilter\40\char\42\ filter\41\:0:*/
-void LB_STDCALL lbDatabaseDialog::setFilter(char* filter) {
+/*...svoid LB_STDCALL lbDatabasePanel\58\\58\setFilter\40\char\42\ filter\41\:0:*/
+void LB_STDCALL lbDatabasePanel::setFilter(char* filter) {
 	if (SQLWhere == NULL) {
 		REQUEST(manager.getPtr(), lb_I_String, SQLWhere)
 		if (filter != NULL) SQLWhere->setData(filter);
@@ -2739,14 +2739,14 @@ void LB_STDCALL lbDatabaseDialog::setFilter(char* filter) {
 }
 /*...e*/
 
-/*...schar\42\ lbDatabaseDialog\58\\58\getTableName\40\char\42\ columnName\41\:0:*/
-char* lbDatabaseDialog::getTableName(char* columnName) {
+/*...schar\42\ lbDatabasePanel\58\\58\getTableName\40\char\42\ columnName\41\:0:*/
+char* lbDatabasePanel::getTableName(char* columnName) {
 	return sampleQuery->getTableName(columnName);
 }
 /*...e*/
 
-/*...slbErrCodes LB_STDCALL lbDatabaseDialog\58\\58\lbDBClear\40\\41\:0:*/
-lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBClear() {
+/*...slbErrCodes LB_STDCALL lbDatabasePanel\58\\58\lbDBClear\40\\41\:0:*/
+lbErrCodes LB_STDCALL lbDatabasePanel::lbDBClear() {
 	int columns = sampleQuery->getColumns();
 
 	for (int i = 1; i <= columns; i++) {
@@ -2810,8 +2810,8 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBClear() {
 	return ERR_NONE;
 }
 /*...e*/
-/*...slbErrCodes LB_STDCALL lbDatabaseDialog\58\\58\lbDBUpdate\40\\41\:0:*/
-lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBUpdate() {
+/*...slbErrCodes LB_STDCALL lbDatabasePanel\58\\58\lbDBUpdate\40\\41\:0:*/
+lbErrCodes LB_STDCALL lbDatabasePanel::lbDBUpdate() {
 
 	if (noDataAvailable) return ERR_NONE;
 
@@ -2891,7 +2891,7 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBUpdate() {
 /*...e*/
 			} else {
 				if (FFI->isSpecialColumn(name)) {
-					_CL_LOG << "lbDatabaseDialog::lbDBUpdate() updates special column" LOG_
+					_CL_LOG << "lbDatabasePanel::lbDBUpdate() updates special column" LOG_
 				} else {
 /*...sUpdate controls:40:*/
 				lb_I_Query::lbDBColumnTypes coltype = sampleQuery->getColumnType(i);
@@ -2983,8 +2983,8 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBUpdate() {
 	return ERR_NONE;
 }
 /*...e*/
-/*...slbErrCodes LB_STDCALL lbDatabaseDialog\58\\58\lbDBRead\40\\41\:0:*/
-lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBRead() {
+/*...slbErrCodes LB_STDCALL lbDatabasePanel\58\\58\lbDBRead\40\\41\:0:*/
+lbErrCodes LB_STDCALL lbDatabasePanel::lbDBRead() {
 
 	SetTitle(formName);
 
@@ -3114,8 +3114,8 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBRead() {
 }
 /*...e*/
 
-/*...slbErrCodes LB_STDCALL lbDatabaseDialog\58\\58\lbDBFirst\40\lb_I_Unknown\42\ uk\41\:0:*/
-lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBFirst(lb_I_Unknown* uk) {
+/*...slbErrCodes LB_STDCALL lbDatabasePanel\58\\58\lbDBFirst\40\lb_I_Unknown\42\ uk\41\:0:*/
+lbErrCodes LB_STDCALL lbDatabasePanel::lbDBFirst(lb_I_Unknown* uk) {
 	lbDBUpdate();
 
 	if (sampleQuery->first() == ERR_DB_NODATA) {
@@ -3137,8 +3137,8 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBFirst(lb_I_Unknown* uk) {
 	return ERR_NONE;
 }
 /*...e*/
-/*...slbErrCodes LB_STDCALL lbDatabaseDialog\58\\58\lbDBNext\40\lb_I_Unknown\42\ uk\41\:0:*/
-lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBNext(lb_I_Unknown* uk) {
+/*...slbErrCodes LB_STDCALL lbDatabasePanel\58\\58\lbDBNext\40\lb_I_Unknown\42\ uk\41\:0:*/
+lbErrCodes LB_STDCALL lbDatabasePanel::lbDBNext(lb_I_Unknown* uk) {
 	lbErrCodes err;
 	lbDBUpdate();
 
@@ -3163,8 +3163,8 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBNext(lb_I_Unknown* uk) {
 	return ERR_NONE;
 }
 /*...e*/
-/*...slbErrCodes LB_STDCALL lbDatabaseDialog\58\\58\lbDBPrev\40\lb_I_Unknown\42\ uk\41\:0:*/
-lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBPrev(lb_I_Unknown* uk) {
+/*...slbErrCodes LB_STDCALL lbDatabasePanel\58\\58\lbDBPrev\40\lb_I_Unknown\42\ uk\41\:0:*/
+lbErrCodes LB_STDCALL lbDatabasePanel::lbDBPrev(lb_I_Unknown* uk) {
 	lbDBUpdate();
 	lbErrCodes err;
 
@@ -3187,8 +3187,8 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBPrev(lb_I_Unknown* uk) {
 	return ERR_NONE;
 }
 /*...e*/
-/*...slbErrCodes LB_STDCALL lbDatabaseDialog\58\\58\lbDBLast\40\lb_I_Unknown\42\ uk\41\:0:*/
-lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBLast(lb_I_Unknown* uk) {
+/*...slbErrCodes LB_STDCALL lbDatabasePanel\58\\58\lbDBLast\40\lb_I_Unknown\42\ uk\41\:0:*/
+lbErrCodes LB_STDCALL lbDatabasePanel::lbDBLast(lb_I_Unknown* uk) {
 	lbDBUpdate();
 
 	if (sampleQuery->last() == ERR_DB_NODATA) {
@@ -3211,8 +3211,8 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBLast(lb_I_Unknown* uk) {
 }
 /*...e*/
 
-/*...slbErrCodes LB_STDCALL lbDatabaseDialog\58\\58\lbDBAdd\40\lb_I_Unknown\42\ uk\41\:0:*/
-lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBAdd(lb_I_Unknown* uk) {
+/*...slbErrCodes LB_STDCALL lbDatabasePanel\58\\58\lbDBAdd\40\lb_I_Unknown\42\ uk\41\:0:*/
+lbErrCodes LB_STDCALL lbDatabasePanel::lbDBAdd(lb_I_Unknown* uk) {
 	if (isAdding) {
 		isAdding = false;
 		if (noDataAvailable) {
@@ -3395,8 +3395,8 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBAdd(lb_I_Unknown* uk) {
 	return ERR_NONE;
 }
 /*...e*/
-/*...slbErrCodes LB_STDCALL lbDatabaseDialog\58\\58\lbDBDelete\40\lb_I_Unknown\42\ uk\41\:0:*/
-lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBDelete(lb_I_Unknown* uk) {
+/*...slbErrCodes LB_STDCALL lbDatabasePanel\58\\58\lbDBDelete\40\lb_I_Unknown\42\ uk\41\:0:*/
+lbErrCodes LB_STDCALL lbDatabasePanel::lbDBDelete(lb_I_Unknown* uk) {
 	//lbDBUpdate();
 
 	sampleQuery->remove();
@@ -3407,8 +3407,8 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBDelete(lb_I_Unknown* uk) {
 }
 /*...e*/
 
-/*...slbErrCodes LB_STDCALL lbDatabaseDialog\58\\58\OnActionButton\40\lb_I_Unknown\42\ uk\41\:0:*/
-lbErrCodes LB_STDCALL lbDatabaseDialog::OnActionButton(lb_I_Unknown* uk) {
+/*...slbErrCodes LB_STDCALL lbDatabasePanel\58\\58\OnActionButton\40\lb_I_Unknown\42\ uk\41\:0:*/
+lbErrCodes LB_STDCALL lbDatabasePanel::OnActionButton(lb_I_Unknown* uk) {
 	lbErrCodes err = ERR_NONE;
 	
 /*...sDoc:8:*/
@@ -3689,8 +3689,8 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::OnActionButton(lb_I_Unknown* uk) {
 }
 /*...e*/
 
-/*...svoid \9\\9\  lbDatabaseDialog\58\\58\OnDispatch\40\wxCommandEvent\38\ event \41\:0:*/
-void lbDatabaseDialog::OnDispatch(wxCommandEvent& event ) {
+/*...svoid \9\\9\  lbDatabasePanel\58\\58\OnDispatch\40\wxCommandEvent\38\ event \41\:0:*/
+void lbDatabasePanel::OnDispatch(wxCommandEvent& event ) {
         switch (event.GetId()) {
         default:
                 // Delegate all other events
@@ -3720,8 +3720,8 @@ void lbDatabaseDialog::OnDispatch(wxCommandEvent& event ) {
         }
 }
 /*...e*/
-/*...svoid\9\\9\  lbDatabaseDialog\58\\58\OnPaint\40\wxCommandEvent\38\ event \41\:0:*/
-void lbDatabaseDialog::OnPaint(wxCommandEvent& event ) {
+/*...svoid\9\\9\  lbDatabasePanel\58\\58\OnPaint\40\wxCommandEvent\38\ event \41\:0:*/
+void lbDatabasePanel::OnPaint(wxCommandEvent& event ) {
 
 	// Paint an object at the given control
 
@@ -3733,8 +3733,8 @@ void lbDatabaseDialog::OnPaint(wxCommandEvent& event ) {
 }
 /*...e*/
 
-/*...sint LB_STDCALL lbDatabaseDialog\58\\58\getPrimaryColumns\40\\41\:0:*/
-int LB_STDCALL lbDatabaseDialog::getPrimaryColumns()
+/*...sint LB_STDCALL lbDatabasePanel\58\\58\getPrimaryColumns\40\\41\:0:*/
+int LB_STDCALL lbDatabasePanel::getPrimaryColumns()
 {
 	/*
 	   Directly forward the request to the formular field information class.
@@ -3754,8 +3754,8 @@ int LB_STDCALL lbDatabaseDialog::getPrimaryColumns()
 	return PKColumns;
 }
 /*...e*/
-/*...sint LB_STDCALL lbDatabaseDialog\58\\58\getForeignColumns\40\char\42\ primaryTable\41\:0:*/
-int LB_STDCALL lbDatabaseDialog::getForeignColumns(char* primaryTable)
+/*...sint LB_STDCALL lbDatabasePanel\58\\58\getForeignColumns\40\char\42\ primaryTable\41\:0:*/
+int LB_STDCALL lbDatabasePanel::getForeignColumns(char* primaryTable)
 {
 	/*
 	   Directly forward the request to the formular field information class.
@@ -3772,25 +3772,419 @@ int LB_STDCALL lbDatabaseDialog::getForeignColumns(char* primaryTable)
 
 	int PKColumns = sampleQuery->getFKColumns();
 
-	_CL_LOG << "lbDatabaseDialog::getForeignColumns(...) returns " << PKColumns << " columns." LOG_
+	_CL_LOG << "lbDatabasePanel::getForeignColumns(...) returns " << PKColumns << " columns." LOG_
 	
 	return PKColumns;
 }
 /*...e*/
 	
-lb_I_String* LB_STDCALL lbDatabaseDialog::getPrimaryColumn(int pos)
+lb_I_String* LB_STDCALL lbDatabasePanel::getPrimaryColumn(int pos)
 {
 	return sampleQuery->getPKColumn(pos);
 }
 
-lb_I_String* LB_STDCALL lbDatabaseDialog::getForeignColumn(int pos)
+lb_I_String* LB_STDCALL lbDatabasePanel::getForeignColumn(int pos)
 {
 	return sampleQuery->getFKColumn(pos);
 }
 	   
-bool LB_STDCALL lbDatabaseDialog::isCharacterColumn(char* name)
+bool LB_STDCALL lbDatabasePanel::isCharacterColumn(char* name)
 {
 	return sampleQuery->getColumnType(name) == lb_I_Query::lbDBColumnChar;
+}
+/*...e*/
+
+/*...sclass lbPluginDatabasePanel implementation:0:*/
+/*...slbPluginDatabasePanel:0:*/
+class lbPluginDatabasePanel : public virtual lb_I_PluginImpl {
+public:
+	lbPluginDatabasePanel();
+	
+	virtual ~lbPluginDatabasePanel();
+
+/*...sfrom plugin interface:8:*/
+	void LB_STDCALL initialize();
+	
+	bool LB_STDCALL run();
+
+	lb_I_Unknown* LB_STDCALL peekImplementation();
+	lb_I_Unknown* LB_STDCALL getImplementation();
+	void LB_STDCALL releaseImplementation();
+/*...e*/
+
+	DECLARE_LB_UNKNOWN()
+	
+	UAP(lb_I_Unknown, dbForm, __FILE__, __LINE__)
+};
+
+BEGIN_IMPLEMENT_LB_UNKNOWN(lbPluginDatabasePanel)
+        ADD_INTERFACE(lb_I_PluginImpl)
+END_IMPLEMENT_LB_UNKNOWN()
+
+IMPLEMENT_FUNCTOR(instanceOflbPluginDatabasePanel, lbPluginDatabasePanel)
+
+/*...slbErrCodes LB_STDCALL lbPluginDatabasePanel\58\\58\setData\40\lb_I_Unknown\42\ uk\41\:0:*/
+lbErrCodes LB_STDCALL lbPluginDatabasePanel::setData(lb_I_Unknown* uk) {
+	lbErrCodes err = ERR_NONE;
+/*
+	UAP(lb_I_PluginImpl, pl, __FILE__, __LINE__)
+	QI(uk, lb_I_PluginImpl, pl, __FILE__, __LINE__)
+
+	dbForm = pl->getImplementation();
+*/
+
+	_CL_VERBOSE << "lbPluginDatabasePanel::setData(...) called.\n" LOG_
+
+	if (dbForm == NULL) {
+		_CL_VERBOSE << "ERROR: Cloning database form plugin without an instance to the form it self" LOG_
+	}
+
+        return ERR_NOT_IMPLEMENTED;
+}
+/*...e*/
+
+lbPluginDatabasePanel::lbPluginDatabasePanel() {
+	_CL_VERBOSE << "lbPluginDatabasePanel::lbPluginDatabasePanel() called.\n" LOG_
+	dbForm = NULL;
+	ref = STARTREF;
+}
+
+lbPluginDatabasePanel::~lbPluginDatabasePanel() {
+	_CL_VERBOSE << "lbPluginDatabasePanel::~lbPluginDatabasePanel() called.\n" LOG_
+}
+
+void LB_STDCALL lbPluginDatabasePanel::initialize() {
+}
+	
+bool LB_STDCALL lbPluginDatabasePanel::run() {
+	return true;
+}
+
+/*...slb_I_Unknown\42\ LB_STDCALL lbPluginDatabasePanel\58\\58\peekImplementation\40\\41\:0:*/
+lb_I_Unknown* LB_STDCALL lbPluginDatabasePanel::peekImplementation() {
+	lbErrCodes err = ERR_NONE;
+
+	if (dbForm == NULL) {
+		lbDatabasePanel* dbPanel = new lbDatabasePanel();
+		dbPanel->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+	
+		QI(dbPanel, lb_I_Unknown, dbForm, __FILE__, __LINE__)
+	} else {
+		_CL_VERBOSE << "lbPluginDatabasePanel::peekImplementation() Implementation already peeked.\n" LOG_
+	}
+	
+	return dbForm.getPtr();
+}
+/*...e*/
+/*...slb_I_Unknown\42\ LB_STDCALL lbPluginDatabasePanel\58\\58\getImplementation\40\\41\:0:*/
+lb_I_Unknown* LB_STDCALL lbPluginDatabasePanel::getImplementation() {
+	lbErrCodes err = ERR_NONE;
+
+	if (dbForm == NULL) {
+
+		_CL_VERBOSE << "Warning: peekImplementation() has not been used prior.\n" LOG_
+	
+		lbDatabasePanel* dbPanel = new lbDatabasePanel();
+		dbPanel->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+	
+		QI(dbPanel, lb_I_Unknown, dbForm, __FILE__, __LINE__)
+	}
+	
+	lb_I_Unknown* r = dbForm.getPtr();
+	dbForm == NULL;
+	return r;
+}
+/*...e*/
+void LB_STDCALL lbPluginDatabasePanel::releaseImplementation() {
+	lbErrCodes err = ERR_NONE;
+	
+	if (dbForm != NULL) {
+		UAP(lb_I_DatabaseForm, form, __FILE__, __LINE__)
+		QI(dbForm, lb_I_DatabaseForm, form, __FILE__, __LINE__)
+	
+		form->destroy();
+	}
+	
+}
+/*...e*/
+/*...e*/
+
+/*...slbDatabaseDialog:0:*/
+
+BEGIN_IMPLEMENT_LB_UNKNOWN(lbDatabaseDialog)
+        ADD_INTERFACE(lb_I_DatabaseForm)
+END_IMPLEMENT_LB_UNKNOWN()
+
+IMPLEMENT_FUNCTOR(instanceOflbDatabaseDialog, lbDatabaseDialog)
+
+
+/*...slbErrCodes LB_STDCALL lbDatabaseDialog\58\\58\setData\40\lb_I_Unknown\42\ uk\41\:0:*/
+lbErrCodes LB_STDCALL lbDatabaseDialog::setData(lb_I_Unknown* uk) {
+		lbErrCodes err = ERR_NONE;
+		
+        _CL_LOG << "lbDatabaseDialog::setData(...) not implemented yet" LOG_
+
+#ifdef bla
+		UAP(lb_I_DatabaseForm, dbForm, __FILE__, __LINE__)
+		QI(uk, lb_I_DatabaseForm, dbForm, __FILE__, __LINE__)
+		
+		fa = ((lbDatabaseDialog*) dbForm.getPtr())->fa;
+		((lbDatabaseDialog*) dbForm.getPtr())->fa = NULL;
+	
+#endif
+		
+        return ERR_NOT_IMPLEMENTED;
+}
+/*...e*/
+
+/*...slbDatabaseDialog\58\\58\lbDatabaseDialog\40\\41\:0:*/
+lbDatabaseDialog::lbDatabaseDialog() 
+	: wxDialog(NULL, -1, wxString(_T("Database dialog")), wxDefaultPosition,
+	wxDefaultSize, wxRESIZE_BORDER|wxDEFAULT_DIALOG_STYLE)
+{
+	_CL_LOG << "lbDatabaseDialog::lbDatabaseDialog() called." LOG_
+	ref = STARTREF;
+	panel = new lbDatabasePanel();
+}
+/*...e*/
+/*...slbDatabaseDialog\58\\58\\126\lbDatabaseDialog\40\\41\:0:*/
+lbDatabaseDialog::~lbDatabaseDialog() {
+	_CL_LOG << "lbDatabaseDialog::~lbDatabaseDialog() called." LOG_
+}
+/*...e*/
+
+/*...slbErrCodes LB_STDCALL lbDatabaseDialog\58\\58\registerEventHandler\40\lb_I_Dispatcher\42\ dispatcher\41\:0:*/
+lbErrCodes LB_STDCALL lbDatabaseDialog::registerEventHandler(lb_I_Dispatcher* dispatcher) {
+
+	char eventName[100] = "";
+	
+	sprintf(eventName, "%pDatabaseFirst", this);
+	dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDatabaseDialog::lbDBFirst, eventName);
+
+	sprintf(eventName, "%pDatabaseNext", this);
+	dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDatabaseDialog::lbDBNext,  eventName);
+
+	sprintf(eventName, "%pDatabasePrev", this);
+	dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDatabaseDialog::lbDBPrev,  eventName);
+
+	sprintf(eventName, "%pDatabaseLast", this);
+	dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDatabaseDialog::lbDBLast,  eventName);
+	
+	sprintf(eventName, "%pDatabaseAdd", this);
+	dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDatabaseDialog::lbDBAdd,  eventName);
+	
+	sprintf(eventName, "%pDatabaseDelete", this);
+	dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDatabaseDialog::lbDBDelete,  eventName);
+	
+	return ERR_NONE;
+}
+/*...e*/
+/*...svoid LB_STDCALL lbDatabaseDialog\58\\58\init\40\char\42\ SQLString\44\ char\42\ DBName\44\ char\42\ DBUser\44\ char\42\ DBPass\41\:0:*/
+void LB_STDCALL lbDatabaseDialog::init(char* _SQLString, char* DBName, char* DBUser, char* DBPass) {
+	char prefix[100] = "";
+	sprintf(prefix, "%p", this);
+
+	wxBoxSizer* sizerMain  = new wxBoxSizer(wxVERTICAL);
+
+	panel->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+
+	panel->Create(this, -1, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, "panel");
+
+	sizerMain->Add(panel, 1, wxEXPAND | wxALL, 5);
+
+	panel->init(_SQLString, DBName, DBUser, DBPass);
+
+	SetTitle(panel->getFormName());
+
+	SetAutoLayout(TRUE);
+		
+	SetSizer(sizerMain);
+
+	sizerMain->SetSizeHints(this);
+	sizerMain->Fit(this);
+	
+	Centre();
+}
+/*...e*/
+
+/*...slbErrCodes LB_STDCALL lbDatabaseDialog\58\\58\setName\40\char const \42\ name\44\ char const \42\ appention\41\:0:*/
+lbErrCodes LB_STDCALL lbDatabaseDialog::setName(char const * name, char const * appention) {
+
+	return panel->setName(name, appention);
+}
+/*...e*/
+
+/*...schar\42\ LB_STDCALL lbDatabaseDialog\58\\58\getQuery\40\\41\:0:*/
+char* LB_STDCALL lbDatabaseDialog::getQuery() {
+	return panel->getQuery();
+}
+/*...e*/
+/*...schar\42\ LB_STDCALL lbDatabaseDialog\58\\58\getColumnName\40\int pos\41\:0:*/
+char* LB_STDCALL lbDatabaseDialog::getColumnName(int pos) {
+	return panel->getColumnName(pos);
+}
+/*...e*/
+
+/*...svoid LB_STDCALL lbDatabaseDialog\58\\58\setMasterForm\40\lb_I_DatabaseMasterForm\42\ master\44\ lb_I_Parameter\42\ params\41\:0:*/
+void LB_STDCALL lbDatabaseDialog::setMasterForm(lb_I_DatabaseForm* master, lb_I_Parameter* params) {
+	panel->setMasterForm(master, params);
+}
+/*...e*/
+/*...svoid LB_STDCALL lbDatabaseDialog\58\\58\setDetailForm\40\lb_I_DatabaseMasterForm\42\ detail\44\ lb_I_Parameter\42\ params\41\:0:*/
+void LB_STDCALL lbDatabaseDialog::setDetailForm(lb_I_DatabaseForm* detail, lb_I_Parameter* params) {
+	panel->setDetailForm(detail, params);
+}
+/*...e*/
+
+/*...sint LB_STDCALL lbDatabaseDialog\58\\58\getControls\40\\41\:0:*/
+int LB_STDCALL lbDatabaseDialog::getControls() {
+	return panel->getControls();
+}
+/*...e*/
+/*...sconst char\42\ LB_STDCALL lbDatabaseDialog\58\\58\getControlValue\40\int pos\41\:0:*/
+const char* LB_STDCALL lbDatabaseDialog::getControlValue(int pos) {
+	return panel->getControlValue(panel->getColumnName(pos));
+}
+/*...e*/
+/*...sconst char\42\ LB_STDCALL lbDatabaseDialog\58\\58\getControlValue\40\char\42\ name\41\:0:*/
+const char* LB_STDCALL lbDatabaseDialog::getControlValue(char* name) {
+
+	wxString value;
+
+	value = panel->getControlValue(name);
+	
+	return value.c_str();
+}
+/*...e*/
+
+/*...svoid LB_STDCALL lbDatabaseDialog\58\\58\ignoreForeignKeys\40\char\42\ toTable\41\:0:*/
+void LB_STDCALL lbDatabaseDialog::ignoreForeignKeys(char* toTable) {
+	panel->ignoreForeignKeys(toTable);
+}
+/*...e*/
+
+/*...svoid LB_STDCALL lbDatabaseDialog\58\\58\updateFromMaster\40\\41\:0:*/
+void LB_STDCALL lbDatabaseDialog::updateFromMaster() {
+	panel->updateFromMaster();
+}
+/*...e*/
+
+/*...svoid LB_STDCALL lbDatabaseDialog\58\\58\updateFromDetail\40\\41\:0:*/
+void LB_STDCALL lbDatabaseDialog::updateFromDetail() {
+	panel->updateFromDetail();
+}
+/*...e*/
+
+/*...svoid LB_STDCALL lbDatabaseDialog\58\\58\setFilter\40\char\42\ filter\41\:0:*/
+void LB_STDCALL lbDatabaseDialog::setFilter(char* filter) {
+	panel->setFilter(filter);
+}
+/*...e*/
+
+/*...schar\42\ lbDatabaseDialog\58\\58\getTableName\40\char\42\ columnName\41\:0:*/
+char* lbDatabaseDialog::getTableName(char* columnName) {
+	return panel->getTableName(columnName);
+}
+/*...e*/
+
+/*...slbErrCodes LB_STDCALL lbDatabaseDialog\58\\58\lbDBClear\40\\41\:0:*/
+lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBClear() {
+	return panel->lbDBClear();
+}
+/*...e*/
+/*...slbErrCodes LB_STDCALL lbDatabaseDialog\58\\58\lbDBUpdate\40\\41\:0:*/
+lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBUpdate() {
+	return panel->lbDBUpdate();
+}
+/*...e*/
+/*...slbErrCodes LB_STDCALL lbDatabaseDialog\58\\58\lbDBRead\40\\41\:0:*/
+lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBRead() {
+	return panel->lbDBRead();
+}
+/*...e*/
+
+/*...slbErrCodes LB_STDCALL lbDatabaseDialog\58\\58\lbDBFirst\40\lb_I_Unknown\42\ uk\41\:0:*/
+lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBFirst(lb_I_Unknown* uk) {
+	return panel->lbDBFirst(uk);
+}
+/*...e*/
+/*...slbErrCodes LB_STDCALL lbDatabaseDialog\58\\58\lbDBNext\40\lb_I_Unknown\42\ uk\41\:0:*/
+lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBNext(lb_I_Unknown* uk) {
+	return panel->lbDBNext(uk);
+}
+/*...e*/
+/*...slbErrCodes LB_STDCALL lbDatabaseDialog\58\\58\lbDBPrev\40\lb_I_Unknown\42\ uk\41\:0:*/
+lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBPrev(lb_I_Unknown* uk) {
+	return panel->lbDBPrev(uk);
+}
+/*...e*/
+/*...slbErrCodes LB_STDCALL lbDatabaseDialog\58\\58\lbDBLast\40\lb_I_Unknown\42\ uk\41\:0:*/
+lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBLast(lb_I_Unknown* uk) {
+	return panel->lbDBLast(uk);
+}
+/*...e*/
+
+/*...slbErrCodes LB_STDCALL lbDatabaseDialog\58\\58\lbDBAdd\40\lb_I_Unknown\42\ uk\41\:0:*/
+lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBAdd(lb_I_Unknown* uk) {
+	return panel->lbDBAdd(uk);
+}
+/*...e*/
+/*...slbErrCodes LB_STDCALL lbDatabaseDialog\58\\58\lbDBDelete\40\lb_I_Unknown\42\ uk\41\:0:*/
+lbErrCodes LB_STDCALL lbDatabaseDialog::lbDBDelete(lb_I_Unknown* uk) {
+	return panel->lbDBDelete(uk);
+}
+/*...e*/
+
+/*...slbErrCodes LB_STDCALL lbDatabaseDialog\58\\58\OnActionButton\40\lb_I_Unknown\42\ uk\41\:0:*/
+lbErrCodes LB_STDCALL lbDatabaseDialog::OnActionButton(lb_I_Unknown* uk) {
+	return panel->OnActionButton(uk);
+}
+/*...e*/
+
+/*...svoid \9\\9\  lbDatabaseDialog\58\\58\OnDispatch\40\wxCommandEvent\38\ event \41\:0:*/
+void lbDatabaseDialog::OnDispatch(wxCommandEvent& event ) {
+	// Dispatcher should be called inside panel
+}
+/*...e*/
+/*...svoid\9\\9\  lbDatabaseDialog\58\\58\OnPaint\40\wxCommandEvent\38\ event \41\:0:*/
+void lbDatabaseDialog::OnPaint(wxCommandEvent& event ) {
+
+	// Paint an object at the given control
+
+
+
+
+
+
+}
+/*...e*/
+
+/*...sint LB_STDCALL lbDatabaseDialog\58\\58\getPrimaryColumns\40\\41\:0:*/
+int LB_STDCALL lbDatabaseDialog::getPrimaryColumns()
+{
+	return panel->getPrimaryColumns();
+}
+/*...e*/
+/*...sint LB_STDCALL lbDatabaseDialog\58\\58\getForeignColumns\40\char\42\ primaryTable\41\:0:*/
+int LB_STDCALL lbDatabaseDialog::getForeignColumns(char* primaryTable)
+{
+	return panel->getForeignColumns(primaryTable);
+}
+/*...e*/
+	
+lb_I_String* LB_STDCALL lbDatabaseDialog::getPrimaryColumn(int pos)
+{
+	return panel->getPrimaryColumn(pos);
+}
+
+lb_I_String* LB_STDCALL lbDatabaseDialog::getForeignColumn(int pos)
+{
+	return panel->getForeignColumn(pos);
+}
+	   
+bool LB_STDCALL lbDatabaseDialog::isCharacterColumn(char* name)
+{
+	return panel->isCharacterColumn(name);
 }
 /*...e*/
 

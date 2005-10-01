@@ -30,11 +30,16 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.21 $
+ * $Revision: 1.22 $
  * $Name:  $
- * $Id: lbDatabaseForm.h,v 1.21 2005/09/11 22:10:24 lollisoft Exp $
+ * $Id: lbDatabaseForm.h,v 1.22 2005/10/01 15:36:27 lollisoft Exp $
  *
  * $Log: lbDatabaseForm.h,v $
+ * Revision 1.22  2005/10/01 15:36:27  lollisoft
+ * Added lbDatabasePanel class. lbDatabaseForm now works with the
+ * panel implementation, so it may be possible to implement a tabbed
+ * layout.
+ *
  * Revision 1.21  2005/09/11 22:10:24  lollisoft
  * Better handling of inserting data on empty result set.
  * If the result set is empty, the navigation buttons are
@@ -446,27 +451,29 @@ private:
 };
 /*...e*/
 
-/*...sclass lbDatabaseDialog:0:*/
+/*...sclass lbDatabasePanel:0:*/
 /**
  * This is the sample database dialog for a wxWidgets based GUI.
  */
 
 
-class lbDatabaseDialog :
+class lbDatabasePanel :
 	public lb_I_DatabaseForm,
-	public wxDialog {
+	public wxPanel {
 public:
 	/**
-	 * Default constructor - implemented in BEGIN_IMPLEMENT_LB_UNKNOWN(lbDatabaseDialog)
+	 * Default constructor - implemented in BEGIN_IMPLEMENT_LB_UNKNOWN(lbDatabasePanel)
 	 */
-	lbDatabaseDialog();
+	lbDatabasePanel();
 
 	/**
 	 * Destructor
 	 */
-	virtual ~lbDatabaseDialog();
+	virtual ~lbDatabasePanel();
 
 	lbErrCodes LB_STDCALL setName(char const * name, char const * appention);
+
+	char*	   LB_STDCALL getFormName() { return formName; }
 
 	lbErrCodes LB_STDCALL addButton(char* buttonText, char* evHandler, int x, int y, int w, int h) { return ERR_NONE; };
 	lbErrCodes LB_STDCALL addLabel(char* text, int x, int y, int w, int h) { return ERR_NONE; };
@@ -675,6 +682,174 @@ public:
 };
 /*...e*/
 
+/*...sclass lbDatabaseDialog:0:*/
+class lbDatabaseDialog :
+	public lb_I_DatabaseForm,
+	public wxDialog {
+public:
+	/**
+	 * Default constructor - implemented in BEGIN_IMPLEMENT_LB_UNKNOWN(lbDatabasePanel)
+	 */
+	lbDatabaseDialog();
+
+	/**
+	 * Destructor
+	 */
+	virtual ~lbDatabaseDialog();
+
+	lbErrCodes LB_STDCALL setName(char const * name, char const * appention);
+
+	lbErrCodes LB_STDCALL addButton(char* buttonText, char* evHandler, int x, int y, int w, int h) { return ERR_NONE; };
+	lbErrCodes LB_STDCALL addLabel(char* text, int x, int y, int w, int h) { return ERR_NONE; };
+	lbErrCodes LB_STDCALL addTextField(char* name, int x, int y, int w, int h) { return ERR_NONE; };
+
+	lbErrCodes LB_STDCALL addOwnerDrawn(char* name, int x, int y, int w, int h) { return ERR_NONE; };
+
+	void LB_STDCALL show() { Show (TRUE); };
+	void LB_STDCALL destroy() { Destroy(); };
+	
+/*...sfrom DatabaseForm interface:8:*/
+	void LB_STDCALL init(char* SQLString, char* DBName, char* DBUser, char* DBPass);
+
+	char* LB_STDCALL getQuery();
+
+	void LB_STDCALL setFilter(char* filter);
+	
+	const char* LB_STDCALL getControlValue(char* name);
+	
+/*...e*/
+
+	void LB_STDCALL setMasterForm(lb_I_DatabaseForm* master, lb_I_Parameter* params);
+
+	void LB_STDCALL setDetailForm(lb_I_DatabaseForm* master, lb_I_Parameter* params);
+	
+	void LB_STDCALL updateFromMaster();
+	
+	void LB_STDCALL updateFromDetail();
+
+	int LB_STDCALL getPrimaryColumns();
+	
+	const char* LB_STDCALL getControlValue(int pos);
+	int LB_STDCALL getControls();
+	
+	lb_I_String* LB_STDCALL getPrimaryColumn(int pos);
+	   
+	int LB_STDCALL getForeignColumns(char* primaryTable);
+	
+	lb_I_String* LB_STDCALL getForeignColumn(int pos);
+	   
+	bool LB_STDCALL isCharacterColumn(char* name);
+
+	void LB_STDCALL ignoreForeignKeys(char* toTable);
+
+	char* LB_STDCALL getTableName(char* columnName);
+	
+	char* LB_STDCALL getColumnName(int pos);
+
+/*...sData navigation and other handlers:8:*/
+	/**
+	 * Database navigation
+	 * 
+	 * Moves to the first row.
+	 */
+	lbErrCodes LB_STDCALL lbDBFirst(lb_I_Unknown* uk);
+
+	/**
+	 * Database navigation
+	 * 
+	 * Moves to the next row.
+	 */
+	lbErrCodes LB_STDCALL lbDBNext(lb_I_Unknown* uk);
+
+	/**
+	 * Database navigation
+	 * 
+	 * Moves to the previous row.
+	 */
+	lbErrCodes LB_STDCALL lbDBPrev(lb_I_Unknown* uk);
+
+	/**
+	 * Database navigation
+	 * 
+	 * Moves to the last row.
+	 */
+	lbErrCodes LB_STDCALL lbDBLast(lb_I_Unknown* uk);
+	
+	/**
+	 * Database manipulation
+	 * 
+	 * This adds a new row, while it copies the values of the actual form into the row.
+	 */
+	lbErrCodes LB_STDCALL lbDBAdd(lb_I_Unknown* uk);
+
+	/**
+	 * Database manipulation
+	 * 
+	 * Deletes the current row.
+	 */
+	lbErrCodes LB_STDCALL lbDBDelete(lb_I_Unknown* uk);
+
+	/**
+	 * Database manipulation
+	 * 
+	 * Internally used to update the current row.
+	 */
+	lbErrCodes LB_STDCALL lbDBUpdate();
+
+	/**
+	 * Database manipulation
+	 *
+	 * Clear the form.
+	 */
+
+	lbErrCodes LB_STDCALL lbDBClear();
+
+	/**
+	 * Database manipulation
+	 * 
+	 * Internally used to read data from the cursor to the current row.
+	 */
+	lbErrCodes LB_STDCALL lbDBRead();
+/*...e*/
+
+/*...sfrom EventHandler interface:8:*/
+	/**
+	 * This function acts in a special way for registering the above navigation handlers
+	 *
+	 * It uses a string of the this pointer + a name for the respective eventhandler.
+	 * This is neccessary for handling more than one database dialog per application.
+	 *
+	 * This is a good sample, if you need to be able to handle more than one instance of
+	 * your registered event handlers.
+	 */
+	lbErrCodes LB_STDCALL registerEventHandler(lb_I_Dispatcher* dispatcher);
+/*...e*/
+
+	/** \brief Handler for button actions
+	 *
+	 * This handler should be used if a button action will be added to the form.
+	 */
+	lbErrCodes LB_STDCALL OnActionButton(lb_I_Unknown* uk);
+
+	void OnDispatch(wxCommandEvent& event);
+
+	/** \brief Paint the control.
+	 *
+	 * This handler should be used to paint an 'ownerdrawn' control.
+	 * As in my Power++ code 'EditSymbol', this should also work under
+	 * wxWidgets.
+	 *
+	 * The only problem would be the selection of which control currently
+	 * fires the event. 'EditSymbol' only handles one such control.
+	 */
+	void OnPaint(wxCommandEvent& event);
+
+	DECLARE_LB_UNKNOWN()
+
+	lbDatabasePanel* panel;
+};
+/*...e*/
+
 
 #ifdef __cplusplus
 extern "C" {
@@ -682,6 +857,8 @@ extern "C" {
 
 DECLARE_SINGLETON_FUNCTOR(instanceOfPluginModule)
 
+DECLARE_FUNCTOR(instanceOflbDatabasePanel)
+DECLARE_FUNCTOR(instanceOflbPluginDatabasePanel)
 DECLARE_FUNCTOR(instanceOflbDatabaseDialog)
 DECLARE_FUNCTOR(instanceOflbPluginDatabaseDialog)
 DECLARE_FUNCTOR(instanceOflbAction)
