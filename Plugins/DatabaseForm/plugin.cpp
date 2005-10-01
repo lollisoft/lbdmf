@@ -116,7 +116,8 @@ END_IMPLEMENT_LB_UNKNOWN()
 IMPLEMENT_SINGLETON_FUNCTOR(instanceOfPluginModule, lbPluginModuleDatabaseForm)
 
 BEGIN_PLUGINS(lbPluginModuleDatabaseForm)
-	ADD_PLUGIN(lbPluginDatabaseDialog, GUI)
+	ADD_PLUGIN(lbPluginDatabaseDialog, GUIDialog)
+	ADD_PLUGIN(lbPluginDatabasePanel, GUIPanel)
 END_PLUGINS()
 
 //	ADD_PLUGIN(lbOwnerDrawControl, GUI)
