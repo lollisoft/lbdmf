@@ -120,7 +120,12 @@ void LB_STDCALL lbLocale::translate(char ** text, char const * to_translate) {
 	if (!lbDMFUser) lbDMFUser = "dba";
 	if (!lbDMFPasswd) lbDMFPasswd = "trainres";
 
-	database->connect("lbDMF", lbDMFUser, lbDMFPasswd);
+	if (database->connect("lbDMF", lbDMFUser, lbDMFPasswd) != ERR_NONE) {
+		*text = (char*) realloc(*text, strlen(to_translate) + 1);
+		*text[0] = 0;
+		strcpy(*text, to_translate);
+		return;
+	}
 
 	UAP(lb_I_Query, sampleQuery, __FILE__, __LINE__)
 
