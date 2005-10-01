@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.91 2005/09/11 19:07:48 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.92 2005/10/01 10:12:12 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.91 $
+ * $Revision: 1.92 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.91 2005/09/11 19:07:48 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.92 2005/10/01 10:12:12 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.92  2005/10/01 10:12:12  lollisoft
+ * Added functions for layout modes.
+ *
  * Revision 1.91  2005/09/11 19:07:48  lollisoft
  * Missing registerDBForm when compiled without wxWrapperDLL.
  *
@@ -1137,7 +1140,22 @@ public:
 
 	lbErrCodes LB_STDCALL cleanup();
 
-
+	/**
+	 * \brief Set presentation mode.
+	 *
+	 * This function set's wether the application uses wxNotebooks to show
+	 * database forms inside (lb_Database_Panel) or uses dialog based forms.
+	 */
+	void	LB_STDCALL setNotebookMode(bool mode = TRUE);
+	
+	/**
+	 * \brief Get presentation mode.
+	 *
+	 * Returns true, if the mode is notebook and false if it is dialog mode.
+	 */
+	bool	LB_STDCALL isNotebookMode();
+	
+	bool _NotebookMode;
 
         int eventCount;
         
