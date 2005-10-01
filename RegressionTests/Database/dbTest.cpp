@@ -276,6 +276,21 @@ int main(int argc, char *argv[]) {
 			break;
 	}
 
+	database->connect("snort", "snort", "Muffin.345");
+	
+	UAP(lb_I_Query, query4, __FILE__, __LINE__)
+
+	query4 = database->getQuery(0);
+
+	char userQuery[1000] = "";
+	
+	cout << "Please enter your SQL query: ";
+	cin.getline(userQuery, sizeof(userQuery));
+
+//	query4->skipFKCollecting();	
+	query4->query(userQuery);
+	
+	query4->PrintData();
 }
 
         return 0;
