@@ -148,6 +148,7 @@ public:
 	int 		LB_STDCALL getColumnIndex(char* name);
 
 	void		LB_STDCALL setUpdateable(char* column, bool updateable);
+	bool		LB_STDCALL getUpdateable(char* column);
 		
 	int LB_STDCALL getArraySize() { return ArraySize; }
 
@@ -272,6 +273,7 @@ public:
 	virtual lb_I_Query::lbDBColumnTypes LB_STDCALL getColumnType(char* name);
 
 	void               LB_STDCALL setUpdateable(char* column, bool updateable = false);
+	bool               LB_STDCALL getUpdateable(char* column);
         
         /* Navigation */
         virtual lbErrCodes	LB_STDCALL first();
@@ -415,7 +417,9 @@ public:
 	virtual lbErrCodes LB_STDCALL getAsString(lb_I_String* result, int asParameter = 0);
 	virtual lbErrCodes LB_STDCALL setFromString(lb_I_String* set, int mode);
 
-	void 		   LB_STDCALL setUpdateable(bool updateable);
+	void		LB_STDCALL checkReadonly(int column);
+	void		LB_STDCALL setUpdateable(bool updateable);
+	bool		LB_STDCALL getUpdateable() { return isUpdateable; }
 
 	lb_I_String* LB_STDCALL getColumnName();
 
@@ -716,6 +720,40 @@ void LB_STDCALL lbBoundColumns::setUpdateable(char* column, bool updateable) {
 	}
 }
 /*...e*/
+bool LB_STDCALL lbBoundColumns::getUpdateable(char* column) {
+	lbErrCodes err = ERR_NONE;
+	if (boundColumns != NULL) {
+		UAP_REQUEST(manager.getPtr(), lb_I_String, stringKey) 
+		stringKey->setData(column);
+		UAP(lb_I_Unknown, ukdata, __FILE__, __LINE__)
+		UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
+		
+		QI(stringKey, lb_I_KeyBase, key, __FILE__, __LINE__)
+
+		ukdata = ColumnNameMapping->getElement(&key);
+		if (ukdata == NULL) printf("NULL pointer!\n");
+
+		UAP(lb_I_Integer, pos, __FILE__, __LINE__)
+		
+		lbErrCodes err = ukdata->queryInterface("lb_I_Integer", (void**) &pos, __FILE__, __LINE__);
+		
+		UAP_REQUEST(manager.getPtr(), lb_I_Integer, integerKey) 
+		integerKey->setData(pos.getPtr());
+		UAP(lb_I_Unknown, ukdata1, __FILE__, __LINE__)
+		UAP(lb_I_KeyBase, key1, __FILE__, __LINE__)
+		
+		QI(integerKey, lb_I_KeyBase, key1, __FILE__, __LINE__)
+
+		ukdata1 = boundColumns->getElement(&key1);
+		if (ukdata1 == NULL) printf("NULL pointer!\n");
+
+		UAP(lb_I_BoundColumn, bc, __FILE__, __LINE__)
+		err = ukdata1->queryInterface("lb_I_BoundColumn", (void**) &bc, __FILE__, __LINE__);
+
+		return bc->getUpdateable();
+	}
+	return false;
+}
 /*...slb_I_BoundColumn\42\ LB_STDCALL lbBoundColumns\58\\58\getBoundColumn\40\int column\41\:0:*/
 lb_I_BoundColumn* LB_STDCALL lbBoundColumns::getBoundColumn(int column) {
 	lbErrCodes err = ERR_NONE;
@@ -2033,6 +2071,9 @@ void LB_STDCALL lbQuery::setUpdateable(char* column, bool updateable) {
 	if (boundColumns.getPtr() != NULL) boundColumns->setUpdateable(column, updateable);
 }
 /*...e*/
+bool LB_STDCALL lbQuery::getUpdateable(char* column) {
+	return boundColumns->getUpdateable(column);
+}
 /*...schar\42\ LB_STDCALL lbQuery\58\\58\getColumnName\40\int col\41\:0:*/
 char lbQuery_column_Name[100] = "";
 
@@ -2737,6 +2778,9 @@ lb_I_Query::lbDBColumnTypes LB_STDCALL lbBoundColumn::getType() {
 			
 		case SQL_INTEGER: 
 			return lb_I_Query::lbDBColumnInteger;
+
+		case SQL_BIGINT: 
+			return lb_I_Query::lbDBColumnBigInteger;
 			
 		case SQL_BINARY:
 			return lb_I_Query::lbDBColumnBinary;
@@ -2823,6 +2867,14 @@ lbErrCodes LB_STDCALL lbBoundColumn::getAsString(lb_I_String* result, int asPara
 	        case SQL_BINARY:
 	        	_CL_VERBOSE << "lbBoundColumn::getAsString(...) failed: Binary data not supported for column '" << colName->charrep() << "'" LOG_
 	        	break;
+		case SQL_BIGINT:
+			{
+				char charrep[100] = "";
+				lltoa(*(long long*) buffer, charrep, 10);
+				//sprintf(charrep, "%Ld", *(long long*) buffer);
+				result->setData(charrep);
+			}
+			break;
 	        case SQL_INTEGER:
 			{
 	        		char charrep[100] = "";
@@ -2889,6 +2941,18 @@ lbErrCodes LB_STDCALL lbBoundColumn::setFromString(lb_I_String* set, int mode) {
 					l = atol(set->getData());
 					
 					long* pl = (long*) buffer;
+					
+					void* b = pl+1;
+					
+					memcpy(b, &l, sizeof(l));
+				}
+				break;
+			case SQL_BIGINT:
+				{
+					long long l = 0;
+					l = atoll(set->getData());
+					
+					long long* pl = (long long*) buffer;
 					
 					void* b = pl+1;
 					
@@ -2990,6 +3054,44 @@ lbErrCodes LB_STDCALL lbBoundColumn::prepareBoundColumn(lb_I_Query* q, int colum
 	return err;
 }
 /*...e*/
+/*...svoid       LB_STDCALL lbBoundColumn\58\\58\checkReadonly\40\int column\41\:0:*/
+void       LB_STDCALL lbBoundColumn::checkReadonly(int column)
+	{// Check for any type of readonly column	
+		SQLHSTMT	StatementHandle;
+		SQLUSMALLINT	ColumnNumber;
+		SQLUSMALLINT	FieldIdentifier;
+		SQLPOINTER	CharacterAttributePtr;
+		SQLSMALLINT	BufferLength;
+		SQLSMALLINT	StringLengthPtr = 0;
+		SQLPOINTER	NumericAttributePtr;
+		
+		SQLINTEGER	Int = 0;
+		
+		CharacterAttributePtr = (void*) malloc(101);
+		memset(CharacterAttributePtr, 0, 101);
+		
+		SQLRETURN retcode;
+		
+		retcode = SQLColAttribute(
+				  hstmt,
+				  column, 
+				  SQL_DESC_UPDATABLE,
+				  CharacterAttributePtr,
+				  100,
+				  &StringLengthPtr,
+				  &Int ); 
+			
+		if ((retcode == SQL_ERROR) || (retcode == SQL_SUCCESS_WITH_INFO)) {
+			_CL_LOG << "ERROR: SQLColAttribute(...) failed." LOG_
+		}
+		
+		setUpdateable(true);
+		
+		if (Int == SQL_ATTR_READONLY) {
+			setUpdateable(false);
+		}
+	}	
+/*...e*/
 /*...slbErrCodes LB_STDCALL lbBoundColumn\58\\58\bindColumn\40\lbQuery\42\ q\44\ int column\44\ bool ro\41\:0:*/
 lbErrCodes LB_STDCALL lbBoundColumn::bindColumn(lb_I_Query* q, int column, bool ro) {
 	hstmt = ((lbQuery*) q)->getCurrentStatement();
@@ -3035,7 +3137,8 @@ lbErrCodes LB_STDCALL lbBoundColumn::bindColumn(lb_I_Query* q, int column, bool 
 	}
 	
 	colName->setData((char*) ColumnName);
-	
+
+	checkReadonly(column);	
 
 	switch (DataType) {
 		case SQL_DATE:
@@ -3119,6 +3222,19 @@ lbErrCodes LB_STDCALL lbBoundColumn::bindColumn(lb_I_Query* q, int column, bool 
 			bound = 1;
 			memset(buffer, 0, sizeof(long)*rows);
 			SQLBindCol(hstmt, column, DataType, buffer, sizeof(long), &cbBufferLength);
+			if (ret != SQL_SUCCESS) {
+			        printf("Error while binding a column!\n");
+			        q->dbError("SQLBindCol()");
+			}
+/*...e*/
+			break;
+		case SQL_BIGINT:
+/*...sbind an big integer:24:*/
+			buffer = malloc((sizeof(long long))*rows);
+			_DataType = DataType;
+			bound = 1;
+			memset(buffer, 0, sizeof(long long)*rows);
+			ret = SQLBindCol(hstmt, column, SQL_C_DEFAULT, buffer, sizeof(long long), &cbBufferLength);
 			if (ret != SQL_SUCCESS) {
 			        printf("Error while binding a column!\n");
 			        q->dbError("SQLBindCol()");
@@ -3307,6 +3423,19 @@ void LB_STDCALL lbBoundColumn::unbindReadonlyColumns() {
 			}
 /*...e*/
 			break;
+		case SQL_BIGINT:
+			_CL_VERBOSE << "Unbind big integer" LOG_
+/*...sbind an big integer:40:*/
+			bound = 0;
+
+			SQLBindCol(hstmt, _column, _DataType, NULL, sizeof(long long), &cbBufferLength);
+
+			if (ret != SQL_SUCCESS) {
+			        printf("Error while binding a column!\n");
+			        query->dbError("SQLBindCol()");
+			}
+/*...e*/
+			break;
 		case SQL_BIT:
 		case SQL_TINYINT:
 			_CL_VERBOSE << "Unbind bit" LOG_
@@ -3378,6 +3507,19 @@ void LB_STDCALL lbBoundColumn::rebindReadonlyColumns() {
 			bound = 1;
 
 			SQLBindCol(hstmt, _column, _DataType, buffer, sizeof(long), &cbBufferLength);
+
+			if (ret != SQL_SUCCESS) {
+			        printf("Error while binding a column!\n");
+			        query->dbError("SQLBindCol()");
+			}
+/*...e*/
+			break;
+		case SQL_BIGINT:
+			_CL_VERBOSE << "Rebind big integer" LOG_
+/*...sbind an big integer:40:*/
+			bound = 1;
+
+			SQLBindCol(hstmt, _column, _DataType, buffer, sizeof(long long), &cbBufferLength);
 
 			if (ret != SQL_SUCCESS) {
 			        printf("Error while binding a column!\n");
@@ -3669,8 +3811,6 @@ lbErrCodes LB_STDCALL lbDatabase::connect(char* DSN, char* user, char* passwd) {
 	    }
 	    	
 	} else {
-	
-
 	    _CL_VERBOSE << "SQLAllocConnect(henv, &hdbc);" LOG_
 
 	    retcode = SQLAllocConnect(henv, &hdbc); /* Connection handle */
@@ -3690,16 +3830,14 @@ lbErrCodes LB_STDCALL lbDatabase::connect(char* DSN, char* user, char* passwd) {
 
 	    QI(c, lb_I_Unknown, uk, __FILE__, __LINE__)
 	    
-	    connPooling->insert(&uk, &key);
-	
 	    _CL_VERBOSE << "SQLSetConnectOption(hdbc, SQL_LOGIN_TIMEOUT, 15);" LOG_
 	    retcode = SQLSetConnectOption(hdbc, SQL_LOGIN_TIMEOUT, 15); /* Set login timeout to 15 seconds. */
 
             if (retcode != SQL_SUCCESS)
             {
-                    _dbError( "SQLSetConnectOption()",henv,hdbc,0);
-                    SQLFreeEnv(henv);
-                    return ERR_DB_CONNECT;
+                _dbError( "SQLSetConnectOption()",henv,hdbc,0);
+                SQLFreeEnv(henv);
+                return ERR_DB_CONNECT;
             }
 
 	    _CL_VERBOSE << "SQLSetConnectAttr(hdbc, SQL_ATTR_ODBC_CURSORS, SQL_CUR_USE_IF_NEEDED, 0);" LOG_
@@ -3737,6 +3875,8 @@ lbErrCodes LB_STDCALL lbDatabase::connect(char* DSN, char* user, char* passwd) {
 	        SQLFreeEnv(henv);
 	        return ERR_DB_CONNECT;
 	    }
+	    
+	    connPooling->insert(&uk, &key);
         }
 
 	return ERR_NONE;
