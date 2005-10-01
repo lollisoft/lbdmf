@@ -207,7 +207,7 @@ public:
 
 			box->Append(wxString(s1->charrep()));
 
-			while (TRUE) {
+			while (err == ERR_NONE) {
 				lbErrCodes err = sampleQuery->next();
 				
 				if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
@@ -216,11 +216,11 @@ public:
 					box->Append(wxString(s1->charrep()));
 					
 					if (err == WARN_DB_NODATA) {
-						box->SetSelection(0);
 						break;
 					}
 				}
 			}
+			box->SetSelection(0);
 		}
 
 		sizerMain->Fit(this);
