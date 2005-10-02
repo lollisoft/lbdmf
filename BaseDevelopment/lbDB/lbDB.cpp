@@ -2870,7 +2870,15 @@ lbErrCodes LB_STDCALL lbBoundColumn::getAsString(lb_I_String* result, int asPara
 		case SQL_BIGINT:
 			{
 				char charrep[100] = "";
+				#ifdef WINDOWS
 				lltoa(*(long long*) buffer, charrep, 10);
+				#endif
+				#ifdef LINUX
+				sprintf(charrep, "%I64d", *(long long*) buffer);
+				#endif
+				#ifdef OSX
+				sprintf(charrep, "%I64d", *(long long*) buffer);
+				#endif
 				//sprintf(charrep, "%Ld", *(long long*) buffer);
 				result->setData(charrep);
 			}
