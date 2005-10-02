@@ -33,11 +33,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.3 $
+ * $Revision: 1.4 $
  * $Name:  $
- * $Id: wxWrapperDLL.h,v 1.3 2005/10/01 21:50:49 lollisoft Exp $
+ * $Id: wxWrapperDLL.h,v 1.4 2005/10/02 16:51:48 lollisoft Exp $
  *
  * $Log: wxWrapperDLL.h,v $
+ * Revision 1.4  2005/10/02 16:51:48  lollisoft
+ * New wxNotebook layout completed. Not yet changeable at runtime, but it works.
+ *
  * Revision 1.3  2005/10/01 21:50:49  lollisoft
  * Begin using panel based dialogs. Fails creating under Windows.
  * (wxWindowBase::SetName routed to wrong function ??)
@@ -208,7 +211,9 @@ public:
                 sampleQuery = NULL;
                 handlersInitialized = FALSE;
                 frame = NULL;
+                notebook = NULL;
 		dialog = NULL;
+		sizerMain = NULL;
 		
 		// Use lbDatabasePanel
 		panelUsage = true;
@@ -348,6 +353,8 @@ public:
 
 	lb_I_DatabaseForm* LB_STDCALL findDBForm(char* name);
 
+	void LB_STDCALL showForm(char* name);
+
 	/*
 	 * Cleanup. This will destroy all possible (hidden) dialogs.
 	 * These dialogs are like the database form sample dialog, wich woild
@@ -370,6 +377,7 @@ public:
         bool panelUsage;
         lb_I_DatabaseForm* dialog;
         wxNotebook* notebook;
+	wxBoxSizer* sizerMain;
 
         // The frame has the main dispatcher and is a wxEventHandler subclass
         lb_wxFrame* frame;

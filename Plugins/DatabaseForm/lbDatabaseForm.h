@@ -30,11 +30,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.22 $
+ * $Revision: 1.23 $
  * $Name:  $
- * $Id: lbDatabaseForm.h,v 1.22 2005/10/01 15:36:27 lollisoft Exp $
+ * $Id: lbDatabaseForm.h,v 1.23 2005/10/02 16:51:48 lollisoft Exp $
  *
  * $Log: lbDatabaseForm.h,v $
+ * Revision 1.23  2005/10/02 16:51:48  lollisoft
+ * New wxNotebook layout completed. Not yet changeable at runtime, but it works.
+ *
  * Revision 1.22  2005/10/01 15:36:27  lollisoft
  * Added lbDatabasePanel class. lbDatabaseForm now works with the
  * panel implementation, so it may be possible to implement a tabbed
@@ -481,6 +484,9 @@ public:
 
 	lbErrCodes LB_STDCALL addOwnerDrawn(char* name, int x, int y, int w, int h) { return ERR_NONE; };
 
+	void LB_STDCALL create(int parentId);
+	int  LB_STDCALL getId() { return GetId(); }
+
 	void LB_STDCALL show() { Show (TRUE); };
 	void LB_STDCALL destroy() { Destroy(); };
 	
@@ -704,6 +710,9 @@ public:
 	lbErrCodes LB_STDCALL addTextField(char* name, int x, int y, int w, int h) { return ERR_NONE; };
 
 	lbErrCodes LB_STDCALL addOwnerDrawn(char* name, int x, int y, int w, int h) { return ERR_NONE; };
+
+	void LB_STDCALL create(int parentId);
+	int  LB_STDCALL getId() { return GetId(); }
 
 	void LB_STDCALL show() { Show (TRUE); };
 	void LB_STDCALL destroy() { Destroy(); };

@@ -837,7 +837,16 @@ lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::createDBForm(char* formName, char* query
 	// Locate the form instance in the container
 
 	if (panelUsage) {
-		notebook = new wxNotebook(frame, -1);
+		if (!notebook) {
+			notebook = new wxNotebook(frame, -1);
+			sizerMain = new wxBoxSizer(wxVERTICAL);
+			
+			frame->SetAutoLayout(TRUE);
+	
+			sizerMain->Add(notebook, 1, wxEXPAND | wxALL, 0);
+	
+			frame->SetSizer(sizerMain);
+		}
 	}
 	
 	UAP(lb_I_DatabaseForm, _dialog, __FILE__, __LINE__)
@@ -930,20 +939,35 @@ lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::createDBForm(char* formName, char* query
 		_dialog->setName(formName);
 
 		if (panelUsage) {
-			((wxPanel*) _dialog.getPtr())->Create(frame, -1, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, "Database Panel");
+			_dialog->create(notebook->GetId());
 		}
 		
 		_dialog->init(queryString, DBName, DBUser, DBPass);
 		
+		if (panelUsage) {
+			wxWindow* w = frame->FindWindowById(_dialog->getId());
+			notebook->AddPage(w, formName, true);
+			notebook->Show(true);
+		
+			sizerMain->SetSizeHints(frame);
+			sizerMain->Fit(frame);
+		
+			frame->Centre();
+		}
+	
+	} else {
+		if (panelUsage) {
+			int num = notebook->GetPageCount();
+			for (int i = 0; i < num; i++) {
+				if (strcmp(notebook->GetPageText(i).c_str(), formName) == 0) {
+					notebook->SetSelection(i);
+				}
+			}
+		}
 	}
 /*...e*/
 
 	_dialog++;
-	
-	if (panelUsage) {
-		wxWindow* w = ((wxWindow*)_dialog.getPtr());
-		notebook->AddPage(w, formName, true);
-	}
 	
 	return _dialog.getPtr();
 }
@@ -1026,6 +1050,7 @@ lbErrCodes LB_STDCALL lb_wxGUI::msgBox(char* windowTitle, char* msg) {
         return ERR_NONE;
 }
 /*...e*/
+/*...slb_I_DatabaseForm\42\ LB_STDCALL lb_wxGUI\58\\58\findDBForm\40\char\42\ name\41\:0:*/
 lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::findDBForm(char* name) {
 	lbErrCodes err = ERR_NONE;
 	
@@ -1050,7 +1075,21 @@ lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::findDBForm(char* name) {
 	w++;
 	return w.getPtr();
 }
-
+/*...e*/
+void LB_STDCALL lb_wxGUI::showForm(char* name) {
+	if (panelUsage) {
+		int num = notebook->GetPageCount();
+		for (int i = 0; i < num; i++) {
+		        if (strcmp(notebook->GetPageText(i).c_str(), name) == 0) {
+	                        notebook->SetSelection(i);
+	                }
+	        }
+	} else {
+		lb_I_DatabaseForm* f = findDBForm(name);
+		
+		if (f) f->show();
+	}
+}
 void LB_STDCALL lb_wxGUI::registerDBForm(char* formName, lb_I_DatabaseForm* form) {
 
 }

@@ -145,7 +145,10 @@ public:
 	lbOwnerDrawControl();
 	
 	virtual ~lbOwnerDrawControl();
-	
+
+	void LB_STDCALL create(int parentId) { }
+	int  LB_STDCALL getId() { return GetId(); }
+
 	void LB_STDCALL init(lb_I_Window* parent);
 	
 	void OnPaint(wxPaintEvent &event);
@@ -181,6 +184,9 @@ lbErrCodes LB_STDCALL lbOwnerDrawControl::setData(lb_I_Unknown* uk) {
 }
 
 void LB_STDCALL lbOwnerDrawControl::init(lb_I_Window* parent) {
+	
+	// Not sure, if it is a panel based dialog or a dialog.
+
 	lbDatabasePanel* p = (lbDatabasePanel*) parent;
 	Create(p, -1, wxPoint(), wxSize(40,40)); 
 }
@@ -582,7 +588,7 @@ void LB_STDCALL lbDetailFormAction::openDetailForm(lb_I_String* formularname, lb
 		detailForm->setMasterForm(f, *&params);
 		
 		detailForm->updateFromMaster();
-		detailForm->show();	
+		gui->showForm(formularname->charrep());	
 	} else {
 		UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
 		UAP(lb_I_GUI, gui, __FILE__, __LINE__)
@@ -760,7 +766,7 @@ void LB_STDCALL lbDetailFormAction::openDetailForm(lb_I_String* formularname, lb
 						
 						// Get the related table for the source field
 						
-						form->show();
+						gui->showForm(formularname->charrep());
 						form++;
 					}
 /*...e*/
@@ -922,7 +928,7 @@ void LB_STDCALL lbMasterFormAction::openMasterForm(lb_I_String* formularname, lb
 		masterForm->setDetailForm(f, *&params);
 		
 		masterForm->updateFromDetail();
-		masterForm->show();	
+		gui->showForm(formularname->charrep());
 	} else {
 		UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
 		UAP(lb_I_GUI, gui, __FILE__, __LINE__)
@@ -1072,6 +1078,7 @@ void LB_STDCALL lbMasterFormAction::openMasterForm(lb_I_String* formularname, lb
 						form->setDetailForm(*&detail, *&params);
 /*...e*/
 						
+/*...sSome docs:88:*/
 /*
  * What should I do to 'interconnect' the forms over the
  * relation 'customer number' ?
@@ -1090,10 +1097,11 @@ void LB_STDCALL lbMasterFormAction::openMasterForm(lb_I_String* formularname, lb
  * " where customerid = 
  *     (select id from <table of masterForm> where <SourceFieldName> = '<SourceFieldValue>')"
  */
+/*...e*/
 						
 						// Get the related table for the source field
 						
-						form->show();
+						gui->showForm(formularname->charrep());
 						form++;
 					}
 /*...e*/
@@ -1276,6 +1284,13 @@ lbDatabasePanel::~lbDatabasePanel() {
 	free (untranslated_formName);
 }
 /*...e*/
+
+void LB_STDCALL lbDatabasePanel::create(int parentId) {
+	wxWindow* w = FindWindowById(parentId);
+	
+	Create(w, -1, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, "panel");
+	SetFocus();
+}
 
 /*...slbErrCodes LB_STDCALL lbDatabasePanel\58\\58\registerEventHandler\40\lb_I_Dispatcher\42\ dispatcher\41\:0:*/
 lbErrCodes LB_STDCALL lbDatabasePanel::registerEventHandler(lb_I_Dispatcher* dispatcher) {
@@ -3952,6 +3967,10 @@ lbDatabaseDialog::~lbDatabaseDialog() {
 	_CL_LOG << "lbDatabaseDialog::~lbDatabaseDialog() called." LOG_
 }
 /*...e*/
+
+void LB_STDCALL lbDatabaseDialog::create(int parentId) {
+	// Don't need a parent
+}
 
 /*...slbErrCodes LB_STDCALL lbDatabaseDialog\58\\58\registerEventHandler\40\lb_I_Dispatcher\42\ dispatcher\41\:0:*/
 lbErrCodes LB_STDCALL lbDatabaseDialog::registerEventHandler(lb_I_Dispatcher* dispatcher) {

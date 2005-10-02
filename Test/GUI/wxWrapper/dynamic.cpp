@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.92 2005/10/01 10:12:12 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.93 2005/10/02 16:51:48 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.92 $
+ * $Revision: 1.93 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.92 2005/10/01 10:12:12 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.93 2005/10/02 16:51:48 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.93  2005/10/02 16:51:48  lollisoft
+ * New wxNotebook layout completed. Not yet changeable at runtime, but it works.
+ *
  * Revision 1.92  2005/10/01 10:12:12  lollisoft
  * Added functions for layout modes.
  *
@@ -2126,19 +2129,13 @@ bool MyApp::OnInit(void)
 
 /*...sMake a panel with a message:0:*/
   // Make a panel with a message
-#ifdef LB_I_EXTENTIONS
-  panel = new wxPanel(frame_peer, -1, wxPoint(0, 0), wxSize(400, 200), wxTAB_TRAVERSAL);
-#endif
 #ifndef LB_I_EXTENTIONS
   panel = new wxPanel(frame, -1, wxPoint(0, 0), wxSize(400, 200), wxTAB_TRAVERSAL);
 #endif
-  char* hello = NULL;
-#ifdef LB_I_EXTENTIONS
-  hello = strdup(_trans("Hello!"));
-  (void)new wxStaticText(panel, 311, hello, wxPoint(10, 10), wxSize(-1, -1), 0);
-  free(hello);
-#endif
+
+
 #ifndef LB_I_EXTENTIONS
+  char* hello = NULL;
   hello = "Hello!";
   (void)new wxStaticText(panel, 311, hello, wxPoint(10, 10), wxSize(-1, -1), 0);
 #endif

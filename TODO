@@ -4,6 +4,11 @@
 		
 		I also will discuss some problems while the development stages.
 
+		30.09.2005	Database type int8 from postgreSQL is currently not supported.
+
+				01.10.2005: Added the support. Also detect redadonly columns such
+				as aggregated columns (count, avg, ...)
+
 		24.09.2005	If the binary samples downloaded and no database configuration
 				has been set up (ODBC setup), the application crashes with a
 				NULL pointer exeption.

@@ -36,7 +36,9 @@
  */
 class lb_I_Window : public lb_I_Unknown
 {
-
+public:
+	virtual void LB_STDCALL create(int parentId) = 0;
+	virtual int  LB_STDCALL getId() = 0;
 };
 
 /*...sclass lb_I_Form:0:*/
@@ -248,6 +250,11 @@ public:
 	 * This function finds any window by their name.
 	 */
 	virtual lb_I_DatabaseForm* LB_STDCALL findDBForm(char* name) = 0;
+	
+	/**
+	 * \brief Show form with given name.
+	 */
+	virtual void LB_STDCALL showForm(char* name) = 0;
 };
 /*...e*/
 /*...sclass lb_I_wxGUI:0:*/
