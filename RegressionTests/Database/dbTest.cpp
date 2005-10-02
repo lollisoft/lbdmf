@@ -284,8 +284,8 @@ int main(int argc, char *argv[]) {
 
 	char userQuery[1000] = "";
 	
-	cout << "Please enter your SQL query: ";
-	cin.getline(userQuery, sizeof(userQuery));
+	COUT << "Please enter your SQL query: ";
+	CIN.getline(userQuery, sizeof(userQuery));
 
 //	query4->skipFKCollecting();	
 	query4->query(userQuery);
