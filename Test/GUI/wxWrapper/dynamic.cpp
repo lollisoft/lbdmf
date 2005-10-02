@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.93 2005/10/02 16:51:48 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.94 2005/10/02 17:10:09 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.93 $
+ * $Revision: 1.94 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.93 2005/10/02 16:51:48 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.94 2005/10/02 17:10:09 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.94  2005/10/02 17:10:09  lollisoft
+ * Removed console output under Windows.
+ *
  * Revision 1.93  2005/10/02 16:51:48  lollisoft
  * New wxNotebook layout completed. Not yet changeable at runtime, but it works.
  *
@@ -2771,14 +2774,16 @@ int PASCAL WinMain(HINSTANCE hInstance,
                    LPSTR lpCmdLine,
                    int nCmdShow)
 {
-    //wxAppInitializer wxTheAppInitializer((wxAppInitializerFunction) wxCreateApp);
+	//wxAppInitializer wxTheAppInitializer((wxAppInitializerFunction) wxCreateApp);
 
-    TRMemOpen();
-    TRMemSetModuleName(__FILE__);
+	FreeConsole();
+
+	TRMemOpen();
+	TRMemSetModuleName(__FILE__);
     
-    MyApp::SetInitializerFunction(wxCreateApp);
+	MyApp::SetInitializerFunction(wxCreateApp);
     
-    return wxEntry((WXHINSTANCE) hInstance, (WXHINSTANCE) hPrevInstance, lpCmdLine, nCmdShow);
+	return wxEntry((WXHINSTANCE) hInstance, (WXHINSTANCE) hPrevInstance, lpCmdLine, nCmdShow);
 }
 #endif
 #endif
