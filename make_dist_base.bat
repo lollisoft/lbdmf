@@ -2,6 +2,8 @@
 xcopy /E /I /Y %1 %DEVROOT%\%1
 cd %DEVROOT%\%1
 del /Y /S CVS
+del /S *.mbr
+del /S *.err
 del /S *.bsc
 del /S *.sbr
 del /S wxwrapper.exe

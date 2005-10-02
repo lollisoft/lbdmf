@@ -3,8 +3,8 @@
 
 [Setup]
 AppName=lbDMF Binary Samples
-AppVerName=lbDMF Binary Samples 0.5.0
-OutputBaseFilename=lbDMF-BinSamples-0.5.0
+AppVerName=lbDMF Binary Samples 0.5.1
+OutputBaseFilename=lbDMF-BinSamples-0.5.1
 AppPublisher=Lothar Behrens
 AppPublisherURL=http://www.lollisoft.de
 AppSupportURL=http://www.sourceforge.net/projects/lbdmf
