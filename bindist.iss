@@ -22,8 +22,7 @@ Source: "Q:\Develop\Projects\bin\wxwrapper.exe"; DestDir: "{app}"; CopyMode: alw
 Source: "Q:\Develop\Projects\CPP\watcomenv.bat"; DestDir: "{app}"; CopyMode: alwaysoverwrite
 Source: "Q:\Develop\Projects\CPP\binsample.bat"; DestDir: "{app}"; CopyMode: alwaysoverwrite
 Source: "Q:\Develop\Projects\dll\mspdb60.dll"; DestDir: "{app}\Develop\Projects\dll"; CopyMode: alwaysoverwrite;
-Source: "Q:\Develop\Projects\dll\wxmswd_w.dll"; DestDir: "{app}\Develop\Projects\dll"; CopyMode: alwaysoverwrite;
-;Source: "Q:\Develop\Projects\CPP\Doc\*.*"; DestDir: "{app}\Doc"; CopyMode: alwaysoverwrite; Flags: recursesubdirs;
+Source: "Q:\Develop\Projects\dll\wxmsw26_wat_custom.dll"; DestDir: "{app}\Develop\Projects\dll"; CopyMode: alwaysoverwrite;
 Source: "Q:\Develop\Projects\CPP\Database\*.*"; DestDir: "{app}\Database"; CopyMode: alwaysoverwrite; Flags: recursesubdirs;
 ; --- My current binary only file
 Source: "Q:\Develop\Projects\dll\lb*.dll"; DestDir: "{app}\Develop\Projects\dll"; CopyMode: alwaysoverwrite;

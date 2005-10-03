@@ -18,7 +18,6 @@ DefaultGroupName=lbDMF
 ;Name: "desktopicon"; Description: "Create a &desktop icon"; GroupDescription: "Additional icons:"; MinVersion: 4,4
 
 [Files]
-;Source: "c:\log\*.*"; DestDir: "c:\log"; CopyMode: alwaysoverwrite
 Source: "Q:\develop\Tools\cygwin\bin\sh.exe"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
 Source: "Q:\develop\Tools\cygwin\bin\cp.exe"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
 Source: "Q:\develop\Tools\cygwin\bin\cat.exe"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
@@ -31,13 +30,7 @@ Source: "Q:\develop\Tools\cygwin\bin\cygintl-2.dll"; DestDir: "{app}\Develop\Pro
 Source: "Q:\develop\Tools\cygwin\bin\cygintl-1.dll"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
 Source: "Q:\develop\Tools\cygwin\bin\cygiconv-2.dll"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
 Source: "Q:\develop\Projects\bin\make.exe"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
-;Source: "Q:\Develop\Projects\dll\libs\*.*"; DestDir: "{app}"; CopyMode: alwaysoverwrite; Flags: recursesubdirs;
 Source: "Q:\Develop\Projects\dll\mspdb60.dll"; DestDir: "{app}\Develop\Projects\dll"; CopyMode: alwaysoverwrite;
-; --- My current binary only file
-;Source: "Q:\Develop\Projects\dll\lbDynApp.dll"; DestDir: "{app}\Develop\Projects\dll"; CopyMode: alwaysoverwrite;
-;Source: "Q:\Develop\Projects\plugins\*.dll"; DestDir: "{app}\Develop\Projects\plugins"; CopyMode: alwaysoverwrite;
-; ???
-;Source: "Q:\develop\Projects\CPP\Compilers\MSVC\lbDMF MSVC IDE.lnk"; DestDir: "{userdesktop}"; CopyMode: alwaysoverwrite;
 
 
 [Icons]
