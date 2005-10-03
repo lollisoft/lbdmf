@@ -241,14 +241,16 @@
  	CREATE TABLE interpret (
  		id SERIAL,
  		name CHAR(50),
- 		country CHAR(3)
+ 		country CHAR(3),
+ 		PRIMARY KEY (id)
  	);
  	
  	CREATE TABLE album (
  		id SERIAL,
  		interpretid INT,
  		name CHAR(50),
- 		go_public_date DATETIME
+ 		go_public_date DATETIME,
+ 		PRIMARY KEY (id)
  	);
  	
  	CREATE TABLE title (
@@ -256,7 +258,8 @@
  		albumid INT,
  		songid INT,
  		name CHAR(50),
- 		time TIME
+ 		time TIME,
+ 		PRIMARY KEY (id)
  	);
  * \endcode
  */

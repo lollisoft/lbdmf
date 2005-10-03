@@ -35,12 +35,7 @@ WATCOMLIBS=$(DEVROOT_MAKE)$(SLASH)Tools$(SLASH)watcom$(SLASH)lib386$(SLASH)nt
 wxBase=$(DEVROOT_MAKE)$(SLASH)wxwin$(SLASH)wx$(SLASH)lib
 LIBS = $(BASE_LIBS) $(DEVROOT_MAKE)$(SLASH)projects$(SLASH)dll$(SLASH)libs$(SLASH)lbhook.lib, \
 	$(DEVROOT_MAKE)$(SLASH)projects$(SLASH)dll$(SLASH)libs$(SLASH)wxWrapperDLL.lib, \
-        $(wxBase)$(SLASH)wat_dll$(SLASH)wxpngd.lib, \
-        $(wxBase)$(SLASH)wat_dll$(SLASH)wxjpegd.lib, \
-        $(wxBase)$(SLASH)wat_dll$(SLASH)wxtiffd.lib, \
-        $(wxBase)$(SLASH)wat_dll$(SLASH)wxregexd.lib, \
-        $(wxBase)$(SLASH)wat_dll$(SLASH)wxmsw26d.lib, \
-        $(wxBase)$(SLASH)wat_dll$(SLASH)wxzlibd.lib
+	$(wxBase)$(SLASH)wat_dll$(SLASH)wxmsw26$(WX_DEBUG).lib
 	
 LIBRS =	libr $(WATCOMLIBS)$(SLASH)kernel32.lib \
 	libr $(WATCOMLIBS)$(SLASH)user32.lib \
@@ -81,16 +76,23 @@ MOD_INCL = $(STD_INCL) -i=$(DEVROOT_MAKE)\\wxwin\\wx\\include
 MOD_INCL_CPP=$(STD_INCL_CPP) -i=$(DEVROOT_MAKE)/projects/CPP/Test/GUI/wxWrapperDLL -i=$(DEVROOT_MAKE)/wxwin/wx/include
 
 C_EXEOPS= $(C_EXEOPS_WATCOM$(MODE)) /D__WIN32__ /DWINVER=0x0400 /D__WINDOWS95__ \
-		/D__WINDOWS__ /D__WXMSW__ /DLB_I_EXTENTIONS /D__WXDEBUG__
+		/D__WINDOWS__ /D__WXMSW__ /DLB_I_EXTENTIONS
 		
 C_DLLOPS= $(C_DLLOPS_WATCOM$(MODE)) /D__WIN32__ /DWINVER=0x0400 /D__WINDOWS95__ \
-		/D__WINDOWS__ /D__WXMSW__ /DLB_I_EXTENTIONS /D__WXDEBUG__ /D_WINDLL /DWXUSINGDLL
+		/D__WINDOWS__ /D__WXMSW__ /DLB_I_EXTENTIONS /D_WINDLL /DWXUSINGDLL
 
 CPP_EXEOPS= $(CPP_EXEOPS_WATCOM$(MODE)) /D__WIN32__ /DWINVER=0x0400 /D__WINDOWS95__ \
-		/D__WINDOWS__ /D__WXMSW__ /DLB_I_EXTENTIONS /D__WXDEBUG__
+		/D__WINDOWS__ /D__WXMSW__ /DLB_I_EXTENTIONS
 		
 CPP_DLLOPS= $(CPP_DLLOPS_WATCOM$(MODE)) /D__WIN32__ /DWINVER=0x0400 /D__WINDOWS95__ \
-		/D__WINDOWS__ /D__WXMSW__ /DLB_I_EXTENTIONS /D__WXDEBUG__ /D_WINDLL /DWXUSINGDLL
+		/D__WINDOWS__ /D__WXMSW__ /DLB_I_EXTENTIONS /D_WINDLL /DWXUSINGDLL
+
+ifeq ($MODE), _DEBUG)
+C_EXEOPS+= /D__WXDEBUG__
+C_DLLOPS+= /D__WXDEBUG__
+CPP_EXEOPS+= /D__WXDEBUG__
+CPP_DLLOPS+= /D__WXDEBUG__
+endif
 		
 LINKFLAGS = $(L_EXEOPS)
 endif

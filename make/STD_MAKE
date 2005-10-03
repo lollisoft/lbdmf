@@ -25,11 +25,14 @@
 #            40235 Duesseldorf (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.66 $
+# * $Revision: 1.67 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.66 2005/09/24 21:35:55 lollisoft Exp $
+# * $Id: STD_MAKE,v 1.67 2005/10/03 18:10:35 lollisoft Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.67  2005/10/03 18:10:35  lollisoft
+# * Latest changes for release 0.5.1
+# *
 # * Revision 1.66  2005/09/24 21:35:55  lollisoft
 # * Stack frame creation (-of+) removed. Problems in tvision build process was
 # * the problem and it is not really needed.
@@ -251,6 +254,11 @@ COMPILER=WATCOM
 MODE=_DEBUG
 #MODE=
 DEBUG_MEMORY=no
+
+WX_DEBUG=
+ifeq (($MODE), _DEBUG)
+WX_DEBUG=d
+endif
 
 WATCOM_SLASH=/
 

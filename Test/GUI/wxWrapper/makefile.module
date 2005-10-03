@@ -34,13 +34,7 @@ WATCOMLIBS=$(DEVROOT_MAKE)$(SLASH)Tools$(SLASH)watcom$(SLASH)lib386$(SLASH)nt
 wxBase=..$(SLASH)..$(SLASH)..$(SLASH)..$(SLASH)..$(SLASH)wxwin$(SLASH)wx$(SLASH)lib
 LIBS = $(BASE_LIBS) $(DEVROOT_MAKE)$(SLASH)projects$(SLASH)dll$(SLASH)libs$(SLASH)lbhook.lib, \
 	$(DEVROOT_MAKE)$(SLASH)projects$(SLASH)dll$(SLASH)libs$(SLASH)wxWrapperDLL.lib, \
-        $(wxBase)$(SLASH)wat_dll$(SLASH)wxmsw26d.lib
-        
-#        $(wxBase)$(SLASH)wat_dll$(SLASH)wxpngd.lib, \
-#        $(wxBase)$(SLASH)wat_dll$(SLASH)wxjpegd.lib, \
-#        $(wxBase)$(SLASH)wat_dll$(SLASH)wxtiffd.lib, \
-#        $(wxBase)$(SLASH)wat_dll$(SLASH)wxregexd.lib, \
-#        $(wxBase)$(SLASH)wat_dll$(SLASH)wxzlibd.lib
+        $(wxBase)$(SLASH)wat_dll$(SLASH)wxmsw26$(WX_DEBUG).lib
 	
 LIBRS =	libr $(WATCOMLIBS)$(SLASH)kernel32.lib \
 	libr $(WATCOMLIBS)$(SLASH)user32.lib \
@@ -89,8 +83,7 @@ C_EXEOPS= $(C_EXEOPS_WATCOM$(MODE)) \
 		/D__WINDOWS95__ \
 		/D__WINDOWS__ \
 		/D__WXMSW__ \
-		/DLB_I_EXTENTIONS \
-		/D__WXDEBUG__
+		/DLB_I_EXTENTIONS
 		
 CPP_EXEOPS= $(CPP_EXEOPS_WATCOM$(MODE)) \
 		/DUSE_WXWRAPPER_DLL \
@@ -100,8 +93,12 @@ CPP_EXEOPS= $(CPP_EXEOPS_WATCOM$(MODE)) \
 		/D__WINDOWS95__ \
 		/D__WINDOWS__ \
 		/D__WXMSW__ \
-		/DLB_I_EXTENTIONS \
-		/D__WXDEBUG__
+		/DLB_I_EXTENTIONS
+
+ifeq ($MODE), _DEBUG)
+C_EXEOPS+= /D__WXDEBUG__
+CPP_EXEOPS+= /D__WXDEBUG__
+endif
 		
 LINKFLAGS = $(L_EXEOPS)
 endif
