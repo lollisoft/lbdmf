@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.66 $
+# * $Revision: 1.67 $
 # * $Name:  $
-# * $Id: Makefile,v 1.66 2005/09/24 21:41:32 lollisoft Exp $
+# * $Id: Makefile,v 1.67 2005/10/03 17:15:14 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.67  2005/10/03 17:15:14  lollisoft
+# * Latest changes for release 0.5.1 under Linux
+# *
 # * Revision 1.66  2005/09/24 21:41:32  lollisoft
 # * Deactivated building tvision stuff. Not yet part of an usable sample.
 # *
@@ -247,9 +250,9 @@ BASEDIRECTORIES= \
 	../Plugins \
 	../Modules \
 	../RegressionTests \
+	../AppDevelopment \
 	../vendor/tvision-set \
-	../vendor/tvision-set/examples/lbDMF \
-	../AppDevelopment 
+	../vendor/tvision-set/examples/lbDMF
 
 #	../../open-watcom
 endif

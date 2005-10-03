@@ -30,11 +30,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.23 $
+ * $Revision: 1.24 $
  * $Name:  $
- * $Id: lbDatabaseForm.h,v 1.23 2005/10/02 16:51:48 lollisoft Exp $
+ * $Id: lbDatabaseForm.h,v 1.24 2005/10/03 17:15:14 lollisoft Exp $
  *
  * $Log: lbDatabaseForm.h,v $
+ * Revision 1.24  2005/10/03 17:15:14  lollisoft
+ * Latest changes for release 0.5.1 under Linux
+ *
  * Revision 1.23  2005/10/02 16:51:48  lollisoft
  * New wxNotebook layout completed. Not yet changeable at runtime, but it works.
  *
@@ -488,7 +491,9 @@ public:
 	int  LB_STDCALL getId() { return GetId(); }
 
 	void LB_STDCALL show() { Show (TRUE); };
-	void LB_STDCALL destroy() { Destroy(); };
+	void LB_STDCALL destroy() {
+	    //Destroy();
+	};
 	
 /*...sfrom DatabaseForm interface:8:*/
 	void LB_STDCALL init(char* SQLString, char* DBName, char* DBUser, char* DBPass);
@@ -673,6 +678,7 @@ public:
 	
 	bool noDataAvailable;
 	bool isAdding;
+	bool _created;
 	
 	char* base_formName;
 	char* formName;
@@ -715,7 +721,7 @@ public:
 	int  LB_STDCALL getId() { return GetId(); }
 
 	void LB_STDCALL show() { Show (TRUE); };
-	void LB_STDCALL destroy() { Destroy(); };
+	void LB_STDCALL destroy() { if (_created) Destroy(); };
 	
 /*...sfrom DatabaseForm interface:8:*/
 	void LB_STDCALL init(char* SQLString, char* DBName, char* DBUser, char* DBPass);
@@ -856,6 +862,7 @@ public:
 	DECLARE_LB_UNKNOWN()
 
 	lbDatabasePanel* panel;
+	bool _created;
 };
 /*...e*/
 

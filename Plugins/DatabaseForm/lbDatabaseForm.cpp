@@ -1270,7 +1270,7 @@ lbDatabasePanel::lbDatabasePanel()
 	untranslated_formName = NULL;
 	base_formName = NULL;
 	noDataAvailable = false;
-
+	_created = false;
 	fa = NULL;
 }
 /*...e*/
@@ -1290,6 +1290,7 @@ void LB_STDCALL lbDatabasePanel::create(int parentId) {
 	
 	Create(w, -1, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, "panel");
 	SetFocus();
+	_created = true;
 }
 
 /*...slbErrCodes LB_STDCALL lbDatabasePanel\58\\58\registerEventHandler\40\lb_I_Dispatcher\42\ dispatcher\41\:0:*/
@@ -3960,6 +3961,7 @@ lbDatabaseDialog::lbDatabaseDialog()
 	_CL_LOG << "lbDatabaseDialog::lbDatabaseDialog() called." LOG_
 	ref = STARTREF;
 	panel = new lbDatabasePanel();
+	_created = true;
 }
 /*...e*/
 /*...slbDatabaseDialog\58\\58\\126\lbDatabaseDialog\40\\41\:0:*/
@@ -4007,7 +4009,7 @@ void LB_STDCALL lbDatabaseDialog::init(char* _SQLString, char* DBName, char* DBU
 
 	panel->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
 
-	panel->Create(this, -1, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, "panel");
+	panel->create(this->GetId());
 
 	sizerMain->Add(panel, 1, wxEXPAND | wxALL, 5);
 

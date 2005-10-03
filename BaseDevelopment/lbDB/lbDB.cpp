@@ -1680,7 +1680,7 @@ void LB_STDCALL lbQuery::prepareFKList() {
 	if (strlen((char* const) szTable) > 99) {
 		_CL_VERBOSE << "ERROR: Possible buffer overflows!" LOG_
 	}
-
+#ifdef bla
 	_CL_VERBOSE << "Try to get foreign keys with '" << temp << "' as primary table" LOG_
 	
 	retcode = SQLForeignKeys(hstmt,
@@ -1692,7 +1692,7 @@ void LB_STDCALL lbQuery::prepareFKList() {
 	         NULL, 0);  
 
 	if ((retcode != SQL_SUCCESS) && (retcode != SQL_SUCCESS_WITH_INFO)) {
-		_CL_LOG << "SQLForeignKeys(...) failed!" LOG_
+		_CL_LOG << "SQLForeignKeys(...) for " << szTable << " failed!" LOG_
 	}
 
 	while ((retcode == SQL_SUCCESS) || (retcode == SQL_SUCCESS_WITH_INFO)) {
@@ -1746,7 +1746,7 @@ void LB_STDCALL lbQuery::prepareFKList() {
 	if (strlen((char* const) szTable) > 99) {
 		_CL_VERBOSE << "ERROR: Possible buffer overflows!" LOG_
 	}
-
+#endif
 	_CL_VERBOSE << "Try to get foreign keys with '" << temp << "' as foreign table" LOG_
 	
 	retcode = SQLForeignKeys(hstmt,

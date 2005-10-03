@@ -928,6 +928,7 @@ lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::createDBForm(char* formName, char* query
 		
 		form->destroy();
 		form = NULL;
+		
 		//-------------------------------------------------------
 		
 		uk = forms->getElement(&key);
