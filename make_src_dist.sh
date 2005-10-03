@@ -5,55 +5,10 @@ if [ -e "dist" ]; then
 	rm -R dist;
 fi
 
-if [ ! -e "dist" ]; then
-	mkdir dist;
-fi
-
-if [ ! -e "dist/Develop" ]; then
-	mkdir dist/Develop;
-fi
-
-if [ ! -e "dist/Develop/Projects" ]; then
-	mkdir dist/Develop/Projects;
-fi
-
-if [ ! -e "dist/Develop/Projects/CPP" ]; then
-	mkdir dist/Develop/Projects/CPP;
-fi
-
-if [ ! -e "dist/Develop/Projects/CPP/BaseDevelopment" ]; then
-	mkdir dist/Develop/Projects/CPP/BaseDevelopment;
-fi
-
-if [ ! -e "dist/Develop/Projects/CPP/BaseDevelopment/lbXMLConfig" ]; then
-	mkdir dist/Develop/Projects/CPP/BaseDevelopment/lbXMLConfig;
-fi
-
-if [ ! -e "dist/Develop/Projects/CPP/AppDevelopmentDemo" ]; then
-	mkdir dist/Develop/Projects/CPP/AppDevelopmentDemo;
-fi
-
-
-./make_dist_base.sh AppDevelopmentDemo/App
-./make_dist_base.sh BaseDevelopment/lbHook 
-./make_dist_base.sh BaseDevelopment/lbclasses 
-./make_dist_base.sh BaseDevelopment/lbDB 
-./make_dist_base.sh BaseDevelopment/lbPluginManager
-./make_dist_base.sh BaseDevelopment/lbMetaApplication 
-./make_dist_base.sh BaseDevelopment/lbModule 
-./make_dist_base.sh BaseDevelopment/lbXMLConfig/lbDOMConfig 
-./make_dist_base.sh Plugins/DatabaseForm
-./make_dist_base.sh vendor/mkmk 
-./make_dist_base.sh vendor/dosdir 
-./make_dist_base.sh include 
-./make_dist_base.sh interfaces 
-./make_dist_base.sh make
-./make_dist_base.sh Test/GUI/wxWrapper
-./make_dist_base.sh Test/Console/XML
-./make_dist_base.sh Compilers
-
-cp README $DEVROOT
-cp COPYING $DEVROOT
-cp BaseDevelopment/Makefile $DEVROOT/BaseDevelopment
-rm *.idb
-
+mkdir dist
+cd dist
+#cvs -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/lbdmf login
+cvs -d:ext:lollisoft@cvs.sourceforge.net:/cvsroot/lbdmf export -r HEAD CPP
+cp ../Plugins/DatabaseReport/repwrt.cpp CPP/Plugins/DatabaseReport/repwrt.cpp
+cp ../Plugins/DatabaseReport/repwrt.h CPP/Plugins/DatabaseReport/repwrt.h
+tar cvzf lbDMF-Source-$1.tgz CPP/
