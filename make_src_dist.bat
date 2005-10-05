@@ -26,7 +26,7 @@ call make_dist_base.bat BaseDevelopment\lbPluginManager
 call make_dist_base.bat BaseDevelopment\lbMetaApplication 
 call make_dist_base.bat BaseDevelopment\lbModule 
 call make_dist_base.bat BaseDevelopment\lbXMLConfig\lbDOMConfig 
-call make_dist_base.bat Plugins\DatabaseForm
+call make_dist_base.bat Plugins
 call make_dist_base.bat vendor\mkmk 
 call make_dist_base.bat vendor\dosdir 
 call make_dist_base.bat include 
@@ -35,11 +35,15 @@ call make_dist_base.bat make
 call make_dist_base.bat test
 call make_dist_base.bat Compilers
 call make_dist_base.bat Database
+call make_dist_base.bat Samples
+call make_dist_base.bat Modules
+call make_dist_base.bat RegressionTests
 
 copy makewat.env %DEVROOT%
 copy makefile.wat %DEVROOT%
 copy README %DEVROOT%
 copy COPYING %DEVROOT%
+copy doxygen.conf %DEVROOT%
 copy BaseDevelopment\makefile %DEVROOT%\BaseDevelopment
 copy BaseDevelopment\make.bat %DEVROOT%\BaseDevelopment
 copy q:\develop\Projects\CPP\watcomenv.bat %DEVROOT%
@@ -47,6 +51,7 @@ copy q:\develop\Projects\CPP\watcomenv.bat.lnk dist
 copy q:\develop\ide.bat %DEVROOT%
 del *.idb
 
-tar cvzf Output\lbDMF-Source-0.5.1.tgz dist\
+rem Windows should not create Linux tgz files (^M)
+rem tar cvzf Output\lbDMF-Source-0.5.1.tgz dist\
 
 rem xcopy /I /E /Y dist q:\dist
