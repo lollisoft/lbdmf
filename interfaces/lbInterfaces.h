@@ -55,6 +55,10 @@
  * Open Watcom compiler, at least version 1.2. <a href="http://www.openwatcom.org">Open Watcom</a>
  * 
  * The wxWidgets source code. Tested version is 2.4.2. <a href="http://www.wxwidgets.org">wxWidgets</a>
+ *
+ * I have included <a href="http://www.daily.de/RepWrt/">wxReportWriter</a>. This project allows me to create database
+ * reports on the fly. But this feature doesn't work under Linux yet. Currently these files have minimal changes compared
+ * to the orginal version. 
  * 
  * One of the following databases: <a href="http://www.mysql.com">MySQL</a>, <a href="http://www.postgresql.org">PostgreSQL</a> or <a href="http://www.sybase.com">Sybase</a>.
  * Other databases may be possible, but there is not yet a SQL script to setup the database.
@@ -123,7 +127,9 @@
  *
  *	After installation: Check, if inside exists a src directory and all else of the distribution.  
  *
- * \section PSetup6 Make wxWidgets source tree
+ * \section PSetup6 Make wxWidgets (2.4.x) source tree
+ *
+ *	If you like to have a static library, skip that lines, that copy makefile.env and makefile.wat.
  *
  *	Start a normal MSDOS console (cmd) and type these lines (C:):
  *
@@ -153,10 +159,49 @@
  *	wmake -f makefile.wat all
  *	\endcode
  *
+ * \section PSetup61 Make wxWidgets (2.6.x) source tree
+ *
+ *	Bevore you build the library, decide to build a static library or a shared library (DLL).
+ *	If you like to have a DLL, modify the following file: config.wat in the build/msw directory.
+ *
+ *	# What type of library to build? [0,1]
+ *	SHARED = 1
+ *
+ *	There is also a switch for debug or release builds:
+ *
+ *	# Type of compiled binaries [debug,release]
+ *	BUILD = release
+ *
+ *	Start a normal MSDOS console (cmd) and type these lines (C:):
+ *
+ *	\code
+ *	set DRIVE=C:
+ *	set WXWIN=%DRIVE%\lbDMF\Develop\wxwin\wx
+ *	%DRIVE%
+ *	cd %WXWIN%\build\msw
+ *	copy /Y %WXWIN%\include\wx\msw\setup.h %WXWIN%\include\wx
+ *	wmake -f makefile.wat all
+ *	\endcode
+ *
+ *	or
+ *
+ *	Start a normal MSDOS console (cmd) and type these lines (D:):
+ *
+ *	\code
+ *	set DRIVE=D:
+ *	set WXWIN=%DRIVE%\lbDMF\Develop\wxwin\wx
+ *	%DRIVE%
+ *	cd %WXWIN%\build\msw
+ *	copy /Y %WXWIN%\include\wx\msw\setup.h %WXWIN%\include\wx
+ *	wmake -f makefile.wat all
+ *	\endcode
+ *
  *	This should start compiling the wxWidgets code.
  *
  *	After you have built wxWitgets, you must copy the created DLL to the place where it should be
  *	installed:
+ *
+ * \section PSetup62 Copy DLL/library for wxWidgets 2.4.x/2.6.x:
  *
  *	From drive C:
  *
@@ -165,7 +210,11 @@
  *	set WXWIN=%DRIVE%\lbDMF\Develop\wxwin\wx
  *	%DRIVE%
  *	cd %WXWIN%\src\msw
- *	copy /Y %WXWIN%\include\wx\lib\wxmsw_d.dll %WXWIN%\..\..\Projects\dll
+ *	mkdir %WXWIN%\..\..\Projects\dll\libs
+ *	copy /Y %WXWIN%\lib\wat_dll\wxmsw*.dll %WXWIN%\..\..\Projects\dll
+ *	copy /Y %WXWIN%\lib\wat_dll\wxmsw*.lib %WXWIN%\..\..\Projects\dll\libs
+ *	copy /Y %WXWIN%\lib\wxmsw*.dll %WXWIN%\..\..\Projects\dll
+ *	copy /Y %WXWIN%\lib\\wxmsw*.lib %WXWIN%\..\..\Projects\dll\libs
  *	\endcode
  *
  *	From Drive D:
@@ -175,7 +224,11 @@
  *	set WXWIN=%DRIVE%\lbDMF\Develop\wxwin\wx
  *	%DRIVE%
  *	cd %WXWIN%\src\msw
- *	copy /Y %WXWIN%\lib\wxmswd_w.dll %WXWIN%\..\..\Projects\dll
+ *      mkdir %WXWIN%\..\..\Projects\dll\libs
+ *	copy /Y %WXWIN%\lib\wat_dll\wxmsw*.dll %WXWIN%\..\..\Projects\dll
+ *      copy /Y %WXWIN%\lib\wat_dll\wxmsw*.lib %WXWIN%\..\..\Projects\dll\libs
+ *      copy /Y %WXWIN%\lib\wxmsw*.dll %WXWIN%\..\..\Projects\dll
+ *      copy /Y %WXWIN%\lib\\wxmsw*.lib %WXWIN%\..\..\Projects\dll\libs
  *	\endcode
  *
  * \section PSetup7 Start compiling lbDMF source tree
