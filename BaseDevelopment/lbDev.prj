@@ -249,6 +249,9 @@ These headers must define the per module (DLL) EXPORT variable
 /*...v\46\\46\\47\plugins\47\databasereport\47\makefile\46\module:0:*/
 /*...v\46\\46\\47\plugins\47\databasereport\47\lbDatabaseReport\46\cpp:0:*/
 /*...v\46\\46\\47\plugins\47\databasereport\47\lbDatabaseReport\46\h:0:*/
+/*...v\46\\46\\47\plugins\47\databasereport\47\repwrt\46\h:0:*/
+/*...v\46\\46\\47\plugins\47\databasereport\47\repwrt\46\cpp:0:*/
+
 /*...v\46\\46\\47\plugins\47\databasereport\47\plugin\46\cpp:0:*/
 
 /*...v\46\\46\\47\Test\47\GUI\47\wxPlugins\47\lbLoginWizard\47\makefile:0:*/
@@ -265,6 +268,7 @@ These headers must define the per module (DLL) EXPORT variable
 /*...v\46\\46\\47\Test\47\GUI\47\wxwrapper\47\dynamic\46\cpp:0:*/
 
 
+/*...v\46\\46\\47\Test\47\GUI\47\wxwrapperDLL\47\makefile:0:*/
 /*...v\46\\46\\47\Test\47\GUI\47\wxwrapperDLL\47\makefile\46\module:0:*/
 /*...v\46\\46\\47\Test\47\GUI\47\wxwrapperDLL\47\wxWrapperDLL\46\h:0:*/
 /*...v\46\\46\\47\Test\47\GUI\47\wxwrapperDLL\47\wxWrapperDLL\46\cpp:0:*/
