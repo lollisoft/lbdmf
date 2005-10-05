@@ -358,6 +358,17 @@ DECLARE_LB_UNKNOWN()
 
 		err = database->connect("lbDMF", lbDMFUser, lbDMFPasswd);
 
+		if (err != ERR_NONE) {
+			char* buf = strdup(_trans("Login to database failed.\n\nYou could not use the dynamic features of the\napplication without a proper configured database."));
+			char* buf1 = strdup(_trans("Error"));
+			wxMessageDialog dialog(NULL, buf, buf1, wxOK);
+
+			dialog.ShowModal();
+
+			free(buf);
+			free(buf1);		
+		}
+
 		sampleQuery = database->getQuery(0);
 
 		char buffer[800] = "";

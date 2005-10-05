@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.94 2005/10/02 17:10:09 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.95 2005/10/05 11:04:39 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,15 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.94 $
+ * $Revision: 1.95 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.94 2005/10/02 17:10:09 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.95 2005/10/05 11:04:39 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.95  2005/10/05 11:04:39  lollisoft
+ * Report login failures due to missing database or correct ODBC configuration
+ * of it.
+ *
  * Revision 1.94  2005/10/02 17:10:09  lollisoft
  * Removed console output under Windows.
  *
@@ -632,7 +636,7 @@ public:
 
 			box->Append(wxString(s1->charrep()));
 
-			while (TRUE) {
+			while (err == ERR_NONE) {
 				lbErrCodes err = sampleQuery->next();
 				
 				if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
@@ -641,14 +645,15 @@ public:
 					box->Append(wxString(s1->charrep()));
 					
 					if (err == WARN_DB_NODATA) {
-						box->SetSelection(0);
 						break;
 					}
 				}
 			}
+			box->SetSelection(0);
 		}
 
 		sizerMain->Fit(this);
+		//Fit();
 
 		return;
 	}
@@ -827,6 +832,17 @@ DECLARE_LB_UNKNOWN()
 		if (!lbDMFPasswd) lbDMFPasswd = "trainres";
 
 		err = database->connect("lbDMF", lbDMFUser, lbDMFPasswd);
+
+		if (err != ERR_NONE) {
+			char* buf = strdup(_trans("Login to database failed.\n\nYou could not use the dynamic features of the\napplication without a proper configured database."));
+			char* buf1 = strdup(_trans("Error"));
+			wxMessageDialog dialog(NULL, buf, buf1, wxOK);
+
+			dialog.ShowModal();
+
+			free(buf);
+			free(buf1);		
+		}
 
 		sampleQuery = database->getQuery(0);
 
