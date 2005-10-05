@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.67 $
+# * $Revision: 1.68 $
 # * $Name:  $
-# * $Id: Makefile,v 1.67 2005/10/03 17:15:14 lollisoft Exp $
+# * $Id: Makefile,v 1.68 2005/10/05 10:02:50 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.68  2005/10/05 10:02:50  lollisoft
+# * Creating help files was sensitive for errors and stops further making.
+# *
 # * Revision 1.67  2005/10/03 17:15:14  lollisoft
 # * Latest changes for release 0.5.1 under Linux
 # *
@@ -582,7 +585,7 @@ lbXMLConfig/lbDOMConfig: dummy
 	../RegressionTests/Database/dbTest.cpp \
 	../RegressionTests/Basetypes/Basetypes.cpp \
 	../RegressionTests/Memory/memTest.cpp
-	@doxygen ../doxygen.conf
+	-@doxygen ../doxygen.conf
 
 ../Samples/HelloWorld: dummy
 	$(MAKE) -s -C $@ -e MODULE=HelloWorld -e TARGET=$(TARGETEXE) -f $(MAKE_CONFIG_FILE)
