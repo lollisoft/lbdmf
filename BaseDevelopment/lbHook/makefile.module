@@ -44,7 +44,7 @@ endif
 # What is to do after the compile job ?
 # Can do copy a file ...
 
-POST_PROCESS=#cp $(DEVROOT)/Projects/CPP/BaseDevelopment/lbHook/*.lib $(DEVROOT)/Projects/dll/libs
+POST_PROCESS=cp $(DEVROOT_MAKE)/Projects/CPP/BaseDevelopment/lbHook/*.lib $(DEVROOT_MAKE)/Projects/dll/libs
 
 ifeq ($(COMPILER), MICROSOFT)
 MOD_INCL = $(STD_INCL_MICROSOFT)
