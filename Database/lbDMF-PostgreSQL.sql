@@ -473,6 +473,64 @@ CREATE UNIQUE INDEX pk_id_User_Anwendungen ON User_Anwendungen
   id
 );
 --...e
+--...sCREATE TABLE report_parameters:0:
+--DROP TABLE report_parameters;
+
+CREATE TABLE report_parameters
+(
+  id SERIAL,
+  report CHAR(50),
+  name CHAR(50) NOT NULL,
+  value INTEGER  NOT NULL,
+  PRIMARY KEY (id)
+);
+          
+CREATE UNIQUE INDEX pk_id_report_parameters ON report_parameters
+(
+  id
+);
+            
+            
+insert into report_parameters (report, name, value) values ('dummy', 'colstepHDR', 41);
+insert into report_parameters (report, name, value) values ('dummy', 'colstep', 30);
+insert into report_parameters (report, name, value) values ('dummy', '_coly', 0);
+insert into report_parameters (report, name, value) values ('dummy', 'fntBig', 12);
+insert into report_parameters (report, name, value) values ('dummy', 'fntSmall', 6);
+insert into report_parameters (report, name, value) values ('dummy', 'fntHdr', 10);
+insert into report_parameters (report, name, value) values ('dummy', 'erwachsene', 22);
+insert into report_parameters (report, name, value) values ('dummy', 'kinder', 15);
+insert into report_parameters (report, name, value) values ('dummy', 'planfahrtid', 20);
+insert into report_parameters (report, name, value) values ('dummy', 'kundenid', 18);
+insert into report_parameters (report, name, value) values ('dummy', 'TextBlockSize', 120);
+--...e
+--...sCREATE TABLE report_texts:0:
+-- +---------------------------------------------------------
+-- | TABLE: report_texts
+-- +---------------------------------------------------------
+CREATE TABLE report_texts
+(
+  id SERIAL,
+  report CHAR(50),
+  line INTEGER,
+  text CHAR(255),
+  PRIMARY KEY (id)
+);
+
+CREATE UNIQUE INDEX pk_id_report_texts ON report_texts
+(
+  id
+);
+
+insert into report_texts (report, line, text) values('dummy', 1, 'Sehr geehrte{Ansprache} {Name},');
+insert into report_texts (report, line, text) values('dummy', 2, '');
+insert into report_texts (report, line, text) values('dummy', 3, 'hiermit bestÑtigen wir Ihnen ihre Reservierung fÅr unten aufgelistete Fahrten.');
+insert into report_texts (report, line, text) values('dummy', 4, 'Die Reservierung bleibt bis zum Zahlungseingang unter Vorbehalt. HierfÅr');
+insert into report_texts (report, line, text) values('dummy', 5, 'bitten wir um VerstÑndniss.');
+insert into report_texts (report, line, text) values('dummy', 6, '');
+insert into report_texts (report, line, text) values('dummy', 7, 'Bitte verwenden Sie als Verwendungszweck folgende Nummer: {Reservierungsnummer}');
+insert into report_texts (report, line, text) values('dummy', 8, '');
+insert into report_texts (report, line, text) values('dummy', 9, 'Wir bedanken uns fÅr Ihre Reservierung und verbleiben.');
+--...e
 
 --...sFOREIGN KEYS:0:
 -- +---------------------------------------------------------
@@ -730,6 +788,13 @@ insert into Formulare (Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) V
 'manageStreckennamen',
 '-',
 3, 1);
+
+insert into Formulare (Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
+'Formularaktionen',
+'Formularaktionen verwalten',
+'manageFormularaktionen',
+'-',
+1, 1);
 --...e
 --...sFill ForeignKey_VisibleData_Mapping:0:
 insert into ForeignKey_VisibleData_Mapping (FKName, FKTable, PKName, PKTable) Values (
@@ -833,6 +898,11 @@ insert into Formular_Parameters (ParameterName, ParameterValue, FormularID) Valu
 'query',
 'select * from planstreckennamen',
 23);
+
+insert into Formular_Parameters (ParameterName, ParameterValue, FormularID) Values (
+'query',
+'select * from actions',
+24);
 --...e
 --...sFill Anwendungs_Parameter:0:
 insert into Anwendungs_Parameter (ParameterName, ParameterValue, AnwendungID) Values ('DBName', 'trainres', 3);
@@ -876,6 +946,8 @@ insert into Anwendungen_Formulare (AnwendungID,FormularID) Values (1, 20);
 insert into Anwendungen_Formulare (AnwendungID,FormularID) Values (3, 21);
 insert into Anwendungen_Formulare (AnwendungID,FormularID) Values (3, 22);
 insert into Anwendungen_Formulare (AnwendungID,FormularID) Values (3, 23);
+
+insert into Anwendungen_Formulare (AnwendungID,FormularID) Values (1, 24);
 --...e
 --...sFill User_Anwendungen:0:
 insert into User_Anwendungen (userid, AnwendungenId) Values (1, 1);
