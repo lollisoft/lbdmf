@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.22 $
+ * $Revision: 1.23 $
  * $Name:  $
- * $Id: lbErrcodes.h,v 1.22 2005/03/31 09:14:35 lollisoft Exp $
+ * $Id: lbErrcodes.h,v 1.23 2005/10/09 22:42:09 lollisoft Exp $
  *
  * $Log: lbErrcodes.h,v $
+ * Revision 1.23  2005/10/09 22:42:09  lollisoft
+ * Bugfix, if no parameter found with that name.
+ *
  * Revision 1.22  2005/03/31 09:14:35  lollisoft
  * Copyright text problems under linux.
  *
@@ -230,7 +233,11 @@ enum lbErrCodes {
 	ERR_DB_READONLY,
 	ERR_DB_STILL_ADDING,
 	ERR_UPDATE_FAILED,
-	WARN_DB_NODATA
+	WARN_DB_NODATA,
+	
+/* Errcodes for parameter handling */	
+	
+	ERR_PARAM_NOT_FOUND
 };
 /*...e*/
 

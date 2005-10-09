@@ -225,6 +225,8 @@ lbErrCodes LB_STDCALL lbParameter::getUAPString(lb_I_String*& parameter, lb_I_St
 
 	uk_p_string = parameters->getElement(&key);
 
+	if (uk_p_string == NULL) return ERR_PARAM_NOT_FOUND;
+
 	UAP(lb_I_String, string, __FILE__, __LINE__)
 	QI(uk_p_string, lb_I_String, string, __FILE__, __LINE__)
 	
@@ -265,6 +267,8 @@ lbErrCodes LB_STDCALL lbParameter::getUAPInteger(lb_I_String*& parameter, lb_I_I
 	UAP(lb_I_Unknown, uk_p_integer, __FILE__, __LINE__)
 
 	uk_p_integer = parameters->getElement(&key);
+
+	if (uk_p_integer == NULL) return ERR_PARAM_NOT_FOUND;
 
 	UAP(lb_I_Integer, integer, __FILE__, __LINE__)
 	QI(uk_p_integer, lb_I_Integer, integer, __FILE__, __LINE__)
