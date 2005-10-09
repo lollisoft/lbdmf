@@ -107,6 +107,7 @@ public:
 
 	// Array of report values
 	wxString**	strValue;
+	int**		colsteps;
 
 	bool		hasConditions;
 	
