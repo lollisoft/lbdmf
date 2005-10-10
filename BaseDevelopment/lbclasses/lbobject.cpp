@@ -355,7 +355,13 @@ lb_I_String& LB_STDCALL lbString::operator = (const char* toAppend) {
 
 void LB_STDCALL lbString::setData(char const * p) {
 	if (stringdata != NULL) free(stringdata);
+	if (key != NULL) free(key);
 	
+	stringdata = NULL;
+	key = NULL;
+	
+	if (p == NULL) return;
+
 	stringdata = (char*) malloc(strlen(p)+1);
 	stringdata[0] = 0;
 	strcpy(stringdata, p);
