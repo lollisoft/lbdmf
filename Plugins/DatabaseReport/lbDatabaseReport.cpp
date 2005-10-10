@@ -880,22 +880,7 @@ void LB_STDCALL lbDatabaseReport::init(char* SQLString, char* DBName, char* DBUs
 
 	int TextBlockSize = properties->getIntParameter("TextBlockSize");
 
-	while (tLine.getPtr() != NULL) {
-	        pObj = new wxReportObj( 0, (LineSpace * ii) + offset - ii, TextBlockSize, 6 );
-	        pObj->SetData(wxString(tLine->charrep()));
-	        pObj->SetIncrements( 0.0, LPI6 );
-	        //pObj->SetLeftAlign();
-	        pReport->AddHeaderObj( pObj );
-		ii++;
-		tLine = properties->getTextLine(ii, "dummy");
-	}
-	
-
-
-	_coly = 10 * LineSpace - 1 + offset;
-
-	// Column header
-
+/*...sPrepare query:8:*/
 	UAP_REQUEST(manager.getPtr(), lb_I_Database, database)
 	UAP(lb_I_Query, query, __FILE__, __LINE__)
 	
@@ -908,7 +893,7 @@ void LB_STDCALL lbDatabaseReport::init(char* SQLString, char* DBName, char* DBUs
 	lbErrCodes err;
 	err = query->query(SQLString);
 
-/*...sRebuild query\44\ if there are conditions:8:*/
+/*...sRebuild query\44\ if there are conditions:16:*/
 	if ((hasConditions) && (err == ERR_NONE)) {
 		UAP_REQUEST(manager.getPtr(), lb_I_String, newQuery)
 		
@@ -956,6 +941,55 @@ void LB_STDCALL lbDatabaseReport::init(char* SQLString, char* DBName, char* DBUs
 		_CL_LOG << "SQL string: " << SQLString LOG_
 	}
 /*...e*/
+/*...e*/
+
+	UAP_REQUEST(getModuleInstance(), lb_I_Parameter, replacer)
+
+	if (hasConditions) {
+		UAP_REQUEST(getModuleInstance(), lb_I_String, pattern)
+		
+		*pattern = "{";
+		*pattern += AndConditionColumn->charrep();
+		*pattern += "}";
+		
+		replacer->setUAPString(*&pattern, *&AndConditionValue);
+	}
+	        
+
+	while (tLine.getPtr() != NULL) {
+	        pObj = new wxReportObj( 0, (LineSpace * ii) + offset - ii, TextBlockSize, 6 );
+	        
+	        wxString data = wxString(tLine->charrep());
+
+	        wxString pattern = data.AfterFirst('{');
+	        
+	        pattern = pattern.BeforeFirst('}');
+	        
+	        UAP_REQUEST(getModuleInstance(), lb_I_String, p)
+	        UAP_REQUEST(getModuleInstance(), lb_I_String, r)
+	        
+	        *p = "{";
+	        *p += pattern.c_str();
+	        *p += "}";
+	        
+	        replacer->getUAPString(*&p, *&r);
+	        
+	        data.Replace(p->charrep(), r->charrep());
+
+	        pObj->SetData(data);
+	        pObj->SetIncrements( 0.0, LPI6 );
+	        //pObj->SetLeftAlign();
+	        pReport->AddHeaderObj( pObj );
+		ii++;
+		tLine = properties->getTextLine(ii, "dummy");
+	}
+	
+
+
+	_coly = 10 * LineSpace - 1 + offset;
+
+	// Column header
+
 	
 	if (err == ERR_NONE) {
 /*...sBuild the report:16:*/
