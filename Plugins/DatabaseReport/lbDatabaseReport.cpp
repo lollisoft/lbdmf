@@ -846,6 +846,11 @@ void LB_STDCALL lbDatabaseReport::init(char* SQLString, char* DBName, char* DBUs
 	wxFont			fntHdr(properties->getIntParameter("fntHdr"),
 				wxSWISS, wxNORMAL, wxBOLD, true);
 
+
+	_CL_LOG << "Native font for 'fntBig' is: " << fntBig.GetNativeFontInfoDesc().c_str() LOG_
+	_CL_LOG << "Native font for 'fntSmall' is: " << fntSmall.GetNativeFontInfoDesc().c_str() LOG_
+	_CL_LOG << "Native font for 'fntHdr' is: " << fntHdr.GetNativeFontInfoDesc().c_str() LOG_
+
 	wxReportWriter* pReport = new wxReportWriter(0, wxT("Test Report"), wxPoint(10,10), wxSize( 100, 100 ) );
 	pReport->SetPath( wxT(".") );
 
