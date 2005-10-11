@@ -828,6 +828,7 @@ void LB_STDCALL lbDatabaseReport::init(char* SQLString, char* DBName, char* DBUs
 
 #ifdef OSX
 	int colstep = properties->getIntParameter("colstep"); 
+	colstep = colstep * 0.75;
 #endif
 #ifndef OSX
 	int colstep = properties->getIntParameter("colstep");
@@ -842,10 +843,10 @@ void LB_STDCALL lbDatabaseReport::init(char* SQLString, char* DBName, char* DBUs
 				wxSWISS, wxITALIC, wxBOLD, true, "Arial");
 				
 	wxFont			fntSmall(properties->getIntParameter("fntSmall-Mac"),
-				wxSWISS, wxNORMAL, wxNORMAL, true , "Arial");
+				wxSWISS, wxNORMAL, wxNORMAL, false , "Arial");
 				
 	wxFont			fntHdr(properties->getIntParameter("fntHdr-Mac"),
-				wxSWISS, wxNORMAL, wxBOLD, true, "Arial");
+				wxSWISS, wxNORMAL, wxBOLD, false, "Arial");
 #endif
 
 #ifdef WINDOWS
@@ -978,6 +979,8 @@ void LB_STDCALL lbDatabaseReport::init(char* SQLString, char* DBName, char* DBUs
 	while (tLine.getPtr() != NULL) {
 	        pObj = new wxReportObj( 0, (LineSpace * ii) + offset - ii, TextBlockSize, 6 );
 	        
+			pObj->SetFont(&fntSmall);
+			
 	        wxString data = wxString(tLine->charrep());
 
 	        wxString pattern = data.AfterFirst('{');
@@ -1004,8 +1007,11 @@ void LB_STDCALL lbDatabaseReport::init(char* SQLString, char* DBName, char* DBUs
 	}
 	
 
+	_coly = (LineSpace * ii) + offset;
 
-	_coly = 10 * LineSpace - 1 + offset;
+#ifdef OSX
+//	_coly = _coly * 0.75;
+#endif
 
 	// Column header
 
@@ -1030,11 +1036,17 @@ void LB_STDCALL lbDatabaseReport::init(char* SQLString, char* DBName, char* DBUs
 			colsteps[i-1] = new int;
 			
 			*(colsteps[i-1]) = properties->getIntParameter(colName->charrep());
+
+			#ifdef OSX
+			*(colsteps[i-1]) = *(colsteps[i-1]) * 0.75;
+			#endif
 			
 			pObj = new wxReportObj( currentColstep, _coly, *(colsteps[i-1]), 5 );
 			pObj->SetData(query->getColumnName(i));
-			pObj->SetFont( &fntHdr );
+			//pObj->SetFont( &fntHdr );
+			pObj->SetFont( &fntSmall );
 			pObj->SetRightAlign();
+			pObj->SetIncrements( 0.0, LPI6 );
 			pReport->AddHeaderObj( pObj );
 			
 			strValue[i-1] = new wxString;
@@ -1082,16 +1094,18 @@ void LB_STDCALL lbDatabaseReport::init(char* SQLString, char* DBName, char* DBUs
 
 		currentColstep = 0;
 
-		pObj = new wxReportObj( currentColstep, _coly+5, *(colsteps[0]), 6 );
+		pObj = new wxReportObj( currentColstep, _coly, *(colsteps[0]), 6 );
 		pObj->SetRef( strValue[0] );
+		pObj->SetFont(&fntSmall);
 		pObj->SetIncrements( 0.0, LPI6 );
 		pObj->SetRightAlign();
 		pReport->AddDataObj( pObj );
 		currentColstep += *(colsteps[0]);
 	
 		for (int i = 2; i <= cols; i++) {
-			pObj = new wxReportObj( currentColstep, _coly+5, *(colsteps[i-1]), 6 );
+			pObj = new wxReportObj( currentColstep, _coly, *(colsteps[i-1]), 6 );
 			pObj->SetRef( strValue[i-1] );
+			pObj->SetFont(&fntSmall);
 			pObj->SetIncrements( 0.0, LPI6 );
 			pObj->SetRightAlign();
 			pReport->AddDataObj( pObj );
