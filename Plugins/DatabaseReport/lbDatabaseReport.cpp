@@ -837,14 +837,28 @@ void LB_STDCALL lbDatabaseReport::init(char* SQLString, char* DBName, char* DBUs
 	
 	wxLogNull		logNull;
 
-	wxFont			fntBig(properties->getIntParameter("fntBig"),
-				wxDECORATIVE, wxITALIC, wxBOLD, true);
+#ifdef OSX
+	wxFont			fntBig(properties->getIntParameter("fntBig-Mac"),
+				wxSWISS, wxITALIC, wxBOLD, true, "Arial");
 				
-	wxFont			fntSmall(properties->getIntParameter("fntSmall"),
-				wxSWISS, wxNORMAL, wxNORMAL);
+	wxFont			fntSmall(properties->getIntParameter("fntSmall-Mac"),
+				wxSWISS, wxNORMAL, wxNORMAL, true , "Arial");
 				
-	wxFont			fntHdr(properties->getIntParameter("fntHdr"),
-				wxSWISS, wxNORMAL, wxBOLD, true);
+	wxFont			fntHdr(properties->getIntParameter("fntHdr-Mac"),
+				wxSWISS, wxNORMAL, wxBOLD, true, "Arial");
+#endif
+
+#ifdef WINDOWS
+	wxFont			fntBig(properties->getIntParameter("fntBig-Windows"),
+				wxSWISS, wxITALIC, wxBOLD, true, "Arial");
+				
+	wxFont			fntSmall(properties->getIntParameter("fntSmall-Windows"),
+				wxSWISS, wxNORMAL, wxNORMAL, true , "Arial");
+				
+	wxFont			fntHdr(properties->getIntParameter("fntHdr-Windows"),
+				wxSWISS, wxNORMAL, wxBOLD, true, "Arial");
+#endif
+
 
 
 	_CL_LOG << "Native font for 'fntBig' is: " << fntBig.GetNativeFontInfoDesc().c_str() LOG_
