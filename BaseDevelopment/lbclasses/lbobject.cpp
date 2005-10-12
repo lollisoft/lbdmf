@@ -217,6 +217,8 @@ void LB_STDCALL lbParameter::setUAPString(lb_I_String*& parameter, lb_I_String*&
 lbErrCodes LB_STDCALL lbParameter::getUAPString(lb_I_String*& parameter, lb_I_String*& p) {
 	lbErrCodes err = ERR_NONE;
 	
+	if (parameters == NULL) return ERR_PARAM_NOT_FOUND;
+	
 	lb_I_String* pp = parameter;
 	UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
 	QI(pp, lb_I_KeyBase, key, __FILE__, __LINE__)
@@ -260,6 +262,8 @@ void LB_STDCALL lbParameter::setUAPInteger(lb_I_String*& parameter, lb_I_Integer
 lbErrCodes LB_STDCALL lbParameter::getUAPInteger(lb_I_String*& parameter, lb_I_Integer*& p) {
 	lbErrCodes err = ERR_NONE;
 	
+	if (parameters == NULL) return ERR_PARAM_NOT_FOUND;
+
 	lb_I_String* pp = parameter;
 	UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
 	QI(pp, lb_I_KeyBase, key, __FILE__, __LINE__)
@@ -376,12 +380,12 @@ void LB_STDCALL lbString::setData(char const * p) {
 void LB_STDCALL lbString::trim() {
 	while (stringdata[strlen(stringdata)-1] == ' ') 
 		stringdata[strlen(stringdata)-1] = 0;
-		
+	
 	if (key != NULL) free(key);
 	
 	key = (char*) malloc(strlen(stringdata)+1);
 	key[0] = 0;
-	key = strcpy(key, stringdata);	
+	key = strcpy(key, stringdata);
 }
 
 char* LB_STDCALL lbString::getData() const {
