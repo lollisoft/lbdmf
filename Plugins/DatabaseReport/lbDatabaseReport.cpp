@@ -874,6 +874,8 @@ void LB_STDCALL lbDatabaseReport::init(char* SQLString, char* DBName, char* DBUs
 	wxReportWriter* pReport = new wxReportWriter(0, wxT("Test Report"), wxPoint(10,10), wxSize( 100, 100 ) );
 	pReport->SetPath( wxT(".") );
 
+	//pReport->SetOrientation(wxLANDSCAPE);
+
 /*...sHeader:8:*/
 	// -----------------------
 	//  HEADER (on each page)
@@ -919,7 +921,7 @@ void LB_STDCALL lbDatabaseReport::init(char* SQLString, char* DBName, char* DBUs
 	err = query->query(SQLString);
 
 /*...sRebuild query\44\ if there are conditions:16:*/
-	if ((hasConditions) && (err == ERR_NONE)) {
+	if ((hasConditions) && (query->hasColumnName(AndConditionColumn->charrep())) && (err == ERR_NONE)) {
 		UAP_REQUEST(manager.getPtr(), lb_I_String, newQuery)
 		
 		bool isChar = query->getColumnType(AndConditionColumn->charrep()) == lb_I_Query::lbDBColumnChar;
@@ -984,7 +986,7 @@ void LB_STDCALL lbDatabaseReport::init(char* SQLString, char* DBName, char* DBUs
 	while (tLine.getPtr() != NULL) {
 	        pObj = new wxReportObj( 0, (LineSpace * ii) + offset - ii, TextBlockSize, 6 );
 	        
-		pObj->SetFont(&fntSmall);
+			pObj->SetFont(&fntSmall);
 			
 	        wxString data = wxString(tLine->charrep());
 
@@ -999,10 +1001,11 @@ void LB_STDCALL lbDatabaseReport::init(char* SQLString, char* DBName, char* DBUs
 	        *p += pattern.c_str();
 	        *p += "}";
 	        
-	        replacer->getUAPString(*&p, *&r);
-	        
-	        data.Replace(p->charrep(), r->charrep());
-
+			if (strcmp(p->charrep(), "{}") != 0) {
+				replacer->getUAPString(*&p, *&r);
+				data.Replace(p->charrep(), r->charrep());
+			}
+			
 	        pObj->SetData(data);
 	        pObj->SetIncrements( 0.0, LPI6 );
 	        //pObj->SetLeftAlign();
@@ -1035,23 +1038,75 @@ void LB_STDCALL lbDatabaseReport::init(char* SQLString, char* DBName, char* DBUs
 
 		int currentColstep = 0;
 
+		wxBitmap bm(100, 20);
+		wxMemoryDC dc;
+		// Not really needed here, because GetTextExtent has it's own font parameter
+		//dc.SetFont(fntHdr);
+		dc.SelectObject(bm);
+		
+		
+		for (int i = 1; i <= cols; i++) {
+			colsteps[i-1] = new int;
+			*(colsteps[i-1]) = 0;
+		}
+		
+		double scalingFactor = 2.5;
+		
+		if (query->first() == ERR_NONE)
+			for (int i = 1; i <= cols; i++) {
+				UAP(lb_I_String, value, __FILE__, __LINE__)
+				UAP_REQUEST(getModuleInstance(), lb_I_String, colName)
+			
+				*colName = query->getColumnName(i);
+				int width = properties->getIntParameter(colName->charrep());
+			
+				if ((width+4) > *(colsteps[i-1])) 
+					*(colsteps[i-1]) = width+4;
+
+				wxCoord w = 0;
+				wxCoord h = 0;
+				
+				value = query->getAsString(i);
+				value->trim();
+				dc.GetTextExtent(value->charrep(), &w, &h, NULL, NULL, &fntSmall);
+			
+				if ((w/scalingFactor) > *(colsteps[i-1])) {
+					*(colsteps[i-1]) = w/scalingFactor;
+				}
+
+			}
+		
+		while(query->next() == ERR_NONE) {
+			for (int i = 1; i <= cols; i++) {
+				UAP(lb_I_String, value, __FILE__, __LINE__)
+				UAP_REQUEST(getModuleInstance(), lb_I_String, colName)
+			
+				*colName = query->getColumnName(i);
+				int width = properties->getIntParameter(colName->charrep());
+			
+				if ((width+4) > *(colsteps[i-1])) 
+					*(colsteps[i-1]) = width+4;
+
+				wxCoord w = 0;
+				wxCoord h = 0;
+				
+				value = query->getAsString(i);
+				value->trim();
+				dc.GetTextExtent(value->charrep(), &w, &h, NULL, NULL, &fntSmall);
+			
+				if ((w/scalingFactor) > *(colsteps[i-1])) {
+					*(colsteps[i-1]) = w/scalingFactor;
+				}
+			}
+		}
+		
 		for (int i = 1; i <= cols; i++) {
 			UAP_REQUEST(getModuleInstance(), lb_I_String, colName)
-			
 			*colName = query->getColumnName(i);
-			
-			colsteps[i-1] = new int;
-			
-			*(colsteps[i-1]) = properties->getIntParameter(colName->charrep());
 
-			#ifdef OSX
-//			*(colsteps[i-1]) = *(colsteps[i-1]) * 0.75;
-			#endif
-			
 			pObj = new wxReportObj( currentColstep, _coly, *(colsteps[i-1]), 5 );
-			pObj->SetData(query->getColumnName(i));
+			pObj->SetData(colName->charrep());
 			pObj->SetFont( &fntHdr );
-			//pObj->SetFont( &fntSmall );
 			pObj->SetRightAlign();
 			pReport->AddHeaderObj( pObj );
 			
@@ -1070,12 +1125,12 @@ void LB_STDCALL lbDatabaseReport::init(char* SQLString, char* DBName, char* DBUs
 		pReport->AddFooterObj( pObj );
 
 		pObj = new wxReportObj( 0, 8, 110, 20 );
-		pObj->SetData( wxT("lbDMF Reportwriter") );
+		pObj->SetData( _T("lbDMF Reportwriter") );
 		pObj->SetFont( &fntSmall );
 		pReport->AddFooterObj( pObj );
 
 		pObj = new wxReportObj( 120, 8, 50, 20 );
-		pObj->SetPgNum( wxT("Page") );
+		pObj->SetPgNum( _T("Page") );
 		pObj->SetFont( &fntSmall );
 		pObj->SetRightAlign();
 		pReport->AddFooterObj( pObj );
@@ -1120,6 +1175,8 @@ void LB_STDCALL lbDatabaseReport::init(char* SQLString, char* DBName, char* DBUs
 	
 		err = query->first();
 
+		dc.SelectObject(wxNullBitmap);
+
 		pReport->BeginDataSection();
 
 /*...sAll lines exept last:32:*/
@@ -1129,25 +1186,13 @@ void LB_STDCALL lbDatabaseReport::init(char* SQLString, char* DBName, char* DBUs
 			
 				value = query->getAsString(i);
 			
-				// -----------------------
-				//  DATA...
-				// -----------------------
-				
-				printf("%s|", value->charrep());
-				
 				*(strValue[i-1]) = value->charrep();
 			}
 			
 			UAP(lb_I_String, value, __FILE__, __LINE__)
 			
 			value = query->getAsString(cols);
-			
-			// -----------------------
-			//  DATA...
-			// -----------------------
-			
-			printf("%s\n", value->charrep());
-			
+
 			*(strValue[cols-1]) = value->charrep();
 			
 			pReport->SaveData();
@@ -1162,15 +1207,17 @@ void LB_STDCALL lbDatabaseReport::init(char* SQLString, char* DBName, char* DBUs
 				UAP(lb_I_String, value, __FILE__, __LINE__)
 			
 				value = query->getAsString(i);
-			
-				// -----------------------
-				//  DATA...
-				// -----------------------
 
 				*(strValue[i-1]) = value->charrep();
 				
 			}
 			
+			UAP(lb_I_String, value, __FILE__, __LINE__)
+			
+			value = query->getAsString(cols);
+
+			*(strValue[cols-1]) = value->charrep();
+
 			pReport->SaveData();
 		}
 /*...e*/
@@ -1191,7 +1238,7 @@ void LB_STDCALL lbDatabaseReport::init(char* SQLString, char* DBName, char* DBUs
 	pReport->FinishSection();
 
 	pReport->FinishReport();
-		
+	
 	ReportFileName = strdup(pReport->FinalDestination().c_str());
 
 	_CL_LOG << "Created a report file: '" << ReportFileName << "'" LOG_
@@ -1232,6 +1279,10 @@ void LB_STDCALL lbDatabaseReport::show() {
 		wxSize( 100, 100 ) );
 	
 	pReport->SetupReport( ReportFileName );
+
+	// Does not change preview layout :-(
+	//pReport->SetOrientation(wxLANDSCAPE);
+
 	pReport->PrintPreview();
 	
 }
