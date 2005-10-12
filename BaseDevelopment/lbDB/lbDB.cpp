@@ -249,13 +249,14 @@ public:
 	 * General information based on the given query.
 	 */
 
-	int		LB_STDCALL getColumns();
+	int				LB_STDCALL getColumns();
+	bool			LB_STDCALL lbQuery::hasColumnName(char* name);
 
-	char*		LB_STDCALL getColumnName(int col);
+	char*			LB_STDCALL getColumnName(int col);
 
-	int		LB_STDCALL hasFKColumn(char* FKName);
+	int				LB_STDCALL hasFKColumn(char* FKName);
 
-	int		LB_STDCALL getFKColumns();
+	int				LB_STDCALL getFKColumns();
 	
 	lb_I_String*    LB_STDCALL getFKColumn(int pos);
 	
@@ -1397,6 +1398,11 @@ int LB_STDCALL lbQuery::getColumns() {
 	return count;
 }
 /*...e*/
+
+bool LB_STDCALL lbQuery::hasColumnName(char* name) {
+	if ((boundColumns != NULL) && (boundColumns->getColumnIndex(name) != -1)) return true; 
+}
+
 /*...sint LB_STDCALL lbQuery\58\\58\hasFKColumn\40\char\42\ FKName\41\:0:*/
 int LB_STDCALL lbQuery::hasFKColumn(char* FKName) {
 	lbErrCodes err = ERR_NONE;

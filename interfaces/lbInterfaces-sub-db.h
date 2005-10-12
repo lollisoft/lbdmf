@@ -139,6 +139,13 @@ public:
 	virtual int        LB_STDCALL getColumns() = 0;
 	
 	/**
+	 * \brief Check exsistence for column name.
+	 *
+	 * Returns false, if given column name is not in the query.
+	 */
+	virtual bool		LB_STDCALL hasColumnName(char* name) = 0;
+	
+	/**
 	 * \brief Get the name of a column.
 	 *
 	 * \param col Integer index of the column.
