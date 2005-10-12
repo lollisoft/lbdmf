@@ -2,7 +2,7 @@
 /*
     DMF Distributed Multiplatform Framework (the initial goal of this library)
     This file is part of lbDMF.
-    Copyright (C) 2002  Lothar Behrens (lothar.behrens@lollisoft.de)
+    Copyright (C) 2002 Lothar Behrens (lothar.behrens@lollisoft.de)
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Lesser General Public
@@ -824,8 +824,11 @@ void LB_STDCALL lbDatabaseReport::init(char* SQLString, char* DBName, char* DBUs
 
 	properties->initData("dummy");
 
-	int colstepHDR = properties->getIntParameter("colstepHDR"); 
+//	int colstepHDR = properties->getIntParameter("colstepHDR"); 
 
+	int colstep = 0;
+
+#ifdef bla	
 #ifdef OSX
 	int colstep = properties->getIntParameter("colstep"); 
 	colstep = colstep * 0.75;
@@ -833,8 +836,10 @@ void LB_STDCALL lbDatabaseReport::init(char* SQLString, char* DBName, char* DBUs
 #ifndef OSX
 	int colstep = properties->getIntParameter("colstep");
 #endif
+#endif
 
-	float _coly = properties->getFloatParameter("_coly");
+	// Currently, this value gets overwritten with n * LineSpace + offset - n
+	float _coly = 0.0; //properties->getFloatParameter("_coly");
 	
 	wxLogNull		logNull;
 
@@ -861,11 +866,11 @@ void LB_STDCALL lbDatabaseReport::init(char* SQLString, char* DBName, char* DBUs
 #endif
 
 
-
+/*
 	_CL_LOG << "Native font for 'fntBig' is: " << fntBig.GetNativeFontInfoDesc().c_str() LOG_
 	_CL_LOG << "Native font for 'fntSmall' is: " << fntSmall.GetNativeFontInfoDesc().c_str() LOG_
 	_CL_LOG << "Native font for 'fntHdr' is: " << fntHdr.GetNativeFontInfoDesc().c_str() LOG_
-
+*/
 	wxReportWriter* pReport = new wxReportWriter(0, wxT("Test Report"), wxPoint(10,10), wxSize( 100, 100 ) );
 	pReport->SetPath( wxT(".") );
 
@@ -1040,7 +1045,7 @@ void LB_STDCALL lbDatabaseReport::init(char* SQLString, char* DBName, char* DBUs
 			*(colsteps[i-1]) = properties->getIntParameter(colName->charrep());
 
 			#ifdef OSX
-			*(colsteps[i-1]) = *(colsteps[i-1]) * 0.75;
+//			*(colsteps[i-1]) = *(colsteps[i-1]) * 0.75;
 			#endif
 			
 			pObj = new wxReportObj( currentColstep, _coly, *(colsteps[i-1]), 5 );
