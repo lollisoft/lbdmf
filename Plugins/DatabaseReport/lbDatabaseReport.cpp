@@ -854,10 +854,10 @@ void LB_STDCALL lbDatabaseReport::init(char* SQLString, char* DBName, char* DBUs
 				wxSWISS, wxITALIC, wxBOLD, true, "Arial");
 				
 	wxFont			fntSmall(properties->getIntParameter("fntSmall-Windows"),
-				wxSWISS, wxNORMAL, wxNORMAL, true , "Arial");
+				wxSWISS, wxNORMAL, wxNORMAL, false , "Arial");
 				
 	wxFont			fntHdr(properties->getIntParameter("fntHdr-Windows"),
-				wxSWISS, wxNORMAL, wxBOLD, true, "Arial");
+				wxSWISS, wxNORMAL, wxBOLD, false, "Arial");
 #endif
 
 
@@ -979,7 +979,7 @@ void LB_STDCALL lbDatabaseReport::init(char* SQLString, char* DBName, char* DBUs
 	while (tLine.getPtr() != NULL) {
 	        pObj = new wxReportObj( 0, (LineSpace * ii) + offset - ii, TextBlockSize, 6 );
 	        
-			pObj->SetFont(&fntSmall);
+		pObj->SetFont(&fntSmall);
 			
 	        wxString data = wxString(tLine->charrep());
 
@@ -1008,6 +1008,8 @@ void LB_STDCALL lbDatabaseReport::init(char* SQLString, char* DBName, char* DBUs
 	
 
 	_coly = (LineSpace * ii) + offset;
+
+	_CL_LOG << "Col Y value is " << _coly LOG_
 
 #ifdef OSX
 //	_coly = _coly * 0.75;
@@ -1043,10 +1045,9 @@ void LB_STDCALL lbDatabaseReport::init(char* SQLString, char* DBName, char* DBUs
 			
 			pObj = new wxReportObj( currentColstep, _coly, *(colsteps[i-1]), 5 );
 			pObj->SetData(query->getColumnName(i));
-			//pObj->SetFont( &fntHdr );
-			pObj->SetFont( &fntSmall );
+			pObj->SetFont( &fntHdr );
+			//pObj->SetFont( &fntSmall );
 			pObj->SetRightAlign();
-			pObj->SetIncrements( 0.0, LPI6 );
 			pReport->AddHeaderObj( pObj );
 			
 			strValue[i-1] = new wxString;
@@ -1094,7 +1095,7 @@ void LB_STDCALL lbDatabaseReport::init(char* SQLString, char* DBName, char* DBUs
 
 		currentColstep = 0;
 
-		pObj = new wxReportObj( currentColstep, _coly, *(colsteps[0]), 6 );
+		pObj = new wxReportObj( currentColstep, _coly + LineSpace, *(colsteps[0]), 6 );
 		pObj->SetRef( strValue[0] );
 		pObj->SetFont(&fntSmall);
 		pObj->SetIncrements( 0.0, LPI6 );
@@ -1103,7 +1104,7 @@ void LB_STDCALL lbDatabaseReport::init(char* SQLString, char* DBName, char* DBUs
 		currentColstep += *(colsteps[0]);
 	
 		for (int i = 2; i <= cols; i++) {
-			pObj = new wxReportObj( currentColstep, _coly, *(colsteps[i-1]), 6 );
+			pObj = new wxReportObj( currentColstep, _coly + LineSpace, *(colsteps[i-1]), 6 );
 			pObj->SetRef( strValue[i-1] );
 			pObj->SetFont(&fntSmall);
 			pObj->SetIncrements( 0.0, LPI6 );
