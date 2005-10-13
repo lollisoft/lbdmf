@@ -1401,6 +1401,7 @@ int LB_STDCALL lbQuery::getColumns() {
 
 bool LB_STDCALL lbQuery::hasColumnName(char* name) {
 	if ((boundColumns != NULL) && (boundColumns->getColumnIndex(name) != -1)) return true; 
+	return false;
 }
 
 /*...sint LB_STDCALL lbQuery\58\\58\hasFKColumn\40\char\42\ FKName\41\:0:*/
