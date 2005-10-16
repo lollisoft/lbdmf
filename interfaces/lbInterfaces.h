@@ -703,6 +703,13 @@ public:
 #define UAP(interface, Unknown_Reference, file, line) \
 		class UAP##Unknown_Reference { \
 \
+		char* strdup(char* s) { \
+			if (s == NULL) return NULL; \
+			char* temp = (char*) malloc(strlen(s)+1); \
+			temp[0] = 0; \
+			strcpy(temp, s); \
+			return temp; \
+		} \
 		public: \
 	        UAP##Unknown_Reference() { \
 	        	_autoPtr = NULL; \
@@ -751,6 +758,7 @@ public:
 		\
 		virtual ~UAP##Unknown_Reference() { \
 			if (_autoPtr != NULL) { \
+				if (attachedClassName != NULL) free(attachedClassName); \
 				if (allowDelete != 1) { \
 					if (_autoPtr->deleteState() == 1) { \
 						printf("Error: Instance would be deleted, but it's not allowed !!\n"); \
@@ -797,9 +805,13 @@ public:
 		} \
 		interface* LB_STDCALL operator -> () { \
 			if ((initialized == false) && (_autoPtr != NULL) && (_autoPtr->getClassName() != NULL)) { \
+				char* className = _autoPtr->getClassName(); \
+				int len = strlen(className)+1; \
 				initialized = true; \
 				if (attachedClassName != NULL) free(attachedClassName); \
-			        attachedClassName = strdup(_autoPtr->getClassName()); \
+				attachedClassName = (char*) malloc(len); \
+				attachedClassName[0] = 0; \
+			        strcpy(attachedClassName, className); \
 			} \
 			return _autoPtr; \
 		} \
@@ -1158,7 +1170,7 @@ void LB_STDCALL classname::setModuleManager(lb_I_Module* m, char* file, int line
 			datei = file; \
 		else \
 			datei++; \
-		manager->notify_create(this, #classname, datei, line); \
+		m->notify_create(this, #classname, datei, line); \
 	} else { \
 		_CL_LOG << "Error: Query interface failed for manager in " << #classname << " while setModuleManager(...)!" LOG_ \
 	} \
@@ -1560,7 +1572,6 @@ lbErrCodes DLLEXPORT LB_FUNCTORCALL name(lb_I_Unknown** uk, lb_I_Module* m, char
  */
 #define DECLARE_SINGLETON_FUNCTOR(name) \
 extern "C" { \
-extern lb_I_Unknown* name##_singleton; \
 lbErrCodes DLLEXPORT LB_FUNCTORCALL name(lb_I_Unknown** uk, lb_I_Module* m, char* file, int line); \
 } 
 
@@ -1568,12 +1579,33 @@ lbErrCodes DLLEXPORT LB_FUNCTORCALL name(lb_I_Unknown** uk, lb_I_Module* m, char
  * Use this once per class.
  */
 #define IMPLEMENT_SINGLETON_FUNCTOR(name, clsname) \
+class singletonHolder_##name { \
+public: \
+	singletonHolder_##name() { \
+		singleton = NULL; \
+	} \
+	virtual ~singletonHolder_##name() { \
+		printf("Delete singleton %s\n", "singletonHolder_" #name); \
+		delete singleton; \
+	} \
+	void set(clsname* _singleton) { \
+		singleton = _singleton; \
+	} \
+	\
+	clsname* get() { \
+		return singleton; \
+	} \
+	\
+	clsname* singleton; \
+}; \
+\
+singletonHolder_##name singleton_##name; \
+\
 extern "C" { \
-lb_I_Unknown* name##_singleton = NULL; \
 lbErrCodes DLLEXPORT LB_FUNCTORCALL name(lb_I_Unknown** uk, lb_I_Module* m, char* file, int line) { \
 \
 	lbErrCodes err = ERR_NONE; \
-	if (name##_singleton == NULL) { \
+	if (singleton_##name.get() == NULL) { \
 	        clsname* instance = new clsname(); \
 	        *uk = NULL; \
 	        char buf[100] = ""; \
@@ -1588,7 +1620,7 @@ lbErrCodes DLLEXPORT LB_FUNCTORCALL name(lb_I_Unknown** uk, lb_I_Module* m, char
 	        	} \
 	        } \
 	        \
-	        name##_singleton = instance; \
+	        singleton_##name.set(instance); \
 	        if ((err = instance->queryInterface("lb_I_Unknown", (void**) uk, file, line)) != ERR_NONE) { \
 	                _CL_LOG << "Failed to create unknown reference to singleton instance of " << \
 	                #clsname << ". Errcode is " << err LOG_ \
@@ -1599,8 +1631,8 @@ lbErrCodes DLLEXPORT LB_FUNCTORCALL name(lb_I_Unknown** uk, lb_I_Module* m, char
 	                return ERR_FUNCTOR; \
 	        } \
         } else { \
-	        track_Object(name##_singleton, "IMPLEMENT_SINGLETON_FUNCTOR - queryInterface()"); \
-	        if ((err = name##_singleton->queryInterface("lb_I_Unknown", (void**) uk, file, line)) != ERR_NONE) { \
+	        track_Object(singleton_##name.get(), "IMPLEMENT_SINGLETON_FUNCTOR - queryInterface()"); \
+	        if ((err = singleton_##name.get()->queryInterface("lb_I_Unknown", (void**) uk, file, line)) != ERR_NONE) { \
 	                _CL_LOG << "Failed to create unknown reference to singleton instance of " << \
 	                #clsname << ". Errcode is " << err LOG_ \
 	                if (err == ERR_STATE_FURTHER_LOCK) { \
@@ -1693,6 +1725,8 @@ public:
 /*...e*/
 
 /*...sclass lb_I_CallbackManager:0:*/
+/** \brief An attempt for registering callbacks.
+ */
 class lb_I_CallbackManager {
 public:
 /*...sdocu:0:*/
@@ -1708,12 +1742,16 @@ public:
 };
 /*...e*/
 /*...sclass lb_I_CallbackDispatcher dispatches over names:0:*/
+/** \brief An attempt to dispatch a request.
+ */
 class lb_I_CallbackDispatcher {
 public:
 	virtual lbErrCodes dispatch(const char* request, lb_I_Transfer_Data& result) = 0;
 };
 /*...e*/
 /*...sclass lb_I_CallbackTarget:0:*/
+/** \brief An attempt to let classes register their callbacks.
+ */
 class lb_I_CallbackTarget {
 public:
 /*...sdocu:0:*/
@@ -1736,6 +1774,8 @@ public:
 
 /*...e*/
 /*...sclass lb_I_ProtocolManager:0:*/
+/** \brief An attempt for a protocol based callback manager.
+ */
 class lb_I_ProtocolManager {
 public:
 /*...sdocu:0:*/
@@ -1751,6 +1791,8 @@ public:
 };
 /*...e*/
 /*...sclass lb_I_ProtocolDispatcher dispatches over protocol haeder:0:*/
+/** \brief An attempt for a protocol based dispatcher.
+ */
 class lb_I_ProtocolDispatcher {
 public:
 	virtual lbErrCodes dispatch(const lb_I_Transfer_Data& request, lb_I_Transfer_Data& result) = 0;
@@ -1762,6 +1804,8 @@ public:
  */
 /*...e*/
 /*...sclass lb_I_ProtocolTarget:0:*/
+/** \brief An attempt for a protocol based callback handler.
+ */
 class lb_I_ProtocolTarget {
 public:
 /*...sdocu:0:*/
@@ -1777,21 +1821,22 @@ public:
 /*...e*/
 
 /*...sclass lb_I_EventConnector:0:*/
-// An Application
+/** \brief ???
+ */
 class lb_I_EventConnector {
 public:
 	virtual lbErrCodes LB_STDCALL getConnectorEventList(lb_I_Container* c) = 0;
 };
 /*...e*/
 /*...sclass lb_I_EventSource:0:*/
-// A Menu ??
+/// A Menu ??
 class lb_I_EventSource {
 public:
 	virtual lbErrCodes LB_STDCALL getSourceEventList(lb_I_Container* c) = 0;
 };
 /*...e*/
 /*...sclass lb_I_EventSink:0:*/
-// A Frame ??
+/// A Frame ??
 class lb_I_EventSink {
 public:
 	virtual lb_I_EventCallback LB_STDCALL getEventFunction(char* name) = 0;
@@ -1819,6 +1864,7 @@ public:
 /*...e*/
 
 /*...sclass lb_I_EventMapper:0:*/
+/// ???
 class lb_I_EventMapper : public lb_I_Unknown {
 public:
 	/**
@@ -2401,6 +2447,7 @@ public:
 	 */
 	virtual void LB_STDCALL setActionID(char* id) = 0;
 };
+
 /**
  * \brief This interface is intended as a way to delegate action steps.
  *
