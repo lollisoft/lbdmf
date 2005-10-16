@@ -234,10 +234,17 @@ int main(int argc, char *argv[]) {
 #ifdef WINDOWS
 	TRMemOpen();
 	TRMemSetModuleName(__FILE__);
+#endif
+
+	mm = getModuleInstance();
+	mm->setModuleManager(mm, __FILE__, __LINE__);
+
+	mm->release(__FILE__, __LINE__);
+	
+	Instances();
 	
 	mm = getModuleInstance();
 	mm->setModuleManager(mm, __FILE__, __LINE__);
-#endif
 
 #define MEM_TEST
 #define CONTAINER_TEST
@@ -256,11 +263,6 @@ int main(int argc, char *argv[]) {
 			string->setData("Test");
 		}
 
-		char* t = (char*) new char[100];
-		t[0] = 0;
-		
-		sprintf(t, "Unfreed memory :-)\n");
-	
 		printf("Ready.\n");
 	}
 
@@ -367,7 +369,8 @@ int main(int argc, char *argv[]) {
 	}
 	
 	mm->release(__FILE__, __LINE__);
-//	getchar();
+
+	Instances();
 	
 	return 0;
 }

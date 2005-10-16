@@ -732,7 +732,7 @@ lbStringKey::lbStringKey(const lb_I_KeyBase* k) {
 
 lbStringKey::~lbStringKey(){
 	if (key != NULL) {
-		delete key;
+		free(key);
 	}
 }
 
@@ -801,15 +801,21 @@ BOOL WINAPI DllMain(HINSTANCE dllHandle, DWORD reason, LPVOID situation) {
                 case DLL_THREAD_ATTACH:
                         _CL_VERBOSE << "New thread starting.\n" LOG_
                         break;
-                case DLL_PROCESS_DETACH:                        
+                case DLL_PROCESS_DETACH:
+
+			free(translated);
+			free(lbLogDirectory);
+			free(lbLogFile);
+			
+                	
                 	_CL_VERBOSE << "DLL_PROCESS_DETACH for " << __FILE__ LOG_
                         if (situation)
                         {
-                                _CL_VERBOSE << "DLL released by system." LOG_
+                                _CL_LOG << "DLL " << __FILE__ << " released by system." LOG_
                         }
                         else
                         {
-                                _CL_VERBOSE << "DLL released by program.\n" LOG_
+                                _CL_LOG << "DLL " << __FILE__ << " released by program.\n" LOG_
                         }
                         break;
                 case DLL_THREAD_DETACH:

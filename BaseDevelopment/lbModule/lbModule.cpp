@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.90 $
+ * $Revision: 1.91 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.90 2005/08/10 22:01:49 lollisoft Exp $
+ * $Id: lbModule.cpp,v 1.91 2005/10/16 17:39:56 lollisoft Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.91  2005/10/16 17:39:56  lollisoft
+ * Improvements in memory usage.
+ *
  * Revision 1.90  2005/08/10 22:01:49  lollisoft
  * Reactivated macro.
  *
@@ -346,6 +349,13 @@ class lbSkipListElement;
 typedef lb_I_Element* Elem;
 #define MAXLEVEL 9
 
+char* strdup(const char* s) {
+	if (s == NULL) return NULL;
+	char* temp = (char*) malloc(strlen(s)+1);
+	temp[0] = 0;
+	strcpy(temp, s);
+	return temp;
+}
 
 /*...sclass SkipNode:0:*/
 class SkipNode {
@@ -1924,188 +1934,6 @@ private:
 };
 
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbHCInterfaceRepository)
-#ifdef bla
-/*...s:0:*/
-char* LB_STDCALL lbHCInterfaceRepository::getClassName() { 
-	return "lbHCInterfaceRepository"; 
-} 
-char* LB_STDCALL lbHCInterfaceRepository::_queryInterface(char* name, void** unknown, char* file, int line) { 
-	char* ID = new char[strlen(name)+strlen("lbHCInterfaceRepository")+strlen(file)+1];
-	ID[0] = 0;
-	strcat(ID, name); 
-	strcat(ID, "lbHCInterfaceRepository"); 
-	strcat(ID, file); 
-	lbErrCodes err = ERR_NONE; 
-	if ((err = queryInterface(name, unknown, file, line)) != ERR_NONE) { 
-		_CL_VERBOSE <<"Error: queryInterface failed (in _queryInterface)!" LOG_ 
-		return ""; 
-	} 
-	
-	return ID; 
-} 
-lb_I_Module* LB_STDCALL lbHCInterfaceRepository::getModuleManager() { 
-		lbErrCodes err = ERR_NONE; 
-		UAP(lb_I_Module, _mm, __FILE__, __LINE__) 
-		if (manager == NULL) { 
-			_CL_VERBOSE << "Error: Can't return module manager. Call setModuleManager(...) on me first!" LOG_ 
-			return NULL; 
-		} 
-
-		_mm.setFile(__FILE__);
-		_mm.setLine(__LINE__);
-		{
-		        char* iface = (char*) malloc(strlen("lb_I_Module")+1);
-		        strcpy(iface, "lb_I_Module");
-		        err = manager->queryInterface(iface, (void**) &_mm, __FILE__, __LINE__);
-		        free(iface);
-		        iface = NULL;
-		}
-
-//     		QI(manager, lb_I_Module, _mm, __FILE__, __LINE__) 
-		return _mm.getPtr(); 
-} 
-
-void LB_STDCALL lbHCInterfaceRepository::setModuleManager(lb_I_Module* m, char* file, int line) { 
-	if (m == NULL) { 
-		_CL_VERBOSE << "Error: Set module manager with a NULL pointer in " << "lbHCInterfaceRepository" << " while setModuleManager(...)!" LOG_ 
-		return; 
-	} 
-	
-	further_lock = 0; 
-	if (debug_macro == 1) { 
-		_CL_VERBOSE << "Warning: setModuleManager() must be enhanced by module manager use" LOG_ 
-	} 
-	if (m != manager.getPtr()) { 
-	    if (m != NULL) m->queryInterface("lb_I_Module", (void**) &manager, file, line); 
-	} 
-	manager.setLine(__LINE__); 
-	manager.setFile(__FILE__); 
-	
-	if (manager != NULL) { 
-		char *datei = strrchr(file, '#'); 
-		if (datei == NULL) 
-			datei = file; 
-		else 
-			datei++; 
-		manager->notify_create(this, "lbHCInterfaceRepository", datei, line); 
-	} else { 
-		_CL_VERBOSE << "Error: Query interface failed for manager in " << "lbHCInterfaceRepository" << " while setModuleManager(...)!" LOG_ 
-	} 
-} 
-
-void LB_STDCALL lbHCInterfaceRepository::resetRefcount() { ref = STARTREF; } 
-int LB_STDCALL lbHCInterfaceRepository::deleteState() { 
-	return (ref-1 == STARTREF) ? 1 : 0; 
-} 
-char*      LB_STDCALL lbHCInterfaceRepository::getCreationLoc() const { 
-	char buf[20] = ""; 
-	sprintf(buf, "%p", (void*) this); 
-	if (manager != NULL) return manager->getCreationLoc(buf); 
-	return strdup("Have no manager - location can't be found"); 
-} 
-lbErrCodes LB_STDCALL lbHCInterfaceRepository::release(char* file, int line) { 
-        ref--; 
-        if (strcmp("lb_EventManager", "lbHCInterfaceRepository") == 0) { 
-        	_CL_VERBOSE << "lb_EventManager::release() called" LOG_ 
-        } 
-	char ptr[20] = ""; 
-        if (manager != NULL) { 
-        	manager->notify_release(this, "lbHCInterfaceRepository", file, line); 
-        } 
-	
-        if (ref == STARTREF) { 
-        	if (manager != NULL) { 
-        		if (manager->can_delete(this, "lbHCInterfaceRepository") == 1)	{ 
-        			manager->notify_destroy(this, "lbHCInterfaceRepository", file, line); 
-        			delete this; 
-        			return ERR_RELEASED; 
-        		} 
-        		else 
-        			_CL_VERBOSE << "Error: Instance has been deleted prior!" LOG_ 
-        	} 
-        	return ERR_NONE; 
-        } 
-        if (ref < STARTREF) { 
-        	_CL_VERBOSE << "Error: Reference count of instance " << ptr << " of object type " << "lbHCInterfaceRepository" << " is less than " << STARTREF << " (" << ref << ") !!!" LOG_ 
-        	return ERR_REFERENCE_COUNTING; 
-        } 
-        return ERR_INSTANCE_STILL_USED; 
-} 
-
-lb_I_Unknown* LB_STDCALL lbHCInterfaceRepository::clone(char* file, int line) const { 
-
-	lbHCInterfaceRepository* cloned = new lbHCInterfaceRepository(); 
-	cloned->setDebug(0); 
-	lb_I_Unknown* uk_this; 
-
-	lb_I_Unknown* uk_cloned = NULL; 
-
-	cloned->setFurtherLock(0); 
-	if (manager == NULL) _CL_VERBOSE << "lbHCInterfaceRepository" << "::clone() can't be used because manager is a NULL pointer!" LOG_ 
-	cloned->setModuleManager(manager.getPtr(), file, line); 
-	if (cloned->queryInterface("lb_I_Unknown", (void**) &uk_cloned, file, line) != ERR_NONE) { 
-		_CL_VERBOSE << "Error while getting interface" LOG_ 
-	} 
-
-	uk_cloned->setData((lb_I_Unknown*) this); 
-
-	cloned->resetRefcount(); 
-	
-	if (manager != NULL) { 
-		lb_I_Unknown* that = (lb_I_Unknown*) cloned; 
-	        manager->notify_add(that, cloned->getClassName(), file, line); 
-	} 
-        else 
-		if (debug_macro == 1) { 
-                	_CL_VERBOSE << "Module manager was not set!" LOG_ 
-		} 
-	
-	lb_I_Unknown* uk = NULL; 
-	if (uk_cloned->queryInterface("lb_I_Unknown", (void**) &uk, file, line) != ERR_NONE) { 
-		_CL_VERBOSE << "Error while getting unknown interface of cloned object" LOG_ 
-	} 
-
-	if (uk->getRefCount() > 1) { 
-		_CL_VERBOSE << "Cloned object has %d references" << uk->getRefCount() LOG_ 
-	} 
-	return uk; 
-
-} 
-
-lbErrCodes LB_STDCALL lbHCInterfaceRepository::queryInterface(char* name, void** unknown, char* file, int line) { 
-	char buf[1000] = ""; 
-	char iFaces[1000] = ""; 
-	char _classname[100] = "lbHCInterfaceRepository"; 
-	if (further_lock == 1) { 
-		_CL_VERBOSE <<"Error: Object has been locked due to missing module manager (call setModuleManager(...) on me first)!" LOG_ 
-		return ERR_STATE_FURTHER_LOCK; 
-	} 
-	if (unknown == NULL) { 
-		_CL_VERBOSE << "Error: Got NULL pointer reference while queryInterface() called for " << 
-		name << " ! Did you coded it this way: (void**) &variable ?" LOG_ 
-	} 
-
-	strcat(iFaces, "lb_I_Unknown, "); 
-        if (strcmp(name, "lb_I_Unknown") == 0) { 
-        	if (ref < STARTREF) { 
-        		_CL_VERBOSE << "Reference count error in queryInterface (" << "lbHCInterfaceRepository" << ")" LOG_ 
-        	} 
-                ref++; 
-                *unknown = (lb_I_Unknown*) this; 
-                if (manager != NULL) { 
-                	lb_I_Unknown* that = (lb_I_Unknown*) this; 
-		        manager->notify_add(that, _classname, file, line); 
-		} 
-		else { 
-	        	setFurtherLock(1); 
-	        	_CL_VERBOSE << "Lock object due to missing manager!" LOG_ 
-	        	return ERR_STATE_FURTHER_LOCK; 
-		} 
-                return ERR_NONE; 
-        }
-
-/*...e*/
-#endif
         ADD_INTERFACE(lb_I_InterfaceRepository)
 END_IMPLEMENT_LB_UNKNOWN()
 
@@ -2318,7 +2146,7 @@ void lbHCInterfaceRepository::initIntefaceList() {
 //        DOMlist = doc.getElementsByTagName(((name[0] == '/') ? &name[1] : name));
 //        len = DOMlist.getLength();
         // Cleanup
-        delete [] savename;
+        free(savename);
 }
 /*...e*/
 /*...e*/
@@ -2335,31 +2163,9 @@ class lbModule :
                 public lb_I_Module
 {
 public:
-        lbModule() {
-                ref = STARTREF+1;
-                loadedModules = NULL;
-                internalInstanceRequest = 0;
-                xml_Instance = NULL;
-                system_up = 0;
-                initializing = 0;
-/*...sVERBOSE:0:*/
-#ifdef VERBOSE
-                _CL_VERBOSE << "lbModule init manager" LOG_
-#endif
-/*...e*/
-                manager = this;
-                setModuleManager(this, __FILE__, __LINE__);
-        }
-        
-        virtual ~lbModule() {
-                if (ref != STARTREF) COUT << "Error: Reference count mismatch" << ENDL;
-/*...sVERBOSE:0:*/
-#ifdef VERBOSE
-                _CL_VERBOSE << "lbModule::~lbModule() called" LOG_
-#endif
-/*...e*/
-        }
-
+	lbModule();
+	virtual ~lbModule();
+	
         DECLARE_LB_UNKNOWN()
 
         virtual lbErrCodes LB_STDCALL initialize();
@@ -2407,178 +2213,7 @@ protected:
 };
 /*...e*/
 
-BEGIN_IMPLEMENT_LB_UNKNOWN(lbModule)
-#ifdef bla
-/*...s:0:*/
-char* LB_STDCALL lbModule::getClassName() { 
-	return "lbModule"; 
-} 
-char* LB_STDCALL lbModule::_queryInterface(char* name, void** unknown, char* file, int line) { 
-	char* ID = new char[strlen(name)+strlen("lbModule")+strlen(file)+1];
-	ID[0] = 0;
-	strcat(ID, name); 
-	strcat(ID, "lbModule"); 
-	strcat(ID, file); 
-	lbErrCodes err = ERR_NONE; 
-	if ((err = queryInterface(name, unknown, file, line)) != ERR_NONE) { 
-		_CL_VERBOSE <<"Error: queryInterface failed (in _queryInterface)!" LOG_ 
-		return ""; 
-	} 
-	
-	return ID; 
-} 
-lb_I_Module* LB_STDCALL lbModule::getModuleManager() { 
-		lbErrCodes err = ERR_NONE; 
-		UAP(lb_I_Module, _mm, __FILE__, __LINE__) 
-		if (manager == NULL) { 
-			_CL_VERBOSE << "Error: Can't return module manager. Call setModuleManager(...) on me first!" LOG_ 
-			return NULL; 
-		} 
-		QI(manager, lb_I_Module, _mm, __FILE__, __LINE__) 
-		return _mm.getPtr(); 
-} 
-
-void LB_STDCALL lbModule::setModuleManager(lb_I_Module* m, char* file, int line) { 
-	if (m == NULL) { 
-		_CL_VERBOSE << "Error: Set module manager with a NULL pointer in " << "lbModule" << " while setModuleManager(...)!" LOG_ 
-		return; 
-	} 
-	
-	further_lock = 0; 
-	if (debug_macro == 1) { 
-		_CL_VERBOSE << "Warning: setModuleManager() must be enhanced by module manager use" LOG_ 
-	} 
-	if (m != manager.getPtr()) { 
-	    if (m != NULL) m->queryInterface("lb_I_Module", (void**) &manager, file, line); 
-	} 
-	manager.setLine(__LINE__); 
-	manager.setFile(__FILE__); 
-	
-	if (manager != NULL) { 
-		char *datei = strrchr(file, '#'); 
-		if (datei == NULL) 
-			datei = file; 
-		else 
-			datei++; 
-		manager->notify_create(this, "lbModule", datei, line); 
-	} else { 
-		_CL_VERBOSE << "Error: Query interface failed for manager in " << "lbModule" << " while setModuleManager(...)!" LOG_ 
-	} 
-} 
-
-void LB_STDCALL lbModule::resetRefcount() { ref = STARTREF; } 
-int LB_STDCALL lbModule::deleteState() { 
-	return (ref-1 == STARTREF) ? 1 : 0; 
-} 
-char*      LB_STDCALL lbModule::getCreationLoc() const { 
-	char buf[20] = ""; 
-	sprintf(buf, "%p", (void*) this); 
-	if (manager != NULL) return manager->getCreationLoc(buf); 
-	return strdup("Have no manager - location can't be found"); 
-} 
-lbErrCodes LB_STDCALL lbModule::release(char* file, int line) { 
-        ref--; 
-        if (strcmp("lb_EventManager", "lbModule") == 0) { 
-        	_CL_VERBOSE << "lb_EventManager::release() called" LOG_ 
-        } 
-	char ptr[20] = ""; 
-        if (manager != NULL) { 
-        	manager->notify_release(this, "lbModule", file, line); 
-        } 
-	
-        if (ref == STARTREF) { 
-        	if (manager != NULL) { 
-        		if (manager->can_delete(this, "lbModule") == 1)	{ 
-        			manager->notify_destroy(this, "lbModule", file, line); 
-        			delete this; 
-        			return ERR_RELEASED; 
-        		} 
-        		else 
-        			_CL_VERBOSE << "Error: Instance has been deleted prior!" LOG_ 
-        	} 
-        	return ERR_NONE; 
-        } 
-        if (ref < STARTREF) { 
-        	_CL_VERBOSE << "Error: Reference count of instance " << ptr << " of object type " << "lbModule" << " is less than " << STARTREF << " (" << ref << ") !!!" LOG_ 
-        	return ERR_REFERENCE_COUNTING; 
-        } 
-        return ERR_INSTANCE_STILL_USED; 
-} 
-
-lb_I_Unknown* LB_STDCALL lbModule::clone(char* file, int line) const { 
-
-	lbModule* cloned = new lbModule(); 
-	cloned->setDebug(0); 
-	lb_I_Unknown* uk_this; 
-
-	lb_I_Unknown* uk_cloned = NULL; 
-
-	cloned->setFurtherLock(0); 
-	if (manager == NULL) _CL_VERBOSE << "lbModule" << "::clone() can't be used because manager is a NULL pointer!" LOG_ 
-	cloned->setModuleManager(manager.getPtr(), file, line); 
-	if (cloned->queryInterface("lb_I_Unknown", (void**) &uk_cloned, file, line) != ERR_NONE) { 
-		_CL_VERBOSE << "Error while getting interface" LOG_ 
-	} 
-
-	uk_cloned->setData((lb_I_Unknown*) this); 
-
-	cloned->resetRefcount(); 
-	
-	if (manager != NULL) { 
-		lb_I_Unknown* that = (lb_I_Unknown*) cloned; 
-	        manager->notify_add(that, cloned->getClassName(), file, line); 
-	} 
-        else 
-		if (debug_macro == 1) { 
-                	_CL_VERBOSE << "Module manager was not set!" LOG_ 
-		} 
-	
-	lb_I_Unknown* uk = NULL; 
-	if (uk_cloned->queryInterface("lb_I_Unknown", (void**) &uk, file, line) != ERR_NONE) { 
-		_CL_VERBOSE << "Error while getting unknown interface of cloned object" LOG_ 
-	} 
-
-	if (uk->getRefCount() > 1) { 
-		_CL_VERBOSE << "Cloned object has %d references" << uk->getRefCount() LOG_ 
-	} 
-	return uk; 
-
-} 
-
-lbErrCodes LB_STDCALL lbModule::queryInterface(char* name, void** unknown, char* file, int line) { 
-	char buf[1000] = ""; 
-	char iFaces[1000] = ""; 
-	char _classname[100] = "lbModule"; 
-	if (further_lock == 1) { 
-		_CL_VERBOSE <<"Error: Object has been locked due to missing module manager (call setModuleManager(...) on me first)!" LOG_ 
-		return ERR_STATE_FURTHER_LOCK; 
-	} 
-	if (unknown == NULL) { 
-		_CL_VERBOSE << "Error: Got NULL pointer reference while queryInterface() called for " << 
-		name << " ! Did you coded it this way: (void**) &variable ?" LOG_ 
-	} 
-
-	strcat(iFaces, "lb_I_Unknown, "); 
-        if (strcmp(name, "lb_I_Unknown") == 0) { 
-        	if (ref < STARTREF) { 
-        		_CL_VERBOSE << "Reference count error in queryInterface (" << "lbModule" << ")" LOG_ 
-        	} 
-                ref++; 
-                *unknown = (lb_I_Unknown*) this; 
-                if (manager != NULL) { 
-                	lb_I_Unknown* that = (lb_I_Unknown*) this; 
-		        manager->notify_add(that, _classname, file, line); 
-		} 
-		else { 
-	        	setFurtherLock(1); 
-	        	_CL_VERBOSE << "Lock object due to missing manager!" LOG_ 
-	        	return ERR_STATE_FURTHER_LOCK; 
-		} 
-                return ERR_NONE; 
-        }
-
-/*...e*/
-#endif
+BEGIN_IMPLEMENT_SINGLETON_LB_UNKNOWN(lbModule)
         ADD_INTERFACE(lb_I_Module)
 END_IMPLEMENT_LB_UNKNOWN()
 
@@ -2879,6 +2514,34 @@ int  LB_STDCALL lbModule::can_delete(lb_I_Unknown* that, char* implName, char* f
 }
 /*...e*/
 /*...e*/
+
+lbModule::lbModule() {
+                ref = STARTREF+1;
+                loadedModules = NULL;
+                internalInstanceRequest = 0;
+                xml_Instance = NULL;
+                system_up = 0;
+                initializing = 0;
+/*...sVERBOSE:0:*/
+#ifdef VERBOSE
+                _CL_VERBOSE << "lbModule init manager" LOG_
+#endif
+/*...e*/
+                manager = (lb_I_Module*) this;
+		setModuleManager(this, __FILE__, __LINE__);
+}
+        
+lbModule::~lbModule() {
+                if (ref != STARTREF) COUT << "Error: Reference count mismatch" << ENDL;
+
+                if (moduleList != NULL) moduleList->release(__FILE__, __LINE__);
+/*...sVERBOSE:0:*/
+#ifdef VERBOSE
+                _CL_VERBOSE << "lbModule::~lbModule() called" LOG_
+#endif
+/*...e*/
+}
+
 
 /*...slbErrCodes lbModule\58\\58\setData\40\lb_I_Unknown\42\ uk\41\:0:*/
 lbErrCodes LB_STDCALL lbModule::setData(lb_I_Unknown* uk) {
@@ -3815,9 +3478,6 @@ BOOL WINAPI DllMain(HINSTANCE dllHandle, DWORD reason, LPVOID situation) {
                 	
                 	TRMemSetModuleName(__FILE__);
                 	
-                	// Most of the leaks for this module are found now.
-                	//TRMemSetAdrBreakPoint("007c1120");
-                	
                         if (situation) {
                                 _CL_VERBOSE << "DLL statically loaded." LOG_
                         }
@@ -3832,11 +3492,11 @@ BOOL WINAPI DllMain(HINSTANCE dllHandle, DWORD reason, LPVOID situation) {
                 	_CL_VERBOSE << "DLL_PROCESS_DETACH for " << __FILE__ LOG_                        
                         if (situation)
                         {
-                                _CL_VERBOSE << "DLL released by system." LOG_
+                                _CL_LOG << "DLL " << __FILE__ << " released by system." LOG_
                         }
                         else
                         {
-                                _CL_VERBOSE << "DLL released by program.\n" LOG_
+                                _CL_LOG << "DLL " << __FILE__ << " released by program.\n" LOG_
                         }
                         break;
                 case DLL_THREAD_DETACH:
