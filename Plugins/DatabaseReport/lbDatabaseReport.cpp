@@ -824,19 +824,7 @@ void LB_STDCALL lbDatabaseReport::init(char* SQLString, char* DBName, char* DBUs
 
 	properties->initData("dummy");
 
-//	int colstepHDR = properties->getIntParameter("colstepHDR"); 
-
 	int colstep = 0;
-
-#ifdef bla	
-#ifdef OSX
-	int colstep = properties->getIntParameter("colstep"); 
-	colstep = colstep * 0.75;
-#endif
-#ifndef OSX
-	int colstep = properties->getIntParameter("colstep");
-#endif
-#endif
 
 	// Currently, this value gets overwritten with n * LineSpace + offset - n
 	float _coly = 0.0; //properties->getFloatParameter("_coly");
@@ -866,11 +854,6 @@ void LB_STDCALL lbDatabaseReport::init(char* SQLString, char* DBName, char* DBUs
 #endif
 
 
-/*
-	_CL_LOG << "Native font for 'fntBig' is: " << fntBig.GetNativeFontInfoDesc().c_str() LOG_
-	_CL_LOG << "Native font for 'fntSmall' is: " << fntSmall.GetNativeFontInfoDesc().c_str() LOG_
-	_CL_LOG << "Native font for 'fntHdr' is: " << fntHdr.GetNativeFontInfoDesc().c_str() LOG_
-*/
 	wxReportWriter* pReport = new wxReportWriter(0, wxT("Test Report"), wxPoint(10,10), wxSize( 100, 100 ) );
 	pReport->SetPath( wxT(".") );
 
@@ -986,7 +969,7 @@ void LB_STDCALL lbDatabaseReport::init(char* SQLString, char* DBName, char* DBUs
 	while (tLine.getPtr() != NULL) {
 	        pObj = new wxReportObj( 0, (LineSpace * ii) + offset - ii, TextBlockSize, 6 );
 	        
-			pObj->SetFont(&fntSmall);
+		pObj->SetFont(&fntSmall);
 			
 	        wxString data = wxString(tLine->charrep());
 
@@ -1001,10 +984,10 @@ void LB_STDCALL lbDatabaseReport::init(char* SQLString, char* DBName, char* DBUs
 	        *p += pattern.c_str();
 	        *p += "}";
 	        
-			if (strcmp(p->charrep(), "{}") != 0) {
-				replacer->getUAPString(*&p, *&r);
-				data.Replace(p->charrep(), r->charrep());
-			}
+		if (strcmp(p->charrep(), "{}") != 0) {
+			replacer->getUAPString(*&p, *&r);
+			data.Replace(p->charrep(), r->charrep());
+		}
 			
 	        pObj->SetData(data);
 	        pObj->SetIncrements( 0.0, LPI6 );
@@ -1107,7 +1090,9 @@ void LB_STDCALL lbDatabaseReport::init(char* SQLString, char* DBName, char* DBUs
 			pObj = new wxReportObj( currentColstep, _coly, *(colsteps[i-1]), 5 );
 			pObj->SetData(colName->charrep());
 			pObj->SetFont( &fntHdr );
+
 			pObj->SetRightAlign();
+
 			pReport->AddHeaderObj( pObj );
 			
 			strValue[i-1] = new wxString;
@@ -1284,7 +1269,6 @@ void LB_STDCALL lbDatabaseReport::show() {
 	//pReport->SetOrientation(wxLANDSCAPE);
 
 	pReport->PrintPreview();
-	
 }
 /*...e*/
 
