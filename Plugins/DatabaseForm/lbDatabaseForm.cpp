@@ -1468,6 +1468,8 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 			QI(cbName, lb_I_KeyBase, key_cbName, __FILE__, __LINE__)
 			QI(_ComboboxMapper, lb_I_Unknown, uk_ComboboxMapper, __FILE__, __LINE__)
 
+			// This is the input parameter
+
 			cbName->setData(name);
 			
 			UAP_REQUEST(manager.getPtr(), lb_I_String, table)
@@ -1492,6 +1494,7 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 			char* buffer = (char*) malloc(1000);
 			buffer[0] = 0;
 			
+/*...sGet column to display instead key:56:*/
 			sprintf(buffer, "select PKName, PKTable	from ForeignKey_VisibleData_Mapping "
 					"where FKName = '%s' and FKTable = '%s'", name, sampleQuery->getTableName(name));
 
@@ -1511,6 +1514,14 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 			FKColumnQuery->query(buffer);
 			
 			err = FKColumnQuery->first();
+/*...e*/
+			
+			//UAP_REQUEST(manager.getPtr(), lb_I_String, VColumn)
+			
+			/// \todo Define this function in my data model
+			//VColumn = data_model->getVisualColumnName(name, sampleQuery);
+			
+			// ------------------
 			
 			if (err == ERR_DB_NODATA) {
 				_CL_VERBOSE << "ERROR: No data column definition to be displayed instead of primary key.\n" LOG_

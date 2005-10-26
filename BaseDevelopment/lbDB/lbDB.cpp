@@ -188,7 +188,7 @@ public:
 	}
 	
 	virtual ~lbQuery() {
-		_CL_VERBOSE << "lbQuery::~lbQuery() called. (" << szSql << ")" LOG_
+		_CL_LOG << "lbQuery::~lbQuery() called. (" << szSql << ")" LOG_
 	}
 	
 	DECLARE_LB_UNKNOWN()
@@ -376,9 +376,9 @@ public:
 	
 	virtual ~lbBoundColumn() {
 		if (columnName != NULL) {
-			_CL_VERBOSE << "~lbBoundColumn('" << columnName << "') called." LOG_
+			_CL_LOG << "~lbBoundColumn('" << columnName << "') called." LOG_
 		} else {
-			_CL_VERBOSE << "~lbBoundColumn(?) called." LOG_
+			_CL_LOG << "~lbBoundColumn(?) called." LOG_
 		}
 		switch (_DataType) {
 			case SQL_CHAR:

@@ -536,6 +536,8 @@ void LB_STDCALL lbDBReportAction::openReport(lb_I_String* reportname, lb_I_Param
 
 						meta->getGUI(&gui);
 
+						//report->setMasterForm(gui->findDBForm(reportname->charrep()), NULL);
+
 						report->setFrame(gui->getFrame());
 						
 						/* Here it would be better to preset the where clause columns
@@ -953,12 +955,18 @@ void LB_STDCALL lbDatabaseReport::init(char* SQLString, char* DBName, char* DBUs
 /*...e*/
 /*...e*/
 
+/*...sReplace patterns:8:*/
 	UAP_REQUEST(getModuleInstance(), lb_I_Parameter, replacer)
 
 	if (hasConditions) {
 		UAP_REQUEST(getModuleInstance(), lb_I_String, pattern)
 		
 		*pattern = "{";
+		
+		if (query->hasFKColumn(AndConditionValue->charrep()) == 1) {
+		// Replace key value with visibly shown value
+		}
+		
 		*pattern += AndConditionColumn->charrep();
 		*pattern += "}";
 		
@@ -996,7 +1004,7 @@ void LB_STDCALL lbDatabaseReport::init(char* SQLString, char* DBName, char* DBUs
 		ii++;
 		tLine = properties->getTextLine(ii, "dummy");
 	}
-	
+/*...e*/
 
 	_coly = (LineSpace * ii) + offset;
 

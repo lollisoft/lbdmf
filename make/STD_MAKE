@@ -25,11 +25,14 @@
 #            40235 Duesseldorf (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.68 $
+# * $Revision: 1.69 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.68 2005/10/26 05:22:35 lollisoft Exp $
+# * $Id: STD_MAKE,v 1.69 2005/10/26 06:07:19 lollisoft Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.69  2005/10/26 06:07:19  lollisoft
+# * Commit due to checks of crashes on OS X and Linux.
+# *
 # * Revision 1.68  2005/10/26 05:22:35  lollisoft
 # * Debug memory switches detailed.
 # *
@@ -256,8 +259,8 @@ COMPILER=WATCOM
 #COMPILER=MICROSOFT
 MODE=_DEBUG
 #MODE=
-DEBUG_MEMORY=no
-#DEBUG_MEMORY=yes
+#DEBUG_MEMORY=no
+DEBUG_MEMORY=yes
 
 WX_DEBUG=
 ifeq (($MODE), _DEBUG)

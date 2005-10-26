@@ -69,6 +69,9 @@
 
 /*...sDatabase:0:*/
 /*...v\46\\46\\47\Database\47\lbDMF\45\PostgreSQL\46\sql:0:*/
+/*...v\46\\46\\47\Database\47\lbDMF\45\MySQL\46\sql:0:*/
+
+/*...v\46\\46\\47\Database\47\lbDMF\45\Data\46\sql:0:*/
 /*...e*/
 
 /*...sInterfaces:0:*/
@@ -120,6 +123,9 @@ These headers must define the per module (DLL) EXPORT variable
 /*...v\46\\46\\47\AppDevelopmentDemo\47\DynamicApp\47\App\47\makefile:0:*/
 /*...v\46\\46\\47\AppDevelopmentDemo\47\DynamicApp\47\App\47\makefile\46\module:0:*/
 /*...v\46\\46\\47\AppDevelopmentDemo\47\DynamicApp\47\App\47\lbDynApp\46\cpp:0:*/
+
+/*...v\46\\46\\47\AppDevelopmentDemo\47\DynamicApp\47\DataModel\47\lbDataModel\46\h:0:*/
+/*...v\46\\46\\47\AppDevelopmentDemo\47\DynamicApp\47\DataModel\47\lbDataModel\46\cpp:0:*/
 
 
 /*...v\46\\46\\47\AppDevelopmentDemo\47\App\47\Application\46\cpp:0:*/
@@ -327,35 +333,6 @@ These headers must define the per module (DLL) EXPORT variable
 /*...v\46\\46\\47\\46\\46\\47\\46\\46\\47\wxwin\47\wx\47\src\47\common\47\object\46\cpp:0:*/
 /*...v\46\\46\\47\\46\\46\\47\\46\\46\\47\wxwin\47\wx\47\src\47\common\47\socket\46\cpp:0:*/
 /*...e*/
-
-/*...sOpenNMS:0:*/
-/*...vj\58\\47\BlueBird\45\0\46\3\46\0\47\javaenv\46\bat:0:*/
-/*...vj\58\\47\BlueBird\45\0\46\3\46\0\47\RunBlueBird\46\bat:0:*/
-/*...vj\58\\47\BlueBird\45\0\46\3\46\0\47\run\46\bat:0:*/
-
-/*...vj\58\\47\BlueBird\45\0\46\3\46\0\47\data\47\users\47\admin\46\xml:0:*/
-/*...vj\58\\47\BlueBird\45\0\46\3\46\0\47\data\47\common\47\conf\47\users\46\xml:0:*/
-
-
-/*...e*/
-
-
-/*...vE\58\\92\develop\92\projects\92\lothar\92\XML\92\SalesOrder1\92\lbHostCfg\92\XMLHostCfgHandlers\46\cpp:0:*/
-
-/*...sPowWow Deutschland GmbH:0:*/
-/*...ve\58\\92\powwow\92\projects\92\waterboy\45\SQL\92\waterboy\45\07\45\02\45\2001\46\sql:0:*/
-/*...ve\58\\92\powwow\92\projects\92\waterboy\45\SQL\92\SQLAbfragen\92\abfrage\46\sql:0:*/
-
-/*...vq\58\\92\develop\92\projects\92\cpp\92\vendor\92\dbfill\92\test\46\cpp:0:*/
-/*...vq\58\\92\develop\92\projects\92\cpp\92\vendor\92\dbfill\92\dbfill\46\cpp:0:*/
-/*...vq\58\\92\develop\92\projects\92\cpp\92\vendor\92\dbfill\92\scripts\92\nettopreise\46\txt:0:*/
-/*...vq\58\\92\develop\92\projects\92\cpp\92\vendor\92\dbfill\92\scripts\92\auswertung\46\bat:0:*/
-/*...e*/
-
-
-
-/*...vG\58\\92\powwow\92\projects\92\migration\92\erstelle\45\serviceliste\92\Waterboy\45\Karte\46\csv\46\txt:0:*/
-/*...vd\58\\92\export\45\29\45\03\45\2001\92\Artikel\45\Karte\46\csv:0:*/
 /*...e*/
 
 /*...v\46\\46\\47\\46\\46\\47\web\46\prj:0:*/

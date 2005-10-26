@@ -33,11 +33,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.3 $
+ * $Revision: 1.4 $
  * $Name:  $
- * $Id: lbLoginWizard.h,v 1.3 2005/05/10 21:05:42 lollisoft Exp $
+ * $Id: lbLoginWizard.h,v 1.4 2005/10/26 06:07:19 lollisoft Exp $
  *
  * $Log: lbLoginWizard.h,v $
+ * Revision 1.4  2005/10/26 06:07:19  lollisoft
+ * Commit due to checks of crashes on OS X and Linux.
+ *
  * Revision 1.3  2005/05/10 21:05:42  lollisoft
  * Including made more actually language conform
  *
@@ -68,7 +71,7 @@ extern "C" {
 #endif
 /*...e*/
 
-DECLARE_FUNCTOR(instanceOfPluginModule)
+DECLARE_SINGLETON_FUNCTOR(instanceOfPluginModule)
 
 /*...s\35\ifdef __cplusplus \125\:0:*/
 #ifdef __cplusplus

@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.95 2005/10/05 11:04:39 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.96 2005/10/26 06:07:19 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.95 $
+ * $Revision: 1.96 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.95 2005/10/05 11:04:39 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.96 2005/10/26 06:07:19 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.96  2005/10/26 06:07:19  lollisoft
+ * Commit due to checks of crashes on OS X and Linux.
+ *
  * Revision 1.95  2005/10/05 11:04:39  lollisoft
  * Report login failures due to missing database or correct ODBC configuration
  * of it.
@@ -2792,7 +2795,7 @@ int PASCAL WinMain(HINSTANCE hInstance,
 {
 	//wxAppInitializer wxTheAppInitializer((wxAppInitializerFunction) wxCreateApp);
 
-	FreeConsole();
+	//FreeConsole();
 
 	TRMemOpen();
 	TRMemSetModuleName(__FILE__);

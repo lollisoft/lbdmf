@@ -1585,10 +1585,13 @@ public: \
 		singleton = NULL; \
 	} \
 	virtual ~singletonHolder_##name() { \
-		printf("Delete singleton %s\n", "singletonHolder_" #name); \
-		delete singleton; \
+		printf("Delete singleton %s\n", "singletonHolder " #clsname); \
+		if (singleton != NULL) singleton->release(__FILE__, __LINE__); \
 	} \
 	void set(clsname* _singleton) { \
+		lb_I_Unknown* temp; \
+		lbErrCodes err = ERR_NONE; \
+		err = _singleton->queryInterface("lb_I_Unknown", (void**) &temp, __FILE__, __LINE__); \
 		singleton = _singleton; \
 	} \
 	\

@@ -97,6 +97,7 @@ lbPluginModuleLoginWizard::lbPluginModuleLoginWizard() {
 }
 
 lbPluginModuleLoginWizard::~lbPluginModuleLoginWizard() {
+	_CL_LOG << "lbPluginModuleLoginWizard::~lbPluginModuleLoginWizard() called." LOG_
 }
 
 void LB_STDCALL lbPluginModuleLoginWizard::initialize() {
@@ -642,7 +643,12 @@ lbPluginLoginWizard::lbPluginLoginWizard() {
 }
 
 lbPluginLoginWizard::~lbPluginLoginWizard() {
-	if (wizard) wizard->Destroy();
+	_CL_LOG << "lbPluginLoginWizard::~lbPluginLoginWizard() called." LOG_
+	if (wizard != NULL) {
+		_CL_LOG << "Destroy wizard." LOG_
+		wizard->Destroy();
+		_CL_LOG << "Wizard destroyed." LOG_
+	}
 }
 	
 	
@@ -657,6 +663,7 @@ lbErrCodes LB_STDCALL lbPluginLoginWizard::runLogin(lb_I_Unknown* uk) {
 	return ERR_NONE;
 }
 	
+/*...svoid LB_STDCALL lbPluginLoginWizard\58\\58\initialize\40\\41\:0:*/
 void LB_STDCALL lbPluginLoginWizard::initialize() {
 
 	UAP_REQUEST(manager.getPtr(), lb_I_EventManager, ev)
@@ -679,7 +686,9 @@ void LB_STDCALL lbPluginLoginWizard::initialize() {
 	free(file);
 	free(entry);
 }
+/*...e*/
 
+/*...sbool LB_STDCALL lbPluginLoginWizard\58\\58\run\40\\41\:0:*/
 bool LB_STDCALL lbPluginLoginWizard::run() {
 	wizard = new wxWizard(NULL, -1, _T("Anmeldung via Plugin"));
 
@@ -718,6 +727,7 @@ bool LB_STDCALL lbPluginLoginWizard::run() {
 
 	return true;
 }
+/*...e*/
 
 /*...slb_I_Unknown\42\ LB_STDCALL lbPluginLoginWizard\58\\58\peekImplementation\40\\41\:0:*/
 lb_I_Unknown* LB_STDCALL lbPluginLoginWizard::peekImplementation() {
@@ -734,7 +744,7 @@ lb_I_Unknown* LB_STDCALL lbPluginLoginWizard::getImplementation() {
 }
 /*...e*/
 void LB_STDCALL lbPluginLoginWizard::releaseImplementation() {
-
+	_CL_LOG << "lbPluginLoginWizard::releaseImplementation() called." LOG_
 }
 
 #ifdef WINDOWS
