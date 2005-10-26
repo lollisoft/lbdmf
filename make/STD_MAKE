@@ -25,11 +25,14 @@
 #            40235 Duesseldorf (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.67 $
+# * $Revision: 1.68 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.67 2005/10/03 18:10:35 lollisoft Exp $
+# * $Id: STD_MAKE,v 1.68 2005/10/26 05:22:35 lollisoft Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.68  2005/10/26 05:22:35  lollisoft
+# * Debug memory switches detailed.
+# *
 # * Revision 1.67  2005/10/03 18:10:35  lollisoft
 # * Latest changes for release 0.5.1
 # *
@@ -254,6 +257,7 @@ COMPILER=WATCOM
 MODE=_DEBUG
 #MODE=
 DEBUG_MEMORY=no
+#DEBUG_MEMORY=yes
 
 WX_DEBUG=
 ifeq (($MODE), _DEBUG)
@@ -306,7 +310,12 @@ WATCOM_CALLING_CONV=-5r #-zz
 WATCOM_DLLTARGET=-bd
 WATCOM_LIBTARGET=
 WATCOM_THREAD_MODEL=#-bm
+ifeq ($(DEBUG_MEMORY), no)
 WATCOM_STDDEBUG=-d2 -hd #-DDEBUG_MALLOC
+endif
+ifeq ($(DEBUG_MEMORY), yes)
+WATCOM_STDDEBUG=-d2 -hd -DDEBUG_MALLOC
+endif
 WATCOM_STACK=#-of+
 WATCOM_PROFILING=#-db -en -s
 
