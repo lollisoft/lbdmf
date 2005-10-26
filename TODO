@@ -4,28 +4,48 @@
 		
 		I also will discuss some problems while the development stages.
 
+		18.10.2005	DatabaseReport is missing a function to get the value of a replacement.
+				The replacement for example is a customer number that will be shown in
+				the form, that calls the database report. In the case of custom where
+				clauses, the column of the where clause may contain a foreign key and it
+				should be shown the representative value of it.
+				
+				It this case the customer number should be shown. If the database report
+				has been called from inside a database form, the form could pass it self
+				to the database report as a parent. Given this, the form could ask the
+				database form for the correct value, since it has it.
+				
+				But there will be another case of calling a database report. The application
+				could be configured to have a menu entry. In this case there is no form as a
+				base.
+				
+				The best enhancement then would be the extraction of that code, who is
+				responsible for getting the values inside the foreign key drop down boxes.
+				
+				This also could be used inside the database report.
+
 		30.09.2005	Database type int8 from postgreSQL is currently not supported.
 
-				01.10.2005: Added the support. Also detect redadonly columns such
+			01.10.2005: Added the support. Also detect redadonly columns such
 				as aggregated columns (count, avg, ...)
 
 		24.09.2005	If the binary samples downloaded and no database configuration
 				has been set up (ODBC setup), the application crashes with a
 				NULL pointer exeption.
 				
-				24.09.2005: 
+			24.09.2005: 
 					Need to create an assistant for ODBC setup,
 					need to extend the database classes to support
 					with ODBC setup API.
 					
-				24.09.2005:
+			24.09.2005:
 					Fallback to a file based configuration. This is in
 					work, but no decision has been made.
 					
 					A first step would be streaming, then syncing with
 					the database.
 
-				24.09.2005:
+			24.09.2005:
 					There may be a bug in the current ODBC driver. Uninstalling
 					it and reinstalling the 7.03.0200 driver fails, because the
 					old driver isn't uninstalled properly.
@@ -54,7 +74,7 @@
 				The form then has no result set and probably could not add
 				new data.
 				
-				28.08.2005: Adding works, but the app crashes after adding
+			28.08.2005: Adding works, but the app crashes after adding
 				by navigating to any other data. This must be tested a little
 				more.
 
