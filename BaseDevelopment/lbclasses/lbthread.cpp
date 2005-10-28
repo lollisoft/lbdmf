@@ -258,6 +258,7 @@ _CL_VERBOSE << "lbCritSect::~lbCritSect() called" LOG_
 #endif
 /*...e*/
 	DeleteCriticalSection((CRITICAL_SECTION*)critsect);
+	delete critsect;
 /*...sTHREAD_VERBOSE:0:*/
 #ifdef THREAD_VERBOSE
 //COUT << "lbCritSect::~lbCritSect() leave" << ENDL;
