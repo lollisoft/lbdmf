@@ -803,9 +803,9 @@ BOOL WINAPI DllMain(HINSTANCE dllHandle, DWORD reason, LPVOID situation) {
                         break;
                 case DLL_PROCESS_DETACH:
 
-			free(translated);
-			free(lbLogDirectory);
-			free(lbLogFile);
+			if (translated) free(translated);
+			if (lbLogDirectory) free(lbLogDirectory);
+			if (lbLogFile) free(lbLogFile);
 			
                 	
                 	_CL_VERBOSE << "DLL_PROCESS_DETACH for " << __FILE__ LOG_
