@@ -113,18 +113,7 @@ class lbBoundColumns: public lb_I_ColumnBinding {
 public:	
 	lbBoundColumns() { ref = STARTREF; ArraySize = 1; }
 	virtual ~lbBoundColumns() {
-		_CL_LOG << "lbBoundColumns::~lbBoundColumns() called." LOG_
-
-		if (boundColumns != NULL) 
-			_CL_LOG << "boundColumns has " << 
-				boundColumns->getRefCount() << " references with " << boundColumns->Count() << " elements." LOG_
-		if (ColumnNameMapping != NULL) 
-			_CL_LOG << "ColumnNameMapping has " << 
-				ColumnNameMapping->getRefCount() << " references with " << ColumnNameMapping->Count() << " elements." LOG_
-
-		setVerbose(true);
-		ColumnNameMapping->deleteAll();
-		setVerbose(false);
+		_CL_VERBOSE << "lbBoundColumns::~lbBoundColumns() called." LOG_
 	}
 	
 	DECLARE_LB_UNKNOWN()
@@ -198,23 +187,7 @@ public:
 	}
 	
 	virtual ~lbQuery() {
-		_CL_LOG << "lbQuery::~lbQuery() called. (" << szSql << ")" LOG_
-
-		if (primaryColumns != NULL) 
-			_CL_LOG << "primaryColumns has " << 
-				primaryColumns->getRefCount() << " references with " << primaryColumns->Count() << " elements." LOG_
-		if (ForeignColumns != NULL) 
-			_CL_LOG << "ForeignColumns has " << 
-				ForeignColumns->getRefCount() << " references with " << ForeignColumns->Count() << " elements." LOG_
-		if (mapPKTable_PKColumns_To_FKName != NULL) 
-			_CL_LOG << "mapPKTable_PKColumns_To_FKName has " << 
-				mapPKTable_PKColumns_To_FKName->getRefCount() << " references with " << mapPKTable_PKColumns_To_FKName->Count() << " elements." LOG_
-		if (ReadOnlyColumns != NULL) 
-			_CL_LOG << "ReadOnlyColumns has " << 
-				ReadOnlyColumns->getRefCount() << " references with " << ReadOnlyColumns->Count() << " elements." LOG_
-		if (boundColumns != NULL) 
-			_CL_LOG << "boundColumns has " << 
-				boundColumns->getRefCount() << " references with " << boundColumns->getColumnCount() << " elements." LOG_
+		_CL_VERBOSE << "lbQuery::~lbQuery() called. (" << szSql << ")" LOG_
 	}
 	
 	DECLARE_LB_UNKNOWN()
@@ -402,15 +375,11 @@ public:
 	
 	virtual ~lbBoundColumn() {
 		if (columnName != NULL) {
-			_CL_LOG << "~lbBoundColumn('" << columnName << "') called." LOG_
+			_CL_VERBOSE << "~lbBoundColumn('" << columnName << "') called." LOG_
 			free(columnName);
 		} else {
-			_CL_LOG << "~lbBoundColumn(?) called." LOG_
+			_CL_VERBOSE << "~lbBoundColumn(?) called." LOG_
 		}
-		
-		//if (colName != NULL) {
-		//	_CL_LOG << "colName has " << colName->getRefCount() << " references." LOG_
-		//}
 		
 		switch (_DataType) {
 			case SQL_CHAR:
@@ -471,17 +440,12 @@ protected:
 		_DataType = dt;
 		buffer = bu;
 		
-		//if (colName != NULL) colName->release(__FILE__, __LINE__);
-
-		//REQUEST(manager.getPtr(), lb_I_String, colName)
-
 		if (name == NULL) {
 			_LOG << "ERROR: Cloning data with NULL pointer" LOG_
 		}
 
 		setColumn(name);
 
-		//colName->setData(name->charrep());
 		return ERR_NONE;
 	}
 
@@ -517,7 +481,6 @@ protected:
 	SQLUINTEGER     ColumnSize; //new (long);
 	int		rows;
 	HSTMT 		hstmt;
-//	UAP(lb_I_String, colName, __FILE__, __LINE__)
 };
 
 /*...e*/
@@ -811,8 +774,6 @@ lb_I_BoundColumn* LB_STDCALL lbBoundColumns::getBoundColumn(int column) {
 
 		bc++;
 		
-		_CL_LOG << "Return object with " << bc->getRefCount() << " references." LOG_
-		
 		return bc.getPtr();
 	}
 	return NULL;
@@ -912,8 +873,6 @@ Therefore I need an indicator, set by the user of this library to know, which on
 
 		UAP(lb_I_BoundColumn, bc1, __FILE__, __LINE__)
 		bc1 = getBoundColumn(i);
-
-		_CL_LOG << "Have lb_I_BoundColumn instance with " << bc1->getRefCount() << " references." LOG_
 
 		UAP_REQUEST(manager.getPtr(), lb_I_String, colName)
 		UAP(lb_I_KeyBase, key1, __FILE__, __LINE__)
@@ -2863,14 +2822,6 @@ lbErrCodes LB_STDCALL lbBoundColumn::setData(lb_I_Unknown* uk) {
 
 	setColumn(column->getColumnName_c_str());
 
-	//if (colName != NULL) colName->release(__FILE__, __LINE__);
-
-	//REQUEST(manager.getPtr(), lb_I_String, colName)
-
-	//if (column->getColumnName() != NULL) {
-	//	colName->setData(column->getColumnName()->charrep());
-	//}
-
 	leaveOwnership(*&column, this);
         
         return ERR_NOT_IMPLEMENTED;
@@ -2882,12 +2833,9 @@ lbErrCodes LB_STDCALL lbBoundColumn::leaveOwnership(lb_I_BoundColumn* oldOwner, 
 	lbBoundColumn* oO = (lbBoundColumn*) oldOwner;
 	lbBoundColumn* nO = (lbBoundColumn*) newOwner;
 
-	//_CL_VERBOSE << "Leave ownership for column '" << oO->colName->charrep() << "'" LOG_
-
 	nO->setData(oO->bound, oO->_DataType, oO->buffer, oO->columnName);
 	oO->bound = 0;
 	nO->isUpdateable = oO->isUpdateable;
-	//oO->colName = NULL;
 	if (oO->buffer != NULL) oO->buffer = NULL;
 
 	return ERR_NONE;
@@ -3158,6 +3106,8 @@ void       LB_STDCALL lbBoundColumn::checkReadonly(int column)
 		if (Int == SQL_ATTR_READONLY) {
 			setUpdateable(false);
 		}
+		
+		free(CharacterAttributePtr);
 	}	
 /*...e*/
 /*...slbErrCodes LB_STDCALL lbBoundColumn\58\\58\bindColumn\40\lbQuery\42\ q\44\ int column\44\ bool ro\41\:0:*/
