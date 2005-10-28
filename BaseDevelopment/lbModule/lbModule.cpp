@@ -30,11 +30,17 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.91 $
+ * $Revision: 1.92 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.91 2005/10/16 17:39:56 lollisoft Exp $
+ * $Id: lbModule.cpp,v 1.92 2005/10/28 05:54:13 lollisoft Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.92  2005/10/28 05:54:13  lollisoft
+ * Fixed memory leak by explicitly deleting singleton instance 'lbModule'.
+ * There is still a reference counting problem and the class contains a
+ * reference counted instance of it's own. So normally it can't be deleted
+ * while a call to release.
+ *
  * Revision 1.91  2005/10/16 17:39:56  lollisoft
  * Improvements in memory usage.
  *
@@ -1840,21 +1846,21 @@ public:
 public:
 
         virtual void LB_STDCALL setFunctor(char* functor) {
-        	free(_functor);
+        	if (_functor) free(_functor);
         	_functor = (char*) malloc(strlen(functor)+1);
         	_functor[0] = 0;
         	strcpy(_functor, functor);
         }
         
         virtual void LB_STDCALL setModule(char* module) {
-        	free(_module);
+        	if (_module) free(_module);
         	_module = (char*) malloc(strlen(module)+1);
         	_module[0] = 0;
         	strcpy(_module, module);
         }
         
         virtual void LB_STDCALL setInterface(char* iface) {
-        	free(_interface);
+        	if (_interface) free(_interface);
         	_interface = (char*) malloc(strlen(iface)+1);
         	_interface[0] = 0;
         	strcpy(_interface, iface);
@@ -1957,7 +1963,7 @@ lbErrCodes lbHCInterfaceRepository::setData(lb_I_Unknown* uk) {
 }
 
 void LB_STDCALL lbHCInterfaceRepository::setCurrentSearchInterface(const char* iface) {
-	free(searchArgument);
+	if (searchArgument) free(searchArgument);
 	searchArgument = (char*) malloc (strlen(iface)+1);
 	searchArgument[0] = 0;
 	strcpy(searchArgument, iface);
@@ -2150,11 +2156,6 @@ void lbHCInterfaceRepository::initIntefaceList() {
 }
 /*...e*/
 /*...e*/
-
-
-
-
-
 
 lb_I_Container* moduleList = NULL;
 /*...sclass lbModule and implementation:0:*/
@@ -2516,7 +2517,7 @@ int  LB_STDCALL lbModule::can_delete(lb_I_Unknown* that, char* implName, char* f
 /*...e*/
 
 lbModule::lbModule() {
-                ref = STARTREF+1;
+                ref = STARTREF;
                 loadedModules = NULL;
                 internalInstanceRequest = 0;
                 xml_Instance = NULL;
@@ -2527,8 +2528,8 @@ lbModule::lbModule() {
                 _CL_VERBOSE << "lbModule init manager" LOG_
 #endif
 /*...e*/
-                manager = (lb_I_Module*) this;
 		setModuleManager(this, __FILE__, __LINE__);
+		ref = STARTREF;
 }
         
 lbModule::~lbModule() {
