@@ -216,13 +216,9 @@ int main(int argc, char *argv[]) {
 		database->connect("lbDMF", lbDMFUser, lbDMFPasswd);
 
 		UAP(lb_I_Query, query2, __FILE__, __LINE__)
-
-#ifdef bla
-
+		UAP(lb_I_Query, queryA, __FILE__, __LINE__)
 		UAP(lb_I_Query, query, __FILE__, __LINE__)
 		UAP(lb_I_Query, query1, __FILE__, __LINE__)
-		UAP(lb_I_Query, queryA, __FILE__, __LINE__)
-
 
 		query = database->getQuery(0);
 
@@ -240,18 +236,19 @@ int main(int argc, char *argv[]) {
 		_CL_LOG << "query has " << query->getRefCount() << " references." LOG_
 
 		query1 = database->getQuery(0);
+		query1->skipFKCollecting();
 		query1->query("insert into regressiontest (test) values('Nix')");
 		query1->query("insert into regressiontest (btest) values(true)");
 		query1->query("insert into regressiontest (btest1) values(true)");
-#endif
+
 		query2 = database->getQuery(0);
-		query2->skipFKCollecting();
 		query2->query("select test, btest, btest1 from regressiontest");
 
-	//	query2->PrintData();
+		query2->PrintData();
 
-//		queryA = database->getQuery(0);
-//		queryA->query("drop table regressiontest");
+		queryA = database->getQuery(0);
+		queryA->skipFKCollecting();
+		queryA->query("drop table regressiontest");
 
 	}
 		
