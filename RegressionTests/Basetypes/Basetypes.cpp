@@ -179,7 +179,6 @@ int main(int argc, char *argv[]) {
 		data->setData("Test1");
 		
 		container->insert(&uk, &key);
-		setVerbose(true);
 		
 		data->setData("Test2");
 		
@@ -195,13 +194,9 @@ int main(int argc, char *argv[]) {
 		
 		uk1 = container->getElement(&key);
 		
-		container->detachAll();
-
-		_CL_LOG << "Begin Verbose..." LOG_
+		// Memory leaks will appear, if this line is uncommented.
+		//container->detachAll();
 	}
-	_CL_LOG << "End Verbose..." LOG_
-	setVerbose(false);
-	
 	_CL_LOG << "Tested a container" LOG_
 	
         return 0;

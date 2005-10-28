@@ -1,11 +1,15 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.68 $
+# * $Revision: 1.69 $
 # * $Name:  $
-# * $Id: Makefile,v 1.68 2005/10/05 10:02:50 lollisoft Exp $
+# * $Id: Makefile,v 1.69 2005/10/28 17:28:42 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.69  2005/10/28 17:28:42  lollisoft
+# * Fixed memory leaks in database classes. Using it in console is tested.
+# * There now are only three objects leaked.
+# *
 # * Revision 1.68  2005/10/05 10:02:50  lollisoft
 # * Creating help files was sensitive for errors and stops further making.
 # *
@@ -582,10 +586,11 @@ lbXMLConfig/lbDOMConfig: dummy
 	../interfaces/lbInterfaces.h \
 	../include/lbConfigHook.h \
 	../Samples/HelloWorld/helloworld.cpp \
-	../RegressionTests/Database/dbTest.cpp \
 	../RegressionTests/Basetypes/Basetypes.cpp \
 	../RegressionTests/Memory/memTest.cpp
 	-@doxygen ../doxygen.conf
+
+#	../RegressionTests/Database/dbTest.cpp \
 
 ../Samples/HelloWorld: dummy
 	$(MAKE) -s -C $@ -e MODULE=HelloWorld -e TARGET=$(TARGETEXE) -f $(MAKE_CONFIG_FILE)

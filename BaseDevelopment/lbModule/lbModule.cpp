@@ -30,11 +30,15 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.92 $
+ * $Revision: 1.93 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.92 2005/10/28 05:54:13 lollisoft Exp $
+ * $Id: lbModule.cpp,v 1.93 2005/10/28 17:28:42 lollisoft Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.93  2005/10/28 17:28:42  lollisoft
+ * Fixed memory leaks in database classes. Using it in console is tested.
+ * There now are only three objects leaked.
+ *
  * Revision 1.92  2005/10/28 05:54:13  lollisoft
  * Fixed memory leak by explicitly deleting singleton instance 'lbModule'.
  * There is still a reference counting problem and the class contains a
@@ -1898,7 +1902,7 @@ END_IMPLEMENT_LB_UNKNOWN()
 
 
 lbErrCodes lbFunctorEntity::setData(lb_I_Unknown* uk) {
-        _CL_VERBOSE << "lbFunctorEntity::setData(...) not implemented yet" LOG_
+        _CL_LOG << "lbFunctorEntity::setData(...) not implemented yet" LOG_
         return ERR_NOT_IMPLEMENTED;
 }
 /*...e*/

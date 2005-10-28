@@ -425,6 +425,8 @@ public:
 	 * \brief Get the column name.
 	 */
 	virtual lb_I_String* LB_STDCALL getColumnName() = 0;
+
+	virtual char* LB_STDCALL getColumnName_c_str() = 0;
 	
 	/**
 	 * \brief Preparation for column binding.

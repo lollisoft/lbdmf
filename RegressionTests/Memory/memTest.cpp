@@ -237,26 +237,25 @@ int main(int argc, char *argv[]) {
 #endif
 
 	mm = getModuleInstance();
-	mm->setModuleManager(mm, __FILE__, __LINE__);
 
-	mm->release(__FILE__, __LINE__);
-	
+	printf("1. lbModule instance has %d references.\n", mm->getRefCount());
+
 	Instances();
-	
-	mm = getModuleInstance();
-	mm->setModuleManager(mm, __FILE__, __LINE__);
+
+	printf("2. lbModule instance has %d references.\n", mm->getRefCount());
 
 #define MEM_TEST
 #define CONTAINER_TEST
 //#define ACCESS_TEST
 
 #ifdef MEM_TEST
-/*...sMemory test:0:*/
 
 	{
 		
 
+		printf("3. lbModule instance has %d references.\n", mm->getRefCount());
 		_CL_LOG << "Memory regression tests..." LOG_
+		printf("4. lbModule instance has %d references.\n", mm->getRefCount());
 	
 		for (int i = 0; i < 50; i++) {
 			UAP_REQUEST(mm, lb_I_String, string)
@@ -267,30 +266,32 @@ int main(int argc, char *argv[]) {
 	}
 
 	Instances();
-/*...e*/
 #endif
 	{
 
-	UAP_REQUEST(mm, lb_I_Container, container)
-	UAP_REQUEST(mm, lb_I_String, string)
+		printf("5. lbModule instance has %d references.\n", mm->getRefCount());
+		UAP_REQUEST(mm, lb_I_Container, container)
+		printf("lbModule instance has %d references.\n", mm->getRefCount());
+		UAP_REQUEST(mm, lb_I_String, string)
+		printf("lbModule instance has %d references.\n", mm->getRefCount());
 
 
-	UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
-	UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
+		UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
+		UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
 
-	QI(string, lb_I_Unknown, uk, __FILE__, __LINE__)
-	QI(string, lb_I_KeyBase, key, __FILE__, __LINE__)
+		QI(string, lb_I_Unknown, uk, __FILE__, __LINE__)
+		QI(string, lb_I_KeyBase, key, __FILE__, __LINE__)
 
-	string->setData("Bla");
+		string->setData("Bla");
 
-	container->insert(&uk, &key);
-	string->setData("Bla1");
-	container->insert(&uk, &key);
+		container->insert(&uk, &key);
+		string->setData("Bla1");
+		container->insert(&uk, &key);
 	
-	container->deleteAll();
+		container->deleteAll();
 
-#ifdef CONTAINER_TEST
-/*...sContainer test:0:*/
+		#ifdef CONTAINER_TEST
+/*...sContainer test:16:*/
 
 	container->insert(&uk, &key);
 	string->setData("Bla1");
@@ -317,12 +318,12 @@ int main(int argc, char *argv[]) {
 	
 	string->setData("Bla3");
 /*...e*/
-#endif
+		#endif
 
 
 
-#ifdef ACCESS_TEST
-/*...sContainer access and search test:0:*/
+		#ifdef ACCESS_TEST
+/*...sContainer access and search test:16:*/
 {
 	UAP(lb_I_Unknown, ukdata, __FILE__, __LINE__)
 
@@ -362,13 +363,13 @@ int main(int argc, char *argv[]) {
 }
 
 /*...e*/
-#endif
+		#endif
 
-	container->deleteAll();
+		container->deleteAll();
 
 	}
-	
-	mm->release(__FILE__, __LINE__);
+
+	printf("lbModule instance has %d references.\n", mm->getRefCount());
 
 	Instances();
 	

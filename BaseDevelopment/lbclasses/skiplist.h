@@ -93,24 +93,10 @@ public:
 /*...sclass lbSkipListElement:0:*/
 class lbSkipListElement : public lb_I_Element {
 public:
-    lbSkipListElement() { 
-    	ref = STARTREF; 
-    	next = NULL; 
-    	data = NULL; 
-    	key = NULL; 
-    	manager = NULL;
-    }
-
+    lbSkipListElement();
     virtual ~lbSkipListElement();
 	
-    lbSkipListElement(const lb_I_Element &e) { 
-    	_CL_VERBOSE << "lbSkipListElement(const lb_I_Element &e) called." LOG_
-    	ref = STARTREF; 
-    	next = e.getNext(); 
-    	data = e.getObject();
-    	key = e.getKey();
-	manager = NULL;
-    }
+    lbSkipListElement(const lb_I_Element &e);
 
     DECLARE_LB_UNKNOWN()
 

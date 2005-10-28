@@ -192,47 +192,77 @@ int main(int argc, char *argv[]) {
 	TRMemSetModuleName(__FILE__);
 //	TRMemSetAdrBreakPoint(brk);
 
-	// Tell other modules the same breakpoint.
-	setTRMemTrackBreak(brk);
 #endif	
 	
 	mm = getModuleInstance();
-	mm->setModuleManager(mm, __FILE__, __LINE__);
 
 	_CL_LOG << "Database regression tests..." LOG_
 
-	UAP_REQUEST(mm, lb_I_String, preload)
+	{
+		UAP_REQUEST(mm, lb_I_String, preload)
 	
-	// Try preload lbClasses
+		// Try preload lbClasses
 	
-	UAP_REQUEST(mm, lb_I_Database, database)
+		UAP_REQUEST(mm, lb_I_Database, database)
 
-	database->init();
+		database->init();
 
-	char* lbDMFPasswd = getenv("lbDMFPasswd");
-	char* lbDMFUser   = getenv("lbDMFUser");
+		char* lbDMFPasswd = getenv("lbDMFPasswd");
+		char* lbDMFUser   = getenv("lbDMFUser");
 
-	if (!lbDMFUser) lbDMFUser = "dba";
-	if (!lbDMFPasswd) lbDMFPasswd = "trainres";
+		if (!lbDMFUser) lbDMFUser = "dba";
+		if (!lbDMFPasswd) lbDMFPasswd = "trainres";
 
-	database->connect("lbDMF", lbDMFUser, lbDMFPasswd);
+		database->connect("lbDMF", lbDMFUser, lbDMFPasswd);
 
-	UAP(lb_I_Query, query, __FILE__, __LINE__)
+		UAP(lb_I_Query, query2, __FILE__, __LINE__)
+
+#ifdef bla
+
+		UAP(lb_I_Query, query, __FILE__, __LINE__)
+		UAP(lb_I_Query, query1, __FILE__, __LINE__)
+		UAP(lb_I_Query, queryA, __FILE__, __LINE__)
+
+
+		query = database->getQuery(0);
+
+		_CL_LOG << "query has " << query->getRefCount() << " references." LOG_
+		char buf[] = "create table regressiontest ("
+				"test char(100) DEFAULT 'Nothing',\n"
+				"btest bool DEFAULT false, "
+				"btest1 bool DEFAULT false"
+				");";
+	
+		// I have problems which collecting foreign key data, if no result sets are there.
+		query->skipFKCollecting();
+		query->query(buf);
+
+		_CL_LOG << "query has " << query->getRefCount() << " references." LOG_
+
+		query1 = database->getQuery(0);
+		query1->query("insert into regressiontest (test) values('Nix')");
+		query1->query("insert into regressiontest (btest) values(true)");
+		query1->query("insert into regressiontest (btest1) values(true)");
+#endif
+		query2 = database->getQuery(0);
+		query2->skipFKCollecting();
+		query2->query("select test, btest, btest1 from regressiontest");
+
+	//	query2->PrintData();
+
+//		queryA = database->getQuery(0);
+//		queryA->query("drop table regressiontest");
+
+	}
+		
+	exit(0);
+
+/*...sbla:0:*/
+#ifdef bla
+
 	UAP(lb_I_Query, query1, __FILE__, __LINE__)
 	UAP(lb_I_Query, query2, __FILE__, __LINE__)
 	UAP(lb_I_Query, query3, __FILE__, __LINE__)
-
-	query = database->getQuery(0);
-
-	char buf[] = "create table regressiontest ("
-			"test char(100) DEFAULT 'Nothing',\n"
-			"btest bool DEFAULT false, "
-			"btest1 bool DEFAULT false"
-			");";
-	
-	// I have problems which collecting foreign key data, if no result sets are there.
-	query->skipFKCollecting();
-	query->query(buf);
 
 	query1 = database->getQuery(0);
 	query1->query("insert into regressiontest (test) values('Nix')");
@@ -242,14 +272,11 @@ int main(int argc, char *argv[]) {
 	query2 = database->getQuery(0);
 	query2->query("select test, btest, btest1 from regressiontest");
 
-	query2->PrintData();
+//	query2->PrintData();
 	
-	query3 = database->getQuery(0);
-	
-	query3->query("drop table regressiontest");
 	
 	query3->query("select tablename, name, 'specialColumn', 'controlType', ro from column_types");
-	query3->PrintData();
+//	query3->PrintData();
 
 	_CL_LOG << "Test datatypes..." LOG_
 	lb_I_Query::lbDBColumnTypes coltype = query3->getColumnType(5);
@@ -275,7 +302,7 @@ int main(int argc, char *argv[]) {
 			_CL_LOG << "lb_I_Query::lbDBColumnUnknown" LOG_
 			break;
 	}
-
+#ifdef TEST_SNORT
 	database->connect("snort", "snort", "Muffin.345");
 	
 	UAP(lb_I_Query, query4, __FILE__, __LINE__)
@@ -291,6 +318,10 @@ int main(int argc, char *argv[]) {
 	query4->query(userQuery);
 	
 	query4->PrintData();
+#endif
+
+#endif
+/*...e*/
 }
 
         return 0;

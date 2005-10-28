@@ -757,8 +757,9 @@ public:
 		} \
 		\
 		virtual ~UAP##Unknown_Reference() { \
+			if (_file) delete [] _file; \
+			if (attachedClassName != NULL) free(attachedClassName); \
 			if (_autoPtr != NULL) { \
-				if (attachedClassName != NULL) free(attachedClassName); \
 				if (allowDelete != 1) { \
 					if (_autoPtr->deleteState() == 1) { \
 						printf("Error: Instance would be deleted, but it's not allowed !!\n"); \
@@ -767,7 +768,6 @@ public:
 				if (_line == -1) { \
 				} \
 				_autoPtr->release(_file, _line); \
-				if (_file) delete [] _file; \
 				_autoPtr = NULL; \
 			} \
 		} \
@@ -1191,6 +1191,9 @@ lbErrCodes LB_STDCALL classname::release(char* file, int line) { \
 	ref--; \
 	char ptr[20] = ""; \
 	sprintf(ptr, "%p", this); \
+	if (((lb_I_Unknown*) manager.getPtr() == (lb_I_Unknown*) this) && (getRefCount() == STARTREF+1)) { \
+		manager--; \
+	} \
         if (manager != NULL) { \
         	manager->notify_release(this, #classname, file, line); \
         } \
@@ -1585,8 +1588,12 @@ public: \
 		singleton = NULL; \
 	} \
 	virtual ~singletonHolder_##name() { \
-		printf("Delete singleton %s\n", "singletonHolder " #clsname); \
-		if (singleton != NULL) singleton->release(__FILE__, __LINE__); \
+		if (singleton != NULL) { \
+			printf("Delete singleton %s with %d references.\n", "singletonHolder " #clsname, singleton->getRefCount()); \
+			delete singleton; \
+		} else { \
+			printf("Warning: Singleton holder has an invalid pointer.\n"); \
+		} \
 	} \
 	void set(clsname* _singleton) { \
 		lb_I_Unknown* temp; \

@@ -38,11 +38,15 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.35 $
+ * $Revision: 1.36 $
  * $Name:  $
- * $Id: skiplist.cpp,v 1.35 2005/07/30 15:56:10 lollisoft Exp $
+ * $Id: skiplist.cpp,v 1.36 2005/10/28 17:28:42 lollisoft Exp $
  *
  * $Log: skiplist.cpp,v $
+ * Revision 1.36  2005/10/28 17:28:42  lollisoft
+ * Fixed memory leaks in database classes. Using it in console is tested.
+ * There now are only three objects leaked.
+ *
  * Revision 1.35  2005/07/30 15:56:10  lollisoft
  * Bugfix in get ... At functions.
  *
@@ -197,6 +201,24 @@ IMPLEMENT_FUNCTOR(instanceOfSkipList, SkipList)
 }
 #endif
 /*...e*/
+
+lbSkipListElement::lbSkipListElement() { 
+    	ref = STARTREF; 
+    	next = NULL; 
+    	data = NULL; 
+    	key = NULL; 
+    	manager = NULL;
+    }
+
+lbSkipListElement::lbSkipListElement(const lb_I_Element &e) { 
+    	_CL_VERBOSE << "lbSkipListElement(const lb_I_Element &e) called." LOG_
+    	ref = STARTREF; 
+    	next = e.getNext(); 
+    	data = e.getObject();
+    	key = e.getKey();
+	manager = NULL;
+    }
+
 
 /*...sSkipNode implementation:0:*/
 SkipNode::SkipNode() {
