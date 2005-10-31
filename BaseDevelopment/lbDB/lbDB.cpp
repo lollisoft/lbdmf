@@ -101,7 +101,6 @@ public:
 	DECLARE_LB_UNKNOWN()
 	
         virtual lbErrCodes LB_STDCALL updateView();
-/*...e*/
         
 /*...svirtual lbErrCodes LB_STDCALL setViewSource\40\lb_I_Unknown\42\ q\41\\59\:8:*/
         /* The view source is the data, that should be displayed.
