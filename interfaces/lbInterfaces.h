@@ -561,6 +561,35 @@ typedef lbErrCodes ( lb_I_EventHandler::*lbEvHandler)(lb_I_Unknown* uk);
 
 #define USE_UAP
 
+class miniString {
+public:
+	miniString() {
+		ptr = (char*) malloc(1);
+		ptr[0] = 0;
+	}
+
+	virtual ~miniString() {
+		if (ptr) free(ptr);
+	}
+
+	char* get() {
+		return ptr;
+	}
+
+	void set(char* p) {
+		if (p) {
+			if (ptr) free(ptr);
+			
+			ptr = (char*) malloc(strlen(p)+1);
+			ptr[0] = 0;
+			strcpy(ptr, p);
+		}
+	}
+
+protected:
+	char* ptr;
+};
+
 	/* setData must check the type of this ! */
 	/* = may also be possible */
 /*...sclass lb_I_Unknown:0:*/
@@ -1098,6 +1127,10 @@ private: \
 	int debug_macro; \
 	int further_lock; \
 	volatile int instance_counted; \
+	miniString lastQIFile; \
+	int        lastQILine; \
+	miniString lastSMFile; \
+	int        lastSMLine; \
 protected: \
 public: \
 	virtual void 		LB_STDCALL setFurtherLock(int state) { \
@@ -1155,6 +1188,8 @@ lb_I_Module* LB_STDCALL classname::getModuleManager() { \
 } \
 \
 void LB_STDCALL classname::setModuleManager(lb_I_Module* m, char* file, int line) { \
+	lastSMFile.set(file); \
+	lastSMLine = line; \
 	if (m == NULL) { \
 		_CL_LOG << "Error: Set module manager with a NULL pointer in " << #classname << " while setModuleManager(...)!" LOG_ \
 		return; \
@@ -1225,7 +1260,10 @@ lbErrCodes LB_STDCALL classname::release(char* file, int line) { \
         	return ERR_NONE; \
         } \
         if (ref < STARTREF) { \
-        	_CL_LOG << "Error: Reference count of instance " << ptr << " of object type " << #classname << " is less than " << STARTREF << " (" << ref << ") !!!" LOG_ \
+        	_CL_LOG << "Error: Reference count of instance " << ptr << " in last query interface " << \
+        	lastQIFile.get() << " at " << lastQILine << " and in last setModuleManager in " << \
+        	lastSMFile.get() << " at " << lastSMLine << \
+        	" of object type " << #classname << " is less than " << STARTREF << " (" << ref << ") !!!" LOG_ \
         	return ERR_REFERENCE_COUNTING; \
         } \
         return ERR_INSTANCE_STILL_USED; \
@@ -1276,6 +1314,8 @@ lb_I_Unknown* LB_STDCALL classname::clone(char* file, int line) const { \
 lbErrCodes LB_STDCALL classname::queryInterface(char* name, void** unknown, char* file, int line) { \
 	char buf[1000] = ""; \
 	char _classname[100] = #classname; \
+	lastQIFile.set(file); \
+	lastQILine = line; \
 	_CL_VERBOSE << #classname << "::queryInterface(" << file << ", " << line << ") with ref = " << ref << " called." LOG_ \
 	\
 	if (instance_counted != 112233) { \
@@ -2174,6 +2214,14 @@ public:
 	 */
 	virtual void LB_STDCALL initialize() = 0;
 
+	/** \brief Unload plugins.
+	 *
+	 * Use this function to clean up all loaded plugin modules.
+	 * This is nessesary due to dependencies of the modules and the
+	 * order of system unload order of the plugins.
+	 */
+	virtual void LB_STDCALL unload() = 0;
+
 	/** \brief Starts listing of plugins.
 	 *
 	 * As of lb_I_Container interface, this is similar to the beginning of
@@ -2260,6 +2308,7 @@ protected:
 #define BEGIN_PLUGINS(cls) \
 \
 void LB_STDCALL cls::setModule(char* module) { \
+	_CL_LOG << #cls << "::setModule(" << module << ") called." LOG_ \
 	if (_module == NULL) { \
 		REQUEST(manager.getPtr(), lb_I_String, _module) \
 	} \

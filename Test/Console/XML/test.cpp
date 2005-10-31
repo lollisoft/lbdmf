@@ -52,7 +52,9 @@ extern "C" {
 #include <iostream>
 #ifndef OSX
 #ifndef USE_MPATROL
+#ifndef MEMTRACK
 #include <malloc.h>
+#endif
 #endif
 #endif
 #ifdef OSX

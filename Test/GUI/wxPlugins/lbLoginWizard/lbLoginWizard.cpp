@@ -82,7 +82,7 @@ public:
 };
 
 /*...sclass lbPluginModuleLoginWizard implementation:0:*/
-BEGIN_IMPLEMENT_LB_UNKNOWN(lbPluginModuleLoginWizard)
+BEGIN_IMPLEMENT_SINGLETON_LB_UNKNOWN(lbPluginModuleLoginWizard)
         ADD_INTERFACE(lb_I_PluginModule)
 END_IMPLEMENT_LB_UNKNOWN()
 
@@ -646,7 +646,7 @@ lbPluginLoginWizard::~lbPluginLoginWizard() {
 	_CL_LOG << "lbPluginLoginWizard::~lbPluginLoginWizard() called." LOG_
 	if (wizard != NULL) {
 		_CL_LOG << "Destroy wizard." LOG_
-		wizard->Destroy();
+		//wizard->Destroy();
 		_CL_LOG << "Wizard destroyed." LOG_
 	}
 }

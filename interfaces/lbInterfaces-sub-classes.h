@@ -30,11 +30,16 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.55 $
+ * $Revision: 1.56 $
  * $Name:  $
- * $Id: lbInterfaces-sub-classes.h,v 1.55 2005/08/21 23:16:47 lollisoft Exp $
+ * $Id: lbInterfaces-sub-classes.h,v 1.56 2005/10/31 19:37:55 lollisoft Exp $
  *
  * $Log: lbInterfaces-sub-classes.h,v $
+ * Revision 1.56  2005/10/31 19:37:55  lollisoft
+ * This version compiles and ends without a crash at exit. I have added a simple
+ * string class to store places of queryInterface calls and setModuleManager calls.
+ * This may change the layout to let the application not crash at exit.
+ *
  * Revision 1.55  2005/08/21 23:16:47  lollisoft
  * Minor change to show the class name of container element, that would not
  * deleted.
@@ -656,7 +661,7 @@ virtual lb_I_KeyBase* LB_STDCALL getKey() const; \
 private: \
 \
     lb_I_Element* next; \
-    lb_I_KeyBase* key; 
+    lb_I_KeyBase* key;
 
 #define IMPLEMENT_LB_ELEMENT(classname) \
 \
@@ -682,7 +687,9 @@ classname::classname(const lb_I_Unknown* o, const lb_I_KeyBase* _key, lb_I_Eleme
 \
 classname::~classname() { \
 	char ptr[20] = ""; \
+	char ptr1[20] = ""; \
 	sprintf(ptr, "%p", this); \
+        sprintf(ptr1, "%p", data); \
 	_CL_VERBOSE << #classname << "::~" << #classname << "() called. Pointer this is: " << ptr LOG_ \
         if (key != NULL) { \
                 key->setDebug(1); \
@@ -690,7 +697,7 @@ classname::~classname() { \
                 _CL_VERBOSE << #classname << "::~" << #classname << "() Delete the key of " #classname LOG_ \
                 RELEASE(key); \
         } \
-        _CL_VERBOSE << #classname << "::~" << #classname << "() Delete the data of " #classname LOG_ \
+        _CL_VERBOSE << #classname << "::~" << #classname << "() Delete the data (" << ptr1 << ") of " #classname LOG_ \
         if (data != NULL) { \
         	if (data->deleteState() != 1) { \
         		_CL_LOG << "Warning: Data wouldn't deleted in container element! (" << data->getClassName() << ")" LOG_ \

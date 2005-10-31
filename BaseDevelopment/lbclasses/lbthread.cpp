@@ -47,7 +47,7 @@ extern "C" {
 
 #include <iostream>
 
-#include <lbInterfaces.h>
+//#include <lbInterfaces.h>
 #include <lbthread.h>
 #include <lbConfigHook.h>
 

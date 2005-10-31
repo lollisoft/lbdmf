@@ -31,11 +31,16 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.64 $
+ * $Revision: 1.65 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.64 2005/10/31 15:02:04 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.65 2005/10/31 19:37:55 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.65  2005/10/31 19:37:55  lollisoft
+ * This version compiles and ends without a crash at exit. I have added a simple
+ * string class to store places of queryInterface calls and setModuleManager calls.
+ * This may change the layout to let the application not crash at exit.
+ *
  * Revision 1.64  2005/10/31 15:02:04  lollisoft
  * Singleton mismatched to their declaration. Small correction in DllMain.
  *
@@ -249,7 +254,7 @@
 
 #include <stdio.h>
 #include <string.h>
-#include <lbInterfaces.h>
+//#include <lbInterfaces.h>
 #ifndef UNIX
 #include <windows.h>
 #endif

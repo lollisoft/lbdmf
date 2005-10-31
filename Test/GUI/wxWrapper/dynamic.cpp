@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.97 2005/10/31 15:13:32 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.98 2005/10/31 19:37:55 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,16 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.97 $
+ * $Revision: 1.98 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.97 2005/10/31 15:13:32 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.98 2005/10/31 19:37:55 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.98  2005/10/31 19:37:55  lollisoft
+ * This version compiles and ends without a crash at exit. I have added a simple
+ * string class to store places of queryInterface calls and setModuleManager calls.
+ * This may change the layout to let the application not crash at exit.
+ *
  * Revision 1.97  2005/10/31 15:13:32  lollisoft
  * Using unload function. But the cleanup doesn't work yet. There is a crash in
  * some system functions after unloading lbDB DLL. Not used now.
@@ -344,7 +349,7 @@
 #endif
 
 #ifdef LB_I_EXTENTIONS
-#include <lbInterfaces.h>
+//#include <lbInterfaces.h>
 #include <lbConfigHook.h>
 #endif
 
