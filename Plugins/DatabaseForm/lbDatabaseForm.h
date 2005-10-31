@@ -30,11 +30,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.24 $
+ * $Revision: 1.25 $
  * $Name:  $
- * $Id: lbDatabaseForm.h,v 1.24 2005/10/03 17:15:14 lollisoft Exp $
+ * $Id: lbDatabaseForm.h,v 1.25 2005/10/31 15:17:17 lollisoft Exp $
  *
  * $Log: lbDatabaseForm.h,v $
+ * Revision 1.25  2005/10/31 15:17:17  lollisoft
+ * Changed plugin classes to be singletons.
+ *
  * Revision 1.24  2005/10/03 17:15:14  lollisoft
  * Latest changes for release 0.5.1 under Linux
  *
@@ -874,9 +877,9 @@ extern "C" {
 DECLARE_SINGLETON_FUNCTOR(instanceOfPluginModule)
 
 DECLARE_FUNCTOR(instanceOflbDatabasePanel)
-DECLARE_FUNCTOR(instanceOflbPluginDatabasePanel)
+DECLARE_SINGLETON_FUNCTOR(instanceOflbPluginDatabasePanel)
 DECLARE_FUNCTOR(instanceOflbDatabaseDialog)
-DECLARE_FUNCTOR(instanceOflbPluginDatabaseDialog)
+DECLARE_SINGLETON_FUNCTOR(instanceOflbPluginDatabaseDialog)
 DECLARE_FUNCTOR(instanceOflbAction)
 
 DECLARE_FUNCTOR(instanceOflbDetailFormAction)
