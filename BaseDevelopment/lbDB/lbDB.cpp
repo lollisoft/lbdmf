@@ -52,7 +52,9 @@ extern "C" {
 #include <stdio.h>
 #ifndef OSX
 #ifndef USE_MPATROL
+#ifndef MEMTRACK
 #include <malloc.h>
+#endif
 #endif
 #endif
 #ifdef OSX
@@ -3733,7 +3735,7 @@ lbDatabase::lbDatabase() {
 }
 
 lbDatabase::~lbDatabase() {
-	_CL_VERBOSE << "lbDatabase::~lbDatabase() called." LOG_
+	_CL_LOG << "lbDatabase::~lbDatabase() called." LOG_
 }
 
 /*...slbErrCodes LB_STDCALL lbDatabase\58\\58\init\40\\41\:0:*/
@@ -4504,7 +4506,7 @@ BOOL WINAPI DllMain(HINSTANCE dllHandle, DWORD reason, LPVOID situation) {
                         _CL_VERBOSE << "New thread starting.\n" LOG_
                         break;
                 case DLL_PROCESS_DETACH:                        
-                       	_CL_VERBOSE << "DLL_PROCESS_DETACH for " << __FILE__ LOG_
+                       	_CL_LOG << "DLL_PROCESS_DETACH for " << __FILE__ LOG_
                         if (situation)
                         {
                         	if (lbDatabase::connPooling != NULL) lbDatabase::connPooling->release(__FILE__, __LINE__);
