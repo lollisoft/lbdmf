@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.96 2005/10/26 06:07:19 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.97 2005/10/31 15:13:32 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,15 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.96 $
+ * $Revision: 1.97 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.96 2005/10/26 06:07:19 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.97 2005/10/31 15:13:32 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.97  2005/10/31 15:13:32  lollisoft
+ * Using unload function. But the cleanup doesn't work yet. There is a crash in
+ * some system functions after unloading lbDB DLL. Not used now.
+ *
  * Revision 1.96  2005/10/26 06:07:19  lollisoft
  * Commit due to checks of crashes on OS X and Linux.
  *
@@ -1915,6 +1919,10 @@ bool MyApp::OnInit(void)
 // Only windows makes problems with the open console output window
 //  FreeConsole();
 #endif  
+
+
+	// Change the module load/unload order
+	UAP_REQUEST(mm.getPtr(), lb_I_String, string)
 /*...e*/
 
 	REQUEST(mm.getPtr(), lb_I_EventManager, ev_manager)        
@@ -2650,7 +2658,6 @@ void lb_wxFrame::OnQuit(wxCommandEvent& WXUNUSED(event) )
   	 * problem, if it is not destroyed here.
   	 */
 
-	_CL_LOG << "lb_wxFrame::OnQuit(...) called." LOG_  	 
   	 
 	if (guiCleanedUp == 0) {
 		_CL_LOG << "lb_wxFrame::OnQuit(...) cleans up GUI" LOG_
@@ -2659,11 +2666,11 @@ void lb_wxFrame::OnQuit(wxCommandEvent& WXUNUSED(event) )
         	guiCleanedUp = 1;
 	}
 
-	_CL_LOG << "lb_wxFrame::OnQuit(...) calls Close(TRUE);" LOG_
+	UAP_REQUEST(mm.getPtr(), lb_I_PluginManager, PM)
 	
+	PM->unload();
+
 	Close(TRUE);
-	
-	_CL_LOG << "lb_wxFrame::OnQuit(...) called Close(TRUE);" LOG_
 }
 
 void lb_wxFrame::OnVerbose(wxCommandEvent& WXUNUSED(event) ) {
