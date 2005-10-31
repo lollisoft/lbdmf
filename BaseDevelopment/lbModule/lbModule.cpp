@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.94 $
+ * $Revision: 1.95 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.94 2005/10/31 09:59:01 lollisoft Exp $
+ * $Id: lbModule.cpp,v 1.95 2005/10/31 15:03:24 lollisoft Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.95  2005/10/31 15:03:24  lollisoft
+ * Include of malloc corrected. Log DLL_PROCESS_DETACH (not verbose).
+ *
  * Revision 1.94  2005/10/31 09:59:01  lollisoft
  * Added support for mpatrol library, but it is deactivated. Use DEBUG_MEMORY=yes to activate it.
  *
@@ -345,7 +348,9 @@ extern "C" {
 #endif
 #ifndef OSX
 #ifndef USE_MPATROL
+#ifndef MEMTRACK
 #include <malloc.h>
+#endif
 #endif
 #endif
 
@@ -3502,7 +3507,7 @@ BOOL WINAPI DllMain(HINSTANCE dllHandle, DWORD reason, LPVOID situation) {
                         _CL_VERBOSE << "New thread starting.\n" LOG_
                         break;
                 case DLL_PROCESS_DETACH:
-                	_CL_VERBOSE << "DLL_PROCESS_DETACH for " << __FILE__ LOG_                        
+                	_CL_LOG << "DLL_PROCESS_DETACH for " << __FILE__ LOG_                        
                         if (situation)
                         {
                                 _CL_LOG << "DLL " << __FILE__ << " released by system." LOG_
