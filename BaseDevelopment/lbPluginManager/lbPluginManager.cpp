@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.28 $
+ * $Revision: 1.29 $
  * $Name:  $
- * $Id: lbPluginManager.cpp,v 1.28 2005/10/31 15:05:12 lollisoft Exp $
+ * $Id: lbPluginManager.cpp,v 1.29 2005/10/31 21:55:16 lollisoft Exp $
  *
  * $Log: lbPluginManager.cpp,v $
+ * Revision 1.29  2005/10/31 21:55:16  lollisoft
+ * Deactivated too early include of lbInterface.h.
+ *
  * Revision 1.28  2005/10/31 15:05:12  lollisoft
  * Added an unload function for correct cleanup. Only delete char* if not NULL.
  * Corrected malloc include.
@@ -168,7 +171,7 @@ extern "C" {
 #include <dirent.h>
 #endif
 
-#include <lbInterfaces.h>
+//#include <lbInterfaces.h>
 #include <lbConfigHook.h>
 
 #include <stdio.h>
