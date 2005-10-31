@@ -30,11 +30,15 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.27 $
+ * $Revision: 1.28 $
  * $Name:  $
- * $Id: lbPluginManager.cpp,v 1.27 2005/10/31 09:59:01 lollisoft Exp $
+ * $Id: lbPluginManager.cpp,v 1.28 2005/10/31 15:05:12 lollisoft Exp $
  *
  * $Log: lbPluginManager.cpp,v $
+ * Revision 1.28  2005/10/31 15:05:12  lollisoft
+ * Added an unload function for correct cleanup. Only delete char* if not NULL.
+ * Corrected malloc include.
+ *
  * Revision 1.27  2005/10/31 09:59:01  lollisoft
  * Added support for mpatrol library, but it is deactivated. Use DEBUG_MEMORY=yes to activate it.
  *
@@ -170,7 +174,9 @@ extern "C" {
 #include <stdio.h>
 #ifndef OSX
 #ifndef USE_MPATROL
+#ifndef MEMTRACK
 #include <malloc.h>
+#endif
 #endif
 #endif
 #ifdef OSX
@@ -197,6 +203,7 @@ public:
 	DECLARE_LB_UNKNOWN()
 
 	void LB_STDCALL initialize();
+	void LB_STDCALL unload();
         bool LB_STDCALL beginEnumPlugins();
 
 	lb_I_Plugin* LB_STDCALL getFirstMatchingPlugin(char* match, char* _namespace);
@@ -238,6 +245,12 @@ lbPluginManager::lbPluginManager() {
 }
 
 lbPluginManager::~lbPluginManager() {
+	_CL_LOG << "lbPluginManager::~lbPluginManager() with " << getRefCount() << " references called." LOG_
+}
+
+void LB_STDCALL lbPluginManager::unload() {
+	PluginModules->deleteAll();
+	PluginContainer->deleteAll();
 }
 
 lbErrCodes LB_STDCALL lbPluginManager::setData(lb_I_Unknown* uk) {
@@ -312,6 +325,8 @@ bool LB_STDCALL lbPluginManager::tryLoad(char* module) {
 			
 			PluginModules->insert(&ukPlugin, &key);
 			
+			UAP(lb_I_Unknown, ukPlugin, __FILE__, __LINE__)
+			
 			ukPlugin = PluginModules->getElement(&key);
 			
 			UAP(lb_I_PluginModule, plM, __FILE__, __LINE__)
@@ -330,6 +345,8 @@ bool LB_STDCALL lbPluginManager::tryLoad(char* module) {
 	} else {
 		ukPlugin->setModuleManager(*&manager, __FILE__, __LINE__);
 		PluginModules->insert(&ukPlugin, &key);
+		
+		UAP(lb_I_Unknown, ukPlugin, __FILE__, __LINE__)
 		
 		ukPlugin = PluginModules->getElement(&key);
 		
@@ -479,8 +496,6 @@ lb_I_Plugin* LB_STDCALL lbPluginManager::nextPlugin() {
 	
 	if (begunEnumerate) {
 
-		UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
-		UAP(lb_I_PluginModule, plM, __FILE__, __LINE__)
 		
 		if (firstPlugin) {
 
@@ -496,6 +511,8 @@ lb_I_Plugin* LB_STDCALL lbPluginManager::nextPlugin() {
 			
 			
 			while (PluginModules->hasMoreElements()) {
+				UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
+				UAP(lb_I_PluginModule, plM, __FILE__, __LINE__)
 			
 				uk = PluginModules->nextElement();
 		
@@ -512,6 +529,7 @@ lb_I_Plugin* LB_STDCALL lbPluginManager::nextPlugin() {
 				PluginContainer = plM->getPlugins();
 			
 				if (PluginContainer->hasMoreElements()) {
+					UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
 					uk = PluginContainer->nextElement();
 				
 					UAP(lb_I_Plugin, plugin, __FILE__, __LINE__)
@@ -527,11 +545,12 @@ lb_I_Plugin* LB_STDCALL lbPluginManager::nextPlugin() {
 		
 			if (!lastPlugin) {
 				if (PluginContainer->hasMoreElements()) {
+					UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
 				        uk = PluginContainer->nextElement();
 
 				        UAP(lb_I_Plugin, plugin, __FILE__, __LINE__)
 				        QI(uk, lb_I_Plugin, plugin, __FILE__, __LINE__)
-						plugin++;
+					plugin++;
 						
 				        return plugin.getPtr();
 				} else {
@@ -607,17 +626,17 @@ public:
 	void LB_STDCALL setAttached(lb_I_PluginImpl* impl);
 	
 	void LB_STDCALL setModule(char* module) {
-		free(_module);
+		if (_module) free(_module);
 		_module = strdup(module);
 	}
 	
 	void LB_STDCALL setName(char* name) { 
-		free(_name);
+		if (_name) free(_name);
 		_name = strdup(name);
 	}
 	
 	void LB_STDCALL setNamespace(char* __namespace) {
-		free(_namespace);
+		if (_namespace) free(_namespace);
 		_namespace = strdup(__namespace);
 	}
 
@@ -660,9 +679,9 @@ lbPlugin::lbPlugin() {
 /*...e*/
 /*...slbPlugin\58\\58\\126\lbPlugin\40\\41\:0:*/
 lbPlugin::~lbPlugin() {
-	free(_module);
-	free(_name);
-	free(_namespace);
+	if (_module) free(_module);
+	if (_name) free(_name);
+	if (_namespace) free(_namespace);
 }
 /*...e*/
 /*...slbErrCodes LB_STDCALL lbPlugin\58\\58\setData\40\lb_I_Unknown\42\ uk\41\:0:*/
@@ -900,7 +919,7 @@ BOOL WINAPI DllMain(HINSTANCE dllHandle, DWORD reason, LPVOID situation) {
                         _CL_VERBOSE << "New thread starting.\n" LOG_
                         break;
                 case DLL_PROCESS_DETACH:                        
-                	_CL_VERBOSE << "DLL_PROCESS_DETACH for " << __FILE__ LOG_
+                	_CL_LOG << "DLL_PROCESS_DETACH for " << __FILE__ LOG_
                         if (situation)
                         {
                                 _CL_VERBOSE << "DLL released by system." LOG_
