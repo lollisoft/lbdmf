@@ -1168,20 +1168,16 @@ void lb_wxFrame::OnQuit(wxCommandEvent& WXUNUSED(event) )
   	 * problem, if it is not destroyed here.
   	 */
 
-	_CL_LOG << "lb_wxFrame::OnQuit(...) called." LOG_  	 
-  	 
+	UAP_REQUEST(manager.getPtr(), lb_I_PluginManager, PM)
+	
+	PM->unload();
+	
 	if (guiCleanedUp == 0) {
-		_CL_LOG << "lb_wxFrame::OnQuit(...) cleans up GUI" LOG_
         	if (gui) gui->cleanup();
-        	_CL_LOG << "lb_wxFrame::OnQuit(...) cleaned up GUI" LOG_
         	guiCleanedUp = 1;
 	}
 
-	_CL_LOG << "lb_wxFrame::OnQuit(...) calls Close(TRUE);" LOG_
-	
 	Close(TRUE);
-	
-	_CL_LOG << "lb_wxFrame::OnQuit(...) called Close(TRUE);" LOG_
 }
 
 void lb_wxFrame::OnVerbose(wxCommandEvent& WXUNUSED(event) ) {
