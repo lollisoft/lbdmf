@@ -144,6 +144,7 @@
  #endif // MEMTRACK
 
  #ifndef MEMTRACK
+  #define TRMemValidate(name) 1
   #define TRMemOpen()
   #define TRMemSetModuleName(name)
   #define TRMemSetAdrBreakPoint(ptr)
