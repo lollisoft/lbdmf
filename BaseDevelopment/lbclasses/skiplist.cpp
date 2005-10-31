@@ -38,11 +38,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.36 $
+ * $Revision: 1.37 $
  * $Name:  $
- * $Id: skiplist.cpp,v 1.36 2005/10/28 17:28:42 lollisoft Exp $
+ * $Id: skiplist.cpp,v 1.37 2005/10/31 14:59:55 lollisoft Exp $
  *
  * $Log: skiplist.cpp,v $
+ * Revision 1.37  2005/10/31 14:59:55  lollisoft
+ * Deflated a macro, but deactivated it.
+ *
  * Revision 1.36  2005/10/28 17:28:42  lollisoft
  * Fixed memory leaks in database classes. Using it in console is tested.
  * There now are only three objects leaked.
@@ -242,6 +245,11 @@ SkipNode::SkipNode(lb_I_Element* r, int level) {
 }
 
 SkipNode::~SkipNode() { 
+
+	if (TRMemValidate(this) == 0) {
+		_CL_LOG << "Error: Object pointer is invalid!" LOG_
+	}
+
 	if (forward) {
 		for (int i=0; i<=myLevel; i++)
 		    forward[i] = NULL;
@@ -253,8 +261,21 @@ SkipNode::~SkipNode() {
 	      	// So call release twice ! :-!
 
       		lb_I_Unknown* uk = value->getObject();
-      		uk->release(__FILE__, __LINE__);
-      		uk->release(__FILE__, __LINE__);
+      		
+      		if (TRMemValidate(uk) == 0) {
+      			_CL_LOG << "ERROR: Have an invalid pointer!" LOG_
+      		}
+
+		_CL_LOG << "Delete SkipNode value object '" << uk->getClassName() << "'" LOG_
+      		
+      		if (uk->getRefCount() < 2) {
+      			_CL_LOG << "ERROR: Reference count is not as expected!" LOG_
+      		} else {
+	      		uk->release(__FILE__, __LINE__);
+      		}
+		uk->release(__FILE__, __LINE__);
+		
+		//value.resetPtr();
 	}
 }
 
@@ -732,6 +753,83 @@ BEGIN_IMPLEMENT_LB_UNKNOWN(lbSkipListElement)
 END_IMPLEMENT_LB_UNKNOWN()
 
 IMPLEMENT_LB_ELEMENT(lbSkipListElement)
+#ifdef bla
+/*...s:0:*/
+lbSkipListElement::lbSkipListElement(const lb_I_Unknown* o, const lb_I_KeyBase* _key, lb_I_Element *_next) { 
+    ref = STARTREF; 
+    manager = NULL; 
+    if (_next == NULL) next = _next; 
+    if (_next != NULL) { 
+        _next->queryInterface("lb_I_Element", (void**) &next, __FILE__, __LINE__); 
+    } 
+    data = NULL; 
+    if (o == NULL) _CL_LOG << "Error! Can't clone a NULL pointer" << __FILE__ ":" << __LINE__ LOG_ 
+    if (o != NULL) { 
+	    data = o->clone(__FILE__, __LINE__); 
+	    if (data->getRefCount() > 1) { 
+	        _CL_LOG << "Warning: Refcount after cloning is more than 1 !!!" LOG_ 
+	    } 
+    } 
+    lb_I_Unknown* uk_key = NULL; 
+    key = (lb_I_KeyBase*) _key->clone(__FILE__, __LINE__); 
+    if (key == NULL) _CL_LOG << "Key cloning in constructor failed. May be a memory problem" LOG_ 
+} 
+
+lbSkipListElement::~lbSkipListElement() { 
+	char ptr[20] = ""; 
+	char ptr1[20] = ""; 
+	sprintf(ptr, "%p", this); 
+        sprintf(ptr1, "%p", data); 
+	_CL_VERBOSE << "lbSkipListElement" << "::~" << "lbSkipListElement" << "() called. Pointer this is: " << ptr LOG_ 
+        if (key != NULL) { 
+                key->setDebug(1); 
+                if (key->deleteState() != 1) _CL_LOG << "Warning: Key wouldn't deleted in container element!" LOG_ 
+                _CL_VERBOSE << "lbSkipListElement" << "::~" << "lbSkipListElement" << "() Delete the key of " "lbSkipListElement" LOG_ 
+                RELEASE(key); 
+        } 
+        _CL_LOG << "lbSkipListElement" << "::~" << "lbSkipListElement" << "() Delete the data (" << ptr1 << ") of " "lbSkipListElement" LOG_ 
+        if (data != NULL) { 
+        	if (data->deleteState() != 1) { 
+        		_CL_LOG << "Warning: Data wouldn't deleted in container element! (" << data->getClassName() << ")" LOG_ 
+        	} 
+		RELEASE(data); 
+        } 
+        _CL_VERBOSE << "lbSkipListElement" << "::~" << "lbSkipListElement" << "() leaving" LOG_ 
+        key = NULL; 
+        data = NULL; 
+} 
+
+lb_I_Unknown* lbSkipListElement::getObject() const { 
+    lb_I_Unknown* uk = NULL; 
+    if(data == NULL) _CL_LOG << "ERROR: Element has no data. Could not return from NULL pointer!!" LOG_ 
+    data->queryInterface("lb_I_Unknown", (void**) &uk, __FILE__, __LINE__); 
+    return uk; 
+} 
+
+lb_I_KeyBase* LB_STDCALL lbSkipListElement::getKey() const { 
+        lb_I_KeyBase* kbase = NULL; 
+        return key; 
+} 
+
+void LB_STDCALL lbSkipListElement::setNext(lb_I_Element *e) { 
+        e->queryInterface("lb_I_Element", (void**) &next, __FILE__, __LINE__); 
+} 
+
+lb_I_Element* LB_STDCALL lbSkipListElement::getNext() const { 
+        return next; 
+} 
+int LB_STDCALL lbSkipListElement::equals(const lb_I_Element* a) const { 
+	return 0; 
+} 
+
+int LB_STDCALL lbSkipListElement::equals(const lb_I_KeyBase* _key) const { 
+	return (*key == _key); 
+} 
+int LB_STDCALL lbSkipListElement::lessthan(const lb_I_KeyBase* _key) const { 
+	return (*key < _key); 
+}
+/*...e*/
+#endif
 
 lbErrCodes LB_STDCALL lbSkipListElement::setData(lb_I_Unknown* uk) {
 	_LOG << "lbSkipListElement::setData(...) not implemented yet" LOG_
