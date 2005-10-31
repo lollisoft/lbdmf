@@ -50,7 +50,9 @@ extern "C" {
 #include <stdio.h>
 #include <iostream>
 #ifndef OSX
+#ifndef USE_MPATROL
 #include <malloc.h>
+#endif
 #endif
 //#include "testdll.h"
 

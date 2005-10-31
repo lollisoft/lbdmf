@@ -46,15 +46,21 @@ extern "C" {
 }
 #endif
 
+#include <lbInterfaces.h>
+#include <lbConfigHook.h>
+
 #include <stdio.h>
 #ifndef OSX
+#ifndef USE_MPATROL
 #include <malloc.h>
+#endif
 #endif
 #ifdef OSX
 #include <sys/malloc.h>
 #endif
-#include <lbInterfaces.h>
-#include <lbConfigHook.h>
+
+//#include <lbInterfaces.h>
+//#include <lbConfigHook.h>
 
 
 
@@ -85,6 +91,7 @@ void _dbError( LPSTR lp, HENV henv,HDBC hdbc,HSTMT hstmt);
 class lbQuery;
 class lbBoundColumn;
 /*...sclass def lbDBView:0:*/
+
 class lbDBView: public lb_I_MVC_View
 {
 public:
@@ -93,9 +100,6 @@ public:
 	
 	DECLARE_LB_UNKNOWN()
 	
-/*...svirtual lbErrCodes LB_STDCALL updateView\40\\41\\59\:8:*/
-        /*------ MVC variant ------------*/
-        /* Data is available, I can read it out ... */
         virtual lbErrCodes LB_STDCALL updateView();
 /*...e*/
         

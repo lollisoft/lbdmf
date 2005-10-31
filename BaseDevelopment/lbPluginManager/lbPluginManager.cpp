@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.26 $
+ * $Revision: 1.27 $
  * $Name:  $
- * $Id: lbPluginManager.cpp,v 1.26 2005/10/01 21:44:08 lollisoft Exp $
+ * $Id: lbPluginManager.cpp,v 1.27 2005/10/31 09:59:01 lollisoft Exp $
  *
  * $Log: lbPluginManager.cpp,v $
+ * Revision 1.27  2005/10/31 09:59:01  lollisoft
+ * Added support for mpatrol library, but it is deactivated. Use DEBUG_MEMORY=yes to activate it.
+ *
  * Revision 1.26  2005/10/01 21:44:08  lollisoft
  * Added handling of namespaces.
  *
@@ -161,15 +164,18 @@ extern "C" {
 #include <dirent.h>
 #endif
 
+#include <lbInterfaces.h>
+#include <lbConfigHook.h>
+
 #include <stdio.h>
 #ifndef OSX
+#ifndef USE_MPATROL
 #include <malloc.h>
+#endif
 #endif
 #ifdef OSX
 #include <sys/malloc.h>
 #endif
-#include <lbInterfaces.h>
-#include <lbConfigHook.h>
 
 
 

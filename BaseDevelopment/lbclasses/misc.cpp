@@ -31,10 +31,13 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.40 $
+ * $Revision: 1.41 $
  * $Name:  $
- * $Id: misc.cpp,v 1.40 2005/06/27 10:32:10 lollisoft Exp $
+ * $Id: misc.cpp,v 1.41 2005/10/31 09:59:01 lollisoft Exp $
  * $Log: misc.cpp,v $
+ * Revision 1.41  2005/10/31 09:59:01  lollisoft
+ * Added support for mpatrol library, but it is deactivated. Use DEBUG_MEMORY=yes to activate it.
+ *
  * Revision 1.40  2005/06/27 10:32:10  lollisoft
  * Mostly changes to conio.h conflicts while XCode build
  *
@@ -272,7 +275,7 @@ public:
 /*...sprivate:0:*/
     private:
 
-	void LB_STDCALL realloc(int add_size);
+	void LB_STDCALL _realloc(int add_size);
 
     static char prefix[100];
     static int level;    
@@ -543,7 +546,7 @@ void LB_STDCALL lbLog::event_end(char *event) {
  * My new - possible bugfree - log system
  */
  
-void LB_STDCALL lbLog::realloc(int add_size) {
+void LB_STDCALL lbLog::_realloc(int add_size) {
 	if (logmessage == NULL) {
 		char* buf = (char*) malloc(add_size);
 		buf[0] = 0;
@@ -563,13 +566,13 @@ void LB_STDCALL lbLog::realloc(int add_size) {
  
 lb_I_Log& LB_STDCALL lbLog::operator<< (/*lb_I_Log* logger,*/ const int i) {
 	char s[1000] = "";
-	realloc(strlen(itoa(i)) + 1);
+	_realloc(strlen(itoa(i)) + 1);
 	lastsize = lastsize + strlen(itoa(i)) + 1;
 	strcat(logmessage, itoa(i));
 	return *this;
 }
 lb_I_Log& LB_STDCALL lbLog::operator<< (/*lb_I_Log* logger,*/ const char c) {
-        realloc(lastsize + 2);
+        _realloc(lastsize + 2);
         lastsize = lastsize + 2;
         char add[2] = "";
         add[0] = c;
@@ -585,7 +588,7 @@ lb_I_Log& LB_STDCALL lbLog::operator<< (/*lb_I_Log* logger,*/ const char c) {
 
 lb_I_Log& LB_STDCALL lbLog::operator<< (/*lb_I_Log* logger,*/ const char* string) {
 	if (string != NULL) {
-		realloc(lastsize+strlen(string) + 10);
+		_realloc(lastsize+strlen(string) + 10);
 		lastsize = lastsize + strlen(string) + 10;
 		strcat(logmessage, string);
 		

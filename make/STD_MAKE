@@ -25,11 +25,14 @@
 #            40235 Duesseldorf (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.69 $
+# * $Revision: 1.70 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.69 2005/10/26 06:07:19 lollisoft Exp $
+# * $Id: STD_MAKE,v 1.70 2005/10/31 09:59:01 lollisoft Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.70  2005/10/31 09:59:01  lollisoft
+# * Added support for mpatrol library, but it is deactivated. Use DEBUG_MEMORY=yes to activate it.
+# *
 # * Revision 1.69  2005/10/26 06:07:19  lollisoft
 # * Commit due to checks of crashes on OS X and Linux.
 # *
@@ -480,22 +483,37 @@ endif
 
 ifeq ($(OSTYPE), linux)
 
+DEBUG_MEMORY=no
+
 STD_INCL = -I $(DEVROOT)/Projects/CPP/BaseDevelopment/lbHook/linuxCode \
 	-I $(DEVROOT)/Projects/CPP/interfaces \
 	-I $(DEVROOT)/Projects/CPP/include \
 	-I $(DEVROOT)/Projects/CPP/BaseDevelopment/lbclasses \
 	-I /usr/include \
+	-I $(HOME)/mpatrol/src \
 	-I . 
 
 STD_INCL_CPP = $(STD_INCL)
 
 OBJ =o
-C_OPS   = -c -g -DUNIX -DLINUX
+C_OPS   = -c -g -DUNIX -DLINUX -DTVISION
+
+ifeq ($(DEBUG_MEMORY), yes)
+C_OPS += -DDEBUG_MALLOC -DUSE_MPATROL
+endif
+
 C_SOOPS = $(C_OPS)
 C_ELFOPS= $(C_OPS)
 L_OPS   = -o
-LIBS    = -ldl -lstdc++ #-lc $(HOME)/mpatrol/build/unix/libmpatrol.a 
-#-lc $(HOME)/mpatrol/build/unix/libmpatrol.a
+
+ifeq ($(DEBUG_MEMORY), yes)
+LIBS    = -ldl -lstdc++ -lmpatrol -lbfd 
+endif
+
+ifeq ($(DEBUG_MEMORY), no)
+LIBS    = -ldl -lstdc++
+endif
+
 #-lefence
 CC =cc
 CPP=cc

@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.93 $
+ * $Revision: 1.94 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.93 2005/10/28 17:28:42 lollisoft Exp $
+ * $Id: lbModule.cpp,v 1.94 2005/10/31 09:59:01 lollisoft Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.94  2005/10/31 09:59:01  lollisoft
+ * Added support for mpatrol library, but it is deactivated. Use DEBUG_MEMORY=yes to activate it.
+ *
  * Revision 1.93  2005/10/28 17:28:42  lollisoft
  * Fixed memory leaks in database classes. Using it in console is tested.
  * There now are only three objects leaked.
@@ -333,21 +336,23 @@ extern "C" {
 }
 #endif
 
+#include <lbConfigHook.h>
+#include <lbInterfaces.h>
+
 #include <stdio.h>
 #ifdef OSX
 #include <sys/malloc.h>
 #endif
 #ifndef OSX
+#ifndef USE_MPATROL
 #include <malloc.h>
 #endif
-#include <lbInterfaces.h>
+#endif
 
 /*...sLB_MODULE_DLL scope:0:*/
 #define LB_MODULE_DLL
 #include <lbmodule-module.h>
 /*...e*/
-
-#include <lbConfigHook.h>
 
 
 #include <lbModule.h>
@@ -359,6 +364,7 @@ class lbSkipListElement;
 typedef lb_I_Element* Elem;
 #define MAXLEVEL 9
 
+#ifndef USE_MPATROL
 char* strdup(const char* s) {
 	if (s == NULL) return NULL;
 	char* temp = (char*) malloc(strlen(s)+1);
@@ -366,6 +372,7 @@ char* strdup(const char* s) {
 	strcpy(temp, s);
 	return temp;
 }
+#endif
 
 /*...sclass SkipNode:0:*/
 class SkipNode {
@@ -2247,6 +2254,7 @@ void LB_STDCALL lbModule::getXMLConfigObject(lb_I_InterfaceRepository** inst) {
 #endif
 #ifdef LINUX
 #define PREFIX ""
+#define HINSTANCE void*
 #endif
 	HINSTANCE h = getModuleHandle();
 	setModuleHandle(h);

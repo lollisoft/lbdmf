@@ -1,23 +1,7 @@
 <?xml version = '1.0' encoding = 'UTF-8'?>
 <!DOCTYPE KDevPrjSession>
 <KDevPrjSession>
- <DocsAndViews NumberOfDocuments="3" >
-  <Doc0 NumberOfViews="1" URL="file:/home/lothar/develop/Projects/CPP/BaseDevelopment/lbXMLConfig/lbXMLConfig/lbXMLConfig.cpp" >
-   <View0 line="62" Type="???" >
-    <AdditionalSettings Top="2" Width="734" Attach="1" Height="300" Left="2" MinMaxMode="0" />
-   </View0>
-  </Doc0>
-  <Doc1 NumberOfViews="1" URL="file:/home/lothar/develop/Projects/CPP/interfaces/lbInterfaces.h" >
-   <View0 line="375" Type="???" >
-    <AdditionalSettings Top="2" Width="734" Attach="1" Height="274" Left="2" MinMaxMode="0" />
-   </View0>
-  </Doc1>
-  <Doc2 NumberOfViews="1" URL="file:/home/lothar/develop/Projects/CPP/BaseDevelopment/lbDB/lbDB.cpp" >
-   <View0 line="96" Type="???" >
-    <AdditionalSettings Top="2" Width="734" Attach="1" Height="274" Left="2" MinMaxMode="0" />
-   </View0>
-  </Doc2>
- </DocsAndViews>
+ <DocsAndViews NumberOfDocuments="0" />
  <pluginList>
   <kdevvalgrind>
    <executable path="" params="" />

@@ -46,17 +46,20 @@ extern "C" {
 }
 #endif            
 
+#include <lbConfigHook.h>
+
 #include <stdio.h>
 #include <iostream>
 #ifndef OSX
+#ifndef USE_MPATROL
 #include <malloc.h>
+#endif
 #endif
 #ifdef OSX
 #include <sys/malloc.h>
 #endif
 //#include "testdll.h"
 
-#include <lbConfigHook.h>
 /*...e*/
 
 #define LOOP

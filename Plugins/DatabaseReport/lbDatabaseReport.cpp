@@ -844,6 +844,17 @@ void LB_STDCALL lbDatabaseReport::init(char* SQLString, char* DBName, char* DBUs
 				wxSWISS, wxNORMAL, wxBOLD, false, "Arial");
 #endif
 
+#ifdef LINUX
+	wxFont			fntBig(properties->getIntParameter("fntBig-Mac"),
+				wxSWISS, wxITALIC, wxBOLD, true, "Arial");
+				
+	wxFont			fntSmall(properties->getIntParameter("fntSmall-Mac"),
+				wxSWISS, wxNORMAL, wxNORMAL, false , "Arial");
+				
+	wxFont			fntHdr(properties->getIntParameter("fntHdr-Mac"),
+				wxSWISS, wxNORMAL, wxBOLD, false, "Arial");
+#endif
+
 #ifdef WINDOWS
 	wxFont			fntBig(properties->getIntParameter("fntBig-Windows"),
 				wxSWISS, wxITALIC, wxBOLD, true, "Arial");

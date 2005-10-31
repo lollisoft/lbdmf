@@ -35,20 +35,27 @@
  * This file must be included by each file to be able to use lbDMF.
  */
 #ifdef USE_MPATROL
-#include <mpatrol.h>
+//#include <mpatrol.h>
 #endif
 
 #ifdef WINDOWS
-#ifndef TVISION
-#ifndef TVISION_APP
+ #ifndef TVISION
+  #ifndef TVISION_APP
 
-#ifdef DEBUG_MALLOC
-#define TRACKER
-#define MEMTRACK
+   #ifdef DEBUG_MALLOC
+    #define TRACKER
+    #define MEMTRACK
+   #endif
+
+  #endif
+ #endif
 #endif
 
-#endif
-#endif
+#ifdef LINUX
+ #ifdef DEBUG_MALLOC
+  #define TRACKER
+  #define MEMTRACK
+ #endif
 #endif
 
 #ifdef WINDOWS
@@ -96,26 +103,44 @@
 #endif
 
 #ifndef OSX
+#ifndef MEMTRACK
 #include <malloc.h>
+#endif
 #endif
 
 #ifndef OSX
 /*...sMemory tracker:0:*/
  #ifdef MEMTRACK
 
+ #ifdef LINUX
+  #define USE_MPATROL
+  #include <mpatrol.h>
+ #endif
+
+
   #ifdef WINDOWS
    extern "C" {
    #include "trmemcvr.h"
    }
   #endif
- 
-  #undef malloc
-  #undef free
-  #undef realloc
 
-  #define malloc TRMemAlloc
-  #define free TRMemFree
-  #define realloc TRMemRealloc
+  #ifndef USE_MPATROL 
+   #undef malloc
+   #undef free
+   #undef realloc
+
+   #define malloc TRMemAlloc
+   #define free TRMemFree
+   #define realloc TRMemRealloc
+  #endif
+
+  #ifdef USE_MPATROL
+   // Undefined outside Open Watcom
+   #define TRMemOpen()
+   #define TRMemSetModuleName(name)
+   #define TRMemSetAdrBreakPoint(ptr)
+  #endif
+ 
  #endif // MEMTRACK
 
  #ifndef MEMTRACK
@@ -385,8 +410,6 @@ DLLEXPORT char* LB_STDCALL itoa(int ptr);
 DLLEXPORT void LB_STDCALL InstanceCount(int inst);
 DLLEXPORT void LB_STDCALL Instances();
 
-
-
 /*...sclass lbStringKey \58\ public lb_I_KeyBase:0:*/
 class DLLEXPORT
 lbStringKey : public lb_I_KeyBase {
@@ -400,7 +423,7 @@ public:
     virtual ~lbStringKey();
 
     DECLARE_LB_UNKNOWN()
-    
+  
     DECLARE_LB_KEYBASE()
 
 private:

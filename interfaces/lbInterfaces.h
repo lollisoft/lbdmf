@@ -365,6 +365,7 @@
 #define FALSE false
 #endif
 
+// KDevelop: Problems to set these variable :-)
 #ifdef TVISION
  #ifndef LB_STDCALL
   #ifdef WINDOWS
@@ -703,7 +704,7 @@ public:
 #define UAP(interface, Unknown_Reference, file, line) \
 		class UAP##Unknown_Reference { \
 \
-		char* strdup(char* s) { \
+		char* my_strdup(char* s) { \
 			if (s == NULL) return NULL; \
 			char* temp = (char*) malloc(strlen(s)+1); \
 			temp[0] = 0; \
@@ -724,9 +725,9 @@ public:
 			attachedClassName = NULL; \
 			initialized = false; \
 			if ((_ref != NULL) && (_ref->getClassName() != NULL)) \
-				attachedClassName = strdup(_ref->getClassName()); \
+				attachedClassName = my_strdup(_ref->getClassName()); \
 			else \
-				attachedClassName = strdup(""); \
+				attachedClassName = my_strdup(""); \
 			if (_file != NULL) delete [] _file; \
 			_file = NULL; \
 			if (_ref._file) { \
@@ -749,9 +750,9 @@ public:
 			} \
 			initialized = false; \
 			if ((_ref != NULL) && (_ref->getClassName() != NULL)) \
-			        attachedClassName = strdup(_ref->getClassName()); \
+			        attachedClassName = my_strdup(_ref->getClassName()); \
 		        else \
-		                attachedClassName = strdup(""); \
+		                attachedClassName = my_strdup(""); \
 			_line = _ref._line; \
 			_autoPtr = _ref._autoPtr; \
 		} \
@@ -838,9 +839,9 @@ public:
 				free(attachedClassName); \
 			} \
 			if ((autoPtr != NULL) && (autoPtr->getClassName() != NULL)) \
-				attachedClassName = strdup(autoPtr->getClassName()); \
+				attachedClassName = my_strdup(autoPtr->getClassName()); \
 			else \
-				attachedClassName = strdup(""); \
+				attachedClassName = my_strdup(""); \
 			return *this; \
 		} \
 		int LB_STDCALL operator == (const interface* b) const { \
@@ -1086,6 +1087,9 @@ public:
 /** \def DECLARE_LB_UNKNOWN() To be used in any interface implementation.
  *  This has to be used for each class definition, when deriving from lb_I_Unknown.
  */
+
+ 
+ 
 #define DECLARE_LB_UNKNOWN() \
 private: \
 	UAP(lb_I_Module, manager, __FILE__, __LINE__) \
