@@ -42,11 +42,6 @@
 #pragma hdrstop
 #endif
 
-#ifdef LB_I_EXTENTIONS
-#include <lbInterfaces.h>
-#include <lbConfigHook.h>
-#endif
-
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
@@ -64,7 +59,6 @@
 /*...e*/
 
 #include <lbConfigHook.h>
-#include <lbInterfaces.h>
 #include <wxWrapperDLL.h>
 
 /*...swxAppSelectPage:0:*/
