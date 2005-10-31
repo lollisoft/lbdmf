@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.63 $
+ * $Revision: 1.64 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.63 2005/06/27 10:32:08 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.64 2005/10/31 15:02:04 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.64  2005/10/31 15:02:04  lollisoft
+ * Singleton mismatched to their declaration. Small correction in DllMain.
+ *
  * Revision 1.63  2005/06/27 10:32:08  lollisoft
  * Mostly changes to conio.h conflicts while XCode build
  *
@@ -276,12 +279,12 @@ extern "C" {
 extern "C" {       
 #endif            
 
-IMPLEMENT_SINGLETON_FUNCTOR(instanceOfMetaApplication, lb_MetaApplication)
 IMPLEMENT_FUNCTOR(instanceOfEventMapper, lb_EventMapper)
 IMPLEMENT_FUNCTOR(instanceOfEvHandler, lb_EvHandler)
 
-IMPLEMENT_SINGLETON_FUNCTOR(instanceOfDispatcher, lb_Dispatcher)
 IMPLEMENT_SINGLETON_FUNCTOR(instanceOfEventManager, lb_EventManager)
+IMPLEMENT_SINGLETON_FUNCTOR(instanceOfDispatcher, lb_Dispatcher)
+IMPLEMENT_SINGLETON_FUNCTOR(instanceOfMetaApplication, lb_MetaApplication)
 
 #ifdef __cplusplus
 }
@@ -1048,7 +1051,7 @@ void LB_STDCALL lb_EventMapper::setID(int id) {
 /*...e*/
 
 /*...slb_EventManager:0:*/
-BEGIN_IMPLEMENT_LB_UNKNOWN(lb_EventManager)
+BEGIN_IMPLEMENT_SINGLETON_LB_UNKNOWN(lb_EventManager)
 	ADD_INTERFACE(lb_I_EventManager)
 END_IMPLEMENT_LB_UNKNOWN()
 
@@ -1203,7 +1206,7 @@ char* LB_STDCALL lb_EventManager::reverseEvent(int evNr) {
 }
 /*...e*/
 /*...slb_Dispatcher:0:*/
-BEGIN_IMPLEMENT_LB_UNKNOWN(lb_Dispatcher)
+BEGIN_IMPLEMENT_SINGLETON_LB_UNKNOWN(lb_Dispatcher)
 	ADD_INTERFACE(lb_I_Dispatcher)
 END_IMPLEMENT_LB_UNKNOWN()
 
@@ -1414,16 +1417,9 @@ BOOL WINAPI DllMain(HINSTANCE dllHandle, DWORD reason, LPVOID situation) {
                         _CL_VERBOSE << "New thread starting.\n" LOG_
                         break;
                 case DLL_PROCESS_DETACH:                        
-                        if (situation)
-                        {
-                        	_CL_VERBOSE << "DLL_PROCESS_DETACH for " << __FILE__ LOG_
-                                _CL_VERBOSE << "DLL released by system." LOG_
-                        }
-                        else
-                        {
-                        	_CL_VERBOSE << "DLL_PROCESS_DETACH for " << __FILE__ LOG_
-                                _CL_VERBOSE << "DLL released by program.\n" LOG_
-                        }
+                       	_CL_LOG << "DLL_PROCESS_DETACH for " << __FILE__ LOG_
+                        if (situation) _CL_VERBOSE << "DLL released by system." LOG_
+                        else           _CL_VERBOSE << "DLL released by program.\n" LOG_
                         break;
                 case DLL_THREAD_DETACH:
                         _CL_VERBOSE << "Thread terminating.\n" LOG_
