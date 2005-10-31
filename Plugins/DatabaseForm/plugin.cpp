@@ -127,7 +127,7 @@ lbPluginModuleDatabaseForm::lbPluginModuleDatabaseForm() {
 }
 
 lbPluginModuleDatabaseForm::~lbPluginModuleDatabaseForm() {
-	_CL_VERBOSE << "lbPluginModuleDatabaseForm::~lbPluginModuleDatabaseForm() called." LOG_
+	_CL_LOG << "lbPluginModuleDatabaseForm::~lbPluginModuleDatabaseForm() called." LOG_
 }
 
 void LB_STDCALL lbPluginModuleDatabaseForm::initialize() {
