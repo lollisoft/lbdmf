@@ -43,7 +43,6 @@
 #endif
 
 #ifdef LB_I_EXTENTIONS
-#include <lbInterfaces.h>
 #include <lbConfigHook.h>
 #endif
 
