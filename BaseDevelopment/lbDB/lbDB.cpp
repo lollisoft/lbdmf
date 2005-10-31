@@ -46,7 +46,7 @@ extern "C" {
 }
 #endif
 
-#include <lbInterfaces.h>
+//#include <lbInterfaces.h>
 #include <lbConfigHook.h>
 
 #include <stdio.h>
@@ -1206,13 +1206,27 @@ lbErrCodes LB_STDCALL lbQuery::bind() {
 		        dbError( "SQLNumResultCols()");
 		        return ERR_DB_QUERYFAILED;
 		} else {
+			lbErrCodes err = ERR_NONE;
 			lbBoundColumns* boundcols = NULL;
 			
+			if (boundColumns != NULL) {
+				_CL_LOG << "Unbind columns of previous query." LOG_
+				boundColumns--;
+				boundColumns = NULL;
+			}
+			
+			if (ReadOnlyColumns != NULL) {
+				ReadOnlyColumns->deleteAll();
+			}
+
 			boundcols = new lbBoundColumns();
 			boundcols->setModuleManager(*&manager, __FILE__, __LINE__);
-			boundColumns = boundcols;
+
+			//boundColumns = boundcols;
 		
 			_CL_VERBOSE << "Bind columns with " << ReadOnlyColumns->Count() << " readonly elements" LOG_
+		
+			QI(boundcols, lb_I_ColumnBinding, boundColumns, __FILE__, __LINE__)
 		
 			boundColumns->setQuery(this, ReadOnlyColumns.getPtr());
 			

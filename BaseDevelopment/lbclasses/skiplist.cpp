@@ -38,11 +38,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.37 $
+ * $Revision: 1.38 $
  * $Name:  $
- * $Id: skiplist.cpp,v 1.37 2005/10/31 14:59:55 lollisoft Exp $
+ * $Id: skiplist.cpp,v 1.38 2005/10/31 21:37:31 lollisoft Exp $
  *
  * $Log: skiplist.cpp,v $
+ * Revision 1.38  2005/10/31 21:37:31  lollisoft
+ * Compile problems. Removed unused log messages.
+ *
  * Revision 1.37  2005/10/31 14:59:55  lollisoft
  * Deflated a macro, but deactivated it.
  *
@@ -266,8 +269,6 @@ SkipNode::~SkipNode() {
       			_CL_LOG << "ERROR: Have an invalid pointer!" LOG_
       		}
 
-		_CL_LOG << "Delete SkipNode value object '" << uk->getClassName() << "'" LOG_
-      		
       		if (uk->getRefCount() < 2) {
       			_CL_LOG << "ERROR: Reference count is not as expected!" LOG_
       		} else {
