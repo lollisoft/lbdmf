@@ -25,11 +25,14 @@
 #            40235 Duesseldorf (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.70 $
+# * $Revision: 1.71 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.70 2005/10/31 09:59:01 lollisoft Exp $
+# * $Id: STD_MAKE,v 1.71 2005/10/31 15:07:44 lollisoft Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.71  2005/10/31 15:07:44  lollisoft
+# * Adapted trmem versus mpatrol builtin and none of them.
+# *
 # * Revision 1.70  2005/10/31 09:59:01  lollisoft
 # * Added support for mpatrol library, but it is deactivated. Use DEBUG_MEMORY=yes to activate it.
 # *
@@ -265,6 +268,10 @@ MODE=_DEBUG
 #DEBUG_MEMORY=no
 DEBUG_MEMORY=yes
 
+#DEBUG_MEMORY_TYPE=mpatrol
+DEBUG_MEMORY_TYPE=trmem
+
+
 WX_DEBUG=
 ifeq (($MODE), _DEBUG)
 WX_DEBUG=d
@@ -277,8 +284,14 @@ STD_INCL_WATCOM_CPP =-i=.   -i=$(DEVROOT_MAKE)$(WATCOM_SLASH)Tools$(WATCOM_SLASH
 			-i=$(DEVROOT_MAKE)$(WATCOM_SLASH)projects$(WATCOM_SLASH)cpp$(WATCOM_SLASH)interfaces \
 			-i=$(DEVROOT_MAKE)$(WATCOM_SLASH)projects$(WATCOM_SLASH)cpp$(WATCOM_SLASH)include \
 			-i=$(DEVROOT_MAKE)$(WATCOM_SLASH)projects$(WATCOM_SLASH)dll$(WATCOM_SLASH)include \
-			-i=$(DEVROOT_MAKE)$(WATCOM_SLASH)projects$(WATCOM_SLASH)lib$(WATCOM_SLASH)include \
-			-i=$(DEVROOT_MAKE)$(WATCOM_SLASH)projects$(WATCOM_SLASH)CPP$(WATCOM_SLASH)vendor$(WATCOM_SLASH)trmem
+			-i=$(DEVROOT_MAKE)$(WATCOM_SLASH)projects$(WATCOM_SLASH)lib$(WATCOM_SLASH)include
+
+ifeq ($(DEBUG_MEMORY_TYPE), trmem)	
+  STD_INCL_WATCOM_CPP += -i=$(DEVROOT_MAKE)$(WATCOM_SLASH)projects$(WATCOM_SLASH)CPP$(WATCOM_SLASH)vendor$(WATCOM_SLASH)trmem
+endif
+ifeq ($(DEBUG_MEMORY_TYPE), mpatrol)
+  STD_INCL_WATCOM_CPP += -i=$(DEVROOT_MAKE)$(WATCOM_SLASH)tools$(WATCOM_SLASH)mpatrol$(WATCOM_SLASH)src
+endif  
 
 WATCOM_SLASH_CC=\\
 
@@ -289,8 +302,16 @@ STD_INCL_WATCOM =-i=. -i=$(DEVROOT_CC)$(WATCOM_SLASH_CC)Tools$(WATCOM_SLASH_CC)W
 			-i=$(DEVROOT_CC)$(WATCOM_SLASH_CC)projects$(WATCOM_SLASH_CC)cpp$(WATCOM_SLASH_CC)interfaces \
 			-i=$(DEVROOT_CC)$(WATCOM_SLASH_CC)projects$(WATCOM_SLASH_CC)cpp$(WATCOM_SLASH_CC)include \
 			-i=$(DEVROOT_CC)$(WATCOM_SLASH_CC)projects$(WATCOM_SLASH_CC)dll$(WATCOM_SLASH_CC)include \
-			-i=$(DEVROOT_CC)$(WATCOM_SLASH_CC)projects$(WATCOM_SLASH_CC)lib$(WATCOM_SLASH_CC)include \
-			-i=$(DEVROOT_CC)$(WATCOM_SLASH_CC)projects$(WATCOM_SLASH_CC)CPP$(WATCOM_SLASH_CC)vendor$(WATCOM_SLASH_CC)trmem
+			-i=$(DEVROOT_CC)$(WATCOM_SLASH_CC)projects$(WATCOM_SLASH_CC)lib$(WATCOM_SLASH_CC)include
+			
+
+ifeq ($(DEBUG_MEMORY_TYPE), trmem)		
+  STD_INCL_WATCOM += -i=$(DEVROOT_CC)$(WATCOM_SLASH_CC)projects$(WATCOM_SLASH_CC)CPP$(WATCOM_SLASH_CC)vendor$(WATCOM_SLASH_CC)trmem
+endif
+ifeq ($(DEBUG_MEMORY_TYPE), mpatrol)
+  STD_INCL_WATCOM += -i=$(DEVROOT_CC)$(WATCOM_SLASH_CC)tools$(WATCOM_SLASH_CC)mpatrol$(WATCOM_SLASH_CC)src
+endif			
+
 #ANAKIN
 #STD_INCL_MICROSOFT = /I "." /I "F:\develop\NT\MSC\VC98\Include" /I "Q:\Develop\xml\xml4csrc3_3_1\src" /I "Q:\Develop\Projects\CPP\include" /I "Q:\Develop\Projects\CPP\interfaces" /I "Q:\Develop\Projects\CPP\basedevelopment\lbclasses"
 #LOTHARBNOTEBOOK
@@ -300,7 +321,12 @@ STD_INCL_CPP = $(STD_INCL_WATCOM_CPP)
 STD_INCL = $(STD_INCL_WATCOM)
 
 ifeq ($(DEBUG_MEMORY), yes)
-BASE_LIBS = $(DEVROOT_MAKE)/projects/lib/trmem.lib,
+  ifeq ($(DEBUG_MEMORY_TYPE), trmem)
+    BASE_LIBS = $(DEVROOT_MAKE)/projects/lib/trmem.lib,
+  endif
+  ifeq ($(DEBUG_MEMORY_TYPE), mpatrol)
+    BASE_LIBS = $(DEVROOT_MAKE)/projects/lib/libmpatrol.lib,
+  endif	
 endif
 
 ifeq ($(DEBUG_MEMORY), no)
@@ -320,7 +346,12 @@ ifeq ($(DEBUG_MEMORY), no)
 WATCOM_STDDEBUG=-d2 -hd #-DDEBUG_MALLOC
 endif
 ifeq ($(DEBUG_MEMORY), yes)
-WATCOM_STDDEBUG=-d2 -hd -DDEBUG_MALLOC
+  ifeq ($(DEBUG_MEMORY_TYPE), trmem)
+    WATCOM_STDDEBUG=-d2 -hd -DDEBUG_MALLOC
+  endif
+  ifeq ($(DEBUG_MEMORY_TYPE), mpatrol)
+    WATCOM_STDDEBUG=-d2 -hd -DUSE_MPATROL
+  endif
 endif
 WATCOM_STACK=#-of+
 WATCOM_PROFILING=#-db -en -s
