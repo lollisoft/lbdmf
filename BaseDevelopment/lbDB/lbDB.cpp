@@ -3814,12 +3814,6 @@ lbErrCodes LB_STDCALL lbDatabase::connect(char* pass) {
 lbErrCodes LB_STDCALL lbDatabase::connect(char* DSN, char* user, char* passwd) {
 	lbErrCodes err = ERR_NONE;
 
-	if (!TRMemValidateAll()) {
-		printf("ERROR: Heap seems to be corrupted!\n");
-		getchar();
-	}
-	
-
 	_CL_VERBOSE << "Connect to database " << DSN << " as " << user << " with passwd=" << passwd LOG_
 	
 	if (connPooling == NULL) {

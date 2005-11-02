@@ -138,11 +138,6 @@ lbErrCodes LB_STDCALL lbDynamicApplication::registerEventHandler(lb_I_Dispatcher
 lbErrCodes LB_STDCALL lbDynamicApplication::getDynamicDBForm(lb_I_Unknown* uk) {
 	lbErrCodes err = ERR_NONE;
 	
-	if (!TRMemValidateAll()) {
-		printf("ERROR: Memory seems to be corrupted!\n");
-		getchar();
-	}
-	
 	if (gui != NULL) {
 	        UAP(lb_I_DatabaseForm, dbForm, __FILE__, __LINE__)
 
@@ -306,19 +301,10 @@ lbErrCodes LB_STDCALL lbDynamicApplication::getDynamicDBForm(lb_I_Unknown* uk) {
 		
 		}		
 
-		if (!TRMemValidateAll()) {
-			printf("ERROR: Memory seems to be corrupted before form creation!\n");
-			getchar();
-		}
-
 	        dbForm = gui->createDBForm(formName->charrep(), query->charrep(), 
 	        				DBName->charrep(), DBUser->charrep(), DBPass->charrep());
 
 		dbForm->show();
-
-		if (!TRMemValidateAll()) {
-			printf("ERROR: Memory seems to be corrupted after showing the form!\n");
-		}
 
 		//- External formular implementation ---------------------------------------------------
 	        //- Would load an external module and optionally use other parameters from configuratoin
