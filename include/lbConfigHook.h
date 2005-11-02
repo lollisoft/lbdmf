@@ -34,9 +34,6 @@
  *
  * This file must be included by each file to be able to use lbDMF.
  */
-#ifdef USE_MPATROL
-//#include <mpatrol.h>
-#endif
 
 #ifdef WINDOWS
  #ifndef TVISION
@@ -107,6 +104,8 @@
 #include <malloc.h>
 #endif
 #endif
+
+#include <lbInterfaces.h>
 
 #ifndef OSX
 /*...sMemory tracker:0:*/
@@ -270,44 +269,12 @@
 /*...e*/
 
 
-#include <lbInterfaces.h>
 
 #ifndef __LB_CONFIG_HOOK__
 #define __LB_CONFIG_HOOK__
 
 #ifdef LINUX
 #define HINSTANCE void*
-#endif
-
-#ifdef bla
-
-#ifdef DLLEXPORT
-#undef DLLEXPORT
-#endif
-
-#define	 DLLEXPORT
-
-#ifdef HOOK_DLL
-#undef DLLEXPORT
-#ifdef WINDOWS
-#define DLLEXPORT LB_DLLEXPORT
-#endif
-#ifdef LINUX
-#define DLLEXPORT
-#endif
-
-#endif
-
-#ifndef HOOK_DLL
-#undef DLLEXPORT
-#ifdef WINDOWS
-#define DLLEXPORT LB_DLLIMPORT
-#endif
-#ifdef LINUX
-#define DLLEXPORT
-#endif
-#endif
-
 #endif
 
 // Object tracking
@@ -380,10 +347,10 @@ DLLEXPORT char* LB_STDCALL translateText(char* text);
 
 
 
-lbErrCodes DLLEXPORT LB_STDCALL lbLoadModule(const char* name, HINSTANCE & hinst);
+DLLEXPORT lbErrCodes LB_STDCALL lbLoadModule(const char* name, HINSTANCE & hinst);
 /*...e*/
 /*...slbErrCodes LB_STDCALL lbGetFunctionPtr\40\const char\42\ name\44\ const HINSTANCE \38\ hinst\44\ void\42\\42\ pfn\41\:0:*/
-lbErrCodes DLLEXPORT LB_STDCALL lbGetFunctionPtr(const char* name, HINSTANCE hinst, void** pfn);
+DLLEXPORT lbErrCodes LB_STDCALL lbGetFunctionPtr(const char* name, HINSTANCE hinst, void** pfn);
 /*...e*/
 
 

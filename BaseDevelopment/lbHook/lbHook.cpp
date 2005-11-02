@@ -27,11 +27,6 @@
             40235 Duesseldorf (germany)
 */
 /*...e*/
-#define HOOK_DLL
-/*...sLB_HOOK_DLL scope:0:*/
-#define LB_HOOK_DLL
-#include <lbhook-module.h>
-/*...e*/
 
 /*...sincludes:0:*/
 #include <stdarg.h>
@@ -64,6 +59,12 @@
 #endif
 
 #include <lbConfigHook.h>
+
+#define HOOK_DLL
+/*...sLB_HOOK_DLL scope:0:*/
+#define LB_HOOK_DLL
+#include <lbhook-module.h>
+/*...e*/
 
 #ifdef LINUX
 #define HINSTANCE void*
@@ -276,7 +277,7 @@ int lb_isInitializing = 0;
 #endif 
  
 /*...slbErrCodes LB_STDCALL lbLoadModule\40\const char\42\ name\44\ HINSTANCE \38\ hinst\41\:0:*/
-lbErrCodes LB_STDCALL lbLoadModule(const char* name, HINSTANCE & hinst) {
+DLLEXPORT lbErrCodes LB_STDCALL lbLoadModule(const char* name, HINSTANCE & hinst) {
 #ifdef WINDOWS
         if ((hinst = LoadLibrary(name)) == NULL)
         {
@@ -352,7 +353,7 @@ lbErrCodes LB_STDCALL lbLoadModule(const char* name, HINSTANCE & hinst) {
 }
 /*...e*/
 /*...slbErrCodes LB_STDCALL lbGetFunctionPtr\40\const char\42\ name\44\ const HINSTANCE \38\ hinst\44\ void\42\\42\ pfn\41\:0:*/
-lbErrCodes LB_STDCALL lbGetFunctionPtr(const char* name, HINSTANCE hinst, void** pfn) {
+DLLEXPORT lbErrCodes LB_STDCALL lbGetFunctionPtr(const char* name, HINSTANCE hinst, void** pfn) {
 #ifdef WINDOWS
         if ((*pfn = (void*) GetProcAddress(hinst, name)) == NULL)
         {
@@ -721,18 +722,18 @@ DLLEXPORT lbStringKey::lbStringKey() {
     key = "";
 }
 
-lbStringKey::lbStringKey(const char* _key) {
+DLLEXPORT lbStringKey::lbStringKey(const char* _key) {
     ref = STARTREF;
     key = strdup(_key);
 }
 
-lbStringKey::lbStringKey(const lb_I_KeyBase* k) {
+DLLEXPORT lbStringKey::lbStringKey(const lb_I_KeyBase* k) {
     ref = STARTREF;
     key = strdup(((lbStringKey*) k)->key);
 }
 
 
-lbStringKey::~lbStringKey(){
+DLLEXPORT lbStringKey::~lbStringKey(){
 	if (key != NULL) {
 		free(key);
 	}

@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.95 $
+ * $Revision: 1.96 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.95 2005/10/31 15:03:24 lollisoft Exp $
+ * $Id: lbModule.cpp,v 1.96 2005/11/02 18:50:48 lollisoft Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.96  2005/11/02 18:50:48  lollisoft
+ * There where some linking problems.
+ *
  * Revision 1.95  2005/10/31 15:03:24  lollisoft
  * Include of malloc corrected. Log DLL_PROCESS_DETACH (not verbose).
  *
@@ -340,7 +343,6 @@ extern "C" {
 #endif
 
 #include <lbConfigHook.h>
-#include <lbInterfaces.h>
 
 #include <stdio.h>
 #ifdef OSX
@@ -354,15 +356,13 @@ extern "C" {
 #endif
 #endif
 
+
 /*...sLB_MODULE_DLL scope:0:*/
 #define LB_MODULE_DLL
 #include <lbmodule-module.h>
 /*...e*/
 
-
 #include <lbModule.h>
-//#include <lbXMLConfig.h>
-//#include <lbkey.h>
 /*...e*/
 
 class lbSkipListElement;
@@ -944,6 +944,7 @@ lbErrCodes LB_STDCALL lbSkipListElement::setData(lb_I_Unknown* uk) {
 }
 /*...e*/
 
+//#ifdef bla
 /*...sclass InstanceRepository:0:*/
 /*...sreferenceList:0:*/
 typedef struct _referenceList {
@@ -1806,6 +1807,7 @@ void LB_STDCALL InstanceRepository::loadContainer(lb_I_Module* m) {
 }
 /*...e*/
 /*...e*/
+//#endif
 
 T_pLB_GET_UNKNOWN_INSTANCE DLL_LB_GET_UNKNOWN_INSTANCE;
 /*...sclass lbModuleContainer:0:*/

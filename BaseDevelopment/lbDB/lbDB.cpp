@@ -46,7 +46,6 @@ extern "C" {
 }
 #endif
 
-//#include <lbInterfaces.h>
 #include <lbConfigHook.h>
 
 #include <stdio.h>
@@ -60,10 +59,6 @@ extern "C" {
 #ifdef OSX
 #include <sys/malloc.h>
 #endif
-
-//#include <lbInterfaces.h>
-//#include <lbConfigHook.h>
-
 
 
 /*...sLB_DATABASE_DLL scope:0:*/
