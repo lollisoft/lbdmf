@@ -139,7 +139,11 @@ int main(int argc, char *argv[]) {
 	}
 
 	lb_I_String* s1 = string1.getPtr();
-	lb_I_String* s2 = string2.getPtr();
+	lb_I_String* s2 = string1.getPtr();
+
+	_CL_LOG << "String has " << s1->getRefCount() << " references." LOG_
+
+	s1->release(__FILE__, __LINE__);
 
 	_CL_LOG << "Test (s1 == s2)" LOG_
 

@@ -119,9 +119,7 @@
 
 
   #ifdef WINDOWS
-   extern "C" {
    #include "trmemcvr.h"
-   }
   #endif
 
   #ifndef USE_MPATROL 

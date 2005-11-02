@@ -53,12 +53,14 @@
 
 #include "wx/wizard.h"
 /*...e*/
+
+#include <lbConfigHook.h>
+
 /*...sLB_DATABASE_DLL scope:0:*/
 #define LB_LOGINWIZARD_DLL
 #include <lbloginwizard-module.h>
 /*...e*/
 
-#include <lbConfigHook.h>
 #include <wxWrapperDLL.h>
 
 /*...swxAppSelectPage:0:*/
@@ -940,6 +942,10 @@ lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::createDBForm(char* formName, char* query
 		
 		if (uk != NULL) {
 		        QI(uk, lb_I_DatabaseForm, _dialog, __FILE__, __LINE__)
+		}
+
+		if (!TRMemValidateAll()) {
+		        printf("ERROR: Memory seems to be corrupted short before form gets its name !\n");
 		}
 		
 		_dialog->setName(formName);

@@ -1226,6 +1226,7 @@ char*      LB_STDCALL classname::getCreationLoc() const { \
 	return strdup("Have no manager - location can't be found"); \
 } \
 lbErrCodes LB_STDCALL classname::release(char* file, int line) { \
+	if (TRMemValidate(this)) { \
 	_CL_VERBOSE << #classname << "::release(" << __FILE__ << ", " << line << ") with ref = " << ref << " called." LOG_ \
 	ref--; \
 	char ptr[20] = ""; \
@@ -1265,6 +1266,9 @@ lbErrCodes LB_STDCALL classname::release(char* file, int line) { \
         	lastSMFile.get() << " at " << lastSMLine << \
         	" of object type " << #classname << " is less than " << STARTREF << " (" << ref << ") !!!" LOG_ \
         	return ERR_REFERENCE_COUNTING; \
+        } \
+        } else { \
+        	printf("Error: Instance %p of object type %s was deleted prior !!!", this, #classname); \
         } \
         return ERR_INSTANCE_STILL_USED; \
 } \
@@ -1428,10 +1432,8 @@ char*      LB_STDCALL classname::getCreationLoc() const { \
 	return strdup("Have no manager - location can't be found"); \
 } \
 lbErrCodes LB_STDCALL classname::release(char* file, int line) { \
+	if (TRMemValidate(this)) { \
         ref--; \
-        if (strcmp("lb_EventManager", #classname) == 0) { \
-        	_CL_LOG << "lb_EventManager::release() called" LOG_ \
-        } \
 	char ptr[20] = ""; \
 	sprintf(ptr, "%p", this); \
         if (manager != NULL) { \
@@ -1452,8 +1454,11 @@ lbErrCodes LB_STDCALL classname::release(char* file, int line) { \
         	return ERR_NONE; \
         } \
         if (ref < STARTREF) { \
-        	_CL_LOG << "Error: Reference count of instance " << ptr << " of object type " << #classname << " is less than " << STARTREF << " (" << ref << ") !!!" LOG_ \
+        	printf("Error: Reference count of instance %p of object type %s is less than %d (%d) !!!", ptr, #classname, STARTREF, ref); \
         	return ERR_REFERENCE_COUNTING; \
+        } \
+        } else { \
+        	printf("Error: Instance %p of object type %s was deleted prior !!!", this, #classname); \
         } \
         return ERR_INSTANCE_STILL_USED; \
 } \
@@ -1633,10 +1638,12 @@ public: \
 	} \
 	virtual ~singletonHolder_##name() { \
 		if (singleton != NULL) { \
-			printf("Delete singleton %s with %d references.\n", "singletonHolder " #clsname, singleton->getRefCount()); \
-			delete singleton; \
+			if (TRMemValidate(singleton)) \
+				delete singleton; \
+			else \
+				printf("ERROR: Sinleton object has been deleted prior!\n"); \ 
 		} else { \
-			printf("Warning: Singleton holder has an invalid pointer.\n"); \
+			printf("Warning: singletonHolder_" #name " has an invalid pointer.\n"); \
 		} \
 	} \
 	void set(clsname* _singleton) { \

@@ -30,11 +30,15 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.29 $
+ * $Revision: 1.30 $
  * $Name:  $
- * $Id: lbPluginManager.cpp,v 1.29 2005/10/31 21:55:16 lollisoft Exp $
+ * $Id: lbPluginManager.cpp,v 1.30 2005/11/02 16:24:28 lollisoft Exp $
  *
  * $Log: lbPluginManager.cpp,v $
+ * Revision 1.30  2005/11/02 16:24:28  lollisoft
+ * Bug for the program ending crash and the cout crash found. See history in
+ * lbDB.cpp.
+ *
  * Revision 1.29  2005/10/31 21:55:16  lollisoft
  * Deactivated too early include of lbInterface.h.
  *
@@ -279,7 +283,10 @@ bool LB_STDCALL lbPluginManager::tryLoad(char* module) {
 		strcat(pluginDir, getenv("HOME"));
 		strcat(pluginDir, "/plugins");
 	} else {
-		pluginDir = strdup(pluginDir);
+		char* temp = pluginDir;
+		pluginDir = (char*) malloc(strlen(pluginDir)+1);
+		pluginDir[0] = 0;
+		strcpy(pluginDir, temp);
 	}
 				
 /*...sbuild PREFIX:0:*/
@@ -397,7 +404,10 @@ void LB_STDCALL lbPluginManager::initialize() {
 		strcat(pluginDir, getenv("HOME"));
 		strcat(pluginDir, "/plugins");
 	} else {
-		pluginDir = strdup(pluginDir);
+		char* temp = pluginDir;
+		pluginDir = (char*) malloc(strlen(pluginDir)+1);
+		pluginDir[0] = 0;
+		strcpy(pluginDir, temp);
 	}
 	
 	char* toFind = new char[strlen(mask)+strlen(pluginDir)+2];
@@ -630,17 +640,32 @@ public:
 	
 	void LB_STDCALL setModule(char* module) {
 		if (_module) free(_module);
-		_module = strdup(module);
+		_module = NULL;
+		if (module) {
+			_module = (char*) malloc(strlen(module)+1);
+			_module[0] = 0;
+			strcpy(_module, module);
+		}
 	}
 	
 	void LB_STDCALL setName(char* name) { 
 		if (_name) free(_name);
-		_name = strdup(name);
+		_name = NULL;
+		if (name) {
+			_name = (char*) malloc(strlen(name)+1);
+			_name[0] = 0;
+			strcpy(_name, name);
+		}
 	}
 	
 	void LB_STDCALL setNamespace(char* __namespace) {
 		if (_namespace) free(_namespace);
-		_namespace = strdup(__namespace);
+		_namespace = NULL;
+		if (__namespace) {
+			_namespace = (char*) malloc(strlen(__namespace)+1);
+			_namespace[0] = 0;
+			strcpy(_namespace, __namespace);
+		}
 	}
 
 	char* LB_STDCALL getModule() { return _module; }

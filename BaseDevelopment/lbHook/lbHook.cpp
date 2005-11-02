@@ -546,6 +546,8 @@ DLLEXPORT char* LB_STDCALL translateText(char* text) {
 
 	locale->translate(&translated, text);
 
+	mm->release(__FILE__, __LINE__);
+
 	return translated;
 }
 

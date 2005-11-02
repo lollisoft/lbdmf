@@ -31,11 +31,15 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.65 $
+ * $Revision: 1.66 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.65 2005/10/31 19:37:55 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.66 2005/11/02 16:24:28 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.66  2005/11/02 16:24:28  lollisoft
+ * Bug for the program ending crash and the cout crash found. See history in
+ * lbDB.cpp.
+ *
  * Revision 1.65  2005/10/31 19:37:55  lollisoft
  * This version compiles and ends without a crash at exit. I have added a simple
  * string class to store places of queryInterface calls and setModuleManager calls.
@@ -548,12 +552,21 @@ lbErrCodes LB_STDCALL lb_MetaApplication::Initialize(char* user, char* app) {
 	addMenuBar(_trans("&Help"));
 
 	if (getenv("TARGET_APPLICATION") == NULL) {
-		char* login = strdup(_trans("&Login\tCtrl-L"));
+		char* temp = _trans("&Login\tCtrl-L");
+		char* login = (char*) malloc(strlen(temp)+1);
+		login[0] = 0;
+		strcpy(login, temp);
+		
 		addMenuEntry(_trans("&File"), login, "getLoginData", "");
 		free(login);
 	}
 	
-	char* mm = strdup(_trans("MainModule&Info\tCtrl-I"));
+	char* temp = _trans("MainModule&Info\tCtrl-I");
+	
+	char* mm = (char*) malloc(strlen(temp)+1);
+	mm[0] = 0;
+	strcpy(mm, temp);
+	
 	addMenuEntry(_trans("&Help"), mm, "getMainModuleInfo", "");
 	free(mm);
 

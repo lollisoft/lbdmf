@@ -98,18 +98,18 @@ lbLocale::lbLocale() {
 }
 
 lbLocale::~lbLocale() {
-	free(_lang);
+	if (_lang) free(_lang);
 }
 
 void LB_STDCALL lbLocale::setLanguage(char const * lang) {
-	free(_lang);
-	_lang = strdup(lang);
+	if (_lang) free(_lang);
+	_lang = (char*) malloc(strlen(lang)+1);
+	_lang[0] = 0;
+	strcpy(_lang, lang);
 }
 
 /*...svoid LB_STDCALL lbLocale\58\\58\translate\40\char \42\\42\ text\44\ char const \42\ to_translate\41\:0:*/
 void LB_STDCALL lbLocale::translate(char ** text, char const * to_translate) {
-
-
 	UAP_REQUEST(manager.getPtr(), lb_I_Database, database)
 
 	database->init();
@@ -121,9 +121,11 @@ void LB_STDCALL lbLocale::translate(char ** text, char const * to_translate) {
 	if (!lbDMFPasswd) lbDMFPasswd = "trainres";
 
 	if (database->connect("lbDMF", lbDMFUser, lbDMFPasswd) != ERR_NONE) {
-		*text = (char*) realloc(*text, strlen(to_translate) + 1);
+		char* temp = *text;
+		*text = (char*) malloc(strlen(to_translate)+1);
 		*text[0] = 0;
 		strcpy(*text, to_translate);
+		if (temp) free(temp);
 		return;
 	}
 
@@ -148,16 +150,23 @@ void LB_STDCALL lbLocale::translate(char ** text, char const * to_translate) {
 
 	        s1 = sampleQuery->getAsString(1);
 
-		*text = (char*) realloc((void*) (*text), strlen(s1->charrep()) + 1);
-		*text[0] = 0;
+		char* temp = *text;
 
-		if (strcmp(s1->charrep(), "") == 0) 
+		if (strcmp(s1->charrep(), "") == 0) {
+			*text = (char*) malloc(strlen(to_translate) + 1);
+			*text[0] = 0;
 			strcpy(*text, to_translate);
-		else
+		} else {
+			*text = (char*) malloc(strlen(s1->charrep()) + 1);
+			*text[0] = 0;
 			strcpy(*text, s1->charrep());
+		}
+		if (temp) free(temp);
 	} else {
-		*text = (char*) realloc(*text, strlen(to_translate) + 1);
+		char* temp = *text;
+		*text = (char*) malloc(strlen(to_translate) + 1);
 		*text[0] = 0;
+		if (temp) free(temp);
 
 		_CL_VERBOSE << "šbersetzung fr '" << to_translate << "' nicht gefunden!" LOG_
 
@@ -333,11 +342,19 @@ lb_I_String& LB_STDCALL lbString::operator += (const lb_I_String* toAppend) {
 }
 
 lb_I_String& LB_STDCALL lbString::operator += (const char* toAppend) {
-	stringdata = (char*) realloc(stringdata, strlen(stringdata)+strlen(toAppend)+1);
+	char* temp = stringdata;
+
+	stringdata = (char*) malloc(strlen(stringdata)+strlen(toAppend)+1);
+	stringdata[0] = 0;
+	strcat(stringdata, temp);
 	strcat(stringdata, toAppend);
-	key = (char*) realloc(key, strlen(key)+strlen(toAppend)+1);
-	strcat(key, toAppend);
 	
+	free(temp);
+	free(key);
+	
+	key = (char*) malloc(strlen(stringdata)+1);
+	strcpy(key, stringdata);
+		
 	return *this;
 }
 
@@ -346,13 +363,17 @@ lb_I_String& LB_STDCALL lbString::operator = (const lb_I_String* toAppend) {
 }
 
 lb_I_String& LB_STDCALL lbString::operator = (const char* toAppend) {
-	stringdata = (char*) realloc(stringdata, strlen(toAppend)+1);
+	char* temp = stringdata;
+
+	stringdata = (char*) malloc(strlen(toAppend)+1);
 	stringdata[0] = 0;
-	strcpy(stringdata, toAppend);
+	strcat(stringdata, toAppend);
 	
-	key = (char*) realloc(key, strlen(toAppend)+1);
-	key[0] = 0;
-	strcpy(key, toAppend);
+	free(temp);
+	free(key);
+	
+	key = (char*) malloc(strlen(stringdata)+1);
+	strcpy(key, stringdata);
 	
 	return *this;
 }

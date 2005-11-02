@@ -1282,6 +1282,7 @@ lbDatabasePanel::~lbDatabasePanel() {
 	free (formName);
 	free (base_formName);
 	free (untranslated_formName);
+	_CL_LOG << "lbDatabasePanel::~lbDatabasePanel() ready." LOG_
 }
 /*...e*/
 
@@ -1935,8 +1936,12 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 lbErrCodes LB_STDCALL lbDatabasePanel::setName(char const * name, char const * appention) {
 	free(formName);
 	free(untranslated_formName);
+
+	char* transl = _trans((char*) name);
 		
-	char* temp = strdup(_trans((char*) name));
+	char* temp = (char*) malloc(strlen(transl)+1);
+	temp[0] = 0;
+	strcpy(temp, transl);
 
 	if (appention) {
 		formName = (char*) malloc(1+strlen(temp)+strlen(appention));
