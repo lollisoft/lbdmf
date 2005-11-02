@@ -2720,6 +2720,8 @@ free(buffer);
 /*...e*/
 /*...schar\42\ LB_STDCALL lbQuery\58\\58\getTableName\40\char\42\ columnName\41\:0:*/
 char *lpszTable = NULL;
+int lpszSize = 0;
+
 char* LB_STDCALL lbQuery::getTableName(char* columnName) {
 		
 		SQLHSTMT	StatementHandle;
@@ -2734,31 +2736,42 @@ char* LB_STDCALL lbQuery::getTableName(char* columnName) {
 		
 		CharacterAttributePtr = (void*) malloc(101);
 		memset(CharacterAttributePtr, 0, 101);
-		
+
 		NumericAttributePtr = &Int;
 		
 		SQLRETURN retcode;
 		int index = boundColumns->getColumnIndex(columnName);
 		
 		retcode = SQLColAttribute(
-								  hstmt,
-								  index, 
-								  SQL_DESC_TABLE_NAME, 
-								  // SQL_DESC_BASE_TABLE_NAME would make problems
-								  // under Mac OS X and Linux
-								  CharacterAttributePtr,
-								  100,
-								  &StringLengthPtr	,
-								  NumericAttributePtr);
+				  hstmt,
+				  index, 
+				  SQL_DESC_TABLE_NAME, 
+				  // SQL_DESC_BASE_TABLE_NAME would make problems
+				  // under Mac OS X and Linux
+				  CharacterAttributePtr,
+				  100,
+				  &StringLengthPtr,
+				  NumericAttributePtr);
 			
 		if ((retcode == SQL_ERROR) || (retcode == SQL_SUCCESS_WITH_INFO)) {
 			_CL_LOG << "ERROR: SQLColAttribute(...) failed." LOG_
 			_dbError("", henv, hdbc, hstmt);
 		}
 		
-		if (lpszTable == NULL)
-			lpszTable = (char*) strdup((char*) CharacterAttributePtr);
-		else {
+		if (lpszTable == NULL) {
+			int _size = strlen((char*) CharacterAttributePtr)+1;
+			lpszTable = (char*) malloc(_size);
+			lpszTable[0] = 0;
+			strcpy(lpszTable, (char*) CharacterAttributePtr);
+			lpszSize = _size;
+		} else {
+			int _size = strlen((char*) CharacterAttributePtr)+1;
+			if (lpszSize < _size) {
+				free(lpszTable);
+				lpszTable = (char*) malloc(_size);
+				lpszSize = _size;
+			}
+		
 			lpszTable[0] = 0;
 			strcpy((char*) lpszTable, (char*) CharacterAttributePtr);
 		}
@@ -3727,17 +3740,16 @@ private:
 	char*	 user;
 	char*	 db;
 
-public:	
-	static lb_I_Container* connPooling;
+	UAP(lb_I_Container, connPooling, __FILE__, __LINE__)
 };
 
-lb_I_Container* lbDatabase::connPooling = NULL;
+//lb_I_Container* lbDatabase::connPooling = NULL;
 
-BEGIN_IMPLEMENT_LB_UNKNOWN(lbDatabase)
+BEGIN_IMPLEMENT_SINGLETON_LB_UNKNOWN(lbDatabase)
 	ADD_INTERFACE(lb_I_Database)
 END_IMPLEMENT_LB_UNKNOWN()
 
-IMPLEMENT_FUNCTOR(instanceOfDatabase, lbDatabase)
+IMPLEMENT_SINGLETON_FUNCTOR(instanceOfDatabase, lbDatabase)
 
 lbDatabase::lbDatabase() {
 	ref = STARTREF;
@@ -3745,6 +3757,7 @@ lbDatabase::lbDatabase() {
 	hdbc = 0;
 	user = NULL;
 	db = NULL;
+	connPooling = NULL;
 	_CL_VERBOSE << "lbDatabase::lbDatabase() called." LOG_
 }
 
@@ -3805,6 +3818,12 @@ lbErrCodes LB_STDCALL lbDatabase::connect(char* pass) {
 /*...slbErrCodes LB_STDCALL lbDatabase\58\\58\connect\40\char\42\ DSN\44\ char\42\ user\44\ char\42\ passwd\41\:0:*/
 lbErrCodes LB_STDCALL lbDatabase::connect(char* DSN, char* user, char* passwd) {
 	lbErrCodes err = ERR_NONE;
+
+	if (!TRMemValidateAll()) {
+		printf("ERROR: Heap seems to be corrupted!\n");
+		getchar();
+	}
+	
 
 	_CL_VERBOSE << "Connect to database " << DSN << " as " << user << " with passwd=" << passwd LOG_
 	
@@ -4520,10 +4539,10 @@ BOOL WINAPI DllMain(HINSTANCE dllHandle, DWORD reason, LPVOID situation) {
                         _CL_VERBOSE << "New thread starting.\n" LOG_
                         break;
                 case DLL_PROCESS_DETACH:                        
-                       	_CL_LOG << "DLL_PROCESS_DETACH for " << __FILE__ LOG_
+                       	_CL_VERBOSE << "DLL_PROCESS_DETACH for " << __FILE__ LOG_
                         if (situation)
                         {
-                        	if (lbDatabase::connPooling != NULL) lbDatabase::connPooling->release(__FILE__, __LINE__);
+                        	//if (lbDatabase::connPooling != NULL) lbDatabase::connPooling->release(__FILE__, __LINE__);
 
                                 _CL_VERBOSE << "DLL released by system." LOG_
                         }
@@ -4531,7 +4550,7 @@ BOOL WINAPI DllMain(HINSTANCE dllHandle, DWORD reason, LPVOID situation) {
                         {
                         	// Cleanup the static container holding open connections.
                         	
-                        	if (lbDatabase::connPooling != NULL) lbDatabase::connPooling->release(__FILE__, __LINE__);
+                        	//if (lbDatabase::connPooling != NULL) lbDatabase::connPooling->release(__FILE__, __LINE__);
                                 
                                 _CL_VERBOSE << "DLL released by program.\n" LOG_
                         }
