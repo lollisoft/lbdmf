@@ -1641,7 +1641,7 @@ public: \
 			if (TRMemValidate(singleton)) \
 				delete singleton; \
 			else \
-				printf("ERROR: Sinleton object has been deleted prior!\n"); \ 
+				printf("ERROR: Sinleton object has been deleted prior!\n"); \
 		} else { \
 			printf("Warning: singletonHolder_" #name " has an invalid pointer.\n"); \
 		} \

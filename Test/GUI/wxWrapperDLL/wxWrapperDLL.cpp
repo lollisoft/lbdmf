@@ -944,10 +944,6 @@ lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::createDBForm(char* formName, char* query
 		        QI(uk, lb_I_DatabaseForm, _dialog, __FILE__, __LINE__)
 		}
 
-		if (!TRMemValidateAll()) {
-		        printf("ERROR: Memory seems to be corrupted short before form gets its name !\n");
-		}
-		
 		_dialog->setName(formName);
 
 		if (panelUsage) {
