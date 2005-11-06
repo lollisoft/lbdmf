@@ -39,6 +39,22 @@ lb_I_Log *log;
 int isInitializing;
 #endif
 
+#ifdef OSX
+
+#include <stdio.h>
+
+void _init ()
+{
+  printf("dlcompat: %s: _init()\n", __FILE__);
+}
+
+void _fini ()
+{
+  printf("dlcompat: %s: _fini()\n", __FILE__);
+}
+
+#endif
+
 
 #ifdef WINDOWS
 /*...sDllMain:0:*/

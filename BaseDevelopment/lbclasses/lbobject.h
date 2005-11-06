@@ -31,10 +31,13 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.26 $
+ * $Revision: 1.27 $
  * $Name:  $
- * $Id: lbobject.h,v 1.26 2005/05/14 18:13:50 lollisoft Exp $
+ * $Id: lbobject.h,v 1.27 2005/11/06 19:25:33 lollisoft Exp $
  * $Log: lbobject.h,v $
+ * Revision 1.27  2005/11/06 19:25:33  lollisoft
+ * All bugs of unloading shared libraries removed.\nUsing dlopen more than once per shared library leads into unability to unload that library.\nMac OS X seems to not properly handle the reference counting, thus unloading of twice loaded shared libs fails.\n\nI have implemented a workaround to handle this properly.\n\nThere is one exeption: lbModule.so is needed by UAP macros, thus this shared library is left loaded and the system can unload it for me.
+ *
  * Revision 1.26  2005/05/14 18:13:50  lollisoft
  * Added operators += and = to the string interface.
  *
@@ -366,7 +369,7 @@ extern "C" {
 DECLARE_FUNCTOR(instanceOfInteger)
 DECLARE_FUNCTOR(instanceOfString)
 DECLARE_FUNCTOR(instanceOfReference)
-DECLARE_SINGLETON_FUNCTOR(instanceOfLocale)
+DECLARE_FUNCTOR(instanceOfLocale)
 
 /*...sendif __cplusplus:0:*/
 #ifdef __cplusplus

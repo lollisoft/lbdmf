@@ -25,11 +25,14 @@
 #            40235 Duesseldorf (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.71 $
+# * $Revision: 1.72 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.71 2005/10/31 15:07:44 lollisoft Exp $
+# * $Id: STD_MAKE,v 1.72 2005/11/06 19:25:34 lollisoft Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.72  2005/11/06 19:25:34  lollisoft
+# * All bugs of unloading shared libraries removed.\nUsing dlopen more than once per shared library leads into unability to unload that library.\nMac OS X seems to not properly handle the reference counting, thus unloading of twice loaded shared libs fails.\n\nI have implemented a workaround to handle this properly.\n\nThere is one exeption: lbModule.so is needed by UAP macros, thus this shared library is left loaded and the system can unload it for me.
+# *
 # * Revision 1.71  2005/10/31 15:07:44  lollisoft
 # * Adapted trmem versus mpatrol builtin and none of them.
 # *
@@ -567,7 +570,7 @@ C_OPS   = -c -DUNIX -DLINUX -DOSX
 C_SOOPS = $(C_OPS)
 C_ELFOPS= $(C_OPS)
 L_OPS   = -o
-LIBS    = -ldl -lcurses #-llibstdc++
+LIBS    = -lc /usr/lib/libSystem.dylib #-lcurses #-lc /usr/lib/libSystem.dylib #-llibstdc++
 #-lefence
 CC =c++
 CPP =c++

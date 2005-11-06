@@ -104,7 +104,7 @@ void LB_STDCALL lbPluginModuleLoginWizard::initialize() {
 }
 
 lbErrCodes LB_STDCALL lbPluginModuleLoginWizard::setData(lb_I_Unknown* uk) {
-        _LOG << "lbPluginModuleLoginWizard::setData(...) not implemented yet" LOG_
+        _CL_LOG << "lbPluginModuleLoginWizard::setData(...) not implemented yet" LOG_
         
         return ERR_NOT_IMPLEMENTED;
 }

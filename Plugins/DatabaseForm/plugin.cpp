@@ -135,7 +135,7 @@ void LB_STDCALL lbPluginModuleDatabaseForm::initialize() {
 }
 
 lbErrCodes LB_STDCALL lbPluginModuleDatabaseForm::setData(lb_I_Unknown* uk) {
-        _LOG << "lbPluginModuleDatabaseForm::setData(...) not implemented yet" LOG_
+        _CL_LOG << "lbPluginModuleDatabaseForm::setData(...) not implemented yet" LOG_
         
         return ERR_NOT_IMPLEMENTED;
 }

@@ -849,6 +849,7 @@ lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::createDBForm(char* formName, char* query
 			sizerMain = new wxBoxSizer(wxVERTICAL);
 			
 			frame->SetAutoLayout(TRUE);
+			notebook->SetAutoLayout(TRUE);
 	
 			sizerMain->Add(notebook, 1, wxEXPAND | wxALL, 0);
 	
@@ -955,10 +956,12 @@ lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::createDBForm(char* formName, char* query
 		if (panelUsage) {
 			wxWindow* w = frame->FindWindowById(_dialog->getId());
 			notebook->AddPage(w, formName, true);
+			notebook->Fit();
 			notebook->Show(true);
 		
 			sizerMain->SetSizeHints(frame);
 			sizerMain->Fit(frame);
+			frame->Fit();
 		
 			frame->Centre();
 		}
@@ -1172,6 +1175,8 @@ void lb_wxFrame::OnQuit(wxCommandEvent& WXUNUSED(event) )
         	if (gui) gui->cleanup();
         	guiCleanedUp = 1;
 	}
+
+//	unHookAll();
 
 	Close(TRUE);
 }

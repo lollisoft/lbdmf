@@ -70,7 +70,7 @@ MOD_INCL=$(STD_INCL) -I ../linuxCode -I /sw/include
 endif    
 
 ifeq ($(OSTYPE), osx)
-OBJDEP=$(HOME)/lib/libdl.a
+OBJDEP=
 MOD_INCL=$(STD_INCL) -I ../linuxCode -I /sw/include
 MOD_INCL_CPP=$(STD_INCL_CPP) -I ../linuxCode -I /sw/include
 endif    

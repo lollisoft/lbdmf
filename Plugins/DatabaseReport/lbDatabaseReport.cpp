@@ -834,6 +834,7 @@ void LB_STDCALL lbDatabaseReport::init(char* SQLString, char* DBName, char* DBUs
 	wxLogNull		logNull;
 
 #ifdef OSX
+#undef LINUX
 	wxFont			fntBig(properties->getIntParameter("fntBig-Mac"),
 				wxSWISS, wxITALIC, wxBOLD, true, "Arial");
 				
@@ -853,6 +854,10 @@ void LB_STDCALL lbDatabaseReport::init(char* SQLString, char* DBName, char* DBUs
 				
 	wxFont			fntHdr(properties->getIntParameter("fntHdr-Mac"),
 				wxSWISS, wxNORMAL, wxBOLD, false, "Arial");
+#endif
+
+#ifdef OSX
+#define LINUX
 #endif
 
 #ifdef WINDOWS
@@ -1070,6 +1075,11 @@ void LB_STDCALL lbDatabaseReport::init(char* SQLString, char* DBName, char* DBUs
 				
 				value = query->getAsString(i);
 				value->trim();
+
+				if (strcmp(value->charrep(), "") == 0) {
+					*value = " ";
+				}
+
 				dc.GetTextExtent(value->charrep(), &w, &h, NULL, NULL, &fntSmall);
 			
 				if ((w/scalingFactor) > *(colsteps[i-1])) {
@@ -1094,6 +1104,11 @@ void LB_STDCALL lbDatabaseReport::init(char* SQLString, char* DBName, char* DBUs
 				
 				value = query->getAsString(i);
 				value->trim();
+				
+				if (strcmp(value->charrep(), "") == 0) {
+					*value = " ";
+				}
+				
 				dc.GetTextExtent(value->charrep(), &w, &h, NULL, NULL, &fntSmall);
 			
 				if ((w/scalingFactor) > *(colsteps[i-1])) {

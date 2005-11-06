@@ -31,10 +31,13 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.41 $
+ * $Revision: 1.42 $
  * $Name:  $
- * $Id: misc.cpp,v 1.41 2005/10/31 09:59:01 lollisoft Exp $
+ * $Id: misc.cpp,v 1.42 2005/11/06 19:25:33 lollisoft Exp $
  * $Log: misc.cpp,v $
+ * Revision 1.42  2005/11/06 19:25:33  lollisoft
+ * All bugs of unloading shared libraries removed.\nUsing dlopen more than once per shared library leads into unability to unload that library.\nMac OS X seems to not properly handle the reference counting, thus unloading of twice loaded shared libs fails.\n\nI have implemented a workaround to handle this properly.\n\nThere is one exeption: lbModule.so is needed by UAP macros, thus this shared library is left loaded and the system can unload it for me.
+ *
  * Revision 1.41  2005/10/31 09:59:01  lollisoft
  * Added support for mpatrol library, but it is deactivated. Use DEBUG_MEMORY=yes to activate it.
  *
@@ -311,7 +314,8 @@ lb_I_Mutex* lbLog::mutex;
 extern "C" {       
 #endif            
 
-IMPLEMENT_SINGLETON_FUNCTOR(instanceOfLogger, lbLog)
+IMPLEMENT_FUNCTOR(instanceOfLogger, lbLog)
+
 #ifdef bla
 /*...s:0:*/
 lbErrCodes DLLEXPORT LB_FUNCTORCALL instanceOfLogger(lb_I_Unknown** uk, lb_I_Module* m, char* file, int line) { 

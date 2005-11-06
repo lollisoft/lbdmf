@@ -12,11 +12,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.68 $
+ * $Revision: 1.69 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.68 2005/09/09 18:00:16 lollisoft Exp $
+ * $Id: mkmk.cpp,v 1.69 2005/11/06 19:25:34 lollisoft Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.69  2005/11/06 19:25:34  lollisoft
+ * All bugs of unloading shared libraries removed.\nUsing dlopen more than once per shared library leads into unability to unload that library.\nMac OS X seems to not properly handle the reference counting, thus unloading of twice loaded shared libs fails.\n\nI have implemented a workaround to handle this properly.\n\nThere is one exeption: lbModule.so is needed by UAP macros, thus this shared library is left loaded and the system can unload it for me.
+ *
  * Revision 1.68  2005/09/09 18:00:16  lollisoft
  * Added printout of given commandline in help mode.
  * Added -o option in bundle target to put object file
@@ -303,6 +306,8 @@
 #define TVISION_DLL 12
 #define TVISION_EXE 13
 #define ELF_BUNDLE_TARGET 15
+#define SO_BUNDLE_TARGET 16
+#define WXSHARED_TARGET  17
 /*...e*/
 
 int targettype=EXE_TARGET;
@@ -1118,8 +1123,69 @@ void write_so_Target(char* modulename) {
 #endif
 }
 /*...e*/
+/*...swrite_so_bundleTarget\40\char\42\ modulename\41\ create a UNIX shared library:0:*/
+void write_so_bundleTarget(char* modulename) {
+#ifdef UNIX
+  printf("PROGRAM=%s\n", modulename);
+  printf("MAJOR=0\n");
+  printf("MINOR=0\n");
+  printf("MICRO=1\n");
+  printf("\n%s: $(OBJS)\n", modulename);
+
+// Patch to create dynamic libraries under Mac OS X
+#ifdef OSX
+  printf("\t\t$(CC) -dynamic -bundle -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) $(LIBS) -lc $(VENDORLIBS)\n");
+#undef UNIX  
+#endif
+#ifdef UNIX
+  printf("\t\t$(CC) -shared -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) $(LIBS) -lc $(VENDORLIBS)\n");
+#endif
+
+#ifdef OSX
+#define UNIX
+#endif
+
+  printf("\t\tcp $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(HOME)/lib\n");
+  printf("\t\tln -sf $(HOME)/lib/$(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(HOME)/lib/$(PROGRAM).$(MAJOR)\n");
+  printf("\t\tln -sf $(HOME)/lib/$(PROGRAM).$(MAJOR) $(HOME)/lib/$(PROGRAM)\n");
+#endif
+#ifdef __WATCOMC__
+  fprintf(stderr, "Warning: Creating a so library under Windows is not possible with Watcom !!\n");
+#endif
+}
+/*...e*/
 /*...swrite_wx_so_Target\40\char\42\ modulename\41\ create a UNIX shared library:0:*/
 void write_wx_so_Target(char* modulename) {
+#ifdef UNIX
+  printf("PROGRAM=%s\n", modulename);
+  printf("MAJOR=0\n");
+  printf("MINOR=0\n");
+  printf("MICRO=1\n");
+  printf("\n%s: $(OBJS)\n", modulename);
+
+// Patch to create dynamic libraries under Mac OS X
+#ifdef OSX
+  printf("\t\t$(CC) -dynamic -bundle -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) `wx-config --libs` $(OBJS) $(OBJDEP) $(L_OPS) -lc $(VENDORLIBS)\n");
+#undef UNIX  
+#endif
+#ifdef UNIX
+  printf("\t\t$(CC) -shared -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) `wx-config --libs` $(OBJS) $(OBJDEP) $(LIBS) -lc $(VENDORLIBS)\n");
+#endif
+#ifdef OSX
+#define UNIX
+#endif
+
+  printf("\t\tcp $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(HOME)/lib\n");
+  printf("\t\tln -sf $(HOME)/lib/$(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(HOME)/lib/$(PROGRAM).$(MAJOR)\n");
+  printf("\t\tln -sf $(HOME)/lib/$(PROGRAM).$(MAJOR) $(HOME)/lib/$(PROGRAM)\n");
+#endif
+#ifdef __WATCOMC__
+  fprintf(stderr, "Warning: Creating a so library under Windows is not possible with Watcom !!\n");
+#endif
+}
+/*...e*/
+/*...swrite_wx_shared_Target\40\char\42\ modulename\41\ create a UNIX shared library:0:*/
+void write_wx_shared_Target(char* modulename) {
 #ifdef UNIX
   printf("PROGRAM=%s\n", modulename);
   printf("MAJOR=0\n");
@@ -1158,7 +1224,7 @@ void write_soPlugin_Target(char* modulename) {
   printf("\n%s: $(OBJS)\n", modulename);
 
 #ifdef OSX  
-  printf("\t\t$(CC) -dynamiclib -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) $(LIBS) -lc $(VENDORLIBS)\n");
+  printf("\t\t$(CC) -dynamic -bundle -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) $(LIBS) -lc $(VENDORLIBS)\n");
 #endif
 
 #ifndef OSX
@@ -1185,7 +1251,7 @@ void write_wx_soPlugin_Target(char* modulename) {
   printf("\n%s: $(OBJS)\n", modulename);
 
 #ifdef OSX  
-  printf("\t\t$(CC) -dynamiclib -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) $(L_OPS) -lc $(VENDORLIBS)\n");
+  printf("\t\t$(CC) -dynamic -bundle -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) $(L_OPS) -lc $(VENDORLIBS)\n");
 #endif
 
 #ifndef OSX
@@ -1212,7 +1278,7 @@ void ShowHelp(int argc, char *argv[])
 
   fprintf(stderr, "Enhanced by Lothar Behrens (lothar.behrens@lollisoft.de)\n\n");
 
-  fprintf(stderr, "MKMK: makefile generator $Revision: 1.68 $\n");
+  fprintf(stderr, "MKMK: makefile generator $Revision: 1.69 $\n");
   fprintf(stderr, "Usage: MKMK lib|exe|dll|so modulname includepath,[includepath,...] file1 [file2 file3...]\n");
   
   fprintf(stderr, "Your parameters are: ");
@@ -1449,6 +1515,10 @@ void WriteDep(FILE *f, char *Name, TIncludeParser *p)
 				printf("\t\t@echo Build %s\n", NameC);
                 printf("\t\t@%s $(C_ELFOPS) $(MOD_INCL) %s -o %s\n\n", Compiler, Name, ObjName);
                 break;
+		case SO_BUNDLE_TARGET:
+	        	printf("\t\t@echo Build %s\n", NameC);
+                printf("\t\t@%s -c -fPIC -g $(C_SOOPS) $(MOD_INCL) %s -o %s\n\n", Compiler, Name, ObjName);
+                break;
         case SO_TARGET:
         case SOPLUGIN_TARGET:
                 {
@@ -1464,6 +1534,7 @@ void WriteDep(FILE *f, char *Name, TIncludeParser *p)
                 }
                 break;
         case WXSO_TARGET:
+		case WXSHARED_TARGET:
         case WXSOPLUGIN_TARGET:
                 {
                 int pos = 0;
@@ -1582,6 +1653,14 @@ void WriteEnding(FILE *f, char *ModuleName, TDepList *l)
                 write_so_Target(ModuleName);
                 write_clean();
                 break;
+        case SO_BUNDLE_TARGET:
+                write_so_bundleTarget(ModuleName);
+                write_clean();
+                break;
+		case WXSHARED_TARGET:
+                write_wx_shared_Target(ModuleName);
+                write_clean();
+                break;
         case WXSO_TARGET:
                 write_wx_so_Target(ModuleName);
                 write_clean();
@@ -1693,6 +1772,11 @@ int main(int argc, char *argv[])
         target_ext = strdup(".so");
   }
   
+  if (strcmp(target, "WXSHARED") == 0) {
+        targettype = WXSHARED_TARGET;
+        target_ext = strdup(".so");
+  }
+  
   if (strcmp(target, "LIB") == 0) {
         targettype = LIB_TARGET;
         target_ext = strdup(".lib");
@@ -1715,6 +1799,11 @@ int main(int argc, char *argv[])
   
   if (strcmp(target, "SOPLUGIN") == 0) {
         targettype = SOPLUGIN_TARGET;
+        target_ext = strdup(".so");
+  }
+  
+  if (strcmp(target, "SOBUNDLE") == 0) {
+        targettype = SO_BUNDLE_TARGET;
         target_ext = strdup(".so");
   }
   

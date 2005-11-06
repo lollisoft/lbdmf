@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.66 $
+ * $Revision: 1.67 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.66 2005/11/02 16:24:28 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.67 2005/11/06 19:25:33 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.67  2005/11/06 19:25:33  lollisoft
+ * All bugs of unloading shared libraries removed.\nUsing dlopen more than once per shared library leads into unability to unload that library.\nMac OS X seems to not properly handle the reference counting, thus unloading of twice loaded shared libs fails.\n\nI have implemented a workaround to handle this properly.\n\nThere is one exeption: lbModule.so is needed by UAP macros, thus this shared library is left loaded and the system can unload it for me.
+ *
  * Revision 1.66  2005/11/02 16:24:28  lollisoft
  * Bug for the program ending crash and the cout crash found. See history in
  * lbDB.cpp.
@@ -1082,7 +1085,7 @@ lb_EventManager::~lb_EventManager() {
 }
 	
 lbErrCodes LB_STDCALL lb_EventManager::setData(lb_I_Unknown* uk) {
-	_LOG << "lb_EventManager::setData() has not been implemented" LOG_
+	_CL_LOG << "lb_EventManager::setData() has not been implemented" LOG_
 	
 	return ERR_NONE;
 }
@@ -1189,7 +1192,7 @@ lbErrCodes LB_STDCALL lb_EventManager::resolveEvent(char* EvName, int & evNr) {
 		QI(object, lb_I_Integer, i, __FILE__, __LINE__)
 		evNr = i->getData();
 	} else {
-		_LOG << "Error: Event name not registered: " << EvName LOG_
+		_CL_LOG << "Error: Event name not registered: " << EvName LOG_
 		return ERR_EVENT_NOTREGISTERED;
 	}
 /*...e*/

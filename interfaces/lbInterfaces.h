@@ -1400,9 +1400,6 @@ void LB_STDCALL classname::setModuleManager(lb_I_Module* m, char* file, int line
 	} \
 	\
 	further_lock = 0; \
-	if (debug_macro == 1) { \
-		_CL_LOG << "Warning: setModuleManager() must be enhanced by module manager use" LOG_ \
-	} \
 	if (m != manager.getPtr()) { \
 	    if (m != NULL) m->queryInterface("lb_I_Module", (void**) &manager, file, line); \
 	} \
@@ -1634,9 +1631,11 @@ lbErrCodes DLLEXPORT LB_FUNCTORCALL name(lb_I_Unknown** uk, lb_I_Module* m, char
 class singletonHolder_##name { \
 public: \
 	singletonHolder_##name() { \
+		printf("singletonHolder_" #name "() called.\n"); \
 		singleton = NULL; \
 	} \
 	virtual ~singletonHolder_##name() { \
+		printf("~singletonHolder_" #name "() called.\n"); \
 		if (singleton != NULL) { \
 			if (TRMemValidate(singleton)) \
 				delete singleton; \
@@ -1645,6 +1644,7 @@ public: \
 		} else { \
 			printf("Warning: singletonHolder_" #name " has an invalid pointer.\n"); \
 		} \
+		printf("~singletonHolder_" #name "() leaving.\n"); \
 	} \
 	void set(clsname* _singleton) { \
 		lb_I_Unknown* temp; \
@@ -1660,7 +1660,7 @@ public: \
 	clsname* singleton; \
 }; \
 \
-singletonHolder_##name singleton_##name; \
+static singletonHolder_##name singleton_##name; \
 \
 extern "C" { \
 lbErrCodes DLLEXPORT LB_FUNCTORCALL name(lb_I_Unknown** uk, lb_I_Module* m, char* file, int line) { \

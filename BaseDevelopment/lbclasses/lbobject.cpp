@@ -74,7 +74,7 @@ IMPLEMENT_FUNCTOR(instanceOfString, lbString)
 IMPLEMENT_FUNCTOR(instanceOfReference, lbReference)
 IMPLEMENT_FUNCTOR(instanceOfParameter, lbParameter)
 
-IMPLEMENT_SINGLETON_FUNCTOR(instanceOfLocale, lbLocale)
+IMPLEMENT_FUNCTOR(instanceOfLocale, lbLocale)
 
 #ifdef __cplusplus
 }

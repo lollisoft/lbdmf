@@ -91,6 +91,9 @@ extern lb_I_Log *lb_log;
 extern int lb_isInitializing;
 #endif
 
+HINSTANCE ModuleHandle = NULL;
+HINSTANCE LB_Module_Handle = NULL;
+
 bool lbVerbose = FALSE;
 int instances = 0;
 char* lbLogDirectory = NULL;
@@ -204,9 +207,6 @@ DLLEXPORT void LB_STDCALL setLoggerInstance(lb_I_Log* l) {
 }
 
 
-HINSTANCE ModuleHandle = NULL;
-HINSTANCE LB_Module_Handle = NULL;
-
 char* trackObject = NULL;
 
 DLLEXPORT char* LB_STDCALL itoa(int ptr) {
@@ -276,6 +276,57 @@ int lb_isInitializing = 0;
 #endif
 #endif 
  
+typedef struct Module {
+	Module() {
+		number = -1;
+		name = NULL;
+		next = NULL;
+		lib = NULL;
+	}
+	int number;
+	char* name;
+	Module* next;
+	HINSTANCE lib;
+} _Modules;
+
+_Modules* loadedModules = NULL;
+
+_Modules *createModule(char* name) {
+	_Modules* temp = NULL;
+	if (loadedModules == NULL) {
+		loadedModules = new _Modules;
+		loadedModules->number = 1;
+		loadedModules->name = (char*) malloc(strlen(name)+1);
+		loadedModules->name[0] = 0;
+		loadedModules->next = NULL;
+		strcpy(loadedModules->name, name);
+		return loadedModules;
+	} else {
+		temp = new _Modules;
+		temp->number = loadedModules->number+1;
+		temp->name = (char*) malloc(strlen(name)+1);
+		temp->name[0] = 0;
+		strcpy(temp->name, name);
+		
+		temp->next = loadedModules;
+		loadedModules = temp;
+		
+		return temp;
+	}
+}
+
+_Modules *findModule(char* name) {
+	_Modules *temp = loadedModules;
+	while (temp != NULL) {
+		if (strcmp(temp->name, name) == 0) {
+			return temp;
+		}
+		temp = temp->next;
+	}
+	
+	return temp;
+} 
+
 /*...slbErrCodes LB_STDCALL lbLoadModule\40\const char\42\ name\44\ HINSTANCE \38\ hinst\41\:0:*/
 DLLEXPORT lbErrCodes LB_STDCALL lbLoadModule(const char* name, HINSTANCE & hinst) {
 #ifdef WINDOWS
@@ -313,6 +364,18 @@ DLLEXPORT lbErrCodes LB_STDCALL lbLoadModule(const char* name, HINSTANCE & hinst
         }
 #endif
 #ifdef LINUX
+
+	_Modules *m = findModule(name);
+
+//	HINSTANCE _hinst;
+
+	if (m) {
+		hinst = m->lib;
+		return ERR_NONE;
+	} else {
+		m = createModule(name);
+	}
+
 	if ((hinst = dlopen(name, RTLD_LAZY)) == NULL)
 	{
 			char* home = 
@@ -331,9 +394,12 @@ DLLEXPORT lbErrCodes LB_STDCALL lbLoadModule(const char* name, HINSTANCE & hinst
 			strcat(newname, "lib");
 			strcat(newname, SLASH);
 			strcat(newname, name);
-	
+
 			if ((hinst = dlopen(newname, RTLD_LAZY)) != NULL) {
+				//printf("Module %s loaded.\n", newname);
+				m->lib = hinst;
 				free(newname);
+				
 				return ERR_NONE;
 			}
 			
@@ -348,6 +414,9 @@ DLLEXPORT lbErrCodes LB_STDCALL lbLoadModule(const char* name, HINSTANCE & hinst
 			free(buffer);
 			return ERR_MODULE_NOT_FOUND;
 	}
+	
+	m->lib = hinst;
+	
 #endif
 	return ERR_NONE;
 }
@@ -357,14 +426,14 @@ DLLEXPORT lbErrCodes LB_STDCALL lbGetFunctionPtr(const char* name, HINSTANCE hin
 #ifdef WINDOWS
         if ((*pfn = (void*) GetProcAddress(hinst, name)) == NULL)
         {
-            _LOG << "Kann Funktion '" << name << "' nicht finden." LOG_
+            _CL_LOG << "Kann Funktion '" << name << "' nicht finden." LOG_
             return ERR_FUNCTION_NOT_FOUND;
         }
 #endif
 #ifdef LINUX
 	if ((*pfn = dlsym(hinst, name)) == NULL)
 	{
-            _LOG << "Kann Funktion '" << name << "' nicht finden." LOG_
+            _CL_LOG << "Kann Funktion '" << name << "' nicht finden." LOG_
             return ERR_FUNCTION_NOT_FOUND;	    
 	}
 #endif
@@ -470,27 +539,33 @@ lbErrCodes LB_STDCALL releaseInstance(lb_I_Unknown* inst) {
 /*...e*/
 /*...svoid LB_STDCALL unHookAll\40\\41\:0:*/
 DLLEXPORT void LB_STDCALL unHookAll() {
-	if (ModuleHandle != NULL) {
-	#ifdef WINDOWS
-		FreeLibrary(ModuleHandle);
-	#endif
-	#ifdef LINUX
-		dlclose(ModuleHandle);
-	#endif
-		ModuleHandle = NULL;
-	}
-	
-	if (LB_Module_Handle != NULL) {
-	#ifdef WINDOWS
-		FreeLibrary(LB_Module_Handle);
-	#endif
-	#ifdef LINUX
-		dlclose(LB_Module_Handle);
-	#endif
-		LB_Module_Handle = NULL;
-	}
-	
-	setLoggerInstance(NULL);
+		_Modules* temp = loadedModules;
+		while (temp) {
+			if (temp->name != NULL) {
+				_Modules* delMod = temp;
+				
+				if (strcmp(temp->name, "lbModule.so") == 0) {
+					temp = temp->next;
+					if (delMod == loadedModules) loadedModules = loadedModules->next;
+					delete delMod;
+					if (temp) temp = loadedModules;
+					continue;
+				}
+
+				printf("Unhook module %s.\n", temp->name);
+				
+				if (dlclose(temp->lib) != 0) {
+					char* msg = dlerror();
+					if (msg) printf("%s\n", msg);
+					temp = temp->next;
+				} else {
+					temp = temp->next;
+					if (delMod == loadedModules) loadedModules = loadedModules->next;
+					delete delMod;
+					if (temp) temp = loadedModules;
+				}
+			}
+		}
 }
 /*...e*/
 
@@ -780,6 +855,26 @@ char* LB_STDCALL lbStringKey::charrep() const {
 }
 /*...e*/
 
+class miniClass {
+public:
+	miniClass() {
+		printf("miniclass ctor called.\n");
+	}
+
+	~miniClass() {
+		printf("miniclass dtor called.\n");
+	}
+protected:
+	char buffer[100];
+};
+
+miniClass _class;
+
+extern "C" {
+void test() {
+	printf("test() called.\n");
+}
+}
 
 #ifdef WINDOWS
 /*...sDllMain:0:*/

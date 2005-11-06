@@ -253,6 +253,12 @@ int main(int argc, char *argv[]) {
 		queryA->query("drop table regressiontest");
 
 	}
+
+	_LOG << "Do log a simple line." LOG_
+
+	mm = getModuleInstance();
+
+	unHookAll();
 		
 	exit(0);
 

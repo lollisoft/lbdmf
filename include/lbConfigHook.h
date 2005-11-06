@@ -149,6 +149,15 @@
 /*...e*/
 #endif // OSX
 
+#ifdef OSX
+ #ifndef MEMTRACK
+  #define TRMemValidate(name) 1
+  //#define TRMemOpen()
+  //#define TRMemSetModuleName(name)
+  //#define TRMemSetAdrBreakPoint(ptr)
+ #endif
+#endif
+
 #define _trans(text) translateText(text)
 
 /*...sLogging macros:0:*/

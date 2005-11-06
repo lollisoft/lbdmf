@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.98 2005/10/31 19:37:55 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.99 2005/11/06 19:25:34 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.98 $
+ * $Revision: 1.99 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.98 2005/10/31 19:37:55 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.99 2005/11/06 19:25:34 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.99  2005/11/06 19:25:34  lollisoft
+ * All bugs of unloading shared libraries removed.\nUsing dlopen more than once per shared library leads into unability to unload that library.\nMac OS X seems to not properly handle the reference counting, thus unloading of twice loaded shared libs fails.\n\nI have implemented a workaround to handle this properly.\n\nThere is one exeption: lbModule.so is needed by UAP macros, thus this shared library is left loaded and the system can unload it for me.
+ *
  * Revision 1.98  2005/10/31 19:37:55  lollisoft
  * This version compiles and ends without a crash at exit. I have added a simple
  * string class to store places of queryInterface calls and setModuleManager calls.
@@ -376,6 +379,9 @@
 
 #ifdef USE_WXWRAPPER_DLL
 #include <wxWrapperDLL.h>
+#endif
+#ifdef OSX
+    #include <dlfcn.h>
 #endif
 
 #ifndef USE_WXWRAPPER_DLL
@@ -1703,6 +1709,8 @@ public wxApp
 		if (wxGUI) delete wxGUI;
 
 		printf("MyApp::~MyApp() called.\n");
+		
+		unHookAll();
 	}
 
 	/**
@@ -1895,7 +1903,19 @@ bool MyApp::OnInit(void)
     char b[100] = "";
     
     wxStopWatch sw;
-    
+
+/* 
+	// Calling the function twice on the same module does not work. It then no more release it by a call to    
+	// dlclose.
+	
+	void* handle1 = dlopen("dll.dylib", RTLD_LAZY);
+	void* handle2 = dlopen("dll.dylib", RTLD_LAZY);
+	
+	dlclose(handle2);
+	dlclose(handle1);
+*/	
+	
+	
 /*...sCreate the frame:0:*/
 #ifndef LB_I_EXTENTIONS
   // Create the main frame window
@@ -1919,6 +1939,8 @@ bool MyApp::OnInit(void)
 
   mm->setModuleManager(mm.getPtr(), __FILE__, __LINE__);
   setModuleManager(mm.getPtr(), __FILE__, __LINE__);
+
+  _LOG << "Module manager loaded. Application initializes..." LOG_
 
 #ifdef WINDOWS
 // Only windows makes problems with the open console output window
@@ -2674,6 +2696,8 @@ void lb_wxFrame::OnQuit(wxCommandEvent& WXUNUSED(event) )
 	UAP_REQUEST(mm.getPtr(), lb_I_PluginManager, PM)
 	
 	PM->unload();
+
+	unHookAll();
 
 	Close(TRUE);
 }

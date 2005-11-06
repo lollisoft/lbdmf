@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.96 $
+ * $Revision: 1.97 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.96 2005/11/02 18:50:48 lollisoft Exp $
+ * $Id: lbModule.cpp,v 1.97 2005/11/06 19:25:33 lollisoft Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.97  2005/11/06 19:25:33  lollisoft
+ * All bugs of unloading shared libraries removed.\nUsing dlopen more than once per shared library leads into unability to unload that library.\nMac OS X seems to not properly handle the reference counting, thus unloading of twice loaded shared libs fails.\n\nI have implemented a workaround to handle this properly.\n\nThere is one exeption: lbModule.so is needed by UAP macros, thus this shared library is left loaded and the system can unload it for me.
+ *
  * Revision 1.96  2005/11/02 18:50:48  lollisoft
  * There where some linking problems.
  *
@@ -2571,7 +2574,7 @@ lbErrCodes LB_STDCALL lbModule::setData(lb_I_Unknown* uk) {
 /*...e*/
 /*...slbErrCodes LB_STDCALL lbModule\58\\58\initialize\40\\41\:0:*/
 lbErrCodes LB_STDCALL lbModule::initialize() {
-
+printf("lbErrCodes LB_STDCALL lbModule::initialize() called.\n");
 	if (initializing == 1) {
 		_CL_VERBOSE << "Warning: Initialize while initializing (loop)" LOG_
 	}
@@ -3484,6 +3487,23 @@ lbErrCodes DLLEXPORT LB_STDCALL lb_releaseInstance(lb_I_Unknown * inst) {
         return ERR_NONE;
 }
 /*...e*/
+
+#ifdef OSX
+
+#include <stdio.h>
+
+void _init ()
+{
+  printf("dlcompat: %s: _init()\n", __FILE__);
+}
+
+void _fini ()
+{
+  printf("dlcompat: %s: _fini()\n", __FILE__);
+}
+
+#endif
+
 
 #ifdef WINDOWS
 /*...sDllMain:0:*/

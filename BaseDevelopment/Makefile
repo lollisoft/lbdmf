@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.69 $
+# * $Revision: 1.70 $
 # * $Name:  $
-# * $Id: Makefile,v 1.69 2005/10/28 17:28:42 lollisoft Exp $
+# * $Id: Makefile,v 1.70 2005/11/06 19:25:32 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.70  2005/11/06 19:25:32  lollisoft
+# * All bugs of unloading shared libraries removed.\nUsing dlopen more than once per shared library leads into unability to unload that library.\nMac OS X seems to not properly handle the reference counting, thus unloading of twice loaded shared libs fails.\n\nI have implemented a workaround to handle this properly.\n\nThere is one exeption: lbModule.so is needed by UAP macros, thus this shared library is left loaded and the system can unload it for me.
+# *
 # * Revision 1.69  2005/10/28 17:28:42  lollisoft
 # * Fixed memory leaks in database classes. Using it in console is tested.
 # * There now are only three objects leaked.
@@ -288,13 +291,16 @@ BASEDIRECTORIES= \
 	../vendor/tvision/examples/lbDMF \
 	../AppDevelopment 
 
-TARGETDLL=so
+TARGETDLL=sobundle
+TARGETSHARED=so
 TARGETEXE=elf
 TARGETWXEXE=bundle
 TARGET_TV_DLL=tvision_dll
 TARGET_TV_EXE=tvision_elf
 TARGETPLUGIN=soplugin
+TARGETSOBUNDLE=sobundle
 TARGETWXSO=wxso
+TARGETWXSHARED=wxshared
 TARGETWXPLUGIN=wxsoplugin
 
 ALLTARGETS = \
@@ -480,7 +486,7 @@ ifeq ($(OSTYPE), osx)
 	cp ../Test/GUI/wxWrapper/wxWrapper $(HOME)/bin
 
 ../Test/GUI/wxWrapperDLL: dummy
-	$(MAKE) -s -C $@ -e MODULE=wxWrapperDLL -e TARGET=$(TARGETWXSO) -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@ -e MODULE=wxWrapperDLL -e TARGET=$(TARGETWXSHARED) -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@
 endif
 
@@ -512,7 +518,7 @@ $(DEVROOT_MAKE)/wxwin/wx/samples/report: dummy
 	$(MAKE) -s -C $@
 
 ../Test/GUI/wxWrapperDLL: dummy
-	$(MAKE) -s -C $@ -e MODULE=wxWrapperDLL -e TARGET=$(TARGETDLL) -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@ -e MODULE=wxWrapperDLL -e TARGET=$(TARGETSHARED) -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@
 
 ../Test/GUI/wxPlugins/lbLoginWizard: dummy
@@ -551,7 +557,7 @@ endif
 #	$(MAKE) -s -C $@
 
 lbHook: dummy
-	$(MAKE) -s -C $@ -e MODULE=$@ -e TARGET=$(TARGETDLL) -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@ -e MODULE=$@ -e TARGET=$(TARGETSHARED) -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@
 
 lbDB: dummy

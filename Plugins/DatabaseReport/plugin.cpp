@@ -136,7 +136,7 @@ void LB_STDCALL lbPluginModuleDatabaseReport::initialize() {
 }
 
 lbErrCodes LB_STDCALL lbPluginModuleDatabaseReport::setData(lb_I_Unknown* uk) {
-        _LOG << "lbPluginModuleDatabaseReport::setData(...) not implemented yet" LOG_
+        _CL_LOG << "lbPluginModuleDatabaseReport::setData(...) not implemented yet" LOG_
         
         return ERR_NOT_IMPLEMENTED;
 }
