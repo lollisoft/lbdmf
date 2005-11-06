@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.99 2005/11/06 19:25:34 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.100 2005/11/06 19:47:22 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.99 $
+ * $Revision: 1.100 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.99 2005/11/06 19:25:34 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.100 2005/11/06 19:47:22 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.100  2005/11/06 19:47:22  lollisoft
+ * There was a problem with other UAP based instances in the main application.\nMoved the unhookAll() call to a destructor in a static instance in the main application file.
+ *
  * Revision 1.99  2005/11/06 19:25:34  lollisoft
  * All bugs of unloading shared libraries removed.\nUsing dlopen more than once per shared library leads into unability to unload that library.\nMac OS X seems to not properly handle the reference counting, thus unloading of twice loaded shared libs fails.\n\nI have implemented a workaround to handle this properly.\n\nThere is one exeption: lbModule.so is needed by UAP macros, thus this shared library is left loaded and the system can unload it for me.
  *
@@ -1710,7 +1713,6 @@ public wxApp
 
 		printf("MyApp::~MyApp() called.\n");
 		
-		unHookAll();
 	}
 
 	/**
@@ -2697,8 +2699,6 @@ void lb_wxFrame::OnQuit(wxCommandEvent& WXUNUSED(event) )
 	
 	PM->unload();
 
-	unHookAll();
-
 	Close(TRUE);
 }
 
@@ -2807,6 +2807,23 @@ void lb_wxFrame::OnPluginTest(wxCommandEvent& WXUNUSED(event) ) {
 */
 /*...e*/
 #endif
+
+#endif
+
+#ifdef OSX
+
+class cleanUp {
+public:
+	cleanUp() {
+	}
+	
+	virtual ~cleanUp() {
+		unHookAll();
+	}
+	
+};
+
+cleanUp clean_up;
 
 #endif
 
