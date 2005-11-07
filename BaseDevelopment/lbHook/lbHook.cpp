@@ -539,6 +539,7 @@ lbErrCodes LB_STDCALL releaseInstance(lb_I_Unknown* inst) {
 /*...e*/
 /*...svoid LB_STDCALL unHookAll\40\\41\:0:*/
 DLLEXPORT void LB_STDCALL unHookAll() {
+#ifndef WINDOWS
 		_Modules* temp = loadedModules;
 		while (temp) {
 			if (temp->name != NULL) {
@@ -566,6 +567,7 @@ DLLEXPORT void LB_STDCALL unHookAll() {
 				}
 			}
 		}
+#endif
 }
 /*...e*/
 
