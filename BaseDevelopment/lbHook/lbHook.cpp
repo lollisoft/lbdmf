@@ -291,7 +291,7 @@ typedef struct Module {
 
 _Modules* loadedModules = NULL;
 
-_Modules *createModule(char* name) {
+_Modules *createModule(const char* name) {
 	_Modules* temp = NULL;
 	if (loadedModules == NULL) {
 		loadedModules = new _Modules;
@@ -315,7 +315,7 @@ _Modules *createModule(char* name) {
 	}
 }
 
-_Modules *findModule(char* name) {
+_Modules *findModule(const char* name) {
 	_Modules *temp = loadedModules;
 	while (temp != NULL) {
 		if (strcmp(temp->name, name) == 0) {
