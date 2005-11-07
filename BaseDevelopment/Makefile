@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.70 $
+# * $Revision: 1.71 $
 # * $Name:  $
-# * $Id: Makefile,v 1.70 2005/11/06 19:25:32 lollisoft Exp $
+# * $Id: Makefile,v 1.71 2005/11/07 10:08:54 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.71  2005/11/07 10:08:54  lollisoft
+# * Windows was missing the new TARGETSHARED definition.
+# *
 # * Revision 1.70  2005/11/06 19:25:32  lollisoft
 # * All bugs of unloading shared libraries removed.\nUsing dlopen more than once per shared library leads into unability to unload that library.\nMac OS X seems to not properly handle the reference counting, thus unloading of twice loaded shared libs fails.\n\nI have implemented a workaround to handle this properly.\n\nThere is one exeption: lbModule.so is needed by UAP macros, thus this shared library is left loaded and the system can unload it for me.
 # *
@@ -359,6 +362,7 @@ endif
 ifeq ($(OSTYPE), Windows_NT)
 
 TARGETDLL=dll
+TARGETSHARED=dll
 TARGETEXE=exe
 TARGETPLUGIN=plugin
 TARGETWXPLUGIN=wxplugin
