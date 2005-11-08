@@ -156,7 +156,7 @@ void  lbDBReportProperties::initData(char* report) {
        	UAP_REQUEST(getModuleInstance(), lb_I_String, key)
 
 	char buf[] = "select name, value from report_parameters where report = '%s'";
-	char* buffer = (char*) malloc(strlen(buf) + 1 + strlen(report));
+	char* buffer = (char*) malloc(strlen(buf) + strlen(report) + 1);
 	buffer[0] = 0;
 	
 	sprintf(buffer, buf, report);
@@ -197,7 +197,7 @@ void  lbDBReportProperties::initData(char* report) {
 
 	char buf1[] = "select line, text from report_texts where report = '%s'";
 	free(buffer);
-	buffer = (char*) malloc(strlen(buf1) + 1);
+	buffer = (char*) malloc(strlen(buf1) + strlen(report) + 1);
 	buffer[0] = 0;
 	
 	sprintf(buffer, buf1, report);
@@ -269,6 +269,8 @@ int   lbDBReportProperties::getIntParameter(char* name) {
 		query->skipFKCollecting();		
 		query->query(buffer);
 		query->enableFKCollecting();
+		
+		free(buffer);
 	}
 
 	i = atoi(value->charrep());
@@ -488,6 +490,8 @@ void LB_STDCALL lbDBReportAction::openReport(lb_I_String* reportname, lb_I_Param
 				query1 = database->getQuery(0);
 
 				err = query1->query(buffer);
+				
+				free(buffer);
 /*...e*/
 				
 				if (err == ERR_NONE) {
@@ -1080,7 +1084,12 @@ void LB_STDCALL lbDatabaseReport::init(char* SQLString, char* DBName, char* DBUs
 					*value = " ";
 				}
 
-				dc.GetTextExtent(value->charrep(), &w, &h, NULL, NULL, &fntSmall);
+				// Workaround to a crash in GetTextExtent
+				char* temp = strdup(value->charrep());
+
+				dc.GetTextExtent(temp, &w, &h, NULL, NULL, &fntSmall);
+			
+				free(temp);
 			
 				if ((w/scalingFactor) > *(colsteps[i-1])) {
 					*(colsteps[i-1]) = w/scalingFactor;
@@ -1109,7 +1118,12 @@ void LB_STDCALL lbDatabaseReport::init(char* SQLString, char* DBName, char* DBUs
 					*value = " ";
 				}
 				
-				dc.GetTextExtent(value->charrep(), &w, &h, NULL, NULL, &fntSmall);
+				// Workaround to a crash in GetTextExtent
+				char* temp = strdup(value->charrep());
+
+				dc.GetTextExtent(temp, &w, &h, NULL, NULL, &fntSmall);
+			
+				free(temp);
 			
 				if ((w/scalingFactor) > *(colsteps[i-1])) {
 					*(colsteps[i-1]) = w/scalingFactor;
