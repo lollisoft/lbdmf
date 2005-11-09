@@ -1085,11 +1085,9 @@ void LB_STDCALL lbDatabaseReport::init(char* SQLString, char* DBName, char* DBUs
 				}
 
 				// Workaround to a crash in GetTextExtent
-				char* temp = strdup(value->charrep());
+				wxString temp = wxString(value->charrep());
 
 				dc.GetTextExtent(temp, &w, &h, NULL, NULL, &fntSmall);
-			
-				free(temp);
 			
 				if ((w/scalingFactor) > *(colsteps[i-1])) {
 					*(colsteps[i-1]) = w/scalingFactor;
@@ -1119,11 +1117,9 @@ void LB_STDCALL lbDatabaseReport::init(char* SQLString, char* DBName, char* DBUs
 				}
 				
 				// Workaround to a crash in GetTextExtent
-				char* temp = strdup(value->charrep());
+				wxString temp = wxString(value->charrep());
 
 				dc.GetTextExtent(temp, &w, &h, NULL, NULL, &fntSmall);
-			
-				free(temp);
 			
 				if ((w/scalingFactor) > *(colsteps[i-1])) {
 					*(colsteps[i-1]) = w/scalingFactor;
