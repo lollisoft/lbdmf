@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.30 $
+ * $Revision: 1.31 $
  * $Name:  $
- * $Id: lbPluginManager.cpp,v 1.30 2005/11/02 16:24:28 lollisoft Exp $
+ * $Id: lbPluginManager.cpp,v 1.31 2005/11/10 08:49:55 lollisoft Exp $
  *
  * $Log: lbPluginManager.cpp,v $
+ * Revision 1.31  2005/11/10 08:49:55  lollisoft
+ * Small memory leak, but it only happens, if the plugin directory is not present.
+ *
  * Revision 1.30  2005/11/02 16:24:28  lollisoft
  * Bug for the program ending crash and the cout crash found. See history in
  * lbDB.cpp.
@@ -436,7 +439,10 @@ void LB_STDCALL lbPluginManager::initialize() {
 	
 	if ((dir = opendir(pluginDir)) == NULL) {
 	    _LOG << "Plugin directory not found!" LOG_
-		free(pluginDir);
+
+	    delete [] toFind;
+	    free(pluginDir);
+
 	    return;
 	}
 	
