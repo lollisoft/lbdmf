@@ -30,11 +30,15 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.31 $
+ * $Revision: 1.32 $
  * $Name:  $
- * $Id: lbPluginManager.cpp,v 1.31 2005/11/10 08:49:55 lollisoft Exp $
+ * $Id: lbPluginManager.cpp,v 1.32 2005/11/11 22:47:35 lollisoft Exp $
  *
  * $Log: lbPluginManager.cpp,v $
+ * Revision 1.32  2005/11/11 22:47:35  lollisoft
+ * Memory leaks removed. There was a hack with singletons, but the current
+ * variant without singletons is tested well.
+ *
  * Revision 1.31  2005/11/10 08:49:55  lollisoft
  * Small memory leak, but it only happens, if the plugin directory is not present.
  *
@@ -259,8 +263,18 @@ lbPluginManager::~lbPluginManager() {
 }
 
 void LB_STDCALL lbPluginManager::unload() {
-	PluginModules->deleteAll();
-	PluginContainer->deleteAll();
+	if(PluginContainer != NULL) {
+		/**
+		 * Releasing a reference, where the instance will not be deleted,
+		 * an additional reset must be used.
+		 *
+		 * TODO: Rewrite UAP macro to reset pointer always.
+		 */
+		PluginContainer->release(__FILE__, __LINE__);
+		PluginContainer.resetPtr();
+	}
+	
+	PluginModules--;
 }
 
 lbErrCodes LB_STDCALL lbPluginManager::setData(lb_I_Unknown* uk) {
@@ -308,7 +322,7 @@ bool LB_STDCALL lbPluginManager::tryLoad(char* module) {
 				
 	// Instantiate an lb_I_PluginModule object
 		
-	char* pluginModule = new char[strlen(pluginDir)+strlen(module)+2];
+	char* pluginModule = (char*) malloc(strlen(pluginDir)+strlen(module)+2);
 	pluginModule[0] = 0;
 	strcat(pluginModule, pluginDir);
 #ifdef WINDOWS
@@ -338,19 +352,19 @@ bool LB_STDCALL lbPluginManager::tryLoad(char* module) {
 			
 			PluginModules->insert(&ukPlugin, &key);
 			
-			UAP(lb_I_Unknown, ukPlugin, __FILE__, __LINE__)
+			UAP(lb_I_Unknown, ukPlugin1, __FILE__, __LINE__)
 			
-			ukPlugin = PluginModules->getElement(&key);
+			ukPlugin1 = PluginModules->getElement(&key);
 			
 			UAP(lb_I_PluginModule, plM, __FILE__, __LINE__)
-			QI(ukPlugin, lb_I_PluginModule, plM, __FILE__, __LINE__)
+			QI(ukPlugin1, lb_I_PluginModule, plM, __FILE__, __LINE__)
 			
 			plM->setModule(pluginModule);
-			delete [] pluginModule;
+			free(pluginModule);
 			free(pluginDir);
 			return true;	
 		}
-		delete [] pluginModule;
+		free(pluginModule);
 		free(pluginDir);
 		
 		return false;
@@ -359,15 +373,17 @@ bool LB_STDCALL lbPluginManager::tryLoad(char* module) {
 		ukPlugin->setModuleManager(*&manager, __FILE__, __LINE__);
 		PluginModules->insert(&ukPlugin, &key);
 		
-		UAP(lb_I_Unknown, ukPlugin, __FILE__, __LINE__)
+		UAP(lb_I_Unknown, ukPlugin1, __FILE__, __LINE__)
 		
-		ukPlugin = PluginModules->getElement(&key);
+		ukPlugin1 = PluginModules->getElement(&key);
 		
 		UAP(lb_I_PluginModule, plM, __FILE__, __LINE__)
-		QI(ukPlugin, lb_I_PluginModule, plM, __FILE__, __LINE__)
+		QI(ukPlugin1, lb_I_PluginModule, plM, __FILE__, __LINE__)
+		
+		_CL_LOG << "lb_I_PluginModule has " << plM->getRefCount() << " references." LOG_
 		
 		plM->setModule(pluginModule);
-		delete [] pluginModule;
+		free(pluginModule);
 		free(pluginDir);
 	}
 
@@ -413,7 +429,7 @@ void LB_STDCALL lbPluginManager::initialize() {
 		strcpy(pluginDir, temp);
 	}
 	
-	char* toFind = new char[strlen(mask)+strlen(pluginDir)+2];
+	char* toFind = (char*) malloc(strlen(mask)+strlen(pluginDir)+2);
 	toFind[0] = 0;
 	
 	strcat(toFind, pluginDir);
@@ -440,7 +456,7 @@ void LB_STDCALL lbPluginManager::initialize() {
 	if ((dir = opendir(pluginDir)) == NULL) {
 	    _LOG << "Plugin directory not found!" LOG_
 
-	    delete [] toFind;
+	    free(toFind);
 	    free(pluginDir);
 
 	    return;
@@ -494,7 +510,7 @@ void LB_STDCALL lbPluginManager::initialize() {
 	}
 	
 	free(pluginDir);
-	delete [] toFind;
+	free(toFind);
 }
 /*...e*/
 /*...sbool LB_STDCALL lbPluginManager\58\\58\beginEnumPlugins\40\\41\:0:*/
@@ -535,17 +551,28 @@ lb_I_Plugin* LB_STDCALL lbPluginManager::nextPlugin() {
 			
 				uk = PluginModules->nextElement();
 		
+				if (uk == NULL) return NULL;
+		
 				QI(uk, lb_I_PluginModule, plM, __FILE__, __LINE__)
 		
 				// Get all plugins of this module
 
-				if (PluginContainer != NULL) {
-					PluginContainer->release(__FILE__, __LINE__);
-				}
+
+				// This was a cause of the difficult bug that later on occures.
+				//
+				// The PluginContainer is a smart pointer that does the release
+				// on it's instance, when assignement operator is used. Thus a
+				// doulbe release also deletes the list of lb_I_PluginImpl instances.
+				//
+				//if (PluginContainer != NULL) {
+				//	PluginContainer->release(__FILE__, __LINE__);
+				//}
 				
 				plM->initialize();
 
 				PluginContainer = plM->getPlugins();
+			
+				if (PluginContainer == NULL) return NULL;
 			
 				if (PluginContainer->hasMoreElements()) {
 					UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
@@ -632,48 +659,22 @@ public:
 
         DECLARE_LB_UNKNOWN()
 
-	lb_I_Unknown* LB_STDCALL getImplementation();
-	bool LB_STDCALL hasInterface(char* name);
+	lb_I_Unknown* 		LB_STDCALL getImplementation();
+	bool 			LB_STDCALL hasInterface(char* name);
 
-	void LB_STDCALL preinitialize();
+	void 			LB_STDCALL preinitialize();
 
-	void LB_STDCALL initialize();
-	bool LB_STDCALL run();
-	void LB_STDCALL uninitialize();
+	void 			LB_STDCALL initialize();
+	bool 			LB_STDCALL run();
+	void 			LB_STDCALL uninitialize();
 	
-	void LB_STDCALL setPluginManager(lb_I_PluginManager* plM);
-	void LB_STDCALL setAttached(lb_I_PluginImpl* impl);
-	
-	void LB_STDCALL setModule(char* module) {
-		if (_module) free(_module);
-		_module = NULL;
-		if (module) {
-			_module = (char*) malloc(strlen(module)+1);
-			_module[0] = 0;
-			strcpy(_module, module);
-		}
-	}
-	
-	void LB_STDCALL setName(char* name) { 
-		if (_name) free(_name);
-		_name = NULL;
-		if (name) {
-			_name = (char*) malloc(strlen(name)+1);
-			_name[0] = 0;
-			strcpy(_name, name);
-		}
-	}
-	
-	void LB_STDCALL setNamespace(char* __namespace) {
-		if (_namespace) free(_namespace);
-		_namespace = NULL;
-		if (__namespace) {
-			_namespace = (char*) malloc(strlen(__namespace)+1);
-			_namespace[0] = 0;
-			strcpy(_namespace, __namespace);
-		}
-	}
+	void 			LB_STDCALL setPluginManager(lb_I_PluginManager* plM);
+	void 			LB_STDCALL setAttached(lb_I_PluginImpl* impl);
+	lb_I_PluginImpl*	LB_STDCALL getAttached();
 
+	void LB_STDCALL setModule(char* module);
+	void LB_STDCALL setName(char* name);
+	void LB_STDCALL setNamespace(char* __namespace);
 	char* LB_STDCALL getModule() { return _module; }
 	char* LB_STDCALL getName() { return _name; }
 	char* LB_STDCALL getNamespace() { return _namespace; }
@@ -684,7 +685,7 @@ private:
 	char* _name;
 	char* _namespace;
 	char* _module;
-	UAP(lb_I_PluginManager, _plM, __FILE__, __LINE__)
+//	UAP(lb_I_PluginManager, _plM, __FILE__, __LINE__)
 
 	UAP(lb_I_Unknown, implementation, __FILE__, __LINE__)
 
@@ -702,6 +703,7 @@ END_IMPLEMENT_LB_UNKNOWN()
 
 /*...slbPlugin\58\\58\lbPlugin\40\\41\:0:*/
 lbPlugin::lbPlugin() {
+	_CL_LOG << "lbPlugin::lbPlugin() called." LOG_
 	_module = NULL;
 	_name = NULL;
 	_namespace = NULL;
@@ -709,18 +711,30 @@ lbPlugin::lbPlugin() {
 	
 	implementation = NULL;
 	isPreInitialized = false;
+	_CL_LOG << "lbPlugin::lbPlugin() leaving." LOG_
 }
 /*...e*/
 /*...slbPlugin\58\\58\\126\lbPlugin\40\\41\:0:*/
 lbPlugin::~lbPlugin() {
+	_CL_LOG << "lbPlugin::~lbPlugin() called." LOG_
+	
+	if (implementation != NULL) {
+		_CL_LOG << "WARNING: lbPlugin " << 
+		_name << " of " << _module << " with " << _namespace << " has a loaded implementation." LOG_
+	}
+	
 	if (_module) free(_module);
 	if (_name) free(_name);
 	if (_namespace) free(_namespace);
+	
+	_CL_LOG << "lbPlugin::~lbPlugin() leaving." LOG_
 }
 /*...e*/
 /*...slbErrCodes LB_STDCALL lbPlugin\58\\58\setData\40\lb_I_Unknown\42\ uk\41\:0:*/
 lbErrCodes LB_STDCALL lbPlugin::setData(lb_I_Unknown* uk) {
 	lbErrCodes err = ERR_NONE;
+
+	_CL_LOG << "lbPlugin::setData(...) called." LOG_
 	
 	UAP(lb_I_Plugin, pl, __FILE__, __LINE__)
 	QI(uk, lb_I_Plugin, pl, __FILE__, __LINE__)
@@ -729,22 +743,75 @@ lbErrCodes LB_STDCALL lbPlugin::setData(lb_I_Unknown* uk) {
 	setModule(pl->getModule());
 	setNamespace(pl->getNamespace());
 
+	setAttached(pl->getAttached());
+	
+	// getAttached increments reference, but this is not needed here. 
+	implementation--;
+	
         return ERR_NOT_IMPLEMENTED;
 }
 /*...e*/
 /*...svoid LB_STDCALL lbPlugin\58\\58\setPluginManager\40\lb_I_PluginManager\42\ plM\41\:0:*/
 void LB_STDCALL lbPlugin::setPluginManager(lb_I_PluginManager* plM) {
-	_plM = plM;
-	_plM++;
+//	_plM = plM;
+//	_plM++;
 }
 /*...e*/
 
 void LB_STDCALL lbPlugin::setAttached(lb_I_PluginImpl* impl) {
+	lbErrCodes err = ERR_NONE;
+	
+	if (impl == NULL) {
+		_CL_LOG << "lbPlugin::setAttached(NULL) called." LOG_
+		return;
+	}
+	
+	QI(impl, lb_I_Unknown, implementation, __FILE__, __LINE__)
+}
 
+lb_I_PluginImpl* LB_STDCALL lbPlugin::getAttached() {
+	lbErrCodes err = ERR_NONE;
+
+	if (implementation == NULL) return NULL;
+	
+	UAP(lb_I_PluginImpl, impl, __FILE__, __LINE__)
+	QI(implementation, lb_I_PluginImpl, impl, __FILE__, __LINE__)
+	impl++;
+	
+	return impl.getPtr();
 }
 
 void LB_STDCALL lbPlugin::uninitialize() {
 
+}
+void LB_STDCALL lbPlugin::setModule(char* module) {
+	if (_module) free(_module);
+	_module = NULL;
+	if (module) {
+		_module = (char*) malloc(strlen(module)+1);
+		_module[0] = 0;
+		strcpy(_module, module);
+	}
+}
+	
+void LB_STDCALL lbPlugin::setName(char* name) { 
+	if (_name) free(_name);
+	_name = NULL;
+	if (name) {
+		_name = (char*) malloc(strlen(name)+1);
+		_name[0] = 0;
+		strcpy(_name, name);
+	}
+}
+	
+void LB_STDCALL lbPlugin::setNamespace(char* __namespace) {
+	if (_namespace) free(_namespace);
+	_namespace = NULL;
+	if (__namespace) {
+		_namespace = (char*) malloc(strlen(__namespace)+1);
+		_namespace[0] = 0;
+		strcpy(_namespace, __namespace);
+	}
 }
 
 /*...svoid LB_STDCALL lbPlugin\58\\58\preinitialize\40\\41\:0:*/
@@ -765,16 +832,18 @@ void LB_STDCALL lbPlugin::preinitialize() {
 		_CL_VERBOSE << "FATAL: lbPlugin::preinitialize() uses a NULL pointer for the manager!" LOG_
 	}
 
+	_CL_LOG << "lbPlugin::preinitialize() tries to get " << name << " from " << _module LOG_
+
 	if (manager->makeInstance(name, _module, &ukPlugin) == ERR_NONE) {
 
 		ukPlugin->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
 
 	        UAP(lb_I_PluginImpl, impl, __FILE__, __LINE__)
 	        QI(ukPlugin, lb_I_PluginImpl, impl, __FILE__, __LINE__)
-	        impl++;
+	        //impl++;
 
 	        QI(ukPlugin, lb_I_Unknown, implementation, __FILE__, __LINE__)
-	        implementation++;
+	        //implementation++;
 		
 		isPreInitialized = true;
 
@@ -789,10 +858,10 @@ void LB_STDCALL lbPlugin::preinitialize() {
 		
 			UAP(lb_I_PluginImpl, impl, __FILE__, __LINE__)
 			QI(ukPlugin, lb_I_PluginImpl, impl, __FILE__, __LINE__)
-			impl++;
+			//impl++;
 		
 			QI(ukPlugin, lb_I_Unknown, implementation, __FILE__, __LINE__)
-			implementation++;
+			//implementation++;
 
 			isPreInitialized = true;
 
@@ -800,6 +869,8 @@ void LB_STDCALL lbPlugin::preinitialize() {
 			printf("lbPlugin::initialize() failed to forward call!\n");
 		}
 	}
+
+	_CL_LOG << "Preinitialized instance has " << implementation->getRefCount() << " references." LOG_
 
 	free(name);
 }
@@ -810,12 +881,16 @@ void LB_STDCALL lbPlugin::initialize() {
 
 	preinitialize();
 
+	_CL_LOG << "lbPlugin::initialize() has preinitialized underlying class." LOG_
+
 	if (isPreInitialized && !postInitialized) {
 		UAP(lb_I_PluginImpl, impl, __FILE__, __LINE__)		
 		QI(implementation, lb_I_PluginImpl, impl, __FILE__, __LINE__)
 
+		_CL_LOG << "lbPlugin::initialize() calls preinitialized underlying class'es initializer." LOG_
 		impl->initialize();
 	}
+	_CL_LOG << "lbPlugin::initialize() returns." LOG_
 }
 
 bool LB_STDCALL lbPlugin::run() {
