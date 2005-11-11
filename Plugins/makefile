@@ -26,6 +26,7 @@ TARGETEXE=elf
 TARGETWXPLUGIN=wxsoplugin
 
 ALLTARGETS = \
+	TestPlugin \
 	DatabaseForm \
 	DatabaseReport
 endif
@@ -37,6 +38,7 @@ TARGETEXE=elf
 TARGETWXPLUGIN=wxsoplugin
 
 ALLTARGETS = \
+	TestPlugin \
 	DatabaseForm \
 	DatabaseReport
 endif
@@ -49,7 +51,7 @@ TARGETWXPLUGIN=wxplugin
 TARGETPLUGIN=plugin
 
 ALLTARGETS = \
-	test \
+	TestPlugin \
 	DatabaseForm \
 	DatabaseReport
 endif
@@ -77,8 +79,8 @@ mkrelease:
 
 dummy:
 
-test: dummy
-	$(MAKE) -C $@ -e MODULE=test -e TARGET=$(TARGETPLUGIN) -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
+TestPlugin: dummy
+	$(MAKE) -C $@ -e MODULE=TestPlugin -e TARGET=$(TARGETPLUGIN) -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
 	$(MAKE) -C $@
 
 DatabaseForm: dummy
