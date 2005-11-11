@@ -46,9 +46,10 @@ ifeq ($(OSTYPE), Windows_NT)
 TARGETDLL=dll
 TARGETEXE=exe
 TARGETWXPLUGIN=wxplugin
-
+TARGETPLUGIN=plugin
 
 ALLTARGETS = \
+	test \
 	DatabaseForm \
 	DatabaseReport
 endif
@@ -75,6 +76,10 @@ mkrelease:
 	cd ../..; tar cvzf lbDMF-0.3.2.3.tgz CPP; cd CPP/BaseDevelopment
 
 dummy:
+
+test: dummy
+	$(MAKE) -C $@ -e MODULE=test -e TARGET=$(TARGETPLUGIN) -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
+	$(MAKE) -C $@
 
 DatabaseForm: dummy
 	$(MAKE) -C $@ -e MODULE=lbDatabaseForm -e TARGET=$(TARGETWXPLUGIN) -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
