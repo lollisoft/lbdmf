@@ -177,6 +177,7 @@
 						lb_I_Log* log; \
 						Unknown->queryInterface("lb_I_Log", (void**) &log, __FILE__, __LINE__); \
 						setLoggerInstance(log); \
+						Unknown->release(__FILE__, __LINE__); \
 						if (log == NULL) { \
 							exit (1); \
 						} else { \
@@ -184,6 +185,7 @@
 					} else { \
 						exit(1); \
 					} \
+					modMan->release(__FILE__, __LINE__); \
 				} else { \
 					exit(1); \
 				} \

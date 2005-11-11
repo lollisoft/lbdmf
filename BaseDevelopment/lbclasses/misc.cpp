@@ -31,10 +31,16 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.42 $
+ * $Revision: 1.43 $
  * $Name:  $
- * $Id: misc.cpp,v 1.42 2005/11/06 19:25:33 lollisoft Exp $
+ * $Id: misc.cpp,v 1.43 2005/11/11 22:51:30 lollisoft Exp $
  * $Log: misc.cpp,v $
+ * Revision 1.43  2005/11/11 22:51:30  lollisoft
+ * Memory leaks removed. There are currently only 4 chunks leaky.
+ * These may be false positives, because one of them is an allocated
+ * wxMenu instance, I have not to delete after adding it to a wxMenuBar.
+ * wxMenuBar gets an owner (see wxWidgets documentation).
+ *
  * Revision 1.42  2005/11/06 19:25:33  lollisoft
  * All bugs of unloading shared libraries removed.\nUsing dlopen more than once per shared library leads into unability to unload that library.\nMac OS X seems to not properly handle the reference counting, thus unloading of twice loaded shared libs fails.\n\nI have implemented a workaround to handle this properly.\n\nThere is one exeption: lbModule.so is needed by UAP macros, thus this shared library is left loaded and the system can unload it for me.
  *
@@ -246,6 +252,10 @@ public:
     		free(logmessage);
     		logmessage = NULL;
     	}
+    	
+    	if (mutex) { 
+    		delete mutex;
+    	}
     }
 /*...e*/
 
@@ -288,7 +298,7 @@ public:
     static char lastevent[100];
     static int beinlog;
     static char f[PATH_MAX];
-    static lb_I_Mutex* mutex;
+    static lbMutex* mutex;
     static char* logmessage;
     static int lastsize;
 /*...e*/
@@ -306,7 +316,7 @@ int lbLog::lastsize = 0;
 clock_t lbLog::start_time, lbLog::end_time;
 int lbLog::doLog = FALSE;
 char lbLog::prefix[100];
-lb_I_Mutex* lbLog::mutex;
+lbMutex* lbLog::mutex;
 
 //lb_I_CritSect sect;
 

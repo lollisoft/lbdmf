@@ -182,24 +182,16 @@ int main(int argc, char *argv[]) {
 	lb_I_Module* mm = NULL;
 
 {
-
-	char brk[100] = "";
-
 #ifdef WINDOWS
-
-//	cout << "Please enter TRMem breakpoint address: ";
-//	cin >> brk;
-	
 	TRMemOpen();
 	TRMemSetModuleName(__FILE__);
-//	TRMemSetAdrBreakPoint(brk);
-
 #endif	
 	
 	mm = getModuleInstance();
 
 	_CL_LOG << "Database regression tests..." LOG_
 
+/*...sBlock:8:*/
 	{
 		UAP_REQUEST(mm, lb_I_String, preload)
 	
@@ -253,10 +245,7 @@ int main(int argc, char *argv[]) {
 		queryA->query("drop table regressiontest");
 
 	}
-
-	_LOG << "Do log a simple line." LOG_
-
-	mm = getModuleInstance();
+/*...e*/
 
 	unHookAll();
 		

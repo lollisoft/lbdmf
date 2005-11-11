@@ -31,11 +31,17 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.67 $
+ * $Revision: 1.68 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.67 2005/11/06 19:25:33 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.68 2005/11/11 22:51:30 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.68  2005/11/11 22:51:30  lollisoft
+ * Memory leaks removed. There are currently only 4 chunks leaky.
+ * These may be false positives, because one of them is an allocated
+ * wxMenu instance, I have not to delete after adding it to a wxMenuBar.
+ * wxMenuBar gets an owner (see wxWidgets documentation).
+ *
  * Revision 1.67  2005/11/06 19:25:33  lollisoft
  * All bugs of unloading shared libraries removed.\nUsing dlopen more than once per shared library leads into unability to unload that library.\nMac OS X seems to not properly handle the reference counting, thus unloading of twice loaded shared libs fails.\n\nI have implemented a workaround to handle this properly.\n\nThere is one exeption: lbModule.so is needed by UAP macros, thus this shared library is left loaded and the system can unload it for me.
  *
@@ -347,7 +353,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::enterDebugger(lb_I_Unknown* uk) {
 /*...e*/
 /*...slbErrCodes LB_STDCALL lb_MetaApplication\58\\58\lbEvHandler1\40\lb_I_Unknown\42\ uk\41\:0:*/
 lbErrCodes LB_STDCALL lb_MetaApplication::lbEvHandler1(lb_I_Unknown* uk) {
-	_LOG << "lb_MetaApplication::lbEvHandler1() called" LOG_
+	_CL_LOG << "lb_MetaApplication::lbEvHandler1() called" LOG_
 	return ERR_NONE;
 }
 /*...e*/
@@ -398,7 +404,7 @@ END_IMPLEMENT_LB_UNKNOWN()
 
 /*...slbErrCodes LB_STDCALL lb_MetaApplication\58\\58\setData\40\lb_I_Unknown\42\ uk\41\:0:*/
 lbErrCodes LB_STDCALL lb_MetaApplication::setData(lb_I_Unknown* uk) {
-	_LOG << "lb_MetaApplication::setData() has not been implemented" LOG_
+	_CL_LOG << "lb_MetaApplication::setData() has not been implemented" LOG_
 	
 	return ERR_NONE;
 }
@@ -738,7 +744,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::loadApplication(char* user, char* appl
                 manager->makeInstance(f, appl, &a);
                 #endif
                 if (a == NULL) {
-                        _LOG << "ERROR: Application could not be loaded - either not found or not configured." LOG_
+                        _CL_LOG << "ERROR: Application could not be loaded - either not found or not configured." LOG_
                         return ERR_NONE;
                 }
 
@@ -778,7 +784,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::loadApplication(char* user, char* appl
 		manager->makeInstance(PREFIX "instanceOfApplication", name, &a);
 		#endif	
 		if (a == NULL) {
-			_LOG << "ERROR: Application could not be loaded - either not found or not configured." LOG_
+			_CL_LOG << "ERROR: Application could not be loaded - either not found or not configured." LOG_
 			return ERR_NONE;
 		}
 		
@@ -800,26 +806,6 @@ lbErrCodes LB_STDCALL lb_MetaApplication::loadApplication(char* user, char* appl
 /*...slbErrCodes LB_STDCALL lb_MetaApplication\58\\58\addMenuBar\40\char\42\ name\44\ char\42\ after\41\:0:*/
 lbErrCodes LB_STDCALL lb_MetaApplication::addMenuBar(char* name, char* after) {
 	lbErrCodes err = ERR_NONE;
-
-/*...sbla:0:*/
-/*
-
-	UAP_REQUEST(manager.getPtr(), lb_I_String, string)
-	string->setData(name);
-	UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
-	QI(string, lb_I_Unknown, uk, __FILE__, __LINE__)
-
-	// Avoids GPF while leaving the function
-	string++;
-
-	UAP_REQUEST(manager.getPtr(), lb_I_String, result)
-	UAP(lb_I_Unknown, uk_result, __FILE__, __LINE__)
-	QI(result, lb_I_Unknown, uk_result, __FILE__, __LINE__)
-
-	if (uk == NULL) _LOG << "Error: Cannot call with a null pointer!" LOG_
-
-*/
-/*...e*/
 
 	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
@@ -1031,7 +1017,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::addMenuEntry(char* in_menu, char* entr
 /*...slb_EventMapper:0:*/
 lb_EventMapper::lb_EventMapper() {
 	ref = STARTREF;
-	_LOG << "Instance of lb_I_EventMapper created" LOG_
+	_CL_LOG << "Instance of lb_I_EventMapper created" LOG_
 	_name = NULL;
 }
 
@@ -1046,7 +1032,7 @@ BEGIN_IMPLEMENT_LB_UNKNOWN(lb_EventMapper)
 END_IMPLEMENT_LB_UNKNOWN()
 
 lbErrCodes LB_STDCALL lb_EventMapper::setData(lb_I_Unknown* uk) {
-	_LOG << "lb_EventMapper::setData() has not been implemented" LOG_
+	_CL_LOG << "lb_EventMapper::setData() has not been implemented" LOG_
 	
 	return ERR_NONE;
 }
@@ -1117,10 +1103,10 @@ lbErrCodes LB_STDCALL lb_EventManager::registerEvent(char* EvName, int & EvNr) {
 /*...e*/
 	
 /*...sError handling:8:*/
-	if (events == NULL) _LOG << "Nullpointer detected (events)!" LOG_
-	if (*&sk == NULL) _LOG << "Nullpointer detected (sk)!" LOG_
+	if (events == NULL) _CL_LOG << "Nullpointer detected (events)!" LOG_
+	if (*&sk == NULL) _CL_LOG << "Nullpointer detected (sk)!" LOG_
 	if (events->exists(&sk) == 1) {
-		_LOG << "lb_EventManager::registerEvent(): Error: Event schon registriert" LOG_
+		_CL_LOG << "lb_EventManager::registerEvent(): Error: Event schon registriert" LOG_
 		return ERR_EVENT_EXISTS;
 	}
 /*...e*/
@@ -1163,7 +1149,7 @@ lbErrCodes LB_STDCALL lb_EventManager::registerEvent(char* EvName, int & EvNr) {
 /*...e*/
 
 	if (events->exists(&sk) != 1) {
-		_LOG << "lb_EventManager::registerEvent(): Error: Event could not be registered" LOG_
+		_CL_LOG << "lb_EventManager::registerEvent(): Error: Event could not be registered" LOG_
 		return ERR_EVENT_NOTREGISTERED;
 	}
 	
@@ -1221,7 +1207,7 @@ char* LB_STDCALL lb_EventManager::reverseEvent(int evNr) {
 		
 		return result;
 	} else {
-		_LOG << "Error: Event id not registered: " << evNr LOG_
+		_CL_LOG << "Error: Event id not registered: " << evNr LOG_
 		return "";
 	}
 }
@@ -1232,17 +1218,15 @@ BEGIN_IMPLEMENT_SINGLETON_LB_UNKNOWN(lb_Dispatcher)
 END_IMPLEMENT_LB_UNKNOWN()
 
 lb_Dispatcher::lb_Dispatcher() {
-
 	ref = STARTREF;
 }
 
 lb_Dispatcher::~lb_Dispatcher() {
-	_LOG << "lb_Dispatcher::~lb_Dispatcher() called" LOG_
 }
 
 /*...slbErrCodes LB_STDCALL lb_Dispatcher\58\\58\setData\40\lb_I_Unknown\42\ uk\41\:0:*/
 lbErrCodes LB_STDCALL lb_Dispatcher::setData(lb_I_Unknown* uk) {
-	_LOG << "lb_Dispatcher::setData() has not been implemented" LOG_
+	_CL_LOG << "lb_Dispatcher::setData() has not been implemented" LOG_
 	
 	return ERR_NONE;
 }
@@ -1293,13 +1277,13 @@ lbErrCodes LB_STDCALL lb_Dispatcher::addEventHandlerFn(lb_I_EventHandler* evHand
         	dispatcher->remove(&k);
 	}
 
-	if ((err = dispatcher->insert(&e, &k)) != ERR_NONE) _LOG << "Error: Inserting new container element failed" LOG_
+	if ((err = dispatcher->insert(&e, &k)) != ERR_NONE) _CL_LOG << "Error: Inserting new container element failed" LOG_
 
 	UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
 
 	uk = dispatcher->getElement(&k);
 	
-	if (uk == NULL) _LOG << "Error: Adding event handler failed (not stored)" LOG_
+	if (uk == NULL) _CL_LOG << "Error: Adding event handler failed (not stored)" LOG_
 
 	return ERR_NONE;
 }
@@ -1307,19 +1291,19 @@ lbErrCodes LB_STDCALL lb_Dispatcher::addEventHandlerFn(lb_I_EventHandler* evHand
 
 /*...slbErrCodes LB_STDCALL lb_Dispatcher\58\\58\addDispatcher\40\lb_I_Dispatcher\42\ disp\41\:0:*/
 lbErrCodes LB_STDCALL lb_Dispatcher::addDispatcher(lb_I_Dispatcher* disp) {
-	_LOG << "lb_Dispatcher::addDispatcher() called" LOG_
+	_CL_LOG << "lb_Dispatcher::addDispatcher() called" LOG_
 	return ERR_NONE;
 }
 /*...e*/
 /*...slbErrCodes LB_STDCALL lb_Dispatcher\58\\58\delDispatcher\40\lb_I_Dispatcher\42\ disp\41\:0:*/
 lbErrCodes LB_STDCALL lb_Dispatcher::delDispatcher(lb_I_Dispatcher* disp) {
-	_LOG << "lb_Dispatcher::delDispatcher() called" LOG_
+	_CL_LOG << "lb_Dispatcher::delDispatcher() called" LOG_
 	return ERR_NONE;
 }
 /*...e*/
 /*...slb_I_DispatchResponce\42\ lb_Dispatcher\58\\58\dispatch\40\lb_I_DispatchRequest\42\ req\41\:0:*/
 lb_I_DispatchResponse* lb_Dispatcher::dispatch(lb_I_DispatchRequest* req) {
-	_LOG << "lb_Dispatcher::dispatch() called" LOG_
+	_CL_LOG << "lb_Dispatcher::dispatch() called" LOG_
 	return NULL;
 }
 /*...e*/
@@ -1338,13 +1322,13 @@ lbErrCodes LB_STDCALL lb_Dispatcher::dispatch(int EvNr, lb_I_Unknown* EvData, lb
 	UAP(lb_I_EvHandler, ev, __FILE__, __LINE__)
 	
 	if (dispatcher == NULL) {
-		_LOG << "Error: Have no dispatcher" LOG_
+		_CL_LOG << "Error: Have no dispatcher" LOG_
 	} else {
 	
 		uk = dispatcher->getElement(&ik);
 	
 		if (uk == NULL) {
-			_LOG << "Error: Could not get the handler from the id" LOG_
+			_CL_LOG << "Error: Could not get the handler from the id" LOG_
 			return ERR_DISPATCH_FAILS;
 		}
 	

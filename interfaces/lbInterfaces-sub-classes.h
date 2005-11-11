@@ -30,11 +30,17 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.56 $
+ * $Revision: 1.57 $
  * $Name:  $
- * $Id: lbInterfaces-sub-classes.h,v 1.56 2005/10/31 19:37:55 lollisoft Exp $
+ * $Id: lbInterfaces-sub-classes.h,v 1.57 2005/11/11 22:51:30 lollisoft Exp $
  *
  * $Log: lbInterfaces-sub-classes.h,v $
+ * Revision 1.57  2005/11/11 22:51:30  lollisoft
+ * Memory leaks removed. There are currently only 4 chunks leaky.
+ * These may be false positives, because one of them is an allocated
+ * wxMenu instance, I have not to delete after adding it to a wxMenuBar.
+ * wxMenuBar gets an owner (see wxWidgets documentation).
+ *
  * Revision 1.56  2005/10/31 19:37:55  lollisoft
  * This version compiles and ends without a crash at exit. I have added a simple
  * string class to store places of queryInterface calls and setModuleManager calls.
@@ -699,6 +705,7 @@ classname::~classname() { \
         } \
         _CL_VERBOSE << #classname << "::~" << #classname << "() Delete the data (" << ptr1 << ") of " #classname LOG_ \
         if (data != NULL) { \
+        	_CL_VERBOSE << "Data object of " << data->getClassName() << " to be deleted has " << data->getRefCount() << " references." LOG_ \
         	if (data->deleteState() != 1) { \
         		_CL_LOG << "Warning: Data wouldn't deleted in container element! (" << data->getClassName() << ")" LOG_ \
         	} \
@@ -713,6 +720,7 @@ lb_I_Unknown* classname::getObject() const { \
     lb_I_Unknown* uk = NULL; \
     if(data == NULL) _CL_LOG << "ERROR: Element has no data. Could not return from NULL pointer!!" LOG_ \
     data->queryInterface("lb_I_Unknown", (void**) &uk, __FILE__, __LINE__); \
+    _CL_LOG << "Object of " << uk->getClassName() << " has " << uk->getRefCount() << " references." LOG_ \
     return uk; \
 } \
 \

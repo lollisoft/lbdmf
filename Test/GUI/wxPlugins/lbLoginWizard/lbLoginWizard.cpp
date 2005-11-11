@@ -81,11 +81,11 @@ public:
 };
 
 /*...sclass lbPluginModuleLoginWizard implementation:0:*/
-BEGIN_IMPLEMENT_SINGLETON_LB_UNKNOWN(lbPluginModuleLoginWizard)
+BEGIN_IMPLEMENT_LB_UNKNOWN(lbPluginModuleLoginWizard)
         ADD_INTERFACE(lb_I_PluginModule)
 END_IMPLEMENT_LB_UNKNOWN()
 
-IMPLEMENT_SINGLETON_FUNCTOR(instanceOfPluginModule, lbPluginModuleLoginWizard)
+IMPLEMENT_FUNCTOR(instanceOfPluginModule, lbPluginModuleLoginWizard)
 
 BEGIN_PLUGINS(lbPluginModuleLoginWizard)
 	ADD_PLUGIN(lbPluginLoginWizard, GUI)
@@ -684,6 +684,7 @@ void LB_STDCALL lbPluginLoginWizard::initialize() {
 	
 	free(file);
 	free(entry);
+
 }
 /*...e*/
 

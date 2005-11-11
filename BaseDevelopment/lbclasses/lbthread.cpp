@@ -145,6 +145,7 @@ lbMutex::lbMutex()
 
 lbMutex::~lbMutex()
 {
+	deleteMutex(MyMutexNumber);	
 }
 
 /*...sdeleteMutex:0:*/
@@ -162,6 +163,8 @@ void lbMutex::deleteMutex(int name)
 /*...screateMutex:0:*/
 void lbMutex::createMutex(int name)
 {
+	MyMutexNumber = name;
+
 /*...sWINDOWS:0:*/
 #ifdef WINDOWS
 

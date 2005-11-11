@@ -1,11 +1,17 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.71 $
+# * $Revision: 1.72 $
 # * $Name:  $
-# * $Id: Makefile,v 1.71 2005/11/07 10:08:54 lollisoft Exp $
+# * $Id: Makefile,v 1.72 2005/11/11 22:51:30 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.72  2005/11/11 22:51:30  lollisoft
+# * Memory leaks removed. There are currently only 4 chunks leaky.
+# * These may be false positives, because one of them is an allocated
+# * wxMenu instance, I have not to delete after adding it to a wxMenuBar.
+# * wxMenuBar gets an owner (see wxWidgets documentation).
+# *
 # * Revision 1.71  2005/11/07 10:08:54  lollisoft
 # * Windows was missing the new TARGETSHARED definition.
 # *
@@ -403,13 +409,13 @@ all_targets: $(ALLTARGETS)
 
 
 ../../dll/libs:
-	mkdir ../../dll/libs
+	-mkdir ../../dll/libs
 
 ../../plugins:
-	mkdir ../../plugins
+	-mkdir ../../plugins
 
 ../../plugins/libs: ../../plugins
-	mkdir ../../plugins/libs
+	-mkdir ../../plugins/libs
 
 clean:
 	@for d in $(ALLTARGETS); do \

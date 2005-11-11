@@ -111,11 +111,11 @@ public:
 /*...e*/
 
 /*...sclass lbPluginModuleDatabaseReport implementation:0:*/
-BEGIN_IMPLEMENT_SINGLETON_LB_UNKNOWN(lbPluginModuleDatabaseReport)
+BEGIN_IMPLEMENT_LB_UNKNOWN(lbPluginModuleDatabaseReport)
         ADD_INTERFACE(lb_I_PluginModule)
 END_IMPLEMENT_LB_UNKNOWN()
 
-IMPLEMENT_SINGLETON_FUNCTOR(instanceOfPluginModule, lbPluginModuleDatabaseReport)
+IMPLEMENT_FUNCTOR(instanceOfPluginModule, lbPluginModuleDatabaseReport)
 
 BEGIN_PLUGINS(lbPluginModuleDatabaseReport)
 	ADD_PLUGIN(lbPluginDatabaseReport, GUI)
@@ -124,11 +124,12 @@ END_PLUGINS()
 //	ADD_PLUGIN(lbOwnerDrawControl, GUI)
 
 lbPluginModuleDatabaseReport::lbPluginModuleDatabaseReport() {
+	_CL_LOG << "lbPluginModuleDatabaseReport::lbPluginModuleDatabaseReport() called." LOG_
 	ref = STARTREF;
 }
 
 lbPluginModuleDatabaseReport::~lbPluginModuleDatabaseReport() {
-	_CL_VERBOSE << "lbPluginModuleDatabaseReport::~lbPluginModuleDatabaseReport() called." LOG_
+	_CL_LOG << "lbPluginModuleDatabaseReport::~lbPluginModuleDatabaseReport() called." LOG_
 }
 
 void LB_STDCALL lbPluginModuleDatabaseReport::initialize() {

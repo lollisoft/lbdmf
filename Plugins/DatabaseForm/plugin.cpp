@@ -109,20 +109,21 @@ public:
 /*...e*/
 
 /*...sclass lbPluginModuleDatabaseForm implementation:0:*/
-BEGIN_IMPLEMENT_SINGLETON_LB_UNKNOWN(lbPluginModuleDatabaseForm)
+BEGIN_IMPLEMENT_LB_UNKNOWN(lbPluginModuleDatabaseForm)
         ADD_INTERFACE(lb_I_PluginModule)
 END_IMPLEMENT_LB_UNKNOWN()
 
-IMPLEMENT_SINGLETON_FUNCTOR(instanceOfPluginModule, lbPluginModuleDatabaseForm)
+IMPLEMENT_FUNCTOR(instanceOfPluginModule, lbPluginModuleDatabaseForm)
 
 BEGIN_PLUGINS(lbPluginModuleDatabaseForm)
-	ADD_PLUGIN(lbPluginDatabaseDialog, GUIDialog)
 	ADD_PLUGIN(lbPluginDatabasePanel, GUIPanel)
 END_PLUGINS()
 
+//	ADD_PLUGIN(lbPluginDatabaseDialog, GUIDialog)
 //	ADD_PLUGIN(lbOwnerDrawControl, GUI)
 
 lbPluginModuleDatabaseForm::lbPluginModuleDatabaseForm() {
+	_CL_LOG << "lbPluginModuleDatabaseForm::lbPluginModuleDatabaseForm() called." LOG_
 	ref = STARTREF;
 }
 
@@ -131,6 +132,7 @@ lbPluginModuleDatabaseForm::~lbPluginModuleDatabaseForm() {
 }
 
 void LB_STDCALL lbPluginModuleDatabaseForm::initialize() {
+	_CL_LOG << "lbPluginModuleDatabaseForm::initialize() called." LOG_
 	enumPlugins();
 }
 

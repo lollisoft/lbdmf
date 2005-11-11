@@ -20,6 +20,10 @@
 /*...v\46\\46\\47\RegressionTests\47\Memory\47\makefile\46\module:0:*/
 /*...v\46\\46\\47\RegressionTests\47\Memory\47\memTest\46\cpp:0:*/
 /*...e*/
+/*...sPluginTest:0:*/
+/*...v\46\\46\\47\RegressionTests\47\PluginTest\47\makefile\46\module:0:*/
+/*...v\46\\46\\47\RegressionTests\47\PluginTest\47\PluginTest\46\cpp:0:*/
+/*...e*/
 
 /*...v\46\\46\\47\RegressionTests\47\makefile:0:*/
 /*...e*/
@@ -264,6 +268,10 @@ These headers must define the per module (DLL) EXPORT variable
 /*...v\46\\46\\47\Test\47\GUI\47\wxPlugins\47\lbLoginWizard\47\makefile\46\module:0:*/
 /*...v\46\\46\\47\Test\47\GUI\47\wxPlugins\47\lbLoginWizard\47\lbLoginWizard\46\h:0:*/
 /*...v\46\\46\\47\Test\47\GUI\47\wxPlugins\47\lbLoginWizard\47\lbLoginWizard\46\cpp:0:*/
+
+/*...v\46\\46\\47\plugins\47\test\47\plugin\46\cpp:0:*/
+/*...v\46\\46\\47\plugins\47\test\47\pluginTest\46\cpp:0:*/
+/*...v\46\\46\\47\plugins\47\test\47\makefile:0:*/
 
 /*...v\46\\46\\47\plugins\47\makefile:0:*/
 /*...e*/

@@ -38,11 +38,17 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.38 $
+ * $Revision: 1.39 $
  * $Name:  $
- * $Id: skiplist.cpp,v 1.38 2005/10/31 21:37:31 lollisoft Exp $
+ * $Id: skiplist.cpp,v 1.39 2005/11/11 22:51:30 lollisoft Exp $
  *
  * $Log: skiplist.cpp,v $
+ * Revision 1.39  2005/11/11 22:51:30  lollisoft
+ * Memory leaks removed. There are currently only 4 chunks leaky.
+ * These may be false positives, because one of them is an allocated
+ * wxMenu instance, I have not to delete after adding it to a wxMenuBar.
+ * wxMenuBar gets an owner (see wxWidgets documentation).
+ *
  * Revision 1.38  2005/10/31 21:37:31  lollisoft
  * Compile problems. Removed unused log messages.
  *
@@ -229,7 +235,7 @@ lbSkipListElement::lbSkipListElement(const lb_I_Element &e) {
 /*...sSkipNode implementation:0:*/
 SkipNode::SkipNode() {
     	myLevel = MAXLEVEL;
-    	value = NULL;
+    	//value = NULL;
     	
     	forward = new SkipNode* [myLevel+1];
     	for (int i=0; i<=myLevel; i++)
@@ -258,7 +264,7 @@ SkipNode::~SkipNode() {
 		    forward[i] = NULL;
 		delete [] forward; 
 	}
-
+/*
 	if (value != NULL) {
 	      	// getObject() increases the refcount for uk.
 	      	// So call release twice ! :-!
@@ -274,10 +280,12 @@ SkipNode::~SkipNode() {
       		} else {
 	      		uk->release(__FILE__, __LINE__);
       		}
+
 		uk->release(__FILE__, __LINE__);
 		
 		//value.resetPtr();
 	}
+*/
 }
 
 void SkipNode::detach() {
@@ -312,7 +320,7 @@ lbErrCodes LB_STDCALL SkipList::setData(lb_I_Unknown* uk) {
 SkipList::SkipList() {
 	iteration = 0;
 	canDeleteObjects = true;
-	head = new SkipNode();
+	head = NULL; //new SkipNode();
 	skipiterator = NULL;
 	flag = 1;
 	level = MAXLEVEL;
@@ -334,6 +342,8 @@ SkipList::~SkipList() {
 		}
 		
 		head = NULL;
+	} else {
+		delete head;
 	}
 }
 /*...sSkipList\58\\58\Count\40\\41\:0:*/
@@ -345,7 +355,6 @@ int LB_STDCALL SkipList::Count() {
 /*...sSkipList\58\\58\deleteAll\40\\41\:0:*/
 void LB_STDCALL SkipList::deleteAll() { 
 	if (can_dump() == 1) {
-	
 		while (skipiterator) {
 			SkipNode* temp = skipiterator;
 			skipiterator = skipiterator->forward[0];
@@ -387,11 +396,8 @@ lbErrCodes LB_STDCALL SkipList::insert(lb_I_Unknown** const e, lb_I_KeyBase** co
         el->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
 
         insert(el);
-        if (search(*key) == NULL) {
-        	_LOG << "Error: SkipList::insert(...) failed" LOG_
-        } else {
-        	count++;
-        }
+
+       	count++;
         
         return err; 
 } 
@@ -522,6 +528,8 @@ lb_I_Unknown* LB_STDCALL SkipList::getElementAt(int i) {
 lb_I_KeyBase* LB_STDCALL SkipList::getKeyAt(int i) {
         int ii = 1;
 
+	_CL_LOG << "SkipList::getKeyAt(int i) called." LOG_
+
 	Elem e;
 
 	if (can_dump() == 1) {
@@ -551,6 +559,8 @@ int randomLevel(void) { // Pick a level on exponential distribution
 /*...sSkipList\58\\58\search\40\lb_I_KeyBase\42\ searchKey\41\:0:*/
 lb_I_Unknown* SkipList::search(lb_I_KeyBase* searchKey) { // Skiplist Search
   SkipNode *x = head;                  // Dummy header node
+
+  if (head == NULL) return NULL;
   
   if (x == NULL) _LOG << "Error: NULL pointer while searching in skiplist" LOG_
   
@@ -570,6 +580,7 @@ lb_I_Unknown* SkipList::search(lb_I_KeyBase* searchKey) { // Skiplist Search
 /*...e*/
 /*...sSkipList\58\\58\insert\40\Elem newValue\41\:0:*/
 void SkipList::insert(Elem newValue) { // Insert into skiplist
+  if (head == NULL) head = new SkipNode();
   SkipNode *x = head;           // Start at header node
   int i;
   int newLevel = randomLevel(); // Select level for new node
@@ -683,6 +694,7 @@ void SkipList::finishIteration() {
 /*...e*/
 /*...sSkipList\58\\58\can_dump\40\\41\:0:*/
 int SkipList::can_dump() {
+	if (count == 0) return 0;
 	if (iteration == 0) { 
         	iteration = 1; 
 	        skipiterator = head; 
@@ -754,83 +766,6 @@ BEGIN_IMPLEMENT_LB_UNKNOWN(lbSkipListElement)
 END_IMPLEMENT_LB_UNKNOWN()
 
 IMPLEMENT_LB_ELEMENT(lbSkipListElement)
-#ifdef bla
-/*...s:0:*/
-lbSkipListElement::lbSkipListElement(const lb_I_Unknown* o, const lb_I_KeyBase* _key, lb_I_Element *_next) { 
-    ref = STARTREF; 
-    manager = NULL; 
-    if (_next == NULL) next = _next; 
-    if (_next != NULL) { 
-        _next->queryInterface("lb_I_Element", (void**) &next, __FILE__, __LINE__); 
-    } 
-    data = NULL; 
-    if (o == NULL) _CL_LOG << "Error! Can't clone a NULL pointer" << __FILE__ ":" << __LINE__ LOG_ 
-    if (o != NULL) { 
-	    data = o->clone(__FILE__, __LINE__); 
-	    if (data->getRefCount() > 1) { 
-	        _CL_LOG << "Warning: Refcount after cloning is more than 1 !!!" LOG_ 
-	    } 
-    } 
-    lb_I_Unknown* uk_key = NULL; 
-    key = (lb_I_KeyBase*) _key->clone(__FILE__, __LINE__); 
-    if (key == NULL) _CL_LOG << "Key cloning in constructor failed. May be a memory problem" LOG_ 
-} 
-
-lbSkipListElement::~lbSkipListElement() { 
-	char ptr[20] = ""; 
-	char ptr1[20] = ""; 
-	sprintf(ptr, "%p", this); 
-        sprintf(ptr1, "%p", data); 
-	_CL_VERBOSE << "lbSkipListElement" << "::~" << "lbSkipListElement" << "() called. Pointer this is: " << ptr LOG_ 
-        if (key != NULL) { 
-                key->setDebug(1); 
-                if (key->deleteState() != 1) _CL_LOG << "Warning: Key wouldn't deleted in container element!" LOG_ 
-                _CL_VERBOSE << "lbSkipListElement" << "::~" << "lbSkipListElement" << "() Delete the key of " "lbSkipListElement" LOG_ 
-                RELEASE(key); 
-        } 
-        _CL_LOG << "lbSkipListElement" << "::~" << "lbSkipListElement" << "() Delete the data (" << ptr1 << ") of " "lbSkipListElement" LOG_ 
-        if (data != NULL) { 
-        	if (data->deleteState() != 1) { 
-        		_CL_LOG << "Warning: Data wouldn't deleted in container element! (" << data->getClassName() << ")" LOG_ 
-        	} 
-		RELEASE(data); 
-        } 
-        _CL_VERBOSE << "lbSkipListElement" << "::~" << "lbSkipListElement" << "() leaving" LOG_ 
-        key = NULL; 
-        data = NULL; 
-} 
-
-lb_I_Unknown* lbSkipListElement::getObject() const { 
-    lb_I_Unknown* uk = NULL; 
-    if(data == NULL) _CL_LOG << "ERROR: Element has no data. Could not return from NULL pointer!!" LOG_ 
-    data->queryInterface("lb_I_Unknown", (void**) &uk, __FILE__, __LINE__); 
-    return uk; 
-} 
-
-lb_I_KeyBase* LB_STDCALL lbSkipListElement::getKey() const { 
-        lb_I_KeyBase* kbase = NULL; 
-        return key; 
-} 
-
-void LB_STDCALL lbSkipListElement::setNext(lb_I_Element *e) { 
-        e->queryInterface("lb_I_Element", (void**) &next, __FILE__, __LINE__); 
-} 
-
-lb_I_Element* LB_STDCALL lbSkipListElement::getNext() const { 
-        return next; 
-} 
-int LB_STDCALL lbSkipListElement::equals(const lb_I_Element* a) const { 
-	return 0; 
-} 
-
-int LB_STDCALL lbSkipListElement::equals(const lb_I_KeyBase* _key) const { 
-	return (*key == _key); 
-} 
-int LB_STDCALL lbSkipListElement::lessthan(const lb_I_KeyBase* _key) const { 
-	return (*key < _key); 
-}
-/*...e*/
-#endif
 
 lbErrCodes LB_STDCALL lbSkipListElement::setData(lb_I_Unknown* uk) {
 	_LOG << "lbSkipListElement::setData(...) not implemented yet" LOG_

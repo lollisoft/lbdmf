@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.100 2005/11/06 19:47:22 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.101 2005/11/11 22:51:30 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,17 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.100 $
+ * $Revision: 1.101 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.100 2005/11/06 19:47:22 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.101 2005/11/11 22:51:30 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.101  2005/11/11 22:51:30  lollisoft
+ * Memory leaks removed. There are currently only 4 chunks leaky.
+ * These may be false positives, because one of them is an allocated
+ * wxMenu instance, I have not to delete after adding it to a wxMenuBar.
+ * wxMenuBar gets an owner (see wxWidgets documentation).
+ *
  * Revision 1.100  2005/11/06 19:47:22  lollisoft
  * There was a problem with other UAP based instances in the main application.\nMoved the unhookAll() call to a destructor in a static instance in the main application file.
  *
@@ -1942,8 +1948,6 @@ bool MyApp::OnInit(void)
   mm->setModuleManager(mm.getPtr(), __FILE__, __LINE__);
   setModuleManager(mm.getPtr(), __FILE__, __LINE__);
 
-  _LOG << "Module manager loaded. Application initializes..." LOG_
-
 #ifdef WINDOWS
 // Only windows makes problems with the open console output window
 //  FreeConsole();
@@ -2810,8 +2814,6 @@ void lb_wxFrame::OnPluginTest(wxCommandEvent& WXUNUSED(event) ) {
 
 #endif
 
-#ifdef OSX
-
 class cleanUp {
 public:
 	cleanUp() {
@@ -2824,8 +2826,6 @@ public:
 };
 
 cleanUp clean_up;
-
-#endif
 
 /*...sWindows based WinMain implementation:0:*/
 #ifndef OSX

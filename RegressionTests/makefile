@@ -27,7 +27,8 @@ TARGETEXE=elf
 ALLTARGETS = \
 	Database \
 	Basetypes \
-	Memory
+	Memory \
+	PluginTest
 endif
 
 ifeq ($(OSTYPE), osx)
@@ -38,7 +39,8 @@ TARGETEXE=elf
 ALLTARGETS = \
 	Database \
 	Basetypes \
-	Memory
+	Memory \
+	PluginTest
 endif
 
 ifeq ($(OSTYPE), Windows_NT)
@@ -49,7 +51,8 @@ TARGETEXE=exe
 ALLTARGETS = \
 	Database \
 	Basetypes \
-	Memory
+	Memory \
+	PluginTest
 endif
 
 
@@ -85,5 +88,9 @@ Memory: dummy
 
 Basetypes: dummy
 	$(MAKE) -C $@ -e MODULE=Basetypes -e TARGET=$(TARGETEXE) -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
+	$(MAKE) -C $@
+
+PluginTest: dummy
+	$(MAKE) -C $@ -e MODULE=PluginTest -e TARGET=$(TARGETEXE) -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
 	$(MAKE) -C $@
 

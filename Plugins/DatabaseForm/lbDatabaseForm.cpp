@@ -3882,7 +3882,12 @@ lbPluginDatabasePanel::lbPluginDatabasePanel() {
 }
 
 lbPluginDatabasePanel::~lbPluginDatabasePanel() {
-	_CL_VERBOSE << "lbPluginDatabasePanel::~lbPluginDatabasePanel() called.\n" LOG_
+	_CL_LOG << "lbPluginDatabasePanel::~lbPluginDatabasePanel() called.\n" LOG_
+	
+	if (dbForm != NULL) {
+		_CL_LOG << "dbForm is not NULL." LOG_
+		_CL_LOG << "*******************" LOG_
+	}
 }
 
 void LB_STDCALL lbPluginDatabasePanel::initialize() {
@@ -3933,10 +3938,10 @@ void LB_STDCALL lbPluginDatabasePanel::releaseImplementation() {
 	if (dbForm != NULL) {
 		UAP(lb_I_DatabaseForm, form, __FILE__, __LINE__)
 		QI(dbForm, lb_I_DatabaseForm, form, __FILE__, __LINE__)
-	
 		form->destroy();
+		
+		dbForm.resetPtr();
 	}
-	
 }
 /*...e*/
 /*...e*/
@@ -4282,6 +4287,11 @@ lbPluginDatabaseDialog::lbPluginDatabaseDialog() {
 
 lbPluginDatabaseDialog::~lbPluginDatabaseDialog() {
 	_CL_VERBOSE << "lbPluginDatabaseDialog::~lbPluginDatabaseDialog() called.\n" LOG_
+
+	if (dbForm != NULL) {
+		_CL_LOG << "dbForm is not NULL." LOG_
+		_CL_LOG << "*******************" LOG_
+	}
 }
 
 void LB_STDCALL lbPluginDatabaseDialog::initialize() {
@@ -4334,8 +4344,9 @@ void LB_STDCALL lbPluginDatabaseDialog::releaseImplementation() {
 		QI(dbForm, lb_I_DatabaseForm, form, __FILE__, __LINE__)
 	
 		form->destroy();
+		
+		dbForm.resetPtr();
 	}
-	
 }
 /*...e*/
 /*...e*/

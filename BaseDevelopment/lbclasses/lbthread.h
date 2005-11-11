@@ -69,12 +69,13 @@ public:
         virtual void release();
 private:
 
+        int    MyMutexNumber;
+
 #ifdef WINDOWS
         HANDLE mutex;
 #endif
 #ifdef __WXGTK__
         int    mutex;
-        int    _name;
 #endif
 };
 /*...e*/

@@ -698,13 +698,23 @@ lbErrCodes LB_STDCALL lbPluginDatabaseReport::setData(lb_I_Unknown* uk) {
 /*...e*/
 
 lbPluginDatabaseReport::lbPluginDatabaseReport() {
-	_CL_VERBOSE << "lbPluginDatabaseReport::lbPluginDatabaseReport() called.\n" LOG_
+	_CL_LOG << "lbPluginDatabaseReport::lbPluginDatabaseReport() called.\n" LOG_
 	dbReport = NULL;
 	ref = STARTREF;
 }
 
 lbPluginDatabaseReport::~lbPluginDatabaseReport() {
-	_CL_VERBOSE << "lbPluginDatabaseReport::~lbPluginDatabaseReport() called.\n" LOG_
+	_CL_LOG << "lbPluginDatabaseReport::~lbPluginDatabaseReport() called.\n" LOG_
+	
+
+	if (dbReport != NULL) {
+		_CL_LOG << "dbReport is not NULL." LOG_
+		_CL_LOG << "*********************" LOG_
+	}
+
+	if (dbReport != NULL) {
+		_CL_LOG << "dbReport has " << dbReport->getRefCount() << " references." LOG_
+	}
 }
 
 void LB_STDCALL lbPluginDatabaseReport::initialize() {

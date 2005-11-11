@@ -82,7 +82,7 @@ IMPLEMENT_FUNCTOR(instanceOfLocale, lbLocale)
 
 
 /*...slbLocale:0:*/
-BEGIN_IMPLEMENT_SINGLETON_LB_UNKNOWN(lbLocale)
+BEGIN_IMPLEMENT_LB_UNKNOWN(lbLocale)
         ADD_INTERFACE(lb_I_Locale)
 END_IMPLEMENT_LB_UNKNOWN()
 

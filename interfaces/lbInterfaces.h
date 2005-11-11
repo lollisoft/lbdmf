@@ -852,6 +852,7 @@ public:
 		} \
 		UAP##Unknown_Reference& LB_STDCALL operator--(int) { \
 			interface* temp = NULL; \
+			if (_autoPtr == NULL) return *this; \
 			if (_autoPtr->release(file, line) == ERR_RELEASED) _autoPtr = NULL; \
 			return *this; \
 		} \
@@ -2319,20 +2320,25 @@ void LB_STDCALL cls::setModule(char* module) { \
 	if (_module == NULL) { \
 		REQUEST(manager.getPtr(), lb_I_String, _module) \
 	} \
-	_module->setData(module); \
+	_CL_LOG << "String _module has " << _module->getRefCount() << " references." LOG_ \
+	*_module = module; \
 } \
 lb_I_Container* cls::getPlugins() { \
-	Plugins++; \
-	return Plugins.getPtr(); \
+	if (Plugins != NULL) { \
+		Plugins++; \
+		return Plugins.getPtr(); \
+	} \
+	return NULL; \
 } \
 void LB_STDCALL cls::enumPlugins() { \
 	lbErrCodes err = ERR_NONE; \
+	_CL_LOG << #cls << "::enumPlugins() called." LOG_ \
 	REQUEST(manager.getPtr(), lb_I_Container, Plugins)
 
 #define ADD_PLUGIN(plugin, namespace) \
 	UAP_REQUEST(manager.getPtr(), lb_I_Plugin, P##plugin##namespace) \
 	\
-	P##plugin##namespace->setModule(_module->getData()); \
+	P##plugin##namespace->setModule(_module->charrep()); \
 	P##plugin##namespace->setName(#plugin); \
 	P##plugin##namespace->setNamespace(#namespace); \
 	\
@@ -2343,13 +2349,14 @@ void LB_STDCALL cls::enumPlugins() { \
 	s##plugin##namespace->setData(#plugin); \
 	QI(s##plugin##namespace, lb_I_KeyBase, Key##plugin##namespace, __FILE__, __LINE__) \
 	QI(P##plugin##namespace, lb_I_Unknown, ukPlugin##plugin##namespace, __FILE__, __LINE__) \
+	\
 	Plugins->insert(&ukPlugin##plugin##namespace, &Key##plugin##namespace); \
 	\
 	UAP(lb_I_Unknown, ukPl##plugin##namespace, __FILE__, __LINE__) \
 	UAP(lb_I_Plugin, Pl##plugin##namespace, __FILE__, __LINE__) \
 	ukPl##plugin##namespace = Plugins->getElement(&Key##plugin##namespace); \
 	QI(ukPl##plugin##namespace, lb_I_Plugin, Pl##plugin##namespace, __FILE__, __LINE__) \
-	Pl##plugin##namespace->setModule(_module->getData()); \
+	Pl##plugin##namespace->setModule(_module->charrep()); \
 	Pl##plugin##namespace->setName(#plugin); \
 	Pl##plugin##namespace->setNamespace(#namespace);
 
@@ -2396,7 +2403,6 @@ public:
 	 * This function returns the instance of the implementation and left the
 	 * owning by the caller. It does not clean up the instance by it self.
 	 */
-	 
 	virtual lb_I_Unknown* LB_STDCALL getImplementation() = 0; 
 
 /*...slb_I_Plugin management API:0:*/
@@ -2413,6 +2419,12 @@ public:
 	 * really detaching.
 	 */
 	virtual void LB_STDCALL setAttached(lb_I_PluginImpl* impl = NULL) = 0;
+
+	/**
+	 * Called inside clone to get also a reference to the plugin implementation.
+	 * This is needed due to deleting issues.
+	 */
+	virtual lb_I_PluginImpl* LB_STDCALL getAttached() = 0;
 
 	/**
 	 * This function should uninitialize all handlers, that are registered.

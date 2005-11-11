@@ -88,6 +88,8 @@ void PrintData(lb_I_Query* q) {
 
 // (trackObject == NULL) ? "" : trackObject int argc, char *argv[]
 int main(int argc, char *argv[]) {
+
+{
 	char* file = "";
 	int line = 0;
 	lbErrCodes err = ERR_NONE;
@@ -111,10 +113,11 @@ int main(int argc, char *argv[]) {
 
 	lb_I_Module* mm = NULL;
 	mm = getModuleInstance();
-	mm->setModuleManager(mm, __FILE__, __LINE__);
+	//mm->setModuleManager(mm, __FILE__, __LINE__);
 
 /*...e*/
 
+/*...sTest plugins:0:*/
 #ifdef TestPlugins
 int a = 1;
 int b = 1;
@@ -126,6 +129,7 @@ if (a == b) {
 	printf("Tested plugin manager\n");	
 }
 #endif
+/*...e*/
 
 /*...sTest database:0:*/
 	_CL_LOG << "Test database library" LOG_
@@ -137,8 +141,6 @@ if (a == b) {
 	
 	UAP_REQUEST(mm, lb_I_Database, database1)
 
-	database->init();
-	database->connect("trainres", "dba", "trainres");
 	UAP(lb_I_Query, query, __FILE__, __LINE__)
 	UAP(lb_I_Query, query1, __FILE__, __LINE__)
 	UAP(lb_I_Query, query2, __FILE__, __LINE__)
@@ -183,10 +185,11 @@ if (a == b) {
 	PrintData(*&query1);
 	PrintData(*&query2);
 	PrintData(*&query);
-	
-exit(0);	
+
 /*...e*/
 
+#ifdef bla
+/*...s:0:*/
 	printf("Test for database deletion with cursor\n");
 
 
@@ -205,11 +208,11 @@ exit(0);
 	UAP_REQUEST(mm, lb_I_String, t1)
 	UAP_REQUEST(mm, lb_I_String, t2)
 
-//	query1->query("drop table test");
+	query1->query("drop table test");
 
 printf("Dropped table test\n");	
 
-//	query1->query("create table test (text char(300), id int)");
+	query1->query("create table test (text char(300), id int)");
 
 printf("Created table test\n");
 
@@ -248,8 +251,12 @@ printf("Deleted a row\n");
 	PrintData(*&query12);
 
 	printf("Tested database cleanup\n");
+/*...e*/
+#endif //bla
 }
 /*...e*/
+#ifdef bla
+/*...sTest all other things:0:*/
 /*...stest container:0:*/
 {
 	printf("Request lb_I_Container\n");
@@ -710,6 +717,11 @@ printf("Test LOG macro\n");
 /*...e*/
 	modMan->uninitialize();
         RELEASE(modMan)
+
+}
+/*...e*/
+#endif
         unHookAll();
         return 0;
+}
 }

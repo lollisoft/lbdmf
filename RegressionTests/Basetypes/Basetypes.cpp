@@ -143,7 +143,7 @@ int main(int argc, char *argv[]) {
 
 	_CL_LOG << "String has " << s1->getRefCount() << " references." LOG_
 
-	s1->release(__FILE__, __LINE__);
+	//s1->release(__FILE__, __LINE__);
 
 	_CL_LOG << "Test (s1 == s2)" LOG_
 

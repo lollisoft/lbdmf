@@ -568,6 +568,12 @@ DLLEXPORT void LB_STDCALL unHookAll() {
 			}
 		}
 #endif
+
+	if (lb_log) {
+		printf("Have %d references to log instance.\n", lb_log->getRefCount());
+		lb_log->release(__FILE__, __LINE__);
+	}
+
 }
 /*...e*/
 

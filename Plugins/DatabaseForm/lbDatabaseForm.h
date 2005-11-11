@@ -30,11 +30,17 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.25 $
+ * $Revision: 1.26 $
  * $Name:  $
- * $Id: lbDatabaseForm.h,v 1.25 2005/10/31 15:17:17 lollisoft Exp $
+ * $Id: lbDatabaseForm.h,v 1.26 2005/11/11 22:51:30 lollisoft Exp $
  *
  * $Log: lbDatabaseForm.h,v $
+ * Revision 1.26  2005/11/11 22:51:30  lollisoft
+ * Memory leaks removed. There are currently only 4 chunks leaky.
+ * These may be false positives, because one of them is an allocated
+ * wxMenu instance, I have not to delete after adding it to a wxMenuBar.
+ * wxMenuBar gets an owner (see wxWidgets documentation).
+ *
  * Revision 1.25  2005/10/31 15:17:17  lollisoft
  * Changed plugin classes to be singletons.
  *
@@ -874,12 +880,12 @@ public:
 extern "C" {
 #endif
 
-DECLARE_SINGLETON_FUNCTOR(instanceOfPluginModule)
+DECLARE_FUNCTOR(instanceOfPluginModule)
 
 DECLARE_FUNCTOR(instanceOflbDatabasePanel)
-DECLARE_SINGLETON_FUNCTOR(instanceOflbPluginDatabasePanel)
+DECLARE_FUNCTOR(instanceOflbPluginDatabasePanel)
 DECLARE_FUNCTOR(instanceOflbDatabaseDialog)
-DECLARE_SINGLETON_FUNCTOR(instanceOflbPluginDatabaseDialog)
+DECLARE_FUNCTOR(instanceOflbPluginDatabaseDialog)
 DECLARE_FUNCTOR(instanceOflbAction)
 
 DECLARE_FUNCTOR(instanceOflbDetailFormAction)
