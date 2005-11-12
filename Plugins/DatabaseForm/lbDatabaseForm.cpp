@@ -3928,7 +3928,7 @@ lb_I_Unknown* LB_STDCALL lbPluginDatabasePanel::getImplementation() {
 	}
 	
 	lb_I_Unknown* r = dbForm.getPtr();
-	dbForm == NULL;
+	dbForm.resetPtr();
 	return r;
 }
 /*...e*/
