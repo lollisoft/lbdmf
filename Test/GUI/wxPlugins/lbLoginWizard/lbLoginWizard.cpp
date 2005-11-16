@@ -28,6 +28,9 @@
 */
 /*...e*/
 
+
+#include <lbConfigHook.h>
+
 /*...smisc and includes:0:*/
 #ifdef __GNUG__
 #pragma implementation "lbLoginWizard.cpp"
@@ -61,6 +64,7 @@
 #define LB_LOGINWIZARD_DLL
 #include <lbloginwizard-module.h>
 /*...e*/
+
 #include <lbLoginWizard.h>
 
 /** \brief This is the plugin module definition class for the login wizard.
@@ -122,12 +126,9 @@ public:
 	wxAppSelectPage() {
 		app = wxString("");
 	}
-	
-	virtual ~wxAppSelectPage() {
-	    _CL_VERBOSE << "wxAppSelectPage::~wxAppSelectPage() called" LOG_
-	}
 
-
+	virtual ~wxAppSelectPage();
+		
 	DECLARE_LB_UNKNOWN()
 
 /*...swxAppSelectPage\40\wxWizard \42\parent\41\:8:*/
@@ -161,6 +162,7 @@ public:
 
 /*...svoid setLoggedOnUser\40\char\42\ user\41\:8:*/
 	void setLoggedOnUser(char* user) {
+		if (userid != NULL) free(userid);
 		userid = strdup(user);
 		 
 		REQUEST(manager.getPtr(), lb_I_Database, database)
@@ -285,6 +287,13 @@ END_EVENT_TABLE()
 BEGIN_IMPLEMENT_LB_UNKNOWN(wxAppSelectPage)
 END_IMPLEMENT_LB_UNKNOWN()
 
+wxAppSelectPage::~wxAppSelectPage() {
+    _CL_LOG << "wxAppSelectPage::~wxAppSelectPage() called" LOG_
+    if (userid != NULL) free(userid);
+}
+
+
+
 lbErrCodes LB_STDCALL wxAppSelectPage::setData(lb_I_Unknown* uk) {
         _LOG << "wxAppSelectPage::setData(...) not implemented yet" LOG_
         return ERR_NOT_IMPLEMENTED;
@@ -341,52 +350,28 @@ DECLARE_LB_UNKNOWN()
 
 /*...slbErrCodes LB_STDCALL createTextCtrl\40\char\42\ _name\41\:8:*/
 	lbErrCodes LB_STDCALL createTextCtrl(char* _name) {
-		char* name = NULL;
-
-		name = strdup(_name);
-
 		wxTextCtrl *text = new wxTextCtrl(this, -1, "", wxPoint());
 
-		text->SetName(name);
+		text->SetName(_name);
 
 		sizerRight->Add(text, 1, wxEXPAND | wxALL, 5);
 
-		char* tLabel = new char[strlen(name) + 1];
-
-		tLabel[0] = 0;
-
-		tLabel = strcat(tLabel, name);
-
-		wxStaticText *label = new wxStaticText(this, -1, tLabel, wxPoint());
+		wxStaticText *label = new wxStaticText(this, -1, _name, wxPoint());
 		sizerLeft->Add(label, 1, wxEXPAND | wxALL, 5);
-	
-		free(name);
 
 		return ERR_NONE;
 	}
 /*...e*/
 /*...slbErrCodes LB_STDCALL createPasswdCtrl\40\char\42\ _name\41\:8:*/
 	lbErrCodes LB_STDCALL createPasswdCtrl(char* _name) {
-		char* name = NULL;
-
-		name = strdup(_name);
-
 		wxTextCtrl *text = new wxTextCtrl(this, -1, "", wxPoint(), wxDefaultSize, wxTE_PASSWORD);
 
-		text->SetName(name);
+		text->SetName(_name);
 
 		sizerRight->Add(text, 1, wxEXPAND | wxALL, 5);
 
-		char* tLabel = new char[strlen(name) + 1];
-
-		tLabel[0] = 0;
-
-		tLabel = strcat(tLabel, name);
-
-		wxStaticText *label = new wxStaticText(this, -1, tLabel, wxPoint());
+		wxStaticText *label = new wxStaticText(this, -1, _name, wxPoint());
 		sizerLeft->Add(label, 1, wxEXPAND | wxALL, 5);
-	
-		free(name);
 
 		return ERR_NONE;
 	}
@@ -437,6 +422,8 @@ _CL_VERBOSE << "Query for user " << user LOG_
 		if (sampleQuery->query(buffer) != ERR_NONE) {
 		    printf("Query for user and password failed\n");
 		    sampleQuery->enableFKCollecting();
+		    free(pass);
+		    free(user);
 		    return FALSE;
 		}
 		
@@ -757,7 +744,7 @@ BOOL WINAPI DllMain(HINSTANCE dllHandle, DWORD reason, LPVOID situation) {
                 	TRMemOpen();
                 	TRMemSetModuleName(__FILE__);
 
-			if (isSetTRMemTrackBreak()) TRMemSetAdrBreakPoint(getTRMemTrackBreak());
+			if (isSetTRMemTrackBreak()) TRMemSetAdrBreakPoint(getTRMemTrackBreak(), 0);
                 	
                         if (situation) {
                                 _CL_VERBOSE << "DLL statically loaded." LOG_
