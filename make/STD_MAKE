@@ -25,11 +25,14 @@
 #            40235 Duesseldorf (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.72 $
+# * $Revision: 1.73 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.72 2005/11/06 19:25:34 lollisoft Exp $
+# * $Id: STD_MAKE,v 1.73 2005/11/16 20:52:54 lollisoft Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.73  2005/11/16 20:52:54  lollisoft
+# * Typo :-)
+# *
 # * Revision 1.72  2005/11/06 19:25:34  lollisoft
 # * All bugs of unloading shared libraries removed.\nUsing dlopen more than once per shared library leads into unability to unload that library.\nMac OS X seems to not properly handle the reference counting, thus unloading of twice loaded shared libs fails.\n\nI have implemented a workaround to handle this properly.\n\nThere is one exeption: lbModule.so is needed by UAP macros, thus this shared library is left loaded and the system can unload it for me.
 # *
@@ -265,7 +268,9 @@ ifeq ($(OSTYPE), Windows_NT)
 
 # Set standard compiler
 COMPILER=WATCOM
+
 #COMPILER=MICROSOFT
+
 MODE=_DEBUG
 #MODE=
 #DEBUG_MEMORY=no
@@ -276,7 +281,7 @@ DEBUG_MEMORY_TYPE=trmem
 
 
 WX_DEBUG=
-ifeq (($MODE), _DEBUG)
+ifeq ($(MODE), _DEBUG)
 WX_DEBUG=d
 endif
 

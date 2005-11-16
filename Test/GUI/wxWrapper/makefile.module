@@ -95,7 +95,7 @@ CPP_EXEOPS= $(CPP_EXEOPS_WATCOM$(MODE)) \
 		/D__WXMSW__ \
 		/DLB_I_EXTENTIONS
 
-ifeq ($MODE), _DEBUG)
+ifeq ($(MODE), _DEBUG)
 C_EXEOPS+= /D__WXDEBUG__
 CPP_EXEOPS+= /D__WXDEBUG__
 endif
