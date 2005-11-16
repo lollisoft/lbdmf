@@ -106,6 +106,7 @@ char* lbLogFile = NULL;
 #define SLASH "\\"
 #endif
 
+/*...sDLLEXPORT void logMessage\40\const char \42\msg\44\ char \42\f\44\ int level\41\:0:*/
 DLLEXPORT void logMessage(const char *msg, char *f, int level) {
                 FILE *fp;
                 fp = fopen( f, "a" );
@@ -129,7 +130,8 @@ DLLEXPORT void logMessage(const char *msg, char *f, int level) {
 						fclose( fp );
                 }
 }
-
+/*...e*/
+/*...svoid logMessage\40\const char \42\msg\41\:0:*/
 void logMessage(const char *msg) {
 	if (lbLogFile == NULL) {
 		char* logpath = getLogDirectory();
@@ -143,7 +145,8 @@ void logMessage(const char *msg) {
 
 	logMessage(msg, lbLogFile, 0);
 }
-
+/*...e*/
+/*...sDLLEXPORT char\42\ getLogDirectory\40\\41\:0:*/
 DLLEXPORT char* getLogDirectory() {
 	if (lbLogDirectory == NULL) {
 		char* home = 
@@ -171,6 +174,7 @@ DLLEXPORT char* getLogDirectory() {
 
 	return lbLogDirectory;
 }
+/*...e*/
 
 DLLEXPORT void LB_STDCALL InstanceCount(int inst) {
 	instances += inst;
@@ -276,21 +280,24 @@ int lb_isInitializing = 0;
 #endif
 #endif 
  
+/*...stypedef struct Module:0:*/
 typedef struct Module {
 	Module() {
 		number = -1;
 		name = NULL;
 		next = NULL;
 		lib = NULL;
+		skip = false;
 	}
 	int number;
 	char* name;
 	Module* next;
 	HINSTANCE lib;
+	bool skip;
 } _Modules;
-
+/*...e*/
 _Modules* loadedModules = NULL;
-
+/*...s_Modules \42\createModule\40\const char\42\ name\41\:0:*/
 _Modules *createModule(const char* name) {
 	_Modules* temp = NULL;
 	if (loadedModules == NULL) {
@@ -314,7 +321,8 @@ _Modules *createModule(const char* name) {
 		return temp;
 	}
 }
-
+/*...e*/
+/*...s_Modules \42\findModule\40\const char\42\ name\41\:0:*/
 _Modules *findModule(const char* name) {
 	_Modules *temp = loadedModules;
 	while (temp != NULL) {
@@ -326,10 +334,20 @@ _Modules *findModule(const char* name) {
 	
 	return temp;
 } 
-
-/*...slbErrCodes LB_STDCALL lbLoadModule\40\const char\42\ name\44\ HINSTANCE \38\ hinst\41\:0:*/
-DLLEXPORT lbErrCodes LB_STDCALL lbLoadModule(const char* name, HINSTANCE & hinst) {
+/*...e*/
+/*...slbErrCodes LB_STDCALL lbLoadModule\40\const char\42\ name\44\ HINSTANCE \38\ hinst\44\ bool skipAutoUnload\41\:0:*/
+DLLEXPORT lbErrCodes LB_STDCALL lbLoadModule(const char* name, HINSTANCE & hinst, bool skipAutoUnload) {
 #ifdef WINDOWS
+
+	_Modules *m = findModule(name);
+
+	if (m) {
+		hinst = m->lib;
+		return ERR_NONE;
+	} else {
+		m = createModule(name);
+	}
+
         if ((hinst = LoadLibrary(name)) == NULL)
         {
 		char *buffer = (char*) malloc(100+strlen(name));
@@ -339,35 +357,36 @@ DLLEXPORT lbErrCodes LB_STDCALL lbLoadModule(const char* name, HINSTANCE & hinst
 		logMessage(buffer);
 		free(buffer);
 			
-            LPVOID lpMsgBuf;
-	    if (!FormatMessage( 
-	      FORMAT_MESSAGE_ALLOCATE_BUFFER | 
-	      FORMAT_MESSAGE_FROM_SYSTEM | 
-	      FORMAT_MESSAGE_IGNORE_INSERTS,
-	      NULL,
-	      GetLastError(),
-	      MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
-	      (LPTSTR) &lpMsgBuf,
-	      0,
-	      NULL ))
-	    {
-	      // Handle the error.
-	      return ERR_MODULE_NOT_FOUND;
-	    }
+		LPVOID lpMsgBuf;
+		if (!FormatMessage( 
+			FORMAT_MESSAGE_ALLOCATE_BUFFER | 
+			FORMAT_MESSAGE_FROM_SYSTEM | 
+			FORMAT_MESSAGE_IGNORE_INSERTS,
+			NULL,
+			GetLastError(),
+			MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
+			(LPTSTR) &lpMsgBuf,
+			0,
+			NULL))
+	    	{
+			// Handle the error.
+			return ERR_MODULE_NOT_FOUND;
+		}
 
-	    MessageBox( NULL, (LPCTSTR)lpMsgBuf, "Error", MB_OK | MB_ICONINFORMATION );
+		MessageBox( NULL, (LPCTSTR)lpMsgBuf, "Error", MB_OK | MB_ICONINFORMATION );
 
-            // Free the buffer.
-            LocalFree( lpMsgBuf );
-            
-            return ERR_MODULE_NOT_FOUND;
+		// Free the buffer.
+		LocalFree( lpMsgBuf );
+
+		return ERR_MODULE_NOT_FOUND;
         }
+
+	m->lib = hinst;
+        m->skip = skipAutoUnload;
 #endif
 #ifdef LINUX
 
 	_Modules *m = findModule(name);
-
-//	HINSTANCE _hinst;
 
 	if (m) {
 		hinst = m->lib;
@@ -398,6 +417,7 @@ DLLEXPORT lbErrCodes LB_STDCALL lbLoadModule(const char* name, HINSTANCE & hinst
 			if ((hinst = dlopen(newname, RTLD_LAZY)) != NULL) {
 				//printf("Module %s loaded.\n", newname);
 				m->lib = hinst;
+				m->skip = skipAutoUnload;
 				free(newname);
 				
 				return ERR_NONE;
@@ -416,6 +436,7 @@ DLLEXPORT lbErrCodes LB_STDCALL lbLoadModule(const char* name, HINSTANCE & hinst
 	}
 	
 	m->lib = hinst;
+	m->skip = skipAutoUnload;
 	
 #endif
 	return ERR_NONE;
@@ -537,8 +558,120 @@ lbErrCodes LB_STDCALL releaseInstance(lb_I_Unknown* inst) {
 	return ERR_NONE;
 }
 /*...e*/
+
+static bool _isSetTRMemTrackBreak = false;
+static char TRMemTrackBreakAddr[21] = "DoNotBreak";
+
+/*...sDLLEXPORT bool LB_STDCALL isSetTRMemTrackBreak\40\\41\:0:*/
+DLLEXPORT bool LB_STDCALL isSetTRMemTrackBreak() {
+#ifdef MEMTRACK
+	char breakPoint[100] = "";
+	int count = 0;
+	
+	if (!_isSetTRMemTrackBreak) {
+		COUT << "Please enter any memory address to be break at: ";
+		CIN >> breakPoint ;
+	
+		COUT << "Please enter count at wich the break should happen: ";
+		CIN >> count;
+		
+		setTRMemTrackBreak(breakPoint, count);
+	}
+#endif	
+	return _isSetTRMemTrackBreak;
+}
+/*...e*/
+/*...sDLLEXPORT void LB_STDCALL setTRMemTrackBreak\40\char\42\ brk\44\ int count\41\:0:*/
+DLLEXPORT void LB_STDCALL setTRMemTrackBreak(char* brk, int count) {
+#ifdef WINDOWS
+	if ((brk != NULL) && (strlen(brk) != 0)) {
+		_isSetTRMemTrackBreak = true;
+		strncpy(TRMemTrackBreakAddr, brk, 20);
+		
+		// Call TRMemSetAdrBreakPoint for lbHook it self.
+		
+		TRMemSetAdrBreakPoint(TRMemTrackBreakAddr, count);
+		TRMemSetModuleName(__FILE__);
+	} else {
+		_isSetTRMemTrackBreak = false;
+		// Using any string other than a pointer string let all strcmp fail.
+		strncpy(TRMemTrackBreakAddr, "unset", 20);
+		TRMemSetAdrBreakPoint("unset", count);
+	}
+#endif
+}
+/*...e*/
+DLLEXPORT char* LB_STDCALL getTRMemTrackBreak() {
+	return TRMemTrackBreakAddr;
+}
+
+char* translated = NULL;
+
+/*...sDLLEXPORT char\42\ LB_STDCALL translateText\40\char\42\ text\41\:0:*/
+DLLEXPORT char* LB_STDCALL translateText(char* text) {
+	lb_I_Module* mm = NULL;
+
+	mm = getModuleInstance();
+	mm->setModuleManager(mm, __FILE__, __LINE__);
+
+	UAP_REQUEST(mm, lb_I_Locale, locale)
+
+	locale->translate(&translated, text);
+
+	mm->release(__FILE__, __LINE__);
+
+	return translated;
+}
+/*...e*/
+/*...sDLLEXPORT lbErrCodes LB_STDCALL lbUnloadModule\40\const char\42\ name\41\:0:*/
+DLLEXPORT lbErrCodes LB_STDCALL lbUnloadModule(const char* name) {
+#ifdef WINDOWS
+		_Modules* temp = loadedModules;
+		_Modules* lastMod = NULL;
+		
+		while (temp) {
+			if (temp->name != NULL) {
+				_CL_LOG << "Unload module " << name << ". Test for " << temp->name << "." LOG_
+				if (strcmp(temp->name, name) == 0) {
+					_Modules* delMod = temp;
+				
+					if (lastMod) {
+						lastMod->next = temp->next;
+					}
+				
+					if (loadedModules == temp) {
+						temp = temp->next;
+						loadedModules = temp;
+					} else {
+						temp = temp->next;
+					}
+					
+					if (FreeLibrary(delMod->lib) == 0) {
+						printf("ERROR: Library could not be unloaded!\n");
+					}
+
+					free(delMod->name);
+					delete delMod;
+				} else {
+					lastMod = temp;
+					temp = temp->next;
+				}
+			}
+		}
+#endif
+	return ERR_NONE;
+}
+/*...e*/
 /*...svoid LB_STDCALL unHookAll\40\\41\:0:*/
 DLLEXPORT void LB_STDCALL unHookAll() {
+	_Modules* skipped = NULL;
+	_Modules* temp_skipped = NULL;
+
+	if (lb_log) {
+		printf("Have %d references to log instance.\n", lb_log->getRefCount());
+		lb_log->release(__FILE__, __LINE__);
+	}
+	
 #ifndef WINDOWS
 		_Modules* temp = loadedModules;
 		while (temp) {
@@ -568,72 +701,66 @@ DLLEXPORT void LB_STDCALL unHookAll() {
 			}
 		}
 #endif
+#ifdef WINDOWS
+		_Modules* temp = loadedModules;
+		while (temp) {
+			if (temp->name != NULL) {
+				_Modules* delMod = temp;
+				
+				if (strcmp(temp->name, "lbModule.so") == 0) {
+					temp = temp->next;
+					if (delMod == loadedModules) loadedModules = loadedModules->next;
+					free(delMod->name);
+					delete delMod;
+					if (temp) temp = loadedModules;
+					continue;
+				}
+				
+				if (temp->skip) {
+					if (skipped == NULL) 
+					{
+						skipped = temp;
+						temp = temp->next;
+						skipped->next = NULL;
+					} else {
+						temp_skipped = temp;
+						temp = temp->next;
+						temp_skipped->next = skipped;
+						skipped = temp_skipped;
+					}
+					
+					continue;
+				}
 
-	if (lb_log) {
-		printf("Have %d references to log instance.\n", lb_log->getRefCount());
-		lb_log->release(__FILE__, __LINE__);
+				printf("Unhook module %s.\n", temp->name);
+				
+				if (FreeLibrary(temp->lib) == 0) {
+					printf("ERROR: Library could not be unloaded!\n");
+					temp = temp->next;
+				} else {
+					temp = temp->next;
+					if (delMod == loadedModules) loadedModules = loadedModules->next;
+					free(delMod->name);
+					delete delMod;
+				}
+			}
+		}
+		
+		// Restore list of skipped modules -> loadedModules
+		
+		loadedModules = skipped;
+#endif
+
+
+
+	// Not freed anywhere
+	if (translated) {
+		free(translated);
+		translated = NULL;
 	}
 
 }
 /*...e*/
-
-static bool _isSetTRMemTrackBreak = false;
-static char TRMemTrackBreakAddr[21] = "DoNotBreak";
-
-DLLEXPORT bool LB_STDCALL isSetTRMemTrackBreak() {
-#ifdef MEMTRACK
-	char breakPoint[100] = "";
-	
-	if (!_isSetTRMemTrackBreak) {
-		COUT << "Please enter any memory address to be break at: ";
-	
-		CIN >> breakPoint ;
-	
-		setTRMemTrackBreak(breakPoint);
-	}
-#endif	
-	return _isSetTRMemTrackBreak;
-}
-
-DLLEXPORT void LB_STDCALL setTRMemTrackBreak(char* brk) {
-#ifdef WINDOWS
-	if ((brk != NULL) && (strlen(brk) != 0)) {
-		_isSetTRMemTrackBreak = true;
-		strncpy(TRMemTrackBreakAddr, brk, 20);
-		
-		// Call TRMemSetAdrBreakPoint for lbHook it self.
-		
-		TRMemSetAdrBreakPoint(TRMemTrackBreakAddr);
-		TRMemSetModuleName(__FILE__);
-	} else {
-		_isSetTRMemTrackBreak = false;
-		// Using any string other than a pointer string let all strcmp fail.
-		strncpy(TRMemTrackBreakAddr, "unset", 20);
-		TRMemSetAdrBreakPoint("unset");
-	}
-#endif
-}
-
-DLLEXPORT char* LB_STDCALL getTRMemTrackBreak() {
-	return TRMemTrackBreakAddr;
-}
-
-char* translated = NULL;
-
-DLLEXPORT char* LB_STDCALL translateText(char* text) {
-	lb_I_Module* mm = NULL;
-
-	mm = getModuleInstance();
-	mm->setModuleManager(mm, __FILE__, __LINE__);
-
-	UAP_REQUEST(mm, lb_I_Locale, locale)
-
-	locale->translate(&translated, text);
-
-	mm->release(__FILE__, __LINE__);
-
-	return translated;
-}
 
 /**
  * A moduleinstance is a factory object for all other further instances
@@ -893,7 +1020,7 @@ BOOL WINAPI DllMain(HINSTANCE dllHandle, DWORD reason, LPVOID situation) {
                 case DLL_PROCESS_ATTACH:
                 	TRMemOpen();
 
-			if (isSetTRMemTrackBreak()) setTRMemTrackBreak(getTRMemTrackBreak());
+			if (isSetTRMemTrackBreak()) setTRMemTrackBreak(getTRMemTrackBreak(), 0);
 			
                 	TRMemSetModuleName(__FILE__);
                 	
