@@ -109,8 +109,9 @@
 
 #ifndef OSX
 /*...sMemory tracker:0:*/
+#ifndef TRMEM_DEFINED
+ #define TRMEM_DEFINED
  #ifdef MEMTRACK
-
  #ifdef LINUX
   #define USE_MPATROL
   #include <mpatrol.h>
@@ -118,10 +119,10 @@
 
 
   #ifdef WINDOWS
-   #include "trmemcvr.h"
+   #include <trmemcvr.h>
   #endif
 
-  #ifndef USE_MPATROL 
+  #ifndef USE_MPATROL
    #undef malloc
    #undef free
    #undef realloc
@@ -129,23 +130,25 @@
    #define malloc TRMemAlloc
    #define free TRMemFree
    #define realloc TRMemRealloc
+   #define strdup TRMemStrdup
   #endif
 
   #ifdef USE_MPATROL
    // Undefined outside Open Watcom
    #define TRMemOpen()
    #define TRMemSetModuleName(name)
-   #define TRMemSetAdrBreakPoint(ptr)
+   #define TRMemSetAdrBreakPoint(ptr, c)
   #endif
- 
+
  #endif // MEMTRACK
 
  #ifndef MEMTRACK
   #define TRMemValidate(name) 1
   #define TRMemOpen()
   #define TRMemSetModuleName(name)
-  #define TRMemSetAdrBreakPoint(ptr)
+  #define TRMemSetAdrBreakPoint(ptr, c)
  #endif
+#endif
 /*...e*/
 #endif // OSX
 
@@ -303,7 +306,7 @@ DLLEXPORT bool LB_STDCALL isSetTRMemTrackBreak();
  *
  * This sets the memory breakpoint address and flags isSetTRMemTrackBreak() to true.
  */
-DLLEXPORT void LB_STDCALL setTRMemTrackBreak(char* brk);
+DLLEXPORT void LB_STDCALL setTRMemTrackBreak(char* brk, int count);
 
 /** \brief Get the break address.
  *
@@ -349,7 +352,8 @@ DLLEXPORT void LB_STDCALL setLoggerInstance(lb_I_Log* l);
 
 DLLEXPORT char* LB_STDCALL translateText(char* text);
 
-/*...slbErrCodes LB_STDCALL lbLoadModule\40\const char\42\ name\44\ HINSTANCE \38\ hinst\41\:0:*/
+DLLEXPORT lbErrCodes LB_STDCALL lbUnloadModule(const char* name);
+/*...sDLLEXPORT lbErrCodes LB_STDCALL lbLoadModule\40\const char\42\ name\44\ HINSTANCE \38\ hinst\44\ bool skipAutoUnload \61\ false\41\:0:*/
 /**
  * \fn Platform independend module loader. This function is used to load a DLL or so module.
  * \param name The name of the module to be load.
@@ -358,9 +362,9 @@ DLLEXPORT char* LB_STDCALL translateText(char* text);
 
 
 
-DLLEXPORT lbErrCodes LB_STDCALL lbLoadModule(const char* name, HINSTANCE & hinst);
+DLLEXPORT lbErrCodes LB_STDCALL lbLoadModule(const char* name, HINSTANCE & hinst, bool skipAutoUnload = false);
 /*...e*/
-/*...slbErrCodes LB_STDCALL lbGetFunctionPtr\40\const char\42\ name\44\ const HINSTANCE \38\ hinst\44\ void\42\\42\ pfn\41\:0:*/
+/*...sDLLEXPORT lbErrCodes LB_STDCALL lbGetFunctionPtr\40\const char\42\ name\44\ const HINSTANCE \38\ hinst\44\ void\42\\42\ pfn\41\:0:*/
 DLLEXPORT lbErrCodes LB_STDCALL lbGetFunctionPtr(const char* name, HINSTANCE hinst, void** pfn);
 /*...e*/
 
