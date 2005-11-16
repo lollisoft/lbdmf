@@ -30,11 +30,18 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.22 $
+ * $Revision: 1.23 $
  * $Name:  $
- * $Id: lbMetaApplication.h,v 1.22 2005/06/20 11:18:46 lollisoft Exp $
+ * $Id: lbMetaApplication.h,v 1.23 2005/11/16 13:17:03 lollisoft Exp $
  *
  * $Log: lbMetaApplication.h,v $
+ * Revision 1.23  2005/11/16 13:17:03  lollisoft
+ * Added Memtrack breakpoint counter.
+ *
+ * Corrected reference count bug by using UAP for 'a' and using preload to
+ * delegate unloading of shared library, loaded by loadApplication into
+ * destructor.
+ *
  * Revision 1.22  2005/06/20 11:18:46  lollisoft
  * Added interface set/get User and ApplicationName
  *
@@ -190,6 +197,9 @@ public:
 
 protected:
 	lb_I_GUI* gui;
+	
+	char* moduleName;
+	
 	UAP(lb_I_EventManager, eman, __FILE__, __LINE__)
 	UAP(lb_I_Dispatcher, dispatcher, __FILE__, __LINE__)
 	UAP(lb_I_MetaApplication, app, __FILE__, __LINE__)
@@ -323,12 +333,12 @@ extern "C" {
 #endif
 /*...e*/
 
-DECLARE_SINGLETON_FUNCTOR(instanceOfMetaApplication)
 DECLARE_FUNCTOR(instanceOfEventMapper)
 DECLARE_FUNCTOR(instanceOfEvHandler)
 
 DECLARE_SINGLETON_FUNCTOR(instanceOfDispatcher)
 DECLARE_SINGLETON_FUNCTOR(instanceOfEventManager)
+DECLARE_SINGLETON_FUNCTOR(instanceOfMetaApplication)
 
 /*...sendif __cplusplus:0:*/
 #ifdef __cplusplus

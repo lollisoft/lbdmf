@@ -31,11 +31,18 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.68 $
+ * $Revision: 1.69 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.68 2005/11/11 22:51:30 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.69 2005/11/16 13:17:03 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.69  2005/11/16 13:17:03  lollisoft
+ * Added Memtrack breakpoint counter.
+ *
+ * Corrected reference count bug by using UAP for 'a' and using preload to
+ * delegate unloading of shared library, loaded by loadApplication into
+ * destructor.
+ *
  * Revision 1.68  2005/11/11 22:51:30  lollisoft
  * Memory leaks removed. There are currently only 4 chunks leaky.
  * These may be false positives, because one of them is an allocated
@@ -292,22 +299,58 @@ extern "C" {
 #include <lbMetaApplication.h>
 /*...e*/
 
-/*...sFunctors:0:*/
-#ifdef __cplusplus
-extern "C" {       
-#endif            
+/*...sCTest:0:*/
+class ITest {
+public:       
+        virtual void release() = 0;
+};
 
+class CTest : public ITest {
+
+public:
+        CTest();
+        virtual ~CTest();
+
+        void release();
+
+        static void* operator new(size_t size);
+        static void operator delete(void* p, size_t size);
+
+        char buf[100];
+};
+
+CTest::CTest() {
+        printf("CTest::CTest() called.\n");
+}
+
+CTest::~CTest() {
+        printf("CTest::~CTest() called.\n");
+}
+
+void CTest::release() {
+        if (TRMemValidate(this)) delete this;
+}
+
+void* CTest::operator new(size_t size) {
+        return malloc(size);
+}
+
+void CTest::operator delete(void* p, size_t size) {
+                free(p);
+}
+
+CTest a1;
+CTest a2;
+/*...e*/
+/*...sFunctors:0:*/
 IMPLEMENT_FUNCTOR(instanceOfEventMapper, lb_EventMapper)
 IMPLEMENT_FUNCTOR(instanceOfEvHandler, lb_EvHandler)
 
 IMPLEMENT_SINGLETON_FUNCTOR(instanceOfEventManager, lb_EventManager)
 IMPLEMENT_SINGLETON_FUNCTOR(instanceOfDispatcher, lb_Dispatcher)
 IMPLEMENT_SINGLETON_FUNCTOR(instanceOfMetaApplication, lb_MetaApplication)
-
-#ifdef __cplusplus
-}
-#endif            
 /*...e*/
+
 
 
 /*...slb_MetaApplication:0:*/
@@ -315,11 +358,27 @@ IMPLEMENT_SINGLETON_FUNCTOR(instanceOfMetaApplication, lb_MetaApplication)
 lb_MetaApplication::lb_MetaApplication() {
 	ref = STARTREF;
 	gui = NULL;
+	moduleName = NULL;
+	
 	_CL_LOG << "lb_MetaApplication::lb_MetaApplication() called." LOG_
 }
 
 lb_MetaApplication::~lb_MetaApplication() {
 	_CL_LOG << "lb_MetaApplication::~lb_MetaApplication() called." LOG_
+
+	/*
+	 * There must be an unload process of the loaded application's, so that it
+	 * will not unloaded in the wrong order when unHookAll is called.
+	 *
+	 *
+	 * Destroy loaded object and manually unload the corresponding module.
+	 */
+
+	app--;
+	app.resetPtr();
+
+	lbUnloadModule(moduleName);
+	free(moduleName);
 }
 /*...e*/
 
@@ -453,7 +512,7 @@ lb_I_EventManager * lb_MetaApplication::getEVManager( void ) {
 }
 /*...e*/
 /*...slbErrCodes LB_STDCALL lb_MetaApplication\58\\58\Initialize\40\char\42\ user \61\ NULL\44\ char\42\ app \61\ NULL\41\:0:*/
-lbErrCodes LB_STDCALL lb_MetaApplication::Initialize(char* user, char* app) {
+lbErrCodes LB_STDCALL lb_MetaApplication::Initialize(char* user, char* appName) {
 /*...sdoc:8:*/
 /**
  * At this point should be found the real application. The real one
@@ -472,12 +531,12 @@ lbErrCodes LB_STDCALL lb_MetaApplication::Initialize(char* user, char* app) {
 		LogonUser->setData(user);
 	}
 	
-	if (app == NULL) {
-		_CL_LOG << "lb_MetaApplication::Initialize() app is NULL" LOG_
+	if (appName == NULL) {
+		_CL_LOG << "lb_MetaApplication::Initialize() appName is NULL" LOG_
 	} else
 	if (LogonApplication == NULL) {
 		REQUEST(manager.getPtr(), lb_I_String, LogonApplication)
-		LogonApplication->setData(app);
+		LogonApplication->setData(appName);
 	}
 
 /*...sdispatch integer values:8:*/
@@ -693,7 +752,9 @@ lbErrCodes LB_STDCALL lb_MetaApplication::loadApplication(char* user, char* appl
 		        ModuleName = sampleQuery->getAsString(1);
 			Functor = sampleQuery->getAsString(2);
 
-		        applicationName = strdup(ModuleName->charrep());
+		        applicationName = (char*) malloc(strlen(ModuleName->charrep())+1);
+		        applicationName[0] = 0;
+			strcpy(applicationName, ModuleName->charrep());		        
 
 			#ifdef bla
 /*...sRead only the first application\46\ More apps are wrong\46\:24:*/
@@ -715,7 +776,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::loadApplication(char* user, char* appl
 
 		}
 
-		lb_I_Unknown* a = NULL;
+		UAP(lb_I_Unknown, a, __FILE__, __LINE__)
 
 		#ifndef LINUX
 		        #ifdef __WATCOMC__
@@ -735,12 +796,15 @@ lbErrCodes LB_STDCALL lb_MetaApplication::loadApplication(char* user, char* appl
 		strcpy(f, PREFIX);
 		strcat(f, Functor->charrep());
 		strcpy(appl, applicationName);
+
 		
                 #ifdef WINDOWS
+		manager->preload(appl);
                 manager->makeInstance(f, appl, &a);
                 #endif
                 #ifdef LINUX
 		strcat(appl, ".so");		
+		manager->preload(appl);
                 manager->makeInstance(f, appl, &a);
                 #endif
                 if (a == NULL) {
@@ -748,19 +812,31 @@ lbErrCodes LB_STDCALL lb_MetaApplication::loadApplication(char* user, char* appl
                         return ERR_NONE;
                 }
 
+		if (moduleName == NULL) {
+			moduleName = (char*) malloc(strlen(appl)+1);
+			moduleName[0] = 0;
+			strcpy(moduleName, appl);
+		} else {
+			_CL_LOG << "ERROR: Multiple applications not yet supported." LOG_
+		}
+
 		a->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
 
                 QI(a, lb_I_MetaApplication, app, __FILE__, __LINE__)
 
-                if (dispatcher.getPtr() == NULL) _LOG << "Error: dispatcher is NULL" LOG_
+                //if (dispatcher.getPtr() == NULL) _LOG << "Error: dispatcher is NULL" LOG_
 
                 app->setGUI(gui);
                 app->Initialize(user, application);
 
-                if (dispatcher.getPtr() == NULL) _LOG << "Error: dispatcher has been set to NULL" LOG_
+		_CL_LOG << "Meta application has " << app->getRefCount() << " references." LOG_
+
+		free(applicationName);
+
+                //if (dispatcher.getPtr() == NULL) _LOG << "Error: dispatcher has been set to NULL" LOG_
 	} else {
 
-		lb_I_Unknown* a = NULL;
+		UAP(lb_I_Unknown, a, __FILE__, __LINE__)
 
 		#ifndef LINUX
 			#ifdef __WATCOMC__
@@ -774,13 +850,16 @@ lbErrCodes LB_STDCALL lb_MetaApplication::loadApplication(char* user, char* appl
 			#define PREFIX ""
 		#endif
 
+
 		#ifdef WINDOWS	
+		manager->preload(applicationName);
 		manager->makeInstance(PREFIX "instanceOfApplication", applicationName, &a);
 		#endif
 		#ifdef LINUX
 		char name[80] = "";
 		strcpy(name, applicationName);
 		strcat(name, ".so");
+		manager->preload(appl);
 		manager->makeInstance(PREFIX "instanceOfApplication", name, &a);
 		#endif	
 		if (a == NULL) {
@@ -794,6 +873,8 @@ lbErrCodes LB_STDCALL lb_MetaApplication::loadApplication(char* user, char* appl
 
 		app->setGUI(gui);
 		app->Initialize();
+
+		_CL_LOG << "Meta application has " << app->getRefCount() << " references." LOG_
 
 		if (dispatcher.getPtr() == NULL) _LOG << "Error: dispatcher has been set to NULL" LOG_
 	}
@@ -1068,6 +1149,7 @@ lb_EventManager::lb_EventManager() {
 }
 
 lb_EventManager::~lb_EventManager() {
+	_CL_LOG << "lb_EventManager::~lb_EventManager() called." LOG_
 }
 	
 lbErrCodes LB_STDCALL lb_EventManager::setData(lb_I_Unknown* uk) {
@@ -1222,6 +1304,7 @@ lb_Dispatcher::lb_Dispatcher() {
 }
 
 lb_Dispatcher::~lb_Dispatcher() {
+	_CL_LOG << "lb_Dispatcher::~lb_Dispatcher() called." LOG_
 }
 
 /*...slbErrCodes LB_STDCALL lb_Dispatcher\58\\58\setData\40\lb_I_Unknown\42\ uk\41\:0:*/
@@ -1407,7 +1490,7 @@ BOOL WINAPI DllMain(HINSTANCE dllHandle, DWORD reason, LPVOID situation) {
                 case DLL_PROCESS_ATTACH:
                 	TRMemOpen();
                 	
-                	if (isSetTRMemTrackBreak()) TRMemSetAdrBreakPoint(getTRMemTrackBreak());
+                	if (isSetTRMemTrackBreak()) TRMemSetAdrBreakPoint(getTRMemTrackBreak(), 0);
                 	
                 	TRMemSetModuleName(__FILE__);
                 	
