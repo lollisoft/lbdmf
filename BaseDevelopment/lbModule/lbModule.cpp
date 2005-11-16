@@ -30,11 +30,18 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.97 $
+ * $Revision: 1.98 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.97 2005/11/06 19:25:33 lollisoft Exp $
+ * $Id: lbModule.cpp,v 1.98 2005/11/16 13:11:38 lollisoft Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.98  2005/11/16 13:11:38  lollisoft
+ * Added Memtrack breakpoint counter.
+ *
+ * Added member preload to enable loading of shared libraries not automatically
+ * unloaded by a unHookAll() call. This in conjunction with lbUnloadModule
+ * fixed problems in shared library unload order.
+ *
  * Revision 1.97  2005/11/06 19:25:33  lollisoft
  * All bugs of unloading shared libraries removed.\nUsing dlopen more than once per shared library leads into unability to unload that library.\nMac OS X seems to not properly handle the reference counting, thus unloading of twice loaded shared libs fails.\n\nI have implemented a workaround to handle this properly.\n\nThere is one exeption: lbModule.so is needed by UAP macros, thus this shared library is left loaded and the system can unload it for me.
  *
@@ -2209,6 +2216,7 @@ public:
         virtual lbErrCodes LB_STDCALL getInstance(char* functorname, lb_I_ConfigObject* node, lb_I_Unknown*& uk);
         virtual lbErrCodes LB_STDCALL getDefaultImpl(char* interfacename, lb_I_ConfigObject** node, char*& implTor, char*& module);
 	virtual lbErrCodes LB_STDCALL load(char* name);
+	virtual lbErrCodes LB_STDCALL preload(char* name);
         virtual lbErrCodes LB_STDCALL makeInstance(char* functor, char* module, lb_I_Unknown** instance);
         
 protected:
@@ -3455,6 +3463,17 @@ printf("Get unknown interface of XMLConfig object\n");
 
 IMPLEMENT_SINGLETON_FUNCTOR(getlb_ModuleInstance, lbModule)
 
+/*...slbErrCodes lbModule\58\\58\preload\40\char\42\ name\41\:0:*/
+lbErrCodes lbModule::preload(char* name) {
+printf("lbModule::load(%s) called\n", name);
+
+	HINSTANCE temp;
+
+	lbLoadModule(name, temp, true);	
+        
+        return ERR_NONE;
+}
+/*...e*/
 /*...slbErrCodes lbModule\58\\58\load\40\char\42\ name\41\:0:*/
 lbErrCodes lbModule::load(char* name) {
 printf("lbModule::load(%s) called\n", name);
@@ -3514,7 +3533,7 @@ BOOL WINAPI DllMain(HINSTANCE dllHandle, DWORD reason, LPVOID situation) {
                 case DLL_PROCESS_ATTACH:
                 	TRMemOpen();
                 	
-                	if (isSetTRMemTrackBreak()) setTRMemTrackBreak(getTRMemTrackBreak());
+                	if (isSetTRMemTrackBreak()) setTRMemTrackBreak(getTRMemTrackBreak(), 0);
                 	
                 	TRMemSetModuleName(__FILE__);
                 	
