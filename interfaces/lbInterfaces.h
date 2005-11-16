@@ -135,12 +135,12 @@
  *
  *	\code
  *	set DRIVE=C:
- *	set WXWIN=%DRIVE%\lbDMF\Develop\wxwin\wx
+ *	set WXDIR=%DRIVE%\lbDMF\Develop\wxwin\wx
  *	%DRIVE%
- *	cd %WXWIN%\src\msw
- *	copy /Y %WXWIN%\include\wx\msw\setup.h %WXWIN%\include\wx
- *	copy /Y %WXWIN%\..\..\Projects\CPP\makewat.env %WXWIN%\src
- *	copy /Y %WXWIN%\..\..\Projects\CPP\makefile.wat %WXWIN%\src\msw
+ *	cd %WXDIR%\src\msw
+ *	copy /Y %WXDIR%\include\wx\msw\setup.h %WXDIR%\include\wx
+ *	copy /Y %WXDIR%\..\..\Projects\CPP\makewat.env %WXDIR%\src
+ *	copy /Y %WXDIR%\..\..\Projects\CPP\makefile.wat %WXDIR%\src\msw
  *	wmake -f makefile.wat all
  *	\endcode
  *
@@ -150,12 +150,12 @@
  *
  *	\code
  *	set DRIVE=D:
- *	set WXWIN=%DRIVE%\lbDMF\Develop\wxwin\wx
+ *	set WXDIR=%DRIVE%\lbDMF\Develop\wxwin\wx
  *	%DRIVE%
- *	cd %WXWIN%\src\msw
- *	copy /Y %WXWIN%\include\wx\msw\setup.h %WXWIN%\include\wx
- *	copy /Y %WXWIN%\..\..\Projects\CPP\makewat.env %WXWIN%\src
- *	copy /Y %WXWIN%\..\..\Projects\CPP\makefile.wat %WXWIN%\src\msw
+ *	cd %WXDIR%\src\msw
+ *	copy /Y %WXDIR%\include\wx\msw\setup.h %WXDIR%\include\wx
+ *	copy /Y %WXDIR%\..\..\Projects\CPP\makewat.env %WXDIR%\src
+ *	copy /Y %WXDIR%\..\..\Projects\CPP\makefile.wat %WXDIR%\src\msw
  *	wmake -f makefile.wat all
  *	\endcode
  *
@@ -176,10 +176,10 @@
  *
  *	\code
  *	set DRIVE=C:
- *	set WXWIN=%DRIVE%\lbDMF\Develop\wxwin\wx
+ *	set WXDIR=%DRIVE%\lbDMF\Develop\wxwin\wx
  *	%DRIVE%
- *	cd %WXWIN%\build\msw
- *	copy /Y %WXWIN%\include\wx\msw\setup.h %WXWIN%\include\wx
+ *	cd %WXDIR%\build\msw
+ *	copy /Y %WXDIR%\include\wx\msw\setup.h %WXDIR%\include\wx
  *	wmake -f makefile.wat all
  *	\endcode
  *
@@ -189,10 +189,10 @@
  *
  *	\code
  *	set DRIVE=D:
- *	set WXWIN=%DRIVE%\lbDMF\Develop\wxwin\wx
+ *	set WXDIR=%DRIVE%\lbDMF\Develop\wxwin\wx
  *	%DRIVE%
- *	cd %WXWIN%\build\msw
- *	copy /Y %WXWIN%\include\wx\msw\setup.h %WXWIN%\include\wx
+ *	cd %WXDIR%\build\msw
+ *	copy /Y %WXDIR%\include\wx\msw\setup.h %WXDIR%\include\wx
  *	wmake -f makefile.wat all
  *	\endcode
  *
@@ -207,28 +207,28 @@
  *
  *	\code
  *	set DRIVE=C:
- *	set WXWIN=%DRIVE%\lbDMF\Develop\wxwin\wx
+ *	set WXDIR=%DRIVE%\lbDMF\Develop\wxwin\wx
  *	%DRIVE%
- *	cd %WXWIN%\src\msw
- *	mkdir %WXWIN%\..\..\Projects\dll\libs
- *	copy /Y %WXWIN%\lib\wat_dll\wxmsw*.dll %WXWIN%\..\..\Projects\dll
- *	copy /Y %WXWIN%\lib\wat_dll\wxmsw*.lib %WXWIN%\..\..\Projects\dll\libs
- *	copy /Y %WXWIN%\lib\wxmsw*.dll %WXWIN%\..\..\Projects\dll
- *	copy /Y %WXWIN%\lib\\wxmsw*.lib %WXWIN%\..\..\Projects\dll\libs
+ *	cd %WXDIR%\src\msw
+ *	mkdir %WXDIR%\..\..\Projects\dll\libs
+ *	copy /Y %WXDIR%\lib\wat_dll\wxmsw*.dll %WXDIR%\..\..\Projects\dll
+ *	copy /Y %WXDIR%\lib\wat_dll\wxmsw*.lib %WXDIR%\..\..\Projects\dll\libs
+ *	copy /Y %WXDIR%\lib\wxmsw*.dll %WXDIR%\..\..\Projects\dll
+ *	copy /Y %WXDIR%\lib\wxmsw*.lib %WXDIR%\..\..\Projects\dll\libs
  *	\endcode
  *
  *	From Drive D:
  *
  *	\code
  *	set DRIVE=D:
- *	set WXWIN=%DRIVE%\lbDMF\Develop\wxwin\wx
+ *	set WXDIR=%DRIVE%\lbDMF\Develop\wxwin\wx
  *	%DRIVE%
- *	cd %WXWIN%\src\msw
- *      mkdir %WXWIN%\..\..\Projects\dll\libs
- *	copy /Y %WXWIN%\lib\wat_dll\wxmsw*.dll %WXWIN%\..\..\Projects\dll
- *      copy /Y %WXWIN%\lib\wat_dll\wxmsw*.lib %WXWIN%\..\..\Projects\dll\libs
- *      copy /Y %WXWIN%\lib\wxmsw*.dll %WXWIN%\..\..\Projects\dll
- *      copy /Y %WXWIN%\lib\\wxmsw*.lib %WXWIN%\..\..\Projects\dll\libs
+ *	cd %WXDIR%\src\msw
+ *      mkdir %WXDIR%\..\..\Projects\dll\libs
+ *	copy /Y %WXDIR%\lib\wat_dll\wxmsw*.dll %WXDIR%\..\..\Projects\dll
+ *      copy /Y %WXDIR%\lib\wat_dll\wxmsw*.lib %WXDIR%\..\..\Projects\dll\libs
+ *      copy /Y %WXDIR%\lib\wxmsw*.dll %WXDIR%\..\..\Projects\dll
+ *      copy /Y %WXDIR%\lib\wxmsw*.lib %WXDIR%\..\..\Projects\dll\libs
  *	\endcode
  *
  * \section PSetup7 Start compiling lbDMF source tree
@@ -1661,7 +1661,7 @@ public: \
 	clsname* singleton; \
 }; \
 \
-static singletonHolder_##name singleton_##name; \
+singletonHolder_##name singleton_##name; \
 \
 extern "C" { \
 lbErrCodes DLLEXPORT LB_FUNCTORCALL name(lb_I_Unknown** uk, lb_I_Module* m, char* file, int line) { \
