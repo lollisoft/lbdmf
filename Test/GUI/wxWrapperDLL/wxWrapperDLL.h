@@ -33,11 +33,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.4 $
+ * $Revision: 1.5 $
  * $Name:  $
- * $Id: wxWrapperDLL.h,v 1.4 2005/10/02 16:51:48 lollisoft Exp $
+ * $Id: wxWrapperDLL.h,v 1.5 2005/11/16 20:51:44 lollisoft Exp $
  *
  * $Log: wxWrapperDLL.h,v $
+ * Revision 1.5  2005/11/16 20:51:44  lollisoft
+ * Moved code, removed memory leaks and trmem counted breakpoint support added.
+ *
  * Revision 1.4  2005/10/02 16:51:48  lollisoft
  * New wxNotebook layout completed. Not yet changeable at runtime, but it works.
  *
@@ -103,14 +106,7 @@ public:
 	/**
 	 * Initialize a default application layout.
 	 */
-        lb_wxFrame():
-        	wxFrame(NULL, -1, _trans("Dynamic sample"), wxPoint(50, 50), wxSize(450, 340))
-        {
-        	menu_bar = NULL; 
-        	gui = NULL;
-        	guiCleanedUp = 0;
-        }
-        
+	lb_wxFrame(); 
         virtual ~lb_wxFrame();
 /*...e*/
 public:
