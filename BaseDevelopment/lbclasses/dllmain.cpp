@@ -65,7 +65,7 @@ BOOL WINAPI DllMain(HINSTANCE dllHandle, DWORD reason, LPVOID situation) {
                 case DLL_PROCESS_ATTACH:
                 	TRMemOpen();
                 	
-			if (isSetTRMemTrackBreak()) TRMemSetAdrBreakPoint(getTRMemTrackBreak());
+			if (isSetTRMemTrackBreak()) TRMemSetAdrBreakPoint(getTRMemTrackBreak(), 0);
                 	
                 	TRMemSetModuleName(__FILE__);
                 	

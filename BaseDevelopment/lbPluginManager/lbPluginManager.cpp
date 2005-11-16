@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.32 $
+ * $Revision: 1.33 $
  * $Name:  $
- * $Id: lbPluginManager.cpp,v 1.32 2005/11/11 22:47:35 lollisoft Exp $
+ * $Id: lbPluginManager.cpp,v 1.33 2005/11/16 13:07:39 lollisoft Exp $
  *
  * $Log: lbPluginManager.cpp,v $
+ * Revision 1.33  2005/11/16 13:07:39  lollisoft
+ * Added Memtrack breakpoint counter.
+ *
  * Revision 1.32  2005/11/11 22:47:35  lollisoft
  * Memory leaks removed. There was a hack with singletons, but the current
  * variant without singletons is tested well.
@@ -703,7 +706,6 @@ END_IMPLEMENT_LB_UNKNOWN()
 
 /*...slbPlugin\58\\58\lbPlugin\40\\41\:0:*/
 lbPlugin::lbPlugin() {
-	_CL_LOG << "lbPlugin::lbPlugin() called." LOG_
 	_module = NULL;
 	_name = NULL;
 	_namespace = NULL;
@@ -711,23 +713,13 @@ lbPlugin::lbPlugin() {
 	
 	implementation = NULL;
 	isPreInitialized = false;
-	_CL_LOG << "lbPlugin::lbPlugin() leaving." LOG_
 }
 /*...e*/
 /*...slbPlugin\58\\58\\126\lbPlugin\40\\41\:0:*/
 lbPlugin::~lbPlugin() {
-	_CL_LOG << "lbPlugin::~lbPlugin() called." LOG_
-	
-	if (implementation != NULL) {
-		_CL_LOG << "WARNING: lbPlugin " << 
-		_name << " of " << _module << " with " << _namespace << " has a loaded implementation." LOG_
-	}
-	
 	if (_module) free(_module);
 	if (_name) free(_name);
 	if (_namespace) free(_namespace);
-	
-	_CL_LOG << "lbPlugin::~lbPlugin() leaving." LOG_
 }
 /*...e*/
 /*...slbErrCodes LB_STDCALL lbPlugin\58\\58\setData\40\lb_I_Unknown\42\ uk\41\:0:*/
@@ -832,7 +824,7 @@ void LB_STDCALL lbPlugin::preinitialize() {
 		_CL_VERBOSE << "FATAL: lbPlugin::preinitialize() uses a NULL pointer for the manager!" LOG_
 	}
 
-	_CL_LOG << "lbPlugin::preinitialize() tries to get " << name << " from " << _module LOG_
+	_CL_VERBOSE << "lbPlugin::preinitialize() tries to get " << name << " from " << _module LOG_
 
 	if (manager->makeInstance(name, _module, &ukPlugin) == ERR_NONE) {
 
@@ -870,7 +862,7 @@ void LB_STDCALL lbPlugin::preinitialize() {
 		}
 	}
 
-	_CL_LOG << "Preinitialized instance has " << implementation->getRefCount() << " references." LOG_
+	_CL_VERBOSE << "Preinitialized instance has " << implementation->getRefCount() << " references." LOG_
 
 	free(name);
 }
@@ -881,7 +873,7 @@ void LB_STDCALL lbPlugin::initialize() {
 
 	preinitialize();
 
-	_CL_LOG << "lbPlugin::initialize() has preinitialized underlying class." LOG_
+	_CL_VERBOSE << "lbPlugin::initialize() has preinitialized underlying class." LOG_
 
 	if (isPreInitialized && !postInitialized) {
 		UAP(lb_I_PluginImpl, impl, __FILE__, __LINE__)		
@@ -890,7 +882,7 @@ void LB_STDCALL lbPlugin::initialize() {
 		_CL_LOG << "lbPlugin::initialize() calls preinitialized underlying class'es initializer." LOG_
 		impl->initialize();
 	}
-	_CL_LOG << "lbPlugin::initialize() returns." LOG_
+	_CL_VERBOSE << "lbPlugin::initialize() returns." LOG_
 }
 
 bool LB_STDCALL lbPlugin::run() {
@@ -917,13 +909,6 @@ lb_I_Unknown* LB_STDCALL lbPlugin::peekImplementation() {
 
 	lb_I_Unknown* uk = impl->peekImplementation();
 
-/*	
-	if (uk && (uk->getModuleManager() == NULL)) {
-		_CL_VERBOSE << "ERROR: lb_I_PluginImpl returns an instance not having a module manager!" LOG_
-		uk->setModuleManager(getModuleInstance(), __FILE__, __LINE__);
-	}
-*/	
-
 	return uk;
 }
 /*...e*/
@@ -946,13 +931,6 @@ lb_I_Unknown* LB_STDCALL lbPlugin::getImplementation() {
 	QI(implementation, lb_I_PluginImpl, impl, __FILE__, __LINE__)
 
 	lb_I_Unknown* uk = impl->getImplementation();
-
-/*	
-	if (uk && (uk->getModuleManager() == NULL)) {
-		_CL_VERBOSE << "ERROR: lb_I_PluginImpl returns an instance not having a module manager!" LOG_
-		uk->setModuleManager(getModuleInstance(), __FILE__, __LINE__);
-	}
-*/	
 
 	return uk;
 }
@@ -1015,7 +993,7 @@ BOOL WINAPI DllMain(HINSTANCE dllHandle, DWORD reason, LPVOID situation) {
                 	TRMemOpen();
                 	TRMemSetModuleName(__FILE__);
 
-			if (isSetTRMemTrackBreak()) TRMemSetAdrBreakPoint(getTRMemTrackBreak());
+			if (isSetTRMemTrackBreak()) TRMemSetAdrBreakPoint(getTRMemTrackBreak(), 0);
                 	
                         if (situation) {
                                 _CL_VERBOSE << "DLL statically loaded." LOG_
