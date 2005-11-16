@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.57 $
+ * $Revision: 1.58 $
  * $Name:  $
- * $Id: lbInterfaces-sub-classes.h,v 1.57 2005/11/11 22:51:30 lollisoft Exp $
+ * $Id: lbInterfaces-sub-classes.h,v 1.58 2005/11/16 20:55:33 lollisoft Exp $
  *
  * $Log: lbInterfaces-sub-classes.h,v $
+ * Revision 1.58  2005/11/16 20:55:33  lollisoft
+ * Less log messages and added preload member in lbModule.
+ *
  * Revision 1.57  2005/11/11 22:51:30  lollisoft
  * Memory leaks removed. There are currently only 4 chunks leaky.
  * These may be false positives, because one of them is an allocated
@@ -720,7 +723,7 @@ lb_I_Unknown* classname::getObject() const { \
     lb_I_Unknown* uk = NULL; \
     if(data == NULL) _CL_LOG << "ERROR: Element has no data. Could not return from NULL pointer!!" LOG_ \
     data->queryInterface("lb_I_Unknown", (void**) &uk, __FILE__, __LINE__); \
-    _CL_LOG << "Object of " << uk->getClassName() << " has " << uk->getRefCount() << " references." LOG_ \
+    _CL_VERBOSE << "Object of " << uk->getClassName() << " has " << uk->getRefCount() << " references." LOG_ \
     return uk; \
 } \
 \
@@ -1216,6 +1219,8 @@ public:
          * automatically unloaded (the array/list).
          */
         virtual lbErrCodes LB_STDCALL load(char* name) = 0;
+
+	virtual lbErrCodes LB_STDCALL preload(char* name) = 0;
 
 	virtual void LB_STDCALL printReferences(char* addr) = 0;        
         
