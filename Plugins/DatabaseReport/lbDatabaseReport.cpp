@@ -1369,7 +1369,7 @@ BOOL WINAPI DllMain(HINSTANCE dllHandle, DWORD reason, LPVOID situation) {
                 	TRMemOpen();
                 	TRMemSetModuleName(__FILE__);
 
-			if (isSetTRMemTrackBreak()) TRMemSetAdrBreakPoint(getTRMemTrackBreak());
+			if (isSetTRMemTrackBreak()) TRMemSetAdrBreakPoint(getTRMemTrackBreak(), 0);
                 	
                         if (situation) {
                                 _CL_VERBOSE << "DLL statically loaded." LOG_
