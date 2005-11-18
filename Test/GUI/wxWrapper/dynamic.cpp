@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.101 2005/11/11 22:51:30 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.102 2005/11/18 23:41:32 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,15 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.101 $
+ * $Revision: 1.102 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.101 2005/11/11 22:51:30 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.102 2005/11/18 23:41:32 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.102  2005/11/18 23:41:32  lollisoft
+ * More memory leaks have been fixed. There are currently less than 200
+ * chunks unfreed, wich may be located in the plugin mechanism.
+ *
  * Revision 1.101  2005/11/11 22:51:30  lollisoft
  * Memory leaks removed. There are currently only 4 chunks leaky.
  * These may be false positives, because one of them is an allocated
@@ -1892,37 +1896,21 @@ IMPLEMENT_APP  (MyApp)
 #endif
 
 int MyApp::OnExit() {
+	UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+	
+	PM->unload();
+	
+	_CL_LOG << "Unloaded plugins." LOG_
+	
 	return 0;
 }
 /*...sMyApp\58\\58\OnInit\40\void\41\:0:*/
 // `Main program' equivalent, creating windows and returning main app frame
-/*...stestthis:0:*/
-void testthis(void* t) {
-#ifdef bla
-	char ptr[20] = "";
-	sprintf(ptr, "%p", t);
-	_LOG << "This is " << ptr LOG_
-#endif
-}
-/*...e*/
-
 bool MyApp::OnInit(void)
 {
     char b[100] = "";
     
     wxStopWatch sw;
-
-/* 
-	// Calling the function twice on the same module does not work. It then no more release it by a call to    
-	// dlclose.
-	
-	void* handle1 = dlopen("dll.dylib", RTLD_LAZY);
-	void* handle2 = dlopen("dll.dylib", RTLD_LAZY);
-	
-	dlclose(handle2);
-	dlclose(handle1);
-*/	
-	
 	
 /*...sCreate the frame:0:*/
 #ifndef LB_I_EXTENTIONS
@@ -1959,7 +1947,7 @@ bool MyApp::OnInit(void)
 /*...e*/
 
 	REQUEST(mm.getPtr(), lb_I_EventManager, ev_manager)        
-	ev_manager++;
+	//ev_manager++;
 /*...sget the dispatcher \40\all handlers must be registered there\41\:0:*/
     UAP_REQUEST(mm.getPtr(), lb_I_Dispatcher, disp)
 	disp->setEventManager(ev_manager.getPtr());
@@ -2040,9 +2028,6 @@ bool MyApp::OnInit(void)
 #endif
 /*...e*/
 
-
-#ifdef LB_I_EXTENTIONS
-#endif
 /*...sInitializiation of the hardcoded part \40\regardless of delegation or not\41\:0:*/
 /*...sHardcoded event registration\9\\40\we do it here\41\:0:*/
 #ifndef LB_I_EXTENTIONS
@@ -2252,13 +2237,7 @@ _LOG << "Showed the window" LOG_
 #endif
 /*...e*/
 
-// Not yet working under Mac OS X, not yet tested under Linux
-//#ifndef OSX
-//#ifndef LINUX
-/*
- * Try to load all plugins and initialize it.
- */
-
+/*...sInit plugins:0:*/
 	UAP_REQUEST(mm.getPtr(), lb_I_PluginManager, PM)
 
 	PM->initialize();
@@ -2277,15 +2256,13 @@ _LOG << "Showed the window" LOG_
 		
 		}
 	}
-
-//#endif
-//#endif
+/*...e*/
 
 #ifdef LB_I_EXTENTIONS
   if (metaApp != NULL) metaApp->run();
 #endif
 
-	_CL_LOG << "MyApp::OnInit() ready." LOG_
+_CL_LOG << "MyApp::OnInit() ready." LOG_
 
   return TRUE;
 }

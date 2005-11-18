@@ -1272,6 +1272,7 @@ lbDatabasePanel::lbDatabasePanel()
 	noDataAvailable = false;
 	_created = false;
 	fa = NULL;
+	FFI = NULL;
 }
 /*...e*/
 /*...slbDatabasePanel\58\\58\\126\lbDatabasePanel\40\\41\:0:*/
@@ -1279,6 +1280,7 @@ lbDatabasePanel::~lbDatabasePanel() {
 	_CL_LOG << "lbDatabasePanel::~lbDatabasePanel() called." LOG_
 
 	if (fa != NULL) delete fa;
+	if (FFI != NULL) delete FFI;
 	free (formName);
 	free (base_formName);
 	free (untranslated_formName);
@@ -1325,6 +1327,9 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 	char prefix[100] = "";
 	sprintf(prefix, "%p", this);
 
+	// Activate relative memory access counts
+	//TRMemStartLocalCount();
+
 	if (ignoredPKTables == NULL) {
 		REQUEST(manager.getPtr(), lb_I_Container, ignoredPKTables)
 	}
@@ -1346,6 +1351,10 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 /*...e*/
 
 /*...sDatabase connection and the stuff:8:*/
+	if (database != NULL) {
+		_CL_LOG << "WARNING: Database instance available!" LOG_
+	}
+	
 	REQUEST(manager.getPtr(), lb_I_Database, database)
 
 	database->init();
@@ -1416,6 +1425,8 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 	sampleQuery->query(SQLString->charrep(), false);
 
 /*...sDetermine readonly fields:8:*/
+	if (FFI != NULL) delete FFI;
+	
 	FFI = new FormularFieldInformation(formName, sampleQuery.getPtr());
 
 	int columns = sampleQuery->getColumns();
@@ -1553,6 +1564,8 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 /*...sHave mapping to visible data for the combobox:64:*/
 				UAP_REQUEST(manager.getPtr(), lb_I_String, PKName)
 				UAP_REQUEST(manager.getPtr(), lb_I_String, PKTable)
+				UAP(lb_I_String, s, __FILE__, __LINE__)
+				
 				
 				PKName = FKColumnQuery->getAsString(1);
 				PKTable = FKColumnQuery->getAsString(2);
@@ -1560,8 +1573,9 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 				wxChoice *cbox = new wxChoice(this, -1);
 				cbox->SetName(name);
 				
-				int old_fk = atoi(sampleQuery->getAsString(i)->charrep());
+				s = sampleQuery->getAsString(i);
 				
+				int old_fk = atoi(s->charrep());
 				
 				buffer[0] = 0;
 				
@@ -1614,6 +1628,10 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 					if (DBerr != WARN_DB_NODATA)
 					// Only if not WARN_DB_NODATA					
 					while ((DBerr == ERR_NONE) || (DBerr == WARN_DB_NODATA)) {
+						UAP_REQUEST(manager.getPtr(), lb_I_String, possible_fk)
+						UAP(lb_I_Unknown, uk_possible_fk, __FILE__, __LINE__)
+						UAP(lb_I_KeyBase, key_cbox_pos, __FILE__, __LINE__)
+						
 						DBerr = ReplacementColumnQuery->next();
 						
 						data = ReplacementColumnQuery->getAsString(1);
@@ -1657,7 +1675,7 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 		} else {
 			if (FFI->isSpecialColumn(name)) {
 /*...sCreate controls based on configuration in a database:40:*/
-				printf("Creating a special control. (%s)\n", FFI->getControlType(name));
+				//printf("Creating a special control. (%s)\n", FFI->getControlType(name));
 
 				lbOwnerDrawControl *ownerdraw = new lbOwnerDrawControl();
 				ownerdraw->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
@@ -1695,8 +1713,11 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 					
 				case lb_I_Query::lbDBColumnChar:
 					{
-						wxTextCtrl *text = new wxTextCtrl(this, -1, 
-							sampleQuery->getAsString(i)->charrep(), wxPoint());
+						UAP(lb_I_String, s, __FILE__, __LINE__)
+						
+						s = sampleQuery->getAsString(i);
+						
+						wxTextCtrl *text = new wxTextCtrl(this, -1, s->charrep(), wxPoint());
 						text->SetName(name);
 						sizerRight->Add(text, 1, wxEXPAND | wxALL, 5);
 						
@@ -1714,8 +1735,11 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 				case lb_I_Query::lbDBColumnBigInteger:
 				case lb_I_Query::lbDBColumnInteger:
 					{
-						wxTextCtrl *text = new wxTextCtrl(this, -1,
-						        sampleQuery->getAsString(i)->charrep(), wxPoint());
+						UAP(lb_I_String, s, __FILE__, __LINE__)
+						
+						s = sampleQuery->getAsString(i);
+					
+						wxTextCtrl *text = new wxTextCtrl(this, -1, s->charrep(), wxPoint());
 					        text->SetName(name);
 					        sizerRight->Add(text, 1, wxEXPAND | wxALL, 5);
 						
@@ -1735,7 +1759,7 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 		}
 		
 		if (createdControl) {
-			char* tLabel = new char[strlen(name) + 6];
+			char* tLabel = (char*) malloc(strlen(name) + 6);
 		
 			tLabel[0] = 0;
 			
@@ -1749,7 +1773,7 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 			
 			if (hideThisColumn == false) sizerLeft->Add(label, 1, wxEXPAND | wxALL, 5);
 			
-			delete [] tLabel;
+			free(tLabel);
 		}	
 		
 		free(name);
@@ -1785,6 +1809,7 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 	sizerAddRem->Add(buttonDelete, 1, wxEXPAND | wxALL, 5);
 
 /*...sAction handler initializion:8:*/
+/*
 	UAP_REQUEST(manager.getPtr(), lb_I_Database, actionsDatabase)
 
 	actionsDatabase->init();
@@ -1801,6 +1826,12 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 	
 	actionQuery = actionsDatabase->getQuery(0);
 
+*/
+	UAP(lb_I_Query, actionQuery, __FILE__, __LINE__)
+	
+	actionQuery = database->getQuery(0);
+
+
 	char *_actionquery = "select actions.name, formular_actions.event from actions "
 			     "inner join formular_actions on actions.id = formular_actions.action "
 			     "inner join formulare on formular_actions.formular = formulare.id "
@@ -1812,8 +1843,12 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 	sprintf(buf, _actionquery, base_formName);
 
 	_CL_LOG << "Have action query: '" << buf << "'" LOG_ 
-	
+
+	actionQuery->skipFKCollecting();	
 	actionQuery->query(buf);
+	actionQuery->enableFKCollecting();
+	free(buf);
+
 	lbErrCodes err = actionQuery->first();
 	
 /*...sloop through and find actions:16:*/
@@ -1914,6 +1949,9 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 	 * be capable to handle it independently.
 	 */
 
+	//TRMemStopLocalCount();
+	//TRMemResetLocalCount();
+
 	SetAutoLayout(TRUE);
 	
 	sizerMain->Add(sizerHor, 0, wxEXPAND | wxALL, 5);
@@ -1928,14 +1966,13 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 	
 	Centre();
 
-
 }
 /*...e*/
 
 /*...slbErrCodes LB_STDCALL lbDatabasePanel\58\\58\setName\40\char const \42\ name\44\ char const \42\ appention\41\:0:*/
 lbErrCodes LB_STDCALL lbDatabasePanel::setName(char const * name, char const * appention) {
-	free(formName);
-	free(untranslated_formName);
+	if (formName) free(formName);
+	if (untranslated_formName) free(untranslated_formName);
 
 	char* transl = _trans((char*) name);
 		
@@ -2766,8 +2803,9 @@ void LB_STDCALL lbDatabasePanel::updateFromDetail() {
 void LB_STDCALL lbDatabasePanel::setFilter(char* filter) {
 	if (SQLWhere == NULL) {
 		REQUEST(manager.getPtr(), lb_I_String, SQLWhere)
-		if (filter != NULL) SQLWhere->setData(filter);
 	}
+
+	if (filter != NULL) SQLWhere->setData(filter);
 }
 /*...e*/
 
@@ -3054,11 +3092,14 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBRead() {
 				
 				if (count != 0) {
 					char *newFK = NULL;
+					UAP(lb_I_String, s, __FILE__, __LINE__)
 
-					newFK = (char*) malloc(strlen(sampleQuery->getAsString(i)->charrep()) + 1);
+					s = sampleQuery->getAsString(i);
+	
+					newFK = (char*) malloc(strlen(s->charrep()) + 1);
 					newFK[0] = 0;
 								
-					strcpy(newFK, sampleQuery->getAsString(i)->charrep());
+					strcpy(newFK, s->charrep());
 				
 					key->setData(atoi(newFK));
 				
@@ -3103,7 +3144,11 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBRead() {
 								check->SetValue(false);
 							} else {
 #endif
-								if (strcmp(sampleQuery->getAsString(i)->charrep(), "true") == 0) {
+								UAP(lb_I_String, s, __FILE__, __LINE__)
+								
+								s = sampleQuery->getAsString(i);
+								
+								if (strcmp(s->charrep(), "true") == 0) {
 									check->SetValue(true);
 								} else {
 									check->SetValue(false);
@@ -3116,16 +3161,24 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBRead() {
 					
 					case lb_I_Query::lbDBColumnChar:
 						{
+							UAP(lb_I_String, s, __FILE__, __LINE__)
+							
+							s = sampleQuery->getAsString(i);
+							
 							wxTextCtrl* tx = (wxTextCtrl*) w;
-							tx->SetValue(wxString(sampleQuery->getAsString(i)->charrep()));
+							tx->SetValue(wxString(s->charrep()));
 						}
 						break;
 					
 					case lb_I_Query::lbDBColumnBigInteger:
 					case lb_I_Query::lbDBColumnInteger:
 						{
+							UAP(lb_I_String, s, __FILE__, __LINE__)
+							
+							s = sampleQuery->getAsString(i);
+							
 							wxTextCtrl* tx = (wxTextCtrl*) w;
-							tx->SetValue(wxString(sampleQuery->getAsString(i)->charrep()));
+							tx->SetValue(wxString(s->charrep()));
 						}
 						break;
 					case lb_I_Query::lbDBColumnUnknown:
@@ -3465,6 +3518,8 @@ lbErrCodes LB_STDCALL lbDatabasePanel::OnActionButton(lb_I_Unknown* uk) {
 /*...e*/
 
 	if (uk != NULL) {
+		char* s = NULL;
+		
 /*...sResolve the related data for the action button \40\to be cached later\41\:16:*/
 		char* reversedEvent = NULL;
 //DebugBreak();		
@@ -3498,7 +3553,7 @@ lbErrCodes LB_STDCALL lbDatabasePanel::OnActionButton(lb_I_Unknown* uk) {
 
 		if (fa == NULL) fa = new FormularActions;	
 
-		char* s = fa->getActionSourceDataField(reversedEvent);
+		s = fa->getActionSourceDataField(reversedEvent);
 
 		/*
 		  Now I can get the data from the source field and put it into the event parameters.

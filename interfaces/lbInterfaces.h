@@ -2056,6 +2056,11 @@ public:
 	virtual lbErrCodes LB_STDCALL addEventHandlerFn(lb_I_EventHandler* evHandlerInstance, lbEvHandler evHandler, char* EvName) = 0;
 	
 	/**
+	 * \brief Remove an event handler.
+	 */
+	virtual lbErrCodes LB_STDCALL delEventHandlerFn(lb_I_EventHandler* evHandlerInstance, lbEvHandler evHandler, char* EvName) = 0;
+	
+	/**
 	 * Register an event handler function under it's id. If the id is not registered, the
 	 * function will fail. The dispatcher is not responsible for registering event names or id's.
 	 */

@@ -2771,6 +2771,8 @@ char* LB_STDCALL lbQuery::getTableName(char* columnName) {
 			strcpy((char*) lpszTable, (char*) CharacterAttributePtr);
 		}
 		
+		free(CharacterAttributePtr);
+		
 		return lpszTable;
 	}
 	/*...e*/

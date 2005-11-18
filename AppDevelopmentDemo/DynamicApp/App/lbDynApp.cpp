@@ -157,10 +157,10 @@ lbErrCodes LB_STDCALL lbDynamicApplication::getDynamicDBForm(lb_I_Unknown* uk) {
 		*/
 /*...e*/
 
-		UAP_REQUEST(manager.getPtr(), lb_I_Integer, eventID)
-		UAP_REQUEST(manager.getPtr(), lb_I_EventManager, eman)
+		UAP(lb_I_Integer, eventID, __FILE__, __LINE__)
 		UAP(lb_I_Query, sampleQuery, __FILE__, __LINE__)
 
+		UAP_REQUEST(manager.getPtr(), lb_I_EventManager, eman)
 		UAP_REQUEST(manager.getPtr(), lb_I_String, query)
 		UAP_REQUEST(manager.getPtr(), lb_I_String, formID)
 		UAP_REQUEST(manager.getPtr(), lb_I_String, formName)
@@ -427,10 +427,6 @@ lbErrCodes LB_STDCALL lbDynamicApplication::Initialize(char* user, char* app) {
 	
 	free(buffer);
 	
-	// Fill up the available applications for that user.
-	UAP_REQUEST(manager.getPtr(), lb_I_String, EventName)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, MenuName)
-
 	char* ed = strdup(_trans("&Edit"));
 
 	char* menu = strdup(_trans(app));
@@ -442,15 +438,11 @@ lbErrCodes LB_STDCALL lbDynamicApplication::Initialize(char* user, char* app) {
 
 	lbErrCodes DBerr = sampleQuery->first();
 	if ((DBerr == ERR_NONE) || (DBerr == WARN_DB_NODATA)) {
-
+		UAP(lb_I_String, EventName, __FILE__, __LINE__)
+		UAP(lb_I_String, MenuName, __FILE__, __LINE__)
+		
 	        EventName = sampleQuery->getAsString(1);
 		MenuName = sampleQuery->getAsString(2);
-
-		_CL_VERBOSE << "Register event name '" << 
-		EventName->charrep() << 
-		"' to menu '" <<
-		MenuName->charrep() <<
-		"'" LOG_
 
 		if (eman->resolveEvent(EventName->charrep(), unused) == ERR_EVENT_NOTREGISTERED) {
 
@@ -469,17 +461,14 @@ lbErrCodes LB_STDCALL lbDynamicApplication::Initialize(char* user, char* app) {
 #define TRUE 1
 		while (TRUE) {
 /*...sget rest of menu entries:24:*/
+			UAP(lb_I_String, EventName, __FILE__, __LINE__)
+			UAP(lb_I_String, MenuName, __FILE__, __LINE__)
+			
 			DBerr = sampleQuery->next();
 		
 			if ((DBerr == ERR_NONE) || (DBerr == WARN_DB_NODATA)) {
 		        	EventName = sampleQuery->getAsString(1);
 				MenuName = sampleQuery->getAsString(2);
-				
-				_CL_VERBOSE << "Register event name '" << 
-				EventName->charrep() << 
-				"' to menu '" <<
-				MenuName->charrep() <<
-				"'" LOG_
 				
 				if (eman->resolveEvent(EventName->charrep(), unused) == ERR_EVENT_NOTREGISTERED) {
 					eman->registerEvent(EventName->charrep(), unused);

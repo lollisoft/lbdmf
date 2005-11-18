@@ -30,11 +30,15 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.26 $
+ * $Revision: 1.27 $
  * $Name:  $
- * $Id: lbDatabaseForm.h,v 1.26 2005/11/11 22:51:30 lollisoft Exp $
+ * $Id: lbDatabaseForm.h,v 1.27 2005/11/18 23:41:32 lollisoft Exp $
  *
  * $Log: lbDatabaseForm.h,v $
+ * Revision 1.27  2005/11/18 23:41:32  lollisoft
+ * More memory leaks have been fixed. There are currently less than 200
+ * chunks unfreed, wich may be located in the plugin mechanism.
+ *
  * Revision 1.26  2005/11/11 22:51:30  lollisoft
  * Memory leaks removed. There are currently only 4 chunks leaky.
  * These may be false positives, because one of them is an allocated
@@ -353,11 +357,13 @@ class FormularActions {
 public:
 
 	FormularActions() {
-		actions = NULL;
+		//actions = NULL;
 	}
 	
 	virtual ~FormularActions() {
 		_CL_LOG << "FormularActions::~FormularActions() called." LOG_
+
+		if (actions != NULL) _CL_LOG << "Actions has " << actions->getRefCount() << " references." LOG_		
 	}
 	
 	/** \brief ID of action target.
@@ -409,7 +415,10 @@ class FormularFieldInformation {
 public:
 
 	FormularFieldInformation(char const * formularname, lb_I_Query* query);
-	virtual ~FormularFieldInformation() {}
+	virtual ~FormularFieldInformation() {
+		_CL_LOG << "ROFields has " << ROFields->getRefCount() << " references." LOG_
+		_CL_LOG << "SCFields has " << SCFields->getRefCount() << " references." LOG_
+	}
 	
 	/** \brief Get readonly status.
 	 *

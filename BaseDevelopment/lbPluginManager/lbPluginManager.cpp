@@ -30,11 +30,15 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.33 $
+ * $Revision: 1.34 $
  * $Name:  $
- * $Id: lbPluginManager.cpp,v 1.33 2005/11/16 13:07:39 lollisoft Exp $
+ * $Id: lbPluginManager.cpp,v 1.34 2005/11/18 23:41:31 lollisoft Exp $
  *
  * $Log: lbPluginManager.cpp,v $
+ * Revision 1.34  2005/11/18 23:41:31  lollisoft
+ * More memory leaks have been fixed. There are currently less than 200
+ * chunks unfreed, wich may be located in the plugin mechanism.
+ *
  * Revision 1.33  2005/11/16 13:07:39  lollisoft
  * Added Memtrack breakpoint counter.
  *
@@ -632,7 +636,10 @@ lb_I_Plugin* LB_STDCALL lbPluginManager::getFirstMatchingPlugin(char* match, cha
 
 			lb_I_Unknown* uk;
 
+			_CL_LOG << "Check for plugin with required interface and " << pl->getRefCount() << " references." LOG_
+
         	        if ((strcmp(pl->getNamespace(), _namespace) == 0) && pl->hasInterface(match)) {
+        	        	_CL_LOG << "Return plugin with required interface and " << pl->getRefCount() << " references." LOG_
         	        	return pl.getPtr();
         	        }
 
@@ -711,7 +718,7 @@ lbPlugin::lbPlugin() {
 	_namespace = NULL;
 	ref = STARTREF;
 	
-	implementation = NULL;
+//	implementation = NULL;
 	isPreInitialized = false;
 }
 /*...e*/
@@ -965,10 +972,9 @@ bool LB_STDCALL lbPlugin::hasInterface(char* name) {
         
 	if (uk == NULL) return false;
 
-	uk++;
-	
 	if (uk->queryInterface(name, (void**) &temp, __FILE__, __LINE__) == ERR_NONE) {
 		temp->release(__FILE__, __LINE__);
+		uk++;
 		return true;
 	}
 

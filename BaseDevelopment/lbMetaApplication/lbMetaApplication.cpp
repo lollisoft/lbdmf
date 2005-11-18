@@ -31,11 +31,15 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.69 $
+ * $Revision: 1.70 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.69 2005/11/16 13:17:03 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.70 2005/11/18 23:41:31 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.70  2005/11/18 23:41:31  lollisoft
+ * More memory leaks have been fixed. There are currently less than 200
+ * chunks unfreed, wich may be located in the plugin mechanism.
+ *
  * Revision 1.69  2005/11/16 13:17:03  lollisoft
  * Added Memtrack breakpoint counter.
  *
@@ -346,9 +350,9 @@ CTest a2;
 IMPLEMENT_FUNCTOR(instanceOfEventMapper, lb_EventMapper)
 IMPLEMENT_FUNCTOR(instanceOfEvHandler, lb_EvHandler)
 
+IMPLEMENT_SINGLETON_FUNCTOR(instanceOfMetaApplication, lb_MetaApplication)
 IMPLEMENT_SINGLETON_FUNCTOR(instanceOfEventManager, lb_EventManager)
 IMPLEMENT_SINGLETON_FUNCTOR(instanceOfDispatcher, lb_Dispatcher)
-IMPLEMENT_SINGLETON_FUNCTOR(instanceOfMetaApplication, lb_MetaApplication)
 /*...e*/
 
 
@@ -1272,7 +1276,7 @@ char* LB_STDCALL lb_EventManager::reverseEvent(int evNr) {
 	lbErrCodes err = ERR_NONE;
 	
 	UAP_REQUEST(manager.getPtr(), lb_I_Integer, ID)
-	ID->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+	//ID->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
 	ID->setData(evNr);
 	
 	UAP(lb_I_KeyBase, kk, __FILE__, __LINE__)
@@ -1305,6 +1309,9 @@ lb_Dispatcher::lb_Dispatcher() {
 
 lb_Dispatcher::~lb_Dispatcher() {
 	_CL_LOG << "lb_Dispatcher::~lb_Dispatcher() called." LOG_
+	
+	if (evManager != NULL) _CL_LOG << "Event manager in dispatcher has " << evManager->getRefCount() << " references." LOG_
+	if (dispatcher != NULL) _CL_LOG << "Dispatcher list has " << dispatcher->getRefCount() << " references." LOG_
 }
 
 /*...slbErrCodes LB_STDCALL lb_Dispatcher\58\\58\setData\40\lb_I_Unknown\42\ uk\41\:0:*/
@@ -1332,6 +1339,18 @@ lbErrCodes LB_STDCALL lb_Dispatcher::addEventHandlerFn(lb_I_EventHandler* evHand
 	int id = 0;
 	evManager->resolveEvent(EvName, id);
 	addEventHandlerFn(evHandlerInstance, evHandler, id);	
+	return ERR_NONE;
+}
+/*...e*/
+/*...slbErrCodes LB_STDCALL lb_Dispatcher\58\\58\delEventHandlerFn\40\lb_I_EventHandler\42\ evHandlerInstance\44\ lbEvHandler evHandler\44\ char\42\ EvName\41\:0:*/
+lbErrCodes LB_STDCALL lb_Dispatcher::delEventHandlerFn(lb_I_EventHandler* evHandlerInstance, lbEvHandler evHandler, char* EvName) {
+	/*
+	 * Create an instance of a function pointer object
+	 */
+	
+	int id = 0;
+	evManager->resolveEvent(EvName, id);
+	//addEventHandlerFn(evHandlerInstance, evHandler, id);	
 	return ERR_NONE;
 }
 /*...e*/

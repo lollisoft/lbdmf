@@ -95,6 +95,7 @@ extern "C" {
 
 
 
+/*...slb_I_Action\42\ FormularActions\58\\58\getAction\40\char\42\ id\41\:0:*/
 lb_I_Action* FormularActions::getAction(char* id) {
 	lbErrCodes err = ERR_NONE;
 	
@@ -116,6 +117,8 @@ lb_I_Action* FormularActions::getAction(char* id) {
 		_action->queryInterface("lb_I_Unknown", (void**) &uk, __FILE__, __LINE__);
 
 		actions->insert(&uk, &key);
+		
+		delete _action;
 	}
 
 	uk = actions->getElement(&key);
@@ -129,7 +132,7 @@ lb_I_Action* FormularActions::getAction(char* id) {
 
 	return action;
 }
-
+/*...e*/
 /*...schar\42\ FormularActions\58\\58\getActionTargetID\40\char\42\ what\41\:0:*/
 char* FormularActions::getActionTargetID(char* what) {
 	lbErrCodes err = ERR_NONE;
@@ -161,6 +164,8 @@ char* FormularActions::getActionTargetID(char* what) {
 	sprintf(buffer, buf, What->charrep());
 	
 	query->query(buffer);
+
+	free(buffer);
 	
 	if (((err = query->first()) == ERR_NONE) || (err == WARN_DB_NODATA)) {
 	
@@ -206,6 +211,8 @@ char* FormularActions::getActionSourceDataField(char* what) {
 	sprintf(buffer, buf, getActionTargetID(what));
 
 	query->query(buffer);
+
+	free(buffer);
 	
 	if (((err = query->first()) == ERR_NONE) || (err == WARN_DB_NODATA)) {
 	
@@ -248,6 +255,8 @@ char* FormularActions::getActionID(char* what) {
 	sprintf(buffer, buf, getActionTargetID(what));
 
 	query->query(buffer);
+
+	free(buffer);
 	
 	if (((err = query->first()) == ERR_NONE) || (err == WARN_DB_NODATA)) {
 	

@@ -269,6 +269,6 @@ char* FormularFieldInformation::getControlType(char* name) {
 		return strdup(type->charrep());
 	}
 	
-	return "";
+	return strdup("");
 }
 

@@ -30,11 +30,15 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.23 $
+ * $Revision: 1.24 $
  * $Name:  $
- * $Id: lbMetaApplication.h,v 1.23 2005/11/16 13:17:03 lollisoft Exp $
+ * $Id: lbMetaApplication.h,v 1.24 2005/11/18 23:41:31 lollisoft Exp $
  *
  * $Log: lbMetaApplication.h,v $
+ * Revision 1.24  2005/11/18 23:41:31  lollisoft
+ * More memory leaks have been fixed. There are currently less than 200
+ * chunks unfreed, wich may be located in the plugin mechanism.
+ *
  * Revision 1.23  2005/11/16 13:17:03  lollisoft
  * Added Memtrack breakpoint counter.
  *
@@ -253,6 +257,7 @@ public:
 	virtual lbErrCodes LB_STDCALL addDispatcher(lb_I_Dispatcher* disp);
 	virtual lbErrCodes LB_STDCALL delDispatcher(lb_I_Dispatcher* disp);
 	virtual lbErrCodes LB_STDCALL addEventHandlerFn(lb_I_EventHandler* evHandlerInstance, lbEvHandler evHandler, char* EvName);
+	virtual lbErrCodes LB_STDCALL delEventHandlerFn(lb_I_EventHandler* evHandlerInstance, lbEvHandler evHandler, char* EvName);
 	virtual lbErrCodes LB_STDCALL addEventHandlerFn(lb_I_EventHandler* evHandlerInstance, lbEvHandler evHandler, int EvNr);
 	
 	/**
