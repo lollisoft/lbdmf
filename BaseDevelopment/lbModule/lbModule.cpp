@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.98 $
+ * $Revision: 1.99 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.98 2005/11/16 13:11:38 lollisoft Exp $
+ * $Id: lbModule.cpp,v 1.99 2005/11/20 17:26:13 lollisoft Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.99  2005/11/20 17:26:13  lollisoft
+ * Local TRMem count.
+ *
  * Revision 1.98  2005/11/16 13:11:38  lollisoft
  * Added Memtrack breakpoint counter.
  *
@@ -856,8 +859,8 @@ BEGIN_IMPLEMENT_LB_UNKNOWN(lbSkipListElement)
         ADD_INTERFACE(lb_I_Element)
 END_IMPLEMENT_LB_UNKNOWN()
 
-//IMPLEMENT_LB_ELEMENT(lbSkipListElement)
-
+IMPLEMENT_LB_ELEMENT(lbSkipListElement)
+#ifdef bla
 /*...sIMPLEMENT_LB_ELEMENT\40\lbSkipListElement\41\:0:*/
 
 lbSkipListElement::lbSkipListElement(const lb_I_Unknown* o, const lb_I_KeyBase* _key, lb_I_Element *_next) { 
@@ -946,7 +949,7 @@ int LB_STDCALL lbSkipListElement::lessthan(const lb_I_KeyBase* _key) const {
 	return (*key < _key); 
 }
 /*...e*/
-
+#endif
 
 lbErrCodes LB_STDCALL lbSkipListElement::setData(lb_I_Unknown* uk) {
 	_CL_VERBOSE << "lbSkipListElement::setData(...) not implemented yet" LOG_

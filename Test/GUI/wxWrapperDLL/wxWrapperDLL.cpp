@@ -754,7 +754,7 @@ lbErrCodes LB_STDCALL lb_wxGUI::cleanup() {
 		 
 		_CL_LOG << "Destroy a form with " << d->getRefCount() << " references ..." LOG_
 		 
-		d++;
+		//d++;
 		
 		d->destroy();
 		
@@ -762,6 +762,8 @@ lbErrCodes LB_STDCALL lb_wxGUI::cleanup() {
 	}
 	
 	forms->detachAll();
+
+	_CL_LOG << "List of forms has " << forms->getRefCount() << " references." LOG_
 
         return ERR_NONE;
 }
@@ -932,6 +934,8 @@ lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::createDBForm(char* formName, char* query
 		UAP_REQUEST(manager.getPtr(), lb_I_PluginManager, PM)
 		UAP(lb_I_Plugin, pl, __FILE__, __LINE__)
 
+		TRMemStartLocalCount();
+
 		if (panelUsage) {
 			pl = PM->getFirstMatchingPlugin("lb_I_DatabaseForm", "GUIPanel");
 		} else {
@@ -962,6 +966,9 @@ lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::createDBForm(char* formName, char* query
 		form = NULL;
 		
 		//-------------------------------------------------------
+		
+		TRMemStopLocalCount();
+		TRMemResetLocalCount();
 		
 		uk = forms->getElement(&key);
 		

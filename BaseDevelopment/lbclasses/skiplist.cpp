@@ -38,11 +38,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.39 $
+ * $Revision: 1.40 $
  * $Name:  $
- * $Id: skiplist.cpp,v 1.39 2005/11/11 22:51:30 lollisoft Exp $
+ * $Id: skiplist.cpp,v 1.40 2005/11/20 17:26:14 lollisoft Exp $
  *
  * $Log: skiplist.cpp,v $
+ * Revision 1.40  2005/11/20 17:26:14  lollisoft
+ * Local TRMem count.
+ *
  * Revision 1.39  2005/11/11 22:51:30  lollisoft
  * Memory leaks removed. There are currently only 4 chunks leaky.
  * These may be false positives, because one of them is an allocated
@@ -304,7 +307,7 @@ void SkipNode::detach() {
 	*/
 	
     	//value = NULL;
-    	value.resetPtr();
+	if (value != NULL) value->detachData();
 }
 /*...e*/
 

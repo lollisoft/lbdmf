@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.58 $
+ * $Revision: 1.59 $
  * $Name:  $
- * $Id: lbInterfaces-sub-classes.h,v 1.58 2005/11/16 20:55:33 lollisoft Exp $
+ * $Id: lbInterfaces-sub-classes.h,v 1.59 2005/11/20 17:26:14 lollisoft Exp $
  *
  * $Log: lbInterfaces-sub-classes.h,v $
+ * Revision 1.59  2005/11/20 17:26:14  lollisoft
+ * Local TRMem count.
+ *
  * Revision 1.58  2005/11/16 20:55:33  lollisoft
  * Less log messages and added preload member in lbModule.
  *
@@ -642,6 +645,7 @@ public:
         virtual int LB_STDCALL equals(const lb_I_KeyBase* _key) const = 0;
 	virtual int LB_STDCALL lessthan(const lb_I_KeyBase* _key) const = 0;
 
+	virtual void LB_STDCALL detachData() = 0;
 
         virtual lb_I_KeyBase* LB_STDCALL getKey() const = 0;
 
@@ -660,13 +664,14 @@ public:
 
 #define DECLARE_LB_ELEMENT(classname) \
 classname(const lb_I_Unknown* o, const lb_I_KeyBase* _key, lb_I_Element *_next = NULL); \
-virtual lb_I_Element* LB_STDCALL getNext() const; \
-virtual void LB_STDCALL setNext(lb_I_Element *e); \
-virtual lb_I_Unknown* LB_STDCALL getObject() const; \
-virtual int LB_STDCALL equals(const lb_I_Element* a) const; \
-virtual int LB_STDCALL equals(const lb_I_KeyBase* _key) const; \
-virtual int LB_STDCALL lessthan(const lb_I_KeyBase* _key) const; \
-virtual lb_I_KeyBase* LB_STDCALL getKey() const; \
+lb_I_Element* LB_STDCALL getNext() const; \
+void LB_STDCALL setNext(lb_I_Element *e); \
+lb_I_Unknown* LB_STDCALL getObject() const; \
+int LB_STDCALL equals(const lb_I_Element* a) const; \
+int LB_STDCALL equals(const lb_I_KeyBase* _key) const; \
+int LB_STDCALL lessthan(const lb_I_KeyBase* _key) const; \
+void LB_STDCALL detachData(); \
+lb_I_KeyBase* LB_STDCALL getKey() const; \
 private: \
 \
     lb_I_Element* next; \
@@ -674,6 +679,9 @@ private: \
 
 #define IMPLEMENT_LB_ELEMENT(classname) \
 \
+void LB_STDCALL classname::detachData() { \
+	data = NULL; \
+} \
 classname::classname(const lb_I_Unknown* o, const lb_I_KeyBase* _key, lb_I_Element *_next) { \
     ref = STARTREF; \
     manager = NULL; \
