@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.70 $
+ * $Revision: 1.71 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.70 2005/11/18 23:41:31 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.71 2005/11/20 13:39:52 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.71  2005/11/20 13:39:52  lollisoft
+ * Wrong variable name
+ *
  * Revision 1.70  2005/11/18 23:41:31  lollisoft
  * More memory leaks have been fixed. There are currently less than 200
  * chunks unfreed, wich may be located in the plugin mechanism.
@@ -863,7 +866,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::loadApplication(char* user, char* appl
 		char name[80] = "";
 		strcpy(name, applicationName);
 		strcat(name, ".so");
-		manager->preload(appl);
+		manager->preload(name);
 		manager->makeInstance(PREFIX "instanceOfApplication", name, &a);
 		#endif	
 		if (a == NULL) {
