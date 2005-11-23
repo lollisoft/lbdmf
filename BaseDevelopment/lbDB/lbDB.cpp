@@ -147,8 +147,8 @@ public:
 	lb_I_Query::lbDBColumnTypes LB_STDCALL getColumnType(char* name);
 	int 		LB_STDCALL getColumnIndex(char* name);
 
-	void		LB_STDCALL setUpdateable(char* column, bool updateable);
-	bool		LB_STDCALL getUpdateable(char* column);
+	void		LB_STDCALL setReadonly(char* column, bool updateable);
+	bool		LB_STDCALL getReadonly(char* column);
 		
 	int LB_STDCALL getArraySize() { return ArraySize; }
 
@@ -272,8 +272,8 @@ public:
 	virtual lb_I_Query::lbDBColumnTypes LB_STDCALL getColumnType(int pos);
 	virtual lb_I_Query::lbDBColumnTypes LB_STDCALL getColumnType(char* name);
 
-	void               LB_STDCALL setUpdateable(char* column, bool updateable = false);
-	bool               LB_STDCALL getUpdateable(char* column);
+	void               LB_STDCALL setReadonly(char* column, bool updateable = true);
+	bool               LB_STDCALL getReadonly(char* column);
         
         /* Navigation */
         virtual lbErrCodes	LB_STDCALL first();
@@ -369,7 +369,7 @@ public:
 		//colName = NULL;
 		ColumnSize = 0;
 		rows = 2;
-		isUpdateable = true;
+		isReadonly = true;
 		columnName = NULL;
 	}
 	
@@ -420,8 +420,8 @@ public:
 	virtual lbErrCodes LB_STDCALL setFromString(lb_I_String* set, int mode);
 
 	void		LB_STDCALL checkReadonly(int column);
-	void		LB_STDCALL setUpdateable(bool updateable);
-	bool		LB_STDCALL getUpdateable() { return isUpdateable; }
+	void		LB_STDCALL setReadonly(bool updateable);
+	bool		LB_STDCALL getReadonly() { return isReadonly; }
 
 	lb_I_String* LB_STDCALL getColumnName();
 
@@ -464,7 +464,7 @@ protected:
 	char*		columnName;
 
 	int		bound;
-	bool		isUpdateable;
+	bool		isReadonly;
 	SQLSMALLINT     _DataType;
 	int 		_column;
 	void*		buffer;
@@ -683,8 +683,8 @@ lb_I_Query::lbDBColumnTypes LB_STDCALL lbBoundColumns::getColumnType(char* name)
 	return lb_I_Query::lbDBColumnUnknown;
 }
 /*...e*/
-/*...svoid LB_STDCALL lbBoundColumns\58\\58\setUpdateable\40\char\42\ column\44\ bool updateable\41\:0:*/
-void LB_STDCALL lbBoundColumns::setUpdateable(char* column, bool updateable) {
+/*...svoid LB_STDCALL lbBoundColumns\58\\58\setReadonly\40\char\42\ column\44\ bool updateable\41\:0:*/
+void LB_STDCALL lbBoundColumns::setReadonly(char* column, bool updateable) {
 
 	lbErrCodes err = ERR_NONE;
 	if (boundColumns != NULL) {
@@ -715,12 +715,12 @@ void LB_STDCALL lbBoundColumns::setUpdateable(char* column, bool updateable) {
 		UAP(lb_I_BoundColumn, bc, __FILE__, __LINE__)
 		err = ukdata1->queryInterface("lb_I_BoundColumn", (void**) &bc, __FILE__, __LINE__);
 
-		bc->setUpdateable(updateable);
+		bc->setReadonly(updateable);
 	}
 }
 /*...e*/
-/*...sbool LB_STDCALL lbBoundColumns\58\\58\getUpdateable\40\char\42\ column\41\:0:*/
-bool LB_STDCALL lbBoundColumns::getUpdateable(char* column) {
+/*...sbool LB_STDCALL lbBoundColumns\58\\58\getReadonly\40\char\42\ column\41\:0:*/
+bool LB_STDCALL lbBoundColumns::getReadonly(char* column) {
 	lbErrCodes err = ERR_NONE;
 	if (boundColumns != NULL) {
 		UAP_REQUEST(manager.getPtr(), lb_I_String, stringKey) 
@@ -750,7 +750,7 @@ bool LB_STDCALL lbBoundColumns::getUpdateable(char* column) {
 		UAP(lb_I_BoundColumn, bc, __FILE__, __LINE__)
 		err = ukdata1->queryInterface("lb_I_BoundColumn", (void**) &bc, __FILE__, __LINE__);
 
-		return bc->getUpdateable();
+		return bc->getReadonly();
 	}
 	return false;
 }
@@ -976,7 +976,7 @@ UAP(lb_I_Integer, key, __FILE__, __LINE__)
 
 /*...sto be implemented:0:*/
 lbErrCodes LB_STDCALL lbQuery::setData(lb_I_Unknown * uk) {
-	_LOG << "lbQuery::setData(...): Not implemented yet" LOG_
+	_CL_LOG << "lbQuery::setData(...): Not implemented yet" LOG_
 	return ERR_NONE;
 }
 
@@ -1198,6 +1198,7 @@ lbErrCodes LB_STDCALL lbQuery::bind() {
 	
 		if (retcode != SQL_SUCCESS)
 		{
+			_CL_LOG << "lbQuery::bind() SQLNumResultCols() failed." LOG_
 		        dbError( "SQLNumResultCols()");
 		        return ERR_DB_QUERYFAILED;
 		} else {
@@ -1210,10 +1211,6 @@ lbErrCodes LB_STDCALL lbQuery::bind() {
 				boundColumns = NULL;
 			}
 			
-			if (ReadOnlyColumns != NULL) {
-				ReadOnlyColumns->deleteAll();
-			}
-
 			boundcols = new lbBoundColumns();
 			boundcols->setModuleManager(*&manager, __FILE__, __LINE__);
 
@@ -2074,9 +2071,14 @@ lb_I_Query::lbDBColumnTypes LB_STDCALL lbQuery::getColumnType(char* name) {
 	return boundColumns->getColumnType(name);
 }
 /*...e*/
-/*...svoid LB_STDCALL lbQuery\58\\58\setUpdateable\40\char\42\ column\44\ bool updateable\41\:0:*/
-void LB_STDCALL lbQuery::setUpdateable(char* column, bool updateable) {
+/*...svoid LB_STDCALL lbQuery\58\\58\setReadonly\40\char\42\ column\44\ bool updateable\41\:0:*/
+void LB_STDCALL lbQuery::setReadonly(char* column, bool updateable) {
 	lbErrCodes err = ERR_NONE;
+
+	if (updateable == true) 
+		_CL_LOG << "lbQuery::setReadonly(" << column << ", TRUE)" LOG_
+	else
+		_CL_LOG << "lbQuery::setReadonly(" << column << ", FALSE)" LOG_
 	
 	UAP_REQUEST(manager.getPtr(), lb_I_String, col)
 	
@@ -2092,13 +2094,26 @@ void LB_STDCALL lbQuery::setUpdateable(char* column, bool updateable) {
 		REQUEST(manager.getPtr(), lb_I_Container, ReadOnlyColumns)
 	}
 
-	ReadOnlyColumns->insert(&uk, &key);
+	if (!ReadOnlyColumns->exists(&key) && updateable == true) {
+		_CL_LOG << "lbQuery::setReadonly(...) calls ReadOnlyColumns->insert(...)." LOG_
+		ReadOnlyColumns->insert(&uk, &key);
+	}
+	
+	if (ReadOnlyColumns->exists(&key) && updateable == false) {
+		_CL_LOG << "lbQuery::setReadonly(...) calls ReadOnlyColumns->remove(&key)." LOG_
+		ReadOnlyColumns->remove(&key);
+	}
 
-	if (boundColumns.getPtr() != NULL) boundColumns->setUpdateable(column, updateable);
+	if (boundColumns.getPtr() != NULL) {
+		_CL_LOG << "lbQuery::setReadonly(...) calls boundColumns->setReadonly(...)." LOG_
+		boundColumns->setReadonly(column, updateable);
+	}
+	
+	_CL_LOG << "lbQuery::setReadonly(...) returns." LOG_
 }
 /*...e*/
-bool LB_STDCALL lbQuery::getUpdateable(char* column) {
-	return boundColumns->getUpdateable(column);
+bool LB_STDCALL lbQuery::getReadonly(char* column) {
+	return boundColumns->getReadonly(column);
 }
 /*...schar\42\ LB_STDCALL lbQuery\58\\58\getColumnName\40\int col\41\:0:*/
 char lbQuery_column_Name[100] = "";
@@ -2571,29 +2586,19 @@ lbErrCodes LB_STDCALL lbQuery::update() {
 	char* CursorName = (char*) malloc(cbMAXSQL);
 	CursorName[0] = 0;
 
+	boundColumns->unbindReadonlyColumns();
+
 	if (mode == 1) {
-	
-	
-		if (ReadOnlyColumns->Count() > 0) {
-			_CL_VERBOSE << "Try to unbind readonly columns while adding a row." LOG_
-			
-			boundColumns->unbindReadonlyColumns();
-			
-		}
-	
 		retcode = SQLSetPos(hstmt, 2, SQL_ADD, SQL_LOCK_NO_CHANGE);
 		
 		if (retcode != SQL_SUCCESS)
 		{
 		        dbError( "SQLSetPos()");
 		        _LOG << "lbQuery::update(...) adding failed." LOG_
+		        
+		        boundColumns->rebindReadonlyColumns();
+		        
 		        return ERR_DB_UPDATEFAILED;
-		}
-
-		if (ReadOnlyColumns->Count() > 0) {
-			_CL_VERBOSE << "Try to rebind readonly columns after adding a row." LOG_
-			
-			boundColumns->rebindReadonlyColumns();
 		}
 
 		mode = 0;
@@ -2696,17 +2701,21 @@ free(buffer);
 /*...e*/
 #endif
 #ifndef USE_CURRENT_OF
-
 		retcode = SQLSetPos(hstmt, 1, SQL_UPDATE, SQL_LOCK_NO_CHANGE);
 		
 		if (retcode != SQL_SUCCESS)
 		{
 		        dbError( "SQLSetPos()");
 		        _LOG << "lbQuery::update(...) updating failed." LOG_
+		        
+		        boundColumns->rebindReadonlyColumns();
+		        
 		        return ERR_DB_UPDATEFAILED;
 		}
 #endif
 	}
+
+	boundColumns->rebindReadonlyColumns();
 
 	free(CursorName);
 
@@ -2864,7 +2873,7 @@ lbErrCodes LB_STDCALL lbBoundColumn::leaveOwnership(lb_I_BoundColumn* oldOwner, 
 
 	nO->setData(oO->bound, oO->_DataType, oO->buffer, oO->columnName);
 	oO->bound = 0;
-	nO->isUpdateable = oO->isUpdateable;
+	nO->isReadonly = oO->isReadonly;
 	if (oO->buffer != NULL) oO->buffer = NULL;
 
 	return ERR_NONE;
@@ -2954,8 +2963,8 @@ lbErrCodes LB_STDCALL lbBoundColumn::getAsString(lb_I_String* result, int asPara
 /*...slbErrCodes LB_STDCALL lbBoundColumn\58\\58\setFromString\40\lb_I_String\42\ set\44\ int mode\41\:0:*/
 lbErrCodes LB_STDCALL lbBoundColumn::setFromString(lb_I_String* set, int mode) {
 
-	if (!isUpdateable) {
-		_CL_VERBOSE << "Warning: Updating a column '" << columnName << "' with readonly status skipped." LOG_
+	if (isReadonly) {
+		_CL_LOG << "Warning: Updating a column '" << columnName << "' with readonly status skipped." LOG_
 		return ERR_NONE;
 	}
 
@@ -3130,10 +3139,10 @@ void       LB_STDCALL lbBoundColumn::checkReadonly(int column)
 			_CL_LOG << "ERROR: SQLColAttribute(...) failed." LOG_
 		}
 		
-		setUpdateable(true);
+		setReadonly(false);
 		
 		if (Int == SQL_ATTR_READONLY) {
-			setUpdateable(false);
+			setReadonly(true);
 		}
 		
 		free(CharacterAttributePtr);
@@ -3163,10 +3172,13 @@ lbErrCodes LB_STDCALL lbBoundColumn::bindColumn(lb_I_Query* q, int column, bool 
 	cbBufferLength = 0;
 	SQLRETURN ret;
 
-	if (ro) {
-		_LOG << "Bind a column that is read only (" << columnName << ")" LOG_
+	if (ro == true) {
+		_CL_LOG << "Bind a column that is read only (" << columnName << ")" LOG_
 		cbBufferLength = SQL_COLUMN_IGNORE;
-		isUpdateable = false;
+		isReadonly = true;
+	} else {
+		// Check, if there are aggregates to be readonly
+		checkReadonly(column);
 	}
 
 
@@ -3179,18 +3191,10 @@ lbErrCodes LB_STDCALL lbBoundColumn::bindColumn(lb_I_Query* q, int column, bool 
 		q->dbError("SQLDescribeCol()");
 	}
 
-	//if (colName == NULL) {
-	//	REQUEST(manager.getPtr(), lb_I_String, colName)
-	//}
-	
-	//colName->setData((char*) ColumnName);
-
 	if (columnName) free(columnName);
 	columnName = (char*) malloc(strlen((char const*) ColumnName)+1);
 	columnName[0] = 0;
 	strcpy(columnName, (char const*) ColumnName);
-
-	checkReadonly(column);	
 
 	switch (DataType) {
 		case SQL_DATE:
@@ -3419,74 +3423,43 @@ SQLCloseCursor(hstmt);
 /*...e*/
 /*...svoid LB_STDCALL lbBoundColumn\58\\58\unbindReadonlyColumns\40\\41\:0:*/
 void LB_STDCALL lbBoundColumn::unbindReadonlyColumns() {
-	SQLRETURN ret;
-	if (!isUpdateable) {
-		_CL_VERBOSE << "Really unbind column '" << columnName << "'" LOG_
+	SQLRETURN ret = SQL_SUCCESS;
+
+	if (isReadonly) {
 /*...sUnbind:16:*/
 	switch (_DataType) {
 		case SQL_DATE:
 		case SQL_TYPE_DATE:
+			_CL_VERBOSE << "Unbind date" LOG_
+			bound = 0;
+
+			ret = SQLBindCol(hstmt, _column, SQL_C_CHAR, NULL, (ColumnSize+1), &cbBufferLength);
+			break;
 		case SQL_CHAR:
 		case SQL_VARCHAR:
 		case SQL_LONGVARCHAR:
 			_CL_VERBOSE << "Unbind char" LOG_
-/*...sbind a character array:40:*/
 			bound = 0;
 
 			ret = SQLBindCol(hstmt, _column, SQL_C_DEFAULT, NULL, (ColumnSize+1), &cbBufferLength);
-			
-			if (ret != SQL_SUCCESS) {
-				printf("Error while binding a column!\n");
-				query->dbError("SQLBindCol()");
-			}
-/*...e*/
 			break;
 		case SQL_BINARY:
 			_CL_VERBOSE << "Unbind binary" LOG_
-/*...sbind a binary array:40:*/
 			bound = 0;
 			
 			ret = SQLBindCol(hstmt, _column, SQL_C_DEFAULT, NULL, (ColumnSize+1), &cbBufferLength);
-			
-			if (ret != SQL_SUCCESS) {
-				printf("Error while binding a column!\n");
-				query->dbError("SQLBindCol()");
-			}
-/*...e*/
 			break;
-/*...slater:32:*/
-/*			
-		case SQL_WCHAR:
-		case SQL_WVARCHAR:
-		case SQL_WLONGVARCHAR:
-			break;
-*/			
-/*...e*/
 		case SQL_INTEGER:
 			_CL_VERBOSE << "Unbind integer" LOG_
-/*...sbind an integer:40:*/
 			bound = 0;
 
-			SQLBindCol(hstmt, _column, _DataType, NULL, sizeof(long), &cbBufferLength);
-
-			if (ret != SQL_SUCCESS) {
-			        printf("Error while binding a column!\n");
-			        query->dbError("SQLBindCol()");
-			}
-/*...e*/
+			SQLBindCol(hstmt, _column, SQL_C_DEFAULT, NULL, sizeof(long), &cbBufferLength);
 			break;
 		case SQL_BIGINT:
 			_CL_VERBOSE << "Unbind big integer" LOG_
-/*...sbind an big integer:40:*/
 			bound = 0;
 
-			SQLBindCol(hstmt, _column, _DataType, NULL, sizeof(long long), &cbBufferLength);
-
-			if (ret != SQL_SUCCESS) {
-			        printf("Error while binding a column!\n");
-			        query->dbError("SQLBindCol()");
-			}
-/*...e*/
+			SQLBindCol(hstmt, _column, SQL_C_DEFAULT, NULL, sizeof(long long), &cbBufferLength);
 			break;
 		case SQL_BIT:
 		case SQL_TINYINT:
@@ -3496,7 +3469,7 @@ void LB_STDCALL lbBoundColumn::unbindReadonlyColumns() {
 			SQLBindCol(hstmt, _column, _DataType, NULL, sizeof(bool), &cbBufferLength);
 
 			if (ret != SQL_SUCCESS) {
-			        printf("Error while binding a column!\n");
+			        printf("Error while unbinding a column!\n");
 			        query->dbError("SQLBindCol()");
 			}
 			break;
@@ -3506,78 +3479,52 @@ void LB_STDCALL lbBoundColumn::unbindReadonlyColumns() {
 	}
 /*...e*/
 	}
+
+	if (ret != SQL_SUCCESS) {
+		printf("Error while unbinding a column!\n");
+		query->dbError("SQLBindCol()");
+	}
 }
 /*...e*/
 /*...svoid LB_STDCALL lbBoundColumn\58\\58\rebindReadonlyColumns\40\\41\:0:*/
 void LB_STDCALL lbBoundColumn::rebindReadonlyColumns() {
-	SQLRETURN ret;
-	if (!isUpdateable) {
-		_CL_VERBOSE << "Really rebind column '" << columnName << "'" LOG_
+	SQLRETURN ret = SQL_SUCCESS;
+
+	if (isReadonly) {
 /*...sRebind:16:*/
 	switch (_DataType) {
 		case SQL_DATE:
 		case SQL_TYPE_DATE:
+			_CL_VERBOSE << "Rebind date" LOG_
+			bound = 1;
+
+			ret = SQLBindCol(hstmt, _column, SQL_C_CHAR, buffer, (ColumnSize+1), &cbBufferLength);
+			break;
 		case SQL_CHAR:
 		case SQL_VARCHAR:
 		case SQL_LONGVARCHAR:
 			_CL_VERBOSE << "Rebind char" LOG_
-/*...sbind a character array:40:*/
 			bound = 1;
 
 			ret = SQLBindCol(hstmt, _column, SQL_C_DEFAULT, buffer, (ColumnSize+1), &cbBufferLength);
-			
-			if (ret != SQL_SUCCESS) {
-				printf("Error while binding a column!\n");
-				query->dbError("SQLBindCol()");
-			}
-/*...e*/
 			break;
 		case SQL_BINARY:
 			_CL_VERBOSE << "Rebind binary" LOG_
-/*...sbind a binary array:40:*/
 			bound = 1;
 			
 			ret = SQLBindCol(hstmt, _column, SQL_C_DEFAULT, buffer, (ColumnSize+1), &cbBufferLength);
-			
-			if (ret != SQL_SUCCESS) {
-				printf("Error while binding a column!\n");
-				query->dbError("SQLBindCol()");
-			}
-/*...e*/
 			break;
-/*...slater:32:*/
-/*			
-		case SQL_WCHAR:
-		case SQL_WVARCHAR:
-		case SQL_WLONGVARCHAR:
-			break;
-*/			
-/*...e*/
 		case SQL_INTEGER:
 			_CL_VERBOSE << "Rebind integer" LOG_
-/*...sbind an integer:40:*/
 			bound = 1;
 
-			SQLBindCol(hstmt, _column, _DataType, buffer, sizeof(long), &cbBufferLength);
-
-			if (ret != SQL_SUCCESS) {
-			        printf("Error while binding a column!\n");
-			        query->dbError("SQLBindCol()");
-			}
-/*...e*/
+			SQLBindCol(hstmt, _column, SQL_C_DEFAULT, buffer, sizeof(long), &cbBufferLength);
 			break;
 		case SQL_BIGINT:
 			_CL_VERBOSE << "Rebind big integer" LOG_
-/*...sbind an big integer:40:*/
 			bound = 1;
 
-			SQLBindCol(hstmt, _column, _DataType, buffer, sizeof(long long), &cbBufferLength);
-
-			if (ret != SQL_SUCCESS) {
-			        printf("Error while binding a column!\n");
-			        query->dbError("SQLBindCol()");
-			}
-/*...e*/
+			SQLBindCol(hstmt, _column, SQL_C_DEFAULT, buffer, sizeof(long long), &cbBufferLength);
 			break;
 		case SQL_BIT:
 		case SQL_TINYINT:
@@ -3597,6 +3544,11 @@ void LB_STDCALL lbBoundColumn::rebindReadonlyColumns() {
 	}
 /*...e*/
 	}
+
+	if (ret != SQL_SUCCESS) {
+	        printf("Error while binding column %s!\n", columnName);
+	        query->dbError("SQLBindCol()");
+	}
 }
 /*...e*/
 /*...slb_I_String\42\ LB_STDCALL lbBoundColumn\58\\58\getColumnName\40\\41\:0:*/
@@ -3608,9 +3560,9 @@ lb_I_String* LB_STDCALL lbBoundColumn::getColumnName() {
 	return colName.getPtr();
 }
 /*...e*/
-/*...svoid lbBoundColumn\58\\58\setUpdateable\40\bool updateable\41\:0:*/
-void lbBoundColumn::setUpdateable(bool updateable) {
-	isUpdateable = updateable;
+/*...svoid lbBoundColumn\58\\58\setReadonly\40\bool updateable\41\:0:*/
+void lbBoundColumn::setReadonly(bool updateable) {
+	isReadonly = updateable;
 }
 /*...e*/
 /*...e*/

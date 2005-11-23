@@ -268,13 +268,13 @@ public:
 	 *
 	 * Set the column 'column' to be updateable or not.
 	 */
-	virtual void		   LB_STDCALL setUpdateable(char* column, bool updateable = false) = 0;
+	virtual void		   LB_STDCALL setReadonly(char* column, bool updateable = true) = 0;
 
 	/** \brief Get updateability of column.
 	 *
 	 * Get the updateability of column 'column'.
 	 */
-	virtual bool		   LB_STDCALL getUpdateable(char* column) = 0;
+	virtual bool		   LB_STDCALL getReadonly(char* column) = 0;
 
         /* Navigation */
         
@@ -372,12 +372,12 @@ public:
 	/**
 	 * \brief Set the column updateability.
 	 */
-	virtual void		LB_STDCALL setUpdateable(bool updateable) = 0;
+	virtual void		LB_STDCALL setReadonly(bool updateable) = 0;
 
 	/**
 	 * \brief Get the column updateability.
 	 */
-	virtual bool		LB_STDCALL getUpdateable() = 0;
+	virtual bool		LB_STDCALL getReadonly() = 0;
 
 /*...sdoc:8:*/
 	/**
@@ -578,12 +578,12 @@ public:
 	/**
 	 * \brief Set the column updateability.
 	 */
-	virtual void		LB_STDCALL setUpdateable(char* column, bool updateable) = 0;
+	virtual void		LB_STDCALL setReadonly(char* column, bool updateable) = 0;
 
 	/**
 	 * \brief Get the column updateability.
 	 */
-	virtual bool		LB_STDCALL getUpdateable(char* column) = 0;
+	virtual bool		LB_STDCALL getReadonly(char* column) = 0;
 	
 	/**
 	 * \brief Get the amound of columns.

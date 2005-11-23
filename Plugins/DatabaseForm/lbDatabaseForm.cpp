@@ -1436,7 +1436,7 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 		name = strdup(sampleQuery->getColumnName(co));
 
 		if (FFI->isReadonly(name)) {
-		        sampleQuery->setUpdateable(name);
+		        sampleQuery->setReadonly(name);
 		}
 		
 		free(name);
@@ -1685,7 +1685,7 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 				
 				sizerRight->Add(ownerdraw, 1, 0, 5);
 
-				if (!sampleQuery->getUpdateable(name) || FFI->isReadonly(name)) {
+				if (FFI->isReadonly(name)) {
 				        ownerdraw->Disable();
 				}
 
@@ -1703,7 +1703,7 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 						check->SetName(name);
 						sizerRight->Add(check, 1, wxEXPAND | wxALL, 5);	
 
-						if (!sampleQuery->getUpdateable(name) || FFI->isReadonly(name)) {
+						if (FFI->isReadonly(name)) {
 						        check->Disable();
 						}
 
@@ -1721,7 +1721,7 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 						text->SetName(name);
 						sizerRight->Add(text, 1, wxEXPAND | wxALL, 5);
 						
-						if (!sampleQuery->getUpdateable(name) || FFI->isReadonly(name)) {
+						if (FFI->isReadonly(name)) {
 							text->Disable();
 						}
 
@@ -1743,7 +1743,7 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 					        text->SetName(name);
 					        sizerRight->Add(text, 1, wxEXPAND | wxALL, 5);
 						
-						if (!sampleQuery->getUpdateable(name) || FFI->isReadonly(name)) {
+						if (FFI->isReadonly(name)) {
  							text->Disable();
 						}
 
@@ -2969,7 +2969,7 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBUpdate() {
 				switch (coltype) {
 					case lb_I_Query::lbDBColumnBit:
 						{
-							if (!sampleQuery->getUpdateable(name) || !FFI->isReadonly(name)) {
+							if (!sampleQuery->getReadonly(name)) {
 								wxCheckBox *check = (wxCheckBox*) w;
 								if (check->GetValue() == TRUE) {
 									wxString v = "true";
@@ -2990,7 +2990,7 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBUpdate() {
 					
 					case lb_I_Query::lbDBColumnChar:
 						{
-							if (!sampleQuery->getUpdateable(name) || !FFI->isReadonly(name)) {
+							if (!sampleQuery->getReadonly(name)) {
 								wxTextCtrl* tx = (wxTextCtrl*) w;
 			
 								wxString v = tx->GetValue();
@@ -3006,7 +3006,7 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBUpdate() {
 					case lb_I_Query::lbDBColumnBigInteger:
 					case lb_I_Query::lbDBColumnInteger:
 						{
-							if (!sampleQuery->getUpdateable(name) || !FFI->isReadonly(name)) {
+							if (!sampleQuery->getReadonly(name)) {
 								wxTextCtrl* tx = (wxTextCtrl*) w;
 			
 								wxString v = tx->GetValue();
@@ -3298,22 +3298,27 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBLast(lb_I_Unknown* uk) {
 
 /*...slbErrCodes LB_STDCALL lbDatabasePanel\58\\58\lbDBAdd\40\lb_I_Unknown\42\ uk\41\:0:*/
 lbErrCodes LB_STDCALL lbDatabasePanel::lbDBAdd(lb_I_Unknown* uk) {
-	if (isAdding) {
+	
+	_CL_LOG << "lbDatabasePanel::lbDBAdd() called." LOG_
+/*	
+	if (isAdding == true) {
 		isAdding = false;
 		if (noDataAvailable) {
 			// Goto first data, because there was no data before.
 			return lbDBFirst(NULL);
 		}
+
+			
 		return lbDBLast(NULL);
 	}
 
 	isAdding = true;
-
+*/
 	lbDBUpdate();
 
 	lbDBClear();
 
-	noDataAvailable = false;
+	//noDataAvailable = false;
 
 	if (sampleQuery->add() != ERR_NONE) {
 		UAP_REQUEST(manager.getPtr(), lb_I_String, newTitle)
@@ -3475,7 +3480,26 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBAdd(lb_I_Unknown* uk) {
 	}
 /*...e*/
 
-//	lbDBRead();
+	if (lbDBUpdate() == ERR_UPDATE_FAILED) {
+		UAP_REQUEST(manager.getPtr(), lb_I_String, newTitle)
+		
+		newTitle->setData(formName);
+		
+		*newTitle += ": Missing fields !";
+		
+		SetTitle(_trans(newTitle->charrep()));
+		
+		_CL_LOG << "Updating after add failed." LOG_
+	} else {
+		_CL_LOG << "Updating after add succeeded. Move to last." LOG_
+		
+		if (lbDBLast(NULL) != ERR_NONE) {
+			_CL_LOG << "Move to last after updating failed." LOG_
+			lbDBFirst(NULL);
+		} else {
+			_CL_LOG << "Move to last after updating succeeded." LOG_
+		}
+	}
 
 	return ERR_NONE;
 }
