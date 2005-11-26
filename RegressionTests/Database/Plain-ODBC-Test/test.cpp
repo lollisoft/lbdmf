@@ -31,6 +31,14 @@ void remove(HSTMT hstmt) {
                 printf("ERROR: Removing data failed.\n");
                 dbError("SQLSetPos(SQL_DELETE)", hstmt);
         }
+        
+	retcode = SQLSetPos(hstmt, 1, SQL_REFRESH, SQL_LOCK_NO_CHANGE);
+
+        if (retcode != SQL_SUCCESS)
+        {
+                printf("ERROR: Removing data failed.\n");
+                dbError("SQLSetPos(SQL_DELETE)", hstmt);
+        }
 }
 
 void update(HSTMT hstmt) {
