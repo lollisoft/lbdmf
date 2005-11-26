@@ -3506,9 +3506,49 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBAdd(lb_I_Unknown* uk) {
 /*...e*/
 /*...slbErrCodes LB_STDCALL lbDatabasePanel\58\\58\lbDBDelete\40\lb_I_Unknown\42\ uk\41\:0:*/
 lbErrCodes LB_STDCALL lbDatabasePanel::lbDBDelete(lb_I_Unknown* uk) {
-	//lbDBUpdate();
-
 	sampleQuery->remove();
+
+	lbErrCodes err = ERR_NONE;
+
+        err = sampleQuery->next();
+
+        if (err == WARN_DB_NODATA) {
+                nextButton->Disable();
+                lastButton->Disable();
+                prevButton->Enable();
+                firstButton->Enable();
+
+		lbDBRead();
+
+		return ERR_NONE;
+        }
+
+        if (err == ERR_DB_NODATA) {
+
+		err = sampleQuery->first();
+
+		if (err == ERR_DB_NODATA) {
+
+			prevButton->Disable();
+			firstButton->Disable();
+			nextButton->Disable();
+			lastButton->Disable();
+			
+			lbDBClear();
+
+			return ERR_NONE;
+		}
+		
+                prevButton->Disable();
+                firstButton->Disable();
+                nextButton->Enable();
+                lastButton->Enable();
+        } else {
+        	nextButton->Enable();
+        	lastButton->Enable();
+        	prevButton->Enable();
+        	firstButton->Enable();
+        }
 
 	lbDBRead();
 

@@ -5,6 +5,7 @@
 -- +---------------------------------------------------------
 
 --USE jedi;
+SET SESSION AUTHORIZATION 'dba';
 
 --...sCREATE TABLE column_types:0:
 CREATE TABLE column_types
@@ -261,8 +262,8 @@ insert into formular_actions (formular, action, event) values(2, 6, 'evt_Manage_
 CREATE TABLE translations
 (
   id SERIAL,
-  text VARCHAR(100),
-  translated VARCHAR(100),
+  text CHAR(100),
+  translated CHAR(100),
   language CHAR(30) default 'german',
   PRIMARY KEY (id)
 );
@@ -275,11 +276,11 @@ CREATE TABLE translations
 CREATE TABLE CodegenTarget
 (
   id SERIAL,
-  Name VARCHAR(100),
-  Titel VARCHAR(100),
-  ModuleName VARCHAR(100),
-  Functor VARCHAR(100),
-  Interface VARCHAR(100),
+  Name CHAR(100),
+  Titel CHAR(100),
+  ModuleName CHAR(100),
+  Functor CHAR(100),
+  Interface CHAR(100),
   PRIMARY KEY (id)
 );
 
@@ -297,11 +298,11 @@ CREATE UNIQUE INDEX pk_id_CodegenTarget ON CodegenTarget
 CREATE TABLE Anwendungen
 (
   id SERIAL,
-  Name VARCHAR(100),
-  Titel VARCHAR(100),
-  ModuleName VARCHAR(100),
-  Functor VARCHAR(100),
-  Interface VARCHAR(100),
+  Name CHAR(100),
+  Titel CHAR(100),
+  ModuleName CHAR(100),
+  Functor CHAR(100),
+  Interface CHAR(100),
   PRIMARY KEY (id)
 );
 
@@ -318,8 +319,8 @@ CREATE UNIQUE INDEX pk_id_Anwendungen ON Anwendungen
 CREATE TABLE Anwendungs_Parameter
 (
   id SERIAL,
-  ParameterName VARCHAR(30),
-  ParameterValue VARCHAR(255),
+  ParameterName CHAR(30),
+  ParameterValue CHAR(255),
   AnwendungID INTEGER,
   PRIMARY KEY (id)
 );
@@ -336,10 +337,10 @@ CREATE UNIQUE INDEX pk_id_Anwendungs_Parameter ON Anwendungs_Parameter
 CREATE TABLE Formulare
 (
   id SERIAL,
-  Name VARCHAR(30),
-  MenuName VARCHAR(30),
-  EventName VARCHAR(30),
-  MenuHilfe VARCHAR(100),
+  Name CHAR(30),
+  MenuName CHAR(30),
+  EventName CHAR(30),
+  MenuHilfe CHAR(100),
   AnwendungID INTEGER,
   Typ INTEGER NOT NULL,
   PRIMARY KEY (id)
@@ -357,8 +358,8 @@ CREATE UNIQUE INDEX pk_id_Formulare ON Formulare
 CREATE TABLE Formular_Parameters
 (
   id SERIAL,
-  ParameterName VARCHAR(30),
-  ParameterValue VARCHAR(255),
+  ParameterName CHAR(30),
+  ParameterValue CHAR(255),
   FormularID INTEGER,
   PRIMARY KEY (id)
 );
@@ -376,10 +377,10 @@ CREATE UNIQUE INDEX pk_id_Formular_Parameters ON Formular_Parameters
 CREATE TABLE ForeignKey_VisibleData_Mapping
 (
   id SERIAL,
-  FKName	VARCHAR(100),
-  FKTable	VARCHAR(100),
-  PKName	VARCHAR(100),
-  PKTable	VARCHAR(100),
+  FKName	CHAR(100),
+  FKTable	CHAR(100),
+  PKName	CHAR(100),
+  PKTable	CHAR(100),
   PRIMARY KEY (id)
 );
 
@@ -424,10 +425,10 @@ CREATE UNIQUE INDEX pk_id_Anwendungsberechtigungen ON Anwendungsberechtigungen
 CREATE TABLE Formulartypen
 (
   id SERIAL,
-  HandlerModule VARCHAR(30),
-  HandlerFunctor VARCHAR(100),
-  HandlerInterface VARCHAR(100),
-  Beschreibung VARCHAR(254),
+  HandlerModule CHAR(30),
+  HandlerFunctor CHAR(100),
+  HandlerInterface CHAR(100),
+  Beschreibung CHAR(254),
   PRIMARY KEY (id)
 );
 
@@ -443,10 +444,10 @@ CREATE UNIQUE INDEX pk_id_Formulartypen ON Formulartypen
 CREATE TABLE Users
 (
   id SERIAL,
-  Name VARCHAR(30),
-  Vorname VARCHAR(30),
-  userid VARCHAR(30),
-  passwort VARCHAR(30),
+  Name CHAR(30),
+  Vorname CHAR(30),
+  userid CHAR(30),
+  passwort CHAR(30),
   lastapp INTEGER,
   PRIMARY KEY (id)
 );

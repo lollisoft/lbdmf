@@ -70,7 +70,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "LBHOOK_EXPORTS" /YX /FD /GZ /c
-# ADD CPP /nologo /MTd /W4 /Gm /GX /ZI /Od /I "..\..\include" /I "..\..\interfaces" /D "_DEBUG" /D "WINDOWS" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "LBHOOK_EXPORTS" /FD /GZ /c
+# ADD CPP /nologo /MTd /W4 /Gm /GX /ZI /Od /I "..\..\include" /I "..\..\interfaces" /D "TVISION" /D "_DEBUG" /D "WINDOWS" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "LBHOOK_EXPORTS" /FD /GZ /c
 # SUBTRACT CPP /YX
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32

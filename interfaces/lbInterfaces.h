@@ -1723,11 +1723,13 @@ lbErrCodes DLLEXPORT LB_FUNCTORCALL name(lb_I_Unknown** uk, lb_I_Module* m, char
  * If it could be created by REQUEST, the UAP_REQUEST macro - requesting an instance for a particular
  * interface - must also request the base class of it self to have the UAP class.
  */
+#ifndef MSC_VER
 class lb_I_Reference : public lb_I_Unknown {
 public:
 	virtual lbErrCodes LB_STDCALL set(lb_I_Unknown* r) = 0;
 	virtual lbErrCodes LB_STDCALL get(lb_I_Unknown*& r) = 0;
 };
+#endif
 /*...e*/
 
 /*...sclass lb_I_gcManager:0:*/

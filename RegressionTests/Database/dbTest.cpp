@@ -216,8 +216,15 @@ int main(int argc, char *argv[]) {
 
 		query = database->getQuery(0);
 
+
+		query1 = database->getQuery(0);
+		query1->skipFKCollecting();
+		query1->query("drop table regressiontest");
+
+
 		_CL_LOG << "query has " << query->getRefCount() << " references." LOG_
 		char buf[] = "create table regressiontest ("
+				"id serial,"
 				"test char(100) DEFAULT 'Nothing',\n"
 				"btest bool DEFAULT false, "
 				"btest1 bool DEFAULT false"
@@ -229,20 +236,41 @@ int main(int argc, char *argv[]) {
 
 		_CL_LOG << "query has " << query->getRefCount() << " references." LOG_
 
-		query1 = database->getQuery(0);
-		query1->skipFKCollecting();
-		query1->query("insert into regressiontest (test) values('Nix')");
+		query1->query("insert into regressiontest (test) values('Nix 1')");
+		query1->query("insert into regressiontest (btest) values(true)");
+		query1->query("insert into regressiontest (btest1) values(true)");
+		query1->query("insert into regressiontest (test) values('Nix 2')");
 		query1->query("insert into regressiontest (btest) values(true)");
 		query1->query("insert into regressiontest (btest1) values(true)");
 
-		query2 = database->getQuery(0);
-		query2->query("select test, btest, btest1 from regressiontest");
+
+		UAP_REQUEST(mm, lb_I_Database, database1)
+
+		database1->init();
+
+		lbDMFPasswd = getenv("lbDMFPasswd");
+		lbDMFUser   = getenv("lbDMFUser");
+
+		if (!lbDMFUser) lbDMFUser = "dba";
+		if (!lbDMFPasswd) lbDMFPasswd = "trainres";
+
+		database1->connect("lbDMF", lbDMFUser, lbDMFPasswd);
+
+		query2 = database1->getQuery(0);
+		query2->skipPeeking();
+		query2->query("select id, test, btest, btest1 from regressiontest order by id");
 
 		query2->PrintData();
 
-		queryA = database->getQuery(0);
-		queryA->skipFKCollecting();
-		queryA->query("drop table regressiontest");
+		query2->first();
+		
+		query2->next();
+		query2->next();
+		query2->next();
+		query2->remove();
+		//query2->previous();
+		query2->PrintData();
+		query2->PrintData(true);
 
 	}
 /*...e*/

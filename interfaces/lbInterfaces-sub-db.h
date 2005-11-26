@@ -84,15 +84,20 @@ public:
 	virtual lbErrCodes LB_STDCALL unregisterView(lb_I_MVC_View* view) = 0;
 /*...e*/
 
-	/**
-	 * \brief Error message printing.
-	 */
-	virtual void LB_STDCALL dbError(char* lp) = 0;
-
 	/** \brief Print the resulting query data to the console. 
 	 *
 	 */
-	virtual void LB_STDCALL PrintData() = 0;
+	virtual void LB_STDCALL PrintData(bool reverse = false) = 0;
+
+	/** \brief Print the current row data to the console. 
+	 *
+	 */
+	virtual void LB_STDCALL PrintCurrent() = 0;
+
+	virtual void LB_STDCALL PrintHeader() = 0;
+	virtual void LB_STDCALL PrintFooter() = 0;
+
+	virtual void LB_STDCALL skipPeeking() = 0;
 
         /**
          * \brief Set the SQL query.
