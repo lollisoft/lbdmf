@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.102 2005/11/18 23:41:32 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.103 2005/11/26 18:59:11 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.102 $
+ * $Revision: 1.103 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.102 2005/11/18 23:41:32 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.103 2005/11/26 18:59:11 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.103  2005/11/26 18:59:11  lollisoft
+ * Minor changes to compile and run under Linux
+ *
  * Revision 1.102  2005/11/18 23:41:32  lollisoft
  * More memory leaks have been fixed. There are currently less than 200
  * chunks unfreed, wich may be located in the plugin mechanism.
@@ -2001,7 +2004,10 @@ bool MyApp::OnInit(void)
 
 /*...sload the frame \40\peer is the frame \63\\63\\41\:0:*/
 
+
+_CL_LOG << "Create frame." LOG_
 	lb_I_Unknown *uk = wxGUI->createFrame();
+_CL_LOG << "Created frame." LOG_
 
 	#ifdef VERBOSE
 	char ptr[20] = "";
@@ -2791,18 +2797,22 @@ void lb_wxFrame::OnPluginTest(wxCommandEvent& WXUNUSED(event) ) {
 
 #endif
 
+#ifdef WINDOWS
 class cleanUp {
 public:
 	cleanUp() {
 	}
 	
 	virtual ~cleanUp() {
+		_CL_LOG << "Call unHookAll()..." LOG_
 		unHookAll();
+		_CL_LOG << "Called unHookAll()." LOG_		
 	}
 	
 };
 
 cleanUp clean_up;
+#endif
 
 /*...sWindows based WinMain implementation:0:*/
 #ifndef OSX

@@ -136,6 +136,9 @@
   #ifdef USE_MPATROL
    // Undefined outside Open Watcom
    #define TRMemOpen()
+   #define TRMemStartLocalCount()
+   #define TRMemStopLocalCount()
+   #define TRMemResetLocalCount()   
    #define TRMemSetModuleName(name)
    #define TRMemSetAdrBreakPoint(ptr, c)
   #endif
@@ -145,6 +148,9 @@
  #ifndef MEMTRACK
   #define TRMemValidate(name) 1
   #define TRMemOpen()
+  #define TRMemStartLocalCount()
+  #define TRMemStopLocalCount()
+  #define TRMemResetLocalCount()   
   #define TRMemSetModuleName(name)
   #define TRMemSetAdrBreakPoint(ptr, c)
  #endif

@@ -12,11 +12,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.69 $
+ * $Revision: 1.70 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.69 2005/11/06 19:25:34 lollisoft Exp $
+ * $Id: mkmk.cpp,v 1.70 2005/11/26 18:59:11 lollisoft Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.70  2005/11/26 18:59:11  lollisoft
+ * Minor changes to compile and run under Linux
+ *
  * Revision 1.69  2005/11/06 19:25:34  lollisoft
  * All bugs of unloading shared libraries removed.\nUsing dlopen more than once per shared library leads into unability to unload that library.\nMac OS X seems to not properly handle the reference counting, thus unloading of twice loaded shared libs fails.\n\nI have implemented a workaround to handle this properly.\n\nThere is one exeption: lbModule.so is needed by UAP macros, thus this shared library is left loaded and the system can unload it for me.
  *
@@ -1278,7 +1281,7 @@ void ShowHelp(int argc, char *argv[])
 
   fprintf(stderr, "Enhanced by Lothar Behrens (lothar.behrens@lollisoft.de)\n\n");
 
-  fprintf(stderr, "MKMK: makefile generator $Revision: 1.69 $\n");
+  fprintf(stderr, "MKMK: makefile generator $Revision: 1.70 $\n");
   fprintf(stderr, "Usage: MKMK lib|exe|dll|so modulname includepath,[includepath,...] file1 [file2 file3...]\n");
   
   fprintf(stderr, "Your parameters are: ");
@@ -1460,6 +1463,11 @@ void WriteDep(FILE *f, char *Name, TIncludeParser *p)
 
   for(int c = 0; c < strlen(SExt); c++) SExt[c] = toupper(SExt[c]);
 
+  if (strcmp(SExt, ".C") == 0) {
+  	CPPFlag = 0;
+  	strcpy(Compiler, "$(CC)");
+  }
+  
   if (strcmp(SExt, ".CPP") == 0) {
   	CPPFlag = 1;
   	strcpy(Compiler, "$(CPP)");
@@ -1468,11 +1476,6 @@ void WriteDep(FILE *f, char *Name, TIncludeParser *p)
   if (strcmp(SExt, ".CC") == 0) {
   	CPPFlag = 1;
   	strcpy(Compiler, "$(CPP)");
-  }
-  
-  if (strcmp(SExt, ".C") == 0) {
-  	CPPFlag = 0;
-  	strcpy(Compiler, "$(CC)");
   }
   
   ObjExt(Name,ObjName,sizeof(ObjName));
@@ -1511,12 +1514,12 @@ void WriteDep(FILE *f, char *Name, TIncludeParser *p)
 //                printf("\t\t%s $(C_EXEOPS) $(MOD_INCL) %s\n\n", Compiler, Name);
                 break;
         case ELF_TARGET:
-		case ELF_BUNDLE_TARGET:
-				printf("\t\t@echo Build %s\n", NameC);
+	case ELF_BUNDLE_TARGET:
+		printf("\t\t@echo Build %s\n", NameC);
                 printf("\t\t@%s $(C_ELFOPS) $(MOD_INCL) %s -o %s\n\n", Compiler, Name, ObjName);
                 break;
-		case SO_BUNDLE_TARGET:
-	        	printf("\t\t@echo Build %s\n", NameC);
+	case SO_BUNDLE_TARGET:
+        	printf("\t\t@echo Build %s\n", NameC);
                 printf("\t\t@%s -c -fPIC -g $(C_SOOPS) $(MOD_INCL) %s -o %s\n\n", Compiler, Name, ObjName);
                 break;
         case SO_TARGET:
@@ -1529,12 +1532,12 @@ void WriteDep(FILE *f, char *Name, TIncludeParser *p)
                         break;
                     }
                 }
-	        	printf("\t\t@echo Build %s\n", NameC);
+        	printf("\t\t@echo Build %s\n", NameC);
                 printf("\t\t@%s -c -fPIC -g $(C_SOOPS) $(MOD_INCL) %s -o %s.o\n\n", Compiler, Name, ObjName);
                 }
                 break;
         case WXSO_TARGET:
-		case WXSHARED_TARGET:
+	case WXSHARED_TARGET:
         case WXSOPLUGIN_TARGET:
                 {
                 int pos = 0;
@@ -1544,7 +1547,7 @@ void WriteDep(FILE *f, char *Name, TIncludeParser *p)
                         break;
                     }
                 }
-	        	printf("\t\t@echo Build %s\n", NameC);
+        	printf("\t\t@echo Build %s\n", NameC);
                 printf("\t\t@%s -c -fPIC -g $(C_SOOPS) $(MOD_INCL) %s -o %s.o\n\n", Compiler, Name, ObjName);
                 }
                 break;

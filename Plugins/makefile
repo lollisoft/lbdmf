@@ -24,6 +24,7 @@ ifeq ($(OSTYPE), linux)
 TARGETDLL=so
 TARGETEXE=elf
 TARGETWXPLUGIN=wxsoplugin
+TARGETPLUGIN=soplugin
 
 ALLTARGETS = \
 	TestPlugin \

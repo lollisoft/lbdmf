@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.71 $
+ * $Revision: 1.72 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.71 2005/11/20 13:39:52 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.72 2005/11/26 18:59:11 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.72  2005/11/26 18:59:11  lollisoft
+ * Minor changes to compile and run under Linux
+ *
  * Revision 1.71  2005/11/20 13:39:52  lollisoft
  * Wrong variable name
  *
@@ -353,9 +356,15 @@ CTest a2;
 IMPLEMENT_FUNCTOR(instanceOfEventMapper, lb_EventMapper)
 IMPLEMENT_FUNCTOR(instanceOfEvHandler, lb_EvHandler)
 
+#ifdef WINDOWS
 IMPLEMENT_SINGLETON_FUNCTOR(instanceOfMetaApplication, lb_MetaApplication)
+#endif
 IMPLEMENT_SINGLETON_FUNCTOR(instanceOfEventManager, lb_EventManager)
 IMPLEMENT_SINGLETON_FUNCTOR(instanceOfDispatcher, lb_Dispatcher)
+#ifdef LINUX
+IMPLEMENT_SINGLETON_FUNCTOR(instanceOfMetaApplication, lb_MetaApplication)
+#endif
+
 /*...e*/
 
 
@@ -384,7 +393,12 @@ lb_MetaApplication::~lb_MetaApplication() {
 	app--;
 	app.resetPtr();
 
-	lbUnloadModule(moduleName);
+_CL_LOG << "Unload module " << moduleName << "." LOG_
+
+	if (moduleName) lbUnloadModule(moduleName);
+	
+_CL_LOG << "Unloaded module." LOG_	
+	
 	free(moduleName);
 }
 /*...e*/

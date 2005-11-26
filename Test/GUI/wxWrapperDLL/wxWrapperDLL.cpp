@@ -1163,8 +1163,8 @@ lb_wxFrame::~lb_wxFrame() {
         	_CL_LOG << "lb_wxFrame::~lb_wxFrame() GUI has been cleaned up prior." LOG_
         	_CL_LOG << "********************************************************" LOG_
         }
-        _CL_LOG << "Event manager has " << eman->getRefCount() << " references." LOG_
-        _CL_LOG << "Dispatcher has    " << dispatcher->getRefCount() << " references." LOG_
+        if (eman != NULL) _CL_LOG << "Event manager has " << eman->getRefCount() << " references." LOG_
+        if (dispatcher != NULL) _CL_LOG << "Dispatcher has    " << dispatcher->getRefCount() << " references." LOG_
 }
 
 void lb_wxFrame::OnRunLogonWizard(wxCommandEvent& WXUNUSED(event)) {
@@ -1320,6 +1320,22 @@ void lb_wxFrame::OnPluginTest(wxCommandEvent& WXUNUSED(event) ) {
 
 
 /*...e*/
+#endif
+#ifdef LINUX
+class cleanUp {
+public:
+        cleanUp() {
+        }
+
+        virtual ~cleanUp() {
+                _CL_LOG << "Call unHookAll()..." LOG_
+                unHookAll();
+                _CL_LOG << "Called unHookAll()." LOG_
+        }
+
+};
+
+cleanUp clean_up;
 #endif
 
 #ifdef WINDOWS

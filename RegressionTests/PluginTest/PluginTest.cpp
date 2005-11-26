@@ -81,7 +81,7 @@ int main(int argc, char *argv[]) {
 
 	if (PM->beginEnumPlugins()) {
 	
-		while (TRUE) {
+		while (true) {
 		
 			UAP(lb_I_Plugin, pl, __FILE__, __LINE__)
 			
@@ -131,7 +131,7 @@ int main(int argc, char *argv[]) {
 
 		if (PM->beginEnumPlugins()) {
 	
-			while (TRUE) {
+			while (true) {
 				_CL_LOG << ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>" LOG_
 				
 				UAP(lb_I_Plugin, pl, __FILE__, __LINE__)

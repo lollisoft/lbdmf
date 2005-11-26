@@ -25,6 +25,7 @@ TARGETDLL=so
 TARGETEXE=elf
 
 ALLTARGETS = \
+	Database/Plain-ODBC-Test \
 	Database \
 	Basetypes \
 	Memory \
@@ -37,6 +38,7 @@ TARGETDLL=so
 TARGETEXE=elf
 
 ALLTARGETS = \
+	Database/Plain-ODBC-Test \
 	Database \
 	Basetypes \
 	Memory \
@@ -49,6 +51,7 @@ TARGETDLL=dll
 TARGETEXE=exe
 
 ALLTARGETS = \
+	Database/Plain-ODBC-Test \
 	Database \
 	Basetypes \
 	Memory \
@@ -78,10 +81,14 @@ mkrelease:
 
 dummy:
 
+Database/Plain-ODBC-Test: dummy
+	$(MAKE) -C $@ -e MODULE=plainTest -e TARGET=$(TARGETEXE) -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
+	$(MAKE) -C $@
+
 Database: dummy
 	$(MAKE) -C $@ -e MODULE=dbTest -e TARGET=$(TARGETEXE) -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
 	$(MAKE) -C $@
-	
+
 Memory: dummy
 	$(MAKE) -C $@ -e MODULE=memTest -e TARGET=$(TARGETEXE) -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
 	$(MAKE) -C $@

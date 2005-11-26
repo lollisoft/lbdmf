@@ -659,6 +659,42 @@ DLLEXPORT lbErrCodes LB_STDCALL lbUnloadModule(const char* name) {
 			}
 		}
 #endif
+#ifdef LINUX
+		_Modules* temp = loadedModules;
+		_Modules* lastMod = NULL;
+		
+		if (name == NULL) _CL_LOG << "ERROR: Could not unload unknown module.\n" LOG_
+
+		while (temp) {
+			if (temp->name != NULL) {
+				_CL_LOG << "Unload module " << name << ". Test for " << temp->name << "." LOG_
+				if (strcmp(temp->name, name) == 0) {
+					_Modules* delMod = temp;
+				
+					if (lastMod) {
+						lastMod->next = temp->next;
+					}
+				
+					if (loadedModules == temp) {
+						temp = temp->next;
+						loadedModules = temp;
+					} else {
+						temp = temp->next;
+					}
+					
+					if (dlclose(delMod->lib) == 0) {
+						printf("ERROR: Library could not be unloaded!\n");
+					}
+
+					free(delMod->name);
+					delete delMod;
+				} else {
+					lastMod = temp;
+					temp = temp->next;
+				}
+			}
+		}
+#endif
 	return ERR_NONE;
 }
 /*...e*/

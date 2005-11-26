@@ -1,4 +1,7 @@
+#ifdef WINDOWS
 #include <windows.h>
+#endif
+
 #include <sqlext.h>
 #include <stdio.h>
 #include <iostream.h>
@@ -114,13 +117,12 @@ void PrintData(HSTMT hstmt, int cols, bool reverse) {
         PrintHeader(cols, hstmt);
         
         if (reverse == false) {
-
                 if (first(hstmt) == SQL_SUCCESS) {
                     PrintCurrent(cols, hstmt);
                     
                     while (next(hstmt) == SQL_SUCCESS) {
                             PrintCurrent(cols, hstmt);
-                    };      
+                    }      
                 }
 
         } else {
@@ -129,7 +131,7 @@ void PrintData(HSTMT hstmt, int cols, bool reverse) {
                             
                     while (previous(hstmt) == SQL_SUCCESS) {
                             PrintCurrent(cols, hstmt);
-                    };      
+                    }
                 }
         }
         
@@ -289,12 +291,13 @@ int main(void)
         first( hstmt_select);
         next(  hstmt_select);
         remove(hstmt_select);
+        update(hstmt_select);
         next(  hstmt_select);
         remove(hstmt_select);
-        first( hstmt_select);
         update(hstmt_select);
+        first( hstmt_select);
 
-        PrintData(hstmt_select, count, true);
+        PrintData(hstmt_select, count, false);
 
         // Free the allocated statement handle
         retcode = SQLFreeStmt (hstmt, SQL_DROP);
