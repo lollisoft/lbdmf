@@ -25,11 +25,14 @@
 #            40235 Duesseldorf (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.73 $
+# * $Revision: 1.74 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.73 2005/11/16 20:52:54 lollisoft Exp $
+# * $Id: STD_MAKE,v 1.74 2005/11/27 16:46:39 lollisoft Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.74  2005/11/27 16:46:39  lollisoft
+# * Made several changes to have a clean ODBC sample application.
+# *
 # * Revision 1.73  2005/11/16 20:52:54  lollisoft
 # * Typo :-)
 # *
@@ -277,7 +280,7 @@ MODE=_DEBUG
 DEBUG_MEMORY=yes
 
 #DEBUG_MEMORY_TYPE=mpatrol
-DEBUG_MEMORY_TYPE=trmem
+#DEBUG_MEMORY_TYPE=trmem
 
 
 WX_DEBUG=

@@ -3100,7 +3100,6 @@ lbErrCodes LB_STDCALL lbBoundColumn::bindColumn(lb_I_Query* q, int column, bool 
 		case SQL_CHAR:
 		case SQL_VARCHAR:
 		case SQL_LONGVARCHAR:
-		
 /*...sbind a character array:24:*/
 			buffer = malloc((ColumnSize+1)*rows+20);
 
@@ -3108,7 +3107,7 @@ lbErrCodes LB_STDCALL lbBoundColumn::bindColumn(lb_I_Query* q, int column, bool 
 			bound = 1;			     // Try a spacer for bugfix
 			memset(buffer, 0, (ColumnSize+1)*rows+20);
 
-			ret = SQLBindCol(hstmt, column, SQL_C_DEFAULT, buffer, (ColumnSize+1), &cbBufferLength);
+			ret = SQLBindCol(hstmt, column, SQL_C_CHAR, buffer, (ColumnSize+1), &cbBufferLength);
 			
 			if (ret != SQL_SUCCESS) {
 				printf("Error while binding a column!\n");
@@ -3311,7 +3310,7 @@ void LB_STDCALL lbBoundColumn::unbindReadonlyColumns() {
 			_CL_VERBOSE << "Unbind char" LOG_
 			bound = 0;
 
-			ret = SQLBindCol(hstmt, _column, SQL_C_DEFAULT, NULL, (ColumnSize+1), &cbBufferLength);
+			ret = SQLBindCol(hstmt, _column, SQL_C_CHAR, NULL, (ColumnSize+1), &cbBufferLength);
 			break;
 		case SQL_BINARY:
 			_CL_VERBOSE << "Unbind binary" LOG_
@@ -3377,7 +3376,7 @@ void LB_STDCALL lbBoundColumn::rebindReadonlyColumns() {
 			_CL_VERBOSE << "Rebind char" LOG_
 			bound = 1;
 
-			ret = SQLBindCol(hstmt, _column, SQL_C_DEFAULT, buffer, (ColumnSize+1), &cbBufferLength);
+			ret = SQLBindCol(hstmt, _column, SQL_C_CHAR, buffer, (ColumnSize+1), &cbBufferLength);
 			break;
 		case SQL_BINARY:
 			_CL_VERBOSE << "Rebind binary" LOG_

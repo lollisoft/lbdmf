@@ -3,7 +3,19 @@ Microsoft Developer Studio Workspace File, Format Version 6.00
 
 ###############################################################################
 
-Project: "psqlodbc"="..\..\psqlODBC-src\psqlodbc-08.01.0101\psqlodbc.dsp" - Package Owner=<4>
+Project: "psqlodbc"="..\..\..\..\..\..\..\psqlODBC-src\psqlodbc-08.01.0101\psqlodbc.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "psqlodbca"="..\..\..\..\..\..\..\PSQLODBC-SRC\PSQLODBC-07.03.0200\psqlodbca\psqlodbca.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{

@@ -146,13 +146,17 @@
  #endif // MEMTRACK
 
  #ifndef MEMTRACK
-  #define TRMemValidate(name) 1
+  #define TRMemValidate(name) (name != NULL)
   #define TRMemOpen()
   #define TRMemStartLocalCount()
   #define TRMemStopLocalCount()
   #define TRMemResetLocalCount()   
   #define TRMemSetModuleName(name)
   #define TRMemSetAdrBreakPoint(ptr, c)
+  #define TRMemStartLocalCount()
+  #define TRMemStopLocalCount()
+  #define TRMemResetLocalCount()
+  #define TRMemFree(name) free(name)
  #endif
 #endif
 /*...e*/
