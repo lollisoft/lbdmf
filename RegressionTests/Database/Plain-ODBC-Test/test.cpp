@@ -5,7 +5,7 @@
 #include <sqlext.h>
 #include <stdio.h>
 #include <iostream.h>
-
+#include <unistd.h>
 
 void dbError(char* lp, HSTMT hstmt);
 void PrintFooter(int cols);
@@ -17,6 +17,15 @@ char test[200] = "";
 char btest[100] = "";
 char btest1[100] = "";
 
+
+void delay(long mikrosek)
+{
+        struct timeval timeout;
+
+        timeout.tv_sec = mikrosek / 1000000;
+        timeout.tv_usec = mikrosek % 1000000;
+        select (0, NULL, NULL, NULL, &timeout);
+}
 
 void trim(char* stringdata) {
         while (stringdata[strlen(stringdata)-1] == ' ')
@@ -31,14 +40,15 @@ void remove(HSTMT hstmt) {
                 printf("ERROR: Removing data failed.\n");
                 dbError("SQLSetPos(SQL_DELETE)", hstmt);
         }
-        
-	retcode = SQLSetPos(hstmt, 1, SQL_REFRESH, SQL_LOCK_NO_CHANGE);
+/*        
+	retcode = SQLSetPos(hstmt, 1, SQL_POSITION, SQL_LOCK_NO_CHANGE);
 
         if (retcode != SQL_SUCCESS)
         {
                 printf("ERROR: Removing data failed.\n");
                 dbError("SQLSetPos(SQL_DELETE)", hstmt);
         }
+*/
 }
 
 void update(HSTMT hstmt) {
@@ -122,24 +132,43 @@ char* getColumnName(HSTMT hstmt, int col) {
 
 
 void PrintData(HSTMT hstmt, int cols, bool reverse) {
+	RETCODE retcode;
+	
         PrintHeader(cols, hstmt);
-        
+	
         if (reverse == false) {
-                if (first(hstmt) == SQL_SUCCESS) {
-                    PrintCurrent(cols, hstmt);
+		retcode = first(hstmt);
+                if ((retcode == SQL_SUCCESS) || (retcode == SQL_SUCCESS_WITH_INFO)) {
                     
-                    while (next(hstmt) == SQL_SUCCESS) {
-                            PrintCurrent(cols, hstmt);
+		    while (retcode == SQL_SUCCESS_WITH_INFO) retcode = next(hstmt);
+		
+		    PrintCurrent(cols, hstmt);
+                    retcode = next(hstmt);
+		    
+                    while ((retcode == SQL_SUCCESS) || (retcode == SQL_SUCCESS_WITH_INFO)) {
+			    
+			    while (retcode == SQL_SUCCESS_WITH_INFO) retcode = next(hstmt);
+                            
+			    PrintCurrent(cols, hstmt);
+			    retcode = next(hstmt);
                     }      
                 }
-
         } else {
-                if (last(hstmt) == SQL_SUCCESS) {
-                    PrintCurrent(cols, hstmt);
+		retcode = last(hstmt);
+                if ((retcode == SQL_SUCCESS) || (retcode == SQL_SUCCESS_WITH_INFO)) {
+                    
+		    while (retcode == SQL_SUCCESS_WITH_INFO) retcode = previous(hstmt);
+		
+		    PrintCurrent(cols, hstmt);
+                    retcode = previous(hstmt);
+		    
+                    while ((retcode == SQL_SUCCESS) || (retcode == SQL_SUCCESS_WITH_INFO)) {
+			    
+			    while (retcode == SQL_SUCCESS_WITH_INFO) retcode = previous(hstmt);
                             
-                    while (previous(hstmt) == SQL_SUCCESS) {
-                            PrintCurrent(cols, hstmt);
-                    }
+			    PrintCurrent(cols, hstmt);
+			    retcode = previous(hstmt);
+                    }      
                 }
         }
         
@@ -224,7 +253,7 @@ int main(void)
         retcode = SQLAllocEnv (&henv);
         retcode = SQLAllocConnect (henv, &hdbc);
         retcode = SQLSetEnvAttr(henv, SQL_ATTR_ODBC_VERSION, (void*) SQL_OV_ODBC3, 0);
-        retcode = SQLSetConnectAttr(hdbc, SQL_ATTR_ODBC_CURSORS, (void*)SQL_CUR_USE_ODBC/*SQL_CUR_USE_IF_NEEDED*/, 0);
+        retcode = SQLSetConnectAttr(hdbc, SQL_ATTR_ODBC_CURSORS, SQL_CUR_USE_IF_NEEDED, 0);
         retcode = SQLConnect(hdbc, DSN, SQL_NTS, user, SQL_NTS, passwd, SQL_NTS);
         retcode = SQLSetConnectOption(hdbc, SQL_AUTOCOMMIT, SQL_AUTOCOMMIT_ON);
         retcode = SQLAllocStmt (hdbc, &hstmt);
@@ -298,12 +327,19 @@ int main(void)
 
         first( hstmt_select);
         next(  hstmt_select);
+
         remove(hstmt_select);
+
         update(hstmt_select);
+
         next(  hstmt_select);
         remove(hstmt_select);
+
         update(hstmt_select);
+	
         first( hstmt_select);
+
+        PrintData(hstmt_select, count, false);
 
         PrintData(hstmt_select, count, false);
 
