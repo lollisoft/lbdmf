@@ -179,6 +179,7 @@ public:
 		firstfetched = 0;
 		cols = 0;
 		cursor = 1;
+		haveData = false;
 
 		preparingFKColumns = 0;
 		
@@ -328,6 +329,7 @@ public:
 private:
 	int	cursor;
 	bool 	peeking;
+	bool	haveData;
 	HENV    henv;
 	HDBC    hdbc;
 	HSTMT   hstmt;
@@ -2256,7 +2258,8 @@ char* LB_STDCALL lbQuery::getColumnName(int col) {
 /*...s\35\define CHECK_ROWSTAT\40\\41\:0:*/
 #define CHECK_ROWSTAT() \
 	if (RowStat[0] == SQL_ROW_DELETED) { \
-		return ERR_DB_ROWDELETED; \
+		reopen(); \
+		if (haveData == false) return ERR_DB_NODATA; \
 	} \
 	if (RowStat[0] == SQL_ROW_NOROW) { \
 		if (retcode == SQL_NO_DATA) { \
@@ -2284,7 +2287,11 @@ void LB_STDCALL lbQuery::reopen() {
 
 	boundColumns->rebind();
 	if (cursor > 0 ) 
-		absolute(cursor);
+		if (absolute(cursor) == ERR_DB_NODATA) {
+			haveData = false;
+		} else {
+			haveData = true;
+		}
 	else
 		first();
 }
@@ -2670,7 +2677,10 @@ UDWORD  RowsFetched = 0;
 	executeDirect(SQL->charrep());
 
 	reopen();
+	
+	if (haveData == false) return ERR_DB_NODATA;
 		
+	return INFO_DB_REOPENED;
 /*
 	retcode = SQLSetPos(hstmt, 1, SQL_REFRESH, SQL_LOCK_NO_CHANGE);
 	
