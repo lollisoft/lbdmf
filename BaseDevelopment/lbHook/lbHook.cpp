@@ -52,23 +52,21 @@
 #endif
 /*...e*/
 
+/*...sDeactivate some MSVC warnings:0:*/
 #ifdef _MSC_VER
 #pragma warning( disable: 4275 )
 #pragma warning( disable: 4251 )
 #pragma warning( disable: 4101 )
 #endif
+/*...e*/
 
-#define HOOK_DLL
 /*...sLB_HOOK_DLL scope:0:*/
+#define HOOK_DLL
 #define LB_HOOK_DLL
 #include <lbhook-module.h>
 /*...e*/
 
 #include <lbConfigHook.h>
-
-#ifdef LINUX
-#define HINSTANCE void*
-#endif
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -76,6 +74,19 @@
 #include <direct.h>
 #endif
 
+/*...sDefines:0:*/
+#ifdef LINUX
+#define HINSTANCE void*
+#endif
+#if defined(OSX) || defined(UNIX) || defined(LINUX)
+#define SLASH "/"
+#endif
+#if defined(WINDOWS)
+#define SLASH "\\"
+#endif
+/*...e*/
+
+/*...sGlobal variables:0:*/
 #ifdef WINDOWS
 #ifndef LB_CLASSES_DLL
 DLLEXPORT lb_I_Log *lb_log;
@@ -90,21 +101,40 @@ LB_DLLIMPORT int lb_isInitializing;
 extern lb_I_Log *lb_log;     
 extern int lb_isInitializing;
 #endif
-
 HINSTANCE ModuleHandle = NULL;
 HINSTANCE LB_Module_Handle = NULL;
-
 bool lbVerbose = FALSE;
 int instances = 0;
 char* lbLogDirectory = NULL;
 char* lbLogFile = NULL;
+#ifdef LINUX
+lb_I_Log *lb_log = NULL;
+int lb_isInitializing = 0;
+#endif
+static int memTrackerInit = 0;
 
-#if defined(OSX) || defined(UNIX) || defined(LINUX)
-#define SLASH "/"
-#endif
-#if defined(WINDOWS)
-#define SLASH "\\"
-#endif
+/*...stypedef struct Module:0:*/
+typedef struct Module {
+	Module() {
+		number = -1;
+		name = NULL;
+		next = NULL;
+		lib = NULL;
+		skip = false;
+	}
+	int number;
+	char* name;
+	Module* next;
+	HINSTANCE lib;
+	bool skip;
+} _Modules;
+/*...e*/
+
+_Modules* loadedModules = NULL;
+static bool _isSetTRMemTrackBreak = false;
+static char TRMemTrackBreakAddr[21] = "DoNotBreak";
+char* translated = NULL;
+/*...e*/
 
 /*...sDLLEXPORT void logMessage\40\const char \42\msg\44\ char \42\f\44\ int level\41\:0:*/
 DLLEXPORT void logMessage(const char *msg, char *f, int level) {
@@ -176,22 +206,26 @@ DLLEXPORT char* getLogDirectory() {
 }
 /*...e*/
 
+/*...sDLLEXPORT void LB_STDCALL InstanceCount\40\int inst\41\:0:*/
 DLLEXPORT void LB_STDCALL InstanceCount(int inst) {
 	instances += inst;
 }
-
+/*...e*/
+/*...sDLLEXPORT void LB_STDCALL Instances\40\\41\:0:*/
 DLLEXPORT void LB_STDCALL Instances() {
 	printf("Current instances are %d.\n", instances);
 }
-
-
+/*...e*/
+/*...sDLLEXPORT void LB_STDCALL setVerbose\40\bool what\41\:0:*/
 DLLEXPORT void LB_STDCALL setVerbose(bool what) {
     lbVerbose = what;
 }
-
+/*...e*/
+/*...sDLLEXPORT bool LB_STDCALL isVerbose\40\\41\:0:*/
 DLLEXPORT bool LB_STDCALL isVerbose() {
 	return lbVerbose;
 }
+/*...e*/
 
 /*...sHelpers:0:*/
 DLLEXPORT int LB_STDCALL isInitializing() {
@@ -264,39 +298,12 @@ DLLEXPORT void LB_STDCALL setLBModuleHandle(HINSTANCE h) {
 }
 /*...e*/
 
-
-#ifdef LINUX
-lb_I_Log *lb_log = NULL;
-int lb_isInitializing = 0;
-#endif
-
-/**
- * Platform independend module loader
- */
-
 #if !defined(LB_STDCALL)
 #ifdef WINDOWS
 #error LB_STDCALL is not defined !
 #endif
 #endif 
  
-/*...stypedef struct Module:0:*/
-typedef struct Module {
-	Module() {
-		number = -1;
-		name = NULL;
-		next = NULL;
-		lib = NULL;
-		skip = false;
-	}
-	int number;
-	char* name;
-	Module* next;
-	HINSTANCE lib;
-	bool skip;
-} _Modules;
-/*...e*/
-_Modules* loadedModules = NULL;
 /*...s_Modules \42\createModule\40\const char\42\ name\41\:0:*/
 _Modules *createModule(const char* name) {
 	_Modules* temp = NULL;
@@ -461,9 +468,6 @@ DLLEXPORT lbErrCodes LB_STDCALL lbGetFunctionPtr(const char* name, HINSTANCE hin
         return ERR_NONE;
 }
 /*...e*/
-
-static int memTrackerInit = 0;
-
 /*...sDLLEXPORT lb_I_Module\42\ LB_STDCALL getModuleInstance\40\\41\:0:*/
 DLLEXPORT lb_I_Module* LB_STDCALL getModuleInstance() {
 typedef lbErrCodes (LB_STDCALL *T_p_getlbModuleInstance) (lb_I_Module**, lb_I_Module* m, char* file, int line);
@@ -558,10 +562,6 @@ lbErrCodes LB_STDCALL releaseInstance(lb_I_Unknown* inst) {
 	return ERR_NONE;
 }
 /*...e*/
-
-static bool _isSetTRMemTrackBreak = false;
-static char TRMemTrackBreakAddr[21] = "DoNotBreak";
-
 /*...sDLLEXPORT bool LB_STDCALL isSetTRMemTrackBreak\40\\41\:0:*/
 DLLEXPORT bool LB_STDCALL isSetTRMemTrackBreak() {
 #ifdef MEMTRACK
@@ -601,12 +601,11 @@ DLLEXPORT void LB_STDCALL setTRMemTrackBreak(char* brk, int count) {
 #endif
 }
 /*...e*/
+/*...sDLLEXPORT char\42\ LB_STDCALL getTRMemTrackBreak\40\\41\:0:*/
 DLLEXPORT char* LB_STDCALL getTRMemTrackBreak() {
 	return TRMemTrackBreakAddr;
 }
-
-char* translated = NULL;
-
+/*...e*/
 /*...sDLLEXPORT char\42\ LB_STDCALL translateText\40\char\42\ text\41\:0:*/
 DLLEXPORT char* LB_STDCALL translateText(char* text) {
 	lb_I_Module* mm = NULL;
@@ -797,12 +796,6 @@ DLLEXPORT void LB_STDCALL unHookAll() {
 
 }
 /*...e*/
-
-/**
- * A moduleinstance is a factory object for all other further instances
- * of registered modules.
- */
-
 /*...sclass lbKey \58\ public lb_I_KeyBase:0:*/
 class DLLEXPORT lbKey : public lb_I_KeyBase {
 public:
@@ -825,8 +818,6 @@ private:
 	int key;
 };
 /*...e*/
-
-
 /*...slbKey:0:*/
 /*...sc\39\tors and d\39\tors:0:*/
 #ifdef _MSC_VER
@@ -897,8 +888,6 @@ char* LB_STDCALL lbKey::charrep() const {
     return strdup(buf);
 }
 /*...e*/
-
-
 /*...slbKey_:0:*/
 /*...sc\39\tors and d\39\tors:0:*/
 #ifdef _MSC_VER
@@ -969,71 +958,6 @@ char* LB_STDCALL lbKey_::charrep() const {
     return strdup(buf);
 }
 /*...e*/
-#ifdef bla
-/*...slbKeyUL:0:*/
-
-
-lbKeyUL::lbKeyUL() {
-    ref = STARTREF;
-    key = 0;
-    strcpy(keyType, "UL");
-}
-
-lbKeyUL::lbKeyUL(unsigned long _key) {
-    ref = STARTREF;
-    key = _key;
-    strcpy(keyType, "UL");
-}
-
-lbKeyUL::lbKeyUL(const lb_I_KeyBase* k) {
-    ref = STARTREF;
-    key = ((lbKeyUL*) k)->key;
-}
-
-
-lbKeyUL::~lbKeyUL(){
-}
-
-BEGIN_IMPLEMENT_LB_UNKNOWN(lbKeyUL)
-	ADD_INTERFACE(lb_I_KeyBase)
-END_IMPLEMENT_LB_UNKNOWN()
-
-lbErrCodes LB_STDCALL lbKeyUL::setData(lb_I_Unknown* uk) {
-	_CL_VERBOSE << "lbKey::setData() not implemented yet" LOG_
-	return ERR_NONE;
-}
-
-
-char* LB_STDCALL lbKeyUL::getKeyType() const {
-    return "UL";
-}
-
-int LB_STDCALL lbKeyUL::equals(const lb_I_KeyBase* _key) const {
-    return key == ((lbKeyUL*) _key)->key;
-}
-
-int LB_STDCALL lbKeyUL::greater(const lb_I_KeyBase* _key) const {
-    return key > ((lbKeyUL*) _key)->key;
-}
-
-int LB_STDCALL lbKeyUL::lessthan(const lb_I_KeyBase* _key) const {
-    return key < ((lbKeyUL*) _key)->key;
-}
-
-char* LB_STDCALL lbKeyUL::charrep() const {
-    char buf[100];
-
-#ifdef WINDOWS
-    itoa(key, buf, 10);
-#endif
-#ifdef LINUX
-    sprintf(buf, "%d", key);
-#endif    
-    
-    return strdup(buf);
-}
-/*...e*/
-#endif
 /*...slbStringKey:0:*/
 DLLEXPORT lbStringKey::lbStringKey() {
     ref = STARTREF;
@@ -1097,27 +1021,6 @@ char* LB_STDCALL lbStringKey::charrep() const {
     return key;
 }
 /*...e*/
-
-class miniClass {
-public:
-	miniClass() {
-		printf("miniclass ctor called.\n");
-	}
-
-	~miniClass() {
-		printf("miniclass dtor called.\n");
-	}
-protected:
-	char buffer[100];
-};
-
-miniClass _class;
-
-extern "C" {
-void test() {
-	printf("test() called.\n");
-}
-}
 
 #ifdef WINDOWS
 /*...sDllMain:0:*/
