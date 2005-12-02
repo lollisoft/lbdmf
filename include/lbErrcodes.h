@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.24 $
+ * $Revision: 1.25 $
  * $Name:  $
- * $Id: lbErrcodes.h,v 1.24 2005/12/02 00:28:43 lollisoft Exp $
+ * $Id: lbErrcodes.h,v 1.25 2005/12/02 17:45:59 lollisoft Exp $
  *
  * $Log: lbErrcodes.h,v $
+ * Revision 1.25  2005/12/02 17:45:59  lollisoft
+ * New DB message code.
+ *
  * Revision 1.24  2005/12/02 00:28:43  lollisoft
  * Deleting a row works for some tests. Deleting data in join queries is not tested
  * and would propably not work. This is at least due to lack of creating a delete
@@ -247,6 +250,7 @@ enum lbErrCodes {
 	ERR_DB_ROWDELETED,
 	ERR_UPDATE_FAILED,
 	WARN_DB_NODATA,
+	INFO_DB_REOPENED,
 	
 /* Errcodes for parameter handling */	
 	
