@@ -1296,6 +1296,39 @@ void LB_STDCALL lbDatabasePanel::create(int parentId) {
 	_created = true;
 }
 
+#define DISABLE_EOF() \
+	if (allNaviDisabled == false) { \
+		nextButton->Disable(); \
+		lastButton->Disable(); \
+		firstButton->Enable(); \
+		prevButton->Enable(); \
+		deleteButton->Enable(); \
+	} \
+	allNaviDisabled = false;
+	
+
+#define DISABLE_BOF() \
+	if (allNaviDisabled == false) { \
+		prevButton->Disable(); \
+		firstButton->Disable(); \
+		lastButton->Enable(); \
+		nextButton->Enable(); \
+		deleteButton->Enable(); \
+	} \
+	allNaviDisabled = false;
+
+#define DISABLE_FOR_ONE_DATA() \ 
+	prevButton->Disable(); \
+	firstButton->Disable(); \
+	lastButton->Disable(); \
+	nextButton->Disable();
+
+#define DISABLE_FOR_NO_DATA() \
+	DISABLE_FOR_ONE_DATA() \
+	deleteButton->Disable(); \
+	allNaviDisabled = true;
+
+
 /*...slbErrCodes LB_STDCALL lbDatabasePanel\58\\58\registerEventHandler\40\lb_I_Dispatcher\42\ dispatcher\41\:0:*/
 lbErrCodes LB_STDCALL lbDatabasePanel::registerEventHandler(lb_I_Dispatcher* dispatcher) {
 
@@ -1805,6 +1838,8 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 	wxButton *buttonAdd = new wxButton(this, DatabaseAdd, _trans("Add")); //, wxPoint(), wxSize(100,20));
 	wxButton *buttonDelete = new wxButton(this, DatabaseDelete, _trans("Delete")); //, wxPoint(), wxSize(100,20));
 
+	deleteButton = buttonDelete;
+
 
 	sizerAddRem->Add(buttonAdd, 1, wxEXPAND | wxALL, 5);
 	sizerAddRem->Add(buttonDelete, 1, wxEXPAND | wxALL, 5);
@@ -1967,6 +2002,7 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 	
 	Centre();
 
+	lbDBFirst(NULL);
 }
 /*...e*/
 
@@ -2884,7 +2920,7 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBClear() {
 /*...slbErrCodes LB_STDCALL lbDatabasePanel\58\\58\lbDBUpdate\40\\41\:0:*/
 lbErrCodes LB_STDCALL lbDatabasePanel::lbDBUpdate() {
 
-	if (noDataAvailable) return ERR_NONE;
+	//if (noDataAvailable) return ERR_NONE;
 
 	SetTitle(formName);
 
@@ -3203,36 +3239,31 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBRead() {
 /*...slbErrCodes LB_STDCALL lbDatabasePanel\58\\58\lbDBFirst\40\lb_I_Unknown\42\ uk\41\:0:*/
 lbErrCodes LB_STDCALL lbDatabasePanel::lbDBFirst(lb_I_Unknown* uk) {
 	lbDBUpdate();
-
+	lbDBClear();
+	
 	lbErrCodes err = sampleQuery->first();
 
 	while (err == ERR_DB_ROWDELETED) err = sampleQuery->next();
 
 	if (err == ERR_DB_NODATA) {
-		prevButton->Disable();
-		firstButton->Disable();
-		lastButton->Disable();
-		nextButton->Disable();
+		DISABLE_FOR_NO_DATA()
 
 		return ERR_DB_NODATA;
 	}
 	
 	lbDBRead();
-
-	prevButton->Disable();
-	firstButton->Disable();
-	lastButton->Enable();
-	nextButton->Enable();
+	
+	DISABLE_BOF()
 
 	return ERR_NONE;
 }
 /*...e*/
 /*...slbErrCodes LB_STDCALL lbDatabasePanel\58\\58\lbDBNext\40\lb_I_Unknown\42\ uk\41\:0:*/
 lbErrCodes LB_STDCALL lbDatabasePanel::lbDBNext(lb_I_Unknown* uk) {
-	lbErrCodes err;
 	lbDBUpdate();
+	lbDBClear();
 
-	err = sampleQuery->next();
+	lbErrCodes err = sampleQuery->next();
 
 	// Skip all deleted rows
 	while (err == ERR_DB_ROWDELETED) err = sampleQuery->next();
@@ -3249,6 +3280,7 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBNext(lb_I_Unknown* uk) {
 	} else {
 		prevButton->Enable();
 		firstButton->Enable();
+		deleteButton->Enable();
 	}
 	
 	lbDBRead();
@@ -3259,9 +3291,9 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBNext(lb_I_Unknown* uk) {
 /*...slbErrCodes LB_STDCALL lbDatabasePanel\58\\58\lbDBPrev\40\lb_I_Unknown\42\ uk\41\:0:*/
 lbErrCodes LB_STDCALL lbDatabasePanel::lbDBPrev(lb_I_Unknown* uk) {
 	lbDBUpdate();
-	lbErrCodes err;
+	lbDBClear();
 
-	err = sampleQuery->previous();
+	lbErrCodes err = sampleQuery->previous();
 
 	// Skip all deleted rows
 	while (err == ERR_DB_ROWDELETED) err = sampleQuery->previous();
@@ -3278,6 +3310,7 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBPrev(lb_I_Unknown* uk) {
 	} else {
 		nextButton->Enable();
 		lastButton->Enable();
+		deleteButton->Enable();
 	}
 
 	lbDBRead();
@@ -3288,27 +3321,22 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBPrev(lb_I_Unknown* uk) {
 /*...slbErrCodes LB_STDCALL lbDatabasePanel\58\\58\lbDBLast\40\lb_I_Unknown\42\ uk\41\:0:*/
 lbErrCodes LB_STDCALL lbDatabasePanel::lbDBLast(lb_I_Unknown* uk) {
 	lbDBUpdate();
+	lbDBClear();
 
 	lbErrCodes err = sampleQuery->last();
 	
 	while (err == ERR_DB_ROWDELETED) err = sampleQuery->previous();
 
 	if (err == ERR_DB_NODATA) {
-		prevButton->Disable();
-		firstButton->Disable();
-		lastButton->Disable();
-		nextButton->Disable();
+		DISABLE_FOR_NO_DATA()
 
 		return ERR_DB_NODATA;
 	}
 
 	lbDBRead();
 
-	nextButton->Disable();
-	lastButton->Disable();
-	firstButton->Enable();
-	prevButton->Enable();
-	
+	DISABLE_EOF()
+
 	return ERR_NONE;
 }
 /*...e*/
@@ -3317,36 +3345,22 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBLast(lb_I_Unknown* uk) {
 lbErrCodes LB_STDCALL lbDatabasePanel::lbDBAdd(lb_I_Unknown* uk) {
 	
 	_CL_LOG << "lbDatabasePanel::lbDBAdd() called." LOG_
-/*	
-	if (isAdding == true) {
-		isAdding = false;
-		if (noDataAvailable) {
-			// Goto first data, because there was no data before.
-			return lbDBFirst(NULL);
-		}
 
-			
-		return lbDBLast(NULL);
-	}
+	if (sampleQuery->isAdding() == 0) {
+		lbDBUpdate();
+		lbDBClear();
 
-	isAdding = true;
-*/
-	lbDBUpdate();
+		if (sampleQuery->add() != ERR_NONE) {
+			UAP_REQUEST(manager.getPtr(), lb_I_String, newTitle)
 
-	lbDBClear();
-
-	//noDataAvailable = false;
-
-	if (sampleQuery->add() != ERR_NONE) {
-		UAP_REQUEST(manager.getPtr(), lb_I_String, newTitle)
-
-		newTitle->setData(formName);
+			newTitle->setData(formName);
 		
-		*newTitle += ": Add failed !";
+			*newTitle += ": Add failed !";
 
-		SetTitle(_trans(newTitle->charrep()));
+			SetTitle(_trans(newTitle->charrep()));
+		}
 	}
-
+	
 /*...sPrefill data to hidden fields\46\ This would mostly be combo boxes\46\:8:*/
 	if (MasterDetailRelationData != NULL) {
 	
@@ -3510,11 +3524,15 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBAdd(lb_I_Unknown* uk) {
 	} else {
 		_CL_LOG << "Updating after add succeeded. Move to last." LOG_
 		
-		if (lbDBLast(NULL) != ERR_NONE) {
-			_CL_LOG << "Move to last after updating failed." LOG_
+		if (allNaviDisabled == true) {
 			lbDBFirst(NULL);
 		} else {
-			_CL_LOG << "Move to last after updating succeeded." LOG_
+			if (lbDBLast(NULL) != ERR_NONE) {
+				_CL_LOG << "Move to last after updating failed." LOG_
+				lbDBFirst(NULL);
+			} else {
+				_CL_LOG << "Move to last after updating succeeded." LOG_
+			}
 		}
 	}
 
@@ -3523,50 +3541,59 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBAdd(lb_I_Unknown* uk) {
 /*...e*/
 /*...slbErrCodes LB_STDCALL lbDatabasePanel\58\\58\lbDBDelete\40\lb_I_Unknown\42\ uk\41\:0:*/
 lbErrCodes LB_STDCALL lbDatabasePanel::lbDBDelete(lb_I_Unknown* uk) {
-	sampleQuery->remove();
-
 	lbErrCodes err = ERR_NONE;
 
-        err = sampleQuery->next();
+	err = sampleQuery->remove();
 
-        if (err == WARN_DB_NODATA) {
-                nextButton->Disable();
-                lastButton->Disable();
-                prevButton->Enable();
-                firstButton->Enable();
-
+	if (err == INFO_DB_REOPENED) {
 		lbDBRead();
-
-		return ERR_NONE;
-        }
-
-        if (err == ERR_DB_NODATA) {
-
-		err = sampleQuery->first();
-
+		return ERR_NONE;	
+	} else {
 		if (err == ERR_DB_NODATA) {
+			err = sampleQuery->first();
+			if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
+				DISABLE_BOF()
+				lbDBRead();
+				return ERR_NONE;
+			} else {
+				lbDBClear();
+				DISABLE_FOR_NO_DATA()
+				return ERR_NONE;
+			}
+		}
+	
+	        err = sampleQuery->next();
 
-			prevButton->Disable();
-			firstButton->Disable();
-			nextButton->Disable();
-			lastButton->Disable();
-			
-			lbDBClear();
+	        if (err == WARN_DB_NODATA) {
+	        	DISABLE_EOF()
+
+			lbDBRead();
 
 			return ERR_NONE;
-		}
-		
-                prevButton->Disable();
-                firstButton->Disable();
-                nextButton->Enable();
-                lastButton->Enable();
-        } else {
-        	nextButton->Enable();
-        	lastButton->Enable();
-        	prevButton->Enable();
-        	firstButton->Enable();
-        }
+	        }
 
+	        if (err == ERR_DB_NODATA) {
+
+			err = sampleQuery->first();
+
+			if (err == ERR_DB_NODATA) {
+
+				DISABLE_FOR_NO_DATA()
+			
+				lbDBClear();
+
+				return ERR_NONE;
+			}
+	
+			DISABLE_BOF()
+	        } else {
+	        	nextButton->Enable();
+	        	lastButton->Enable();
+	        	prevButton->Enable();
+	        	firstButton->Enable();
+	        }
+	}
+	
 	lbDBRead();
 
 	return ERR_NONE;
