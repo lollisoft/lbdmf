@@ -100,7 +100,7 @@ lbPluginModuleLoginWizard::lbPluginModuleLoginWizard() {
 }
 
 lbPluginModuleLoginWizard::~lbPluginModuleLoginWizard() {
-	_CL_LOG << "lbPluginModuleLoginWizard::~lbPluginModuleLoginWizard() called." LOG_
+	_CL_VERBOSE << "lbPluginModuleLoginWizard::~lbPluginModuleLoginWizard() called." LOG_
 }
 
 void LB_STDCALL lbPluginModuleLoginWizard::initialize() {
@@ -108,7 +108,7 @@ void LB_STDCALL lbPluginModuleLoginWizard::initialize() {
 }
 
 lbErrCodes LB_STDCALL lbPluginModuleLoginWizard::setData(lb_I_Unknown* uk) {
-        _CL_LOG << "lbPluginModuleLoginWizard::setData(...) not implemented yet" LOG_
+        _CL_VERBOSE << "lbPluginModuleLoginWizard::setData(...) not implemented yet" LOG_
         
         return ERR_NOT_IMPLEMENTED;
 }
@@ -293,7 +293,7 @@ BEGIN_IMPLEMENT_LB_UNKNOWN(wxAppSelectPage)
 END_IMPLEMENT_LB_UNKNOWN()
 
 wxAppSelectPage::~wxAppSelectPage() {
-    _CL_LOG << "wxAppSelectPage::~wxAppSelectPage() called" LOG_
+    _CL_VERBOSE << "wxAppSelectPage::~wxAppSelectPage() called" LOG_
     if (userid != NULL) free(userid);
 }
 
@@ -622,7 +622,7 @@ END_IMPLEMENT_LB_UNKNOWN()
 IMPLEMENT_FUNCTOR(instanceOflbPluginLoginWizard, lbPluginLoginWizard)
 
 lbErrCodes LB_STDCALL lbPluginLoginWizard::setData(lb_I_Unknown* uk) {
-        _CL_LOG << "lbPluginLoginWizard::setData(...) not implemented yet" LOG_
+        _CL_VERBOSE << "lbPluginLoginWizard::setData(...) not implemented yet" LOG_
 
         return ERR_NOT_IMPLEMENTED;
 }
@@ -634,12 +634,7 @@ lbPluginLoginWizard::lbPluginLoginWizard() {
 }
 
 lbPluginLoginWizard::~lbPluginLoginWizard() {
-	_CL_LOG << "lbPluginLoginWizard::~lbPluginLoginWizard() called." LOG_
-	if (wizard != NULL) {
-		_CL_LOG << "Destroy wizard." LOG_
-		//wizard->Destroy();
-		_CL_LOG << "Wizard destroyed." LOG_
-	}
+	_CL_VERBOSE << "lbPluginLoginWizard::~lbPluginLoginWizard() called." LOG_
 }
 	
 	
@@ -736,7 +731,7 @@ lb_I_Unknown* LB_STDCALL lbPluginLoginWizard::getImplementation() {
 }
 /*...e*/
 void LB_STDCALL lbPluginLoginWizard::releaseImplementation() {
-	_CL_LOG << "lbPluginLoginWizard::releaseImplementation() called." LOG_
+	_CL_VERBOSE << "lbPluginLoginWizard::releaseImplementation() called." LOG_
 }
 
 #ifdef WINDOWS

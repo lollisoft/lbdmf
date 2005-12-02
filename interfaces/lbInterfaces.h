@@ -1623,11 +1623,11 @@ lbErrCodes DLLEXPORT LB_FUNCTORCALL name(lb_I_Unknown** uk, lb_I_Module* m, char
 class singletonHolder_##name { \
 public: \
 	singletonHolder_##name() { \
-		printf("singletonHolder_" #name "() called.\n"); \
+		_CL_VERBOSE << "singletonHolder_" << #name << "() called." LOG_ \
 		singleton = NULL; \
 	} \
 	virtual ~singletonHolder_##name() { \
-		printf("~singletonHolder_" #name "() called.\n"); \
+		_CL_VERBOSE << "~singletonHolder_" << #name << "() called." LOG_ \
 		if (singleton != NULL) { \
 			if (TRMemValidate(singleton)) \
 				delete singleton; \
@@ -1636,7 +1636,7 @@ public: \
 		} else { \
 			printf("Warning: singletonHolder_" #name " has an invalid pointer.\n"); \
 		} \
-		printf("~singletonHolder_" #name "() leaving.\n"); \
+		_CL_VERBOSE << "~singletonHolder_" << #name << "() leaving." LOG_ \
 	} \
 	void set(clsname* _singleton) { \
 		lb_I_Unknown* temp; \
@@ -2314,11 +2314,11 @@ protected:
 #define BEGIN_PLUGINS(cls) \
 \
 void LB_STDCALL cls::setModule(char* module) { \
-	_CL_LOG << #cls << "::setModule(" << module << ") called." LOG_ \
+	_CL_VERBOSE << #cls << "::setModule(" << module << ") called." LOG_ \
 	if (_module == NULL) { \
 		REQUEST(manager.getPtr(), lb_I_String, _module) \
 	} \
-	_CL_LOG << "String _module has " << _module->getRefCount() << " references." LOG_ \
+	_CL_VERBOSE << "String _module has " << _module->getRefCount() << " references." LOG_ \
 	*_module = module; \
 } \
 lb_I_Container* cls::getPlugins() { \
@@ -2330,7 +2330,7 @@ lb_I_Container* cls::getPlugins() { \
 } \
 void LB_STDCALL cls::enumPlugins() { \
 	lbErrCodes err = ERR_NONE; \
-	_CL_LOG << #cls << "::enumPlugins() called." LOG_ \
+	_CL_VERBOSE << #cls << "::enumPlugins() called." LOG_ \
 	REQUEST(manager.getPtr(), lb_I_Container, Plugins)
 
 #define ADD_PLUGIN(plugin, namespace) \

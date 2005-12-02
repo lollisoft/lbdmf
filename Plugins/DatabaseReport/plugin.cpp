@@ -124,12 +124,12 @@ END_PLUGINS()
 //	ADD_PLUGIN(lbOwnerDrawControl, GUI)
 
 lbPluginModuleDatabaseReport::lbPluginModuleDatabaseReport() {
-	_CL_LOG << "lbPluginModuleDatabaseReport::lbPluginModuleDatabaseReport() called." LOG_
+	_CL_VERBOSE << "lbPluginModuleDatabaseReport::lbPluginModuleDatabaseReport() called." LOG_
 	ref = STARTREF;
 }
 
 lbPluginModuleDatabaseReport::~lbPluginModuleDatabaseReport() {
-	_CL_LOG << "lbPluginModuleDatabaseReport::~lbPluginModuleDatabaseReport() called." LOG_
+	_CL_VERBOSE << "lbPluginModuleDatabaseReport::~lbPluginModuleDatabaseReport() called." LOG_
 }
 
 void LB_STDCALL lbPluginModuleDatabaseReport::initialize() {
@@ -137,7 +137,7 @@ void LB_STDCALL lbPluginModuleDatabaseReport::initialize() {
 }
 
 lbErrCodes LB_STDCALL lbPluginModuleDatabaseReport::setData(lb_I_Unknown* uk) {
-        _CL_LOG << "lbPluginModuleDatabaseReport::setData(...) not implemented yet" LOG_
+        _CL_VERBOSE << "lbPluginModuleDatabaseReport::setData(...) not implemented yet" LOG_
         
         return ERR_NOT_IMPLEMENTED;
 }

@@ -123,21 +123,21 @@ END_PLUGINS()
 //	ADD_PLUGIN(lbOwnerDrawControl, GUI)
 
 lbPluginModuleDatabaseForm::lbPluginModuleDatabaseForm() {
-	_CL_LOG << "lbPluginModuleDatabaseForm::lbPluginModuleDatabaseForm() called." LOG_
+	_CL_VERBOSE << "lbPluginModuleDatabaseForm::lbPluginModuleDatabaseForm() called." LOG_
 	ref = STARTREF;
 }
 
 lbPluginModuleDatabaseForm::~lbPluginModuleDatabaseForm() {
-	_CL_LOG << "lbPluginModuleDatabaseForm::~lbPluginModuleDatabaseForm() called." LOG_
+	_CL_VERBOSE << "lbPluginModuleDatabaseForm::~lbPluginModuleDatabaseForm() called." LOG_
 }
 
 void LB_STDCALL lbPluginModuleDatabaseForm::initialize() {
-	_CL_LOG << "lbPluginModuleDatabaseForm::initialize() called." LOG_
+	_CL_VERBOSE << "lbPluginModuleDatabaseForm::initialize() called." LOG_
 	enumPlugins();
 }
 
 lbErrCodes LB_STDCALL lbPluginModuleDatabaseForm::setData(lb_I_Unknown* uk) {
-        _CL_LOG << "lbPluginModuleDatabaseForm::setData(...) not implemented yet" LOG_
+        _CL_VERBOSE << "lbPluginModuleDatabaseForm::setData(...) not implemented yet" LOG_
         
         return ERR_NOT_IMPLEMENTED;
 }

@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.34 $
+ * $Revision: 1.35 $
  * $Name:  $
- * $Id: lbPluginManager.cpp,v 1.34 2005/11/18 23:41:31 lollisoft Exp $
+ * $Id: lbPluginManager.cpp,v 1.35 2005/12/02 17:38:11 lollisoft Exp $
  *
  * $Log: lbPluginManager.cpp,v $
+ * Revision 1.35  2005/12/02 17:38:11  lollisoft
+ * Lesser log messages. Put them to be verbose only.
+ *
  * Revision 1.34  2005/11/18 23:41:31  lollisoft
  * More memory leaks have been fixed. There are currently less than 200
  * chunks unfreed, wich may be located in the plugin mechanism.
@@ -733,7 +736,7 @@ lbPlugin::~lbPlugin() {
 lbErrCodes LB_STDCALL lbPlugin::setData(lb_I_Unknown* uk) {
 	lbErrCodes err = ERR_NONE;
 
-	_CL_LOG << "lbPlugin::setData(...) called." LOG_
+	_CL_VERBOSE << "lbPlugin::setData(...) called." LOG_
 	
 	UAP(lb_I_Plugin, pl, __FILE__, __LINE__)
 	QI(uk, lb_I_Plugin, pl, __FILE__, __LINE__)
@@ -761,7 +764,7 @@ void LB_STDCALL lbPlugin::setAttached(lb_I_PluginImpl* impl) {
 	lbErrCodes err = ERR_NONE;
 	
 	if (impl == NULL) {
-		_CL_LOG << "lbPlugin::setAttached(NULL) called." LOG_
+		_CL_VERBOSE << "lbPlugin::setAttached(NULL) called." LOG_
 		return;
 	}
 	
@@ -886,7 +889,7 @@ void LB_STDCALL lbPlugin::initialize() {
 		UAP(lb_I_PluginImpl, impl, __FILE__, __LINE__)		
 		QI(implementation, lb_I_PluginImpl, impl, __FILE__, __LINE__)
 
-		_CL_LOG << "lbPlugin::initialize() calls preinitialized underlying class'es initializer." LOG_
+		_CL_VERBOSE << "lbPlugin::initialize() calls preinitialized underlying class'es initializer." LOG_
 		impl->initialize();
 	}
 	_CL_VERBOSE << "lbPlugin::initialize() returns." LOG_

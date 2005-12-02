@@ -124,16 +124,16 @@ lbPluginModuleTest::lbPluginModuleTest() {
 }
 
 lbPluginModuleTest::~lbPluginModuleTest() {
-	_CL_LOG << "lbPluginModuleTest::~lbPluginModuleTest() called." LOG_
+	_CL_VERBOSE << "lbPluginModuleTest::~lbPluginModuleTest() called." LOG_
 }
 
 void LB_STDCALL lbPluginModuleTest::initialize() {
-	_CL_LOG << "lbPluginModuleTest::initialize() called." LOG_
+	_CL_VERBOSE << "lbPluginModuleTest::initialize() called." LOG_
 	enumPlugins();
 }
 
 lbErrCodes LB_STDCALL lbPluginModuleTest::setData(lb_I_Unknown* uk) {
-        _CL_LOG << "lbPluginModuleTest::setData(...) not implemented yet" LOG_
+        _CL_VERBOSE << "lbPluginModuleTest::setData(...) not implemented yet" LOG_
 
 	if (uk != NULL) {
 		_CL_LOG << "Cloning object with " << uk->getRefCount() << " references." LOG_
