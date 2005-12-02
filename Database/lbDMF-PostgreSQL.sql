@@ -428,6 +428,7 @@ CREATE TABLE Formulartypen
   HandlerModule CHAR(30),
   HandlerFunctor CHAR(100),
   HandlerInterface CHAR(100),
+  Namespace CHAR(50),
   Beschreibung CHAR(254),
   PRIMARY KEY (id)
 );

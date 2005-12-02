@@ -33,11 +33,22 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.5 $
+ * $Revision: 1.6 $
  * $Name:  $
- * $Id: wxWrapperDLL.h,v 1.5 2005/11/16 20:51:44 lollisoft Exp $
+ * $Id: wxWrapperDLL.h,v 1.6 2005/12/02 00:28:43 lollisoft Exp $
  *
  * $Log: wxWrapperDLL.h,v $
+ * Revision 1.6  2005/12/02 00:28:43  lollisoft
+ * Deleting a row works for some tests. Deleting data in join queries is not tested
+ * and would propably not work. This is at least due to lack of creating a delete
+ * statement per related table.
+ *
+ * Now this deleting also includes the ability to reopen the query as needed.
+ * Form code is adopted to the case if there are no peek aheads are done
+ * while fetching new data.
+ *
+ * Code cleanup would be done later.
+ *
  * Revision 1.5  2005/11/16 20:51:44  lollisoft
  * Moved code, removed memory leaks and trmem counted breakpoint support added.
  *
@@ -197,30 +208,29 @@ class DLLEXPORT lb_wxGUI
 
 {
 public:
-/*...sctor\47\dtor:8:*/
-        lb_wxGUI() {
+
+	lb_wxGUI() {
 		#ifdef VERBOSE        	
-                _LOG << "lb_I_wxGUI object will be created and initialized" LOG_
+	        _LOG << "lb_I_wxGUI object will be created and initialized" LOG_
 		#endif                
                 
-                eventCount = 0;
-                sampleQuery = NULL;
-                handlersInitialized = FALSE;
-                frame = NULL;
-                notebook = NULL;
+	        eventCount = 0;
+	        sampleQuery = NULL;
+	        handlersInitialized = FALSE;
+	        frame = NULL;
+	        notebook = NULL;
 		dialog = NULL;
 		sizerMain = NULL;
 		
 		// Use lbDatabasePanel
 		panelUsage = true;
-        }
+	}
 
 	virtual ~lb_wxGUI() { 
 		#ifdef VERBOSE
 	        _LOG << "lb_wxGUI::~lb_wxGUI() called.\n" LOG_
 	        #endif
 	}
-/*...e*/
 
         DECLARE_LB_UNKNOWN()
 
@@ -359,6 +369,7 @@ public:
 
 	lbErrCodes LB_STDCALL cleanup();
 
+	lbErrCodes LB_STDCALL switchPanelUse(lb_I_Unknown* uk);
 
 
         int eventCount;

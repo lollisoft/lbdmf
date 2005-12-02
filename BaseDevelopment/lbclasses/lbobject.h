@@ -31,10 +31,21 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.27 $
+ * $Revision: 1.28 $
  * $Name:  $
- * $Id: lbobject.h,v 1.27 2005/11/06 19:25:33 lollisoft Exp $
+ * $Id: lbobject.h,v 1.28 2005/12/02 00:28:43 lollisoft Exp $
  * $Log: lbobject.h,v $
+ * Revision 1.28  2005/12/02 00:28:43  lollisoft
+ * Deleting a row works for some tests. Deleting data in join queries is not tested
+ * and would propably not work. This is at least due to lack of creating a delete
+ * statement per related table.
+ *
+ * Now this deleting also includes the ability to reopen the query as needed.
+ * Form code is adopted to the case if there are no peek aheads are done
+ * while fetching new data.
+ *
+ * Code cleanup would be done later.
+ *
  * Revision 1.27  2005/11/06 19:25:33  lollisoft
  * All bugs of unloading shared libraries removed.\nUsing dlopen more than once per shared library leads into unability to unload that library.\nMac OS X seems to not properly handle the reference counting, thus unloading of twice loaded shared libs fails.\n\nI have implemented a workaround to handle this properly.\n\nThere is one exeption: lbModule.so is needed by UAP macros, thus this shared library is left loaded and the system can unload it for me.
  *
@@ -253,6 +264,7 @@ protected:
 };
 /*...e*/
 /*...sclass lbReference:0:*/
+#ifndef _MSC_VER
 class lbReference : public lb_I_Reference {
 public:
 	lbReference() { _r = NULL; }
@@ -266,6 +278,7 @@ public:
 protected:
 	UAP(lb_I_Unknown, _r, __FILE__, __LINE__)
 };
+#endif
 /*...e*/
 /*...sclass lbString:0:*/
 class lbString : public lb_I_String

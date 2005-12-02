@@ -31,10 +31,21 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.43 $
+ * $Revision: 1.44 $
  * $Name:  $
- * $Id: misc.cpp,v 1.43 2005/11/11 22:51:30 lollisoft Exp $
+ * $Id: misc.cpp,v 1.44 2005/12/02 00:28:43 lollisoft Exp $
  * $Log: misc.cpp,v $
+ * Revision 1.44  2005/12/02 00:28:43  lollisoft
+ * Deleting a row works for some tests. Deleting data in join queries is not tested
+ * and would propably not work. This is at least due to lack of creating a delete
+ * statement per related table.
+ *
+ * Now this deleting also includes the ability to reopen the query as needed.
+ * Form code is adopted to the case if there are no peek aheads are done
+ * while fetching new data.
+ *
+ * Code cleanup would be done later.
+ *
  * Revision 1.43  2005/11/11 22:51:30  lollisoft
  * Memory leaks removed. There are currently only 4 chunks leaky.
  * These may be false positives, because one of them is an allocated
@@ -208,6 +219,10 @@
 #include <iostream>
 #include <stdio.h>
 #include <time.h>
+
+#ifdef _MSC_VER
+#define PATH_MAX 512
+#endif
 
 #include <stdarg.h>
 #ifdef WINDOWS

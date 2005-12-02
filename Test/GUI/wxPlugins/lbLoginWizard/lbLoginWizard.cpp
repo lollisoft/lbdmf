@@ -221,6 +221,11 @@ public:
 						break;
 					}
 				}
+				
+				if (err == ERR_DB_NODATA) {
+				        box->SetSelection(0);
+				        break;
+				}
 			}
 			box->SetSelection(0);
 		}

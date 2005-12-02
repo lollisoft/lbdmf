@@ -18,37 +18,37 @@
 	Test's:
 	
 	MSSQL:			Deletes the two rows, but no detection of them to be deleted.
-					There would be no datachanges, except the value in the primary
-					key (id = 0).
+				There would be no datachanges, except the value in the primary
+				key (id = 0).
 	  
-					All 6 rows would be printed out.
+				All 6 rows would be printed out.
 		
 	Sybase:			There is a hang. Don't know why ?
 		  
 	PostgreSQL:		The data would be deleted and with my modified version of the ODBC driver
-					I detect bodus pointer values (Linux/Windows).
+				I detect bodus pointer values (Linux/Windows).
 			
-					Driver version 07.03.0200 without changes does crash.
-					Driver version 07.03.0200 with changes does not crash, but detection of
-					bodus pointers does not result in a comparable output as of MSSQL.
+				Driver version 07.03.0200 without changes does crash.
+				Driver version 07.03.0200 with changes does not crash, but detection of
+				bodus pointers does not result in a comparable output as of MSSQL.
 			  
-					Google posting: QR_get_value_backend_row returns invalid pointers !
-					http://groups.google.com/group/pgsql.interfaces.odbc/browse_frm/thread/5eab6fe60712e7b6/a15b55bedd0bb9a4#a15b55bedd0bb9a4
+				Google posting: QR_get_value_backend_row returns invalid pointers !
+				http://groups.google.com/group/pgsql.interfaces.odbc/browse_frm/thread/5eab6fe60712e7b6/a15b55bedd0bb9a4#a15b55bedd0bb9a4
 				
 	MySQL:			Not tested.
 
   
 	TODO:	Find out, what are the reason's for the different database vendors.
 
-			Fix the undefined behaviour in PostgreSQL driver version 07.03.0200.
+		Fix the undefined behaviour in PostgreSQL driver version 07.03.0200.
 
-			Why is there a difference between using 
+		Why is there a difference between using 
 
-				SQL_ATTR_ODBC_CURSORS = SQL_CUR_USE_IF_NEEDED
+		SQL_ATTR_ODBC_CURSORS = SQL_CUR_USE_IF_NEEDED
 	
-			and
+		and
 
-				SQL_ATTR_ODBC_CURSORS = SQL_CUR_USE_ODBC
+		SQL_ATTR_ODBC_CURSORS = SQL_CUR_USE_ODBC
 */
 /*
 	DMF Distributed Multiplatform Framework (the initial goal of this library)
@@ -89,16 +89,20 @@
 #include <stdio.h>
 #include <iostream.h>
 
+#define _SQL_ROW_DELETED 1000
+
 void dbError(char* lp, HSTMT hstmt);
 void PrintFooter(int cols);
 void PrintHeader(int cols, HSTMT hstmt);
 void PrintCurrent(int cols, HSTMT hstmt);
+void _dbError_DBC(char* lp, HDBC hdbc);
 
 // Fixed bound columns
 char id[10] = "";
 char test[200] = "";
 char btest[100] = "";
 char btest1[100] = "";
+HDBC        hdbc = NULL;                            // Connection handle
 
 void trim(char* stringdata) {
 	while (stringdata[strlen(stringdata)-1] == ' ')
@@ -115,15 +119,38 @@ void refresh(HSTMT hstmt) {
 	}
 }
 
-void remove(HSTMT hstmt) {
-	RETCODE retcode = SQLSetPos(hstmt, 1, SQL_DELETE, SQL_LOCK_NO_CHANGE);
-	
+void remove(HSTMT hstmt, char* id) {
+	//RETCODE retcode = SQLSetPos(hstmt, 1, SQL_DELETE, SQL_LOCK_NO_CHANGE);
+	RETCODE retcode;
+
+	HSTMT hstmt_delete;
+	char buf[1000] = "delete from regressiontest where id = %s";
+	char* SQL = (char*) malloc(strlen(buf)+1);
+
+	sprintf(SQL, buf, id);
+
+	retcode = SQLAllocStmt(hdbc, &hstmt_delete);
+
+	if (retcode != SQL_SUCCESS)
+	{
+		_dbError_DBC("SQLAllocStmt()", hdbc);
+	}
+
+	SQLExecDirect(hstmt_delete, (UCHAR*) SQL, SQL_NTS);
+
+	if (retcode != SQL_SUCCESS)
+	{
+		dbError("SQLExecDirect()", hstmt);
+	}
+
+	retcode = SQLFreeStmt(hstmt_delete, SQL_DROP);
+
 	if (retcode != SQL_SUCCESS)
 	{
 		printf("ERROR: Removing data failed.\n");
 		dbError("SQLSetPos(SQL_DELETE)", hstmt);
 	}
-	
+/*	
 	retcode = SQLSetPos(hstmt, 1, SQL_REFRESH, SQL_LOCK_NO_CHANGE);
 	
 	if (retcode != SQL_SUCCESS)
@@ -131,7 +158,7 @@ void remove(HSTMT hstmt) {
 		printf("ERROR: Removing data failed.\n");
 		dbError("SQLSetPos(SQL_REFRESH)", hstmt);
 	}
-	
+*/	
 }
 
 void update(HSTMT hstmt) {
@@ -143,12 +170,49 @@ void update(HSTMT hstmt) {
 	}
 }
 
+#define CHECK_ROWSTAT() \
+	if (retcode == SQL_ROW_DELETED) { \
+	        printf("ERROR: This row is deleted.\n"); \
+	        return _SQL_ROW_DELETED; \
+	} \
+        if (RowStat[0] == SQL_ROW_DELETED) { \
+                printf("ERROR: This row is deleted.\n"); \
+                return _SQL_ROW_DELETED; \
+        } \
+        if (RowStat[0] == SQL_ROW_NOROW) { \
+                printf("ERROR: This row is norow.\n"); \
+                if (retcode == SQL_NO_DATA) { \
+                        cout << "ERROR: There would also be SQL_NO_DATA." << endl; \
+                } \
+        } \
+        if (RowStat[0] == SQL_ROW_ERROR) { \
+                printf("ERROR: This row is error.\n"); \
+                if (retcode == SQL_NO_DATA) { \
+                        cout << "ERROR: There would also be SQL_NO_DATA." << endl; \
+                } \
+        }
+
+RETCODE absolute(HSTMT hstmt, int pos) {
+	UWORD   RowStat[20];
+	UDWORD  RowsFetched = 0;
+	
+	RETCODE retcode = SQLExtendedFetch(hstmt, SQL_FETCH_ABSOLUTE, pos, &RowsFetched, &RowStat[0]);
+	
+	CHECK_ROWSTAT()
+
+	if (retcode != SQL_SUCCESS) dbError("SQLExtendedFetch()", hstmt);
+	
+	return retcode;
+}
+
 RETCODE last(HSTMT hstmt) {
 	UWORD   RowStat[20];
 	UDWORD  RowsFetched = 0;
 	
 	RETCODE retcode = SQLExtendedFetch(hstmt, SQL_FETCH_LAST, 0, &RowsFetched, &RowStat[0]);
 	
+	CHECK_ROWSTAT()
+
 	if (retcode != SQL_SUCCESS) dbError("SQLExtendedFetch()", hstmt);
 	
 	return retcode;
@@ -160,6 +224,8 @@ RETCODE first(HSTMT hstmt) {
 	
 	RETCODE retcode = SQLExtendedFetch(hstmt, SQL_FETCH_FIRST, 0, &RowsFetched, &RowStat[0]);
 	
+	CHECK_ROWSTAT()
+
 	if (retcode != SQL_SUCCESS) dbError("SQLExtendedFetch()", hstmt);
 	
 	return retcode;
@@ -171,6 +237,8 @@ RETCODE next(HSTMT hstmt) {
 	
 	RETCODE retcode = SQLExtendedFetch(hstmt, SQL_FETCH_NEXT, 0, &RowsFetched, &RowStat[0]);
 	
+	CHECK_ROWSTAT()
+
 	if (retcode != SQL_SUCCESS) dbError("SQLExtendedFetch()", hstmt);
 	
 	return retcode;
@@ -182,6 +250,8 @@ RETCODE previous(HSTMT hstmt) {
 	
 	RETCODE retcode = SQLExtendedFetch(hstmt, SQL_FETCH_PREV, 0, &RowsFetched, &RowStat[0]);
 	
+	CHECK_ROWSTAT()
+
 	if (retcode != SQL_SUCCESS) dbError("SQLExtendedFetch()", hstmt);
 	
 	return retcode;
@@ -220,47 +290,46 @@ char* getColumnName(HSTMT hstmt, int col) {
 }
 
 
-void PrintData(HSTMT hstmt, int cols, bool reverse) {
+void PrintData(HSTMT hstmt, int cols, bool reverse, bool position = true) {
 	RETCODE retcode;
-	
 	PrintHeader(cols, hstmt);
-	
 	if (reverse == false) {
-		retcode = first(hstmt);
+		if (position == true) {
+			retcode = first(hstmt);
+			while (retcode == _SQL_ROW_DELETED) retcode = next(hstmt);
+		} else {
+			retcode = SQL_SUCCESS;
+		}
+		
 		if ((retcode == SQL_SUCCESS) || (retcode == SQL_SUCCESS_WITH_INFO)) {
-			// Skip all rows that throw any warnings. These include SQL_TRUNCATED columns
-			while (retcode == SQL_SUCCESS_WITH_INFO) retcode = next(hstmt);
-			
 			PrintCurrent(cols, hstmt);
 			retcode = next(hstmt);
-			
+			while (retcode == _SQL_ROW_DELETED) retcode = next(hstmt);
 			while ((retcode == SQL_SUCCESS) || (retcode == SQL_SUCCESS_WITH_INFO)) {
-				// Skip all rows that throw any warnings. These include SQL_TRUNCATED columns
-				while (retcode == SQL_SUCCESS_WITH_INFO) retcode = next(hstmt);
-				
 				PrintCurrent(cols, hstmt);
 				retcode = next(hstmt);
+				while (retcode == _SQL_ROW_DELETED) retcode = next(hstmt);
 			}      
 		}
 	} else {
-		retcode = last(hstmt);
+		if (position == true) {
+			retcode = last(hstmt);
+			while (retcode == _SQL_ROW_DELETED) retcode = previous(hstmt);
+		} else {
+			retcode = SQL_SUCCESS;
+		}
+
 		if ((retcode == SQL_SUCCESS) || (retcode == SQL_SUCCESS_WITH_INFO)) {
-			// Skip all rows that throw any warnings. These include SQL_TRUNCATED columns
-			while (retcode == SQL_SUCCESS_WITH_INFO) retcode = previous(hstmt);
-			
 			PrintCurrent(cols, hstmt);
 			retcode = previous(hstmt);
-			
+			while (retcode == _SQL_ROW_DELETED) retcode = previous(hstmt);
 			while ((retcode == SQL_SUCCESS) || (retcode == SQL_SUCCESS_WITH_INFO)) {
-				// Skip all rows that throw any warnings. These include SQL_TRUNCATED columns
-				while (retcode == SQL_SUCCESS_WITH_INFO) retcode = previous(hstmt);
-				
 				PrintCurrent(cols, hstmt);
 				retcode = previous(hstmt);
+				while (retcode == _SQL_ROW_DELETED) retcode = previous(hstmt);
 			}      
 		}
 	}
-	
 	PrintFooter(cols);
 }
 
@@ -370,10 +439,35 @@ void dbError(char* lp, HSTMT hstmt)
 	}
 }
 
+// This statement crashes inside SQLExecDirect(...)
+UCHAR buf5[] = "select id, test, btest, btest1 from regressiontest";
+	
+
+void setQuery(unsigned char* q, HSTMT &hstmt) {
+	RETCODE retcode;
+	long cbBufferLength = 0;
+
+	if (hstmt != NULL) {
+		retcode = SQLFreeStmt (hstmt, SQL_CLOSE);
+	}
+
+	retcode = SQLExecDirect(hstmt, q, SQL_NTS);
+	
+	if (retcode != SQL_SUCCESS) dbError("SQLExecDirect()", hstmt);
+
+	retcode = SQLBindCol(hstmt, 1, SQL_C_CHAR, id, sizeof(id), &cbBufferLength);
+	if (retcode != SQL_SUCCESS) dbError("SQLBindCol()", hstmt);
+	retcode = SQLBindCol(hstmt, 2, SQL_C_CHAR, test, sizeof(test), &cbBufferLength);
+	if (retcode != SQL_SUCCESS) dbError("SQLBindCol()", hstmt);
+	retcode = SQLBindCol(hstmt, 3, SQL_C_CHAR, btest, sizeof(btest), &cbBufferLength);
+	if (retcode != SQL_SUCCESS) dbError("SQLBindCol()", hstmt);
+	retcode = SQLBindCol(hstmt, 4, SQL_C_CHAR, btest1, sizeof(btest1), &cbBufferLength);
+	if (retcode != SQL_SUCCESS) dbError("SQLBindCol()", hstmt);
+}
+
 int main(void)
 {
 	HENV        henv = NULL;                            // Env Handle from SQLAllocEnv()
-	HDBC        hdbc = NULL;                            // Connection handle
 	HSTMT       hstmt = NULL;                           // Statement handle
 	HSTMT       hstmt_select = NULL;                    // Statement handle
 	UCHAR       *DSN = (unsigned char*) "lbDMF";		// Data Source Name buffer
@@ -485,26 +579,15 @@ int main(void)
 	if (retcode != SQL_SUCCESS) dbError("SQLExecDirect()", hstmt);
 	retcode = SQLExecDirect(hstmt, buf14, SQL_NTS);
 	if (retcode != SQL_SUCCESS) dbError("SQLExecDirect()", hstmt);
-	
-	// This statement crashes inside SQLExecDirect(...)
-	UCHAR buf5[] = "select id, test, btest, btest1 from regressiontest";
-	retcode = SQLExecDirect(hstmt_select, buf5, SQL_NTS);
-	
-	if (retcode != SQL_SUCCESS) dbError("SQLExecDirect()", hstmt_select);
-	
-	retcode = SQLBindCol(hstmt_select, 1, SQL_C_CHAR, id, sizeof(id), &cbBufferLength);
-	if (retcode != SQL_SUCCESS) dbError("SQLBindCol()", hstmt_select);
-	retcode = SQLBindCol(hstmt_select, 2, SQL_C_CHAR, test, sizeof(test), &cbBufferLength);
-	if (retcode != SQL_SUCCESS) dbError("SQLBindCol()", hstmt_select);
-	retcode = SQLBindCol(hstmt_select, 3, SQL_C_CHAR, btest, sizeof(btest), &cbBufferLength);
-	if (retcode != SQL_SUCCESS) dbError("SQLBindCol()", hstmt_select);
-	retcode = SQLBindCol(hstmt_select, 4, SQL_C_CHAR, btest1, sizeof(btest1), &cbBufferLength);
-	if (retcode != SQL_SUCCESS) dbError("SQLBindCol()", hstmt_select);
-	
+
+	retcode = SQLFreeStmt (hstmt, SQL_DROP);
+
+	setQuery(buf5, hstmt_select);
+
 	SWORD count = 0;
 	retcode = SQLNumResultCols(hstmt_select, &count);
 	
-	if (count == 0) count = 4;
+	//if (count == 0) count = 4;
 	
 	if (retcode != SQL_SUCCESS) dbError("SQLNumResultCols()", hstmt_select);
 	
@@ -515,24 +598,28 @@ int main(void)
 	first( hstmt_select);
 	next(  hstmt_select);
 	
-	remove(hstmt_select);
-	update(hstmt_select);
+	remove(hstmt_select, id);
+	//update(hstmt_select);
 	
 	next(  hstmt_select);
 	
-	remove(hstmt_select);
-	update(hstmt_select);
+	remove(hstmt_select, id);
+	//update(hstmt_select);
 	
-	refresh(hstmt_select);
+	// Close Cursor
+	setQuery(buf5, hstmt_select);
 	
-	first( hstmt_select);
+	//refresh(hstmt_select);
+	
+	absolute(hstmt_select, 1);
+	
+	PrintData(hstmt_select, count, false, false);
 	
 	PrintData(hstmt_select, count, false);
 	
 	PrintData(hstmt_select, count, true);
 	
 	// Free the allocated statement handles
-	retcode = SQLFreeStmt (hstmt, SQL_DROP);
 	retcode = SQLFreeStmt (hstmt_select, SQL_DROP);
 	
 	// Free the allocated connection handle

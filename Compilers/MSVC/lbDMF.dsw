@@ -18,6 +18,18 @@ Package=<4>
 
 ###############################################################################
 
+Project: "Plain_ODBC_Test"="..\..\RegressionTests\Database\Plain-ODBC-Test\Plain_ODBC_Test\Plain_ODBC_Test.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
 Project: "Test"=..\..\Test\Console\xml\TestCon.dsp - Package Owner=<4>
 
 Package=<5>
@@ -26,24 +38,6 @@ Package=<5>
 
 Package=<4>
 {{{
-    Begin Project Dependency
-    Project_Dep_Name lbHook
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name lbClasses
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name lbDB
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name lbMetaApplication
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name Application
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name lbModule
-    End Project Dependency
 }}}
 
 ###############################################################################

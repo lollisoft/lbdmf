@@ -25,11 +25,22 @@
 #            40235 Duesseldorf (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.74 $
+# * $Revision: 1.75 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.74 2005/11/27 16:46:39 lollisoft Exp $
+# * $Id: STD_MAKE,v 1.75 2005/12/02 00:28:43 lollisoft Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.75  2005/12/02 00:28:43  lollisoft
+# * Deleting a row works for some tests. Deleting data in join queries is not tested
+# * and would propably not work. This is at least due to lack of creating a delete
+# * statement per related table.
+# *
+# * Now this deleting also includes the ability to reopen the query as needed.
+# * Form code is adopted to the case if there are no peek aheads are done
+# * while fetching new data.
+# *
+# * Code cleanup would be done later.
+# *
 # * Revision 1.74  2005/11/27 16:46:39  lollisoft
 # * Made several changes to have a clean ODBC sample application.
 # *
@@ -276,8 +287,8 @@ COMPILER=WATCOM
 
 MODE=_DEBUG
 #MODE=
-#DEBUG_MEMORY=no
-DEBUG_MEMORY=yes
+DEBUG_MEMORY=no
+#DEBUG_MEMORY=yes
 
 #DEBUG_MEMORY_TYPE=mpatrol
 #DEBUG_MEMORY_TYPE=trmem
@@ -353,17 +364,20 @@ WATCOM_CALLING_CONV=-5r #-zz
 WATCOM_DLLTARGET=-bd
 WATCOM_LIBTARGET=
 WATCOM_THREAD_MODEL=#-bm
+
 ifeq ($(DEBUG_MEMORY), no)
-WATCOM_STDDEBUG=-d2 -hd #-DDEBUG_MALLOC
+WATCOM_STDDEBUG=-d2 -hd 
 endif
+
 ifeq ($(DEBUG_MEMORY), yes)
   ifeq ($(DEBUG_MEMORY_TYPE), trmem)
-    WATCOM_STDDEBUG=-d2 -hd -DDEBUG_MALLOC
+    WATCOM_STDDEBUG+= -DDEBUG_MALLOC
   endif
   ifeq ($(DEBUG_MEMORY_TYPE), mpatrol)
-    WATCOM_STDDEBUG=-d2 -hd -DUSE_MPATROL
+    WATCOM_STDDEBUG+= -DUSE_MPATROL
   endif
 endif
+
 WATCOM_STACK=#-of+
 WATCOM_PROFILING=#-db -en -s
 

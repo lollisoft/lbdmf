@@ -71,7 +71,9 @@ extern "C" {
 
 IMPLEMENT_FUNCTOR(instanceOfInteger, lbInteger)
 IMPLEMENT_FUNCTOR(instanceOfString, lbString)
+#ifndef _MSC_VER
 IMPLEMENT_FUNCTOR(instanceOfReference, lbReference)
+#endif
 IMPLEMENT_FUNCTOR(instanceOfParameter, lbParameter)
 
 IMPLEMENT_FUNCTOR(instanceOfLocale, lbLocale)
@@ -293,6 +295,7 @@ lbErrCodes LB_STDCALL lbParameter::getUAPInteger(lb_I_String*& parameter, lb_I_I
 }
 /*...e*/
 /*...slbReference:0:*/
+#ifndef _MSC_VER
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbReference)
 	ADD_INTERFACE(lb_I_Reference)
 END_IMPLEMENT_LB_UNKNOWN()
@@ -315,6 +318,7 @@ lbErrCodes LB_STDCALL lbReference::get(lb_I_Unknown*& r) {
 	
 	return ERR_NONE;
 }
+#endif
 /*...e*/
 /*...slbString:0:*/
 lbString::lbString() {
@@ -344,10 +348,16 @@ lb_I_String& LB_STDCALL lbString::operator += (const lb_I_String* toAppend) {
 lb_I_String& LB_STDCALL lbString::operator += (const char* toAppend) {
 	char* temp = stringdata;
 
-	stringdata = (char*) malloc(strlen(stringdata)+strlen(toAppend)+1);
-	stringdata[0] = 0;
-	strcat(stringdata, temp);
-	strcat(stringdata, toAppend);
+	if (stringdata == NULL) {
+		stringdata = (char*) malloc(strlen(toAppend)+1);
+		stringdata[0] = 0;
+	} else {
+		stringdata = (char*) malloc(strlen(stringdata)+strlen(toAppend)+1);
+		stringdata[0] = 0;
+		strcat(stringdata, temp);
+	}
+
+	if (toAppend != NULL) strcat(stringdata, toAppend);
 	
 	free(temp);
 	free(key);

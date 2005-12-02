@@ -81,37 +81,104 @@ public:
 
 
 	DECLARE_LB_UNKNOWN()
+	
+	wxAppSelectPage(wxWizard *parent);
 
-/*...swxAppSelectPage\40\wxWizard \42\parent\41\:8:*/
-	wxAppSelectPage(wxWizard *parent) : wxWizardPageSimple(parent)
-	{
-			//m_bitmap = wxBITMAP(wiztest2);
-
-			sizerMain  = new wxBoxSizer(wxVERTICAL);
-
-			wxStaticText* text = new wxStaticText(this, -1, _trans("Application:"));
-			box = new wxChoice(this, -1);
-	        
-			sizerMain->Add(text, 0, wxEXPAND | wxALL, 5);
-			sizerMain->Add(box, 0, wxEXPAND | wxALL, 5);
-	        
-			SetSizer(sizerMain);
-	        
-			sizerMain->SetSizeHints(this);
-			sizerMain->Fit(this);
-	        
-			box->SetFocusFromKbd();
-			
-			Centre();
-	}
-
-/*...e*/
 	lbErrCodes LB_STDCALL registerEventHandler(lb_I_Dispatcher* dispatcher);
 
 	wxString LB_STDCALL getSelectedApp() { return app; }
 
-/*...svoid setLoggedOnUser\40\char\42\ user\41\:8:*/
-	void setLoggedOnUser(char* user) {
+	void setLoggedOnUser(char* user);
+
+	virtual bool TransferDataFromWindow();
+
+	void OnWizardPageChanging(wxWizardEvent& event);
+
+private:
+	wxCheckBox *m_checkbox;
+	char* userid;
+	wxChoice* box;
+	wxString app;
+	wxBoxSizer* sizerMain;
+
+	UAP(lb_I_Database, database, __FILE__, __LINE__)
+	UAP(lb_I_Query, sampleQuery, __FILE__, __LINE__)
+
+	DECLARE_EVENT_TABLE()	
+	
+	
+	// l gets overwritten, while assigning a lb_I_Query* pointer to sampleQuery !!
+	// l and buf are therefore as a bugfix.
+	long l;
+	char buf[100];
+};
+
+BEGIN_EVENT_TABLE(wxAppSelectPage, wxWizardPageSimple)
+    EVT_WIZARD_PAGE_CHANGING(-1, wxAppSelectPage::OnWizardPageChanging)
+END_EVENT_TABLE()
+
+BEGIN_IMPLEMENT_LB_UNKNOWN(wxAppSelectPage)
+END_IMPLEMENT_LB_UNKNOWN()
+
+/*...swxAppSelectPage\58\\58\wxAppSelectPage\40\wxWizard \42\parent\41\:0:*/
+wxAppSelectPage::wxAppSelectPage(wxWizard *parent) : wxWizardPageSimple(parent)
+{
+	//m_bitmap = wxBITMAP(wiztest2);
+
+	sizerMain  = new wxBoxSizer(wxVERTICAL);
+
+	wxStaticText* text = new wxStaticText(this, -1, _trans("Application:"));
+	box = new wxChoice(this, -1);
+	        
+	sizerMain->Add(text, 0, wxEXPAND | wxALL, 5);
+	sizerMain->Add(box, 0, wxEXPAND | wxALL, 5);
+	        
+	SetSizer(sizerMain);
+	        
+	sizerMain->SetSizeHints(this);
+	sizerMain->Fit(this);
+	        
+	box->SetFocusFromKbd();
+			
+	Centre();
+}
+/*...e*/
+lbErrCodes LB_STDCALL wxAppSelectPage::setData(lb_I_Unknown* uk) {
+        _LOG << "wxAppSelectPage::setData(...) not implemented yet" LOG_
+        return ERR_NOT_IMPLEMENTED;
+}
+/*...svirtual bool wxAppSelectPage\58\\58\TransferDataFromWindow\40\\41\:0:*/
+	bool wxAppSelectPage::TransferDataFromWindow()
+	{
+	        return TRUE;
+	}
+/*...e*/
+/*...slbErrCodes LB_STDCALL wxAppSelectPage\58\\58\registerEventHandler\40\lb_I_Dispatcher\42\ dispatcher\41\:0:*/
+lbErrCodes LB_STDCALL wxAppSelectPage::registerEventHandler(lb_I_Dispatcher* dispatcher) {
+
+	return ERR_NONE;
+}
+/*...e*/
+/*...svoid wxAppSelectPage\58\\58\OnWizardPageChanging\40\wxWizardEvent\38\ event\41\:0:*/
+void wxAppSelectPage::OnWizardPageChanging(wxWizardEvent& event) {
+		if (event.GetDirection()) {
+			int sel = box->GetSelection();
+			app = box->GetString(sel);
+
+			if (!app.IsEmpty()) {
+				UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
+		
+				char* _app = strdup(app.c_str());
+			
+				meta->loadApplication(userid, _app);
+			
+				free(_app);
+			}
+		}
+	}
+/*...e*/
+/*...svoid wxAppSelectPage\58\\58\setLoggedOnUser\40\char\42\ user\41\:0:*/
+void wxAppSelectPage::setLoggedOnUser(char* user) {
 		userid = strdup(user);
 		 
 		REQUEST(manager.getPtr(), lb_I_Database, database)
@@ -140,6 +207,7 @@ public:
 
 		sampleQuery->skipFKCollecting();
 		sampleQuery->query(buffer);
+		sampleQuery->PrintData();
 		sampleQuery->enableFKCollecting();
 
 		// Clear the box, if it was previously filled due to navigation.
@@ -151,10 +219,10 @@ public:
 		lbErrCodes err = sampleQuery->first();
 
 		if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
-
-			UAP_REQUEST(manager.getPtr(), lb_I_String, s1)	
-
+			UAP(lb_I_String, s1, __FILE__, __LINE__)
 			s1 = sampleQuery->getAsString(1);
+
+			_CL_LOG << "Append '" << s1->charrep() << "' to application list." LOG_
 
 			box->Append(wxString(s1->charrep()));
 
@@ -162,7 +230,10 @@ public:
 				lbErrCodes err = sampleQuery->next();
 				
 				if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
+					UAP(lb_I_String, s1, __FILE__, __LINE__)
 					s1 = sampleQuery->getAsString(1);
+					
+					_CL_LOG << "Append '" << s1->charrep() << "' to application list." LOG_
 					
 					box->Append(wxString(s1->charrep()));
 					
@@ -171,6 +242,11 @@ public:
 						break;
 					}
 				}
+				
+				if (err == ERR_DB_NODATA) {
+					box->SetSelection(0);
+					break;
+				}
 			}
 		}
 
@@ -178,68 +254,6 @@ public:
 
 		return;
 	}
-/*...e*/
-
-/*...svirtual bool TransferDataFromWindow\40\\41\:8:*/
-	virtual bool TransferDataFromWindow()
-	{
-	        return TRUE;
-	}
-/*...e*/
-
-	void OnWizardPageChanging(wxWizardEvent& event) {
-		if (event.GetDirection()) {
-			int sel = box->GetSelection();
-			app = box->GetString(sel);
-
-			if (!app.IsEmpty()) {
-				UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
-		
-				char* _app = strdup(app.c_str());
-			
-				meta->loadApplication(userid, _app);
-			
-				free(_app);
-			}
-		}
-	}
-
-private:
-	wxCheckBox *m_checkbox;
-	char* userid;
-	wxChoice* box;
-	wxString app;
-	wxBoxSizer* sizerMain;
-
-	UAP(lb_I_Database, database, __FILE__, __LINE__)
-	UAP(lb_I_Query, sampleQuery, __FILE__, __LINE__)
-
-	DECLARE_EVENT_TABLE()	
-	
-	
-	// l gets overwritten, while assigning a lb_I_Query* pointer to sampleQuery !!
-	// l and buf are therefore as a bugfix.
-	long l;
-	char buf[100];
-};
-
-BEGIN_EVENT_TABLE(wxAppSelectPage, wxWizardPageSimple)
-    EVT_WIZARD_PAGE_CHANGING(-1, wxAppSelectPage::OnWizardPageChanging)
-END_EVENT_TABLE()
-
-BEGIN_IMPLEMENT_LB_UNKNOWN(wxAppSelectPage)
-END_IMPLEMENT_LB_UNKNOWN()
-
-lbErrCodes LB_STDCALL wxAppSelectPage::setData(lb_I_Unknown* uk) {
-        _LOG << "wxAppSelectPage::setData(...) not implemented yet" LOG_
-        return ERR_NOT_IMPLEMENTED;
-}
-
-/*...slbErrCodes LB_STDCALL wxAppSelectPage\58\\58\registerEventHandler\40\lb_I_Dispatcher\42\ dispatcher\41\:0:*/
-lbErrCodes LB_STDCALL wxAppSelectPage::registerEventHandler(lb_I_Dispatcher* dispatcher) {
-
-	return ERR_NONE;
-}
 /*...e*/
 /*...e*/
 
@@ -556,7 +570,15 @@ lbErrCodes LB_STDCALL lb_wxFrame::setData(lb_I_Unknown* uk) {
 lbErrCodes LB_STDCALL lb_wxFrame::registerEvents(lb_I_EventConnector* object) {
         lb_wxFrame* peer = getPeer();
 
+	UAP_REQUEST(manager.getPtr(), lb_I_EventManager, eman)
 
+	int on_panel_usage;
+	
+	eman->registerEvent("switchPanelUse", on_panel_usage);
+
+	((wxFrame*) peer)->Connect( on_panel_usage,  -1, wxEVT_COMMAND_MENU_SELECTED,
+	          (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
+                  &lb_wxFrame::OnDispatch );
         
         ((wxFrame*) peer)->Connect( DYNAMIC_QUIT,  -1, wxEVT_COMMAND_MENU_SELECTED,
                   (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
@@ -585,25 +607,26 @@ lbErrCodes LB_STDCALL lb_wxFrame::registerEvents(lb_I_EventConnector* object) {
 /*...slbErrCodes lb_wxFrame\58\\58\createEventsource\40\lb_I_EventConnector\42\ object\41\:0:*/
 lbErrCodes LB_STDCALL lb_wxFrame::createEventsource(lb_I_EventConnector* object) {
 
-/*...screate a menu:0:*/
-  // Make a menubar
-  wxMenu *file_menu = new wxMenu;
+	// Make a menubar
+	wxMenu *file_menu = new wxMenu;
   
-  file_menu->Append(DYNAMIC_ABOUT	, _trans("&About\tCtrl-A"));
-  file_menu->Append(DYNAMIC_VERBOSE	, _trans("&Verbose\tCtrl-V"));
-  file_menu->Append(DYNAMIC_QUIT	, _trans("E&xit\tCtrl-x"));
-  file_menu->Append(DYNAMIC_PLUGINTEST	, _trans("&Test Plugin\tCtrl-T"));
+	file_menu->Append(DYNAMIC_ABOUT	, _trans("&About\tCtrl-A"));
+	file_menu->Append(DYNAMIC_VERBOSE	, _trans("&Verbose\tCtrl-V"));
+	file_menu->Append(DYNAMIC_QUIT	, _trans("E&xit\tCtrl-x"));
+	file_menu->Append(DYNAMIC_PLUGINTEST	, _trans("&Test Plugin\tCtrl-T"));
 
-  menu_bar = new wxMenuBar;
-  menu_bar->Append(file_menu, _trans("&File"));
-  
-/*...e*/
+	int on_panel_usage;
+	UAP_REQUEST(manager.getPtr(), lb_I_EventManager, eman)
+	
+	eman->resolveEvent("switchPanelUse", on_panel_usage);
+	
+	file_menu->Append(on_panel_usage, _trans("switch &Panel usage\tCtrl-P"));
+	
+	menu_bar = new wxMenuBar;
+	menu_bar->Append(file_menu, _trans("&File"));
 
-/*...sset the created menubar:0:*/
+	SetMenuBar(menu_bar);
 
-  SetMenuBar(menu_bar);
-
-/*...e*/
         return ERR_NONE;
 }
 /*...e*/
@@ -612,10 +635,10 @@ lbErrCodes LB_STDCALL lb_wxFrame::createEventsource(lb_I_EventConnector* object)
 /*...sclass lb_wxGUI:0:*/
 #ifdef LB_I_EXTENTIONS
 
-
 BEGIN_IMPLEMENT_LB_UNKNOWN(lb_wxGUI)
         ADD_INTERFACE(lb_I_wxGUI)
 END_IMPLEMENT_LB_UNKNOWN()
+
 
 /*...sUnimplemented code:0:*/
 /*...slbErrCodes LB_STDCALL lb_wxGUI\58\\58\setDispatcher\40\lb_I_Dispatcher\42\ disp\41\:0:*/
@@ -709,11 +732,15 @@ lbErrCodes LB_STDCALL lb_wxGUI::insertMenuEntry(lb_I_Unknown* entry) {
 /*...e*/
 /*...e*/
 
+
 /*...slbErrCodes LB_STDCALL lb_wxGUI\58\\58\registerEventHandler\40\lb_I_Dispatcher\42\ disp\41\:0:*/
 lbErrCodes LB_STDCALL lb_wxGUI::registerEventHandler(lb_I_Dispatcher* disp) {
+	_CL_LOG << "lb_wxGUI::registerEventHandler(lb_I_Dispatcher* disp) called." LOG_
 
 // Cleanup is no event handler.        
 //        disp->addEventHandlerFn(this, (lbEvHandler) &lb_wxGUI::cleanup, "wxGUI_Cleanup"); 
+
+	disp->addEventHandlerFn(this, (lbEvHandler) &lb_wxGUI::switchPanelUse, "switchPanelUse");
          
         return ERR_NONE;
 }
@@ -1137,6 +1164,15 @@ void LB_STDCALL lb_wxGUI::showForm(char* name) {
 void LB_STDCALL lb_wxGUI::registerDBForm(char* formName, lb_I_DatabaseForm* form) {
 
 }
+
+lbErrCodes LB_STDCALL lb_wxGUI::switchPanelUse(lb_I_Unknown* uk) {
+	lbErrCodes err = ERR_NONE;
+	
+	panelUsage = !panelUsage;
+	
+	return err;
+}
+
 #endif
 /*...e*/
 #endif

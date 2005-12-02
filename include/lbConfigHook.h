@@ -388,7 +388,7 @@ DLLEXPORT lbErrCodes LB_STDCALL lbGetFunctionPtr(const char* name, HINSTANCE hin
 DLLEXPORT lb_I_Module* LB_STDCALL getModuleInstance();
 /*...e*/
 /*...slbErrCodes LB_STDCALL releaseInstance\40\lb_I_Unknown\42\ inst\41\:0:*/
-lbErrCodes LB_STDCALL releaseInstance(lb_I_Unknown* inst);
+DLLEXPORT lbErrCodes LB_STDCALL releaseInstance(lb_I_Unknown* inst);
 /*...e*/
 /*...svoid LB_STDCALL unHookAll\40\\41\:0:*/
 DLLEXPORT void LB_STDCALL unHookAll();

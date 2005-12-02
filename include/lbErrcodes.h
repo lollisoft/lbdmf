@@ -30,11 +30,22 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.23 $
+ * $Revision: 1.24 $
  * $Name:  $
- * $Id: lbErrcodes.h,v 1.23 2005/10/09 22:42:09 lollisoft Exp $
+ * $Id: lbErrcodes.h,v 1.24 2005/12/02 00:28:43 lollisoft Exp $
  *
  * $Log: lbErrcodes.h,v $
+ * Revision 1.24  2005/12/02 00:28:43  lollisoft
+ * Deleting a row works for some tests. Deleting data in join queries is not tested
+ * and would propably not work. This is at least due to lack of creating a delete
+ * statement per related table.
+ *
+ * Now this deleting also includes the ability to reopen the query as needed.
+ * Form code is adopted to the case if there are no peek aheads are done
+ * while fetching new data.
+ *
+ * Code cleanup would be done later.
+ *
  * Revision 1.23  2005/10/09 22:42:09  lollisoft
  * Bugfix, if no parameter found with that name.
  *
@@ -221,7 +232,8 @@ enum lbErrCodes {
 	ERR_SOCKET_CLOSED,
 
 /* Errcodes for the database module */
-	
+
+	ERR_DB_EXECDIRECT,	
 	ERR_DB_INIT,
 	ERR_DB_ALLOCSTATEMENT,
 	ERR_DB_QUERYFAILED,
@@ -232,6 +244,7 @@ enum lbErrCodes {
 	ERR_DB_NODATA,
 	ERR_DB_READONLY,
 	ERR_DB_STILL_ADDING,
+	ERR_DB_ROWDELETED,
 	ERR_UPDATE_FAILED,
 	WARN_DB_NODATA,
 	

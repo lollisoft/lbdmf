@@ -227,7 +227,8 @@ int main(int argc, char *argv[]) {
 				"id serial,"
 				"test char(100) DEFAULT 'Nothing',\n"
 				"btest bool DEFAULT false, "
-				"btest1 bool DEFAULT false"
+				"btest1 bool DEFAULT false,"
+				"CONSTRAINT regressiontest_pkey PRIMARY KEY (id)"
 				");";
 	
 		// I have problems which collecting foreign key data, if no result sets are there.
@@ -257,8 +258,14 @@ int main(int argc, char *argv[]) {
 		database1->connect("lbDMF", lbDMFUser, lbDMFPasswd);
 
 		query2 = database1->getQuery(0);
+		query2->enableFKCollecting();
 		query2->skipPeeking();
-		query2->query("select id, test, btest, btest1 from regressiontest order by id");
+		//query2->query("select id, test, btest, btest1 from regressiontest order by id");
+
+		query2->query(
+		"select * from Anwendungen inner join User_Anwendungen on "
+		"Anwendungen.id = User_Anwendungen.anwendungenid "
+		"inner join Users on User_Anwendungen.userid = Users.id where Users.userid = 'user'");
 
 		query2->PrintData();
 
@@ -267,16 +274,17 @@ int main(int argc, char *argv[]) {
 		query2->next();
 		query2->next();
 		query2->next();
-		query2->remove();
+		//query2->remove();
+		query2->update();
 		//query2->previous();
 		query2->PrintData();
-		query2->PrintData(true);
+		query2->PrintData();
 
 	}
 /*...e*/
 
 	unHookAll();
-		
+	getchar();	
 	exit(0);
 
 /*...sbla:0:*/

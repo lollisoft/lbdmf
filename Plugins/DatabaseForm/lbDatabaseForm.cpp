@@ -1421,7 +1421,8 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 		REQUEST(manager.getPtr(), lb_I_String, SQLString)
 		SQLString->setData(_SQLString);
 	}
-	
+
+	//sampleQuery->skipPeeking();
 	sampleQuery->query(SQLString->charrep(), false);
 
 /*...sDetermine readonly fields:8:*/
@@ -3203,7 +3204,11 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBRead() {
 lbErrCodes LB_STDCALL lbDatabasePanel::lbDBFirst(lb_I_Unknown* uk) {
 	lbDBUpdate();
 
-	if (sampleQuery->first() == ERR_DB_NODATA) {
+	lbErrCodes err = sampleQuery->first();
+
+	while (err == ERR_DB_ROWDELETED) err = sampleQuery->next();
+
+	if (err == ERR_DB_NODATA) {
 		prevButton->Disable();
 		firstButton->Disable();
 		lastButton->Disable();
@@ -3228,6 +3233,9 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBNext(lb_I_Unknown* uk) {
 	lbDBUpdate();
 
 	err = sampleQuery->next();
+
+	// Skip all deleted rows
+	while (err == ERR_DB_ROWDELETED) err = sampleQuery->next();
 	
 	if (err == WARN_DB_NODATA) {
 		nextButton->Disable();
@@ -3253,7 +3261,12 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBPrev(lb_I_Unknown* uk) {
 	lbDBUpdate();
 	lbErrCodes err;
 
-	if ((err = sampleQuery->previous()) == WARN_DB_NODATA) {
+	err = sampleQuery->previous();
+
+	// Skip all deleted rows
+	while (err == ERR_DB_ROWDELETED) err = sampleQuery->previous();
+
+	if (err == WARN_DB_NODATA) {
 		prevButton->Disable();
 		firstButton->Disable();
 	}
@@ -3276,7 +3289,11 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBPrev(lb_I_Unknown* uk) {
 lbErrCodes LB_STDCALL lbDatabasePanel::lbDBLast(lb_I_Unknown* uk) {
 	lbDBUpdate();
 
-	if (sampleQuery->last() == ERR_DB_NODATA) {
+	lbErrCodes err = sampleQuery->last();
+	
+	while (err == ERR_DB_ROWDELETED) err = sampleQuery->previous();
+
+	if (err == ERR_DB_NODATA) {
 		prevButton->Disable();
 		firstButton->Disable();
 		lastButton->Disable();

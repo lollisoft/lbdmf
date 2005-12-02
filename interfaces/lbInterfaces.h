@@ -418,19 +418,8 @@
  #endif
 #endif
 
-#ifdef __WATCOMC__
+#ifdef WINDOWS
 #define LB_DLLEXPORT __declspec(dllexport)
-#endif
-
-#ifndef __WATCOMC__
-#define LB_DLLEXPORT __declspec(dllexport)
-#endif
-
-#ifdef __WATCOMC__
-#define LB_DLLIMPORT __declspec(dllimport)
-#endif
-
-#ifndef __WATCOMC__
 #define LB_DLLIMPORT __declspec(dllimport)
 #endif
 
@@ -608,8 +597,10 @@ class lb_I_Unknown {
 private:
 	/**
 	 * Hide this operator to prevent usage. Effect ??
+	 *
+	 * Under MSVC 6.0 I get lots of warnings that there could not be created an assignement operator.
 	 */
-	lb_I_Unknown& operator=(const lb_I_Unknown& rhs);
+//	lb_I_Unknown& operator=(const lb_I_Unknown& rhs);
 	
 	/**
 	 * Hide this operator to prevent usage. Effect ??
@@ -1723,7 +1714,7 @@ lbErrCodes DLLEXPORT LB_FUNCTORCALL name(lb_I_Unknown** uk, lb_I_Module* m, char
  * If it could be created by REQUEST, the UAP_REQUEST macro - requesting an instance for a particular
  * interface - must also request the base class of it self to have the UAP class.
  */
-#ifndef MSC_VER
+#ifndef _MSC_VER
 class lb_I_Reference : public lb_I_Unknown {
 public:
 	virtual lbErrCodes LB_STDCALL set(lb_I_Unknown* r) = 0;

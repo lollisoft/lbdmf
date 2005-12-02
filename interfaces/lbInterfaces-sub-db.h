@@ -281,7 +281,11 @@ public:
 	 */
 	virtual bool		   LB_STDCALL getReadonly(char* column) = 0;
 
+
         /* Navigation */
+
+	virtual int		LB_STDCALL getPosition() = 0;
+	virtual lbErrCodes	LB_STDCALL absolute(int pos) = 0;
         
 	/**
 	 * \brief Move to first row.
@@ -454,6 +458,11 @@ public:
 	
 	virtual void	     LB_STDCALL rebindReadonlyColumns() = 0;	
 
+	/**
+	 * \brief Rebind column.
+	 */
+	virtual void LB_STDCALL rebind() = 0;
+
 protected:
 	/**
 	 * This function will be used in setData to take the ownership of the internal
@@ -556,14 +565,17 @@ public:
 	/**
 	 * \brief Unbind readonly columns.
 	 */
-
 	virtual void LB_STDCALL unbindReadonlyColumns() = 0;
 
 	/**
 	 * \brief Rebind readonly columns.
 	 */
-
 	virtual void LB_STDCALL rebindReadonlyColumns() = 0;
+
+	/** 
+	 * \brief Rebind all columns.
+	 */
+	virtual void LB_STDCALL rebind() = 0;
 
 	/**
 	 * \brief Get the type of a column.

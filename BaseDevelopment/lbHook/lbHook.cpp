@@ -58,13 +58,13 @@
 #pragma warning( disable: 4101 )
 #endif
 
-#include <lbConfigHook.h>
-
 #define HOOK_DLL
 /*...sLB_HOOK_DLL scope:0:*/
 #define LB_HOOK_DLL
 #include <lbhook-module.h>
 /*...e*/
+
+#include <lbConfigHook.h>
 
 #ifdef LINUX
 #define HINSTANCE void*
@@ -894,6 +894,78 @@ char* LB_STDCALL lbKey::charrep() const {
     sprintf(buf, "%d", key);
 #endif    
     _CL_VERBOSE << "lbKey::charrep() in lbHook.cpp" LOG_
+    return strdup(buf);
+}
+/*...e*/
+
+
+/*...slbKey_:0:*/
+/*...sc\39\tors and d\39\tors:0:*/
+#ifdef _MSC_VER
+lbKey_::lbKey_(char* file, int line) {
+        key = 0;
+        strcpy(keyType, "int");
+}
+#endif
+lbKey_::lbKey_() {
+    ref = STARTREF;
+    key = 0;
+	manager = NULL;
+    strcpy(keyType, "int");
+}
+
+lbKey_::lbKey_(int _key) {
+    ref = STARTREF;
+    key = _key;
+    strcpy(keyType, "int");
+	manager = NULL;
+}
+
+lbKey_::lbKey_(const lb_I_KeyBase* k) {
+    ref = STARTREF;
+    key = ((lbKey_) k).key;
+}
+
+lbKey_::~lbKey_(){
+}
+/*...e*/
+
+/*...simplement lb_I_Unknown:0:*/
+BEGIN_IMPLEMENT_LB_UNKNOWN(lbKey_)
+	ADD_INTERFACE(lb_I_KeyBase)
+END_IMPLEMENT_LB_UNKNOWN()
+
+
+lbErrCodes LB_STDCALL lbKey_::setData(lb_I_Unknown* uk) {
+	return ERR_NONE;
+}
+/*...e*/
+
+char* LB_STDCALL lbKey_::getKeyType() const {
+    return "int";
+}
+
+int LB_STDCALL lbKey_::equals(const lb_I_KeyBase* _key) const {
+    return key == ((lbKey_*) _key)->key;
+}
+
+int LB_STDCALL lbKey_::greater(const lb_I_KeyBase* _key) const {
+    return key > ((lbKey_*) _key)->key;
+}
+
+int LB_STDCALL lbKey_::lessthan(const lb_I_KeyBase* _key) const {
+    return key < ((lbKey_*) _key)->key;
+}
+
+char* LB_STDCALL lbKey_::charrep() const {
+    char buf[100];
+#ifdef WINDOWS
+    itoa(key, buf, 10);
+#endif
+#ifdef LINUX
+    sprintf(buf, "%d", key);
+#endif    
+    _CL_VERBOSE << "lbKey_::charrep() in lbHook.cpp" LOG_
     return strdup(buf);
 }
 /*...e*/
