@@ -127,6 +127,12 @@ public:
 	 * Any further navigation is skipped until the update function has been called.
 	 */
 	virtual lbErrCodes LB_STDCALL add() = 0;
+
+	/** \brief Get adding mode.
+	 *
+	 * Returns 1 if adding is active or 0 if not.
+	 */
+	virtual int LB_STDCALL isAdding() = 0;
 	
 	/**
 	 * \brief Deletes the current entry.
