@@ -458,6 +458,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::Initialize(char* user, char* app) {
 		}
 		
 		if (DBerr == WARN_DB_NODATA) return ERR_NONE;
+		if (DBerr == ERR_DB_NODATA) return ERR_NONE;
 #define TRUE 1
 		while (TRUE) {
 /*...sget rest of menu entries:24:*/
@@ -482,6 +483,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::Initialize(char* user, char* app) {
 				}
 		        	if (DBerr == WARN_DB_NODATA) break;
 		        }
+	        	if (DBerr == ERR_DB_NODATA) break;
 /*...e*/
 		}
 
