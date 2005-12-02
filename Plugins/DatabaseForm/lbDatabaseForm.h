@@ -30,11 +30,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.27 $
+ * $Revision: 1.28 $
  * $Name:  $
- * $Id: lbDatabaseForm.h,v 1.27 2005/11/18 23:41:32 lollisoft Exp $
+ * $Id: lbDatabaseForm.h,v 1.28 2005/12/02 17:45:31 lollisoft Exp $
  *
  * $Log: lbDatabaseForm.h,v $
+ * Revision 1.28  2005/12/02 17:45:31  lollisoft
+ * Added members (deleteButton, allNaviDisabled).
+ *
  * Revision 1.27  2005/11/18 23:41:32  lollisoft
  * More memory leaks have been fixed. There are currently less than 200
  * chunks unfreed, wich may be located in the plugin mechanism.
@@ -693,7 +696,9 @@ public:
 	wxWindow* prevButton;
 	wxWindow* nextButton;
 	wxWindow* lastButton;
-	
+	wxWindow* deleteButton;
+
+	bool allNaviDisabled;	
 	bool noDataAvailable;
 	bool isAdding;
 	bool _created;
