@@ -27,3 +27,8 @@ Debug
 *.err
 *.so.*
 makefile
+AppDevelopment
+bouml.txt
+dist
+Output
+readme.txt
