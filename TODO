@@ -4,6 +4,10 @@
 		
 		I also will discuss some problems while the development stages.
 
+		03.12.2005	DatabaseForms lack to handle proper adding of data in an empty table.
+				The form does not update the entered data after 'Add' has been pressed.
+				There must be added a second row. Then manipulating rows will work.
+
 		18.10.2005	DatabaseReport is missing a function to get the value of a replacement.
 				The replacement for example is a customer number that will be shown in
 				the form, that calls the database report. In the case of custom where

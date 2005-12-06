@@ -1,11 +1,17 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.72 $
+# * $Revision: 1.73 $
 # * $Name:  $
-# * $Id: Makefile,v 1.72 2005/11/11 22:51:30 lollisoft Exp $
+# * $Id: Makefile,v 1.73 2005/12/06 15:54:56 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.73  2005/12/06 15:54:56  lollisoft
+# * Changes let the GUI work properly in debug mode. But there is a NULL
+# * pointer exeption in release mode near opening a database form.
+# *
+# * Testing on Mac OS X and Linux.
+# *
 # * Revision 1.72  2005/11/11 22:51:30  lollisoft
 # * Memory leaks removed. There are currently only 4 chunks leaky.
 # * These may be false positives, because one of them is an allocated
@@ -322,7 +328,6 @@ ALLTARGETS = \
 	lbclasses \
 	lbDB \
 	lbPluginManager \
-	../Plugins/DatabaseForm \
 	../AppDevelopmentDemo/App \
 	../AppDevelopmentDemo/DynamicApp/App \
 	../Test/GUI/wxWrapperDLL \
@@ -355,7 +360,6 @@ ALLTARGETS = \
 	lbclasses \
 	lbMetaApplication \
 	lbPluginManager \
-	../Plugins/DatabaseForm \
 	../AppDevelopmentDemo/App \
 	../AppDevelopmentDemo/DynamicApp/App \
 	../Test/Console/XML \
@@ -387,7 +391,6 @@ ALLTARGETS = \
 	lbclasses \
 	lbMetaApplication \
 	lbPluginManager \
-	../Plugins/DatabaseForm \
 	../AppDevelopmentDemo/App \
 	../AppDevelopmentDemo/DynamicApp/App \
 	../Test/Console/XML \
@@ -605,6 +608,8 @@ lbXMLConfig/lbDOMConfig: dummy
 	../RegressionTests/Basetypes/Basetypes.cpp \
 	../RegressionTests/Memory/memTest.cpp
 	-@doxygen ../doxygen.conf
+	
+	
 
 #	../RegressionTests/Database/dbTest.cpp \
 

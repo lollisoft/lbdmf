@@ -38,11 +38,17 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.40 $
+ * $Revision: 1.41 $
  * $Name:  $
- * $Id: skiplist.cpp,v 1.40 2005/11/20 17:26:14 lollisoft Exp $
+ * $Id: skiplist.cpp,v 1.41 2005/12/06 15:54:56 lollisoft Exp $
  *
  * $Log: skiplist.cpp,v $
+ * Revision 1.41  2005/12/06 15:54:56  lollisoft
+ * Changes let the GUI work properly in debug mode. But there is a NULL
+ * pointer exeption in release mode near opening a database form.
+ *
+ * Testing on Mac OS X and Linux.
+ *
  * Revision 1.40  2005/11/20 17:26:14  lollisoft
  * Local TRMem count.
  *
@@ -492,8 +498,8 @@ lb_I_Unknown* LB_STDCALL SkipList::getElement(lb_I_KeyBase** const key) {
     lb_I_Unknown* e = search(*key);
     
     if (e == NULL) {
-    	_LOG << "SkipList::getElement(...) returns a NULL pointer!" LOG_
-	    printf("SkipList::getElement(lb_I_KeyBase** const key) searches for '%s'\n", (*key)->charrep());
+	_LOG << "SkipList::getElement(...) returns a NULL pointer!" LOG_
+	_LOG << "SkipList::getElement(...) searched for '" << (*key)->charrep() << "'" LOG_
     }
     
     return e;

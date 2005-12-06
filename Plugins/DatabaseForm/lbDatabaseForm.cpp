@@ -2002,6 +2002,8 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 	
 	Centre();
 
+	_CL_VERBOSE << "lbDatabasePanel::init(...) ready. Move to first row." LOG_
+
 	lbDBFirst(NULL);
 }
 /*...e*/
@@ -3261,7 +3263,6 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBFirst(lb_I_Unknown* uk) {
 /*...slbErrCodes LB_STDCALL lbDatabasePanel\58\\58\lbDBNext\40\lb_I_Unknown\42\ uk\41\:0:*/
 lbErrCodes LB_STDCALL lbDatabasePanel::lbDBNext(lb_I_Unknown* uk) {
 	lbDBUpdate();
-	lbDBClear();
 
 	lbErrCodes err = sampleQuery->next();
 
@@ -3281,6 +3282,8 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBNext(lb_I_Unknown* uk) {
 		prevButton->Enable();
 		firstButton->Enable();
 		deleteButton->Enable();
+	
+		lbDBClear();
 	}
 	
 	lbDBRead();
@@ -3291,7 +3294,6 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBNext(lb_I_Unknown* uk) {
 /*...slbErrCodes LB_STDCALL lbDatabasePanel\58\\58\lbDBPrev\40\lb_I_Unknown\42\ uk\41\:0:*/
 lbErrCodes LB_STDCALL lbDatabasePanel::lbDBPrev(lb_I_Unknown* uk) {
 	lbDBUpdate();
-	lbDBClear();
 
 	lbErrCodes err = sampleQuery->previous();
 
@@ -3311,6 +3313,8 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBPrev(lb_I_Unknown* uk) {
 		nextButton->Enable();
 		lastButton->Enable();
 		deleteButton->Enable();
+
+		lbDBClear();
 	}
 
 	lbDBRead();
@@ -3343,11 +3347,12 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBLast(lb_I_Unknown* uk) {
 
 /*...slbErrCodes LB_STDCALL lbDatabasePanel\58\\58\lbDBAdd\40\lb_I_Unknown\42\ uk\41\:0:*/
 lbErrCodes LB_STDCALL lbDatabasePanel::lbDBAdd(lb_I_Unknown* uk) {
-	
+	lbErrCodes errUpdate = ERR_NONE;
 	_CL_LOG << "lbDatabasePanel::lbDBAdd() called." LOG_
 
 	if (sampleQuery->isAdding() == 0) {
-		lbDBUpdate();
+		errUpdate = lbDBUpdate();
+
 		lbDBClear();
 
 		if (sampleQuery->add() != ERR_NONE) {
@@ -3356,8 +3361,14 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBAdd(lb_I_Unknown* uk) {
 			newTitle->setData(formName);
 		
 			*newTitle += ": Add failed !";
+			
+			_LOG << newTitle->charrep() LOG_
 
 			SetTitle(_trans(newTitle->charrep()));
+		} else {
+			// Fake a successfull update
+			
+			errUpdate = ERR_NONE;
 		}
 	}
 	
@@ -3511,12 +3522,14 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBAdd(lb_I_Unknown* uk) {
 	}
 /*...e*/
 
-	if (lbDBUpdate() == ERR_UPDATE_FAILED) {
+	if (errUpdate == ERR_UPDATE_FAILED) {
 		UAP_REQUEST(manager.getPtr(), lb_I_String, newTitle)
 		
 		newTitle->setData(formName);
 		
 		*newTitle += ": Missing fields !";
+		
+		_LOG << newTitle->charrep() LOG_
 		
 		SetTitle(_trans(newTitle->charrep()));
 		

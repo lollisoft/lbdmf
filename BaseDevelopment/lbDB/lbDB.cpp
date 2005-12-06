@@ -69,6 +69,8 @@ extern "C" {
 #include <lbDB.h>
 /*...e*/
 
+//#define USE_FETCH_SCROLL
+
 extern "C" {
 #include <sql.h>
 #include <sqlext.h>
@@ -79,6 +81,25 @@ extern "C" {
 #ifndef WINDOWS
 #define lstrcpy strcpy
 #endif
+
+/*...s\35\define CHECK_ROWSTAT\40\\41\:0:*/
+#define CHECK_ROWSTAT() \
+	if (RowStat[0] == SQL_ROW_DELETED) { \
+		reopen(); \
+		if (haveData == false) return ERR_DB_NODATA; \
+	} \
+	if (RowStat[0] == SQL_ROW_NOROW) { \
+		if (retcode == SQL_NO_DATA) { \
+			_CL_LOG << "ERROR: There would also be SQL_NO_DATA." LOG_ \
+		} \
+	} \
+	if (RowStat[0] == SQL_ROW_ERROR) { \
+		if (retcode == SQL_NO_DATA) { \
+			_CL_LOG << "ERROR: There would also be SQL_NO_DATA." LOG_ \
+		} \
+	}
+
+/*...e*/
 
 void _dbError_STMT(char* lp, HSTMT hstmt);
 void _dbError_ENV(char* lp, HENV henv);
@@ -162,6 +183,8 @@ private:
 };
 /*...e*/
 /*...sclass def lbQuery:0:*/
+/** \brief Implementation using ODBC backend.
+ */
 class lbQuery :
 public lb_I_Query
 {
@@ -257,21 +280,21 @@ public:
 	 * General information based on the given query.
 	 */
 
-	int				LB_STDCALL getColumns();
+	int			LB_STDCALL getColumns();
 	bool			LB_STDCALL lbQuery::hasColumnName(char* name);
 
 	char*			LB_STDCALL getColumnName(int col);
 
-	int				LB_STDCALL hasFKColumn(char* FKName);
-
-	int				LB_STDCALL getFKColumns();
+	int			LB_STDCALL hasFKColumn(char* FKName);
+			
+	int			LB_STDCALL getFKColumns();
 	
-	lb_I_String*    LB_STDCALL getFKColumn(int pos);
+	lb_I_String*    	LB_STDCALL getFKColumn(int pos);
 	
-	lb_I_String*	LB_STDCALL getFKColumn(char* table, char* primary);
+	lb_I_String*		LB_STDCALL getFKColumn(char* table, char* primary);
 	
-	lb_I_String*	LB_STDCALL getPKTable(char const * FKName);
-	lb_I_String*    LB_STDCALL getPKColumn(char const * FKName);
+	lb_I_String*		LB_STDCALL getPKTable(char const * FKName);
+	lb_I_String*    	LB_STDCALL getPKColumn(char const * FKName);
 
 	int 			LB_STDCALL getPKColumns();
 	lb_I_String* 		LB_STDCALL getPKColumn(int pos);
@@ -281,8 +304,8 @@ public:
 	virtual lb_I_Query::lbDBColumnTypes LB_STDCALL getColumnType(int pos);
 	virtual lb_I_Query::lbDBColumnTypes LB_STDCALL getColumnType(char* name);
 
-	void               LB_STDCALL setReadonly(char* column, bool updateable = true);
-	bool               LB_STDCALL getReadonly(char* column);
+	void			LB_STDCALL setReadonly(char* column, bool updateable = true);
+	bool			LB_STDCALL getReadonly(char* column);
         
         /* Navigation */
         
@@ -582,7 +605,7 @@ bool LB_STDCALL lbBoundColumns::isNull(int pos) {
 	return false;
 }
 /*...e*/
-
+/*...svoid LB_STDCALL lbBoundColumns\58\\58\rebind\40\\41\:0:*/
 void LB_STDCALL lbBoundColumns::rebind() {
 	lbErrCodes err = ERR_NONE;
 	
@@ -599,7 +622,7 @@ void LB_STDCALL lbBoundColumns::rebind() {
 		}
 	}
 }
-
+/*...e*/
 /*...svoid LB_STDCALL lbBoundColumns\58\\58\unbindReadonlyColumns\40\\41\:0:*/
 void LB_STDCALL lbBoundColumns::unbindReadonlyColumns() {
 	lbErrCodes err = ERR_NONE;
@@ -824,8 +847,6 @@ int               LB_STDCALL lbBoundColumns::getColumnCount() {
 	return boundColumns->Count();
 }
 /*...e*/
-
-class lbQuery;
 
 /*...slbErrCodes      LB_STDCALL lbBoundColumns\58\\58\setQuery\40\lbQuery\42\ q\44\ lb_I_Container\42\ ReadonlyColumns\41\:0:*/
 lbErrCodes      LB_STDCALL lbBoundColumns::setQuery(lb_I_Query* q, lb_I_Container* ReadonlyColumns) {
@@ -1497,7 +1518,6 @@ lb_I_String* LB_STDCALL lbQuery::getAsString(int column) {
 }
 #endif
 /*...e*/
-//#define USE_FETCH_SCROLL
 /*...sint LB_STDCALL lbQuery\58\\58\getColumns\40\\41\:0:*/
 int LB_STDCALL lbQuery::getColumns() {
 	SWORD count = 0;
@@ -1508,11 +1528,12 @@ int LB_STDCALL lbQuery::getColumns() {
 	return count;
 }
 /*...e*/
-
+/*...sbool LB_STDCALL lbQuery\58\\58\hasColumnName\40\char\42\ name\41\:0:*/
 bool LB_STDCALL lbQuery::hasColumnName(char* name) {
 	if ((boundColumns != NULL) && (boundColumns->getColumnIndex(name) != -1)) return true; 
 	return false;
 }
+/*...e*/
 
 /*...sint LB_STDCALL lbQuery\58\\58\hasFKColumn\40\char\42\ FKName\41\:0:*/
 int LB_STDCALL lbQuery::hasFKColumn(char* FKName) {
@@ -2220,9 +2241,99 @@ void LB_STDCALL lbQuery::setReadonly(char* column, bool updateable) {
 	_CL_LOG << "lbQuery::setReadonly(...) returns." LOG_
 }
 /*...e*/
+/*...sbool LB_STDCALL lbQuery\58\\58\getReadonly\40\char\42\ column\41\:0:*/
 bool LB_STDCALL lbQuery::getReadonly(char* column) {
 	return boundColumns->getReadonly(column);
 }
+/*...e*/
+/*...schar\42\ LB_STDCALL lbQuery\58\\58\getTableName\40\char\42\ columnName\41\:0:*/
+char *lpszTable = NULL;
+int lpszSize = 0;
+
+char* LB_STDCALL lbQuery::getTableName(char* columnName) {
+		
+		SQLHSTMT	StatementHandle;
+		SQLUSMALLINT	ColumnNumber;
+		SQLUSMALLINT	FieldIdentifier;
+		SQLPOINTER	CharacterAttributePtr;
+		SQLSMALLINT	BufferLength;
+		SQLSMALLINT	StringLengthPtr = 0;
+		SQLPOINTER	NumericAttributePtr;
+		
+		SQLINTEGER	Int = 0;
+		
+		CharacterAttributePtr = (void*) malloc(101);
+		memset(CharacterAttributePtr, 0, 101);
+
+		NumericAttributePtr = &Int;
+		
+		SQLRETURN retcode;
+		int index = boundColumns->getColumnIndex(columnName);
+		
+		retcode = SQLColAttribute(
+				  hstmt,
+				  index, 
+				  SQL_DESC_TABLE_NAME, 
+				  // SQL_DESC_BASE_TABLE_NAME would make problems
+				  // under Mac OS X and Linux
+				  CharacterAttributePtr,
+				  100,
+				  &StringLengthPtr,
+				  NumericAttributePtr);
+			
+		if ((retcode == SQL_ERROR) || (retcode == SQL_SUCCESS_WITH_INFO)) {
+			_CL_LOG << "ERROR: SQLColAttribute(...) failed." LOG_
+			dbError("SQLColAttribute()", hstmt);
+		}
+		
+		if (lpszTable == NULL) {
+			int _size = strlen((char*) CharacterAttributePtr)+1;
+			lpszTable = (char*) malloc(_size);
+			lpszTable[0] = 0;
+			strcpy(lpszTable, (char*) CharacterAttributePtr);
+			lpszSize = _size;
+		} else {
+			int _size = strlen((char*) CharacterAttributePtr)+1;
+			if (lpszSize < _size) {
+				free(lpszTable);
+				lpszTable = (char*) malloc(_size);
+				lpszSize = _size;
+			}
+		
+			lpszTable[0] = 0;
+			strcpy((char*) lpszTable, (char*) CharacterAttributePtr);
+		}
+		
+		free(CharacterAttributePtr);
+		
+		
+	if (strcmp(lpszTable, "") == 0) {
+		// Quick hack
+
+		char* buf = strdup(szSql);
+		char* t = strtok(buf, " ,");
+		
+		while (t) {
+			t = strtok(NULL, " ,");
+			
+			if (strcmp(t, "from") == 0) break;
+		}
+
+		t = strtok(NULL, " ,");
+
+		printf("%s\n", t);
+		
+		strcpy((char*) lpszTable, t);
+		free(buf);
+	}
+		
+		
+		
+		return lpszTable;
+	}
+	/*...e*/
+
+/*...e*/
 /*...schar\42\ LB_STDCALL lbQuery\58\\58\getColumnName\40\int col\41\:0:*/
 char lbQuery_column_Name[100] = "";
 
@@ -2250,30 +2361,8 @@ char* LB_STDCALL lbQuery::getColumnName(int col) {
 	return lbQuery_column_Name;
 }
 /*...e*/
-#ifdef bla
-	if (retcode == SQL_ROW_DELETED) { \
-		return ERR_DB_ROWDELETED; \
-	}
-#endif
-/*...s\35\define CHECK_ROWSTAT\40\\41\:0:*/
-#define CHECK_ROWSTAT() \
-	if (RowStat[0] == SQL_ROW_DELETED) { \
-		reopen(); \
-		if (haveData == false) return ERR_DB_NODATA; \
-	} \
-	if (RowStat[0] == SQL_ROW_NOROW) { \
-		if (retcode == SQL_NO_DATA) { \
-			_CL_LOG << "ERROR: There would also be SQL_NO_DATA." LOG_ \
-		} \
-	} \
-	if (RowStat[0] == SQL_ROW_ERROR) { \
-		if (retcode == SQL_NO_DATA) { \
-			_CL_LOG << "ERROR: There would also be SQL_NO_DATA." LOG_ \
-		} \
-	}
 
-/*...e*/
-
+/*...svoid LB_STDCALL lbQuery\58\\58\reopen\40\\41\:0:*/
 void LB_STDCALL lbQuery::reopen() {
 	RETCODE retcode;
 	
@@ -2295,6 +2384,7 @@ void LB_STDCALL lbQuery::reopen() {
 	else
 		first();
 }
+/*...e*/
 
 /*...slbErrCodes LB_STDCALL lbQuery\58\\58\absolute\40\int pos\41\:0:*/
 lbErrCodes LB_STDCALL lbQuery::absolute(int pos) {
@@ -2633,10 +2723,25 @@ lbErrCodes LB_STDCALL lbQuery::add() {
 }
 /*...e*/
 /*...slbErrCodes LB_STDCALL lbQuery\58\\58\remove\40\\41\:0:*/
-#define CREATE_DYNAMIC_STATEMENTS
+//#define CREATE_DYNAMIC_STATEMENTS
 lbErrCodes LB_STDCALL lbQuery::remove() {
 UWORD   RowStat[20];
 UDWORD  RowsFetched = 0;
+
+/**
+ * \todo {
+ * Implement automatic primary key insertion in query member function.
+ *
+ * It must be possible to avoid showing the primary key to the user, but it
+ * is needed in the query to correctly build delete statements.
+ *
+ * Currently, CREATE_DYNAMIC_STATEMENTS is undefined and SQL_DELETE would be used.
+ * It is a compromise between problems with PostgreSQL ODBC driver version 07.03.0200
+ * and it's reread problem. 
+ *
+ * Reopen is used.
+ * }
+ */
 
 	if (mode == 1) return ERR_DB_STILL_ADDING;
 
@@ -2655,15 +2760,25 @@ UDWORD  RowsFetched = 0;
 	*SQL += " where ";
 
 	for (int i = 1; i < PKCols; i++) {
+		#define NAME_LEN 10
+		
+		SQLCHAR szName[NAME_LEN] = "";
+		SQLINTEGER  cbName;
+		
 		UAP(lb_I_String, pk, __FILE__, __LINE__)
 		UAP(lb_I_String, val, __FILE__, __LINE__)
 		pk = getPKColumn(i);
-		val = getAsString(i);
 		
-		*SQL += pk->charrep();
-		*SQL += " = ";
-		*SQL += val->charrep();
-		*SQL += " and ";
+		RETCODE retcode = SQLGetData(hstmt, i, SQL_C_CHAR, szName, NAME_LEN, &cbName);
+		
+		if (retcode != SQL_SUCCESS) {
+			_CL_LOG << "ERROR: Column could not retrieved !" LOG_
+		} else {
+			*SQL += pk->charrep();
+			*SQL += " = ";
+			*SQL += (char*) szName;
+			*SQL += " and ";
+		}
 	}
 	
 	UAP(lb_I_String, value, __FILE__, __LINE__)
@@ -2673,6 +2788,8 @@ UDWORD  RowsFetched = 0;
 	*SQL += pk->charrep();
 	*SQL += " = ";
 	*SQL += value->charrep();
+
+	_CL_LOG << "Created a delete statement as follows: '" << SQL->charrep() << "'" LOG_
 
 	executeDirect(SQL->charrep());
 
@@ -2703,68 +2820,10 @@ UDWORD  RowsFetched = 0;
 	        return ERR_NONE;
 	}
 
-/*...scommented out:0:*/
-/*
-	SQLCHAR cursorname[100] = "";
-	short l;
+	reopen();
 	
-	SQLGetCursorName(hstmt, cursorname, 99, &l);
+	if (haveData == false) return ERR_DB_NODATA;
 
-
-	SQLCHAR query[500] = "";
-	
-	sprintf((char*) query, "update %s set deleted = 1 where CURRENT OF '%s'", getTableName(), cursorname);
-
-	printf("%s\n", query);
-
-	retcode = SQLExecDirect(hstmt, query, SQL_NTS);
-
-	
-	if (retcode != SQL_SUCCESS)
-	{
-	        dbError( "SQLExecDirect()", hstmt);
-	        _LOG << "lbQuery::remove(...) deleting failed." LOG_
-	        return ERR_NONE;
-	}
-
-	printf("SQLExecDirect() done\n");
-*/
-/*...e*/
-/*
-	retcode = SQLSetPos(hstmt, 1, SQL_REFRESH, SQL_LOCK_NO_CHANGE);
-
-	if (retcode != SQL_SUCCESS)
-	{
-	        dbError("SQLSetPos(SQL_REFRESH)", hstmt);
-	        _CL_LOG << "lbQuery::remove(...) deleting failed." LOG_
-	        return ERR_NONE;
-	}
-*/
-/*...scommented out:0:*/
-//	if (fetchstatus == 1) return previous();
-//	return next();
-
-/*
-	if (fetchstatus == 0) {
-		lbErrCodes err = ERR_NONE;
-		err = next();
-		if ((err != ERR_NONE) && (err != WARN_DB_NODATA)) {
-			return first();
-		}
-		return err;
-	} else {		
-		switch (fetchstatus) {
-		
-		case 1  : 
-			return previous();
-		case -1 :
-			return next();
-		default:
-			break;
-		}
-	}
-*/
-/*...e*/
 #endif
 	return ERR_NONE;
 }
@@ -2912,94 +2971,6 @@ free(buffer);
 
 	return ERR_NONE;
 }
-/*...e*/
-/*...schar\42\ LB_STDCALL lbQuery\58\\58\getTableName\40\char\42\ columnName\41\:0:*/
-char *lpszTable = NULL;
-int lpszSize = 0;
-
-char* LB_STDCALL lbQuery::getTableName(char* columnName) {
-		
-		SQLHSTMT	StatementHandle;
-		SQLUSMALLINT	ColumnNumber;
-		SQLUSMALLINT	FieldIdentifier;
-		SQLPOINTER	CharacterAttributePtr;
-		SQLSMALLINT	BufferLength;
-		SQLSMALLINT	StringLengthPtr = 0;
-		SQLPOINTER	NumericAttributePtr;
-		
-		SQLINTEGER	Int = 0;
-		
-		CharacterAttributePtr = (void*) malloc(101);
-		memset(CharacterAttributePtr, 0, 101);
-
-		NumericAttributePtr = &Int;
-		
-		SQLRETURN retcode;
-		int index = boundColumns->getColumnIndex(columnName);
-		
-		retcode = SQLColAttribute(
-				  hstmt,
-				  index, 
-				  SQL_DESC_TABLE_NAME, 
-				  // SQL_DESC_BASE_TABLE_NAME would make problems
-				  // under Mac OS X and Linux
-				  CharacterAttributePtr,
-				  100,
-				  &StringLengthPtr,
-				  NumericAttributePtr);
-			
-		if ((retcode == SQL_ERROR) || (retcode == SQL_SUCCESS_WITH_INFO)) {
-			_CL_LOG << "ERROR: SQLColAttribute(...) failed." LOG_
-			dbError("SQLColAttribute()", hstmt);
-		}
-		
-		if (lpszTable == NULL) {
-			int _size = strlen((char*) CharacterAttributePtr)+1;
-			lpszTable = (char*) malloc(_size);
-			lpszTable[0] = 0;
-			strcpy(lpszTable, (char*) CharacterAttributePtr);
-			lpszSize = _size;
-		} else {
-			int _size = strlen((char*) CharacterAttributePtr)+1;
-			if (lpszSize < _size) {
-				free(lpszTable);
-				lpszTable = (char*) malloc(_size);
-				lpszSize = _size;
-			}
-		
-			lpszTable[0] = 0;
-			strcpy((char*) lpszTable, (char*) CharacterAttributePtr);
-		}
-		
-		free(CharacterAttributePtr);
-		
-		
-	if (strcmp(lpszTable, "") == 0) {
-		// Quick hack
-
-		char* buf = strdup(szSql);
-		char* t = strtok(buf, " ,");
-		
-		while (t) {
-			t = strtok(NULL, " ,");
-			
-			if (strcmp(t, "from") == 0) break;
-		}
-
-		t = strtok(NULL, " ,");
-
-		printf("%s\n", t);
-		
-		strcpy((char*) lpszTable, t);
-		free(buf);
-	}
-		
-		
-		
-		return lpszTable;
-	}
-	/*...e*/
-
 /*...e*/
 /*...svoid LB_STDCALL lbQuery\58\\58\dbError\40\char\42\ lp\44\ HSTMT hstmt\41\:0:*/
 void LB_STDCALL lbQuery::dbError(char* lp, HSTMT hstmt)

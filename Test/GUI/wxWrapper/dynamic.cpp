@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.103 2005/11/26 18:59:11 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.104 2005/12/06 15:54:56 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,17 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.103 $
+ * $Revision: 1.104 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.103 2005/11/26 18:59:11 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.104 2005/12/06 15:54:56 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.104  2005/12/06 15:54:56  lollisoft
+ * Changes let the GUI work properly in debug mode. But there is a NULL
+ * pointer exeption in release mode near opening a database form.
+ *
+ * Testing on Mac OS X and Linux.
+ *
  * Revision 1.103  2005/11/26 18:59:11  lollisoft
  * Minor changes to compile and run under Linux
  *
@@ -2835,7 +2841,14 @@ int PASCAL WinMain(HINSTANCE hInstance,
 {
 	//wxAppInitializer wxTheAppInitializer((wxAppInitializerFunction) wxCreateApp);
 
-	//FreeConsole();
+	char* CONSOLE_DETACH = getenv("CONSOLE_DETACH");
+
+	if (CONSOLE_DETACH == NULL) FreeConsole();
+	if ((CONSOLE_DETACH != NULL) && 
+	    (strcmp(CONSOLE_DETACH, "no") != 0) &&
+	    (strcmp(CONSOLE_DETACH, "NO") != 0) &&
+	    (strcmp(CONSOLE_DETACH, "No") != 0) &&
+	    (strcmp(CONSOLE_DETACH, "nO") != 0)) FreeConsole();
 
 	TRMemOpen();
 	TRMemSetModuleName(__FILE__);

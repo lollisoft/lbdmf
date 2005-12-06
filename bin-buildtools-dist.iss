@@ -3,8 +3,8 @@
 
 [Setup]
 AppName=lbDMF Binary Build Tools
-AppVerName=lbDMF Binary Build Tools 0.5.1
-OutputBaseFilename=lbDMF-BinbuildTools-0.5.1
+AppVerName=lbDMF Binary Build Tools 0.6.0
+OutputBaseFilename=lbDMF-BinbuildTools-0.6.0
 AppPublisher=Lothar Behrens
 AppPublisherURL=http://www.lollisoft.de
 AppSupportURL=http://www.sourceforge.net/projects/lbdmf
@@ -19,13 +19,17 @@ DefaultGroupName=lbDMF
 
 [Files]
 Source: "Q:\develop\Tools\cygwin\bin\sh.exe"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
+Source: "Q:\develop\Tools\cygwin\bin\ssh.exe"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
 Source: "Q:\develop\Tools\cygwin\bin\cp.exe"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
 Source: "Q:\develop\Tools\cygwin\bin\cat.exe"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
 Source: "Q:\develop\Tools\cygwin\bin\echo.exe"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
 Source: "Q:\develop\Tools\cygwin\bin\rm.exe"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
 Source: "Q:\develop\Tools\cygwin\bin\mkdir.exe"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
 Source: "Q:\develop\Projects\bin\mkmk.exe"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
+Source: "Q:\develop\Tools\cygwin\bin\cygcrypto-0.9.8.dll"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
 Source: "Q:\develop\Tools\cygwin\bin\cygwin1.dll"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
+Source: "Q:\develop\Tools\cygwin\bin\cygz.dll"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
+Source: "Q:\develop\Tools\cygwin\bin\cygminires.dll"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
 Source: "Q:\develop\Tools\cygwin\bin\cygintl-2.dll"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
 Source: "Q:\develop\Tools\cygwin\bin\cygintl-1.dll"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
 Source: "Q:\develop\Tools\cygwin\bin\cygiconv-2.dll"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite

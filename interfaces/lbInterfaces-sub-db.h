@@ -94,9 +94,22 @@ public:
 	 */
 	virtual void LB_STDCALL PrintCurrent() = 0;
 
+	/** \brief Print out table header.
+	 *
+	 */
 	virtual void LB_STDCALL PrintHeader() = 0;
+
+	/** \brief Print out table footer.
+	 *
+	 */
 	virtual void LB_STDCALL PrintFooter() = 0;
 
+	/** \brief Skip look ahead if there are more rows.
+	 *
+	 * This deactivates extra look ahead if there are more rows in the
+	 * cursor. The GUI sample need this to determine erly state for the
+	 * navigation buttons.
+	 */
 	virtual void LB_STDCALL skipPeeking() = 0;
 
         /**
@@ -173,31 +186,15 @@ public:
 	/**
 	 * \brief Skip foreign column informations.
 	 *
-	 * This disables the collecting of foreign keys. There are some problems on
-	 * my test system (Windows 2000 / german). My development system is english
-	 * and works !
-	 *
-	 * The implementation under linux has problems, if SQLForeignColumns is used. There
-	 * an alternative implementation is used.
-	 *
-	 * WARNING: The affecting variable is static and affects all instances of this class.
+	 * Disable the collection of foreign keys in an internal list.
 	 */
-
 	virtual void LB_STDCALL skipFKCollecting() = 0;
 
 	/**
 	 * \brief Enable foreign column informations.
 	 *
-	 * This enables the collecting of foreign keys. There are some problems on
-	 * my test system (Windows 2000 / german). My development system is english
-	 * and works !
-	 *
-	 * The implementation under linux has problems, if SQLForeignColumns is used. There
-	 * an alternative implementation is used.
-	 *
-	 * WARNING: The affecting variable is static and affects all instances of this class.
+	 * Enable the collection of foreign keys in an internal list.
 	 */
-
 	virtual void LB_STDCALL enableFKCollecting() = 0;
 
 
@@ -233,6 +230,10 @@ public:
 	 */
 	virtual lb_I_String*	LB_STDCALL getPKTable(char const * FKName) = 0;
 
+	/** \brief Get primary column name.
+	 *
+	 * A foreign column points to another table's primary column.
+	 */
 	virtual lb_I_String* 	LB_STDCALL getPKColumn(char const * FKName) = 0;
 
 	/**
@@ -290,7 +291,21 @@ public:
 
         /* Navigation */
 
+	/** \brief Get integer based position.
+	 *
+	 * The position is internally used to reposition the cursor to a prior
+	 * position after the function reopen has recreated the statement.
+	 *
+	 * Currently remove makes use of reopen.
+	 *
+	 * First row starts with 1.
+	 */
 	virtual int		LB_STDCALL getPosition() = 0;
+
+	/** \brief Position the cursor to an absolute position.
+	 *
+	 * First row starts with 1.
+	 */
 	virtual lbErrCodes	LB_STDCALL absolute(int pos) = 0;
         
 	/**

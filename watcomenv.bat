@@ -17,6 +17,8 @@ exit
 
 rem set TARGET_APPLICATION=Application
 
+set CONSOLE_DETACH=no
+
 if NOT "%COMPUTERNAME%"=="ANAKIN" goto DISTMODE:
 
 set DEVLW=q:
@@ -71,7 +73,7 @@ set DLLROOT=%RUNROOT%\dll
 set BINROOT=%RUNROOT%\bin;%RUNROOT%\CPP\bin
 
 set Path=%DEVLW%\%BASE%\bin;%SystemRoot%\system32;%DEVLW%\;%WATBIN%;%DEVBIN%;%DLLROOT%;%BINROOT%
-set Path=%Path%;q:\develop\tools\cygwin\bin;Q:\develop\Tools\Perl\bin
+set Path=%Path%;q:\develop\tools\cygwin\bin;Q:\develop\Tools\Perl\bin;G:\gs\gs8.15\bin
 
 set MSC=%MSVCDir%\Bin;%MSVCDir%\Lib
 

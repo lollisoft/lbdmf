@@ -25,11 +25,17 @@
 #            40235 Duesseldorf (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.75 $
+# * $Revision: 1.76 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.75 2005/12/02 00:28:43 lollisoft Exp $
+# * $Id: STD_MAKE,v 1.76 2005/12/06 15:54:56 lollisoft Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.76  2005/12/06 15:54:56  lollisoft
+# * Changes let the GUI work properly in debug mode. But there is a NULL
+# * pointer exeption in release mode near opening a database form.
+# *
+# * Testing on Mac OS X and Linux.
+# *
 # * Revision 1.75  2005/12/02 00:28:43  lollisoft
 # * Deleting a row works for some tests. Deleting data in join queries is not tested
 # * and would propably not work. This is at least due to lack of creating a delete
@@ -285,8 +291,8 @@ COMPILER=WATCOM
 
 #COMPILER=MICROSOFT
 
-MODE=_DEBUG
-#MODE=
+#MODE=_DEBUG
+MODE=
 DEBUG_MEMORY=no
 #DEBUG_MEMORY=yes
 
