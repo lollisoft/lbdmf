@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.73 $
+# * $Revision: 1.74 $
 # * $Name:  $
-# * $Id: Makefile,v 1.73 2005/12/06 15:54:56 lollisoft Exp $
+# * $Id: Makefile,v 1.74 2005/12/06 17:04:25 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.74  2005/12/06 17:04:25  lollisoft
+# * Last make problems under Linux
+# *
 # * Revision 1.73  2005/12/06 15:54:56  lollisoft
 # * Changes let the GUI work properly in debug mode. But there is a NULL
 # * pointer exeption in release mode near opening a database form.
@@ -342,6 +345,7 @@ ifeq ($(OSTYPE), linux)
 
 TARGETDLL=so
 TARGETEXE=elf
+TARGETSHARED=so
 TARGETWXEXE=elf
 TARGETWXSO=wxso
 TARGET_TV_DLL=tvision_dll

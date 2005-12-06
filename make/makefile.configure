@@ -18,7 +18,7 @@ ifeq ($(TARGET), tvision_dll)
 makefile: makefile.module \
 $(DEVROOT_MAKE)/Projects/CPP/BaseDevelopment/Makefile \
 $(DEVROOT_MAKE)/Projects/CPP/make/makefile.template \
-$(DEVROOT_MAKE)/Projects/CPP/make/Std_make \
+$(DEVROOT_MAKE)/Projects/CPP/make/STD_MAKE \
 $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
 	@cat $(DEVROOT_MAKE)/Projects/CPP/make/makefile.template > makefile
 	@cat makefile.module >> makefile
@@ -51,7 +51,7 @@ ifeq ($(TARGET), tvision_exe)
 makefile: makefile.module \
 $(DEVROOT_MAKE)/Projects/CPP/BaseDevelopment/Makefile \
 $(DEVROOT_MAKE)/Projects/CPP/make/makefile.template \
-$(DEVROOT_MAKE)/Projects/CPP/make/Std_make \
+$(DEVROOT_MAKE)/Projects/CPP/make/STD_MAKE \
 $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
 	@cat $(DEVROOT_MAKE)/Projects/CPP/make/makefile.template > makefile
 	@cat makefile.module >> makefile
@@ -69,7 +69,7 @@ ifeq ($(TARGET), tvision_elf)
 makefile: makefile.module \
 $(DEVROOT_MAKE)/Projects/CPP/BaseDevelopment/Makefile \
 $(DEVROOT_MAKE)/Projects/CPP/make/makefile.template \
-$(DEVROOT_MAKE)/Projects/CPP/make/Std_make \
+$(DEVROOT_MAKE)/Projects/CPP/make/STD_MAKE \
 $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
 	@cat $(DEVROOT_MAKE)/Projects/CPP/make/makefile.template > makefile
 	@cat makefile.module >> makefile
@@ -87,7 +87,7 @@ ifeq ($(TARGET), plugin)
 makefile: makefile.module \
 $(DEVROOT_MAKE)/Projects/CPP/BaseDevelopment/Makefile \
 $(DEVROOT_MAKE)/Projects/CPP/make/makefile.template \
-$(DEVROOT_MAKE)/Projects/CPP/make/Std_make \
+$(DEVROOT_MAKE)/Projects/CPP/make/STD_MAKE \
 $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
 	@cat $(DEVROOT_MAKE)/Projects/CPP/make/makefile.template > makefile
 	@cat makefile.module >> makefile
@@ -105,7 +105,7 @@ ifeq ($(TARGET), wxplugin)
 makefile: makefile.module \
 $(DEVROOT_MAKE)/Projects/CPP/BaseDevelopment/Makefile \
 $(DEVROOT_MAKE)/Projects/CPP/make/makefile.template \
-$(DEVROOT_MAKE)/Projects/CPP/make/Std_make \
+$(DEVROOT_MAKE)/Projects/CPP/make/STD_MAKE \
 $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
 	@cat $(DEVROOT_MAKE)/Projects/CPP/make/makefile.template > makefile
 	@cat makefile.module >> makefile
@@ -123,7 +123,7 @@ ifeq ($(TARGET), soplugin)
 makefile: makefile.module \
 $(DEVROOT_MAKE)/Projects/CPP/BaseDevelopment/Makefile \
 $(DEVROOT_MAKE)/Projects/CPP/make/makefile.template \
-$(DEVROOT_MAKE)/Projects/CPP/make/Std_make \
+$(DEVROOT_MAKE)/Projects/CPP/make/STD_MAKE \
 $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
 	@cat $(DEVROOT_MAKE)/Projects/CPP/make/makefile.template > makefile
 	@cat makefile.module >> makefile
@@ -140,7 +140,7 @@ ifeq ($(TARGET), wxsoplugin)
 makefile: makefile.module \
 $(DEVROOT_MAKE)/Projects/CPP/BaseDevelopment/Makefile \
 $(DEVROOT_MAKE)/Projects/CPP/make/makefile.template \
-$(DEVROOT_MAKE)/Projects/CPP/make/Std_make \
+$(DEVROOT_MAKE)/Projects/CPP/make/STD_MAKE \
 $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
 	@cat $(DEVROOT_MAKE)/Projects/CPP/make/makefile.template > makefile
 	@cat makefile.module >> makefile
@@ -157,7 +157,7 @@ ifeq ($(TARGET), dll)
 makefile: makefile.module \
 $(DEVROOT_MAKE)/Projects/CPP/BaseDevelopment/Makefile \
 $(DEVROOT_MAKE)/Projects/CPP/make/makefile.template \
-$(DEVROOT_MAKE)/Projects/CPP/make/Std_make \
+$(DEVROOT_MAKE)/Projects/CPP/make/STD_MAKE \
 $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
 	@cat $(DEVROOT_MAKE)/Projects/CPP/make/makefile.template > makefile
 	@cat makefile.module >> makefile
@@ -178,7 +178,7 @@ DIRECTORIES = $(foreach s, $(DIRECTORY), "$s"/*.cpp)
 makefile: makefile.module \
 $(DEVROOT_MAKE)/Projects/CPP/BaseDevelopment/Makefile \
 $(DEVROOT_MAKE)/Projects/CPP/make/makefile.template \
-$(DEVROOT_MAKE)/Projects/CPP/make/Std_make \
+$(DEVROOT_MAKE)/Projects/CPP/make/STD_MAKE \
 $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
 	@cat $(DEVROOT_MAKE)/Projects/CPP/make/makefile.template > makefile
 	@cat makefile.module >> makefile
@@ -196,7 +196,7 @@ DIRECTORIES = $(foreach s, $(DIRECTORY), $s/*.cpp)
 makefile: makefile.module \
 $(DEVROOT_MAKE)/Projects/CPP/BaseDevelopment/Makefile \
 $(DEVROOT_MAKE)/Projects/CPP/make/makefile.template \
-$(DEVROOT_MAKE)/Projects/CPP/make/Std_make \
+$(DEVROOT_MAKE)/Projects/CPP/make/STD_MAKE \
 $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
 	@cat $(DEVROOT_MAKE)/Projects/CPP/make/makefile.template > makefile
 	@cat makefile.module >> makefile
@@ -213,7 +213,7 @@ ifeq ($(TARGET), so)
 makefile: makefile.module \
 $(DEVROOT_MAKE)/Projects/CPP/BaseDevelopment/Makefile \
 $(DEVROOT_MAKE)/Projects/CPP/make/makefile.template \
-$(DEVROOT_MAKE)/Projects/CPP/make/Std_make \
+$(DEVROOT_MAKE)/Projects/CPP/make/STD_MAKE \
 $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
 	@cat $(DEVROOT_MAKE)/Projects/CPP/make/makefile.template > makefile
 	@cat makefile.module >> makefile
@@ -230,7 +230,7 @@ ifeq ($(TARGET), sobundle)
 makefile: makefile.module \
 $(DEVROOT_MAKE)/Projects/CPP/BaseDevelopment/Makefile \
 $(DEVROOT_MAKE)/Projects/CPP/make/makefile.template \
-$(DEVROOT_MAKE)/Projects/CPP/make/Std_make \
+$(DEVROOT_MAKE)/Projects/CPP/make/STD_MAKE \
 $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
 	@cat $(DEVROOT_MAKE)/Projects/CPP/make/makefile.template > makefile
 	@cat makefile.module >> makefile
@@ -247,7 +247,7 @@ ifeq ($(TARGET), wxso)
 makefile: makefile.module \
 $(DEVROOT_MAKE)/Projects/CPP/BaseDevelopment/Makefile \
 $(DEVROOT_MAKE)/Projects/CPP/make/makefile.template \
-$(DEVROOT_MAKE)/Projects/CPP/make/Std_make \
+$(DEVROOT_MAKE)/Projects/CPP/make/STD_MAKE \
 $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
 	@cat $(DEVROOT_MAKE)/Projects/CPP/make/makefile.template > makefile
 	@cat makefile.module >> makefile
@@ -264,7 +264,7 @@ ifeq ($(TARGET), wxshared)
 makefile: makefile.module \
 $(DEVROOT_MAKE)/Projects/CPP/BaseDevelopment/Makefile \
 $(DEVROOT_MAKE)/Projects/CPP/make/makefile.template \
-$(DEVROOT_MAKE)/Projects/CPP/make/Std_make \
+$(DEVROOT_MAKE)/Projects/CPP/make/STD_MAKE \
 $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
 	@cat $(DEVROOT_MAKE)/Projects/CPP/make/makefile.template > makefile
 	@cat makefile.module >> makefile
@@ -281,7 +281,7 @@ ifeq ($(TARGET), exe)
 makefile: makefile.module \
 $(DEVROOT_MAKE)/Projects/CPP/BaseDevelopment/Makefile \
 $(DEVROOT_MAKE)/Projects/CPP/make/makefile.template \
-$(DEVROOT_MAKE)/Projects/CPP/make/Std_make \
+$(DEVROOT_MAKE)/Projects/CPP/make/STD_MAKE \
 $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
 	@cat $(DEVROOT_MAKE)/Projects/CPP/make/makefile.template > makefile
 	@cat makefile.module >> makefile
@@ -299,7 +299,7 @@ ifeq ($(TARGET), wcc386)
 makefile: makefile.module \
 $(DEVROOT_MAKE)/Projects/CPP/BaseDevelopment/Makefile \
 $(DEVROOT_MAKE)/Projects/CPP/make/makefile.template \
-$(DEVROOT_MAKE)/Projects/CPP/make/Std_make \
+$(DEVROOT_MAKE)/Projects/CPP/make/STD_MAKE \
 $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
 	@cat $(DEVROOT_MAKE)/Projects/CPP/make/makefile.template > makefile
 	@cat makefile.module >> makefile
