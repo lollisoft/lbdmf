@@ -37,6 +37,7 @@ ifeq ($(OSTYPE), osx)
 TARGETDLL=so
 TARGETEXE=elf
 TARGETWXPLUGIN=wxsoplugin
+TARGETPLUGIN=soplugin
 
 ALLTARGETS = \
 	TestPlugin \

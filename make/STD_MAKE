@@ -25,11 +25,16 @@
 #            40235 Duesseldorf (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.76 $
+# * $Revision: 1.77 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.76 2005/12/06 15:54:56 lollisoft Exp $
+# * $Id: STD_MAKE,v 1.77 2005/12/07 23:43:08 lollisoft Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.77  2005/12/07 23:43:08  lollisoft
+# * Small changes that let also not crash the app at exit under
+# * Mac OS X. But there is still a problem with creating first
+# * data entries in a table.
+# *
 # * Revision 1.76  2005/12/06 15:54:56  lollisoft
 # * Changes let the GUI work properly in debug mode. But there is a NULL
 # * pointer exeption in release mode near opening a database form.
@@ -598,7 +603,7 @@ C_OPS   = -c -DUNIX -DLINUX -DOSX
 C_SOOPS = $(C_OPS)
 C_ELFOPS= $(C_OPS)
 L_OPS   = -o
-LIBS    = -lc /usr/lib/libSystem.dylib #-lcurses #-lc /usr/lib/libSystem.dylib #-llibstdc++
+LIBS    = #-lc /usr/lib/libSystem.dylib #-lcurses #-llibstdc++
 #-lefence
 CC =c++
 CPP =c++

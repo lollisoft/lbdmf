@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.105 2005/12/07 11:41:23 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.106 2005/12/07 23:43:08 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,16 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.105 $
+ * $Revision: 1.106 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.105 2005/12/07 11:41:23 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.106 2005/12/07 23:43:08 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.106  2005/12/07 23:43:08  lollisoft
+ * Small changes that let also not crash the app at exit under
+ * Mac OS X. But there is still a problem with creating first
+ * data entries in a table.
+ *
  * Revision 1.105  2005/12/07 11:41:23  lollisoft
  * Linux handles unloading modules correctly - for now.
  *
@@ -2796,7 +2801,6 @@ void lb_wxFrame::OnPluginTest(wxCommandEvent& WXUNUSED(event) ) {
 */
 /*...e*/
 #endif
-
 #endif
 
 #ifdef WINDOWS
@@ -2815,7 +2819,7 @@ public:
 
 cleanUp clean_up;
 #endif
-#ifdef bla
+#ifdef OSX
 class cleanUp {
 public:
 	cleanUp() {

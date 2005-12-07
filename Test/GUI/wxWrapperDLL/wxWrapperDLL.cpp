@@ -1357,7 +1357,7 @@ void lb_wxFrame::OnPluginTest(wxCommandEvent& WXUNUSED(event) ) {
 
 /*...e*/
 #endif
-#ifdef LINUX
+#ifdef Bla
 class cleanUp {
 public:
         cleanUp() {
@@ -1365,8 +1365,8 @@ public:
 
         virtual ~cleanUp() {
                 _CL_LOG << "Call unHookAll()..." LOG_
-		//lbBreak();
-                //unHookAll();
+				//lbBreak();
+                unHookAll();
                 _CL_LOG << "Called unHookAll()." LOG_
         }
 

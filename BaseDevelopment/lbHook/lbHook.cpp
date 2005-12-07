@@ -36,6 +36,9 @@
 #ifdef WINDOWS
   #include <windows.h>
 #endif
+#ifdef OSX
+  #include <CoreFoundation/CFBase.h>
+#endif
 #ifdef LINUX
   #include <dlfcn.h>
   #include <signal.h>
@@ -351,11 +354,7 @@ DLLEXPORT void LB_STDCALL lbBreak() {
 #endif
 #endif
 #ifdef OSX
-    #if __powerc
-    Debugger();
-    #else
-    SysBreak();
-    #endif
+//    Debugger();
 #endif
 #ifdef WINDOWS
     DebugBreak();

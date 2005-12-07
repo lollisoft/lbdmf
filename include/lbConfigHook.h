@@ -165,6 +165,9 @@
 #ifdef OSX
  #ifndef MEMTRACK
   #define TRMemValidate(name) 1
+   #define TRMemStartLocalCount()
+   #define TRMemStopLocalCount()
+   #define TRMemResetLocalCount()
   //#define TRMemOpen()
   //#define TRMemSetModuleName(name)
   //#define TRMemSetAdrBreakPoint(ptr)
