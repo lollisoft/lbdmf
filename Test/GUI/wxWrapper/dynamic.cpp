@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.104 2005/12/06 15:54:56 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.105 2005/12/07 11:41:23 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,17 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.104 $
+ * $Revision: 1.105 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.104 2005/12/06 15:54:56 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.105 2005/12/07 11:41:23 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.105  2005/12/07 11:41:23  lollisoft
+ * Linux handles unloading modules correctly - for now.
+ *
+ * Handling this behaviour without positioning the loading of the modules
+ * is still a TODO, if it ever is possible.
+ *
  * Revision 1.104  2005/12/06 15:54:56  lollisoft
  * Changes let the GUI work properly in debug mode. But there is a NULL
  * pointer exeption in release mode near opening a database form.
@@ -1918,8 +1924,31 @@ int MyApp::OnExit() {
 bool MyApp::OnInit(void)
 {
     char b[100] = "";
-    
     wxStopWatch sw;
+
+    UAP(lb_I_Module, mm, __FILE__, __LINE__)
+    mm = getModuleInstance();
+
+
+    if (mm == NULL) {
+	wxMessageDialog dialog(NULL, "Module manager not found. could not run application.", "Error", wxOK);
+
+	dialog.ShowModal();  
+	return FALSE;
+    } 
+
+    mm->setModuleManager(mm.getPtr(), __FILE__, __LINE__);
+    setModuleManager(mm.getPtr(), __FILE__, __LINE__);
+    
+    UAP_REQUEST(mm.getPtr(), lb_I_String, string)
+    UAP_REQUEST(mm.getPtr(), lb_I_Database, tempDB) // Preload this module
+    UAP_REQUEST(mm.getPtr(), lb_I_PluginManager, PM)
+    UAP_REQUEST(mm.getPtr(), lb_I_MetaApplication, metaApp)
+    UAP_REQUEST(mm.getPtr(), lb_I_Dispatcher, disp)
+	REQUEST(mm.getPtr(), lb_I_EventManager, ev_manager)        
+
+    metaApp++;
+
 	
 /*...sCreate the frame:0:*/
 #ifndef LB_I_EXTENTIONS
@@ -1928,37 +1957,8 @@ bool MyApp::OnInit(void)
 #endif
 #ifdef LB_I_EXTENTIONS
     lbErrCodes err = ERR_NONE;
-/*...sBasic setup:0:*/
 
-  UAP(lb_I_Module, mm, __FILE__, __LINE__)
-
-  mm = getModuleInstance();
-
-
-  if (mm == NULL) {
-		wxMessageDialog dialog(NULL, "Module manager not found. could not run application.", "Error", wxOK);
-
-		dialog.ShowModal();  
-		return FALSE;
-  } 
-
-  mm->setModuleManager(mm.getPtr(), __FILE__, __LINE__);
-  setModuleManager(mm.getPtr(), __FILE__, __LINE__);
-
-#ifdef WINDOWS
-// Only windows makes problems with the open console output window
-//  FreeConsole();
-#endif  
-
-
-	// Change the module load/unload order
-	UAP_REQUEST(mm.getPtr(), lb_I_String, string)
-/*...e*/
-
-	REQUEST(mm.getPtr(), lb_I_EventManager, ev_manager)        
-	//ev_manager++;
 /*...sget the dispatcher \40\all handlers must be registered there\41\:0:*/
-    UAP_REQUEST(mm.getPtr(), lb_I_Dispatcher, disp)
 	disp->setEventManager(ev_manager.getPtr());
 		
     if (disp == NULL) _LOG << "Fatal: Have not got a dispatcher!" LOG_
@@ -2234,8 +2234,6 @@ _LOG << "Showed the window" LOG_
 
 /*...sInit the meta application:0:*/
 #ifdef LB_I_EXTENTIONS
-  UAP_REQUEST(mm.getPtr(), lb_I_MetaApplication, metaApp)
-  metaApp++;
   if (metaApp != NULL) {
       metaApp->setGUI(wxGUI);
 
@@ -2250,8 +2248,6 @@ _LOG << "Showed the window" LOG_
 /*...e*/
 
 /*...sInit plugins:0:*/
-	UAP_REQUEST(mm.getPtr(), lb_I_PluginManager, PM)
-
 	PM->initialize();
 
 	if (PM->beginEnumPlugins()) {
@@ -2811,6 +2807,23 @@ public:
 	
 	virtual ~cleanUp() {
 		_CL_LOG << "Call unHookAll()..." LOG_
+		unHookAll();
+		_CL_LOG << "Called unHookAll()." LOG_		
+	}
+	
+};
+
+cleanUp clean_up;
+#endif
+#ifdef bla
+class cleanUp {
+public:
+	cleanUp() {
+	}
+	
+	virtual ~cleanUp() {
+		_CL_LOG << "Call unHookAll()..." LOG_
+		lbBreak();
 		unHookAll();
 		_CL_LOG << "Called unHookAll()." LOG_		
 	}

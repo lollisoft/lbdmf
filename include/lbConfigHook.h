@@ -333,7 +333,7 @@ DLLEXPORT char* LB_STDCALL getTRMemTrackBreak();
 /** \brief Activate or deactivate verbose messages. */
 DLLEXPORT void LB_STDCALL setVerbose(bool what);
 DLLEXPORT bool LB_STDCALL isVerbose();
-
+DLLEXPORT void LB_STDCALL lbBreak();
 #define LOGFILE "lbDMF.log"
 
 /** \brief Log a message to the given file. */

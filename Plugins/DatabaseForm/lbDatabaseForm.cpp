@@ -1317,7 +1317,7 @@ void LB_STDCALL lbDatabasePanel::create(int parentId) {
 	} \
 	allNaviDisabled = false;
 
-#define DISABLE_FOR_ONE_DATA() \ 
+#define DISABLE_FOR_ONE_DATA() \
 	prevButton->Disable(); \
 	firstButton->Disable(); \
 	lastButton->Disable(); \

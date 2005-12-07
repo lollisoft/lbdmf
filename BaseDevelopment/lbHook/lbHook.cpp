@@ -38,7 +38,7 @@
 #endif
 #ifdef LINUX
   #include <dlfcn.h>
-
+  #include <signal.h>
   #ifdef __cplusplus
     extern "C" {      
   #endif            
@@ -342,6 +342,27 @@ _Modules *findModule(const char* name) {
 	return temp;
 } 
 /*...e*/
+
+DLLEXPORT void LB_STDCALL lbBreak() {
+
+#ifdef LINUX
+#ifndef OSX
+    raise(SIGTRAP);
+#endif
+#endif
+#ifdef OSX
+    #if __powerc
+    Debugger();
+    #else
+    SysBreak();
+    #endif
+#endif
+#ifdef WINDOWS
+    DebugBreak();
+#endif
+
+}
+
 /*...slbErrCodes LB_STDCALL lbLoadModule\40\const char\42\ name\44\ HINSTANCE \38\ hinst\44\ bool skipAutoUnload\41\:0:*/
 DLLEXPORT lbErrCodes LB_STDCALL lbLoadModule(const char* name, HINSTANCE & hinst, bool skipAutoUnload) {
 #ifdef WINDOWS
