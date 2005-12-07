@@ -119,6 +119,7 @@ lb_I_Action* FormularActions::getAction(char* id) {
 		actions->insert(&uk, &key);
 		
 		delete _action;
+		uk.resetPtr();
 	}
 
 	uk = actions->getElement(&key);
