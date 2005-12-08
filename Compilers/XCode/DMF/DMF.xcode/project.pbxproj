@@ -797,7 +797,7 @@
 				INSTALL_PATH = /usr/local/lib;
 				LIBRARY_STYLE = DYNAMIC;
 				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = "-lc ${SYMROOT}/lbHook.dylib";
+				OTHER_LDFLAGS = "-lc ${SYMROOT}/lbHook.so";
 				OTHER_REZFLAGS = "";
 				PRODUCT_NAME = lbClasses;
 				SECTORDER_FLAGS = "";
@@ -865,7 +865,7 @@
 				INSTALL_PATH = /usr/local/lib;
 				LIBRARY_STYLE = DYNAMIC;
 				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = "-lc ${SYMROOT}/lbHook.dylib";
+				OTHER_LDFLAGS = "-lc ${SYMROOT}/lbHook.so";
 				OTHER_REZFLAGS = "";
 				PRODUCT_NAME = lbModule;
 				SECTORDER_FLAGS = "";
@@ -927,7 +927,7 @@
 				INSTALL_PATH = /usr/local/lib;
 				LIBRARY_STYLE = DYNAMIC;
 				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = "-lc ${SYMROOT}/lbHook.dylib /usr/lib/libiodbc.dylib";
+				OTHER_LDFLAGS = "-lc ${SYMROOT}/lbHook.so /usr/lib/libiodbc.dylib";
 				OTHER_REZFLAGS = "";
 				PRODUCT_NAME = lbDB;
 				SECTORDER_FLAGS = "";
@@ -981,7 +981,7 @@
 				INSTALL_PATH = /usr/local/lib;
 				LIBRARY_STYLE = DYNAMIC;
 				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = "-lc ${SYMROOT}/lbHook.dylib";
+				OTHER_LDFLAGS = "-lc ${SYMROOT}/lbHook.so";
 				OTHER_REZFLAGS = "";
 				PRODUCT_NAME = lbPluginManager;
 				SECTORDER_FLAGS = "";
@@ -1043,7 +1043,7 @@
 				INSTALL_PATH = /usr/local/lib;
 				LIBRARY_STYLE = DYNAMIC;
 				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = "-lc ${SYMROOT}/lbHook.dylib";
+				OTHER_LDFLAGS = "-lc ${SYMROOT}/lbHook.so";
 				OTHER_REZFLAGS = "";
 				PRODUCT_NAME = lbMetaApplication;
 				SECTORDER_FLAGS = "";
