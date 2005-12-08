@@ -116,6 +116,8 @@ int lb_isInitializing = 0;
 #endif
 static int memTrackerInit = 0;
 
+int countModules = 0;
+
 /*...stypedef struct Module:0:*/
 typedef struct Module {
 	Module() {
@@ -124,6 +126,9 @@ typedef struct Module {
 		next = NULL;
 		lib = NULL;
 		skip = false;
+	}
+	~Module() {
+		countModules--;
 	}
 	int number;
 	char* name;
@@ -306,9 +311,10 @@ DLLEXPORT void LB_STDCALL setLBModuleHandle(HINSTANCE h) {
 #error LB_STDCALL is not defined !
 #endif
 #endif 
- 
+
 /*...s_Modules \42\createModule\40\const char\42\ name\41\:0:*/
 _Modules *createModule(const char* name) {
+	countModules++;
 	_Modules* temp = NULL;
 	if (loadedModules == NULL) {
 		loadedModules = new _Modules;
@@ -335,14 +341,23 @@ _Modules *createModule(const char* name) {
 /*...s_Modules \42\findModule\40\const char\42\ name\41\:0:*/
 _Modules *findModule(const char* name) {
 	_Modules *temp = loadedModules;
+	_Modules *found = NULL;
+	int count = 0;
+	
+	
 	while (temp != NULL) {
+		count++;
 		if (strcmp(temp->name, name) == 0) {
-			return temp;
+			found = temp;
 		}
 		temp = temp->next;
 	}
 	
-	return temp;
+	if (count != countModules) {
+		_CL_LOG << "ERROR: Count of loaded modules disagree with count value." LOG_
+	}
+	
+	return found;
 } 
 /*...e*/
 
@@ -416,7 +431,7 @@ DLLEXPORT lbErrCodes LB_STDCALL lbLoadModule(const char* name, HINSTANCE & hinst
 
 	_Modules *m = findModule(name);
 
-	if (m) {
+	if (m != NULL) {
 		hinst = m->lib;
 		return ERR_NONE;
 	} else {
@@ -645,24 +660,29 @@ DLLEXPORT char* LB_STDCALL translateText(char* text) {
 /*...e*/
 /*...sDLLEXPORT lbErrCodes LB_STDCALL lbUnloadModule\40\const char\42\ name\41\:0:*/
 DLLEXPORT lbErrCodes LB_STDCALL lbUnloadModule(const char* name) {
+
 #ifdef WINDOWS
 		_Modules* temp = loadedModules;
 		_Modules* lastMod = NULL;
 		
 		while (temp) {
+			if (temp->name == NULL) {
+				lastMod = temp;
+				temp = temp->next;
+				continue;
+			}
+			
 			if (temp->name != NULL) {
 				_CL_LOG << "Unload module " << name << ". Test for " << temp->name << "." LOG_
 				if (strcmp(temp->name, name) == 0) {
 					_Modules* delMod = temp;
 				
-					if (lastMod) {
-						lastMod->next = temp->next;
-					}
-				
 					if (loadedModules == temp) {
+						lastMod = temp;
 						temp = temp->next;
 						loadedModules = temp;
 					} else {
+						lastMod = temp;
 						temp = temp->next;
 					}
 					
@@ -671,6 +691,7 @@ DLLEXPORT lbErrCodes LB_STDCALL lbUnloadModule(const char* name) {
 					}
 
 					free(delMod->name);
+					lastMod->next = delMod->next;
 					delete delMod;
 				} else {
 					lastMod = temp;
@@ -686,20 +707,23 @@ DLLEXPORT lbErrCodes LB_STDCALL lbUnloadModule(const char* name) {
 		if (name == NULL) _CL_LOG << "ERROR: Could not unload unknown module.\n" LOG_
 
 		while (temp) {
+			if (temp->name == NULL) {
+				lastMod = temp;
+				temp = temp->next;
+				continue;
+			}
+
 			if (temp->name != NULL) {
-				_CL_LOG << "Unload module " << name << ". Test for " << temp->name << "." LOG_
 				if (strcmp(temp->name, name) == 0) {
 					_Modules* delMod = temp;
+					temp = temp->next;
 				
-					if (lastMod) {
-						lastMod->next = temp->next;
+					if (lastMod != NULL) {
+						lastMod->next = delMod->next;
 					}
 				
-					if (loadedModules == temp) {
-						temp = temp->next;
-						loadedModules = temp;
-					} else {
-						temp = temp->next;
+					if (loadedModules == delMod) {
+						loadedModules = delMod->next;
 					}
 					
 					if (dlclose(delMod->lib) == 0) {
@@ -715,6 +739,7 @@ DLLEXPORT lbErrCodes LB_STDCALL lbUnloadModule(const char* name) {
 			}
 		}
 #endif
+
 	return ERR_NONE;
 }
 /*...e*/
@@ -731,6 +756,20 @@ DLLEXPORT void LB_STDCALL unHookAll() {
 #ifndef WINDOWS
 		_Modules* temp = loadedModules;
 		while (temp) {
+			if (temp->name == NULL) {
+				_Modules* delMod = temp;
+				_CL_LOG << "ERROR: Found a module without a stored name!" LOG_
+				if (dlclose(temp->lib) != 0) {
+					char* msg = dlerror();
+					if (msg) printf("%s\n", msg);
+					temp = temp->next;
+				} else {
+					temp = temp->next;
+					if (delMod == loadedModules) loadedModules = loadedModules->next;
+					delete delMod;
+					//if (temp == NULL) temp = loadedModules;
+				}
+			}
 			if (temp->name != NULL) {
 				_Modules* delMod = temp;
 				
@@ -738,7 +777,7 @@ DLLEXPORT void LB_STDCALL unHookAll() {
 					temp = temp->next;
 					if (delMod == loadedModules) loadedModules = loadedModules->next;
 					delete delMod;
-					if (temp) temp = loadedModules;
+					//if(temp == NULL) temp = loadedModules;
 					continue;
 				}
 
@@ -752,7 +791,7 @@ DLLEXPORT void LB_STDCALL unHookAll() {
 					temp = temp->next;
 					if (delMod == loadedModules) loadedModules = loadedModules->next;
 					delete delMod;
-					if (temp) temp = loadedModules;
+					//if (temp == NULL) temp = loadedModules;
 				}
 			}
 		}
@@ -807,7 +846,7 @@ DLLEXPORT void LB_STDCALL unHookAll() {
 		loadedModules = skipped;
 #endif
 
-
+	loadedModules = NULL;
 
 	// Not freed anywhere
 	if (translated) {
