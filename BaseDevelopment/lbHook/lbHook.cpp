@@ -364,6 +364,7 @@ DLLEXPORT void LB_STDCALL lbBreak() {
 
 /*...slbErrCodes LB_STDCALL lbLoadModule\40\const char\42\ name\44\ HINSTANCE \38\ hinst\44\ bool skipAutoUnload\41\:0:*/
 DLLEXPORT lbErrCodes LB_STDCALL lbLoadModule(const char* name, HINSTANCE & hinst, bool skipAutoUnload) {
+
 #ifdef WINDOWS
 
 	_Modules *m = findModule(name);
@@ -908,6 +909,7 @@ char* LB_STDCALL lbKey::charrep() const {
     return strdup(buf);
 }
 /*...e*/
+#ifndef OSX
 /*...slbKey_:0:*/
 /*...sc\39\tors and d\39\tors:0:*/
 #ifdef _MSC_VER
@@ -978,6 +980,7 @@ char* LB_STDCALL lbKey_::charrep() const {
     return strdup(buf);
 }
 /*...e*/
+#endif
 /*...slbStringKey:0:*/
 DLLEXPORT lbStringKey::lbStringKey() {
     ref = STARTREF;
