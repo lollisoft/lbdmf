@@ -585,6 +585,11 @@ void LB_STDCALL lbDetailFormAction::openDetailForm(lb_I_String* formularname, lb
 
 		lb_I_DatabaseForm* f = gui->findDBForm(masterForm->charrep());
 
+		if (f == NULL) {
+			_CL_LOG << "Error: Bail out, no master form found." LOG_
+			return; 
+		}
+
 		detailForm->setMasterForm(f, *&params);
 		
 		detailForm->updateFromMaster();
@@ -699,6 +704,12 @@ void LB_STDCALL lbDetailFormAction::openDetailForm(lb_I_String* formularname, lb
 									DBName->charrep(), 
 									DBUser->charrep(), 
 									DBPass->charrep());
+									
+						if (form == NULL) {
+							_CL_LOG << "Error: Bail out, detail form could not be created." LOG_
+							return; 
+						}
+									
 						detailForm = form.getPtr();
 
 						*parameter = " - ";
@@ -724,6 +735,12 @@ void LB_STDCALL lbDetailFormAction::openDetailForm(lb_I_String* formularname, lb
 
 						if (f == NULL) {
 							_CL_LOG << "Error: Bail out, no master form found." LOG_
+							
+							if (detailForm != NULL) {
+								// Cleanup
+								detailForm->destroy();
+							}
+							
 							return; 
 						}
 
@@ -925,6 +942,11 @@ void LB_STDCALL lbMasterFormAction::openMasterForm(lb_I_String* formularname, lb
 
 		lb_I_DatabaseForm* f = gui->findDBForm(detailForm->charrep());
 
+		if (f == NULL) {
+			_CL_LOG << "ERROR: Could not find detail form. Bail out." LOG_
+			return;
+		}
+
 		masterForm->setDetailForm(f, *&params);
 		
 		masterForm->updateFromDetail();
@@ -932,28 +954,33 @@ void LB_STDCALL lbMasterFormAction::openMasterForm(lb_I_String* formularname, lb
 	} else {
 		UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
 		UAP(lb_I_GUI, gui, __FILE__, __LINE__)
-	
+		
 		meta->getGUI(&gui);
-	
-
-	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
-
-	parameter->setData("DBName");
-	params->getUAPString(*&parameter, *&DBName);
-	parameter->setData("DBUser");
-	params->getUAPString(*&parameter, *&DBUser);
-	parameter->setData("DBPass");
-	params->getUAPString(*&parameter, *&DBPass);
-	parameter->setData("source Form");
-	params->getUAPString(*&parameter, *&detailForm);
-//	parameter->setData("source field");
-//	params->getUAPString(*&parameter, *&SourceFieldName);
-	parameter->setData("source value");
-	params->getUAPString(*&parameter, *&SourceFieldValue);
-	parameter->setData("application");
-	params->getUAPString(*&parameter, *&app);
-
+		
+		
+		UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
+			
+		parameter->setData("DBName");
+		params->getUAPString(*&parameter, *&DBName);
+		parameter->setData("DBUser");
+		params->getUAPString(*&parameter, *&DBUser);
+		parameter->setData("DBPass");
+		params->getUAPString(*&parameter, *&DBPass);
+		parameter->setData("source Form");
+		params->getUAPString(*&parameter, *&detailForm);
+		//	parameter->setData("source field");
+		//	params->getUAPString(*&parameter, *&SourceFieldName);
+		parameter->setData("source value");
+		params->getUAPString(*&parameter, *&SourceFieldValue);
+		parameter->setData("application");
+		params->getUAPString(*&parameter, *&app);
+		
 		lb_I_DatabaseForm* f = gui->findDBForm(detailForm->charrep());
+
+		if (f == NULL) {
+			_CL_LOG << "ERROR: Could not find detail form. Bail out." LOG_
+			return;
+		}
 
 /*...sGet the SQL query based on formular name\44\ application name\46\:16:*/
 		UAP_REQUEST(manager.getPtr(), lb_I_String, user)
@@ -2500,13 +2527,11 @@ void LB_STDCALL lbDatabasePanel::updateFromMaster() {
 	}
 /*...e*/
 
-	newQuery->setData(getQuery());
-	
-	*newQuery += newWhereClause->charrep();
-	
-	_CL_VERBOSE << "Have new query for detail form: '" << newQuery->charrep() << "'" LOG_
-	
 	sampleQuery = database->getQuery(0);
+
+	*newQuery = sampleQuery->setWhereClause(getQuery(), newWhereClause->charrep());
+
+	_CL_LOG << "Have created new query: " << newQuery->charrep() LOG_
 
 	sampleQuery->query(newQuery->charrep());
 
@@ -4508,7 +4533,7 @@ lb_I_Unknown* LB_STDCALL lbPluginDatabaseDialog::getImplementation() {
 	}
 	
 	lb_I_Unknown* r = dbForm.getPtr();
-	dbForm == NULL;
+	dbForm.resetPtr();
 	return r;
 }
 /*...e*/

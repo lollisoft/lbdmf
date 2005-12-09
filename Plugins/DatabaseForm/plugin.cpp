@@ -117,6 +117,7 @@ IMPLEMENT_FUNCTOR(instanceOfPluginModule, lbPluginModuleDatabaseForm)
 
 BEGIN_PLUGINS(lbPluginModuleDatabaseForm)
 	ADD_PLUGIN(lbPluginDatabasePanel, GUIPanel)
+	ADD_PLUGIN(lbPluginDatabaseDialog, GUIDialog)
 END_PLUGINS()
 
 //	ADD_PLUGIN(lbPluginDatabaseDialog, GUIDialog)

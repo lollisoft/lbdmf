@@ -742,7 +742,7 @@ lbErrCodes LB_STDCALL lb_wxGUI::registerEventHandler(lb_I_Dispatcher* disp) {
 
 	disp->addEventHandlerFn(this, (lbEvHandler) &lb_wxGUI::switchPanelUse, "switchPanelUse");
          
-        return ERR_NONE;
+	return ERR_NONE;
 }
 /*...e*/
 /*...slbErrCodes LB_STDCALL lb_wxGUI\58\\58\cleanup\40\\41\:0:*/
@@ -1016,19 +1016,19 @@ lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::createDBForm(char* formName, char* query
 			notebook->AddPage(w, formName, true);
 			notebook->Fit();
 			notebook->Show(true);
-		
+			
 			sizerMain->SetSizeHints(frame);
 			sizerMain->Fit(frame);
 			frame->Fit();
 		
 			frame->Centre();
 		}
-	
+		
 	} else {
 		if (panelUsage) {
 			int num = notebook->GetPageCount();
 			for (int i = 0; i < num; i++) {
-				if (strcmp(notebook->GetPageText(i).c_str(), formName) == 0) {
+				if (strncmp(notebook->GetPageText(i).c_str(), formName, strlen(formName)) == 0) {
 					notebook->SetSelection(i);
 				}
 			}
@@ -1151,10 +1151,11 @@ void LB_STDCALL lb_wxGUI::showForm(char* name) {
 	if (panelUsage) {
 		int num = notebook->GetPageCount();
 		for (int i = 0; i < num; i++) {
-		        if (strcmp(notebook->GetPageText(i).c_str(), name) == 0) {
-	                        notebook->SetSelection(i);
-	                }
-	        }
+		    if (strncmp(notebook->GetPageText(i).c_str(), name, strlen(name)) == 0) {
+				notebook->SetPageText(i, notebook->GetPageText(i));
+				notebook->SetSelection(i);
+			}
+		}
 	} else {
 		lb_I_DatabaseForm* f = findDBForm(name);
 		

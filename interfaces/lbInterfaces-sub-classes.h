@@ -30,11 +30,20 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.59 $
+ * $Revision: 1.60 $
  * $Name:  $
- * $Id: lbInterfaces-sub-classes.h,v 1.59 2005/11/20 17:26:14 lollisoft Exp $
+ * $Id: lbInterfaces-sub-classes.h,v 1.60 2005/12/09 15:57:59 lollisoft Exp $
  *
  * $Log: lbInterfaces-sub-classes.h,v $
+ * Revision 1.60  2005/12/09 15:57:59  lollisoft
+ * Things work more properly under Mac OS X.
+ *
+ * Added stristr member function in lb_I_String.
+ * Added setWhereClause/addWhereClause in lb_I_Query.
+ *
+ * All that needed to fix a bug in master / detail forms on
+ * SQL queries with order by clauses.
+ *
  * Revision 1.59  2005/11/20 17:26:14  lollisoft
  * Local TRMem count.
  *
@@ -430,6 +439,11 @@ public:
 	 * Removes the trailing spaces in the string.
 	 */
 	virtual void LB_STDCALL trim() = 0;
+
+	/** \brief Get case insensitive substr.
+	 *
+	 */
+	virtual char* LB_STDCALL stristr(const char *String, const char *Pattern) = 0;
 
         /**
          * \brief Set the string data from char*

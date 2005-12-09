@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.106 2005/12/07 23:43:08 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.107 2005/12/09 15:57:58 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,20 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.106 $
+ * $Revision: 1.107 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.106 2005/12/07 23:43:08 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.107 2005/12/09 15:57:58 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.107  2005/12/09 15:57:58  lollisoft
+ * Things work more properly under Mac OS X.
+ *
+ * Added stristr member function in lb_I_String.
+ * Added setWhereClause/addWhereClause in lb_I_Query.
+ *
+ * All that needed to fix a bug in master / detail forms on
+ * SQL queries with order by clauses.
+ *
  * Revision 1.106  2005/12/07 23:43:08  lollisoft
  * Small changes that let also not crash the app at exit under
  * Mac OS X. But there is still a problem with creating first
@@ -1975,7 +1984,6 @@ bool MyApp::OnInit(void)
   if (wxGUI == NULL) {
         wxGUI = new lb_wxGUI();
         wxGUI->setModuleManager(mm.getPtr(), __FILE__, __LINE__);
-
 /* No event for a cleanup issue, that can be handled by lb_wxFrame knowing of wxGUI
 	int wxGUI_Cleanup;
 
@@ -2156,6 +2164,9 @@ _CL_LOG << "Created frame." LOG_
 /*...e*/
 
   err = frame_peer->createEventsource(this);
+
+  wxGUI->registerEventHandler(*&disp);
+
   
   if (err != ERR_NONE) _LOG << "Have some problems to set up menu event sources" LOG_
   

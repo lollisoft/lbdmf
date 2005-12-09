@@ -340,8 +340,20 @@ public:
 	 * Sets the cursor position to the last  of the result set.
 	 */        
         virtual lbErrCodes LB_STDCALL last() = 0;
-        
-        /* Accessors */
+
+	/** \brief Build new SQL query with where clause.
+	 *
+	 * This function copies the result into a new buffer. You have to free() it.
+	 */
+		virtual char* LB_STDCALL setWhereClause(const char* query, char* where) = 0;
+	
+	/** \brief Add to an existing where clause.
+	 *
+	 * This function copies the result into a new buffer. You have to free() it.
+	 */
+	 
+		virtual char* LB_STDCALL addWhereClause(const char* query, char* where) = 0;
+    /* Accessors */
 #ifdef UNBOUND        
 	/**
 	 * \brief Get the column data as char*

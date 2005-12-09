@@ -31,10 +31,19 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.28 $
+ * $Revision: 1.29 $
  * $Name:  $
- * $Id: lbobject.h,v 1.28 2005/12/02 00:28:43 lollisoft Exp $
+ * $Id: lbobject.h,v 1.29 2005/12/09 15:57:58 lollisoft Exp $
  * $Log: lbobject.h,v $
+ * Revision 1.29  2005/12/09 15:57:58  lollisoft
+ * Things work more properly under Mac OS X.
+ *
+ * Added stristr member function in lb_I_String.
+ * Added setWhereClause/addWhereClause in lb_I_Query.
+ *
+ * All that needed to fix a bug in master / detail forms on
+ * SQL queries with order by clauses.
+ *
  * Revision 1.28  2005/12/02 00:28:43  lollisoft
  * Deleting a row works for some tests. Deleting data in join queries is not tested
  * and would propably not work. This is at least due to lack of creating a delete
@@ -290,6 +299,9 @@ public:
 	DECLARE_LB_UNKNOWN()
 
 public:	
+
+	char* LB_STDCALL stristr(const char *String, const char *Pattern);
+
 	void LB_STDCALL trim();
 	void LB_STDCALL setData(char const * p);
 	char* LB_STDCALL getData() const;

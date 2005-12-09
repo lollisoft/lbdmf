@@ -309,13 +309,16 @@ public:
         
         /* Navigation */
         
-        virtual int             LB_STDCALL getPosition() { return cursor; }
-        virtual lbErrCodes      LB_STDCALL absolute(int pos);
+        int             LB_STDCALL getPosition() { return cursor; }
+        lbErrCodes      LB_STDCALL absolute(int pos);
         
-        virtual lbErrCodes	LB_STDCALL first();
-        virtual lbErrCodes	LB_STDCALL next();
-        virtual lbErrCodes	LB_STDCALL previous();
-        virtual lbErrCodes	LB_STDCALL last();
+        lbErrCodes	LB_STDCALL first();
+        lbErrCodes	LB_STDCALL next();
+        lbErrCodes	LB_STDCALL previous();
+		lbErrCodes	LB_STDCALL last();
+		char* LB_STDCALL setWhereClause(const char* query, char* where);
+	
+		char* LB_STDCALL addWhereClause(const char* query, char* where);
 
 		void		LB_STDCALL reopen();
 
@@ -1344,6 +1347,40 @@ lbErrCodes LB_STDCALL lbQuery::bind() {
 	return ERR_NONE;
 }
 /*...e*/
+char* LB_STDCALL lbQuery::setWhereClause(const char* query, char* where) {
+	char* temp = NULL;
+	UAP_REQUEST(manager.getPtr(), lb_I_String, orginal)
+	
+	*orginal = query;
+		
+	if (where != NULL) {
+		UAP_REQUEST(manager.getPtr(), lb_I_String, order)
+		char* orderClause = orginal->stristr(orginal->charrep(), "ORDER BY");
+		
+		if (orderClause != NULL) {
+			char* t;
+			orderClause[-1] = 0;
+			t = strdup(orderClause);
+			orderClause = t;
+			t = strdup(orginal->charrep());
+			*orginal = t;
+			*orginal += " ";
+			*orginal += where;
+			*orginal += " ";
+			*orginal += orderClause;
+			free(t);
+			free(orderClause);
+		} else {
+			*orginal += " ";
+			*orginal += where;
+		}
+	}
+	return strdup(orginal->charrep());
+}
+
+char* LB_STDCALL lbQuery::addWhereClause(const char* query, char* where) {
+
+}
 
 /*...slbErrCodes LB_STDCALL lbQuery\58\\58\query\40\char\42\ q\44\ bool bind\41\:0:*/
 lbErrCodes LB_STDCALL lbQuery::query(char* q, bool bind) {
