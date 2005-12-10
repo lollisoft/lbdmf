@@ -2368,7 +2368,7 @@ char* LB_STDCALL lbQuery::getTableName(char* columnName) {
 		
 		return lpszTable;
 	}
-	/*...e*/
+/*...e*/
 
 /*...e*/
 /*...schar\42\ LB_STDCALL lbQuery\58\\58\getColumnName\40\int col\41\:0:*/
@@ -3029,8 +3029,8 @@ void LB_STDCALL lbQuery::dbError(char* lp, HSTMT hstmt)
 }
 
 /*...e*/
-
 /*...e*/
+
 /*...sclass lbBoundColumn:0:*/
 
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbBoundColumn)
@@ -3204,7 +3204,7 @@ lbErrCodes LB_STDCALL lbBoundColumn::getAsString(lb_I_String* result, int asPara
 		*/
 			return ERR_NONE;
 	}
-	/*...e*/
+/*...e*/
 /*...slbErrCodes LB_STDCALL lbBoundColumn\58\\58\setFromString\40\lb_I_String\42\ set\44\ int mode\41\:0:*/
 	lbErrCodes LB_STDCALL lbBoundColumn::setFromString(lb_I_String* set, int mode) {
 		if (isReadonly) {
@@ -3355,7 +3355,7 @@ lbErrCodes LB_STDCALL lbBoundColumn::getAsString(lb_I_String* result, int asPara
 		
 		return ERR_NONE;
 	}
-	/*...e*/
+/*...e*/
 /*...slbErrCodes LB_STDCALL lbBoundColumn\58\\58\prepareBoundColumn\40\lb_I_Query\42\ q\44\ int column\41\:0:*/
 lbErrCodes LB_STDCALL lbBoundColumn::prepareBoundColumn(lb_I_Query* q, int column) {
 	lbErrCodes err = ERR_NONE;
@@ -4852,3 +4852,4 @@ BOOL WINAPI DllMain(HINSTANCE dllHandle, DWORD reason, LPVOID situation) {
 /*...e*/
 #endif
 
+    
