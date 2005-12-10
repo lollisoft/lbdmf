@@ -2369,8 +2369,6 @@ char* LB_STDCALL lbQuery::getTableName(char* columnName) {
 		return lpszTable;
 	}
 /*...e*/
-
-/*...e*/
 /*...schar\42\ LB_STDCALL lbQuery\58\\58\getColumnName\40\int col\41\:0:*/
 char lbQuery_column_Name[100] = "";
 
