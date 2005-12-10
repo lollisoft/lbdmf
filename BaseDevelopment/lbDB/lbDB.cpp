@@ -1379,7 +1379,7 @@ char* LB_STDCALL lbQuery::setWhereClause(const char* query, char* where) {
 }
 
 char* LB_STDCALL lbQuery::addWhereClause(const char* query, char* where) {
-
+	return strdup("ERROR: Not implemented.");
 }
 
 /*...slbErrCodes LB_STDCALL lbQuery\58\\58\query\40\char\42\ q\44\ bool bind\41\:0:*/

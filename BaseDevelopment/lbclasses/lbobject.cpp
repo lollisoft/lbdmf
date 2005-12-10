@@ -37,7 +37,7 @@
 
 #include <stdio.h>
 #include <string.h>
-
+#include <ctype.h>
 //#include <lbInterfaces.h>
 #ifndef UNIX
 #include <windows.h>

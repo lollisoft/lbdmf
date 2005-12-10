@@ -1943,6 +1943,8 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 	
 		sizerActions->Add(actionButton, 1, wxEXPAND | wxALL, 5);
 
+		_CL_LOG << "Added an action (while loop): " << eventName LOG_
+
 		free(eventName);
 
 		err = actionQuery->next();
@@ -1976,6 +1978,8 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 		        (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) &lbDatabasePanel::OnDispatch);
 		
 		sizerActions->Add(actionButton, 1, wxEXPAND | wxALL, 5);
+
+		_CL_LOG << "Added an action: " << eventName LOG_
 		
 		free(eventName);
 	
@@ -1983,7 +1987,7 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 /*...e*/
 /*...e*/
 
-
+_CL_LOG << "Connect event handlers" LOG_
 /*...sconnect event handlers:8:*/
 //#define CONNECTOR ((wxFrame*) frame)
 #define CONNECTOR this
@@ -2015,6 +2019,7 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 	//TRMemStopLocalCount();
 	//TRMemResetLocalCount();
 
+
 	SetAutoLayout(TRUE);
 	
 	sizerMain->Add(sizerHor, 0, wxEXPAND | wxALL, 5);
@@ -2029,9 +2034,10 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 	
 	Centre();
 
-	_CL_VERBOSE << "lbDatabasePanel::init(...) ready. Move to first row." LOG_
+_CL_LOG << "lbDatabasePanel::init(...) ready. Move to first row." LOG_
 
-	lbDBFirst(NULL);
+// Crashes without debug information
+//	lbDBFirst(NULL);
 }
 /*...e*/
 
@@ -2953,13 +2959,14 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBUpdate() {
 
 	int columns = sampleQuery->getColumns();
 
-	UAP_REQUEST(manager.getPtr(), lb_I_String, col)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, val)
-					
+	
+	_CL_LOG << "Update each columns." LOG_				
 	for (int i = 1; i <= columns; i++) {
+		UAP_REQUEST(manager.getPtr(), lb_I_String, col)
+		UAP_REQUEST(manager.getPtr(), lb_I_String, val)
 		char* name = strdup(sampleQuery->getColumnName(i));
 
-		_CL_VERBOSE << "Update column " << name LOG_
+		_CL_LOG << "Update column " << name LOG_
 
 		// Find the corresponding window
 		
@@ -3114,6 +3121,7 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBUpdate() {
 		return ERR_UPDATE_FAILED;
 	}
 	
+	_CL_LOG << "lbDatabasePanel::lbDBUpdate() returns ERR_NONE." LOG_
 	return ERR_NONE;
 }
 /*...e*/
@@ -3265,10 +3273,13 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBRead() {
 
 /*...slbErrCodes LB_STDCALL lbDatabasePanel\58\\58\lbDBFirst\40\lb_I_Unknown\42\ uk\41\:0:*/
 lbErrCodes LB_STDCALL lbDatabasePanel::lbDBFirst(lb_I_Unknown* uk) {
-	lbDBUpdate();
+
+	lbErrCodes err = lbDBUpdate();
+_CL_LOG << "lbDBClear();" LOG_
 	lbDBClear();
-	
-	lbErrCodes err = sampleQuery->first();
+
+_CL_LOG << "sampleQuery->first();" LOG_	
+	err = sampleQuery->first();
 
 	while (err == ERR_DB_ROWDELETED) err = sampleQuery->next();
 
@@ -3277,11 +3288,13 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBFirst(lb_I_Unknown* uk) {
 
 		return ERR_DB_NODATA;
 	}
-	
+
+_CL_LOG << "lbDBRead();" LOG_	
 	lbDBRead();
 	
+_CL_LOG << "DISABLE_BOF()" LOG_	
 	DISABLE_BOF()
-
+_CL_LOG << "return ERR_NONE;" LOG_
 	return ERR_NONE;
 }
 /*...e*/

@@ -17,7 +17,7 @@ exit
 
 rem set TARGET_APPLICATION=Application
 
-set CONSOLE_DETACH=no
+set CONSOLE_DETACH=yes
 
 if NOT "%COMPUTERNAME%"=="ANAKIN" goto DISTMODE:
 
