@@ -260,17 +260,24 @@ int main(int argc, char *argv[]) {
 		query2 = database1->getQuery(0);
 		query2->enableFKCollecting();
 		query2->skipPeeking();
-		//query2->query("select id, test, btest, btest1 from regressiontest order by id");
-
+		query2->query("select id, test, btest, btest1 from regressiontest order by id");
+#ifdef bla
 		query2->query(
 		"select * from Anwendungen inner join User_Anwendungen on "
 		"Anwendungen.id = User_Anwendungen.anwendungenid "
 		"inner join Users on User_Anwendungen.userid = Users.id where Users.userid = 'user'");
-
+#endif
 		query2->PrintData();
 
 		query2->first();
+		UAP_REQUEST(mm, lb_I_String, col)
+		UAP_REQUEST(mm, lb_I_String, val)
 		
+		col->setData("btest");
+		val->setData("true");
+		
+		query2->setString(*&col, *&val);
+		query2->update();
 		query2->next();
 		query2->next();
 		query2->next();

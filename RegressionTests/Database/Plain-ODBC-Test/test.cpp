@@ -615,6 +615,14 @@ int main(void)
 	
 	PrintData(hstmt_select, count, false, false);
 	
+	first( hstmt_select);
+	
+	printf("Test changing data...\n");
+	
+	sprintf(btest, "%d", 1); 
+	sprintf(btest1, "%d", 1); 
+	update(hstmt_select);
+	
 	PrintData(hstmt_select, count, false);
 	
 	PrintData(hstmt_select, count, true);

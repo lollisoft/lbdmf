@@ -3212,7 +3212,7 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBRead() {
 								
 								s = sampleQuery->getAsString(i);
 								
-								if (strcmp(s->charrep(), "true") == 0) {
+								if ((strcmp(s->charrep(), "true") == 0) || (strcmp(s->charrep(), "1") == 0)) {
 									check->SetValue(true);
 								} else {
 									check->SetValue(false);
@@ -3310,7 +3310,7 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBNext(lb_I_Unknown* uk) {
 	
 		lbDBClear();
 	}
-	
+		
 	lbDBRead();
 
 	return ERR_NONE;

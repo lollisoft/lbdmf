@@ -3120,98 +3120,110 @@ lbErrCodes LB_STDCALL lbBoundColumn::getAsString(lb_I_String* result, int asPara
 	switch (_DataType) {
 		case SQL_DATE:
 		case SQL_TYPE_DATE:
-	        case SQL_CHAR:
-	        case SQL_VARCHAR:
-	        case SQL_LONGVARCHAR:
-	        
-	        	if (asParameter == 1) {
-	        		char* b = (char*) malloc(strlen((char const *) buffer)+3);
-	        		b[0] = 0;
-	        		sprintf(b, "'%s'", buffer);
-	        		result->setData(b);
-	        		free(b);
-	        	} else {
-	        		result->setData((char*) buffer);
-	        		result->trim();
-	        	}
-	        	
-	        	break;
-	        case SQL_BINARY:
-	        	_CL_VERBOSE << "lbBoundColumn::getAsString(...) failed: Binary data not supported for column '" << columnName << "'" LOG_
-	        	break;
+		case SQL_CHAR:
+		case SQL_VARCHAR:
+		case SQL_LONGVARCHAR:
+#ifndef BIND_BOOL_DEFAULT
+		case SQL_BIT:
+		case SQL_TINYINT:
+#endif
+			if (asParameter == 1) {
+				char* b = (char*) malloc(strlen((char const *) buffer)+3);
+				b[0] = 0;
+				sprintf(b, "'%s'", buffer);
+				result->setData(b);
+				free(b);
+			} else {
+				result->setData((char*) buffer);
+				result->trim();
+			}
+			
+			break;
+		case SQL_BINARY:
+			_CL_VERBOSE << "lbBoundColumn::getAsString(...) failed: Binary data not supported for column '" << columnName << "'" LOG_
+			break;
 		case SQL_BIGINT:
-			{
-				char charrep[100] = "";
-				#ifdef WINDOWS
+		{
+			char charrep[100] = "";
+#ifdef WINDOWS
 #ifndef _MSC_VER
-				lltoa(*(long long*) buffer, charrep, 10);
+			lltoa(*(long long*) buffer, charrep, 10);
 #endif
 #ifdef _MSC_VER
-				sprintf(charrep, "%I64d", *(__int64*) buffer);
+			sprintf(charrep, "%I64d", *(__int64*) buffer);
 #endif
-				#endif
-				#ifdef LINUX
-				sprintf(charrep, "%I64d", *(long long*) buffer);
-				#endif
-				#ifdef OSX
-				sprintf(charrep, "%I64d", *(long long*) buffer);
-				#endif
-				//sprintf(charrep, "%Ld", *(long long*) buffer);
-				result->setData(charrep);
+#endif
+#ifdef LINUX
+			sprintf(charrep, "%I64d", *(long long*) buffer);
+#endif
+#ifdef OSX
+			sprintf(charrep, "%I64d", *(long long*) buffer);
+#endif
+			//sprintf(charrep, "%Ld", *(long long*) buffer);
+			result->setData(charrep);
+		}
+			break;
+		case SQL_INTEGER:
+		{
+			char charrep[100] = "";
+			sprintf(charrep, "%d", *(long*) buffer);
+			result->setData(charrep);
+		}
+			break;
+#ifdef BIND_BOOL_DEFAULT
+		case SQL_BIT:
+		case SQL_TINYINT:
+		{
+#ifdef OSX
+			int bi = 0;
+			bi = *(int*) buffer;
+			
+			if (bi != 0) {
+#endif
+#ifndef OSX
+				bool b = *(bool*) buffer;
+				if (b == true) {
+#endif
+					result->setData("true");
+				}
+				else {
+					result->setData("false");
+				}	
 			}
 			break;
-	        case SQL_INTEGER:
-			{
-	        		char charrep[100] = "";
-	        		sprintf(charrep, "%d", *(long*) buffer);
-	        		result->setData(charrep);
-			}
-	        	break;
-	        case SQL_BIT:
-	        case SQL_TINYINT:
-	        	{
-			#ifdef OSX
-				int bi = 0;
-				bi = *(int*) buffer;
-
-	        		if (bi != 0) {
-			#endif
-			#ifndef OSX
-				bool b = *(bool*) buffer;
-	        		if (b == true) {
-			#endif
-					_CL_VERBOSE << "Set a BIT value as true" LOG_
-		        		result->setData("true");
-				}
-		        	else {
-		        		_CL_VERBOSE << "Set a BIT value as false" LOG_
-		        		result->setData("false");
-				}	
-	        	}
-	        	break;
+#endif
 	        default:
 	        	_CL_VERBOSE << "lbBoundColumn::getAsString(...) failed: Unknown or not supported datatype for column '" << columnName << "'"  LOG_
 	        	break;
+		}
+		/* Pointer doesn't get changed.
+		char* buf = (char*) malloc(20);
+		sprintf(buf, "(%p)", buffer);
+		*result += buf;
+		free(buf);
+		*/
+			return ERR_NONE;
 	}
-	return ERR_NONE;
-}
-/*...e*/
+	/*...e*/
 /*...slbErrCodes LB_STDCALL lbBoundColumn\58\\58\setFromString\40\lb_I_String\42\ set\44\ int mode\41\:0:*/
-lbErrCodes LB_STDCALL lbBoundColumn::setFromString(lb_I_String* set, int mode) {
-
-	if (isReadonly) {
-		_CL_LOG << "Warning: Updating a column '" << columnName << "' with readonly status skipped." LOG_
-		return ERR_NONE;
-	}
-
-	if (mode == 1) {
-		switch (_DataType) {
-			case SQL_DATE:
-			case SQL_TYPE_DATE:
-			case SQL_CHAR:
-			case SQL_VARCHAR:
-			case SQL_LONGVARCHAR:
-			
+	lbErrCodes LB_STDCALL lbBoundColumn::setFromString(lb_I_String* set, int mode) {
+		if (isReadonly) {
+			_CL_LOG << "Warning: Updating a column '" << columnName << "' with readonly status skipped." LOG_
+			return ERR_NONE;
+		}
+		
+		if (mode == 1) {
+			switch (_DataType) {
+				case SQL_DATE:
+				case SQL_TYPE_DATE:
+				case SQL_CHAR:
+				case SQL_VARCHAR:
+				case SQL_LONGVARCHAR:
+#ifndef BIND_BOOL_DEFAULT
+				case SQL_BIT:
+				case SQL_TINYINT:
+#endif
+					
 				{
 					// Must set an offset for the insert buffer
 					
@@ -3220,8 +3232,8 @@ lbErrCodes LB_STDCALL lbBoundColumn::setFromString(lb_I_String* set, int mode) {
 					char* b = strcpy(bb + ColumnSize + 1, set->getData());
 					cbBufferLength = strlen((char*) buffer);
 				}
-				break;
-			case SQL_INTEGER:
+					break;
+				case SQL_INTEGER:
 				{
 					long l = 0;
 					l = atol(set->getData());
@@ -3232,9 +3244,9 @@ lbErrCodes LB_STDCALL lbBoundColumn::setFromString(lb_I_String* set, int mode) {
 					
 					memcpy(b, &l, sizeof(l));
 				}
-				break;
-
-			case SQL_BIGINT:
+					break;
+					
+				case SQL_BIGINT:
 				{
 #ifndef _MSC_VER
 					long long l = 0;
@@ -3250,69 +3262,100 @@ lbErrCodes LB_STDCALL lbBoundColumn::setFromString(lb_I_String* set, int mode) {
 					
 					memcpy(b, &l, sizeof(l));
 				}
-				break;
-			case SQL_BINARY:
-				_CL_VERBOSE << "lbBoundColumn::setFromString(...) failed: Binary data not supported for column '" << columnName << "'"  LOG_
-				break;
-			case SQL_BIT:
-			case SQL_TINYINT:
+					break;
+				case SQL_BINARY:
+					_CL_VERBOSE << "lbBoundColumn::setFromString(...) failed: Binary data not supported for column '" << columnName << "'"  LOG_
+					break;
+#ifdef BIND_BOOL_DEFAULT					
+				case SQL_BIT:
+				case SQL_TINYINT:
 				{
+#ifdef OSX				
+					long l = 0;
+					if (strcmp(set->charrep(), "true") == 0) {
+						l = 1;
+					}
+					
+					long* pl = (long*) buffer;
+					
+					void* b = pl+1;
+					
+					memcpy(b, &l, sizeof(l));
+#endif
+#ifndef OSX
 					bool l = false;
 					if (strcmp(set->charrep(), "true") == 0) {
 						l = true;
 					}
-			
+					
 					bool* pl = (bool*) buffer;
 					
 					void* b = pl+1;
 					
 					memcpy(b, &l, sizeof(l));
+#endif 
 				}
 				break;
-		}
-
-	} else {
-		switch (_DataType) {
-			case SQL_DATE:
-			case SQL_TYPE_DATE:
-			case SQL_CHAR:
-			case SQL_VARCHAR:
-			case SQL_LONGVARCHAR:
-			
+#endif			
+			}
+		} else {
+			switch (_DataType) {
+				case SQL_DATE:
+				case SQL_TYPE_DATE:
+				case SQL_CHAR:
+				case SQL_VARCHAR:
+				case SQL_LONGVARCHAR:
+#ifndef BIND_BOOL_DEFAULT
+				case SQL_BIT:
+				case SQL_TINYINT:
+#endif
+					
 				{
 					char* b = strcpy((char*) buffer, set->getData());
 					cbBufferLength = strlen((char*) buffer);
 				}
-				break;
-			case SQL_INTEGER:
+					break;
+				case SQL_INTEGER:
 				{
 					long l = 0;
 					l = atol(set->getData());
 					memcpy(buffer, &l, sizeof(l));
 				}
-				break;
-			case SQL_BINARY:
-				_CL_VERBOSE << "lbBoundColumn::setFromString(...) failed: Binary data not supported for column '" << columnName << "'" LOG_
-				break;
-			case SQL_BIT:
-			case SQL_TINYINT:
+					break;
+				case SQL_BINARY:
+					_CL_VERBOSE << "lbBoundColumn::setFromString(...) failed: Binary data not supported for column '" << columnName << "'" LOG_
+					break;
+#ifdef BIND_BOOL_DEFAULT					
+				case SQL_BIT:
+				case SQL_TINYINT:
 				{
+#ifdef OSX
+					long l = 0;
+					if (strcmp(set->charrep(), "true") == 0) {
+						l = -1;
+					}
+
+					*((long*) buffer) = l;
+#endif
+#ifndef OSX
 					bool l = false;
 					if (strcmp(set->charrep(), "true") == 0) {
 						l = true;
 					}
-
+					
 					*((bool*) buffer) = l;
+#endif
 					//memcpy(buffer, &l, sizeof(bool));
 				}
 				break;
+#endif					
+			}
+			
 		}
-
+		
+		return ERR_NONE;
 	}
-
-	return ERR_NONE;
-}
-/*...e*/
+	/*...e*/
 /*...slbErrCodes LB_STDCALL lbBoundColumn\58\\58\prepareBoundColumn\40\lb_I_Query\42\ q\44\ int column\41\:0:*/
 lbErrCodes LB_STDCALL lbBoundColumn::prepareBoundColumn(lb_I_Query* q, int column) {
 	lbErrCodes err = ERR_NONE;
@@ -3473,6 +3516,8 @@ lbErrCodes LB_STDCALL lbBoundColumn::bindColumn(lb_I_Query* q, int column, bool 
 			}
 /*...e*/
 			break;
+		case SQL_BIT:
+		case SQL_TINYINT:
 		case SQL_CHAR:
 		case SQL_VARCHAR:
 		case SQL_LONGVARCHAR:
@@ -3552,19 +3597,31 @@ lbErrCodes LB_STDCALL lbBoundColumn::bindColumn(lb_I_Query* q, int column, bool 
 			}
 /*...e*/
 			break;
+// Having no problems updating, when bound to a char array...
+#ifdef BIND_BOOL_DEFAULT		
 		case SQL_BIT:
 		case SQL_TINYINT:
+#ifndef OSX		
 			buffer = malloc((sizeof(bool))*rows);
 			_DataType = DataType;
 			bound = 1;
 			memset(buffer, 0, sizeof(bool)*rows);
-			ret = SQLBindCol(hstmt, column, DataType, buffer, sizeof(bool), &cbBufferLength);
+			ret = SQLBindCol(hstmt, column, SQL_BIT, buffer, sizeof(bool), &cbBufferLength);
+#endif
+#ifdef OSX
+			buffer = malloc((sizeof(long))*rows);
+			_DataType = DataType;
+			bound = 1;
+			memset(buffer, 0, sizeof(long)*rows);
+			ret = SQLBindCol(hstmt, column, SQL_BIT, buffer, sizeof(long), &cbBufferLength);
+#endif
 			if (ret != SQL_SUCCESS) {
 				_LOG << "Error: Binding column '" << columnName << "' failed!" LOG_
 				
 			        query->dbError("SQLBindCol()", hstmt);
 			}
 			break;
+#endif
 		default:
 			_CL_LOG << "lbBoundColumn::bindColumn(...) failed: Unknown or not supported datatype for column '" << columnName << "': " << DataType LOG_
 			break;
@@ -3693,7 +3750,10 @@ void LB_STDCALL lbBoundColumn::unbindReadonlyColumns() {
 		case SQL_CHAR:
 		case SQL_VARCHAR:
 		case SQL_LONGVARCHAR:
-		
+#ifndef BIND_BOOL_DEFAULT
+		case SQL_BIT:
+		case SQL_TINYINT:
+#endif		
 			_CL_VERBOSE << "Unbind char" LOG_
 			bound = 0;
 
@@ -3721,18 +3781,23 @@ void LB_STDCALL lbBoundColumn::unbindReadonlyColumns() {
 			SQLBindCol(hstmt, _column, SQL_C_DEFAULT, NULL, sizeof(__int64), &cbBufferLength);
 #endif
 			break;
+#ifdef BIND_BOOL_DEFAULT
 		case SQL_BIT:
 		case SQL_TINYINT:
 			_CL_VERBOSE << "Unbind bit" LOG_
 			bound = 0;
-
-			SQLBindCol(hstmt, _column, _DataType, NULL, sizeof(bool), &cbBufferLength);
-
+#ifdef OSX
+			SQLBindCol(hstmt, _column, SQL_BIT, NULL, sizeof(long), &cbBufferLength);
+#endif
+#ifndef OSX
+			SQLBindCol(hstmt, _column, SQL_BIT, NULL, sizeof(bool), &cbBufferLength);
+#endif			
 			if (ret != SQL_SUCCESS) {
 			        printf("Error while unbinding a column!\n");
 			        query->dbError("SQLBindCol()", hstmt);
 			}
 			break;
+#endif
 		default:
 			_CL_VERBOSE << "lbBoundColumn::unbindReadonlyColumns(...) failed: Unknown or not supported datatype for column '" << columnName << "': " << _DataType LOG_
 			break;
@@ -3763,6 +3828,10 @@ void LB_STDCALL lbBoundColumn::rebindReadonlyColumns() {
 		case SQL_CHAR:
 		case SQL_VARCHAR:
 		case SQL_LONGVARCHAR:
+#ifndef BIND_BOOL_DEFAULT
+		case SQL_BIT:
+		case SQL_TINYINT:
+#endif		
 		
 			_CL_VERBOSE << "Rebind char" LOG_
 			bound = 1;
@@ -3791,18 +3860,23 @@ void LB_STDCALL lbBoundColumn::rebindReadonlyColumns() {
 			SQLBindCol(hstmt, _column, SQL_C_DEFAULT, buffer, sizeof(__int64), &cbBufferLength);
 #endif
 			break;
+#ifdef BIND_BOOL_DEFAULT
 		case SQL_BIT:
 		case SQL_TINYINT:
 			_CL_VERBOSE << "Rebind bit" LOG_
 			bound = 1;
-
-			SQLBindCol(hstmt, _column, _DataType, buffer, sizeof(bool), &cbBufferLength);
-
+#ifdef OSX
+			SQLBindCol(hstmt, _column, SQL_BIT, buffer, sizeof(long), &cbBufferLength);
+#endif
+#ifndef OSX
+			SQLBindCol(hstmt, _column, SQL_BIT, buffer, sizeof(bool), &cbBufferLength);
+#endif
 			if (ret != SQL_SUCCESS) {
 			        printf("Error while binding a column!\n");
 			        query->dbError("SQLBindCol()", hstmt);
 			}
 			break;
+#endif
 		default:
 			_CL_VERBOSE << "lbBoundColumn::rebindReadonlyColumns(...) failed: Unknown or not supported datatype for column '" << columnName << "': " << _DataType LOG_
 			break;
@@ -3832,6 +3906,10 @@ void LB_STDCALL lbBoundColumn::rebind() {
 		case SQL_CHAR:
 		case SQL_VARCHAR:
 		case SQL_LONGVARCHAR:
+#ifndef BIND_BOOL_DEFAULT
+		case SQL_BIT:
+		case SQL_TINYINT:
+#endif		
 		
 			_CL_VERBOSE << "Rebind char" LOG_
 			bound = 1;
@@ -3860,18 +3938,23 @@ void LB_STDCALL lbBoundColumn::rebind() {
 			SQLBindCol(hstmt, _column, SQL_C_DEFAULT, buffer, sizeof(__int64), &cbBufferLength);
 #endif
 			break;
+#ifdef BIND_BOOL_DEFAULT
 		case SQL_BIT:
 		case SQL_TINYINT:
 			_CL_VERBOSE << "Rebind bit" LOG_
 			bound = 1;
-
+#ifdef OSX
+			SQLBindCol(hstmt, _column, _DataType, buffer, sizeof(long), &cbBufferLength);
+#endif
+#ifndef OSX
 			SQLBindCol(hstmt, _column, _DataType, buffer, sizeof(bool), &cbBufferLength);
-
+#endif
 			if (ret != SQL_SUCCESS) {
 			        printf("Error while binding a column!\n");
 			        query->dbError("SQLBindCol()", hstmt);
 			}
 			break;
+#endif
 		default:
 			_CL_VERBOSE << "lbBoundColumn::rebindReadonlyColumns(...) failed: Unknown or not supported datatype for column '" << columnName << "': " << _DataType LOG_
 			break;

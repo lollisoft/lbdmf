@@ -143,7 +143,7 @@ FormularFieldInformation::FormularFieldInformation(char const * formularname, lb
 			
 			col->setData(query->getColumnName(i));
 
-			if ((strcmp(col->charrep(), fieldname->charrep()) == 0) && (strcmp("true", ro->charrep()) == 0)) {
+			if ((strcmp(col->charrep(), fieldname->charrep()) == 0) && ((strcmp("true", ro->charrep()) == 0) || (strcmp("1", ro->charrep()) == 0))) {
 				UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
 				UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
 				
@@ -153,7 +153,7 @@ FormularFieldInformation::FormularFieldInformation(char const * formularname, lb
 				ROFields->insert(&uk, &key);
 			}
 
-			if ((strcmp(col->charrep(), fieldname->charrep()) == 0) && (strcmp("true", specialColumn->charrep()) == 0)) {
+			if ((strcmp(col->charrep(), fieldname->charrep()) == 0) && ((strcmp("true", specialColumn->charrep()) == 0) || (strcmp("1", specialColumn->charrep()) == 0))) {
 				UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
 				UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
 				
@@ -188,7 +188,7 @@ FormularFieldInformation::FormularFieldInformation(char const * formularname, lb
 
                         col->setData(query->getColumnName(i));
 			
-			if ((strcmp(col->charrep(), fieldname->charrep()) == 0) && (strcmp("true", ro->charrep()) == 0)) {
+			if ((strcmp(col->charrep(), fieldname->charrep()) == 0) && ((strcmp("true", ro->charrep()) == 0) || (strcmp("1", ro->charrep()) == 0))) {
                                 UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
                                 UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
 
@@ -198,7 +198,7 @@ FormularFieldInformation::FormularFieldInformation(char const * formularname, lb
                                 ROFields->insert(&uk, &key);
                         }
 
-			if ((strcmp(col->charrep(), fieldname->charrep()) == 0) && (strcmp("true", specialColumn->charrep()) == 0)) {
+			if ((strcmp(col->charrep(), fieldname->charrep()) == 0) && ((strcmp("true", specialColumn->charrep()) == 0) || (strcmp("1", specialColumn->charrep()) == 0))) {
 				UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
 				UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
 				
