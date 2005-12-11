@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.72 $
+ * $Revision: 1.73 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.72 2005/11/26 18:59:11 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.73 2005/12/11 19:15:49 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.73  2005/12/11 19:15:49  lollisoft
+ * Release changes for 0.6.0. Added todo entries, removed unused code.
+ *
  * Revision 1.72  2005/11/26 18:59:11  lollisoft
  * Minor changes to compile and run under Linux
  *
@@ -309,52 +312,11 @@ extern "C" {
 #include <lbMetaApplication.h>
 /*...e*/
 
-/*...sCTest:0:*/
-class ITest {
-public:       
-        virtual void release() = 0;
-};
-
-class CTest : public ITest {
-
-public:
-        CTest();
-        virtual ~CTest();
-
-        void release();
-
-        static void* operator new(size_t size);
-        static void operator delete(void* p, size_t size);
-
-        char buf[100];
-};
-
-CTest::CTest() {
-        printf("CTest::CTest() called.\n");
-}
-
-CTest::~CTest() {
-        printf("CTest::~CTest() called.\n");
-}
-
-void CTest::release() {
-        if (TRMemValidate(this)) delete this;
-}
-
-void* CTest::operator new(size_t size) {
-        return malloc(size);
-}
-
-void CTest::operator delete(void* p, size_t size) {
-                free(p);
-}
-
-CTest a1;
-CTest a2;
-/*...e*/
 /*...sFunctors:0:*/
 IMPLEMENT_FUNCTOR(instanceOfEventMapper, lb_EventMapper)
 IMPLEMENT_FUNCTOR(instanceOfEvHandler, lb_EvHandler)
+
+/// \todo Check if these OS differences are really needed.
 
 #ifdef WINDOWS
 IMPLEMENT_SINGLETON_FUNCTOR(instanceOfMetaApplication, lb_MetaApplication)
@@ -366,8 +328,6 @@ IMPLEMENT_SINGLETON_FUNCTOR(instanceOfMetaApplication, lb_MetaApplication)
 #endif
 
 /*...e*/
-
-
 
 /*...slb_MetaApplication:0:*/
 /*...sctors\47\dtors:0:*/
@@ -533,6 +493,7 @@ lb_I_EventManager * lb_MetaApplication::getEVManager( void ) {
 }
 /*...e*/
 /*...slbErrCodes LB_STDCALL lb_MetaApplication\58\\58\Initialize\40\char\42\ user \61\ NULL\44\ char\42\ app \61\ NULL\41\:0:*/
+/// \todo Implement autologon settings for last user.
 lbErrCodes LB_STDCALL lb_MetaApplication::Initialize(char* user, char* appName) {
 /*...sdoc:8:*/
 /**
