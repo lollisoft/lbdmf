@@ -93,6 +93,7 @@ lbErrCodes LB_STDCALL lbLocale::setData(lb_I_Unknown* uk) {
 	return ERR_NONE;
 }
 
+/// \todo Use environment variable to select language.
 lbLocale::lbLocale() {
 	ref = STARTREF;
 	_lang = (char*) malloc(100);
@@ -112,6 +113,7 @@ void LB_STDCALL lbLocale::setLanguage(char const * lang) {
 }
 
 /*...svoid LB_STDCALL lbLocale\58\\58\translate\40\char \42\\42\ text\44\ char const \42\ to_translate\41\:0:*/
+/// \todo Add default language in insert statement. This enables automatic creation of new languages, if selected.
 void LB_STDCALL lbLocale::translate(char ** text, char const * to_translate) {
 	UAP_REQUEST(manager.getPtr(), lb_I_Database, database)
 

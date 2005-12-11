@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.35 $
+ * $Revision: 1.36 $
  * $Name:  $
- * $Id: lbPluginManager.cpp,v 1.35 2005/12/02 17:38:11 lollisoft Exp $
+ * $Id: lbPluginManager.cpp,v 1.36 2005/12/11 19:15:16 lollisoft Exp $
  *
  * $Log: lbPluginManager.cpp,v $
+ * Revision 1.36  2005/12/11 19:15:16  lollisoft
+ * Release changes for 0.6.0. Added todo entries.
+ *
  * Revision 1.35  2005/12/02 17:38:11  lollisoft
  * Lesser log messages. Put them to be verbose only.
  *
@@ -218,6 +221,7 @@ extern "C" {
 /*...e*/
 
 /*...sclass lbPluginManager:0:*/
+/// \brief Plugin manager implementation.
 class lbPluginManager : public lb_I_PluginManager {
 public:
 
@@ -625,6 +629,7 @@ lb_I_Plugin* LB_STDCALL lbPluginManager::nextPlugin() {
 }
 /*...e*/
 /*...slb_I_Plugin\42\ LB_STDCALL lbPluginManager\58\\58\getFirstMatchingPlugin\40\char\42\ match\44\ char\42\ _namespace\41\:0:*/
+/// \todo Extend namespace feature by comma separated property list. (Or threaded as feature list).
 lb_I_Plugin* LB_STDCALL lbPluginManager::getFirstMatchingPlugin(char* match, char* _namespace) {
 	
 	if (beginEnumPlugins()) {
@@ -654,16 +659,18 @@ lb_I_Plugin* LB_STDCALL lbPluginManager::getFirstMatchingPlugin(char* match, cha
 }
 /*...e*/
 
+/// \todo Implement plugin installation mechanism.
 bool LB_STDCALL lbPluginManager::attach(lb_I_PluginModule* toAttach) {
 	return FALSE;
 }
-
+/// \todo Implement plugin deinstallation mechanism.
 bool LB_STDCALL lbPluginManager::detach(lb_I_PluginModule* toAttach) {
 	return FALSE;
 }
 /*...e*/
 
 /*...sclass lbPlugin:0:*/
+/// \brief Plugin entity implementation.
 class lbPlugin : public lb_I_Plugin {
 public:
 
