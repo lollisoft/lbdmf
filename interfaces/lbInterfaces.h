@@ -367,7 +367,7 @@
 /*...sDatabase Prototype GUI:0:*/
 /** \page PrototypeGUI Database prototype GUI documentation
  *
- * \section Introducion
+ * \section Introduction
  *
  * The main sample application, distributed also as binary sample, is aimed to be a prototype
  * for any kind of database applications. You could define forms and related information in a
@@ -376,16 +376,43 @@
  * If you have a target database model for a specific application, then it is easy to build up
  * a prototype for it in minutes.
  *
- * \section Application
+ * \section Prepare1 Prepare for first run
+ *
+ * Before you could run the sample application, you need a proper set up database. As I most time
+ * test and use <a href="http://www.postgresql.org">PostgreSQL</a>, you should have installed this
+ * database engine. Also you should have set up an ODBC driver for that database. See \ref PSetup9 "ODBC Setup".
+ *
+ * \note The binary sample package contains an ODBC setup routine for a PostgreSQL database installed on your machine.
+ *
+ * After database installation (see \ref PSetup8 "Database setup") you need to run the script for that database.
+ *
+ * Source package:
+ * 
+ * \li PostgreSQL: /lbDMF/develop/Projects/CPP/Database/lbDMF-PostgreSQL.sql 
+ * \li MySQL: /lbDMF/develop/Projects/CPP/Database/lbDMF-MySQL.sql
+ * \li Sybase: /lbDMF/develop/Projects/CPP/Database/lbDMF-Sybase.sql
+ *
+ * Binary sample package:
+ *
+ * \li PostgreSQL: /lbDMF/Database/lbDMF-PostgreSQL.sql 
+ * \li MySQL: /lbDMF/Database/lbDMF-MySQL.sql
+ * \li Sybase: /lbDMF/Database/lbDMF-Sybase.sql
+ *
+ * \section Application1 The application
  *
  * Let us start with an application - say - we have a small CD collection database.
  *
- * \section Database Setup
+ * \section DatabaseSetup1 Database Setup
  *
- * The CD collection database will consist interprets, album and and title tables. To create
- * the database, please copy the SQL code below to your database query editor.
+ * The CD collection database will consist interpret, album and and title tables. To create
+ * the database, please copy the SQL code below to your database query editor of your newly created database instance.
+ *
+ * \note You must declare a primary key for each table. If you don't do it, the GUI would not work properly.
  *
  * \code
+ 	-- Force to use this user. Rename it accordingly.
+ 	SET SESSION AUTHORIZATION 'dba';
+ 	
  	CREATE TABLE interpret (
  		id SERIAL,
  		name CHAR(50),
@@ -397,8 +424,10 @@
  		id SERIAL,
  		interpretid INT,
  		name CHAR(50),
- 		go_public_date DATETIME,
- 		PRIMARY KEY (id)
+ 		go_public_date DATE,
+ 		PRIMARY KEY (id),
+ 		CONSTRAINT cst_album_interpret_interpretid FOREIGN KEY (interpretid)
+ 			REFERENCES interpret (id) ON UPDATE NO ACTION ON DELETE NO ACTION
  	);
  	
  	CREATE TABLE title (
@@ -407,9 +436,23 @@
  		songid INT,
  		name CHAR(50),
  		time TIME,
- 		PRIMARY KEY (id)
+ 		PRIMARY KEY (id),
+ 		CONSTRAINT cst_title_album_albumid FOREIGN KEY (albumid)
+ 			REFERENCES album (id) ON UPDATE NO ACTION ON DELETE NO ACTION
+ 		
  	);
  * \endcode
+ *
+ * \section lbDMFDatabaseSetup1 Setup the configuration in the main config database
+ *
+ * To be able to run the application with forms against that tables, we need to setup some configuration for it.
+ * Start the GUI and login with the default user 'user' and password 'TestUser'. Select the application 'lbDMF Manager'.
+ * A menu would be created with some entries.
+ *
+ * \note You get a tabbed view per default. If you like to view more than one form in parallel, select 'File->switch panel usage'.
+ *
+ * Select menuentry 'Benutzer verwalten' in menu 'lbDMF Manager' to manage users. There, add a new entry with 'Add' and then set up
+ * the users data correctly.
  */
 /*...e*/
 
@@ -819,13 +862,6 @@ public:
 #define UAP(interface, Unknown_Reference, file, line) \
 		class UAP##Unknown_Reference { \
 \
-		char* my_strdup(char* s) { \
-			if (s == NULL) return NULL; \
-			char* temp = (char*) malloc(strlen(s)+1); \
-			temp[0] = 0; \
-			strcpy(temp, s); \
-			return temp; \
-		} \
 		public: \
 	        UAP##Unknown_Reference() { \
 	        	_autoPtr = NULL; \
@@ -840,24 +876,24 @@ public:
 			attachedClassName = NULL; \
 			initialized = false; \
 			if ((_ref != NULL) && (_ref->getClassName() != NULL)) \
-				attachedClassName = my_strdup(_ref->getClassName()); \
+				attachedClassName = strdup(_ref->getClassName()); \
 			else \
-				attachedClassName = my_strdup(""); \
-			if (_file != NULL) delete [] _file; \
+				attachedClassName = strdup(""); \
+			if (_file != NULL) free(_file); \
 			_file = NULL; \
-			if (_ref._file) { \
-				_file = new char [strlen(_ref._file) + 1]; \
-				_file = strcpy(_file, _ref._file); \
+			if (_ref._file != NULL) { \
+				_file = (char*) malloc(strlen(_ref._file) + 1); \
+				strcpy(_file, _ref._file); \
 			} \
 			_line = _ref._line; \
 			_autoPtr = NULL; \
 		} \
 		void operator=(const UAP##Unknown_Reference& _ref) { \
 			if (_file != NULL) { \
-				delete [] _file; \
+				free(_file); \
 				if (_ref._file) { \
-					_file = new char [strlen(_ref._file) + 1]; \
-					_file = strcpy(_file, _ref._file); \
+					_file = (char*) malloc(strlen(_ref._file) + 1); \
+					strcpy(_file, _ref._file); \
 				} \
 			} \
 			if (attachedClassName) { \
@@ -865,15 +901,15 @@ public:
 			} \
 			initialized = false; \
 			if ((_ref != NULL) && (_ref->getClassName() != NULL)) \
-			        attachedClassName = my_strdup(_ref->getClassName()); \
+			        attachedClassName = strdup(_ref->getClassName()); \
 		        else \
-		                attachedClassName = my_strdup(""); \
+		                attachedClassName = strdup(""); \
 			_line = _ref._line; \
 			_autoPtr = _ref._autoPtr; \
 		} \
 		\
 		virtual ~UAP##Unknown_Reference() { \
-			if (_file) delete [] _file; \
+			if (_file) free(_file); \
 			if (attachedClassName != NULL) free(attachedClassName); \
 			if (_autoPtr != NULL) { \
 				if (allowDelete != 1) { \
@@ -889,11 +925,10 @@ public:
 		} \
 		void LB_STDCALL setFile(char* __file) { \
 			if (_file != NULL) { \
-				delete [] _file; \
-				_file = NULL; \
+				free(_file); \
 			} \
 			if (__file != NULL) { \
-				_file = new char [strlen(__file) + 1]; \
+				_file = (char*) malloc(strlen(__file) + 1); \
 				strcpy(_file, __file); \
 			} \
 		} \
@@ -955,9 +990,9 @@ public:
 				free(attachedClassName); \
 			} \
 			if ((autoPtr != NULL) && (autoPtr->getClassName() != NULL)) \
-				attachedClassName = my_strdup(autoPtr->getClassName()); \
+				attachedClassName = strdup(autoPtr->getClassName()); \
 			else \
-				attachedClassName = my_strdup(""); \
+				attachedClassName = strdup(""); \
 			return *this; \
 		} \
 		int LB_STDCALL operator == (const interface* b) const { \
@@ -969,12 +1004,14 @@ public:
 		void LB_STDCALL setDelete(int _allow) { allowDelete = _allow; } \
 		\
 		protected: \
+		char before[10]; \
 	        interface* _autoPtr; \
 	        int _line; \
 	        char* _file; \
 	        int allowDelete; \
 	        bool initialized; \
 	        char* attachedClassName; \
+	        char after[10]; \
 		}; \
 	\
         interface* _UAP##Unknown_Reference; \
