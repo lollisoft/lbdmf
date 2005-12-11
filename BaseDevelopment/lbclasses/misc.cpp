@@ -31,10 +31,13 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.44 $
+ * $Revision: 1.45 $
  * $Name:  $
- * $Id: misc.cpp,v 1.44 2005/12/02 00:28:43 lollisoft Exp $
+ * $Id: misc.cpp,v 1.45 2005/12/11 19:14:23 lollisoft Exp $
  * $Log: misc.cpp,v $
+ * Revision 1.45  2005/12/11 19:14:23  lollisoft
+ * Release changes for 0.6.0. Added todo entries.
+ *
  * Revision 1.44  2005/12/02 00:28:43  lollisoft
  * Deleting a row works for some tests. Deleting data in join queries is not tested
  * and would propably not work. This is at least due to lack of creating a delete
@@ -254,6 +257,7 @@ extern "C" {
 #define  LOG_DEFINED
 
 /*...sclass lbLog:0:*/
+/// \brief Logging implementation. \todo Separate file to a base class.
 class lbLog : public lb_I_Log {
 
 /*...spublic:0:*/

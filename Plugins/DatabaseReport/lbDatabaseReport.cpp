@@ -1309,6 +1309,7 @@ void LB_STDCALL lbDatabaseReport::update() {
 }
 
 /*...svoid LB_STDCALL lbDatabaseReport\58\\58\show\40\\41\:0:*/
+/// \todo Check why second run crashes here or in init. 
 void LB_STDCALL lbDatabaseReport::show() {
 	_CL_LOG << "Try to show the report..." LOG_
 	wxReportWriter* pReport = new wxReportWriter(

@@ -1347,6 +1347,8 @@ lbErrCodes LB_STDCALL lbQuery::bind() {
 	return ERR_NONE;
 }
 /*...e*/
+/*...schar\42\ LB_STDCALL lbQuery\58\\58\setWhereClause\40\const char\42\ query\44\ char\42\ where\41\:0:*/
+/// \todo Add support for joined tables.
 char* LB_STDCALL lbQuery::setWhereClause(const char* query, char* where) {
 	char* temp = NULL;
 	UAP_REQUEST(manager.getPtr(), lb_I_String, orginal)
@@ -1377,7 +1379,8 @@ char* LB_STDCALL lbQuery::setWhereClause(const char* query, char* where) {
 	}
 	return strdup(orginal->charrep());
 }
-
+/*...e*/
+/// \todo Implement adding where clauses to exsisting.
 char* LB_STDCALL lbQuery::addWhereClause(const char* query, char* where) {
 	return strdup("ERROR: Not implemented.");
 }
@@ -2764,8 +2767,7 @@ UWORD   RowStat[20];
 UDWORD  RowsFetched = 0;
 
 /**
- * \todo {
- * Implement automatic primary key insertion in query member function.
+ * \todo Could not build delete statement without primary key included in SQL statement.
  *
  * It must be possible to avoid showing the primary key to the user, but it
  * is needed in the query to correctly build delete statements.
@@ -2775,7 +2777,7 @@ UDWORD  RowsFetched = 0;
  * and it's reread problem. 
  *
  * Reopen is used.
- * }
+ * 
  */
 
 	if (mode == 1) return ERR_DB_STILL_ADDING;
