@@ -273,6 +273,9 @@
  *
  *	\code
  *	Windows Registry Editor Version 5.00
+ *	
+ *	[HKEY_LOCAL_MACHINE\SOFTWARE\ODBC\ODBC.INI\ODBC Data Sources]
+ *	"lbDMF"="PostgreSQL"
  *
  *	[HKEY_LOCAL_MACHINE\SOFTWARE\ODBC\ODBC.INI\lbDMF]
  *	"Driver"="C:\\lbDMF\\develop\\Projects\\dll\\psqlodbc.dll"
