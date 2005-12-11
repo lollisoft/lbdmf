@@ -37,7 +37,7 @@
  */
 
 /*...sMain page documentation:0:*/
-/** \mainpage Distributed Multiplatform Framework (0.5.1)
+/** \mainpage Distributed Multiplatform Framework (0.6.0)
  * \section intro_sec Introduction to DMF - Distributed Multiplatform Framework
  *
  * This is the introduction for the users of DMF after the first installation.
@@ -54,7 +54,7 @@
  *
  * Open Watcom compiler, at least version 1.2. <a href="http://www.openwatcom.org">Open Watcom</a>
  * 
- * The wxWidgets source code. Tested version is 2.4.2. <a href="http://www.wxwidgets.org">wxWidgets</a>
+ * The wxWidgets source code. Tested version is 2.4.2 and 2.6.1 <a href="http://www.wxwidgets.org">wxWidgets</a>
  *
  * I have included <a href="http://www.daily.de/RepWrt/">wxReportWriter</a>. This project allows me to create database
  * reports on the fly. But this feature doesn't work under Linux yet. Currently these files have minimal changes compared
@@ -224,11 +224,11 @@
  *	set WXDIR=%DRIVE%\lbDMF\Develop\wxwin\wx
  *	%DRIVE%
  *	cd %WXDIR%\src\msw
- *      mkdir %WXDIR%\..\..\Projects\dll\libs
+ *	mkdir %WXDIR%\..\..\Projects\dll\libs
  *	copy /Y %WXDIR%\lib\wat_dll\wxmsw*.dll %WXDIR%\..\..\Projects\dll
- *      copy /Y %WXDIR%\lib\wat_dll\wxmsw*.lib %WXDIR%\..\..\Projects\dll\libs
- *      copy /Y %WXDIR%\lib\wxmsw*.dll %WXDIR%\..\..\Projects\dll
- *      copy /Y %WXDIR%\lib\wxmsw*.lib %WXDIR%\..\..\Projects\dll\libs
+ *	copy /Y %WXDIR%\lib\wat_dll\wxmsw*.lib %WXDIR%\..\..\Projects\dll\libs
+ *	copy /Y %WXDIR%\lib\wxmsw*.dll %WXDIR%\..\..\Projects\dll
+ *	copy /Y %WXDIR%\lib\wxmsw*.lib %WXDIR%\..\..\Projects\dll\libs
  *	\endcode
  *
  * \section PSetup7 Start compiling lbDMF source tree
@@ -244,13 +244,15 @@
  *	Do this with the tools, provided from the database vendors.
  *	
  *	The first database, needed should be named lbdmf and a correct ODBC configuration should
- *	be set up.
+ *	be set up. See below.
  *
  *	The database scripts are located in [C/D]:\\lbDMF\\Develop\\Projects\\CPP\\Database.
  *
  *	Create at least an user to have rights to change data. For the PostgreSQL database, create
  *	the user and create the tables with that user logged on. If you set up the tables with the
  *	database system user, your user has not the correct rigths.
+ *
+ *	Currently, I maintain MySQL and Sybase and PostgreSQL database scripts, but I prefer to use PostgreSQL.
  *
  *	Set the environment variables to connect with the correct user and password. If not, default values from
  *	my private database are used:
@@ -259,7 +261,97 @@
  *
  *	set lbDMFpasswd=<Password>
  *
- * \section PSetup9 Run the sample GUI application
+ * \section PSetup9 ODBC Setup
+ *
+ *	The setup must activate any updateable cursor switches, don't convert bools as char. As a sample, here are
+ *	the nessesary registry files (their content) to setup a configuration to a local PostgreSQL installation
+ *	(as administrator):
+ *
+ *	Note: The samples here are for drive C: installation only.
+ *
+ *	The database ODBC setup:
+ *
+ *	\code
+ *	Windows Registry Editor Version 5.00
+ *
+ *	[HKEY_LOCAL_MACHINE\SOFTWARE\ODBC\ODBC.INI\lbDMF]
+ *	"Driver"="C:\\lbDMF\\develop\\Projects\\dll\\psqlodbc.dll"
+ *	"Fetch"="100"
+ *	"CommLog"="0"
+ *	"Debug"="0"
+ *	"Optimizer"="1"
+ *	"Ksqo"="1"
+ *	"UniqueIndex"="1"
+ *	"UseDeclareFetch"="0"
+ *	"UnknownSizes"="0"
+ *	"TextAsLongVarchar"="1"
+ *	"UnknownsAsLongVarchar"="0"
+ *	"BoolsAsChar"="0"
+ *	"Parse"="0"
+ *	"CancelAsFreeStmt"="0"
+ *	"MaxVarcharSize"="254"
+ *	"MaxLongVarcharSize"="8190"
+ *	"ExtraSysTablePrefixes"="dd_;"
+ *	"Description"=""
+ *	"Database"="lbdmf"
+ *	"Servername"="localhost"
+ *	"Port"="5432"
+ *	"SSLmode"="prefer"
+ *	"Username"="dba"
+ *	"Password"="trainres"
+ *	"ReadOnly"="0"
+ *	"ShowOidColumn"="0"
+ *	"FakeOidIndex"="0"
+ *	"RowVersioning"="0"
+ *	"ShowSystemTables"="1"
+ *	"Protocol"="6.4"
+ *	"ConnSettings"=""
+ *	"DisallowPremature"="0"
+ *	"UpdatableCursors"="1"
+ *	"LFConversion"="1"
+ *	"TrueIsMinus1"="0"
+ *	"BI"="0"
+ *	"ByteaAsLongVarBinary"="0"
+ *	"UseServerSidePrepare"="0"
+ *	"LowerCaseIdentifier"="0"
+ *	\endcode
+ *
+ *	The database ODBC driver setup:
+ *
+ *	\code
+ *	Windows Registry Editor Version 5.00
+ *
+ *	[HKEY_LOCAL_MACHINE\SOFTWARE\ODBC\ODBCINST.INI\PostgreSQL]
+ *	"UsageCount"=dword:00000001
+ *	"Driver"="C:\\lbDMF\\develop\\Projects\\dll\\psqlodbc.dll"
+ *	"Setup"="C:\\lbDMF\\develop\\Projects\\dll\\psqlodbc.dll"
+ *	"APILevel"="1"
+ *	"SQLLevel"="1"
+ *	"DriverODBCVer"="03.00"
+ *	"FileUsage"="0"
+ *	"ConnectFunctions"="YYN"
+ *	"Fetch"="100"
+ *	"CommLog"="0"
+ *	"Debug"="0"
+ *	"Optimizer"="1"
+ *	"Ksqo"="1"
+ *	"UniqueIndex"="1"
+ *	"ReadOnly"="0"
+ *	"UseDeclareFetch"="0"
+ *	"UnknownSizes"="0"
+ *	"TextAsLongVarchar"="1"
+ *	"UnknownsAsLongVarchar"="0"
+ *	"BoolsAsChar"="0"
+ *	"Parse"="0"
+ *	"CancelAsFreeStmt"="0"
+ *	"MaxVarcharSize"="254"
+ *	"MaxLongVarcharSize"="8190"
+ *	"ExtraSysTablePrefixes"="dd_;"
+ *	"CPTimeout"="<not pooled>"
+ *	"ConnSettings"=""
+ *	\endcode
+ *
+ * \section PSetup10 Run the sample GUI application
  *
  *	Simply after compiling the sources, let the build window open and type wxwrapper. Go to menu
  *	File->Login and login as behrens over the wizard and use password as the password.

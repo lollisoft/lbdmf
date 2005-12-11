@@ -51,7 +51,7 @@ copy q:\develop\Projects\CPP\watcomenv.bat.lnk dist
 copy q:\develop\ide.bat %DEVROOT%
 del *.idb
 
-rem Windows should not create Linux tgz files (^M)
-rem tar cvzf Output\lbDMF-Source-0.5.1.tgz dist\
-
-rem xcopy /I /E /Y dist q:\dist
+"Q:\develop\Tools\Inno Setup 3\iscc" q:\develop\Projects\CPP\dist.iss
+"Q:\develop\Tools\Inno Setup 3\iscc" q:\develop\Projects\CPP\bindist.iss
+"Q:\develop\Tools\Inno Setup 3\iscc" q:\develop\Projects\CPP\docdist.iss
+"Q:\develop\Tools\Inno Setup 3\iscc" q:\develop\Projects\CPP\bin-buildtools-dist.iss
