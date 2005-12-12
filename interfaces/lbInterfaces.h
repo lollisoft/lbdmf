@@ -870,6 +870,8 @@ public:
 	        	attachedClassName = NULL; \
 	        	allowDelete = 1; \
 	        	initialized = false; \
+			memset(before, 0, sizeof(before)); \
+			memset(after, 0, sizeof(after)); \
 		} \
 		\
 		UAP##Unknown_Reference(const UAP##Unknown_Reference& _ref) { \
@@ -887,6 +889,8 @@ public:
 			} \
 			_line = _ref._line; \
 			_autoPtr = NULL; \
+			memset(before, 0, sizeof(before)); \
+			memset(after, 0, sizeof(after)); \
 		} \
 		void operator=(const UAP##Unknown_Reference& _ref) { \
 			if (_file != NULL) { \
@@ -921,6 +925,18 @@ public:
 				} \
 				_autoPtr->release(_file, _line); \
 				_autoPtr = NULL; \
+			} \
+			for (int i = 0; i < sizeof(before); i++) { \
+				if (before[i] != 0) { \
+					_CL_LOG << "ERROR: Boundary buffer (before) hit! (" << __FILE__ << ", " << __LINE__ LOG_ \
+					break; \
+				} \
+			} \
+			for (int i = 0; i < sizeof(after); i++) { \
+				if (after[i] != 0) { \
+					_CL_LOG << "ERROR: Boundary buffer (after) hit! (" << __FILE__ << ", " << __LINE__ LOG_ \
+					break; \
+				} \
 			} \
 		} \
 		void LB_STDCALL setFile(char* __file) { \
