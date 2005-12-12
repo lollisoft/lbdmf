@@ -203,6 +203,7 @@ public:
 		cols = 0;
 		cursor = 1;
 		haveData = false;
+		mode = 0;
 
 		preparingFKColumns = 0;
 		
