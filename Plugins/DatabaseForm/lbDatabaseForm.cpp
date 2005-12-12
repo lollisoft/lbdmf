@@ -1591,7 +1591,7 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 			
 			//UAP_REQUEST(manager.getPtr(), lb_I_String, VColumn)
 			
-			/// \todo Define this function in my data model
+			// Define this function in my data model
 			//VColumn = data_model->getVisualColumnName(name, sampleQuery);
 			
 			// ------------------
@@ -3114,7 +3114,7 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBUpdate() {
 		
 		*newTitle += ": Update failed !";
 
-		SetTitle(_trans(newTitle->charrep()));
+		SetTitle(newTitle->charrep());
 		
 		_LOG << "Update a database record failed." LOG_
 
@@ -3408,12 +3408,14 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBAdd(lb_I_Unknown* uk) {
 			
 			errUpdate = ERR_NONE;
 		}
+	} else {
+		_CL_LOG << "Query is in add mode." LOG_
 	}
 	
 /*...sPrefill data to hidden fields\46\ This would mostly be combo boxes\46\:8:*/
 	if (MasterDetailRelationData != NULL) {
 	
-		_CL_VERBOSE << "Have " << MasterDetailRelationData->Count() << " elements in list." LOG_
+		_CL_LOG << "Have " << MasterDetailRelationData->Count() << " elements in list." LOG_
 	
 		for (int i = 1; i <= MasterDetailRelationData->Count(); i++) {
 			lbErrCodes err = ERR_NONE;
@@ -3560,8 +3562,11 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBAdd(lb_I_Unknown* uk) {
 	}
 /*...e*/
 
+	_CL_LOG << "Determine update failed..." LOG_
+
 	if (errUpdate == ERR_UPDATE_FAILED) {
 		UAP_REQUEST(manager.getPtr(), lb_I_String, newTitle)
+		_CL_LOG << "Updating after add failed." LOG_
 		
 		newTitle->setData(formName);
 		
@@ -3570,8 +3575,6 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBAdd(lb_I_Unknown* uk) {
 		_LOG << newTitle->charrep() LOG_
 		
 		SetTitle(_trans(newTitle->charrep()));
-		
-		_CL_LOG << "Updating after add failed." LOG_
 	} else {
 		_CL_LOG << "Updating after add succeeded. Move to last." LOG_
 		
@@ -3586,6 +3589,8 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBAdd(lb_I_Unknown* uk) {
 			}
 		}
 	}
+
+	_CL_LOG << "Return from lbDatabasePanel::lbDBAdd(lb_I_Unknown* uk)" LOG_
 
 	return ERR_NONE;
 }
