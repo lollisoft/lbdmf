@@ -30,11 +30,16 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.60 $
+ * $Revision: 1.61 $
  * $Name:  $
- * $Id: lbInterfaces-sub-classes.h,v 1.60 2005/12/09 15:57:59 lollisoft Exp $
+ * $Id: lbInterfaces-sub-classes.h,v 1.61 2005/12/13 23:42:14 lollisoft Exp $
  *
  * $Log: lbInterfaces-sub-classes.h,v $
+ * Revision 1.61  2005/12/13 23:42:14  lollisoft
+ * Code may work properly, but doesn't compile well. Compiler bug ?
+ * I know about a macro bug when missing one backslash, but I haven't
+ * created one in my last changes - I think.
+ *
  * Revision 1.60  2005/12/09 15:57:59  lollisoft
  * Things work more properly under Mac OS X.
  *
@@ -751,7 +756,10 @@ lb_I_Unknown* classname::getObject() const { \
 \
 lb_I_KeyBase* LB_STDCALL classname::getKey() const { \
         lb_I_KeyBase* kbase = NULL; \
-        return key; \
+        if(key == NULL) _CL_LOG << "ERROR: Element has no key. Could not return from NULL pointer!!" LOG_ \
+        key->queryInterface("lb_I_KeyBase", (void**) &kbase, __FILE__, __LINE__); \
+        _CL_VERBOSE << "Key of " << key->getClassName() << " has " << key->getRefCount() << " references." LOG_ \
+        return kbase; \
 } \
 \
 void LB_STDCALL classname::setNext(lb_I_Element *e) { \

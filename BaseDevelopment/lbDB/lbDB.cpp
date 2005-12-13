@@ -1629,9 +1629,10 @@ lb_I_String* LB_STDCALL lbQuery::getFKColumn(int pos) {
 	// getKeyAt returns it's reference.
 	// Bugfix: increment reference here.
 	// Implementation of lb_I_Element should be fixed.
+
+	// It is fixed now.
 	
 	uk = ForeignColumns->getKeyAt(pos);
-	uk++;
 	
 	QI(uk, lb_I_String, s, __FILE__, __LINE__)
 	s++;

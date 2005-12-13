@@ -25,11 +25,16 @@
 #            40235 Duesseldorf (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.77 $
+# * $Revision: 1.78 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.77 2005/12/07 23:43:08 lollisoft Exp $
+# * $Id: STD_MAKE,v 1.78 2005/12/13 23:42:14 lollisoft Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.78  2005/12/13 23:42:14  lollisoft
+# * Code may work properly, but doesn't compile well. Compiler bug ?
+# * I know about a macro bug when missing one backslash, but I haven't
+# * created one in my last changes - I think.
+# *
 # * Revision 1.77  2005/12/07 23:43:08  lollisoft
 # * Small changes that let also not crash the app at exit under
 # * Mac OS X. But there is still a problem with creating first
@@ -389,7 +394,7 @@ ifeq ($(DEBUG_MEMORY), yes)
   endif
 endif
 
-WATCOM_STACK=#-of+
+WATCOM_STACK=-of+
 WATCOM_PROFILING=#-db -en -s
 
 WATCOM_STD_C_OPS= \

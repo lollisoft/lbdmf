@@ -267,7 +267,7 @@
  *	the nessesary registry files (their content) to setup a configuration to a local PostgreSQL installation
  *	(as administrator):
  *
- *	Note: The samples here are for drive C: installation only.
+ *	\note The samples here are for drive C: installation only.
  *
  *	The database ODBC setup:
  *
@@ -451,8 +451,43 @@
  *
  * \note You get a tabbed view per default. If you like to view more than one form in parallel, select 'File->switch panel usage'.
  *
- * Select menuentry 'Benutzer verwalten' in menu 'lbDMF Manager' to manage users. There, add a new entry with 'Add' and then set up
- * the users data correctly.
+ * Select menuentry 'Benutzer verwalten' in menu 'lbDMF Manager' to manage users. 
+ * There, add a new entry with 'Add' and then set up the users data correctly.
+ *
+ * \note If you add the first entry in the form, you should again press the add button and then delete one of the two created entries with delete. Say, this is still a little bad 'feature' and behaves in all forms.
+ *
+ * \section AddFormular1 Create a new application
+ *
+ * After you have created a new user, you must create a new application. This would not be done, if you press the button 'Anwendungen'.
+ * You first must open a new form.
+ *
+ * Go to menu 'lbDMF Manager' and open 'Anwendungen' from <b>there</b>. The difference is, that you get opened the form 'Anwendungen',
+ * whereas you open the 'User to application' mapping from the users form. This is because you could map multiple users to multiple
+ * applications. (It is a N to N relation).
+ *
+ * \section ApplicationDataEntry1 Entries for the new application
+ *
+ * Enter the data for your new application as follows:
+ *
+ * \verbatim
+   Application name  = 'Music database'
+   Application title = 'Music database'
+   Module name       = 'lbDynApp'
+   Functor           = 'instanceOfApplication'
+   Interface         = 'lb_I_Application' \endverbatim
+ *
+ * If you have entered all data, again press add (remember deletion of temprary added data) <b>or</b>
+ * press a navigation button to save the data.
+ *
+ * \section GotoDetail1 Connect the user with the application
+ *
+ * Go to tab 'Benutzer' and press 'Anwendungen' to connect the user to the newly created application. Create a new entry
+ * by pressing 'Add' and select your new application from the drop down list. After this, you have to either save the data
+ * or again press 'Add' and delete the secondly added entry again.
+ *
+ * \section RestartAndTry Restart and try your application
+ *
+ * You could directly login to your new application, but this may buggy. Restart and try then.
  */
 /*...e*/
 

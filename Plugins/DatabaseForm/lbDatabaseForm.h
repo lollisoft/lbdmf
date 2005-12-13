@@ -30,11 +30,16 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.28 $
+ * $Revision: 1.29 $
  * $Name:  $
- * $Id: lbDatabaseForm.h,v 1.28 2005/12/02 17:45:31 lollisoft Exp $
+ * $Id: lbDatabaseForm.h,v 1.29 2005/12/13 23:41:09 lollisoft Exp $
  *
  * $Log: lbDatabaseForm.h,v $
+ * Revision 1.29  2005/12/13 23:41:09  lollisoft
+ * Code may work properly, but doesn't compile well. Compiler bug ?
+ * I know about a macro bug when missing one backslash, but I haven't
+ * created one in my last changes - I think.
+ *
  * Revision 1.28  2005/12/02 17:45:31  lollisoft
  * Added members (deleteButton, allNaviDisabled).
  *
@@ -169,7 +174,7 @@ public:
 
 	int prepareDialogHandler();
 
-	void LB_STDCALL init(lb_I_Database* _queryDB, lb_I_Query* query);
+	void LB_STDCALL init(lb_I_Query* query, char* DBName, char* DBUser, char* DBPass);
 
 	void LB_STDCALL show() { ShowModal (); };
 	void LB_STDCALL destroy() { Destroy(); };
@@ -231,6 +236,9 @@ public:
 	wxWindow* nextButton;
 	wxWindow* lastButton;
 	int pass;
+	char* _DBUser;
+	char* _DBName;
+	char* _DBPass;
 };
 /*...e*/
 

@@ -187,13 +187,12 @@ lbErrCodes LB_STDCALL lbDynamicApplication::getDynamicDBForm(lb_I_Unknown* uk) {
 		sampleQuery = database->getQuery(0);	
 
 		char* b =
-		        "select Formulare.id, Formulare.name from Formulare inner join Anwendungen_Formulare on "
-		        "Formulare.id = Anwendungen_Formulare.formularid "
-		        "inner join Anwendungen on Anwendungen_Formulare.anwendungid = Anwendungen.id inner join "
-		        "User_Anwendungen on Anwendungen.id = User_Anwendungen.anwendungenid inner join Users on "
-		        " User_Anwendungen.userid = Users.id where "
-		        "Users.userid = '%s' and Anwendungen.name = '%s' and "
-		        "Formulare.eventname = '%s'";
+			"select Formulare.id, Formulare.name from Formulare "
+			"inner join Anwendungen on Formulare.anwendungid = Anwendungen.id inner join "
+			"User_Anwendungen on Anwendungen.id = User_Anwendungen.anwendungenid inner join Users on "
+			" User_Anwendungen.userid = Users.id where "
+			"Users.userid = '%s' and Anwendungen.name = '%s' and "
+			"Formulare.eventname = '%s'";
 
 		char* buffer = (char*) malloc(strlen(b)+strlen(LogonUser->charrep())+strlen(LogonApplication->charrep())+strlen(eventName)+1);
 
@@ -390,11 +389,10 @@ lbErrCodes LB_STDCALL lbDynamicApplication::Initialize(char* user, char* app) {
 	sampleQuery = database->getQuery(0);	
 
 	char* b =
-	        "select Formulare.eventname, Formulare.menuname from Formulare inner join Anwendungen_Formulare on "
-	        "Formulare.id = Anwendungen_Formulare.formularid "
-	        "inner join Anwendungen on Anwendungen_Formulare.anwendungid = Anwendungen.id inner join "
+	        "select Formulare.eventname, Formulare.menuname from Formulare inner join "
+	        "Anwendungen on Formulare.anwendungid = Anwendungen.id inner join "
 	        "User_Anwendungen on Anwendungen.id = User_Anwendungen.anwendungenid inner join Users on "
-	        " User_Anwendungen.userid = Users.id where "
+	        "User_Anwendungen.userid = Users.id where "
 	        "Users.userid = '%s' and Anwendungen.name = '%s'";
 
 	char* buffer = (char*) malloc(strlen(b)+strlen(user)+strlen(app)+1);
@@ -420,6 +418,9 @@ lbErrCodes LB_STDCALL lbDynamicApplication::Initialize(char* user, char* app) {
 	}
 
 	if (sampleQuery == NULL) printf("NULL pointer !\n");
+
+	_CL_LOG << "lbDynamicApplication::Initialize('" << user << "', '" << app << "');" LOG_
+	_CL_LOG << "Query: " << buffer LOG_
 
 	sampleQuery->skipFKCollecting();
 	sampleQuery->query(buffer);

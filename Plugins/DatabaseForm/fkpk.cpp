@@ -1,3 +1,4 @@
+/*...sLicense:0:*/
 /*
     DMF Distributed Multiplatform Framework (the initial goal of this library)
     This file is part of lbDMF.
@@ -25,7 +26,9 @@
             
             40235 Duesseldorf (germany)
 */
+/*...e*/
 
+/*...sStandard includes:0:*/
 #ifdef WINDOWS
 #include <windows.h>
 #include <io.h>
@@ -51,11 +54,10 @@ extern "C" {
 #ifdef OSX
 #include <sys/malloc.h>
 #endif
+/*...e*/
 
 #include <lbConfigHook.h>
 #include <lbInterfaces.h>
-
-
 
 #define LB_PLUGINMANAGER_DLL
 #include <lbpluginmanager-module.h>
@@ -96,29 +98,22 @@ wxDefaultSize, wxRESIZE_BORDER|wxDEFAULT_DIALOG_STYLE)
 }
 lbConfigure_FK_PK_MappingDialog::~lbConfigure_FK_PK_MappingDialog() {
 
+	if (_DBUser) free(_DBUser);
+	if (_DBPass) free(_DBPass);
+	if (_DBName) free(_DBName);
+
 }
 lbErrCodes LB_STDCALL lbConfigure_FK_PK_MappingDialog::setData(lb_I_Unknown* uk) {
         _CL_VERBOSE << "lbConfigure_FK_PK_MappingDialog::setData(...) not implemented yet" LOG_
 
         return ERR_NOT_IMPLEMENTED;
 }
+/*...svoid lbConfigure_FK_PK_MappingDialog\58\\58\OnFKComboBoxSelected\40\ wxCommandEvent \38\event \41\:0:*/
 void lbConfigure_FK_PK_MappingDialog::OnFKComboBoxSelected( wxCommandEvent &event ) {
 	wxString s = cBoxFKNames->GetStringSelection();
 	
 	cBoxFKNames->Disable();
 	
-	REQUEST(manager.getPtr(), lb_I_Database, database)
-	
-	database->init();
-	
-	char* lbDMFPasswd = getenv("lbDMFPasswd");
-	char* lbDMFUser   = getenv("lbDMFUser");
-	
-	if (!lbDMFUser) lbDMFUser = "dba";
-	if (!lbDMFPasswd) lbDMFPasswd = "trainres";
-	
-	database->connect("lbDMF", lbDMFUser, lbDMFPasswd);
-
 	UAP(lb_I_String, PKTable, __FILE__, __LINE__)
 	
 	PKTable = sourceQuery->getPKTable(s.c_str());
@@ -126,6 +121,12 @@ void lbConfigure_FK_PK_MappingDialog::OnFKComboBoxSelected( wxCommandEvent &even
 	char buf[] = "select * from %s";
 	char* buffer = (char*) malloc(strlen(buf)+strlen(PKTable->charrep())+1);
 	sprintf(buffer, buf, PKTable->charrep());
+	
+	UAP_REQUEST(manager.getPtr(), lb_I_Database, queryDB)
+	
+	queryDB->init();
+	
+	queryDB->connect(_DBName, _DBUser, _DBPass);
 	
 	UAP(lb_I_Query, sampleQuery, __FILE__, __LINE__)
 	
@@ -141,6 +142,8 @@ void lbConfigure_FK_PK_MappingDialog::OnFKComboBoxSelected( wxCommandEvent &even
 	cBoxPKNames->Enable();
 	cBoxPKNames->SetSelection(-1);
 }
+/*...e*/
+/*...svoid lbConfigure_FK_PK_MappingDialog\58\\58\OnPKComboBoxSelected\40\ wxCommandEvent \38\event \41\:0:*/
 void lbConfigure_FK_PK_MappingDialog::OnPKComboBoxSelected( wxCommandEvent &event ) {
 	wxString PKName = cBoxPKNames->GetStringSelection();
 	wxString FKName = cBoxFKNames->GetStringSelection();
@@ -202,6 +205,7 @@ void lbConfigure_FK_PK_MappingDialog::OnPKComboBoxSelected( wxCommandEvent &even
 	}
 	
 }
+/*...e*/
 
 lbErrCodes LB_STDCALL lbConfigure_FK_PK_MappingDialog::selectedColumn(lb_I_Unknown* uk) {
 	EndModal(wxID_OK);
@@ -209,6 +213,7 @@ lbErrCodes LB_STDCALL lbConfigure_FK_PK_MappingDialog::selectedColumn(lb_I_Unkno
 	return ERR_NONE;
 }
 
+/*...sint lbConfigure_FK_PK_MappingDialog\58\\58\prepareDialogHandler\40\\41\:0:*/
 int lbConfigure_FK_PK_MappingDialog::prepareDialogHandler() {
 	int SelectedColumn;
 	int cbFKSel;
@@ -252,6 +257,8 @@ int lbConfigure_FK_PK_MappingDialog::prepareDialogHandler() {
 */
 	return SelectedColumn;
 }
+/*...e*/
+/*...slbErrCodes LB_STDCALL lbConfigure_FK_PK_MappingDialog\58\\58\registerEventHandler\40\lb_I_Dispatcher\42\ dispatcher\41\:0:*/
 lbErrCodes LB_STDCALL lbConfigure_FK_PK_MappingDialog::registerEventHandler(lb_I_Dispatcher* dispatcher) {
 	lbErrCodes err = ERR_NONE;
 
@@ -262,14 +269,18 @@ lbErrCodes LB_STDCALL lbConfigure_FK_PK_MappingDialog::registerEventHandler(lb_I
 
 	return err;
 }
-void LB_STDCALL lbConfigure_FK_PK_MappingDialog::init(lb_I_Database* _queryDB, lb_I_Query* query) {
+/*...e*/
+/*...svoid LB_STDCALL lbConfigure_FK_PK_MappingDialog\58\\58\init\40\lb_I_Query\42\ query\44\ char\42\ DBName\44\ char\42\ DBUser\44\ char\42\ DBPass\41\:0:*/
+void LB_STDCALL lbConfigure_FK_PK_MappingDialog::init(lb_I_Query* query, char* DBName, char* DBUser, char* DBPass) {
 	lbErrCodes err = ERR_NONE;
 	char prefix[100] = "";
 	sprintf(prefix, "%p", this);
 
+	_DBName = strdup(DBName);
+	_DBUser = strdup(DBUser);
+	_DBPass = strdup(DBPass);
+
 	QI(query, lb_I_Query, sourceQuery, __FILE__, __LINE__)
-	QI(_queryDB, lb_I_Database, queryDB, __FILE__, __LINE__)
-	
 	
 	wxBoxSizer* sizerMain  = new wxBoxSizer(wxVERTICAL);
 	
@@ -330,6 +341,8 @@ void LB_STDCALL lbConfigure_FK_PK_MappingDialog::init(lb_I_Database* _queryDB, l
 	Centre();
 
 }
+/*...e*/
+/*...svoid lbConfigure_FK_PK_MappingDialog\58\\58\OnDispatch\40\wxCommandEvent\38\ event \41\:0:*/
 void lbConfigure_FK_PK_MappingDialog::OnDispatch(wxCommandEvent& event ) {
         switch (event.GetId()) {
         default:
@@ -359,3 +372,4 @@ void lbConfigure_FK_PK_MappingDialog::OnDispatch(wxCommandEvent& event ) {
                 break;
         }
 }
+/*...e*/
