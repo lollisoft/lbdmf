@@ -374,7 +374,7 @@
  * configuration database.
  *
  * If you have a target database model for a specific application, then it is easy to build up
- * a prototype for it in minutes.
+ * a prototype for it in minutes. Here you could see it in action on <a href="../../screens-sample-all.html">all platforms</a>
  *
  * \section Prepare1 Prepare for first run
  *
