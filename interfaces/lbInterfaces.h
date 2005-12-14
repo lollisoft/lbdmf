@@ -456,9 +456,9 @@
  *
  * \note If you add the first entry in the form, you should again press the add button and then delete one of the two created entries with delete. Say, this is still a little bad 'feature' and behaves in all forms.
  *
- * \section AddFormular1 Create a new application
+ * \section AddApplication1 Create a new application
  *
- * After you have created a new user, you must create a new application. This would not be done, if you press the button 'Anwendungen'.
+ * After you have created a new user, you must create a new application. This would <b>not</b> be done, if you press the button 'Anwendungen'.
  * You first must open a new form.
  *
  * Go to menu 'lbDMF Manager' and open 'Anwendungen' from <b>there</b>. The difference is, that you get opened the form 'Anwendungen',
@@ -484,6 +484,40 @@
  * Go to tab 'Benutzer' and press 'Anwendungen' to connect the user to the newly created application. Create a new entry
  * by pressing 'Add' and select your new application from the drop down list. After this, you have to either save the data
  * or again press 'Add' and delete the secondly added entry again.
+ *
+ * \section SetFormular1 Setup database formulars
+ * 
+ * For each table in the sample, you need to create a database formular configuration. To do this, you go to tab 'Anwendungen' and press
+ * the button 'Formulare'. You will open a detail form, that will only show forms for your currently selected application in tab 'Anwendungen'
+ *
+ * From there you must use 'Add' to create new entries in that form. Press twice and let the second one alive - do not delete it again.
+ * Setup formular name and all data as follows:
+ *
+ * \verbatim
+   name        = '<formname>'
+   menuname    = '<name in menu>'
+   eventname   = 'manage<formularname>'
+   menuhilfe   = '<menu help text>'
+   anwendungid = '<select your application>'
+   typ         = '<select Dynamisch aufgebautes Datenbankformular>' \endverbatim
+ *
+ * The event name must be unique per application. Double entries would be used once and the first entry retrieved from the database query wins.
+ *
+ * Each form could be of a dynamic type or a hard coded variant. Hardcoded is not implemented yet. The menu help 'menuhilfe' also is not implemented yet.
+ *
+ * Repeat this step for all your forms.
+ *
+ * \section SetQuery1 Setup SQL query parameter
+ *
+ * After you have created an application, connected the newly created user to that application and have created the forms, you need
+ * to setup a SQL query for each form. Do this from the current tab by pressing the button 'Parameter'.
+ *
+ * Each form currently needs only one parameter - the query parameter. Add a new entry and setup as follows:
+ * \verbatim
+   parametername  = 'query'
+   parametervalue = '<SQL query for that form>' \endverbatim
+ *
+ * Repeat this step by changing to tab 'Formulare', select the other forms and press 'Parameter' for each form.
  *
  * \section RestartAndTry Restart and try your application
  *
