@@ -587,6 +587,8 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 				
 				UAP(lb_I_Query, ReplacementColumnQuery, __FILE__, __LINE__)
 				
+				database->connect(DBName, DBUser, DBPass);
+				
 				ReplacementColumnQuery = database->getQuery(0);
 				
 				ReplacementColumnQuery->query(buffer);
