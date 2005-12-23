@@ -1001,8 +1001,8 @@ public:
 					break; \
 				} \
 			} \
-			for (int i = 0; i < sizeof(after); i++) { \
-				if (after[i] != 0) { \
+			for (int ii = 0; ii < sizeof(after); ii++) { \
+				if (after[ii] != 0) { \
 					_CL_LOG << "ERROR: Boundary buffer (after) hit! (" << __FILE__ << ", " << __LINE__ LOG_ \
 					break; \
 				} \
