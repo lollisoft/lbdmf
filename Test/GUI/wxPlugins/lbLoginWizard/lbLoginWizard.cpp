@@ -406,7 +406,9 @@ DECLARE_LB_UNKNOWN()
 			dialog.ShowModal();
 
 			free(buf);
-			free(buf1);		
+			free(buf1);
+			
+			return FALSE;
 		}
 
 		sampleQuery = database->getQuery(0);
