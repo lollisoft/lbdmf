@@ -31,10 +31,13 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.29 $
+ * $Revision: 1.30 $
  * $Name:  $
- * $Id: lbobject.h,v 1.29 2005/12/09 15:57:58 lollisoft Exp $
+ * $Id: lbobject.h,v 1.30 2005/12/30 11:20:03 lollisoft Exp $
  * $Log: lbobject.h,v $
+ * Revision 1.30  2005/12/30 11:20:03  lollisoft
+ * New function (toLower).
+ *
  * Revision 1.29  2005/12/09 15:57:58  lollisoft
  * Things work more properly under Mac OS X.
  *
@@ -303,6 +306,7 @@ public:
 	char* LB_STDCALL stristr(const char *String, const char *Pattern);
 
 	void LB_STDCALL trim();
+	void LB_STDCALL toLower();
 	void LB_STDCALL setData(char const * p);
 	char* LB_STDCALL getData() const;
 	

@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.61 $
+ * $Revision: 1.62 $
  * $Name:  $
- * $Id: lbInterfaces-sub-classes.h,v 1.61 2005/12/13 23:42:14 lollisoft Exp $
+ * $Id: lbInterfaces-sub-classes.h,v 1.62 2005/12/30 11:20:44 lollisoft Exp $
  *
  * $Log: lbInterfaces-sub-classes.h,v $
+ * Revision 1.62  2005/12/30 11:20:44  lollisoft
+ * New function (toLower).
+ *
  * Revision 1.61  2005/12/13 23:42:14  lollisoft
  * Code may work properly, but doesn't compile well. Compiler bug ?
  * I know about a macro bug when missing one backslash, but I haven't
@@ -444,6 +447,11 @@ public:
 	 * Removes the trailing spaces in the string.
 	 */
 	virtual void LB_STDCALL trim() = 0;
+
+	/** \brief Set all characters to lower. 
+	 *
+	 */
+	virtual void LB_STDCALL toLower() = 0;
 
 	/** \brief Get case insensitive substr.
 	 *

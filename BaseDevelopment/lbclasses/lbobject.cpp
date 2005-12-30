@@ -453,6 +453,13 @@ void LB_STDCALL lbString::trim() {
 	key = strcpy(key, stringdata);
 }
 
+void LB_STDCALL lbString::toLower() {
+	for (int i = 0; i < strlen(stringdata); i++) {
+		stringdata[i] = tolower(stringdata[i]);
+		key[i] = tolower(key[i]);
+	}
+}
+
 char* LB_STDCALL lbString::getData() const {
 	return stringdata;
 }
