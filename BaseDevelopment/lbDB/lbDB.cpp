@@ -1591,6 +1591,7 @@ int LB_STDCALL lbQuery::hasFKColumn(char* FKName) {
 		UAP_REQUEST(manager.getPtr(), lb_I_String, s)
 	
 		s->setData(FKName);
+		s->toLower();
 		
 		QI(s, lb_I_KeyBase, key, __FILE__, __LINE__)
 	
@@ -1685,6 +1686,7 @@ lb_I_String* LB_STDCALL lbQuery::getPKTable(char const * FKName) {
 	UAP_REQUEST(manager.getPtr(), lb_I_String, s)
 	
 	s->setData(FKName);
+	s->toLower();
 	
 	QI(s, lb_I_KeyBase, key, __FILE__, __LINE__)
 	
@@ -1901,6 +1903,8 @@ void LB_STDCALL lbQuery::prepareFKList() {
 	      
 	      FKName->setData((char*) szFkCol);
 	      PKTable->setData((char*) szPkTable);
+
+	      FKName->toLower();
 	      
 	      UAP(lb_I_Unknown, uk_PKTable, __FILE__, __LINE__)
 	      UAP(lb_I_KeyBase, key_FKName, __FILE__, __LINE__)
@@ -1958,7 +1962,8 @@ void LB_STDCALL lbQuery::prepareFKList() {
 	   if (retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO) {
 	      lbErrCodes err = ERR_NONE;
 
-	      if (isVerbose()) printf("%-s ( %-s ) <-- %-s ( %-s )\n", szPkTable, szPkCol, szFkTable, szFkCol);
+	      //if (isVerbose()) 
+	      printf("%-s ( %-s ) <-- %-s ( %-s )\n", szPkTable, szPkCol, szFkTable, szFkCol);
 	      
 	      
 	      UAP_REQUEST(manager.getPtr(), lb_I_String, FKName)
@@ -1968,6 +1973,8 @@ void LB_STDCALL lbQuery::prepareFKList() {
 	      
 	      FKName->setData((char*) szFkCol);
 	      PKTable->setData((char*) szPkTable);
+
+	      FKName->toLower();
 	      
 	      UAP(lb_I_Unknown, uk_PKTable, __FILE__, __LINE__)
 	      UAP(lb_I_KeyBase, key_FKName, __FILE__, __LINE__)
@@ -2072,7 +2079,7 @@ void LB_STDCALL lbQuery::prepareFKList() {
 	        QI(PKTable, lb_I_Unknown, uk_PKTable, __FILE__, __LINE__)
 
 
-			if (isVerbose()) printf("%-s ( %-s ) <-- %-s ( %-s )\n", PKTable->charrep(), PKName->charrep(), table, FKName->charrep());
+		if (isVerbose()) printf("%-s ( %-s ) <-- %-s ( %-s )\n", PKTable->charrep(), PKName->charrep(), table, FKName->charrep());
 
 	        ForeignColumns->insert(&uk_PKTable, &key_FKName);
 	        
@@ -2875,7 +2882,7 @@ lbErrCodes LB_STDCALL lbQuery::update() {
 	char* CursorName = (char*) malloc(cbMAXSQL);
 	CursorName[0] = 0;
 
-	boundColumns->unbindReadonlyColumns();
+	if (boundColumns != NULL) boundColumns->unbindReadonlyColumns();
 
 	if (mode == 1) {
 		retcode = SQLSetPos(hstmt, 2, SQL_ADD, SQL_LOCK_NO_CHANGE);
@@ -2885,7 +2892,7 @@ lbErrCodes LB_STDCALL lbQuery::update() {
 		        dbError("SQLSetPos()", hstmt);
 		        _LOG << "lbQuery::update(...) adding failed." LOG_
 		        
-		        boundColumns->rebindReadonlyColumns();
+		        if (boundColumns != NULL) boundColumns->rebindReadonlyColumns();
 		        
 		        return ERR_DB_UPDATEFAILED;
 		}
@@ -2997,14 +3004,14 @@ free(buffer);
 		        dbError("SQLSetPos()", hstmt);
 		        _LOG << "lbQuery::update(...) updating failed." LOG_
 		        
-		        boundColumns->rebindReadonlyColumns();
+		        if (boundColumns != NULL) boundColumns->rebindReadonlyColumns();
 		        
 		        return ERR_DB_UPDATEFAILED;
 		}
 #endif
 	}
 
-	boundColumns->rebindReadonlyColumns();
+	if (boundColumns != NULL) boundColumns->rebindReadonlyColumns();
 
 	free(CursorName);
 
