@@ -1,0 +1,12 @@
+"Case Sensitive" = 'True'
+"Start Symbol" = <Main>
+Comment Line = ';' 
+Comment Start = '/*'
+Comment End = '*/'
+Word = {Letter} ({Letter} | {Digit})+
+Number = {Digit}+
+<Number> ::= Number
+<Word>   ::= Word
+<Main>    ::=    <Value> <Main>
+               | <Value> 
+<Value>     ::= <Word> | <Number>
