@@ -204,7 +204,7 @@ $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
 	@echo all: $(_MODULE) >> makefile
 	@rm -f $(DEVROOT_MAKE)/Projects/CPP/include/lbkey.h
 	@cp -f $(DEVROOT_MAKE)/Projects/CPP/BaseDevelopment/lbclasses/lbkey.h $(DEVROOT_MAKE)/Projects/CPP/include
-	$(MKMK) $(TARGET) $(_MODULE) . *.cpp >> makefile
+	$(MKMK) $(TARGET) $(_MODULE) . *.c *.cpp >> makefile
 
 endif
 
