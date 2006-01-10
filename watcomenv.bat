@@ -19,6 +19,9 @@ rem set TARGET_APPLICATION=Application
 
 set CONSOLE_DETACH=yes
 
+rem set lbDMFPasswd=
+rem set lbDMFUser=
+
 if NOT "%COMPUTERNAME%"=="ANAKIN" goto DISTMODE:
 
 set DEVLW=q:
