@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.74 $
+# * $Revision: 1.75 $
 # * $Name:  $
-# * $Id: Makefile,v 1.74 2005/12/06 17:04:25 lollisoft Exp $
+# * $Id: Makefile,v 1.75 2006/01/10 23:37:42 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.75  2006/01/10 23:37:42  lollisoft
+# * Added Goldparser for usability testing.
+# *
 # * Revision 1.74  2005/12/06 17:04:25  lollisoft
 # * Last make problems under Linux
 # *
@@ -278,6 +281,7 @@ BASEDIRECTORIES= \
 	../Plugins \
 	../Modules \
 	../RegressionTests \
+	../vendor/c-goldparser \
 	../AppDevelopment \
 	../vendor/tvision-set \
 	../vendor/tvision-set/examples/lbDMF
@@ -449,6 +453,10 @@ mkrelease:
 #	lbXMLConfig/lbDOMConfig \
 
 dummy:
+
+../vendor/c-goldparser: dummy
+	$(MAKE) -s -C $@ -e MODULE=gold -e TARGET=$(TARGETEXE) -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@
 
 ../vendor/tvision: dummy
 	$(MAKE) -s -C $@ -e MODULE=librhtv -e TARGET=$(TARGET_TV_DLL) -f $(MAKE_CONFIG_FILE)
