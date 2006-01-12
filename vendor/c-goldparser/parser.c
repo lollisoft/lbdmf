@@ -589,8 +589,10 @@ short parser_parse(struct _parser* parser)
 	while(1) {
 		if (parser->ntokens<1) {
 			// No input tokens on stack, grab one from the input stream
-			if ((parser->symbol = scanner_scan(parser)) < 0)
+			if ((parser->symbol = scanner_scan(parser)) < 0) {
+				printf("Return errcode -1 on parser->ntokens<1.\n");
 				return -1;
+			}
 			_push_token(parser, parser->symbol, parser->lexeme);
 		} else
 			// Retrieve the last token from the input stack
@@ -665,5 +667,6 @@ short parser_parse(struct _parser* parser)
 	} // while
 
 	// token not found in rule
+	printf("Error: Token not found in rule.\n");
 	return -1;
 }
