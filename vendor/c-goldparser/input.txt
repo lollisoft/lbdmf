@@ -1,8 +1,5 @@
-  /*
+/*
  this is a comment
 */
-
- ; here's another comment
-
 word1 2354 word2
 
