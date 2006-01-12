@@ -300,31 +300,30 @@ struct _parse_config* parser_config_create_file(const char* filename)
 //
 // Helper functions for loading .cgt file
 //
-char* getws(char* b, char* s) {
+char* cgt_getws(char* b, char* s) {
 	while(*s++ = *b++) b++;
 	b++; return b;
 }
-char* getsh(char* b, short* s) {
+char* cgt_getsh(char* b, short* s) {
 	unsigned char* _b = (unsigned char*)b;
 	*s = *_b++;
 	*s |= (*_b++) << 8;
 	return (char*)_b;
 }
-char* getvws(char* b, char* str) {
-	b++; return getws(b,str);
+char* cgt_getvws(char* b, char* str) {
+	b++; return cgt_getws(b,str);
 }
-char* skipvws(char* b) {
+char* cgt_skipvws(char* b) {
 	b++; while(*b++) b++;
 	return ++b;
 }
-char* getvb(char* b, unsigned char* v) {
+char* cgt_getvb(char* b, unsigned char* v) {
 	b++; *v = *(unsigned char*)b++;
 	return b;
 }
-char* getvsh(char* b, short* v) {
-	b++; return getsh(b,v);
+char* cgt_getvsh(char* b, short* v) {
+	b++; return cgt_getsh(b,v);
 }
-
 //
 // Load a parse table from memory
 //
@@ -343,7 +342,7 @@ struct _parse_config* parser_config_create_mem(char* b, int len)
 	bend = b + len;
 
 	// get header
-	b = getws(b, str);
+	b = (char*) cgt_getws(b, str);
 
 	// check header
 	if (strcmp(str, "GOLD Parser Tables/v1.0"))
@@ -358,28 +357,28 @@ struct _parse_config* parser_config_create_mem(char* b, int len)
 		b++; // skip record id
 
 		// read number of entries in record
-		b = getsh(b, &nEntries);
+		b = cgt_getsh(b, &nEntries);
 
 		// read record type
-		b = getvb(b, &recType);
+		b = cgt_getvb(b, &recType);
 
 		switch(recType) {
 		case 'P': // Parameters
-			b = skipvws(b); // Name
-			b = skipvws(b); // Version
-			b = skipvws(b); // Author
-			b = skipvws(b); // About
-			b = getvb(b, &byt); // Case Sensitive?
-			b = getvsh(b, &res->start_symbol); // Start Symbol
+			b = cgt_skipvws(b); // Name
+			b = cgt_skipvws(b); // Version
+			b = cgt_skipvws(b); // Author
+			b = cgt_skipvws(b); // About
+			b = cgt_getvb(b, &byt); // Case Sensitive?
+			b = cgt_getvsh(b, &res->start_symbol); // Start Symbol
 			res->case_sensitive = byt?1:0;
 			break;
 		case 'T': // Table Counts
 			{
-			b = getvsh(b, &res->nsym);
-			b = getvsh(b, &res->ncharset);
-			b = getvsh(b, &res->nrule);
-			b = getvsh(b, &res->ndfa_state);
-			b = getvsh(b, &res->nlalr_state);
+			b = cgt_getvsh(b, &res->nsym);
+			b = cgt_getvsh(b, &res->ncharset);
+			b = cgt_getvsh(b, &res->nrule);
+			b = cgt_getvsh(b, &res->ndfa_state);
+			b = cgt_getvsh(b, &res->nlalr_state);
 
 			// reserve memory
 			res->charset = (const char**)malloc(sizeof(char*) * res->ncharset);
@@ -390,58 +389,58 @@ struct _parse_config* parser_config_create_mem(char* b, int len)
 			}
 			break;
 		case 'I': // Initial States
-			b = getvsh(b, &res->init_dfa);
-			b = getvsh(b, &res->init_lalr);
+			b = cgt_getvsh(b, &res->init_dfa);
+			b = cgt_getvsh(b, &res->init_lalr);
 			break;
 		case 'S': // Symbol Entry
 			{
-			b = getvsh(b, &idx);
-			b = getvws(b, str);
-			b = getvsh(b, &res->sym[idx].Type);
+			b = cgt_getvsh(b, &idx);
+			b = cgt_getvws(b, str);
+			b = cgt_getvsh(b, &res->sym[idx].Type);
 			res->sym[idx].Name = strdup(str);
 			}
 			break;
 		case 'C': // Character set Entry
 			{
 			int slen;
-			b = getvsh(b, &idx);
-			b = getvws(b, str);
+			b = cgt_getvsh(b, &idx);
+			b = cgt_getvws(b, str);
 			slen = (int)strlen(str);
 			res->charset[idx] = (char*)strdup(str);
 			}
 			break;
 		case 'R': // Rule Table Entry
-			b = getvsh(b, &idx);
-			b = getvsh(b, &res->rule[idx].NonTerminal);
+			b = cgt_getvsh(b, &idx);
+			b = cgt_getvsh(b, &res->rule[idx].NonTerminal);
 			b++; // reserved
 			res->rule[idx].nsymbol = nEntries-4;
 			res->rule[idx].symbol = (short*)malloc(sizeof(struct _symbol)*(nEntries-4));
 			for (i=0;i<nEntries-4;i++)
-				b = getvsh(b, &res->rule[idx].symbol[i]);
+				b = cgt_getvsh(b, &res->rule[idx].symbol[i]);
 			break;
 		case 'D': // DFA State Entry
-			b = getvsh(b, &idx);
-			b = getvb(b, &byt);
-			b = getvsh(b, &res->dfa_state[idx].AcceptIndex);
+			b = cgt_getvsh(b, &idx);
+			b = cgt_getvb(b, &byt);
+			b = cgt_getvsh(b, &res->dfa_state[idx].AcceptIndex);
 			res->dfa_state[idx].Accept = byt?1:0;
 			b++; // reserved
 			res->dfa_state[idx].nedge = (nEntries-5)/3;
 			res->dfa_state[idx].edge = (struct _edge*)malloc(sizeof(struct _edge)*((nEntries-5)/3));
 			for (i=0; i<nEntries-5; i+=3) {
-				b = getvsh(b, &res->dfa_state[idx].edge[i/3].CharSetIndex);
-				b = getvsh(b, &res->dfa_state[idx].edge[i/3].TargetIndex);
+				b = cgt_getvsh(b, &res->dfa_state[idx].edge[i/3].CharSetIndex);
+				b = cgt_getvsh(b, &res->dfa_state[idx].edge[i/3].TargetIndex);
 				b++; // reserved
 			}
 			break;
 		case 'L': // LALR State Entry
-			b = getvsh(b, &idx);
+			b = cgt_getvsh(b, &idx);
 			b++; // reserved
 			res->lalr_state[idx].naction = (nEntries-3)/4;
 			res->lalr_state[idx].action = (struct _action*)malloc(sizeof(struct _action)*((nEntries-3)/4));
 			for (i=0;i<nEntries-3;i+=4) {
-				b = getvsh(b, &res->lalr_state[idx].action[i/4].SymbolIndex);
-				b = getvsh(b, &res->lalr_state[idx].action[i/4].Action);
-				b = getvsh(b, &res->lalr_state[idx].action[i/4].Target);
+				b = cgt_getvsh(b, &res->lalr_state[idx].action[i/4].SymbolIndex);
+				b = cgt_getvsh(b, &res->lalr_state[idx].action[i/4].Action);
+				b = cgt_getvsh(b, &res->lalr_state[idx].action[i/4].Target);
 				b++; // reserved
 			}
 			break;
