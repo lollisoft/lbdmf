@@ -142,6 +142,7 @@ int main(int argc, char** argv)
 			run = false;
 			break;
 		case -1: // Parse error
+			printf("Error: Parse error.\n");
 			run = false;
 			break;
 		default:
