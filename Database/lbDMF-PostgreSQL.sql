@@ -20,7 +20,7 @@ CREATE TABLE column_types
 --...e
 insert into column_types (name, tablename, ro) values('kundennr', 'kunden', TRUE);
 insert into column_types (name, tablename, ro) values('id', 'chart', TRUE);
-
+insert into column_types (name, tablename, ro) values('language', 'translations', TRUE);
 --...sActions:0:
 --...sCREATE TABLE actions:0:
 -- +---------------------------------------------------------
@@ -763,6 +763,8 @@ insert into Formulare (Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) V
 '-',
 1 , 1);
 
+-- 20:
+
 insert into Formulare (Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
 'Anwendungen -> Formulare',
 'Anwendungen -> Formulare',
@@ -795,6 +797,15 @@ insert into Formulare (Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) V
 'Formularaktionen',
 'Formularaktionen verwalten',
 'manageFormularaktionen',
+'-',
+1, 1);
+
+-- 25:
+
+insert into Formulare (Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
+'Uebersetzungen',
+'Uebersetzungen verwalten',
+'manageUebersetzungen',
 '-',
 1, 1);
 
@@ -915,8 +926,13 @@ insert into Formular_Parameters (ParameterName, ParameterValue, FormularID) Valu
 
 insert into Formular_Parameters (ParameterName, ParameterValue, FormularID) Values (
 'query',
-'select id, partnumber, description, unit, listprice, sellprice from parts',
+'select text, translated from translations order by text',
 25);
+
+insert into Formular_Parameters (ParameterName, ParameterValue, FormularID) Values (
+'query',
+'select id, partnumber, description, unit, listprice, sellprice from parts',
+26);
 
 --...e
 --...sFill Anwendungs_Parameter:0:
@@ -963,8 +979,8 @@ insert into Anwendungen_Formulare (AnwendungID,FormularID) Values (3, 22);
 insert into Anwendungen_Formulare (AnwendungID,FormularID) Values (3, 23);
 
 insert into Anwendungen_Formulare (AnwendungID,FormularID) Values (1, 24);
-
-insert into Anwendungen_Formulare (AnwendungID,FormularID) Values (5, 25);
+insert into Anwendungen_Formulare (AnwendungID,FormularID) Values (1, 25);
+insert into Anwendungen_Formulare (AnwendungID,FormularID) Values (5, 26);
 --...e
 --...sFill User_Anwendungen:0:
 insert into User_Anwendungen (userid, AnwendungenId) Values (1, 1);
