@@ -260,6 +260,8 @@ public:
 		lbDBColumnInteger,
 		lbDBColumnBigInteger,
 		lbDBColumnBinary,
+		lbDBColumnDate,
+		lbDBColumnFloat,
 		lbDBColumnUnknown
 	};
 
