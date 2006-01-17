@@ -3053,6 +3053,9 @@ bool LB_STDCALL lbBoundColumn::isNull() {
 lb_I_Query::lbDBColumnTypes LB_STDCALL lbBoundColumn::getType() {
 	switch (_DataType) {
 	
+		case SQL_FLOAT:
+			return lb_I_Query::lbDBColumnFloat;
+			
 		case SQL_BIT:
 			return lb_I_Query::lbDBColumnBit;
 			
@@ -3127,6 +3130,7 @@ lb_I_Unknown* LB_STDCALL lbBoundColumn::getData() {
 lbErrCodes LB_STDCALL lbBoundColumn::getAsString(lb_I_String* result, int asParameter) {
 	
 	switch (_DataType) {
+		case SQL_FLOAT:
 		case SQL_DATE:
 		case SQL_TYPE_DATE:
 		case SQL_CHAR:
@@ -3223,6 +3227,7 @@ lbErrCodes LB_STDCALL lbBoundColumn::getAsString(lb_I_String* result, int asPara
 		
 		if (mode == 1) {
 			switch (_DataType) {
+				case SQL_FLOAT:
 				case SQL_DATE:
 				case SQL_TYPE_DATE:
 				case SQL_CHAR:
@@ -3309,6 +3314,7 @@ lbErrCodes LB_STDCALL lbBoundColumn::getAsString(lb_I_String* result, int asPara
 			}
 		} else {
 			switch (_DataType) {
+				case SQL_FLOAT:
 				case SQL_DATE:
 				case SQL_TYPE_DATE:
 				case SQL_CHAR:
@@ -3525,6 +3531,7 @@ lbErrCodes LB_STDCALL lbBoundColumn::bindColumn(lb_I_Query* q, int column, bool 
 			}
 /*...e*/
 			break;
+		case SQL_FLOAT:
 		case SQL_BIT:
 		case SQL_TINYINT:
 		case SQL_CHAR:
@@ -3756,6 +3763,7 @@ void LB_STDCALL lbBoundColumn::unbindReadonlyColumns() {
 
 			ret = SQLBindCol(hstmt, _column, SQL_C_CHAR, NULL, (ColumnSize+1), &cbBufferLength);
 			break;
+		case SQL_FLOAT:	
 		case SQL_CHAR:
 		case SQL_VARCHAR:
 		case SQL_LONGVARCHAR:
@@ -3834,6 +3842,7 @@ void LB_STDCALL lbBoundColumn::rebindReadonlyColumns() {
 
 			ret = SQLBindCol(hstmt, _column, SQL_C_CHAR, buffer, (ColumnSize+1), &cbBufferLength);
 			break;
+		case SQL_FLOAT:
 		case SQL_CHAR:
 		case SQL_VARCHAR:
 		case SQL_LONGVARCHAR:
@@ -3912,6 +3921,7 @@ void LB_STDCALL lbBoundColumn::rebind() {
 
 			ret = SQLBindCol(hstmt, _column, SQL_C_CHAR, buffer, (ColumnSize+1), &cbBufferLength);
 			break;
+		case SQL_FLOAT:
 		case SQL_CHAR:
 		case SQL_VARCHAR:
 		case SQL_LONGVARCHAR:

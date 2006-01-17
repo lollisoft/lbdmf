@@ -701,6 +701,8 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 /*...sCreate controls based on database type:40:*/
 			lb_I_Query::lbDBColumnTypes coltype = sampleQuery->getColumnType(i);
 
+			long style = wxFILTER_NONE;
+
 			switch (coltype) {
 				case lb_I_Query::lbDBColumnBit:
 					{
@@ -717,13 +719,16 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 					}
 					break;
 					
+				case lb_I_Query::lbDBColumnFloat:
+					_CL_LOG << "Have a numeric field." LOG_
+					style = wxFILTER_NUMERIC;
 				case lb_I_Query::lbDBColumnChar:
 					{
 						UAP(lb_I_String, s, __FILE__, __LINE__)
 						
 						s = sampleQuery->getAsString(i);
 						
-						wxTextCtrl *text = new wxTextCtrl(this, -1, s->charrep(), wxPoint());
+						wxTextCtrl *text = new wxTextCtrl(this, -1, s->charrep(), wxPoint(), wxDefaultSize, style);
 						text->SetName(name);
 						sizerRight->Add(text, 1, wxEXPAND | wxALL, 5);
 						
