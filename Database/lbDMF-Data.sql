@@ -5,6 +5,7 @@
 
 insert into column_types (name, tablename, ro) values('kundennr', 'kunden', true);
 insert into column_types (name, tablename, ro) values('id', 'chart', true);
+insert into column_types (name, tablename, ro) values('language', 'translations', TRUE);
 
 insert into action_types (bezeichnung) values('Buttonpress'); -- Built in handler
 
