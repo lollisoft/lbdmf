@@ -797,6 +797,13 @@ insert into Formulare (Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) V
 'manageFormularaktionen',
 '-',
 1, 1);
+
+insert into Formulare (Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
+'Artikel',
+'Artikelverwaltung',
+'manageParts',
+'-',
+5 , 1);
 --...e
 --...sFill ForeignKey_VisibleData_Mapping:0:
 insert into ForeignKey_VisibleData_Mapping (FKName, FKTable, PKName, PKTable) Values (
@@ -905,6 +912,12 @@ insert into Formular_Parameters (ParameterName, ParameterValue, FormularID) Valu
 'query',
 'select * from actions',
 24);
+
+insert into Formular_Parameters (ParameterName, ParameterValue, FormularID) Values (
+'query',
+'select id, partnumber, description, unit, listprice, sellprice from parts',
+25);
+
 --...e
 --...sFill Anwendungs_Parameter:0:
 insert into Anwendungs_Parameter (ParameterName, ParameterValue, AnwendungID) Values ('DBName', 'trainres', 3);
@@ -950,6 +963,8 @@ insert into Anwendungen_Formulare (AnwendungID,FormularID) Values (3, 22);
 insert into Anwendungen_Formulare (AnwendungID,FormularID) Values (3, 23);
 
 insert into Anwendungen_Formulare (AnwendungID,FormularID) Values (1, 24);
+
+insert into Anwendungen_Formulare (AnwendungID,FormularID) Values (5, 25);
 --...e
 --...sFill User_Anwendungen:0:
 insert into User_Anwendungen (userid, AnwendungenId) Values (1, 1);
