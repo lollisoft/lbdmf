@@ -701,8 +701,6 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 /*...sCreate controls based on database type:40:*/
 			lb_I_Query::lbDBColumnTypes coltype = sampleQuery->getColumnType(i);
 
-			long style = wxFILTER_NONE;
-
 			switch (coltype) {
 				case lb_I_Query::lbDBColumnBit:
 					{
@@ -720,15 +718,48 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 					break;
 					
 				case lb_I_Query::lbDBColumnFloat:
-					_CL_LOG << "Have a numeric field." LOG_
-					style = wxFILTER_NUMERIC;
+					{
+						_CL_LOG << "Have a numeric field." LOG_	
+						wxTextValidator val = wxTextValidator(wxFILTER_INCLUDE_CHAR_LIST, new wxString(""));
+						
+						wxArrayString ValArray;
+						ValArray.Add(".");
+						ValArray.Add("-");
+						ValArray.Add("0");
+						ValArray.Add("1");
+						ValArray.Add("2");
+						ValArray.Add("3");
+						ValArray.Add("4");
+						ValArray.Add("5");
+						ValArray.Add("6");
+						ValArray.Add("7");
+						ValArray.Add("8");
+						ValArray.Add("9");
+						
+						val.SetIncludes(ValArray);
+					
+						UAP(lb_I_String, s, __FILE__, __LINE__)
+						
+						s = sampleQuery->getAsString(i);
+						
+						wxTextCtrl *text = new wxTextCtrl(this, -1, s->charrep(), wxPoint(), wxDefaultSize, 0, val);
+						text->SetName(name);
+						sizerRight->Add(text, 1, wxEXPAND | wxALL, 5);
+						
+						if (FFI->isReadonly(name)) {
+							text->Disable();
+						}
+
+						createdControl = true;
+					}
+					break;
 				case lb_I_Query::lbDBColumnChar:
 					{
 						UAP(lb_I_String, s, __FILE__, __LINE__)
 						
 						s = sampleQuery->getAsString(i);
 						
-						wxTextCtrl *text = new wxTextCtrl(this, -1, s->charrep(), wxPoint(), wxDefaultSize, style);
+						wxTextCtrl *text = new wxTextCtrl(this, -1, s->charrep(), wxPoint(), wxDefaultSize);
 						text->SetName(name);
 						sizerRight->Add(text, 1, wxEXPAND | wxALL, 5);
 						
@@ -746,11 +777,29 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 				case lb_I_Query::lbDBColumnBigInteger:
 				case lb_I_Query::lbDBColumnInteger:
 					{
+						_CL_LOG << "Have a numeric field." LOG_	
+						wxTextValidator val = wxTextValidator(wxFILTER_INCLUDE_CHAR_LIST, new wxString(""));
+						
+						wxArrayString ValArray;
+						ValArray.Add("0");
+						ValArray.Add("1");
+						ValArray.Add("2");
+						ValArray.Add("3");
+						ValArray.Add("4");
+						ValArray.Add("5");
+						ValArray.Add("6");
+						ValArray.Add("7");
+						ValArray.Add("8");
+						ValArray.Add("9");
+						ValArray.Add("-");
+						
+						val.SetIncludes(ValArray);
+
 						UAP(lb_I_String, s, __FILE__, __LINE__)
 						
 						s = sampleQuery->getAsString(i);
 					
-						wxTextCtrl *text = new wxTextCtrl(this, -1, s->charrep(), wxPoint());
+						wxTextCtrl *text = new wxTextCtrl(this, -1, s->charrep(), wxPoint(), wxDefaultSize, 0, val);
 					        text->SetName(name);
 					        sizerRight->Add(text, 1, wxEXPAND | wxALL, 5);
 						
@@ -2013,6 +2062,7 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBUpdate() {
 						}
 						break;
 					
+					case lb_I_Query::lbDBColumnFloat:
 					case lb_I_Query::lbDBColumnChar:
 						{
 							if (!sampleQuery->getReadonly(name)) {
@@ -2185,6 +2235,7 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBRead() {
 						}
 						break;
 					
+					case lb_I_Query::lbDBColumnFloat:
 					case lb_I_Query::lbDBColumnChar:
 						{
 							UAP(lb_I_String, s, __FILE__, __LINE__)
