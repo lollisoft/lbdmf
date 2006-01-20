@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.73 $
+ * $Revision: 1.74 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.73 2005/12/11 19:15:49 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.74 2006/01/20 21:30:39 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.74  2006/01/20 21:30:39  lollisoft
+ * Used base class in loadApplication changed to lb_I_Application.
+ *
  * Revision 1.73  2005/12/11 19:15:49  lollisoft
  * Release changes for 0.6.0. Added todo entries, removed unused code.
  *
@@ -804,7 +807,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::loadApplication(char* user, char* appl
 
 		a->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
 
-                QI(a, lb_I_MetaApplication, app, __FILE__, __LINE__)
+                QI(a, lb_I_Application, app, __FILE__, __LINE__)
 
                 //if (dispatcher.getPtr() == NULL) _LOG << "Error: dispatcher is NULL" LOG_
 
