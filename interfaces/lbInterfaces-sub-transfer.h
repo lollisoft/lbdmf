@@ -111,4 +111,13 @@ public:
 };
 /*...e*/
 
+class lb_I_InputStream : public lb_I_Unknown {
+
+};
+
+class lb_I_OutputStream : public lb_I_Unknown {
+
+};
+
+
 #endif // __LB_SUB_TRANSFER__
