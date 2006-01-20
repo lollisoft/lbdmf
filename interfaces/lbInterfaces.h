@@ -669,7 +669,7 @@ typedef unsigned short u_short;
 class lb_I_CallbackTarget;
 class lb_I_ProtocolTarget;
 
-#include <lbInterfaces-sub-transfer.h>
+//#include <lbInterfaces-sub-transfer.h>
 /*...e*/
 
 /*...sforward class decl\39\s:0:*/
@@ -693,6 +693,7 @@ class lb_I_EventHandler;
 class lb_I_ConfigObject;
 
 class lb_I_Frame;
+class lb_I_Transfer_Data;
 /*...e*/
 
 /*...scallback \47\ handler typedefs:0:*/
@@ -2354,6 +2355,58 @@ public:
 
 };
 /*...e*/
+/*...sclass lb_I_Application:0:*/
+/**
+ * \brief Interface for a delegated application.
+ *
+ * This inteface is used when the implementation of an lb_I_MetaApplication
+ * loads an application and delegates the control to it. This would be done
+ * by a call to loadApplication in lb_I_MetaApplication.
+ */
+class lb_I_Application : public lb_I_Unknown {
+public:
+
+	/**
+	 * Set the graphical user interface instance that is the wrapper side.
+	 */
+	virtual lbErrCodes LB_STDCALL setGUI(lb_I_GUI* gui) = 0;
+
+	/** \brief Set the user for the current application.
+	 */
+	virtual lbErrCodes LB_STDCALL setUserName(char* user) = 0;
+	
+	/** \brief Set the application name for the current application.
+	 */
+	virtual lbErrCodes LB_STDCALL setApplicationName(char* app) = 0;
+	
+	/**
+	 * Initialize the application module. Optionally, provide user and application name.
+	 */
+	virtual lbErrCodes LB_STDCALL Initialize(char* user = NULL, char* app = NULL) = 0;
+	
+	/**
+	 * \brief Run the application
+	 *
+	 * This lets the GUI 'start' some threads in the background or run the app without
+	 * a GUI.
+	 */
+	virtual lbErrCodes LB_STDCALL run() = 0;
+
+	/**
+	 * \brief Get the GUI instance.
+	 */	
+	virtual lbErrCodes LB_STDCALL getGUI(lb_I_GUI** gui) = 0;
+
+	virtual lbErrCodes LB_STDCALL getUserName(lb_I_String** user) = 0;
+	virtual lbErrCodes LB_STDCALL getApplicationName(lb_I_String** app) = 0;
+	
+	/**
+	 * Get access to the main event manager, so all parts can initialize event handlers
+	 * and then initialize Actors for still initialized event handlers.
+	 */
+	virtual lb_I_EventManager* getEVManager() = 0;
+};
+/*...e*/
 /*...sclass lb_I_MetaApplication:0:*/
 /**
  * \brief Interface from a wrapper and lbDMF
@@ -2760,6 +2813,7 @@ public:
 	virtual void LB_STDCALL setActionID(char* id) = 0;
 };
 
+#include <lbInterfaces-sub-transfer.h>
 #include <lbInterfaces-sub-xml.h>
 #include <lbInterfaces-sub-classes.h>	
 #include <lbInterfaces-sub-ui.h>
