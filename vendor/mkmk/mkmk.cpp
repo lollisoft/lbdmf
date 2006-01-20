@@ -12,11 +12,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.70 $
+ * $Revision: 1.71 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.70 2005/11/26 18:59:11 lollisoft Exp $
+ * $Id: mkmk.cpp,v 1.71 2006/01/20 01:00:39 lollisoft Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.71  2006/01/20 01:00:39  lollisoft
+ * Bugfix in absolutely depend on wxMac version 2.6.1.
+ *
  * Revision 1.70  2005/11/26 18:59:11  lollisoft
  * Minor changes to compile and run under Linux
  *
@@ -760,21 +763,22 @@ void writeBundleTarget(char* modulename) {
 #undef UNIX
   fprintf(stderr, "Writing osx executable target\n");
   printf("PROGRAM=%s\n", modulename);
+  printf("MKMK_WX_VERSION=`wx-config --version`\n");
   printf("\n%s: $(OBJS)\n", modulename);
   printf("\t\t$(CC) $(L_OPS) %s $(OBJS) $(OBJDEP) $(LIBS) -bind_at_load -lc $(VENDORLIBS)\n",modulename);
   printf("\t\t$(CP) $(PROGRAM) $(HOME)/bin\n");
 
   // Write Mac OS X Bundle
-  printf("\t\t/Developer/Tools/Rez -d __DARWIN__ -t APPL -d __WXMAC__ -i . -d WXUSINGDLL -i $(HOME)/wxMac-2.6.1/samples -i $(HOME)/wxMac-2.6.1/include -o %s Carbon.r sample.r\n", modulename);
+  printf("\t\t/Developer/Tools/Rez -d __DARWIN__ -t APPL -d __WXMAC__ -i . -d WXUSINGDLL -i $(HOME)/wxMac-$(MKMK_WX_VERSION)/samples -i $(HOME)/wxMac-$(MKMK_WX_VERSION)/include -o %s Carbon.r sample.r\n", modulename);
   printf("\t\t/Developer/Tools/SetFile -a C %s\n", modulename);
-  printf("\t\t-$(HOME)/wxMac-2.6.1/change-install-names $(HOME)/wxMac-2.6.1/lib /usr/local %s\n", modulename);
+  printf("\t\t-$(HOME)/wxMac-$(MKMK_WX_VERSION)/change-install-names $(HOME)/wxMac-$(MKMK_WX_VERSION)/lib /usr/local %s\n", modulename);
   printf("\t\trm -Rf %s.app\n", modulename);
   printf("\t\tmkdir -p %s.app\n", modulename);
   printf("\t\tmkdir -p %s.app/Contents\n", modulename);
   printf("\t\tmkdir -p %s.app/Contents/MacOS\n", modulename);
   printf("\t\tmkdir -p %s.app/Contents/Resources\n", modulename);
-  printf("\t\tset -e \"s/IDENTIFIER/`echo . | sed -e 's,\\.\\./,,g' | sed -e 's,/,.,g'`/\" -e \"s/EXECUTABLE/%s/\" -e \"s/VERSION/2.6.1/\" $(HOME)/wxMac-2.6.1/src/mac/carbon/wxmac.icns %s.app/Contents/Resources/wxmac.icns\n", modulename, modulename);
-  printf("\t\tsed -e \"s/IDENTIFIER/`echo . | sed -e 's,\\.\\./,,g' | sed -e 's,/,.,g'`/\" -e \"s/EXECUTABLE/%s/\" -e \"s/VERSION/2.6.1/\" $(HOME)/wxMac-2.6.1/src/mac/carbon/Info.plist.in >%s.app/Contents/Info.plist\n", modulename, modulename);
+  printf("\t\tset -e \"s/IDENTIFIER/`echo . | sed -e 's,\\.\\./,,g' | sed -e 's,/,.,g'`/\" -e \"s/EXECUTABLE/%s/\" -e \"s/VERSION/$(MKMK_WX_VERSION)/\" $(HOME)/wxMac-$(MKMK_WX_VERSION)/src/mac/carbon/wxmac.icns %s.app/Contents/Resources/wxmac.icns\n", modulename, modulename);
+  printf("\t\tsed -e \"s/IDENTIFIER/`echo . | sed -e 's,\\.\\./,,g' | sed -e 's,/,.,g'`/\" -e \"s/EXECUTABLE/%s/\" -e \"s/VERSION/$(MKMK_WX_VERSION)/\" $(HOME)/wxMac-$(MKMK_WX_VERSION)/src/mac/carbon/Info.plist.in >%s.app/Contents/Info.plist\n", modulename, modulename);
   printf("\t\techo -n \"APPL????\" >%s.app/Contents/PkgInfo\n", modulename);
   printf("\t\tln -f %s %s.app/Contents/MacOS/%s\n", modulename, modulename, modulename);
 //  printf("\t\t\n", modulename);
@@ -1281,7 +1285,7 @@ void ShowHelp(int argc, char *argv[])
 
   fprintf(stderr, "Enhanced by Lothar Behrens (lothar.behrens@lollisoft.de)\n\n");
 
-  fprintf(stderr, "MKMK: makefile generator $Revision: 1.70 $\n");
+  fprintf(stderr, "MKMK: makefile generator $Revision: 1.71 $\n");
   fprintf(stderr, "Usage: MKMK lib|exe|dll|so modulname includepath,[includepath,...] file1 [file2 file3...]\n");
   
   fprintf(stderr, "Your parameters are: ");
