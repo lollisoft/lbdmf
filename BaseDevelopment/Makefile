@@ -1,11 +1,15 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.75 $
+# * $Revision: 1.76 $
 # * $Name:  $
-# * $Id: Makefile,v 1.75 2006/01/10 23:37:42 lollisoft Exp $
+# * $Id: Makefile,v 1.76 2006/01/20 00:58:24 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.76  2006/01/20 00:58:24  lollisoft
+# * Changed order to enable building AppDevelopment tree.
+# * This is a hook for users of lbDMF framework.
+# *
 # * Revision 1.75  2006/01/10 23:37:42  lollisoft
 # * Added Goldparser for usability testing.
 # *
@@ -310,8 +314,8 @@ BASEDIRECTORIES= \
 	../Plugins \
 	../Modules \
 	../RegressionTests \
-	../vendor/tvision/examples/lbDMF \
-	../AppDevelopment 
+	../AppDevelopment \
+	../vendor/tvision/examples/lbDMF
 
 TARGETDLL=sobundle
 TARGETSHARED=so
