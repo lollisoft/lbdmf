@@ -32,7 +32,7 @@ extern "C" {
 /*...e*/
 /*...sclass lb_DynamicApplication:0:*/
 class lbDynamicApplication : 
-public lb_I_MetaApplication,
+public lb_I_Application,
 public lb_I_EventHandler
 {
 public:
@@ -61,42 +61,12 @@ public:
 	virtual lbErrCodes LB_STDCALL registerEventHandler(lb_I_Dispatcher* disp);	
 
 	/**
-	 * \brief Unused here
-	 */
-	virtual lbErrCodes LB_STDCALL loadApplication(char* user, char* app);
-
-
-	/**
 	 * \brief The main handler to create dynamic forms
 	 */
 	lbErrCodes LB_STDCALL getDynamicDBForm(lb_I_Unknown* uk);
 
 /*...sWrapper for some usual GUI functions:8:*/
 
-	/* The menubar is still present in the demo. At the
-	   first time, a new menubar should not be used.
-	*/
-	virtual lbErrCodes LB_STDCALL addMenuBar(char* name, char* after = NULL);
-
-	/**
-	 * Add a menu behind the last.
-	 */
-	virtual lbErrCodes LB_STDCALL addMenu(char* name);
-	
-	/**
-	 * Add a menu entry in the named menu after given entry,
-	 * if provided. The handler must be registered.
-	 * 
-	 * Input:
-	 *	char* in_menu:		Which menu to add to (File/Edit/Help/...)
-	 *	char* entry:		The text for that entry
-	 *	char* evHandler:	The name of a registered event handler, that handle this
-	 *	char* afterentry:	Insert the entry after an exsisting entry
-	 */
-	virtual lbErrCodes LB_STDCALL addMenuEntry(char* in_menu, char* entry, char* evHandler, char* afterentry = NULL);
-	virtual lbErrCodes LB_STDCALL addButton(char* buttonText, char* evHandler, int x, int y, int w, int h);
-	virtual lbErrCodes LB_STDCALL addLabel(char* text, int x, int y, int w, int h);
-	virtual lbErrCodes LB_STDCALL addTextField(char* name, int x, int y, int w, int h);
 /*...e*/
 
 protected:
@@ -107,6 +77,7 @@ protected:
 	
 	UAP(lb_I_String, LogonUser, __FILE__, __LINE__)
 	UAP(lb_I_String, LogonApplication, __FILE__, __LINE__)
+	UAP(lb_I_MetaApplication, metaapp, __FILE__, __LINE__)
 		
 	char hdsihd[100];
 };
@@ -321,7 +292,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::getDynamicDBForm(lb_I_Unknown* uk) {
 
 
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbDynamicApplication)
-	ADD_INTERFACE(lb_I_MetaApplication)
+	ADD_INTERFACE(lb_I_Application)
 END_IMPLEMENT_LB_UNKNOWN()
 
 IMPLEMENT_FUNCTOR(instanceOfApplication, lbDynamicApplication)
@@ -417,6 +388,10 @@ lbErrCodes LB_STDCALL lbDynamicApplication::Initialize(char* user, char* app) {
 	        LogonApplication->setData(app);
 	}
 
+	if (metaapp == NULL) {
+		REQUEST(manager.getPtr(), lb_I_MetaApplication, metaapp)
+	}
+
 	if (sampleQuery == NULL) printf("NULL pointer !\n");
 
 	_CL_LOG << "lbDynamicApplication::Initialize('" << user << "', '" << app << "');" LOG_
@@ -432,7 +407,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::Initialize(char* user, char* app) {
 
 	char* menu = strdup(_trans(app));
 
-	addMenuBar(menu, ed);
+	metaapp->addMenuBar(menu, ed);
 
 	free(ed);
 	free(menu);
@@ -442,7 +417,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::Initialize(char* user, char* app) {
 		UAP(lb_I_String, EventName, __FILE__, __LINE__)
 		UAP(lb_I_String, MenuName, __FILE__, __LINE__)
 		
-	        EventName = sampleQuery->getAsString(1);
+		EventName = sampleQuery->getAsString(1);
 		MenuName = sampleQuery->getAsString(2);
 
 		if (eman->resolveEvent(EventName->charrep(), unused) == ERR_EVENT_NOTREGISTERED) {
@@ -452,7 +427,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::Initialize(char* user, char* app) {
 			dispatcher->addEventHandlerFn(this, 
 					(lbEvHandler) &lbDynamicApplication::getDynamicDBForm, EventName->charrep());
 
-			addMenuEntry(_trans(app), MenuName->charrep(), EventName->charrep(), "");
+			metaapp->addMenuEntry(_trans(app), MenuName->charrep(), EventName->charrep(), "");
 
 		} else {
 			_CL_VERBOSE << "WARNING: Event name already reserved. Ignore it for menucreation." LOG_
@@ -478,7 +453,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::Initialize(char* user, char* app) {
 					dispatcher->addEventHandlerFn(this,
 							(lbEvHandler) &lbDynamicApplication::getDynamicDBForm, EventName->charrep());
 				
-					addMenuEntry(_trans(app), MenuName->charrep(), EventName->charrep(), "");
+					metaapp->addMenuEntry(_trans(app), MenuName->charrep(), EventName->charrep(), "");
 				} else {
 					_CL_VERBOSE << "WARNING: Event name already reserved. Ignore it for menucreation." LOG_
 				}
@@ -535,67 +510,6 @@ lbErrCodes LB_STDCALL lbDynamicApplication::run() {
 }
 /*...e*/
 
-/*...sBasic functions to be used for a UI application:0:*/
-lbErrCodes LB_STDCALL lbDynamicApplication::loadApplication(char* user, char* app) {
-        lbErrCodes err = ERR_NONE;
-
-        UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, MetaApp)
-        MetaApp->loadApplication(user, app);
-
-        return err;
-}
-
-lbErrCodes LB_STDCALL lbDynamicApplication::addMenuBar(char* name, char* after) {
-	lbErrCodes err = ERR_NONE;
-
-	UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, app)
-
-	app->addMenuBar(name, after);
-
-	return err;
-}
-
-lbErrCodes LB_STDCALL lbDynamicApplication::addMenu(char* name) {
-	return ERR_NONE;
-}
-
-lbErrCodes LB_STDCALL lbDynamicApplication::addButton(char* buttonText, char* evHandler, int x, int y, int w, int h) {
-	lbErrCodes err = ERR_NONE;
-		
-	UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, app)
-	app->addButton(buttonText, evHandler, x, y, w, h);
-
-	return err;
-}
-
-lbErrCodes LB_STDCALL lbDynamicApplication::addMenuEntry(char* in_menu, char* entry, char* evHandler, char* afterentry) {
-	lbErrCodes err = ERR_NONE;
-	
-	UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, app)
-	app->addMenuEntry(in_menu, entry, evHandler, afterentry);
-
-	return ERR_NONE;
-}
-
-lbErrCodes LB_STDCALL lbDynamicApplication::addTextField(char* name, int x, int y, int w, int h) {
-	lbErrCodes err = ERR_NONE;
-	
-	UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, app)
-	app->addTextField(name, x, y, w, h);
-
-        return err;
-}
-
-lbErrCodes LB_STDCALL lbDynamicApplication::addLabel(char* text, int x, int y, int w, int h) {
-	lbErrCodes err = ERR_NONE;
-
-	UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, app)
-	app->addLabel(text, x, y, w, h);
-
-	return err;
-}
-
-/*...e*/
 /*...e*/
 
 #ifdef WINDOWS
