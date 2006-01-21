@@ -2407,6 +2407,9 @@ public:
 	virtual lb_I_EventManager* getEVManager() = 0;
 };
 /*...e*/
+
+class lb_I_InputStream;
+
 /*...sclass lb_I_MetaApplication:0:*/
 /**
  * \brief Interface from a wrapper and lbDMF
@@ -2456,16 +2459,37 @@ public:
 
 	virtual lbErrCodes LB_STDCALL loadApplication(char* user, char* app) = 0;
 
-	/**
+	/*
 	 * Basic functions to be used for a UI application
 	 */
 
+	/** Add a menubar name after. 
+	 */
 	virtual lbErrCodes LB_STDCALL addMenuBar(char* name, char* after) = 0;
+
+	/** Add a menu.
+	 */
 	virtual lbErrCodes LB_STDCALL addMenu(char* name) = 0;
+
+	/** Add menu entry.
+	 */
 	virtual lbErrCodes LB_STDCALL addMenuEntry(char* in_menu, char* entry, char* evHandler, char* afterentry = NULL) = 0;
+
+	/** Add a button.
+	 */
 	virtual lbErrCodes LB_STDCALL addButton(char* buttonText, char* evHandler, int x, int y, int w, int h) = 0;
+
+	/** Add a label.
+	 */
 	virtual lbErrCodes LB_STDCALL addLabel(char* text, int x, int y, int w, int h) = 0;
+
+	/** Add a text field.
+	 */
 	virtual lbErrCodes LB_STDCALL addTextField(char* name, int x, int y, int w, int h) = 0;
+	
+	/** \brief Ask the user for a file by given extention.
+	 */
+	virtual lb_I_InputStream* LB_STDCALL askOpenFileReadStream(char* extentions) = 0;
 };
 /*...e*/
 
@@ -2720,9 +2744,19 @@ public:
 	 */
 	virtual void LB_STDCALL setNamespace(char* __namespace) = 0;
 	
-	
+	/** \brief Get shared library name.
+	 *
+	 */
 	virtual char* LB_STDCALL getModule() = 0;
+	
+	/** \brief Get plugin functor name.
+	 *
+	 */
 	virtual char* LB_STDCALL getName() = 0;
+	
+	/** \brief Get namespace.
+	 *
+	 */
 	virtual char* LB_STDCALL getNamespace() = 0;
 
 /*...e*/

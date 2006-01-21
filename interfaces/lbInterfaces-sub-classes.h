@@ -30,11 +30,15 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.62 $
+ * $Revision: 1.63 $
  * $Name:  $
- * $Id: lbInterfaces-sub-classes.h,v 1.62 2005/12/30 11:20:44 lollisoft Exp $
+ * $Id: lbInterfaces-sub-classes.h,v 1.63 2006/01/21 23:50:11 lollisoft Exp $
  *
  * $Log: lbInterfaces-sub-classes.h,v $
+ * Revision 1.63  2006/01/21 23:50:11  lollisoft
+ * Added new member to ask the user for a file. And some
+ * more initial member documentation.
+ *
  * Revision 1.62  2005/12/30 11:20:44  lollisoft
  * New function (toLower).
  *
@@ -842,8 +846,13 @@ public:
 	 * iteration is finished automatically.
 	 */
     virtual void LB_STDCALL finishIteration() = 0;
-
+	
+	/** \brief Get element at given position. Starts at 0.
+	 */
     virtual lb_I_Unknown* LB_STDCALL getElementAt(int i) = 0;
+	
+	/** \brief Get key at given position. Starts at 0.
+	 */
     virtual lb_I_KeyBase* LB_STDCALL getKeyAt(int i) = 0;
 
     /**
