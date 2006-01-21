@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.24 $
+ * $Revision: 1.25 $
  * $Name:  $
- * $Id: lbMetaApplication.h,v 1.24 2005/11/18 23:41:31 lollisoft Exp $
+ * $Id: lbMetaApplication.h,v 1.25 2006/01/21 23:48:14 lollisoft Exp $
  *
  * $Log: lbMetaApplication.h,v $
+ * Revision 1.25  2006/01/21 23:48:14  lollisoft
+ * Added new member to ask the user for a file.
+ *
  * Revision 1.24  2005/11/18 23:41:31  lollisoft
  * More memory leaks have been fixed. There are currently less than 200
  * chunks unfreed, wich may be located in the plugin mechanism.
@@ -191,10 +194,12 @@ public:
 	 *	char* evHandler:	The name of a registered event handler, that handle this
 	 *	char* afterentry:	Insert the entry after an exsisting entry
 	 */
-	virtual lbErrCodes LB_STDCALL addMenuEntry(char* in_menu, char* entry, char* evHandler, char* afterentry = NULL);
-	virtual lbErrCodes LB_STDCALL addButton(char* buttonText, char* evHandler, int x, int y, int w, int h);
-	virtual lbErrCodes LB_STDCALL addLabel(char* text, int x, int y, int w, int h);
-	virtual lbErrCodes LB_STDCALL addTextField(char* name, int x, int y, int w, int h);
+	lbErrCodes LB_STDCALL addMenuEntry(char* in_menu, char* entry, char* evHandler, char* afterentry = NULL);
+	lbErrCodes LB_STDCALL addButton(char* buttonText, char* evHandler, int x, int y, int w, int h);
+	lbErrCodes LB_STDCALL addLabel(char* text, int x, int y, int w, int h);
+	lbErrCodes LB_STDCALL addTextField(char* name, int x, int y, int w, int h);
+	
+	lb_I_InputStream* LB_STDCALL askOpenFileReadStream(char* extentions);
 /*...e*/
 
 	lbErrCodes LB_STDCALL lbButtonTestHandler(lb_I_Unknown* uk);	

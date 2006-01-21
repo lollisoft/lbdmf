@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.74 $
+ * $Revision: 1.75 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.74 2006/01/20 21:30:39 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.75 2006/01/21 23:48:14 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.75  2006/01/21 23:48:14  lollisoft
+ * Added new member to ask the user for a file.
+ *
  * Revision 1.74  2006/01/20 21:30:39  lollisoft
  * Used base class in loadApplication changed to lb_I_Application.
  *
@@ -947,6 +950,34 @@ lbErrCodes LB_STDCALL lb_MetaApplication::addTextField(char* name, int x, int y,
         return err;
 }
 /*...e*/
+
+lb_I_InputStream* LB_STDCALL lb_MetaApplication::askOpenFileReadStream(char* extentions) {
+	lbErrCodes err = ERR_NONE;
+	
+	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, value)
+	UAP_REQUEST(manager.getPtr(), lb_I_Integer, i)
+
+
+	parameter->setData("extention");
+	value->setData(extentions);
+	param->setUAPString(*&parameter, *&value);
+
+	UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
+	QI(param, lb_I_Unknown, uk, __FILE__, __LINE__)
+	
+	UAP_REQUEST(manager.getPtr(), lb_I_String, result)
+	UAP(lb_I_Unknown, uk_result, __FILE__, __LINE__)
+	QI(result, lb_I_Unknown, uk_result, __FILE__, __LINE__)
+	
+	dispatcher->dispatch("askOpenFileReadStream", uk.getPtr(), &uk_result);
+
+	// Got a name of the file. Create an input stream.
+
+	return NULL;
+}
+
 
 /*...slb_MetaApplication\58\\58\addLabel\40\char\42\ text\44\ int x\44\ int y\44\ int w\44\ int h\41\:0:*/
 lbErrCodes LB_STDCALL lb_MetaApplication::addLabel(char* text, int x, int y, int w, int h) {
