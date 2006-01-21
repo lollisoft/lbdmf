@@ -704,20 +704,11 @@ lbPluginDatabaseReport::lbPluginDatabaseReport() {
 }
 
 lbPluginDatabaseReport::~lbPluginDatabaseReport() {
-	_CL_LOG << "lbPluginDatabaseReport::~lbPluginDatabaseReport() called.\n" LOG_
-	
-
-	if (dbReport != NULL) {
-		_CL_LOG << "dbReport is not NULL." LOG_
-		_CL_LOG << "*********************" LOG_
-	}
-
-	if (dbReport != NULL) {
-		_CL_LOG << "dbReport has " << dbReport->getRefCount() << " references." LOG_
-	}
+	_CL_VERBOSE << "lbPluginDatabaseReport::~lbPluginDatabaseReport() called." LOG_
 }
 
 void LB_STDCALL lbPluginDatabaseReport::initialize() {
+	_CL_LOG << "lbPluginDatabaseReport::initialize() called." LOG_
 }
 	
 bool LB_STDCALL lbPluginDatabaseReport::run() {
