@@ -843,11 +843,11 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 	sizerHor->Add(sizerLeft, 1, wxEXPAND | wxALL, 5);
 	sizerHor->Add(sizerRight, 1, wxEXPAND | wxALL, 5);
 
-	wxButton *button1 = new wxButton(this, DatabaseFirst, _trans("First")); //, wxPoint(), wxSize(100,20));
-	wxButton *button2 = new wxButton(this, DatabasePrev, _trans("Prev")); //, wxPoint(), wxSize(100,20));
-	wxButton *button3 = new wxButton(this, DatabaseNext, _trans("Next")); //, wxPoint(), wxSize(100,20));
-	wxButton *button4 = new wxButton(this, DatabaseLast, _trans("Last")); //, wxPoint(), wxSize(100,20));
-
+	wxButton *button1 = new wxButton(this, DatabaseFirst, _trans("First"));
+	wxButton *button2 = new wxButton(this, DatabasePrev, _trans("Prev"));
+	wxButton *button3 = new wxButton(this, DatabaseNext, _trans("Next"));
+	wxButton *button4 = new wxButton(this, DatabaseLast, _trans("Last"));
+	
 	firstButton = button1;
 	prevButton = button2;
 	nextButton = button3;
@@ -861,8 +861,8 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 	sizerNavi->Add(button3, 1, wxEXPAND | wxALL, 5);
 	sizerNavi->Add(button4, 1, wxEXPAND | wxALL, 5);
 
-	wxButton *buttonAdd = new wxButton(this, DatabaseAdd, _trans("Add")); //, wxPoint(), wxSize(100,20));
-	wxButton *buttonDelete = new wxButton(this, DatabaseDelete, _trans("Delete")); //, wxPoint(), wxSize(100,20));
+	wxButton *buttonAdd = new wxButton(this, DatabaseAdd, _trans("Add"));
+	wxButton *buttonDelete = new wxButton(this, DatabaseDelete, _trans("Delete"));
 
 	deleteButton = buttonDelete;
 
@@ -871,24 +871,6 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 	sizerAddRem->Add(buttonDelete, 1, wxEXPAND | wxALL, 5);
 
 /*...sAction handler initializion:8:*/
-/*
-	UAP_REQUEST(manager.getPtr(), lb_I_Database, actionsDatabase)
-
-	actionsDatabase->init();
-
-	char* lbDMFPasswd = getenv("lbDMFPasswd");
-	char* lbDMFUser   = getenv("lbDMFUser");
-
-	if (!lbDMFUser) lbDMFUser = "dba";
-	if (!lbDMFPasswd) lbDMFPasswd = "trainres";
-
-	actionsDatabase->connect("lbDMF", lbDMFUser, lbDMFPasswd);
-
-	UAP(lb_I_Query, actionQuery, __FILE__, __LINE__)
-	
-	actionQuery = actionsDatabase->getQuery(0);
-
-*/
 	UAP(lb_I_Query, actionQuery, __FILE__, __LINE__)
 	
 	actionQuery = database->getQuery(0);
