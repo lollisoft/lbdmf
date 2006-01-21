@@ -32,7 +32,7 @@ extern "C" {
 /*...e*/
 /*...sclass lb_Application:0:*/
 class lbApplication : 
-public lb_I_MetaApplication,
+public lb_I_Application,
 public lb_I_EventHandler
 {
 public:
@@ -68,35 +68,6 @@ public:
 	lbErrCodes LB_STDCALL getLoginData(lb_I_Unknown* uk);
 
 	lbErrCodes LB_STDCALL getCustomFormsConfig(lb_I_Unknown* uk);
-
-	virtual lbErrCodes LB_STDCALL loadApplication(char* user, char* app);
-
-/*...sWrapper for some usual GUI functions:8:*/
-
-	/* The menubar is still present in the demo. At the
-	   first time, a new menubar should not be used.
-	*/
-	virtual lbErrCodes LB_STDCALL addMenuBar(char* name, char* after = NULL);
-
-	/**
-	 * Add a menu behind the last.
-	 */
-	virtual lbErrCodes LB_STDCALL addMenu(char* name);
-	
-	/**
-	 * Add a menu entry in the named menu after given entry,
-	 * if provided. The handler must be registered.
-	 * 
-	 * Input:
-	 *	char* in_menu:		Which menu to add to (File/Edit/Help/...)
-	 *	char* entry:		The text for that entry
-	 *	char* evHandler:	The name of a registered event handler, that handle this
-	 *	char* afterentry:	Insert the entry after an exsisting entry
-	 */
-	virtual lbErrCodes LB_STDCALL addMenuEntry(char* in_menu, char* entry, char* evHandler, char* afterentry = NULL);
-	virtual lbErrCodes LB_STDCALL addButton(char* buttonText, char* evHandler, int x, int y, int w, int h);
-	virtual lbErrCodes LB_STDCALL addLabel(char* text, int x, int y, int w, int h);
-	virtual lbErrCodes LB_STDCALL addTextField(char* name, int x, int y, int w, int h);
 /*...e*/
 
 protected:
@@ -354,14 +325,16 @@ lbErrCodes LB_STDCALL lbApplication::Initialize(char* user, char* app) {
 	 */
 /*...e*/
 	
-	addMenuBar("Kunden", "Edit");
-	addMenuBar("Reservierungen", "Kunden");
-	addMenuBar("Bahnhoefe", "Reservierungen");
+	UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, metaapp)
+	
+	metaapp->addMenuBar("Kunden", "Edit");
+	metaapp->addMenuBar("Reservierungen", "Kunden");
+	metaapp->addMenuBar("Bahnhoefe", "Reservierungen");
 	
 	
 	//addMenuEntry("File", "Anmelden", "getLoginData", "");
-	addMenuEntry("Kunden", "Elemente in World", "getKundenDetails", "");
-	addMenuEntry("Kunden", "Kunden", "getKundenListe", "");
+	metaapp->addMenuEntry("Kunden", "Elemente in World", "getKundenDetails", "");
+	metaapp->addMenuEntry("Kunden", "Kunden", "getKundenListe", "");
 
 	
 	return ERR_NONE;
@@ -408,66 +381,6 @@ lbErrCodes LB_STDCALL lbApplication::run() {
 }
 /*...e*/
 
-/*...sBasic functions to be used for a UI application:0:*/
-lbErrCodes LB_STDCALL lbApplication::loadApplication(char* user, char* app) {
-        lbErrCodes err = ERR_NONE;
-
-        UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, MetaApp)
-        MetaApp->loadApplication(user, app);
-
-        return err;
-}
-
-lbErrCodes LB_STDCALL lbApplication::addMenuBar(char* name, char* after) {
-	lbErrCodes err = ERR_NONE;
-
-	UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, app)
-	app->addMenuBar(name, after);
-
-	return err;
-}
-
-lbErrCodes LB_STDCALL lbApplication::addMenu(char* name) {
-	return ERR_NONE;
-}
-
-lbErrCodes LB_STDCALL lbApplication::addButton(char* buttonText, char* evHandler, int x, int y, int w, int h) {
-	lbErrCodes err = ERR_NONE;
-		
-	UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, app)
-	app->addButton(buttonText, evHandler, x, y, w, h);
-
-	return err;
-}
-
-lbErrCodes LB_STDCALL lbApplication::addMenuEntry(char* in_menu, char* entry, char* evHandler, char* afterentry) {
-	lbErrCodes err = ERR_NONE;
-	
-	UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, app)
-	app->addMenuEntry(in_menu, entry, evHandler, afterentry);
-
-	return ERR_NONE;
-}
-
-lbErrCodes LB_STDCALL lbApplication::addTextField(char* name, int x, int y, int w, int h) {
-	lbErrCodes err = ERR_NONE;
-	
-	UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, app)
-	app->addTextField(name, x, y, w, h);
-
-        return err;
-}
-
-lbErrCodes LB_STDCALL lbApplication::addLabel(char* text, int x, int y, int w, int h) {
-	lbErrCodes err = ERR_NONE;
-
-	UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, app)
-	app->addLabel(text, x, y, w, h);
-
-	return err;
-}
-
-/*...e*/
 /*...e*/
 
 
