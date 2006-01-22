@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.75 $
+ * $Revision: 1.76 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.75 2006/01/21 23:48:14 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.76 2006/01/22 13:36:51 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.76  2006/01/22 13:36:51  lollisoft
+ * Reading back an added parameter (result) works.
+ *
  * Revision 1.75  2006/01/21 23:48:14  lollisoft
  * Added new member to ask the user for a file.
  *
@@ -974,6 +977,11 @@ lb_I_InputStream* LB_STDCALL lb_MetaApplication::askOpenFileReadStream(char* ext
 	dispatcher->dispatch("askOpenFileReadStream", uk.getPtr(), &uk_result);
 
 	// Got a name of the file. Create an input stream.
+	
+	parameter->setData("result");
+	param->getUAPString(*&parameter, *&value);
+	
+	_CL_LOG << "Got a file name: " << value->charrep() << "." LOG_
 
 	return NULL;
 }
