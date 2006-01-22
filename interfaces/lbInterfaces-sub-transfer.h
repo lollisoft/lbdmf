@@ -112,11 +112,27 @@ public:
 /*...e*/
 
 class lb_I_InputStream : public lb_I_Unknown {
+public:
+	virtual void LB_STDCALL setFileName(char* name) = 0;
+	virtual bool LB_STDCALL open() = 0;
+    virtual bool LB_STDCALL read() = 0;
+    
+    virtual lb_I_InputStream& LB_STDCALL operator>> (int& i) = 0;
+    virtual lb_I_InputStream& LB_STDCALL operator>> (char& c) = 0;
+    virtual lb_I_InputStream& LB_STDCALL operator>> (char*& string) = 0;
 
 };
 
 class lb_I_OutputStream : public lb_I_Unknown {
+public:
+	virtual void LB_STDCALL setFileName(char* name) = 0;
 
+    virtual void LB_STDCALL logdirect(const char *msg, char *f, int level) = 0;
+    
+    virtual lb_I_OutputStream& LB_STDCALL operator<< (const int i) = 0;
+    virtual lb_I_OutputStream& LB_STDCALL operator<< (const char c) = 0;
+    virtual lb_I_OutputStream& LB_STDCALL operator<< (const char* string) = 0;
+	
 };
 
 
