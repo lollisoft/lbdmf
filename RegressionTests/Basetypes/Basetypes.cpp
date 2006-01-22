@@ -174,59 +174,43 @@ int main(int argc, char *argv[]) {
 	UAP_REQUEST(mm, lb_I_OutputStream, out)
 	
 	out->setFileName("Test.txt");
+	out->open();
+	
 	int n = 0;
-	*out << "Testdata: " << n++ << "\n";
-	*out << "Testdata: " << n++ << "\n";
-	*out << "Testdata: " << n++ << "\n";
-	*out << "Testdata: " << n++ << "\n";
-	*out << "Testdata: " << n++ << "\n";
-	*out << "Testdata: " << n++ << "\n";
-	*out << "Testdata: " << n++ << "\n";
-	*out << "Testdata: " << n++ << "\n";
-	*out << "Testdata: " << n++ << "\n";
-	*out << "Testdata: " << n++ << "\n";
-	*out << "Testdata: " << n++ << "\n";
-	*out << "Testdata: " << n++ << "\n";
-	*out << "Testdata: " << n++ << "\n";
-	*out << "Testdata: " << n++ << "\n";
-	*out << "Testdata: " << n++ << "\n";
-	*out << "Testdata: " << n++ << "\n";
+		
+	*out << "Testdata1: " << n++;
+	*out << "Testdata2: " << n++;
+	*out << "Testdata3: " << n++;
+	*out << "Testdata4: " << n++;
+	*out << "Testdata5: " << n++;
+	*out << "Testdata6: " << n++;
+	*out << "Testdata7: " << n++;
+	*out << "Testdata8: " << n++;
+	*out << "Testdata9: " << n++;
+	*out << "Testdata10: " << n++;
+	*out << "Testdata11: " << n++;
+	*out << "Testdata12: " << n++;
+	*out << "Testdata13: " << n++;
+	*out << "Testdata14: " << n++;
+	*out << "Testdata15: " << n++;
+	*out << "Testdata16: " << n++;
 
-
-#ifdef bla
-	_CL_LOG << "Test a container" LOG_
+	out->close();
 	
-	{
-		UAP_REQUEST(mm, lb_I_Container, container)
-	
-		UAP_REQUEST(mm, lb_I_String, data)
-		UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
-		UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
-		QI(data, lb_I_KeyBase, key, __FILE__, __LINE__)
-		QI(data, lb_I_Unknown, uk, __FILE__, __LINE__)
-		
-		data->setData("Test1");
-		
-		container->insert(&uk, &key);
-		
-		data->setData("Test2");
-		
-		container->insert(&uk, &key);
-		
-		data->setData("Test1");
-		
-		container->remove(&key);
+	UAP_REQUEST(mm, lb_I_InputStream, in)
 
-		UAP(lb_I_Unknown, uk1, __FILE__, __LINE__)
-		
-		data->setData("Test2");
-		
-		uk1 = container->getElement(&key);
-		
-		// Memory leaks will appear, if this line is uncommented.
-		//container->detachAll();
+	in->setFileName("Test.txt");
+	
+	in->open();
+	
+	char* buf = NULL;
+	
+	
+	for (int i = 0; i < 16; i++) {
+		n = 0;
+		*in >> buf >> n;
+		_CL_LOG << "'" << buf << "', " << n LOG_; 
 	}
-	_CL_LOG << "Tested a container" LOG_
-#endif	
+
         return 0;
 }
