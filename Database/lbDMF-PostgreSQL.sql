@@ -59,6 +59,7 @@ CREATE TABLE action_types
 ALTER TABLE actions
 ADD CONSTRAINT cst_action_types_TypID FOREIGN KEY ( typ )
    REFERENCES action_types ( id );
+
 --...e
 --...sCREATE TABLE action_steps:0:
 -- +------------------------------------------------------------
@@ -105,6 +106,15 @@ CREATE TABLE formular_actions
   event		char(100),
   PRIMARY KEY (id)
 );
+
+ALTER TABLE formular_actions
+ADD CONSTRAINT cst_formular_actions_formular FOREIGN KEY ( formular )
+   REFERENCES formulare ( id );
+
+ALTER TABLE formular_actions
+ADD CONSTRAINT cst_formular_actions_action FOREIGN KEY ( action )
+   REFERENCES actions ( id );
+
 --...e
 --...e
 --...sFill actions:0:
@@ -794,8 +804,8 @@ insert into Formulare (Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) V
 3, 1);
 
 insert into Formulare (Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
-'Formularaktionen',
-'Formularaktionen verwalten',
+'Aktionen',
+'Aktionen verwalten',
 'manageFormularaktionen',
 '-',
 1, 1);
@@ -815,6 +825,13 @@ insert into Formulare (Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) V
 'manageParts',
 '-',
 5 , 1);
+
+insert into Formulare (Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
+'Formularaktionen zuordnen',
+'Formularaktionen zuordnen',
+'manageAssignFormActions',
+'-',
+1 , 1);
 --...e
 --...sFill ForeignKey_VisibleData_Mapping:0:
 insert into ForeignKey_VisibleData_Mapping (FKName, FKTable, PKName, PKTable) Values (
@@ -934,6 +951,11 @@ insert into Formular_Parameters (ParameterName, ParameterValue, FormularID) Valu
 'select id, partnumber, description, unit, listprice, sellprice from parts',
 26);
 
+insert into Formular_Parameters (ParameterName, ParameterValue, FormularID) Values (
+'query',
+'select formular, action, event from formular_actions order by formular',
+27);
+
 --...e
 --...sFill Anwendungs_Parameter:0:
 insert into Anwendungs_Parameter (ParameterName, ParameterValue, AnwendungID) Values ('DBName', 'trainres', 3);
@@ -981,6 +1003,7 @@ insert into Anwendungen_Formulare (AnwendungID,FormularID) Values (3, 23);
 insert into Anwendungen_Formulare (AnwendungID,FormularID) Values (1, 24);
 insert into Anwendungen_Formulare (AnwendungID,FormularID) Values (1, 25);
 insert into Anwendungen_Formulare (AnwendungID,FormularID) Values (5, 26);
+insert into Anwendungen_Formulare (AnwendungID,FormularID) Values (5, 27);
 --...e
 --...sFill User_Anwendungen:0:
 insert into User_Anwendungen (userid, AnwendungenId) Values (1, 1);

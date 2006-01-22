@@ -1013,7 +1013,7 @@ _CL_LOG << "Connect event handlers" LOG_
 	sizerMain->SetSizeHints(this);
 	sizerMain->Fit(this);
 	
-	Centre();
+	//Centre();
 
 _CL_LOG << "lbDatabasePanel::init(...) ready. Move to first row." LOG_
 
@@ -3253,7 +3253,7 @@ void LB_STDCALL lbDatabaseDialog::init(char* _SQLString, char* DBName, char* DBU
 	sizerMain->SetSizeHints(this);
 	sizerMain->Fit(this);
 	
-	Centre();
+	//Centre();
 }
 /*...e*/
 

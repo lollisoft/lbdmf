@@ -169,6 +169,31 @@ int main(int argc, char *argv[]) {
                 _CL_LOG << "Strings are not identical" LOG_
         }
 
+	_CL_LOG << "Test Stream classes." LOG_
+	
+	UAP_REQUEST(mm, lb_I_OutputStream, out)
+	
+	out->setFileName("Test.txt");
+	int n = 0;
+	*out << "Testdata: " << n++ << "\n";
+	*out << "Testdata: " << n++ << "\n";
+	*out << "Testdata: " << n++ << "\n";
+	*out << "Testdata: " << n++ << "\n";
+	*out << "Testdata: " << n++ << "\n";
+	*out << "Testdata: " << n++ << "\n";
+	*out << "Testdata: " << n++ << "\n";
+	*out << "Testdata: " << n++ << "\n";
+	*out << "Testdata: " << n++ << "\n";
+	*out << "Testdata: " << n++ << "\n";
+	*out << "Testdata: " << n++ << "\n";
+	*out << "Testdata: " << n++ << "\n";
+	*out << "Testdata: " << n++ << "\n";
+	*out << "Testdata: " << n++ << "\n";
+	*out << "Testdata: " << n++ << "\n";
+	*out << "Testdata: " << n++ << "\n";
+
+
+#ifdef bla
 	_CL_LOG << "Test a container" LOG_
 	
 	{
@@ -202,6 +227,6 @@ int main(int argc, char *argv[]) {
 		//container->detachAll();
 	}
 	_CL_LOG << "Tested a container" LOG_
-	
+#endif	
         return 0;
 }

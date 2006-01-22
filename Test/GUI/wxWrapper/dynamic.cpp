@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.107 2005/12/09 15:57:58 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.108 2006/01/22 17:26:18 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.107 $
+ * $Revision: 1.108 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.107 2005/12/09 15:57:58 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.108 2006/01/22 17:26:18 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.108  2006/01/22 17:26:18  lollisoft
+ * Several changes as of new types and tests of them.
+ *
  * Revision 1.107  2005/12/09 15:57:58  lollisoft
  * Things work more properly under Mac OS X.
  *
@@ -1795,11 +1798,16 @@ public wxApp
 	 */
 	lbErrCodes LB_STDCALL lbEvHandler1(lb_I_Unknown* uk);
 	
-	/**
+	/** \brief Handler to ask for a filename.
+	 *
+	 */
+	lbErrCodes LB_STDCALL askOpenFileReadStream(lb_I_Unknown* uk);
+
+	/** \brief Handler to add a menubar.
 	 * Event handler to add a menu bar on the main menu. This is used in my lb_I_MetaApplication and
 	 * also used in the demo app module.
 	 */
-	lbErrCodes LB_STDCALL lbEvHandler2(lb_I_Unknown* uk);
+	lbErrCodes LB_STDCALL addMenuBar(lb_I_Unknown* uk);
 	
 	/**
 	 * Event handler to add a menu entry in a given menu bar name.
@@ -1857,6 +1865,7 @@ protected:
         int AddLabel;
         int AddTextField;
         int AddButton;
+		int AskOpenFileReadStream;
         
         
 /*...sevent manager:8:*/
@@ -2013,11 +2022,12 @@ bool MyApp::OnInit(void)
 	ev_manager->registerEvent("AddMenuEntry", AddMenuEntry);
 	ev_manager->registerEvent("AddLabel", AddLabel);
 	ev_manager->registerEvent("AddTextField", AddTextField);
+	ev_manager->registerEvent("askOpenFileReadStream", AskOpenFileReadStream);
 
-        /**
-         * Register any event handler from this instance by the wxGUI wrapper.
-         */
-        registerEventHandler(*&disp);
+    /**
+     * Register any event handler from this instance by the wxGUI wrapper.
+     */
+    registerEventHandler(*&disp);
   }
 /*...e*/
 
@@ -2302,18 +2312,19 @@ lbErrCodes LB_STDCALL MyApp::setData(lb_I_Unknown* uk) {
 
 /*...sMyApp\58\\58\registerEventHandler\40\lb_I_Dispatcher\42\ disp\41\:0:*/
 lbErrCodes LB_STDCALL MyApp::registerEventHandler(lb_I_Dispatcher* disp) {
-        #ifdef VERBOSE
-        _LOG << "Register event handler" LOG_;
-        #endif
-        // We provide some menu manipulation
-        disp->addEventHandlerFn(this, (lbEvHandler) &MyApp::lbEvHandler1, "AddMenu");
-        disp->addEventHandlerFn(this, (lbEvHandler) &MyApp::lbEvHandler2, "AddMenuBar");
-        disp->addEventHandlerFn(this, (lbEvHandler) &MyApp::lbEvHandler3, "AddMenuEntry");
+	#ifdef VERBOSE
+	_LOG << "Register event handler" LOG_;
+	#endif
+	// We provide some menu manipulation
+	disp->addEventHandlerFn(this, (lbEvHandler) &MyApp::lbEvHandler1, "AddMenu");
+	disp->addEventHandlerFn(this, (lbEvHandler) &MyApp::addMenuBar, "AddMenuBar");
+	disp->addEventHandlerFn(this, (lbEvHandler) &MyApp::lbEvHandler3, "AddMenuEntry");
 	disp->addEventHandlerFn(this, (lbEvHandler) &MyApp::addButton, "AddButton");
 	disp->addEventHandlerFn(this, (lbEvHandler) &MyApp::addLabel, "AddLabel");
 	disp->addEventHandlerFn(this, (lbEvHandler) &MyApp::addTextField, "AddTextField");
+	disp->addEventHandlerFn(this, (lbEvHandler) &MyApp::askOpenFileReadStream, "askOpenFileReadStream");
 
-        return ERR_NONE;
+	return ERR_NONE;
 }
 /*...e*/
 /*...sevent handler:0:*/
@@ -2352,13 +2363,43 @@ lbErrCodes LB_STDCALL MyApp::HandleAddMenu(lb_I_Unknown* uk) {
 /*...e*/
 
 lbErrCodes LB_STDCALL MyApp::lbEvHandler1(lb_I_Unknown* uk) {
-	_LOG << "MyApp::lbEvHandler1 called" LOG_
 	return ERR_NONE;
 }
 
-/*...sAddMenuBar\9\\9\Handler:0:*/
-lbErrCodes LB_STDCALL MyApp::lbEvHandler2(lb_I_Unknown* uk) {
+lbErrCodes LB_STDCALL MyApp::askOpenFileReadStream(lb_I_Unknown* uk) {
+	lbErrCodes err = ERR_NONE;
 
+	UAP_REQUEST(manager.getPtr(), lb_I_EventManager, ev_manager)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, name)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, filepath)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, defaultdir)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, after)
+
+	UAP(lb_I_Parameter, param, __FILE__, __LINE__)
+	
+	QI(uk, lb_I_Parameter, param, __FILE__, __LINE__)
+	
+	parameter->setData("extention");
+	param->getUAPString(*&parameter, *&name);
+
+	//"BMP and GIF files (*.bmp;*.gif)|*.bmp;*.gif|PNG files (*.png)|*.png"
+	
+	wxFileDialog fileDialog(NULL, _trans("Choose a file"), defaultdir->charrep(), "", name->charrep(), wxOPEN);
+
+	_CL_LOG << "Show up a file dialog." LOG_
+
+	if (fileDialog.ShowModal() == wxID_OK) {
+		parameter->setData("result");
+		filepath->setData(fileDialog.GetPath().c_str());
+		param->setUAPString(*&parameter, *&filepath);
+	}
+	
+	return err;
+}
+
+/*...sAddMenuBar\9\\9\Handler:0:*/
+lbErrCodes LB_STDCALL MyApp::addMenuBar(lb_I_Unknown* uk) {
 	lbErrCodes err = ERR_NONE;
 
 	UAP_REQUEST(manager.getPtr(), lb_I_EventManager, ev_manager)

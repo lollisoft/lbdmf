@@ -1016,14 +1016,14 @@ lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::createDBForm(char* formName, char* query
 		if (panelUsage) {
 			wxWindow* w = frame->FindWindowById(_dialog->getId());
 			notebook->AddPage(w, formName, true);
-			notebook->Fit();
+			//notebook->Fit();
 			notebook->Show(true);
 			
 			sizerMain->SetSizeHints(frame);
-			sizerMain->Fit(frame);
-			frame->Fit();
+			//sizerMain->Fit(frame);
+			//frame->Fit();
 		
-			frame->Centre();
+			//frame->Centre();
 		}
 		
 	} else {
