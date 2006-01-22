@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.25 $
+ * $Revision: 1.26 $
  * $Name:  $
- * $Id: lbErrcodes.h,v 1.25 2005/12/02 17:45:59 lollisoft Exp $
+ * $Id: lbErrcodes.h,v 1.26 2006/01/22 13:32:29 lollisoft Exp $
  *
  * $Log: lbErrcodes.h,v $
+ * Revision 1.26  2006/01/22 13:32:29  lollisoft
+ * New mutex id's. Why is this here ?
+ *
  * Revision 1.25  2005/12/02 17:45:59  lollisoft
  * New DB message code.
  *
@@ -259,5 +262,7 @@ enum lbErrCodes {
 /*...e*/
 
 #define LB_LOGFILE_MUTEX 1
+#define LB_INPUTFILE_MUTEX 2
+#define LB_OUTPUTFILE_MUTEX 3
 
 #endif
