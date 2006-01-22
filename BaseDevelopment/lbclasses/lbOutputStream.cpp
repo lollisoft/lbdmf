@@ -82,20 +82,19 @@ class lbOutputStream : public lb_I_OutputStream {
 /*...spublic:0:*/
 public:
 
-    lbOutputStream();
+	lbOutputStream();
 
-    virtual ~lbOutputStream() { 
-    	if (logmessage != NULL) {
-    		free(logmessage);
-    		logmessage = NULL;
-    	}
+	virtual ~lbOutputStream() { 
+    		if (logmessage != NULL) {
+	    		free(logmessage);
+	    		logmessage = NULL;
+	    	}
     	
-    	if (mutex) { 
-    		delete mutex;
-    	}
-		if (!isOpen) {
-			fclose(fout);
-		}
+	    	if (mutex) { 
+	    		delete mutex;
+	    	}
+    	
+	    	close();
 	}
 /*...e*/
 
@@ -104,12 +103,14 @@ public:
 
 /*...slb_I_OutputStream:0:*/
 	void LB_STDCALL setFileName(char* name);
+	bool LB_STDCALL open();
+	bool LB_STDCALL close();
 
-    virtual void LB_STDCALL logdirect(const char *msg, char *f, int level);
+	void LB_STDCALL logdirect(const char *msg, char *f, int level);
     
-    virtual lb_I_OutputStream& LB_STDCALL operator<< (const int i);
-    virtual lb_I_OutputStream& LB_STDCALL operator<< (const char c);
-    virtual lb_I_OutputStream& LB_STDCALL operator<< (const char* string);
+	lb_I_OutputStream& LB_STDCALL operator<< (const int i);
+	lb_I_OutputStream& LB_STDCALL operator<< (const char c);
+	lb_I_OutputStream& LB_STDCALL operator<< (const char* string);
 /*...e*/
 
 /*...sprivate:0:*/
@@ -117,12 +118,14 @@ public:
 
 	void LB_STDCALL _realloc(int add_size);
 
-    char f[PATH_MAX];
-    lbMutex* mutex;
-    char* logmessage;
-    int lastsize;
+	char f[PATH_MAX];
+	lbMutex* mutex;
+	char* logmessage;
+	int pre_lastsize;
+	int lastsize;
 	FILE*	fout;
 	bool	isOpen;
+	int	offset;
 /*...e*/
 
 };
@@ -210,62 +213,65 @@ void LB_STDCALL lbOutputStream::setFileName(char* name) {
 	f[0] = 0;
 	strncpy(f, name, PATH_MAX-1);
 }
+
+bool LB_STDCALL lbOutputStream::close() {
+	if (isOpen) {
+		fflush(fout);
+		fclose(fout);
+		isOpen = false;
+	}
+	return true;
+}
+bool LB_STDCALL lbOutputStream::open() {
+	fout = fopen(f, "wb");
+	if (!fout) {
+		_CL_LOG << "ERROR: Input file not found!" LOG_
+		return false;
+	}
+	isOpen = true;
+	return true;
+}
  
 void LB_STDCALL lbOutputStream::_realloc(int add_size) {
 	if (logmessage == NULL) {
 		char* buf = (char*) malloc(add_size);
 		buf[0] = 0;
 		logmessage = buf;
-		//logmessage = (char*) ::realloc((void*) logmessage, add_size);
+		pre_lastsize = 0;
 		lastsize = add_size;
 	} else {
 		char* buf = (char*) malloc(lastsize+add_size);
-		buf[0] = 0;
-		buf = strcpy(buf, logmessage);
+		buf = (char*) memcpy((void*)buf, (void*)logmessage, lastsize);
 		free(logmessage);
 		logmessage = buf;
-		//logmessage = (char*) ::realloc((void*) logmessage, lastsize+add_size);
+		pre_lastsize = lastsize;
 		lastsize += add_size;
 	}
 } 
  
-lb_I_OutputStream& LB_STDCALL lbOutputStream::operator<< (/*lb_I_OutputStream* logger,*/ const int i) {
-	char s[1000] = "";
-	_realloc(strlen(itoa(i)) + 1);
-	lastsize = lastsize + strlen(itoa(i)) + 1;
-	strcat(logmessage, itoa(i));
+lb_I_OutputStream& LB_STDCALL lbOutputStream::operator<< (const int i) {
+	if (!isOpen) return *this;
+	
+	fwrite(&i, sizeof(i), 1, fout);
+	
 	return *this;
 }
-lb_I_OutputStream& LB_STDCALL lbOutputStream::operator<< (/*lb_I_OutputStream* logger,*/ const char c) {
-        _realloc(lastsize + 2);
-        lastsize = lastsize + 2;
-        char add[2] = "";
-        add[0] = c;
-        strcat(logmessage, add);
-        if (c == '\n') {
-        	logdirect(logmessage, f, 0);
-        	free(logmessage);
-        	logmessage = NULL;
-        	lastsize = 0;
-        }
+lb_I_OutputStream& LB_STDCALL lbOutputStream::operator<< (const char c) {
+	if (!isOpen) return *this;
+
+	fwrite(&c, sizeof(c), 1, fout);
+
 	return *this;
 }
 
-lb_I_OutputStream& LB_STDCALL lbOutputStream::operator<< (/*lb_I_OutputStream* logger,*/ const char* string) {
-	if (string != NULL) {
-		_realloc(lastsize+strlen(string) + 10);
-		lastsize = lastsize + strlen(string) + 10;
-		strcat(logmessage, string);
-		
-		if (strcmp(string, "\n") == 0) {
-			logdirect(logmessage, f, 0);
-			free(logmessage);
-			logmessage = NULL;
-			lastsize = 0;
-		}
-	} else {
-		
-	}
+lb_I_OutputStream& LB_STDCALL lbOutputStream::operator<< (const char* string) {
+	if (!isOpen) return *this;
+
+	int len = strlen(string)+1;
+
+	fwrite(&len, sizeof(len), 1, fout);
+	fwrite(string, len, 1, fout);
+
 	return *this;
 }
 

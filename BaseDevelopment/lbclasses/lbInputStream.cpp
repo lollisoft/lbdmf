@@ -92,6 +92,8 @@ public:
     	if (mutex) { 
     		delete mutex;
     	}
+
+    	close();
     }
 /*...e*/
 
@@ -101,29 +103,31 @@ public:
 
 	void LB_STDCALL setFileName(char* name);
 	bool LB_STDCALL open();
-    bool LB_STDCALL read();
+	bool LB_STDCALL close();
+	
+	bool LB_STDCALL read();
     
-    virtual lb_I_InputStream& LB_STDCALL operator>> (int& i);
-    virtual lb_I_InputStream& LB_STDCALL operator>> (char& c);
-    virtual lb_I_InputStream& LB_STDCALL operator>> (char*& string);
+	lb_I_InputStream& LB_STDCALL operator>> (int& i);
+	lb_I_InputStream& LB_STDCALL operator>> (char& c);
+	lb_I_InputStream& LB_STDCALL operator>> (char*& string);
 /*...e*/
 
 /*...sprivate:0:*/
-    private:
+	private:
 
 	void LB_STDCALL _realloc(int add_size);
 
 	char f[PATH_MAX];
-    static lbMutex* mutex;
-    char* logmessage;
-    int lastsize;
+	static lbMutex* mutex;
+	char* logmessage;
+	int lastsize;
 	FILE*	fin;
 	bool	isOpen;
 	
 	void*	readBuffer;
-	int		max_readBufferSize;
-	int		readBufferSize;
-	int		offset;
+	int	max_readBufferSize;
+	int	readBufferSize;
+	int	offset;
 
 /*...e*/
 
@@ -189,6 +193,15 @@ void LB_STDCALL lbInputStream::setFileName(char* name) {
 	strncpy(f, name, PATH_MAX-1);
 }
 
+bool LB_STDCALL lbInputStream::close() {
+	if (isOpen) {
+		fflush(fin);
+		fclose(fin);
+		isOpen = false;
+	}
+	return true;
+}
+
 bool LB_STDCALL lbInputStream::open() {
 	fin = fopen(f, "rb");
 	if (!fin) {
@@ -199,103 +212,42 @@ bool LB_STDCALL lbInputStream::open() {
 	return true;
 }
 
-/*...slbInputStream\58\\58\logdirect\40\\46\\46\\46\\41\:0:*/
 bool LB_STDCALL lbInputStream::read() {
-	if (!isOpen) return false;
-	if (!feof((FILE*)fin)) {
-			readBufferSize = (int)fread(readBuffer, 1, max_readBufferSize, (FILE*)fin);
-			offset = 0;    // reset the offset
-			return true;
-	}
 	return false;
 }
-/*...e*/
 void LB_STDCALL lbInputStream::_realloc(int add_size) {
-	if (logmessage == NULL) {
-		char* buf = (char*) malloc(add_size);
-		buf[0] = 0;
-		logmessage = buf;
-		//logmessage = (char*) ::realloc((void*) logmessage, add_size);
-		lastsize = add_size;
-	} else {
-		char* buf = (char*) malloc(lastsize+add_size);
-		buf[0] = 0;
-		buf = strcpy(buf, logmessage);
-		free(logmessage);
-		logmessage = buf;
-		//logmessage = (char*) ::realloc((void*) logmessage, lastsize+add_size);
-		lastsize += add_size;
-	}
 } 
  
-lb_I_InputStream& LB_STDCALL lbInputStream::operator>> (/*lb_I_InputStream* logger,*/ int& i) {
-	if (offset == readBufferSize) {
-		// Read more data. (This reset's offset)
-		if (read()) {
-		
-		} else {
-			_CL_LOG << "Error while reading buffer!" LOG_
-			i = 0;
-			return *this;
-		}
-	}
-	
-	if (offset+sizeof(int) > readBufferSize) {
-		memcpy((void*) &i, readBuffer, readBufferSize-offset);
-		offset+=(readBufferSize-offset);
-		
-		if (read()) {
-			memcpy((void*) &i, readBuffer, sizeof(int));
-			offset+=sizeof(int);
-		} else {
-			_CL_LOG << "FATAL: Partial read failed!" LOG_
-			i = 0;
-			return *this;
-		}
-	
-	} else {
-		memcpy((void*) &i, readBuffer, sizeof(int));
-		offset+=sizeof(int);
-	}
+lb_I_InputStream& LB_STDCALL lbInputStream::operator>> (int& i) {
+	if (!isOpen) return *this;
+
+	fread(&i, sizeof(i), 1, fin);
 	
 	return *this;
 }
 
-lb_I_InputStream& LB_STDCALL lbInputStream::operator>> (/*lb_I_InputStream* logger,*/ char& c) {
-	if (offset == readBufferSize) {
-		// Read more data. (This reset's offset)
-		if (read()) {
-		
-		} else {
-			_CL_LOG << "Error while reading buffer!" LOG_
-			c = ' ';
-			return *this;
-		}
-	}
-	
-	if (offset+sizeof(char) > readBufferSize) {
-		memcpy((void*) &c, readBuffer, readBufferSize-offset);
-		offset+=(readBufferSize-offset);
-		
-		if (read()) {
-			memcpy((void*) &c, readBuffer, sizeof(char));
-			offset+=sizeof(char);
-		} else {
-			_CL_LOG << "FATAL: Partial read failed!" LOG_
-			c = ' ';
-			return *this;
-		}
-	
-	} else {
-		memcpy((void*) &c, readBuffer, sizeof(char));
-		offset+=sizeof(char);
-	}
+lb_I_InputStream& LB_STDCALL lbInputStream::operator>> (char& c) {
+	if (!isOpen) return *this;
+
+	fread(&c, sizeof(c), 1, fin);
 	
 	return *this;
 }
 
-lb_I_InputStream& LB_STDCALL lbInputStream::operator>> (/*lb_I_InputStream* logger,*/ char*& string) {
+lb_I_InputStream& LB_STDCALL lbInputStream::operator>> (char*& string) {
+	char* buf = NULL;
+	int size = 0;
+	
+	fread(&size, sizeof(size), 1, fin);
+	
+	buf = (char*) malloc(size);
+	
+	fread(buf, size, 1, fin);
 
+	if (string != NULL) free(string);
+
+	string = buf;
+	
 	return *this;
 }
 
