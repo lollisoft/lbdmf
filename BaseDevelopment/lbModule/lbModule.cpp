@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.99 $
+ * $Revision: 1.100 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.99 2005/11/20 17:26:13 lollisoft Exp $
+ * $Id: lbModule.cpp,v 1.100 2006/01/22 13:39:58 lollisoft Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.100  2006/01/22 13:39:58  lollisoft
+ * Added entries for Stream classes.
+ *
  * Revision 1.99  2005/11/20 17:26:13  lollisoft
  * Local TRMem count.
  *
@@ -2032,8 +2035,13 @@ lb_I_FunctorEntity* LB_STDCALL lbHCInterfaceRepository::getFirstEntity() {
 #define PREFIX ""
 #endif
 
-	if (strcmp(searchArgument, "lb_I_Container") == 0) {
-	 	functor = PREFIX "instanceOfSkipList";
+	if (strcmp(searchArgument, "lb_I_InputStream") == 0) {
+	 	functor = PREFIX "instanceOfInputStream";
+		module = "lbClasses";
+	}
+	
+	if (strcmp(searchArgument, "lb_I_OutputStream") == 0) {
+	 	functor = PREFIX "instanceOfOutputStream";
 		module = "lbClasses";
 	}
 	
