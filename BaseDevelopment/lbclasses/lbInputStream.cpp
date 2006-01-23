@@ -75,7 +75,6 @@ extern "C" {
 #define  ISTREAM_DEFINED
 
 /*...sclass lbInputStream:0:*/
-/// \brief Logging implementation. \todo Separate file to a base class.
 class lbInputStream : public lb_I_InputStream {
 
 /*...spublic:0:*/
@@ -168,18 +167,17 @@ lbErrCodes LB_STDCALL lbInputStream::setData(lb_I_Unknown* uk) {
 /*...slbInputStream\58\\58\lbInputStream\40\\41\:0:*/
 lbInputStream::lbInputStream() {
 //lbLock lbLock(sect);
-		ref = STARTREF;
-		manager = NULL;
-		fin = NULL;
-		readBuffer = NULL;
-		readBufferSize = 0;
-		offset = 0;
-		max_readBufferSize = 100;
-		isOpen = false;
-        
-		f[0] = 0;
+	ref = STARTREF;
+	manager = NULL;
+	fin = NULL;
+	readBuffer = NULL;
+	readBufferSize = 0;
+	offset = 0;
+	max_readBufferSize = 100;
+	isOpen = false;
+        f[0] = 0;
 		
-        if (mutex == NULL) {
+	if (mutex == NULL) {
                 mutex = new lbMutex();
                 mutex->createMutex(LB_INPUTFILE_MUTEX);
         }
