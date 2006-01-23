@@ -4153,14 +4153,14 @@ lbDatabase::~lbDatabase() {
 lbErrCodes LB_STDCALL lbDatabase::init() {
 	retcode = SQLAllocEnv(&henv);
 	if (retcode != SQL_SUCCESS) {
-        	_CL_VERBOSE << "lbDatabase::init(): Database initializion failed." LOG_
+        	_LOG << "lbDatabase::init(): Database initializion failed." LOG_
         	return ERR_DB_INIT;
         }
 
 	retcode = SQLSetEnvAttr(henv, SQL_ATTR_ODBC_VERSION, (void*) SQL_OV_ODBC3, 0);
 
 	if (retcode != SQL_SUCCESS) {
-        	_CL_VERBOSE << "lbDatabase::init(): Database version initializion failed." LOG_
+        	_LOG << "lbDatabase::init(): Database version initializion failed." LOG_
         	return ERR_DB_INIT;
 	}
 
@@ -4245,12 +4245,13 @@ lbErrCodes LB_STDCALL lbDatabase::connect(char* DSN, char* user, char* passwd) {
 
 	    retcode = SQLAllocConnect(henv, &hdbc); /* Connection handle */
 
-		if (retcode != SQL_SUCCESS)
-	        {
-    		    _dbError_ENV("SQLAllocConnect()", henv);
-        	    SQLFreeEnv(henv);
-        	    return ERR_DB_CONNECT;
-    		}	
+	    if (retcode != SQL_SUCCESS)
+	    {
+		_LOG << "SQLAllocConnect(henv, &hdbc) failed." LOG_
+    		_dbError_ENV("SQLAllocConnect()", henv);
+        	SQLFreeEnv(henv);
+    		return ERR_DB_CONNECT;
+    	    }	
         
 	    lbConnection* c = new lbConnection();
 	    
@@ -4265,6 +4266,7 @@ lbErrCodes LB_STDCALL lbDatabase::connect(char* DSN, char* user, char* passwd) {
 
             if (retcode != SQL_SUCCESS)
             {
+		_LOG << "SQLSetConnectOption(hdbc, SQL_LOGIN_TIMEOUT, 15) failed." LOG_
                 _dbError_DBC( "SQLSetConnectOption()", hdbc);
                 SQLFreeEnv(henv);
                 return ERR_DB_CONNECT;
@@ -4279,18 +4281,15 @@ lbErrCodes LB_STDCALL lbDatabase::connect(char* DSN, char* user, char* passwd) {
 
             if (retcode != SQL_SUCCESS)
             {
+		_LOG << "SQLSetConnectAttr(hdbc, SQL_ATTR_ODBC_CURSORS, SQL_CUR_USE_IF_NEEDED, 0) failed." LOG_
 	        _dbError_DBC( "SQLSetConnectAttr()", hdbc);
                 SQLFreeEnv(henv);
                 return ERR_DB_CONNECT;
 	    }
 
-	    _CL_VERBOSE << "SQLConnect(hdbc, '" << DSN << "', '" << user << "', '" << passwd << "');" LOG_
-
 	    retcode = SQLConnect(hdbc, (unsigned char*) DSN, SQL_NTS, 
 				       (unsigned char*) user, SQL_NTS, 
 				       (unsigned char*) passwd, SQL_NTS); /* Connect to data source */
-
-	    _CL_VERBOSE << "Called." LOG_
 
 	    if (retcode != SQL_SUCCESS && retcode != SQL_SUCCESS_WITH_INFO)
             {
@@ -4314,6 +4313,7 @@ lbErrCodes LB_STDCALL lbDatabase::connect(char* DSN, char* user, char* passwd) {
 
 	    if (retcode != SQL_SUCCESS)
 	    {
+		_LOG << "SQLSetConnectOption(hdbc, SQL_AUTOCOMMIT, SQL_AUTOCOMMIT_ON) failed." LOG_
 	        _dbError_DBC( "SQLSetConnectOption(SQL_AUTOCOMMIT, SQL_AUTOCOMMIT_ON)", hdbc);
 	        SQLFreeEnv(henv);
 	        return ERR_DB_CONNECT;
