@@ -25,6 +25,10 @@
 	    
 	    40235 Duesseldorf (germany)
 */
+/**
+ *  \file lbInterfaces-sub-transfer.h
+ *  Include for data transfer interfaces.
+ */
 #ifndef __LB_SUB_TRANSFER__
 #define __LB_SUB_TRANSFER__
 
@@ -53,6 +57,9 @@ typedef struct {
 /*...e*/
 
 /*...sclass lb_I_Transfer_Data:0:*/
+/**
+ * \brief Protocolbased data transfer.
+ */
 class lb_I_Transfer_Data {
 protected:
         lb_I_Transfer_Data() {}
@@ -111,32 +118,115 @@ public:
 };
 /*...e*/
 
+/**
+ * \brief Filebased data reader.
+ */
 class lb_I_InputStream : public lb_I_Unknown {
 public:
+
+	/** \brief Set a filename to load from.
+	 *
+	 */
 	virtual void LB_STDCALL setFileName(char* name) = 0;
+
+	/** \brief Open the file.
+	 *
+	 */
 	virtual bool LB_STDCALL open() = 0;
+
+	/** \brief Close the file.
+	 *
+	 */
 	virtual bool LB_STDCALL close() = 0;
+
+	/** \brief Should be deprectated.
+	 *
+	 */
 	virtual bool LB_STDCALL read() = 0;
-    
+   	
+	/** \brief Read an int data type.
+	 *
+	 */
 	virtual lb_I_InputStream& LB_STDCALL operator>> (int& i) = 0;
+   	
+	/** \brief Read a char data type.
+	 *
+	 */
 	virtual lb_I_InputStream& LB_STDCALL operator>> (char& c) = 0;
+   	
+	/** \brief Read a complete string.
+	 *
+	 */
 	virtual lb_I_InputStream& LB_STDCALL operator>> (char*& string) = 0;
 
 };
 
+/**
+ * \brief Filebased data writer.
+ */
 class lb_I_OutputStream : public lb_I_Unknown {
 public:
+
+	/** \brief Set a filename to load from.
+	 *
+	 */
 	virtual void LB_STDCALL setFileName(char* name) = 0;
+
+	/** \brief Open the file.
+	 *
+	 */
 	virtual bool LB_STDCALL open() = 0;
+
+	/** \brief Close the file.
+	 *
+	 */
 	virtual bool LB_STDCALL close() = 0;
 
+	/** \brief Should be deprectated.
+	 *
+	 */
 	virtual void LB_STDCALL logdirect(const char *msg, char *f, int level) = 0;
     
+	/** \brief Write an int data type.
+	 *
+	 */
 	virtual lb_I_OutputStream& LB_STDCALL operator<< (const int i) = 0;
+
+	/** \brief Write a char data type.
+	 *
+	 */
 	virtual lb_I_OutputStream& LB_STDCALL operator<< (const char c) = 0;
+	
+	/** \brief Write a complete string.
+	 *
+	 */
 	virtual lb_I_OutputStream& LB_STDCALL operator<< (const char* string) = 0;
 	
 };
 
+/**
+ * \brief Interface for loadable and saveable objects.
+ */
+class lb_I_Streamable {
+public:
+
+	/**
+	 * \brief Supported column types
+	 */
+	enum lbStreamTypes {
+		lb_I_String,
+		lb_I_Integer,
+		lb_I_Long,
+		lb_I_Container
+	};
+
+	/** \brief Save to stream.
+	 */
+	virtual lbErrCodes LB_STDCALL save(lb_I_OutputStream* oStream) = 0;
+	
+	/** \brief Load from stream.
+	 */
+	virtual lbErrCodes LB_STDCALL load(lb_I_InputStream* iStream) = 0;
+};
 
 #endif // __LB_SUB_TRANSFER__
