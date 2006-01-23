@@ -76,7 +76,6 @@ extern "C" {
 #define  OUTPUTSTREAM_DEFINED
 
 /*...sclass lbOutputStream:0:*/
-/// \brief Logging implementation. \todo Separate file to a base class.
 class lbOutputStream : public lb_I_OutputStream {
 
 /*...spublic:0:*/
@@ -205,9 +204,6 @@ void LB_STDCALL lbOutputStream::logdirect(const char *msg, char *f, int level) {
 #endif						
 }
 /*...e*/
-/**
- * My new - possible bugfree - log system
- */
 
 void LB_STDCALL lbOutputStream::setFileName(char* name) {
 	f[0] = 0;
