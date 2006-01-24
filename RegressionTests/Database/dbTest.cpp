@@ -281,11 +281,11 @@ int main(int argc, char *argv[]) {
 		query2->next();
 		query2->next();
 		query2->next();
-		//query2->remove();
+		query2->remove();
 		query2->update();
 		//query2->previous();
 		query2->PrintData();
-		query2->PrintData();
+		query2->PrintData(true);
 
 	}
 /*...e*/
