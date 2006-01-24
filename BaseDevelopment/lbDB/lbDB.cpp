@@ -861,6 +861,8 @@ lbErrCodes      LB_STDCALL lbBoundColumns::setQuery(lb_I_Query* q, lb_I_Containe
 	HSTMT hstmt = qq->getCurrentStatement();
 	query = qq;
 
+// As Luf states, here it should not be.
+//#ifdef bla
 	const int ArraySize = 1;
 	SQLUSMALLINT RowStatusArray[ArraySize];
 
@@ -873,7 +875,7 @@ lbErrCodes      LB_STDCALL lbBoundColumns::setQuery(lb_I_Query* q, lb_I_Containe
 	SQLSetStmtAttr(hstmt, SQL_ATTR_CURSOR_TYPE, (SQLPOINTER) csrType, 0);
 	SQLSetStmtAttr(hstmt, SQL_ATTR_ROW_BIND_TYPE, SQL_BIND_BY_COLUMN, 0);
 	SQLSetStmtAttr(hstmt, SQL_ATTR_ROW_STATUS_PTR, RowStatusArray, 0);
-
+//#endif
 	/*
 	 * Get the number of columns for this query.
 	 */
@@ -1427,12 +1429,38 @@ Using SQLSetPos
 	retcode = SQLSetCursorName(hstmt, cursorname, SQL_NTS);
 */	
 /*...e*/
+// Moved from lbBoundColumns::setQuery(...)
+// As Luf states, here it should be.
+#ifdef bla
+	const int ArraySize = 1;
+	SQLUSMALLINT RowStatusArray[ArraySize];
 
+	// Set the array size to one.
+	SQLSetStmtAttr(hstmt, SQL_ATTR_ROW_ARRAY_SIZE, (SQLPOINTER) ArraySize, 0);
+	
+	// Why this construct ??
+	SQLINTEGER csrType = SQL_CURSOR_KEYSET_DRIVEN;
+	
+	if ((retcode = SQLSetStmtAttr(hstmt, SQL_ATTR_CURSOR_TYPE, (SQLPOINTER) csrType, 0)) != SQL_SUCCESS) {
+		if (retcode != SQL_SUCCESS_WITH_INFO) 
+			_CL_LOG << "lbQuery::query(...) Error: Failed to set cursor to keyset driven." LOG_
+	}
+
+	if ((retcode = SQLSetStmtAttr(hstmt, SQL_ATTR_ROW_BIND_TYPE, SQL_BIND_BY_COLUMN, 0)) != SQL_SUCCESS) {
+		if (retcode != SQL_SUCCESS_WITH_INFO) 
+			_CL_LOG << "lbQuery::query(...) Error: Failed to set binding by column." LOG_
+	}
+	
+	if ((retcode = SQLSetStmtAttr(hstmt, SQL_ATTR_ROW_STATUS_PTR, RowStatusArray, 0)) != SQL_SUCCESS) {
+		if (retcode != SQL_SUCCESS_WITH_INFO) 
+			_CL_LOG << "lbQuery::query(...) Error: Failed to set rowstatus array." LOG_
+	}
+#endif
 	retcode = SQLExecDirect(hstmt, (unsigned char*) szSql, SQL_NTS);
 
 	if ((retcode != SQL_SUCCESS) && (retcode != SQL_SUCCESS_WITH_INFO))
         {
-        	dbError("SQLExecDirect()", hstmt);
+        	//dbError("SQLExecDirect()", hstmt);
 		_LOG << "lbQuery::query(...) failed. (" << szSql << ")" LOG_
 		return ERR_DB_QUERYFAILED;
         }
