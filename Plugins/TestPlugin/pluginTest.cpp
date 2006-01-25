@@ -92,6 +92,7 @@ extern "C" {
 /*...e*/
 
 /*...slbTest:0:*/
+#ifdef bla
 class lbTest : public lb_I_Unknown {
 public:
 	lbTest();
@@ -136,7 +137,7 @@ void LB_STDCALL lbTest::test() {
 
 }
 /*...e*/
-
+#endif
 /*...sclass lbPluginTest implementation:0:*/
 /*...slbPluginTest:0:*/
 class lbPluginTest : public virtual lb_I_PluginImpl {
