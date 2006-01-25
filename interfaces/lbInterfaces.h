@@ -63,6 +63,9 @@
  * One of the following databases: <a href="http://www.mysql.com">MySQL</a>, <a href="http://www.postgresql.org">PostgreSQL</a> or <a href="http://www.sybase.com">Sybase</a>.
  * Other databases may be possible, but there is not yet a SQL script to setup the database.
  *
+ * \note To get ODBC stuff work properly under Linux you should at least on SuSE Linux 9.1 download unixODBC version 2.2.11,
+ * compile and install it. After that, reinstall ODBC driver version 07.03.0200 for UPDATEABLE CURSORS.
+ *
  * \ref Postsetup "Post setup instructions."
  */
 /*...e*/
