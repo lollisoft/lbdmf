@@ -697,6 +697,34 @@ class lb_I_ConfigObject;
 
 class lb_I_Frame;
 class lb_I_Transfer_Data;
+
+// Base interface for visitors
+class lb_I_Aspect;
+class lb_I_Integer;
+class lb_I_Long;
+class lb_I_Container;
+class lb_I_Database;
+class lb_I_Connection;
+class lb_I_ColumnBinding;
+class lb_I_BoundColumn;
+class lb_I_KeyBase;
+class lb_I_Query;
+class lb_I_MVC_View;
+class lb_I_InterfaceRepository;
+class lb_I_Element;
+class lb_I_FunctorEntity;
+class lb_I_InstanceReference;
+class lb_I_FileOperation;
+class lb_I_OutputStream;
+class lb_I_Locale;
+class lb_I_Parameter;
+class lb_I_Log;
+class lb_I_Window;
+class lb_I_wxFrame;
+class lb_I_MasterDetailFormDefinition;
+class lb_I_DatabaseReport;
+class lb_I_Project;
+
 /*...e*/
 
 /*...scallback \47\ handler typedefs:0:*/
@@ -910,7 +938,7 @@ public:
          *		It creates a new instance with the normal constructor. But it calls
          *		the method setData with the this pointer.
          *		You must provide this method to be able to make a copy of your data.
-	 *
+		 *
          *
          *		return uk;
          */
@@ -921,6 +949,8 @@ public:
          * from the clone member to get a correct copy of the cloned instance.
          */
         virtual lbErrCodes LB_STDCALL setData(lb_I_Unknown* u) = 0;
+
+		virtual void accept(lb_I_Aspect* v) = 0;//{ v->visit(this); } 
 
 //friend class lb_I_gcManager;	
 };
@@ -1349,19 +1379,20 @@ public: \
 	virtual void 		LB_STDCALL setFurtherLock(int state) { \
 	    further_lock = state; \
 	} \
-	virtual void 		LB_STDCALL setModuleManager(lb_I_Module* m, char* file, int line); \
-	virtual lb_I_Module*    LB_STDCALL getModuleManager(); \
-	virtual void 		LB_STDCALL resetRefcount(); \
-	virtual void 		LB_STDCALL setDebug(int i = 1) { debug_macro = i; } \
-	virtual lbErrCodes 	LB_STDCALL release(char* file, int line); \
-	virtual char* 		LB_STDCALL getClassName(); \
-	virtual char*           LB_STDCALL getCreationLoc() const; \
-	virtual int 		LB_STDCALL deleteState(); \
-	virtual char* 		LB_STDCALL _queryInterface(char* name, void** unknown, char* file, int line); \
-	virtual lbErrCodes 	LB_STDCALL queryInterface(char* name, void** unknown, char* file, int line); \
-	virtual lb_I_Unknown* 	LB_STDCALL clone(char* file, int line) const; \
-	virtual lbErrCodes 	LB_STDCALL setData(lb_I_Unknown* u); \
-	virtual int 		LB_STDCALL getRefCount() { return ref; }
+	void 		LB_STDCALL setModuleManager(lb_I_Module* m, char* file, int line); \
+	lb_I_Module*    LB_STDCALL getModuleManager(); \
+	void 		LB_STDCALL resetRefcount(); \
+	void 		LB_STDCALL setDebug(int i = 1) { debug_macro = i; } \
+	lbErrCodes 	LB_STDCALL release(char* file, int line); \
+	char* 		LB_STDCALL getClassName(); \
+	char*           LB_STDCALL getCreationLoc() const; \
+	int 		LB_STDCALL deleteState(); \
+	char* 		LB_STDCALL _queryInterface(char* name, void** unknown, char* file, int line); \
+	lbErrCodes 	LB_STDCALL queryInterface(char* name, void** unknown, char* file, int line); \
+	lb_I_Unknown* 	LB_STDCALL clone(char* file, int line) const; \
+	lbErrCodes 	LB_STDCALL setData(lb_I_Unknown* u); \
+	int 		LB_STDCALL getRefCount() { return ref; } \
+	void		LB_STDCALL accept(lb_I_Aspect* v) { v->visit(this); }
 
 /*...e*/
 
@@ -2850,6 +2881,7 @@ public:
 	virtual void LB_STDCALL setActionID(char* id) = 0;
 };
 
+#include <lbInterfaces-sub-visitor.h>
 #include <lbInterfaces-sub-transfer.h>
 #include <lbInterfaces-sub-xml.h>
 #include <lbInterfaces-sub-classes.h>	
