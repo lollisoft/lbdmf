@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.101 $
+ * $Revision: 1.102 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.101 2006/01/22 19:24:36 lollisoft Exp $
+ * $Id: lbModule.cpp,v 1.102 2006/01/25 15:47:58 lollisoft Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.102  2006/01/25 15:47:58  lollisoft
+ * Commented unused stuff out to let visitor changes compile.
+ *
  * Revision 1.101  2006/01/22 19:24:36  lollisoft
  * Entry for skiplist class was lost.
  *
@@ -3121,7 +3124,7 @@ lbErrCodes LB_STDCALL lbModule::getInstance(char* functorname, lb_I_ConfigObject
         return ERR_NONE;
 }
 /*...e*/
-
+#ifdef bla
 /*...sclass lbNamedValue:0:*/
 class lbNamedValue :    public lb_I_Unknown {
 public:
@@ -3151,6 +3154,7 @@ public:
         lb_I_Unknown* uk_value;
 };
 /*...e*/
+#endif
 /*...sclass lbElement:0:*/
 class lbElement : public lb_I_Element {
 private:
@@ -3208,6 +3212,7 @@ lbErrCodes lbElement::setData(lb_I_Unknown* uk) {
         return ERR_NOT_IMPLEMENTED;
 }
 /*...e*/
+#ifdef bla
 /*...simplementation of lbNamedValue:0:*/
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbNamedValue)
 // No additionally interface, because it's not used externally yet.
@@ -3250,6 +3255,7 @@ lbErrCodes lbNamedValue::getValue(lb_I_Unknown* & _value) {
 
 lbNamedValue* namedValue = NULL;
 //lb_I_Container* moduleList = NULL;
+#endif // lbNamedValue
 
 typedef struct instances_of_module {
         char* moduleName;
