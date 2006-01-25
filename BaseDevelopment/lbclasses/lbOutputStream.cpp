@@ -36,9 +36,10 @@
 #define __MISC
 
 /*...sIncludes:0:*/
-#include <iostream>
+#include <iostream.h>
 #include <stdio.h>
 #include <time.h>
+#include <fstream.h>
 
 #ifdef _MSC_VER
 #define PATH_MAX 512
@@ -125,6 +126,9 @@ public:
 	FILE*	fout;
 	bool	isOpen;
 	int	offset;
+
+	ofstream* _ostream;
+
 /*...e*/
 
 };
@@ -173,35 +177,11 @@ lbOutputStream::lbOutputStream() {
 
         logmessage = NULL;
         lastsize = 0;
+	_ostream = NULL;
 }
 /*...e*/
 /*...slbOutputStream\58\\58\logdirect\40\\46\\46\\46\\41\:0:*/
 void LB_STDCALL lbOutputStream::logdirect(const char *msg, char *f, int level) {
-	if (!isOpen) {
-		fout = fopen(f, "a");
-		if (!fout) {
-			_CL_LOG << "ERROR: Input file not found!" LOG_
-			return;
-		}
-		isOpen = true;
-	}
-	
-	char buf[1000] = "";
-	buf[0] = 0;
-	
-	int l = level;
-	
-	while (l > 0) {
-		sprintf(buf, "%s%s", buf, "\t");
-		l--;
-	}
-	
-#ifdef WINDOWS                        
-	fprintf( fout, "%s%s", buf, msg);
-#endif
-#if defined (OSX) || defined (LINUX) || defined(UNIX)
-	fprintf( fout, "%s%s", buf, msg);
-#endif						
 }
 /*...e*/
 
@@ -212,50 +192,34 @@ void LB_STDCALL lbOutputStream::setFileName(char* name) {
 
 bool LB_STDCALL lbOutputStream::close() {
 	if (isOpen) {
-		fflush(fout);
-		fclose(fout);
+		_ostream->close();
+		delete _ostream;
 		isOpen = false;
 	}
 	return true;
 }
 bool LB_STDCALL lbOutputStream::open() {
-	fout = fopen(f, "wb");
-	if (!fout) {
-		_CL_LOG << "ERROR: Input file not found!" LOG_
-		return false;
+	if (!isOpen) {
+		_ostream = new ofstream(f);
 	}
 	isOpen = true;
 	return true;
 }
  
 void LB_STDCALL lbOutputStream::_realloc(int add_size) {
-	if (logmessage == NULL) {
-		char* buf = (char*) malloc(add_size);
-		buf[0] = 0;
-		logmessage = buf;
-		pre_lastsize = 0;
-		lastsize = add_size;
-	} else {
-		char* buf = (char*) malloc(lastsize+add_size);
-		buf = (char*) memcpy((void*)buf, (void*)logmessage, lastsize);
-		free(logmessage);
-		logmessage = buf;
-		pre_lastsize = lastsize;
-		lastsize += add_size;
-	}
 } 
  
 lb_I_OutputStream& LB_STDCALL lbOutputStream::operator<< (const int i) {
 	if (!isOpen) return *this;
-	
-	fwrite(&i, sizeof(i), 1, fout);
+
+	*_ostream << i;
 	
 	return *this;
 }
 lb_I_OutputStream& LB_STDCALL lbOutputStream::operator<< (const char c) {
 	if (!isOpen) return *this;
 
-	fwrite(&c, sizeof(c), 1, fout);
+	*_ostream << c;
 
 	return *this;
 }
@@ -263,10 +227,9 @@ lb_I_OutputStream& LB_STDCALL lbOutputStream::operator<< (const char c) {
 lb_I_OutputStream& LB_STDCALL lbOutputStream::operator<< (const char* string) {
 	if (!isOpen) return *this;
 
-	int len = strlen(string)+1;
+	std::string s(string);
 
-	fwrite(&len, sizeof(len), 1, fout);
-	fwrite(string, len, 1, fout);
+	*_ostream << endl << s << endl; 	
 
 	return *this;
 }

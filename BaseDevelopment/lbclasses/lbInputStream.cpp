@@ -37,6 +37,7 @@
 
 /*...sIncludes:0:*/
 #include <iostream>
+#include <fstream>
 #include <stdio.h>
 #include <time.h>
 
@@ -68,7 +69,7 @@ extern "C" {
 
 #include <lbthread.h>
 #include <lb_misc.h>
-#include <fstream>
+#include <fstream.h>
 /*...e*/
 
 #ifndef  ISTREAM_DEFINED
@@ -127,6 +128,7 @@ public:
 	int	max_readBufferSize;
 	int	readBufferSize;
 	int	offset;
+	ifstream* _istream;
 
 /*...e*/
 
@@ -176,6 +178,8 @@ lbInputStream::lbInputStream() {
 	max_readBufferSize = 100;
 	isOpen = false;
         f[0] = 0;
+
+	_istream = NULL;
 		
 	if (mutex == NULL) {
                 mutex = new lbMutex();
@@ -193,19 +197,19 @@ void LB_STDCALL lbInputStream::setFileName(char* name) {
 
 bool LB_STDCALL lbInputStream::close() {
 	if (isOpen) {
-		fflush(fin);
-		fclose(fin);
+		_istream->close();
+		delete _istream;
 		isOpen = false;
 	}
+
 	return true;
 }
 
 bool LB_STDCALL lbInputStream::open() {
-	fin = fopen(f, "rb");
-	if (!fin) {
-		_CL_LOG << "ERROR: Input file not found!" LOG_
-		return false;
+	if (!isOpen) {
+		_istream = new ifstream(f);
 	}
+
 	isOpen = true;
 	return true;
 }
@@ -219,15 +223,15 @@ void LB_STDCALL lbInputStream::_realloc(int add_size) {
 lb_I_InputStream& LB_STDCALL lbInputStream::operator>> (int& i) {
 	if (!isOpen) return *this;
 
-	fread(&i, sizeof(i), 1, fin);
-	
+	*_istream >> i;
+
 	return *this;
 }
 
 lb_I_InputStream& LB_STDCALL lbInputStream::operator>> (char& c) {
 	if (!isOpen) return *this;
 
-	fread(&c, sizeof(c), 1, fin);
+	*_istream >> c;
 	
 	return *this;
 }
@@ -235,17 +239,17 @@ lb_I_InputStream& LB_STDCALL lbInputStream::operator>> (char& c) {
 lb_I_InputStream& LB_STDCALL lbInputStream::operator>> (char*& string) {
 	char* buf = NULL;
 	int size = 0;
+
+	std::string s;	
 	
-	fread(&size, sizeof(size), 1, fin);
-	
-	buf = (char*) malloc(size);
-	
-	fread(buf, size, 1, fin);
+	_istream->ignore(1, '\n');
+
+	getline(*_istream, s);
 
 	if (string != NULL) free(string);
 
-	string = buf;
-	
+	string = strdup(s.c_str());
+
 	return *this;
 }
 
