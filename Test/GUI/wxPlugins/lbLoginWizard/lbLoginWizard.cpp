@@ -563,122 +563,39 @@ char const * LB_STDCALL wxLogonPage::getTextValue(char* _name) {
 /*...e*/
 /*...e*/
 
-/** \brief Implements a wizard based login plugin.
- *
- */
-class lbPluginLoginWizard :
-	public lb_I_PluginImpl,
-	public lb_I_EventHandler
-{
+class lbLoginHandler : 
+	public lb_I_Unknown,
+	public lb_I_EventHandler {
 public:
+		lbLoginHandler();
+		virtual ~lbLoginHandler();
 
-	lbPluginLoginWizard();
-	virtual ~lbPluginLoginWizard();
+		DECLARE_LB_UNKNOWN()
 
-	DECLARE_LB_UNKNOWN()
+		lbErrCodes LB_STDCALL registerEventHandler(lb_I_Dispatcher* disp);
+		lbErrCodes LB_STDCALL runLogin(lb_I_Unknown* uk);
+		
+		wxWizard *wizard;
+		wxWizardPageSimple *page1;
+};
 
-	/** \brief Registers internally needed event handlers.
-	 *
-	 * This function registers one event handler, that let the GUI invoke it from
-	 * menu actions.
-	 */
-	virtual lbErrCodes LB_STDCALL registerEventHandler(lb_I_Dispatcher* disp);
-	
-	/** \brief Init the menu emtries.
-	 *
-	 * This connects the login feature to a menu.
-	 */
-	virtual void LB_STDCALL initialize();
-	
-	/** \brief Run the login manually.
-	 *
-	 * This let the login wizard appear manually without invoking it from
-	 * the menu entry. You could use this to start the login wizard automatically.
-	 */
-	virtual bool LB_STDCALL run();
-
-	/** \brief Get the underlying implementation.
-	 *
-	 * Not needed in this implementation. This implementation has no separate
-	 * class with the implementation. This is due to the not existing problem
-	 * of multible base class inheritation of lb_I_Unknown.
-	 *
-	 * If multible intarfaces could be queried, then each
-	 */
-	virtual lb_I_Unknown* LB_STDCALL getImplementation();
-
-	virtual lb_I_Unknown* LB_STDCALL peekImplementation();
-	void LB_STDCALL releaseImplementation();
-
-	lbErrCodes LB_STDCALL runLogin(lb_I_Unknown* uk);
-	
-	
-	wxWizard *wizard;
-	wxWizardPageSimple *page1;
-};	
-
-BEGIN_IMPLEMENT_LB_UNKNOWN(lbPluginLoginWizard)
-        ADD_INTERFACE(lb_I_PluginImpl)
+BEGIN_IMPLEMENT_LB_UNKNOWN(lbLoginHandler)
+	ADD_INTERFACE(lb_I_EventHandler)
 END_IMPLEMENT_LB_UNKNOWN()
 
-IMPLEMENT_FUNCTOR(instanceOflbPluginLoginWizard, lbPluginLoginWizard)
-
-lbErrCodes LB_STDCALL lbPluginLoginWizard::setData(lb_I_Unknown* uk) {
-        _CL_VERBOSE << "lbPluginLoginWizard::setData(...) not implemented yet" LOG_
+lbErrCodes LB_STDCALL lbLoginHandler::setData(lb_I_Unknown* uk) {
+        _CL_VERBOSE << "lbLoginHandler::setData(...) not implemented yet" LOG_
 
         return ERR_NOT_IMPLEMENTED;
 }
 
-lbPluginLoginWizard::lbPluginLoginWizard() {
-	wizard = NULL;
-	page1 = NULL;
-	ref = STARTREF;
-}
-
-lbPluginLoginWizard::~lbPluginLoginWizard() {
-	_CL_VERBOSE << "lbPluginLoginWizard::~lbPluginLoginWizard() called." LOG_
-}
-	
-	
-lbErrCodes LB_STDCALL lbPluginLoginWizard::registerEventHandler(lb_I_Dispatcher* disp) {
-	disp->addEventHandlerFn(this, (lbEvHandler) &lbPluginLoginWizard::runLogin, "RunLogin");
+lbErrCodes LB_STDCALL lbLoginHandler::registerEventHandler(lb_I_Dispatcher* disp) {
+	disp->addEventHandlerFn(this, (lbEvHandler) &lbLoginHandler::runLogin, "RunLogin");
 	
 	return ERR_NONE;
 }
 
-lbErrCodes LB_STDCALL lbPluginLoginWizard::runLogin(lb_I_Unknown* uk) {
-	run();
-	return ERR_NONE;
-}
-	
-/*...svoid LB_STDCALL lbPluginLoginWizard\58\\58\initialize\40\\41\:0:*/
-void LB_STDCALL lbPluginLoginWizard::initialize() {
-
-	UAP_REQUEST(manager.getPtr(), lb_I_EventManager, ev)
-	
-	int lEvent;
-	
-	ev->registerEvent("RunLogin", lEvent);
-
-	UAP_REQUEST(manager.getPtr(), lb_I_Dispatcher, disp)
-	
-	registerEventHandler(*&disp);
-
-	UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
-
-	char* file = strdup(_trans("&File"));
-	char* entry = strdup(_trans("Login via &Plugin\tCtrl-P"));
-	
-	meta->addMenuEntry(file, entry, "RunLogin", "");
-	
-	free(file);
-	free(entry);
-
-}
-/*...e*/
-
-/*...sbool LB_STDCALL lbPluginLoginWizard\58\\58\run\40\\41\:0:*/
-bool LB_STDCALL lbPluginLoginWizard::run() {
+lbErrCodes LB_STDCALL lbLoginHandler::runLogin(lb_I_Unknown* uk) {
 	wizard = new wxWizard(NULL, -1, _T("Anmeldung via Plugin"));
 
 	page1 = new wxWizardPageSimple(wizard);
@@ -709,12 +626,121 @@ bool LB_STDCALL lbPluginLoginWizard::run() {
 	if ( !wizard->RunWizard(page1) )
 	{
 		wizard->Destroy();
-		return false;
-        }
+		return ERR_NONE;
+    }
 
 	wizard->Destroy();
 
-	return true;
+	return ERR_NONE;
+}
+
+lbLoginHandler::lbLoginHandler() {
+	wizard = NULL;
+	page1 = NULL;
+	ref = STARTREF;
+}
+
+lbLoginHandler::~lbLoginHandler() {
+	_CL_VERBOSE << "lbLoginHandler::~lbLoginHandler() called." LOG_
+}
+
+
+/** \brief Implements a wizard based login plugin.
+ *
+ */
+class lbPluginLoginWizard :
+	public lb_I_PluginImpl
+{
+public:
+
+	lbPluginLoginWizard();
+	virtual ~lbPluginLoginWizard();
+
+	DECLARE_LB_UNKNOWN()
+	
+	/** \brief Init the menu emtries.
+	 *
+	 * This connects the login feature to a menu.
+	 */
+	virtual void LB_STDCALL initialize();
+	
+	/** \brief Run the login manually.
+	 *
+	 * This let the login wizard appear manually without invoking it from
+	 * the menu entry. You could use this to start the login wizard automatically.
+	 */
+	virtual bool LB_STDCALL run();
+
+	/** \brief Get the underlying implementation.
+	 *
+	 * Not needed in this implementation. This implementation has no separate
+	 * class with the implementation. This is due to the not existing problem
+	 * of multible base class inheritation of lb_I_Unknown.
+	 *
+	 * If multible intarfaces could be queried, then each
+	 */
+	virtual lb_I_Unknown* LB_STDCALL getImplementation();
+
+	virtual lb_I_Unknown* LB_STDCALL peekImplementation();
+	void LB_STDCALL releaseImplementation();
+	
+	UAP(lb_I_Unknown, loginHandler, __FILE__, __LINE__)
+};	
+
+BEGIN_IMPLEMENT_LB_UNKNOWN(lbPluginLoginWizard)
+        ADD_INTERFACE(lb_I_PluginImpl)
+END_IMPLEMENT_LB_UNKNOWN()
+
+IMPLEMENT_FUNCTOR(instanceOflbPluginLoginWizard, lbPluginLoginWizard)
+
+lbErrCodes LB_STDCALL lbPluginLoginWizard::setData(lb_I_Unknown* uk) {
+        _CL_VERBOSE << "lbPluginLoginWizard::setData(...) not implemented yet" LOG_
+
+        return ERR_NOT_IMPLEMENTED;
+}
+
+lbPluginLoginWizard::lbPluginLoginWizard() {
+	ref = STARTREF;
+}
+
+lbPluginLoginWizard::~lbPluginLoginWizard() {
+	_CL_VERBOSE << "lbPluginLoginWizard::~lbPluginLoginWizard() called." LOG_
+}
+	
+/*...svoid LB_STDCALL lbPluginLoginWizard\58\\58\initialize\40\\41\:0:*/
+void LB_STDCALL lbPluginLoginWizard::initialize() {
+	lbErrCodes err = ERR_NONE;
+	
+	UAP_REQUEST(manager.getPtr(), lb_I_EventManager, ev)
+	
+	int lEvent;
+	
+	ev->registerEvent("RunLogin", lEvent);
+
+	UAP_REQUEST(manager.getPtr(), lb_I_Dispatcher, disp)
+	
+	lbLoginHandler* hdl = new lbLoginHandler();
+	hdl->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+	
+	QI(hdl, lb_I_Unknown, loginHandler, __FILE__, __LINE__)
+	
+	hdl->registerEventHandler(*&disp);
+
+	UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
+
+	char* file = strdup(_trans("&File"));
+	char* entry = strdup(_trans("Login via &Plugin\tCtrl-P"));
+	
+	meta->addMenuEntry(file, entry, "RunLogin", "");
+	
+	free(file);
+	free(entry);
+
+}
+/*...e*/
+
+/*...sbool LB_STDCALL lbPluginLoginWizard\58\\58\run\40\\41\:0:*/
+bool LB_STDCALL lbPluginLoginWizard::run() {
 }
 /*...e*/
 
