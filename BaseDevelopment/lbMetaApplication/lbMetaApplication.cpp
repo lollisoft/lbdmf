@@ -31,11 +31,15 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.76 $
+ * $Revision: 1.77 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.76 2006/01/22 13:36:51 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.77 2006/01/26 14:03:23 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.77  2006/01/26 14:03:23  lollisoft
+ * Added event en/disable and toggle functions. Also added
+ * askYesNo function.
+ *
  * Revision 1.76  2006/01/22 13:36:51  lollisoft
  * Reading back an added parameter (result) works.
  *
@@ -954,6 +958,38 @@ lbErrCodes LB_STDCALL lb_MetaApplication::addTextField(char* name, int x, int y,
 }
 /*...e*/
 
+bool LB_STDCALL lb_MetaApplication::askYesNo(char* msg) {
+	lbErrCodes err = ERR_NONE;
+	
+	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, value)
+	UAP_REQUEST(manager.getPtr(), lb_I_Integer, i)
+
+
+	parameter->setData("msg");
+	value->setData(msg);
+	param->setUAPString(*&parameter, *&value);
+
+	UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
+	QI(param, lb_I_Unknown, uk, __FILE__, __LINE__)
+	
+	UAP_REQUEST(manager.getPtr(), lb_I_String, result)
+	UAP(lb_I_Unknown, uk_result, __FILE__, __LINE__)
+	QI(result, lb_I_Unknown, uk_result, __FILE__, __LINE__)
+	
+	dispatcher->dispatch("askYesNo", uk.getPtr(), &uk_result);
+
+	// Got a name of the file. Create an input stream.
+	
+	parameter->setData("result");
+	param->getUAPString(*&parameter, *&value);
+	
+	if (strcmp(value->charrep(), "yes") == 0) return true;
+	return false;
+}
+
+
 lb_I_InputStream* LB_STDCALL lb_MetaApplication::askOpenFileReadStream(char* extentions) {
 	lbErrCodes err = ERR_NONE;
 	
@@ -983,7 +1019,11 @@ lb_I_InputStream* LB_STDCALL lb_MetaApplication::askOpenFileReadStream(char* ext
 	
 	_CL_LOG << "Got a file name: " << value->charrep() << "." LOG_
 
-	return NULL;
+	UAP_REQUEST(manager.getPtr(), lb_I_InputStream, s)
+	s++;
+	s->setFileName(value->charrep());
+	
+	return s.getPtr();
 }
 
 
@@ -1032,7 +1072,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::addLabel(char* text, int x, int y, int
 
 /*...slb_MetaApplication\58\\58\addButton\40\char\42\ buttonText\44\ char\42\ evHandler\44\ int x\44\ int y\44\ int w\44\ int h\41\:0:*/
 lbErrCodes LB_STDCALL lb_MetaApplication::addButton(char* buttonText, char* evHandler, int x, int y, int w, int h) {
-        lbErrCodes err = ERR_NONE;
+	lbErrCodes err = ERR_NONE;
 
 	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
@@ -1076,6 +1116,79 @@ lbErrCodes LB_STDCALL lb_MetaApplication::addButton(char* buttonText, char* evHa
 	return err;
 }
 /*...e*/
+
+lbErrCodes LB_STDCALL lb_MetaApplication::enableEvent(char* name) {
+	lbErrCodes err = ERR_NONE;
+
+	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, value)
+	
+	
+	parameter->setData("handlername");
+	value->setData(name);
+	param->setUAPString(*&parameter, *&value);
+
+	UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
+	QI(param, lb_I_Unknown, uk, __FILE__, __LINE__)
+	
+	UAP_REQUEST(manager.getPtr(), lb_I_String, result)
+	UAP(lb_I_Unknown, uk_result, __FILE__, __LINE__)
+	QI(result, lb_I_Unknown, uk_result, __FILE__, __LINE__)
+	
+	dispatcher->dispatch("enableEvent", uk.getPtr(), &uk_result);
+
+	return err;
+}
+
+lbErrCodes LB_STDCALL lb_MetaApplication::disableEvent(char* name) {
+	lbErrCodes err = ERR_NONE;
+
+	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, value)
+	
+	
+	parameter->setData("handlername");
+	value->setData(name);
+	param->setUAPString(*&parameter, *&value);
+
+	UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
+	QI(param, lb_I_Unknown, uk, __FILE__, __LINE__)
+	
+	UAP_REQUEST(manager.getPtr(), lb_I_String, result)
+	UAP(lb_I_Unknown, uk_result, __FILE__, __LINE__)
+	QI(result, lb_I_Unknown, uk_result, __FILE__, __LINE__)
+	
+	dispatcher->dispatch("disableEvent", uk.getPtr(), &uk_result);
+
+	return err;
+}
+
+lbErrCodes LB_STDCALL lb_MetaApplication::toggleEvent(char* name) {
+	lbErrCodes err = ERR_NONE;
+
+	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, value)
+	
+	
+	parameter->setData("handlername");
+	value->setData(name);
+	param->setUAPString(*&parameter, *&value);
+
+	UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
+	QI(param, lb_I_Unknown, uk, __FILE__, __LINE__)
+	
+	UAP_REQUEST(manager.getPtr(), lb_I_String, result)
+	UAP(lb_I_Unknown, uk_result, __FILE__, __LINE__)
+	QI(result, lb_I_Unknown, uk_result, __FILE__, __LINE__)
+	
+	dispatcher->dispatch("toggleEvent", uk.getPtr(), &uk_result);
+
+	return err;
+}
+
 
 /*...slb_MetaApplication\58\\58\addMenuEntry\40\char\42\ in_menu\44\ char\42\ entry\44\ char\42\ evHandler\44\ char\42\ afterentry\41\:0:*/
 lbErrCodes LB_STDCALL lb_MetaApplication::addMenuEntry(char* in_menu, char* entry, char* evHandler, char* afterentry) {

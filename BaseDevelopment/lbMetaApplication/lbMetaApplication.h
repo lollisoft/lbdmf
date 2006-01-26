@@ -30,11 +30,15 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.25 $
+ * $Revision: 1.26 $
  * $Name:  $
- * $Id: lbMetaApplication.h,v 1.25 2006/01/21 23:48:14 lollisoft Exp $
+ * $Id: lbMetaApplication.h,v 1.26 2006/01/26 14:03:23 lollisoft Exp $
  *
  * $Log: lbMetaApplication.h,v $
+ * Revision 1.26  2006/01/26 14:03:23  lollisoft
+ * Added event en/disable and toggle functions. Also added
+ * askYesNo function.
+ *
  * Revision 1.25  2006/01/21 23:48:14  lollisoft
  * Added new member to ask the user for a file.
  *
@@ -199,7 +203,12 @@ public:
 	lbErrCodes LB_STDCALL addLabel(char* text, int x, int y, int w, int h);
 	lbErrCodes LB_STDCALL addTextField(char* name, int x, int y, int w, int h);
 	
+	lbErrCodes LB_STDCALL enableEvent(char* name);
+	lbErrCodes LB_STDCALL disableEvent(char* name);
+	lbErrCodes LB_STDCALL toggleEvent(char* name);
+	
 	lb_I_InputStream* LB_STDCALL askOpenFileReadStream(char* extentions);
+	bool			  LB_STDCALL askYesNo(char* msg);
 /*...e*/
 
 	lbErrCodes LB_STDCALL lbButtonTestHandler(lb_I_Unknown* uk);	
