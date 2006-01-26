@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.108 2006/01/22 17:26:18 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.109 2006/01/26 14:09:10 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.108 $
+ * $Revision: 1.109 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.108 2006/01/22 17:26:18 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.109 2006/01/26 14:09:10 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.109  2006/01/26 14:09:10  lollisoft
+ * Added event en/disable and toggle event handlers. Also added askYesNo handler.
+ *
  * Revision 1.108  2006/01/22 17:26:18  lollisoft
  * Several changes as of new types and tests of them.
  *
@@ -1803,6 +1806,11 @@ public wxApp
 	 */
 	lbErrCodes LB_STDCALL askOpenFileReadStream(lb_I_Unknown* uk);
 
+	/** \brief Handler to ask for YES or NO.
+	 *
+	 */
+	lbErrCodes LB_STDCALL askYesNo(lb_I_Unknown* uk);
+
 	/** \brief Handler to add a menubar.
 	 * Event handler to add a menu bar on the main menu. This is used in my lb_I_MetaApplication and
 	 * also used in the demo app module.
@@ -1814,6 +1822,24 @@ public wxApp
 	 * \note These handlers should not called by the user of lbDMF. The programmer would use lb_I_MetaApplication to abstract from the real GUI implementation.
 	 */
 	lbErrCodes LB_STDCALL lbEvHandler3(lb_I_Unknown* uk);	
+	
+	/** \brief Enable an event.
+	 *
+	 * Enable all event sources, that are associated with this event name.
+	 */
+	lbErrCodes LB_STDCALL enableEvent(lb_I_Unknown* uk);
+
+	/** \brief Disable an event.
+	 *
+	 * Disable all event sources, that are associated with this event name.
+	 */
+	lbErrCodes LB_STDCALL disableEvent(lb_I_Unknown* uk);
+
+	/** \brief Toggle an event.
+	 *
+	 * Enable or disable all event sources, that are associated with this event name.
+	 */
+	lbErrCodes LB_STDCALL toggleEvent(lb_I_Unknown* uk);
 	
 	// These event handlers are canditates for an API replacement
 
@@ -1865,7 +1891,12 @@ protected:
         int AddLabel;
         int AddTextField;
         int AddButton;
+        int _enableEvent;
+        int _disableEvent;
+        int _toggleEvent;
+        int _askYesNo;
 		int AskOpenFileReadStream;
+		
         
         
 /*...sevent manager:8:*/
@@ -2023,7 +2054,10 @@ bool MyApp::OnInit(void)
 	ev_manager->registerEvent("AddLabel", AddLabel);
 	ev_manager->registerEvent("AddTextField", AddTextField);
 	ev_manager->registerEvent("askOpenFileReadStream", AskOpenFileReadStream);
-
+	ev_manager->registerEvent("askYesNo", _askYesNo);
+	ev_manager->registerEvent("enableEvent", _enableEvent);
+	ev_manager->registerEvent("disableEvent", _disableEvent);
+	ev_manager->registerEvent("toggleEvent", _toggleEvent);
     /**
      * Register any event handler from this instance by the wxGUI wrapper.
      */
@@ -2323,6 +2357,11 @@ lbErrCodes LB_STDCALL MyApp::registerEventHandler(lb_I_Dispatcher* disp) {
 	disp->addEventHandlerFn(this, (lbEvHandler) &MyApp::addLabel, "AddLabel");
 	disp->addEventHandlerFn(this, (lbEvHandler) &MyApp::addTextField, "AddTextField");
 	disp->addEventHandlerFn(this, (lbEvHandler) &MyApp::askOpenFileReadStream, "askOpenFileReadStream");
+	disp->addEventHandlerFn(this, (lbEvHandler) &MyApp::askYesNo, "askYesNo");
+
+	disp->addEventHandlerFn(this, (lbEvHandler) &MyApp::enableEvent, "enableEvent");
+	disp->addEventHandlerFn(this, (lbEvHandler) &MyApp::disableEvent, "disableEvent");
+	disp->addEventHandlerFn(this, (lbEvHandler) &MyApp::toggleEvent, "toggleEvent");
 
 	return ERR_NONE;
 }
@@ -2393,6 +2432,35 @@ lbErrCodes LB_STDCALL MyApp::askOpenFileReadStream(lb_I_Unknown* uk) {
 		parameter->setData("result");
 		filepath->setData(fileDialog.GetPath().c_str());
 		param->setUAPString(*&parameter, *&filepath);
+	}
+	
+	return err;
+}
+lbErrCodes LB_STDCALL MyApp::askYesNo(lb_I_Unknown* uk) {
+	lbErrCodes err = ERR_NONE;
+
+	UAP_REQUEST(manager.getPtr(), lb_I_EventManager, ev_manager)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, msg)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, result)
+
+	UAP(lb_I_Parameter, param, __FILE__, __LINE__)
+	
+	QI(uk, lb_I_Parameter, param, __FILE__, __LINE__)
+	
+	parameter->setData("msg");
+	param->getUAPString(*&parameter, *&msg);
+	
+	wxMessageDialog msgDialog(NULL, msg->charrep(), _trans("Frage..."), wxYES_NO);
+
+	if (msgDialog.ShowModal() == wxID_YES) {
+		parameter->setData("result");
+		result->setData("yes");
+		param->setUAPString(*&parameter, *&result);
+	} else {
+		parameter->setData("result");
+		result->setData("no");
+		param->setUAPString(*&parameter, *&result);
 	}
 	
 	return err;
@@ -2492,6 +2560,88 @@ lbErrCodes LB_STDCALL MyApp::lbEvHandler3(lb_I_Unknown* uk) {
 /*...e*/
 }
 /*...e*/
+lbErrCodes LB_STDCALL MyApp::toggleEvent(lb_I_Unknown* uk) {
+	lbErrCodes err = ERR_NONE;
+
+	UAP_REQUEST(manager.getPtr(), lb_I_EventManager, ev_manager)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, handlername)
+	
+	UAP(lb_I_Parameter, param, __FILE__, __LINE__)
+	QI(uk, lb_I_Parameter, param, __FILE__, __LINE__)
+
+	parameter->setData("handlername");
+	param->getUAPString(*&parameter, *&handlername);
+
+	int EvNr = 0;
+	
+	if (ev_manager->resolveEvent(handlername->getData(), EvNr) == ERR_EVENT_NOTREGISTERED) {
+		_CL_LOG << "ERROR: Could not register a menu entry with an unregistered handler!" LOG_
+		
+		return ERR_EVENT_NOTREGISTERED;
+	}
+
+	wxMenuBar* mbar = frame_peer->getMenuBar();
+
+	mbar->Enable(EvNr, mbar->IsEnabled(EvNr));
+
+	return err;
+}
+lbErrCodes LB_STDCALL MyApp::disableEvent(lb_I_Unknown* uk) {
+	lbErrCodes err = ERR_NONE;
+
+	UAP_REQUEST(manager.getPtr(), lb_I_EventManager, ev_manager)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, handlername)
+	
+	UAP(lb_I_Parameter, param, __FILE__, __LINE__)
+	QI(uk, lb_I_Parameter, param, __FILE__, __LINE__)
+
+	parameter->setData("handlername");
+	param->getUAPString(*&parameter, *&handlername);
+
+	int EvNr = 0;
+	
+	if (ev_manager->resolveEvent(handlername->getData(), EvNr) == ERR_EVENT_NOTREGISTERED) {
+		_CL_LOG << "ERROR: Could not register a menu entry with an unregistered handler!" LOG_
+		
+		return ERR_EVENT_NOTREGISTERED;
+	}
+
+	wxMenuBar* mbar = frame_peer->getMenuBar();
+
+	mbar->Enable(EvNr, false);
+
+	return err;
+}
+lbErrCodes LB_STDCALL MyApp::enableEvent(lb_I_Unknown* uk) {
+	lbErrCodes err = ERR_NONE;
+
+	UAP_REQUEST(manager.getPtr(), lb_I_EventManager, ev_manager)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, handlername)
+	
+	UAP(lb_I_Parameter, param, __FILE__, __LINE__)
+	QI(uk, lb_I_Parameter, param, __FILE__, __LINE__)
+
+	parameter->setData("handlername");
+	param->getUAPString(*&parameter, *&handlername);
+
+	int EvNr = 0;
+	
+	if (ev_manager->resolveEvent(handlername->getData(), EvNr) == ERR_EVENT_NOTREGISTERED) {
+		_CL_LOG << "ERROR: Could not register a menu entry with an unregistered handler!" LOG_
+		
+		return ERR_EVENT_NOTREGISTERED;
+	}
+
+	wxMenuBar* mbar = frame_peer->getMenuBar();
+
+	mbar->Enable(EvNr, true);
+
+	return err;
+}
+
 /*...sAddButton \9\\9\Handler:0:*/
 /**
  * Add a button to the active window.
