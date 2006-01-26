@@ -118,16 +118,24 @@ public:
 };
 /*...e*/
 
-/**
- * \brief Filebased data reader.
+/** \brief Base of streams.
+ *
+ * This interface currently is used for passing into lb_I_FileOperation.
  */
-class lb_I_InputStream : public lb_I_Unknown {
+class lb_I_Stream :
+	public lb_I_Unknown
+{
 public:
 
-	/** \brief Set a filename to load from.
+	/** \brief Set the filename.
 	 *
 	 */
 	virtual void LB_STDCALL setFileName(char* name) = 0;
+
+	/** \brief Get the filename.
+	 *
+	 */
+	virtual const char* LB_STDCALL getFileName() = 0;
 
 	/** \brief Open the file.
 	 *
@@ -138,12 +146,15 @@ public:
 	 *
 	 */
 	virtual bool LB_STDCALL close() = 0;
+};
 
-	/** \brief Should be deprectated.
-	 *
-	 */
-	virtual bool LB_STDCALL read() = 0;
-   	
+/**
+ * \brief Filebased data reader.
+ */
+class lb_I_InputStream : 
+	public lb_I_Stream {
+public:
+
 	/** \brief Read an int data type.
 	 *
 	 */
@@ -164,29 +175,10 @@ public:
 /**
  * \brief Filebased data writer.
  */
-class lb_I_OutputStream : public lb_I_Unknown {
+class lb_I_OutputStream : 
+	public lb_I_Stream {
 public:
 
-	/** \brief Set a filename to load from.
-	 *
-	 */
-	virtual void LB_STDCALL setFileName(char* name) = 0;
-
-	/** \brief Open the file.
-	 *
-	 */
-	virtual bool LB_STDCALL open() = 0;
-
-	/** \brief Close the file.
-	 *
-	 */
-	virtual bool LB_STDCALL close() = 0;
-
-	/** \brief Should be deprectated.
-	 *
-	 */
-	virtual void LB_STDCALL logdirect(const char *msg, char *f, int level) = 0;
-    
 	/** \brief Write an int data type.
 	 *
 	 */
