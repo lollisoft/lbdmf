@@ -103,6 +103,7 @@ public:
 
 /*...slb_I_OutputStream:0:*/
 	void LB_STDCALL setFileName(char* name);
+	const char* LB_STDCALL getFileName();
 	bool LB_STDCALL open();
 	bool LB_STDCALL close();
 
@@ -188,6 +189,10 @@ void LB_STDCALL lbOutputStream::logdirect(const char *msg, char *f, int level) {
 void LB_STDCALL lbOutputStream::setFileName(char* name) {
 	f[0] = 0;
 	strncpy(f, name, PATH_MAX-1);
+}
+
+const char* LB_STDCALL lbOutputStream::getFileName() {
+	return f;
 }
 
 bool LB_STDCALL lbOutputStream::close() {
