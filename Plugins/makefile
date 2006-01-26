@@ -28,6 +28,7 @@ TARGETPLUGIN=soplugin
 
 ALLTARGETS = \
 	TestPlugin \
+	VisitorOperations \
 	DatabaseForm \
 	DatabaseReport
 endif
@@ -41,6 +42,7 @@ TARGETPLUGIN=soplugin
 
 ALLTARGETS = \
 	TestPlugin \
+	VisitorOperations \
 	DatabaseForm \
 	DatabaseReport
 endif
@@ -54,6 +56,7 @@ TARGETPLUGIN=plugin
 
 ALLTARGETS = \
 	TestPlugin \
+	VisitorOperations \
 	DatabaseForm \
 	DatabaseReport
 endif
@@ -93,3 +96,7 @@ DatabaseReport: dummy
 	$(MAKE) -C $@ -e MODULE=lbDatabaseReport -e TARGET=$(TARGETWXPLUGIN) -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
 	$(MAKE) -C $@
 	
+VisitorOperations: dummy
+	$(MAKE) -C $@ -e MODULE=lbVisitorOperations -e TARGET=$(TARGETPLUGIN) -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
+	$(MAKE) -C $@
+
