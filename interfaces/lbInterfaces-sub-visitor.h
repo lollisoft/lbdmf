@@ -5,7 +5,9 @@
  * Implement a new class for a new operation such as save/load to/from file.
  *
  */
-class lb_I_Aspect { // abstract interface for visitors 
+class lb_I_Aspect :
+public lb_I_Unknown
+{ // abstract interface for visitors 
 public: 
 virtual void LB_STDCALL visit(lb_I_KeyBase*) = 0; 
 virtual void LB_STDCALL visit(lb_I_String*) = 0; 
@@ -49,22 +51,20 @@ virtual void LB_STDCALL visit(lb_I_MasterDetailFormDefinition*) = 0;
 virtual void LB_STDCALL visit(lb_I_DelegatedAction*) = 0;
 virtual void LB_STDCALL visit(lb_I_DatabaseReport*) = 0;
 virtual void LB_STDCALL visit(lb_I_Project*) = 0;
-//virtual void LB_STDCALL visit(lb_I_GUI*) = 0;
-
-
-//virtual void LB_STDCALL visit(*) = 0;
-//virtual void LB_STDCALL visit(lb_I_Aspect*) = 0; 
-
- 
 //virtual ~Aspect(){} 
-
 }; 
 
 /** \brief Base for any file operation.
  *
  * To be capable to operate on files, You need to open that file and close it.
  */
-class lb_I_FileOperation {
+class lb_I_FileOperation :
+public lb_I_Aspect
+{
+protected:
+	lb_I_FileOperation() {}
+	virtual ~lb_I_FileOperation() {}
+	
 public:
 	/** \brief Start the operation.
 	 *
@@ -73,8 +73,22 @@ public:
 	 *
 	 * If a file operation is not started by calling begin. It can not be used, or
 	 * it should do nothing. 
+	 *
+	 * \param file	Provide a filename to internally create a file based stream.
 	 */
 	virtual bool begin(char* file) = 0;
+	
+	/** \brief Start the operation.
+	 *
+	 * Starts a file operation by means of implementation. See lbInputStreanOpr or
+	 * lbOutputStreamOpr. They internally use lbInputStream and lbOutputStream.
+	 *
+	 * If a file operation is not started by calling begin. It can not be used, or
+	 * it should do nothing. 
+	 *
+	 * \param stream	Provide an exsisting stream. To be used for cascaded operations.
+	 */
+	virtual bool begin(lb_I_Stream* stream) = 0;
 	
 	/** \brief End the operation.
 	 *
