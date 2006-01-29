@@ -147,8 +147,9 @@ public:
 	void LB_STDCALL visit(lb_I_Form*) { }
 	void LB_STDCALL visit(lb_I_MasterDetailFormDefinition*) { }
 	void LB_STDCALL visit(lb_I_DatabaseReport*) { }
-	void LB_STDCALL visit(lb_I_Project*) { }
-	
+	void LB_STDCALL visit(lb_I_Project*);
+	void LB_STDCALL visit(lb_I_CodeGenerator*) { }
+	void LB_STDCALL visit(lb_I_ProjectManager*) { }	
 	
 	/** \brief Start save operation.
 	 *
@@ -165,6 +166,10 @@ public:
 	 * This closes the file and thus disables visit members.
 	 */
 	void LB_STDCALL end();
+		
+	lb_I_Stream* LB_STDCALL getStream();
+	
+	UAP(lb_I_OutputStream, oStream, __FILE__, __LINE__)
 };
 
 
@@ -200,17 +205,52 @@ lbOutputStream::~lbOutputStream() {
 /*...e*/
 
 bool LB_STDCALL lbOutputStream::begin(char* file) {
-	return true;
+
+	if (oStream == NULL) { 
+		REQUEST(manager.getPtr(), lb_I_OutputStream, oStream)
+		
+		oStream->setFileName(file);
+		return oStream->open();
+	} else {
+		_CL_LOG << "Error: lbOutputStream::begin(...) called prior!" LOG_
+	}
+	
+	return false;
 }
 
 bool LB_STDCALL lbOutputStream::begin(lb_I_Stream* stream) {
-	return true;
+	lbErrCodes err = ERR_NONE;
+	QI(stream, lb_I_OutputStream, oStream, __FILE__, __LINE__)
+	
+	if (oStream == NULL) {
+		_CL_LOG << "lbOutputStream::begin(...) Error: This is not a output stream." LOG_
+		return false;
+	} else {
+		return oStream->open();
+	}
+}
+
+void LB_STDCALL lbOutputStream::visit(lb_I_Project*) {
+	_CL_LOG << "Save a lb_I_Project object. (Warning: This interface is private and could not be saved or loaded." LOG_
 }
 
 void LB_STDCALL lbOutputStream::end() {
-
+	if (oStream == NULL) {
+		_CL_LOG << "lbOutputStream::end() Error: Not opened." LOG_
+	}
+	
+	oStream->close();
 }
 
+lb_I_Stream* LB_STDCALL lbOutputStream::getStream() {
+	lbErrCodes err = ERR_NONE;
+	
+	UAP(lb_I_Stream, s, __FILE__, __LINE__)
+	QI(oStream, lb_I_Stream, s, __FILE__, __LINE__)
+	s++;
+	
+	return s.getPtr();
+}
 /*...e*/
 
 /*...sclass lbPluginOutputStream implementation:0:*/

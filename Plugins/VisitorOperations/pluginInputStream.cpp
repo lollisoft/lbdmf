@@ -148,10 +148,16 @@ public:
 	void LB_STDCALL visit(lb_I_MasterDetailFormDefinition*) { }
 	void LB_STDCALL visit(lb_I_DatabaseReport*) { }
 	void LB_STDCALL visit(lb_I_Project*);
+	void LB_STDCALL visit(lb_I_CodeGenerator*) { }
+	void LB_STDCALL visit(lb_I_ProjectManager*) { }
 
 	bool LB_STDCALL begin(char* file);
 	bool LB_STDCALL begin(lb_I_Stream* stream);
 	void LB_STDCALL end();
+
+	lb_I_Stream* LB_STDCALL getStream();
+
+	UAP(lb_I_InputStream, iStream, __FILE__, __LINE__)
 };
 
 
@@ -208,6 +214,15 @@ void LB_STDCALL lbInputStreamOpr::end() {
 
 }
 
+lb_I_Stream* LB_STDCALL lbInputStreamOpr::getStream() {
+	lbErrCodes err = ERR_NONE;
+	
+        UAP(lb_I_Stream, s, __FILE__, __LINE__)
+        QI(iStream, lb_I_Stream, s, __FILE__, __LINE__)
+        s++;
+
+        return s.getPtr();
+}
 /*...e*/
 
 /*...sclass lbPluginInputStream implementation:0:*/
@@ -216,7 +231,7 @@ class lbPluginInputStream : public lb_I_PluginImpl {
 public:
 	lbPluginInputStream();
 	
-	~lbPluginInputStream();
+	virtual ~lbPluginInputStream();
 
 /*...sfrom plugin interface:8:*/
 	void LB_STDCALL initialize();
