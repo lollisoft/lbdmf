@@ -12,11 +12,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.71 $
+ * $Revision: 1.72 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.71 2006/01/20 01:00:39 lollisoft Exp $
+ * $Id: mkmk.cpp,v 1.72 2006/01/29 09:45:39 lollisoft Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.72  2006/01/29 09:45:39  lollisoft
+ * Added new target.
+ *
  * Revision 1.71  2006/01/20 01:00:39  lollisoft
  * Bugfix in absolutely depend on wxMac version 2.6.1.
  *
@@ -1285,7 +1288,7 @@ void ShowHelp(int argc, char *argv[])
 
   fprintf(stderr, "Enhanced by Lothar Behrens (lothar.behrens@lollisoft.de)\n\n");
 
-  fprintf(stderr, "MKMK: makefile generator $Revision: 1.71 $\n");
+  fprintf(stderr, "MKMK: makefile generator $Revision: 1.72 $\n");
   fprintf(stderr, "Usage: MKMK lib|exe|dll|so modulname includepath,[includepath,...] file1 [file2 file3...]\n");
   
   fprintf(stderr, "Your parameters are: ");
@@ -1750,6 +1753,11 @@ int main(int argc, char *argv[])
   }
 
   if (strcmp(target, "TVISION_DLL") == 0) {
+  	targettype = TVISION_DLL;
+  	target_ext = strdup(".dll");
+  }
+  
+  if (strcmp(target, "TVISION_USR_DLL") == 0) {
   	targettype = TVISION_DLL;
   	target_ext = strdup(".dll");
   }
