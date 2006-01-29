@@ -96,6 +96,7 @@
 /*...v\46\\46\\47\interfaces\47\lbInterfaces\45\sub\45\ui\46\h:0:*/
 /*...v\46\\46\\47\interfaces\47\lbInterfaces\45\sub\45\wxWrapper\46\h:0:*/
 /*...v\46\\46\\47\interfaces\47\lbInterfaces\45\sub\45\db\46\h:0:*/
+/*...v\46\\46\\47\interfaces\47\lbInterfaces\45\sub\45\visitor\46\h:0:*/
 /*...e*/
 /*...sHaeder:0:*/
 /*...v\46\\46\\47\\46\\46\\47\\46\\46\\47\tools\47\watcom\47\h\47\nt\47\windef\46\h:0:*/
@@ -286,6 +287,11 @@ These headers must define the per module (DLL) EXPORT variable
 /*...v\46\\46\\47\plugins\47\testplugin\47\plugin\46\cpp:0:*/
 /*...v\46\\46\\47\plugins\47\testplugin\47\pluginTest\46\cpp:0:*/
 /*...v\46\\46\\47\plugins\47\testplugin\47\makefile:0:*/
+
+/*...v\46\\46\\47\plugins\47\VisitorOperations\47\plugin\46\cpp:0:*/
+/*...v\46\\46\\47\plugins\47\VisitorOperations\47\pluginOutputStream\46\cpp:0:*/
+/*...v\46\\46\\47\plugins\47\VisitorOperations\47\pluginInputStream\46\cpp:0:*/
+
 
 /*...v\46\\46\\47\plugins\47\makefile:0:*/
 /*...e*/
