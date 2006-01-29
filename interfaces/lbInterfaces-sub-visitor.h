@@ -51,6 +51,8 @@ virtual void LB_STDCALL visit(lb_I_MasterDetailFormDefinition*) = 0;
 virtual void LB_STDCALL visit(lb_I_DelegatedAction*) = 0;
 virtual void LB_STDCALL visit(lb_I_DatabaseReport*) = 0;
 virtual void LB_STDCALL visit(lb_I_Project*) = 0;
+virtual void LB_STDCALL visit(lb_I_CodeGenerator*) = 0;
+virtual void LB_STDCALL visit(lb_I_ProjectManager*) = 0;
 //virtual ~Aspect(){} 
 }; 
 
@@ -76,7 +78,7 @@ public:
 	 *
 	 * \param file	Provide a filename to internally create a file based stream.
 	 */
-	virtual bool begin(char* file) = 0;
+	virtual bool LB_STDCALL begin(char* file) = 0;
 	
 	/** \brief Start the operation.
 	 *
@@ -88,11 +90,17 @@ public:
 	 *
 	 * \param stream	Provide an exsisting stream. To be used for cascaded operations.
 	 */
-	virtual bool begin(lb_I_Stream* stream) = 0;
+	virtual bool LB_STDCALL begin(lb_I_Stream* stream) = 0;
 	
 	/** \brief End the operation.
 	 *
 	 * This closes the file and disables the operation.
 	 */
-	virtual void end() = 0;
+	virtual void LB_STDCALL end() = 0;
+	
+	/** \brief Get access to stream.
+	 *
+	 * This allows storage handling for private data.
+	 */
+	virtual lb_I_Stream* LB_STDCALL getStream() = 0;
 };
