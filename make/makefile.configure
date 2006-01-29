@@ -27,7 +27,6 @@ $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
 	@rm -f $(DEVROOT_MAKE)/Projects/CPP/include/lbkey.h
 	@rm -f include/tv/configtv.h
 	@rm -f $(_MODULE).bak	
-	@cp include/tv/configtv.watcom.h include/tv/configtv.h
 	@cp -f $(DEVROOT_MAKE)/Projects/CPP/BaseDevelopment/lbclasses/lbkey.h $(DEVROOT_MAKE)/Projects/CPP/include
 	$(MKMK) $(TARGET) $(_MODULE) include,include/tv,include/cl,include/win32 \
 	classes/*.cc \
@@ -45,6 +44,24 @@ $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
 	histlist.cc \
 	drivers2.cc \
 	>> makefile
+endif
+
+ifeq ($(TARGET), tvision_usr_dll)
+makefile: makefile.module \
+$(DEVROOT_MAKE)/Projects/CPP/BaseDevelopment/Makefile \
+$(DEVROOT_MAKE)/Projects/CPP/make/makefile.template \
+$(DEVROOT_MAKE)/Projects/CPP/make/STD_MAKE \
+$(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
+	@cat $(DEVROOT_MAKE)/Projects/CPP/make/makefile.template > makefile
+	@cat makefile.module >> makefile
+	@echo Path=$(PATH) >> makefile
+	@echo all: $(_MODULE).dll >> makefile
+	@rm -f $(DEVROOT_MAKE)/Projects/CPP/include/lbkey.h
+	@rm -f include/tv/configtv.h
+	@rm -f $(_MODULE).bak	
+	@cp -f $(DEVROOT_MAKE)/Projects/CPP/BaseDevelopment/lbclasses/lbkey.h $(DEVROOT_MAKE)/Projects/CPP/include
+	$(MKMK) $(TARGET) $(_MODULE) include,include/tv,include/cl,include/win32 \
+	*.cpp >> makefile
 endif
 
 ifeq ($(TARGET), tvision_exe)
