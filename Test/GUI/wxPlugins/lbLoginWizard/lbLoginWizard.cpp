@@ -741,6 +741,7 @@ void LB_STDCALL lbPluginLoginWizard::initialize() {
 
 /*...sbool LB_STDCALL lbPluginLoginWizard\58\\58\run\40\\41\:0:*/
 bool LB_STDCALL lbPluginLoginWizard::run() {
+	return true;
 }
 /*...e*/
 
