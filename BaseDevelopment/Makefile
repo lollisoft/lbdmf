@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.76 $
+# * $Revision: 1.77 $
 # * $Name:  $
-# * $Id: Makefile,v 1.76 2006/01/20 00:58:24 lollisoft Exp $
+# * $Id: Makefile,v 1.77 2006/01/29 09:36:33 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.77  2006/01/29 09:36:33  lollisoft
+# * Don't build TVision. It should completely be in my private makefile.
+# *
 # * Revision 1.76  2006/01/20 00:58:24  lollisoft
 # * Changed order to enable building AppDevelopment tree.
 # * This is a hook for users of lbDMF framework.
@@ -286,10 +289,10 @@ BASEDIRECTORIES= \
 	../Modules \
 	../RegressionTests \
 	../vendor/c-goldparser \
-	../AppDevelopment \
-	../vendor/tvision-set \
-	../vendor/tvision-set/examples/lbDMF
+	../AppDevelopment
 
+#	../vendor/tvision-set \
+#	../vendor/tvision-set/examples/lbDMF
 #	../../open-watcom
 endif
 
