@@ -41,6 +41,10 @@
 #include <stdio.h>
 #include <time.h>
 
+#ifdef __WATCOMC__
+#include <string.hpp>
+#endif
+
 #ifdef _MSC_VER
 #define PATH_MAX 512
 #endif
@@ -158,6 +162,7 @@ IMPLEMENT_FUNCTOR(instanceOfInputStream, lbInputStream)
 //#define LOG_ << ""; }
 
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbInputStream)
+	ADD_INTERFACE(lb_I_Stream)
         ADD_INTERFACE(lb_I_InputStream)
 END_IMPLEMENT_LB_UNKNOWN()
 
@@ -241,19 +246,27 @@ lb_I_InputStream& LB_STDCALL lbInputStream::operator>> (char& c) {
 	return *this;
 }
 
-lb_I_InputStream& LB_STDCALL lbInputStream::operator>> (char*& string) {
+lb_I_InputStream& LB_STDCALL lbInputStream::operator>> (char*& _string) {
 	char* buf = NULL;
 	int size = 0;
 
+#ifndef __WATCOMC__
 	std::string s;	
+#endif
+#ifdef __WATCOMC__
+	String s;	
+#endif
 	
 	_istream->ignore(1, '\n');
-
+#ifndef __WATCOMC__ 
 	getline(*_istream, s);
+#endif
+#ifdef __WATCOMC__ 
+	*_istream >> s;
+#endif
+	if (_string != NULL) free(_string);
 
-	if (string != NULL) free(string);
-
-	string = strdup(s.c_str());
+	_string = strdup(s.c_str());
 
 	return *this;
 }

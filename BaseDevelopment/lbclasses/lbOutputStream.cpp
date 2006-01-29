@@ -41,6 +41,10 @@
 #include <time.h>
 #include <fstream.h>
 
+#ifdef __WATCOMC__
+#include <string.hpp>
+#endif
+
 #ifdef _MSC_VER
 #define PATH_MAX 512
 #endif
@@ -152,6 +156,7 @@ IMPLEMENT_FUNCTOR(instanceOfOutputStream, lbOutputStream)
 //#define LOG_ << ""; }
 
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbOutputStream)
+	ADD_INTERFACE(lb_I_Stream)
         ADD_INTERFACE(lb_I_OutputStream)
 END_IMPLEMENT_LB_UNKNOWN()
 
@@ -232,8 +237,12 @@ lb_I_OutputStream& LB_STDCALL lbOutputStream::operator<< (const char c) {
 lb_I_OutputStream& LB_STDCALL lbOutputStream::operator<< (const char* string) {
 	if (!isOpen) return *this;
 
+#ifndef __WATCOMC__
 	std::string s(string);
-
+#endif
+#ifdef __WATCOMC__
+	String s(string);
+#endif
 	*_ostream << endl << s << endl; 	
 
 	return *this;
