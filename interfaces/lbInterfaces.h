@@ -725,6 +725,8 @@ class lb_I_MasterDetailFormDefinition;
 class lb_I_DatabaseReport;
 class lb_I_Project;
 class lb_I_Stream;
+class lb_I_CodeGenerator;
+class lb_I_ProjectManager;
 /*...e*/
 
 /*...scallback \47\ handler typedefs:0:*/
@@ -950,7 +952,7 @@ public:
          */
         virtual lbErrCodes LB_STDCALL setData(lb_I_Unknown* u) = 0;
 
-		virtual void accept(lb_I_Aspect* v) = 0;//{ v->visit(this); } 
+	virtual void LB_STDCALL accept(lb_I_Aspect* v) = 0;//{ v->visit(this); } 
 
 //friend class lb_I_gcManager;	
 };
