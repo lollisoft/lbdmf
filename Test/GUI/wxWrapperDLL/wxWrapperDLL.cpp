@@ -54,6 +54,8 @@
 /*...e*/
 
 #include "wx/wizard.h"
+#include "wx/splitter.h"
+
 /*...e*/
 
 /*...sLB_DATABASE_DLL scope:0:*/
@@ -560,6 +562,13 @@ lb_wxFrame::lb_wxFrame() //:
 	menu_bar = NULL; 
 	gui = NULL;
 	guiCleanedUp = 0;
+
+	// Splitter window handling
+	m_left = m_right = NULL;
+	m_splitter = NULL;
+	m_replacewindow = NULL;
+	
+	_isSplitted = false;
 }
 
 /*...slbErrCodes lb_wxFrame\58\\58\setData\40\lb_I_Unknown\42\ uk\41\:0:*/
@@ -598,11 +607,6 @@ lbErrCodes LB_STDCALL lb_wxFrame::registerEvents(lb_I_EventConnector* object) {
 	          (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
                   &lb_wxFrame::OnVerbose );
 
-	((wxFrame*) peer)->Connect( DYNAMIC_PLUGINTEST, -1, wxEVT_COMMAND_MENU_SELECTED,
-		(wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
-		&lb_wxFrame::OnPluginTest );
-
-
         return ERR_NONE;
 }
 /*...e*/
@@ -612,17 +616,15 @@ lbErrCodes LB_STDCALL lb_wxFrame::createEventsource(lb_I_EventConnector* object)
 	// Make a menubar
 	wxMenu *file_menu = new wxMenu;
   
-	file_menu->Append(DYNAMIC_ABOUT	, _trans("&About\tCtrl-A"));
-	file_menu->Append(DYNAMIC_VERBOSE	, _trans("&Verbose\tCtrl-V"));
-	file_menu->Append(DYNAMIC_QUIT	, _trans("E&xit\tCtrl-x"));
-	file_menu->Append(DYNAMIC_PLUGINTEST	, _trans("&Test Plugin\tCtrl-T"));
+	file_menu->Append(DYNAMIC_ABOUT	 , _trans("&About\tCtrl-A"));
+	file_menu->Append(DYNAMIC_VERBOSE, _trans("&Verbose\tCtrl-V"));
+	file_menu->Append(DYNAMIC_QUIT	 , _trans("E&xit\tCtrl-x"));
 
 	int on_panel_usage;
 	UAP_REQUEST(manager.getPtr(), lb_I_EventManager, eman)
 	
 	eman->resolveEvent("switchPanelUse", on_panel_usage);
-	
-	file_menu->Append(on_panel_usage, _trans("switch &Panel usage\tCtrl-P"));
+	file_menu->Append(on_panel_usage, _trans("&switch Panel usage\tCtrl-S"));
 	
 	menu_bar = new wxMenuBar;
 	menu_bar->Append(file_menu, _trans("&File"));
@@ -1188,22 +1190,19 @@ lb_wxFrame::lb_wxFrame(wxFrame *frame, char *title, int x, int y, int w, int h):
 {
 	menu_bar = NULL;
 	guiCleanedUp = 0;
+	// Splitter window handling
+	m_left = m_right = NULL;
+	m_splitter = NULL;
+	m_replacewindow = NULL;
+	
+	_isSplitted = false;
 }
 
 lb_wxFrame::~lb_wxFrame() {
-        _CL_LOG << "lb_wxFrame::~lb_wxFrame() called." LOG_
-
         if (guiCleanedUp == 0) {
-        	_CL_LOG << "lb_wxFrame::~lb_wxFrame() cleans up GUI" LOG_
                 if (gui) gui->cleanup();
-                _CL_LOG << "lb_wxFrame::~lb_wxFrame() cleaned up GUI" LOG_
                 guiCleanedUp = 1;
-        } else {
-        	_CL_LOG << "lb_wxFrame::~lb_wxFrame() GUI has been cleaned up prior." LOG_
-        	_CL_LOG << "********************************************************" LOG_
         }
-        if (eman != NULL) _CL_LOG << "Event manager has " << eman->getRefCount() << " references." LOG_
-        if (dispatcher != NULL) _CL_LOG << "Dispatcher has    " << dispatcher->getRefCount() << " references." LOG_
 }
 
 void lb_wxFrame::OnRunLogonWizard(wxCommandEvent& WXUNUSED(event)) {
@@ -1347,35 +1346,7 @@ void lb_wxFrame::OnDispatch(wxCommandEvent& event ) {
         }
 }
 /*...e*/
-
-
-void lb_wxFrame::OnPluginTest(wxCommandEvent& WXUNUSED(event) ) {
-
-	UAP_REQUEST(manager.getPtr(), lb_I_PluginManager, PM)
-	UAP(lb_I_Plugin, pl, __FILE__, __LINE__)
-
-	pl = PM->getFirstMatchingPlugin("lb_I_DatabaseNixfind", "bla");
-}
-
-
 /*...e*/
-#endif
-#ifdef Bla
-class cleanUp {
-public:
-        cleanUp() {
-        }
-
-        virtual ~cleanUp() {
-                _CL_LOG << "Call unHookAll()..." LOG_
-				//lbBreak();
-                unHookAll();
-                _CL_LOG << "Called unHookAll()." LOG_
-        }
-
-};
-
-cleanUp clean_up;
 #endif
 
 #ifdef WINDOWS

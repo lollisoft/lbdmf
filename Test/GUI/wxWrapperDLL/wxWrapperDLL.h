@@ -33,11 +33,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.6 $
+ * $Revision: 1.7 $
  * $Name:  $
- * $Id: wxWrapperDLL.h,v 1.6 2005/12/02 00:28:43 lollisoft Exp $
+ * $Id: wxWrapperDLL.h,v 1.7 2006/01/30 06:23:48 lollisoft Exp $
  *
  * $Log: wxWrapperDLL.h,v $
+ * Revision 1.7  2006/01/30 06:23:48  lollisoft
+ * Removed OnPluginTest and added preparation for splitter windows.
+ *
  * Revision 1.6  2005/12/02 00:28:43  lollisoft
  * Deleting a row works for some tests. Deleting data in join queries is not tested
  * and would propably not work. This is at least due to lack of creating a delete
@@ -98,7 +101,6 @@
 #define DYNAMIC_TEST1           1004
 #define DYNAMIC_TEST2           1005
 #define DYNAMIC_VERBOSE         1006
-#define DYNAMIC_PLUGINTEST	1007
 
 class lb_wxGUI;
 
@@ -139,7 +141,6 @@ public:
 public:
         void OnQuit(wxCommandEvent& event);
         void OnVerbose(wxCommandEvent& event);
-        void OnPluginTest(wxCommandEvent& event );
         
         /**
          * Displays the about form of the application.
@@ -190,8 +191,21 @@ public:
         
         virtual lbErrCodes LB_STDCALL createEventsource(lb_I_EventConnector* object);
         virtual lb_I_Unknown* LB_STDCALL getEventsource(lb_I_EventConnector* object) { return NULL; }
+
+	/// Show or hide left panel.
+	void LB_STDCALL showLeftPanel(bool show);
+	
+	/// Is left panel visible ?
+	bool LB_STDCALL isSplitted() { return _isSplitted; }
         
         wxMenuBar* menu_bar;
+
+	// Splitter window handling
+	wxScrolledWindow *m_left, *m_right;
+	wxSplitterWindow* m_splitter;
+	wxWindow *m_replacewindow;
+	
+	bool _isSplitted;            
         
         lb_wxGUI* gui;
         int guiCleanedUp;
