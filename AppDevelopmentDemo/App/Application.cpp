@@ -68,7 +68,6 @@ public:
 	lbErrCodes LB_STDCALL getLoginData(lb_I_Unknown* uk);
 
 	lbErrCodes LB_STDCALL getCustomFormsConfig(lb_I_Unknown* uk);
-/*...e*/
 
 protected:
 	lb_I_GUI* gui;
