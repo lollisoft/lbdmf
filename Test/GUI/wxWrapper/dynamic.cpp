@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.109 2006/01/26 14:09:10 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.110 2006/01/30 06:24:59 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.109 $
+ * $Revision: 1.110 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.109 2006/01/26 14:09:10 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.110 2006/01/30 06:24:59 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.110  2006/01/30 06:24:59  lollisoft
+ * Added preparation for splitter windows and renamed neutral handler names.
+ *
  * Revision 1.109  2006/01/26 14:09:10  lollisoft
  * Added event en/disable and toggle event handlers. Also added askYesNo handler.
  *
@@ -414,6 +417,7 @@
 /*...e*/
 
 #include "wx/wizard.h"
+#include "wx/splitter.h"
 /*...e*/
 
 // ID for the menu commands
@@ -1799,7 +1803,7 @@ public wxApp
 	 * the sample application creates it directly to have a menu if no other modules are
 	 * found. At leasd an exit handling is created.
 	 */
-	lbErrCodes LB_STDCALL lbEvHandler1(lb_I_Unknown* uk);
+	lbErrCodes LB_STDCALL addMenu(lb_I_Unknown* uk);
 	
 	/** \brief Handler to ask for a filename.
 	 *
@@ -1821,7 +1825,7 @@ public wxApp
 	 * Event handler to add a menu entry in a given menu bar name.
 	 * \note These handlers should not called by the user of lbDMF. The programmer would use lb_I_MetaApplication to abstract from the real GUI implementation.
 	 */
-	lbErrCodes LB_STDCALL lbEvHandler3(lb_I_Unknown* uk);	
+	lbErrCodes LB_STDCALL addMenuEntry(lb_I_Unknown* uk);	
 	
 	/** \brief Enable an event.
 	 *
@@ -2346,13 +2350,11 @@ lbErrCodes LB_STDCALL MyApp::setData(lb_I_Unknown* uk) {
 
 /*...sMyApp\58\\58\registerEventHandler\40\lb_I_Dispatcher\42\ disp\41\:0:*/
 lbErrCodes LB_STDCALL MyApp::registerEventHandler(lb_I_Dispatcher* disp) {
-	#ifdef VERBOSE
-	_LOG << "Register event handler" LOG_;
-	#endif
 	// We provide some menu manipulation
-	disp->addEventHandlerFn(this, (lbEvHandler) &MyApp::lbEvHandler1, "AddMenu");
+	
+	disp->addEventHandlerFn(this, (lbEvHandler) &MyApp::addMenu, "AddMenu");
 	disp->addEventHandlerFn(this, (lbEvHandler) &MyApp::addMenuBar, "AddMenuBar");
-	disp->addEventHandlerFn(this, (lbEvHandler) &MyApp::lbEvHandler3, "AddMenuEntry");
+	disp->addEventHandlerFn(this, (lbEvHandler) &MyApp::addMenuEntry, "AddMenuEntry");
 	disp->addEventHandlerFn(this, (lbEvHandler) &MyApp::addButton, "AddButton");
 	disp->addEventHandlerFn(this, (lbEvHandler) &MyApp::addLabel, "AddLabel");
 	disp->addEventHandlerFn(this, (lbEvHandler) &MyApp::addTextField, "AddTextField");
@@ -2401,7 +2403,7 @@ lbErrCodes LB_STDCALL MyApp::HandleAddMenu(lb_I_Unknown* uk) {
 }
 /*...e*/
 
-lbErrCodes LB_STDCALL MyApp::lbEvHandler1(lb_I_Unknown* uk) {
+lbErrCodes LB_STDCALL MyApp::addMenu(lb_I_Unknown* uk) {
 	return ERR_NONE;
 }
 
@@ -2516,7 +2518,7 @@ lbErrCodes LB_STDCALL MyApp::addMenuBar(lb_I_Unknown* uk) {
  *	menuname:	Name of menu entry
  *	handlername:	Name of handler
  */
-lbErrCodes LB_STDCALL MyApp::lbEvHandler3(lb_I_Unknown* uk) {
+lbErrCodes LB_STDCALL MyApp::addMenuEntry(lb_I_Unknown* uk) {
 /*...scode:0:*/
 	lbErrCodes err = ERR_NONE;
 
@@ -3005,6 +3007,7 @@ void lb_wxFrame::OnPluginTest(wxCommandEvent& WXUNUSED(event) ) {
 #endif
 #endif
 
+/*...sCleanup helper:0:*/
 #ifdef WINDOWS
 class cleanUp {
 public:
@@ -3012,9 +3015,7 @@ public:
 	}
 	
 	virtual ~cleanUp() {
-		_CL_LOG << "Call unHookAll()..." LOG_
 		unHookAll();
-		_CL_LOG << "Called unHookAll()." LOG_		
 	}
 	
 };
@@ -3038,6 +3039,7 @@ public:
 
 cleanUp clean_up;
 #endif
+/*...e*/
 
 /*...sWindows based WinMain implementation:0:*/
 #ifndef OSX
