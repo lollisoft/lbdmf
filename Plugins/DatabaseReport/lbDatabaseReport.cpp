@@ -90,6 +90,7 @@ extern "C" {
 /*...e*/
 
 #include "wx/wizard.h"
+#include "wx/splitter.h"
 /*...e*/
 
 #ifndef OSX
