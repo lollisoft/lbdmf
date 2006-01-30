@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.110 2006/01/30 06:24:59 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.111 2006/01/30 15:54:15 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,15 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.110 $
+ * $Revision: 1.111 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.110 2006/01/30 06:24:59 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.111 2006/01/30 15:54:15 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.111  2006/01/30 15:54:15  lollisoft
+ * Removed the __FILE__ and __LINE__ parameter usage in UAP and QI.
+ * This was an unnessesary thing and makes programming easier.
+ *
  * Revision 1.110  2006/01/30 06:24:59  lollisoft
  * Added preparation for splitter windows and renamed neutral handler names.
  *
@@ -543,8 +547,8 @@ public:
         lb_wxGUI* gui;
         int guiCleanedUp;
         
-        UAP(lb_I_EventManager, eman, __FILE__, __LINE__)
-        UAP(lb_I_Dispatcher, dispatcher, __FILE__, __LINE__)
+        UAP(lb_I_EventManager, eman)
+        UAP(lb_I_Dispatcher, dispatcher)
 };
 
 BEGIN_IMPLEMENT_LB_UNKNOWN(lb_wxFrame)
@@ -760,8 +764,8 @@ private:
 	wxString app;
 	wxBoxSizer* sizerMain;
 
-	UAP(lb_I_Database, database, __FILE__, __LINE__)
-	UAP(lb_I_Query, sampleQuery, __FILE__, __LINE__)
+	UAP(lb_I_Database, database)
+	UAP(lb_I_Query, sampleQuery)
 
 	DECLARE_EVENT_TABLE()	
 	
@@ -1006,8 +1010,8 @@ _CL_VERBOSE << "Query for user " << user LOG_
 /*...e*/
 
     
-	UAP(lb_I_Database, database, __FILE__, __LINE__)
-	UAP(lb_I_Query, sampleQuery, __FILE__, __LINE__)
+	UAP(lb_I_Database, database)
+	UAP(lb_I_Query, sampleQuery)
 
 
 	// l gets overwritten, while assigning a lb_I_Query* pointer to sampleQuery !!
@@ -1263,7 +1267,7 @@ public:
         // The frame has the main dispatcher and is a wxEventHandler subclass
         lb_wxFrame* frame;
 	
-	UAP(lb_I_Container, forms, __FILE__, __LINE__)
+	UAP(lb_I_Container, forms)
 	char buffer[100];
 };
 /*...e*/
@@ -1396,8 +1400,8 @@ lbErrCodes LB_STDCALL lb_wxGUI::cleanup() {
 
 		if (!form) continue;
 
-		UAP(lb_I_DatabaseForm, d, __FILE__, __LINE__)		
-		QI(form, lb_I_DatabaseForm, d, __FILE__, __LINE__)
+		UAP(lb_I_DatabaseForm, d)		
+		QI(form, lb_I_DatabaseForm, d)
 		
 		/* Really needed here !
 		 * The wxWidgets system doesn't have a or at least has it's own reference counting system.
@@ -1475,13 +1479,13 @@ lb_I_Form* LB_STDCALL lb_wxGUI::createLoginForm() {
 		REQUEST(getModuleManager(), lb_I_Container, forms)
 	}	
 
-	UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
-	UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
+	UAP(lb_I_Unknown, uk)
+	UAP(lb_I_KeyBase, key)
 	
 	UAP_REQUEST(getModuleManager(), lb_I_String, fName)
 	fName->setData("LoginForm");
 	
-	QI(fName, lb_I_KeyBase, key, __FILE__, __LINE__)
+	QI(fName, lb_I_KeyBase, key)
 	
 	uk = forms->getElement(&key);	
 	
@@ -1495,7 +1499,7 @@ lb_I_Form* LB_STDCALL lb_wxGUI::createLoginForm() {
 		_dialog = new lbLoginDialog();
 		_dialog->setModuleManager(getModuleManager(), __FILE__, __LINE__);
 		
-		QI(_dialog, lb_I_Unknown, uk, __FILE__, __LINE__)
+		QI(_dialog, lb_I_Unknown, uk)
 		
 		forms->insert(&uk, &key);
 		
@@ -1522,24 +1526,24 @@ lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::createDBForm(char* formName, char* query
 
 	// Locate the form instance in the container
 	
-	UAP(lb_I_DatabaseForm, _dialog, __FILE__, __LINE__)
+	UAP(lb_I_DatabaseForm, _dialog)
 	
 	if (forms == NULL) {
 		REQUEST(getModuleManager(), lb_I_Container, forms)
 	}	
 
-	UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
-	UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
+	UAP(lb_I_Unknown, uk)
+	UAP(lb_I_KeyBase, key)
 	
 	UAP_REQUEST(getModuleManager(), lb_I_String, fName)
 	fName->setData(formName);
 	
-	QI(fName, lb_I_KeyBase, key, __FILE__, __LINE__)
+	QI(fName, lb_I_KeyBase, key)
 	
 	uk = forms->getElement(&key);	
 	
 	if (uk != NULL) {
-		QI(uk, lb_I_DatabaseForm, _dialog, __FILE__, __LINE__)
+		QI(uk, lb_I_DatabaseForm, _dialog)
 	}
 
 	if ((_dialog.getPtr() != NULL) && (strcmp(queryString, _dialog->getQuery()) != 0)) {
@@ -1568,7 +1572,7 @@ lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::createDBForm(char* formName, char* query
 		 */
 
 		UAP_REQUEST(manager.getPtr(), lb_I_PluginManager, PM)
-		UAP(lb_I_Plugin, pl, __FILE__, __LINE__)
+		UAP(lb_I_Plugin, pl)
 		
 		pl = PM->getFirstMatchingPlugin("lb_I_DatabaseForm");
 
@@ -1589,8 +1593,8 @@ lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::createDBForm(char* formName, char* query
 		// The form has been cloned. Destroy the unused instance.
 		// This avoids application hang at exit.
 		
-		UAP(lb_I_DatabaseForm, form, __FILE__, __LINE__)
-		QI(uk, lb_I_DatabaseForm, form, __FILE__, __LINE__)
+		UAP(lb_I_DatabaseForm, form)
+		QI(uk, lb_I_DatabaseForm, form)
 		
 		form->destroy();
 		form = NULL;
@@ -1599,7 +1603,7 @@ lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::createDBForm(char* formName, char* query
 		uk = forms->getElement(&key);
 		
 		if (uk != NULL) {
-		        QI(uk, lb_I_DatabaseForm, _dialog, __FILE__, __LINE__)
+		        QI(uk, lb_I_DatabaseForm, _dialog)
 		}
 		
 		_dialog->setName(formName);
@@ -1650,9 +1654,9 @@ lb_I_Frame* LB_STDCALL lb_wxGUI::getFrame() {
 /*...slbErrCodes LB_STDCALL lb_wxGUI\58\\58\gotoMenuEntry\40\char\42\ entry\41\:0:*/
 lbErrCodes LB_STDCALL lb_wxGUI::gotoMenuEntry(char* entry) {
         lbErrCodes err = ERR_NONE;
-        UAP(lb_I_Frame, frame, __FILE__, __LINE__)
+        UAP(lb_I_Frame, frame)
         
-        QI(_main_frame, lb_I_Frame, frame, __FILE__, __LINE__)
+        QI(_main_frame, lb_I_Frame, frame)
 
 
         /**
@@ -1666,7 +1670,7 @@ lbErrCodes LB_STDCALL lb_wxGUI::gotoMenuEntry(char* entry) {
          * We get a dispatch responce
          */
          
-        UAP(lb_I_DispatchResponse, d_res, __FILE__, __LINE__)
+        UAP(lb_I_DispatchResponse, d_res)
 
         if (d_req.getPtr()) {
                 // d_req must resolve the symbolic request name to its Id.
@@ -1701,17 +1705,17 @@ lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::findDBForm(char* name) {
 	lbErrCodes err = ERR_NONE;
 	
 	UAP_REQUEST(getModuleManager(), lb_I_String, fName)
-	UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
-	UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
+	UAP(lb_I_KeyBase, key)
+	UAP(lb_I_Unknown, uk)
 	
 	fName->setData(name);
 	
-	QI(fName, lb_I_KeyBase, key, __FILE__, __LINE__)
+	QI(fName, lb_I_KeyBase, key)
 	
 	uk = forms->getElement(&key);
 	
-	UAP(lb_I_DatabaseForm, w, __FILE__, __LINE__)
-	QI(uk, lb_I_DatabaseForm, w, __FILE__, __LINE__)
+	UAP(lb_I_DatabaseForm, w)
+	QI(uk, lb_I_DatabaseForm, w)
 	// Not really needed, because my dialogs are forced to not be smart.
 	w++;
 	return w.getPtr();
@@ -1909,17 +1913,16 @@ protected:
          * symbolic event names. First I do not handle a scope.
          */
         
-        UAP(lb_I_EventManager, ev_manager, __FILE__, __LINE__)
+        UAP(lb_I_EventManager, ev_manager)
 /*...e*/
 /*...smeta application:8:*/
         /*
          * I also need an instance of the meta application, that is loaded as the application wrapper.
          */
          
-        UAP(lb_I_MetaApplication, metaApp, __FILE__, __LINE__) 
+        UAP(lb_I_MetaApplication, metaApp) 
 /*...e*/
 /*...sframe:8:*/
-//        DEBUG_UAP(lb_I_wxFrame, frame, __FILE__, __LINE__)
 	lb_I_wxFrame *frame;
 /*...e*/
 
@@ -1984,7 +1987,7 @@ bool MyApp::OnInit(void)
     char b[100] = "";
     wxStopWatch sw;
 
-    UAP(lb_I_Module, mm, __FILE__, __LINE__)
+    UAP(lb_I_Module, mm)
     mm = getModuleInstance();
 
 
@@ -2087,8 +2090,8 @@ _CL_LOG << "Created frame." LOG_
 	 * A Peer interface to get the derived class
 	 */
 
-	//  QI(uk_em, lb_I_EventManager, ev_manager, __FILE__, __LINE__)
-	//  QI(uk, lb_I_wxFrame, frame, __FILE__, __LINE__)
+	//  QI(uk_em, lb_I_EventManager, ev_manager)
+	//  QI(uk, lb_I_wxFrame, frame)
 
 
 	uk->queryInterface("lb_I_wxFrame", (void**) &frame, __FILE__, __LINE__);
@@ -2318,7 +2321,7 @@ _LOG << "Showed the window" LOG_
 	
 		while (TRUE) {
 		
-			UAP(lb_I_Plugin, pl, __FILE__, __LINE__)
+			UAP(lb_I_Plugin, pl)
 			
 			pl = PM->nextPlugin();
 			
@@ -2373,7 +2376,7 @@ lbErrCodes LB_STDCALL MyApp::registerEventHandler(lb_I_Dispatcher* disp) {
 lbErrCodes LB_STDCALL MyApp::HandleGetFrame(lb_I_Unknown* uk) {
         if(frame != NULL) {
                 lb_I_Unknown* _uk;
-                UAP(lb_I_Reference, ref, __FILE__, __LINE__)
+                UAP(lb_I_Reference, ref)
                 frame->queryInterface("lb_I_Unknown", (void**) &_uk, __FILE__, __LINE__);
                 
                 uk->queryInterface("lb_I_Reference", (void**) &ref, __FILE__, __LINE__);
@@ -2387,9 +2390,9 @@ lbErrCodes LB_STDCALL MyApp::HandleGetFrame(lb_I_Unknown* uk) {
 lbErrCodes LB_STDCALL MyApp::HandleAddMenu(lb_I_Unknown* uk) {
 	lbErrCodes err = ERR_NONE;
 
-	UAP(lb_I_String, string, __FILE__, __LINE__)
+	UAP(lb_I_String, string)
 	if (uk == NULL) _LOG << "Have got a null pointer" LOG_;
-	QI(uk, lb_I_String, string, __FILE__, __LINE__)
+	QI(uk, lb_I_String, string)
 	
 	wxMenu *menu = new wxMenu;
 
@@ -2417,9 +2420,9 @@ lbErrCodes LB_STDCALL MyApp::askOpenFileReadStream(lb_I_Unknown* uk) {
 	UAP_REQUEST(manager.getPtr(), lb_I_String, defaultdir)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, after)
 
-	UAP(lb_I_Parameter, param, __FILE__, __LINE__)
+	UAP(lb_I_Parameter, param)
 	
-	QI(uk, lb_I_Parameter, param, __FILE__, __LINE__)
+	QI(uk, lb_I_Parameter, param)
 	
 	parameter->setData("extention");
 	param->getUAPString(*&parameter, *&name);
@@ -2446,9 +2449,9 @@ lbErrCodes LB_STDCALL MyApp::askYesNo(lb_I_Unknown* uk) {
 	UAP_REQUEST(manager.getPtr(), lb_I_String, msg)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, result)
 
-	UAP(lb_I_Parameter, param, __FILE__, __LINE__)
+	UAP(lb_I_Parameter, param)
 	
-	QI(uk, lb_I_Parameter, param, __FILE__, __LINE__)
+	QI(uk, lb_I_Parameter, param)
 	
 	parameter->setData("msg");
 	param->getUAPString(*&parameter, *&msg);
@@ -2477,9 +2480,9 @@ lbErrCodes LB_STDCALL MyApp::addMenuBar(lb_I_Unknown* uk) {
 	UAP_REQUEST(manager.getPtr(), lb_I_String, name)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, after)
 
-	UAP(lb_I_Parameter, param, __FILE__, __LINE__)
+	UAP(lb_I_Parameter, param)
 	
-	QI(uk, lb_I_Parameter, param, __FILE__, __LINE__)
+	QI(uk, lb_I_Parameter, param)
 	
 	parameter->setData("name");
 	param->getUAPString(*&parameter, *&name);
@@ -2529,9 +2532,9 @@ lbErrCodes LB_STDCALL MyApp::addMenuEntry(lb_I_Unknown* uk) {
 	UAP_REQUEST(manager.getPtr(), lb_I_String, handlername)
 	
 	
-	UAP(lb_I_Parameter, param, __FILE__, __LINE__)
+	UAP(lb_I_Parameter, param)
 
-	QI(uk, lb_I_Parameter, param, __FILE__, __LINE__)
+	QI(uk, lb_I_Parameter, param)
 
 	parameter->setData("menubar");
 	param->getUAPString(*&parameter, *&menubar);
@@ -2569,8 +2572,8 @@ lbErrCodes LB_STDCALL MyApp::toggleEvent(lb_I_Unknown* uk) {
 	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, handlername)
 	
-	UAP(lb_I_Parameter, param, __FILE__, __LINE__)
-	QI(uk, lb_I_Parameter, param, __FILE__, __LINE__)
+	UAP(lb_I_Parameter, param)
+	QI(uk, lb_I_Parameter, param)
 
 	parameter->setData("handlername");
 	param->getUAPString(*&parameter, *&handlername);
@@ -2596,8 +2599,8 @@ lbErrCodes LB_STDCALL MyApp::disableEvent(lb_I_Unknown* uk) {
 	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, handlername)
 	
-	UAP(lb_I_Parameter, param, __FILE__, __LINE__)
-	QI(uk, lb_I_Parameter, param, __FILE__, __LINE__)
+	UAP(lb_I_Parameter, param)
+	QI(uk, lb_I_Parameter, param)
 
 	parameter->setData("handlername");
 	param->getUAPString(*&parameter, *&handlername);
@@ -2623,8 +2626,8 @@ lbErrCodes LB_STDCALL MyApp::enableEvent(lb_I_Unknown* uk) {
 	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, handlername)
 	
-	UAP(lb_I_Parameter, param, __FILE__, __LINE__)
-	QI(uk, lb_I_Parameter, param, __FILE__, __LINE__)
+	UAP(lb_I_Parameter, param)
+	QI(uk, lb_I_Parameter, param)
 
 	parameter->setData("handlername");
 	param->getUAPString(*&parameter, *&handlername);
@@ -2665,9 +2668,9 @@ lbErrCodes LB_STDCALL MyApp::addButton(lb_I_Unknown* uk) {
 	UAP_REQUEST(manager.getPtr(), lb_I_Integer, w)
 	UAP_REQUEST(manager.getPtr(), lb_I_Integer, h)	
 	
-	UAP(lb_I_Parameter, param, __FILE__, __LINE__)
+	UAP(lb_I_Parameter, param)
 
-	QI(uk, lb_I_Parameter, param, __FILE__, __LINE__)
+	QI(uk, lb_I_Parameter, param)
 
 	parameter->setData("buttontext");
 	param->getUAPString(*&parameter, *&buttontext);
@@ -2720,9 +2723,9 @@ lbErrCodes LB_STDCALL MyApp::addLabel(lb_I_Unknown* uk) {
 	UAP_REQUEST(manager.getPtr(), lb_I_Integer, h)	
 	
 	
-	UAP(lb_I_Parameter, param, __FILE__, __LINE__)
+	UAP(lb_I_Parameter, param)
 
-	QI(uk, lb_I_Parameter, param, __FILE__, __LINE__)
+	QI(uk, lb_I_Parameter, param)
 
 
 	parameter->setData("labeltext");
@@ -2764,9 +2767,9 @@ lbErrCodes LB_STDCALL MyApp::addTextField(lb_I_Unknown* uk) {
 	UAP_REQUEST(manager.getPtr(), lb_I_Integer, h)	
 	
 	
-	UAP(lb_I_Parameter, param, __FILE__, __LINE__)
+	UAP(lb_I_Parameter, param)
 
-	QI(uk, lb_I_Parameter, param, __FILE__, __LINE__)
+	QI(uk, lb_I_Parameter, param)
 
 
 	parameter->setData("text");
@@ -2979,12 +2982,12 @@ void lb_wxFrame::OnDispatch(wxCommandEvent& event ) {
 			
 			param->setData(event.GetId());
 			
-			UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
-			QI(param, lb_I_Unknown, uk, __FILE__, __LINE__)
+			UAP(lb_I_Unknown, uk)
+			QI(param, lb_I_Unknown, uk)
 		
 			UAP_REQUEST(m, lb_I_String, result)
-			UAP(lb_I_Unknown, uk_result, __FILE__, __LINE__)
-			QI(result, lb_I_Unknown, uk_result, __FILE__, __LINE__)
+			UAP(lb_I_Unknown, uk_result)
+			QI(result, lb_I_Unknown, uk_result)
 		
 			dispatcher->dispatch(event.GetId(), uk.getPtr(), &uk_result);
                 }
@@ -2997,7 +3000,7 @@ void lb_wxFrame::OnDispatch(wxCommandEvent& event ) {
 void lb_wxFrame::OnPluginTest(wxCommandEvent& WXUNUSED(event) ) {
 
 	UAP_REQUEST(manager.getPtr(), lb_I_PluginManager, PM)
-	UAP(lb_I_Plugin, pl, __FILE__, __LINE__)
+	UAP(lb_I_Plugin, pl)
 
 	pl = PM->getFirstMatchingPlugin("lb_I_DatabaseReport");
 

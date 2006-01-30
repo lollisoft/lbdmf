@@ -31,11 +31,15 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.53 $
+ * $Revision: 1.54 $
  * $Name:  $
- * $Id: lbDOMConfig.cpp,v 1.53 2005/05/10 20:20:37 lollisoft Exp $
+ * $Id: lbDOMConfig.cpp,v 1.54 2006/01/30 15:54:15 lollisoft Exp $
  *
  * $Log: lbDOMConfig.cpp,v $
+ * Revision 1.54  2006/01/30 15:54:15  lollisoft
+ * Removed the __FILE__ and __LINE__ parameter usage in UAP and QI.
+ * This was an unnessesary thing and makes programming easier.
+ *
  * Revision 1.53  2005/05/10 20:20:37  lollisoft
  * Include files changed to be more actially language compilant
  *
@@ -582,9 +586,9 @@ protected:
 	DOM_Node   node;
 	char* getNameValue;
 	int debug;
-	UAP(lb_I_ConfigObject, parent, __FILE__, __LINE__)
+	UAP(lb_I_ConfigObject, parent)
 	
-	UAP(lb_I_Container, lbDOMchilds, __FILE__, __LINE__)
+	UAP(lb_I_Container, lbDOMchilds)
 	//lb_I_Container* lbDOMchilds;
 #ifdef bla
 /*...sbla:0:*/
@@ -871,7 +875,7 @@ lbErrCodes lbDOMNode::setData(lb_I_Unknown* uk) {
 /*...e*/
 	node = _node->node;
 	if (_node->lbDOMchilds != NULL) {
-		//QI(_node->lbDOMchilds, lb_I_Container, lbDOMchilds, __FILE__, __LINE__)
+		//QI(_node->lbDOMchilds, lb_I_Container, lbDOMchilds)
 		_node->lbDOMchilds->queryInterface("lb_I_Container", (void**) &lbDOMchilds, __FILE__, __LINE__);
 	}
 
@@ -1091,7 +1095,7 @@ lbErrCodes LB_STDCALL lbDOMNode::getFirstChildren(lb_I_ConfigObject** children) 
 	
 //	currentChildIndex = 0;
 	
-	UAP(lb_I_Unknown, unknown, __FILE__, __LINE__)
+	UAP(lb_I_Unknown, unknown)
 
 	unknown.setFile(__FILE__);
 	unknown.setLine(__LINE__);
@@ -1140,7 +1144,7 @@ lbErrCodes LB_STDCALL lbDOMNode::getNextChildren(lb_I_ConfigObject** children) {
 	
 	//currentChildIndex++;
 
-	UAP(lb_I_Unknown, unknown, __FILE__, __LINE__)
+	UAP(lb_I_Unknown, unknown)
 	unknown.setFile(__FILE__);
 	unknown.setLine(__LINE__);
 
@@ -1198,9 +1202,9 @@ lbDOMContainer* LB_STDCALL lbDOMNode::createAbstractedChildList(DOM_Node _node) 
 		lbNode->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
 		lbNode->node = child;
 		
-		UAP(lb_I_Unknown, unknown, __FILE__, __LINE__)
+		UAP(lb_I_Unknown, unknown)
 
-		QI(lbNode, lb_I_Unknown, unknown, __FILE__, __LINE__)
+		QI(lbNode, lb_I_Unknown, unknown)
 		
 		if (unknown == NULL) _LOG << "Error: The unknown pointer must not be NULL!" LOG_
 		
@@ -1208,7 +1212,7 @@ lbDOMContainer* LB_STDCALL lbDOMNode::createAbstractedChildList(DOM_Node _node) 
 			_CL_VERBOSE << "Error: Pointer of unknown instance differs from created instance" LOG_
 			getch();
 		}
-		UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
+		UAP(lb_I_KeyBase, key)
 		key = new lbKey(i);
 
 		key->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
@@ -1377,7 +1381,7 @@ protected:
 	int haveFunctorList;
 
 
-	UAP(lb_I_Container, lastResult, __FILE__, __LINE__)
+	UAP(lb_I_Container, lastResult)
 //	lb_I_Container* lastResult;
 };
 /*...e*/
@@ -1404,12 +1408,12 @@ char* LB_STDCALL lbDOMConfig::_queryInterface(char* name, void** unknown, char* 
 }
 lb_I_Module* LB_STDCALL lbDOMConfig::getModuleManager() {
 		lbErrCodes err = ERR_NONE;
-		UAP(lb_I_Module, _mm, __FILE__, __LINE__)
+		UAP(lb_I_Module, _mm)
 		if (manager == NULL) {
 			_CL_VERBOSE << "Error: Can't return module manager. Call setModuleManager(...) on me first!" LOG_
 			return NULL;
 		}
-		QI(manager, lb_I_Module, _mm, __FILE__, __LINE__)
+		QI(manager, lb_I_Module, _mm)
 		return _mm.getPtr();
 }
 
@@ -1763,8 +1767,8 @@ lb_I_Container* LB_STDCALL lbDOMConfig::findNodesAtTreePos(const char* treePos) 
 			lbNode->setNode(currentnode);
 
 			
-			UAP(lb_I_Unknown, unknown, __FILE__, __LINE__)
-			UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
+			UAP(lb_I_Unknown, unknown)
+			UAP(lb_I_KeyBase, key)
 
 			if (lbNode->queryInterface("lb_I_Unknown", (void**) &unknown, __FILE__, __LINE__) != ERR_NONE) {
 				_CL_VERBOSE << "lbNode->queryInterface() Failed!" LOG_

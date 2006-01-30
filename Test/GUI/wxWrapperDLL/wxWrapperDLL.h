@@ -33,11 +33,15 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.7 $
+ * $Revision: 1.8 $
  * $Name:  $
- * $Id: wxWrapperDLL.h,v 1.7 2006/01/30 06:23:48 lollisoft Exp $
+ * $Id: wxWrapperDLL.h,v 1.8 2006/01/30 15:54:15 lollisoft Exp $
  *
  * $Log: wxWrapperDLL.h,v $
+ * Revision 1.8  2006/01/30 15:54:15  lollisoft
+ * Removed the __FILE__ and __LINE__ parameter usage in UAP and QI.
+ * This was an unnessesary thing and makes programming easier.
+ *
  * Revision 1.7  2006/01/30 06:23:48  lollisoft
  * Removed OnPluginTest and added preparation for splitter windows.
  *
@@ -210,8 +214,8 @@ public:
         lb_wxGUI* gui;
         int guiCleanedUp;
         
-        UAP(lb_I_EventManager, eman, __FILE__, __LINE__)
-        UAP(lb_I_Dispatcher, dispatcher, __FILE__, __LINE__)
+        UAP(lb_I_EventManager, eman)
+        UAP(lb_I_Dispatcher, dispatcher)
 };
 /*...e*/
 
@@ -403,7 +407,7 @@ public:
         // The frame has the main dispatcher and is a wxEventHandler subclass
         lb_wxFrame* frame;
 	
-	UAP(lb_I_Container, forms, __FILE__, __LINE__)
+	UAP(lb_I_Container, forms)
 	char buffer[100];
 };
 /*...e*/

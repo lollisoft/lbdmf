@@ -103,8 +103,8 @@ private:
 	wxString app;
 	wxBoxSizer* sizerMain;
 
-	UAP(lb_I_Database, database, __FILE__, __LINE__)
-	UAP(lb_I_Query, sampleQuery, __FILE__, __LINE__)
+	UAP(lb_I_Database, database)
+	UAP(lb_I_Query, sampleQuery)
 
 	DECLARE_EVENT_TABLE()	
 	
@@ -221,7 +221,7 @@ void wxAppSelectPage::setLoggedOnUser(char* user) {
 		lbErrCodes err = sampleQuery->first();
 
 		if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
-			UAP(lb_I_String, s1, __FILE__, __LINE__)
+			UAP(lb_I_String, s1)
 			s1 = sampleQuery->getAsString(1);
 
 			_CL_LOG << "Append '" << s1->charrep() << "' to application list." LOG_
@@ -232,7 +232,7 @@ void wxAppSelectPage::setLoggedOnUser(char* user) {
 				lbErrCodes err = sampleQuery->next();
 				
 				if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
-					UAP(lb_I_String, s1, __FILE__, __LINE__)
+					UAP(lb_I_String, s1)
 					s1 = sampleQuery->getAsString(1);
 					
 					_CL_LOG << "Append '" << s1->charrep() << "' to application list." LOG_
@@ -290,8 +290,8 @@ DECLARE_LB_UNKNOWN()
 	void init(wxWindow* parent);
 
     
-//	UAP(lb_I_Database, database, __FILE__, __LINE__)
-//	UAP(lb_I_Query, sampleQuery, __FILE__, __LINE__)
+//	UAP(lb_I_Database, database)
+//	UAP(lb_I_Query, sampleQuery)
 
 
 	// l gets overwritten, while assigning a lb_I_Query* pointer to sampleQuery !!
@@ -408,7 +408,7 @@ bool wxLogonPage::TransferDataFromWindow() {
 	lbErrCodes err = ERR_NONE;
 		
 	UAP_REQUEST(manager.getPtr(), lb_I_Database, database)
-	UAP(lb_I_Query, sampleQuery, __FILE__, __LINE__)
+	UAP(lb_I_Query, sampleQuery)
 	database->init();
 
 	char* lbDMFPasswd = getenv("lbDMFPasswd");
@@ -772,8 +772,8 @@ lbErrCodes LB_STDCALL lb_wxGUI::cleanup() {
 
 		if (!form) continue;
 
-		UAP(lb_I_DatabaseForm, d, __FILE__, __LINE__)		
-		QI(form, lb_I_DatabaseForm, d, __FILE__, __LINE__)
+		UAP(lb_I_DatabaseForm, d)		
+		QI(form, lb_I_DatabaseForm, d)
 		
 		/* Really needed here !
 		 * The wxWidgets system doesn't have a or at least has it's own reference counting system.
@@ -853,13 +853,13 @@ lb_I_Form* LB_STDCALL lb_wxGUI::createLoginForm() {
 		REQUEST(getModuleManager(), lb_I_Container, forms)
 	}	
 
-	UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
-	UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
+	UAP(lb_I_Unknown, uk)
+	UAP(lb_I_KeyBase, key)
 	
 	UAP_REQUEST(getModuleManager(), lb_I_String, fName)
 	fName->setData("LoginForm");
 	
-	QI(fName, lb_I_KeyBase, key, __FILE__, __LINE__)
+	QI(fName, lb_I_KeyBase, key)
 	
 	uk = forms->getElement(&key);	
 	
@@ -873,7 +873,7 @@ lb_I_Form* LB_STDCALL lb_wxGUI::createLoginForm() {
 		_dialog = new lbLoginDialog();
 		_dialog->setModuleManager(getModuleManager(), __FILE__, __LINE__);
 		
-		QI(_dialog, lb_I_Unknown, uk, __FILE__, __LINE__)
+		QI(_dialog, lb_I_Unknown, uk)
 		
 		forms->insert(&uk, &key);
 		
@@ -914,24 +914,24 @@ lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::createDBForm(char* formName, char* query
 		}
 	}
 	
-	UAP(lb_I_DatabaseForm, _dialog, __FILE__, __LINE__)
+	UAP(lb_I_DatabaseForm, _dialog)
 	
 	if (forms == NULL) {
 		REQUEST(getModuleManager(), lb_I_Container, forms)
 	}	
 
-	UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
-	UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
+	UAP(lb_I_Unknown, uk)
+	UAP(lb_I_KeyBase, key)
 	
 	UAP_REQUEST(getModuleManager(), lb_I_String, fName)
 	fName->setData(formName);
 	
-	QI(fName, lb_I_KeyBase, key, __FILE__, __LINE__)
+	QI(fName, lb_I_KeyBase, key)
 	
 	uk = forms->getElement(&key);	
 	
 	if (uk != NULL) {
-		QI(uk, lb_I_DatabaseForm, _dialog, __FILE__, __LINE__)
+		QI(uk, lb_I_DatabaseForm, _dialog)
 	}
 
 /*...sCheck for recreation of the form:8:*/
@@ -963,7 +963,7 @@ lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::createDBForm(char* formName, char* query
 		 */
 
 		UAP_REQUEST(manager.getPtr(), lb_I_PluginManager, PM)
-		UAP(lb_I_Plugin, pl, __FILE__, __LINE__)
+		UAP(lb_I_Plugin, pl)
 
 		TRMemStartLocalCount();
 
@@ -990,8 +990,8 @@ lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::createDBForm(char* formName, char* query
 		// The form has been cloned. Destroy the unused instance.
 		// This avoids application hang at exit.
 		
-		UAP(lb_I_DatabaseForm, form, __FILE__, __LINE__)
-		QI(uk, lb_I_DatabaseForm, form, __FILE__, __LINE__)
+		UAP(lb_I_DatabaseForm, form)
+		QI(uk, lb_I_DatabaseForm, form)
 		
 		form->destroy();
 		form = NULL;
@@ -1004,7 +1004,7 @@ lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::createDBForm(char* formName, char* query
 		uk = forms->getElement(&key);
 		
 		if (uk != NULL) {
-		        QI(uk, lb_I_DatabaseForm, _dialog, __FILE__, __LINE__)
+		        QI(uk, lb_I_DatabaseForm, _dialog)
 		}
 
 		_dialog->setName(formName);
@@ -1078,9 +1078,9 @@ lb_I_Unknown* LB_STDCALL lb_wxGUI::getFrame() {
 /*...slbErrCodes LB_STDCALL lb_wxGUI\58\\58\gotoMenuEntry\40\char\42\ entry\41\:0:*/
 lbErrCodes LB_STDCALL lb_wxGUI::gotoMenuEntry(char* entry) {
         lbErrCodes err = ERR_NONE;
-        UAP(lb_I_Frame, frame, __FILE__, __LINE__)
+        UAP(lb_I_Frame, frame)
         
-        QI(_main_frame, lb_I_Frame, frame, __FILE__, __LINE__)
+        QI(_main_frame, lb_I_Frame, frame)
 
 
         /**
@@ -1094,7 +1094,7 @@ lbErrCodes LB_STDCALL lb_wxGUI::gotoMenuEntry(char* entry) {
          * We get a dispatch responce
          */
          
-        UAP(lb_I_DispatchResponse, d_res, __FILE__, __LINE__)
+        UAP(lb_I_DispatchResponse, d_res)
 
         if (d_req.getPtr()) {
                 // d_req must resolve the symbolic request name to its Id.
@@ -1130,12 +1130,12 @@ lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::findDBForm(char* name) {
 	lbErrCodes err = ERR_NONE;
 	
 	UAP_REQUEST(getModuleManager(), lb_I_String, fName)
-	UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
-	UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
+	UAP(lb_I_KeyBase, key)
+	UAP(lb_I_Unknown, uk)
 	
 	fName->setData(name);
 	
-	QI(fName, lb_I_KeyBase, key, __FILE__, __LINE__)
+	QI(fName, lb_I_KeyBase, key)
 	
 	uk = forms->getElement(&key);
 	
@@ -1144,8 +1144,8 @@ lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::findDBForm(char* name) {
 		return NULL;
 	}
 	
-	UAP(lb_I_DatabaseForm, w, __FILE__, __LINE__)
-	QI(uk, lb_I_DatabaseForm, w, __FILE__, __LINE__)
+	UAP(lb_I_DatabaseForm, w)
+	QI(uk, lb_I_DatabaseForm, w)
 	// Not really needed, because my dialogs are forced to not be smart.
 	w++;
 	return w.getPtr();
@@ -1333,12 +1333,12 @@ void lb_wxFrame::OnDispatch(wxCommandEvent& event ) {
 			
 			param->setData(event.GetId());
 			
-			UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
-			QI(param, lb_I_Unknown, uk, __FILE__, __LINE__)
+			UAP(lb_I_Unknown, uk)
+			QI(param, lb_I_Unknown, uk)
 		
 			UAP_REQUEST(m, lb_I_String, result)
-			UAP(lb_I_Unknown, uk_result, __FILE__, __LINE__)
-			QI(result, lb_I_Unknown, uk_result, __FILE__, __LINE__)
+			UAP(lb_I_Unknown, uk_result)
+			QI(result, lb_I_Unknown, uk_result)
 		
 			dispatcher->dispatch(event.GetId(), uk.getPtr(), &uk_result);
                 }

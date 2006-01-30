@@ -25,11 +25,15 @@
 #            40235 Duesseldorf (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.78 $
+# * $Revision: 1.79 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.78 2005/12/13 23:42:14 lollisoft Exp $
+# * $Id: STD_MAKE,v 1.79 2006/01/30 15:54:16 lollisoft Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.79  2006/01/30 15:54:16  lollisoft
+# * Removed the __FILE__ and __LINE__ parameter usage in UAP and QI.
+# * This was an unnessesary thing and makes programming easier.
+# *
 # * Revision 1.78  2005/12/13 23:42:14  lollisoft
 # * Code may work properly, but doesn't compile well. Compiler bug ?
 # * I know about a macro bug when missing one backslash, but I haven't
@@ -301,8 +305,8 @@ COMPILER=WATCOM
 
 #COMPILER=MICROSOFT
 
-#MODE=_DEBUG
-MODE=
+MODE=_DEBUG
+#MODE=
 DEBUG_MEMORY=no
 #DEBUG_MEMORY=yes
 

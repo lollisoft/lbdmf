@@ -271,8 +271,8 @@ private:
 
 	DECLARE_EVENT_TABLE()
 
-	UAP(lb_I_Database, database, __FILE__, __LINE__)
-	UAP(lb_I_Query, sampleQuery, __FILE__, __LINE__)
+	UAP(lb_I_Database, database)
+	UAP(lb_I_Query, sampleQuery)
 
 	
 	
@@ -505,8 +505,8 @@ _CL_VERBOSE << "Query for user " << user LOG_
 /*...e*/
 
     
-	UAP(lb_I_Database, database, __FILE__, __LINE__)
-	UAP(lb_I_Query, sampleQuery, __FILE__, __LINE__)
+	UAP(lb_I_Database, database)
+	UAP(lb_I_Query, sampleQuery)
 
 
 	// l gets overwritten, while assigning a lb_I_Query* pointer to sampleQuery !!
@@ -684,7 +684,7 @@ public:
 	virtual lb_I_Unknown* LB_STDCALL peekImplementation();
 	void LB_STDCALL releaseImplementation();
 	
-	UAP(lb_I_Unknown, loginHandler, __FILE__, __LINE__)
+	UAP(lb_I_Unknown, loginHandler)
 };	
 
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbPluginLoginWizard)
@@ -722,7 +722,7 @@ void LB_STDCALL lbPluginLoginWizard::initialize() {
 	lbLoginHandler* hdl = new lbLoginHandler();
 	hdl->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
 	
-	QI(hdl, lb_I_Unknown, loginHandler, __FILE__, __LINE__)
+	QI(hdl, lb_I_Unknown, loginHandler)
 	
 	hdl->registerEventHandler(*&disp);
 

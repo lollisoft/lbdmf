@@ -71,13 +71,13 @@ public:
 
 protected:
 	lb_I_GUI* gui;
-	UAP(lb_I_EventManager, eman, __FILE__, __LINE__)
-	UAP(lb_I_Dispatcher, dispatcher, __FILE__, __LINE__)
-	UAP(lb_I_Database, database, __FILE__, __LINE__)
+	UAP(lb_I_EventManager, eman)
+	UAP(lb_I_Dispatcher, dispatcher)
+	UAP(lb_I_Database, database)
 	
-	UAP(lb_I_String, LogonUser, __FILE__, __LINE__)
-	UAP(lb_I_String, LogonApplication, __FILE__, __LINE__)
-	UAP(lb_I_MetaApplication, metaapp, __FILE__, __LINE__)
+	UAP(lb_I_String, LogonUser)
+	UAP(lb_I_String, LogonApplication)
+	UAP(lb_I_MetaApplication, metaapp)
 		
 	char hdsihd[100];
 };
@@ -111,7 +111,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::getDynamicDBForm(lb_I_Unknown* uk) {
 	lbErrCodes err = ERR_NONE;
 	
 	if (gui != NULL) {
-	        UAP(lb_I_DatabaseForm, dbForm, __FILE__, __LINE__)
+	        UAP(lb_I_DatabaseForm, dbForm)
 
 /*...sDoc:16:*/
 		/*
@@ -128,15 +128,15 @@ lbErrCodes LB_STDCALL lbDynamicApplication::getDynamicDBForm(lb_I_Unknown* uk) {
 		*/
 /*...e*/
 
-		UAP(lb_I_Integer, eventID, __FILE__, __LINE__)
-		UAP(lb_I_Query, sampleQuery, __FILE__, __LINE__)
+		UAP(lb_I_Integer, eventID)
+		UAP(lb_I_Query, sampleQuery)
 
 		UAP_REQUEST(manager.getPtr(), lb_I_EventManager, eman)
 		UAP_REQUEST(manager.getPtr(), lb_I_String, query)
 		UAP_REQUEST(manager.getPtr(), lb_I_String, formID)
 		UAP_REQUEST(manager.getPtr(), lb_I_String, formName)
 		
-		QI(uk, lb_I_Integer, eventID, __FILE__, __LINE__)
+		QI(uk, lb_I_Integer, eventID)
 
 		// Retrieve the event name from their ID
 
@@ -201,7 +201,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::getDynamicDBForm(lb_I_Unknown* uk) {
 
 		sprintf(buffer, b, formID->charrep());
 
-		UAP(lb_I_Query, formularQuery, __FILE__, __LINE__)
+		UAP(lb_I_Query, formularQuery)
 
 		formularQuery = database->getQuery(0);
 		
@@ -233,7 +233,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::getDynamicDBForm(lb_I_Unknown* uk) {
 		
 		sprintf(buffer, b, LogonApplication->charrep());
 
-		UAP(lb_I_Query, DBConnQuery, __FILE__, __LINE__)
+		UAP(lb_I_Query, DBConnQuery)
 
 		DBConnQuery = database->getQuery(0);
 		
@@ -345,7 +345,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::Initialize(char* user, char* app) {
 
 
 	UAP_REQUEST(manager.getPtr(), lb_I_Database, database)
-	UAP(lb_I_Query, sampleQuery, __FILE__, __LINE__)
+	UAP(lb_I_Query, sampleQuery)
 	
 	database->init();
 
@@ -414,8 +414,8 @@ lbErrCodes LB_STDCALL lbDynamicApplication::Initialize(char* user, char* app) {
 
 	lbErrCodes DBerr = sampleQuery->first();
 	if ((DBerr == ERR_NONE) || (DBerr == WARN_DB_NODATA)) {
-		UAP(lb_I_String, EventName, __FILE__, __LINE__)
-		UAP(lb_I_String, MenuName, __FILE__, __LINE__)
+		UAP(lb_I_String, EventName)
+		UAP(lb_I_String, MenuName)
 		
 		EventName = sampleQuery->getAsString(1);
 		MenuName = sampleQuery->getAsString(2);
@@ -438,8 +438,8 @@ lbErrCodes LB_STDCALL lbDynamicApplication::Initialize(char* user, char* app) {
 #define TRUE 1
 		while (TRUE) {
 /*...sget rest of menu entries:24:*/
-			UAP(lb_I_String, EventName, __FILE__, __LINE__)
-			UAP(lb_I_String, MenuName, __FILE__, __LINE__)
+			UAP(lb_I_String, EventName)
+			UAP(lb_I_String, MenuName)
 			
 			DBerr = sampleQuery->next();
 		

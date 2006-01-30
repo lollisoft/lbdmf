@@ -31,10 +31,14 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.30 $
+ * $Revision: 1.31 $
  * $Name:  $
- * $Id: lbobject.h,v 1.30 2005/12/30 11:20:03 lollisoft Exp $
+ * $Id: lbobject.h,v 1.31 2006/01/30 15:54:15 lollisoft Exp $
  * $Log: lbobject.h,v $
+ * Revision 1.31  2006/01/30 15:54:15  lollisoft
+ * Removed the __FILE__ and __LINE__ parameter usage in UAP and QI.
+ * This was an unnessesary thing and makes programming easier.
+ *
  * Revision 1.30  2005/12/30 11:20:03  lollisoft
  * New function (toLower).
  *
@@ -272,7 +276,7 @@ public:
 	
 protected:
 
-	UAP(lb_I_Container, parameters, __FILE__, __LINE__)
+	UAP(lb_I_Container, parameters)
 };
 /*...e*/
 /*...sclass lbReference:0:*/
@@ -288,7 +292,7 @@ public:
 	virtual lbErrCodes LB_STDCALL get(lb_I_Unknown*& r);
 	
 protected:
-	UAP(lb_I_Unknown, _r, __FILE__, __LINE__)
+	UAP(lb_I_Unknown, _r)
 };
 #endif
 /*...e*/

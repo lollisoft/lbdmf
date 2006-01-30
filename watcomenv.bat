@@ -78,6 +78,8 @@ set BINROOT=%RUNROOT%\bin;%RUNROOT%\CPP\bin
 set Path=%DEVLW%\%BASE%\bin;%SystemRoot%\system32;%DEVLW%\;%WATBIN%;%DEVBIN%;%DLLROOT%;%BINROOT%
 set Path=%Path%;q:\develop\tools\cygwin\bin;Q:\develop\Tools\Perl\bin;G:\gs\gs8.15\bin
 
+set Path=%Path%;c:\tp
+
 set MSC=%MSVCDir%\Bin;%MSVCDir%\Lib
 
 set Path=%MSC%;%Path%;%DEVLW%\%BASE%\bin

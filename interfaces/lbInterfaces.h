@@ -768,22 +768,17 @@ typedef lbErrCodes ( lb_I_EventHandler::*lbEvHandler)(lb_I_Unknown* uk);
 	}
 
 /*...e*/
-/*...sdefine QI\40\source\44\ interface\44\ target\44\ file\44\ line\41\:0:*/
-#define QI(source, interface, target, file, line) \
-	target.setFile(file); \
-	target.setLine(line); \
+/*...sdefine QI\40\source\44\ interface\44\ target\41\:0:*/
+#define QI(source, interface, target) \
+	target.setFile(__FILE__); \
+	target.setLine(__LINE__); \
 	{ \
 		char* iface = (char*) malloc(strlen(#interface)+1); \
 		strcpy(iface, #interface); \
-	 	err = source->queryInterface(iface, (void**) &target, file, line); \
+	 	err = source->queryInterface(iface, (void**) &target, __FILE__, __LINE__); \
 	 	free(iface); \
 	 	iface = NULL; \
 	}
-
-#define _QI(source, interface, target) \
-	target.setFile(file); \
-	target.setLine(line); \
- 	err = source->queryInterface(#interface, (void**) &target, __FILE__, __LINE__);
 /*...e*/
 /*...e*/
 
@@ -964,7 +959,7 @@ public:
  *  \brief An automatic pointer implementation via macro.
  */
 
-#define UAP(interface, Unknown_Reference, file, line) \
+#define UAP(interface, Unknown_Reference) \
 		class UAP##Unknown_Reference { \
 \
 		public: \
@@ -1089,13 +1084,13 @@ public:
 		} \
 		UAP##Unknown_Reference& LB_STDCALL operator++(int) { \
 			interface* temp = NULL; \
-			_autoPtr->queryInterface(#interface, (void**) &temp, file, line); \
+			_autoPtr->queryInterface(#interface, (void**) &temp, __FILE__, __LINE__); \
 			return *this; \
 		} \
 		UAP##Unknown_Reference& LB_STDCALL operator--(int) { \
 			interface* temp = NULL; \
 			if (_autoPtr == NULL) return *this; \
-			if (_autoPtr->release(file, line) == ERR_RELEASED) _autoPtr = NULL; \
+			if (_autoPtr->release(__FILE__, __LINE__) == ERR_RELEASED) _autoPtr = NULL; \
 			return *this; \
 		} \
 		interface ** LB_STDCALL operator & () { \
@@ -1104,7 +1099,7 @@ public:
 		\
 		UAP##Unknown_Reference& LB_STDCALL operator = (interface* autoPtr) { \
 			if (_autoPtr != NULL) { \
-				_autoPtr->release(file, line); \
+				_autoPtr->release(__FILE__, __LINE__); \
 			} \
 			_autoPtr = autoPtr; \
 			if (attachedClassName) { \
@@ -1148,144 +1143,6 @@ public:
 /*...e*/
 /*...e*/
 
-#ifdef bla
-/*...sDebug AutoPointer:0:*/
-/** \def DEBUG_UAP(interface, Unknown_Reference, file, line)
- * \brief An automatic pointer implementation via macro. Debug version.
- */
-
-#define DEBUG_UAP(interface, Unknown_Reference, file, line) \
-		class UAP##Unknown_Reference { \
-\
-		private: \
-		UAP##Unknown_Reference(UAP##Unknown_Reference& from) { \
-		} \
-		public: \
-	        UAP##Unknown_Reference() { \
-	        	_autoPtr = NULL; \
-	        	_line = -1; \
-	        	_file = NULL; \
-	        	allowDelete = 1; \
-		} \
-		UAP##Unknown_Reference(const UAP##Unknown_Reference& _ref) { \
-	        	_file = NULL; \
-		        if (_ref._file) { \
-		                _file = new char [strlen(_ref._file) + 1]; \
-		                _file = strcpy(_file, _ref._file); \
-		        } \
-		        _line = _ref._line; \
-		} \
-		void operator=(const UAP##Unknown_Reference& _ref) { \
-		        if (_file != NULL) { \
-		                delete [] _file; \
-		                if (_ref._file) { \
-		                        _file = new char [strlen(_ref._file) + 1]; \
-		                        _file = strcpy(_file, _ref._file); \
-		                } \
-		        } \
-		        _line = _ref._line; \
-		} \
-		\
-		virtual ~UAP##Unknown_Reference() { \
-			_CL_LOG << "UAP destructor ~UAP" << #Unknown_Reference << "() at " << _file << " called" LOG_ \
-			if (_autoPtr != NULL) { \
-				if (allowDelete != 1) { \
-					if (_autoPtr->deleteState() == 1) { \
-						_CL_LOG << "Error: Instance would be deleted, but it's not allowed !!" LOG_ \
-					} \
-				} \
-				if (_line == -1) { \
-					_CL_LOG << "Warning: No reference has been taken in " << #Unknown_Reference << " at " << _line << " (UAP is in " << file << " at " << line LOG_ \
-				} \
-				_autoPtr->release(_file, _line); \
-				if (_file) delete [] _file; \
-			} \
-			_CL_VERBOSE << "UAP destructor ~UAP" << #Unknown_Reference << "() ready" LOG_ \
-		} \
-		void LB_STDCALL setFile(char* __file) { \
-			if (_file != NULL) { \
-				delete [] _file; \
-				_file = NULL; \
-			} \
-			if (__file != NULL) { \
-				_file = new char [strlen(__file) + 1]; \
-				_file = strcpy(_file, __file); \
-			} \
-		} \
-		void LB_STDCALL setLine(int __line) { \
-			_line = __line; \
-		} \
-		\
-		interface* LB_STDCALL getPtr() const { return _autoPtr; } \
-		void LB_STDCALL setPtr(interface*& source) { \
-			if (_autoPtr != NULL) { \
-				_CL_LOG << "Error: UAP object still initialized!" LOG_ \
-			} \
-			_autoPtr = source; \
-		} \
-		\
-		interface& LB_STDCALL operator * () { \
-		_LOG << "Warning: Using reference to UAP pointer in " << file << " at " <<  line LOG_ \
-		return *_autoPtr; } \
-		interface* LB_STDCALL operator -> () const { \
-			if (_autoPtr == NULL) { \
-				_CL_LOG << "Error: UAP pointer (" << #Unknown_Reference << ") for interface " << #interface << " is NULL!" LOG_ \
-			} \
-			return _autoPtr; \
-		} \
-		interface* LB_STDCALL operator -> () { \
-			if (_autoPtr == NULL) { \
-				_CL_LOG << "Error: UAP pointer (" << #Unknown_Reference << ") for interface " << #interface << " is NULL!" LOG_ \
-			} \
-			return _autoPtr; \
-		} \
-		UAP##Unknown_Reference& LB_STDCALL operator++(int) { \
-			interface* temp = NULL; \
-			_autoPtr->queryInterface(#interface, (void**) &temp, file, line); \
-			return *this; \
-		} \
-		UAP##Unknown_Reference& LB_STDCALL operator--(int) { \
-			interface* temp = NULL; \
-			if (_autoPtr->release(file, line) == ERR_RELEASED) _autoPtr = NULL; \
-			return *this; \
-		} \
-		interface ** LB_STDCALL operator & () { \
-			return &_autoPtr; \
-		} \
-		\
-		UAP##Unknown_Reference& LB_STDCALL operator = (interface* autoPtr) { \
-			_autoPtr = autoPtr; \
-			return *this; \
-		} \
-		int LB_STDCALL operator == (const interface* b) const { \
-			return _autoPtr == b; \
-		} \
-		int LB_STDCALL operator != (const interface* b) const { \
-			return _autoPtr != b; \
-		} \
-		void LB_STDCALL setDelete(int _allow) { allowDelete = _allow; } \
-		\
-		protected: \
-	        interface* _autoPtr; \
-	        int _line; \
-	        char* _file; \
-	        int allowDelete; \
-		}; \
-	\
-        interface* _UAP##Unknown_Reference; \
-        UAP##Unknown_Reference Unknown_Reference;
-
-
-/*...sbla \40\geht nicht\41\:0:*/
-#ifdef bla
-#define UNKNOWN_AUTO_PTR(interface, Unknown_Referene) \
-	interface* Unknown_Referene = NULL; \
-	UAP UAP##Unknown_Referene((lb_I_Unknown**) &Unknown_Referene);
-#endif
-/*...e*/
-/*...e*/
-#endif
-
 /*...sREQUEST Use this for a predefined UAP\46\:0:*/
 // Use this for a predefined UAP. It will automatically deleted, if scope is gone.
 
@@ -1296,7 +1153,7 @@ public:
  */
 
 #define REQUEST(mm, interface, variable) \
-  	UAP(lb_I_Unknown, uk##variable, __FILE__, __LINE__) \
+  	UAP(lb_I_Unknown, uk##variable) \
   	mm->request(#interface, &uk##variable); \
   	uk##variable->setModuleManager(mm, __FILE__, __LINE__); \
   	uk##variable->queryInterface(#interface, (void**) &variable, __FILE__, __LINE__); \
@@ -1310,7 +1167,7 @@ public:
  */
 
 #define DEBUG_REQUEST(mm, interface, variable) \
-  	UAP(lb_I_Unknown, uk##variable, __FILE__, __LINE__) \
+  	UAP(lb_I_Unknown, uk##variable) \
 	printf("Step 1\n"); \
   	mm->request(#interface, &uk##variable); \
 	printf("Step 2\n"); \
@@ -1334,9 +1191,9 @@ public:
  */
 
 #define UAP_REQUEST(mm, interface, variable) \
-  	UAP(lb_I_Unknown, uk##variable, __FILE__, __LINE__) \
+  	UAP(lb_I_Unknown, uk##variable) \
   	if (mm->request(#interface, &uk##variable) == ERR_MODULE_NO_INTERFACE) _CL_LOG << "Error: Interface not defined" LOG_ \
-  	UAP(interface, variable, __FILE__, __LINE__) \
+  	UAP(interface, variable) \
   	uk##variable->setModuleManager(mm, __FILE__, __LINE__); \
   	uk##variable->queryInterface(#interface, (void**) &variable, __FILE__, __LINE__);
 
@@ -1366,7 +1223,7 @@ public:
  
 #define DECLARE_LB_UNKNOWN() \
 private: \
-	UAP(lb_I_Module, manager, __FILE__, __LINE__) \
+	UAP(lb_I_Module, manager) \
 	int ref; \
 	lb_I_Unknown* data; \
 	int debug_macro; \
@@ -1424,12 +1281,12 @@ char* LB_STDCALL classname::_queryInterface(char* name, void** unknown, char* fi
 } \
 lb_I_Module* LB_STDCALL classname::getModuleManager() { \
 		lbErrCodes err = ERR_NONE; \
-		UAP(lb_I_Module, _mm, __FILE__, __LINE__) \
+		UAP(lb_I_Module, _mm) \
 		if (manager == NULL) { \
 			_CL_LOG << "Error: Can't return module manager. Call setModuleManager(...) on me first!" LOG_ \
 			return NULL; \
 		} \
-		QI(manager, lb_I_Module, _mm, __FILE__, __LINE__) \
+		QI(manager, lb_I_Module, _mm) \
 		return _mm.getPtr(); \
 } \
 \
@@ -1630,12 +1487,12 @@ char* LB_STDCALL classname::_queryInterface(char* name, void** unknown, char* fi
 } \
 lb_I_Module* LB_STDCALL classname::getModuleManager() { \
 		lbErrCodes err = ERR_NONE; \
-		UAP(lb_I_Module, _mm, __FILE__, __LINE__) \
+		UAP(lb_I_Module, _mm) \
 		if (manager == NULL) { \
 			_CL_LOG << "Error: Can't return module manager. Call setModuleManager(...) on me first!" LOG_ \
 			return NULL; \
 		} \
-		QI(manager, lb_I_Module, _mm, __FILE__, __LINE__) \
+		QI(manager, lb_I_Module, _mm) \
 		return _mm.getPtr(); \
 } \
 \
@@ -2657,8 +2514,8 @@ protected:
 	virtual void LB_STDCALL setModule(char* module); \
 	virtual lb_I_Container* LB_STDCALL getPlugins(); \
 	virtual void LB_STDCALL enumPlugins(); \
-	UAP(lb_I_Container, Plugins, __FILE__, __LINE__) \
-	UAP(lb_I_String, _module, __FILE__, __LINE__)
+	UAP(lb_I_Container, Plugins) \
+	UAP(lb_I_String, _module)
 
 #define BEGIN_PLUGINS(cls) \
 \
@@ -2690,19 +2547,19 @@ void LB_STDCALL cls::enumPlugins() { \
 	P##plugin##namespace->setNamespace(#namespace); \
 	\
 	UAP_REQUEST(manager.getPtr(), lb_I_String, s##plugin##namespace) \
-	UAP(lb_I_KeyBase, Key##plugin##namespace, __FILE__, __LINE__) \
-	UAP(lb_I_Unknown, ukPlugin##plugin##namespace, __FILE__, __LINE__) \
+	UAP(lb_I_KeyBase, Key##plugin##namespace) \
+	UAP(lb_I_Unknown, ukPlugin##plugin##namespace) \
 	\
 	s##plugin##namespace->setData(#plugin); \
-	QI(s##plugin##namespace, lb_I_KeyBase, Key##plugin##namespace, __FILE__, __LINE__) \
-	QI(P##plugin##namespace, lb_I_Unknown, ukPlugin##plugin##namespace, __FILE__, __LINE__) \
+	QI(s##plugin##namespace, lb_I_KeyBase, Key##plugin##namespace) \
+	QI(P##plugin##namespace, lb_I_Unknown, ukPlugin##plugin##namespace) \
 	\
 	Plugins->insert(&ukPlugin##plugin##namespace, &Key##plugin##namespace); \
 	\
-	UAP(lb_I_Unknown, ukPl##plugin##namespace, __FILE__, __LINE__) \
-	UAP(lb_I_Plugin, Pl##plugin##namespace, __FILE__, __LINE__) \
+	UAP(lb_I_Unknown, ukPl##plugin##namespace) \
+	UAP(lb_I_Plugin, Pl##plugin##namespace) \
 	ukPl##plugin##namespace = Plugins->getElement(&Key##plugin##namespace); \
-	QI(ukPl##plugin##namespace, lb_I_Plugin, Pl##plugin##namespace, __FILE__, __LINE__) \
+	QI(ukPl##plugin##namespace, lb_I_Plugin, Pl##plugin##namespace) \
 	Pl##plugin##namespace->setModule(_module->charrep()); \
 	Pl##plugin##namespace->setName(#plugin); \
 	Pl##plugin##namespace->setNamespace(#namespace);

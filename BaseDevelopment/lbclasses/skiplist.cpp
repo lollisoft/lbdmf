@@ -38,11 +38,15 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.41 $
+ * $Revision: 1.42 $
  * $Name:  $
- * $Id: skiplist.cpp,v 1.41 2005/12/06 15:54:56 lollisoft Exp $
+ * $Id: skiplist.cpp,v 1.42 2006/01/30 15:54:15 lollisoft Exp $
  *
  * $Log: skiplist.cpp,v $
+ * Revision 1.42  2006/01/30 15:54:15  lollisoft
+ * Removed the __FILE__ and __LINE__ parameter usage in UAP and QI.
+ * This was an unnessesary thing and makes programming easier.
+ *
  * Revision 1.41  2005/12/06 15:54:56  lollisoft
  * Changes let the GUI work properly in debug mode. But there is a NULL
  * pointer exeption in release mode near opening a database form.
@@ -388,7 +392,7 @@ void LB_STDCALL SkipList::deleteAll() {
 /*...e*/
 /*...sSkipList\58\\58\exists\40\lb_I_KeyBase\42\\42\ const key\41\:0:*/
 int LB_STDCALL SkipList::exists(lb_I_KeyBase** const key) { 
-    UAP(lb_I_Unknown, s, __FILE__, __LINE__)
+    UAP(lb_I_Unknown, s)
     
     s = search(*key);
     
@@ -612,7 +616,7 @@ void SkipList::insert(Elem newValue) { // Insert into skiplist
     update[i] = x;              // Keep track of end at level i
   }
 
-  UAP(lb_I_Element, el, __FILE__, __LINE__)
+  UAP(lb_I_Element, el)
   el = newValue;
   el++;
   el++;

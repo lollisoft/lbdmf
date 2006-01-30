@@ -112,7 +112,7 @@ FormularFieldInformation::FormularFieldInformation(char const * formularname, lb
 
 	database->connect("lbDMF", lbDMFUser, lbDMFPasswd);
 
-	UAP(lb_I_Query, ROquery, __FILE__, __LINE__)
+	UAP(lb_I_Query, ROquery)
 
 	ROquery = database->getQuery(0);
 
@@ -123,11 +123,11 @@ FormularFieldInformation::FormularFieldInformation(char const * formularname, lb
 	err = ROquery->first();
 
 	while (err == ERR_NONE) {
-	        UAP(lb_I_String, tablename, __FILE__, __LINE__)
-	        UAP(lb_I_String, fieldname, __FILE__, __LINE__)
-	        UAP(lb_I_String, specialColumn, __FILE__, __LINE__)
-	        UAP(lb_I_String, columnType, __FILE__, __LINE__)
-	        UAP(lb_I_String, ro, __FILE__, __LINE__)
+	        UAP(lb_I_String, tablename)
+	        UAP(lb_I_String, fieldname)
+	        UAP(lb_I_String, specialColumn)
+	        UAP(lb_I_String, columnType)
+	        UAP(lb_I_String, ro)
 
 	        tablename = ROquery->getAsString(1);
 		fieldname = ROquery->getAsString(2);
@@ -144,21 +144,21 @@ FormularFieldInformation::FormularFieldInformation(char const * formularname, lb
 			col->setData(query->getColumnName(i));
 
 			if ((strcmp(col->charrep(), fieldname->charrep()) == 0) && ((strcmp("true", ro->charrep()) == 0) || (strcmp("1", ro->charrep()) == 0))) {
-				UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
-				UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
+				UAP(lb_I_KeyBase, key)
+				UAP(lb_I_Unknown, uk)
 				
-				QI(col, lb_I_KeyBase, key, __FILE__, __LINE__)
-				QI(col, lb_I_Unknown, uk, __FILE__, __LINE__)
+				QI(col, lb_I_KeyBase, key)
+				QI(col, lb_I_Unknown, uk)
 				
 				ROFields->insert(&uk, &key);
 			}
 
 			if ((strcmp(col->charrep(), fieldname->charrep()) == 0) && ((strcmp("true", specialColumn->charrep()) == 0) || (strcmp("1", specialColumn->charrep()) == 0))) {
-				UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
-				UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
+				UAP(lb_I_KeyBase, key)
+				UAP(lb_I_Unknown, uk)
 				
-				QI(col, lb_I_KeyBase, key, __FILE__, __LINE__)
-				QI(columnType, lb_I_Unknown, uk, __FILE__, __LINE__)
+				QI(col, lb_I_KeyBase, key)
+				QI(columnType, lb_I_Unknown, uk)
 				
 				SCFields->insert(&uk, &key);
 			}
@@ -167,11 +167,11 @@ FormularFieldInformation::FormularFieldInformation(char const * formularname, lb
 	}
 	
 	if (err == WARN_DB_NODATA) {
-                UAP(lb_I_String, tablename, __FILE__, __LINE__)
-                UAP(lb_I_String, fieldname, __FILE__, __LINE__)
-		UAP(lb_I_String, specialColumn, __FILE__, __LINE__)
-		UAP(lb_I_String, columnType, __FILE__, __LINE__)
-		UAP(lb_I_String, ro, __FILE__, __LINE__)
+                UAP(lb_I_String, tablename)
+                UAP(lb_I_String, fieldname)
+		UAP(lb_I_String, specialColumn)
+		UAP(lb_I_String, columnType)
+		UAP(lb_I_String, ro)
 		
                 tablename = ROquery->getAsString(1);
                 fieldname = ROquery->getAsString(2);
@@ -189,21 +189,21 @@ FormularFieldInformation::FormularFieldInformation(char const * formularname, lb
                         col->setData(query->getColumnName(i));
 			
 			if ((strcmp(col->charrep(), fieldname->charrep()) == 0) && ((strcmp("true", ro->charrep()) == 0) || (strcmp("1", ro->charrep()) == 0))) {
-                                UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
-                                UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
+                                UAP(lb_I_KeyBase, key)
+                                UAP(lb_I_Unknown, uk)
 
-                                QI(col, lb_I_KeyBase, key, __FILE__, __LINE__)
-                                QI(col, lb_I_Unknown, uk, __FILE__, __LINE__)
+                                QI(col, lb_I_KeyBase, key)
+                                QI(col, lb_I_Unknown, uk)
 
                                 ROFields->insert(&uk, &key);
                         }
 
 			if ((strcmp(col->charrep(), fieldname->charrep()) == 0) && ((strcmp("true", specialColumn->charrep()) == 0) || (strcmp("1", specialColumn->charrep()) == 0))) {
-				UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
-				UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
+				UAP(lb_I_KeyBase, key)
+				UAP(lb_I_Unknown, uk)
 				
-				QI(col, lb_I_KeyBase, key, __FILE__, __LINE__)
-				QI(columnType, lb_I_Unknown, uk, __FILE__, __LINE__)
+				QI(col, lb_I_KeyBase, key)
+				QI(columnType, lb_I_Unknown, uk)
 				
 				SCFields->insert(&uk, &key);
 			}
@@ -219,8 +219,8 @@ bool FormularFieldInformation::isReadonly(char* field) {
 	
 	f->trim();
 	
-	UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
-	QI(f, lb_I_KeyBase, key, __FILE__, __LINE__)
+	UAP(lb_I_KeyBase, key)
+	QI(f, lb_I_KeyBase, key)
 	
 	if (ROFields->exists(&key) == 1) {
 		return true;
@@ -239,8 +239,8 @@ bool FormularFieldInformation::isSpecialColumn(char* field) {
 	
 	f->trim();
 
-	UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
-	QI(f, lb_I_KeyBase, key, __FILE__, __LINE__)
+	UAP(lb_I_KeyBase, key)
+	QI(f, lb_I_KeyBase, key)
 	
 	if (SCFields->exists(&key) == 1) {
 		return true;
@@ -257,14 +257,14 @@ char* FormularFieldInformation::getControlType(char* name) {
 	
 	f->trim();
 	
-	UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
-	QI(f, lb_I_KeyBase, key, __FILE__, __LINE__)
+	UAP(lb_I_KeyBase, key)
+	QI(f, lb_I_KeyBase, key)
 
 	if (SCFields->exists(&key) == 1) {
-		UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
+		UAP(lb_I_Unknown, uk)
 		UAP_REQUEST(getModuleInstance(), lb_I_String, type)
 		uk = SCFields->getElement(&key);
-		QI(uk, lb_I_String, type, __FILE__, __LINE__)
+		QI(uk, lb_I_String, type)
 		
 		return strdup(type->charrep());
 	}

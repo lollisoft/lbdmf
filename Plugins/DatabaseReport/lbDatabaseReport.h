@@ -49,16 +49,16 @@ protected:
 	void LB_STDCALL openReport(lb_I_String* reportname, lb_I_Parameter* params);
 
 	char* myActionID;
-	UAP(lb_I_Database, db, __FILE__, __LINE__)
-	UAP(lb_I_String, app, __FILE__, __LINE__)
-	UAP(lb_I_String, masterForm, __FILE__, __LINE__)
-	UAP(lb_I_String, SourceFieldName, __FILE__, __LINE__)
-	UAP(lb_I_String, SourceFieldValue, __FILE__, __LINE__)
-	UAP(lb_I_String, DBName, __FILE__, __LINE__)
-	UAP(lb_I_String, DBUser, __FILE__, __LINE__)
-	UAP(lb_I_String, DBPass, __FILE__, __LINE__)
+	UAP(lb_I_Database, db)
+	UAP(lb_I_String, app)
+	UAP(lb_I_String, masterForm)
+	UAP(lb_I_String, SourceFieldName)
+	UAP(lb_I_String, SourceFieldValue)
+	UAP(lb_I_String, DBName)
+	UAP(lb_I_String, DBUser)
+	UAP(lb_I_String, DBPass)
 
-	UAP(lb_I_DatabaseReport, report, __FILE__, __LINE__)
+	UAP(lb_I_DatabaseReport, report)
 };
 /*...e*/
 /*...sclass lbDatabaseReport:0:*/
@@ -111,8 +111,8 @@ public:
 
 	bool		hasConditions;
 	
-	UAP(lb_I_String, AndConditionColumn, __FILE__, __LINE__)
-	UAP(lb_I_String, AndConditionValue, __FILE__, __LINE__)
+	UAP(lb_I_String, AndConditionColumn)
+	UAP(lb_I_String, AndConditionValue)
 };
 /*...e*/
 

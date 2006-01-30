@@ -509,7 +509,7 @@ DLLEXPORT lb_I_Module* LB_STDCALL getModuleInstance() {
 typedef lbErrCodes (LB_STDCALL *T_p_getlbModuleInstance) (lb_I_Module**, lb_I_Module* m, char* file, int line);
 T_p_getlbModuleInstance DLL_GETMODULEINSTANCE;
 	lbErrCodes err = ERR_NONE;
-	UAP(lb_I_Module, module, __FILE__, __LINE__)
+	UAP(lb_I_Module, module)
 
 	if (memTrackerInit == 0) {
 		//DebugBreak();
@@ -579,8 +579,8 @@ T_p_getlbModuleInstance DLL_GETMODULEINSTANCE;
 		logMessage("Instance is locked. Must set module manager first\n");
 		module->setModuleManager(module.getPtr(), __FILE__, __LINE__);
 	} 
-	UAP(lb_I_Module, inst, __FILE__, __LINE__)
-	QI(module, lb_I_Module, inst, __FILE__, __LINE__)
+	UAP(lb_I_Module, inst)
+	QI(module, lb_I_Module, inst)
 	return inst.getPtr();
 }
 /*...e*/

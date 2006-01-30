@@ -30,11 +30,15 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.63 $
+ * $Revision: 1.64 $
  * $Name:  $
- * $Id: lbInterfaces-sub-classes.h,v 1.63 2006/01/21 23:50:11 lollisoft Exp $
+ * $Id: lbInterfaces-sub-classes.h,v 1.64 2006/01/30 15:54:15 lollisoft Exp $
  *
  * $Log: lbInterfaces-sub-classes.h,v $
+ * Revision 1.64  2006/01/30 15:54:15  lollisoft
+ * Removed the __FILE__ and __LINE__ parameter usage in UAP and QI.
+ * This was an unnessesary thing and makes programming easier.
+ *
  * Revision 1.63  2006/01/21 23:50:11  lollisoft
  * Added new member to ask the user for a file. And some
  * more initial member documentation.
@@ -613,9 +617,9 @@ public:
 		UAP_REQUEST(manager.getPtr(), lb_I_String, menuname)
 		UAP_REQUEST(manager.getPtr(), lb_I_String, handlername)
 	
-		UAP(lb_I_Parameter, param, __FILE__, __LINE__)
+		UAP(lb_I_Parameter, param)
 
-		QI(uk, lb_I_Parameter, param, __FILE__, __LINE__)
+		QI(uk, lb_I_Parameter, param)
 
 		parameter->setData("menubar");
 		param->getUAPString(*&parameter, *&menubar);

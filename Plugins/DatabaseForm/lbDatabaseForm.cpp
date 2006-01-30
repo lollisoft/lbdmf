@@ -216,8 +216,8 @@ lbErrCodes LB_STDCALL lbDatabasePanel::setData(lb_I_Unknown* uk) {
 		
         _CL_VERBOSE << "lbDatabasePanel::setData(...) not implemented yet" LOG_
 
-		UAP(lb_I_DatabaseForm, dbForm, __FILE__, __LINE__)
-		QI(uk, lb_I_DatabaseForm, dbForm, __FILE__, __LINE__)
+		UAP(lb_I_DatabaseForm, dbForm)
+		QI(uk, lb_I_DatabaseForm, dbForm)
 		
 		fa = ((lbDatabasePanel*) dbForm.getPtr())->fa;
 		((lbDatabasePanel*) dbForm.getPtr())->fa = NULL;
@@ -458,8 +458,8 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 
 		bool createdControl = false;
 
-		UAP(lb_I_Query, FKColumnQuery, __FILE__, __LINE__)
-		UAP(lb_I_Query, FKColumnQuery1, __FILE__, __LINE__)
+		UAP(lb_I_Query, FKColumnQuery)
+		UAP(lb_I_Query, FKColumnQuery1)
 		
 		name = strdup(sampleQuery->getColumnName(i));
 
@@ -478,25 +478,25 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 			UAP_REQUEST(manager.getPtr(), lb_I_Container, ComboboxMapper)
 
 			UAP_REQUEST(manager.getPtr(), lb_I_String, cbName)
-			UAP(lb_I_KeyBase, key_cbName, __FILE__, __LINE__)
+			UAP(lb_I_KeyBase, key_cbName)
 			
-			QI(cbName, lb_I_KeyBase, key_cbName, __FILE__, __LINE__)
-			QI(_ComboboxMapper, lb_I_Unknown, uk_ComboboxMapper, __FILE__, __LINE__)
+			QI(cbName, lb_I_KeyBase, key_cbName)
+			QI(_ComboboxMapper, lb_I_Unknown, uk_ComboboxMapper)
 
 			// This is the input parameter
 
 			cbName->setData(name);
 			
 			UAP_REQUEST(manager.getPtr(), lb_I_String, table)
-			UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
+			UAP(lb_I_KeyBase, key)
 	
-			UAP(lb_I_String, t, __FILE__, __LINE__)
+			UAP(lb_I_String, t)
 	
 			t = sampleQuery->getPKTable(name);
 	
 			table->setData(t->charrep());
 	
-			QI(table, lb_I_KeyBase, key, __FILE__, __LINE__)
+			QI(table, lb_I_KeyBase, key)
 	
 			if (ignoredPKTables->exists(&key) == 1) hideThisColumn = true;
 			
@@ -504,7 +504,7 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 
 			ukComboboxMapper = ComboboxMapperList->getElement(&key_cbName);
 			
-			QI(ukComboboxMapper, lb_I_Container, ComboboxMapper, __FILE__, __LINE__)
+			QI(ukComboboxMapper, lb_I_Container, ComboboxMapper)
 			
 			char* buffer = (char*) malloc(1000);
 			buffer[0] = 0;
@@ -568,7 +568,7 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 /*...sHave mapping to visible data for the combobox:64:*/
 				UAP_REQUEST(manager.getPtr(), lb_I_String, PKName)
 				UAP_REQUEST(manager.getPtr(), lb_I_String, PKTable)
-				UAP(lb_I_String, s, __FILE__, __LINE__)
+				UAP(lb_I_String, s)
 				
 				
 				PKName = FKColumnQuery->getAsString(1);
@@ -585,7 +585,7 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 				
 				sprintf(buffer, "select %s, id from %s order by id", PKName->charrep(), PKTable->charrep());
 				
-				UAP(lb_I_Query, ReplacementColumnQuery, __FILE__, __LINE__)
+				UAP(lb_I_Query, ReplacementColumnQuery)
 				
 				database->connect(DBName, DBUser, DBPass);
 				
@@ -614,20 +614,20 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 					
 					UAP_REQUEST(manager.getPtr(), lb_I_Integer, key)
 					
-					UAP(lb_I_Unknown, uk_possible_fk, __FILE__, __LINE__)
-					UAP(lb_I_KeyBase, key_cbox_pos, __FILE__, __LINE__)
+					UAP(lb_I_Unknown, uk_possible_fk)
+					UAP(lb_I_KeyBase, key_cbox_pos)
 					
 					if (old_fk == possible_fk_pos) cbox->SetSelection(cbox_pos);
 					
 					key->setData(cbox_pos);
 					cbox_pos++;
 					
-					QI(key, lb_I_KeyBase, key_cbox_pos, __FILE__, __LINE__)
+					QI(key, lb_I_KeyBase, key_cbox_pos)
 					UAP_REQUEST(manager.getPtr(), lb_I_Integer, possible_fk_int)
 
 					possible_fk_int->setData(possible_fk_pos);
 
-					QI(possible_fk_int, lb_I_Unknown, uk_possible_fk, __FILE__, __LINE__)
+					QI(possible_fk_int, lb_I_Unknown, uk_possible_fk)
 					
 					ComboboxMapper->insert(&uk_possible_fk, &key_cbox_pos);
 					
@@ -635,8 +635,8 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 					// Only if not WARN_DB_NODATA					
 					while ((DBerr == ERR_NONE) || (DBerr == WARN_DB_NODATA)) {
 						UAP_REQUEST(manager.getPtr(), lb_I_String, possible_fk)
-						UAP(lb_I_Unknown, uk_possible_fk, __FILE__, __LINE__)
-						UAP(lb_I_KeyBase, key_cbox_pos, __FILE__, __LINE__)
+						UAP(lb_I_Unknown, uk_possible_fk)
+						UAP(lb_I_KeyBase, key_cbox_pos)
 						
 						DBerr = ReplacementColumnQuery->next();
 						
@@ -655,12 +655,12 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 						key->setData(cbox_pos);
 						cbox_pos++;
 						
-						QI(key, lb_I_KeyBase, key_cbox_pos, __FILE__, __LINE__)
+						QI(key, lb_I_KeyBase, key_cbox_pos)
 						UAP_REQUEST(manager.getPtr(), lb_I_Integer, possible_fk_int)
 						
 						possible_fk_int->setData(possible_fk_pos);
 						
-						QI(possible_fk_int, lb_I_Unknown, uk_possible_fk, __FILE__, __LINE__)
+						QI(possible_fk_int, lb_I_Unknown, uk_possible_fk)
 					
 						ComboboxMapper->insert(&uk_possible_fk, &key_cbox_pos);
 					
@@ -738,7 +738,7 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 						
 						val.SetIncludes(ValArray);
 					
-						UAP(lb_I_String, s, __FILE__, __LINE__)
+						UAP(lb_I_String, s)
 						
 						s = sampleQuery->getAsString(i);
 						
@@ -755,7 +755,7 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 					break;
 				case lb_I_Query::lbDBColumnChar:
 					{
-						UAP(lb_I_String, s, __FILE__, __LINE__)
+						UAP(lb_I_String, s)
 						
 						s = sampleQuery->getAsString(i);
 						
@@ -795,7 +795,7 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 						
 						val.SetIncludes(ValArray);
 
-						UAP(lb_I_String, s, __FILE__, __LINE__)
+						UAP(lb_I_String, s)
 						
 						s = sampleQuery->getAsString(i);
 					
@@ -871,7 +871,7 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 	sizerAddRem->Add(buttonDelete, 1, wxEXPAND | wxALL, 5);
 
 /*...sAction handler initializion:8:*/
-	UAP(lb_I_Query, actionQuery, __FILE__, __LINE__)
+	UAP(lb_I_Query, actionQuery)
 	
 	actionQuery = database->getQuery(0);
 
@@ -897,8 +897,8 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 	
 /*...sloop through and find actions:16:*/
 	while (err == ERR_NONE) {
-		UAP(lb_I_String, action, __FILE__, __LINE__)
-		UAP(lb_I_String, actionWhat, __FILE__, __LINE__)
+		UAP(lb_I_String, action)
+		UAP(lb_I_String, actionWhat)
 		
 		action = actionQuery->getAsString(1);
 		actionWhat = actionQuery->getAsString(2);
@@ -933,8 +933,8 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 /*...e*/
 /*...sget last action:16:*/
 	if (err == WARN_DB_NODATA) {
-		UAP(lb_I_String, action, __FILE__, __LINE__)
-		UAP(lb_I_String, actionWhat, __FILE__, __LINE__)
+		UAP(lb_I_String, action)
+		UAP(lb_I_String, actionWhat)
 		
 		action = actionQuery->getAsString(1);
 		actionWhat = actionQuery->getAsString(2);
@@ -1209,13 +1209,13 @@ void LB_STDCALL lbDatabasePanel::ignoreForeignKeys(char* toTable) {
 	}
 
 	UAP_REQUEST(manager.getPtr(), lb_I_String, string)
-	UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
-	UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
+	UAP(lb_I_Unknown, uk)
+	UAP(lb_I_KeyBase, key)
 	
 	string->setData(toTable);
 	
-	QI(string, lb_I_Unknown, uk, __FILE__, __LINE__)
-	QI(string, lb_I_KeyBase, key, __FILE__, __LINE__)
+	QI(string, lb_I_Unknown, uk)
+	QI(string, lb_I_KeyBase, key)
 	
 	ignoredPKTables->insert(&uk, &key);
 }
@@ -1270,7 +1270,7 @@ void LB_STDCALL lbDatabasePanel::updateFromMaster() {
 
 
 /*...sDetermine the primary key values of the current master entry\44\ based on the value of the \42\\38\SourceFieldName\46\:8:*/
-	UAP(lb_I_String, colName, __FILE__, __LINE__)
+	UAP(lb_I_String, colName)
 	int columns = _master->getPrimaryColumns();
 	bool isChar = _master->isCharacterColumn(SourceFieldName->charrep());
 	
@@ -1312,7 +1312,7 @@ void LB_STDCALL lbDatabasePanel::updateFromMaster() {
 
 /*...sRetrieve the values from the primary keys and build up the where clause to be used in detail form:8:*/
 	REQUEST(manager.getPtr(), lb_I_Database, database)
-	UAP(lb_I_Query, PKQuery, __FILE__, __LINE__)
+	UAP(lb_I_Query, PKQuery)
 
 	database->init();
 	database->connect(DBName->charrep(), DBUser->charrep(), DBPass->charrep());
@@ -1324,7 +1324,7 @@ void LB_STDCALL lbDatabasePanel::updateFromMaster() {
 	if (err == ERR_NONE) {
 
 		UAP_REQUEST(manager.getPtr(), lb_I_String, colName)
-		UAP(lb_I_String, colValue, __FILE__, __LINE__)
+		UAP(lb_I_String, colValue)
 
 		err = PKQuery->first();
 
@@ -1341,7 +1341,7 @@ void LB_STDCALL lbDatabasePanel::updateFromMaster() {
 		
 				bool isChar = PKQuery->getColumnType(i) == lb_I_Query::lbDBColumnChar;
 		
-				UAP(lb_I_String, fk, __FILE__, __LINE__)
+				UAP(lb_I_String, fk)
 		
 				fk = sampleQuery->getFKColumn(
 						PKQuery->getTableName(colName->charrep()),
@@ -1366,11 +1366,11 @@ void LB_STDCALL lbDatabasePanel::updateFromMaster() {
 			
 				*newWhereClause += " and ";
 
-				UAP(lb_I_Unknown, uk_colValue, __FILE__, __LINE__)
-				UAP(lb_I_KeyBase, key_fk, __FILE__, __LINE__)
+				UAP(lb_I_Unknown, uk_colValue)
+				UAP(lb_I_KeyBase, key_fk)
 				
-				QI(colValue, lb_I_Unknown, uk_colValue, __FILE__, __LINE__)
-				QI(fk, lb_I_KeyBase, key_fk, __FILE__, __LINE__)
+				QI(colValue, lb_I_Unknown, uk_colValue)
+				QI(fk, lb_I_KeyBase, key_fk)
 
 				MasterDetailRelationData->insert(&uk_colValue, &key_fk);
 
@@ -1384,7 +1384,7 @@ void LB_STDCALL lbDatabasePanel::updateFromMaster() {
 		
 			bool isChar = PKQuery->getColumnType(columns) == lb_I_Query::lbDBColumnChar;
 		
-			UAP(lb_I_String, fk, __FILE__, __LINE__)
+			UAP(lb_I_String, fk)
 		
 			fk = sampleQuery->getFKColumn(
 					PKQuery->getTableName(colName->charrep()),
@@ -1407,11 +1407,11 @@ void LB_STDCALL lbDatabasePanel::updateFromMaster() {
 			
 			if (isChar) *newWhereClause += "'";
 
-			UAP(lb_I_Unknown, uk_colValue, __FILE__, __LINE__)
-			UAP(lb_I_KeyBase, key_fk, __FILE__, __LINE__)
+			UAP(lb_I_Unknown, uk_colValue)
+			UAP(lb_I_KeyBase, key_fk)
 				
-			QI(colValue, lb_I_Unknown, uk_colValue, __FILE__, __LINE__)
-			QI(fk, lb_I_KeyBase, key_fk, __FILE__, __LINE__)
+			QI(colValue, lb_I_Unknown, uk_colValue)
+			QI(fk, lb_I_KeyBase, key_fk)
 
 			MasterDetailRelationData->insert(&uk_colValue, &key_fk);
 			_CL_VERBOSE << "Set control '" << fk->charrep() << "' to '" << colValue->charrep() << "'" LOG_
@@ -1432,7 +1432,7 @@ void LB_STDCALL lbDatabasePanel::updateFromMaster() {
 		
 				bool isChar = PKQuery->getColumnType(i) == lb_I_Query::lbDBColumnChar;
 		
-				UAP(lb_I_String, fk, __FILE__, __LINE__)
+				UAP(lb_I_String, fk)
 		
 				fk = sampleQuery->getFKColumn(
 						PKQuery->getTableName(colName->charrep()),
@@ -1457,11 +1457,11 @@ void LB_STDCALL lbDatabasePanel::updateFromMaster() {
 			
 				*newWhereClause += " and ";
 
-				UAP(lb_I_Unknown, uk_colValue, __FILE__, __LINE__)
-				UAP(lb_I_KeyBase, key_fk, __FILE__, __LINE__)
+				UAP(lb_I_Unknown, uk_colValue)
+				UAP(lb_I_KeyBase, key_fk)
 				
-				QI(colValue, lb_I_Unknown, uk_colValue, __FILE__, __LINE__)
-				QI(fk, lb_I_KeyBase, key_fk, __FILE__, __LINE__)
+				QI(colValue, lb_I_Unknown, uk_colValue)
+				QI(fk, lb_I_KeyBase, key_fk)
 
 				MasterDetailRelationData->insert(&uk_colValue, &key_fk);
 				_CL_VERBOSE << "Set control '" << fk->charrep() << "' to '" << colValue->charrep() << "'" LOG_
@@ -1474,7 +1474,7 @@ void LB_STDCALL lbDatabasePanel::updateFromMaster() {
 		
 			bool isChar = PKQuery->getColumnType(columns) == lb_I_Query::lbDBColumnChar;
 		
-			UAP(lb_I_String, fk, __FILE__, __LINE__)
+			UAP(lb_I_String, fk)
 		
 			fk = sampleQuery->getFKColumn(
 					PKQuery->getTableName(colName->charrep()),
@@ -1497,11 +1497,11 @@ void LB_STDCALL lbDatabasePanel::updateFromMaster() {
 			
 			if (isChar) *newWhereClause += "'";
 
-			UAP(lb_I_Unknown, uk_colValue, __FILE__, __LINE__)
-			UAP(lb_I_KeyBase, key_fk, __FILE__, __LINE__)
+			UAP(lb_I_Unknown, uk_colValue)
+			UAP(lb_I_KeyBase, key_fk)
 				
-			QI(colValue, lb_I_Unknown, uk_colValue, __FILE__, __LINE__)
-			QI(fk, lb_I_KeyBase, key_fk, __FILE__, __LINE__)
+			QI(colValue, lb_I_Unknown, uk_colValue)
+			QI(fk, lb_I_KeyBase, key_fk)
 
 			MasterDetailRelationData->insert(&uk_colValue, &key_fk);
 			_CL_VERBOSE << "Set control '" << fk->charrep() << "' to '" << colValue->charrep() << "'" LOG_
@@ -1583,7 +1583,7 @@ void LB_STDCALL lbDatabasePanel::updateFromDetail() {
 
 
 /*...sDetermine the foreign key values of the current detail entry\44\ based on the value of the \42\\38\SourceFieldName\46\:8:*/
-	UAP(lb_I_String, colName, __FILE__, __LINE__)
+	UAP(lb_I_String, colName)
 	int columns = _detail->getForeignColumns();
 	bool isChar = _detail->isCharacterColumn(SourceFieldName->charrep());
 	
@@ -1638,7 +1638,7 @@ void LB_STDCALL lbDatabasePanel::updateFromDetail() {
 
 /*...sRetrieve the values from the primary keys and build up the where clause to be used in detail form:8:*/
 	REQUEST(manager.getPtr(), lb_I_Database, database)
-	UAP(lb_I_Query, PKQuery, __FILE__, __LINE__)
+	UAP(lb_I_Query, PKQuery)
 
 	database->init();
 	database->connect(DBName->charrep(), DBUser->charrep(), DBPass->charrep());
@@ -1650,7 +1650,7 @@ void LB_STDCALL lbDatabasePanel::updateFromDetail() {
 	if (err == ERR_NONE) {
 
 		UAP_REQUEST(manager.getPtr(), lb_I_String, colName)
-		UAP(lb_I_String, colValue, __FILE__, __LINE__)
+		UAP(lb_I_String, colValue)
 
 		err = PKQuery->first();
 
@@ -1667,7 +1667,7 @@ void LB_STDCALL lbDatabasePanel::updateFromDetail() {
 		
 				bool isChar = PKQuery->getColumnType(i) == lb_I_Query::lbDBColumnChar;
 		
-				UAP(lb_I_String, fk, __FILE__, __LINE__)
+				UAP(lb_I_String, fk)
 		
 				fk = PKQuery->getPKColumn(colName->charrep());
 				*newWhereClause += fk->charrep();
@@ -1688,11 +1688,11 @@ void LB_STDCALL lbDatabasePanel::updateFromDetail() {
 			
 				*newWhereClause += " and ";
 
-				UAP(lb_I_Unknown, uk_colValue, __FILE__, __LINE__)
-				UAP(lb_I_KeyBase, key_fk, __FILE__, __LINE__)
+				UAP(lb_I_Unknown, uk_colValue)
+				UAP(lb_I_KeyBase, key_fk)
 				
-				QI(colValue, lb_I_Unknown, uk_colValue, __FILE__, __LINE__)
-				QI(fk, lb_I_KeyBase, key_fk, __FILE__, __LINE__)
+				QI(colValue, lb_I_Unknown, uk_colValue)
+				QI(fk, lb_I_KeyBase, key_fk)
 
 				MasterDetailRelationData->insert(&uk_colValue, &key_fk);
 
@@ -1706,7 +1706,7 @@ void LB_STDCALL lbDatabasePanel::updateFromDetail() {
 		
 				bool isChar = PKQuery->getColumnType(columns) == lb_I_Query::lbDBColumnChar;
 		
-				UAP(lb_I_String, fk, __FILE__, __LINE__)
+				UAP(lb_I_String, fk)
 		
 				fk = PKQuery->getPKColumn(colName->charrep());
 				*newWhereClause += fk->charrep();
@@ -1727,11 +1727,11 @@ void LB_STDCALL lbDatabasePanel::updateFromDetail() {
 			
 				//*newWhereClause += " and ";
 
-				UAP(lb_I_Unknown, uk_colValue, __FILE__, __LINE__)
-				UAP(lb_I_KeyBase, key_fk, __FILE__, __LINE__)
+				UAP(lb_I_Unknown, uk_colValue)
+				UAP(lb_I_KeyBase, key_fk)
 				
-				QI(colValue, lb_I_Unknown, uk_colValue, __FILE__, __LINE__)
-				QI(fk, lb_I_KeyBase, key_fk, __FILE__, __LINE__)
+				QI(colValue, lb_I_Unknown, uk_colValue)
+				QI(fk, lb_I_KeyBase, key_fk)
 
 				MasterDetailRelationData->insert(&uk_colValue, &key_fk);
 
@@ -1753,7 +1753,7 @@ void LB_STDCALL lbDatabasePanel::updateFromDetail() {
 		
 				bool isChar = PKQuery->getColumnType(i) == lb_I_Query::lbDBColumnChar;
 		
-				UAP(lb_I_String, fk, __FILE__, __LINE__)
+				UAP(lb_I_String, fk)
 		
 				fk = PKQuery->getPKColumn(colName->charrep());
 				*newWhereClause += fk->charrep();
@@ -1774,11 +1774,11 @@ void LB_STDCALL lbDatabasePanel::updateFromDetail() {
 			
 				*newWhereClause += " and ";
 
-				UAP(lb_I_Unknown, uk_colValue, __FILE__, __LINE__)
-				UAP(lb_I_KeyBase, key_fk, __FILE__, __LINE__)
+				UAP(lb_I_Unknown, uk_colValue)
+				UAP(lb_I_KeyBase, key_fk)
 				
-				QI(colValue, lb_I_Unknown, uk_colValue, __FILE__, __LINE__)
-				QI(fk, lb_I_KeyBase, key_fk, __FILE__, __LINE__)
+				QI(colValue, lb_I_Unknown, uk_colValue)
+				QI(fk, lb_I_KeyBase, key_fk)
 
 				MasterDetailRelationData->insert(&uk_colValue, &key_fk);
 
@@ -1792,7 +1792,7 @@ void LB_STDCALL lbDatabasePanel::updateFromDetail() {
 		
 				bool isChar = PKQuery->getColumnType(columns) == lb_I_Query::lbDBColumnChar;
 		
-				UAP(lb_I_String, fk, __FILE__, __LINE__)
+				UAP(lb_I_String, fk)
 		
 				fk = PKQuery->getPKColumn(colName->charrep());
 				*newWhereClause += fk->charrep();
@@ -1813,11 +1813,11 @@ void LB_STDCALL lbDatabasePanel::updateFromDetail() {
 			
 				//*newWhereClause += " and ";
 
-				UAP(lb_I_Unknown, uk_colValue, __FILE__, __LINE__)
-				UAP(lb_I_KeyBase, key_fk, __FILE__, __LINE__)
+				UAP(lb_I_Unknown, uk_colValue)
+				UAP(lb_I_KeyBase, key_fk)
 				
-				QI(colValue, lb_I_Unknown, uk_colValue, __FILE__, __LINE__)
-				QI(fk, lb_I_KeyBase, key_fk, __FILE__, __LINE__)
+				QI(colValue, lb_I_Unknown, uk_colValue)
+				QI(fk, lb_I_KeyBase, key_fk)
 
 				MasterDetailRelationData->insert(&uk_colValue, &key_fk);
 
@@ -1975,32 +1975,32 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBUpdate() {
 					
 					cbName->setData(name);
 					
-					UAP(lb_I_KeyBase, key_cbName, __FILE__, __LINE__)
-					UAP(lb_I_Unknown, uk_cbMapper, __FILE__, __LINE__)
-					UAP(lb_I_Container, cbMapper, __FILE__, __LINE__)
+					UAP(lb_I_KeyBase, key_cbName)
+					UAP(lb_I_Unknown, uk_cbMapper)
+					UAP(lb_I_Container, cbMapper)
 					
-					QI(cbName, lb_I_KeyBase, key_cbName, __FILE__, __LINE__)
+					QI(cbName, lb_I_KeyBase, key_cbName)
 					
 					uk_cbMapper = ComboboxMapperList->getElement(&key_cbName);
 					
-					QI(uk_cbMapper, lb_I_Container, cbMapper, __FILE__, __LINE__)
+					QI(uk_cbMapper, lb_I_Container, cbMapper)
 					
 					key->setData(pos);
 					
-					UAP(lb_I_KeyBase, key_pos, __FILE__, __LINE__)
+					UAP(lb_I_KeyBase, key_pos)
 					
-					QI(key, lb_I_KeyBase, key_pos, __FILE__, __LINE__)
+					QI(key, lb_I_KeyBase, key_pos)
 				
-					UAP(lb_I_Unknown, uk_mapping, __FILE__, __LINE__)
+					UAP(lb_I_Unknown, uk_mapping)
 					
 					uk_mapping = cbMapper->getElement(&key_pos);
 					
 					if (uk_mapping == NULL)  { 
 						printf("ERROR: cbMapper didn't found an entry for above search argument\n");
 					} else {
-						UAP(lb_I_Integer, FK_id, __FILE__, __LINE__)
+						UAP(lb_I_Integer, FK_id)
 					
-						QI(uk_mapping, lb_I_Integer, FK_id, __FILE__, __LINE__)
+						QI(uk_mapping, lb_I_Integer, FK_id)
 					
 						int p = FK_id->getData();
 					
@@ -2136,21 +2136,21 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBRead() {
 
 				cbName->setData(name);
 
-				UAP(lb_I_KeyBase, key_cbName, __FILE__, __LINE__)
-				UAP(lb_I_Unknown, uk_cbMapper, __FILE__, __LINE__)
-				UAP(lb_I_Container, cbMapper, __FILE__, __LINE__)
+				UAP(lb_I_KeyBase, key_cbName)
+				UAP(lb_I_Unknown, uk_cbMapper)
+				UAP(lb_I_Container, cbMapper)
 
-				QI(cbName, lb_I_KeyBase, key_cbName, __FILE__, __LINE__)
+				QI(cbName, lb_I_KeyBase, key_cbName)
 
 				uk_cbMapper = ComboboxMapperList->getElement(&key_cbName);
 
-				QI(uk_cbMapper, lb_I_Container, cbMapper, __FILE__, __LINE__)
+				QI(uk_cbMapper, lb_I_Container, cbMapper)
 				
 				int count = cbMapper->Count();
 				
 				if (count != 0) {
 					char *newFK = NULL;
-					UAP(lb_I_String, s, __FILE__, __LINE__)
+					UAP(lb_I_String, s)
 
 					s = sampleQuery->getAsString(i);
 	
@@ -2161,19 +2161,19 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBRead() {
 				
 					key->setData(atoi(newFK));
 				
-					UAP(lb_I_KeyBase, key_FK_id, __FILE__, __LINE__)
+					UAP(lb_I_KeyBase, key_FK_id)
 				
-					QI(key, lb_I_KeyBase, key_FK_id, __FILE__, __LINE__)
+					QI(key, lb_I_KeyBase, key_FK_id)
 				
-					UAP(lb_I_Unknown, uk_cbBoxPosition, __FILE__, __LINE__)
-					UAP(lb_I_Integer, cbBoxPosition, __FILE__, __LINE__)
+					UAP(lb_I_Unknown, uk_cbBoxPosition)
+					UAP(lb_I_Integer, cbBoxPosition)
 				
 					int cbPos = 0;
 				
 					while (cbMapper->hasMoreElements() == 1) {
-						UAP(lb_I_Integer, sel, __FILE__, __LINE__)
+						UAP(lb_I_Integer, sel)
 					        lb_I_Unknown* e = cbMapper->nextElement();
-					        QI(e, lb_I_Integer, sel, __FILE__, __LINE__)
+					        QI(e, lb_I_Integer, sel)
 				        
 					        if (sel->getData() == atoi(newFK)) {
 					        	cbox->SetSelection(cbPos);
@@ -2202,7 +2202,7 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBRead() {
 								check->SetValue(false);
 							} else {
 #endif
-								UAP(lb_I_String, s, __FILE__, __LINE__)
+								UAP(lb_I_String, s)
 								
 								s = sampleQuery->getAsString(i);
 								
@@ -2220,7 +2220,7 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBRead() {
 					case lb_I_Query::lbDBColumnFloat:
 					case lb_I_Query::lbDBColumnChar:
 						{
-							UAP(lb_I_String, s, __FILE__, __LINE__)
+							UAP(lb_I_String, s)
 							
 							s = sampleQuery->getAsString(i);
 							
@@ -2232,7 +2232,7 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBRead() {
 					case lb_I_Query::lbDBColumnBigInteger:
 					case lb_I_Query::lbDBColumnInteger:
 						{
-							UAP(lb_I_String, s, __FILE__, __LINE__)
+							UAP(lb_I_String, s)
 							
 							s = sampleQuery->getAsString(i);
 							
@@ -2407,15 +2407,15 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBAdd(lb_I_Unknown* uk) {
 		for (int i = 1; i <= MasterDetailRelationData->Count(); i++) {
 			lbErrCodes err = ERR_NONE;
 		
-			UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
-			UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
+			UAP(lb_I_Unknown, uk)
+			UAP(lb_I_KeyBase, key)
 			
-			UAP(lb_I_String, value, __FILE__, __LINE__)
+			UAP(lb_I_String, value)
 			
 			uk = MasterDetailRelationData->getElementAt(i);
 			key = MasterDetailRelationData->getKeyAt(i);
 			
-			QI(uk, lb_I_String, value, __FILE__, __LINE__)
+			QI(uk, lb_I_String, value)
 			
 			_CL_LOG << "Set control '" << key->charrep() << "' with ref = " << key->getRefCount() << " to '" << value->charrep() << "'" LOG_
 			
@@ -2437,15 +2437,15 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBAdd(lb_I_Unknown* uk) {
 
 				cbName->setData(key->charrep());
 
-				UAP(lb_I_KeyBase, key_cbName, __FILE__, __LINE__)
-				UAP(lb_I_Unknown, uk_cbMapper, __FILE__, __LINE__)
-				UAP(lb_I_Container, cbMapper, __FILE__, __LINE__)
+				UAP(lb_I_KeyBase, key_cbName)
+				UAP(lb_I_Unknown, uk_cbMapper)
+				UAP(lb_I_Container, cbMapper)
 
-				QI(cbName, lb_I_KeyBase, key_cbName, __FILE__, __LINE__)
+				QI(cbName, lb_I_KeyBase, key_cbName)
 
 				uk_cbMapper = ComboboxMapperList->getElement(&key_cbName);
 
-				QI(uk_cbMapper, lb_I_Container, cbMapper, __FILE__, __LINE__)
+				QI(uk_cbMapper, lb_I_Container, cbMapper)
 				
 				int count = cbMapper->Count();
 				
@@ -2459,21 +2459,21 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBAdd(lb_I_Unknown* uk) {
 				
 					key1->setData(atoi(newFK));
 				
-					UAP(lb_I_KeyBase, key_FK_id, __FILE__, __LINE__)
+					UAP(lb_I_KeyBase, key_FK_id)
 				
-					QI(key1, lb_I_KeyBase, key_FK_id, __FILE__, __LINE__)
+					QI(key1, lb_I_KeyBase, key_FK_id)
 				
-					UAP(lb_I_Unknown, uk_cbBoxPosition, __FILE__, __LINE__)
-					UAP(lb_I_Integer, cbBoxPosition, __FILE__, __LINE__)
+					UAP(lb_I_Unknown, uk_cbBoxPosition)
+					UAP(lb_I_Integer, cbBoxPosition)
 				
 					int cbPos = 0;
 					bool selected = false;
 					
 				
 					while (cbMapper->hasMoreElements() == 1) {
-						UAP(lb_I_Integer, sel, __FILE__, __LINE__)
+						UAP(lb_I_Integer, sel)
 					        lb_I_Unknown* e = cbMapper->nextElement();
-					        QI(e, lb_I_Integer, sel, __FILE__, __LINE__)
+					        QI(e, lb_I_Integer, sel)
 				        
 					        if (sel->getData() == atoi(newFK)) {
 					        	selected = true;
@@ -2680,8 +2680,8 @@ lbErrCodes LB_STDCALL lbDatabasePanel::OnActionButton(lb_I_Unknown* uk) {
 		/* The parameter is the id of the event, that has been emitted.
 		   Resolve the name of that id. */
 		
-		UAP(lb_I_Integer, eventID, __FILE__, __LINE__)
-		QI(uk, lb_I_Integer, eventID, __FILE__, __LINE__)
+		UAP(lb_I_Integer, eventID)
+		QI(uk, lb_I_Integer, eventID)
 		
 		UAP_REQUEST(manager.getPtr(), lb_I_EventManager, eman)
 		
@@ -2730,32 +2730,32 @@ lbErrCodes LB_STDCALL lbDatabasePanel::OnActionButton(lb_I_Unknown* uk) {
 					
 					cbName->setData(s);
 					
-					UAP(lb_I_KeyBase, key_cbName, __FILE__, __LINE__)
-					UAP(lb_I_Unknown, uk_cbMapper, __FILE__, __LINE__)
-					UAP(lb_I_Container, cbMapper, __FILE__, __LINE__)
+					UAP(lb_I_KeyBase, key_cbName)
+					UAP(lb_I_Unknown, uk_cbMapper)
+					UAP(lb_I_Container, cbMapper)
 					
-					QI(cbName, lb_I_KeyBase, key_cbName, __FILE__, __LINE__)
+					QI(cbName, lb_I_KeyBase, key_cbName)
 					
 					uk_cbMapper = ComboboxMapperList->getElement(&key_cbName);
 					
-					QI(uk_cbMapper, lb_I_Container, cbMapper, __FILE__, __LINE__)
+					QI(uk_cbMapper, lb_I_Container, cbMapper)
 					
 					key->setData(pos);
 					
-					UAP(lb_I_KeyBase, key_pos, __FILE__, __LINE__)
+					UAP(lb_I_KeyBase, key_pos)
 					
-					QI(key, lb_I_KeyBase, key_pos, __FILE__, __LINE__)
+					QI(key, lb_I_KeyBase, key_pos)
 				
-					UAP(lb_I_Unknown, uk_mapping, __FILE__, __LINE__)
+					UAP(lb_I_Unknown, uk_mapping)
 					
 					uk_mapping = cbMapper->getElement(&key_pos);
 					
 					if (uk_mapping == NULL)  { 
 						printf("ERROR: cbMapper didn't found an entry for above search argument\n");
 					} else {
-						UAP(lb_I_Integer, FK_id, __FILE__, __LINE__)
+						UAP(lb_I_Integer, FK_id)
 					
-						QI(uk_mapping, lb_I_Integer, FK_id, __FILE__, __LINE__)
+						QI(uk_mapping, lb_I_Integer, FK_id)
 					
 						int p = FK_id->getData();
 					
@@ -2878,7 +2878,7 @@ lbErrCodes LB_STDCALL lbDatabasePanel::OnActionButton(lb_I_Unknown* uk) {
 		*/
 /*...e*/
 
-		UAP(lb_I_Action, action, __FILE__, __LINE__)
+		UAP(lb_I_Action, action)
 		action = fa->getAction(fa->getActionID(reversedEvent));
 
 /*...sBuild up parameter list:16:*/
@@ -2947,12 +2947,12 @@ void lbDatabasePanel::OnDispatch(wxCommandEvent& event ) {
 			
 			param->setData(event.GetId());
 			
-			UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
-			QI(param, lb_I_Unknown, uk, __FILE__, __LINE__)
+			UAP(lb_I_Unknown, uk)
+			QI(param, lb_I_Unknown, uk)
 		
 			UAP_REQUEST(m, lb_I_String, result)
-			UAP(lb_I_Unknown, uk_result, __FILE__, __LINE__)
-			QI(result, lb_I_Unknown, uk_result, __FILE__, __LINE__)
+			UAP(lb_I_Unknown, uk_result)
+			QI(result, lb_I_Unknown, uk_result)
 		
 			dispatcher->dispatch(event.GetId(), uk.getPtr(), &uk_result);
                 }
@@ -3054,7 +3054,7 @@ public:
 
 	DECLARE_LB_UNKNOWN()
 	
-	UAP(lb_I_Unknown, dbForm, __FILE__, __LINE__)
+	UAP(lb_I_Unknown, dbForm)
 };
 
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbPluginDatabasePanel)
@@ -3067,8 +3067,8 @@ IMPLEMENT_FUNCTOR(instanceOflbPluginDatabasePanel, lbPluginDatabasePanel)
 lbErrCodes LB_STDCALL lbPluginDatabasePanel::setData(lb_I_Unknown* uk) {
 	lbErrCodes err = ERR_NONE;
 /*
-	UAP(lb_I_PluginImpl, pl, __FILE__, __LINE__)
-	QI(uk, lb_I_PluginImpl, pl, __FILE__, __LINE__)
+	UAP(lb_I_PluginImpl, pl)
+	QI(uk, lb_I_PluginImpl, pl)
 
 	dbForm = pl->getImplementation();
 */
@@ -3113,7 +3113,7 @@ lb_I_Unknown* LB_STDCALL lbPluginDatabasePanel::peekImplementation() {
 		lbDatabasePanel* dbPanel = new lbDatabasePanel();
 		dbPanel->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
 	
-		QI(dbPanel, lb_I_Unknown, dbForm, __FILE__, __LINE__)
+		QI(dbPanel, lb_I_Unknown, dbForm)
 	} else {
 		_CL_VERBOSE << "lbPluginDatabasePanel::peekImplementation() Implementation already peeked.\n" LOG_
 	}
@@ -3132,7 +3132,7 @@ lb_I_Unknown* LB_STDCALL lbPluginDatabasePanel::getImplementation() {
 		lbDatabasePanel* dbPanel = new lbDatabasePanel();
 		dbPanel->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
 	
-		QI(dbPanel, lb_I_Unknown, dbForm, __FILE__, __LINE__)
+		QI(dbPanel, lb_I_Unknown, dbForm)
 	}
 	
 	lb_I_Unknown* r = dbForm.getPtr();
@@ -3144,8 +3144,8 @@ void LB_STDCALL lbPluginDatabasePanel::releaseImplementation() {
 	lbErrCodes err = ERR_NONE;
 	
 	if (dbForm != NULL) {
-		UAP(lb_I_DatabaseForm, form, __FILE__, __LINE__)
-		QI(dbForm, lb_I_DatabaseForm, form, __FILE__, __LINE__)
+		UAP(lb_I_DatabaseForm, form)
+		QI(dbForm, lb_I_DatabaseForm, form)
 		form->destroy();
 		
 		dbForm.resetPtr();
@@ -3170,8 +3170,8 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::setData(lb_I_Unknown* uk) {
         _CL_LOG << "lbDatabaseDialog::setData(...) not implemented yet" LOG_
 
 #ifdef bla
-		UAP(lb_I_DatabaseForm, dbForm, __FILE__, __LINE__)
-		QI(uk, lb_I_DatabaseForm, dbForm, __FILE__, __LINE__)
+		UAP(lb_I_DatabaseForm, dbForm)
+		QI(uk, lb_I_DatabaseForm, dbForm)
 		
 		fa = ((lbDatabaseDialog*) dbForm.getPtr())->fa;
 		((lbDatabaseDialog*) dbForm.getPtr())->fa = NULL;
@@ -3458,7 +3458,7 @@ public:
 
 	DECLARE_LB_UNKNOWN()
 	
-	UAP(lb_I_Unknown, dbForm, __FILE__, __LINE__)
+	UAP(lb_I_Unknown, dbForm)
 };
 
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbPluginDatabaseDialog)
@@ -3471,8 +3471,8 @@ IMPLEMENT_FUNCTOR(instanceOflbPluginDatabaseDialog, lbPluginDatabaseDialog)
 lbErrCodes LB_STDCALL lbPluginDatabaseDialog::setData(lb_I_Unknown* uk) {
 	lbErrCodes err = ERR_NONE;
 /*
-	UAP(lb_I_PluginImpl, pl, __FILE__, __LINE__)
-	QI(uk, lb_I_PluginImpl, pl, __FILE__, __LINE__)
+	UAP(lb_I_PluginImpl, pl)
+	QI(uk, lb_I_PluginImpl, pl)
 
 	dbForm = pl->getImplementation();
 */
@@ -3517,7 +3517,7 @@ lb_I_Unknown* LB_STDCALL lbPluginDatabaseDialog::peekImplementation() {
 		lbDatabaseDialog* dbDialog = new lbDatabaseDialog();
 		dbDialog->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
 	
-		QI(dbDialog, lb_I_Unknown, dbForm, __FILE__, __LINE__)
+		QI(dbDialog, lb_I_Unknown, dbForm)
 	} else {
 		_CL_VERBOSE << "lbPluginDatabaseDialog::peekImplementation() Implementation already peeked.\n" LOG_
 	}
@@ -3536,7 +3536,7 @@ lb_I_Unknown* LB_STDCALL lbPluginDatabaseDialog::getImplementation() {
 		lbDatabaseDialog* dbDialog = new lbDatabaseDialog();
 		dbDialog->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
 	
-		QI(dbDialog, lb_I_Unknown, dbForm, __FILE__, __LINE__)
+		QI(dbDialog, lb_I_Unknown, dbForm)
 	}
 	
 	lb_I_Unknown* r = dbForm.getPtr();
@@ -3548,8 +3548,8 @@ void LB_STDCALL lbPluginDatabaseDialog::releaseImplementation() {
 	lbErrCodes err = ERR_NONE;
 	
 	if (dbForm != NULL) {
-		UAP(lb_I_DatabaseForm, form, __FILE__, __LINE__)
-		QI(dbForm, lb_I_DatabaseForm, form, __FILE__, __LINE__)
+		UAP(lb_I_DatabaseForm, form)
+		QI(dbForm, lb_I_DatabaseForm, form)
 	
 		form->destroy();
 		

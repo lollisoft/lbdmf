@@ -152,7 +152,7 @@ void LB_STDCALL lbAction::delegate(lb_I_Parameter* params) {
 	parameter->setData("id");
 	params->getUAPString(*&parameter, *&id);
 
-	UAP(lb_I_Query, query, __FILE__, __LINE__)
+	UAP(lb_I_Query, query)
 	
 	query = db->getQuery(0);
 	
@@ -165,14 +165,14 @@ void LB_STDCALL lbAction::delegate(lb_I_Parameter* params) {
 	if (query->query(q) == ERR_NONE) {
 		lbErrCodes err = ERR_NONE;
 		UAP_REQUEST(manager.getPtr(), lb_I_String, key)
-		UAP(lb_I_KeyBase, ukey, __FILE__, __LINE__)
+		UAP(lb_I_KeyBase, ukey)
 
 		err = query->first();
 	
 		while (err == ERR_NONE) {
 			UAP_REQUEST(manager.getPtr(), lb_I_String, action_handler)
 			UAP_REQUEST(manager.getPtr(), lb_I_String, module)
-			UAP(lb_I_DelegatedAction, action, __FILE__, __LINE__)
+			UAP(lb_I_DelegatedAction, action)
 			
 			action_handler = query->getAsString(1);
 			module = query->getAsString(2);
@@ -182,7 +182,7 @@ void LB_STDCALL lbAction::delegate(lb_I_Parameter* params) {
 			key->setData(module->charrep());
 			*key += *&action_handler;
 			
-			QI(key, lb_I_KeyBase, ukey, __FILE__, __LINE__)
+			QI(key, lb_I_KeyBase, ukey)
 			
 			if (actions->exists(&ukey) == 0) {
 /*...sInstanciate one and insert into actions:32:*/
@@ -228,7 +228,7 @@ void LB_STDCALL lbAction::delegate(lb_I_Parameter* params) {
 			        strcat(pluginModule, module->charrep());
 /*...e*/
 	
-				UAP(lb_I_Unknown, result, __FILE__, __LINE__)
+				UAP(lb_I_Unknown, result)
 			
 				char* ah = (char*) malloc(strlen(PREFIX)+strlen(action_handler->charrep())+1);
 				ah[0] = 0;
@@ -247,11 +247,11 @@ void LB_STDCALL lbAction::delegate(lb_I_Parameter* params) {
 /*...e*/
 			}
 			
-			UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
+			UAP(lb_I_Unknown, uk)
 				
 			uk = actions->getElement(&ukey);
 				
-			QI(uk, lb_I_DelegatedAction, action, __FILE__, __LINE__)
+			QI(uk, lb_I_DelegatedAction, action)
 			
 			action->setActionID(id->charrep());
 			action->execute(*&params);
@@ -264,7 +264,7 @@ void LB_STDCALL lbAction::delegate(lb_I_Parameter* params) {
 		if (err == WARN_DB_NODATA) {
 			UAP_REQUEST(manager.getPtr(), lb_I_String, action_handler)
 			UAP_REQUEST(manager.getPtr(), lb_I_String, module)
-			UAP(lb_I_DelegatedAction, action, __FILE__, __LINE__)
+			UAP(lb_I_DelegatedAction, action)
 			
 			action_handler = query->getAsString(1);
 			module = query->getAsString(2);
@@ -274,7 +274,7 @@ void LB_STDCALL lbAction::delegate(lb_I_Parameter* params) {
 			key->setData(module->charrep());
 			*key += *&action_handler;
 			
-			QI(key, lb_I_KeyBase, ukey, __FILE__, __LINE__)
+			QI(key, lb_I_KeyBase, ukey)
 			
 			if (actions->exists(&ukey) == 0) {
 /*...sInstanciate one and insert into actions:32:*/
@@ -319,7 +319,7 @@ void LB_STDCALL lbAction::delegate(lb_I_Parameter* params) {
 			        strcat(pluginModule, module->charrep());
 /*...e*/
 	
-				UAP(lb_I_Unknown, result, __FILE__, __LINE__)
+				UAP(lb_I_Unknown, result)
 			
 				char* ah = (char*) malloc(strlen(PREFIX)+strlen(action_handler->charrep())+1);
 				ah[0] = 0;
@@ -338,11 +338,11 @@ void LB_STDCALL lbAction::delegate(lb_I_Parameter* params) {
 /*...e*/
 			}
 			
-			UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
+			UAP(lb_I_Unknown, uk)
 				
 			uk = actions->getElement(&ukey);
 				
-			QI(uk, lb_I_DelegatedAction, action, __FILE__, __LINE__)
+			QI(uk, lb_I_DelegatedAction, action)
 			action->setActionID(id->charrep());
 			
 			_CL_LOG << "Execute delegated action..." LOG_
@@ -356,7 +356,7 @@ void LB_STDCALL lbAction::delegate(lb_I_Parameter* params) {
 /*...svoid LB_STDCALL lbAction\58\\58\execute\40\lb_I_Parameter\42\ params\41\:0:*/
 void LB_STDCALL lbAction::execute(lb_I_Parameter* params) {
 	REQUEST(manager.getPtr(), lb_I_Database, db)
-	UAP(lb_I_Query, query, __FILE__, __LINE__)
+	UAP(lb_I_Query, query)
 
 	db->init();
 
@@ -472,7 +472,7 @@ void LB_STDCALL lbDetailFormAction::openDetailForm(lb_I_String* formularname, lb
 		detailForm->setName(formularname->charrep(), parameter->charrep());
 
 		UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
-		UAP(lb_I_GUI, gui, __FILE__, __LINE__)
+		UAP(lb_I_GUI, gui)
 		
 		meta->getGUI(&gui);
 
@@ -489,7 +489,7 @@ void LB_STDCALL lbDetailFormAction::openDetailForm(lb_I_String* formularname, lb
 		gui->showForm(formularname->charrep());	
 	} else {
 		UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
-		UAP(lb_I_GUI, gui, __FILE__, __LINE__)
+		UAP(lb_I_GUI, gui)
 	
 		meta->getGUI(&gui);
 
@@ -535,7 +535,7 @@ void LB_STDCALL lbDetailFormAction::openDetailForm(lb_I_String* formularname, lb
 		sprintf(buffer, b, user->charrep(), app->charrep(), formularname->charrep());
 		
 		UAP_REQUEST(manager.getPtr(), lb_I_Database, database)
-		UAP(lb_I_Query, query, __FILE__, __LINE__)
+		UAP(lb_I_Query, query)
 		
 		database->init();
 		
@@ -565,7 +565,7 @@ void LB_STDCALL lbDetailFormAction::openDetailForm(lb_I_String* formularname, lb
 				buffer[0] = 0;
 				sprintf(buffer, b, id->charrep());
 
-				UAP(lb_I_Query, query, __FILE__, __LINE__)
+				UAP(lb_I_Query, query)
 
 				query = database->getQuery(0);
 
@@ -575,21 +575,21 @@ void LB_STDCALL lbDetailFormAction::openDetailForm(lb_I_String* formularname, lb
 				if (err == ERR_NONE) {
 /*...sTake result as the SQL query parameter for the detail form:40:*/
 					UAP_REQUEST(manager.getPtr(), lb_I_PluginManager, PM)
-					UAP(lb_I_Plugin, pl, __FILE__, __LINE__)
+					UAP(lb_I_Plugin, pl)
 					UAP_REQUEST(manager.getPtr(), lb_I_String, sql)
 
 					err = query->first();
 					
 					if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
 /*...sTry load the detail form and make basic setup:88:*/
-						UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
+						UAP(lb_I_Unknown, uk)
 						
 						sql = query->getAsString(1);
 
-						UAP(lb_I_DatabaseForm, form, __FILE__, __LINE__)
+						UAP(lb_I_DatabaseForm, form)
 
 						UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
-						UAP(lb_I_GUI, gui, __FILE__, __LINE__)
+						UAP(lb_I_GUI, gui)
 						meta->getGUI(&gui);
 						
 						form = gui->createDBForm(formularname->charrep(),
@@ -621,8 +621,8 @@ void LB_STDCALL lbDetailFormAction::openDetailForm(lb_I_String* formularname, lb
 						*/
 /*...e*/
 						
-						UAP(lb_I_DatabaseForm, f, __FILE__, __LINE__)
-						UAP(lb_I_DatabaseForm, master, __FILE__, __LINE__)
+						UAP(lb_I_DatabaseForm, f)
+						UAP(lb_I_DatabaseForm, master)
 
 						f = gui->findDBForm(masterForm->charrep());
 
@@ -637,7 +637,7 @@ void LB_STDCALL lbDetailFormAction::openDetailForm(lb_I_String* formularname, lb
 							return; 
 						}
 
-						QI(f, lb_I_DatabaseForm, master, __FILE__, __LINE__)						
+						QI(f, lb_I_DatabaseForm, master)						
 						
 						UAP_REQUEST(manager.getPtr(), lb_I_String, table)
 						
@@ -716,7 +716,7 @@ void LB_STDCALL lbDetailFormAction::execute(lb_I_Parameter* params) {
 /*...e*/
 
 	UAP_REQUEST(manager.getPtr(), lb_I_Database, database)
-	UAP(lb_I_Query, query, __FILE__, __LINE__)
+	UAP(lb_I_Query, query)
 
 	database->init();
 
@@ -829,7 +829,7 @@ void LB_STDCALL lbMasterFormAction::openMasterForm(lb_I_String* formularname, lb
 		masterForm->setName(formularname->charrep(), parameter->charrep());
 				
 		UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
-		UAP(lb_I_GUI, gui, __FILE__, __LINE__)
+		UAP(lb_I_GUI, gui)
 		
 		meta->getGUI(&gui);
 
@@ -846,7 +846,7 @@ void LB_STDCALL lbMasterFormAction::openMasterForm(lb_I_String* formularname, lb
 		gui->showForm(formularname->charrep());
 	} else {
 		UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
-		UAP(lb_I_GUI, gui, __FILE__, __LINE__)
+		UAP(lb_I_GUI, gui)
 		
 		meta->getGUI(&gui);
 		
@@ -898,7 +898,7 @@ void LB_STDCALL lbMasterFormAction::openMasterForm(lb_I_String* formularname, lb
 		sprintf(buffer, b, user->charrep(), app->charrep(), formularname->charrep());
 		
 		UAP_REQUEST(manager.getPtr(), lb_I_Database, database)
-		UAP(lb_I_Query, query, __FILE__, __LINE__)
+		UAP(lb_I_Query, query)
 		
 		database->init();
 		
@@ -928,7 +928,7 @@ void LB_STDCALL lbMasterFormAction::openMasterForm(lb_I_String* formularname, lb
 				buffer[0] = 0;
 				sprintf(buffer, b, id->charrep());
 
-				UAP(lb_I_Query, query, __FILE__, __LINE__)
+				UAP(lb_I_Query, query)
 
 				query = database->getQuery(0);
 
@@ -938,20 +938,20 @@ void LB_STDCALL lbMasterFormAction::openMasterForm(lb_I_String* formularname, lb
 				if (err == ERR_NONE) {
 /*...sTake result as the SQL query parameter for the detail form:40:*/
 					UAP_REQUEST(manager.getPtr(), lb_I_PluginManager, PM)
-					UAP(lb_I_Plugin, pl, __FILE__, __LINE__)
+					UAP(lb_I_Plugin, pl)
 					UAP_REQUEST(manager.getPtr(), lb_I_String, sql)
 
 					err = query->first();
 					
 					if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
 /*...sTry load the detail form and make basic setup:88:*/
-						UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
+						UAP(lb_I_Unknown, uk)
 						
 						sql = query->getAsString(1);
 						
-						UAP(lb_I_DatabaseForm, form, __FILE__, __LINE__)
+						UAP(lb_I_DatabaseForm, form)
 						UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
-						UAP(lb_I_GUI, gui, __FILE__, __LINE__)
+						UAP(lb_I_GUI, gui)
 
 						meta->getGUI(&gui);
 
@@ -977,13 +977,13 @@ void LB_STDCALL lbMasterFormAction::openMasterForm(lb_I_String* formularname, lb
 						   The only way may be any kind of temporal default value.
 						*/
 						
-						UAP(lb_I_DatabaseForm, f, __FILE__, __LINE__)
+						UAP(lb_I_DatabaseForm, f)
 
-						UAP(lb_I_DatabaseForm, detail, __FILE__, __LINE__)
+						UAP(lb_I_DatabaseForm, detail)
 
 						f = gui->findDBForm(detailForm->charrep());
 
-						QI(f, lb_I_DatabaseForm, detail, __FILE__, __LINE__)						
+						QI(f, lb_I_DatabaseForm, detail)						
 						
 						UAP_REQUEST(manager.getPtr(), lb_I_String, table)
 						
@@ -1061,7 +1061,7 @@ void LB_STDCALL lbMasterFormAction::execute(lb_I_Parameter* params) {
 /*...e*/
 
 	UAP_REQUEST(manager.getPtr(), lb_I_Database, database)
-	UAP(lb_I_Query, query, __FILE__, __LINE__)
+	UAP(lb_I_Query, query)
 
 	database->init();
 

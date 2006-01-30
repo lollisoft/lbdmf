@@ -30,11 +30,15 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.26 $
+ * $Revision: 1.27 $
  * $Name:  $
- * $Id: lbMetaApplication.h,v 1.26 2006/01/26 14:03:23 lollisoft Exp $
+ * $Id: lbMetaApplication.h,v 1.27 2006/01/30 15:54:14 lollisoft Exp $
  *
  * $Log: lbMetaApplication.h,v $
+ * Revision 1.27  2006/01/30 15:54:14  lollisoft
+ * Removed the __FILE__ and __LINE__ parameter usage in UAP and QI.
+ * This was an unnessesary thing and makes programming easier.
+ *
  * Revision 1.26  2006/01/26 14:03:23  lollisoft
  * Added event en/disable and toggle functions. Also added
  * askYesNo function.
@@ -218,11 +222,11 @@ protected:
 	
 	char* moduleName;
 	
-	UAP(lb_I_EventManager, eman, __FILE__, __LINE__)
-	UAP(lb_I_Dispatcher, dispatcher, __FILE__, __LINE__)
-	UAP(lb_I_MetaApplication, app, __FILE__, __LINE__)
-	UAP(lb_I_String, LogonUser, __FILE__, __LINE__)
-	UAP(lb_I_String, LogonApplication, __FILE__, __LINE__)
+	UAP(lb_I_EventManager, eman)
+	UAP(lb_I_Dispatcher, dispatcher)
+	UAP(lb_I_MetaApplication, app)
+	UAP(lb_I_String, LogonUser)
+	UAP(lb_I_String, LogonApplication)
 	
 	char gwedgd[100];
 };
@@ -293,8 +297,8 @@ public:
 	
 	virtual lb_I_DispatchResponse* LB_STDCALL dispatch(lb_I_DispatchRequest* req);
 	
-	UAP(lb_I_Container, dispatcher, __FILE__, __LINE__)
-	UAP(lb_I_EventManager, evManager, __FILE__, __LINE__)
+	UAP(lb_I_Container, dispatcher)
+	UAP(lb_I_EventManager, evManager)
 };
 /*...e*/
 /*...sclass lb_EventManager:0:*/
@@ -315,13 +319,13 @@ protected:
 	friend class lb_I_Dispatcher;
 
 	// Maps id to event name	
-	UAP(lb_I_Container, events, __FILE__, __LINE__)
+	UAP(lb_I_Container, events)
 	
 	// Holds free id
-	UAP(lb_I_Container, freeIds, __FILE__, __LINE__)
+	UAP(lb_I_Container, freeIds)
 	
 	// Reverse mapping name -> id
-	UAP(lb_I_Container, reverse_events, __FILE__, __LINE__)
+	UAP(lb_I_Container, reverse_events)
 	
 	int maxEvId;
 };

@@ -169,7 +169,7 @@ public:
 		
 	lb_I_Stream* LB_STDCALL getStream();
 	
-	UAP(lb_I_OutputStream, oStream, __FILE__, __LINE__)
+	UAP(lb_I_OutputStream, oStream)
 };
 
 
@@ -220,7 +220,7 @@ bool LB_STDCALL lbOutputStream::begin(char* file) {
 
 bool LB_STDCALL lbOutputStream::begin(lb_I_Stream* stream) {
 	lbErrCodes err = ERR_NONE;
-	QI(stream, lb_I_OutputStream, oStream, __FILE__, __LINE__)
+	QI(stream, lb_I_OutputStream, oStream)
 	
 	if (oStream == NULL) {
 		_CL_LOG << "lbOutputStream::begin(...) Error: This is not a output stream." LOG_
@@ -245,8 +245,8 @@ void LB_STDCALL lbOutputStream::end() {
 lb_I_Stream* LB_STDCALL lbOutputStream::getStream() {
 	lbErrCodes err = ERR_NONE;
 	
-	UAP(lb_I_Stream, s, __FILE__, __LINE__)
-	QI(oStream, lb_I_Stream, s, __FILE__, __LINE__)
+	UAP(lb_I_Stream, s)
+	QI(oStream, lb_I_Stream, s)
 	s++;
 	
 	return s.getPtr();
@@ -274,7 +274,7 @@ public:
 	DECLARE_LB_UNKNOWN()
 
 private:
-	UAP(lb_I_Unknown, impl, __FILE__, __LINE__)
+	UAP(lb_I_Unknown, impl)
 };
 
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbPluginOutputStream)
@@ -317,7 +317,7 @@ lb_I_Unknown* LB_STDCALL lbPluginOutputStream::peekImplementation() {
 		lbOutputStream* InputStream = new lbOutputStream();
 		InputStream->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
 	
-		QI(InputStream, lb_I_Unknown, impl, __FILE__, __LINE__)
+		QI(InputStream, lb_I_Unknown, impl)
 	} else {
 		_CL_VERBOSE << "lbPluginDatabasePanel::peekImplementation() Implementation already peeked.\n" LOG_
 	}
@@ -336,7 +336,7 @@ lb_I_Unknown* LB_STDCALL lbPluginOutputStream::getImplementation() {
 		lbOutputStream* InputStream = new lbOutputStream();
 		InputStream->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
 	
-		QI(InputStream, lb_I_Unknown, impl, __FILE__, __LINE__)
+		QI(InputStream, lb_I_Unknown, impl)
 	}
 	
 	lb_I_Unknown* r = impl.getPtr();

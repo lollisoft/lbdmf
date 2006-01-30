@@ -83,7 +83,7 @@ int main(int argc, char *argv[]) {
 	
 		while (true) {
 		
-			UAP(lb_I_Plugin, pl, __FILE__, __LINE__)
+			UAP(lb_I_Plugin, pl)
 			
 			pl = PM->nextPlugin();
 			
@@ -134,7 +134,7 @@ int main(int argc, char *argv[]) {
 			while (true) {
 				_CL_LOG << ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>" LOG_
 				
-				UAP(lb_I_Plugin, pl, __FILE__, __LINE__)
+				UAP(lb_I_Plugin, pl)
 			
 				_CL_LOG << "__________________________________" LOG_
 				pl = PM->nextPlugin();
@@ -172,14 +172,14 @@ int main(int argc, char *argv[]) {
 			COUT << "Functor: ";
 			CIN >> functorName;
 		
-			UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
-			UAP(lb_I_PluginModule, plM, __FILE__, __LINE__)
+			UAP(lb_I_Unknown, uk)
+			UAP(lb_I_PluginModule, plM)
 		
 			if (mm->makeInstance(functorName, moduleName, &uk) != ERR_NONE) {
 				COUT << "ERROR: Module or functor not found!" << ENDL;
 			}
 			
-			QI(uk, lb_I_PluginModule, plM, __FILE__, __LINE__)
+			QI(uk, lb_I_PluginModule, plM)
 			
 			if (plM != NULL) {
 			        COUT << "Call initialize of plugin module." << ENDL;
@@ -193,14 +193,14 @@ int main(int argc, char *argv[]) {
 		CIN >> answer;
 
 		if ((strcmp(answer, "y") == 0) || (strcmp(answer, "Y") == 0)) {
-	                UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
-	                UAP(lb_I_PluginModule, plM, __FILE__, __LINE__)
+	                UAP(lb_I_Unknown, uk)
+	                UAP(lb_I_PluginModule, plM)
 
 	                if (mm->makeInstance(functorName, moduleName, &uk) != ERR_NONE) {
 	                        COUT << "ERROR: Module or functor not found!" << ENDL;
 	                }
 	                
-	                QI(uk, lb_I_PluginModule, plM, __FILE__, __LINE__)
+	                QI(uk, lb_I_PluginModule, plM)
 	                
 	                if (plM != NULL) {
 	                	COUT << "Call initialize of plugin module." << ENDL;

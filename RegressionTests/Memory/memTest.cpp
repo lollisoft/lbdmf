@@ -104,11 +104,11 @@ int main(int argc, char *argv[]) {
 	UAP_REQUEST(mm, lb_I_String, string)
 
 
-	UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
-	UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
+	UAP(lb_I_Unknown, uk)
+	UAP(lb_I_KeyBase, key)
 
-	QI(string, lb_I_Unknown, uk, __FILE__, __LINE__)
-	QI(string, lb_I_KeyBase, key, __FILE__, __LINE__)
+	QI(string, lb_I_Unknown, uk)
+	QI(string, lb_I_KeyBase, key)
 
 	string->setData("Bla");
 
@@ -166,21 +166,21 @@ int main(int argc, char *argv[]) {
 	
 	\code	
 {
-	UAP(lb_I_Unknown, ukdata, __FILE__, __LINE__)
+	UAP(lb_I_Unknown, ukdata)
 
-	UAP(lb_I_String, s, __FILE__, __LINE__)
-
-	ukdata = container->getElement(&key);
-	if (ukdata == NULL) printf("NULL pointer!\n");
-
-	QI(ukdata, lb_I_String, s, __FILE__, __LINE__)
-
-	UAP(lb_I_String, s1, __FILE__, __LINE__)
+	UAP(lb_I_String, s)
 
 	ukdata = container->getElement(&key);
 	if (ukdata == NULL) printf("NULL pointer!\n");
 
-	QI(ukdata, lb_I_String, s1, __FILE__, __LINE__)
+	QI(ukdata, lb_I_String, s)
+
+	UAP(lb_I_String, s1)
+
+	ukdata = container->getElement(&key);
+	if (ukdata == NULL) printf("NULL pointer!\n");
+
+	QI(ukdata, lb_I_String, s1)
 
 	s1->setData("Changed");
 	char* cp1 = s1->getData();
@@ -191,12 +191,12 @@ int main(int argc, char *argv[]) {
 
 	printf("Try to dump content of container\n");	
 	while (container->hasMoreElements() == 1) {
-		UAP(lb_I_Unknown, e, __FILE__, __LINE__)
+		UAP(lb_I_Unknown, e)
 		e = container->nextElement();
 		if (e != NULL) {
-			UAP(lb_I_String, s, __FILE__, __LINE__)
+			UAP(lb_I_String, s)
 			
-			QI(e, lb_I_String, s, __FILE__, __LINE__)
+			QI(e, lb_I_String, s)
 						
 			printf("String is: %s\n", s->getData());
 		}
@@ -276,11 +276,11 @@ int main(int argc, char *argv[]) {
 		printf("lbModule instance has %d references.\n", mm->getRefCount());
 
 
-		UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
-		UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
+		UAP(lb_I_Unknown, uk)
+		UAP(lb_I_KeyBase, key)
 
-		QI(string, lb_I_Unknown, uk, __FILE__, __LINE__)
-		QI(string, lb_I_KeyBase, key, __FILE__, __LINE__)
+		QI(string, lb_I_Unknown, uk)
+		QI(string, lb_I_KeyBase, key)
 
 		string->setData("Bla");
 
@@ -325,21 +325,21 @@ int main(int argc, char *argv[]) {
 		#ifdef ACCESS_TEST
 /*...sContainer access and search test:16:*/
 {
-	UAP(lb_I_Unknown, ukdata, __FILE__, __LINE__)
+	UAP(lb_I_Unknown, ukdata)
 
-	UAP(lb_I_String, s, __FILE__, __LINE__)
-
-	ukdata = container->getElement(&key);
-	if (ukdata == NULL) printf("NULL pointer!\n");
-
-	QI(ukdata, lb_I_String, s, __FILE__, __LINE__)
-
-	UAP(lb_I_String, s1, __FILE__, __LINE__)
+	UAP(lb_I_String, s)
 
 	ukdata = container->getElement(&key);
 	if (ukdata == NULL) printf("NULL pointer!\n");
 
-	QI(ukdata, lb_I_String, s1, __FILE__, __LINE__)
+	QI(ukdata, lb_I_String, s)
+
+	UAP(lb_I_String, s1)
+
+	ukdata = container->getElement(&key);
+	if (ukdata == NULL) printf("NULL pointer!\n");
+
+	QI(ukdata, lb_I_String, s1)
 
 	s1->setData("Changed");
 	char* cp1 = s1->getData();
@@ -350,12 +350,12 @@ int main(int argc, char *argv[]) {
 
 	printf("Try to dump content of container\n");	
 	while (container->hasMoreElements() == 1) {
-		UAP(lb_I_Unknown, e, __FILE__, __LINE__)
+		UAP(lb_I_Unknown, e)
 		e = container->nextElement();
 		if (e != NULL) {
-			UAP(lb_I_String, s, __FILE__, __LINE__)
+			UAP(lb_I_String, s)
 			
-			QI(e, lb_I_String, s, __FILE__, __LINE__)
+			QI(e, lb_I_String, s)
 						
 			printf("String is: %s\n", s->getData());
 		}

@@ -114,7 +114,7 @@ void lbConfigure_FK_PK_MappingDialog::OnFKComboBoxSelected( wxCommandEvent &even
 	
 	cBoxFKNames->Disable();
 	
-	UAP(lb_I_String, PKTable, __FILE__, __LINE__)
+	UAP(lb_I_String, PKTable)
 	
 	PKTable = sourceQuery->getPKTable(s.c_str());
 	
@@ -128,7 +128,7 @@ void lbConfigure_FK_PK_MappingDialog::OnFKComboBoxSelected( wxCommandEvent &even
 	
 	queryDB->connect(_DBName, _DBUser, _DBPass);
 	
-	UAP(lb_I_Query, sampleQuery, __FILE__, __LINE__)
+	UAP(lb_I_Query, sampleQuery)
 	
 	sampleQuery = queryDB->getQuery(0);
 
@@ -160,7 +160,7 @@ void lbConfigure_FK_PK_MappingDialog::OnPKComboBoxSelected( wxCommandEvent &even
 	
 	database->connect("lbDMF", lbDMFUser, lbDMFPasswd);
 
-	UAP(lb_I_String, PKTable, __FILE__, __LINE__)
+	UAP(lb_I_String, PKTable)
 	
 	char* fkTable = strdup(sourceQuery->getTableName((char*) FKName.c_str()));
 	
@@ -174,7 +174,7 @@ void lbConfigure_FK_PK_MappingDialog::OnPKComboBoxSelected( wxCommandEvent &even
 	
 	cBoxFKNames->Delete(cBoxFKNames->GetSelection());
 	
-	UAP(lb_I_Query, query, __FILE__, __LINE__)
+	UAP(lb_I_Query, query)
 	
 	char buf[] = "insert into ForeignKey_VisibleData_Mapping (FKName, FKTable, PKName, PKTable) values('%s','%s', '%s', '%s')";
 
@@ -280,7 +280,7 @@ void LB_STDCALL lbConfigure_FK_PK_MappingDialog::init(lb_I_Query* query, char* D
 	_DBUser = strdup(DBUser);
 	_DBPass = strdup(DBPass);
 
-	QI(query, lb_I_Query, sourceQuery, __FILE__, __LINE__)
+	QI(query, lb_I_Query, sourceQuery)
 	
 	wxBoxSizer* sizerMain  = new wxBoxSizer(wxVERTICAL);
 	
@@ -360,12 +360,12 @@ void lbConfigure_FK_PK_MappingDialog::OnDispatch(wxCommandEvent& event ) {
 			
 			param->setData(event.GetId());
 			
-			UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
-			QI(param, lb_I_Unknown, uk, __FILE__, __LINE__)
+			UAP(lb_I_Unknown, uk)
+			QI(param, lb_I_Unknown, uk)
 		
 			UAP_REQUEST(m, lb_I_String, result)
-			UAP(lb_I_Unknown, uk_result, __FILE__, __LINE__)
-			QI(result, lb_I_Unknown, uk_result, __FILE__, __LINE__)
+			UAP(lb_I_Unknown, uk_result)
+			QI(result, lb_I_Unknown, uk_result)
 		
 			dispatcher->dispatch(event.GetId(), uk.getPtr(), &uk_result);
                 }

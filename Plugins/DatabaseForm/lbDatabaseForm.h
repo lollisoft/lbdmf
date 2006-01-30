@@ -30,11 +30,15 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.29 $
+ * $Revision: 1.30 $
  * $Name:  $
- * $Id: lbDatabaseForm.h,v 1.29 2005/12/13 23:41:09 lollisoft Exp $
+ * $Id: lbDatabaseForm.h,v 1.30 2006/01/30 15:54:15 lollisoft Exp $
  *
  * $Log: lbDatabaseForm.h,v $
+ * Revision 1.30  2006/01/30 15:54:15  lollisoft
+ * Removed the __FILE__ and __LINE__ parameter usage in UAP and QI.
+ * This was an unnessesary thing and makes programming easier.
+ *
  * Revision 1.29  2005/12/13 23:41:09  lollisoft
  * Code may work properly, but doesn't compile well. Compiler bug ?
  * I know about a macro bug when missing one backslash, but I haven't
@@ -206,17 +210,17 @@ public:
 	void OnFKComboBoxSelected( wxCommandEvent &event );
 	void OnPKComboBoxSelected( wxCommandEvent &event );
 	    
-	UAP(lb_I_Database, database, __FILE__, __LINE__)
-	UAP(lb_I_Query, sampleQuery, __FILE__, __LINE__)
+	UAP(lb_I_Database, database)
+	UAP(lb_I_Query, sampleQuery)
 	
 	/**
 	 * \brief Maps positions to id's for each displayed combo box.
 	 *
 	 * Store a container for each combo box with key(pos) and data(id). 
 	 */
-	UAP(lb_I_Container, ComboboxMapperList, __FILE__, __LINE__)
-	UAP(lb_I_Query, sourceQuery, __FILE__, __LINE__)
-	UAP(lb_I_Database, queryDB, __FILE__, __LINE__)
+	UAP(lb_I_Container, ComboboxMapperList)
+	UAP(lb_I_Query, sourceQuery)
+	UAP(lb_I_Database, queryDB)
 
 
 	// l gets overwritten, while assigning a lb_I_Query* pointer to sampleQuery !!
@@ -260,9 +264,9 @@ protected:
 	
 
 	char* myActionID;
-	UAP(lb_I_Database, db, __FILE__, __LINE__)
+	UAP(lb_I_Database, db)
 	
-	UAP(lb_I_Container, actions, __FILE__, __LINE__)
+	UAP(lb_I_Container, actions)
 };
 /*...e*/
 
@@ -285,14 +289,14 @@ protected:
 	void LB_STDCALL openDetailForm(lb_I_String* formularname, lb_I_Parameter* params);
 
 	char* myActionID;
-	UAP(lb_I_Database, db, __FILE__, __LINE__)
-	UAP(lb_I_String, app, __FILE__, __LINE__)
-	UAP(lb_I_String, masterForm, __FILE__, __LINE__)
-	UAP(lb_I_String, SourceFieldName, __FILE__, __LINE__)
-	UAP(lb_I_String, SourceFieldValue, __FILE__, __LINE__)
-	UAP(lb_I_String, DBName, __FILE__, __LINE__)
-	UAP(lb_I_String, DBUser, __FILE__, __LINE__)
-	UAP(lb_I_String, DBPass, __FILE__, __LINE__)
+	UAP(lb_I_Database, db)
+	UAP(lb_I_String, app)
+	UAP(lb_I_String, masterForm)
+	UAP(lb_I_String, SourceFieldName)
+	UAP(lb_I_String, SourceFieldValue)
+	UAP(lb_I_String, DBName)
+	UAP(lb_I_String, DBUser)
+	UAP(lb_I_String, DBPass)
 
 	lb_I_DatabaseForm* detailForm;
 };
@@ -316,14 +320,14 @@ protected:
 	void LB_STDCALL openMasterForm(lb_I_String* formularname, lb_I_Parameter* params);
 
 	char* myActionID;
-	UAP(lb_I_Database, db, __FILE__, __LINE__)
-	UAP(lb_I_String, app, __FILE__, __LINE__)
-	UAP(lb_I_String, detailForm, __FILE__, __LINE__)
-	UAP(lb_I_String, SourceFieldName, __FILE__, __LINE__)
-	UAP(lb_I_String, SourceFieldValue, __FILE__, __LINE__)
-	UAP(lb_I_String, DBName, __FILE__, __LINE__)
-	UAP(lb_I_String, DBUser, __FILE__, __LINE__)
-	UAP(lb_I_String, DBPass, __FILE__, __LINE__)
+	UAP(lb_I_Database, db)
+	UAP(lb_I_String, app)
+	UAP(lb_I_String, detailForm)
+	UAP(lb_I_String, SourceFieldName)
+	UAP(lb_I_String, SourceFieldValue)
+	UAP(lb_I_String, DBName)
+	UAP(lb_I_String, DBUser)
+	UAP(lb_I_String, DBPass)
 
 	lb_I_DatabaseForm* masterForm;
 };
@@ -344,7 +348,7 @@ public:
 	
 protected:
 	char* myActionID;
-	UAP(lb_I_Database, db, __FILE__, __LINE__)
+	UAP(lb_I_Database, db)
 };
 /*...e*/
 
@@ -411,7 +415,7 @@ public:
 	bool update() { return true; }
 	
 protected:
-	UAP(lb_I_Container, actions, __FILE__, __LINE__)
+	UAP(lb_I_Container, actions)
 	char buffer[100];
 };
 /*...e*/
@@ -450,8 +454,8 @@ protected:
 
 	lb_I_Query* _query;
 
-	UAP(lb_I_Container, ROFields, __FILE__, __LINE__)	
-	UAP(lb_I_Container, SCFields, __FILE__, __LINE__)
+	UAP(lb_I_Container, ROFields)	
+	UAP(lb_I_Container, SCFields)
 };
 /*...e*/
 
@@ -482,7 +486,7 @@ public:
 private:
 	lb_I_DatabaseForm* masterForm;
 	
-	UAP(lb_I_Container, masterColumns, __FILE__, __LINE__)
+	UAP(lb_I_Container, masterColumns)
 };
 /*...e*/
 
@@ -663,37 +667,37 @@ public:
 	DECLARE_LB_UNKNOWN()
 
 /*...svariables:8:*/
-	UAP(lb_I_Database, database, __FILE__, __LINE__)
-	UAP(lb_I_Query, sampleQuery, __FILE__, __LINE__)
-	UAP(lb_I_String, SQLString, __FILE__, __LINE__)
-	UAP(lb_I_String, SQLWhere, __FILE__, __LINE__)
+	UAP(lb_I_Database, database)
+	UAP(lb_I_Query, sampleQuery)
+	UAP(lb_I_String, SQLString)
+	UAP(lb_I_String, SQLWhere)
 
-	UAP(lb_I_String, _DBName, __FILE__, __LINE__)
-	UAP(lb_I_String, _DBUser, __FILE__, __LINE__)
-	UAP(lb_I_String, _DBPass, __FILE__, __LINE__)
+	UAP(lb_I_String, _DBName)
+	UAP(lb_I_String, _DBUser)
+	UAP(lb_I_String, _DBPass)
 	
 	/*
 	 * Maps positions to id's for each displayed combo box.
 	 *
 	 * Store a container for each combo box with key(pos) and data(id). 
 	 */
-	UAP(lb_I_Container, ComboboxMapperList, __FILE__, __LINE__)
+	UAP(lb_I_Container, ComboboxMapperList)
 	
 	/* Storage for all yet loaded actions. */
-	UAP(lb_I_Container, actions, __FILE__, __LINE__)
+	UAP(lb_I_Container, actions)
 
-	UAP(lb_I_String, app, __FILE__, __LINE__)
-	UAP(lb_I_String, masterForm, __FILE__, __LINE__)
-	UAP(lb_I_String, detailForm, __FILE__, __LINE__)
-	UAP(lb_I_String, SourceFieldName, __FILE__, __LINE__)
-	UAP(lb_I_String, SourceFieldValue, __FILE__, __LINE__)
-	UAP(lb_I_String, DBName, __FILE__, __LINE__)
-	UAP(lb_I_String, DBUser, __FILE__, __LINE__)
-	UAP(lb_I_String, DBPass, __FILE__, __LINE__)
+	UAP(lb_I_String, app)
+	UAP(lb_I_String, masterForm)
+	UAP(lb_I_String, detailForm)
+	UAP(lb_I_String, SourceFieldName)
+	UAP(lb_I_String, SourceFieldValue)
+	UAP(lb_I_String, DBName)
+	UAP(lb_I_String, DBUser)
+	UAP(lb_I_String, DBPass)
 
 
-	UAP(lb_I_Container, ignoredPKTables, __FILE__, __LINE__)
-	UAP(lb_I_Container, MasterDetailRelationData, __FILE__, __LINE__)
+	UAP(lb_I_Container, ignoredPKTables)
+	UAP(lb_I_Container, MasterDetailRelationData)
 
 	// l gets overwritten, while assigning a lb_I_Query* pointer to sampleQuery !!
 	// l and buf are therefore as a bugfix.

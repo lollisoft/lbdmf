@@ -176,8 +176,8 @@ public:
 	int LB_STDCALL getArraySize() { return ArraySize; }
 
 private:
-	UAP(lb_I_Container, boundColumns, __FILE__, __LINE__)
-	UAP(lb_I_Container, ColumnNameMapping, __FILE__, __LINE__)
+	UAP(lb_I_Container, boundColumns)
+	UAP(lb_I_Container, ColumnNameMapping)
 	int ArraySize;
 	lbQuery* query;
 };
@@ -375,18 +375,18 @@ private:
 	// Number of columns for the query
 	SQLSMALLINT cols;
 
-	UAP(lb_I_Container, primaryColumns, __FILE__, __LINE__)
-	UAP(lb_I_Container, ForeignColumns, __FILE__, __LINE__)
+	UAP(lb_I_Container, primaryColumns)
+	UAP(lb_I_Container, ForeignColumns)
 	
-	UAP(lb_I_Container, mapPKTable_PKColumns_To_FKName, __FILE__, __LINE__)
+	UAP(lb_I_Container, mapPKTable_PKColumns_To_FKName)
 
-	UAP(lb_I_Container, ReadOnlyColumns, __FILE__, __LINE__)
+	UAP(lb_I_Container, ReadOnlyColumns)
 
 #ifdef UNBOUND	
-	UAP(lb_I_Container, boundColumns, __FILE__, __LINE__)
+	UAP(lb_I_Container, boundColumns)
 #endif
 #ifndef UNBOUND
-	UAP(lb_I_ColumnBinding, boundColumns, __FILE__, __LINE__)
+	UAP(lb_I_ColumnBinding, boundColumns)
 #endif
 	char buff[100];
 
@@ -591,15 +591,15 @@ bool LB_STDCALL lbBoundColumns::isNull(int pos) {
 	if (boundColumns != NULL) {
 		UAP_REQUEST(manager.getPtr(), lb_I_Integer, integerKey) 
 		integerKey->setData(pos);
-		UAP(lb_I_Unknown, ukdata, __FILE__, __LINE__)
-		UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
+		UAP(lb_I_Unknown, ukdata)
+		UAP(lb_I_KeyBase, key)
 		
-		QI(integerKey, lb_I_KeyBase, key, __FILE__, __LINE__)
+		QI(integerKey, lb_I_KeyBase, key)
 
 		ukdata = boundColumns->getElement(&key);
 		if (ukdata == NULL) printf("NULL pointer!\n");
 
-		UAP(lb_I_BoundColumn, bc, __FILE__, __LINE__)
+		UAP(lb_I_BoundColumn, bc)
 		lbErrCodes err = ukdata->queryInterface("lb_I_BoundColumn", (void**) &bc, __FILE__, __LINE__);
 
 		return bc->isNull();
@@ -615,12 +615,12 @@ void LB_STDCALL lbBoundColumns::rebind() {
 	
 	if (boundColumns != NULL) {
 		while (boundColumns->hasMoreElements() == 1) {
-			UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
-			UAP(lb_I_BoundColumn, bc, __FILE__, __LINE__)
+			UAP(lb_I_Unknown, uk)
+			UAP(lb_I_BoundColumn, bc)
 			
 			uk = boundColumns->nextElement();
 			
-			QI(uk, lb_I_BoundColumn, bc, __FILE__, __LINE__)
+			QI(uk, lb_I_BoundColumn, bc)
 			
 			bc->rebind();
 		}
@@ -633,12 +633,12 @@ void LB_STDCALL lbBoundColumns::unbindReadonlyColumns() {
 	
 	if (boundColumns != NULL) {
 		while (boundColumns->hasMoreElements() == 1) {
-			UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
-			UAP(lb_I_BoundColumn, bc, __FILE__, __LINE__)
+			UAP(lb_I_Unknown, uk)
+			UAP(lb_I_BoundColumn, bc)
 			
 			uk = boundColumns->nextElement();
 			
-			QI(uk, lb_I_BoundColumn, bc, __FILE__, __LINE__)
+			QI(uk, lb_I_BoundColumn, bc)
 			
 			bc->unbindReadonlyColumns();
 		}
@@ -651,12 +651,12 @@ void LB_STDCALL lbBoundColumns::rebindReadonlyColumns() {
 	
 	if (boundColumns != NULL) {
 		while (boundColumns->hasMoreElements() == 1) {
-			UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
-			UAP(lb_I_BoundColumn, bc, __FILE__, __LINE__)
+			UAP(lb_I_Unknown, uk)
+			UAP(lb_I_BoundColumn, bc)
 			
 			uk = boundColumns->nextElement();
 			
-			QI(uk, lb_I_BoundColumn, bc, __FILE__, __LINE__)
+			QI(uk, lb_I_BoundColumn, bc)
 			
 			bc->rebindReadonlyColumns();
 		}
@@ -671,15 +671,15 @@ lb_I_Query::lbDBColumnTypes LB_STDCALL lbBoundColumns::getColumnType(int pos) {
 	if (boundColumns != NULL) {
 		UAP_REQUEST(manager.getPtr(), lb_I_Integer, integerKey) 
 		integerKey->setData(pos);
-		UAP(lb_I_Unknown, ukdata, __FILE__, __LINE__)
-		UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
+		UAP(lb_I_Unknown, ukdata)
+		UAP(lb_I_KeyBase, key)
 		
-		QI(integerKey, lb_I_KeyBase, key, __FILE__, __LINE__)
+		QI(integerKey, lb_I_KeyBase, key)
 
 		ukdata = boundColumns->getElement(&key);
 		if (ukdata == NULL) printf("NULL pointer!\n");
 
-		UAP(lb_I_BoundColumn, bc, __FILE__, __LINE__)
+		UAP(lb_I_BoundColumn, bc)
 		lbErrCodes err = ukdata->queryInterface("lb_I_BoundColumn", (void**) &bc, __FILE__, __LINE__);
 
 		return bc->getType();
@@ -697,10 +697,10 @@ int LB_STDCALL lbBoundColumns::getColumnIndex(char* name) {
 	if (boundColumns != NULL) {
 		UAP_REQUEST(manager.getPtr(), lb_I_String, stringKey) 
 		stringKey->setData(name);
-		UAP(lb_I_Unknown, ukdata, __FILE__, __LINE__)
-		UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
+		UAP(lb_I_Unknown, ukdata)
+		UAP(lb_I_KeyBase, key)
 		
-		QI(stringKey, lb_I_KeyBase, key, __FILE__, __LINE__)
+		QI(stringKey, lb_I_KeyBase, key)
 
 		ukdata = ColumnNameMapping->getElement(&key);
 		if (ukdata == NULL) {
@@ -709,7 +709,7 @@ int LB_STDCALL lbBoundColumns::getColumnIndex(char* name) {
 			return -1;
 		}
 
-		UAP(lb_I_Integer, pos, __FILE__, __LINE__)
+		UAP(lb_I_Integer, pos)
 		
 		lbErrCodes err = ukdata->queryInterface("lb_I_Integer", (void**) &pos, __FILE__, __LINE__);
 		
@@ -726,10 +726,10 @@ lb_I_Query::lbDBColumnTypes LB_STDCALL lbBoundColumns::getColumnType(char* name)
 	if (boundColumns != NULL) {
 		UAP_REQUEST(manager.getPtr(), lb_I_String, stringKey) 
 		stringKey->setData(name);
-		UAP(lb_I_Unknown, ukdata, __FILE__, __LINE__)
-		UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
+		UAP(lb_I_Unknown, ukdata)
+		UAP(lb_I_KeyBase, key)
 		
-		QI(stringKey, lb_I_KeyBase, key, __FILE__, __LINE__)
+		QI(stringKey, lb_I_KeyBase, key)
 
 		ukdata = ColumnNameMapping->getElement(&key);
 		if (ukdata == NULL) {
@@ -738,8 +738,8 @@ lb_I_Query::lbDBColumnTypes LB_STDCALL lbBoundColumns::getColumnType(char* name)
 			return lb_I_Query::lbDBColumnUnknown;
 		}
 
-		UAP(lb_I_BoundColumn, bc, __FILE__, __LINE__)
-		UAP(lb_I_Integer, pos, __FILE__, __LINE__)
+		UAP(lb_I_BoundColumn, bc)
+		UAP(lb_I_Integer, pos)
 		
 		lbErrCodes err = ukdata->queryInterface("lb_I_Integer", (void**) &pos, __FILE__, __LINE__);
 		
@@ -756,29 +756,29 @@ void LB_STDCALL lbBoundColumns::setReadonly(char* column, bool updateable) {
 	if (boundColumns != NULL) {
 		UAP_REQUEST(manager.getPtr(), lb_I_String, stringKey) 
 		stringKey->setData(column);
-		UAP(lb_I_Unknown, ukdata, __FILE__, __LINE__)
-		UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
+		UAP(lb_I_Unknown, ukdata)
+		UAP(lb_I_KeyBase, key)
 		
-		QI(stringKey, lb_I_KeyBase, key, __FILE__, __LINE__)
+		QI(stringKey, lb_I_KeyBase, key)
 
 		ukdata = ColumnNameMapping->getElement(&key);
 		if (ukdata == NULL) printf("NULL pointer!\n");
 
-		UAP(lb_I_Integer, pos, __FILE__, __LINE__)
+		UAP(lb_I_Integer, pos)
 		
 		lbErrCodes err = ukdata->queryInterface("lb_I_Integer", (void**) &pos, __FILE__, __LINE__);
 		
 		UAP_REQUEST(manager.getPtr(), lb_I_Integer, integerKey) 
 		integerKey->setData(pos.getPtr());
-		UAP(lb_I_Unknown, ukdata1, __FILE__, __LINE__)
-		UAP(lb_I_KeyBase, key1, __FILE__, __LINE__)
+		UAP(lb_I_Unknown, ukdata1)
+		UAP(lb_I_KeyBase, key1)
 		
-		QI(integerKey, lb_I_KeyBase, key1, __FILE__, __LINE__)
+		QI(integerKey, lb_I_KeyBase, key1)
 
 		ukdata1 = boundColumns->getElement(&key1);
 		if (ukdata1 == NULL) printf("NULL pointer!\n");
 
-		UAP(lb_I_BoundColumn, bc, __FILE__, __LINE__)
+		UAP(lb_I_BoundColumn, bc)
 		err = ukdata1->queryInterface("lb_I_BoundColumn", (void**) &bc, __FILE__, __LINE__);
 
 		bc->setReadonly(updateable);
@@ -791,29 +791,29 @@ bool LB_STDCALL lbBoundColumns::getReadonly(char* column) {
 	if (boundColumns != NULL) {
 		UAP_REQUEST(manager.getPtr(), lb_I_String, stringKey) 
 		stringKey->setData(column);
-		UAP(lb_I_Unknown, ukdata, __FILE__, __LINE__)
-		UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
+		UAP(lb_I_Unknown, ukdata)
+		UAP(lb_I_KeyBase, key)
 		
-		QI(stringKey, lb_I_KeyBase, key, __FILE__, __LINE__)
+		QI(stringKey, lb_I_KeyBase, key)
 
 		ukdata = ColumnNameMapping->getElement(&key);
 		if (ukdata == NULL) printf("NULL pointer!\n");
 
-		UAP(lb_I_Integer, pos, __FILE__, __LINE__)
+		UAP(lb_I_Integer, pos)
 		
 		lbErrCodes err = ukdata->queryInterface("lb_I_Integer", (void**) &pos, __FILE__, __LINE__);
 		
 		UAP_REQUEST(manager.getPtr(), lb_I_Integer, integerKey) 
 		integerKey->setData(pos.getPtr());
-		UAP(lb_I_Unknown, ukdata1, __FILE__, __LINE__)
-		UAP(lb_I_KeyBase, key1, __FILE__, __LINE__)
+		UAP(lb_I_Unknown, ukdata1)
+		UAP(lb_I_KeyBase, key1)
 		
-		QI(integerKey, lb_I_KeyBase, key1, __FILE__, __LINE__)
+		QI(integerKey, lb_I_KeyBase, key1)
 
 		ukdata1 = boundColumns->getElement(&key1);
 		if (ukdata1 == NULL) printf("NULL pointer!\n");
 
-		UAP(lb_I_BoundColumn, bc, __FILE__, __LINE__)
+		UAP(lb_I_BoundColumn, bc)
 		err = ukdata1->queryInterface("lb_I_BoundColumn", (void**) &bc, __FILE__, __LINE__);
 
 		return bc->getReadonly();
@@ -827,15 +827,15 @@ lb_I_BoundColumn* LB_STDCALL lbBoundColumns::getBoundColumn(int column) {
 	if (boundColumns != NULL) {
 		UAP_REQUEST(manager.getPtr(), lb_I_Integer, integerKey) 
 		integerKey->setData(column);
-		UAP(lb_I_Unknown, ukdata, __FILE__, __LINE__)
-		UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
+		UAP(lb_I_Unknown, ukdata)
+		UAP(lb_I_KeyBase, key)
 		
-		QI(integerKey, lb_I_KeyBase, key, __FILE__, __LINE__)
+		QI(integerKey, lb_I_KeyBase, key)
 
 		ukdata = boundColumns->getElement(&key);
 		if (ukdata == NULL) printf("NULL pointer!\n");
 
-		UAP(lb_I_BoundColumn, bc, __FILE__, __LINE__)
+		UAP(lb_I_BoundColumn, bc)
 		lbErrCodes err = ukdata->queryInterface("lb_I_BoundColumn", (void**) &bc, __FILE__, __LINE__);
 
 		bc++;
@@ -927,21 +927,21 @@ Therefore I need an indicator, set by the user of this library to know, which on
 
 		integerKey->setData(i);
 
-		UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
-		UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
+		UAP(lb_I_Unknown, uk)
+		UAP(lb_I_KeyBase, key)
 
 		bc->queryInterface("lb_I_Unknown", (void**) &uk, __FILE__, __LINE__);
 		integerKey->queryInterface("lb_I_KeyBase", (void**) &key, __FILE__, __LINE__);		
 
 		boundColumns->insert(&uk, &key);
 
-		UAP(lb_I_BoundColumn, bc1, __FILE__, __LINE__)
+		UAP(lb_I_BoundColumn, bc1)
 		bc1 = getBoundColumn(i);
 
 		UAP_REQUEST(manager.getPtr(), lb_I_String, colName)
-		UAP(lb_I_KeyBase, key1, __FILE__, __LINE__)
+		UAP(lb_I_KeyBase, key1)
 		colName->setData(qq->getColumnName(i));
-		QI(colName, lb_I_KeyBase, key1, __FILE__, __LINE__)
+		QI(colName, lb_I_KeyBase, key1)
 
 		bool Readonly = false;
 
@@ -957,14 +957,14 @@ Therefore I need an indicator, set by the user of this library to know, which on
 			REQUEST(manager.getPtr(), lb_I_Container, ColumnNameMapping)
 		}
 		
-		UAP(lb_I_KeyBase, skey, __FILE__, __LINE__)
-		UAP(lb_I_String, string, __FILE__, __LINE__)
+		UAP(lb_I_KeyBase, skey)
+		UAP(lb_I_String, string)
 
 		string = bc1->getColumnName();
 
 		string->queryInterface("lb_I_KeyBase", (void**) &skey, __FILE__, __LINE__);
 
-		UAP(lb_I_Unknown, ivalue, __FILE__, __LINE__)
+		UAP(lb_I_Unknown, ivalue)
 
 		integerKey->queryInterface("lb_I_Unknown", (void**) &ivalue, __FILE__, __LINE__);
 		
@@ -984,7 +984,7 @@ Therefore I need an indicator, set by the user of this library to know, which on
 lbErrCodes	LB_STDCALL lbBoundColumns::getString(int column, lb_I_String* instance) {
 	lbErrCodes err = ERR_NONE;
 
-	UAP(lb_I_BoundColumn, bc, __FILE__, __LINE__)
+	UAP(lb_I_BoundColumn, bc)
 
 	bc = getBoundColumn(column);
 	// getBoundColumn(column); increases refcount
@@ -1000,24 +1000,24 @@ lbErrCodes	LB_STDCALL lbBoundColumns::getString(char* column, lb_I_String* insta
 /*...slbErrCodes      LB_STDCALL lbBoundColumns\58\\58\setString\40\char\42\ column\44\ lb_I_String\42\ instance\41\:0:*/
 lbErrCodes      LB_STDCALL lbBoundColumns::setString(char* column, lb_I_String* instance) {
 	lbErrCodes err = ERR_NONE;
-	UAP(lb_I_Unknown, ukdata, __FILE__, __LINE__)
-	UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
+	UAP(lb_I_Unknown, ukdata)
+	UAP(lb_I_KeyBase, key)
 	
 	UAP_REQUEST(manager.getPtr(), lb_I_String, Column)
 	
 	Column->setData(column);
 	
-	QI(Column, lb_I_KeyBase, key, __FILE__, __LINE__)
+	QI(Column, lb_I_KeyBase, key)
 	ukdata = ColumnNameMapping->getElement(&key);
 
-	UAP(lb_I_KeyBase, index, __FILE__, __LINE__)
-	QI(ukdata, lb_I_KeyBase, index, __FILE__, __LINE__)
+	UAP(lb_I_KeyBase, index)
+	QI(ukdata, lb_I_KeyBase, index)
 
-	UAP(lb_I_Unknown, uk_bc, __FILE__, __LINE__)
+	UAP(lb_I_Unknown, uk_bc)
 	uk_bc = boundColumns->getElement(&index);
 	
-	UAP(lb_I_BoundColumn, bc, __FILE__, __LINE__)
-	QI(uk_bc, lb_I_BoundColumn, bc, __FILE__, __LINE__)
+	UAP(lb_I_BoundColumn, bc)
+	QI(uk_bc, lb_I_BoundColumn, bc)
 
 	// Adding or updating ? - Decided inside
 	bc->setFromString(instance, getMode());
@@ -1036,7 +1036,7 @@ BEGIN_IMPLEMENT_LB_UNKNOWN(lbQuery)
         ADD_INTERFACE(lb_I_Query)
 END_IMPLEMENT_LB_UNKNOWN()
 
-UAP(lb_I_Integer, key, __FILE__, __LINE__)
+UAP(lb_I_Integer, key)
 
 /*...sto be implemented:0:*/
 lbErrCodes LB_STDCALL lbQuery::setData(lb_I_Unknown * uk) {
@@ -1154,11 +1154,11 @@ void LB_STDCALL lbQuery::PrintHeader() {
 /*...e*/
 /*...svoid LB_STDCALL lbQuery\58\\58\PrintCurrent\40\\41\:0:*/
 void LB_STDCALL lbQuery::PrintCurrent() {
-	UAP(lb_I_String, s, __FILE__, __LINE__)
+	UAP(lb_I_String, s)
 	int cols = getColumns();
 	
 	for (int i = 1; i <= cols-1; i++) {
-		UAP(lb_I_String, s, __FILE__, __LINE__)
+		UAP(lb_I_String, s)
 	        s = getAsString(i);
 	        s->trim();
 	        printf("%19s", s->charrep());
@@ -1337,7 +1337,7 @@ lbErrCodes LB_STDCALL lbQuery::bind() {
 		
 			_CL_VERBOSE << "Bind columns with " << ReadOnlyColumns->Count() << " readonly elements" LOG_
 		
-			QI(boundcols, lb_I_ColumnBinding, boundColumns, __FILE__, __LINE__)
+			QI(boundcols, lb_I_ColumnBinding, boundColumns)
 		
 			boundColumns->setQuery(this, ReadOnlyColumns.getPtr());
 			
@@ -1488,7 +1488,7 @@ Using SQLSetPos
 			boundcols = new lbBoundColumns();
 			boundcols->setModuleManager(*&manager, __FILE__, __LINE__);
 
-			QI(boundcols, lb_I_ColumnBinding, boundColumns, __FILE__, __LINE__)
+			QI(boundcols, lb_I_ColumnBinding, boundColumns)
 		
 			boundColumns->setQuery(this, ReadOnlyColumns.getPtr());
 			
@@ -1540,10 +1540,10 @@ char* LB_STDCALL lbQuery::getChar(int column) {
 				// Strip trailing blanks
 				while (szobjecttyp[strlen(szobjecttyp)-1] == ' ') szobjecttyp[strlen(szobjecttyp)-1] = 0;
 				string->setData(szobjecttyp);
-				UAP(lb_I_KeyBase, bkey, __FILE__, __LINE__)
-				UAP(lb_I_Unknown, ustring, __FILE__, __LINE__)
-				QI(key, lb_I_KeyBase, bkey, __FILE__, __LINE__)
-				QI(string, lb_I_Unknown, ustring, __FILE__, __LINE__)
+				UAP(lb_I_KeyBase, bkey)
+				UAP(lb_I_Unknown, ustring)
+				QI(key, lb_I_KeyBase, bkey)
+				QI(string, lb_I_Unknown, ustring)
 				
 				key->setData(i);
 				
@@ -1561,15 +1561,15 @@ char* LB_STDCALL lbQuery::getChar(int column) {
 	}
 	
 	key->setData(column);
-	UAP(lb_I_KeyBase, bkey, __FILE__, __LINE__)
-	QI(key, lb_I_KeyBase, bkey, __FILE__, __LINE__)
+	UAP(lb_I_KeyBase, bkey)
+	QI(key, lb_I_KeyBase, bkey)
 	
-	UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
+	UAP(lb_I_Unknown, uk)
 
 	uk = boundColumns->getElement(&bkey);
 
-	UAP(lb_I_String, string, __FILE__, __LINE__)
-	QI(uk, lb_I_String, string, __FILE__, __LINE__)
+	UAP(lb_I_String, string)
+	QI(uk, lb_I_String, string)
 
 	return string->getData();
 }
@@ -1615,20 +1615,20 @@ int LB_STDCALL lbQuery::hasFKColumn(char* FKName) {
 			return 0;
 		}
 	
-		UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
+		UAP(lb_I_KeyBase, key)
 		UAP_REQUEST(manager.getPtr(), lb_I_String, s)
 	
 		s->setData(FKName);
 		s->toLower();
 		
-		QI(s, lb_I_KeyBase, key, __FILE__, __LINE__)
+		QI(s, lb_I_KeyBase, key)
 	
 		if (ForeignColumns->exists(&key) == 1) {
-			UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
-			UAP(lb_I_String, s, __FILE__, __LINE__)
+			UAP(lb_I_Unknown, uk)
+			UAP(lb_I_String, s)
 			
 			uk = ForeignColumns->getElement(&key);
-			QI(uk, lb_I_String, s, __FILE__, __LINE__)
+			QI(uk, lb_I_String, s)
 			
 			// Check, if FKName does not point from other table to me
 			if (strcmp(s->charrep(), getTableName(FKName)) != 0) return 1;
@@ -1652,8 +1652,8 @@ lb_I_String* LB_STDCALL lbQuery::getFKColumn(int pos) {
 	
 	if (skipFKCollections == 1) return NULL;
 	
-	UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
-	UAP(lb_I_String,  s, __FILE__, __LINE__)
+	UAP(lb_I_Unknown, uk)
+	UAP(lb_I_String,  s)
 	
 	// getKeyAt returns it's reference.
 	// Bugfix: increment reference here.
@@ -1663,7 +1663,7 @@ lb_I_String* LB_STDCALL lbQuery::getFKColumn(int pos) {
 	
 	uk = ForeignColumns->getKeyAt(pos);
 	
-	QI(uk, lb_I_String, s, __FILE__, __LINE__)
+	QI(uk, lb_I_String, s)
 	s++;
 	
 	return s.getPtr();
@@ -1674,15 +1674,15 @@ lb_I_String* LB_STDCALL lbQuery::getFKColumn(char* table, char* primary) {
 	lbErrCodes err = ERR_NONE;
 	
 	UAP_REQUEST(manager.getPtr(), lb_I_String, PKTable_PKName)
-	UAP(lb_I_KeyBase, key_PKTable_PKName, __FILE__, __LINE__)
+	UAP(lb_I_KeyBase, key_PKTable_PKName)
 	
 	*PKTable_PKName = table;
 	*PKTable_PKName += primary;
 	
-	QI(PKTable_PKName, lb_I_KeyBase, key_PKTable_PKName, __FILE__, __LINE__)
+	QI(PKTable_PKName, lb_I_KeyBase, key_PKTable_PKName)
 
-	UAP(lb_I_Unknown, result, __FILE__, __LINE__)
-	UAP(lb_I_String, FKName, __FILE__, __LINE__)
+	UAP(lb_I_Unknown, result)
+	UAP(lb_I_String, FKName)
 
 	if (mapPKTable_PKColumns_To_FKName == NULL) {
 		_CL_LOG << "Error: There were no foreign keys collected. (" << table << ", " << primary << ")" LOG_
@@ -1693,7 +1693,7 @@ lb_I_String* LB_STDCALL lbQuery::getFKColumn(char* table, char* primary) {
 
 	if (result == NULL) return NULL;
 
-	QI(result, lb_I_String, FKName, __FILE__, __LINE__)
+	QI(result, lb_I_String, FKName)
 
 	FKName++;
 	
@@ -1710,21 +1710,21 @@ lb_I_String* LB_STDCALL lbQuery::getPKTable(char const * FKName) {
 		return NULL;
 	}
 	
-	UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
+	UAP(lb_I_KeyBase, key)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, s)
 	
 	s->setData(FKName);
 	s->toLower();
 	
-	QI(s, lb_I_KeyBase, key, __FILE__, __LINE__)
+	QI(s, lb_I_KeyBase, key)
 	
 	if (ForeignColumns->exists(&key) == 1) {
-		UAP(lb_I_String, string, __FILE__, __LINE__)
-		UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
+		UAP(lb_I_String, string)
+		UAP(lb_I_Unknown, uk)
 		
 		uk = ForeignColumns->getElement(&key)->clone(__FILE__, __LINE__);
 		
-		QI(uk, lb_I_String, string, __FILE__, __LINE__)
+		QI(uk, lb_I_String, string)
 
 		string++;
 		
@@ -1934,22 +1934,22 @@ void LB_STDCALL lbQuery::prepareFKList() {
 
 	      FKName->toLower();
 	      
-	      UAP(lb_I_Unknown, uk_PKTable, __FILE__, __LINE__)
-	      UAP(lb_I_KeyBase, key_FKName, __FILE__, __LINE__)
+	      UAP(lb_I_Unknown, uk_PKTable)
+	      UAP(lb_I_KeyBase, key_FKName)
 	      
-	      UAP(lb_I_Unknown, uk_FKName, __FILE__, __LINE__)
-	      UAP(lb_I_KeyBase, key_PKTable_PKName, __FILE__, __LINE__)
+	      UAP(lb_I_Unknown, uk_FKName)
+	      UAP(lb_I_KeyBase, key_PKTable_PKName)
 	      
-	      QI(FKName, lb_I_KeyBase, key_FKName, __FILE__, __LINE__)
-	      QI(PKTable, lb_I_Unknown, uk_PKTable, __FILE__, __LINE__)
+	      QI(FKName, lb_I_KeyBase, key_FKName)
+	      QI(PKTable, lb_I_Unknown, uk_PKTable)
 
 	      ForeignColumns->insert(&uk_PKTable, &key_FKName);
 	      
 	      *PKTable_PKName = (char*) szPkTable;
 	      *PKTable_PKName += (char*) szPkCol;
 	      
-	      QI(PKTable_PKName, lb_I_KeyBase, key_PKTable_PKName, __FILE__, __LINE__)
-	      QI(FKName, lb_I_Unknown, uk_FKName, __FILE__, __LINE__)
+	      QI(PKTable_PKName, lb_I_KeyBase, key_PKTable_PKName)
+	      QI(FKName, lb_I_Unknown, uk_FKName)
 
 	      _CL_VERBOSE << "Insert map for '" << key_PKTable_PKName->charrep() << 
 		"' to '" << FKName->charrep() << "'" LOG_
@@ -2004,22 +2004,22 @@ void LB_STDCALL lbQuery::prepareFKList() {
 
 	      FKName->toLower();
 	      
-	      UAP(lb_I_Unknown, uk_PKTable, __FILE__, __LINE__)
-	      UAP(lb_I_KeyBase, key_FKName, __FILE__, __LINE__)
+	      UAP(lb_I_Unknown, uk_PKTable)
+	      UAP(lb_I_KeyBase, key_FKName)
 	      
-	      UAP(lb_I_Unknown, uk_FKName, __FILE__, __LINE__)
-	      UAP(lb_I_KeyBase, key_PKTable_PKName, __FILE__, __LINE__)
+	      UAP(lb_I_Unknown, uk_FKName)
+	      UAP(lb_I_KeyBase, key_PKTable_PKName)
 	      
-	      QI(FKName, lb_I_KeyBase, key_FKName, __FILE__, __LINE__)
-	      QI(PKTable, lb_I_Unknown, uk_PKTable, __FILE__, __LINE__)
+	      QI(FKName, lb_I_KeyBase, key_FKName)
+	      QI(PKTable, lb_I_Unknown, uk_PKTable)
 
 	      ForeignColumns->insert(&uk_PKTable, &key_FKName);
 	      
 	      *PKTable_PKName = (char*) szPkTable;
 	      *PKTable_PKName += (char*) szPkCol;
 	      
-	      QI(PKTable_PKName, lb_I_KeyBase, key_PKTable_PKName, __FILE__, __LINE__)
-	      QI(FKName, lb_I_Unknown, uk_FKName, __FILE__, __LINE__)
+	      QI(PKTable_PKName, lb_I_KeyBase, key_PKTable_PKName)
+	      QI(FKName, lb_I_Unknown, uk_FKName)
 
 		_CL_VERBOSE << "Insert map for '" << key_PKTable_PKName->charrep() << 
 		"' to '" << FKName->charrep() << "'" LOG_
@@ -2068,7 +2068,7 @@ void LB_STDCALL lbQuery::prepareFKList() {
 
 	
 	for (int i = 1; i <= getColumns(); i++) { 
-    	    UAP(lb_I_Query, q, __FILE__, __LINE__)
+    	    UAP(lb_I_Query, q)
 
 	    buffer[0] = 0;
 	    
@@ -2097,14 +2097,14 @@ void LB_STDCALL lbQuery::prepareFKList() {
 		
 	        FKName->setData(column);
 		
-		UAP(lb_I_Unknown, uk_PKTable, __FILE__, __LINE__)
-		UAP(lb_I_KeyBase, key_FKName, __FILE__, __LINE__)
+		UAP(lb_I_Unknown, uk_PKTable)
+		UAP(lb_I_KeyBase, key_FKName)
 
-		UAP(lb_I_Unknown, uk_FKName, __FILE__, __LINE__)
-		UAP(lb_I_KeyBase, key_PKTable_PKName, __FILE__, __LINE__)
+		UAP(lb_I_Unknown, uk_FKName)
+		UAP(lb_I_KeyBase, key_PKTable_PKName)
 	      
-	        QI(FKName, lb_I_KeyBase, key_FKName, __FILE__, __LINE__)
-	        QI(PKTable, lb_I_Unknown, uk_PKTable, __FILE__, __LINE__)
+	        QI(FKName, lb_I_KeyBase, key_FKName)
+	        QI(PKTable, lb_I_Unknown, uk_PKTable)
 
 
 		if (isVerbose()) printf("%-s ( %-s ) <-- %-s ( %-s )\n", PKTable->charrep(), PKName->charrep(), table, FKName->charrep());
@@ -2114,8 +2114,8 @@ void LB_STDCALL lbQuery::prepareFKList() {
 	        *PKTable_PKName = (char*) szPkTable;
 	        *PKTable_PKName += (char*) szPkCol;
 	        
-	        QI(PKTable_PKName, lb_I_KeyBase, key_PKTable_PKName, __FILE__, __LINE__)
-	        QI(FKName, lb_I_Unknown, uk_FKName, __FILE__, __LINE__)
+	        QI(PKTable_PKName, lb_I_KeyBase, key_PKTable_PKName)
+	        QI(FKName, lb_I_Unknown, uk_FKName)
 
 		_CL_LOG << "Insert map for '" << key_PKTable_PKName->charrep() << 
 		"' to '" << FKName->charrep() << "'" LOG_
@@ -2215,11 +2215,11 @@ int LB_STDCALL lbQuery::getPKColumns() {
 		KeyPosition->setData(columns);
 		PKName->setData((char*) szPkCol);
 	      
-		UAP(lb_I_Unknown, uk_PKName, __FILE__, __LINE__)
-		UAP(lb_I_KeyBase, key_Pos, __FILE__, __LINE__)
+		UAP(lb_I_Unknown, uk_PKName)
+		UAP(lb_I_KeyBase, key_Pos)
 		
-		QI(PKName, lb_I_Unknown, uk_PKName, __FILE__, __LINE__)
-		QI(KeyPosition, lb_I_KeyBase, key_Pos, __FILE__, __LINE__)
+		QI(PKName, lb_I_Unknown, uk_PKName)
+		QI(KeyPosition, lb_I_KeyBase, key_Pos)
 
 
 		// Store the position as they appear
@@ -2242,17 +2242,17 @@ lb_I_String* LB_STDCALL lbQuery::getPKColumn(int pos) {
 	
 	UAP_REQUEST(manager.getPtr(), lb_I_Integer, Position)
 
-	UAP(lb_I_KeyBase, key_Position, __FILE__, __LINE__)
-	QI(Position, lb_I_KeyBase, key_Position, __FILE__, __LINE__)
+	UAP(lb_I_KeyBase, key_Position)
+	QI(Position, lb_I_KeyBase, key_Position)
 
 	Position->setData(pos);
 
 	if (primaryColumns->exists(&key_Position) != 0) {
-		UAP(lb_I_String, column, __FILE__, __LINE__)
-		UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
+		UAP(lb_I_String, column)
+		UAP(lb_I_Unknown, uk)
 		
 		uk = primaryColumns->getElement(&key_Position);
-		QI(uk, lb_I_String, column, __FILE__, __LINE__)
+		QI(uk, lb_I_String, column)
 		column++;
 		
 		return column.getPtr();
@@ -2288,11 +2288,11 @@ void LB_STDCALL lbQuery::setReadonly(char* column, bool updateable) {
 	
 	UAP_REQUEST(manager.getPtr(), lb_I_String, col)
 	
-	UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
-	UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
+	UAP(lb_I_KeyBase, key)
+	UAP(lb_I_Unknown, uk)
 	
-	QI(col, lb_I_KeyBase, key, __FILE__, __LINE__)
-	QI(col, lb_I_Unknown, uk, __FILE__, __LINE__)
+	QI(col, lb_I_KeyBase, key)
+	QI(col, lb_I_Unknown, uk)
 	
 	col->setData(column);
 
@@ -2824,7 +2824,7 @@ UDWORD  RowsFetched = 0;
 	   I try to build a delete statement dynamically. */
 
 	UAP_REQUEST(manager.getPtr(), lb_I_String, SQL)
-	UAP(lb_I_String, pk, __FILE__, __LINE__)
+	UAP(lb_I_String, pk)
 
 	int  PKCols = getPKColumns();
 
@@ -2839,8 +2839,8 @@ UDWORD  RowsFetched = 0;
 		SQLCHAR szName[NAME_LEN] = "";
 		SQLINTEGER  cbName;
 		
-		UAP(lb_I_String, pk, __FILE__, __LINE__)
-		UAP(lb_I_String, val, __FILE__, __LINE__)
+		UAP(lb_I_String, pk)
+		UAP(lb_I_String, val)
 		pk = getPKColumn(i);
 		
 		RETCODE retcode = SQLGetData(hstmt, i, SQL_C_CHAR, szName, NAME_LEN, &cbName);
@@ -2855,7 +2855,7 @@ UDWORD  RowsFetched = 0;
 		}
 	}
 	
-	UAP(lb_I_String, value, __FILE__, __LINE__)
+	UAP(lb_I_String, value)
 	pk = getPKColumn(PKCols);
 	value = getAsString(PKCols);
 		
@@ -2965,7 +2965,7 @@ lbErrCodes LB_STDCALL lbQuery::update() {
 		sprintf(buffer, "%s%s%s", Update, Table, Set);
 		
 		for (int i = 1; i <= boundColumns->getColumnCount()-1; i++) {
-			UAP(lb_I_BoundColumn, bc, __FILE__, __LINE__)
+			UAP(lb_I_BoundColumn, bc)
 			
 			bc = boundColumns->getBoundColumn(i);
 
@@ -2992,7 +2992,7 @@ lbErrCodes LB_STDCALL lbQuery::update() {
 		}
 		
 		{
-			UAP(lb_I_BoundColumn, bc, __FILE__, __LINE__)
+			UAP(lb_I_BoundColumn, bc)
 			bc = boundColumns->getBoundColumn(boundColumns->getColumnCount());
 		
 		//printf("Build set clause for %s\n", bc->getColumnName()->charrep());
@@ -3113,9 +3113,9 @@ lb_I_Query::lbDBColumnTypes LB_STDCALL lbBoundColumn::getType() {
 lbErrCodes LB_STDCALL lbBoundColumn::setData(lb_I_Unknown* uk) {
         lbErrCodes err = ERR_NONE;
         
-        UAP(lb_I_BoundColumn, column, __FILE__, __LINE__)
+        UAP(lb_I_BoundColumn, column)
         
-        QI(uk, lb_I_BoundColumn, column, __FILE__, __LINE__)
+        QI(uk, lb_I_BoundColumn, column)
 	        
         /**
          * I cannot use normal use of setData, because the internal pointers would
@@ -4098,8 +4098,8 @@ IMPLEMENT_FUNCTOR(instanceOfConnection, lbConnection)
 lbErrCodes LB_STDCALL lbConnection::setData(lb_I_Unknown* uk) {
 	lbErrCodes err = ERR_NONE;
 	
-	UAP(lb_I_Connection, con, __FILE__, __LINE__)
-	QI(uk, lb_I_Connection, con, __FILE__, __LINE__)
+	UAP(lb_I_Connection, con)
+	QI(uk, lb_I_Connection, con)
 	
 	lbConnection* connection; 
 	
@@ -4152,7 +4152,7 @@ private:
 	char*	 user;
 	char*	 db;
 
-	UAP(lb_I_Container, connPooling, __FILE__, __LINE__)
+	UAP(lb_I_Container, connPooling)
 };
 
 //lb_I_Container* lbDatabase::connPooling = NULL;
@@ -4250,17 +4250,17 @@ lbErrCodes LB_STDCALL lbDatabase::connect(char* DSN, char* user, char* passwd) {
 	
 	free(DSN_user);
 	
-	UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
-	UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
+	UAP(lb_I_KeyBase, key)
+	UAP(lb_I_Unknown, uk)
 	
-	QI(dsn_user, lb_I_KeyBase, key, __FILE__, __LINE__)
+	QI(dsn_user, lb_I_KeyBase, key)
 	
 	if (connPooling->exists(&key) == 1) {
-	    UAP(lb_I_Connection, con, __FILE__, __LINE__)
+	    UAP(lb_I_Connection, con)
 	    
 	    uk = connPooling->getElement(&key);
 	    
-	    QI(uk, lb_I_Connection, con, __FILE__, __LINE__)
+	    QI(uk, lb_I_Connection, con)
 	    
 	    if (con != NULL) {
 		lbConnection* c = (lbConnection*) con.getPtr();
@@ -4287,7 +4287,7 @@ lbErrCodes LB_STDCALL lbDatabase::connect(char* DSN, char* user, char* passwd) {
 	
 	    c->setConnection(hdbc);
 
-	    QI(c, lb_I_Unknown, uk, __FILE__, __LINE__)
+	    QI(c, lb_I_Unknown, uk)
 	    
 	    _CL_VERBOSE << "SQLSetConnectOption(hdbc, SQL_LOGIN_TIMEOUT, 15);" LOG_
 	    retcode = SQLSetConnectOption(hdbc, SQL_LOGIN_TIMEOUT, 15); /* Set login timeout to 15 seconds. */

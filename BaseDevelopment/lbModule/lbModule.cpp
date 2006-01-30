@@ -30,11 +30,15 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.102 $
+ * $Revision: 1.103 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.102 2006/01/25 15:47:58 lollisoft Exp $
+ * $Id: lbModule.cpp,v 1.103 2006/01/30 15:54:14 lollisoft Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.103  2006/01/30 15:54:14  lollisoft
+ * Removed the __FILE__ and __LINE__ parameter usage in UAP and QI.
+ * This was an unnessesary thing and makes programming easier.
+ *
  * Revision 1.102  2006/01/25 15:47:58  lollisoft
  * Commented unused stuff out to let visitor changes compile.
  *
@@ -405,7 +409,7 @@ char* strdup(const char* s) {
 class SkipNode {
   public:
     int myLevel;
-    UAP(lb_I_Element, value, __FILE__, __LINE__)
+    UAP(lb_I_Element, value)
     SkipNode** forward;
     
     SkipNode();
@@ -1037,7 +1041,7 @@ public:
 	virtual void LB_STDCALL addReference(char* classname, char* file, int line);
 	virtual void LB_STDCALL delReference(char* classname, char* file, int line);
 	
-	UAP(lb_I_Container, references, __FILE__, __LINE__)
+	UAP(lb_I_Container, references)
 	lbErrCodes err;
 };
 /*...e*/
@@ -1074,15 +1078,15 @@ void LB_STDCALL lbInstance::addReference(char* classname, char* file, int line) 
 
 	if (manager == NULL) _CL_VERBOSE << "Error: InstanceRepository has got a NULL pointer for the manager" LOG_
 	key->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
-	UAP(lb_I_KeyBase, _key, __FILE__, __LINE__)
-	QI(key, lb_I_KeyBase, _key, __FILE__, __LINE__)
+	UAP(lb_I_KeyBase, _key)
+	QI(key, lb_I_KeyBase, _key)
 
-	UAP(lb_I_Unknown, element, __FILE__, __LINE__)
+	UAP(lb_I_Unknown, element)
 	element = references->getElement(&_key);
 	
 	if (element != NULL) {
-		UAP(lb_I_InstanceReference, instance, __FILE__, __LINE__)
-		QI(element, lb_I_InstanceReference, instance, __FILE__, __LINE__)
+		UAP(lb_I_InstanceReference, instance)
+		QI(element, lb_I_InstanceReference, instance)
 		if (instance != NULL) {
 			instance->setCount(instance->getCount() + 1);
 		}
@@ -1106,15 +1110,15 @@ void LB_STDCALL lbInstance::delReference(char* classname, char* file, int line) 
 
 	if (manager == NULL) _CL_VERBOSE << "Error: InstanceRepository has got a NULL pointer for the manager" LOG_
 	key->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
-	UAP(lb_I_KeyBase, _key, __FILE__, __LINE__)
-	QI(key, lb_I_KeyBase, _key, __FILE__, __LINE__)
+	UAP(lb_I_KeyBase, _key)
+	QI(key, lb_I_KeyBase, _key)
 
-	UAP(lb_I_Unknown, element, __FILE__, __LINE__)
+	UAP(lb_I_Unknown, element)
 	element = references->getElement(&_key);
 
 	if (element != NULL) {
-		UAP(lb_I_InstanceReference, instance, __FILE__, __LINE__)
-		QI(element, lb_I_InstanceReference, instance, __FILE__, __LINE__)
+		UAP(lb_I_InstanceReference, instance)
+		QI(element, lb_I_InstanceReference, instance)
 		if (instance != NULL) {
 			if (instance->getCount() == 0) {
 				_CL_VERBOSE << "Warning: Reference count goes under 0!" LOG_
@@ -1324,8 +1328,8 @@ public:
         instanceList* iList;
         classnameList* cList;
         
-        UAP(lb_I_Container, lb_iList, __FILE__, __LINE__)
-        UAP(lb_I_Container, lb_cList, __FILE__, __LINE__)
+        UAP(lb_I_Container, lb_iList)
+        UAP(lb_I_Container, lb_cList)
 
 private:
 	int loadedContainer;
@@ -1416,10 +1420,10 @@ void LB_STDCALL InstanceRepository::createInstance(char* addr, char* classname, 
 		
 		if (manager == NULL) _CL_VERBOSE << "Error: InstanceRepository has got a NULL pointer for the manager" LOG_
 		key->setModuleManager(manager, __FILE__, __LINE__);
-		UAP(lb_I_KeyBase, _key, __FILE__, __LINE__)
-		QI(key, lb_I_KeyBase, _key, __FILE__, __LINE__)
+		UAP(lb_I_KeyBase, _key)
+		QI(key, lb_I_KeyBase, _key)
 		
-		UAP(lb_I_Unknown, element, __FILE__, __LINE__)
+		UAP(lb_I_Unknown, element)
 		element = lb_iList->getElement(&_key);
 		
 		if (element == NULL) {
@@ -1488,15 +1492,15 @@ void LB_STDCALL InstanceRepository::addReference(char* addr, char* classname, ch
 		
 		if (manager == NULL) _CL_VERBOSE << "Error: InstanceRepository has got a NULL pointer for the manager" LOG_
 		key->setModuleManager(manager, __FILE__, __LINE__);
-		UAP(lb_I_KeyBase, _key, __FILE__, __LINE__)
-		QI(key, lb_I_KeyBase, _key, __FILE__, __LINE__)
+		UAP(lb_I_KeyBase, _key)
+		QI(key, lb_I_KeyBase, _key)
 		
-		UAP(lb_I_Unknown, element, __FILE__, __LINE__)
+		UAP(lb_I_Unknown, element)
 		element = lb_iList->getElement(&_key);
 		
 		if (element != NULL) {
-			UAP(lb_I_Instance, instance, __FILE__, __LINE__)
-			QI(element, lb_I_Instance, instance, __FILE__, __LINE__)
+			UAP(lb_I_Instance, instance)
+			QI(element, lb_I_Instance, instance)
 			if (instance != NULL) {
 				instance->addReference(classname, file, line);
 			}
@@ -1558,15 +1562,15 @@ void LB_STDCALL InstanceRepository::delReference(char* addr, char* classname, ch
 
                 if (manager == NULL) _CL_VERBOSE << "Error: InstanceRepository has got a NULL pointer for the manager" LOG_
                 key->setModuleManager(manager, __FILE__, __LINE__);
-                UAP(lb_I_KeyBase, _key, __FILE__, __LINE__)
-                QI(key, lb_I_KeyBase, _key, __FILE__, __LINE__)
+                UAP(lb_I_KeyBase, _key)
+                QI(key, lb_I_KeyBase, _key)
 
-                UAP(lb_I_Unknown, element, __FILE__, __LINE__)
+                UAP(lb_I_Unknown, element)
                 element = lb_iList->getElement(&_key);
 
                 if (element != NULL) {
-                        UAP(lb_I_Instance, instance, __FILE__, __LINE__)
-                        QI(element, lb_I_Instance, instance, __FILE__, __LINE__)
+                        UAP(lb_I_Instance, instance)
+                        QI(element, lb_I_Instance, instance)
                         if (instance != NULL) {
                                 instance->delReference(classname, file, line);
                         }
@@ -2256,9 +2260,9 @@ protected:
 
         
         int internalInstanceRequest;
-        UAP(lb_I_Container, loadedModules, __FILE__, __LINE__)
-        UAP(lb_I_XMLConfig, xml_Instance, __FILE__, __LINE__)
-	UAP(lb_I_InterfaceRepository, newInterfaceRepository, __FILE__, __LINE__)
+        UAP(lb_I_Container, loadedModules)
+        UAP(lb_I_XMLConfig, xml_Instance)
+	UAP(lb_I_InterfaceRepository, newInterfaceRepository)
 
         int system_up;
         int initializing;
@@ -2299,7 +2303,7 @@ void LB_STDCALL lbModule::getXMLConfigObject(lb_I_InterfaceRepository** inst) {
 	HINSTANCE h = getModuleHandle();
 	setModuleHandle(h);
         if (newInterfaceRepository == NULL) {
-                UAP(lb_I_Unknown, result, __FILE__, __LINE__)
+                UAP(lb_I_Unknown, result)
                 makeInstance(PREFIX "instanceOfHCInterfaceRepository", "lbModule", &result);
 		result->queryInterface("lb_I_InterfaceRepository", (void**) inst, __FILE__, __LINE__);
         }
@@ -2321,7 +2325,7 @@ void LB_STDCALL lbModule::getXMLConfigObject(lb_I_InterfaceRepository** inst) {
 	setModuleHandle(h);
 
         if (newInterfaceRepository == NULL) {
-                UAP(lb_I_Unknown, result, __FILE__, __LINE__)
+                UAP(lb_I_Unknown, result)
 		
 		printf("Make an instance of %s out of %s\n", ftrname, libname);
                 makeInstance(ftrname, libname, &result);
@@ -2363,7 +2367,7 @@ void LB_STDCALL lbModule::getXMLConfigObject(lb_I_XMLConfig** inst) {
 
 
 
-        UAP(lb_I_XMLConfig, xml_I, __FILE__, __LINE__)
+        UAP(lb_I_XMLConfig, xml_I)
 
         if (libname == NULL) return;
         if (ftrname == NULL) return;
@@ -2421,10 +2425,10 @@ printf("Set up location\n");
          */ 
 /*...e*/
 
-	UAP(lb_I_XMLConfig, _inst, __FILE__, __LINE__)
+	UAP(lb_I_XMLConfig, _inst)
 	
 //printf("Query interface of instance at %p\n", xml_I);
-//        QI(xml_I, lb_I_XMLConfig, _inst, __FILE__, __LINE__) 
+//        QI(xml_I, lb_I_XMLConfig, _inst) 
 //QI(source, interface, target, file, line)
 	_inst.setFile(__FILE__);
 	_inst.setLine(__LINE__);
@@ -2682,7 +2686,7 @@ lbErrCodes LB_STDCALL lbModule::uninitialize() {
  * Output:      Only one node from the list in a new view
  */
 lb_I_ConfigObject* LB_STDCALL lbModule::findFunctorNode(lb_I_ConfigObject** _node, const char* request) {
-        UAP(lb_I_ConfigObject, temp_node, __FILE__, __LINE__)
+        UAP(lb_I_ConfigObject, temp_node)
         lb_I_ConfigObject* node = *_node;
         
         temp_node.setDelete(0);
@@ -2756,7 +2760,7 @@ char* LB_STDCALL lbModule::findFunctorModule(lb_I_ConfigObject** _node) {
         
         if (strcmp (node->getName(), "Module") == 0) {
                 { 
-                UAP(lb_I_ConfigObject, temp_node, __FILE__, __LINE__)
+                UAP(lb_I_ConfigObject, temp_node)
                 temp_node.setLine(__LINE__);
                 temp_node.setFile(__FILE__);
                 temp_node.setDelete(0);
@@ -2778,7 +2782,7 @@ char* LB_STDCALL lbModule::findFunctorModule(lb_I_ConfigObject** _node) {
                 }
 
                 do {
-                UAP(lb_I_ConfigObject, temp_node, __FILE__, __LINE__)
+                UAP(lb_I_ConfigObject, temp_node)
                 temp_node.setLine(__LINE__);
                 temp_node.setFile(__FILE__);
                 temp_node.setDelete(0);
@@ -2800,7 +2804,7 @@ char* LB_STDCALL lbModule::findFunctorModule(lb_I_ConfigObject** _node) {
                 } while (err == ERR_NONE);
         }
         else {
-                UAP(lb_I_ConfigObject, temp_node, __FILE__, __LINE__)
+                UAP(lb_I_ConfigObject, temp_node)
                 temp_node.setLine(__LINE__);
                 temp_node.setFile(__FILE__);
                 
@@ -2823,12 +2827,12 @@ char* LB_STDCALL lbModule::findFunctorName(lb_I_ConfigObject** ___node) {
          * Go up one level and get the children 'FunctionName'
          */
          
-        UAP(lb_I_ConfigObject, _node, __FILE__, __LINE__)
+        UAP(lb_I_ConfigObject, _node)
         _node.setLine(__LINE__);
         _node.setFile(__FILE__);
         _node.setDelete(0);
         
-        UAP(lb_I_ConfigObject, __node, __FILE__, __LINE__)
+        UAP(lb_I_ConfigObject, __node)
 	__node.setLine(__LINE__);
 	__node.setFile(__FILE__);
         __node.setDelete(0);
@@ -2856,7 +2860,7 @@ char* LB_STDCALL lbModule::findFunctorName(lb_I_ConfigObject** ___node) {
 
                 
                 while (err == ERR_NONE) {
-                        UAP(lb_I_ConfigObject, child, __FILE__, __LINE__)
+                        UAP(lb_I_ConfigObject, child)
                         child.setFile(__FILE__);
                         child.setLine(__LINE__);
                         child.setDelete(0);
@@ -2909,7 +2913,7 @@ char* LB_STDCALL lbModule::findFunctorName(lb_I_ConfigObject** ___node) {
 lbErrCodes LB_STDCALL lbModule::getDefaultImpl(char* interfacename, lb_I_ConfigObject** node, char*& implTor, char*& module) {
         lbErrCodes err = ERR_NONE;
         int count = 0;
-        UAP(lb_I_ConfigObject, _node, __FILE__, __LINE__)
+        UAP(lb_I_ConfigObject, _node)
         _node = *node;
         _node++; // UAP must check the pointer here too
 
@@ -2917,7 +2921,7 @@ lbErrCodes LB_STDCALL lbModule::getDefaultImpl(char* interfacename, lb_I_ConfigO
         module = new char[100];
 
 {
-        UAP(lb_I_ConfigObject, temp_node, __FILE__, __LINE__)
+        UAP(lb_I_ConfigObject, temp_node)
         
         /**
          * Use _node instead of the interface pointer. Later UAP will be able to check
@@ -2954,7 +2958,7 @@ lbErrCodes LB_STDCALL lbModule::getDefaultImpl(char* interfacename, lb_I_ConfigO
 /*...sget next children:0:*/
         err = ERR_NONE;
         while (err == ERR_NONE) {
-                UAP(lb_I_ConfigObject, temp_node, __FILE__, __LINE__)
+                UAP(lb_I_ConfigObject, temp_node)
                 
                 err = _node->getNextChildren(&temp_node);
                 
@@ -3314,8 +3318,8 @@ lbErrCodes LB_STDCALL lbModule::request(const char* request, lb_I_Unknown** resu
 	
         char* functorName = NULL;
 	buf[0] = 0;
-        UAP(lb_I_ConfigObject, config, __FILE__, __LINE__)
-        UAP(lb_I_ConfigObject, impl, __FILE__, __LINE__)
+        UAP(lb_I_ConfigObject, config)
+        UAP(lb_I_ConfigObject, impl)
 
 // Using this has been resulted in memory leak
 //        config.setLine(__LINE__);
@@ -3328,17 +3332,17 @@ lbErrCodes LB_STDCALL lbModule::request(const char* request, lb_I_Unknown** resu
 #ifdef USE_INTERFACE_REPOSITORY
 	if (newInterfaceRepository != NULL) {
 		newInterfaceRepository->setCurrentSearchInterface(request);
-		UAP(lb_I_FunctorEntity, e, __FILE__, __LINE__)
+		UAP(lb_I_FunctorEntity, e)
 		
 		e = newInterfaceRepository->getFirstEntity();
 		
 		char* functor = e->getFunctor();
 		char* module  = e->getModule();
 		
-		UAP(lb_I_Unknown, _result, __FILE__, __LINE__)
+		UAP(lb_I_Unknown, _result)
 		makeInstance(functor, module, &_result);
 
-		//QI(result, lb_I_InterfaceRepository, newInterfaceRepository, __FILE__, __LINE__)		
+		//QI(result, lb_I_InterfaceRepository, newInterfaceRepository)		
 		*result = _result.getPtr();
 		(*result)->setModuleManager(this, __FILE__, __LINE__);
 		_result++;
@@ -3503,7 +3507,7 @@ printf("lbModule::load(%s) called\n", name);
 lbErrCodes lbModule::load(char* name) {
 printf("lbModule::load(%s) called\n", name);
 #ifndef USE_INTERFACE_REPOSITORY
-        UAP(lb_I_XMLConfig, xml_Instance, __FILE__, __LINE__)
+        UAP(lb_I_XMLConfig, xml_Instance)
 
         getXMLConfigObject(&xml_Instance);
         

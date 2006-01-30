@@ -79,12 +79,12 @@ int main(int argc, char** argv)
 	const char* lexeme;
 	_parse_input* input;
 	FILE*		fin = 0;
-	Parser		p("test.cgt");
+	Parser		p("Pascal.cgt");
 
 	if (!p.isopen()) return 0;
 
 	// open input file
-	fin = fopen("input.txt", "rb");
+	fin = fopen("Pascal.txt", "rb");
 	if (!fin) {
 		printf("input file not found");
 		return 0;
@@ -146,6 +146,9 @@ int main(int argc, char** argv)
 			run = false;
 			break;
 		default:
+			lexeme = p.get_child_lexeme(0);
+			p.set_lexeme(lexeme,0);
+			printf("<Unknown>: %s\n", lexeme);
 			break;
 		}
 	}

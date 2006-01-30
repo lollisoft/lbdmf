@@ -89,10 +89,10 @@ int main(int argc, char *argv[]) {
 
 	database->connect("lbDMF", lbDMFUser, lbDMFPasswd);
 
-	UAP(lb_I_Query, query, __FILE__, __LINE__)
-	UAP(lb_I_Query, query1, __FILE__, __LINE__)
-	UAP(lb_I_Query, query2, __FILE__, __LINE__)
-	UAP(lb_I_Query, query3, __FILE__, __LINE__)
+	UAP(lb_I_Query, query)
+	UAP(lb_I_Query, query1)
+	UAP(lb_I_Query, query2)
+	UAP(lb_I_Query, query3)
 
 	query = database->getQuery(0);
 
@@ -209,10 +209,10 @@ int main(int argc, char *argv[]) {
 
 		database->connect("lbDMF", lbDMFUser, lbDMFPasswd);
 
-		UAP(lb_I_Query, query2, __FILE__, __LINE__)
-		UAP(lb_I_Query, queryA, __FILE__, __LINE__)
-		UAP(lb_I_Query, query, __FILE__, __LINE__)
-		UAP(lb_I_Query, query1, __FILE__, __LINE__)
+		UAP(lb_I_Query, query2)
+		UAP(lb_I_Query, queryA)
+		UAP(lb_I_Query, query)
+		UAP(lb_I_Query, query1)
 
 		query = database->getQuery(0);
 
@@ -297,9 +297,9 @@ int main(int argc, char *argv[]) {
 /*...sbla:0:*/
 #ifdef bla
 
-	UAP(lb_I_Query, query1, __FILE__, __LINE__)
-	UAP(lb_I_Query, query2, __FILE__, __LINE__)
-	UAP(lb_I_Query, query3, __FILE__, __LINE__)
+	UAP(lb_I_Query, query1)
+	UAP(lb_I_Query, query2)
+	UAP(lb_I_Query, query3)
 
 	query1 = database->getQuery(0);
 	query1->query("insert into regressiontest (test) values('Nix')");
@@ -342,7 +342,7 @@ int main(int argc, char *argv[]) {
 #ifdef TEST_SNORT
 	database->connect("snort", "snort", "Muffin.345");
 	
-	UAP(lb_I_Query, query4, __FILE__, __LINE__)
+	UAP(lb_I_Query, query4)
 
 	query4 = database->getQuery(0);
 

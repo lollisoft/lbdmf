@@ -118,8 +118,8 @@ public:
 	
 	char* _report;
 	
-	UAP(lb_I_Parameter, params, __FILE__, __LINE__)
-	UAP(lb_I_Parameter, textlines, __FILE__, __LINE__)
+	UAP(lb_I_Parameter, params)
+	UAP(lb_I_Parameter, textlines)
 };
 
 
@@ -134,8 +134,8 @@ lbDBReportProperties::~lbDBReportProperties() {
 
 void  lbDBReportProperties::initData(char* report) {
         UAP_REQUEST(getModuleInstance(), lb_I_Database, ReportCFGDB)
-        UAP(lb_I_Query, query, __FILE__, __LINE__)
-        UAP(lb_I_Query, tquery, __FILE__, __LINE__)
+        UAP(lb_I_Query, query)
+        UAP(lb_I_Query, tquery)
 
         ReportCFGDB->init();
 
@@ -248,7 +248,7 @@ int   lbDBReportProperties::getIntParameter(char* name) {
 	
 	if (params->getUAPString(*&key, *&value) != ERR_NONE) {
 		UAP_REQUEST(getModuleInstance(), lb_I_Database, ReportCFGDB)
-		UAP(lb_I_Query, query, __FILE__, __LINE__)
+		UAP(lb_I_Query, query)
 		
 		ReportCFGDB->init();
 		
@@ -386,7 +386,7 @@ void LB_STDCALL lbDBReportAction::openReport(lb_I_String* reportname, lb_I_Param
 		report->setName(reportname->charrep(), parameter->charrep());
 
 		UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
-		UAP(lb_I_GUI, gui, __FILE__, __LINE__)
+		UAP(lb_I_GUI, gui)
 		
 		meta->getGUI(&gui);
 
@@ -454,7 +454,7 @@ void LB_STDCALL lbDBReportAction::openReport(lb_I_String* reportname, lb_I_Param
 		sprintf(buffer, b, user->charrep(), app->charrep(), reportname->charrep());
 		
 		UAP_REQUEST(manager.getPtr(), lb_I_Database, database)
-		UAP(lb_I_Query, query, __FILE__, __LINE__)
+		UAP(lb_I_Query, query)
 		
 		database->init();
 		
@@ -486,7 +486,7 @@ void LB_STDCALL lbDBReportAction::openReport(lb_I_String* reportname, lb_I_Param
 				buffer[0] = 0;
 				sprintf(buffer, b, id->charrep());
 
-				UAP(lb_I_Query, query1, __FILE__, __LINE__)
+				UAP(lb_I_Query, query1)
 
 				query1 = database->getQuery(0);
 
@@ -498,14 +498,14 @@ void LB_STDCALL lbDBReportAction::openReport(lb_I_String* reportname, lb_I_Param
 				if (err == ERR_NONE) {
 /*...sTake result as the SQL query parameter for the report data:40:*/
 					UAP_REQUEST(manager.getPtr(), lb_I_PluginManager, PM)
-					UAP(lb_I_Plugin, pl, __FILE__, __LINE__)
+					UAP(lb_I_Plugin, pl)
 					UAP_REQUEST(manager.getPtr(), lb_I_String, sql)
 
 					err = query1->first();
 					
 					if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
 /*...sTry load the report and make basic setup:88:*/
-						UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
+						UAP(lb_I_Unknown, uk)
 						
 						sql = query1->getAsString(1);
 
@@ -513,8 +513,8 @@ void LB_STDCALL lbDBReportAction::openReport(lb_I_String* reportname, lb_I_Param
 						
 						uk = pl->getImplementation();
 						
-						UAP(lb_I_DatabaseReport, DBReport, __FILE__, __LINE__)
-						QI(uk, lb_I_DatabaseReport, DBReport, __FILE__, __LINE__)
+						UAP(lb_I_DatabaseReport, DBReport)
+						QI(uk, lb_I_DatabaseReport, DBReport)
 						
 						DBReport++;
 						
@@ -537,7 +537,7 @@ void LB_STDCALL lbDBReportAction::openReport(lb_I_String* reportname, lb_I_Param
 						*/
 
 						UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
-						UAP(lb_I_GUI, gui, __FILE__, __LINE__)
+						UAP(lb_I_GUI, gui)
 
 						meta->getGUI(&gui);
 
@@ -602,7 +602,7 @@ void LB_STDCALL lbDBReportAction::execute(lb_I_Parameter* params) {
 /*...e*/
 
 	UAP_REQUEST(manager.getPtr(), lb_I_Database, database)
-	UAP(lb_I_Query, query, __FILE__, __LINE__)
+	UAP(lb_I_Query, query)
 
 	database->init();
 
@@ -675,7 +675,7 @@ public:
 
 	DECLARE_LB_UNKNOWN()
 	
-	UAP(lb_I_Unknown, dbReport, __FILE__, __LINE__)
+	UAP(lb_I_Unknown, dbReport)
 };
 
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbPluginDatabaseReport)
@@ -726,7 +726,7 @@ lb_I_Unknown* LB_STDCALL lbPluginDatabaseReport::peekImplementation() {
 		lbDatabaseReport* _dbReport = new lbDatabaseReport();
 		_dbReport->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
 	
-		QI(_dbReport, lb_I_Unknown, dbReport, __FILE__, __LINE__)
+		QI(_dbReport, lb_I_Unknown, dbReport)
 	} else {
 		_CL_VERBOSE << "lbPluginDatabaseReport::peekImplementation() Implementation already peeked.\n" LOG_
 	}
@@ -747,7 +747,7 @@ lb_I_Unknown* LB_STDCALL lbPluginDatabaseReport::getImplementation() {
 		lbDatabaseReport* _dbReport = new lbDatabaseReport();
 		_dbReport->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
 	
-		QI(_dbReport, lb_I_Unknown, dbReport, __FILE__, __LINE__)
+		QI(_dbReport, lb_I_Unknown, dbReport)
 	}
 	
 	lb_I_Unknown* r = dbReport.getPtr();
@@ -908,7 +908,7 @@ void LB_STDCALL lbDatabaseReport::init(char* SQLString, char* DBName, char* DBUs
 	float offset = 10;
 
 	int ii = 1;
-	UAP(lb_I_String, tLine, __FILE__, __LINE__)
+	UAP(lb_I_String, tLine)
 	
 	tLine = properties->getTextLine(ii, "dummy");
 
@@ -916,7 +916,7 @@ void LB_STDCALL lbDatabaseReport::init(char* SQLString, char* DBName, char* DBUs
 
 /*...sPrepare query:8:*/
 	UAP_REQUEST(manager.getPtr(), lb_I_Database, database)
-	UAP(lb_I_Query, query, __FILE__, __LINE__)
+	UAP(lb_I_Query, query)
 	
 	database->init();
 	
@@ -1067,7 +1067,7 @@ void LB_STDCALL lbDatabaseReport::init(char* SQLString, char* DBName, char* DBUs
 		
 		if (query->first() == ERR_NONE)
 			for (int i = 1; i <= cols; i++) {
-				UAP(lb_I_String, value, __FILE__, __LINE__)
+				UAP(lb_I_String, value)
 				UAP_REQUEST(getModuleInstance(), lb_I_String, colName)
 			
 				*colName = query->getColumnName(i);
@@ -1099,7 +1099,7 @@ void LB_STDCALL lbDatabaseReport::init(char* SQLString, char* DBName, char* DBUs
 		
 		while(query->next() == ERR_NONE) {
 			for (int i = 1; i <= cols; i++) {
-				UAP(lb_I_String, value, __FILE__, __LINE__)
+				UAP(lb_I_String, value)
 				UAP_REQUEST(getModuleInstance(), lb_I_String, colName)
 			
 				*colName = query->getColumnName(i);
@@ -1213,14 +1213,14 @@ void LB_STDCALL lbDatabaseReport::init(char* SQLString, char* DBName, char* DBUs
 /*...sAll lines exept last:32:*/
 		while (err == ERR_NONE) {
 			for (int i = 1; i < cols; i++) {
-				UAP(lb_I_String, value, __FILE__, __LINE__)
+				UAP(lb_I_String, value)
 			
 				value = query->getAsString(i);
 			
 				*(strValue[i-1]) = value->charrep();
 			}
 			
-			UAP(lb_I_String, value, __FILE__, __LINE__)
+			UAP(lb_I_String, value)
 			
 			value = query->getAsString(cols);
 
@@ -1235,7 +1235,7 @@ void LB_STDCALL lbDatabaseReport::init(char* SQLString, char* DBName, char* DBUs
 /*...sLast line:32:*/
 		if (err == WARN_DB_NODATA) {
 			for (int i = 1; i <= cols; i++) {
-				UAP(lb_I_String, value, __FILE__, __LINE__)
+				UAP(lb_I_String, value)
 			
 				value = query->getAsString(i);
 
@@ -1243,7 +1243,7 @@ void LB_STDCALL lbDatabaseReport::init(char* SQLString, char* DBName, char* DBUs
 				
 			}
 			
-			UAP(lb_I_String, value, __FILE__, __LINE__)
+			UAP(lb_I_String, value)
 			
 			value = query->getAsString(cols);
 

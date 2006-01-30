@@ -71,10 +71,10 @@ public:
 
 protected:
 	lb_I_GUI* gui;
-	UAP(lb_I_EventManager, eman, __FILE__, __LINE__)
-	UAP(lb_I_Dispatcher, dispatcher, __FILE__, __LINE__)
-	UAP(lb_I_String, LogonUser, __FILE__, __LINE__)
-	UAP(lb_I_String, LogonApplication, __FILE__, __LINE__)
+	UAP(lb_I_EventManager, eman)
+	UAP(lb_I_Dispatcher, dispatcher)
+	UAP(lb_I_String, LogonUser)
+	UAP(lb_I_String, LogonApplication)
 };
 /*...e*/
 /*...slbApplication:0:*/
@@ -110,7 +110,7 @@ lbErrCodes LB_STDCALL lbApplication::registerEventHandler(lb_I_Dispatcher* disp)
 /*...sevent handlers\44\ that can be registered:0:*/
 lbErrCodes LB_STDCALL lbApplication::getDynamicDBForm(lb_I_Unknown* uk) {
 	if (gui != NULL) {
-	        UAP(lb_I_DatabaseForm, dbForm, __FILE__, __LINE__)
+	        UAP(lb_I_DatabaseForm, dbForm)
 
 		/*
 			To get the data from the database, we do transmit only a few data by uk to this
@@ -148,7 +148,7 @@ lbErrCodes LB_STDCALL lbApplication::getDynamicDBForm(lb_I_Unknown* uk) {
 lbErrCodes LB_STDCALL lbApplication::getLoginData(lb_I_Unknown* uk) {
 
 	if (gui != NULL) {
-	        UAP(lb_I_Form, loginForm, __FILE__, __LINE__)
+	        UAP(lb_I_Form, loginForm)
 		
 		loginForm = gui->createLoginForm();
 	} else {
@@ -163,7 +163,7 @@ lbErrCodes LB_STDCALL lbApplication::getKundenDetails(lb_I_Unknown* uk) {
 	_LOG << "lbApplication::getKundenDetails() called" LOG_
 
 	if (gui != NULL) {
-		UAP(lb_I_DatabaseForm, dbForm, __FILE__, __LINE__)
+		UAP(lb_I_DatabaseForm, dbForm)
 		
 		dbForm = gui->createDBForm("Elemente in World", "select objecttyp, x, y, w, h from world order by id",
 		"trainres", "dba", "trainres");
@@ -181,7 +181,7 @@ lbErrCodes LB_STDCALL lbApplication::getKundenListe(lb_I_Unknown* uk) {
 	_LOG << "lbApplication::getKundenListe() called" LOG_
 
 	if (gui != NULL) {
-		UAP(lb_I_DatabaseForm, dbForm, __FILE__, __LINE__)
+		UAP(lb_I_DatabaseForm, dbForm)
 		
 		dbForm = gui->createDBForm("Kunden", "select Firma, Name, Vorname, Strasse, Hausnummer, Ort, Plz, Vorwahl, Telefon from Kunden",
 		"trainres", "dba", "trainres");
@@ -199,7 +199,7 @@ lbErrCodes LB_STDCALL lbApplication::getKundenListe(lb_I_Unknown* uk) {
 lbErrCodes LB_STDCALL lbApplication::getCustomFormsConfig(lb_I_Unknown* uk) {
 
 	if (gui != NULL) {
-		UAP(lb_I_DatabaseForm, dbForm, __FILE__, __LINE__)
+		UAP(lb_I_DatabaseForm, dbForm)
 		
 		dbForm = gui->createDBForm("Formulare", "select Name, MenuName, EventName, query from DBForms",
 		"trainres", "dba", "trainres");

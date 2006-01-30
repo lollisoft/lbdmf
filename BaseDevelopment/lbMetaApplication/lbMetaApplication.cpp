@@ -31,11 +31,15 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.77 $
+ * $Revision: 1.78 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.77 2006/01/26 14:03:23 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.78 2006/01/30 15:54:14 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.78  2006/01/30 15:54:14  lollisoft
+ * Removed the __FILE__ and __LINE__ parameter usage in UAP and QI.
+ * This was an unnessesary thing and makes programming easier.
+ *
  * Revision 1.77  2006/01/26 14:03:23  lollisoft
  * Added event en/disable and toggle functions. Also added
  * askYesNo function.
@@ -438,7 +442,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::lbButtonTestHandler(lb_I_Unknown* uk) 
 lbErrCodes LB_STDCALL lb_MetaApplication::getLoginData(lb_I_Unknown* uk) {
 
         if (gui != NULL) {
-                UAP(lb_I_Form, loginForm, __FILE__, __LINE__)
+                UAP(lb_I_Form, loginForm)
 
                 loginForm = gui->createLoginForm();
         } else {
@@ -710,7 +714,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::loadApplication(char* user, char* appl
 		 */
 
 		UAP_REQUEST(manager.getPtr(), lb_I_Database, database)
-		UAP(lb_I_Query, sampleQuery, __FILE__, __LINE__)
+		UAP(lb_I_Query, sampleQuery)
 
 		database->init();
 		database->connect("lbDMF", lbDMFUser, lbDMFPasswd);
@@ -771,7 +775,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::loadApplication(char* user, char* appl
 
 		}
 
-		UAP(lb_I_Unknown, a, __FILE__, __LINE__)
+		UAP(lb_I_Unknown, a)
 
 		#ifndef LINUX
 		        #ifdef __WATCOMC__
@@ -817,7 +821,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::loadApplication(char* user, char* appl
 
 		a->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
 
-                QI(a, lb_I_Application, app, __FILE__, __LINE__)
+                QI(a, lb_I_Application, app)
 
                 //if (dispatcher.getPtr() == NULL) _LOG << "Error: dispatcher is NULL" LOG_
 
@@ -831,7 +835,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::loadApplication(char* user, char* appl
                 //if (dispatcher.getPtr() == NULL) _LOG << "Error: dispatcher has been set to NULL" LOG_
 	} else {
 
-		UAP(lb_I_Unknown, a, __FILE__, __LINE__)
+		UAP(lb_I_Unknown, a)
 
 		#ifndef LINUX
 			#ifdef __WATCOMC__
@@ -862,7 +866,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::loadApplication(char* user, char* appl
 			return ERR_NONE;
 		}
 		
-		QI(a, lb_I_MetaApplication, app, __FILE__, __LINE__)
+		QI(a, lb_I_MetaApplication, app)
 
 		if (dispatcher.getPtr() == NULL) _LOG << "Error: dispatcher is NULL" LOG_
 
@@ -899,12 +903,12 @@ lbErrCodes LB_STDCALL lb_MetaApplication::addMenuBar(char* name, char* after) {
 	}
 
 
-	UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
-	QI(param, lb_I_Unknown, uk, __FILE__, __LINE__)
+	UAP(lb_I_Unknown, uk)
+	QI(param, lb_I_Unknown, uk)
 	
 	UAP_REQUEST(manager.getPtr(), lb_I_String, result)
-	UAP(lb_I_Unknown, uk_result, __FILE__, __LINE__)
-	QI(result, lb_I_Unknown, uk_result, __FILE__, __LINE__)
+	UAP(lb_I_Unknown, uk_result)
+	QI(result, lb_I_Unknown, uk_result)
 	
 	dispatcher->dispatch("AddMenuBar", uk.getPtr(), &uk_result);
 
@@ -945,12 +949,12 @@ lbErrCodes LB_STDCALL lb_MetaApplication::addTextField(char* name, int x, int y,
         i->setData(h);
         param->setUAPInteger(*&parameter, *&i);
 
-        UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
-        QI(param, lb_I_Unknown, uk, __FILE__, __LINE__)
+        UAP(lb_I_Unknown, uk)
+        QI(param, lb_I_Unknown, uk)
 
         UAP_REQUEST(manager.getPtr(), lb_I_String, result)
-        UAP(lb_I_Unknown, uk_result, __FILE__, __LINE__)
-        QI(result, lb_I_Unknown, uk_result, __FILE__, __LINE__)
+        UAP(lb_I_Unknown, uk_result)
+        QI(result, lb_I_Unknown, uk_result)
 
         dispatcher->dispatch("AddTextField", uk.getPtr(), &uk_result);
 
@@ -971,12 +975,12 @@ bool LB_STDCALL lb_MetaApplication::askYesNo(char* msg) {
 	value->setData(msg);
 	param->setUAPString(*&parameter, *&value);
 
-	UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
-	QI(param, lb_I_Unknown, uk, __FILE__, __LINE__)
+	UAP(lb_I_Unknown, uk)
+	QI(param, lb_I_Unknown, uk)
 	
 	UAP_REQUEST(manager.getPtr(), lb_I_String, result)
-	UAP(lb_I_Unknown, uk_result, __FILE__, __LINE__)
-	QI(result, lb_I_Unknown, uk_result, __FILE__, __LINE__)
+	UAP(lb_I_Unknown, uk_result)
+	QI(result, lb_I_Unknown, uk_result)
 	
 	dispatcher->dispatch("askYesNo", uk.getPtr(), &uk_result);
 
@@ -1003,12 +1007,12 @@ lb_I_InputStream* LB_STDCALL lb_MetaApplication::askOpenFileReadStream(char* ext
 	value->setData(extentions);
 	param->setUAPString(*&parameter, *&value);
 
-	UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
-	QI(param, lb_I_Unknown, uk, __FILE__, __LINE__)
+	UAP(lb_I_Unknown, uk)
+	QI(param, lb_I_Unknown, uk)
 	
 	UAP_REQUEST(manager.getPtr(), lb_I_String, result)
-	UAP(lb_I_Unknown, uk_result, __FILE__, __LINE__)
-	QI(result, lb_I_Unknown, uk_result, __FILE__, __LINE__)
+	UAP(lb_I_Unknown, uk_result)
+	QI(result, lb_I_Unknown, uk_result)
 	
 	dispatcher->dispatch("askOpenFileReadStream", uk.getPtr(), &uk_result);
 
@@ -1057,12 +1061,12 @@ lbErrCodes LB_STDCALL lb_MetaApplication::addLabel(char* text, int x, int y, int
 	i->setData(h);
 	param->setUAPInteger(*&parameter, *&i);
 
-	UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
-	QI(param, lb_I_Unknown, uk, __FILE__, __LINE__)
+	UAP(lb_I_Unknown, uk)
+	QI(param, lb_I_Unknown, uk)
 	
 	UAP_REQUEST(manager.getPtr(), lb_I_String, result)
-	UAP(lb_I_Unknown, uk_result, __FILE__, __LINE__)
-	QI(result, lb_I_Unknown, uk_result, __FILE__, __LINE__)
+	UAP(lb_I_Unknown, uk_result)
+	QI(result, lb_I_Unknown, uk_result)
 	
 	dispatcher->dispatch("AddLabel", uk.getPtr(), &uk_result);
 
@@ -1104,12 +1108,12 @@ lbErrCodes LB_STDCALL lb_MetaApplication::addButton(char* buttonText, char* evHa
 	i->setData(h);
 	param->setUAPInteger(*&parameter, *&i);
 
-	UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
-	QI(param, lb_I_Unknown, uk, __FILE__, __LINE__)
+	UAP(lb_I_Unknown, uk)
+	QI(param, lb_I_Unknown, uk)
 	
 	UAP_REQUEST(manager.getPtr(), lb_I_String, result)
-	UAP(lb_I_Unknown, uk_result, __FILE__, __LINE__)
-	QI(result, lb_I_Unknown, uk_result, __FILE__, __LINE__)
+	UAP(lb_I_Unknown, uk_result)
+	QI(result, lb_I_Unknown, uk_result)
 	
 	dispatcher->dispatch("AddButton", uk.getPtr(), &uk_result);
 
@@ -1129,12 +1133,12 @@ lbErrCodes LB_STDCALL lb_MetaApplication::enableEvent(char* name) {
 	value->setData(name);
 	param->setUAPString(*&parameter, *&value);
 
-	UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
-	QI(param, lb_I_Unknown, uk, __FILE__, __LINE__)
+	UAP(lb_I_Unknown, uk)
+	QI(param, lb_I_Unknown, uk)
 	
 	UAP_REQUEST(manager.getPtr(), lb_I_String, result)
-	UAP(lb_I_Unknown, uk_result, __FILE__, __LINE__)
-	QI(result, lb_I_Unknown, uk_result, __FILE__, __LINE__)
+	UAP(lb_I_Unknown, uk_result)
+	QI(result, lb_I_Unknown, uk_result)
 	
 	dispatcher->dispatch("enableEvent", uk.getPtr(), &uk_result);
 
@@ -1153,12 +1157,12 @@ lbErrCodes LB_STDCALL lb_MetaApplication::disableEvent(char* name) {
 	value->setData(name);
 	param->setUAPString(*&parameter, *&value);
 
-	UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
-	QI(param, lb_I_Unknown, uk, __FILE__, __LINE__)
+	UAP(lb_I_Unknown, uk)
+	QI(param, lb_I_Unknown, uk)
 	
 	UAP_REQUEST(manager.getPtr(), lb_I_String, result)
-	UAP(lb_I_Unknown, uk_result, __FILE__, __LINE__)
-	QI(result, lb_I_Unknown, uk_result, __FILE__, __LINE__)
+	UAP(lb_I_Unknown, uk_result)
+	QI(result, lb_I_Unknown, uk_result)
 	
 	dispatcher->dispatch("disableEvent", uk.getPtr(), &uk_result);
 
@@ -1177,12 +1181,12 @@ lbErrCodes LB_STDCALL lb_MetaApplication::toggleEvent(char* name) {
 	value->setData(name);
 	param->setUAPString(*&parameter, *&value);
 
-	UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
-	QI(param, lb_I_Unknown, uk, __FILE__, __LINE__)
+	UAP(lb_I_Unknown, uk)
+	QI(param, lb_I_Unknown, uk)
 	
 	UAP_REQUEST(manager.getPtr(), lb_I_String, result)
-	UAP(lb_I_Unknown, uk_result, __FILE__, __LINE__)
-	QI(result, lb_I_Unknown, uk_result, __FILE__, __LINE__)
+	UAP(lb_I_Unknown, uk_result)
+	QI(result, lb_I_Unknown, uk_result)
 	
 	dispatcher->dispatch("toggleEvent", uk.getPtr(), &uk_result);
 
@@ -1217,12 +1221,12 @@ lbErrCodes LB_STDCALL lb_MetaApplication::addMenuEntry(char* in_menu, char* entr
 		param->setUAPString(*&parameter, *&value);
 	}
 
-	UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
-	QI(param, lb_I_Unknown, uk, __FILE__, __LINE__)
+	UAP(lb_I_Unknown, uk)
+	QI(param, lb_I_Unknown, uk)
 
 	UAP_REQUEST(manager.getPtr(), lb_I_String, result)
-	UAP(lb_I_Unknown, uk_result, __FILE__, __LINE__)
-	QI(result, lb_I_Unknown, uk_result, __FILE__, __LINE__)
+	UAP(lb_I_Unknown, uk_result)
+	QI(result, lb_I_Unknown, uk_result)
 
 	dispatcher->dispatch("AddMenuEntry", uk.getPtr(), &uk_result);
 	
@@ -1317,8 +1321,8 @@ lbErrCodes LB_STDCALL lb_EventManager::registerEvent(char* EvName, int & EvNr) {
 	UAP_REQUEST(manager.getPtr(), lb_I_String, stringData)
 	stringData->setData(EvName);
 	
-	UAP(lb_I_KeyBase, sk, __FILE__, __LINE__)
-	QI(stringData, lb_I_Unknown, sk, __FILE__, __LINE__)
+	UAP(lb_I_KeyBase, sk)
+	QI(stringData, lb_I_Unknown, sk)
 /*...e*/
 	
 /*...sError handling:8:*/
@@ -1333,16 +1337,16 @@ lbErrCodes LB_STDCALL lb_EventManager::registerEvent(char* EvName, int & EvNr) {
 	if (freeIds->Count() == 0) {
 		maxEvId++;
 	} else {
-		UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
-		UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
+		UAP(lb_I_Unknown, uk)
+		UAP(lb_I_KeyBase, key)
 
 		key = freeIds->getKeyAt(freeIds->Count());
 		uk = freeIds->getElementAt(freeIds->Count());
 		
 		freeIds->remove(&key);
 			
-		UAP(lb_I_Integer, i, __FILE__, __LINE__)
-		QI(uk, lb_I_Integer, i, __FILE__, __LINE__)
+		UAP(lb_I_Integer, i)
+		QI(uk, lb_I_Integer, i)
 
 		newId = i->getData();
 	}
@@ -1351,16 +1355,16 @@ lbErrCodes LB_STDCALL lb_EventManager::registerEvent(char* EvName, int & EvNr) {
 	UAP_REQUEST(manager.getPtr(), lb_I_Integer, integerData)
 	integerData->setData(maxEvId);
 	
-	UAP(lb_I_Unknown, idata, __FILE__, __LINE__)
-	QI(integerData, lb_I_Unknown, idata, __FILE__, __LINE__)
+	UAP(lb_I_Unknown, idata)
+	QI(integerData, lb_I_Unknown, idata)
 
 	events->insert(&idata, &sk);
 	
-	UAP(lb_I_KeyBase, ik, __FILE__, __LINE__)
-	QI(integerData, lb_I_Unknown, ik, __FILE__, __LINE__)
+	UAP(lb_I_KeyBase, ik)
+	QI(integerData, lb_I_Unknown, ik)
 
-	UAP(lb_I_Unknown, sdata, __FILE__, __LINE__)
-	QI(stringData, lb_I_Unknown, sdata, __FILE__, __LINE__)
+	UAP(lb_I_Unknown, sdata)
+	QI(stringData, lb_I_Unknown, sdata)
 	
 	reverse_events->insert(&sdata, &ik);
 	
@@ -1384,17 +1388,17 @@ lbErrCodes LB_STDCALL lb_EventManager::resolveEvent(char* EvName, int & evNr) {
 	stringKey->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
 	stringKey->setData(EvName);
 	
-	UAP(lb_I_KeyBase, kk, __FILE__, __LINE__)
-	QI(stringKey, lb_I_Unknown, kk, __FILE__, __LINE__)
+	UAP(lb_I_KeyBase, kk)
+	QI(stringKey, lb_I_Unknown, kk)
 /*...e*/
 
 /*...sresolve event:8:*/
 	if (events->exists(&kk) == 1) {
-		UAP(lb_I_Unknown, object, __FILE__, __LINE__)
-		UAP(lb_I_Integer, i, __FILE__, __LINE__)
+		UAP(lb_I_Unknown, object)
+		UAP(lb_I_Integer, i)
 		
 		object = events->getElement(&kk);
-		QI(object, lb_I_Integer, i, __FILE__, __LINE__)
+		QI(object, lb_I_Integer, i)
 		evNr = i->getData();
 	} else {
 		_CL_LOG << "Error: Event name not registered: " << EvName LOG_
@@ -1412,15 +1416,15 @@ char* LB_STDCALL lb_EventManager::reverseEvent(int evNr) {
 	//ID->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
 	ID->setData(evNr);
 	
-	UAP(lb_I_KeyBase, kk, __FILE__, __LINE__)
-	QI(ID, lb_I_Unknown, kk, __FILE__, __LINE__)
+	UAP(lb_I_KeyBase, kk)
+	QI(ID, lb_I_Unknown, kk)
 	
 	if (reverse_events->exists(&kk) == 1) {
-		UAP(lb_I_Unknown, object, __FILE__, __LINE__)
-		UAP(lb_I_String, str, __FILE__, __LINE__)
+		UAP(lb_I_Unknown, object)
+		UAP(lb_I_String, str)
 		
 		object = reverse_events->getElement(&kk);
-		QI(object, lb_I_String, str, __FILE__, __LINE__)
+		QI(object, lb_I_String, str)
 		static char result[100] = "";
 		strcpy(result, str->getData());
 		
@@ -1503,18 +1507,18 @@ lbErrCodes LB_STDCALL lb_Dispatcher::addEventHandlerFn(lb_I_EventHandler* evHand
 	UAP_REQUEST(manager.getPtr(), lb_I_Integer, i)
 	i->setData(EvNr);
 
-	  UAP(lb_I_KeyBase, k, __FILE__, __LINE__)
-	QI(i, lb_I_KeyBase, k, __FILE__, __LINE__)
+	  UAP(lb_I_KeyBase, k)
+	QI(i, lb_I_KeyBase, k)
 
-	    UAP(lb_I_Unknown, e, __FILE__, __LINE__)
-	QI(evH, lb_I_Unknown, e, __FILE__, __LINE__)
+	    UAP(lb_I_Unknown, e)
+	QI(evH, lb_I_Unknown, e)
 	if (dispatcher->exists(&k) == 1) {
         	dispatcher->remove(&k);
 	}
 
 	if ((err = dispatcher->insert(&e, &k)) != ERR_NONE) _CL_LOG << "Error: Inserting new container element failed" LOG_
 
-	UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
+	UAP(lb_I_Unknown, uk)
 
 	uk = dispatcher->getElement(&k);
 	
@@ -1549,12 +1553,12 @@ lbErrCodes LB_STDCALL lb_Dispatcher::dispatch(int EvNr, lb_I_Unknown* EvData, lb
 	UAP_REQUEST(manager.getPtr(), lb_I_Integer, i)
 	i->setData(EvNr);
 	
-	UAP(lb_I_KeyBase, ik, __FILE__, __LINE__)
-	QI(i, lb_I_KeyBase, ik, __FILE__, __LINE__)
+	UAP(lb_I_KeyBase, ik)
+	QI(i, lb_I_KeyBase, ik)
 	
 	
-	UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
-	UAP(lb_I_EvHandler, ev, __FILE__, __LINE__)
+	UAP(lb_I_Unknown, uk)
+	UAP(lb_I_EvHandler, ev)
 	
 	if (dispatcher == NULL) {
 		_CL_LOG << "Error: Have no dispatcher" LOG_
@@ -1567,7 +1571,7 @@ lbErrCodes LB_STDCALL lb_Dispatcher::dispatch(int EvNr, lb_I_Unknown* EvData, lb
 			return ERR_DISPATCH_FAILS;
 		}
 	
-		QI(uk, lb_I_EvHandler, ev, __FILE__, __LINE__)
+		QI(uk, lb_I_EvHandler, ev)
 
 		ev->call(EvData, EvResult);
 	}
@@ -1607,8 +1611,8 @@ lbEvHandler LB_STDCALL lb_EvHandler::getHandler() {
 lbErrCodes LB_STDCALL lb_EvHandler::setData(lb_I_Unknown* uk) {
 	lbErrCodes err = ERR_NONE;
 	
-	UAP(lb_I_EvHandler, eh, __FILE__, __LINE__)
-	QI(uk, lb_I_EvHandler, eh, __FILE__, __LINE__)
+	UAP(lb_I_EvHandler, eh)
+	QI(uk, lb_I_EvHandler, eh)
 	
 	setHandler(eh->getHandlerInstance(), eh->getHandler());
 	

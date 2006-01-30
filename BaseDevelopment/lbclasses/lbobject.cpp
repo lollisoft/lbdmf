@@ -134,7 +134,7 @@ void LB_STDCALL lbLocale::translate(char ** text, char const * to_translate) {
 		return;
 	}
 
-	UAP(lb_I_Query, sampleQuery, __FILE__, __LINE__)
+	UAP(lb_I_Query, sampleQuery)
 
 	sampleQuery = database->getQuery(0);
 
@@ -180,7 +180,7 @@ void LB_STDCALL lbLocale::translate(char ** text, char const * to_translate) {
 		sprintf(buffer, "insert into translations (text, translated) values('%s', '%s')", to_translate, to_translate);
 
 		/* Sybase SQL Anywhere 5.5 has problems with state 24000. Maybe an auto commit problem */
-		UAP(lb_I_Query, sampleQuery1, __FILE__, __LINE__)
+		UAP(lb_I_Query, sampleQuery1)
 		sampleQuery1 = database->getQuery(0);
 		sampleQuery1->skipFKCollecting();
 		sampleQuery1->query(buffer);
@@ -218,11 +218,11 @@ void LB_STDCALL lbParameter::setUAPString(lb_I_String*& parameter, lb_I_String*&
 		}
 	}	
 	
-	UAP(lb_I_KeyBase, k_parameter, __FILE__, __LINE__)
-	QI(parameter, lb_I_KeyBase, k_parameter, __FILE__, __LINE__)
+	UAP(lb_I_KeyBase, k_parameter)
+	QI(parameter, lb_I_KeyBase, k_parameter)
 
-	UAP(lb_I_Unknown, uk_p, __FILE__, __LINE__)
-	QI(p, lb_I_Unknown, uk_p, __FILE__, __LINE__)
+	UAP(lb_I_Unknown, uk_p)
+	QI(p, lb_I_Unknown, uk_p)
 	
 	
 	parameters->insert(&uk_p, &k_parameter);
@@ -234,17 +234,17 @@ lbErrCodes LB_STDCALL lbParameter::getUAPString(lb_I_String*& parameter, lb_I_St
 	if (parameters == NULL) return ERR_PARAM_NOT_FOUND;
 	
 	lb_I_String* pp = parameter;
-	UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
-	QI(pp, lb_I_KeyBase, key, __FILE__, __LINE__)
+	UAP(lb_I_KeyBase, key)
+	QI(pp, lb_I_KeyBase, key)
 	
-	UAP(lb_I_Unknown, uk_p_string, __FILE__, __LINE__)
+	UAP(lb_I_Unknown, uk_p_string)
 
 	uk_p_string = parameters->getElement(&key);
 
 	if (uk_p_string == NULL) return ERR_PARAM_NOT_FOUND;
 
-	UAP(lb_I_String, string, __FILE__, __LINE__)
-	QI(uk_p_string, lb_I_String, string, __FILE__, __LINE__)
+	UAP(lb_I_String, string)
+	QI(uk_p_string, lb_I_String, string)
 	
 	
 	p->setData(string->getData());
@@ -263,11 +263,11 @@ void LB_STDCALL lbParameter::setUAPInteger(lb_I_String*& parameter, lb_I_Integer
 		}
 	}	
 	
-	UAP(lb_I_KeyBase, k_parameter, __FILE__, __LINE__)
-	QI(parameter, lb_I_KeyBase, k_parameter, __FILE__, __LINE__)
+	UAP(lb_I_KeyBase, k_parameter)
+	QI(parameter, lb_I_KeyBase, k_parameter)
 
-	UAP(lb_I_Unknown, uk_p, __FILE__, __LINE__)
-	QI(p, lb_I_Unknown, uk_p, __FILE__, __LINE__)
+	UAP(lb_I_Unknown, uk_p)
+	QI(p, lb_I_Unknown, uk_p)
 	
 	
 	parameters->insert(&uk_p, &k_parameter);
@@ -279,17 +279,17 @@ lbErrCodes LB_STDCALL lbParameter::getUAPInteger(lb_I_String*& parameter, lb_I_I
 	if (parameters == NULL) return ERR_PARAM_NOT_FOUND;
 
 	lb_I_String* pp = parameter;
-	UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
-	QI(pp, lb_I_KeyBase, key, __FILE__, __LINE__)
+	UAP(lb_I_KeyBase, key)
+	QI(pp, lb_I_KeyBase, key)
 	
-	UAP(lb_I_Unknown, uk_p_integer, __FILE__, __LINE__)
+	UAP(lb_I_Unknown, uk_p_integer)
 
 	uk_p_integer = parameters->getElement(&key);
 
 	if (uk_p_integer == NULL) return ERR_PARAM_NOT_FOUND;
 
-	UAP(lb_I_Integer, integer, __FILE__, __LINE__)
-	QI(uk_p_integer, lb_I_Integer, integer, __FILE__, __LINE__)
+	UAP(lb_I_Integer, integer)
+	QI(uk_p_integer, lb_I_Integer, integer)
 	
 	if (integer.getPtr() != NULL) p->setData(integer->getData());
 	
@@ -504,9 +504,9 @@ END_IMPLEMENT_LB_UNKNOWN()
 lbErrCodes LB_STDCALL lbString::setData(lb_I_Unknown* uk) {
 	lbErrCodes err = ERR_NONE;
 		
-	UAP(lb_I_String, string, __FILE__, __LINE__)
+	UAP(lb_I_String, string)
 	
-	QI(uk, lb_I_String, string, __FILE__, __LINE__)
+	QI(uk, lb_I_String, string)
 	
 	if (string != NULL) {
 		setData(string->charrep());
@@ -585,8 +585,8 @@ END_IMPLEMENT_LB_UNKNOWN()
 
 lbErrCodes LB_STDCALL lbInteger::setData(lb_I_Unknown* uk) {
 	lbErrCodes err= ERR_NONE;
-	UAP(lb_I_Integer, i, __FILE__, __LINE__)
-	QI(uk, lb_I_Integer, i, __FILE__, __LINE__)
+	UAP(lb_I_Integer, i)
+	QI(uk, lb_I_Integer, i)
 	
 	int v = i->getData();
 	setData(v);

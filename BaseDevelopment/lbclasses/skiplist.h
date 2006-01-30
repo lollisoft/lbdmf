@@ -54,7 +54,7 @@ class SkipNode {
     }
     
     int myLevel;
-    UAP(lb_I_Element, value, __FILE__, __LINE__)
+    UAP(lb_I_Element, value)
     char buffer[100];
     SkipNode** forward;
 };

@@ -30,11 +30,15 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.36 $
+ * $Revision: 1.37 $
  * $Name:  $
- * $Id: lbPluginManager.cpp,v 1.36 2005/12/11 19:15:16 lollisoft Exp $
+ * $Id: lbPluginManager.cpp,v 1.37 2006/01/30 15:54:15 lollisoft Exp $
  *
  * $Log: lbPluginManager.cpp,v $
+ * Revision 1.37  2006/01/30 15:54:15  lollisoft
+ * Removed the __FILE__ and __LINE__ parameter usage in UAP and QI.
+ * This was an unnessesary thing and makes programming easier.
+ *
  * Revision 1.36  2005/12/11 19:15:16  lollisoft
  * Release changes for 0.6.0. Added todo entries.
  *
@@ -248,10 +252,10 @@ private:
 	bool begunEnumerate;
 	bool firstEnumerate;
 	
-	UAP(lb_I_Container, PluginModules, __FILE__, __LINE__)
+	UAP(lb_I_Container, PluginModules)
 
 
-	UAP(lb_I_Container, PluginContainer, __FILE__, __LINE__)
+	UAP(lb_I_Container, PluginContainer)
 	
 	bool firstPlugin;
 	bool lastPlugin;
@@ -350,12 +354,12 @@ bool LB_STDCALL lbPluginManager::tryLoad(char* module) {
 #endif
 	strcat(pluginModule, module);
 		
-	UAP(lb_I_Unknown, ukPlugin, __FILE__, __LINE__)
+	UAP(lb_I_Unknown, ukPlugin)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, pluginName)
 	pluginName->setData(module);
 	
-	UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
-	QI(pluginName, lb_I_KeyBase, key, __FILE__, __LINE__)
+	UAP(lb_I_KeyBase, key)
+	QI(pluginName, lb_I_KeyBase, key)
 				       
 	if (manager->makeInstance(PREFIX "instanceOfPluginModule", pluginModule, &ukPlugin) != ERR_NONE) {
 	
@@ -366,12 +370,12 @@ bool LB_STDCALL lbPluginManager::tryLoad(char* module) {
 			
 			PluginModules->insert(&ukPlugin, &key);
 			
-			UAP(lb_I_Unknown, ukPlugin1, __FILE__, __LINE__)
+			UAP(lb_I_Unknown, ukPlugin1)
 			
 			ukPlugin1 = PluginModules->getElement(&key);
 			
-			UAP(lb_I_PluginModule, plM, __FILE__, __LINE__)
-			QI(ukPlugin1, lb_I_PluginModule, plM, __FILE__, __LINE__)
+			UAP(lb_I_PluginModule, plM)
+			QI(ukPlugin1, lb_I_PluginModule, plM)
 			
 			plM->setModule(pluginModule);
 			free(pluginModule);
@@ -387,12 +391,12 @@ bool LB_STDCALL lbPluginManager::tryLoad(char* module) {
 		ukPlugin->setModuleManager(*&manager, __FILE__, __LINE__);
 		PluginModules->insert(&ukPlugin, &key);
 		
-		UAP(lb_I_Unknown, ukPlugin1, __FILE__, __LINE__)
+		UAP(lb_I_Unknown, ukPlugin1)
 		
 		ukPlugin1 = PluginModules->getElement(&key);
 		
-		UAP(lb_I_PluginModule, plM, __FILE__, __LINE__)
-		QI(ukPlugin1, lb_I_PluginModule, plM, __FILE__, __LINE__)
+		UAP(lb_I_PluginModule, plM)
+		QI(ukPlugin1, lb_I_PluginModule, plM)
 		
 		_CL_LOG << "lb_I_PluginModule has " << plM->getRefCount() << " references." LOG_
 		
@@ -560,14 +564,14 @@ lb_I_Plugin* LB_STDCALL lbPluginManager::nextPlugin() {
 			
 			
 			while (PluginModules->hasMoreElements()) {
-				UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
-				UAP(lb_I_PluginModule, plM, __FILE__, __LINE__)
+				UAP(lb_I_Unknown, uk)
+				UAP(lb_I_PluginModule, plM)
 			
 				uk = PluginModules->nextElement();
 		
 				if (uk == NULL) return NULL;
 		
-				QI(uk, lb_I_PluginModule, plM, __FILE__, __LINE__)
+				QI(uk, lb_I_PluginModule, plM)
 		
 				// Get all plugins of this module
 
@@ -589,11 +593,11 @@ lb_I_Plugin* LB_STDCALL lbPluginManager::nextPlugin() {
 				if (PluginContainer == NULL) return NULL;
 			
 				if (PluginContainer->hasMoreElements()) {
-					UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
+					UAP(lb_I_Unknown, uk)
 					uk = PluginContainer->nextElement();
 				
-					UAP(lb_I_Plugin, plugin, __FILE__, __LINE__)
-					QI(uk, lb_I_Plugin, plugin, __FILE__, __LINE__)
+					UAP(lb_I_Plugin, plugin)
+					QI(uk, lb_I_Plugin, plugin)
 					plugin++;
 					
 					return plugin.getPtr();
@@ -605,11 +609,11 @@ lb_I_Plugin* LB_STDCALL lbPluginManager::nextPlugin() {
 		
 			if (!lastPlugin) {
 				if (PluginContainer->hasMoreElements()) {
-					UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
+					UAP(lb_I_Unknown, uk)
 				        uk = PluginContainer->nextElement();
 
-				        UAP(lb_I_Plugin, plugin, __FILE__, __LINE__)
-				        QI(uk, lb_I_Plugin, plugin, __FILE__, __LINE__)
+				        UAP(lb_I_Plugin, plugin)
+				        QI(uk, lb_I_Plugin, plugin)
 					plugin++;
 						
 				        return plugin.getPtr();
@@ -636,7 +640,7 @@ lb_I_Plugin* LB_STDCALL lbPluginManager::getFirstMatchingPlugin(char* match, cha
 
         	while (true) {
 
-	                UAP(lb_I_Plugin, pl, __FILE__, __LINE__)
+	                UAP(lb_I_Plugin, pl)
 
 	                pl = nextPlugin();
 
@@ -705,9 +709,9 @@ private:
 	char* _name;
 	char* _namespace;
 	char* _module;
-//	UAP(lb_I_PluginManager, _plM, __FILE__, __LINE__)
+//	UAP(lb_I_PluginManager, _plM)
 
-	UAP(lb_I_Unknown, implementation, __FILE__, __LINE__)
+	UAP(lb_I_Unknown, implementation)
 
 	bool isPreInitialized;
 	bool postInitialized;
@@ -745,8 +749,8 @@ lbErrCodes LB_STDCALL lbPlugin::setData(lb_I_Unknown* uk) {
 
 	_CL_VERBOSE << "lbPlugin::setData(...) called." LOG_
 	
-	UAP(lb_I_Plugin, pl, __FILE__, __LINE__)
-	QI(uk, lb_I_Plugin, pl, __FILE__, __LINE__)
+	UAP(lb_I_Plugin, pl)
+	QI(uk, lb_I_Plugin, pl)
 	
 	setName(pl->getName());
 	setModule(pl->getModule());
@@ -775,7 +779,7 @@ void LB_STDCALL lbPlugin::setAttached(lb_I_PluginImpl* impl) {
 		return;
 	}
 	
-	QI(impl, lb_I_Unknown, implementation, __FILE__, __LINE__)
+	QI(impl, lb_I_Unknown, implementation)
 }
 
 lb_I_PluginImpl* LB_STDCALL lbPlugin::getAttached() {
@@ -783,8 +787,8 @@ lb_I_PluginImpl* LB_STDCALL lbPlugin::getAttached() {
 
 	if (implementation == NULL) return NULL;
 	
-	UAP(lb_I_PluginImpl, impl, __FILE__, __LINE__)
-	QI(implementation, lb_I_PluginImpl, impl, __FILE__, __LINE__)
+	UAP(lb_I_PluginImpl, impl)
+	QI(implementation, lb_I_PluginImpl, impl)
 	impl++;
 	
 	return impl.getPtr();
@@ -828,7 +832,7 @@ void LB_STDCALL lbPlugin::preinitialize() {
 	lbErrCodes err = ERR_NONE;
 	if (isPreInitialized) return;
 
-	UAP(lb_I_Unknown, ukPlugin, __FILE__, __LINE__)
+	UAP(lb_I_Unknown, ukPlugin)
 
 	char* name = (char*) malloc(strlen(PREFIX)+strlen("instanceOf")+strlen(_name)+1);
 
@@ -847,11 +851,11 @@ void LB_STDCALL lbPlugin::preinitialize() {
 
 		ukPlugin->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
 
-	        UAP(lb_I_PluginImpl, impl, __FILE__, __LINE__)
-	        QI(ukPlugin, lb_I_PluginImpl, impl, __FILE__, __LINE__)
+	        UAP(lb_I_PluginImpl, impl)
+	        QI(ukPlugin, lb_I_PluginImpl, impl)
 	        //impl++;
 
-	        QI(ukPlugin, lb_I_Unknown, implementation, __FILE__, __LINE__)
+	        QI(ukPlugin, lb_I_Unknown, implementation)
 	        //implementation++;
 		
 		isPreInitialized = true;
@@ -865,11 +869,11 @@ void LB_STDCALL lbPlugin::preinitialize() {
 		
 			ukPlugin->setModuleManager(manager.getPtr(), __FILE__, __LINE__);;
 		
-			UAP(lb_I_PluginImpl, impl, __FILE__, __LINE__)
-			QI(ukPlugin, lb_I_PluginImpl, impl, __FILE__, __LINE__)
+			UAP(lb_I_PluginImpl, impl)
+			QI(ukPlugin, lb_I_PluginImpl, impl)
 			//impl++;
 		
-			QI(ukPlugin, lb_I_Unknown, implementation, __FILE__, __LINE__)
+			QI(ukPlugin, lb_I_Unknown, implementation)
 			//implementation++;
 
 			isPreInitialized = true;
@@ -893,8 +897,8 @@ void LB_STDCALL lbPlugin::initialize() {
 	_CL_VERBOSE << "lbPlugin::initialize() has preinitialized underlying class." LOG_
 
 	if (isPreInitialized && !postInitialized) {
-		UAP(lb_I_PluginImpl, impl, __FILE__, __LINE__)		
-		QI(implementation, lb_I_PluginImpl, impl, __FILE__, __LINE__)
+		UAP(lb_I_PluginImpl, impl)		
+		QI(implementation, lb_I_PluginImpl, impl)
 
 		_CL_VERBOSE << "lbPlugin::initialize() calls preinitialized underlying class'es initializer." LOG_
 		impl->initialize();
@@ -921,8 +925,8 @@ lb_I_Unknown* LB_STDCALL lbPlugin::peekImplementation() {
 	
 	lbErrCodes err = ERR_NONE;
 	
-	UAP(lb_I_PluginImpl, impl, __FILE__, __LINE__)
-	QI(implementation, lb_I_PluginImpl, impl, __FILE__, __LINE__)
+	UAP(lb_I_PluginImpl, impl)
+	QI(implementation, lb_I_PluginImpl, impl)
 
 	lb_I_Unknown* uk = impl->peekImplementation();
 
@@ -944,8 +948,8 @@ lb_I_Unknown* LB_STDCALL lbPlugin::getImplementation() {
 	
 	lbErrCodes err = ERR_NONE;
 	
-	UAP(lb_I_PluginImpl, impl, __FILE__, __LINE__)
-	QI(implementation, lb_I_PluginImpl, impl, __FILE__, __LINE__)
+	UAP(lb_I_PluginImpl, impl)
+	QI(implementation, lb_I_PluginImpl, impl)
 
 	lb_I_Unknown* uk = impl->getImplementation();
 
@@ -959,7 +963,7 @@ bool LB_STDCALL lbPlugin::hasInterface(char* name) {
 	
 	if (implementation == NULL) preinitialize();
 	
-	UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
+	UAP(lb_I_Unknown, uk)
 
 	/*
 		This function firstly creates an instance of the implementation behind
@@ -988,8 +992,8 @@ bool LB_STDCALL lbPlugin::hasInterface(char* name) {
 		return true;
 	}
 
-	UAP(lb_I_PluginImpl, impl, __FILE__, __LINE__)
-	QI(implementation, lb_I_PluginImpl, impl, __FILE__, __LINE__)
+	UAP(lb_I_PluginImpl, impl)
+	QI(implementation, lb_I_PluginImpl, impl)
 	
 	impl->releaseImplementation();
 	

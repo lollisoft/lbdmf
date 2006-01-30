@@ -99,11 +99,11 @@ extern "C" {
 lb_I_Action* FormularActions::getAction(char* id) {
 	lbErrCodes err = ERR_NONE;
 	
-	UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
+	UAP(lb_I_Unknown, uk)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, ID)
-	UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
+	UAP(lb_I_KeyBase, key)
 	ID->setData(id);
-	QI(ID, lb_I_KeyBase, key, __FILE__, __LINE__)
+	QI(ID, lb_I_KeyBase, key)
 
 	lb_I_Action* action;
 	
@@ -154,7 +154,7 @@ char* FormularActions::getActionTargetID(char* what) {
 	
 	database->connect("lbDMF", lbDMFUser, lbDMFPasswd);	
 
-	UAP(lb_I_Query, query, __FILE__, __LINE__)
+	UAP(lb_I_Query, query)
 	
 	query = database->getQuery(0);
 	
@@ -170,7 +170,7 @@ char* FormularActions::getActionTargetID(char* what) {
 	
 	if (((err = query->first()) == ERR_NONE) || (err == WARN_DB_NODATA)) {
 	
-		UAP(lb_I_String, source, __FILE__, __LINE__)
+		UAP(lb_I_String, source)
 		
 		source = query->getAsString(1);
 		
@@ -201,7 +201,7 @@ char* FormularActions::getActionSourceDataField(char* what) {
 	
 	database->connect("lbDMF", lbDMFUser, lbDMFPasswd);	
 
-	UAP(lb_I_Query, query, __FILE__, __LINE__)
+	UAP(lb_I_Query, query)
 	
 	query = database->getQuery(0);
 	
@@ -217,7 +217,7 @@ char* FormularActions::getActionSourceDataField(char* what) {
 	
 	if (((err = query->first()) == ERR_NONE) || (err == WARN_DB_NODATA)) {
 	
-		UAP(lb_I_String, source, __FILE__, __LINE__)
+		UAP(lb_I_String, source)
 		
 		source = query->getAsString(1);
 		
@@ -245,7 +245,7 @@ char* FormularActions::getActionID(char* what) {
 	
 	database->connect("lbDMF", lbDMFUser, lbDMFPasswd);	
 
-	UAP(lb_I_Query, query, __FILE__, __LINE__)
+	UAP(lb_I_Query, query)
 	
 	query = database->getQuery(0);
 	
@@ -261,7 +261,7 @@ char* FormularActions::getActionID(char* what) {
 	
 	if (((err = query->first()) == ERR_NONE) || (err == WARN_DB_NODATA)) {
 	
-		UAP(lb_I_String, source, __FILE__, __LINE__)
+		UAP(lb_I_String, source)
 		
 		source = query->getAsString(1);
 		

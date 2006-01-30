@@ -98,8 +98,8 @@ int main(int argc, char *argv[]) {
     char* port = NULL;
     char buf[100] = "";
     int count = 0;
-    UAP(lb_I_Unknown, unknown, __FILE__, __LINE__)
-    UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
+    UAP(lb_I_Unknown, unknown)
+    UAP(lb_I_Unknown, uk)
 /*...e*/
 /*...sinit:0:*/
 	printf("Program starting with %d arguments ...\n", argc);
@@ -141,9 +141,9 @@ if (a == b) {
 	
 	UAP_REQUEST(mm, lb_I_Database, database1)
 
-	UAP(lb_I_Query, query, __FILE__, __LINE__)
-	UAP(lb_I_Query, query1, __FILE__, __LINE__)
-	UAP(lb_I_Query, query2, __FILE__, __LINE__)
+	UAP(lb_I_Query, query)
+	UAP(lb_I_Query, query1)
+	UAP(lb_I_Query, query2)
 
 	query = database->getQuery(0);
 
@@ -160,7 +160,7 @@ if (a == b) {
 
 	PrintData(*&query);
 
-	UAP(lb_I_Query, testquery, __FILE__, __LINE__)
+	UAP(lb_I_Query, testquery)
 	
 	testquery = database->getQuery(0);
 
@@ -195,8 +195,8 @@ if (a == b) {
 
 	UAP_REQUEST(mm, lb_I_Database, db1)
 	UAP_REQUEST(mm, lb_I_Database, database2)
-	UAP(lb_I_Query, query11, __FILE__, __LINE__)
-	UAP(lb_I_Query, query12, __FILE__, __LINE__)
+	UAP(lb_I_Query, query11)
+	UAP(lb_I_Query, query12)
 	
 	db1->init();
 	db1->connect("trainres", "dba", "trainres");
@@ -329,15 +329,15 @@ printf("Deleted a row\n");
 /*...e*/
 /*...sTest container with inserting strings and manipulate one reference to show changes in other reference:0:*/
 {
-		UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
+		UAP(lb_I_Unknown, uk)
     			
 		if (mm->request("lb_I_Container", &uk) != ERR_NONE) {
 			printf("Error: Could not get needed instance!\n");
 		}
 
 		if (uk != NULL) {
-			UAP(lb_I_Unknown, uk1, __FILE__, __LINE__)
-			UAP(lb_I_Container, container, __FILE__, __LINE__)
+			UAP(lb_I_Unknown, uk1)
+			UAP(lb_I_Container, container)
 
 			if (uk->queryInterface("lb_I_Container", (void**) &container, __FILE__, __LINE__) != ERR_NONE) {
 				_CL_LOG << "Error: Could not query for interface lb_I_Container" LOG_
@@ -349,7 +349,7 @@ printf("Deleted a row\n");
 
 			if (uk1 != NULL) {
 				_CL_LOG << "Test the container" LOG_
-				UAP(lb_I_String, string, __FILE__, __LINE__)
+				UAP(lb_I_String, string)
 				if (uk1->queryInterface("lb_I_String", (void**) &string, __FILE__, __LINE__) != ERR_NONE) {
 					printf("Error: Could not get needed interface!\n");
 				}
@@ -358,8 +358,8 @@ printf("Deleted a row\n");
 					// Fill up the container
 /*...sand delete it after that again:40:*/
 /*...screate key and uk for the container filling:40:*/
-							UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
-							UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
+							UAP(lb_I_Unknown, uk)
+							UAP(lb_I_KeyBase, key)
 						
 							string->queryInterface("lb_I_Unknown", (void**) &uk, __FILE__, __LINE__);
 							string->queryInterface("lb_I_KeyBase", (void**) &key, __FILE__, __LINE__);
@@ -488,8 +488,8 @@ printf("Deleted a row\n");
 /*...e*/
 
 /*...stest unknown auto pointer:0:*/
-		UAP(lb_I_Unknown, theVariable, __FILE__, __LINE__)
-		UAP(lb_I_String, string, __FILE__, __LINE__)
+		UAP(lb_I_Unknown, theVariable)
+		UAP(lb_I_String, string)
 		
 		if (theVariable.getPtr() != NULL) _CL_LOG << "Error: UAP does not correctly work" LOG_
 
@@ -543,15 +543,15 @@ printf("Deleted a row\n");
 	#ifdef LOOP
         for (long i = 0; i < 1; i++) {
     	#endif
-    			UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
+    			UAP(lb_I_Unknown, uk)
     			
 			if (modMan->request("lb_I_Container", &uk) != ERR_NONE) {
 				printf("Error: Could not get needed instance!\n");
 			}
 
 			if (uk != NULL) {
-				UAP(lb_I_Unknown, uk1, __FILE__, __LINE__)
-				UAP(lb_I_Container, container, __FILE__, __LINE__)
+				UAP(lb_I_Unknown, uk1)
+				UAP(lb_I_Container, container)
 
 				if (uk->queryInterface("lb_I_Container", (void**) &container, __FILE__, __LINE__) != ERR_NONE) {
 					_CL_LOG << "Error: Could not query for interface lb_I_Container" LOG_
@@ -563,7 +563,7 @@ printf("Deleted a row\n");
 
 				if (uk1 != NULL) {
 					_CL_LOG << "Test the container" LOG_
-					UAP(lb_I_String, string, __FILE__, __LINE__)
+					UAP(lb_I_String, string)
 					if (uk1->queryInterface("lb_I_String", (void**) &string, __FILE__, __LINE__) != ERR_NONE) {
 						printf("Error: Could not get needed interface!\n");
 					}
@@ -572,8 +572,8 @@ printf("Deleted a row\n");
 						// Fill up the container
 						for (long i = 0; i < 10000000; i++) {
 /*...sand delete it after that again:56:*/
-							UAP(lb_I_Unknown, uk, __FILE__, __LINE__)
-							UAP(lb_I_KeyBase, key, __FILE__, __LINE__)
+							UAP(lb_I_Unknown, uk)
+							UAP(lb_I_KeyBase, key)
 						
 							string->queryInterface("lb_I_Unknown", (void**) &uk, __FILE__, __LINE__);
 							string->queryInterface("lb_I_KeyBase", (void**) &key, __FILE__, __LINE__);

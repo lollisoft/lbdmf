@@ -157,7 +157,7 @@ public:
 
 	lb_I_Stream* LB_STDCALL getStream();
 
-	UAP(lb_I_InputStream, iStream, __FILE__, __LINE__)
+	UAP(lb_I_InputStream, iStream)
 };
 
 
@@ -217,8 +217,8 @@ void LB_STDCALL lbInputStreamOpr::end() {
 lb_I_Stream* LB_STDCALL lbInputStreamOpr::getStream() {
 	lbErrCodes err = ERR_NONE;
 	
-        UAP(lb_I_Stream, s, __FILE__, __LINE__)
-        QI(iStream, lb_I_Stream, s, __FILE__, __LINE__)
+        UAP(lb_I_Stream, s)
+        QI(iStream, lb_I_Stream, s)
         s++;
 
         return s.getPtr();
@@ -246,7 +246,7 @@ public:
 	DECLARE_LB_UNKNOWN()
 
 private:
-	UAP(lb_I_Unknown, impl, __FILE__, __LINE__)
+	UAP(lb_I_Unknown, impl)
 };
 
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbPluginInputStream)
@@ -289,7 +289,7 @@ lb_I_Unknown* LB_STDCALL lbPluginInputStream::peekImplementation() {
 		lbInputStreamOpr* InputStream = new lbInputStreamOpr();
 		InputStream->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
 	
-		QI(InputStream, lb_I_Unknown, impl, __FILE__, __LINE__)
+		QI(InputStream, lb_I_Unknown, impl)
 	} else {
 		_CL_VERBOSE << "lbPluginDatabasePanel::peekImplementation() Implementation already peeked.\n" LOG_
 	}
@@ -308,7 +308,7 @@ lb_I_Unknown* LB_STDCALL lbPluginInputStream::getImplementation() {
 		lbInputStreamOpr* InputStream = new lbInputStreamOpr();
 		InputStream->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
 	
-		QI(InputStream, lb_I_Unknown, impl, __FILE__, __LINE__)
+		QI(InputStream, lb_I_Unknown, impl)
 	}
 	
 	lb_I_Unknown* r = impl.getPtr();
