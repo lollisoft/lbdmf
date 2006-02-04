@@ -1375,7 +1375,7 @@ lbErrCodes LB_STDCALL lb_wxFrame::showLeftPropertyBar(lb_I_Unknown* uk) {
 			wxBoxSizer* sizerMain = new wxBoxSizer(wxVERTICAL);
 			wxBoxSizer* sizerRight = new wxBoxSizer(wxVERTICAL);
 			
-			RemoveChild(current);
+			//RemoveChild(current);
 			
 			sizerMain->Add(m_splitter, 1, wxEXPAND | wxALL, 0);
 			

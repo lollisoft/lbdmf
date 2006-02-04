@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.112 2006/02/04 11:15:55 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.113 2006/02/04 18:14:58 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.112 $
+ * $Revision: 1.113 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.112 2006/02/04 11:15:55 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.113 2006/02/04 18:14:58 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.113  2006/02/04 18:14:58  lollisoft
+ * Adaptions to Linux
+ *
  * Revision 1.112  2006/02/04 11:15:55  lollisoft
  * Changed wxFrame class structure and added support for splitter windows.
  *
@@ -2047,6 +2050,7 @@ bool MyApp::OnInit(void)
     UAP(lb_I_Unknown, uk)
     uk = wxGUI->createFrame();
     uk++;
+    uk++;
 
     frame = (lb_wxFrame*) uk.getPtr();
 
@@ -2087,6 +2091,10 @@ bool MyApp::OnInit(void)
     }
 
     if (metaApp != NULL) metaApp->run();
+
+    _CL_LOG << "wxGUI has " << wxGUI->getRefCount() << " references." LOG_
+    
+    setVerbose(true);
 
     return TRUE;
 }
