@@ -255,6 +255,10 @@ public:
 	 * \brief Show form with given name.
 	 */
 	virtual void LB_STDCALL showForm(char* name) = 0;
+	
+	/** \brief Set the app's icon.
+	 */
+	virtual void LB_STDCALL setIcon(char* name) = 0;
 };
 /*...e*/
 /*...sclass lb_I_wxGUI:0:*/

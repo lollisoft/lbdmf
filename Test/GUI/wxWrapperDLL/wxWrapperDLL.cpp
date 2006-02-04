@@ -49,7 +49,7 @@
 #endif
 
 #if defined(__WXGTK__) || defined(__WXMOTIF__)
-//#include "mondrian.xpm"
+#include "mondrian.xpm"
 #endif
 /*...e*/
 
@@ -548,11 +548,10 @@ char const * LB_STDCALL wxLogonPage::getTextValue(char* _name) {
 /*...e*/
 /*...e*/
 
-#ifdef LB_I_EXTENTIONS
 /*...sclass lb_wxFrame:0:*/
 BEGIN_IMPLEMENT_LB_UNKNOWN(lb_wxFrame)
 //        ADD_INTERFACE(lb_I_EventSink)
-        ADD_INTERFACE(lb_I_wxFrame)
+//        ADD_INTERFACE(lb_I_wxFrame)
 END_IMPLEMENT_LB_UNKNOWN()
 
 
@@ -569,49 +568,45 @@ lb_wxFrame::lb_wxFrame() //:
 	m_replacewindow = NULL;
 	
 	_isSplitted = false;
+
+	// Use lbDatabasePanel
+	panelUsage = true;
 }
 
-/*...slbErrCodes lb_wxFrame\58\\58\setData\40\lb_I_Unknown\42\ uk\41\:0:*/
-lbErrCodes LB_STDCALL lb_wxFrame::setData(lb_I_Unknown* uk) {
-        _LOG << "lb_wxFrame::setData(...) not implemented yet" LOG_
-        return ERR_NOT_IMPLEMENTED;
-}
-/*...e*/
-/*...slbErrCodes lb_wxFrame\58\\58\registerEvents\40\lb_I_EventConnector\42\ object\41\:0:*/
-lbErrCodes LB_STDCALL lb_wxFrame::registerEvents(lb_I_EventConnector* object) {
-        lb_wxFrame* peer = getPeer();
+/*...slbErrCodes LB_STDCALL lb_wxFrame\58\\58\registerEventHandler\40\lb_I_Dispatcher\42\ disp\41\:0:*/
+lbErrCodes LB_STDCALL lb_wxFrame::registerEventHandler(lb_I_Dispatcher* disp) {
+	UAP_REQUEST(getModuleInstance(), lb_I_EventManager, eman)
 
-	UAP_REQUEST(manager.getPtr(), lb_I_EventManager, eman)
-
-	int on_panel_usage;
-	
 	eman->registerEvent("switchPanelUse", on_panel_usage);
+	eman->registerEvent("showLeftPropertyBar", _showLeftPropertyBar);
 
-	((wxFrame*) peer)->Connect( on_panel_usage,  -1, wxEVT_COMMAND_MENU_SELECTED,
+	disp->addEventHandlerFn(this, (lbEvHandler) &lb_wxFrame::showLeftPropertyBar, "showLeftPropertyBar");
+	disp->addEventHandlerFn(this, (lbEvHandler) &lb_wxFrame::switchPanelUse, "switchPanelUse");
+
+	Connect( _showLeftPropertyBar,  -1, wxEVT_COMMAND_MENU_SELECTED,
+	          (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
+                  &lb_wxFrame::OnDispatch );
+	
+	Connect( on_panel_usage,  -1, wxEVT_COMMAND_MENU_SELECTED,
 	          (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
                   &lb_wxFrame::OnDispatch );
         
-        ((wxFrame*) peer)->Connect( DYNAMIC_QUIT,  -1, wxEVT_COMMAND_MENU_SELECTED,
+        Connect( DYNAMIC_QUIT,  -1, wxEVT_COMMAND_MENU_SELECTED,
                   (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
                   &lb_wxFrame::OnDispatch );
 
-        ((wxFrame*) peer)->Connect( DYNAMIC_ABOUT, -1, wxEVT_COMMAND_MENU_SELECTED,
+        Connect( DYNAMIC_ABOUT, -1, wxEVT_COMMAND_MENU_SELECTED,
                   (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
                   &lb_wxFrame::OnDispatch );
 
-	((wxFrame*) peer)->Connect( DYNAMIC_BUILDMENU, -1, wxEVT_COMMAND_MENU_SELECTED,
+	Connect( DYNAMIC_BUILDMENU, -1, wxEVT_COMMAND_MENU_SELECTED,
 	          (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
                   &lb_wxFrame::OnDispatch );
 
-	((wxFrame*) peer)->Connect( DYNAMIC_VERBOSE, -1, wxEVT_COMMAND_MENU_SELECTED,
+	Connect( DYNAMIC_VERBOSE, -1, wxEVT_COMMAND_MENU_SELECTED,
 	          (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
                   &lb_wxFrame::OnVerbose );
 
-        return ERR_NONE;
-}
-/*...e*/
-/*...slbErrCodes lb_wxFrame\58\\58\createEventsource\40\lb_I_EventConnector\42\ object\41\:0:*/
-lbErrCodes LB_STDCALL lb_wxFrame::createEventsource(lb_I_EventConnector* object) {
 
 	// Make a menubar
 	wxMenu *file_menu = new wxMenu;
@@ -621,24 +616,34 @@ lbErrCodes LB_STDCALL lb_wxFrame::createEventsource(lb_I_EventConnector* object)
 	file_menu->Append(DYNAMIC_QUIT	 , _trans("E&xit\tCtrl-x"));
 
 	int on_panel_usage;
-	UAP_REQUEST(manager.getPtr(), lb_I_EventManager, eman)
 	
-	eman->resolveEvent("switchPanelUse", on_panel_usage);
 	file_menu->Append(on_panel_usage, _trans("&switch Panel usage\tCtrl-S"));
-	
+	file_menu->Append(_showLeftPropertyBar, _trans("Show &left property panel\tCtrl-l"));
+
 	menu_bar = new wxMenuBar;
 	menu_bar->Append(file_menu, _trans("&File"));
 
 	SetMenuBar(menu_bar);
 
-        return ERR_NONE;
+	return ERR_NONE;
 }
 /*...e*/
+/*...slbErrCodes LB_STDCALL lb_wxFrame\58\\58\setData\40\lb_I_Unknown\42\ uk\41\:0:*/
+lbErrCodes LB_STDCALL lb_wxFrame::setData(lb_I_Unknown* uk) {
+        _LOG << "lb_wxFrame::setData(...) not implemented yet" LOG_
+        return ERR_NOT_IMPLEMENTED;
+}
+/*...e*/
+lbErrCodes LB_STDCALL lb_wxFrame::switchPanelUse(lb_I_Unknown* uk) {
+	lbErrCodes err = ERR_NONE;
+	
+	panelUsage = !panelUsage;
+	
+	return err;
+}
 /*...e*/
 
 /*...sclass lb_wxGUI:0:*/
-#ifdef LB_I_EXTENTIONS
-
 BEGIN_IMPLEMENT_LB_UNKNOWN(lb_wxGUI)
         ADD_INTERFACE(lb_I_wxGUI)
 END_IMPLEMENT_LB_UNKNOWN()
@@ -739,12 +744,6 @@ lbErrCodes LB_STDCALL lb_wxGUI::insertMenuEntry(lb_I_Unknown* entry) {
 
 /*...slbErrCodes LB_STDCALL lb_wxGUI\58\\58\registerEventHandler\40\lb_I_Dispatcher\42\ disp\41\:0:*/
 lbErrCodes LB_STDCALL lb_wxGUI::registerEventHandler(lb_I_Dispatcher* disp) {
-	_CL_LOG << "lb_wxGUI::registerEventHandler(lb_I_Dispatcher* disp) called." LOG_
-
-// Cleanup is no event handler.        
-//        disp->addEventHandlerFn(this, (lbEvHandler) &lb_wxGUI::cleanup, "wxGUI_Cleanup"); 
-
-	disp->addEventHandlerFn(this, (lbEvHandler) &lb_wxGUI::switchPanelUse, "switchPanelUse");
          
 	return ERR_NONE;
 }
@@ -900,7 +899,7 @@ lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::createDBForm(char* formName, char* query
 
 	// Locate the form instance in the container
 
-	if (panelUsage) {
+	if (frame->isPanelUsage() && !frame->isSplitted()) {
 		if (!notebook) {
 			notebook = new wxNotebook(frame, -1);
 			sizerMain = new wxBoxSizer(wxVERTICAL);
@@ -967,7 +966,7 @@ lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::createDBForm(char* formName, char* query
 
 		TRMemStartLocalCount();
 
-		if (panelUsage) {
+		if (frame->isPanelUsage()) {
 			pl = PM->getFirstMatchingPlugin("lb_I_DatabaseForm", "GUIPanel");
 		} else {
 			pl = PM->getFirstMatchingPlugin("lb_I_DatabaseForm", "GUIDialog");
@@ -1009,13 +1008,13 @@ lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::createDBForm(char* formName, char* query
 
 		_dialog->setName(formName);
 
-		if (panelUsage) {
+		if (frame->isPanelUsage()) {
 			_dialog->create(notebook->GetId());
 		}
 		
 		_dialog->init(queryString, DBName, DBUser, DBPass);
 		
-		if (panelUsage) {
+		if (frame->isPanelUsage()) {
 			wxWindow* w = frame->FindWindowById(_dialog->getId());
 			notebook->AddPage(w, formName, true);
 			//notebook->Fit();
@@ -1029,7 +1028,7 @@ lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::createDBForm(char* formName, char* query
 		}
 		
 	} else {
-		if (panelUsage) {
+		if (frame->isPanelUsage()) {
 			int num = notebook->GetPageCount();
 			for (int i = 0; i < num; i++) {
 				if (strncmp(notebook->GetPageText(i).c_str(), formName, strlen(formName)) == 0) {
@@ -1041,6 +1040,9 @@ lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::createDBForm(char* formName, char* query
 /*...e*/
 
 	_dialog++;
+
+	UAP_REQUEST(getModuleManager(), lb_I_MetaApplication, app)
+	app->enableEvent("showLeftPropertyBar");
 	
 	return _dialog.getPtr();
 }
@@ -1152,7 +1154,7 @@ lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::findDBForm(char* name) {
 }
 /*...e*/
 void LB_STDCALL lb_wxGUI::showForm(char* name) {
-	if (panelUsage) {
+	if (frame->isPanelUsage()) {
 		int num = notebook->GetPageCount();
 		for (int i = 0; i < num; i++) {
 		    if (strncmp(notebook->GetPageText(i).c_str(), name, strlen(name)) == 0) {
@@ -1166,23 +1168,21 @@ void LB_STDCALL lb_wxGUI::showForm(char* name) {
 		if (f) f->show();
 	}
 }
+
+void LB_STDCALL lb_wxGUI::setIcon(char* name) {
+	#ifdef __WXMSW__
+	    frame->SetIcon(wxIcon("mondrian"));
+	#endif
+	#if defined(__WXGTK__) || defined(__WXMOTIF__)
+	    frame->SetIcon(wxIcon(mondrian_xpm));
+	#endif
+}
+
 void LB_STDCALL lb_wxGUI::registerDBForm(char* formName, lb_I_DatabaseForm* form) {
 
 }
-
-lbErrCodes LB_STDCALL lb_wxGUI::switchPanelUse(lb_I_Unknown* uk) {
-	lbErrCodes err = ERR_NONE;
-	
-	panelUsage = !panelUsage;
-	
-	return err;
-}
-
-#endif
 /*...e*/
-#endif
 
-#ifdef LB_I_EXTENTIONS
 /*...slb_wxFrame:0:*/
 // My frame constructor
 lb_wxFrame::lb_wxFrame(wxFrame *frame, char *title, int x, int y, int w, int h):
@@ -1190,12 +1190,14 @@ lb_wxFrame::lb_wxFrame(wxFrame *frame, char *title, int x, int y, int w, int h):
 {
 	menu_bar = NULL;
 	guiCleanedUp = 0;
+
 	// Splitter window handling
 	m_left = m_right = NULL;
 	m_splitter = NULL;
 	m_replacewindow = NULL;
 	
 	_isSplitted = false;
+	
 }
 
 lb_wxFrame::~lb_wxFrame() {
@@ -1205,6 +1207,7 @@ lb_wxFrame::~lb_wxFrame() {
         }
 }
 
+/*...svoid lb_wxFrame\58\\58\OnRunLogonWizard\40\wxCommandEvent\38\ WXUNUSED\40\event\41\\41\:0:*/
 void lb_wxFrame::OnRunLogonWizard(wxCommandEvent& WXUNUSED(event)) {
     wxWizard *wizard = new wxWizard(this, -1, _T("Anmeldung"));
 
@@ -1228,9 +1231,8 @@ void lb_wxFrame::OnRunLogonWizard(wxCommandEvent& WXUNUSED(event)) {
     }
 
     wizard->Destroy();
-                                             
-
 }
+/*...e*/
 /*...slb_wxFrame\58\\58\OnQuit\40\wxCommandEvent\38\ WXUNUSED\40\event\41\ \41\:0:*/
 void lb_wxFrame::OnQuit(wxCommandEvent& WXUNUSED(event) )
 {
@@ -1346,8 +1348,53 @@ void lb_wxFrame::OnDispatch(wxCommandEvent& event ) {
         }
 }
 /*...e*/
+
+lbErrCodes LB_STDCALL lb_wxFrame::showLeftPropertyBar(lb_I_Unknown* uk) {
+	_CL_LOG << "lb_wxFrame::showLeftPropertyBar(lb_I_Unknown* uk) called." LOG_
+
+	if (m_splitter == NULL) {
+		m_splitter = new wxSplitterWindow(this, wxID_ANY,
+	                                   wxDefaultPosition, wxDefaultSize,
+                                           wxSP_3D | wxSP_LIVE_UPDATE |
+                                           wxCLIP_CHILDREN /* | wxSP_NO_XP_THEME */ );
+        
+        	wxList children = GetChildren();
+        	wxNode* node = children.GetFirst();
+        	
+        	if (children.IsEmpty()) {
+        		_CL_LOG << "Warning: No child window found." LOG_
+        		
+        		wxPanel* leftPanel = new wxPanel(m_splitter);
+        		
+        		m_splitter->Initialize(leftPanel);
+        	} else {
+			wxWindow *current = (wxWindow*) node->GetData();
+		
+			wxScrolledWindow* leftPanel = new wxScrolledWindow(m_splitter);
+
+			wxBoxSizer* sizerMain = new wxBoxSizer(wxVERTICAL);
+			wxBoxSizer* sizerRight = new wxBoxSizer(wxVERTICAL);
+			
+			RemoveChild(current);
+			
+			sizerMain->Add(m_splitter, 1, wxEXPAND | wxALL, 0);
+			
+			current->Reparent(m_splitter);
+
+			m_splitter->Initialize(leftPanel);
+			m_splitter->SplitVertically(leftPanel, current, 100);        
+
+			SetSizer(sizerMain);
+			
+			SetAutoLayout(TRUE);
+			m_splitter->SetAutoLayout(TRUE);
+
+			Fit();
+        	}
+        }
+	return ERR_NONE;
+}
 /*...e*/
-#endif
 
 #ifdef WINDOWS
 /*...sDllMain:0:*/

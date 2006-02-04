@@ -816,9 +816,10 @@ lbDatabaseReport::~lbDatabaseReport() {
 void LB_STDCALL lbDatabaseReport::destroy() {
 }
 
+/// \todo Change to using window ID lookup.
 void LB_STDCALL lbDatabaseReport::setFrame(lb_I_Unknown* _frame) {
 	lb_wxFrame* __frame = (lb_wxFrame*) _frame;
-	frame = __frame->getPeer();
+	frame = __frame;
 }
 
 /*...svoid LB_STDCALL lbDatabaseReport\58\\58\init\40\char\42\ SQLString\44\ char\42\ DBName\44\ char\42\ DBUser\44\ char\42\ DBPass\41\:0:*/

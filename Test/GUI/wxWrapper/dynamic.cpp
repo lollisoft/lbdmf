@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.111 2006/01/30 15:54:15 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.112 2006/02/04 11:15:55 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.111 $
+ * $Revision: 1.112 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.111 2006/01/30 15:54:15 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.112 2006/02/04 11:15:55 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.112  2006/02/04 11:15:55  lollisoft
+ * Changed wxFrame class structure and added support for splitter windows.
+ *
  * Revision 1.111  2006/01/30 15:54:15  lollisoft
  * Removed the __FILE__ and __LINE__ parameter usage in UAP and QI.
  * This was an unnessesary thing and makes programming easier.
@@ -1889,7 +1892,8 @@ protected:
          */
 /*...e*/
         lb_wxGUI* wxGUI;
-        lb_wxFrame* frame_peer;
+
+        //UAP(lb_I_EventHandler, frame)
 
 	// Storage for event ID's generated on the fly
         
@@ -1903,7 +1907,7 @@ protected:
         int _disableEvent;
         int _toggleEvent;
         int _askYesNo;
-		int AskOpenFileReadStream;
+	int AskOpenFileReadStream;
 		
         
         
@@ -1923,7 +1927,7 @@ protected:
         UAP(lb_I_MetaApplication, metaApp) 
 /*...e*/
 /*...sframe:8:*/
-	lb_I_wxFrame *frame;
+	lb_wxFrame *frame;
 /*...e*/
 
 	char buffer[100];
@@ -2010,52 +2014,23 @@ bool MyApp::OnInit(void)
 
     metaApp++;
 
-	
-/*...sCreate the frame:0:*/
-#ifndef LB_I_EXTENTIONS
-  // Create the main frame window
-  frame = new MyFrame(NULL, "Dynamic wxWindows App", 50, 50, 450, 340);
-#endif
-#ifdef LB_I_EXTENTIONS
     lbErrCodes err = ERR_NONE;
 
-/*...sget the dispatcher \40\all handlers must be registered there\41\:0:*/
-	disp->setEventManager(ev_manager.getPtr());
+    disp->setEventManager(ev_manager.getPtr());
 		
     if (disp == NULL) _LOG << "Fatal: Have not got a dispatcher!" LOG_
-/*...e*/
 
-//  UAP_REQUEST(mm, lb_I_Log, logger)
-
-/*...sdid I need wxGUI here \63\ It registers event handlers from the wxGUI:0:*/
-  if (wxGUI == NULL) {
+    if (wxGUI == NULL) {
         wxGUI = new lb_wxGUI();
         wxGUI->setModuleManager(mm.getPtr(), __FILE__, __LINE__);
-/* No event for a cleanup issue, that can be handled by lb_wxFrame knowing of wxGUI
-	int wxGUI_Cleanup;
-
-	ev_manager->registerEvent("wxGUI_Cleanup", wxGUI_Cleanup);
-
-        wxGUI->registerEventHandler(*&disp);
-*/
-
 
 	// Register Events, that I provide
 
 	ev_manager->registerEvent("AddMenu", AddMenu);
 	ev_manager->registerEvent("AddMenuBar", AddMenuBar);
 	ev_manager->registerEvent("AddButton", AddButton);	
-	
-	
-	/*
-	 * Registering an AddMenuEntry handler is a more specific handler,
-	 * that need special handler data. This means herefore, an information,
-	 * who is responsible for that event and what event should be issued to
-	 * the targed handler. It might be these parameters:
-	 *
-	 * target	= target handler for handling id 
-	 * event	= event id to be issued
-	 */
+
+	ev_manager->registerEvent("showLeft", AddButton);	
 	
 	ev_manager->registerEvent("AddMenuEntry", AddMenuEntry);
 	ev_manager->registerEvent("AddLabel", AddLabel);
@@ -2065,281 +2040,55 @@ bool MyApp::OnInit(void)
 	ev_manager->registerEvent("enableEvent", _enableEvent);
 	ev_manager->registerEvent("disableEvent", _disableEvent);
 	ev_manager->registerEvent("toggleEvent", _toggleEvent);
-    /**
-     * Register any event handler from this instance by the wxGUI wrapper.
-     */
-    registerEventHandler(*&disp);
-  }
-/*...e*/
 
-/*...sload the frame \40\peer is the frame \63\\63\\41\:0:*/
+        registerEventHandler(*&disp);
+    }
 
+    UAP(lb_I_Unknown, uk)
+    uk = wxGUI->createFrame();
+    uk++;
 
-_CL_LOG << "Create frame." LOG_
-	lb_I_Unknown *uk = wxGUI->createFrame();
-_CL_LOG << "Created frame." LOG_
+    frame = (lb_wxFrame*) uk.getPtr();
 
-	#ifdef VERBOSE
-	char ptr[20] = "";
-	sprintf(ptr, "%p", uk);
+    frame->registerEventHandler(*&disp);
+
+    // Fake. Parameter not used yet.
+    wxGUI->setIcon("mondrian");
+
+    //err = frame->createEventsource(this);
+
+    wxGUI->registerEventHandler(*&disp);
+
+    if (err != ERR_NONE) _LOG << "Have some problems to set up menu event sources" LOG_
+
   
-	_LOG << "Have got a frame: " << ptr LOG_
-  	#endif
-  	
-	/**
-	 * A Peer interface to get the derived class
-	 */
+    frame->Centre();
+    frame->Show(TRUE);
 
-	//  QI(uk_em, lb_I_EventManager, ev_manager)
-	//  QI(uk, lb_I_wxFrame, frame)
+    SetTopWindow(frame);
 
+    if (metaApp != NULL) {
+        metaApp->setGUI(wxGUI);
 
-	uk->queryInterface("lb_I_wxFrame", (void**) &frame, __FILE__, __LINE__);
+        metaApp->Initialize();
+        metaApp->disableEvent("showLeftPropertyBar");
+    } 
+
+    PM->initialize();
+
+    if (PM->beginEnumPlugins()) {
 	
-	frame_peer = frame->getPeer();
-  
-  
-/*...e*/
-  
-#endif
-/*...e*/
+    while (TRUE) {
+        UAP(lb_I_Plugin, pl)
+        pl = PM->nextPlugin();
+        if (pl == NULL) break;
+            pl->initialize();
+        }
+    }
 
-/*...sInitializiation of the hardcoded part \40\regardless of delegation or not\41\:0:*/
-/*...sHardcoded event registration\9\\40\we do it here\41\:0:*/
-#ifndef LB_I_EXTENTIONS
-  frame->Connect( DYNAMIC_QUIT,  -1, wxEVT_COMMAND_MENU_SELECTED,
-                  (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
-                  &MyFrame::OnQuit );
-  frame->Connect( DYNAMIC_ABOUT, -1, wxEVT_COMMAND_MENU_SELECTED,
-                  (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
-                  &MyFrame::OnAbout );
-  frame->Connect( DYNAMIC_VERBOSE, -1, wxEVT_COMMAND_MENU_SELECTED,
-                  (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
-                  &MyFrame::OnVerbose );
-		  
-#endif
-/*...e*/
-/*...sDelegated event registration\9\\40\peer does this for us\41\:0:*/
-#ifdef LB_I_EXTENTIONS
-  /**
-   * Lets the frame search for events, that can handled by this instance.
-   * For that, the class MyApp must be derived from lb_I_EventHandler.
-   * registerEvents is self calls that->getHandlerHavetoConnected() to get a
-   * list of events have to be connected for that object.
-   * In this case, a quit and an about event.
-   */
-  frame_peer->registerEvents(this);
-/*...sregisterEvents\40\\41\ sample:0:*/
-/*
-  MyFrane::registerEvents(lb_I_EventConnector* object) {
-      // Register my own event handler, but the info about what events
-      // comes from an extern event connector.
-      list = object->getHandlerHavetoConnected();
+    if (metaApp != NULL) metaApp->run();
 
-      for (int i = 0; i < list->getCount(); i++) {
-        char* eventName = list->getAt(i);
-        Connect(eventName, getEventFunction(eventName));
-      }
-  }
-*/
-/*...e*/
-#endif
-/*...e*/
-
-/*...sset an icon:0:*/
-#ifndef LB_I_EXTENTIONS
-/*...san icon:0:*/
-  // Give it an icon
-#ifdef __WXMSW__
-  frame->SetIcon(wxIcon("mondrian"));
-#else
-  frame->SetIcon(wxIcon(mondrian_xpm));
-#endif
-/*...e*/
-#endif
-#ifdef LB_I_EXTENTIONS
-/*...san icon:0:*/
-  // Give it an icon
-#ifdef __WXMSW__
-  frame_peer->SetIcon(wxIcon("mondrian"));
-#else
-#ifndef OSX
-  frame_peer->SetIcon(wxIcon(mondrian_xpm));
-#endif
-#endif
-/*...e*/
-#endif
-/*...e*/
-
-/*...sHardcoded menu \9\\9\\9\\40\we do it here\41\:0:*/
-#ifndef LB_I_EXTENTIONS
-/*...screate a menu:0:*/
-  // Make a menubar
-  wxMenu *file_menu = new wxMenu;
-  
-  file_menu->Append(DYNAMIC_ABOUT, "&About");
-  file_menu->Append(DYNAMIC_QUIT, "E&xit");
-  file_menu->Append(DYNAMIC_VERBOSE, "&Verbose");
-
-//  file_menu->Append(GUI->useEvent("DYNAMIC_ABOUT"), "&About");
-//  file_menu->Append(GUI->useEvent("DYNAMIC_QUIT"), "E&xit");
-
-  wxMenuBar *menu_bar = new wxMenuBar;
-  menu_bar->Append(file_menu, "&File");
-/*...e*/
-
-/*...sset the created menubar:0:*/
-#ifndef LB_I_EXTENTIONS
-  frame->SetMenuBar(menu_bar);
-#endif
-#ifdef LB_I_EXTENTIONS
-  frame_peer->SetMenuBar(menu_bar);
-#endif
-/*...e*/
-#endif
-/*...e*/
-/*...sDelegated menucreation \9\\9\\40\peer does this for us\41\:0:*/
-#ifdef LB_I_EXTENTIONS
-/*...sDoc \45\ creating the menu:0:*/
-  /**
-   * Make an event source from the app event list.
-   * The application may have more events than the frame.
-   * This is nod bad. In this case not all event source objects are
-   * created. So the application is not completely implemented, but
-   * it can be tested with that functionality.
-   * A menu event source may be assigned to the frame. But it may also
-   * assigned a toolbar. So the result sould be an unknown reference.
-   *
-   * It may be decided by the developer of an application.
-   */
-/*...e*/
-
-  err = frame_peer->createEventsource(this);
-
-  wxGUI->registerEventHandler(*&disp);
-
-  
-  if (err != ERR_NONE) _LOG << "Have some problems to set up menu event sources" LOG_
-  
-/*...sa text edit sample:0:*/
-  /**
-   * As a sample, the application is a simple texteditor, then a texteditormodule
-   * may be used for that functionality.
-   
-   The module for the text editor will be in another library. While getting this information
-   from the module manager, it is simple to implement this (hidden here).
-
-   lb_I_TextEditor* textedit = GUI->createTextEditor();
-   
-   All the events will be registered.
-   
-   textedit->registerEvents(this);
-   
-   The event source may be modified. Possibly with the following additions:
-   A menu for open a document,
-   close it,
-   save it and
-   show document property.
-   
-   textedit->createEventsource(this);
-   
-   if (textedit->checkEvents() == 0) {
-        // Show an error, that some event groups are not completely
-        // connected.
-   }
-   
-   */
-/*...e*/
-  
-#endif
-/*...e*/
-
-/*...sMake a panel with a message:0:*/
-  // Make a panel with a message
-#ifndef LB_I_EXTENTIONS
-  panel = new wxPanel(frame, -1, wxPoint(0, 0), wxSize(400, 200), wxTAB_TRAVERSAL);
-#endif
-
-
-#ifndef LB_I_EXTENTIONS
-  char* hello = NULL;
-  hello = "Hello!";
-  (void)new wxStaticText(panel, 311, hello, wxPoint(10, 10), wxSize(-1, -1), 0);
-#endif
-/*...e*/
-#ifdef LB_I_EXTENTIONS
-#ifdef VERBOSE
-_LOG << "Made panel" LOG_
-#endif
-#endif
-/*...sShow the window:0:*/
-#ifdef LB_I_EXTENTIONS
-  // Show the frame
-  
-  frame_peer->Centre();
-  frame_peer->Show(TRUE);
-
-  SetTopWindow(frame_peer);
-#endif
-#ifndef LB_I_EXTENTIONS
-  // Show the frame
-  
-  frame->Centre();
-  frame->Show(TRUE);
-
-  SetTopWindow(frame);
-#endif
-/*...e*/
-#ifdef LB_I_EXTENTIONS
-#ifdef VERBOSE
-_LOG << "Showed the window" LOG_
-#endif
-#endif
-
-
-/*...e*/
-
-/*...sInit the meta application:0:*/
-#ifdef LB_I_EXTENTIONS
-  if (metaApp != NULL) {
-      metaApp->setGUI(wxGUI);
-
-      /**
-       * Try to register an event source for a basic information about the
-       * application module as a first step.
-       */
-      metaApp->Initialize();
-      _CL_LOG << "Initialized the meta application" LOG_
-  } 
-#endif
-/*...e*/
-
-/*...sInit plugins:0:*/
-	PM->initialize();
-
-	if (PM->beginEnumPlugins()) {
-	
-		while (TRUE) {
-		
-			UAP(lb_I_Plugin, pl)
-			
-			pl = PM->nextPlugin();
-			
-			if (pl == NULL) break;
-
-			pl->initialize();
-		
-		}
-	}
-/*...e*/
-
-#ifdef LB_I_EXTENTIONS
-  if (metaApp != NULL) metaApp->run();
-#endif
-
-_CL_LOG << "MyApp::OnInit() ready." LOG_
-
-  return TRUE;
+    return TRUE;
 }
 /*...e*/
 #ifdef LB_I_EXTENTIONS
@@ -2372,7 +2121,7 @@ lbErrCodes LB_STDCALL MyApp::registerEventHandler(lb_I_Dispatcher* disp) {
 }
 /*...e*/
 /*...sevent handler:0:*/
-/*...slbErrCodes LB_STDCALL MyApp\58\\58\HandleGetFrame\40\lb_I_Unknown\42\ uk\41\:0:*/
+/*...sHandleGetFrame\9\\9\Handler:0:*/
 lbErrCodes LB_STDCALL MyApp::HandleGetFrame(lb_I_Unknown* uk) {
         if(frame != NULL) {
                 lb_I_Unknown* _uk;
@@ -2386,7 +2135,7 @@ lbErrCodes LB_STDCALL MyApp::HandleGetFrame(lb_I_Unknown* uk) {
         return ERR_NONE;
 }
 /*...e*/
-/*...slbErrCodes LB_STDCALL MyApp\58\\58\HandleAddMenu\40\lb_I_Unknown\42\ uk\41\:0:*/
+/*...sHandleAddMenu\9\\9\Handler:0:*/
 lbErrCodes LB_STDCALL MyApp::HandleAddMenu(lb_I_Unknown* uk) {
 	lbErrCodes err = ERR_NONE;
 
@@ -2399,17 +2148,13 @@ lbErrCodes LB_STDCALL MyApp::HandleAddMenu(lb_I_Unknown* uk) {
 	menu->Append(DYNAMIC_TEST1, "&About");
 	menu->Append(DYNAMIC_TEST2, "E&xit");
 	    
-	wxMenuBar* mBar = frame_peer->getMenuBar();
+	wxMenuBar* mBar = frame->getMenuBar();
 	mBar->Append(menu, "&Edit");
 
         return ERR_NONE;
 }
 /*...e*/
-
-lbErrCodes LB_STDCALL MyApp::addMenu(lb_I_Unknown* uk) {
-	return ERR_NONE;
-}
-
+/*...saskOpenFileReadStream\9\Handler:0:*/
 lbErrCodes LB_STDCALL MyApp::askOpenFileReadStream(lb_I_Unknown* uk) {
 	lbErrCodes err = ERR_NONE;
 
@@ -2441,6 +2186,8 @@ lbErrCodes LB_STDCALL MyApp::askOpenFileReadStream(lb_I_Unknown* uk) {
 	
 	return err;
 }
+/*...e*/
+/*...saskYesNo\9\\9\\9\Handler:0:*/
 lbErrCodes LB_STDCALL MyApp::askYesNo(lb_I_Unknown* uk) {
 	lbErrCodes err = ERR_NONE;
 
@@ -2470,8 +2217,9 @@ lbErrCodes LB_STDCALL MyApp::askYesNo(lb_I_Unknown* uk) {
 	
 	return err;
 }
+/*...e*/
 
-/*...sAddMenuBar\9\\9\Handler:0:*/
+/*...saddMenuBar\9\\9\\9\Handler:0:*/
 lbErrCodes LB_STDCALL MyApp::addMenuBar(lb_I_Unknown* uk) {
 	lbErrCodes err = ERR_NONE;
 
@@ -2493,7 +2241,7 @@ lbErrCodes LB_STDCALL MyApp::addMenuBar(lb_I_Unknown* uk) {
 		
 		wxMenu *menu = new wxMenu;
 		
-		wxMenuBar* mbar = frame_peer->getMenuBar();
+		wxMenuBar* mbar = frame->getMenuBar();
 		
 		int pos = 0;
 		
@@ -2505,14 +2253,14 @@ lbErrCodes LB_STDCALL MyApp::addMenuBar(lb_I_Unknown* uk) {
 	} else {
 		wxMenu *menu = new wxMenu;
 
-		wxMenuBar* mbar = frame_peer->getMenuBar();
+		wxMenuBar* mbar = frame->getMenuBar();
 		if (mbar) mbar->Append(menu, name->getData());
 	}
 	
 	return err;
 }
 /*...e*/
-/*...sAddMenuEntry\9\Handler:0:*/
+/*...saddMenuEntry\9\\9\Handler:0:*/
 /**
  * Add a menu entry to a specific menubar.
  *
@@ -2551,13 +2299,13 @@ lbErrCodes LB_STDCALL MyApp::addMenuEntry(lb_I_Unknown* uk) {
 		return ERR_EVENT_NOTREGISTERED;
 	}
 
-	wxMenuBar* mbar = frame_peer->getMenuBar();
+	wxMenuBar* mbar = frame->getMenuBar();
 	
 	wxMenu* menu = mbar->GetMenu(mbar->FindMenu(wxString(menubar->getData())));
 
 	menu->Append(EvNr, menuname->getData());
 
-	((wxFrame*) frame_peer)->Connect( EvNr,  -1, wxEVT_COMMAND_MENU_SELECTED,
+	((wxFrame*) frame)->Connect( EvNr,  -1, wxEVT_COMMAND_MENU_SELECTED,
           (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
           &lb_wxFrame::OnDispatch );
 
@@ -2565,6 +2313,7 @@ lbErrCodes LB_STDCALL MyApp::addMenuEntry(lb_I_Unknown* uk) {
 /*...e*/
 }
 /*...e*/
+/*...stoggleEvent\9\\9\\9\Handler:0:*/
 lbErrCodes LB_STDCALL MyApp::toggleEvent(lb_I_Unknown* uk) {
 	lbErrCodes err = ERR_NONE;
 
@@ -2586,12 +2335,14 @@ lbErrCodes LB_STDCALL MyApp::toggleEvent(lb_I_Unknown* uk) {
 		return ERR_EVENT_NOTREGISTERED;
 	}
 
-	wxMenuBar* mbar = frame_peer->getMenuBar();
+	wxMenuBar* mbar = frame->getMenuBar();
 
 	mbar->Enable(EvNr, mbar->IsEnabled(EvNr));
 
 	return err;
 }
+/*...e*/
+/*...sdisableEvent\9\\9\Handler:0:*/
 lbErrCodes LB_STDCALL MyApp::disableEvent(lb_I_Unknown* uk) {
 	lbErrCodes err = ERR_NONE;
 
@@ -2613,12 +2364,14 @@ lbErrCodes LB_STDCALL MyApp::disableEvent(lb_I_Unknown* uk) {
 		return ERR_EVENT_NOTREGISTERED;
 	}
 
-	wxMenuBar* mbar = frame_peer->getMenuBar();
+	wxMenuBar* mbar = frame->getMenuBar();
 
 	mbar->Enable(EvNr, false);
 
 	return err;
 }
+/*...e*/
+/*...senableEvent\9\\9\\9\Handler:0:*/
 lbErrCodes LB_STDCALL MyApp::enableEvent(lb_I_Unknown* uk) {
 	lbErrCodes err = ERR_NONE;
 
@@ -2640,14 +2393,14 @@ lbErrCodes LB_STDCALL MyApp::enableEvent(lb_I_Unknown* uk) {
 		return ERR_EVENT_NOTREGISTERED;
 	}
 
-	wxMenuBar* mbar = frame_peer->getMenuBar();
+	wxMenuBar* mbar = frame->getMenuBar();
 
 	mbar->Enable(EvNr, true);
 
 	return err;
 }
-
-/*...sAddButton \9\\9\Handler:0:*/
+/*...e*/
+/*...saddButton \9\\9\\9\Handler:0:*/
 /**
  * Add a button to the active window.
  *
@@ -2656,7 +2409,6 @@ lbErrCodes LB_STDCALL MyApp::enableEvent(lb_I_Unknown* uk) {
  *      handlername:    Name of handler
  */
 lbErrCodes LB_STDCALL MyApp::addButton(lb_I_Unknown* uk) {
-/*...scode:0:*/
 	lbErrCodes err = ERR_NONE;
 
 	UAP_REQUEST(manager.getPtr(), lb_I_EventManager, ev_manager)
@@ -2688,31 +2440,21 @@ lbErrCodes LB_STDCALL MyApp::addButton(lb_I_Unknown* uk) {
 	int EvNr = 0;
 	ev_manager->resolveEvent(handlername->getData(), EvNr);
 
-	lb_wxFrame* f = frame_peer->getPeer();
-	
-//	if (panel == NULL) panel = new wxPanel(f);
-	
 	wxButton *button = new wxButton(panel, EvNr, buttontext->getData(), 
 					wxPoint(x->getData(),y->getData()), 
 					wxSize((int) w->getData(),(int) h->getData() ));
 
-	((wxFrame*) frame_peer)->Connect( EvNr,  -1, wxEVT_COMMAND_BUTTON_CLICKED,
+	frame->Connect( EvNr,  -1, wxEVT_COMMAND_BUTTON_CLICKED,
 	  (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
 	    &lb_wxFrame::OnDispatch );
 
 	return ERR_NONE;
-/*...e*/
 }
 /*...e*/
-
+/*...saddLabel\9\\9\\9\Handler:0:*/
 lbErrCodes LB_STDCALL MyApp::addLabel(lb_I_Unknown* uk) {
-#ifdef VERBOSE
-	_LOG << "lbErrCodes LB_STDCALL MyApp::addLabel(lb_I_Unknown* uk) called" LOG_
-#endif
-/*...scode:0:*/
 	_LOG << "MyApp::addLabel called" LOG_
 	lbErrCodes err = ERR_NONE;
-
 
 	UAP_REQUEST(manager.getPtr(), lb_I_EventManager, ev_manager)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
@@ -2722,11 +2464,9 @@ lbErrCodes LB_STDCALL MyApp::addLabel(lb_I_Unknown* uk) {
 	UAP_REQUEST(manager.getPtr(), lb_I_Integer, w)
 	UAP_REQUEST(manager.getPtr(), lb_I_Integer, h)	
 	
-	
 	UAP(lb_I_Parameter, param)
 
 	QI(uk, lb_I_Parameter, param)
-
 
 	parameter->setData("labeltext");
 	param->getUAPString(*&parameter, *&buttontext);
@@ -2739,23 +2479,14 @@ lbErrCodes LB_STDCALL MyApp::addLabel(lb_I_Unknown* uk) {
 	parameter->setData("h");
 	param->getUAPInteger(*&parameter, *&h);	
 	
-	lb_wxFrame* f = frame_peer->getPeer();
-	
-	_LOG "Create a static text" LOG_
-
-
 	wxStaticText *text = new wxStaticText(panel, -1, buttontext->getData(), wxPoint(x->getData(),y->getData()),
 					wxSize((int) w->getData(),(int) h->getData() ));
 
-/*...e*/
 	return ERR_NONE;
 }
-
+/*...e*/
+/*...saddTextField\9\\9\Handler:0:*/
 lbErrCodes LB_STDCALL MyApp::addTextField(lb_I_Unknown* uk) {
-#ifdef VERBOSE
-	_LOG << "lbErrCodes LB_STDCALL MyApp::addTextField(lb_I_Unknown* uk) called" LOG_
-#endif
-/*...scode:0:*/
 	lbErrCodes err = ERR_NONE;
 
 	UAP_REQUEST(manager.getPtr(), lb_I_EventManager, ev_manager)
@@ -2766,11 +2497,9 @@ lbErrCodes LB_STDCALL MyApp::addTextField(lb_I_Unknown* uk) {
 	UAP_REQUEST(manager.getPtr(), lb_I_Integer, w)
 	UAP_REQUEST(manager.getPtr(), lb_I_Integer, h)	
 	
-	
 	UAP(lb_I_Parameter, param)
 
 	QI(uk, lb_I_Parameter, param)
-
 
 	parameter->setData("text");
 	param->getUAPString(*&parameter, *&buttontext);
@@ -2783,18 +2512,15 @@ lbErrCodes LB_STDCALL MyApp::addTextField(lb_I_Unknown* uk) {
 	parameter->setData("h");
 	param->getUAPInteger(*&parameter, *&h);	
 	
-	lb_wxFrame* f = frame_peer->getPeer();
-	
-#ifdef VERBOSE
-	_LOG "Create a static text" LOG_
-#endif
-
 	wxTextCtrl *text = new 
 	
 	wxTextCtrl(panel, -1, buttontext->getData(), wxPoint(x->getData(),y->getData()),
 					wxSize((int) w->getData(),(int) h->getData() ));
 
+	return ERR_NONE;
+}
 /*...e*/
+lbErrCodes LB_STDCALL MyApp::addMenu(lb_I_Unknown* uk) {
 	return ERR_NONE;
 }
 /*...e*/

@@ -33,11 +33,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.8 $
+ * $Revision: 1.9 $
  * $Name:  $
- * $Id: wxWrapperDLL.h,v 1.8 2006/01/30 15:54:15 lollisoft Exp $
+ * $Id: wxWrapperDLL.h,v 1.9 2006/02/04 11:16:32 lollisoft Exp $
  *
  * $Log: wxWrapperDLL.h,v $
+ * Revision 1.9  2006/02/04 11:16:32  lollisoft
+ * Changed wxFrame class structure and added support for splitter windows.
+ *
  * Revision 1.8  2006/01/30 15:54:15  lollisoft
  * Removed the __FILE__ and __LINE__ parameter usage in UAP and QI.
  * This was an unnessesary thing and makes programming easier.
@@ -116,7 +119,9 @@ class lb_wxGUI;
  */
 class DLLEXPORT lb_wxFrame : 
 		public wxFrame,
-                public lb_I_wxFrame
+//                public lb_I_wxFrame,
+		public lb_I_Unknown,
+                public lb_I_EventHandler
 { 
 public:
 /*...sctors\47\dtors:8:*/
@@ -135,12 +140,6 @@ public:
 	 * Set the GUI wrapper instance.
 	 */
 	void setGUI(lb_wxGUI* _gui) { gui = _gui; }
-
-	/**
-	 * Intented to typecast to derived class. Not sure, if this is really stupid.
-	 * Where is it used ?
-	 */
-        virtual lb_wxFrame* getPeer() { return this; } 
 
 public:
         void OnQuit(wxCommandEvent& event);
@@ -187,21 +186,22 @@ public:
          * Mixin the interface code, so the base of wxFrame can be used.
          * Simple a dummy code yet.
          */
-        virtual lb_I_EventCallback LB_STDCALL getEventFunction(char* name) { return NULL; }
-        virtual lbErrCodes LB_STDCALL Connect(char* evName, lb_I_EventCallback evFn) { return ERR_NONE; }
-        virtual lbErrCodes LB_STDCALL getSinkEventList(lb_I_Container* c) { return ERR_NONE; }
-
-        virtual lbErrCodes LB_STDCALL registerEvents(lb_I_EventConnector* object);
-        
-        virtual lbErrCodes LB_STDCALL createEventsource(lb_I_EventConnector* object);
-        virtual lb_I_Unknown* LB_STDCALL getEventsource(lb_I_EventConnector* object) { return NULL; }
+      
+	lbErrCodes LB_STDCALL registerEventHandler(lb_I_Dispatcher* disp);
 
 	/// Show or hide left panel.
 	void LB_STDCALL showLeftPanel(bool show);
 	
 	/// Is left panel visible ?
 	bool LB_STDCALL isSplitted() { return _isSplitted; }
+
+	bool LB_STDCALL isPanelUsage() { return panelUsage; }
         
+// Event handlers        
+        
+        lbErrCodes LB_STDCALL showLeftPropertyBar(lb_I_Unknown* uk);
+	lbErrCodes LB_STDCALL switchPanelUse(lb_I_Unknown* uk);
+
         wxMenuBar* menu_bar;
 
 	// Splitter window handling
@@ -210,9 +210,15 @@ public:
 	wxWindow *m_replacewindow;
 	
 	bool _isSplitted;            
+        bool panelUsage;
         
         lb_wxGUI* gui;
         int guiCleanedUp;
+
+	// Registered event handler IS's
+	int on_panel_usage;
+	int _showLeftPropertyBar;
+
         
         UAP(lb_I_EventManager, eman)
         UAP(lb_I_Dispatcher, dispatcher)
@@ -240,8 +246,6 @@ public:
 		dialog = NULL;
 		sizerMain = NULL;
 		
-		// Use lbDatabasePanel
-		panelUsage = true;
 	}
 
 	virtual ~lb_wxGUI() { 
@@ -379,6 +383,8 @@ public:
 
 	void LB_STDCALL showForm(char* name);
 
+	void LB_STDCALL setIcon(char* name);
+
 	/*
 	 * Cleanup. This will destroy all possible (hidden) dialogs.
 	 * These dialogs are like the database form sample dialog, wich woild
@@ -386,9 +392,6 @@ public:
 	 */
 
 	lbErrCodes LB_STDCALL cleanup();
-
-	lbErrCodes LB_STDCALL switchPanelUse(lb_I_Unknown* uk);
-
 
         int eventCount;
         
@@ -399,7 +402,6 @@ public:
         
         bool handlersInitialized;
         
-        bool panelUsage;
         lb_I_DatabaseForm* dialog;
         wxNotebook* notebook;
 	wxBoxSizer* sizerMain;
