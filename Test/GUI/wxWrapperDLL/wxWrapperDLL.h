@@ -33,11 +33,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.9 $
+ * $Revision: 1.10 $
  * $Name:  $
- * $Id: wxWrapperDLL.h,v 1.9 2006/02/04 11:16:32 lollisoft Exp $
+ * $Id: wxWrapperDLL.h,v 1.10 2006/02/06 14:49:41 lollisoft Exp $
  *
  * $Log: wxWrapperDLL.h,v $
+ * Revision 1.10  2006/02/06 14:49:41  lollisoft
+ * Try to implement left panel using wxPropertyGrid
+ *
  * Revision 1.9  2006/02/04 11:16:32  lollisoft
  * Changed wxFrame class structure and added support for splitter windows.
  *
@@ -200,7 +203,9 @@ public:
 // Event handlers        
         
         lbErrCodes LB_STDCALL showLeftPropertyBar(lb_I_Unknown* uk);
-	lbErrCodes LB_STDCALL switchPanelUse(lb_I_Unknown* uk);
+		lbErrCodes LB_STDCALL switchPanelUse(lb_I_Unknown* uk);
+
+		lbErrCodes LB_STDCALL setPreferredPropertyPanelByNamespace(lb_I_Unknown* uk);
 
         wxMenuBar* menu_bar;
 
@@ -209,17 +214,19 @@ public:
 	wxSplitterWindow* m_splitter;
 	wxWindow *m_replacewindow;
 	
-	bool _isSplitted;            
+		bool _isSplitted;            
         bool panelUsage;
-        
+		
+       
         lb_wxGUI* gui;
         int guiCleanedUp;
 
-	// Registered event handler IS's
-	int on_panel_usage;
-	int _showLeftPropertyBar;
+		// Registered event handler IS's
+		int on_panel_usage;
+		int _showLeftPropertyBar;
 
         
+		UAP(lb_I_String, PanelNamespace)
         UAP(lb_I_EventManager, eman)
         UAP(lb_I_Dispatcher, dispatcher)
 };

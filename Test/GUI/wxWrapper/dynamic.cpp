@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.113 2006/02/04 18:14:58 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.114 2006/02/06 14:49:41 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.113 $
+ * $Revision: 1.114 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.113 2006/02/04 18:14:58 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.114 2006/02/06 14:49:41 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.114  2006/02/06 14:49:41  lollisoft
+ * Try to implement left panel using wxPropertyGrid
+ *
  * Revision 1.113  2006/02/04 18:14:58  lollisoft
  * Adaptions to Linux
  *
@@ -2091,10 +2094,6 @@ bool MyApp::OnInit(void)
     }
 
     if (metaApp != NULL) metaApp->run();
-
-    _CL_LOG << "wxGUI has " << wxGUI->getRefCount() << " references." LOG_
-    
-    setVerbose(true);
 
     return TRUE;
 }

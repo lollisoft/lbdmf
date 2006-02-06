@@ -19,10 +19,11 @@
 		};
 		270BA7B6086C0A0900799F65 = {
 			children = (
+				27CEEFCA099686730038005D,
+				27F462A709960253007178F9,
 				27CE9A1C08D4A87C00FB3DF0,
 				2766157708D4AD9900675AD6,
 				27CE9A1D08D4A87C00FB3DF0,
-				2766157908D4ADF700675AD6,
 				27240A6808D49FA3009B29CA,
 				27240A8908D4A2C0009B29CA,
 				27240A8A08D4A2C0009B29CA,
@@ -41,6 +42,7 @@
 				27C524F7086F1E06005DB6C8,
 				27C524F5086F1D66005DB6C8,
 				27B91DB1086EEA3300DB17D6,
+				27CEEFD00996869B0038005D,
 				2764970D086ED80A000EB62C,
 				27B91DA9086EE5CE00DB17D6,
 			);
@@ -88,6 +90,7 @@
 				27240A5408D49DBE009B29CA,
 				27240A6208D49F10009B29CA,
 				27CE9A1108D4A77600FB3DF0,
+				27A8F1D5099684740010AF15,
 			);
 		};
 		27240A5408D49DBE009B29CA = {
@@ -107,7 +110,7 @@
 				INSTALL_PATH = /usr/local/lib;
 				LIBRARY_STYLE = DYNAMIC;
 				OTHER_CFLAGS = "";
-				OTHER_CPLUSPLUSFLAGS = "-I$(HOME)/develop/Projects/CPP/Test/GUI/wxWrapperDLL -I$(HOME)/wxMac-2.6.1/lib/wx/include/mac-ansi-debug-2.6 -I$(HOME)/wxMac-2.6.1/include -I$(HOME)/wxMac-2.6.1/contrib/include -D__WXDEBUG__ -D__WXMAC__ -D_FILE_OFFSET_BITS=64 -D_LARGE_FILES -DNO_GCC_PRAGMA -DUSE_WXWRAPPER_DLL";
+				OTHER_CPLUSPLUSFLAGS = "-I$(HOME)/develop/Projects/CPP/Test/GUI/wxWrapperDLL -DUSE_WXWRAPPER_DLL -I/usr/local/lib/wx/include/mac-ansi-debug-2.6 -I/usr/local/include/wx-2.6 -D__WXDEBUG__ -D__WXMAC__ -D_FILE_OFFSET_BITS=64 -D_LARGE_FILES -DNO_GCC_PRAGMA";
 				OTHER_LDFLAGS = "-L/usr/local/lib   -framework QuickTime -framework IOKit -framework Carbon -framework Cocoa -framework System  -lwx_macd-2.6 -ldl -lc $(HOME)/lib/lbHook.so $(HOME)/lib/wxWrapperDLL.so";
 				OTHER_REZFLAGS = "";
 				PRODUCT_NAME = lbDatabaseForm;
@@ -143,6 +146,7 @@
 				27240A7108D49FA3009B29CA,
 				27CE9A1E08D4A87C00FB3DF0,
 				27CE9A1F08D4A87C00FB3DF0,
+				27F462A809960253007178F9,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -179,7 +183,7 @@
 				INSTALL_PATH = /usr/local/lib;
 				LIBRARY_STYLE = DYNAMIC;
 				OTHER_CFLAGS = "";
-				OTHER_CPLUSPLUSFLAGS = "-I$(HOME)/develop/Projects/CPP/Test/GUI/wxWrapperDLL -I$(HOME)/wxMac-2.6.1/lib/wx/include/mac-ansi-debug-2.6 -I$(HOME)/wxMac-2.6.1/include -I$(HOME)/wxMac-2.6.1/contrib/include -D__WXDEBUG__ -D__WXMAC__ -D_FILE_OFFSET_BITS=64 -D_LARGE_FILES -DNO_GCC_PRAGMA";
+				OTHER_CPLUSPLUSFLAGS = "-I$(HOME)/develop/Projects/CPP/Test/GUI/wxWrapperDLL -I/usr/local/lib/wx/include/mac-ansi-debug-2.6 -I/usr/local/include/wx-2.6 -D__WXDEBUG__ -D__WXMAC__ -D_FILE_OFFSET_BITS=64 -D_LARGE_FILES -DNO_GCC_PRAGMA";
 				OTHER_LDFLAGS = "-L/usr/local/lib   -framework QuickTime -framework IOKit -framework Carbon -framework Cocoa -framework System  -lwx_macd-2.6 -ldl -lc $(HOME)/lib/lbHook.so $(HOME)/lib/wxWrapperDLL.so";
 				OTHER_REZFLAGS = "";
 				PRODUCT_NAME = lbDatabaseReport;
@@ -419,6 +423,7 @@
 				27240A6708D49F10009B29CA,
 				2766152F08D4ABD700675AD6,
 				2766157408D4AD6C00675AD6,
+				27ACE22A09976271000541A3,
 			);
 			isa = PBXGroup;
 			name = Products;
@@ -429,7 +434,7 @@
 			explicitFileType = "compiled.mach-o.dylib";
 			includeInIndex = 0;
 			isa = PBXFileReference;
-			path = lbDatabaseForm.so;
+			path = wxWrapperDLL.so;
 			refType = 3;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
@@ -452,21 +457,6 @@
 		};
 		2766157808D4AD9900675AD6 = {
 			fileRef = 2766157708D4AD9900675AD6;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		2766157908D4ADF700675AD6 = {
-			fileEncoding = 30;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.cpp.cpp;
-			name = wxWrapperDLL.cpp;
-			path = /Users/lothar/develop/Projects/CPP/Test/GUI/wxWrapperDLL/wxWrapperDLL.cpp;
-			refType = 0;
-			sourceTree = "<absolute>";
-		};
-		2766157A08D4ADF700675AD6 = {
-			fileRef = 2766157908D4ADF700675AD6;
 			isa = PBXBuildFile;
 			settings = {
 			};
@@ -585,7 +575,7 @@
 				INSTALL_PATH = "$(USER_APPS_DIR)";
 				LIBRARY_STYLE = BUNDLE;
 				OTHER_CFLAGS = "";
-				OTHER_CPLUSPLUSFLAGS = "-I$(HOME)/develop/Projects/CPP/Test/GUI/wxWrapperDLL -I$(HOME)/wxMac-2.6.1/lib/wx/include/mac-ansi-debug-2.6 -I$(HOME)/wxMac-2.6.1/include -I$(HOME)/wxMac-2.6.1/contrib/include -D__WXDEBUG__ -D__WXMAC__ -D_FILE_OFFSET_BITS=64 -D_LARGE_FILES -DNO_GCC_PRAGMA -DUSE_WXWRAPPER_DLL";
+				OTHER_CPLUSPLUSFLAGS = "-I$(HOME)/develop/Projects/CPP/Test/GUI/wxWrapperDLL -DUSE_WXWRAPPER_DLL -I/usr/local/lib/wx/include/mac-ansi-debug-2.6 -I/usr/local/include/wx-2.6 -D__WXDEBUG__ -D__WXMAC__ -D_FILE_OFFSET_BITS=64 -D_LARGE_FILES -DNO_GCC_PRAGMA";
 				OTHER_LDFLAGS = "-L/usr/local/lib   -framework QuickTime -framework IOKit -framework Carbon -framework Cocoa -framework System  -lwx_macd-2.6 -ldl -bind_at_load -lc $(HOME)/lib/lbHook.so $(HOME)/lib/wxWrapperDLL.so";
 				OTHER_REZFLAGS = "";
 				PREBINDING = NO;
@@ -604,6 +594,7 @@
 				2790ED68086F5AED00DA24CB,
 				27240A7308D4A01E009B29CA,
 				27240A7508D4A026009B29CA,
+				27CEEFD7099687590038005D,
 			);
 			isa = PBXNativeTarget;
 			name = wxWrapper;
@@ -711,6 +702,74 @@
 			isa = PBXTargetDependency;
 			target = 27C524EF086F1D13005DB6C8;
 			targetProxy = 2790ED67086F5AED00DA24CB;
+		};
+		27A8F1D5099684740010AF15 = {
+			buildPhases = (
+				27A8F1D7099684740010AF15,
+				27A8F1D8099684740010AF15,
+				27A8F1DA099684740010AF15,
+			);
+			buildRules = (
+			);
+			buildSettings = {
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				EXECUTABLE_EXTENSION = so;
+				GCC_PREPROCESSOR_DEFINITIONS = "LINUX OSX UNIX TVISION";
+				HEADER_SEARCH_PATHS = "";
+				INSTALL_PATH = /usr/local/lib;
+				LIBRARY_STYLE = DYNAMIC;
+				OTHER_CFLAGS = "";
+				OTHER_CPLUSPLUSFLAGS = "-I. -I$(HOME)/develop/Projects/CPP/Test/GUI/wxWrapperDLL -I/usr/local/lib/wx/include/mac-ansi-debug-2.6 -I/usr/local/include/wx-2.6 -D__WXDEBUG__ -D__WXMAC__ -D_FILE_OFFSET_BITS=64 -D_LARGE_FILES -DNO_GCC_PRAGMA -DUSE_WXWRAPPER_DLL";
+				OTHER_LDFLAGS = "-L/usr/local/lib   -framework QuickTime -framework IOKit -framework Carbon -framework Cocoa -framework System  -lwx_macd-2.6 -ldl -lc $(HOME)/lib/lbHook.so $(HOME)/lib/wxWrapperDLL.so";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = lbLoginWizard;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = "-Wmost -Wno-four-char-constants -Wno-unknown-pragmas";
+			};
+			dependencies = (
+				27A8F1D6099684740010AF15,
+			);
+			isa = PBXNativeTarget;
+			name = lbLoginWizard;
+			productName = lbHook;
+			productReference = 27ACE22A09976271000541A3;
+			productType = "com.apple.product-type.library.dynamic";
+		};
+		27A8F1D6099684740010AF15 = {
+			isa = PBXTargetDependency;
+			target = 2764970B086ED80A000EB62C;
+			targetProxy = 2790ED05086F44EB00DA24CB;
+		};
+		27A8F1D7099684740010AF15 = {
+			buildActionMask = 2147483647;
+			files = (
+			);
+			isa = PBXHeadersBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		27A8F1D8099684740010AF15 = {
+			buildActionMask = 2147483647;
+			files = (
+				27CEEFCB099686730038005D,
+			);
+			isa = PBXSourcesBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		27A8F1DA099684740010AF15 = {
+			buildActionMask = 2147483647;
+			files = (
+			);
+			isa = PBXFrameworksBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		27ACE22A09976271000541A3 = {
+			explicitFileType = "compiled.mach-o.dylib";
+			includeInIndex = 0;
+			isa = PBXFileReference;
+			path = lbLoginWizard.so;
+			refType = 3;
+			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		27AEFF7C086F5EDE005A0A3D = {
 			fileRef = 27B91DB1086EEA3300DB17D6;
@@ -1210,10 +1269,10 @@
 				INSTALL_PATH = /usr/local/lib;
 				LIBRARY_STYLE = DYNAMIC;
 				OTHER_CFLAGS = "";
-				OTHER_CPLUSPLUSFLAGS = "-I. -I$(HOME)/develop/Projects/CPP/Test/GUI/wxWrapperDLL -I$(HOME)/wxMac-2.6.1/lib/wx/include/mac-ansi-debug-2.6 -I$(HOME)/wxMac-2.6.1/include -I$(HOME)/wxMac-2.6.1/contrib/include -D__WXDEBUG__ -D__WXMAC__ -D_FILE_OFFSET_BITS=64 -D_LARGE_FILES -DNO_GCC_PRAGMA -DUSE_WXWRAPPER_DLL";
-				OTHER_LDFLAGS = "-L/usr/local/lib   -framework QuickTime -framework IOKit -framework Carbon -framework Cocoa -framework System  -lwx_macd-2.6 -ldl -lc $(HOME)/lib/lbHook.so $(HOME)/lib/wxWrapperDLL.so";
+				OTHER_CPLUSPLUSFLAGS = "-I. -I$(HOME)/develop/Projects/CPP/Test/GUI/wxWrapperDLL -I/usr/local/lib/wx/include/mac-ansi-debug-2.6 -I/usr/local/include/wx-2.6 -D__WXDEBUG__ -D__WXMAC__ -D_FILE_OFFSET_BITS=64 -D_LARGE_FILES -DNO_GCC_PRAGMA -DUSE_WXWRAPPER_DLL";
+				OTHER_LDFLAGS = "-L/usr/local/lib   -framework QuickTime -framework IOKit -framework Carbon -framework Cocoa -framework System  -lwx_macd-2.6 -lwx_macd_propgrid-2.6 -ldl -lc $(HOME)/lib/lbHook.so $(HOME)/lib/wxWrapperDLL.so";
 				OTHER_REZFLAGS = "";
-				PRODUCT_NAME = lbDatabaseForm;
+				PRODUCT_NAME = wxWrapperDLL;
 				SECTORDER_FLAGS = "";
 				WARNING_CFLAGS = "-Wmost -Wno-four-char-constants -Wno-unknown-pragmas";
 			};
@@ -1241,7 +1300,7 @@
 		27CE9A1408D4A77600FB3DF0 = {
 			buildActionMask = 2147483647;
 			files = (
-				2766157A08D4ADF700675AD6,
+				27CEEFD10996869B0038005D,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1279,6 +1338,63 @@
 		};
 		27CE9A1F08D4A87C00FB3DF0 = {
 			fileRef = 27CE9A1D08D4A87C00FB3DF0;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		27CEEFCA099686730038005D = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = lbLoginWizard.cpp;
+			path = /Users/lothar/develop/Projects/CPP/Test/GUI/wxPlugins/lbLoginWizard/lbLoginWizard.cpp;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		27CEEFCB099686730038005D = {
+			fileRef = 27CEEFCA099686730038005D;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		27CEEFD00996869B0038005D = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = wxWrapperDLL.cpp;
+			path = /Users/lothar/develop/Projects/CPP/Test/GUI/wxWrapperDLL/wxWrapperDLL.cpp;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		27CEEFD10996869B0038005D = {
+			fileRef = 27CEEFD00996869B0038005D;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		27CEEFD6099687590038005D = {
+			containerPortal = 270BA7BA086C0A0900799F65;
+			isa = PBXContainerItemProxy;
+			proxyType = 1;
+			remoteGlobalIDString = 27A8F1D5099684740010AF15;
+			remoteInfo = lbLoginWizard;
+		};
+		27CEEFD7099687590038005D = {
+			isa = PBXTargetDependency;
+			target = 27A8F1D5099684740010AF15;
+			targetProxy = 27CEEFD6099687590038005D;
+		};
+		27F462A709960253007178F9 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = Actions.cpp;
+			path = /Users/lothar/develop/Projects/CPP/Plugins/DatabaseForm/Actions.cpp;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		27F462A809960253007178F9 = {
+			fileRef = 27F462A709960253007178F9;
 			isa = PBXBuildFile;
 			settings = {
 			};

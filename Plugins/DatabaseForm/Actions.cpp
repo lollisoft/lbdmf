@@ -156,9 +156,10 @@ void LB_STDCALL lbAction::delegate(lb_I_Parameter* params) {
 	
 	query = db->getQuery(0);
 	
-	char buf[] = "select action_handler, module from action_types inner join action_steps on action_types.id = action_steps.type where action_steps.id = %s";
+	char buf[] = "select action_handler, module from action_types inner join "
+	             "action_steps on action_types.id = action_steps.type where action_steps.id = %s";
 	
-	char* q = (char*) malloc(strlen(buf)+strlen(myActionID)+1);
+	char* q = (char*) malloc(strlen(buf)+strlen(id->charrep())+1);
 	q[0] = 0;
 	sprintf(q, buf, id->charrep());
 
@@ -374,6 +375,8 @@ void LB_STDCALL lbAction::execute(lb_I_Parameter* params) {
 	char* q = (char*) malloc(strlen(buf)+strlen(myActionID)+1);
 	q[0] = 0;
 	sprintf(q, buf, myActionID);
+
+	_CL_LOG << "Get action steps from id = " << myActionID LOG_
 	
 	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
 
@@ -517,9 +520,8 @@ void LB_STDCALL lbDetailFormAction::openDetailForm(lb_I_String* formularname, lb
 		meta->getUserName(&user);		
 
 		char* b =
-		        "select Formulare.id from Formulare inner join Anwendungen_Formulare on "
-		        "Formulare.id = Anwendungen_Formulare.formularid "
-		        "inner join Anwendungen on Anwendungen_Formulare.anwendungid = Anwendungen.id inner join "
+		        "select Formulare.id from Formulare "
+		        "inner join Anwendungen on Formulare.anwendungid = Anwendungen.id inner join "
 		        "User_Anwendungen on Anwendungen.id = User_Anwendungen.anwendungenid inner join Users on "
 		        " User_Anwendungen.userid = Users.id where "
 		        "Users.userid = '%s' and Anwendungen.name = '%s' and "
@@ -682,7 +684,11 @@ void LB_STDCALL lbDetailFormAction::openDetailForm(lb_I_String* formularname, lb
 /*...e*/
 				} else {
 					_CL_LOG << "ERROR: Expected query for the formular ID failed:\n" << buffer LOG_
+					free(buffer);
 				}
+			} else {
+				_CL_LOG << "ERROR: No data found for query to get detailform:\n\n" << buffer LOG_
+				free(buffer);
 			}
 		}
 	}
@@ -735,6 +741,8 @@ void LB_STDCALL lbDetailFormAction::execute(lb_I_Parameter* params) {
 	q[0] = 0;
 	sprintf(q, buf, myActionID);
 
+	_CL_LOG << "lbDetailFormAction::execute(" << myActionID << ")" LOG_
+
 	if (query->query(q) == ERR_NONE) {
 	
 		lbErrCodes err = query->first();
@@ -745,7 +753,9 @@ void LB_STDCALL lbDetailFormAction::execute(lb_I_Parameter* params) {
 			
 			what = query->getAsString(1);
 			what->trim();
-
+			
+			_CL_LOG << "Open detail form (" << what->charrep() << ")" LOG_
+			
 			openDetailForm(*&what, *&params);
 			
 			err = query->next();
@@ -759,6 +769,8 @@ void LB_STDCALL lbDetailFormAction::execute(lb_I_Parameter* params) {
 			what = query->getAsString(1);
 			what->trim();
 			
+			_CL_LOG << "Open detail form (" << what->charrep() << ")" LOG_
+
 			openDetailForm(*&what, *&params);
 /*...e*/
 		}

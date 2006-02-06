@@ -56,6 +56,9 @@
 #include "wx/wizard.h"
 #include "wx/splitter.h"
 
+// Necessary header file
+#include <wx/propgrid/propgrid.h>
+
 /*...e*/
 
 /*...sLB_DATABASE_DLL scope:0:*/
@@ -577,11 +580,15 @@ lb_wxFrame::lb_wxFrame() //:
 lbErrCodes LB_STDCALL lb_wxFrame::registerEventHandler(lb_I_Dispatcher* disp) {
 	UAP_REQUEST(getModuleInstance(), lb_I_EventManager, eman)
 
+	int temp;
+
 	eman->registerEvent("switchPanelUse", on_panel_usage);
 	eman->registerEvent("showLeftPropertyBar", _showLeftPropertyBar);
+	eman->registerEvent("setPreferredPropertyPanelByNamespace", temp);
 
 	disp->addEventHandlerFn(this, (lbEvHandler) &lb_wxFrame::showLeftPropertyBar, "showLeftPropertyBar");
 	disp->addEventHandlerFn(this, (lbEvHandler) &lb_wxFrame::switchPanelUse, "switchPanelUse");
+	disp->addEventHandlerFn(this, (lbEvHandler) &lb_wxFrame::setPreferredPropertyPanelByNamespace, "setPreferredPropertyPanelByNamespace");
 
 	Connect( _showLeftPropertyBar,  -1, wxEVT_COMMAND_MENU_SELECTED,
 	          (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
@@ -899,7 +906,7 @@ lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::createDBForm(char* formName, char* query
 
 	// Locate the form instance in the container
 
-	if (frame->isPanelUsage() && !frame->isSplitted()) {
+	if (frame->isPanelUsage()) {
 		if (!notebook) {
 			notebook = new wxNotebook(frame, -1);
 			sizerMain = new wxBoxSizer(wxVERTICAL);
@@ -1017,14 +1024,18 @@ lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::createDBForm(char* formName, char* query
 		if (frame->isPanelUsage()) {
 			wxWindow* w = frame->FindWindowById(_dialog->getId());
 			notebook->AddPage(w, formName, true);
-			//notebook->Fit();
+			notebook->Fit();
 			notebook->Show(true);
 			
-			sizerMain->SetSizeHints(frame);
-			//sizerMain->Fit(frame);
-			//frame->Fit();
+			if (frame->isSplitted()) {
+				frame->Fit();
+			} else {
+				sizerMain->SetSizeHints(frame->FindWindowById(_dialog->getId()));
+				sizerMain->Fit(frame->FindWindowById(_dialog->getId()));
+				frame->Fit();
 		
-			//frame->Centre();
+				frame->Centre();
+			}	
 		}
 		
 	} else {
@@ -1349,29 +1360,101 @@ void lb_wxFrame::OnDispatch(wxCommandEvent& event ) {
 }
 /*...e*/
 
+lbErrCodes LB_STDCALL lb_wxFrame::setPreferredPropertyPanelByNamespace(lb_I_Unknown* uk) {
+	lbErrCodes err = ERR_NONE;
+	
+	UAP(lb_I_Parameter, param)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, _namespace)
+	QI(uk, lb_I_Parameter, param)
+		
+	parameter->setData("namespace");
+	param->getUAPString(*&parameter, *&_namespace);
+
+	if (PanelNamespace == NULL) {
+		REQUEST(manager.getPtr(), lb_I_String, PanelNamespace)
+	}
+	
+	*PanelNamespace = _namespace->charrep();
+	
+	return err;
+}
+
 lbErrCodes LB_STDCALL lb_wxFrame::showLeftPropertyBar(lb_I_Unknown* uk) {
 	_CL_LOG << "lb_wxFrame::showLeftPropertyBar(lb_I_Unknown* uk) called." LOG_
-
+	
 	if (m_splitter == NULL) {
 		m_splitter = new wxSplitterWindow(this, wxID_ANY,
-	                                   wxDefaultPosition, wxDefaultSize,
-                                           wxSP_3D | wxSP_LIVE_UPDATE |
-                                           wxCLIP_CHILDREN /* | wxSP_NO_XP_THEME */ );
+										  wxDefaultPosition, wxDefaultSize,
+										  wxSP_3D | wxSP_LIVE_UPDATE |
+										  wxCLIP_CHILDREN /* | wxSP_NO_XP_THEME */ );
         
-        	wxList children = GetChildren();
-        	wxNode* node = children.GetFirst();
-        	
-        	if (children.IsEmpty()) {
-        		_CL_LOG << "Warning: No child window found." LOG_
-        		
-        		wxPanel* leftPanel = new wxPanel(m_splitter);
-        		
-        		m_splitter->Initialize(leftPanel);
-        	} else {
-			wxWindow *current = (wxWindow*) node->GetData();
+		wxList children = GetChildren();
+		wxNode* node = children.GetFirst();
 		
-			wxScrolledWindow* leftPanel = new wxScrolledWindow(m_splitter);
+		if (children.IsEmpty()) {
+			_CL_LOG << "Warning: No child window found." LOG_
+			
+			wxPanel* leftPanel = new wxPanel(m_splitter);
+			
+			m_splitter->Initialize(leftPanel);
+		} else {
+			wxWindow *current = (wxWindow*) node->GetData();
+			
+			// Select a proper implementation based on default or plugin availability
+			wxWindow* leftPanel = NULL;
+			
+			//			if (PanelNamespace == NULL) 
+			//				leftPanel = new wxScrolledWindow(m_splitter);
+			//				else {
+			wxPanel* panel = new wxPanel(m_splitter,-1,wxPoint(0,0),wxSize(400,400));
 
+#ifdef bla			
+			wxPropertyGrid* pg = new wxPropertyGrid(
+													panel,
+													wxID_ANY,
+													wxDefaultPosition, 
+													wxDefaultSize,
+													wxPG_AUTO_SORT |
+													wxPG_SPLITTER_AUTO_CENTER |
+													wxPG_DEFAULT_STYLE );
+#endif
+
+			wxPropertyGridManager* pg = new wxPropertyGridManager(panel, -1,
+				wxDefaultPosition, wxDefaultSize,
+				wxPG_BOLD_MODIFIED |
+				wxPG_SPLITTER_AUTO_CENTER |
+				wxPG_AUTO_SORT |
+				//wxPG_HIDE_MARGIN|wxPG_STATIC_SPLITTER |
+				//wxPG_TOOLTIPS |
+				//wxPG_HIDE_CATEGORIES |
+				//wxPG_LIMITED_EDITING |
+				wxTAB_TRAVERSAL |
+				wxPG_TOOLBAR |
+				wxPG_DESCRIPTION
+				//wxPG_COMPACTOR
+				);
+
+			
+			// Add int property 
+			pg->Append ( wxIntProperty ( wxT("IntProperty"), wxPG_LABEL, 12345678 ) );
+			
+			// Add float property (value type is actually double)
+			pg->Append ( wxFloatProperty ( wxT("FloatProperty"), wxPG_LABEL, 12345.678 ) );
+			
+			// Add a bool property
+			pg->Append ( wxBoolProperty ( wxT("BoolProperty"), wxPG_LABEL, false ) );
+			
+			// A string property that can be edited in a separate editor dialog.
+			pg->Append ( wxLongStringProperty (wxT("LongStringProperty"),
+											   wxPG_LABEL,
+											   wxT("This is much longer string than the ")
+											   wxT("first one. Edit it by clicking the button.")));
+			
+			
+			leftPanel = panel;
+			//				}
+			
 			wxBoxSizer* sizerMain = new wxBoxSizer(wxVERTICAL);
 			wxBoxSizer* sizerRight = new wxBoxSizer(wxVERTICAL);
 			
@@ -1380,18 +1463,24 @@ lbErrCodes LB_STDCALL lb_wxFrame::showLeftPropertyBar(lb_I_Unknown* uk) {
 			sizerMain->Add(m_splitter, 1, wxEXPAND | wxALL, 0);
 			
 			current->Reparent(m_splitter);
-
+			
 			m_splitter->Initialize(leftPanel);
 			m_splitter->SplitVertically(leftPanel, current, 100);        
-
+			
 			SetSizer(sizerMain);
 			
 			SetAutoLayout(TRUE);
 			m_splitter->SetAutoLayout(TRUE);
-
+			
+			leftPanel->SetAutoLayout(TRUE);
+			
+			leftPanel->Show(true);
+			pg->Show(true);
+			
 			Fit();
-        	}
-        }
+			_isSplitted = true;
+		}
+	}
 	return ERR_NONE;
 }
 /*...e*/

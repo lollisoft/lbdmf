@@ -205,7 +205,7 @@ char* FormularActions::getActionSourceDataField(char* what) {
 	
 	query = database->getQuery(0);
 	
-	char buf[] = "select source from actions where target = %s";
+	char buf[] = "select source from actions where id = %s";
 	
 	char* buffer = (char*) malloc(strlen(buf)+20);
 	
@@ -232,46 +232,8 @@ char* FormularActions::getActionSourceDataField(char* what) {
 /*...schar\42\ FormularActions\58\\58\getActionID\40\char\42\ what\41\:0:*/
 char* FormularActions::getActionID(char* what) {
 	lbErrCodes err = ERR_NONE;
-
-	UAP_REQUEST(getModuleInstance(), lb_I_Database, database)
 	
-	database->init();
-	
-	char* lbDMFPasswd = getenv("lbDMFPasswd");
-	char* lbDMFUser   = getenv("lbDMFUser");
-	
-	if (!lbDMFUser) lbDMFUser = "dba";
-	if (!lbDMFPasswd) lbDMFPasswd = "trainres";
-	
-	database->connect("lbDMF", lbDMFUser, lbDMFPasswd);	
-
-	UAP(lb_I_Query, query)
-	
-	query = database->getQuery(0);
-	
-	char buf[] = "select id from actions where target = %s";
-	
-	char* buffer = (char*) malloc(strlen(buf)+20);
-	
-	sprintf(buffer, buf, getActionTargetID(what));
-
-	query->query(buffer);
-
-	free(buffer);
-	
-	if (((err = query->first()) == ERR_NONE) || (err == WARN_DB_NODATA)) {
-	
-		UAP(lb_I_String, source)
-		
-		source = query->getAsString(1);
-		
-		source->trim();
-				
-		return strdup(source->charrep());
-	}
-
-	_CL_LOG << "FormularActions::getActionID('" << what << "') failed!" LOG_
-	
-	return strdup("");
+	// Get it from the foreign key in formular_actions
+	return getActionTargetID(what);
 }
 /*...e*/
