@@ -56,8 +56,10 @@
 #include "wx/wizard.h"
 #include "wx/splitter.h"
 
+#ifdef OSX
 // Necessary header file
 #include <wx/propgrid/propgrid.h>
+#endif
 
 /*...e*/
 
@@ -1385,9 +1387,9 @@ lbErrCodes LB_STDCALL lb_wxFrame::showLeftPropertyBar(lb_I_Unknown* uk) {
 	
 	if (m_splitter == NULL) {
 		m_splitter = new wxSplitterWindow(this, wxID_ANY,
-										  wxDefaultPosition, wxDefaultSize,
-										  wxSP_3D | wxSP_LIVE_UPDATE |
-										  wxCLIP_CHILDREN /* | wxSP_NO_XP_THEME */ );
+			  wxDefaultPosition, wxDefaultSize,
+			  wxSP_3D | wxSP_LIVE_UPDATE |
+			  wxCLIP_CHILDREN /* | wxSP_NO_XP_THEME */ );
         
 		wxList children = GetChildren();
 		wxNode* node = children.GetFirst();
@@ -1419,7 +1421,7 @@ lbErrCodes LB_STDCALL lb_wxFrame::showLeftPropertyBar(lb_I_Unknown* uk) {
 													wxPG_SPLITTER_AUTO_CENTER |
 													wxPG_DEFAULT_STYLE );
 #endif
-
+#ifdef OSX
 			wxPropertyGridManager* pg = new wxPropertyGridManager(panel, -1,
 				wxDefaultPosition, wxDefaultSize,
 				wxPG_BOLD_MODIFIED |
@@ -1453,6 +1455,9 @@ lbErrCodes LB_STDCALL lb_wxFrame::showLeftPropertyBar(lb_I_Unknown* uk) {
 			
 			
 			leftPanel = panel;
+#endif
+			leftPanel = new wxScrolledWindow(m_splitter);
+			
 			//				}
 			
 			wxBoxSizer* sizerMain = new wxBoxSizer(wxVERTICAL);
@@ -1475,8 +1480,9 @@ lbErrCodes LB_STDCALL lb_wxFrame::showLeftPropertyBar(lb_I_Unknown* uk) {
 			leftPanel->SetAutoLayout(TRUE);
 			
 			leftPanel->Show(true);
+#ifdef OSX			
 			pg->Show(true);
-			
+#endif			
 			Fit();
 			_isSplitted = true;
 		}
