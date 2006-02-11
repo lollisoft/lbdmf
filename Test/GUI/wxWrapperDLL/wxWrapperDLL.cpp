@@ -28,6 +28,9 @@
 */
 /*...e*/
 
+#define USE_PROPGRID
+//#define IN_PANEL
+
 #include <lbConfigHook.h>
 
 /*...smisc and includes:0:*/
@@ -56,9 +59,9 @@
 #include "wx/wizard.h"
 #include "wx/splitter.h"
 
-#ifdef OSX
+#ifdef USE_PROPGRID
 // Necessary header file
-#include <wx/propgrid/propgrid.h>
+#include "wx/propgrid/propgrid.h"
 #endif
 
 /*...e*/
@@ -1409,19 +1412,25 @@ lbErrCodes LB_STDCALL lb_wxFrame::showLeftPropertyBar(lb_I_Unknown* uk) {
 			//			if (PanelNamespace == NULL) 
 			//				leftPanel = new wxScrolledWindow(m_splitter);
 			//				else {
+#ifdef IN_PANEL			
 			wxPanel* panel = new wxPanel(m_splitter,-1,wxPoint(0,0),wxSize(400,400));
-
-#ifdef bla			
-			wxPropertyGrid* pg = new wxPropertyGrid(
-													panel,
-													wxID_ANY,
-													wxDefaultPosition, 
-													wxDefaultSize,
-													wxPG_AUTO_SORT |
-													wxPG_SPLITTER_AUTO_CENTER |
-													wxPG_DEFAULT_STYLE );
 #endif
-#ifdef OSX
+#ifdef USE_PROPGRID
+			wxPropertyGrid* pg = new wxPropertyGrid(
+#ifdef IN_PANEL
+				panel,
+#endif
+#ifndef IN_PANEL
+				m_splitter,
+#endif
+				wxID_ANY,
+				wxDefaultPosition, 
+				wxDefaultSize,
+				wxPG_AUTO_SORT |
+				wxPG_SPLITTER_AUTO_CENTER |
+				wxPG_DEFAULT_STYLE );
+#endif
+#ifdef bla
 			wxPropertyGridManager* pg = new wxPropertyGridManager(panel, -1,
 				wxDefaultPosition, wxDefaultSize,
 				wxPG_BOLD_MODIFIED |
@@ -1436,7 +1445,8 @@ lbErrCodes LB_STDCALL lb_wxFrame::showLeftPropertyBar(lb_I_Unknown* uk) {
 				wxPG_DESCRIPTION
 				//wxPG_COMPACTOR
 				);
-
+#endif
+#ifdef USE_PROPGRID
 			
 			// Add int property 
 			pg->Append ( wxIntProperty ( wxT("IntProperty"), wxPG_LABEL, 12345678 ) );
@@ -1449,15 +1459,20 @@ lbErrCodes LB_STDCALL lb_wxFrame::showLeftPropertyBar(lb_I_Unknown* uk) {
 			
 			// A string property that can be edited in a separate editor dialog.
 			pg->Append ( wxLongStringProperty (wxT("LongStringProperty"),
-											   wxPG_LABEL,
-											   wxT("This is much longer string than the ")
-											   wxT("first one. Edit it by clicking the button.")));
+				   wxPG_LABEL,
+				   wxT("This is much longer string than the ")
+				   wxT("first one. Edit it by clicking the button.")));
 			
-			
+#ifdef IN_PANEL			
 			leftPanel = panel;
 #endif
+#ifndef IN_PANEL
+			leftPanel = pg;
+#endif
+#endif
+#ifndef USE_PROPGRID
 			leftPanel = new wxScrolledWindow(m_splitter);
-			
+#endif			
 			//				}
 			
 			wxBoxSizer* sizerMain = new wxBoxSizer(wxVERTICAL);
@@ -1480,10 +1495,17 @@ lbErrCodes LB_STDCALL lb_wxFrame::showLeftPropertyBar(lb_I_Unknown* uk) {
 			leftPanel->SetAutoLayout(TRUE);
 			
 			leftPanel->Show(true);
-#ifdef OSX			
+#ifdef USE_PROPGRID			
 			pg->Show(true);
 #endif			
 			Fit();
+			leftPanel->Fit();
+
+#ifdef USE_PROPGRID		
+			pg->SetAutoLayout(TRUE);	
+			pg->Fit();
+#endif			
+			
 			_isSplitted = true;
 		}
 	}
