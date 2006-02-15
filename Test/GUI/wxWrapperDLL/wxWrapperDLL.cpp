@@ -1566,6 +1566,7 @@ lbErrCodes LB_STDCALL lb_wxFrame::showLeftPropertyBar(lb_I_Unknown* uk) {
 #ifdef IN_PANEL
 			wxScrolledWindow* panel = new wxScrolledWindow(this, -1);
 #endif
+
 			wxPropertyGrid* pg = new wxPropertyGrid(
 #ifdef IN_PANEL
 				panel,
@@ -1574,11 +1575,11 @@ lbErrCodes LB_STDCALL lb_wxFrame::showLeftPropertyBar(lb_I_Unknown* uk) {
 				this,
 #endif
 				wxID_ANY,
-				wxDefaultPosition, 
-				wxSize(200,500),
+				wxPoint(0, 0), 
+				wxSize(200, 500),
 				wxPG_AUTO_SORT |
 				wxPG_DEFAULT_STYLE );
-			
+
 			pg->Append ( wxIntProperty ( wxT("IntProperty"), wxPG_LABEL, 12345678 ) );
 			pg->Append ( wxFloatProperty ( wxT("FloatProperty"), wxPG_LABEL, 12345.678 ) );
 			pg->Append ( wxBoolProperty ( wxT("BoolProperty"), wxPG_LABEL, false ) );
@@ -1587,6 +1588,7 @@ lbErrCodes LB_STDCALL lb_wxFrame::showLeftPropertyBar(lb_I_Unknown* uk) {
 				   wxPG_LABEL,
 				   wxT("This is much longer string than the ")
 				   wxT("first one. Edit it by clicking the button.")));
+
 			
 #ifdef IN_PANEL
 			leftPanel = panel;
@@ -1594,15 +1596,6 @@ lbErrCodes LB_STDCALL lb_wxFrame::showLeftPropertyBar(lb_I_Unknown* uk) {
 #ifndef IN_PANEL
 			leftPanel = pg;
 #endif
-
-			wxBoxSizer* sizerLeft = new wxBoxSizer(wxVERTICAL);
-			sizerLeft->Add(leftPanel, 1, wxEXPAND|wxALL, 0);
-			leftPanel->SetSizer(sizerLeft);
-			leftPanel->SetAutoLayout(TRUE);
-			pg->SetAutoLayout(TRUE);
-
-			pg->Show(true);
-
 			m_mgr.AddPane(leftPanel, wxLEFT, wxT("Properties"));
 
 			m_mgr.Update();
