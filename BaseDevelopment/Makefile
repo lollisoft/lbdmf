@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.77 $
+# * $Revision: 1.78 $
 # * $Name:  $
-# * $Id: Makefile,v 1.77 2006/01/29 09:36:33 lollisoft Exp $
+# * $Id: Makefile,v 1.78 2006/02/15 12:47:12 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.78  2006/02/15 12:47:12  lollisoft
+# * Added wxAUI target.
+# *
 # * Revision 1.77  2006/01/29 09:36:33  lollisoft
 # * Don't build TVision. It should completely be in my private makefile.
 # *
@@ -318,6 +321,8 @@ BASEDIRECTORIES= \
 	../Modules \
 	../RegressionTests \
 	../AppDevelopment \
+	../vendor/wxaui-0.9.1/src \
+	../vendor/wxaui-0.9.1/sample \
 	../vendor/tvision/examples/lbDMF
 
 TARGETDLL=sobundle
@@ -510,6 +515,14 @@ ifeq ($(OSTYPE), osx)
 
 ../Test/GUI/wxPlugins/lbLoginWizard: dummy
 	$(MAKE) -s -C $@ -e MODULE=lbLoginWizard -e TARGET=$(TARGETWXPLUGIN) -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@
+
+~/Desktop/wxaui-0.9.1/src: dummy
+	$(MAKE) -s -C $@ -e MODULE=wxAUI -e TARGET=$(TARGETWXSHARED) -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@
+
+~/Desktop/wxaui-0.9.1/sample: dummy
+	$(MAKE) -s -C $@ -e MODULE=wxAUISample -e TARGET=$(TARGETWXEXE) -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@
 
 ../Test/GUI/wxWrapper: dummy
