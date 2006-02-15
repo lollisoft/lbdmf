@@ -33,11 +33,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.10 $
+ * $Revision: 1.11 $
  * $Name:  $
- * $Id: wxWrapperDLL.h,v 1.10 2006/02/06 14:49:41 lollisoft Exp $
+ * $Id: wxWrapperDLL.h,v 1.11 2006/02/15 12:44:44 lollisoft Exp $
  *
  * $Log: wxWrapperDLL.h,v $
+ * Revision 1.11  2006/02/15 12:44:44  lollisoft
+ * Acceptable layout capabilities with wxAUI, but still no  visible properties.
+ *
  * Revision 1.10  2006/02/06 14:49:41  lollisoft
  * Try to implement left panel using wxPropertyGrid
  *
@@ -121,114 +124,132 @@ class lb_wxGUI;
  * It implements the main event handling interface via OnDispatch.
  */
 class DLLEXPORT lb_wxFrame : 
-		public wxFrame,
+public wxFrame,
 //                public lb_I_wxFrame,
-		public lb_I_Unknown,
-                public lb_I_EventHandler
+public lb_I_Unknown,
+public lb_I_EventHandler
 { 
 public:
-/*...sctors\47\dtors:8:*/
+	/*...sctors\47\dtors:8:*/
 	/**
-	 * Initialize a default application layout.
+	* Initialize a default application layout.
 	 */
 	lb_wxFrame(); 
-        virtual ~lb_wxFrame();
-/*...e*/
+	virtual ~lb_wxFrame();
+	/*...e*/
 public:
         lb_wxFrame(wxFrame *frame, char *title, int x, int y, int w, int h);
-
-        DECLARE_LB_UNKNOWN()
-
-	/**
-	 * Set the GUI wrapper instance.
-	 */
-	void setGUI(lb_wxGUI* _gui) { gui = _gui; }
-
+	
+	DECLARE_LB_UNKNOWN()
+		
+		/**
+		* Set the GUI wrapper instance.
+		 */
+		void setGUI(lb_wxGUI* _gui) { gui = _gui; }
+	
 public:
-        void OnQuit(wxCommandEvent& event);
-        void OnVerbose(wxCommandEvent& event);
-        
-        /**
-         * Displays the about form of the application.
-         */
-        void OnAbout(wxCommandEvent& event);
-
+    void OnQuit(wxCommandEvent& event);
+	void OnVerbose(wxCommandEvent& event);
+	
 	/**
-	 * Displays the logon wizard dialog.
+		* Displays the about form of the application.
+	 */
+	void OnAbout(wxCommandEvent& event);
+	
+	/**
+		* Displays the logon wizard dialog.
 	 */
 	void OnRunLogonWizard(wxCommandEvent& WXUNUSED(event));
-
-
-        /**
-         * This dispatcher converts all events to lb_I_Dispatcher events
-         * and forwards them to such a dispatcher.
-         * 
-         * wx Handlers are forwarded directly.
-         */
-        void OnDispatch(wxCommandEvent& event);
-
+	
+	
 	/**
-	 * Build the minimal standard menu of the application.
+		* This dispatcher converts all events to lb_I_Dispatcher events
+	 * and forwards them to such a dispatcher.
+	 * 
+	 * wx Handlers are forwarded directly.
+	 */
+	void OnDispatch(wxCommandEvent& event);
+	
+	/**
+		* Build the minimal standard menu of the application.
 	 */
 	void OnBuildMenu(wxCommandEvent& event);
 	
 	/**
-	 * \deprecated This was only a menu instance pointer check - debug.
+		* \deprecated This was only a menu instance pointer check - debug.
 	 */
 	void OnCheck(wxCommandEvent& event);
-
+	
+#ifdef USE_WXAUI	
+	void OnSize(wxSizeEvent& event);
+	void OnEraseBackground(wxEraseEvent& event);
+#endif
+	
 	/**
-	 * Return the frames menubar. Internal use only.
+		* Return the frames menubar. Internal use only.
 	 */
 	wxMenuBar* LB_STDCALL getMenuBar() {
 		return menu_bar;
 	}
     
 public:
-        /**
-         * Mixin the interface code, so the base of wxFrame can be used.
-         * Simple a dummy code yet.
-         */
-      
+	/**
+	 * Mixin the interface code, so the base of wxFrame can be used.
+	 * Simple a dummy code yet.
+	 */
+		
 	lbErrCodes LB_STDCALL registerEventHandler(lb_I_Dispatcher* disp);
-
+	
 	/// Show or hide left panel.
 	void LB_STDCALL showLeftPanel(bool show);
 	
 	/// Is left panel visible ?
 	bool LB_STDCALL isSplitted() { return _isSplitted; }
-
+	
 	bool LB_STDCALL isPanelUsage() { return panelUsage; }
-        
-// Event handlers        
-        
-        lbErrCodes LB_STDCALL showLeftPropertyBar(lb_I_Unknown* uk);
-		lbErrCodes LB_STDCALL switchPanelUse(lb_I_Unknown* uk);
-
-		lbErrCodes LB_STDCALL setPreferredPropertyPanelByNamespace(lb_I_Unknown* uk);
-
-        wxMenuBar* menu_bar;
-
+	
+#ifdef USE_WXAUI
+	wxFrameManager& getAUIManager() { return m_mgr; }
+#endif		
+	
+	
+	// Event handlers        
+	
+	lbErrCodes LB_STDCALL showLeftPropertyBar(lb_I_Unknown* uk);
+	lbErrCodes LB_STDCALL switchPanelUse(lb_I_Unknown* uk);
+	
+	lbErrCodes LB_STDCALL setPreferredPropertyPanelByNamespace(lb_I_Unknown* uk);
+	
+	wxMenuBar* menu_bar;
+	
 	// Splitter window handling
 	wxScrolledWindow *m_left, *m_right;
 	wxSplitterWindow* m_splitter;
 	wxWindow *m_replacewindow;
 	
-		bool _isSplitted;            
-        bool panelUsage;
+	bool _isSplitted;            
+	bool panelUsage;
+	
+	lb_wxGUI* gui;
+	int guiCleanedUp;
+	
+	// Registered event handler IS's
+	int on_panel_usage;
+	int _showLeftPropertyBar;
+	
+	
+	UAP(lb_I_String, PanelNamespace)
+    UAP(lb_I_EventManager, eman)
+    UAP(lb_I_Dispatcher, dispatcher)
 		
-       
-        lb_wxGUI* gui;
-        int guiCleanedUp;
+		
+#ifdef USE_WXAUI
+private:
+		wxFrameManager m_mgr;
 
-		// Registered event handler IS's
-		int on_panel_usage;
-		int _showLeftPropertyBar;
+	DECLARE_EVENT_TABLE();
 
-        
-		UAP(lb_I_String, PanelNamespace)
-        UAP(lb_I_EventManager, eman)
-        UAP(lb_I_Dispatcher, dispatcher)
+#endif		
 };
 /*...e*/
 

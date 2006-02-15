@@ -29,7 +29,8 @@
 /*...e*/
 
 #define USE_PROPGRID
-//#define IN_PANEL
+#define USE_WXAUI
+#define IN_PANEL
 
 #include <lbConfigHook.h>
 
@@ -62,6 +63,10 @@
 #ifdef USE_PROPGRID
 // Necessary header file
 #include "wx/propgrid/propgrid.h"
+#endif
+
+#ifdef USE_WXAUI
+#include <manager.h>
 #endif
 
 /*...e*/
@@ -587,6 +592,10 @@ lbErrCodes LB_STDCALL lb_wxFrame::registerEventHandler(lb_I_Dispatcher* disp) {
 
 	int temp;
 
+#ifdef USE_WXAUI
+	m_mgr.SetFrame(this);
+#endif
+
 	eman->registerEvent("switchPanelUse", on_panel_usage);
 	eman->registerEvent("showLeftPropertyBar", _showLeftPropertyBar);
 	eman->registerEvent("setPreferredPropertyPanelByNamespace", temp);
@@ -922,6 +931,10 @@ lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::createDBForm(char* formName, char* query
 			sizerMain->Add(notebook, 1, wxEXPAND | wxALL, 0);
 	
 			frame->SetSizer(sizerMain);
+			
+			frame->getAUIManager().AddPane(notebook,   wxCENTER, wxT("Workplace"));
+
+			frame->getAUIManager().Update();
 		}
 	}
 	
@@ -1213,14 +1226,18 @@ lb_wxFrame::lb_wxFrame(wxFrame *frame, char *title, int x, int y, int w, int h):
 	m_replacewindow = NULL;
 	
 	_isSplitted = false;
-	
 }
 
 lb_wxFrame::~lb_wxFrame() {
-        if (guiCleanedUp == 0) {
-                if (gui) gui->cleanup();
-                guiCleanedUp = 1;
-        }
+#ifdef USE_WXAUI
+	// deinitialize the frame manager
+	m_mgr.UnInit();
+#endif
+	
+	if (guiCleanedUp == 0) {
+		if (gui) gui->cleanup();
+		guiCleanedUp = 1;
+	}
 }
 
 /*...svoid lb_wxFrame\58\\58\OnRunLogonWizard\40\wxCommandEvent\38\ WXUNUSED\40\event\41\\41\:0:*/
@@ -1290,6 +1307,26 @@ void lb_wxFrame::OnAbout(wxCommandEvent& WXUNUSED(event) )
   free(buf1);
 }
 /*...e*/
+#ifdef USE_WXAUI
+
+BEGIN_EVENT_TABLE(lb_wxFrame, wxFrame)
+    EVT_ERASE_BACKGROUND(lb_wxFrame::OnEraseBackground)
+    EVT_SIZE(lb_wxFrame::OnSize)
+END_EVENT_TABLE()
+
+
+void lb_wxFrame::OnEraseBackground(wxEraseEvent& event)
+{
+    event.Skip();
+}
+
+void lb_wxFrame::OnSize(wxSizeEvent& event)
+{
+	m_mgr.Update();
+    event.Skip();
+}
+
+#endif
 /*...slb_wxFrame\58\\58\OnCheck\40\wxCommandEvent\38\ WXUNUSED\40\event\41\ \41\:0:*/
 void lb_wxFrame::OnCheck(wxCommandEvent& WXUNUSED(event) ) {
 	char ptr[200] = "";
@@ -1388,11 +1425,11 @@ lbErrCodes LB_STDCALL lb_wxFrame::setPreferredPropertyPanelByNamespace(lb_I_Unkn
 lbErrCodes LB_STDCALL lb_wxFrame::showLeftPropertyBar(lb_I_Unknown* uk) {
 	_CL_LOG << "lb_wxFrame::showLeftPropertyBar(lb_I_Unknown* uk) called." LOG_
 	
+#ifndef USE_WXAUI	
 	if (m_splitter == NULL) {
 		m_splitter = new wxSplitterWindow(this, wxID_ANY,
 			  wxDefaultPosition, wxDefaultSize,
-			  wxSP_3D | wxSP_LIVE_UPDATE |
-			  wxCLIP_CHILDREN /* | wxSP_NO_XP_THEME */ );
+			  wxSP_3D | wxSP_LIVE_UPDATE /*| wxCLIP_CHILDREN*/ /* | wxSP_NO_XP_THEME */ );
         
 		wxList children = GetChildren();
 		wxNode* node = children.GetFirst();
@@ -1413,7 +1450,7 @@ lbErrCodes LB_STDCALL lb_wxFrame::showLeftPropertyBar(lb_I_Unknown* uk) {
 			//				leftPanel = new wxScrolledWindow(m_splitter);
 			//				else {
 #ifdef IN_PANEL			
-			wxPanel* panel = new wxPanel(m_splitter,-1,wxPoint(0,0),wxSize(400,400));
+			wxPanel* panel = new wxPanel(m_splitter,-1);
 #endif
 #ifdef USE_PROPGRID
 			wxPropertyGrid* pg = new wxPropertyGrid(
@@ -1427,7 +1464,7 @@ lbErrCodes LB_STDCALL lb_wxFrame::showLeftPropertyBar(lb_I_Unknown* uk) {
 				wxDefaultPosition, 
 				wxDefaultSize,
 				wxPG_AUTO_SORT |
-				wxPG_SPLITTER_AUTO_CENTER |
+//				wxPG_SPLITTER_AUTO_CENTER |
 				wxPG_DEFAULT_STYLE );
 #endif
 #ifdef bla
@@ -1477,38 +1514,100 @@ lbErrCodes LB_STDCALL lb_wxFrame::showLeftPropertyBar(lb_I_Unknown* uk) {
 			
 			wxBoxSizer* sizerMain = new wxBoxSizer(wxVERTICAL);
 			wxBoxSizer* sizerRight = new wxBoxSizer(wxVERTICAL);
-			
-			//RemoveChild(current);
-			
-			sizerMain->Add(m_splitter, 1, wxEXPAND | wxALL, 0);
+			wxBoxSizer* sizerLeft = new wxBoxSizer(wxVERTICAL);
 			
 			current->Reparent(m_splitter);
-			
-			m_splitter->Initialize(leftPanel);
-			m_splitter->SplitVertically(leftPanel, current, 100);        
-			
-			SetSizer(sizerMain);
-			
-			SetAutoLayout(TRUE);
+
+			sizerMain->Add(m_splitter, 1, wxEXPAND, 0);
+			sizerLeft->Add(leftPanel, 1, wxEXPAND, 0);
+			sizerRight->Add(current, 1, wxEXPAND, 0);
+
+			current->SetSizer(sizerRight);
+			current->SetAutoLayout(TRUE);
+		
+			m_splitter->SetSizer(sizerMain);
 			m_splitter->SetAutoLayout(TRUE);
 			
+			leftPanel->SetSizer(sizerLeft);
 			leftPanel->SetAutoLayout(TRUE);
-			
-			leftPanel->Show(true);
-#ifdef USE_PROPGRID			
-			pg->Show(true);
-#endif			
-			Fit();
-			leftPanel->Fit();
 
-#ifdef USE_PROPGRID		
-			pg->SetAutoLayout(TRUE);	
-			pg->Fit();
-#endif			
-			
+			SetSizer(sizerMain);
+
+			//sizerMain->SetSizeHints( this );
+
+			//m_splitter->Initialize(leftPanel);
+			m_splitter->SplitVertically(leftPanel, current, 200);
+	
+			Layout();
+			Fit();
+
 			_isSplitted = true;
+			
+			_CL_LOG << "Done activating splitter ..." LOG_
 		}
 	}
+#endif
+
+#ifdef USE_WXAUI
+		wxList children = GetChildren();
+		wxNode* node = children.GetFirst();
+		
+		if (children.IsEmpty()) {
+			_CL_LOG << "Warning: No child window found." LOG_
+			
+			wxPanel* leftPanel = new wxPanel(this);
+
+			m_mgr.AddPane(leftPanel, wxLEFT, wxT("Properties"));
+
+			m_mgr.Update();
+			
+		} else {
+			wxWindow* leftPanel = NULL;
+#ifdef IN_PANEL
+			wxScrolledWindow* panel = new wxScrolledWindow(this, -1);
+#endif
+			wxPropertyGrid* pg = new wxPropertyGrid(
+#ifdef IN_PANEL
+				panel,
+#endif
+#ifndef IN_PANEL
+				this,
+#endif
+				wxID_ANY,
+				wxDefaultPosition, 
+				wxSize(200,500),
+				wxPG_AUTO_SORT |
+				wxPG_DEFAULT_STYLE );
+			
+			pg->Append ( wxIntProperty ( wxT("IntProperty"), wxPG_LABEL, 12345678 ) );
+			pg->Append ( wxFloatProperty ( wxT("FloatProperty"), wxPG_LABEL, 12345.678 ) );
+			pg->Append ( wxBoolProperty ( wxT("BoolProperty"), wxPG_LABEL, false ) );
+			
+			pg->Append ( wxLongStringProperty (wxT("LongStringProperty"),
+				   wxPG_LABEL,
+				   wxT("This is much longer string than the ")
+				   wxT("first one. Edit it by clicking the button.")));
+			
+#ifdef IN_PANEL
+			leftPanel = panel;
+#endif
+#ifndef IN_PANEL
+			leftPanel = pg;
+#endif
+
+			wxBoxSizer* sizerLeft = new wxBoxSizer(wxVERTICAL);
+			sizerLeft->Add(leftPanel, 1, wxEXPAND|wxALL, 0);
+			leftPanel->SetSizer(sizerLeft);
+			leftPanel->SetAutoLayout(TRUE);
+			pg->SetAutoLayout(TRUE);
+
+			pg->Show(true);
+
+			m_mgr.AddPane(leftPanel, wxLEFT, wxT("Properties"));
+
+			m_mgr.Update();
+		}
+#endif	
 	return ERR_NONE;
 }
 /*...e*/
