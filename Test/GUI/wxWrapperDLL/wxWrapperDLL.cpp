@@ -59,6 +59,8 @@
 
 #include "wx/wizard.h"
 #include "wx/splitter.h"
+#include <wx/treectrl.h>
+#include <wx/artprov.h>
 
 #ifdef USE_PROPGRID
 // Necessary header file
@@ -594,6 +596,7 @@ lbErrCodes LB_STDCALL lb_wxFrame::registerEventHandler(lb_I_Dispatcher* disp) {
 
 #ifdef USE_WXAUI
 	m_mgr.SetFrame(this);
+	SetMinSize(wxSize(500,400));
 #endif
 
 	eman->registerEvent("switchPanelUse", on_panel_usage);
@@ -1322,7 +1325,7 @@ void lb_wxFrame::OnEraseBackground(wxEraseEvent& event)
 
 void lb_wxFrame::OnSize(wxSizeEvent& event)
 {
-	m_mgr.Update();
+	_CL_LOG << "OnSize() called for " << event.GetEventObject()->GetClassInfo()->GetClassName() << "." LOG_
     event.Skip();
 }
 
@@ -1422,6 +1425,74 @@ lbErrCodes LB_STDCALL lb_wxFrame::setPreferredPropertyPanelByNamespace(lb_I_Unkn
 	return err;
 }
 
+
+wxPropertyGrid* lb_wxFrame::CreatePropertyGrid(wxWindow* parent) {
+	wxPropertyGrid* pg = new wxPropertyGrid(
+		parent,
+		wxID_ANY,
+		wxPoint(0, 0), 
+		wxSize(160, 250),
+		wxPG_AUTO_SORT |
+		wxPG_DEFAULT_STYLE );
+
+	pg->Append ( wxIntProperty ( wxT("IntProperty"), wxPG_LABEL, 12345678 ) );
+	pg->Append ( wxFloatProperty ( wxT("FloatProperty"), wxPG_LABEL, 12345.678 ) );
+	pg->Append ( wxBoolProperty ( wxT("BoolProperty"), wxPG_LABEL, false ) );
+			
+	pg->Append ( wxLongStringProperty (wxT("LongStringProperty"),
+		   wxPG_LABEL,
+		   wxT("This is much longer string than the ")
+		   wxT("first one. Edit it by clicking the button.")));
+
+	return pg;
+}
+
+wxTreeCtrl* lb_wxFrame::CreateTreeCtrl(wxWindow* parent) {
+    wxTreeCtrl* tree = new wxTreeCtrl(parent, -1,
+                                      wxPoint(0,0), wxSize(160,250),
+                                      wxTR_DEFAULT_STYLE | wxNO_BORDER);
+    
+    wxTreeItemId root = tree->AddRoot(wxT("wxAUI Project"));
+    wxArrayTreeItemIds items;
+
+
+    wxImageList* imglist = new wxImageList(16, 16, true, 2);
+    imglist->Add(wxArtProvider::GetBitmap(wxART_FOLDER, wxART_OTHER, wxSize(16,16)));
+    imglist->Add(wxArtProvider::GetBitmap(wxART_NORMAL_FILE, wxART_OTHER, wxSize(16,16)));
+    tree->AssignImageList(imglist);
+
+    items.Add(tree->AppendItem(root, wxT("Item 1"), 0));
+    items.Add(tree->AppendItem(root, wxT("Item 2"), 0));
+    items.Add(tree->AppendItem(root, wxT("Item 3"), 0));
+    items.Add(tree->AppendItem(root, wxT("Item 4"), 0));
+    items.Add(tree->AppendItem(root, wxT("Item 5"), 0));
+
+    
+    int i, count;
+    for (i = 0, count = items.Count(); i < count; ++i)
+    {
+        wxTreeItemId id = items.Item(i);
+        tree->AppendItem(id, wxT("Subitem 1"), 1);
+        tree->AppendItem(id, wxT("Subitem 2"), 1);
+        tree->AppendItem(id, wxT("Subitem 3"), 1);
+        tree->AppendItem(id, wxT("Subitem 4"), 1);
+        tree->AppendItem(id, wxT("Subitem 5"), 1);
+    }
+
+
+    tree->Expand(root);
+
+    return tree;
+}
+
+wxPoint lb_wxFrame::GetStartPosition()
+{
+    static int x = 0;
+    x += 20;
+    wxPoint pt = ClientToScreen(wxPoint(0,0));
+    return wxPoint(pt.x + x, pt.y + x);
+}
+
 lbErrCodes LB_STDCALL lb_wxFrame::showLeftPropertyBar(lb_I_Unknown* uk) {
 	_CL_LOG << "lb_wxFrame::showLeftPropertyBar(lb_I_Unknown* uk) called." LOG_
 	
@@ -1451,61 +1522,12 @@ lbErrCodes LB_STDCALL lb_wxFrame::showLeftPropertyBar(lb_I_Unknown* uk) {
 			//				else {
 #ifdef IN_PANEL			
 			wxPanel* panel = new wxPanel(m_splitter,-1);
-#endif
-#ifdef USE_PROPGRID
-			wxPropertyGrid* pg = new wxPropertyGrid(
-#ifdef IN_PANEL
-				panel,
-#endif
-#ifndef IN_PANEL
-				m_splitter,
-#endif
-				wxID_ANY,
-				wxDefaultPosition, 
-				wxDefaultSize,
-				wxPG_AUTO_SORT |
-//				wxPG_SPLITTER_AUTO_CENTER |
-				wxPG_DEFAULT_STYLE );
-#endif
-#ifdef bla
-			wxPropertyGridManager* pg = new wxPropertyGridManager(panel, -1,
-				wxDefaultPosition, wxDefaultSize,
-				wxPG_BOLD_MODIFIED |
-				wxPG_SPLITTER_AUTO_CENTER |
-				wxPG_AUTO_SORT |
-				//wxPG_HIDE_MARGIN|wxPG_STATIC_SPLITTER |
-				//wxPG_TOOLTIPS |
-				//wxPG_HIDE_CATEGORIES |
-				//wxPG_LIMITED_EDITING |
-				wxTAB_TRAVERSAL |
-				wxPG_TOOLBAR |
-				wxPG_DESCRIPTION
-				//wxPG_COMPACTOR
-				);
-#endif
-#ifdef USE_PROPGRID
-			
-			// Add int property 
-			pg->Append ( wxIntProperty ( wxT("IntProperty"), wxPG_LABEL, 12345678 ) );
-			
-			// Add float property (value type is actually double)
-			pg->Append ( wxFloatProperty ( wxT("FloatProperty"), wxPG_LABEL, 12345.678 ) );
-			
-			// Add a bool property
-			pg->Append ( wxBoolProperty ( wxT("BoolProperty"), wxPG_LABEL, false ) );
-			
-			// A string property that can be edited in a separate editor dialog.
-			pg->Append ( wxLongStringProperty (wxT("LongStringProperty"),
-				   wxPG_LABEL,
-				   wxT("This is much longer string than the ")
-				   wxT("first one. Edit it by clicking the button.")));
-			
-#ifdef IN_PANEL			
+			wxPropertyGrid* pg = CreatePropertyGrid(panel);
 			leftPanel = panel;
 #endif
 #ifndef IN_PANEL
+			wxPropertyGrid* pg = CreatePropertyGrid(this);
 			leftPanel = pg;
-#endif
 #endif
 #ifndef USE_PROPGRID
 			leftPanel = new wxScrolledWindow(m_splitter);
@@ -1567,36 +1589,34 @@ lbErrCodes LB_STDCALL lb_wxFrame::showLeftPropertyBar(lb_I_Unknown* uk) {
 			wxScrolledWindow* panel = new wxScrolledWindow(this, -1);
 #endif
 
-			wxPropertyGrid* pg = new wxPropertyGrid(
-#ifdef IN_PANEL
-				panel,
-#endif
-#ifndef IN_PANEL
-				this,
-#endif
-				wxID_ANY,
-				wxPoint(0, 0), 
-				wxSize(200, 500),
-				wxPG_AUTO_SORT |
-				wxPG_DEFAULT_STYLE );
-
-			pg->Append ( wxIntProperty ( wxT("IntProperty"), wxPG_LABEL, 12345678 ) );
-			pg->Append ( wxFloatProperty ( wxT("FloatProperty"), wxPG_LABEL, 12345.678 ) );
-			pg->Append ( wxBoolProperty ( wxT("BoolProperty"), wxPG_LABEL, false ) );
-			
-			pg->Append ( wxLongStringProperty (wxT("LongStringProperty"),
-				   wxPG_LABEL,
-				   wxT("This is much longer string than the ")
-				   wxT("first one. Edit it by clicking the button.")));
-
 			
 #ifdef IN_PANEL
+			wxPropertyGrid* pg = CreatePropertyGrid(panel);
 			leftPanel = panel;
 #endif
 #ifndef IN_PANEL
+			wxPropertyGrid* pg = CreatePropertyGrid(this);
 			leftPanel = pg;
 #endif
-			m_mgr.AddPane(leftPanel, wxLEFT, wxT("Properties"));
+
+			leftPanel->SetAutoLayout(TRUE);
+			pg->SetAutoLayout(TRUE);
+
+			wxSizer* s = GetSizer();
+
+			if (s != NULL) {
+				_CL_LOG << "Got the sizer object..." LOG_
+				s->Add(leftPanel, 1, wxEXPAND | wxALL, 0);
+			}
+			
+			pg->SetSizeHints(leftPanel->GetSize());
+
+			m_mgr.AddPane(pg, wxPaneInfo().
+                  Name(wxT("Properties")).Caption(wxT("Properties")).
+                  Float().FloatingPosition(GetStartPosition()).
+                  FloatingSize(wxSize(300,200)));
+
+//			m_mgr.AddPane(leftPanel, wxLEFT, wxT("Properties"));
 
 			m_mgr.Update();
 		}

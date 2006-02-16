@@ -33,11 +33,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.11 $
+ * $Revision: 1.12 $
  * $Name:  $
- * $Id: wxWrapperDLL.h,v 1.11 2006/02/15 12:44:44 lollisoft Exp $
+ * $Id: wxWrapperDLL.h,v 1.12 2006/02/16 10:09:36 lollisoft Exp $
  *
  * $Log: wxWrapperDLL.h,v $
+ * Revision 1.12  2006/02/16 10:09:36  lollisoft
+ * I have it now.
+ *
  * Revision 1.11  2006/02/15 12:44:44  lollisoft
  * Acceptable layout capabilities with wxAUI, but still no  visible properties.
  *
@@ -211,6 +214,11 @@ public:
 #ifdef USE_WXAUI
 	wxFrameManager& getAUIManager() { return m_mgr; }
 #endif		
+
+	wxPropertyGrid* CreatePropertyGrid(wxWindow* parent);
+	wxTreeCtrl* CreateTreeCtrl(wxWindow* parent);
+	wxPoint GetStartPosition();
+
 	
 	
 	// Event handlers        
