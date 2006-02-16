@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.78 $
+# * $Revision: 1.79 $
 # * $Name:  $
-# * $Id: Makefile,v 1.78 2006/02/15 12:47:12 lollisoft Exp $
+# * $Id: Makefile,v 1.79 2006/02/16 22:48:38 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.79  2006/02/16 22:48:38  lollisoft
+# * Tested last wxAUI layout changes under Linux. It builds and runs.
+# *
 # * Revision 1.78  2006/02/15 12:47:12  lollisoft
 # * Added wxAUI target.
 # *
@@ -293,6 +296,7 @@ BASEDIRECTORIES= \
 	../RegressionTests \
 	../vendor/c-goldparser \
 	../AppDevelopment
+	
 
 #	../vendor/tvision-set \
 #	../vendor/tvision-set/examples/lbDMF
@@ -380,6 +384,8 @@ ALLTARGETS = \
 	lbclasses \
 	lbMetaApplication \
 	lbPluginManager \
+	../vendor/wxaui-0.9.1/src \
+	../vendor/wxaui-0.9.1/sample \
 	../AppDevelopmentDemo/App \
 	../AppDevelopmentDemo/DynamicApp/App \
 	../Test/Console/XML \
@@ -536,6 +542,14 @@ ifeq ($(OSTYPE), osx)
 endif
 
 ifeq ($(OSTYPE), linux)
+../vendor/wxaui-0.9.1/src: dummy
+	$(MAKE) -s -C $@ -e MODULE=wxAUI -e TARGET=$(TARGETWXSO) -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@
+
+../vendor/wxaui-0.9.1/sample: dummy
+	$(MAKE) -s -C $@ -e MODULE=wxAUISample -e TARGET=$(TARGETWXEXE) -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@
+
 ../Test/GUI/wxWrapperDLL: dummy
 	$(MAKE) -s -C $@ -e MODULE=wxWrapperDLL -e TARGET=$(TARGETWXSO) -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@
