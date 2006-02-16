@@ -1051,11 +1051,14 @@ lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::createDBForm(char* formName, char* query
 			if (frame->isSplitted()) {
 				frame->Fit();
 			} else {
-				sizerMain->SetSizeHints(frame->FindWindowById(_dialog->getId()));
-				sizerMain->Fit(frame->FindWindowById(_dialog->getId()));
+				//sizerMain->SetSizeHints(frame->FindWindowById(_dialog->getId()));
+				frame->SetMinSize(frame->FindWindowById(_dialog->getId())->GetSize());
 				frame->Fit();
+
+				//sizerMain->Fit(frame->FindWindowById(_dialog->getId()));
 		
 				frame->Centre();
+				//frame->Refresh();
 			}	
 		}
 		
