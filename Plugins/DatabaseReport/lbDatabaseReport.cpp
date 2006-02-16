@@ -91,6 +91,7 @@ extern "C" {
 
 #include "wx/wizard.h"
 #include "wx/splitter.h"
+#include "wx/treectrl.h"
 /*...e*/
 
 #ifndef OSX
@@ -99,7 +100,7 @@ extern "C" {
 #endif
 #endif
 
-
+#include "wx/propgrid/propgrid.h"
 #include <wxWrapperDLL.h>
 #include <lbDatabaseReport.h>
 

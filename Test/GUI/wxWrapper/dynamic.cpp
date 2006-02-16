@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.114 2006/02/06 14:49:41 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.115 2006/02/16 16:14:38 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.114 $
+ * $Revision: 1.115 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.114 2006/02/06 14:49:41 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.115 2006/02/16 16:14:38 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.115  2006/02/16 16:14:38  lollisoft
+ * Small changes to let wxAUI based layout compile under Windows.
+ *
  * Revision 1.114  2006/02/06 14:49:41  lollisoft
  * Try to implement left panel using wxPropertyGrid
  *
@@ -431,6 +434,7 @@
 
 #include "wx/wizard.h"
 #include "wx/splitter.h"
+#include "wx/treectrl.h"
 /*...e*/
 
 // ID for the menu commands
@@ -443,6 +447,7 @@
 #define DYNAMIC_VERBOSE		1006
 
 #ifdef USE_WXWRAPPER_DLL
+#include "wx/propgrid/propgrid.h"
 #include <wxWrapperDLL.h>
 #endif
 #ifdef OSX

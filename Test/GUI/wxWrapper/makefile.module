@@ -72,8 +72,8 @@ LINKFLAGS = $(L_EXEOPS_MICROSOFT) $(LIBS) $(OBJS) \
 endif
 
 ifeq ($(COMPILER), WATCOM)
-MOD_INCL = $(STD_INCL) -i=../wxWrapperDLL -i=../../../../../wxwin/wx/include
-MOD_INCL_CPP = $(STD_INCL_CPP) -i=../wxWrapperDLL -i=../../../../../wxwin/wx/include
+MOD_INCL = $(STD_INCL) -i=../wxWrapperDLL -i=../../../../../wxwin/wx/include -i=$(DEVROOT)\\wxwin\\wx\\contrib\\include
+MOD_INCL_CPP = $(STD_INCL_CPP) -i=../wxWrapperDLL -i=../../../../../wxwin/wx/include -i=$(DEVROOT_MAKE)/wxwin/wx/contrib/include
 
 C_EXEOPS= $(C_EXEOPS_WATCOM$(MODE)) \
 		/DUSE_WXWRAPPER_DLL \
