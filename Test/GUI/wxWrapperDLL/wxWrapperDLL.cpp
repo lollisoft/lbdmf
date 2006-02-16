@@ -30,7 +30,10 @@
 
 #define USE_PROPGRID
 #define USE_WXAUI
+
+#ifdef OSX
 #define IN_PANEL
+#endif
 
 #include <lbConfigHook.h>
 
@@ -1499,6 +1502,7 @@ wxPoint lb_wxFrame::GetStartPosition()
 lbErrCodes LB_STDCALL lb_wxFrame::showLeftPropertyBar(lb_I_Unknown* uk) {
 	_CL_LOG << "lb_wxFrame::showLeftPropertyBar(lb_I_Unknown* uk) called." LOG_
 	
+/*...sNo wxAUI:0:*/
 #ifndef USE_WXAUI	
 	if (m_splitter == NULL) {
 		m_splitter = new wxSplitterWindow(this, wxID_ANY,
@@ -1572,6 +1576,7 @@ lbErrCodes LB_STDCALL lb_wxFrame::showLeftPropertyBar(lb_I_Unknown* uk) {
 		}
 	}
 #endif
+/*...e*/
 
 #ifdef USE_WXAUI
 		wxList children = GetChildren();
