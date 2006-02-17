@@ -1937,29 +1937,21 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBClear() {
 /*...e*/
 /*...slbErrCodes LB_STDCALL lbDatabasePanel\58\\58\lbDBUpdate\40\\41\:0:*/
 lbErrCodes LB_STDCALL lbDatabasePanel::lbDBUpdate() {
-
 	//if (noDataAvailable) return ERR_NONE;
-
 	SetTitle(formName);
 
 	int columns = sampleQuery->getColumns();
-
 	
-	_CL_LOG << "Update each columns." LOG_				
 	for (int i = 1; i <= columns; i++) {
 		UAP_REQUEST(manager.getPtr(), lb_I_String, col)
 		UAP_REQUEST(manager.getPtr(), lb_I_String, val)
 		char* name = strdup(sampleQuery->getColumnName(i));
-
-		_CL_LOG << "Update column " << name LOG_
 
 		// Find the corresponding window
 		
 		wxWindow* w = FindWindowByName(wxString(name), this);
 
 		if (w != NULL) {
-		
-			_CL_VERBOSE << "Have a control to be updated" LOG_
 		
 			if (sampleQuery->hasFKColumn(name) == 1) {
 /*...sUpdate drop down box:32:*/
@@ -2107,7 +2099,6 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBUpdate() {
 		return ERR_UPDATE_FAILED;
 	}
 	
-	_CL_LOG << "lbDatabasePanel::lbDBUpdate() returns ERR_NONE." LOG_
 	return ERR_NONE;
 }
 /*...e*/

@@ -198,8 +198,27 @@ BEGIN_IMPLEMENT_LB_UNKNOWN(lbParameter)
 	ADD_INTERFACE(lb_I_Parameter)
 END_IMPLEMENT_LB_UNKNOWN()
 
+lb_I_Container* LB_STDCALL lbParameter::getParameterList() {
+	if (parameters == NULL) return NULL;
+	
+	parameters++;
+	
+	return parameters.getPtr();
+}
+
 lbErrCodes LB_STDCALL lbParameter::setData(lb_I_Unknown* uk) {
-	_CL_VERBOSE << "lbParameter::setData(...) not implemented yet" LOG_
+	lbErrCodes err = ERR_NONE;
+	
+	UAP(lb_I_Parameter, source)
+	QI(uk, lb_I_Parameter, source)
+	
+	if (source != NULL) {
+		UAP(lb_I_Unknown, uk)
+		uk = source->getParameterList()->clone(__FILE__, __LINE__);
+		
+		QI(uk, lb_I_Container,  parameters)
+	}
+		
 	return ERR_NOT_IMPLEMENTED;
 }
 
@@ -207,6 +226,50 @@ int LB_STDCALL lbParameter::Count() {
 	if (parameters == NULL) return 0;
 	return parameters->Count();
 }
+
+void LB_STDCALL lbParameter::setUAPContainer(lb_I_String*& parameter, lb_I_Container*& p) {
+	lbErrCodes err = ERR_NONE;
+	if (parameters == NULL) {
+		REQUEST(manager.getPtr(), lb_I_Container, parameters)
+		if (parameters == NULL) {
+			_LOG << "Error: Could not get container instance for parameres" LOG_
+			return;
+		}
+	}	
+	
+	UAP(lb_I_KeyBase, k_parameter)
+	QI(parameter, lb_I_KeyBase, k_parameter)
+
+	UAP(lb_I_Unknown, uk_p)
+	QI(p, lb_I_Unknown, uk_p)
+	
+	parameters->insert(&uk_p, &k_parameter);
+}
+
+lbErrCodes LB_STDCALL lbParameter::getUAPContainer(lb_I_String*& parameter, lb_I_Container*& p) {
+	lbErrCodes err = ERR_NONE;
+	
+	if (parameters == NULL) return ERR_PARAM_NOT_FOUND;
+	
+	lb_I_String* pp = parameter;
+	UAP(lb_I_KeyBase, key)
+	QI(pp, lb_I_KeyBase, key)
+	
+	UAP(lb_I_Unknown, uk_p_container)
+
+	uk_p_container = parameters->getElement(&key);
+
+	if (uk_p_container == NULL) return ERR_PARAM_NOT_FOUND;
+
+	p->setData(*&uk_p_container);
+	
+	return ERR_NONE;
+}
+
+
+
+
+
 
 void LB_STDCALL lbParameter::setUAPString(lb_I_String*& parameter, lb_I_String*& p) {
 	lbErrCodes err = ERR_NONE;
@@ -250,6 +313,45 @@ lbErrCodes LB_STDCALL lbParameter::getUAPString(lb_I_String*& parameter, lb_I_St
 	p->setData(string->getData());
 	
 	
+	return ERR_NONE;
+}
+
+void LB_STDCALL lbParameter::setUAPParameter(lb_I_String*& parameter, lb_I_Parameter*& p) {
+	lbErrCodes err = ERR_NONE;
+	if (parameters == NULL) {
+		REQUEST(manager.getPtr(), lb_I_Container, parameters)
+		if (parameters == NULL) {
+			_LOG << "Error: Could not get container instance for parameres" LOG_
+			return;
+		}
+	}	
+	
+	UAP(lb_I_KeyBase, k_parameter)
+	QI(parameter, lb_I_KeyBase, k_parameter)
+
+	UAP(lb_I_Unknown, uk_p)
+	QI(p, lb_I_Unknown, uk_p)
+	
+	parameters->insert(&uk_p, &k_parameter);
+}
+
+lbErrCodes LB_STDCALL lbParameter::getUAPParameter(lb_I_String*& parameter, lb_I_Parameter*& p) {
+	lbErrCodes err = ERR_NONE;
+	
+	if (parameters == NULL) return ERR_PARAM_NOT_FOUND;
+	
+	lb_I_String* pp = parameter;
+	UAP(lb_I_KeyBase, key)
+	QI(pp, lb_I_KeyBase, key)
+	
+	UAP(lb_I_Unknown, uk_p_parameter)
+
+	uk_p_parameter = parameters->getElement(&key);
+
+	if (uk_p_parameter == NULL) return ERR_PARAM_NOT_FOUND;
+
+	p->setData(*&uk_p_parameter);
+		
 	return ERR_NONE;
 }
 

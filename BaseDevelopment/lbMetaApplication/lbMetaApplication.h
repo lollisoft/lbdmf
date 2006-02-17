@@ -30,11 +30,21 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.27 $
+ * $Revision: 1.28 $
  * $Name:  $
- * $Id: lbMetaApplication.h,v 1.27 2006/01/30 15:54:14 lollisoft Exp $
+ * $Id: lbMetaApplication.h,v 1.28 2006/02/17 23:57:16 lollisoft Exp $
  *
  * $Log: lbMetaApplication.h,v $
+ * Revision 1.28  2006/02/17 23:57:16  lollisoft
+ * Added functionality to pass a bunch of properties to the GUI. This then would be shown in a property window.
+ *
+ * There are additional changes in various classes to let this
+ * work properly.
+ *
+ * Todo: Implement the unpacking and type detection code
+ * for each parameter, mapping to wxPropertyGrid entities
+ * and handlers that push back the changes.
+ *
  * Revision 1.27  2006/01/30 15:54:14  lollisoft
  * Removed the __FILE__ and __LINE__ parameter usage in UAP and QI.
  * This was an unnessesary thing and makes programming easier.
@@ -213,6 +223,12 @@ public:
 	
 	lb_I_InputStream* LB_STDCALL askOpenFileReadStream(char* extentions);
 	bool			  LB_STDCALL askYesNo(char* msg);
+	
+	/** \brief Let the GUI show the given parameters in a property panel.
+	 *
+	 */
+	lbErrCodes LB_STDCALL showPropertyPanel(lb_I_Parameter* params);
+	
 /*...e*/
 
 	lbErrCodes LB_STDCALL lbButtonTestHandler(lb_I_Unknown* uk);	

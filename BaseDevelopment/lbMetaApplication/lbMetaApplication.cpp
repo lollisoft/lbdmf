@@ -31,11 +31,21 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.78 $
+ * $Revision: 1.79 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.78 2006/01/30 15:54:14 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.79 2006/02/17 23:57:13 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.79  2006/02/17 23:57:13  lollisoft
+ * Added functionality to pass a bunch of properties to the GUI. This then would be shown in a property window.
+ *
+ * There are additional changes in various classes to let this
+ * work properly.
+ *
+ * Todo: Implement the unpacking and type detection code
+ * for each parameter, mapping to wxPropertyGrid entities
+ * and handlers that push back the changes.
+ *
  * Revision 1.78  2006/01/30 15:54:14  lollisoft
  * Removed the __FILE__ and __LINE__ parameter usage in UAP and QI.
  * This was an unnessesary thing and makes programming easier.
@@ -1193,6 +1203,20 @@ lbErrCodes LB_STDCALL lb_MetaApplication::toggleEvent(char* name) {
 	return err;
 }
 
+lbErrCodes LB_STDCALL lb_MetaApplication::showPropertyPanel(lb_I_Parameter* params) {
+	lbErrCodes err = ERR_NONE;
+
+	UAP(lb_I_Unknown, uk)
+	QI(params, lb_I_Unknown, uk)
+
+	UAP_REQUEST(manager.getPtr(), lb_I_String, result)
+	UAP(lb_I_Unknown, uk_result)
+	QI(result, lb_I_Unknown, uk_result)
+
+	dispatcher->dispatch("ShowPropertyPanel", uk.getPtr(), &uk_result);
+
+	return ERR_NONE;
+}
 
 /*...slb_MetaApplication\58\\58\addMenuEntry\40\char\42\ in_menu\44\ char\42\ entry\44\ char\42\ evHandler\44\ char\42\ afterentry\41\:0:*/
 lbErrCodes LB_STDCALL lb_MetaApplication::addMenuEntry(char* in_menu, char* entry, char* evHandler, char* afterentry) {

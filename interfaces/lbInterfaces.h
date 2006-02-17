@@ -2402,6 +2402,12 @@ public:
 	/** \brief Ask the user for YES or NO.
 	 */
 	virtual bool LB_STDCALL askYesNo(char* msg) = 0;
+	
+	/** \brief Let the GUI show the given parameters in a property panel.
+	 *
+	 */
+	virtual lbErrCodes LB_STDCALL showPropertyPanel(lb_I_Parameter* params) = 0;
+	
 };
 /*...e*/
 

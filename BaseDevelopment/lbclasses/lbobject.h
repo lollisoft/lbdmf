@@ -31,10 +31,20 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.31 $
+ * $Revision: 1.32 $
  * $Name:  $
- * $Id: lbobject.h,v 1.31 2006/01/30 15:54:15 lollisoft Exp $
+ * $Id: lbobject.h,v 1.32 2006/02/17 23:57:16 lollisoft Exp $
  * $Log: lbobject.h,v $
+ * Revision 1.32  2006/02/17 23:57:16  lollisoft
+ * Added functionality to pass a bunch of properties to the GUI. This then would be shown in a property window.
+ *
+ * There are additional changes in various classes to let this
+ * work properly.
+ *
+ * Todo: Implement the unpacking and type detection code
+ * for each parameter, mapping to wxPropertyGrid entities
+ * and handlers that push back the changes.
+ *
  * Revision 1.31  2006/01/30 15:54:15  lollisoft
  * Removed the __FILE__ and __LINE__ parameter usage in UAP and QI.
  * This was an unnessesary thing and makes programming easier.
@@ -272,8 +282,15 @@ public:
 	virtual void LB_STDCALL setUAPInteger(lb_I_String*& parameter, lb_I_Integer*& p);
 	virtual lbErrCodes LB_STDCALL getUAPInteger(lb_I_String*& parameter, lb_I_Integer*& p);
 	
-	virtual int LB_STDCALL Count();
+	virtual void LB_STDCALL setUAPParameter(lb_I_String*& parameter, lb_I_Parameter*& p);
+	virtual lbErrCodes LB_STDCALL getUAPParameter(lb_I_String*& parameter, lb_I_Parameter*& p);
 	
+	virtual void LB_STDCALL setUAPContainer(lb_I_String*& parameter, lb_I_Container*& p);
+	virtual lbErrCodes LB_STDCALL getUAPContainer(lb_I_String*& parameter, lb_I_Container*& p);
+	
+	virtual int LB_STDCALL Count();
+	virtual lb_I_Container* LB_STDCALL getParameterList();
+
 protected:
 
 	UAP(lb_I_Container, parameters)

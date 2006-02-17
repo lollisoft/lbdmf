@@ -33,11 +33,21 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.12 $
+ * $Revision: 1.13 $
  * $Name:  $
- * $Id: wxWrapperDLL.h,v 1.12 2006/02/16 10:09:36 lollisoft Exp $
+ * $Id: wxWrapperDLL.h,v 1.13 2006/02/17 23:57:17 lollisoft Exp $
  *
  * $Log: wxWrapperDLL.h,v $
+ * Revision 1.13  2006/02/17 23:57:17  lollisoft
+ * Added functionality to pass a bunch of properties to the GUI. This then would be shown in a property window.
+ *
+ * There are additional changes in various classes to let this
+ * work properly.
+ *
+ * Todo: Implement the unpacking and type detection code
+ * for each parameter, mapping to wxPropertyGrid entities
+ * and handlers that push back the changes.
+ *
  * Revision 1.12  2006/02/16 10:09:36  lollisoft
  * I have it now.
  *
@@ -249,11 +259,12 @@ public:
 	UAP(lb_I_String, PanelNamespace)
     UAP(lb_I_EventManager, eman)
     UAP(lb_I_Dispatcher, dispatcher)
+	UAP(lb_I_Parameter, currentProperties)
 		
 		
 #ifdef USE_WXAUI
 private:
-		wxFrameManager m_mgr;
+	wxFrameManager m_mgr;
 
 	DECLARE_EVENT_TABLE();
 

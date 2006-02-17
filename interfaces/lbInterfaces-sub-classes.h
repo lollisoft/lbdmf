@@ -30,11 +30,21 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.64 $
+ * $Revision: 1.65 $
  * $Name:  $
- * $Id: lbInterfaces-sub-classes.h,v 1.64 2006/01/30 15:54:15 lollisoft Exp $
+ * $Id: lbInterfaces-sub-classes.h,v 1.65 2006/02/17 23:57:17 lollisoft Exp $
  *
  * $Log: lbInterfaces-sub-classes.h,v $
+ * Revision 1.65  2006/02/17 23:57:17  lollisoft
+ * Added functionality to pass a bunch of properties to the GUI. This then would be shown in a property window.
+ *
+ * There are additional changes in various classes to let this
+ * work properly.
+ *
+ * Todo: Implement the unpacking and type detection code
+ * for each parameter, mapping to wxPropertyGrid entities
+ * and handlers that push back the changes.
+ *
  * Revision 1.64  2006/01/30 15:54:15  lollisoft
  * Removed the __FILE__ and __LINE__ parameter usage in UAP and QI.
  * This was an unnessesary thing and makes programming easier.
@@ -643,17 +653,27 @@ public:
 	          &lb_wxFrame::OnDispatch );
          * \endcode
          */ 
-        virtual lbErrCodes LB_STDCALL getUAPString(lb_I_String*& parameter, lb_I_String*& p) = 0; 
+	virtual lbErrCodes LB_STDCALL getUAPString(lb_I_String*& parameter, lb_I_String*& p) = 0; 
 
 	virtual void LB_STDCALL setUAPInteger(lb_I_String*& parameter, lb_I_Integer*& p) = 0;
 	virtual lbErrCodes LB_STDCALL getUAPInteger(lb_I_String*& parameter, lb_I_Integer*& p) = 0;
+	
+	virtual void LB_STDCALL setUAPContainer(lb_I_String*& parameter, lb_I_Container*& p) = 0;
+	virtual lbErrCodes LB_STDCALL getUAPContainer(lb_I_String*& parameter, lb_I_Container*& p) = 0;
+
+	virtual void LB_STDCALL setUAPParameter(lb_I_String*& parameter, lb_I_Parameter*& p) = 0;
+	virtual lbErrCodes LB_STDCALL getUAPParameter(lb_I_String*& parameter, lb_I_Parameter*& p) = 0;
 	
 	/**
 	 * /brief Returns the number of parameters
 	 *
 	 */
 	virtual int LB_STDCALL Count() = 0;
-
+	
+	/** \brief Get the list of parameters as a container.
+	 *
+	 */
+	virtual lb_I_Container* LB_STDCALL getParameterList() = 0;
 };
 /*...e*/
 
@@ -881,6 +901,11 @@ public:
      * Use this function to avoid cleanup through the container.
      */
     virtual void LB_STDCALL detachAll() = 0;
+	
+	/** \brief Get current key based on iterator position.
+	 *
+	 */
+	virtual lb_I_KeyBase* LB_STDCALL currentKey() = 0;
 };
 
 /*...sDECLARE_LB_I_CONTAINER_IMPL_CO \40\co_Interface\41\:0:*/
@@ -934,6 +959,7 @@ protected: \
         \
         virtual void LB_STDCALL deleteAll(); \
         virtual void LB_STDCALL detachAll() { canDeleteObjects = false; } \
+		virtual lb_I_KeyBase* LB_STDCALL currentKey(); \
 protected: \
     int count; \
     int iteration; \
@@ -1019,6 +1045,11 @@ int classname::hasMoreElements() { \
     } \
 \
     return 1; \
+} \
+\
+lb_I_KeyBase* classname::currentKey() { \
+	if (iterator == NULL) return NULL; \
+	return iterator->getKey(); \
 } \
 \
 lb_I_Unknown* classname::nextElement() { \
@@ -1207,6 +1238,10 @@ int LB_STDCALL classname::hasMoreElements() { \
     } \
 \
     return 1; \
+} \
+lb_I_KeyBase* classname::currentKey() { \
+	if (iterator == NULL) return NULL; \
+	return iterator->getKey(); \
 } \
 \
 lb_I_Unknown* LB_STDCALL classname::nextElement() { \

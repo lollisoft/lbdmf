@@ -30,11 +30,21 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.103 $
+ * $Revision: 1.104 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.103 2006/01/30 15:54:14 lollisoft Exp $
+ * $Id: lbModule.cpp,v 1.104 2006/02/17 23:57:16 lollisoft Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.104  2006/02/17 23:57:16  lollisoft
+ * Added functionality to pass a bunch of properties to the GUI. This then would be shown in a property window.
+ *
+ * There are additional changes in various classes to let this
+ * work properly.
+ *
+ * Todo: Implement the unpacking and type detection code
+ * for each parameter, mapping to wxPropertyGrid entities
+ * and handlers that push back the changes.
+ *
  * Revision 1.103  2006/01/30 15:54:14  lollisoft
  * Removed the __FILE__ and __LINE__ parameter usage in UAP and QI.
  * This was an unnessesary thing and makes programming easier.
@@ -649,6 +659,10 @@ int LB_STDCALL SkipList::hasMoreElements() {
     return can_dump();
 } 
 /*...e*/
+lb_I_KeyBase* SkipList::currentKey() {
+	if (container_data == NULL) return NULL;
+		return container_data->getKey();
+}
 /*...sSkipList\58\\58\nextElement\40\\41\:0:*/
 lb_I_Unknown* LB_STDCALL SkipList::nextElement() { 
 

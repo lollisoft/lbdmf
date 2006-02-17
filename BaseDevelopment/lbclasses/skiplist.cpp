@@ -38,11 +38,21 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.42 $
+ * $Revision: 1.43 $
  * $Name:  $
- * $Id: skiplist.cpp,v 1.42 2006/01/30 15:54:15 lollisoft Exp $
+ * $Id: skiplist.cpp,v 1.43 2006/02/17 23:57:16 lollisoft Exp $
  *
  * $Log: skiplist.cpp,v $
+ * Revision 1.43  2006/02/17 23:57:16  lollisoft
+ * Added functionality to pass a bunch of properties to the GUI. This then would be shown in a property window.
+ *
+ * There are additional changes in various classes to let this
+ * work properly.
+ *
+ * Todo: Implement the unpacking and type detection code
+ * for each parameter, mapping to wxPropertyGrid entities
+ * and handlers that push back the changes.
+ *
  * Revision 1.42  2006/01/30 15:54:15  lollisoft
  * Removed the __FILE__ and __LINE__ parameter usage in UAP and QI.
  * This was an unnessesary thing and makes programming easier.
@@ -327,9 +337,25 @@ END_IMPLEMENT_LB_UNKNOWN()
 
 
 lbErrCodes LB_STDCALL SkipList::setData(lb_I_Unknown* uk) {
-	_CL_VERBOSE << "SkipList::setData(...) not implemented yet" LOG_
-	return ERR_NOT_IMPLEMENTED;
+	lbErrCodes err = ERR_NONE;
+	
+	UAP(lb_I_Container, source)
+	QI(uk, lb_I_Container, source)
+	
+	if (source != NULL) 
+		while (source->hasMoreElements()) {
+				UAP(lb_I_Unknown, ukValue)
+				UAP(lb_I_KeyBase, key)
+			
+				ukValue = source->nextElement();
+				key = source->currentKey();
+				
+				insert(&ukValue, &key);
+		}
+	
+	return ERR_NONE;
 }
+
 SkipList::SkipList() {
 	iteration = 0;
 	canDeleteObjects = true;
@@ -497,6 +523,15 @@ lb_I_Unknown* LB_STDCALL SkipList::nextElement() {
 	}
 } 
 /*...e*/
+
+lb_I_KeyBase* LB_STDCALL SkipList::currentKey() {
+	if (skipiterator != NULL) {
+		Elem e = skipiterator->value.getPtr();
+		
+		return e->getKey();
+	}
+}
+
 /*...sSkipList\58\\58\getElement\40\lb_I_KeyBase\42\\42\ const key\41\:0:*/
 lb_I_Unknown* LB_STDCALL SkipList::getElement(lb_I_KeyBase** const key) { 
     lb_I_Unknown* e = search(*key);

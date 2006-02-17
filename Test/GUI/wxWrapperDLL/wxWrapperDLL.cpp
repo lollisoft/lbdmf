@@ -603,10 +603,10 @@ lbErrCodes LB_STDCALL lb_wxFrame::registerEventHandler(lb_I_Dispatcher* disp) {
 #endif
 
 	eman->registerEvent("switchPanelUse", on_panel_usage);
-	eman->registerEvent("showLeftPropertyBar", _showLeftPropertyBar);
+	eman->registerEvent("ShowPropertyPanel", _showLeftPropertyBar);
 	eman->registerEvent("setPreferredPropertyPanelByNamespace", temp);
 
-	disp->addEventHandlerFn(this, (lbEvHandler) &lb_wxFrame::showLeftPropertyBar, "showLeftPropertyBar");
+	disp->addEventHandlerFn(this, (lbEvHandler) &lb_wxFrame::showLeftPropertyBar, "ShowPropertyPanel");
 	disp->addEventHandlerFn(this, (lbEvHandler) &lb_wxFrame::switchPanelUse, "switchPanelUse");
 	disp->addEventHandlerFn(this, (lbEvHandler) &lb_wxFrame::setPreferredPropertyPanelByNamespace, "setPreferredPropertyPanelByNamespace");
 
@@ -1048,20 +1048,22 @@ lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::createDBForm(char* formName, char* query
 		if (frame->isPanelUsage()) {
 			wxWindow* w = frame->FindWindowById(_dialog->getId());
 			notebook->AddPage(w, formName, true);
-			notebook->Fit();
-			notebook->Show(true);
+			if (!frame->IsMaximized()) notebook->Fit();
+			//notebook->Show(true);
 			
 			if (frame->isSplitted()) {
-				frame->Fit();
+				if (!frame->IsMaximized()) frame->Fit();
 			} else {
 				//sizerMain->SetSizeHints(frame->FindWindowById(_dialog->getId()));
 				frame->SetMinSize(frame->FindWindowById(_dialog->getId())->GetSize());
-				frame->Fit();
+				if (!frame->IsMaximized()) {
+					frame->Fit();
 
-				//sizerMain->Fit(frame->FindWindowById(_dialog->getId()));
+					//sizerMain->Fit(frame->FindWindowById(_dialog->getId()));
 		
-				frame->Centre();
-				//frame->Refresh();
+					frame->Centre();
+					//frame->Refresh();
+				}
 			}	
 		}
 		
@@ -1080,7 +1082,7 @@ lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::createDBForm(char* formName, char* query
 	_dialog++;
 
 	UAP_REQUEST(getModuleManager(), lb_I_MetaApplication, app)
-	app->enableEvent("showLeftPropertyBar");
+	app->enableEvent("ShowPropertyPanel");
 	
 	return _dialog.getPtr();
 }
@@ -1441,15 +1443,21 @@ wxPropertyGrid* lb_wxFrame::CreatePropertyGrid(wxWindow* parent) {
 		wxPG_AUTO_SORT |
 		wxPG_DEFAULT_STYLE );
 
-	pg->Append ( wxIntProperty ( wxT("IntProperty"), wxPG_LABEL, 12345678 ) );
-	pg->Append ( wxFloatProperty ( wxT("FloatProperty"), wxPG_LABEL, 12345.678 ) );
-	pg->Append ( wxBoolProperty ( wxT("BoolProperty"), wxPG_LABEL, false ) );
+	if (currentProperties == NULL) {
+		pg->Append ( wxIntProperty ( wxT("IntProperty"), wxPG_LABEL, 12345678 ) );
+		pg->Append ( wxFloatProperty ( wxT("FloatProperty"), wxPG_LABEL, 12345.678 ) );
+		pg->Append ( wxBoolProperty ( wxT("BoolProperty"), wxPG_LABEL, false ) );
 			
-	pg->Append ( wxLongStringProperty (wxT("LongStringProperty"),
+		pg->Append ( wxLongStringProperty (wxT("LongStringProperty"),
 		   wxPG_LABEL,
 		   wxT("This is much longer string than the ")
 		   wxT("first one. Edit it by clicking the button.")));
-
+	} else {
+	
+		pg->Append(wxLongStringProperty (wxT("StringProperty"), wxPG_LABEL, wxT("Have application properties.")));
+	
+	}
+	 
 	return pg;
 }
 
@@ -1500,7 +1508,18 @@ wxPoint lb_wxFrame::GetStartPosition()
 }
 
 lbErrCodes LB_STDCALL lb_wxFrame::showLeftPropertyBar(lb_I_Unknown* uk) {
-	_CL_LOG << "lb_wxFrame::showLeftPropertyBar(lb_I_Unknown* uk) called." LOG_
+	lbErrCodes err = ERR_NONE;
+	
+	UAP(lb_I_Parameter, params)
+	QI(uk, lb_I_Parameter, params)
+	
+	if (params != NULL) {
+		if (currentProperties == NULL) {
+			REQUEST(manager.getPtr(), lb_I_Parameter, currentProperties)
+		}
+		
+		currentProperties->setData(uk);
+	}
 	
 /*...sNo wxAUI:0:*/
 #ifndef USE_WXAUI	
@@ -1582,52 +1601,39 @@ lbErrCodes LB_STDCALL lb_wxFrame::showLeftPropertyBar(lb_I_Unknown* uk) {
 		wxList children = GetChildren();
 		wxNode* node = children.GetFirst();
 		
-		if (children.IsEmpty()) {
-			_CL_LOG << "Warning: No child window found." LOG_
-			
-			wxPanel* leftPanel = new wxPanel(this);
-
-			m_mgr.AddPane(leftPanel, wxLEFT, wxT("Properties"));
-
-			m_mgr.Update();
-			
-		} else {
-			wxWindow* leftPanel = NULL;
+		wxWindow* leftPanel = NULL;
 #ifdef IN_PANEL
-			wxScrolledWindow* panel = new wxScrolledWindow(this, -1);
+		wxScrolledWindow* panel = new wxScrolledWindow(this, -1);
 #endif
 
 			
 #ifdef IN_PANEL
-			wxPropertyGrid* pg = CreatePropertyGrid(panel);
-			leftPanel = panel;
+		wxPropertyGrid* pg = CreatePropertyGrid(panel);
+		leftPanel = panel;
 #endif
 #ifndef IN_PANEL
-			wxPropertyGrid* pg = CreatePropertyGrid(this);
-			leftPanel = pg;
+		wxPropertyGrid* pg = CreatePropertyGrid(this);
+		leftPanel = pg;
 #endif
 
-			leftPanel->SetAutoLayout(TRUE);
-			pg->SetAutoLayout(TRUE);
+		leftPanel->SetAutoLayout(TRUE);
+		pg->SetAutoLayout(TRUE);
 
-			wxSizer* s = GetSizer();
+		wxSizer* s = GetSizer();
 
-			if (s != NULL) {
-				_CL_LOG << "Got the sizer object..." LOG_
-				s->Add(leftPanel, 1, wxEXPAND | wxALL, 0);
-			}
-			
-			pg->SetSizeHints(leftPanel->GetSize());
-
-			m_mgr.AddPane(pg, wxPaneInfo().
-                  Name(wxT("Properties")).Caption(wxT("Properties")).
-                  Float().FloatingPosition(GetStartPosition()).
-                  FloatingSize(wxSize(300,200)));
-
-//			m_mgr.AddPane(leftPanel, wxLEFT, wxT("Properties"));
-
-			m_mgr.Update();
+		if (s != NULL) {
+			_CL_LOG << "Got the sizer object..." LOG_
+			s->Add(leftPanel, 1, wxEXPAND | wxALL, 0);
 		}
+			
+		pg->SetSizeHints(leftPanel->GetSize());
+
+		m_mgr.AddPane(pg, wxPaneInfo().
+			Name(wxT("Properties")).Caption(wxT("Properties")).
+			Float().FloatingPosition(GetStartPosition()).
+			FloatingSize(wxSize(300,200)));
+
+		m_mgr.Update();
 #endif	
 	return ERR_NONE;
 }
