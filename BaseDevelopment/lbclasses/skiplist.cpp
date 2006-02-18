@@ -38,11 +38,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.43 $
+ * $Revision: 1.44 $
  * $Name:  $
- * $Id: skiplist.cpp,v 1.43 2006/02/17 23:57:16 lollisoft Exp $
+ * $Id: skiplist.cpp,v 1.44 2006/02/18 19:13:25 lollisoft Exp $
  *
  * $Log: skiplist.cpp,v $
+ * Revision 1.44  2006/02/18 19:13:25  lollisoft
+ * A todo.
+ *
  * Revision 1.43  2006/02/17 23:57:16  lollisoft
  * Added functionality to pass a bunch of properties to the GUI. This then would be shown in a property window.
  *
@@ -367,6 +370,7 @@ SkipList::SkipList() {
 	ref = STARTREF;
 }
 
+/// \todo Cleanup problem, when key used multiple times.
 SkipList::~SkipList() {
 	if (can_dump() == 1) {
 		while (skipiterator) {
