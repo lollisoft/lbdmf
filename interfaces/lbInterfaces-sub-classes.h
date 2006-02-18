@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.65 $
+ * $Revision: 1.66 $
  * $Name:  $
- * $Id: lbInterfaces-sub-classes.h,v 1.65 2006/02/17 23:57:17 lollisoft Exp $
+ * $Id: lbInterfaces-sub-classes.h,v 1.66 2006/02/18 19:12:18 lollisoft Exp $
  *
  * $Log: lbInterfaces-sub-classes.h,v $
+ * Revision 1.66  2006/02/18 19:12:18  lollisoft
+ * Not so much log messages.
+ *
  * Revision 1.65  2006/02/17 23:57:17  lollisoft
  * Added functionality to pass a bunch of properties to the GUI. This then would be shown in a property window.
  *
@@ -762,22 +765,17 @@ classname::~classname() { \
 	char ptr1[20] = ""; \
 	sprintf(ptr, "%p", this); \
         sprintf(ptr1, "%p", data); \
-	_CL_VERBOSE << #classname << "::~" << #classname << "() called. Pointer this is: " << ptr LOG_ \
         if (key != NULL) { \
-                key->setDebug(1); \
-                if (key->deleteState() != 1) _CL_LOG << "Warning: Key wouldn't deleted in container element!" LOG_ \
-                _CL_VERBOSE << #classname << "::~" << #classname << "() Delete the key of " #classname LOG_ \
-                RELEASE(key); \
+            key->setDebug(1); \
+            if (key->deleteState() != 1) _CL_VERBOSE << "Warning: Key wouldn't deleted in container element! (References: " << key->getRefCount() << ")(" << key->charrep() << ")" LOG_ \
+            RELEASE(key); \
         } \
-        _CL_VERBOSE << #classname << "::~" << #classname << "() Delete the data (" << ptr1 << ") of " #classname LOG_ \
         if (data != NULL) { \
-        	_CL_VERBOSE << "Data object of " << data->getClassName() << " to be deleted has " << data->getRefCount() << " references." LOG_ \
         	if (data->deleteState() != 1) { \
-        		_CL_LOG << "Warning: Data wouldn't deleted in container element! (" << data->getClassName() << ")" LOG_ \
+        		_CL_VERBOSE << "Warning: Data wouldn't deleted in container element! (" << data->getClassName() << ")" LOG_ \
         	} \
-		RELEASE(data); \
+			RELEASE(data); \
         } \
-        _CL_VERBOSE << #classname << "::~" << #classname << "() leaving" LOG_ \
         key = NULL; \
         data = NULL; \
 } \
