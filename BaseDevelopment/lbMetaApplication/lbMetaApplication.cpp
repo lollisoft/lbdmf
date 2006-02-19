@@ -31,11 +31,20 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.79 $
+ * $Revision: 1.80 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.79 2006/02/17 23:57:13 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.80 2006/02/19 18:41:35 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.80  2006/02/19 18:41:35  lollisoft
+ * Feedback of properties works good. I am use the
+ * dispatcher mechanism to forward the change events
+ * on per lb_I_Parameter instance and the category name
+ * to a registered handler.
+ *
+ * So one handler must be capable to recieve values for all
+ * elements of one lb_I_Parameter instance.
+ *
  * Revision 1.79  2006/02/17 23:57:13  lollisoft
  * Added functionality to pass a bunch of properties to the GUI. This then would be shown in a property window.
  *
@@ -1217,6 +1226,32 @@ lbErrCodes LB_STDCALL lb_MetaApplication::showPropertyPanel(lb_I_Parameter* para
 
 	return ERR_NONE;
 }
+
+lbErrCodes LB_STDCALL lb_MetaApplication::registerPropertyChangeEventGroup(char* name, lb_I_Parameter* params, lb_I_EventHandler* target, lbEvHandler handler) {
+	lbErrCodes err = ERR_NONE;
+	
+	UAP(lb_I_Container, properties)
+	
+	properties = params->getParameterList();
+	
+	int temp;
+	
+	for (int i = 1; i <= properties->Count(); i++) {
+		UAP(lb_I_KeyBase, key)
+		UAP_REQUEST(manager.getPtr(), lb_I_String, eventName)
+		
+		key = properties->getKeyAt(i);
+		
+		*eventName = name;
+		*eventName += key->charrep();
+		
+		eman->registerEvent(eventName->charrep(), temp);
+		dispatcher->addEventHandlerFn(target, handler, eventName->charrep());
+	}
+	
+	return err;
+}
+
 
 /*...slb_MetaApplication\58\\58\addMenuEntry\40\char\42\ in_menu\44\ char\42\ entry\44\ char\42\ evHandler\44\ char\42\ afterentry\41\:0:*/
 lbErrCodes LB_STDCALL lb_MetaApplication::addMenuEntry(char* in_menu, char* entry, char* evHandler, char* afterentry) {

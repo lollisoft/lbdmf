@@ -30,11 +30,20 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.28 $
+ * $Revision: 1.29 $
  * $Name:  $
- * $Id: lbMetaApplication.h,v 1.28 2006/02/17 23:57:16 lollisoft Exp $
+ * $Id: lbMetaApplication.h,v 1.29 2006/02/19 18:41:35 lollisoft Exp $
  *
  * $Log: lbMetaApplication.h,v $
+ * Revision 1.29  2006/02/19 18:41:35  lollisoft
+ * Feedback of properties works good. I am use the
+ * dispatcher mechanism to forward the change events
+ * on per lb_I_Parameter instance and the category name
+ * to a registered handler.
+ *
+ * So one handler must be capable to recieve values for all
+ * elements of one lb_I_Parameter instance.
+ *
  * Revision 1.28  2006/02/17 23:57:16  lollisoft
  * Added functionality to pass a bunch of properties to the GUI. This then would be shown in a property window.
  *
@@ -232,6 +241,8 @@ public:
 /*...e*/
 
 	lbErrCodes LB_STDCALL lbButtonTestHandler(lb_I_Unknown* uk);	
+
+	lbErrCodes LB_STDCALL registerPropertyChangeEventGroup(char* name, lb_I_Parameter* params, lb_I_EventHandler* target, lbEvHandler handler);
 
 protected:
 	lb_I_GUI* gui;

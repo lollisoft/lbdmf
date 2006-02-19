@@ -33,11 +33,20 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.14 $
+ * $Revision: 1.15 $
  * $Name:  $
- * $Id: wxWrapperDLL.h,v 1.14 2006/02/19 12:03:29 lollisoft Exp $
+ * $Id: wxWrapperDLL.h,v 1.15 2006/02/19 18:42:24 lollisoft Exp $
  *
  * $Log: wxWrapperDLL.h,v $
+ * Revision 1.15  2006/02/19 18:42:24  lollisoft
+ * Feedback of properties works good. I am use the
+ * dispatcher mechanism to forward the change events
+ * on per lb_I_Parameter instance and the category name
+ * to a registered handler.
+ *
+ * So one handler must be capable to recieve values for all
+ * elements of one lb_I_Parameter instance.
+ *
  * Revision 1.14  2006/02/19 12:03:29  lollisoft
  * Populating properties works. Currently it is not possible to
  * add sub properties, but handling categories.
@@ -134,6 +143,8 @@
 #define DYNAMIC_TEST2           1005
 #define DYNAMIC_VERBOSE         1006
 
+#define PGID					1007
+
 class lb_wxGUI;
 
 /*...sclass lb_wxFrame:0:*/
@@ -203,6 +214,9 @@ public:
 	void OnSize(wxSizeEvent& event);
 	void OnEraseBackground(wxEraseEvent& event);
 #endif
+
+	void OnPropertyGridChange (wxPropertyGridEvent& event);
+
 	
 	/**
 		* Return the frames menubar. Internal use only.
@@ -232,9 +246,9 @@ public:
 #endif		
 
 
-	void populateProperties(wxPropertyGrid* pg, lb_I_Container* properties);
-	void populateInteger(wxPropertyGrid* pg, lb_I_Unknown* uk, lb_I_KeyBase* name);
-	void populateString(wxPropertyGrid* pg, lb_I_Unknown* uk, lb_I_KeyBase* name);
+	void populateProperties(wxPropertyGrid* pg, lb_I_Container* properties, char* category = NULL);
+	void populateInteger(wxPropertyGrid* pg, lb_I_Unknown* uk, lb_I_KeyBase* name, char* category = NULL);
+	void populateString(wxPropertyGrid* pg, lb_I_Unknown* uk, lb_I_KeyBase* name, char* category = NULL);
 
 	wxPropertyGrid* CreatePropertyGrid(wxWindow* parent);
 	wxTreeCtrl* CreateTreeCtrl(wxWindow* parent);

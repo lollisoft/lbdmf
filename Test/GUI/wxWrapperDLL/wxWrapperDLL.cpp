@@ -68,6 +68,11 @@
 #ifdef USE_PROPGRID
 // Necessary header file
 #include "wx/propgrid/propgrid.h"
+#include "wx/propgrid/propdev.h"
+// This defines wxPropertyGridManager.
+#include <wx/propgrid/manager.h>
+
+
 #endif
 
 #ifdef USE_WXAUI
@@ -605,35 +610,35 @@ lbErrCodes LB_STDCALL lb_wxFrame::registerEventHandler(lb_I_Dispatcher* disp) {
 	eman->registerEvent("switchPanelUse", on_panel_usage);
 	eman->registerEvent("ShowPropertyPanel", _showLeftPropertyBar);
 	eman->registerEvent("setPreferredPropertyPanelByNamespace", temp);
-
+	
 	disp->addEventHandlerFn(this, (lbEvHandler) &lb_wxFrame::showLeftPropertyBar, "ShowPropertyPanel");
 	disp->addEventHandlerFn(this, (lbEvHandler) &lb_wxFrame::switchPanelUse, "switchPanelUse");
 	disp->addEventHandlerFn(this, (lbEvHandler) &lb_wxFrame::setPreferredPropertyPanelByNamespace, "setPreferredPropertyPanelByNamespace");
-
+	
 	Connect( _showLeftPropertyBar,  -1, wxEVT_COMMAND_MENU_SELECTED,
-	          (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
-                  &lb_wxFrame::OnDispatch );
+			 (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
+			 &lb_wxFrame::OnDispatch );
 	
 	Connect( on_panel_usage,  -1, wxEVT_COMMAND_MENU_SELECTED,
-	          (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
-                  &lb_wxFrame::OnDispatch );
-        
-        Connect( DYNAMIC_QUIT,  -1, wxEVT_COMMAND_MENU_SELECTED,
-                  (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
-                  &lb_wxFrame::OnDispatch );
-
-        Connect( DYNAMIC_ABOUT, -1, wxEVT_COMMAND_MENU_SELECTED,
-                  (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
-                  &lb_wxFrame::OnDispatch );
-
+			 (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
+			 &lb_wxFrame::OnDispatch );
+	
+	Connect( DYNAMIC_QUIT,  -1, wxEVT_COMMAND_MENU_SELECTED,
+			 (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
+			 &lb_wxFrame::OnDispatch );
+	
+	Connect( DYNAMIC_ABOUT, -1, wxEVT_COMMAND_MENU_SELECTED,
+			 (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
+			 &lb_wxFrame::OnDispatch );
+	
 	Connect( DYNAMIC_BUILDMENU, -1, wxEVT_COMMAND_MENU_SELECTED,
-	          (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
-                  &lb_wxFrame::OnDispatch );
-
+			 (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
+			 &lb_wxFrame::OnDispatch );
+	
 	Connect( DYNAMIC_VERBOSE, -1, wxEVT_COMMAND_MENU_SELECTED,
-	          (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
-                  &lb_wxFrame::OnVerbose );
-
+			 (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
+			 &lb_wxFrame::OnVerbose );
+	
 
 	// Make a menubar
 	wxMenu *file_menu = new wxMenu;
@@ -1321,6 +1326,7 @@ void lb_wxFrame::OnAbout(wxCommandEvent& WXUNUSED(event) )
 #ifdef USE_WXAUI
 
 BEGIN_EVENT_TABLE(lb_wxFrame, wxFrame)
+    EVT_PG_CHANGED( PGID, lb_wxFrame::OnPropertyGridChange )
     EVT_ERASE_BACKGROUND(lb_wxFrame::OnEraseBackground)
     EVT_SIZE(lb_wxFrame::OnSize)
 END_EVENT_TABLE()
@@ -1363,6 +1369,48 @@ void lb_wxFrame::OnBuildMenu(wxCommandEvent& WXUNUSED(event) ) {
 
 }
 /*...e*/
+void lb_wxFrame::OnPropertyGridChange ( wxPropertyGridEvent& event )
+{
+	lbErrCodes err = ERR_NONE;
+	
+	// Get name of changed property
+	const wxString& PropertyName = event.GetPropertyName();
+	
+	// Get resulting value - wxVariant is convenient here.
+	wxVariant PropertyValue = event.GetPropertyValue();
+	
+	_CL_LOG << "Property has been changed " << PropertyName.c_str() << " to '" << PropertyValue.MakeString().c_str() << "'" LOG_
+
+	UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, value)
+	UAP_REQUEST(getModuleInstance(), lb_I_Integer, evId)
+	
+	int PropertyEvent;
+	
+	eman->resolveEvent((char*) PropertyName.c_str(), PropertyEvent);
+	
+	name->setData("eventId");
+	evId->setData(PropertyEvent);
+	param->setUAPInteger(*&name, *&evId);
+	
+	name->setData("value");
+	value->setData((char*) PropertyValue.MakeString().c_str());
+	param->setUAPString(*&name, *&value);
+	
+	name->setData("name");
+	value->setData((char*) PropertyName.c_str());
+	param->setUAPString(*&name, *&value);
+	
+	UAP(lb_I_Unknown, uk)
+	QI(param, lb_I_Unknown, uk)
+		
+	UAP_REQUEST(getModuleInstance(), lb_I_String, result)
+	UAP(lb_I_Unknown, uk_result)
+	QI(result, lb_I_Unknown, uk_result)
+		
+	dispatcher->dispatch(PropertyEvent, uk.getPtr(), &uk_result);
+}
 /*...slb_wxFrame\58\\58\OnDispatch\40\wxCommandEvent\38\ event \41\:0:*/
 void lb_wxFrame::OnDispatch(wxCommandEvent& event ) {
         switch (event.GetId()) {
@@ -1437,7 +1485,7 @@ lbErrCodes LB_STDCALL lb_wxFrame::setPreferredPropertyPanelByNamespace(lb_I_Unkn
 wxPropertyGrid* lb_wxFrame::CreatePropertyGrid(wxWindow* parent) {
 	wxPropertyGrid* pg = new wxPropertyGrid(
 		parent,
-		wxID_ANY,
+		PGID,
 		wxPoint(0, 0), 
 		wxSize(160, 250),
 		wxPG_AUTO_SORT |
@@ -1463,27 +1511,35 @@ wxPropertyGrid* lb_wxFrame::CreatePropertyGrid(wxWindow* parent) {
 	return pg;
 }
 
-void lb_wxFrame::populateString(wxPropertyGrid* pg, lb_I_Unknown* uk, lb_I_KeyBase* name) {
+void lb_wxFrame::populateString(wxPropertyGrid* pg, lb_I_Unknown* uk, lb_I_KeyBase* name, char* category) {
 	lbErrCodes err = ERR_NONE;
 	UAP(lb_I_String, s)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, category_name)
 	QI(uk, lb_I_String, s)
 	
 	_CL_LOG << "Add string property (" << name->charrep() << "): " << s->charrep() LOG_
 	
-	pg->Append(wxStringProperty (name->charrep(), wxPG_LABEL, s->charrep()));
+	if (category) *category_name = category;
+	*category_name += name->charrep();
+	
+	pg->Append(wxStringProperty (name->charrep(), category_name->charrep(), s->charrep()));
 }
 
-void lb_wxFrame::populateInteger(wxPropertyGrid* pg, lb_I_Unknown* uk, lb_I_KeyBase* name) {
+void lb_wxFrame::populateInteger(wxPropertyGrid* pg, lb_I_Unknown* uk, lb_I_KeyBase* name, char* category) {
 	lbErrCodes err = ERR_NONE;
 	UAP(lb_I_Integer, i)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, category_name)
 	QI(uk, lb_I_Integer, i)
 	
 	_CL_LOG << "Add integer property (" << name->charrep() << "): " << i->charrep() LOG_
 
-	pg->Append(wxIntProperty (name->charrep(), wxPG_LABEL, i->getData()));
+	if (category) *category_name = category;
+	*category_name += name->charrep();
+
+	pg->Append(wxIntProperty (name->charrep(), category_name->charrep(), i->getData()));
 }
 
-void lb_wxFrame::populateProperties(wxPropertyGrid* pg, lb_I_Container* properties) {
+void lb_wxFrame::populateProperties(wxPropertyGrid* pg, lb_I_Container* properties, char* category) {
 	lbErrCodes err = ERR_NONE;
 		for (int i = 1; i <= properties->Count(); i++) {
 			UAP(lb_I_Unknown, uk)
@@ -1492,8 +1548,8 @@ void lb_wxFrame::populateProperties(wxPropertyGrid* pg, lb_I_Container* properti
 			uk = properties->getElementAt(i);
 			key = properties->getKeyAt(i);
 			
-			if (strcmp(uk->getClassName(), "lbString") == 0) populateString(pg, *&uk, *&key);
-			if (strcmp(uk->getClassName(), "lbInteger") == 0) populateInteger(pg, *&uk, *&key);
+			if (strcmp(uk->getClassName(), "lbString") == 0) populateString(pg, *&uk, *&key, category);
+			if (strcmp(uk->getClassName(), "lbInteger") == 0) populateInteger(pg, *&uk, *&key, category);
 			if (strcmp(uk->getClassName(), "lbParameter") == 0) {
 				UAP(lb_I_Container, props)
 				UAP(lb_I_Parameter, param)
@@ -1504,7 +1560,7 @@ void lb_wxFrame::populateProperties(wxPropertyGrid* pg, lb_I_Container* properti
 				pg->AppendCategory( key->charrep() );
 				props = param->getParameterList();
 				
-				populateProperties(pg, *&props);
+				populateProperties(pg, *&props, key->charrep());
 			}
 		}
 }

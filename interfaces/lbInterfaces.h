@@ -2407,6 +2407,14 @@ public:
 	 *
 	 */
 	virtual lbErrCodes LB_STDCALL showPropertyPanel(lb_I_Parameter* params) = 0;
+
+	/** \brief Register a handler for change events of parametes.
+	 *
+	 * Each parameter has a name and therefore could be used for events. In combination with the group name, the event name
+	 * would be unique and could be dispatched correctly to the given handler. The handler could reverse the event name and
+	 * figure out which value has been changed.
+	 */
+	virtual lbErrCodes LB_STDCALL registerPropertyChangeEventGroup(char* name, lb_I_Parameter* params, lb_I_EventHandler* target, lbEvHandler handler) = 0;
 	
 };
 /*...e*/
