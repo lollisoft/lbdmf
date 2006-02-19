@@ -1453,12 +1453,60 @@ wxPropertyGrid* lb_wxFrame::CreatePropertyGrid(wxWindow* parent) {
 		   wxT("This is much longer string than the ")
 		   wxT("first one. Edit it by clicking the button.")));
 	} else {
+		UAP(lb_I_Container, parameter)
 	
-		pg->Append(wxLongStringProperty (wxT("StringProperty"), wxPG_LABEL, wxT("Have application properties.")));
+		parameter = currentProperties->getParameterList();
 	
+		populateProperties(pg, *&parameter);
 	}
 	 
 	return pg;
+}
+
+void lb_wxFrame::populateString(wxPropertyGrid* pg, lb_I_Unknown* uk, lb_I_KeyBase* name) {
+	lbErrCodes err = ERR_NONE;
+	UAP(lb_I_String, s)
+	QI(uk, lb_I_String, s)
+	
+	_CL_LOG << "Add string property (" << name->charrep() << "): " << s->charrep() LOG_
+	
+	pg->Append(wxStringProperty (name->charrep(), wxPG_LABEL, s->charrep()));
+}
+
+void lb_wxFrame::populateInteger(wxPropertyGrid* pg, lb_I_Unknown* uk, lb_I_KeyBase* name) {
+	lbErrCodes err = ERR_NONE;
+	UAP(lb_I_Integer, i)
+	QI(uk, lb_I_Integer, i)
+	
+	_CL_LOG << "Add integer property (" << name->charrep() << "): " << i->charrep() LOG_
+
+	pg->Append(wxIntProperty (name->charrep(), wxPG_LABEL, i->getData()));
+}
+
+void lb_wxFrame::populateProperties(wxPropertyGrid* pg, lb_I_Container* properties) {
+	lbErrCodes err = ERR_NONE;
+		for (int i = 1; i <= properties->Count(); i++) {
+			UAP(lb_I_Unknown, uk)
+			UAP(lb_I_KeyBase, key)
+			
+			uk = properties->getElementAt(i);
+			key = properties->getKeyAt(i);
+			
+			if (strcmp(uk->getClassName(), "lbString") == 0) populateString(pg, *&uk, *&key);
+			if (strcmp(uk->getClassName(), "lbInteger") == 0) populateInteger(pg, *&uk, *&key);
+			if (strcmp(uk->getClassName(), "lbParameter") == 0) {
+				UAP(lb_I_Container, props)
+				UAP(lb_I_Parameter, param)
+				QI(uk, lb_I_Parameter, param)
+
+				_CL_LOG << "Add property category: " << key->charrep() LOG_
+
+				pg->AppendCategory( key->charrep() );
+				props = param->getParameterList();
+				
+				populateProperties(pg, *&props);
+			}
+		}
 }
 
 wxTreeCtrl* lb_wxFrame::CreateTreeCtrl(wxWindow* parent) {

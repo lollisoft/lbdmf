@@ -38,11 +38,17 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.44 $
+ * $Revision: 1.45 $
  * $Name:  $
- * $Id: skiplist.cpp,v 1.44 2006/02/18 19:13:25 lollisoft Exp $
+ * $Id: skiplist.cpp,v 1.45 2006/02/19 12:03:28 lollisoft Exp $
  *
  * $Log: skiplist.cpp,v $
+ * Revision 1.45  2006/02/19 12:03:28  lollisoft
+ * Populating properties works. Currently it is not possible to
+ * add sub properties, but handling categories.
+ *
+ * Note: Each property name must be unique.
+ *
  * Revision 1.44  2006/02/18 19:13:25  lollisoft
  * A todo.
  *
@@ -346,14 +352,14 @@ lbErrCodes LB_STDCALL SkipList::setData(lb_I_Unknown* uk) {
 	QI(uk, lb_I_Container, source)
 	
 	if (source != NULL) 
-		while (source->hasMoreElements()) {
-				UAP(lb_I_Unknown, ukValue)
-				UAP(lb_I_KeyBase, key)
-			
-				ukValue = source->nextElement();
-				key = source->currentKey();
-				
-				insert(&ukValue, &key);
+		for (int i = 1; i <= source->Count(); i++) {
+			UAP(lb_I_Unknown, uk)
+			UAP(lb_I_KeyBase, key)
+		
+			uk = source->getElementAt(i);
+			key = source->getKeyAt(i); 
+
+			insert(&uk, &key);
 		}
 	
 	return ERR_NONE;
@@ -368,6 +374,7 @@ SkipList::SkipList() {
 	level = MAXLEVEL;
 	count = 0;
 	ref = STARTREF;
+	_currentKey = NULL;
 }
 
 /// \todo Cleanup problem, when key used multiple times.
@@ -519,6 +526,9 @@ lb_I_Unknown* LB_STDCALL SkipList::nextElement() {
 
 	Elem e = dump_next();
 	
+	if (_currentKey) _currentKey->release(__FILE__, __LINE__);
+	_currentKey = e->getKey();
+	
 	if(e != NULL) {
 		return e->getObject();
 	} else {
@@ -529,11 +539,7 @@ lb_I_Unknown* LB_STDCALL SkipList::nextElement() {
 /*...e*/
 
 lb_I_KeyBase* LB_STDCALL SkipList::currentKey() {
-	if (skipiterator != NULL) {
-		Elem e = skipiterator->value.getPtr();
-		
-		return e->getKey();
-	}
+	_currentKey;
 }
 
 /*...sSkipList\58\\58\getElement\40\lb_I_KeyBase\42\\42\ const key\41\:0:*/
@@ -578,9 +584,7 @@ lb_I_Unknown* LB_STDCALL SkipList::getElementAt(int i) {
 /*...e*/
 /*...slb_I_KeyBase\42\ LB_STDCALL SkipList\58\\58\getKeyAt\40\int i\41\:0:*/
 lb_I_KeyBase* LB_STDCALL SkipList::getKeyAt(int i) {
-        int ii = 1;
-
-	_CL_LOG << "SkipList::getKeyAt(int i) called." LOG_
+	int ii = 1;
 
 	Elem e;
 

@@ -320,6 +320,22 @@ int main(int argc, char *argv[]) {
 /*...e*/
 		#endif
 
+	UAP(lb_I_Container, clone)
+	
+	uk = container->clone(__FILE__, __LINE__);
+
+	QI(uk, lb_I_Container, clone)
+
+	for (int i = 1; i <= clone->Count(); i++) {
+		UAP(lb_I_Unknown, uk)
+		UAP(lb_I_String, s)
+		
+		uk = clone->getElementAt(i);
+		
+		QI(uk, lb_I_String, s)
+		
+		_CL_LOG << "Key: " << clone->getKeyAt(i)->charrep() << ", Data: " << s->charrep() LOG_
+	}
 
 
 		#ifdef ACCESS_TEST

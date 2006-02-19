@@ -33,11 +33,17 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.13 $
+ * $Revision: 1.14 $
  * $Name:  $
- * $Id: wxWrapperDLL.h,v 1.13 2006/02/17 23:57:17 lollisoft Exp $
+ * $Id: wxWrapperDLL.h,v 1.14 2006/02/19 12:03:29 lollisoft Exp $
  *
  * $Log: wxWrapperDLL.h,v $
+ * Revision 1.14  2006/02/19 12:03:29  lollisoft
+ * Populating properties works. Currently it is not possible to
+ * add sub properties, but handling categories.
+ *
+ * Note: Each property name must be unique.
+ *
  * Revision 1.13  2006/02/17 23:57:17  lollisoft
  * Added functionality to pass a bunch of properties to the GUI. This then would be shown in a property window.
  *
@@ -224,6 +230,11 @@ public:
 #ifdef USE_WXAUI
 	wxFrameManager& getAUIManager() { return m_mgr; }
 #endif		
+
+
+	void populateProperties(wxPropertyGrid* pg, lb_I_Container* properties);
+	void populateInteger(wxPropertyGrid* pg, lb_I_Unknown* uk, lb_I_KeyBase* name);
+	void populateString(wxPropertyGrid* pg, lb_I_Unknown* uk, lb_I_KeyBase* name);
 
 	wxPropertyGrid* CreatePropertyGrid(wxWindow* parent);
 	wxTreeCtrl* CreateTreeCtrl(wxWindow* parent);

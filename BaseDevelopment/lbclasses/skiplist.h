@@ -62,8 +62,10 @@ class SkipNode {
 /*...sclass SkipList:0:*/
 class SkipList : public lb_I_Container {
 private:
-      SkipNode* head;
-      SkipNode* skipiterator;
+      SkipNode*		head;
+      SkipNode*		skipiterator;
+      lb_I_KeyBase*	_currentKey;
+	  
       int level;
       int flag;
 

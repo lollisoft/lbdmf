@@ -576,7 +576,7 @@
 				LIBRARY_STYLE = BUNDLE;
 				OTHER_CFLAGS = "";
 				OTHER_CPLUSPLUSFLAGS = "-I$(HOME)/develop/Projects/CPP/Test/GUI/wxWrapperDLL -DUSE_WXWRAPPER_DLL -I/usr/local/lib/wx/include/mac-ansi-debug-2.6 -I/usr/local/include/wx-2.6 -D__WXDEBUG__ -D__WXMAC__ -D_FILE_OFFSET_BITS=64 -D_LARGE_FILES -DNO_GCC_PRAGMA";
-				OTHER_LDFLAGS = "-L/usr/local/lib   -framework QuickTime -framework IOKit -framework Carbon -framework Cocoa -framework System  -lwx_macd-2.6 -ldl -bind_at_load -lc $(HOME)/lib/lbHook.so $(HOME)/lib/wxWrapperDLL.so";
+				OTHER_LDFLAGS = "-L/usr/local/lib   -framework QuickTime -framework IOKit -framework Carbon -framework Cocoa -framework System  -lwx_macd-2.6 -ldl -bind_at_load -lc $(HOME)/lib/wxAUI.so $(HOME)/lib/lbHook.so $(HOME)/lib/wxWrapperDLL.so";
 				OTHER_REZFLAGS = "";
 				PREBINDING = NO;
 				PRODUCT_NAME = wxWrapper;
@@ -1269,8 +1269,8 @@
 				INSTALL_PATH = /usr/local/lib;
 				LIBRARY_STYLE = DYNAMIC;
 				OTHER_CFLAGS = "";
-				OTHER_CPLUSPLUSFLAGS = "-I. -I$(HOME)/develop/Projects/CPP/Test/GUI/wxWrapperDLL -I/usr/local/lib/wx/include/mac-ansi-debug-2.6 -I/usr/local/include/wx-2.6 -D__WXDEBUG__ -D__WXMAC__ -D_FILE_OFFSET_BITS=64 -D_LARGE_FILES -DNO_GCC_PRAGMA -DUSE_WXWRAPPER_DLL";
-				OTHER_LDFLAGS = "-L/usr/local/lib   -framework QuickTime -framework IOKit -framework Carbon -framework Cocoa -framework System  -lwx_macd-2.6 -lwx_macd_propgrid-2.6 -ldl -lc $(HOME)/lib/lbHook.so $(HOME)/lib/wxWrapperDLL.so";
+				OTHER_CPLUSPLUSFLAGS = "-I. -I$(HOME)/develop/Projects/CPP/vendor/wxaui-0.9.1/include -I$(HOME)/develop/Projects/CPP/Test/GUI/wxWrapperDLL -I/usr/local/lib/wx/include/mac-ansi-debug-2.6 -I/usr/local/include/wx-2.6 -D__WXDEBUG__ -D__WXMAC__ -D_FILE_OFFSET_BITS=64 -D_LARGE_FILES -DNO_GCC_PRAGMA -DUSE_WXWRAPPER_DLL";
+				OTHER_LDFLAGS = "-L/usr/local/lib   -framework QuickTime -framework IOKit -framework Carbon -framework Cocoa -framework System  -lwx_macd-2.6 -lwx_macd_propgrid-2.6 -ldl -lc $(HOME)/lib/lbHook.so $(HOME)/lib/wxAUI.so $(HOME)/lib/wxWrapperDLL.so";
 				OTHER_REZFLAGS = "";
 				PRODUCT_NAME = wxWrapperDLL;
 				SECTORDER_FLAGS = "";
