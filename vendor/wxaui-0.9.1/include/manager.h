@@ -12,6 +12,13 @@
 #ifndef __WXAUI_WXAUI_H
 #define __WXAUI_WXAUI_H
 
+#ifdef __WATCOMC__
+ #ifndef WXAUI_DLLEXPORT
+  #define WXAUI_DLLEXPORT __declspec(dllimport)
+ #endif
+ #undef WXDLLEXPORT
+ #define WXDLLEXPORT WXAUI_DLLEXPORT
+#endif
 enum wxFrameManagerDock
 {
     wxAUI_DOCK_NONE = 0,
@@ -90,7 +97,7 @@ class wxFrameManagerEvent;
 
 WX_DECLARE_OBJARRAY(wxDockInfo, wxDockInfoArray);
 WX_DECLARE_OBJARRAY(wxDockUIPart, wxDockUIPartArray);
-WX_DECLARE_OBJARRAY(wxPaneButton, wxPaneButtonArray);
+WX_DECLARE_EXPORTED_OBJARRAY(wxPaneButton, wxPaneButtonArray);
 WX_DECLARE_OBJARRAY(wxPaneInfo, wxPaneInfoArray);
 WX_DEFINE_ARRAY_PTR(wxPaneInfo*, wxPaneInfoPtrArray);
 WX_DEFINE_ARRAY_PTR(wxDockInfo*, wxDockInfoPtrArray);

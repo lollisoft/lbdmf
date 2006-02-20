@@ -12,6 +12,10 @@
 #include <wx/wx.h>
 #include <wx/minifram.h>
 #include <wx/image.h>
+
+#ifdef __WATCOMC__
+#define WXAUI_DLLEXPORT __declspec(dllexport)
+#endif
 #include "manager.h"
 
 //#define WXAUI_USE_WXGETMOUSESTATE 0
@@ -35,7 +39,7 @@ WX_DECLARE_OBJARRAY(wxRect, wxAuiRectArray);
 WX_DEFINE_OBJARRAY(wxAuiRectArray)
 WX_DEFINE_OBJARRAY(wxDockUIPartArray)
 WX_DEFINE_OBJARRAY(wxDockInfoArray)
-WX_DEFINE_OBJARRAY(wxPaneButtonArray)
+WX_DEFINE_EXPORTED_OBJARRAY(wxPaneButtonArray)
 WX_DEFINE_OBJARRAY(wxPaneInfoArray)
 
 wxPaneInfo wxNullPaneInfo;
