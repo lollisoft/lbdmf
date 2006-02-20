@@ -38,11 +38,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.45 $
+ * $Revision: 1.46 $
  * $Name:  $
- * $Id: skiplist.cpp,v 1.45 2006/02/19 12:03:28 lollisoft Exp $
+ * $Id: skiplist.cpp,v 1.46 2006/02/20 13:00:45 lollisoft Exp $
  *
  * $Log: skiplist.cpp,v $
+ * Revision 1.46  2006/02/20 13:00:45  lollisoft
+ * Missing return. This would be the cause, why currentKey hasn't worked.
+ *
  * Revision 1.45  2006/02/19 12:03:28  lollisoft
  * Populating properties works. Currently it is not possible to
  * add sub properties, but handling categories.
@@ -539,7 +542,7 @@ lb_I_Unknown* LB_STDCALL SkipList::nextElement() {
 /*...e*/
 
 lb_I_KeyBase* LB_STDCALL SkipList::currentKey() {
-	_currentKey;
+	return _currentKey;
 }
 
 /*...sSkipList\58\\58\getElement\40\lb_I_KeyBase\42\\42\ const key\41\:0:*/
