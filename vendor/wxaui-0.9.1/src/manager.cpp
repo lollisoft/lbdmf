@@ -14,18 +14,18 @@
 #include <wx/image.h>
 #include "manager.h"
 
-#define WXAUI_USE_WXGETMOUSESTATE 0
+//#define WXAUI_USE_WXGETMOUSESTATE 0
 #define HAVE_WXGETMOUSESTATE
 
 #ifdef WXAUI_USE_WXGETMOUSESTATE
-#ifndef HAVE_WXGETMOUSESTATE
-// We want to use WXGETMOUSESTATE but we haven't got it in the wx library - presume there is an include file
-#include "wxmousestate.h"
-#endif // HAVE_WXGETMOUSESTATE
+ #ifndef HAVE_WXGETMOUSESTATE
+ // We want to use WXGETMOUSESTATE but we haven't got it in the wx library - presume there is an include file
+  #include "wxmousestate.h"
+ #endif // HAVE_WXGETMOUSESTATE
 #else
-#ifdef __WXGTK__
-extern "C" { void* gdk_window_get_pointer(void*, int*, int*, unsigned int*); }
-#endif // __WXGTK__
+ #ifdef __WXGTK__
+ extern "C" { void* gdk_window_get_pointer(void*, int*, int*, unsigned int*); }
+ #endif // __WXGTK__
 #endif // WXAUI_USE_WXGETMOUSESTATE
 
 // -- various array and event implementations --

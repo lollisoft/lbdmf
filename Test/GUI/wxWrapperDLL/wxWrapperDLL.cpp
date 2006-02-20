@@ -35,6 +35,10 @@
 #define IN_PANEL
 #endif
 
+#ifdef LINUX
+//#define IN_PANEL
+#endif
+
 #include <lbConfigHook.h>
 
 /*...smisc and includes:0:*/
