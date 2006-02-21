@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.81 $
+ * $Revision: 1.82 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.81 2006/02/21 19:35:50 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.82 2006/02/21 20:56:30 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.82  2006/02/21 20:56:30  lollisoft
+ * Wrong menu updating.
+ *
  * Revision 1.81  2006/02/21 19:35:50  lollisoft
  * Implemented autoload mechanism of last loaded application.
  * It demonstrates the new capabilities operating with files.
@@ -513,7 +516,6 @@ lbErrCodes LB_STDCALL lb_MetaApplication::getLoginData(lb_I_Unknown* uk) {
 lbErrCodes LB_STDCALL lb_MetaApplication::doAutoload(lb_I_Unknown* uk) {
 	_autoload = !_autoload;
 	
-	toggleEvent("doAutoload");
 	return ERR_NONE;
 }
 /*...e*/
