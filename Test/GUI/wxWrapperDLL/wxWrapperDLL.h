@@ -33,11 +33,15 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.15 $
+ * $Revision: 1.16 $
  * $Name:  $
- * $Id: wxWrapperDLL.h,v 1.15 2006/02/19 18:42:24 lollisoft Exp $
+ * $Id: wxWrapperDLL.h,v 1.16 2006/02/21 19:35:51 lollisoft Exp $
  *
  * $Log: wxWrapperDLL.h,v $
+ * Revision 1.16  2006/02/21 19:35:51  lollisoft
+ * Implemented autoload mechanism of last loaded application.
+ * It demonstrates the new capabilities operating with files.
+ *
  * Revision 1.15  2006/02/19 18:42:24  lollisoft
  * Feedback of properties works good. I am use the
  * dispatcher mechanism to forward the change events
@@ -155,8 +159,7 @@ class lb_wxGUI;
  */
 class DLLEXPORT lb_wxFrame : 
 public wxFrame,
-//                public lb_I_wxFrame,
-public lb_I_Unknown,
+public lb_I_Frame,
 public lb_I_EventHandler
 { 
 public:
@@ -178,22 +181,22 @@ public:
 		void setGUI(lb_wxGUI* _gui) { gui = _gui; }
 	
 public:
-    void OnQuit(wxCommandEvent& event);
+	void OnQuit(wxCommandEvent& event);
 	void OnVerbose(wxCommandEvent& event);
 	
 	/**
-		* Displays the about form of the application.
+	 * Displays the about form of the application.
 	 */
 	void OnAbout(wxCommandEvent& event);
 	
 	/**
-		* Displays the logon wizard dialog.
+	 * Displays the logon wizard dialog.
 	 */
 	void OnRunLogonWizard(wxCommandEvent& WXUNUSED(event));
 	
 	
 	/**
-		* This dispatcher converts all events to lb_I_Dispatcher events
+	 * This dispatcher converts all events to lb_I_Dispatcher events
 	 * and forwards them to such a dispatcher.
 	 * 
 	 * wx Handlers are forwarded directly.
@@ -201,12 +204,12 @@ public:
 	void OnDispatch(wxCommandEvent& event);
 	
 	/**
-		* Build the minimal standard menu of the application.
+	 * Build the minimal standard menu of the application.
 	 */
 	void OnBuildMenu(wxCommandEvent& event);
 	
 	/**
-		* \deprecated This was only a menu instance pointer check - debug.
+	 * \deprecated This was only a menu instance pointer check - debug.
 	 */
 	void OnCheck(wxCommandEvent& event);
 	
@@ -219,7 +222,7 @@ public:
 
 	
 	/**
-		* Return the frames menubar. Internal use only.
+	 * Return the frames menubar. Internal use only.
 	 */
 	wxMenuBar* LB_STDCALL getMenuBar() {
 		return menu_bar;
@@ -249,6 +252,7 @@ public:
 	void populateProperties(wxPropertyGrid* pg, lb_I_Container* properties, char* category = NULL);
 	void populateInteger(wxPropertyGrid* pg, lb_I_Unknown* uk, lb_I_KeyBase* name, char* category = NULL);
 	void populateString(wxPropertyGrid* pg, lb_I_Unknown* uk, lb_I_KeyBase* name, char* category = NULL);
+	void populateBoolean(wxPropertyGrid* pg, lb_I_Unknown* uk, lb_I_KeyBase* name, char* category = NULL);
 
 	wxPropertyGrid* CreatePropertyGrid(wxWindow* parent);
 	wxTreeCtrl* CreateTreeCtrl(wxWindow* parent);
@@ -282,10 +286,9 @@ public:
 	
 	
 	UAP(lb_I_String, PanelNamespace)
-    UAP(lb_I_EventManager, eman)
-    UAP(lb_I_Dispatcher, dispatcher)
+	UAP(lb_I_EventManager, eman)
+	UAP(lb_I_Dispatcher, dispatcher)
 	UAP(lb_I_Parameter, currentProperties)
-		
 		
 #ifdef USE_WXAUI
 private:

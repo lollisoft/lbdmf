@@ -9,6 +9,13 @@ class lb_I_Aspect :
 public lb_I_Unknown
 { // abstract interface for visitors 
 public: 
+
+virtual void LB_STDCALL visit(lb_I_LogonHandler*) = 0;
+virtual void LB_STDCALL visit(lb_I_LogonPage*) = 0;
+virtual void LB_STDCALL visit(lb_I_AppSelectPage*) = 0;
+virtual void LB_STDCALL visit(lb_I_GUIApp*) = 0; // This is the wxApp class !! ??
+virtual void LB_STDCALL visit(lb_I_GUI*) = 0;
+virtual void LB_STDCALL visit(lb_I_Frame*) = 0;
 virtual void LB_STDCALL visit(lb_I_KeyBase*) = 0; 
 virtual void LB_STDCALL visit(lb_I_String*) = 0; 
 virtual void LB_STDCALL visit(lb_I_Integer*) = 0; 
@@ -25,11 +32,11 @@ virtual void LB_STDCALL visit(lb_I_Element*) = 0;
 virtual void LB_STDCALL visit(lb_I_Module*) = 0; 
 virtual void LB_STDCALL visit(lb_I_FunctorEntity*) = 0;
 virtual void LB_STDCALL visit(lb_I_InstanceReference*) = 0;
-virtual void LB_STDCALL visit(lb_I_EventHandler*) = 0;
+//virtual void LB_STDCALL visit(lb_I_EventHandler*) = 0;
 virtual void LB_STDCALL visit(lb_I_EventManager*) = 0;
 virtual void LB_STDCALL visit(lb_I_EventMapper*) = 0;
-//virtual void LB_STDCALL visit(lb_I_Application*) = 0;
-//virtual void LB_STDCALL visit(lb_I_MetaApplication*) = 0;
+virtual void LB_STDCALL visit(lb_I_Application*) = 0;
+virtual void LB_STDCALL visit(lb_I_MetaApplication*) = 0;
 virtual void LB_STDCALL visit(lb_I_EvHandler*) = 0;
 virtual void LB_STDCALL visit(lb_I_Dispatcher*) = 0;
 virtual void LB_STDCALL visit(lb_I_InputStream*) = 0;

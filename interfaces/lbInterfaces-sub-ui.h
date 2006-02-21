@@ -88,6 +88,9 @@ public:
 	virtual void LB_STDCALL destroy() = 0;
 };
 /*...e*/
+class lb_I_GUIApp {
+
+};
 /*...sclass lb_I_GUI:0:*/
 /**
  * It seems, that this is the factory class for any GUI elements. It also knows about any instance.
@@ -278,6 +281,18 @@ public:
 	 * The control must know its parent window.
 	 */
 	virtual void LB_STDCALL init(lb_I_Window* parent) = 0;
+};
+
+class lb_I_LogonPage {
+
+};
+
+class lb_I_AppSelectPage {
+
+};
+
+class lb_I_LogonHandler {
+
 };
 
 #endif // __LB_INTERFACES_SUB_WXWRAPPER__

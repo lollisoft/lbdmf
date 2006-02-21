@@ -31,11 +31,15 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.80 $
+ * $Revision: 1.81 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.80 2006/02/19 18:41:35 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.81 2006/02/21 19:35:50 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.81  2006/02/21 19:35:50  lollisoft
+ * Implemented autoload mechanism of last loaded application.
+ * It demonstrates the new capabilities operating with files.
+ *
  * Revision 1.80  2006/02/19 18:41:35  lollisoft
  * Feedback of properties works good. I am use the
  * dispatcher mechanism to forward the change events
@@ -371,13 +375,45 @@ lb_MetaApplication::lb_MetaApplication() {
 	ref = STARTREF;
 	gui = NULL;
 	moduleName = NULL;
+
+	_autoload = true;
+	_autoselect = false;
 	
 	_CL_LOG << "lb_MetaApplication::lb_MetaApplication() called." LOG_
 }
 
 lb_MetaApplication::~lb_MetaApplication() {
 	_CL_LOG << "lb_MetaApplication::~lb_MetaApplication() called." LOG_
+	
+	lbErrCodes err = ERR_NONE;
 
+#ifdef bla
+
+	UAP_REQUEST(manager.getPtr(), lb_I_PluginManager, PM)
+
+	UAP(lb_I_Plugin, pl1)
+	UAP(lb_I_Unknown, ukPl1)
+
+	pl1 = PM->getFirstMatchingPlugin("lb_I_FileOperation", "OutputStreamVisitor");
+	ukPl1 = pl1->getImplementation();
+
+	UAP(lb_I_FileOperation, fOp1)
+	QI(ukPl1, lb_I_FileOperation, fOp1)
+
+	if (!fOp1->begin("MetaApp.mad")) {
+	        _CL_LOG << "ERROR: Could not write default file for meta application!" LOG_
+	} else {
+
+		if (LogonUser != NULL) _CL_LOG << "Save user: '" << LogonUser->charrep() << "'" LOG_
+		if (LogonApplication != NULL) _CL_LOG << "Save app : '" << LogonApplication->charrep() << "'" LOG_
+
+		UAP(lb_I_Unknown, ukAcceptor1)
+		QI(this, lb_I_Unknown, ukAcceptor1)
+		ukAcceptor1->accept(*&fOp1);
+
+		fOp1->end();
+	}
+#endif
 	/*
 	 * There must be an unload process of the loaded application's, so that it
 	 * will not unloaded in the wrong order when unHookAll is called.
@@ -401,6 +437,8 @@ _CL_LOG << "Unloaded module." LOG_
 
 /*...sregister event handlers:0:*/
 lbErrCodes LB_STDCALL lb_MetaApplication::registerEventHandler(lb_I_Dispatcher* disp) {
+
+	disp->addEventHandlerFn(this, (lbEvHandler) &lb_MetaApplication::doAutoload, "doAutoload");
 
 	disp->addEventHandlerFn(this, (lbEvHandler) &lb_MetaApplication::enterDebugger, "enterDebugger");
 	disp->addEventHandlerFn(this, (lbEvHandler) &lb_MetaApplication::lbEvHandler1, "getBasicApplicationInfo");
@@ -471,6 +509,13 @@ lbErrCodes LB_STDCALL lb_MetaApplication::getLoginData(lb_I_Unknown* uk) {
 	return ERR_NONE;
 }
 /*...e*/
+
+lbErrCodes LB_STDCALL lb_MetaApplication::doAutoload(lb_I_Unknown* uk) {
+	_autoload = !_autoload;
+	
+	toggleEvent("doAutoload");
+	return ERR_NONE;
+}
 /*...e*/
 
 
@@ -497,16 +542,24 @@ lbErrCodes LB_STDCALL lb_MetaApplication::getGUI(lb_I_GUI** _gui) {
 	return ERR_NONE;
 }
 /*...e*/
+/*...slbErrCodes LB_STDCALL lb_MetaApplication\58\\58\getUserName\40\lb_I_String\42\\42\ user\41\:0:*/
 lbErrCodes LB_STDCALL lb_MetaApplication::getUserName(lb_I_String** user) {
-	(*user)->setData(LogonUser->charrep());
+	if (LogonUser == NULL) (*user)->setData("");
+	else (*user)->setData(LogonUser->charrep());
 	return ERR_NONE;
 }
-
+/*...e*/
+/*...slbErrCodes LB_STDCALL lb_MetaApplication\58\\58\getApplicationName\40\lb_I_String\42\\42\ app\41\:0:*/
 lbErrCodes LB_STDCALL lb_MetaApplication::getApplicationName(lb_I_String** app) {
-	(*app)->setData(LogonApplication->charrep());
+	if (LogonApplication == NULL) (*app)->setData("");
+	else (*app)->setData(LogonApplication->charrep());
 	return ERR_NONE;
 }
+/*...e*/
+/*...slbErrCodes LB_STDCALL lb_MetaApplication\58\\58\setUserName\40\char\42\ user\41\:0:*/
 lbErrCodes LB_STDCALL lb_MetaApplication::setUserName(char* user) {
+	if ((user == NULL) || strcmp(user, "") == 0) return ERR_NONE;
+	 
 	if (LogonUser == NULL) {
         	REQUEST(manager.getPtr(), lb_I_String, LogonUser)
 	}
@@ -514,8 +567,11 @@ lbErrCodes LB_STDCALL lb_MetaApplication::setUserName(char* user) {
        	LogonUser->setData(user);
 	return ERR_NONE;
 }
-
+/*...e*/
+/*...slbErrCodes LB_STDCALL lb_MetaApplication\58\\58\setApplicationName\40\char\42\ app\41\:0:*/
 lbErrCodes LB_STDCALL lb_MetaApplication::setApplicationName(char* app) {
+	if ((app == NULL) || strcmp(app, "") == 0) return ERR_NONE;
+
 	if (LogonApplication == NULL) {
         	REQUEST(manager.getPtr(), lb_I_String, LogonApplication)
 	}
@@ -523,6 +579,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::setApplicationName(char* app) {
        	LogonApplication->setData(app);
 	return ERR_NONE;
 }
+/*...e*/
 /*...slb_I_EventManager \42\ lb_MetaApplication\58\\58\getEVManager\40\ void \41\:0:*/
 lb_I_EventManager * lb_MetaApplication::getEVManager( void ) {
 	return NULL;
@@ -531,6 +588,7 @@ lb_I_EventManager * lb_MetaApplication::getEVManager( void ) {
 /*...slbErrCodes LB_STDCALL lb_MetaApplication\58\\58\Initialize\40\char\42\ user \61\ NULL\44\ char\42\ app \61\ NULL\41\:0:*/
 /// \todo Implement autologon settings for last user.
 lbErrCodes LB_STDCALL lb_MetaApplication::Initialize(char* user, char* appName) {
+	lbErrCodes err = ERR_NONE;
 /*...sdoc:8:*/
 /**
  * At this point should be found the real application. The real one
@@ -567,6 +625,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::Initialize(char* user, char* appName) 
 	int testPressed;
 	int enterDebugger;
 	int getLoginData;
+	int doAutoload;
 /*...e*/
 
 /*...sget the event manager:8:*/
@@ -579,6 +638,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::Initialize(char* user, char* appName) 
 /*...e*/
 	
 /*...sregister some basic events \40\getBasicApplicationInfo\46\\46\\46\\41\ by the event manager:8:*/
+	eman->registerEvent("doAutoload", doAutoload);
 	eman->registerEvent("enterDebugger", enterDebugger);
 	eman->registerEvent("getBasicApplicationInfo", getBasicApplicationInfo);
 	eman->registerEvent("getMainModuleInfo", getMainModuleInfo);
@@ -631,6 +691,16 @@ lbErrCodes LB_STDCALL lb_MetaApplication::Initialize(char* user, char* appName) 
 	
 	addMenuBar(_trans("&Edit"));
 
+	char* temp1 = _trans("&Autoload application\tCtrl-A");
+	
+	char* mm1 = (char*) malloc(strlen(temp1)+1);
+	mm1[0] = 0;
+	strcpy(mm1, temp1);
+
+	addMenuEntryCheckable(_trans("&Edit"), mm1, "doAutoload", "");
+
+	free(mm1);
+
 	if (getenv("TARGET_APPLICATION") != NULL) {
 		loadApplication("", "");
 	}
@@ -656,29 +726,108 @@ lbErrCodes LB_STDCALL lb_MetaApplication::Initialize(char* user, char* appName) 
 	addMenuEntry(_trans("&Help"), mm, "getMainModuleInfo", "");
 	free(mm);
 
-#ifdef bla	
-/*...sMain module demos and their help:8:*/
-
-	addButton("Press me for test", "Button Test pressed", 10, 30, 100, 20);
+	_CL_LOG << "Load properties from file..." LOG_
 	
-	int hight = 60;
+	REQUEST(manager.getPtr(), lb_I_Parameter, myProperties)
 
-	addLabel("Label", 115, 30, 100, 20);
-	addTextField("TextField", 220, 30, 100, 20);
+	// Get the plugin to read a standard stream based file
 
-	for (int n = 1; n <= 7; n++) {
-		addButton("|<", "Button Test pressed", 10, hight+n*20+n*5, 100, 20);
-		addButton("<<", "Button Test pressed", 115, hight+n*20+n*5, 100, 20);
-		addButton(">>", "Button Test pressed", 220, hight+n*20+n*5, 100, 20);
-		addButton(">|", "Button Test pressed", 325, hight+n*20+n*5, 100, 20);
+	UAP_REQUEST(manager.getPtr(), lb_I_PluginManager, PM)
+
+	UAP(lb_I_Plugin, pl)
+	UAP(lb_I_Unknown, ukPl)
+		
+	pl = PM->getFirstMatchingPlugin("lb_I_FileOperation", "InputStreamVisitor");
+	ukPl = pl->getImplementation();
+			
+	UAP(lb_I_FileOperation, fOp)
+	QI(ukPl, lb_I_FileOperation, fOp)
+			
+	if (!fOp->begin("MetaApp.mad")) {
+		// No file. Try write a default file.
+		
+		UAP(lb_I_Plugin, pl1)
+		UAP(lb_I_Unknown, ukPl1)
+		
+		pl1 = PM->getFirstMatchingPlugin("lb_I_FileOperation", "OutputStreamVisitor");
+		ukPl1 = pl1->getImplementation();
+			
+		UAP(lb_I_FileOperation, fOp1)
+		QI(ukPl1, lb_I_FileOperation, fOp1)
+
+		if (!fOp1->begin("MetaApp.mad")) {
+			_CL_LOG << "ERROR: Could not write default file for meta application!" LOG_		
+			
+			return ERR_FILE_WRITE_DEFAULT;
+		}
+
+		UAP(lb_I_Unknown, ukAcceptor1)
+		QI(this, lb_I_Unknown, ukAcceptor1)
+		ukAcceptor1->accept(*&fOp1);
+		
+		fOp1->end();		
+		
+		if (!fOp->begin("MetaApp.mad")) {
+			_CL_LOG << "FATAL: Re read just written default file failed!" LOG_
+			return ERR_FILE_READ_DEFAULT;
+		}
 	}
-/*...e*/
-#endif
+			
+	// Do it as I didn't know the type of my project.
+	UAP(lb_I_Unknown, ukAcceptor)
+	QI(this, lb_I_Unknown, ukAcceptor)
+	ukAcceptor->accept(*&fOp);
+			
+	fOp->end();
+
+	if (getAutoload() && (LogonUser != NULL) && (LogonApplication != NULL)) {
+		if ((strcmp(LogonUser->charrep(), "") != 0) && (strcmp(LogonApplication->charrep(), "") != 0)) {
+			_CL_LOG << "Autoload is active and have " << LogonApplication->charrep() << 
+				" and " << LogonUser->charrep() << ". Loading..." LOG_
+			
+			/* loadApplication() does not know, that the parameters are from it self.
+			   Thus LogonApplication->setData(...) and LogonUser->setData(...) would
+			   delete it's content.
+			   
+			   This is tricky.
+			*/ 
+			
+			char* a = strdup(LogonApplication->charrep());
+			char* u = strdup(LogonUser->charrep());
+				
+			loadApplication(u, a);
+			
+			free(a);
+			free(u);
+		
+		}
+	}
+
+	if (getAutoload()) 
+		toggleEvent("doAutoload");
+
+	
+	_CL_LOG << "Loaded properties from file." LOG_
 
 	return ERR_NONE;
 }
 /*...e*/
 
+void       LB_STDCALL lb_MetaApplication::setAutoload(bool b) {
+	_autoload = b;
+}
+
+void       LB_STDCALL lb_MetaApplication::setAutoselect(bool b) {
+	_autoselect = b;
+}
+
+bool       LB_STDCALL lb_MetaApplication::getAutoload() {
+	return _autoload;
+}
+
+bool       LB_STDCALL lb_MetaApplication::getAutoselect() {
+	return _autoselect;
+}
 
 // This starts the main application
 
@@ -706,16 +855,18 @@ lbErrCodes LB_STDCALL lb_MetaApplication::loadApplication(char* user, char* appl
         } else
         if (LogonUser == NULL) {
                 REQUEST(manager.getPtr(), lb_I_String, LogonUser)
-                LogonUser->setData(user);
         }
+
+        LogonUser->setData(user);
 
         if (application == NULL) {
                 _CL_LOG << "lb_MetaApplication::Initialize() app is NULL" LOG_
         } else
         if (LogonApplication == NULL) {
                 REQUEST(manager.getPtr(), lb_I_String, LogonApplication)
-                LogonApplication->setData(application);
         }
+
+        LogonApplication->setData(application);
 
 
         char* applicationName = getenv("TARGET_APPLICATION");
@@ -747,7 +898,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::loadApplication(char* user, char* appl
 		        "Anwendungen.id = User_Anwendungen.anwendungenid "
 		        "inner join Users on User_Anwendungen.userid = Users.id where "
 		        "Users.userid = '%s' and Anwendungen.name = '%s'"
-		                , user, application);
+		                , LogonUser->charrep(), LogonApplication->charrep());
 
 		/*
 		 * Decide upon the interface, if this code is capable to handle this application.
@@ -792,6 +943,8 @@ lbErrCodes LB_STDCALL lb_MetaApplication::loadApplication(char* user, char* appl
 /*...e*/
 			#endif
 
+		} else {
+			_CL_LOG << "Error: Query to get application data failed. '" << buffer << "'" LOG_
 		}
 
 		UAP(lb_I_Unknown, a)
@@ -934,11 +1087,11 @@ lbErrCodes LB_STDCALL lb_MetaApplication::addMenuBar(char* name, char* after) {
 	return err;
 }
 /*...e*/
-
+/*...slbErrCodes LB_STDCALL lb_MetaApplication\58\\58\addMenu\40\char\42\ name\41\:0:*/
 lbErrCodes LB_STDCALL lb_MetaApplication::addMenu(char* name) {
 	return ERR_NONE;
 }
-
+/*...e*/
 /*...slb_MetaApplication\58\\58\addTextField\40\char\42\ name\44\ int x\44\ int y\44\ int w\44\ int h\41\:0:*/
 lbErrCodes LB_STDCALL lb_MetaApplication::addTextField(char* name, int x, int y, int w, int h) {
 	lbErrCodes err = ERR_NONE;
@@ -980,7 +1133,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::addTextField(char* name, int x, int y,
         return err;
 }
 /*...e*/
-
+/*...sbool LB_STDCALL lb_MetaApplication\58\\58\askYesNo\40\char\42\ msg\41\:0:*/
 bool LB_STDCALL lb_MetaApplication::askYesNo(char* msg) {
 	lbErrCodes err = ERR_NONE;
 	
@@ -1011,8 +1164,7 @@ bool LB_STDCALL lb_MetaApplication::askYesNo(char* msg) {
 	if (strcmp(value->charrep(), "yes") == 0) return true;
 	return false;
 }
-
-
+/*...e*/
 lb_I_InputStream* LB_STDCALL lb_MetaApplication::askOpenFileReadStream(char* extentions) {
 	lbErrCodes err = ERR_NONE;
 	
@@ -1227,6 +1379,32 @@ lbErrCodes LB_STDCALL lb_MetaApplication::showPropertyPanel(lb_I_Parameter* para
 	return ERR_NONE;
 }
 
+lbErrCodes LB_STDCALL lb_MetaApplication::propertyChanged(lb_I_Unknown* uk) {
+	lbErrCodes err = ERR_NONE;
+	
+	UAP(lb_I_Parameter, param)
+	QI(uk, lb_I_Parameter, param)
+	
+	if (param != NULL) {
+		UAP_REQUEST(manager.getPtr(), lb_I_String, name)
+		UAP_REQUEST(manager.getPtr(), lb_I_String, parameterName)
+		UAP_REQUEST(manager.getPtr(), lb_I_String, value)
+		
+		name->setData("name");
+		param->getUAPString(*&name, *&parameterName);
+		
+		name->setData("value");
+		param->getUAPString(*&name, *&value);
+		
+		
+		
+	} else {
+		_LOG << "ERROR: Could not decode parameter structure!" LOG_
+	}
+	
+	return err;
+}
+
 lbErrCodes LB_STDCALL lb_MetaApplication::registerPropertyChangeEventGroup(char* name, lb_I_Parameter* params, lb_I_EventHandler* target, lbEvHandler handler) {
 	lbErrCodes err = ERR_NONE;
 	
@@ -1293,6 +1471,49 @@ lbErrCodes LB_STDCALL lb_MetaApplication::addMenuEntry(char* in_menu, char* entr
 	return ERR_NONE;
 }
 /*...e*/
+lbErrCodes LB_STDCALL lb_MetaApplication::addMenuEntryCheckable(char* in_menu, char* entry, char* evHandler, char* afterentry) {
+	lbErrCodes err = ERR_NONE;
+	
+	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, value)
+	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
+	
+	
+	parameter->setData("menubar");
+	value->setData(in_menu);
+	param->setUAPString(*&parameter, *&value);
+	
+	parameter->setData("menuname");
+	value->setData(entry);
+	param->setUAPString(*&parameter, *&value);
+
+	parameter->setData("handlername");
+	value->setData(evHandler);
+	param->setUAPString(*&parameter, *&value);
+
+	parameter->setData("checkable");
+	value->setData("yes");
+	param->setUAPString(*&parameter, *&value);
+	
+	if (afterentry && (strcmp(afterentry, "") != 0)) {
+		parameter->setData("after");
+		value->setData(afterentry);
+		param->setUAPString(*&parameter, *&value);
+	}
+
+	UAP(lb_I_Unknown, uk)
+	QI(param, lb_I_Unknown, uk)
+
+	UAP_REQUEST(manager.getPtr(), lb_I_String, result)
+	UAP(lb_I_Unknown, uk_result)
+	QI(result, lb_I_Unknown, uk_result)
+
+	dispatcher->dispatch("AddMenuEntry", uk.getPtr(), &uk_result);
+	
+
+	return ERR_NONE;
+
+}
 /*...e*/
 /*...e*/
 /*...slb_EventMapper:0:*/

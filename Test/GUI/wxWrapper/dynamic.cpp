@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.115 2006/02/16 16:14:38 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.116 2006/02/21 19:35:51 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,15 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.115 $
+ * $Revision: 1.116 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.115 2006/02/16 16:14:38 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.116 2006/02/21 19:35:51 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.116  2006/02/21 19:35:51  lollisoft
+ * Implemented autoload mechanism of last loaded application.
+ * It demonstrates the new capabilities operating with files.
+ *
  * Revision 1.115  2006/02/16 16:14:38  lollisoft
  * Small changes to let wxAUI based layout compile under Windows.
  *
@@ -1752,6 +1756,7 @@ class MyFrame;
 class MyApp:
 #ifdef LB_I_EXTENTIONS
 public lb_I_Unknown
+, public lb_I_GUIApp
 , public lb_I_EventConnector
 , public lb_I_EventHandler ,
 #endif
@@ -1987,8 +1992,39 @@ IMPLEMENT_APP  (MyApp)
 #endif
 
 int MyApp::OnExit() {
+	lbErrCodes err = ERR_NONE;
+	
 	UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
 	
+	if (metaApp == NULL) {
+		REQUEST(getModuleInstance(), lb_I_MetaApplication, metaApp)
+	}
+
+	PM->initialize();
+
+	{
+        	UAP(lb_I_Plugin, pl1)
+	        UAP(lb_I_Unknown, ukPl1)
+
+	        pl1 = PM->getFirstMatchingPlugin("lb_I_FileOperation", "OutputStreamVisitor");
+	        ukPl1 = pl1->getImplementation();
+
+	        UAP(lb_I_FileOperation, fOp1)
+	        QI(ukPl1, lb_I_FileOperation, fOp1)
+
+	        if (!fOp1->begin("MetaApp.mad")) {
+	                _CL_LOG << "ERROR: Could not write default file for meta application!" LOG_
+	        } else {
+	
+	                UAP(lb_I_Unknown, ukAcceptor1)
+	                QI(metaApp, lb_I_Unknown, ukAcceptor1)
+	                ukAcceptor1->accept(*&fOp1);
+	
+	                fOp1->end();
+	        }
+        
+        }
+        
 	PM->unload();
 	
 	_CL_LOG << "Unloaded plugins." LOG_
@@ -2073,6 +2109,7 @@ bool MyApp::OnInit(void)
 
     if (err != ERR_NONE) _LOG << "Have some problems to set up menu event sources" LOG_
 
+    PM->initialize();
   
     frame->Centre();
     frame->Show(TRUE);
@@ -2083,10 +2120,8 @@ bool MyApp::OnInit(void)
         metaApp->setGUI(wxGUI);
 
         metaApp->Initialize();
-        metaApp->disableEvent("showLeftPropertyBar");
     } 
 
-    PM->initialize();
 
     if (PM->beginEnumPlugins()) {
 	
@@ -2290,6 +2325,7 @@ lbErrCodes LB_STDCALL MyApp::addMenuEntry(lb_I_Unknown* uk) {
 	UAP_REQUEST(manager.getPtr(), lb_I_String, menubar)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, menuname)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, handlername)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, checkable)
 	
 	
 	UAP(lb_I_Parameter, param)
@@ -2302,6 +2338,11 @@ lbErrCodes LB_STDCALL MyApp::addMenuEntry(lb_I_Unknown* uk) {
 	param->getUAPString(*&parameter, *&menuname);
 	parameter->setData("handlername");
 	param->getUAPString(*&parameter, *&handlername);
+
+	if (param->Count() > 3) {
+		parameter->setData("checkable");
+		param->getUAPString(*&parameter, *&checkable);
+	}
 	
 	int EvNr = 0;
 	
@@ -2315,7 +2356,13 @@ lbErrCodes LB_STDCALL MyApp::addMenuEntry(lb_I_Unknown* uk) {
 	
 	wxMenu* menu = mbar->GetMenu(mbar->FindMenu(wxString(menubar->getData())));
 
-	menu->Append(EvNr, menuname->getData());
+
+	if ((param->Count() > 3) && (strcmp(checkable->charrep(), "yes") == 0))
+		menu->AppendCheckItem(EvNr, menuname->getData());
+	else
+		menu->Append(EvNr, menuname->getData());
+
+
 
 	((wxFrame*) frame)->Connect( EvNr,  -1, wxEVT_COMMAND_MENU_SELECTED,
           (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
@@ -2349,7 +2396,7 @@ lbErrCodes LB_STDCALL MyApp::toggleEvent(lb_I_Unknown* uk) {
 
 	wxMenuBar* mbar = frame->getMenuBar();
 
-	mbar->Enable(EvNr, mbar->IsEnabled(EvNr));
+	mbar->Check(EvNr, mbar->IsChecked(EvNr));
 
 	return err;
 }

@@ -30,11 +30,15 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.37 $
+ * $Revision: 1.38 $
  * $Name:  $
- * $Id: lbPluginManager.cpp,v 1.37 2006/01/30 15:54:15 lollisoft Exp $
+ * $Id: lbPluginManager.cpp,v 1.38 2006/02/21 19:35:51 lollisoft Exp $
  *
  * $Log: lbPluginManager.cpp,v $
+ * Revision 1.38  2006/02/21 19:35:51  lollisoft
+ * Implemented autoload mechanism of last loaded application.
+ * It demonstrates the new capabilities operating with files.
+ *
  * Revision 1.37  2006/01/30 15:54:15  lollisoft
  * Removed the __FILE__ and __LINE__ parameter usage in UAP and QI.
  * This was an unnessesary thing and makes programming easier.
@@ -277,7 +281,7 @@ lbPluginManager::lbPluginManager() {
 }
 
 lbPluginManager::~lbPluginManager() {
-	_CL_LOG << "lbPluginManager::~lbPluginManager() with " << getRefCount() << " references called." LOG_
+	_CL_LOG << "lbPluginManager::~lbPluginManager() called." LOG_
 }
 
 void LB_STDCALL lbPluginManager::unload() {
@@ -413,6 +417,10 @@ void LB_STDCALL lbPluginManager::initialize() {
 	if (!firstEnumerate) {
 		firstEnumerate = true;
 		
+		REQUEST(manager.getPtr(), lb_I_Container, PluginModules)
+	}
+
+	if (PluginModules == NULL) {
 		REQUEST(manager.getPtr(), lb_I_Container, PluginModules)
 	}
 

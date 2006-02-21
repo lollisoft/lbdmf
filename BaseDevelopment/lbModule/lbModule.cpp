@@ -30,11 +30,15 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.104 $
+ * $Revision: 1.105 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.104 2006/02/17 23:57:16 lollisoft Exp $
+ * $Id: lbModule.cpp,v 1.105 2006/02/21 19:35:50 lollisoft Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.105  2006/02/21 19:35:50  lollisoft
+ * Implemented autoload mechanism of last loaded application.
+ * It demonstrates the new capabilities operating with files.
+ *
  * Revision 1.104  2006/02/17 23:57:16  lollisoft
  * Added functionality to pass a bunch of properties to the GUI. This then would be shown in a property window.
  *
@@ -2086,6 +2090,11 @@ lb_I_FunctorEntity* LB_STDCALL lbHCInterfaceRepository::getFirstEntity() {
 	
 	if (strcmp(searchArgument, "lb_I_Integer") == 0) {
 		functor = PREFIX "instanceOfInteger";
+		module = "lbClasses";
+	}
+	
+	if (strcmp(searchArgument, "lb_I_Boolean") == 0) {
+		functor = PREFIX "instanceOfBoolean";
 		module = "lbClasses";
 	}
 	

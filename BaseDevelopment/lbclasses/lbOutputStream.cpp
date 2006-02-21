@@ -114,6 +114,7 @@ public:
 	void LB_STDCALL logdirect(const char *msg, char *f, int level);
     
 	lb_I_OutputStream& LB_STDCALL operator<< (const int i);
+	lb_I_OutputStream& LB_STDCALL operator<< (const bool b);
 	lb_I_OutputStream& LB_STDCALL operator<< (const char c);
 	lb_I_OutputStream& LB_STDCALL operator<< (const char* string);
 /*...e*/
@@ -222,14 +223,29 @@ void LB_STDCALL lbOutputStream::_realloc(int add_size) {
 lb_I_OutputStream& LB_STDCALL lbOutputStream::operator<< (const int i) {
 	if (!isOpen) return *this;
 
-	*_ostream << i;
+	*_ostream << i << endl;
 	
 	return *this;
 }
+
+lb_I_OutputStream& LB_STDCALL lbOutputStream::operator<< (const bool b) {
+	if (!isOpen) return *this;
+
+	int _b;
+	if (b == true) 
+		_b = 1;
+	else
+		_b = 0;
+		
+	*_ostream << _b << endl;	
+	
+	return *this;
+}
+
 lb_I_OutputStream& LB_STDCALL lbOutputStream::operator<< (const char c) {
 	if (!isOpen) return *this;
 
-	*_ostream << c;
+	*_ostream << c << endl;
 
 	return *this;
 }
@@ -243,7 +259,8 @@ lb_I_OutputStream& LB_STDCALL lbOutputStream::operator<< (const char* string) {
 #ifdef __WATCOMC__
 	String s(string);
 #endif
-	*_ostream << endl << s << endl; 	
+	*_ostream << strlen(string) << endl;
+	*_ostream << s << endl;
 
 	return *this;
 }

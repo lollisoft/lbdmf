@@ -106,6 +106,13 @@ public:
 	
 	DECLARE_LB_UNKNOWN()
 
+/*...sUnimplemented visitors:8:*/
+	void LB_STDCALL visit(lb_I_LogonHandler*) { }
+	void LB_STDCALL visit(lb_I_LogonPage*) { }
+	void LB_STDCALL visit(lb_I_AppSelectPage*) { }
+	void LB_STDCALL visit(lb_I_GUI*) { }
+	void LB_STDCALL visit(lb_I_GUIApp*) { }
+	void LB_STDCALL visit(lb_I_Frame*) { }
 	void LB_STDCALL visit(lb_I_KeyBase*) { } 
 	void LB_STDCALL visit(lb_I_String*) { } 
 	void LB_STDCALL visit(lb_I_Integer*) { } 
@@ -125,8 +132,6 @@ public:
 	void LB_STDCALL visit(lb_I_EventHandler*) { }
 	void LB_STDCALL visit(lb_I_EventManager*) { }
 	void LB_STDCALL visit(lb_I_EventMapper*) { }
-	//void LB_STDCALL visit(lb_I_Application*) { }
-	//void LB_STDCALL visit(lb_I_MetaApplication*) { }
 	void LB_STDCALL visit(lb_I_EvHandler*) { }
 	void LB_STDCALL visit(lb_I_Dispatcher*) { }
 	void LB_STDCALL visit(lb_I_InputStream*) { }
@@ -147,10 +152,14 @@ public:
 	void LB_STDCALL visit(lb_I_Form*) { }
 	void LB_STDCALL visit(lb_I_MasterDetailFormDefinition*) { }
 	void LB_STDCALL visit(lb_I_DatabaseReport*) { }
-	void LB_STDCALL visit(lb_I_Project*);
 	void LB_STDCALL visit(lb_I_CodeGenerator*) { }
 	void LB_STDCALL visit(lb_I_ProjectManager*) { }	
+/*...e*/
 	
+	void LB_STDCALL visit(lb_I_Project*);
+	void LB_STDCALL visit(lb_I_Application*);
+	void LB_STDCALL visit(lb_I_MetaApplication*);
+
 	/** \brief Start save operation.
 	 *
 	 * This initializes an input file stream with a given name.
@@ -232,6 +241,30 @@ bool LB_STDCALL lbOutputStream::begin(lb_I_Stream* stream) {
 
 void LB_STDCALL lbOutputStream::visit(lb_I_Project*) {
 	_CL_LOG << "Save a lb_I_Project object. (Warning: This interface is private and could not be saved or loaded." LOG_
+}
+
+void LB_STDCALL lbOutputStream::visit(lb_I_MetaApplication* app) {
+	_CL_LOG << "Save a lb_I_MetaApplication object." LOG_
+
+	UAP_REQUEST(manager.getPtr(), lb_I_String, temp)
+	bool  b;
+
+	app->getApplicationName(&temp);
+	*oStream << temp->charrep();
+
+	app->getUserName(&temp);
+	*oStream << temp->charrep();
+
+	b = app->getAutoload();
+	*oStream << b;
+
+	b = app->getAutoselect();
+	*oStream << b;
+
+}
+
+void LB_STDCALL lbOutputStream::visit(lb_I_Application*) {
+	_CL_LOG << "Save a lb_I_Application object." LOG_
 }
 
 void LB_STDCALL lbOutputStream::end() {

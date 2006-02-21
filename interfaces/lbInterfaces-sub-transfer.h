@@ -159,6 +159,11 @@ public:
 	 *
 	 */
 	virtual lb_I_InputStream& LB_STDCALL operator>> (int& i) = 0;
+
+	/** \brief Read a bool data type.
+	 *
+	 */
+	virtual lb_I_InputStream& LB_STDCALL operator>> (bool& b) = 0;
    	
 	/** \brief Read a char data type.
 	 *
@@ -183,6 +188,11 @@ public:
 	 *
 	 */
 	virtual lb_I_OutputStream& LB_STDCALL operator<< (const int i) = 0;
+
+	/** \brief Write a bool data type.
+	 *
+	 */
+	virtual lb_I_OutputStream& LB_STDCALL operator<< (const bool b) = 0;
 
 	/** \brief Write a char data type.
 	 *

@@ -365,6 +365,8 @@ DLLEXPORT void LB_STDCALL setLoggerInstance(lb_I_Log* l);
 
 DLLEXPORT char* LB_STDCALL translateText(char* text);
 
+DLLEXPORT bool LB_STDCALL FileExists(char *filename);
+
 DLLEXPORT lbErrCodes LB_STDCALL lbUnloadModule(const char* name);
 /*...sDLLEXPORT lbErrCodes LB_STDCALL lbLoadModule\40\const char\42\ name\44\ HINSTANCE \38\ hinst\44\ bool skipAutoUnload \61\ false\41\:0:*/
 /**

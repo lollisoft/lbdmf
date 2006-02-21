@@ -1,11 +1,15 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.79 $
+# * $Revision: 1.80 $
 # * $Name:  $
-# * $Id: Makefile,v 1.79 2006/02/16 22:48:38 lollisoft Exp $
+# * $Id: Makefile,v 1.80 2006/02/21 19:35:50 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.80  2006/02/21 19:35:50  lollisoft
+# * Implemented autoload mechanism of last loaded application.
+# * It demonstrates the new capabilities operating with files.
+# *
 # * Revision 1.79  2006/02/16 22:48:38  lollisoft
 # * Tested last wxAUI layout changes under Linux. It builds and runs.
 # *
@@ -308,7 +312,9 @@ BASEDIRECTORIES= \
 	../Plugins \
 	../Modules \
 	../RegressionTests \
-	../AppDevelopment 
+	../AppDevelopment \
+	../vendor/wxaui-0.9.1/src \
+	../vendor/wxaui-0.9.1/sample
 
 # Don't compile these every time.
 #	../vendor/tvision-set \
@@ -574,6 +580,14 @@ ifeq ($(OSTYPE), Windows_NT)
 
 $(DEVROOT_MAKE)/wxwin/wx/samples/report: dummy
 	$(MAKE) -s -C $@ -e MODULE=report -e TARGET=$(TARGETEXE) -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@
+
+../vendor/wxaui-0.9.1/src: dummy
+	$(MAKE) -s -C $@ -e MODULE=wxAUI -e TARGET=$(TARGETSHARED) -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@
+
+../vendor/wxaui-0.9.1/sample: dummy
+	$(MAKE) -s -C $@ -e MODULE=wxAUISample -e TARGET=$(TARGETEXE) -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@
 
 ../Test/GUI/wxWrapperDLL: dummy

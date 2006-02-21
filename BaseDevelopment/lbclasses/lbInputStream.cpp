@@ -113,6 +113,7 @@ public:
 	bool LB_STDCALL read();
     
 	lb_I_InputStream& LB_STDCALL operator>> (int& i);
+	lb_I_InputStream& LB_STDCALL operator>> (bool& b);
 	lb_I_InputStream& LB_STDCALL operator>> (char& c);
 	lb_I_InputStream& LB_STDCALL operator>> (char*& string);
 /*...e*/
@@ -217,6 +218,7 @@ bool LB_STDCALL lbInputStream::close() {
 
 bool LB_STDCALL lbInputStream::open() {
 	if (!isOpen) {
+		if (!FileExists(f)) return false;
 		_istream = new ifstream(f);
 	}
 
@@ -235,6 +237,21 @@ lb_I_InputStream& LB_STDCALL lbInputStream::operator>> (int& i) {
 
 	*_istream >> i;
 
+	return *this;
+}
+
+lb_I_InputStream& LB_STDCALL lbInputStream::operator>> (bool& b) {
+	if (!isOpen) return *this;
+	
+	int _b;
+
+	*_istream >> _b;
+
+	if (_b == 1)
+		b = true;
+	else
+		b = false;
+		
 	return *this;
 }
 
@@ -257,16 +274,22 @@ lb_I_InputStream& LB_STDCALL lbInputStream::operator>> (char*& _string) {
 	String s;	
 #endif
 	
+	*_istream >> size;
+	
+	buf = (char*) malloc(size+1);
+	
 	_istream->ignore(1, '\n');
 #ifndef __WATCOMC__ 
 	getline(*_istream, s);
+	if (_string != NULL) free(_string);
+	_string = strdup(s.c_str());
 #endif
 #ifdef __WATCOMC__ 
-	*_istream >> s;
+	//*_istream >> s;
+	_istream->getline(buf, size+1);
+	_string = buf;
 #endif
-	if (_string != NULL) free(_string);
 
-	_string = strdup(s.c_str());
 
 	return *this;
 }

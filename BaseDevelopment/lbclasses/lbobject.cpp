@@ -71,6 +71,7 @@ extern "C" {
 #endif            
 
 IMPLEMENT_FUNCTOR(instanceOfInteger, lbInteger)
+IMPLEMENT_FUNCTOR(instanceOfBoolean, lbBoolean)
 IMPLEMENT_FUNCTOR(instanceOfString, lbString)
 #ifndef _MSC_VER
 IMPLEMENT_FUNCTOR(instanceOfReference, lbReference)
@@ -394,6 +395,50 @@ lbErrCodes LB_STDCALL lbParameter::getUAPInteger(lb_I_String*& parameter, lb_I_I
 	QI(uk_p_integer, lb_I_Integer, integer)
 	
 	if (integer.getPtr() != NULL) p->setData(integer->getData());
+	
+	
+	return ERR_NONE;
+}
+
+void LB_STDCALL lbParameter::setUAPBoolean(lb_I_String*& parameter, lb_I_Boolean*& p) {
+	lbErrCodes err = ERR_NONE;
+	if (parameters == NULL) {
+		REQUEST(manager.getPtr(), lb_I_Container, parameters)
+		if (parameters == NULL) {
+			_LOG << "Error: Could not get container instance for parameres" LOG_
+			return;
+		}
+	}	
+	
+	UAP(lb_I_KeyBase, k_parameter)
+	QI(parameter, lb_I_KeyBase, k_parameter)
+
+	UAP(lb_I_Unknown, uk_p)
+	QI(p, lb_I_Unknown, uk_p)
+	
+	
+	parameters->insert(&uk_p, &k_parameter);
+}
+
+lbErrCodes LB_STDCALL lbParameter::getUAPBoolean(lb_I_String*& parameter, lb_I_Boolean*& p) {
+	lbErrCodes err = ERR_NONE;
+	
+	if (parameters == NULL) return ERR_PARAM_NOT_FOUND;
+
+	lb_I_String* pp = parameter;
+	UAP(lb_I_KeyBase, key)
+	QI(pp, lb_I_KeyBase, key)
+	
+	UAP(lb_I_Unknown, uk_p_boolean)
+
+	uk_p_boolean = parameters->getElement(&key);
+
+	if (uk_p_boolean == NULL) return ERR_PARAM_NOT_FOUND;
+
+	UAP(lb_I_Boolean, _bool)
+	QI(uk_p_boolean, lb_I_Boolean, _bool)
+	
+	if (_bool.getPtr() != NULL) p->setData(_bool->getData());
 	
 	
 	return ERR_NONE;
@@ -725,6 +770,63 @@ char* LB_STDCALL lbInteger::charrep() const {
 #endif
     
 	return buf;
+}
+/*...e*/
+/*...e*/
+/*...slbBoolean:0:*/
+lbBoolean::lbBoolean() {
+	ref = STARTREF;
+	integerdata = 0;
+}
+
+lbBoolean::~lbBoolean() {
+}
+
+void lbBoolean::setData(bool p) {
+	integerdata = p;
+	key = p;
+}
+
+bool lbBoolean::getData() const {
+	return integerdata;
+}
+
+BEGIN_IMPLEMENT_LB_UNKNOWN(lbBoolean)
+	ADD_INTERFACE(lb_I_Boolean)
+	ADD_INTERFACE(lb_I_KeyBase)
+END_IMPLEMENT_LB_UNKNOWN()
+
+lbErrCodes LB_STDCALL lbBoolean::setData(lb_I_Unknown* uk) {
+	lbErrCodes err= ERR_NONE;
+	UAP(lb_I_Boolean, i)
+	QI(uk, lb_I_Boolean, i)
+	
+	bool v = i->getData();
+	setData(v);
+	
+	return err;
+}
+
+/*...sKey:0:*/
+char* LB_STDCALL lbBoolean::getKeyType() const {
+    return "bool";
+}
+
+int LB_STDCALL lbBoolean::equals(const lb_I_KeyBase* _key) const {
+    return key == ((lbBoolean*) _key)->key;
+}
+
+int LB_STDCALL lbBoolean::greater(const lb_I_KeyBase* _key) const {
+    return key > ((lbBoolean*) _key)->key;
+}
+
+int LB_STDCALL lbBoolean::lessthan(const lb_I_KeyBase* _key) const {
+    return key < ((lbBoolean*) _key)->key;
+}
+
+char* LB_STDCALL lbBoolean::charrep() const {
+	if (key) return "true";
+	else return "false";
 }
 /*...e*/
 /*...e*/

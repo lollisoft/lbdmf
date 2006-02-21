@@ -31,10 +31,14 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.32 $
+ * $Revision: 1.33 $
  * $Name:  $
- * $Id: lbobject.h,v 1.32 2006/02/17 23:57:16 lollisoft Exp $
+ * $Id: lbobject.h,v 1.33 2006/02/21 19:35:51 lollisoft Exp $
  * $Log: lbobject.h,v $
+ * Revision 1.33  2006/02/21 19:35:51  lollisoft
+ * Implemented autoload mechanism of last loaded application.
+ * It demonstrates the new capabilities operating with files.
+ *
  * Revision 1.32  2006/02/17 23:57:16  lollisoft
  * Added functionality to pass a bunch of properties to the GUI. This then would be shown in a property window.
  *
@@ -282,6 +286,9 @@ public:
 	virtual void LB_STDCALL setUAPInteger(lb_I_String*& parameter, lb_I_Integer*& p);
 	virtual lbErrCodes LB_STDCALL getUAPInteger(lb_I_String*& parameter, lb_I_Integer*& p);
 	
+	virtual void LB_STDCALL setUAPBoolean(lb_I_String*& parameter, lb_I_Boolean*& p);
+	virtual lbErrCodes LB_STDCALL getUAPBoolean(lb_I_String*& parameter, lb_I_Boolean*& p);
+	
 	virtual void LB_STDCALL setUAPParameter(lb_I_String*& parameter, lb_I_Parameter*& p);
 	virtual lbErrCodes LB_STDCALL getUAPParameter(lb_I_String*& parameter, lb_I_Parameter*& p);
 	
@@ -367,6 +374,27 @@ private:
     int integerdata;
 };
 /*...e*/
+/*...sclass lbBoolean:0:*/
+class lbBoolean : public lb_I_Boolean
+{
+public:
+	lbBoolean();
+	virtual ~lbBoolean();
+
+	DECLARE_LB_UNKNOWN()
+	
+	DECLARE_LB_KEYBASE()
+	
+	virtual void LB_STDCALL setData(bool p);
+	virtual bool LB_STDCALL getData() const;
+	
+private:
+
+    char keyType[10];
+    bool key;
+    bool integerdata;
+};
+/*...e*/
 /*...sclass lbLong:0:*/
 class lbLong : public lb_I_Long
 {
@@ -417,6 +445,7 @@ extern "C" {
 /*...e*/
 
 DECLARE_FUNCTOR(instanceOfInteger)
+DECLARE_FUNCTOR(instanceOfBoolean)
 DECLARE_FUNCTOR(instanceOfString)
 DECLARE_FUNCTOR(instanceOfReference)
 DECLARE_FUNCTOR(instanceOfLocale)

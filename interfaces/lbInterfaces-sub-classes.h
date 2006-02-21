@@ -30,11 +30,15 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.66 $
+ * $Revision: 1.67 $
  * $Name:  $
- * $Id: lbInterfaces-sub-classes.h,v 1.66 2006/02/18 19:12:18 lollisoft Exp $
+ * $Id: lbInterfaces-sub-classes.h,v 1.67 2006/02/21 19:35:52 lollisoft Exp $
  *
  * $Log: lbInterfaces-sub-classes.h,v $
+ * Revision 1.67  2006/02/21 19:35:52  lollisoft
+ * Implemented autoload mechanism of last loaded application.
+ * It demonstrates the new capabilities operating with files.
+ *
  * Revision 1.66  2006/02/18 19:12:18  lollisoft
  * Not so much log messages.
  *
@@ -551,6 +555,44 @@ public:
 	virtual lbErrCodes LB_STDCALL setData( lb_I_Unknown * uk) = 0;        
 };
 /*...e*/
+/*...sclass lb_I_Boolean:0:*/
+/**
+ * \brief A basic boolean class.
+ *
+ * This is a set of base interfaces that are compatible to the lb_I_Container interface.
+ */
+class lb_I_Boolean : public lb_I_KeyBase {
+protected:
+	/**
+	 * \deprecated Pure abstract class has no ctor/dtor's
+	 */
+        lb_I_Boolean() {}
+	/**
+	 * \deprecated Pure abstract class has no ctor/dtor's
+	 */
+        virtual ~lb_I_Boolean() {}
+
+public:
+	/** 
+	 * \brief Set p as the int value.
+	 *
+	 * \param p Boolean value to be set.
+	 */        
+        virtual void LB_STDCALL setData(bool p) = 0;
+        
+        /**
+         * \brief Get the integer value.
+         */
+        virtual bool LB_STDCALL getData() const = 0;
+	
+        /**
+         * \brief Set data from other lb_I_Boolean instance.
+         *
+         * This member is used in lb_I_Container implementation via clone.
+         */
+	virtual lbErrCodes LB_STDCALL setData( lb_I_Unknown * uk) = 0;        
+};
+/*...e*/
 /*...sclass lb_I_Long:0:*/
 /**
  * \brief A basic long class.
@@ -660,6 +702,9 @@ public:
 
 	virtual void LB_STDCALL setUAPInteger(lb_I_String*& parameter, lb_I_Integer*& p) = 0;
 	virtual lbErrCodes LB_STDCALL getUAPInteger(lb_I_String*& parameter, lb_I_Integer*& p) = 0;
+	
+	virtual void LB_STDCALL setUAPBoolean(lb_I_String*& parameter, lb_I_Boolean*& p) = 0;
+	virtual lbErrCodes LB_STDCALL getUAPBoolean(lb_I_String*& parameter, lb_I_Boolean*& p) = 0;
 	
 	virtual void LB_STDCALL setUAPContainer(lb_I_String*& parameter, lb_I_Container*& p) = 0;
 	virtual lbErrCodes LB_STDCALL getUAPContainer(lb_I_String*& parameter, lb_I_Container*& p) = 0;

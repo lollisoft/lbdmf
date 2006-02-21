@@ -118,7 +118,7 @@ lbErrCodes LB_STDCALL lbPluginModuleLoginWizard::setData(lb_I_Unknown* uk) {
 /*...swxAppSelectPage:0:*/
 class wxAppSelectPage :
 public lb_I_Unknown,
-public lb_I_EventHandler, 
+public lb_I_AppSelectPage, 
 public wxWizardPageSimple
 {
 public:
@@ -156,7 +156,6 @@ public:
 	}
 
 /*...e*/
-	lbErrCodes LB_STDCALL registerEventHandler(lb_I_Dispatcher* dispatcher);
 
 	wxString LB_STDCALL getSelectedApp() { return app; }
 
@@ -303,18 +302,11 @@ lbErrCodes LB_STDCALL wxAppSelectPage::setData(lb_I_Unknown* uk) {
         _LOG << "wxAppSelectPage::setData(...) not implemented yet" LOG_
         return ERR_NOT_IMPLEMENTED;
 }
-
-/*...slbErrCodes LB_STDCALL wxAppSelectPage\58\\58\registerEventHandler\40\lb_I_Dispatcher\42\ dispatcher\41\:0:*/
-lbErrCodes LB_STDCALL wxAppSelectPage::registerEventHandler(lb_I_Dispatcher* dispatcher) {
-
-	return ERR_NONE;
-}
-/*...e*/
 /*...e*/
 /*...swxLogonPage:0:*/
 class wxLogonPage :
 public lb_I_Unknown,
-public lb_I_EventHandler,
+public lb_I_LogonPage,
 public wxWizardPageSimple
 {
 public:
@@ -350,8 +342,6 @@ DECLARE_LB_UNKNOWN()
 	            event.Veto();
 	        }
 	}
-
-	lbErrCodes LB_STDCALL registerEventHandler(lb_I_Dispatcher* dispatcher);
 
 /*...slbErrCodes LB_STDCALL createTextCtrl\40\char\42\ _name\41\:8:*/
 	lbErrCodes LB_STDCALL createTextCtrl(char* _name) {
@@ -472,15 +462,8 @@ _CL_VERBOSE << "Query for user " << user LOG_
 		int LoginOk;
 		int LoginCancel;
 	
-		UAP_REQUEST(manager.getPtr(), lb_I_EventManager, eman)
-		UAP_REQUEST(manager.getPtr(), lb_I_Dispatcher, dispatcher)
-
 		char eventName[100] = "";
 		
-		dispatcher->setEventManager(eman.getPtr());
-
-		registerEventHandler(dispatcher.getPtr());
-
 		sizerHor->Add(sizerLeft, 1, wxEXPAND | wxALL, 5);
 		sizerHor->Add(sizerRight, 1, wxEXPAND | wxALL, 5);
 	
@@ -538,13 +521,6 @@ lbErrCodes LB_STDCALL wxLogonPage::setData(lb_I_Unknown* uk) {
 }
 
 
-/*...slbErrCodes LB_STDCALL wxLogonPage\58\\58\registerEventHandler\40\lb_I_Dispatcher\42\ dispatcher\41\:0:*/
-lbErrCodes LB_STDCALL wxLogonPage::registerEventHandler(lb_I_Dispatcher* dispatcher) {
-
-	return ERR_NONE;
-}
-/*...e*/
-
 /*...schar const \42\ LB_STDCALL wxLogonPage\58\\58\getTextValue\40\char\42\ _name\41\:0:*/
 char const * LB_STDCALL wxLogonPage::getTextValue(char* _name) {
 	
@@ -565,6 +541,7 @@ char const * LB_STDCALL wxLogonPage::getTextValue(char* _name) {
 
 class lbLoginHandler : 
 	public lb_I_Unknown,
+	public lb_I_LogonHandler,
 	public lb_I_EventHandler {
 public:
 		lbLoginHandler();

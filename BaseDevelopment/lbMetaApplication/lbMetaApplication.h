@@ -30,11 +30,15 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.29 $
+ * $Revision: 1.30 $
  * $Name:  $
- * $Id: lbMetaApplication.h,v 1.29 2006/02/19 18:41:35 lollisoft Exp $
+ * $Id: lbMetaApplication.h,v 1.30 2006/02/21 19:35:50 lollisoft Exp $
  *
  * $Log: lbMetaApplication.h,v $
+ * Revision 1.30  2006/02/21 19:35:50  lollisoft
+ * Implemented autoload mechanism of last loaded application.
+ * It demonstrates the new capabilities operating with files.
+ *
  * Revision 1.29  2006/02/19 18:41:35  lollisoft
  * Feedback of properties works good. I am use the
  * dispatcher mechanism to forward the change events
@@ -170,28 +174,33 @@ public:
 	 * For each event, it gets an numeric identifer so it may
 	 * be able to dispatch that events.
 	 */
-	virtual lbErrCodes LB_STDCALL Initialize(char* user = NULL, char* app = NULL);
-	virtual lbErrCodes LB_STDCALL run();
-	virtual lbErrCodes LB_STDCALL getGUI(lb_I_GUI** _gui);
-	virtual lbErrCodes LB_STDCALL getUserName(lb_I_String** user);
-	virtual lbErrCodes LB_STDCALL getApplicationName(lb_I_String** app);
+	lbErrCodes LB_STDCALL Initialize(char* user = NULL, char* app = NULL);
+	lbErrCodes LB_STDCALL run();
+	lbErrCodes LB_STDCALL getGUI(lb_I_GUI** _gui);
+	lbErrCodes LB_STDCALL getUserName(lb_I_String** user);
+	lbErrCodes LB_STDCALL getApplicationName(lb_I_String** app);
 
-	virtual lbErrCodes LB_STDCALL setUserName(char* user);
-	virtual lbErrCodes LB_STDCALL setApplicationName(char* app);
+	lbErrCodes LB_STDCALL setUserName(char* user);
+	lbErrCodes LB_STDCALL setApplicationName(char* app);
 
-	virtual lb_I_EventManager * getEVManager( void );
+	void	   LB_STDCALL setAutoload(bool b);
+	void	   LB_STDCALL setAutoselect(bool b);
+	bool	   LB_STDCALL getAutoload();
+	bool	   LB_STDCALL getAutoselect();
+
+	lb_I_EventManager * getEVManager( void );
 
 	void LB_STDCALL getBasicApplicationInfo(lb_I_Unknown** info);
 	
 
-	virtual lbErrCodes LB_STDCALL registerEventHandler(lb_I_Dispatcher* disp);	
+	lbErrCodes LB_STDCALL registerEventHandler(lb_I_Dispatcher* disp);	
 	
 	lbErrCodes LB_STDCALL loadSubModules();
 	
 	/**
 	 * Load the real application.
 	 */
-	virtual lbErrCodes LB_STDCALL loadApplication(char* user, char* app);
+	lbErrCodes LB_STDCALL loadApplication(char* user, char* app);
 
 	lbErrCodes LB_STDCALL enterDebugger(lb_I_Unknown* uk);
 	lbErrCodes LB_STDCALL getLoginData(lb_I_Unknown* uk);
@@ -204,12 +213,12 @@ public:
 	/* The menubar is still present in the demo. At the
 	   first time, a new menubar should not be used.
 	*/
-	virtual lbErrCodes LB_STDCALL addMenuBar(char* name, char* after = NULL);
+	lbErrCodes LB_STDCALL addMenuBar(char* name, char* after = NULL);
 
 	/**
 	 * Add a menu behind the last.
 	 */
-	virtual lbErrCodes LB_STDCALL addMenu(char* name);
+	lbErrCodes LB_STDCALL addMenu(char* name);
 	
 	/**
 	 * Add a menu entry in the named menu after given entry,
@@ -222,6 +231,7 @@ public:
 	 *	char* afterentry:	Insert the entry after an exsisting entry
 	 */
 	lbErrCodes LB_STDCALL addMenuEntry(char* in_menu, char* entry, char* evHandler, char* afterentry = NULL);
+	lbErrCodes LB_STDCALL addMenuEntryCheckable(char* in_menu, char* entry, char* evHandler, char* afterentry = NULL);
 	lbErrCodes LB_STDCALL addButton(char* buttonText, char* evHandler, int x, int y, int w, int h);
 	lbErrCodes LB_STDCALL addLabel(char* text, int x, int y, int w, int h);
 	lbErrCodes LB_STDCALL addTextField(char* name, int x, int y, int w, int h);
@@ -244,6 +254,10 @@ public:
 
 	lbErrCodes LB_STDCALL registerPropertyChangeEventGroup(char* name, lb_I_Parameter* params, lb_I_EventHandler* target, lbEvHandler handler);
 
+	/// \brief My handler for changed properties.
+	lbErrCodes LB_STDCALL propertyChanged(lb_I_Unknown* uk);
+
+	lbErrCodes LB_STDCALL doAutoload(lb_I_Unknown* uk);
 protected:
 	lb_I_GUI* gui;
 	
@@ -251,9 +265,14 @@ protected:
 	
 	UAP(lb_I_EventManager, eman)
 	UAP(lb_I_Dispatcher, dispatcher)
-	UAP(lb_I_MetaApplication, app)
+	UAP(lb_I_Application, app)
 	UAP(lb_I_String, LogonUser)
 	UAP(lb_I_String, LogonApplication)
+	
+	UAP(lb_I_Parameter, myProperties)
+
+	bool _autoload;
+	bool _autoselect;
 	
 	char gwedgd[100];
 };

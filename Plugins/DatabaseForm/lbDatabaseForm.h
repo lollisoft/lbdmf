@@ -30,11 +30,15 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.30 $
+ * $Revision: 1.31 $
  * $Name:  $
- * $Id: lbDatabaseForm.h,v 1.30 2006/01/30 15:54:15 lollisoft Exp $
+ * $Id: lbDatabaseForm.h,v 1.31 2006/02/21 19:35:51 lollisoft Exp $
  *
  * $Log: lbDatabaseForm.h,v $
+ * Revision 1.31  2006/02/21 19:35:51  lollisoft
+ * Implemented autoload mechanism of last loaded application.
+ * It demonstrates the new capabilities operating with files.
+ *
  * Revision 1.30  2006/01/30 15:54:15  lollisoft
  * Removed the __FILE__ and __LINE__ parameter usage in UAP and QI.
  * This was an unnessesary thing and makes programming easier.
@@ -162,8 +166,9 @@
 
 /*...sclass lbConfigure_FK_PK_MappingDialog:0:*/
 class lbConfigure_FK_PK_MappingDialog :
+//	public lb_I_Unknown,
+	public lb_I_Window,
 	public lb_I_EventHandler,
-	public lb_I_Unknown,
 	public wxDialog {
 public:
 	/**
@@ -177,6 +182,9 @@ public:
 	virtual ~lbConfigure_FK_PK_MappingDialog();
 
 	int prepareDialogHandler();
+
+	void LB_STDCALL create(int parentId) { }
+	int  LB_STDCALL getId() { return GetId(); }
 
 	void LB_STDCALL init(lb_I_Query* query, char* DBName, char* DBUser, char* DBPass);
 
@@ -281,7 +289,7 @@ public:
 	void LB_STDCALL execute(lb_I_Parameter* params);
 
 	void LB_STDCALL setDatabase(lb_I_Database* _db);
-	
+
 	DECLARE_LB_UNKNOWN()
 	
 protected:

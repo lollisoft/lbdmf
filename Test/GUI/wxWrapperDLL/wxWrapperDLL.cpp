@@ -95,7 +95,7 @@
 /*...swxAppSelectPage:0:*/
 class wxAppSelectPage :
 public lb_I_Unknown,
-public lb_I_EventHandler, 
+public lb_I_AppSelectPage, 
 public wxWizardPageSimple
 {
 public:
@@ -112,8 +112,6 @@ public:
 	DECLARE_LB_UNKNOWN()
 	
 	wxAppSelectPage(wxWizard *parent);
-
-	lbErrCodes LB_STDCALL registerEventHandler(lb_I_Dispatcher* dispatcher);
 
 	wxString LB_STDCALL getSelectedApp() { return app; }
 
@@ -181,12 +179,6 @@ lbErrCodes LB_STDCALL wxAppSelectPage::setData(lb_I_Unknown* uk) {
 	{
 	        return TRUE;
 	}
-/*...e*/
-/*...slbErrCodes LB_STDCALL wxAppSelectPage\58\\58\registerEventHandler\40\lb_I_Dispatcher\42\ dispatcher\41\:0:*/
-lbErrCodes LB_STDCALL wxAppSelectPage::registerEventHandler(lb_I_Dispatcher* dispatcher) {
-
-	return ERR_NONE;
-}
 /*...e*/
 /*...svoid wxAppSelectPage\58\\58\OnWizardPageChanging\40\wxWizardEvent\38\ event\41\:0:*/
 void wxAppSelectPage::OnWizardPageChanging(wxWizardEvent& event) {
@@ -289,7 +281,7 @@ void wxAppSelectPage::setLoggedOnUser(char* user) {
 /*...swxLogonPage:0:*/
 class wxLogonPage :
 public lb_I_Unknown,
-public lb_I_EventHandler,
+public lb_I_LogonPage,
 public wxWizardPageSimple
 {
 public:
@@ -308,8 +300,6 @@ DECLARE_LB_UNKNOWN()
 
 	// wizard event handlers
 	void OnWizardCancel(wxWizardEvent& event);
-
-	lbErrCodes LB_STDCALL registerEventHandler(lb_I_Dispatcher* dispatcher);
 
 	lbErrCodes LB_STDCALL createPasswdCtrl(char* _name);
 	lbErrCodes LB_STDCALL createTextCtrl(char* _name);
@@ -525,8 +515,6 @@ void wxLogonPage::init(wxWindow* parent) {
 		
 	dispatcher->setEventManager(eman.getPtr());
 
-	registerEventHandler(dispatcher.getPtr());
-
 	sizerHor->Add(sizerLeft, 1, wxEXPAND | wxALL, 5);
 	sizerHor->Add(sizerRight, 1, wxEXPAND | wxALL, 5);
 	
@@ -547,13 +535,6 @@ void wxLogonPage::init(wxWindow* parent) {
 	sizerMain->Fit(this);
 		
 	//Centre();
-}
-/*...e*/
-
-/*...slbErrCodes LB_STDCALL wxLogonPage\58\\58\registerEventHandler\40\lb_I_Dispatcher\42\ dispatcher\41\:0:*/
-lbErrCodes LB_STDCALL wxLogonPage::registerEventHandler(lb_I_Dispatcher* dispatcher) {
-
-	return ERR_NONE;
 }
 /*...e*/
 
@@ -660,6 +641,10 @@ lbErrCodes LB_STDCALL lb_wxFrame::registerEventHandler(lb_I_Dispatcher* disp) {
 	menu_bar->Append(file_menu, _trans("&File"));
 
 	SetMenuBar(menu_bar);
+
+#ifdef USE_WXAUI
+        m_mgr.Update();
+#endif
 
 	return ERR_NONE;
 }
@@ -1527,6 +1512,20 @@ void lb_wxFrame::populateString(wxPropertyGrid* pg, lb_I_Unknown* uk, lb_I_KeyBa
 	*category_name += name->charrep();
 	
 	pg->Append(wxStringProperty (name->charrep(), category_name->charrep(), s->charrep()));
+}
+
+void lb_wxFrame::populateBoolean(wxPropertyGrid* pg, lb_I_Unknown* uk, lb_I_KeyBase* name, char* category) {
+	lbErrCodes err = ERR_NONE;
+	UAP(lb_I_Boolean, s)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, category_name)
+	QI(uk, lb_I_Boolean, s)
+	
+	_CL_LOG << "Add string property (" << name->charrep() << "): " << s->charrep() LOG_
+	
+	if (category) *category_name = category;
+	*category_name += name->charrep();
+	
+	pg->Append(wxBoolProperty (name->charrep(), category_name->charrep(), s->charrep()));
 }
 
 void lb_wxFrame::populateInteger(wxPropertyGrid* pg, lb_I_Unknown* uk, lb_I_KeyBase* name, char* category) {

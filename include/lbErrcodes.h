@@ -30,11 +30,15 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.26 $
+ * $Revision: 1.27 $
  * $Name:  $
- * $Id: lbErrcodes.h,v 1.26 2006/01/22 13:32:29 lollisoft Exp $
+ * $Id: lbErrcodes.h,v 1.27 2006/02/21 19:35:52 lollisoft Exp $
  *
  * $Log: lbErrcodes.h,v $
+ * Revision 1.27  2006/02/21 19:35:52  lollisoft
+ * Implemented autoload mechanism of last loaded application.
+ * It demonstrates the new capabilities operating with files.
+ *
  * Revision 1.26  2006/01/22 13:32:29  lollisoft
  * New mutex id's. Why is this here ?
  *
@@ -257,7 +261,10 @@ enum lbErrCodes {
 	
 /* Errcodes for parameter handling */	
 	
-	ERR_PARAM_NOT_FOUND
+	ERR_PARAM_NOT_FOUND,
+	
+	ERR_FILE_WRITE_DEFAULT,
+	ERR_FILE_READ_DEFAULT
 };
 /*...e*/
 

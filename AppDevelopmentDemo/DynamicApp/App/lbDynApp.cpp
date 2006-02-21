@@ -65,10 +65,6 @@ public:
 	 */
 	lbErrCodes LB_STDCALL getDynamicDBForm(lb_I_Unknown* uk);
 
-/*...sWrapper for some usual GUI functions:8:*/
-
-/*...e*/
-
 protected:
 	lb_I_GUI* gui;
 	UAP(lb_I_EventManager, eman)
@@ -87,6 +83,7 @@ protected:
 lbDynamicApplication::lbDynamicApplication() {
 	ref = STARTREF;
 	gui = NULL;
+	_CL_LOG << "lbDynamicApplication::lbDynamicApplication() called." LOG_
 }
 
 lbDynamicApplication::~lbDynamicApplication() {
@@ -377,16 +374,16 @@ lbErrCodes LB_STDCALL lbDynamicApplication::Initialize(char* user, char* app) {
 	} else
 	if (LogonUser == NULL) {
 	        REQUEST(manager.getPtr(), lb_I_String, LogonUser)
-	        LogonUser->setData(user);
 	}
+        LogonUser->setData(user);
 	
 	if (app == NULL) {
 	        _CL_LOG << "lb_MetaApplication::Initialize() app is NULL" LOG_
 	} else
 	if (LogonApplication == NULL) {
 	        REQUEST(manager.getPtr(), lb_I_String, LogonApplication)
-	        LogonApplication->setData(app);
 	}
+        LogonApplication->setData(app);
 
 	if (metaapp == NULL) {
 		REQUEST(manager.getPtr(), lb_I_MetaApplication, metaapp)
@@ -470,12 +467,14 @@ lbErrCodes LB_STDCALL lbDynamicApplication::Initialize(char* user, char* app) {
 
 /*...e*/
 lbErrCodes LB_STDCALL lbDynamicApplication::getUserName(lb_I_String** user) {
-	(*user)->setData(LogonUser->charrep());
+	if (LogonUser == NULL) (*user)->setData("");
+	else (*user)->setData(LogonUser->charrep());
 	return ERR_NONE;
 }
 
 lbErrCodes LB_STDCALL lbDynamicApplication::getApplicationName(lb_I_String** app) {
-	(*app)->setData(LogonApplication->charrep());
+	if (LogonApplication == NULL) (*app)->setData("");
+	else (*app)->setData(LogonApplication->charrep());
 	return ERR_NONE;
 }
 lbErrCodes LB_STDCALL lbDynamicApplication::setUserName(char* user) {

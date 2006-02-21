@@ -581,6 +581,10 @@ ADD CONSTRAINT cst_User_Anwendungen_AnwendungenId FOREIGN KEY ( AnwendungenId )
 ALTER TABLE Formular_Parameters
 ADD CONSTRAINT cst_Formular_Parameters_FormularID FOREIGN KEY ( FormularID )
    REFERENCES Formulare (id );
+
+ALTER TABLE Anwendungs_Parameter 
+ADD CONSTRAINT cst_Anwendungs_Parameter_AnwendungID FOREIGN KEY ( AnwendungID )
+   REFERENCES Anwendungen ( id );
 --...e
 
 --...sData:0:

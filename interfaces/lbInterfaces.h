@@ -727,6 +727,10 @@ class lb_I_Project;
 class lb_I_Stream;
 class lb_I_CodeGenerator;
 class lb_I_ProjectManager;
+class lb_I_GUIApp;
+class lb_I_LogonPage;
+class lb_I_AppSelectPage;
+class lb_I_LogonHandler;
 /*...e*/
 
 /*...scallback \47\ handler typedefs:0:*/
@@ -2243,9 +2247,7 @@ class lb_I_Frame :
 public lb_I_Unknown
 {
 public:
-	virtual lb_I_Unknown* LB_STDCALL createFrame() = 0;
-//	virtual lbErrCodes registerEvent(char* evName, int evType, frame->getDispatcherFn())
-
+//	virtual lb_I_Unknown* LB_STDCALL createFrame() = 0;
 };
 /*...e*/
 /*...sclass lb_I_Application:0:*/
@@ -2319,9 +2321,37 @@ public:
 	 */
 	virtual lbErrCodes LB_STDCALL setGUI(lb_I_GUI* gui) = 0;
 
+	/** \brief Set user name.
+	 * Set the user name. The user name is the login name in the database if lbDMF is used.
+	 */
 	virtual lbErrCodes LB_STDCALL setUserName(char* user) = 0;
-	virtual lbErrCodes LB_STDCALL setApplicationName(char* app) = 0;
 	
+	/** \brief Set application name.
+	 * The application name must be configured in the database and must point to a module
+	 * (DLL/so) containing an interface with this name: lb_I_Application.
+	 */
+	virtual lbErrCodes LB_STDCALL setApplicationName(char* app) = 0;
+
+	/** \brief Set automatic loading of application.
+	 * The easiest login procedure.
+	 */
+	virtual void	   LB_STDCALL setAutoload(bool b) = 0;
+	
+	/** \brief Set automatic selection of application.
+	 * This would be used to help the login procedure to be easier.
+	 */
+	virtual void	   LB_STDCALL setAutoselect(bool b) = 0;
+	
+	/** \brief Get automatic loading of application.
+	 * The easiest login procedure.
+	 */
+	virtual bool	   LB_STDCALL getAutoload() = 0;
+	
+	/** \brief Get automatic selection of application.
+	 * This would be used to help the login procedure to be easier.
+	 */
+	virtual bool	   LB_STDCALL getAutoselect() = 0;
+
 	/**
 	 * Initialize the application module. Optionally, provide user and application name.
 	 */
@@ -2340,7 +2370,14 @@ public:
 	 */	
 	virtual lbErrCodes LB_STDCALL getGUI(lb_I_GUI** gui) = 0;
 
+	/** \brief Get the current user name.
+	 *
+	 */
 	virtual lbErrCodes LB_STDCALL getUserName(lb_I_String** user) = 0;
+	
+	/** \brief Get the current application name.
+	 *
+	 */
 	virtual lbErrCodes LB_STDCALL getApplicationName(lb_I_String** app) = 0;
 	
 	/**
@@ -2367,6 +2404,11 @@ public:
 	/** Add menu entry.
 	 */
 	virtual lbErrCodes LB_STDCALL addMenuEntry(char* in_menu, char* entry, char* evHandler, char* afterentry = NULL) = 0;
+
+	/** Add a checkable menu entry.
+	 *
+	 */
+	virtual lbErrCodes LB_STDCALL addMenuEntryCheckable(char* in_menu, char* entry, char* evHandler, char* afterentry = NULL) = 0;
 
 	/** \brief Enable a given event.
 	 *

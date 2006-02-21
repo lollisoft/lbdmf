@@ -377,6 +377,30 @@ DLLEXPORT void LB_STDCALL lbBreak() {
 
 }
 
+#ifdef WINDOWS
+DLLEXPORT bool LB_STDCALL FileExists(char *filename)
+{
+	OFSTRUCT ofs;
+	return OpenFile(filename, &ofs, OF_EXIST) != HFILE_ERROR;
+}
+#endif
+#ifndef OSX
+#ifdef LINUX
+DLLEXPORT bool LB_STDCALL FileExists(char *filename)
+{
+	struct stat sb;
+	return stat(filename, &sb) != -1;
+}
+#endif
+#endif
+#ifdef OSX
+DLLEXPORT bool LB_STDCALL FileExists(char *filename)
+{
+	struct stat sb;
+	return stat(filename, &sb) != -1;
+}
+#endif
+
 /*...slbErrCodes LB_STDCALL lbLoadModule\40\const char\42\ name\44\ HINSTANCE \38\ hinst\44\ bool skipAutoUnload\41\:0:*/
 DLLEXPORT lbErrCodes LB_STDCALL lbLoadModule(const char* name, HINSTANCE & hinst, bool skipAutoUnload) {
 
