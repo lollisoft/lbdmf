@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.116 2006/02/21 19:35:51 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.117 2006/02/21 21:02:16 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.116 $
+ * $Revision: 1.117 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.116 2006/02/21 19:35:51 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.117 2006/02/21 21:02:16 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.117  2006/02/21 21:02:16  lollisoft
+ * Wrong menu check handling.
+ *
  * Revision 1.116  2006/02/21 19:35:51  lollisoft
  * Implemented autoload mechanism of last loaded application.
  * It demonstrates the new capabilities operating with files.
@@ -2396,7 +2399,7 @@ lbErrCodes LB_STDCALL MyApp::toggleEvent(lb_I_Unknown* uk) {
 
 	wxMenuBar* mbar = frame->getMenuBar();
 
-	mbar->Check(EvNr, mbar->IsChecked(EvNr));
+	mbar->Check(EvNr, !mbar->IsChecked(EvNr));
 
 	return err;
 }
