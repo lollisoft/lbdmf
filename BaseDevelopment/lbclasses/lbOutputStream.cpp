@@ -94,10 +94,6 @@ public:
 	    		logmessage = NULL;
 	    	}
     	
-	    	if (mutex) { 
-	    		delete mutex;
-	    	}
-    	
 	    	close();
 	}
 /*...e*/
@@ -125,7 +121,6 @@ public:
 	void LB_STDCALL _realloc(int add_size);
 
 	char f[PATH_MAX];
-	lbMutex* mutex;
 	char* logmessage;
 	int pre_lastsize;
 	int lastsize;
@@ -170,18 +165,13 @@ lbErrCodes LB_STDCALL lbOutputStream::setData(lb_I_Unknown* uk) {
 /*...slbOutputStream\58\\58\lbOutputStream\40\\41\:0:*/
 lbOutputStream::lbOutputStream() {
 //lbLock lbLock(sect);
-		ref = STARTREF;
-		manager = NULL;
-		fout = NULL;
-		isOpen = false;
-        
-		f[0] = 0;
+	ref = STARTREF;
+	manager = NULL;
+	fout = NULL;
+	isOpen = false;
+       
+	f[0] = 0;
 		
-        if (mutex == NULL) {
-                mutex = new lbMutex();
-                mutex->createMutex(LB_OUTPUTFILE_MUTEX);
-        }
-
         logmessage = NULL;
         lastsize = 0;
 	_ostream = NULL;

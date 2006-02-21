@@ -93,10 +93,6 @@ public:
     		logmessage = NULL;
     	}
     	
-    	if (mutex) { 
-    		delete mutex;
-    	}
-
     	close();
     }
 /*...e*/
@@ -124,7 +120,6 @@ public:
 	void LB_STDCALL _realloc(int add_size);
 
 	char f[PATH_MAX];
-	static lbMutex* mutex;
 	char* logmessage;
 	int lastsize;
 	FILE*	fin;
@@ -142,10 +137,6 @@ public:
 /*...e*/
 
 
-lbMutex* lbInputStream::mutex;
-
-//lb_I_CritSect sect;
-
 #ifdef __cplusplus
 extern "C" {       
 #endif            
@@ -155,12 +146,6 @@ IMPLEMENT_FUNCTOR(instanceOfInputStream, lbInputStream)
 #ifdef __cplusplus
 }
 #endif            
-
-// Logging macro does not work recursively
-//#undef _CL_VERBOSE
-//#define _CL_VERBOSE cerr
-//#undef LOG_
-//#define LOG_ << ""; }
 
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbInputStream)
 	ADD_INTERFACE(lb_I_Stream)
@@ -187,11 +172,6 @@ lbInputStream::lbInputStream() {
         f[0] = 0;
 
 	_istream = NULL;
-		
-	if (mutex == NULL) {
-                mutex = new lbMutex();
-                mutex->createMutex(LB_INPUTFILE_MUTEX);
-        }
 
         logmessage = NULL;
         lastsize = 0;
