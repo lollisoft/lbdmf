@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.30 $
+ * $Revision: 1.31 $
  * $Name:  $
- * $Id: lbMetaApplication.h,v 1.30 2006/02/21 19:35:50 lollisoft Exp $
+ * $Id: lbMetaApplication.h,v 1.31 2006/02/22 11:49:57 lollisoft Exp $
  *
  * $Log: lbMetaApplication.h,v $
+ * Revision 1.31  2006/02/22 11:49:57  lollisoft
+ * Moved the general part to meta application. wxWrapper does ask for it when left panel will be shown.
+ *
  * Revision 1.30  2006/02/21 19:35:50  lollisoft
  * Implemented autoload mechanism of last loaded application.
  * It demonstrates the new capabilities operating with files.
@@ -253,6 +256,8 @@ public:
 	lbErrCodes LB_STDCALL lbButtonTestHandler(lb_I_Unknown* uk);	
 
 	lbErrCodes LB_STDCALL registerPropertyChangeEventGroup(char* name, lb_I_Parameter* params, lb_I_EventHandler* target, lbEvHandler handler);
+
+	lb_I_Parameter* LB_STDCALL getParameter();
 
 	/// \brief My handler for changed properties.
 	lbErrCodes LB_STDCALL propertyChanged(lb_I_Unknown* uk);

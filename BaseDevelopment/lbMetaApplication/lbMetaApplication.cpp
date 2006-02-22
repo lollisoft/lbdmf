@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.82 $
+ * $Revision: 1.83 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.82 2006/02/21 20:56:30 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.83 2006/02/22 11:49:57 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.83  2006/02/22 11:49:57  lollisoft
+ * Moved the general part to meta application. wxWrapper does ask for it when left panel will be shown.
+ *
  * Revision 1.82  2006/02/21 20:56:30  lollisoft
  * Wrong menu updating.
  *
@@ -831,6 +834,86 @@ bool       LB_STDCALL lb_MetaApplication::getAutoselect() {
 	return _autoselect;
 }
 
+lbErrCodes LB_STDCALL lb_MetaApplication::propertyChanged(lb_I_Unknown* uk) {
+	lbErrCodes err = ERR_NONE;
+	
+	UAP(lb_I_Parameter, param)
+	QI(uk, lb_I_Parameter, param)
+	
+	if (param != NULL) {
+		UAP_REQUEST(manager.getPtr(), lb_I_String, name)
+		UAP_REQUEST(manager.getPtr(), lb_I_String, parameterName)
+		UAP_REQUEST(manager.getPtr(), lb_I_String, value)
+		
+		UAP(lb_I_KeyBase, key)
+		
+		name->setData("name");
+		param->getUAPString(*&name, *&parameterName);
+		
+		name->setData("value");
+		param->getUAPString(*&name, *&value);
+		
+		QI(parameterName, lb_I_KeyBase, key)
+		
+		if (strcmp(key->charrep(), "GeneralAutoselect last application") == 0) {
+				if (strcmp(value->charrep(), "1") == 0) {
+					setAutoselect(true);
+				} else {
+					setAutoselect(false);
+				}
+		}
+		
+		if (strcmp(key->charrep(), "GeneralAutoopen last application") == 0) {
+				if (strcmp(value->charrep(), "1") == 0) {
+					setAutoload(true);
+				} else {
+					setAutoload(false);
+				}
+				toggleEvent("doAutoload");
+		}
+		
+		
+	} else {
+		_LOG << "ERROR: Could not decode parameter structure!" LOG_
+	}
+	
+	return err;
+}
+
+lb_I_Parameter* LB_STDCALL lb_MetaApplication::getParameter() {
+	// Build up a preferences object and pass it to the property view
+	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
+	
+	// General parameters for this application
+	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, paramGeneral)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, parameterGeneral)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, valueGeneral)
+	
+	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, value)
+	UAP_REQUEST(manager.getPtr(), lb_I_Boolean, b)
+
+
+	parameter->setData("General");
+	//--------------------------------------------------------
+	parameterGeneral->setData("Autoselect last application");
+	b->setData(_autoselect);
+	paramGeneral->setUAPBoolean(*&parameterGeneral, *&b);
+	
+	parameterGeneral->setData("Autoopen last application");
+	b->setData(_autoload);
+	paramGeneral->setUAPBoolean(*&parameterGeneral, *&b);
+
+	registerPropertyChangeEventGroup(parameter->charrep(), *&paramGeneral, this, (lbEvHandler) &lb_MetaApplication::propertyChanged);
+	
+	param->setUAPParameter(*&parameter, *&paramGeneral);
+	//--------------------------------------------------------
+	param++;
+
+	return param.getPtr();
+}
+
+
 // This starts the main application
 
 /*...slbErrCodes LB_STDCALL lb_MetaApplication\58\\58\run\40\\41\:0:*/
@@ -1379,32 +1462,6 @@ lbErrCodes LB_STDCALL lb_MetaApplication::showPropertyPanel(lb_I_Parameter* para
 	dispatcher->dispatch("ShowPropertyPanel", uk.getPtr(), &uk_result);
 
 	return ERR_NONE;
-}
-
-lbErrCodes LB_STDCALL lb_MetaApplication::propertyChanged(lb_I_Unknown* uk) {
-	lbErrCodes err = ERR_NONE;
-	
-	UAP(lb_I_Parameter, param)
-	QI(uk, lb_I_Parameter, param)
-	
-	if (param != NULL) {
-		UAP_REQUEST(manager.getPtr(), lb_I_String, name)
-		UAP_REQUEST(manager.getPtr(), lb_I_String, parameterName)
-		UAP_REQUEST(manager.getPtr(), lb_I_String, value)
-		
-		name->setData("name");
-		param->getUAPString(*&name, *&parameterName);
-		
-		name->setData("value");
-		param->getUAPString(*&name, *&value);
-		
-		
-		
-	} else {
-		_LOG << "ERROR: Could not decode parameter structure!" LOG_
-	}
-	
-	return err;
 }
 
 lbErrCodes LB_STDCALL lb_MetaApplication::registerPropertyChangeEventGroup(char* name, lb_I_Parameter* params, lb_I_EventHandler* target, lbEvHandler handler) {
