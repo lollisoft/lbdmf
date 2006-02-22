@@ -2299,7 +2299,8 @@ public:
 	 * Get access to the main event manager, so all parts can initialize event handlers
 	 * and then initialize Actors for still initialized event handlers.
 	 */
-	virtual lb_I_EventManager* getEVManager() = 0;
+	virtual lb_I_EventManager* LB_STDCALL getEVManager() = 0;
+	
 };
 /*...e*/
 
@@ -2458,6 +2459,10 @@ public:
 	 */
 	virtual lbErrCodes LB_STDCALL registerPropertyChangeEventGroup(char* name, lb_I_Parameter* params, lb_I_EventHandler* target, lbEvHandler handler) = 0;
 	
+	/** \brief Access to the object's parameters.
+	 *
+	 */
+	virtual lb_I_Parameter* LB_STDCALL getParameter() = 0;
 };
 /*...e*/
 
