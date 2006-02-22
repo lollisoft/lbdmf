@@ -1520,12 +1520,12 @@ void lb_wxFrame::populateBoolean(wxPropertyGrid* pg, lb_I_Unknown* uk, lb_I_KeyB
 	UAP_REQUEST(manager.getPtr(), lb_I_String, category_name)
 	QI(uk, lb_I_Boolean, s)
 	
-	_CL_LOG << "Add string property (" << name->charrep() << "): " << s->charrep() LOG_
+	_CL_LOG << "Add boolean property (" << name->charrep() << "): " << s->charrep() LOG_
 	
 	if (category) *category_name = category;
 	*category_name += name->charrep();
 	
-	pg->Append(wxBoolProperty (name->charrep(), category_name->charrep(), s->charrep()));
+	pg->Append(wxBoolProperty (name->charrep(), category_name->charrep(), s->getData()));
 }
 
 void lb_wxFrame::populateInteger(wxPropertyGrid* pg, lb_I_Unknown* uk, lb_I_KeyBase* name, char* category) {
@@ -1553,6 +1553,7 @@ void lb_wxFrame::populateProperties(wxPropertyGrid* pg, lb_I_Container* properti
 			
 			if (strcmp(uk->getClassName(), "lbString") == 0) populateString(pg, *&uk, *&key, category);
 			if (strcmp(uk->getClassName(), "lbInteger") == 0) populateInteger(pg, *&uk, *&key, category);
+			if (strcmp(uk->getClassName(), "lbBoolean") == 0) populateBoolean(pg, *&uk, *&key, category);
 			if (strcmp(uk->getClassName(), "lbParameter") == 0) {
 				UAP(lb_I_Container, props)
 				UAP(lb_I_Parameter, param)
@@ -1616,18 +1617,36 @@ wxPoint lb_wxFrame::GetStartPosition()
 
 lbErrCodes LB_STDCALL lb_wxFrame::showLeftPropertyBar(lb_I_Unknown* uk) {
 	lbErrCodes err = ERR_NONE;
-	
+
+	if (currentProperties == NULL) {
+		REQUEST(manager.getPtr(), lb_I_Parameter, currentProperties)
+	}
+
+	UAP(lb_I_Container, list)
+
+	list = currentProperties->getParameterList();
+	if ((list != NULL) && (list->Count() > 0)) list->deleteAll();
+
+	// Fill optionally given bunch of patameters
+
 	UAP(lb_I_Parameter, params)
 	QI(uk, lb_I_Parameter, params)
-	
 	if (params != NULL) {
-		if (currentProperties == NULL) {
-			REQUEST(manager.getPtr(), lb_I_Parameter, currentProperties)
-		}
-		
 		currentProperties->setData(uk);
 	}
+
+	// Fill up the properties from meta application
 	
+	UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, group)
+	UAP(lb_I_Parameter, param)
+	
+	param = meta->getParameter();
+	
+	group->setData("General");
+	
+	currentProperties->setUAPParameter(*&group, *&param);
+
 /*...sNo wxAUI:0:*/
 #ifndef USE_WXAUI	
 	if (m_splitter == NULL) {
