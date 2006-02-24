@@ -12,11 +12,15 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.72 $
+ * $Revision: 1.73 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.72 2006/01/29 09:45:39 lollisoft Exp $
+ * $Id: mkmk.cpp,v 1.73 2006/02/24 14:27:32 lollisoft Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.73  2006/02/24 14:27:32  lollisoft
+ * Fix absolute path for symbolic links of shared libraries.
+ * Linux not yet tested.
+ *
  * Revision 1.72  2006/01/29 09:45:39  lollisoft
  * Added new target.
  *
@@ -1125,8 +1129,12 @@ void write_so_Target(char* modulename) {
 #endif
 
   printf("\t\tcp $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(HOME)/lib\n");
-  printf("\t\tln -sf $(HOME)/lib/$(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(HOME)/lib/$(PROGRAM).$(MAJOR)\n");
-  printf("\t\tln -sf $(HOME)/lib/$(PROGRAM).$(MAJOR) $(HOME)/lib/$(PROGRAM)\n");
+  printf("\t\techo cd $(HOME)/lib >mklink.sh\n");
+  printf("\t\techo ln -sf $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(PROGRAM).$(MAJOR) >>mklink.sh\n");
+  printf("\t\techo ln -sf $(PROGRAM).$(MAJOR) $(PROGRAM) >>mklink.sh\n");
+  printf("\t\tchmod +x mklink.sh\n");
+  printf("\t\t./mklink.sh\n");
+  printf("\t\trm mklink.sh\n");
 #endif
 #ifdef __WATCOMC__
   fprintf(stderr, "Warning: Creating a so library under Windows is not possible with Watcom !!\n");
@@ -1156,8 +1164,12 @@ void write_so_bundleTarget(char* modulename) {
 #endif
 
   printf("\t\tcp $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(HOME)/lib\n");
-  printf("\t\tln -sf $(HOME)/lib/$(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(HOME)/lib/$(PROGRAM).$(MAJOR)\n");
-  printf("\t\tln -sf $(HOME)/lib/$(PROGRAM).$(MAJOR) $(HOME)/lib/$(PROGRAM)\n");
+  printf("\t\techo cd $(HOME)/lib >mklink.sh\n");
+  printf("\t\techo ln -sf $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(PROGRAM).$(MAJOR) >>mklink.sh\n");
+  printf("\t\techo ln -sf $(PROGRAM).$(MAJOR) $(PROGRAM) >>mklink.sh\n");
+  printf("\t\tchmod +x mklink.sh\n");
+  printf("\t\t./mklink.sh\n");
+  printf("\t\trm mklink.sh\n");
 #endif
 #ifdef __WATCOMC__
   fprintf(stderr, "Warning: Creating a so library under Windows is not possible with Watcom !!\n");
@@ -1186,8 +1198,12 @@ void write_wx_so_Target(char* modulename) {
 #endif
 
   printf("\t\tcp $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(HOME)/lib\n");
-  printf("\t\tln -sf $(HOME)/lib/$(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(HOME)/lib/$(PROGRAM).$(MAJOR)\n");
-  printf("\t\tln -sf $(HOME)/lib/$(PROGRAM).$(MAJOR) $(HOME)/lib/$(PROGRAM)\n");
+  printf("\t\techo cd $(HOME)/lib >mklink.sh\n");
+  printf("\t\techo ln -sf $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(PROGRAM).$(MAJOR) >>mklink.sh\n");
+  printf("\t\techo ln -sf $(PROGRAM).$(MAJOR) $(PROGRAM) >>mklink.sh\n");
+  printf("\t\tchmod +x mklink.sh\n");
+  printf("\t\t./mklink.sh\n");
+  printf("\t\trm mklink.sh\n");
 #endif
 #ifdef __WATCOMC__
   fprintf(stderr, "Warning: Creating a so library under Windows is not possible with Watcom !!\n");
@@ -1216,8 +1232,12 @@ void write_wx_shared_Target(char* modulename) {
 #endif
 
   printf("\t\tcp $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(HOME)/lib\n");
-  printf("\t\tln -sf $(HOME)/lib/$(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(HOME)/lib/$(PROGRAM).$(MAJOR)\n");
-  printf("\t\tln -sf $(HOME)/lib/$(PROGRAM).$(MAJOR) $(HOME)/lib/$(PROGRAM)\n");
+  printf("\t\techo cd $(HOME)/lib >mklink.sh\n");
+  printf("\t\techo ln -sf $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(PROGRAM).$(MAJOR) >>mklink.sh\n");
+  printf("\t\techo ln -sf $(PROGRAM).$(MAJOR) $(PROGRAM) >>mklink.sh\n");
+  printf("\t\tchmod +x mklink.sh\n");
+  printf("\t\t./mklink.sh\n");
+  printf("\t\trm mklink.sh\n");
 #endif
 #ifdef __WATCOMC__
   fprintf(stderr, "Warning: Creating a so library under Windows is not possible with Watcom !!\n");
@@ -1242,8 +1262,12 @@ void write_soPlugin_Target(char* modulename) {
 #endif
 
   printf("\t\tcp $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(HOME)/plugins\n");
-  printf("\t\tln -sf $(HOME)/plugins/$(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(HOME)/plugins/$(PROGRAM).$(MAJOR)\n");
-  printf("\t\tln -sf $(HOME)/plugins/$(PROGRAM).$(MAJOR) $(HOME)/plugins/$(PROGRAM)\n");
+  printf("\t\techo cd $(HOME)/plugins >mklink.sh\n");
+  printf("\t\techo ln -sf $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(PROGRAM).$(MAJOR) >>mklink.sh\n");
+  printf("\t\techo ln -sf $(PROGRAM).$(MAJOR) $(PROGRAM) >>mklink.sh\n");
+  printf("\t\tchmod +x mklink.sh\n");
+  printf("\t\t./mklink.sh\n");
+  printf("\t\trm mklink.sh\n");
 #endif
 #ifdef __WATCOMC__
   fprintf(stderr, "Warning: Creating a so library under Windows is not possible with Watcom !!\n");
@@ -1269,8 +1293,12 @@ void write_wx_soPlugin_Target(char* modulename) {
 #endif
 
   printf("\t\tcp $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(HOME)/plugins\n");
-  printf("\t\tln -sf $(HOME)/plugins/$(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(HOME)/plugins/$(PROGRAM).$(MAJOR)\n");
-  printf("\t\tln -sf $(HOME)/plugins/$(PROGRAM).$(MAJOR) $(HOME)/plugins/$(PROGRAM)\n");
+  printf("\t\techo cd $(HOME)/plugins >mklink.sh\n");
+  printf("\t\techo ln -sf $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(PROGRAM).$(MAJOR) >>mklink.sh\n");
+  printf("\t\techo ln -sf $(PROGRAM).$(MAJOR) $(PROGRAM) >>mklink.sh\n");
+  printf("\t\tchmod +x mklink.sh\n");
+  printf("\t\t./mklink.sh\n");
+  printf("\t\trm mklink.sh\n");
 
 #endif
 #ifdef __WATCOMC__
@@ -1288,7 +1316,7 @@ void ShowHelp(int argc, char *argv[])
 
   fprintf(stderr, "Enhanced by Lothar Behrens (lothar.behrens@lollisoft.de)\n\n");
 
-  fprintf(stderr, "MKMK: makefile generator $Revision: 1.72 $\n");
+  fprintf(stderr, "MKMK: makefile generator $Revision: 1.73 $\n");
   fprintf(stderr, "Usage: MKMK lib|exe|dll|so modulname includepath,[includepath,...] file1 [file2 file3...]\n");
   
   fprintf(stderr, "Your parameters are: ");
