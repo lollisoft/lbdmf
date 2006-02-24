@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.38 $
+ * $Revision: 1.39 $
  * $Name:  $
- * $Id: lbPluginManager.cpp,v 1.38 2006/02/21 19:35:51 lollisoft Exp $
+ * $Id: lbPluginManager.cpp,v 1.39 2006/02/24 14:22:53 lollisoft Exp $
  *
  * $Log: lbPluginManager.cpp,v $
+ * Revision 1.39  2006/02/24 14:22:53  lollisoft
+ * Second fallback to $PWD/plugins
+ *
  * Revision 1.38  2006/02/21 19:35:51  lollisoft
  * Implemented autoload mechanism of last loaded application.
  * It demonstrates the new capabilities operating with files.
@@ -251,7 +254,7 @@ public:
 private:
 
 
-	bool LB_STDCALL tryLoad(char* module);
+	bool LB_STDCALL tryLoad(char* module, char* path);
 
 	bool begunEnumerate;
 	bool firstEnumerate;
@@ -305,7 +308,7 @@ lbErrCodes LB_STDCALL lbPluginManager::setData(lb_I_Unknown* uk) {
 }
 
 /*...sbool LB_STDCALL lbPluginManager\58\\58\tryLoad\40\char\42\ module\41\:0:*/
-bool LB_STDCALL lbPluginManager::tryLoad(char* module) {
+bool LB_STDCALL lbPluginManager::tryLoad(char* module, char* path) {
 	lbErrCodes err = ERR_NONE;
 	
 	if (strcmp(".", module) == 0) return false;
@@ -313,20 +316,12 @@ bool LB_STDCALL lbPluginManager::tryLoad(char* module) {
 	
 	_CL_VERBOSE << "Try to load module '" << module << "'" LOG_
 	
-	char* pluginDir = getenv("PLUGIN_DIR");
+	char* pluginDir = NULL;
+
+	pluginDir = (char*) malloc(strlen(path)+1);
 	
-	if (pluginDir == NULL) {
-		_LOG << "ERROR: No plugin directory configured. Try fallback. Please create one and set environment PLUGIN_DIR properly." LOG_
-		pluginDir = (char*) malloc(strlen(getenv("HOME"))+strlen("/plugins")+1);
-		pluginDir[0] = 0;
-		strcat(pluginDir, getenv("HOME"));
-		strcat(pluginDir, "/plugins");
-	} else {
-		char* temp = pluginDir;
-		pluginDir = (char*) malloc(strlen(pluginDir)+1);
-		pluginDir[0] = 0;
-		strcpy(pluginDir, temp);
-	}
+	pluginDir[0] = 0;
+	strcat(pluginDir, path);
 				
 /*...sbuild PREFIX:0:*/
 #ifndef LINUX
@@ -480,12 +475,23 @@ void LB_STDCALL lbPluginManager::initialize() {
 	struct dirent *dir_info;
 	
 	if ((dir = opendir(pluginDir)) == NULL) {
-	    _LOG << "Plugin directory not found!" LOG_
 
 	    free(toFind);
 	    free(pluginDir);
 
-	    return;
+		pluginDir = (char*) malloc(strlen(getenv("PWD"))+strlen("/plugins")+1);
+		pluginDir[0] = 0;
+		strcat(pluginDir, getenv("PWD"));
+		strcat(pluginDir, "/plugins");
+		
+		if ((dir = opendir(pluginDir)) == NULL) {
+			_LOG << "Plugin directory not found!" LOG_
+		
+			free(toFind);
+			free(pluginDir);
+		
+			return;
+		}
 	}
 	
 	dir_info = readdir(dir);
@@ -510,21 +516,21 @@ void LB_STDCALL lbPluginManager::initialize() {
 	if (dir_info != NULL) {
 #endif
 #ifdef WINDOWS	
-		tryLoad(find.name);
+		tryLoad(find.name, pluginDir);
 #endif
 #ifdef LINUX
-		tryLoad(dir_info->d_name);
+		tryLoad(dir_info->d_name, pluginDir);
 #endif
 		
 #ifdef WINDOWS
 		while (_findnext(handle, &find) == 0) {
-			tryLoad(find.name);
+			tryLoad(find.name, pluginDir);
 		}
 #endif
 #ifdef LINUX
 		while ((dir_info = readdir(dir)) != NULL) {
 			if (strstr(dir_info->d_name, ".so") != NULL) {
-			    tryLoad(dir_info->d_name);
+			    tryLoad(dir_info->d_name, pluginDir);
 			}
 		}
 #endif
