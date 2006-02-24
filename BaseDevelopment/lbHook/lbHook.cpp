@@ -462,15 +462,13 @@ DLLEXPORT lbErrCodes LB_STDCALL lbLoadModule(const char* name, HINSTANCE & hinst
 		m = createModule(name);
 	}
 
+	_CL_LOG << "Try load module: " << name LOG_
 	if ((hinst = dlopen(name, RTLD_LAZY)) == NULL)
 	{
-			char* home = 
-			#if defined(WINDOWS)
-			getenv("USERPROFILE");
-			#endif
+			char* home = NULL;
+			
 			#if defined(UNIX) || defined(LINUX) || defined(OSX)
-			getenv("HOME");
-			#endif
+			home = getenv("PWD");
 
 			char* newname = (char*) malloc(strlen(home)+strlen(name)+6);
 			
@@ -481,6 +479,36 @@ DLLEXPORT lbErrCodes LB_STDCALL lbLoadModule(const char* name, HINSTANCE & hinst
 			strcat(newname, SLASH);
 			strcat(newname, name);
 
+			_CL_LOG << "Try load module: " << newname LOG_
+			if ((hinst = dlopen(newname, RTLD_LAZY)) != NULL) {
+				m->lib = hinst;
+				m->skip = skipAutoUnload;
+				free(newname);
+				
+				return ERR_NONE;
+			}
+			
+			free(newname);
+			#endif
+
+			home =   
+			#if defined(WINDOWS)
+			getenv("USERPROFILE");
+			#endif
+			#if defined(UNIX) || defined(LINUX) || defined(OSX)
+			getenv("HOME");
+			#endif
+
+			newname = (char*) malloc(strlen(home)+strlen(name)+6);
+			
+			newname[0] = 0;
+			strcat(newname, home);
+			strcat(newname, SLASH);
+			strcat(newname, "lib");
+			strcat(newname, SLASH);
+			strcat(newname, name);
+
+			_CL_LOG << "Try load module: " << newname LOG_
 			if ((hinst = dlopen(newname, RTLD_LAZY)) != NULL) {
 				//printf("Module %s loaded.\n", newname);
 				m->lib = hinst;
