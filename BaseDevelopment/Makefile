@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.80 $
+# * $Revision: 1.81 $
 # * $Name:  $
-# * $Id: Makefile,v 1.80 2006/02/21 19:35:50 lollisoft Exp $
+# * $Id: Makefile,v 1.81 2006/02/24 14:25:23 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.81  2006/02/24 14:25:23  lollisoft
+# * Fix wrong path
+# *
 # * Revision 1.80  2006/02/21 19:35:50  lollisoft
 # * Implemented autoload mechanism of last loaded application.
 # * It demonstrates the new capabilities operating with files.
@@ -529,11 +532,11 @@ ifeq ($(OSTYPE), osx)
 	$(MAKE) -s -C $@ -e MODULE=lbLoginWizard -e TARGET=$(TARGETWXPLUGIN) -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@
 
-~/Desktop/wxaui-0.9.1/src: dummy
+../vendor/wxaui-0.9.1/src: dummy
 	$(MAKE) -s -C $@ -e MODULE=wxAUI -e TARGET=$(TARGETWXSHARED) -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@
 
-~/Desktop/wxaui-0.9.1/sample: dummy
+../vendor/wxaui-0.9.1/sample: dummy
 	$(MAKE) -s -C $@ -e MODULE=wxAUISample -e TARGET=$(TARGETWXEXE) -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@
 
