@@ -12,11 +12,16 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.73 $
+ * $Revision: 1.74 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.73 2006/02/24 14:27:32 lollisoft Exp $
+ * $Id: mkmk.cpp,v 1.74 2006/02/26 23:46:19 lollisoft Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.74  2006/02/26 23:46:19  lollisoft
+ * Changed build method for shared libraries under Mac OS X
+ * to be frameworks. These would be embedable into the
+ * application bundle - thus enables better install method.
+ *
  * Revision 1.73  2006/02/24 14:27:32  lollisoft
  * Fix absolute path for symbolic links of shared libraries.
  * Linux not yet tested.
@@ -321,6 +326,8 @@
 #define ELF_BUNDLE_TARGET 15
 #define SO_BUNDLE_TARGET 16
 #define WXSHARED_TARGET  17
+#define FRAMEWORK_TARGET  18
+#define WXFRAMEWORK_TARGET  19
 /*...e*/
 
 int targettype=EXE_TARGET;
@@ -783,6 +790,10 @@ void writeBundleTarget(char* modulename) {
   printf("\t\tmkdir -p %s.app\n", modulename);
   printf("\t\tmkdir -p %s.app/Contents\n", modulename);
   printf("\t\tmkdir -p %s.app/Contents/MacOS\n", modulename);
+  printf("\t\tmkdir -p %s.app/Contents/Frameworks\n", modulename);
+  printf("\t\tcp -R $(HOME)/lib/lbHook.framework %s.app/Contents/Frameworks\n", modulename);
+  printf("\t\tcp -R $(HOME)/lib/wxWrapperDLL.framework %s.app/Contents/Frameworks\n", modulename);
+  printf("\t\tcp -R $(HOME)/lib/wxAUI.framework %s.app/Contents/Frameworks\n", modulename);
   printf("\t\tmkdir -p %s.app/Contents/Resources\n", modulename);
   printf("\t\tset -e \"s/IDENTIFIER/`echo . | sed -e 's,\\.\\./,,g' | sed -e 's,/,.,g'`/\" -e \"s/EXECUTABLE/%s/\" -e \"s/VERSION/$(MKMK_WX_VERSION)/\" $(HOME)/wxMac-$(MKMK_WX_VERSION)/src/mac/carbon/wxmac.icns %s.app/Contents/Resources/wxmac.icns\n", modulename, modulename);
   printf("\t\tsed -e \"s/IDENTIFIER/`echo . | sed -e 's,\\.\\./,,g' | sed -e 's,/,.,g'`/\" -e \"s/EXECUTABLE/%s/\" -e \"s/VERSION/$(MKMK_WX_VERSION)/\" $(HOME)/wxMac-$(MKMK_WX_VERSION)/src/mac/carbon/Info.plist.in >%s.app/Contents/Info.plist\n", modulename, modulename);
@@ -1244,6 +1255,176 @@ void write_wx_shared_Target(char* modulename) {
 #endif
 }
 /*...e*/
+void write_wx_framework_Target(char* modulename) {
+#ifdef UNIX
+  printf("PROGRAM=%s\n", modulename);
+  printf("MAJOR=0\n");
+  printf("MINOR=0\n");
+  printf("MICRO=1\n");
+  printf("\n%s.framework: $(OBJS)\n", modulename);
+
+// Create the  directory structure
+
+  printf("\t\t-rm -R %s.framework\n", modulename);
+  printf("\t\tmkdir -p %s.framework/Versions/A/Resources\n", modulename);
+  
+  printf("\t\techo \\<?xml version=\"1.0\" encoding=\"UTF-8\"?\\> > Info.plist\n");
+  printf("\t\techo \\<!DOCTYPE plist PUBLIC \"-//Apple Computer//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\"\\> >> Info.plist\n");
+  printf("\t\techo \\<plist version=\"1.0\"\\> >> Info.plist\n");
+  printf("\t\techo \\<dict\\> >> Info.plist\n");
+  printf("\t\techo 	\\<key\\>CFBundleDevelopmentRegion\\</key\\> >> Info.plist\n");
+  printf("\t\techo 	\\<string\\>English\\</string\\> >> Info.plist\n");
+  printf("\t\techo 	\\<key\\>CFBundleExecutable\\</key\\> >> Info.plist\n");
+  printf("\t\techo 	\\<string\\>%s\\</string\\> >> Info.plist\n", modulename);
+  printf("\t\techo 	\\<key\\>CFBundleIconFile\\</key\\> >> Info.plist\n");
+  printf("\t\techo 	\\<string\\>\\</string\\> >> Info.plist\n");
+  printf("\t\techo 	\\<key\\>CFBundleIdentifier\\</key\\> >> Info.plist\n");
+  printf("\t\techo 	\\<string\\>com.apple.%sframework\\</string\\> >> Info.plist\n", modulename);
+  printf("\t\techo 	\\<key\\>CFBundleInfoDictionaryVersion\\</key\\> >> Info.plist\n");
+  printf("\t\techo 	\\<string\\>6.0\\</string\\> >> Info.plist\n");
+  printf("\t\techo 	\\<key\\>CFBundlePackageType\\</key\\> >> Info.plist\n");
+  printf("\t\techo 	\\<string\\>FMWK\\</string\\> >> Info.plist\n");
+  printf("\t\techo 	\\<key\\>CFBundleSignature\\</key\\> >> Info.plist\n");
+  printf("\t\techo 	\\<string\\>????\\</string\\> >> Info.plist\n");
+  printf("\t\techo 	\\<key\\>CFBundleVersion\\</key\\> >> Info.plist\n");
+  printf("\t\techo 	\\<string\\>1.0\\</string\\> >> Info.plist\n");
+  printf("\t\techo 	\\<key\\>NSPrincipalClass\\</key\\> >> Info.plist\n");
+  printf("\t\techo 	\\<string\\>\\</string\\> >> Info.plist\n");
+  printf("\t\techo \\</dict\\> >> Info.plist\n");
+  printf("\t\techo \\</plist\\> >> Info.plist\n");
+
+  printf("\t\tcp Info.plist %s.framework/Versions/A/Resources\n", modulename);
+  
+  printf("\t\tmkdir -p %s.framework/Versions/A/Resources/English.lproj\n", modulename);
+
+/* Localized versions of Info.plist keys */
+
+  printf("\t\techo CFBundleName = \"%s\"; > InfoPlist.strings\n", modulename);
+  printf("\t\techo CFBundleShortVersionString = \"1.0\"; >> InfoPlist.strings\n");
+  printf("\t\techo CFBundleGetInfoString = \"%s version 1.0, Copyright (c) 2004 __MyCompanyName__.\"; >> InfoPlist.strings\n", modulename);
+  printf("\t\techo NSHumanReadableCopyright = \"Copyright (c) 2004 __MyCompanyName__.\"; >> InfoPlist.strings\n");
+
+  printf("\t\tcp InfoPlist.strings %s.framework/Versions/A/Resources/English.lproj\n", modulename);
+
+
+
+// Patch to create dynamic libraries under Mac OS X
+#ifdef OSX
+  printf("\t\t$(CC) -dynamiclib -W1,-single_module -compatibility_version 1 -current_version 1 -install_name \"@executable_path/../Frameworks/%s.framework/Versions/A/%s\" -seg1addr 0xb0000000 $(OBJS) $(OBJDEP) `wx-config --libs` $(L_OPS) -o $(PROGRAM).framework/Versions/A/$(PROGRAM) -lc $(VENDORLIBS)\n", modulename, modulename);
+
+  printf("\t\techo \\#!/bin/sh > mkLinks.sh\n");
+  printf("\t\techo cd %s.framework/Versions >> mkLinks.sh\n", modulename);
+  printf("\t\techo ln -sf A Current >> mkLinks.sh\n");
+  printf("\t\techo cd .. >> mkLinks.sh\n");
+  printf("\t\techo ln -sf Versions/Current/Resources Resources >> mkLinks.sh\n");
+  printf("\t\techo ln -sf Versions/Current/%s %s >> mkLinks.sh\n", modulename, modulename);
+  printf("\t\tchmod +x mkLinks.sh\n");
+  printf("\t\t./mkLinks.sh");
+  printf("\t\trm mkLinks.sh\n");
+  
+
+#undef UNIX  
+#endif
+#ifdef UNIX
+  printf("\t\t$(CC) -shared -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) $(LIBS) -lc $(VENDORLIBS)\n");
+#endif
+#ifdef OSX
+#define UNIX
+#endif
+
+  printf("\t\t-rm -R $(HOME)/lib/%s.framework\n", modulename);
+  printf("\t\tcp -Rf $(PROGRAM).framework $(HOME)/lib\n");
+#endif
+#ifdef __WATCOMC__
+  fprintf(stderr, "Warning: Creating a so library under Windows is not possible with Watcom !!\n");
+#endif
+}
+
+void write_framework_Target(char* modulename) {
+#ifdef UNIX
+  printf("PROGRAM=%s\n", modulename);
+  printf("MAJOR=0\n");
+  printf("MINOR=0\n");
+  printf("MICRO=1\n");
+  printf("\n%s.framework: $(OBJS)\n", modulename);
+
+// Create the  directory structure
+
+  printf("\t\t-rm -R %s.framework\n", modulename);
+  printf("\t\tmkdir -p %s.framework/Versions/A/Resources\n", modulename);
+  
+  printf("\t\techo \\<?xml version=\"1.0\" encoding=\"UTF-8\"?\\> > Info.plist\n");
+  printf("\t\techo \\<!DOCTYPE plist PUBLIC \"-//Apple Computer//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\"\\> >> Info.plist\n");
+  printf("\t\techo \\<plist version=\"1.0\"\\> >> Info.plist\n");
+  printf("\t\techo \\<dict\\> >> Info.plist\n");
+  printf("\t\techo 	\\<key\\>CFBundleDevelopmentRegion\\</key\\> >> Info.plist\n");
+  printf("\t\techo 	\\<string\\>English\\</string\\> >> Info.plist\n");
+  printf("\t\techo 	\\<key\\>CFBundleExecutable\\</key\\> >> Info.plist\n");
+  printf("\t\techo 	\\<string\\>%s\\</string\\> >> Info.plist\n", modulename);
+  printf("\t\techo 	\\<key\\>CFBundleIconFile\\</key\\> >> Info.plist\n");
+  printf("\t\techo 	\\<string\\>\\</string\\> >> Info.plist\n");
+  printf("\t\techo 	\\<key\\>CFBundleIdentifier\\</key\\> >> Info.plist\n");
+  printf("\t\techo 	\\<string\\>com.apple.%sframework\\</string\\> >> Info.plist\n", modulename);
+  printf("\t\techo 	\\<key\\>CFBundleInfoDictionaryVersion\\</key\\> >> Info.plist\n");
+  printf("\t\techo 	\\<string\\>6.0\\</string\\> >> Info.plist\n");
+  printf("\t\techo 	\\<key\\>CFBundlePackageType\\</key\\> >> Info.plist\n");
+  printf("\t\techo 	\\<string\\>FMWK\\</string\\> >> Info.plist\n");
+  printf("\t\techo 	\\<key\\>CFBundleSignature\\</key\\> >> Info.plist\n");
+  printf("\t\techo 	\\<string\\>????\\</string\\> >> Info.plist\n");
+  printf("\t\techo 	\\<key\\>CFBundleVersion\\</key\\> >> Info.plist\n");
+  printf("\t\techo 	\\<string\\>1.0\\</string\\> >> Info.plist\n");
+  printf("\t\techo 	\\<key\\>NSPrincipalClass\\</key\\> >> Info.plist\n");
+  printf("\t\techo 	\\<string\\>\\</string\\> >> Info.plist\n");
+  printf("\t\techo \\</dict\\> >> Info.plist\n");
+  printf("\t\techo \\</plist\\> >> Info.plist\n");
+
+  printf("\t\tcp Info.plist %s.framework/Versions/A/Resources\n", modulename);
+  
+  printf("\t\tmkdir -p %s.framework/Versions/A/Resources/English.lproj\n", modulename);
+
+/* Localized versions of Info.plist keys */
+
+  printf("\t\techo CFBundleName = \"%s\"; > InfoPlist.strings\n", modulename);
+  printf("\t\techo CFBundleShortVersionString = \"1.0\"; >> InfoPlist.strings\n");
+  printf("\t\techo CFBundleGetInfoString = \"%s version 1.0, Copyright (c) 2004 __MyCompanyName__.\"; >> InfoPlist.strings\n", modulename);
+  printf("\t\techo NSHumanReadableCopyright = \"Copyright (c) 2004 __MyCompanyName__.\"; >> InfoPlist.strings\n");
+
+  printf("\t\tcp InfoPlist.strings %s.framework/Versions/A/Resources/English.lproj\n", modulename);
+
+
+
+// Patch to create dynamic libraries under Mac OS X
+#ifdef OSX
+  printf("\t\t$(CC) -dynamiclib -W1,-single_module -compatibility_version 1 -current_version 1 -install_name \"@executable_path/../Frameworks/%s.framework/Versions/A/%s\" -seg1addr 0xb0000000 $(OBJS) $(OBJDEP) $(L_OPS) $(PROGRAM).framework/Versions/A/$(PROGRAM) -lc $(VENDORLIBS)\n", modulename, modulename);
+
+  printf("\t\techo \\#!/bin/sh > mkLinks.sh\n");
+  printf("\t\techo cd %s.framework/Versions >> mkLinks.sh\n", modulename);
+  printf("\t\techo ln -sf A Current >> mkLinks.sh\n");
+  printf("\t\techo cd .. >> mkLinks.sh\n");
+  printf("\t\techo ln -sf Versions/Current/Resources Resources >> mkLinks.sh\n");
+  printf("\t\techo ln -sf Versions/Current/%s %s >> mkLinks.sh\n", modulename, modulename);
+  printf("\t\tchmod +x mkLinks.sh\n");
+  printf("\t\t./mkLinks.sh");
+  printf("\t\trm mkLinks.sh\n");
+  
+
+#undef UNIX  
+#endif
+#ifdef UNIX
+  printf("\t\t$(CC) -shared -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) $(LIBS) -lc $(VENDORLIBS)\n");
+#endif
+#ifdef OSX
+#define UNIX
+#endif
+
+  printf("\t\t-rm -R $(HOME)/lib/%s.framework\n", modulename);
+  printf("\t\tcp -Rf $(PROGRAM).framework $(HOME)/lib\n");
+#endif
+#ifdef __WATCOMC__
+  fprintf(stderr, "Warning: Creating a so library under Windows is not possible with Watcom !!\n");
+#endif
+}
+
 /*...swrite_soPlugin_Target\40\char\42\ modulename\41\ create a UNIX shared library:0:*/
 void write_soPlugin_Target(char* modulename) {
 #ifdef UNIX
@@ -1316,7 +1497,7 @@ void ShowHelp(int argc, char *argv[])
 
   fprintf(stderr, "Enhanced by Lothar Behrens (lothar.behrens@lollisoft.de)\n\n");
 
-  fprintf(stderr, "MKMK: makefile generator $Revision: 1.73 $\n");
+  fprintf(stderr, "MKMK: makefile generator $Revision: 1.74 $\n");
   fprintf(stderr, "Usage: MKMK lib|exe|dll|so modulname includepath,[includepath,...] file1 [file2 file3...]\n");
   
   fprintf(stderr, "Your parameters are: ");
@@ -1573,7 +1754,7 @@ void WriteDep(FILE *f, char *Name, TIncludeParser *p)
                 break;
         case WXSO_TARGET:
 	case WXSHARED_TARGET:
-        case WXSOPLUGIN_TARGET:
+    case WXSOPLUGIN_TARGET:
                 {
                 int pos = 0;
                 for (int i = 0; i < strlen(ObjName); i++) {
@@ -1584,6 +1765,20 @@ void WriteDep(FILE *f, char *Name, TIncludeParser *p)
                 }
         	printf("\t\t@echo Build %s\n", NameC);
                 printf("\t\t@%s -c -fPIC -g $(C_SOOPS) $(MOD_INCL) %s -o %s.o\n\n", Compiler, Name, ObjName);
+                }
+                break;
+    case FRAMEWORK_TARGET:
+    case WXFRAMEWORK_TARGET:
+                {
+                int pos = 0;
+                for (int i = 0; i < strlen(ObjName); i++) {
+                    if (ObjName[i] == '.') {
+                        ObjName[i] = 0;
+                        break;
+                    }
+                }
+				printf("\t\t@echo Build %s\n", NameC);
+                printf("\t\t@%s -c -g $(C_SOOPS) $(MOD_INCL) %s -o %s.o\n\n", Compiler, Name, ObjName);
                 }
                 break;
         default:
@@ -1697,6 +1892,14 @@ void WriteEnding(FILE *f, char *ModuleName, TDepList *l)
                 break;
 		case WXSHARED_TARGET:
                 write_wx_shared_Target(ModuleName);
+                write_clean();
+                break;
+		case FRAMEWORK_TARGET:
+                write_framework_Target(ModuleName);
+                write_clean();
+                break;
+		case WXFRAMEWORK_TARGET:
+                write_wx_framework_Target(ModuleName);
                 write_clean();
                 break;
         case WXSO_TARGET:
@@ -1818,6 +2021,16 @@ int main(int argc, char *argv[])
   if (strcmp(target, "WXSHARED") == 0) {
         targettype = WXSHARED_TARGET;
         target_ext = strdup(".so");
+  }
+  
+  if (strcmp(target, "FRAMEWORK") == 0) {
+        targettype = FRAMEWORK_TARGET;
+        target_ext = strdup("");
+  }
+  
+  if (strcmp(target, "WXFRAMEWORK") == 0) {
+        targettype = WXFRAMEWORK_TARGET;
+        target_ext = strdup("");
   }
   
   if (strcmp(target, "LIB") == 0) {

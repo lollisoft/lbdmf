@@ -30,11 +30,16 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.39 $
+ * $Revision: 1.40 $
  * $Name:  $
- * $Id: lbPluginManager.cpp,v 1.39 2006/02/24 14:22:53 lollisoft Exp $
+ * $Id: lbPluginManager.cpp,v 1.40 2006/02/26 23:46:19 lollisoft Exp $
  *
  * $Log: lbPluginManager.cpp,v $
+ * Revision 1.40  2006/02/26 23:46:19  lollisoft
+ * Changed build method for shared libraries under Mac OS X
+ * to be frameworks. These would be embedable into the
+ * application bundle - thus enables better install method.
+ *
  * Revision 1.39  2006/02/24 14:22:53  lollisoft
  * Second fallback to $PWD/plugins
  *
@@ -300,6 +305,7 @@ void LB_STDCALL lbPluginManager::unload() {
 	}
 	
 	PluginModules--;
+	PluginModules.resetPtr();
 }
 
 lbErrCodes LB_STDCALL lbPluginManager::setData(lb_I_Unknown* uk) {
@@ -315,30 +321,30 @@ bool LB_STDCALL lbPluginManager::tryLoad(char* module, char* path) {
 	if (strstr(module, "so.") != NULL) return false;
 	
 	_CL_VERBOSE << "Try to load module '" << module << "'" LOG_
+		
+		char* pluginDir = NULL;
 	
-	char* pluginDir = NULL;
-
 	pluginDir = (char*) malloc(strlen(path)+1);
 	
 	pluginDir[0] = 0;
 	strcat(pluginDir, path);
 				
-/*...sbuild PREFIX:0:*/
+	/*...sbuild PREFIX:0:*/
 #ifndef LINUX
-        #ifdef __WATCOMC__
-        #define PREFIX "_"
-        #endif
-        #ifdef _MSC_VER
-        #define PREFIX ""
-        #endif
+#ifdef __WATCOMC__
+#define PREFIX "_"
+#endif
+#ifdef _MSC_VER
+#define PREFIX ""
+#endif
 #endif
 #ifdef LINUX
 #define PREFIX ""
 #endif
-/*...e*/
+	/*...e*/
 				
 	// Instantiate an lb_I_PluginModule object
-		
+	
 	char* pluginModule = (char*) malloc(strlen(pluginDir)+strlen(module)+2);
 	pluginModule[0] = 0;
 	strcat(pluginModule, pluginDir);
@@ -352,58 +358,61 @@ bool LB_STDCALL lbPluginManager::tryLoad(char* module, char* path) {
 	strcat(pluginModule, "/");
 #endif
 	strcat(pluginModule, module);
-		
+	
 	UAP(lb_I_Unknown, ukPlugin)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, pluginName)
-	pluginName->setData(module);
+		UAP_REQUEST(manager.getPtr(), lb_I_String, pluginName)
+		pluginName->setData(module);
 	
 	UAP(lb_I_KeyBase, key)
-	QI(pluginName, lb_I_KeyBase, key)
-				       
-	if (manager->makeInstance(PREFIX "instanceOfPluginModule", pluginModule, &ukPlugin) != ERR_NONE) {
-	
-		// It may be a Microsoft compiled plugin...
-		if (manager->makeInstance("instanceOfPluginModule", pluginModule, &ukPlugin) == ERR_NONE) {
-
-			ukPlugin->setModuleManager(*&manager, __FILE__, __LINE__);
-			
-			PluginModules->insert(&ukPlugin, &key);
-			
-			UAP(lb_I_Unknown, ukPlugin1)
-			
-			ukPlugin1 = PluginModules->getElement(&key);
-			
-			UAP(lb_I_PluginModule, plM)
-			QI(ukPlugin1, lb_I_PluginModule, plM)
-			
-			plM->setModule(pluginModule);
-			free(pluginModule);
-			free(pluginDir);
-			return true;	
+		QI(pluginName, lb_I_KeyBase, key)
+		
+		if (PluginModules->exists(&key) != 0) {
+			_CL_LOG << "Warning: Plugin already registered." LOG_
+		} else {
+			if (manager->makeInstance(PREFIX "instanceOfPluginModule", pluginModule, &ukPlugin) != ERR_NONE) {
+				
+				// It may be a Microsoft compiled plugin...
+				if (manager->makeInstance("instanceOfPluginModule", pluginModule, &ukPlugin) == ERR_NONE) {
+					
+					ukPlugin->setModuleManager(*&manager, __FILE__, __LINE__);
+					
+					PluginModules->insert(&ukPlugin, &key);
+					
+					UAP(lb_I_Unknown, ukPlugin1)
+						
+						ukPlugin1 = PluginModules->getElement(&key);
+					
+					UAP(lb_I_PluginModule, plM)
+						QI(ukPlugin1, lb_I_PluginModule, plM)
+						
+						plM->setModule(pluginModule);
+					free(pluginModule);
+					free(pluginDir);
+					return true;	
+				}
+				free(pluginModule);
+				free(pluginDir);
+				
+				return false;
+				
+			} else {
+				ukPlugin->setModuleManager(*&manager, __FILE__, __LINE__);
+				PluginModules->insert(&ukPlugin, &key);
+				
+				UAP(lb_I_Unknown, ukPlugin1)
+					
+					ukPlugin1 = PluginModules->getElement(&key);
+				
+				UAP(lb_I_PluginModule, plM)
+					QI(ukPlugin1, lb_I_PluginModule, plM)
+					
+					_CL_LOG << "lb_I_PluginModule has " << plM->getRefCount() << " references." LOG_
+					
+					plM->setModule(pluginModule);
+				free(pluginModule);
+				free(pluginDir);
+			}
 		}
-		free(pluginModule);
-		free(pluginDir);
-		
-		return false;
-	
-	} else {
-		ukPlugin->setModuleManager(*&manager, __FILE__, __LINE__);
-		PluginModules->insert(&ukPlugin, &key);
-		
-		UAP(lb_I_Unknown, ukPlugin1)
-		
-		ukPlugin1 = PluginModules->getElement(&key);
-		
-		UAP(lb_I_PluginModule, plM)
-		QI(ukPlugin1, lb_I_PluginModule, plM)
-		
-		_CL_LOG << "lb_I_PluginModule has " << plM->getRefCount() << " references." LOG_
-		
-		plM->setModule(pluginModule);
-		free(pluginModule);
-		free(pluginDir);
-	}
-
 	return true;
 }
 /*...e*/
@@ -478,10 +487,13 @@ void LB_STDCALL lbPluginManager::initialize() {
 
 	    free(toFind);
 	    free(pluginDir);
+		
+		char* pwd = getenv("PWD");
+		if (pwd == NULL) pwd = ".";
 
-		pluginDir = (char*) malloc(strlen(getenv("PWD"))+strlen("/plugins")+1);
+		pluginDir = (char*) malloc(strlen(pwd)+strlen("/plugins")+1);
 		pluginDir[0] = 0;
-		strcat(pluginDir, getenv("PWD"));
+		strcat(pluginDir, pwd);
 		strcat(pluginDir, "/plugins");
 		
 		if ((dir = opendir(pluginDir)) == NULL) {
@@ -530,6 +542,7 @@ void LB_STDCALL lbPluginManager::initialize() {
 #ifdef LINUX
 		while ((dir_info = readdir(dir)) != NULL) {
 			if (strstr(dir_info->d_name, ".so") != NULL) {
+				_CL_LOG << "Try to load plugin: " << pluginDir << "/" << dir_info->d_name LOG_
 			    tryLoad(dir_info->d_name, pluginDir);
 			}
 		}

@@ -135,41 +135,84 @@ void LB_STDCALL lbAction::setActionID(char* id) {
 }
 /*...e*/
 
+void makePluginName(char* path, char* module, char*& result) {
+		char* pluginDir = NULL;
+
+		pluginDir = (char*) malloc(strlen(path)+strlen("/plugins")+1);
+		pluginDir[0] = 0;
+		strcat(pluginDir, path);
+		strcat(pluginDir, "/plugins");
+
+		/*...sBuild up pluginModule:64:*/
+		char* pluginModule = (char*) malloc(strlen(pluginDir)+strlen(module)+2);
+		pluginModule[0] = 0;
+		strcat(pluginModule, pluginDir);
+#ifdef WINDOWS
+		strcat(pluginModule, "\\");
+#endif
+#ifdef LINUX
+		strcat(pluginModule, "/");
+#endif
+#ifdef OSX
+		strcat(pluginModule, "/");
+#endif
+		strcat(pluginModule, module);
+		/*...e*/
+		result = pluginModule;
+		free(pluginDir);
+}
+
 /*...svoid LB_STDCALL lbAction\58\\58\delegate\40\lb_I_Parameter\42\ params\41\:0:*/
 void LB_STDCALL lbAction::delegate(lb_I_Parameter* params) {
 	/*
-		Resolve the parameters that we need here.
-		Currently only the id of the action step.
+	 Resolve the parameters that we need here.
+	 Currently only the id of the action step.
 	 */
-
+	/*...sbuild PREFIX:64:*/
+#ifndef LINUX
+#ifdef __WATCOMC__
+#define PREFIX "_"
+#endif
+#ifdef _MSC_VER
+#define PREFIX ""
+#endif
+#endif
+#ifdef LINUX
+#define PREFIX ""
+#endif
+	/*...e*/
+	
+	char* pluginModule = NULL;
+	
+	
 	UAP_REQUEST(manager.getPtr(), lb_I_String, id)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
-
+		
 	if (actions == NULL) {
 		REQUEST(manager.getPtr(), lb_I_Container, actions)
 	}
-
+	
 	parameter->setData("id");
 	params->getUAPString(*&parameter, *&id);
-
-	UAP(lb_I_Query, query)
 	
+	UAP(lb_I_Query, query)
+		
 	query = db->getQuery(0);
 	
 	char buf[] = "select action_handler, module from action_types inner join "
-	             "action_steps on action_types.id = action_steps.type where action_steps.id = %s";
+		"action_steps on action_types.id = action_steps.type where action_steps.id = %s";
 	
 	char* q = (char*) malloc(strlen(buf)+strlen(id->charrep())+1);
 	q[0] = 0;
 	sprintf(q, buf, id->charrep());
-
+	
 	if (query->query(q) == ERR_NONE) {
 		lbErrCodes err = ERR_NONE;
 		UAP_REQUEST(manager.getPtr(), lb_I_String, key)
 		UAP(lb_I_KeyBase, ukey)
-
+			
 		err = query->first();
-	
+		
 		while (err == ERR_NONE) {
 			UAP_REQUEST(manager.getPtr(), lb_I_String, action_handler)
 			UAP_REQUEST(manager.getPtr(), lb_I_String, module)
@@ -179,87 +222,56 @@ void LB_STDCALL lbAction::delegate(lb_I_Parameter* params) {
 			module = query->getAsString(2);
 			action_handler->trim();
 			module->trim();
-
+			
 			key->setData(module->charrep());
 			*key += *&action_handler;
 			
 			QI(key, lb_I_KeyBase, ukey)
-			
-			if (actions->exists(&ukey) == 0) {
-/*...sInstanciate one and insert into actions:32:*/
-				char* pluginDir = getenv("PLUGIN_DIR");
-				if (pluginDir == NULL) {
-					_LOG << "ERROR: No plugin directory configured. Try fallback. Please create one and set environment PLUGIN_DIR properly." LOG_
-					pluginDir = (char*) malloc(strlen(getenv("HOME"))+strlen("/plugins")+1);
-					pluginDir[0] = 0;
-					strcat(pluginDir, getenv("HOME"));
-					strcat(pluginDir, "/plugins");
-				} else {
-					pluginDir = strdup(pluginDir);
-				}
 				
-
-/*...sbuild PREFIX:64:*/
-#ifndef LINUX
-        #ifdef __WATCOMC__
-        #define PREFIX "_"
-        #endif
-        #ifdef _MSC_VER
-        #define PREFIX ""
-        #endif
-#endif
-#ifdef LINUX
-#define PREFIX ""
-#endif
-/*...e*/
-
-/*...sBuild up pluginModule:64:*/
-			        char* pluginModule = new char[strlen(pluginDir)+strlen(module->charrep())+2];
-			        pluginModule[0] = 0;
-			        strcat(pluginModule, pluginDir);
-			#ifdef WINDOWS
-			        strcat(pluginModule, "\\");
-			#endif
-			#ifdef LINUX
-			        strcat(pluginModule, "/");
-			#endif
-			#ifdef OSX
-			        strcat(pluginModule, "/");
-			#endif
-			        strcat(pluginModule, module->charrep());
-/*...e*/
-	
-				UAP(lb_I_Unknown, result)
-			
-				char* ah = (char*) malloc(strlen(PREFIX)+strlen(action_handler->charrep())+1);
-				ah[0] = 0;
-			
-				strcat(ah, PREFIX);
-				strcat(ah, action_handler->charrep());
-			
-				if (manager->makeInstance(ah, module->charrep(), &result) != ERR_NONE) {
+				if (actions->exists(&ukey) == 0) {
+					/*...sInstanciate one and insert into actions:32:*/
+					
+					UAP(lb_I_Unknown, result)
+					
+					char* ah = (char*) malloc(strlen(PREFIX)+strlen(action_handler->charrep())+1);
+					ah[0] = 0;
+					
+					strcat(ah, PREFIX);
+					strcat(ah, action_handler->charrep());
+					
+					
+					makePluginName(getenv("HOME"), module->charrep(), pluginModule);
+					
 					if (manager->makeInstance(ah, pluginModule,  &result) != ERR_NONE) {
-						_CL_LOG << "ERROR: Configured module '" << pluginModule << "' could not be loaded." LOG_
+						
+						free(pluginModule);
+						char* pwd = getenv("PWD");
+						if (pwd == NULL) pwd = ".";
+						makePluginName(pwd, module->charrep(), pluginModule);
+						
+						if (manager->makeInstance(ah, pluginModule,  &result) != ERR_NONE) {
+							_CL_LOG << "ERROR: Plugin could not be loaded." LOG_
+						}
+						
 					}
+					
+					result->setModuleManager(getModuleInstance(), __FILE__, __LINE__);
+					actions->insert(&result, &ukey);
+					/*...e*/
 				}
-			
-				result->setModuleManager(getModuleInstance(), __FILE__, __LINE__);
-				actions->insert(&result, &ukey);
-/*...e*/
-			}
 			
 			UAP(lb_I_Unknown, uk)
 				
-			uk = actions->getElement(&ukey);
-				
-			QI(uk, lb_I_DelegatedAction, action)
+				uk = actions->getElement(&ukey);
 			
-			action->setActionID(id->charrep());
+			QI(uk, lb_I_DelegatedAction, action)
+				
+				action->setActionID(id->charrep());
 			action->execute(*&params);
 			
 			_CL_LOG << "References for delegated action are " << action->getRefCount() << "." LOG_
-			
-			err = query->next();
+				
+				err = query->next();
 		}
 		
 		if (err == WARN_DB_NODATA) {
@@ -271,84 +283,52 @@ void LB_STDCALL lbAction::delegate(lb_I_Parameter* params) {
 			module = query->getAsString(2);
 			action_handler->trim();
 			module->trim();
-
+			
 			key->setData(module->charrep());
 			*key += *&action_handler;
 			
 			QI(key, lb_I_KeyBase, ukey)
-			
-			if (actions->exists(&ukey) == 0) {
-/*...sInstanciate one and insert into actions:32:*/
-				char* pluginDir = getenv("PLUGIN_DIR");
-				if (pluginDir == NULL) {
-					_LOG << "ERROR: No plugin directory configured. Try fallback. Please create one and set environment PLUGIN_DIR properly." LOG_
-					pluginDir = (char*) malloc(strlen(getenv("HOME"))+strlen("/plugins")+1);
-					pluginDir[0] = 0;
-					strcat(pluginDir, getenv("HOME"));
-					strcat(pluginDir, "/plugins");
-				} else {
-					pluginDir = strdup(pluginDir);
-				}
 				
-/*...sbuild PREFIX:64:*/
-#ifndef LINUX
-        #ifdef __WATCOMC__
-        #define PREFIX "_"
-        #endif
-        #ifdef _MSC_VER
-        #define PREFIX ""
-        #endif
-#endif
-#ifdef LINUX
-#define PREFIX ""
-#endif
-/*...e*/
-
-/*...sBuild up pluginModule:64:*/
-			        char* pluginModule = new char[strlen(pluginDir)+strlen(module->charrep())+2];
-			        pluginModule[0] = 0;
-			        strcat(pluginModule, pluginDir);
-			#ifdef WINDOWS
-			        strcat(pluginModule, "\\");
-			#endif
-			#ifdef LINUX
-			        strcat(pluginModule, "/");
-			#endif
-			#ifdef OSX
-			        strcat(pluginModule, "/");
-			#endif
-			        strcat(pluginModule, module->charrep());
-/*...e*/
-	
-				UAP(lb_I_Unknown, result)
-			
-				char* ah = (char*) malloc(strlen(PREFIX)+strlen(action_handler->charrep())+1);
-				ah[0] = 0;
-			
-				strcat(ah, PREFIX);
-				strcat(ah, action_handler->charrep());
-			
-				if (manager->makeInstance(ah, module->charrep(), &result) != ERR_NONE) {
+				if (actions->exists(&ukey) == 0) {
+					
+					UAP(lb_I_Unknown, result)
+					
+					char* ah = (char*) malloc(strlen(PREFIX)+strlen(action_handler->charrep())+1);
+					ah[0] = 0;
+					
+					strcat(ah, PREFIX);
+					strcat(ah, action_handler->charrep());
+					
+					makePluginName(getenv("HOME"), module->charrep(), pluginModule);
+					
 					if (manager->makeInstance(ah, pluginModule,  &result) != ERR_NONE) {
-						_CL_LOG << "ERROR: Configured module '" << pluginModule << "' could not be loaded." LOG_
+						
+						free(pluginModule);
+						char* pwd = getenv("PWD");
+						if (pwd == NULL) pwd = ".";
+						makePluginName(pwd, module->charrep(), pluginModule);
+						
+						if (manager->makeInstance(ah, pluginModule,  &result) != ERR_NONE) {
+							_CL_LOG << "ERROR: Plugin could not be loaded." LOG_
+						}
+						
 					}
+					
+					result->setModuleManager(getModuleInstance(), __FILE__, __LINE__);
+					actions->insert(&result, &ukey);
+					/*...e*/
 				}
-			
-				result->setModuleManager(getModuleInstance(), __FILE__, __LINE__);
-				actions->insert(&result, &ukey);
-/*...e*/
-			}
 			
 			UAP(lb_I_Unknown, uk)
 				
-			uk = actions->getElement(&ukey);
-				
+				uk = actions->getElement(&ukey);
+			
 			QI(uk, lb_I_DelegatedAction, action)
-			action->setActionID(id->charrep());
+				action->setActionID(id->charrep());
 			
 			_CL_LOG << "Execute delegated action..." LOG_
-						
-			action->execute(*&params);
+				
+				action->execute(*&params);
 		}
 	}
 }

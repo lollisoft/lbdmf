@@ -109,6 +109,22 @@ VENDORLIBS=$(HOME)/lib/lbHook.so
 L_OPS=$(L_SOOPS) `wx-config --libs`
 LIBS=-lwx_gtk2_propgrid-2.6
 endif    
+
+ifeq ($(LB_USE_FRAMEWORKS), yes)
+
+ifeq ($(OSTYPE), osx)
+MOD_INCL=$(STD_INCL) -I $(DEVROOT)/Projects/CPP/vendor/wxaui-0.9.1/include
+OBJDEP=
+C_SOOPS_WX = -DOSX -DUNIX -DLINUX -DLB_I_EXTENTIONS `wx-config --inplace --cxxflags` 
+C_SOOPS= $(C_SOOPS_WX)
+VENDORLIBS=
+L_OPS=$(L_SOOPS) -F$(HOME)/lib -framework wxAUI -framework lbHook -lwx_macd_propgrid-2.6 #`wx-config --inplace --libs`
+endif
+
+endif
+
+ifeq ($(LB_USE_FRAMEWORKS), no)
+
 ifeq ($(OSTYPE), osx)
 MOD_INCL=$(STD_INCL) -I $(DEVROOT)/Projects/CPP/vendor/wxaui-0.9.1/include
 OBJDEP=
@@ -117,3 +133,6 @@ C_SOOPS= $(C_SOOPS_WX)
 VENDORLIBS=$(HOME)/lib/lbHook.so $(HOME)/lib/wxAUI.so 
 L_OPS=$(L_SOOPS) -lwx_macd_propgrid-2.6 #`wx-config --inplace --libs`
 endif
+
+endif
+

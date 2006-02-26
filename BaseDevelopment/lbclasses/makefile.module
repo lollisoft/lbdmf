@@ -61,8 +61,24 @@ MODULE=lbClasses
 MOD_INCL=$(STD_INCL) -I../lbHook/linuxCode
 VENDORLIBS=$(HOME)/lib/lbHook.so
 endif    
+
+ifeq ($(LB_USE_FRAMEWORKS), yes)
+
+ifeq ($(OSTYPE), osx)
+MODULE=lbClasses
+MOD_INCL=$(STD_INCL) -I../lbHook/linuxCode
+VENDORLIBS=
+LIBS=$(L_SOOPS) -F$(HOME)/lib -framework lbHook
+endif    
+
+endif
+
+ifeq ($(LB_USE_FRAMEWORKS), no)
+
 ifeq ($(OSTYPE), osx)
 MODULE=lbClasses
 MOD_INCL=$(STD_INCL) -I../lbHook/linuxCode
 VENDORLIBS=$(HOME)/lib/lbHook.so
 endif    
+
+endif

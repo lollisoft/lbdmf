@@ -1279,11 +1279,12 @@ void lb_wxFrame::OnQuit(wxCommandEvent& WXUNUSED(event) )
   	 * The database form sample is a modal form and may be making the
   	 * problem, if it is not destroyed here.
   	 */
-
+/*
 	UAP_REQUEST(manager.getPtr(), lb_I_PluginManager, PM)
 	
+	PM->initialize();
 	PM->unload();
-	
+*/	
 	if (guiCleanedUp == 0) {
         	if (gui) gui->cleanup();
         	guiCleanedUp = 1;

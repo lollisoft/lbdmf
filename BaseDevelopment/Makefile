@@ -1,11 +1,16 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.81 $
+# * $Revision: 1.82 $
 # * $Name:  $
-# * $Id: Makefile,v 1.81 2006/02/24 14:25:23 lollisoft Exp $
+# * $Id: Makefile,v 1.82 2006/02/26 23:46:18 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.82  2006/02/26 23:46:18  lollisoft
+# * Changed build method for shared libraries under Mac OS X
+# * to be frameworks. These would be embedable into the
+# * application bundle - thus enables better install method.
+# *
 # * Revision 1.81  2006/02/24 14:25:23  lollisoft
 # * Fix wrong path
 # *
@@ -349,6 +354,8 @@ TARGETSOBUNDLE=sobundle
 TARGETWXSO=wxso
 TARGETWXSHARED=wxshared
 TARGETWXPLUGIN=wxsoplugin
+TARGETFRAMEWORK=framework
+TARGETWXFRAMEWORK=wxframework
 
 ALLTARGETS = \
 	../include/lbkey.h \
@@ -533,7 +540,7 @@ ifeq ($(OSTYPE), osx)
 	$(MAKE) -s -C $@
 
 ../vendor/wxaui-0.9.1/src: dummy
-	$(MAKE) -s -C $@ -e MODULE=wxAUI -e TARGET=$(TARGETWXSHARED) -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@ -e MODULE=wxAUI -e TARGET=$(TARGETWXFRAMEWORK) -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@
 
 ../vendor/wxaui-0.9.1/sample: dummy
@@ -546,7 +553,7 @@ ifeq ($(OSTYPE), osx)
 	cp ../Test/GUI/wxWrapper/wxWrapper $(HOME)/bin
 
 ../Test/GUI/wxWrapperDLL: dummy
-	$(MAKE) -s -C $@ -e MODULE=wxWrapperDLL -e TARGET=$(TARGETWXSHARED) -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@ -e MODULE=wxWrapperDLL -e TARGET=$(TARGETWXFRAMEWORK) -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@
 endif
 
@@ -633,7 +640,7 @@ endif
 #	$(MAKE) -s -C $@
 
 lbHook: dummy
-	$(MAKE) -s -C $@ -e MODULE=$@ -e TARGET=$(TARGETSHARED) -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@ -e MODULE=$@ -e TARGET=$(TARGETFRAMEWORK) -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@
 
 lbDB: dummy

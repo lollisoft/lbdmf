@@ -114,7 +114,21 @@ C_ELFOPS += `wx-config --inplace --cxxflags` -DUSE_WXWRAPPER_DLL -DUNIX -DLINUX 
 L_OPS = `wx-config --inplace --libs` -o
 
 VENDORLIBS=$(HOME)/lib/lbHook.so $(HOME)/lib/wxWrapperDLL.so 
-endif    
+endif
+
+ifeq ($(LB_USE_FRAMEWORKS), yes)
+
+ifeq ($(OSTYPE), osx)
+MOD_INCL=$(STD_INCL) -I ../include -I ../wxWrapperDLL
+OBJDEP=
+C_ELFOPS += `wx-config --inplace --cxxflags` -DUSE_WXWRAPPER_DLL -DOSX -DUNIX -DLINUX -DLB_I_EXTENTIONS -D__WXDEBUG__
+L_OPS = -F$(HOME)/lib -framework wxAUI `wx-config --inplace --libs` -o
+VENDORLIBS=
+endif
+
+endif
+
+ifeq ($(LB_USE_FRAMEWORKS), no)
 
 ifeq ($(OSTYPE), osx)
 MOD_INCL=$(STD_INCL) -I ../include -I ../wxWrapperDLL
@@ -122,4 +136,6 @@ OBJDEP=
 C_ELFOPS += `wx-config --inplace --cxxflags` -DUSE_WXWRAPPER_DLL -DOSX -DUNIX -DLINUX -DLB_I_EXTENTIONS -D__WXDEBUG__
 L_OPS = `wx-config --inplace --libs` -o
 VENDORLIBS=$(HOME)/lib/wxAUI.so 
+endif
+
 endif

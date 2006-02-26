@@ -30,11 +30,16 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.105 $
+ * $Revision: 1.106 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.105 2006/02/21 19:35:50 lollisoft Exp $
+ * $Id: lbModule.cpp,v 1.106 2006/02/26 23:46:19 lollisoft Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.106  2006/02/26 23:46:19  lollisoft
+ * Changed build method for shared libraries under Mac OS X
+ * to be frameworks. These would be embedable into the
+ * application bundle - thus enables better install method.
+ *
  * Revision 1.105  2006/02/21 19:35:50  lollisoft
  * Implemented autoload mechanism of last loaded application.
  * It demonstrates the new capabilities operating with files.
@@ -3108,12 +3113,16 @@ lbErrCodes err = ERR_NONE;
 			strcpy(_module, module);
 	
 			#ifdef LINUX
-			if (strchr(_module, '.') == NULL) strcat(_module, ".so");
+			if (strchr(_module, '.') == NULL) 
+				strcat(_module, ".so");
+			else
+			if ((_module[0] == '.') && (_module[strlen(_module)-3] != '.')) 
+				strcat(_module, ".so");
 			#endif
 		
                         if ((err = lbLoadModule(_module, h)) != ERR_NONE) {
                                 // report error if still loaded
-                                _CL_VERBOSE << "Error: Could not load the module '" << module << "'" LOG_
+                                _LOG << "Error: Could not load the module '" << _module << "'" LOG_
                                 
                                 free(_module);
                                 

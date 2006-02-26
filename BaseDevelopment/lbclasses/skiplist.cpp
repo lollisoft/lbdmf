@@ -38,11 +38,16 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.46 $
+ * $Revision: 1.47 $
  * $Name:  $
- * $Id: skiplist.cpp,v 1.46 2006/02/20 13:00:45 lollisoft Exp $
+ * $Id: skiplist.cpp,v 1.47 2006/02/26 23:46:19 lollisoft Exp $
  *
  * $Log: skiplist.cpp,v $
+ * Revision 1.47  2006/02/26 23:46:19  lollisoft
+ * Changed build method for shared libraries under Mac OS X
+ * to be frameworks. These would be embedable into the
+ * application bundle - thus enables better install method.
+ *
  * Revision 1.46  2006/02/20 13:00:45  lollisoft
  * Missing return. This would be the cause, why currentKey hasn't worked.
  *
@@ -654,14 +659,19 @@ void SkipList::insert(Elem newValue) { // Insert into skiplist
   update = new SkipNode* [level+1]; 
 
   for(i=level; i>=0; i--) { // Search for insert position
-    lb_I_Element* e = (x->forward[i] != NULL) ? x->forward[i]->value.getPtr() : NULL;
-    while((x->forward[i] != NULL) && (*e < newValue->getKey())) {
-      x = x->forward[i];
-      e = x->forward[i] != NULL ? x->forward[i]->value.getPtr() : NULL;
-    }
-    update[i] = x;              // Keep track of end at level i
+	  lb_I_Element* e = (x->forward[i] != NULL) ? x->forward[i]->value.getPtr() : NULL;
+	  
+	  while((x->forward[i] != NULL) && (*e < newValue->getKey())) {
+		  x = x->forward[i];
+		  e = x->forward[i] != NULL ? x->forward[i]->value.getPtr() : NULL;
+		  
+		  if ((x->forward[i] != NULL) && (x->forward[i]->value.getPtr() == NULL)) {
+			  _CL_LOG << "FATAL: Skiplist may be corrupted!" LOG_
+		  }
+	  }
+	  update[i] = x;              // Keep track of end at level i
   }
-
+  
   UAP(lb_I_Element, el)
   el = newValue;
   el++;

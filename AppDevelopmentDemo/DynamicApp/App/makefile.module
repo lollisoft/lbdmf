@@ -57,8 +57,22 @@ OBJDEP=
 VENDORLIBS=$(HOME)/lib/lbHook.so /usr/lib/libodbc.so
 endif    
 
+ifeq ($(LB_USE_FRAMEWORKS), yes)
+
+ifeq ($(OSTYPE), osx)
+MOD_INCL=$(STD_INCL)
+VENDORLIBS=
+LIBS=$(L_SOOPS) -F$(HOME)/lib -framework lbHook
+endif    
+
+endif
+
+ifeq ($(LB_USE_FRAMEWORKS), no)
+
 ifeq ($(OSTYPE), osx)
 MOD_INCL=$(STD_INCL)
 OBJDEP=
-VENDORLIBS=$(HOME)/lib/lbHook.so /usr/lib/libiodbc.dylib
+VENDORLIBS=$(HOME)/lib/lbHook.so
 endif    
+
+endif

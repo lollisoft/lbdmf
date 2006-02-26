@@ -106,6 +106,22 @@ C_SOOPS= $(C_SOOPS_WX)
 VENDORLIBS=$(HOME)/lib/lbHook.so 
 L_OPS=$(L_SOOPS) `wx-config --libs`
 endif    
+
+ifeq ($(LB_USE_FRAMEWORKS), yes)
+
+ifeq ($(OSTYPE), osx)
+MOD_INCL=$(STD_INCL)
+OBJDEP=
+C_SOOPS_WX = -DOSX -DUNIX -DLINUX -DLB_I_EXTENTIONS `wx-config --inplace --cxxflags` 
+C_SOOPS= $(C_SOOPS_WX)
+VENDORLIBS=
+L_OPS=$(L_SOOPS) -F$(HOME)/lib -framework lbHook `wx-config --inplace --libs`
+endif
+
+endif
+
+ifeq ($(LB_USE_FRAMEWORKS), no)
+
 ifeq ($(OSTYPE), osx)
 MOD_INCL=$(STD_INCL)
 OBJDEP=
@@ -113,4 +129,6 @@ C_SOOPS_WX = -DOSX -DUNIX -DLINUX -DLB_I_EXTENTIONS `wx-config --inplace --cxxfl
 C_SOOPS= $(C_SOOPS_WX)
 VENDORLIBS=$(HOME)/lib/lbHook.so 
 L_OPS=$(L_SOOPS) `wx-config --inplace --libs`
+endif
+
 endif

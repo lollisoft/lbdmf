@@ -403,102 +403,107 @@ DLLEXPORT bool LB_STDCALL FileExists(char *filename)
 
 /*...slbErrCodes LB_STDCALL lbLoadModule\40\const char\42\ name\44\ HINSTANCE \38\ hinst\44\ bool skipAutoUnload\41\:0:*/
 DLLEXPORT lbErrCodes LB_STDCALL lbLoadModule(const char* name, HINSTANCE & hinst, bool skipAutoUnload) {
-
+	
 #ifdef WINDOWS
-
+	
 	_Modules *m = findModule(name);
-
+	
 	if (m) {
 		hinst = m->lib;
 		return ERR_NONE;
 	} else {
 		m = createModule(name);
 	}
-
-        if ((hinst = LoadLibrary(name)) == NULL)
-        {
+	
+	if ((hinst = LoadLibrary(name)) == NULL)
+	{
 		char *buffer = (char*) malloc(100+strlen(name));
 		buffer[0] = 0;
 		sprintf(buffer, "Kann DLL '%s' nicht laden.\n", name); 
-            
+		
 		logMessage(buffer);
 		free(buffer);
-			
+		
 		LPVOID lpMsgBuf;
 		if (!FormatMessage( 
-			FORMAT_MESSAGE_ALLOCATE_BUFFER | 
-			FORMAT_MESSAGE_FROM_SYSTEM | 
-			FORMAT_MESSAGE_IGNORE_INSERTS,
-			NULL,
-			GetLastError(),
-			MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
-			(LPTSTR) &lpMsgBuf,
-			0,
-			NULL))
-	    	{
+							FORMAT_MESSAGE_ALLOCATE_BUFFER | 
+							FORMAT_MESSAGE_FROM_SYSTEM | 
+							FORMAT_MESSAGE_IGNORE_INSERTS,
+							NULL,
+							GetLastError(),
+							MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
+							(LPTSTR) &lpMsgBuf,
+							0,
+							NULL))
+		{
 			// Handle the error.
 			return ERR_MODULE_NOT_FOUND;
 		}
-
+		
 		MessageBox( NULL, (LPCTSTR)lpMsgBuf, "Error", MB_OK | MB_ICONINFORMATION );
-
+		
 		// Free the buffer.
 		LocalFree( lpMsgBuf );
-
+		
 		return ERR_MODULE_NOT_FOUND;
-        }
-
+	}
+	
 	m->lib = hinst;
-        m->skip = skipAutoUnload;
+	m->skip = skipAutoUnload;
 #endif
 #ifdef LINUX
-
+	
 	_Modules *m = findModule(name);
-
+	
 	if (m != NULL) {
 		hinst = m->lib;
 		return ERR_NONE;
 	} else {
 		m = createModule(name);
 	}
-
+	
 	_CL_LOG << "Try load module: " << name LOG_
-	if ((hinst = dlopen(name, RTLD_LAZY)) == NULL)
-	{
-			char* home = NULL;
+		if ((hinst = dlopen(name, RTLD_LAZY)) == NULL)
+		{
+			char* home = NULL;//(char*) malloc(100);
+			char* newname = NULL;
 			
-			#if defined(UNIX) || defined(LINUX) || defined(OSX)
-			home = getenv("PWD");
-
-			char* newname = (char*) malloc(strlen(home)+strlen(name)+6);
+#if defined(UNIX) || defined(LINUX) || defined(OSX)
+			home = ".";//getcwd(home, 100);
 			
-			newname[0] = 0;
-			strcat(newname, home);
-			strcat(newname, SLASH);
-			strcat(newname, "lib");
-			strcat(newname, SLASH);
-			strcat(newname, name);
-
-			_CL_LOG << "Try load module: " << newname LOG_
-			if ((hinst = dlopen(newname, RTLD_LAZY)) != NULL) {
-				m->lib = hinst;
-				m->skip = skipAutoUnload;
+			if (home != NULL) {
+				
+				newname = (char*) malloc(strlen(home)+strlen(name)+6);
+				
+				newname[0] = 0;
+				strcat(newname, home);
+				strcat(newname, SLASH);
+				strcat(newname, "lib");
+				strcat(newname, SLASH);
+				strcat(newname, name);
+				
+				_CL_LOG << "Try load module: " << newname LOG_
+					if ((hinst = dlopen(newname, RTLD_LAZY)) != NULL) {
+						m->lib = hinst;
+						m->skip = skipAutoUnload;
+						free(newname);
+						
+						return ERR_NONE;
+					}
+				
 				free(newname);
 				
-				return ERR_NONE;
 			}
+#endif
 			
-			free(newname);
-			#endif
-
 			home =   
-			#if defined(WINDOWS)
+#if defined(WINDOWS)
 			getenv("USERPROFILE");
-			#endif
-			#if defined(UNIX) || defined(LINUX) || defined(OSX)
+#endif
+#if defined(UNIX) || defined(LINUX) || defined(OSX)
 			getenv("HOME");
-			#endif
-
+#endif
+			
 			newname = (char*) malloc(strlen(home)+strlen(name)+6);
 			
 			newname[0] = 0;
@@ -507,28 +512,28 @@ DLLEXPORT lbErrCodes LB_STDCALL lbLoadModule(const char* name, HINSTANCE & hinst
 			strcat(newname, "lib");
 			strcat(newname, SLASH);
 			strcat(newname, name);
-
+			
 			_CL_LOG << "Try load module: " << newname LOG_
-			if ((hinst = dlopen(newname, RTLD_LAZY)) != NULL) {
-				//printf("Module %s loaded.\n", newname);
-				m->lib = hinst;
-				m->skip = skipAutoUnload;
-				free(newname);
-				
-				return ERR_NONE;
-			}
+				if ((hinst = dlopen(newname, RTLD_LAZY)) != NULL) {
+					//printf("Module %s loaded.\n", newname);
+					m->lib = hinst;
+					m->skip = skipAutoUnload;
+					free(newname);
+					
+					return ERR_NONE;
+				}
 			
 			free(newname);
 			
 			char *buffer = (char*) malloc(strlen(name)+100);
 			buffer[0] = 0;
-
+			
 			sprintf(buffer, "Kann SO module '%s' nicht laden.\n", name);
 			
 			logMessage(buffer);
 			free(buffer);
 			return ERR_MODULE_NOT_FOUND;
-	}
+		}
 	
 	m->lib = hinst;
 	m->skip = skipAutoUnload;
