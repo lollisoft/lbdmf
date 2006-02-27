@@ -56,7 +56,7 @@ public:
 	virtual lbErrCodes LB_STDCALL setUserName(char* user);
 	virtual lbErrCodes LB_STDCALL setApplicationName(char* app);
 	
-	virtual lb_I_EventManager * getEVManager( void );
+	virtual lb_I_EventManager* LB_STDCALL getEVManager( void );
 
 	virtual lbErrCodes LB_STDCALL registerEventHandler(lb_I_Dispatcher* disp);	
 
@@ -238,8 +238,8 @@ lbErrCodes LB_STDCALL lbApplication::getGUI(lb_I_GUI** _gui) {
 	return ERR_NONE;
 }
 /*...e*/
-/*...slb_I_EventManager \42\ lbApplication\58\\58\getEVManager\40\ void \41\:0:*/
-lb_I_EventManager * lbApplication::getEVManager( void ) {
+/*...slb_I_EventManager\42\ LB_STDCALL lbApplication\58\\58\getEVManager\40\ void \41\:0:*/
+lb_I_EventManager* LB_STDCALL lbApplication::getEVManager( void ) {
 	return NULL;
 }
 /*...e*/
