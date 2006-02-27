@@ -138,10 +138,25 @@ void LB_STDCALL lbAction::setActionID(char* id) {
 void makePluginName(char* path, char* module, char*& result) {
 		char* pluginDir = NULL;
 
+		#ifndef WINDOWS
 		pluginDir = (char*) malloc(strlen(path)+strlen("/plugins")+1);
 		pluginDir[0] = 0;
 		strcat(pluginDir, path);
 		strcat(pluginDir, "/plugins");
+		#endif
+
+		#ifdef WINDOWS
+		// Overwrites hardcoded path
+		pluginDir = getenv("PLUGIN_DIR");
+		if (pluginDir == NULL) {
+			pluginDir = (char*) malloc(strlen(path)+strlen("\\plugins")+1);
+			pluginDir[0] = 0;
+			strcat(pluginDir, path);
+			strcat(pluginDir, "\\plugins");
+		} else {
+			pluginDir = strdup(pluginDir);
+		}
+		#endif 
 
 		/*...sBuild up pluginModule:64:*/
 		char* pluginModule = (char*) malloc(strlen(pluginDir)+strlen(module)+2);
@@ -239,8 +254,17 @@ void LB_STDCALL lbAction::delegate(lb_I_Parameter* params) {
 					strcat(ah, PREFIX);
 					strcat(ah, action_handler->charrep());
 					
+					char* home = NULL;
 					
-					makePluginName(getenv("HOME"), module->charrep(), pluginModule);
+					#ifdef LINUX
+					home = getenv("HOME");
+					#endif
+					#ifdef WINDOWS
+					home = getenv("USERPROFILE");
+					#endif
+					
+					
+					makePluginName(home, module->charrep(), pluginModule);
 					
 					if (manager->makeInstance(ah, pluginModule,  &result) != ERR_NONE) {
 						
@@ -299,7 +323,16 @@ void LB_STDCALL lbAction::delegate(lb_I_Parameter* params) {
 					strcat(ah, PREFIX);
 					strcat(ah, action_handler->charrep());
 					
-					makePluginName(getenv("HOME"), module->charrep(), pluginModule);
+					char* home = NULL;
+					
+					#ifdef LINUX
+					home = getenv("HOME");
+					#endif
+					#ifdef WINDOWS
+					home = getenv("USERPROFILE");
+					#endif
+					
+					makePluginName(home, module->charrep(), pluginModule);
 					
 					if (manager->makeInstance(ah, pluginModule,  &result) != ERR_NONE) {
 						
