@@ -589,7 +589,7 @@ lbErrCodes LB_STDCALL lb_wxFrame::registerEventHandler(lb_I_Dispatcher* disp) {
 
 #ifdef USE_WXAUI
 	m_mgr.SetFrame(this);
-	SetMinSize(wxSize(500,400));
+//	SetMinSize(wxSize(500,400));
 #endif
 
 	eman->registerEvent("switchPanelUse", on_panel_usage);
@@ -1041,22 +1041,23 @@ lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::createDBForm(char* formName, char* query
 		
 		if (frame->isPanelUsage()) {
 			wxWindow* w = frame->FindWindowById(_dialog->getId());
+			w->Fit();
+			
 			notebook->AddPage(w, formName, true);
-			if (!frame->IsMaximized()) notebook->Fit();
-			//notebook->Show(true);
+			
+			if (!frame->IsMaximized()) {
+				notebook->SetSizeHints(frame->FindWindowById(_dialog->getId())->GetSize());
+				notebook->Fit();
+			}
 			
 			if (frame->isSplitted()) {
 				if (!frame->IsMaximized()) frame->Fit();
 			} else {
-				//sizerMain->SetSizeHints(frame->FindWindowById(_dialog->getId()));
-				frame->SetMinSize(frame->FindWindowById(_dialog->getId())->GetSize());
 				if (!frame->IsMaximized()) {
-					frame->Fit();
-
-					//sizerMain->Fit(frame->FindWindowById(_dialog->getId()));
 		
+					frame->SetSizeHints(notebook->GetSize());
+					frame->Fit();
 					frame->Centre();
-					//frame->Refresh();
 				}
 			}	
 		}
@@ -1077,7 +1078,7 @@ lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::createDBForm(char* formName, char* query
 
 	UAP_REQUEST(getModuleManager(), lb_I_MetaApplication, app)
 	app->enableEvent("ShowPropertyPanel");
-	
+
 	return _dialog.getPtr();
 }
 /*...e*/
