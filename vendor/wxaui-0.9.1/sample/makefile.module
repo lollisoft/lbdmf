@@ -107,13 +107,13 @@ endif
 endif
 
 ifeq ($(OSTYPE), linux)
-MOD_INCL=$(STD_INCL) -I ../wxWrapperDLL
+MOD_INCL=$(STD_INCL) -I ../include -I ../wxWrapperDLL
 OBJDEP=
 
 C_ELFOPS += `wx-config --inplace --cxxflags` -DUSE_WXWRAPPER_DLL -DUNIX -DLINUX -DLB_I_EXTENTIONS
 L_OPS = `wx-config --inplace --libs` -o
 
-VENDORLIBS=$(HOME)/lib/lbHook.so $(HOME)/lib/wxWrapperDLL.so 
+VENDORLIBS=$(HOME)/lib/wxAUI.so 
 endif
 
 ifeq ($(LB_USE_FRAMEWORKS), yes)
