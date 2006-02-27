@@ -30,11 +30,15 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.40 $
+ * $Revision: 1.41 $
  * $Name:  $
- * $Id: lbPluginManager.cpp,v 1.40 2006/02/26 23:46:19 lollisoft Exp $
+ * $Id: lbPluginManager.cpp,v 1.41 2006/02/27 11:22:16 lollisoft Exp $
  *
  * $Log: lbPluginManager.cpp,v $
+ * Revision 1.41  2006/02/27 11:22:16  lollisoft
+ * Corrected plugin path settings. On Windows, environment PLUGIN_DIR
+ * overwrites home/plugins.
+ *
  * Revision 1.40  2006/02/26 23:46:19  lollisoft
  * Changed build method for shared libraries under Mac OS X
  * to be frameworks. These would be embedable into the
@@ -448,9 +452,17 @@ void LB_STDCALL lbPluginManager::initialize() {
 	
 	if (pluginDir == NULL) {
 		_LOG << "ERROR: No plugin directory configured. Try fallback. Please create one and set environment PLUGIN_DIR properly." LOG_
+		#ifndef WINDOWS
 		pluginDir = (char*) malloc(strlen(getenv("HOME"))+strlen("/plugins")+1);
 		pluginDir[0] = 0;
 		strcat(pluginDir, getenv("HOME"));
+		#endif
+		#ifdef WINDOWS
+		pluginDir = (char*) malloc(strlen(getenv("USERPROFILE"))+strlen("/plugins")+1);
+		pluginDir[0] = 0;
+		strcat(pluginDir, getenv("USERPROFILE"));
+		#endif
+
 		strcat(pluginDir, "/plugins");
 	} else {
 		char* temp = pluginDir;
