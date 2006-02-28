@@ -22,8 +22,9 @@ if [ "$ARCH" == "ppc" ]; then
 fi
 
 echo Do Linux stuff
-
-tar cvzf lbDMF-Source-$1.tgz CPP/
+mkdir lbdmf-$1
+mv CPP lbdmf-$1
+tar cvzf lbDMF-Source-$1.tgz lbdmf-$1/
 cp lbDMF-Source-$1.tgz /usr/src/packages/SOURCES
 cd ..
-rpmbuild -ba lbDMF.spec
+#rpmbuild -ba lbDMF.spec
