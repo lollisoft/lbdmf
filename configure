@@ -2,7 +2,11 @@
 
 echo all: CPP/BaseDevelopment > makefile
 echo \# >> makefile
+
+echo DEVROOT=`pwd` >> makefile
+
+
 echo dummy: >> makefile
 echo \ >> makefile
 echo CPP/BaseDevelopment: dummy >> makefile
-echo \	\$\(MAKE\) -s -C \$\@ >> makefile
+echo \	\$\(MAKE\) -s -C \$\@ -e DEVROOT=\$\(DEVROOT\)/.. >> makefile
