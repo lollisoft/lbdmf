@@ -24,6 +24,7 @@ fi
 echo Do Linux stuff
 mkdir lbdmf-$1
 mv CPP lbdmf-$1
+cp lbdmf-$1/CPP/configure lbdmf-$1
 tar cvzf lbDMF-Source-$1.tgz lbdmf-$1/
 cp lbDMF-Source-$1.tgz /usr/src/packages/SOURCES
 cd ..
