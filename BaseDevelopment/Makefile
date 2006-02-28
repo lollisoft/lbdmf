@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.82 $
+# * $Revision: 1.83 $
 # * $Name:  $
-# * $Id: Makefile,v 1.82 2006/02/26 23:46:18 lollisoft Exp $
+# * $Id: Makefile,v 1.83 2006/02/28 11:26:58 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.83  2006/02/28 11:26:58  lollisoft
+# * Set TARGETFRAMEWORK to so for Linux
+# *
 # * Revision 1.82  2006/02/26 23:46:18  lollisoft
 # * Changed build method for shared libraries under Mac OS X
 # * to be frameworks. These would be embedable into the
@@ -380,6 +383,7 @@ endif
 ifeq ($(OSTYPE), linux)
 
 TARGETDLL=so
+TARGETFRAMEWORK=so
 TARGETEXE=elf
 TARGETSHARED=so
 TARGETWXEXE=elf
