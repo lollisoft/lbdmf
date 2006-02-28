@@ -2,5 +2,7 @@
 
 echo all: CPP/BaseDevelopment > makefile
 echo \# >> makefile
+echo dummy: >> makefile
+echo \ >> makefile
 echo CPP/BaseDevelopment: dummy >> makefile
-echo 	$(MAKE) -s -C $@ >> makefile
+echo \	\$\(MAKE\) -s -C \$\@ >> makefile
