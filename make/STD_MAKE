@@ -25,11 +25,14 @@
 #            40235 Duesseldorf (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.81 $
+# * $Revision: 1.82 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.81 2006/02/28 10:51:37 lollisoft Exp $
+# * $Id: STD_MAKE,v 1.82 2006/02/28 12:43:24 lollisoft Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.82  2006/02/28 12:43:24  lollisoft
+# * Added a switch to make in debug mode (Linux)
+# *
 # * Revision 1.81  2006/02/28 10:51:37  lollisoft
 # * Now no debug information.
 # *
@@ -568,6 +571,16 @@ endif
 ifeq ($(OSTYPE), linux)
 
 DEBUG_MEMORY=no
+DEBUG=no
+
+
+ifeq ($(DEBUG), yes)
+DEBUG_CXX_FLAGS=-g
+endif
+
+ifeq ($(DEBUG), no)
+DEBUG_CXX_FLAGS=
+endif
 
 STD_INCL = -I $(DEVROOT)/Projects/CPP/BaseDevelopment/lbHook/linuxCode \
 	-I $(DEVROOT)/Projects/CPP/interfaces \
@@ -580,7 +593,11 @@ STD_INCL = -I $(DEVROOT)/Projects/CPP/BaseDevelopment/lbHook/linuxCode \
 STD_INCL_CPP = $(STD_INCL)
 
 OBJ =o
-C_OPS   = -c -g -DUNIX -DLINUX -DTVISION
+C_OPS   = -c $(DEBUG_CXX_FLAGS) -DUNIX -DLINUX -DTVISION
+
+ifeq ($(DEBUG), yes)
+DEBUG_CXX_FLAGS=-g
+endif
 
 ifeq ($(DEBUG_MEMORY), yes)
 C_OPS += -DDEBUG_MALLOC -DUSE_MPATROL
