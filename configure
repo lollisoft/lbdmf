@@ -1,3 +1,6 @@
 #!/bin/sh
 
-
+echo all: CPP/BaseDevelopment > makefile
+echo \# >> makefile
+echo CPP/BaseDevelopment: dummy >> makefile
+echo 	$(MAKE) -s -C $@ >> makefile
