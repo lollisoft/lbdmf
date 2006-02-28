@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.84 $
+# * $Revision: 1.85 $
 # * $Name:  $
-# * $Id: Makefile,v 1.84 2006/02/28 19:40:04 lollisoft Exp $
+# * $Id: Makefile,v 1.85 2006/02/28 20:23:04 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.85  2006/02/28 20:23:04  lollisoft
+# * Test existence of ../AppDevelopment
+# *
 # * Revision 1.84  2006/02/28 19:40:04  lollisoft
 # * Removed unused vendor targets
 # *
@@ -619,7 +622,7 @@ endif
 	$(MAKE) -C $@
 
 ../AppDevelopment: dummy
-	$(MAKE) -s -C $@
+	test -d $@ && $(MAKE) -s -C $@
 
 ../Plugins: dummy
 	$(MAKE) -s -C $@
