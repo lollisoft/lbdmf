@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.85 $
+# * $Revision: 1.86 $
 # * $Name:  $
-# * $Id: Makefile,v 1.85 2006/02/28 20:23:04 lollisoft Exp $
+# * $Id: Makefile,v 1.86 2006/02/28 23:11:59 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.86  2006/02/28 23:11:59  lollisoft
+# * Try -k
+# *
 # * Revision 1.85  2006/02/28 20:23:04  lollisoft
 # * Test existence of ../AppDevelopment
 # *
@@ -622,7 +625,7 @@ endif
 	$(MAKE) -C $@
 
 ../AppDevelopment: dummy
-	test -d $@ && $(MAKE) -s -C $@
+	$(MAKE) -k -s -C $@
 
 ../Plugins: dummy
 	$(MAKE) -s -C $@
