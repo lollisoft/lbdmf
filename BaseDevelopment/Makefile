@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.83 $
+# * $Revision: 1.84 $
 # * $Name:  $
-# * $Id: Makefile,v 1.83 2006/02/28 11:26:58 lollisoft Exp $
+# * $Id: Makefile,v 1.84 2006/02/28 19:40:04 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.84  2006/02/28 19:40:04  lollisoft
+# * Removed unused vendor targets
+# *
 # * Revision 1.83  2006/02/28 11:26:58  lollisoft
 # * Set TARGETFRAMEWORK to so for Linux
 # *
@@ -309,7 +312,6 @@ BASEDIRECTORIES= \
 	../Plugins \
 	../Modules \
 	../RegressionTests \
-	../vendor/c-goldparser \
 	../AppDevelopment
 	
 
