@@ -1,3 +1,4 @@
+
 *.dll 
 *.lib 
 *.lst 
@@ -27,3 +28,4 @@ Debug
 *.err
 *.so.*
 makefile
+Basetypes
