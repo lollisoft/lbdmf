@@ -9,4 +9,4 @@ echo DEVROOT=`pwd` >> makefile
 echo dummy: >> makefile
 echo \ >> makefile
 echo Projects/CPP/BaseDevelopment: dummy >> makefile
-echo \	\$\(MAKE\) -s -C \$\@ -e DEVROOT=\$\(DEVROOT\) >> makefile
+echo \	\$\(MAKE\) -s -C \$\@ -e RPMBUILD=yes -e DEVROOT=\$\(DEVROOT\) >> makefile
