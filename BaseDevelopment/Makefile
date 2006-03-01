@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.87 $
+# * $Revision: 1.88 $
 # * $Name:  $
-# * $Id: Makefile,v 1.87 2006/03/01 11:30:51 lollisoft Exp $
+# * $Id: Makefile,v 1.88 2006/03/01 11:34:46 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.88  2006/03/01 11:34:46  lollisoft
+# * Activated RPMBUILD section
+# *
 # * Revision 1.87  2006/03/01 11:30:51  lollisoft
 # * Test RPMBUILD failure
 # *
@@ -292,10 +295,6 @@
 #
 #.PHONY: dummy
 
-ifdef RPMBUILD
-.
-endif
-
 ifeq ($(OSTYPE), linux)
 DEVROOT_MAKE=$(DEVROOT)
 endif
@@ -319,7 +318,7 @@ Path=$(PATH)
 
 MAKE_CONFIG_FILE=$(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
 
-
+ifndef RPMBUILD 
 ifeq ($(OSTYPE), linux)
 BASEDIRECTORIES= \
 	../Plugins \
@@ -332,6 +331,18 @@ BASEDIRECTORIES= \
 #	../vendor/tvision-set/examples/lbDMF
 #	../../open-watcom
 endif
+endif
+
+ifdef RPMBUILD 
+ifeq ($(OSTYPE), linux)
+BASEDIRECTORIES= \
+	../Plugins \
+	../Modules \
+	../RegressionTests
+
+endif
+endif
+
 
 ifeq ($(OSTYPE), Windows_NT)
 BASEDIRECTORIES= \
