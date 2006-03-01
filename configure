@@ -10,3 +10,6 @@ echo dummy: >> makefile
 echo \ >> makefile
 echo Projects/CPP/BaseDevelopment: dummy >> makefile
 echo \	\$\(MAKE\) -s -C \$\@ -e RPMBUILD=yes -e DEVROOT=\$\(DEVROOT\) >> makefile
+
+echo install-strip:
+echo \	\$\(MAKE\) -s -C \$\@ -e RPMBUILD=yes -e DEVROOT=\$\(DEVROOT\) install-strip>> makefile
