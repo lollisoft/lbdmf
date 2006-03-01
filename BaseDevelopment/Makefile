@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.86 $
+# * $Revision: 1.87 $
 # * $Name:  $
-# * $Id: Makefile,v 1.86 2006/02/28 23:11:59 lollisoft Exp $
+# * $Id: Makefile,v 1.87 2006/03/01 11:30:51 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.87  2006/03/01 11:30:51  lollisoft
+# * Test RPMBUILD failure
+# *
 # * Revision 1.86  2006/02/28 23:11:59  lollisoft
 # * Try -k
 # *
@@ -288,6 +291,10 @@
 # False targets
 #
 #.PHONY: dummy
+
+ifdef RPMBUILD
+.
+endif
 
 ifeq ($(OSTYPE), linux)
 DEVROOT_MAKE=$(DEVROOT)
