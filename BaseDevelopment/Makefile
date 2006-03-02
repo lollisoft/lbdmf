@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.90 $
+# * $Revision: 1.91 $
 # * $Name:  $
-# * $Id: Makefile,v 1.90 2006/03/02 13:01:18 lollisoft Exp $
+# * $Id: Makefile,v 1.91 2006/03/02 13:06:58 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.91  2006/03/02 13:06:58  lollisoft
+# * Corrected creation of target directories
+# *
 # * Revision 1.90  2006/03/02 13:01:18  lollisoft
 # * Added creation of target directories
 # *
@@ -519,13 +522,13 @@ install-strip:
 ../../plugins/libs: ../../plugins
 	-mkdir ../../plugins/libs
 
-$(prefix)\bin:
+$(prefix)/bin:
 	-mkdir $@
 
-$(prefix)\lib:
+$(prefix)/lib:
 	-mkdir $@
 
-$(prefix)\plugins:
+$(prefix)/plugins:
 	-mkdir $@
 
 clean:
