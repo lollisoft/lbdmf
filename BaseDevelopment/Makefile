@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.88 $
+# * $Revision: 1.89 $
 # * $Name:  $
-# * $Id: Makefile,v 1.88 2006/03/01 11:34:46 lollisoft Exp $
+# * $Id: Makefile,v 1.89 2006/03/02 12:35:22 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.89  2006/03/02 12:35:22  lollisoft
+# * Modified existing clean target and added install-strip target
+# *
 # * Revision 1.88  2006/03/01 11:34:46  lollisoft
 # * Activated RPMBUILD section
 # *
@@ -420,8 +423,7 @@ TARGETPLUGIN=soplugin
 TARGETWXPLUGIN=wxsoplugin
 
 
-ALLTARGETS = \
-	../include/lbkey.h \
+ALLDIRS = \
 	../vendor/dosdir \
 	../vendor/mkmk \
 	lbHook \
@@ -439,6 +441,11 @@ ALLTARGETS = \
 	../Test/GUI/wxWrapper \
 	../Test/GUI/wxPlugins/lbLoginWizard \
 	$(BASEDIRECTORIES)
+
+ALLTARGETS = \
+	../include/lbkey.h \
+	$(ALLDIRS)
+
 endif
 
 ifeq ($(OSTYPE), Windows_NT)
@@ -483,6 +490,16 @@ endif
 all_targets: $(ALLTARGETS)
 
 
+install:
+	for sub_target in $(ALLDIRS); do \
+		$(MAKE) -C $$sub_target install; \
+	done
+
+install-strip:
+	for sub_target in $(ALLDIRS); do \
+		$(MAKE) -C $$sub_target install-strip; \
+	done
+
 ../../dll/libs:
 	-mkdir ../../dll/libs
 
@@ -493,12 +510,12 @@ all_targets: $(ALLTARGETS)
 	-mkdir ../../plugins/libs
 
 clean:
-	@for d in $(ALLTARGETS); do \
-	    $(MAKE) -C $$d clean || exit $? ; \
+	@for d in $(ALLDIRS); do \
+	    $(MAKE) -C $$d clean; \
 	done
 
 distclean:
-	@for d in $(ALLTARGETS); do \
+	@for d in $(ALLDIRS); do \
 	    echo $$d ; \
 	    cp $$d/makefile $$d/makefile.clean; \
 	    $(MAKE) -C $$d distclean -f makefile.clean || exit $? ; \
@@ -506,7 +523,7 @@ distclean:
 	done
 
 mkrelease:
-	@for d in $(ALLTARGETS); do \
+	@for d in $(ALLDIRS); do \
 	    $(MAKE) -C $$d clean || exit $? ; \
 	done
 	cd ../..; tar cvzf lbDMF-0.3.2.3.tgz CPP; cd CPP/BaseDevelopment
@@ -591,6 +608,7 @@ ifeq ($(OSTYPE), linux)
 ../vendor/wxaui-0.9.1/src: dummy
 	$(MAKE) -s -C $@ -e MODULE=wxAUI -e TARGET=$(TARGETWXSO) -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@
+	$(MAKE) -s -C $@ install-strip
 
 ../vendor/wxaui-0.9.1/sample: dummy
 	$(MAKE) -s -C $@ -e MODULE=wxAUISample -e TARGET=$(TARGETWXEXE) -f $(MAKE_CONFIG_FILE)
@@ -599,6 +617,7 @@ ifeq ($(OSTYPE), linux)
 ../Test/GUI/wxWrapperDLL: dummy
 	$(MAKE) -s -C $@ -e MODULE=wxWrapperDLL -e TARGET=$(TARGETWXSO) -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@
+	$(MAKE) -s -C $@ install-strip
 
 ../Test/GUI/wxWrapper: dummy
 	$(MAKE) -s -C $@ -e MODULE=wxWrapper -e TARGET=$(TARGETWXEXE) -f $(MAKE_CONFIG_FILE)
@@ -670,8 +689,10 @@ endif
 #	$(MAKE) -s -C $@
 
 lbHook: dummy
+	@echo prefix='$(prefix)'
 	$(MAKE) -s -C $@ -e MODULE=$@ -e TARGET=$(TARGETFRAMEWORK) -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@
+	$(MAKE) -s -C $@ install-strip
 
 lbDB: dummy
 	$(MAKE) -s -C $@ -e MODULE=$@ -e TARGET=$(TARGETDLL) -f $(MAKE_CONFIG_FILE)
