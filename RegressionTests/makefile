@@ -30,7 +30,9 @@ ALLTARGETS = \
 	Basetypes \
 	Memory \
 	PluginTest
+
 endif
+
 
 ifeq ($(OSTYPE), osx)
 
@@ -43,6 +45,7 @@ ALLTARGETS = \
 	Basetypes \
 	Memory \
 	PluginTest
+
 endif
 
 ifeq ($(OSTYPE), Windows_NT)
@@ -56,17 +59,13 @@ ALLTARGETS = \
 	Basetypes \
 	Memory \
 	PluginTest
+
 endif
 
 
 all_targets: $(ALLTARGETS)
 
 
-
-clean:
-	@for d in $(ALLTARGETS); do \
-	    $(MAKE) -C $$d clean || exit $? ; \
-	done
 
 distclean:
 	@for d in $(ALLTARGETS); do \
@@ -100,4 +99,13 @@ Basetypes: dummy
 PluginTest: dummy
 	$(MAKE) -C $@ -e MODULE=PluginTest -e TARGET=$(TARGETEXE) -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
 	$(MAKE) -C $@
+
+clean:
+	for sub_target in $(ALLTARGETS); do $(MAKE) -C $$sub_target clean; done 
+
+install:
+	for sub_target in $(ALLTARGETS); do $(MAKE) -C $$sub_target install; done 
+
+install-strip:
+	for sub_target in $(ALLTARGETS); do $(MAKE) -C $$sub_target install-strip; done
 

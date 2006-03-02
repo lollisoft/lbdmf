@@ -66,11 +66,6 @@ all_targets: $(ALLTARGETS)
 
 
 
-clean:
-	@for d in $(ALLTARGETS); do \
-	    $(MAKE) -C $$d clean || exit $? ; \
-	done
-
 distclean:
 	@for d in $(ALLTARGETS); do \
 	    $(MAKE) -C $$d distclean || exit $? ; \
@@ -99,4 +94,20 @@ DatabaseReport: dummy
 VisitorOperations: dummy
 	$(MAKE) -C $@ -e MODULE=lbVisitorOperations -e TARGET=$(TARGETPLUGIN) -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
 	$(MAKE) -C $@
+
+clean:
+	for sub_target in $(ALLTARGETS); do \
+		$(MAKE) -C $$sub_target clean; \
+	done
+
+install:
+	for sub_target in $(ALLTARGETS); do \
+	$(MAKE) -C $$sub_target install; \
+	done
+
+install-strip:
+	for sub_target in $(ALLTARGETS); do \
+		$(MAKE) -C $$sub_target install-strip; \
+	done 
+
 

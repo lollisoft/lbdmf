@@ -12,3 +12,16 @@ ifeq ($(OSTYPE), osx)
 include $(DEVROOT)/Projects/CPP/make/STD_MAKE
 endif
 
+ifndef prefix
+prefix=$(HOME)
+endif
+
+exec_prefix=$(prefix)
+bindir=$(exec_prefix)/bin
+sbindir=$(exec_prefix)/sbin
+libdir=$(exec_prefix)/lib
+plugindir=$(exec_prefix)/plugins
+
+INSTALL=install
+INSTALL_PROGRAM=$(INSTALL)
+STRIP=strip -s

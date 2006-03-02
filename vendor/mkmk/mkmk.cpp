@@ -12,11 +12,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.74 $
+ * $Revision: 1.75 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.74 2006/02/26 23:46:19 lollisoft Exp $
+ * $Id: mkmk.cpp,v 1.75 2006/03/02 12:37:12 lollisoft Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.75  2006/03/02 12:37:12  lollisoft
+ * Modified or added make install (strip) process
+ *
  * Revision 1.74  2006/02/26 23:46:19  lollisoft
  * Changed build method for shared libraries under Mac OS X
  * to be frameworks. These would be embedable into the
@@ -780,7 +783,6 @@ void writeBundleTarget(char* modulename) {
   printf("MKMK_WX_VERSION=`wx-config --version`\n");
   printf("\n%s: $(OBJS)\n", modulename);
   printf("\t\t$(CC) $(L_OPS) %s $(OBJS) $(OBJDEP) $(LIBS) -bind_at_load -lc $(VENDORLIBS)\n",modulename);
-  printf("\t\t$(CP) $(PROGRAM) $(HOME)/bin\n");
 
   // Write Mac OS X Bundle
   printf("\t\t/Developer/Tools/Rez -d __DARWIN__ -t APPL -d __WXMAC__ -i . -d WXUSINGDLL -i $(HOME)/wxMac-$(MKMK_WX_VERSION)/samples -i $(HOME)/wxMac-$(MKMK_WX_VERSION)/include -o %s Carbon.r sample.r\n", modulename);
@@ -807,11 +809,19 @@ void writeBundleTarget(char* modulename) {
   printf("PROGRAM=%s\n", modulename);
   printf("\n%s: $(OBJS)\n", modulename);
   printf("\t\t$(CC) $(L_OPS) %s $(OBJS) $(OBJDEP) $(LIBS) -lc $(VENDORLIBS)\n",modulename);
-  printf("\t\t$(CP) $(PROGRAM) $(HOME)/bin\n");
 #endif
 
 #ifdef OSX
 #define UNIX
+#endif
+
+#ifdef UNIX
+  printf("install:\n");
+  printf("\t\t$(CP) $(PROGRAM) $(bindir)\n");
+
+  printf("install-strip:\n");
+  printf("\t\t$(STRIP) $(PROGRAM)\n");
+  printf("\t\t$(INSTALL_PROGRAM) $(PROGRAM) $(bindir)\n");
 #endif
 
 #ifdef __WATCOMC__
@@ -848,7 +858,6 @@ void writeExeTarget(char* modulename) {
   printf("PROGRAM=%s\n", modulename);
   printf("\n%s: $(OBJS)\n", modulename);
   printf("\t\t$(CC) $(L_OPS) %s $(OBJS) $(OBJDEP) $(LIBS) -bind_at_load -lc $(VENDORLIBS)\n",modulename);
-  printf("\t\t$(CP) $(PROGRAM) $(HOME)/bin\n");
 #endif
 
 #ifdef UNIX
@@ -859,8 +868,19 @@ void writeExeTarget(char* modulename) {
   printf("\t\t$(CP) $(PROGRAM) $(HOME)/bin\n");
 #endif
 
+
+
 #ifdef OSX
 #define UNIX
+#endif
+
+#ifdef UNIX
+  printf("install:\n");
+  printf("\t\t$(CP) $(PROGRAM) $(bindir)\n");
+
+  printf("install-strip:\n");
+  printf("\t\t$(STRIP) $(PROGRAM)\n");
+  printf("\t\t$(INSTALL_PROGRAM) $(PROGRAM) $(bindir)\n");
 #endif
 
 #ifdef __WATCOMC__
@@ -957,6 +977,16 @@ void writeDllTarget(char* modulename) {
   printf("\t\t@$(POST_PROCESS) \n");
   printf("endif\n");
 #endif
+
+#ifdef UNIX
+  printf("install:\n");
+  printf("\t\t$(INSTALL_PROGRAM) %s $(libdir)\n", modulename);
+
+  printf("install-strip:\n");
+  printf("\t\t$(STRIP) $(PROGRAM)\n");
+  printf("\t\t$(INSTALL_PROGRAM) %s $(libdir)\n", modulename);
+#endif
+
 }
 /*...e*/
 /*...swritePluginTarget\40\char\42\ modulename\41\:0:*/
@@ -1139,13 +1169,20 @@ void write_so_Target(char* modulename) {
 #define UNIX
 #endif
 
-  printf("\t\tcp $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(HOME)/lib\n");
-  printf("\t\techo cd $(HOME)/lib >mklink.sh\n");
+  printf("\n");
+  printf("install:\n");
+  printf("\t\t$(INSTALL) $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(libdir)\n");
+  printf("\t\techo cd $(libdir) >mklink.sh\n");
   printf("\t\techo ln -sf $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(PROGRAM).$(MAJOR) >>mklink.sh\n");
   printf("\t\techo ln -sf $(PROGRAM).$(MAJOR) $(PROGRAM) >>mklink.sh\n");
   printf("\t\tchmod +x mklink.sh\n");
   printf("\t\t./mklink.sh\n");
   printf("\t\trm mklink.sh\n");
+
+  printf("\n");
+  printf("install-strip: install\n");
+  printf("\t\t$(STRIP) $(libdir)/$(PROGRAM).$(MAJOR).$(MINOR).$(MICRO)\n");
+
 #endif
 #ifdef __WATCOMC__
   fprintf(stderr, "Warning: Creating a so library under Windows is not possible with Watcom !!\n");
@@ -1174,13 +1211,20 @@ void write_so_bundleTarget(char* modulename) {
 #define UNIX
 #endif
 
-  printf("\t\tcp $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(HOME)/lib\n");
-  printf("\t\techo cd $(HOME)/lib >mklink.sh\n");
+  printf("\n");
+  printf("install:\n");
+  printf("\t\t$(INSTALL) $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(libdir)\n");
+  printf("\t\techo cd $(libdir) >mklink.sh\n");
   printf("\t\techo ln -sf $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(PROGRAM).$(MAJOR) >>mklink.sh\n");
   printf("\t\techo ln -sf $(PROGRAM).$(MAJOR) $(PROGRAM) >>mklink.sh\n");
   printf("\t\tchmod +x mklink.sh\n");
   printf("\t\t./mklink.sh\n");
   printf("\t\trm mklink.sh\n");
+
+  printf("\n");
+  printf("install-strip: install\n");
+  printf("\t\t$(STRIP) $(libdir)/$(PROGRAM).$(MAJOR).$(MINOR).$(MICRO)\n"); 
+
 #endif
 #ifdef __WATCOMC__
   fprintf(stderr, "Warning: Creating a so library under Windows is not possible with Watcom !!\n");
@@ -1208,13 +1252,20 @@ void write_wx_so_Target(char* modulename) {
 #define UNIX
 #endif
 
-  printf("\t\tcp $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(HOME)/lib\n");
-  printf("\t\techo cd $(HOME)/lib >mklink.sh\n");
+  printf("\n");
+  printf("install:\n");
+  printf("\t\t$(INSTALL) $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(libdir)\n");
+  printf("\t\techo cd $(libdir) >mklink.sh\n");
   printf("\t\techo ln -sf $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(PROGRAM).$(MAJOR) >>mklink.sh\n");
   printf("\t\techo ln -sf $(PROGRAM).$(MAJOR) $(PROGRAM) >>mklink.sh\n");
   printf("\t\tchmod +x mklink.sh\n");
   printf("\t\t./mklink.sh\n");
   printf("\t\trm mklink.sh\n");
+
+  printf("\n");
+  printf("install-strip: install\n");
+  printf("\t\t$(STRIP) $(libdir)/$(PROGRAM).$(MAJOR).$(MINOR).$(MICRO)\n");
+
 #endif
 #ifdef __WATCOMC__
   fprintf(stderr, "Warning: Creating a so library under Windows is not possible with Watcom !!\n");
@@ -1242,13 +1293,20 @@ void write_wx_shared_Target(char* modulename) {
 #define UNIX
 #endif
 
-  printf("\t\tcp $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(HOME)/lib\n");
-  printf("\t\techo cd $(HOME)/lib >mklink.sh\n");
+  printf("\n");
+  printf("install:\n");
+  printf("\t\t$(INSTALL) $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(libdir)\n");
+  printf("\t\techo cd $(libdir) >mklink.sh\n");
   printf("\t\techo ln -sf $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(PROGRAM).$(MAJOR) >>mklink.sh\n");
   printf("\t\techo ln -sf $(PROGRAM).$(MAJOR) $(PROGRAM) >>mklink.sh\n");
   printf("\t\tchmod +x mklink.sh\n");
   printf("\t\t./mklink.sh\n");
   printf("\t\trm mklink.sh\n");
+
+  printf("\n");
+  printf("install-strip: install\n");
+  printf("\t\t$(STRIP) $(libdir)/$(PROGRAM).$(MAJOR).$(MINOR).$(MICRO)\n"); 
+  
 #endif
 #ifdef __WATCOMC__
   fprintf(stderr, "Warning: Creating a so library under Windows is not possible with Watcom !!\n");
@@ -1442,13 +1500,19 @@ void write_soPlugin_Target(char* modulename) {
   printf("\t\t$(CC) -shared -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) $(LIBS) -lc $(VENDORLIBS)\n");
 #endif
 
-  printf("\t\tcp $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(HOME)/plugins\n");
-  printf("\t\techo cd $(HOME)/plugins >mklink.sh\n");
+  printf("\n");
+  printf("install:\n");
+  printf("\t\t$(INSTALL) $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(plugindir)\n");
+  printf("\t\techo cd $(plugindir) >mklink.sh\n");
   printf("\t\techo ln -sf $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(PROGRAM).$(MAJOR) >>mklink.sh\n");
   printf("\t\techo ln -sf $(PROGRAM).$(MAJOR) $(PROGRAM) >>mklink.sh\n");
   printf("\t\tchmod +x mklink.sh\n");
   printf("\t\t./mklink.sh\n");
   printf("\t\trm mklink.sh\n");
+
+  printf("\n");
+  printf("install-strip: install\n");
+  printf("\t\t$(STRIP) $(plugindir)/$(PROGRAM).$(MAJOR).$(MINOR).$(MICRO)\n");
 #endif
 #ifdef __WATCOMC__
   fprintf(stderr, "Warning: Creating a so library under Windows is not possible with Watcom !!\n");
@@ -1473,13 +1537,19 @@ void write_wx_soPlugin_Target(char* modulename) {
   printf("\t\t$(CC) -shared -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) $(L_OPS) -lc $(VENDORLIBS)\n");
 #endif
 
-  printf("\t\tcp $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(HOME)/plugins\n");
-  printf("\t\techo cd $(HOME)/plugins >mklink.sh\n");
+  printf("\n");
+  printf("install:\n");
+  printf("\t\t$(INSTALL) $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(plugindir)\n");
+  printf("\t\techo cd $(plugindir) >mklink.sh\n");
   printf("\t\techo ln -sf $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(PROGRAM).$(MAJOR) >>mklink.sh\n");
   printf("\t\techo ln -sf $(PROGRAM).$(MAJOR) $(PROGRAM) >>mklink.sh\n");
   printf("\t\tchmod +x mklink.sh\n");
   printf("\t\t./mklink.sh\n");
   printf("\t\trm mklink.sh\n");
+  
+  printf("\n");
+  printf("install-strip: install\n");
+  printf("\t\t$(STRIP) $(plugindir)/$(PROGRAM).$(MAJOR).$(MINOR).$(MICRO)\n");
 
 #endif
 #ifdef __WATCOMC__
@@ -1497,7 +1567,7 @@ void ShowHelp(int argc, char *argv[])
 
   fprintf(stderr, "Enhanced by Lothar Behrens (lothar.behrens@lollisoft.de)\n\n");
 
-  fprintf(stderr, "MKMK: makefile generator $Revision: 1.74 $\n");
+  fprintf(stderr, "MKMK: makefile generator $Revision: 1.75 $\n");
   fprintf(stderr, "Usage: MKMK lib|exe|dll|so modulname includepath,[includepath,...] file1 [file2 file3...]\n");
   
   fprintf(stderr, "Your parameters are: ");
