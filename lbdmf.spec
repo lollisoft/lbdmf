@@ -8,7 +8,7 @@ Source: %{name}-%{version}.tgz
 BuildRoot: %{_tmppath}/build-root-%{name}
 Packager: Lothar Behrens
 Distribution: SuSE
-Prefix: /tmp/%{name}
+Prefix: /usr
 Url: http://www.lollisoft.de
 
 
@@ -25,7 +25,7 @@ mkdir $RPM_BUILD_ROOT
 
 %build
 CFLAGS="$RPM_OPT_FLAGS" CXXFLAGS="$RPM_OPT_FLAGS" \
-./configure --prefix=%{prefix}
+./configure --prefix=$RPM_BUILD_ROOT%{prefix}
 make -j 2
 
 %install
