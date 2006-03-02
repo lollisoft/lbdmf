@@ -12,11 +12,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.75 $
+ * $Revision: 1.76 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.75 2006/03/02 12:37:12 lollisoft Exp $
+ * $Id: mkmk.cpp,v 1.76 2006/03/02 16:39:29 lollisoft Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.76  2006/03/02 16:39:29  lollisoft
+ * Use prefix for libraries.
+ *
  * Revision 1.75  2006/03/02 12:37:12  lollisoft
  * Modified or added make install (strip) process
  *
@@ -1567,7 +1570,7 @@ void ShowHelp(int argc, char *argv[])
 
   fprintf(stderr, "Enhanced by Lothar Behrens (lothar.behrens@lollisoft.de)\n\n");
 
-  fprintf(stderr, "MKMK: makefile generator $Revision: 1.75 $\n");
+  fprintf(stderr, "MKMK: makefile generator $Revision: 1.76 $\n");
   fprintf(stderr, "Usage: MKMK lib|exe|dll|so modulname includepath,[includepath,...] file1 [file2 file3...]\n");
   
   fprintf(stderr, "Your parameters are: ");
@@ -1806,7 +1809,7 @@ void WriteDep(FILE *f, char *Name, TIncludeParser *p)
                 break;
 	case SO_BUNDLE_TARGET:
         	printf("\t\t@echo Build %s\n", NameC);
-                printf("\t\t@%s -c -fPIC -g $(C_SOOPS) $(MOD_INCL) %s -o %s\n\n", Compiler, Name, ObjName);
+                printf("\t\t@%s -c -fPIC $(C_SOOPS) $(MOD_INCL) %s -o %s\n\n", Compiler, Name, ObjName);
                 break;
         case SO_TARGET:
         case SOPLUGIN_TARGET:
@@ -1819,7 +1822,7 @@ void WriteDep(FILE *f, char *Name, TIncludeParser *p)
                     }
                 }
         	printf("\t\t@echo Build %s\n", NameC);
-                printf("\t\t@%s -c -fPIC -g $(C_SOOPS) $(MOD_INCL) %s -o %s.o\n\n", Compiler, Name, ObjName);
+                printf("\t\t@%s -c -fPIC $(C_SOOPS) $(MOD_INCL) %s -o %s.o\n\n", Compiler, Name, ObjName);
                 }
                 break;
         case WXSO_TARGET:
@@ -1834,7 +1837,7 @@ void WriteDep(FILE *f, char *Name, TIncludeParser *p)
                     }
                 }
         	printf("\t\t@echo Build %s\n", NameC);
-                printf("\t\t@%s -c -fPIC -g $(C_SOOPS) $(MOD_INCL) %s -o %s.o\n\n", Compiler, Name, ObjName);
+                printf("\t\t@%s -c -fPIC $(C_SOOPS) $(MOD_INCL) %s -o %s.o\n\n", Compiler, Name, ObjName);
                 }
                 break;
     case FRAMEWORK_TARGET:
@@ -1848,7 +1851,7 @@ void WriteDep(FILE *f, char *Name, TIncludeParser *p)
                     }
                 }
 				printf("\t\t@echo Build %s\n", NameC);
-                printf("\t\t@%s -c -g $(C_SOOPS) $(MOD_INCL) %s -o %s.o\n\n", Compiler, Name, ObjName);
+                printf("\t\t@%s -c $(C_SOOPS) $(MOD_INCL) %s -o %s.o\n\n", Compiler, Name, ObjName);
                 }
                 break;
         default:

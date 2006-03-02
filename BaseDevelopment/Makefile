@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.92 $
+# * $Revision: 1.93 $
 # * $Name:  $
-# * $Id: Makefile,v 1.92 2006/03/02 13:10:40 lollisoft Exp $
+# * $Id: Makefile,v 1.93 2006/03/02 16:39:29 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.93  2006/03/02 16:39:29  lollisoft
+# * Use prefix for libraries.
+# *
 # * Revision 1.92  2006/03/02 13:10:40  lollisoft
 # * Missing -p
 # *
@@ -384,7 +387,6 @@ BASEDIRECTORIES= \
 	../Modules \
 	../RegressionTests \
 	../AppDevelopment \
-	../vendor/wxaui-0.9.1/src \
 	../vendor/wxaui-0.9.1/sample \
 	../vendor/tvision/examples/lbDMF
 
@@ -412,6 +414,7 @@ ALLTARGETS = \
 	lbclasses \
 	lbDB \
 	lbPluginManager \
+	../vendor/wxaui-0.9.1/src \
 	../AppDevelopmentDemo/App \
 	../AppDevelopmentDemo/DynamicApp/App \
 	../Test/GUI/wxWrapperDLL \
