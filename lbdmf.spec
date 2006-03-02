@@ -8,7 +8,7 @@ Source: %{name}-%{version}.tgz
 BuildRoot: %{_tmppath}/build-root-%{name}
 Packager: Lothar Behrens
 Distribution: SuSE
-Prefix: /tmp
+Prefix: /tmp/%{name}
 Url: http://www.lollisoft.de
 
 
