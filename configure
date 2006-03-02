@@ -9,7 +9,7 @@ i=0
 while [ $# -gt 0 ]
 do
   case $1 in
-  "-prefix"*) echo export prefix=`echo $1 | awk -F = '{ print $2; }'` >> makefile;;
+  "--prefix"*) echo export prefix=`echo $1 | awk -F = '{ print $2; }'` >> makefile;;
   esac
   shift
 done
