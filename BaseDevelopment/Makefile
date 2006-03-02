@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.93 $
+# * $Revision: 1.94 $
 # * $Name:  $
-# * $Id: Makefile,v 1.93 2006/03/02 16:39:29 lollisoft Exp $
+# * $Id: Makefile,v 1.94 2006/03/02 20:32:28 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.94  2006/03/02 20:32:28  lollisoft
+# * Minor changes under Windows
+# *
 # * Revision 1.93  2006/03/02 16:39:29  lollisoft
 # * Use prefix for libraries.
 # *
@@ -312,6 +315,11 @@
 
 ifeq ($(OSTYPE), linux)
 DEVROOT_MAKE=$(DEVROOT)
+
+ifndef prefix
+prefix=$(HOME)
+endif
+
 endif
 
 ifeq ($(OSTYPE), osx)
@@ -324,9 +332,6 @@ endif
 
 Path=$(PATH)
 
-ifndef prefix
-prefix=$(HOME)
-endif
 
 #
 # The BASEDIRECTORIES is intended to hook in other projects into the directory structure.
@@ -470,6 +475,7 @@ endif
 ifeq ($(OSTYPE), Windows_NT)
 
 TARGETDLL=dll
+TARGETFRAMEWORK=dll
 TARGETSHARED=dll
 TARGETEXE=exe
 TARGETPLUGIN=plugin
@@ -720,7 +726,9 @@ lbHook: dummy
 	@echo prefix='$(prefix)'
 	$(MAKE) -s -C $@ -e MODULE=$@ -e TARGET=$(TARGETFRAMEWORK) -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@
+ifeq ($(OSTYPE), linux)
 	$(MAKE) -s -C $@ install-strip
+endif
 
 lbDB: dummy
 	$(MAKE) -s -C $@ -e MODULE=$@ -e TARGET=$(TARGETDLL) -f $(MAKE_CONFIG_FILE)
