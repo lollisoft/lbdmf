@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.89 $
+# * $Revision: 1.90 $
 # * $Name:  $
-# * $Id: Makefile,v 1.89 2006/03/02 12:35:22 lollisoft Exp $
+# * $Id: Makefile,v 1.90 2006/03/02 13:01:18 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.90  2006/03/02 13:01:18  lollisoft
+# * Added creation of target directories
+# *
 # * Revision 1.89  2006/03/02 12:35:22  lollisoft
 # * Modified existing clean target and added install-strip target
 # *
@@ -312,6 +315,10 @@ endif
 
 Path=$(PATH)
 
+ifndef prefix
+prefix=$(HOME)
+endif
+
 #
 # The BASEDIRECTORIES is intended to hook in other projects into the directory structure.
 # This means, that these directories are for general intent. I would create some modules,
@@ -443,6 +450,9 @@ ALLDIRS = \
 	$(BASEDIRECTORIES)
 
 ALLTARGETS = \
+	$(prefix)/bin \
+	$(prefix)/lib \
+	$(prefix)/plugins \
 	../include/lbkey.h \
 	$(ALLDIRS)
 
@@ -508,6 +518,15 @@ install-strip:
 
 ../../plugins/libs: ../../plugins
 	-mkdir ../../plugins/libs
+
+$(prefix)\bin:
+	-mkdir $@
+
+$(prefix)\lib:
+	-mkdir $@
+
+$(prefix)\plugins:
+	-mkdir $@
 
 clean:
 	@for d in $(ALLDIRS); do \
