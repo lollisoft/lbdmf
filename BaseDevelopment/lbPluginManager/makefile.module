@@ -56,7 +56,7 @@ MOD_INCL=$(STD_INCL)
 #-I $(DEVROOT)/Projects/CPP/vendor/dosdir
 OBJDEP=
 #$(DEVROOT)/Projects/CPP/vendor/dosdir/match.o $(DEVROOT)/Projects/CPP/vendor/dosdir/dosdir.o
-VENDORLIBS=$(HOME)/lib/lbHook.so
+VENDORLIBS=$(prefix)/lib/lbHook.so
 endif    
 
 ifeq ($(LB_USE_FRAMEWORKS), yes)

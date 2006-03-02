@@ -59,7 +59,7 @@ endif
 ifeq ($(OSTYPE), linux)
 MODULE=lbClasses
 MOD_INCL=$(STD_INCL) -I../lbHook/linuxCode
-VENDORLIBS=$(HOME)/lib/lbHook.so
+VENDORLIBS=$(prefix)/lib/lbHook.so
 endif    
 
 ifeq ($(LB_USE_FRAMEWORKS), yes)
