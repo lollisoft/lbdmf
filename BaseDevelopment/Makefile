@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.94 $
+# * $Revision: 1.95 $
 # * $Name:  $
-# * $Id: Makefile,v 1.94 2006/03/02 20:32:28 lollisoft Exp $
+# * $Id: Makefile,v 1.95 2006/03/03 16:16:40 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.95  2006/03/03 16:16:40  lollisoft
+# * Changes in shared library naming and linking against.
+# *
 # * Revision 1.94  2006/03/02 20:32:28  lollisoft
 # * Minor changes under Windows
 # *
@@ -640,7 +643,7 @@ endif
 
 ifeq ($(OSTYPE), linux)
 ../vendor/wxaui-0.9.1/src: dummy
-	$(MAKE) -s -C $@ -e MODULE=wxAUI -e TARGET=$(TARGETWXSO) -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@ -e MODULE=libwxAUI -e TARGET=$(TARGETWXSO) -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@
 	$(MAKE) -s -C $@ install-strip
 
@@ -649,7 +652,7 @@ ifeq ($(OSTYPE), linux)
 	$(MAKE) -s -C $@
 
 ../Test/GUI/wxWrapperDLL: dummy
-	$(MAKE) -s -C $@ -e MODULE=wxWrapperDLL -e TARGET=$(TARGETWXSO) -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@ -e MODULE=libwxWrapperDLL -e TARGET=$(TARGETWXSO) -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@
 	$(MAKE) -s -C $@ install-strip
 
@@ -724,7 +727,11 @@ endif
 
 lbHook: dummy
 	@echo prefix='$(prefix)'
+ifeq ($(OSTYPE), linux)
+	$(MAKE) -s -C $@ -e MODULE=lib$@ -e TARGET=$(TARGETFRAMEWORK) -f $(MAKE_CONFIG_FILE)
+else
 	$(MAKE) -s -C $@ -e MODULE=$@ -e TARGET=$(TARGETFRAMEWORK) -f $(MAKE_CONFIG_FILE)
+endif
 	$(MAKE) -s -C $@
 ifeq ($(OSTYPE), linux)
 	$(MAKE) -s -C $@ install-strip

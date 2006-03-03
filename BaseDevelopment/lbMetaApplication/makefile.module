@@ -53,7 +53,7 @@ endif
 
 ifeq ($(OSTYPE), linux)
 MOD_INCL=$(STD_INCL) -I../lbHook/linuxCode
-VENDORLIBS=$(prefix)/lib/lbHook.so
+VENDORLIBS=-L$(prefix)/lib -llbHook
 endif    
 
 ifeq ($(LB_USE_FRAMEWORKS), yes)

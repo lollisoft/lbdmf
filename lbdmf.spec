@@ -1,21 +1,23 @@
 Name: lbdmf
-Summary: -
+Summary: Distributed Multiplatform Framework
 Version: 0.7.0
 Release: 1
 License: LGPL
-Group: Develop/Tools
+Group: Development/Tools
 Source: %{name}-%{version}.tgz
-BuildRoot: %{_tmppath}/build-root-%{name}
-Packager: Lothar Behrens
-Distribution: SuSE
+BuildRoot: %{_tmppath}/%{name}-%{version}-buildroot
+Packager: Lothar Behrens <lothar.behrens@lollisoft.de>
+Distribution: SUSE
 Prefix: /usr
 Url: http://www.lollisoft.de
-
+Autoreqprov: on
+Provides: lbdmf
 
 
 
 %description
--
+This is a framework to develop software. It's origin goal was to make me independent from other
+(commercial) frameworks and development tools.
 
 %prep
 rm -rf $RPM_BUILD_ROOT 
@@ -26,10 +28,14 @@ mkdir $RPM_BUILD_ROOT
 %build
 CFLAGS="$RPM_OPT_FLAGS" CXXFLAGS="$RPM_OPT_FLAGS" \
 ./configure --prefix=$RPM_BUILD_ROOT%{prefix}
-make -j 2
+if [ "$SMP" != "" ]; then
+  make -j 2
+else
+  make
+fi
 
 %install
-make DESTDIR=$RPM_BUILD_ROOT install-strip
+make DESTDIR="%{buildroot}" install-strip
 
 cd $RPM_BUILD_ROOT
 

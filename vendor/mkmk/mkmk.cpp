@@ -12,11 +12,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.76 $
+ * $Revision: 1.77 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.76 2006/03/02 16:39:29 lollisoft Exp $
+ * $Id: mkmk.cpp,v 1.77 2006/03/03 16:16:41 lollisoft Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.77  2006/03/03 16:16:41  lollisoft
+ * Changes in shared library naming and linking against.
+ *
  * Revision 1.76  2006/03/02 16:39:29  lollisoft
  * Use prefix for libraries.
  *
@@ -867,7 +870,7 @@ void writeExeTarget(char* modulename) {
   fprintf(stderr, "Writing linux executable target\n");
   printf("PROGRAM=%s\n", modulename);
   printf("\n%s: $(OBJS)\n", modulename);
-  printf("\t\t$(CC) $(L_OPS) %s $(OBJS) $(OBJDEP) $(LIBS) -lc $(VENDORLIBS)\n",modulename);
+  printf("\t\t$(CC) $(L_OPS) %s $(OBJS) $(OBJDEP) $(LIBS) $(VENDORLIBS)\n",modulename);
   printf("\t\t$(CP) $(PROGRAM) $(HOME)/bin\n");
 #endif
 
@@ -1161,11 +1164,11 @@ void write_so_Target(char* modulename) {
 
 // Patch to create dynamic libraries under Mac OS X
 #ifdef OSX
-  printf("\t\t$(CC) -dynamiclib -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) $(LIBS) -lc $(VENDORLIBS)\n");
+  printf("\t\t$(CC) -dynamiclib -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) $(LIBS) $(VENDORLIBS)\n");
 #undef UNIX  
 #endif
 #ifdef UNIX
-  printf("\t\t$(CC) -shared -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) $(LIBS) -lc $(VENDORLIBS)\n");
+  printf("\t\t$(CC) -shared -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) $(LIBS) $(VENDORLIBS)\n");
 #endif
 
 #ifdef OSX
@@ -1203,11 +1206,11 @@ void write_so_bundleTarget(char* modulename) {
 
 // Patch to create dynamic libraries under Mac OS X
 #ifdef OSX
-  printf("\t\t$(CC) -dynamic -bundle -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) $(LIBS) -lc $(VENDORLIBS)\n");
+  printf("\t\t$(CC) -dynamic -bundle -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) $(LIBS) $(VENDORLIBS)\n");
 #undef UNIX  
 #endif
 #ifdef UNIX
-  printf("\t\t$(CC) -shared -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) $(LIBS) -lc $(VENDORLIBS)\n");
+  printf("\t\t$(CC) -shared -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) $(LIBS) $(VENDORLIBS)\n");
 #endif
 
 #ifdef OSX
@@ -1245,11 +1248,11 @@ void write_wx_so_Target(char* modulename) {
 
 // Patch to create dynamic libraries under Mac OS X
 #ifdef OSX
-  printf("\t\t$(CC) -dynamic -bundle -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) `wx-config --libs` $(OBJS) $(OBJDEP) $(L_OPS) -lc $(VENDORLIBS)\n");
+  printf("\t\t$(CC) -dynamic -bundle -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) `wx-config --libs` $(OBJS) $(OBJDEP) $(L_OPS) $(VENDORLIBS)\n");
 #undef UNIX  
 #endif
 #ifdef UNIX
-  printf("\t\t$(CC) -shared -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) `wx-config --libs` $(OBJS) $(OBJDEP) $(LIBS) -lc $(VENDORLIBS)\n");
+  printf("\t\t$(CC) -shared -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) `wx-config --libs` $(OBJS) $(OBJDEP) $(LIBS) $(VENDORLIBS)\n");
 #endif
 #ifdef OSX
 #define UNIX
@@ -1286,11 +1289,11 @@ void write_wx_shared_Target(char* modulename) {
 
 // Patch to create dynamic libraries under Mac OS X
 #ifdef OSX
-  printf("\t\t$(CC) -dynamiclib -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) `wx-config --libs` $(OBJS) $(OBJDEP) $(L_OPS) -lc $(VENDORLIBS)\n");
+  printf("\t\t$(CC) -dynamiclib -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) `wx-config --libs` $(OBJS) $(OBJDEP) $(L_OPS) $(VENDORLIBS)\n");
 #undef UNIX  
 #endif
 #ifdef UNIX
-  printf("\t\t$(CC) -shared -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) `wx-config --libs` $(OBJS) $(OBJDEP) $(LIBS) -lc $(VENDORLIBS)\n");
+  printf("\t\t$(CC) -shared -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) `wx-config --libs` $(OBJS) $(OBJDEP) $(LIBS) $(VENDORLIBS)\n");
 #endif
 #ifdef OSX
 #define UNIX
@@ -1371,7 +1374,7 @@ void write_wx_framework_Target(char* modulename) {
 
 // Patch to create dynamic libraries under Mac OS X
 #ifdef OSX
-  printf("\t\t$(CC) -dynamiclib -W1,-single_module -compatibility_version 1 -current_version 1 -install_name \"@executable_path/../Frameworks/%s.framework/Versions/A/%s\" -seg1addr 0xb0000000 $(OBJS) $(OBJDEP) `wx-config --libs` $(L_OPS) -o $(PROGRAM).framework/Versions/A/$(PROGRAM) -lc $(VENDORLIBS)\n", modulename, modulename);
+  printf("\t\t$(CC) -dynamiclib -W1,-single_module -compatibility_version 1 -current_version 1 -install_name \"@executable_path/../Frameworks/%s.framework/Versions/A/%s\" -seg1addr 0xb0000000 $(OBJS) $(OBJDEP) `wx-config --libs` $(L_OPS) -o $(PROGRAM).framework/Versions/A/$(PROGRAM) $(VENDORLIBS)\n", modulename, modulename);
 
   printf("\t\techo \\#!/bin/sh > mkLinks.sh\n");
   printf("\t\techo cd %s.framework/Versions >> mkLinks.sh\n", modulename);
@@ -1387,7 +1390,7 @@ void write_wx_framework_Target(char* modulename) {
 #undef UNIX  
 #endif
 #ifdef UNIX
-  printf("\t\t$(CC) -shared -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) $(LIBS) -lc $(VENDORLIBS)\n");
+  printf("\t\t$(CC) -shared -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) $(LIBS) $(VENDORLIBS)\n");
 #endif
 #ifdef OSX
 #define UNIX
@@ -1456,7 +1459,7 @@ void write_framework_Target(char* modulename) {
 
 // Patch to create dynamic libraries under Mac OS X
 #ifdef OSX
-  printf("\t\t$(CC) -dynamiclib -W1,-single_module -compatibility_version 1 -current_version 1 -install_name \"@executable_path/../Frameworks/%s.framework/Versions/A/%s\" -seg1addr 0xb0000000 $(OBJS) $(OBJDEP) $(L_OPS) $(PROGRAM).framework/Versions/A/$(PROGRAM) -lc $(VENDORLIBS)\n", modulename, modulename);
+  printf("\t\t$(CC) -dynamiclib -W1,-single_module -compatibility_version 1 -current_version 1 -install_name \"@executable_path/../Frameworks/%s.framework/Versions/A/%s\" -seg1addr 0xb0000000 $(OBJS) $(OBJDEP) $(L_OPS) $(PROGRAM).framework/Versions/A/$(PROGRAM) $(VENDORLIBS)\n", modulename, modulename);
 
   printf("\t\techo \\#!/bin/sh > mkLinks.sh\n");
   printf("\t\techo cd %s.framework/Versions >> mkLinks.sh\n", modulename);
@@ -1472,7 +1475,7 @@ void write_framework_Target(char* modulename) {
 #undef UNIX  
 #endif
 #ifdef UNIX
-  printf("\t\t$(CC) -shared -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) $(LIBS) -lc $(VENDORLIBS)\n");
+  printf("\t\t$(CC) -shared -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) $(LIBS) $(VENDORLIBS)\n");
 #endif
 #ifdef OSX
 #define UNIX
@@ -1496,11 +1499,11 @@ void write_soPlugin_Target(char* modulename) {
   printf("\n%s: $(OBJS)\n", modulename);
 
 #ifdef OSX  
-  printf("\t\t$(CC) -dynamic -bundle -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) $(LIBS) -lc $(VENDORLIBS)\n");
+  printf("\t\t$(CC) -dynamic -bundle -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) $(LIBS) $(VENDORLIBS)\n");
 #endif
 
 #ifndef OSX
-  printf("\t\t$(CC) -shared -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) $(LIBS) -lc $(VENDORLIBS)\n");
+  printf("\t\t$(CC) -shared -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) $(LIBS) $(VENDORLIBS)\n");
 #endif
 
   printf("\n");
@@ -1533,11 +1536,11 @@ void write_wx_soPlugin_Target(char* modulename) {
   printf("\n%s: $(OBJS)\n", modulename);
 
 #ifdef OSX  
-  printf("\t\t$(CC) -dynamic -bundle -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) $(L_OPS) -lc $(VENDORLIBS)\n");
+  printf("\t\t$(CC) -dynamic -bundle -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) $(L_OPS) $(VENDORLIBS)\n");
 #endif
 
 #ifndef OSX
-  printf("\t\t$(CC) -shared -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) $(L_OPS) -lc $(VENDORLIBS)\n");
+  printf("\t\t$(CC) -shared -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) $(L_OPS) $(VENDORLIBS)\n");
 #endif
 
   printf("\n");
@@ -1570,7 +1573,7 @@ void ShowHelp(int argc, char *argv[])
 
   fprintf(stderr, "Enhanced by Lothar Behrens (lothar.behrens@lollisoft.de)\n\n");
 
-  fprintf(stderr, "MKMK: makefile generator $Revision: 1.76 $\n");
+  fprintf(stderr, "MKMK: makefile generator $Revision: 1.77 $\n");
   fprintf(stderr, "Usage: MKMK lib|exe|dll|so modulname includepath,[includepath,...] file1 [file2 file3...]\n");
   
   fprintf(stderr, "Your parameters are: ");

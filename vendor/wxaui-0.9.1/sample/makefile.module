@@ -113,7 +113,7 @@ OBJDEP=
 C_ELFOPS += `wx-config --inplace --cxxflags` -DUSE_WXWRAPPER_DLL -DUNIX -DLINUX -DLB_I_EXTENTIONS
 L_OPS = `wx-config --inplace --libs` -o
 
-VENDORLIBS=$(prefix)/lib/wxAUI.so 
+VENDORLIBS=-L$(prefix)/lib -lwxAUI 
 endif
 
 ifeq ($(LB_USE_FRAMEWORKS), yes)

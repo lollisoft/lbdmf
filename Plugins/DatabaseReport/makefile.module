@@ -105,7 +105,7 @@ MOD_INCL=$(STD_INCL) -I $(DEVROOT)/Projects/CPP/Test/GUI/wxWrapperDLL
 OBJDEP=
 C_SOOPS_WX = -DUNIX -DLINUX -DLB_I_EXTENTIONS `wx-config --inplace --cxxflags`
 C_SOOPS= $(C_SOOPS_WX)
-VENDORLIBS=$(prefix)/lib/lbHook.so 
+VENDORLIBS=-L$(prefix)/lib -llbHook 
 L_OPS=$(L_SOOPS) `wx-config --libs`
 endif    
 
