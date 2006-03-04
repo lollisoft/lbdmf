@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.99 $
+# * $Revision: 1.100 $
 # * $Name:  $
-# * $Id: Makefile,v 1.99 2006/03/04 17:03:17 lollisoft Exp $
+# * $Id: Makefile,v 1.100 2006/03/04 17:18:55 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.100  2006/03/04 17:18:55  lollisoft
+# * Bugfix
+# *
 # * Revision 1.99  2006/03/04 17:03:17  lollisoft
 # * Symlinks do not simply appear in rpm's
 # *
@@ -539,9 +542,9 @@ install-strip:
 	for sub_target in $(ALLDIRS); do \
 		$(MAKE) -C $$sub_target install-strip; \
 	done
-	echo mkdir -p $(prefix)/lib > mklib.sh
-	echo cp /usr/local/lib/libdmf_wx_gtk2-2.6.so $(prefix)/lib >> mklib.sh
-	echo cp /usr/local/lib/libdmf_wx_gtk2_propgrid-2.6.so $(prefix)/lib >> mklib.sh
+	echo mkdir -p $(prefix)/lib
+	cp /usr/local/lib/libdmf_wx_gtk2-2.6.so $(prefix)/lib
+	cp /usr/local/lib/libdmf_wx_gtk2_propgrid-2.6.so $(prefix)/lib
 
 ../../dll/libs:
 	-mkdir ../../dll/libs
