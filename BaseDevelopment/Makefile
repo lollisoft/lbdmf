@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.95 $
+# * $Revision: 1.96 $
 # * $Name:  $
-# * $Id: Makefile,v 1.95 2006/03/03 16:16:40 lollisoft Exp $
+# * $Id: Makefile,v 1.96 2006/03/04 12:18:18 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.96  2006/03/04 12:18:18  lollisoft
+# * Try to include wx libraries
+# *
 # * Revision 1.95  2006/03/03 16:16:40  lollisoft
 # * Changes in shared library naming and linking against.
 # *
@@ -527,6 +530,10 @@ install-strip:
 	for sub_target in $(ALLDIRS); do \
 		$(MAKE) -C $$sub_target install-strip; \
 	done
+	mkdir -p $(prefix)/local/lib
+	cp /usr/local/lib/libwx_gtk2-2.6.so* $(prefix)/local/lib 
+	cp /usr/local/lib/libwx_gtk2_propgrid-2.6.so.0.2.0* $(prefix)/local/lib
+
 
 ../../dll/libs:
 	-mkdir ../../dll/libs
