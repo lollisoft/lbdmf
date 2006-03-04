@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.100 $
+# * $Revision: 1.101 $
 # * $Name:  $
-# * $Id: Makefile,v 1.100 2006/03/04 17:18:55 lollisoft Exp $
+# * $Id: Makefile,v 1.101 2006/03/04 22:18:17 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.101  2006/03/04 22:18:17  lollisoft
+# * Corrected library dependencies and build names
+# *
 # * Revision 1.100  2006/03/04 17:18:55  lollisoft
 # * Bugfix
 # *
@@ -392,6 +395,7 @@ BASEDIRECTORIES= \
 	../Modules \
 	../RegressionTests \
 	../AppDevelopment \
+	../vendor/propgrid \
 	../vendor/wxaui-0.9.1/src \
 	../vendor/wxaui-0.9.1/sample
 
@@ -471,6 +475,7 @@ ALLDIRS = \
 	lbclasses \
 	lbMetaApplication \
 	lbPluginManager \
+	../vendor/propgrid \
 	../vendor/wxaui-0.9.1/src \
 	../vendor/wxaui-0.9.1/sample \
 	../AppDevelopmentDemo/App \
@@ -544,7 +549,6 @@ install-strip:
 	done
 	echo mkdir -p $(prefix)/lib
 	cp /usr/local/lib/libdmf_wx_gtk2-2.6.so $(prefix)/lib
-	cp /usr/local/lib/libdmf_wx_gtk2_propgrid-2.6.so $(prefix)/lib
 
 ../../dll/libs:
 	-mkdir ../../dll/libs
@@ -662,6 +666,11 @@ endif
 ifeq ($(OSTYPE), linux)
 ../vendor/wxaui-0.9.1/src: dummy
 	$(MAKE) -s -C $@ -e MODULE=libwxAUI -e TARGET=$(TARGETWXSO) -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@
+	$(MAKE) -s -C $@ install-strip
+
+../vendor/propgrid: dummy
+	$(MAKE) -s -C $@ -e MODULE=libwxPropgrid -e TARGET=$(TARGETWXSO) -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@
 	$(MAKE) -s -C $@ install-strip
 

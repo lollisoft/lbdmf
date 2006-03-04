@@ -110,9 +110,9 @@ MOD_INCL=$(STD_INCL) -I ../wxWrapperDLL
 OBJDEP=
 
 C_ELFOPS += `wx-config --inplace --cxxflags` -DUSE_WXWRAPPER_DLL -DUNIX -DLINUX -DLB_I_EXTENTIONS
-L_OPS = -L/usr/local/lib -pthread   -L/usr/X11R6/lib  -ldmf_wx_gtk2-2.6 -o
+L_OPS = -L$(prefix)/lib -pthread   -L/usr/X11R6/lib  -ldmf_wx_gtk2-2.6 -o
 
-VENDORLIBS=-L$(prefix)/lib -llbHook -lwxWrapperDLL -lwxAUI
+VENDORLIBS=-L$(prefix)/lib -llbHook -lwxWrapperDLL -lwxAUI -lwxPropgrid
 endif    
 
 ifeq ($(LB_USE_FRAMEWORKS), yes)

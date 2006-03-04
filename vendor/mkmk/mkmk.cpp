@@ -12,11 +12,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.77 $
+ * $Revision: 1.78 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.77 2006/03/03 16:16:41 lollisoft Exp $
+ * $Id: mkmk.cpp,v 1.78 2006/03/04 22:18:18 lollisoft Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.78  2006/03/04 22:18:18  lollisoft
+ * Corrected library dependencies and build names
+ *
  * Revision 1.77  2006/03/03 16:16:41  lollisoft
  * Changes in shared library naming and linking against.
  *
@@ -1252,7 +1255,7 @@ void write_wx_so_Target(char* modulename) {
 #undef UNIX  
 #endif
 #ifdef UNIX
-  printf("\t\t$(CC) -shared -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) `wx-config --libs` $(OBJS) $(OBJDEP) $(LIBS) $(VENDORLIBS)\n");
+  printf("\t\t$(CC) -shared -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) $(LIBS) $(VENDORLIBS)\n");
 #endif
 #ifdef OSX
 #define UNIX
@@ -1573,7 +1576,7 @@ void ShowHelp(int argc, char *argv[])
 
   fprintf(stderr, "Enhanced by Lothar Behrens (lothar.behrens@lollisoft.de)\n\n");
 
-  fprintf(stderr, "MKMK: makefile generator $Revision: 1.77 $\n");
+  fprintf(stderr, "MKMK: makefile generator $Revision: 1.78 $\n");
   fprintf(stderr, "Usage: MKMK lib|exe|dll|so modulname includepath,[includepath,...] file1 [file2 file3...]\n");
   
   fprintf(stderr, "Your parameters are: ");

@@ -104,7 +104,7 @@ OBJDEP=
 C_SOOPS_WX = -DUNIX -DLINUX -DLB_I_EXTENTIONS `wx-config --cxxflags`
 C_SOOPS= $(C_SOOPS_WX)
 VENDORLIBS=-L$(prefix)/lib -llbHook 
-L_OPS=$(L_SOOPS) `wx-config --libs`
+L_OPS=$(L_SOOPS) -L$(prefix)/lib -pthread   -L/usr/X11R6/lib  -ldmf_wx_gtk2-2.6 
 endif
 
 ifeq ($(LB_USE_FRAMEWORKS), yes)
