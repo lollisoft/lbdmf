@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.97 $
+# * $Revision: 1.98 $
 # * $Name:  $
-# * $Id: Makefile,v 1.97 2006/03/04 16:24:20 lollisoft Exp $
+# * $Id: Makefile,v 1.98 2006/03/04 16:41:23 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.98  2006/03/04 16:41:23  lollisoft
+# * Bugfix
+# *
 # * Revision 1.97  2006/03/04 16:24:20  lollisoft
 # * Added creation of symlinks while installation.
 # *
@@ -536,13 +539,14 @@ install-strip:
 	echo mkdir -p $(prefix)/lib > mklib.sh
 	echo cp /usr/local/lib/libdmf_wx_gtk2-2.6.so.0.2.0 $(prefix)/lib >> mklib.sh
 	echo cp /usr/local/lib/libdmf_wx_gtk2_propgrid-2.6.so.0.2.0 $(prefix)/lib >> mklib.sh
-	cd $(prefix)/lib
-	ln -s /usr/local/lib/libdmf_wx_gtk2-2.6.so.0.2.0 /usr/local/lib/libdmf_wx_gtk2-2.6.so.0
-	ln -s /usr/local/lib/libdmf_wx_gtk2-2.6.so.0 /usr/local/lib/libdmf_wx_gtk2-2.6.so
-	ln -s /usr/local/lib/libdmf_wx_gtk2_propgrid-2.6.so.0.2.0 /usr/local/lib/libdmf_wx_gtk2_propgrid-2.6.so.0
-	ln -s /usr/local/lib/libdmf_wx_gtk2_propgrid-2.6.so.0 /usr/local/lib/libdmf_wx_gtk2_propgrid-2.6.so
+	echo cd $(prefix)/lib >> mklib.sh
+	ln -s libdmf_wx_gtk2-2.6.so.0.2.0 libdmf_wx_gtk2-2.6.so.0 >> mklib.sh
+	ln -s libdmf_wx_gtk2-2.6.so.0 libdmf_wx_gtk2-2.6.so >> mklib.sh
+	ln -s libdmf_wx_gtk2_propgrid-2.6.so.0.2.0 libdmf_wx_gtk2_propgrid-2.6.so.0 >> mklib.sh
+	ln -s libdmf_wx_gtk2_propgrid-2.6.so.0 libdmf_wx_gtk2_propgrid-2.6.so >> mklib.sh
 	chmod +x mklib.sh
 	./mklib.sh
+	rm mklib.sh
 
 ../../dll/libs:
 	-mkdir ../../dll/libs
