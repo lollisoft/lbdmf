@@ -111,7 +111,7 @@ MOD_INCL=$(STD_INCL) -I ../include -I ../wxWrapperDLL
 OBJDEP=
 
 C_ELFOPS += `wx-config --inplace --cxxflags` -DUSE_WXWRAPPER_DLL -DUNIX -DLINUX -DLB_I_EXTENTIONS
-L_OPS = `wx-config --inplace --libs` -o
+L_OPS = -L/usr/local/lib -pthread   -L/usr/X11R6/lib  -ldmf_wx_gtk2-2.6 -o
 
 VENDORLIBS=-L$(prefix)/lib -lwxAUI 
 endif
