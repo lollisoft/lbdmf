@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.101 $
+# * $Revision: 1.102 $
 # * $Name:  $
-# * $Id: Makefile,v 1.101 2006/03/04 22:18:17 lollisoft Exp $
+# * $Id: Makefile,v 1.102 2006/03/05 10:09:57 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.102  2006/03/05 10:09:57  lollisoft
+# * Wrong wx library name
+# *
 # * Revision 1.101  2006/03/04 22:18:17  lollisoft
 # * Corrected library dependencies and build names
 # *
@@ -548,7 +551,7 @@ install-strip:
 		$(MAKE) -C $$sub_target install-strip; \
 	done
 	echo mkdir -p $(prefix)/lib
-	cp /usr/local/lib/libdmf_wx_gtk2-2.6.so $(prefix)/lib
+	cp /usr/local/lib/libwx_gtk2-Lollisoft-2.6.so $(prefix)/lib
 
 ../../dll/libs:
 	-mkdir ../../dll/libs
