@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.41 $
+ * $Revision: 1.42 $
  * $Name:  $
- * $Id: lbPluginManager.cpp,v 1.41 2006/02/27 11:22:16 lollisoft Exp $
+ * $Id: lbPluginManager.cpp,v 1.42 2006/03/05 08:00:49 lollisoft Exp $
  *
  * $Log: lbPluginManager.cpp,v $
+ * Revision 1.42  2006/03/05 08:00:49  lollisoft
+ * Added check for /usr/plugins as plugindir.
+ *
  * Revision 1.41  2006/02/27 11:22:16  lollisoft
  * Corrected plugin path settings. On Windows, environment PLUGIN_DIR
  * overwrites home/plugins.
@@ -509,12 +512,23 @@ void LB_STDCALL lbPluginManager::initialize() {
 		strcat(pluginDir, "/plugins");
 		
 		if ((dir = opendir(pluginDir)) == NULL) {
-			_LOG << "Plugin directory not found!" LOG_
-		
-			free(toFind);
-			free(pluginDir);
-		
-			return;
+
+			/// \todo Change to a better plugin directory.
+			char* pl = "/usr";
+
+			pluginDir = (char*) malloc(strlen(pl)+strlen("/plugins")+1);
+			pluginDir[0] = 0;
+			strcat(pluginDir, pl);
+			strcat(pluginDir, "/plugins");
+
+			if ((dir = opendir(pluginDir)) == NULL) {
+			    _LOG << "Plugin directory not found." LOG_
+			    
+			    free(toFind);
+			    free(pluginDir);
+			    
+			    return;
+			}
 		}
 	}
 	
