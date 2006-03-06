@@ -23,6 +23,9 @@ This is a framework to develop software. It's origin goal was to make me indepen
 rm -rf $RPM_BUILD_ROOT 
 mkdir $RPM_BUILD_ROOT
 
+%post
+ldconfig
+
 %setup -q
 
 %build
