@@ -23,9 +23,6 @@ This is a framework to develop software. It's origin goal was to make me indepen
 rm -rf $RPM_BUILD_ROOT 
 mkdir $RPM_BUILD_ROOT
 
-%post
-ldconfig
-
 %setup -q
 
 %build
@@ -49,6 +46,9 @@ find . -type l -fprint $RPM_BUILD_DIR/file.list.%{name}.libs
 sed '1,2d;s,^\.,\%attr(-\,root\,root) \%dir ,' $RPM_BUILD_DIR/file.list.%{name}.dirs > $RPM_BUILD_DIR/file.list.%{name}
 sed 's,^\.,\%attr(-\,root\,root) ,' $RPM_BUILD_DIR/file.list.%{name}.files >> $RPM_BUILD_DIR/file.list.%{name}
 sed 's,^\.,\%attr(-\,root\,root) ,' $RPM_BUILD_DIR/file.list.%{name}.libs >> $RPM_BUILD_DIR/file.list.%{name}
+
+%post
+ldconfig
 
 %clean
 rm -rf $RPM_BUILD_ROOT
