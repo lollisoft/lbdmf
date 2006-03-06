@@ -104,7 +104,7 @@ OBJDEP=
 C_SOOPS_WX = `wx-config --cxxflags` -I $(DEVROOT)/Projects/CPP/vendor/wxaui-0.9.1/include
 C_SOOPS= $(C_SOOPS_WX)
 VENDORLIBS=
-LIBS=$(L_SOOPS) -L/usr/local/lib -pthread   -L/usr/X11R6/lib  -ldmf_wx_gtk2-2.6 
+LIBS=$(L_SOOPS) `wx-config --inplace --libs` 
 endif    
 
 
