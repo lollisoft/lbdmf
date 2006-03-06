@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.42 $
+ * $Revision: 1.43 $
  * $Name:  $
- * $Id: lbPluginManager.cpp,v 1.42 2006/03/05 08:00:49 lollisoft Exp $
+ * $Id: lbPluginManager.cpp,v 1.43 2006/03/06 11:45:46 lollisoft Exp $
  *
  * $Log: lbPluginManager.cpp,v $
+ * Revision 1.43  2006/03/06 11:45:46  lollisoft
+ * Corrected search criteria creation time point
+ *
  * Revision 1.42  2006/03/05 08:00:49  lollisoft
  * Added check for /usr/plugins as plugindir.
  *
@@ -474,6 +477,7 @@ void LB_STDCALL lbPluginManager::initialize() {
 		strcpy(pluginDir, temp);
 	}
 	
+#ifdef WINDOWS	
 	char* toFind = (char*) malloc(strlen(mask)+strlen(pluginDir)+2);
 	toFind[0] = 0;
 	
@@ -490,8 +494,6 @@ void LB_STDCALL lbPluginManager::initialize() {
 #endif
 #endif
 	strcat(toFind, mask);
-
-#ifdef WINDOWS	
 	long handle = _findfirst(toFind, &find);
 #endif
 #ifdef LINUX
@@ -500,7 +502,6 @@ void LB_STDCALL lbPluginManager::initialize() {
 	
 	if ((dir = opendir(pluginDir)) == NULL) {
 
-	    free(toFind);
 	    free(pluginDir);
 		
 		char* pwd = getenv("PWD");
@@ -524,13 +525,29 @@ void LB_STDCALL lbPluginManager::initialize() {
 			if ((dir = opendir(pluginDir)) == NULL) {
 			    _LOG << "Plugin directory not found." LOG_
 			    
-			    free(toFind);
 			    free(pluginDir);
 			    
 			    return;
 			}
 		}
 	}
+
+	char* toFind = (char*) malloc(strlen(mask)+strlen(pluginDir)+2);
+	toFind[0] = 0;
+	
+	strcat(toFind, pluginDir);
+#ifdef WINDOWS
+	strcat(toFind, "\\");
+#endif
+#ifdef LINUX
+	strcat(toFind, "/");
+#endif
+#ifndef LINUX
+#ifdef OSX
+	strcat(toFind, "/");
+#endif
+#endif
+	strcat(toFind, mask);
 	
 	dir_info = readdir(dir);
 #endif
