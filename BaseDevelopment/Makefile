@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.105 $
+# * $Revision: 1.106 $
 # * $Name:  $
-# * $Id: Makefile,v 1.105 2006/03/06 13:10:31 lollisoft Exp $
+# * $Id: Makefile,v 1.106 2006/03/07 09:40:28 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.106  2006/03/07 09:40:28  lollisoft
+# * Removed some targets in rpm build
+# *
 # * Revision 1.105  2006/03/06 13:10:31  lollisoft
 # * Use local libdir for pulling wx library
 # *
@@ -394,9 +397,7 @@ ifdef RPMBUILD
 ifeq ($(OSTYPE), linux)
 BASEDIRECTORIES= \
 	../Plugins \
-	../Modules \
-	../RegressionTests
-
+	../Modules
 endif
 endif
 
@@ -477,7 +478,27 @@ TARGET_TV_EXE=tvision_elf
 TARGETPLUGIN=soplugin
 TARGETWXPLUGIN=wxsoplugin
 
+ifdef RPMBUILD
+ALLDIRS = \
+	../vendor/dosdir \
+	../vendor/mkmk \
+	lbHook \
+	lbDB \
+	lbModule \
+	lbclasses \
+	lbMetaApplication \
+	lbPluginManager \
+	../vendor/propgrid \
+	../vendor/wxaui-0.9.1/src \
+	../AppDevelopmentDemo/App \
+	../AppDevelopmentDemo/DynamicApp/App \
+	../Test/GUI/wxWrapperDLL \
+	../Test/GUI/wxWrapper \
+	../Test/GUI/wxPlugins/lbLoginWizard \
+	$(BASEDIRECTORIES)
+endif
 
+ifndef RPMBUILD
 ALLDIRS = \
 	../vendor/dosdir \
 	../vendor/mkmk \
@@ -497,6 +518,7 @@ ALLDIRS = \
 	../Test/GUI/wxWrapper \
 	../Test/GUI/wxPlugins/lbLoginWizard \
 	$(BASEDIRECTORIES)
+endif
 
 ALLTARGETS = \
 	$(prefix)/bin \
