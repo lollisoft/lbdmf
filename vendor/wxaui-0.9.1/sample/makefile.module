@@ -121,7 +121,12 @@ ifeq ($(LB_USE_FRAMEWORKS), yes)
 ifeq ($(OSTYPE), osx)
 MOD_INCL=$(STD_INCL) -I ../include -I ../wxWrapperDLL
 OBJDEP=
-C_ELFOPS += `wx-config --inplace --cxxflags` -DUSE_WXWRAPPER_DLL -DOSX -DUNIX -DLINUX -DLB_I_EXTENTIONS -D__WXDEBUG__
+C_ELFOPS += `wx-config --inplace --cxxflags` -DUSE_WXWRAPPER_DLL -DOSX -DUNIX -DLINUX -DLB_I_EXTENTIONS
+
+ifeq ($(DEBUG), yes)
+C_ELFOPS += -D__WXDEBUG__
+endif
+
 L_OPS = -F$(HOME)/lib -framework wxAUI `wx-config --inplace --libs` -o
 VENDORLIBS=
 endif
@@ -133,7 +138,12 @@ ifeq ($(LB_USE_FRAMEWORKS), no)
 ifeq ($(OSTYPE), osx)
 MOD_INCL=$(STD_INCL) -I ../include -I ../wxWrapperDLL
 OBJDEP=
-C_ELFOPS += `wx-config --inplace --cxxflags` -DUSE_WXWRAPPER_DLL -DOSX -DUNIX -DLINUX -DLB_I_EXTENTIONS -D__WXDEBUG__
+C_ELFOPS += `wx-config --inplace --cxxflags` -DUSE_WXWRAPPER_DLL -DOSX -DUNIX -DLINUX -DLB_I_EXTENTIONS
+
+ifeq ($(DEBUG), yes)
+C_ELFOPS += -D__WXDEBUG__
+endif
+
 L_OPS = `wx-config --inplace --libs` -o
 VENDORLIBS=$(HOME)/lib/wxAUI.so 
 endif
