@@ -632,8 +632,6 @@ lbErrCodes LB_STDCALL lb_wxFrame::registerEventHandler(lb_I_Dispatcher* disp) {
 	file_menu->Append(DYNAMIC_VERBOSE, _trans("&Verbose\tCtrl-V"));
 	file_menu->Append(DYNAMIC_QUIT	 , _trans("E&xit\tCtrl-x"));
 
-	int on_panel_usage;
-	
 	file_menu->Append(on_panel_usage, _trans("&switch Panel usage\tCtrl-S"));
 	file_menu->Append(_showLeftPropertyBar, _trans("Show &left property panel\tCtrl-l"));
 
@@ -643,7 +641,7 @@ lbErrCodes LB_STDCALL lb_wxFrame::registerEventHandler(lb_I_Dispatcher* disp) {
 	SetMenuBar(menu_bar);
 
 #ifdef USE_WXAUI
-        m_mgr.Update();
+	m_mgr.Update();
 #endif
 
 	return ERR_NONE;
