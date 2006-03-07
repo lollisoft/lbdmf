@@ -36,6 +36,7 @@ endif
 
 all_targets: $(ALLTARGETS)
 
+install-strip:
 
 
 clean:
