@@ -25,11 +25,14 @@
 #            40235 Duesseldorf (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.82 $
+# * $Revision: 1.83 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.82 2006/02/28 12:43:24 lollisoft Exp $
+# * $Id: STD_MAKE,v 1.83 2006/03/09 08:57:37 lollisoft Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.83  2006/03/09 08:57:37  lollisoft
+# * No debugging in OSX for release.
+# *
 # * Revision 1.82  2006/02/28 12:43:24  lollisoft
 # * Added a switch to make in debug mode (Linux)
 # *
@@ -627,6 +630,9 @@ ifeq ($(OSTYPE), osx)
 
 #LB_USE_FRAMEWORKS=no
 LB_USE_FRAMEWORKS=yes
+
+DEBUG=no
+
 
 STD_INCL = -I $(DEVROOT)/Projects/CPP/BaseDevelopment/lbHook/linuxCode \
 	-I $(DEVROOT)/Projects/CPP/interfaces \
