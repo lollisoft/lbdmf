@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.117 2006/02/21 21:02:16 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.118 2006/03/09 08:59:41 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.117 $
+ * $Revision: 1.118 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.117 2006/02/21 21:02:16 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.118 2006/03/09 08:59:41 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.118  2006/03/09 08:59:41  lollisoft
+ * Catch plugin failures while saving application data.
+ *
  * Revision 1.117  2006/02/21 21:02:16  lollisoft
  * Wrong menu check handling.
  *
@@ -1998,40 +2001,52 @@ int MyApp::OnExit() {
 	lbErrCodes err = ERR_NONE;
 	
 	UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
-	
+		
 	if (metaApp == NULL) {
 		REQUEST(getModuleInstance(), lb_I_MetaApplication, metaApp)
 	}
-
-	PM->initialize();
-
-	{
+	
+	if (PM == NULL) {
+		_LOG << "Error: Could not get plugin manager for saving application data." LOG_
+	} else {
+		PM->initialize();
+		
+		{
         	UAP(lb_I_Plugin, pl1)
 	        UAP(lb_I_Unknown, ukPl1)
-
+			
 	        pl1 = PM->getFirstMatchingPlugin("lb_I_FileOperation", "OutputStreamVisitor");
-	        ukPl1 = pl1->getImplementation();
-
-	        UAP(lb_I_FileOperation, fOp1)
-	        QI(ukPl1, lb_I_FileOperation, fOp1)
-
-	        if (!fOp1->begin("MetaApp.mad")) {
-	                _CL_LOG << "ERROR: Could not write default file for meta application!" LOG_
-	        } else {
-	
-	                UAP(lb_I_Unknown, ukAcceptor1)
-	                QI(metaApp, lb_I_Unknown, ukAcceptor1)
-	                ukAcceptor1->accept(*&fOp1);
-	
-	                fOp1->end();
-	        }
-        
+	        
+			if (pl1 == NULL) {
+				_LOG << "Error: Could not get file operation plugin." LOG_
+			} else {
+				ukPl1 = pl1->getImplementation();
+				
+				if (ukPl1 == NULL) {
+					_LOG << "Error: Could not get file operation implementation." LOG_					
+				} else {
+					UAP(lb_I_FileOperation, fOp1)
+					QI(ukPl1, lb_I_FileOperation, fOp1)
+					
+					if (!fOp1->begin("MetaApp.mad")) {
+						_CL_LOG << "ERROR: Could not write default file for meta application!" LOG_
+					} else {
+						
+						UAP(lb_I_Unknown, ukAcceptor1)
+						QI(metaApp, lb_I_Unknown, ukAcceptor1)
+						ukAcceptor1->accept(*&fOp1);
+						
+						fOp1->end();
+					}
+				}
+			}
         }
         
-	PM->unload();
+		PM->unload();
+	}
 	
 	_CL_LOG << "Unloaded plugins." LOG_
-	
+		
 	return 0;
 }
 /*...sMyApp\58\\58\OnInit\40\void\41\:0:*/
