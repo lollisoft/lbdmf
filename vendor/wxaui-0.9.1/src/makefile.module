@@ -118,7 +118,7 @@ OBJDEP=
 C_SOOPS_WX = -DOSX -DUNIX -DLINUX -DLB_I_EXTENTIONS `wx-config --inplace --cxxflags` 
 C_SOOPS= $(C_SOOPS_WX)
 VENDORLIBS= 
-L_OPS=$(L_SOOPS) -F$(HOME)/lib -framework lbHook -lwx_macd_propgrid-2.6 #`wx-config --inplace --libs`
+L_OPS=$(L_SOOPS) -F$(HOME)/lib -framework lbHook -lwx_mac_Lollisoft_propgrid-2.6 #`wx-config --inplace --libs`
 endif
 
 endif
@@ -131,7 +131,7 @@ OBJDEP=
 C_SOOPS_WX = -DOSX -DUNIX -DLINUX -DLB_I_EXTENTIONS `wx-config --inplace --cxxflags` 
 C_SOOPS= $(C_SOOPS_WX)
 VENDORLIBS=$(HOME)/lib/lbHook.so 
-L_OPS=$(L_SOOPS) -lwx_macd_propgrid-2.6 #`wx-config --inplace --libs`
+L_OPS=$(L_SOOPS) -lwx_mac_Lollisoft_propgrid-2.6
 endif
 
 endif
