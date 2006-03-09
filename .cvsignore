@@ -29,5 +29,6 @@ Debug
 makefile
 bouml.txt
 dist
+bindist
 Output
 readme.txt
