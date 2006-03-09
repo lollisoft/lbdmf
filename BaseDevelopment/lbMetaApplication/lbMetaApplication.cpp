@@ -27,15 +27,19 @@
             40235 Duesseldorf (germany)
 */
 /*...e*/
-
+	
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.83 $
+ * $Revision: 1.84 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.83 2006/02/22 11:49:57 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.84 2006/03/09 09:29:11 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.84  2006/03/09 09:29:11  lollisoft
+ * Catch plugin failure while loading application settings and
+ * database connection failure.
+ *
  * Revision 1.83  2006/02/22 11:49:57  lollisoft
  * Moved the general part to meta application. wxWrapper does ask for it when left panel will be shown.
  *
@@ -595,31 +599,31 @@ lb_I_EventManager * lb_MetaApplication::getEVManager( void ) {
 lbErrCodes LB_STDCALL lb_MetaApplication::Initialize(char* user, char* appName) {
 	lbErrCodes err = ERR_NONE;
 /*...sdoc:8:*/
-/**
- * At this point should be found the real application. The real one
- * may be defined by an environment variable, that is defined out of
- * a batch file.
- * The variable contains the name of the application, where a xml tag
- * resolves the functor for this application.
- */
+	/**
+	* At this point should be found the real application. The real one
+	 * may be defined by an environment variable, that is defined out of
+	 * a batch file.
+	 * The variable contains the name of the application, where a xml tag
+	 * resolves the functor for this application.
+	 */
 /*...e*/
-
+	
 	if (user == NULL) {
 		_CL_LOG << "lb_MetaApplication::Initialize() user is NULL" LOG_
 	} else
-	if (LogonUser == NULL) {
-		REQUEST(manager.getPtr(), lb_I_String, LogonUser)
-		LogonUser->setData(user);
-	}
+		if (LogonUser == NULL) {
+			REQUEST(manager.getPtr(), lb_I_String, LogonUser)
+			LogonUser->setData(user);
+		}
 	
 	if (appName == NULL) {
 		_CL_LOG << "lb_MetaApplication::Initialize() appName is NULL" LOG_
 	} else
-	if (LogonApplication == NULL) {
-		REQUEST(manager.getPtr(), lb_I_String, LogonApplication)
-		LogonApplication->setData(appName);
-	}
-
+		if (LogonApplication == NULL) {
+			REQUEST(manager.getPtr(), lb_I_String, LogonApplication)
+			LogonApplication->setData(appName);
+		}
+	
 /*...sdispatch integer values:8:*/
 	/*
 	 * This variable is needed, if this instance also implements a little dispatcher.
@@ -632,42 +636,42 @@ lbErrCodes LB_STDCALL lb_MetaApplication::Initialize(char* user, char* appName) 
 	int getLoginData;
 	int doAutoload;
 /*...e*/
-
+	
 /*...sget the event manager:8:*/
 	/**
-	 * Registrieren eines Events, der auch auf der GUI Seite bekannt ist.
+		* Registrieren eines Events, der auch auf der GUI Seite bekannt ist.
 	 */
 	
 	lb_I_Module* m = *&manager;
 	REQUEST(m, lb_I_EventManager, eman)
 /*...e*/
-	
+		
 /*...sregister some basic events \40\getBasicApplicationInfo\46\\46\\46\\41\ by the event manager:8:*/
-	eman->registerEvent("doAutoload", doAutoload);
+		eman->registerEvent("doAutoload", doAutoload);
 	eman->registerEvent("enterDebugger", enterDebugger);
 	eman->registerEvent("getBasicApplicationInfo", getBasicApplicationInfo);
 	eman->registerEvent("getMainModuleInfo", getMainModuleInfo);
 	eman->registerEvent("Button Test pressed", testPressed);
-
+	
 	if (getenv("TARGET_APPLICATION") == NULL) {
 		// Need a database configuration based authentication
 		eman->registerEvent("getLoginData", getLoginData);
 	}
 /*...e*/
-
+	
 /*...sget the dispatcher instance:8:*/
 	REQUEST(m, lb_I_Dispatcher, dispatcher)
-	dispatcher->setEventManager(eman.getPtr());
+		dispatcher->setEventManager(eman.getPtr());
 /*...e*/
-
+	
 	registerEventHandler(dispatcher.getPtr());
-
+	
 	// Step 3 (Load sub components, handling menus and else needed for an UI)
 	loadSubModules();
-
+	
 /*...ssome docs:8:*/
 	/**
-	 * After initializion of all event handlers, we need to get up all
+		* After initializion of all event handlers, we need to get up all
 	 * GUI accessible handlers - like menus or else.
 	 * This class, as an example, provides two handlers
 	 * getBasicApplicationInfo and getMainModuleInfo
@@ -684,10 +688,10 @@ lbErrCodes LB_STDCALL lb_MetaApplication::Initialize(char* user, char* appName) 
 	 *	1. An information about menu creation
 	 *		This may be a simple string - lb_I_String
 	 */
-
-
+	
+	
 	/**
-	 * Init the application (menu, toolbar, accelerators)
+		* Init the application (menu, toolbar, accelerators)
 	 *
 	 * This will be done by the loaded application from the
 	 * environment variable (TARGET_APPLICATION)
@@ -695,23 +699,23 @@ lbErrCodes LB_STDCALL lb_MetaApplication::Initialize(char* user, char* appName) 
 /*...e*/
 	
 	addMenuBar(_trans("&Edit"));
-
+	
 	char* temp1 = _trans("&Autoload application\tCtrl-A");
 	
 	char* mm1 = (char*) malloc(strlen(temp1)+1);
 	mm1[0] = 0;
 	strcpy(mm1, temp1);
-
+	
 	addMenuEntryCheckable(_trans("&Edit"), mm1, "doAutoload", "");
-
+	
 	free(mm1);
-
+	
 	if (getenv("TARGET_APPLICATION") != NULL) {
 		loadApplication("", "");
 	}
 	
 	addMenuBar(_trans("&Help"));
-
+	
 	if (getenv("TARGET_APPLICATION") == NULL) {
 		char* temp = _trans("&Login\tCtrl-L");
 		char* login = (char*) malloc(strlen(temp)+1);
@@ -730,91 +734,103 @@ lbErrCodes LB_STDCALL lb_MetaApplication::Initialize(char* user, char* appName) 
 	
 	addMenuEntry(_trans("&Help"), mm, "getMainModuleInfo", "");
 	free(mm);
-
-	_CL_LOG << "Load properties from file..." LOG_
 	
-	REQUEST(manager.getPtr(), lb_I_Parameter, myProperties)
-
-	// Get the plugin to read a standard stream based file
-
-	UAP_REQUEST(manager.getPtr(), lb_I_PluginManager, PM)
-
-	UAP(lb_I_Plugin, pl)
-	UAP(lb_I_Unknown, ukPl)
+	_CL_LOG << "Load properties from file..." LOG_
 		
-	pl = PM->getFirstMatchingPlugin("lb_I_FileOperation", "InputStreamVisitor");
-	ukPl = pl->getImplementation();
-			
-	UAP(lb_I_FileOperation, fOp)
-	QI(ukPl, lb_I_FileOperation, fOp)
-			
-	if (!fOp->begin("MetaApp.mad")) {
-		// No file. Try write a default file.
+		REQUEST(manager.getPtr(), lb_I_Parameter, myProperties)
 		
-		UAP(lb_I_Plugin, pl1)
-		UAP(lb_I_Unknown, ukPl1)
+		// Get the plugin to read a standard stream based file
 		
-		pl1 = PM->getFirstMatchingPlugin("lb_I_FileOperation", "OutputStreamVisitor");
-		ukPl1 = pl1->getImplementation();
-			
-		UAP(lb_I_FileOperation, fOp1)
-		QI(ukPl1, lb_I_FileOperation, fOp1)
+		UAP_REQUEST(manager.getPtr(), lb_I_PluginManager, PM)
+		
+		UAP(lb_I_Plugin, pl)
+		UAP(lb_I_Unknown, ukPl)
+		
+		pl = PM->getFirstMatchingPlugin("lb_I_FileOperation", "InputStreamVisitor");
+	
+	if (pl != NULL) {
+		_CL_LOG << "Try to get an implementation." LOG_
+		ukPl = pl->getImplementation();
 
-		if (!fOp1->begin("MetaApp.mad")) {
-			_CL_LOG << "ERROR: Could not write default file for meta application!" LOG_		
+		if (ukPl != NULL) {
+		UAP(lb_I_FileOperation, fOp)
+			QI(ukPl, lb_I_FileOperation, fOp)
 			
-			return ERR_FILE_WRITE_DEFAULT;
+			if (!fOp->begin("MetaApp.mad")) {
+				// No file. Try write a default file.
+				
+				_CL_LOG << "No configuration file available. Write one." LOG_
+				
+				UAP(lb_I_Plugin, pl1)
+				UAP(lb_I_Unknown, ukPl1)
+				
+				pl1 = PM->getFirstMatchingPlugin("lb_I_FileOperation", "OutputStreamVisitor");
+				ukPl1 = pl1->getImplementation();
+				
+				UAP(lb_I_FileOperation, fOp1)
+					QI(ukPl1, lb_I_FileOperation, fOp1)
+					
+					if (!fOp1->begin("MetaApp.mad")) {
+						_CL_LOG << "ERROR: Could not write default file for meta application!" LOG_		
+						
+						return ERR_FILE_WRITE_DEFAULT;
+					}
+				
+				UAP(lb_I_Unknown, ukAcceptor1)
+					QI(this, lb_I_Unknown, ukAcceptor1)
+					ukAcceptor1->accept(*&fOp1);
+				
+				fOp1->end();		
+				
+				if (!fOp->begin("MetaApp.mad")) {
+					_CL_LOG << "FATAL: Re read just written default file failed!" LOG_
+					return ERR_FILE_READ_DEFAULT;
+				}
+			}
+		
+		// Do it as I didn't know the type of my project.
+		UAP(lb_I_Unknown, ukAcceptor)
+			QI(this, lb_I_Unknown, ukAcceptor)
+			ukAcceptor->accept(*&fOp);
+		
+		fOp->end();
+		} else {
+			_CL_LOG << "Error: Could not load stream operator classes!" LOG_
 		}
-
-		UAP(lb_I_Unknown, ukAcceptor1)
-		QI(this, lb_I_Unknown, ukAcceptor1)
-		ukAcceptor1->accept(*&fOp1);
-		
-		fOp1->end();		
-		
-		if (!fOp->begin("MetaApp.mad")) {
-			_CL_LOG << "FATAL: Re read just written default file failed!" LOG_
-			return ERR_FILE_READ_DEFAULT;
-		}
+	} else {
+		_CL_LOG << "Error: Could not load stream operator classes!" LOG_
 	}
-			
-	// Do it as I didn't know the type of my project.
-	UAP(lb_I_Unknown, ukAcceptor)
-	QI(this, lb_I_Unknown, ukAcceptor)
-	ukAcceptor->accept(*&fOp);
-			
-	fOp->end();
-
+	
 	if (getAutoload() && (LogonUser != NULL) && (LogonApplication != NULL)) {
 		if ((strcmp(LogonUser->charrep(), "") != 0) && (strcmp(LogonApplication->charrep(), "") != 0)) {
 			_CL_LOG << "Autoload is active and have " << LogonApplication->charrep() << 
-				" and " << LogonUser->charrep() << ". Loading..." LOG_
+			" and " << LogonUser->charrep() << ". Loading..." LOG_
 			
 			/* loadApplication() does not know, that the parameters are from it self.
-			   Thus LogonApplication->setData(...) and LogonUser->setData(...) would
-			   delete it's content.
-			   
-			   This is tricky.
+			Thus LogonApplication->setData(...) and LogonUser->setData(...) would
+			delete it's content.
+			
+			This is tricky.
 			*/ 
 			
 			char* a = strdup(LogonApplication->charrep());
 			char* u = strdup(LogonUser->charrep());
-				
+			
 			loadApplication(u, a);
 			
 			free(a);
 			free(u);
-		
+			
 		}
 	}
-
+	
 	if (getAutoload()) 
 		toggleEvent("doAutoload");
-
+	
 	
 	_CL_LOG << "Loaded properties from file." LOG_
-
-	return ERR_NONE;
+		
+		return ERR_NONE;
 }
 /*...e*/
 
@@ -972,122 +988,129 @@ lbErrCodes LB_STDCALL lb_MetaApplication::loadApplication(char* user, char* appl
 		UAP(lb_I_Query, sampleQuery)
 
 		database->init();
-		database->connect("lbDMF", lbDMFUser, lbDMFPasswd);
 
-		sampleQuery = database->getQuery(0);
-
-		char buffer[1000] = "";
-
-		sprintf(buffer,
-		        "select Anwendungen.modulename, Anwendungen.functor, Anwendungen.interface from Anwendungen inner join User_Anwendungen on "
-		        "Anwendungen.id = User_Anwendungen.anwendungenid "
-		        "inner join Users on User_Anwendungen.userid = Users.id where "
-		        "Users.userid = '%s' and Anwendungen.name = '%s'"
-		                , LogonUser->charrep(), LogonApplication->charrep());
-
-		/*
-		 * Decide upon the interface, if this code is capable to handle this application.
-		 * First, only handle lb_I_MetaApplication types.
-		 */
-
-		sampleQuery->skipFKCollecting();
-		sampleQuery->query(buffer);
-		sampleQuery->enableFKCollecting();
-		
-
-		// Fill up the available applications for that user.
-		UAP_REQUEST(manager.getPtr(), lb_I_String, ModuleName)
-		UAP_REQUEST(manager.getPtr(), lb_I_String, Functor)
-
-		lbErrCodes DBerr = sampleQuery->first();
-
-		if ((DBerr == ERR_NONE) || (DBerr == WARN_DB_NODATA)) {
-
+		if (database->connect("lbDMF", lbDMFUser, lbDMFPasswd) != ERR_NONE) {
+			_LOG << "Error: Connection to database failed." LOG_
+			return ERR_NONE;
+		} else {
+			
+			sampleQuery = database->getQuery(0);
+			
+			char buffer[1000] = "";
+			
+			sprintf(buffer,
+					"select Anwendungen.modulename, Anwendungen.functor, Anwendungen.interface from Anwendungen inner join User_Anwendungen on "
+					"Anwendungen.id = User_Anwendungen.anwendungenid "
+					"inner join Users on User_Anwendungen.userid = Users.id where "
+					"Users.userid = '%s' and Anwendungen.name = '%s'"
+					, LogonUser->charrep(), LogonApplication->charrep());
+			
+			/*
+			 * Decide upon the interface, if this code is capable to handle this application.
+			 * First, only handle lb_I_MetaApplication types.
+			 */
+			
+			sampleQuery->skipFKCollecting();
+			sampleQuery->query(buffer);
+			sampleQuery->enableFKCollecting();
+			
+			
+			// Fill up the available applications for that user.
+			UAP_REQUEST(manager.getPtr(), lb_I_String, ModuleName)
+				UAP_REQUEST(manager.getPtr(), lb_I_String, Functor)
+				
+				lbErrCodes DBerr = sampleQuery->first();
+			
+			if ((DBerr == ERR_NONE) || (DBerr == WARN_DB_NODATA)) {
+				
 		        ModuleName = sampleQuery->getAsString(1);
-			Functor = sampleQuery->getAsString(2);
-
+				Functor = sampleQuery->getAsString(2);
+				
 		        applicationName = (char*) malloc(strlen(ModuleName->charrep())+1);
 		        applicationName[0] = 0;
-			strcpy(applicationName, ModuleName->charrep());		        
-
-			#ifdef bla
+				strcpy(applicationName, ModuleName->charrep());		        
+				
+#ifdef bla
 /*...sRead only the first application\46\ More apps are wrong\46\:24:*/
 		        while (TRUE) {
-		                lbErrCodes err = sampleQuery->next();
-
-		                if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
-		                        s1 = sampleQuery->getAsString(1);
-
-		                        printf("Have application '%s'\n", s1->charrep());
-
-		                        box->Append(wxString(s1->charrep()));
-
-		                        if (err == WARN_DB_NODATA) break;
-		                }
+					lbErrCodes err = sampleQuery->next();
+					
+					if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
+						s1 = sampleQuery->getAsString(1);
+						
+						printf("Have application '%s'\n", s1->charrep());
+						
+						box->Append(wxString(s1->charrep()));
+						
+						if (err == WARN_DB_NODATA) break;
+					}
 		        }
 /*...e*/
-			#endif
-
-		} else {
-			_CL_LOG << "Error: Query to get application data failed. '" << buffer << "'" LOG_
-		}
-
-		UAP(lb_I_Unknown, a)
-
-		#ifndef LINUX
-		        #ifdef __WATCOMC__
-		        	#define PREFIX "_"
-	        	#endif
-			#ifdef _MSC_VER
-			        #define PREFIX ""
-	        	#endif
-		#endif
-		#ifdef LINUX
-			#define PREFIX ""
-		#endif
-
-		char f[100] = "";
-		char appl[100] = "";
-
-		strcpy(f, PREFIX);
-		strcat(f, Functor->charrep());
-		strcpy(appl, applicationName);
-
-		
-                #ifdef WINDOWS
-		manager->preload(appl);
-                manager->makeInstance(f, appl, &a);
-                #endif
-                #ifdef LINUX
-		strcat(appl, ".so");		
-		manager->preload(appl);
-                manager->makeInstance(f, appl, &a);
-                #endif
-                if (a == NULL) {
-                        _CL_LOG << "ERROR: Application could not be loaded - either not found or not configured." LOG_
-                        return ERR_NONE;
-                }
-
-		if (moduleName == NULL) {
-			moduleName = (char*) malloc(strlen(appl)+1);
-			moduleName[0] = 0;
-			strcpy(moduleName, appl);
-		} else {
-			_CL_LOG << "ERROR: Multiple applications not yet supported." LOG_
-		}
-
-		a->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
-
-                QI(a, lb_I_Application, app)
-
+#endif
+				
+			} else {
+				_CL_LOG << "Error: Query to get application data failed. '" << buffer << "'" LOG_
+			}
+			
+			
+			UAP(lb_I_Unknown, a)
+				
+#ifndef LINUX
+#ifdef __WATCOMC__
+#define PREFIX "_"
+#endif
+#ifdef _MSC_VER
+#define PREFIX ""
+#endif
+#endif
+#ifdef LINUX
+#define PREFIX ""
+#endif
+				
+				char f[100] = "";
+			char appl[100] = "";
+			
+			strcpy(f, PREFIX);
+			strcat(f, Functor->charrep());
+			strcpy(appl, applicationName);
+			
+			
+#ifdef WINDOWS
+			manager->preload(appl);
+			manager->makeInstance(f, appl, &a);
+#endif
+#ifdef LINUX
+			strcat(appl, ".so");		
+			manager->preload(appl);
+			manager->makeInstance(f, appl, &a);
+#endif
+			if (a == NULL) {
+				_CL_LOG << "ERROR: Application could not be loaded - either not found or not configured." LOG_
+				return ERR_NONE;
+			}
+			
+			if (moduleName == NULL) {
+				moduleName = (char*) malloc(strlen(appl)+1);
+				moduleName[0] = 0;
+				strcpy(moduleName, appl);
+			} else {
+				_CL_LOG << "ERROR: Multiple applications not yet supported." LOG_
+			}
+			
+			a->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+			
+			QI(a, lb_I_Application, app)
+				
                 //if (dispatcher.getPtr() == NULL) _LOG << "Error: dispatcher is NULL" LOG_
-
+				
                 app->setGUI(gui);
-                app->Initialize(user, application);
-
-		_CL_LOG << "Meta application has " << app->getRefCount() << " references." LOG_
-
-		free(applicationName);
+			app->Initialize(user, application);
+			
+			_CL_LOG << "Meta application has " << app->getRefCount() << " references." LOG_
+				
+				free(applicationName);
+			
+		}
 
                 //if (dispatcher.getPtr() == NULL) _LOG << "Error: dispatcher has been set to NULL" LOG_
 	} else {
