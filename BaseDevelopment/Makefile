@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.106 $
+# * $Revision: 1.107 $
 # * $Name:  $
-# * $Id: Makefile,v 1.106 2006/03/07 09:40:28 lollisoft Exp $
+# * $Id: Makefile,v 1.107 2006/03/09 09:03:10 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.107  2006/03/09 09:03:10  lollisoft
+# * Missing ALLDIRS.
+# *
 # * Revision 1.106  2006/03/07 09:40:28  lollisoft
 # * Removed some targets in rpm build
 # *
@@ -462,6 +465,27 @@ ALLTARGETS = \
 	../Test/GUI/wxPlugins/lbLoginWizard \
 	../Test/Console/XML \
 	$(BASEDIRECTORIES)
+
+ALLDIRS = \
+	../vendor/dosdir \
+	../vendor/mkmk \
+	lbHook \
+	lbDB \
+	lbModule \
+	lbclasses \
+	lbMetaApplication \
+	lbPluginManager \
+	../vendor/propgrid \
+	../vendor/wxaui-0.9.1/src \
+	../vendor/wxaui-0.9.1/sample \
+	../AppDevelopmentDemo/App \
+	../AppDevelopmentDemo/DynamicApp/App \
+	../Test/Console/XML \
+	../Test/GUI/wxWrapperDLL \
+	../Test/GUI/wxWrapper \
+	../Test/GUI/wxPlugins/lbLoginWizard \
+	$(BASEDIRECTORIES)
+
 
 endif
 
