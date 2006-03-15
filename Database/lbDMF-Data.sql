@@ -429,27 +429,27 @@ insert into Formular_Parameters (ParameterName, ParameterValue, FormularID) Valu
 
 insert into Formular_Parameters (ParameterName, ParameterValue, FormularID) Values (
 'query',
-'select name, vorname, userid, passwort from users',
+'select name, vorname, userid, passwort from Users',
 1);
 
 insert into Formular_Parameters (ParameterName, ParameterValue, FormularID) Values (
 'query',
-'select name, menuname, eventname, menuhilfe, anwendungid, typ from formulare',
+'select name, menuname, eventname, menuhilfe, anwendungid, typ from Formulare',
 2);
 
 insert into Formular_Parameters (ParameterName, ParameterValue, FormularID) Values (
 'query',
-'select parametername, parametervalue, formularid from formular_parameters',
+'select parametername, parametervalue, formularid from Formular_Parameters',
 7);
 
 insert into Formular_Parameters (ParameterName, ParameterValue, FormularID) Values (
 'query',
-'select userid, anwendungenid from user_anwendungen',
+'select userid, anwendungenid from User_Anwendungen',
 8);
 
 insert into Formular_Parameters (ParameterName, ParameterValue, FormularID) Values (
 'query',
-'select anwendungid, formularid from anwendungen_formulare',
+'select anwendungid, formularid from Anwendungen_Formulare',
 17);
 
 insert into Formular_Parameters (ParameterName, ParameterValue, FormularID) Values (
@@ -459,12 +459,12 @@ insert into Formular_Parameters (ParameterName, ParameterValue, FormularID) Valu
 
 insert into Formular_Parameters (ParameterName, ParameterValue, FormularID) Values (
 'query',
-'select name, titel, modulename, functor, interface from anwendungen order by id',
+'select name, titel, modulename, functor, interface from Anwendungen order by id',
 19);
 
 insert into Formular_Parameters (ParameterName, ParameterValue, FormularID) Values (
 'query',
-'select anwendungid, formularid from anwendungen_formulare order by id',
+'select anwendungid, formularid from Anwendungen_Formulare order by id',
 20);
 
 insert into Formular_Parameters (ParameterName, ParameterValue, FormularID) Values (
