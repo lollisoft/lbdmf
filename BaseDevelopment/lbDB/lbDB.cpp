@@ -799,6 +799,8 @@ bool LB_STDCALL lbBoundColumns::getReadonly(char* column) {
 		ukdata = ColumnNameMapping->getElement(&key);
 		if (ukdata == NULL) printf("NULL pointer!\n");
 
+		
+
 		UAP(lb_I_Integer, pos)
 		
 		lbErrCodes err = ukdata->queryInterface("lb_I_Integer", (void**) &pos, __FILE__, __LINE__);
@@ -1672,6 +1674,8 @@ lb_I_String* LB_STDCALL lbQuery::getFKColumn(int pos) {
 /*...slb_I_String\42\ LB_STDCALL lbQuery\58\\58\getFKColumn\40\char\42\ table\44\ char\42\ primary\41\:0:*/
 lb_I_String* LB_STDCALL lbQuery::getFKColumn(char* table, char* primary) {
 	lbErrCodes err = ERR_NONE;
+
+	_CL_LOG << "lbQuery::getFKColumn('" << table << "', '" << primary << "') called." LOG_
 	
 	UAP_REQUEST(manager.getPtr(), lb_I_String, PKTable_PKName)
 	UAP(lb_I_KeyBase, key_PKTable_PKName)
@@ -1864,7 +1868,11 @@ void LB_STDCALL lbQuery::prepareFKList() {
 	UCHAR   szFkCol[COL_LEN];  /* Foreign key column   */
 
 	SQLHSTMT         hstmt;
-	SQLINTEGER      cbPkTable, cbPkCol, cbFkTable, cbFkCol, cbKeySeq;
+	SQLINTEGER      cbPkTable = TAB_LEN;
+	SQLINTEGER 	cbPkCol = TAB_LEN;
+	SQLINTEGER	cbFkTable = TAB_LEN;
+	SQLINTEGER	cbFkCol = TAB_LEN;
+	SQLINTEGER	cbKeySeq = TAB_LEN;
 	SQLSMALLINT      iKeySeq;
 	SQLRETURN         retcode;
 /*...e*/
@@ -1921,7 +1929,8 @@ void LB_STDCALL lbQuery::prepareFKList() {
 	   if (retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO) {
 	      lbErrCodes err = ERR_NONE;
 
-	      if (isVerbose()) printf("%-s ( %-s ) <-- %-s ( %-s )\n", szPkTable, szPkCol, szFkTable, szFkCol);
+	      //if (isVerbose()) 
+	      printf("%s ( %s ) <-- %s ( %s )\n", szPkTable, szPkCol, szFkTable, szFkCol);
 	      
 	      
 	      UAP_REQUEST(manager.getPtr(), lb_I_String, FKName)
@@ -1991,7 +2000,7 @@ void LB_STDCALL lbQuery::prepareFKList() {
 	      lbErrCodes err = ERR_NONE;
 
 	      //if (isVerbose()) 
-	      printf("%-s ( %-s ) <-- %-s ( %-s )\n", szPkTable, szPkCol, szFkTable, szFkCol);
+	      printf("%s ( %s ) <-- %s ( %s )\n", szPkTable, szPkCol, szFkTable, szFkCol);
 	      
 	      
 	      UAP_REQUEST(manager.getPtr(), lb_I_String, FKName)
@@ -2430,8 +2439,12 @@ char* LB_STDCALL lbQuery::getColumnName(int col) {
 	if (ret != SQL_SUCCESS) {
 		_CL_LOG << "Error: lbQuery::getColumnName('" << col << "') failed. (" << ColumnName << ")" LOG_
 	}
-
-	strcpy(lbQuery_column_Name, (char*) ColumnName);
+	
+	if (strchr((char const*) ColumnName, '.') != 0) {
+		strcpy(lbQuery_column_Name, (char*) (strchr((char const*) ColumnName, '.') + 1));
+	} else {
+		strcpy(lbQuery_column_Name, (char*) ColumnName);
+	}
 	
 	return lbQuery_column_Name;
 }
@@ -3433,7 +3446,12 @@ lbErrCodes LB_STDCALL lbBoundColumn::prepareBoundColumn(lb_I_Query* q, int colum
 	if (columnName) free(columnName);
 	columnName = (char*) malloc(strlen((char const*) ColumnName)+1);
 	columnName[0] = 0;
-	strcpy(columnName, (char const*) ColumnName);
+
+	if (strchr((char const*) ColumnName, '.') != 0) {
+	        strcpy(columnName, (char*) (strchr((char const*) ColumnName, '.') + 1));
+        } else {
+                strcpy(columnName, (char*) ColumnName);
+        }
 
 	return err;
 }
@@ -3524,7 +3542,12 @@ lbErrCodes LB_STDCALL lbBoundColumn::bindColumn(lb_I_Query* q, int column, bool 
 	if (columnName) free(columnName);
 	columnName = (char*) malloc(strlen((char const*) ColumnName)+1);
 	columnName[0] = 0;
-	strcpy(columnName, (char const*) ColumnName);
+
+	if (strchr((char const*) ColumnName, '.') != 0) {
+	        strcpy(columnName, (char*) (strchr((char const*) ColumnName, '.') + 1));
+        } else {
+                strcpy(columnName, (char*) ColumnName);
+        }
 
 	switch (DataType) {
 		case SQL_DATE:
