@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.107 $
+# * $Revision: 1.108 $
 # * $Name:  $
-# * $Id: Makefile,v 1.107 2006/03/09 09:03:10 lollisoft Exp $
+# * $Id: Makefile,v 1.108 2006/03/15 07:24:14 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.108  2006/03/15 07:24:14  lollisoft
+# * Moved Windows module make ordering.
+# *
 # * Revision 1.107  2006/03/09 09:03:10  lollisoft
 # * Missing ALLDIRS.
 # *
@@ -410,12 +413,12 @@ BASEDIRECTORIES= \
 	../Plugins \
 	../Modules \
 	../RegressionTests \
-	../AppDevelopment \
-	../vendor/propgrid \
 	../vendor/wxaui-0.9.1/src \
-	../vendor/wxaui-0.9.1/sample
+	../vendor/wxaui-0.9.1/sample \
+	../AppDevelopment
 
 # Don't compile these every time.
+#	../vendor/propgrid \
 #	../vendor/tvision-set \
 #	../vendor/tvision-set/examples/lbDMF \
 #	../vendor/wxReportWriter \
