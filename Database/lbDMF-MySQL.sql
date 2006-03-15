@@ -13,7 +13,7 @@ CREATE TABLE column_types
   specialColumn BOOL DEFAULT 'false',
   controlType char(30) DEFAULT '',
   PRIMARY KEY (id)
-);
+) type=InnoDB;
 
 -- +---------------------------------------------------------
 -- | TABLE: Actions
@@ -30,7 +30,7 @@ CREATE TABLE actions
   source char(100),
   target INTEGER,
   PRIMARY KEY (id)
-);
+) type=InnoDB;
 
 -- +---------------------------------------------------------
 -- | TABLE: action_types
@@ -46,7 +46,7 @@ CREATE TABLE action_types
   action_handler char(100),	-- the functor with the implementation of the handler
   module	 char(100),	-- the module with the implementation of the handler
   PRIMARY KEY (id)
-);
+) type=InnoDB;
 
 -- +---------------------------------------------------------
 -- | TABLE: action_target
@@ -64,7 +64,7 @@ CREATE TABLE action_steps
   type		INTEGER, -- May be NULL for the first target
   what		char(100),
   PRIMARY KEY (id)
-);
+) type=InnoDB;
 
 CREATE TABLE formular_actions
 (
@@ -73,7 +73,7 @@ CREATE TABLE formular_actions
   action	INTEGER,
   event		CHAR(100),
   PRIMARY KEY (id)
-);
+) type=InnoDB;
 
 -- +---------------------------------------------------------
 -- | TABLE: Translations
@@ -87,7 +87,7 @@ CREATE TABLE translations
   translated VARCHAR(100),
   language CHAR(30) default 'german',
   PRIMARY KEY (id)
-);
+) type=InnoDB;
 
 -- +---------------------------------------------------------
 -- | TABLE: Anwendungen
@@ -102,7 +102,7 @@ CREATE TABLE Anwendungen
   Functor VARCHAR(100),
   Interface VARCHAR(100),
   PRIMARY KEY (id)
-);
+) type=InnoDB;
 
 -- +---------------------------------------------------------
 -- | TABLE: Anwendungs_Parameter
@@ -115,7 +115,20 @@ CREATE TABLE Anwendungs_Parameter
   ParameterValue VARCHAR(255),
   AnwendungID INTEGER,
   PRIMARY KEY (id)
-);
+) type=InnoDB;
+
+-- +---------------------------------------------------------
+-- | TABLE: Formulartypen
+-- +---------------------------------------------------------
+CREATE TABLE Formulartypen
+(
+  id INTEGER NOT NULL AUTO_INCREMENT,
+  HandlerModule VARCHAR(30),
+  HandlerFunctor VARCHAR(100),
+  HandlerInterface VARCHAR(100),
+  Beschreibung VARCHAR(254),
+  PRIMARY KEY (id)
+) type=InnoDB;
 
 
 
@@ -131,13 +144,17 @@ CREATE TABLE Formulare
   MenuHilfe VARCHAR(100),
   AnwendungID INTEGER,
   Typ INTEGER NOT NULL,
-  PRIMARY KEY (id),
-  FOREIGN KEY FK_AnwendungID (AnwendungID) REFERENCES Anwendungen (id)
-);
+  PRIMARY KEY (id)
+) type=InnoDB;
 
+ALTER TABLE `Formulare` ADD INDEX Typ_ind (Typ);
+
+ALTER TABLE `Formulare` ADD INDEX AnwendungID_ind (AnwendungID);
 
 ALTER TABLE `Formulare` ADD FOREIGN KEY `FK_Typ` (`Typ`)
     REFERENCES `Formulartypen` (`id`);
+
+ALTER TABLE `Formulare` ADD FOREIGN KEY `FK_AnwendungID` (`AnwendungID`) REFERENCES `Anwendungen` (`id`);
 
 -- +---------------------------------------------------------
 -- | TABLE: Formular_Parameters
@@ -149,7 +166,9 @@ CREATE TABLE Formular_Parameters
   ParameterValue VARCHAR(255),
   FormularID INTEGER,
   PRIMARY KEY (id)
-);
+) type=InnoDB;
+
+ALTER TABLE `Formular_Parameters` ADD INDEX FormularID_ind (FormularID);
 
 ALTER TABLE `Formular_Parameters` ADD FOREIGN KEY `FK_FormularID` (`FormularID`)
     REFERENCES `Formulare` (`id`);
@@ -166,7 +185,7 @@ CREATE TABLE ForeignKey_VisibleData_Mapping
   PKName	VARCHAR(100),
   PKTable	VARCHAR(100),
   PRIMARY KEY (id)
-);
+) type=InnoDB;
 
 -- +---------------------------------------------------------
 -- | TABLE: Anwendungen_Formulare
@@ -177,43 +196,17 @@ CREATE TABLE Anwendungen_Formulare
   AnwendungID INTEGER NOT NULL,
   FormularID INTEGER NOT NULL,
   PRIMARY KEY (id)
-);
+) type=InnoDB;
+
+ALTER TABLE `Anwendungen_Formulare` ADD INDEX AnwendungID_ind (AnwendungID);
+
+ALTER TABLE `Anwendungen_Formulare` ADD INDEX FormularID_ind (FormularID);
 
 ALTER TABLE `Anwendungen_Formulare` ADD FOREIGN KEY `FK_AnwendungID` (`AnwendungID`)
     REFERENCES `Anwendungen` (`id`);
 
 ALTER TABLE `Anwendungen_Formulare` ADD FOREIGN KEY `FK_FormularID` (`FormularID`)
     REFERENCES `Formulare` (`id`);
-
--- +---------------------------------------------------------
--- | TABLE: Anwendungsberechtigungen
--- +---------------------------------------------------------
-CREATE TABLE Anwendungsberechtigungen
-(
-  id INTEGER NOT NULL AUTO_INCREMENT,
-  idUser INTEGER,
-  idFormular INTEGER,
-  PRIMARY KEY (id)
-);
-
-ALTER TABLE `Anwendungsberechtigungen` ADD FOREIGN KEY `FK_idUser` (`idUser`)
-    REFERENCES `Users` (`id`);
-
-ALTER TABLE `Anwendungsberechtigungen` ADD FOREIGN KEY `FK_idFormular` (`idFormular`)
-    REFERENCES `Formulare` (`id`);
-
--- +---------------------------------------------------------
--- | TABLE: Formulartypen
--- +---------------------------------------------------------
-CREATE TABLE Formulartypen
-(
-  id INTEGER NOT NULL AUTO_INCREMENT,
-  HandlerModule VARCHAR(30),
-  HandlerFunctor VARCHAR(100),
-  HandlerInterface VARCHAR(100),
-  Beschreibung VARCHAR(254),
-  PRIMARY KEY (id)
-);
 
 -- +---------------------------------------------------------
 -- | TABLE: User
@@ -227,7 +220,29 @@ CREATE TABLE Users
   passwort VARCHAR(30),
   lastapp INTEGER,
   PRIMARY KEY (id)
-);
+) type=InnoDB;
+
+
+-- +---------------------------------------------------------
+-- | TABLE: Anwendungsberechtigungen
+-- +---------------------------------------------------------
+CREATE TABLE Anwendungsberechtigungen
+(
+  id INTEGER NOT NULL AUTO_INCREMENT,
+  idUser INTEGER NOT NULL,
+  idFormular INTEGER NOT NULL,
+  PRIMARY KEY (id)
+) type=InnoDB;
+
+ALTER TABLE `Anwendungsberechtigungen` ADD INDEX idUser_ind (idUser);
+
+ALTER TABLE `Anwendungsberechtigungen` ADD INDEX idFormular_ind (idFormular);
+
+ALTER TABLE `Anwendungsberechtigungen` ADD FOREIGN KEY `FK_idUser` (`idUser`)
+    REFERENCES `Users` (`id`);
+
+ALTER TABLE `Anwendungsberechtigungen` ADD FOREIGN KEY `FK_idFormular` (`idFormular`)
+    REFERENCES `Formulare` (`id`);
 
 -- +---------------------------------------------------------
 -- | TABLE: User_Anwendungen
@@ -238,7 +253,11 @@ CREATE TABLE User_Anwendungen
   userid INTEGER NOT NULL,
   AnwendungenId INTEGER NOT NULL,
   PRIMARY KEY (id)
-);
+) type=InnoDB;
+
+ALTER TABLE `User_Anwendungen` ADD INDEX userid_ind (userid);
+
+ALTER TABLE `User_Anwendungen` ADD INDEX AnwendungenId_ind (AnwendungenId);
 
 ALTER TABLE `User_Anwendungen` ADD FOREIGN KEY `FK_userid` (`userid`)
     REFERENCES `Users` (`id`);
@@ -253,7 +272,7 @@ CREATE TABLE report_parameters
   name CHAR(50) NOT NULL,
   value INTEGER  NOT NULL,
   PRIMARY KEY (id)
-);
+) type=InnoDB;
 
 CREATE TABLE report_texts
 (
@@ -262,7 +281,7 @@ CREATE TABLE report_texts
   line INTEGER,
   text CHAR(255),
   PRIMARY KEY (id)
-);
+) type=InnoDB;
 
 
 -- +---------------------------------------------------------
