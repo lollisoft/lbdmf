@@ -588,7 +588,7 @@ void LB_STDCALL lbDetailFormAction::openDetailForm(lb_I_String* formularname, lb
 /*...sPrepare query to get parameter value based on given ID:32:*/
 				id = query->getAsString(1);
 				
-				char* b = "select parametervalue from formular_parameters where formularid = %s";
+				char* b = "select parametervalue from Formular_Parameters where formularid = %s";
 
 				char* buffer = (char*) malloc(strlen(b)+strlen(id->charrep())+1);
 				buffer[0] = 0;

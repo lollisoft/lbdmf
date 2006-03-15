@@ -878,8 +878,8 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 
 	char *_actionquery = "select actions.name, formular_actions.event from actions "
 			     "inner join formular_actions on actions.id = formular_actions.action "
-			     "inner join formulare on formular_actions.formular = formulare.id "
-			     "where formulare.name = '%s'";
+			     "inner join Formulare on formular_actions.formular = Formulare.id "
+			     "where Formulare.name = '%s'";
 
 	char *buf = (char*) malloc(strlen(_actionquery) + strlen(base_formName) + 1);
 	buf[0] = 0;
