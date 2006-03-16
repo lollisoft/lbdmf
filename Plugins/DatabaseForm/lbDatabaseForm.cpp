@@ -418,6 +418,10 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 /*...e*/
 	
 	sampleQuery->enableFKCollecting();
+	
+	UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
+
+	sampleQuery->setAutoRefresh(meta->getAutorefreshData());
 
 	if (SQLString == NULL) {
 		REQUEST(manager.getPtr(), lb_I_String, SQLString)
