@@ -2333,6 +2333,11 @@ public:
 	 */
 	virtual lbErrCodes LB_STDCALL setApplicationName(char* app) = 0;
 
+
+	/** \brief Set automatic loading of SQL data after update.
+	 */
+	virtual void	   LB_STDCALL setAutorefreshData(bool b) = 0;
+	
 	/** \brief Set automatic loading of application.
 	 * The easiest login procedure.
 	 */
@@ -2342,6 +2347,10 @@ public:
 	 * This would be used to help the login procedure to be easier.
 	 */
 	virtual void	   LB_STDCALL setAutoselect(bool b) = 0;
+	
+	/** \brief Set automatic loading of SQL data after update.
+	 */
+	virtual bool	   LB_STDCALL getAutorefreshData() = 0;
 	
 	/** \brief Get automatic loading of application.
 	 * The easiest login procedure.
