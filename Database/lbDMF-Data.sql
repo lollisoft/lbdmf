@@ -3,9 +3,9 @@
 -- | AUTHOR      : Lothar Behrens
 -- +---------------------------------------------------------
 
-insert into column_types (name, tablename, ro) values('kundennr', 'kunden', true);
-insert into column_types (name, tablename, ro) values('id', 'chart', true);
-insert into column_types (name, tablename, ro) values('language', 'translations', TRUE);
+insert into column_types (name, tablename, ro) values('kundennr', 'kunden', 'true');
+insert into column_types (name, tablename, ro) values('id', 'chart', 'true');
+insert into column_types (name, tablename, ro) values('language', 'translations', 'true');
 
 insert into action_types (bezeichnung) values('Buttonpress'); -- Built in handler
 
@@ -384,39 +384,40 @@ insert into Formulare (Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) V
 1, 1);
 insert into ForeignKey_VisibleData_Mapping (FKName, FKTable, PKName, PKTable) Values (
 'anwendungid',
-'formulare',
+'Formulare',
 'name',
-'anwendungen');
+'Anwendungen');
 
 insert into ForeignKey_VisibleData_Mapping (FKName, FKTable, PKName, PKTable) Values (
 'typ',
-'formulare',
+'Formulare',
 'beschreibung',
-'formulartypen');
+'Formulartypen');
 
 insert into ForeignKey_VisibleData_Mapping (FKName, FKTable, PKName, PKTable) Values (
 'formularid',
-'formular_parameters',
+'Formular_Parameters',
 'name',
-'formulare');
+'Formulare');
 
 insert into ForeignKey_VisibleData_Mapping (FKName, FKTable, PKName, PKTable) Values (
 'anwendungid',
-'anwendungs_parameter',
+'Anwendungs_Parameter',
 'name',
-'anwendungen');
+'Anwendungen');
 
 insert into ForeignKey_VisibleData_Mapping (FKName, FKTable, PKName, PKTable) Values (
 'userid',
-'user_anwendungen',
+'User_Anwendungen',
 'userid',
-'users');
+'Users');
 
 insert into ForeignKey_VisibleData_Mapping (FKName, FKTable, PKName, PKTable) Values (
 'anwendungenid',
-'user_anwendungen',
+'User_Anwendungen',
 'name',
 'anwendungen');
+
 insert into Formular_Parameters (ParameterName, ParameterValue, FormularID) Values (
 'query',
 'select kundennr, name, vorname, ort, plz, strasse, vorwahl, telefon from kunden order by kundennr',
