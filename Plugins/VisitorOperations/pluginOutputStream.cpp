@@ -249,6 +249,9 @@ void LB_STDCALL lbOutputStream::visit(lb_I_MetaApplication* app) {
 	UAP_REQUEST(manager.getPtr(), lb_I_String, temp)
 	bool  b;
 
+	b = app->getAutorefreshData();
+	*oStream << b;
+
 	app->getApplicationName(&temp);
 	*oStream << temp->charrep();
 

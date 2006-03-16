@@ -236,6 +236,9 @@ void LB_STDCALL lbInputStreamOpr::visit(lb_I_MetaApplication* app) {
 	char* temp = NULL;
 	bool  b;
 	
+	*iStream >> b;
+	app->setAutorefreshData(b);
+	
 	*iStream >> temp;
 	app->setApplicationName(temp);
 	
