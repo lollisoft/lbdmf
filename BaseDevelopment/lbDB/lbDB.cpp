@@ -204,6 +204,7 @@ public:
 		cursor = 1;
 		haveData = false;
 		mode = 0;
+		_autoRefresh = false;
 
 		preparingFKColumns = 0;
 		
@@ -320,6 +321,8 @@ public:
 		char* LB_STDCALL setWhereClause(const char* query, char* where);
 	
 		char* LB_STDCALL addWhereClause(const char* query, char* where);
+		
+		void LB_STDCALL setAutoRefresh(bool b);
 
 		void		LB_STDCALL reopen();
 
@@ -366,6 +369,7 @@ private:
 	int	databound;
 	int     firstfetched;
 	int	_readonly; // readonly = 1, else = 0
+	bool _autoRefresh;
 	int	mode;  // insert = 1, select = 0
 //	char* lpszTable;
 
@@ -2915,6 +2919,9 @@ UDWORD  RowsFetched = 0;
 	return ERR_NONE;
 }
 /*...e*/
+void LB_STDCALL lbQuery::setAutoRefresh(bool b) {
+	_autoRefresh = b;
+}
 /*...slbErrCodes LB_STDCALL lbQuery\58\\58\update\40\\41\:0:*/
 //#define USE_CURRENT_OF
 lbErrCodes LB_STDCALL lbQuery::update() {
@@ -3055,6 +3062,8 @@ free(buffer);
 	if (boundColumns != NULL) boundColumns->rebindReadonlyColumns();
 
 	free(CursorName);
+
+	if (_autoRefresh) reopen();
 
 	return ERR_NONE;
 }
