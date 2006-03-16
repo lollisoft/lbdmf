@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.31 $
+ * $Revision: 1.32 $
  * $Name:  $
- * $Id: lbMetaApplication.h,v 1.31 2006/02/22 11:49:57 lollisoft Exp $
+ * $Id: lbMetaApplication.h,v 1.32 2006/03/16 08:01:04 lollisoft Exp $
  *
  * $Log: lbMetaApplication.h,v $
+ * Revision 1.32  2006/03/16 08:01:04  lollisoft
+ * Added set and getAutorefreshData members to the  lb_I_MetaApplication implementation. Also included that flags in the property panel.
+ *
  * Revision 1.31  2006/02/22 11:49:57  lollisoft
  * Moved the general part to meta application. wxWrapper does ask for it when left panel will be shown.
  *
@@ -187,7 +190,9 @@ public:
 	lbErrCodes LB_STDCALL setApplicationName(char* app);
 
 	void	   LB_STDCALL setAutoload(bool b);
+	void	   LB_STDCALL setAutorefreshData(bool b);
 	void	   LB_STDCALL setAutoselect(bool b);
+	bool	   LB_STDCALL getAutorefreshData();
 	bool	   LB_STDCALL getAutoload();
 	bool	   LB_STDCALL getAutoselect();
 
@@ -277,6 +282,7 @@ protected:
 	UAP(lb_I_Parameter, myProperties)
 
 	bool _autoload;
+	bool _autorefresh;
 	bool _autoselect;
 	
 	char gwedgd[100];

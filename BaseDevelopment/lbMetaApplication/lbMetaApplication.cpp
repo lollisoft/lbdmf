@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.84 $
+ * $Revision: 1.85 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.84 2006/03/09 09:29:11 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.85 2006/03/16 08:01:04 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.85  2006/03/16 08:01:04  lollisoft
+ * Added set and getAutorefreshData members to the  lb_I_MetaApplication implementation. Also included that flags in the property panel.
+ *
  * Revision 1.84  2006/03/09 09:29:11  lollisoft
  * Catch plugin failure while loading application settings and
  * database connection failure.
@@ -388,6 +391,7 @@ lb_MetaApplication::lb_MetaApplication() {
 
 	_autoload = true;
 	_autoselect = false;
+	_autorefresh = false;
 	
 	_CL_LOG << "lb_MetaApplication::lb_MetaApplication() called." LOG_
 }
@@ -838,12 +842,20 @@ void       LB_STDCALL lb_MetaApplication::setAutoload(bool b) {
 	_autoload = b;
 }
 
+void       LB_STDCALL lb_MetaApplication::setAutorefreshData(bool b) {
+	_autorefresh = b;
+}
+
 void       LB_STDCALL lb_MetaApplication::setAutoselect(bool b) {
 	_autoselect = b;
 }
 
 bool       LB_STDCALL lb_MetaApplication::getAutoload() {
 	return _autoload;
+}
+
+bool       LB_STDCALL lb_MetaApplication::getAutorefreshData() {
+	return _autorefresh;
 }
 
 bool       LB_STDCALL lb_MetaApplication::getAutoselect() {
@@ -870,6 +882,14 @@ lbErrCodes LB_STDCALL lb_MetaApplication::propertyChanged(lb_I_Unknown* uk) {
 		param->getUAPString(*&name, *&value);
 		
 		QI(parameterName, lb_I_KeyBase, key)
+		
+		if (strcmp(key->charrep(), "GeneralAutorefresh updated data") == 0) {
+				if (strcmp(value->charrep(), "1") == 0) {
+					setAutorefreshData(true);
+				} else {
+					setAutorefreshData(false);
+				}
+		}
 		
 		if (strcmp(key->charrep(), "GeneralAutoselect last application") == 0) {
 				if (strcmp(value->charrep(), "1") == 0) {
@@ -914,6 +934,10 @@ lb_I_Parameter* LB_STDCALL lb_MetaApplication::getParameter() {
 	//--------------------------------------------------------
 	parameterGeneral->setData("Autoselect last application");
 	b->setData(_autoselect);
+	paramGeneral->setUAPBoolean(*&parameterGeneral, *&b);
+	
+	parameterGeneral->setData("Autorefresh updated data");
+	b->setData(_autorefresh);
 	paramGeneral->setUAPBoolean(*&parameterGeneral, *&b);
 	
 	parameterGeneral->setData("Autoopen last application");
