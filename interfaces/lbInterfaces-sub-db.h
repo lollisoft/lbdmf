@@ -355,6 +355,11 @@ public:
 	 */
 	 
 		virtual char* LB_STDCALL addWhereClause(const char* query, char* where) = 0;
+		
+		/** \brief Set autorefresh on update.
+		 *
+		 */
+		virtual void LB_STDCALL setAutoRefresh(bool b) = 0;
     /* Accessors */
 #ifdef UNBOUND        
 	/**
