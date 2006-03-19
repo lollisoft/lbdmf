@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.43 $
+ * $Revision: 1.44 $
  * $Name:  $
- * $Id: lbPluginManager.cpp,v 1.43 2006/03/06 11:45:46 lollisoft Exp $
+ * $Id: lbPluginManager.cpp,v 1.44 2006/03/19 23:35:42 lollisoft Exp $
  *
  * $Log: lbPluginManager.cpp,v $
+ * Revision 1.44  2006/03/19 23:35:42  lollisoft
+ * Removed some log messages and reformatted some code.
+ *
  * Revision 1.43  2006/03/06 11:45:46  lollisoft
  * Corrected search criteria creation time point
  *
@@ -332,7 +335,7 @@ bool LB_STDCALL lbPluginManager::tryLoad(char* module, char* path) {
 	
 	_CL_VERBOSE << "Try to load module '" << module << "'" LOG_
 		
-		char* pluginDir = NULL;
+	char* pluginDir = NULL;
 	
 	pluginDir = (char*) malloc(strlen(path)+1);
 	
@@ -377,7 +380,7 @@ bool LB_STDCALL lbPluginManager::tryLoad(char* module, char* path) {
 		QI(pluginName, lb_I_KeyBase, key)
 		
 		if (PluginModules->exists(&key) != 0) {
-			_CL_LOG << "Warning: Plugin already registered." LOG_
+			_CL_VERBOSE << "Warning: Plugin already registered." LOG_
 		} else {
 			if (manager->makeInstance(PREFIX "instanceOfPluginModule", pluginModule, &ukPlugin) != ERR_NONE) {
 				
@@ -390,12 +393,12 @@ bool LB_STDCALL lbPluginManager::tryLoad(char* module, char* path) {
 					
 					UAP(lb_I_Unknown, ukPlugin1)
 						
-						ukPlugin1 = PluginModules->getElement(&key);
+					ukPlugin1 = PluginModules->getElement(&key);
 					
 					UAP(lb_I_PluginModule, plM)
-						QI(ukPlugin1, lb_I_PluginModule, plM)
+					QI(ukPlugin1, lb_I_PluginModule, plM)
 						
-						plM->setModule(pluginModule);
+					plM->setModule(pluginModule);
 					free(pluginModule);
 					free(pluginDir);
 					return true;	
@@ -411,14 +414,14 @@ bool LB_STDCALL lbPluginManager::tryLoad(char* module, char* path) {
 				
 				UAP(lb_I_Unknown, ukPlugin1)
 					
-					ukPlugin1 = PluginModules->getElement(&key);
+				ukPlugin1 = PluginModules->getElement(&key);
 				
 				UAP(lb_I_PluginModule, plM)
-					QI(ukPlugin1, lb_I_PluginModule, plM)
+				QI(ukPlugin1, lb_I_PluginModule, plM)
 					
-					_CL_LOG << "lb_I_PluginModule has " << plM->getRefCount() << " references." LOG_
+				_CL_VERBOSE << "lb_I_PluginModule has " << plM->getRefCount() << " references." LOG_
 					
-					plM->setModule(pluginModule);
+				plM->setModule(pluginModule);
 				free(pluginModule);
 				free(pluginDir);
 			}
@@ -585,7 +588,6 @@ void LB_STDCALL lbPluginManager::initialize() {
 #ifdef LINUX
 		while ((dir_info = readdir(dir)) != NULL) {
 			if (strstr(dir_info->d_name, ".so") != NULL) {
-				_CL_LOG << "Try to load plugin: " << pluginDir << "/" << dir_info->d_name LOG_
 			    tryLoad(dir_info->d_name, pluginDir);
 			}
 		}
@@ -705,28 +707,16 @@ lb_I_Plugin* LB_STDCALL lbPluginManager::nextPlugin() {
 /*...slb_I_Plugin\42\ LB_STDCALL lbPluginManager\58\\58\getFirstMatchingPlugin\40\char\42\ match\44\ char\42\ _namespace\41\:0:*/
 /// \todo Extend namespace feature by comma separated property list. (Or threaded as feature list).
 lb_I_Plugin* LB_STDCALL lbPluginManager::getFirstMatchingPlugin(char* match, char* _namespace) {
-	
 	if (beginEnumPlugins()) {
-
-        	while (true) {
-
-	                UAP(lb_I_Plugin, pl)
-
-	                pl = nextPlugin();
-
-                	if (pl == NULL) break;
-
+		while (true) {
+			UAP(lb_I_Plugin, pl)
+			pl = nextPlugin();
+			if (pl == NULL) break;
 			lb_I_Unknown* uk;
-
-			_CL_LOG << "Check for plugin with required interface and " << pl->getRefCount() << " references." LOG_
-
-        	        if ((strcmp(pl->getNamespace(), _namespace) == 0) && pl->hasInterface(match)) {
-        	        	_CL_LOG << "Return plugin with required interface and " << pl->getRefCount() << " references." LOG_
-        	        	return pl.getPtr();
-        	        }
-
-	        }
-
+			if ((strcmp(pl->getNamespace(), _namespace) == 0) && pl->hasInterface(match)) {
+				return pl.getPtr();
+			}
+		}
 		return NULL;
 	}
 	return NULL;
