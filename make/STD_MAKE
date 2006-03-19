@@ -25,11 +25,14 @@
 #            40235 Duesseldorf (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.83 $
+# * $Revision: 1.84 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.83 2006/03/09 08:57:37 lollisoft Exp $
+# * $Id: STD_MAKE,v 1.84 2006/03/19 23:47:59 lollisoft Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.84  2006/03/19 23:47:59  lollisoft
+# * Missing -g in debug mode. Currently in debug mode.
+# *
 # * Revision 1.83  2006/03/09 08:57:37  lollisoft
 # * No debugging in OSX for release.
 # *
@@ -631,7 +634,7 @@ ifeq ($(OSTYPE), osx)
 #LB_USE_FRAMEWORKS=no
 LB_USE_FRAMEWORKS=yes
 
-DEBUG=no
+DEBUG=yes
 
 
 STD_INCL = -I $(DEVROOT)/Projects/CPP/BaseDevelopment/lbHook/linuxCode \
@@ -642,7 +645,12 @@ STD_INCL = -I $(DEVROOT)/Projects/CPP/BaseDevelopment/lbHook/linuxCode \
 	-I . 
 
 OBJ =o
+ifeq ($(DEBUG), no)
 C_OPS   = -c -DUNIX -DLINUX -DOSX
+endif
+ifeq ($(DEBUG), yes)
+C_OPS   = -c -g -DUNIX -DLINUX -DOSX
+endif
 C_SOOPS = $(C_OPS)
 C_ELFOPS= $(C_OPS)
 L_OPS   = -o
