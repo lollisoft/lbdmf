@@ -462,19 +462,16 @@ DLLEXPORT lbErrCodes LB_STDCALL lbLoadModule(const char* name, HINSTANCE & hinst
 		m = createModule(name);
 	}
 	
-	_CL_LOG << "Try load module: " << name LOG_
-		if ((hinst = dlopen(name, RTLD_LAZY)) == NULL)
-		{
-			char* home = NULL;//(char*) malloc(100);
-			char* newname = NULL;
-			
+	if ((hinst = dlopen(name, RTLD_LAZY)) == NULL)
+	{
+		char* home = NULL;//(char*) malloc(100);
+		char* newname = NULL;
+		
 #if defined(UNIX) || defined(LINUX) || defined(OSX)
-			home = ".";//getcwd(home, 100);
+		home = ".";//getcwd(home, 100);
 			
 			if (home != NULL) {
-				
 				newname = (char*) malloc(strlen(home)+strlen(name)+6);
-				
 				newname[0] = 0;
 				strcat(newname, home);
 				strcat(newname, SLASH);
@@ -482,17 +479,15 @@ DLLEXPORT lbErrCodes LB_STDCALL lbLoadModule(const char* name, HINSTANCE & hinst
 				strcat(newname, SLASH);
 				strcat(newname, name);
 				
-				_CL_LOG << "Try load module: " << newname LOG_
-					if ((hinst = dlopen(newname, RTLD_LAZY)) != NULL) {
-						m->lib = hinst;
-						m->skip = skipAutoUnload;
-						free(newname);
+				if ((hinst = dlopen(newname, RTLD_LAZY)) != NULL) {
+					m->lib = hinst;
+					m->skip = skipAutoUnload;
+					free(newname);
 						
-						return ERR_NONE;
-					}
+					return ERR_NONE;
+				}
 				
 				free(newname);
-				
 			}
 #endif
 			
@@ -513,15 +508,13 @@ DLLEXPORT lbErrCodes LB_STDCALL lbLoadModule(const char* name, HINSTANCE & hinst
 			strcat(newname, SLASH);
 			strcat(newname, name);
 			
-			_CL_LOG << "Try load module: " << newname LOG_
-				if ((hinst = dlopen(newname, RTLD_LAZY)) != NULL) {
-					//printf("Module %s loaded.\n", newname);
-					m->lib = hinst;
-					m->skip = skipAutoUnload;
-					free(newname);
-					
-					return ERR_NONE;
-				}
+			if ((hinst = dlopen(newname, RTLD_LAZY)) != NULL) {
+				m->lib = hinst;
+				m->skip = skipAutoUnload;
+				free(newname);
+				
+				return ERR_NONE;
+			}
 			
 			free(newname);
 			
@@ -533,7 +526,7 @@ DLLEXPORT lbErrCodes LB_STDCALL lbLoadModule(const char* name, HINSTANCE & hinst
 			logMessage(buffer);
 			free(buffer);
 			return ERR_MODULE_NOT_FOUND;
-		}
+	}
 	
 	m->lib = hinst;
 	m->skip = skipAutoUnload;
