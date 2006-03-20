@@ -55,9 +55,6 @@ extern "C" {
 #endif
 
 #include <lbConfigHook.h>
-#include <lbInterfaces.h>
-
-
 
 /*...sLB_PLUGINMANAGER_DLL scope:0:*/
 #define LB_PLUGINMANAGER_DLL
@@ -153,11 +150,10 @@ public:
 	void LB_STDCALL visit(lb_I_MasterDetailFormDefinition*) { _CL_LOG << "visit(lb_I_MasterDetailFormDefinition*)" LOG_ }
 	void LB_STDCALL visit(lb_I_DatabaseReport*) { _CL_LOG << "visit(lb_I_DatabaseReport*)" LOG_ }
 	void LB_STDCALL visit(lb_I_CodeGenerator*) { _CL_LOG << "visit(lb_I_CodeGenerator*)" LOG_ }
-	void LB_STDCALL visit(lb_I_ProjectManager*) { _CL_LOG << "visit(lb_I_ProjectManager*)" LOG_ }
 	void LB_STDCALL visit(lb_I_Boolean*) { _CL_LOG << "visit(lb_I_Boolean*)" LOG_ }
 /*...e*/
 
-	void LB_STDCALL visit(lb_I_Project*);
+	void LB_STDCALL visit(lb_I_Streamable* pm);
 	void LB_STDCALL visit(lb_I_Application*);
 	void LB_STDCALL visit(lb_I_MetaApplication*);
 
@@ -210,24 +206,37 @@ bool LB_STDCALL lbInputStreamOpr::begin(char* file) {
 
 	if (!ret) {
 		_CL_LOG << "lbInputStreamOpr::begin(" << file << ") Error: Open file failed." LOG_
-	} else {
-		_CL_LOG << "lbInputStreamOpr::begin(" << file << ") Succeeded." LOG_
 	}
-	
 	
 	return ret;
 }
 
 bool LB_STDCALL lbInputStreamOpr::begin(lb_I_Stream* stream) {
+	lbErrCodes err = ERR_NONE;
 	if (stream != NULL) {
 		_CL_LOG << "lbInputStreamOpr::begin(lb_I_Stream*): Got a stream (" << stream->getClassName() << ")." LOG_
+		QI(stream, lb_I_InputStream, iStream)
+		bool ret = iStream->open();
+
+		if (!ret) {
+			_CL_LOG << "lbInputStreamOpr::begin(lb_I_Stream* stream) Error: Open file failed." LOG_
+		}
+		
+		return ret;
+	} else {
+		_CL_LOG << "lbInputStreamOpr::begin(lb_I_Stream* stream) Error: Uninitialized stream onject (NULL pointer)!" LOG_
 	}
 	
-	return true;
+	return false;
 }
 
-void LB_STDCALL lbInputStreamOpr::visit(lb_I_Project*) {
-	_CL_LOG << "lbInputStreamOpr::visit(): Read data of a project." LOG_
+void LB_STDCALL lbInputStreamOpr::visit(lb_I_Streamable* pm) {
+	if (iStream != NULL) {
+		// Project manager has a private implementation. Use existing fromFile function.
+		pm->load(iStream.getPtr());
+	} else {
+		_CL_LOG << "lbInputStreamOpr::visit(lb_I_ProjectManager* pm) Error: No input stream available. Could not read from stream!" LOG_
+	}
 }
 
 void LB_STDCALL lbInputStreamOpr::visit(lb_I_MetaApplication* app) {

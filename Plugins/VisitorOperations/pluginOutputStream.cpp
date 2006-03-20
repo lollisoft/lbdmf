@@ -55,9 +55,6 @@ extern "C" {
 #endif
 
 #include <lbConfigHook.h>
-#include <lbInterfaces.h>
-
-
 
 /*...sLB_PLUGINMANAGER_DLL scope:0:*/
 #define LB_PLUGINMANAGER_DLL
@@ -153,10 +150,9 @@ public:
 	void LB_STDCALL visit(lb_I_MasterDetailFormDefinition*) { }
 	void LB_STDCALL visit(lb_I_DatabaseReport*) { }
 	void LB_STDCALL visit(lb_I_CodeGenerator*) { }
-	void LB_STDCALL visit(lb_I_ProjectManager*) { }	
 /*...e*/
 	
-	void LB_STDCALL visit(lb_I_Project*);
+	void LB_STDCALL visit(lb_I_Streamable* pm);
 	void LB_STDCALL visit(lb_I_Application*);
 	void LB_STDCALL visit(lb_I_MetaApplication*);
 
@@ -214,12 +210,17 @@ lbOutputStream::~lbOutputStream() {
 /*...e*/
 
 bool LB_STDCALL lbOutputStream::begin(char* file) {
-
 	if (oStream == NULL) { 
 		REQUEST(manager.getPtr(), lb_I_OutputStream, oStream)
 		
 		oStream->setFileName(file);
-		return oStream->open();
+		bool ret = oStream->open();
+
+		if (!ret) {
+			_CL_LOG << "lbOutputStream::begin(" << file << ") Error: Open file failed." LOG_
+		}
+
+		return ret;
 	} else {
 		_CL_LOG << "Error: lbOutputStream::begin(...) called prior!" LOG_
 	}
@@ -229,18 +230,31 @@ bool LB_STDCALL lbOutputStream::begin(char* file) {
 
 bool LB_STDCALL lbOutputStream::begin(lb_I_Stream* stream) {
 	lbErrCodes err = ERR_NONE;
-	QI(stream, lb_I_OutputStream, oStream)
-	
-	if (oStream == NULL) {
-		_CL_LOG << "lbOutputStream::begin(...) Error: This is not a output stream." LOG_
-		return false;
+	if (stream != NULL) {
+		_CL_LOG << "lbOutputStream::begin(lb_I_Stream*): Got a stream (" << stream->getClassName() << ")." LOG_
+		QI(stream, lb_I_OutputStream, oStream)
+		bool ret = oStream->open();
+
+		if (!ret) {
+			_CL_LOG << "lbOutputStream::begin(lb_I_Stream* stream) Error: Open file failed." LOG_
+		}
+		
+		return ret;
 	} else {
-		return oStream->open();
+		_CL_LOG << "lbOutputStream::begin(lb_I_Stream* stream) Error: Uninitialized stream onject (NULL pointer)!" LOG_
 	}
+	
+	return false;
 }
 
-void LB_STDCALL lbOutputStream::visit(lb_I_Project*) {
-	_CL_LOG << "Save a lb_I_Project object. (Warning: This interface is private and could not be saved or loaded." LOG_
+void LB_STDCALL lbOutputStream::visit(lb_I_Streamable* pm) {
+	if (oStream != NULL) {
+		// Project manager has a private implementation. Use existing fromFile function.
+		pm->save(oStream.getPtr());
+	} else {
+		_CL_LOG << "lbOutputStream::visit(lb_I_ProjectManager* pm) Error: No input stream available. Could not read from stream!" LOG_
+	}
+
 }
 
 void LB_STDCALL lbOutputStream::visit(lb_I_MetaApplication* app) {
