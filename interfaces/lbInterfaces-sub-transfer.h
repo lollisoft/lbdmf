@@ -212,6 +212,7 @@ public:
 class lb_I_Streamable {
 public:
 
+#ifdef bla
 	/**
 	 * \brief Supported column types
 	 */
@@ -221,6 +222,7 @@ public:
 		lb_I_Long,
 		lb_I_Container
 	};
+#endif
 
 	/** \brief Save to stream.
 	 */
