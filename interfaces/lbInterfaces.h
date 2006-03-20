@@ -685,7 +685,6 @@ class lb_I_gcManager;
 class lb_I_Unknown;
 class lb_I_Module;
 
-class lb_I_Container;
 class lb_I_Event;
 class lb_I_EventSink;
 
@@ -700,6 +699,7 @@ class lb_I_Transfer_Data;
 
 // Base interface for visitors
 class lb_I_Aspect;
+class lb_I_Streamable;
 class lb_I_Integer;
 class lb_I_Long;
 class lb_I_Container;
@@ -2829,11 +2829,11 @@ public:
 	virtual void LB_STDCALL setActionID(char* id) = 0;
 };
 
-#include <lbInterfaces-sub-visitor.h>
 #include <lbInterfaces-sub-transfer.h>
 #include <lbInterfaces-sub-xml.h>
 #include <lbInterfaces-sub-classes.h>	
 #include <lbInterfaces-sub-ui.h>
 #include <lbInterfaces-sub-db.h>
 #include <lbInterfaces-sub-wxWrapper.h>
+#include <lbInterfaces-sub-visitor.h>
 #endif // __LB_INTERFACES__
