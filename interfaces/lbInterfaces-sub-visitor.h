@@ -1,5 +1,3 @@
-
-
 /** \brief Visitor base for all my interfaces.
  *
  * Implement a new class for a new operation such as save/load to/from file.
@@ -32,7 +30,6 @@ virtual void LB_STDCALL visit(lb_I_Element*) = 0;
 virtual void LB_STDCALL visit(lb_I_Module*) = 0; 
 virtual void LB_STDCALL visit(lb_I_FunctorEntity*) = 0;
 virtual void LB_STDCALL visit(lb_I_InstanceReference*) = 0;
-//virtual void LB_STDCALL visit(lb_I_EventHandler*) = 0;
 virtual void LB_STDCALL visit(lb_I_EventManager*) = 0;
 virtual void LB_STDCALL visit(lb_I_EventMapper*) = 0;
 virtual void LB_STDCALL visit(lb_I_Application*) = 0;
@@ -57,9 +54,8 @@ virtual void LB_STDCALL visit(lb_I_Form*) = 0;
 virtual void LB_STDCALL visit(lb_I_MasterDetailFormDefinition*) = 0;
 virtual void LB_STDCALL visit(lb_I_DelegatedAction*) = 0;
 virtual void LB_STDCALL visit(lb_I_DatabaseReport*) = 0;
-virtual void LB_STDCALL visit(lb_I_Project*) = 0;
 virtual void LB_STDCALL visit(lb_I_CodeGenerator*) = 0;
-virtual void LB_STDCALL visit(lb_I_ProjectManager*) = 0;
+virtual void LB_STDCALL visit(lb_I_Streamable*) = 0;
 //virtual ~Aspect(){} 
 }; 
 
