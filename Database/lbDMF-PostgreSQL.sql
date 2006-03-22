@@ -88,6 +88,27 @@ ALTER TABLE action_steps
 ADD CONSTRAINT cst_action_target_TypeID FOREIGN KEY ( type )
    REFERENCES action_types ( id );
 --...e
+--...sCREATE TABLE Formulare:0:
+-- +---------------------------------------------------------
+-- | TABLE: Formulare
+-- +---------------------------------------------------------
+CREATE TABLE Formulare
+(
+  id SERIAL,
+  Name CHAR(30),
+  MenuName CHAR(30),
+  EventName CHAR(30),
+  MenuHilfe CHAR(100),
+  AnwendungID INTEGER,
+  Typ INTEGER NOT NULL,
+  PRIMARY KEY (id)
+);
+
+CREATE UNIQUE INDEX pk_id_Formulare ON Formulare
+(
+  id
+);
+
 --...sCREATE TABLE formular_actions:0:
 -- +---------------------------------------------------------
 -- | TABLE: formular_actions
@@ -246,21 +267,6 @@ insert into action_steps (bezeichnung, a_order_nr, what, type, actionid) values(
 'DynReservierungen',
 6, 7);
 --...e
---...sFill formular_actions:0:
-insert into formular_actions (formular, action, event) values(5, 1, 'evt_Reserve_Customer_Trip');
-insert into formular_actions (formular, action, event) values(5, 2, 'evt_Some_Test_Action');
-
-insert into formular_actions (formular, action, event) values(21, 3, 'evt_Manage_Train_Trip_Name');
-
-insert into formular_actions (formular, action, event) values(6, 7, 'evt_Print_Customer_Reservations');
-
--- Actions for 'lbDMF Manager' application
-
-insert into formular_actions (formular, action, event) values(1, 4, 'evt_Manage_User_Apps');
-insert into formular_actions (formular, action, event) values(19, 5, 'evt_Manage_Apps_Forms');
-insert into formular_actions (formular, action, event) values(2, 6, 'evt_Manage_Form_Parameters');
-
---...e
 --...e
 
 --...sCREATE TABLE translations:0:
@@ -340,26 +346,6 @@ CREATE UNIQUE INDEX pk_id_Anwendungs_Parameter ON Anwendungs_Parameter
   id
 );
 --...e
---...sCREATE TABLE Formulare:0:
--- +---------------------------------------------------------
--- | TABLE: Formulare
--- +---------------------------------------------------------
-CREATE TABLE Formulare
-(
-  id SERIAL,
-  Name CHAR(30),
-  MenuName CHAR(30),
-  EventName CHAR(30),
-  MenuHilfe CHAR(100),
-  AnwendungID INTEGER,
-  Typ INTEGER NOT NULL,
-  PRIMARY KEY (id)
-);
-
-CREATE UNIQUE INDEX pk_id_Formulare ON Formulare
-(
-  id
-);
 --...e
 --...sCREATE TABLE Formular_Parameters:0:
 -- +---------------------------------------------------------
@@ -837,6 +823,23 @@ insert into Formulare (Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) V
 '-',
 1 , 1);
 --...e
+
+--...sFill formular_actions:0:
+insert into formular_actions (formular, action, event) values(5, 1, 'evt_Reserve_Customer_Trip');
+insert into formular_actions (formular, action, event) values(5, 2, 'evt_Some_Test_Action');
+
+insert into formular_actions (formular, action, event) values(21, 3, 'evt_Manage_Train_Trip_Name');
+
+insert into formular_actions (formular, action, event) values(6, 7, 'evt_Print_Customer_Reservations');
+
+-- Actions for 'lbDMF Manager' application
+
+insert into formular_actions (formular, action, event) values(1, 4, 'evt_Manage_User_Apps');
+insert into formular_actions (formular, action, event) values(19, 5, 'evt_Manage_Apps_Forms');
+insert into formular_actions (formular, action, event) values(2, 6, 'evt_Manage_Form_Parameters');
+
+--...e
+
 --...sFill ForeignKey_VisibleData_Mapping:0:
 insert into ForeignKey_VisibleData_Mapping (FKName, FKTable, PKName, PKTable) Values (
 'anwendungid',
