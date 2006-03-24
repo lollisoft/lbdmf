@@ -2338,6 +2338,16 @@ public:
 	 */
 	virtual void	   LB_STDCALL setAutorefreshData(bool b) = 0;
 	
+	/** \brief Store information about maximized GUI.
+	 *
+	 */
+	virtual void	   LB_STDCALL setGUIMaximized(bool b) = 0;
+	
+	/** \brief Get information about maximized GUI.
+	 *
+	 */
+	virtual bool	   LB_STDCALL getGUIMaximized() = 0;
+	
 	/** \brief Set automatic loading of application.
 	 * The easiest login procedure.
 	 */

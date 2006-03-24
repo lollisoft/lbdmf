@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.85 $
+ * $Revision: 1.86 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.85 2006/03/16 08:01:04 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.86 2006/03/24 17:12:22 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.86  2006/03/24 17:12:22  lollisoft
+ * Added GUI state for maximized or not.
+ *
  * Revision 1.85  2006/03/16 08:01:04  lollisoft
  * Added set and getAutorefreshData members to the  lb_I_MetaApplication implementation. Also included that flags in the property panel.
  *
@@ -837,6 +840,14 @@ lbErrCodes LB_STDCALL lb_MetaApplication::Initialize(char* user, char* appName) 
 		return ERR_NONE;
 }
 /*...e*/
+
+void	   LB_STDCALL lb_MetaApplication::setGUIMaximized(bool b) {
+	_GUIMaximized = b;
+}
+
+bool	   LB_STDCALL lb_MetaApplication::getGUIMaximized() {
+	return _GUIMaximized;
+}
 
 void       LB_STDCALL lb_MetaApplication::setAutoload(bool b) {
 	_autoload = b;

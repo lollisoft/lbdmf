@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.118 2006/03/09 08:59:41 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.119 2006/03/24 17:14:21 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.118 $
+ * $Revision: 1.119 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.118 2006/03/09 08:59:41 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.119 2006/03/24 17:14:21 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.119  2006/03/24 17:14:21  lollisoft
+ * Added GUI state for maximized or not.
+ *
  * Revision 1.118  2006/03/09 08:59:41  lollisoft
  * Catch plugin failures while saving application data.
  *
@@ -2130,16 +2133,16 @@ bool MyApp::OnInit(void)
     PM->initialize();
   
     frame->Centre();
-    frame->Show(TRUE);
 
     SetTopWindow(frame);
 
     if (metaApp != NULL) {
         metaApp->setGUI(wxGUI);
-
         metaApp->Initialize();
+		if (metaApp->getGUIMaximized()) frame->Maximize();
     } 
 
+    frame->Show(TRUE);
 
     if (PM->beginEnumPlugins()) {
 	

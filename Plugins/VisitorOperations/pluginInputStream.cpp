@@ -260,6 +260,9 @@ void LB_STDCALL lbInputStreamOpr::visit(lb_I_MetaApplication* app) {
 	*iStream >> b;
 	app->setAutoselect(b);
 
+	*iStream >> b;
+	app->setGUIMaximized(b);
+
 }
 
 void LB_STDCALL lbInputStreamOpr::visit(lb_I_Application*) {

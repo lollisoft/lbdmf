@@ -278,6 +278,9 @@ void LB_STDCALL lbOutputStream::visit(lb_I_MetaApplication* app) {
 	b = app->getAutoselect();
 	*oStream << b;
 
+	b = app->getGUIMaximized();
+	*oStream << b;
+
 }
 
 void LB_STDCALL lbOutputStream::visit(lb_I_Application*) {

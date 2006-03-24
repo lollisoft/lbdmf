@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.32 $
+ * $Revision: 1.33 $
  * $Name:  $
- * $Id: lbMetaApplication.h,v 1.32 2006/03/16 08:01:04 lollisoft Exp $
+ * $Id: lbMetaApplication.h,v 1.33 2006/03/24 17:12:22 lollisoft Exp $
  *
  * $Log: lbMetaApplication.h,v $
+ * Revision 1.33  2006/03/24 17:12:22  lollisoft
+ * Added GUI state for maximized or not.
+ *
  * Revision 1.32  2006/03/16 08:01:04  lollisoft
  * Added set and getAutorefreshData members to the  lb_I_MetaApplication implementation. Also included that flags in the property panel.
  *
@@ -195,6 +198,9 @@ public:
 	bool	   LB_STDCALL getAutorefreshData();
 	bool	   LB_STDCALL getAutoload();
 	bool	   LB_STDCALL getAutoselect();
+	void	   LB_STDCALL setGUIMaximized(bool b);
+	bool	   LB_STDCALL getGUIMaximized();
+
 
 	lb_I_EventManager * getEVManager( void );
 
@@ -284,6 +290,7 @@ protected:
 	bool _autoload;
 	bool _autorefresh;
 	bool _autoselect;
+	bool _GUIMaximized;
 	
 	char gwedgd[100];
 };
