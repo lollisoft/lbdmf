@@ -723,7 +723,6 @@ DLLEXPORT lbErrCodes LB_STDCALL lbUnloadModule(const char* name) {
 			}
 			
 			if (temp->name != NULL) {
-				_CL_LOG << "Unload module " << name << ". Test for " << temp->name << "." LOG_
 				if (strcmp(temp->name, name) == 0) {
 					_Modules* delMod = temp;
 				
@@ -799,7 +798,6 @@ DLLEXPORT void LB_STDCALL unHookAll() {
 	_Modules* temp_skipped = NULL;
 
 	if (lb_log) {
-		printf("Have %d references to log instance.\n", lb_log->getRefCount());
 		lb_log->release(__FILE__, __LINE__);
 	}
 	
@@ -831,7 +829,7 @@ DLLEXPORT void LB_STDCALL unHookAll() {
 					continue;
 				}
 
-				printf("Unhook module %s.\n", temp->name);
+				_CL_VERBOSE << "Unhook module " << temp->name << "." LOG_
 				
 				if (dlclose(temp->lib) != 0) {
 					char* msg = dlerror();
@@ -877,7 +875,7 @@ DLLEXPORT void LB_STDCALL unHookAll() {
 					continue;
 				}
 
-				printf("Unhook module %s.\n", temp->name);
+				_CL_VERBOSE << "Unhook module " << temp->name << "." LOG_
 				
 				if (FreeLibrary(temp->lib) == 0) {
 					printf("ERROR: Library could not be unloaded!\n");
