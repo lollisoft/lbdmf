@@ -33,11 +33,15 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.16 $
+ * $Revision: 1.17 $
  * $Name:  $
- * $Id: wxWrapperDLL.h,v 1.16 2006/02/21 19:35:51 lollisoft Exp $
+ * $Id: wxWrapperDLL.h,v 1.17 2006/03/24 17:15:40 lollisoft Exp $
  *
  * $Log: wxWrapperDLL.h,v $
+ * Revision 1.17  2006/03/24 17:15:40  lollisoft
+ * Added GUI state for maximized or not.
+ * Size events didn't work ??
+ *
  * Revision 1.16  2006/02/21 19:35:51  lollisoft
  * Implemented autoload mechanism of last loaded application.
  * It demonstrates the new capabilities operating with files.
@@ -173,7 +177,7 @@ public:
 public:
         lb_wxFrame(wxFrame *frame, char *title, int x, int y, int w, int h);
 	
-	DECLARE_LB_UNKNOWN()
+		DECLARE_LB_UNKNOWN()
 		
 		/**
 		* Set the GUI wrapper instance.
@@ -220,7 +224,6 @@ public:
 
 	void OnPropertyGridChange (wxPropertyGridEvent& event);
 
-	
 	/**
 	 * Return the frames menubar. Internal use only.
 	 */
@@ -284,19 +287,17 @@ public:
 	int on_panel_usage;
 	int _showLeftPropertyBar;
 	
+#ifdef USE_WXAUI
+private:
+	wxFrameManager m_mgr;
+	DECLARE_EVENT_TABLE()
+#endif		
+
 	
 	UAP(lb_I_String, PanelNamespace)
 	UAP(lb_I_EventManager, eman)
 	UAP(lb_I_Dispatcher, dispatcher)
 	UAP(lb_I_Parameter, currentProperties)
-		
-#ifdef USE_WXAUI
-private:
-	wxFrameManager m_mgr;
-
-	DECLARE_EVENT_TABLE();
-
-#endif		
 };
 /*...e*/
 

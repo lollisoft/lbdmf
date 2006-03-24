@@ -1217,6 +1217,7 @@ void LB_STDCALL lb_wxGUI::registerDBForm(char* formName, lb_I_DatabaseForm* form
 /*...e*/
 
 /*...slb_wxFrame:0:*/
+
 // My frame constructor
 lb_wxFrame::lb_wxFrame(wxFrame *frame, char *title, int x, int y, int w, int h):
   wxFrame(frame, -1, title, wxPoint(x, y), wxSize(w, h))
@@ -1233,6 +1234,11 @@ lb_wxFrame::lb_wxFrame(wxFrame *frame, char *title, int x, int y, int w, int h):
 }
 
 lb_wxFrame::~lb_wxFrame() {
+
+	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, metaApp)
+	
+	metaApp->setGUIMaximized(IsMaximized());
+
 #ifdef USE_WXAUI
 	// deinitialize the frame manager
 	m_mgr.UnInit();
@@ -1314,15 +1320,18 @@ void lb_wxFrame::OnAbout(wxCommandEvent& WXUNUSED(event) )
 /*...e*/
 #ifdef USE_WXAUI
 
+//IMPLEMENT_CLASS(lb_wxFrame, wxFrame)
+
 BEGIN_EVENT_TABLE(lb_wxFrame, wxFrame)
     EVT_PG_CHANGED( PGID, lb_wxFrame::OnPropertyGridChange )
     EVT_ERASE_BACKGROUND(lb_wxFrame::OnEraseBackground)
-    EVT_SIZE(lb_wxFrame::OnSize)
+    EVT_SIZE(lb_wxFrame::OnSize)	
 END_EVENT_TABLE()
 
 
 void lb_wxFrame::OnEraseBackground(wxEraseEvent& event)
 {
+	_CL_LOG << "OnEraseBackground() called for " << event.GetEventObject()->GetClassInfo()->GetClassName() << "." LOG_
     event.Skip();
 }
 
