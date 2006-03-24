@@ -533,16 +533,3 @@ insert into User_Anwendungen (userid, AnwendungenId) Values (1, 2);
 insert into User_Anwendungen (userid, AnwendungenId) Values (1, 3);
 insert into User_Anwendungen (userid, AnwendungenId) Values (1, 4);
 insert into User_Anwendungen (userid, AnwendungenId) Values (1, 5);
-
--- +----------------------------------------
--- | Setup for the codgeneration Target
--- +----------------------------------------
-
-insert into CodegenTarget (Name, Titel, ModuleName, Functor, Interface) 
-Values (
-'lbDMFAppwriter', 
-'Create an application module for lbDMF Framework', 
-'ModullbDMFAppgen',
-'instanceOflbDMFAppwriter',
-'lb_I_CodeGenerator'
-);
