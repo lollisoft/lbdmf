@@ -2277,7 +2277,14 @@ public:
 	/**
 	 * Initialize the application module. Optionally, provide user and application name.
 	 */
-	virtual lbErrCodes LB_STDCALL Initialize(char* user = NULL, char* app = NULL) = 0;
+	virtual lbErrCodes LB_STDCALL initialize(char* user = NULL, char* app = NULL) = 0;
+	
+	/** \brief Cleanup.
+	 *
+	 * This function must be called before uncontrolled destructor calls are done.
+	 * It ensures a clean application exit proccess.
+	 */
+	virtual lbErrCodes LB_STDCALL uninitialize() = 0;
 	
 	/**
 	 * \brief Run the application
@@ -2375,7 +2382,7 @@ public:
 	/**
 	 * Initialize the application module. Optionally, provide user and application name.
 	 */
-	virtual lbErrCodes LB_STDCALL Initialize(char* user = NULL, char* app = NULL) = 0;
+	virtual lbErrCodes LB_STDCALL initialize(char* user = NULL, char* app = NULL) = 0;
 	
 	/**
 	 * \brief Run the application
@@ -2406,9 +2413,15 @@ public:
 	 */
 	virtual lb_I_EventManager* getEVManager() = 0;
 
-
+	/** \brief Load target application.
+	 *
+	 * Used to load given application with user's rights.
+	 */
 	virtual lbErrCodes LB_STDCALL loadApplication(char* user, char* app) = 0;
 
+	/** \brief Unload any loaded application.
+	 */
+	virtual lbErrCodes LB_STDCALL unloadApplication() = 0;
 	/*
 	 * Basic functions to be used for a UI application
 	 */
