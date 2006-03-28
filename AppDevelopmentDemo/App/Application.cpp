@@ -48,7 +48,8 @@ public:
 	 * For each event, it gets an numeric identifer so it may
 	 * be able to dispatch that events.
 	 */
-	virtual lbErrCodes LB_STDCALL Initialize(char* user = NULL, char* app = NULL);
+	virtual lbErrCodes LB_STDCALL initialize(char* user = NULL, char* app = NULL);
+	virtual lbErrCodes LB_STDCALL uninitialize();
 	virtual lbErrCodes LB_STDCALL run();
 	virtual lbErrCodes LB_STDCALL getGUI(lb_I_GUI** _gui);
 	virtual lbErrCodes LB_STDCALL getUserName(lb_I_String** user);
@@ -243,8 +244,11 @@ lb_I_EventManager* LB_STDCALL lbApplication::getEVManager( void ) {
 	return NULL;
 }
 /*...e*/
+lbErrCodes LB_STDCALL lbApplication::uninitialize() {
+
+}
 /*...slbErrCodes LB_STDCALL lbApplication\58\\58\Initialize\40\char\42\ user \61\ NULL\44\ char\42\ app \61\ NULL\41\:0:*/
-lbErrCodes LB_STDCALL lbApplication::Initialize(char* user, char* app) {
+lbErrCodes LB_STDCALL lbApplication::initialize(char* user, char* app) {
 
 	// To be implemented in a separate application module
 
