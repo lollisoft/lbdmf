@@ -1295,6 +1295,10 @@ void lb_wxFrame::OnQuit(wxCommandEvent& WXUNUSED(event) )
         	guiCleanedUp = 1;
 	}
 
+	UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
+		
+	meta->unloadApplication();
+
 //	unHookAll();
 
 	Close(TRUE);
