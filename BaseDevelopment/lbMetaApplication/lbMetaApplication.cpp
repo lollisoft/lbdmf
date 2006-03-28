@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.86 $
+ * $Revision: 1.87 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.86 2006/03/24 17:12:22 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.87 2006/03/28 11:34:04 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.87  2006/03/28 11:34:04  lollisoft
+ * Renamed Initialize to initialize and added unloadApplication for better unloading of the application.
+ *
  * Revision 1.86  2006/03/24 17:12:22  lollisoft
  * Added GUI state for maximized or not.
  *
@@ -404,33 +407,6 @@ lb_MetaApplication::~lb_MetaApplication() {
 	
 	lbErrCodes err = ERR_NONE;
 
-#ifdef bla
-
-	UAP_REQUEST(manager.getPtr(), lb_I_PluginManager, PM)
-
-	UAP(lb_I_Plugin, pl1)
-	UAP(lb_I_Unknown, ukPl1)
-
-	pl1 = PM->getFirstMatchingPlugin("lb_I_FileOperation", "OutputStreamVisitor");
-	ukPl1 = pl1->getImplementation();
-
-	UAP(lb_I_FileOperation, fOp1)
-	QI(ukPl1, lb_I_FileOperation, fOp1)
-
-	if (!fOp1->begin("MetaApp.mad")) {
-	        _CL_LOG << "ERROR: Could not write default file for meta application!" LOG_
-	} else {
-
-		if (LogonUser != NULL) _CL_LOG << "Save user: '" << LogonUser->charrep() << "'" LOG_
-		if (LogonApplication != NULL) _CL_LOG << "Save app : '" << LogonApplication->charrep() << "'" LOG_
-
-		UAP(lb_I_Unknown, ukAcceptor1)
-		QI(this, lb_I_Unknown, ukAcceptor1)
-		ukAcceptor1->accept(*&fOp1);
-
-		fOp1->end();
-	}
-#endif
 	/*
 	 * There must be an unload process of the loaded application's, so that it
 	 * will not unloaded in the wrong order when unHookAll is called.
@@ -439,14 +415,16 @@ lb_MetaApplication::~lb_MetaApplication() {
 	 * Destroy loaded object and manually unload the corresponding module.
 	 */
 
-	app--;
-	app.resetPtr();
-
-_CL_LOG << "Unload module " << moduleName << "." LOG_
+	if (app != NULL) {
+		app--;
+		app.resetPtr();
+	}
+	
+	_CL_LOG << "Unload module " << moduleName << "." LOG_
 
 	if (moduleName) lbUnloadModule(moduleName);
 	
-_CL_LOG << "Unloaded module." LOG_	
+	_CL_LOG << "Unloaded module." LOG_	
 	
 	free(moduleName);
 }
@@ -494,7 +472,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::lbEvHandler2(lb_I_Unknown* uk) {
 	if (gui != NULL) {
 	        gui->msgBox("Information", "The main module of this application is a DLL and creates a basic functionality.\nThe real application will be loaded from configuraton and then the control\nwill be delegated to it.");
 	} else {
-	        COUT << "lb_MetaApplication::Initialize() called in console mode" << ENDL;
+	        COUT << "lb_MetaApplication::lbEvHandler2() called in console mode" << ENDL;
 	}
 
 	return ERR_NONE;
@@ -506,7 +484,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::lbButtonTestHandler(lb_I_Unknown* uk) 
         if (gui != NULL) {
                 gui->msgBox("Information", "Test button has been pressed");
         } else {
-                COUT << "lb_MetaApplication::Initialize() called in console mode" << ENDL;
+                COUT << "lb_MetaApplication::lbButtonTestHandler() called in console mode" << ENDL;
         }
 
         return ERR_NONE;
@@ -603,7 +581,7 @@ lb_I_EventManager * lb_MetaApplication::getEVManager( void ) {
 /*...e*/
 /*...slbErrCodes LB_STDCALL lb_MetaApplication\58\\58\Initialize\40\char\42\ user \61\ NULL\44\ char\42\ app \61\ NULL\41\:0:*/
 /// \todo Implement autologon settings for last user.
-lbErrCodes LB_STDCALL lb_MetaApplication::Initialize(char* user, char* appName) {
+lbErrCodes LB_STDCALL lb_MetaApplication::initialize(char* user, char* appName) {
 	lbErrCodes err = ERR_NONE;
 /*...sdoc:8:*/
 	/**
@@ -982,6 +960,16 @@ lbErrCodes LB_STDCALL lb_MetaApplication::loadSubModules() {
 	return ERR_NONE;
 }
 
+lbErrCodes LB_STDCALL lb_MetaApplication::unloadApplication() {
+	if (app != NULL) {
+		app->uninitialize();
+		app--;
+		app.resetPtr();
+	}
+	
+	return ERR_NONE;
+}
+
 /*...slbErrCodes LB_STDCALL lb_MetaApplication\58\\58\loadApplication\40\char\42\ user\44\ char\42\ app\41\:0:*/
 lbErrCodes LB_STDCALL lb_MetaApplication::loadApplication(char* user, char* application) {
 	lbErrCodes err = ERR_NONE;
@@ -1136,15 +1124,14 @@ lbErrCodes LB_STDCALL lb_MetaApplication::loadApplication(char* user, char* appl
 			
 			QI(a, lb_I_Application, app)
 				
-                //if (dispatcher.getPtr() == NULL) _LOG << "Error: dispatcher is NULL" LOG_
+            //if (dispatcher.getPtr() == NULL) _LOG << "Error: dispatcher is NULL" LOG_
 				
-                app->setGUI(gui);
-			app->Initialize(user, application);
+			app->setGUI(gui);
+			app->initialize(user, application);
 			
 			_CL_LOG << "Meta application has " << app->getRefCount() << " references." LOG_
 				
-				free(applicationName);
-			
+			free(applicationName);
 		}
 
                 //if (dispatcher.getPtr() == NULL) _LOG << "Error: dispatcher has been set to NULL" LOG_
@@ -1186,7 +1173,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::loadApplication(char* user, char* appl
 		if (dispatcher.getPtr() == NULL) _LOG << "Error: dispatcher is NULL" LOG_
 
 		app->setGUI(gui);
-		app->Initialize();
+		app->initialize();
 
 		_CL_LOG << "Meta application has " << app->getRefCount() << " references." LOG_
 

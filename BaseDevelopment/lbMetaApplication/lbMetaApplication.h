@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.33 $
+ * $Revision: 1.34 $
  * $Name:  $
- * $Id: lbMetaApplication.h,v 1.33 2006/03/24 17:12:22 lollisoft Exp $
+ * $Id: lbMetaApplication.h,v 1.34 2006/03/28 11:34:04 lollisoft Exp $
  *
  * $Log: lbMetaApplication.h,v $
+ * Revision 1.34  2006/03/28 11:34:04  lollisoft
+ * Renamed Initialize to initialize and added unloadApplication for better unloading of the application.
+ *
  * Revision 1.33  2006/03/24 17:12:22  lollisoft
  * Added GUI state for maximized or not.
  *
@@ -183,7 +186,7 @@ public:
 	 * For each event, it gets an numeric identifer so it may
 	 * be able to dispatch that events.
 	 */
-	lbErrCodes LB_STDCALL Initialize(char* user = NULL, char* app = NULL);
+	lbErrCodes LB_STDCALL initialize(char* user = NULL, char* app = NULL);
 	lbErrCodes LB_STDCALL run();
 	lbErrCodes LB_STDCALL getGUI(lb_I_GUI** _gui);
 	lbErrCodes LB_STDCALL getUserName(lb_I_String** user);
@@ -215,6 +218,7 @@ public:
 	 * Load the real application.
 	 */
 	lbErrCodes LB_STDCALL loadApplication(char* user, char* app);
+	lbErrCodes LB_STDCALL unloadApplication();
 
 	lbErrCodes LB_STDCALL enterDebugger(lb_I_Unknown* uk);
 	lbErrCodes LB_STDCALL getLoginData(lb_I_Unknown* uk);
