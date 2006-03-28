@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.119 2006/03/24 17:14:21 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.120 2006/03/28 11:38:58 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.119 $
+ * $Revision: 1.120 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.119 2006/03/24 17:14:21 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.120 2006/03/28 11:38:58 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.120  2006/03/28 11:38:58  lollisoft
+ * Renamed Initialize to initialize and call unloadApplication in OnExit() for better unloading of the application.
+ *
  * Revision 1.119  2006/03/24 17:14:21  lollisoft
  * Added GUI state for maximized or not.
  *
@@ -2009,6 +2012,8 @@ int MyApp::OnExit() {
 		REQUEST(getModuleInstance(), lb_I_MetaApplication, metaApp)
 	}
 	
+	metaApp->unloadApplication();
+	
 	if (PM == NULL) {
 		_LOG << "Error: Could not get plugin manager for saving application data." LOG_
 	} else {
@@ -2138,7 +2143,7 @@ bool MyApp::OnInit(void)
 
     if (metaApp != NULL) {
         metaApp->setGUI(wxGUI);
-        metaApp->Initialize();
+        metaApp->initialize();
 		if (metaApp->getGUIMaximized()) frame->Maximize();
     } 
 
