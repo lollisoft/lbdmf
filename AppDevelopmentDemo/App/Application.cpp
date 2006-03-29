@@ -245,9 +245,9 @@ lb_I_EventManager* LB_STDCALL lbApplication::getEVManager( void ) {
 }
 /*...e*/
 lbErrCodes LB_STDCALL lbApplication::uninitialize() {
-
+	return ERR_NONE;
 }
-/*...slbErrCodes LB_STDCALL lbApplication\58\\58\Initialize\40\char\42\ user \61\ NULL\44\ char\42\ app \61\ NULL\41\:0:*/
+/*...slbErrCodes LB_STDCALL lbApplication\58\\58\initialize\40\char\42\ user \61\ NULL\44\ char\42\ app \61\ NULL\41\:0:*/
 lbErrCodes LB_STDCALL lbApplication::initialize(char* user, char* app) {
 
 	// To be implemented in a separate application module
