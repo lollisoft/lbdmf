@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.108 $
+# * $Revision: 1.109 $
 # * $Name:  $
-# * $Id: Makefile,v 1.108 2006/03/15 07:24:14 lollisoft Exp $
+# * $Id: Makefile,v 1.109 2006/04/11 13:40:05 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.109  2006/04/11 13:40:05  lollisoft
+# * Added making propgrid module.
+# *
 # * Revision 1.108  2006/03/15 07:24:14  lollisoft
 # * Moved Windows module make ordering.
 # *
@@ -413,7 +416,6 @@ BASEDIRECTORIES= \
 	../Plugins \
 	../Modules \
 	../RegressionTests \
-	../vendor/wxaui-0.9.1/src \
 	../vendor/wxaui-0.9.1/sample \
 	../AppDevelopment
 
@@ -579,6 +581,8 @@ ALLTARGETS = \
 	lbclasses \
 	lbMetaApplication \
 	lbPluginManager \
+	../vendor/wxaui-0.9.1/src \
+	../vendor/propgrid \
 	../AppDevelopmentDemo/App \
 	../AppDevelopmentDemo/DynamicApp/App \
 	../Test/Console/XML \
@@ -764,6 +768,10 @@ ifeq ($(OSTYPE), Windows_NT)
 
 $(DEVROOT_MAKE)/wxwin/wx/samples/report: dummy
 	$(MAKE) -s -C $@ -e MODULE=report -e TARGET=$(TARGETEXE) -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@
+
+../vendor/propgrid: dummy
+	$(MAKE) -s -C $@ -e MODULE=wxPropgrid -e TARGET=$(TARGETSHARED) -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@
 
 ../vendor/wxaui-0.9.1/src: dummy
