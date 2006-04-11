@@ -750,7 +750,8 @@ wxPGProperty::wxPGProperty( const wxString& label, const wxString& name )
 #endif
 {
     m_label = label;
-    if ( ((void*)(&name)) != NULL )
+    if ( &name != ((wxString*)NULL) ) 
+//    if ( ((void*)(&name)) != NULL )
         DoSetName ( name );
     else
         DoSetName ( label );
