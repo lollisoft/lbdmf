@@ -1770,7 +1770,7 @@ lb_I_String* LB_STDCALL lbQuery::getPKColumn(char const * FKName) {
 /*...sBind columns:16:*/
 	SQLBindCol(hstmt, 3, SQL_C_CHAR, szPkTable, TAB_LEN, &cbPkTable);
 	SQLBindCol(hstmt, 4, SQL_C_CHAR, szPkCol, COL_LEN, &cbPkCol);
-	SQLBindCol(hstmt, 5, SQL_C_SSHORT, &iKeySeq, TAB_LEN, &cbKeySeq);
+	SQLBindCol(hstmt, 5, SQL_C_CHAR, &iKeySeq, TAB_LEN, &cbKeySeq); //SSHORT
 	SQLBindCol(hstmt, 7, SQL_C_CHAR, szFkTable, TAB_LEN, &cbFkTable);
 	SQLBindCol(hstmt, 8, SQL_C_CHAR, szFkCol, COL_LEN, &cbFkCol);
 /*...e*/
@@ -1784,7 +1784,7 @@ lb_I_String* LB_STDCALL lbQuery::getPKColumn(char const * FKName) {
 		_CL_VERBOSE << "ERROR: Possible buffer overflows!" LOG_
 	}
 
-	_CL_LOG << "Try to get foreign keys with '" << temp << "' as foreign table" LOG_
+	_CL_VERBOSE << "Try to get foreign keys with '" << temp << "' as foreign table" LOG_
 	
 	retcode = SQLForeignKeys(hstmt,
 	         NULL, 0,      /* Primary catalog   */
@@ -1808,10 +1808,20 @@ lb_I_String* LB_STDCALL lbQuery::getPKColumn(char const * FKName) {
 
 	   if (retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO) {
 	      lbErrCodes err = ERR_NONE;
-
-//	      printf("%-s ( %-s ) <-- %-s ( %-s )\n", szPkTable, szPkCol, szFkTable, szFkCol);
+	      UAP_REQUEST(manager.getPtr(), lb_I_String, comp)
+	      UAP_REQUEST(manager.getPtr(), lb_I_String, comp1)
 	      
-	      if (strcmp(FKName, (char const*) szFkCol) == 0) {
+	      /// \todo Think about case sensity.
+	      
+	      if (isVerbose()) printf("%-s ( %-s ) <-- %-s ( %-s ) compare foreign column with: %s\n", szPkTable, szPkCol, szFkTable, szFkCol, FKName);
+	      
+	      *comp = (char*) szFkCol;
+	      comp->toLower();
+	      
+	      *comp1 = FKName;
+	      comp1->toLower();
+	      
+	      if (strcmp(comp1->charrep(), comp->charrep()) == 0) {
 	      	UAP_REQUEST(manager.getPtr(), lb_I_String, c)
 	      	
 	      	c->setData((char const*) szPkCol);
@@ -1891,7 +1901,7 @@ void LB_STDCALL lbQuery::prepareFKList() {
 /*...sBind columns:16:*/
 	SQLBindCol(hstmt, 3, SQL_C_CHAR, szPkTable, TAB_LEN, &cbPkTable);
 	SQLBindCol(hstmt, 4, SQL_C_CHAR, szPkCol, COL_LEN, &cbPkCol);
-	SQLBindCol(hstmt, 5, SQL_C_SSHORT, &iKeySeq, TAB_LEN, &cbKeySeq);
+	SQLBindCol(hstmt, 5, SQL_C_CHAR, &iKeySeq, TAB_LEN, &cbKeySeq); //SSHORT
 	SQLBindCol(hstmt, 7, SQL_C_CHAR, szFkTable, TAB_LEN, &cbFkTable);
 	SQLBindCol(hstmt, 8, SQL_C_CHAR, szFkCol, COL_LEN, &cbFkCol);
 /*...e*/
@@ -1905,7 +1915,7 @@ void LB_STDCALL lbQuery::prepareFKList() {
 		_CL_VERBOSE << "ERROR: Possible buffer overflows!" LOG_
 	}
 
-	_CL_LOG << "Get foreign keys for '" << szTable << "'" LOG_
+	_CL_VERBOSE << "Get foreign keys for '" << szTable << "'" LOG_
 
 #ifdef bla
 	_CL_VERBOSE << "Try to get foreign keys with '" << temp << "' as primary table" LOG_
@@ -2003,7 +2013,7 @@ void LB_STDCALL lbQuery::prepareFKList() {
 	   if (retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO) {
 	      lbErrCodes err = ERR_NONE;
 
-	      //if (isVerbose()) 
+	      if (isVerbose()) 
 	      printf("%s ( %s ) <-- %s ( %s )\n", szPkTable, szPkCol, szFkTable, szFkCol);
 	      
 	      
@@ -2034,8 +2044,7 @@ void LB_STDCALL lbQuery::prepareFKList() {
 	      QI(PKTable_PKName, lb_I_KeyBase, key_PKTable_PKName)
 	      QI(FKName, lb_I_Unknown, uk_FKName)
 
-		_CL_VERBOSE << "Insert map for '" << key_PKTable_PKName->charrep() << 
-		"' to '" << FKName->charrep() << "'" LOG_
+	      _CL_VERBOSE << "Insert map for '" << key_PKTable_PKName->charrep() << "' to '" << FKName->charrep() << "'" LOG_
 	      
 	      mapPKTable_PKColumns_To_FKName->insert(&uk_FKName, &key_PKTable_PKName);
 	   }
@@ -2050,7 +2059,7 @@ void LB_STDCALL lbQuery::prepareFKList() {
 
 
 // MySQL does not yet support Foreign keys or my tests with type INNODB doesn't work
-// Fallback to use manual queries.
+// Fallback to use manual queries. (Using MySQL-Max solved that)
 
 	if (ForeignColumns->Count() == 0) {		
 /*...sOriginally for Linux:8:*/
@@ -2085,7 +2094,7 @@ void LB_STDCALL lbQuery::prepareFKList() {
 
 	    buffer[0] = 0;
 	    
-	    char* column = getColumnName(i);
+	    char* column = strdup(getColumnName(i));
 
 	    sprintf(buffer, "select PKTable, PKName from ForeignKey_VisibleData_Mapping where FKTable = '%s' and FKName = '%s'", table, column);
 
@@ -2105,6 +2114,8 @@ void LB_STDCALL lbQuery::prepareFKList() {
 	        UAP_REQUEST(manager.getPtr(), lb_I_String, PKName)
 		UAP_REQUEST(manager.getPtr(), lb_I_String, PKTable_PKName)
 	
+		UAP_REQUEST(manager.getPtr(), lb_I_String, PKColumn)
+	
 		PKTable = q->getAsString(1);
 		PKName = q->getAsString(2);
 		
@@ -2120,25 +2131,28 @@ void LB_STDCALL lbQuery::prepareFKList() {
 	        QI(PKTable, lb_I_Unknown, uk_PKTable)
 
 
-		if (isVerbose()) printf("%-s ( %-s ) <-- %-s ( %-s )\n", PKTable->charrep(), PKName->charrep(), table, FKName->charrep());
+		if (isVerbose())
+		printf("%-s ( %-s ) <-- %-s ( %-s )\n", PKTable->charrep(), PKName->charrep(), table, FKName->charrep());
 
 	        ForeignColumns->insert(&uk_PKTable, &key_FKName);
 	        
-	        *PKTable_PKName = (char*) szPkTable;
-	        *PKTable_PKName += (char*) szPkCol;
+	        *PKTable_PKName = PKTable->charrep();
+	        PKColumn = getPKColumn(FKName->charrep());
+	        *PKTable_PKName += PKColumn->charrep();
 	        
 	        QI(PKTable_PKName, lb_I_KeyBase, key_PKTable_PKName)
 	        QI(FKName, lb_I_Unknown, uk_FKName)
 
-		_CL_LOG << "Insert map for '" << key_PKTable_PKName->charrep() << 
+		_CL_VERBOSE << "Insert map for '" << key_PKTable_PKName->charrep() << 
 		"' to '" << FKName->charrep() << "'" LOG_
 
-	        
 	        mapPKTable_PKColumns_To_FKName->insert(&uk_FKName, &key_PKTable_PKName);
 	        
 	    } else {
 	    	_CL_VERBOSE << "No foreign key to primary data mapping found." LOG_
 	    }
+	    
+	    free(column);
 	}
 /*...e*/
 	}
