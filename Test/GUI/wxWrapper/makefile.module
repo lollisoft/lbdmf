@@ -106,7 +106,7 @@ endif
 endif
 
 ifeq ($(OSTYPE), linux)
-MOD_INCL=$(STD_INCL) -I ../wxWrapperDLL
+MOD_INCL=$(STD_INCL) -I $(DEVROOT)/Projects/CPP/vendor/propgrid/include -I ../wxWrapperDLL
 OBJDEP=
 
 C_ELFOPS += `wx-config --inplace --cxxflags` -DUSE_WXWRAPPER_DLL -DUNIX -DLINUX -DLB_I_EXTENTIONS
