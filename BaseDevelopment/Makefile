@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.109 $
+# * $Revision: 1.110 $
 # * $Name:  $
-# * $Id: Makefile,v 1.109 2006/04/11 13:40:05 lollisoft Exp $
+# * $Id: Makefile,v 1.110 2006/04/16 10:10:43 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.110  2006/04/16 10:10:43  lollisoft
+# * Added wxPropgrid framework rule.
+# *
 # * Revision 1.109  2006/04/11 13:40:05  lollisoft
 # * Added making propgrid module.
 # *
@@ -705,6 +708,10 @@ ifeq ($(OSTYPE), osx)
 	$@/make-osx.sh $@
 	cp $@/mkmk $(HOME)/bin
 	cd ../BaseDevelopment
+
+../vendor/propgrid: dummy
+	$(MAKE) -s -C $@ -e MODULE=wxPropgrid -e TARGET=$(TARGETWXFRAMEWORK) -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@
 
 ../Test/GUI/wxPlugins/lbLoginWizard: dummy
 	$(MAKE) -s -C $@ -e MODULE=lbLoginWizard -e TARGET=$(TARGETWXPLUGIN) -f $(MAKE_CONFIG_FILE)
