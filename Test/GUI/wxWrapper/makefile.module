@@ -124,11 +124,11 @@ C_ELFOPS += `wx-config --inplace --cxxflags` -DUSE_WXWRAPPER_DLL -DOSX -DUNIX -D
 
 ifeq ($(DEBUG), yes)
 C_ELFOPS +=  -D__WXDEBUG__
-L_OPS = -L. -L$(prefix)/lib -F$(prefix)/lib -lwx_macd_Lollisoft_propgrid-2.6 -framework wxAUI -framework wxWrapperDLL -framework lbHook `wx-config --inplace --libs` -o
+L_OPS = -L. -F$(prefix)/lib -framework wxPropgrid -framework wxAUI -framework wxWrapperDLL -framework lbHook `wx-config --inplace --libs` -o
 endif
 
 ifeq ($(DEBUG), no)
-L_OPS = -L. -L$(prefix)/lib -F$(prefix)/lib -lwx_mac_Lollisoft_propgrid-2.6 -framework wxAUI -framework wxWrapperDLL -framework lbHook `wx-config --inplace --libs` -o
+L_OPS = -L. -F$(prefix)/lib -framework wxPropgrid -framework wxAUI -framework wxWrapperDLL -framework lbHook `wx-config --inplace --libs` -o
 endif
 VENDORLIBS=
 endif
