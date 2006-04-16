@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.110 $
+# * $Revision: 1.111 $
 # * $Name:  $
-# * $Id: Makefile,v 1.110 2006/04/16 10:10:43 lollisoft Exp $
+# * $Id: Makefile,v 1.111 2006/04/16 12:01:19 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.111  2006/04/16 12:01:19  lollisoft
+# * Missed addition of propgrid target.
+# *
 # * Revision 1.110  2006/04/16 10:10:43  lollisoft
 # * Added wxPropgrid framework rule.
 # *
@@ -465,6 +468,7 @@ ALLTARGETS = \
 	lbclasses \
 	lbDB \
 	lbPluginManager \
+	../vendor/propgrid \
 	../vendor/wxaui-0.9.1/src \
 	../AppDevelopmentDemo/App \
 	../AppDevelopmentDemo/DynamicApp/App \
