@@ -12,11 +12,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.78 $
+ * $Revision: 1.79 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.78 2006/03/04 22:18:18 lollisoft Exp $
+ * $Id: mkmk.cpp,v 1.79 2006/04/16 10:03:06 lollisoft Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.79  2006/04/16 10:03:06  lollisoft
+ * Added copying wxPropgrid framework. (Todo: Move that to a post make copy list rule)
+ *
  * Revision 1.78  2006/03/04 22:18:18  lollisoft
  * Corrected library dependencies and build names
  *
@@ -802,9 +805,13 @@ void writeBundleTarget(char* modulename) {
   printf("\t\tmkdir -p %s.app/Contents\n", modulename);
   printf("\t\tmkdir -p %s.app/Contents/MacOS\n", modulename);
   printf("\t\tmkdir -p %s.app/Contents/Frameworks\n", modulename);
+  
+/// \todo Create module specific framework list to be copied instead.
+  
   printf("\t\tcp -R $(HOME)/lib/lbHook.framework %s.app/Contents/Frameworks\n", modulename);
   printf("\t\tcp -R $(HOME)/lib/wxWrapperDLL.framework %s.app/Contents/Frameworks\n", modulename);
   printf("\t\tcp -R $(HOME)/lib/wxAUI.framework %s.app/Contents/Frameworks\n", modulename);
+  printf("\t\tcp -R $(HOME)/lib/wxPropgrid.framework %s.app/Contents/Frameworks\n", modulename);
   printf("\t\tmkdir -p %s.app/Contents/Resources\n", modulename);
   printf("\t\tset -e \"s/IDENTIFIER/`echo . | sed -e 's,\\.\\./,,g' | sed -e 's,/,.,g'`/\" -e \"s/EXECUTABLE/%s/\" -e \"s/VERSION/$(MKMK_WX_VERSION)/\" $(HOME)/wxMac-$(MKMK_WX_VERSION)/src/mac/carbon/wxmac.icns %s.app/Contents/Resources/wxmac.icns\n", modulename, modulename);
   printf("\t\tsed -e \"s/IDENTIFIER/`echo . | sed -e 's,\\.\\./,,g' | sed -e 's,/,.,g'`/\" -e \"s/EXECUTABLE/%s/\" -e \"s/VERSION/$(MKMK_WX_VERSION)/\" $(HOME)/wxMac-$(MKMK_WX_VERSION)/src/mac/carbon/Info.plist.in >%s.app/Contents/Info.plist\n", modulename, modulename);
@@ -1576,7 +1583,7 @@ void ShowHelp(int argc, char *argv[])
 
   fprintf(stderr, "Enhanced by Lothar Behrens (lothar.behrens@lollisoft.de)\n\n");
 
-  fprintf(stderr, "MKMK: makefile generator $Revision: 1.78 $\n");
+  fprintf(stderr, "MKMK: makefile generator $Revision: 1.79 $\n");
   fprintf(stderr, "Usage: MKMK lib|exe|dll|so modulname includepath,[includepath,...] file1 [file2 file3...]\n");
   
   fprintf(stderr, "Your parameters are: ");
