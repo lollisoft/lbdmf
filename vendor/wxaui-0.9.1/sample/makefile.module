@@ -127,7 +127,7 @@ ifeq ($(DEBUG), yes)
 C_ELFOPS += -D__WXDEBUG__
 endif
 
-L_OPS = -F$(HOME)/lib -framework wxAUI `wx-config --inplace --libs` -o
+L_OPS = -F$(HOME)/lib -framework wxPropgrid -framework lbHook -framework wxAUI `wx-config --inplace --libs` -o
 VENDORLIBS=
 endif
 
