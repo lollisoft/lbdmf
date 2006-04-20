@@ -12,11 +12,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.79 $
+ * $Revision: 1.80 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.79 2006/04/16 10:03:06 lollisoft Exp $
+ * $Id: mkmk.cpp,v 1.80 2006/04/20 12:46:00 lollisoft Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.80  2006/04/20 12:46:00  lollisoft
+ * Copy application bundle instead of plain application.
+ *
  * Revision 1.79  2006/04/16 10:03:06  lollisoft
  * Added copying wxPropgrid framework. (Todo: Move that to a post make copy list rule)
  *
@@ -833,11 +836,11 @@ void writeBundleTarget(char* modulename) {
 
 #ifdef UNIX
   printf("install:\n");
-  printf("\t\t$(CP) $(PROGRAM) $(bindir)\n");
+  printf("\t\t$(CP) -R $(PROGRAM).app $(bindir)\n");
 
   printf("install-strip:\n");
   printf("\t\t$(STRIP) $(PROGRAM)\n");
-  printf("\t\t$(INSTALL_PROGRAM) $(PROGRAM) $(bindir)\n");
+  printf("\t\t$(INSTALL_PROGRAM) $(PROGRAM).app $(bindir)\n");
 #endif
 
 #ifdef __WATCOMC__
@@ -1583,7 +1586,7 @@ void ShowHelp(int argc, char *argv[])
 
   fprintf(stderr, "Enhanced by Lothar Behrens (lothar.behrens@lollisoft.de)\n\n");
 
-  fprintf(stderr, "MKMK: makefile generator $Revision: 1.79 $\n");
+  fprintf(stderr, "MKMK: makefile generator $Revision: 1.80 $\n");
   fprintf(stderr, "Usage: MKMK lib|exe|dll|so modulname includepath,[includepath,...] file1 [file2 file3...]\n");
   
   fprintf(stderr, "Your parameters are: ");
