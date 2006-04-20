@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.111 $
+# * $Revision: 1.112 $
 # * $Name:  $
-# * $Id: Makefile,v 1.111 2006/04/16 12:01:19 lollisoft Exp $
+# * $Id: Makefile,v 1.112 2006/04/20 11:40:32 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.112  2006/04/20 11:40:32  lollisoft
+# * Added creation rules for ~/bin ~/lib and ~/plugins into the Mac OS X target list.
+# *
 # * Revision 1.111  2006/04/16 12:01:19  lollisoft
 # * Missed addition of propgrid target.
 # *
@@ -375,6 +378,11 @@ endif
 
 ifeq ($(OSTYPE), osx)
 DEVROOT_MAKE=$(DEVROOT)
+
+ifndef prefix
+prefix=$(HOME)
+endif
+
 endif
 
 ifeq ($(OSTYPE), Windows_NT)
@@ -459,6 +467,9 @@ TARGETFRAMEWORK=framework
 TARGETWXFRAMEWORK=wxframework
 
 ALLTARGETS = \
+	$(prefix)/bin \
+	$(prefix)/lib \
+	$(prefix)/plugins \
 	../include/lbkey.h \
 	../vendor/dosdir \
 	../vendor/mkmk \
