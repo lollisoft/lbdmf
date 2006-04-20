@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.112 $
+# * $Revision: 1.113 $
 # * $Name:  $
-# * $Id: Makefile,v 1.112 2006/04/20 11:40:32 lollisoft Exp $
+# * $Id: Makefile,v 1.113 2006/04/20 12:20:31 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.113  2006/04/20 12:20:31  lollisoft
+# * Changed make order to catch up all targets before propably non existing directories.
+# *
 # * Revision 1.112  2006/04/20 11:40:32  lollisoft
 # * Added creation rules for ~/bin ~/lib and ~/plugins into the Mac OS X target list.
 # *
@@ -448,8 +451,8 @@ BASEDIRECTORIES= \
 	../Plugins \
 	../Modules \
 	../RegressionTests \
-	../AppDevelopment \
 	../vendor/wxaui-0.9.1/sample \
+	../AppDevelopment \
 	../vendor/tvision/examples/lbDMF
 
 TARGETDLL=sobundle
