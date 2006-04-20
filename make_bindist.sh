@@ -1,6 +1,19 @@
 #!/bin/sh
-
 # Create Mac OS X binary package of wxWrapper.
+
+ARCH=`arch`
+
+if [ "$1" == "" ]; then
+	echo No version parameter given.
+	echo Sample: $0 0.7.1
+	exit;
+fi
+
+if [ "$ARCH" != "ppc" ]; then
+	echo This is no Mac machine.
+        exit;
+fi
+
 
 export DEVROOT=dist/Develop/Projects/CPP
 
@@ -36,3 +49,25 @@ ln -s libwx_mac_Lollisoft_propgrid-2.6.0.dylib libwx_mac_Lollisoft_propgrid-2.6.
 cd ../../../..
 
 cp -R ~/develop/Projects/CPP/Test/GUI/wxWrapper/wxWrapper.app ./lbDMF
+
+DMGFILE=lbDMF-Binary-Samples-$1.dmg
+DMGFILEOUT=lbDMF-Binary-Samples-$1.dmg.tgz
+
+# Create an initial disk image (32 megs)
+hdiutil create -size 32m -fs HFS+ -volname "lbDMF Binary Samples ($1)" $DMGFILE
+ 
+# Mount the disk image
+hdiutil attach $DMGFILE
+ 
+# Obtain device information
+DEV=$(hdiutil attach $DMGFILE | grep Apple_partition_scheme | cut -f 1)
+
+cd ./lbDMF
+cp -R . "/Volumes/lbDMF Binary Samples ($1)"
+cd ..
+ 
+# Unmount the disk image
+hdiutil detach $DEV
+ 
+tar cvzf $DMGFILEOUT $DMGFILE
+rm $DMGFILE
