@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.120 2006/03/28 11:38:58 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.121 2006/05/07 07:06:54 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.120 $
+ * $Revision: 1.121 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.120 2006/03/28 11:38:58 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.121 2006/05/07 07:06:54 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.121  2006/05/07 07:06:54  lollisoft
+ * Return an empty string on file dialog canceling.
+ *
  * Revision 1.120  2006/03/28 11:38:58  lollisoft
  * Renamed Initialize to initialize and call unloadApplication in OnExit() for better unloading of the application.
  *
@@ -2003,6 +2006,7 @@ IMPLEMENT_APP  (MyApp)
 #endif
 #endif
 
+/*...sint MyApp\58\\58\OnExit\40\\41\:0:*/
 int MyApp::OnExit() {
 	lbErrCodes err = ERR_NONE;
 	
@@ -2057,6 +2061,7 @@ int MyApp::OnExit() {
 		
 	return 0;
 }
+/*...e*/
 /*...sMyApp\58\\58\OnInit\40\void\41\:0:*/
 // `Main program' equivalent, creating windows and returning main app frame
 bool MyApp::OnInit(void)
@@ -2254,6 +2259,10 @@ lbErrCodes LB_STDCALL MyApp::askOpenFileReadStream(lb_I_Unknown* uk) {
 	if (fileDialog.ShowModal() == wxID_OK) {
 		parameter->setData("result");
 		filepath->setData(fileDialog.GetPath().c_str());
+		param->setUAPString(*&parameter, *&filepath);
+	} else {
+		parameter->setData("result");
+		filepath->setData("");
 		param->setUAPString(*&parameter, *&filepath);
 	}
 	
