@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.87 $
+ * $Revision: 1.88 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.87 2006/03/28 11:34:04 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.88 2006/05/07 07:07:57 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.88  2006/05/07 07:07:57  lollisoft
+ * Corrected file dialog cancel handling.
+ *
  * Revision 1.87  2006/03/28 11:34:04  lollisoft
  * Renamed Initialize to initialize and added unloadApplication for better unloading of the application.
  *
@@ -1321,13 +1324,15 @@ lb_I_InputStream* LB_STDCALL lb_MetaApplication::askOpenFileReadStream(char* ext
 	
 	parameter->setData("result");
 	param->getUAPString(*&parameter, *&value);
+
+	if (strcmp(value->charrep(), "") == 0) return NULL;
 	
 	_CL_LOG << "Got a file name: " << value->charrep() << "." LOG_
 
 	UAP_REQUEST(manager.getPtr(), lb_I_InputStream, s)
 	s++;
 	s->setFileName(value->charrep());
-	
+
 	return s.getPtr();
 }
 
