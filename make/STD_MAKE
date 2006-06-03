@@ -25,11 +25,23 @@
 #            40235 Duesseldorf (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.85 $
+# * $Revision: 1.86 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.85 2006/04/20 11:11:29 lollisoft Exp $
+# * $Id: STD_MAKE,v 1.86 2006/06/03 06:16:58 lollisoft Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.86  2006/06/03 06:16:58  lollisoft
+# * Changes against new Datamodel classes.
+# * These are used instead spread SQL commands.
+# *
+# * Currently, the SQL commands are for fallback issues,
+# * if there is no data in the config files.
+# *
+# * Later the planned fallback SQL commands are replaced by
+# * a controlled visitor operation.
+# *
+# * Work is in process.
+# *
 # * Revision 1.85  2006/04/20 11:11:29  lollisoft
 # * Using release build for 0.7.1 version.
 # *
@@ -637,7 +649,7 @@ ifeq ($(OSTYPE), osx)
 #LB_USE_FRAMEWORKS=no
 LB_USE_FRAMEWORKS=yes
 
-DEBUG=no
+DEBUG=yes
 
 
 STD_INCL = -I $(DEVROOT)/Projects/CPP/BaseDevelopment/lbHook/linuxCode \

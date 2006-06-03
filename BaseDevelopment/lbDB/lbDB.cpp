@@ -157,6 +157,7 @@ public:
          * Convert the internal data to a char array and return the data.
          */
         lbErrCodes	LB_STDCALL getString(int column, lb_I_String* instance);
+        lbErrCodes	LB_STDCALL getLong(int column, lb_I_Long* instance);
         lbErrCodes	LB_STDCALL getString(char* column, lb_I_String* instance);
         lbErrCodes      LB_STDCALL setString(char* column, lb_I_String* instance);
 
@@ -330,13 +331,14 @@ public:
         virtual char* 		LB_STDCALL getChar(int column);
 #endif
 #ifndef UNBOUND       
-        virtual lb_I_String*	LB_STDCALL getAsString(int column);
-	virtual lbErrCodes	LB_STDCALL setString(lb_I_String* columnName, lb_I_String* value);
+        lb_I_String*	LB_STDCALL getAsString(int column);
+		lb_I_Long*		LB_STDCALL getAsLong(int column);
+		lbErrCodes		LB_STDCALL setString(lb_I_String* columnName, lb_I_String* value);
 #endif        
 	
-	lbErrCodes LB_STDCALL init(HENV _henv, HDBC _hdbc, int readonly = 1);
+		lbErrCodes LB_STDCALL init(HENV _henv, HDBC _hdbc, int readonly = 1);
 
-	lbErrCodes LB_STDCALL executeDirect(char* SQL);
+		lbErrCodes LB_STDCALL executeDirect(char* SQL);
 
 	/**
 	 * Get the statement for creation of bound columns in lb_I_ColumnBinding.
@@ -468,7 +470,9 @@ public:
 	virtual lb_I_Query::lbDBColumnTypes LB_STDCALL getType();
 	virtual lb_I_Unknown* LB_STDCALL getData();
 	virtual lbErrCodes LB_STDCALL getAsString(lb_I_String* result, int asParameter = 0);
+	virtual lbErrCodes LB_STDCALL getAsLong(lb_I_Long* result, int asParameter = 0);
 	virtual lbErrCodes LB_STDCALL setFromString(lb_I_String* set, int mode);
+	virtual lbErrCodes LB_STDCALL setFromLong(lb_I_Long* set, int mode);
 
 	void		LB_STDCALL checkReadonly(int column);
 	void		LB_STDCALL setReadonly(bool updateable);
@@ -986,6 +990,17 @@ Therefore I need an indicator, set by the user of this library to know, which on
 	return ERR_NONE;
 }
 /*...e*/
+lbErrCodes	LB_STDCALL lbBoundColumns::getLong(int column, lb_I_Long* instance) {
+	lbErrCodes err = ERR_NONE;
+
+	UAP(lb_I_BoundColumn, bc)
+
+	bc = getBoundColumn(column);
+	bc->getAsLong(instance);
+
+	return ERR_NONE;
+}
+/*...e*/
 /*...slbErrCodes      LB_STDCALL lbBoundColumns\58\\58\getString\40\int column\44\ lb_I_String\42\ instance\41\:0:*/
 lbErrCodes	LB_STDCALL lbBoundColumns::getString(int column, lb_I_String* instance) {
 	lbErrCodes err = ERR_NONE;
@@ -1398,6 +1413,11 @@ char* LB_STDCALL lbQuery::addWhereClause(const char* query, char* where) {
 lbErrCodes LB_STDCALL lbQuery::query(char* q, bool bind) {
 	lbBoundColumns* boundcols = NULL;
 
+    if (q == NULL) {
+		_LOG << "Error: Have got a NULL pointer for the query to execute!" LOG_
+		return ERR_DB_QUERYFAILED;
+	}
+	
 	if (strlen(q) >= 1000) printf("WARNING: Bufferoverflow in %s at %d\n", __FILE__, __LINE__);
 
 	lstrcpy(szSql, q);
@@ -1591,6 +1611,15 @@ lb_I_String* LB_STDCALL lbQuery::getAsString(int column) {
 	
 	return string.getPtr();
 }
+
+lb_I_Long* LB_STDCALL lbQuery::getAsLong(int column) {
+	UAP_REQUEST(manager.getPtr(), lb_I_Long, value)
+	// Caller get's an owner
+	value++;
+	boundColumns->getLong(column, *&value);
+	return value.getPtr();
+}
+
 #endif
 /*...e*/
 /*...sint LB_STDCALL lbQuery\58\\58\getColumns\40\\41\:0:*/
@@ -3190,6 +3219,24 @@ lb_I_Unknown* LB_STDCALL lbBoundColumn::getData() {
 	return NULL;
 }
 /*...e*/
+lbErrCodes LB_STDCALL lbBoundColumn::getAsLong(lb_I_Long* result, int asParameter) {
+	lbErrCodes err = ERR_NONE;
+	
+	switch (_DataType) {
+		case SQL_INTEGER:
+		{
+			result->setData(*(long*) buffer);
+			break;
+		}
+
+        default:
+			_CL_VERBOSE << "lbBoundColumn::getAsLong(...) failed: Unknown or not supported datatype for column '" << columnName << "'"  LOG_
+	       	break;
+	}
+	
+	return err;
+}
+
 /*...slbErrCodes LB_STDCALL lbBoundColumn\58\\58\getAsString\40\lb_I_String\42\ result\44\ int asParameter\41\:0:*/
 lbErrCodes LB_STDCALL lbBoundColumn::getAsString(lb_I_String* result, int asParameter) {
 	
@@ -3279,11 +3326,42 @@ lbErrCodes LB_STDCALL lbBoundColumn::getAsString(lb_I_String* result, int asPara
 		*result += buf;
 		free(buf);
 		*/
-			return ERR_NONE;
-	}
+		return ERR_NONE;
+}
 /*...e*/
+lbErrCodes LB_STDCALL lbBoundColumn::setFromLong(lb_I_Long* set, int mode) {
+	lbErrCodes err = ERR_NONE;
+	if (isReadonly) {
+		_CL_LOG << "Warning: Updating a column '" << columnName << "' with readonly status skipped." LOG_
+		return ERR_NONE;
+	}
+	if (mode == 1) {
+		switch (_DataType) {
+			case SQL_INTEGER:
+			{
+				long l = set->getData();
+				
+				long* pl = (long*) buffer;
+				
+				void* b = pl+1;
+				
+				memcpy(b, &l, sizeof(l));
+			}
+				break;
+		}
+	} else {
+		switch (_DataType) {
+			case SQL_INTEGER:
+			{
+				long l = set->getData();
+				memcpy(buffer, &l, sizeof(l));
+			}
+		}
+	}
+	return err;
+}
 /*...slbErrCodes LB_STDCALL lbBoundColumn\58\\58\setFromString\40\lb_I_String\42\ set\44\ int mode\41\:0:*/
-	lbErrCodes LB_STDCALL lbBoundColumn::setFromString(lb_I_String* set, int mode) {
+lbErrCodes LB_STDCALL lbBoundColumn::setFromString(lb_I_String* set, int mode) {
 		if (isReadonly) {
 			_CL_LOG << "Warning: Updating a column '" << columnName << "' with readonly status skipped." LOG_
 			return ERR_NONE;
@@ -4172,7 +4250,9 @@ public:
         lbDatabase();
         virtual ~lbDatabase();
 
-	virtual lbErrCodes LB_STDCALL init();
+	lbErrCodes	LB_STDCALL init();
+	
+	bool		LB_STDCALL isConnected();
 	
 	/**
 	 * Makes a connection to the specified database. For ODBC database drivers,
@@ -4182,13 +4262,13 @@ public:
 	 *		user	database user
 	 *		passwd	database password
 	 */
-	virtual lbErrCodes LB_STDCALL connect(char* DSN, char* user, char* passwd);
-	virtual lb_I_Query* LB_STDCALL getQuery(int readonly = 1);
+	lbErrCodes	LB_STDCALL connect(char* DSN, char* user, char* passwd);
+	lb_I_Query*	LB_STDCALL getQuery(int readonly = 1);
 
-	virtual lbErrCodes LB_STDCALL connect(char* pass);
+	lbErrCodes	LB_STDCALL connect(char* pass);
 
-	virtual lbErrCodes LB_STDCALL setUser(char* _user);
-	virtual lbErrCodes LB_STDCALL setDB(char* _db);	
+	lbErrCodes	LB_STDCALL setUser(char* _user);
+	lbErrCodes	LB_STDCALL setDB(char* _db);	
 	
 	
 private:
@@ -4197,6 +4277,7 @@ private:
 	HDBC     hdbc;
 	char*	 user;
 	char*	 db;
+	bool	 connected;
 
 	UAP(lb_I_Container, connPooling)
 };
@@ -4216,6 +4297,7 @@ lbDatabase::lbDatabase() {
 	user = NULL;
 	db = NULL;
 	connPooling = NULL;
+	connected = false;
 	_CL_VERBOSE << "lbDatabase::lbDatabase() called." LOG_
 }
 
@@ -4271,11 +4353,16 @@ lbErrCodes LB_STDCALL lbDatabase::connect(char* pass) {
 	return connect(db, user, pass);
 }
 
+bool LB_STDCALL lbDatabase::isConnected() {
+	return connected;
+}
+
 /*...slbErrCodes LB_STDCALL lbDatabase\58\\58\connect\40\char\42\ DSN\44\ char\42\ user\44\ char\42\ passwd\41\:0:*/
 lbErrCodes LB_STDCALL lbDatabase::connect(char* DSN, char* user, char* passwd) {
 	lbErrCodes err = ERR_NONE;
 
-	_CL_VERBOSE << "Connect to database " << DSN << " as " << user << " with passwd=" << passwd LOG_
+	// Put me to unconnected state, if anything goes wrong...
+	connected = false;
 	
 	if (connPooling == NULL) {
 	    UAP_REQUEST(manager.getPtr(), lb_I_Container, container)
@@ -4309,10 +4396,11 @@ lbErrCodes LB_STDCALL lbDatabase::connect(char* DSN, char* user, char* passwd) {
 	    QI(uk, lb_I_Connection, con)
 	    
 	    if (con != NULL) {
-		lbConnection* c = (lbConnection*) con.getPtr();
+			lbConnection* c = (lbConnection*) con.getPtr();
 		
-		hdbc = c->getConnection();
-	    }
+			hdbc = c->getConnection();
+			connected = true;
+		}
 	    	
 	} else {
 	    _CL_VERBOSE << "SQLAllocConnect(henv, &hdbc);" LOG_
@@ -4340,7 +4428,7 @@ lbErrCodes LB_STDCALL lbDatabase::connect(char* DSN, char* user, char* passwd) {
 
             if (retcode != SQL_SUCCESS)
             {
-		_LOG << "SQLSetConnectOption(hdbc, SQL_LOGIN_TIMEOUT, 15) failed." LOG_
+				_LOG << "SQLSetConnectOption(hdbc, SQL_LOGIN_TIMEOUT, 15) failed." LOG_
                 _dbError_DBC( "SQLSetConnectOption()", hdbc);
                 SQLFreeEnv(henv);
                 return ERR_DB_CONNECT;
@@ -4348,17 +4436,17 @@ lbErrCodes LB_STDCALL lbDatabase::connect(char* DSN, char* user, char* passwd) {
 
 	    _CL_VERBOSE << "SQLSetConnectAttr(hdbc, SQL_ATTR_ODBC_CURSORS, SQL_CUR_USE_IF_NEEDED, 0);" LOG_
 
-	// SQL_CUR_USE_IF_NEEDED does not work with psqlODBC 8.x.x
-	// Use Cursor library.
+		// SQL_CUR_USE_IF_NEEDED does not work with psqlODBC 8.x.x
+		// Use Cursor library.
 	    //retcode = SQLSetConnectAttr(hdbc, SQL_ATTR_ODBC_CURSORS, (void*)SQL_CUR_USE_ODBC/*SQL_CUR_USE_IF_NEEDED*/, 0);
 	    retcode = SQLSetConnectAttr(hdbc, SQL_ATTR_ODBC_CURSORS, SQL_CUR_USE_IF_NEEDED, 0);
 
-            if (retcode != SQL_SUCCESS)
-            {
-		_LOG << "SQLSetConnectAttr(hdbc, SQL_ATTR_ODBC_CURSORS, SQL_CUR_USE_IF_NEEDED, 0) failed." LOG_
-	        _dbError_DBC( "SQLSetConnectAttr()", hdbc);
-                SQLFreeEnv(henv);
-                return ERR_DB_CONNECT;
+		if (retcode != SQL_SUCCESS)
+		{
+			_LOG << "SQLSetConnectAttr(hdbc, SQL_ATTR_ODBC_CURSORS, SQL_CUR_USE_IF_NEEDED, 0) failed." LOG_
+			_dbError_DBC( "SQLSetConnectAttr()", hdbc);
+			SQLFreeEnv(henv);
+			return ERR_DB_CONNECT;
 	    }
 
 	    retcode = SQLConnect(hdbc, (unsigned char*) DSN, SQL_NTS, 
@@ -4366,12 +4454,12 @@ lbErrCodes LB_STDCALL lbDatabase::connect(char* DSN, char* user, char* passwd) {
 				       (unsigned char*) passwd, SQL_NTS); /* Connect to data source */
 
 	    if (retcode != SQL_SUCCESS && retcode != SQL_SUCCESS_WITH_INFO)
-            {
-        	_dbError_DBC( "SQLConnect()", hdbc);
-		_LOG << "Connection to database failed." LOG_
-        	SQLFreeEnv(henv);
-        	return ERR_DB_CONNECT;
-            }
+		{
+			_dbError_DBC( "SQLConnect()", hdbc);
+			_LOG << "Connection to database failed." LOG_
+			SQLFreeEnv(henv);
+			return ERR_DB_CONNECT;
+		}
             
 /* Does not help :-(
 	    retcode = SQLSetConnectAttr(hdbc, SQL_TXN_ISOLATION, (void*) SQL_TXN_SERIALIZABLE, 0); //(void*) SQL_TXN_REPEATABLE_READ, 0);
@@ -4383,18 +4471,19 @@ lbErrCodes LB_STDCALL lbDatabase::connect(char* DSN, char* user, char* passwd) {
 	        return ERR_DB_CONNECT;
 	    }
 */
-            retcode = SQLSetConnectOption(hdbc, SQL_AUTOCOMMIT, SQL_AUTOCOMMIT_ON);
+		retcode = SQLSetConnectOption(hdbc, SQL_AUTOCOMMIT, SQL_AUTOCOMMIT_ON);
 
-	    if (retcode != SQL_SUCCESS)
-	    {
-		_LOG << "SQLSetConnectOption(hdbc, SQL_AUTOCOMMIT, SQL_AUTOCOMMIT_ON) failed." LOG_
-	        _dbError_DBC( "SQLSetConnectOption(SQL_AUTOCOMMIT, SQL_AUTOCOMMIT_ON)", hdbc);
-	        SQLFreeEnv(henv);
-	        return ERR_DB_CONNECT;
+		if (retcode != SQL_SUCCESS)
+		{
+			_LOG << "SQLSetConnectOption(hdbc, SQL_AUTOCOMMIT, SQL_AUTOCOMMIT_ON) failed." LOG_
+			_dbError_DBC( "SQLSetConnectOption(SQL_AUTOCOMMIT, SQL_AUTOCOMMIT_ON)", hdbc);
+			SQLFreeEnv(henv);
+			return ERR_DB_CONNECT;
 	    }
 	    
 	    connPooling->insert(&uk, &key);
-        }
+		connected = true;
+	}
 
 	return ERR_NONE;
 }

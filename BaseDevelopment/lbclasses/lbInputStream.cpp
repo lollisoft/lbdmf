@@ -109,6 +109,7 @@ public:
 	bool LB_STDCALL read();
     
 	lb_I_InputStream& LB_STDCALL operator>> (int& i);
+	lb_I_InputStream& LB_STDCALL operator>> (long& i);
 	lb_I_InputStream& LB_STDCALL operator>> (bool& b);
 	lb_I_InputStream& LB_STDCALL operator>> (char& c);
 	lb_I_InputStream& LB_STDCALL operator>> (char*& string);
@@ -213,6 +214,14 @@ void LB_STDCALL lbInputStream::_realloc(int add_size) {
 } 
  
 lb_I_InputStream& LB_STDCALL lbInputStream::operator>> (int& i) {
+	if (!isOpen) return *this;
+
+	*_istream >> i;
+
+	return *this;
+}
+
+lb_I_InputStream& LB_STDCALL lbInputStream::operator>> (long& i) {
 	if (!isOpen) return *this;
 
 	*_istream >> i;

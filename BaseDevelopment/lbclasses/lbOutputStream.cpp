@@ -110,6 +110,7 @@ public:
 	void LB_STDCALL logdirect(const char *msg, char *f, int level);
     
 	lb_I_OutputStream& LB_STDCALL operator<< (const int i);
+	lb_I_OutputStream& LB_STDCALL operator<< (const long i);
 	lb_I_OutputStream& LB_STDCALL operator<< (const bool b);
 	lb_I_OutputStream& LB_STDCALL operator<< (const char c);
 	lb_I_OutputStream& LB_STDCALL operator<< (const char* string);
@@ -211,6 +212,14 @@ void LB_STDCALL lbOutputStream::_realloc(int add_size) {
 } 
  
 lb_I_OutputStream& LB_STDCALL lbOutputStream::operator<< (const int i) {
+	if (!isOpen) return *this;
+
+	*_ostream << i << endl;
+	
+	return *this;
+}
+
+lb_I_OutputStream& LB_STDCALL lbOutputStream::operator<< (const long i) {
 	if (!isOpen) return *this;
 
 	*_ostream << i << endl;

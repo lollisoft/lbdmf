@@ -731,6 +731,7 @@ class lb_I_GUIApp;
 class lb_I_LogonPage;
 class lb_I_AppSelectPage;
 class lb_I_LogonHandler;
+class lb_I_DatabaseOperation;
 /*...e*/
 
 /*...scallback \47\ handler typedefs:0:*/
@@ -2495,8 +2496,147 @@ public:
 	 *
 	 */
 	virtual lb_I_Parameter* LB_STDCALL getParameter() = 0;
+	
+
+	/** \brief Login to the application.
+	 *
+	 * See description of addUserAccount.
+	 */
+	virtual bool LB_STDCALL login(const char* user, const char* pass) = 0;
 };
 /*...e*/
+
+class lb_I_UserAccounts : public lb_I_Unknown {
+public:
+	/** \brief Add an user account and get it's ID.
+	 *
+	 * This function only works, when a super user has already logged in.
+	 * If there is no such user and no database available, the current user
+	 * id would be used for a local super user.
+	 *
+	 * The database's stored super user has more priority over the local.
+	 * Locally logged in super users didn't get access to the user accounts
+	 * in the database. So if the database is back any how, the user must
+	 * login to the database's super user.
+	 *
+	 * If the passwords are inconsistent and the database is available again,
+	 * the user must login arain to the database's user.
+	 *
+	 * If all that is ok, the super user could transfer the users to the local
+	 * copy of users.
+	 *
+	 * Any better solutions ?
+	 *
+	 * Parameters:
+	 *
+	 *		_id would be automatically generated, if no third parameter is given.
+	 *		This is the case, when the new entry would be added from user interaction and
+	 *		later stored in the database.
+	 *
+	 *		It would be the best to directly store the new entry in the database and retrieve
+	 *		the id for furter linking of applications to users.
+	 *
+	 * Returns -1, if given id exists (then repeat without that id).
+	 * Returns -2, if user exists.
+	 */
+	virtual long		LB_STDCALL addAccount(const char* _user, const char* _pass, long _id = -1) = 0;
+	
+	/** \brief Select current user.
+	 *
+	 * Direct access by the given login name.
+	 */
+	virtual bool		LB_STDCALL selectAccount(const char* _user) = 0;
+	
+	/** \brief Get the number of users.
+	 */
+	virtual long		LB_STDCALL getUserCount() = 0;
+	
+	/** \brief Begin or indicate end of iteration.
+	 */
+	virtual bool		LB_STDCALL hasMoreUsers() = 0;
+
+	/** \brief Iterate to next user.
+	 */
+	virtual void		LB_STDCALL setNextUser() = 0;
+
+	/** \brief Stop iteration.
+	 */
+	virtual void		LB_STDCALL finishUserIteration() = 0;
+	
+	/** \brief Get current user name (iteration).
+	 */
+	virtual char*		LB_STDCALL getUserName() = 0;
+
+	/** \brief Get current user id.
+	 */
+	virtual long		LB_STDCALL getUserUID() = 0;
+
+	/** \brief Get current user password.
+	 */
+	virtual char*		LB_STDCALL getUserPassword() = 0;
+};
+
+class lb_I_Applications : public lb_I_Unknown {
+public:
+	/** \brief Add a new application.
+	 *
+	 * The given _id is used for later linking of users to specific applications.
+	 * Using _id's default value indicates a new entry in the database. Else a readout from stream/database.
+	 * When using default id value, internally a 'virtual' id must be assigned, to be able to store relations.
+	 *
+	 * To avoid extra functions, these 'virtual' id's would be negative. This could be determined my the
+	 * database stream handler.
+	 */
+	virtual long LB_STDCALL addApplication(const char* application, const char* titel, const char* modulename, const char* functor, const char* _interface, long _id = -1) = 0;
+	
+	/** \brief Select current application.
+	 */
+	virtual bool LB_STDCALL selectApplication(const char* application) = 0;
+	
+	/** \brief Get the number of applications.
+	 */
+	virtual int LB_STDCALL getApplicationCount() = 0;
+	
+	/** \brief Begin or indicate end of iteration.
+	 */
+	virtual bool		LB_STDCALL hasMoreApplications() = 0;
+
+	/** \brief Iterate to next application.
+	 */
+	virtual void		LB_STDCALL setNextApplication() = 0;
+
+	/** \brief Stop iteration.
+	 */
+	virtual void		LB_STDCALL finishApplicationIteration() = 0;
+	
+	/** \brief Get current application name (iteration).
+	 */
+	virtual char*		LB_STDCALL getApplicationName() = 0;
+
+	/** \brief Get current application name (iteration).
+	 */
+	virtual char*		LB_STDCALL getApplicationTitle() = 0;
+
+	/** \brief Get current application name (iteration).
+	 */
+	virtual char*		LB_STDCALL getApplicationFunctor() = 0;
+
+	/** \brief Get current application name (iteration).
+	 */
+	virtual char*		LB_STDCALL getApplicationModule() = 0;
+
+	/** \brief Get current application name (iteration).
+	 */
+	virtual char*		LB_STDCALL getApplicationInterface() = 0;
+
+	/** \brief Get current applications user id.
+	 *
+	 * Each application entry has an associated id.
+	 */
+	virtual long		LB_STDCALL getApplicationID() = 0;
+};
+
+
 
 class lb_I_Plugin;
 class lb_I_PluginImpl;

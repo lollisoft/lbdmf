@@ -30,11 +30,23 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.44 $
+ * $Revision: 1.45 $
  * $Name:  $
- * $Id: lbPluginManager.cpp,v 1.44 2006/03/19 23:35:42 lollisoft Exp $
+ * $Id: lbPluginManager.cpp,v 1.45 2006/06/03 06:16:57 lollisoft Exp $
  *
  * $Log: lbPluginManager.cpp,v $
+ * Revision 1.45  2006/06/03 06:16:57  lollisoft
+ * Changes against new Datamodel classes.
+ * These are used instead spread SQL commands.
+ *
+ * Currently, the SQL commands are for fallback issues,
+ * if there is no data in the config files.
+ *
+ * Later the planned fallback SQL commands are replaced by
+ * a controlled visitor operation.
+ *
+ * Work is in process.
+ *
  * Revision 1.44  2006/03/19 23:35:42  lollisoft
  * Removed some log messages and reformatted some code.
  *
@@ -988,6 +1000,9 @@ lb_I_Unknown* LB_STDCALL lbPlugin::peekImplementation() {
 	UAP(lb_I_PluginImpl, impl)
 	QI(implementation, lb_I_PluginImpl, impl)
 
+	if (impl == NULL) {
+		_CL_LOG << "Error: Could not instantiate plugin implementation with given interface. (" << _name << ")" LOG_
+	}
 	lb_I_Unknown* uk = impl->peekImplementation();
 
 	return uk;

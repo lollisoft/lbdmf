@@ -3,15 +3,18 @@
  * Implement a new class for a new operation such as save/load to/from file.
  *
  */
+
 class lb_I_Aspect :
 public lb_I_Unknown
 { // abstract interface for visitors 
 public: 
 
+// The lb_I_Streamable interface would possibly go impossible
+//virtual void LB_STDCALL visit(lb_I_Unknown*) { printf("Error: Catch all visitor called!\n"); }
 virtual void LB_STDCALL visit(lb_I_LogonHandler*) = 0;
-virtual void LB_STDCALL visit(lb_I_LogonPage*) = 0;
-virtual void LB_STDCALL visit(lb_I_AppSelectPage*) = 0;
-virtual void LB_STDCALL visit(lb_I_GUIApp*) = 0; // This is the wxApp class !! ??
+virtual void LB_STDCALL visit(lb_I_LogonPage*) = 0;     // Conflict with the catchall. Don't use MI.
+virtual void LB_STDCALL visit(lb_I_AppSelectPage*) = 0; // As above
+virtual void LB_STDCALL visit(lb_I_GUIApp*) = 0;        // This is the wxApp class !! ??
 virtual void LB_STDCALL visit(lb_I_GUI*) = 0;
 virtual void LB_STDCALL visit(lb_I_Frame*) = 0;
 virtual void LB_STDCALL visit(lb_I_KeyBase*) = 0; 
@@ -56,6 +59,9 @@ virtual void LB_STDCALL visit(lb_I_DelegatedAction*) = 0;
 virtual void LB_STDCALL visit(lb_I_DatabaseReport*) = 0;
 virtual void LB_STDCALL visit(lb_I_CodeGenerator*) = 0;
 virtual void LB_STDCALL visit(lb_I_Streamable*) = 0;
+virtual void LB_STDCALL visit(lb_I_DatabaseOperation*) = 0;
+virtual void LB_STDCALL visit(lb_I_UserAccounts*) = 0;
+virtual void LB_STDCALL visit(lb_I_Applications*) = 0;
 //virtual ~Aspect(){} 
 }; 
 
@@ -106,4 +112,37 @@ public:
 	 * This allows storage handling for private data.
 	 */
 	virtual lb_I_Stream* LB_STDCALL getStream() = 0;
+};
+
+class lb_I_DatabaseOperation :
+public lb_I_Aspect
+{
+protected:
+	lb_I_DatabaseOperation() {}
+	virtual ~lb_I_DatabaseOperation() {}
+	
+public:
+	/** \brief Start the operation.
+	 *
+	 * Start the database operation with the given parameters.
+	 */
+	virtual bool LB_STDCALL begin(const char* DBName, const char* DBUser, const char* DBPass) = 0;
+	
+	/** \brief Start the operation.
+	 *
+	 * Start the database operation with the given database instance.
+	 */
+	virtual bool LB_STDCALL begin(lb_I_Database* _db) = 0;
+	
+	/** \brief End the operation.
+	 *
+	 * This closes the file and disables the operation.
+	 */
+	virtual void LB_STDCALL end() = 0;
+	
+	/** \brief Get access to stream.
+	 *
+	 * This allows storage handling for private data.
+	 */
+	//virtual lb_I_Stream* LB_STDCALL getStream() = 0;
 };

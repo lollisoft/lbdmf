@@ -385,6 +385,14 @@ public:
          * \param value Value as a string.
          */
         virtual lbErrCodes	LB_STDCALL setString(lb_I_String* columnName, lb_I_String* value) = 0;
+		
+		/**
+		 * \brief Get the column data as lb_I_Integer* instance.
+		 * 
+		 * Builds a lb_I_Integer instance and fills in the data of the bound column.
+		 * The database column must be of valit integer type. 
+		 */
+		virtual lb_I_Long* LB_STDCALL getAsLong(int column) = 0;
 #endif
 };
 /*...e*/
@@ -459,6 +467,14 @@ public:
 	 * \param asParameter Don't know why here a parameter should be possible.
 	 */
 	virtual lbErrCodes LB_STDCALL getAsString(lb_I_String* result, int asParameter = 0) = 0;
+	
+	/**
+	 * \brief Get a long column.
+	 *
+	 * \param result Result must be an instance of lb_I_Long to be filled.
+	 * \param asParameter Don't know why here a parameter should be possible.
+	 */
+	virtual lbErrCodes LB_STDCALL getAsLong(lb_I_Long* result, int asParameter = 0) = 0;
 	
 	/**
 	 * \brief Set the data from a string.
@@ -664,6 +680,16 @@ public:
 	 *
 	 * Returns index column as a string.
 	 *
+	 * \param column Index of the column.
+	 * \param instance String instance to be filled with the value.
+	 */
+        virtual lbErrCodes      LB_STDCALL getLong(int column, lb_I_Long* instance) = 0;
+        
+	/**
+	 * \brief Get the column as string representation.
+	 *
+	 * Returns index column as a string.
+	 *
 	 * \param column Name of the column.
 	 * \param instance String instance to be filled with the value.
 	 */
@@ -761,10 +787,15 @@ public:
 	/**
 	 * \brief Initializion of the database backend.
 	 */
-	virtual lbErrCodes LB_STDCALL init() = 0;
+	virtual lbErrCodes	LB_STDCALL init() = 0;
 
-	virtual lbErrCodes LB_STDCALL setUser(char* _user) = 0;
-	virtual lbErrCodes LB_STDCALL setDB(char* _db) = 0;
+	virtual lbErrCodes	LB_STDCALL setUser(char* _user) = 0;
+	virtual lbErrCodes	LB_STDCALL setDB(char* _db) = 0;
+
+	/** \brief Determine connection status.
+	 *
+	 */
+	virtual bool		LB_STDCALL isConnected() = 0;
 
 	/**
 	 * \brief Connect to the database.

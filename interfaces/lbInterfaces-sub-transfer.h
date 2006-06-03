@@ -160,6 +160,11 @@ public:
 	 */
 	virtual lb_I_InputStream& LB_STDCALL operator>> (int& i) = 0;
 
+	/** \brief Read an long data type.
+	 *
+	 */
+	virtual lb_I_InputStream& LB_STDCALL operator>> (long& i) = 0;
+
 	/** \brief Read a bool data type.
 	 *
 	 */
@@ -188,6 +193,11 @@ public:
 	 *
 	 */
 	virtual lb_I_OutputStream& LB_STDCALL operator<< (const int i) = 0;
+
+	/** \brief Write an long data type.
+	 *
+	 */
+	virtual lb_I_OutputStream& LB_STDCALL operator<< (const long i) = 0;
 
 	/** \brief Write a bool data type.
 	 *
@@ -224,13 +234,21 @@ public:
 	};
 #endif
 
-	/** \brief Save to stream.
+	/** \brief Save to a filebased stream.
 	 */
 	virtual lbErrCodes LB_STDCALL save(lb_I_OutputStream* oStream) = 0;
 	
-	/** \brief Load from stream.
+	/** \brief Load from a filebased stream.
 	 */
 	virtual lbErrCodes LB_STDCALL load(lb_I_InputStream* iStream) = 0;
+
+	/** \brief Save to a database.
+	 */
+	virtual lbErrCodes LB_STDCALL save(lb_I_Database* oDB) = 0;
+	
+	/** \brief Load from a database.
+	 */
+	virtual lbErrCodes LB_STDCALL load(lb_I_Database* iDB) = 0;
 };
 
 #endif // __LB_SUB_TRANSFER__

@@ -30,6 +30,7 @@ ALLTARGETS = \
 	TestPlugin \
 	VisitorOperations \
 	DatabaseForm \
+	lbDMFDataModel \
 	DatabaseReport
 endif
 
@@ -44,6 +45,7 @@ ALLTARGETS = \
 	TestPlugin \
 	VisitorOperations \
 	DatabaseForm \
+	lbDMFDataModel \
 	DatabaseReport
 endif
 
@@ -58,6 +60,7 @@ ALLTARGETS = \
 	TestPlugin \
 	VisitorOperations \
 	DatabaseForm \
+	lbDMFDataModel \
 	DatabaseReport
 endif
 
@@ -85,6 +88,10 @@ TestPlugin: dummy
 
 DatabaseForm: dummy
 	$(MAKE) -C $@ -e MODULE=lbDatabaseForm -e TARGET=$(TARGETWXPLUGIN) -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
+	$(MAKE) -C $@
+	
+lbDMFDataModel: dummy
+	$(MAKE) -C $@ -e MODULE=$@ -e TARGET=$(TARGETPLUGIN) -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
 	$(MAKE) -C $@
 	
 DatabaseReport: dummy

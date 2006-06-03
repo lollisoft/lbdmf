@@ -423,20 +423,19 @@ lbErrCodes LB_STDCALL wxLogonPage::createTextCtrl(char* _name) {
 /*...svirtual bool wxLogonPage\58\\58\TransferDataFromWindow\40\\41\:0:*/
 bool wxLogonPage::TransferDataFromWindow() {
 	lbErrCodes err = ERR_NONE;
-		
-	UAP_REQUEST(manager.getPtr(), lb_I_Database, database)
-	UAP(lb_I_Query, sampleQuery)
-	database->init();
+	
+	char* pass = strdup(getTextValue("Passwort:"));
+	char* user = strdup(getTextValue("Benutzer:"));
 
-	char* lbDMFPasswd = getenv("lbDMFPasswd");
-	char* lbDMFUser   = getenv("lbDMFUser");
-		
-	if (!lbDMFUser) lbDMFUser = "dba";
-	if (!lbDMFPasswd) lbDMFPasswd = "trainres";
+	UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
 
-	err = database->connect("lbDMF", lbDMFUser, lbDMFPasswd);
+	if (meta->login(user, pass)) {
+		appselect->setLoggedOnUser(user);
+		if (pass) free(pass);
+		if (user) free(user);
 
-	if (err != ERR_NONE) {
+		return TRUE;
+	} else {
 		char* buf = strdup(_trans("Login to database failed.\n\nYou could not use the dynamic features of the\napplication without a proper configured database."));
 		char* buf1 = strdup(_trans("Error"));
 		wxMessageDialog dialog(NULL, buf, buf1, wxOK);
@@ -446,48 +445,6 @@ bool wxLogonPage::TransferDataFromWindow() {
 		free(buf);
 		free(buf1);
 		
-		return FALSE;
-	}
-
-	sampleQuery = database->getQuery(0);
-
-	char buffer[800] = "";
-
-	char* pass = strdup(getTextValue("Passwort:"));
-	char* user = strdup(getTextValue("Benutzer:"));
-
-
-	sampleQuery->skipFKCollecting();
-	sprintf(buffer, "select userid, passwort from Users where userid = '%s' and passwort = '%s'",
-               	user, pass);
-
-	_CL_VERBOSE << "Query for user " << user LOG_
-
-	if (sampleQuery->query(buffer) != ERR_NONE) {
-	    printf("Query for user and password failed\n");
-	    sampleQuery->enableFKCollecting();
-	    
-	    if (pass) free(pass);
-	    if (user) free(user);
-	    
-	    return FALSE;
-	}
-		
-	sampleQuery->enableFKCollecting();
-
-	err = sampleQuery->first();
-
-	if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
-		appselect->setLoggedOnUser(user);
-		if (pass) free(pass);
-		if (user) free(user);
-
-		return TRUE;
-	} else {
-	        printf("User authentication failed\n");
-
-		if (pass) free(pass);
-		if (user) free(user);
 		return FALSE;
 	}
 }

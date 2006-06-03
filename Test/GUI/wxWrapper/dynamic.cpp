@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.121 2006/05/07 07:06:54 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.122 2006/06/03 06:16:58 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,23 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.121 $
+ * $Revision: 1.122 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.121 2006/05/07 07:06:54 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.122 2006/06/03 06:16:58 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.122  2006/06/03 06:16:58  lollisoft
+ * Changes against new Datamodel classes.
+ * These are used instead spread SQL commands.
+ *
+ * Currently, the SQL commands are for fallback issues,
+ * if there is no data in the config files.
+ *
+ * Later the planned fallback SQL commands are replaced by
+ * a controlled visitor operation.
+ *
+ * Work is in process.
+ *
  * Revision 1.121  2006/05/07 07:06:54  lollisoft
  * Return an empty string on file dialog canceling.
  *
@@ -2047,6 +2059,9 @@ int MyApp::OnExit() {
 						UAP(lb_I_Unknown, ukAcceptor1)
 						QI(metaApp, lb_I_Unknown, ukAcceptor1)
 						ukAcceptor1->accept(*&fOp1);
+						
+						
+						
 						
 						fOp1->end();
 					}

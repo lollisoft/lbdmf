@@ -31,11 +31,23 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.88 $
+ * $Revision: 1.89 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.88 2006/05/07 07:07:57 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.89 2006/06/03 06:16:57 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.89  2006/06/03 06:16:57  lollisoft
+ * Changes against new Datamodel classes.
+ * These are used instead spread SQL commands.
+ *
+ * Currently, the SQL commands are for fallback issues,
+ * if there is no data in the config files.
+ *
+ * Later the planned fallback SQL commands are replaced by
+ * a controlled visitor operation.
+ *
+ * Work is in process.
+ *
  * Revision 1.88  2006/05/07 07:07:57  lollisoft
  * Corrected file dialog cancel handling.
  *
@@ -401,6 +413,8 @@ lb_MetaApplication::lb_MetaApplication() {
 	_autoload = true;
 	_autoselect = false;
 	_autorefresh = false;
+	_logged_in = false;
+	_loading_object_data = false;
 	
 	_CL_LOG << "lb_MetaApplication::lb_MetaApplication() called." LOG_
 }
@@ -555,13 +569,22 @@ lbErrCodes LB_STDCALL lb_MetaApplication::getApplicationName(lb_I_String** app) 
 /*...e*/
 /*...slbErrCodes LB_STDCALL lb_MetaApplication\58\\58\setUserName\40\char\42\ user\41\:0:*/
 lbErrCodes LB_STDCALL lb_MetaApplication::setUserName(char* user) {
-	if ((user == NULL) || strcmp(user, "") == 0) return ERR_NONE;
-	 
+	if (!_loading_object_data)
+		if (!_logged_in) {
+			_LOG << "Error: Not logged in. Function call not allowed." LOG_
+			return ERR_NONE;
+		}
+	
+	if ((user == NULL) || strcmp(user, "") == 0) {
+		_LOG << "Error: Setting empty user name not allowed." LOG_ 
+		return ERR_NONE;
+	}
+	
 	if (LogonUser == NULL) {
         	REQUEST(manager.getPtr(), lb_I_String, LogonUser)
 	}
 
-       	LogonUser->setData(user);
+	LogonUser->setData(user);
 	return ERR_NONE;
 }
 /*...e*/
@@ -599,7 +622,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::initialize(char* user, char* appName) 
 	if (user == NULL) {
 		_CL_LOG << "lb_MetaApplication::Initialize() user is NULL" LOG_
 	} else
-		if (LogonUser == NULL) {
+		if (LogonUser == NULL && _logged_in) {
 			REQUEST(manager.getPtr(), lb_I_String, LogonUser)
 			LogonUser->setData(user);
 		}
@@ -635,7 +658,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::initialize(char* user, char* appName) 
 /*...e*/
 		
 /*...sregister some basic events \40\getBasicApplicationInfo\46\\46\\46\\41\ by the event manager:8:*/
-		eman->registerEvent("doAutoload", doAutoload);
+	eman->registerEvent("doAutoload", doAutoload);
 	eman->registerEvent("enterDebugger", enterDebugger);
 	eman->registerEvent("getBasicApplicationInfo", getBasicApplicationInfo);
 	eman->registerEvent("getMainModuleInfo", getMainModuleInfo);
@@ -649,7 +672,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::initialize(char* user, char* appName) 
 	
 /*...sget the dispatcher instance:8:*/
 	REQUEST(m, lb_I_Dispatcher, dispatcher)
-		dispatcher->setEventManager(eman.getPtr());
+	dispatcher->setEventManager(eman.getPtr());
 /*...e*/
 	
 	registerEventHandler(dispatcher.getPtr());
@@ -724,24 +747,26 @@ lbErrCodes LB_STDCALL lb_MetaApplication::initialize(char* user, char* appName) 
 	free(mm);
 	
 	_CL_LOG << "Load properties from file..." LOG_
+	
+	_loading_object_data = true;
+	
+	REQUEST(manager.getPtr(), lb_I_Parameter, myProperties)
 		
-		REQUEST(manager.getPtr(), lb_I_Parameter, myProperties)
+	// Get the plugin to read a standard stream based file
 		
-		// Get the plugin to read a standard stream based file
+	UAP_REQUEST(manager.getPtr(), lb_I_PluginManager, PM)
 		
-		UAP_REQUEST(manager.getPtr(), lb_I_PluginManager, PM)
+	UAP(lb_I_Plugin, pl)
+	UAP(lb_I_Unknown, ukPl)
 		
-		UAP(lb_I_Plugin, pl)
-		UAP(lb_I_Unknown, ukPl)
-		
-		pl = PM->getFirstMatchingPlugin("lb_I_FileOperation", "InputStreamVisitor");
+	pl = PM->getFirstMatchingPlugin("lb_I_FileOperation", "InputStreamVisitor");
 	
 	if (pl != NULL) {
 		_CL_LOG << "Try to get an implementation." LOG_
 		ukPl = pl->getImplementation();
 
 		if (ukPl != NULL) {
-		UAP(lb_I_FileOperation, fOp)
+			UAP(lb_I_FileOperation, fOp)
 			QI(ukPl, lb_I_FileOperation, fOp)
 			
 			if (!fOp->begin("MetaApp.mad")) {
@@ -751,23 +776,36 @@ lbErrCodes LB_STDCALL lb_MetaApplication::initialize(char* user, char* appName) 
 				
 				UAP(lb_I_Plugin, pl1)
 				UAP(lb_I_Unknown, ukPl1)
-				
 				pl1 = PM->getFirstMatchingPlugin("lb_I_FileOperation", "OutputStreamVisitor");
 				ukPl1 = pl1->getImplementation();
-				
 				UAP(lb_I_FileOperation, fOp1)
-					QI(ukPl1, lb_I_FileOperation, fOp1)
+				QI(ukPl1, lb_I_FileOperation, fOp1)
 					
-					if (!fOp1->begin("MetaApp.mad")) {
-						_CL_LOG << "ERROR: Could not write default file for meta application!" LOG_		
+				if (!fOp1->begin("MetaApp.mad")) {
+					_CL_LOG << "ERROR: Could not write default file for meta application!" LOG_		
 						
-						return ERR_FILE_WRITE_DEFAULT;
-					}
+					return ERR_FILE_WRITE_DEFAULT;
+				}
 				
+				// Save me
 				UAP(lb_I_Unknown, ukAcceptor1)
-					QI(this, lb_I_Unknown, ukAcceptor1)
-					ukAcceptor1->accept(*&fOp1);
-				
+				QI(this, lb_I_Unknown, ukAcceptor1)
+				ukAcceptor1->accept(*&fOp1);
+			
+				// Save a Users list
+				UAP(lb_I_Plugin, pl2)
+				UAP(lb_I_Unknown, ukPl2)
+				pl2 = PM->getFirstMatchingPlugin("lb_I_UserAccounts", "Model");
+				ukPl2 = pl2->getImplementation();
+				ukPl2->accept(*&fOp1);
+
+				// Save a Applications list
+				UAP(lb_I_Plugin, pl3)
+				UAP(lb_I_Unknown, ukPl3)
+				pl3 = PM->getFirstMatchingPlugin("lb_I_Applications", "Model");
+				ukPl3 = pl3->getImplementation();
+				ukPl3->accept(*&fOp1);
+						
 				fOp1->end();		
 				
 				if (!fOp->begin("MetaApp.mad")) {
@@ -775,19 +813,53 @@ lbErrCodes LB_STDCALL lb_MetaApplication::initialize(char* user, char* appName) 
 					return ERR_FILE_READ_DEFAULT;
 				}
 			}
-		
-		// Do it as I didn't know the type of my project.
-		UAP(lb_I_Unknown, ukAcceptor)
+			
+			// Read my data
+			UAP(lb_I_Unknown, ukAcceptor)
 			QI(this, lb_I_Unknown, ukAcceptor)
 			ukAcceptor->accept(*&fOp);
+
+			// Read an Users list
+			UAP(lb_I_Plugin, pl2)
+			UAP(lb_I_Unknown, ukPl2)
+			pl2 = PM->getFirstMatchingPlugin("lb_I_UserAccounts", "Model");
+			ukPl2 = pl2->getImplementation();
+			ukPl2->accept(*&fOp);
+
+			QI(ukPl2, lb_I_UserAccounts, Users)
+
+			// Read an Applications list
+			UAP(lb_I_Plugin, pl3)
+			UAP(lb_I_Unknown, ukPl3)
+			pl3 = PM->getFirstMatchingPlugin("lb_I_Applications", "Model");
+			ukPl3 = pl3->getImplementation();
+			ukPl3->accept(*&fOp);
 		
-		fOp->end();
+			QI(ukPl3, lb_I_Applications, Applications)
+		
+			fOp->end();
 		} else {
 			_CL_LOG << "Error: Could not load stream operator classes!" LOG_
 		}
 	} else {
 		_CL_LOG << "Error: Could not load stream operator classes!" LOG_
 	}
+	
+	/*
+	 
+	   Here it would be the best to get user accounts into the new account list.
+	   Having no database and no previously retrieved data from file would lead
+	   into not loading the last application for the last user.
+	   
+	   Really, it then would be invalid data in the last logged in user.
+	   
+	   Changed user data leads to a reread from the database for these user accounts.
+	   Thus, the database has higher priority. This is because other users may have
+	   changed their passwords.
+	   
+	   Changing the data for the logged in user is a special case, where the changed
+	   data must be written back to the database.
+	*/
 	
 	if (getAutoload() && (LogonUser != NULL) && (LogonApplication != NULL)) {
 		if ((strcmp(LogonUser->charrep(), "") != 0) && (strcmp(LogonApplication->charrep(), "") != 0)) {
@@ -815,10 +887,11 @@ lbErrCodes LB_STDCALL lb_MetaApplication::initialize(char* user, char* appName) 
 	if (getAutoload()) 
 		toggleEvent("doAutoload");
 	
+	_loading_object_data = false;
 	
 	_CL_LOG << "Loaded properties from file." LOG_
 		
-		return ERR_NONE;
+	return ERR_NONE;
 }
 /*...e*/
 
@@ -976,45 +1049,45 @@ lbErrCodes LB_STDCALL lb_MetaApplication::unloadApplication() {
 /*...slbErrCodes LB_STDCALL lb_MetaApplication\58\\58\loadApplication\40\char\42\ user\44\ char\42\ app\41\:0:*/
 lbErrCodes LB_STDCALL lb_MetaApplication::loadApplication(char* user, char* application) {
 	lbErrCodes err = ERR_NONE;
-
-        if (user == NULL) {
-                _CL_LOG << "lb_MetaApplication::Initialize() user is NULL" LOG_
-        } else
-        if (LogonUser == NULL) {
-                REQUEST(manager.getPtr(), lb_I_String, LogonUser)
-        }
-
-        LogonUser->setData(user);
-
-        if (application == NULL) {
-                _CL_LOG << "lb_MetaApplication::Initialize() app is NULL" LOG_
-        } else
+	
+	if (user == NULL) {
+		_CL_LOG << "lb_MetaApplication::Initialize() user is NULL" LOG_
+	} else
+		if (LogonUser == NULL) {
+			REQUEST(manager.getPtr(), lb_I_String, LogonUser)
+		}
+	
+	LogonUser->setData(user);
+	
+	if (application == NULL) {
+		_CL_LOG << "lb_MetaApplication::Initialize() app is NULL" LOG_
+	} else
         if (LogonApplication == NULL) {
-                REQUEST(manager.getPtr(), lb_I_String, LogonApplication)
+			REQUEST(manager.getPtr(), lb_I_String, LogonApplication)
         }
-
-        LogonApplication->setData(application);
-
-
-        char* applicationName = getenv("TARGET_APPLICATION");
-
+	
+	LogonApplication->setData(application);
+	
+	
+	char* applicationName = getenv("TARGET_APPLICATION");
+	
 	char* lbDMFPasswd = getenv("lbDMFPasswd");
 	char* lbDMFUser   = getenv("lbDMFUser");
 	
 	if (!lbDMFUser) lbDMFUser = "dba";
 	if (!lbDMFPasswd) lbDMFPasswd = "trainres";
-
+	
 	if (applicationName == NULL) {
 		/*
 		 * No predefined application without authentication.
 		 * Read the configuration from a database.
 		 */
-
+		
 		UAP_REQUEST(manager.getPtr(), lb_I_Database, database)
 		UAP(lb_I_Query, sampleQuery)
-
+		
 		database->init();
-
+		
 		if (database->connect("lbDMF", lbDMFUser, lbDMFPasswd) != ERR_NONE) {
 			_LOG << "Error: Connection to database failed." LOG_
 			return ERR_NONE;
@@ -1057,7 +1130,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::loadApplication(char* user, char* appl
 				strcpy(applicationName, ModuleName->charrep());		        
 				
 #ifdef bla
-/*...sRead only the first application\46\ More apps are wrong\46\:24:*/
+				/*...sRead only the first application\46\ More apps are wrong\46\:24:*/
 		        while (TRUE) {
 					lbErrCodes err = sampleQuery->next();
 					
@@ -1071,7 +1144,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::loadApplication(char* user, char* appl
 						if (err == WARN_DB_NODATA) break;
 					}
 		        }
-/*...e*/
+				/*...e*/
 #endif
 				
 			} else {
@@ -1127,62 +1200,62 @@ lbErrCodes LB_STDCALL lb_MetaApplication::loadApplication(char* user, char* appl
 			
 			QI(a, lb_I_Application, app)
 				
-            //if (dispatcher.getPtr() == NULL) _LOG << "Error: dispatcher is NULL" LOG_
+				//if (dispatcher.getPtr() == NULL) _LOG << "Error: dispatcher is NULL" LOG_
 				
-			app->setGUI(gui);
+				app->setGUI(gui);
 			app->initialize(user, application);
 			
 			_CL_LOG << "Meta application has " << app->getRefCount() << " references." LOG_
 				
-			free(applicationName);
+				free(applicationName);
 		}
-
-                //if (dispatcher.getPtr() == NULL) _LOG << "Error: dispatcher has been set to NULL" LOG_
+		
+		//if (dispatcher.getPtr() == NULL) _LOG << "Error: dispatcher has been set to NULL" LOG_
 	} else {
-
+		
 		UAP(lb_I_Unknown, a)
-
-		#ifndef LINUX
-			#ifdef __WATCOMC__
-				#define PREFIX "_"
-			#endif
-			#ifdef _MSC_VER
-				#define PREFIX ""
-			#endif
-		#endif
-		#ifdef LINUX
-			#define PREFIX ""
-		#endif
-
-
-		#ifdef WINDOWS	
+		
+#ifndef LINUX
+#ifdef __WATCOMC__
+#define PREFIX "_"
+#endif
+#ifdef _MSC_VER
+#define PREFIX ""
+#endif
+#endif
+#ifdef LINUX
+#define PREFIX ""
+#endif
+		
+		
+#ifdef WINDOWS	
 		manager->preload(applicationName);
 		manager->makeInstance(PREFIX "instanceOfApplication", applicationName, &a);
-		#endif
-		#ifdef LINUX
+#endif
+#ifdef LINUX
 		char name[80] = "";
 		strcpy(name, applicationName);
 		strcat(name, ".so");
 		manager->preload(name);
 		manager->makeInstance(PREFIX "instanceOfApplication", name, &a);
-		#endif	
+#endif	
 		if (a == NULL) {
 			_CL_LOG << "ERROR: Application could not be loaded - either not found or not configured." LOG_
 			return ERR_NONE;
 		}
 		
 		QI(a, lb_I_MetaApplication, app)
-
-		if (dispatcher.getPtr() == NULL) _LOG << "Error: dispatcher is NULL" LOG_
-
-		app->setGUI(gui);
+			
+			if (dispatcher.getPtr() == NULL) _LOG << "Error: dispatcher is NULL" LOG_
+				
+				app->setGUI(gui);
 		app->initialize();
-
+		
 		_CL_LOG << "Meta application has " << app->getRefCount() << " references." LOG_
-
-		if (dispatcher.getPtr() == NULL) _LOG << "Error: dispatcher has been set to NULL" LOG_
+			
+			if (dispatcher.getPtr() == NULL) _LOG << "Error: dispatcher has been set to NULL" LOG_
 	}
-
+		
         return ERR_NONE;
 }
 /*...e*/
@@ -1619,11 +1692,76 @@ lbErrCodes LB_STDCALL lb_MetaApplication::addMenuEntryCheckable(char* in_menu, c
 
 	dispatcher->dispatch("AddMenuEntry", uk.getPtr(), &uk_result);
 	
-
 	return ERR_NONE;
-
 }
 /*...e*/
+
+bool LB_STDCALL lb_MetaApplication::login(const char* user, const char* pass) {
+	lbErrCodes err = ERR_NONE;
+	
+	if (Users->getUserCount() == 0) { 
+		// Fallback to database use. This should be moved to s 'service', that would
+		// Read out the content's of the database. So the best would be using visitor
+		// pattern for this to do.
+		
+		
+		UAP_REQUEST(manager.getPtr(), lb_I_Database, database)
+		UAP(lb_I_Query, sampleQuery)
+		database->init();
+		
+		char* lbDMFPasswd = getenv("lbDMFPasswd");
+		char* lbDMFUser   = getenv("lbDMFUser");
+		
+		if (!lbDMFUser) lbDMFUser = "dba";
+		if (!lbDMFPasswd) lbDMFPasswd = "trainres";
+		
+		err = database->connect("lbDMF", lbDMFUser, lbDMFPasswd);
+		
+		if (err != ERR_NONE) {
+			return FALSE;
+		}
+		
+		sampleQuery = database->getQuery(0);
+		
+		char buffer[800] = "";
+		
+		sampleQuery->skipFKCollecting();
+		sprintf(buffer, "select userid, passwort from Users where userid = '%s' and passwort = '%s'",
+               	user, pass);
+		
+		_CL_VERBOSE << "Query for user " << user LOG_
+			
+			if (sampleQuery->query(buffer) != ERR_NONE) {
+				sampleQuery->enableFKCollecting();
+				return FALSE;
+			}
+		
+		sampleQuery->enableFKCollecting();
+		
+		err = sampleQuery->first();
+		
+		if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
+			_logged_in = TRUE;
+			return TRUE;
+		} else {
+			return FALSE;
+		}
+	} else {
+		// We have got users from file
+		
+		while (Users->hasMoreUsers()) {
+			Users->setNextUser();
+			
+			if ((strcmp(Users->getUserName(), user) == 0) && (strcmp(Users->getUserPassword(), pass) == 0)) {
+				_logged_in = TRUE;
+				return true;
+			}
+		}
+		
+		return false;
+	}
+}
+
 /*...e*/
 /*...slb_EventMapper:0:*/
 lb_EventMapper::lb_EventMapper() {

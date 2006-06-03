@@ -71,6 +71,7 @@ extern "C" {
 #endif            
 
 IMPLEMENT_FUNCTOR(instanceOfInteger, lbInteger)
+IMPLEMENT_FUNCTOR(instanceOfLong, lbLong)
 IMPLEMENT_FUNCTOR(instanceOfBoolean, lbBoolean)
 IMPLEMENT_FUNCTOR(instanceOfString, lbString)
 #ifndef _MSC_VER
@@ -353,6 +354,50 @@ lbErrCodes LB_STDCALL lbParameter::getUAPParameter(lb_I_String*& parameter, lb_I
 
 	p->setData(*&uk_p_parameter);
 		
+	return ERR_NONE;
+}
+
+void LB_STDCALL lbParameter::setUAPLong(lb_I_String*& parameter, lb_I_Long*& p) {
+	lbErrCodes err = ERR_NONE;
+	if (parameters == NULL) {
+		REQUEST(manager.getPtr(), lb_I_Container, parameters)
+		if (parameters == NULL) {
+			_LOG << "Error: Could not get container instance for parameres" LOG_
+			return;
+		}
+	}	
+	
+	UAP(lb_I_KeyBase, k_parameter)
+	QI(parameter, lb_I_KeyBase, k_parameter)
+
+	UAP(lb_I_Unknown, uk_p)
+	QI(p, lb_I_Unknown, uk_p)
+	
+	
+	parameters->insert(&uk_p, &k_parameter);
+}
+
+lbErrCodes LB_STDCALL lbParameter::getUAPLong(lb_I_String*& parameter, lb_I_Long*& p) {
+	lbErrCodes err = ERR_NONE;
+	
+	if (parameters == NULL) return ERR_PARAM_NOT_FOUND;
+
+	lb_I_String* pp = parameter;
+	UAP(lb_I_KeyBase, key)
+	QI(pp, lb_I_KeyBase, key)
+	
+	UAP(lb_I_Unknown, uk_p_integer)
+
+	uk_p_integer = parameters->getElement(&key);
+
+	if (uk_p_integer == NULL) return ERR_PARAM_NOT_FOUND;
+
+	UAP(lb_I_Long, integer)
+	QI(uk_p_integer, lb_I_Long, integer)
+	
+	if (integer.getPtr() != NULL) p->setData(integer->getData());
+	
+	
 	return ERR_NONE;
 }
 

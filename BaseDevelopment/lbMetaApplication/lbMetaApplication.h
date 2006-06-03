@@ -30,11 +30,23 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.34 $
+ * $Revision: 1.35 $
  * $Name:  $
- * $Id: lbMetaApplication.h,v 1.34 2006/03/28 11:34:04 lollisoft Exp $
+ * $Id: lbMetaApplication.h,v 1.35 2006/06/03 06:16:57 lollisoft Exp $
  *
  * $Log: lbMetaApplication.h,v $
+ * Revision 1.35  2006/06/03 06:16:57  lollisoft
+ * Changes against new Datamodel classes.
+ * These are used instead spread SQL commands.
+ *
+ * Currently, the SQL commands are for fallback issues,
+ * if there is no data in the config files.
+ *
+ * Later the planned fallback SQL commands are replaced by
+ * a controlled visitor operation.
+ *
+ * Work is in process.
+ *
  * Revision 1.34  2006/03/28 11:34:04  lollisoft
  * Renamed Initialize to initialize and added unloadApplication for better unloading of the application.
  *
@@ -278,6 +290,9 @@ public:
 	lbErrCodes LB_STDCALL propertyChanged(lb_I_Unknown* uk);
 
 	lbErrCodes LB_STDCALL doAutoload(lb_I_Unknown* uk);
+	
+	bool LB_STDCALL login(const char* user, const char* pass);
+	
 protected:
 	lb_I_GUI* gui;
 	
@@ -290,11 +305,16 @@ protected:
 	UAP(lb_I_String, LogonApplication)
 	
 	UAP(lb_I_Parameter, myProperties)
+	
+	UAP(lb_I_Applications, Applications)
+	UAP(lb_I_UserAccounts, Users)
 
 	bool _autoload;
 	bool _autorefresh;
 	bool _autoselect;
 	bool _GUIMaximized;
+	bool _logged_in;
+	bool _loading_object_data;
 	
 	char gwedgd[100];
 };

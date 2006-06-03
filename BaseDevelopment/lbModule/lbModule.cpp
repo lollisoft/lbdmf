@@ -30,11 +30,23 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.106 $
+ * $Revision: 1.107 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.106 2006/02/26 23:46:19 lollisoft Exp $
+ * $Id: lbModule.cpp,v 1.107 2006/06/03 06:16:57 lollisoft Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.107  2006/06/03 06:16:57  lollisoft
+ * Changes against new Datamodel classes.
+ * These are used instead spread SQL commands.
+ *
+ * Currently, the SQL commands are for fallback issues,
+ * if there is no data in the config files.
+ *
+ * Later the planned fallback SQL commands are replaced by
+ * a controlled visitor operation.
+ *
+ * Work is in process.
+ *
  * Revision 1.106  2006/02/26 23:46:19  lollisoft
  * Changed build method for shared libraries under Mac OS X
  * to be frameworks. These would be embedable into the
@@ -1914,6 +1926,7 @@ public:
 
         virtual void LB_STDCALL setFunctor(char* functor) {
         	if (_functor) free(_functor);
+			if (functor == NULL) return;
         	_functor = (char*) malloc(strlen(functor)+1);
         	_functor[0] = 0;
         	strcpy(_functor, functor);
@@ -1921,6 +1934,7 @@ public:
         
         virtual void LB_STDCALL setModule(char* module) {
         	if (_module) free(_module);
+			if (module == NULL) return;
         	_module = (char*) malloc(strlen(module)+1);
         	_module[0] = 0;
         	strcpy(_module, module);
@@ -2041,6 +2055,7 @@ void LB_STDCALL lbHCInterfaceRepository::setCurrentSearchInterface(const char* i
 
 /*...slb_I_FunctorEntity\42\ LB_STDCALL lbHCInterfaceRepository\58\\58\getFirstEntity\40\\41\:0:*/
 lb_I_FunctorEntity* LB_STDCALL lbHCInterfaceRepository::getFirstEntity() {
+
 	if (CurrentSearchMode == 0) {
 		printf("SearchMode not set. Please call first lbHCInterfaceRepository::setCurrentSearchInterface(char* iface)\nOr any further other setCurrentSearch<Mode>(char* argument) function\n");
 		return NULL;
@@ -2053,6 +2068,7 @@ lb_I_FunctorEntity* LB_STDCALL lbHCInterfaceRepository::getFirstEntity() {
 
 	char* module = NULL;
 	char* functor = NULL;
+	bool  found = false;
 
 // Add code here to overload exsisting interface definitions by custom repository
 
@@ -2071,98 +2087,124 @@ lb_I_FunctorEntity* LB_STDCALL lbHCInterfaceRepository::getFirstEntity() {
 	if (strcmp(searchArgument, "lb_I_Container") == 0) {
 	 	functor = PREFIX "instanceOfSkipList";
 		module = "lbClasses";
+		found = true;
 	}
 	
 	if (strcmp(searchArgument, "lb_I_InputStream") == 0) {
 	 	functor = PREFIX "instanceOfInputStream";
 		module = "lbClasses";
+		found = true;
 	}
 	
 	if (strcmp(searchArgument, "lb_I_OutputStream") == 0) {
 	 	functor = PREFIX "instanceOfOutputStream";
 		module = "lbClasses";
+		found = true;
 	}
 	
 	if (strcmp(searchArgument, "lb_I_Log") == 0) {
 		functor = PREFIX "instanceOfLogger";
 		module = "lbClasses";
+		found = true;
 	}
 	
 	if (strcmp(searchArgument, "lb_I_KeyBase") == 0) {
 		functor = PREFIX "instanceOfIntegerKey";
 		module = "lbClasses";
+		found = true;
 	}
 	
 	if (strcmp(searchArgument, "lb_I_Integer") == 0) {
 		functor = PREFIX "instanceOfInteger";
 		module = "lbClasses";
+		found = true;
+	}
+	
+	if (strcmp(searchArgument, "lb_I_Long") == 0) {
+		functor = PREFIX "instanceOfLong";
+		module = "lbClasses";
+		found = true;
 	}
 	
 	if (strcmp(searchArgument, "lb_I_Boolean") == 0) {
 		functor = PREFIX "instanceOfBoolean";
 		module = "lbClasses";
+		found = true;
 	}
 	
 	if (strcmp(searchArgument, "lb_I_String") == 0) {
 		functor = PREFIX "instanceOfString";
 		module = "lbClasses";
+		found = true;
 	}
 	
 	if (strcmp(searchArgument, "lb_I_Parameter") == 0) {
 		functor = PREFIX "instanceOfParameter";
 		module = "lbClasses";
+		found = true;
 	}
 	
 	if (strcmp(searchArgument, "lb_I_Database") == 0) {
 		functor = PREFIX "instanceOfDatabase";
 		module = "lbDB";
+		found = true;
 	}
 	
 	if (strcmp(searchArgument, "lb_I_PluginManager") == 0) {
 		functor = PREFIX "instanceOfPluginManager";
 		module = "lbPluginManager";
+		found = true;
 	}
 	
 	if (strcmp(searchArgument, "lb_I_Plugin") == 0) {
 		functor = PREFIX "instanceOfPlugin";
 		module = "lbPluginManager";
+		found = true;
 	}
 	
 	if (strcmp(searchArgument, "lb_I_InterfaceRepository") == 0) {
 	 	functor = "instanceOfInterfaceRepository";
 		module = "lbDOMConfig";
+		found = true;
 	}
 	
 	if (strcmp(searchArgument, "lb_I_MetaApplication") == 0) {
 		functor = PREFIX "instanceOfMetaApplication";
 		module = "lbMetaApplication";
+		found = true;
 	}
 	
 	if (strcmp(searchArgument, "lb_I_EventMapper") == 0) {
 		functor = PREFIX "instanceOfEventMapper";
 		module = "lbMetaApplication";
+		found = true;
 	}
 	
 	if (strcmp(searchArgument, "lb_I_EventManager") == 0) {
 		functor = PREFIX "instanceOfEventManager";
 		module = "lbMetaApplication";
+		found = true;
 	}
 	
 	if (strcmp(searchArgument, "lb_I_Dispatcher") == 0) {
 		functor = PREFIX "instanceOfDispatcher";
 		module = "lbMetaApplication";
+		found = true;
 	}
 	
 	if (strcmp(searchArgument, "lb_I_EvHandler") == 0) {
 		functor = PREFIX "instanceOfEvHandler";
 		module = "lbMetaApplication";
+		found = true;
 	}
 
 	if (strcmp(searchArgument, "lb_I_Locale") == 0) {
 		functor = PREFIX "instanceOfLocale";
 		module = "lbClasses";
+		found = true;
 	}
-	
+
+
 	lbFunctorEntity* fe = new lbFunctorEntity;
 	fe->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
 
@@ -2171,6 +2213,11 @@ lb_I_FunctorEntity* LB_STDCALL lbHCInterfaceRepository::getFirstEntity() {
 
 	_fe->setModule(module);
 	_fe->setFunctor(functor);
+
+	if (!found) { 
+		_CL_LOG << "Error; Requested interface not found in repository!" LOG_
+		_LOG << "Error; Requested interface not found in repository!" LOG_
+	}
 
 	return _fe;
 }

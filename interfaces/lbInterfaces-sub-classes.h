@@ -30,11 +30,23 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.67 $
+ * $Revision: 1.68 $
  * $Name:  $
- * $Id: lbInterfaces-sub-classes.h,v 1.67 2006/02/21 19:35:52 lollisoft Exp $
+ * $Id: lbInterfaces-sub-classes.h,v 1.68 2006/06/03 06:16:58 lollisoft Exp $
  *
  * $Log: lbInterfaces-sub-classes.h,v $
+ * Revision 1.68  2006/06/03 06:16:58  lollisoft
+ * Changes against new Datamodel classes.
+ * These are used instead spread SQL commands.
+ *
+ * Currently, the SQL commands are for fallback issues,
+ * if there is no data in the config files.
+ *
+ * Later the planned fallback SQL commands are replaced by
+ * a controlled visitor operation.
+ *
+ * Work is in process.
+ *
  * Revision 1.67  2006/02/21 19:35:52  lollisoft
  * Implemented autoload mechanism of last loaded application.
  * It demonstrates the new capabilities operating with files.
@@ -711,6 +723,9 @@ public:
 
 	virtual void LB_STDCALL setUAPParameter(lb_I_String*& parameter, lb_I_Parameter*& p) = 0;
 	virtual lbErrCodes LB_STDCALL getUAPParameter(lb_I_String*& parameter, lb_I_Parameter*& p) = 0;
+
+	virtual void LB_STDCALL setUAPLong(lb_I_String*& parameter, lb_I_Long*& p) = 0;
+	virtual lbErrCodes LB_STDCALL getUAPLong(lb_I_String*& parameter, lb_I_Long*& p) = 0;
 	
 	/**
 	 * /brief Returns the number of parameters

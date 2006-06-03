@@ -31,10 +31,22 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.33 $
+ * $Revision: 1.34 $
  * $Name:  $
- * $Id: lbobject.h,v 1.33 2006/02/21 19:35:51 lollisoft Exp $
+ * $Id: lbobject.h,v 1.34 2006/06/03 06:16:57 lollisoft Exp $
  * $Log: lbobject.h,v $
+ * Revision 1.34  2006/06/03 06:16:57  lollisoft
+ * Changes against new Datamodel classes.
+ * These are used instead spread SQL commands.
+ *
+ * Currently, the SQL commands are for fallback issues,
+ * if there is no data in the config files.
+ *
+ * Later the planned fallback SQL commands are replaced by
+ * a controlled visitor operation.
+ *
+ * Work is in process.
+ *
  * Revision 1.33  2006/02/21 19:35:51  lollisoft
  * Implemented autoload mechanism of last loaded application.
  * It demonstrates the new capabilities operating with files.
@@ -292,6 +304,9 @@ public:
 	virtual void LB_STDCALL setUAPParameter(lb_I_String*& parameter, lb_I_Parameter*& p);
 	virtual lbErrCodes LB_STDCALL getUAPParameter(lb_I_String*& parameter, lb_I_Parameter*& p);
 	
+	virtual void LB_STDCALL setUAPLong(lb_I_String*& parameter, lb_I_Long*& p);
+	virtual lbErrCodes LB_STDCALL getUAPLong(lb_I_String*& parameter, lb_I_Long*& p);
+	
 	virtual void LB_STDCALL setUAPContainer(lb_I_String*& parameter, lb_I_Container*& p);
 	virtual lbErrCodes LB_STDCALL getUAPContainer(lb_I_String*& parameter, lb_I_Container*& p);
 	
@@ -445,6 +460,7 @@ extern "C" {
 /*...e*/
 
 DECLARE_FUNCTOR(instanceOfInteger)
+DECLARE_FUNCTOR(instanceOfLong)
 DECLARE_FUNCTOR(instanceOfBoolean)
 DECLARE_FUNCTOR(instanceOfString)
 DECLARE_FUNCTOR(instanceOfReference)

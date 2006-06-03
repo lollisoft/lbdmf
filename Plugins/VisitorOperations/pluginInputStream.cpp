@@ -151,11 +151,15 @@ public:
 	void LB_STDCALL visit(lb_I_DatabaseReport*) { _CL_LOG << "visit(lb_I_DatabaseReport*)" LOG_ }
 	void LB_STDCALL visit(lb_I_CodeGenerator*) { _CL_LOG << "visit(lb_I_CodeGenerator*)" LOG_ }
 	void LB_STDCALL visit(lb_I_Boolean*) { _CL_LOG << "visit(lb_I_Boolean*)" LOG_ }
+	void LB_STDCALL visit(lb_I_DatabaseOperation* pm) { _CL_LOG << "visit(lb_I_DatabaseOperation*)" LOG_ }
+	
 /*...e*/
 
 	void LB_STDCALL visit(lb_I_Streamable* pm);
 	void LB_STDCALL visit(lb_I_Application*);
 	void LB_STDCALL visit(lb_I_MetaApplication*);
+	void LB_STDCALL visit(lb_I_UserAccounts*);
+	void LB_STDCALL visit(lb_I_Applications*);
 
 	bool LB_STDCALL begin(char* file);
 	bool LB_STDCALL begin(lb_I_Stream* stream);
@@ -239,11 +243,55 @@ void LB_STDCALL lbInputStreamOpr::visit(lb_I_Streamable* pm) {
 	}
 }
 
+void LB_STDCALL lbInputStreamOpr::visit(lb_I_UserAccounts* users) {
+	// Number of users
+	int   count = 0;
+	*iStream >> count;
+
+	for (int i = 0; i < count; count++) {
+		// Load a user entry.
+		int   UID;
+		char* User = NULL;
+		char* Pass = NULL;
+		
+		*iStream >> UID;
+		*iStream >> User;
+		*iStream >> Pass;
+		
+		users->addAccount(User, Pass, UID);
+	}
+}
+
+void LB_STDCALL lbInputStreamOpr::visit(lb_I_Applications* app) {
+	// Number of applications
+	int   count = 0;
+	*iStream >> count;
+	
+	for (int i = 0; i < count; count++) {
+		long  ID = -1;
+		char* Name = NULL;
+		char* Titel = NULL;
+		char* ModuleName = NULL;
+		char* Functor = NULL;
+		char* Interface = NULL;
+	
+		*iStream >> ID;
+		*iStream >> Name;
+		*iStream >> Titel;
+		*iStream >> ModuleName;
+		*iStream >> Functor;
+		*iStream >> Interface;
+												
+		app->addApplication(Name, Titel, ModuleName, Functor, Interface, ID);
+	}
+}
+
 void LB_STDCALL lbInputStreamOpr::visit(lb_I_MetaApplication* app) {
 	_CL_LOG << "lbInputStreamOpr::visit(): Read data of meta application." LOG_
 
 	char* temp = NULL;
 	bool  b;
+	int   count = 0;
 	
 	*iStream >> b;
 	app->setAutorefreshData(b);
@@ -263,6 +311,10 @@ void LB_STDCALL lbInputStreamOpr::visit(lb_I_MetaApplication* app) {
 	*iStream >> b;
 	app->setGUIMaximized(b);
 
+	/* Load user and password configurations here. Also the list of applications per user
+	   should be stored outside of an RDCD data model. This enables early authentication
+	   without loading any of these files.
+	*/
 }
 
 void LB_STDCALL lbInputStreamOpr::visit(lb_I_Application*) {
