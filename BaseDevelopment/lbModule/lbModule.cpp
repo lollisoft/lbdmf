@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.107 $
+ * $Revision: 1.108 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.107 2006/06/03 06:16:57 lollisoft Exp $
+ * $Id: lbModule.cpp,v 1.108 2006/06/05 15:47:40 lollisoft Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.108  2006/06/05 15:47:40  lollisoft
+ * Bugfixes for missing repository entries. Deactivated RDCD code.
+ *
  * Revision 1.107  2006/06/03 06:16:57  lollisoft
  * Changes against new Datamodel classes.
  * These are used instead spread SQL commands.
@@ -3417,6 +3420,11 @@ lbErrCodes LB_STDCALL lbModule::request(const char* request, lb_I_Unknown** resu
 		
 		char* functor = e->getFunctor();
 		char* module  = e->getModule();
+
+		if (functor == NULL || module == NULL) {
+			_LOG << "Error: Requested interface (" << request << ") not found in repository!" LOG_
+			return ERR_MODULE_NO_INTERFACE;
+		}
 		
 		UAP(lb_I_Unknown, _result)
 		makeInstance(functor, module, &_result);

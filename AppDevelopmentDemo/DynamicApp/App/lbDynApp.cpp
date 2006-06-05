@@ -23,7 +23,7 @@ extern "C" {
 
 #include <lbConfigHook.h>
 
-#define USE_RDCD_MODEL
+//#define USE_RDCD_MODEL
 
 #ifdef USE_RDCD_MODEL
 /// \todo Move interfaces to public place, where needed.
@@ -83,9 +83,10 @@ protected:
 	UAP(lb_I_String, LogonApplication)
 	UAP(lb_I_MetaApplication, metaapp)
 
+#ifdef USE_RDCD_MODEL
 	// Model of the dynamic form configuration 
 	UAP(lb_I_RDCDModel, model)
-
+#endif
 		
 	char hdsihd[100];
 };
@@ -155,6 +156,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::getDynamicDBForm(lb_I_Unknown* uk) {
 
 		char* eventName = eman->reverseEvent(eventID->getData());
 
+#ifdef USE_RDCD_MODEL
 		if (model != NULL) {
 			model->selectFormByEventName(eventName);
 			
@@ -167,6 +169,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::getDynamicDBForm(lb_I_Unknown* uk) {
 			if (dbForm != NULL) dbForm->show();
 			
 		} else {
+#endif
 			// Use old version with direct database queries. This could happen, if no plugin was found, no file was found and couldn't created.
 		
 			if(database == NULL) {
@@ -317,7 +320,9 @@ lbErrCodes LB_STDCALL lbDynamicApplication::getDynamicDBForm(lb_I_Unknown* uk) {
 				//--------------------------------------------------------------------------------------
 				
 			free(buffer);
+#ifdef USE_RDCD_MODEL
 		}
+#endif
 	} else {
 	        COUT << "KundenDetails" << ENDL;
 	}

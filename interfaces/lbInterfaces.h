@@ -1160,10 +1160,14 @@ public:
 #define REQUEST(mm, interface, variable) \
   	UAP(lb_I_Unknown, uk##variable) \
   	mm->request(#interface, &uk##variable); \
-  	uk##variable->setModuleManager(mm, __FILE__, __LINE__); \
-  	uk##variable->queryInterface(#interface, (void**) &variable, __FILE__, __LINE__); \
-	uk##variable.setFile(__FILE__); \
-	uk##variable.setLine(__LINE__);
+  	if (uk##variable != NULL) { \
+	  	uk##variable->setModuleManager(mm, __FILE__, __LINE__); \
+	  	uk##variable->queryInterface(#interface, (void**) &variable, __FILE__, __LINE__); \
+		uk##variable.setFile(__FILE__); \
+		uk##variable.setLine(__LINE__); \
+	} else { \
+	_LOG << "Error: REQUEST macro failure!" LOG_ \
+	} \
 
 
 /** \def DEBUG_REQUEST(mm, interface, variable)
@@ -1197,10 +1201,13 @@ public:
 
 #define UAP_REQUEST(mm, interface, variable) \
   	UAP(lb_I_Unknown, uk##variable) \
-  	if (mm->request(#interface, &uk##variable) == ERR_MODULE_NO_INTERFACE) _CL_LOG << "Error: Interface not defined" LOG_ \
   	UAP(interface, variable) \
-  	uk##variable->setModuleManager(mm, __FILE__, __LINE__); \
-  	uk##variable->queryInterface(#interface, (void**) &variable, __FILE__, __LINE__);
+  	if (mm->request(#interface, &uk##variable) == ERR_MODULE_NO_INTERFACE) { \
+  		_CL_LOG << "Error: Interface not defined" LOG_ \
+  	} else { \
+	  	uk##variable->setModuleManager(mm, __FILE__, __LINE__); \
+	  	uk##variable->queryInterface(#interface, (void**) &variable, __FILE__, __LINE__); \
+	}
 
 /*...e*/
 
