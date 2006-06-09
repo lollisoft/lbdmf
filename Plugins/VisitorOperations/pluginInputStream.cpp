@@ -283,6 +283,8 @@ void LB_STDCALL lbInputStreamOpr::visit(lb_I_Applications* app) {
 		*iStream >> Interface;
 												
 		app->addApplication(Name, Titel, ModuleName, Functor, Interface, ID);
+
+		// Leaky !
 	}
 }
 
@@ -310,11 +312,6 @@ void LB_STDCALL lbInputStreamOpr::visit(lb_I_MetaApplication* app) {
 
 	*iStream >> b;
 	app->setGUIMaximized(b);
-
-	/* Load user and password configurations here. Also the list of applications per user
-	   should be stored outside of an RDCD data model. This enables early authentication
-	   without loading any of these files.
-	*/
 }
 
 void LB_STDCALL lbInputStreamOpr::visit(lb_I_Application*) {

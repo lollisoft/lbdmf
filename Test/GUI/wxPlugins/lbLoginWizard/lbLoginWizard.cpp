@@ -161,73 +161,31 @@ public:
 
 /*...svoid setLoggedOnUser\40\char\42\ user\41\:8:*/
 	void setLoggedOnUser(char* user) {
+		lbErrCodes err = ERR_NONE;
+
 		if (userid != NULL) free(userid);
 		userid = strdup(user);
-		 
-		REQUEST(manager.getPtr(), lb_I_Database, database)
 
-		database->init();
-
-		char* lbDMFPasswd = getenv("lbDMFPasswd");
-		char* lbDMFUser   = getenv("lbDMFUser");
+		UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
+		UAP(lb_I_Container, apps)
 		
-		if (!lbDMFUser) lbDMFUser = "dba";
-		if (!lbDMFPasswd) lbDMFPasswd = "trainres";
-
-		database->connect("lbDMF", lbDMFUser, lbDMFPasswd);
-
-		sampleQuery = database->getQuery(0);
-
-		char buffer[800] = "";
-
-		sprintf(buffer, 
-			"select Anwendungen.name from Anwendungen inner join User_Anwendungen on "
-			"Anwendungen.id = User_Anwendungen.anwendungenid "
-			"inner join Users on User_Anwendungen.userid = Users.id where "
-			"Users.userid = '%s'"
-				, userid);
-
-
-		sampleQuery->skipFKCollecting();
-		sampleQuery->query(buffer);
-		sampleQuery->enableFKCollecting();
-
-		// Clear the box, if it was previously filled due to navigation.
+		meta->setUserName(user);
 		
+		apps = meta->getApplications();
+
 		box->Clear();
 		
-		// Fill up the available applications for that user.
-
-		lbErrCodes err = sampleQuery->first();
-
-		if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
-
-			UAP_REQUEST(manager.getPtr(), lb_I_String, s1)	
-
-			s1 = sampleQuery->getAsString(1);
-
-			box->Append(wxString(s1->charrep()));
-
-			while (err == ERR_NONE) {
-				lbErrCodes err = sampleQuery->next();
-				
-				if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
-					s1 = sampleQuery->getAsString(1);
-					
-					box->Append(wxString(s1->charrep()));
-					
-					if (err == WARN_DB_NODATA) {
-						break;
-					}
-				}
-				
-				if (err == ERR_DB_NODATA) {
-				        box->SetSelection(0);
-				        break;
-				}
-			}
-			box->SetSelection(0);
+		while (apps->hasMoreElements()) {
+			UAP(lb_I_String, name)
+			UAP(lb_I_Unknown, uk)
+			
+			uk = apps->nextElement();
+			QI(uk, lb_I_String, name)
+			
+			box->Append(wxString(name->charrep()));
 		}
+
+		box->SetSelection(0);
 
 		sizerMain->Fit(this);
 		//Fit();
@@ -376,73 +334,29 @@ DECLARE_LB_UNKNOWN()
 	{
 		lbErrCodes err = ERR_NONE;
 		
-		REQUEST(manager.getPtr(), lb_I_Database, database)
-
-		database->init();
-
-		char* lbDMFPasswd = getenv("lbDMFPasswd");
-		char* lbDMFUser   = getenv("lbDMFUser");
-		
-		if (!lbDMFUser) lbDMFUser = "dba";
-		if (!lbDMFPasswd) lbDMFPasswd = "trainres";
-
-		err = database->connect("lbDMF", lbDMFUser, lbDMFPasswd);
-
-		if (err != ERR_NONE) {
-			char* buf = strdup(_trans("Login to database failed.\n\nYou could not use the dynamic features of the\napplication without a proper configured database."));
-			char* buf1 = strdup(_trans("Error"));
-			wxMessageDialog dialog(NULL, buf, buf1, wxOK);
-
-			dialog.ShowModal();
-
-			free(buf);
-			free(buf1);
-			
-			return FALSE;
-		}
-
-		sampleQuery = database->getQuery(0);
-
-		char buffer[800] = "";
-
 		char* pass = strdup(getTextValue("Passwort:"));
 		char* user = strdup(getTextValue("Benutzer:"));
-
-
-		sampleQuery->skipFKCollecting();
-
-		sprintf(buffer, "select userid, passwort from Users where userid = '%s' and passwort = '%s'",
-                	user, pass);
-
-_CL_VERBOSE << "Query for user " << user LOG_
-
-		if (sampleQuery->query(buffer) != ERR_NONE) {
-		    printf("Query for user and password failed\n");
-		    sampleQuery->enableFKCollecting();
-		    free(pass);
-		    free(user);
-		    return FALSE;
-		}
 		
-		sampleQuery->enableFKCollecting();
-
-		err = sampleQuery->first();
-
-		if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
-			appselect->setLoggedOnUser(user);
-
-			if (pass) free(pass);
-			if (user) free(user);
-
-			return TRUE;
-		} else {
-		        printf("User authentication failed\n");
-
-			if (pass) free(pass);
-			if (user) free(user);
-
-			return FALSE;
-		}
+		UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
+			
+			if (meta->login(user, pass)) {
+				appselect->setLoggedOnUser(user);
+				if (pass) free(pass);
+				if (user) free(user);
+				
+				return TRUE;
+			} else {
+				char* buf = strdup(_trans("Login to database failed.\n\nYou could not use the dynamic features of the\napplication without a proper configured database."));
+				char* buf1 = strdup(_trans("Error"));
+				wxMessageDialog dialog(NULL, buf, buf1, wxOK);
+				
+				dialog.ShowModal();
+				
+				free(buf);
+				free(buf1);
+				
+				return FALSE;
+			}
 	}
 /*...e*/
 /*...svoid init\40\wxWindow\42\ parent\41\:8:*/

@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.89 $
+ * $Revision: 1.90 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.89 2006/06/03 06:16:57 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.90 2006/06/09 16:03:33 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.90  2006/06/09 16:03:33  lollisoft
+ * Changes on Mac OS X before weekend.
+ *
  * Revision 1.89  2006/06/03 06:16:57  lollisoft
  * Changes against new Datamodel classes.
  * These are used instead spread SQL commands.
@@ -1696,11 +1699,91 @@ lbErrCodes LB_STDCALL lb_MetaApplication::addMenuEntryCheckable(char* in_menu, c
 }
 /*...e*/
 
+lb_I_Container* LB_STDCALL lb_MetaApplication::getApplications() {
+	UAP_REQUEST(manager.getPtr(), lb_I_Container, apps)
+	
+	if (Applications->getApplicationCount() == 0) {
+		// Maybe no data collected in the file yet
+		// Fallback to manually read out the applications
+	
+		UAP_REQUEST(manager.getPtr(), lb_I_Database, database)
+		UAP(lb_I_Query, sampleQuery)
+		database->init();
+
+		char* lbDMFPasswd = getenv("lbDMFPasswd");
+		char* lbDMFUser   = getenv("lbDMFUser");
+		
+		if (!lbDMFUser) lbDMFUser = "dba";
+		if (!lbDMFPasswd) lbDMFPasswd = "trainres";
+
+		database->connect("lbDMF", lbDMFUser, lbDMFPasswd);
+
+		sampleQuery = database->getQuery(0);
+
+		char buffer[800] = "";
+
+		sprintf(buffer, 
+			"select Anwendungen.name from Anwendungen inner join User_Anwendungen on "
+			"Anwendungen.id = User_Anwendungen.anwendungenid "
+			"inner join Users on User_Anwendungen.userid = Users.id where "
+			"Users.userid = '%s'"
+				, LogonUser->charrep());
+
+
+		sampleQuery->skipFKCollecting();
+		sampleQuery->query(buffer);
+		sampleQuery->enableFKCollecting();
+	
+		lbErrCodes err = sampleQuery->first();
+
+		if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
+
+			UAP_REQUEST(manager.getPtr(), lb_I_String, S1)	
+			UAP(lb_I_KeyBase, key)
+			UAP(lb_I_Unknown, uk_S1)
+			
+			S1 = sampleQuery->getAsString(1);
+			QI(S1, lb_I_KeyBase, key)
+			QI(S1, lb_I_Unknown, uk_S1)
+			
+			apps->insert(&uk_S1, &key);
+
+			while (err == ERR_NONE) {
+				lbErrCodes err = sampleQuery->next();
+				
+				if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
+					S1 = sampleQuery->getAsString(1);
+					QI(S1, lb_I_KeyBase, key)
+					QI(S1, lb_I_Unknown, uk_S1)
+			
+					apps->insert(&uk_S1, &key);
+					
+					if (err == WARN_DB_NODATA) {
+						break;
+					}
+				}
+				
+				if (err == ERR_DB_NODATA) {
+				        //box->SetSelection(0);
+				        break;
+				}
+			}
+
+		}
+	
+	} else {
+	
+	}
+	
+	apps++;
+	return apps.getPtr();
+}
+
 bool LB_STDCALL lb_MetaApplication::login(const char* user, const char* pass) {
 	lbErrCodes err = ERR_NONE;
 	
-	if (Users->getUserCount() == 0) { 
-		// Fallback to database use. This should be moved to s 'service', that would
+	if (Users->getUserCount() == 0) {
+		// Fallback to database use. This should be moved to a 'service', that would
 		// Read out the content's of the database. So the best would be using visitor
 		// pattern for this to do.
 		

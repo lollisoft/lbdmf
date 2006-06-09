@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.35 $
+ * $Revision: 1.36 $
  * $Name:  $
- * $Id: lbMetaApplication.h,v 1.35 2006/06/03 06:16:57 lollisoft Exp $
+ * $Id: lbMetaApplication.h,v 1.36 2006/06/09 16:03:33 lollisoft Exp $
  *
  * $Log: lbMetaApplication.h,v $
+ * Revision 1.36  2006/06/09 16:03:33  lollisoft
+ * Changes on Mac OS X before weekend.
+ *
  * Revision 1.35  2006/06/03 06:16:57  lollisoft
  * Changes against new Datamodel classes.
  * These are used instead spread SQL commands.
@@ -292,6 +295,8 @@ public:
 	lbErrCodes LB_STDCALL doAutoload(lb_I_Unknown* uk);
 	
 	bool LB_STDCALL login(const char* user, const char* pass);
+	lb_I_Container* LB_STDCALL getApplications();
+
 	
 protected:
 	lb_I_GUI* gui;

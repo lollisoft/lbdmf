@@ -200,81 +200,37 @@ void wxAppSelectPage::OnWizardPageChanging(wxWizardEvent& event) {
 /*...e*/
 /*...svoid wxAppSelectPage\58\\58\setLoggedOnUser\40\char\42\ user\41\:0:*/
 void wxAppSelectPage::setLoggedOnUser(char* user) {
+		lbErrCodes err = ERR_NONE;
+		
+		if (userid != NULL) free(userid);
 		userid = strdup(user);
-		 
-		REQUEST(manager.getPtr(), lb_I_Database, database)
 
-		database->init();
-
-		char* lbDMFPasswd = getenv("lbDMFPasswd");
-		char* lbDMFUser   = getenv("lbDMFUser");
+		UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
+		UAP(lb_I_Container, apps)
 		
-		if (!lbDMFUser) lbDMFUser = "dba";
-		if (!lbDMFPasswd) lbDMFPasswd = "trainres";
+		meta->setUserName(user);
 
-		database->connect("lbDMF", lbDMFUser, lbDMFPasswd);
+		apps = meta->getApplications();
 
-		sampleQuery = database->getQuery(0);
-
-		char buffer[800] = "";
-
-		sprintf(buffer, 
-			"select Anwendungen.name from Anwendungen inner join User_Anwendungen on "
-			"Anwendungen.id = User_Anwendungen.anwendungenid "
-			"inner join Users on User_Anwendungen.userid = Users.id where "
-			"Users.userid = '%s'"
-				, userid);
-
-
-		sampleQuery->skipFKCollecting();
-		sampleQuery->query(buffer);
-		sampleQuery->PrintData();
-		sampleQuery->enableFKCollecting();
-
-		// Clear the box, if it was previously filled due to navigation.
-		
 		box->Clear();
 		
-		// Fill up the available applications for that user.
-
-		lbErrCodes err = sampleQuery->first();
-
-		if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
-			UAP(lb_I_String, s1)
-			s1 = sampleQuery->getAsString(1);
-
-			_CL_LOG << "Append '" << s1->charrep() << "' to application list." LOG_
-
-			box->Append(wxString(s1->charrep()));
-
-			while (TRUE) {
-				lbErrCodes err = sampleQuery->next();
-				
-				if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
-					UAP(lb_I_String, s1)
-					s1 = sampleQuery->getAsString(1);
-					
-					_CL_LOG << "Append '" << s1->charrep() << "' to application list." LOG_
-					
-					box->Append(wxString(s1->charrep()));
-					
-					if (err == WARN_DB_NODATA) {
-						box->SetSelection(0);
-						break;
-					}
-				}
-				
-				if (err == ERR_DB_NODATA) {
-					box->SetSelection(0);
-					break;
-				}
-			}
+		while (apps->hasMoreElements()) {
+			UAP(lb_I_String, name)
+			UAP(lb_I_Unknown, uk)
+			
+			uk = apps->nextElement();
+			QI(uk, lb_I_String, name)
+			
+			box->Append(wxString(name->charrep()));
 		}
 
-		sizerMain->Fit(this);
+		box->SetSelection(0);
 
-		return;
-	}
+		sizerMain->Fit(this);
+		//Fit();
+
+		return;		 
+}
 /*...e*/
 /*...e*/
 

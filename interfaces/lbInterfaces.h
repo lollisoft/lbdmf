@@ -2331,6 +2331,17 @@ class lb_I_InputStream;
  */
 class lb_I_MetaApplication : public lb_I_Unknown {
 public:
+	
+	/** \brief Save the object.
+	 *
+	 * This function is there because of the composition of public accessible data and
+	 * non public, such as the user accounts and their applications.
+	 * 
+	 * The non public data could not saved or loaded by the visitor function for this
+	 * class. save does this by saving the parts separately by delegating it to their
+	 * visitors.
+	 */
+	virtual lbErrCodes LB_STDCALL save() = 0;
 
 	/**
 	 * Set the graphical user interface instance that is the wrapper side.
@@ -2510,6 +2521,12 @@ public:
 	 * See description of addUserAccount.
 	 */
 	virtual bool LB_STDCALL login(const char* user, const char* pass) = 0;
+	
+	/** \brief get a list of applications.
+	 *
+	 * This function builds a list of application based on the user rights.
+	 */
+	virtual lb_I_Container* LB_STDCALL getApplications() = 0;
 };
 /*...e*/
 
