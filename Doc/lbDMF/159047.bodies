@@ -1,0 +1,176 @@
+class lbXMLConfig
+!!!257863.cpp!!!	lbXMLConfig()
+
+	ref = STARTREF;
+	interface_used = 0;
+	gTopLevel = new TopLevel;
+	handler = NULL;
+!!!257991.cpp!!!	~lbXMLConfig()
+
+/*...sVERBOSE:0:*/
+#ifdef VERBOSE
+	cout << "lbXMLConfig::~lbXMLConfig() called" << endl;
+#endif
+/*...e*/
+	if (ref != STARTREF) cout << "Error: Reference count mismatch!" << endl;
+	
+	if (gTopLevel != NULL) {
+/*...sVERBOSE:0:*/
+#ifdef VERBOSE		
+		cout << "Delete gTopLevel object" << endl;
+#endif		
+/*...e*/
+		delete handler;
+		delete gTopLevel;
+/*...sVERBOSE:0:*/
+#ifdef VERBOSE
+		cout << "Deleted gTopLevel object" << endl;
+#endif
+/*...e*/
+	}
+!!!258247.cpp!!!	release() : lbErrCodes
+
+
+	if (interface_used != 0) ref--;
+/*...sVERBOSE:0:*/
+#ifdef VERBOSE	
+cout << "lbXMLConfig::release() called (ref is now " << ref << ")" << endl;	
+#endif
+/*...e*/
+	if (ref == STARTREF) {
+		cout << "Delete lbXMLConfig object" << endl;
+		delete this;
+	}
+	
+	return ERR_NONE;
+!!!258375.cpp!!!	queryInterface(inout name : char, inout unknown : void) : lbErrCodes
+
+	if (strcmp(name, "lb_I_XMLConfig") == 0) {
+		ref++;
+		interface_used++;
+		cout << "Test parsing..." << endl;
+		parse();
+		cout << "Tested parse" << endl;
+		*unknown = (lb_I_XMLConfig*) this;
+		cout << "lbXMLConfig::queryInterface(\"lb_I_XMLConfig\", unknown) ('" 
+		<< hex << (void*) this << dec << "') called (returning '" 
+		<< hex << (void*) *unknown << dec << "')" << endl;
+		return ERR_NONE;
+	}
+	
+	if (strcmp(name, "lb_I_Unknown") == 0) {
+		ref++;
+		interface_used++;
+		*unknown = (lb_I_Unknown*) this;
+		return ERR_NONE;
+	}
+	
+	return ERR_NO_INTERFACE;
+!!!258503.cpp!!!	parse() : lbErrCodes
+
+	lbErrCodes err = ERR_NONE;
+cout << "lbXMLConfig::parse() called ('" << hex << (void*) this << dec << "')" << endl;
+	char *filename = getenv("LBHOSTCFGFILE");
+/*...sVERBOSE:0:*/
+#ifdef VERBOSE
+	cout << "Parse file '" << filename << "'..." << endl;
+#endif
+/*...e*/
+
+	if (filename != NULL) {
+	    if (initialized == 0) {
+/*...sInitialize the XML4C2 system:20:*/
+		    // Initialize the XML4C2 system
+		    try
+		    {
+				XMLPlatformUtils::Initialize();
+		    }
+
+			catch (const XMLException& toCatch)
+		    {
+				cout << "Error during initialization! :\n"
+		                 << toCatch.getMessage() << endl;
+		         return ERR_XML_INIT;
+		    }		
+/*...e*/
+	    }
+
+//for (long i = 0; i < 1000000; i++) {
+
+/*...sSetup objects:12:*/
+	    // Begin parsing...
+	    SAXParser parser;
+	    parser.setDoValidation(true);
+
+	    handler = new XMLTreeBuilder();
+	    handler->setTopLevelDocument(gTopLevel); // Internally stored static !!
+
+	    parser.setDocumentHandler(handler);
+	    parser.setErrorHandler(handler);
+		
+/*...e*/
+
+
+/*...stry parsing \40\no explicid allocation\41\:12:*/
+	    // Parse the file and catch any exceptions that propogate out
+	    try	
+		{
+	            parser.parse(filename);
+
+		    if (gTopLevel->m_plbConfigObject->getGeneralParseError()) {
+			// Error while parsing
+			err = ERR_XML_GENERAL_PARSE_FAILED;
+		    }
+		}
+
+		catch (const XMLException& )
+	        {
+			CL_LOG("Parse error");
+			return ERR_XML_NOFILE;
+		}
+/*...e*/
+
+	    // Clean up our parser and handler
+	    //delete handler;
+//}	
+
+	} else return ERR_NO_ENVIRONMENT;
+	return err;
+!!!258631.cpp!!!	hasConfigObject(in cfgObjectName : char) : lbErrCodes
+
+	lb_I_ConfigObject* obj = NULL;
+	lbErrCodes err = ERR_NONE;
+/*...sVERBOSE:0:*/
+#ifdef VERBOSE
+	cout << "Search '" << cfgObjectName << "'" << endl;
+#endif
+/*...e*/
+	if ((err = gTopLevel->m_plbConfigObject->findObject(cfgObjectName,obj)) == ERR_NONE) {
+/*...sVERBOSE:0:*/
+#ifdef VERBOSE
+		cout << "Call obj->release()" << endl;
+#endif
+/*...e*/
+		obj->release();
+/*...sVERBOSE:0:*/
+#ifdef VERBOSE
+		cout << "Called" << endl;
+#endif		
+/*...e*/
+	} else {
+		cout << "No such object found" << endl;
+	}
+
+	return err;
+!!!258759.cpp!!!	getConfigObject(inout cfgObj : lb_I_ConfigObject, in cfgObjectName : char) : lbErrCodes
+
+	lbErrCodes err = ERR_NONE;
+	// Try to locate the identifer in the tree
+
+	cout << "lbXMLConfig::getConfigObject(...) called" << endl;
+
+	if ((err = gTopLevel->m_plbConfigObject->findObject(cfgObjectName, cfgObj)) != ERR_NONE) {
+		return err;
+	}
+	
+	return err;

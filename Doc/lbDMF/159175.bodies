@@ -1,0 +1,195 @@
+class lbApplication
+!!!259143.cpp!!!	initialize(inout user : char =  NULL, inout app : char =  NULL) : lbErrCodes
+
+
+	// To be implemented in a separate application module
+
+	int getKundenDetails;
+	int getKundenListe;
+	int getLoginData;
+	int unused;
+
+	// Get the event manager
+
+	lb_I_Module* m = *&manager;
+	printf("Get an event manager\n");
+	REQUEST(m, lb_I_EventManager, eman)
+
+
+	if (user == NULL) {
+	        _CL_LOG << "lb_MetaApplication::Initialize() user is NULL" LOG_
+	} else
+		if (LogonUser == NULL) {
+	        REQUEST(manager.getPtr(), lb_I_String, LogonUser)
+	        LogonUser->setData(user);
+	}
+	
+	if (app == NULL) {
+	        _CL_LOG << "lb_MetaApplication::Initialize() app is NULL" LOG_
+	} else
+	if (LogonApplication == NULL) {
+	        REQUEST(manager.getPtr(), lb_I_String, LogonApplication)
+	        LogonApplication->setData(app);
+	}
+
+	// Register my handler identifers
+	
+	eman->registerEvent("getKundenDetails", getKundenDetails);
+	eman->registerEvent("getKundenListe", getKundenListe);
+	eman->registerEvent("getLoginData", getLoginData);
+
+	eman->registerEvent("getDynamicDBForm", unused);
+
+	// Attach to the dispatcher
+
+	REQUEST(m, lb_I_Dispatcher, dispatcher)
+	dispatcher->setEventManager(eman.getPtr());
+
+	// Register my handlers to the dispatcher
+
+	registerEventHandler(dispatcher.getPtr());
+
+	// Step 3 (Load sub components, handling menus and else needed for an UI)
+
+/*...ssome docs:8:*/
+	/**
+	 * After initializion of all event handlers, we need to get up all
+	 * GUI accessible handlers - like menus or else.
+	 * This class, as an example, provides two handlers
+	 * getBasicApplicationInfo and getMainModuleInfo
+	 * 
+	 * The handler depends on some capabilities:
+	 *
+	 * 	1. A basic dialog to show text
+	 *		This may be a container of capabilities
+	 *		 must:SimpleTextDialog
+	 *		 optional:PictureElements
+	 *
+	 * It provides these capabilities:
+	 *
+	 *	1. An information about menu creation
+	 *		This may be a simple string - lb_I_String
+	 */
+
+
+	/**
+	 * Init the application (menu, toolbar, accelerators)
+	 *
+	 * This will be done by the loaded application from the
+	 * environment variable (TARGET_APPLICATION)
+	 */
+/*...e*/
+	
+	UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, metaapp)
+	
+	metaapp->addMenuBar("Kunden", "Edit");
+	metaapp->addMenuBar("Reservierungen", "Kunden");
+	metaapp->addMenuBar("Bahnhoefe", "Reservierungen");
+	
+	
+	//addMenuEntry("File", "Anmelden", "getLoginData", "");
+	metaapp->addMenuEntry("Kunden", "Elemente in World", "getKundenDetails", "");
+	metaapp->addMenuEntry("Kunden", "Kunden", "getKundenListe", "");
+
+	
+	return ERR_NONE;
+!!!259271.cpp!!!	uninitialize() : lbErrCodes
+
+	return ERR_NONE;
+!!!259399.cpp!!!	run() : lbErrCodes
+
+#ifdef bla
+	lb_I_Unknown* result;
+
+	dispatcher->dispatch("AddMenu", NULL, &result);	
+#endif
+	return ERR_NONE;
+!!!259527.cpp!!!	getGUI(inout _gui : lb_I_GUI) : lbErrCodes
+
+	*_gui = gui;
+	return ERR_NONE;
+!!!259655.cpp!!!	getUserName(inout user : lb_I_String) : lbErrCodes
+
+	(*user)->setData(LogonUser->charrep());
+	return ERR_NONE;
+!!!259783.cpp!!!	getApplicationName(inout app : lb_I_String) : lbErrCodes
+
+	(*app)->setData(LogonApplication->charrep());
+	return ERR_NONE;
+!!!259911.cpp!!!	setUserName(inout user : char) : lbErrCodes
+
+	if (LogonUser == NULL) {
+        	REQUEST(manager.getPtr(), lb_I_String, LogonUser)
+	}
+
+       	LogonUser->setData(user);
+	return ERR_NONE;
+!!!260039.cpp!!!	setApplicationName(inout app : char) : lbErrCodes
+
+	if (LogonApplication == NULL) {
+        	REQUEST(manager.getPtr(), lb_I_String, LogonApplication)
+	}
+
+       	LogonApplication->setData(app);
+	return ERR_NONE;
+!!!260167.cpp!!!	getEVManager(in  : void) : lb_I_EventManager
+
+	return NULL;
+!!!260551.cpp!!!	getKundenDetails(inout uk : lb_I_Unknown) : lbErrCodes
+
+	_LOG << "lbApplication::getKundenDetails() called" LOG_
+
+	if (gui != NULL) {
+		UAP(lb_I_DatabaseForm, dbForm)
+		
+		dbForm = gui->createDBForm("Elemente in World", "select objecttyp, x, y, w, h from world order by id",
+		"trainres", "dba", "trainres");
+		
+		dbForm->show();
+	} else {
+	        COUT << "KundenDetails" << ENDL;
+	}
+
+	return ERR_NONE;
+!!!260679.cpp!!!	getKundenListe(inout uk : lb_I_Unknown) : lbErrCodes
+
+	_LOG << "lbApplication::getKundenListe() called" LOG_
+
+	if (gui != NULL) {
+		UAP(lb_I_DatabaseForm, dbForm)
+		
+		dbForm = gui->createDBForm("Kunden", "select Firma, Name, Vorname, Strasse, Hausnummer, Ort, Plz, Vorwahl, Telefon from Kunden",
+		"trainres", "dba", "trainres");
+		
+		dbForm->show();
+	} else {
+	        COUT << "KundenDetails" << ENDL;
+	}
+
+
+	return ERR_NONE;
+!!!260807.cpp!!!	getLoginData(inout uk : lb_I_Unknown) : lbErrCodes
+
+
+	if (gui != NULL) {
+	        UAP(lb_I_Form, loginForm)
+		
+		loginForm = gui->createLoginForm();
+	} else {
+		COUT << "Login form on console not supported" << ENDL;
+	}
+
+	return ERR_NONE;
+!!!260935.cpp!!!	getCustomFormsConfig(inout uk : lb_I_Unknown) : lbErrCodes
+
+
+	if (gui != NULL) {
+		UAP(lb_I_DatabaseForm, dbForm)
+		
+		dbForm = gui->createDBForm("Formulare", "select Name, MenuName, EventName, query from DBForms",
+		"trainres", "dba", "trainres");
+		
+		dbForm->show();
+	}
+
+	return ERR_NONE;

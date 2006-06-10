@@ -1,0 +1,69 @@
+class lbCritSect
+!!!196935.cpp!!!	lbCritSect()
+
+/*...sTHREAD_VERBOSE:0:*/
+#ifdef THREAD_VERBOSE
+_CL_VERBOSE << "lbCritSect::lbCritSect() called" LOG_
+//COUT << "lbCritSect::lbCritSect() called" << ENDL;
+#endif
+/*...e*/
+	critsect = new CRITICAL_SECTION;
+	InitializeCriticalSection((CRITICAL_SECTION*)critsect);
+/*...sTHREAD_VERBOSE:0:*/
+#ifdef THREAD_VERBOSE
+//COUT << "lbCritSect::lbCritSect() leave" << ENDL;
+_CL_VERBOSE << "lbCritSect::lbCritSect() leave" LOG_
+#endif
+/*...e*/
+!!!197063.cpp!!!	~lbCritSect()
+
+/*...sTHREAD_VERBOSE:0:*/
+#ifdef THREAD_VERBOSE
+//COUT << "lbCritSect::~lbCritSect() called" << ENDL << flush;
+_CL_VERBOSE << "lbCritSect::~lbCritSect() called" LOG_
+#endif
+/*...e*/
+	DeleteCriticalSection((CRITICAL_SECTION*)critsect);
+	delete critsect;
+/*...sTHREAD_VERBOSE:0:*/
+#ifdef THREAD_VERBOSE
+//COUT << "lbCritSect::~lbCritSect() leave" << ENDL;
+_CL_VERBOSE << "lbCritSect::~lbCritSect() leave" LOG_
+#endif
+/*...e*/
+!!!197191.cpp!!!	enter() : lbErrCodes
+
+#ifdef USE_CRITICAL_SECTION
+/*...sTHREAD_VERBOSE:0:*/
+#ifdef THREAD_VERBOSE
+_CL_VERBOSE << "lbCritSect::enter() called" LOG_
+//COUT << "lbCritSect::enter() called" << ENDL;
+#endif
+/*...e*/
+	EnterCriticalSection((CRITICAL_SECTION*)critsect);
+/*...sTHREAD_VERBOSE:0:*/
+#ifdef THREAD_VERBOSE
+//COUT << "lbCritSect::enter() leave" << ENDL;	
+_CL_VERBOSE << "lbCritSect::enter() leave" LOG_
+#endif
+/*...e*/
+#endif
+	return ERR_NONE;
+!!!197319.cpp!!!	leave() : lbErrCodes
+
+#ifdef USE_CRITICAL_SECTION
+/*...sTHREAD_VERBOSE:0:*/
+#ifdef THREAD_VERBOSE
+_CL_VERBOSE << "lbCritSect::leave() called" LOG_
+//COUT << "lbCritSect::leave() called" << ENDL;
+#endif
+/*...e*/
+	LeaveCriticalSection((CRITICAL_SECTION*)critsect);
+/*...sTHREAD_VERBOSE:0:*/
+#ifdef THREAD_VERBOSE
+_CL_VERBOSE << "lbCritSect::leave() leave" LOG_
+//COUT << "lbCritSect::leave() leave" << ENDL;
+#endif
+/*...e*/
+#endif
+	return ERR_NONE;

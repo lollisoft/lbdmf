@@ -1,0 +1,112 @@
+class lb_Dispatcher
+!!!209095.cpp!!!	~lb_Dispatcher()
+
+	_CL_LOG << "lb_Dispatcher::~lb_Dispatcher() called." LOG_
+	
+	if (evManager != NULL) _CL_LOG << "Event manager in dispatcher has " << evManager->getRefCount() << " references." LOG_
+	if (dispatcher != NULL) _CL_LOG << "Dispatcher list has " << dispatcher->getRefCount() << " references." LOG_
+!!!209223.cpp!!!	addDispatcher(inout disp : lb_I_Dispatcher) : lbErrCodes
+
+	_CL_LOG << "lb_Dispatcher::addDispatcher() called" LOG_
+	return ERR_NONE;
+!!!209351.cpp!!!	delDispatcher(inout disp : lb_I_Dispatcher) : lbErrCodes
+
+	_CL_LOG << "lb_Dispatcher::delDispatcher() called" LOG_
+	return ERR_NONE;
+!!!209479.cpp!!!	addEventHandlerFn(inout evHandlerInstance : lb_I_EventHandler, in evHandler : lbEvHandler, inout EvName : char) : lbErrCodes
+
+	/*
+	 * Create an instance of a function pointer object
+	 */
+	
+	int id = 0;
+	evManager->resolveEvent(EvName, id);
+	addEventHandlerFn(evHandlerInstance, evHandler, id);	
+	return ERR_NONE;
+!!!209607.cpp!!!	delEventHandlerFn(inout evHandlerInstance : lb_I_EventHandler, in evHandler : lbEvHandler, inout EvName : char) : lbErrCodes
+
+	/*
+	 * Create an instance of a function pointer object
+	 */
+	
+	int id = 0;
+	evManager->resolveEvent(EvName, id);
+	//addEventHandlerFn(evHandlerInstance, evHandler, id);	
+	return ERR_NONE;
+!!!209735.cpp!!!	addEventHandlerFn(inout evHandlerInstance : lb_I_EventHandler, in evHandler : lbEvHandler, in EvNr : int) : lbErrCodes
+
+	lbErrCodes err = ERR_NONE;
+	
+	if (dispatcher == NULL) {
+		// Create the instance, that holds the events mapping
+		REQUEST(manager.getPtr(), lb_I_Container, dispatcher)
+		dispatcher->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+	}
+
+	UAP_REQUEST(manager.getPtr(), lb_I_EvHandler, evH)
+	evH->setHandler(evHandlerInstance, evHandler);
+
+	UAP_REQUEST(manager.getPtr(), lb_I_Integer, i)
+	i->setData(EvNr);
+
+	  UAP(lb_I_KeyBase, k)
+	QI(i, lb_I_KeyBase, k)
+
+	    UAP(lb_I_Unknown, e)
+	QI(evH, lb_I_Unknown, e)
+	if (dispatcher->exists(&k) == 1) {
+        	dispatcher->remove(&k);
+	}
+
+	if ((err = dispatcher->insert(&e, &k)) != ERR_NONE) _CL_LOG << "Error: Inserting new container element failed" LOG_
+
+	UAP(lb_I_Unknown, uk)
+
+	uk = dispatcher->getElement(&k);
+	
+	if (uk == NULL) _CL_LOG << "Error: Adding event handler failed (not stored)" LOG_
+
+	return ERR_NONE;
+!!!209863.cpp!!!	dispatch(in EvNr : int, inout EvData : lb_I_Unknown, inout EvResult : lb_I_Unknown) : lbErrCodes
+
+	lbErrCodes err = ERR_NONE;
+	
+	UAP_REQUEST(manager.getPtr(), lb_I_Integer, i)
+	i->setData(EvNr);
+	
+	UAP(lb_I_KeyBase, ik)
+	QI(i, lb_I_KeyBase, ik)
+	
+	
+	UAP(lb_I_Unknown, uk)
+	UAP(lb_I_EvHandler, ev)
+	
+	if (dispatcher == NULL) {
+		_CL_LOG << "Error: Have no dispatcher" LOG_
+	} else {
+	
+		uk = dispatcher->getElement(&ik);
+	
+		if (uk == NULL) {
+			_CL_LOG << "Error: Could not get the handler from the id" LOG_
+			return ERR_DISPATCH_FAILS;
+		}
+	
+		QI(uk, lb_I_EvHandler, ev)
+
+		ev->call(EvData, EvResult);
+	}
+	return ERR_NONE;
+!!!209991.cpp!!!	dispatch(inout EvName : char, inout EvData : lb_I_Unknown, inout EvResult : lb_I_Unknown) : lbErrCodes
+
+
+	int id = 0;
+	lbErrCodes err = ERR_NONE;
+	
+	evManager->resolveEvent(EvName, id);
+
+	return dispatch(id, EvData, EvResult);
+!!!210119.cpp!!!	dispatch(inout req : lb_I_DispatchRequest) : lb_I_DispatchResponse
+
+	_CL_LOG << "lb_Dispatcher::dispatch() called" LOG_
+	return NULL;

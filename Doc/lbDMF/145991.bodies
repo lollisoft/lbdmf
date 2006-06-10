@@ -1,0 +1,14 @@
+class lb_EvHandler
+!!!210631.cpp!!!	~lb_EvHandler()
+
+!!!210759.cpp!!!	getHandler() : lbEvHandler
+
+	return ev;
+!!!210887.cpp!!!	getHandlerInstance() : lb_I_EventHandler
+
+	return _evHandlerInstance;
+!!!211015.cpp!!!	call(inout evData : lb_I_Unknown, inout evResult : lb_I_Unknown) : lbErrCodes
+
+	(_evHandlerInstance->*(lbEvHandler) ev) (evData);
+	
+	return ERR_NONE;

@@ -1,0 +1,91 @@
+class lbDatabaseDialog
+!!!275783.cpp!!!	setFilter(inout filter : char) : void
+
+	panel->setFilter(filter);
+!!!275911.cpp!!!	getControlValue(inout name : char) : char
+
+
+	wxString value;
+
+	value = panel->getControlValue(name);
+	
+	return value.c_str();
+!!!276167.cpp!!!	setDetailForm(inout detail : lb_I_DatabaseForm, inout params : lb_I_Parameter) : void
+
+	panel->setDetailForm(detail, params);
+!!!276295.cpp!!!	updateFromMaster() : void
+
+	panel->updateFromMaster();
+!!!276423.cpp!!!	updateFromDetail() : void
+
+	panel->updateFromDetail();
+!!!276551.cpp!!!	getPrimaryColumns() : int
+
+	return panel->getPrimaryColumns();
+!!!276679.cpp!!!	getControlValue(in pos : int) : char
+
+	return panel->getControlValue(panel->getColumnName(pos));
+!!!276807.cpp!!!	getControls() : int
+
+	return panel->getControls();
+!!!276935.cpp!!!	getPrimaryColumn(in pos : int) : lb_I_String
+
+	return panel->getPrimaryColumn(pos);
+!!!277063.cpp!!!	getForeignColumns(inout primaryTable : char) : int
+
+	return panel->getForeignColumns(primaryTable);
+!!!277191.cpp!!!	getForeignColumn(in pos : int) : lb_I_String
+
+	return panel->getForeignColumn(pos);
+!!!277319.cpp!!!	isCharacterColumn(inout name : char) : bool
+
+	return panel->isCharacterColumn(name);
+!!!277447.cpp!!!	ignoreForeignKeys(inout toTable : char) : void
+
+	panel->ignoreForeignKeys(toTable);
+!!!277575.cpp!!!	getTableName(inout columnName : char) : char
+
+	return panel->getTableName(columnName);
+!!!277831.cpp!!!	lbDBFirst(inout uk : lb_I_Unknown) : lbErrCodes
+
+	return panel->lbDBFirst(uk);
+!!!277959.cpp!!!	lbDBNext(inout uk : lb_I_Unknown) : lbErrCodes
+
+	return panel->lbDBNext(uk);
+!!!278087.cpp!!!	lbDBPrev(inout uk : lb_I_Unknown) : lbErrCodes
+
+	return panel->lbDBPrev(uk);
+!!!278215.cpp!!!	lbDBLast(inout uk : lb_I_Unknown) : lbErrCodes
+
+	return panel->lbDBLast(uk);
+!!!278343.cpp!!!	lbDBAdd(inout uk : lb_I_Unknown) : lbErrCodes
+
+	return panel->lbDBAdd(uk);
+!!!278471.cpp!!!	lbDBDelete(inout uk : lb_I_Unknown) : lbErrCodes
+
+	return panel->lbDBDelete(uk);
+!!!278599.cpp!!!	lbDBUpdate() : lbErrCodes
+
+	return panel->lbDBUpdate();
+!!!278727.cpp!!!	lbDBClear() : lbErrCodes
+
+	return panel->lbDBClear();
+!!!278855.cpp!!!	lbDBRead() : lbErrCodes
+
+	return panel->lbDBRead();
+!!!279111.cpp!!!	OnActionButton(inout uk : lb_I_Unknown) : lbErrCodes
+
+	return panel->OnActionButton(uk);
+!!!279239.cpp!!!	OnDispatch(inout event : wxCommandEvent) : void
+
+	// Dispatcher should be called inside panel
+!!!279367.cpp!!!	OnPaint(inout event : wxCommandEvent) : void
+
+
+	// Paint an object at the given control
+
+
+
+
+
+

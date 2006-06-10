@@ -1,0 +1,521 @@
+class lbConfigObject
+!!!214727.cpp!!!	lbConfigObject(inout _parent : lbConfigObject)
+
+ocount++;
+	int count = 0;
+	interface_used = 0;
+	ref = STARTREF;
+
+/*...sMEMTEST:0:*/
+#ifdef MEMTEST
+	if (all_elements == NULL) {
+		all_elements = new lbElementList;
+		all_elements->next = NULL;
+		all_elements->obj = _parent;
+		
+		cout << dec << "Have allocated " << count << " objects yet" << endl;
+		
+	}
+	plbElementList temp = all_elements;
+
+	int skipthis = 0;
+	int skip_parent = 0;
+
+	while (temp->next != NULL) {
+		if (temp->obj == this) skipthis = 1;
+		if (temp->obj == _parent) skip_parent = 1;
+		temp = temp->next;
+		count++;
+	}
+	      
+
+	cout << dec << "Have " << count << " objects now" << endl;
+	
+	      
+	// May be to save
+	if (skipthis == 0) {
+		temp->next = new lbElementList;
+		temp = temp->next;
+		
+		temp->next = NULL;
+		temp->obj = this;
+	}
+		
+	if (skip_parent = 0) {
+		temp->next = new lbElementList;
+		temp = temp->next;
+		
+		temp->next = NULL;
+		temp->obj = _parent;
+	}
+#endif
+/*...e*/
+	_name = NULL;
+	attribut_list = NULL;
+	parent = _parent;
+	if (parent != NULL) deep = parent->getDeep() + 1;
+	childs = NULL;//_parent->childs;
+!!!214983.cpp!!!	~lbConfigObject()
+
+ocount--;
+/*...sVERBOSE:0:*/
+#ifdef VERBOSE
+cout << "lbConfigObject::~lbConfigObject() called (" << ((_name) ? _name : "?") << ")" << endl;
+#endif
+/*...e*/
+	if (ref != STARTREF) cout << "Reference count mismatch!" << endl;
+
+	if (_name != NULL) free(_name);
+
+	while (attribut_list != NULL) {
+/*...sVERBOSE:0:*/
+#ifdef VERBOSE
+		cout << "Have to delete the attribut_list" << endl;
+#endif
+/*...e*/
+		plbAttribut pList = attribut_list;
+		attribut_list = attribut_list->next;
+/*...sVERBOSE:0:*/
+#ifdef VERBOSE
+		cout << "Delete pList->name" << endl;
+#endif
+/*...e*/
+		if (pList->name != NULL) free(pList->name); 
+/*...sVERBOSE:0:*/
+#ifdef VERBOSE
+		cout << "Delete pList->value" << endl;
+#endif
+/*...e*/
+		if (pList->value != NULL) free(pList->value); 
+/*...sVERBOSE:0:*/
+#ifdef VERBOSE
+		cout << "Delete pList" << endl;
+#endif
+/*...e*/
+		delete pList;
+	}
+
+	while (childs != NULL) {
+/*...sVERBOSE:0:*/
+#ifdef VERBOSE
+		cout << "Have to delete the childs" << endl;
+#endif
+/*...e*/
+		plbElementList pChild = childs;
+		childs = childs->next;
+/*...sVERBOSE:0:*/
+#ifdef VERBOSE		
+		cout << "Release a lbConfigObject object (" << hex << (void*) pChild->obj << ")" << endl;
+#endif
+/*...e*/
+		pChild->obj->release();
+/*...sVERBOSE:0:*/
+#ifdef VERBOSE
+		cout << "Released" << endl;
+#endif		
+/*...e*/
+		delete pChild;
+	}
+!!!215111.cpp!!!	startElement(in name : XMLCh, inout attributes : AttributeList) : XMLHandler
+
+	/**
+	 * If this instance has a LOCID, then set a back pointer 
+	 * to this instance for all childrens.
+	 */
+	int haveLOCID = 0;
+	
+
+	for (int ii=0; ii<deep; ii++) wcout << L" ";
+		
+	_name = lb_wcstombs(name);
+
+	if (strcmp(_name, "ModuleName") == 0) {
+		cout << "I saw element: " << _name << " " << hex << (void*) this << dec << endl;
+	}
+	
+	if (_name == NULL) {
+		cout << "Error! _name is a NULL pointer" << endl;
+		
+	}
+	
+/*...sVERBOSE:0:*/
+#ifdef VERBOSE
+	cout << "lbConfigObject::startElement '" << _name << "' object: " << hex << (void*) this << dec << endl;
+#endif
+/*...e*/
+/*...sCheck\44\ if a LOCID attribute is available:8:*/
+	/**
+	 * Check, if a LOCID attribute is available. If so, then create a
+	 * container for ID's with that tag type.
+	 */
+	 
+	const XMLCh* value = attributes.getValue("LOCID");
+	
+	if (value != NULL) {
+//		for (int i=0; i<deep; i++) wcout << L" ";
+//		wcout << L"Have a LOCID descriptor pointing to " << value << L"\n";
+		
+		haveLOCID = 1;
+	} 
+/*...e*/
+
+	setGeneralParseError(FALSE);
+
+	/**
+	 * This is an entrypoint of a document
+	 */
+	lbConfigObject* temp = new lbConfigObject(this);
+
+	if (haveLOCID == 1) {
+	/**
+	 * This entry describes, that a new subtree id would be used.
+	 * Also this defines the tagname, containing an id.
+	 * LOCID has an entry of the tag name.
+	 */
+		//temp->setBackPtr(this, value);
+	}
+#define STORE_DATA	
+#ifdef STORE_DATA	
+/*...sVERBOSE:0:*/
+#ifdef VERBOSE
+cout << "Begin storing data" << endl;
+#endif
+/*...e*/
+/*...sstore element:8:*/
+	plbElementList firstElement = NULL;
+
+	if (childs == NULL) {
+/*...sVERBOSE:8:*/
+#ifdef VERBOSE
+	cout << "childs == NULL" << endl;
+#endif
+/*...e*/
+		childs = new lbElementList;
+		childs->next = NULL;
+		childs->obj = temp;
+/*...sVERBOSE:8:*/
+#ifdef VERBOSE
+		cout << "Stored object is " << hex << (void*) childs->obj << endl;
+		
+#endif
+/*...e*/
+	} else {
+/*...sVERBOSE:8:*/
+#ifdef VERBOSE
+	cout << "childs != NULL" << endl;
+#endif
+/*...e*/
+		firstElement = childs;
+	
+		while (childs->next != NULL) childs = childs->next;
+		childs->next = new lbElementList;
+		childs = childs->next;
+		childs->next = NULL;
+/*...sVERBOSE:8:*/
+#ifdef VERBOSE
+	cout << "Assign temp" << endl;
+#endif
+/*...e*/
+		childs->obj = temp;
+/*...sVERBOSE:8:*/
+#ifdef VERBOSE	
+		cout << "Stored object is " << hex << (void*) childs->obj << endl;
+		
+#endif
+/*...e*/
+		childs = firstElement;
+	}
+/*...e*/
+/*...sVERBOSE:0:*/
+#ifdef VERBOSE
+cout << "Stored element" << endl;
+#endif
+/*...e*/
+/*...sstore attributes:8:*/
+	unsigned int count = attributes.getLength();
+		
+	if (attribut_list == NULL) {
+		attribut_list = new lbAttribut;
+		attribut_list->name = NULL;
+		attribut_list->value = NULL;
+		attribut_list->where = NULL;
+		attribut_list->next = NULL;
+	}
+	
+	plbAttribut first = attribut_list;
+	
+	while (attribut_list->next != NULL) attribut_list = attribut_list->next; 
+		
+/*...sfill up with all attributes:16:*/
+	for (unsigned int i = 0; i < count; i++) {
+		attribut_list->name = lb_wcstombs(attributes.getName(i));
+		attribut_list->value = lb_wcstombs(attributes.getValue(i));
+		attribut_list->where = this;
+
+/*...sVERBOSE:32:*/
+#ifdef VERBOSE
+		cout << "Have attribute for " << _name << " '" 
+		<< attribut_list->name 
+		<< "' = '"
+		<< attribut_list->value
+		<< "'"
+		<< " Type '"
+		<< lb_wcstombs(attributes.getType(i))
+		<< "'" << endl;
+#endif
+/*...e*/
+
+		attribut_list->next = new lbAttribut;
+		attribut_list = attribut_list->next;
+		attribut_list->name = NULL;
+		attribut_list->value = NULL;
+		attribut_list->next = NULL;
+	}
+/*...e*/
+
+	attribut_list = first;
+	
+
+		
+/*...e*/
+/*...sVERBOSE:0:*/
+#ifdef VERBOSE
+cout << "Stored attributes" << endl;
+#endif
+/*...e*/
+	if (childs == NULL) {
+		cout << "Childs = NULL" << endl;
+		
+	}
+#endif
+	
+
+	return temp;
+!!!215239.cpp!!!	release() : lbErrCodes
+
+	if (interface_used != 0) ref--;
+/*...sVERBOSE:0:*/
+#ifdef VERBOSE
+	cout << "lbConfigObject::release() called (ref now is " << ref << ")" << endl;
+#endif
+/*...e*/
+	if (ref == STARTREF) {
+#ifdef bla	
+/*...scleanup:16:*/
+		if (all_elements != NULL) {
+			plbElementList temp = all_elements;
+			plbElementList pre = temp;
+		
+			while ((temp->next != NULL) && (temp->obj != this)) {
+				pre = temp;
+				temp = temp->next;
+			}
+		
+			if ((temp->obj == this) && (pre != temp)) {
+				// Anywhere in the list
+				pre->next = temp->next;
+				delete temp;
+			} else {
+				all_elements = temp->next;
+				delete temp;
+			}
+		}	
+/*...e*/
+#endif	
+
+		cout << "Delete object (" << ((_name) ? _name : "?") << ") " << hex << (void*) this << dec << endl;
+		delete this;
+	}
+	return ERR_NONE;
+!!!215367.cpp!!!	queryInterface(inout name : char, inout unknown : void) : lbErrCodes
+
+	
+	if (strcmp(name, "lb_I_ConfigObject") == 0) {
+		ref++;
+		interface_used++;
+		*unknown = (lb_I_ConfigObject*) this;
+		return ERR_NONE;
+	}
+	
+	if (strcmp(name, "lb_I_Unknown") == 0) {
+		ref++;
+		interface_used++;
+		*unknown = (lb_I_Unknown*) this;
+		return ERR_NONE;
+	}
+	
+	return ERR_NO_INTERFACE;
+!!!215495.cpp!!!	findObject(in name : char, inout object : lb_I_ConfigObject) : lbErrCodes
+
+	char* pattern = NULL;
+
+	for (int ii=0; ii<deep; ii++) cout << " ";
+		
+	cout << "I (" << hex << (void*) this << dec << ") saw element: " << ((_name) ? _name : "?") << endl;
+
+
+	plbElementList pChild = childs;
+	
+	deep++;	
+		
+/*...sSearch the list:8:*/
+			while (childs != NULL) {
+				lbErrCodes err = ERR_NONE;
+
+				if ((err = childs->obj->findObject(name, object)) == ERR_NONE) {
+					childs = pChild;
+					return err;
+				}
+				childs = childs->next;
+			}
+/*...e*/
+	
+	deep--;
+		
+	childs = pChild;
+	
+	return ERR_NO_OBJECT;		
+	
+	if (name == NULL) {
+		cout << "Name is a NULL pointer!" << endl;
+		return ERR_NONE;
+	}
+	
+	pattern = strdup(name);
+	
+	char* at = strchr(pattern, '/');
+
+	
+
+
+	if (at == NULL) {
+/*...shandle simple name:8:*/
+		cout << "No / found" << endl;
+		
+		if (_name == NULL) {
+			cout << "Object not found - return" << endl;
+			free(pattern);
+			return ERR_NO_OBJECT;
+		}
+		cout << "strcmp(_name: '" << _name << "')..." << endl;
+		
+		if (strcmp(_name, pattern) == 0) {
+			cout << "Found object with name '" << pattern << "'" << endl;
+			queryInterface("lb_I_ConfigObject", (void**) &object);
+			if (object != NULL) cout << "Got interface" << endl;
+		} else {
+			cout << "Strings are different" << endl;
+			free(pattern);
+			return ERR_NO_OBJECT;
+		}
+		
+/*...e*/
+	} else {
+/*...shandle path:8:*/
+		cout << "handle path" << endl;
+		at[0] = 0;
+		char* part = strdup(pattern);
+		char* rest = strdup(at+1);
+		
+		cout << "Address of _name is " << hex << (void*) _name << endl;
+		if (_name) cout << "Objectname: " << _name << endl;
+		cout << "part: " << part << " rest: " << rest << endl;
+		
+		if (_name == NULL) {
+/*...sAssume root element:24:*/
+			plbElementList pChild = childs;
+			
+			if (childs == NULL) {
+				cout << "Root element has no childs!" << endl;
+			}
+			
+/*...sSearch the list:48:*/
+			while (childs != NULL) {
+				lbErrCodes err = ERR_NONE;
+		
+				cout << "Search on " << name << endl;
+				
+				if ((err = childs->obj->findObject(name, object)) == ERR_NONE) {
+					childs = pChild;
+					if (part) free(part);
+					if (rest) free(rest);
+					free(pattern);
+					return err;
+				}
+				cout << "Search next element (_name == NULL)" << endl;
+				childs = childs->next;
+			}
+/*...e*/
+		
+			childs = pChild;
+			if (part) free(part);
+			if (rest) free(rest);
+			cout << "Return ERR_NO_OBJECT" << endl;
+			free(pattern);
+			return ERR_NO_OBJECT;
+/*...e*/
+		} else {
+/*...sAssume childs of root element:24:*/
+			plbElementList pChild = childs;
+			
+/*...sSearch the list:48:*/
+			while (childs != NULL) {
+				lbErrCodes err = ERR_NONE;
+
+				cout << "Search on " << rest << endl;
+				
+				if ((err = childs->obj->findObject(rest, object)) == ERR_NONE) {
+					childs = pChild;
+					if (part) free(part);
+					if (rest) free(rest);
+					free(pattern);
+					return err;
+				}
+				cout << "Search next element (_name != NULL)" << endl;
+				childs = childs->next;
+			}
+/*...e*/
+		
+			childs = pChild;
+			if (part) free(part);
+			if (rest) free(rest);
+			free(pattern);
+			return ERR_NO_OBJECT;
+/*...e*/
+		}
+		
+		cout << "Not a NULL pointer, go ahead" << endl;
+		
+		
+		if (strcmp(_name, part) == 0) {
+			cout << "Found object with name '" << name << "'" << endl;
+			queryInterface("lb_I_Unknown", (void**) &object);
+			if (object != NULL) cout << "Got interface" << endl;
+		}
+	
+		cout << "Element: " << part 
+		<< "Rest: " << rest
+		<< endl;
+		
+		if (part) free(part);
+		if (rest) free(rest);
+/*...e*/
+	}
+	
+	free(pattern);
+	return ERR_NONE;
+!!!215623.cpp!!!	getAttribute(in name : char, inout attr : lb_I_Attribute) : lbErrCodes
+
+	return ERR_NONE;
+!!!215751.cpp!!!	setGeneralParseError(in _parseError : BOOL) : void
+
+	parseError = _parseError;
+!!!215879.cpp!!!	getGeneralParseError() : BOOL
+
+	return parseError;
+!!!216007.cpp!!!	getDeep() : int
+
+	return deep;
+!!!216135.cpp!!!	setDeep(in d : int) : void
+
+	deep = d;

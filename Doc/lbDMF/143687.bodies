@@ -1,0 +1,41 @@
+class SkipNode
+!!!197959.cpp!!!	SkipNode()
+
+    	myLevel = MAXLEVEL;
+    	value = NULL;
+    	forward = new SkipNode* [myLevel+1];
+    	for (int i=0; i<=myLevel; i++)
+    	    forward[i] = NULL;
+!!!198087.cpp!!!	SkipNode(inout r : lb_I_Element, in level : int)
+
+        myLevel = level;
+        value = r;
+        forward = new SkipNode* [level+1];
+        for (int i=0; i<=level; i++)
+            forward[i] = NULL;
+!!!198343.cpp!!!	~SkipNode()
+ 
+      _CL_VERBOSE << "SkipNode destructor called" LOG_
+      delete [] forward; 
+      _CL_VERBOSE << "Deleted forward array" LOG_
+      
+      if (value != NULL) RELEASE(value)
+      _CL_VERBOSE << "Released value of this element" LOG_
+!!!198471.cpp!!!	detach() : void
+
+	/* 
+		value = NULL invokes operator = who internally tries to
+		release the stored pointer.
+		
+		detach() is intented to force a membership leaving. So
+		invoking detach() is explicid done by the user of the
+		container due to the knoledge, that the container not have
+		to delete it's data.
+		
+		This is needed to detach the wxWidgets sample application's
+		database dialogs, because the wxWidgets framework worries
+		about deleting it's windows.
+	*/
+	
+    	//value = NULL;
+	if (value != NULL) value->detachData();

@@ -1,0 +1,38 @@
+class lbAppServerThread
+!!!226631.cpp!!!	lbAppServerThread(inout _clt : lbTransfer, inout _server : lbAppServer)
+
+	/*
+		Check if the given transfer client has valid data
+	*/
+	
+	if (_clt == NULL) {
+		LOG("lbAppServerThread::lbAppServerThread(...) Error: Have a NULL pointer!");
+	}
+	else
+	if (_clt->isValid() == 1) {
+		clt = _clt;
+		server = _server;
+	} else {
+		LOG("lbAppServerThread::lbAppServerThread(...) Error: Got an invalid lbTransfer client object!");
+		clt = _clt;
+		server = _server;
+	}
+!!!226759.cpp!!!	~lbAppServerThread()
+
+	COUT << "lbAppServerThread::~lbAppServerThread() called" << ENDL;
+!!!226887.cpp!!!	Entry() : void
+
+/*...sAPPCS_VERBOSE:0:*/
+#ifdef APPCS_VERBOSE
+	LOGENABLE("lbAppServerThread::Entry()");
+	LOG("lbAppServerThread::Entry(): Do request");
+#endif
+/*...e*/
+	server->_connected(clt);
+/*...sAPPCS_VERBOSE:0:*/
+#ifdef APPCS_VERBOSE
+	LOG("lbAppServerThread::Entry(): Done request");
+#endif
+/*...e*/
+	//COUT << "lbAppServerThread::Entry(): Done request" << ENDL;	
+	return NULL;

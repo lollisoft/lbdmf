@@ -1,0 +1,226 @@
+class lbConfigure_FK_PK_MappingDialog
+!!!262983.cpp!!!	~lbConfigure_FK_PK_MappingDialog()
+
+
+	if (_DBUser) free(_DBUser);
+	if (_DBPass) free(_DBPass);
+	if (_DBName) free(_DBName);
+
+!!!263111.cpp!!!	prepareDialogHandler() : int
+
+	int SelectedColumn;
+	int cbFKSel;
+	int cbPKSel;
+	
+	UAP_REQUEST(manager.getPtr(), lb_I_EventManager, eman)
+	UAP_REQUEST(manager.getPtr(), lb_I_Dispatcher, dispatcher)
+
+	char eventName[100] = "";
+		
+	sprintf(eventName, "%pSelectedColumn", this);
+	eman->registerEvent(eventName, SelectedColumn);
+
+	dispatcher->setEventManager(eman.getPtr());
+
+	// Register lbDMF dispatched event handler
+
+	registerEventHandler(dispatcher.getPtr());
+
+	this->Connect( SelectedColumn,  -1, wxEVT_COMMAND_BUTTON_CLICKED, 
+		(wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) 
+			&lbConfigure_FK_PK_MappingDialog::OnDispatch);
+
+	// Register normal wxWidgets event handler
+
+	this->Connect( cBoxFKNames->GetId(),  -1, wxEVT_COMMAND_CHOICE_SELECTED, 
+		(wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) 
+			&lbConfigure_FK_PK_MappingDialog::OnFKComboBoxSelected);
+
+	this->Connect( cBoxPKNames->GetId(),  -1, wxEVT_COMMAND_CHOICE_SELECTED, 
+		(wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) 
+			&lbConfigure_FK_PK_MappingDialog::OnPKComboBoxSelected);
+/*
+	this->Connect( cBoxFKNames->GetId(),  -1, wxEVT_COMMAND_TEXT_ENTER, 
+		(wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) 
+			&lbConfigure_FK_PK_MappingDialog::OnFKComboBoxSelected);
+
+	this->Connect( cBoxPKNames->GetId(),  -1, wxEVT_COMMAND_TEXT_ENTER, 
+		(wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) 
+			&lbConfigure_FK_PK_MappingDialog::OnPKComboBoxSelected);
+*/
+	return SelectedColumn;
+!!!263495.cpp!!!	init(inout query : lb_I_Query, inout DBName : char, inout DBUser : char, inout DBPass : char) : void
+
+	lbErrCodes err = ERR_NONE;
+	char prefix[100] = "";
+	sprintf(prefix, "%p", this);
+
+	_DBName = strdup(DBName);
+	_DBUser = strdup(DBUser);
+	_DBPass = strdup(DBPass);
+
+	QI(query, lb_I_Query, sourceQuery)
+	
+	wxBoxSizer* sizerMain  = new wxBoxSizer(wxVERTICAL);
+	
+	wxBoxSizer* sizerHor   = new wxBoxSizer(wxHORIZONTAL);
+	
+	wxBoxSizer* sizerAddRem = new wxBoxSizer(wxHORIZONTAL);
+	wxBoxSizer* sizerNavi  = new wxBoxSizer(wxHORIZONTAL);
+
+	wxBoxSizer* sizerActions = new wxBoxSizer(wxHORIZONTAL);
+	
+	wxBoxSizer* sizerLeft  = new wxBoxSizer(wxVERTICAL);	
+	wxBoxSizer* sizerRight = new wxBoxSizer(wxVERTICAL);
+
+	sizerHor->Add(sizerLeft, 1, wxEXPAND | wxALL, 5);
+	sizerHor->Add(sizerRight, 1, wxEXPAND | wxALL, 5);
+
+	label = new wxStaticText(this, -1, "Dropdown Element:", wxPoint());
+	sizerLeft->Add(label, 1, wxALL, 5);
+
+	cBoxFKNames = new wxChoice(this, -1);
+	sizerLeft->Add(cBoxFKNames, 1, wxALL, 5);
+
+	labelF = new wxStaticText(this, -1, "Feld anzuzeigen:", wxPoint());
+	sizerRight->Add(labelF, 1, wxALL, 5);
+	
+	cBoxPKNames = new wxChoice(this, -1);
+	sizerRight->Add(cBoxPKNames, 1, wxALL, 5);
+
+	int SelectedColumn = prepareDialogHandler();
+
+	cBoxPKNames->Disable();
+
+	for (int i = 1; i <= query->getColumns(); i++) {
+		char* name = query->getColumnName(i);
+		
+		if (query->hasFKColumn(name) == 1) {
+			cBoxFKNames->Append(wxString(name));
+		}
+	}
+
+	cBoxFKNames->SetSelection(-1);
+
+	firstButton = new wxButton(this, SelectedColumn, "Ready", wxPoint(), wxSize(100,20));
+	firstButton->Disable();
+
+	sizerNavi->Add(firstButton, 1, wxALL, 5);
+
+	SetAutoLayout(TRUE);
+	
+	sizerMain->Add(sizerHor, 0, wxEXPAND | wxALL, 5);
+	sizerMain->Add(sizerNavi, 0, wxEXPAND | wxALL, 5);
+	
+	SetSizer(sizerMain);
+
+	sizerMain->SetSizeHints(this);
+	sizerMain->Fit(this);
+	
+	Centre();
+
+!!!263879.cpp!!!	selectedColumn(inout uk : lb_I_Unknown) : lbErrCodes
+
+	EndModal(wxID_OK);
+
+	return ERR_NONE;
+!!!264007.cpp!!!	registerEventHandler(inout dispatcher : lb_I_Dispatcher) : lbErrCodes
+
+	lbErrCodes err = ERR_NONE;
+
+	char eventName[100] = "";
+
+	sprintf(eventName, "%pSelectedColumn", this);
+	dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbConfigure_FK_PK_MappingDialog::selectedColumn, eventName);
+
+	return err;
+!!!264135.cpp!!!	OnDispatch(inout event : wxCommandEvent) : void
+
+        switch (event.GetId()) {
+        default:
+                // Delegate all other events
+                {
+                	lbErrCodes err = ERR_NONE;
+			lb_I_Module* m = getModuleInstance();
+			
+			UAP_REQUEST(m, lb_I_EventManager, eman)
+		
+			UAP_REQUEST(m, lb_I_Dispatcher, dispatcher)
+			dispatcher->setEventManager(eman.getPtr());
+
+			UAP_REQUEST(m, lb_I_Integer, param)
+			
+			param->setData(event.GetId());
+			
+			UAP(lb_I_Unknown, uk)
+			QI(param, lb_I_Unknown, uk)
+		
+			UAP_REQUEST(m, lb_I_String, result)
+			UAP(lb_I_Unknown, uk_result)
+			QI(result, lb_I_Unknown, uk_result)
+		
+			dispatcher->dispatch(event.GetId(), uk.getPtr(), &uk_result);
+                }
+                break;
+        }
+!!!264263.cpp!!!	OnPKComboBoxSelected(inout event : wxCommandEvent) : void
+
+	wxString PKName = cBoxPKNames->GetStringSelection();
+	wxString FKName = cBoxFKNames->GetStringSelection();
+
+	REQUEST(manager.getPtr(), lb_I_Database, database)
+	
+	database->init();
+	
+	char* lbDMFPasswd = getenv("lbDMFPasswd");
+	char* lbDMFUser   = getenv("lbDMFUser");
+	
+	if (!lbDMFUser) lbDMFUser = "dba";
+	if (!lbDMFPasswd) lbDMFPasswd = "trainres";
+	
+	database->connect("lbDMF", lbDMFUser, lbDMFPasswd);
+
+	UAP(lb_I_String, PKTable)
+	
+	char* fkTable = strdup(sourceQuery->getTableName((char*) FKName.c_str()));
+	
+	char* p = strdup(FKName.c_str());
+	
+	PKTable = sourceQuery->getPKTable(p);
+	
+	free(p);
+	
+	// Delete the entry, we now will put into the configuration
+	
+	cBoxFKNames->Delete(cBoxFKNames->GetSelection());
+	
+	UAP(lb_I_Query, query)
+	
+	char buf[] = "insert into ForeignKey_VisibleData_Mapping (FKName, FKTable, PKName, PKTable) values('%s','%s', '%s', '%s')";
+
+	int size = strlen(buf)+	PKName.Length()+ strlen(fkTable)+ FKName.Length()+ strlen(PKTable->charrep())+ 1;
+
+	char* buffer = (char*) malloc(size);
+
+	buffer[0] = 0;
+
+	sprintf(buffer, buf, FKName.c_str(), fkTable, PKName.c_str(), PKTable->charrep());
+
+	query = database->getQuery(0);
+	
+	query->skipFKCollecting();
+	query->query(buffer);
+	query->enableFKCollecting();
+	
+	if (cBoxFKNames->GetCount() > 0) {
+		cBoxFKNames->SetSelection(-1);
+		cBoxFKNames->Enable();
+		cBoxPKNames->Clear();
+		cBoxPKNames->Disable();
+	} else {
+		cBoxPKNames->Disable();
+		cBoxFKNames->Disable();
+
+		firstButton->Enable();		
+	}
+	

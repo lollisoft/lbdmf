@@ -1,0 +1,18 @@
+class ReportPreviewFrame
+!!!281671.cpp!!!	~ReportPreviewFrame(in  : void)
+
+!!!281799.cpp!!!	OnCloseWindow(inout event : wxCloseEvent) : void
+
+	// When the preview frame closes, we need to close
+	// the corresponding report file also. This is done
+	// in ...FinishReport()
+	
+	printf("ReportPreviewFrame::OnCloseWindow( wxCloseEvent &event ) called.\n");
+	
+	if ( m_pRepWrt )
+	{
+        printf("ReportPreviewFrame::OnCloseWindow( wxCloseEvent &event ) calls m_pRepWrt->FinishReport().\n");
+		m_pRepWrt->FinishReport();
+	}
+
+	wxPreviewFrame::OnCloseWindow( event );

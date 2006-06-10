@@ -1,0 +1,93 @@
+class lbInstance
+!!!241095.cpp!!!	~lbInstance()
+
+	
+!!!241223.cpp!!!	getAddress() : char
+
+	return addr;
+!!!241351.cpp!!!	getInstanceClassname() : char
+
+	return classname;
+!!!241479.cpp!!!	getFile() : char
+
+	return file;
+!!!241607.cpp!!!	getLine() : int
+
+	return line;
+!!!241735.cpp!!!	setAddress(inout a : char) : void
+
+	if (addr != NULL) free(addr);
+	addr = strdup(a);
+!!!241863.cpp!!!	setClassname(inout c : char) : void
+
+	if (classname != NULL) free(classname);
+	classname = strdup(c);
+!!!241991.cpp!!!	setFile(inout f : char) : void
+
+	if (file != NULL) free(file);
+	file = strdup(f);
+!!!242119.cpp!!!	setLine(in l : int) : void
+
+	line = l;
+!!!242247.cpp!!!	addReference(inout classname : char, inout file : char, in line : int) : void
+
+	if (references == NULL) {
+		REQUEST(manager.getPtr(), lb_I_Container, references)
+	}
+	char* buf = new char[strlen(classname)+strlen(file)+10];
+	buf[0] = 0;
+	
+	sprintf(buf, "%s_%s_%d", classname, file, line);
+	
+	lbStringKey* key = new lbStringKey(buf);
+
+	if (manager == NULL) _CL_VERBOSE << "Error: InstanceRepository has got a NULL pointer for the manager" LOG_
+	key->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+	UAP(lb_I_KeyBase, _key)
+	QI(key, lb_I_KeyBase, _key)
+
+	UAP(lb_I_Unknown, element)
+	element = references->getElement(&_key);
+	
+	if (element != NULL) {
+		UAP(lb_I_InstanceReference, instance)
+		QI(element, lb_I_InstanceReference, instance)
+		if (instance != NULL) {
+			instance->setCount(instance->getCount() + 1);
+		}
+	}
+	
+	delete [] buf;
+!!!242375.cpp!!!	delReference(inout classname : char, inout file : char, in line : int) : void
+
+        if (references == NULL) {
+                REQUEST(manager.getPtr(), lb_I_Container, references)
+        }
+
+	char* buf = new char[strlen(classname)+strlen(file)+10];
+	buf[0] = 0;
+	
+	sprintf(buf, "%s_%s_%d", classname, file, line);
+	
+	lbStringKey* key = new lbStringKey(buf);
+
+	if (manager == NULL) _CL_VERBOSE << "Error: InstanceRepository has got a NULL pointer for the manager" LOG_
+	key->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+	UAP(lb_I_KeyBase, _key)
+	QI(key, lb_I_KeyBase, _key)
+
+	UAP(lb_I_Unknown, element)
+	element = references->getElement(&_key);
+
+	if (element != NULL) {
+		UAP(lb_I_InstanceReference, instance)
+		QI(element, lb_I_InstanceReference, instance)
+		if (instance != NULL) {
+			if (instance->getCount() == 0) {
+				_CL_VERBOSE << "Warning: Reference count goes under 0!" LOG_
+			}
+			instance->setCount(instance->getCount() - 1);
+		}
+	}
+	
+	delete [] buf;

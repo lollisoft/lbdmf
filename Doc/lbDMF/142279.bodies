@@ -1,0 +1,67 @@
+class lbStringList
+!!!195015.cpp!!!	lbStringList()
+
+	ref = STARTREF;
+	list = NULL;
+	count = 0;
+!!!195143.cpp!!!	~lbStringList()
+
+	list->deleteAll();
+	RELEASE(list);
+!!!195271.cpp!!!	setType() : void
+
+	OTyp = LB_STRINGLIST;
+!!!195399.cpp!!!	clone() : lb_I_Unknown
+
+	lbStringList* cloned = new lbStringList();
+	
+	lb_I_Unknown* uk_stringlist = list->clone();
+	
+	uk_stringlist->queryInterface("lb_I_Container", (void**) &cloned->list);
+	cloned->count = count;
+	
+	lb_I_Unknown* uk_cloned = NULL;
+	
+	if (cloned->queryInterface("lb_I_Unknown", (void**) &uk_cloned) != ERR_NONE) {
+		_CL_VERBOSE << "Error: query interface failed" LOG_
+	}
+	
+	return uk_cloned;
+!!!195527.cpp!!!	insert(inout s : lb_I_String) : void
+
+	count++;
+	/**
+	 * It should be passed a lb_I_Unknown pointer. Internally the needed interface should be
+	 * queried.
+	 */
+	
+	list->insert(s, &lbKey(count));
+!!!195655.cpp!!!	remove(in s : lb_I_String) : int
+
+	if (exists(s)) {
+		list->remove(&lbKey(count));
+		count--;
+		return 1;
+	} else return 0;
+!!!195783.cpp!!!	exists(in s : lb_I_String) : int
+
+	int result = 0;
+	while (hasMoreElements()) {
+		if (strcmp(s->getData(), ((lbString*) nextElement())->getData()) == 0) result = 1;
+	}
+	return result;
+!!!195911.cpp!!!	hasMoreElements() : int
+
+	return list->hasMoreElements();
+!!!196039.cpp!!!	nextElement() : lb_I_String
+
+	lb_I_Unknown* uk_object = NULL;
+	lb_I_String* s = NULL;
+	
+	uk_object = list->nextElement();
+	
+	if (uk_object->queryInterface("lb_I_String", (void**) &s) != ERR_NONE) {
+		_CL_VERBOSE << "Error: query interface failed" LOG_
+	}
+	
+	return s;

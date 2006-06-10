@@ -1,0 +1,10 @@
+class lbBoolean
+!!!194247.cpp!!!	lbBoolean()
+
+	ref = STARTREF;
+	integerdata = 0;
+!!!194375.cpp!!!	~lbBoolean()
+
+!!!194503.cpp!!!	getData() : bool
+
+	return integerdata;

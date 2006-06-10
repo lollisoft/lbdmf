@@ -1,0 +1,183 @@
+class lbDBReportProperties
+!!!305095.cpp!!!	initData(inout report : char) : void
+
+        UAP_REQUEST(getModuleInstance(), lb_I_Database, ReportCFGDB)
+        UAP(lb_I_Query, query)
+        UAP(lb_I_Query, tquery)
+
+        ReportCFGDB->init();
+
+        char* lbDMFPasswd = getenv("lbDMFPasswd");
+        char* lbDMFUser   = getenv("lbDMFUser");
+
+        if (!lbDMFUser) lbDMFUser = "dba";
+        if (!lbDMFPasswd) lbDMFPasswd = "trainres";
+
+        ReportCFGDB->connect("lbDMF", lbDMFUser, lbDMFPasswd);
+
+        query = ReportCFGDB->getQuery(0);
+
+        // Get all the parameters for a given report
+
+/*...v\46\\46\\47\\46\\46\\47\Database\47\lbDMF\45\PostgreSQL\46\sql:0:*/
+
+       	UAP_REQUEST(getModuleInstance(), lb_I_String, value)
+       	UAP_REQUEST(getModuleInstance(), lb_I_String, key)
+
+	char buf[] = "select name, value from report_parameters where report = '%s'";
+	char* buffer = (char*) malloc(strlen(buf) + strlen(report) + 1);
+	buffer[0] = 0;
+	
+	sprintf(buffer, buf, report);
+	_report = strdup(report);
+        
+        if (query->query(buffer) == ERR_NONE) {
+        	lbErrCodes err = query->first();
+        	
+               	while(err == ERR_NONE) {
+        		
+	        	*key = query->getAsString(1);
+	        	*value = query->getAsString(2);
+        	
+        		key->trim();
+        		value->trim();
+
+			//_CL_LOG << "Insert in lbDBReportProperties: " << key->charrep() << " = " << value->charrep() LOG_
+        	
+	        	params->setUAPString(*&key, *&value);
+        		
+        		err = query->next();
+        	}
+        	
+        	if (err == WARN_DB_NODATA) {
+	        	*key = query->getAsString(1);
+	        	*value = query->getAsString(2);
+	        	
+	        	key->trim();
+	        	value->trim();
+	        	
+			//_CL_LOG << "Insert in lbDBReportProperties: " << key->charrep() << " = " << value->charrep() LOG_
+
+	        	params->setUAPString(*&key, *&value);
+        	}
+        }
+
+	tquery = ReportCFGDB->getQuery(0);
+
+	char buf1[] = "select line, text from report_texts where report = '%s'";
+	free(buffer);
+	buffer = (char*) malloc(strlen(buf1) + strlen(report) + 1);
+	buffer[0] = 0;
+	
+	sprintf(buffer, buf1, report);
+
+		
+        if (tquery->query(buffer) == ERR_NONE) {
+        	lbErrCodes err = tquery->first();
+        	
+               	while(err == ERR_NONE) {
+        		
+	        	*key = tquery->getAsString(1);
+	        	*value = tquery->getAsString(2);
+        	
+        		key->trim();
+        		value->trim();
+        		
+			_CL_LOG << "Insert in lbDBReportProperties: " << key->charrep() << " = " << value->charrep() LOG_
+
+	        	textlines->setUAPString(*&key, *&value);
+        		
+        		err = tquery->next();
+        	}
+        	
+        	if (err == WARN_DB_NODATA) {
+	        	*key = tquery->getAsString(1);
+	        	*value = tquery->getAsString(2);
+	        	
+	        	key->trim();
+	        	value->trim();
+	        	
+			_CL_LOG << "Insert in lbDBReportProperties: " << key->charrep() << " = " << value->charrep() LOG_
+
+	        	textlines->setUAPString(*&key, *&value);
+        	}
+        }
+        
+!!!305223.cpp!!!	getIntParameter(inout name : char) : int
+
+	int i = 0;
+	UAP_REQUEST(getModuleInstance(), lb_I_String, value)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, key)
+	
+	*key = name;
+	
+	*value = "30";
+	
+	if (params->getUAPString(*&key, *&value) != ERR_NONE) {
+		UAP_REQUEST(getModuleInstance(), lb_I_Database, ReportCFGDB)
+		UAP(lb_I_Query, query)
+		
+		ReportCFGDB->init();
+		
+		char* lbDMFPasswd = getenv("lbDMFPasswd");
+		char* lbDMFUser   = getenv("lbDMFUser");
+		
+		if (!lbDMFUser) lbDMFUser = "dba";
+		if (!lbDMFPasswd) lbDMFPasswd = "trainres";
+		
+		ReportCFGDB->connect("lbDMF", lbDMFUser, lbDMFPasswd);
+		
+		query = ReportCFGDB->getQuery(0);
+		
+		char buf[] = "insert into report_parameters (report, name, value) values ('%s', '%s', 30)";
+		char* buffer = (char*) malloc(strlen(buf) + 1 + strlen(name) + strlen(_report));
+		buffer[0] = 0;
+		sprintf(buffer, buf, _report, name);
+		
+		query->skipFKCollecting();		
+		query->query(buffer);
+		query->enableFKCollecting();
+		
+		free(buffer);
+	}
+
+	i = atoi(value->charrep());
+
+	return i;
+!!!305351.cpp!!!	getFloatParameter(inout name : char) : float
+
+	float i = 0;
+	UAP_REQUEST(getModuleInstance(), lb_I_String, value)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, key)
+	
+	*key = name;
+
+	params->getUAPString(*&key, *&value);
+	
+	i = atoi(value->charrep());
+	
+	return i;
+!!!305479.cpp!!!	getCharParameter(inout name : char) : lb_I_String
+
+	UAP_REQUEST(getModuleInstance(), lb_I_String, value)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, key)
+	
+	*key = name;
+	
+	params->getUAPString(*&key, *&value);
+	
+	value++;
+	
+	return value.getPtr();
+!!!305607.cpp!!!	getTextLine(in line : int, inout name : char) : lb_I_String
+
+	UAP_REQUEST(getModuleInstance(), lb_I_String, value)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, key)
+	
+	*key = itoa(line);
+	
+	if (textlines->getUAPString(*&key, *&value) != ERR_NONE) return NULL;
+	
+	value++;
+	
+	return value.getPtr();

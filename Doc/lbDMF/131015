@@ -1,0 +1,3748 @@
+format 22
+"DatabaseReport" // Plugins::DatabaseReport
+  // class settings
+  //class diagram settings
+  draw_all_relations default hide_attributes default hide_operations default show_full_members_definition default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default
+  //use case diagram settings
+  package_name_in_tab default show_context default auto_label_position default
+  //sequence diagram settings
+  show_full_operations_definition default write_horizontally default drawing_language default
+  //collaboration diagram settings
+  show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default
+  //component diagram settings
+  package_name_in_tab default show_context default auto_label_position default
+  draw_component_as_icon default show_component_req_prov default show_component_rea default
+  //deployment diagram settings
+  package_name_in_tab default show_context default write_horizontally default auto_label_position default
+  draw_component_as_icon default show_component_req_prov default show_component_rea default
+  //state diagram settings
+  package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default
+  show_activities default region_horizontally default drawing_language default
+  
+  classview 130375 "DatabaseReport"
+    //class diagram settings
+    draw_all_relations default hide_attributes default hide_operations default show_full_members_definition default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default
+    //col diagram settings
+    show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default
+    //seq diagram settings
+    show_full_operations_definition default write_horizontally default drawing_language default
+    //state diagram settings
+    package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default
+    show_activities default region_horizontally default drawing_language default
+    //class settings
+    class 161607 "lbDBReportAction"
+      
+      
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      classrelation 155719 // <generalisation>
+	relation 155719 ---|>
+	  a public
+	    cpp default "Generated"
+	    classrelation_ref 155719 // <generalisation>
+	  b parent class_ref 136903 // lb_I_DelegatedAction
+      end
+
+      operation 279495 "lbDBReportAction"
+	public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${name}${(}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${class}::${name}${(}${)}${throw}{
+${body}}
+"
+	
+	
+      end
+
+      operation 279623 "~lbDBReportAction"
+	cpp_virtual public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${virtual}${name}${(}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${class}::${name}${(}${)}${throw}{
+${body}}
+"
+	
+	
+      end
+
+      operation 279751 "setActionID"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "id" explicit_type "char"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 279879 "execute"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "params" type class_ref 141127 // lb_I_Parameter
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//...e
+//...svoid LB_STDCALL lbDBReportAction\\58\\\\58\\execute\\40\\lb_I_Parameter\\42\\ params\\41\\:0:
+
+${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 280007 "setDatabase"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "_db" type class_ref 160711 // lb_I_Database
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      attribute 164423 "myActionID"
+	public explicit_type "char"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	java_decl ""
+	idl_decl ""
+      end
+
+      operation 280135 "init"
+	public explicit_return_type "void"
+	nparams 4
+	  param inout name "SQLString" explicit_type "char"
+	  param inout name "DBName" explicit_type "char"
+	  param inout name "DBUser" explicit_type "char"
+	  param inout name "DBPass" explicit_type "char"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}, ${t1} * ${p1}, ${t2} * ${p2}, ${t3} * ${p3}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}, ${t1} * ${p1}, ${t2} * ${p2}, ${t3} * ${p3}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 280263 "addAndCondition"
+	public explicit_return_type "void"
+	nparams 2
+	  param inout name "column" explicit_type "char"
+	  param inout name "value" explicit_type "char"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}, ${t1} * ${p1}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}, ${t1} * ${p1}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 280391 "addOrCondition"
+	cpp_inline public explicit_return_type "void"
+	nparams 2
+	  param inout name "column" explicit_type "char"
+	  param inout name "value" explicit_type "char"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}, ${t1} * ${p1}${)}${const}${volatile}${throw}${abstract} { };
+"
+	
+	
+      end
+
+      operation 280519 "beginBracket"
+	cpp_inline public explicit_return_type "void"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract} { };
+"
+	
+	
+      end
+
+      operation 280647 "endBracket"
+	cpp_inline public explicit_return_type "void"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract} { };
+"
+	
+	
+      end
+
+      operation 280775 "setFrame"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "_frame" type class_ref 141767 // lb_I_Unknown
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 280903 "destroy"
+	public explicit_return_type "void"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 281031 "update"
+	public explicit_return_type "void"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 281159 "show"
+	public explicit_return_type "void"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 281287 "print"
+	public explicit_return_type "void"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 281415 "setName"
+	public return_type class_ref 128711 // lbErrCodes
+	nparams 2
+	  param in name "name" explicit_type "char"
+	  param in name "appention" explicit_type "char"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} * ${p0}, const ${t1} * ${p1}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}const ${t0} * ${p0}, const ${t1} * ${p1}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      attribute 164551 "ReportName"
+	public explicit_type "char"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	java_decl ""
+	idl_decl ""
+      end
+
+      attribute 164679 "untranslated_ReportName"
+	public explicit_type "char"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	java_decl ""
+	idl_decl ""
+      end
+
+      classrelation 155847 // frame (<unidirectional association>)
+	relation 155847 --->
+	  a role_name "frame" multiplicity "" public
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 155847 // frame (<unidirectional association>)
+	  b parent class_ref 161735 // wxFrame
+      end
+
+      classrelation 155975 // pObj (<unidirectional association>)
+	relation 155975 --->
+	  a role_name "pObj" multiplicity "" public
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 155975 // pObj (<unidirectional association>)
+	  b parent class_ref 161863 // wxReportObj
+      end
+
+      attribute 164807 "strValue"
+	public type class_ref 161991 // wxString
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} * * ${name}${value};
+"
+	java_decl ""
+	idl_decl ""
+      end
+
+      attribute 164935 "colsteps"
+	public explicit_type "int"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} * * ${name}${value};
+"
+	java_decl ""
+	idl_decl ""
+      end
+
+      attribute 165063 "hasConditions"
+	public explicit_type "bool"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	idl_decl ""
+      end
+    end
+
+    class 161863 "wxReportObj"
+      
+      
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment " -------------------------------------
+  A Report/Print object
+ -------------------------------------"
+      classrelation 156871 // m_pMargin (<unidirectional association>)
+	relation 156871 --->
+	  a role_name "m_pMargin" multiplicity "" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 156871 // m_pMargin (<unidirectional association>)
+	  b parent class_ref 163271 // wxReportWriterCtrl
+      end
+
+      classrelation 156999 // m_ptInitPos (<directional aggregation by value>)
+	relation 156999 *-->
+	  a role_name "m_ptInitPos" multiplicity "" private
+	    comment " in 1/100mm"
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	    classrelation_ref 156999 // m_ptInitPos (<directional aggregation by value>)
+	  b parent class_ref 162503 // wxPoint
+      end
+
+      classrelation 157127 // m_sizSize (<directional aggregation by value>)
+	relation 157127 *-->
+	  a role_name "m_sizSize" multiplicity "" private
+	    comment " in 1/100mm"
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	    classrelation_ref 157127 // m_sizSize (<directional aggregation by value>)
+	  b parent class_ref 162631 // wxSize
+      end
+
+      classrelation 157255 // m_sizInc (<directional aggregation by value>)
+	relation 157255 *-->
+	  a role_name "m_sizInc" multiplicity "" private
+	    comment " in 1/100mm"
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	    classrelation_ref 157255 // m_sizInc (<directional aggregation by value>)
+	  b parent class_ref 162631 // wxSize
+      end
+
+      classrelation 157383 // m_ptCurrPos (<directional aggregation by value>)
+	relation 157383 *-->
+	  a role_name "m_ptCurrPos" multiplicity "" private
+	    comment " in 1/100mm"
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	    classrelation_ref 157383 // m_ptCurrPos (<directional aggregation by value>)
+	  b parent class_ref 162503 // wxPoint
+      end
+
+      classrelation 157511 // m_pFont (<unidirectional association>)
+	relation 157511 --->
+	  a role_name "m_pFont" multiplicity "" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 157511 // m_pFont (<unidirectional association>)
+	  b parent class_ref 163399 // wxFont
+      end
+
+      attribute 166471 "m_pData"
+	private explicit_type "void"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	java_decl ""
+	idl_decl ""
+	comment " pointer to data"
+      end
+
+      attribute 166599 "m_nType"
+	private explicit_type "ushort"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	idl_decl ""
+	comment " POTYPE_xxxx"
+      end
+
+      attribute 166727 "m_dLocal"
+	private explicit_type "double"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	idl_decl ""
+	comment " local 'double' value"
+      end
+
+      attribute 166855 "m_lLocal"
+	private explicit_type "long"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	idl_decl ""
+	comment " local 'long' value"
+      end
+
+      classrelation 157639 // m_strLocal (<directional aggregation by value>)
+	relation 157639 *-->
+	  a role_name "m_strLocal" multiplicity "" private
+	    comment " local 'wxString'"
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	    classrelation_ref 157639 // m_strLocal (<directional aggregation by value>)
+	  b parent class_ref 161991 // wxString
+      end
+
+      attribute 166983 "m_nLen"
+	private explicit_type "int"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	idl_decl ""
+      end
+
+      attribute 167111 "m_nDec"
+	private explicit_type "int"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	idl_decl ""
+      end
+
+      attribute 167239 "m_dSum"
+	private explicit_type "double"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	idl_decl ""
+      end
+
+      attribute 167367 "m_lSum"
+	private explicit_type "long"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	idl_decl ""
+      end
+
+      attribute 167495 "m_dScale"
+	private explicit_type "double"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	idl_decl ""
+      end
+
+      attribute 167623 "m_boRightAlign"
+	private explicit_type "bool"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	idl_decl ""
+      end
+
+      classrelation 157767 // m_pBitmap (<unidirectional association>)
+	relation 157767 --->
+	  a role_name "m_pBitmap" multiplicity "" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 157767 // m_pBitmap (<unidirectional association>)
+	  b parent class_ref 163527 // wxBitmap
+      end
+
+      operation 282695 "wxReportObj"
+	public explicit_return_type ""
+	nparams 1
+	  param in name "" explicit_type "void"
+	cpp_decl "    ${comment}${inline}${name}${(}${t0} ${p0}${)}${volatile}${throw};
+"
+	cpp_def "// -------------------------------------
+// A report object
+// -------------------------------------
+
+${comment}${inline}${class}::${name}${(}${t0} ${p0}${)}${throw}{
+${body}}
+"
+	
+	
+      end
+
+      operation 282823 "wxReportObj"
+	public explicit_return_type ""
+	nparams 4
+	  param in name "dXPos" explicit_type "double"
+	  param in name "dYPos" explicit_type "double"
+	  param in name "dXSize" explicit_type "double"
+	    defaultvalue " 10.0"
+	  param in name "dYSize" explicit_type "double"
+	    defaultvalue "  4.2333	// Height in mm  (i.e. 1/6 inch = 4.2333mm)
+				"
+	cpp_decl "    ${comment}${inline}${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}, ${t3} ${p3}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${class}::${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}, ${t3} ${p3}${)}${throw}{
+${body}}
+"
+	
+	
+      end
+
+      operation 282951 "~wxReportObj"
+	public explicit_return_type ""
+	nparams 1
+	  param in name "" explicit_type "void"
+	cpp_decl "    ${comment}${inline}${virtual}${name}${(}${t0} ${p0}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${class}::${name}${(}${t0} ${p0}${)}${throw}{
+${body}}
+"
+	
+	
+      end
+
+      operation 283079 "Init"
+	public explicit_return_type "void"
+	nparams 4
+	  param in name "dXPos" explicit_type "double"
+	  param in name "dYPos" explicit_type "double"
+	  param in name "dXSize" explicit_type "double"
+	  param in name "dYSize" explicit_type "double"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}, ${t3} ${p3}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}, ${t3} ${p3}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 283207 "GetInitPos"
+	cpp_inline public return_type class_ref 162503 // wxPoint
+	nparams 1
+	  param in name "" explicit_type "void"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} & ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract} { return m_ptInitPos; };
+"
+	
+	
+      end
+
+      operation 283335 "GetSize"
+	cpp_inline public return_type class_ref 162631 // wxSize
+	nparams 1
+	  param in name "" explicit_type "void"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} & ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract} { return m_sizSize; };
+"
+	
+	
+      end
+
+      operation 283463 "GetInc"
+	cpp_inline public return_type class_ref 162631 // wxSize
+	nparams 1
+	  param in name "" explicit_type "void"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} & ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract} { return m_sizInc; };
+"
+	
+	
+      end
+
+      operation 283591 "GetCurrPos"
+	cpp_inline public return_type class_ref 162503 // wxPoint
+	nparams 1
+	  param in name "" explicit_type "void"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} & ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract} { return m_ptCurrPos; };
+"
+	
+	
+      end
+
+      operation 283719 "GetLocalLong"
+	cpp_inline public explicit_return_type "long"
+	nparams 1
+	  param in name "" explicit_type "void"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract} { return m_lLocal; };
+"
+	
+	
+      end
+
+      operation 283847 "GetType"
+	cpp_inline public explicit_return_type "int"
+	nparams 1
+	  param in name "" explicit_type "void"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract} { return m_nType; };
+"
+	
+	
+      end
+
+      operation 283975 "GetString"
+	cpp_inline public return_type class_ref 161991 // wxString
+	nparams 1
+	  param in name "" explicit_type "void"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} & ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract} { return m_strLocal; };
+"
+	
+	
+      end
+
+      operation 284103 "SaveSettings"
+	public explicit_return_type "bool"
+	nparams 1
+	  param inout name "fFile" type class_ref 163655 // wxFFile
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 284231 "SaveData"
+	public explicit_return_type "bool"
+	nparams 1
+	  param inout name "fFile" type class_ref 163655 // wxFFile
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 284359 "SaveWxString"
+	public explicit_return_type "bool"
+	nparams 2
+	  param inout name "fFile" type class_ref 163655 // wxFFile
+	  param inout name "str" type class_ref 161991 // wxString
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} & ${p0}, ${t1} & ${p1}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} & ${p0}, ${t1} & ${p1}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 284487 "LoadSettings"
+	public explicit_return_type "bool"
+	nparams 1
+	  param inout name "fFile" type class_ref 163655 // wxFFile
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 284615 "LoadData"
+	public explicit_return_type "bool"
+	nparams 1
+	  param inout name "fFile" type class_ref 163655 // wxFFile
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 284743 "LoadWxString"
+	public return_type class_ref 161991 // wxString
+	nparams 1
+	  param inout name "fFile" type class_ref 163655 // wxFFile
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 284871 "ResetPos"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "" explicit_type "void"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "// Set object's position to its initial position
+
+${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 284999 "MoveForward"
+	public return_type class_ref 162503 // wxPoint
+	nparams 1
+	  param in name "" explicit_type "void"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} & ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "// Move the object to its new position for the next use
+
+${comment}${inline}${type} & ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+	comment " set to initial position"
+      end
+
+      operation 285127 "MoveBackward"
+	public return_type class_ref 162503 // wxPoint
+	nparams 1
+	  param in name "" explicit_type "void"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} & ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "// Move the object to its previous position
+// (where it was before it was used)
+
+${comment}${inline}${type} & ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+	comment " increment x/y positions and return
+   new current position"
+      end
+
+      operation 285255 "SetFont"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "pFt" type class_ref 163399 // wxFont
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}const ${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+	comment " go back to previous x/y position and
+   new current position"
+      end
+
+      operation 285383 "SetMargins"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "pMargin" type class_ref 163271 // wxReportWriterCtrl
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "// Store pointer to (global) page margins
+
+${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 285511 "SetCurrPos"
+	cpp_inline public explicit_return_type "void"
+	nparams 1
+	  param in name "pt" type class_ref 162503 // wxPoint
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract} { m_ptCurrPos = pt; };
+"
+	
+	
+      end
+
+      operation 285639 "SetPosition"
+	public explicit_return_type "void"
+	nparams 2
+	  param in name "dXPos" explicit_type "double"
+	  param in name "dYPos" explicit_type "double"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "// Set CURRENT position of object (in mm)
+// (internal representation is in 1/100mm units)
+
+${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 285767 "SetInitPosition"
+	public explicit_return_type "void"
+	nparams 2
+	  param in name "dXPos" explicit_type "double"
+	  param in name "dYPos" explicit_type "double"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "// Set INITIAL position (i.e. when a new page begins) of object (in mm)
+// (internal representation is in 1/100mm units)
+
+${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 285895 "SetIncrements"
+	public explicit_return_type "void"
+	nparams 2
+	  param in name "dXInc" explicit_type "double"
+	  param in name "dYInc" explicit_type "double"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "// Set horizontal and vertical increment of object (in mm)
+// (internal representation is in 1/100mm units)
+
+${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 286023 "SetWidth"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "dWid" explicit_type "double"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "// Set width of object (in mm)
+// (internal representation is in 1/100mm units)
+
+${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 286151 "SetHeight"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "dHei" explicit_type "double"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "// Set height of object (in mm)
+// (internal representation is in 1/100mm units)
+
+${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 286279 "SetStepH"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "dStep" explicit_type "double"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "// Set horizontal increment of object (in mm)
+// (internal representation is in 1/100mm units)
+
+${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 286407 "SetStepV"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "dStep" explicit_type "double"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "// Set vertical increment of object (in mm)
+// (internal representation is in 1/100mm units)
+
+${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 286535 "SetScale"
+	cpp_inline public explicit_return_type "void"
+	nparams 1
+	  param in name "dScale" explicit_type "double"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract} { m_dScale = dScale; };
+"
+	
+	
+      end
+
+      operation 286663 "SetRightAlign"
+	cpp_inline public explicit_return_type "void"
+	nparams 1
+	  param in name "boRight" explicit_type "bool"
+	    defaultvalue " true "
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract} { m_boRightAlign = boRight; };
+"
+	
+	
+      end
+
+      operation 286791 "SetBitmap"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "strFile" type class_ref 161991 // wxString
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "// Store the name of a file containing a PNG bitmap
+// (for use in header)
+
+${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 286919 "SetRef"
+	public explicit_return_type "void"
+	nparams 2
+	  param in name "cpData" type class_ref 163783 // wxChar
+	  param in name "iType" explicit_type "int"
+	    defaultvalue " POTYPE_PCHAR "
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} * ${p0}, ${t1} ${p1}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "// Store a pointer to data of type wxChar[].
+// This may be
+//   a) text,
+//   b) text representing a double value
+//   c) text representing an integer
+
+${comment}${inline}${type} ${class}::${name}${(}const ${t0} * ${p0}, ${t1} ${p1}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 287047 "SetRef"
+	public explicit_return_type "void"
+	nparams 2
+	  param in name "strData" type class_ref 161991 // wxString
+	  param in name "iType" explicit_type "int"
+	    defaultvalue " POTYPE_PSTR "
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} * ${p0}, ${t1} ${p1}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "// Store a pointer to data of type wxString
+// This may be
+//   a) string,
+//   b) string representing a double value
+//   c) string representing an integer
+
+${comment}${inline}${type} ${class}::${name}${(}const ${t0} * ${p0}, ${t1} ${p1}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+	comment " can also be PCHARDBL or PCHARINT"
+      end
+
+      operation 287175 "SetRef"
+	public explicit_return_type "void"
+	nparams 3
+	  param in name "pdData" explicit_type "double"
+	  param in name "nLen" explicit_type "ushort"
+	    defaultvalue " 10"
+	  param in name "nDec" explicit_type "ushort"
+	    defaultvalue " 2 "
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} * ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "// Store a pointer to data of type 'double'
+
+${comment}${inline}${type} ${class}::${name}${(}const ${t0} * ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+	comment " can also be PSTRDBL or PSTRINT"
+      end
+
+      operation 287303 "SetRef"
+	public explicit_return_type "void"
+	nparams 2
+	  param in name "piData" explicit_type "int"
+	  param in name "nLen" explicit_type "ushort"
+	    defaultvalue " 8 "
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} * ${p0}, ${t1} ${p1}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "// Store a pointer to data of type 'int'
+
+${comment}${inline}${type} ${class}::${name}${(}const ${t0} * ${p0}, ${t1} ${p1}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 287431 "SetRef"
+	public explicit_return_type "void"
+	nparams 2
+	  param in name "plData" explicit_type "long"
+	  param in name "nLen" explicit_type "ushort"
+	    defaultvalue " 8 "
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} * ${p0}, ${t1} ${p1}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "// Store a pointer to data of type 'long'
+
+${comment}${inline}${type} ${class}::${name}${(}const ${t0} * ${p0}, ${t1} ${p1}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 287559 "SetRef"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "pDate" type class_ref 163911 // TIMESTAMP_STRUCT
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "// Store a pointer to data of type 'TIMESTAMP'
+
+${comment}${inline}${type} ${class}::${name}${(}const ${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 287687 "SetCheckbox"
+	public explicit_return_type "void"
+	nparams 2
+	  param in name "pboData" explicit_type "bool"
+	  param in name "nLen" explicit_type "int"
+	    defaultvalue " 3 "
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} * ${p0}, ${t1} ${p1}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "// Store a pointer to data of type 'bool'
+//   for presentation as a checkbox or a checkmark
+
+${comment}${inline}${type} ${class}::${name}${(}const ${t0} * ${p0}, ${t1} ${p1}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 287815 "SetLogic"
+	public explicit_return_type "void"
+	nparams 2
+	  param in name "pboData" explicit_type "bool"
+	  param in name "nLen" explicit_type "int"
+	    defaultvalue " 3 "
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} * ${p0}, ${t1} ${p1}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "// Store a pointer to data of type 'bool'
+
+${comment}${inline}${type} ${class}::${name}${(}const ${t0} * ${p0}, ${t1} ${p1}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 287943 "SetData"
+	public explicit_return_type "void"
+	nparams 3
+	  param in name "dData" explicit_type "double"
+	  param in name "nLen" explicit_type "ushort"
+	    defaultvalue " 10"
+	  param in name "nDec" explicit_type "ushort"
+	    defaultvalue " 2 "
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "// Store a single (fixed) data object of type 'double'
+
+${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 288071 "SetData"
+	public explicit_return_type "void"
+	nparams 2
+	  param in name "lData" explicit_type "long"
+	  param in name "nLen" explicit_type "ushort"
+	    defaultvalue " 8 "
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "// Store a single (fixed) data object of type 'long'
+
+${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 288199 "SetData"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "strData" type class_ref 161991 // wxString
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "// Store a single (fixed) data object of type 'wxString'
+
+${comment}${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 288327 "SetData"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "cpData" type class_ref 163783 // wxChar
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "// Store a single (fixed) data object of type 'wxChar[]'
+
+${comment}${inline}${type} ${class}::${name}${(}const ${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 288455 "SetPgNum"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "strData" type class_ref 161991 // wxString
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "// Set object to type 'page-number' (with auxiliary prompt)
+// Later seen as
+//    Page ####
+//    Seite ####
+//    Pagina ####
+//    etc.
+
+${comment}${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 288583 "SetPgNum"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "cpData" type class_ref 163783 // wxChar
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "// Set object to type 'page-number' (with auxiliary prompt)
+
+${comment}${inline}${type} ${class}::${name}${(}const ${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 288711 "SetRepDate"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "" explicit_type "void"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "// Set object to type 'date'
+
+${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 288839 "SetLine"
+	public explicit_return_type "void"
+	nparams 2
+	  param in name "dX" explicit_type "double"
+	    defaultvalue " -1.0"
+	  param in name "dY" explicit_type "double"
+	    defaultvalue " -1.0 "
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "// Set object to type 'line'
+
+${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 288967 "SetSubReport"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "nCount" explicit_type "long"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "// Start a SUB-REPORT (at current position)
+
+${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 289095 "SetSubReportEnd"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "" explicit_type "void"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "// Ends a SUB-REPORT
+
+${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 289223 "SetPageBreak"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "" explicit_type "void"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "// Start a new page
+
+${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 289351 "Draw"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "dc" type class_ref 164039 // wxDC
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "// -----------------------------------------
+// Drawing the object in a DC
+// -----------------------------------------
+
+${comment}${inline}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+    end
+
+    class 162119 "ReportPreviewFrame"
+      
+      
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      classrelation 156103 // <generalisation>
+	relation 156103 ---|>
+	  a public
+	    cpp default "Generated"
+	    classrelation_ref 156103 // <generalisation>
+	  b parent class_ref 162247 // wxPreviewFrame
+      end
+
+      operation 281543 "ReportPreviewFrame"
+	public explicit_return_type ""
+	nparams 7
+	  param inout name "preview" type class_ref 162375 // wxPrintPreview
+	  param inout name "parent" type class_ref 161735 // wxFrame
+	  param in name "title" type class_ref 161991 // wxString
+	  param in name "pos" type class_ref 162503 // wxPoint
+	    defaultvalue " wxDefaultPosition"
+	  param in name "size" type class_ref 162631 // wxSize
+	    defaultvalue " wxDefaultSize"
+	  param in name "style" explicit_type "long"
+	    defaultvalue " wxDEFAULT_FRAME_STYLE"
+	  param in name "name" type class_ref 161991 // wxString
+	    defaultvalue " wxT(\"frame\") "
+	cpp_decl "    ${comment}${inline}${name}${(}${t0} * ${p0}, ${t1} * ${p1}, const ${t2} & ${p2}, const ${t3} & ${p3}, const ${t4} & ${p4}, ${t5} ${p5}, const ${t6} & ${p6}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${class}::${name}${(}${t0} * ${p0}, ${t1} * ${p1}, const ${t2} & ${p2}, const ${t3} & ${p3}, const ${t4} & ${p4}, ${t5} ${p5}, const ${t6} & ${p6}${)}${throw}{
+${body}}
+"
+	
+	
+      end
+
+      operation 281671 "~ReportPreviewFrame"
+	public explicit_return_type ""
+	nparams 1
+	  param in name "" explicit_type "void"
+	cpp_decl "    ${comment}${inline}${virtual}${name}${(}${t0} ${p0}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${class}::${name}${(}${t0} ${p0}${)}${throw}{
+${body}}
+"
+	
+	
+      end
+
+      operation 281799 "OnCloseWindow"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "event" type class_ref 162759 // wxCloseEvent
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 281927 "SetReportWriter"
+	cpp_inline public explicit_return_type "void"
+	nparams 1
+	  param inout name "pRep" type class_ref 162887 // wxReportWriter
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { m_pRepWrt = pRep; };
+"
+	
+	
+      end
+
+      classrelation 156231 // m_pRepWrt (<unidirectional association>)
+	relation 156231 --->
+	  a role_name "m_pRepWrt" multiplicity "" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 156231 // m_pRepWrt (<unidirectional association>)
+	  b parent class_ref 162887 // wxReportWriter
+      end
+
+      classrelation 156359 // m_pPageSetupData (<unidirectional association>)
+	relation 156359 --->
+	  a role_name "m_pPageSetupData" multiplicity "" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 156359 // m_pPageSetupData (<unidirectional association>)
+	  b parent class_ref 163015 // wxPageSetupData
+      end
+
+      operation 282055 "Free"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "" explicit_type "void"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 282183 "GetPrintData"
+	public return_type class_ref 163143 // wxPrintData
+	nparams 1
+	  param in name "" explicit_type "void"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} & ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} & ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 282311 "GetPageSetupData"
+	public return_type class_ref 163015 // wxPageSetupData
+	nparams 1
+	  param in name "" explicit_type "void"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} & ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} & ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 282439 "SetPrintData"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "printdata" type class_ref 163143 // wxPrintData
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 282567 "SetPageSetupData"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "setupdata" type class_ref 163015 // wxPageSetupData
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+    end
+
+    class 162887 "wxReportWriter"
+      
+      
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment " -------------------------------------
+  THE REPORT (page)
+ -------------------------------------"
+      classrelation 158023 // <generalisation>
+	relation 158023 ---|>
+	  a public
+	    cpp default "Generated"
+	    classrelation_ref 158023 // <generalisation>
+	  b parent class_ref 161735 // wxFrame
+      end
+
+      classrelation 158151 // m_strFilename (<directional aggregation by value>)
+	relation 158151 *-->
+	  a role_name "m_strFilename" multiplicity "" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	    classrelation_ref 158151 // m_strFilename (<directional aggregation by value>)
+	  b parent class_ref 161991 // wxString
+      end
+
+      classrelation 158279 // m_strFilenameTmp (<directional aggregation by value>)
+	relation 158279 *-->
+	  a role_name "m_strFilenameTmp" multiplicity "" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	    classrelation_ref 158279 // m_strFilenameTmp (<directional aggregation by value>)
+	  b parent class_ref 161991 // wxString
+      end
+
+      classrelation 158407 // m_strPathOfReports (<directional aggregation by value>)
+	relation 158407 *-->
+	  a role_name "m_strPathOfReports" multiplicity "" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	    classrelation_ref 158407 // m_strPathOfReports (<directional aggregation by value>)
+	  b parent class_ref 161991 // wxString
+      end
+
+      classrelation 158535 // m_strDateFmt (<directional aggregation by value>)
+	relation 158535 *-->
+	  a role_name "m_strDateFmt" multiplicity "" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	    classrelation_ref 158535 // m_strDateFmt (<directional aggregation by value>)
+	  b parent class_ref 161991 // wxString
+      end
+
+      classrelation 158663 // m_strShortDateFmt (<directional aggregation by value>)
+	relation 158663 *-->
+	  a role_name "m_strShortDateFmt" multiplicity "" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	    classrelation_ref 158663 // m_strShortDateFmt (<directional aggregation by value>)
+	  b parent class_ref 161991 // wxString
+      end
+
+      classrelation 158791 // m_strDate (<directional aggregation by value>)
+	relation 158791 *-->
+	  a role_name "m_strDate" multiplicity "" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	    classrelation_ref 158791 // m_strDate (<directional aggregation by value>)
+	  b parent class_ref 161991 // wxString
+      end
+
+      classrelation 158919 // m_strUser (<directional aggregation by value>)
+	relation 158919 *-->
+	  a role_name "m_strUser" multiplicity "" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	    classrelation_ref 158919 // m_strUser (<directional aggregation by value>)
+	  b parent class_ref 161991 // wxString
+      end
+
+      classrelation 159047 // m_strInfo (<directional aggregation by value>)
+	relation 159047 *-->
+	  a role_name "m_strInfo" multiplicity "" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	    classrelation_ref 159047 // m_strInfo (<directional aggregation by value>)
+	  b parent class_ref 161991 // wxString
+      end
+
+      classrelation 159175 // m_lstHeader (<directional aggregation by value>)
+	relation 159175 *-->
+	  a role_name "m_lstHeader" multiplicity "" private
+	    comment " list of report's header objects"
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	    classrelation_ref 159175 // m_lstHeader (<directional aggregation by value>)
+	  b parent class_ref 164295 // wxReportObjList
+      end
+
+      classrelation 159303 // m_lstFooter (<directional aggregation by value>)
+	relation 159303 *-->
+	  a role_name "m_lstFooter" multiplicity "" private
+	    comment " list of report's footer objects"
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	    classrelation_ref 159303 // m_lstFooter (<directional aggregation by value>)
+	  b parent class_ref 164295 // wxReportObjList
+      end
+
+      classrelation 159431 // m_pObjList (<unidirectional association>)
+	relation 159431 --->
+	  a role_name "m_pObjList" multiplicity "" private
+	    comment " points to the current list of report objects"
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 159431 // m_pObjList (<unidirectional association>)
+	  b parent class_ref 164295 // wxReportObjList
+      end
+
+      classrelation 159559 // m_lstSections (<directional aggregation by value>)
+	relation 159559 *-->
+	  a role_name "m_lstSections" multiplicity "" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	    classrelation_ref 159559 // m_lstSections (<directional aggregation by value>)
+	  b parent class_ref 164423 // wxReportSectionList
+      end
+
+      classrelation 159687 // m_PageCtrl (<directional aggregation by value>)
+	relation 159687 *-->
+	  a role_name "m_PageCtrl" multiplicity "" private
+	    comment " margins, page-number, # of pages etc."
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	    classrelation_ref 159687 // m_PageCtrl (<directional aggregation by value>)
+	  b parent class_ref 163271 // wxReportWriterCtrl
+      end
+
+      classrelation 159815 // m_pPrintout (<unidirectional association>)
+	relation 159815 --->
+	  a role_name "m_pPrintout" multiplicity "" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 159815 // m_pPrintout (<unidirectional association>)
+	  b parent class_ref 164551 // ReportPrintout
+      end
+
+      classrelation 159943 // m_fFile (<directional aggregation by value>)
+	relation 159943 *-->
+	  a role_name "m_fFile" multiplicity "" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	    classrelation_ref 159943 // m_fFile (<directional aggregation by value>)
+	  b parent class_ref 163655 // wxFFile
+      end
+
+      attribute 168135 "m_lDatasets"
+	private explicit_type "long"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	idl_decl ""
+      end
+
+      attribute 168263 "m_boLoad"
+	private explicit_type "bool"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	idl_decl ""
+	comment " TRUE = report is loading"
+      end
+
+      attribute 168391 "m_boObjectsSaved"
+	private explicit_type "bool"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	idl_decl ""
+	comment " TRUE = header/footer saved"
+      end
+
+      attribute 168519 "m_lCurrentFilePos"
+	private explicit_type "long"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	idl_decl ""
+      end
+
+      attribute 168647 "m_lNextPageInFile"
+	private explicit_type "long"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	idl_decl ""
+      end
+
+      attribute 168775 "m_lCurrentSection"
+	private explicit_type "long"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	idl_decl ""
+	comment " index into wxReportSectionList"
+      end
+
+      classrelation 160071 // m_aPageStart (<directional aggregation by value>)
+	relation 160071 *-->
+	  a role_name "m_aPageStart" multiplicity "" private
+	    comment " file positions of page starts"
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	    classrelation_ref 160071 // m_aPageStart (<directional aggregation by value>)
+	  b parent class_ref 164679 // wxArrayLong
+      end
+
+      classrelation 160199 // m_aSection (<directional aggregation by value>)
+	relation 160199 *-->
+	  a role_name "m_aSection" multiplicity "" private
+	    comment " current section at each begin of page"
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	    classrelation_ref 160199 // m_aSection (<directional aggregation by value>)
+	  b parent class_ref 164679 // wxArrayLong
+      end
+
+      operation 289479 "wxReportWriter"
+	public explicit_return_type ""
+	nparams 4
+	  param inout name "frame" type class_ref 161735 // wxFrame
+	  param in name "title" type class_ref 161991 // wxString
+	  param in name "pos" type class_ref 162503 // wxPoint
+	  param in name "size" type class_ref 162631 // wxSize
+	cpp_decl "    ${comment}${inline}${name}${(}${t0} * ${p0}, const ${t1} & ${p1}, const ${t2} & ${p2}, const ${t3} & ${p3}${)}${volatile}${throw};
+"
+	cpp_def "// -------------------------------------
+//  A report page
+//
+//  Handles setup of a complete report
+//  as well as drawing of a selected
+//  page
+// -------------------------------------
+
+${comment}${inline}${class}::${name}${(}${t0} * ${p0}, const ${t1} & ${p1}, const ${t2} & ${p2}, const ${t3} & ${p3}${)}:
+wxFrame(frame, -1, title, pos, size)
+${throw}{
+${body}}
+"
+	
+	
+      end
+
+      operation 289607 "~wxReportWriter"
+	public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${virtual}${name}${(}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${class}::${name}${(}${)}${throw}{
+${body}}
+"
+	
+	
+      end
+
+      operation 289735 "DefinitionError"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "" explicit_type "void"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 289863 "AddHeaderObj"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "pObj" type class_ref 161863 // wxReportObj
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 289991 "AddFooterObj"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "pObj" type class_ref 161863 // wxReportObj
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 290119 "AddDataObj"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "pObj" type class_ref 161863 // wxReportObj
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 290247 "DefineSection"
+	public explicit_return_type "long"
+	nparams 1
+	  param in name "" explicit_type "void"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 290375 "PreviousSection"
+	public explicit_return_type "long"
+	nparams 1
+	  param in name "lCurrentSection" explicit_type "long"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 290503 "EndSection"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "" explicit_type "void"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 290631 "BeginDataSection"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "" explicit_type "void"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "// Saves a POTYPE_SUBSTART and n settings
+
+${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 290759 "EndDataSection"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "" explicit_type "void"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "// Saves a POTYPE_SUBEND
+
+${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 290887 "FinishSection"
+	cpp_inline public explicit_return_type "void"
+	nparams 1
+	  param in name "" explicit_type "void"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract} { EndDataSection(); EndSection(); };
+"
+	
+	
+      end
+
+      operation 291015 "NewPage"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "" explicit_type "void"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "// Saves a POTYPE_PGBREAK
+
+${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 291143 "HorizLine"
+	public explicit_return_type "void"
+	nparams 3
+	  param in name "dX" explicit_type "double"
+	    defaultvalue " 0.0"
+	  param in name "dLen" explicit_type "double"
+	    defaultvalue " 170.0"
+	  param in name "dYInc" explicit_type "double"
+	    defaultvalue " 0.0 "
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "// Saves a POTYPE_LINE
+
+${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+	comment " Saves a POTYPE_PGBREAK"
+      end
+
+      operation 291271 "LoadReportInfo"
+	public explicit_return_type "long"
+	nparams 1
+	  param in name "strFile" type class_ref 161991 // wxString
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 291399 "LoadFile"
+	public explicit_return_type "bool"
+	nparams 1
+	  param in name "strFile" type class_ref 161991 // wxString
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 291527 "LoadWxString"
+	public return_type class_ref 161991 // wxString
+	nparams 1
+	  param inout name "pFile" type class_ref 163655 // wxFFile
+	    defaultvalue " 0 "
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 291655 "SaveObjects"
+	public explicit_return_type "bool"
+	nparams 1
+	  param in name "" explicit_type "void"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 291783 "SaveData"
+	public explicit_return_type "bool"
+	nparams 1
+	  param in name "" explicit_type "void"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 291911 "SetupReport"
+	public explicit_return_type "long"
+	nparams 1
+	  param in name "strFile" type class_ref 161991 // wxString
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+	comment " Saves report or sub-report data array"
+      end
+
+      operation 292039 "FinishReport"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "" explicit_type "void"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 292167 "FinalDestination"
+	public return_type class_ref 161991 // wxString
+	nparams 1
+	  param in name "" explicit_type "void"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 292295 "GetPath"
+	cpp_inline public return_type class_ref 161991 // wxString
+	nparams 1
+	  param in name "" explicit_type "void"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract} { return m_strPathOfReports; };
+"
+	
+	
+      end
+
+      operation 292423 "GetNumberOfPages"
+	public explicit_return_type "int"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 292551 "SetPage"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "uiPage" explicit_type "uint"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 292679 "GetTextSize"
+	public explicit_return_type "void"
+	nparams 3
+	  param inout name "dc" type class_ref 164039 // wxDC
+	  param inout name "iX" explicit_type "int"
+	  param inout name "iY" explicit_type "int"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} & ${p0}, ${t1} * ${p1}, ${t2} * ${p2}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} & ${p0}, ${t1} * ${p1}, ${t2} * ${p2}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 292807 "GetTopMargin"
+	cpp_inline public explicit_return_type "double"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract} { return m_PageCtrl.m_dTop; };
+"
+	
+	
+      end
+
+      operation 292935 "GetLeftMargin"
+	cpp_inline public explicit_return_type "double"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract} { return m_PageCtrl.m_dLeft; };
+"
+	
+	
+      end
+
+      operation 293063 "GetBottomMargin"
+	cpp_inline public explicit_return_type "double"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract} { return m_PageCtrl.m_dBottom; };
+"
+	
+	
+      end
+
+      operation 293191 "GetRightMargin"
+	cpp_inline public explicit_return_type "double"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract} { return m_PageCtrl.m_dRight; };
+"
+	
+	
+      end
+
+      operation 293319 "GetDate"
+	cpp_inline public return_type class_ref 161991 // wxString
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract} { return m_strDate; };
+"
+	
+	
+      end
+
+      operation 293447 "GetUser"
+	cpp_inline public return_type class_ref 161991 // wxString
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract} { return m_strUser; };
+"
+	
+	
+      end
+
+      operation 293575 "GetInfo"
+	cpp_inline public return_type class_ref 161991 // wxString
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract} { return m_strInfo; };
+"
+	
+	
+      end
+
+      operation 293703 "SetLoading"
+	cpp_inline public explicit_return_type "void"
+	nparams 1
+	  param in name "" explicit_type "void"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract} { m_boLoad = true; };
+"
+	
+	
+      end
+
+      operation 293831 "SetPath"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "strPath" type class_ref 161991 // wxString
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 293959 "SetDateFormat"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "strFmt" type class_ref 161991 // wxString
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 294087 "SetShortDateFormat"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "strFmt" type class_ref 161991 // wxString
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 294215 "SetDate"
+	cpp_inline public explicit_return_type "void"
+	nparams 1
+	  param in name "strDate" type class_ref 161991 // wxString
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract} { m_strDate = strDate; };
+"
+	
+	
+      end
+
+      operation 294343 "SetDate"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "dt" type class_ref 164807 // wxDateTime
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 294471 "SetUser"
+	cpp_inline public explicit_return_type "void"
+	nparams 1
+	  param in name "strUser" type class_ref 161991 // wxString
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract} { m_strUser = strUser; };
+"
+	
+	
+      end
+
+      operation 294599 "SetInfo"
+	cpp_inline public explicit_return_type "void"
+	nparams 1
+	  param in name "strInfo" type class_ref 161991 // wxString
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract} { m_strInfo = strInfo; };
+"
+	
+	
+      end
+
+      operation 294727 "SetPrintout"
+	cpp_inline public explicit_return_type "void"
+	nparams 1
+	  param inout name "pRef" type class_ref 164551 // ReportPrintout
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { m_pPrintout = pRef; };
+"
+	
+	
+      end
+
+      operation 294855 "SetTopMargin"
+	cpp_inline public explicit_return_type "void"
+	nparams 1
+	  param in name "d" explicit_type "double"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract} { m_PageCtrl.m_dTop    = d; };
+"
+	
+	
+      end
+
+      operation 294983 "SetLeftMargin"
+	cpp_inline public explicit_return_type "void"
+	nparams 1
+	  param in name "d" explicit_type "double"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract} { m_PageCtrl.m_dLeft   = d; };
+"
+	
+	
+      end
+
+      operation 295111 "SetBottomMargin"
+	cpp_inline public explicit_return_type "void"
+	nparams 1
+	  param in name "d" explicit_type "double"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract} { m_PageCtrl.m_dBottom = d; };
+"
+	
+	
+      end
+
+      operation 295239 "SetRightMargin"
+	cpp_inline public explicit_return_type "void"
+	nparams 1
+	  param in name "d" explicit_type "double"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract} { m_PageCtrl.m_dRight  = d; };
+"
+	
+	
+      end
+
+      operation 295367 "SetOrientation"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "iMode" explicit_type "int"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 295495 "Draw"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "dc" type class_ref 164039 // wxDC
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 295623 "PrintPreview"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "" explicit_type "void"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 295751 "Print"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "" explicit_type "void"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+    end
+
+    class 163271 "wxReportWriterCtrl"
+      
+      
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment " -------------------------------------
+  Margins
+  ('Right' margin unused)
+ -------------------------------------"
+      attribute 165191 "m_dTop"
+	public explicit_type "double"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	idl_decl ""
+      end
+
+      attribute 165319 "m_dLeft"
+	public explicit_type "double"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	idl_decl ""
+      end
+
+      attribute 165447 "m_dBottom"
+	public explicit_type "double"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	idl_decl ""
+      end
+
+      attribute 165575 "m_dRight"
+	public explicit_type "double"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	idl_decl ""
+      end
+
+      attribute 165703 "m_dYSizeMM"
+	public explicit_type "double"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	idl_decl ""
+      end
+
+      attribute 165831 "m_dXSizeMM"
+	public explicit_type "double"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	idl_decl ""
+      end
+
+      attribute 165959 "m_nPages"
+	public explicit_type "long"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	idl_decl ""
+      end
+
+      attribute 166087 "m_nCurrentPage"
+	public explicit_type "long"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	idl_decl ""
+      end
+
+      attribute 166215 "m_dDataCurrY"
+	public explicit_type "double"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	idl_decl ""
+      end
+
+      attribute 166343 "m_dFooterMinY"
+	public explicit_type "double"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	idl_decl ""
+      end
+
+      classrelation 156487 // m_pDateStr (<unidirectional association>)
+	relation 156487 --->
+	  a role_name "m_pDateStr" multiplicity "" public
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 156487 // m_pDateStr (<unidirectional association>)
+	  b parent class_ref 161991 // wxString
+      end
+
+      classrelation 156615 // m_pDateFmt (<unidirectional association>)
+	relation 156615 --->
+	  a role_name "m_pDateFmt" multiplicity "" public
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 156615 // m_pDateFmt (<unidirectional association>)
+	  b parent class_ref 161991 // wxString
+      end
+
+      classrelation 156743 // m_pShortDateFmt (<unidirectional association>)
+	relation 156743 --->
+	  a role_name "m_pShortDateFmt" multiplicity "" public
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 156743 // m_pShortDateFmt (<unidirectional association>)
+	  b parent class_ref 161991 // wxString
+      end
+    end
+
+    class 164167 "wxReportSection"
+      
+      
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment " -------------------------------------
+  
+ -------------------------------------"
+      classrelation 157895 // m_pList (<unidirectional association>)
+	relation 157895 --->
+	  a role_name "m_pList" multiplicity "" public
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 157895 // m_pList (<unidirectional association>)
+	  b parent class_ref 164295 // wxReportObjList
+      end
+
+      attribute 167751 "m_lPreviousSection"
+	public explicit_type "long"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	idl_decl ""
+      end
+
+      attribute 167879 "m_lSections"
+	public explicit_type "long"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	idl_decl ""
+      end
+
+      attribute 168007 "m_boSaved"
+	public explicit_type "bool"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	idl_decl ""
+      end
+    end
+
+    class 164551 "ReportPrintout"
+      
+      
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment " -------------------------------------
+  Printout Handling
+ -------------------------------------"
+      classrelation 160327 // <generalisation>
+	relation 160327 ---|>
+	  a public
+	    cpp default "Generated"
+	    classrelation_ref 160327 // <generalisation>
+	  b parent class_ref 164935 // wxPrintout
+      end
+
+      operation 295879 "ReportPrintout"
+	public explicit_return_type ""
+	nparams 2
+	  param inout name "pFrame" type class_ref 162887 // wxReportWriter
+	  param inout name "szTitle" type class_ref 163783 // wxChar
+	    defaultvalue " wxT(\"Polix Druck\") "
+	cpp_decl "    ${comment}${inline}${name}${(}${t0} * ${p0}, ${t1} * ${p1}${)}${volatile}${throw};
+"
+	cpp_def "// -------------------------------------
+//  Report Printout Handling
+// -------------------------------------
+
+${comment}${inline}${class}::${name}${(}${t0} * ${p0}, ${t1} * ${p1}${)}
+ : wxPrintout(szTitle)
+${throw}{
+${body}}
+"
+	
+	
+      end
+
+      operation 296007 "~ReportPrintout"
+	public explicit_return_type ""
+	nparams 1
+	  param in name "" explicit_type "void"
+	cpp_decl "    ${comment}${inline}${virtual}${name}${(}${t0} ${p0}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${class}::${name}${(}${t0} ${p0}${)}${throw}{
+${body}}
+"
+	
+	
+      end
+
+      operation 296135 "OnPrintPage"
+	public explicit_return_type "bool"
+	nparams 1
+	  param in name "page" explicit_type "int"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 296263 "HasPage"
+	public explicit_return_type "bool"
+	nparams 1
+	  param in name "pageNum" explicit_type "int"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 296391 "OnBeginDocument"
+	public explicit_return_type "bool"
+	nparams 2
+	  param in name "startPage" explicit_type "int"
+	  param in name "endPage" explicit_type "int"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 296519 "GetPageInfo"
+	public explicit_return_type "void"
+	nparams 4
+	  param inout name "minPage" explicit_type "int"
+	  param inout name "maxPage" explicit_type "int"
+	  param inout name "selPageFrom" explicit_type "int"
+	  param inout name "selPageTo" explicit_type "int"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}, ${t1} * ${p1}, ${t2} * ${p2}, ${t3} * ${p3}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}, ${t1} * ${p1}, ${t2} * ${p2}, ${t3} * ${p3}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 296647 "OnEndPrinting"
+	public explicit_return_type "void"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 296775 "DrawPage"
+	public explicit_return_type "void"
+	nparams 2
+	  param inout name "dc" type class_ref 164039 // wxDC
+	  param in name "iPage" explicit_type "int"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}, ${t1} ${p1}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}, ${t1} ${p1}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 296903 "CalcScale"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "dc" type class_ref 164039 // wxDC
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 297031 "GetMMScale"
+	cpp_inline public explicit_return_type "double"
+	nparams 1
+	  param in name "" explicit_type "void"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract} { return (double)m_fScaleMMToLogUnits; };
+"
+	
+	
+      end
+
+      classrelation 160455 // m_pReportPage (<unidirectional association>)
+	relation 160455 --->
+	  a role_name "m_pReportPage" multiplicity "" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 160455 // m_pReportPage (<unidirectional association>)
+	  b parent class_ref 162887 // wxReportWriter
+      end
+
+      attribute 168903 "m_fOverallScale"
+	private explicit_type "float"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	idl_decl ""
+      end
+
+      attribute 169031 "m_fScaleMMToLogUnits"
+	private explicit_type "float"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	idl_decl ""
+      end
+    end
+
+    class 165063 "wxReportSelector"
+      
+      
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      classrelation 160583 // <generalisation>
+	relation 160583 ---|>
+	  a public
+	    cpp default "Generated"
+	    classrelation_ref 160583 // <generalisation>
+	  b parent class_ref 159943 // wxDialog
+      end
+
+      classrelation 160711 // m_aFiles (<directional aggregation by value>)
+	relation 160711 *-->
+	  a role_name "m_aFiles" multiplicity "" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	    classrelation_ref 160711 // m_aFiles (<directional aggregation by value>)
+	  b parent class_ref 165191 // wxArrayString
+      end
+
+      classrelation 160839 // m_strPathOfReports (<directional aggregation by value>)
+	relation 160839 *-->
+	  a role_name "m_strPathOfReports" multiplicity "" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	    classrelation_ref 160839 // m_strPathOfReports (<directional aggregation by value>)
+	  b parent class_ref 161991 // wxString
+      end
+
+      classrelation 160967 // m_strFilename (<directional aggregation by value>)
+	relation 160967 *-->
+	  a role_name "m_strFilename" multiplicity "" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	    classrelation_ref 160967 // m_strFilename (<directional aggregation by value>)
+	  b parent class_ref 161991 // wxString
+      end
+
+      attribute 169159 "m_iSelected"
+	private explicit_type "int"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	idl_decl ""
+      end
+
+      operation 297159 "CreateElements"
+	private explicit_return_type "void"
+	nparams 1
+	  param in name "" explicit_type "void"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 297287 "FillList"
+	private explicit_return_type "void"
+	nparams 1
+	  param in name "" explicit_type "void"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 297415 "SetupList"
+	private explicit_return_type "void"
+	nparams 1
+	  param in name "" explicit_type "void"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 297543 "SelectedListItem"
+	private explicit_return_type "long"
+	nparams 1
+	  param in name "" explicit_type "void"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 297671 "wxReportSelector"
+	public explicit_return_type ""
+	nparams 3
+	  param inout name "pParent" type class_ref 161735 // wxFrame
+	  param in name "strTitle" type class_ref 161991 // wxString
+	  param in name "strPath" type class_ref 161991 // wxString
+	    defaultvalue " wxT(\".\") "
+	cpp_decl "    ${comment}${inline}${name}${(}${t0} * ${p0}, const ${t1} & ${p1}, const ${t2} & ${p2}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${class}::${name}${(}${t0} * ${p0}, const ${t1} & ${p1}, const ${t2} & ${p2}${)}${throw}{
+${body}}
+"
+	
+	
+      end
+
+      operation 297799 "~wxReportSelector"
+	public explicit_return_type ""
+	nparams 1
+	  param in name "" explicit_type "void"
+	cpp_decl "    ${comment}${inline}${virtual}${name}${(}${t0} ${p0}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${class}::${name}${(}${t0} ${p0}${)}${throw}{
+${body}}
+"
+	
+	
+      end
+
+      operation 297927 "GetSelected"
+	cpp_inline public explicit_return_type "int"
+	nparams 1
+	  param in name "" explicit_type "void"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract} { return m_iSelected; };
+"
+	
+	
+      end
+
+      operation 298055 "GetFilename"
+	cpp_inline public return_type class_ref 161991 // wxString
+	nparams 1
+	  param in name "" explicit_type "void"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract} { return m_strFilename; };
+"
+	
+	
+      end
+
+      operation 298183 "OnPreview"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "event" type class_ref 160071 // wxCommandEvent
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 298311 "OnPrint"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "event" type class_ref 160071 // wxCommandEvent
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 298439 "OnDelete"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "event" type class_ref 160071 // wxCommandEvent
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 298567 "OnIdle"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "event" type class_ref 165319 // wxIdleEvent
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+    end
+
+    class 166855 "lbDBReportProperties"
+      
+      
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "...sclass lbDBReportProperties:0:"
+      operation 304839 "lbDBReportProperties"
+	public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${name}${(}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${class}::${name}${(}${)}${throw}{
+${body}}
+"
+	
+	
+      end
+
+      operation 304967 "~lbDBReportProperties"
+	cpp_virtual public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${virtual}${name}${(}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${class}::${name}${(}${)}${throw}{
+${body}}
+"
+	
+	
+      end
+
+      operation 305095 "initData"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "report" explicit_type "char"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 305223 "getIntParameter"
+	public explicit_return_type "int"
+	nparams 1
+	  param inout name "name" explicit_type "char"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 305351 "getFloatParameter"
+	public explicit_return_type "float"
+	nparams 1
+	  param inout name "name" explicit_type "char"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 305479 "getCharParameter"
+	public return_type class_ref 141255 // lb_I_String
+	nparams 1
+	  param inout name "name" explicit_type "char"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} * ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 305607 "getTextLine"
+	public return_type class_ref 141255 // lb_I_String
+	nparams 2
+	  param in name "line" explicit_type "int"
+	  param inout name "name" explicit_type "char"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}${t0} ${p0}, ${t1} * ${p1}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} * ${class}::${name}${(}${t0} ${p0}, ${t1} * ${p1}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      attribute 169287 "_report"
+	public explicit_type "char"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	java_decl ""
+	idl_decl ""
+      end
+    end
+
+    class 166983 "lbPluginDatabaseReport"
+      
+      
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "...e
+...e
+...sclass lbPluginDatabaseReport implementation:0:
+...slbPluginDatabaseReport:0:"
+      classrelation 162247 // <generalisation>
+	relation 162247 ---|>
+	  a public
+	    cpp default "Generated"
+	    classrelation_ref 162247 // <generalisation>
+	  b parent class_ref 166343 // virtual
+      end
+
+      classrelation 162375 // <generalisation>
+	relation 162375 ---|>
+	  a private
+	    cpp default "Generated"
+	    classrelation_ref 162375 // <generalisation>
+	  b parent class_ref 136263 // lb_I_PluginImpl
+      end
+
+      operation 305735 "lbPluginDatabaseReport"
+	public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${name}${(}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${class}::${name}${(}${)}${throw}{
+${body}}
+"
+	
+	
+      end
+
+      operation 305863 "~lbPluginDatabaseReport"
+	cpp_virtual public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${virtual}${name}${(}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${class}::${name}${(}${)}${throw}{
+${body}}
+"
+	
+	
+      end
+
+      operation 305991 "initialize"
+	public explicit_return_type "void"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+	comment "...sfrom plugin interface:8:"
+      end
+
+      operation 306119 "run"
+	public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 306247 "peekImplementation"
+	public return_type class_ref 141767 // lb_I_Unknown
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} * ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 306375 "getImplementation"
+	public return_type class_ref 141767 // lb_I_Unknown
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} * ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 306503 "releaseImplementation"
+	public explicit_return_type "void"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 306631 "SetData"
+	public explicit_return_type "_CL_VERBOSE<< \"lbPluginDatabaseReport::setData(...) called.\\n\" LOG_
+
+	if (dbReport == NULL) {
+		_CL_VERBOSE << \"ERROR: Cloning database report plugin without an instance to the report it self\" LOG_
+	}
+
+        return ERR_NOT_IMPLEMENTED;
+}
+/*...e*/
+
+lbPluginDatabaseReport::lbPluginDatabaseReport() {
+	_CL_LOG << \"lbPluginDatabaseReport::lbPluginDatabaseReport() called.\\n\" LOG_
+	dbReport = NULL;
+	ref = STARTREF;
+}
+
+lbPluginDatabaseReport::~lbPluginDatabaseReport() {
+	_CL_VERBOSE << \"lbPluginDatabaseReport::~lbPluginDatabaseReport() called.\" LOG_
+}
+
+void LB_STDCALL lbPluginDatabaseReport::initialize() {
+	_CL_LOG << \"lbPluginDatabaseReport::initialize() called.\" LOG_
+}
+	
+bool LB_STDCALL lbPluginDatabaseReport::run() {
+	return true;
+}
+
+/*...slb_I_Unknown\\42\\ LB_STDCALL lbPluginDatabaseReport\\58\\\\58\\peekImplementation\\40\\\\41\\:0:*/
+lb_I_Unknown* LB_STDCALL lbPluginDatabaseReport::peekImplementation() {
+	lbErrCodes err = ERR_NONE;
+	
+	_CL_LOG << \"lb_I_Unknown* LB_STDCALL lbPluginDatabaseReport::peekImplementation() called.\" LOG_
+
+	if (dbReport == NULL) {
+		lbDatabaseReport* _dbReport = new lbDatabaseReport();
+		_dbReport->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+	
+		QI(_dbReport, lb_I_Unknown, dbReport)
+	} else {
+		_CL_VERBOSE << \"lbPluginDatabaseReport::peekImplementation() Implementation already peeked.\\n\" LOG_
+	}
+	
+	return dbReport.getPtr();
+}
+/*...e*/
+/*...slb_I_Unknown\\42\\ LB_STDCALL lbPluginDatabaseReport\\58\\\\58\\getImplementation\\40\\\\41\\:0:*/
+lb_I_Unknown* LB_STDCALL lbPluginDatabaseReport::getImplementation() {
+	lbErrCodes err = ERR_NONE;
+	
+	_CL_LOG << \"lb_I_Unknown* LB_STDCALL lbPluginDatabaseReport::getImplementation() called.\" LOG_
+	
+	if (dbReport == NULL) {
+
+		_CL_VERBOSE << \"Warning: peekImplementation() has not been used prior.\\n\" LOG_
+	
+		lbDatabaseReport* _dbReport = new lbDatabaseReport();
+		_dbReport->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+	
+		QI(_dbReport, lb_I_Unknown, dbReport)
+	}
+	
+	lb_I_Unknown* r = dbReport.getPtr();
+	dbReport == NULL;
+	return r;
+}
+/*...e*/
+void LB_STDCALL lbPluginDatabaseReport::releaseImplementation() {
+}
+/*...e*/
+/*...e*/
+
+BEGIN_IMPLEMENT_LB_UNKNOWN(lbDatabaseReport)
+        ADD_INTERFACE(lb_I_DatabaseReport)
+END_IMPLEMENT_LB_UNKNOWN()
+
+IMPLEMENT_FUNCTOR(instanceOflbDatabaseReport, lbDatabaseReport)
+
+/*...sColumn positions:0:*/
+#define   LPI6      4.23
+#define   COL1X     0
+#define   COL2X     13
+#define   COL3X     54
+#define   COL4X     80
+#define   COL5X     111
+#define   COL6X     150
+#define   COL1WID   12
+#define   COL2WID   40
+#define   COL3WID   15
+#define   COL4WID   30
+#define   COL5WID   30
+#define   COL6WID   40
+#define   COLHDRY   18
+#define   COLY      25
+/*...e*/
+
+/*...slbErrCodes LB_STDCALL lbDatabaseReport\\58\\\\58\\setData\\40\\lb_I_Unknown\\42\\ uk\\41\\:0:*/
+lbErrCodes LB_STDCALL lbDatabaseReport::setData(lb_I_Unknown* uk) {
+	lbErrCodes err = ERR_NONE;
+		
+        _CL_LOG << \"lbDatabaseReport::setData(...) not implemented yet\" LOG_
+
+        return ERR_NOT_IMPLEMENTED;
+}
+/*...e*/
+
+/*...slbDatabaseReport\\58\\\\58\\lbDatabaseReport\\40\\\\41\\:0:*/
+lbDatabaseReport::lbDatabaseReport() {
+	ref = STARTREF;
+	frame = NULL;
+	ReportName = NULL;
+	ReportFileName = NULL;
+	untranslated_ReportName = NULL;
+	hasConditions = false;
+	
+	_CL_LOG << \"lbDatabaseReport::lbDatabaseReport() called.\" LOG_
+}
+/*...e*/
+
+/*...slbDatabaseReport\\58\\\\58\\\\126\\lbDatabaseReport\\40\\\\41\\:0:*/
+lbDatabaseReport::~lbDatabaseReport() {
+	_CL_LOG << \"lbDatabaseReport::~lbDatabaseReport() called.\" LOG_
+}
+/*...e*/
+
+void LB_STDCALL lbDatabaseReport::destroy() {
+}
+
+/// \\todo Change to using window ID lookup.
+void LB_STDCALL lbDatabaseReport::setFrame(lb_I_Unknown* _frame) {
+	lb_wxFrame* __frame = (lb_wxFrame*) _frame;
+	frame = __frame;
+}
+
+/*...svoid LB_STDCALL lbDatabaseReport\\58\\\\58\\init\\40\\char\\42\\ SQLString\\44\\ char\\42\\ DBName\\44\\ char\\42\\ DBUser\\44\\ char\\42\\ DBPass\\41\\:0:*/
+void LB_STDCALL lbDatabaseReport::init(char* SQLString, char* DBName, char* DBUser, char* DBPass) {
+	_CL_LOG << \"lbDatabaseReport::init('\" << 
+			SQLString << \"', '\" << 
+			DBName << \"', '\" << 
+			DBUser << \"', '*****') for '\" << untranslated_ReportName << \"' called.\" LOG_
+
+	lbDBReportProperties* properties = new lbDBReportProperties();
+
+	properties->initData(\"dummy\");
+
+	int colstep = 0;
+
+	// Currently, this value gets overwritten with n * LineSpace + offset - n
+	float _coly = 0.0; //properties->getFloatParameter(\"_coly\");
+	
+	wxLogNull		logNull;
+
+#ifdef OSX
+#undef LINUX
+	wxFont			fntBig(properties->getIntParameter(\"fntBig-Mac\"),
+				wxSWISS, wxITALIC, wxBOLD, true, \"Arial\");
+				
+	wxFont			fntSmall(properties->getIntParameter(\"fntSmall-Mac\"),
+				wxSWISS, wxNORMAL, wxNORMAL, false , \"Arial\");
+				
+	wxFont			fntHdr(properties->getIntParameter(\"fntHdr-Mac\"),
+				wxSWISS, wxNORMAL, wxBOLD, false, \"Arial\");
+#endif
+
+#ifdef LINUX
+	wxFont			fntBig(properties->getIntParameter(\"fntBig-Mac\"),
+				wxSWISS, wxITALIC, wxBOLD, true, \"Arial\");
+				
+	wxFont			fntSmall(properties->getIntParameter(\"fntSmall-Mac\"),
+				wxSWISS, wxNORMAL, wxNORMAL, false , \"Arial\");
+				
+	wxFont			fntHdr(properties->getIntParameter(\"fntHdr-Mac\"),
+				wxSWISS, wxNORMAL, wxBOLD, false, \"Arial\");
+#endif
+
+#ifdef OSX
+#define LINUX
+#endif
+
+#ifdef WINDOWS
+	wxFont			fntBig(properties->getIntParameter(\"fntBig-Windows\"),
+				wxSWISS, wxITALIC, wxBOLD, true, \"Arial\");
+				
+	wxFont			fntSmall(properties->getIntParameter(\"fntSmall-Windows\"),
+				wxSWISS, wxNORMAL, wxNORMAL, false , \"Arial\");
+				
+	wxFont			fntHdr(properties->getIntParameter(\"fntHdr-Windows\"),
+				wxSWISS, wxNORMAL, wxBOLD, false, \"Arial\");
+#endif
+
+
+	wxReportWriter* pReport = new wxReportWriter(0, wxT(\"Test Report\"), wxPoint(10,10), wxSize( 100, 100 ) );
+	pReport->SetPath( wxT(\".\") );
+
+	//pReport->SetOrientation(wxLANDSCAPE);
+
+/*...sHeader:8:*/
+	// -----------------------
+	//  HEADER (on each page)
+	// -----------------------
+
+	pObj = new wxReportObj(  0,  0, 100, 30 );
+	pObj->SetBitmap( wxT(\"PLG.png\") );
+	pReport->AddHeaderObj( pObj );
+
+	pObj = new wxReportObj( 70, 7, 50, 20 );
+	pObj->SetData( wxString(untranslated_ReportName) );
+	pObj->SetFont( &fntBig );
+	pReport->AddHeaderObj( pObj );
+
+	pObj = new wxReportObj( 120, 7, 50, 20 );
+	pObj->SetPgNum( wxT(\"Page\") );
+	pObj->SetRightAlign();
+	pReport->AddHeaderObj( pObj );
+/*...e*/
+
+	
+	float LineSpace = LPI6;
+	float offset = 10;
+
+	int ii = 1;
+	UAP(lb_I_String, tLine)
+	
+	tLine = properties->getTextLine(ii, \"dummy\");
+
+	int TextBlockSize = properties->getIntParameter(\"TextBlockSize\");
+
+/*...sPrepare query:8:*/
+	UAP_REQUEST(manager.getPtr(), lb_I_Database, database)
+	UAP(lb_I_Query, query)
+	
+	database->init();
+	
+	database->connect(DBName, DBUser, DBPass);
+	
+	query = database->getQuery(0);
+	
+	lbErrCodes err;
+	err = query->query(SQLString);
+
+/*...sRebuild query\\44\\ if there are conditions:16:*/
+	if ((hasConditions) && (query->hasColumnName(AndConditionColumn->charrep())) && (err == ERR_NONE)) {
+		UAP_REQUEST(manager.getPtr(), lb_I_String, newQuery)
+		
+		bool isChar = query->getColumnType(AndConditionColumn->charrep()) == lb_I_Query::lbDBColumnChar;
+		
+		// Could not set whole string to lower case, because there may be a case where
+		// the case sensity of columns is relevant.
+		
+		char* temp = NULL;
+
+		char* order = strstr(SQLString, \"order\");
+		
+		if (order) {
+			char* temp = strdup(order);
+			order[0] = 0;
+		}
+		
+		*newQuery = SQLString;
+		*newQuery += \" where \";
+		*newQuery += AndConditionColumn->charrep();
+
+		if (isChar) 
+			*newQuery += \" = '\";
+		else
+			*newQuery += \" = \";
+
+		*newQuery += AndConditionValue->charrep();
+
+		if (isChar) 
+			*newQuery += \"'\";
+
+		if (temp) {
+			*newQuery += \" \";
+			*newQuery += temp;
+			
+			free(temp);
+		}
+			
+		query = database->getQuery(0);
+		
+		_CL_LOG << \"SQL string: \" << newQuery->charrep() LOG_ 
+		
+		err = query->query(newQuery->charrep());
+	} else {
+		_CL_LOG << \"SQL string: \" << SQLString LOG_
+	}
+/*...e*/
+/*...e*/
+
+/*...sReplace patterns:8:*/
+	UAP_REQUEST(getModuleInstance(), lb_I_Parameter, replacer)
+
+	if (hasConditions) {
+		UAP_REQUEST(getModuleInstance(), lb_I_String, pattern)
+		
+		*pattern = \"{\";
+		
+		if (query->hasFKColumn(AndConditionValue->charrep()) == 1) {
+		// Replace key value with visibly shown value
+		}
+		
+		*pattern += AndConditionColumn->charrep();
+		*pattern += \"}\";
+		
+		replacer->setUAPString(*&pattern, *&AndConditionValue);
+	}
+	        
+
+	while (tLine.getPtr() != NULL) {
+	        pObj = new wxReportObj( 0, (LineSpace * ii) + offset - ii, TextBlockSize, 6 );
+	        
+		pObj->SetFont(&fntSmall);
+			
+	        wxString data = wxString(tLine->charrep());
+
+	        wxString pattern = data.AfterFirst('{');
+	        
+	        pattern = pattern.BeforeFirst('}');
+	        
+	        UAP_REQUEST(getModuleInstance(), lb_I_String, p)
+	        UAP_REQUEST(getModuleInstance(), lb_I_String, r)
+	        
+	        *p = \"{\";
+	        *p += pattern.c_str();
+	        *p += \"}\";
+	        
+		if (strcmp(p->charrep(), \"{}\") != 0) {
+			replacer->getUAPString(*&p, *&r);
+			data.Replace(p->charrep(), r->charrep());
+		}
+			
+	        pObj->"
+	nparams 1
+	  param in name "" type class_ref 167111 // data
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+    end
+
+    class 167239 "lbPluginModuleDatabaseReport"
+      
+      
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "...sclass lbPluginModuleDatabaseReport:0:"
+      classrelation 162503 // <generalisation>
+	relation 162503 ---|>
+	  a public
+	    cpp default "Generated"
+	    classrelation_ref 162503 // <generalisation>
+	  b parent class_ref 136519 // lb_I_PluginModule
+      end
+
+      operation 306759 "lbPluginModuleDatabaseReport"
+	public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${name}${(}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${class}::${name}${(}${)}${throw}{
+${body}}
+"
+	
+	
+      end
+
+      operation 306887 "~lbPluginModuleDatabaseReport"
+	cpp_virtual public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${virtual}${name}${(}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${class}::${name}${(}${)}${throw}{
+${body}}
+"
+	
+	
+      end
+    end
+  end
+
+  deploymentview 130247 "DatabaseReport"
+    //deployment diagram settings
+    package_name_in_tab default show_context default write_horizontally default auto_label_position default
+    draw_component_as_icon default show_component_req_prov default show_component_rea default
+    artifact 146375 "lbDBReportAction"
+      stereotype "source"
+      cpp_h "#ifndef _${NAME}_H
+#define _${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_classes
+	class_ref 161607 // lbDBReportAction
+      end
+    end
+
+    artifact 146503 "ReportPreviewFrame"
+      stereotype "source"
+      cpp_h "#ifndef _${NAME}_H
+#define _${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_classes
+	class_ref 162119 // ReportPreviewFrame
+      end
+    end
+
+    artifact 146631 "wxReportWriterCtrl"
+      stereotype "source"
+      cpp_h "#ifndef _${NAME}_H
+#define _${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_classes
+	class_ref 163271 // wxReportWriterCtrl
+      end
+    end
+
+    artifact 146759 "wxReportObj"
+      stereotype "source"
+      cpp_h "#ifndef _${NAME}_H
+#define _${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_classes
+	class_ref 161863 // wxReportObj
+      end
+    end
+
+    artifact 146887 "wxReportSection"
+      stereotype "source"
+      cpp_h "#ifndef _${NAME}_H
+#define _${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_classes
+	class_ref 164167 // wxReportSection
+      end
+    end
+
+    artifact 147015 "wxReportWriter"
+      stereotype "source"
+      cpp_h "#ifndef _${NAME}_H
+#define _${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_classes
+	class_ref 162887 // wxReportWriter
+      end
+    end
+
+    artifact 147143 "ReportPrintout"
+      stereotype "source"
+      cpp_h "#ifndef _${NAME}_H
+#define _${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_classes
+	class_ref 164551 // ReportPrintout
+      end
+    end
+
+    artifact 147271 "wxReportSelector"
+      stereotype "source"
+      cpp_h "#ifndef _${NAME}_H
+#define _${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_classes
+	class_ref 165063 // wxReportSelector
+      end
+    end
+
+    artifact 148167 "lbDBReportProperties"
+      stereotype "source"
+      cpp_h "#ifndef _${NAME}_H
+#define _${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_classes
+	class_ref 166855 // lbDBReportProperties
+      end
+    end
+
+    artifact 148295 "lbPluginDatabaseReport"
+      stereotype "source"
+      cpp_h "#ifndef _${NAME}_H
+#define _${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_classes
+	class_ref 166983 // lbPluginDatabaseReport
+      end
+    end
+
+    artifact 148423 "lbPluginModuleDatabaseReport"
+      stereotype "source"
+      cpp_h "#ifndef _${NAME}_H
+#define _${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_classes
+	class_ref 167239 // lbPluginModuleDatabaseReport
+      end
+    end
+  end
+end

@@ -1,0 +1,93 @@
+class ReportPrintout
+!!!295879.cpp!!!	ReportPrintout(inout pFrame : wxReportWriter, inout szTitle : wxChar =  wxT("Polix Druck") )
+
+	m_pReportPage = pFrame;
+
+	if ( pFrame )
+		pFrame->SetPrintout( this );
+!!!296007.cpp!!!	~ReportPrintout(in  : void)
+
+	if ( m_pReportPage )
+		m_pReportPage->SetPrintout( 0 );
+!!!296135.cpp!!!	OnPrintPage(in page : int) : bool
+
+    wxDC *dc = GetDC();
+
+    if (dc)
+    {
+		DrawPage( dc, page );
+        return TRUE;
+    }
+    else
+        return FALSE;
+!!!296263.cpp!!!	HasPage(in pageNum : int) : bool
+
+    return (pageNum <= m_pReportPage->GetNumberOfPages() );
+!!!296391.cpp!!!	OnBeginDocument(in startPage : int, in endPage : int) : bool
+
+    if (!wxPrintout::OnBeginDocument(startPage, endPage))
+        return FALSE;
+    
+    return TRUE;
+!!!296519.cpp!!!	GetPageInfo(inout minPage : int, inout maxPage : int, inout selPageFrom : int, inout selPageTo : int) : void
+
+    *minPage     = 1;
+    *maxPage     = m_pReportPage->GetNumberOfPages();
+    *selPageFrom = 1;
+    *selPageTo   = m_pReportPage->GetNumberOfPages();
+!!!296647.cpp!!!	OnEndPrinting() : void
+
+!!!296775.cpp!!!	DrawPage(inout dc : wxDC, in iPage : int) : void
+
+	CalcScale( dc );	
+	
+	m_pReportPage->SetPage( iPage );
+
+    m_pReportPage->Draw(*dc);
+//	dc->SetUserScale( m_fOverallScale, m_fOverallScale );
+	dc->SetUserScale( 1.0, 1.0 );
+!!!296903.cpp!!!	CalcScale(inout dc : wxDC) : void
+
+    // Get the logical pixels per inch of screen and printer
+    int ppiScreenX,  ppiScreenY;
+    int ppiPrinterX, ppiPrinterY;
+    int pageWidth,   pageHeight;
+    int w, h;
+	double dTopM, dLeftM;
+
+	dTopM = dLeftM = 0.0;
+
+    GetPPIScreen(  &ppiScreenX,  &ppiScreenY );
+    GetPPIPrinter( &ppiPrinterX, &ppiPrinterY );
+    
+    // This scales the DC so that the printout roughly represents the
+    // the screen scaling. The text point size _should_ be the right size
+    // but in fact is too small for some reason. This is a detail that will
+    // need to be addressed at some point but can be fudged for the
+    // moment.
+    float fScale = (float)((float)ppiPrinterX/(float)ppiScreenX);
+    
+    // Now we have to check in case our real page size is reduced
+    // (e.g. because we're drawing to a print preview memory DC)
+    dc->GetSize( &w, &h );
+//  GetPageSizeMM( &pageWidth, &pageHeight );
+    GetPageSizePixels( &pageWidth, &pageHeight );
+    
+    // If printer pageWidth == current DC width, then this doesn't
+    // change. But w might be the preview bitmap width, so scale down.
+    m_fOverallScale = fScale * (float)(w/(float)pageWidth);
+    
+	dc->SetUserScale( m_fOverallScale, m_fOverallScale );
+    
+    // Calculate conversion factor for converting millimetres into
+    // logical units.
+    // There are approx. 25.4 mm to the inch. There are ppi
+    // device units to the inch. Therefore 1 mm corresponds to
+    // ppi/25.4 device units. We also divide by the
+    // screen-to-printer scaling factor, because we need to
+    // unscale to pass logical units to DrawLine.
+    
+    m_fScaleMMToLogUnits = (float)(ppiPrinterX/(fScale * 25.4));
+    
+    int pageWidthMM, pageHeightMM;
+    GetPageSizeMM( &pageWidthMM, &pageHeightMM );

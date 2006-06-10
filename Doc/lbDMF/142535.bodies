@@ -1,0 +1,74 @@
+class lbMutex
+!!!196167.cpp!!!	lbMutex()
+
+!!!196295.cpp!!!	~lbMutex()
+
+	deleteMutex(MyMutexNumber);	
+!!!196423.cpp!!!	createMutex(in name : int) : void
+
+	MyMutexNumber = name;
+
+/*...sWINDOWS:0:*/
+#ifdef WINDOWS
+
+        char number[10];
+        char _name[80] = "lbMutex";
+        itoa(name, number, 10);
+        strcat(_name, number);
+        
+        mutex = ::CreateMutex(0, FALSE, _name);
+
+#endif
+/*...e*/
+/*...s__WXGTK__:0:*/
+#ifdef __WXGTK__
+        int HandlePrefix = 20000;
+
+        if ((mutex = semget(HandlePrefix+name, 1, S_IRWXU |
+                                                  S_IRWXG |
+                                                  S_IRWXO | 
+                                                  IPC_CREAT |
+                                                  IPC_EXCL)) == -1)
+        {
+                perror("semget failed - use open");
+                
+                if ((mutex = semget(HandlePrefix+name, 0, 0)) == -1)
+                {
+                        perror("Open semaphore failed");
+                        exit(1);
+                }
+                return;
+        }       
+        
+        if (helper(mutex) == -1) 
+        {
+                perror("semctl error - exit");
+                exit(1);
+        }
+#endif
+/*...e*/
+!!!196551.cpp!!!	deleteMutex(in name : int) : void
+
+#ifdef WINDOWS
+        CloseHandle(mutex);
+#endif
+#ifdef __WXGTK__
+        int HandlePrefix = 20000;
+        deletesem(HandlePrefix+name);
+#endif
+!!!196679.cpp!!!	enter() : void
+
+#ifdef WINDOWS
+        WaitForSingleObject(mutex, INFINITE);
+#endif
+#ifdef __WXGTK__
+        P(mutex);
+#endif
+!!!196807.cpp!!!	release() : void
+
+#ifdef WINDOWS
+        ReleaseMutex(mutex);
+#endif
+#ifdef __WXGTK__
+        V(mutex);
+#endif

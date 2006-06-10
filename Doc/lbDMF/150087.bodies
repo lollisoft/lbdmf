@@ -1,0 +1,109 @@
+class lbInputStream
+!!!220871.cpp!!!	lbInputStream()
+
+//lbLock lbLock(sect);
+	ref = STARTREF;
+	manager = NULL;
+	fin = NULL;
+	readBuffer = NULL;
+	readBufferSize = 0;
+	offset = 0;
+	max_readBufferSize = 100;
+	isOpen = false;
+        f[0] = 0;
+
+	_istream = NULL;
+
+        logmessage = NULL;
+        lastsize = 0;
+!!!221127.cpp!!!	getFileName() : char
+
+	return f;
+!!!221255.cpp!!!	open() : bool
+
+	if (!isOpen) {
+		if (!FileExists(f)) return false;
+		_istream = new ifstream(f);
+	}
+
+	isOpen = true;
+	return true;
+!!!221383.cpp!!!	close() : bool
+
+	if (isOpen) {
+		_istream->close();
+		delete _istream;
+		isOpen = false;
+	}
+
+	return true;
+!!!221511.cpp!!!	read() : bool
+
+	return false;
+!!!221639.cpp!!!	operator >>(inout i : int) : lb_I_InputStream
+
+	if (!isOpen) return *this;
+
+	*_istream >> i;
+
+	return *this;
+!!!221767.cpp!!!	operator >>(inout i : long) : lb_I_InputStream
+
+	if (!isOpen) return *this;
+
+	*_istream >> i;
+
+	return *this;
+!!!221895.cpp!!!	operator >>(inout b : bool) : lb_I_InputStream
+
+	if (!isOpen) return *this;
+	
+	int _b;
+
+	*_istream >> _b;
+
+	if (_b == 1)
+		b = true;
+	else
+		b = false;
+		
+	return *this;
+!!!222023.cpp!!!	operator >>(inout c : char) : lb_I_InputStream
+
+	if (!isOpen) return *this;
+
+	*_istream >> c;
+	
+	return *this;
+!!!222151.cpp!!!	operator >>(inout _string : char) : lb_I_InputStream
+
+	char* buf = NULL;
+	int size = 0;
+
+#ifndef __WATCOMC__
+	std::string s;	
+#endif
+#ifdef __WATCOMC__
+	String s;	
+#endif
+	
+	*_istream >> size;
+	
+	buf = (char*) malloc(size+1);
+	
+	_istream->ignore(1, '\n');
+#ifndef __WATCOMC__ 
+	getline(*_istream, s);
+	if (_string != NULL) free(_string);
+	_string = strdup(s.c_str());
+#endif
+#ifdef __WATCOMC__ 
+	//*_istream >> s;
+	_istream->getline(buf, size+1);
+	_string = buf;
+#endif
+
+
+	return *this;
+!!!222279.cpp!!!	_realloc(in add_size : int) : void
+

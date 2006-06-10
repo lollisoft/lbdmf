@@ -1,0 +1,10 @@
+class lbDOMAttribute
+!!!256455.cpp!!!	getName(inout name : char) : lbErrCodes
+
+	return ERR_NONE;
+!!!256583.cpp!!!	getValue(inout value : char) : lbErrCodes
+
+	return ERR_NONE;
+!!!256711.cpp!!!	getType(inout type : char) : lbErrCodes
+
+	return ERR_NONE;

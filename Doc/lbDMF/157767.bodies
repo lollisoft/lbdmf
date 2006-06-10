@@ -1,0 +1,21 @@
+class DOMTreeErrorReporter
+!!!252999.cpp!!!	warning(in  : SAXParseException) : void
+
+    //
+    // Ignore all warnings.
+    //
+!!!253127.cpp!!!	error(in toCatch : SAXParseException) : void
+
+    cerr << "Error at file \"" << DOMString(toCatch.getSystemId())
+		 << "\", line " << toCatch.getLineNumber()
+		 << ", column " << toCatch.getColumnNumber()
+         << "   Message: " << DOMString(toCatch.getMessage()) << ENDL;
+!!!253255.cpp!!!	fatalError(in toCatch : SAXParseException) : void
+
+    cerr << "Fatal Error at file \"" << DOMString(toCatch.getSystemId())
+		 << "\", line " << toCatch.getLineNumber()
+		 << ", column " << toCatch.getColumnNumber()
+         << "   Message: " << DOMString(toCatch.getMessage()) << ENDL;
+!!!253383.cpp!!!	resetErrors() : void
+
+    // No-op in this case

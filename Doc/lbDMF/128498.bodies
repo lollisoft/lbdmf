@@ -1,0 +1,15 @@
+class wxLogonPage
+!!!129394.cpp!!!	getTextValue(inout _name : char) : char
+
+	
+	wxWindow* w = FindWindowByName(wxString(_name));
+
+	if (w != NULL) {
+        	wxTextCtrl* tx = (wxTextCtrl*) w;
+
+	        textValue = tx->GetValue();
+
+		return textValue.c_str();
+	}
+
+	return "";

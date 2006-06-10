@@ -1,0 +1,176 @@
+class FormularFieldInformation
+!!!267335.cpp!!!	FormularFieldInformation(in formularname : char, inout query : lb_I_Query)
+
+
+	lbErrCodes err = ERR_NONE;
+
+	UAP_REQUEST(getModuleInstance(), lb_I_Database, database)
+
+	REQUEST(getModuleInstance(), lb_I_Container, ROFields)
+	REQUEST(getModuleInstance(), lb_I_Container, SCFields)
+
+	database->init();
+
+	char* lbDMFPasswd = getenv("lbDMFPasswd");
+	char* lbDMFUser   = getenv("lbDMFUser");
+
+	if (!lbDMFUser) lbDMFUser = "dba";
+	if (!lbDMFPasswd) lbDMFPasswd = "trainres";
+
+	database->connect("lbDMF", lbDMFUser, lbDMFPasswd);
+
+	UAP(lb_I_Query, ROquery)
+
+	ROquery = database->getQuery(0);
+
+	char buf[] = "select tablename, name, specialcolumn, controltype, ro from column_types";
+
+	ROquery->query(buf);
+	
+	err = ROquery->first();
+
+	while (err == ERR_NONE) {
+	        UAP(lb_I_String, tablename)
+	        UAP(lb_I_String, fieldname)
+	        UAP(lb_I_String, specialColumn)
+	        UAP(lb_I_String, columnType)
+	        UAP(lb_I_String, ro)
+
+	        tablename = ROquery->getAsString(1);
+		fieldname = ROquery->getAsString(2);
+		specialColumn = ROquery->getAsString(3);
+		columnType = ROquery->getAsString(4);
+		ro = ROquery->getAsString(5);
+
+		fieldname->trim();
+		columnType->trim();
+
+		for (int i = 1; i <= query->getColumns(); i++) {
+			UAP_REQUEST(getModuleInstance(), lb_I_String, col)
+			
+			col->setData(query->getColumnName(i));
+
+			if ((strcmp(col->charrep(), fieldname->charrep()) == 0) && ((strcmp("true", ro->charrep()) == 0) || (strcmp("1", ro->charrep()) == 0))) {
+				UAP(lb_I_KeyBase, key)
+				UAP(lb_I_Unknown, uk)
+				
+				QI(col, lb_I_KeyBase, key)
+				QI(col, lb_I_Unknown, uk)
+				
+				ROFields->insert(&uk, &key);
+			}
+
+			if ((strcmp(col->charrep(), fieldname->charrep()) == 0) && ((strcmp("true", specialColumn->charrep()) == 0) || (strcmp("1", specialColumn->charrep()) == 0))) {
+				UAP(lb_I_KeyBase, key)
+				UAP(lb_I_Unknown, uk)
+				
+				QI(col, lb_I_KeyBase, key)
+				QI(columnType, lb_I_Unknown, uk)
+				
+				SCFields->insert(&uk, &key);
+			}
+		}		
+		err = ROquery->next();
+	}
+	
+	if (err == WARN_DB_NODATA) {
+                UAP(lb_I_String, tablename)
+                UAP(lb_I_String, fieldname)
+		UAP(lb_I_String, specialColumn)
+		UAP(lb_I_String, columnType)
+		UAP(lb_I_String, ro)
+		
+                tablename = ROquery->getAsString(1);
+                fieldname = ROquery->getAsString(2);
+		specialColumn = ROquery->getAsString(3);
+		columnType = ROquery->getAsString(4);
+		ro = ROquery->getAsString(5);
+
+		fieldname->trim();
+		columnType->trim();
+
+		
+                for (int i = 1; i <= query->getColumns(); i++) {
+                        UAP_REQUEST(getModuleInstance(), lb_I_String, col)
+
+                        col->setData(query->getColumnName(i));
+			
+			if ((strcmp(col->charrep(), fieldname->charrep()) == 0) && ((strcmp("true", ro->charrep()) == 0) || (strcmp("1", ro->charrep()) == 0))) {
+                                UAP(lb_I_KeyBase, key)
+                                UAP(lb_I_Unknown, uk)
+
+                                QI(col, lb_I_KeyBase, key)
+                                QI(col, lb_I_Unknown, uk)
+
+                                ROFields->insert(&uk, &key);
+                        }
+
+			if ((strcmp(col->charrep(), fieldname->charrep()) == 0) && ((strcmp("true", specialColumn->charrep()) == 0) || (strcmp("1", specialColumn->charrep()) == 0))) {
+				UAP(lb_I_KeyBase, key)
+				UAP(lb_I_Unknown, uk)
+				
+				QI(col, lb_I_KeyBase, key)
+				QI(columnType, lb_I_Unknown, uk)
+				
+				SCFields->insert(&uk, &key);
+			}
+                }
+	}
+!!!267591.cpp!!!	isReadonly(inout field : char) : bool
+
+	lbErrCodes err = ERR_NONE;
+	
+	UAP_REQUEST(getModuleInstance(), lb_I_String, f)
+	f->setData(field);
+	
+	f->trim();
+	
+	UAP(lb_I_KeyBase, key)
+	QI(f, lb_I_KeyBase, key)
+	
+	if (ROFields->exists(&key) == 1) {
+		return true;
+	}
+	else {
+		return false;
+	}
+	
+!!!267719.cpp!!!	isSpecialColumn(inout field : char) : bool
+
+	lbErrCodes err = ERR_NONE;
+	
+	UAP_REQUEST(getModuleInstance(), lb_I_String, f)
+	f->setData(field);
+	
+	f->trim();
+
+	UAP(lb_I_KeyBase, key)
+	QI(f, lb_I_KeyBase, key)
+	
+	if (SCFields->exists(&key) == 1) {
+		return true;
+	}
+
+	return false;
+!!!267847.cpp!!!	getControlType(inout name : char) : char
+
+	lbErrCodes err = ERR_NONE;
+	
+	UAP_REQUEST(getModuleInstance(), lb_I_String, f)
+	f->setData(name);
+	
+	f->trim();
+	
+	UAP(lb_I_KeyBase, key)
+	QI(f, lb_I_KeyBase, key)
+
+	if (SCFields->exists(&key) == 1) {
+		UAP(lb_I_Unknown, uk)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, type)
+		uk = SCFields->getElement(&key);
+		QI(uk, lb_I_String, type)
+		
+		return strdup(type->charrep());
+	}
+	
+	return strdup("");

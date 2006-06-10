@@ -1,0 +1,16 @@
+class lbInputStreamOpr
+!!!325447.cpp!!!	visit(inout  : lb_I_Application) : void
+
+	_CL_LOG << "lbInputStreamOpr::visit(): Read data of application." LOG_
+!!!326215.cpp!!!	end() : void
+
+
+!!!326343.cpp!!!	getStream() : lb_I_Stream
+
+	lbErrCodes err = ERR_NONE;
+	
+        UAP(lb_I_Stream, s)
+        QI(iStream, lb_I_Stream, s)
+        s++;
+
+        return s.getPtr();

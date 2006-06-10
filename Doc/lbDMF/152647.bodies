@@ -1,0 +1,1953 @@
+class lbQuery
+!!!230343.cpp!!!	registerView(inout view : lb_I_MVC_View) : lbErrCodes
+
+	_LOG << "lbQuery::registerView(...): Not implemented yet" LOG_
+	return ERR_NONE;
+!!!230471.cpp!!!	unregisterView(inout view : lb_I_MVC_View) : lbErrCodes
+
+	_LOG << "lbQuery::unregisterView(...): Not implemented yet" LOG_
+        return ERR_NONE;
+!!!230599.cpp!!!	skipFKCollecting() : void
+
+	skipFKCollections = 1;
+!!!230727.cpp!!!	enableFKCollecting() : void
+
+	skipFKCollections = 0;
+!!!230855.cpp!!!	prepareFKList() : void
+
+	#define TAB_LEN 100
+	#define COL_LEN 100
+
+	if (mapPKTable_PKColumns_To_FKName == NULL) {
+		REQUEST(manager.getPtr(), lb_I_Container, mapPKTable_PKColumns_To_FKName)
+	} else {
+		mapPKTable_PKColumns_To_FKName->deleteAll();
+	}
+
+
+	if (ForeignColumns == NULL) {
+		REQUEST(manager.getPtr(), lb_I_Container, ForeignColumns)
+	} else {
+		ForeignColumns->deleteAll();
+	}
+
+	if (skipFKCollections == 1) {
+	    _CL_VERBOSE << "==========================================" LOG_
+	    _CL_VERBOSE << "Do not collect foreign column information!" LOG_
+	    _CL_VERBOSE << "==========================================" LOG_
+
+	    return;
+	}
+
+/*...sOriginally for windows \40\primary table\41\:8:*/
+/*...sVariables:16:*/
+	unsigned char*   szTable = NULL;     /* Table to display   */
+
+	UCHAR   szPkTable[TAB_LEN];  /* Primary key table name */
+	UCHAR   szFkTable[TAB_LEN];  /* Foreign key table name */
+	UCHAR   szPkCol[COL_LEN];  /* Primary key column   */
+	UCHAR   szFkCol[COL_LEN];  /* Foreign key column   */
+
+	SQLHSTMT         hstmt;
+	SQLINTEGER      cbPkTable = TAB_LEN;
+	SQLINTEGER 	cbPkCol = TAB_LEN;
+	SQLINTEGER	cbFkTable = TAB_LEN;
+	SQLINTEGER	cbFkCol = TAB_LEN;
+	SQLINTEGER	cbKeySeq = TAB_LEN;
+	SQLSMALLINT      iKeySeq;
+	SQLRETURN         retcode;
+/*...e*/
+
+	retcode = SQLAllocStmt(hdbc, &hstmt); /* Statement handle */
+
+	if (retcode != SQL_SUCCESS)
+	{
+	        _dbError_DBC("SQLAllocStmt()", hdbc);
+	}
+
+/*...sBind columns:16:*/
+	SQLBindCol(hstmt, 3, SQL_C_CHAR, szPkTable, TAB_LEN, &cbPkTable);
+	SQLBindCol(hstmt, 4, SQL_C_CHAR, szPkCol, COL_LEN, &cbPkCol);
+	SQLBindCol(hstmt, 5, SQL_C_CHAR, &iKeySeq, TAB_LEN, &cbKeySeq); //SSHORT
+	SQLBindCol(hstmt, 7, SQL_C_CHAR, szFkTable, TAB_LEN, &cbFkTable);
+	SQLBindCol(hstmt, 8, SQL_C_CHAR, szFkCol, COL_LEN, &cbFkCol);
+/*...e*/
+
+	char* temp = (char*) getTableName(getColumnName(1));
+	szTable = (unsigned char*) malloc(strlen(temp)+1);
+	szTable[0] = 0;
+	strcpy((char*) szTable, temp);
+	
+	if (strlen((char* const) szTable) > 99) {
+		_CL_VERBOSE << "ERROR: Possible buffer overflows!" LOG_
+	}
+
+	_CL_VERBOSE << "Get foreign keys for '" << szTable << "'" LOG_
+
+#ifdef bla
+	_CL_VERBOSE << "Try to get foreign keys with '" << temp << "' as primary table" LOG_
+	
+	retcode = SQLForeignKeys(hstmt,
+	         NULL, 0,      /* Primary catalog   */
+	         NULL, 0,      /* Primary schema   */
+	         szTable, SQL_NTS, /* Primary table   */
+	         NULL, 0,      /* Foreign schema   */
+	         NULL, 0,      /* Foreign table   */
+	         NULL, 0);  
+
+	if ((retcode != SQL_SUCCESS) && (retcode != SQL_SUCCESS_WITH_INFO)) {
+		_CL_LOG << "SQLForeignKeys(...) for " << szTable << " failed!" LOG_
+	}
+
+	while ((retcode == SQL_SUCCESS) || (retcode == SQL_SUCCESS_WITH_INFO)) {
+
+	/* Fetch and display the result set. This will be all of the */
+	/* foreign keys in other tables that refer to the ORDERS */
+	/* primary key.                 */
+
+	   retcode = SQLFetch(hstmt);
+
+	   if (retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO) {
+	      lbErrCodes err = ERR_NONE;
+
+	      //if (isVerbose()) 
+	      printf("%s ( %s ) <-- %s ( %s )\n", szPkTable, szPkCol, szFkTable, szFkCol);
+	      
+	      
+	      UAP_REQUEST(manager.getPtr(), lb_I_String, FKName)
+	      UAP_REQUEST(manager.getPtr(), lb_I_String, PKTable)
+	      
+	      UAP_REQUEST(manager.getPtr(), lb_I_String, PKTable_PKName)
+	      
+	      FKName->setData((char*) szFkCol);
+	      PKTable->setData((char*) szPkTable);
+
+	      FKName->toLower();
+	      
+	      UAP(lb_I_Unknown, uk_PKTable)
+	      UAP(lb_I_KeyBase, key_FKName)
+	      
+	      UAP(lb_I_Unknown, uk_FKName)
+	      UAP(lb_I_KeyBase, key_PKTable_PKName)
+	      
+	      QI(FKName, lb_I_KeyBase, key_FKName)
+	      QI(PKTable, lb_I_Unknown, uk_PKTable)
+
+	      ForeignColumns->insert(&uk_PKTable, &key_FKName);
+	      
+	      *PKTable_PKName = (char*) szPkTable;
+	      *PKTable_PKName += (char*) szPkCol;
+	      
+	      QI(PKTable_PKName, lb_I_KeyBase, key_PKTable_PKName)
+	      QI(FKName, lb_I_Unknown, uk_FKName)
+
+	      _CL_VERBOSE << "Insert map for '" << key_PKTable_PKName->charrep() << 
+		"' to '" << FKName->charrep() << "'" LOG_
+	      
+	      mapPKTable_PKColumns_To_FKName->insert(&uk_FKName, &key_PKTable_PKName);
+	   }
+	}
+/*...e*/
+
+/*...sOriginally for windows \40\foreign table\41\:8:*/
+	if (strlen((char* const) szTable) > 99) {
+		_CL_VERBOSE << "ERROR: Possible buffer overflows!" LOG_
+	}
+#endif
+	_CL_VERBOSE << "Try to get foreign keys with '" << temp << "' as foreign table" LOG_
+	
+	retcode = SQLForeignKeys(hstmt,
+	         NULL, 0,      /* Primary catalog   */
+	         NULL, 0,      /* Primary schema   */
+	         NULL, 0,      /* Primary table   */
+	         NULL, 0,      /* Foreign catalog   */
+	         NULL, 0,      /* Foreign schema   */
+	         szTable, SQL_NTS); /* Foreign table   */
+
+	if ((retcode != SQL_SUCCESS) && (retcode != SQL_SUCCESS_WITH_INFO)) {
+		_CL_LOG << "SQLForeignKeys(...) failed!" LOG_
+	}
+
+
+	while ((retcode == SQL_SUCCESS) || (retcode == SQL_SUCCESS_WITH_INFO)) {
+
+	/* Fetch and display the result set. This will be all of the */
+	/* foreign keys in other tables that refer to the ORDERS */
+	/* primary key.                 */
+
+	   retcode = SQLFetch(hstmt);
+	   
+	   if (retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO) {
+	      lbErrCodes err = ERR_NONE;
+
+	      if (isVerbose()) 
+	      printf("%s ( %s ) <-- %s ( %s )\n", szPkTable, szPkCol, szFkTable, szFkCol);
+	      
+	      
+	      UAP_REQUEST(manager.getPtr(), lb_I_String, FKName)
+	      UAP_REQUEST(manager.getPtr(), lb_I_String, PKTable)
+	      
+	      UAP_REQUEST(manager.getPtr(), lb_I_String, PKTable_PKName)
+	      
+	      FKName->setData((char*) szFkCol);
+	      PKTable->setData((char*) szPkTable);
+
+	      FKName->toLower();
+	      
+	      UAP(lb_I_Unknown, uk_PKTable)
+	      UAP(lb_I_KeyBase, key_FKName)
+	      
+	      UAP(lb_I_Unknown, uk_FKName)
+	      UAP(lb_I_KeyBase, key_PKTable_PKName)
+	      
+	      QI(FKName, lb_I_KeyBase, key_FKName)
+	      QI(PKTable, lb_I_Unknown, uk_PKTable)
+
+	      ForeignColumns->insert(&uk_PKTable, &key_FKName);
+	      
+	      *PKTable_PKName = (char*) szPkTable;
+	      *PKTable_PKName += (char*) szPkCol;
+	      
+	      QI(PKTable_PKName, lb_I_KeyBase, key_PKTable_PKName)
+	      QI(FKName, lb_I_Unknown, uk_FKName)
+
+	      _CL_VERBOSE << "Insert map for '" << key_PKTable_PKName->charrep() << "' to '" << FKName->charrep() << "'" LOG_
+	      
+	      mapPKTable_PKColumns_To_FKName->insert(&uk_FKName, &key_PKTable_PKName);
+	   }
+	}
+
+	free(szTable);
+
+	/* Close the cursor (the hstmt is still allocated). */
+
+	SQLFreeStmt(hstmt, SQL_DROP);
+/*...e*/
+
+
+// MySQL does not yet support Foreign keys or my tests with type INNODB doesn't work
+// Fallback to use manual queries. (Using MySQL-Max solved that)
+
+	if (ForeignColumns->Count() == 0) {		
+/*...sOriginally for Linux:8:*/
+	lbErrCodes err = ERR_NONE;
+	
+	char buffer[1000] = "";
+	
+	/* For each column in the table for the current query try to select the PKTable and associate it to
+	   the foreign column.
+	 */
+
+	_CL_VERBOSE << "lbQuery::prepareFKList() tries to read foreign column information from table" LOG_
+	
+	char* table = getTableName(getColumnName(1));
+	
+	lb_I_Module* m = getModuleManager();
+
+        UAP_REQUEST(m, lb_I_Database, db)
+        db->init();
+	
+        char* user = getenv("lbDMFUser");
+        char* pass = getenv("lbDMFPasswd");
+	
+        if (!user) user = "dba";
+        if (!pass) pass = "trainres";
+	
+        db->connect("lbDMF", user, pass);
+
+	
+	for (int i = 1; i <= getColumns(); i++) { 
+    	    UAP(lb_I_Query, q)
+
+	    buffer[0] = 0;
+	    
+	    char* column = strdup(getColumnName(i));
+
+	    sprintf(buffer, "select PKTable, PKName from ForeignKey_VisibleData_Mapping where FKTable = '%s' and FKName = '%s'", table, column);
+
+	    _CL_VERBOSE << "Query: " << buffer LOG_
+
+	    q = db->getQuery(0);
+
+	    skipFKCollections = 1;
+	    err = q->query(buffer);
+	    skipFKCollections = 0;
+	    
+	    err = q->first();
+
+	    if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
+		UAP_REQUEST(manager.getPtr(), lb_I_String, FKName)
+	        UAP_REQUEST(manager.getPtr(), lb_I_String, PKTable)
+	        UAP_REQUEST(manager.getPtr(), lb_I_String, PKName)
+		UAP_REQUEST(manager.getPtr(), lb_I_String, PKTable_PKName)
+	
+		UAP_REQUEST(manager.getPtr(), lb_I_String, PKColumn)
+	
+		PKTable = q->getAsString(1);
+		PKName = q->getAsString(2);
+		
+	        FKName->setData(column);
+		
+		UAP(lb_I_Unknown, uk_PKTable)
+		UAP(lb_I_KeyBase, key_FKName)
+
+		UAP(lb_I_Unknown, uk_FKName)
+		UAP(lb_I_KeyBase, key_PKTable_PKName)
+	      
+	        QI(FKName, lb_I_KeyBase, key_FKName)
+	        QI(PKTable, lb_I_Unknown, uk_PKTable)
+
+
+		if (isVerbose())
+		printf("%-s ( %-s ) <-- %-s ( %-s )\n", PKTable->charrep(), PKName->charrep(), table, FKName->charrep());
+
+	        ForeignColumns->insert(&uk_PKTable, &key_FKName);
+	        
+	        *PKTable_PKName = PKTable->charrep();
+	        PKColumn = getPKColumn(FKName->charrep());
+	        *PKTable_PKName += PKColumn->charrep();
+	        
+	        QI(PKTable_PKName, lb_I_KeyBase, key_PKTable_PKName)
+	        QI(FKName, lb_I_Unknown, uk_FKName)
+
+		_CL_VERBOSE << "Insert map for '" << key_PKTable_PKName->charrep() << 
+		"' to '" << FKName->charrep() << "'" LOG_
+
+	        mapPKTable_PKColumns_To_FKName->insert(&uk_FKName, &key_PKTable_PKName);
+	        
+	    } else {
+	    	_CL_VERBOSE << "No foreign key to primary data mapping found." LOG_
+	    }
+	    
+	    free(column);
+	}
+/*...e*/
+	}
+!!!230983.cpp!!!	getTableName(inout columnName : char =  NULL) : char
+
+		
+		SQLHSTMT	StatementHandle;
+		SQLUSMALLINT	ColumnNumber;
+		SQLUSMALLINT	FieldIdentifier;
+		SQLPOINTER	CharacterAttributePtr;
+		SQLSMALLINT	BufferLength;
+		SQLSMALLINT	StringLengthPtr = 0;
+		SQLPOINTER	NumericAttributePtr;
+		
+		SQLINTEGER	Int = 0;
+		
+		CharacterAttributePtr = (void*) malloc(101);
+		memset(CharacterAttributePtr, 0, 101);
+
+		NumericAttributePtr = &Int;
+		
+		SQLRETURN retcode;
+		int index = boundColumns->getColumnIndex(columnName);
+		
+		retcode = SQLColAttribute(
+				  hstmt,
+				  index, 
+				  SQL_DESC_TABLE_NAME, 
+				  // SQL_DESC_BASE_TABLE_NAME would make problems
+				  // under Mac OS X and Linux
+				  CharacterAttributePtr,
+				  100,
+				  &StringLengthPtr,
+				  NumericAttributePtr);
+			
+		if ((retcode == SQL_ERROR) || (retcode == SQL_SUCCESS_WITH_INFO)) {
+			_CL_LOG << "ERROR: SQLColAttribute(...) failed." LOG_
+			dbError("SQLColAttribute()", hstmt);
+		}
+		
+		if (lpszTable == NULL) {
+			int _size = strlen((char*) CharacterAttributePtr)+1;
+			lpszTable = (char*) malloc(_size);
+			lpszTable[0] = 0;
+			strcpy(lpszTable, (char*) CharacterAttributePtr);
+			lpszSize = _size;
+		} else {
+			int _size = strlen((char*) CharacterAttributePtr)+1;
+			if (lpszSize < _size) {
+				free(lpszTable);
+				lpszTable = (char*) malloc(_size);
+				lpszSize = _size;
+			}
+		
+			lpszTable[0] = 0;
+			strcpy((char*) lpszTable, (char*) CharacterAttributePtr);
+		}
+		
+		free(CharacterAttributePtr);
+		
+		
+	if (strcmp(lpszTable, "") == 0) {
+		// Quick hack
+
+		char* buf = strdup(szSql);
+		char* t = strtok(buf, " ,");
+		
+		while (t) {
+			t = strtok(NULL, " ,");
+			
+			if (strcmp(t, "from") == 0) break;
+		}
+
+		t = strtok(NULL, " ,");
+
+		printf("%s\n", t);
+		
+		strcpy((char*) lpszTable, t);
+		free(buf);
+	}
+		
+		
+		
+		return lpszTable;
+	
+!!!231111.cpp!!!	dbError(inout lp : char, in hstmt : HSTMT) : void
+
+	SQLCHAR  SqlState[6], SQLStmt[100], Msg[SQL_MAX_MESSAGE_LENGTH];
+	SQLINTEGER NativeError;
+	SQLSMALLINT i, MsgLen;
+	SQLRETURN  rc;
+
+	i = 1;
+	
+	while ((rc = SQLGetDiagRec(SQL_HANDLE_STMT, hstmt, i, SqlState, &NativeError,
+	      Msg, sizeof(Msg), &MsgLen)) != SQL_NO_DATA) {
+	
+		_CL_LOG << "Error in lbQuery: (" << lp << ") " << 
+			SqlState << ": " << (int) NativeError << " - " << Msg LOG_
+		i++;
+	}
+!!!231239.cpp!!!	PrintData(in reverse : bool) : void
+
+	lbErrCodes err = ERR_NONE;
+	int cols = getColumns();
+
+	PrintHeader();
+	
+	if (reverse == false) {
+/*...sforward:8:*/
+	err = first();
+	while (err == ERR_DB_ROWDELETED) err = next();
+
+	if (err == ERR_NONE) {
+	    PrintCurrent();
+	    
+	    err = next();
+	    
+	    while (err == ERR_DB_ROWDELETED) err = next();
+	    
+	    while (err == ERR_NONE) {
+			PrintCurrent();
+			
+			err = next();
+			
+			while (err == ERR_DB_ROWDELETED) err = next();
+	    }
+		
+	    if (err == WARN_DB_NODATA) {
+	    		PrintCurrent();
+	    }	    
+	}
+/*...e*/
+	} else {
+/*...sreverse:8:*/
+	err = last();
+	while (err == ERR_DB_ROWDELETED) err = previous();
+	if (err == ERR_NONE) {
+	    PrintCurrent();
+	    
+	    err = previous();
+	    
+	    while (err == ERR_DB_ROWDELETED) err = previous();
+	    
+	    while (err == ERR_NONE) {
+			PrintCurrent();
+			
+			err = previous();
+			
+			while (err == ERR_DB_ROWDELETED) err = previous();
+	    }
+		
+	    if (err == WARN_DB_NODATA) {
+	    		PrintCurrent();
+	    }	    
+	}
+/*...e*/
+	}
+	
+	PrintFooter();
+!!!231367.cpp!!!	PrintCurrent() : void
+
+	UAP(lb_I_String, s)
+	int cols = getColumns();
+	
+	for (int i = 1; i <= cols-1; i++) {
+		UAP(lb_I_String, s)
+	        s = getAsString(i);
+	        s->trim();
+	        printf("%19s", s->charrep());
+	};
+
+	s = getAsString(cols);
+	s->trim();
+	printf("%19s\n", s->charrep());
+!!!231495.cpp!!!	PrintHeader() : void
+
+	int cols = getColumns();
+	for (int i = 1; i < cols; i++) {
+	        printf("%19s", getColumnName(i));
+	}
+
+	printf("%19s\n", getColumnName(cols));
+
+	PrintFooter();
+!!!231623.cpp!!!	PrintFooter() : void
+
+	int cols = getColumns();
+	
+	for (int i = 1; i < cols; i++) {
+		printf("-------------------");
+	}
+	
+	printf("-------------------\n");
+!!!231879.cpp!!!	query(inout q : char, in bind : bool) : lbErrCodes
+
+	lbBoundColumns* boundcols = NULL;
+
+    if (q == NULL) {
+		_LOG << "Error: Have got a NULL pointer for the query to execute!" LOG_
+		return ERR_DB_QUERYFAILED;
+	}
+	
+	if (strlen(q) >= 1000) printf("WARNING: Bufferoverflow in %s at %d\n", __FILE__, __LINE__);
+
+	lstrcpy(szSql, q);
+
+/*...sdoc:0:*/
+#ifdef bla
+
+Using SQLSetPos
+	Before an application calls SQLSetPos, it must perform the following sequence of steps: 
+
+	If the application will call SQLSetPos with Operation set to SQL_UPDATE, call SQLBindCol 
+	(or SQLSetDescRec) for each column to specify its data type and bind buffers for the columns data and length.
+
+
+	If the application will call SQLSetPos with Operation set to SQL_DELETE or SQL_UPDATE, 
+	call SQLColAttribute to make sure that the columns to be deleted or updated are updatable.
+
+
+	Call SQLExecDirect, SQLExecute, or a catalog function to create a result set.
+
+
+	Call SQLFetch or SQLFetchScroll to retrieve the data.
+	Note In ODBC 3.x, SQLSetPos can be called before SQLFetch or SQLFetchScroll. For more information, 
+	see the Block Cursors, Scrollable Cursors, and Backward Compatibility section in Appendix G, 
+	Driver Guidelines for Backward Compatibility.
+
+#endif
+/*...e*/
+/*...sbla:0:*/
+/*
+	char cursorname[100] = "";
+	
+	sprintf(cursorname, "Cursor-%p", this);
+
+	retcode = SQLSetCursorName(hstmt, cursorname, SQL_NTS);
+*/	
+/*...e*/
+// Moved from lbBoundColumns::setQuery(...)
+// As Luf states, here it should be.
+#ifdef bla
+	const int ArraySize = 1;
+	SQLUSMALLINT RowStatusArray[ArraySize];
+
+	// Set the array size to one.
+	SQLSetStmtAttr(hstmt, SQL_ATTR_ROW_ARRAY_SIZE, (SQLPOINTER) ArraySize, 0);
+	
+	// Why this construct ??
+	SQLINTEGER csrType = SQL_CURSOR_KEYSET_DRIVEN;
+	
+	if ((retcode = SQLSetStmtAttr(hstmt, SQL_ATTR_CURSOR_TYPE, (SQLPOINTER) csrType, 0)) != SQL_SUCCESS) {
+		if (retcode != SQL_SUCCESS_WITH_INFO) 
+			_CL_LOG << "lbQuery::query(...) Error: Failed to set cursor to keyset driven." LOG_
+	}
+
+	if ((retcode = SQLSetStmtAttr(hstmt, SQL_ATTR_ROW_BIND_TYPE, SQL_BIND_BY_COLUMN, 0)) != SQL_SUCCESS) {
+		if (retcode != SQL_SUCCESS_WITH_INFO) 
+			_CL_LOG << "lbQuery::query(...) Error: Failed to set binding by column." LOG_
+	}
+	
+	if ((retcode = SQLSetStmtAttr(hstmt, SQL_ATTR_ROW_STATUS_PTR, RowStatusArray, 0)) != SQL_SUCCESS) {
+		if (retcode != SQL_SUCCESS_WITH_INFO) 
+			_CL_LOG << "lbQuery::query(...) Error: Failed to set rowstatus array." LOG_
+	}
+#endif
+	retcode = SQLExecDirect(hstmt, (unsigned char*) szSql, SQL_NTS);
+
+	if ((retcode != SQL_SUCCESS) && (retcode != SQL_SUCCESS_WITH_INFO))
+        {
+        	//dbError("SQLExecDirect()", hstmt);
+		_LOG << "lbQuery::query(...) failed. (" << szSql << ")" LOG_
+		return ERR_DB_QUERYFAILED;
+        }
+
+	if (bind == true) {
+		retcode = SQLNumResultCols(hstmt, &cols);
+
+		if (retcode != SQL_SUCCESS)
+		{
+		        dbError("SQLNumResultCols()", hstmt);
+		        return ERR_DB_QUERYFAILED;
+		} else {
+			lbErrCodes err = ERR_NONE;
+			
+			if (boundColumns != NULL) {
+				_CL_LOG << "Unbind columns of previous query." LOG_
+				boundColumns--;
+				boundColumns = NULL;
+			}
+			
+			if (ReadOnlyColumns != NULL) {
+				ReadOnlyColumns->deleteAll();
+			}
+
+			boundcols = new lbBoundColumns();
+			boundcols->setModuleManager(*&manager, __FILE__, __LINE__);
+
+			QI(boundcols, lb_I_ColumnBinding, boundColumns)
+		
+			boundColumns->setQuery(this, ReadOnlyColumns.getPtr());
+			
+			prepareFKList();
+		}
+		
+		databound = 1;
+	} else {
+		_CL_LOG << "Do not prebind columns. You must call bind()." LOG_
+	}
+
+	return ERR_NONE;
+!!!232007.cpp!!!	bind() : lbErrCodes
+
+	if (databound == 0) {
+		
+		_CL_VERBOSE << "lbQuery::bind() binds columns..." LOG_
+		
+		retcode = SQLNumResultCols(hstmt, &cols);
+	
+		if (retcode != SQL_SUCCESS)
+		{
+			_CL_LOG << "lbQuery::bind() SQLNumResultCols() failed." LOG_
+		        dbError("SQLNumResultCols()", hstmt);
+		        return ERR_DB_QUERYFAILED;
+		} else {
+			lbErrCodes err = ERR_NONE;
+			lbBoundColumns* boundcols = NULL;
+			
+			if (boundColumns != NULL) {
+				_CL_LOG << "Unbind columns of previous query." LOG_
+				boundColumns--;
+				boundColumns = NULL;
+			}
+			
+			boundcols = new lbBoundColumns();
+			boundcols->setModuleManager(*&manager, __FILE__, __LINE__);
+
+			//boundColumns = boundcols;
+		
+			_CL_VERBOSE << "Bind columns with " << ReadOnlyColumns->Count() << " readonly elements" LOG_
+		
+			QI(boundcols, lb_I_ColumnBinding, boundColumns)
+		
+			boundColumns->setQuery(this, ReadOnlyColumns.getPtr());
+			
+			prepareFKList();
+		}
+		
+		databound = 1;
+	}
+	
+	return ERR_NONE;
+!!!232135.cpp!!!	add() : lbErrCodes
+
+
+	if (_readonly == 1) return ERR_DB_READONLY;
+
+	mode = 1;
+
+	return ERR_NONE;
+!!!232391.cpp!!!	remove() : lbErrCodes
+
+UWORD   RowStat[20];
+UDWORD  RowsFetched = 0;
+
+/**
+ * \todo Could not build delete statement without primary key included in SQL statement.
+ *
+ * It must be possible to avoid showing the primary key to the user, but it
+ * is needed in the query to correctly build delete statements.
+ *
+ * Currently, CREATE_DYNAMIC_STATEMENTS is undefined and SQL_DELETE would be used.
+ * It is a compromise between problems with PostgreSQL ODBC driver version 07.03.0200
+ * and it's reread problem. 
+ *
+ * Reopen is used.
+ * 
+ */
+
+	if (mode == 1) return ERR_DB_STILL_ADDING;
+
+#ifdef CREATE_DYNAMIC_STATEMENTS
+	/* As of still having problems with deleting rows with SQLSetPos
+	   I try to build a delete statement dynamically. */
+
+	UAP_REQUEST(manager.getPtr(), lb_I_String, SQL)
+	UAP(lb_I_String, pk)
+
+	int  PKCols = getPKColumns();
+
+	pk = getPKColumn(PKCols);
+	*SQL = "delete from ";
+	*SQL += getTableName(pk->charrep()); // What is, if I have a joined query ?
+	*SQL += " where ";
+
+	for (int i = 1; i < PKCols; i++) {
+		#define NAME_LEN 10
+		
+		SQLCHAR szName[NAME_LEN] = "";
+		SQLINTEGER  cbName;
+		
+		UAP(lb_I_String, pk)
+		UAP(lb_I_String, val)
+		pk = getPKColumn(i);
+		
+		RETCODE retcode = SQLGetData(hstmt, i, SQL_C_CHAR, szName, NAME_LEN, &cbName);
+		
+		if (retcode != SQL_SUCCESS) {
+			_CL_LOG << "ERROR: Column could not retrieved !" LOG_
+		} else {
+			*SQL += pk->charrep();
+			*SQL += " = ";
+			*SQL += (char*) szName;
+			*SQL += " and ";
+		}
+	}
+	
+	UAP(lb_I_String, value)
+	pk = getPKColumn(PKCols);
+	value = getAsString(PKCols);
+		
+	*SQL += pk->charrep();
+	*SQL += " = ";
+	*SQL += value->charrep();
+
+	_CL_LOG << "Created a delete statement as follows: '" << SQL->charrep() << "'" LOG_
+
+	executeDirect(SQL->charrep());
+
+	reopen();
+	
+	if (haveData == false) return ERR_DB_NODATA;
+		
+	return INFO_DB_REOPENED;
+/*
+	retcode = SQLSetPos(hstmt, 1, SQL_REFRESH, SQL_LOCK_NO_CHANGE);
+	
+	if (retcode != SQL_SUCCESS)
+	{
+	        dbError("SQLSetPos(SQL_DELETE)", hstmt);
+	        _CL_LOG << "lbQuery::remove(...) deleting failed." LOG_
+	        return ERR_NONE;
+	}
+*/
+#endif
+
+#ifndef CREATE_DYNAMIC_STATEMENTS
+	retcode = SQLSetPos(hstmt, 1, SQL_DELETE, SQL_LOCK_NO_CHANGE);
+	
+	if (retcode != SQL_SUCCESS)
+	{
+	        dbError("SQLSetPos(SQL_DELETE)", hstmt);
+	        _CL_LOG << "lbQuery::remove(...) deleting failed." LOG_
+	        return ERR_NONE;
+	}
+
+	reopen();
+	
+	if (haveData == false) return ERR_DB_NODATA;
+
+#endif
+	return ERR_NONE;
+!!!232519.cpp!!!	update() : lbErrCodes
+
+	lbErrCodes err = ERR_NONE;
+	#define cbMAXSQL    512
+	char* CursorName = (char*) malloc(cbMAXSQL);
+	CursorName[0] = 0;
+
+	if (boundColumns != NULL) boundColumns->unbindReadonlyColumns();
+
+	if (mode == 1) {
+		retcode = SQLSetPos(hstmt, 2, SQL_ADD, SQL_LOCK_NO_CHANGE);
+		
+		if (retcode != SQL_SUCCESS)
+		{
+		        dbError("SQLSetPos()", hstmt);
+		        _LOG << "lbQuery::update(...) adding failed." LOG_
+		        
+		        if (boundColumns != NULL) boundColumns->rebindReadonlyColumns();
+		        
+		        return ERR_DB_UPDATEFAILED;
+		}
+
+		mode = 0;
+	} else {
+#ifdef USE_CURRENT_OF
+/*...susing WHERE CURRENT OF \46\\46\\46\:0:*/
+		// Update the existing record
+
+		// Now I am able to begin the update statement
+		
+		char* buffer = (char*) malloc(2000);
+
+		char* Update = "UPDATE ";
+		char* Table  = getTableName();
+		char* Set    = " SET ";
+		
+		
+		int ci = 0;
+		
+		while (Table[ci] != ' ') ci++;
+		
+		Table[ci] = 0;
+		
+		SWORD    cb;
+		
+		
+		SQLGetCursorName(hstmt, (unsigned char *) CursorName ,cbMAXSQL, &cb);
+		
+		
+		printf("Update table '%s'\n", Table);
+
+		/* Get the updateable columns, that I have bound.
+		   That means, primary and foreign keys should not
+		   updated here, because this is intented for the
+		   simplest forms without dropdown boxes that may
+		   handle it correctly.
+		   And why should I change a primary key ?
+		*/
+		
+		sprintf(buffer, "%s%s%s", Update, Table, Set);
+		
+		for (int i = 1; i <= boundColumns->getColumnCount()-1; i++) {
+			UAP(lb_I_BoundColumn, bc)
+			
+			bc = boundColumns->getBoundColumn(i);
+
+
+			if (bc == NULL) {
+				_LOG << "ERROR: boundColumns->getBoundColumn(" << i << ") returns NULL pointer" LOG_
+				printf("Nullpointer logged\n");
+			}
+			
+			char* tempbuffer = strdup(buffer);
+			
+			UAP_REQUEST(manager.getPtr(), lb_I_String, s)
+			if (s.getPtr() == NULL) printf("ERROR: s is NULL\n");
+			bc->getAsString(s.getPtr(), 1);
+
+			if (s == NULL) printf("ERROR: Null pointer in s\n");
+			if (bc == NULL) printf("ERROR: Null pointer in bc\n");
+			if (bc->getColumnName() == NULL) printf("ERROR: Null pointer in bc->getColumnName()\n");
+			
+			char* colName = bc->getColumnName()->getData();
+			char* colValue = s->getData();
+			sprintf(buffer, "%s%s=%s, ", tempbuffer, colName, colValue);
+			free(tempbuffer);
+		}
+		
+		{
+			UAP(lb_I_BoundColumn, bc)
+			bc = boundColumns->getBoundColumn(boundColumns->getColumnCount());
+		
+		//printf("Build set clause for %s\n", bc->getColumnName()->charrep());
+			
+			char* tempbuffer = strdup(buffer);
+			
+			UAP_REQUEST(manager.getPtr(), lb_I_String, s)
+			bc->getAsString(s.getPtr(), 1);
+			
+//			sprintf(buffer, "%s%s=%s WHERE CURRENT OF %s", tempbuffer, bc->getColumnName()->getData(), s->getData(), CursorName);
+			sprintf(buffer, "%s%s=%s", tempbuffer, bc->getColumnName()->getData(), s->getData());
+			
+			free(tempbuffer);
+			
+		}
+		
+printf("Query is: '%s'\n", buffer);
+
+		retcode = SQLExecDirect(hupdatestmt, (unsigned char*) buffer, SQL_NTS);
+//		             SQLExecute(hupdatestmt, (unsigned char *)buffer, SQL_NTS);
+		if (retcode != SQL_SUCCESS)
+		{
+		        dbError("SQLExecDirect() for update", hupdatestmt);
+		        _LOG << "lbQuery::update(...) failed." LOG_
+		        return ERR_DB_UPDATEFAILED;
+		}
+
+free(buffer);
+
+/*...e*/
+#endif
+#ifndef USE_CURRENT_OF
+		retcode = SQLSetPos(hstmt, 1, SQL_UPDATE, SQL_LOCK_NO_CHANGE);
+		
+		if (retcode != SQL_SUCCESS)
+		{
+		        dbError("SQLSetPos()", hstmt);
+		        _LOG << "lbQuery::update(...) updating failed." LOG_
+		        
+		        if (boundColumns != NULL) boundColumns->rebindReadonlyColumns();
+		        
+		        return ERR_DB_UPDATEFAILED;
+		}
+#endif
+	}
+
+	if (boundColumns != NULL) boundColumns->rebindReadonlyColumns();
+
+	free(CursorName);
+
+	if (_autoRefresh) reopen();
+
+	return ERR_NONE;
+!!!232647.cpp!!!	getColumns() : int
+
+	SWORD count = 0;
+	retcode = SQLNumResultCols(hstmt, &count);
+
+	if (retcode != SQL_SUCCESS) dbError("lbQuery::getColumns()", hstmt);
+	
+	return count;
+!!!232903.cpp!!!	getColumnName(in col : int) : char
+
+	SQLSMALLINT     ColumnNumber = 0;
+	SQLCHAR         ColumnName[1000] = "";
+	SQLSMALLINT     BufferLength = 500;
+	SQLSMALLINT     DataType = 0;
+	SQLSMALLINT     NameLength = 0;
+
+	SQLSMALLINT     DecimalDigits = 0;
+	SQLSMALLINT     Nullable = 0;
+	SQLUINTEGER     ColumnSize;
+
+	SQLRETURN ret = SQLDescribeCol( hstmt, col, ColumnName,
+                      BufferLength, &NameLength, &DataType,
+                      &ColumnSize, &DecimalDigits, &Nullable);
+
+	if (ret != SQL_SUCCESS) {
+		_CL_LOG << "Error: lbQuery::getColumnName('" << col << "') failed. (" << ColumnName << ")" LOG_
+	}
+	
+	if (strchr((char const*) ColumnName, '.') != 0) {
+		strcpy(lbQuery_column_Name, (char*) (strchr((char const*) ColumnName, '.') + 1));
+	} else {
+		strcpy(lbQuery_column_Name, (char*) ColumnName);
+	}
+	
+	return lbQuery_column_Name;
+!!!233031.cpp!!!	hasFKColumn(inout FKName : char) : int
+
+	lbErrCodes err = ERR_NONE;
+
+	if ((FKName != NULL) && (strlen(FKName) > 0)) {
+
+		if (skipFKCollections == 1) {
+			_CL_VERBOSE << "Warning: Skipping for checking of foreign columns." LOG_
+			return 0;
+		}
+	
+		UAP(lb_I_KeyBase, key)
+		UAP_REQUEST(manager.getPtr(), lb_I_String, s)
+	
+		s->setData(FKName);
+		s->toLower();
+		
+		QI(s, lb_I_KeyBase, key)
+	
+		if (ForeignColumns->exists(&key) == 1) {
+			UAP(lb_I_Unknown, uk)
+			UAP(lb_I_String, s)
+			
+			uk = ForeignColumns->getElement(&key);
+			QI(uk, lb_I_String, s)
+			
+			// Check, if FKName does not point from other table to me
+			if (strcmp(s->charrep(), getTableName(FKName)) != 0) return 1;
+		}
+
+	}
+
+	return 0;
+!!!233159.cpp!!!	getFKColumns() : int
+
+	if (skipFKCollections == 1) return 0;
+
+	return ForeignColumns->Count();
+!!!233287.cpp!!!	getFKColumn(in pos : int) : lb_I_String
+
+	lbErrCodes err = ERR_NONE;
+	
+	if (skipFKCollections == 1) return NULL;
+	
+	UAP(lb_I_Unknown, uk)
+	UAP(lb_I_String,  s)
+	
+	// getKeyAt returns it's reference.
+	// Bugfix: increment reference here.
+	// Implementation of lb_I_Element should be fixed.
+
+	// It is fixed now.
+	
+	uk = ForeignColumns->getKeyAt(pos);
+	
+	QI(uk, lb_I_String, s)
+	s++;
+	
+	return s.getPtr();
+!!!233415.cpp!!!	getFKColumn(inout table : char, inout primary : char) : lb_I_String
+
+	lbErrCodes err = ERR_NONE;
+
+	_CL_LOG << "lbQuery::getFKColumn('" << table << "', '" << primary << "') called." LOG_
+	
+	UAP_REQUEST(manager.getPtr(), lb_I_String, PKTable_PKName)
+	UAP(lb_I_KeyBase, key_PKTable_PKName)
+	
+	*PKTable_PKName = table;
+	*PKTable_PKName += primary;
+	
+	QI(PKTable_PKName, lb_I_KeyBase, key_PKTable_PKName)
+
+	UAP(lb_I_Unknown, result)
+	UAP(lb_I_String, FKName)
+
+	if (mapPKTable_PKColumns_To_FKName == NULL) {
+		_CL_LOG << "Error: There were no foreign keys collected. (" << table << ", " << primary << ")" LOG_
+		return NULL;
+	}
+
+	result = mapPKTable_PKColumns_To_FKName->getElement(&key_PKTable_PKName);
+
+	if (result == NULL) return NULL;
+
+	QI(result, lb_I_String, FKName)
+
+	FKName++;
+	
+	return FKName.getPtr();
+!!!233543.cpp!!!	getPKTable(in FKName : char) : lb_I_String
+
+	lbErrCodes err = ERR_NONE;
+
+
+	if (skipFKCollections == 1) {
+		_CL_VERBOSE << "Warning: Skipping for checking of foreign columns." LOG_
+		return NULL;
+	}
+	
+	UAP(lb_I_KeyBase, key)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, s)
+	
+	s->setData(FKName);
+	s->toLower();
+	
+	QI(s, lb_I_KeyBase, key)
+	
+	if (ForeignColumns->exists(&key) == 1) {
+		UAP(lb_I_String, string)
+		UAP(lb_I_Unknown, uk)
+		
+		uk = ForeignColumns->getElement(&key)->clone(__FILE__, __LINE__);
+		
+		QI(uk, lb_I_String, string)
+
+		string++;
+		
+		return string.getPtr();
+	}
+
+	return NULL;
+!!!233671.cpp!!!	getPKColumn(in FKName : char) : lb_I_String
+
+	#define TAB_LEN 100
+	#define COL_LEN 100
+
+	unsigned char*   szTable = NULL;     /* Table to display   */
+
+	UCHAR   szPkTable[TAB_LEN];  /* Primary key table name */
+	UCHAR   szFkTable[TAB_LEN];  /* Foreign key table name */
+	UCHAR   szPkCol[COL_LEN];  /* Primary key column   */
+	UCHAR   szFkCol[COL_LEN];  /* Foreign key column   */
+
+	SQLHSTMT         hstmt;
+	SQLINTEGER      cbPkTable, cbPkCol, cbFkTable, cbFkCol, cbKeySeq;
+	SQLSMALLINT      iKeySeq;
+	SQLRETURN         retcode;
+
+/*...sOriginally for windows \40\foreign table\41\:8:*/
+	retcode = SQLAllocStmt(hdbc, &hstmt); /* Statement handle */
+
+	if (retcode != SQL_SUCCESS)
+	{
+		_dbError_DBC("SQLAllocStmt()", hdbc);
+	}
+
+/*...sBind columns:16:*/
+	SQLBindCol(hstmt, 3, SQL_C_CHAR, szPkTable, TAB_LEN, &cbPkTable);
+	SQLBindCol(hstmt, 4, SQL_C_CHAR, szPkCol, COL_LEN, &cbPkCol);
+	SQLBindCol(hstmt, 5, SQL_C_CHAR, &iKeySeq, TAB_LEN, &cbKeySeq); //SSHORT
+	SQLBindCol(hstmt, 7, SQL_C_CHAR, szFkTable, TAB_LEN, &cbFkTable);
+	SQLBindCol(hstmt, 8, SQL_C_CHAR, szFkCol, COL_LEN, &cbFkCol);
+/*...e*/
+
+	char* temp = (char*) getTableName(getColumnName(1));
+	szTable = (unsigned char*) malloc(strlen(temp)+1);
+	szTable[0] = 0;
+	strcpy((char*) szTable, temp);
+	
+	if (strlen((char* const) szTable) > 99) {
+		_CL_VERBOSE << "ERROR: Possible buffer overflows!" LOG_
+	}
+
+	_CL_VERBOSE << "Try to get foreign keys with '" << temp << "' as foreign table" LOG_
+	
+	retcode = SQLForeignKeys(hstmt,
+	         NULL, 0,      /* Primary catalog   */
+	         NULL, 0,      /* Primary schema   */
+	         NULL, 0,      /* Primary table   */
+	         NULL, 0,      /* Foreign catalog   */
+	         NULL, 0,      /* Foreign schema   */
+	         szTable, SQL_NTS); /* Foreign table   */
+
+	if ((retcode != SQL_SUCCESS) && (retcode != SQL_SUCCESS_WITH_INFO)) {
+		_CL_LOG << "SQLForeignKeys(...) failed!" LOG_
+	}
+
+	while ((retcode == SQL_SUCCESS) || (retcode == SQL_SUCCESS_WITH_INFO)) {
+
+	/* Fetch and display the result set. This will be all of the */
+	/* foreign keys in other tables that refer to the ORDERS */
+	/* primary key.                 */
+
+	   retcode = SQLFetch(hstmt);
+
+	   if (retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO) {
+	      lbErrCodes err = ERR_NONE;
+	      UAP_REQUEST(manager.getPtr(), lb_I_String, comp)
+	      UAP_REQUEST(manager.getPtr(), lb_I_String, comp1)
+	      
+	      /// \todo Think about case sensity.
+	      
+	      if (isVerbose()) printf("%-s ( %-s ) <-- %-s ( %-s ) compare foreign column with: %s\n", szPkTable, szPkCol, szFkTable, szFkCol, FKName);
+	      
+	      *comp = (char*) szFkCol;
+	      comp->toLower();
+	      
+	      *comp1 = FKName;
+	      comp1->toLower();
+	      
+	      if (strcmp(comp1->charrep(), comp->charrep()) == 0) {
+	      	UAP_REQUEST(manager.getPtr(), lb_I_String, c)
+	      	
+	      	c->setData((char const*) szPkCol);
+	      	c++;
+	      	free(szTable);
+	      	SQLFreeStmt(hstmt, SQL_DROP);
+	      	return c.getPtr();
+	      }
+	   } else {
+	   	dbError("SQLFetch(hstmt) in getPKColumn()", hstmt);
+	   }
+	}
+
+	free(szTable);
+
+	/* Close the cursor (the hstmt is still allocated). */
+
+	SQLFreeStmt(hstmt, SQL_DROP);
+	
+	return NULL;
+/*...e*/
+!!!233799.cpp!!!	getPKColumns() : int
+
+	
+	if (primaryColumns == NULL) {
+		REQUEST(manager.getPtr(), lb_I_Container, primaryColumns)
+        } else {
+                primaryColumns->deleteAll();
+        }
+
+	unsigned char*   szTable = NULL;     /* Table to display   */
+
+	UCHAR   szPkTable[TAB_LEN];  /* Primary key table name */
+	UCHAR   szFkTable[TAB_LEN];  /* Foreign key table name */
+	UCHAR   szPkCol[COL_LEN];  /* Primary key column   */
+	UCHAR   szFkCol[COL_LEN];  /* Foreign key column   */
+
+	SQLHSTMT         hstmt;
+	SQLINTEGER      cbPkTable, cbPkCol, cbFkTable, cbFkCol, cbKeySeq;
+	SQLSMALLINT      iKeySeq;
+	SQLRETURN         retcode;
+
+	retcode = SQLAllocStmt(hdbc, &hstmt); /* Statement handle */
+
+	SQLBindCol(hstmt, 3, SQL_C_CHAR, szPkTable, TAB_LEN, &cbPkTable);
+	if (retcode != SQL_SUCCESS)
+	{
+	        dbError("SQLAllocStmt()", hstmt);
+	}
+
+	SQLBindCol(hstmt, 4, SQL_C_CHAR, szPkCol, COL_LEN, &cbPkCol);
+	if (retcode != SQL_SUCCESS)
+	{
+	        dbError("SQLAllocStmt()", hstmt);
+	}
+
+	SQLBindCol(hstmt, 5, SQL_C_SSHORT, &iKeySeq, TAB_LEN, &cbKeySeq);
+	if (retcode != SQL_SUCCESS)
+	{
+	        dbError("SQLAllocStmt()", hstmt);
+	}
+	
+	_CL_VERBOSE << "Call getTableName('" << getColumnName(1) << "')" LOG_
+
+	char* temp = (char*) getTableName(getColumnName(1));
+	szTable = (unsigned char*) malloc(strlen(temp)+1);
+	szTable[0] = 0;
+	strcpy((char*) szTable, temp);
+	
+	retcode = SQLPrimaryKeys(hstmt,
+	         NULL, 0,      		/* Primary catalog   */
+	         NULL, 0,      		/* Primary schema   */
+	         szTable, SQL_NTS);	/* Primary table   */
+
+	int columns = 0;
+
+	if ((retcode != SQL_SUCCESS) && (retcode != SQL_SUCCESS_WITH_INFO))
+	{
+		_CL_LOG << "lbQuery::getPKColumns() SQLPrimaryKeys failed." LOG_
+		
+		dbError("SQLPrimaryKeys()", hstmt);
+	}
+	
+
+	while ((retcode == SQL_SUCCESS) || (retcode == SQL_SUCCESS_WITH_INFO)) {
+
+	/* Fetch and display the result set. This will be all of the */
+	/* foreign keys in other tables that refer to the ORDERS */
+	/* primary key.                 */
+
+	   retcode = SQLFetch(hstmt);
+	   
+	   if (retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO) {
+		lbErrCodes err = ERR_NONE;
+
+		printf("%s ( %s ) seq: %hd\n", szPkTable, szPkCol, iKeySeq);
+	      
+		columns++;
+	      
+		UAP_REQUEST(manager.getPtr(), lb_I_Integer, KeyPosition)
+		UAP_REQUEST(manager.getPtr(), lb_I_String, PKName)
+	      
+		KeyPosition->setData(columns);
+		PKName->setData((char*) szPkCol);
+	      
+		UAP(lb_I_Unknown, uk_PKName)
+		UAP(lb_I_KeyBase, key_Pos)
+		
+		QI(PKName, lb_I_Unknown, uk_PKName)
+		QI(KeyPosition, lb_I_KeyBase, key_Pos)
+
+
+		// Store the position as they appear
+		primaryColumns->insert(&uk_PKName, &key_Pos);
+	   }
+	}
+
+	free(szTable);
+
+	/* Close the cursor (the hstmt is still allocated). */
+
+	SQLFreeStmt(hstmt, SQL_DROP);
+	
+	return columns;
+!!!233927.cpp!!!	getPKColumn(in pos : int) : lb_I_String
+
+	lbErrCodes err = ERR_NONE;
+	
+	UAP_REQUEST(manager.getPtr(), lb_I_Integer, Position)
+
+	UAP(lb_I_KeyBase, key_Position)
+	QI(Position, lb_I_KeyBase, key_Position)
+
+	Position->setData(pos);
+
+	if (primaryColumns->exists(&key_Position) != 0) {
+		UAP(lb_I_String, column)
+		UAP(lb_I_Unknown, uk)
+		
+		uk = primaryColumns->getElement(&key_Position);
+		QI(uk, lb_I_String, column)
+		column++;
+		
+		return column.getPtr();
+	
+	}
+
+	return NULL;
+!!!234055.cpp!!!	isNull(in pos : int) : bool
+
+	return boundColumns->isNull(pos);
+!!!234183.cpp!!!	getColumnType(in pos : int) : lbDBColumnTypes
+
+	return boundColumns->getColumnType(pos);
+!!!234311.cpp!!!	getColumnType(inout name : char) : lbDBColumnTypes
+
+	return boundColumns->getColumnType(name);
+!!!234439.cpp!!!	setReadonly(inout column : char, in updateable : bool =  true) : void
+
+	lbErrCodes err = ERR_NONE;
+
+	if (updateable == true) 
+		_CL_LOG << "lbQuery::setReadonly(" << column << ", TRUE)" LOG_
+	else
+		_CL_LOG << "lbQuery::setReadonly(" << column << ", FALSE)" LOG_
+	
+	UAP_REQUEST(manager.getPtr(), lb_I_String, col)
+	
+	UAP(lb_I_KeyBase, key)
+	UAP(lb_I_Unknown, uk)
+	
+	QI(col, lb_I_KeyBase, key)
+	QI(col, lb_I_Unknown, uk)
+	
+	col->setData(column);
+
+	if (ReadOnlyColumns == NULL) {
+		REQUEST(manager.getPtr(), lb_I_Container, ReadOnlyColumns)
+	}
+
+	if (!ReadOnlyColumns->exists(&key) && updateable == true) {
+		_CL_LOG << "lbQuery::setReadonly(...) calls ReadOnlyColumns->insert(...)." LOG_
+		ReadOnlyColumns->insert(&uk, &key);
+	}
+	
+	if (ReadOnlyColumns->exists(&key) && updateable == false) {
+		_CL_LOG << "lbQuery::setReadonly(...) calls ReadOnlyColumns->remove(&key)." LOG_
+		ReadOnlyColumns->remove(&key);
+	}
+
+	if (boundColumns.getPtr() != NULL) {
+		_CL_LOG << "lbQuery::setReadonly(...) calls boundColumns->setReadonly(...)." LOG_
+		boundColumns->setReadonly(column, updateable);
+	}
+	
+	_CL_LOG << "lbQuery::setReadonly(...) returns." LOG_
+!!!234567.cpp!!!	getReadonly(inout column : char) : bool
+
+	return boundColumns->getReadonly(column);
+!!!234823.cpp!!!	absolute(in pos : int) : lbErrCodes
+
+        UWORD   RowStat[20];
+        UDWORD  RowsFetched = 0;
+
+	cursor = 1;
+
+	memset(&RowStat[0], sizeof(UWORD)*20, 0);
+
+        // Indicate, that data must prebound to a buffer
+        databound = 0;
+
+	fetchstatus = -1;
+
+#ifndef USE_FETCH_SCROLL
+        retcode = SQLExtendedFetch(hstmt, SQL_FETCH_ABSOLUTE, pos, &RowsFetched, &RowStat[0]);
+
+	CHECK_ROWSTAT()
+	
+	if (peeking == false) {
+		if (retcode == SQL_SUCCESS) {
+			cursor = pos;
+		        return ERR_NONE;
+		}
+	        
+	        if (retcode == SQL_NO_DATA) return last();
+	}
+#endif
+
+#ifdef USE_FETCH_SCROLL
+	retcode = SQLFetchScroll(hstmt, SQL_FETCH_FIRST, 0);
+#endif
+	if (retcode == SQL_NO_DATA) return ERR_DB_NODATA;
+        if (retcode == SQL_ERROR || retcode == SQL_SUCCESS_WITH_INFO) {
+                _LOG << "lbQuery::first(): Error while fetching next row" LOG_
+                dbError("SQLExtendedFetch()", hstmt);
+                
+                // Unsave !!
+                if (retcode == SQL_SUCCESS_WITH_INFO) return ERR_NONE;
+                
+                return ERR_DB_FETCHFIRST;
+        }
+		retcode = SQLExtendedFetch(hstmt, SQL_FETCH_NEXT, 0, &RowsFetched, &RowStat[0]);
+		
+		//CHECK_ROWSTAT()
+		
+		if (retcode == SQL_NO_DATA) {
+			retcode = SQLExtendedFetch(hstmt, SQL_FETCH_PREV, 0, &RowsFetched, &RowStat[0]);
+			
+			//CHECK_ROWSTAT()
+			
+			if (retcode == SQL_NO_DATA) {
+				_LOG << "FATAL ERROR: Resultset indication for no data has been failed!" LOG_
+				fetchstatus = 2;
+				return ERR_DB_NODATA;
+			}
+			fetchstatus = 1;
+			return WARN_DB_NODATA;
+		} else {
+			retcode = SQLExtendedFetch(hstmt, SQL_FETCH_PREV, 0, &RowsFetched, &RowStat[0]);
+			
+			//CHECK_ROWSTAT()
+			
+			if (retcode == SQL_NO_DATA) {
+				_LOG << "FATAL ERROR: Resultset indication for no data has been failed!" LOG_
+				fetchstatus = 2;
+				return ERR_DB_NODATA;
+			}
+			fetchstatus = 0;
+			return ERR_NONE;
+		}
+!!!234951.cpp!!!	first() : lbErrCodes
+
+        UWORD   RowStat[20];
+        UDWORD  RowsFetched = 0;
+
+	cursor = 1;
+
+	memset(&RowStat[0], 0, sizeof(UWORD)*20);
+
+        // Indicate, that data must prebound to a buffer
+        databound = 0;
+
+	fetchstatus = -1;
+
+#ifndef USE_FETCH_SCROLL
+        retcode = SQLExtendedFetch(hstmt, SQL_FETCH_FIRST, 0, &RowsFetched, &RowStat[0]);
+
+	CHECK_ROWSTAT()
+	
+	if (peeking == false) {
+	        return (retcode == SQL_NO_DATA) ? ERR_DB_NODATA : ERR_NONE;
+	}
+#endif
+
+#ifdef USE_FETCH_SCROLL
+	retcode = SQLFetchScroll(hstmt, SQL_FETCH_FIRST, 0);
+#endif
+	if (retcode == SQL_NO_DATA) return ERR_DB_NODATA;
+        if (retcode == SQL_ERROR || retcode == SQL_SUCCESS_WITH_INFO) {
+                _LOG << "lbQuery::first(): Error while fetching next row" LOG_
+                dbError("SQLExtendedFetch()", hstmt);
+                
+                // Unsave !!
+                if (retcode == SQL_SUCCESS_WITH_INFO) return ERR_NONE;
+                
+                return ERR_DB_FETCHFIRST;
+        }
+		retcode = SQLExtendedFetch(hstmt, SQL_FETCH_NEXT, 0, &RowsFetched, &RowStat[0]);
+		
+		if (retcode == SQL_NO_DATA) {
+			retcode = SQLExtendedFetch(hstmt, SQL_FETCH_PREV, 0, &RowsFetched, &RowStat[0]);
+			
+			if (retcode == SQL_NO_DATA) {
+				_LOG << "FATAL ERROR: Resultset indication for no data has been failed!" LOG_
+				fetchstatus = 2;
+				return ERR_DB_NODATA;
+			}
+			fetchstatus = 1;
+			return WARN_DB_NODATA;
+		} else {
+			retcode = SQLExtendedFetch(hstmt, SQL_FETCH_PREV, 0, &RowsFetched, &RowStat[0]);
+			
+			if (retcode == SQL_NO_DATA) {
+				_LOG << "FATAL ERROR: Resultset indication for no data has been failed!" LOG_
+				fetchstatus = 2;
+				return ERR_DB_NODATA;
+			}
+			fetchstatus = 0;
+			return ERR_NONE;
+		}
+!!!235079.cpp!!!	next() : lbErrCodes
+
+	UWORD   RowStat[20];
+	UDWORD  RowsFetched = 0;
+	databound = 0; // Indicate, that data must prebound to a buffer
+
+	memset(&RowStat[0], 0, sizeof(UWORD)*20);
+
+#ifndef USE_FETCH_SCROLL
+	retcode = SQLExtendedFetch(hstmt, SQL_FETCH_NEXT, 0, &RowsFetched, &RowStat[0]);
+
+	CHECK_ROWSTAT()
+
+	if (peeking == false) {
+		if (retcode == SQL_SUCCESS) cursor++;
+		return (retcode == SQL_NO_DATA) ? ERR_DB_NODATA : ERR_NONE;
+	}
+	
+	if (retcode == SQL_NO_DATA) {
+		retcode = SQLExtendedFetch(hstmt, SQL_FETCH_PREV, 0, &RowsFetched, &RowStat[0]);
+		
+		fetchstatus = 1;
+		return ERR_DB_NODATA; // Really no data
+	} else {
+		if (retcode == SQL_SUCCESS) cursor++;
+	
+		retcode = SQLExtendedFetch(hstmt, SQL_FETCH_NEXT, 0, &RowsFetched, &RowStat[0]);
+		
+		if (retcode == SQL_NO_DATA) {
+			retcode = SQLExtendedFetch(hstmt, SQL_FETCH_PREV, 0, &RowsFetched, &RowStat[0]);
+			
+			if (retcode == SQL_NO_DATA) {
+				_LOG << "FATAL ERROR: Resultset indication for no data has been failed!" LOG_
+				fetchstatus = 2;
+				return ERR_DB_NODATA; // ERROR: Go back to intented row failed after peek
+			}
+			fetchstatus = 1;
+			return WARN_DB_NODATA; // Warn for no more data
+		} else {
+			retcode = SQLExtendedFetch(hstmt, SQL_FETCH_PREV, 0, &RowsFetched, &RowStat[0]);
+			
+			if (retcode == SQL_NO_DATA) {
+				_LOG << "FATAL ERROR: Resultset indication for no data has been failed!" LOG_
+				fetchstatus = 2;
+				return ERR_DB_NODATA;
+			}
+			fetchstatus = 0;
+			return ERR_NONE;
+		}
+	}
+#endif
+
+#ifdef USE_FETCH_SCROLL
+	retcode = SQLFetchScroll(hstmt, SQL_FETCH_NEXT, 0);
+#endif
+!!!235207.cpp!!!	previous() : lbErrCodes
+
+        UWORD   RowStat[20];
+        UDWORD  RowsFetched = 0;
+
+	memset(&RowStat[0], 0, sizeof(UWORD)*20);
+
+        // Indicate, that data must prebound to a buffer
+        databound = 0;
+
+#ifndef USE_FETCH_SCROLL
+        retcode = SQLExtendedFetch(hstmt, SQL_FETCH_PREV, 0, &RowsFetched, &RowStat[0]);
+
+	CHECK_ROWSTAT()
+
+	if (peeking == false) {
+		if (retcode == SQL_SUCCESS) cursor--;
+	        return (retcode == SQL_NO_DATA) ? ERR_DB_NODATA : ERR_NONE;
+	}
+
+	if (retcode == SQL_NO_DATA) {
+		retcode = SQLExtendedFetch(hstmt, SQL_FETCH_NEXT, 0, &RowsFetched, &RowStat[0]);
+		
+		fetchstatus = -1;
+		return ERR_DB_NODATA;
+	} else {
+		if (retcode == SQL_SUCCESS) cursor--;
+		retcode = SQLExtendedFetch(hstmt, SQL_FETCH_PREV, 0, &RowsFetched, &RowStat[0]);
+		
+		if (retcode == SQL_NO_DATA) {
+			retcode = SQLExtendedFetch(hstmt, SQL_FETCH_NEXT, 0, &RowsFetched, &RowStat[0]);
+			
+			if (retcode == SQL_NO_DATA) {
+				_LOG << "FATAL ERROR: Resultset indication for no data has been failed!" LOG_
+				fetchstatus = -2;
+				return ERR_DB_NODATA;
+			}
+			fetchstatus = -1;
+			return WARN_DB_NODATA;
+		} else {
+			retcode = SQLExtendedFetch(hstmt, SQL_FETCH_NEXT, 0, &RowsFetched, &RowStat[0]);
+			
+			if (retcode == SQL_NO_DATA) {
+				_LOG << "FATAL ERROR: Resultset indication for no data has been failed!" LOG_
+				fetchstatus = -2;
+				return ERR_DB_NODATA;
+			}
+			fetchstatus = 0;
+			return ERR_NONE;
+		}
+	}
+#endif
+
+#ifdef USE_FETCH_SCROLL
+	retcode = SQLFetchScroll(hstmt, SQL_FETCH_PREV, 0);
+#endif
+!!!235335.cpp!!!	last() : lbErrCodes
+
+        UWORD   RowStat[20];
+        UDWORD  RowsFetched = 0;
+
+	cursor = -1;
+
+	memset(&RowStat[0], sizeof(UWORD)*20, 0);
+
+        // Indicate, that data must prebound to a buffer
+        databound = 0;
+
+	fetchstatus = 1;
+        
+#ifndef USE_FETCH_SCROLL
+        retcode = SQLExtendedFetch(hstmt, SQL_FETCH_LAST, 0, &RowsFetched, &RowStat[0]);
+        
+        CHECK_ROWSTAT()
+
+	if (peeking == false) {
+	        return (retcode == SQL_NO_DATA) ? ERR_DB_NODATA : ERR_NONE;
+	}
+        
+#endif
+#ifdef USE_FETCH_SCROLL
+	retcode = SQLFetchScroll(hstmt, SQL_FETCH_LAST, 0);
+#endif
+	if (retcode == SQL_NO_DATA) {
+	        return ERR_DB_NODATA;
+	}
+        if (retcode == SQL_ERROR || retcode == SQL_SUCCESS_WITH_INFO) {
+                _LOG << "lbQuery::last(): Error while fetching next row" LOG_
+                dbError("SQLExtendedFetch()", hstmt);
+		// Unsave !!
+		if (retcode == SQL_SUCCESS_WITH_INFO) return ERR_NONE;
+                return ERR_DB_FETCHLAST;
+        }
+		retcode = SQLExtendedFetch(hstmt, SQL_FETCH_PREV, 0, &RowsFetched, &RowStat[0]);
+		
+		if (retcode == SQL_NO_DATA) {
+			retcode = SQLExtendedFetch(hstmt, SQL_FETCH_NEXT, 0, &RowsFetched, &RowStat[0]);
+			
+			if (retcode == SQL_NO_DATA) {
+				_LOG << "FATAL ERROR: Resultset indication for no data has been failed!" LOG_
+				fetchstatus = -2;
+				return ERR_DB_NODATA;
+			}
+			fetchstatus = -1;
+			return WARN_DB_NODATA;
+		} else {
+			retcode = SQLExtendedFetch(hstmt, SQL_FETCH_NEXT, 0, &RowsFetched, &RowStat[0]);
+			
+			if (retcode == SQL_NO_DATA) {
+				_LOG << "FATAL ERROR: Resultset indication for no data has been failed!" LOG_
+				fetchstatus = -2;
+				return ERR_DB_NODATA;
+			}
+			fetchstatus = 0;
+			return ERR_NONE;
+		}
+!!!235463.cpp!!!	setWhereClause(in query : char, inout where : char) : char
+
+	char* temp = NULL;
+	UAP_REQUEST(manager.getPtr(), lb_I_String, orginal)
+	
+	*orginal = query;
+		
+	if (where != NULL) {
+		UAP_REQUEST(manager.getPtr(), lb_I_String, order)
+		char* orderClause = orginal->stristr(orginal->charrep(), "ORDER BY");
+		
+		if (orderClause != NULL) {
+			char* t;
+			orderClause[-1] = 0;
+			t = strdup(orderClause);
+			orderClause = t;
+			t = strdup(orginal->charrep());
+			*orginal = t;
+			*orginal += " ";
+			*orginal += where;
+			*orginal += " ";
+			*orginal += orderClause;
+			free(t);
+			free(orderClause);
+		} else {
+			*orginal += " ";
+			*orginal += where;
+		}
+	}
+	return strdup(orginal->charrep());
+!!!235591.cpp!!!	addWhereClause(in query : char, inout where : char) : char
+
+	return strdup("ERROR: Not implemented.");
+!!!235719.cpp!!!	setAutoRefresh(in b : bool) : void
+
+	_autoRefresh = b;
+!!!235847.cpp!!!	reopen() : void
+
+	RETCODE retcode;
+	
+	if (hstmt != NULL) {
+	        retcode = SQLFreeStmt (hstmt, SQL_CLOSE);
+	}
+
+	retcode = SQLExecDirect(hstmt, (unsigned char*) szSql, SQL_NTS);
+
+	if (retcode != SQL_SUCCESS) dbError("SQLExecDirect()", hstmt);
+
+	boundColumns->rebind();
+	if (cursor > 0 ) 
+		if (absolute(cursor) == ERR_DB_NODATA) {
+			haveData = false;
+		} else {
+			haveData = true;
+		}
+	else
+		first();
+!!!235975.cpp!!!	getChar(in column : int) : char
+
+	SDWORD cbobjecttyp;
+	char   szobjecttyp[SZLEN+100];
+	lbErrCodes err = ERR_NONE;
+
+	if (databound == 0) {
+/*...sPrebind columns:16:*/
+		// Prebound data from row
+		
+		if (boundColumns == NULL) {
+			REQUEST(manager.getPtr(), lb_I_Container, boundColumns)
+		} else {
+			_LOG << "Delete bound collumns" LOG_
+			boundColumns->deleteAll();
+		}
+		
+		if (boundColumns == NULL) _LOG << "Error: Unable to prebind columns!" LOG_
+		if (firstfetched != 1) {
+			firstfetched = 1; 
+			count = getColCount();
+		}
+			
+		UAP_REQUEST(manager.getPtr(), lb_I_Integer, key)
+		UAP_REQUEST(manager.getPtr(), lb_I_String, string)
+		
+		for (int i = 1; i <= count; i++) {
+			retcode = SQLGetData(hstmt, i, SQL_C_CHAR, szobjecttyp, SZLEN+50, &cbobjecttyp);
+
+			if (retcode == SQL_ERROR || retcode == SQL_SUCCESS_WITH_INFO) {
+	        		dbError( "SQLGetData()",henv,hdbc,hstmt);
+	        		_LOG << "lbQuery::getChar(): Error while get data" LOG_
+			} else {
+				// Strip trailing blanks
+				while (szobjecttyp[strlen(szobjecttyp)-1] == ' ') szobjecttyp[strlen(szobjecttyp)-1] = 0;
+				string->setData(szobjecttyp);
+				UAP(lb_I_KeyBase, bkey)
+				UAP(lb_I_Unknown, ustring)
+				QI(key, lb_I_KeyBase, bkey)
+				QI(string, lb_I_Unknown, ustring)
+				
+				key->setData(i);
+				
+				boundColumns->insert(&ustring, &bkey);
+				boundColumns->getElement(&bkey);
+			}
+		}
+		
+		databound = 1;
+/*...e*/
+	}
+	
+	if (key == NULL) {
+		REQUEST(manager.getPtr(), lb_I_Integer, key)
+	}
+	
+	key->setData(column);
+	UAP(lb_I_KeyBase, bkey)
+	QI(key, lb_I_KeyBase, bkey)
+	
+	UAP(lb_I_Unknown, uk)
+
+	uk = boundColumns->getElement(&bkey);
+
+	UAP(lb_I_String, string)
+	QI(uk, lb_I_String, string)
+
+	return string->getData();
+!!!236103.cpp!!!	getAsString(in column : int) : lb_I_String
+
+	UAP_REQUEST(manager.getPtr(), lb_I_String, string)
+	
+	// Caller get's an owner
+	string++;
+	
+	boundColumns->getString(column, *&string);
+	
+	return string.getPtr();
+!!!236231.cpp!!!	getAsLong(in column : int) : lb_I_Long
+
+	UAP_REQUEST(manager.getPtr(), lb_I_Long, value)
+	// Caller get's an owner
+	value++;
+	boundColumns->getLong(column, *&value);
+	return value.getPtr();
+!!!236359.cpp!!!	setString(inout columnName : lb_I_String, inout value : lb_I_String) : lbErrCodes
+
+
+	if (_readonly == 1) return ERR_DB_READONLY;
+	if (mode == 1) {
+		boundColumns->setString(columnName->charrep(), value);
+	} else {
+		boundColumns->setString(columnName->charrep(), value);
+	}
+
+	return ERR_NONE;
+!!!236487.cpp!!!	init(in _henv : HENV, in _hdbc : HDBC, in readonly : int =  1) : lbErrCodes
+
+	hdbc = _hdbc;
+	henv = _henv;
+	hdbc = _hdbc;
+
+	retcode = SQLAllocStmt(hdbc, &hstmt); /* Statement handle */
+
+	if (retcode != SQL_SUCCESS)
+	{
+	        _dbError_DBC( "SQLAllocStmt()", hdbc);
+	        _LOG << "lbDatabase::getQuery() failed due to statement allocation." LOG_
+	        SQLFreeEnv(henv);
+        	return ERR_DB_ALLOCSTATEMENT;
+	}
+
+	if (readonly == 0) {
+	// Compare values before updating
+		
+		
+		retcode = SQLSetStmtOption(hstmt, SQL_ATTR_CONCURRENCY, 
+
+		//SQL_CONCUR_LOCK
+		//SQL_CONCUR_VALUES // To be tested
+		SQL_CONCUR_ROWVER // Does not work
+		
+		);
+		
+		
+		_readonly = readonly;
+	}
+
+        if (retcode != SQL_SUCCESS)
+        {
+                dbError( "SQLSetStmtOption()", hstmt);
+                _LOG << "lbDatabase::getQuery() failed due to setting concurrency settings." LOG_
+                SQLFreeEnv(henv);
+                return ERR_DB_ALLOCSTATEMENT;
+        }
+
+	retcode = SQLSetStmtOption(hstmt, SQL_CURSOR_TYPE, SQL_CURSOR_KEYSET_DRIVEN);
+
+
+	if (retcode == SQL_SUCCESS_WITH_INFO) {
+                dbError( "SQLSetStmtOption()", hstmt);
+                _LOG << "lbDatabase::getQuery() failed due to setting cursor type." LOG_
+	} else
+        if (retcode != SQL_SUCCESS)
+        {
+                dbError( "SQLSetStmtOption()", hstmt);
+                _LOG << "lbDatabase::getQuery() failed due to setting cursor type." LOG_
+                SQLFreeEnv(henv);
+                return ERR_DB_ALLOCSTATEMENT;
+        }
+
+        SQLINTEGER size = 1;
+
+	if (retcode != SQL_SUCCESS) {
+		dbError( "SQLSetStmtAttr()", hstmt);
+		_LOG << "lbDatabase::getQuery() failed due to set statement attributes." LOG_
+		//SQLFreeEnv(henv);
+		return ERR_DB_ALLOCSTATEMENT;
+	}	
+	
+	return ERR_NONE;
+!!!236615.cpp!!!	executeDirect(inout SQL : char) : lbErrCodes
+
+	HSTMT hstmt;
+
+	retcode = SQLAllocStmt(hdbc, &hstmt);
+
+	if (retcode != SQL_SUCCESS)
+	{
+	        _dbError_DBC( "SQLAllocStmt()", hdbc);
+	        _LOG << "lbDatabase::getQuery() failed due to statement allocation." LOG_
+        	return ERR_DB_EXECDIRECT;
+	}
+/*
+	if (readonly == 0) {
+		retcode = SQLSetStmtOption(hstmt, SQL_ATTR_CONCURRENCY, 
+		//SQL_CONCUR_LOCK
+		//SQL_CONCUR_VALUES // To be tested
+		SQL_CONCUR_ROWVER // Does not work
+		);
+	}
+
+        if (retcode != SQL_SUCCESS)
+        {
+                dbError( "SQLSetStmtOption()", hstmt);
+                _LOG << "lbDatabase::getQuery() failed due to setting concurrency settings." LOG_
+                return ERR_DB_EXECDIRECT;
+        }
+*/
+	retcode = SQLSetStmtOption(hstmt, SQL_CURSOR_TYPE, SQL_CURSOR_KEYSET_DRIVEN);
+
+
+	if (retcode == SQL_SUCCESS_WITH_INFO) {
+                dbError( "SQLSetStmtOption()", hstmt);
+                _LOG << "lbDatabase::getQuery() failed due to setting cursor type." LOG_
+	} else
+        if (retcode != SQL_SUCCESS)
+        {
+                dbError( "SQLSetStmtOption()", hstmt);
+                _LOG << "lbDatabase::getQuery() failed due to setting cursor type." LOG_
+                return ERR_DB_EXECDIRECT;
+        }
+
+        SQLINTEGER size = 1;
+
+	if (retcode != SQL_SUCCESS) {
+		dbError( "SQLSetStmtAttr()", hstmt);
+		_LOG << "lbDatabase::getQuery() failed due to set statement attributes." LOG_
+		return ERR_DB_EXECDIRECT;
+	}
+
+	retcode = SQLExecDirect(hstmt, (unsigned char*) SQL, SQL_NTS);
+
+	if ((retcode != SQL_SUCCESS) && (retcode != SQL_SUCCESS_WITH_INFO))
+	{
+	        dbError("SQLExecDirect()", hstmt);
+	        _LOG << "lbQuery::query(...) failed. (" << szSql << ")" LOG_
+	        return ERR_DB_QUERYFAILED;
+	}
+
+	retcode = SQLFreeStmt (hstmt, SQL_DROP);
+
+	if ((retcode != SQL_SUCCESS) && (retcode != SQL_SUCCESS_WITH_INFO))
+	{
+	        dbError("SQLExecDirect()", hstmt);
+	        _LOG << "lbQuery::query(...) failed. (" << szSql << ")" LOG_
+	        return ERR_DB_QUERYFAILED;
+	}
+
+	return ERR_NONE;

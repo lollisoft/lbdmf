@@ -1,0 +1,3289 @@
+format 22
+"DatabaseForm" // Plugins::DatabaseForm
+  // class settings
+  //class diagram settings
+  draw_all_relations default hide_attributes default hide_operations default show_full_members_definition default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default
+  //use case diagram settings
+  package_name_in_tab default show_context default auto_label_position default
+  //sequence diagram settings
+  show_full_operations_definition default write_horizontally default drawing_language default
+  //collaboration diagram settings
+  show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default
+  //component diagram settings
+  package_name_in_tab default show_context default auto_label_position default
+  draw_component_as_icon default show_component_req_prov default show_component_rea default
+  //deployment diagram settings
+  package_name_in_tab default show_context default write_horizontally default auto_label_position default
+  draw_component_as_icon default show_component_req_prov default show_component_rea default
+  //state diagram settings
+  package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default
+  show_activities default region_horizontally default drawing_language default
+  
+  classview 130247 "DatabaseForm"
+    //class diagram settings
+    draw_all_relations default hide_attributes default hide_operations default show_full_members_definition default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default
+    //col diagram settings
+    show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default
+    //seq diagram settings
+    show_full_operations_definition default write_horizontally default drawing_language default
+    //state diagram settings
+    package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default
+    show_activities default region_horizontally default drawing_language default
+    //class settings
+    class 159687 "lbConfigure_FK_PK_MappingDialog"
+      
+      
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "...sclass lbConfigure_FK_PK_MappingDialog:0:"
+      classrelation 152263 // <generalisation>
+	relation 152263 ---|>
+	  a public
+	    cpp default "Generated"
+	    classrelation_ref 152263 // <generalisation>
+	  b parent class_ref 159815 // lb_I_Window
+      end
+
+      classrelation 152391 // <generalisation>
+	relation 152391 ---|>
+	  a public
+	    cpp default "Generated"
+	    classrelation_ref 152391 // <generalisation>
+	  b parent class_ref 133191 // lb_I_EventHandler
+      end
+
+      classrelation 152519 // <generalisation>
+	relation 152519 ---|>
+	  a public
+	    cpp default "Generated"
+	    classrelation_ref 152519 // <generalisation>
+	  b parent class_ref 159943 // wxDialog
+      end
+
+      operation 262855 "lbConfigure_FK_PK_MappingDialog"
+	public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${name}${(}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${class}::${name}${(}${)}${throw}{
+${body}}
+"
+	
+	
+	comment "	public lb_I_Unknown,
+*
+	 * Default constructor - implemented in BEGIN_IMPLEMENT_LB_UNKNOWN(lbDatabaseDialog)
+	 "
+      end
+
+      operation 262983 "~lbConfigure_FK_PK_MappingDialog"
+	cpp_virtual public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${virtual}${name}${(}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${class}::${name}${(}${)}${throw}{
+${body}}
+"
+	
+	
+	comment "*
+	 * Destructor
+	 "
+      end
+
+      operation 263111 "prepareDialogHandler"
+	public explicit_return_type "int"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//...sint lbConfigure_FK_PK_MappingDialog\\58\\\\58\\prepareDialogHandler\\40\\\\41\\:0:
+
+${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 263239 "create"
+	cpp_inline public explicit_return_type "void"
+	nparams 1
+	  param in name "parentId" explicit_type "int"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract} { };
+"
+	
+	
+      end
+
+      operation 263367 "getId"
+	cpp_inline public explicit_return_type "int"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract} { return GetId(); };
+"
+	
+	
+      end
+
+      operation 263495 "init"
+	public explicit_return_type "void"
+	nparams 4
+	  param inout name "query" type class_ref 152391 // lb_I_Query
+	  param inout name "DBName" explicit_type "char"
+	  param inout name "DBUser" explicit_type "char"
+	  param inout name "DBPass" explicit_type "char"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}, ${t1} * ${p1}, ${t2} * ${p2}, ${t3} * ${p3}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//...e
+//...svoid LB_STDCALL lbConfigure_FK_PK_MappingDialog\\58\\\\58\\init\\40\\lb_I_Query\\42\\ query\\44\\ char\\42\\ DBName\\44\\ char\\42\\ DBUser\\44\\ char\\42\\ DBPass\\41\\:0:
+
+${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}, ${t1} * ${p1}, ${t2} * ${p2}, ${t3} * ${p3}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 263623 "show"
+	cpp_inline public explicit_return_type "void"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract} { ShowModal (); };
+"
+	
+	
+      end
+
+      operation 263751 "destroy"
+	cpp_inline public explicit_return_type "void"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract} { Destroy(); };
+"
+	
+	
+      end
+
+      operation 263879 "selectedColumn"
+	public return_type class_ref 128711 // lbErrCodes
+	nparams 1
+	  param inout name "uk" type class_ref 141767 // lb_I_Unknown
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//...e
+
+${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+	comment "*
+	 * Column has been selected.
+	 *
+	 * Store the retrieved data in the tables and destroy the form.
+	 "
+      end
+
+      operation 264007 "registerEventHandler"
+	public return_type class_ref 128711 // lbErrCodes
+	nparams 1
+	  param inout name "dispatcher" type class_ref 133575 // lb_I_Dispatcher
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//...e
+//...slbErrCodes LB_STDCALL lbConfigure_FK_PK_MappingDialog\\58\\\\58\\registerEventHandler\\40\\lb_I_Dispatcher\\42\\ dispatcher\\41\\:0:
+
+${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+	comment "*
+	 * This function acts in a special way for registering the above navigation handlers
+	 *
+	 * It uses a string of the this pointer + a name for the respective eventhandler.
+	 * This is neccessary for handling more than one database dialog per application.
+	 *
+	 * This is a good sample, if you need to be able to handle more than one instance of
+	 * your registered event handlers.
+	 "
+      end
+
+      operation 264135 "OnDispatch"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "event" type class_ref 160071 // wxCommandEvent
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//...e
+//...svoid lbConfigure_FK_PK_MappingDialog\\58\\\\58\\OnDispatch\\40\\wxCommandEvent\\38\\ event \\41\\:0:
+
+${comment}${inline}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 264263 "OnPKComboBoxSelected"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "event" type class_ref 160071 // wxCommandEvent
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//...e
+//...svoid lbConfigure_FK_PK_MappingDialog\\58\\\\58\\OnPKComboBoxSelected\\40\\ wxCommandEvent \\38\\event \\41\\:0:
+
+${comment}${inline}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      attribute 162375 "buf"
+	public explicit_type "char"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}[100]${value};
+"
+	java_decl ""
+	idl_decl ""
+      end
+
+      classrelation 152647 // firstButton (<unidirectional association>)
+	relation 152647 --->
+	  a role_name "firstButton" multiplicity "" public
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 152647 // firstButton (<unidirectional association>)
+	  b parent class_ref 160199 // wxWindow
+      end
+
+      classrelation 152775 // cBoxFKNames (<unidirectional association>)
+	relation 152775 --->
+	  a role_name "cBoxFKNames" multiplicity "" public
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 152775 // cBoxFKNames (<unidirectional association>)
+	  b parent class_ref 160327 // wxChoice
+      end
+
+      classrelation 152903 // cBoxPKNames (<unidirectional association>)
+	relation 152903 --->
+	  a role_name "cBoxPKNames" multiplicity "" public
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 152903 // cBoxPKNames (<unidirectional association>)
+	  b parent class_ref 160327 // wxChoice
+      end
+
+      classrelation 153031 // label (<unidirectional association>)
+	relation 153031 --->
+	  a role_name "label" multiplicity "" public
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 153031 // label (<unidirectional association>)
+	  b parent class_ref 160455 // wxStaticText
+      end
+
+      classrelation 153159 // labelF (<unidirectional association>)
+	relation 153159 --->
+	  a role_name "labelF" multiplicity "" public
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 153159 // labelF (<unidirectional association>)
+	  b parent class_ref 160455 // wxStaticText
+      end
+
+      classrelation 153287 // prevButton (<unidirectional association>)
+	relation 153287 --->
+	  a role_name "prevButton" multiplicity "" public
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 153287 // prevButton (<unidirectional association>)
+	  b parent class_ref 160199 // wxWindow
+      end
+
+      classrelation 153415 // nextButton (<unidirectional association>)
+	relation 153415 --->
+	  a role_name "nextButton" multiplicity "" public
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 153415 // nextButton (<unidirectional association>)
+	  b parent class_ref 160199 // wxWindow
+      end
+
+      classrelation 153543 // lastButton (<unidirectional association>)
+	relation 153543 --->
+	  a role_name "lastButton" multiplicity "" public
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 153543 // lastButton (<unidirectional association>)
+	  b parent class_ref 160199 // wxWindow
+      end
+
+      attribute 162503 "pass"
+	public explicit_type "int"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	idl_decl ""
+      end
+
+      attribute 162631 "_DBUser"
+	public explicit_type "char"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	java_decl ""
+	idl_decl ""
+      end
+
+      attribute 162759 "_DBName"
+	public explicit_type "char"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	java_decl ""
+	idl_decl ""
+      end
+
+      attribute 162887 "_DBPass"
+	public explicit_type "char"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	java_decl ""
+	idl_decl ""
+      end
+    end
+
+    class 160583 "lbAction"
+      
+      
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "...e
+...sclass lbAction:0:"
+      classrelation 153671 // <generalisation>
+	relation 153671 ---|>
+	  a public
+	    cpp default "Generated"
+	    classrelation_ref 153671 // <generalisation>
+	  b parent class_ref 136775 // lb_I_Action
+      end
+
+      operation 264391 "lbAction"
+	public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${name}${(}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${class}::${name}${(}${)}${throw}{
+${body}}
+"
+	
+	
+      end
+
+      operation 264519 "~lbAction"
+	cpp_virtual public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${virtual}${name}${(}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${class}::${name}${(}${)}${throw}{
+${body}}
+"
+	
+	
+      end
+
+      operation 264647 "setActionID"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "id" explicit_type "char"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 264775 "execute"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "params" type class_ref 141127 // lb_I_Parameter
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      attribute 163015 "myActionID"
+	public explicit_type "char"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	java_decl ""
+	idl_decl ""
+      end
+
+      operation 264903 "setActionID"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "id" explicit_type "char"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//...svoid LB_STDCALL lbAction\\58\\\\58\\setActionID\\40\\char\\42\\ id\\41\\:0:
+
+${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 265031 "execute"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "params" type class_ref 141127 // lb_I_Parameter
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//...e
+//...svoid LB_STDCALL lbAction\\58\\\\58\\execute\\40\\lb_I_Parameter\\42\\ params\\41\\:0:
+
+${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 265159 "setDatabase"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "_db" type class_ref 160711 // lb_I_Database
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+    end
+
+    class 160839 "lbMasterFormAction"
+      
+      
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "...e
+...sclass lbMasterFormAction:0:"
+      classrelation 153799 // <generalisation>
+	relation 153799 ---|>
+	  a public
+	    cpp default "Generated"
+	    classrelation_ref 153799 // <generalisation>
+	  b parent class_ref 136903 // lb_I_DelegatedAction
+      end
+
+      operation 265287 "lbMasterFormAction"
+	public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${name}${(}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${class}::${name}${(}${)}${throw}{
+${body}}
+"
+	
+	
+      end
+
+      operation 265415 "~lbMasterFormAction"
+	cpp_virtual public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${virtual}${name}${(}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${class}::${name}${(}${)}${throw}{
+${body}}
+"
+	
+	
+      end
+
+      operation 265543 "setActionID"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "id" explicit_type "char"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 265671 "execute"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "params" type class_ref 141127 // lb_I_Parameter
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//...e
+//...svoid LB_STDCALL lbMasterFormAction\\58\\\\58\\execute\\40\\lb_I_Parameter\\42\\ params\\41\\:0:
+
+${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 265799 "setDatabase"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "_db" type class_ref 160711 // lb_I_Database
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      attribute 163143 "myActionID"
+	public explicit_type "char"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	java_decl ""
+	idl_decl ""
+      end
+    end
+
+    class 160967 "lbSQLQueryAction"
+      
+      
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "...e
+...sclass lbSQLQueryAction:0:"
+      classrelation 153927 // <generalisation>
+	relation 153927 ---|>
+	  a public
+	    cpp default "Generated"
+	    classrelation_ref 153927 // <generalisation>
+	  b parent class_ref 136903 // lb_I_DelegatedAction
+      end
+
+      operation 265927 "lbSQLQueryAction"
+	public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${name}${(}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${class}::${name}${(}${)}${throw}{
+${body}}
+"
+	
+	
+      end
+
+      operation 266055 "~lbSQLQueryAction"
+	cpp_virtual public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${virtual}${name}${(}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${class}::${name}${(}${)}${throw}{
+${body}}
+"
+	
+	
+      end
+
+      operation 266183 "setActionID"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "id" explicit_type "char"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 266311 "execute"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "params" type class_ref 141127 // lb_I_Parameter
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 266439 "setDatabase"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "_db" type class_ref 160711 // lb_I_Database
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 266567 "getActionTargetID"
+	public explicit_return_type "char"
+	nparams 1
+	  param inout name "what" explicit_type "char"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} * ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+	comment "* \\brief ID of action target.
+	 *
+	 * Get the ID of the action target based on the 'what' data field.
+	 * This is needed, when 
+	 "
+      end
+
+      operation 266695 "getActionSourceDataField"
+	public explicit_return_type "char"
+	nparams 1
+	  param inout name "what" explicit_type "char"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} * ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+	comment "* \\brief Source field of the action. "
+      end
+
+      operation 266823 "getActionID"
+	public explicit_return_type "char"
+	nparams 1
+	  param inout name "what" explicit_type "char"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} * ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+	comment "* \\brief ID for the action. "
+      end
+
+      operation 266951 "getAction"
+	public return_type class_ref 136775 // lb_I_Action
+	nparams 1
+	  param inout name "id" explicit_type "char"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} * ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+	comment "* \\brief Get the action instance. 
+	 *
+	 * This function creates the requested action instance, stores it for caching and
+	 * then returns a reference to it.
+	 "
+      end
+
+      operation 267079 "validate"
+	cpp_inline public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract} { return true; };
+"
+	
+	
+	comment "* \\brief Validate the form.
+	 *
+	 * Use this function to check, if the data has a correct state.
+	 "
+      end
+
+      operation 267207 "update"
+	cpp_inline public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract} { return true; };
+"
+	
+	
+	comment "* \\brief Update master/detail views and related views.
+	 *
+	 * Use this function to update related views. This may master/detail views and
+	 * possibly views, containing data fields related to any open views.
+	 "
+      end
+    end
+
+    class 161095 "FormularFieldInformation"
+      
+      
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "...e
+...sclass FormularFieldInformation:0:
+* \\brief Management of formular fields.
+ *
+ * This class is used to concentrate the code for formular field informations.
+ "
+      operation 267335 "FormularFieldInformation"
+	public explicit_return_type ""
+	nparams 2
+	  param in name "formularname" explicit_type "char"
+	  param inout name "query" type class_ref 152391 // lb_I_Query
+	cpp_decl "    ${comment}${inline}${name}${(}const ${t0} * ${p0}, ${t1} * ${p1}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${class}::${name}${(}const ${t0} * ${p0}, ${t1} * ${p1}${)}${throw}{
+${body}}
+"
+	
+	
+      end
+
+      operation 267463 "~FormularFieldInformation"
+	cpp_virtual cpp_inline public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${virtual}${name}${(}${)}${volatile}${throw} {
+		_CL_LOG << \"ROFields has \" << ROFields->getRefCount() << \" references.\" LOG_
+		_CL_LOG << \"SCFields has \" << SCFields->getRefCount() << \" references.\" LOG_
+	};
+"
+	
+	
+      end
+
+      operation 267591 "isReadonly"
+	public explicit_return_type "bool"
+	nparams 1
+	  param inout name "field" explicit_type "char"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+	comment "* \\brief Get readonly status.
+	 *
+	 * Returns true, if the specifed field is readonly.
+	 "
+      end
+
+      operation 267719 "isSpecialColumn"
+	public explicit_return_type "bool"
+	nparams 1
+	  param inout name "field" explicit_type "char"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+	comment "* \\brief Check, if there must be used a special control.
+	 *
+	 * Returns true, if the configuration says, that there must be used a special
+	 * control. This is the case if I like to use an ownerdrawn control.
+	 "
+      end
+
+      operation 267847 "getControlType"
+	public explicit_return_type "char"
+	nparams 1
+	  param inout name "name" explicit_type "char"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} * ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      classrelation 154055 // _query (<unidirectional association>)
+	relation 154055 --->
+	  a role_name "_query" multiplicity "" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 154055 // _query (<unidirectional association>)
+	  b parent class_ref 152391 // lb_I_Query
+      end
+
+      operation 267975 "setMasterForm"
+	protected explicit_return_type "void"
+	nparams 1
+	  param inout name "master" type class_ref 161223 // lb_I_DatabaseForm
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 268103 "addMasterColumn"
+	protected explicit_return_type "void"
+	nparams 1
+	  param inout name "column" explicit_type "char"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 268231 "getMasterColumns"
+	protected explicit_return_type "int"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 268359 "getMasterColumn"
+	protected return_type class_ref 141255 // lb_I_String
+	nparams 1
+	  param in name "pos" explicit_type "int"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} * ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 268487 "getMasterForm"
+	protected return_type class_ref 161223 // lb_I_DatabaseForm
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} * ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 268615 "setCharacterColumn"
+	protected explicit_return_type "void"
+	nparams 2
+	  param in name "pos" explicit_type "int"
+	  param in name "is" explicit_type "bool"
+	    defaultvalue " true"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 268743 "isCharacterColumn"
+	protected explicit_return_type "bool"
+	nparams 1
+	  param in name "pos" explicit_type "int"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 268871 "setName"
+	protected return_type class_ref 128711 // lbErrCodes
+	nparams 2
+	  param in name "name" explicit_type "char"
+	  param in name "appention" explicit_type "char"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} * ${p0}, const ${t1} * ${p1}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}const ${t0} * ${p0}, const ${t1} * ${p1}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 268999 "getFormName"
+	cpp_inline protected explicit_return_type "char"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}${)}${const}${volatile}${throw}${abstract} { return formName; };
+"
+	
+	
+      end
+
+      operation 269127 "addButton"
+	cpp_inline protected return_type class_ref 128711 // lbErrCodes
+	nparams 6
+	  param inout name "buttonText" explicit_type "char"
+	  param inout name "evHandler" explicit_type "char"
+	  param in name "x" explicit_type "int"
+	  param in name "y" explicit_type "int"
+	  param in name "w" explicit_type "int"
+	  param in name "h" explicit_type "int"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}, ${t1} * ${p1}, ${t2} ${p2}, ${t3} ${p3}, ${t4} ${p4}, ${t5} ${p5}${)}${const}${volatile}${throw}${abstract} { return ERR_NONE; };
+"
+	
+	
+      end
+
+      operation 269255 "addLabel"
+	cpp_inline protected return_type class_ref 128711 // lbErrCodes
+	nparams 5
+	  param inout name "text" explicit_type "char"
+	  param in name "x" explicit_type "int"
+	  param in name "y" explicit_type "int"
+	  param in name "w" explicit_type "int"
+	  param in name "h" explicit_type "int"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}, ${t1} ${p1}, ${t2} ${p2}, ${t3} ${p3}, ${t4} ${p4}${)}${const}${volatile}${throw}${abstract} { return ERR_NONE; };
+"
+	
+	
+      end
+
+      operation 269383 "addTextField"
+	cpp_inline protected return_type class_ref 128711 // lbErrCodes
+	nparams 5
+	  param inout name "name" explicit_type "char"
+	  param in name "x" explicit_type "int"
+	  param in name "y" explicit_type "int"
+	  param in name "w" explicit_type "int"
+	  param in name "h" explicit_type "int"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}, ${t1} ${p1}, ${t2} ${p2}, ${t3} ${p3}, ${t4} ${p4}${)}${const}${volatile}${throw}${abstract} { return ERR_NONE; };
+"
+	
+	
+      end
+
+      operation 269511 "addOwnerDrawn"
+	cpp_inline protected return_type class_ref 128711 // lbErrCodes
+	nparams 5
+	  param inout name "name" explicit_type "char"
+	  param in name "x" explicit_type "int"
+	  param in name "y" explicit_type "int"
+	  param in name "w" explicit_type "int"
+	  param in name "h" explicit_type "int"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}, ${t1} ${p1}, ${t2} ${p2}, ${t3} ${p3}, ${t4} ${p4}${)}${const}${volatile}${throw}${abstract} { return ERR_NONE; };
+"
+	
+	
+      end
+
+      operation 269639 "create"
+	protected explicit_return_type "void"
+	nparams 1
+	  param in name "parentId" explicit_type "int"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 269767 "getId"
+	cpp_inline protected explicit_return_type "int"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract} { return GetId(); };
+"
+	
+	
+      end
+
+      operation 269895 "show"
+	cpp_inline protected explicit_return_type "void"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract} { Show (TRUE); };
+"
+	
+	
+      end
+
+      operation 270023 "destroy"
+	cpp_inline protected explicit_return_type "void"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract} {
+	    //Destroy();
+	};
+"
+	
+	
+      end
+
+      operation 270151 "init"
+	protected explicit_return_type "void"
+	nparams 4
+	  param inout name "SQLString" explicit_type "char"
+	  param inout name "DBName" explicit_type "char"
+	  param inout name "DBUser" explicit_type "char"
+	  param inout name "DBPass" explicit_type "char"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}, ${t1} * ${p1}, ${t2} * ${p2}, ${t3} * ${p3}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}, ${t1} * ${p1}, ${t2} * ${p2}, ${t3} * ${p3}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+	comment "...sfrom DatabaseForm interface:8:"
+      end
+
+      operation 270279 "getQuery"
+	protected explicit_return_type "char"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} * ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 270407 "setFilter"
+	protected explicit_return_type "void"
+	nparams 1
+	  param inout name "filter" explicit_type "char"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 270535 "getControlValue"
+	protected explicit_return_type "char"
+	nparams 1
+	  param inout name "name" explicit_type "char"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} * ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}const ${type} * ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 270663 "setMasterForm"
+	protected explicit_return_type "void"
+	nparams 2
+	  param inout name "master" type class_ref 161223 // lb_I_DatabaseForm
+	  param inout name "params" type class_ref 141127 // lb_I_Parameter
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}, ${t1} * ${p1}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}, ${t1} * ${p1}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+	comment "...e"
+      end
+
+      operation 270791 "setDetailForm"
+	protected explicit_return_type "void"
+	nparams 2
+	  param inout name "master" type class_ref 161223 // lb_I_DatabaseForm
+	  param inout name "params" type class_ref 141127 // lb_I_Parameter
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}, ${t1} * ${p1}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}, ${t1} * ${p1}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 270919 "updateFromMaster"
+	protected explicit_return_type "void"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 271047 "updateFromDetail"
+	protected explicit_return_type "void"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 271175 "getPrimaryColumns"
+	protected explicit_return_type "int"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 271303 "getControlValue"
+	protected explicit_return_type "char"
+	nparams 1
+	  param in name "pos" explicit_type "int"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} * ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}const ${type} * ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 271431 "getControls"
+	protected explicit_return_type "int"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 271559 "getPrimaryColumn"
+	protected return_type class_ref 141255 // lb_I_String
+	nparams 1
+	  param in name "pos" explicit_type "int"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} * ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 271687 "getForeignColumns"
+	protected explicit_return_type "int"
+	nparams 1
+	  param inout name "primaryTable" explicit_type "char"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 271815 "getForeignColumn"
+	protected return_type class_ref 141255 // lb_I_String
+	nparams 1
+	  param in name "pos" explicit_type "int"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} * ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 271943 "isCharacterColumn"
+	protected explicit_return_type "bool"
+	nparams 1
+	  param inout name "name" explicit_type "char"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 272071 "ignoreForeignKeys"
+	protected explicit_return_type "void"
+	nparams 1
+	  param inout name "toTable" explicit_type "char"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 272199 "getTableName"
+	protected explicit_return_type "char"
+	nparams 1
+	  param inout name "columnName" explicit_type "char"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} * ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 272327 "getColumnName"
+	protected explicit_return_type "char"
+	nparams 1
+	  param in name "pos" explicit_type "int"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} * ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 272455 "lbDBFirst"
+	protected return_type class_ref 128711 // lbErrCodes
+	nparams 1
+	  param inout name "uk" type class_ref 141767 // lb_I_Unknown
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+	comment "...sData navigation and other handlers:8:
+*
+	 * Database navigation
+	 * 
+	 * Moves to the first row.
+	 "
+      end
+
+      operation 272583 "lbDBNext"
+	protected return_type class_ref 128711 // lbErrCodes
+	nparams 1
+	  param inout name "uk" type class_ref 141767 // lb_I_Unknown
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+	comment "*
+	 * Database navigation
+	 * 
+	 * Moves to the next row.
+	 "
+      end
+
+      operation 272711 "lbDBPrev"
+	protected return_type class_ref 128711 // lbErrCodes
+	nparams 1
+	  param inout name "uk" type class_ref 141767 // lb_I_Unknown
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+	comment "*
+	 * Database navigation
+	 * 
+	 * Moves to the previous row.
+	 "
+      end
+
+      operation 272839 "lbDBLast"
+	protected return_type class_ref 128711 // lbErrCodes
+	nparams 1
+	  param inout name "uk" type class_ref 141767 // lb_I_Unknown
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+	comment "*
+	 * Database navigation
+	 * 
+	 * Moves to the last row.
+	 "
+      end
+
+      operation 272967 "lbDBAdd"
+	protected return_type class_ref 128711 // lbErrCodes
+	nparams 1
+	  param inout name "uk" type class_ref 141767 // lb_I_Unknown
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+	comment "*
+	 * Database manipulation
+	 * 
+	 * This adds a new row, while it copies the values of the actual form into the row.
+	 "
+      end
+
+      operation 273095 "lbDBDelete"
+	protected return_type class_ref 128711 // lbErrCodes
+	nparams 1
+	  param inout name "uk" type class_ref 141767 // lb_I_Unknown
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+	comment "*
+	 * Database manipulation
+	 * 
+	 * Deletes the current row.
+	 "
+      end
+
+      operation 273223 "lbDBUpdate"
+	protected return_type class_ref 128711 // lbErrCodes
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+	comment "*
+	 * Database manipulation
+	 * 
+	 * Internally used to update the current row.
+	 "
+      end
+
+      operation 273351 "lbDBClear"
+	protected return_type class_ref 128711 // lbErrCodes
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+	comment "*
+	 * Database manipulation
+	 *
+	 * Clear the form.
+	 "
+      end
+
+      operation 273479 "lbDBRead"
+	protected return_type class_ref 128711 // lbErrCodes
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+	comment "*
+	 * Database manipulation
+	 * 
+	 * Internally used to read data from the cursor to the current row.
+	 "
+      end
+
+      operation 273607 "registerEventHandler"
+	protected return_type class_ref 128711 // lbErrCodes
+	nparams 1
+	  param inout name "dispatcher" type class_ref 133575 // lb_I_Dispatcher
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+	comment "...e
+...sfrom EventHandler interface:8:
+*
+	 * This function acts in a special way for registering the above navigation handlers
+	 *
+	 * It uses a string of the this pointer + a name for the respective eventhandler.
+	 * This is neccessary for handling more than one database dialog per application.
+	 *
+	 * This is a good sample, if you need to be able to handle more than one instance of
+	 * your registered event handlers.
+	 "
+      end
+
+      operation 273735 "OnActionButton"
+	protected return_type class_ref 128711 // lbErrCodes
+	nparams 1
+	  param inout name "uk" type class_ref 141767 // lb_I_Unknown
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+	comment "...e
+* \\brief Handler for button actions
+	 *
+	 * This handler should be used if a button action will be added to the form.
+	 "
+      end
+
+      operation 273863 "OnDispatch"
+	protected explicit_return_type "void"
+	nparams 1
+	  param inout name "event" type class_ref 160071 // wxCommandEvent
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 273991 "OnPaint"
+	protected explicit_return_type "void"
+	nparams 1
+	  param inout name "event" type class_ref 160071 // wxCommandEvent
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+	comment "* \\brief Paint the control.
+	 *
+	 * This handler should be used to paint an 'ownerdrawn' control.
+	 * As in my Power++ code 'EditSymbol', this should also work under
+	 * wxWidgets.
+	 *
+	 * The only problem would be the selection of which control currently
+	 * fires the event. 'EditSymbol' only handles one such control.
+	 "
+      end
+
+      attribute 163271 "buf"
+	protected explicit_type "char"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}[100]${value};
+"
+	java_decl ""
+	idl_decl ""
+      end
+
+      classrelation 154183 // firstButton (<unidirectional association>)
+	relation 154183 --->
+	  a role_name "firstButton" multiplicity "" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 154183 // firstButton (<unidirectional association>)
+	  b parent class_ref 160199 // wxWindow
+      end
+
+      classrelation 154311 // prevButton (<unidirectional association>)
+	relation 154311 --->
+	  a role_name "prevButton" multiplicity "" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 154311 // prevButton (<unidirectional association>)
+	  b parent class_ref 160199 // wxWindow
+      end
+
+      classrelation 154439 // nextButton (<unidirectional association>)
+	relation 154439 --->
+	  a role_name "nextButton" multiplicity "" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 154439 // nextButton (<unidirectional association>)
+	  b parent class_ref 160199 // wxWindow
+      end
+
+      classrelation 154567 // lastButton (<unidirectional association>)
+	relation 154567 --->
+	  a role_name "lastButton" multiplicity "" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 154567 // lastButton (<unidirectional association>)
+	  b parent class_ref 160199 // wxWindow
+      end
+
+      classrelation 154695 // deleteButton (<unidirectional association>)
+	relation 154695 --->
+	  a role_name "deleteButton" multiplicity "" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 154695 // deleteButton (<unidirectional association>)
+	  b parent class_ref 160199 // wxWindow
+      end
+
+      attribute 163399 "allNaviDisabled"
+	protected explicit_type "bool"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	idl_decl ""
+      end
+
+      attribute 163527 "noDataAvailable"
+	protected explicit_type "bool"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	idl_decl ""
+      end
+
+      attribute 163655 "isAdding"
+	protected explicit_type "bool"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	idl_decl ""
+      end
+
+      attribute 163783 "_created"
+	protected explicit_type "bool"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	idl_decl ""
+      end
+
+      attribute 163911 "base_formName"
+	protected explicit_type "char"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	java_decl ""
+	idl_decl ""
+      end
+
+      attribute 164039 "formName"
+	protected explicit_type "char"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	java_decl ""
+	idl_decl ""
+      end
+
+      attribute 164167 "untranslated_formName"
+	protected explicit_type "char"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	java_decl ""
+	idl_decl ""
+      end
+
+      classrelation 154823 // FFI (<unidirectional association>)
+	relation 154823 --->
+	  a role_name "FFI" multiplicity "" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 154823 // FFI (<unidirectional association>)
+	  b parent class_ref 161095 // FormularFieldInformation
+      end
+
+      classrelation 154951 // fa (<unidirectional association>)
+	relation 154951 --->
+	  a role_name "fa" multiplicity "" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 154951 // fa (<unidirectional association>)
+	  b parent class_ref 161351 // FormularActions
+      end
+
+      classrelation 155079 // _master (<unidirectional association>)
+	relation 155079 --->
+	  a role_name "_master" multiplicity "" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 155079 // _master (<unidirectional association>)
+	  b parent class_ref 161223 // lb_I_DatabaseForm
+      end
+
+      classrelation 155207 // _detail (<unidirectional association>)
+	relation 155207 --->
+	  a role_name "_detail" multiplicity "" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 155207 // _detail (<unidirectional association>)
+	  b parent class_ref 161223 // lb_I_DatabaseForm
+      end
+
+      classrelation 155335 // _params (<unidirectional association>)
+	relation 155335 --->
+	  a role_name "_params" multiplicity "" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 155335 // _params (<unidirectional association>)
+	  b parent class_ref 141127 // lb_I_Parameter
+      end
+    end
+
+    class 161479 "lbDatabaseDialog"
+      
+      
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "...e
+...e
+...sclass lbDatabaseDialog:0:"
+      classrelation 155463 // <generalisation>
+	relation 155463 ---|>
+	  a public
+	    cpp default "Generated"
+	    classrelation_ref 155463 // <generalisation>
+	  b parent class_ref 161223 // lb_I_DatabaseForm
+      end
+
+      classrelation 155591 // <generalisation>
+	relation 155591 ---|>
+	  a public
+	    cpp default "Generated"
+	    classrelation_ref 155591 // <generalisation>
+	  b parent class_ref 159943 // wxDialog
+      end
+
+      operation 274119 "lbDatabaseDialog"
+	public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${name}${(}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${class}::${name}${(}${)}${throw}{
+${body}}
+"
+	
+	
+	comment "*
+	 * Default constructor - implemented in BEGIN_IMPLEMENT_LB_UNKNOWN(lbDatabasePanel)
+	 "
+      end
+
+      operation 274247 "~lbDatabaseDialog"
+	cpp_virtual public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${virtual}${name}${(}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${class}::${name}${(}${)}${throw}{
+${body}}
+"
+	
+	
+	comment "*
+	 * Destructor
+	 "
+      end
+
+      operation 274375 "setName"
+	public return_type class_ref 128711 // lbErrCodes
+	nparams 2
+	  param in name "name" explicit_type "char"
+	  param in name "appention" explicit_type "char"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} * ${p0}, const ${t1} * ${p1}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}const ${t0} * ${p0}, const ${t1} * ${p1}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 274503 "addButton"
+	cpp_inline public return_type class_ref 128711 // lbErrCodes
+	nparams 6
+	  param inout name "buttonText" explicit_type "char"
+	  param inout name "evHandler" explicit_type "char"
+	  param in name "x" explicit_type "int"
+	  param in name "y" explicit_type "int"
+	  param in name "w" explicit_type "int"
+	  param in name "h" explicit_type "int"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}, ${t1} * ${p1}, ${t2} ${p2}, ${t3} ${p3}, ${t4} ${p4}, ${t5} ${p5}${)}${const}${volatile}${throw}${abstract} { return ERR_NONE; };
+"
+	
+	
+      end
+
+      operation 274631 "addLabel"
+	cpp_inline public return_type class_ref 128711 // lbErrCodes
+	nparams 5
+	  param inout name "text" explicit_type "char"
+	  param in name "x" explicit_type "int"
+	  param in name "y" explicit_type "int"
+	  param in name "w" explicit_type "int"
+	  param in name "h" explicit_type "int"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}, ${t1} ${p1}, ${t2} ${p2}, ${t3} ${p3}, ${t4} ${p4}${)}${const}${volatile}${throw}${abstract} { return ERR_NONE; };
+"
+	
+	
+      end
+
+      operation 274759 "addTextField"
+	cpp_inline public return_type class_ref 128711 // lbErrCodes
+	nparams 5
+	  param inout name "name" explicit_type "char"
+	  param in name "x" explicit_type "int"
+	  param in name "y" explicit_type "int"
+	  param in name "w" explicit_type "int"
+	  param in name "h" explicit_type "int"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}, ${t1} ${p1}, ${t2} ${p2}, ${t3} ${p3}, ${t4} ${p4}${)}${const}${volatile}${throw}${abstract} { return ERR_NONE; };
+"
+	
+	
+      end
+
+      operation 274887 "addOwnerDrawn"
+	cpp_inline public return_type class_ref 128711 // lbErrCodes
+	nparams 5
+	  param inout name "name" explicit_type "char"
+	  param in name "x" explicit_type "int"
+	  param in name "y" explicit_type "int"
+	  param in name "w" explicit_type "int"
+	  param in name "h" explicit_type "int"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}, ${t1} ${p1}, ${t2} ${p2}, ${t3} ${p3}, ${t4} ${p4}${)}${const}${volatile}${throw}${abstract} { return ERR_NONE; };
+"
+	
+	
+      end
+
+      operation 275015 "create"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "parentId" explicit_type "int"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 275143 "getId"
+	cpp_inline public explicit_return_type "int"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract} { return GetId(); };
+"
+	
+	
+      end
+
+      operation 275271 "show"
+	cpp_inline public explicit_return_type "void"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract} { Show (TRUE); };
+"
+	
+	
+      end
+
+      operation 275399 "destroy"
+	cpp_inline public explicit_return_type "void"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract} { if (_created) Destroy(); };
+"
+	
+	
+      end
+
+      operation 275527 "init"
+	public explicit_return_type "void"
+	nparams 4
+	  param inout name "SQLString" explicit_type "char"
+	  param inout name "DBName" explicit_type "char"
+	  param inout name "DBUser" explicit_type "char"
+	  param inout name "DBPass" explicit_type "char"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}, ${t1} * ${p1}, ${t2} * ${p2}, ${t3} * ${p3}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}, ${t1} * ${p1}, ${t2} * ${p2}, ${t3} * ${p3}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+	comment "...sfrom DatabaseForm interface:8:"
+      end
+
+      operation 275655 "getQuery"
+	public explicit_return_type "char"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} * ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 275783 "setFilter"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "filter" explicit_type "char"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//...e
+//...svoid LB_STDCALL lbDatabaseDialog\\58\\\\58\\setFilter\\40\\char\\42\\ filter\\41\\:0:
+
+${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 275911 "getControlValue"
+	public explicit_return_type "char"
+	nparams 1
+	  param inout name "name" explicit_type "char"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} * ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//...e
+//...sconst char\\42\\ LB_STDCALL lbDatabaseDialog\\58\\\\58\\getControlValue\\40\\char\\42\\ name\\41\\:0:
+
+${comment}${inline}const ${type} * ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 276039 "setMasterForm"
+	public explicit_return_type "void"
+	nparams 2
+	  param inout name "master" type class_ref 161223 // lb_I_DatabaseForm
+	  param inout name "params" type class_ref 141127 // lb_I_Parameter
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}, ${t1} * ${p1}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}, ${t1} * ${p1}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+	comment "...e"
+      end
+
+      operation 276167 "setDetailForm"
+	public explicit_return_type "void"
+	nparams 2
+	  param inout name "detail" type class_ref 161223 // lb_I_DatabaseForm
+	  param inout name "params" type class_ref 141127 // lb_I_Parameter
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}, ${t1} * ${p1}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//...e
+//...svoid LB_STDCALL lbDatabaseDialog\\58\\\\58\\setDetailForm\\40\\lb_I_DatabaseMasterForm\\42\\ detail\\44\\ lb_I_Parameter\\42\\ params\\41\\:0:
+
+${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}, ${t1} * ${p1}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 276295 "updateFromMaster"
+	public explicit_return_type "void"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//...e
+//...svoid LB_STDCALL lbDatabaseDialog\\58\\\\58\\updateFromMaster\\40\\\\41\\:0:
+
+${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 276423 "updateFromDetail"
+	public explicit_return_type "void"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//...e
+//...svoid LB_STDCALL lbDatabaseDialog\\58\\\\58\\updateFromDetail\\40\\\\41\\:0:
+
+${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 276551 "getPrimaryColumns"
+	public explicit_return_type "int"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//...e
+//...sint LB_STDCALL lbDatabaseDialog\\58\\\\58\\getPrimaryColumns\\40\\\\41\\:0:
+
+${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 276679 "getControlValue"
+	public explicit_return_type "char"
+	nparams 1
+	  param in name "pos" explicit_type "int"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} * ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//...e
+//...sconst char\\42\\ LB_STDCALL lbDatabaseDialog\\58\\\\58\\getControlValue\\40\\int pos\\41\\:0:
+
+${comment}${inline}const ${type} * ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 276807 "getControls"
+	public explicit_return_type "int"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//...e
+//...sint LB_STDCALL lbDatabaseDialog\\58\\\\58\\getControls\\40\\\\41\\:0:
+
+${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 276935 "getPrimaryColumn"
+	public return_type class_ref 141255 // lb_I_String
+	nparams 1
+	  param in name "pos" explicit_type "int"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//...e
+
+${comment}${inline}${type} * ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 277063 "getForeignColumns"
+	public explicit_return_type "int"
+	nparams 1
+	  param inout name "primaryTable" explicit_type "char"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//...e
+//...sint LB_STDCALL lbDatabaseDialog\\58\\\\58\\getForeignColumns\\40\\char\\42\\ primaryTable\\41\\:0:
+
+${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 277191 "getForeignColumn"
+	public return_type class_ref 141255 // lb_I_String
+	nparams 1
+	  param in name "pos" explicit_type "int"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} * ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 277319 "isCharacterColumn"
+	public explicit_return_type "bool"
+	nparams 1
+	  param inout name "name" explicit_type "char"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 277447 "ignoreForeignKeys"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "toTable" explicit_type "char"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//...e
+//...svoid LB_STDCALL lbDatabaseDialog\\58\\\\58\\ignoreForeignKeys\\40\\char\\42\\ toTable\\41\\:0:
+
+${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 277575 "getTableName"
+	public explicit_return_type "char"
+	nparams 1
+	  param inout name "columnName" explicit_type "char"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//...e
+//...schar\\42\\ lbDatabaseDialog\\58\\\\58\\getTableName\\40\\char\\42\\ columnName\\41\\:0:
+
+${comment}${inline}${type} * ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 277703 "getColumnName"
+	public explicit_return_type "char"
+	nparams 1
+	  param in name "pos" explicit_type "int"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} * ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 277831 "lbDBFirst"
+	public return_type class_ref 128711 // lbErrCodes
+	nparams 1
+	  param inout name "uk" type class_ref 141767 // lb_I_Unknown
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//...e
+//...slbErrCodes LB_STDCALL lbDatabaseDialog\\58\\\\58\\lbDBFirst\\40\\lb_I_Unknown\\42\\ uk\\41\\:0:
+
+${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+	comment "...sData navigation and other handlers:8:
+*
+	 * Database navigation
+	 * 
+	 * Moves to the first row.
+	 "
+      end
+
+      operation 277959 "lbDBNext"
+	public return_type class_ref 128711 // lbErrCodes
+	nparams 1
+	  param inout name "uk" type class_ref 141767 // lb_I_Unknown
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//...e
+//...slbErrCodes LB_STDCALL lbDatabaseDialog\\58\\\\58\\lbDBNext\\40\\lb_I_Unknown\\42\\ uk\\41\\:0:
+
+${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+	comment "*
+	 * Database navigation
+	 * 
+	 * Moves to the next row.
+	 "
+      end
+
+      operation 278087 "lbDBPrev"
+	public return_type class_ref 128711 // lbErrCodes
+	nparams 1
+	  param inout name "uk" type class_ref 141767 // lb_I_Unknown
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//...e
+//...slbErrCodes LB_STDCALL lbDatabaseDialog\\58\\\\58\\lbDBPrev\\40\\lb_I_Unknown\\42\\ uk\\41\\:0:
+
+${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+	comment "*
+	 * Database navigation
+	 * 
+	 * Moves to the previous row.
+	 "
+      end
+
+      operation 278215 "lbDBLast"
+	public return_type class_ref 128711 // lbErrCodes
+	nparams 1
+	  param inout name "uk" type class_ref 141767 // lb_I_Unknown
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//...e
+//...slbErrCodes LB_STDCALL lbDatabaseDialog\\58\\\\58\\lbDBLast\\40\\lb_I_Unknown\\42\\ uk\\41\\:0:
+
+${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+	comment "*
+	 * Database navigation
+	 * 
+	 * Moves to the last row.
+	 "
+      end
+
+      operation 278343 "lbDBAdd"
+	public return_type class_ref 128711 // lbErrCodes
+	nparams 1
+	  param inout name "uk" type class_ref 141767 // lb_I_Unknown
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//...e
+//...slbErrCodes LB_STDCALL lbDatabaseDialog\\58\\\\58\\lbDBAdd\\40\\lb_I_Unknown\\42\\ uk\\41\\:0:
+
+${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+	comment "*
+	 * Database manipulation
+	 * 
+	 * This adds a new row, while it copies the values of the actual form into the row.
+	 "
+      end
+
+      operation 278471 "lbDBDelete"
+	public return_type class_ref 128711 // lbErrCodes
+	nparams 1
+	  param inout name "uk" type class_ref 141767 // lb_I_Unknown
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//...e
+//...slbErrCodes LB_STDCALL lbDatabaseDialog\\58\\\\58\\lbDBDelete\\40\\lb_I_Unknown\\42\\ uk\\41\\:0:
+
+${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+	comment "*
+	 * Database manipulation
+	 * 
+	 * Deletes the current row.
+	 "
+      end
+
+      operation 278599 "lbDBUpdate"
+	public return_type class_ref 128711 // lbErrCodes
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//...e
+//...slbErrCodes LB_STDCALL lbDatabaseDialog\\58\\\\58\\lbDBUpdate\\40\\\\41\\:0:
+
+${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+	comment "*
+	 * Database manipulation
+	 * 
+	 * Internally used to update the current row.
+	 "
+      end
+
+      operation 278727 "lbDBClear"
+	public return_type class_ref 128711 // lbErrCodes
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//...e
+//...slbErrCodes LB_STDCALL lbDatabaseDialog\\58\\\\58\\lbDBClear\\40\\\\41\\:0:
+
+${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+	comment "*
+	 * Database manipulation
+	 *
+	 * Clear the form.
+	 "
+      end
+
+      operation 278855 "lbDBRead"
+	public return_type class_ref 128711 // lbErrCodes
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//...e
+//...slbErrCodes LB_STDCALL lbDatabaseDialog\\58\\\\58\\lbDBRead\\40\\\\41\\:0:
+
+${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+	comment "*
+	 * Database manipulation
+	 * 
+	 * Internally used to read data from the cursor to the current row.
+	 "
+      end
+
+      operation 278983 "registerEventHandler"
+	public return_type class_ref 128711 // lbErrCodes
+	nparams 1
+	  param inout name "dispatcher" type class_ref 133575 // lb_I_Dispatcher
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+	comment "...e
+...sfrom EventHandler interface:8:
+*
+	 * This function acts in a special way for registering the above navigation handlers
+	 *
+	 * It uses a string of the this pointer + a name for the respective eventhandler.
+	 * This is neccessary for handling more than one database dialog per application.
+	 *
+	 * This is a good sample, if you need to be able to handle more than one instance of
+	 * your registered event handlers.
+	 "
+      end
+
+      operation 279111 "OnActionButton"
+	public return_type class_ref 128711 // lbErrCodes
+	nparams 1
+	  param inout name "uk" type class_ref 141767 // lb_I_Unknown
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//...e
+//...slbErrCodes LB_STDCALL lbDatabaseDialog\\58\\\\58\\OnActionButton\\40\\lb_I_Unknown\\42\\ uk\\41\\:0:
+
+${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+	comment "...e
+* \\brief Handler for button actions
+	 *
+	 * This handler should be used if a button action will be added to the form.
+	 "
+      end
+
+      operation 279239 "OnDispatch"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "event" type class_ref 160071 // wxCommandEvent
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//...e
+//...svoid \\9\\\\9\\  lbDatabaseDialog\\58\\\\58\\OnDispatch\\40\\wxCommandEvent\\38\\ event \\41\\:0:
+
+${comment}${inline}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 279367 "OnPaint"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "event" type class_ref 160071 // wxCommandEvent
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//...e
+//...svoid\\9\\\\9\\  lbDatabaseDialog\\58\\\\58\\OnPaint\\40\\wxCommandEvent\\38\\ event \\41\\:0:
+
+${comment}${inline}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+	comment "* \\brief Paint the control.
+	 *
+	 * This handler should be used to paint an 'ownerdrawn' control.
+	 * As in my Power++ code 'EditSymbol', this should also work under
+	 * wxWidgets.
+	 *
+	 * The only problem would be the selection of which control currently
+	 * fires the event. 'EditSymbol' only handles one such control.
+	 "
+      end
+
+      attribute 164295 "_created"
+	public explicit_type "bool"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	idl_decl ""
+      end
+    end
+
+    class 165703 "lbOwnerDrawControl"
+      
+      
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "...sdoc:0:
+
+	This database dialog sample uses a fixed query yet.
+	It is used as the only dialog from lb_wxGUI::createDBForm(char* formName).
+	
+	It should be changed in any way, if there are more different sample queries.
+	Handling creation and usage of form elements directly in wxDialog failed
+	anyhow.
+	
+	So I decided to use a derivation of it and put the handlers for the navigation
+	into this class and use it only by this class.
+	
+	I am not sure, if it will work if I create more than one dialog. The peoblem
+	may be my event handling mechanism.
+	
+	Here I use the following code to register my handlers:
+	
+	dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDatabaseDialog::lbDBFirst, \"DatabaseFirst\");
+	
+	It registers the event \"DatabaseFirst\" for this instance, because the this pointer is used inside
+	my dispatching functionality.
+	
+	The identifer used here - \"DatabaseFirst\" - is a logical one. To be sure to get a free ID that
+	also works inside wxWidgets, eman registers ID's above 5000 - I think.
+	
+	To get a different ID for the second 'different' dialog - showing other data, It would be the best
+	idea to use the following unique things:
+	
+	process ID, thread ID optional, this pointer and the hostname.
+	
+	This leads into difficult code to build up the unique identifer, but macros would help.
+	
+	
+	At least:
+	
+	It would be easy to implement the native wxWidgets event handling mechanism, but then I am not
+	able to do a programmatical navigation from outside wxWidgets.
+	
+	This is only an idea - a remote control at application level.
+
+...e
+...sclass lbOwnerDrawControl:0:"
+      classrelation 161351 // <generalisation>
+	relation 161351 ---|>
+	  a public
+	    cpp default "Generated"
+	    classrelation_ref 161351 // <generalisation>
+	  b parent class_ref 165831 // lb_I_Control
+      end
+
+      classrelation 161479 // <generalisation>
+	relation 161479 ---|>
+	  a public
+	    cpp default "Generated"
+	    classrelation_ref 161479 // <generalisation>
+	  b parent class_ref 165959 // wxControl
+      end
+
+      operation 301895 "lbOwnerDrawControl"
+	public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${name}${(}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${class}::${name}${(}${)}${throw}{
+${body}}
+"
+	
+	
+      end
+
+      operation 302023 "~lbOwnerDrawControl"
+	cpp_virtual public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${virtual}${name}${(}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${class}::${name}${(}${)}${throw}{
+${body}}
+"
+	
+	
+      end
+
+      operation 302151 "create"
+	cpp_inline public explicit_return_type "void"
+	nparams 1
+	  param in name "parentId" explicit_type "int"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract} { };
+"
+	
+	
+      end
+
+      operation 302279 "getId"
+	cpp_inline public explicit_return_type "int"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract} { return GetId(); };
+"
+	
+	
+      end
+
+      operation 302407 "init"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "parent" type class_ref 159815 // lb_I_Window
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 302535 "OnPaint"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "event" type class_ref 166087 // wxPaintEvent
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+    end
+
+    class 166215 "lbPluginDatabasePanel"
+      
+      
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "...e
+...sclass lbPluginDatabasePanel implementation:0:
+...slbPluginDatabasePanel:0:"
+      classrelation 161607 // <generalisation>
+	relation 161607 ---|>
+	  a public
+	    cpp default "Generated"
+	    classrelation_ref 161607 // <generalisation>
+	  b parent class_ref 166343 // virtual
+      end
+
+      classrelation 161735 // <generalisation>
+	relation 161735 ---|>
+	  a private
+	    cpp default "Generated"
+	    classrelation_ref 161735 // <generalisation>
+	  b parent class_ref 136263 // lb_I_PluginImpl
+      end
+
+      operation 302663 "lbPluginDatabasePanel"
+	public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${name}${(}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${class}::${name}${(}${)}${throw}{
+${body}}
+"
+	
+	
+      end
+
+      operation 302791 "~lbPluginDatabasePanel"
+	cpp_virtual public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${virtual}${name}${(}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${class}::${name}${(}${)}${throw}{
+${body}}
+"
+	
+	
+      end
+
+      operation 302919 "initialize"
+	public explicit_return_type "void"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+	comment "...sfrom plugin interface:8:"
+      end
+
+      operation 303047 "run"
+	public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 303175 "peekImplementation"
+	public return_type class_ref 141767 // lb_I_Unknown
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} * ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 303303 "getImplementation"
+	public return_type class_ref 141767 // lb_I_Unknown
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} * ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 303431 "releaseImplementation"
+	public explicit_return_type "void"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 303559 "getColumnName"
+	public explicit_return_type "_CL_VERBOSE<< \"lbPluginDatabasePanel::setData(...) called.\\n\" LOG_
+
+	if (dbForm == NULL) {
+		_CL_VERBOSE << \"ERROR: Cloning database form plugin without an instance to the form it self\" LOG_
+	}
+
+        return ERR_NOT_IMPLEMENTED;
+}
+/*...e*/
+
+lbPluginDatabasePanel::lbPluginDatabasePanel() {
+	_CL_VERBOSE << \"lbPluginDatabasePanel::lbPluginDatabasePanel() called.\\n\" LOG_
+	dbForm = NULL;
+	ref = STARTREF;
+}
+
+lbPluginDatabasePanel::~lbPluginDatabasePanel() {
+	_CL_LOG << \"lbPluginDatabasePanel::~lbPluginDatabasePanel() called.\\n\" LOG_
+	
+	if (dbForm != NULL) {
+		_CL_LOG << \"dbForm is not NULL.\" LOG_
+		_CL_LOG << \"*******************\" LOG_
+	}
+}
+
+void LB_STDCALL lbPluginDatabasePanel::initialize() {
+}
+	
+bool LB_STDCALL lbPluginDatabasePanel::run() {
+	return true;
+}
+
+/*...slb_I_Unknown\\42\\ LB_STDCALL lbPluginDatabasePanel\\58\\\\58\\peekImplementation\\40\\\\41\\:0:*/
+lb_I_Unknown* LB_STDCALL lbPluginDatabasePanel::peekImplementation() {
+	lbErrCodes err = ERR_NONE;
+
+	if (dbForm == NULL) {
+		lbDatabasePanel* dbPanel = new lbDatabasePanel();
+		dbPanel->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+	
+		QI(dbPanel, lb_I_Unknown, dbForm)
+	} else {
+		_CL_VERBOSE << \"lbPluginDatabasePanel::peekImplementation() Implementation already peeked.\\n\" LOG_
+	}
+	
+	return dbForm.getPtr();
+}
+/*...e*/
+/*...slb_I_Unknown\\42\\ LB_STDCALL lbPluginDatabasePanel\\58\\\\58\\getImplementation\\40\\\\41\\:0:*/
+lb_I_Unknown* LB_STDCALL lbPluginDatabasePanel::getImplementation() {
+	lbErrCodes err = ERR_NONE;
+
+	if (dbForm == NULL) {
+
+		_CL_VERBOSE << \"Warning: peekImplementation() has not been used prior.\\n\" LOG_
+	
+		lbDatabasePanel* dbPanel = new lbDatabasePanel();
+		dbPanel->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+	
+		QI(dbPanel, lb_I_Unknown, dbForm)
+	}
+	
+	lb_I_Unknown* r = dbForm.getPtr();
+	dbForm.resetPtr();
+	return r;
+}
+/*...e*/
+void LB_STDCALL lbPluginDatabasePanel::releaseImplementation() {
+	lbErrCodes err = ERR_NONE;
+	
+	if (dbForm != NULL) {
+		UAP(lb_I_DatabaseForm, form)
+		QI(dbForm, lb_I_DatabaseForm, form)
+		form->destroy();
+		
+		dbForm.resetPtr();
+	}
+}
+/*...e*/
+/*...e*/
+
+/*...slbDatabaseDialog:0:*/
+
+BEGIN_IMPLEMENT_LB_UNKNOWN(lbDatabaseDialog)
+        ADD_INTERFACE(lb_I_DatabaseForm)
+END_IMPLEMENT_LB_UNKNOWN()
+
+IMPLEMENT_FUNCTOR(instanceOflbDatabaseDialog, lbDatabaseDialog)
+
+
+/*...slbErrCodes LB_STDCALL lbDatabaseDialog\\58\\\\58\\setData\\40\\lb_I_Unknown\\42\\ uk\\41\\:0:*/
+lbErrCodes LB_STDCALL lbDatabaseDialog::setData(lb_I_Unknown* uk) {
+		lbErrCodes err = ERR_NONE;
+		
+        _CL_LOG << \"lbDatabaseDialog::setData(...) not implemented yet\" LOG_
+
+#ifdef bla
+		UAP(lb_I_DatabaseForm, dbForm)
+		QI(uk, lb_I_DatabaseForm, dbForm)
+		
+		fa = ((lbDatabaseDialog*) dbForm.getPtr())->fa;
+		((lbDatabaseDialog*) dbForm.getPtr())->fa = NULL;
+	
+#endif
+		
+        return ERR_NOT_IMPLEMENTED;
+}
+/*...e*/
+
+/*...slbDatabaseDialog\\58\\\\58\\lbDatabaseDialog\\40\\\\41\\:0:*/
+lbDatabaseDialog::lbDatabaseDialog() 
+	: wxDialog(NULL, -1, wxString(_T(\"Database dialog\")), wxDefaultPosition,
+	wxDefaultSize, wxRESIZE_BORDER|wxDEFAULT_DIALOG_STYLE)
+{
+	_CL_LOG << \"lbDatabaseDialog::lbDatabaseDialog() called.\" LOG_
+	ref = STARTREF;
+	panel = new lbDatabasePanel();
+	_created = true;
+}
+/*...e*/
+/*...slbDatabaseDialog\\58\\\\58\\\\126\\lbDatabaseDialog\\40\\\\41\\:0:*/
+lbDatabaseDialog::~lbDatabaseDialog() {
+	_CL_LOG << \"lbDatabaseDialog::~lbDatabaseDialog() called.\" LOG_
+}
+/*...e*/
+
+void LB_STDCALL lbDatabaseDialog::create(int parentId) {
+	// Don't need a parent
+}
+
+/*...slbErrCodes LB_STDCALL lbDatabaseDialog\\58\\\\58\\registerEventHandler\\40\\lb_I_Dispatcher\\42\\ dispatcher\\41\\:0:*/
+lbErrCodes LB_STDCALL lbDatabaseDialog::registerEventHandler(lb_I_Dispatcher* dispatcher) {
+
+	char eventName[100] = \"\";
+	
+	sprintf(eventName, \"%pDatabaseFirst\", this);
+	dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDatabaseDialog::lbDBFirst, eventName);
+
+	sprintf(eventName, \"%pDatabaseNext\", this);
+	dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDatabaseDialog::lbDBNext,  eventName);
+
+	sprintf(eventName, \"%pDatabasePrev\", this);
+	dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDatabaseDialog::lbDBPrev,  eventName);
+
+	sprintf(eventName, \"%pDatabaseLast\", this);
+	dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDatabaseDialog::lbDBLast,  eventName);
+	
+	sprintf(eventName, \"%pDatabaseAdd\", this);
+	dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDatabaseDialog::lbDBAdd,  eventName);
+	
+	sprintf(eventName, \"%pDatabaseDelete\", this);
+	dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDatabaseDialog::lbDBDelete,  eventName);
+	
+	return ERR_NONE;
+}
+/*...e*/
+/*...svoid LB_STDCALL lbDatabaseDialog\\58\\\\58\\init\\40\\char\\42\\ SQLString\\44\\ char\\42\\ DBName\\44\\ char\\42\\ DBUser\\44\\ char\\42\\ DBPass\\41\\:0:*/
+void LB_STDCALL lbDatabaseDialog::init(char* _SQLString, char* DBName, char* DBUser, char* DBPass) {
+	char prefix[100] = \"\";
+	sprintf(prefix, \"%p\", this);
+
+	wxBoxSizer* sizerMain  = new wxBoxSizer(wxVERTICAL);
+
+	panel->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+
+	panel->create(this->GetId());
+
+	sizerMain->Add(panel, 1, wxEXPAND | wxALL, 5);
+
+	panel->init(_SQLString, DBName, DBUser, DBPass);
+
+	SetTitle(panel->getFormName());
+
+	SetAutoLayout(TRUE);
+		
+	SetSizer(sizerMain);
+
+	sizerMain->SetSizeHints(this);
+	sizerMain->Fit(this);
+	
+	//Centre();
+}
+/*...e*/
+
+/*...slbErrCodes LB_STDCALL lbDatabaseDialog\\58\\\\58\\setName\\40\\char const \\42\\ name\\44\\ char const \\42\\ appention\\41\\:0:*/
+lbErrCodes LB_STDCALL lbDatabaseDialog::setName(char const * name, char const * appention) {
+
+	return panel->setName(name, appention);
+}
+/*...e*/
+
+/*...schar\\42\\ LB_STDCALL lbDatabaseDialog\\58\\\\58\\getQuery\\40\\\\41\\:0:*/
+char* LB_STDCALL lbDatabaseDialog::getQuery() {
+	return panel->getQuery();
+}
+/*...e*/
+/*...schar\\42\\ LB_STDCALL lbDatabaseDialog\\58\\\\58\\getColumnName\\40\\int pos\\41\\:0:*/
+char* LB_STDCALL lbDatabaseDialog::getColumnName(int pos) {
+	return panel->"
+	nparams 1
+	  param in name "" type class_ref 166471 // pos
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+	comment "
+	UAP(lb_I_PluginImpl, pl)
+	QI(uk, lb_I_PluginImpl, pl)
+
+	dbForm = pl->getImplementation();
+"
+      end
+    end
+
+    class 166599 "lbPluginDatabaseDialog"
+      
+      
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "...e
+...sclass lbPluginDatabaseDialog implementation:0:
+...slbPluginDatabaseDialog:0:"
+      classrelation 161863 // <generalisation>
+	relation 161863 ---|>
+	  a public
+	    cpp default "Generated"
+	    classrelation_ref 161863 // <generalisation>
+	  b parent class_ref 166343 // virtual
+      end
+
+      classrelation 161991 // <generalisation>
+	relation 161991 ---|>
+	  a private
+	    cpp default "Generated"
+	    classrelation_ref 161991 // <generalisation>
+	  b parent class_ref 136263 // lb_I_PluginImpl
+      end
+
+      operation 303687 "lbPluginDatabaseDialog"
+	public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${name}${(}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${class}::${name}${(}${)}${throw}{
+${body}}
+"
+	
+	
+      end
+
+      operation 303815 "~lbPluginDatabaseDialog"
+	cpp_virtual public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${virtual}${name}${(}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${class}::${name}${(}${)}${throw}{
+${body}}
+"
+	
+	
+      end
+
+      operation 303943 "initialize"
+	public explicit_return_type "void"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+	comment "...sfrom plugin interface:8:"
+      end
+
+      operation 304071 "run"
+	public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 304199 "peekImplementation"
+	public return_type class_ref 141767 // lb_I_Unknown
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} * ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 304327 "getImplementation"
+	public return_type class_ref 141767 // lb_I_Unknown
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} * ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 304455 "releaseImplementation"
+	public explicit_return_type "void"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+    end
+
+    class 166727 "lbPluginModuleDatabaseForm"
+      
+      
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "...sclass lbPluginModuleDatabaseForm:0:"
+      classrelation 162119 // <generalisation>
+	relation 162119 ---|>
+	  a public
+	    cpp default "Generated"
+	    classrelation_ref 162119 // <generalisation>
+	  b parent class_ref 136519 // lb_I_PluginModule
+      end
+
+      operation 304583 "lbPluginModuleDatabaseForm"
+	public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${name}${(}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${class}::${name}${(}${)}${throw}{
+${body}}
+"
+	
+	
+      end
+
+      operation 304711 "~lbPluginModuleDatabaseForm"
+	cpp_virtual public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${virtual}${name}${(}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${class}::${name}${(}${)}${throw}{
+${body}}
+"
+	
+	
+      end
+    end
+  end
+
+  deploymentview 130119 "DatabaseForm"
+    //deployment diagram settings
+    package_name_in_tab default show_context default write_horizontally default auto_label_position default
+    draw_component_as_icon default show_component_req_prov default show_component_rea default
+    artifact 145607 "lbConfigure_FK_PK_MappingDialog"
+      stereotype "source"
+      cpp_h "#ifndef _${NAME}_H
+#define _${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_classes
+	class_ref 159687 // lbConfigure_FK_PK_MappingDialog
+      end
+    end
+
+    artifact 145735 "lbAction"
+      stereotype "source"
+      cpp_h "#ifndef _${NAME}_H
+#define _${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_classes
+	class_ref 160583 // lbAction
+      end
+    end
+
+    artifact 145863 "lbMasterFormAction"
+      stereotype "source"
+      cpp_h "#ifndef _${NAME}_H
+#define _${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_classes
+	class_ref 160839 // lbMasterFormAction
+      end
+    end
+
+    artifact 145991 "lbSQLQueryAction"
+      stereotype "source"
+      cpp_h "#ifndef _${NAME}_H
+#define _${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_classes
+	class_ref 160967 // lbSQLQueryAction
+      end
+    end
+
+    artifact 146119 "FormularFieldInformation"
+      stereotype "source"
+      cpp_h "#ifndef _${NAME}_H
+#define _${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_classes
+	class_ref 161095 // FormularFieldInformation
+      end
+    end
+
+    artifact 146247 "lbDatabaseDialog"
+      stereotype "source"
+      cpp_h "#ifndef _${NAME}_H
+#define _${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_classes
+	class_ref 161479 // lbDatabaseDialog
+      end
+    end
+
+    artifact 147655 "lbOwnerDrawControl"
+      stereotype "source"
+      cpp_h "#ifndef _${NAME}_H
+#define _${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_classes
+	class_ref 165703 // lbOwnerDrawControl
+      end
+    end
+
+    artifact 147783 "lbPluginDatabasePanel"
+      stereotype "source"
+      cpp_h "#ifndef _${NAME}_H
+#define _${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_classes
+	class_ref 166215 // lbPluginDatabasePanel
+      end
+    end
+
+    artifact 147911 "lbPluginDatabaseDialog"
+      stereotype "source"
+      cpp_h "#ifndef _${NAME}_H
+#define _${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_classes
+	class_ref 166599 // lbPluginDatabaseDialog
+      end
+    end
+
+    artifact 148039 "lbPluginModuleDatabaseForm"
+      stereotype "source"
+      cpp_h "#ifndef _${NAME}_H
+#define _${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_classes
+	class_ref 166727 // lbPluginModuleDatabaseForm
+      end
+    end
+  end
+end

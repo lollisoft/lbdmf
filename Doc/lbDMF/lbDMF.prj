@@ -29,4 +29,19 @@ format 22
 
   mark_for_import
   
+  ncouples 1
+  key "#file" value "Q:\\develop\\Projects\\CPP\\Doc\\lbDMF\\IgnoreIdentifers.txt"
+  package_ref 128071 // interfaces
+
+  package_ref 128199 // unknown
+
+  package_ref 128327 // include
+
+  package_ref 128455 // BaseDevelopment
+
+  package_ref 130247 // AppDevelopmentDemo
+
+  package_ref 130759 // Plugins
+
+  package_ref 128114 // Test
 end

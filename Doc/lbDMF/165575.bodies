@@ -1,0 +1,69 @@
+class lbUsersModel
+!!!300615.cpp!!!	~lbUsersModel()
+
+
+!!!300743.cpp!!!	addAccount(in _user : char, in _pass : char, in _id : long =  -1) : long
+
+	lbErrCodes err = ERR_NONE;
+	UAP_REQUEST(manager.getPtr(), lb_I_String, User)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, Pass)
+	UAP_REQUEST(manager.getPtr(), lb_I_Long, ID)
+	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, paramname)
+
+	*User = _user;
+	*Pass = _pass;
+	ID->setData(_id);
+	
+	*paramname = "User";
+	param->setUAPString(*&paramname, *&User);
+	*paramname = "Pass";
+	param->setUAPString(*&paramname, *&Pass);
+	*paramname = "ID";
+	param->setUAPLong(*&paramname, *&ID);
+	
+	UAP(lb_I_KeyBase, key)
+	UAP(lb_I_Unknown, ukParam)
+	QI(ID, lb_I_KeyBase, key)
+	QI(param, lb_I_Unknown, ukParam)
+	
+	Users->insert(&ukParam, &key);
+
+	return -1;
+!!!300871.cpp!!!	selectAccount(in _user : char) : bool
+
+	return false;
+!!!300999.cpp!!!	getUserCount() : long
+
+	return Users->Count();
+!!!301127.cpp!!!	hasMoreUsers() : bool
+
+	return Users->hasMoreElements();
+!!!301255.cpp!!!	setNextUser() : void
+
+	lbErrCodes err = ERR_NONE;
+	UAP_REQUEST(manager.getPtr(), lb_I_String, name)
+	UAP(lb_I_Parameter, param)
+	UAP(lb_I_Unknown, uk)
+	
+	uk = Users->nextElement();
+	QI(uk, lb_I_Parameter, param)
+	
+	*name = "Name";
+	param->getUAPString(*&name, *&currentUserName);
+	*name = "Pass";
+	param->getUAPString(*&name, *&currentUserName);
+	*name = "ID";
+	param->getUAPLong(*&name, *&currentUserID);
+!!!301383.cpp!!!	finishUserIteration() : void
+
+	Users->finishIteration();
+!!!301511.cpp!!!	getUserName() : char
+
+	return currentUserName->charrep();
+!!!301639.cpp!!!	getUserUID() : long
+
+	return currentUserID->getData();
+!!!301767.cpp!!!	getUserPassword() : char
+
+	return currentUserPassword->charrep();

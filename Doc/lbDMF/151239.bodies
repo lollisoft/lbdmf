@@ -1,0 +1,194 @@
+class lbLog
+!!!224839.cpp!!!	lbLog()
+
+//lbLock lbLock(sect);
+		ref = STARTREF;
+		manager = NULL;
+        
+		f[0] = 0;
+		strcat(f, getLogDirectory());
+#if defined (LINUX) || defined (OSX) || defined (UNIX)
+		strcat(f, "/");
+#endif
+#if defined (WINDOWS)
+		strcat(f, "\\");
+#endif
+		strcat(f, LOGFILE);
+		
+		
+        logdirect("lbLog::lbLog(): Creating mutex for logfile\n", f, level);
+        if (firstlog == 0) {
+                mutex = new lbMutex();
+                mutex->createMutex(LB_LOGFILE_MUTEX);
+        }
+
+        firstlog = 1;
+        doLog = 1;
+        logmessage = NULL;
+        lastsize = 0;
+        _CL_VERBOSE << "lbLog::lbLog() leaving" LOG_
+!!!224967.cpp!!!	lbLog(in l : int)
+
+//lbLock lbLock(sect);
+	logmessage = NULL;
+	lastsize = 0;
+	strcpy(f, LOGFILE);
+//        logdirect("lbLog::lbLog(int l): Creating mutex for logfile", f, level);
+
+        if (firstlog == 0) {
+                mutex = new lbMutex();
+                mutex->createMutex(LB_LOGFILE_MUTEX);
+        }
+
+        firstlog = 1;
+        doLog = l;
+        _CL_VERBOSE << "lbLog::lbLog(): Creating mutex for logfile" LOG_
+	printf("lbLog::lbLog(int l) leaving\n");
+    
+!!!225223.cpp!!!	logdirect(in msg : char, inout f : char, in level : int) : void
+
+	logMessage(msg, f, level);
+!!!225351.cpp!!!	log(in log : int) : void
+
+        if (firstlog == 0) {
+        	lbLog log;// = lbLog();
+        }
+        doLog = log;
+!!!225479.cpp!!!	enable(inout where : char) : void
+
+        char buf[100];
+        doLog = TRUE;
+        
+        if (firstlog == 0) {
+        	lbLog log;// = lbLog();
+        }
+        
+        mutex->enter();
+
+        sprintf(buf, "Log is enabled at %s", where);
+//      level++;
+        logdirect(buf, f, level);
+//      level++;
+        
+        mutex->release();
+!!!225607.cpp!!!	disable(inout where : char) : void
+
+        char buf[100];
+        
+        if (firstlog == 0) {
+        	lbLog log;// = lbLog();
+        }
+        
+        mutex->enter();
+        
+        if (level <= 0) {
+                logdirect("lbLog: Function sequence error. Disable called before enable!", f, 0);
+                return;
+        }
+        
+        doLog = FALSE;
+        sprintf(buf, "Log is disabled at %s", where);
+//      level--;
+        logdirect(buf, f, level);
+//      level--;
+
+        mutex->release();
+!!!225735.cpp!!!	event_begin(inout event : char) : void
+
+        if (firstlog == 0) {
+        	lbLog log;// = lbLog();
+        }
+        if (doLog == TRUE) {
+            beinlog = 1;
+            start_time = clock();
+
+            _CL_VERBOSE << event LOG_
+    }
+!!!225863.cpp!!!	event_end(inout event : char) : void
+
+       char buf[100];
+       if (firstlog == 0) {
+        	lbLog log;// = lbLog();
+       }
+
+        if (doLog == TRUE) {
+                beinlog = 0;
+                end_time = clock();
+        
+                FILE *fp;
+
+                if ((end_time - start_time) > 5)
+                {
+                        fp = fopen( f, "a" );
+                        if( fp != NULL ) {
+                                // rest of code goes here
+        
+                                fprintf( fp, "Message %s: Duration\tProcess\t%d\t%u\n",
+                                event, lbGetCurrentProcessId(), end_time - start_time);
+                        }
+                        fclose( fp );
+                }
+        }
+    
+!!!225991.cpp!!!	setPrefix(inout p : char) : void
+
+//COUT << "lbLog::setPrefix(char* p) called" << ENDL;
+        {
+                //lbLock lbLock(sect, "lbLockSection");
+                strcpy(prefix, p);
+        }
+!!!226119.cpp!!!	operator <<(in i : int) : lb_I_Log
+
+	char s[1000] = "";
+	_realloc(strlen(itoa(i)) + 1);
+	lastsize = lastsize + strlen(itoa(i)) + 1;
+	strcat(logmessage, itoa(i));
+	return *this;
+!!!226247.cpp!!!	operator <<(in c : char) : lb_I_Log
+
+        _realloc(lastsize + 2);
+        lastsize = lastsize + 2;
+        char add[2] = "";
+        add[0] = c;
+        strcat(logmessage, add);
+        if (c == '\n') {
+        	logdirect(logmessage, f, 0);
+        	free(logmessage);
+        	logmessage = NULL;
+        	lastsize = 0;
+        }
+	return *this;
+!!!226375.cpp!!!	operator <<(in string : char) : lb_I_Log
+
+	if (string != NULL) {
+		_realloc(lastsize+strlen(string) + 10);
+		lastsize = lastsize + strlen(string) + 10;
+		strcat(logmessage, string);
+		
+		if (strcmp(string, "\n") == 0) {
+			logdirect(logmessage, f, 0);
+			free(logmessage);
+			logmessage = NULL;
+			lastsize = 0;
+		}
+	} else {
+		
+	}
+	return *this;
+!!!226503.cpp!!!	_realloc(in add_size : int) : void
+
+	if (logmessage == NULL) {
+		char* buf = (char*) malloc(add_size);
+		buf[0] = 0;
+		logmessage = buf;
+		//logmessage = (char*) ::realloc((void*) logmessage, add_size);
+		lastsize = add_size;
+	} else {
+		char* buf = (char*) malloc(lastsize+add_size);
+		buf[0] = 0;
+		buf = strcpy(buf, logmessage);
+		free(logmessage);
+		logmessage = buf;
+		//logmessage = (char*) ::realloc((void*) logmessage, lastsize+add_size);
+		lastsize += add_size;
+	}

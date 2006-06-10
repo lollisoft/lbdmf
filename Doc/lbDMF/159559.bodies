@@ -1,0 +1,479 @@
+class lbDynamicApplication
+!!!261191.cpp!!!	lbDynamicApplication()
+
+	ref = STARTREF;
+	gui = NULL;
+	_CL_LOG << "lbDynamicApplication::lbDynamicApplication() called." LOG_
+!!!261319.cpp!!!	~lbDynamicApplication()
+
+	_CL_LOG << "lbDynamicApplication::~lbDynamicApplication() called." LOG_
+!!!261447.cpp!!!	initialize(inout user : char =  NULL, inout app : char =  NULL) : lbErrCodes
+
+
+	// To be implemented in a separate application module
+	lbErrCodes err = ERR_NONE;
+	int unused;
+
+	// Get the event manager
+
+	lb_I_Module* m = *&manager;
+
+	REQUEST(m, lb_I_EventManager, eman)
+
+
+	REQUEST(m, lb_I_Dispatcher, dispatcher)
+	dispatcher->setEventManager(eman.getPtr());
+
+#ifdef USE_RDCD_MODEL
+		// -------------------------------------------------------------------------
+		// I plan to use an object model to be used instead. The object model should
+		// fasten up the application setup.
+		//
+		// In a next step, the RDCD model should be loaded after the user has been
+		// logged in. Thus, the login and user data must be separated from the app
+		// configuration data. To ensure authenticated usage, the model may ask the
+		// login 'service' for the password before enabling the interface completely.
+		// -------------------------------------------------------------------------
+
+		UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+		UAP(lb_I_Plugin, pl)
+		UAP(lb_I_Unknown, ukPl)
+		
+		pl = PM->getFirstMatchingPlugin("lb_I_RDCDModel", "RDCDModel");
+		
+		if (pl != NULL) {
+			ukPl = pl->getImplementation();
+			if (ukPl != NULL) {
+				QI(ukPl, lb_I_RDCDModel, model)
+				
+				if (model != NULL) {
+					// Have a valid model instance
+					_CL_LOG << "Suceeded loading a lbRDCDModel instance as plugin." LOG_
+					
+					// Need to derive filename from given application name
+					UAP_REQUEST(manager.getPtr(), lb_I_String, filename)
+					*filename = LogonApplication->charrep();
+					*filename += ".daf"; // Dynamic application forms 
+					
+					pl = PM->getFirstMatchingPlugin("lb_I_FileOperation", "InputStreamVisitor");
+	
+					if (pl != NULL) {
+						ukPl = pl->getImplementation();
+				
+						UAP(lb_I_FileOperation, fOp)
+						QI(ukPl, lb_I_FileOperation, fOp)
+				
+						if (fOp != NULL) {
+							if (fOp->begin(filename->charrep())) {
+								UAP(lb_I_Unknown, ukAcceptor)
+								QI(model, lb_I_Unknown, ukAcceptor)
+								ukAcceptor->accept(*&fOp);
+						
+								fOp->end();
+							
+							} else {
+								// No file found. Create one from database...
+							}
+						} else {
+							_LOG << "Error: Could not get a valid file operation instance." LOG_
+						}
+					}
+				}
+			}
+		}
+		
+#endif		
+
+
+	/*
+		Select all events, that are configured and register it.
+	 */
+
+
+	UAP_REQUEST(manager.getPtr(), lb_I_Database, database)
+	UAP(lb_I_Query, sampleQuery)
+	
+	database->init();
+
+	char* lbDMFPasswd = getenv("lbDMFPasswd");
+	char* lbDMFUser   = getenv("lbDMFUser");
+	
+	if (!lbDMFUser) lbDMFUser = "dba";
+	if (!lbDMFPasswd) lbDMFPasswd = "trainres";
+
+	database->connect("lbDMF", lbDMFUser, lbDMFPasswd);
+	
+	sampleQuery = database->getQuery(0);	
+
+	char* b =
+	        "select Formulare.eventname, Formulare.menuname from Formulare inner join "
+	        "Anwendungen on Formulare.anwendungid = Anwendungen.id inner join "
+	        "User_Anwendungen on Anwendungen.id = User_Anwendungen.anwendungenid inner join Users on "
+	        "User_Anwendungen.userid = Users.id where "
+	        "Users.userid = '%s' and Anwendungen.name = '%s'";
+
+	char* buffer = (char*) malloc(strlen(b)+strlen(user)+strlen(app)+1);
+
+	sprintf(buffer, b, user, app);
+
+	// Save user and app internally
+	
+	if (user == NULL) {
+	        _CL_LOG << "lb_MetaApplication::Initialize() user is NULL" LOG_
+	} else
+	if (LogonUser == NULL) {
+	        REQUEST(manager.getPtr(), lb_I_String, LogonUser)
+	}
+        LogonUser->setData(user);
+	
+	if (app == NULL) {
+	        _CL_LOG << "lb_MetaApplication::Initialize() app is NULL" LOG_
+	} else
+	if (LogonApplication == NULL) {
+	        REQUEST(manager.getPtr(), lb_I_String, LogonApplication)
+	}
+        LogonApplication->setData(app);
+
+	if (metaapp == NULL) {
+		REQUEST(manager.getPtr(), lb_I_MetaApplication, metaapp)
+	}
+
+	if (sampleQuery == NULL) printf("NULL pointer !\n");
+
+	_CL_LOG << "lbDynamicApplication::Initialize('" << user << "', '" << app << "');" LOG_
+	_CL_LOG << "Query: " << buffer LOG_
+
+	sampleQuery->skipFKCollecting();
+	sampleQuery->query(buffer);
+	sampleQuery->enableFKCollecting();
+	
+	free(buffer);
+	
+	char* ed = strdup(_trans("&Edit"));
+
+	char* menu = strdup(_trans(app));
+
+	metaapp->addMenuBar(menu, ed);
+
+	free(ed);
+	free(menu);
+
+	lbErrCodes DBerr = sampleQuery->first();
+	if ((DBerr == ERR_NONE) || (DBerr == WARN_DB_NODATA)) {
+		UAP(lb_I_String, EventName)
+		UAP(lb_I_String, MenuName)
+		
+		EventName = sampleQuery->getAsString(1);
+		MenuName = sampleQuery->getAsString(2);
+
+		if (eman->resolveEvent(EventName->charrep(), unused) == ERR_EVENT_NOTREGISTERED) {
+
+			eman->registerEvent(EventName->charrep(), unused);
+		
+			dispatcher->addEventHandlerFn(this, 
+					(lbEvHandler) &lbDynamicApplication::getDynamicDBForm, EventName->charrep());
+
+			metaapp->addMenuEntry(_trans(app), MenuName->charrep(), EventName->charrep(), "");
+
+		} else {
+			_CL_VERBOSE << "WARNING: Event name already reserved. Ignore it for menucreation." LOG_
+		}
+		
+		if (DBerr == WARN_DB_NODATA) return ERR_NONE;
+		if (DBerr == ERR_DB_NODATA) return ERR_NONE;
+#define TRUE 1
+		while (TRUE) {
+/*...sget rest of menu entries:24:*/
+			UAP(lb_I_String, EventName)
+			UAP(lb_I_String, MenuName)
+			
+			DBerr = sampleQuery->next();
+		
+			if ((DBerr == ERR_NONE) || (DBerr == WARN_DB_NODATA)) {
+		        	EventName = sampleQuery->getAsString(1);
+				MenuName = sampleQuery->getAsString(2);
+				
+				if (eman->resolveEvent(EventName->charrep(), unused) == ERR_EVENT_NOTREGISTERED) {
+					eman->registerEvent(EventName->charrep(), unused);
+				
+					dispatcher->addEventHandlerFn(this,
+							(lbEvHandler) &lbDynamicApplication::getDynamicDBForm, EventName->charrep());
+				
+					metaapp->addMenuEntry(_trans(app), MenuName->charrep(), EventName->charrep(), "");
+				} else {
+					_CL_VERBOSE << "WARNING: Event name already reserved. Ignore it for menucreation." LOG_
+				}
+		        	if (DBerr == WARN_DB_NODATA) break;
+		        }
+	        	if (DBerr == ERR_DB_NODATA) break;
+/*...e*/
+		}
+
+	}
+
+	return ERR_NONE;
+!!!261575.cpp!!!	uninitialize() : lbErrCodes
+
+	return ERR_NONE;
+!!!261703.cpp!!!	run() : lbErrCodes
+
+#ifdef bla
+	lb_I_Unknown* result;
+
+	dispatcher->dispatch("AddMenu", NULL, &result);	
+#endif
+	return ERR_NONE;
+!!!261831.cpp!!!	getGUI(inout _gui : lb_I_GUI) : lbErrCodes
+
+	*_gui = gui;
+	return ERR_NONE;
+!!!261959.cpp!!!	getUserName(inout user : lb_I_String) : lbErrCodes
+
+	if (LogonUser == NULL) (*user)->setData("");
+	else (*user)->setData(LogonUser->charrep());
+	return ERR_NONE;
+!!!262087.cpp!!!	getApplicationName(inout app : lb_I_String) : lbErrCodes
+
+	if (LogonApplication == NULL) (*app)->setData("");
+	else (*app)->setData(LogonApplication->charrep());
+	return ERR_NONE;
+!!!262215.cpp!!!	setUserName(inout user : char) : lbErrCodes
+
+	if (LogonUser == NULL) {
+        	REQUEST(manager.getPtr(), lb_I_String, LogonUser)
+	}
+
+       	LogonUser->setData(user);
+	return ERR_NONE;
+!!!262343.cpp!!!	setApplicationName(inout app : char) : lbErrCodes
+
+	if (LogonApplication == NULL) {
+        	REQUEST(manager.getPtr(), lb_I_String, LogonApplication)
+	}
+
+       	LogonApplication->setData(app);
+	return ERR_NONE;
+!!!262471.cpp!!!	getEVManager(in  : void) : lb_I_EventManager
+
+	return NULL;
+!!!262599.cpp!!!	registerEventHandler(inout disp : lb_I_Dispatcher) : lbErrCodes
+
+
+	// Register a dynamic formular creator
+
+// Done while initialiation
+//	disp->addEventHandlerFn(this, (lbEvHandler) &lbDynamicApplication::getDynamicDBForm, "getDynamicDBForm");
+
+	return ERR_NONE;
+!!!262727.cpp!!!	getDynamicDBForm(inout uk : lb_I_Unknown) : lbErrCodes
+
+	lbErrCodes err = ERR_NONE;
+	
+	if (gui != NULL) {
+	        UAP(lb_I_DatabaseForm, dbForm)
+
+/*...sDoc:16:*/
+		/*
+			To get the data from the database, we do transmit only a few data by uk to this
+			function.
+			
+			It would be only the form id it self. Additionally, we need to check the typ of the
+			formular to be really a DynamicDBForm.
+			
+			If this is ok, we need to load the additional query from a foreign table for that
+			typ of form.
+			
+			At best, this functionality is placed in a separate class.
+		*/
+/*...e*/
+
+		UAP(lb_I_Integer, eventID)
+		UAP(lb_I_Query, sampleQuery)
+
+		UAP_REQUEST(manager.getPtr(), lb_I_EventManager, eman)
+		UAP_REQUEST(manager.getPtr(), lb_I_String, query)
+		UAP_REQUEST(manager.getPtr(), lb_I_String, formID)
+		UAP_REQUEST(manager.getPtr(), lb_I_String, formName)
+
+		UAP_REQUEST(manager.getPtr(), lb_I_String, DBName)
+		UAP_REQUEST(manager.getPtr(), lb_I_String, DBUser)
+		UAP_REQUEST(manager.getPtr(), lb_I_String, DBPass)
+
+		QI(uk, lb_I_Integer, eventID)
+
+		// Retrieve the event name from their ID
+
+		char* eventName = eman->reverseEvent(eventID->getData());
+
+#ifdef USE_RDCD_MODEL
+		if (model != NULL) {
+			model->selectFormByEventName(eventName);
+			
+			dbForm = gui->createDBForm(	model->getFormularName(), 
+										model->getFormularQuery(),
+										model->getDBName(), 
+										model->getDBUser(), 
+										model->getDBPass());
+			
+			if (dbForm != NULL) dbForm->show();
+			
+		} else {
+#endif
+			// Use old version with direct database queries. This could happen, if no plugin was found, no file was found and couldn't created.
+		
+			if(database == NULL) {
+				REQUEST(manager.getPtr(), lb_I_Database, database)
+				database->init();
+
+				char* lbDMFPasswd = getenv("lbDMFPasswd");
+				char* lbDMFUser   = getenv("lbDMFUser");
+				
+				if (!lbDMFUser) lbDMFUser = "dba";
+				if (!lbDMFPasswd) lbDMFPasswd = "trainres";
+
+				database->connect("lbDMF", lbDMFUser, lbDMFPasswd);
+			}
+		
+			sampleQuery = database->getQuery(0);
+
+			char* b =
+				"select Formulare.id, Formulare.name from Formulare "
+				"inner join Anwendungen on Formulare.anwendungid = Anwendungen.id inner join "
+				"User_Anwendungen on Anwendungen.id = User_Anwendungen.anwendungenid inner join Users on "
+				" User_Anwendungen.userid = Users.id where "
+				"Users.userid = '%s' and Anwendungen.name = '%s' and "
+				"Formulare.eventname = '%s'";
+
+			char* buffer = (char*) malloc(strlen(b)+strlen(LogonUser->charrep())+strlen(LogonApplication->charrep())+strlen(eventName)+1);
+
+			buffer[0] = 0;
+
+			sprintf(buffer, b, LogonUser->charrep(), LogonApplication->charrep(), eventName);
+
+			// Get the ID and Name of the intented formular
+
+			_CL_LOG << "Logon user is: " << LogonUser->charrep() LOG_
+			_CL_LOG << "Logon app is: " << LogonApplication->charrep() LOG_
+
+			sampleQuery->query(buffer);
+			
+			err = sampleQuery->first();
+			
+			if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
+				formID = sampleQuery->getAsString(1);
+				formName = sampleQuery->getAsString(2);
+			}
+
+
+			//- Internal formular implementation ------------------------------------------------
+
+			b =
+			"select parametervalue from formular_parameters "
+			"where parametername = 'query' and "
+			"formularid = %s";
+			
+			free(buffer);
+			
+			buffer = (char*) malloc(strlen(b)+strlen(formID->charrep())+1);
+
+			buffer[0] = 0;
+
+			sprintf(buffer, b, formID->charrep());
+
+			UAP(lb_I_Query, formularQuery)
+
+			formularQuery = database->getQuery(0);
+			
+			// It is an internal formular and I don't distinguish between 
+			// different formular implementations yet
+			
+			formularQuery->skipFKCollecting();
+			formularQuery->query(buffer);
+			formularQuery->enableFKCollecting();
+			
+			err = formularQuery->first();
+			
+			if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
+					query = formularQuery->getAsString(1);
+					
+					if ((query != NULL) && (query->charrep() == NULL)) {
+						_LOG << "Error: Getting SQL query for the formular '" << formID->charrep() << "' failed." LOG_
+					} else {
+						_LOG << "Have got this query for the form: " << query->charrep() LOG_
+					}
+			} else {
+				_CL_LOG << "Error: Something happens while getting the formular SQL query!" LOG_
+			}
+			
+			b = 
+				"select parametername, parametervalue from anwendungs_parameter inner join "
+				"anwendungen on anwendungs_parameter.anwendungid = anwendungen.id where "
+				"anwendungen.name = '%s'";
+
+			free(buffer);
+
+			buffer = (char*) malloc(strlen(b)+strlen(LogonApplication->charrep())+1);
+
+			buffer[0] = 0;
+			
+			sprintf(buffer, b, LogonApplication->charrep());
+
+			UAP(lb_I_Query, DBConnQuery)
+
+			DBConnQuery = database->getQuery(0);
+			
+			DBConnQuery->query(buffer);
+
+			err = DBConnQuery->first();
+
+			UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
+
+			if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
+				parameter = DBConnQuery->getAsString(1);
+			
+				if (strcmp(parameter->charrep(), "DBName") == 0) DBName = DBConnQuery->getAsString(2);
+				if (strcmp(parameter->charrep(), "DBUser") == 0) DBUser = DBConnQuery->getAsString(2);
+				if (strcmp(parameter->charrep(), "DBPass") == 0) DBPass = DBConnQuery->getAsString(2);
+				
+				err = DBConnQuery->next();
+				if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
+					parameter = DBConnQuery->getAsString(1);
+					if (strcmp(parameter->charrep(), "DBName") == 0) DBName = DBConnQuery->getAsString(2);
+					if (strcmp(parameter->charrep(), "DBUser") == 0) DBUser = DBConnQuery->getAsString(2);
+					if (strcmp(parameter->charrep(), "DBPass") == 0) DBPass = DBConnQuery->getAsString(2);
+				} else {
+					_LOG << "Fehler: Konnte DBUser nicht auslesen" LOG_
+				}
+				
+				err = DBConnQuery->next();
+				if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
+					parameter = DBConnQuery->getAsString(1);
+					if (strcmp(parameter->charrep(), "DBName") == 0) DBName = DBConnQuery->getAsString(2);
+					if (strcmp(parameter->charrep(), "DBUser") == 0) DBUser = DBConnQuery->getAsString(2);
+					if (strcmp(parameter->charrep(), "DBPass") == 0) DBPass = DBConnQuery->getAsString(2);
+				} else {
+					_LOG << "Fehler: Konnte DBPass nicht auslesen" LOG_
+				}
+			
+			}		
+
+			_CL_LOG << "Create a database form for " << formName->charrep() << " with " << query->charrep() LOG_
+			
+				dbForm = gui->createDBForm(formName->charrep(), query->charrep(), 
+								DBName->charrep(), DBUser->charrep(), DBPass->charrep());
+
+			if (dbForm != NULL) dbForm->show();
+
+			//- External formular implementation ---------------------------------------------------
+				//- Would load an external module and optionally use other parameters from configuratoin
+				//--------------------------------------------------------------------------------------
+				
+			free(buffer);
+#ifdef USE_RDCD_MODEL
+		}
+#endif
+	} else {
+	        COUT << "KundenDetails" << ENDL;
+	}
+
+        return ERR_NONE;

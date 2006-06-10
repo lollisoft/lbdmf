@@ -1,0 +1,25 @@
+class lbSQLQueryAction
+!!!265927.cpp!!!	lbSQLQueryAction()
+
+	ref = STARTREF;
+	myActionID = NULL;
+!!!266055.cpp!!!	~lbSQLQueryAction()
+
+	free(myActionID);
+!!!266183.cpp!!!	setActionID(inout id : char) : void
+
+	free(myActionID);
+	
+	if ((id != NULL) && (strlen(id) > 0)) {
+		myActionID = strdup(id);
+	} else {
+		_CL_LOG << "Error: Got an invalid action ID!" LOG_
+	}
+!!!266311.cpp!!!	execute(inout params : lb_I_Parameter) : void
+
+	_CL_LOG << "lbSQLQueryAction::execute()" LOG_
+	
+!!!266439.cpp!!!	setDatabase(inout _db : lb_I_Database) : void
+
+	db = _db;
+	db++;

@@ -1,0 +1,120 @@
+class lbPluginManager
+!!!250183.cpp!!!	~lbPluginManager()
+
+	_CL_LOG << "lbPluginManager::~lbPluginManager() called." LOG_
+!!!250311.cpp!!!	unload() : void
+
+	if(PluginContainer != NULL) {
+		/**
+		 * Releasing a reference, where the instance will not be deleted,
+		 * an additional reset must be used.
+		 *
+		 * TODO: Rewrite UAP macro to reset pointer always.
+		 */
+		PluginContainer->release(__FILE__, __LINE__);
+		PluginContainer.resetPtr();
+	}
+	
+	PluginModules--;
+	PluginModules.resetPtr();
+!!!251079.cpp!!!	tryLoad(inout module : char, inout path : char) : bool
+
+	lbErrCodes err = ERR_NONE;
+	
+	if (strcmp(".", module) == 0) return false;
+	if (strstr(module, "so.") != NULL) return false;
+	
+	_CL_VERBOSE << "Try to load module '" << module << "'" LOG_
+		
+	char* pluginDir = NULL;
+	
+	pluginDir = (char*) malloc(strlen(path)+1);
+	
+	pluginDir[0] = 0;
+	strcat(pluginDir, path);
+				
+	/*...sbuild PREFIX:0:*/
+#ifndef LINUX
+#ifdef __WATCOMC__
+#define PREFIX "_"
+#endif
+#ifdef _MSC_VER
+#define PREFIX ""
+#endif
+#endif
+#ifdef LINUX
+#define PREFIX ""
+#endif
+	/*...e*/
+				
+	// Instantiate an lb_I_PluginModule object
+	
+	char* pluginModule = (char*) malloc(strlen(pluginDir)+strlen(module)+2);
+	pluginModule[0] = 0;
+	strcat(pluginModule, pluginDir);
+#ifdef WINDOWS
+	strcat(pluginModule, "\\");
+#endif
+#ifdef LINUX
+	strcat(pluginModule, "/");
+#endif
+#ifdef OSX
+	strcat(pluginModule, "/");
+#endif
+	strcat(pluginModule, module);
+	
+	UAP(lb_I_Unknown, ukPlugin)
+		UAP_REQUEST(manager.getPtr(), lb_I_String, pluginName)
+		pluginName->setData(module);
+	
+	UAP(lb_I_KeyBase, key)
+		QI(pluginName, lb_I_KeyBase, key)
+		
+		if (PluginModules->exists(&key) != 0) {
+			_CL_VERBOSE << "Warning: Plugin already registered." LOG_
+		} else {
+			if (manager->makeInstance(PREFIX "instanceOfPluginModule", pluginModule, &ukPlugin) != ERR_NONE) {
+				
+				// It may be a Microsoft compiled plugin...
+				if (manager->makeInstance("instanceOfPluginModule", pluginModule, &ukPlugin) == ERR_NONE) {
+					
+					ukPlugin->setModuleManager(*&manager, __FILE__, __LINE__);
+					
+					PluginModules->insert(&ukPlugin, &key);
+					
+					UAP(lb_I_Unknown, ukPlugin1)
+						
+					ukPlugin1 = PluginModules->getElement(&key);
+					
+					UAP(lb_I_PluginModule, plM)
+					QI(ukPlugin1, lb_I_PluginModule, plM)
+						
+					plM->setModule(pluginModule);
+					free(pluginModule);
+					free(pluginDir);
+					return true;	
+				}
+				free(pluginModule);
+				free(pluginDir);
+				
+				return false;
+				
+			} else {
+				ukPlugin->setModuleManager(*&manager, __FILE__, __LINE__);
+				PluginModules->insert(&ukPlugin, &key);
+				
+				UAP(lb_I_Unknown, ukPlugin1)
+					
+				ukPlugin1 = PluginModules->getElement(&key);
+				
+				UAP(lb_I_PluginModule, plM)
+				QI(ukPlugin1, lb_I_PluginModule, plM)
+					
+				_CL_VERBOSE << "lb_I_PluginModule has " << plM->getRefCount() << " references." LOG_
+					
+				plM->setModule(pluginModule);
+				free(pluginModule);
+				free(pluginDir);
+			}
+		}
+	return true;

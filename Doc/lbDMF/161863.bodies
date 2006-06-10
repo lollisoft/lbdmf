@@ -1,0 +1,706 @@
+class wxReportObj
+!!!282695.cpp!!!	wxReportObj(in  : void)
+
+	Init( 0.0, 0.0, 1.0, 2.0 );
+!!!282823.cpp!!!	wxReportObj(in dXPos : double, in dYPos : double, in dXSize : double =  10.0, in dYSize : double =   4.2333	// Height in mm  (i.e. 1/6 inch = 4.2333mm)
+				)
+
+	Init( dXPos, dYPos, dXSize, dYSize );
+!!!282951.cpp!!!	~wxReportObj(in  : void)
+
+	if ( m_pFont )
+		delete m_pFont;
+
+	m_pFont = 0;
+
+	if ( m_pBitmap )
+		delete m_pBitmap;
+
+	m_pBitmap = 0;
+!!!283079.cpp!!!	Init(in dXPos : double, in dYPos : double, in dXSize : double, in dYSize : double) : void
+
+	m_strLocal.Empty();
+	m_pBitmap      = 0;
+	m_pMargin      = 0;
+	m_dLocal       = 0.0;
+	m_lLocal       = 0;
+	m_dSum         = 0.0;
+	m_lSum         = 0;
+	m_nLen         = 0;
+	m_nDec         = 0;
+	m_nType        = POTYPE_NONE;
+	m_pFont        = 0;
+	m_boRightAlign = false;
+	m_dScale       = 3.78;		// just a default so far
+
+	SetInitPosition( dXPos, dYPos );
+	m_sizSize.x    = (int)(100.0 * dXSize);
+	m_sizSize.y    = (int)(100.0 * dYSize);
+
+	m_ptCurrPos    = m_ptInitPos;
+	m_sizInc.x     = 0;
+	m_sizInc.y     = m_sizSize.y;
+
+!!!284103.cpp!!!	SaveSettings(inout fFile : wxFFile) : bool
+
+	long		lHelp;
+	wxString	strFace;
+	wxFont		*pFt;
+
+	if ( ! fFile.IsOpened() )
+		return false;
+
+	fFile.Write( &m_ptInitPos, sizeof( wxPoint ) );
+	fFile.Write( &m_sizSize,   sizeof( wxSize ) );
+	fFile.Write( &m_sizInc,    sizeof( wxSize ) );
+
+	fFile.Write( &m_nLen,  sizeof( m_nLen ) );
+	fFile.Write( &m_nDec,  sizeof( m_nDec ) );
+
+	fFile.Write( &m_nType, sizeof( m_nType ) );
+
+	lHelp = m_boRightAlign;
+	fFile.Write( &lHelp, sizeof( lHelp ) );
+
+	if ( m_pFont )
+		pFt = m_pFont;
+	else
+		pFt = wxSWISS_FONT;
+
+	lHelp = pFt->GetPointSize();
+	fFile.Write( &lHelp, sizeof( lHelp ) );
+	lHelp = pFt->GetFamily();
+	fFile.Write( &lHelp, sizeof( lHelp ) );
+	lHelp = pFt->GetStyle();
+	fFile.Write( &lHelp, sizeof( lHelp ) );
+	lHelp = pFt->GetWeight();
+	fFile.Write( &lHelp, sizeof( lHelp ) );
+	lHelp = pFt->GetUnderlined();
+	fFile.Write( &lHelp, sizeof( lHelp ) );
+	lHelp = (long)pFt->GetDefaultEncoding();
+	fFile.Write( &lHelp, sizeof( lHelp ) );
+
+	strFace = pFt->GetFaceName();
+	SaveWxString( fFile, strFace );
+
+	return true;
+!!!284231.cpp!!!	SaveData(inout fFile : wxFFile) : bool
+
+	wxString strSave;
+	wxString strFmt;
+	double   dVal;
+	long     lVal;
+
+	if ( ! fFile.IsOpened() )
+		return false;
+
+	strSave.Empty();
+
+	switch ( m_nType )
+	{
+		case POTYPE_PCHAR:
+			strSave = (const wxChar *)m_pData;
+			break;
+
+		case POTYPE_PCHARDBL:
+			strSave = (const wxChar *)m_pData;
+			if ( strSave.ToDouble( &dVal ) )
+				m_dLocal = dVal;
+			break;
+
+		case POTYPE_PCHARINT:
+			strSave = (const wxChar *)m_pData;
+			if ( strSave.ToLong( &lVal ) )
+				m_lLocal = lVal;
+			break;
+
+		case POTYPE_PSTR:
+			strSave = *(wxString *)m_pData;
+			break;
+
+		case POTYPE_PSTRDBL:
+			strSave = *(wxString *)m_pData;
+			if ( strSave.ToDouble( &dVal ) )
+				m_dLocal = dVal;
+			break;
+
+		case POTYPE_PSTRINT:
+			strSave = *(wxString *)m_pData;
+			if ( strSave.ToLong( &lVal ) )
+				m_lLocal = lVal;
+			break;
+
+		case POTYPE_STRING:
+			strSave = m_strLocal;
+			break;
+
+		case POTYPE_PTIMEST:
+			if ( m_pMargin && m_pMargin->m_pShortDateFmt )
+			{
+				wxDateTime	dt;
+				wxVariant	v( (TIMESTAMP_STRUCT *)m_pData );
+
+				dt = v.GetDateTime();
+				strSave = dt.Format( *m_pMargin->m_pShortDateFmt );
+			}
+			break;
+
+		case POTYPE_PDBL:
+			m_dLocal = *(double *)m_pData;
+			// fall through here!
+		case POTYPE_DOUBLE:
+			strFmt.Printf( wxT("%%%d.%df"), m_nLen, m_nDec );
+			m_strLocal.Printf( strFmt, m_dLocal );
+			strSave = m_strLocal;
+			break;
+
+		case POTYPE_PINT:
+		case POTYPE_PLONG:
+			if ( m_nType == POTYPE_PINT )
+				m_lLocal = *(int *)m_pData;
+			else
+				m_lLocal = *(long *)m_pData;
+			// fall through here!
+		case POTYPE_LONG:
+			strFmt.Printf( wxT("%%%dld"), m_nLen );
+			m_strLocal.Printf( strFmt, m_lLocal );
+			strSave = m_strLocal;
+			break;
+
+		case POTYPE_PCHECK:
+		case POTYPE_PLOGIC:
+			m_lLocal = *(bool *)m_pData;
+			m_strLocal.Printf( wxT("%lu"), m_lLocal );
+			strSave = m_strLocal;
+			break;
+
+		case POTYPE_LINE:
+			break;
+
+		case POTYPE_REPDATE:
+			strSave = m_strLocal;
+			break;
+
+		case POTYPE_PGNUM:
+			strSave = m_strLocal;
+			break;
+
+		case POTYPE_BITMAP:
+			strSave = m_strLocal;
+			break;
+
+		default:
+			break;
+
+	}
+
+	fFile.Write( &m_nType,  sizeof( m_nType ) );
+	fFile.Write( &m_dLocal, sizeof( m_dLocal ) );
+	fFile.Write( &m_lLocal, sizeof( m_lLocal ) );
+
+	SaveWxString( fFile, strSave );
+
+	return true;
+!!!284359.cpp!!!	SaveWxString(inout fFile : wxFFile, inout str : wxString) : bool
+
+	long lHelp;
+
+	if ( ! fFile.IsOpened() )
+		return false;
+
+	lHelp = (long)str.Len() + 1L;
+	fFile.Write( &lHelp, sizeof( lHelp ) );
+	fFile.Write( str.c_str(), lHelp );
+
+	return true;
+!!!284487.cpp!!!	LoadSettings(inout fFile : wxFFile) : bool
+
+	long		lHelp;
+	wxString	strFace;
+	long		lPoint, lFam, lStyle, lWeight;
+	bool		boUl;
+    wxFontEncoding eEnc;
+
+	if ( ! fFile.IsOpened() )
+		return false;
+
+	fFile.Read( &m_ptInitPos, sizeof( wxPoint ) );
+	fFile.Read( &m_sizSize,   sizeof( wxSize  ) );
+	fFile.Read( &m_sizInc,    sizeof( wxSize  ) );
+
+	fFile.Read( &m_nLen,      sizeof( m_nLen  ) );
+	fFile.Read( &m_nDec,      sizeof( m_nDec  ) );
+
+	fFile.Read( &m_nType,     sizeof( m_nType ) );
+
+	fFile.Read( &lHelp,       sizeof( lHelp   ) );
+	m_boRightAlign = ( 0L != lHelp );
+
+	fFile.Read( &lPoint,      sizeof( lPoint  ) );
+	fFile.Read( &lFam,        sizeof( lFam    ) );
+	fFile.Read( &lStyle,      sizeof( lStyle  ) );
+	fFile.Read( &lWeight,     sizeof( lWeight ) );
+	fFile.Read( &lHelp,       sizeof( lHelp   ) );
+	boUl = ( 0L != lHelp );
+	fFile.Read( &lHelp,       sizeof( lHelp   ) );
+	eEnc = (wxFontEncoding)lHelp;
+
+	strFace = LoadWxString( fFile );
+ 
+	if ( m_pFont )
+		delete m_pFont;
+
+	m_pFont = new wxFont( lPoint, lFam, lStyle, lWeight, boUl, strFace, eEnc );
+
+	return true;
+!!!284615.cpp!!!	LoadData(inout fFile : wxFFile) : bool
+
+	wxString	strSave;
+
+	if ( ! fFile.IsOpened() )
+		return false;
+
+	fFile.Read( &m_nType, sizeof( m_nType ) );
+	if ( fFile.Eof() )
+		return false;
+
+	fFile.Read( &m_dLocal, sizeof( m_dLocal ) );
+	if ( fFile.Eof() )
+		return false;
+
+	fFile.Read( &m_lLocal, sizeof( m_lLocal ) );
+	if ( fFile.Eof() )
+		return false;
+
+	m_strLocal = LoadWxString( fFile );
+	if ( fFile.Eof() )
+		return false;
+
+	return true;
+!!!284743.cpp!!!	LoadWxString(inout fFile : wxFFile) : wxString
+
+	long lHelp;
+	wxString strRet;
+
+	strRet.Empty();
+
+	if ( ! fFile.IsOpened() )
+		return strRet;
+
+	if ( sizeof( lHelp ) == fFile.Read( &lHelp, sizeof( lHelp ) ) )
+	{
+		if ( lHelp > 0L )
+		{
+			wxChar *cp;
+
+			cp = new wxChar[ lHelp ];
+
+			if ( cp )
+			{
+				fFile.Read( cp, lHelp );
+				*(cp + lHelp - 1) = 0x00;
+				strRet = cp;
+
+				delete [] cp;
+			}
+		}
+	}
+
+	return strRet;
+!!!284871.cpp!!!	ResetPos(in  : void) : void
+
+	m_ptCurrPos   = m_ptInitPos;
+!!!284999.cpp!!!	MoveForward(in  : void) : wxPoint
+
+	m_ptCurrPos.x += m_sizInc.x;
+	m_ptCurrPos.y += m_sizInc.y;
+
+	return m_ptCurrPos;
+!!!285127.cpp!!!	MoveBackward(in  : void) : wxPoint
+
+	m_ptCurrPos.x -= m_sizInc.x;
+	m_ptCurrPos.y -= m_sizInc.y;
+
+	return m_ptCurrPos;
+!!!285255.cpp!!!	SetFont(in pFt : wxFont) : void
+
+	if ( m_pFont )
+		delete m_pFont;
+
+	m_pFont = new wxFont( 
+		pFt->GetPointSize(),
+		pFt->GetFamily(),
+		pFt->GetStyle(),
+		pFt->GetWeight(),
+		pFt->GetUnderlined(),
+		pFt->GetFaceName(),
+		pFt->GetEncoding() );
+!!!285383.cpp!!!	SetMargins(inout pMargin : wxReportWriterCtrl) : void
+
+	m_pMargin = pMargin;
+!!!285639.cpp!!!	SetPosition(in dXPos : double, in dYPos : double) : void
+
+	m_ptCurrPos.x = (int)(100.0 * dXPos);
+	m_ptCurrPos.y = (int)(100.0 * dYPos);
+!!!285767.cpp!!!	SetInitPosition(in dXPos : double, in dYPos : double) : void
+
+	m_ptInitPos.x = (int)(100.0 * dXPos);
+	m_ptInitPos.y = (int)(100.0 * dYPos);
+!!!285895.cpp!!!	SetIncrements(in dXInc : double, in dYInc : double) : void
+
+	m_sizInc.x = (int)(100.0 * dXInc);
+	m_sizInc.y = (int)(100.0 * dYInc);
+!!!286023.cpp!!!	SetWidth(in dWid : double) : void
+
+	m_sizSize.x = (int)(100.0 * dWid);
+!!!286151.cpp!!!	SetHeight(in dHei : double) : void
+
+	m_sizSize.y = (int)(100.0 * dHei);
+!!!286279.cpp!!!	SetStepH(in dStep : double) : void
+
+	m_sizInc.x = (int)(100.0 * dStep);
+!!!286407.cpp!!!	SetStepV(in dStep : double) : void
+
+	m_sizInc.y = (int)(100.0 * dStep);
+!!!286791.cpp!!!	SetBitmap(in strFile : wxString) : void
+
+#if wxUSE_LIBPNG
+    wxImage image;
+	wxLogNull logNull;
+
+    if ( image.LoadFile( strFile ) )
+	{
+        m_pBitmap = new wxBitmap( image );
+
+		m_nType = POTYPE_BITMAP;
+		m_strLocal = strFile;
+	}
+#endif // wxUSE_LIBPNG
+!!!286919.cpp!!!	SetRef(in cpData : wxChar, in iType : int =  POTYPE_PCHAR ) : void
+
+	if ( iType == POTYPE_PCHAR
+	  || iType == POTYPE_PCHARDBL
+	  || iType == POTYPE_PCHARINT )
+	{
+		m_pData = (void *)cpData;
+		m_nType = iType;
+	}
+!!!287047.cpp!!!	SetRef(in strData : wxString, in iType : int =  POTYPE_PSTR ) : void
+
+	if ( iType == POTYPE_PSTR
+	  || iType == POTYPE_PSTRDBL
+	  || iType == POTYPE_PSTRINT )
+	{
+		m_pData = (void *)strData;
+		m_nType = iType;
+	}
+!!!287175.cpp!!!	SetRef(in pdData : double, in nLen : ushort =  10, in nDec : ushort =  2 ) : void
+
+	m_pData = (void *)pdData;
+	m_nType = POTYPE_PDBL;
+	m_nLen  = nLen;
+	m_nDec  = nDec;
+!!!287303.cpp!!!	SetRef(in piData : int, in nLen : ushort =  8 ) : void
+
+	m_pData = (void *)piData;
+	m_nType = POTYPE_PINT;
+	m_nLen  = nLen;
+!!!287431.cpp!!!	SetRef(in plData : long, in nLen : ushort =  8 ) : void
+
+	m_pData = (void *)plData;
+	m_nType = POTYPE_PLONG;
+	m_nLen  = nLen;
+!!!287559.cpp!!!	SetRef(in pDate : TIMESTAMP_STRUCT) : void
+
+	m_pData = (void *)pDate;
+	m_nType = POTYPE_PTIMEST;
+!!!287687.cpp!!!	SetCheckbox(in pboData : bool, in nLen : int =  3 ) : void
+
+	m_pData = (void *)pboData;
+	m_nType = POTYPE_PCHECK;
+	m_nLen  = nLen;
+!!!287815.cpp!!!	SetLogic(in pboData : bool, in nLen : int =  3 ) : void
+
+	m_pData = (void *)pboData;
+	m_nType = POTYPE_PLOGIC;
+	m_nLen  = nLen;
+!!!287943.cpp!!!	SetData(in dData : double, in nLen : ushort =  10, in nDec : ushort =  2 ) : void
+
+	wxString strFmt;
+
+	m_dLocal = dData;
+	m_nLen   = nLen;
+	m_nDec   = nDec;
+	m_nType  = POTYPE_DOUBLE;
+
+	strFmt.Printf( wxT("%%%d.%df"), m_nLen, m_nDec );
+	m_strLocal.Printf( strFmt, m_dLocal );
+!!!288071.cpp!!!	SetData(in lData : long, in nLen : ushort =  8 ) : void
+
+	wxString strFmt;
+
+	m_lLocal = lData;
+	m_nLen   = nLen;
+	m_nType  = POTYPE_LONG;
+
+	strFmt.Printf( wxT("%%%dld"), m_nLen );
+	m_strLocal.Printf( strFmt, m_lLocal );
+!!!288199.cpp!!!	SetData(in strData : wxString) : void
+
+	m_strLocal = strData;
+	m_nType  = POTYPE_STRING;
+!!!288327.cpp!!!	SetData(in cpData : wxChar) : void
+
+	wxString strHelp;
+
+	strHelp = cpData;
+	SetData( strHelp );
+!!!288455.cpp!!!	SetPgNum(in strData : wxString) : void
+
+	m_strLocal = strData;
+	m_nType  = POTYPE_PGNUM;
+!!!288583.cpp!!!	SetPgNum(in cpData : wxChar) : void
+
+	wxString strHelp;
+
+	strHelp = cpData;
+	SetPgNum( strHelp );
+!!!288711.cpp!!!	SetRepDate(in  : void) : void
+
+	m_strLocal = wxT("->");
+	m_nType  = POTYPE_REPDATE;
+!!!288839.cpp!!!	SetLine(in dX : double =  -1.0, in dY : double =  -1.0 ) : void
+
+	m_nType = POTYPE_LINE;
+	if ( dX > 0.0 )
+		m_sizInc.x = (int)(100.0 * dX);
+	if ( dY > 0.0 )
+		m_sizInc.y = (int)(100.0 * dY);
+!!!288967.cpp!!!	SetSubReport(in nCount : long) : void
+
+	m_nType  = POTYPE_SUBSTART;
+	m_lLocal = nCount;
+!!!289095.cpp!!!	SetSubReportEnd(in  : void) : void
+
+	m_nType = POTYPE_SUBEND;
+	m_lLocal = 0;
+!!!289223.cpp!!!	SetPageBreak(in  : void) : void
+
+	m_nType  = POTYPE_PGBREAK;
+	m_lLocal = 0;
+!!!289351.cpp!!!	Draw(inout dc : wxDC) : void
+
+	wxString strPrint;
+	double   dVal;
+	int      iWid, iHei;
+	long     lVal;
+	long     lXP, lYP, lXS, lYS;
+
+	// In all cases the output data is available as 
+	// a string in m_strLocal
+
+	dVal = 0.0;
+	lVal = 0L;
+
+/*
+	if ( m_nType == POTYPE_PTIMEST )
+	{
+		if ( m_pMargin && m_pMargin->m_pShortDateFmt )
+		{
+			wxString			strSub;
+			wxDateTime			dt;
+			TIMESTAMP_STRUCT	TS;
+
+			strSub = m_strLocal.Mid( 0, 4 );
+			TS.year = wxAtoi( strSub );
+
+			strSub = m_strLocal.Mid( 4, 2 );
+			TS.month = wxAtoi( strSub );
+			
+			strSub = m_strLocal.Mid( 6, 2 );
+			TS.day = wxAtoi( strSub );
+
+			strSub = m_strLocal.Mid( 8, 2 );
+			TS.hour = wxAtoi( strSub );
+
+			strSub = m_strLocal.Mid( 10, 2 );
+			TS.minute = wxAtoi( strSub );
+
+			strSub = m_strLocal.Mid( 12, 2 );
+			TS.second = wxAtoi( strSub );
+
+			TS.fraction = 0;
+
+			wxVariant v( &TS );
+
+			dt = v.GetDateTime();
+			strPrint = dt.Format( *m_pMargin->m_pShortDateFmt );
+		}
+		else
+			strPrint = m_strLocal;
+	}
+	else
+*/
+	{
+		// string representation always in m_strLocal
+		strPrint = m_strLocal;
+	}
+
+	// page numbers must be handled seperately
+	if ( m_nType == POTYPE_PGNUM )
+	{
+		if ( m_pMargin )
+		{
+			wxString strPgNum;
+			strPgNum.Printf( wxT("%ld/%ld"),
+				1 + m_pMargin->m_nCurrentPage, m_pMargin->m_nPages );
+			strPrint += wxT(" ");
+			strPrint += strPgNum;
+		}
+		else
+			strPrint = wxT("PGNUM?");
+	}
+
+	// date must be handled seperately also
+	if ( m_nType == POTYPE_REPDATE )
+	{
+		if ( m_pMargin && m_pMargin->m_pDateStr )
+			strPrint = *m_pMargin->m_pDateStr;
+		else
+			strPrint = wxT("REPDATE?");
+	}
+
+	// calculating position and size
+	//   internal datas are in  1/100 Millimeters;
+	//   external datas are in  Millimeters
+	//
+	//   For getting logical coordinates, we use the scale
+	//   which was calculated by CalcScale()
+
+	if ( m_pMargin )
+	{
+		// we have a pointer to the page margins
+		lXP = (long)(m_dScale * 0.01 * (m_ptCurrPos.x + 100.0 * m_pMargin->m_dLeft));
+		lYP = (long)(m_dScale * 0.01 * (m_ptCurrPos.y + 100.0 * m_pMargin->m_dTop));
+		lXS = (long)(m_dScale * 0.01 * m_sizSize.x);
+		lYS = (long)(m_dScale * 0.01 * m_sizSize.y);
+	}
+	else
+	{
+		// we don't know about page margins
+		lXP = (long)(m_dScale * 0.01 * m_ptCurrPos.x );
+		lYP = (long)(m_dScale * 0.01 * m_ptCurrPos.y);
+		lXS = (long)(m_dScale * 0.01 * m_sizSize.x);
+		lYS = (long)(m_dScale * 0.01 * m_sizSize.y);
+	}
+
+
+	switch ( m_nType )
+	{
+	case POTYPE_PLOGIC:
+	case POTYPE_PCHECK:
+		{
+			wxPen const *pCurrPen;
+			long  lOffs;
+
+			pCurrPen = & dc.GetPen();
+			dc.SetPen( * wxBLACK_PEN );
+			lOffs = lYS / 3;
+
+			if ( m_nLen > 0 )
+			{
+				// Draw a box
+				dc.DrawLine( lXP +   0, lYP - lOffs,       lXP + lXS, lYP - lOffs );
+				dc.DrawLine( lXP + lXS, lYP - lOffs,       lXP + lXS, lYP - lOffs - lYS );
+				dc.DrawLine( lXP + lXS, lYP - lOffs - lYS, lXP +   0, lYP - lOffs - lYS );
+				dc.DrawLine( lXP +   0, lYP - lOffs - lYS, lXP +   0, lYP - lOffs );
+			}
+
+			if ( m_lLocal != 0 )
+			{
+				if ( m_nType == POTYPE_PLOGIC )
+				{
+					long lAy, lBx;
+
+					lAy = (lYP + lYP - lYS) / 2;
+					lBx = (3 * lXP + lXS) / 3;
+
+					dc.DrawLine( lXP + 1, lAy - lOffs + 1, lBx, lYP - lOffs );
+					dc.DrawLine( lBx,     lYP - lOffs,     lXP + lXS - 1, lYP - lOffs - lYS + 1 );
+				}
+				else
+				{
+					dc.DrawLine( lXP, lYP - lOffs,       lXP + lXS, lYP - lOffs - lYS );
+					dc.DrawLine( lXP, lYP - lOffs - lYS, lXP + lXS, lYP - lOffs );
+				}
+			}
+
+			dc.SetPen( * pCurrPen );
+
+			MoveForward();
+		}
+		break;
+
+	case POTYPE_BITMAP:
+		// Object is a bitmap
+		// ------------------
+		if ( ! m_pBitmap )
+			SetBitmap( m_strLocal );
+
+		if ( m_pBitmap && m_pBitmap->Ok() )
+		{
+	        dc.DrawBitmap( *m_pBitmap, lXP, lYP );
+
+			MoveForward();
+	    }
+		break;
+
+	case POTYPE_LINE:
+		{
+			wxPen const *pCurrPen;
+
+			pCurrPen = & dc.GetPen();
+			dc.SetPen( * wxBLACK_PEN );
+			dc.DrawLine( lXP, lYP, lXP + lXS, lYP + lYS );
+			dc.SetPen( * pCurrPen );
+
+			MoveForward();
+		} break;
+
+	case POTYPE_PGNUM:
+	case POTYPE_REPDATE:
+//		break;
+
+	default:
+		if ( m_pFont )
+			dc.SetFont( *m_pFont );
+
+		dc.GetTextExtent( strPrint, &iWid, &iHei );
+		lYP -= iHei;
+
+		dc.SetClippingRegion( lXP, lYP, lXS, lYS );
+
+		// drawing position is likely to change
+		// with right-aligned text
+		if ( m_boRightAlign )
+		{
+			if ( m_pMargin )
+			{
+				lXP = (long)(m_dScale * 0.01 * (m_ptCurrPos.x + m_sizSize.x + 100.0 * m_pMargin->m_dLeft));
+				lXP -= (iWid + 2);
+			}
+			else
+			{
+				lXP = (long)(m_dScale * 0.01 * (m_ptCurrPos.x + m_sizSize.x) );
+				lXP -= (iWid + 2);
+			}
+		}
+
+		dc.DrawText( strPrint, lXP, lYP );
+		dc.DestroyClippingRegion();
+
+		MoveForward();
+
+		break;
+
+	} // switch

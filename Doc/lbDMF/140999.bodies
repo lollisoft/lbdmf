@@ -1,0 +1,229 @@
+class lbParameter
+!!!191047.cpp!!!	getUAPString(inout parameter : lb_I_String, inout p : lb_I_String) : lbErrCodes
+
+	lbErrCodes err = ERR_NONE;
+	
+	if (parameters == NULL) return ERR_PARAM_NOT_FOUND;
+	
+	lb_I_String* pp = parameter;
+	UAP(lb_I_KeyBase, key)
+	QI(pp, lb_I_KeyBase, key)
+	
+	UAP(lb_I_Unknown, uk_p_string)
+
+	uk_p_string = parameters->getElement(&key);
+
+	if (uk_p_string == NULL) return ERR_PARAM_NOT_FOUND;
+
+	UAP(lb_I_String, string)
+	QI(uk_p_string, lb_I_String, string)
+	
+	
+	p->setData(string->getData());
+	
+	
+	return ERR_NONE;
+!!!191175.cpp!!!	setUAPInteger(inout parameter : lb_I_String, inout p : lb_I_Integer) : void
+
+	lbErrCodes err = ERR_NONE;
+	if (parameters == NULL) {
+		REQUEST(manager.getPtr(), lb_I_Container, parameters)
+		if (parameters == NULL) {
+			_LOG << "Error: Could not get container instance for parameres" LOG_
+			return;
+		}
+	}	
+	
+	UAP(lb_I_KeyBase, k_parameter)
+	QI(parameter, lb_I_KeyBase, k_parameter)
+
+	UAP(lb_I_Unknown, uk_p)
+	QI(p, lb_I_Unknown, uk_p)
+	
+	
+	parameters->insert(&uk_p, &k_parameter);
+!!!191303.cpp!!!	getUAPInteger(inout parameter : lb_I_String, inout p : lb_I_Integer) : lbErrCodes
+
+	lbErrCodes err = ERR_NONE;
+	
+	if (parameters == NULL) return ERR_PARAM_NOT_FOUND;
+
+	lb_I_String* pp = parameter;
+	UAP(lb_I_KeyBase, key)
+	QI(pp, lb_I_KeyBase, key)
+	
+	UAP(lb_I_Unknown, uk_p_integer)
+
+	uk_p_integer = parameters->getElement(&key);
+
+	if (uk_p_integer == NULL) return ERR_PARAM_NOT_FOUND;
+
+	UAP(lb_I_Integer, integer)
+	QI(uk_p_integer, lb_I_Integer, integer)
+	
+	if (integer.getPtr() != NULL) p->setData(integer->getData());
+	
+	
+	return ERR_NONE;
+!!!191431.cpp!!!	setUAPBoolean(inout parameter : lb_I_String, inout p : lb_I_Boolean) : void
+
+	lbErrCodes err = ERR_NONE;
+	if (parameters == NULL) {
+		REQUEST(manager.getPtr(), lb_I_Container, parameters)
+		if (parameters == NULL) {
+			_LOG << "Error: Could not get container instance for parameres" LOG_
+			return;
+		}
+	}	
+	
+	UAP(lb_I_KeyBase, k_parameter)
+	QI(parameter, lb_I_KeyBase, k_parameter)
+
+	UAP(lb_I_Unknown, uk_p)
+	QI(p, lb_I_Unknown, uk_p)
+	
+	
+	parameters->insert(&uk_p, &k_parameter);
+!!!191559.cpp!!!	getUAPBoolean(inout parameter : lb_I_String, inout p : lb_I_Boolean) : lbErrCodes
+
+	lbErrCodes err = ERR_NONE;
+	
+	if (parameters == NULL) return ERR_PARAM_NOT_FOUND;
+
+	lb_I_String* pp = parameter;
+	UAP(lb_I_KeyBase, key)
+	QI(pp, lb_I_KeyBase, key)
+	
+	UAP(lb_I_Unknown, uk_p_boolean)
+
+	uk_p_boolean = parameters->getElement(&key);
+
+	if (uk_p_boolean == NULL) return ERR_PARAM_NOT_FOUND;
+
+	UAP(lb_I_Boolean, _bool)
+	QI(uk_p_boolean, lb_I_Boolean, _bool)
+	
+	if (_bool.getPtr() != NULL) p->setData(_bool->getData());
+	
+	
+	return ERR_NONE;
+!!!191687.cpp!!!	setUAPParameter(inout parameter : lb_I_String, inout p : lb_I_Parameter) : void
+
+	lbErrCodes err = ERR_NONE;
+	if (parameters == NULL) {
+		REQUEST(manager.getPtr(), lb_I_Container, parameters)
+		if (parameters == NULL) {
+			_LOG << "Error: Could not get container instance for parameres" LOG_
+			return;
+		}
+	}	
+	
+	UAP(lb_I_KeyBase, k_parameter)
+	QI(parameter, lb_I_KeyBase, k_parameter)
+
+	UAP(lb_I_Unknown, uk_p)
+	QI(p, lb_I_Unknown, uk_p)
+	
+	parameters->insert(&uk_p, &k_parameter);
+!!!191815.cpp!!!	getUAPParameter(inout parameter : lb_I_String, inout p : lb_I_Parameter) : lbErrCodes
+
+	lbErrCodes err = ERR_NONE;
+	
+	if (parameters == NULL) return ERR_PARAM_NOT_FOUND;
+	
+	lb_I_String* pp = parameter;
+	UAP(lb_I_KeyBase, key)
+	QI(pp, lb_I_KeyBase, key)
+	
+	UAP(lb_I_Unknown, uk_p_parameter)
+
+	uk_p_parameter = parameters->getElement(&key);
+
+	if (uk_p_parameter == NULL) return ERR_PARAM_NOT_FOUND;
+
+	p->setData(*&uk_p_parameter);
+		
+	return ERR_NONE;
+!!!191943.cpp!!!	setUAPLong(inout parameter : lb_I_String, inout p : lb_I_Long) : void
+
+	lbErrCodes err = ERR_NONE;
+	if (parameters == NULL) {
+		REQUEST(manager.getPtr(), lb_I_Container, parameters)
+		if (parameters == NULL) {
+			_LOG << "Error: Could not get container instance for parameres" LOG_
+			return;
+		}
+	}	
+	
+	UAP(lb_I_KeyBase, k_parameter)
+	QI(parameter, lb_I_KeyBase, k_parameter)
+
+	UAP(lb_I_Unknown, uk_p)
+	QI(p, lb_I_Unknown, uk_p)
+	
+	
+	parameters->insert(&uk_p, &k_parameter);
+!!!192071.cpp!!!	getUAPLong(inout parameter : lb_I_String, inout p : lb_I_Long) : lbErrCodes
+
+	lbErrCodes err = ERR_NONE;
+	
+	if (parameters == NULL) return ERR_PARAM_NOT_FOUND;
+
+	lb_I_String* pp = parameter;
+	UAP(lb_I_KeyBase, key)
+	QI(pp, lb_I_KeyBase, key)
+	
+	UAP(lb_I_Unknown, uk_p_integer)
+
+	uk_p_integer = parameters->getElement(&key);
+
+	if (uk_p_integer == NULL) return ERR_PARAM_NOT_FOUND;
+
+	UAP(lb_I_Long, integer)
+	QI(uk_p_integer, lb_I_Long, integer)
+	
+	if (integer.getPtr() != NULL) p->setData(integer->getData());
+	
+	
+	return ERR_NONE;
+!!!192199.cpp!!!	setUAPContainer(inout parameter : lb_I_String, inout p : lb_I_Container) : void
+
+	lbErrCodes err = ERR_NONE;
+	if (parameters == NULL) {
+		REQUEST(manager.getPtr(), lb_I_Container, parameters)
+		if (parameters == NULL) {
+			_LOG << "Error: Could not get container instance for parameres" LOG_
+			return;
+		}
+	}	
+	
+	UAP(lb_I_KeyBase, k_parameter)
+	QI(parameter, lb_I_KeyBase, k_parameter)
+
+	UAP(lb_I_Unknown, uk_p)
+	QI(p, lb_I_Unknown, uk_p)
+	
+	parameters->insert(&uk_p, &k_parameter);
+!!!192327.cpp!!!	getUAPContainer(inout parameter : lb_I_String, inout p : lb_I_Container) : lbErrCodes
+
+	lbErrCodes err = ERR_NONE;
+	
+	if (parameters == NULL) return ERR_PARAM_NOT_FOUND;
+	
+	lb_I_String* pp = parameter;
+	UAP(lb_I_KeyBase, key)
+	QI(pp, lb_I_KeyBase, key)
+	
+	UAP(lb_I_Unknown, uk_p_container)
+
+	uk_p_container = parameters->getElement(&key);
+
+	if (uk_p_container == NULL) return ERR_PARAM_NOT_FOUND;
+
+	p->setData(*&uk_p_container);
+	
+	return ERR_NONE;
+!!!192455.cpp!!!	Count() : int
+
+	if (parameters == NULL) return 0;
+	return parameters->Count();

@@ -1,0 +1,201 @@
+class wxReportSelector
+!!!297159.cpp!!!	CreateElements(in  : void) : void
+
+    wxBoxSizer *item0 = new wxBoxSizer( wxVERTICAL );
+
+    wxStaticText *item1 = new wxStaticText( this, ID_TX_PROMPT, _("Select a report:"), wxDefaultPosition, wxDefaultSize, 0 );
+    item0->Add( item1, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+    wxListCtrl *item2 = new wxListCtrl( this, ID_LC_REPORT, wxDefaultPosition, wxSize(450,200), wxLC_REPORT|wxSUNKEN_BORDER );
+    item0->Add( item2, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+    wxBoxSizer *item3 = new wxBoxSizer( wxHORIZONTAL );
+
+    wxButton *item4 = new wxButton( this, ID_PB_PREVIEW, _("Preview"), wxDefaultPosition, wxDefaultSize, 0 );
+    item3->Add( item4, 0, wxALIGN_CENTRE|wxALL, 5 );
+
+    wxButton *item5 = new wxButton( this, ID_PB_PRINT, _("Print"), wxDefaultPosition, wxDefaultSize, 0 );
+    item3->Add( item5, 0, wxALIGN_CENTRE|wxALL, 5 );
+
+    wxButton *item6 = new wxButton( this, ID_PB_DEL, _("Delete"), wxDefaultPosition, wxDefaultSize, 0 );
+    item3->Add( item6, 0, wxALIGN_CENTRE|wxALL, 5 );
+
+    wxButton *item7 = new wxButton( this, wxID_CANCEL, _("Close"), wxDefaultPosition, wxDefaultSize, 0 );
+    item7->SetDefault();
+    item3->Add( item7, 0, wxALIGN_CENTRE|wxALL, 5 );
+
+    item0->Add( item3, 0, wxALIGN_CENTRE|wxALL, 5 );
+
+    SetAutoLayout( TRUE );
+    SetSizer( item0 );
+    item0->Fit( this );
+    item0->SetSizeHints( this );
+!!!297287.cpp!!!	FillList(in  : void) : void
+
+	wxListCtrl		*pLst;
+	wxString		strData;
+	wxString		strDir;
+	wxString		strFiles;
+	wxArrayString	aRepFiles;
+	int				iItem;
+	wxReportWriter	repPage( 0, wxT(""), wxPoint(0,0), wxSize(10,10) );
+
+	repPage.SetLoading();
+
+	pLst = (wxListCtrl *)FindWindow( ID_LC_REPORT );
+	pLst->DeleteAllItems();
+
+	aRepFiles.Clear();
+	m_aFiles.Clear();
+
+	strDir    = m_strPathOfReports;
+
+	strFiles  = wxT("*.");
+	strFiles += VLPEXT;
+
+	wxDir::GetAllFiles( strDir, &aRepFiles, strFiles, wxDIR_FILES );
+
+	// Now sorting files by date...
+	wxSortedArrayString	aSortedByDate;
+	wxFileName			fn;
+	wxDateTime			dt;
+	for ( iItem = 0; iItem < (int)aRepFiles.GetCount(); ++iItem )
+	{
+		fn.Assign( aRepFiles[ iItem ] );
+		fn.Normalize();
+		if ( fn.GetTimes( 0, 0, &dt ) )
+		{
+			strData.Printf( wxT("%s%s=%s"),
+				dt.FormatISODate().c_str(),
+				dt.FormatISOTime().c_str(),
+				aRepFiles[ iItem ].c_str() );
+			aSortedByDate.Add( strData );
+		}
+	}
+
+	// Pushing the sorted list into our local array,
+	// beginning with the lastest file on top
+	for ( iItem = 0; iItem < (int)aSortedByDate.GetCount(); ++iItem )
+	{
+		int iIdx;
+
+		iIdx    = aSortedByDate.GetCount() - 1 - iItem;
+		strData = aSortedByDate[ iIdx ].AfterFirst( wxT('=') );
+		m_aFiles.Add( strData );
+	}
+
+    // Now filling the list
+	for ( iItem = 0; iItem < (int)m_aFiles.GetCount(); ++iItem )
+	{
+		repPage.LoadReportInfo( m_aFiles[ iItem ] );
+
+		pLst->InsertItem( iItem, repPage.GetDate() );
+		pLst->SetItemData( iItem, iItem );
+
+		pLst->SetItem( iItem, 1, repPage.GetUser() );
+
+		pLst->SetItem( iItem, 2, repPage.GetInfo() );
+
+	}
+
+	aSortedByDate.Clear();
+
+!!!297415.cpp!!!	SetupList(in  : void) : void
+
+	wxListCtrl *pLst;
+
+	pLst = (wxListCtrl *)FindWindow( ID_LC_REPORT );
+	pLst->ClearAll();
+	pLst->InsertColumn( 0, wxT("Date"), wxLIST_FORMAT_LEFT, 120 );
+	pLst->InsertColumn( 1, wxT("User"), wxLIST_FORMAT_LEFT,  80 );
+	pLst->InsertColumn( 2, wxT("Info"), wxLIST_FORMAT_LEFT, 200 );
+
+!!!297543.cpp!!!	SelectedListItem(in  : void) : long
+
+	wxListCtrl *pLst;
+	long lRet;
+
+	pLst = (wxListCtrl *)FindWindow( ID_LC_REPORT );
+
+	lRet = -1L;
+	lRet = pLst->GetNextItem( lRet, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED );
+	
+	if ( lRet != -1L )
+		return pLst->GetItemData( lRet );
+
+	return lRet;
+!!!297799.cpp!!!	~wxReportSelector(in  : void)
+
+	m_aFiles.Clear();
+!!!298183.cpp!!!	OnPreview(inout event : wxCommandEvent) : void
+
+	long         lItem;
+
+	lItem = SelectedListItem();
+	if ( lItem >= 0 )
+	{
+		m_strFilename = m_aFiles[ lItem ];
+		m_iSelected   = REPSEL_PREVIEW;
+
+	}
+
+	EndModal( wxID_OK );
+!!!298311.cpp!!!	OnPrint(inout event : wxCommandEvent) : void
+
+	long lItem;
+
+	lItem = SelectedListItem();
+	if ( lItem >= 0 )
+	{
+		m_strFilename = m_aFiles[ lItem ];
+		m_iSelected   = REPSEL_PRINT;
+	}
+	EndModal( wxID_OK );
+!!!298439.cpp!!!	OnDelete(inout event : wxCommandEvent) : void
+
+	wxString    strFile;
+	wxListCtrl *pLst;
+	long        lItem;
+	long        lLine;
+
+	pLst = (wxListCtrl *)FindWindow( ID_LC_REPORT );
+
+	lLine = -1L;
+
+	for (;;)
+	{
+		lLine = pLst->GetNextItem( lLine, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED );
+	
+		if ( lLine < 0L )
+			break;
+
+		lItem = pLst->GetItemData( lLine );
+
+		if ( lItem >= 0 )
+		{
+			strFile = m_aFiles[ lItem ];
+
+			wxRemoveFile( strFile );
+
+		}
+	}
+
+	FillList();
+
+	// EndModal( wxID_OK );
+!!!298567.cpp!!!	OnIdle(inout event : wxIdleEvent) : void
+
+	wxButton	*pBtnPrint;
+	wxButton	*pBtnPreview;
+	wxButton	*pBtnDelete;
+	long		lItem;
+
+	pBtnPrint   = (wxButton *)FindWindow( ID_PB_PRINT );
+	pBtnPreview = (wxButton *)FindWindow( ID_PB_PREVIEW );
+	pBtnDelete  = (wxButton *)FindWindow( ID_PB_DEL );
+
+	lItem = SelectedListItem();
+	
+	pBtnPrint->Enable(   lItem != -1 );
+	pBtnPreview->Enable( lItem != -1 );
+	pBtnDelete->Enable(  lItem != -1 );

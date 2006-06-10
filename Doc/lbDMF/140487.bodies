@@ -1,0 +1,20 @@
+class lbKeyUL
+!!!189127.cpp!!!	lbKeyUL(inout file : char, in line : int)
+ 
+	key = 0; strcpy(keyType, "UL");
+!!!189255.cpp!!!	lbKeyUL()
+
+    ref = STARTREF;
+    key = 0;
+    strcpy(keyType, "UL");
+!!!189383.cpp!!!	lbKeyUL(in _key : ulong)
+
+    ref = STARTREF;
+    key = _key;
+    strcpy(keyType, "UL");
+!!!189511.cpp!!!	lbKeyUL(in k : lb_I_KeyBase)
+
+    ref = STARTREF;
+    key = ((lbKeyUL*) k)->key;
+!!!189639.cpp!!!	~lbKeyUL()
+

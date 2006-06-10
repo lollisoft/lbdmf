@@ -1,0 +1,523 @@
+format 22
+"lbcs" // BaseDevelopment::lbcs
+  // class settings
+  //class diagram settings
+  draw_all_relations default hide_attributes default hide_operations default show_full_members_definition default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default
+  //use case diagram settings
+  package_name_in_tab default show_context default auto_label_position default
+  //sequence diagram settings
+  show_full_operations_definition default write_horizontally default drawing_language default
+  //collaboration diagram settings
+  show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default
+  //component diagram settings
+  package_name_in_tab default show_context default auto_label_position default
+  draw_component_as_icon default show_component_req_prov default show_component_rea default
+  //deployment diagram settings
+  package_name_in_tab default show_context default write_horizontally default auto_label_position default
+  draw_component_as_icon default show_component_req_prov default show_component_rea default
+  //state diagram settings
+  package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default
+  show_activities default region_horizontally default drawing_language default
+  
+  classview 128583 "lbcs"
+    //class diagram settings
+    draw_all_relations default hide_attributes default hide_operations default show_full_members_definition default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default
+    //col diagram settings
+    show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default
+    //seq diagram settings
+    show_full_operations_definition default write_horizontally default drawing_language default
+    //state diagram settings
+    package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default
+    show_activities default region_horizontally default drawing_language default
+    //class settings
+    class 144071 "lbConnection"
+      
+      
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "...e
+...sclass lbConnection:0:"
+      classrelation 137159 // <generalisation>
+	relation 137159 ---|>
+	  a public
+	    cpp default "Generated"
+	    classrelation_ref 137159 // <generalisation>
+	  b parent class_ref 140615 // lbObject
+      end
+
+      operation 200007 "lbConnection"
+	public explicit_return_type ""
+	nparams 3
+	  param inout name "host" explicit_type "char"
+	  param in name "_pid" explicit_type "int"
+	  param in name "_tid" explicit_type "int"
+	cpp_decl "    ${comment}${inline}${name}${(}${t0} * ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${volatile}${throw};
+"
+	cpp_def "//...e
+//...slbConnection:0:
+
+${comment}${inline}${class}::${name}${(}${t0} * ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${throw}{
+${body}}
+"
+	
+	
+      end
+
+      operation 200135 "~lbConnection"
+	cpp_virtual public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${virtual}${name}${(}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${class}::${name}${(}${)}${throw}{
+${body}}
+"
+	
+	
+      end
+
+      operation 200263 "setType"
+	public explicit_return_type "void"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+	comment "*
+	 * Abstract functions
+	 "
+      end
+
+      operation 200391 "clone"
+	const public return_type class_ref 140615 // lbObject
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} * ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      attribute 145735 "hostname"
+	public explicit_type "char"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	java_decl ""
+	idl_decl ""
+      end
+
+      attribute 145863 "pid"
+	public explicit_type "int"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	idl_decl ""
+      end
+
+      attribute 145991 "tid"
+	public explicit_type "int"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	idl_decl ""
+      end
+    end
+
+    class 144199 "lbDispatchProto"
+      
+      
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "...sclass lbDispatchProto:0:
+*
+ * \\brief An attempt to dispatch several protocols over one tcp port.
+ "
+      classrelation 137287 // <generalisation>
+	relation 137287 ---|>
+	  a public
+	    cpp default "Generated"
+	    classrelation_ref 137287 // <generalisation>
+	  b parent class_ref 140615 // lbObject
+      end
+
+      operation 200519 "lbDispatchProto"
+	public explicit_return_type ""
+	nparams 2
+	  param in name "service" explicit_type "char"
+	  param in name "fn" type class_ref 144327 // lbProtocolCallback
+	cpp_decl "    ${comment}${inline}${name}${(}const ${t0} * ${p0}, ${t1} ${p1}${)}${volatile}${throw};
+"
+	cpp_def "//...e
+//...slbDispatchProto \\40\\Container for a registered protocol handler\\41\\:0:
+
+${comment}${inline}${class}::${name}${(}const ${t0} * ${p0}, ${t1} ${p1}${)}${throw}{
+${body}}
+"
+	
+	
+      end
+
+      operation 200647 "~lbDispatchProto"
+	cpp_virtual public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${virtual}${name}${(}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${class}::${name}${(}${)}${throw}{
+${body}}
+"
+	
+	
+      end
+
+      operation 200775 "setType"
+	public explicit_return_type "void"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+	comment "*
+	 * Abstract functions
+	 "
+      end
+
+      operation 200903 "clone"
+	const public return_type class_ref 140615 // lbObject
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} * ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 201031 "getProto"
+	public return_type class_ref 144327 // lbProtocolCallback
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      classrelation 137415 // dispProto (<directional aggregation by value>)
+	relation 137415 *-->
+	  a role_name "dispProto" multiplicity "" public
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	    classrelation_ref 137415 // dispProto (<directional aggregation by value>)
+	  b parent class_ref 144327 // lbProtocolCallback
+      end
+    end
+
+    class 144455 "lbDispatchFn"
+      
+      
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "...e
+...sclass lbDispatchFn:0:
+*
+ * \\brief An attempt to dispatch function calls.
+ "
+      classrelation 137543 // <generalisation>
+	relation 137543 ---|>
+	  a public
+	    cpp default "Generated"
+	    classrelation_ref 137543 // <generalisation>
+	  b parent class_ref 140615 // lbObject
+      end
+
+      operation 201159 "lbDispatchFn"
+	public explicit_return_type ""
+	nparams 2
+	  param in name "service" explicit_type "char"
+	  param in name "fn" type class_ref 144583 // lbMemberCallback
+	cpp_decl "    ${comment}${inline}${name}${(}const ${t0} * ${p0}, ${t1} ${p1}${)}${volatile}${throw};
+"
+	cpp_def "//...e
+//...e
+//...slbDispatchFn \\40\\Container for a registered function handler\\41\\:0:
+
+${comment}${inline}${class}::${name}${(}const ${t0} * ${p0}, ${t1} ${p1}${)}${throw}{
+${body}}
+"
+	
+	
+      end
+
+      operation 201287 "~lbDispatchFn"
+	cpp_virtual public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${virtual}${name}${(}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${class}::${name}${(}${)}${throw}{
+${body}}
+"
+	
+	
+      end
+
+      operation 201415 "setType"
+	public explicit_return_type "void"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+	comment "*
+	 * Abstract functions
+	 "
+      end
+
+      operation 201543 "clone"
+	const public return_type class_ref 140615 // lbObject
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} * ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 201671 "getFn"
+	public return_type class_ref 144583 // lbMemberCallback
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      classrelation 137671 // dispFn (<directional aggregation by value>)
+	relation 137671 *-->
+	  a role_name "dispFn" multiplicity "" public
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	    classrelation_ref 137671 // dispFn (<directional aggregation by value>)
+	  b parent class_ref 144583 // lbMemberCallback
+      end
+    end
+
+    class 151495 "lbAppServerThread"
+      
+      
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "#include <lbInterfaces.h>
+...slbAppServerThread:0:"
+      classrelation 144071 // <generalisation>
+	relation 144071 ---|>
+	  a public
+	    cpp default "Generated"
+	    classrelation_ref 144071 // <generalisation>
+	  b parent class_ref 150983 // lbThread
+      end
+
+      operation 226631 "lbAppServerThread"
+	public explicit_return_type ""
+	nparams 2
+	  param inout name "_clt" type class_ref 151623 // lbTransfer
+	  param inout name "_server" type class_ref 151751 // lbAppServer
+	cpp_decl "    ${comment}${inline}${name}${(}${t0} * ${p0}, ${t1} * ${p1}${)}${volatile}${throw};
+"
+	cpp_def "//...e
+//...slbAppServerThread\\58\\\\58\\lbAppServerThread\\40\\lbTransfer\\42\\ _clt\\44\\ lbAppServer\\42\\ _server\\41\\:0:
+
+${comment}${inline}${class}::${name}${(}${t0} * ${p0}, ${t1} * ${p1}${)}${throw}{
+${body}}
+"
+	
+	
+      end
+
+      operation 226759 "~lbAppServerThread"
+	cpp_virtual public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${virtual}${name}${(}${)}${volatile}${throw};
+"
+	cpp_def "//...e
+//...slbAppServerThread\\58\\\\58\\\\126\\lbAppServerThread\\40\\\\41\\:0:
+
+${comment}${inline}${class}::${name}${(}${)}${throw}{
+${body}}
+"
+	
+	
+      end
+
+      operation 226887 "Entry"
+	protected explicit_return_type "void"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//...svoid\\42\\ lbAppServerThread\\58\\\\58\\Entry\\40\\\\41\\:0:
+
+${comment}${inline}${type} * ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      classrelation 144199 // clt (<unidirectional association>)
+	relation 144199 --->
+	  a role_name "clt" multiplicity "" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 144199 // clt (<unidirectional association>)
+	  b parent class_ref 151623 // lbTransfer
+      end
+
+      classrelation 144327 // server (<unidirectional association>)
+	relation 144327 --->
+	  a role_name "server" multiplicity "" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 144327 // server (<unidirectional association>)
+	  b parent class_ref 151751 // lbAppServer
+      end
+    end
+  end
+
+  deploymentview 128455 "lbcs"
+    //deployment diagram settings
+    package_name_in_tab default show_context default write_horizontally default auto_label_position default
+    draw_component_as_icon default show_component_req_prov default show_component_rea default
+    artifact 137671 "lbConnection"
+      stereotype "source"
+      cpp_h "#ifndef _${NAME}_H
+#define _${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_classes
+	class_ref 144071 // lbConnection
+      end
+    end
+
+    artifact 137799 "lbDispatchProto"
+      stereotype "source"
+      cpp_h "#ifndef _${NAME}_H
+#define _${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_classes
+	class_ref 144199 // lbDispatchProto
+      end
+    end
+
+    artifact 137927 "lbDispatchFn"
+      stereotype "source"
+      cpp_h "#ifndef _${NAME}_H
+#define _${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_classes
+	class_ref 144455 // lbDispatchFn
+      end
+    end
+
+    artifact 140999 "lbAppServerThread"
+      stereotype "source"
+      cpp_h "#ifndef _${NAME}_H
+#define _${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_classes
+	class_ref 151495 // lbAppServerThread
+      end
+    end
+  end
+end

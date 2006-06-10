@@ -1,0 +1,12 @@
+class lbLong
+!!!194631.cpp!!!	lbLong()
+
+	ref = STARTREF;
+	longdata = 0;
+	key = 0;
+	strcpy(keyType, "UL");
+!!!194759.cpp!!!	~lbLong()
+
+!!!194887.cpp!!!	getData() : long
+
+	return longdata;

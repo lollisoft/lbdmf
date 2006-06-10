@@ -1,0 +1,20 @@
+class lbPluginLoginWizard
+!!!130802.cpp!!!	~lbPluginLoginWizard()
+
+	_CL_VERBOSE << "lbPluginLoginWizard::~lbPluginLoginWizard() called." LOG_
+!!!130930.cpp!!!	run() : bool
+
+	return true;
+!!!131058.cpp!!!	getImplementation() : lb_I_Unknown
+
+	lbErrCodes err = ERR_NONE;
+
+	return this;
+!!!131186.cpp!!!	peekImplementation() : lb_I_Unknown
+
+	lbErrCodes err = ERR_NONE;
+
+	return this;
+!!!131314.cpp!!!	releaseImplementation() : void
+
+	_CL_VERBOSE << "lbPluginLoginWizard::releaseImplementation() called." LOG_

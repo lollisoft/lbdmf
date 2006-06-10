@@ -1,0 +1,38 @@
+class lbLock
+!!!197447.cpp!!!	lbLock(inout _cso : lbCritSect, inout _name : char)
+
+#ifdef USE_CRITICAL_SECTION
+/*...sTHREAD_VERBOSE:0:*/
+#ifdef THREAD_VERBOSE
+//COUT << "lbLock::lbLock(...) enter critical section: " << _name << ENDL;
+_CL_VERBOSE << "lbLock::lbLock(...) enter critical section" LOG_
+#endif
+/*...e*/
+	_cso.enter();
+	cso = &_cso;
+	name = strdup(_name);
+/*...sTHREAD_VERBOSE:0:*/
+#ifdef THREAD_VERBOSE
+_CL_VERBOSE << "lbLock::lbLock(...) entered" LOG_
+//COUT << "lbLock::lbLock(...) entered" << ENDL;
+#endif
+/*...e*/
+#endif
+!!!197575.cpp!!!	~lbLock()
+
+#ifdef USE_CRITICAL_SECTION
+/*...sTHREAD_VERBOSE:0:*/
+#ifdef THREAD_VERBOSE
+//COUT << "lbLock::~lbLock(...) leave critical section: " << name << ENDL;
+_CL_VERBOSE << "lbLock::~lbLock(...) leave critical section" LOG_
+#endif
+/*...e*/
+	cso->leave();
+	free(name);
+/*...sTHREAD_VERBOSE:0:*/
+#ifdef THREAD_VERBOSE
+//COUT << "lbLock::~lbLock(...) leaved" << ENDL;
+_CL_VERBOSE << "lbLock::~lbLock(...) leaved" LOG_
+#endif
+/*...e*/
+#endif	

@@ -1,0 +1,391 @@
+format 22
+"App" // AppDevelopmentDemo::App
+  // class settings
+  //class diagram settings
+  draw_all_relations default hide_attributes default hide_operations default show_full_members_definition default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default
+  //use case diagram settings
+  package_name_in_tab default show_context default auto_label_position default
+  //sequence diagram settings
+  show_full_operations_definition default write_horizontally default drawing_language default
+  //collaboration diagram settings
+  show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default
+  //component diagram settings
+  package_name_in_tab default show_context default auto_label_position default
+  draw_component_as_icon default show_component_req_prov default show_component_rea default
+  //deployment diagram settings
+  package_name_in_tab default show_context default write_horizontally default auto_label_position default
+  draw_component_as_icon default show_component_req_prov default show_component_rea default
+  //state diagram settings
+  package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default
+  show_activities default region_horizontally default drawing_language default
+  
+  classview 129991 "App"
+    //class diagram settings
+    draw_all_relations default hide_attributes default hide_operations default show_full_members_definition default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default
+    //col diagram settings
+    show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default
+    //seq diagram settings
+    show_full_operations_definition default write_horizontally default drawing_language default
+    //state diagram settings
+    package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default
+    show_activities default region_horizontally default drawing_language default
+    //class settings
+    class 159175 "lbApplication"
+      
+      
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "...e
+...sclass lb_Application:0:"
+      classrelation 151367 // <generalisation>
+	relation 151367 ---|>
+	  a public
+	    cpp default "Generated"
+	    classrelation_ref 151367 // <generalisation>
+	  b parent class_ref 135111 // lb_I_Application
+      end
+
+      classrelation 151495 // <generalisation>
+	relation 151495 ---|>
+	  a public
+	    cpp default "Generated"
+	    classrelation_ref 151495 // <generalisation>
+	  b parent class_ref 133191 // lb_I_EventHandler
+      end
+
+      operation 258887 "lbApplication"
+	public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${name}${(}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${class}::${name}${(}${)}${throw}{
+${body}}
+"
+	
+	
+      end
+
+      operation 259015 "~lbApplication"
+	cpp_virtual public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${virtual}${name}${(}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${class}::${name}${(}${)}${throw}{
+${body}}
+"
+	
+	
+      end
+
+      operation 259143 "initialize"
+	cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	nparams 2
+	  param inout name "user" explicit_type "char"
+	    defaultvalue " NULL"
+	  param inout name "app" explicit_type "char"
+	    defaultvalue " NULL"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}, ${t1} * ${p1}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//...slbErrCodes LB_STDCALL lbApplication\\58\\\\58\\initialize\\40\\char\\42\\ user \\61\\ NULL\\44\\ char\\42\\ app \\61\\ NULL\\41\\:0:
+
+${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}, ${t1} * ${p1}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+	comment "*
+	 * Let the implementation register it's symbolic events.
+	 * For each event, it gets an numeric identifer so it may
+	 * be able to dispatch that events.
+	 "
+      end
+
+      operation 259271 "uninitialize"
+	cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//...e
+
+${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 259399 "run"
+	cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "// This starts the main application
+//...slbErrCodes LB_STDCALL lbApplication\\58\\\\58\\run\\40\\\\41\\:0:
+
+${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 259527 "getGUI"
+	cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	nparams 1
+	  param inout name "_gui" type class_ref 145095 // lb_I_GUI
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * * ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//...e
+//...slbErrCodes LB_STDCALL lbApplication\\58\\\\58\\getGUI\\40\\lb_I_GUI\\42\\\\42\\ _gui\\41\\:0:
+
+${comment}${inline}${type} ${class}::${name}${(}${t0} * * ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 259655 "getUserName"
+	cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	nparams 1
+	  param inout name "user" type class_ref 141255 // lb_I_String
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * * ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//...e
+
+${comment}${inline}${type} ${class}::${name}${(}${t0} * * ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 259783 "getApplicationName"
+	cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	nparams 1
+	  param inout name "app" type class_ref 141255 // lb_I_String
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * * ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * * ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 259911 "setUserName"
+	cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	nparams 1
+	  param inout name "user" explicit_type "char"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 260039 "setApplicationName"
+	cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	nparams 1
+	  param inout name "app" explicit_type "char"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 260167 "getEVManager"
+	cpp_virtual public return_type class_ref 134855 // lb_I_EventManager
+	nparams 1
+	  param in name "" explicit_type "void"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//...e
+//...slb_I_EventManager\\42\\ LB_STDCALL lbApplication\\58\\\\58\\getEVManager\\40\\ void \\41\\:0:
+
+${comment}${inline}${type} * ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 260295 "registerEventHandler"
+	cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	nparams 1
+	  param inout name "disp" type class_ref 133575 // lb_I_Dispatcher
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 260423 "getDynamicDBForm"
+	public return_type class_ref 128711 // lbErrCodes
+	nparams 1
+	  param inout name "uk" type class_ref 141767 // lb_I_Unknown
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 260551 "getKundenDetails"
+	public return_type class_ref 128711 // lbErrCodes
+	nparams 1
+	  param inout name "uk" type class_ref 141767 // lb_I_Unknown
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//...e
+//...slbErrCodes LB_STDCALL lbApplication\\58\\\\58\\getKundenDetails\\40\\lb_I_Unknown\\42\\ uk\\41\\:0:
+
+${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 260679 "getKundenListe"
+	public return_type class_ref 128711 // lbErrCodes
+	nparams 1
+	  param inout name "uk" type class_ref 141767 // lb_I_Unknown
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//...e
+//...slbErrCodes LB_STDCALL lbApplication\\58\\\\58\\getKundenListe\\40\\lb_I_Unknown\\42\\ uk\\41\\:0:
+
+${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 260807 "getLoginData"
+	public return_type class_ref 128711 // lbErrCodes
+	nparams 1
+	  param inout name "uk" type class_ref 141767 // lb_I_Unknown
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//...slbErrCodes LB_STDCALL lbApplication\\58\\\\58\\getLoginData\\40\\lb_I_Unknown\\42\\ uk\\41\\:0:
+
+${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 260935 "getCustomFormsConfig"
+	public return_type class_ref 128711 // lbErrCodes
+	nparams 1
+	  param inout name "uk" type class_ref 141767 // lb_I_Unknown
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//...e
+//...slbErrCodes LB_STDCALL lbApplication\\58\\\\58\\getCustomFormsConfig\\40\\lb_I_Unknown\\42\\ uk\\41\\:0:
+
+${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      classrelation 151623 // gui (<unidirectional association>)
+	relation 151623 --->
+	  a role_name "gui" multiplicity "" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 151623 // gui (<unidirectional association>)
+	  b parent class_ref 145095 // lb_I_GUI
+      end
+
+      operation 261063 "addEventHandlerFn"
+	protected explicit_return_type "_LOG<< \"Instance of lb_I_Application created\" LOG_
+}
+
+lbApplication::~lbApplication() {
+	_LOG << \"Instance of lb_I_Application destroyed\" LOG_
+}
+/*...e*/
+
+/*...sregister event handlers:0:*/
+lbErrCodes LB_STDCALL lbApplication::registerEventHandler(lb_I_Dispatcher* disp) {
+
+//	disp->addEventHandlerFn(this, (lbEvHandler) &lbApplication::getLoginData, \"getLoginData\");
+
+	disp->addEventHandlerFn(this, (lbEvHandler) &lbApplication::getKundenDetails, \"getKundenDetails\");
+	disp->addEventHandlerFn(this, (lbEvHandler) &lbApplication::getKundenListe, \"getKundenListe\");
+
+	// Register a dynamic formular creator
+
+	disp->"
+	nparams 1
+	  param in name "" type class_ref 159303 // this
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+      end
+
+      classrelation 151751 // ERR_NONE (<directional aggregation by value>)
+	relation 151751 *-->
+	  a role_name "ERR_NONE" multiplicity "" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	    classrelation_ref 151751 // ERR_NONE (<directional aggregation by value>)
+	  b parent class_ref 159431 // return
+      end
+    end
+  end
+
+  deploymentview 129863 "App"
+    //deployment diagram settings
+    package_name_in_tab default show_context default write_horizontally default auto_label_position default
+    draw_component_as_icon default show_component_req_prov default show_component_rea default
+    artifact 145351 "lbApplication"
+      stereotype "source"
+      cpp_h "#ifndef _${NAME}_H
+#define _${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_classes
+	class_ref 159175 // lbApplication
+      end
+    end
+  end
+end

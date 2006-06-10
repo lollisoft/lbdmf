@@ -1,0 +1,4 @@
+class lbDBView
+!!!227271.cpp!!!	setViewSource(inout q : lb_I_Unknown) : lbErrCodes
+
+	return ERR_NONE;

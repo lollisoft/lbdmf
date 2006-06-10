@@ -1,0 +1,1862 @@
+class lbBoundColumn
+!!!237639.cpp!!!	getType() : lbDBColumnTypes
+
+	switch (_DataType) {
+	
+		case SQL_FLOAT:
+			return lb_I_Query::lbDBColumnFloat;
+			
+		case SQL_BIT:
+			return lb_I_Query::lbDBColumnBit;
+			
+		case SQL_DATE:
+		case SQL_TYPE_DATE:
+		case SQL_CHAR:
+		case SQL_VARCHAR:
+		case SQL_LONGVARCHAR: 
+		
+			return lb_I_Query::lbDBColumnChar;
+			
+		case SQL_INTEGER: 
+			return lb_I_Query::lbDBColumnInteger;
+
+		case SQL_BIGINT: 
+			return lb_I_Query::lbDBColumnBigInteger;
+			
+		case SQL_BINARY:
+			return lb_I_Query::lbDBColumnBinary;
+		
+		default: return lb_I_Query::lbDBColumnUnknown;
+	}
+
+!!!237767.cpp!!!	getData() : lb_I_Unknown
+
+	_CL_VERBOSE << "lbBoundColumn::getData(...) not implemented yet" LOG_
+	return NULL;
+!!!237895.cpp!!!	getAsString(inout result : lb_I_String, in asParameter : int =  0) : lbErrCodes
+
+	
+	switch (_DataType) {
+		case SQL_FLOAT:
+		case SQL_DATE:
+		case SQL_TYPE_DATE:
+		case SQL_CHAR:
+		case SQL_VARCHAR:
+		case SQL_LONGVARCHAR:
+#ifndef BIND_BOOL_DEFAULT
+		case SQL_BIT:
+		case SQL_TINYINT:
+#endif
+			if (asParameter == 1) {
+				char* b = (char*) malloc(strlen((char const *) buffer)+3);
+				b[0] = 0;
+				sprintf(b, "'%s'", buffer);
+				result->setData(b);
+				free(b);
+			} else {
+				result->setData((char*) buffer);
+				result->trim();
+			}
+			
+			break;
+		case SQL_BINARY:
+			_CL_VERBOSE << "lbBoundColumn::getAsString(...) failed: Binary data not supported for column '" << columnName << "'" LOG_
+			break;
+		case SQL_BIGINT:
+		{
+			char charrep[100] = "";
+#ifdef WINDOWS
+#ifndef _MSC_VER
+			lltoa(*(long long*) buffer, charrep, 10);
+#endif
+#ifdef _MSC_VER
+			sprintf(charrep, "%I64d", *(__int64*) buffer);
+#endif
+#endif
+#ifdef LINUX
+			sprintf(charrep, "%I64d", *(long long*) buffer);
+#endif
+#ifdef OSX
+			sprintf(charrep, "%I64d", *(long long*) buffer);
+#endif
+			//sprintf(charrep, "%Ld", *(long long*) buffer);
+			result->setData(charrep);
+		}
+			break;
+		case SQL_INTEGER:
+		{
+			char charrep[100] = "";
+			sprintf(charrep, "%d", *(long*) buffer);
+			result->setData(charrep);
+		}
+			break;
+#ifdef BIND_BOOL_DEFAULT
+		case SQL_BIT:
+		case SQL_TINYINT:
+		{
+#ifdef OSX
+			int bi = 0;
+			bi = *(int*) buffer;
+			
+			if (bi != 0) {
+#endif
+#ifndef OSX
+				bool b = *(bool*) buffer;
+				if (b == true) {
+#endif
+					result->setData("true");
+				}
+				else {
+					result->setData("false");
+				}	
+			}
+			break;
+#endif
+	        default:
+	        	_CL_VERBOSE << "lbBoundColumn::getAsString(...) failed: Unknown or not supported datatype for column '" << columnName << "'"  LOG_
+	        	break;
+		}
+		/* Pointer doesn't get changed.
+		char* buf = (char*) malloc(20);
+		sprintf(buf, "(%p)", buffer);
+		*result += buf;
+		free(buf);
+		*/
+		return ERR_NONE;
+}
+/*...e*/
+lbErrCodes LB_STDCALL lbBoundColumn::setFromLong(lb_I_Long* set, int mode) {
+	lbErrCodes err = ERR_NONE;
+	if (isReadonly) {
+		_CL_LOG << "Warning: Updating a column '" << columnName << "' with readonly status skipped." LOG_
+		return ERR_NONE;
+	}
+	if (mode == 1) {
+		switch (_DataType) {
+			case SQL_INTEGER:
+			{
+				long l = set->getData();
+				
+				long* pl = (long*) buffer;
+				
+				void* b = pl+1;
+				
+				memcpy(b, &l, sizeof(l));
+			}
+				break;
+		}
+	} else {
+		switch (_DataType) {
+			case SQL_INTEGER:
+			{
+				long l = set->getData();
+				memcpy(buffer, &l, sizeof(l));
+			}
+		}
+	}
+	return err;
+}
+/*...slbErrCodes LB_STDCALL lbBoundColumn\58\\58\setFromString\40\lb_I_String\42\ set\44\ int mode\41\:0:*/
+lbErrCodes LB_STDCALL lbBoundColumn::setFromString(lb_I_String* set, int mode) {
+		if (isReadonly) {
+			_CL_LOG << "Warning: Updating a column '" << columnName << "' with readonly status skipped." LOG_
+			return ERR_NONE;
+		}
+		
+		if (mode == 1) {
+			switch (_DataType) {
+				case SQL_FLOAT:
+				case SQL_DATE:
+				case SQL_TYPE_DATE:
+				case SQL_CHAR:
+				case SQL_VARCHAR:
+				case SQL_LONGVARCHAR:
+#ifndef BIND_BOOL_DEFAULT
+				case SQL_BIT:
+				case SQL_TINYINT:
+#endif
+					
+				{
+					// Must set an offset for the insert buffer
+					
+					char* bb = (char*) buffer;
+					
+					char* b = strcpy(bb + ColumnSize + 1, set->getData());
+					cbBufferLength = strlen((char*) buffer);
+				}
+					break;
+				case SQL_INTEGER:
+				{
+					long l = 0;
+					l = atol(set->getData());
+					
+					long* pl = (long*) buffer;
+					
+					void* b = pl+1;
+					
+					memcpy(b, &l, sizeof(l));
+				}
+					break;
+					
+				case SQL_BIGINT:
+				{
+#ifndef _MSC_VER
+					long long l = 0;
+					l = atoll(set->getData());
+					long long* pl = (long long*) buffer;
+#endif					
+#ifdef _MSC_VER
+					__int64 l = 0;
+					l = _atoi64(set->getData());
+					__int64* pl = (__int64*) buffer;
+#endif										
+					void* b = pl+1;
+					
+					memcpy(b, &l, sizeof(l));
+				}
+					break;
+				case SQL_BINARY:
+					_CL_VERBOSE << "lbBoundColumn::setFromString(...) failed: Binary data not supported for column '" << columnName << "'"  LOG_
+					break;
+#ifdef BIND_BOOL_DEFAULT					
+				case SQL_BIT:
+				case SQL_TINYINT:
+				{
+#ifdef OSX				
+					long l = 0;
+					if (strcmp(set->charrep(), "true") == 0) {
+						l = 1;
+					}
+					
+					long* pl = (long*) buffer;
+					
+					void* b = pl+1;
+					
+					memcpy(b, &l, sizeof(l));
+#endif
+#ifndef OSX
+					bool l = false;
+					if (strcmp(set->charrep(), "true") == 0) {
+						l = true;
+					}
+					
+					bool* pl = (bool*) buffer;
+					
+					void* b = pl+1;
+					
+					memcpy(b, &l, sizeof(l));
+#endif 
+				}
+				break;
+#endif			
+			}
+		} else {
+			switch (_DataType) {
+				case SQL_FLOAT:
+				case SQL_DATE:
+				case SQL_TYPE_DATE:
+				case SQL_CHAR:
+				case SQL_VARCHAR:
+				case SQL_LONGVARCHAR:
+#ifndef BIND_BOOL_DEFAULT
+				case SQL_BIT:
+				case SQL_TINYINT:
+#endif
+					
+				{
+					char* b = strcpy((char*) buffer, set->getData());
+					cbBufferLength = strlen((char*) buffer);
+				}
+					break;
+				case SQL_INTEGER:
+				{
+					long l = 0;
+					l = atol(set->getData());
+					memcpy(buffer, &l, sizeof(l));
+				}
+					break;
+				case SQL_BINARY:
+					_CL_VERBOSE << "lbBoundColumn::setFromString(...) failed: Binary data not supported for column '" << columnName << "'" LOG_
+					break;
+#ifdef BIND_BOOL_DEFAULT					
+				case SQL_BIT:
+				case SQL_TINYINT:
+				{
+#ifdef OSX
+					long l = 0;
+					if (strcmp(set->charrep(), "true") == 0) {
+						l = -1;
+					}
+
+					*((long*) buffer) = l;
+#endif
+#ifndef OSX
+					bool l = false;
+					if (strcmp(set->charrep(), "true") == 0) {
+						l = true;
+					}
+					
+					*((bool*) buffer) = l;
+#endif
+					//memcpy(buffer, &l, sizeof(bool));
+				}
+				break;
+#endif					
+			}
+			
+		}
+		
+		return ERR_NONE;
+	}
+/*...e*/
+/*...slbErrCodes LB_STDCALL lbBoundColumn\58\\58\prepareBoundColumn\40\lb_I_Query\42\ q\44\ int column\41\:0:*/
+lbErrCodes LB_STDCALL lbBoundColumn::prepareBoundColumn(lb_I_Query* q, int column) {
+	lbErrCodes err = ERR_NONE;
+
+	HSTMT hstmt = ((lbQuery*) q)->getCurrentStatement();
+
+/*...svars:8:*/
+	SQLSMALLINT     ColumnNumber = 0;
+	SQLCHAR         ColumnName[1000] = "";
+	SQLSMALLINT     BufferLength = 500;
+	SQLSMALLINT     NameLength = 0;
+	SQLSMALLINT     DataType = 0;
+	
+	SQLSMALLINT     DecimalDigits = 0;
+	SQLSMALLINT     Nullable = 0;
+/*...e*/
+
+// Assume readonly for now ...
+
+	SQLRETURN ret = SQLDescribeCol( hstmt, column, ColumnName,
+	                                BufferLength, &NameLength, &DataType,
+	                                &ColumnSize, &DecimalDigits, &Nullable);
+
+	_DataType = DataType;
+
+	//if (colName == NULL) {
+	//	REQUEST(manager.getPtr(), lb_I_String, colName)
+	//}
+	
+	//colName->setData((char*) ColumnName);
+
+	if (columnName) free(columnName);
+	columnName = (char*) malloc(strlen((char const*) ColumnName)+1);
+	columnName[0] = 0;
+
+	if (strchr((char const*) ColumnName, '.') != 0) {
+	        strcpy(columnName, (char*) (strchr((char const*) ColumnName, '.') + 1));
+        } else {
+                strcpy(columnName, (char*) ColumnName);
+        }
+
+	return err;
+}
+/*...e*/
+/*...svoid       LB_STDCALL lbBoundColumn\58\\58\checkReadonly\40\int column\41\:0:*/
+void       LB_STDCALL lbBoundColumn::checkReadonly(int column)
+	{// Check for any type of readonly column	
+		SQLHSTMT	StatementHandle;
+		SQLUSMALLINT	ColumnNumber;
+		SQLUSMALLINT	FieldIdentifier;
+		SQLPOINTER	CharacterAttributePtr;
+		SQLSMALLINT	BufferLength;
+		SQLSMALLINT	StringLengthPtr = 0;
+		SQLPOINTER	NumericAttributePtr;
+		
+		SQLINTEGER	Int = 0;
+		
+		CharacterAttributePtr = (void*) malloc(101);
+		memset(CharacterAttributePtr, 0, 101);
+		
+		SQLRETURN retcode;
+		
+		retcode = SQLColAttribute(
+				  hstmt,
+				  column, 
+				  SQL_DESC_UPDATABLE,
+				  CharacterAttributePtr,
+				  100,
+				  &StringLengthPtr,
+				  &Int ); 
+			
+		if ((retcode == SQL_ERROR) || (retcode == SQL_SUCCESS_WITH_INFO)) {
+			_CL_LOG << "ERROR: SQLColAttribute(...) failed." LOG_
+		}
+		
+		setReadonly(false);
+		
+		if (Int == SQL_ATTR_READONLY) {
+			setReadonly(true);
+		}
+		
+		free(CharacterAttributePtr);
+	}	
+/*...e*/
+/*...slbErrCodes LB_STDCALL lbBoundColumn\58\\58\bindColumn\40\lb_I_Query\42\ q\44\ int column\44\ bool ro\41\:0:*/
+lbErrCodes LB_STDCALL lbBoundColumn::bindColumn(lb_I_Query* q, int column, bool ro) {
+	hstmt = ((lbQuery*) q)->getCurrentStatement();
+
+	query = (lbQuery*) q;
+
+	_column = column;
+
+/*...svars:8:*/
+	SQLSMALLINT     ColumnNumber = 0;
+	SQLCHAR         ColumnName[1000] = "";
+	SQLSMALLINT     BufferLength = 500;
+	SQLSMALLINT     DataType = 0;
+	SQLSMALLINT     NameLength = 0;
+	
+	SQLSMALLINT     DecimalDigits = 0;
+	SQLSMALLINT     Nullable = 0;
+/*...e*/
+
+// Assume readonly for now ...
+
+	cbBufferLength = 0;
+	SQLRETURN ret;
+
+	if (ro == true) {
+		_CL_LOG << "Bind a column that is read only (" << columnName << ")" LOG_
+		cbBufferLength = SQL_COLUMN_IGNORE;
+		isReadonly = true;
+	} else {
+		// Check, if there are aggregates to be readonly
+		checkReadonly(column);
+	}
+
+
+	ret = SQLDescribeCol( hstmt, column, ColumnName,
+	                                BufferLength, &NameLength, &DataType,
+	                                &ColumnSize, &DecimalDigits, &Nullable);
+
+	if (ret != SQL_SUCCESS) {
+		printf("Error: Failed to get column description for column %d.\n", column);
+		query->dbError("SQLDescribeCol()", hstmt);
+	}
+
+	if (columnName) free(columnName);
+	columnName = (char*) malloc(strlen((char const*) ColumnName)+1);
+	columnName[0] = 0;
+
+	if (strchr((char const*) ColumnName, '.') != 0) {
+	        strcpy(columnName, (char*) (strchr((char const*) ColumnName, '.') + 1));
+        } else {
+                strcpy(columnName, (char*) ColumnName);
+        }
+
+	switch (DataType) {
+		case SQL_DATE:
+/*...sbind a character array:24:*/
+			buffer = malloc((ColumnSize+1)*rows+20);
+
+			_DataType = DataType;
+			bound = 1;			     // Try a spacer for bugfix
+			memset(buffer, 0, (ColumnSize+1)*rows+20);
+
+			ret = SQLBindCol(hstmt, column, SQL_C_CHAR, buffer, (ColumnSize+1), &cbBufferLength);
+			
+			if (ret != SQL_SUCCESS) {
+				printf("Error while binding a column!\n");
+				query->dbError("SQLBindCol()", hstmt);
+			}
+/*...e*/
+			break;
+		case SQL_TYPE_DATE:
+/*...sbind a character array:24:*/
+			buffer = malloc((ColumnSize+1)*rows+20);
+
+			_DataType = DataType;
+			bound = 1;			     // Try a spacer for bugfix
+			memset(buffer, 0, (ColumnSize+1)*rows+20);
+
+			ret = SQLBindCol(hstmt, column, SQL_C_CHAR, buffer, (ColumnSize+1), &cbBufferLength);
+			
+			if (ret != SQL_SUCCESS) {
+				printf("Error while binding a column!\n");
+				query->dbError("SQLBindCol()", hstmt);
+			}
+/*...e*/
+			break;
+		case SQL_FLOAT:
+		case SQL_BIT:
+		case SQL_TINYINT:
+		case SQL_CHAR:
+		case SQL_VARCHAR:
+		case SQL_LONGVARCHAR:
+/*...sbind a character array:24:*/
+			buffer = malloc((ColumnSize+1)*rows+20);
+
+			_DataType = DataType;
+			bound = 1;			     // Try a spacer for bugfix
+			memset(buffer, 0, (ColumnSize+1)*rows+20);
+
+			ret = SQLBindCol(hstmt, column, SQL_C_CHAR, buffer, (ColumnSize+1), &cbBufferLength);
+			
+			if (ret != SQL_SUCCESS) {
+				printf("Error while binding a column!\n");
+				query->dbError("SQLBindCol()", hstmt);
+			}
+/*...e*/
+			break;
+		case SQL_BINARY:
+/*...sbind a binary array:24:*/
+			buffer = malloc((ColumnSize+1)*rows+20);
+
+			_DataType = DataType;
+			bound = 1;			     // Try a spacer for bugfix
+			memset(buffer, 0, (ColumnSize+1)*rows+20);
+			
+			ret = SQLBindCol(hstmt, column, SQL_C_DEFAULT, buffer, (ColumnSize+1), &cbBufferLength);
+			
+			if (ret != SQL_SUCCESS) {
+				printf("Error while binding a column!\n");
+				query->dbError("SQLBindCol()", hstmt);
+			}
+/*...e*/
+			break;
+/*...slater:16:*/
+/*			
+		case SQL_WCHAR:
+		case SQL_WVARCHAR:
+		case SQL_WLONGVARCHAR:
+			break;
+*/			
+/*...e*/
+		case SQL_INTEGER:
+/*...sbind an integer:24:*/
+			buffer = malloc((sizeof(long))*rows);
+			_DataType = DataType;
+			bound = 1;
+			memset(buffer, 0, sizeof(long)*rows);
+			SQLBindCol(hstmt, column, DataType, buffer, sizeof(long), &cbBufferLength);
+			if (ret != SQL_SUCCESS) {
+			        printf("Error while binding a column!\n");
+			        query->dbError("SQLBindCol()", hstmt);
+			}
+/*...e*/
+			break;
+		case SQL_BIGINT:
+/*...sbind an big integer:24:*/
+#ifndef _MSC_VER
+			buffer = malloc((sizeof(long long))*rows);
+#endif
+#ifdef _MSC_VER
+			buffer = malloc((sizeof(__int64))*rows);
+#endif
+			_DataType = DataType;
+			bound = 1;
+#ifndef _MSC_VER
+			memset(buffer, 0, sizeof(long long)*rows);
+			ret = SQLBindCol(hstmt, column, SQL_C_DEFAULT, buffer, sizeof(long long), &cbBufferLength);
+#endif
+#ifdef _MSC_VER
+			memset(buffer, 0, sizeof(__int64)*rows);
+			ret = SQLBindCol(hstmt, column, SQL_C_DEFAULT, buffer, sizeof(__int64), &cbBufferLength);
+#endif
+			if (ret != SQL_SUCCESS) {
+			        printf("Error while binding a column!\n");
+			        query->dbError("SQLBindCol()", hstmt);
+			}
+/*...e*/
+			break;
+// Having no problems updating, when bound to a char array...
+#ifdef BIND_BOOL_DEFAULT		
+		case SQL_BIT:
+		case SQL_TINYINT:
+#ifndef OSX		
+			buffer = malloc((sizeof(bool))*rows);
+			_DataType = DataType;
+			bound = 1;
+			memset(buffer, 0, sizeof(bool)*rows);
+			ret = SQLBindCol(hstmt, column, SQL_BIT, buffer, sizeof(bool), &cbBufferLength);
+#endif
+#ifdef OSX
+			buffer = malloc((sizeof(long))*rows);
+			_DataType = DataType;
+			bound = 1;
+			memset(buffer, 0, sizeof(long)*rows);
+			ret = SQLBindCol(hstmt, column, SQL_BIT, buffer, sizeof(long), &cbBufferLength);
+#endif
+			if (ret != SQL_SUCCESS) {
+				_LOG << "Error: Binding column '" << columnName << "' failed!" LOG_
+				
+			        query->dbError("SQLBindCol()", hstmt);
+			}
+			break;
+#endif
+		default:
+			_CL_LOG << "lbBoundColumn::bindColumn(...) failed: Unknown or not supported datatype for column '" << columnName << "': " << DataType LOG_
+			break;
+	}
+	
+
+	return ERR_NONE;
+}
+/*...sSample of dynamically allocated buffer:0:*/
+#ifdef bla
+
+// I cannot use that because I have a separate class of a bound column.
+// And why should it impossible to allocate separate buffers for each
+// column.
+
+
+// This application allocates a buffer at run time. For each column, this buffer
+// contains memory for the column's data and length/indicator. For example:
+//
+//  column 1    column 2 column 3 column 4
+// <------------><---------------><-----><------------>
+//  db1 li1  db2   li2 db3 li3  db4 li4
+//   |   |    |   | | |  |   |
+//  _____V_____V________V_______V___V___V______V_____V_
+// |__________|__|_____________|__|___|__|__________|__|
+//
+// dbn = data buffer for column n
+// lin = length/indicator buffer for column n
+
+// Define a macro to increase the size of a buffer so it is a multiple of the alignment
+// size. Thus, if a buffer starts on an alignment boundary, it will end just before the
+// next alignment boundary. In this example, an alignment size of 4 is used because
+// this is the size of the largest data type used in the application's buffer -- the
+// size of an SDWORD and of the largest default C data type are both 4. If a larger
+// data type (such as _int64) was used, it would be necessary to align for that size.
+#define ALIGNSIZE 4
+#define ALIGNBUF(Length) Length % ALIGNSIZE ? \
+         Length + ALIGNSIZE - (Length % ALIGNSIZE) : Length
+
+SQLCHAR   SelectStmt[100];
+SQLSMALLINT NumCols, *CTypeArray, i;
+SQLINTEGER  *ColLenArray, *OffsetArray, SQLType, *DataPtr;
+SQLRETURN rc; 
+SQLHSTMT  hstmt;
+
+// Get a SELECT statement from the user and execute it.
+GetSelectStmt(SelectStmt, 100);
+SQLExecDirect(hstmt, SelectStmt, SQL_NTS);
+
+// Determine the number of result set columns.  Allocate arrays to hold the C type,
+// byte length, and buffer offset to the data.
+SQLNumResultCols(hstmt, &NumCols);
+CTypeArray = (SQLSMALLINT *) malloc(NumCols * sizeof(SQLSMALLINT));
+ColLenArray = (SQLINTEGER *) malloc(NumCols * sizeof(SQLINTEGER));
+OffsetArray = (SQLINTEGER *) malloc(NumCols * sizeof(SQLINTEGER));
+
+OffsetArray[0] = 0;
+for (i = 0; i < NumCols; i++) {
+ // Determine the column's SQL type. GetDefaultCType contains a switch statement that
+ // returns the default C type for each SQL type.
+ SQLColAttribute(hstmt, ((SQLUSMALLINT) i) + 1, SQL_DESC_TYPE, NULL, 0, NULL, (SQLPOINTER) &SQLType);
+ CTypeArray[i] = GetDefaultCType(SQLType);
+
+ // Determine the column's byte length. Calculate the offset in the buffer to the
+ // data as the offset to the previous column, plus the byte length of the previous
+ // column, plus the byte length of the previous column's length/indicator buffer.
+ // Note that the byte length of the column and the length/indicator buffer are
+ // increased so that, assuming they start on an alignment boundary, they will end on
+ // the byte before the next alignment boundary. Although this might leave some holes
+ // in the buffer, it is a relatively inexpensive way to guarantee alignment.
+ SQLColAttribute(hstmt, ((SQLUSMALLINT) i)+1, SQL_DESC_OCTET_LENGTH, NULL, 0, NULL, &ColLenArray[i]);
+ ColLenArray[i] = ALIGNBUF(ColLenArray[i]);
+ if (i)
+  OffsetArray[i] = OffsetArray[i-1]+ColLenArray[i-1]+ALIGNBUF(sizeof(SQLINTEGER));
+}
+
+// Allocate the data buffer. The size of the buffer is equal to the offset to the data
+// buffer for the final column, plus the byte length of the data buffer and
+// length/indicator buffer for the last column.
+void *DataPtr = malloc(OffsetArray[NumCols - 1] +
+        ColLenArray[NumCols - 1] + ALIGNBUF(sizeof(SQLINTEGER)));
+
+// For each column, bind the address in the buffer at the start of the memory allocated
+// for that column's data and the address at the start of the memory allocated for that
+// column's length/indicator buffer.
+for (i = 0; i < NumCols; i++)
+ SQLBindCol(hstmt,
+      ((SQLUSMALLINT) i) + 1,
+      CTypeArray[i],
+      (SQLPOINTER)((SQLCHAR *)DataPtr + OffsetArray[i]),
+      ColLenArray[i],
+      (SQLINTEGER *)((SQLCHAR *)DataPtr + OffsetArray[i] + ColLenArray[i]));
+
+// Retrieve and print each row. PrintData accepts a pointer to the data, its C type,
+// and its byte length/indicator. It contains a switch statement that casts and prints
+// the data according to its type. Code to check if rc equals SQL_ERROR or
+// SQL_SUCCESS_WITH_INFO not shown.
+while ((rc = SQLFetch(hstmt)) != SQL_NO_DATA) {
+ for (i = 0; i < NumCols; i++) {
+  PrintData((SQLCHAR *)DataPtr[OffsetArray[i]], CTypeArray[i],
+      (SQLINTEGER *)((SQLCHAR *)DataPtr[OffsetArray[i] + ColLenArray[i]]));
+ }
+}
+
+// Close the cursor.
+SQLCloseCursor(hstmt);
+
+
+#endif
+/*...e*/
+/*...e*/
+/*...svoid LB_STDCALL lbBoundColumn\58\\58\unbindReadonlyColumns\40\\41\:0:*/
+void LB_STDCALL lbBoundColumn::unbindReadonlyColumns() {
+	SQLRETURN ret = SQL_SUCCESS;
+
+	if (isReadonly) {
+/*...sUnbind:16:*/
+	switch (_DataType) {
+		case SQL_DATE:
+		case SQL_TYPE_DATE:
+			_CL_VERBOSE << "Unbind date" LOG_
+			bound = 0;
+
+			ret = SQLBindCol(hstmt, _column, SQL_C_CHAR, NULL, (ColumnSize+1), &cbBufferLength);
+			break;
+		case SQL_FLOAT:	
+		case SQL_CHAR:
+		case SQL_VARCHAR:
+		case SQL_LONGVARCHAR:
+#ifndef BIND_BOOL_DEFAULT
+		case SQL_BIT:
+		case SQL_TINYINT:
+#endif		
+			_CL_VERBOSE << "Unbind char" LOG_
+			bound = 0;
+
+			ret = SQLBindCol(hstmt, _column, SQL_C_CHAR, NULL, (ColumnSize+1), &cbBufferLength);
+			break;
+		case SQL_BINARY:
+			_CL_VERBOSE << "Unbind binary" LOG_
+			bound = 0;
+			
+			ret = SQLBindCol(hstmt, _column, SQL_C_DEFAULT, NULL, (ColumnSize+1), &cbBufferLength);
+			break;
+		case SQL_INTEGER:
+			_CL_VERBOSE << "Unbind integer" LOG_
+			bound = 0;
+
+			SQLBindCol(hstmt, _column, SQL_C_DEFAULT, NULL, sizeof(long), &cbBufferLength);
+			break;
+		case SQL_BIGINT:
+			_CL_VERBOSE << "Unbind big integer" LOG_
+			bound = 0;
+#ifndef _MSC_VER
+			SQLBindCol(hstmt, _column, SQL_C_DEFAULT, NULL, sizeof(long long), &cbBufferLength);
+#endif
+#ifdef _MSC_VER
+			SQLBindCol(hstmt, _column, SQL_C_DEFAULT, NULL, sizeof(__int64), &cbBufferLength);
+#endif
+			break;
+#ifdef BIND_BOOL_DEFAULT
+		case SQL_BIT:
+		case SQL_TINYINT:
+			_CL_VERBOSE << "Unbind bit" LOG_
+			bound = 0;
+#ifdef OSX
+			SQLBindCol(hstmt, _column, SQL_BIT, NULL, sizeof(long), &cbBufferLength);
+#endif
+#ifndef OSX
+			SQLBindCol(hstmt, _column, SQL_BIT, NULL, sizeof(bool), &cbBufferLength);
+#endif			
+			if (ret != SQL_SUCCESS) {
+			        printf("Error while unbinding a column!\n");
+			        query->dbError("SQLBindCol()", hstmt);
+			}
+			break;
+#endif
+		default:
+			_CL_VERBOSE << "lbBoundColumn::unbindReadonlyColumns(...) failed: Unknown or not supported datatype for column '" << columnName << "': " << _DataType LOG_
+			break;
+	}
+/*...e*/
+	}
+
+	if (ret != SQL_SUCCESS) {
+		printf("Error while unbinding a column!\n");
+		query->dbError("SQLBindCol()", hstmt);
+	}
+}
+/*...e*/
+/*...svoid LB_STDCALL lbBoundColumn\58\\58\rebindReadonlyColumns\40\\41\:0:*/
+void LB_STDCALL lbBoundColumn::rebindReadonlyColumns() {
+	SQLRETURN ret = SQL_SUCCESS;
+
+	if (isReadonly) {
+/*...sRebind:16:*/
+	switch (_DataType) {
+		case SQL_DATE:
+		case SQL_TYPE_DATE:
+			_CL_VERBOSE << "Rebind date" LOG_
+			bound = 1;
+
+			ret = SQLBindCol(hstmt, _column, SQL_C_CHAR, buffer, (ColumnSize+1), &cbBufferLength);
+			break;
+		case SQL_FLOAT:
+		case SQL_CHAR:
+		case SQL_VARCHAR:
+		case SQL_LONGVARCHAR:
+#ifndef BIND_BOOL_DEFAULT
+		case SQL_BIT:
+		case SQL_TINYINT:
+#endif		
+		
+			_CL_VERBOSE << "Rebind char" LOG_
+			bound = 1;
+
+			ret = SQLBindCol(hstmt, _column, SQL_C_CHAR, buffer, (ColumnSize+1), &cbBufferLength);
+			break;
+		case SQL_BINARY:
+			_CL_VERBOSE << "Rebind binary" LOG_
+			bound = 1;
+			
+			ret = SQLBindCol(hstmt, _column, SQL_C_DEFAULT, buffer, (ColumnSize+1), &cbBufferLength);
+			break;
+		case SQL_INTEGER:
+			_CL_VERBOSE << "Rebind integer" LOG_
+			bound = 1;
+
+			SQLBindCol(hstmt, _column, SQL_C_DEFAULT, buffer, sizeof(long), &cbBufferLength);
+			break;
+		case SQL_BIGINT:
+			_CL_VERBOSE << "Rebind big integer" LOG_
+			bound = 1;
+#ifndef _MSC_VER
+			SQLBindCol(hstmt, _column, SQL_C_DEFAULT, buffer, sizeof(long long), &cbBufferLength);
+#endif
+#ifdef _MSC_VER
+			SQLBindCol(hstmt, _column, SQL_C_DEFAULT, buffer, sizeof(__int64), &cbBufferLength);
+#endif
+			break;
+#ifdef BIND_BOOL_DEFAULT
+		case SQL_BIT:
+		case SQL_TINYINT:
+			_CL_VERBOSE << "Rebind bit" LOG_
+			bound = 1;
+#ifdef OSX
+			SQLBindCol(hstmt, _column, SQL_BIT, buffer, sizeof(long), &cbBufferLength);
+#endif
+#ifndef OSX
+			SQLBindCol(hstmt, _column, SQL_BIT, buffer, sizeof(bool), &cbBufferLength);
+#endif
+			if (ret != SQL_SUCCESS) {
+			        printf("Error while binding a column!\n");
+			        query->dbError("SQLBindCol()", hstmt);
+			}
+			break;
+#endif
+		default:
+			_CL_VERBOSE << "lbBoundColumn::rebindReadonlyColumns(...) failed: Unknown or not supported datatype for column '" << columnName << "': " << _DataType LOG_
+			break;
+	}
+/*...e*/
+	}
+
+	if (ret != SQL_SUCCESS) {
+	        printf("Error while binding column %s!\n", columnName);
+	        query->dbError("SQLBindCol()", hstmt);
+	}
+}
+/*...e*/
+/*...svoid LB_STDCALL lbBoundColumn\58\\58\rebind\40\\41\:0:*/
+void LB_STDCALL lbBoundColumn::rebind() {
+	SQLRETURN ret = SQL_SUCCESS;
+
+/*...sRebind:8:*/
+	switch (_DataType) {
+		case SQL_DATE:
+		case SQL_TYPE_DATE:
+			_CL_VERBOSE << "Rebind date" LOG_
+			bound = 1;
+
+			ret = SQLBindCol(hstmt, _column, SQL_C_CHAR, buffer, (ColumnSize+1), &cbBufferLength);
+			break;
+		case SQL_FLOAT:
+		case SQL_CHAR:
+		case SQL_VARCHAR:
+		case SQL_LONGVARCHAR:
+#ifndef BIND_BOOL_DEFAULT
+		case SQL_BIT:
+		case SQL_TINYINT:
+#endif		
+		
+			_CL_VERBOSE << "Rebind char" LOG_
+			bound = 1;
+
+			ret = SQLBindCol(hstmt, _column, SQL_C_CHAR, buffer, (ColumnSize+1), &cbBufferLength);
+			break;
+		case SQL_BINARY:
+			_CL_VERBOSE << "Rebind binary" LOG_
+			bound = 1;
+			
+			ret = SQLBindCol(hstmt, _column, SQL_C_DEFAULT, buffer, (ColumnSize+1), &cbBufferLength);
+			break;
+		case SQL_INTEGER:
+			_CL_VERBOSE << "Rebind integer" LOG_
+			bound = 1;
+
+			SQLBindCol(hstmt, _column, SQL_C_DEFAULT, buffer, sizeof(long), &cbBufferLength);
+			break;
+		case SQL_BIGINT:
+			_CL_VERBOSE << "Rebind big integer" LOG_
+			bound = 1;
+#ifndef _MSC_VER
+			SQLBindCol(hstmt, _column, SQL_C_DEFAULT, buffer, sizeof(long long), &cbBufferLength);
+#endif
+#ifdef _MSC_VER
+			SQLBindCol(hstmt, _column, SQL_C_DEFAULT, buffer, sizeof(__int64), &cbBufferLength);
+#endif
+			break;
+#ifdef BIND_BOOL_DEFAULT
+		case SQL_BIT:
+		case SQL_TINYINT:
+			_CL_VERBOSE << "Rebind bit" LOG_
+			bound = 1;
+#ifdef OSX
+			SQLBindCol(hstmt, _column, _DataType, buffer, sizeof(long), &cbBufferLength);
+#endif
+#ifndef OSX
+			SQLBindCol(hstmt, _column, _DataType, buffer, sizeof(bool), &cbBufferLength);
+#endif
+			if (ret != SQL_SUCCESS) {
+			        printf("Error while binding a column!\n");
+			        query->dbError("SQLBindCol()", hstmt);
+			}
+			break;
+#endif
+		default:
+			_CL_VERBOSE << "lbBoundColumn::rebindReadonlyColumns(...) failed: Unknown or not supported datatype for column '" << columnName << "': " << _DataType LOG_
+			break;
+	}
+/*...e*/
+
+	if (ret != SQL_SUCCESS) {
+	        printf("Error while binding column %s!\n", columnName);
+	        query->dbError("SQLBindCol()", hstmt);
+	}
+}
+/*...e*/
+/*...slb_I_String\42\ LB_STDCALL lbBoundColumn\58\\58\getColumnName\40\\41\:0:*/
+lb_I_String* LB_STDCALL lbBoundColumn::getColumnName() {
+	UAP_REQUEST(manager.getPtr(), lb_I_String, colName)
+	colName->setData(columnName);
+	colName++;
+	
+	return colName.getPtr();
+}
+/*...e*/
+/*...svoid lbBoundColumn\58\\58\setReadonly\40\bool updateable\41\:0:*/
+void lbBoundColumn::setReadonly(bool updateable) {
+	isReadonly = updateable;
+}
+/*...e*/
+/*...e*/
+/*...sclass lbConnection:0:*/
+class lbConnection : public lb_I_Connection
+{
+public:
+        lbConnection()  {
+	    ref = STARTREF;
+	    _dbname = NULL;
+	    _dbuser = NULL;
+	}
+        virtual ~lbConnection() {
+        	_CL_VERBOSE << "lbConnection::~lbConnection() called" LOG_
+		if (_dbname) free(_dbname);
+		if (_dbuser) free(_dbuser);
+	}
+
+	DECLARE_LB_UNKNOWN()
+
+
+	virtual char* LB_STDCALL getDBName() { return _dbname; }
+	virtual char* LB_STDCALL getDBUser() { return _dbuser; }
+
+//-- Private interface -----------------------------------------
+	virtual void LB_STDCALL setDBName(char* name) {
+	    if (_dbname) {
+		free(_dbname);
+		_dbname = NULL;
+	    }
+	    
+	    _dbname = (char*) malloc(strlen(name)+1);
+	    
+	    if (name) strcpy(_dbname, name);
+	}
+	
+	virtual void LB_STDCALL setDBUser(char* name) {
+	    if (_dbuser) {
+		free(_dbuser);
+		_dbuser = NULL;
+	    }
+	    
+	    _dbuser = (char*) malloc(strlen(name)+1);
+	    
+	    if (name) strcpy(_dbuser, name);
+	}
+	
+	virtual void LB_STDCALL setConnection(HDBC _hdbc) {
+	    hdbc = _hdbc;
+	}
+	
+	virtual HDBC LB_STDCALL getConnection() { return hdbc; }
+	
+protected:
+
+	char* _dbname;
+	char* _dbuser;
+	
+	HDBC     hdbc;
+};
+/*...e*/
+
+/*...sclass lbConnection implementation:0:*/
+BEGIN_IMPLEMENT_LB_UNKNOWN(lbConnection)
+	ADD_INTERFACE(lb_I_Connection)
+END_IMPLEMENT_LB_UNKNOWN()
+
+IMPLEMENT_FUNCTOR(instanceOfConnection, lbConnection)
+
+lbErrCodes LB_STDCALL lbConnection::setData(lb_I_Unknown* uk) {
+	lbErrCodes err = ERR_NONE;
+	
+	UAP(lb_I_Connection, con)
+	QI(uk, lb_I_Connection, con)
+	
+	lbConnection* connection; 
+	
+	if (con.getPtr() != NULL) {
+	    connection = (lbConnection*) con.getPtr();
+	    
+	    hdbc = connection->getConnection();
+	}
+	
+	return ERR_NOT_IMPLEMENTED;
+}
+/*...e*/
+
+
+/*...sclass lbDatabase:0:*/
+class lbDatabase :
+public lb_I_Database
+{
+private:
+
+	DECLARE_LB_UNKNOWN()
+
+public:
+        lbDatabase();
+        virtual ~lbDatabase();
+
+	lbErrCodes	LB_STDCALL init();
+	
+	bool		LB_STDCALL isConnected();
+	
+	/**
+	 * Makes a connection to the specified database. For ODBC database drivers,
+	 * the DSN is a simple name without a special driver postfix.
+	 *
+	 * Input:	DSN	database name (name[:driver][:host][:port])
+	 *		user	database user
+	 *		passwd	database password
+	 */
+	lbErrCodes	LB_STDCALL connect(char* DSN, char* user, char* passwd);
+	lb_I_Query*	LB_STDCALL getQuery(int readonly = 1);
+
+	lbErrCodes	LB_STDCALL connect(char* pass);
+
+	lbErrCodes	LB_STDCALL setUser(char* _user);
+	lbErrCodes	LB_STDCALL setDB(char* _db);	
+	
+	
+private:
+	RETCODE  retcode;
+	HENV     henv;	
+	HDBC     hdbc;
+	char*	 user;
+	char*	 db;
+	bool	 connected;
+
+	UAP(lb_I_Container, connPooling)
+};
+
+//lb_I_Container* lbDatabase::connPooling = NULL;
+
+BEGIN_IMPLEMENT_SINGLETON_LB_UNKNOWN(lbDatabase)
+	ADD_INTERFACE(lb_I_Database)
+END_IMPLEMENT_LB_UNKNOWN()
+
+IMPLEMENT_SINGLETON_FUNCTOR(instanceOfDatabase, lbDatabase)
+
+lbDatabase::lbDatabase() {
+	ref = STARTREF;
+	henv = 0;
+	hdbc = 0;
+	user = NULL;
+	db = NULL;
+	connPooling = NULL;
+	connected = false;
+	_CL_VERBOSE << "lbDatabase::lbDatabase() called." LOG_
+}
+
+lbDatabase::~lbDatabase() {
+	_CL_LOG << "lbDatabase::~lbDatabase() called." LOG_
+}
+
+/*...slbErrCodes LB_STDCALL lbDatabase\58\\58\init\40\\41\:0:*/
+lbErrCodes LB_STDCALL lbDatabase::init() {
+	retcode = SQLAllocEnv(&henv);
+	if (retcode != SQL_SUCCESS) {
+        	_LOG << "lbDatabase::init(): Database initializion failed." LOG_
+        	return ERR_DB_INIT;
+        }
+
+	retcode = SQLSetEnvAttr(henv, SQL_ATTR_ODBC_VERSION, (void*) SQL_OV_ODBC3, 0);
+
+	if (retcode != SQL_SUCCESS) {
+        	_LOG << "lbDatabase::init(): Database version initializion failed." LOG_
+        	return ERR_DB_INIT;
+	}
+
+	return ERR_NONE;
+}
+/*...e*/
+/*...slbErrCodes LB_STDCALL lbDatabase\58\\58\setData\40\lb_I_Unknown\42\ uk\41\:0:*/
+lbErrCodes LB_STDCALL lbDatabase::setData(lb_I_Unknown* uk) {
+	_CL_VERBOSE << "lbInstanceReference::setData(...) not implemented yet" LOG_
+	return ERR_NOT_IMPLEMENTED;
+}
+/*...e*/
+
+lbErrCodes LB_STDCALL lbDatabase::setUser(char* _user) {
+	if (user != NULL) free(user);
+	user = (char*) malloc(strlen(_user)+1);
+	user[0] = 0;
+	strcpy(user, _user);
+	_CL_VERBOSE << "lbDatabase::setUser('" << user << "') called." LOG_
+	return ERR_NONE;
+}
+
+lbErrCodes LB_STDCALL lbDatabase::setDB(char* _db) {
+	if (db != NULL) free(db);
+	db = (char*) malloc(strlen(_db)+1);
+	db[0] = 0;
+	strcpy(db, _db);
+	_CL_VERBOSE << "lbDatabase::setDB('" << db << "') called." LOG_
+	return ERR_NONE;
+}
+
+lbErrCodes LB_STDCALL lbDatabase::connect(char* pass) {
+	_CL_VERBOSE << "lbDatabase::connect(char* pass) called. DB:" << db << ", U:" << user << ", P:" << pass LOG_
+	return connect(db, user, pass);
+}
+
+bool LB_STDCALL lbDatabase::isConnected() {
+	return connected;
+}
+
+/*...slbErrCodes LB_STDCALL lbDatabase\58\\58\connect\40\char\42\ DSN\44\ char\42\ user\44\ char\42\ passwd\41\:0:*/
+lbErrCodes LB_STDCALL lbDatabase::connect(char* DSN, char* user, char* passwd) {
+	lbErrCodes err = ERR_NONE;
+
+	// Put me to unconnected state, if anything goes wrong...
+	connected = false;
+	
+	if (connPooling == NULL) {
+	    UAP_REQUEST(manager.getPtr(), lb_I_Container, container)
+	    container->queryInterface("lb_I_Container", (void**) &connPooling, __FILE__, __LINE__);
+	}
+
+	char* DSN_user = (char*) malloc(strlen(DSN)+1+strlen(user)+1);
+	DSN_user[0] = 0;
+	
+	// Build the key for the connection
+	
+	strcat(DSN_user, DSN);	
+	strcat(DSN_user, "-");
+	strcat(DSN_user, user);
+	
+	UAP_REQUEST(manager.getPtr(), lb_I_String, dsn_user)
+	dsn_user->setData(DSN_user);
+	
+	free(DSN_user);
+	
+	UAP(lb_I_KeyBase, key)
+	UAP(lb_I_Unknown, uk)
+	
+	QI(dsn_user, lb_I_KeyBase, key)
+	
+	if (connPooling->exists(&key) == 1) {
+	    UAP(lb_I_Connection, con)
+	    
+	    uk = connPooling->getElement(&key);
+	    
+	    QI(uk, lb_I_Connection, con)
+	    
+	    if (con != NULL) {
+			lbConnection* c = (lbConnection*) con.getPtr();
+		
+			hdbc = c->getConnection();
+			connected = true;
+		}
+	    	
+	} else {
+	    _CL_VERBOSE << "SQLAllocConnect(henv, &hdbc);" LOG_
+
+	    retcode = SQLAllocConnect(henv, &hdbc); /* Connection handle */
+
+	    if (retcode != SQL_SUCCESS)
+	    {
+		_LOG << "SQLAllocConnect(henv, &hdbc) failed." LOG_
+    		_dbError_ENV("SQLAllocConnect()", henv);
+        	SQLFreeEnv(henv);
+    		return ERR_DB_CONNECT;
+    	    }	
+        
+	    lbConnection* c = new lbConnection();
+	    
+	    c->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+	
+	    c->setConnection(hdbc);
+
+	    QI(c, lb_I_Unknown, uk)
+	    
+	    _CL_VERBOSE << "SQLSetConnectOption(hdbc, SQL_LOGIN_TIMEOUT, 15);" LOG_
+	    retcode = SQLSetConnectOption(hdbc, SQL_LOGIN_TIMEOUT, 15); /* Set login timeout to 15 seconds. */
+
+            if (retcode != SQL_SUCCESS)
+            {
+				_LOG << "SQLSetConnectOption(hdbc, SQL_LOGIN_TIMEOUT, 15) failed." LOG_
+                _dbError_DBC( "SQLSetConnectOption()", hdbc);
+                SQLFreeEnv(henv);
+                return ERR_DB_CONNECT;
+            }
+
+	    _CL_VERBOSE << "SQLSetConnectAttr(hdbc, SQL_ATTR_ODBC_CURSORS, SQL_CUR_USE_IF_NEEDED, 0);" LOG_
+
+		// SQL_CUR_USE_IF_NEEDED does not work with psqlODBC 8.x.x
+		// Use Cursor library.
+	    //retcode = SQLSetConnectAttr(hdbc, SQL_ATTR_ODBC_CURSORS, (void*)SQL_CUR_USE_ODBC/*SQL_CUR_USE_IF_NEEDED*/, 0);
+	    retcode = SQLSetConnectAttr(hdbc, SQL_ATTR_ODBC_CURSORS, SQL_CUR_USE_IF_NEEDED, 0);
+
+		if (retcode != SQL_SUCCESS)
+		{
+			_LOG << "SQLSetConnectAttr(hdbc, SQL_ATTR_ODBC_CURSORS, SQL_CUR_USE_IF_NEEDED, 0) failed." LOG_
+			_dbError_DBC( "SQLSetConnectAttr()", hdbc);
+			SQLFreeEnv(henv);
+			return ERR_DB_CONNECT;
+	    }
+
+	    retcode = SQLConnect(hdbc, (unsigned char*) DSN, SQL_NTS, 
+				       (unsigned char*) user, SQL_NTS, 
+				       (unsigned char*) passwd, SQL_NTS); /* Connect to data source */
+
+	    if (retcode != SQL_SUCCESS && retcode != SQL_SUCCESS_WITH_INFO)
+		{
+			_dbError_DBC( "SQLConnect()", hdbc);
+			_LOG << "Connection to database failed." LOG_
+			SQLFreeEnv(henv);
+			return ERR_DB_CONNECT;
+		}
+            
+/* Does not help :-(
+	    retcode = SQLSetConnectAttr(hdbc, SQL_TXN_ISOLATION, (void*) SQL_TXN_SERIALIZABLE, 0); //(void*) SQL_TXN_REPEATABLE_READ, 0);
+	    
+	    if (retcode != SQL_SUCCESS)
+	    {
+	        _dbError_DBC( "SQLSetConnectOption(SQL_TXN_ISOLATION, SQL_TXN_REPEATABLE_READ)", hdbc);
+	        SQLFreeEnv(henv);
+	        return ERR_DB_CONNECT;
+	    }
+*/
+		retcode = SQLSetConnectOption(hdbc, SQL_AUTOCOMMIT, SQL_AUTOCOMMIT_ON);
+
+		if (retcode != SQL_SUCCESS)
+		{
+			_LOG << "SQLSetConnectOption(hdbc, SQL_AUTOCOMMIT, SQL_AUTOCOMMIT_ON) failed." LOG_
+			_dbError_DBC( "SQLSetConnectOption(SQL_AUTOCOMMIT, SQL_AUTOCOMMIT_ON)", hdbc);
+			SQLFreeEnv(henv);
+			return ERR_DB_CONNECT;
+	    }
+	    
+	    connPooling->insert(&uk, &key);
+		connected = true;
+	}
+
+	return ERR_NONE;
+}
+/*...e*/
+lb_I_Query* LB_STDCALL lbDatabase::getQuery(int readonly) {
+	lbQuery* query = new lbQuery;
+	query->setModuleManager(*&manager, __FILE__, __LINE__);
+
+	if (query->init(henv, hdbc, readonly) != ERR_NONE) {
+		_LOG << "ERROR: Initializion of query has been failed!" LOG_
+		
+		//return NULL;
+	}
+
+	lb_I_Query* q = NULL;
+	
+	query->queryInterface("lb_I_Query", (void**) &q, __FILE__, __LINE__);
+
+	return q;
+}
+/*...e*/
+/*...svoid _dbError_STMT\40\char\42\ lp\44\ HSTMT hstmt\41\:0:*/
+void _dbError_STMT(char* lp, HSTMT hstmt) {
+	SQLCHAR  SqlState[6], SQLStmt[100], Msg[SQL_MAX_MESSAGE_LENGTH];
+	SQLINTEGER NativeError;
+	SQLSMALLINT i, MsgLen;
+	SQLRETURN  rc;
+
+	i = 1;
+	
+	while ((rc = SQLGetDiagRec(SQL_HANDLE_STMT, hstmt, i, SqlState, &NativeError,
+	      Msg, sizeof(Msg), &MsgLen)) != SQL_NO_DATA) {
+	
+		_CL_LOG << "Error in lbQuery: (" << lp << ") " << 
+			SqlState << ": " << (int) NativeError << " - " << Msg LOG_
+		i++;
+	}
+}
+/*...e*/
+/*...svoid _dbError_ENV\40\char\42\ lp\44\ HENV henv\41\:0:*/
+void _dbError_ENV(char* lp, HENV henv) {
+	SQLCHAR  SqlState[6], SQLStmt[100], Msg[SQL_MAX_MESSAGE_LENGTH];
+	SQLINTEGER NativeError;
+	SQLSMALLINT i, MsgLen;
+	SQLRETURN  rc;
+
+	i = 1;
+	
+	while ((rc = SQLGetDiagRec(SQL_HANDLE_ENV, henv, i, SqlState, &NativeError,
+	      Msg, sizeof(Msg), &MsgLen)) != SQL_NO_DATA) {
+	
+		_CL_LOG << "Error in lbQuery: (" << lp << ") " << 
+			SqlState << ": " << (int) NativeError << " - " << Msg LOG_
+		i++;
+	}
+}
+/*...e*/
+/*...svoid _dbError_DBC\40\char\42\ lp\44\ HDBC hdbc\41\:0:*/
+void _dbError_DBC(char* lp, HDBC hdbc) {
+	SQLCHAR  SqlState[6], SQLStmt[100], Msg[SQL_MAX_MESSAGE_LENGTH];
+	SQLINTEGER NativeError;
+	SQLSMALLINT i, MsgLen;
+	SQLRETURN  rc;
+
+	i = 1;
+	
+	while ((rc = SQLGetDiagRec(SQL_HANDLE_DBC, hdbc, i, SqlState, &NativeError,
+	      Msg, sizeof(Msg), &MsgLen)) != SQL_NO_DATA) {
+	
+		_CL_LOG << "Error in lbQuery: (" << lp << ") " << 
+			SqlState << ": " << (int) NativeError << " - " << Msg LOG_
+		i++;
+	}
+}
+/*...e*/
+
+/*...sclass lbDBInterfaceRepository:0:*/
+class lbDBInterfaceRepository : public lb_I_InterfaceRepository
+{
+public:
+        lbDBInterfaceRepository();
+        virtual ~lbDBInterfaceRepository();
+
+        DECLARE_LB_UNKNOWN()
+
+	void LB_STDCALL setCurrentSearchInterface(const char* iface);
+	lb_I_FunctorEntity* LB_STDCALL getFirstEntity();
+
+	void initIntefaceList();
+
+	int errorsOccured;
+	
+	// Created once and contains all interface nodes
+	unsigned int interfaces; // current interface index
+	unsigned int len;
+	
+	/**
+	 * Indicates the current search mode (currently only over interfaces).
+	 */
+	int CurrentSearchMode;
+	char* searchArgument;
+	
+	/**
+	 * Indicates an invalid search status like 
+	 * 	noPrevious interface;
+	 *	noNext     interface;
+	 *
+	 * Note:	Moving to first or last interface resets any invalid status.
+	 */
+	int invalidSearchStatus;
+private:
+        RETCODE  retcode;
+        HENV     henv;
+        HDBC     hdbc;
+};
+
+BEGIN_IMPLEMENT_LB_UNKNOWN(lbDBInterfaceRepository)
+        ADD_INTERFACE(lb_I_InterfaceRepository)
+END_IMPLEMENT_LB_UNKNOWN()
+
+IMPLEMENT_FUNCTOR(instanceOfDBInterfaceRepository, lbDBInterfaceRepository)
+
+lbDBInterfaceRepository::lbDBInterfaceRepository() {	
+	manager = NULL;
+	ref = STARTREF;
+	henv = 0;
+	hdbc = 0;
+
+#ifdef bla
+
+	retcode = SQLAllocEnv(&henv);
+	if (retcode != SQL_SUCCESS) {
+        	dbError( "SQLAllocEnv()",henv,0,0);
+        	_LOG << "Database initializion failed." LOG_
+        	return ERR_DB_INIT;
+        }
+
+	retcode = SQLSetEnvAttr(henv, SQL_ATTR_ODBC_VERSION, (void*) SQL_OV_ODBC3, 0);
+
+	if (retcode != SQL_SUCCESS) {
+        	dbError( "SQLSetEnvAttr()",henv,0,0);
+        	_LOG << "Database version initializion failed." LOG_
+        	return ERR_DB_INIT;
+	}
+
+
+
+
+	retcode = SQLAllocConnect(henv, &hdbc); /* Connection handle */
+
+	if (retcode != SQL_SUCCESS)
+        {
+        	_dbError("SQLAllocConnect()", henv);
+        	SQLFreeEnv(henv);
+        	return ERR_DB_CONNECT;
+        }	
+        
+	retcode = SQLSetConnectOption(hdbc, SQL_LOGIN_TIMEOUT, 15); /* Set login timeout to 15 seconds. */
+
+        if (retcode != SQL_SUCCESS)
+        {
+                _dbError("SQLSetConnectOption()", hdbc);
+                SQLFreeEnv(henv);
+                return ERR_DB_CONNECT;
+        }
+
+	retcode = SQLSetConnectAttr(hdbc, SQL_ATTR_ODBC_CURSORS, SQL_CUR_USE_IF_NEEDED, 0);
+
+        if (retcode != SQL_SUCCESS)
+        {
+                _dbError("SQLSetConnectAttr()", hdbc);
+                SQLFreeEnv(henv);
+                return ERR_DB_CONNECT;
+        }
+
+	retcode = SQLConnect(hdbc, (unsigned char*) "lbDMFConfig", SQL_NTS, 
+				   (unsigned char*) "lbDMF", SQL_NTS, 
+				   (unsigned char*) "lbDMF", SQL_NTS); /* Connect to data source */
+
+	if (retcode != SQL_SUCCESS && retcode != SQL_SUCCESS_WITH_INFO)
+        {
+        	_dbError( "SQLConnect()", hdbc);
+		_LOG << "Connection to database failed." LOG_
+        	SQLFreeEnv(henv);
+        	return ERR_DB_CONNECT;
+        } else {
+//		SQLFreeEnv(henv);
+		printf("Connection succeeded.\n");
+        }
+
+        retcode = SQLSetConnectOption(hdbc, SQL_AUTOCOMMIT, SQL_AUTOCOMMIT_ON);
+
+	if (retcode != SQL_SUCCESS)
+	{
+	        _dbError("SQLSetConnectOption(SQL_AUTOCOMMIT, SQL_AUTOCOMMIT_ON)", hdbc);
+	        SQLFreeEnv(henv);
+	        return ERR_DB_CONNECT;
+	}
+        
+
+#endif
+
+
+
+}
+
+lbDBInterfaceRepository::~lbDBInterfaceRepository() {
+}
+
+lbErrCodes lbDBInterfaceRepository::setData(lb_I_Unknown* uk) {
+        _CL_VERBOSE << "lbDBInterfaceRepository::setData(...) not implemented yet" LOG_
+        return ERR_NOT_IMPLEMENTED;
+}
+
+void LB_STDCALL lbDBInterfaceRepository::setCurrentSearchInterface(const char* iface) {
+	searchArgument = strdup(iface);
+	interfaces = 0;
+	CurrentSearchMode = 1;
+	
+//	initIntefaceList();
+}
+
+/*...slb_I_FunctorEntity\42\ LB_STDCALL lbDBInterfaceRepository\58\\58\getFirstEntity\40\\41\:0:*/
+lb_I_FunctorEntity* LB_STDCALL lbDBInterfaceRepository::getFirstEntity() {
+	if (CurrentSearchMode == 0) {
+		printf("SearchMode not set. Please call first lbDBInterfaceRepository::setCurrentSearchInterface(char* iface)\nOr any further other setCurrentSearch<Mode>(char* argument) function\n");
+		return NULL;
+	}
+	
+	if (CurrentSearchMode != 1) {
+		printf("SearchMode currently not provided.\n");
+		return NULL;
+	}
+
+#ifdef bla
+	// Search for that node, containing specifed interface.
+	for (interfaces; interfaces < len; interfaces++) {
+/*...sOld DOM code:0:*/
+#ifdef bla	
+		DOM_Node node = DOMlist.item(interfaces);
+		
+		DOM_NamedNodeMap attributeMap = node.getAttributes();
+		
+		DOM_Node InterfaceName = attributeMap.getNamedItem(DOMString("Name"));
+		
+		if (InterfaceName.getNodeValue().equals(DOMString(searchArgument))) {
+		
+			DOMString nodename = node.getNodeName();
+		
+			char* module = NULL;
+			char* functor = NULL;
+		
+			// Navidate to the Function node to get the functor name
+			node = node.getParentNode().getParentNode();
+			DOM_NodeList nodeList = node.getChildNodes();
+		
+/*...sfind function name value:24:*/
+		// Find function name
+		for (unsigned int index = 0; index < nodeList.getLength(); index++) {
+			node = nodeList.item(index);
+			if (node.getNodeName().equals(DOMString("FunctionName"))) break;
+		}
+				
+		attributeMap = node.getAttributes();
+
+		DOM_Node an_attr = attributeMap.getNamedItem(DOMString("Name"));
+
+		if (an_attr == NULL) {
+		        printf("Error: Attribute not found\n"); // LOG_
+
+		        return NULL;
+		        
+		}
+/*...e*/
+			DOMString functorName = an_attr.getNodeValue();
+
+			DOM_Node moduleNode = node.getParentNode().getParentNode().getParentNode();
+			nodeList = moduleNode.getChildNodes();
+			
+/*...sfind module for that functor:24:*/
+
+			DOM_Node moduleNameNode;
+
+	                // Find module name
+	                for (int i = 0; i < nodeList.getLength(); i++) {
+	                        moduleNameNode = nodeList.item(i);
+	                        if (moduleNameNode.getNodeName().equals(DOMString("ModuleName"))) break;
+	                }			
+
+			attributeMap = moduleNameNode.getAttributes();
+			an_attr = attributeMap.getNamedItem(DOMString("Name"));
+			
+			if (an_attr == NULL) {
+			        printf("Error: Attribute not found\n"); 
+			        for (unsigned int l = 0; l < attributeMap.getLength(); l++) {
+			        	DOM_Node n = attributeMap.item(l);
+			        	printf("Debug of Node ");
+			        	moduleNode.getNodeName().print();
+			        	printf(" has Attribute ");
+			        	n.getNodeName().println();
+			        }
+
+			        return NULL;
+
+			}
+			
+/*...e*/
+
+			DOMString moduleName = an_attr.getNodeValue();
+
+			char* temp = functorName.transcode();
+			functor = strdup(temp);
+			functorName.deletetranscoded(temp);
+			
+			temp = moduleName.transcode();
+			module = strdup(temp);
+			moduleName.deletetranscoded(temp);
+			
+			
+			lbFunctorEntity* fe = new lbFunctorEntity;
+			fe->setModuleManager(this->getModuleManager(), __FILE__, __LINE__);
+			lb_I_FunctorEntity* _fe = NULL;
+			fe->queryInterface("lb_I_FunctorEntity", (void**) &_fe, __FILE__, __LINE__);
+			
+			_fe->setModule(module);
+			_fe->setFunctor(functor);
+			
+			
+			return _fe;
+			
+		}
+/*...sRubbish:0:*/
+#ifdef bla
+		if (value == DOMString(iface)) {
+/*...sget the nodes\44\ that contains the data:24:*/
+			// Get the functor and module for creation of FunctorEntity
+			DOM_Node module = node.getParentNode();
+			module = module.getParentNode();
+			module = module.getParentNode();
+			module = module.getParentNode();
+			
+			DOM_Node functor = node.getParentNode();
+			functor = functor.getParentNode();
+/*...e*/
+
+			DOM_NodeList DOMlist = module.getChildNodes();
+			int count = DOMlist.getLength();
+			
+			DOM_Node child;
+			char* modulename = NULL;
+			char* functorname = NULL;
+			
+/*...sget module name:24:*/
+			for (int ii = 0; ii < count; ii++) {
+				child = DOMlist.item(ii);
+				
+				if (child.getNodeName() == DOMString("ModuleName")) {
+					DOM_NamedNodeMap attributeMap = child.getAttributes();
+
+					if (attributeMap == NULL) {
+					        _CL_VERBOSE << "Error: This node is not of type ELEMENT" LOG_
+
+					        return NULL;
+					}
+
+					DOM_Node an_attr = attributeMap.getNamedItem(DOMString("Name"));
+
+					if (an_attr == NULL) {
+					        _CL_VERBOSE << "Error: Attribute not found" LOG_
+
+					        return NULL;
+					}
+
+					DOMString value = an_attr.getNodeValue();
+					char* temp = value.transcode();
+					
+					// Bugfix in XML4C - do cleanup directly
+					modulename = strdup(temp);
+					value.deletetranscoded(temp);
+					temp = NULL;
+					break;
+				}
+			}
+/*...e*/
+			
+			DOMlist = functor.getChildNodes();
+			count = DOMlist.getLength();
+			
+/*...sget functor name:24:*/
+			for (ii = 0; ii < count; ii++) {
+				child = DOMlist.item(ii);
+				
+				if (child.getNodeName() == DOMString("FunctionName")) {
+					DOM_NamedNodeMap attributeMap = child.getAttributes();
+
+					if (attributeMap == NULL) {
+					        _CL_VERBOSE << "Error: This node is not of type ELEMENT" LOG_
+
+					        return NULL;
+					}
+
+					DOM_Node an_attr = attributeMap.getNamedItem(DOMString("Name"));
+
+					if (an_attr == NULL) {
+					        _CL_VERBOSE << "Error: Attribute not found" LOG_
+
+					        return NULL;
+					}
+
+					DOMString value = an_attr.getNodeValue();
+					char* temp = value.transcode();
+					
+					// Bugfix in XML4C - do cleanup directly
+					functorname = strdup(temp);
+					value.deletetranscoded(temp);
+					temp = NULL;
+				}
+			}
+/*...e*/
+
+			printf("lbDBInterfaceRepository got functor %s in module %s for %s\n", functorname, modulename, iface);
+			
+			break;
+		}
+#endif
+/*...e*/
+#endif
+/*...e*/
+	}
+#endif
+
+	return NULL;
+}
+/*...e*/
+#ifdef bla
+/*...slbErrCodes LB_STDCALL lbDBInterfaceRepository\58\\58\parse\40\\41\:0:*/
+lbErrCodes LB_STDCALL lbDBInterfaceRepository::parse() {
+	lbErrCodes err = ERR_NONE;
+	char *filename = getenv("LBHOSTCFGFILE");
+/*...sVERBOSE:0:*/
+#ifdef VERBOSE
+	COUT << "Parse file '" << filename << "'..." << ENDL;
+#endif
+/*...e*/
+
+	if (filename != NULL) {
+
+/*...sSetup objects:12:*/
+	    // Begin parsing...
+	    DOMParser parser;
+	    parser.setDoValidation(true);
+
+	    parser.setErrorHandler(errReporter);
+		
+/*...e*/
+
+
+/*...stry parsing \40\no explicid allocation\41\:12:*/
+	    // Parse the file and catch any exceptions that propogate out
+	    try	
+		{
+		    errorsOccured = 0;
+	            parser.parse(filename);
+	
+	            doc = parser.getDocument();
+		}
+
+		catch (const XMLException& )
+	        {
+			COUT << "Parse error\n" << ENDL;
+			errorsOccured = 1;
+			return ERR_XML_NOFILE;
+		}
+/*...e*/
+
+	    // Clean up our parser and handler
+	    //delete handler;
+
+	} else return ERR_NO_ENVIRONMENT;
+	return err;
+}
+/*...e*/
+#endif
+/*...svoid lbDBInterfaceRepository\58\\58\initIntefaceList\40\\41\:0:*/
+void lbDBInterfaceRepository::initIntefaceList() {
+	char* name = NULL;
+	char* savename = NULL;
+        savename = strdup("#document/dtdHostCfgDoc/Modules/Module/Functions/Function/Functor/InterfaceName");
+        name = strrchr(savename, '/');
+        if (name == NULL) name = savename;
+//        DOMlist = doc.getElementsByTagName(((name[0] == '/') ? &name[1] : name));
+//        len = DOMlist.getLength();
+        // Cleanup
+        delete [] savename;
+}
+/*...e*/
+/*...e*/
+#ifdef WINDOWS
+/*...sDllMain:0:*/
+BOOL WINAPI DllMain(HINSTANCE dllHandle, DWORD reason, LPVOID situation) {
+        char buf[100]="";
+
+        switch (reason) {
+                case DLL_PROCESS_ATTACH:
+                	TRMemOpen();
+
+			if (isSetTRMemTrackBreak()) TRMemSetAdrBreakPoint(getTRMemTrackBreak(), 0);
+			
+                	TRMemSetModuleName(__FILE__);
+                	
+                	_CL_VERBOSE << "DLL lbDB loaded." LOG_
+                	
+                        if (situation) {
+                                _CL_VERBOSE << "DLL statically loaded." LOG_
+                        }
+                        else {
+                                _CL_VERBOSE << "DLL dynamically loaded.\n" LOG_
+                        }
+                        break;
+                case DLL_THREAD_ATTACH:
+                        _CL_VERBOSE << "New thread starting.\n" LOG_
+                        break;
+                case DLL_PROCESS_DETACH:                        
+                       	_CL_VERBOSE << "DLL_PROCESS_DETACH for " << __FILE__ LOG_
+                        if (situation)
+                        {
+                        	//if (lbDatabase::connPooling != NULL) lbDatabase::connPooling->release(__FILE__, __LINE__);
+
+                                _CL_VERBOSE << "DLL released by system." LOG_
+                        }
+                        else
+                        {
+                        	// Cleanup the static container holding open connections.
+                        	
+                        	//if (lbDatabase::connPooling != NULL) lbDatabase::connPooling->release(__FILE__, __LINE__);
+                                
+                                _CL_VERBOSE << "DLL released by program.\n" LOG_
+                        }
+                        break;
+                case DLL_THREAD_DETACH:
+                        _CL_VERBOSE << "Thread terminating.\n" LOG_
+                default:
+                        return FALSE;
+        }
+        
+        return TRUE;
+}
+/*...e*/
+#endif
+
+    
+!!!238023.cpp!!!	getAsLong(inout result : lb_I_Long, in asParameter : int =  0) : lbErrCodes
+
+	lbErrCodes err = ERR_NONE;
+	
+	switch (_DataType) {
+		case SQL_INTEGER:
+		{
+			result->setData(*(long*) buffer);
+			break;
+		}
+
+        default:
+			_CL_VERBOSE << "lbBoundColumn::getAsLong(...) failed: Unknown or not supported datatype for column '" << columnName << "'"  LOG_
+	       	break;
+	}
+	
+	return err;
+!!!239815.cpp!!!	leaveOwnership(inout oldOwner : lb_I_BoundColumn, inout newOwner : lb_I_BoundColumn) : lbErrCodes
+
+
+	lbBoundColumn* oO = (lbBoundColumn*) oldOwner;
+	lbBoundColumn* nO = (lbBoundColumn*) newOwner;
+
+	nO->setData(oO->bound, oO->_DataType, oO->buffer, oO->columnName);
+	oO->bound = 0;
+	nO->isReadonly = oO->isReadonly;
+	if (oO->buffer != NULL) oO->buffer = NULL;
+
+	return ERR_NONE;

@@ -1,0 +1,16 @@
+class lbDispatchProto
+!!!200519.cpp!!!	lbDispatchProto(in service : char, in fn : lbProtocolCallback)
+
+	dispProto = fn;
+!!!200647.cpp!!!	~lbDispatchProto()
+
+!!!200775.cpp!!!	setType() : void
+
+	OTyp = LB_APPSERVER_DISPATCH_PROTO;
+!!!200903.cpp!!!	clone() : lbObject
+
+	lbDispatchProto *clone = new lbDispatchProto("", dispProto);
+	return clone;
+!!!201031.cpp!!!	getProto() : lbProtocolCallback
+
+	return dispProto;

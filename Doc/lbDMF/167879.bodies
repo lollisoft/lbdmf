@@ -1,0 +1,8 @@
+class lbTest
+!!!309319.cpp!!!	lbTest()
+
+	_CL_LOG << "lbTest::lbTest() called." LOG_
+	ref = STARTREF;
+!!!309447.cpp!!!	~lbTest()
+
+	_CL_LOG << "lbTest::~lbTest() called." LOG_

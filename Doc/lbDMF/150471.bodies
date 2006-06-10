@@ -1,0 +1,84 @@
+class lbOutputStream
+!!!222407.cpp!!!	lbOutputStream()
+
+//lbLock lbLock(sect);
+	ref = STARTREF;
+	manager = NULL;
+	fout = NULL;
+	isOpen = false;
+       
+	f[0] = 0;
+		
+        logmessage = NULL;
+        lastsize = 0;
+	_ostream = NULL;
+!!!222663.cpp!!!	getFileName() : char
+
+	return f;
+!!!222791.cpp!!!	open() : bool
+
+	if (!isOpen) {
+		_ostream = new ofstream(f);
+	}
+	isOpen = true;
+	return true;
+!!!222919.cpp!!!	close() : bool
+
+	if (isOpen) {
+		_ostream->close();
+		delete _ostream;
+		isOpen = false;
+	}
+	return true;
+!!!223047.cpp!!!	logdirect(in msg : char, inout f : char, in level : int) : void
+
+!!!223175.cpp!!!	operator <<(in i : int) : lb_I_OutputStream
+
+	if (!isOpen) return *this;
+
+	*_ostream << i << endl;
+	
+	return *this;
+!!!223303.cpp!!!	operator <<(in i : long) : lb_I_OutputStream
+
+	if (!isOpen) return *this;
+
+	*_ostream << i << endl;
+	
+	return *this;
+!!!223431.cpp!!!	operator <<(in b : bool) : lb_I_OutputStream
+
+	if (!isOpen) return *this;
+
+	int _b;
+	if (b == true) 
+		_b = 1;
+	else
+		_b = 0;
+		
+	*_ostream << _b << endl;	
+	
+	return *this;
+!!!223559.cpp!!!	operator <<(in c : char) : lb_I_OutputStream
+
+	if (!isOpen) return *this;
+
+	*_ostream << c << endl;
+
+	return *this;
+!!!223687.cpp!!!	operator <<(in string : char) : lb_I_OutputStream
+
+	if (!isOpen) return *this;
+
+#ifndef __WATCOMC__
+	std::string s(string);
+#endif
+#ifdef __WATCOMC__
+	String s(string);
+#endif
+	*_ostream << strlen(string) << endl;
+	*_ostream << s << endl;
+
+	return *this;
+!!!223815.cpp!!!	_realloc(in add_size : int) : void
+

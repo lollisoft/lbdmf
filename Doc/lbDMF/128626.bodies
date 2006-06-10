@@ -1,0 +1,47 @@
+class lbLoginHandler
+!!!130290.cpp!!!	lbLoginHandler()
+
+	wizard = NULL;
+	page1 = NULL;
+	ref = STARTREF;
+!!!130418.cpp!!!	~lbLoginHandler()
+
+	_CL_VERBOSE << "lbLoginHandler::~lbLoginHandler() called." LOG_
+!!!130546.cpp!!!	runLogin(inout uk : lb_I_Unknown) : lbErrCodes
+
+	wizard = new wxWizard(NULL, -1, _T("Anmeldung via Plugin"));
+
+	page1 = new wxWizardPageSimple(wizard);
+
+	wxStaticText *text = new wxStaticText(page1, -1, _T("Melden Sie sich nun an.\n"));
+
+	wxSize size = text->GetBestSize();
+
+	wxLogonPage *page2 = new wxLogonPage(wizard);
+	
+	page2->setModuleManager(getModuleManager(), __FILE__, __LINE__);
+
+	//page2->init(frame);
+	page2->init(NULL);
+
+	wxAppSelectPage *page3 = new wxAppSelectPage(wizard);
+	page3->setModuleManager(getModuleManager(), __FILE__, __LINE__);
+
+	page2->setAppSelectPage(page3);
+
+	page1->SetNext(page2);
+	page2->SetPrev(page1);
+	page2->SetNext(page3);
+	page3->SetPrev(page2);
+	
+	wizard->SetPageSize(size);
+
+	if ( !wizard->RunWizard(page1) )
+	{
+		wizard->Destroy();
+		return ERR_NONE;
+    }
+
+	wizard->Destroy();
+
+	return ERR_NONE;

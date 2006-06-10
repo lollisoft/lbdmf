@@ -1,0 +1,440 @@
+class lb_wxGUI
+!!!134002.cpp!!!	createMenu() : lb_I_Unknown
+
+       _LOG << "Error: Function has not been implemented!" LOG_
+        return NULL;
+!!!134130.cpp!!!	createMenuBar() : lb_I_Unknown
+
+       _LOG << "Error: Function has not been implemented!" LOG_
+        return NULL;
+!!!134258.cpp!!!	createMenuEntry() : lb_I_Unknown
+
+       _LOG << "Error: Function has not been implemented!" LOG_
+        return NULL;
+!!!134386.cpp!!!	createDBForm(inout formName : char, inout queryString : char, inout DBName : char, inout DBUser : char, inout DBPass : char) : lb_I_DatabaseForm
+
+	lbErrCodes err = ERR_NONE;
+
+	// Locate the form instance in the container
+
+	if (frame->isPanelUsage()) {
+		if (!notebook) {
+			notebook = new wxNotebook(frame, -1);
+			sizerMain = new wxBoxSizer(wxVERTICAL);
+			
+			frame->SetAutoLayout(TRUE);
+			notebook->SetAutoLayout(TRUE);
+	
+			sizerMain->Add(notebook, 1, wxEXPAND | wxALL, 0);
+	
+			frame->SetSizer(sizerMain);
+			
+			frame->getAUIManager().AddPane(notebook,   wxCENTER, wxT("Workplace"));
+
+			frame->getAUIManager().Update();
+		}
+	}
+	
+	UAP(lb_I_DatabaseForm, _dialog)
+	
+	if (forms == NULL) {
+		REQUEST(getModuleManager(), lb_I_Container, forms)
+	}	
+
+	UAP(lb_I_Unknown, uk)
+	UAP(lb_I_KeyBase, key)
+	
+	UAP_REQUEST(getModuleManager(), lb_I_String, fName)
+	fName->setData(formName);
+	
+	QI(fName, lb_I_KeyBase, key)
+	
+	uk = forms->getElement(&key);	
+	
+	if (uk != NULL) {
+		QI(uk, lb_I_DatabaseForm, _dialog)
+	}
+
+/*...sCheck for recreation of the form:8:*/
+	if ((_dialog.getPtr() != NULL) && (strcmp(queryString, _dialog->getQuery()) != 0)) {
+	
+		// SQL query from database has been changed. Recreate the dialog from scratch. 
+	
+		// Don't delete any forms inside the container
+		forms->detachAll();
+	
+		forms->remove(&key);
+		
+		_dialog->destroy();
+	
+		_dialog.resetPtr();
+	}
+/*...e*/
+
+/*...sCreate new\44\ if not yet done:8:*/
+	if (_dialog.getPtr() == NULL) {
+		/*
+		 * Try to find a database form plugin, having the interface lb_I_DatabaseForm.
+		 *
+		 * This interface contains one and only one member function to initialize the
+		 * form with a given SQL query, the required database name, login and password.
+		 *
+		 * This demonstrates the extensibleability of the GUI wrapper with the new plugin
+		 * framework.
+		 */
+
+		UAP_REQUEST(manager.getPtr(), lb_I_PluginManager, PM)
+		UAP(lb_I_Plugin, pl)
+
+		TRMemStartLocalCount();
+
+		if (frame->isPanelUsage()) {
+			pl = PM->getFirstMatchingPlugin("lb_I_DatabaseForm", "GUIPanel");
+		} else {
+			pl = PM->getFirstMatchingPlugin("lb_I_DatabaseForm", "GUIDialog");
+		}
+
+		if (pl == NULL) {
+			char* msg = (char*) malloc(200);
+			msg[0] = 0;
+			strcpy(msg, _trans("Database form plugin not found or not installed.\n\nDatabase forms are not available."));
+			msgBox(_trans("Error"), msg);
+			free(msg);
+			return NULL;
+		}
+
+		uk = pl->getImplementation();
+		
+		forms->insert(&uk, &key);
+		
+		//-------------------------------------------------------
+		// The form has been cloned. Destroy the unused instance.
+		// This avoids application hang at exit.
+		
+		UAP(lb_I_DatabaseForm, form)
+		QI(uk, lb_I_DatabaseForm, form)
+		
+		form->destroy();
+		form = NULL;
+		
+		//-------------------------------------------------------
+		
+		TRMemStopLocalCount();
+		TRMemResetLocalCount();
+		
+		uk = forms->getElement(&key);
+		
+		if (uk != NULL) {
+		        QI(uk, lb_I_DatabaseForm, _dialog)
+		}
+
+		_dialog->setName(formName);
+
+		if (frame->isPanelUsage()) {
+			_dialog->create(notebook->GetId());
+		}
+		
+		_dialog->init(queryString, DBName, DBUser, DBPass);
+		
+		if (frame->isPanelUsage()) {
+			wxWindow* w = frame->FindWindowById(_dialog->getId());
+			w->Fit();
+			
+			notebook->AddPage(w, formName, true);
+			
+			if (!frame->IsMaximized()) {
+				notebook->SetSizeHints(frame->FindWindowById(_dialog->getId())->GetSize());
+				notebook->Fit();
+			}
+			
+			if (frame->isSplitted()) {
+				if (!frame->IsMaximized()) frame->Fit();
+			} else {
+				if (!frame->IsMaximized()) {
+		
+					frame->SetSizeHints(notebook->GetSize());
+					frame->Fit();
+					frame->Centre();
+				}
+			}	
+		}
+		
+	} else {
+		if (frame->isPanelUsage()) {
+			int num = notebook->GetPageCount();
+			for (int i = 0; i < num; i++) {
+				if (strncmp(notebook->GetPageText(i).c_str(), formName, strlen(formName)) == 0) {
+					notebook->SetSelection(i);
+				}
+			}
+		}
+	}
+/*...e*/
+
+	_dialog++;
+
+	UAP_REQUEST(getModuleManager(), lb_I_MetaApplication, app)
+	app->enableEvent("ShowPropertyPanel");
+
+	return _dialog.getPtr();
+!!!134514.cpp!!!	registerDBForm(inout formName : char, inout form : lb_I_DatabaseForm) : void
+
+
+!!!134642.cpp!!!	createLoginForm() : lb_I_Form
+
+	wxWizard *wizard = new wxWizard(NULL, -1, _T("Anmeldung"));
+
+	wxWizardPageSimple *page1 = new wxWizardPageSimple(wizard);
+
+	wxStaticText *text = new wxStaticText(page1, -1, _T("Melden Sie sich nun an.\n"));
+
+	wxSize size = text->GetBestSize();
+
+	wxLogonPage *page2 = new wxLogonPage(wizard);
+	
+	page2->setModuleManager(getModuleManager(), __FILE__, __LINE__);
+
+	page2->init(frame);
+
+	wxAppSelectPage *page3 = new wxAppSelectPage(wizard);
+	page3->setModuleManager(getModuleManager(), __FILE__, __LINE__);
+
+	page2->setAppSelectPage(page3);
+
+
+	page1->SetNext(page2);
+	page2->SetPrev(page1);
+	page2->SetNext(page3);
+	page3->SetPrev(page2);
+	
+
+	wizard->SetPageSize(size);
+
+	if ( ! wizard->RunWizard(page1) )
+	{
+	    wxMessageBox(_T("Anmeldung fehlgeschlagen"), _T("That's all"),
+            wxICON_INFORMATION | wxOK);
+        }
+
+//	wxString app = page3->getSelectedApp();
+
+	wizard->Destroy();
+
+
+#ifdef bla
+/*...s:0:*/
+
+	lbErrCodes err = ERR_NONE;
+
+	// Locate the form instance in the container
+	
+	lbLoginDialog* _dialog = NULL;
+	
+	if (forms == NULL) {
+		REQUEST(getModuleManager(), lb_I_Container, forms)
+	}	
+
+	UAP(lb_I_Unknown, uk)
+	UAP(lb_I_KeyBase, key)
+	
+	UAP_REQUEST(getModuleManager(), lb_I_String, fName)
+	fName->setData("LoginForm");
+	
+	QI(fName, lb_I_KeyBase, key)
+	
+	uk = forms->getElement(&key);	
+	
+	if (uk != NULL) {
+		_dialog = (lbLoginDialog*) *&uk;
+	}
+
+	if (_dialog) {
+		_dialog->Show(TRUE);
+	} else {
+		_dialog = new lbLoginDialog();
+		_dialog->setModuleManager(getModuleManager(), __FILE__, __LINE__);
+		
+		QI(_dialog, lb_I_Unknown, uk)
+		
+		forms->insert(&uk, &key);
+		
+		delete _dialog;
+		_dialog = NULL;
+		
+		uk = forms->getElement(&key);
+		
+		if (uk != NULL) {
+		        _dialog = (lbLoginDialog*) *&uk;
+		}
+		
+		_dialog->init(frame);
+		_dialog->Show();
+	}
+/*...e*/
+#endif
+	return NULL;
+!!!134770.cpp!!!	getFrame() : lb_I_Frame
+
+        lb_I_Unknown* f = NULL;
+        
+        _main_frame->queryInterface("lb_I_Unknown", (void**) &f, __FILE__, __LINE__);
+        
+        return f;
+!!!134898.cpp!!!	registerEvent(inout EvName : char, inout EvNr : int) : lbErrCodes
+
+       _LOG << "Registering an event" LOG_;
+        return ERR_NONE;
+!!!135026.cpp!!!	registerEventHandler(inout disp : lb_I_Dispatcher) : lbErrCodes
+
+         
+	return ERR_NONE;
+!!!135154.cpp!!!	addDispatcher(inout disp : lb_I_Dispatcher) : lbErrCodes
+
+       _LOG << "Add a sub dispatcher" LOG_;
+        return ERR_NONE;
+!!!135282.cpp!!!	dispatchEvent(in EvNr : int, inout EvData : lb_I_Unknown) : lbErrCodes
+
+       _LOG << "Dispatch an event" LOG_;
+        return ERR_NONE;
+!!!135666.cpp!!!	queryEvent(inout EvName : char, inout EvData : lb_I_Unknown) : lbErrCodes
+
+       _LOG << "Query an event" LOG_;
+        return ERR_NONE;
+!!!135794.cpp!!!	deactivateMenuEntry() : lbErrCodes
+
+       _LOG << "Error: Function has not been implemented!" LOG_
+        return ERR_NONE;
+!!!135922.cpp!!!	activateMenuEntry() : lbErrCodes
+
+       _LOG << "Error: Function has not been implemented!" LOG_
+        return ERR_NONE;
+!!!136050.cpp!!!	gotoMenuRoot() : lbErrCodes
+
+       _LOG << "Error: Function has not been implemented!" LOG_
+        return ERR_NONE;
+!!!136178.cpp!!!	gotoMenuEntry(inout entry : char) : lbErrCodes
+
+        lbErrCodes err = ERR_NONE;
+        UAP(lb_I_Frame, frame)
+        
+        QI(_main_frame, lb_I_Frame, frame)
+
+
+        /**
+         * Create the dispatch request
+         */
+
+
+        UAP_REQUEST(manager.getPtr(), lb_I_DispatchRequest, d_req)
+        
+        /**
+         * We get a dispatch responce
+         */
+         
+        UAP(lb_I_DispatchResponse, d_res)
+
+        if (d_req.getPtr()) {
+                // d_req must resolve the symbolic request name to its Id.
+                // So it must have an instance from lb_I_EventManager
+                d_req->setRequestName("hasMenuEntry");
+
+                d_res = myDispatcher->dispatch(*&d_req);
+
+                if ((d_res.getPtr()) && (d_res->isOk())) {
+                } else {
+                }
+        } 
+
+/*        id (frame->hasMenuEntry(entry)) {
+                if (currentMenuEntry) free(currentMenuEntry);
+                currentMenuEntry = strdup(entry);
+        }
+*/
+        return ERR_NONE;
+!!!136306.cpp!!!	addMenuEntry(inout entry : lb_I_Unknown) : lbErrCodes
+
+       _LOG << "Error: Function has not been implemented!" LOG_
+        return ERR_NONE;
+!!!136434.cpp!!!	insertMenuEntry(inout entry : lb_I_Unknown) : lbErrCodes
+
+       _LOG << "Error: Function has not been implemented!" LOG_
+        return ERR_NONE;
+!!!136562.cpp!!!	msgBox(inout windowTitle : char, inout msg : char) : lbErrCodes
+
+        wxMessageDialog dialog(NULL, msg, windowTitle, wxOK);
+
+        dialog.ShowModal();
+
+        return ERR_NONE;
+!!!137586.cpp!!!	findDBForm(inout name : char) : lb_I_DatabaseForm
+
+	lbErrCodes err = ERR_NONE;
+	
+	UAP_REQUEST(getModuleManager(), lb_I_String, fName)
+	UAP(lb_I_KeyBase, key)
+	UAP(lb_I_Unknown, uk)
+	
+	fName->setData(name);
+	
+	QI(fName, lb_I_KeyBase, key)
+	
+	uk = forms->getElement(&key);
+	
+	if (uk == NULL) {
+		_CL_LOG << "Error: No form with name '" << name << "' found." LOG_
+		return NULL;
+	}
+	
+	UAP(lb_I_DatabaseForm, w)
+	QI(uk, lb_I_DatabaseForm, w)
+	// Not really needed, because my dialogs are forced to not be smart.
+	w++;
+	return w.getPtr();
+!!!137714.cpp!!!	cleanup() : lbErrCodes
+
+	
+	/* Destroy all still created forms that are hidden.
+	 * If this would not be taken, the application will hang,
+	 * because these windows are still there.
+	 *
+	 * But the container must be deleted and there seems to be
+	 * a double delete. So I need a removeAll function for the container. 
+	 */
+
+	if (forms == NULL) {
+		_CL_LOG << "lb_wxGUI::cleanup() has nothing to clean up." LOG_
+		return ERR_NONE;
+	} 
+
+	while (forms->hasMoreElements()) {
+		lbErrCodes err = ERR_NONE;
+				
+		lb_I_Unknown* form = forms->nextElement();
+
+		if (!form) continue;
+
+		UAP(lb_I_DatabaseForm, d)		
+		QI(form, lb_I_DatabaseForm, d)
+		
+		/* Really needed here !
+		 * The wxWidgets system doesn't have a or at least has it's own reference counting system.
+		 *
+		 * So here I must ensure, that the object it self doesn't get deleted in the container.
+		 * wxWidgets should call the destructor of the form.
+		 */
+		 
+		 
+		_CL_LOG << "Destroy a form with " << d->getRefCount() << " references ..." LOG_
+		 
+		//d++;
+		
+		d->destroy();
+		
+		_CL_LOG << "Destroyed the form." LOG_
+	}
+	
+	forms->detachAll();
+
+	_CL_LOG << "List of forms has " << forms->getRefCount() << " references." LOG_
+
+        return ERR_NONE;

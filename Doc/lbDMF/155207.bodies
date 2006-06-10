@@ -1,0 +1,21 @@
+class lbInstanceReference
+!!!242503.cpp!!!	~lbInstanceReference()
+
+!!!242631.cpp!!!	getFile() : char
+
+	return file;
+!!!242759.cpp!!!	getLine() : int
+
+	return line;
+!!!242887.cpp!!!	getCount() : int
+
+	return count;
+!!!243015.cpp!!!	setFile(inout f : char) : void
+
+
+!!!243143.cpp!!!	setLine(in l : int) : void
+
+	line = l;
+!!!243271.cpp!!!	setCount(in c : int) : void
+
+	count = c;

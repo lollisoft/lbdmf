@@ -1,0 +1,1295 @@
+class lb_MetaApplication
+!!!202183.cpp!!!	~lb_MetaApplication()
+
+	_CL_LOG << "lb_MetaApplication::~lb_MetaApplication() called." LOG_
+	
+	lbErrCodes err = ERR_NONE;
+
+	/*
+	 * There must be an unload process of the loaded application's, so that it
+	 * will not unloaded in the wrong order when unHookAll is called.
+	 *
+	 *
+	 * Destroy loaded object and manually unload the corresponding module.
+	 */
+
+	if (app != NULL) {
+		app--;
+		app.resetPtr();
+	}
+	
+	_CL_LOG << "Unload module " << moduleName << "." LOG_
+
+	if (moduleName) lbUnloadModule(moduleName);
+	
+	_CL_LOG << "Unloaded module." LOG_	
+	
+	free(moduleName);
+!!!202439.cpp!!!	load() : lbErrCodes
+
+	lbErrCodes err = ERR_NONE;
+	
+	// Get the plugin to read a standard stream based file
+
+	UAP_REQUEST(manager.getPtr(), lb_I_PluginManager, PM)
+
+	UAP(lb_I_Plugin, pl)
+	UAP(lb_I_Unknown, ukPl)
+
+	pl = PM->getFirstMatchingPlugin("lb_I_FileOperation", "InputStreamVisitor");
+
+	if (pl != NULL) {
+		ukPl = pl->getImplementation();
+
+		if (ukPl != NULL) {
+			UAP(lb_I_FileOperation, fOp)
+			QI(ukPl, lb_I_FileOperation, fOp)
+			
+			if (!fOp->begin("MetaApp.mad")) {
+				return ERR_FILE_READ;
+			}
+			
+			// Read my data
+			UAP(lb_I_Unknown, ukAcceptor)
+			QI(this, lb_I_Unknown, ukAcceptor)
+			ukAcceptor->accept(*&fOp);
+
+/*...sRead an Users list:24:*/
+			// Read an Users list
+			UAP(lb_I_Plugin, pl2)
+			UAP(lb_I_Unknown, ukPl2)
+			pl2 = PM->getFirstMatchingPlugin("lb_I_UserAccounts", "Model");
+			ukPl2 = pl2->getImplementation();
+			ukPl2->accept(*&fOp);
+
+			QI(ukPl2, lb_I_UserAccounts, Users)
+/*...e*/
+
+/*...sRead an Applications list:24:*/
+			// Read an Applications list
+			UAP(lb_I_Plugin, pl3)
+			UAP(lb_I_Unknown, ukPl3)
+			pl3 = PM->getFirstMatchingPlugin("lb_I_Applications", "Model");
+			ukPl3 = pl3->getImplementation();
+			ukPl3->accept(*&fOp);
+		
+			QI(ukPl3, lb_I_Applications, Applications)
+/*...e*/
+		
+			fOp->end();
+			
+			return ERR_NONE;
+		} else {
+			_CL_LOG << "Error: Could not load stream operator classes!" LOG_
+		}
+	} else {
+		_CL_LOG << "Error: Could not load stream operator classes!" LOG_
+	}
+	return ERR_FILE_READ;
+!!!202567.cpp!!!	initialize(inout user : char =  NULL, inout appName : char =  NULL) : lbErrCodes
+
+	lbErrCodes err = ERR_NONE;
+/*...sdoc:8:*/
+	/**
+	* At this point should be found the real application. The real one
+	 * may be defined by an environment variable, that is defined out of
+	 * a batch file.
+	 * The variable contains the name of the application, where a xml tag
+	 * resolves the functor for this application.
+	 */
+/*...e*/
+	
+	if (user == NULL) {
+		_CL_LOG << "lb_MetaApplication::Initialize() user is NULL" LOG_
+	} else
+		if (LogonUser == NULL && _logged_in) {
+			REQUEST(manager.getPtr(), lb_I_String, LogonUser)
+			LogonUser->setData(user);
+		}
+	
+	if (appName == NULL) {
+		_CL_LOG << "lb_MetaApplication::Initialize() appName is NULL" LOG_
+	} else
+		if (LogonApplication == NULL) {
+			REQUEST(manager.getPtr(), lb_I_String, LogonApplication)
+			LogonApplication->setData(appName);
+		}
+	
+/*...sdispatch integer values:8:*/
+	/*
+	 * This variable is needed, if this instance also implements a little dispatcher.
+	 * It should moved into the class declatation and used in the dispatch functions.
+	 */
+	int getBasicApplicationInfo;
+	int getMainModuleInfo;
+	int testPressed;
+	int enterDebugger;
+	int getLoginData;
+	int doAutoload;
+/*...e*/
+	
+/*...sget the event manager:8:*/
+	/**
+		* Registrieren eines Events, der auch auf der GUI Seite bekannt ist.
+	 */
+	
+	lb_I_Module* m = *&manager;
+	REQUEST(m, lb_I_EventManager, eman)
+/*...e*/
+		
+/*...sregister some basic events \40\getBasicApplicationInfo\46\\46\\46\\41\ by the event manager:8:*/
+	eman->registerEvent("doAutoload", doAutoload);
+	eman->registerEvent("enterDebugger", enterDebugger);
+	eman->registerEvent("getBasicApplicationInfo", getBasicApplicationInfo);
+	eman->registerEvent("getMainModuleInfo", getMainModuleInfo);
+	eman->registerEvent("Button Test pressed", testPressed);
+	
+	if (getenv("TARGET_APPLICATION") == NULL) {
+		// Need a database configuration based authentication
+		eman->registerEvent("getLoginData", getLoginData);
+	}
+/*...e*/
+	
+/*...sget the dispatcher instance:8:*/
+	REQUEST(m, lb_I_Dispatcher, dispatcher)
+	dispatcher->setEventManager(eman.getPtr());
+/*...e*/
+	
+	registerEventHandler(dispatcher.getPtr());
+	
+	// Step 3 (Load sub components, handling menus and else needed for an UI)
+	loadSubModules();
+	
+/*...ssome docs:8:*/
+	/**
+		* After initializion of all event handlers, we need to get up all
+	 * GUI accessible handlers - like menus or else.
+	 * This class, as an example, provides two handlers
+	 * getBasicApplicationInfo and getMainModuleInfo
+	 * 
+	 * The handler depends on some capabilities:
+	 *
+	 * 	1. A basic dialog to show text
+	 *		This may be a container of capabilities
+	 *		 must:SimpleTextDialog
+	 *		 optional:PictureElements
+	 *
+	 * It provides these capabilities:
+	 *
+	 *	1. An information about menu creation
+	 *		This may be a simple string - lb_I_String
+	 */
+	
+	
+	/**
+		* Init the application (menu, toolbar, accelerators)
+	 *
+	 * This will be done by the loaded application from the
+	 * environment variable (TARGET_APPLICATION)
+	 */
+/*...e*/
+	
+	addMenuBar(_trans("&Edit"));
+	
+	char* temp1 = _trans("&Autoload application\tCtrl-A");
+	
+	char* mm1 = (char*) malloc(strlen(temp1)+1);
+	mm1[0] = 0;
+	strcpy(mm1, temp1);
+	
+	addMenuEntryCheckable(_trans("&Edit"), mm1, "doAutoload", "");
+	
+	free(mm1);
+	
+	if (getenv("TARGET_APPLICATION") != NULL) {
+		loadApplication("", "");
+	}
+	
+	addMenuBar(_trans("&Help"));
+	
+	if (getenv("TARGET_APPLICATION") == NULL) {
+		char* temp = _trans("&Login\tCtrl-L");
+		char* login = (char*) malloc(strlen(temp)+1);
+		login[0] = 0;
+		strcpy(login, temp);
+		
+		addMenuEntry(_trans("&File"), login, "getLoginData", "");
+		free(login);
+	}
+	
+	char* temp = _trans("MainModule&Info\tCtrl-I");
+	
+	char* mm = (char*) malloc(strlen(temp)+1);
+	mm[0] = 0;
+	strcpy(mm, temp);
+	
+	addMenuEntry(_trans("&Help"), mm, "getMainModuleInfo", "");
+	free(mm);
+	
+	_CL_LOG << "Load properties from file..." LOG_
+	
+	_loading_object_data = true;
+	
+	REQUEST(manager.getPtr(), lb_I_Parameter, myProperties)
+		
+
+	if (load() != ERR_NONE) {
+		if (save() != ERR_NONE) {
+			_LOG << "ERROR: Could not save a default file for MetaApplication data!" LOG_
+		}
+	}
+	
+	/*
+	 
+	   Here it would be the best to get user accounts into the new account list.
+	   Having no database and no previously retrieved data from file would lead
+	   into not loading the last application for the last user.
+	   
+	   Really, it then would be invalid data in the last logged in user.
+	   
+	   Changed user data leads to a reread from the database for these user accounts.
+	   Thus, the database has higher priority. This is because other users may have
+	   changed their passwords.
+	   
+	   Changing the data for the logged in user is a special case, where the changed
+	   data must be written back to the database.
+	*/
+	
+	if (getAutoload() && (LogonUser != NULL) && (LogonApplication != NULL)) {
+		if ((strcmp(LogonUser->charrep(), "") != 0) && (strcmp(LogonApplication->charrep(), "") != 0)) {
+			_CL_LOG << "Autoload is active and have " << LogonApplication->charrep() << 
+			" and " << LogonUser->charrep() << ". Loading..." LOG_
+			
+			/* loadApplication() does not know, that the parameters are from it self.
+			Thus LogonApplication->setData(...) and LogonUser->setData(...) would
+			delete it's content.
+			
+			This is tricky.
+			*/ 
+			
+			char* a = strdup(LogonApplication->charrep());
+			char* u = strdup(LogonUser->charrep());
+			
+			loadApplication(u, a);
+			
+			free(a);
+			free(u);
+			
+		}
+	}
+	
+	if (getAutoload()) 
+		toggleEvent("doAutoload");
+	
+	_loading_object_data = false;
+	
+	_CL_LOG << "Loaded properties from file." LOG_
+		
+	return ERR_NONE;
+!!!202695.cpp!!!	run() : lbErrCodes
+
+#ifdef bla
+	lb_I_Unknown* result;
+
+	dispatcher->dispatch("AddMenu", NULL, &result);	
+#endif
+	return ERR_NONE;
+!!!202823.cpp!!!	getGUI(inout _gui : lb_I_GUI) : lbErrCodes
+
+	*_gui = gui;
+	return ERR_NONE;
+!!!202951.cpp!!!	getUserName(inout user : lb_I_String) : lbErrCodes
+
+	if (LogonUser == NULL) (*user)->setData("");
+	else (*user)->setData(LogonUser->charrep());
+	return ERR_NONE;
+!!!203079.cpp!!!	getApplicationName(inout app : lb_I_String) : lbErrCodes
+
+	if (LogonApplication == NULL) (*app)->setData("");
+	else (*app)->setData(LogonApplication->charrep());
+	return ERR_NONE;
+!!!203207.cpp!!!	setUserName(inout user : char) : lbErrCodes
+
+	if (!_loading_object_data)
+		if (!_logged_in) {
+			_LOG << "Error: Not logged in. Function call not allowed." LOG_
+			return ERR_NONE;
+		}
+	
+	if ((user == NULL) || strcmp(user, "") == 0) {
+		_LOG << "Error: Setting empty user name not allowed." LOG_ 
+		return ERR_NONE;
+	}
+	
+	if (LogonUser == NULL) {
+        	REQUEST(manager.getPtr(), lb_I_String, LogonUser)
+	}
+
+	LogonUser->setData(user);
+	return ERR_NONE;
+!!!203335.cpp!!!	setApplicationName(inout app : char) : lbErrCodes
+
+	if ((app == NULL) || strcmp(app, "") == 0) return ERR_NONE;
+
+	if (LogonApplication == NULL) {
+        	REQUEST(manager.getPtr(), lb_I_String, LogonApplication)
+	}
+
+       	LogonApplication->setData(app);
+	return ERR_NONE;
+!!!203463.cpp!!!	setAutoload(in b : bool) : void
+
+	_autoload = b;
+!!!203591.cpp!!!	setAutorefreshData(in b : bool) : void
+
+	_autorefresh = b;
+!!!203719.cpp!!!	setAutoselect(in b : bool) : void
+
+	_autoselect = b;
+!!!203847.cpp!!!	getAutorefreshData() : bool
+
+	return _autorefresh;
+!!!203975.cpp!!!	getAutoload() : bool
+
+	return _autoload;
+!!!204103.cpp!!!	getAutoselect() : bool
+
+	return _autoselect;
+!!!204231.cpp!!!	setGUIMaximized(in b : bool) : void
+
+	_GUIMaximized = b;
+!!!204359.cpp!!!	getGUIMaximized() : bool
+
+	return _GUIMaximized;
+!!!204487.cpp!!!	getEVManager(in  : void) : lb_I_EventManager
+
+	return NULL;
+!!!204743.cpp!!!	registerEventHandler(inout disp : lb_I_Dispatcher) : lbErrCodes
+
+
+	disp->addEventHandlerFn(this, (lbEvHandler) &lb_MetaApplication::doAutoload, "doAutoload");
+
+	disp->addEventHandlerFn(this, (lbEvHandler) &lb_MetaApplication::enterDebugger, "enterDebugger");
+	disp->addEventHandlerFn(this, (lbEvHandler) &lb_MetaApplication::lbEvHandler1, "getBasicApplicationInfo");
+	disp->addEventHandlerFn(this, (lbEvHandler) &lb_MetaApplication::lbEvHandler2, "getMainModuleInfo");
+	disp->addEventHandlerFn(this, (lbEvHandler) &lb_MetaApplication::lbButtonTestHandler, "Button Test pressed");
+	
+	// Register a general login functionality
+	disp->addEventHandlerFn(this, (lbEvHandler) &lb_MetaApplication::getLoginData, "getLoginData");
+	
+	return ERR_NONE;
+!!!204871.cpp!!!	loadSubModules() : lbErrCodes
+
+	return ERR_NONE;
+!!!204999.cpp!!!	loadApplication(inout user : char, inout application : char) : lbErrCodes
+
+	lbErrCodes err = ERR_NONE;
+	
+	if (user == NULL) {
+		_CL_LOG << "lb_MetaApplication::Initialize() user is NULL" LOG_
+	} else
+		if (LogonUser == NULL) {
+			REQUEST(manager.getPtr(), lb_I_String, LogonUser)
+		}
+	
+	LogonUser->setData(user);
+	
+	if (application == NULL) {
+		_CL_LOG << "lb_MetaApplication::Initialize() app is NULL" LOG_
+	} else
+        if (LogonApplication == NULL) {
+			REQUEST(manager.getPtr(), lb_I_String, LogonApplication)
+        }
+	
+	LogonApplication->setData(application);
+	
+	
+	char* applicationName = getenv("TARGET_APPLICATION");
+	
+	char* lbDMFPasswd = getenv("lbDMFPasswd");
+	char* lbDMFUser   = getenv("lbDMFUser");
+	
+	if (!lbDMFUser) lbDMFUser = "dba";
+	if (!lbDMFPasswd) lbDMFPasswd = "trainres";
+	
+	if (applicationName == NULL) {
+		/*
+		 * No predefined application without authentication.
+		 * Read the configuration from a database.
+		 */
+		
+		UAP_REQUEST(manager.getPtr(), lb_I_Database, database)
+		UAP(lb_I_Query, sampleQuery)
+		
+		database->init();
+		
+		if (database->connect("lbDMF", lbDMFUser, lbDMFPasswd) != ERR_NONE) {
+			_LOG << "Error: Connection to database failed." LOG_
+			return ERR_NONE;
+		} else {
+			
+			sampleQuery = database->getQuery(0);
+			
+			char buffer[1000] = "";
+			
+			sprintf(buffer,
+					"select Anwendungen.modulename, Anwendungen.functor, Anwendungen.interface from Anwendungen inner join User_Anwendungen on "
+					"Anwendungen.id = User_Anwendungen.anwendungenid "
+					"inner join Users on User_Anwendungen.userid = Users.id where "
+					"Users.userid = '%s' and Anwendungen.name = '%s'"
+					, LogonUser->charrep(), LogonApplication->charrep());
+			
+			/*
+			 * Decide upon the interface, if this code is capable to handle this application.
+			 * First, only handle lb_I_MetaApplication types.
+			 */
+			
+			sampleQuery->skipFKCollecting();
+			sampleQuery->query(buffer);
+			sampleQuery->enableFKCollecting();
+			
+			
+			// Fill up the available applications for that user.
+			UAP_REQUEST(manager.getPtr(), lb_I_String, ModuleName)
+				UAP_REQUEST(manager.getPtr(), lb_I_String, Functor)
+				
+				lbErrCodes DBerr = sampleQuery->first();
+			
+			if ((DBerr == ERR_NONE) || (DBerr == WARN_DB_NODATA)) {
+				
+		        ModuleName = sampleQuery->getAsString(1);
+				Functor = sampleQuery->getAsString(2);
+				
+		        applicationName = (char*) malloc(strlen(ModuleName->charrep())+1);
+		        applicationName[0] = 0;
+				strcpy(applicationName, ModuleName->charrep());		        
+				
+#ifdef bla
+				/*...sRead only the first application\46\ More apps are wrong\46\:24:*/
+		        while (TRUE) {
+					lbErrCodes err = sampleQuery->next();
+					
+					if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
+						s1 = sampleQuery->getAsString(1);
+						
+						printf("Have application '%s'\n", s1->charrep());
+						
+						box->Append(wxString(s1->charrep()));
+						
+						if (err == WARN_DB_NODATA) break;
+					}
+		        }
+				/*...e*/
+#endif
+				
+			} else {
+				_CL_LOG << "Error: Query to get application data failed. '" << buffer << "'" LOG_
+			}
+			
+			
+			UAP(lb_I_Unknown, a)
+				
+#ifndef LINUX
+#ifdef __WATCOMC__
+#define PREFIX "_"
+#endif
+#ifdef _MSC_VER
+#define PREFIX ""
+#endif
+#endif
+#ifdef LINUX
+#define PREFIX ""
+#endif
+				
+				char f[100] = "";
+			char appl[100] = "";
+			
+			strcpy(f, PREFIX);
+			strcat(f, Functor->charrep());
+			strcpy(appl, applicationName);
+			
+			
+#ifdef WINDOWS
+			manager->preload(appl);
+			manager->makeInstance(f, appl, &a);
+#endif
+#ifdef LINUX
+			strcat(appl, ".so");		
+			manager->preload(appl);
+			manager->makeInstance(f, appl, &a);
+#endif
+			if (a == NULL) {
+				_CL_LOG << "ERROR: Application could not be loaded - either not found or not configured." LOG_
+				return ERR_NONE;
+			}
+			
+			if (moduleName == NULL) {
+				moduleName = (char*) malloc(strlen(appl)+1);
+				moduleName[0] = 0;
+				strcpy(moduleName, appl);
+			} else {
+				_CL_LOG << "ERROR: Multiple applications not yet supported." LOG_
+			}
+			
+			a->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+			
+			QI(a, lb_I_Application, app)
+				
+				//if (dispatcher.getPtr() == NULL) _LOG << "Error: dispatcher is NULL" LOG_
+				
+				app->setGUI(gui);
+			app->initialize(user, application);
+			
+			_CL_LOG << "Meta application has " << app->getRefCount() << " references." LOG_
+				
+				free(applicationName);
+		}
+		
+		//if (dispatcher.getPtr() == NULL) _LOG << "Error: dispatcher has been set to NULL" LOG_
+	} else {
+		
+		UAP(lb_I_Unknown, a)
+		
+#ifndef LINUX
+#ifdef __WATCOMC__
+#define PREFIX "_"
+#endif
+#ifdef _MSC_VER
+#define PREFIX ""
+#endif
+#endif
+#ifdef LINUX
+#define PREFIX ""
+#endif
+		
+		
+#ifdef WINDOWS	
+		manager->preload(applicationName);
+		manager->makeInstance(PREFIX "instanceOfApplication", applicationName, &a);
+#endif
+#ifdef LINUX
+		char name[80] = "";
+		strcpy(name, applicationName);
+		strcat(name, ".so");
+		manager->preload(name);
+		manager->makeInstance(PREFIX "instanceOfApplication", name, &a);
+#endif	
+		if (a == NULL) {
+			_CL_LOG << "ERROR: Application could not be loaded - either not found or not configured." LOG_
+			return ERR_NONE;
+		}
+		
+		QI(a, lb_I_MetaApplication, app)
+			
+			if (dispatcher.getPtr() == NULL) _LOG << "Error: dispatcher is NULL" LOG_
+				
+				app->setGUI(gui);
+		app->initialize();
+		
+		_CL_LOG << "Meta application has " << app->getRefCount() << " references." LOG_
+			
+			if (dispatcher.getPtr() == NULL) _LOG << "Error: dispatcher has been set to NULL" LOG_
+	}
+		
+        return ERR_NONE;
+!!!205127.cpp!!!	unloadApplication() : lbErrCodes
+
+	if (app != NULL) {
+		app->uninitialize();
+		app--;
+		app.resetPtr();
+	}
+	
+	return ERR_NONE;
+!!!205255.cpp!!!	enterDebugger(inout uk : lb_I_Unknown) : lbErrCodes
+
+#ifdef WINDOWS
+	DebugBreak();
+#endif
+#ifdef LINUX
+	// How do I this under linux ??
+#endif
+	return ERR_NONE;
+!!!205383.cpp!!!	getLoginData(inout uk : lb_I_Unknown) : lbErrCodes
+
+
+        if (gui != NULL) {
+                UAP(lb_I_Form, loginForm)
+
+                loginForm = gui->createLoginForm();
+        } else {
+                COUT << "Login form on console not supported" << ENDL;
+        }
+
+	return ERR_NONE;
+!!!205511.cpp!!!	lbEvHandler1(inout uk : lb_I_Unknown) : lbErrCodes
+
+	_CL_LOG << "lb_MetaApplication::lbEvHandler1() called" LOG_
+	return ERR_NONE;
+!!!205639.cpp!!!	lbEvHandler2(inout uk : lb_I_Unknown) : lbErrCodes
+
+
+	if (gui != NULL) {
+	        gui->msgBox("Information", "The main module of this application is a DLL and creates a basic functionality.\nThe real application will be loaded from configuraton and then the control\nwill be delegated to it.");
+	} else {
+	        COUT << "lb_MetaApplication::lbEvHandler2() called in console mode" << ENDL;
+	}
+
+	return ERR_NONE;
+!!!205767.cpp!!!	addMenuBar(inout name : char, inout after : char =  NULL) : lbErrCodes
+
+	lbErrCodes err = ERR_NONE;
+
+	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, value)
+
+	parameter->setData("name");
+	value->setData(name);
+	param->setUAPString(*&parameter, *&value);
+
+	if (after != NULL) {
+		parameter->setData("after");
+		value->setData(after);
+		param->setUAPString(*&parameter, *&value);
+
+	}
+
+
+	UAP(lb_I_Unknown, uk)
+	QI(param, lb_I_Unknown, uk)
+	
+	UAP_REQUEST(manager.getPtr(), lb_I_String, result)
+	UAP(lb_I_Unknown, uk_result)
+	QI(result, lb_I_Unknown, uk_result)
+	
+	dispatcher->dispatch("AddMenuBar", uk.getPtr(), &uk_result);
+
+	return err;
+!!!205895.cpp!!!	addMenu(inout name : char) : lbErrCodes
+
+	return ERR_NONE;
+!!!206023.cpp!!!	addMenuEntry(inout in_menu : char, inout entry : char, inout evHandler : char, inout afterentry : char =  NULL) : lbErrCodes
+
+	lbErrCodes err = ERR_NONE;
+	
+	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, value)
+	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
+	
+	
+	parameter->setData("menubar");
+	value->setData(in_menu);
+	param->setUAPString(*&parameter, *&value);
+	
+	parameter->setData("menuname");
+	value->setData(entry);
+	param->setUAPString(*&parameter, *&value);
+
+	parameter->setData("handlername");
+	value->setData(evHandler);
+	param->setUAPString(*&parameter, *&value);
+	
+	if (afterentry && (strcmp(afterentry, "") != 0)) {
+		parameter->setData("after");
+		value->setData(afterentry);
+		param->setUAPString(*&parameter, *&value);
+	}
+
+	UAP(lb_I_Unknown, uk)
+	QI(param, lb_I_Unknown, uk)
+
+	UAP_REQUEST(manager.getPtr(), lb_I_String, result)
+	UAP(lb_I_Unknown, uk_result)
+	QI(result, lb_I_Unknown, uk_result)
+
+	dispatcher->dispatch("AddMenuEntry", uk.getPtr(), &uk_result);
+	
+
+	return ERR_NONE;
+!!!206151.cpp!!!	addMenuEntryCheckable(inout in_menu : char, inout entry : char, inout evHandler : char, inout afterentry : char =  NULL) : lbErrCodes
+
+	lbErrCodes err = ERR_NONE;
+	
+	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, value)
+	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
+	
+	
+	parameter->setData("menubar");
+	value->setData(in_menu);
+	param->setUAPString(*&parameter, *&value);
+	
+	parameter->setData("menuname");
+	value->setData(entry);
+	param->setUAPString(*&parameter, *&value);
+
+	parameter->setData("handlername");
+	value->setData(evHandler);
+	param->setUAPString(*&parameter, *&value);
+
+	parameter->setData("checkable");
+	value->setData("yes");
+	param->setUAPString(*&parameter, *&value);
+	
+	if (afterentry && (strcmp(afterentry, "") != 0)) {
+		parameter->setData("after");
+		value->setData(afterentry);
+		param->setUAPString(*&parameter, *&value);
+	}
+
+	UAP(lb_I_Unknown, uk)
+	QI(param, lb_I_Unknown, uk)
+
+	UAP_REQUEST(manager.getPtr(), lb_I_String, result)
+	UAP(lb_I_Unknown, uk_result)
+	QI(result, lb_I_Unknown, uk_result)
+
+	dispatcher->dispatch("AddMenuEntry", uk.getPtr(), &uk_result);
+	
+	return ERR_NONE;
+!!!206279.cpp!!!	addButton(inout buttonText : char, inout evHandler : char, in x : int, in y : int, in w : int, in h : int) : lbErrCodes
+
+	lbErrCodes err = ERR_NONE;
+
+	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, value)
+	UAP_REQUEST(manager.getPtr(), lb_I_Integer, i)
+	
+	
+	parameter->setData("buttontext");
+	value->setData(buttonText);
+	param->setUAPString(*&parameter, *&value);
+	
+	parameter->setData("handlername");
+	value->setData(evHandler);
+	param->setUAPString(*&parameter, *&value);
+	
+	parameter->setData("x");
+	i->setData(x);
+	param->setUAPInteger(*&parameter, *&i);
+
+	parameter->setData("y");
+	i->setData(y);
+	param->setUAPInteger(*&parameter, *&i);
+
+	parameter->setData("w");
+	i->setData(w);
+	param->setUAPInteger(*&parameter, *&i);
+
+	parameter->setData("h");
+	i->setData(h);
+	param->setUAPInteger(*&parameter, *&i);
+
+	UAP(lb_I_Unknown, uk)
+	QI(param, lb_I_Unknown, uk)
+	
+	UAP_REQUEST(manager.getPtr(), lb_I_String, result)
+	UAP(lb_I_Unknown, uk_result)
+	QI(result, lb_I_Unknown, uk_result)
+	
+	dispatcher->dispatch("AddButton", uk.getPtr(), &uk_result);
+
+	return err;
+!!!206407.cpp!!!	addLabel(inout text : char, in x : int, in y : int, in w : int, in h : int) : lbErrCodes
+
+	lbErrCodes err = ERR_NONE;
+
+	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, value)
+	UAP_REQUEST(manager.getPtr(), lb_I_Integer, i)
+
+
+	parameter->setData("labeltext");
+	value->setData(text);
+	param->setUAPString(*&parameter, *&value);
+
+	parameter->setData("x");
+	i->setData(x);
+	param->setUAPInteger(*&parameter, *&i);
+
+	parameter->setData("y");
+	i->setData(y);
+	param->setUAPInteger(*&parameter, *&i);
+
+	parameter->setData("w");
+	i->setData(w);
+	param->setUAPInteger(*&parameter, *&i);
+
+	parameter->setData("h");
+	i->setData(h);
+	param->setUAPInteger(*&parameter, *&i);
+
+	UAP(lb_I_Unknown, uk)
+	QI(param, lb_I_Unknown, uk)
+	
+	UAP_REQUEST(manager.getPtr(), lb_I_String, result)
+	UAP(lb_I_Unknown, uk_result)
+	QI(result, lb_I_Unknown, uk_result)
+	
+	dispatcher->dispatch("AddLabel", uk.getPtr(), &uk_result);
+
+	return err;
+!!!206535.cpp!!!	addTextField(inout name : char, in x : int, in y : int, in w : int, in h : int) : lbErrCodes
+
+	lbErrCodes err = ERR_NONE;
+	
+	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, value)
+	UAP_REQUEST(manager.getPtr(), lb_I_Integer, i)
+
+        parameter->setData("text");
+        value->setData(name);
+        param->setUAPString(*&parameter, *&value);
+
+        parameter->setData("x");
+        i->setData(x);
+        param->setUAPInteger(*&parameter, *&i);
+
+        parameter->setData("y");
+        i->setData(y);
+        param->setUAPInteger(*&parameter, *&i);
+
+        parameter->setData("w");
+        i->setData(w);
+        param->setUAPInteger(*&parameter, *&i);
+
+        parameter->setData("h");
+        i->setData(h);
+        param->setUAPInteger(*&parameter, *&i);
+
+        UAP(lb_I_Unknown, uk)
+        QI(param, lb_I_Unknown, uk)
+
+        UAP_REQUEST(manager.getPtr(), lb_I_String, result)
+        UAP(lb_I_Unknown, uk_result)
+        QI(result, lb_I_Unknown, uk_result)
+
+        dispatcher->dispatch("AddTextField", uk.getPtr(), &uk_result);
+
+        return err;
+!!!206663.cpp!!!	enableEvent(inout name : char) : lbErrCodes
+
+	lbErrCodes err = ERR_NONE;
+
+	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, value)
+	
+	
+	parameter->setData("handlername");
+	value->setData(name);
+	param->setUAPString(*&parameter, *&value);
+
+	UAP(lb_I_Unknown, uk)
+	QI(param, lb_I_Unknown, uk)
+	
+	UAP_REQUEST(manager.getPtr(), lb_I_String, result)
+	UAP(lb_I_Unknown, uk_result)
+	QI(result, lb_I_Unknown, uk_result)
+	
+	dispatcher->dispatch("enableEvent", uk.getPtr(), &uk_result);
+
+	return err;
+!!!206791.cpp!!!	disableEvent(inout name : char) : lbErrCodes
+
+	lbErrCodes err = ERR_NONE;
+
+	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, value)
+	
+	
+	parameter->setData("handlername");
+	value->setData(name);
+	param->setUAPString(*&parameter, *&value);
+
+	UAP(lb_I_Unknown, uk)
+	QI(param, lb_I_Unknown, uk)
+	
+	UAP_REQUEST(manager.getPtr(), lb_I_String, result)
+	UAP(lb_I_Unknown, uk_result)
+	QI(result, lb_I_Unknown, uk_result)
+	
+	dispatcher->dispatch("disableEvent", uk.getPtr(), &uk_result);
+
+	return err;
+!!!206919.cpp!!!	toggleEvent(inout name : char) : lbErrCodes
+
+	lbErrCodes err = ERR_NONE;
+
+	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, value)
+	
+	
+	parameter->setData("handlername");
+	value->setData(name);
+	param->setUAPString(*&parameter, *&value);
+
+	UAP(lb_I_Unknown, uk)
+	QI(param, lb_I_Unknown, uk)
+	
+	UAP_REQUEST(manager.getPtr(), lb_I_String, result)
+	UAP(lb_I_Unknown, uk_result)
+	QI(result, lb_I_Unknown, uk_result)
+	
+	dispatcher->dispatch("toggleEvent", uk.getPtr(), &uk_result);
+
+	return err;
+!!!207047.cpp!!!	askOpenFileReadStream(inout extentions : char) : lb_I_InputStream
+
+	lbErrCodes err = ERR_NONE;
+	
+	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, value)
+	UAP_REQUEST(manager.getPtr(), lb_I_Integer, i)
+
+
+	parameter->setData("extention");
+	value->setData(extentions);
+	param->setUAPString(*&parameter, *&value);
+
+	UAP(lb_I_Unknown, uk)
+	QI(param, lb_I_Unknown, uk)
+	
+	UAP_REQUEST(manager.getPtr(), lb_I_String, result)
+	UAP(lb_I_Unknown, uk_result)
+	QI(result, lb_I_Unknown, uk_result)
+	
+	dispatcher->dispatch("askOpenFileReadStream", uk.getPtr(), &uk_result);
+
+	// Got a name of the file. Create an input stream.
+	
+	parameter->setData("result");
+	param->getUAPString(*&parameter, *&value);
+
+	if (strcmp(value->charrep(), "") == 0) return NULL;
+	
+	_CL_LOG << "Got a file name: " << value->charrep() << "." LOG_
+
+	UAP_REQUEST(manager.getPtr(), lb_I_InputStream, s)
+	s++;
+	s->setFileName(value->charrep());
+
+	return s.getPtr();
+!!!207175.cpp!!!	askYesNo(inout msg : char) : bool
+
+	lbErrCodes err = ERR_NONE;
+	
+	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, value)
+	UAP_REQUEST(manager.getPtr(), lb_I_Integer, i)
+
+
+	parameter->setData("msg");
+	value->setData(msg);
+	param->setUAPString(*&parameter, *&value);
+
+	UAP(lb_I_Unknown, uk)
+	QI(param, lb_I_Unknown, uk)
+	
+	UAP_REQUEST(manager.getPtr(), lb_I_String, result)
+	UAP(lb_I_Unknown, uk_result)
+	QI(result, lb_I_Unknown, uk_result)
+	
+	dispatcher->dispatch("askYesNo", uk.getPtr(), &uk_result);
+
+	// Got a name of the file. Create an input stream.
+	
+	parameter->setData("result");
+	param->getUAPString(*&parameter, *&value);
+	
+	if (strcmp(value->charrep(), "yes") == 0) return true;
+	return false;
+!!!207303.cpp!!!	showPropertyPanel(inout params : lb_I_Parameter) : lbErrCodes
+
+	lbErrCodes err = ERR_NONE;
+
+	UAP(lb_I_Unknown, uk)
+	QI(params, lb_I_Unknown, uk)
+
+	UAP_REQUEST(manager.getPtr(), lb_I_String, result)
+	UAP(lb_I_Unknown, uk_result)
+	QI(result, lb_I_Unknown, uk_result)
+
+	dispatcher->dispatch("ShowPropertyPanel", uk.getPtr(), &uk_result);
+
+	return ERR_NONE;
+!!!207431.cpp!!!	lbButtonTestHandler(inout uk : lb_I_Unknown) : lbErrCodes
+
+
+        if (gui != NULL) {
+                gui->msgBox("Information", "Test button has been pressed");
+        } else {
+                COUT << "lb_MetaApplication::lbButtonTestHandler() called in console mode" << ENDL;
+        }
+
+        return ERR_NONE;
+!!!207559.cpp!!!	registerPropertyChangeEventGroup(inout name : char, inout params : lb_I_Parameter, inout target : lb_I_EventHandler, in handler : lbEvHandler) : lbErrCodes
+
+	lbErrCodes err = ERR_NONE;
+	
+	UAP(lb_I_Container, properties)
+	
+	properties = params->getParameterList();
+	
+	int temp;
+	
+	for (int i = 1; i <= properties->Count(); i++) {
+		UAP(lb_I_KeyBase, key)
+		UAP_REQUEST(manager.getPtr(), lb_I_String, eventName)
+		
+		key = properties->getKeyAt(i);
+		
+		*eventName = name;
+		*eventName += key->charrep();
+		
+		eman->registerEvent(eventName->charrep(), temp);
+		dispatcher->addEventHandlerFn(target, handler, eventName->charrep());
+	}
+	
+	return err;
+!!!207687.cpp!!!	getParameter() : lb_I_Parameter
+
+	// Build up a preferences object and pass it to the property view
+	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
+	
+	// General parameters for this application
+	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, paramGeneral)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, parameterGeneral)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, valueGeneral)
+	
+	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, value)
+	UAP_REQUEST(manager.getPtr(), lb_I_Boolean, b)
+
+
+	parameter->setData("General");
+	//--------------------------------------------------------
+	parameterGeneral->setData("Autoselect last application");
+	b->setData(_autoselect);
+	paramGeneral->setUAPBoolean(*&parameterGeneral, *&b);
+	
+	parameterGeneral->setData("Autorefresh updated data");
+	b->setData(_autorefresh);
+	paramGeneral->setUAPBoolean(*&parameterGeneral, *&b);
+	
+	parameterGeneral->setData("Autoopen last application");
+	b->setData(_autoload);
+	paramGeneral->setUAPBoolean(*&parameterGeneral, *&b);
+
+	registerPropertyChangeEventGroup(parameter->charrep(), *&paramGeneral, this, (lbEvHandler) &lb_MetaApplication::propertyChanged);
+	
+	param->setUAPParameter(*&parameter, *&paramGeneral);
+	//--------------------------------------------------------
+	param++;
+
+	return param.getPtr();
+!!!207815.cpp!!!	propertyChanged(inout uk : lb_I_Unknown) : lbErrCodes
+
+	lbErrCodes err = ERR_NONE;
+	
+	UAP(lb_I_Parameter, param)
+	QI(uk, lb_I_Parameter, param)
+	
+	if (param != NULL) {
+		UAP_REQUEST(manager.getPtr(), lb_I_String, name)
+		UAP_REQUEST(manager.getPtr(), lb_I_String, parameterName)
+		UAP_REQUEST(manager.getPtr(), lb_I_String, value)
+		
+		UAP(lb_I_KeyBase, key)
+		
+		name->setData("name");
+		param->getUAPString(*&name, *&parameterName);
+		
+		name->setData("value");
+		param->getUAPString(*&name, *&value);
+		
+		QI(parameterName, lb_I_KeyBase, key)
+		
+		if (strcmp(key->charrep(), "GeneralAutorefresh updated data") == 0) {
+				if (strcmp(value->charrep(), "1") == 0) {
+					setAutorefreshData(true);
+				} else {
+					setAutorefreshData(false);
+				}
+		}
+		
+		if (strcmp(key->charrep(), "GeneralAutoselect last application") == 0) {
+				if (strcmp(value->charrep(), "1") == 0) {
+					setAutoselect(true);
+				} else {
+					setAutoselect(false);
+				}
+		}
+		
+		if (strcmp(key->charrep(), "GeneralAutoopen last application") == 0) {
+				if (strcmp(value->charrep(), "1") == 0) {
+					setAutoload(true);
+				} else {
+					setAutoload(false);
+				}
+				toggleEvent("doAutoload");
+		}
+		
+		
+	} else {
+		_LOG << "ERROR: Could not decode parameter structure!" LOG_
+	}
+	
+	return err;
+!!!207943.cpp!!!	doAutoload(inout uk : lb_I_Unknown) : lbErrCodes
+
+	_autoload = !_autoload;
+	
+	return ERR_NONE;
+!!!208071.cpp!!!	login(in user : char, in pass : char) : bool
+
+	lbErrCodes err = ERR_NONE;
+	
+	if (Users->getUserCount() == 0) {
+		// Fallback to database use. This should be moved to a 'service', that would
+		// Read out the content's of the database. So the best would be using visitor
+		// pattern for this to do.
+		
+		
+		UAP_REQUEST(manager.getPtr(), lb_I_Database, database)
+		UAP(lb_I_Query, sampleQuery)
+		database->init();
+		
+		char* lbDMFPasswd = getenv("lbDMFPasswd");
+		char* lbDMFUser   = getenv("lbDMFUser");
+		
+		if (!lbDMFUser) lbDMFUser = "dba";
+		if (!lbDMFPasswd) lbDMFPasswd = "trainres";
+		
+		err = database->connect("lbDMF", lbDMFUser, lbDMFPasswd);
+		
+		if (err != ERR_NONE) {
+			return FALSE;
+		}
+		
+		sampleQuery = database->getQuery(0);
+		
+		char buffer[800] = "";
+		
+		sampleQuery->skipFKCollecting();
+		sprintf(buffer, "select userid, passwort from Users where userid = '%s' and passwort = '%s'",
+               	user, pass);
+		
+		_CL_VERBOSE << "Query for user " << user LOG_
+			
+			if (sampleQuery->query(buffer) != ERR_NONE) {
+				sampleQuery->enableFKCollecting();
+				return FALSE;
+			}
+		
+		sampleQuery->enableFKCollecting();
+		
+		err = sampleQuery->first();
+		
+		if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
+			_logged_in = TRUE;
+			return TRUE;
+		} else {
+			return FALSE;
+		}
+	} else {
+		// We have got users from file
+		
+		while (Users->hasMoreUsers()) {
+			Users->setNextUser();
+			
+			if ((strcmp(Users->getUserName(), user) == 0) && (strcmp(Users->getUserPassword(), pass) == 0)) {
+				_logged_in = TRUE;
+				return true;
+			}
+		}
+		
+		return false;
+	}
+!!!208199.cpp!!!	getApplications() : lb_I_Container
+
+	UAP_REQUEST(manager.getPtr(), lb_I_Container, apps)
+	
+	if (Applications->getApplicationCount() == 0) {
+		// Maybe no data collected in the file yet
+		// Fallback to manually read out the applications
+	
+		UAP_REQUEST(manager.getPtr(), lb_I_Database, database)
+		UAP(lb_I_Query, sampleQuery)
+		database->init();
+
+		char* lbDMFPasswd = getenv("lbDMFPasswd");
+		char* lbDMFUser   = getenv("lbDMFUser");
+		
+		if (!lbDMFUser) lbDMFUser = "dba";
+		if (!lbDMFPasswd) lbDMFPasswd = "trainres";
+
+		database->connect("lbDMF", lbDMFUser, lbDMFPasswd);
+
+		sampleQuery = database->getQuery(0);
+
+		char buffer[800] = "";
+
+		sprintf(buffer, 
+			"select Anwendungen.name from Anwendungen inner join User_Anwendungen on "
+			"Anwendungen.id = User_Anwendungen.anwendungenid "
+			"inner join Users on User_Anwendungen.userid = Users.id where "
+			"Users.userid = '%s'"
+				, LogonUser->charrep());
+
+
+		sampleQuery->skipFKCollecting();
+		sampleQuery->query(buffer);
+		sampleQuery->enableFKCollecting();
+	
+		lbErrCodes err = sampleQuery->first();
+
+		if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
+
+			UAP_REQUEST(manager.getPtr(), lb_I_String, S1)	
+			UAP(lb_I_KeyBase, key)
+			UAP(lb_I_Unknown, uk_S1)
+			
+			S1 = sampleQuery->getAsString(1);
+			QI(S1, lb_I_KeyBase, key)
+			QI(S1, lb_I_Unknown, uk_S1)
+			
+			apps->insert(&uk_S1, &key);
+
+			while (err == ERR_NONE) {
+				lbErrCodes err = sampleQuery->next();
+				
+				if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
+					S1 = sampleQuery->getAsString(1);
+					QI(S1, lb_I_KeyBase, key)
+					QI(S1, lb_I_Unknown, uk_S1)
+			
+					apps->insert(&uk_S1, &key);
+					
+					if (err == WARN_DB_NODATA) {
+						break;
+					}
+				}
+				
+				if (err == ERR_DB_NODATA) {
+				        //box->SetSelection(0);
+				        break;
+				}
+			}
+
+		}
+	
+	} else {
+	
+	}
+	
+	apps++;
+	return apps.getPtr();

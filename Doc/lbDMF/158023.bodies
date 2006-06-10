@@ -1,0 +1,398 @@
+class lbDOMNode
+!!!253639.cpp!!!	lbDOMNode(inout file : char, in line : int)
+
+	char ptr[20] = "";
+	sprintf(ptr, "%p", this);
+	char msg[1000] = "";
+	sprintf(msg, "lbDOMNode::lbDOMNode(...) called at %d in %s", line, file);
+	track_Object(this, msg);
+	getNameValue = NULL;
+
+
+	c = NULL;
+
+	resetRefcount();
+//	currentChildIndex = 0;
+	lbDOMchilds = NULL;
+	debug = 0;
+
+	parent = NULL;
+	
+	manager = NULL;
+
+	parent.setFile(__FILE__);
+	parent.setLine(__LINE__);
+//	lbDOMchilds.setFile(__FILE__);
+//	lbDOMchilds.setLine(__LINE__);
+
+	// This was the bug for the wrong deletion while leave scope
+	//parent++;
+#ifdef VERBOSE
+	_CL_VERBOSE << "Warning: Parent is set to my self in c'tor" LOG_
+#endif
+!!!253767.cpp!!!	lbDOMNode()
+
+	char ptr[20] = "";
+	sprintf(ptr, "%p", this);
+	resetRefcount();
+//	currentChildIndex = 0;
+	lbDOMchilds = NULL;
+	debug = 0;
+	getNameValue = NULL;
+
+	parent = NULL;
+
+	c = NULL;
+	
+	manager = NULL;
+
+	parent.setFile(__FILE__);
+	parent.setLine(__LINE__);
+
+//	lbDOMchilds.setFile(__FILE__);
+//	lbDOMchilds.setLine(__LINE__);
+
+
+	// This was the bug for the wrong deletion while leave scope
+	//parent++;
+#ifdef VERBOSE
+	_CL_VERBOSE << "Warning: Parent is set to my self in c'tor" LOG_
+#endif
+!!!253895.cpp!!!	~lbDOMNode()
+
+	char ptr[20] = "";
+	sprintf(ptr, "%p", (void*) this);
+
+	if (getNameValue != NULL) {
+		deleteValue(getNameValue);
+		getNameValue = NULL;
+	}
+
+	if (ref != STARTREF)
+		_CL_VERBOSE << "Error: Reference count mismatch" LOG_
+
+
+	// Bugfix (in createAbstractedChildList)
+//	lbDOMchilds--;
+/*
+// No more because UAP	
+	if (lbDOMchilds != NULL) {
+		lbDOMchilds->deleteAll();
+		RELEASE(lbDOMchilds);
+		lbDOMchilds = NULL;
+	}
+*/
+!!!254023.cpp!!!	findObject(in name : char, inout object : lb_I_ConfigObject) : lbErrCodes
+
+	_CL_VERBOSE << "Not implemented yet" LOG_
+	return ERR_NONE;
+!!!254151.cpp!!!	getParent(inout _parent : lb_I_ConfigObject) : lbErrCodes
+
+	if (parent == NULL) {
+		_CL_VERBOSE << "Error: lbDOMNode is not correctly set up. Parent is NULL!" LOG_
+	}
+
+	parent->queryInterface("lb_I_ConfigObject", (void**) _parent, __FILE__, __LINE__);
+
+	return ERR_NONE;
+!!!254279.cpp!!!	getFirstChildren(inout children : lb_I_ConfigObject) : lbErrCodes
+
+	if (lbDOMchilds == NULL) {
+		_CL_VERBOSE << "Error, no childrens in config object" LOG_
+		return ERR_CONFIG_NO_CHILDS;
+	}
+	
+//	currentChildIndex = 0;
+	
+	UAP(lb_I_Unknown, unknown)
+
+	unknown.setFile(__FILE__);
+	unknown.setLine(__LINE__);
+
+	if (lbDOMchilds->hasMoreElements() == 1) {
+		unknown = lbDOMchilds->nextElement();
+//		currentChildIndex++;
+	} else {
+		_CL_VERBOSE << "ERROR: No child found" LOG_
+		return ERR_CONFIG_EMPTY_CONTAINER;
+	}
+	
+	if (unknown == NULL) {
+		_CL_VERBOSE << "Fatal: Must have a children here!" LOG_
+	}
+
+	unknown->queryInterface("lb_I_ConfigObject", (void**) children, __FILE__, __LINE__);
+	
+	/**
+	 * Return a reference! So increment my own because of UAP
+	 */
+	//unknown++;
+
+	return ERR_NONE;
+!!!254407.cpp!!!	getNextChildren(inout children : lb_I_ConfigObject) : lbErrCodes
+
+	lbErrCodes err = ERR_NONE;
+	
+/*...sreturn state no childs:8:*/
+	if (lbDOMchilds == NULL) {
+		_CL_VERBOSE << "Error: Returning ERR_CONFIG_NO_CHILDS" LOG_
+		getch();
+		return ERR_CONFIG_NO_CHILDS;
+	}
+/*...e*/
+	
+	char buf[100] = "";
+
+/*...sreturn state no more childs:8:*/
+	if (!lbDOMchilds->hasMoreElements()) {
+		return ERR_CONFIG_NO_MORE_CHILDS;
+	}
+/*...e*/
+	
+	//currentChildIndex++;
+
+	UAP(lb_I_Unknown, unknown)
+	unknown.setFile(__FILE__);
+	unknown.setLine(__LINE__);
+
+	unknown = lbDOMchilds->nextElement();
+
+/*...serror unknown \61\ NULL:8:*/
+	if (unknown == NULL) {
+		_CL_VERBOSE << "Fatal: Must have a children here!" LOG_
+		getch();
+	}
+/*...e*/
+
+	unknown->queryInterface("lb_I_ConfigObject", (void**) children, __FILE__, __LINE__);
+
+	/**
+	 * Return a reference! So increment my own because of UAP
+	 * Note: queryInterface does that !
+	 */
+	//unknown++;
+
+	if (children == NULL) {
+		_CL_VERBOSE << "Error: queryInterface creates a NULL pointer!" LOG_
+		getch();
+	}
+	
+	return ERR_NONE;
+!!!254535.cpp!!!	getChildrenCount() : int
+
+	_CL_VERBOSE << "Not implemented yet" LOG_
+	return 0;
+!!!254663.cpp!!!	getAttribute(in name : char, inout attr : lb_I_Attribute) : lbErrCodes
+
+
+	/**
+	 * In the first use of this function, I like to get a functor as an attribute.
+	 */
+	_CL_VERBOSE << "lbDOMNode::getAttribute(...): Not implemented yet" LOG_
+	return ERR_NONE;
+!!!254791.cpp!!!	getAttributeValue(in name : char, inout attr : char) : lbErrCodes
+
+
+	DOM_NamedNodeMap attributeMap = node.getAttributes();
+	
+	if (attributeMap == NULL) {
+		_CL_VERBOSE << "Error: This node is not of type ELEMENT" LOG_
+		
+		return ERR_UNSPECIFIED;
+	}
+	
+	DOM_Node an_attr = attributeMap.getNamedItem(DOMString(name));	
+	
+	if (an_attr == NULL) {
+		_CL_VERBOSE << "Error: Attribute not found" LOG_
+		
+		return ERR_UNSPECIFIED;
+	}
+	
+	DOMString value = an_attr.getNodeValue();
+	char* result = value.transcode();
+
+#ifdef bla
+	if (debug == 0) {
+		debug = 1;
+		DOMString string = getName();
+		char* temp = string.transcode();
+/*...sVERBOSE:16:*/
+#ifdef VERBOSE		
+		if (strcmp(temp, "InterfaceName") == 0) {
+			char* v = NULL;
+			getAttributeValue("Name", v);
+			printf("Interface name is %s\n", v);
+		}
+#endif		
+/*...e*/
+		debug = 0;
+	}
+#endif	
+	attr = strdup(result);
+#ifdef WINDOWS
+//	value.deletetranscoded(result);
+#endif		
+//	free((void*) result);
+	return ERR_NONE;
+!!!254919.cpp!!!	deleteValue(inout attr : char) : lbErrCodes
+
+	DOMString value = DOMString();
+#ifdef WINDOWS
+//	value.deletetranscoded(attr);
+	delete [] attr;
+	attr = NULL;
+#endif
+#ifdef LINUX
+	delete attr;
+	attr = NULL;
+#endif	
+	return ERR_NONE;
+!!!255047.cpp!!!	getName() : char
+
+#ifdef VERBOSE
+	_CL_VERBOSE << "lbDOMNode::getName() called" LOG_
+	getch();
+#endif
+	if (node.isNull()) {
+/*...sVERBOSE:0:*/
+	#ifdef VERBOSE
+		_CL_VERBOSE << "node is NULL!" LOG_
+	#endif
+/*...e*/
+		return "Internal node not defined!";
+	}
+
+	DOMString string = node.getNodeName();
+
+#ifdef VERBOSE
+	_CL_VERBOSE << "Got the DOMString" LOG_
+	getch();
+#endif
+
+	if (getNameValue != NULL) deleteValue(getNameValue);
+	getNameValue = string.transcode();
+
+#ifdef VERBOSE
+	_CL_VERBOSE << "Got the node name" LOG_
+	getch();
+#endif	
+	return getNameValue;
+!!!255175.cpp!!!	setChildrens(inout _childs : lbNodeList) : lbErrCodes
+
+	_CL_VERBOSE << "Error: Not implemented yet" LOG_
+	return ERR_NONE;
+!!!255303.cpp!!!	setParent(inout _parent : lb_I_ConfigObject) : lbErrCodes
+
+	_CL_VERBOSE << "lbDOMNode::setParent(...) not implemented yet" LOG_
+	return ERR_NONE;
+!!!255431.cpp!!!	setNode(in _node : DOM_Node) : lbErrCodes
+
+	/**
+	 * A node possibly has some childs. Because of the search result, the nodes
+	 * are not encapsulated in a lbDOMNode. To increase the speed for further
+	 * requests, the abstracted childs of that node are created now.
+	 */
+	if (_node.isNull()) {
+		_CL_VERBOSE << "Error: Null node could not be set!" LOG_
+		getch();
+	}
+	if (c != NULL) {
+		c->deleteAll();
+		RELEASE(c)
+		c = NULL;
+	}
+	c = createAbstractedChildList(_node);
+
+	if (c != NULL)
+		c->queryInterface("lb_I_Container", (void**) &lbDOMchilds, __FILE__, __LINE__);
+	else
+		_CL_VERBOSE << "Error: Creation of abstracted childs returns NULL" LOG_
+
+	if (lbDOMchilds == NULL) {
+		_CL_VERBOSE << "Error: Here must be a result!" LOG_
+		
+	}
+	
+	node = _node;
+	if (node.isNull()) {
+		_CL_VERBOSE << "Error: Null node could not be set!" LOG_
+		getch();
+	}
+	
+	DOM_Node pnode = _node.getParentNode();
+
+	if (pnode != NULL) {
+		
+		if (parent != NULL) {
+			_CL_VERBOSE << "Previous parent node will be overwritten!" LOG_
+		}
+		lbDOMNode* _parent = new lbDOMNode(__FILE__, __LINE__);
+		
+		_parent->setFurtherLock(0);
+		if (manager == NULL) _LOG << "Error: Set manager in parent with a NULL pointer!" LOG_
+		_parent->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+		
+		_parent->setNode(pnode);
+		parent = _parent;
+		parent++;
+	} else {
+		if (parent != NULL) {
+		#ifdef VERBOSE
+			_CL_VERBOSE << "Previous parent node must be deleted!" LOG_
+		#endif	
+		}
+	}
+
+	return ERR_NONE;
+!!!255559.cpp!!!	createAbstractedChildList(in _node : DOM_Node) : lbDOMContainer
+
+
+
+	DOM_NodeList DOMlist = _node.getChildNodes();
+	int len = DOMlist.getLength();	
+	lbDOMContainer* list = new lbDOMContainer;
+	lbErrCodes err = ERR_NONE;
+
+	if (manager == NULL) _LOG << "Error: Setting in lbDOMNode::createAbstractedChildList() a NULL pointer as manager" LOG_
+	
+	list->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+	
+	// Create an instance and create one reference. Then give it out.	
+	// This is the bug - see in lbDOMNode destructor
+	lb_I_Unknown* temp;
+	list->queryInterface("lb_I_Unknown", (void**) &temp, __FILE__, __LINE__);
+	
+	char buf[100] = "";
+/*...sloop:8:*/
+	for (int i = 0; i < len; i++) {
+		DOM_Node child = DOMlist.item(i);	
+
+		lbDOMNode* lbNode = new lbDOMNode(__FILE__, __LINE__);
+		
+		lbNode->setFurtherLock(0);
+		lbNode->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+		lbNode->node = child;
+		
+		UAP(lb_I_Unknown, unknown)
+
+		QI(lbNode, lb_I_Unknown, unknown)
+		
+		if (unknown == NULL) _LOG << "Error: The unknown pointer must not be NULL!" LOG_
+		
+		if (unknown != lbNode) {
+			_CL_VERBOSE << "Error: Pointer of unknown instance differs from created instance" LOG_
+			getch();
+		}
+		UAP(lb_I_KeyBase, key)
+		key = new lbKey(i);
+
+		key->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+		key++;
+		if (unknown == NULL) _LOG << "Error: Inserting a null pointer!" LOG_
+		list->insert(&unknown, &key);
+		key--;
+	}
+/*...e*/
+
+	return list;

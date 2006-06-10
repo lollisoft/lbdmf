@@ -1,0 +1,17 @@
+class lbConnection
+!!!200007.cpp!!!	lbConnection(inout host : char, in _pid : int, in _tid : int)
+
+	hostname = strdup(host);
+	pid = _pid;
+	tid = _tid;
+!!!200135.cpp!!!	~lbConnection()
+
+	free(hostname);
+!!!200263.cpp!!!	setType() : void
+
+	OTyp = LB_CONNECTION;
+!!!200391.cpp!!!	clone() : lbObject
+
+	lbConnection* cloned = new lbConnection(hostname, pid, tid);
+	
+	return (lbObject*) cloned;

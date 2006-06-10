@@ -1,0 +1,130 @@
+class lbThreadInternal
+!!!224071.cpp!!!	Create(inout thread : lbThread) : lbErrCodes
+
+/*...sTHREAD_VERBOSE:0:*/
+	#ifdef THREAD_VERBOSE
+	_CL_VERBOSE << "lbThreadInternal::Create called" LOG_
+	if (thread == NULL) {
+		printf("lbThreadInternal::Create: Got a null pointer.\n");
+	}
+	#endif
+/*...e*/
+    lb_hThread = ::CreateThread
+                  (
+                    NULL,                               // default security
+                    0,                                  // default stack size
+                    (LPTHREAD_START_ROUTINE)            // thread entry point
+                    lbThreadInternal::WinThreadStart,   //
+                    (LPVOID)thread,                     // parameter
+                    CREATE_SUSPENDED,                   // flags
+                    &lb_ThreadId                        // [out] thread id
+                  );
+/*...sTHREAD_VERBOSE:0:*/
+#ifdef THREAD_VERBOSE
+    _LOG << "Thread with id " << lb_ThreadId << " created" LOG_
+#endif
+/*...e*/
+
+    if ( lb_hThread == NULL )
+    {
+    	// Do some logging
+    	_CL_VERBOSE << "lbThreadInternal: Could not create a thread" LOG_
+
+        return LB_THREAD_ERROR;
+    }
+
+    // lb_ThreadId must be associated with the current clt
+    
+    if ( ::SetThreadPriority(lb_hThread, THREAD_PRIORITY_NORMAL) == 0 )
+    {
+    	_CL_VERBOSE << "lbThreadInternal: Could not set ThreadPriority" LOG_
+    	return LB_THREAD_ERROR;
+    }
+    
+    return ERR_NONE;
+!!!224199.cpp!!!	suspend() : lbErrCodes
+
+    DWORD nSuspendCount = ::SuspendThread(lb_hThread);
+    if ( nSuspendCount == (DWORD)-1 )
+    {
+        _LOG << "lbThreadInternal: Can not suspend thread" LOG_
+
+        return LB_THREAD_ERROR;
+    }
+
+//    m_state = STATE_PAUSED;
+
+    return ERR_NONE;
+!!!224327.cpp!!!	resume() : lbErrCodes
+
+    DWORD nSuspendCount = ::ResumeThread(lb_hThread);
+    if ( nSuspendCount == (DWORD)-1 )
+    {
+        _LOG << "lbThreadInternal: Can not resume thread" LOG_
+
+        return LB_THREAD_ERROR;
+    }
+
+/*...sVERBOSE:0:*/
+#ifdef NOVERBOSE
+    printf("lbThreadInternal::resume, thread resumed\n");
+#endif
+/*...e*/
+
+//    m_state = STATE_RUNNING;
+
+    return ERR_NONE;
+!!!224711.cpp!!!	WinThreadStart(inout thread : lbThread) : DWORD
+
+    // store the thread object in the TLS
+/*...sTHREAD_VERBOSE:0:*/
+    #ifdef THREAD_VERBOSE
+    _LOG << "lbThreadInternal::WinThreadStart: Do NOT store thread in tls" LOG_
+    #endif    
+/*...e*/
+#define bla    
+/*...sbla:0:*/
+#ifdef bla
+    _LOG << "lbThreadInternal::WinThreadStart called" LOG_
+    if ( !::TlsSetValue(s_tlsThisThread, thread) )
+    {
+        _LOG << "lbThreadInternal::WinThreadStart, Can not start thread: error writing TLS." LOG_
+
+        return (DWORD)-1;
+    }
+#endif
+/*...e*/
+#undef bla
+/*...sTHREAD_VERBOSE:0:*/
+#ifdef THREAD_VERBOSE
+_CL_VERBOSE << "lbThreadInternal::WinThreadStart: Calling (DWORD)thread->Entry()" LOG_
+#endif
+/*...e*/
+
+    if (thread == NULL) {
+/*...sTHREAD_VERBOSE:0:*/
+#ifdef THREAD_VERBOSE
+_CL_VERBOSE << "lbThreadInternal::WinThreadStart: Null pointer: thread" LOG_
+#endif
+/*...e*/
+    }
+    
+    DWORD ret = (DWORD)thread->Entry();
+
+/*...sTHREAD_VERBOSE:0:*/
+#ifdef THREAD_VERBOSE
+_CL_VERBOSE << "lbThreadInternal::WinThreadStart: Returning from (DWORD)thread->Entry()\n" LOG_
+#endif
+/*...e*/
+
+    //thread->p_ThreadImpl->SetState(STATE_EXITED);
+/*...sTHREAD_VERBOSE:0:*/
+#ifdef THREAD_VERBOSE
+    _LOG << "lbThreadInternal: Do not call OnExit()" LOG_
+#endif
+/*...e*/
+    //thread->OnExit();
+
+    delete thread;
+
+    return ret;

@@ -1,0 +1,10 @@
+class TopLevel
+!!!216519.cpp!!!	startElement(in name : XMLCh, inout attributes : AttributeList) : XMLHandler
+
+	if (!wcscmp(name, L"VcdjSalesOrder"))
+		return &m_SalesOrdersDocument;
+
+	return kSwallowTagSet;
+!!!216647.cpp!!!	test() : void
+
+	cout << "TopLevel::test() called" << endl;

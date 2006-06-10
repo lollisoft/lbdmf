@@ -1,0 +1,50 @@
+class XMLTreeBuilder
+!!!219207.cpp!!!	XMLTreeBuilder()
+
+!!!219335.cpp!!!	~XMLTreeBuilder()
+
+!!!219463.cpp!!!	endDocument() : void
+
+!!!219591.cpp!!!	endElement(in name : XMLCh) : void
+
+	XMLHandler* curHandler = m_Handlers.top();
+	if (m_Handlers.top()->endElement())
+		m_Handlers.pop();
+!!!219719.cpp!!!	characters(in chars : XMLCh, in length : uint) : void
+
+	m_Handlers.top()->characters(chars, length);
+!!!219847.cpp!!!	startDocument() : void
+
+	m_Handlers.push(&gTopLevel);
+!!!219975.cpp!!!	startElement(in name : XMLCh, inout attributes : AttributeList) : void
+
+	XMLHandler* curHandler = m_Handlers.top();
+	XMLHandler* nextHandler = m_Handlers.top()->startElement(name, attributes);
+	m_Handlers.push(nextHandler ? nextHandler : &gNullHandler );
+!!!220103.cpp!!!	warning(in e : SAXParseException) : void
+
+    cout << "Warning at (file " << e.getSystemId()
+            << ", line " << e.getLineNumber()
+            << ", char " << e.getColumnNumber()
+            << "): " << e.getMessage() << endl;
+!!!220231.cpp!!!	error(in e : SAXParseException) : void
+
+    cout << "Error at (file " << e.getSystemId()
+            << ", line " << e.getLineNumber()
+            << ", char " << e.getColumnNumber()
+            << "): " << e.getMessage() << endl;
+!!!220359.cpp!!!	fatalError(in e : SAXParseException) : void
+
+    cout << "Fatal Error at (file " << e.getSystemId()
+            << ", line " << e.getLineNumber()
+            << ", char " << e.getColumnNumber()
+            << "): " << e.getMessage() << endl;
+!!!220487.cpp!!!	notationDecl(in name : XMLCh, in publicId : XMLCh, in systemId : XMLCh) : void
+
+    // Not used at this time
+!!!220615.cpp!!!	unparsedEntityDecl(in name : XMLCh, in publicId : XMLCh, in systemId : XMLCh, in notationName : XMLCh) : void
+
+    // Not used at this time
+!!!220743.cpp!!!	setTopLevelDocument(inout handler : XMLHandler) : void
+ 
+    	gTopLevel = handler;

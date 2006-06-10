@@ -1,0 +1,16 @@
+class lbDispatchFn
+!!!201159.cpp!!!	lbDispatchFn(in service : char, in fn : lbMemberCallback)
+
+	dispFn = fn;
+!!!201287.cpp!!!	~lbDispatchFn()
+
+!!!201415.cpp!!!	setType() : void
+
+	OTyp = LB_APPCLIENT_DISPATCH_FN;
+!!!201543.cpp!!!	clone() : lbObject
+
+	lbDispatchFn *clone = new lbDispatchFn("", dispFn);
+	return clone;
+!!!201671.cpp!!!	getFn() : lbMemberCallback
+
+	return dispFn;

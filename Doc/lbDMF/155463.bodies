@@ -1,0 +1,470 @@
+class InstanceRepository
+!!!243527.cpp!!!	InstanceRepository(inout m : lb_I_Module)
+
+	manager = m;
+        iList = NULL;
+        cList = NULL;
+        loadedContainer = 0;
+        instances = 0;
+        maxinstances = 1000;
+        references = 0;
+        skip = 0;
+        skipreference = 0;
+        lb_iList = NULL;
+!!!243655.cpp!!!	~InstanceRepository()
+
+        while (iList != NULL) {
+                instanceList* temp = iList;
+                iList = iList->next;
+                dumpReference(temp);
+                delete temp;
+        }
+        
+        while (cList != NULL) {
+                classnameList* temp = cList;
+                cList = cList->next;
+                delete temp;
+        }
+!!!243783.cpp!!!	createInstance(inout addr : char, inout classname : char, inout file : char, in line : int) : void
+
+	// First check, if there is no instance
+	
+	if (skip > 0) return;
+	
+	instanceList* temp = iList;
+	instances++;
+/*	
+	if (instances > maxinstances) {
+		DebugBreak();
+		maxinstances += 1000;
+	}
+*/	
+	if (strcmp("lbInstance", classname) == 0) return;
+	if (strcmp("lbStringKey", classname) == 0) return;
+	
+	if (loadedContainer == 1) {
+/*...sprepare instance entry:16:*/
+		lbInstance* inst = new lbInstance();
+		inst->setModuleManager(manager, __FILE__, __LINE__);
+	
+		inst->setAddress(addr);
+		inst->setClassname(classname);
+		inst->setFile(file);
+		inst->setLine(line);
+/*...e*/
+	
+/*...sprepare key:16:*/
+		lbStringKey *key = new lbStringKey(addr);
+
+		if (manager == NULL) _CL_VERBOSE << "Error: InstanceRepository has got a NULL pointer for the manager" LOG_
+		key->setModuleManager(manager, __FILE__, __LINE__);
+/*...e*/
+
+		//Stack overflow, because key get's cloned.
+		skip++;		
+		lb_iList->insert((lb_I_Unknown**) &inst, (lb_I_KeyBase**) &key);
+		skip--;
+		
+		
+/*...scheck inserted element:16:*/
+		{
+		lbErrCodes err = ERR_NONE;
+		lbStringKey *key = new lbStringKey(addr);
+		
+		if (manager == NULL) _CL_VERBOSE << "Error: InstanceRepository has got a NULL pointer for the manager" LOG_
+		key->setModuleManager(manager, __FILE__, __LINE__);
+		UAP(lb_I_KeyBase, _key)
+		QI(key, lb_I_KeyBase, _key)
+		
+		UAP(lb_I_Unknown, element)
+		element = lb_iList->getElement(&_key);
+		
+		if (element == NULL) {
+			_CL_VERBOSE << "Fatal: InstanceRepository::createInstance(...) could not find inserted element!!!" LOG_
+			//exit(1);
+		}
+/*...e*/
+		
+		}
+		
+		
+	} else {
+/*...sfirst element:8:*/
+	if (iList == NULL) {
+		iList = new instanceList;
+		char address[20] = "";
+		sprintf(address, "%p", iList);
+		iList->next = NULL;
+		iList->rList = NULL;
+		iList->addr = strdup(addr);
+		iList->classname = strdup(classname);
+		iList->file = strdup(file);
+		iList->line = line;
+		return;
+	}
+/*...e*/
+/*...smore than one elements:8:*/
+	while (temp != NULL) {
+		if ((strcmp(Upper(temp->addr), Upper(addr)) == 0) && (strcmp(temp->classname, classname) == 0)) {
+			_CL_VERBOSE << "Error: Instance " << 
+			classname << " in " << file <<
+			" at " << line << " already registered" LOG_
+		} else if (strcmp(Upper(temp->addr), Upper(addr)) == 0) {
+			_CL_VERBOSE << "Error: Found a registered object with the same address. Was it not deleted correctly?" LOG_
+		} else if (temp->next == NULL) {
+			// Insert it here
+			instanceList* neu = new instanceList;
+			
+			neu->next = NULL;
+			neu->rList = NULL;
+			neu->addr = strdup(addr);
+			neu->classname = strdup(classname);
+			neu->file = strdup(file);
+			neu->line = line;
+
+			temp->next = neu;
+			return;
+		}
+		temp = temp->next;
+	}
+/*...e*/
+	}
+!!!243911.cpp!!!	addReference(inout addr : char, inout classname : char, inout file : char, in line : int) : void
+
+	if (skipreference > 0) return;
+	skipreference++;
+	instanceList* temp = iList;
+	lbErrCodes err;
+	int foundReference = 0;
+	
+	if (strcmp(classname, "lbModule") == 0) return;
+	if (loadedContainer == 1) {
+		lbStringKey *key = new lbStringKey(addr);
+		
+		if (manager == NULL) _CL_VERBOSE << "Error: InstanceRepository has got a NULL pointer for the manager" LOG_
+		key->setModuleManager(manager, __FILE__, __LINE__);
+		UAP(lb_I_KeyBase, _key)
+		QI(key, lb_I_KeyBase, _key)
+		
+		UAP(lb_I_Unknown, element)
+		element = lb_iList->getElement(&_key);
+		
+		if (element != NULL) {
+			UAP(lb_I_Instance, instance)
+			QI(element, lb_I_Instance, instance)
+			if (instance != NULL) {
+				instance->addReference(classname, file, line);
+			}
+		}
+	} else
+	while (temp != NULL) {
+/*...ssearch instance address:16:*/
+		if (strcmp(Upper(temp->addr), Upper(addr)) == 0) {
+			// Found the entry for this instance
+			if (strcmp(temp->classname, classname) == 0) {
+				referenceList* rL = temp->rList;
+					
+				while(rL != NULL) {
+					if ((strcmp(rL->file, file) == 0) && (rL->line == line)) {
+						rL->count++;
+						foundReference = 1;
+						break;
+					}
+					rL = rL->next;
+				}
+					
+				if (foundReference == 0) {
+					rL = new referenceList;
+					rL->next = temp->rList;
+					temp->rList = rL;
+					
+					rL->file = strdup(file);
+					rL->line = line;
+					rL->count = 1;
+				}
+			} else {
+				_CL_VERBOSE << "Error: InstanceRepository::addReference() classname differs." << 
+				"Stored: " << temp->classname << " Given: " << classname << 
+				"\nStored was created in " <<
+				 temp->file << " at " << temp->line << " with pointer " << addr LOG_ 
+				return;
+			}
+		}
+/*...e*/
+		temp = temp->next;
+	}
+	
+	skipreference--;
+	
+!!!244039.cpp!!!	delReference(inout addr : char, inout classname : char, inout file : char, in line : int) : void
+
+	if (skipreference > 0) return;
+	skipreference++;
+	instanceList* temp = iList;
+	instanceList* prev = NULL;
+        lbErrCodes err;
+        int foundReference = 0;
+
+	if (strcmp(classname, "lbStringKey") == 0) return;
+        if (loadedContainer == 1) {
+                lbStringKey *key = new lbStringKey(addr);
+
+                if (manager == NULL) _CL_VERBOSE << "Error: InstanceRepository has got a NULL pointer for the manager" LOG_
+                key->setModuleManager(manager, __FILE__, __LINE__);
+                UAP(lb_I_KeyBase, _key)
+                QI(key, lb_I_KeyBase, _key)
+
+                UAP(lb_I_Unknown, element)
+                element = lb_iList->getElement(&_key);
+
+                if (element != NULL) {
+                        UAP(lb_I_Instance, instance)
+                        QI(element, lb_I_Instance, instance)
+                        if (instance != NULL) {
+                                instance->delReference(classname, file, line);
+                        }
+                }
+        } else
+	while (temp != NULL) {
+/*...ssearch instance address:16:*/
+		if (strcmp(Upper(temp->addr), Upper(addr)) == 0) {
+			// Found the entry for this instance
+			if (strcmp(temp->classname, classname) == 0) {
+				referenceList* rList = temp->rList;
+				referenceList* rPrev = NULL;
+				
+				if (rList == NULL) printf("Error: Reference list is NULL\n");
+/*...sSearch in the references:48:*/
+				while (rList != NULL) {
+					#ifdef VERBOSE
+					printf("Stored reference is in %s at %d\n", rList->file, rList->line);
+					#endif
+					if ((strcmp(rList->file, file) == 0) && (rList->line == line)) {
+						foundReference = 1;
+						if (rList->count > 1) {
+							rList->count--;
+							return;
+						} else {
+							if (rList->count != 1) _CL_VERBOSE << "Error: Reference count is wrong" LOG_
+							
+							if (rPrev == NULL) {
+								temp->rList = rList->next;
+								free(rList->file);
+								delete rList;
+							} else {
+								rPrev = rList->next;
+								free(rList->file);
+								delete rList;
+							}
+							
+							if (prev == NULL) {
+								prev = temp;
+								temp = temp->next;
+								free(prev->classname);
+								free(prev->file);
+								if (temp == NULL) {
+									delete iList;
+									iList = NULL;
+								}
+								else {
+									delete prev;
+									prev = NULL;
+								}
+								return;
+							} else {
+								prev->next = temp->next;
+								free(temp->classname);
+								free(temp->file);
+								delete temp;
+								return;
+							}
+						}
+					}
+				
+					rPrev = rList;
+					rList = rList->next;
+				}
+/*...e*/
+				
+				if (foundReference == 0) {
+					_CL_VERBOSE << "Error: Reference was not registered (classname=" << classname <<
+					", file=" << file << ", line=" << line << ")" LOG_ 
+				}
+			} else {
+				_CL_VERBOSE << "Error: InstanceRepository::delReference() classname differs" LOG_
+				return;
+			}
+		}
+		prev = temp;
+		temp = temp->next;
+/*...e*/
+	}
+	skipreference--;
+!!!244167.cpp!!!	destroyInstance(inout addr : char, inout classname : char, inout file : char, in line : int) : void
+
+	if (skip > 0) return;
+	skip++;
+	instanceList* temp = iList;
+	instanceList* prev = NULL;
+
+	if (loadedContainer == 1) {
+/*...sprepare key:16:*/
+		lbStringKey *key = new lbStringKey(addr);
+
+		if (manager == NULL) _CL_VERBOSE << "Error: InstanceRepository has got a NULL pointer for the manager" LOG_
+		key->setModuleManager(manager, __FILE__, __LINE__);
+/*...e*/
+
+		//Stack overflow, because key get's cloned.
+		skip++;		
+		lb_iList->remove((lb_I_KeyBase**) &key);
+		skip--;
+	} else {	
+/*...sLinked list:16:*/
+	while (temp != NULL) {
+		if ((strcmp(Upper(temp->addr), Upper(addr)) == 0) && (strcmp(temp->classname, classname) == 0)) {
+			if (prev == NULL) {
+				if (temp->rList != NULL) {
+					if (temp->rList->count >= 1) {
+						_CL_VERBOSE << "Error: Destroying an instance, that always has references" LOG_
+						referenceList* rTemp = temp->rList;
+						
+						while (rTemp != NULL) {
+							_CL_VERBOSE << "Reference for " << classname << " is at " << 
+							rTemp->file << ": " << rTemp->line <<
+							" with " << rTemp->count << " references." LOG_
+							referenceList* rPrev = rTemp;
+							rTemp = rTemp->next;
+							
+							free(rPrev->file);
+							delete rPrev;
+						}
+					} else {
+						referenceList* rTemp = temp->rList;
+						
+						while (rTemp != NULL) {
+							_CL_VERBOSE << "Reference for " << classname << " is at " << 
+							rTemp->file << ": " << rTemp->line <<
+							" with " << rTemp->count << " references." LOG_
+							referenceList* rPrev = rTemp;
+							rTemp = rTemp->next;
+							
+							free(rPrev->file);
+							delete rPrev;
+						}
+					}
+				} else {
+					prev = temp;
+					temp = temp->next;
+					
+					free(prev->addr);
+					free(prev->file);
+					free(prev->classname);
+					delete prev;
+				}
+			} else {
+				if (temp->rList != NULL) {
+					if (temp->rList->count >= 1) {
+						_CL_VERBOSE << "Error: Destroying an instance, that always has references" LOG_
+						referenceList* rTemp = temp->rList;
+						
+						while (rTemp != NULL) {
+							_CL_VERBOSE << "Reference for " << classname << " is at " << rTemp->file << ": " << 
+							rTemp->line << " with " << rTemp->count << " references." LOG_
+							referenceList* rPrev = rTemp;
+							rTemp = rTemp->next;
+							
+							free(rPrev->file);
+							delete rPrev;
+						}
+					} else {
+						referenceList* rTemp = temp->rList;
+						
+						while (rTemp != NULL) {
+							_CL_VERBOSE << "Reference for " << classname << " is at " << rTemp->file << ": " << 
+							rTemp->line << " with " << rTemp->count << " references." LOG_
+							referenceList* rPrev = rTemp;
+							rTemp = rTemp->next;
+							
+							free(rPrev->file);
+							delete rPrev;
+						}
+					}
+					
+				}  else {
+				       prev->next = temp->next;
+
+				       free(temp->addr);
+				       free(temp->file);
+				       free(temp->classname);
+				       delete temp;
+				}
+			}
+		}
+		
+		prev = temp;
+		temp = temp->next;
+	}
+/*...e*/
+	}
+	skip--;
+!!!244295.cpp!!!	getCreationLoc(inout addr : char) : char
+
+	instanceList* temp = iList;
+/*...sfirst element:8:*/
+	if (iList == NULL) {
+		return "No IR elements available";
+	}
+/*...e*/
+/*...smore than one elements:8:*/
+	while (temp != NULL) {
+		static char buf[1000] = "";
+		sprintf(buf, "Location File: %s, Line: %d", temp->file, temp->line);
+		if (strcmp(Upper(temp->addr), Upper(addr)) == 0) {
+			return buf;
+		} 
+		temp = temp->next;
+	}
+/*...e*/
+	return strdup("No location stored");	
+!!!244423.cpp!!!	printReferences(inout addr : char) : void
+
+	instanceList* temp = iList;
+	_CL_VERBOSE << "InstanceRepository::printReferences(char* addr) called" LOG_
+	while(temp != NULL) {
+		if (strcmp(Upper(temp->addr), Upper(addr)) == 0) {
+			referenceList* rTemp = temp->rList;
+			
+			while(rTemp != NULL) {
+				printf("Reference for %s in %f at %d with %d stored count's\n", 
+				temp->classname, rTemp->file, rTemp->line, rTemp->count);
+				rTemp = rTemp->next;
+			}
+		}
+		temp = temp->next;
+	}
+	_CL_VERBOSE << "InstanceRepository::printReferences(char* addr) leaving" LOG_
+!!!244551.cpp!!!	dumpReference(inout i : instanceList) : void
+
+	referenceList* rTemp = i->rList;
+	while(rTemp != NULL) {
+		printf("Instance for %s has a reference in %s at %d\n", 
+			i->classname, rTemp->file, rTemp->line);
+		rTemp = rTemp->next;
+	}
+!!!244679.cpp!!!	loadContainer(inout m : lb_I_Module) : void
+
+	if (loadedContainer == 1) return;
+	loadedContainer = 1;
+
+	SkipList* instances = new SkipList();
+
+	lb_iList = instances;
+	
+	instanceList* temp = iList;
+	_CL_VERBOSE << "Info: InstanceRepository::loadContainer(...) is not implemented completely" LOG_
+	while (temp != NULL) {
+		printf("Have an instance %s in %s at %d\n", temp->classname, temp->file, temp->line);
+		temp = temp->next;
+	}
+

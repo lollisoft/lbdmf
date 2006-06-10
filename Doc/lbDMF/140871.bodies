@@ -1,0 +1,87 @@
+class lbLocale
+!!!190407.cpp!!!	lbLocale()
+
+	ref = STARTREF;
+	_lang = (char*) malloc(100);
+	_lang[0] = 0;
+	strcpy(_lang, "german");
+!!!190535.cpp!!!	~lbLocale()
+
+	if (_lang) free(_lang);
+!!!190663.cpp!!!	translate(inout text : char, in to_translate : char) : void
+
+	UAP_REQUEST(manager.getPtr(), lb_I_Database, database)
+
+	database->init();
+
+	char* lbDMFPasswd = getenv("lbDMFPasswd");
+	char* lbDMFUser   = getenv("lbDMFUser");
+
+	if (!lbDMFUser) lbDMFUser = "dba";
+	if (!lbDMFPasswd) lbDMFPasswd = "trainres";
+
+	if (database->connect("lbDMF", lbDMFUser, lbDMFPasswd) != ERR_NONE) {
+		char* temp = *text;
+		*text = (char*) malloc(strlen(to_translate)+1);
+		*text[0] = 0;
+		strcpy(*text, to_translate);
+		if (temp) free(temp);
+		return;
+	}
+
+	UAP(lb_I_Query, sampleQuery)
+
+	sampleQuery = database->getQuery(0);
+
+	char buffer[800] = "";
+
+	sprintf(buffer, "select translated from translations where language = '%s' and text = '%s'", _lang, to_translate);
+
+	sampleQuery->skipFKCollecting();
+	sampleQuery->query(buffer);
+
+	// Fill up the available applications for that user.
+	
+	lbErrCodes err = sampleQuery->first();
+
+	if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
+
+	        UAP_REQUEST(manager.getPtr(), lb_I_String, s1)
+
+	        s1 = sampleQuery->getAsString(1);
+
+		char* temp = *text;
+
+		if (strcmp(s1->charrep(), "") == 0) {
+			*text = (char*) malloc(strlen(to_translate) + 1);
+			*text[0] = 0;
+			strcpy(*text, to_translate);
+		} else {
+			*text = (char*) malloc(strlen(s1->charrep()) + 1);
+			*text[0] = 0;
+			strcpy(*text, s1->charrep());
+		}
+		if (temp) free(temp);
+	} else {
+		char* temp = *text;
+		*text = (char*) malloc(strlen(to_translate) + 1);
+		*text[0] = 0;
+		if (temp) free(temp);
+
+		_CL_VERBOSE << "šbersetzung fr '" << to_translate << "' nicht gefunden!" LOG_
+
+		buffer[0] = 0;
+		
+		sprintf(buffer, "insert into translations (text, translated) values('%s', '%s')", to_translate, to_translate);
+
+		/* Sybase SQL Anywhere 5.5 has problems with state 24000. Maybe an auto commit problem */
+		UAP(lb_I_Query, sampleQuery1)
+		sampleQuery1 = database->getQuery(0);
+		sampleQuery1->skipFKCollecting();
+		sampleQuery1->query(buffer);
+		sampleQuery1->enableFKCollecting();
+
+		strcpy(*text, to_translate);
+	}
+
+	sampleQuery->enableFKCollecting();

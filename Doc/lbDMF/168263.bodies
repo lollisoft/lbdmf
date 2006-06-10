@@ -1,0 +1,7 @@
+class lbDatabaseInputStream
+!!!317127.cpp!!!	visit(inout  : lb_I_Application) : void
+
+	_CL_LOG << "lbDatabaseInputStream::visit(): Read data of application." LOG_
+!!!317895.cpp!!!	end() : void
+
+

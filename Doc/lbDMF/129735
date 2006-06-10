@@ -1,0 +1,2099 @@
+format 22
+"lbModule" // BaseDevelopment::lbModule
+  // class settings
+  //class diagram settings
+  draw_all_relations default hide_attributes default hide_operations default show_full_members_definition default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default
+  //use case diagram settings
+  package_name_in_tab default show_context default auto_label_position default
+  //sequence diagram settings
+  show_full_operations_definition default write_horizontally default drawing_language default
+  //collaboration diagram settings
+  show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default
+  //component diagram settings
+  package_name_in_tab default show_context default auto_label_position default
+  draw_component_as_icon default show_component_req_prov default show_component_rea default
+  //deployment diagram settings
+  package_name_in_tab default show_context default write_horizontally default auto_label_position default
+  draw_component_as_icon default show_component_req_prov default show_component_rea default
+  //state diagram settings
+  package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default
+  show_activities default region_horizontally default drawing_language default
+  
+  classview 129479 "lbModule"
+    //class diagram settings
+    draw_all_relations default hide_attributes default hide_operations default show_full_members_definition default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default
+    //col diagram settings
+    show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default
+    //seq diagram settings
+    show_full_operations_definition default write_horizontally default drawing_language default
+    //state diagram settings
+    package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default
+    show_activities default region_horizontally default drawing_language default
+    //class settings
+    class 154183 "_referenceList"
+       stereotype "struct"
+      
+      cpp_decl "${comment}${template}struct ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "...e
+#ifdef bla
+...sclass InstanceRepository:0:
+...sreferenceList:0:"
+      attribute 156615 "file"
+	public explicit_type "char"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	java_decl ""
+	idl_decl ""
+      end
+
+      attribute 156743 "line"
+	public explicit_type "int"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	idl_decl ""
+      end
+
+      attribute 156871 "count"
+	public explicit_type "int"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	idl_decl ""
+      end
+
+      classrelation 146887 // next (<unidirectional association>)
+	relation 146887 --->
+	  a role_name "next" multiplicity "" public
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 146887 // next (<unidirectional association>)
+	  b parent class_ref 154183 // _referenceList
+      end
+    end
+
+    class 154311 "referenceList"
+       stereotype "typedef" base_type class_ref 154183 // _referenceList
+      
+      cpp_decl "${comment}typedef ${type} ${name}, *preferenceList;
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+    end
+
+    class 154439 "_instanceList"
+       stereotype "struct"
+      
+      cpp_decl "${comment}${template}struct ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "...e
+...sinstanceList:0:"
+      attribute 156999 "addr"
+	public explicit_type "char"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	java_decl ""
+	idl_decl ""
+      end
+
+      attribute 157127 "classname"
+	public explicit_type "char"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	java_decl ""
+	idl_decl ""
+      end
+
+      attribute 157255 "file"
+	public explicit_type "char"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	java_decl ""
+	idl_decl ""
+      end
+
+      attribute 157383 "line"
+	public explicit_type "int"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	idl_decl ""
+      end
+
+      classrelation 147015 // rList (<unidirectional association>)
+	relation 147015 --->
+	  a role_name "rList" multiplicity "" public
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 147015 // rList (<unidirectional association>)
+	  b parent class_ref 154311 // referenceList
+      end
+
+      classrelation 147143 // next (<unidirectional association>)
+	relation 147143 --->
+	  a role_name "next" multiplicity "" public
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 147143 // next (<unidirectional association>)
+	  b parent class_ref 154439 // _instanceList
+      end
+    end
+
+    class 154567 "instanceList"
+       stereotype "typedef" base_type class_ref 154439 // _instanceList
+      
+      cpp_decl "${comment}typedef ${type} ${name}, *pinstanceList;
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+    end
+
+    class 154695 "_classnameList"
+       stereotype "struct"
+      
+      cpp_decl "${comment}${template}struct ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "...e
+...sclassnameList:0:"
+      attribute 157511 "classname"
+	public explicit_type "char"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	java_decl ""
+	idl_decl ""
+      end
+
+      classrelation 147271 // instances (<unidirectional association>)
+	relation 147271 --->
+	  a role_name "instances" multiplicity "" public
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 147271 // instances (<unidirectional association>)
+	  b parent class_ref 154567 // instanceList
+      end
+
+      classrelation 147399 // next (<unidirectional association>)
+	relation 147399 --->
+	  a role_name "next" multiplicity "" public
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 147399 // next (<unidirectional association>)
+	  b parent class_ref 154695 // _classnameList
+      end
+    end
+
+    class 154823 "classnameList"
+       stereotype "typedef" base_type class_ref 154695 // _classnameList
+      
+      cpp_decl "${comment}typedef ${type} ${name}, *pclassnameList;
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+    end
+
+    class 154951 "lbInstance"
+      
+      
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "...sclass lbInstance:0:
+...sclass lbInstance:0:"
+      classrelation 147527 // <generalisation>
+	relation 147527 ---|>
+	  a public
+	    cpp default "Generated"
+	    classrelation_ref 147527 // <generalisation>
+	  b parent class_ref 155079 // lb_I_Instance
+      end
+
+      attribute 157639 "addr"
+	private explicit_type "char"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	java_decl ""
+	idl_decl ""
+      end
+
+      attribute 157767 "classname"
+	private explicit_type "char"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	java_decl ""
+	idl_decl ""
+      end
+
+      attribute 157895 "file"
+	private explicit_type "char"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	java_decl ""
+	idl_decl ""
+      end
+
+      attribute 158023 "line"
+	private explicit_type "int"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	idl_decl ""
+      end
+
+      attribute 158151 "key"
+	private explicit_type "char"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	java_decl ""
+	idl_decl ""
+      end
+
+      operation 241095 "~lbInstance"
+	cpp_virtual private explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${virtual}${name}${(}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${class}::${name}${(}${)}${throw}{
+${body}}
+"
+	
+	
+      end
+
+      operation 241223 "getAddress"
+	cpp_virtual private explicit_return_type "char"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//...e
+//...sper instance functions:0:
+
+${comment}${inline}${type} * ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 241351 "getInstanceClassname"
+	cpp_virtual private explicit_return_type "char"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} * ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 241479 "getFile"
+	cpp_virtual private explicit_return_type "char"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} * ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 241607 "getLine"
+	cpp_virtual private explicit_return_type "int"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 241735 "setAddress"
+	cpp_virtual private explicit_return_type "void"
+	nparams 1
+	  param inout name "a" explicit_type "char"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 241863 "setClassname"
+	cpp_virtual private explicit_return_type "void"
+	nparams 1
+	  param inout name "c" explicit_type "char"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 241991 "setFile"
+	cpp_virtual private explicit_return_type "void"
+	nparams 1
+	  param inout name "f" explicit_type "char"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 242119 "setLine"
+	cpp_virtual private explicit_return_type "void"
+	nparams 1
+	  param in name "l" explicit_type "int"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 242247 "addReference"
+	cpp_virtual private explicit_return_type "void"
+	nparams 3
+	  param inout name "classname" explicit_type "char"
+	  param inout name "file" explicit_type "char"
+	  param in name "line" explicit_type "int"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}, ${t1} * ${p1}, ${t2} ${p2}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//...svoid LB_STDCALL lbInstance\\58\\\\58\\addReference\\40\\char\\42\\ classname\\44\\ char\\42\\ file\\44\\ int line\\41\\:0:
+
+${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}, ${t1} * ${p1}, ${t2} ${p2}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+	comment "*
+	 * Build a string with classname + _ + file + _ + line as a key for the reference.
+	 * If the release function is used directly, it shows me an unregistered reference,
+	 * so I will find all non UAP pointers.
+	 "
+      end
+
+      operation 242375 "delReference"
+	cpp_virtual private explicit_return_type "void"
+	nparams 3
+	  param inout name "classname" explicit_type "char"
+	  param inout name "file" explicit_type "char"
+	  param in name "line" explicit_type "int"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}, ${t1} * ${p1}, ${t2} ${p2}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//...e
+//...svoid LB_STDCALL lbInstance\\58\\\\58\\delReference\\40\\char\\42\\ classname\\44\\ char\\42\\ file\\44\\ int line\\41\\:0:
+
+${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}, ${t1} * ${p1}, ${t2} ${p2}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+    end
+
+    class 155207 "lbInstanceReference"
+      
+      
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "...e
+...e
+...sclass lbInstanceReference:0:"
+      classrelation 147655 // <generalisation>
+	relation 147655 ---|>
+	  a public
+	    cpp default "Generated"
+	    classrelation_ref 147655 // <generalisation>
+	  b parent class_ref 155335 // lb_I_InstanceReference
+      end
+
+      attribute 158279 "file"
+	private explicit_type "char"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	java_decl ""
+	idl_decl ""
+      end
+
+      attribute 158407 "line"
+	private explicit_type "int"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	idl_decl ""
+      end
+
+      attribute 158535 "count"
+	private explicit_type "int"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	idl_decl ""
+      end
+
+      operation 242503 "~lbInstanceReference"
+	cpp_virtual private explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${virtual}${name}${(}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${class}::${name}${(}${)}${throw}{
+${body}}
+"
+	
+	
+      end
+
+      operation 242631 "getFile"
+	cpp_virtual private explicit_return_type "char"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} * ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 242759 "getLine"
+	cpp_virtual private explicit_return_type "int"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 242887 "getCount"
+	cpp_virtual private explicit_return_type "int"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 243015 "setFile"
+	cpp_virtual private explicit_return_type "void"
+	nparams 1
+	  param inout name "f" explicit_type "char"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 243143 "setLine"
+	cpp_virtual private explicit_return_type "void"
+	nparams 1
+	  param in name "l" explicit_type "int"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 243271 "setCount"
+	cpp_virtual private explicit_return_type "void"
+	nparams 1
+	  param in name "c" explicit_type "int"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+    end
+
+    class 155463 "InstanceRepository"
+      
+      
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "...sclass InstanceRepository:0:"
+      operation 243399 "InstanceRepository"
+	cpp_inline private explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${name}${(}${)}${volatile}${throw} {};
+"
+	
+	
+      end
+
+      operation 243527 "InstanceRepository"
+	public explicit_return_type ""
+	nparams 1
+	  param inout name "m" type class_ref 155591 // lb_I_Module
+	cpp_decl "    ${comment}${inline}${name}${(}${t0} * ${p0}${)}${volatile}${throw};
+"
+	cpp_def "//...e
+//...sInstanceRepository\\58\\\\58\\InstanceRepository\\40\\lb_I_Module\\42\\ m\\41\\:0:
+
+${comment}${inline}${class}::${name}${(}${t0} * ${p0}${)}${throw}{
+${body}}
+"
+	
+	
+      end
+
+      operation 243655 "~InstanceRepository"
+	cpp_virtual public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${virtual}${name}${(}${)}${volatile}${throw};
+"
+	cpp_def "//...e
+//...sInstanceRepository\\58\\\\58\\\\126\\InstanceRepository\\40\\\\41\\:0:
+
+${comment}${inline}${class}::${name}${(}${)}${throw}{
+${body}}
+"
+	
+	
+      end
+
+      operation 243783 "createInstance"
+	public explicit_return_type "void"
+	nparams 4
+	  param inout name "addr" explicit_type "char"
+	  param inout name "classname" explicit_type "char"
+	  param inout name "file" explicit_type "char"
+	  param in name "line" explicit_type "int"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}, ${t1} * ${p1}, ${t2} * ${p2}, ${t3} ${p3}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//...e
+//...sInstanceRepository\\58\\\\58\\createInstance\\40\\char\\42\\ addr\\44\\ char\\42\\ classname\\44\\ char\\42\\ file\\44\\ int line\\41\\:0:
+
+${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}, ${t1} * ${p1}, ${t2} * ${p2}, ${t3} ${p3}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 243911 "addReference"
+	public explicit_return_type "void"
+	nparams 4
+	  param inout name "addr" explicit_type "char"
+	  param inout name "classname" explicit_type "char"
+	  param inout name "file" explicit_type "char"
+	  param in name "line" explicit_type "int"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}, ${t1} * ${p1}, ${t2} * ${p2}, ${t3} ${p3}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//...e
+//...sInstanceRepository\\58\\\\58\\addReference\\40\\char\\42\\ addr\\44\\ char\\42\\ classname\\44\\ char\\42\\ file\\44\\ int line\\41\\:0:
+
+${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}, ${t1} * ${p1}, ${t2} * ${p2}, ${t3} ${p3}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 244039 "delReference"
+	public explicit_return_type "void"
+	nparams 4
+	  param inout name "addr" explicit_type "char"
+	  param inout name "classname" explicit_type "char"
+	  param inout name "file" explicit_type "char"
+	  param in name "line" explicit_type "int"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}, ${t1} * ${p1}, ${t2} * ${p2}, ${t3} ${p3}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//...e
+//...sInstanceRepository\\58\\\\58\\delReference\\40\\char\\42\\ addr\\44\\ char\\42\\ classname\\44\\ char\\42\\ file\\44\\ int line\\41\\:0:
+
+${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}, ${t1} * ${p1}, ${t2} * ${p2}, ${t3} ${p3}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 244167 "destroyInstance"
+	public explicit_return_type "void"
+	nparams 4
+	  param inout name "addr" explicit_type "char"
+	  param inout name "classname" explicit_type "char"
+	  param inout name "file" explicit_type "char"
+	  param in name "line" explicit_type "int"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}, ${t1} * ${p1}, ${t2} * ${p2}, ${t3} ${p3}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//...e
+//...sInstanceRepository\\58\\\\58\\destroyInstance\\40\\char\\42\\ addr\\44\\ char\\42\\ classname\\44\\ char\\42\\ file\\44\\ int line\\41\\:0:
+
+${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}, ${t1} * ${p1}, ${t2} * ${p2}, ${t3} ${p3}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 244295 "getCreationLoc"
+	public explicit_return_type "char"
+	nparams 1
+	  param inout name "addr" explicit_type "char"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//...e
+//...sInstanceRepository\\58\\\\58\\getCreationLoc\\40\\char\\42\\ addr\\41\\:0:
+
+${comment}${inline}${type} * ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 244423 "printReferences"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "addr" explicit_type "char"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//...e
+//...sInstanceRepository\\58\\\\58\\printReferences\\40\\char\\42\\ addr\\41\\:0:
+
+${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 244551 "dumpReference"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "i" type class_ref 154567 // instanceList
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//...e
+//...sInstanceRepository\\58\\\\58\\dumpReference\\40\\instanceList\\42\\ i\\41\\:0:
+
+${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 244679 "loadContainer"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "m" type class_ref 155591 // lb_I_Module
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//...e
+//...sInstanceRepository\\58\\\\58\\loadContainer\\40\\lb_I_Module\\42\\ m\\41\\:0:
+
+${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      classrelation 147783 // iList (<unidirectional association>)
+	relation 147783 --->
+	  a role_name "iList" multiplicity "" public
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 147783 // iList (<unidirectional association>)
+	  b parent class_ref 154567 // instanceList
+      end
+
+      classrelation 147911 // cList (<unidirectional association>)
+	relation 147911 --->
+	  a role_name "cList" multiplicity "" public
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 147911 // cList (<unidirectional association>)
+	  b parent class_ref 154823 // classnameList
+      end
+
+      attribute 158663 "instances"
+	public explicit_type "int"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	idl_decl ""
+      end
+
+      attribute 158791 "maxinstances"
+	public explicit_type "int"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	idl_decl ""
+      end
+
+      attribute 158919 "references"
+	public explicit_type "int"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	idl_decl ""
+      end
+
+      classrelation 148039 // manager (<unidirectional association>)
+	relation 148039 --->
+	  a role_name "manager" multiplicity "" public
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 148039 // manager (<unidirectional association>)
+	  b parent class_ref 155591 // lb_I_Module
+      end
+
+      attribute 159047 "skip"
+	public explicit_type "int"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	idl_decl ""
+      end
+
+      attribute 159175 "skipreference"
+	public explicit_type "int"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	idl_decl ""
+      end
+    end
+
+    class 155719 "lbModuleContainer"
+      
+      
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "...sclass lbModuleContainer:0:"
+      classrelation 148167 // <generalisation>
+	relation 148167 ---|>
+	  a public
+	    cpp default "Generated"
+	    classrelation_ref 148167 // <generalisation>
+	  b parent class_ref 140103 // lb_I_Container
+      end
+
+      operation 244807 "lbModuleContainer"
+	public explicit_return_type ""
+	nparams 1
+	  param in name "c" type class_ref 140103 // lb_I_Container
+	cpp_decl "    ${comment}${inline}${name}${(}const ${t0} * ${p0}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${class}::${name}${(}const ${t0} * ${p0}${)}${throw}{
+${body}}
+"
+	
+	
+      end
+
+      operation 244935 "operator ="
+	public return_type class_ref 140103 // lb_I_Container
+	nparams 1
+	  param in name "c" type class_ref 140103 // lb_I_Container
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}const ${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} * ${class}::${name}${(}const ${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 245063 "lbModuleContainer"
+	public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${name}${(}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${class}::${name}${(}${)}${throw}{
+${body}}
+"
+	
+	
+      end
+
+      operation 245191 "~lbModuleContainer"
+	cpp_virtual public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${virtual}${name}${(}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${class}::${name}${(}${)}${throw}{
+${body}}
+"
+	
+	
+      end
+
+      operation 245319 "setFunctor"
+	cpp_virtual cpp_inline public explicit_return_type "void"
+	nparams 1
+	  param inout name "functor" explicit_type "char"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} {
+        	if (_functor) free(_functor);
+			if (functor == NULL) return;
+        	_functor = (char*) malloc(strlen(functor)+1);
+        	_functor[0] = 0;
+        	strcpy(_functor, functor);
+        };
+"
+	
+	
+      end
+
+      operation 245447 "setModule"
+	cpp_virtual cpp_inline public explicit_return_type "void"
+	nparams 1
+	  param inout name "module" explicit_type "char"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} {
+        	if (_module) free(_module);
+			if (module == NULL) return;
+        	_module = (char*) malloc(strlen(module)+1);
+        	_module[0] = 0;
+        	strcpy(_module, module);
+        };
+"
+	
+	
+      end
+
+      operation 245575 "setInterface"
+	cpp_virtual cpp_inline public explicit_return_type "void"
+	nparams 1
+	  param inout name "iface" explicit_type "char"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} {
+        	if (_interface) free(_interface);
+        	_interface = (char*) malloc(strlen(iface)+1);
+        	_interface[0] = 0;
+        	strcpy(_interface, iface);
+        };
+"
+	
+	
+      end
+
+      operation 245703 "getModule"
+	cpp_virtual cpp_inline public explicit_return_type "char"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}${)}${const}${volatile}${throw}${abstract} {
+        	return _module;
+        };
+"
+	
+	
+      end
+
+      operation 245831 "getInterface"
+	cpp_virtual cpp_inline public explicit_return_type "char"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}${)}${const}${volatile}${throw}${abstract} {
+        	return _interface;
+	};
+"
+	
+	
+      end
+
+      classrelation 148295 // <dependency>
+	relation 148295 -_->
+	  stereotype "friend"
+	  a protected
+	    cpp default "Generated"
+	    classrelation_ref 148295 // <dependency>
+	  b parent class_ref 155847 // lb_I_InterfaceRepository
+      end
+
+      attribute 159303 "_functor"
+	public explicit_type "char"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	java_decl ""
+	idl_decl ""
+      end
+
+      attribute 159431 "_module"
+	public explicit_type "char"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	java_decl ""
+	idl_decl ""
+      end
+
+      attribute 159559 "_interface"
+	public explicit_type "char"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	java_decl ""
+	idl_decl ""
+      end
+    end
+
+    class 155975 "lbHCInterfaceRepository"
+      
+      
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "...e
+...sclass lbHCInterfaceRepository:0:"
+      classrelation 148423 // <generalisation>
+	relation 148423 ---|>
+	  a public
+	    cpp default "Generated"
+	    classrelation_ref 148423 // <generalisation>
+	  b parent class_ref 155847 // lb_I_InterfaceRepository
+      end
+
+      operation 245959 "lbHCInterfaceRepository"
+	public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${name}${(}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${class}::${name}${(}${)}${throw}{
+${body}}
+"
+	
+	
+      end
+
+      operation 246087 "~lbHCInterfaceRepository"
+	cpp_virtual public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${virtual}${name}${(}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${class}::${name}${(}${)}${throw}{
+${body}}
+"
+	
+	
+      end
+
+      operation 246215 "getFirstEntity"
+	public return_type class_ref 156103 // lb_I_FunctorEntity
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//...slb_I_FunctorEntity\\42\\ LB_STDCALL lbHCInterfaceRepository\\58\\\\58\\getFirstEntity\\40\\\\41\\:0:
+
+${comment}${inline}${type} * ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 246343 "initIntefaceList"
+	public explicit_return_type "void"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//...svoid lbHCInterfaceRepository\\58\\\\58\\initIntefaceList\\40\\\\41\\:0:
+
+${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      attribute 159687 "errorsOccured"
+	public explicit_type "int"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	idl_decl ""
+      end
+
+      attribute 159815 "interfaces"
+	public explicit_type "uint"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	idl_decl ""
+	comment " current interface index"
+      end
+
+      attribute 159943 "len"
+	public explicit_type "uint"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	idl_decl ""
+      end
+
+      attribute 160071 "CurrentSearchMode"
+	public explicit_type "int"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	idl_decl ""
+      end
+
+      attribute 160199 "searchArgument"
+	public explicit_type "char"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	java_decl ""
+	idl_decl ""
+      end
+
+      attribute 160327 "invalidSearchStatus"
+	public explicit_type "int"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	idl_decl ""
+      end
+    end
+
+    class 156231 "lbModule"
+      
+      
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "...sclass lbModule and implementation:0:
+...sclass lbModule:0:"
+      classrelation 148551 // <generalisation>
+	relation 148551 ---|>
+	  a public
+	    cpp default "Generated"
+	    classrelation_ref 148551 // <generalisation>
+	  b parent class_ref 155591 // lb_I_Module
+      end
+
+      operation 246471 "lbModule"
+	public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${name}${(}${)}${volatile}${throw};
+"
+	cpp_def "//...e
+//...e
+
+${comment}${inline}${class}::${name}${(}${)}${throw}{
+${body}}
+"
+	
+	
+      end
+
+      operation 246599 "~lbModule"
+	cpp_virtual public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${virtual}${name}${(}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${class}::${name}${(}${)}${throw}{
+${body}}
+"
+	
+	
+      end
+
+      operation 246727 "request"
+	cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	nparams 2
+	  param in name "request" explicit_type "char"
+	  param inout name "result" type class_ref 141767 // lb_I_Unknown
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} * ${p0}, ${t1} * * ${p1}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//...sDocu for Module management:0:
+//*
+// * lbModule is a manager for creating instances of interfaces, regartless where
+// * it came from. lbModule must be responsible for the following tasks:
+// *
+// * Knowing of loaded modules,
+// * loading new modules,
+// * releasing a module, if no more instances from there are in use.
+// *
+// *
+// * So these functions may be declared for that issues:
+// *
+// * protected:
+// * // Handle is managed internally
+// * lbErrCodes lbModule::loadModule(const char* modulename);
+// *
+// * // Not the handle is needed. A module can only loaded once in a process.
+// * lbErrCodes lbModule::unloadModule(const char* modulename);   
+// *
+// *
+// * A general problem here is, that a bootstraping of some base instances must be
+// * made. For the module management I need a container instance. For this problem,
+// * It may be usefull to implement simple classes for that interfaces.
+// *
+// *
+// *
+// 
+//...e
+//...slbModule\\58\\\\58\\request\\40\\\\46\\\\46\\\\46\\\\41\\:0:
+//*
+// * The requestable interface simply return result of 'spoken' requests.
+// * The 'spoken' request may be only one word or it may a sentence.
+// *
+// * A possible request may like this:
+// *      get instance from interface '<parameter>'
+// *
+// * With this, a requestable object may be instructable by a simple script
+// * language.
+// 
+
+${comment}${inline}${type} ${class}::${name}${(}const ${t0} * ${p0}, ${t1} * * ${p1}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 246855 "uninitialize"
+	cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//...e
+//...slbErrCodes LB_STDCALL uninitialize\\40\\\\41\\:0:
+
+${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 246983 "printReferences"
+	cpp_virtual public explicit_return_type "void"
+	nparams 1
+	  param inout name "addr" explicit_type "char"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//...e
+//...svoid LB_STDCALL lbModule\\58\\\\58\\printReferences\\40\\char\\42\\ addr\\41\\:0:
+
+${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 247111 "getCreationLoc"
+	cpp_virtual public explicit_return_type "char"
+	nparams 1
+	  param inout name "addr" explicit_type "char"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//...e
+//...sdebug helper:0:
+//...schar\\42\\ LB_STDCALL lbModule\\58\\\\58\\getCreationLoc\\40\\char\\42\\ addr\\41\\:0:
+
+${comment}${inline}${type} * ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 247239 "notify_create"
+	cpp_virtual public explicit_return_type "void"
+	nparams 4
+	  param inout name "that" type class_ref 141767 // lb_I_Unknown
+	  param inout name "implName" explicit_type "char"
+	  param inout name "file" explicit_type "char"
+	    defaultvalue " \"\""
+	  param in name "line" explicit_type "int"
+	    defaultvalue " 0"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}, ${t1} * ${p1}, ${t2} * ${p2}, ${t3} ${p3}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//...e
+//...svoid LB_STDCALL lbModule\\58\\\\58\\notify_create\\40\\lb_I_Unknown\\42\\ that\\44\\ char\\42\\ implName\\44\\ char\\42\\ file\\44\\ int line\\41\\:0:
+
+${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}, ${t1} * ${p1}, ${t2} * ${p2}, ${t3} ${p3}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 247367 "notify_add"
+	cpp_virtual public explicit_return_type "void"
+	nparams 4
+	  param inout name "that" type class_ref 141767 // lb_I_Unknown
+	  param inout name "implName" explicit_type "char"
+	  param inout name "file" explicit_type "char"
+	  param in name "line" explicit_type "int"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}, ${t1} * ${p1}, ${t2} * ${p2}, ${t3} ${p3}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//...e
+//...svoid LB_STDCALL lbModule\\58\\\\58\\notify_add\\40\\lb_I_Unknown\\42\\ that\\44\\ char\\42\\ implName\\44\\ char\\42\\ file\\44\\ int line\\41\\:0:
+
+${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}, ${t1} * ${p1}, ${t2} * ${p2}, ${t3} ${p3}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 247495 "notify_release"
+	cpp_virtual public explicit_return_type "void"
+	nparams 4
+	  param inout name "that" type class_ref 141767 // lb_I_Unknown
+	  param inout name "implName" explicit_type "char"
+	  param inout name "file" explicit_type "char"
+	  param in name "line" explicit_type "int"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}, ${t1} * ${p1}, ${t2} * ${p2}, ${t3} ${p3}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//...e
+//...svoid LB_STDCALL lbModule\\58\\\\58\\notify_release\\40\\lb_I_Unknown\\42\\ that\\44\\ char\\42\\ implName\\44\\ char\\42\\ file\\44\\ int line\\41\\:0:
+
+${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}, ${t1} * ${p1}, ${t2} * ${p2}, ${t3} ${p3}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 247623 "notify_destroy"
+	cpp_virtual public explicit_return_type "void"
+	nparams 4
+	  param inout name "that" type class_ref 141767 // lb_I_Unknown
+	  param inout name "implName" explicit_type "char"
+	  param inout name "file" explicit_type "char"
+	  param in name "line" explicit_type "int"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}, ${t1} * ${p1}, ${t2} * ${p2}, ${t3} ${p3}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//...e
+//...svoid LB_STDCALL lbModule\\58\\\\58\\notify_destroy\\40\\lb_I_Unknown\\42\\ that\\44\\ char\\42\\ implName\\44\\ char\\42\\ file\\44\\ int line\\41\\:0:
+
+${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}, ${t1} * ${p1}, ${t2} * ${p2}, ${t3} ${p3}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 247751 "can_delete"
+	cpp_virtual public explicit_return_type "int"
+	nparams 4
+	  param inout name "that" type class_ref 141767 // lb_I_Unknown
+	  param inout name "implName" explicit_type "char"
+	  param inout name "file" explicit_type "char"
+	    defaultvalue " \"\""
+	  param in name "line" explicit_type "int"
+	    defaultvalue " 0"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}, ${t1} * ${p1}, ${t2} * ${p2}, ${t3} ${p3}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//...e
+//...sint  LB_STDCALL lbModule\\58\\\\58\\can_delete\\40\\lb_I_Unknown\\42\\ that\\44\\ char\\42\\ implName\\44\\ char\\42\\ file\\44\\ int line\\41\\:0:
+
+${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}, ${t1} * ${p1}, ${t2} * ${p2}, ${t3} ${p3}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 247879 "getObjectInstance"
+	cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	nparams 2
+	  param in name "name" explicit_type "char"
+	  param inout name "inst" type class_ref 140103 // lb_I_Container
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} * ${p0}, ${t1} * & ${p1}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//...e
+//...slbErrCodes lbModule\\58\\\\58\\getObjectInstance\\40\\const char\\42\\ name\\44\\ lb_I_Container\\42\\\\38\\ inst\\41\\:0:
+
+${comment}${inline}${type} ${class}::${name}${(}const ${t0} * ${p0}, ${t1} * & ${p1}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 248007 "getFunctors"
+	cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	nparams 3
+	  param inout name "interfacename" explicit_type "char"
+	  param inout name "node" type class_ref 147783 // lb_I_ConfigObject
+	  param inout name "uk" type class_ref 141767 // lb_I_Unknown
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}, ${t1} * ${p1}, ${t2} * & ${p2}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//...e
+//...slbErrCodes lbModule\\58\\\\58\\getFunctors\\40\\char\\42\\ interfacename\\44\\ lb_I_ConfigObject\\42\\ node\\44\\ lb_I_Unknown\\42\\\\38\\ uk\\41\\:0:
+
+${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}, ${t1} * ${p1}, ${t2} * & ${p2}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 248135 "getInstance"
+	cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	nparams 3
+	  param inout name "functorname" explicit_type "char"
+	  param inout name "node" type class_ref 147783 // lb_I_ConfigObject
+	  param inout name "uk" type class_ref 141767 // lb_I_Unknown
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}, ${t1} * ${p1}, ${t2} * & ${p2}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//...e
+
+${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}, ${t1} * ${p1}, ${t2} * & ${p2}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 248263 "getDefaultImpl"
+	cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	nparams 4
+	  param inout name "interfacename" explicit_type "char"
+	  param inout name "node" type class_ref 147783 // lb_I_ConfigObject
+	  param inout name "implTor" explicit_type "char"
+	  param inout name "module" explicit_type "char"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}, ${t1} * * ${p1}, ${t2} * & ${p2}, ${t3} * & ${p3}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//...e
+//...slbErrCodes lbModule\\58\\\\58\\getDefaultImpl\\40\\char\\42\\ interfacename\\44\\ lb_I_ConfigObject\\42\\\\42\\ node\\44\\ char\\42\\\\38\\ implTor\\44\\ char\\42\\\\38\\ module\\41\\:0:
+
+${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}, ${t1} * * ${p1}, ${t2} * & ${p2}, ${t3} * & ${p3}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 248391 "load"
+	cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	nparams 1
+	  param inout name "name" explicit_type "char"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//...e
+//...slbErrCodes lbModule\\58\\\\58\\load\\40\\char\\42\\ name\\41\\:0:
+
+${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 248519 "preload"
+	cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	nparams 1
+	  param inout name "name" explicit_type "char"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 248647 "makeInstance"
+	cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	nparams 3
+	  param inout name "functor" explicit_type "char"
+	  param inout name "module" explicit_type "char"
+	  param inout name "instance" type class_ref 141767 // lb_I_Unknown
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}, ${t1} * ${p1}, ${t2} * * ${p2}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//...e
+//...slbErrCodes lbModule\\58\\\\58\\makeInstance\\40\\char\\42\\ functor\\44\\ char\\42\\ module\\44\\ lb_I_Unknown\\42\\\\42\\ instance\\41\\:0:
+
+${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}, ${t1} * ${p1}, ${t2} * * ${p2}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 248775 "getXMLConfigObject"
+	protected explicit_return_type "void"
+	nparams 1
+	  param inout name "inst" type class_ref 156359 // lb_I_XMLConfig
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * * ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * * ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 248903 "getXMLConfigObject"
+	protected explicit_return_type "void"
+	nparams 1
+	  param inout name "inst" type class_ref 155847 // lb_I_InterfaceRepository
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * * ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * * ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 249031 "findFunctorNode"
+	protected return_type class_ref 147783 // lb_I_ConfigObject
+	nparams 2
+	  param inout name "_node" type class_ref 147783 // lb_I_ConfigObject
+	  param in name "request" explicit_type "char"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}${t0} * * ${p0}, const ${t1} * ${p1}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//...e
+// Helpers to abstract XML structure
+//...slbModule\\58\\\\58\\findFunctorNode\\40\\\\46\\\\46\\\\46\\\\41\\:0:
+//*
+// * Creates a view of needed data in a lb_I_ConfigObject.
+// * The node then contains only one subtree for a functor.
+// * 
+// * Input:       A list of functor nodes in a view of a lb_I_ConfigObject
+// *              
+// *              The request itself
+// *
+// * Output:      Only one node from the list in a new view
+// 
+
+${comment}${inline}${type} * ${class}::${name}${(}${t0} * * ${p0}, const ${t1} * ${p1}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 249159 "findFunctorModule"
+	protected explicit_return_type "char"
+	nparams 1
+	  param inout name "_node" type class_ref 147783 // lb_I_ConfigObject
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}${t0} * * ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//...e
+//...slbModule\\58\\\\58\\findFunctorModule\\40\\\\46\\\\46\\\\46\\\\41\\:0:
+
+${comment}${inline}${type} * ${class}::${name}${(}${t0} * * ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 249287 "findFunctorName"
+	protected explicit_return_type "char"
+	nparams 1
+	  param inout name "___node" type class_ref 147783 // lb_I_ConfigObject
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}${t0} * * ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//...e
+//...slbModule\\58\\\\58\\findFunctorName\\40\\\\46\\\\46\\\\46\\\\41\\:0:
+
+${comment}${inline}${type} * ${class}::${name}${(}${t0} * * ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      attribute 160455 "internalInstanceRequest"
+	protected explicit_type "int"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	idl_decl ""
+      end
+
+      attribute 160583 "initializing"
+	protected explicit_type "int"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	idl_decl ""
+      end
+    end
+
+    class 156487 "lbNamedValue"
+      
+      
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "...sclass lbNamedValue:0:"
+      classrelation 148679 // <generalisation>
+	relation 148679 ---|>
+	  a public
+	    cpp default "Generated"
+	    classrelation_ref 148679 // <generalisation>
+	  b parent class_ref 141767 // lb_I_Unknown
+      end
+
+      operation 249415 "lbNamedValue"
+	cpp_inline public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${name}${(}${)}${volatile}${throw} {
+                name = strdup(\"\");
+        };
+"
+	
+	
+      end
+
+      operation 249543 "~lbNamedValue"
+	cpp_virtual cpp_inline public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${virtual}${name}${(}${)}${volatile}${throw} {
+                free(name);
+        };
+"
+	
+	
+      end
+
+      operation 249671 "setName"
+	public return_type class_ref 128711 // lbErrCodes
+	nparams 1
+	  param in name "_name" explicit_type "char"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} * const ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//...e
+//...slbNamedValue\\58\\\\58\\setName\\40\\\\41\\:0:
+
+${comment}${inline}${type} ${class}::${name}${(}const ${t0} * const ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 249799 "setValue"
+	public return_type class_ref 128711 // lbErrCodes
+	nparams 1
+	  param inout name "_value" type class_ref 141767 // lb_I_Unknown
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//...e
+//...slbNamedValue\\58\\\\58\\setValue\\40\\\\41\\:0:
+
+${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+	comment "*
+         * This is a one value container. Objects in a container are copies of inserted
+         * ones. This prevents manipulation of an object outside of the container.
+         *
+         * A modification must explicidly set into the container via the set function.
+         "
+      end
+
+      operation 249927 "getValue"
+	public return_type class_ref 128711 // lbErrCodes
+	nparams 1
+	  param inout name "_value" type class_ref 141767 // lb_I_Unknown
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//...e
+//...slbNamedValue\\58\\\\58\\getValue\\40\\\\41\\:0:
+
+${comment}${inline}${type} ${class}::${name}${(}${t0} * & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      attribute 160711 "name"
+	public explicit_type "char"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	java_decl ""
+	idl_decl ""
+      end
+
+      classrelation 148807 // uk_value (<unidirectional association>)
+	relation 148807 --->
+	  a role_name "uk_value" multiplicity "" public
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 148807 // uk_value (<unidirectional association>)
+	  b parent class_ref 141767 // lb_I_Unknown
+      end
+    end
+
+    class 156615 "instances_of_module"
+       stereotype "struct"
+      
+      cpp_decl "${comment}${template}struct ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      attribute 160839 "moduleName"
+	public explicit_type "char"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	java_decl ""
+	idl_decl ""
+      end
+
+      attribute 160967 "count"
+	public explicit_type "int"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	idl_decl ""
+      end
+    end
+
+    class 156743 "instModule"
+       stereotype "typedef" base_type class_ref 156615 // instances_of_module
+      
+      cpp_decl "${comment}typedef ${type} ${name};
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+    end
+  end
+
+  deploymentview 129351 "lbModule"
+    //deployment diagram settings
+    package_name_in_tab default show_context default write_horizontally default auto_label_position default
+    draw_component_as_icon default show_component_req_prov default show_component_rea default
+    artifact 142023 "_referenceList"
+      stereotype "source"
+      cpp_h "#ifndef _${NAME}_H
+#define _${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_classes
+	class_ref 154183 // _referenceList
+      end
+    end
+
+    artifact 142151 "referenceList"
+      stereotype "source"
+      cpp_h "#ifndef _${NAME}_H
+#define _${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_classes
+	class_ref 154311 // referenceList
+      end
+    end
+
+    artifact 142279 "_instanceList"
+      stereotype "source"
+      cpp_h "#ifndef _${NAME}_H
+#define _${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_classes
+	class_ref 154439 // _instanceList
+      end
+    end
+
+    artifact 142407 "instanceList"
+      stereotype "source"
+      cpp_h "#ifndef _${NAME}_H
+#define _${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_classes
+	class_ref 154567 // instanceList
+      end
+    end
+
+    artifact 142535 "_classnameList"
+      stereotype "source"
+      cpp_h "#ifndef _${NAME}_H
+#define _${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_classes
+	class_ref 154695 // _classnameList
+      end
+    end
+
+    artifact 142663 "classnameList"
+      stereotype "source"
+      cpp_h "#ifndef _${NAME}_H
+#define _${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_classes
+	class_ref 154823 // classnameList
+      end
+    end
+
+    artifact 142791 "lbInstance"
+      stereotype "source"
+      cpp_h "#ifndef _${NAME}_H
+#define _${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_classes
+	class_ref 154951 // lbInstance
+      end
+    end
+
+    artifact 142919 "lbInstanceReference"
+      stereotype "source"
+      cpp_h "#ifndef _${NAME}_H
+#define _${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_classes
+	class_ref 155207 // lbInstanceReference
+      end
+    end
+
+    artifact 143047 "InstanceRepository"
+      stereotype "source"
+      cpp_h "#ifndef _${NAME}_H
+#define _${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_classes
+	class_ref 155463 // InstanceRepository
+      end
+    end
+
+    artifact 143175 "lbModuleContainer"
+      stereotype "source"
+      cpp_h "#ifndef _${NAME}_H
+#define _${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_classes
+	class_ref 155719 // lbModuleContainer
+      end
+    end
+
+    artifact 143303 "lbHCInterfaceRepository"
+      stereotype "source"
+      cpp_h "#ifndef _${NAME}_H
+#define _${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_classes
+	class_ref 155975 // lbHCInterfaceRepository
+      end
+    end
+
+    artifact 143431 "lbModule"
+      stereotype "source"
+      cpp_h "#ifndef _${NAME}_H
+#define _${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_classes
+	class_ref 156231 // lbModule
+      end
+    end
+
+    artifact 143559 "lbNamedValue"
+      stereotype "source"
+      cpp_h "#ifndef _${NAME}_H
+#define _${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_classes
+	class_ref 156487 // lbNamedValue
+      end
+    end
+
+    artifact 143687 "instances_of_module"
+      stereotype "source"
+      cpp_h "#ifndef _${NAME}_H
+#define _${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_classes
+	class_ref 156615 // instances_of_module
+      end
+    end
+
+    artifact 143815 "instModule"
+      stereotype "source"
+      cpp_h "#ifndef _${NAME}_H
+#define _${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_classes
+	class_ref 156743 // instModule
+      end
+    end
+  end
+end

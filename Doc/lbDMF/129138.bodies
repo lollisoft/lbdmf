@@ -1,0 +1,500 @@
+class MyApp
+!!!138354.cpp!!!	OnInit(in  : void) : bool
+
+    char b[100] = "";
+    wxStopWatch sw;
+
+    UAP(lb_I_Module, mm)
+    mm = getModuleInstance();
+
+
+    if (mm == NULL) {
+	wxMessageDialog dialog(NULL, "Module manager not found. could not run application.", "Error", wxOK);
+
+	dialog.ShowModal();  
+	return FALSE;
+    } 
+
+    mm->setModuleManager(mm.getPtr(), __FILE__, __LINE__);
+    setModuleManager(mm.getPtr(), __FILE__, __LINE__);
+    
+    UAP_REQUEST(mm.getPtr(), lb_I_String, string)
+    UAP_REQUEST(mm.getPtr(), lb_I_Database, tempDB) // Preload this module
+    UAP_REQUEST(mm.getPtr(), lb_I_PluginManager, PM)
+    UAP_REQUEST(mm.getPtr(), lb_I_MetaApplication, metaApp)
+    UAP_REQUEST(mm.getPtr(), lb_I_Dispatcher, disp)
+	REQUEST(mm.getPtr(), lb_I_EventManager, ev_manager)        
+
+    metaApp++;
+
+    lbErrCodes err = ERR_NONE;
+
+    disp->setEventManager(ev_manager.getPtr());
+		
+    if (disp == NULL) _LOG << "Fatal: Have not got a dispatcher!" LOG_
+
+    if (wxGUI == NULL) {
+        wxGUI = new lb_wxGUI();
+        wxGUI->setModuleManager(mm.getPtr(), __FILE__, __LINE__);
+
+	// Register Events, that I provide
+
+	ev_manager->registerEvent("AddMenu", AddMenu);
+	ev_manager->registerEvent("AddMenuBar", AddMenuBar);
+	ev_manager->registerEvent("AddButton", AddButton);	
+
+	ev_manager->registerEvent("showLeft", AddButton);	
+	
+	ev_manager->registerEvent("AddMenuEntry", AddMenuEntry);
+	ev_manager->registerEvent("AddLabel", AddLabel);
+	ev_manager->registerEvent("AddTextField", AddTextField);
+	ev_manager->registerEvent("askOpenFileReadStream", AskOpenFileReadStream);
+	ev_manager->registerEvent("askYesNo", _askYesNo);
+	ev_manager->registerEvent("enableEvent", _enableEvent);
+	ev_manager->registerEvent("disableEvent", _disableEvent);
+	ev_manager->registerEvent("toggleEvent", _toggleEvent);
+
+        registerEventHandler(*&disp);
+    }
+
+    UAP(lb_I_Unknown, uk)
+    uk = wxGUI->createFrame();
+    uk++;
+    uk++;
+
+    frame = (lb_wxFrame*) uk.getPtr();
+
+    frame->registerEventHandler(*&disp);
+
+    // Fake. Parameter not used yet.
+    wxGUI->setIcon("mondrian");
+
+    //err = frame->createEventsource(this);
+
+    wxGUI->registerEventHandler(*&disp);
+
+    if (err != ERR_NONE) _LOG << "Have some problems to set up menu event sources" LOG_
+
+    PM->initialize();
+  
+    frame->Centre();
+
+    SetTopWindow(frame);
+
+    if (metaApp != NULL) {
+        metaApp->setGUI(wxGUI);
+        metaApp->initialize();
+		if (metaApp->getGUIMaximized()) frame->Maximize();
+    } 
+
+    frame->Show(TRUE);
+
+    if (PM->beginEnumPlugins()) {
+	
+    while (TRUE) {
+        UAP(lb_I_Plugin, pl)
+        pl = PM->nextPlugin();
+        if (pl == NULL) break;
+            pl->initialize();
+        }
+    }
+
+    if (metaApp != NULL) metaApp->run();
+
+    return TRUE;
+!!!138866.cpp!!!	registerEventHandler(inout disp : lb_I_Dispatcher) : lbErrCodes
+
+	// We provide some menu manipulation
+	
+	disp->addEventHandlerFn(this, (lbEvHandler) &MyApp::addMenu, "AddMenu");
+	disp->addEventHandlerFn(this, (lbEvHandler) &MyApp::addMenuBar, "AddMenuBar");
+	disp->addEventHandlerFn(this, (lbEvHandler) &MyApp::addMenuEntry, "AddMenuEntry");
+	disp->addEventHandlerFn(this, (lbEvHandler) &MyApp::addButton, "AddButton");
+	disp->addEventHandlerFn(this, (lbEvHandler) &MyApp::addLabel, "AddLabel");
+	disp->addEventHandlerFn(this, (lbEvHandler) &MyApp::addTextField, "AddTextField");
+	disp->addEventHandlerFn(this, (lbEvHandler) &MyApp::askOpenFileReadStream, "askOpenFileReadStream");
+	disp->addEventHandlerFn(this, (lbEvHandler) &MyApp::askYesNo, "askYesNo");
+
+	disp->addEventHandlerFn(this, (lbEvHandler) &MyApp::enableEvent, "enableEvent");
+	disp->addEventHandlerFn(this, (lbEvHandler) &MyApp::disableEvent, "disableEvent");
+	disp->addEventHandlerFn(this, (lbEvHandler) &MyApp::toggleEvent, "toggleEvent");
+
+	return ERR_NONE;
+!!!138994.cpp!!!	addMenu(inout uk : lb_I_Unknown) : lbErrCodes
+
+	return ERR_NONE;
+!!!139122.cpp!!!	askOpenFileReadStream(inout uk : lb_I_Unknown) : lbErrCodes
+
+	lbErrCodes err = ERR_NONE;
+
+	UAP_REQUEST(manager.getPtr(), lb_I_EventManager, ev_manager)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, name)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, filepath)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, defaultdir)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, after)
+
+	UAP(lb_I_Parameter, param)
+	
+	QI(uk, lb_I_Parameter, param)
+	
+	parameter->setData("extention");
+	param->getUAPString(*&parameter, *&name);
+
+	//"BMP and GIF files (*.bmp;*.gif)|*.bmp;*.gif|PNG files (*.png)|*.png"
+	
+	wxFileDialog fileDialog(NULL, _trans("Choose a file"), defaultdir->charrep(), "", name->charrep(), wxOPEN);
+
+	_CL_LOG << "Show up a file dialog." LOG_
+
+	if (fileDialog.ShowModal() == wxID_OK) {
+		parameter->setData("result");
+		filepath->setData(fileDialog.GetPath().c_str());
+		param->setUAPString(*&parameter, *&filepath);
+	} else {
+		parameter->setData("result");
+		filepath->setData("");
+		param->setUAPString(*&parameter, *&filepath);
+	}
+	
+	return err;
+!!!139250.cpp!!!	askYesNo(inout uk : lb_I_Unknown) : lbErrCodes
+
+	lbErrCodes err = ERR_NONE;
+
+	UAP_REQUEST(manager.getPtr(), lb_I_EventManager, ev_manager)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, msg)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, result)
+
+	UAP(lb_I_Parameter, param)
+	
+	QI(uk, lb_I_Parameter, param)
+	
+	parameter->setData("msg");
+	param->getUAPString(*&parameter, *&msg);
+	
+	wxMessageDialog msgDialog(NULL, msg->charrep(), _trans("Frage..."), wxYES_NO);
+
+	if (msgDialog.ShowModal() == wxID_YES) {
+		parameter->setData("result");
+		result->setData("yes");
+		param->setUAPString(*&parameter, *&result);
+	} else {
+		parameter->setData("result");
+		result->setData("no");
+		param->setUAPString(*&parameter, *&result);
+	}
+	
+	return err;
+!!!139378.cpp!!!	addMenuBar(inout uk : lb_I_Unknown) : lbErrCodes
+
+	lbErrCodes err = ERR_NONE;
+
+	UAP_REQUEST(manager.getPtr(), lb_I_EventManager, ev_manager)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, name)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, after)
+
+	UAP(lb_I_Parameter, param)
+	
+	QI(uk, lb_I_Parameter, param)
+	
+	parameter->setData("name");
+	param->getUAPString(*&parameter, *&name);
+
+	if (param->Count() > 1) {
+		parameter->setData("after");
+		param->getUAPString(*&parameter, *&after);
+		
+		wxMenu *menu = new wxMenu;
+		
+		wxMenuBar* mbar = frame->getMenuBar();
+		
+		int pos = 0;
+		
+		if (mbar) {
+			wxString m = wxString(after->getData());
+			pos = mbar->FindMenu(m);
+			mbar->Insert(pos+1, menu, name->getData());
+		}
+	} else {
+		wxMenu *menu = new wxMenu;
+
+		wxMenuBar* mbar = frame->getMenuBar();
+		if (mbar) mbar->Append(menu, name->getData());
+	}
+	
+	return err;
+!!!139506.cpp!!!	addMenuEntry(inout uk : lb_I_Unknown) : lbErrCodes
+
+/*...scode:0:*/
+	lbErrCodes err = ERR_NONE;
+
+	UAP_REQUEST(manager.getPtr(), lb_I_EventManager, ev_manager)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, menubar)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, menuname)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, handlername)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, checkable)
+	
+	
+	UAP(lb_I_Parameter, param)
+
+	QI(uk, lb_I_Parameter, param)
+
+	parameter->setData("menubar");
+	param->getUAPString(*&parameter, *&menubar);
+	parameter->setData("menuname");
+	param->getUAPString(*&parameter, *&menuname);
+	parameter->setData("handlername");
+	param->getUAPString(*&parameter, *&handlername);
+
+	if (param->Count() > 3) {
+		parameter->setData("checkable");
+		param->getUAPString(*&parameter, *&checkable);
+	}
+	
+	int EvNr = 0;
+	
+	if (ev_manager->resolveEvent(handlername->getData(), EvNr) == ERR_EVENT_NOTREGISTERED) {
+		_CL_LOG << "ERROR: Could not register a menu entry with an unregistered handler!" LOG_
+		
+		return ERR_EVENT_NOTREGISTERED;
+	}
+
+	wxMenuBar* mbar = frame->getMenuBar();
+	
+	wxMenu* menu = mbar->GetMenu(mbar->FindMenu(wxString(menubar->getData())));
+
+
+	if ((param->Count() > 3) && (strcmp(checkable->charrep(), "yes") == 0))
+		menu->AppendCheckItem(EvNr, menuname->getData());
+	else
+		menu->Append(EvNr, menuname->getData());
+
+
+
+	((wxFrame*) frame)->Connect( EvNr,  -1, wxEVT_COMMAND_MENU_SELECTED,
+          (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
+          &lb_wxFrame::OnDispatch );
+
+	return ERR_NONE;
+/*...e*/
+!!!139634.cpp!!!	enableEvent(inout uk : lb_I_Unknown) : lbErrCodes
+
+	lbErrCodes err = ERR_NONE;
+
+	UAP_REQUEST(manager.getPtr(), lb_I_EventManager, ev_manager)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, handlername)
+	
+	UAP(lb_I_Parameter, param)
+	QI(uk, lb_I_Parameter, param)
+
+	parameter->setData("handlername");
+	param->getUAPString(*&parameter, *&handlername);
+
+	int EvNr = 0;
+	
+	if (ev_manager->resolveEvent(handlername->getData(), EvNr) == ERR_EVENT_NOTREGISTERED) {
+		_CL_LOG << "ERROR: Could not register a menu entry with an unregistered handler!" LOG_
+		
+		return ERR_EVENT_NOTREGISTERED;
+	}
+
+	wxMenuBar* mbar = frame->getMenuBar();
+
+	mbar->Enable(EvNr, true);
+
+	return err;
+!!!139762.cpp!!!	disableEvent(inout uk : lb_I_Unknown) : lbErrCodes
+
+	lbErrCodes err = ERR_NONE;
+
+	UAP_REQUEST(manager.getPtr(), lb_I_EventManager, ev_manager)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, handlername)
+	
+	UAP(lb_I_Parameter, param)
+	QI(uk, lb_I_Parameter, param)
+
+	parameter->setData("handlername");
+	param->getUAPString(*&parameter, *&handlername);
+
+	int EvNr = 0;
+	
+	if (ev_manager->resolveEvent(handlername->getData(), EvNr) == ERR_EVENT_NOTREGISTERED) {
+		_CL_LOG << "ERROR: Could not register a menu entry with an unregistered handler!" LOG_
+		
+		return ERR_EVENT_NOTREGISTERED;
+	}
+
+	wxMenuBar* mbar = frame->getMenuBar();
+
+	mbar->Enable(EvNr, false);
+
+	return err;
+!!!139890.cpp!!!	toggleEvent(inout uk : lb_I_Unknown) : lbErrCodes
+
+	lbErrCodes err = ERR_NONE;
+
+	UAP_REQUEST(manager.getPtr(), lb_I_EventManager, ev_manager)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, handlername)
+	
+	UAP(lb_I_Parameter, param)
+	QI(uk, lb_I_Parameter, param)
+
+	parameter->setData("handlername");
+	param->getUAPString(*&parameter, *&handlername);
+
+	int EvNr = 0;
+	
+	if (ev_manager->resolveEvent(handlername->getData(), EvNr) == ERR_EVENT_NOTREGISTERED) {
+		_CL_LOG << "ERROR: Could not register a menu entry with an unregistered handler!" LOG_
+		
+		return ERR_EVENT_NOTREGISTERED;
+	}
+
+	wxMenuBar* mbar = frame->getMenuBar();
+
+	mbar->Check(EvNr, !mbar->IsChecked(EvNr));
+
+	return err;
+!!!140018.cpp!!!	addButton(inout uk : lb_I_Unknown) : lbErrCodes
+
+	lbErrCodes err = ERR_NONE;
+
+	UAP_REQUEST(manager.getPtr(), lb_I_EventManager, ev_manager)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, buttontext)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, handlername)
+	UAP_REQUEST(manager.getPtr(), lb_I_Integer, x)
+	UAP_REQUEST(manager.getPtr(), lb_I_Integer, y)
+	UAP_REQUEST(manager.getPtr(), lb_I_Integer, w)
+	UAP_REQUEST(manager.getPtr(), lb_I_Integer, h)	
+	
+	UAP(lb_I_Parameter, param)
+
+	QI(uk, lb_I_Parameter, param)
+
+	parameter->setData("buttontext");
+	param->getUAPString(*&parameter, *&buttontext);
+	parameter->setData("handlername");
+	param->getUAPString(*&parameter, *&handlername);
+	parameter->setData("x");
+	param->getUAPInteger(*&parameter, *&x);	
+	parameter->setData("y");
+	param->getUAPInteger(*&parameter, *&y);	
+	parameter->setData("w");
+	param->getUAPInteger(*&parameter, *&w);	
+	parameter->setData("h");
+	param->getUAPInteger(*&parameter, *&h);	
+	
+	int EvNr = 0;
+	ev_manager->resolveEvent(handlername->getData(), EvNr);
+
+	wxButton *button = new wxButton(panel, EvNr, buttontext->getData(), 
+					wxPoint(x->getData(),y->getData()), 
+					wxSize((int) w->getData(),(int) h->getData() ));
+
+	frame->Connect( EvNr,  -1, wxEVT_COMMAND_BUTTON_CLICKED,
+	  (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
+	    &lb_wxFrame::OnDispatch );
+
+	return ERR_NONE;
+!!!140146.cpp!!!	addLabel(inout uk : lb_I_Unknown) : lbErrCodes
+
+	_LOG << "MyApp::addLabel called" LOG_
+	lbErrCodes err = ERR_NONE;
+
+	UAP_REQUEST(manager.getPtr(), lb_I_EventManager, ev_manager)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, buttontext)
+	UAP_REQUEST(manager.getPtr(), lb_I_Integer, x)
+	UAP_REQUEST(manager.getPtr(), lb_I_Integer, y)
+	UAP_REQUEST(manager.getPtr(), lb_I_Integer, w)
+	UAP_REQUEST(manager.getPtr(), lb_I_Integer, h)	
+	
+	UAP(lb_I_Parameter, param)
+
+	QI(uk, lb_I_Parameter, param)
+
+	parameter->setData("labeltext");
+	param->getUAPString(*&parameter, *&buttontext);
+	parameter->setData("x");
+	param->getUAPInteger(*&parameter, *&x);	
+	parameter->setData("y");
+	param->getUAPInteger(*&parameter, *&y);	
+	parameter->setData("w");
+	param->getUAPInteger(*&parameter, *&w);	
+	parameter->setData("h");
+	param->getUAPInteger(*&parameter, *&h);	
+	
+	wxStaticText *text = new wxStaticText(panel, -1, buttontext->getData(), wxPoint(x->getData(),y->getData()),
+					wxSize((int) w->getData(),(int) h->getData() ));
+
+	return ERR_NONE;
+!!!140274.cpp!!!	addTextField(inout uk : lb_I_Unknown) : lbErrCodes
+
+	lbErrCodes err = ERR_NONE;
+
+	UAP_REQUEST(manager.getPtr(), lb_I_EventManager, ev_manager)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, buttontext)
+	UAP_REQUEST(manager.getPtr(), lb_I_Integer, x)
+	UAP_REQUEST(manager.getPtr(), lb_I_Integer, y)
+	UAP_REQUEST(manager.getPtr(), lb_I_Integer, w)
+	UAP_REQUEST(manager.getPtr(), lb_I_Integer, h)	
+	
+	UAP(lb_I_Parameter, param)
+
+	QI(uk, lb_I_Parameter, param)
+
+	parameter->setData("text");
+	param->getUAPString(*&parameter, *&buttontext);
+	parameter->setData("x");
+	param->getUAPInteger(*&parameter, *&x);	
+	parameter->setData("y");
+	param->getUAPInteger(*&parameter, *&y);	
+	parameter->setData("w");
+	param->getUAPInteger(*&parameter, *&w);	
+	parameter->setData("h");
+	param->getUAPInteger(*&parameter, *&h);	
+	
+	wxTextCtrl *text = new 
+	
+	wxTextCtrl(panel, -1, buttontext->getData(), wxPoint(x->getData(),y->getData()),
+					wxSize((int) w->getData(),(int) h->getData() ));
+
+	return ERR_NONE;
+!!!140402.cpp!!!	HandleGetFrame(inout uk : lb_I_Unknown) : lbErrCodes
+
+        if(frame != NULL) {
+                lb_I_Unknown* _uk;
+                UAP(lb_I_Reference, ref)
+                frame->queryInterface("lb_I_Unknown", (void**) &_uk, __FILE__, __LINE__);
+                
+                uk->queryInterface("lb_I_Reference", (void**) &ref, __FILE__, __LINE__);
+                
+                ref->set(_uk);
+        }
+        return ERR_NONE;
+!!!140530.cpp!!!	HandleAddMenu(inout uk : lb_I_Unknown) : lbErrCodes
+
+	lbErrCodes err = ERR_NONE;
+
+	UAP(lb_I_String, string)
+	if (uk == NULL) _LOG << "Have got a null pointer" LOG_;
+	QI(uk, lb_I_String, string)
+	
+	wxMenu *menu = new wxMenu;
+
+	menu->Append(DYNAMIC_TEST1, "&About");
+	menu->Append(DYNAMIC_TEST2, "E&xit");
+	    
+	wxMenuBar* mBar = frame->getMenuBar();
+	mBar->Append(menu, "&Edit");
+
+        return ERR_NONE;

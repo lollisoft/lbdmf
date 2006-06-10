@@ -1,0 +1,97 @@
+class lb_wxFrame
+!!!131570.cpp!!!	~lb_wxFrame()
+
+
+	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, metaApp)
+	
+	metaApp->setGUIMaximized(IsMaximized());
+
+#ifdef USE_WXAUI
+	// deinitialize the frame manager
+	m_mgr.UnInit();
+#endif
+	
+	if (guiCleanedUp == 0) {
+		if (gui) gui->cleanup();
+		guiCleanedUp = 1;
+	}
+!!!131698.cpp!!!	lb_wxFrame(inout frame : wxFrame, inout title : char, in x : int, in y : int, in w : int, in h : int)
+
+	menu_bar = NULL;
+	guiCleanedUp = 0;
+
+	// Splitter window handling
+	m_left = m_right = NULL;
+	m_splitter = NULL;
+	m_replacewindow = NULL;
+	
+	_isSplitted = false;
+!!!132466.cpp!!!	OnDispatch(inout event : wxCommandEvent) : void
+
+        switch (event.GetId()) {
+        case DYNAMIC_QUIT:
+                OnQuit(event);
+                break;
+        case DYNAMIC_ABOUT:
+                OnAbout(event);
+                break;
+	case DYNAMIC_VERBOSE:
+		OnVerbose(event);
+		break;
+        case DYNAMIC_BUILDMENU:
+        	{
+        		OnBuildMenu(event);
+        	}
+        	break;
+        default:
+                // Delegate all other events
+                {
+                	lbErrCodes err = ERR_NONE;
+			lb_I_Module* m = getModuleInstance();
+			
+			if (eman == NULL) {
+				REQUEST(m, lb_I_EventManager, eman)
+			}
+		
+			if (dispatcher == NULL) {
+				REQUEST(m, lb_I_Dispatcher, dispatcher)
+				dispatcher->setEventManager(eman.getPtr());
+			}				
+
+			UAP_REQUEST(m, lb_I_Integer, param)
+			
+			param->setData(event.GetId());
+			
+			UAP(lb_I_Unknown, uk)
+			QI(param, lb_I_Unknown, uk)
+		
+			UAP_REQUEST(m, lb_I_String, result)
+			UAP(lb_I_Unknown, uk_result)
+			QI(result, lb_I_Unknown, uk_result)
+		
+			dispatcher->dispatch(event.GetId(), uk.getPtr(), &uk_result);
+                }
+                break;
+        }
+!!!133490.cpp!!!	createEventsource(inout object : lb_I_EventConnector) : lbErrCodes
+
+
+/*...screate a menu:0:*/
+  // Make a menubar
+  wxMenu *file_menu = new wxMenu;
+  
+  file_menu->Append(DYNAMIC_ABOUT, _trans("&About\tCtrl-A"));
+  file_menu->Append(DYNAMIC_VERBOSE, _trans("&Verbose\tCtrl-V"));
+  file_menu->Append(DYNAMIC_QUIT, _trans("E&xit\tCtrl-x"));
+
+  menu_bar = new wxMenuBar;
+  menu_bar->Append(file_menu, _trans("&File"));
+  
+/*...e*/
+
+/*...sset the created menubar:0:*/
+
+  SetMenuBar(menu_bar);
+
+/*...e*/
+        return ERR_NONE;

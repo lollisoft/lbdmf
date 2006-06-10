@@ -1,0 +1,8 @@
+class lbOwnerDrawControl
+!!!302407.cpp!!!	init(inout parent : lb_I_Window) : void
+
+	
+	// Not sure, if it is a panel based dialog or a dialog.
+
+	lbDatabasePanel* p = (lbDatabasePanel*) parent;
+	Create(p, -1, wxPoint(), wxSize(40,40)); 

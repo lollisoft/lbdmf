@@ -1,0 +1,10 @@
+class lbInteger
+!!!193863.cpp!!!	lbInteger()
+
+	ref = STARTREF;
+	integerdata = 0;
+!!!193991.cpp!!!	~lbInteger()
+
+!!!194119.cpp!!!	getData() : int
+
+	return integerdata;

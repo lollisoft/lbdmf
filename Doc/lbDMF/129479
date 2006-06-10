@@ -1,0 +1,1635 @@
+format 22
+"lbXMLConfig" // BaseDevelopment::lbXMLConfig::lbXMLConfig
+  // class settings
+  //class diagram settings
+  draw_all_relations default hide_attributes default hide_operations default show_full_members_definition default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default
+  //use case diagram settings
+  package_name_in_tab default show_context default auto_label_position default
+  //sequence diagram settings
+  show_full_operations_definition default write_horizontally default drawing_language default
+  //collaboration diagram settings
+  show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default
+  //component diagram settings
+  package_name_in_tab default show_context default auto_label_position default
+  draw_component_as_icon default show_component_req_prov default show_component_rea default
+  //deployment diagram settings
+  package_name_in_tab default show_context default write_horizontally default auto_label_position default
+  draw_component_as_icon default show_component_req_prov default show_component_rea default
+  //state diagram settings
+  package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default
+  show_activities default region_horizontally default drawing_language default
+  
+  classview 129223 "lbXMLConfig"
+    //class diagram settings
+    draw_all_relations default hide_attributes default hide_operations default show_full_members_definition default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default
+    //col diagram settings
+    show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default
+    //seq diagram settings
+    show_full_operations_definition default write_horizontally default drawing_language default
+    //state diagram settings
+    package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default
+    show_activities default region_horizontally default drawing_language default
+    //class settings
+    class 147271 "_lbAttribut"
+       stereotype "struct"
+      
+      cpp_decl "${comment}${template}struct ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      attribute 149319 "name"
+	public explicit_type "char"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	java_decl ""
+	idl_decl ""
+      end
+
+      attribute 149447 "value"
+	public explicit_type "char"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	java_decl ""
+	idl_decl ""
+      end
+
+      classrelation 140359 // where (<unidirectional association>)
+	relation 140359 --->
+	  a role_name "where" multiplicity "" public
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 140359 // where (<unidirectional association>)
+	  b parent class_ref 147399 // lbConfigObject
+      end
+
+      classrelation 140487 // next (<unidirectional association>)
+	relation 140487 --->
+	  a role_name "next" multiplicity "" public
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 140487 // next (<unidirectional association>)
+	  b parent class_ref 147271 // _lbAttribut
+      end
+    end
+
+    class 147399 "lbConfigObject"
+      
+      
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "...sclass lbConfigObject \\58\\ public lb_I_ConfigObject:0:"
+      classrelation 140871 // <generalisation>
+	relation 140871 ---|>
+	  a public
+	    cpp default "Generated"
+	    classrelation_ref 140871 // <generalisation>
+	  b parent class_ref 148039 // XMLHandler
+      end
+
+      classrelation 140999 // <generalisation>
+	relation 140999 ---|>
+	  a public
+	    cpp default "Generated"
+	    classrelation_ref 140999 // <generalisation>
+	  b parent class_ref 147783 // lb_I_ConfigObject
+      end
+
+      operation 214599 "lbConfigObject"
+	cpp_inline public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${name}${(}${)}${volatile}${throw} { 
+		interface_used = 0;
+		ocount++;
+		ref = STARTREF; 
+		childs = NULL; 
+		deep = 0; 
+		attribut_list = NULL;
+		_name = NULL;
+	};
+"
+	
+	
+      end
+
+      operation 214727 "lbConfigObject"
+	public explicit_return_type ""
+	nparams 1
+	  param inout name "_parent" type class_ref 147399 // lbConfigObject
+	cpp_decl "    ${comment}${inline}${name}${(}${t0} * ${p0}${)}${volatile}${throw};
+"
+	cpp_def "//...slbConfigObject\\58\\\\58\\lbConfigObject\\40\\lbConfigObject\\42\\ _parent\\41\\:0:
+
+${comment}${inline}${class}::${name}${(}${t0} * ${p0}${)}${throw}{
+${body}}
+"
+	
+	
+      end
+
+      operation 214855 "lbConfigObject"
+	cpp_inline public explicit_return_type ""
+	nparams 1
+	  param in name "c" type class_ref 147399 // lbConfigObject
+	cpp_decl "    ${comment}${inline}${name}${(}const ${t0} & ${p0}${)}${volatile}${throw} {
+		//ocount++;
+		cout << \"lbConfigObject::lbConfigObject(const lbConfigObject& c) called\" << flush << endl;
+	};
+"
+	
+	
+      end
+
+      operation 214983 "~lbConfigObject"
+	cpp_virtual public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${virtual}${name}${(}${)}${volatile}${throw};
+"
+	cpp_def "//...e
+//...slbConfigObject\\58\\\\58\\\\126\\lbConfigObject\\40\\\\41\\:0:
+
+${comment}${inline}${class}::${name}${(}${)}${throw}{
+${body}}
+"
+	
+	
+      end
+
+      operation 215111 "startElement"
+	cpp_virtual public return_type class_ref 148039 // XMLHandler
+	nparams 2
+	  param in name "name" type class_ref 148167 // XMLCh
+	  param inout name "attributes" type class_ref 148295 // AttributeList
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}const ${t0} * const ${p0}, ${t1} & ${p1}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//...e
+//...sXMLHandler\\42\\ lbConfigObject\\58\\\\58\\startElement\\40\\\\46\\\\46\\\\46\\\\41\\:0:
+//virtual
+
+${comment}${inline}${type} * ${class}::${name}${(}const ${t0} * const ${p0}, ${t1} & ${p1}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 215239 "release"
+	cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//...e
+//...slbConfigObject\\58\\\\58\\release\\40\\\\41\\:0:
+
+${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 215367 "queryInterface"
+	cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	nparams 2
+	  param inout name "name" explicit_type "char"
+	  param inout name "unknown" explicit_type "void"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}, ${t1} * * ${p1}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//...e
+//...slbErrCodes lbConfigObject\\58\\\\58\\queryInterface\\40\\\\46\\\\46\\\\46\\\\41\\:0:
+
+${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}, ${t1} * * ${p1}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 215495 "findObject"
+	cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	nparams 2
+	  param in name "name" explicit_type "char"
+	  param inout name "object" type class_ref 147783 // lb_I_ConfigObject
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} * ${p0}, ${t1} * & ${p1}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//...e
+//...slbErrCodes lbConfigObject\\58\\\\58\\findObject\\40\\\\46\\\\46\\\\46\\\\41\\:0:
+
+${comment}${inline}${type} ${class}::${name}${(}const ${t0} * ${p0}, ${t1} * & ${p1}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+	comment "*
+	 * Public accessors to the data
+	 "
+      end
+
+      operation 215623 "getAttribute"
+	cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	nparams 2
+	  param in name "name" explicit_type "char"
+	  param inout name "attr" type class_ref 148423 // lb_I_Attribute
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} * ${p0}, ${t1} * & ${p1}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//...e
+//...slbErrCodes lbConfigObject\\58\\\\58\\getAttribute\\40\\\\46\\\\46\\\\46\\\\41\\:0:
+
+${comment}${inline}${type} ${class}::${name}${(}const ${t0} * ${p0}, ${t1} * & ${p1}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 215751 "setGeneralParseError"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "_parseError" type class_ref 148551 // BOOL
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//...e
+//...svoid lbConfigObject\\58\\\\58\\setGeneralParseError\\40\\BOOL _parseError\\41\\:0:
+
+${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 215879 "getGeneralParseError"
+	public return_type class_ref 148551 // BOOL
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//...e
+//...sBOOL lbConfigObject\\58\\\\58\\getGeneralParseError\\40\\\\41\\:0:
+
+${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 216007 "getDeep"
+	public explicit_return_type "int"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//...e
+//...sint lbConfigObject\\58\\\\58\\getDeep\\40\\\\41\\:0:
+
+${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 216135 "setDeep"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "d" explicit_type "int"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//...e
+//...svoid lbConfigObject\\58\\\\58\\setDeep\\40\\int d\\41\\:0:
+
+${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      attribute 149575 "interface_used"
+	private explicit_type "int"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	idl_decl ""
+      end
+
+      classrelation 141127 // parseError (<directional aggregation by value>)
+	relation 141127 *-->
+	  a role_name "parseError" multiplicity "" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	    classrelation_ref 141127 // parseError (<directional aggregation by value>)
+	  b parent class_ref 148551 // BOOL
+      end
+
+      attribute 149703 "deep"
+	private explicit_type "int"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	idl_decl ""
+      end
+
+      classrelation 141255 // parent (<unidirectional association>)
+	relation 141255 --->
+	  a role_name "parent" multiplicity "" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 141255 // parent (<unidirectional association>)
+	  b parent class_ref 147399 // lbConfigObject
+      end
+
+      classrelation 141383 // childs (<directional aggregation by value>)
+	relation 141383 *-->
+	  a role_name "childs" multiplicity "" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	    classrelation_ref 141383 // childs (<directional aggregation by value>)
+	  b parent class_ref 148679 // plbElementList
+      end
+
+      attribute 149831 "_name"
+	private explicit_type "char"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	java_decl ""
+	idl_decl ""
+      end
+
+      classrelation 141511 // attribut_list (<directional aggregation by value>)
+	relation 141511 *-->
+	  a role_name "attribut_list" multiplicity "" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	    classrelation_ref 141511 // attribut_list (<directional aggregation by value>)
+	  b parent class_ref 148807 // plbAttribut
+      end
+
+      classrelation 141639 // all_elements (<directional aggregation by value>)
+	relation 141639 *-->
+	  a role_name "all_elements" multiplicity "" init_value "= NULL" class_relation private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	    classrelation_ref 141639 // all_elements (<directional aggregation by value>)
+	  b parent class_ref 148679 // plbElementList
+      end
+
+      attribute 149959 "ref"
+	private explicit_type "int"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	idl_decl ""
+      end
+
+      attribute 150087 "ocount"
+	class_attribute private explicit_type "int"
+	init_value "= 0"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	idl_decl ""
+      end
+    end
+
+    class 147527 "lbAttribut"
+       stereotype "typedef" base_type class_ref 147271 // _lbAttribut
+      
+      cpp_decl "${comment}typedef ${type} ${name}, *plbAttribut;
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+    end
+
+    class 147655 "_lbElementList"
+       stereotype "struct"
+      
+      cpp_decl "${comment}${template}struct ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      classrelation 140615 // obj (<unidirectional association>)
+	relation 140615 --->
+	  a role_name "obj" multiplicity "" public
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 140615 // obj (<unidirectional association>)
+	  b parent class_ref 147783 // lb_I_ConfigObject
+      end
+
+      classrelation 140743 // next (<unidirectional association>)
+	relation 140743 --->
+	  a role_name "next" multiplicity "" public
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 140743 // next (<unidirectional association>)
+	  b parent class_ref 147655 // _lbElementList
+      end
+    end
+
+    class 147911 "lbElementList"
+       stereotype "typedef" base_type class_ref 147655 // _lbElementList
+      
+      cpp_decl "${comment}typedef ${type} ${name}, *plbElementList;
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+    end
+
+    class 148039 "XMLHandler"
+      abstract 
+      
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+ XMLHandler is a mixin interface that must be inherited
+ by every object that can receive data from the
+ XMLTreeBuilder dispatcher. These objects will
+ never be called directly by SAX.
+"
+      operation 218823 "startElement"
+	abstract cpp_virtual public return_type class_ref 148039 // XMLHandler
+	nparams 2
+	  param in name "name" type class_ref 148167 // XMLCh
+	  param inout name "attributes" type class_ref 148295 // AttributeList
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}const ${t0} * const ${p0}, ${t1} & ${p1}${)}${const}${volatile}${throw}${abstract};
+"
+	
+	
+      end
+
+      operation 218951 "endElement"
+	cpp_virtual cpp_inline public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract} {return true; };
+"
+	
+	
+	comment " Returns whether or not to pop the handler stack"
+      end
+
+      operation 219079 "characters"
+	cpp_virtual cpp_inline public explicit_return_type "void"
+	nparams 2
+	  param in name "chars" type class_ref 148167 // XMLCh
+	  param in name "length" explicit_type "uint"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} * const ${p0}, const ${t1} ${p1}${)}${const}${volatile}${throw}${abstract} {};
+"
+	
+	
+      end
+    end
+
+    class 148935 "TopLevel"
+      
+      
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "...sclass TopLevel \\58\\ public XMLHandler:0:"
+      classrelation 141767 // <generalisation>
+	relation 141767 ---|>
+	  a public
+	    cpp default "Generated"
+	    classrelation_ref 141767 // <generalisation>
+	  b parent class_ref 148039 // XMLHandler
+      end
+
+      operation 216263 "TopLevel"
+	cpp_inline public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${name}${(}${)}${volatile}${throw} { 
+/*...sVERBOSE:0:*/
+#ifdef VERBOSE	
+		cout << \"TopLevel() called\" << endl;
+#endif	
+/*...e*/
+		m_plbConfigObject = new lbConfigObject; 
+	};
+"
+	
+	
+      end
+
+      operation 216391 "~TopLevel"
+	cpp_virtual cpp_inline public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${virtual}${name}${(}${)}${volatile}${throw} { 
+	};
+"
+	
+	
+      end
+
+      operation 216519 "startElement"
+	cpp_virtual public return_type class_ref 148039 // XMLHandler
+	nparams 2
+	  param in name "name" type class_ref 148167 // XMLCh
+	  param inout name "attributes" type class_ref 148295 // AttributeList
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}const ${t0} * const ${p0}, ${t1} & ${p1}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//////////////////////////////////////
+//////////////////////////////////////
+//virtual
+
+//...e
+//virtual
+//...sXMLHandler\\42\\ TopLevel\\58\\\\58\\startElement\\40\\\\46\\\\46\\\\46\\\\41\\:0:
+
+${comment}${inline}${type} * ${class}::${name}${(}const ${t0} * const ${p0}, ${t1} & ${p1}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 216647 "test"
+	cpp_virtual public explicit_return_type "void"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//...e
+//...svoid TopLevel\\58\\\\58\\test\\40\\\\41\\:0:
+
+${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+    end
+
+    class 149063 "NullHandler"
+      
+      
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "/////////////////////////////////////////////////
+	NullHandler
+/////////////////////////////////////////////////"
+      classrelation 141895 // <generalisation>
+	relation 141895 ---|>
+	  a public
+	    cpp default "Generated"
+	    classrelation_ref 141895 // <generalisation>
+	  b parent class_ref 148039 // XMLHandler
+      end
+
+      operation 216775 "NullHandler"
+	cpp_inline public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${name}${(}${)}${volatile}${throw} {};
+"
+	
+	
+      end
+
+      operation 216903 "startElement"
+	cpp_virtual cpp_inline public return_type class_ref 148039 // XMLHandler
+	nparams 2
+	  param in name "name" type class_ref 148167 // XMLCh
+	  param inout name "attributes" type class_ref 148295 // AttributeList
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}const ${t0} * const ${p0}, ${t1} & ${p1}${)}${const}${volatile}${throw}${abstract} { return NULL; };
+"
+	
+	
+      end
+
+      operation 217031 "endElement"
+	cpp_virtual cpp_inline public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract} { return true; };
+"
+	
+	
+      end
+
+      operation 217159 "characters"
+	cpp_virtual cpp_inline public explicit_return_type "void"
+	nparams 2
+	  param in name "chars" type class_ref 148167 // XMLCh
+	  param in name "length" explicit_type "uint"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} * const ${p0}, const ${t1} ${p1}${)}${const}${volatile}${throw}${abstract} { };
+"
+	
+	
+      end
+    end
+
+    class 149191 "CharacterHandler"
+      
+      
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "/////////////////////////////////////////////////
+	CharacterHandler
+
+ To be used if data will be held between tags
+ instead of in attributes. This handler is for
+ string data. 
+/////////////////////////////////////////////////"
+      classrelation 142023 // <generalisation>
+	relation 142023 ---|>
+	  a public
+	    cpp default "Generated"
+	    classrelation_ref 142023 // <generalisation>
+	  b parent class_ref 148039 // XMLHandler
+      end
+
+      operation 217287 "CharacterHandler"
+	cpp_inline public explicit_return_type ""
+	nparams 1
+	  param inout name "wstr" type class_ref 149319 // wstring
+	cpp_decl "    ${comment}${inline}${name}${(}${t0} & ${p0}${)}${volatile}${throw} : m_DestString(wstr) {};
+"
+	
+	
+      end
+
+      operation 217415 "startElement"
+	cpp_virtual cpp_inline public return_type class_ref 148039 // XMLHandler
+	nparams 2
+	  param in name "name" type class_ref 148167 // XMLCh
+	  param inout name "attributes" type class_ref 148295 // AttributeList
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}const ${t0} * const ${p0}, ${t1} & ${p1}${)}${const}${volatile}${throw}${abstract} { return NULL; };
+"
+	
+	
+      end
+
+      operation 217543 "endElement"
+	cpp_virtual cpp_inline public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract} { delete this; return true; };
+"
+	
+	
+      end
+
+      operation 217671 "characters"
+	cpp_virtual cpp_inline public explicit_return_type "void"
+	nparams 2
+	  param in name "chars" type class_ref 148167 // XMLCh
+	  param in name "length" explicit_type "uint"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} * const ${p0}, const ${t1} ${p1}${)}${const}${volatile}${throw}${abstract} { m_DestString = chars;};
+"
+	
+	
+      end
+
+      attribute 150215 "m_DestString"
+	public type class_ref 149319 // wstring
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} & ${name}${value};
+"
+	java_decl ""
+	idl_decl ""
+      end
+    end
+
+    class 149447 "DoubleHandler"
+      
+      
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "/////////////////////////////////////////////////
+	CharacterHandler
+
+ To be used if data will be held between tags
+ instead of in attributes. This handler is for
+ strings that get converted to double. 
+/////////////////////////////////////////////////"
+      classrelation 142151 // <generalisation>
+	relation 142151 ---|>
+	  a public
+	    cpp default "Generated"
+	    classrelation_ref 142151 // <generalisation>
+	  b parent class_ref 148039 // XMLHandler
+      end
+
+      operation 217799 "DoubleHandler"
+	cpp_inline public explicit_return_type ""
+	nparams 1
+	  param inout name "wstr" explicit_type "double"
+	cpp_decl "    ${comment}${inline}${name}${(}${t0} & ${p0}${)}${volatile}${throw} : m_DestDouble(wstr) {};
+"
+	
+	
+      end
+
+      operation 217927 "startElement"
+	cpp_virtual cpp_inline public return_type class_ref 148039 // XMLHandler
+	nparams 2
+	  param in name "name" type class_ref 148167 // XMLCh
+	  param inout name "attributes" type class_ref 148295 // AttributeList
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}const ${t0} * const ${p0}, ${t1} & ${p1}${)}${const}${volatile}${throw}${abstract} { return NULL; };
+"
+	
+	
+      end
+
+      operation 218055 "endElement"
+	cpp_virtual cpp_inline public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract} { delete this; return true; };
+"
+	
+	
+      end
+
+      operation 218183 "characters"
+	cpp_virtual cpp_inline public explicit_return_type "void"
+	nparams 2
+	  param in name "chars" type class_ref 148167 // XMLCh
+	  param in name "length" explicit_type "uint"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} * const ${p0}, const ${t1} ${p1}${)}${const}${volatile}${throw}${abstract} { wchar_t* stop; m_DestDouble = wcstod(chars, &stop);};
+"
+	
+	
+      end
+
+      attribute 150343 "m_DestDouble"
+	public explicit_type "double"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} & ${name}${value};
+"
+	java_decl ""
+	idl_decl ""
+      end
+    end
+
+    class 149575 "IntHandler"
+      
+      
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "/////////////////////////////////////////////////
+	CharacterHandler
+
+ To be used if data will be held between tags
+ instead of in attributes. This handler is for
+ strings that get converted to int. 
+/////////////////////////////////////////////////"
+      classrelation 142279 // <generalisation>
+	relation 142279 ---|>
+	  a public
+	    cpp default "Generated"
+	    classrelation_ref 142279 // <generalisation>
+	  b parent class_ref 148039 // XMLHandler
+      end
+
+      operation 218311 "IntHandler"
+	cpp_inline public explicit_return_type ""
+	nparams 1
+	  param inout name "destint" explicit_type "int"
+	cpp_decl "    ${comment}${inline}${name}${(}${t0} & ${p0}${)}${volatile}${throw} : m_DestInt(destint) {};
+"
+	
+	
+	comment " The ctor takes as a n argument the place
+ to put the int after it is read."
+      end
+
+      operation 218439 "startElement"
+	cpp_virtual cpp_inline public return_type class_ref 148039 // XMLHandler
+	nparams 2
+	  param in name "name" type class_ref 148167 // XMLCh
+	  param inout name "attributes" type class_ref 148295 // AttributeList
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}const ${t0} * const ${p0}, ${t1} & ${p1}${)}${const}${volatile}${throw}${abstract} { return NULL; };
+"
+	
+	
+      end
+
+      operation 218567 "endElement"
+	cpp_virtual cpp_inline public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract} { delete this; return true; };
+"
+	
+	
+      end
+
+      operation 218695 "characters"
+	cpp_virtual cpp_inline public explicit_return_type "void"
+	nparams 2
+	  param in name "chars" type class_ref 148167 // XMLCh
+	  param in name "length" explicit_type "uint"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} * const ${p0}, const ${t1} ${p1}${)}${const}${volatile}${throw}${abstract} { m_DestInt = _wtoi(chars);};
+"
+	
+	
+      end
+
+      attribute 150471 "m_DestInt"
+	public explicit_type "int"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} & ${name}${value};
+"
+	java_decl ""
+	idl_decl ""
+      end
+    end
+
+    class 149703 "XMLTreeBuilder"
+      
+      
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "
+ XMLTreeBuilder is called by the SAX events. It is
+ responsible for dispatching the SAX event to
+ whichever object is currently responsible for
+ handling it. This object is at the top of the stack.
+"
+      classrelation 142407 // <generalisation>
+	relation 142407 ---|>
+	  a public
+	    cpp default "Generated"
+	    classrelation_ref 142407 // <generalisation>
+	  b parent class_ref 149831 // HandlerBase
+      end
+
+      operation 219207 "XMLTreeBuilder"
+	public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${name}${(}${)}${volatile}${throw};
+"
+	cpp_def "// ---------------------------------------------------------------------------
+//  XMLTreeBuilder: Constructors and Destructor
+// ---------------------------------------------------------------------------
+
+//...e
+//...e
+//...sclass XMLTreeBuilder:0:
+// ---------------------------------------------------------------------------
+//  XMLTreeBuilder: Constructors and Destructor
+// ---------------------------------------------------------------------------
+
+${comment}${inline}${class}::${name}${(}${)}${throw}{
+${body}}
+"
+	
+	
+	comment " -----------------------------------------------------------------------
+  Constructors
+ -----------------------------------------------------------------------"
+      end
+
+      operation 219335 "~XMLTreeBuilder"
+	public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${virtual}${name}${(}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${class}::${name}${(}${)}${throw}{
+${body}}
+"
+	
+	
+      end
+
+      operation 219463 "endDocument"
+	public explicit_return_type "void"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+	comment " -----------------------------------------------------------------------
+  Implementations of the SAX DocumentHandler interface
+ -----------------------------------------------------------------------"
+      end
+
+      operation 219591 "endElement"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "name" type class_ref 148167 // XMLCh
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} * const ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}const ${t0} * const ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 219719 "characters"
+	public explicit_return_type "void"
+	nparams 2
+	  param in name "chars" type class_ref 148167 // XMLCh
+	  param in name "length" explicit_type "uint"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} * const ${p0}, const ${t1} ${p1}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "// ---------------------------------------------------------------------------
+//  XMLTreeBuilder: Overrides of the SAX DocumentHandler interface
+// ---------------------------------------------------------------------------
+
+// ---------------------------------------------------------------------------
+//  XMLTreeBuilder: Overrides of the SAX DocumentHandler interface
+// ---------------------------------------------------------------------------
+
+${comment}${inline}${type} ${class}::${name}${(}const ${t0} * const ${p0}, const ${t1} ${p1}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 219847 "startDocument"
+	public explicit_return_type "void"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 219975 "startElement"
+	public explicit_return_type "void"
+	nparams 2
+	  param in name "name" type class_ref 148167 // XMLCh
+	  param inout name "attributes" type class_ref 148295 // AttributeList
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} * const ${p0}, ${t1} & ${p1}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}const ${t0} * const ${p0}, ${t1} & ${p1}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 220103 "warning"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "e" type class_ref 149959 // SAXParseException
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+	comment " -----------------------------------------------------------------------
+  Implementations of the SAX ErrorHandler interface
+ -----------------------------------------------------------------------"
+      end
+
+      operation 220231 "error"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "e" type class_ref 149959 // SAXParseException
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "// ---------------------------------------------------------------------------
+//  XMLTreeBuilder: Overrides of the SAX ErrorHandler interface
+// ---------------------------------------------------------------------------
+
+// ---------------------------------------------------------------------------
+//  XMLTreeBuilder: Overrides of the SAX ErrorHandler interface
+// ---------------------------------------------------------------------------
+
+${comment}${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 220359 "fatalError"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "e" type class_ref 149959 // SAXParseException
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 220487 "notationDecl"
+	public explicit_return_type "void"
+	nparams 3
+	  param in name "name" type class_ref 148167 // XMLCh
+	  param in name "publicId" type class_ref 148167 // XMLCh
+	  param in name "systemId" type class_ref 148167 // XMLCh
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} * const ${p0}, const ${t1} * const ${p1}, const ${t2} * const ${p2}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}const ${t0} * const ${p0}, const ${t1} * const ${p1}, const ${t2} * const ${p2}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+	comment " -----------------------------------------------------------------------
+  Implementation of the SAX DTDHandler interface
+ -----------------------------------------------------------------------"
+      end
+
+      operation 220615 "unparsedEntityDecl"
+	public explicit_return_type "void"
+	nparams 4
+	  param in name "name" type class_ref 148167 // XMLCh
+	  param in name "publicId" type class_ref 148167 // XMLCh
+	  param in name "systemId" type class_ref 148167 // XMLCh
+	  param in name "notationName" type class_ref 148167 // XMLCh
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} * const ${p0}, const ${t1} * const ${p1}, const ${t2} * const ${p2}, const ${t3} * const ${p3}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "// ---------------------------------------------------------------------------
+//  XMLTreeBuilder: Overrides of the SAX DTDHandler interface
+// ---------------------------------------------------------------------------
+
+// ---------------------------------------------------------------------------
+//  XMLTreeBuilder: Overrides of the SAX DTDHandler interface
+// ---------------------------------------------------------------------------
+
+${comment}${inline}${type} ${class}::${name}${(}const ${t0} * const ${p0}, const ${t1} * const ${p1}, const ${t2} * const ${p2}, const ${t3} * const ${p3}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      classrelation 142535 // m_Handlers (<directional aggregation by value>)
+	relation 142535 *-->
+	  stereotype "stack"
+	  a role_name "m_Handlers" multiplicity "" public
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${stereotype}<${type}*> ${name}${value};"
+	    classrelation_ref 142535 // m_Handlers (<directional aggregation by value>)
+	  b parent class_ref 148039 // XMLHandler
+      end
+
+      operation 220743 "setTopLevelDocument"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "handler" type class_ref 148039 // XMLHandler
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      classrelation 142663 // gTopLevel (<unidirectional association>)
+	relation 142663 --->
+	  a role_name "gTopLevel" multiplicity "" init_value "= NULL" class_relation public
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 142663 // gTopLevel (<unidirectional association>)
+	  b parent class_ref 148039 // XMLHandler
+      end
+    end
+
+    class 159047 "lbXMLConfig"
+      
+      
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "...sclass lbXMLConfig \\58\\ public lb_I_XMLConfig:0:
+...sclass lbXMLConfig:0:"
+      classrelation 150983 // <generalisation>
+	relation 150983 ---|>
+	  a public
+	    cpp default "Generated"
+	    classrelation_ref 150983 // <generalisation>
+	  b parent class_ref 156359 // lb_I_XMLConfig
+      end
+
+      operation 257863 "lbXMLConfig"
+	public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${name}${(}${)}${volatile}${throw};
+"
+	cpp_def "//...e
+//...slbXMLConfig\\58\\\\58\\lbXMLConfig\\40\\\\41\\:0:
+
+${comment}${inline}${class}::${name}${(}${)}${throw}{
+${body}}
+"
+	
+	
+      end
+
+      operation 257991 "~lbXMLConfig"
+	cpp_virtual public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${virtual}${name}${(}${)}${volatile}${throw};
+"
+	cpp_def "//...e
+//...slbXMLConfig\\58\\\\58\\\\126\\lbXMLConfig\\40\\\\41\\:0:
+
+${comment}${inline}${class}::${name}${(}${)}${throw}{
+${body}}
+"
+	
+	
+      end
+
+      operation 258119 "lbXMLConfig"
+	cpp_inline public explicit_return_type ""
+	nparams 1
+	  param in name "t" type class_ref 159047 // lbXMLConfig
+	cpp_decl "    ${comment}${inline}${name}${(}const ${t0} & ${p0}${)}${volatile}${throw} {
+		ref = STARTREF;
+		handler = NULL;
+/*...sVERBOSE:0:*/
+#ifdef VERBOSE
+	cout << \"lbXMLConfig(const lbXMLConfig* & t) called\" << endl;
+	
+#endif	
+/*...e*/
+		gTopLevel = t.gTopLevel;
+	};
+"
+	
+	
+      end
+
+      operation 258247 "release"
+	cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//...e
+//...slbErrCodes lbXMLConfig\\58\\\\58\\release\\40\\\\41\\:0:
+
+${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 258375 "queryInterface"
+	cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	nparams 2
+	  param inout name "name" explicit_type "char"
+	  param inout name "unknown" explicit_type "void"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}, ${t1} * * ${p1}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//...e
+//...slbErrCodes lbXMLConfig\\58\\\\58\\queryInterface\\40\\\\46\\\\46\\\\46\\\\41\\:0:
+
+${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}, ${t1} * * ${p1}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 258503 "parse"
+	cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//...e
+//...slbErrCodes lbXMLConfig\\58\\\\58\\parse\\40\\\\41\\:0:
+
+${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 258631 "hasConfigObject"
+	cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	nparams 1
+	  param in name "cfgObjectName" explicit_type "char"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//...e
+//...slbErrCodes lbXMLConfig\\58\\\\58\\hasConfigObject\\40\\\\46\\\\46\\\\46\\\\41\\:0:
+
+${comment}${inline}${type} ${class}::${name}${(}const ${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 258759 "getConfigObject"
+	cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	nparams 2
+	  param inout name "cfgObj" type class_ref 147783 // lb_I_ConfigObject
+	  param in name "cfgObjectName" explicit_type "char"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * & ${p0}, const ${t1} * const ${p1}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//...e
+//...slbErrCodes lbXMLConfig\\58\\\\58\\getConfigObject\\40\\\\46\\\\46\\\\46\\\\41\\:0:
+
+${comment}${inline}${type} ${class}::${name}${(}${t0} * & ${p0}, const ${t1} * const ${p1}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      classrelation 151111 // gTopLevel (<unidirectional association>)
+	relation 151111 --->
+	  a role_name "gTopLevel" multiplicity "" init_value "= NULL" class_relation public
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 151111 // gTopLevel (<unidirectional association>)
+	  b parent class_ref 148935 // TopLevel
+      end
+
+      attribute 162119 "ref"
+	protected explicit_type "int"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	idl_decl ""
+      end
+
+      attribute 162247 "interface_used"
+	protected explicit_type "int"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	idl_decl ""
+      end
+
+      classrelation 151239 // handler (<unidirectional association>)
+	relation 151239 --->
+	  a role_name "handler" multiplicity "" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 151239 // handler (<unidirectional association>)
+	  b parent class_ref 149703 // XMLTreeBuilder
+      end
+    end
+  end
+
+  deploymentview 128967 "lbXMLConfig"
+    //deployment diagram settings
+    package_name_in_tab default show_context default write_horizontally default auto_label_position default
+    draw_component_as_icon default show_component_req_prov default show_component_rea default
+    artifact 138951 "_lbAttribut"
+      stereotype "source"
+      cpp_h "#ifndef _${NAME}_H
+#define _${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_classes
+	class_ref 147271 // _lbAttribut
+      end
+    end
+
+    artifact 139079 "lbAttribut"
+      stereotype "source"
+      cpp_h "#ifndef _${NAME}_H
+#define _${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_classes
+	class_ref 147527 // lbAttribut
+      end
+    end
+
+    artifact 139207 "_lbElementList"
+      stereotype "source"
+      cpp_h "#ifndef _${NAME}_H
+#define _${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_classes
+	class_ref 147655 // _lbElementList
+      end
+    end
+
+    artifact 139335 "lbElementList"
+      stereotype "source"
+      cpp_h "#ifndef _${NAME}_H
+#define _${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_classes
+	class_ref 147911 // lbElementList
+      end
+    end
+
+    artifact 139463 "lbConfigObject"
+      stereotype "source"
+      cpp_h "#ifndef _${NAME}_H
+#define _${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_classes
+	class_ref 147399 // lbConfigObject
+      end
+    end
+
+    artifact 139591 "TopLevel"
+      stereotype "source"
+      cpp_h "#ifndef _${NAME}_H
+#define _${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_classes
+	class_ref 148935 // TopLevel
+      end
+    end
+
+    artifact 139719 "NullHandler"
+      stereotype "source"
+      cpp_h "#ifndef _${NAME}_H
+#define _${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_classes
+	class_ref 149063 // NullHandler
+      end
+    end
+
+    artifact 139847 "CharacterHandler"
+      stereotype "source"
+      cpp_h "#ifndef _${NAME}_H
+#define _${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_classes
+	class_ref 149191 // CharacterHandler
+      end
+    end
+
+    artifact 139975 "DoubleHandler"
+      stereotype "source"
+      cpp_h "#ifndef _${NAME}_H
+#define _${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_classes
+	class_ref 149447 // DoubleHandler
+      end
+    end
+
+    artifact 140103 "IntHandler"
+      stereotype "source"
+      cpp_h "#ifndef _${NAME}_H
+#define _${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_classes
+	class_ref 149575 // IntHandler
+      end
+    end
+
+    artifact 140231 "XMLHandler"
+      stereotype "source"
+      cpp_h "#ifndef _${NAME}_H
+#define _${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_classes
+	class_ref 148039 // XMLHandler
+      end
+    end
+
+    artifact 140359 "XMLTreeBuilder"
+      stereotype "source"
+      cpp_h "#ifndef _${NAME}_H
+#define _${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_classes
+	class_ref 149703 // XMLTreeBuilder
+      end
+    end
+
+    artifact 145223 "lbXMLConfig"
+      stereotype "source"
+      cpp_h "#ifndef _${NAME}_H
+#define _${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_classes
+	class_ref 159047 // lbXMLConfig
+      end
+    end
+  end
+end

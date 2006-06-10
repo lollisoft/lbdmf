@@ -1,0 +1,4 @@
+class lbDOMContainer
+!!!256199.cpp!!!	~lbDOMContainer()
+
+	deleteAll();

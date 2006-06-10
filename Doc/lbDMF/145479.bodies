@@ -1,0 +1,18 @@
+class lb_EventMapper
+!!!208327.cpp!!!	lb_EventMapper()
+
+	ref = STARTREF;
+	_CL_LOG << "Instance of lb_I_EventMapper created" LOG_
+	_name = NULL;
+!!!208455.cpp!!!	~lb_EventMapper()
+
+!!!208583.cpp!!!	getID() : int
+
+	return _id;
+!!!208711.cpp!!!	getName() : char
+
+	if (_name != NULL) return _name;
+	return NULL;
+!!!208839.cpp!!!	setID(in id : int) : void
+
+	_id = id;

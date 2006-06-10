@@ -1,0 +1,1419 @@
+class wxReportWriter
+!!!289479.cpp!!!	wxReportWriter(inout frame : wxFrame, in title : wxString, in pos : wxPoint, in size : wxSize)
+
+#if defined(USE_OLD_PRINTSETTING)
+    if ( ! g_printData )
+	    g_printData = new wxPrintData;
+	if ( ! g_pageSetupData )
+    g_pageSetupData = new wxPageSetupDialogData;
+#endif
+	m_pPrintout = 0;
+
+	m_strFilename.Empty();
+	m_strFilenameTmp.Empty();
+	SetPath( wxT("." ) );
+	m_strPathOfReports = wxT(".");
+
+	m_lstHeader.DeleteContents( true );
+	m_lstFooter.DeleteContents( true );
+	m_lstSections.DeleteContents( true );
+
+	m_lstHeader.Clear();
+	m_lstFooter.Clear();
+	m_lstSections.Clear();
+
+	// Some default values for page-size and margins
+	m_PageCtrl.m_dTop			=  10.0;
+//	m_PageCtrl.m_dLeft			=  20.0;
+	m_PageCtrl.m_dLeft			=  10.0;
+	m_PageCtrl.m_dBottom		=  15.0;
+	m_PageCtrl.m_dRight			=   0.0;
+	m_PageCtrl.m_dYSizeMM		= 297.0;	
+	m_PageCtrl.m_dXSizeMM		= 210.0;
+	m_PageCtrl.m_pDateStr		= &m_strDate;
+	m_PageCtrl.m_pDateFmt		= &m_strDateFmt;
+	m_PageCtrl.m_pShortDateFmt	= &m_strShortDateFmt;
+
+	m_strDateFmt          = wxT("%m/%d/%Y  %H:%M:%S");
+	m_strShortDateFmt     = wxT("%m/%d/%Y");
+
+	m_lDatasets           = 0L;
+	m_lCurrentSection     = -1L;
+
+	m_boLoad              = false;
+	m_boObjectsSaved      = false;
+
+	// we do not have any objects so far
+	m_pObjList           = 0;
+!!!289607.cpp!!!	~wxReportWriter()
+
+#if defined(USE_OLD_PRINTSETTING)
+    if ( g_printData )
+	    delete g_printData;
+	if ( g_pageSetupData )
+		delete g_pageSetupData;
+
+    g_printData     = 0;
+    g_pageSetupData = 0;
+#else
+	g_PrintSettings.Free();
+#endif
+
+	FinishReport();
+
+	// De-allocation  of our section list
+	while ( m_lstSections.GetCount() > 0 )
+		EndSection();
+!!!289735.cpp!!!	DefinitionError(in  : void) : void
+
+	wxMessageBox( wxT(	"Wrong definition sequence.\n\n" )
+						+ wxString(wxT( "Header, Footer and Misc Information not allowed\n" ))
+						+ wxT( "during or after report data!" ),
+		          wxT("Error"), wxOK | wxICON_HAND | wxCENTRE );
+!!!289863.cpp!!!	AddHeaderObj(inout pObj : wxReportObj) : void
+
+	if ( m_boObjectsSaved )
+	{
+		DefinitionError();
+		return;
+	}
+
+	pObj->SetMargins( &m_PageCtrl );
+	m_lstHeader.Append( pObj );
+!!!289991.cpp!!!	AddFooterObj(inout pObj : wxReportObj) : void
+
+	if ( m_boObjectsSaved )
+	{
+		DefinitionError();
+		return;
+	}
+
+	pObj->SetMargins( &m_PageCtrl );
+	m_lstFooter.Append( pObj );
+!!!290119.cpp!!!	AddDataObj(inout pObj : wxReportObj) : void
+
+	// giving the report object the information about page margins
+	pObj->SetMargins( &m_PageCtrl );
+
+	// appending the report object to the current object-list
+	if ( m_pObjList )
+		m_pObjList->Append( pObj );
+!!!290247.cpp!!!	DefineSection(in  : void) : long
+
+	// adding an (empty) list to the section-list
+	wxReportSection	*pSection;
+
+	pSection = new wxReportSection;
+
+	if ( ! pSection )
+		return m_lCurrentSection;
+
+	pSection->m_pList            = new wxReportObjList;
+	pSection->m_lPreviousSection = m_lCurrentSection;
+	pSection->m_lSections        = m_lstSections.GetCount();
+
+	if ( pSection->m_pList )
+	{
+		m_lstSections.Append( pSection );
+		m_lCurrentSection = m_lstSections.GetCount() - 1;
+		m_pObjList = pSection->m_pList;
+
+	}
+
+	return m_lCurrentSection;	// this is the new section
+!!!290375.cpp!!!	PreviousSection(in lCurrentSection : long) : long
+
+	if ( lCurrentSection < 0L )
+		return lCurrentSection;
+
+	if ( lCurrentSection >= (long)m_lstSections.GetCount() )
+		return -1L;
+
+	wxReportSection	*pSection;
+	wxNode			*pNode;
+
+	pNode = (wxNode *)m_lstSections.Item( lCurrentSection );
+	if (pNode)
+	{
+		pSection = (wxReportSection *)pNode->GetData();
+		return pSection->m_lPreviousSection;
+	}
+
+	return -1;
+!!!290503.cpp!!!	EndSection(in  : void) : void
+
+	// removing the LAST object-list from the list of sections
+	wxReportSection	*pSection;
+	wxNode			*pNode;
+
+	pNode = (wxNode *)m_lstSections.GetLast();
+	if (pNode)
+	{
+		pSection = (wxReportSection *)pNode->GetData();
+
+		if ( pSection )
+		{
+			pSection->m_pList->DeleteContents( true );
+			pSection->m_pList->Clear();
+		}
+
+		// positioning to previous list...
+		pNode = pNode->GetPrevious();
+		if ( pNode )
+			m_pObjList = ((wxReportSection *)pNode->GetData())->m_pList;
+		else
+			m_pObjList = 0;
+		
+		m_lstSections.DeleteNode( m_lstSections.GetLast() );
+
+		m_lCurrentSection = m_lstSections.GetCount() - 1;
+
+	}
+!!!290631.cpp!!!	BeginDataSection(in  : void) : void
+
+	wxNode		*pNode;
+	wxReportObj	*pObj;
+	wxReportObj	obj;
+
+	if ( ! m_pObjList )
+		return;	// No sections defined yet
+
+	// (fixed) objects (header/footer) must have been saved before!!!
+	if ( ! m_boObjectsSaved )
+		SaveObjects();
+
+	// Saving a POTYPE_SUBSTART object which contains the
+	// number of following object settings
+	obj.SetSubReport( m_pObjList->GetCount() );
+	obj.SaveData( m_fFile );
+
+	// The object settings...
+	pNode = (wxNode *)m_pObjList->GetFirst();
+	while (pNode)
+	{
+		pObj = (wxReportObj *)pNode->GetData();
+		pObj->SaveSettings( m_fFile );
+
+		pNode = pNode->GetNext();
+	}
+
+!!!290759.cpp!!!	EndDataSection(in  : void) : void
+
+	wxReportObj	obj;
+
+	// Saving a POTYPE_SUBEND object
+	obj.SetSubReportEnd();
+	obj.SaveData( m_fFile );
+!!!291015.cpp!!!	NewPage(in  : void) : void
+
+	wxReportObj	obj;
+
+	// Saving a POTYPE_PGBREAK object
+	obj.SetPageBreak();
+	obj.SaveData( m_fFile );
+!!!291143.cpp!!!	HorizLine(in dX : double =  0.0, in dLen : double =  170.0, in dYInc : double =  0.0 ) : void
+
+	wxReportObj	obj( 0.0, 0.0, 0.0, 0.0 );
+
+	// Saving a POTYPE_LINE object
+	obj.SetLine( 0.0, 0.0 );
+//	obj.SetIncrements( 0.0, dYInc );
+	obj.SaveData( m_fFile );
+!!!291271.cpp!!!	LoadReportInfo(in strFile : wxString) : long
+
+	bool		boRet;
+	long		lHelp;
+	wxChar		szHelp[ 20 ];
+	wxString	strData;
+	wxFFile		f;
+
+	if ( strFile.IsEmpty() )
+		return -1;
+
+	boRet = f.Open( strFile, "rb" );
+
+	if ( boRet )
+	{
+		// Is this a report file?
+		f.Read( szHelp, wxStrlen( VLPHEADER ) );
+		szHelp[ wxStrlen( VLPHEADER ) ] = 0x00;
+		strData = szHelp;
+
+		if ( strData != VLPHEADER )
+		{
+			f.Close();
+			return -3L;	// wrong file header. Not a report file!
+		}
+
+		// Number of saved datasets (informational only)
+		f.Read( &lHelp, sizeof( lHelp ) );
+
+		m_strDate = LoadWxString( &f );
+		m_strUser = LoadWxString( &f );
+		m_strInfo = LoadWxString( &f );
+
+		f.Close();
+
+		return 0;
+	}
+
+	return -2L;
+!!!291399.cpp!!!	LoadFile(in strFile : wxString) : bool
+
+	bool boRet;
+
+	if ( strFile.IsEmpty() )
+	{
+		wxFileDialog dlg( this, wxT("Choose a Text"),
+			              wxT("."), wxT(""),
+						  wxT("Text Files (*.txt)|*.txt|All Files (*.*)|*.*"),
+						  wxOPEN );
+
+		if ( wxID_OK != dlg.ShowModal() )
+			return false;
+
+		strFile = dlg.GetFilename();
+	}
+
+	m_aPageStart.Clear();
+
+	if ( m_fFile.IsOpened() )
+		m_fFile.Close();
+
+	boRet = m_fFile.Open( strFile, "rb" );
+
+	if ( boRet )
+	{
+		long lRead;
+		long lSizeOfFile;
+		char szDummy[12];
+		char *cpFF;
+
+		lSizeOfFile = m_fFile.Length();
+
+		m_aPageStart.Add( 0L );
+		m_lNextPageInFile = 0;
+
+		do
+		{
+			lRead = m_fFile.Read( szDummy, sizeof( szDummy ) - 1 );
+			szDummy[ lRead ] = 0x00;
+
+			while ( lRead )
+			{
+				cpFF = strchr( szDummy, '\014' );
+				if ( NULL != cpFF )
+				{
+					m_lNextPageInFile += (cpFF - szDummy) + 1;
+					lRead -= (cpFF - szDummy) + 1;
+
+					// If get a FF at the end, and after that only
+					// CR and/or LF, we don't add a "new" page
+					if ( m_lNextPageInFile < (lSizeOfFile - 1) )
+					{
+						m_aPageStart.Add( m_lNextPageInFile );
+						strcpy( szDummy, cpFF + 1 );
+					}
+					else
+					{
+						// That's it....!
+						lRead = 0;
+					}
+				}
+				else
+				{
+					m_lNextPageInFile += lRead;
+					lRead = 0;
+				}
+
+			} // while lRead
+
+		} while ( ! m_fFile.Eof() );
+
+		for ( unsigned int i = 0; i < m_aPageStart.GetCount(); ++i )
+			m_lCurrentFilePos = m_aPageStart[ i ];
+
+		// If the VERY LAST Char in the File was a FormFeed (FF), we have
+		// calculate 1 page too much
+
+/*		Now we already handle this while reading...
+		===========================================
+		m_fFile.Seek( -1L, wxFromEnd );
+		if ( 1 == m_fFile.Read( szDummy, 1 ) )
+			if ( *szDummy == '\014' )
+			{
+				i = m_aPageStart.GetCount();
+				if ( i > 1 )
+					m_aPageStart.RemoveAt( i - 1 );
+			}
+*/
+
+		m_lNextPageInFile = 0;
+		m_lCurrentFilePos = 0;
+		m_PageCtrl.m_nCurrentPage = 0;
+
+		m_fFile.Seek( m_lCurrentFilePos );
+
+	} // file open()
+
+	return boRet;
+!!!291527.cpp!!!	LoadWxString(inout pFile : wxFFile =  0 ) : wxString
+
+	long lHelp;
+	wxString strRet;
+	wxFFile *pLoadFile;
+
+	if ( pFile )
+		pLoadFile = pFile;
+	else
+		pLoadFile = &m_fFile;
+
+	strRet.Empty();
+
+	if ( ! pLoadFile->IsOpened() )
+		return strRet;
+
+	if ( sizeof( lHelp ) == pLoadFile->Read( &lHelp, sizeof( lHelp ) ) )
+	{
+		if ( lHelp > 0 )
+		{
+			wxChar *cp;
+
+			cp = new wxChar[ lHelp ];
+
+			if ( cp )
+			{
+				pLoadFile->Read( cp, lHelp );
+				*(cp + lHelp - 1) = 0x00;
+				strRet = cp;
+
+				delete [] cp;
+			}
+		}
+	}
+
+	return strRet;
+!!!291655.cpp!!!	SaveObjects(in  : void) : bool
+
+	bool		boRet;
+	long		lHelp;
+	double		dHelp;
+	wxNode		*pNode;
+	wxReportObj	*pObj;
+
+	if ( m_strFilename.IsEmpty() )
+	{
+		wxFileName  fName(m_strPathOfReports, wxT("report") );
+		fName.Normalize();
+		fName = wxFileName::CreateTempFileName( fName.GetLongPath() );
+		m_strFilenameTmp = fName.GetLongPath();
+		fName.SetExt( VLPEXT );
+
+		m_strFilename = fName.GetLongPath();
+
+	}
+
+	if ( m_fFile.IsOpened() )
+		m_fFile.Close();
+
+	boRet = m_fFile.Open( m_strFilenameTmp, "wb" );
+	m_boLoad = false;
+
+	if ( boRet )
+	{
+		m_lDatasets = 0L;
+
+		m_fFile.Write( VLPHEADER, wxStrlen( VLPHEADER ) );		// File-Header
+
+		lHelp = 0L;		// placeholder for number of data-objects
+						//   (becomes set when closing the file by writing
+						//    m_lDatasets into this location. This is not
+						//    important for functionality; just for information)
+
+		m_fFile.Write( &lHelp, sizeof( lHelp ) );
+
+		lHelp = (long)m_strDate.Len() + 1L;
+		m_fFile.Write( &lHelp, sizeof( lHelp ) );
+		m_fFile.Write( m_strDate.c_str(), lHelp );
+
+		lHelp = (long)m_strUser.Len() + 1L;
+		m_fFile.Write( &lHelp, sizeof( lHelp ) );
+		m_fFile.Write( m_strUser.c_str(), lHelp );
+
+		lHelp = (long)m_strInfo.Len() + 1L;
+		m_fFile.Write( &lHelp, sizeof( lHelp ) );
+		m_fFile.Write( m_strInfo.c_str(), lHelp );
+
+		dHelp = m_PageCtrl.m_dTop;		// Top-Margin
+		m_fFile.Write( &dHelp, sizeof( dHelp ) );
+
+		dHelp = m_PageCtrl.m_dLeft;		// Left-Margin
+		m_fFile.Write( &dHelp, sizeof( dHelp ) );
+
+		dHelp = m_PageCtrl.m_dBottom;		// Bottom-Margin
+		m_fFile.Write( &dHelp, sizeof( dHelp ) );
+
+		dHelp = m_PageCtrl.m_dRight;		// Right-Margin
+		m_fFile.Write( &dHelp, sizeof( dHelp ) );
+
+		dHelp = m_PageCtrl.m_dYSizeMM;	// Blattgröße Y
+		m_fFile.Write( &dHelp, sizeof( dHelp ) );
+
+		dHelp = m_PageCtrl.m_dXSizeMM;	// Blattgröße X
+		m_fFile.Write( &dHelp, sizeof( dHelp ) );
+
+		lHelp = m_lstHeader.GetCount();	// Anzahl Header-Objekte
+		m_fFile.Write( &lHelp, sizeof( lHelp ) );
+
+		lHelp = m_lstFooter.GetCount();	// Anzahl Footer-Objekte
+		m_fFile.Write( &lHelp, sizeof( lHelp ) );
+
+
+		// Header-Objekte speichern
+		// ------------------------
+		pNode = (wxNode *)m_lstHeader.GetFirst();
+		while (pNode)
+		{
+			pObj = (wxReportObj *)pNode->GetData();
+
+			pObj->SaveSettings( m_fFile );
+
+			pNode = pNode->GetNext();
+
+		}
+
+		// Footer-Objekte speichern
+		// ------------------------
+		pNode = (wxNode *)m_lstFooter.GetFirst();
+		while (pNode)
+		{
+			pObj = (wxReportObj *)pNode->GetData();
+
+			pObj->SaveSettings( m_fFile );
+
+			pNode = pNode->GetNext();
+
+		}
+
+		// Header-Daten speichern
+		// ----------------------
+		pNode = (wxNode *)m_lstHeader.GetFirst();
+		while (pNode)
+		{
+			pObj = (wxReportObj *)pNode->GetData();
+			pObj->SaveData( m_fFile );
+
+			pNode = pNode->GetNext();
+		}
+
+		// Footer-Daten speichern
+		// ----------------------
+		pNode = (wxNode *)m_lstFooter.GetFirst();
+		while (pNode)
+		{
+			pObj = (wxReportObj *)pNode->GetData();
+			pObj->SaveData( m_fFile );
+
+			pNode = pNode->GetNext();
+		}
+
+		
+		m_boObjectsSaved = true;
+
+		// File stays open!!!
+	}
+
+	return boRet;
+!!!291783.cpp!!!	SaveData(in  : void) : bool
+
+	wxNode		*pNode;
+	wxReportObj	*pObj;
+
+	if ( ! m_boObjectsSaved )
+		SaveObjects();
+
+	if ( ! m_fFile.IsOpened() )
+		return false;
+
+	pNode = (wxNode *)m_pObjList->GetFirst();
+	while (pNode)
+	{
+		pObj = (wxReportObj *)pNode->GetData();
+		pObj->SaveData( m_fFile );
+
+		pNode = pNode->GetNext();
+	}
+
+	++m_lDatasets;
+
+	return true;
+!!!291911.cpp!!!	SetupReport(in strFile : wxString) : long
+
+	bool		boRet;
+	bool		boLoad;
+	long		lHelp;
+	long		lFilePos;
+	wxChar		szHelp[256];
+	wxString	strData;
+	long		nHeaderObj;
+	long		nFooterObj;
+	long		lSection;
+	double		dY;
+	wxNode		*pNode;
+	wxReportObj	*pObj;
+	wxReportObj	objHelp;
+	bool		boEof;
+	wxPoint		pt;
+
+	if ( strFile.IsEmpty() )
+	{
+		wxFileDialog dlg( this, wxT("Loading a report..."),
+			              m_strPathOfReports, wxT(""),
+						  wxT("Report (*.vlp)|*.vlp|All Files (*.*)|*.*"),
+						  wxOPEN );
+
+		if ( wxID_OK != dlg.ShowModal() )
+			return -1L;
+
+		strFile = dlg.GetPath();
+	}
+
+	if ( m_fFile.IsOpened() )
+		m_fFile.Close();
+
+	boRet = m_fFile.Open( strFile, "rb" );
+
+	m_boLoad         = true;
+	m_boObjectsSaved = false;
+
+	if ( boRet )
+	{
+		// No data so far (page-start positions, section information)
+		m_aPageStart.Clear();
+		m_aSection.Clear();
+
+		// No datasets so far
+		m_lDatasets = 0L;
+
+		// Is this a report file?
+		m_fFile.Read( szHelp, wxStrlen( VLPHEADER ) );
+		szHelp[ wxStrlen( VLPHEADER ) ] = 0x00;
+		strData = szHelp;
+
+		if ( strData != VLPHEADER )
+		{
+			return -2L;	// wrong file header. Not a report file!
+		}
+
+		// Number of saved datasets (informational only)
+		m_fFile.Read( &m_lDatasets, sizeof( lHelp ) );
+
+		m_strDate = LoadWxString();
+		m_strUser = LoadWxString();
+		m_strInfo = LoadWxString();
+
+		m_fFile.Read( &m_PageCtrl.m_dTop,     sizeof( m_PageCtrl.m_dTop     ) );
+		m_fFile.Read( &m_PageCtrl.m_dLeft,    sizeof( m_PageCtrl.m_dLeft    ) );
+		m_fFile.Read( &m_PageCtrl.m_dBottom,  sizeof( m_PageCtrl.m_dBottom  ) );
+		m_fFile.Read( &m_PageCtrl.m_dRight,   sizeof( m_PageCtrl.m_dRight   ) );
+		m_fFile.Read( &m_PageCtrl.m_dYSizeMM, sizeof( m_PageCtrl.m_dYSizeMM ) );
+		m_fFile.Read( &m_PageCtrl.m_dXSizeMM, sizeof( m_PageCtrl.m_dXSizeMM ) );
+
+		m_lstHeader.DeleteContents( true );
+		m_lstFooter.DeleteContents( true );
+		m_lstSections.DeleteContents( true );
+
+		m_lstHeader.Clear();
+		m_lstFooter.Clear();
+		m_lstSections.Clear();
+
+		m_fFile.Read( &nHeaderObj, sizeof( nHeaderObj ) );
+		m_fFile.Read( &nFooterObj, sizeof( nFooterObj ) );
+
+		// Loading header-objects
+		// ----------------------
+		for ( lHelp = 0L; lHelp < nHeaderObj; ++lHelp )
+		{
+			pObj = new wxReportObj( 0.0, 1.1, 2.2, 3.3 );
+			pObj->LoadSettings( m_fFile );
+			pObj->ResetPos();
+			AddHeaderObj( pObj );
+		}
+
+		// Loading footer-objects
+		// ----------------------
+		for ( lHelp = 0L; lHelp < nFooterObj; ++lHelp )
+		{
+			pObj = new wxReportObj( 0.0, 1.1, 2.2, 3.3 );
+			pObj->LoadSettings( m_fFile );
+			pObj->ResetPos();
+			AddFooterObj( pObj );
+
+		}
+
+
+		// Loading header data...
+		// ----------------------
+		pNode = (wxNode *)m_lstHeader.GetFirst();
+		while (pNode)
+		{
+			pObj = (wxReportObj *)pNode->GetData();
+			pObj->LoadData( m_fFile );
+
+			pNode = pNode->GetNext();
+		}
+
+
+		// Loading footer data...
+		// ----------------------
+
+		// take care on margins 
+		m_PageCtrl.m_dFooterMinY = m_PageCtrl.m_dYSizeMM - m_PageCtrl.m_dBottom;
+
+		pNode = (wxNode *)m_lstFooter.GetFirst();
+		while (pNode)
+		{
+			pObj = (wxReportObj *)pNode->GetData();
+			pObj->LoadData( m_fFile );
+
+			// smallest Y coordinate calculation
+			dY = m_PageCtrl.m_dYSizeMM - m_PageCtrl.m_dBottom
+			   - 0.01 * pObj->GetInitPos().y;
+			if ( dY < m_PageCtrl.m_dFooterMinY )
+				m_PageCtrl.m_dFooterMinY = dY;
+
+			pNode = pNode->GetNext();
+		}
+
+
+		// Well, this was the part with FIXED data.
+		// Variable data may follow
+
+		// The first record MUST contain a POTYPE_SUBSTART
+		// record with the number of objects
+
+
+		m_PageCtrl.m_dDataCurrY = m_PageCtrl.m_dTop;
+
+		boEof    = false;
+		lSection = -1L;
+
+		while ( ! boEof )
+		{
+			// File should have a section start as the first record!
+
+			lFilePos = m_fFile.Tell();
+
+			boLoad = objHelp.LoadData( m_fFile );
+			if ( ! boLoad )
+			{
+				boEof = true;
+				continue;
+			}
+
+			// Checking that report starts with a POTYPE_SUBSTART
+			if ( lSection == -1L )
+			{
+				if ( objHelp.GetType() != POTYPE_SUBSTART )
+				{
+					boEof = true;
+					wxMessageBox( wxT("Report File corrupt") );
+
+					continue;
+				}
+			}
+
+			switch ( objHelp.GetType() )
+            {
+				case POTYPE_LINE:
+					lFilePos = m_fFile.Tell();
+
+					// advance object's Y positions by 0.2mm
+					pNode = (wxNode *)m_pObjList->GetFirst();
+					while (pNode)
+					{
+						pObj = (wxReportObj *)pNode->GetData();
+
+						pt = pObj->GetCurrPos();
+						pt.y += HLINE_INC;
+						pObj->SetCurrPos( pt );
+
+						pNode = pNode->GetNext();
+					}
+					break;
+
+				case POTYPE_PGBREAK:
+					lFilePos = m_fFile.Tell();
+
+					m_aPageStart.Add( lFilePos );
+					m_aSection.Add( lSection );
+
+					m_PageCtrl.m_dDataCurrY = m_PageCtrl.m_dTop;
+
+					// object positions back to their initial pos.
+					pNode = (wxNode *)m_pObjList->GetFirst();
+					while (pNode)
+					{
+						pObj = (wxReportObj *)pNode->GetData();
+						pObj->ResetPos();
+
+						pNode = pNode->GetNext();
+					}
+					break;
+
+                case POTYPE_SUBSTART:
+    				lSection = DefineSection();
+
+					// Loading data-objects
+					// --------------------
+					for ( lHelp = 0L; (lHelp < objHelp.GetLocalLong()) && ! boEof; ++lHelp )
+					{
+						pObj = new wxReportObj( 0.0, 1.1, 2.2, 3.3 );
+						pObj->LoadSettings( m_fFile );
+
+						boEof = m_fFile.Eof();
+
+						pObj->ResetPos();
+
+						pt = pObj->GetCurrPos();	// without margin
+
+						// Minimal position is object's init position
+						if ( (m_PageCtrl.m_dDataCurrY - m_PageCtrl.m_dTop) > (0.01 * pt.y) )
+							pObj->SetPosition( 0.01 * pt.x, 
+								m_PageCtrl.m_dDataCurrY - m_PageCtrl.m_dTop );
+
+						AddDataObj( pObj );
+					}
+                    break;
+
+                case POTYPE_SUBEND:
+	    			// we keep definition of section; thus no EndSection() here
+					// EndSection();
+
+					// going back to the section where we came from
+					lSection = PreviousSection( lSection );
+
+					// if that was the very first one, report ends
+			    	if ( lSection < 0 )
+				    	boEof = true;
+				    else
+				    {
+						// Selecting the corresponding obj-list
+					    wxReportSection	*pSection;
+
+					    pNode = (wxNode *)m_lstSections.Item( lSection );
+					    if (pNode)
+					    {
+						    pSection = (wxReportSection *)pNode->GetData();
+
+						    if ( pSection )
+							{
+							    m_pObjList = pSection->m_pList;
+								m_lCurrentSection = lSection;
+							}
+						    else
+							    boEof = true;
+					    }
+					    else
+						    boEof = true;
+
+						// Re-positioning objects
+					    if ( m_pObjList )
+						{
+							pNode = (wxNode *)m_pObjList->GetFirst();
+							while (pNode )
+							{
+								pObj = (wxReportObj *)pNode->GetData();
+								pObj->ResetPos();
+
+								pt = pObj->GetCurrPos();	// without margins
+
+								// Minimal position is object's init position
+								if ( (m_PageCtrl.m_dDataCurrY - m_PageCtrl.m_dTop) > (0.01 * pt.y) )
+									pObj->SetPosition( 0.01 * pt.x, 
+										m_PageCtrl.m_dDataCurrY - m_PageCtrl.m_dTop );
+
+								pNode = pNode->GetNext();
+							}
+						} // valid obj-list
+				    }
+                    break;
+
+				default:	// Data...
+
+					m_fFile.Seek( lFilePos );	// back to the beginning of this data
+
+					// Reading all data here. We analyze where the bottom
+					// margin (including footer objects) is going to be reached
+
+					// FIRST page starts HERE (at this file pos)
+					if ( m_aPageStart.GetCount() == 0 )
+					{
+						m_aPageStart.Add( m_fFile.Tell() );	// file position of FIRST page
+						m_aSection.Add( lSection );			// we are in this section
+					}
+
+					lFilePos = m_fFile.Tell();	// Does the next set of objects
+												// still fit on the page...?
+
+					// Calculating new max. Y positions after (simulated) data output
+					pNode = (wxNode *)m_pObjList->GetFirst();
+					while (pNode && ! boEof )
+					{
+						pObj = (wxReportObj *)pNode->GetData();
+
+						boLoad = pObj->LoadData( m_fFile );
+						if ( ! boLoad )
+							boEof = true;
+
+						dY  = 0.01 * pObj->MoveForward().y;	// without margin
+						dY += m_PageCtrl.m_dTop;			// WITH margin
+
+						if ( dY > m_PageCtrl.m_dDataCurrY )
+							m_PageCtrl.m_dDataCurrY = dY;	// new max. pos. WITH margin
+
+						pNode = pNode->GetNext();
+					}
+
+					if ( boEof )
+						continue;	// This is the end
+
+					lFilePos = m_fFile.Tell();	// Now we're here
+
+					// If at least ONE of the new Y positions of the current objects is
+					// beyond the bootom margin/footer, we'll start a new page
+					if ( m_PageCtrl.m_dDataCurrY > m_PageCtrl.m_dFooterMinY )
+					{
+						m_aPageStart.Add( lFilePos );
+						m_aSection.Add( lSection );
+
+						m_PageCtrl.m_dDataCurrY = m_PageCtrl.m_dTop;
+
+						// object positions back to their initial pos.
+						pNode = (wxNode *)m_pObjList->GetFirst();
+						while (pNode)
+						{
+							pObj = (wxReportObj *)pNode->GetData();
+							pObj->ResetPos();
+							pNode = pNode->GetNext();
+						}
+
+					}
+
+					break;
+
+            } // switch
+
+		} // while ! Eof (section)
+
+
+//		m_fFile.Close();	// keeping file open
+
+	} // File opened
+
+	m_boObjectsSaved = false;
+
+	lFilePos = m_fFile.Tell();
+
+	return lFilePos;
+!!!292039.cpp!!!	FinishReport(in  : void) : void
+
+	// If Report ONLY has header/footer objects,
+	// .SaveData has never been called. Thus the
+	// header/footer objects have never been saved!
+	if ( ! m_boLoad )
+		if ( ! m_boObjectsSaved )
+			SaveObjects();
+
+	if ( m_fFile.IsOpened() )
+	{
+		if ( ! m_boLoad )
+			if ( m_fFile.Seek( wxStrlen( VLPHEADER ) ) )
+				m_fFile.Write( &m_lDatasets, sizeof( m_lDatasets ) );
+
+		m_fFile.Close();
+
+		if ( ! m_boLoad )
+		{
+			wxRenameFile( m_strFilenameTmp, m_strFilename );
+		}
+	}
+!!!292167.cpp!!!	FinalDestination(in  : void) : wxString
+
+	// If Report is finished, we can supply its
+	// final filename
+	//
+	// (A Report is finished when the output file is
+	//  closed AND we're not loading it!)
+	if ( ! m_fFile.IsOpened() && ! m_boLoad )
+		return m_strFilename;
+
+	return wxEmptyString;
+!!!292423.cpp!!!	GetNumberOfPages() : int
+
+	return m_aPageStart.GetCount();
+!!!292551.cpp!!!	SetPage(in uiPage : uint) : void
+
+	if ( uiPage > 0 && uiPage <= m_aPageStart.GetCount() )
+		m_PageCtrl.m_nCurrentPage = uiPage - 1;
+	m_PageCtrl.m_nPages = m_aPageStart.GetCount();
+!!!293831.cpp!!!	SetPath(in strPath : wxString) : void
+
+	wxFileName fName( strPath, wxT("") );
+	fName.Normalize();
+
+	if ( ! fName.DirExists() )
+	{
+		if ( ! fName.Mkdir( 0777, true ) )
+			m_strPathOfReports = wxT("." );
+		else
+			m_strPathOfReports = fName.GetLongPath();
+	}
+	else
+		m_strPathOfReports = fName.GetLongPath();
+!!!293959.cpp!!!	SetDateFormat(in strFmt : wxString) : void
+
+	m_strDateFmt = strFmt;
+!!!294087.cpp!!!	SetShortDateFormat(in strFmt : wxString) : void
+
+	m_strShortDateFmt = strFmt;
+!!!294343.cpp!!!	SetDate(in dt : wxDateTime) : void
+
+	wxString strDate;
+
+	if ( m_boObjectsSaved )
+	{
+		DefinitionError();
+		return;
+	}
+
+	strDate.Printf( wxT("%s"), dt.Format( m_strDateFmt ).c_str() );
+
+	SetDate( strDate );
+!!!295367.cpp!!!	SetOrientation(in iMode : int) : void
+
+    if ( iMode == wxLANDSCAPE )
+	{
+        m_PageCtrl.m_dYSizeMM = 210.0;
+        m_PageCtrl.m_dXSizeMM = 297.0;
+    }
+    else
+	{
+        m_PageCtrl.m_dYSizeMM = 297.0;
+        m_PageCtrl.m_dXSizeMM = 210.0;
+    }
+!!!295495.cpp!!!	Draw(inout dc : wxDC) : void
+
+	long	    lPosData;
+	wxString    strHeader;
+	wxString    strLine;
+	double      dScale;
+	double		dY;
+	bool		boEOP;
+	bool		boLoad;
+	wxNode      *pNode;
+	wxReportObj *pObj;
+	wxReportObj	objHelp;
+    wxReportSection	*pSection;
+	wxPoint pt;
+
+	if ( m_PageCtrl.m_nCurrentPage < 0 )
+		return;
+
+	if ( m_PageCtrl.m_nCurrentPage >= (int)m_aPageStart.GetCount() )
+		return;
+
+	lPosData          = m_aPageStart[ m_PageCtrl.m_nCurrentPage ];
+	m_lCurrentSection = m_aSection[ m_PageCtrl.m_nCurrentPage ];
+
+	m_fFile.Seek( lPosData );
+
+	dScale = 3.78;	// just a default value
+	if ( m_pPrintout )
+		dScale = m_pPrintout->GetMMScale();
+
+	// setting up header-objects
+	// -------------------------
+	pNode = (wxNode *)m_lstHeader.GetFirst();
+	while (pNode)
+	{
+		pObj = (wxReportObj *)pNode->GetData();
+
+		pObj->ResetPos();
+		pObj->SetScale( dScale );	// MM --> log.Units
+
+		pNode = pNode->GetNext();
+
+	}
+
+	// setting up footer-objects
+	// -------------------------
+	pNode = (wxNode *)m_lstFooter.GetFirst();
+	while (pNode)
+	{
+		pObj = (wxReportObj *)pNode->GetData();
+
+		pObj->ResetPos();
+		pObj->SetScale( dScale );	// MM --> log.Units
+
+		pNode = pNode->GetNext();
+
+	}
+
+	// drawing header-objects
+	// ----------------------
+	pNode = (wxNode *)m_lstHeader.GetFirst();
+	while (pNode)
+	{
+		pObj = (wxReportObj *)pNode->GetData();
+		pObj->Draw( dc );
+
+		pNode = pNode->GetNext();
+	}
+
+	m_PageCtrl.m_dFooterMinY = m_PageCtrl.m_dYSizeMM - m_PageCtrl.m_dBottom;
+
+	// drawing footer-objects
+	// ----------------------
+	pNode = (wxNode *)m_lstFooter.GetFirst();
+	while (pNode)
+	{
+		wxPoint pt;
+
+		pObj = (wxReportObj *)pNode->GetData();
+
+		dY = m_PageCtrl.m_dYSizeMM - m_PageCtrl.m_dBottom
+		   - 0.01 * pObj->GetInitPos().y;
+
+		if ( dY < m_PageCtrl.m_dFooterMinY )
+			m_PageCtrl.m_dFooterMinY = dY;
+
+		// The object's Draw() function takes Top & Left Margins into account
+		// Therefore we must subtract the top margin here
+		dY -= m_PageCtrl.m_dTop;
+
+		pt = pObj->GetInitPos();
+		pObj->SetPosition( 0.01 * pt.x, dY );
+
+		pObj->Draw( dc );
+
+		pNode = pNode->GetNext();
+	}
+
+	boEOP = false;
+	m_PageCtrl.m_dDataCurrY = m_PageCtrl.m_dTop;
+
+    // Positioning internal pointer to appropriate list
+    if ( m_lCurrentSection < 0 || m_lCurrentSection >= (long)m_lstSections.GetCount() )
+        return;
+
+    pNode = (wxNode *)m_lstSections.Item( m_lCurrentSection );
+    if (pNode)
+    {
+	    pSection = (wxReportSection *)pNode->GetData();
+
+	    if ( pSection )
+		    m_pObjList = pSection->m_pList;
+	    else
+		    boEOP = true;
+    }
+    else
+	    boEOP = true;
+
+	// Object positions to their initial pos.
+	// --------------------------------------
+    pNode = (wxNode *)m_pObjList->GetFirst();
+	while ( pNode && ! boEOP )
+	{
+		pObj = (wxReportObj *)pNode->GetData();
+
+		pObj->ResetPos();
+
+	    pNode = pNode->GetNext();
+	}
+
+	// Drawing report-objects
+	// ----------------------
+	while ( ! boEOP )
+	{
+		lPosData = m_fFile.Tell();
+
+		boLoad = objHelp.LoadData( m_fFile );
+		if ( ! boLoad )
+		{
+			boEOP = true;
+			continue;
+		}
+
+		switch ( objHelp.GetType() )
+        {
+			case POTYPE_PGBREAK:
+				boEOP = true;
+				break;
+
+			case POTYPE_REPDATE:
+			case POTYPE_PGNUM:
+				break;			// not possible in data section!
+
+			case POTYPE_LINE:	// Line within data section!!!
+				{
+					double dMinX;
+					double dMaxX;
+					double dMaxY;
+					double dX;
+					double dY;
+					wxPoint pt;
+
+					if ( ! m_pObjList )
+						break;
+
+					dMinX =  10000.0;
+					dMaxX = -10000.0;
+					dMaxY = -10000.0;
+
+					
+					pNode = (wxNode *)m_pObjList->GetFirst();
+					while ( pNode )
+					{
+						pObj = (wxReportObj *)pNode->GetData();
+
+						// find maximum Y of PREVIOUS positions
+						pt = pObj->GetCurrPos();
+
+						dY  = 0.01 * pObj->MoveBackward().y;	// WITHOUT margin
+
+						if ( dY > dMaxY )
+							dMaxY = dY;
+
+						pt.y += HLINE_INC;			// 0.2mm forward in Y
+						pObj->SetCurrPos( pt );
+
+
+		    			pt  = pObj->GetCurrPos();	// without margin
+						dX  = 0.01 * pt.x;
+
+						if ( dX > dMaxX )
+							dMaxX = dX;
+
+						if ( dX < dMinX )
+							dMinX = dX;
+
+						dX  = 0.01 * (pt.x + pObj->GetSize().x);
+
+						if ( dX > dMaxX )
+							dMaxX = dX;
+
+
+					    pNode = pNode->GetNext();
+					}
+
+					if ( dMaxX > dMinX )
+					{
+						objHelp.SetPosition( dMinX, dMaxY );
+						objHelp.SetIncrements( 0.0, 0.0 );
+						objHelp.SetHeight( 0.0 );
+						objHelp.SetWidth( dMaxX - dMinX );
+						objHelp.SetMargins( &m_PageCtrl );
+
+						objHelp.Draw( dc );
+					}
+				} break;
+
+            case POTYPE_SUBSTART:
+            case POTYPE_SUBEND:
+                if ( objHelp.GetType() == POTYPE_SUBSTART )
+				{
+					long lHelp;
+
+					pNode = (wxNode *)m_lstSections.Item( m_lCurrentSection );
+					if ( pNode )
+					{
+					    pSection = (wxReportSection *)pNode->GetData();
+
+						if ( pSection )
+						{
+
+							lHelp = pSection->m_lSections;
+							++lHelp;
+							m_lCurrentSection = lHelp;
+						}
+					}
+				}
+                else
+	    		    m_lCurrentSection = PreviousSection( m_lCurrentSection );
+
+                if ( m_lCurrentSection < 0 || m_lCurrentSection >= (long)m_lstSections.GetCount() )
+                    break;
+
+				// Selecting corresponding data-objects
+                pNode = (wxNode *)m_lstSections.Item( m_lCurrentSection );
+                if (pNode)
+                {
+                    pSection = (wxReportSection *)pNode->GetData();
+
+                    if ( pSection )
+                        m_pObjList = pSection->m_pList;
+                    else
+                        boEOP = true;
+                }
+                else
+                    boEOP = true;
+
+				// Re-positioning data-objects
+				// ---------------------------
+                pNode = (wxNode *)m_pObjList->GetFirst();
+				while ( pNode && ! boEOP )
+				{
+					// object settings are in file.
+					// must jump over them here
+	                if ( objHelp.GetType() == POTYPE_SUBSTART )
+					{
+						wxReportObj objDummy;
+						objDummy.LoadSettings( m_fFile );	// dummy, to jump over the
+															// object definitions
+					}
+
+
+					pObj = (wxReportObj *)pNode->GetData();
+
+					pObj->ResetPos();
+
+					pt = pObj->GetCurrPos();	// without margin
+
+					// Minimal position is object's init position
+					if ( (m_PageCtrl.m_dDataCurrY - m_PageCtrl.m_dTop) > (0.01 * pt.y) )
+						pObj->SetPosition( 0.01 * pt.x, 
+							m_PageCtrl.m_dDataCurrY - m_PageCtrl.m_dTop );
+
+				    pNode = pNode->GetNext();
+				}
+                break;
+
+			default:	// Data...
+
+				m_fFile.Seek( lPosData );	// back to the beginning of this data
+
+
+				// We can draw data first and the check whether at least
+				// ONE of the object positions is beyond the bottom
+				// margins (including footer obj.)
+				pNode = (wxNode *)m_pObjList->GetFirst();
+				while (pNode && ! boEOP )
+				{
+					pObj = (wxReportObj *)pNode->GetData();
+
+					boLoad = pObj->LoadData( m_fFile );
+					if ( ! boLoad )
+						boEOP = true;
+
+		    		if ( ! boEOP )
+			    		pObj->Draw( dc );
+
+				    pNode = pNode->GetNext();
+
+			    }
+
+				// Now analyzing new positions
+
+				pNode = (wxNode *)m_pObjList->GetFirst();
+				while (pNode && ! boEOP )
+				{
+					pObj = (wxReportObj *)pNode->GetData();
+
+		    		dY  = 0.01 * pObj->GetCurrPos().y;	// without margin
+			    	dY += m_PageCtrl.m_dTop;			// WITH margin
+
+    				if ( dY > m_PageCtrl.m_dDataCurrY )
+	    				m_PageCtrl.m_dDataCurrY = dY;
+
+    				if ( m_PageCtrl.m_dDataCurrY > m_PageCtrl.m_dFooterMinY )
+	    				boEOP = true;
+
+				    pNode = pNode->GetNext();
+
+			    }
+
+				break;
+
+        } // switch
+
+	} // while
+
+!!!295623.cpp!!!	PrintPreview(in  : void) : void
+
+    // Pass two printout objects: for preview, and possible printing.
+#if defined(USE_OLD_PRINTSETTING)
+    wxPrintDialogData printDialogData(* g_printData);
+#else
+    wxPrintData printData = g_PrintSettings.GetPrintData();
+    if( m_PageCtrl.m_dYSizeMM < m_PageCtrl.m_dXSizeMM )
+        printData.SetOrientation( wxLANDSCAPE );
+    else
+        printData.SetOrientation( wxPORTRAIT );
+    wxPrintDialogData printDialogData( printData );
+#endif
+    wxPrintPreview *preview = new wxPrintPreview(
+		new ReportPrintout( this ),
+		new ReportPrintout( this ),
+		&printDialogData );
+
+    if (!preview->Ok())
+    {
+        delete preview;
+        wxMessageBox( wxT("There was a problem with Preview. Maybe the\n")
+			             + wxString( wxT("actual printer has not been configured correctly?") ),
+					  wxT("Preview"), wxOK );
+        return;
+    }
+
+/*  // This is the OLD version:  
+    wxPreviewFrame *frame = new wxPreviewFrame( preview, this, wxT("Print Preview"),
+		                                        wxPoint(70, 70), wxSize(640, 480) );
+*/
+
+	// We need our subclass of wxPreviewFrame here because
+	// when the preview frame closes, we must close the
+	// report file also. Otherwise the file would stay
+	// open and could not (for example) be deleted as long
+	// as the application is active
+    ReportPreviewFrame *frame = new ReportPreviewFrame( preview, this, wxT("Print Preview"),
+		                                        wxPoint(70, 70), wxSize(640, 480) );
+	frame->SetReportWriter( this );
+
+
+//  frame->Centre(wxBOTH);
+    frame->Initialize();
+    frame->Show(TRUE);
+!!!295751.cpp!!!	Print(in  : void) : void
+
+#if defined(USE_OLD_PRINTSETTING)
+    wxPrintDialogData printDialogData(* g_printData);
+#else
+    wxPrintData printData = g_PrintSettings.GetPrintData();
+    if( m_PageCtrl.m_dYSizeMM < m_PageCtrl.m_dXSizeMM )
+        printData.SetOrientation( wxLANDSCAPE );
+    else
+        printData.SetOrientation( wxPORTRAIT );
+    wxPrintDialogData printDialogData( printData );
+#endif
+    wxPrinter printer(& printDialogData);
+
+    ReportPrintout printout( this );
+
+    if (! printer.Print( this, &printout, TRUE ) )
+    {
+        if (wxPrinter::GetLastError() == wxPRINTER_ERROR)
+	        wxMessageBox( wxT("There was a problem with Preview. Maybe the\n")
+				            + wxString(wxT( "actual printer has not been configured correctly?" )),
+						  wxT("Print"), wxOK );
+        else
+            wxMessageBox( wxT("Printing was canceled."), wxT("Print"), wxOK );
+    }
+    else
+    {
+#if defined(USE_OLD_PRINTSETTING)
+        (*g_printData) = printer.GetPrintDialogData().GetPrintData();
+#else
+		g_PrintSettings.SetPrintData( printer.GetPrintDialogData().GetPrintData() );
+#endif
+    }

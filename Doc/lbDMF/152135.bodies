@@ -1,0 +1,430 @@
+class lbBoundColumns
+!!!227655.cpp!!!	setBoundColumns(inout bc : lb_I_Container) : lbErrCodes
+
+        _CL_VERBOSE << "lbBoundColumns::setBoundColumns() not implemented yet" LOG_
+	return ERR_NONE;
+!!!227783.cpp!!!	getBoundColumn(in column : int) : lb_I_BoundColumn
+
+	lbErrCodes err = ERR_NONE;
+	if (boundColumns != NULL) {
+		UAP_REQUEST(manager.getPtr(), lb_I_Integer, integerKey) 
+		integerKey->setData(column);
+		UAP(lb_I_Unknown, ukdata)
+		UAP(lb_I_KeyBase, key)
+		
+		QI(integerKey, lb_I_KeyBase, key)
+
+		ukdata = boundColumns->getElement(&key);
+		if (ukdata == NULL) printf("NULL pointer!\n");
+
+		UAP(lb_I_BoundColumn, bc)
+		lbErrCodes err = ukdata->queryInterface("lb_I_BoundColumn", (void**) &bc, __FILE__, __LINE__);
+
+		bc++;
+		
+		return bc.getPtr();
+	}
+	return NULL;
+!!!227911.cpp!!!	getColumnCount() : int
+
+	return boundColumns->Count();
+!!!228039.cpp!!!	setQuery(inout q : lb_I_Query, inout ReadonlyColumns : lb_I_Container) : lbErrCodes
+
+/*...spreparements:0:*/
+
+	lbQuery* qq = (lbQuery*) q;
+
+	HSTMT hstmt = qq->getCurrentStatement();
+	query = qq;
+
+// As Luf states, here it should not be.
+//#ifdef bla
+	const int ArraySize = 1;
+	SQLUSMALLINT RowStatusArray[ArraySize];
+
+	// Set the array size to one.
+	SQLSetStmtAttr(hstmt, SQL_ATTR_ROW_ARRAY_SIZE, (SQLPOINTER) ArraySize, 0);
+	
+	// Why this construct ??
+	SQLINTEGER csrType = SQL_CURSOR_KEYSET_DRIVEN;
+	
+	SQLSetStmtAttr(hstmt, SQL_ATTR_CURSOR_TYPE, (SQLPOINTER) csrType, 0);
+	SQLSetStmtAttr(hstmt, SQL_ATTR_ROW_BIND_TYPE, SQL_BIND_BY_COLUMN, 0);
+	SQLSetStmtAttr(hstmt, SQL_ATTR_ROW_STATUS_PTR, RowStatusArray, 0);
+//#endif
+	/*
+	 * Get the number of columns for this query.
+	 */
+	SQLSMALLINT num = 0;	
+	SQLRETURN sqlreturn = SQLNumResultCols(hstmt, &num);
+/*...e*/
+	
+/*...sdocs:0:*/
+#ifdef bla
+
+MSDN:
+
+	Many applications, especially ones that only display data, only require the metadata returned by 
+	SQLDescribeCol. 
+	For these applications, it is faster to use SQLDescribeCol than SQLColAttribute because the information is 
+	returned in a single call. 
+
+
+Therefore I need an indicator, set by the user of this library to know, which one I should use.
+
+#endif
+/*...e*/
+
+	// Request bound columns holder and key helper
+	// Warning: This function should only called once yet.
+
+	if (boundColumns == NULL) {
+		REQUEST(manager.getPtr(), lb_I_Container, boundColumns)
+	} else {
+		boundColumns->deleteAll();
+	}
+
+	// For each column create a bound column instance.
+	// The instance will bind the column.
+	for (int i = 1; i <= num; i++) {
+		UAP_REQUEST(manager.getPtr(), lb_I_Integer, integerKey)
+		lbErrCodes err = ERR_NONE;
+
+		// Create the instance ...
+		
+		lbBoundColumn* bc = new lbBoundColumn();
+
+		lb_I_Module* m = getModuleManager();
+
+
+		bc->setModuleManager(m, __FILE__, __LINE__);
+
+		bc->prepareBoundColumn(q, i);
+
+		integerKey->setData(i);
+
+		UAP(lb_I_Unknown, uk)
+		UAP(lb_I_KeyBase, key)
+
+		bc->queryInterface("lb_I_Unknown", (void**) &uk, __FILE__, __LINE__);
+		integerKey->queryInterface("lb_I_KeyBase", (void**) &key, __FILE__, __LINE__);		
+
+		boundColumns->insert(&uk, &key);
+
+		UAP(lb_I_BoundColumn, bc1)
+		bc1 = getBoundColumn(i);
+
+		UAP_REQUEST(manager.getPtr(), lb_I_String, colName)
+		UAP(lb_I_KeyBase, key1)
+		colName->setData(qq->getColumnName(i));
+		QI(colName, lb_I_KeyBase, key1)
+
+		bool Readonly = false;
+
+		if (ReadonlyColumns->exists(&key1) == 1) Readonly = true;
+
+		bc1->bindColumn(q, i, Readonly);
+
+/*...sGet the column name for this column and add an index to it\39\s column id\46\:16:*/
+
+		if (ColumnNameMapping == NULL) {
+			// Create the index mapping instnce
+			
+			REQUEST(manager.getPtr(), lb_I_Container, ColumnNameMapping)
+		}
+		
+		UAP(lb_I_KeyBase, skey)
+		UAP(lb_I_String, string)
+
+		string = bc1->getColumnName();
+
+		string->queryInterface("lb_I_KeyBase", (void**) &skey, __FILE__, __LINE__);
+
+		UAP(lb_I_Unknown, ivalue)
+
+		integerKey->queryInterface("lb_I_Unknown", (void**) &ivalue, __FILE__, __LINE__);
+		
+		if (ColumnNameMapping.getPtr() == NULL) printf("Error: NULL pointer at ColumnNameMapping detected\n");
+		if (ivalue.getPtr() == NULL) printf("Error: NULL pointer at ivalue detected\n");
+		if (skey.getPtr() == NULL) printf("Error: NULL pointer at skey detected\n");
+
+		ColumnNameMapping->insert(&ivalue, &skey);
+/*...e*/
+
+	}
+
+	return ERR_NONE;
+!!!228167.cpp!!!	getMode() : int
+
+	return query->isAdding();
+!!!228295.cpp!!!	getString(in column : int, inout instance : lb_I_String) : lbErrCodes
+
+	lbErrCodes err = ERR_NONE;
+
+	UAP(lb_I_BoundColumn, bc)
+
+	bc = getBoundColumn(column);
+	// getBoundColumn(column); increases refcount
+	//bc++;
+	bc->getAsString(instance);
+
+	return ERR_NONE;
+!!!228423.cpp!!!	getLong(in column : int, inout instance : lb_I_Long) : lbErrCodes
+
+	lbErrCodes err = ERR_NONE;
+
+	UAP(lb_I_BoundColumn, bc)
+
+	bc = getBoundColumn(column);
+	bc->getAsLong(instance);
+
+	return ERR_NONE;
+!!!228551.cpp!!!	getString(inout column : char, inout instance : lb_I_String) : lbErrCodes
+
+	return ERR_NONE;
+!!!228679.cpp!!!	setString(inout column : char, inout instance : lb_I_String) : lbErrCodes
+
+	lbErrCodes err = ERR_NONE;
+	UAP(lb_I_Unknown, ukdata)
+	UAP(lb_I_KeyBase, key)
+	
+	UAP_REQUEST(manager.getPtr(), lb_I_String, Column)
+	
+	Column->setData(column);
+	
+	QI(Column, lb_I_KeyBase, key)
+	ukdata = ColumnNameMapping->getElement(&key);
+
+	UAP(lb_I_KeyBase, index)
+	QI(ukdata, lb_I_KeyBase, index)
+
+	UAP(lb_I_Unknown, uk_bc)
+	uk_bc = boundColumns->getElement(&index);
+	
+	UAP(lb_I_BoundColumn, bc)
+	QI(uk_bc, lb_I_BoundColumn, bc)
+
+	// Adding or updating ? - Decided inside
+	bc->setFromString(instance, getMode());
+
+	return ERR_NONE;
+!!!228807.cpp!!!	unbindReadonlyColumns() : void
+
+	lbErrCodes err = ERR_NONE;
+	
+	if (boundColumns != NULL) {
+		while (boundColumns->hasMoreElements() == 1) {
+			UAP(lb_I_Unknown, uk)
+			UAP(lb_I_BoundColumn, bc)
+			
+			uk = boundColumns->nextElement();
+			
+			QI(uk, lb_I_BoundColumn, bc)
+			
+			bc->unbindReadonlyColumns();
+		}
+	}
+!!!228935.cpp!!!	rebindReadonlyColumns() : void
+
+	lbErrCodes err = ERR_NONE;
+	
+	if (boundColumns != NULL) {
+		while (boundColumns->hasMoreElements() == 1) {
+			UAP(lb_I_Unknown, uk)
+			UAP(lb_I_BoundColumn, bc)
+			
+			uk = boundColumns->nextElement();
+			
+			QI(uk, lb_I_BoundColumn, bc)
+			
+			bc->rebindReadonlyColumns();
+		}
+	}
+!!!229063.cpp!!!	isNull(in pos : int) : bool
+
+
+	lbErrCodes err = ERR_NONE;
+	if (boundColumns != NULL) {
+		UAP_REQUEST(manager.getPtr(), lb_I_Integer, integerKey) 
+		integerKey->setData(pos);
+		UAP(lb_I_Unknown, ukdata)
+		UAP(lb_I_KeyBase, key)
+		
+		QI(integerKey, lb_I_KeyBase, key)
+
+		ukdata = boundColumns->getElement(&key);
+		if (ukdata == NULL) printf("NULL pointer!\n");
+
+		UAP(lb_I_BoundColumn, bc)
+		lbErrCodes err = ukdata->queryInterface("lb_I_BoundColumn", (void**) &bc, __FILE__, __LINE__);
+
+		return bc->isNull();
+	}
+
+	// What to answer here ??
+	return false;
+!!!229191.cpp!!!	getColumnType(in pos : int) : lbDBColumnTypes
+
+
+	lbErrCodes err = ERR_NONE;
+	if (boundColumns != NULL) {
+		UAP_REQUEST(manager.getPtr(), lb_I_Integer, integerKey) 
+		integerKey->setData(pos);
+		UAP(lb_I_Unknown, ukdata)
+		UAP(lb_I_KeyBase, key)
+		
+		QI(integerKey, lb_I_KeyBase, key)
+
+		ukdata = boundColumns->getElement(&key);
+		if (ukdata == NULL) printf("NULL pointer!\n");
+
+		UAP(lb_I_BoundColumn, bc)
+		lbErrCodes err = ukdata->queryInterface("lb_I_BoundColumn", (void**) &bc, __FILE__, __LINE__);
+
+		return bc->getType();
+	}
+
+	_LOG << "lbBoundColumns::getColumnType(int pos) returns unknown type" LOG_
+
+	return lb_I_Query::lbDBColumnUnknown;
+!!!229319.cpp!!!	getColumnType(inout name : char) : lbDBColumnTypes
+
+
+	lbErrCodes err = ERR_NONE;
+	if (boundColumns != NULL) {
+		UAP_REQUEST(manager.getPtr(), lb_I_String, stringKey) 
+		stringKey->setData(name);
+		UAP(lb_I_Unknown, ukdata)
+		UAP(lb_I_KeyBase, key)
+		
+		QI(stringKey, lb_I_KeyBase, key)
+
+		ukdata = ColumnNameMapping->getElement(&key);
+		if (ukdata == NULL) {
+			_LOG << "lbBoundColumns::getColumnType('" << name << "') returned no data !" LOG_
+			
+			return lb_I_Query::lbDBColumnUnknown;
+		}
+
+		UAP(lb_I_BoundColumn, bc)
+		UAP(lb_I_Integer, pos)
+		
+		lbErrCodes err = ukdata->queryInterface("lb_I_Integer", (void**) &pos, __FILE__, __LINE__);
+		
+		return getColumnType(pos->getData());
+	}
+
+	return lb_I_Query::lbDBColumnUnknown;
+!!!229447.cpp!!!	getColumnIndex(inout name : char) : int
+
+
+	lbErrCodes err = ERR_NONE;
+	if (boundColumns != NULL) {
+		UAP_REQUEST(manager.getPtr(), lb_I_String, stringKey) 
+		stringKey->setData(name);
+		UAP(lb_I_Unknown, ukdata)
+		UAP(lb_I_KeyBase, key)
+		
+		QI(stringKey, lb_I_KeyBase, key)
+
+		ukdata = ColumnNameMapping->getElement(&key);
+		if (ukdata == NULL) {
+			_LOG << "lbBoundColumns::getColumnIndex('" << name << "') returned no data !" LOG_
+			
+			return -1;
+		}
+
+		UAP(lb_I_Integer, pos)
+		
+		lbErrCodes err = ukdata->queryInterface("lb_I_Integer", (void**) &pos, __FILE__, __LINE__);
+		
+		return pos->getData();
+	}
+
+	return -1;
+!!!229575.cpp!!!	setReadonly(inout column : char, in updateable : bool) : void
+
+
+	lbErrCodes err = ERR_NONE;
+	if (boundColumns != NULL) {
+		UAP_REQUEST(manager.getPtr(), lb_I_String, stringKey) 
+		stringKey->setData(column);
+		UAP(lb_I_Unknown, ukdata)
+		UAP(lb_I_KeyBase, key)
+		
+		QI(stringKey, lb_I_KeyBase, key)
+
+		ukdata = ColumnNameMapping->getElement(&key);
+		if (ukdata == NULL) printf("NULL pointer!\n");
+
+		UAP(lb_I_Integer, pos)
+		
+		lbErrCodes err = ukdata->queryInterface("lb_I_Integer", (void**) &pos, __FILE__, __LINE__);
+		
+		UAP_REQUEST(manager.getPtr(), lb_I_Integer, integerKey) 
+		integerKey->setData(pos.getPtr());
+		UAP(lb_I_Unknown, ukdata1)
+		UAP(lb_I_KeyBase, key1)
+		
+		QI(integerKey, lb_I_KeyBase, key1)
+
+		ukdata1 = boundColumns->getElement(&key1);
+		if (ukdata1 == NULL) printf("NULL pointer!\n");
+
+		UAP(lb_I_BoundColumn, bc)
+		err = ukdata1->queryInterface("lb_I_BoundColumn", (void**) &bc, __FILE__, __LINE__);
+
+		bc->setReadonly(updateable);
+	}
+!!!229703.cpp!!!	getReadonly(inout column : char) : bool
+
+	lbErrCodes err = ERR_NONE;
+	if (boundColumns != NULL) {
+		UAP_REQUEST(manager.getPtr(), lb_I_String, stringKey) 
+		stringKey->setData(column);
+		UAP(lb_I_Unknown, ukdata)
+		UAP(lb_I_KeyBase, key)
+		
+		QI(stringKey, lb_I_KeyBase, key)
+
+		ukdata = ColumnNameMapping->getElement(&key);
+		if (ukdata == NULL) printf("NULL pointer!\n");
+
+		
+
+		UAP(lb_I_Integer, pos)
+		
+		lbErrCodes err = ukdata->queryInterface("lb_I_Integer", (void**) &pos, __FILE__, __LINE__);
+		
+		UAP_REQUEST(manager.getPtr(), lb_I_Integer, integerKey) 
+		integerKey->setData(pos.getPtr());
+		UAP(lb_I_Unknown, ukdata1)
+		UAP(lb_I_KeyBase, key1)
+		
+		QI(integerKey, lb_I_KeyBase, key1)
+
+		ukdata1 = boundColumns->getElement(&key1);
+		if (ukdata1 == NULL) printf("NULL pointer!\n");
+
+		UAP(lb_I_BoundColumn, bc)
+		err = ukdata1->queryInterface("lb_I_BoundColumn", (void**) &bc, __FILE__, __LINE__);
+
+		return bc->getReadonly();
+	}
+	return false;
+!!!229831.cpp!!!	rebind() : void
+
+	lbErrCodes err = ERR_NONE;
+	
+	if (boundColumns != NULL) {
+		while (boundColumns->hasMoreElements() == 1) {
+			UAP(lb_I_Unknown, uk)
+			UAP(lb_I_BoundColumn, bc)
+			
+			uk = boundColumns->nextElement();
+			
+			QI(uk, lb_I_BoundColumn, bc)
+			
+			bc->rebind();
+		}
+	}

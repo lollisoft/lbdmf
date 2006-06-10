@@ -1,0 +1,17 @@
+class lbNamedValue
+!!!249671.cpp!!!	setName(in _name : char) : lbErrCodes
+
+        name = strdup((_name == NULL) ? "" : _name);
+        return ERR_NONE;
+!!!249799.cpp!!!	setValue(inout _value : lb_I_Unknown) : lbErrCodes
+
+        if (uk_value != NULL) RELEASE(uk_value);
+        
+        // clone() set's the ref counter to 1, so a release above deletes the object.
+        uk_value = _value->clone(__FILE__, __LINE__);
+        return ERR_NONE;
+!!!249927.cpp!!!	getValue(inout _value : lb_I_Unknown) : lbErrCodes
+
+        _value = uk_value->clone(__FILE__, __LINE__);
+        
+        return ERR_NONE;

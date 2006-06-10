@@ -1,0 +1,94 @@
+class lbApplications
+!!!298823.cpp!!!	~lbApplications()
+
+
+!!!298951.cpp!!!	addApplication(in application : char, in titel : char, in modulename : char, in functor : char, in _interface : char, in _id : long) : long
+
+	lbErrCodes err = ERR_NONE;
+	UAP_REQUEST(manager.getPtr(), lb_I_Long, _ID)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, Application)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, Titel)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, ModuleName)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, Functor)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, Interface)
+	
+	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, paramname)
+
+	_ID->setData(_id);
+	*Application = application;
+
+
+	*paramname = "ID";
+	param->setUAPLong(*&paramname, *&_ID);
+	*paramname = "Application";
+	param->setUAPString(*&paramname, *&Application);
+	*paramname = "Titel";
+	param->setUAPString(*&paramname, *&Titel);
+	*paramname = "ModuleName";
+	param->setUAPString(*&paramname, *&ModuleName);
+	*paramname = "Functor";
+	param->setUAPString(*&paramname, *&Functor);
+	*paramname = "Interface";
+	param->setUAPString(*&paramname, *&Interface);
+	
+	UAP(lb_I_KeyBase, key)
+	UAP(lb_I_Unknown, ukParam)
+	QI(_ID, lb_I_KeyBase, key)
+	QI(param, lb_I_Unknown, ukParam)
+	
+	Applications->insert(&ukParam, &key);
+
+	return false;
+!!!299079.cpp!!!	selectApplication(in application : char) : bool
+
+	return false;
+!!!299207.cpp!!!	getApplicationCount() : int
+
+	return Applications->Count();
+!!!299335.cpp!!!	hasMoreApplications() : bool
+
+	return Applications->hasMoreElements();
+!!!299463.cpp!!!	setNextApplication() : void
+
+	lbErrCodes err = ERR_NONE;
+	UAP_REQUEST(manager.getPtr(), lb_I_String, name)
+	UAP(lb_I_Parameter, param)
+	UAP(lb_I_Unknown, uk)
+	
+	uk = Applications->nextElement();
+	QI(uk, lb_I_Parameter, param)
+	
+	*name = "ID";
+	param->getUAPLong(*&name, *&currentApplicationUID);
+	*name = "Application";
+	param->getUAPString(*&name, *&currentApplication);
+	*name = "Titel";
+	param->getUAPString(*&name, *&currentTitel);
+	*name = "ModuleName";
+	param->getUAPString(*&name, *&currentFunctor);
+	*name = "Functor";
+	param->getUAPString(*&name, *&currentModuleName);
+	*name = "Interface";
+	param->getUAPString(*&name, *&currentInterface);
+!!!299591.cpp!!!	finishApplicationIteration() : void
+
+	Applications->finishIteration();
+!!!299719.cpp!!!	getApplicationName() : char
+
+	return currentApplication->charrep();
+!!!299847.cpp!!!	getApplicationID() : long
+
+	return currentApplicationUID->getData();
+!!!299975.cpp!!!	getApplicationTitle() : char
+
+	return currentTitel->charrep();
+!!!300103.cpp!!!	getApplicationFunctor() : char
+
+	return currentFunctor->charrep();
+!!!300231.cpp!!!	getApplicationModule() : char
+
+	return currentModuleName->charrep();
+!!!300359.cpp!!!	getApplicationInterface() : char
+
+	return currentInterface->charrep();

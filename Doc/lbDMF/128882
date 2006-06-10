@@ -1,0 +1,949 @@
+format 22
+"lbLoginWizard" // Test::GUI::wxPlugins::lbLoginWizard
+  // class settings
+  //class diagram settings
+  draw_all_relations default hide_attributes default hide_operations default show_full_members_definition default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default
+  //use case diagram settings
+  package_name_in_tab default show_context default auto_label_position default
+  //sequence diagram settings
+  show_full_operations_definition default write_horizontally default drawing_language default
+  //collaboration diagram settings
+  show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default
+  //component diagram settings
+  package_name_in_tab default show_context default auto_label_position default
+  draw_component_as_icon default show_component_req_prov default show_component_rea default
+  //deployment diagram settings
+  package_name_in_tab default show_context default write_horizontally default auto_label_position default
+  draw_component_as_icon default show_component_req_prov default show_component_rea default
+  //state diagram settings
+  package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default
+  show_activities default region_horizontally default drawing_language default
+  
+  classview 128242 "lbLoginWizard"
+    //class diagram settings
+    draw_all_relations default hide_attributes default hide_operations default show_full_members_definition default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default
+    //col diagram settings
+    show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default
+    //seq diagram settings
+    show_full_operations_definition default write_horizontally default drawing_language default
+    //state diagram settings
+    package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default
+    show_activities default region_horizontally default drawing_language default
+    //class settings
+    class 128242 "lbPluginModuleLoginWizard"
+      
+      
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "* \\brief This is the plugin module definition class for the login wizard.
+ *
+ "
+      classrelation 128114 // <generalisation>
+	relation 128114 ---|>
+	  a public
+	    cpp default "Generated"
+	    classrelation_ref 128114 // <generalisation>
+	  b parent class_ref 136519 // lb_I_PluginModule
+      end
+
+      operation 128114 "lbPluginModuleLoginWizard"
+	public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${name}${(}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${class}::${name}${(}${)}${throw}{
+${body}}
+"
+	
+	
+      end
+
+      operation 128242 "~lbPluginModuleLoginWizard"
+	cpp_virtual public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${virtual}${name}${(}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${class}::${name}${(}${)}${throw}{
+${body}}
+"
+	
+	
+      end
+    end
+
+    class 128370 "wxAppSelectPage"
+      
+      
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "...e
+...swxAppSelectPage:0:"
+      classrelation 128242 // <generalisation>
+	relation 128242 ---|>
+	  a public
+	    cpp default "Generated"
+	    classrelation_ref 128242 // <generalisation>
+	  b parent class_ref 141767 // lb_I_Unknown
+      end
+
+      classrelation 128370 // <generalisation>
+	relation 128370 ---|>
+	  a public
+	    cpp default "Generated"
+	    classrelation_ref 128370 // <generalisation>
+	  b parent class_ref 168647 // lb_I_AppSelectPage
+      end
+
+      classrelation 128498 // <generalisation>
+	relation 128498 ---|>
+	  a public
+	    cpp default "Generated"
+	    classrelation_ref 128498 // <generalisation>
+	  b parent class_ref 170951 // wxWizardPageSimple
+      end
+
+      operation 128370 "wxAppSelectPage"
+	cpp_inline public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${name}${(}${)}${volatile}${throw} {
+		app = wxString(\"\");
+	};
+"
+	
+	
+      end
+
+      operation 128498 "~wxAppSelectPage"
+	cpp_virtual public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${virtual}${name}${(}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${class}::${name}${(}${)}${throw}{
+${body}}
+"
+	
+	
+      end
+
+      operation 128626 "getSelectedApp"
+	cpp_inline public return_type class_ref 161991 // wxString
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract} { return app; };
+"
+	
+	
+	comment "...e"
+      end
+
+      operation 128754 "setLoggedOnUser"
+	cpp_inline public explicit_return_type "void"
+	nparams 1
+	  param inout name "user" explicit_type "char"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} {
+		lbErrCodes err = ERR_NONE;
+
+		if (userid != NULL) free(userid);
+		userid = strdup(user);
+
+		UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
+		UAP(lb_I_Container, apps)
+		
+		meta->setUserName(user);
+		
+		apps = meta->getApplications();
+
+		box->Clear();
+		
+		while (apps->hasMoreElements()) {
+			UAP(lb_I_String, name)
+			UAP(lb_I_Unknown, uk)
+			
+			uk = apps->nextElement();
+			QI(uk, lb_I_String, name)
+			
+			box->Append(wxString(name->charrep()));
+		}
+
+		box->SetSelection(0);
+
+		sizerMain->Fit(this);
+		//Fit();
+
+		return;
+	};
+"
+	
+	
+	comment "...svoid setLoggedOnUser\\40\\char\\42\\ user\\41\\:8:"
+      end
+
+      operation 128882 "TransferDataFromWindow"
+	cpp_virtual cpp_inline public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract} {
+		// The application must have been selected here by the user.
+	        return TRUE;
+	};
+"
+	
+	
+	comment "...e
+...svirtual bool TransferDataFromWindow\\40\\\\41\\:8:"
+      end
+
+      operation 129010 "OnWizardPageChanging"
+	cpp_inline public explicit_return_type "void"
+	nparams 1
+	  param inout name "event" type class_ref 171079 // wxWizardEvent
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract} {
+		if (event.GetDirection()) {
+			int sel = box->GetSelection();
+			app = box->GetString(sel);
+
+			if (!app.IsEmpty()) {
+				UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
+		
+				char* _app = strdup(app.c_str());
+			
+				meta->loadApplication(userid, _app);
+			
+				free(_app);
+			}
+		}
+	};
+"
+	
+	
+	comment "...e"
+      end
+
+      classrelation 128626 // m_checkbox (<unidirectional association>)
+	relation 128626 --->
+	  a role_name "m_checkbox" multiplicity "" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 128626 // m_checkbox (<unidirectional association>)
+	  b parent class_ref 171207 // wxCheckBox
+      end
+
+      attribute 128114 "userid"
+	private explicit_type "char"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	java_decl ""
+	idl_decl ""
+      end
+
+      classrelation 128754 // box (<unidirectional association>)
+	relation 128754 --->
+	  a role_name "box" multiplicity "" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 128754 // box (<unidirectional association>)
+	  b parent class_ref 160327 // wxChoice
+      end
+
+      classrelation 128882 // app (<directional aggregation by value>)
+	relation 128882 *-->
+	  a role_name "app" multiplicity "" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	    classrelation_ref 128882 // app (<directional aggregation by value>)
+	  b parent class_ref 161991 // wxString
+      end
+
+      classrelation 129010 // sizerMain (<unidirectional association>)
+	relation 129010 --->
+	  a role_name "sizerMain" multiplicity "" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 129010 // sizerMain (<unidirectional association>)
+	  b parent class_ref 171335 // wxBoxSizer
+      end
+
+      attribute 128242 "buf"
+	private explicit_type "char"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}[100]${value};
+"
+	java_decl ""
+	idl_decl ""
+      end
+    end
+
+    class 128498 "wxLogonPage"
+      
+      
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "...e
+...swxLogonPage:0:"
+      classrelation 129138 // <generalisation>
+	relation 129138 ---|>
+	  a public
+	    cpp default "Generated"
+	    classrelation_ref 129138 // <generalisation>
+	  b parent class_ref 141767 // lb_I_Unknown
+      end
+
+      classrelation 129266 // <generalisation>
+	relation 129266 ---|>
+	  a public
+	    cpp default "Generated"
+	    classrelation_ref 129266 // <generalisation>
+	  b parent class_ref 168519 // lb_I_LogonPage
+      end
+
+      classrelation 129394 // <generalisation>
+	relation 129394 ---|>
+	  a public
+	    cpp default "Generated"
+	    classrelation_ref 129394 // <generalisation>
+	  b parent class_ref 170951 // wxWizardPageSimple
+      end
+
+      operation 129138 "~wxLogonPage"
+	cpp_virtual cpp_inline public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${virtual}${name}${(}${)}${volatile}${throw} {
+	};
+"
+	
+	
+      end
+
+      operation 129266 "wxLogonPage"
+	cpp_inline public explicit_return_type ""
+	nparams 1
+	  param inout name "parent" type class_ref 171591 // wxWizard
+	cpp_decl "    ${comment}${inline}${name}${(}${t0} * ${p0}${)}${volatile}${throw} : wxWizardPageSimple(parent)
+	{
+	        //m_bitmap = wxBITMAP(wiztest2);
+	};
+"
+	
+	
+      end
+
+      operation 129394 "getTextValue"
+	public explicit_return_type "char"
+	nparams 1
+	  param inout name "_name" explicit_type "char"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} * ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//...e
+//...schar const \\42\\ LB_STDCALL wxLogonPage\\58\\\\58\\getTextValue\\40\\char\\42\\ _name\\41\\:0:
+
+//...e
+//...schar const \\42\\ LB_STDCALL wxLogonPage\\58\\\\58\\getTextValue\\40\\char\\42\\ _name\\41\\:0:
+
+//...schar const \\42\\ LB_STDCALL wxLogonPage\\58\\\\58\\getTextValue\\40\\char\\42\\ _name\\41\\:0:
+
+${comment}${inline}const ${type} * ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 129522 "setAppSelectPage"
+	cpp_inline public explicit_return_type "void"
+	nparams 1
+	  param inout name "p" type class_ref 128370 // wxAppSelectPage
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} {
+		appselect = p;
+	};
+"
+	
+	
+      end
+
+      operation 129650 "OnWizardCancel"
+	cpp_inline public explicit_return_type "void"
+	nparams 1
+	  param inout name "event" type class_ref 171079 // wxWizardEvent
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract} {
+	        if ( wxMessageBox(_T(\"Do you really want to cancel?\"), _T(\"Question\"),
+	                          wxICON_QUESTION | wxYES_NO, this) != wxYES )
+	        {
+	            // not confirmed
+	            event.Veto();
+	        }
+	};
+"
+	
+	
+	comment " wizard event handlers"
+      end
+
+      operation 129778 "createTextCtrl"
+	cpp_inline public return_type class_ref 128711 // lbErrCodes
+	nparams 1
+	  param inout name "_name" explicit_type "char"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} {
+		wxTextCtrl *text = new wxTextCtrl(this, -1, \"\", wxPoint());
+
+		text->SetName(_name);
+
+		sizerRight->Add(text, 1, wxEXPAND | wxALL, 5);
+
+		wxStaticText *label = new wxStaticText(this, -1, _name, wxPoint());
+		sizerLeft->Add(label, 1, wxEXPAND | wxALL, 5);
+
+		return ERR_NONE;
+	};
+"
+	
+	
+	comment "...slbErrCodes LB_STDCALL createTextCtrl\\40\\char\\42\\ _name\\41\\:8:"
+      end
+
+      operation 129906 "createPasswdCtrl"
+	cpp_inline public return_type class_ref 128711 // lbErrCodes
+	nparams 1
+	  param inout name "_name" explicit_type "char"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} {
+		wxTextCtrl *text = new wxTextCtrl(this, -1, \"\", wxPoint(), wxDefaultSize, wxTE_PASSWORD);
+
+		text->SetName(_name);
+
+		sizerRight->Add(text, 1, wxEXPAND | wxALL, 5);
+
+		wxStaticText *label = new wxStaticText(this, -1, _name, wxPoint());
+		sizerLeft->Add(label, 1, wxEXPAND | wxALL, 5);
+
+		return ERR_NONE;
+	};
+"
+	
+	
+	comment "...e
+...slbErrCodes LB_STDCALL createPasswdCtrl\\40\\char\\42\\ _name\\41\\:8:"
+      end
+
+      operation 130034 "TransferDataFromWindow"
+	cpp_virtual cpp_inline public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract} {
+		lbErrCodes err = ERR_NONE;
+		
+		char* pass = strdup(getTextValue(\"Passwort:\"));
+		char* user = strdup(getTextValue(\"Benutzer:\"));
+		
+		UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
+			
+			if (meta->login(user, pass)) {
+				appselect->setLoggedOnUser(user);
+				if (pass) free(pass);
+				if (user) free(user);
+				
+				return TRUE;
+			} else {
+				char* buf = strdup(_trans(\"Login to database failed.\\n\\nYou could not use the dynamic features of the\\napplication without a proper configured database.\"));
+				char* buf1 = strdup(_trans(\"Error\"));
+				wxMessageDialog dialog(NULL, buf, buf1, wxOK);
+				
+				dialog.ShowModal();
+				
+				free(buf);
+				free(buf1);
+				
+				return FALSE;
+			}
+	};
+"
+	
+	
+	comment "...e
+...svirtual bool TransferDataFromWindow\\40\\\\41\\:8:"
+      end
+
+      operation 130162 "init"
+	cpp_inline public explicit_return_type "void"
+	nparams 1
+	  param inout name "parent" type class_ref 160199 // wxWindow
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} {
+		char prefix[100] = \"\";
+		sprintf(prefix, \"%p\", this);
+
+		SetTitle(\"Login\");
+
+		sizerMain  = new wxBoxSizer(wxVERTICAL);
+		sizerHor   = new wxBoxSizer(wxHORIZONTAL);
+		sizerAddRem = new wxBoxSizer(wxHORIZONTAL);
+		sizerLeft  = new wxBoxSizer(wxVERTICAL);	
+		sizerRight = new wxBoxSizer(wxVERTICAL);
+
+		int LoginOk;
+		int LoginCancel;
+	
+		char eventName[100] = \"\";
+		
+		sizerHor->Add(sizerLeft, 1, wxEXPAND | wxALL, 5);
+		sizerHor->Add(sizerRight, 1, wxEXPAND | wxALL, 5);
+	
+		createTextCtrl(\"Benutzer:\");
+		createPasswdCtrl(\"Passwort:\");
+
+		//#define CONNECTOR ((wxFrame*) frame)
+		#define CONNECTOR this
+	
+		SetAutoLayout(TRUE);
+		
+		sizerMain->Add(sizerHor, 0, wxEXPAND | wxALL, 5);
+		sizerMain->Add(sizerAddRem, 0, wxEXPAND | wxALL, 5);
+		
+		SetSizer(sizerMain);
+	
+		sizerMain->SetSizeHints(this);
+		sizerMain->Fit(this);
+		
+		//Centre();
+	};
+"
+	
+	
+	comment "...e
+...svoid init\\40\\wxWindow\\42\\ parent\\41\\:8:"
+      end
+
+      attribute 128370 "buf"
+	public explicit_type "char"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}[100]${value};
+"
+	java_decl ""
+	idl_decl ""
+      end
+
+      classrelation 129522 // OkButton (<unidirectional association>)
+	relation 129522 --->
+	  a role_name "OkButton" multiplicity "" public
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 129522 // OkButton (<unidirectional association>)
+	  b parent class_ref 160199 // wxWindow
+      end
+
+      classrelation 129650 // CancelButton (<unidirectional association>)
+	relation 129650 --->
+	  a role_name "CancelButton" multiplicity "" public
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 129650 // CancelButton (<unidirectional association>)
+	  b parent class_ref 160199 // wxWindow
+      end
+
+      classrelation 129778 // textValue (<directional aggregation by value>)
+	relation 129778 *-->
+	  a role_name "textValue" multiplicity "" public
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	    classrelation_ref 129778 // textValue (<directional aggregation by value>)
+	  b parent class_ref 161991 // wxString
+      end
+
+      classrelation 129906 // sizerMain (<unidirectional association>)
+	relation 129906 --->
+	  a role_name "sizerMain" multiplicity "" public
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 129906 // sizerMain (<unidirectional association>)
+	  b parent class_ref 171335 // wxBoxSizer
+      end
+
+      classrelation 130034 // sizerHor (<unidirectional association>)
+	relation 130034 --->
+	  a role_name "sizerHor" multiplicity "" public
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 130034 // sizerHor (<unidirectional association>)
+	  b parent class_ref 171335 // wxBoxSizer
+      end
+
+      classrelation 130162 // sizerAddRem (<unidirectional association>)
+	relation 130162 --->
+	  a role_name "sizerAddRem" multiplicity "" public
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 130162 // sizerAddRem (<unidirectional association>)
+	  b parent class_ref 171335 // wxBoxSizer
+      end
+
+      classrelation 130290 // sizerLeft (<unidirectional association>)
+	relation 130290 --->
+	  a role_name "sizerLeft" multiplicity "" public
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 130290 // sizerLeft (<unidirectional association>)
+	  b parent class_ref 171335 // wxBoxSizer
+      end
+
+      classrelation 130418 // sizerRight (<unidirectional association>)
+	relation 130418 --->
+	  a role_name "sizerRight" multiplicity "" public
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 130418 // sizerRight (<unidirectional association>)
+	  b parent class_ref 171335 // wxBoxSizer
+      end
+
+      classrelation 130546 // appselect (<unidirectional association>)
+	relation 130546 --->
+	  a role_name "appselect" multiplicity "" public
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 130546 // appselect (<unidirectional association>)
+	  b parent class_ref 128370 // wxAppSelectPage
+      end
+    end
+
+    class 128626 "lbLoginHandler"
+      
+      
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "...e
+...e"
+      classrelation 130674 // <generalisation>
+	relation 130674 ---|>
+	  a public
+	    cpp default "Generated"
+	    classrelation_ref 130674 // <generalisation>
+	  b parent class_ref 141767 // lb_I_Unknown
+      end
+
+      classrelation 130802 // <generalisation>
+	relation 130802 ---|>
+	  a public
+	    cpp default "Generated"
+	    classrelation_ref 130802 // <generalisation>
+	  b parent class_ref 171847 // lb_I_LogonHandler
+      end
+
+      classrelation 130930 // <generalisation>
+	relation 130930 ---|>
+	  a public
+	    cpp default "Generated"
+	    classrelation_ref 130930 // <generalisation>
+	  b parent class_ref 133191 // lb_I_EventHandler
+      end
+
+      operation 130290 "lbLoginHandler"
+	public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${name}${(}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${class}::${name}${(}${)}${throw}{
+${body}}
+"
+	
+	
+      end
+
+      operation 130418 "~lbLoginHandler"
+	cpp_virtual public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${virtual}${name}${(}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${class}::${name}${(}${)}${throw}{
+${body}}
+"
+	
+	
+      end
+
+      operation 130546 "runLogin"
+	public return_type class_ref 128711 // lbErrCodes
+	nparams 1
+	  param inout name "uk" type class_ref 141767 // lb_I_Unknown
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      classrelation 131058 // wizard (<unidirectional association>)
+	relation 131058 --->
+	  a role_name "wizard" multiplicity "" public
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 131058 // wizard (<unidirectional association>)
+	  b parent class_ref 171591 // wxWizard
+      end
+
+      classrelation 131186 // page1 (<unidirectional association>)
+	relation 131186 --->
+	  a role_name "page1" multiplicity "" public
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 131186 // page1 (<unidirectional association>)
+	  b parent class_ref 170951 // wxWizardPageSimple
+      end
+    end
+
+    class 128754 "lbPluginLoginWizard"
+      
+      
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "* \\brief Implements a wizard based login plugin.
+ *
+ "
+      classrelation 131314 // <generalisation>
+	relation 131314 ---|>
+	  a public
+	    cpp default "Generated"
+	    classrelation_ref 131314 // <generalisation>
+	  b parent class_ref 136263 // lb_I_PluginImpl
+      end
+
+      operation 130674 "lbPluginLoginWizard"
+	public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${name}${(}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${class}::${name}${(}${)}${throw}{
+${body}}
+"
+	
+	
+      end
+
+      operation 130802 "~lbPluginLoginWizard"
+	cpp_virtual public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${virtual}${name}${(}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${class}::${name}${(}${)}${throw}{
+${body}}
+"
+	
+	
+      end
+
+      operation 130930 "run"
+	cpp_virtual public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//...e
+//...sbool LB_STDCALL lbPluginLoginWizard\\58\\\\58\\run\\40\\\\41\\:0:
+
+${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+	comment "* \\brief Run the login manually.
+	 *
+	 * This let the login wizard appear manually without invoking it from
+	 * the menu entry. You could use this to start the login wizard automatically.
+	 "
+      end
+
+      operation 131058 "getImplementation"
+	cpp_virtual public return_type class_ref 141767 // lb_I_Unknown
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//...e
+//...slb_I_Unknown\\42\\ LB_STDCALL lbPluginLoginWizard\\58\\\\58\\getImplementation\\40\\\\41\\:0:
+
+${comment}${inline}${type} * ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+	comment "* \\brief Get the underlying implementation.
+	 *
+	 * Not needed in this implementation. This implementation has no separate
+	 * class with the implementation. This is due to the not existing problem
+	 * of multible base class inheritation of lb_I_Unknown.
+	 *
+	 * If multible intarfaces could be queried, then each
+	 "
+      end
+
+      operation 131186 "peekImplementation"
+	cpp_virtual public return_type class_ref 141767 // lb_I_Unknown
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//...e
+//...slb_I_Unknown\\42\\ LB_STDCALL lbPluginLoginWizard\\58\\\\58\\peekImplementation\\40\\\\41\\:0:
+
+${comment}${inline}${type} * ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 131314 "releaseImplementation"
+	public explicit_return_type "void"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//...e
+
+${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+    end
+  end
+
+  deploymentview 128242 "lbLoginWizard"
+    //deployment diagram settings
+    package_name_in_tab default show_context default write_horizontally default auto_label_position default
+    draw_component_as_icon default show_component_req_prov default show_component_rea default
+    artifact 128242 "lbPluginModuleLoginWizard"
+      stereotype "source"
+      cpp_h "#ifndef _${NAME}_H
+#define _${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_classes
+	class_ref 128242 // lbPluginModuleLoginWizard
+      end
+    end
+
+    artifact 128370 "wxAppSelectPage"
+      stereotype "source"
+      cpp_h "#ifndef _${NAME}_H
+#define _${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_classes
+	class_ref 128370 // wxAppSelectPage
+      end
+    end
+
+    artifact 128498 "wxLogonPage"
+      stereotype "source"
+      cpp_h "#ifndef _${NAME}_H
+#define _${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_classes
+	class_ref 128498 // wxLogonPage
+      end
+    end
+
+    artifact 128626 "lbLoginHandler"
+      stereotype "source"
+      cpp_h "#ifndef _${NAME}_H
+#define _${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_classes
+	class_ref 128626 // lbLoginHandler
+      end
+    end
+
+    artifact 128754 "lbPluginLoginWizard"
+      stereotype "source"
+      cpp_h "#ifndef _${NAME}_H
+#define _${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_classes
+	class_ref 128754 // lbPluginLoginWizard
+      end
+    end
+  end
+end

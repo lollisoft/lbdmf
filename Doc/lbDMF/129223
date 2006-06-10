@@ -1,0 +1,950 @@
+format 22
+"lbtransfer" // BaseDevelopment::lbtransfer
+  // class settings
+  //class diagram settings
+  draw_all_relations default hide_attributes default hide_operations default show_full_members_definition default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default
+  //use case diagram settings
+  package_name_in_tab default show_context default auto_label_position default
+  //sequence diagram settings
+  show_full_operations_definition default write_horizontally default drawing_language default
+  //collaboration diagram settings
+  show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default
+  //component diagram settings
+  package_name_in_tab default show_context default auto_label_position default
+  draw_component_as_icon default show_component_req_prov default show_component_rea default
+  //deployment diagram settings
+  package_name_in_tab default show_context default write_horizontally default auto_label_position default
+  draw_component_as_icon default show_component_req_prov default show_component_rea default
+  //state diagram settings
+  package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default
+  show_activities default region_horizontally default drawing_language default
+  
+  classview 129095 "lbtransfer"
+    //class diagram settings
+    draw_all_relations default hide_attributes default hide_operations default show_full_members_definition default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default
+    //col diagram settings
+    show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default
+    //seq diagram settings
+    show_full_operations_definition default write_horizontally default drawing_language default
+    //state diagram settings
+    package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default
+    show_activities default region_horizontally default drawing_language default
+    //class settings
+    class 146119 "LB_SOCK_STATE"
+       stereotype "enum"
+      
+      cpp_decl "${comment}enum ${name} {
+${items}
+};
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "...e"
+      attribute 147655 "LB_SOCK_UNINITIALIZED"
+	public explicit_type ""
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl ""
+	idl_decl ""
+      end
+
+      attribute 147783 "LB_SOCK_CONNECTED"
+	public explicit_type ""
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl ""
+	idl_decl ""
+      end
+
+      attribute 147911 "LB_SOCK_CLOSED"
+	public explicit_type ""
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl ""
+	idl_decl ""
+      end
+
+      attribute 148039 "LB_SOCK_LISTENING"
+	public explicit_type ""
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl ""
+	idl_decl ""
+      end
+    end
+
+    class 146247 "lbSocket"
+      
+      
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment " In DLL lbTransfer DLLEXPORT must be \"\""
+      operation 211143 "lbSocket"
+	public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${name}${(}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${class}::${name}${(}${)}${throw}{
+${body}}
+"
+	
+	
+      end
+
+      operation 211271 "lbSocket"
+	public explicit_return_type ""
+	nparams 1
+	  param in name "s" type class_ref 146247 // lbSocket
+	cpp_decl "    ${comment}${inline}${name}${(}const ${t0} & ${p0}${)}${volatile}${throw};
+"
+	cpp_def "//...slbSocket\\58\\\\58\\lbSocket\\40\\const lbSocket\\38\\ s\\41\\:0:
+
+${comment}${inline}${class}::${name}${(}const ${t0} & ${p0}${)}${throw}{
+${body}}
+"
+	
+	
+      end
+
+      operation 211399 "~lbSocket"
+	cpp_virtual public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${virtual}${name}${(}${)}${volatile}${throw};
+"
+	cpp_def "//...e
+
+${comment}${inline}${class}::${name}${(}${)}${throw}{
+${body}}
+"
+	
+	
+      end
+
+      operation 211527 "isValid"
+	public explicit_return_type "int"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//...slbSocket\\58\\\\58\\isValid\\40\\\\41\\:0:
+
+${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+	comment "*
+	 * Is this object valid ?
+	 "
+      end
+
+      operation 211655 "gethostname"
+	class_operation public explicit_return_type "int"
+	nparams 1
+	  param inout name "name" explicit_type "char"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//...e
+//...slbSocket\\58\\\\58\\gethostname\\40\\char \\42\\ \\38\\ name\\41\\:0:
+
+${comment}${inline}${type} ${class}::${name}${(}${t0} * & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 211783 "initSymbolic"
+	public explicit_return_type "void"
+	nparams 2
+	  param inout name "host" explicit_type "char"
+	  param inout name "service" explicit_type "char"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}, ${t1} * ${p1}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//...e
+//...slbSocket\\58\\\\58\\initSymbolic\\40\\char\\42\\ host\\44\\ char\\42\\ service\\41\\:0:
+
+${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}, ${t1} * ${p1}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 211911 "reinit"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "mysockaddr" explicit_type "char"
+	    defaultvalue "\"\""
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//...e
+//...slbSocket\\58\\\\58\\reinit\\40\\char \\42\\mysockaddr\\41\\:0:
+
+${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 212039 "neagleOff"
+	public return_type class_ref 128711 // lbErrCodes
+	nparams 1
+	  param in name "s" type class_ref 146375 // SOCKET
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//...e
+//...slbSocket\\58\\\\58\\neagleOff\\40\\SOCKET s\\41\\:0:
+
+${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 212167 "isServer"
+	cpp_inline public explicit_return_type "int"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract} { return _isServer; };
+"
+	
+	
+      end
+
+      operation 212295 "recvInteger"
+	public return_type class_ref 128711 // lbErrCodes
+	nparams 1
+	  param inout name "i" explicit_type "int"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//...e
+//...slbSocket\\58\\\\58\\recvInteger\\40\\int\\38\\ i\\41\\:0:
+
+${comment}${inline}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 212423 "sendInteger"
+	public return_type class_ref 128711 // lbErrCodes
+	nparams 1
+	  param in name "i" explicit_type "int"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//...e
+//...slbSocket\\58\\\\58\\sendInteger\\40\\int i\\41\\:0:
+
+${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 212551 "send"
+	public return_type class_ref 128711 // lbErrCodes
+	nparams 2
+	  param inout name "buf" explicit_type "void"
+	  param in name "len" explicit_type "int"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}, ${t1} ${p1}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//...e
+//...slbSocket\\58\\\\58\\send\\40\\void\\42\\ buf\\44\\ int len\\41\\:0:
+
+${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}, ${t1} ${p1}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 212679 "recv"
+	public return_type class_ref 128711 // lbErrCodes
+	nparams 2
+	  param inout name "buf" explicit_type "void"
+	  param inout name "len" explicit_type "int"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}, ${t1} & ${p1}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//...e
+//...slbSocket\\58\\\\58\\recv\\40\\void\\42\\ buf\\44\\ int \\38\\ len\\41\\:0:
+
+${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}, ${t1} & ${p1}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+	comment "*
+	 * Buffer must be allocated.
+	 "
+      end
+
+      operation 212807 "recv_charbuf"
+	public return_type class_ref 128711 // lbErrCodes
+	nparams 1
+	  param inout name "buf" explicit_type "char"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//...e
+//...slbSocket\\58\\\\58\\recv_charbuf\\40\\char \\42\\buf\\41\\:0:
+
+${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 212935 "send_charbuf"
+	public return_type class_ref 128711 // lbErrCodes
+	nparams 2
+	  param inout name "buf" explicit_type "char"
+	  param in name "len" explicit_type "int"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}, ${t1} ${p1}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//...e
+//...slbSocket\\58\\\\58\\send_charbuf\\40\\char \\42\\buf\\44\\ int len\\41\\:0:
+
+${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}, ${t1} ${p1}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 213063 "recv"
+	public return_type class_ref 128711 // lbErrCodes
+	nparams 1
+	  param inout name "data" type class_ref 146503 // lb_Transfer_Data
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//...e
+//...slbSocket\\58\\\\58\\recv\\40\\lb_Transfer_Data \\38\\ data\\41\\:0:
+
+${comment}${inline}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+	comment "*
+	 * Send and recieve a data buffer and automatically split off to
+	 * the max amount of packet size.
+	 "
+      end
+
+      operation 213191 "send"
+	public return_type class_ref 128711 // lbErrCodes
+	nparams 1
+	  param inout name "data" type class_ref 146503 // lb_Transfer_Data
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//...e
+//...slbSocket\\58\\\\58\\send\\40\\lb_Transfer_Data \\38\\ data\\41\\:0:
+
+${comment}${inline}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 213319 "accept"
+	public return_type class_ref 128711 // lbErrCodes
+	nparams 1
+	  param inout name "s" type class_ref 146247 // lbSocket
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//...e
+//...slbSocket\\58\\\\58\\accept\\40\\lbSocket\\42\\\\38\\ s\\41\\:0:
+
+${comment}${inline}${type} ${class}::${name}${(}${t0} * & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+	comment "*
+	 * Like the lbTransfer, here I must provide a lbSocket as a result.
+	 * At this time you have to delete the instance after use.
+	 "
+      end
+
+      operation 213447 "startup"
+	private explicit_return_type "int"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//...e
+//...slbSocket\\58\\\\58\\startup\\40\\\\41\\:0:
+
+${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+	comment " These functions must not be locket"
+      end
+
+      operation 213575 "init"
+	private explicit_return_type "void"
+	nparams 2
+	  param in name "mysockaddr" explicit_type "ulong"
+	  param in name "port" type class_ref 146631 // u_short
+	    defaultvalue " PORT"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//...e
+//...slbSocket\\58\\\\58\\init\\40\\unsigned long mysockaddr\\44\\ u_short port\\41\\:0:
+
+${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 213703 "bind"
+	private explicit_return_type "int"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//...e
+//...slbSocket\\58\\\\58\\bind\\40\\\\41\\:0:
+
+${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 213831 "listen"
+	private explicit_return_type "int"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//...e
+//...slbSocket\\58\\\\58\\listen\\40\\\\41\\:0:
+
+${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 213959 "socket"
+	private explicit_return_type "int"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//...e
+//...slbSocket\\58\\\\58\\socket\\40\\\\41\\:0:
+
+${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 214087 "close"
+	private explicit_return_type "int"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//...e
+//...slbSocket\\58\\\\58\\close\\40\\\\41\\:0:
+
+${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 214215 "connect"
+	private explicit_return_type "int"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//...e
+//...slbSocket\\58\\\\58\\connect\\40\\\\41\\:0:
+
+${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 214343 "setSockConnection"
+	private explicit_return_type "int"
+	nparams 1
+	  param in name "s" type class_ref 146375 // SOCKET
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//...e
+//...slbSocket\\58\\\\58\\setSockConnection\\40\\SOCKET s\\41\\:0:
+
+${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 214471 "inet_addrFromString"
+	private explicit_return_type "ulong"
+	nparams 1
+	  param inout name "w" explicit_type "char"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "//...e
+//...slbSocked\\58\\\\58\\inet_addrFromString\\40\\char\\42\\ addr\\41\\:0:
+
+${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      classrelation 139079 // mutex (<unidirectional association>)
+	relation 139079 --->
+	  a role_name "mutex" multiplicity "" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 139079 // mutex (<unidirectional association>)
+	  b parent class_ref 142535 // lbMutex
+      end
+
+      attribute 148167 "sockUse"
+	class_attribute private explicit_type "int"
+	init_value "= 0"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	idl_decl ""
+      end
+
+      classrelation 139207 // Data (<directional aggregation by value>)
+	relation 139207 *-->
+	  a role_name "Data" multiplicity "" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	    classrelation_ref 139207 // Data (<directional aggregation by value>)
+	  b parent class_ref 146759 // WSADATA
+      end
+
+      classrelation 139335 // serverSockAddr (<directional aggregation by value>)
+	relation 139335 *-->
+	  a role_name "serverSockAddr" multiplicity "" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	    classrelation_ref 139335 // serverSockAddr (<directional aggregation by value>)
+	  b parent class_ref 146887 // SOCKADDR_IN
+      end
+
+      classrelation 139463 // clientSockAddr (<directional aggregation by value>)
+	relation 139463 *-->
+	  a role_name "clientSockAddr" multiplicity "" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	    classrelation_ref 139463 // clientSockAddr (<directional aggregation by value>)
+	  b parent class_ref 146887 // SOCKADDR_IN
+      end
+
+      classrelation 139591 // serverSocket (<directional aggregation by value>)
+	relation 139591 *-->
+	  a role_name "serverSocket" multiplicity "" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	    classrelation_ref 139591 // serverSocket (<directional aggregation by value>)
+	  b parent class_ref 146375 // SOCKET
+      end
+
+      classrelation 139719 // clientSocket (<directional aggregation by value>)
+	relation 139719 *-->
+	  a role_name "clientSocket" multiplicity "" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	    classrelation_ref 139719 // clientSocket (<directional aggregation by value>)
+	  b parent class_ref 146375 // SOCKET
+      end
+
+      classrelation 139847 // clBackup (<directional aggregation by value>)
+	relation 139847 *-->
+	  a role_name "clBackup" multiplicity "" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	    classrelation_ref 139847 // clBackup (<directional aggregation by value>)
+	  b parent class_ref 146375 // SOCKET
+      end
+
+      attribute 148295 "status"
+	private explicit_type "int"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	idl_decl ""
+      end
+
+      attribute 148423 "addrLen"
+	private explicit_type "int"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	idl_decl ""
+	comment "=sizeof(SOCKADDR_IN);"
+      end
+
+      attribute 148551 "destAddr"
+	private explicit_type "ulong"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	idl_decl ""
+	comment " for client init"
+      end
+
+      attribute 148679 "startupflag"
+	private explicit_type "int"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	idl_decl ""
+      end
+
+      classrelation 139975 // <directional aggregation by value>
+	relation 139975 *-->
+	  a role_name "" multiplicity "" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}struct ${type} ${name}${value};
+"
+	    classrelation_ref 139975 // <directional aggregation by value>
+	  b parent class_ref 147015 // sockaddr_in
+      end
+
+      classrelation 140103 // <directional aggregation by value>
+	relation 140103 *-->
+	  a role_name "" multiplicity "" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}struct ${type} ${name}${value};
+"
+	    classrelation_ref 140103 // <directional aggregation by value>
+	  b parent class_ref 147015 // sockaddr_in
+      end
+
+      attribute 148807 "numrcv"
+	private explicit_type "int"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	idl_decl ""
+      end
+
+      attribute 148935 "_isServer"
+	private explicit_type "int"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	idl_decl ""
+      end
+
+      classrelation 140231 // lbSockState (<directional aggregation by value>)
+	relation 140231 *-->
+	  a role_name "lbSockState" multiplicity "" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	    classrelation_ref 140231 // lbSockState (<directional aggregation by value>)
+	  b parent class_ref 146119 // LB_SOCK_STATE
+      end
+    end
+
+    class 147143 "LB_TRANSFER_STATE"
+       stereotype "enum"
+      
+      cpp_decl "${comment}enum ${name} {
+${items}
+};
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      attribute 149063 "LB_STATE_UNINITIALIZED"
+	public explicit_type ""
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl ""
+	idl_decl ""
+      end
+
+      attribute 149191 "LB_STATE_CONNECTED"
+	public explicit_type ""
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl ""
+	idl_decl ""
+      end
+    end
+
+    class 156999 "lbSocketModule"
+      
+      
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "...sclass lbSocketModule:0:"
+      operation 251207 "lbSocketModule"
+	cpp_inline public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${name}${(}${)}${volatile}${throw} {
+		sendMutex.CreateMutex(LB_SEND_MUTEX);
+		recvMutex.CreateMutex(LB_RECV_MUTEX);
+	};
+"
+	
+	
+      end
+
+      operation 251335 "~lbSocketModule"
+	cpp_virtual cpp_inline public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${virtual}${name}${(}${)}${volatile}${throw} {
+		COUT << \"Deinit socket module\" << ENDL;
+	};
+"
+	
+	
+      end
+    end
+
+    class 157127 "lbMutexLocker"
+      
+      
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment " Module initializion
+...sclass lbMutexLocker:0:"
+      operation 251463 "lbMutexLocker"
+	cpp_inline public explicit_return_type ""
+	nparams 1
+	  param in name "m" type class_ref 142535 // lbMutex
+	cpp_decl "    ${comment}${inline}${name}${(}${t0} ${p0}${)}${volatile}${throw} {
+		mutex = m;
+		mutex.Enter();
+	};
+"
+	
+	
+      end
+
+      operation 251591 "~lbMutexLocker"
+	cpp_virtual cpp_inline public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${virtual}${name}${(}${)}${volatile}${throw} {
+		mutex.Release();
+	};
+"
+	
+	
+      end
+
+      classrelation 149063 // mutex (<directional aggregation by value>)
+	relation 149063 *-->
+	  a role_name "mutex" multiplicity "" public
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	    classrelation_ref 149063 // mutex (<directional aggregation by value>)
+	  b parent class_ref 142535 // lbMutex
+      end
+    end
+
+    class 157255 "lbTransferModule"
+      
+      
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "...sclass lbTransferModule:0:"
+      operation 251719 "lbTransferModule"
+	cpp_inline public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${name}${(}${)}${volatile}${throw} {
+                signal(SIGINT, handler);
+                signal(SIGBREAK, handler);
+                signal(SIGABRT, handler);
+                signal(SIGSEGV, handler);
+                signal(SIGTERM, handler);
+                signal(SIGILL, handler);
+        };
+"
+	
+	
+      end
+
+      operation 251847 "~lbTransferModule"
+	cpp_virtual cpp_inline public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${virtual}${name}${(}${)}${volatile}${throw} {
+                COUT << \"Deinit transfer module\" << ENDL;
+        };
+"
+	
+	
+      end
+    end
+
+    class 157383 "lbTransferDataObject"
+      
+      
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+    end
+  end
+
+  deploymentview 128839 "lbtransfer"
+    //deployment diagram settings
+    package_name_in_tab default show_context default write_horizontally default auto_label_position default
+    draw_component_as_icon default show_component_req_prov default show_component_rea default
+    artifact 138695 "LB_SOCK_STATE"
+      stereotype "source"
+      cpp_h "#ifndef _${NAME}_H
+#define _${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_classes
+	class_ref 146119 // LB_SOCK_STATE
+      end
+    end
+
+    artifact 138823 "lbSocket"
+      stereotype "source"
+      cpp_h "#ifndef _${NAME}_H
+#define _${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_classes
+	class_ref 146247 // lbSocket
+      end
+    end
+
+    artifact 144071 "lbSocketModule"
+      stereotype "source"
+      cpp_h "#ifndef _${NAME}_H
+#define _${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_classes
+	class_ref 156999 // lbSocketModule
+      end
+    end
+
+    artifact 144199 "lbMutexLocker"
+      stereotype "source"
+      cpp_h "#ifndef _${NAME}_H
+#define _${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_classes
+	class_ref 157127 // lbMutexLocker
+      end
+    end
+
+    artifact 144327 "lbTransferModule"
+      stereotype "source"
+      cpp_h "#ifndef _${NAME}_H
+#define _${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_classes
+	class_ref 157255 // lbTransferModule
+      end
+    end
+  end
+end

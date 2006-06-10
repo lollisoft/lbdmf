@@ -1,0 +1,44 @@
+class lbSkipListElement
+!!!199751.cpp!!!	~lbSkipListElement()
+ 
+        if (key != NULL) { 
+                if (key->deleteState() != 1) _CL_VERBOSE << "Key wouldn't deleted in container element!" LOG_ 
+                RELEASE(key); 
+        } 
+        if (data != NULL) { 
+                if (data->deleteState() != 1) { 
+                        lb_I_ConfigObject* node; 
+                        data->queryInterface("lb_I_ConfigObject", (void**) &node, __FILE__, __LINE__); 
+                        if (node != NULL) { 
+	                        _CL_VERBOSE << "Data (lb_I_Unknown at " << 
+	                        ltoa((void*) data) << 
+	                        ") (created at: " << data->getCreationLoc() << 
+	                        ") (refcount=" << data->getRefCount() << 
+	                        ") (lbSkipListElement='" << data->getClassName() << 
+	                        "', tagname='" << node->getName() << "') wouldn't deleted in container element!" LOG_ 
+        	                node->release(__FILE__, __LINE__); 
+                        } else { 
+	                        _CL_VERBOSE << "Data (lb_I_Unknown at " << 
+	                        ltoa((void*) data) << 
+	                        ") (created at: " << data->getCreationLoc() << 
+	                        ") (refcount=" << data->getRefCount() << 
+	                        ") (lbSkipListElement='" << data->getClassName() << 
+	                        "', tagname='" << node->getName() << "') wouldn't deleted in container element!" LOG_ 
+        	        } 
+                        char ptr[20] = ""; 
+                        sprintf(ptr, "%p", (void*) data); 
+                        manager->printReferences(ptr); 
+                } 
+                RELEASE(data); 
+        } 
+        key = NULL; 
+        data = NULL; 
+!!!199879.cpp!!!	lbSkipListElement(in e : lb_I_Element)
+ 
+    	_CL_VERBOSE << "lbSkipListElement(const lb_I_Element &e) called." LOG_
+    	ref = STARTREF; 
+    	next = e.getNext(); 
+    	data = e.getObject();
+    	key = e.getKey();
+	manager = NULL;
+    

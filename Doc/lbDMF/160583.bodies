@@ -1,0 +1,78 @@
+class lbAction
+!!!264391.cpp!!!	lbAction()
+
+	ref = STARTREF;
+	myActionID = NULL;
+!!!264519.cpp!!!	~lbAction()
+
+	free(myActionID);
+	_CL_LOG << "lbAction::~lbAction() called." LOG_
+	if (actions != NULL) {
+		_CL_LOG << "Have " << actions->Count() << " elements in action list." LOG_
+		actions->deleteAll();
+	}
+	_CL_LOG << "Deleted all delegation actions." LOG_
+!!!264903.cpp!!!	setActionID(inout id : char) : void
+
+	
+	free(myActionID);
+	
+	if ((id != NULL) && (strlen(id) > 0)) {
+		myActionID = strdup(id);
+	} else {
+		_CL_LOG << "Error: Got an invalid action ID!" LOG_
+	}
+!!!265031.cpp!!!	execute(inout params : lb_I_Parameter) : void
+
+	REQUEST(manager.getPtr(), lb_I_Database, db)
+	UAP(lb_I_Query, query)
+
+	db->init();
+
+	char* lbDMFPasswd = getenv("lbDMFPasswd");
+	char* lbDMFUser   = getenv("lbDMFUser");
+
+	if (!lbDMFUser) lbDMFUser = "dba";
+	if (!lbDMFPasswd) lbDMFPasswd = "trainres";
+
+	db->connect("lbDMF", lbDMFUser, lbDMFPasswd);
+
+	query = db->getQuery(0);	
+	
+	char buf[] = "select id from action_steps where actionid = %s";
+	char* q = (char*) malloc(strlen(buf)+strlen(myActionID)+1);
+	q[0] = 0;
+	sprintf(q, buf, myActionID);
+
+	_CL_LOG << "Get action steps from id = " << myActionID LOG_
+	
+	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
+
+	if (query->query(q) == ERR_NONE) {
+	
+		lbErrCodes err = query->first();
+	
+		while(err == ERR_NONE) {
+			UAP_REQUEST(manager.getPtr(), lb_I_String, id)
+			
+			id = query->getAsString(1);
+			
+			parameter->setData("id");
+			params->setUAPString(*&parameter, *&id);
+			
+			delegate(*&params);
+			
+			err = query->next();
+		}
+		
+		if (err == WARN_DB_NODATA) {
+			UAP_REQUEST(manager.getPtr(), lb_I_String, id)
+			
+			id = query->getAsString(1);
+			
+			parameter->setData("id");
+			params->setUAPString(*&parameter, *&id);
+			
+			delegate(*&params);
+		}
+	}
