@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.122 2006/06/03 06:16:58 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.123 2006/06/10 09:54:49 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,15 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.122 $
+ * $Revision: 1.123 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.122 2006/06/03 06:16:58 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.123 2006/06/10 09:54:49 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.123  2006/06/10 09:54:49  lollisoft
+ * Removed outside saving structure code for meta application.
+ * This is now done by the new save method.
+ *
  * Revision 1.122  2006/06/03 06:16:58  lollisoft
  * Changes against new Datamodel classes.
  * These are used instead spread SQL commands.
@@ -2022,55 +2026,18 @@ IMPLEMENT_APP  (MyApp)
 int MyApp::OnExit() {
 	lbErrCodes err = ERR_NONE;
 	
-	UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
-		
 	if (metaApp == NULL) {
 		REQUEST(getModuleInstance(), lb_I_MetaApplication, metaApp)
 	}
 	
+
+	UAP_REQUEST(manager.getPtr(), lb_I_PluginManager, PM)
+	
 	metaApp->unloadApplication();
 	
-	if (PM == NULL) {
-		_LOG << "Error: Could not get plugin manager for saving application data." LOG_
-	} else {
-		PM->initialize();
-		
-		{
-        	UAP(lb_I_Plugin, pl1)
-	        UAP(lb_I_Unknown, ukPl1)
-			
-	        pl1 = PM->getFirstMatchingPlugin("lb_I_FileOperation", "OutputStreamVisitor");
-	        
-			if (pl1 == NULL) {
-				_LOG << "Error: Could not get file operation plugin." LOG_
-			} else {
-				ukPl1 = pl1->getImplementation();
-				
-				if (ukPl1 == NULL) {
-					_LOG << "Error: Could not get file operation implementation." LOG_					
-				} else {
-					UAP(lb_I_FileOperation, fOp1)
-					QI(ukPl1, lb_I_FileOperation, fOp1)
-					
-					if (!fOp1->begin("MetaApp.mad")) {
-						_CL_LOG << "ERROR: Could not write default file for meta application!" LOG_
-					} else {
-						
-						UAP(lb_I_Unknown, ukAcceptor1)
-						QI(metaApp, lb_I_Unknown, ukAcceptor1)
-						ukAcceptor1->accept(*&fOp1);
-						
-						
-						
-						
-						fOp1->end();
-					}
-				}
-			}
-        }
-        
-		PM->unload();
-	}
+	metaApp->save();
+	
+	PM->unload();
 	
 	_CL_LOG << "Unloaded plugins." LOG_
 		
