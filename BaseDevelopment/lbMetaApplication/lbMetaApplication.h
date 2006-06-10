@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.36 $
+ * $Revision: 1.37 $
  * $Name:  $
- * $Id: lbMetaApplication.h,v 1.36 2006/06/09 16:03:33 lollisoft Exp $
+ * $Id: lbMetaApplication.h,v 1.37 2006/06/10 09:51:51 lollisoft Exp $
  *
  * $Log: lbMetaApplication.h,v $
+ * Revision 1.37  2006/06/10 09:51:51  lollisoft
+ * Implemented new load and save method for meta application.
+ *
  * Revision 1.36  2006/06/09 16:03:33  lollisoft
  * Changes on Mac OS X before weekend.
  *
@@ -194,7 +197,10 @@ public:
 
 	DECLARE_LB_UNKNOWN()
 
-	virtual lbErrCodes LB_STDCALL setGUI(lb_I_GUI* _gui);
+	lbErrCodes LB_STDCALL setGUI(lb_I_GUI* _gui);
+	
+	lbErrCodes LB_STDCALL save();
+	lbErrCodes LB_STDCALL load();
 	
 	/**
 	 * Let the implementation register it's symbolic events.

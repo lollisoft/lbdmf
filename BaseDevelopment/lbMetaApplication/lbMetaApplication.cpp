@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.90 $
+ * $Revision: 1.91 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.90 2006/06/09 16:03:33 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.91 2006/06/10 09:51:51 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.91  2006/06/10 09:51:51  lollisoft
+ * Implemented new load and save method for meta application.
+ *
  * Revision 1.90  2006/06/09 16:03:33  lollisoft
  * Changes on Mac OS X before weekend.
  *
@@ -537,6 +540,114 @@ BEGIN_IMPLEMENT_SINGLETON_LB_UNKNOWN(lb_MetaApplication)
 	ADD_INTERFACE(lb_I_MetaApplication)
 END_IMPLEMENT_LB_UNKNOWN()
 
+/*...slbErrCodes LB_STDCALL lb_MetaApplication\58\\58\save\40\\41\:0:*/
+lbErrCodes LB_STDCALL lb_MetaApplication::save() {
+	lbErrCodes err = ERR_NONE;
+
+	UAP_REQUEST(manager.getPtr(), lb_I_PluginManager, PM)
+	
+	UAP(lb_I_Plugin, pl1)
+	UAP(lb_I_Unknown, ukPl1)
+	pl1 = PM->getFirstMatchingPlugin("lb_I_FileOperation", "OutputStreamVisitor");
+	ukPl1 = pl1->getImplementation();
+	UAP(lb_I_FileOperation, fOp1)
+	QI(ukPl1, lb_I_FileOperation, fOp1)
+					
+	if (!fOp1->begin("MetaApp.mad")) {
+		_CL_LOG << "ERROR: Could not write default file for meta application!" LOG_		
+					
+		return ERR_FILE_WRITE_DEFAULT;
+	}
+				
+	// Save me
+	UAP(lb_I_Unknown, ukAcceptor1)
+	QI(this, lb_I_Unknown, ukAcceptor1)
+	ukAcceptor1->accept(*&fOp1);
+			
+	// Save a Users list
+	UAP(lb_I_Plugin, pl2)
+	UAP(lb_I_Unknown, ukPl2)
+	pl2 = PM->getFirstMatchingPlugin("lb_I_UserAccounts", "Model");
+	ukPl2 = pl2->getImplementation();
+	ukPl2->accept(*&fOp1);
+
+	// Save a Applications list
+	UAP(lb_I_Plugin, pl3)
+	UAP(lb_I_Unknown, ukPl3)
+	pl3 = PM->getFirstMatchingPlugin("lb_I_Applications", "Model");
+	ukPl3 = pl3->getImplementation();
+	ukPl3->accept(*&fOp1);
+				
+	fOp1->end();		
+
+	return ERR_NONE;
+}
+/*...e*/
+
+/*...slbErrCodes LB_STDCALL lb_MetaApplication\58\\58\load\40\\41\:0:*/
+lbErrCodes LB_STDCALL lb_MetaApplication::load() {
+	lbErrCodes err = ERR_NONE;
+	
+	// Get the plugin to read a standard stream based file
+
+	UAP_REQUEST(manager.getPtr(), lb_I_PluginManager, PM)
+
+	UAP(lb_I_Plugin, pl)
+	UAP(lb_I_Unknown, ukPl)
+
+	pl = PM->getFirstMatchingPlugin("lb_I_FileOperation", "InputStreamVisitor");
+
+	if (pl != NULL) {
+		ukPl = pl->getImplementation();
+
+		if (ukPl != NULL) {
+			UAP(lb_I_FileOperation, fOp)
+			QI(ukPl, lb_I_FileOperation, fOp)
+			
+			if (!fOp->begin("MetaApp.mad")) {
+				return ERR_FILE_READ;
+			}
+			
+			// Read my data
+			UAP(lb_I_Unknown, ukAcceptor)
+			QI(this, lb_I_Unknown, ukAcceptor)
+			ukAcceptor->accept(*&fOp);
+
+/*...sRead an Users list:24:*/
+			// Read an Users list
+			UAP(lb_I_Plugin, pl2)
+			UAP(lb_I_Unknown, ukPl2)
+			pl2 = PM->getFirstMatchingPlugin("lb_I_UserAccounts", "Model");
+			ukPl2 = pl2->getImplementation();
+			ukPl2->accept(*&fOp);
+
+			QI(ukPl2, lb_I_UserAccounts, Users)
+/*...e*/
+
+/*...sRead an Applications list:24:*/
+			// Read an Applications list
+			UAP(lb_I_Plugin, pl3)
+			UAP(lb_I_Unknown, ukPl3)
+			pl3 = PM->getFirstMatchingPlugin("lb_I_Applications", "Model");
+			ukPl3 = pl3->getImplementation();
+			ukPl3->accept(*&fOp);
+		
+			QI(ukPl3, lb_I_Applications, Applications)
+/*...e*/
+		
+			fOp->end();
+			
+			return ERR_NONE;
+		} else {
+			_CL_LOG << "Error: Could not load stream operator classes!" LOG_
+		}
+	} else {
+		_CL_LOG << "Error: Could not load stream operator classes!" LOG_
+	}
+	return ERR_FILE_READ;
+}
+/*...e*/
+
 /*...slbErrCodes LB_STDCALL lb_MetaApplication\58\\58\setData\40\lb_I_Unknown\42\ uk\41\:0:*/
 lbErrCodes LB_STDCALL lb_MetaApplication::setData(lb_I_Unknown* uk) {
 	_CL_LOG << "lb_MetaApplication::setData() has not been implemented" LOG_
@@ -755,97 +866,11 @@ lbErrCodes LB_STDCALL lb_MetaApplication::initialize(char* user, char* appName) 
 	
 	REQUEST(manager.getPtr(), lb_I_Parameter, myProperties)
 		
-	// Get the plugin to read a standard stream based file
-		
-	UAP_REQUEST(manager.getPtr(), lb_I_PluginManager, PM)
-		
-	UAP(lb_I_Plugin, pl)
-	UAP(lb_I_Unknown, ukPl)
-		
-	pl = PM->getFirstMatchingPlugin("lb_I_FileOperation", "InputStreamVisitor");
-	
-	if (pl != NULL) {
-		_CL_LOG << "Try to get an implementation." LOG_
-		ukPl = pl->getImplementation();
 
-		if (ukPl != NULL) {
-			UAP(lb_I_FileOperation, fOp)
-			QI(ukPl, lb_I_FileOperation, fOp)
-			
-			if (!fOp->begin("MetaApp.mad")) {
-				// No file. Try write a default file.
-				
-				_CL_LOG << "No configuration file available. Write one." LOG_
-				
-				UAP(lb_I_Plugin, pl1)
-				UAP(lb_I_Unknown, ukPl1)
-				pl1 = PM->getFirstMatchingPlugin("lb_I_FileOperation", "OutputStreamVisitor");
-				ukPl1 = pl1->getImplementation();
-				UAP(lb_I_FileOperation, fOp1)
-				QI(ukPl1, lb_I_FileOperation, fOp1)
-					
-				if (!fOp1->begin("MetaApp.mad")) {
-					_CL_LOG << "ERROR: Could not write default file for meta application!" LOG_		
-						
-					return ERR_FILE_WRITE_DEFAULT;
-				}
-				
-				// Save me
-				UAP(lb_I_Unknown, ukAcceptor1)
-				QI(this, lb_I_Unknown, ukAcceptor1)
-				ukAcceptor1->accept(*&fOp1);
-			
-				// Save a Users list
-				UAP(lb_I_Plugin, pl2)
-				UAP(lb_I_Unknown, ukPl2)
-				pl2 = PM->getFirstMatchingPlugin("lb_I_UserAccounts", "Model");
-				ukPl2 = pl2->getImplementation();
-				ukPl2->accept(*&fOp1);
-
-				// Save a Applications list
-				UAP(lb_I_Plugin, pl3)
-				UAP(lb_I_Unknown, ukPl3)
-				pl3 = PM->getFirstMatchingPlugin("lb_I_Applications", "Model");
-				ukPl3 = pl3->getImplementation();
-				ukPl3->accept(*&fOp1);
-						
-				fOp1->end();		
-				
-				if (!fOp->begin("MetaApp.mad")) {
-					_CL_LOG << "FATAL: Re read just written default file failed!" LOG_
-					return ERR_FILE_READ_DEFAULT;
-				}
-			}
-			
-			// Read my data
-			UAP(lb_I_Unknown, ukAcceptor)
-			QI(this, lb_I_Unknown, ukAcceptor)
-			ukAcceptor->accept(*&fOp);
-
-			// Read an Users list
-			UAP(lb_I_Plugin, pl2)
-			UAP(lb_I_Unknown, ukPl2)
-			pl2 = PM->getFirstMatchingPlugin("lb_I_UserAccounts", "Model");
-			ukPl2 = pl2->getImplementation();
-			ukPl2->accept(*&fOp);
-
-			QI(ukPl2, lb_I_UserAccounts, Users)
-
-			// Read an Applications list
-			UAP(lb_I_Plugin, pl3)
-			UAP(lb_I_Unknown, ukPl3)
-			pl3 = PM->getFirstMatchingPlugin("lb_I_Applications", "Model");
-			ukPl3 = pl3->getImplementation();
-			ukPl3->accept(*&fOp);
-		
-			QI(ukPl3, lb_I_Applications, Applications)
-		
-			fOp->end();
-		} else {
-			_CL_LOG << "Error: Could not load stream operator classes!" LOG_
+	if (load() != ERR_NONE) {
+		if (save() != ERR_NONE) {
+			_LOG << "ERROR: Could not save a default file for MetaApplication data!" LOG_
 		}
-	} else {
-		_CL_LOG << "Error: Could not load stream operator classes!" LOG_
 	}
 	
 	/*
