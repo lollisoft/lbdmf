@@ -2334,14 +2334,20 @@ public:
 	
 	/** \brief Save the object.
 	 *
-	 * This function is there because of the composition of public accessible data and
-	 * non public, such as the user accounts and their applications.
-	 * 
-	 * The non public data could not saved or loaded by the visitor function for this
-	 * class. save does this by saving the parts separately by delegating it to their
-	 * visitors.
+	 * This is not a replacement for private save(lb_I_XXXStream*).
+	 * It is here, because this interface doesn't make all the internal
+	 * data public. Thus a visitor is unable to save the whole data.
+	 *
+	 * To avoid external handling how to save the data, this function comes
+	 * into play.
 	 */
 	virtual lbErrCodes LB_STDCALL save() = 0;
+
+	/** \brief Load the object.
+	 * 
+	 * See save for detailed description.
+	 */
+	virtual lbErrCodes LB_STDCALL load() = 0;
 
 	/**
 	 * Set the graphical user interface instance that is the wrapper side.
@@ -2530,6 +2536,7 @@ public:
 };
 /*...e*/
 
+/*...sclass lb_I_UserAccounts:0:*/
 class lb_I_UserAccounts : public lb_I_Unknown {
 public:
 	/** \brief Add an user account and get it's ID.
@@ -2599,7 +2606,9 @@ public:
 	 */
 	virtual char*		LB_STDCALL getUserPassword() = 0;
 };
+/*...e*/
 
+/*...sclass lb_I_Applications:0:*/
 class lb_I_Applications : public lb_I_Unknown {
 public:
 	/** \brief Add a new application.
@@ -2659,6 +2668,7 @@ public:
 	 */
 	virtual long		LB_STDCALL getApplicationID() = 0;
 };
+/*...e*/
 
 
 
