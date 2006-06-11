@@ -1,33 +1,33 @@
-format 22
+format 24
 "lbLoginWizard" // Test::GUI::wxPlugins::lbLoginWizard
   // class settings
   //class diagram settings
-  draw_all_relations default hide_attributes default hide_operations default show_full_members_definition default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default
+  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default shadow default
   //use case diagram settings
-  package_name_in_tab default show_context default auto_label_position default
+  package_name_in_tab default show_context default auto_label_position default shadow default
   //sequence diagram settings
-  show_full_operations_definition default write_horizontally default drawing_language default
+  show_full_operations_definition default write_horizontally default drawing_language default shadow default
   //collaboration diagram settings
-  show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default
+  show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default shadow default
   //component diagram settings
-  package_name_in_tab default show_context default auto_label_position default
+  package_name_in_tab default show_context default auto_label_position default shadow default
   draw_component_as_icon default show_component_req_prov default show_component_rea default
   //deployment diagram settings
-  package_name_in_tab default show_context default write_horizontally default auto_label_position default
+  package_name_in_tab default show_context default write_horizontally default auto_label_position default shadow default
   draw_component_as_icon default show_component_req_prov default show_component_rea default
   //state diagram settings
-  package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default
+  package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default shadow default
   show_activities default region_horizontally default drawing_language default
   
   classview 128242 "lbLoginWizard"
     //class diagram settings
-    draw_all_relations default hide_attributes default hide_operations default show_full_members_definition default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default
+    draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default shadow default
     //col diagram settings
-    show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default
+    show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default shadow default
     //seq diagram settings
-    show_full_operations_definition default write_horizontally default drawing_language default
+    show_full_operations_definition default write_horizontally default drawing_language default shadow default
     //state diagram settings
-    package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default
+    package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default shadow default
     show_activities default region_horizontally default drawing_language default
     //class settings
     class 128242 "lbPluginModuleLoginWizard"
@@ -47,7 +47,7 @@ ${inlines}
       classrelation 128114 // <generalisation>
 	relation 128114 ---|>
 	  a public
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 128114 // <generalisation>
 	  b parent class_ref 136519 // lb_I_PluginModule
       end
@@ -93,7 +93,7 @@ ${inlines}
       classrelation 128242 // <generalisation>
 	relation 128242 ---|>
 	  a public
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 128242 // <generalisation>
 	  b parent class_ref 141767 // lb_I_Unknown
       end
@@ -101,7 +101,7 @@ ${inlines}
       classrelation 128370 // <generalisation>
 	relation 128370 ---|>
 	  a public
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 128370 // <generalisation>
 	  b parent class_ref 168647 // lb_I_AppSelectPage
       end
@@ -109,7 +109,7 @@ ${inlines}
       classrelation 128498 // <generalisation>
 	relation 128498 ---|>
 	  a public
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 128498 // <generalisation>
 	  b parent class_ref 170951 // wxWizardPageSimple
       end
@@ -298,7 +298,7 @@ ${inlines}
       classrelation 129138 // <generalisation>
 	relation 129138 ---|>
 	  a public
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 129138 // <generalisation>
 	  b parent class_ref 141767 // lb_I_Unknown
       end
@@ -306,7 +306,7 @@ ${inlines}
       classrelation 129266 // <generalisation>
 	relation 129266 ---|>
 	  a public
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 129266 // <generalisation>
 	  b parent class_ref 168519 // lb_I_LogonPage
       end
@@ -314,7 +314,7 @@ ${inlines}
       classrelation 129394 // <generalisation>
 	relation 129394 ---|>
 	  a public
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 129394 // <generalisation>
 	  b parent class_ref 170951 // wxWizardPageSimple
       end
@@ -390,7 +390,7 @@ ${body}}
 "
 	
 	
-	comment " wizard event handlers"
+	comment " wizard event handlers"
       end
 
       operation 129778 "createTextCtrl"
@@ -615,7 +615,7 @@ ${body}}
     end
 
     class 128626 "lbLoginHandler"
-      
+       stereotype "implementation class"
       
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
@@ -630,7 +630,7 @@ ${inlines}
       classrelation 130674 // <generalisation>
 	relation 130674 ---|>
 	  a public
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 130674 // <generalisation>
 	  b parent class_ref 141767 // lb_I_Unknown
       end
@@ -638,7 +638,7 @@ ${inlines}
       classrelation 130802 // <generalisation>
 	relation 130802 ---|>
 	  a public
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 130802 // <generalisation>
 	  b parent class_ref 171847 // lb_I_LogonHandler
       end
@@ -646,7 +646,7 @@ ${inlines}
       classrelation 130930 // <generalisation>
 	relation 130930 ---|>
 	  a public
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 130930 // <generalisation>
 	  b parent class_ref 133191 // lb_I_EventHandler
       end
@@ -705,6 +705,22 @@ ${body}}
 	    classrelation_ref 131186 // page1 (<unidirectional association>)
 	  b parent class_ref 170951 // wxWizardPageSimple
       end
+
+      classrelation 128100 // <dependency>
+	relation 128100 -_->
+	  a default
+	    cpp default "Generated"
+	    classrelation_ref 128100 // <dependency>
+	  b parent class_ref 128370 // wxAppSelectPage
+      end
+
+      classrelation 128228 // <dependency>
+	relation 128228 -_->
+	  a default
+	    cpp default "Generated"
+	    classrelation_ref 128228 // <dependency>
+	  b parent class_ref 128498 // wxLogonPage
+      end
     end
 
     class 128754 "lbPluginLoginWizard"
@@ -724,7 +740,7 @@ ${inlines}
       classrelation 131314 // <generalisation>
 	relation 131314 ---|>
 	  a public
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 131314 // <generalisation>
 	  b parent class_ref 136263 // lb_I_PluginImpl
       end
@@ -829,7 +845,7 @@ ${body}}
 
   deploymentview 128242 "lbLoginWizard"
     //deployment diagram settings
-    package_name_in_tab default show_context default write_horizontally default auto_label_position default
+    package_name_in_tab default show_context default write_horizontally default auto_label_position default shadow default
     draw_component_as_icon default show_component_req_prov default show_component_rea default
     artifact 128242 "lbPluginModuleLoginWizard"
       stereotype "source"

@@ -1,33 +1,33 @@
-format 22
+format 24
 "wxWrapper" // Test::GUI::wxWrapper
   // class settings
   //class diagram settings
-  draw_all_relations default hide_attributes default hide_operations default show_full_members_definition default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default
+  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default shadow default
   //use case diagram settings
-  package_name_in_tab default show_context default auto_label_position default
+  package_name_in_tab default show_context default auto_label_position default shadow default
   //sequence diagram settings
-  show_full_operations_definition default write_horizontally default drawing_language default
+  show_full_operations_definition default write_horizontally default drawing_language default shadow default
   //collaboration diagram settings
-  show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default
+  show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default shadow default
   //component diagram settings
-  package_name_in_tab default show_context default auto_label_position default
+  package_name_in_tab default show_context default auto_label_position default shadow default
   draw_component_as_icon default show_component_req_prov default show_component_rea default
   //deployment diagram settings
-  package_name_in_tab default show_context default write_horizontally default auto_label_position default
+  package_name_in_tab default show_context default write_horizontally default auto_label_position default shadow default
   draw_component_as_icon default show_component_req_prov default show_component_rea default
   //state diagram settings
-  package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default
+  package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default shadow default
   show_activities default region_horizontally default drawing_language default
   
   classview 128370 "wxWrapper"
     //class diagram settings
-    draw_all_relations default hide_attributes default hide_operations default show_full_members_definition default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default
+    draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default shadow default
     //col diagram settings
-    show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default
+    show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default shadow default
     //seq diagram settings
-    show_full_operations_definition default write_horizontally default drawing_language default
+    show_full_operations_definition default write_horizontally default drawing_language default shadow default
     //state diagram settings
-    package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default
+    package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default shadow default
     show_activities default region_horizontally default drawing_language default
     //class settings
     class 128882 "lb_wxFrame"
@@ -50,7 +50,7 @@ ${inlines}
       classrelation 131442 // <generalisation>
 	relation 131442 ---|>
 	  a public
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 131442 // <generalisation>
 	  b parent class_ref 161735 // wxFrame
       end
@@ -58,7 +58,7 @@ ${inlines}
       classrelation 131570 // <generalisation>
 	relation 131570 ---|>
 	  a public
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 131570 // <generalisation>
 	  b parent class_ref 169159 // lb_I_wxFrame
       end
@@ -380,7 +380,7 @@ ${inlines}
       classrelation 131954 // <generalisation>
 	relation 131954 ---|>
 	  a public
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 131954 // <generalisation>
 	  b parent class_ref 172743 // lb_I_wxGUI
       end
@@ -388,7 +388,7 @@ ${inlines}
       classrelation 132082 // <generalisation>
 	relation 132082 ---|>
 	  a public
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 132082 // <generalisation>
 	  b parent class_ref 133191 // lb_I_EventHandler
       end
@@ -1116,13 +1116,10 @@ ${body}}
       end
     end
 
-    class 129138 "MyApp"
+    class 129138 "User"
+       stereotype "actor"
       
-      
-      cpp_decl "${comment}${template}class ${name}${inherit} {
-${members}};
-${inlines}
-"
+      cpp_decl ""
       java_decl ""
       idl_decl ""
       explicit_switch_type ""
@@ -1137,7 +1134,7 @@ ${inlines}
       classrelation 132850 // <generalisation>
 	relation 132850 ---|>
 	  a public
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 132850 // <generalisation>
 	  b parent class_ref 141767 // lb_I_Unknown
       end
@@ -1145,7 +1142,7 @@ ${inlines}
       classrelation 132978 // <generalisation>
 	relation 132978 ---|>
 	  a public
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 132978 // <generalisation>
 	  b parent class_ref 168775 // lb_I_GUIApp
       end
@@ -1153,7 +1150,7 @@ ${inlines}
       classrelation 133106 // <generalisation>
 	relation 133106 ---|>
 	  a public
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 133106 // <generalisation>
 	  b parent class_ref 172487 // lb_I_EventConnector
       end
@@ -1161,7 +1158,7 @@ ${inlines}
       classrelation 133234 // <generalisation>
 	relation 133234 ---|>
 	  a public
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 133234 // <generalisation>
 	  b parent class_ref 133191 // lb_I_EventHandler
       end
@@ -1169,12 +1166,12 @@ ${inlines}
       classrelation 133362 // <generalisation>
 	relation 133362 ---|>
 	  a public
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 133362 // <generalisation>
 	  b parent class_ref 172999 // wxApp
       end
 
-      operation 138098 "MyApp"
+      operation 138098 "User"
 	cpp_inline public explicit_return_type ""
 	nparams 0
 	cpp_decl "    ${comment}${inline}${name}${(}${)}${volatile}${throw} {
@@ -1192,7 +1189,7 @@ ${inlines}
 	 "
       end
 
-      operation 138226 "~MyApp"
+      operation 138226 "~User"
 	cpp_virtual cpp_inline public explicit_return_type ""
 	nparams 0
 	cpp_decl "    ${comment}${inline}${virtual}${name}${(}${)}${volatile}${throw} { 
@@ -1698,11 +1695,11 @@ ${inlines}
       explicit_switch_type ""
       
       comment "...sclass MyFrame:0:
- Define a new frame type"
+ Define a new frame type"
       classrelation 133746 // <generalisation>
 	relation 133746 ---|>
 	  a public
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 133746 // <generalisation>
 	  b parent class_ref 161735 // wxFrame
       end
@@ -1806,7 +1803,7 @@ ${inlines}
 
   deploymentview 128370 "wxWrapper"
     //deployment diagram settings
-    package_name_in_tab default show_context default write_horizontally default auto_label_position default
+    package_name_in_tab default show_context default write_horizontally default auto_label_position default shadow default
     draw_component_as_icon default show_component_req_prov default show_component_rea default
     artifact 128882 "lb_wxFrame"
       stereotype "source"
@@ -1873,7 +1870,6 @@ ${namespace_start}
 ${members}
 ${namespace_end}"
       associated_classes
-	class_ref 129138 // MyApp
       end
     end
 
