@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.27 $
+ * $Revision: 1.28 $
  * $Name:  $
- * $Id: lbErrcodes.h,v 1.27 2006/02/21 19:35:52 lollisoft Exp $
+ * $Id: lbErrcodes.h,v 1.28 2006/06/11 16:26:19 lollisoft Exp $
  *
  * $Log: lbErrcodes.h,v $
+ * Revision 1.28  2006/06/11 16:26:19  lollisoft
+ * More error codes.
+ *
  * Revision 1.27  2006/02/21 19:35:52  lollisoft
  * Implemented autoload mechanism of last loaded application.
  * It demonstrates the new capabilities operating with files.
@@ -264,7 +267,8 @@ enum lbErrCodes {
 	ERR_PARAM_NOT_FOUND,
 	
 	ERR_FILE_WRITE_DEFAULT,
-	ERR_FILE_READ_DEFAULT
+	ERR_FILE_READ_DEFAULT,
+	ERR_FILE_READ
 };
 /*...e*/
 
