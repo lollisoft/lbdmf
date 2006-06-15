@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.37 $
+ * $Revision: 1.38 $
  * $Name:  $
- * $Id: lbMetaApplication.h,v 1.37 2006/06/10 09:51:51 lollisoft Exp $
+ * $Id: lbMetaApplication.h,v 1.38 2006/06/15 18:36:28 lollisoft Exp $
  *
  * $Log: lbMetaApplication.h,v $
+ * Revision 1.38  2006/06/15 18:36:28  lollisoft
+ * Partly implemented load of lbDMF database contents into file. (Login and application list)
+ *
  * Revision 1.37  2006/06/10 09:51:51  lollisoft
  * Implemented new load and save method for meta application.
  *
@@ -319,6 +322,7 @@ protected:
 	
 	UAP(lb_I_Applications, Applications)
 	UAP(lb_I_UserAccounts, Users)
+	UAP(lb_I_User_Applications, User_Applications)
 
 	bool _autoload;
 	bool _autorefresh;

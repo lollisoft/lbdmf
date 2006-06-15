@@ -2578,6 +2578,12 @@ public:
 	 */
 	virtual bool		LB_STDCALL selectAccount(const char* _user) = 0;
 	
+	/** \brief Select current user.
+	 *
+	 * Direct access by the given user number.
+	 */
+	virtual bool		LB_STDCALL selectAccount(long user_id) = 0;
+	
 	/** \brief Get the number of users.
 	 */
 	virtual long		LB_STDCALL getUserCount() = 0;
@@ -2600,7 +2606,7 @@ public:
 
 	/** \brief Get current user id.
 	 */
-	virtual long		LB_STDCALL getUserUID() = 0;
+	virtual long		LB_STDCALL getUserID() = 0;
 
 	/** \brief Get current user password.
 	 */
@@ -2623,8 +2629,16 @@ public:
 	virtual long LB_STDCALL addApplication(const char* application, const char* titel, const char* modulename, const char* functor, const char* _interface, long _id = -1) = 0;
 	
 	/** \brief Select current application.
+	 *
+	 * Direct access by application name.
 	 */
 	virtual bool LB_STDCALL selectApplication(const char* application) = 0;
+	
+	/** \brief Select current application.
+	 *
+	 * Direct access by application id.
+	 */
+	virtual bool LB_STDCALL selectApplication(long _id) = 0;
 	
 	/** \brief Get the number of applications.
 	 */
@@ -2669,6 +2683,65 @@ public:
 	virtual long		LB_STDCALL getApplicationID() = 0;
 };
 /*...e*/
+
+class lb_I_User_Applications : public lb_I_Unknown {
+public:
+	/** \brief Add a new application.
+	 *
+	 * The given _id is used for later linking of users to specific applications.
+	 * Using _id's default value indicates a new entry in the database. Else a readout from stream/database.
+	 * When using default id value, internally a 'virtual' id must be assigned, to be able to store relations.
+	 *
+	 * To avoid extra functions, these 'virtual' id's would be negative. This could be determined my the
+	 * database stream handler.
+	 */
+	virtual long LB_STDCALL addRelation(long app_id, long user_id, long _id = -1) = 0;
+	
+	/** \brief Select relation by id.
+	 */
+	virtual bool LB_STDCALL selectRelation(long _id) = 0;
+	
+	/** \brief Hide entities, not related to filter.
+	 *	
+	 * Multiple filters are logically or'ed, but different filter names are and'ed.
+	 */
+	virtual bool LB_STDCALL addFilter(const char* filter, const char* value) = 0;
+	
+	/** \brief Remove filter.
+	 *
+	 * Removes all or specified filter(s). 
+	 */
+	virtual bool LB_STDCALL resetFilter(const char* filter = "") = 0;
+	
+	/** \brief Get the number of applications.
+	 */
+	virtual int LB_STDCALL getRelationCount() = 0;
+	
+	/** \brief Begin or indicate end of iteration.
+	 */
+	virtual bool		LB_STDCALL hasMoreRelations() = 0;
+
+	/** \brief Iterate to next application.
+	 */
+	virtual void		LB_STDCALL setNextRelation() = 0;
+
+	/** \brief Stop iteration.
+	 */
+	virtual void		LB_STDCALL finishRelationIteration() = 0;
+	
+	/** \brief Get current applications id.
+	 *
+	 * Each application entry has an associated id.
+	 */
+	virtual long		LB_STDCALL getApplicationID() = 0;
+
+	/** \brief Get current users id.
+	 *
+	 */
+	virtual long		LB_STDCALL getUserID() = 0;
+	
+	virtual long		LB_STDCALL getID() = 0;
+};
 
 
 

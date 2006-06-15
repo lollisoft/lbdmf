@@ -28,7 +28,7 @@ format 24
   diagram_format A4
 
   mark_for_import
-  
+
   ncouples 1
   key "#file" value "Q:\\develop\\Projects\\CPP\\Doc\\lbDMF\\IgnoreIdentifers.txt"
   package_ref 128071 // interfaces

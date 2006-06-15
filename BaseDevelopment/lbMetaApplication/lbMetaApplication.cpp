@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.91 $
+ * $Revision: 1.92 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.91 2006/06/10 09:51:51 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.92 2006/06/15 18:36:28 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.92  2006/06/15 18:36:28  lollisoft
+ * Partly implemented load of lbDMF database contents into file. (Login and application list)
+ *
  * Revision 1.91  2006/06/10 09:51:51  lollisoft
  * Implemented new load and save method for meta application.
  *
@@ -560,23 +563,54 @@ lbErrCodes LB_STDCALL lb_MetaApplication::save() {
 	}
 				
 	// Save me
+	
+	_CL_LOG << "Save lbMetaApplication base objects" LOG_
+	
 	UAP(lb_I_Unknown, ukAcceptor1)
 	QI(this, lb_I_Unknown, ukAcceptor1)
 	ukAcceptor1->accept(*&fOp1);
 			
 	// Save a Users list
-	UAP(lb_I_Plugin, pl2)
-	UAP(lb_I_Unknown, ukPl2)
-	pl2 = PM->getFirstMatchingPlugin("lb_I_UserAccounts", "Model");
-	ukPl2 = pl2->getImplementation();
-	ukPl2->accept(*&fOp1);
+	
+	_CL_LOG << "Save lbMetaApplication user list" LOG_
+	
+	if (Users == NULL) {
+			UAP(lb_I_Plugin, pl2)
+			UAP(lb_I_Unknown, ukPl2)
+			pl2 = PM->getFirstMatchingPlugin("lb_I_UserAccounts", "Model");
+			ukPl2 = pl2->getImplementation();
+			QI(ukPl2, lb_I_UserAccounts, Users)
+	}
+	
+	if (Users != NULL) Users->accept(*&fOp1);
 
 	// Save a Applications list
-	UAP(lb_I_Plugin, pl3)
-	UAP(lb_I_Unknown, ukPl3)
-	pl3 = PM->getFirstMatchingPlugin("lb_I_Applications", "Model");
-	ukPl3 = pl3->getImplementation();
-	ukPl3->accept(*&fOp1);
+
+	_CL_LOG << "Save lbMetaApplication application list" LOG_
+
+	if (Applications == NULL) {
+			UAP(lb_I_Plugin, pl3)
+			UAP(lb_I_Unknown, ukPl3)
+			pl3 = PM->getFirstMatchingPlugin("lb_I_Applications", "Model");
+			ukPl3 = pl3->getImplementation();
+			QI(ukPl3, lb_I_Applications, Applications)			
+	}
+	
+	if (Applications != NULL) Applications->accept(*&fOp1);
+				
+	// Save a User_Applications relation
+
+	_CL_LOG << "Save lbMetaApplication user - application relation list" LOG_
+
+	if (User_Applications == NULL) {
+			UAP(lb_I_Plugin, pl4)
+			UAP(lb_I_Unknown, ukPl4)
+			pl4 = PM->getFirstMatchingPlugin("lb_I_User_Applications", "Model");
+			ukPl4 = pl4->getImplementation();
+			QI(ukPl4, lb_I_User_Applications, User_Applications)			
+	}
+	
+	if (User_Applications != NULL) User_Applications->accept(*&fOp1);
 				
 	fOp1->end();		
 
@@ -634,6 +668,14 @@ lbErrCodes LB_STDCALL lb_MetaApplication::load() {
 		
 			QI(ukPl3, lb_I_Applications, Applications)
 /*...e*/
+
+			UAP(lb_I_Plugin, pl4)
+			UAP(lb_I_Unknown, ukPl4)
+			pl4 = PM->getFirstMatchingPlugin("lb_I_User_Applications", "Model");
+			ukPl4 = pl4->getImplementation();
+			ukPl4->accept(*&fOp);
+		
+			QI(ukPl4, lb_I_User_Applications, User_Applications)
 		
 			fOp->end();
 			
@@ -1725,6 +1767,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::addMenuEntryCheckable(char* in_menu, c
 /*...e*/
 
 lb_I_Container* LB_STDCALL lb_MetaApplication::getApplications() {
+	lbErrCodes err = ERR_NONE;
 	UAP_REQUEST(manager.getPtr(), lb_I_Container, apps)
 	
 	if (Applications->getApplicationCount() == 0) {
@@ -1742,6 +1785,45 @@ lb_I_Container* LB_STDCALL lb_MetaApplication::getApplications() {
 		if (!lbDMFPasswd) lbDMFPasswd = "trainres";
 
 		database->connect("lbDMF", lbDMFUser, lbDMFPasswd);
+
+		if (err != ERR_NONE) {
+			_LOG << "Error: No database connection built up. Could not use database logins." LOG_
+			return FALSE;
+		}
+		
+		UAP_REQUEST(manager.getPtr(), lb_I_PluginManager, PM)
+			
+		UAP(lb_I_Plugin, pl)
+		UAP(lb_I_Unknown, ukPl)
+			
+		pl = PM->getFirstMatchingPlugin("lb_I_DatabaseOperation", "DatabaseInputStreamVisitor");
+		
+		if (pl != NULL) {
+			ukPl = pl->getImplementation();
+			
+			if (ukPl != NULL) {
+				UAP(lb_I_DatabaseOperation, fOp)
+				QI(ukPl, lb_I_DatabaseOperation, fOp)
+				
+				if (!fOp->begin(database.getPtr())) {
+					_LOG << "FATAL: Failed to start reading application list from database!" LOG_
+					apps++;
+					return apps.getPtr();
+				}
+				
+				Applications->accept(*&fOp);
+				
+				User_Applications->accept(*&fOp);
+							
+				fOp->end();
+			} else {
+				_CL_LOG << "Error: Could not load database stream operator classes!" LOG_
+			}
+		} else {
+			_CL_LOG << "Error: Could not load database stream operator classes!" LOG_
+		}
+		
+		// A first preload of the applications is ignored yet.
 
 		sampleQuery = database->getQuery(0);
 
@@ -1797,7 +1879,36 @@ lb_I_Container* LB_STDCALL lb_MetaApplication::getApplications() {
 		}
 	
 	} else {
-	
+		if (Users->selectAccount(LogonUser->charrep())) {
+			long UID = Users->getUserID();
+			
+			User_Applications->finishRelationIteration();
+			
+			while (User_Applications->hasMoreRelations()) {
+				User_Applications->setNextRelation();
+				Applications->selectApplication(User_Applications->getApplicationID());
+
+				_CL_LOG <<	"Check if user '" << Users->getUserName() <<
+							"' has rights on application '" << Applications->getApplicationName() << "'. (" << User_Applications->getApplicationID() << ") " <<
+							UID << " = " << User_Applications->getUserID() LOG_
+				
+				if (User_Applications->getUserID() == UID) {
+					UAP_REQUEST(manager.getPtr(), lb_I_String, S1)	
+					UAP(lb_I_KeyBase, key)
+					UAP(lb_I_Unknown, uk_S1)
+					
+
+					*S1 = Applications->getApplicationName();
+
+					QI(S1, lb_I_KeyBase, key)
+					QI(S1, lb_I_Unknown, uk_S1)
+					
+					apps->insert(&uk_S1, &key);
+				}
+			}
+		} else {
+			_LOG << "Error: Logged in user account is not in data model!" LOG_
+		}
 	}
 	
 	apps++;
@@ -1812,9 +1923,7 @@ bool LB_STDCALL lb_MetaApplication::login(const char* user, const char* pass) {
 		// Read out the content's of the database. So the best would be using visitor
 		// pattern for this to do.
 		
-		
 		UAP_REQUEST(manager.getPtr(), lb_I_Database, database)
-		UAP(lb_I_Query, sampleQuery)
 		database->init();
 		
 		char* lbDMFPasswd = getenv("lbDMFPasswd");
@@ -1826,9 +1935,44 @@ bool LB_STDCALL lb_MetaApplication::login(const char* user, const char* pass) {
 		err = database->connect("lbDMF", lbDMFUser, lbDMFPasswd);
 		
 		if (err != ERR_NONE) {
+			_LOG << "Error: No database connection built up. Could not use database logins." LOG_
 			return FALSE;
 		}
 		
+		UAP_REQUEST(manager.getPtr(), lb_I_PluginManager, PM)
+			
+		UAP(lb_I_Plugin, pl)
+		UAP(lb_I_Unknown, ukPl)
+			
+		pl = PM->getFirstMatchingPlugin("lb_I_DatabaseOperation", "DatabaseInputStreamVisitor");
+		
+		if (pl != NULL) {
+			ukPl = pl->getImplementation();
+			
+			if (ukPl != NULL) {
+				UAP(lb_I_DatabaseOperation, fOp)
+				QI(ukPl, lb_I_DatabaseOperation, fOp)
+				
+				if (!fOp->begin(database.getPtr())) {
+					return ERR_FILE_READ;
+				}
+				
+				Users->accept(*&fOp);
+					
+				fOp->end();
+			} else {
+				_CL_LOG << "Error: Could not load database stream operator classes!" LOG_
+			}
+		} else {
+			_CL_LOG << "Error: Could not load database stream operator classes!" LOG_
+		}
+		
+		// A first preload of the user accounts is ignored yet.
+		_CL_LOG << "Try selective database login check." LOG_
+		
+		
+		UAP(lb_I_Query, sampleQuery)
+			
 		sampleQuery = database->getQuery(0);
 		
 		char buffer[800] = "";
@@ -1839,10 +1983,10 @@ bool LB_STDCALL lb_MetaApplication::login(const char* user, const char* pass) {
 		
 		_CL_VERBOSE << "Query for user " << user LOG_
 			
-			if (sampleQuery->query(buffer) != ERR_NONE) {
-				sampleQuery->enableFKCollecting();
-				return FALSE;
-			}
+		if (sampleQuery->query(buffer) != ERR_NONE) {
+			sampleQuery->enableFKCollecting();
+			return FALSE;
+		}
 		
 		sampleQuery->enableFKCollecting();
 		
@@ -1862,9 +2006,12 @@ bool LB_STDCALL lb_MetaApplication::login(const char* user, const char* pass) {
 			
 			if ((strcmp(Users->getUserName(), user) == 0) && (strcmp(Users->getUserPassword(), pass) == 0)) {
 				_logged_in = TRUE;
+				Users->finishUserIteration();
 				return true;
 			}
 		}
+		
+		// There may be more users in the database, so try to fetch them and make one retry
 		
 		return false;
 	}

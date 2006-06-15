@@ -62,6 +62,7 @@ virtual void LB_STDCALL visit(lb_I_Streamable*) = 0;
 virtual void LB_STDCALL visit(lb_I_DatabaseOperation*) = 0;
 virtual void LB_STDCALL visit(lb_I_UserAccounts*) = 0;
 virtual void LB_STDCALL visit(lb_I_Applications*) = 0;
+virtual void LB_STDCALL visit(lb_I_User_Applications*) = 0;
 //virtual ~Aspect(){} 
 }; 
 

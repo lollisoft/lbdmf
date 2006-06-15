@@ -888,6 +888,7 @@ lbLong::~lbLong() {
 
 void lbLong::setData(long p) {
 	longdata = p;
+	key = p;
 }
 
 long lbLong::getData() const {
@@ -900,8 +901,16 @@ BEGIN_IMPLEMENT_LB_UNKNOWN(lbLong)
 END_IMPLEMENT_LB_UNKNOWN()
 
 lbErrCodes LB_STDCALL lbLong::setData(lb_I_Unknown* uk) {
-	_CL_VERBOSE << "lbLong::setData(...) not implemented yet" LOG_
-	return ERR_NOT_IMPLEMENTED;
+	lbErrCodes err = ERR_NONE;
+	UAP(lb_I_Long, l)
+	
+	if (uk != NULL) {
+		QI(uk, lb_I_Long, l)
+		longdata = l->getData();
+		key = l->getData();
+	}
+	
+	return ERR_NONE;
 }
 
 /*...slbKeyUL:0:*/
