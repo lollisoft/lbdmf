@@ -28,30 +28,33 @@
 */
 /*...e*/
 
-class lbUsersModel : public lb_I_UserAccounts {
+class lbUserApplicationRelationModel : public lb_I_User_Applications {
 public:
-	lbUsersModel();
-	virtual ~lbUsersModel();
-
-	long		LB_STDCALL addAccount(const char* _user, const char* _pass, long _id = -1);
-	bool		LB_STDCALL selectAccount(const char* _user);
-	bool		LB_STDCALL selectAccount(long user_id);
-	long		LB_STDCALL getUserCount();
-	bool		LB_STDCALL hasMoreUsers();
-	void		LB_STDCALL setNextUser();
-	void		LB_STDCALL finishUserIteration();
-	char*		LB_STDCALL getUserName();
-	long		LB_STDCALL getUserID();
-	char*		LB_STDCALL getUserPassword();
+	lbUserApplicationRelationModel();
+	virtual ~lbUserApplicationRelationModel();
+	
+	long LB_STDCALL addRelation(long app_id, long user_id, long _id = -1);
+	
+	bool	LB_STDCALL selectRelation(long _id);
+	bool	LB_STDCALL addFilter(const char* filter, const char* value);
+	bool	LB_STDCALL resetFilter(const char* filter = "");
+	
+	int		LB_STDCALL getRelationCount();
+	bool	LB_STDCALL hasMoreRelations();
+	void	LB_STDCALL setNextRelation();
+	void	LB_STDCALL finishRelationIteration();
+	long	LB_STDCALL getApplicationID();
+	long	LB_STDCALL getUserID();
+	long	LB_STDCALL getID();
 
 	DECLARE_LB_UNKNOWN()
 	
-	UAP(lb_I_Container, Users)
+	UAP(lb_I_Container, Relations)
 	
-	UAP(lb_I_String, currentUserName)
-	UAP(lb_I_String, currentUserPassword)
 	UAP(lb_I_Long, currentUserID)
+	UAP(lb_I_Long, currentAppID)
+	UAP(lb_I_Long, currentID)
 };
 
 
-DECLARE_FUNCTOR(instanceOflbUsersModel)
+DECLARE_FUNCTOR(instanceOflbUserApplicationRelationModel)

@@ -160,6 +160,7 @@ public:
 	void LB_STDCALL visit(lb_I_MetaApplication*);
 	void LB_STDCALL visit(lb_I_UserAccounts*);
 	void LB_STDCALL visit(lb_I_Applications*);
+	void LB_STDCALL visit(lb_I_User_Applications*);
 
 	bool LB_STDCALL begin(char* file);
 	bool LB_STDCALL begin(lb_I_Stream* stream);
@@ -248,7 +249,7 @@ void LB_STDCALL lbInputStreamOpr::visit(lb_I_UserAccounts* users) {
 	int   count = 0;
 	*iStream >> count;
 
-	for (int i = 0; i < count; count++) {
+	for (int i = 0; i < count; i++) {
 		// Load a user entry.
 		int   UID;
 		char* User = NULL;
@@ -267,7 +268,7 @@ void LB_STDCALL lbInputStreamOpr::visit(lb_I_Applications* app) {
 	int   count = 0;
 	*iStream >> count;
 	
-	for (int i = 0; i < count; count++) {
+	for (int i = 0; i < count; i++) {
 		long  ID = -1;
 		char* Name = NULL;
 		char* Titel = NULL;
@@ -285,6 +286,24 @@ void LB_STDCALL lbInputStreamOpr::visit(lb_I_Applications* app) {
 		app->addApplication(Name, Titel, ModuleName, Functor, Interface, ID);
 
 		// Leaky !
+	}
+}
+
+void LB_STDCALL lbInputStreamOpr::visit(lb_I_User_Applications* user_app) {
+	// Number of applications
+	int   count = 0;
+	*iStream >> count;
+	
+	for (int i = 0; i < count; i++) {
+		long  ID = -1;
+		long  UserID = -1;
+		long  AppID = -1;
+	
+		*iStream >> ID;
+		*iStream >> UserID;
+		*iStream >> AppID;
+												
+		user_app->addRelation(AppID, UserID, ID);
 	}
 }
 

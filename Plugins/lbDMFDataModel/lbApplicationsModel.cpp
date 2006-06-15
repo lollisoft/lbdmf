@@ -74,6 +74,10 @@ lbApplications::lbApplications() {
 	ref = STARTREF;
 	REQUEST(getModuleInstance(), lb_I_Container, Applications)
 	REQUEST(getModuleInstance(), lb_I_String, currentApplication)
+	REQUEST(getModuleInstance(), lb_I_String, currentTitel)
+	REQUEST(getModuleInstance(), lb_I_String, currentFunctor)
+	REQUEST(getModuleInstance(), lb_I_String, currentModuleName)
+	REQUEST(getModuleInstance(), lb_I_String, currentInterface)
 	REQUEST(getModuleInstance(), lb_I_Long, currentApplicationUID)
 }
 
@@ -100,7 +104,12 @@ long	LB_STDCALL lbApplications::addApplication(const char* application, const ch
 
 	_ID->setData(_id);
 	*Application = application;
+	*Titel = titel;
+	*ModuleName = modulename;
+	*Functor = functor;
+	*Interface = _interface;
 
+	_CL_VERBOSE << "lbApplications::addApplication('" << application << "', '" << titel << "', '" << modulename << "', '" << functor << "', '" << _interface << "', '" << _ID->getData() << "') called" LOG_
 
 	*paramname = "ID";
 	param->setUAPLong(*&paramname, *&_ID);
@@ -115,6 +124,13 @@ long	LB_STDCALL lbApplications::addApplication(const char* application, const ch
 	*paramname = "Interface";
 	param->setUAPString(*&paramname, *&Interface);
 	
+	UAP_REQUEST(manager.getPtr(), lb_I_Long, lTemp)
+	
+	*paramname = "ID";
+	param->getUAPLong(*&paramname, *&lTemp);
+	
+	_CL_VERBOSE << "Retrieved back this ID: " << lTemp->getData() LOG_	
+	
 	UAP(lb_I_KeyBase, key)
 	UAP(lb_I_Unknown, ukParam)
 	QI(_ID, lb_I_KeyBase, key)
@@ -126,7 +142,49 @@ long	LB_STDCALL lbApplications::addApplication(const char* application, const ch
 }
 
 bool	LB_STDCALL lbApplications::selectApplication(const char* application) {
+	_CL_LOG << "Warning: lbApplications::selectApplication(const char* application) not implemented!" LOG_
 	return false;
+}
+
+bool	LB_STDCALL lbApplications::selectApplication(long _id) {
+	lbErrCodes err = ERR_NONE;
+	
+	UAP_REQUEST(manager.getPtr(), lb_I_String, name)
+	UAP_REQUEST(manager.getPtr(), lb_I_Long, ID)
+	UAP(lb_I_Parameter, param)
+	UAP(lb_I_Unknown, uk)
+	UAP(lb_I_KeyBase, key)
+	
+	ID->setData(_id);
+	QI(ID, lb_I_KeyBase, key)
+
+	uk = Applications->getElement(&key);
+
+	if (uk != NULL) {
+		QI(uk, lb_I_Parameter, param)
+		*name = "ID";
+		param->getUAPLong(*&name, *&currentApplicationUID);
+		*name = "Application";
+		param->getUAPString(*&name, *&currentApplication);
+		*name = "Titel";
+		param->getUAPString(*&name, *&currentTitel);
+		*name = "ModuleName";
+		param->getUAPString(*&name, *&currentFunctor);
+		*name = "Functor";
+		param->getUAPString(*&name, *&currentModuleName);
+		*name = "Interface";
+		param->getUAPString(*&name, *&currentInterface);
+
+		_CL_LOG << "lbApplications::selectApplication('" << _id << "') selects '" << 
+		currentApplication->charrep() << "', '" << 
+		currentTitel->charrep() << "', '" << 
+		currentModuleName->charrep() << "', '" << 
+		currentFunctor->charrep() << "', '" << 
+		currentInterface->charrep() << "', '" << currentApplicationUID->getData() << "'" LOG_
+
+	} else {
+		_CL_LOG << "Error: No such application with ID = " << _id << "." LOG_
+	}
 }
 
 int		LB_STDCALL lbApplications::getApplicationCount() {
@@ -134,7 +192,7 @@ int		LB_STDCALL lbApplications::getApplicationCount() {
 }
 
 bool	LB_STDCALL lbApplications::hasMoreApplications() {
-	return Applications->hasMoreElements();
+	return (Applications->hasMoreElements() == 1);
 }
 
 void	LB_STDCALL lbApplications::setNextApplication() {

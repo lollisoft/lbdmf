@@ -35,11 +35,16 @@ public:
 	virtual ~lbApplications();
 
 	long	LB_STDCALL addApplication(const char* application, const char* titel, const char* modulename, const char* functor, const char* _interface, long _id);
+	
 	bool	LB_STDCALL selectApplication(const char* application);
+	bool	LB_STDCALL selectApplication(long _id);
+	
 	int		LB_STDCALL getApplicationCount();
+	
 	bool	LB_STDCALL hasMoreApplications();
 	void	LB_STDCALL setNextApplication();
 	void	LB_STDCALL finishApplicationIteration();
+	
 	char*	LB_STDCALL getApplicationName();
 	long	LB_STDCALL getApplicationID();
 	char*	LB_STDCALL getApplicationTitle();

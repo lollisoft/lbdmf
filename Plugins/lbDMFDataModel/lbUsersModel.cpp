@@ -116,16 +116,57 @@ long  LB_STDCALL lbUsersModel::addAccount(const char* _user, const char* _pass, 
 	return -1;
 }
 
-bool  LB_STDCALL lbUsersModel::selectAccount(const char* _user) {
+bool LB_STDCALL lbUsersModel::selectAccount(const char* _user) {
+	while (hasMoreUsers()) {
+		setNextUser();
+		
+		if (strcmp(getUserName(), _user) == 0) {
+			finishUserIteration();			
+			return true;
+		}
+	}
+
 	return false;
 }
+
+
+bool LB_STDCALL lbUsersModel::selectAccount(long user_id) {
+	lbErrCodes err = ERR_NONE;
+	
+	UAP_REQUEST(manager.getPtr(), lb_I_String, name)
+	UAP_REQUEST(manager.getPtr(), lb_I_Long, ID)
+	UAP(lb_I_Parameter, param)
+	UAP(lb_I_Unknown, uk)
+	UAP(lb_I_KeyBase, key)
+	
+	ID->setData(user_id);
+	QI(ID, lb_I_KeyBase, key)
+
+	uk = Users->getElement(&key);
+
+	if (uk != NULL) {
+		QI(uk, lb_I_Parameter, param)
+		
+		*name = "User";
+		param->getUAPString(*&name, *&currentUserName);
+		*name = "Pass";
+		param->getUAPString(*&name, *&currentUserPassword);
+		*name = "ID";
+		param->getUAPLong(*&name, *&currentUserID);
+		
+		return true;
+	}
+
+	return false;
+}
+
 
 long  LB_STDCALL lbUsersModel::getUserCount() {
 	return Users->Count();
 }
 
 bool  LB_STDCALL lbUsersModel::hasMoreUsers() {
-	return Users->hasMoreElements();
+	return (Users->hasMoreElements() == 1);
 }
 
 void  LB_STDCALL lbUsersModel::setNextUser() {
@@ -137,10 +178,10 @@ void  LB_STDCALL lbUsersModel::setNextUser() {
 	uk = Users->nextElement();
 	QI(uk, lb_I_Parameter, param)
 	
-	*name = "Name";
+	*name = "User";
 	param->getUAPString(*&name, *&currentUserName);
 	*name = "Pass";
-	param->getUAPString(*&name, *&currentUserName);
+	param->getUAPString(*&name, *&currentUserPassword);
 	*name = "ID";
 	param->getUAPLong(*&name, *&currentUserID);
 }
@@ -153,7 +194,7 @@ char* LB_STDCALL lbUsersModel::getUserName() {
 	return currentUserName->charrep();
 }
 
-long  LB_STDCALL lbUsersModel::getUserUID() {
+long  LB_STDCALL lbUsersModel::getUserID() {
 	return currentUserID->getData();
 }
 

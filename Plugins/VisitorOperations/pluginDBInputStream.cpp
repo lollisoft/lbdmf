@@ -160,6 +160,7 @@ public:
 	void LB_STDCALL visit(lb_I_MetaApplication*);
 	void LB_STDCALL visit(lb_I_UserAccounts*);
 	void LB_STDCALL visit(lb_I_Applications*);
+	void LB_STDCALL visit(lb_I_User_Applications*);
 
 	bool LB_STDCALL begin(const char* DBName, const char* DBUser, const char* DBPass);
 	bool LB_STDCALL begin(lb_I_Database* _db);
@@ -248,6 +249,11 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_UserAccounts* users) {
 	lbErrCodes err = ERR_NONE;
 	UAP(lb_I_Query, q)
 	
+	if (db == NULL) {
+		_LOG << "FATAL: Database imput stream could not work without a database!" LOG_
+		return;
+	}
+	
 	q = db->getQuery(0);
 	
 	q->skipFKCollecting();
@@ -272,7 +278,7 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_UserAccounts* users) {
 		
 		users->addAccount(qUID->charrep(), qPWD->charrep(), qID->getData());
 
-		while ((err = q->next()) != ERR_NONE && err != WARN_DB_NODATA) {
+		while ((err = q->next()) == ERR_NONE || err == WARN_DB_NODATA) {
 			qID = q->getAsLong(1);
 			qUID = q->getAsString(2);
 			qPWD = q->getAsString(3);
@@ -325,6 +331,45 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Applications* applications) {
 			qInterface = q->getAsString(6);
 		
 			applications->addApplication(qName->charrep(), qTitel->charrep(), qModuleName->charrep(), qFunctor->charrep(), qInterface->charrep(), qID->getData());
+		}
+
+	}
+}
+
+void LB_STDCALL lbDatabaseInputStream::visit(lb_I_User_Applications* user_applications) {
+	lbErrCodes err = ERR_NONE;
+	UAP(lb_I_Query, q)
+	
+	q = db->getQuery(0);
+	
+	q->skipFKCollecting();
+
+	if (q->query("select id, userid, anwendungenid from user_anwendungen") != ERR_NONE) {
+		_LOG << "Error: Access to application table failed. Read applications would be skipped." LOG_
+		return;
+	}
+	
+	err = q->first(); 
+	
+	if ((err != ERR_NONE) && (err != WARN_DB_NODATA)) {
+		_LOG << "Error: No applications found. All applications may be deleted accidantly." LOG_
+	} else {
+		UAP(lb_I_Long, qID)
+		UAP(lb_I_Long, qUserID)
+		UAP(lb_I_Long, qAppID)
+		
+		qID = q->getAsLong(1);
+		qUserID = q->getAsLong(2);
+		qAppID = q->getAsLong(3);
+		
+		user_applications->addRelation(qAppID->getData(), qUserID->getData(), qID->getData());
+
+		while (((err = q->next()) == ERR_NONE) || err == WARN_DB_NODATA) {
+			qID = q->getAsLong(1);
+			qUserID = q->getAsLong(2);
+			qAppID = q->getAsLong(3);
+		
+			user_applications->addRelation(qAppID->getData(), qUserID->getData(), qID->getData());
 		}
 
 	}

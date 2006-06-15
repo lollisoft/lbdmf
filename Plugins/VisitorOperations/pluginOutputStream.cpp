@@ -159,6 +159,7 @@ public:
 	void LB_STDCALL visit(lb_I_MetaApplication*);
 	void LB_STDCALL visit(lb_I_UserAccounts*);
 	void LB_STDCALL visit(lb_I_Applications*);
+	void LB_STDCALL visit(lb_I_User_Applications*);
 	
 
 	/** \brief Start save operation.
@@ -268,10 +269,12 @@ void LB_STDCALL lbOutputStream::visit(lb_I_UserAccounts* users) {
 	count = users->getUserCount();
 	*oStream << count;
 	
+	users->finishUserIteration();
+	
 	while (users->hasMoreUsers()) {
 		users->setNextUser();
 		
-		*oStream << users->getUserUID();
+		*oStream << users->getUserID();
 		*oStream << users->getUserName();
 		*oStream << users->getUserPassword();
 	}
@@ -283,8 +286,17 @@ void LB_STDCALL lbOutputStream::visit(lb_I_Applications* app) {
 	count = app->getApplicationCount();
 	*oStream << count;
 	
+	app->finishApplicationIteration();
+	
 	while (app->hasMoreApplications()) {
 		app->setNextApplication();
+		
+		_CL_LOG << "Save application: '" << app->getApplicationName() << 
+		"', title: '" << app->getApplicationTitle() <<
+		"', module: '" << app->getApplicationModule() <<
+		"', functor: '" << app->getApplicationFunctor() <<
+		"', interface: '" << app->getApplicationInterface()
+		  LOG_
 		
 		*oStream << app->getApplicationID();
 		*oStream << app->getApplicationName();
@@ -292,6 +304,23 @@ void LB_STDCALL lbOutputStream::visit(lb_I_Applications* app) {
 		*oStream << app->getApplicationModule();
 		*oStream << app->getApplicationFunctor();
 		*oStream << app->getApplicationInterface();
+	}
+}
+
+void LB_STDCALL lbOutputStream::visit(lb_I_User_Applications* app) {
+	int count;
+
+	count = app->getRelationCount();
+	*oStream << count;
+	
+	app->finishRelationIteration();
+	
+	while (app->hasMoreRelations()) {
+		app->setNextRelation();
+		
+		*oStream << app->getID();
+		*oStream << app->getUserID();
+		*oStream << app->getApplicationID();
 	}
 }
 

@@ -118,6 +118,7 @@ IMPLEMENT_FUNCTOR(instanceOfPluginModule, lbPluginModulelbDMFDataModel)
 BEGIN_PLUGINS(lbPluginModulelbDMFDataModel)
 	ADD_PLUGIN(lbPluginApplications, Model)
 	ADD_PLUGIN(lbPluginUsersModel, Model)	
+	ADD_PLUGIN(lbPluginUserApplicationRelationModel, Model)
 END_PLUGINS()
 
 lbPluginModulelbDMFDataModel::lbPluginModulelbDMFDataModel() {
