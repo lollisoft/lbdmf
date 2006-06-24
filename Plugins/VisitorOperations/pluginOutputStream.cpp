@@ -152,6 +152,8 @@ public:
 	void LB_STDCALL visit(lb_I_CodeGenerator*) { _CL_LOG << "visit(lb_I_CodeGenerator*)" LOG_ }
 	void LB_STDCALL visit(lb_I_Boolean*) { _CL_LOG << "visit(lb_I_Boolean*)" LOG_ }
 	void LB_STDCALL visit(lb_I_DatabaseOperation* pm) { _CL_LOG << "visit(lb_I_DatabaseOperation*)" LOG_ }
+	void LB_STDCALL visit(lb_I_ParameterTable*) { _CL_LOG << "visit(lb_I_ParameterTable*)" LOG_ }
+
 /*...e*/
 	
 	void LB_STDCALL visit(lb_I_Streamable* pm);
@@ -160,7 +162,9 @@ public:
 	void LB_STDCALL visit(lb_I_UserAccounts*);
 	void LB_STDCALL visit(lb_I_Applications*);
 	void LB_STDCALL visit(lb_I_User_Applications*);
-	
+	void LB_STDCALL visit(lb_I_Formulars*);
+	void LB_STDCALL visit(lb_I_ApplicationParameter*);
+	void LB_STDCALL visit(lb_I_FormularParameter*);
 
 	/** \brief Start save operation.
 	 *
@@ -277,6 +281,63 @@ void LB_STDCALL lbOutputStream::visit(lb_I_UserAccounts* users) {
 		*oStream << users->getUserID();
 		*oStream << users->getUserName();
 		*oStream << users->getUserPassword();
+	}
+}
+
+void LB_STDCALL lbOutputStream::visit(lb_I_FormularParameter* forms) {
+	int count;
+
+	count = forms->getParameterCount();
+	*oStream << count;
+	
+	forms->finishParameterIteration();
+	
+	while (forms->hasMoreParameters()) {
+		forms->setNextParameter();
+		
+		*oStream << forms->getParameterID();
+		*oStream << forms->getParameterName();
+		*oStream << forms->getParameterValue();
+		*oStream << forms->getFormularID();
+	}
+}
+
+void LB_STDCALL lbOutputStream::visit(lb_I_ApplicationParameter* apps) {
+	int count;
+
+	count = apps->getParameterCount();
+	*oStream << count;
+	
+	apps->finishParameterIteration();
+	
+	while (apps->hasMoreParameters()) {
+		apps->setNextParameter();
+		
+		*oStream << apps->getParameterID();
+		*oStream << apps->getParameterName();
+		*oStream << apps->getParameterValue();
+		*oStream << apps->getApplicationID();
+	}
+}
+
+void LB_STDCALL lbOutputStream::visit(lb_I_Formulars* forms) {
+	int count;
+
+	count = forms->getFormularCount();
+	*oStream << count;
+	
+	forms->finishFormularIteration();
+	
+	while (forms->hasMoreFormulars()) {
+		forms->setNextFormular();
+		
+		*oStream << forms->getFormularID();
+		*oStream << forms->getName();
+		*oStream << forms->getMenuName();
+		*oStream << forms->getEventName();
+		*oStream << forms->getMenuHelp();
+		*oStream << forms->getApplicationID();
+		*oStream << forms->getTyp();
 	}
 }
 

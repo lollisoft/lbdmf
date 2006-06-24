@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.28 $
+ * $Revision: 1.29 $
  * $Name:  $
- * $Id: lbErrcodes.h,v 1.28 2006/06/11 16:26:19 lollisoft Exp $
+ * $Id: lbErrcodes.h,v 1.29 2006/06/24 06:19:54 lollisoft Exp $
  *
  * $Log: lbErrcodes.h,v $
+ * Revision 1.29  2006/06/24 06:19:54  lollisoft
+ * Commit due to travel to Duesseldorf.
+ *
  * Revision 1.28  2006/06/11 16:26:19  lollisoft
  * More error codes.
  *
@@ -268,6 +271,7 @@ enum lbErrCodes {
 	
 	ERR_FILE_WRITE_DEFAULT,
 	ERR_FILE_READ_DEFAULT,
+	ERR_FILE_WRITE,
 	ERR_FILE_READ
 };
 /*...e*/

@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.38 $
+ * $Revision: 1.39 $
  * $Name:  $
- * $Id: lbMetaApplication.h,v 1.38 2006/06/15 18:36:28 lollisoft Exp $
+ * $Id: lbMetaApplication.h,v 1.39 2006/06/24 06:19:54 lollisoft Exp $
  *
  * $Log: lbMetaApplication.h,v $
+ * Revision 1.39  2006/06/24 06:19:54  lollisoft
+ * Commit due to travel to Duesseldorf.
+ *
  * Revision 1.38  2006/06/15 18:36:28  lollisoft
  * Partly implemented load of lbDMF database contents into file. (Login and application list)
  *
@@ -305,7 +308,7 @@ public:
 	
 	bool LB_STDCALL login(const char* user, const char* pass);
 	lb_I_Container* LB_STDCALL getApplications();
-
+	long LB_STDCALL getApplicationID();
 	
 protected:
 	lb_I_GUI* gui;

@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.92 $
+ * $Revision: 1.93 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.92 2006/06/15 18:36:28 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.93 2006/06/24 06:19:54 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.93  2006/06/24 06:19:54  lollisoft
+ * Commit due to travel to Duesseldorf.
+ *
  * Revision 1.92  2006/06/15 18:36:28  lollisoft
  * Partly implemented load of lbDMF database contents into file. (Login and application list)
  *
@@ -561,10 +564,6 @@ lbErrCodes LB_STDCALL lb_MetaApplication::save() {
 					
 		return ERR_FILE_WRITE_DEFAULT;
 	}
-				
-	// Save me
-	
-	_CL_LOG << "Save lbMetaApplication base objects" LOG_
 	
 	UAP(lb_I_Unknown, ukAcceptor1)
 	QI(this, lb_I_Unknown, ukAcceptor1)
@@ -572,42 +571,38 @@ lbErrCodes LB_STDCALL lb_MetaApplication::save() {
 			
 	// Save a Users list
 	
-	_CL_LOG << "Save lbMetaApplication user list" LOG_
-	
 	if (Users == NULL) {
 			UAP(lb_I_Plugin, pl2)
 			UAP(lb_I_Unknown, ukPl2)
 			pl2 = PM->getFirstMatchingPlugin("lb_I_UserAccounts", "Model");
 			ukPl2 = pl2->getImplementation();
 			QI(ukPl2, lb_I_UserAccounts, Users)
+			
+			_CL_LOG << "Save default user data ..." LOG_
 	}
 	
 	if (Users != NULL) Users->accept(*&fOp1);
-
-	// Save a Applications list
-
-	_CL_LOG << "Save lbMetaApplication application list" LOG_
 
 	if (Applications == NULL) {
 			UAP(lb_I_Plugin, pl3)
 			UAP(lb_I_Unknown, ukPl3)
 			pl3 = PM->getFirstMatchingPlugin("lb_I_Applications", "Model");
 			ukPl3 = pl3->getImplementation();
-			QI(ukPl3, lb_I_Applications, Applications)			
+			QI(ukPl3, lb_I_Applications, Applications)
+			
+			_CL_LOG << "Save default application data ..." LOG_
 	}
 	
 	if (Applications != NULL) Applications->accept(*&fOp1);
 				
-	// Save a User_Applications relation
-
-	_CL_LOG << "Save lbMetaApplication user - application relation list" LOG_
-
 	if (User_Applications == NULL) {
 			UAP(lb_I_Plugin, pl4)
 			UAP(lb_I_Unknown, ukPl4)
 			pl4 = PM->getFirstMatchingPlugin("lb_I_User_Applications", "Model");
 			ukPl4 = pl4->getImplementation();
-			QI(ukPl4, lb_I_User_Applications, User_Applications)			
+			QI(ukPl4, lb_I_User_Applications, User_Applications)
+			
+			_CL_LOG << "Save default user - application data ..." LOG_
 	}
 	
 	if (User_Applications != NULL) User_Applications->accept(*&fOp1);
@@ -1174,6 +1169,8 @@ lbErrCodes LB_STDCALL lb_MetaApplication::loadApplication(char* user, char* appl
 					"Users.userid = '%s' and Anwendungen.name = '%s'"
 					, LogonUser->charrep(), LogonApplication->charrep());
 			
+			printf("%s\n", buffer);
+			
 			/*
 			 * Decide upon the interface, if this code is capable to handle this application.
 			 * First, only handle lb_I_MetaApplication types.
@@ -1198,25 +1195,6 @@ lbErrCodes LB_STDCALL lb_MetaApplication::loadApplication(char* user, char* appl
 		        applicationName = (char*) malloc(strlen(ModuleName->charrep())+1);
 		        applicationName[0] = 0;
 				strcpy(applicationName, ModuleName->charrep());		        
-				
-#ifdef bla
-				/*...sRead only the first application\46\ More apps are wrong\46\:24:*/
-		        while (TRUE) {
-					lbErrCodes err = sampleQuery->next();
-					
-					if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
-						s1 = sampleQuery->getAsString(1);
-						
-						printf("Have application '%s'\n", s1->charrep());
-						
-						box->Append(wxString(s1->charrep()));
-						
-						if (err == WARN_DB_NODATA) break;
-					}
-		        }
-				/*...e*/
-#endif
-				
 			} else {
 				_CL_LOG << "Error: Query to get application data failed. '" << buffer << "'" LOG_
 			}
@@ -1766,6 +1744,17 @@ lbErrCodes LB_STDCALL lb_MetaApplication::addMenuEntryCheckable(char* in_menu, c
 }
 /*...e*/
 
+long LB_STDCALL lb_MetaApplication::getApplicationID() {
+	if ((_logged_in) && (Applications->getApplicationCount() > 0)) {
+		Applications->selectApplication(LogonApplication->charrep());
+		
+		return Applications->getApplicationID();
+	} else {
+		_CL_LOG << "Error: This should not happen." LOG_
+		return 0;
+	}
+}
+
 lb_I_Container* LB_STDCALL lb_MetaApplication::getApplications() {
 	lbErrCodes err = ERR_NONE;
 	UAP_REQUEST(manager.getPtr(), lb_I_Container, apps)
@@ -2183,7 +2172,7 @@ lbErrCodes LB_STDCALL lb_EventManager::resolveEvent(char* EvName, int & evNr) {
 		QI(object, lb_I_Integer, i)
 		evNr = i->getData();
 	} else {
-		_CL_LOG << "Error: Event name not registered: " << EvName LOG_
+		_CL_VERBOSE << "Error: Event name not registered: " << EvName LOG_
 		return ERR_EVENT_NOTREGISTERED;
 	}
 /*...e*/

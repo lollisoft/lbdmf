@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.45 $
+ * $Revision: 1.46 $
  * $Name:  $
- * $Id: lbPluginManager.cpp,v 1.45 2006/06/03 06:16:57 lollisoft Exp $
+ * $Id: lbPluginManager.cpp,v 1.46 2006/06/24 06:19:54 lollisoft Exp $
  *
  * $Log: lbPluginManager.cpp,v $
+ * Revision 1.46  2006/06/24 06:19:54  lollisoft
+ * Commit due to travel to Duesseldorf.
+ *
  * Revision 1.45  2006/06/03 06:16:57  lollisoft
  * Changes against new Datamodel classes.
  * These are used instead spread SQL commands.
@@ -951,7 +954,7 @@ void LB_STDCALL lbPlugin::preinitialize() {
 			isPreInitialized = true;
 
 		} else {
-			printf("lbPlugin::initialize() failed to forward call!\n");
+			_CL_LOG << "lbPlugin::initialize() failed to forward call! Maybe the configured plugin is not implemented, or not with that name." LOG_
 		}
 	}
 

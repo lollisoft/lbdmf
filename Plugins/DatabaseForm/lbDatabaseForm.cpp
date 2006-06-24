@@ -360,7 +360,11 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 	REQUEST(manager.getPtr(), lb_I_Database, database)
 
 	database->init();
-	database->connect(DBName, DBUser, DBPass);
+	if (database->connect(DBName, DBUser, DBPass) != ERR_NONE) {
+		_LOG << "Error: Could not connect to given database: '" << DBName << "'" LOG_
+
+		return;
+	}
 
 	if (_DBName == NULL) {
 		REQUEST(manager.getPtr(), lb_I_String, _DBName)
@@ -434,6 +438,7 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 /*...sDetermine readonly fields:8:*/
 	if (FFI != NULL) delete FFI;
 	
+	/// \todo Add passing a parameter for the application ID.
 	FFI = new FormularFieldInformation(formName, sampleQuery.getPtr());
 
 	int columns = sampleQuery->getColumns();

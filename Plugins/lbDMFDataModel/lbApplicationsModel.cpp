@@ -72,6 +72,7 @@ END_IMPLEMENT_LB_UNKNOWN()
 
 lbApplications::lbApplications() {
 	ref = STARTREF;
+	_CL_LOG << "lbApplications::lbApplications() called." LOG_
 	REQUEST(getModuleInstance(), lb_I_Container, Applications)
 	REQUEST(getModuleInstance(), lb_I_String, currentApplication)
 	REQUEST(getModuleInstance(), lb_I_String, currentTitel)
@@ -82,7 +83,7 @@ lbApplications::lbApplications() {
 }
 
 lbApplications::~lbApplications() {
-
+	_CL_LOG << "lbApplications::~lbApplications() called." LOG_
 }
 
 lbErrCodes LB_STDCALL lbApplications::setData(lb_I_Unknown*) {
@@ -124,13 +125,6 @@ long	LB_STDCALL lbApplications::addApplication(const char* application, const ch
 	*paramname = "Interface";
 	param->setUAPString(*&paramname, *&Interface);
 	
-	UAP_REQUEST(manager.getPtr(), lb_I_Long, lTemp)
-	
-	*paramname = "ID";
-	param->getUAPLong(*&paramname, *&lTemp);
-	
-	_CL_VERBOSE << "Retrieved back this ID: " << lTemp->getData() LOG_	
-	
 	UAP(lb_I_KeyBase, key)
 	UAP(lb_I_Unknown, ukParam)
 	QI(_ID, lb_I_KeyBase, key)
@@ -142,7 +136,16 @@ long	LB_STDCALL lbApplications::addApplication(const char* application, const ch
 }
 
 bool	LB_STDCALL lbApplications::selectApplication(const char* application) {
-	_CL_LOG << "Warning: lbApplications::selectApplication(const char* application) not implemented!" LOG_
+
+	while (hasMoreApplications()) {
+		setNextApplication();
+		
+		if (strcmp(getApplicationName(), application) == 0) {
+			finishApplicationIteration();
+			return true;
+		}
+	}
+
 	return false;
 }
 
@@ -168,14 +171,14 @@ bool	LB_STDCALL lbApplications::selectApplication(long _id) {
 		param->getUAPString(*&name, *&currentApplication);
 		*name = "Titel";
 		param->getUAPString(*&name, *&currentTitel);
-		*name = "ModuleName";
-		param->getUAPString(*&name, *&currentFunctor);
 		*name = "Functor";
+		param->getUAPString(*&name, *&currentFunctor);
+		*name = "ModuleName";
 		param->getUAPString(*&name, *&currentModuleName);
 		*name = "Interface";
 		param->getUAPString(*&name, *&currentInterface);
 
-		_CL_LOG << "lbApplications::selectApplication('" << _id << "') selects '" << 
+		_CL_VERBOSE << "lbApplications::selectApplication('" << _id << "') selects '" << 
 		currentApplication->charrep() << "', '" << 
 		currentTitel->charrep() << "', '" << 
 		currentModuleName->charrep() << "', '" << 
@@ -211,9 +214,9 @@ void	LB_STDCALL lbApplications::setNextApplication() {
 	*name = "Titel";
 	param->getUAPString(*&name, *&currentTitel);
 	*name = "ModuleName";
-	param->getUAPString(*&name, *&currentFunctor);
-	*name = "Functor";
 	param->getUAPString(*&name, *&currentModuleName);
+	*name = "Functor";
+	param->getUAPString(*&name, *&currentFunctor);
 	*name = "Interface";
 	param->getUAPString(*&name, *&currentInterface);
 }

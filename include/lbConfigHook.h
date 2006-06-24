@@ -223,13 +223,13 @@
 #ifndef __MISC
 #define _CL_LOG \
 { \
-        COUT \
+        COUT << __FILE__ << ", " << __LINE__ << ": "\
         
 #endif
 #ifdef __MISC
 #define _CL_LOG \
 { \
-        COUT \
+        COUT << __FILE__ << ", " << __LINE__ << ": "\
         
 #endif
 

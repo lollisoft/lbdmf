@@ -191,6 +191,7 @@ void wxAppSelectPage::OnWizardPageChanging(wxWizardEvent& event) {
 		
 				char* _app = strdup(app.c_str());
 			
+				_CL_LOG << "Load application '" << _app << "'" LOG_
 				meta->loadApplication(userid, _app);
 			
 				free(_app);
@@ -208,7 +209,9 @@ void wxAppSelectPage::setLoggedOnUser(char* user) {
 		UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
 		UAP(lb_I_Container, apps)
 		
-		meta->setUserName(user);
+		_CL_LOG << "Set Logged on user to '" << userid << "'" LOG_
+		
+		meta->setUserName(userid);
 
 		apps = meta->getApplications();
 
@@ -830,6 +833,8 @@ lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::createDBForm(char* formName, char* query
 	lbErrCodes err = ERR_NONE;
 
 	// Locate the form instance in the container
+	
+	_CL_LOG << "Create database formular for '" << formName << "', '" << queryString << "', '" << DBName << "', '" << DBUser << "', '" << DBPass << "'" LOG_
 
 	if (frame->isPanelUsage()) {
 		if (!notebook) {

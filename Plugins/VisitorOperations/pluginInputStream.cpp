@@ -152,6 +152,7 @@ public:
 	void LB_STDCALL visit(lb_I_CodeGenerator*) { _CL_LOG << "visit(lb_I_CodeGenerator*)" LOG_ }
 	void LB_STDCALL visit(lb_I_Boolean*) { _CL_LOG << "visit(lb_I_Boolean*)" LOG_ }
 	void LB_STDCALL visit(lb_I_DatabaseOperation* pm) { _CL_LOG << "visit(lb_I_DatabaseOperation*)" LOG_ }
+	void LB_STDCALL visit(lb_I_ParameterTable*) { _CL_LOG << "visit(lb_I_ParameterTable*)" LOG_ }
 	
 /*...e*/
 
@@ -161,6 +162,9 @@ public:
 	void LB_STDCALL visit(lb_I_UserAccounts*);
 	void LB_STDCALL visit(lb_I_Applications*);
 	void LB_STDCALL visit(lb_I_User_Applications*);
+	void LB_STDCALL visit(lb_I_Formulars*);
+	void LB_STDCALL visit(lb_I_ApplicationParameter*);
+	void LB_STDCALL visit(lb_I_FormularParameter*);
 
 	bool LB_STDCALL begin(char* file);
 	bool LB_STDCALL begin(lb_I_Stream* stream);
@@ -260,6 +264,73 @@ void LB_STDCALL lbInputStreamOpr::visit(lb_I_UserAccounts* users) {
 		*iStream >> Pass;
 		
 		users->addAccount(User, Pass, UID);
+	}
+}
+
+void LB_STDCALL lbInputStreamOpr::visit(lb_I_FormularParameter* params) {
+	// Number of users
+	int   count = 0;
+	*iStream >> count;
+
+	for (int i = 0; i < count; i++) {
+		long   ID;
+		char* Name = NULL;
+		char* Value = NULL;
+		long  FID;
+		
+		*iStream >> ID;
+		*iStream >> Name;
+		*iStream >> Value;
+		*iStream >> FID;
+		
+		params->addParameter(Name, Value, FID, ID);
+	}
+}
+
+void LB_STDCALL lbInputStreamOpr::visit(lb_I_ApplicationParameter* params) {
+	// Number of users
+	int   count = 0;
+	*iStream >> count;
+
+	for (int i = 0; i < count; i++) {
+		long   ID;
+		char* Name = NULL;
+		char* Value = NULL;
+		long  AID;
+		
+		*iStream >> ID;
+		*iStream >> Name;
+		*iStream >> Value;
+		*iStream >> AID;
+		
+		params->addParameter(Name, Value, AID, ID);
+	}
+}
+
+void LB_STDCALL lbInputStreamOpr::visit(lb_I_Formulars* forms) {
+	// Number of users
+	int   count = 0;
+	int FormularID;
+	int AnwendungID;
+	int Typ;
+	char* FormularName = NULL;
+	char* MenuName = NULL;
+	char* MenuHilfe = NULL;
+	char* EventName = NULL;
+	
+	*iStream >> count;
+
+	for (int i = 0; i < count; i++) {
+		
+		*iStream >> FormularID;
+		*iStream >> FormularName;
+		*iStream >> MenuName;
+		*iStream >> EventName;
+		*iStream >> MenuHilfe;
+		*iStream >> AnwendungID;
+		*iStream >> Typ;
+		
+		forms->addFormular(FormularName, MenuName, EventName, MenuHilfe, AnwendungID, Typ, FormularID);
 	}
 }
 

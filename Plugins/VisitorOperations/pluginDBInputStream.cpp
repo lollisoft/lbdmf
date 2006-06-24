@@ -152,6 +152,7 @@ public:
 	void LB_STDCALL visit(lb_I_CodeGenerator*) { _CL_LOG << "visit(lb_I_CodeGenerator*)" LOG_ }
 	void LB_STDCALL visit(lb_I_Boolean*) { _CL_LOG << "visit(lb_I_Boolean*)" LOG_ }
 	void LB_STDCALL visit(lb_I_DatabaseOperation*) { _CL_LOG << "visit(lb_I_DatabaseOperation*)" LOG_ }
+	void LB_STDCALL visit(lb_I_ParameterTable*) { _CL_LOG << "visit(lb_I_ParameterTable*)" LOG_ }
 
 /*...e*/
 
@@ -161,6 +162,10 @@ public:
 	void LB_STDCALL visit(lb_I_UserAccounts*);
 	void LB_STDCALL visit(lb_I_Applications*);
 	void LB_STDCALL visit(lb_I_User_Applications*);
+	void LB_STDCALL visit(lb_I_Formulars*);
+	
+	void LB_STDCALL visit(lb_I_ApplicationParameter*);
+	void LB_STDCALL visit(lb_I_FormularParameter*);
 
 	bool LB_STDCALL begin(const char* DBName, const char* DBUser, const char* DBPass);
 	bool LB_STDCALL begin(lb_I_Database* _db);
@@ -284,6 +289,153 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_UserAccounts* users) {
 			qPWD = q->getAsString(3);
 		
 			users->addAccount(qUID->charrep(), qPWD->charrep(), qID->getData());
+		}
+	}
+}
+
+void LB_STDCALL lbDatabaseInputStream::visit(lb_I_FormularParameter* params) {
+	lbErrCodes err = ERR_NONE;
+	UAP(lb_I_Query, q)
+	
+	if (db == NULL) {
+		_LOG << "FATAL: Database imput stream could not work without a database!" LOG_
+		return;
+	}
+	
+	q = db->getQuery(0);
+	
+	q->skipFKCollecting();
+	
+	if (q->query("select id, parametername, parametervalue, formularid from Formular_Parameters") != ERR_NONE) {
+		_LOG << "Error: Access to Formular_Parameters table failed. Read Formular_Parameters would be skipped." LOG_
+		return;
+	}
+	
+	err = q->first(); 
+	
+	if ((err != ERR_NONE) && (err != WARN_DB_NODATA)) {
+		_LOG << "Error: No Formular_Parameters found. All data may be deleted accidantly." LOG_
+	} else {
+		UAP(lb_I_Long, qID)
+		UAP(lb_I_Long, qFID)
+		UAP(lb_I_String, qV)
+		UAP(lb_I_String, qN)
+		
+		qID = q->getAsLong(1);
+		qN = q->getAsString(2);
+		qV = q->getAsString(3);
+		qFID = q->getAsLong(4);
+		
+		params->addParameter(qN->charrep(), qV->charrep(), qFID->getData(), qID->getData());
+
+		while ((err = q->next()) == ERR_NONE || err == WARN_DB_NODATA) {
+			qID = q->getAsLong(1);
+			qN = q->getAsString(2);
+			qV = q->getAsString(3);
+			qFID = q->getAsLong(4);
+			
+			params->addParameter(qN->charrep(), qV->charrep(), qFID->getData(), qID->getData());
+		}
+	}
+}
+
+void LB_STDCALL lbDatabaseInputStream::visit(lb_I_ApplicationParameter* params) {
+	lbErrCodes err = ERR_NONE;
+	UAP(lb_I_Query, q)
+	
+	if (db == NULL) {
+		_LOG << "FATAL: Database imput stream could not work without a database!" LOG_
+		return;
+	}
+	
+	q = db->getQuery(0);
+	
+	q->skipFKCollecting();
+	
+	if (q->query("select id, parametername, parametervalue, anwendungid from Anwendungs_Parameter") != ERR_NONE) {
+		_LOG << "Error: Access to Anwendungs_Parameters table failed. Read Anwendungs_Parameters would be skipped." LOG_
+		return;
+	}
+	
+	err = q->first(); 
+	
+	if ((err != ERR_NONE) && (err != WARN_DB_NODATA)) {
+		_LOG << "Error: No Anwendungs_Parameters found. All data may be deleted accidantly." LOG_
+	} else {
+		UAP(lb_I_Long, qID)
+		UAP(lb_I_Long, qAID)
+		UAP(lb_I_String, qV)
+		UAP(lb_I_String, qN)
+		
+		qID = q->getAsLong(1);
+		qN = q->getAsString(2);
+		qV = q->getAsString(3);
+		qAID = q->getAsLong(4);
+		
+		params->addParameter(qN->charrep(), qV->charrep(), qAID->getData(), qID->getData());
+
+		while ((err = q->next()) == ERR_NONE || err == WARN_DB_NODATA) {
+			qID = q->getAsLong(1);
+			qN = q->getAsString(2);
+			qV = q->getAsString(3);
+			qAID = q->getAsLong(4);
+			
+			params->addParameter(qN->charrep(), qV->charrep(), qAID->getData(), qID->getData());
+		}
+	}
+}
+
+void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Formulars* forms) {
+	lbErrCodes err = ERR_NONE;
+	UAP(lb_I_Query, q)
+	
+	if (db == NULL) {
+		_LOG << "FATAL: Database imput stream could not work without a database!" LOG_
+		return;
+	}
+	
+	q = db->getQuery(0);
+	
+	q->skipFKCollecting();
+	
+	if (q->query("select id, name, menuname, eventname, menuhilfe, anwendungid, typ from formulare") != ERR_NONE) {
+		_LOG << "Error: Access to formular table failed. Read formulars would be skipped." LOG_
+		return;
+	}
+	
+	err = q->first(); 
+
+	if ((err != ERR_NONE) && (err != WARN_DB_NODATA)) {
+		_LOG << "Error: No formulars found. All formulars may be deleted accidantly." LOG_
+	} else {
+		UAP(lb_I_Long, FormularID)
+		UAP(lb_I_Long, AnwendungID)
+		UAP(lb_I_Long, Typ)
+		UAP(lb_I_String, FormularName)
+		UAP(lb_I_String, MenuName)
+		UAP(lb_I_String, MenuHilfe)
+		UAP(lb_I_String, EventName)
+
+		FormularID = q->getAsLong(1);
+		FormularName = q->getAsString(2);
+		MenuName = q->getAsString(3);
+		EventName = q->getAsString(4);		
+		MenuHilfe = q->getAsString(5);
+		AnwendungID = q->getAsLong(6);
+		Typ = q->getAsLong(7);
+		
+		forms->addFormular(FormularName->charrep(), MenuName->charrep(), EventName->charrep(), MenuHilfe->charrep(), AnwendungID->getData(), Typ->getData(), FormularID->getData());
+
+		while ((err = q->next()) == ERR_NONE || err == WARN_DB_NODATA) {
+			FormularID = q->getAsLong(1);
+			FormularName = q->getAsString(2);
+			MenuName = q->getAsString(3);
+			EventName = q->getAsString(4);		
+			MenuHilfe = q->getAsString(5);
+			AnwendungID = q->getAsLong(6);
+			Typ = q->getAsLong(7);
+			
+			forms->addFormular(FormularName->charrep(), MenuName->charrep(), EventName->charrep(), MenuHilfe->charrep(), AnwendungID->getData(), Typ->getData(), FormularID->getData());
 		}
 	}
 }

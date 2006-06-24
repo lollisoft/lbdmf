@@ -12,11 +12,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.81 $
+ * $Revision: 1.82 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.81 2006/04/20 13:13:40 lollisoft Exp $
+ * $Id: mkmk.cpp,v 1.82 2006/06/24 06:19:54 lollisoft Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.82  2006/06/24 06:19:54  lollisoft
+ * Commit due to travel to Duesseldorf.
+ *
  * Revision 1.81  2006/04/20 13:13:40  lollisoft
  * Copy application bundle instead of plain application.
  *
@@ -1151,6 +1154,7 @@ void write_clean(char* modulename = NULL) {
     printf("\t\t-rm *.o\n");
     if (modulename == NULL) {
         printf("\t\t-rm *.so.*\n");
+        printf("\t\t-rm *.so\n");
     } else {
         printf("\t\t-rm %s\n", modulename);
     }
@@ -1589,7 +1593,7 @@ void ShowHelp(int argc, char *argv[])
 
   fprintf(stderr, "Enhanced by Lothar Behrens (lothar.behrens@lollisoft.de)\n\n");
 
-  fprintf(stderr, "MKMK: makefile generator $Revision: 1.81 $\n");
+  fprintf(stderr, "MKMK: makefile generator $Revision: 1.82 $\n");
   fprintf(stderr, "Usage: MKMK lib|exe|dll|so modulname includepath,[includepath,...] file1 [file2 file3...]\n");
   
   fprintf(stderr, "Your parameters are: ");
