@@ -732,6 +732,7 @@ class lb_I_LogonPage;
 class lb_I_AppSelectPage;
 class lb_I_LogonHandler;
 class lb_I_DatabaseOperation;
+class lb_I_Document;
 /*...e*/
 
 /*...scallback \47\ handler typedefs:0:*/
@@ -1671,7 +1672,7 @@ lbErrCodes LB_STDCALL classname::queryInterface(char* name, void** unknown, char
         }
 
 #define END_IMPLEMENT_LB_UNKNOWN() \
-	_CL_LOG << "Error: Requested interface '" << name << "' not found! File: " << file << " Line: " << line LOG_ \
+	_CL_VERBOSE << "Error: Requested interface '" << name << "' not found! File: " << file << " Line: " << line LOG_ \
 	return ERR_NO_INTERFACE; \
 }
 
@@ -2533,11 +2534,53 @@ public:
 	 * This function builds a list of application based on the user rights.
 	 */
 	virtual lb_I_Container* LB_STDCALL getApplications() = 0;
+	
+	/** \brief Get the ID of an application.
+	 *
+	 */
+	virtual long LB_STDCALL getApplicationID() = 0;
+	
+	/** \brief Get the active document.
+	 *
+	 * This function returns the active document for the current application.
+	 */
+	virtual lb_I_Document*	LB_STDCALL getActiveDocument() = 0;
+	
+	/** \brief Set the active document.
+	 *
+	 * This function sets the active document for the current application.
+	 */
+	virtual void			LB_STDCALL setActiveDocument(lb_I_Document* doc) = 0;
+	
+	
 };
 /*...e*/
 
+class lb_I_Document : public lb_I_Unknown {
+public:
+	/** \brief Get the name of this document.
+	 *
+	 * The name is not related to a filename, but may used for it.
+	 */
+	char*	LB_STDCALL	getName() = 0;
+	
+	/** \brief Set the name of this document.
+	 *
+	 * The name is not related to a filename, but may used for it.
+	 */
+	void	LB_STDCALL	setName(const char* name) = 0;
+	
+	/** \brief Get the description of this document.
+	 */
+	char*	LB_STDCALL	getDescription() = 0;
+	
+	/** \brief Set the description of this document.
+	 */
+	void	LB_STDCALL	setDescription(const char* description) = 0;
+};
+
 /*...sclass lb_I_UserAccounts:0:*/
-class lb_I_UserAccounts : public lb_I_Unknown {
+class lb_I_UserAccounts : public lb_I_Document {
 public:
 	/** \brief Add an user account and get it's ID.
 	 *
@@ -2615,7 +2658,7 @@ public:
 /*...e*/
 
 /*...sclass lb_I_Applications:0:*/
-class lb_I_Applications : public lb_I_Unknown {
+class lb_I_Applications : public lb_I_Document {
 public:
 	/** \brief Add a new application.
 	 *
@@ -2684,7 +2727,7 @@ public:
 };
 /*...e*/
 
-class lb_I_User_Applications : public lb_I_Unknown {
+class lb_I_User_Applications : public lb_I_Document {
 public:
 	/** \brief Add a new application.
 	 *
@@ -2741,6 +2784,54 @@ public:
 	virtual long		LB_STDCALL getUserID() = 0;
 	
 	virtual long		LB_STDCALL getID() = 0;
+};
+
+class lb_I_Formulars : public lb_I_Document {
+public:
+
+	virtual long		LB_STDCALL addFormular(const char* name, const char* menuname, const char* eventname, const char* menuhilfe, long anwendung_id, long typ, long formular_id = -1) = 0;
+	virtual bool		LB_STDCALL selectFormular(long _id) = 0;
+	virtual int			LB_STDCALL getFormularCount() = 0;
+	virtual bool		LB_STDCALL hasMoreFormulars() = 0;
+	virtual void		LB_STDCALL setNextFormular() = 0;
+	virtual void		LB_STDCALL finishFormularIteration() = 0;
+	
+	virtual char*		LB_STDCALL getName() = 0;
+	virtual char*		LB_STDCALL getMenuName() = 0;
+	virtual char*		LB_STDCALL getEventName() = 0;
+	virtual char*		LB_STDCALL getMenuHelp() = 0;
+	virtual long		LB_STDCALL getApplicationID() = 0;
+	virtual long		LB_STDCALL getTyp() = 0;
+	virtual long		LB_STDCALL getFormularID() = 0;
+};
+
+
+class lb_I_ParameterTable : public lb_I_Document {
+public:
+	virtual bool		LB_STDCALL selectParameter(long _id) = 0;
+
+	virtual int			LB_STDCALL getParameterCount() = 0;
+	virtual bool		LB_STDCALL hasMoreParameters() = 0;
+	virtual void		LB_STDCALL setNextParameter() = 0;
+	virtual void		LB_STDCALL finishParameterIteration() = 0;
+
+	virtual long		LB_STDCALL getParameterID() = 0;
+	virtual char*		LB_STDCALL getParameterName() = 0;
+	virtual char*		LB_STDCALL getParameterValue() = 0;
+};
+
+class lb_I_FormularParameter : public lb_I_ParameterTable {
+public:
+	virtual long		LB_STDCALL addParameter(const char* name, const char* value, long formular_id, long _id = -1) = 0;
+	virtual long		LB_STDCALL getFormularID() = 0;
+	virtual char*		LB_STDCALL getParameter(const char* name, long formular_id) = 0;
+};
+
+class lb_I_ApplicationParameter : public lb_I_ParameterTable {
+public:
+	virtual long		LB_STDCALL addParameter(const char* name, const char* value, long anwendungs_id, long _id = -1) = 0;
+	virtual long		LB_STDCALL getApplicationID() = 0;
+	virtual char*		LB_STDCALL getParameter(const char* name, long application_id) = 0;
 };
 
 
