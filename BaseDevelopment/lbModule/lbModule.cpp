@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.108 $
+ * $Revision: 1.109 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.108 2006/06/05 15:47:40 lollisoft Exp $
+ * $Id: lbModule.cpp,v 1.109 2006/07/02 13:30:13 lollisoft Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.109  2006/07/02 13:30:13  lollisoft
+ * Added feature to not clone objects when inserting into a container. Better error message when no interface was found.
+ *
  * Revision 1.108  2006/06/05 15:47:40  lollisoft
  * Bugfixes for missing repository entries. Deactivated RDCD code.
  *
@@ -586,7 +589,7 @@ int LB_STDCALL SkipList::exists(lb_I_KeyBase** const key) {
 lbErrCodes LB_STDCALL SkipList::insert(lb_I_Unknown** const e, lb_I_KeyBase** const key) { 
         lbErrCodes err = ERR_NONE; 
         
-        lbSkipListElement* el = new lbSkipListElement(*e, *key);
+        lbSkipListElement* el = new lbSkipListElement(*e, *key, cloning);
 
         insert(el);
         
@@ -596,7 +599,7 @@ lbErrCodes LB_STDCALL SkipList::insert(lb_I_Unknown** const e, lb_I_KeyBase** co
 /*...sSkipList\58\\58\remove\40\lb_I_KeyBase\42\\42\ const key\41\:0:*/
 lbErrCodes LB_STDCALL SkipList::remove(lb_I_KeyBase** const key) { 
         lbErrCodes err = ERR_NONE; 
-        lbSkipListElement* el = new lbSkipListElement(*key, *key);
+        lbSkipListElement* el = new lbSkipListElement(*key, *key, cloning);
         
         remove(el);
         
@@ -2218,8 +2221,8 @@ lb_I_FunctorEntity* LB_STDCALL lbHCInterfaceRepository::getFirstEntity() {
 	_fe->setFunctor(functor);
 
 	if (!found) { 
-		_CL_LOG << "Error; Requested interface not found in repository!" LOG_
-		_LOG << "Error; Requested interface not found in repository!" LOG_
+		_CL_LOG << "Error; Requested interface not found in repository! (" << searchArgument << ")" LOG_
+		_LOG << "Error; Requested interface not found in repository! (" << searchArgument << ")" LOG_
 	}
 
 	return _fe;
