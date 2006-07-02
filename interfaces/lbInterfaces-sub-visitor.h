@@ -67,8 +67,13 @@ virtual void LB_STDCALL visit(lb_I_Formulars*) = 0;
 virtual void LB_STDCALL visit(lb_I_ParameterTable*) = 0;
 virtual void LB_STDCALL visit(lb_I_ApplicationParameter*) = 0;
 virtual void LB_STDCALL visit(lb_I_FormularParameter*) = 0;
+virtual void LB_STDCALL visit(lb_I_Actions*) = 0;
+virtual void LB_STDCALL visit(lb_I_Formular_Actions*) = 0;
+virtual void LB_STDCALL visit(lb_I_Action_Types*) = 0;
+virtual void LB_STDCALL visit(lb_I_Action_Steps*) = 0;
+virtual void LB_STDCALL visit(lb_I_Translations*) = 0;
 //virtual ~Aspect(){} 
-}; 
+};   
 
 /** \brief Base for any file operation.
  *
