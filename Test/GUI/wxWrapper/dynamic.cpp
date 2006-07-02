@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.123 2006/06/10 09:54:49 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.124 2006/07/02 13:39:16 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.123 $
+ * $Revision: 1.124 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.123 2006/06/10 09:54:49 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.124 2006/07/02 13:39:16 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.124  2006/07/02 13:39:16  lollisoft
+ * Minor change (PM).
+ *
  * Revision 1.123  2006/06/10 09:54:49  lollisoft
  * Removed outside saving structure code for meta application.
  * This is now done by the new save method.
@@ -2064,6 +2067,8 @@ bool MyApp::OnInit(void)
 
     mm->setModuleManager(mm.getPtr(), __FILE__, __LINE__);
     setModuleManager(mm.getPtr(), __FILE__, __LINE__);
+
+
     
     UAP_REQUEST(mm.getPtr(), lb_I_String, string)
     UAP_REQUEST(mm.getPtr(), lb_I_Database, tempDB) // Preload this module
@@ -2071,6 +2076,8 @@ bool MyApp::OnInit(void)
     UAP_REQUEST(mm.getPtr(), lb_I_MetaApplication, metaApp)
     UAP_REQUEST(mm.getPtr(), lb_I_Dispatcher, disp)
 	REQUEST(mm.getPtr(), lb_I_EventManager, ev_manager)        
+
+    PM->initialize();
 
     metaApp++;
 
@@ -2121,8 +2128,6 @@ bool MyApp::OnInit(void)
     wxGUI->registerEventHandler(*&disp);
 
     if (err != ERR_NONE) _LOG << "Have some problems to set up menu event sources" LOG_
-
-    PM->initialize();
   
     frame->Centre();
 
