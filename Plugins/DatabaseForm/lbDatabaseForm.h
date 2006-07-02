@@ -30,11 +30,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.31 $
+ * $Revision: 1.32 $
  * $Name:  $
- * $Id: lbDatabaseForm.h,v 1.31 2006/02/21 19:35:51 lollisoft Exp $
+ * $Id: lbDatabaseForm.h,v 1.32 2006/07/02 13:12:54 lollisoft Exp $
  *
  * $Log: lbDatabaseForm.h,v $
+ * Revision 1.32  2006/07/02 13:12:54  lollisoft
+ * Begun with data model classes support.
+ *
  * Revision 1.31  2006/02/21 19:35:51  lollisoft
  * Implemented autoload mechanism of last loaded application.
  * It demonstrates the new capabilities operating with files.
@@ -706,6 +709,14 @@ public:
 
 	UAP(lb_I_Container, ignoredPKTables)
 	UAP(lb_I_Container, MasterDetailRelationData)
+
+	// Preloaded data from database, if plugins are available.
+	UAP(lb_I_Formulars, forms)
+	UAP(lb_I_FormularParameter, formParams)
+	UAP(lb_I_ApplicationParameter, appParams)
+	UAP(lb_I_Actions, appActions)
+	UAP(lb_I_Action_Steps, appActionSteps)
+	UAP(lb_I_Action_Types, appActionTypes)
 
 	// l gets overwritten, while assigning a lb_I_Query* pointer to sampleQuery !!
 	// l and buf are therefore as a bugfix.

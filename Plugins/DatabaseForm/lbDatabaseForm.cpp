@@ -326,8 +326,67 @@ lbErrCodes LB_STDCALL lbDatabasePanel::registerEventHandler(lb_I_Dispatcher* dis
 /*...e*/
 /*...svoid LB_STDCALL lbDatabasePanel\58\\58\init\40\char\42\ SQLString\44\ char\42\ DBName\44\ char\42\ DBUser\44\ char\42\ DBPass\41\:0:*/
 void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUser, char* DBPass) {
+	lbErrCodes err = ERR_NONE;
 	char prefix[100] = "";
 	sprintf(prefix, "%p", this);
+
+	UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
+
+	UAP(lb_I_Unknown, uk)
+	UAP(lb_I_Parameter, params)
+	
+	uk = meta->getActiveDocument();
+	QI(uk, lb_I_Parameter, params)
+
+	if (params != NULL) {
+		// Try to retrieve current document's data. Later on this will be preffered before plain SQL queries.
+		UAP_REQUEST(manager.getPtr(), lb_I_Container, document)
+		UAP_REQUEST(manager.getPtr(), lb_I_String, name)
+		UAP(lb_I_KeyBase, key)
+		UAP(lb_I_Unknown, uk)
+		
+		QI(name, lb_I_KeyBase, key)
+		*name = "ApplicationData";
+		params->getUAPContainer(*&name, *&document);
+
+		*name = "Formulars";
+		uk = document->getElement(&key);
+		QI(uk, lb_I_Formulars, forms)
+		
+		*name = "FormParams";
+		uk = document->getElement(&key);
+		QI(uk, lb_I_FormularParameter, formParams)
+
+		*name = "AppParams";
+		uk = document->getElement(&key);
+		QI(uk, lb_I_ApplicationParameter, appParams)
+
+		*name = "AppActions";
+		uk = document->getElement(&key);
+		QI(uk, lb_I_Actions, appActions)
+		
+		*name = "AppActionSteps";
+		uk = document->getElement(&key);
+		QI(uk, lb_I_Action_Steps, appActionSteps)
+		
+		*name = "AppActionTypes";
+		uk = document->getElement(&key);
+		QI(uk, lb_I_Action_Types, appActionTypes)
+
+
+		if ((forms == NULL) || 
+		(formParams == NULL) || 
+		(appActions == NULL) || 
+		(appActionSteps == NULL) || 
+		(appActionTypes == NULL) ||
+		(appParams == NULL)) {
+			_LOG << "Error: Could not recieve one of the required document elements of application!" LOG_
+		} else {
+			// Preload more data.
+			
+			
+		}
+	}
 
 	// Activate relative memory access counts
 	//TRMemStartLocalCount();
@@ -422,8 +481,6 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 /*...e*/
 	
 	sampleQuery->enableFKCollecting();
-	
-	UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
 
 	sampleQuery->setAutoRefresh(meta->getAutorefreshData());
 
@@ -592,6 +649,7 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 				
 				buffer[0] = 0;
 				
+				// This query is dynamic. Thus it could not mapped to an object. Also these data is from target database, not config database.
 				sprintf(buffer, "select %s, id from %s order by id", PKName->charrep(), PKTable->charrep());
 				
 				UAP(lb_I_Query, ReplacementColumnQuery)
@@ -902,7 +960,7 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 	actionQuery->enableFKCollecting();
 	free(buf);
 
-	lbErrCodes err = actionQuery->first();
+	err = actionQuery->first();
 	
 /*...sloop through and find actions:16:*/
 	while (err == ERR_NONE) {
