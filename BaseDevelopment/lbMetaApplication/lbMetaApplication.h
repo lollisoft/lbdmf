@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.39 $
+ * $Revision: 1.40 $
  * $Name:  $
- * $Id: lbMetaApplication.h,v 1.39 2006/06/24 06:19:54 lollisoft Exp $
+ * $Id: lbMetaApplication.h,v 1.40 2006/07/02 13:25:57 lollisoft Exp $
  *
  * $Log: lbMetaApplication.h,v $
+ * Revision 1.40  2006/07/02 13:25:57  lollisoft
+ * Added active document support.
+ *
  * Revision 1.39  2006/06/24 06:19:54  lollisoft
  * Commit due to travel to Duesseldorf.
  *
@@ -193,6 +196,9 @@
 
 
 /*...sclass lb_MetaApplication:0:*/
+/** \brief Implementation of lb_I_MetaApplication
+ * Main application interface to the programmer.
+ */
 class lb_MetaApplication : 
 public lb_I_MetaApplication,
 public lb_I_EventHandler
@@ -310,6 +316,12 @@ public:
 	lb_I_Container* LB_STDCALL getApplications();
 	long LB_STDCALL getApplicationID();
 	
+	void			LB_STDCALL setActiveApplication(const char* name);
+	
+	lb_I_Unknown*	LB_STDCALL getActiveDocument();
+	void			LB_STDCALL setActiveDocument(lb_I_Unknown* doc);
+
+	
 protected:
 	lb_I_GUI* gui;
 	
@@ -321,10 +333,16 @@ protected:
 	UAP(lb_I_String, LogonUser)
 	UAP(lb_I_String, LogonApplication)
 	
+	/// \brief Active document per LogonApplication
+	UAP(lb_I_Container, activeDocuments)
+	
 	UAP(lb_I_Parameter, myProperties)
 	
+	/// \brief Applications stored in file or database.
 	UAP(lb_I_Applications, Applications)
+	/// \brief Users stored in file or database.
 	UAP(lb_I_UserAccounts, Users)
+	/// \brief Users to Applications mapping stored in file or database.
 	UAP(lb_I_User_Applications, User_Applications)
 
 	bool _autoload;

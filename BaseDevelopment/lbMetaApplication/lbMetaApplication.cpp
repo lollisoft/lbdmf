@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.93 $
+ * $Revision: 1.94 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.93 2006/06/24 06:19:54 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.94 2006/07/02 13:25:57 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.94  2006/07/02 13:25:57  lollisoft
+ * Added active document support.
+ *
  * Revision 1.93  2006/06/24 06:19:54  lollisoft
  * Commit due to travel to Duesseldorf.
  *
@@ -427,6 +430,10 @@ lb_MetaApplication::lb_MetaApplication() {
 	_autorefresh = false;
 	_logged_in = false;
 	_loading_object_data = false;
+	
+	REQUEST(getModuleInstance(), lb_I_Container, activeDocuments)
+	
+	activeDocuments->setCloning(false);
 	
 	_CL_LOG << "lb_MetaApplication::lb_MetaApplication() called." LOG_
 }
@@ -940,6 +947,8 @@ lbErrCodes LB_STDCALL lb_MetaApplication::initialize(char* user, char* appName) 
 			
 			char* a = strdup(LogonApplication->charrep());
 			char* u = strdup(LogonUser->charrep());
+			
+			_logged_in = true;
 			
 			loadApplication(u, a);
 			
@@ -1753,6 +1762,39 @@ long LB_STDCALL lb_MetaApplication::getApplicationID() {
 		_CL_LOG << "Error: This should not happen." LOG_
 		return 0;
 	}
+}
+
+void			LB_STDCALL lb_MetaApplication::setActiveApplication(const char* name) {
+
+}
+
+lb_I_Unknown*	LB_STDCALL lb_MetaApplication::getActiveDocument() {
+	lbErrCodes err = ERR_NONE;
+	UAP(lb_I_KeyBase, key)
+	
+	QI(LogonApplication, lb_I_KeyBase, key)
+
+	return activeDocuments->getElement(&key);
+}
+
+void			LB_STDCALL lb_MetaApplication::setActiveDocument(lb_I_Unknown* doc) {
+	lbErrCodes err = ERR_NONE;
+	UAP(lb_I_KeyBase, key)
+	UAP(lb_I_Unknown, ukDoc)
+	
+	ukDoc = doc;
+	
+	QI(LogonApplication, lb_I_KeyBase, key)
+
+	if (activeDocuments->exists(&key)) {
+		activeDocuments->remove(&key);
+	}
+
+	_CL_LOG << "Insert active document for application '" << LogonApplication->charrep() << "'" LOG_
+
+	activeDocuments->insert(&ukDoc, &key);
+	
+	_CL_LOG << "Inserted document has " << ukDoc->getRefCount() << " references." LOG_
 }
 
 lb_I_Container* LB_STDCALL lb_MetaApplication::getApplications() {
