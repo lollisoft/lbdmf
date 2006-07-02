@@ -631,6 +631,7 @@ T_p_getlbModuleInstance DLL_GETMODULEINSTANCE;
 	} 
 	UAP(lb_I_Module, inst)
 	QI(module, lb_I_Module, inst)
+	
 	return inst.getPtr();
 }
 /*...e*/
@@ -693,18 +694,68 @@ DLLEXPORT char* LB_STDCALL getTRMemTrackBreak() {
 }
 /*...e*/
 /*...sDLLEXPORT char\42\ LB_STDCALL translateText\40\char\42\ text\41\:0:*/
+
+UAP(lb_I_Locale, locale)
+
 DLLEXPORT char* LB_STDCALL translateText(char* text) {
-	lb_I_Module* mm = NULL;
+	lbErrCodes err = ERR_NONE;
+	if (locale == NULL) {
+		REQUEST(getModuleInstance(), lb_I_Locale, locale)
+		
+		UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+		UAP(lb_I_Plugin, pl)
+		UAP(lb_I_Unknown, ukPl)
+		
+		// Need to derive filename from given application name
+		UAP_REQUEST(getModuleInstance(), lb_I_String, filename)
+		*filename = "translations.dat";
 
-	mm = getModuleInstance();
-	mm->setModuleManager(mm, __FILE__, __LINE__);
+		UAP_REQUEST(getModuleInstance(), lb_I_Database, database)
+		
+		database->init();
+		
+		char* lbDMFPasswd = getenv("lbDMFPasswd");
+		char* lbDMFUser   = getenv("lbDMFUser");
+		
+		if (!lbDMFUser) lbDMFUser = "dba";
+		if (!lbDMFPasswd) lbDMFPasswd = "trainres";
+		
+		if (database->connect("lbDMF", lbDMFUser, lbDMFPasswd) != ERR_NONE) {
+			return text;
+		}
+		
+		bool isFileAvailable = false;
+		
+		UAP(lb_I_DatabaseOperation, fDBOp)
+			
+		pl = PM->getFirstMatchingPlugin("lb_I_DatabaseOperation", "DatabaseInputStreamVisitor");
+		if (pl != NULL)	ukPl = pl->getImplementation();
+		if (ukPl != NULL) QI(ukPl, lb_I_DatabaseOperation, fDBOp)
+		isFileAvailable = fDBOp->begin(*&database); 
 
-	UAP_REQUEST(mm, lb_I_Locale, locale)
-
+		if (isFileAvailable) {
+			UAP(lb_I_Plugin, plTranslations)
+			UAP(lb_I_Unknown, ukPlTranslations)
+			
+			plTranslations = PM->getFirstMatchingPlugin("lb_I_Translations", "Model");
+			if (plTranslations != NULL) {
+				ukPlTranslations = plTranslations->getImplementation();
+			} else {
+				_LOG << "Warning: No translations datamodel plugin found." LOG_
+			}
+			
+			ukPlTranslations->accept(*&fDBOp);
+			
+			locale->setTranslationData(*&ukPlTranslations);
+			
+			_CL_LOG << "Loaded translation data into translation model and provided it to locale." LOG_
+			
+			fDBOp->end();
+		}
+		
+	}
+	
 	locale->translate(&translated, text);
-
-	mm->release(__FILE__, __LINE__);
-
 	return translated;
 }
 /*...e*/
@@ -799,6 +850,11 @@ DLLEXPORT void LB_STDCALL unHookAll() {
 
 	if (lb_log) {
 		lb_log->release(__FILE__, __LINE__);
+	}
+
+	if (locale != NULL) {
+		locale--;
+		locale.resetPtr();
 	}
 	
 #ifndef WINDOWS

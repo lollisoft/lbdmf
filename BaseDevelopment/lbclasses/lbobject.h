@@ -31,10 +31,13 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.34 $
+ * $Revision: 1.35 $
  * $Name:  $
- * $Id: lbobject.h,v 1.34 2006/06/03 06:16:57 lollisoft Exp $
+ * $Id: lbobject.h,v 1.35 2006/07/02 13:22:22 lollisoft Exp $
  * $Log: lbobject.h,v $
+ * Revision 1.35  2006/07/02 13:22:22  lollisoft
+ * Added support for preloaded translation data model.
+ *
  * Revision 1.34  2006/06/03 06:16:57  lollisoft
  * Changes against new Datamodel classes.
  * These are used instead spread SQL commands.
@@ -272,11 +275,12 @@ public:
 
         DECLARE_LB_UNKNOWN()
 
-        virtual void LB_STDCALL setLanguage(char const * lang);
+        void LB_STDCALL setLanguage(char const * lang);
 
-        virtual void LB_STDCALL translate(char ** text, char const * to_translate);
-        
-        
+		void LB_STDCALL translate(char ** text, char const * to_translate);
+		void LB_STDCALL setTranslationData(lb_I_Unknown* uk);
+
+        UAP(lb_I_Translations, translations)
         char* _lang;
 };
 /*...e*/
@@ -286,6 +290,7 @@ public:
 class lbParameter : public lb_I_Parameter {
 public:
 	lbParameter() {
+		cloning = true;
 		ref = STARTREF;
 	}
 	virtual ~lbParameter() {}
@@ -313,8 +318,9 @@ public:
 	virtual int LB_STDCALL Count();
 	virtual lb_I_Container* LB_STDCALL getParameterList();
 
+	void LB_STDCALL setCloning(bool doClone=true);
 protected:
-
+	bool cloning;
 	UAP(lb_I_Container, parameters)
 };
 /*...e*/
