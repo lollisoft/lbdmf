@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.68 $
+ * $Revision: 1.69 $
  * $Name:  $
- * $Id: lbInterfaces-sub-classes.h,v 1.68 2006/06/03 06:16:58 lollisoft Exp $
+ * $Id: lbInterfaces-sub-classes.h,v 1.69 2006/07/02 13:06:31 lollisoft Exp $
  *
  * $Log: lbInterfaces-sub-classes.h,v $
+ * Revision 1.69  2006/07/02 13:06:31  lollisoft
+ * Added feature to not clone objects when inserting into a container.
+ *
  * Revision 1.68  2006/06/03 06:16:58  lollisoft
  * Changes against new Datamodel classes.
  * These are used instead spread SQL commands.
@@ -458,6 +461,12 @@ public:
 	 * key for searching.
 	 */
 	virtual void LB_STDCALL translate(char ** text, char const * to_translate) = 0;
+	
+	/** \brief Set the data model for translations.
+	 *
+	 * If this is given, locale uses that as memory based version instead of SQL calls per every translate call.
+	 */
+	virtual void LB_STDCALL setTranslationData(lb_I_Unknown* uk) = 0;
 };
 
 // Keyable interfaces
@@ -737,6 +746,9 @@ public:
 	 *
 	 */
 	virtual lb_I_Container* LB_STDCALL getParameterList() = 0;
+	
+	virtual	void LB_STDCALL setCloning(bool doClone=true) = 0;
+
 };
 /*...e*/
 
@@ -781,7 +793,7 @@ public:
 };
 
 #define DECLARE_LB_ELEMENT(classname) \
-classname(const lb_I_Unknown* o, const lb_I_KeyBase* _key, lb_I_Element *_next = NULL); \
+classname(const lb_I_Unknown* o, const lb_I_KeyBase* _key, bool doClone, lb_I_Element *_next = NULL); \
 lb_I_Element* LB_STDCALL getNext() const; \
 void LB_STDCALL setNext(lb_I_Element *e); \
 lb_I_Unknown* LB_STDCALL getObject() const; \
@@ -800,7 +812,7 @@ private: \
 void LB_STDCALL classname::detachData() { \
 	data = NULL; \
 } \
-classname::classname(const lb_I_Unknown* o, const lb_I_KeyBase* _key, lb_I_Element *_next) { \
+classname::classname(const lb_I_Unknown* o, const lb_I_KeyBase* _key, bool doClone, lb_I_Element *_next) { \
     ref = STARTREF; \
     manager = NULL; \
     if (_next == NULL) next = _next; \
@@ -810,10 +822,15 @@ classname::classname(const lb_I_Unknown* o, const lb_I_KeyBase* _key, lb_I_Eleme
     data = NULL; \
     if (o == NULL) _CL_LOG << "Error! Can't clone a NULL pointer" << __FILE__ ":" << __LINE__ LOG_ \
     if (o != NULL) { \
-	    data = o->clone(__FILE__, __LINE__); \
-	    if (data->getRefCount() > 1) { \
-	        _CL_LOG << "Warning: Refcount after cloning is more than 1 !!!" LOG_ \
-	    } \
+		if (doClone) { \
+			data = o->clone(__FILE__, __LINE__); \
+			if (data->getRefCount() > 1) { \
+				_CL_LOG << "Warning: Refcount after cloning is more than 1 !!!" LOG_ \
+			} \
+		} else { \
+			o->queryInterface("lb_I_Unknown", (void**) &data, __FILE__, __LINE__); \
+		\
+		} \
     } \
     lb_I_Unknown* uk_key = NULL; \
     key = (lb_I_KeyBase*) _key->clone(__FILE__, __LINE__); \
@@ -964,6 +981,12 @@ public:
 	 *
 	 */
 	virtual lb_I_KeyBase* LB_STDCALL currentKey() = 0;
+	
+	/** \brief Use to avoid copying while insert.
+	 *
+	 * Disabling cloning with doClone=false.
+	 */
+	virtual void LB_STDCALL setCloning(bool doClone=true) = 0;
 };
 
 /*...sDECLARE_LB_I_CONTAINER_IMPL_CO \40\co_Interface\41\:0:*/
@@ -1017,9 +1040,11 @@ protected: \
         \
         virtual void LB_STDCALL deleteAll(); \
         virtual void LB_STDCALL detachAll() { canDeleteObjects = false; } \
+		virtual void LB_STDCALL setCloning(bool doClone=true) { cloning = doClone; } \
 		virtual lb_I_KeyBase* LB_STDCALL currentKey(); \
 protected: \
     int count; \
+	bool cloning; \
     int iteration; \
     lb_I_Element* iterator; \
     bool canDeleteObjects; \
@@ -1219,7 +1244,7 @@ lbErrCodes LB_STDCALL classname::remove(lb_I_KeyBase** const key) { \
 lbErrCodes LB_STDCALL classname::_insert(lb_I_Unknown** const e, lb_I_KeyBase** const key) { \
 \
     if (container_data == NULL) { \
-        lbElement* _data = new lbElement(*e, *key); \
+        lbElement* _data = new lbElement(*e, *key, cloning); \
         _data->setModuleManager(manager.getPtr(), __FILE__, __LINE__); \
 \
         _data->queryInterface("lb_I_Element", (void**) &container_data, __FILE__, __LINE__); \
@@ -1238,14 +1263,14 @@ lbErrCodes LB_STDCALL classname::_insert(lb_I_Unknown** const e, lb_I_KeyBase** 
 \
             if (next != NULL) { \
                 if (next->getKey() < *key) { \
-                    lbElement* el = new lbElement(*e, *key, next); \
+                    lbElement* el = new lbElement(*e, *key, cloning, next); \
                     el->setModuleManager(manager.getPtr(), __FILE__, __LINE__); \
                     temp->setNext(el); \
                     return ERR_NONE; \
                 } \
             } \
             else { \
-            	lbElement* el = new lbElement(*e, *key, next); \
+            	lbElement* el = new lbElement(*e, *key, cloning, next); \
             	el->setModuleManager(manager.getPtr(), __FILE__, __LINE__); \
                 temp->setNext(el); \
                 return ERR_NONE; \
