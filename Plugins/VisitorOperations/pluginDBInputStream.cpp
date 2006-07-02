@@ -163,9 +163,14 @@ public:
 	void LB_STDCALL visit(lb_I_Applications*);
 	void LB_STDCALL visit(lb_I_User_Applications*);
 	void LB_STDCALL visit(lb_I_Formulars*);
+	void LB_STDCALL visit(lb_I_Formular_Actions*);
+	void LB_STDCALL visit(lb_I_Action_Types*);
+	void LB_STDCALL visit(lb_I_Action_Steps*);
 	
 	void LB_STDCALL visit(lb_I_ApplicationParameter*);
 	void LB_STDCALL visit(lb_I_FormularParameter*);
+	void LB_STDCALL visit(lb_I_Actions*);
+	void LB_STDCALL visit(lb_I_Translations*);
 
 	bool LB_STDCALL begin(const char* DBName, const char* DBUser, const char* DBPass);
 	bool LB_STDCALL begin(lb_I_Database* _db);
@@ -293,6 +298,52 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_UserAccounts* users) {
 	}
 }
 
+void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Translations* trans) {
+	lbErrCodes err = ERR_NONE;
+	UAP(lb_I_Query, q)
+	
+	if (db == NULL) {
+		_LOG << "FATAL: Database imput stream could not work without a database!" LOG_
+		return;
+	}
+	
+	q = db->getQuery(0);
+	
+	q->skipFKCollecting();
+	
+	if (q->query("select id, text, translated, language from translations") != ERR_NONE) {
+		_LOG << "Error: Access to translations table failed. Read translations would be skipped." LOG_
+		return;
+	}
+	
+	err = q->first(); 
+	
+	if ((err != ERR_NONE) && (err != WARN_DB_NODATA)) {
+		_LOG << "Error: No translations found. All accounts may be deleted accidantly." LOG_
+	} else {
+		UAP(lb_I_Long, qID)
+		UAP(lb_I_String, qText)
+		UAP(lb_I_String, qTranslated)
+		UAP(lb_I_String, qLanguage)
+		
+		qID = q->getAsLong(1);
+		qText = q->getAsString(2);
+		qTranslated = q->getAsString(3);
+		qLanguage = q->getAsString(4);
+		
+		trans->addTranslation(qText->charrep(), qTranslated->charrep(), qLanguage->charrep(), qID->getData());
+
+		while ((err = q->next()) == ERR_NONE || err == WARN_DB_NODATA) {
+			qID = q->getAsLong(1);
+			qText = q->getAsString(2);
+			qTranslated = q->getAsString(3);
+			qLanguage = q->getAsString(4);
+		
+			trans->addTranslation(qText->charrep(), qTranslated->charrep(), qLanguage->charrep(), qID->getData());
+		}
+	}
+}
+
 void LB_STDCALL lbDatabaseInputStream::visit(lb_I_FormularParameter* params) {
 	lbErrCodes err = ERR_NONE;
 	UAP(lb_I_Query, q)
@@ -335,6 +386,210 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_FormularParameter* params) {
 			qFID = q->getAsLong(4);
 			
 			params->addParameter(qN->charrep(), qV->charrep(), qFID->getData(), qID->getData());
+		}
+	}
+}
+
+void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Actions* actions) {
+	lbErrCodes err = ERR_NONE;
+	UAP(lb_I_Query, q)
+	
+	if (db == NULL) {
+		_LOG << "FATAL: Database imput stream could not work without a database!" LOG_
+		return;
+	}
+	
+	q = db->getQuery(0);
+	
+	q->skipFKCollecting();
+	
+	char *_actionquery = "select id, name, typ, source, target from actions";
+
+	
+	if (q->query(_actionquery) != ERR_NONE) {
+		_LOG << "Error: Access to action table failed. Read actions would be skipped." LOG_
+		return;
+	}
+	
+	err = q->first(); 
+	
+	if ((err != ERR_NONE) && (err != WARN_DB_NODATA)) {
+		_LOG << "Error: No Formular_Parameters found. All data may be deleted accidantly." LOG_
+	} else {
+		UAP(lb_I_Long, qID)
+		UAP(lb_I_Long, qTyp)
+		UAP(lb_I_Long, qTarget)
+		UAP(lb_I_String, qName)
+		UAP(lb_I_String, qSource)
+		
+		qID = q->getAsLong(1);
+		qName = q->getAsString(2);
+		qTyp = q->getAsLong(3);
+		qSource = q->getAsString(4);
+		qTarget = q->getAsLong(5);
+		
+		actions->addAction(qName->charrep(), qTyp->getData(), qSource->charrep(), qTarget->getData(), qID->getData());
+
+		while ((err = q->next()) == ERR_NONE || err == WARN_DB_NODATA) {
+			qID = q->getAsLong(1);
+			qName = q->getAsString(2);
+			qTyp = q->getAsLong(3);
+			qSource = q->getAsString(4);
+			qTarget = q->getAsLong(5);
+		
+			actions->addAction(qName->charrep(), qTyp->getData(), qSource->charrep(), qTarget->getData(), qID->getData());
+		}
+	}
+}
+
+void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Action_Steps* action_steps) {
+	lbErrCodes err = ERR_NONE;
+	UAP(lb_I_Query, q)
+	
+	if (db == NULL) {
+		_LOG << "FATAL: Database imput stream could not work without a database!" LOG_
+		return;
+	}
+	
+	q = db->getQuery(0);
+	
+	q->skipFKCollecting();
+	
+	char *_actionquery = "select id, bezeichnung, actionid, a_order_nr, \"type\", what from action_steps";
+	
+	if (q->query(_actionquery) != ERR_NONE) {
+		_LOG << "Error: Access to action_steps table failed. Read action_steps would be skipped." LOG_
+		return;
+	}
+	
+	err = q->first(); 
+	
+	if ((err != ERR_NONE) && (err != WARN_DB_NODATA)) {
+		_LOG << "Error: No action_steps found. All data may be deleted accidantly." LOG_
+	} else {
+		UAP(lb_I_Long, qID)
+		UAP(lb_I_String, qBezeichnung)
+		UAP(lb_I_Long, qActionID)
+		UAP(lb_I_Long, qOrderNo)
+		UAP(lb_I_Long, qType)
+		UAP(lb_I_String, qWhat)
+		
+		qID = q->getAsLong(1);
+		qBezeichnung = q->getAsString(2);
+		qActionID = q->getAsLong(3);
+		qOrderNo = q->getAsLong(4);
+		qType = q->getAsLong(5);
+		qWhat = q->getAsString(6);
+
+		action_steps->addActionStep(qBezeichnung->charrep(), qActionID->getData(), qOrderNo->getData(), qType->getData(), qWhat->charrep(), qID->getData());
+		
+		while ((err = q->next()) == ERR_NONE || err == WARN_DB_NODATA) {
+			qID = q->getAsLong(1);
+			qBezeichnung = q->getAsString(2);
+			qActionID = q->getAsLong(3);
+			qOrderNo = q->getAsLong(4);
+			qType = q->getAsLong(5);
+			qWhat = q->getAsString(6);
+
+			action_steps->addActionStep(qBezeichnung->charrep(), qActionID->getData(), qOrderNo->getData(), qType->getData(), qWhat->charrep(), qID->getData());
+		}
+	}
+}
+
+void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Action_Types* action_types) {
+	lbErrCodes err = ERR_NONE;
+	UAP(lb_I_Query, q)
+	
+	if (db == NULL) {
+		_LOG << "FATAL: Database imput stream could not work without a database!" LOG_
+		return;
+	}
+	
+	q = db->getQuery(0);
+	
+	q->skipFKCollecting();
+	
+	char *_actionquery = "select id, bezeichnung, action_handler, module from action_types";
+
+	
+	if (q->query(_actionquery) != ERR_NONE) {
+		_LOG << "Error: Access to action_types table failed. Read action_types would be skipped." LOG_
+		return;
+	}
+	
+	err = q->first(); 
+	
+	if ((err != ERR_NONE) && (err != WARN_DB_NODATA)) {
+		_LOG << "Error: No action_types found. All data may be deleted accidantly." LOG_
+	} else {
+		UAP(lb_I_Long, qID)
+		UAP(lb_I_String, qBezeichnung)
+		UAP(lb_I_String, qActionHandler)
+		UAP(lb_I_String, qModule)
+		
+		qID = q->getAsLong(1);
+		qBezeichnung = q->getAsString(2);
+		qActionHandler = q->getAsString(3);
+		qModule = q->getAsString(4);
+		
+		action_types->addActionTypes(qBezeichnung->charrep(), qActionHandler->charrep(), qModule->charrep(), qID->getData());
+
+		while ((err = q->next()) == ERR_NONE || err == WARN_DB_NODATA) {
+			qID = q->getAsLong(1);
+			qBezeichnung = q->getAsString(2);
+			qActionHandler = q->getAsString(3);
+			qModule = q->getAsString(4);
+		
+			action_types->addActionTypes(qBezeichnung->charrep(), qActionHandler->charrep() , qModule->charrep(), qID->getData());
+		}
+	}
+}
+
+void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Formular_Actions* formular_actions) {
+	lbErrCodes err = ERR_NONE;
+	UAP(lb_I_Query, q)
+	
+	if (db == NULL) {
+		_LOG << "FATAL: Database imput stream could not work without a database!" LOG_
+		return;
+	}
+	
+	q = db->getQuery(0);
+	
+	q->skipFKCollecting();
+	
+	char *_actionquery = "select id, formular, \"action\", event from formular_actions";
+
+	
+	if (q->query(_actionquery) != ERR_NONE) {
+		_LOG << "Error: Access to formular_actions table failed. Read formular_actions would be skipped." LOG_
+		return;
+	}
+	
+	err = q->first(); 
+	
+	if ((err != ERR_NONE) && (err != WARN_DB_NODATA)) {
+		_LOG << "Error: No Formular_Parameters found. All data may be deleted accidantly." LOG_
+	} else {
+		UAP(lb_I_Long, qID)
+		UAP(lb_I_Long, qFormular)
+		UAP(lb_I_Long, qAction)
+		UAP(lb_I_String, qEvent)
+		
+		qID = q->getAsLong(1);
+		qFormular = q->getAsLong(2);
+		qAction = q->getAsLong(3);
+		qEvent = q->getAsString(4);
+		
+		formular_actions->addFormularAction(qFormular->getData() , qAction->getData(), qEvent->charrep(), qID->getData());
+
+		while ((err = q->next()) == ERR_NONE || err == WARN_DB_NODATA) {
+			qID = q->getAsLong(1);
+			qFormular = q->getAsLong(2);
+			qAction = q->getAsLong(3);
+			qEvent = q->getAsString(4);
+		
+			formular_actions->addFormularAction(qFormular->getData() , qAction->getData(), qEvent->charrep(), qID->getData());
 		}
 	}
 }

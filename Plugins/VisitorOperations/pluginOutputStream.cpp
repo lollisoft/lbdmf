@@ -165,6 +165,11 @@ public:
 	void LB_STDCALL visit(lb_I_Formulars*);
 	void LB_STDCALL visit(lb_I_ApplicationParameter*);
 	void LB_STDCALL visit(lb_I_FormularParameter*);
+	void LB_STDCALL visit(lb_I_Actions*);
+	void LB_STDCALL visit(lb_I_Formular_Actions*);
+	void LB_STDCALL visit(lb_I_Action_Types*);
+	void LB_STDCALL visit(lb_I_Action_Steps*);
+	void LB_STDCALL visit(lb_I_Translations*);
 
 	/** \brief Start save operation.
 	 *
@@ -284,6 +289,24 @@ void LB_STDCALL lbOutputStream::visit(lb_I_UserAccounts* users) {
 	}
 }
 
+void LB_STDCALL lbOutputStream::visit(lb_I_Translations* trans) {
+	int count;
+
+	count = trans->getTranslationsCount();
+	*oStream << count;
+	
+	trans->finishTranslationIteration();
+	
+	while (trans->hasMoreTranslations()) {
+		trans->setNextTranslation();
+		
+		*oStream << trans->getTranslationID();
+		*oStream << trans->getTranslationText();
+		*oStream << trans->getTranslationTranslated();
+		*oStream << trans->getTranslationLanguage();
+	}
+}
+
 void LB_STDCALL lbOutputStream::visit(lb_I_FormularParameter* forms) {
 	int count;
 
@@ -299,6 +322,81 @@ void LB_STDCALL lbOutputStream::visit(lb_I_FormularParameter* forms) {
 		*oStream << forms->getParameterName();
 		*oStream << forms->getParameterValue();
 		*oStream << forms->getFormularID();
+	}
+}
+
+void LB_STDCALL lbOutputStream::visit(lb_I_Actions* actions) {
+	int count;
+
+	count = actions->getActionCount();
+	*oStream << count;
+	
+	actions->finishActionIteration();
+	
+	while (actions->hasMoreActions()) {
+		actions->setNextAction();
+		
+		*oStream << actions->getActionID();
+		*oStream << actions->getActionName();
+		*oStream << actions->getActionSource();
+		*oStream << actions->getActionTyp();
+		*oStream << actions->getActionTarget();
+	}
+}
+
+void LB_STDCALL lbOutputStream::visit(lb_I_Action_Steps* action_steps) {
+	int count;
+
+	count = action_steps->getActionStepCount();
+	*oStream << count;
+	
+	action_steps->finishActionStepIteration();
+	
+	while (action_steps->hasMoreActionSteps()) {
+		action_steps->setNextActionStep();
+		
+		*oStream << action_steps->getActionStepID();
+		*oStream << action_steps->getActionStepActionID();
+		*oStream << action_steps->getActionStepOrderNo();
+		*oStream << action_steps->getActionStepType();
+		*oStream << action_steps->getActionStepBezeichnung();
+		*oStream << action_steps->getActionStepWhat();
+	}
+}
+
+void LB_STDCALL lbOutputStream::visit(lb_I_Action_Types* action_types) {
+	int count;
+
+	count = action_types->getActionTypesCount();
+	*oStream << count;
+	
+	action_types->finishActionTypeIteration();
+	
+	while (action_types->hasMoreActionTypes()) {
+		action_types->setNextActionType();
+		
+		*oStream << action_types->getActionTypeID();
+		*oStream << action_types->getActionTypeBezeichnung();
+		*oStream << action_types->getActionTypeHandler();
+		*oStream << action_types->getActionTypeModule();
+	}
+}
+
+void LB_STDCALL lbOutputStream::visit(lb_I_Formular_Actions* formular_actions) {
+	int count;
+
+	count = formular_actions->getFormularActionsCount();
+	*oStream << count;
+	
+	formular_actions->finishFormularActionIteration();
+	
+	while (formular_actions->hasMoreFormularActions()) {
+		formular_actions->setNextFormularAction();
+		
+		*oStream << formular_actions->getFormularActionID();
+		*oStream << formular_actions->getFormularActionFormularID();
+		*oStream << formular_actions->getFormularActionActionID();
+		*oStream << formular_actions->getFormularActionEvent();
 	}
 }
 

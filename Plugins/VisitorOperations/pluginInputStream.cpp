@@ -165,6 +165,11 @@ public:
 	void LB_STDCALL visit(lb_I_Formulars*);
 	void LB_STDCALL visit(lb_I_ApplicationParameter*);
 	void LB_STDCALL visit(lb_I_FormularParameter*);
+	void LB_STDCALL visit(lb_I_Actions*);
+	void LB_STDCALL visit(lb_I_Formular_Actions*);
+	void LB_STDCALL visit(lb_I_Action_Types*);
+	void LB_STDCALL visit(lb_I_Action_Steps*);
+	void LB_STDCALL visit(lb_I_Translations*);
 
 	bool LB_STDCALL begin(char* file);
 	bool LB_STDCALL begin(lb_I_Stream* stream);
@@ -267,6 +272,28 @@ void LB_STDCALL lbInputStreamOpr::visit(lb_I_UserAccounts* users) {
 	}
 }
 
+void LB_STDCALL lbInputStreamOpr::visit(lb_I_Translations* trans) {
+	// Number of users
+	int   count = 0;
+	*iStream >> count;
+
+	int   ID;
+	char* Text = NULL;
+	char* Translated = NULL;
+	char* Language = NULL;
+
+	for (int i = 0; i < count; i++) {
+		// Load a user entry.
+		
+		*iStream >> ID;
+		*iStream >> Text;
+		*iStream >> Translated;
+		*iStream >> Language;
+		
+		trans->addTranslation(Text, Translated, Language, ID);
+	}
+}
+
 void LB_STDCALL lbInputStreamOpr::visit(lb_I_FormularParameter* params) {
 	// Number of users
 	int   count = 0;
@@ -304,6 +331,93 @@ void LB_STDCALL lbInputStreamOpr::visit(lb_I_ApplicationParameter* params) {
 		*iStream >> AID;
 		
 		params->addParameter(Name, Value, AID, ID);
+	}
+}
+
+void LB_STDCALL lbInputStreamOpr::visit(lb_I_Actions* actions) {
+	// Number of actions
+	int   count = 0;
+	*iStream >> count;
+
+	for (int i = 0; i < count; i++) {
+		long   ID;
+		char* Name = NULL;
+		char* Source = NULL;
+		long  Typ;
+		long  Target;
+		
+		*iStream >> ID;
+		*iStream >> Name;
+		*iStream >> Source;
+		*iStream >> Typ;
+		*iStream >> Target;
+		
+		actions->addAction(Name, Typ, Source, Target, ID);
+	}
+}
+
+void LB_STDCALL lbInputStreamOpr::visit(lb_I_Action_Steps* action_steps) {
+	// Number of actions
+	int   count = 0;
+	*iStream >> count;
+
+	for (int i = 0; i < count; i++) {
+		long   ID;
+		char* Bezeichnung = NULL;
+		char* What = NULL;
+		long  ActionID;
+		long  OrderNo;
+		long  Type;
+
+		*iStream >> ID;
+		*iStream >> ActionID;
+		*iStream >> OrderNo;
+		*iStream >> Type;
+		*iStream >> Bezeichnung;
+		*iStream >> What;
+		
+		
+		action_steps->addActionStep(Bezeichnung, ActionID, OrderNo, Type, What, ID);
+	}
+}
+
+void LB_STDCALL lbInputStreamOpr::visit(lb_I_Action_Types* action_types) {
+	// Number of actions
+	int   count = 0;
+	*iStream >> count;
+
+	for (int i = 0; i < count; i++) {
+		long   ID;
+		char* Bezeichnung = NULL;
+		char* Handler = NULL;
+		char* Module = NULL;
+		
+		*iStream >> ID;
+		*iStream >> Bezeichnung;
+		*iStream >> Handler;
+		*iStream >> Module;
+		
+		action_types->addActionTypes(Bezeichnung, Handler, Module, ID);
+	}
+}
+
+void LB_STDCALL lbInputStreamOpr::visit(lb_I_Formular_Actions* formular_actions) {
+	// Number of actions
+	int   count = 0;
+	*iStream >> count;
+
+	for (int i = 0; i < count; i++) {
+		long   ID;
+		char* Event = NULL;
+		long  FormularID;
+		long  ActionID;
+		
+		*iStream >> ID;
+		*iStream >> FormularID;
+		*iStream >> ActionID;
+		*iStream >> Event;
+		
+		formular_actions->addFormularAction(FormularID , ActionID, Event, ID); 
 	}
 }
 
