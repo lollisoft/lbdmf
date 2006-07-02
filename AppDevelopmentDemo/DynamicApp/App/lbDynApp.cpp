@@ -92,7 +92,11 @@ protected:
 	UAP(lb_I_Formulars, forms)
 	UAP(lb_I_FormularParameter, formParams)
 	UAP(lb_I_ApplicationParameter, appParams)
-				
+	UAP(lb_I_Actions, appActions)
+	UAP(lb_I_Action_Steps, appActionSteps)
+	UAP(lb_I_Action_Types, appActionTypes)
+
+
 	char hdsihd[100];
 };
 /*...e*/
@@ -441,6 +445,21 @@ lbErrCodes LB_STDCALL lbDynamicApplication::uninitialize() {
 						appParams->accept(*&fOp);
 					}
 					
+					if (appActions != NULL) {
+						_CL_LOG << "Save a appActions model object..." LOG_
+						appActions->accept(*&fOp);
+					}
+					
+					if (appActionTypes != NULL) {
+						_CL_LOG << "Save a appActionTypes model object..." LOG_
+						appActionTypes->accept(*&fOp);
+					}
+					
+					if (appActionSteps != NULL) {
+						_CL_LOG << "Save a appActionSteps model object..." LOG_
+						appActionSteps->accept(*&fOp);
+					}
+					
 					fOp->end();
 				} else {
 				// No file found. Create one from database...
@@ -452,254 +471,359 @@ lbErrCodes LB_STDCALL lbDynamicApplication::uninitialize() {
 }
 /*...slbErrCodes LB_STDCALL lbDynamicApplication\58\\58\initialize\40\char\42\ user \61\ NULL\44\ char\42\ app \61\ NULL\41\:0:*/
 lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
-
+	
 	// To be implemented in a separate application module
 	lbErrCodes err = ERR_NONE;
 	int unused;
-
+	
 	// Get the event manager
-
+	
 	lb_I_Module* m = *&manager;
-
+	
 	REQUEST(m, lb_I_EventManager, eman)
-
+		
 	REQUEST(m, lb_I_Dispatcher, dispatcher)
 	dispatcher->setEventManager(eman.getPtr());
-
+	
 	if (metaapp == NULL) {
 		REQUEST(manager.getPtr(), lb_I_MetaApplication, metaapp)
 	}
-
+	
 	// Save user and app internally
 	
 	if (user == NULL) {
         _CL_LOG << "lb_MetaApplication::Initialize() user is NULL" LOG_
 	} else
-	if (LogonUser == NULL) {
-        REQUEST(manager.getPtr(), lb_I_String, LogonUser)
-	}
+		if (LogonUser == NULL) {
+			REQUEST(manager.getPtr(), lb_I_String, LogonUser)
+		}
 	LogonUser->setData(user);
 	
 	if (app == NULL) {
         _CL_LOG << "lb_MetaApplication::Initialize() app is NULL" LOG_
 	} else
-	if (LogonApplication == NULL) {
-        REQUEST(manager.getPtr(), lb_I_String, LogonApplication)
-	}
+		if (LogonApplication == NULL) {
+			REQUEST(manager.getPtr(), lb_I_String, LogonApplication)
+		}
 	LogonApplication->setData(app);
-
-#ifdef USE_RDCD_MODEL
-		// -------------------------------------------------------------------------
-		// I plan to use an object model to be used instead. The object model should
-		// fasten up the application setup.
-		//
-		// In a next step, the RDCD model should be loaded after the user has been
-		// logged in. Thus, the login and user data must be separated from the app
-		// configuration data. To ensure authenticated usage, the model may ask the
-		// login 'service' for the password before enabling the interface completely.
-		// -------------------------------------------------------------------------
-
-		UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
-		UAP(lb_I_Plugin, pl)
-		UAP(lb_I_Unknown, ukPl)
-		
-		pl = PM->getFirstMatchingPlugin("lb_I_RDCDModel", "RDCDModel");
-		
-		if (pl != NULL) {
-			ukPl = pl->getImplementation();
-			if (ukPl != NULL) {
-				QI(ukPl, lb_I_RDCDModel, model)
-				
-				if (model != NULL) {
-					// Have a valid model instance
-					_CL_LOG << "Suceeded loading a lbRDCDModel instance as plugin." LOG_
-					
-					// Need to derive filename from given application name
-					UAP_REQUEST(manager.getPtr(), lb_I_String, filename)
-					*filename = LogonApplication->charrep();
-					*filename += ".daf"; // Dynamic application forms 
-					
-					pl = PM->getFirstMatchingPlugin("lb_I_FileOperation", "InputStreamVisitor");
 	
-					if (pl != NULL) {
-						ukPl = pl->getImplementation();
+#ifdef USE_RDCD_MODEL
+	// -------------------------------------------------------------------------
+	// I plan to use an object model to be used instead. The object model should
+	// fasten up the application setup.
+	//
+	// In a next step, the RDCD model should be loaded after the user has been
+	// logged in. Thus, the login and user data must be separated from the app
+	// configuration data. To ensure authenticated usage, the model may ask the
+	// login 'service' for the password before enabling the interface completely.
+	// -------------------------------------------------------------------------
+	
+	UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+	UAP(lb_I_Plugin, pl)
+	UAP(lb_I_Unknown, ukPl)
+		
+	pl = PM->getFirstMatchingPlugin("lb_I_RDCDModel", "RDCDModel");
+	
+	if (pl != NULL) {
+		ukPl = pl->getImplementation();
+		if (ukPl != NULL) {
+			QI(ukPl, lb_I_RDCDModel, model)
+			
+			if (model != NULL) {
+				// Have a valid model instance
+				_CL_LOG << "Suceeded loading a lbRDCDModel instance as plugin." LOG_
 				
-						UAP(lb_I_FileOperation, fOp)
-						QI(ukPl, lb_I_FileOperation, fOp)
+				// Need to derive filename from given application name
+				UAP_REQUEST(manager.getPtr(), lb_I_String, filename)
+				*filename = LogonApplication->charrep();
+				*filename += ".daf"; // Dynamic application forms 
 				
-						if (fOp != NULL) {
-							if (fOp->begin(filename->charrep())) {
-								UAP(lb_I_Unknown, ukAcceptor)
-								QI(model, lb_I_Unknown, ukAcceptor)
-								ukAcceptor->accept(*&fOp);
+				pl = PM->getFirstMatchingPlugin("lb_I_FileOperation", "InputStreamVisitor");
+				
+				if (pl != NULL) {
+					ukPl = pl->getImplementation();
+					
+					UAP(lb_I_FileOperation, fOp)
+					QI(ukPl, lb_I_FileOperation, fOp)
 						
-								fOp->end();
-							
-							} else {
-								// No file found. Create one from database...
-							}
+					if (fOp != NULL) {
+						if (fOp->begin(filename->charrep())) {
+							UAP(lb_I_Unknown, ukAcceptor)
+							QI(model, lb_I_Unknown, ukAcceptor)
+							ukAcceptor->accept(*&fOp);
+								
+							fOp->end();
+								
 						} else {
-							_LOG << "Error: Could not get a valid file operation instance." LOG_
+							// No file found. Create one from database...
 						}
+					} else {
+						_LOG << "Error: Could not get a valid file operation instance." LOG_
 					}
 				}
 			}
 		}
-		
-#endif		
-
-		UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
-		UAP(lb_I_Plugin, pl)
-		UAP(lb_I_Unknown, ukPl)
-
-		// Need to derive filename from given application name
-		UAP_REQUEST(manager.getPtr(), lb_I_String, filename)
-		*filename = LogonApplication->charrep();
-		*filename += ".daf"; // Dynamic application forms 
-			
-		bool isFileAvailable = false;
-		bool isDBAvailable = false;
-		bool DBOperation = false;
-		
-		UAP(lb_I_FileOperation, fOp)
-		UAP(lb_I_DatabaseOperation, fOpDB)
-
-		pl = PM->getFirstMatchingPlugin("lb_I_FileOperation", "InputStreamVisitor");
-		if (pl != NULL)	ukPl = pl->getImplementation();
-		if (ukPl != NULL) QI(ukPl, lb_I_FileOperation, fOp)
-		isFileAvailable = fOp->begin(filename->charrep()); 
-				
-		UAP_REQUEST(manager.getPtr(), lb_I_Database, database)
-		UAP(lb_I_Query, sampleQuery)
-
-		database->init();
-
-		char* lbDMFPasswd = getenv("lbDMFPasswd");
-		char* lbDMFUser   = getenv("lbDMFUser");
+	}
 	
-		if (!lbDMFUser) lbDMFUser = "dba";
-		if (!lbDMFPasswd) lbDMFPasswd = "trainres";
-
-		if (!isFileAvailable) {
-			if ((database != NULL) && (database->connect("lbDMF", lbDMFUser, lbDMFPasswd) != ERR_NONE)) {
-				_LOG << "Fatal: No file and no database configuration available. Cannot proceed!" LOG_
-			} else {
-				pl = PM->getFirstMatchingPlugin("lb_I_DatabaseOperation", "DatabaseInputStreamVisitor");
-				if (pl != NULL)	ukPl = pl->getImplementation();
-				if (ukPl != NULL) QI(ukPl, lb_I_DatabaseOperation, fOpDB)
-				isDBAvailable = fOpDB->begin(database.getPtr());
-				DBOperation = true;
-			}
-			
-		}
-
-		if (isFileAvailable || isDBAvailable) {
-			UAP(lb_I_Plugin, plFormulars)
-			UAP(lb_I_Unknown, ukPlFormulars)
-			UAP(lb_I_Plugin, plFormParams)
-			UAP(lb_I_Unknown, ukPlFormParams)
-			UAP(lb_I_Plugin, plAppParams)
-			UAP(lb_I_Unknown, ukPlAppParams)
-			
-			plFormulars = PM->getFirstMatchingPlugin("lb_I_Formulars", "Model");
-			if (plFormulars != NULL) {
-				ukPlFormulars = plFormulars->getImplementation();
-			} else {
-				_LOG << "Warning: No formular datamodel plugin found." LOG_
-			}
-			
-			if (ukPlFormulars != NULL) { 
-				QI(ukPlFormulars, lb_I_Formulars, forms)
-			} else {
-				_LOG << "Warning: No formular datamodel plugin implementation found." LOG_
-			}
+#endif		
+	
+	UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+	UAP(lb_I_Plugin, pl)
+	UAP(lb_I_Unknown, ukPl)
+		
+	// Need to derive filename from given application name
+	UAP_REQUEST(manager.getPtr(), lb_I_String, filename)
+	*filename = LogonApplication->charrep();
+	*filename += ".daf"; // Dynamic application forms 
+	
+	bool isFileAvailable = false;
+	bool isDBAvailable = false;
+	bool DBOperation = false;
+	
+	UAP(lb_I_FileOperation, fOp)
+	UAP(lb_I_DatabaseOperation, fOpDB)
+		
+	pl = PM->getFirstMatchingPlugin("lb_I_FileOperation", "InputStreamVisitor");
+	if (pl != NULL)	ukPl = pl->getImplementation();
+	if (ukPl != NULL) QI(ukPl, lb_I_FileOperation, fOp)
+	isFileAvailable = fOp->begin(filename->charrep()); 
 				
-			plFormParams = PM->getFirstMatchingPlugin("lb_I_FormularParameter", "Model");
-			if (plFormParams != NULL) {
-				ukPlFormParams = plFormParams->getImplementation();
-			} else {
-				_LOG << "Warning: No formular parameter datamodel plugin found." LOG_
-			}
-			
-			if (ukPlFormParams != NULL) { 
-				QI(ukPlFormParams, lb_I_FormularParameter, formParams)
-			} else {
-				_LOG << "Warning: No formular parameter datamodel plugin implementation found." LOG_
-			}
-			
-			plAppParams = PM->getFirstMatchingPlugin("lb_I_ApplicationParameter", "Model");
-			if (plAppParams != NULL) {
-				ukPlAppParams = plAppParams->getImplementation();
-			} else {
-				_LOG << "Warning: No application parameter datamodel plugin found." LOG_
-			}
-			
-			if (ukPlAppParams != NULL) {
-				QI(ukPlAppParams, lb_I_ApplicationParameter, appParams)
-			} else {
-				_LOG << "Warning: No application parameter datamodel plugin implementation found." LOG_
-			}
-			
-			if (!DBOperation && (forms != NULL) && (formParams != NULL) && (appParams != NULL)) {
-				_CL_LOG << "Load application data from file ..." LOG_
-				forms->accept(*&fOp);
-				formParams->accept(*&fOp);
-				appParams->accept(*&fOp);
-			}
-			
-			if (DBOperation && (forms != NULL) && (formParams != NULL) && (appParams != NULL)) {
-				_CL_LOG << "Load application data from database ..." LOG_
-				forms->accept(*&fOpDB);
-				formParams->accept(*&fOpDB);
-				appParams->accept(*&fOpDB);
-			}
-			
-			if (!DBOperation) fOp->end();
-			if (DBOperation) fOpDB->end();
+	UAP_REQUEST(manager.getPtr(), lb_I_Database, database)
+	UAP(lb_I_Query, sampleQuery)
+		
+	database->init();
+	
+	char* lbDMFPasswd = getenv("lbDMFPasswd");
+	char* lbDMFUser   = getenv("lbDMFUser");
+	
+	if (!lbDMFUser) lbDMFUser = "dba";
+	if (!lbDMFPasswd) lbDMFPasswd = "trainres";
+	
+	if (!isFileAvailable) {
+		if ((database != NULL) && (database->connect("lbDMF", lbDMFUser, lbDMFPasswd) != ERR_NONE)) {
+			_LOG << "Fatal: No file and no database configuration available. Cannot proceed!" LOG_
 		} else {
-		// No file found. Create one from database...
+			pl = PM->getFirstMatchingPlugin("lb_I_DatabaseOperation", "DatabaseInputStreamVisitor");
+			if (pl != NULL)	ukPl = pl->getImplementation();
+			if (ukPl != NULL) QI(ukPl, lb_I_DatabaseOperation, fOpDB)
+			isDBAvailable = fOpDB->begin(database.getPtr());
+			DBOperation = true;
+		}
+		
+	}
+	
+	if (isFileAvailable || isDBAvailable) {
+		UAP(lb_I_Plugin, plFormulars)
+		UAP(lb_I_Unknown, ukPlFormulars)
+		UAP(lb_I_Plugin, plFormParams)
+		UAP(lb_I_Unknown, ukPlFormParams)
+		UAP(lb_I_Plugin, plAppParams)
+		UAP(lb_I_Unknown, ukPlAppParams)
+		UAP(lb_I_Plugin, plAppActions)
+		UAP(lb_I_Unknown, ukPlAppActions)
+		UAP(lb_I_Plugin, plAppActionTypes)
+		UAP(lb_I_Unknown, ukPlAppActionTypes)
+		UAP(lb_I_Plugin, plAppActionSteps)
+		UAP(lb_I_Unknown, ukPlAppActionSteps)
+		
+		plAppActions = PM->getFirstMatchingPlugin("lb_I_Actions", "Model");
+		if (plAppActions != NULL) {
+			ukPlAppActions = plAppActions->getImplementation();
+		} else {
+			_LOG << "Warning: No actions datamodel plugin found." LOG_
+		}
+		
+		if (ukPlAppActions != NULL) { 
+			QI(ukPlAppActions, lb_I_Actions, appActions)
+		} else {
+			_LOG << "Warning: No actions datamodel plugin implementation found." LOG_
 		}
 
+		plAppActionTypes = PM->getFirstMatchingPlugin("lb_I_Action_Types", "Model");
+		if (plAppActionTypes != NULL) {
+			ukPlAppActionTypes = plAppActionTypes->getImplementation();
+		} else {
+			_LOG << "Warning: No action_types datamodel plugin found." LOG_
+		}
+		
+		if (ukPlAppActionTypes != NULL) { 
+			QI(ukPlAppActionTypes, lb_I_Action_Types, appActionTypes)
+		} else {
+			_LOG << "Warning: No action_types datamodel plugin implementation found." LOG_
+		}
 
+		plAppActionSteps = PM->getFirstMatchingPlugin("lb_I_Action_Steps", "Model");
+		if (plAppActionSteps != NULL) {
+			ukPlAppActionSteps = plAppActionSteps->getImplementation();
+		} else {
+			_LOG << "Warning: No action_steps datamodel plugin found." LOG_
+		}
+		
+		if (ukPlAppActionSteps != NULL) { 
+			QI(ukPlAppActionSteps, lb_I_Action_Steps, appActionSteps)
+		} else {
+			_LOG << "Warning: No action_steps datamodel plugin implementation found." LOG_
+		}
+
+		plFormulars = PM->getFirstMatchingPlugin("lb_I_Formulars", "Model");
+		if (plFormulars != NULL) {
+			ukPlFormulars = plFormulars->getImplementation();
+		} else {
+			_LOG << "Warning: No formular datamodel plugin found." LOG_
+		}
+		
+		if (ukPlFormulars != NULL) { 
+			QI(ukPlFormulars, lb_I_Formulars, forms)
+		} else {
+			_LOG << "Warning: No formular datamodel plugin implementation found." LOG_
+		}
+		
+		plFormParams = PM->getFirstMatchingPlugin("lb_I_FormularParameter", "Model");
+		if (plFormParams != NULL) {
+			ukPlFormParams = plFormParams->getImplementation();
+		} else {
+			_LOG << "Warning: No formular parameter datamodel plugin found." LOG_
+		}
+		
+		if (ukPlFormParams != NULL) { 
+			QI(ukPlFormParams, lb_I_FormularParameter, formParams)
+		} else {
+			_LOG << "Warning: No formular parameter datamodel plugin implementation found." LOG_
+		}
+		
+		plAppParams = PM->getFirstMatchingPlugin("lb_I_ApplicationParameter", "Model");
+		if (plAppParams != NULL) {
+			ukPlAppParams = plAppParams->getImplementation();
+		} else {
+			_LOG << "Warning: No application parameter datamodel plugin found." LOG_
+		}
+		
+		if (ukPlAppParams != NULL) {
+			QI(ukPlAppParams, lb_I_ApplicationParameter, appParams)
+		} else {
+			_LOG << "Warning: No application parameter datamodel plugin implementation found." LOG_
+		}
+		
+		if (!DBOperation && 
+			(forms != NULL) && 
+			(formParams != NULL) && 
+			(appActions != NULL) && 
+			(appActionSteps != NULL) && 
+			(appActionTypes != NULL) && 
+			(appParams != NULL)) {
+			_LOG << "Load application data from file ..." LOG_
+			forms->accept(*&fOp);
+			formParams->accept(*&fOp);
+			appParams->accept(*&fOp);
+			appActions->accept(*&fOp);
+			appActionTypes->accept(*&fOp);
+			appActionSteps->accept(*&fOp);
+		}
+		
+		if (DBOperation && 
+			(forms != NULL) && 
+			(formParams != NULL) && 
+			(appActions != NULL) && 
+			(appActionSteps != NULL) && 
+			(appActionTypes != NULL) && 
+			(appParams != NULL)) {
+			_LOG << "Load application data from database ..." LOG_
+			forms->accept(*&fOpDB);
+			formParams->accept(*&fOpDB);
+			appParams->accept(*&fOpDB);
+			appActions->accept(*&fOpDB);
+			appActionTypes->accept(*&fOpDB);
+			appActionSteps->accept(*&fOpDB);
+		}
+		
+		if (!DBOperation) fOp->end();
+		if (DBOperation) fOpDB->end();
+		
+		// Loading the application related data succeeded. Put these into a parameter object for reference.
+		
+		UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
+		UAP_REQUEST(manager.getPtr(), lb_I_Container, document)
+		UAP_REQUEST(manager.getPtr(), lb_I_String, name)
+		UAP(lb_I_KeyBase, key)
+		QI(name, lb_I_KeyBase, key)
+		
+		param->setCloning(false);
+		document->setCloning(false);
+
+		if ((forms != NULL) && 
+			(formParams != NULL) && 
+			(appActions != NULL) && 
+			(appActionSteps != NULL) && 
+			(appActionTypes != NULL) && 
+			(appParams != NULL)) {
+			
+			*name = "Formulars";
+			document->insert(&forms, &key);
+			
+			*name = "FormParams";
+			document->insert(&formParams, &key);
+			
+			*name = "AppParams";
+			document->insert(&appParams, &key);
+			
+			*name = "AppActions";
+			document->insert(&appActions, &key);
+			
+			*name = "AppActionSteps";
+			document->insert(&appActionSteps, &key);
+			
+			*name = "AppActionTypes";
+			document->insert(&appActionTypes, &key);
+		}		
+		*name = "ApplicationData";
+		param->setUAPContainer(*&name, *&document);
+		
+		param++;
+		metaapp->setActiveDocument(*&param);
+	} else {
+		// No file found. Create one from database...
+	}
+	
+	
 	/*
-		Select all events, that are configured and register it.
+	 Select all events, that are configured and register it.
 	 */
-
+	
 	database->connect("lbDMF", lbDMFUser, lbDMFPasswd);
 	
 	sampleQuery = database->getQuery(0);	
-
+	
 	char* b =
-	        "select Formulare.eventname, Formulare.menuname from Formulare inner join "
-	        "Anwendungen on Formulare.anwendungid = Anwendungen.id inner join "
-	        "User_Anwendungen on Anwendungen.id = User_Anwendungen.anwendungenid inner join Users on "
-	        "User_Anwendungen.userid = Users.id where "
-	        "Users.userid = '%s' and Anwendungen.name = '%s'";
-
+		"select Formulare.eventname, Formulare.menuname from Formulare inner join "
+		"Anwendungen on Formulare.anwendungid = Anwendungen.id inner join "
+		"User_Anwendungen on Anwendungen.id = User_Anwendungen.anwendungenid inner join Users on "
+		"User_Anwendungen.userid = Users.id where "
+		"Users.userid = '%s' and Anwendungen.name = '%s'";
+	
 	char* buffer = (char*) malloc(strlen(b)+strlen(user)+strlen(app)+1);
-
+	
 	sprintf(buffer, b, user, app);
-
+	
 	if (sampleQuery == NULL) printf("NULL pointer !\n");
-
+	
 	_CL_LOG << "lbDynamicApplication::Initialize('" << user << "', '" << app << "');" LOG_
-	_CL_LOG << "Query: " << buffer LOG_
-
-	sampleQuery->skipFKCollecting();
+		_CL_LOG << "Query: " << buffer LOG_
+		
+		sampleQuery->skipFKCollecting();
 	sampleQuery->query(buffer);
 	sampleQuery->enableFKCollecting();
 	
 	free(buffer);
 	
 	char* ed = strdup(_trans("&Edit"));
-
+	
 	char* menu = strdup(_trans(app));
-
+	
 	metaapp->addMenuBar(menu, ed);
-
+	
 	free(ed);
 	free(menu);
-
+	
 	lbErrCodes DBerr = sampleQuery->first();
 	if ((DBerr == ERR_NONE) || (DBerr == WARN_DB_NODATA)) {
 		UAP(lb_I_String, EventName)
@@ -707,16 +831,16 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 		
 		EventName = sampleQuery->getAsString(1);
 		MenuName = sampleQuery->getAsString(2);
-
-		if (eman->resolveEvent(EventName->charrep(), unused) == ERR_EVENT_NOTREGISTERED) {
-
-			eman->registerEvent(EventName->charrep(), unused);
 		
+		if (eman->resolveEvent(EventName->charrep(), unused) == ERR_EVENT_NOTREGISTERED) {
+			
+			eman->registerEvent(EventName->charrep(), unused);
+			
 			dispatcher->addEventHandlerFn(this, 
-					(lbEvHandler) &lbDynamicApplication::getDynamicDBForm, EventName->charrep());
-
+										  (lbEvHandler) &lbDynamicApplication::getDynamicDBForm, EventName->charrep());
+			
 			metaapp->addMenuEntry(_trans(app), MenuName->charrep(), EventName->charrep(), "");
-
+			
 		} else {
 			_CL_VERBOSE << "WARNING: Event name already reserved. Ignore it for menucreation." LOG_
 		}
@@ -725,34 +849,34 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 		if (DBerr == ERR_DB_NODATA) return ERR_NONE;
 #define TRUE 1
 		while (TRUE) {
-/*...sget rest of menu entries:24:*/
+			/*...sget rest of menu entries:24:*/
 			UAP(lb_I_String, EventName)
 			UAP(lb_I_String, MenuName)
 			
 			DBerr = sampleQuery->next();
-		
+			
 			if ((DBerr == ERR_NONE) || (DBerr == WARN_DB_NODATA)) {
-		        	EventName = sampleQuery->getAsString(1);
+				EventName = sampleQuery->getAsString(1);
 				MenuName = sampleQuery->getAsString(2);
 				
 				if (eman->resolveEvent(EventName->charrep(), unused) == ERR_EVENT_NOTREGISTERED) {
 					eman->registerEvent(EventName->charrep(), unused);
-				
+					
 					dispatcher->addEventHandlerFn(this,
-							(lbEvHandler) &lbDynamicApplication::getDynamicDBForm, EventName->charrep());
-				
+												  (lbEvHandler) &lbDynamicApplication::getDynamicDBForm, EventName->charrep());
+					
 					metaapp->addMenuEntry(_trans(app), MenuName->charrep(), EventName->charrep(), "");
 				} else {
 					_CL_VERBOSE << "WARNING: Event name already reserved. Ignore it for menucreation." LOG_
 				}
-		        	if (DBerr == WARN_DB_NODATA) break;
-		        }
-	        	if (DBerr == ERR_DB_NODATA) break;
-/*...e*/
+				if (DBerr == WARN_DB_NODATA) break;
+			}
+			if (DBerr == ERR_DB_NODATA) break;
+			/*...e*/
 		}
-
+		
 	}
-
+	
 	return ERR_NONE;
 }
 
