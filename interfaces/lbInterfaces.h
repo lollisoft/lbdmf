@@ -975,6 +975,7 @@ public:
 	        	_file = NULL; \
 	        	attachedClassName = NULL; \
 	        	allowDelete = 1; \
+				locked = false; \
 	        	initialized = false; \
 			memset(before, 0, sizeof(before)); \
 			memset(after, 0, sizeof(after)); \
@@ -1059,10 +1060,14 @@ public:
 		} \
 		\
 		interface* LB_STDCALL getPtr() const { return _autoPtr; } \
+		void LB_STDCALL lock() { \
+			locked = true; \
+		} \
 		void LB_STDCALL resetPtr() { \
 			_autoPtr = NULL; \
 		} \
 		void LB_STDCALL setPtr(interface*& source) { \
+			if (locked) return; \
 			if (_autoPtr != NULL) { \
 				_CL_LOG << "Error: UAP object still initialized!" LOG_ \
 			} \
@@ -1104,6 +1109,7 @@ public:
 		} \
 		\
 		UAP##Unknown_Reference& LB_STDCALL operator = (interface* autoPtr) { \
+			if (locked) return *this; \
 			if (_autoPtr != NULL) { \
 				_autoPtr->release(__FILE__, __LINE__); \
 			} \
@@ -1132,6 +1138,7 @@ public:
 	        char* _file; \
 	        int allowDelete; \
 	        bool initialized; \
+			bool locked; \
 	        char* attachedClassName; \
 	        char after[10]; \
 		}; \
@@ -2540,47 +2547,24 @@ public:
 	 */
 	virtual long LB_STDCALL getApplicationID() = 0;
 	
-	/** \brief Get the active document.
-	 *
-	 * This function returns the active document for the current application.
+	/** \brief Set the active application.
 	 */
-	virtual lb_I_Document*	LB_STDCALL getActiveDocument() = 0;
+	virtual void			LB_STDCALL setActiveApplication(const char* name) = 0;
+
+	/** \brief Get the active document.
+	 * Active document per loaded application.
+	 */
+	virtual lb_I_Unknown*	LB_STDCALL getActiveDocument() = 0;
 	
 	/** \brief Set the active document.
-	 *
-	 * This function sets the active document for the current application.
+	 * Active document per loaded application.
 	 */
-	virtual void			LB_STDCALL setActiveDocument(lb_I_Document* doc) = 0;
-	
-	
+	virtual void			LB_STDCALL setActiveDocument(lb_I_Unknown* doc) = 0;
 };
 /*...e*/
 
-class lb_I_Document : public lb_I_Unknown {
-public:
-	/** \brief Get the name of this document.
-	 *
-	 * The name is not related to a filename, but may used for it.
-	 */
-	char*	LB_STDCALL	getName() = 0;
-	
-	/** \brief Set the name of this document.
-	 *
-	 * The name is not related to a filename, but may used for it.
-	 */
-	void	LB_STDCALL	setName(const char* name) = 0;
-	
-	/** \brief Get the description of this document.
-	 */
-	char*	LB_STDCALL	getDescription() = 0;
-	
-	/** \brief Set the description of this document.
-	 */
-	void	LB_STDCALL	setDescription(const char* description) = 0;
-};
-
 /*...sclass lb_I_UserAccounts:0:*/
-class lb_I_UserAccounts : public lb_I_Document {
+class lb_I_UserAccounts : public lb_I_Unknown {
 public:
 	/** \brief Add an user account and get it's ID.
 	 *
@@ -2658,7 +2642,7 @@ public:
 /*...e*/
 
 /*...sclass lb_I_Applications:0:*/
-class lb_I_Applications : public lb_I_Document {
+class lb_I_Applications : public lb_I_Unknown {
 public:
 	/** \brief Add a new application.
 	 *
@@ -2727,7 +2711,7 @@ public:
 };
 /*...e*/
 
-class lb_I_User_Applications : public lb_I_Document {
+class lb_I_User_Applications : public lb_I_Unknown {
 public:
 	/** \brief Add a new application.
 	 *
@@ -2786,8 +2770,13 @@ public:
 	virtual long		LB_STDCALL getID() = 0;
 };
 
-class lb_I_Formulars : public lb_I_Document {
+class lb_I_Formulars : public lb_I_Unknown {
 public:
+	/** \brief Ignore all other data.
+	 *
+	 * This will be used to ignore all data not from the specific application.
+	 */
+	//virtual void		LB_STDCALL setApplicationFilter(long anwendung_id) = 0;
 
 	virtual long		LB_STDCALL addFormular(const char* name, const char* menuname, const char* eventname, const char* menuhilfe, long anwendung_id, long typ, long formular_id = -1) = 0;
 	virtual bool		LB_STDCALL selectFormular(long _id) = 0;
@@ -2806,7 +2795,7 @@ public:
 };
 
 
-class lb_I_ParameterTable : public lb_I_Document {
+class lb_I_ParameterTable : public lb_I_Unknown {
 public:
 	virtual bool		LB_STDCALL selectParameter(long _id) = 0;
 
@@ -2832,6 +2821,109 @@ public:
 	virtual long		LB_STDCALL addParameter(const char* name, const char* value, long anwendungs_id, long _id = -1) = 0;
 	virtual long		LB_STDCALL getApplicationID() = 0;
 	virtual char*		LB_STDCALL getParameter(const char* name, long application_id) = 0;
+};
+
+class lb_I_FKPK_Mapping : public lb_I_Unknown {
+public:
+	virtual long		LB_STDCALL addMapping(const char* PKTable, const char* PKName, const char* FKTable, const char* FKName, long _id = -1) = 0;
+	virtual bool		LB_STDCALL selectMapping(long _id) = 0;
+	virtual int			LB_STDCALL getMappingCount() = 0;
+	virtual bool		LB_STDCALL hasMoreMappings() = 0;
+	virtual void		LB_STDCALL setNextMapping() = 0;
+	virtual void		LB_STDCALL finishMappingIteration() = 0;
+	
+	virtual long		LB_STDCALL getMappingID() = 0;
+	virtual char*		LB_STDCALL getPKTable() = 0;
+	virtual char*		LB_STDCALL getPKName() = 0;
+	virtual char*		LB_STDCALL getFKTable() = 0;
+	virtual char*		LB_STDCALL getFKName() = 0;
+};
+
+class lb_I_Actions : public lb_I_Unknown {
+public:
+	virtual long		LB_STDCALL addAction(const char* name, long typ, const char* source, long target, long _id = -1) = 0;
+	virtual bool		LB_STDCALL selectAction(long _id) = 0;
+	virtual int			LB_STDCALL getActionCount() = 0;
+	virtual bool		LB_STDCALL hasMoreActions() = 0;
+	virtual void		LB_STDCALL setNextAction() = 0;
+	virtual void		LB_STDCALL finishActionIteration() = 0;
+	
+	virtual long		LB_STDCALL getActionID() = 0;
+	virtual long		LB_STDCALL getActionTyp() = 0;
+	virtual long		LB_STDCALL getActionTarget() = 0;
+
+	virtual char*		LB_STDCALL getActionSource() = 0;
+	virtual char*		LB_STDCALL getActionName() = 0;
+	
+};
+
+class lb_I_Action_Steps : public lb_I_Unknown {
+public:
+	virtual long		LB_STDCALL addActionStep(const char* bezeichnung, long actionid, long orderNo, long type, const char* what, long _id = -1) = 0;
+	virtual bool		LB_STDCALL selectActionStep(long _id) = 0;
+	virtual int			LB_STDCALL getActionStepCount() = 0;
+	virtual bool		LB_STDCALL hasMoreActionSteps() = 0;
+	virtual void		LB_STDCALL setNextActionStep() = 0;
+	virtual void		LB_STDCALL finishActionStepIteration() = 0;
+	
+	virtual long		LB_STDCALL getActionStepID() = 0;
+	virtual long		LB_STDCALL getActionStepActionID() = 0;
+	virtual long		LB_STDCALL getActionStepOrderNo() = 0;
+	virtual long		LB_STDCALL getActionStepType() = 0;
+
+	virtual char*		LB_STDCALL getActionStepBezeichnung() = 0;
+	virtual char*		LB_STDCALL getActionStepWhat() = 0;
+	
+};
+
+class lb_I_Action_Types : public lb_I_Unknown {
+public:
+	virtual long		LB_STDCALL addActionTypes(const char* bezeichnung, const char* action_handler , const char* module, long _id = -1) = 0;
+	virtual bool		LB_STDCALL selectActionTypes(long _id) = 0;
+	virtual int			LB_STDCALL getActionTypesCount() = 0;
+	virtual bool		LB_STDCALL hasMoreActionTypes() = 0;
+	virtual void		LB_STDCALL setNextActionType() = 0;
+	virtual void		LB_STDCALL finishActionTypeIteration() = 0;
+	
+	virtual long		LB_STDCALL getActionTypeID() = 0;
+
+	virtual char*		LB_STDCALL getActionTypeBezeichnung() = 0;
+	virtual char*		LB_STDCALL getActionTypeHandler() = 0;
+	virtual char*		LB_STDCALL getActionTypeModule() = 0;
+	
+};
+
+class lb_I_Formular_Actions : public lb_I_Unknown {
+public:
+	virtual long		LB_STDCALL addFormularAction(long formular, long action, const char* event, long _id = -1) = 0;
+	virtual bool		LB_STDCALL selectFormularAction(long _id) = 0;
+	virtual int			LB_STDCALL getFormularActionsCount() = 0;
+	virtual bool		LB_STDCALL hasMoreFormularActions() = 0;
+	virtual void		LB_STDCALL setNextFormularAction() = 0;
+	virtual void		LB_STDCALL finishFormularActionIteration() = 0;
+	
+	virtual long		LB_STDCALL getFormularActionID() = 0;
+	virtual long		LB_STDCALL getFormularActionFormularID() = 0;
+	virtual long		LB_STDCALL getFormularActionActionID() = 0;
+
+	virtual char*		LB_STDCALL getFormularActionEvent() = 0;
+	
+};
+
+class lb_I_Translations : public lb_I_Unknown {
+public:
+	virtual long		LB_STDCALL addTranslation(const char* text, const char* translated, const char* language, long _id = -1) = 0;
+	virtual bool		LB_STDCALL selectTranslation(long _id) = 0;
+	virtual bool		LB_STDCALL selectText(const char* text, const char* language) = 0;
+	virtual int			LB_STDCALL getTranslationsCount() = 0;
+	virtual bool		LB_STDCALL hasMoreTranslations() = 0;
+	virtual void		LB_STDCALL setNextTranslation() = 0;
+	virtual void		LB_STDCALL finishTranslationIteration() = 0;
+	
+	virtual long		LB_STDCALL getTranslationID() = 0;
+	virtual char*		LB_STDCALL getTranslationText() = 0;
+	virtual char*		LB_STDCALL getTranslationTranslated() = 0;
+	virtual char*		LB_STDCALL getTranslationLanguage() = 0;
 };
 
 
