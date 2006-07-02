@@ -38,11 +38,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.47 $
+ * $Revision: 1.48 $
  * $Name:  $
- * $Id: skiplist.cpp,v 1.47 2006/02/26 23:46:19 lollisoft Exp $
+ * $Id: skiplist.cpp,v 1.48 2006/07/02 13:24:02 lollisoft Exp $
  *
  * $Log: skiplist.cpp,v $
+ * Revision 1.48  2006/07/02 13:24:02  lollisoft
+ * Added feature to not clone objects when inserting into a container.
+ *
  * Revision 1.47  2006/02/26 23:46:19  lollisoft
  * Changed build method for shared libraries under Mac OS X
  * to be frameworks. These would be embedable into the
@@ -382,6 +385,7 @@ SkipList::SkipList() {
 	level = MAXLEVEL;
 	count = 0;
 	ref = STARTREF;
+	cloning = true;
 	_currentKey = NULL;
 }
 
@@ -450,7 +454,7 @@ int LB_STDCALL SkipList::exists(lb_I_KeyBase** const key) {
 lbErrCodes LB_STDCALL SkipList::insert(lb_I_Unknown** const e, lb_I_KeyBase** const key) { 
         lbErrCodes err = ERR_NONE; 
 
-        lbSkipListElement* el = new lbSkipListElement(*e, *key);
+        lbSkipListElement* el = new lbSkipListElement(*e, *key, cloning);
         el->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
 
         insert(el);
@@ -464,7 +468,7 @@ lbErrCodes LB_STDCALL SkipList::insert(lb_I_Unknown** const e, lb_I_KeyBase** co
 lbErrCodes LB_STDCALL SkipList::remove(lb_I_KeyBase** const key) { 
         lbErrCodes err = ERR_NONE; 
         
-        lbSkipListElement* el = new lbSkipListElement(NULL, *key);
+        lbSkipListElement* el = new lbSkipListElement(NULL, *key, cloning);
         
         remove(el);
         
@@ -478,7 +482,7 @@ lbErrCodes LB_STDCALL SkipList::_insert(lb_I_Unknown** const e, lb_I_KeyBase** c
 /*...sbla:0:*/
 #ifdef bla
     if (container_data == NULL) { 
-        lbElement* _data = new lbElement(*e, *key); 
+        lbElement* _data = new lbElement(*e, *key, cloning); 
         _data->setModuleManager(manager.getPtr(), __FILE__, __LINE__); 
 
         _data->queryInterface("lb_I_Element", (void**) &container_data, __FILE__, __LINE__); 
@@ -497,7 +501,7 @@ lbErrCodes LB_STDCALL SkipList::_insert(lb_I_Unknown** const e, lb_I_KeyBase** c
 
             if (next != NULL) { 
                 if (next->getKey() < *key) { 
-                    lbElement* el = new lbElement(*e, *key, next); 
+                    lbElement* el = new lbElement(*e, *key, cloning, next); 
                     el->setModuleManager(manager.getPtr(), __FILE__, __LINE__); 
                     temp->setNext(el); 
                     return ERR_NONE; 
