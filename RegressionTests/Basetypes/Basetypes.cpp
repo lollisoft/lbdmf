@@ -209,8 +209,9 @@ int main(int argc, char *argv[]) {
 	for (int i = 0; i < 16; i++) {
 		n = 0;
 		*in >> buf >> n;
-		_CL_LOG << "'" << buf << "', " << n LOG_; 
+		_CL_LOG << "'" << buf << "', " << n LOG_;
+		free(buf);
 	}
-
+	
         return 0;
 }
