@@ -55,9 +55,6 @@ extern "C" {
 #endif
 
 #include <lbConfigHook.h>
-#include <lbInterfaces.h>
-
-
 
 /*...sLB_PLUGINMANAGER_DLL scope:0:*/
 #define LB_PLUGINMANAGER_DLL
@@ -65,35 +62,13 @@ extern "C" {
 /*...e*/
 
 /*...e*/
-/*...smisc and includes:0:*/
-#ifdef __GNUG__
-#pragma implementation "dynamic.cpp"
-#pragma interface "dynamic.cpp"
-#endif
+#define USE_TEST_PLUGIN
 
-// For compilers that support precompilation, includes "wx/wx.h".
-#include <wx/wxprec.h>
-
-/*...swx ifdef\39\s:0:*/
-#ifdef __BORLANDC__
-#pragma hdrstop
-#endif
-
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
-
-#if defined(__WXGTK__) || defined(__WXMOTIF__)
-//#include "mondrian.xpm"
-#endif
-/*...e*/
-
-#include "wx/wizard.h"
-/*...e*/
-
+#ifdef USE_TEST_PLUGIN
 /*...slbTest:0:*/
-#ifdef bla
-class lbTest : public lb_I_Unknown {
+class lbTest :
+	public lb_I_Streamable,
+	public lb_I_Unknown {
 public:
 	lbTest();
 	virtual ~lbTest();
@@ -101,6 +76,10 @@ public:
 	DECLARE_LB_UNKNOWN()
 	
 	void LB_STDCALL test();
+	lbErrCodes LB_STDCALL save(lb_I_OutputStream* oStream) { return ERR_NONE; }
+	lbErrCodes LB_STDCALL load(lb_I_InputStream* iStream) { return ERR_NONE; }
+	lbErrCodes LB_STDCALL save(lb_I_Database* oDB) { return ERR_NONE; }
+	lbErrCodes LB_STDCALL load(lb_I_Database* iDB) { return ERR_NONE; }
 };
 
 
@@ -157,6 +136,11 @@ public:
 /*...e*/
 
 	DECLARE_LB_UNKNOWN()
+	
+#ifdef USE_TEST_PLUGIN
+private:
+        UAP(lb_I_Unknown, impl)
+#endif
 };
 
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbPluginTest)
@@ -191,21 +175,54 @@ bool LB_STDCALL lbPluginTest::run() {
 	return true;
 }
 
-/*...slb_I_Unknown\42\ LB_STDCALL lbPluginTest\58\\58\peekImplementation\40\\41\:0:*/
 lb_I_Unknown* LB_STDCALL lbPluginTest::peekImplementation() {
+#ifdef USE_TEST_PLUGIN
+	lbErrCodes err = ERR_NONE;
+
+	if (impl == NULL) {
+		lbTest* test = new lbTest();
+		test->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+	
+		QI(test, lb_I_Unknown, impl)
+	} else {
+		_CL_VERBOSE << "lbPluginTest::peekImplementation() Implementation already peeked.\n" LOG_
+	}
+	
+	return impl.getPtr();
+#endif
+#ifndef USE_TEST_PLUGIN	
+	return NULL;
+#endif
+}
+lb_I_Unknown* LB_STDCALL lbPluginTest::getImplementation() {
+#ifdef USE_TEST_PLUGIN
+	lbErrCodes err = ERR_NONE;
+
+	if (impl == NULL) {
+		lbTest* test = new lbTest();
+		test->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+	
+		QI(test, lb_I_Unknown, impl)
+	}
+	
+	lb_I_Unknown* r = impl.getPtr();
+	impl.resetPtr();
+	return r;
+#endif
+#ifndef USE_TEST_PLUGIN
+	return NULL;
+#endif
+}
+
+void LB_STDCALL lbPluginTest::releaseImplementation() {
+#ifdef USE_TEST_PLUGIN
 	lbErrCodes err = ERR_NONE;
 	
-	return NULL;
-}
-/*...e*/
-/*...slb_I_Unknown\42\ LB_STDCALL lbPluginTest\58\\58\getImplementation\40\\41\:0:*/
-lb_I_Unknown* LB_STDCALL lbPluginTest::getImplementation() {
-	lbErrCodes err = ERR_NONE;
-	return NULL;
-}
-/*...e*/
-void LB_STDCALL lbPluginTest::releaseImplementation() {
-	lbErrCodes err = ERR_NONE;
+	if (impl != NULL) {
+		impl->release(__FILE__, __LINE__);
+		impl.resetPtr();
+	}
+#endif
 }
 /*...e*/
 /*...e*/

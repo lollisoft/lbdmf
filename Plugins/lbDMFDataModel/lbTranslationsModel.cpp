@@ -27,15 +27,11 @@
             40235 Duesseldorf (germany)
 */
 /*...e*/
-#define LB_DMFDATAMODEL_DLL
-
 #ifdef _MSC_VER
 
 //#pragma warning( disable: 4101 )
 
 #endif
-
-/*...sincludes:0:*/
 
 
 #include <stdio.h>
@@ -44,22 +40,13 @@
 #ifndef UNIX
 #include <windows.h>
 #endif
-#ifdef UNIX
-
-#ifdef __cplusplus
-extern "C" {      
-#endif            
-
-//#include <conio.h>
-
-#ifdef __cplusplus
-}      
-#endif            
-
-#endif
 
 #include <lbConfigHook.h>
+
+/*...sLB_DMFDATAMODEL_DLL scope:0:*/
+#define LB_DMFDATAMODEL_DLL
 #include <lbdmfdatamodel-module.h>
+/*...e*/
 
 #include <lbTranslationsModel.h>
 
@@ -333,6 +320,12 @@ lb_I_Unknown* LB_STDCALL lbPluginTranslationsModel::getImplementation() {
 }
 /*...e*/
 void LB_STDCALL lbPluginTranslationsModel::releaseImplementation() {
+        lbErrCodes err = ERR_NONE;
+
+        if (ukTranslations != NULL) {
+                ukTranslations->release(__FILE__, __LINE__);
+                ukTranslations.resetPtr();
+        }
 }
 /*...e*/
 /*...e*/

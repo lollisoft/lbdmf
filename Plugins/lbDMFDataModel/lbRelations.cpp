@@ -27,39 +27,19 @@
             40235 Duesseldorf (germany)
 */
 /*...e*/
-#define LB_DMFDATAMODEL_DLL
-
-#ifdef _MSC_VER
-
-//#pragma warning( disable: 4101 )
-
-#endif
-
-/*...sincludes:0:*/
-
-
 #include <stdio.h>
 #include <string.h>
-//#include <lbInterfaces.h>
 #ifndef UNIX
 #include <windows.h>
 #endif
 #ifdef UNIX
-
-#ifdef __cplusplus
-extern "C" {      
-#endif            
-
-//#include <conio.h>
-
-#ifdef __cplusplus
-}      
-#endif            
-
 #endif
 
 #include <lbConfigHook.h>
+/*...sLB_PLUGINMANAGER_DLL scope:0:*/
+#define LB_DMFDATAMODEL_DLL
 #include <lbdmfdatamodel-module.h>
+/*...e*/
 
 #include <lbRelations.h>
 
@@ -285,6 +265,12 @@ lb_I_Unknown* LB_STDCALL lbPluginUserApplicationRelationModel::getImplementation
 }
 /*...e*/
 void LB_STDCALL lbPluginUserApplicationRelationModel::releaseImplementation() {
+        lbErrCodes err = ERR_NONE;
+
+        if (ukUserApplicationRelationModel != NULL) {
+                ukUserApplicationRelationModel->release(__FILE__, __LINE__);
+                ukUserApplicationRelationModel.resetPtr();
+        }
 }
 /*...e*/
 /*...e*/

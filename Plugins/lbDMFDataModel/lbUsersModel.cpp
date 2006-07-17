@@ -27,39 +27,20 @@
             40235 Duesseldorf (germany)
 */
 /*...e*/
-#define LB_DMFDATAMODEL_DLL
-
-#ifdef _MSC_VER
-
-//#pragma warning( disable: 4101 )
-
-#endif
-
-/*...sincludes:0:*/
-
-
 #include <stdio.h>
 #include <string.h>
-//#include <lbInterfaces.h>
 #ifndef UNIX
 #include <windows.h>
 #endif
 #ifdef UNIX
-
-#ifdef __cplusplus
-extern "C" {      
-#endif            
-
-//#include <conio.h>
-
-#ifdef __cplusplus
-}      
-#endif            
-
 #endif
 
 #include <lbConfigHook.h>
+
+/*...sLB_DMFDATAMODEL_DLL scope:0:*/
+#define LB_DMFDATAMODEL_DLL
 #include <lbdmfdatamodel-module.h>
+/*...e*/
 
 #include <lbUsersModel.h>
 
@@ -79,7 +60,7 @@ lbUsersModel::lbUsersModel() {
 }
 
 lbUsersModel::~lbUsersModel() {
-
+	_CL_LOG << "lbUsersModel::~lbUsersModel() called." LOG_
 }
 
 lbErrCodes LB_STDCALL lbUsersModel::setData(lb_I_Unknown*) {
@@ -293,6 +274,12 @@ lb_I_Unknown* LB_STDCALL lbPluginUsersModel::getImplementation() {
 }
 /*...e*/
 void LB_STDCALL lbPluginUsersModel::releaseImplementation() {
+        lbErrCodes err = ERR_NONE;
+
+        if (ukUsersModel != NULL) {
+                ukUsersModel->release(__FILE__, __LINE__);
+                ukUsersModel.resetPtr();
+        }
 }
 /*...e*/
 /*...e*/

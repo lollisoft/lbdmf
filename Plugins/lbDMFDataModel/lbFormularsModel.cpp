@@ -27,40 +27,19 @@
             40235 Duesseldorf (germany)
 */
 /*...e*/
-#define LB_DMFDATAMODEL_DLL
-
-#ifdef _MSC_VER
-
-//#pragma warning( disable: 4101 )
-
-#endif
-
-/*...sincludes:0:*/
-
-
 #include <stdio.h>
 #include <string.h>
-//#include <lbInterfaces.h>
 #ifndef UNIX
 #include <windows.h>
 #endif
 #ifdef UNIX
-
-#ifdef __cplusplus
-extern "C" {      
-#endif            
-
-//#include <conio.h>
-
-#ifdef __cplusplus
-}      
-#endif            
-
 #endif
 
 #include <lbConfigHook.h>
+/*...sLB_DMFDATAMODEL_DLL scope:0:*/
+#define LB_DMFDATAMODEL_DLL
 #include <lbdmfdatamodel-module.h>
-
+/*...e*/
 #include <lbFormularsModel.h>
 
 IMPLEMENT_FUNCTOR(instanceOflbFormularsModel, lbFormularsModel)
@@ -348,6 +327,12 @@ lb_I_Unknown* LB_STDCALL lbPluginFormularsModel::getImplementation() {
 }
 /*...e*/
 void LB_STDCALL lbPluginFormularsModel::releaseImplementation() {
+        lbErrCodes err = ERR_NONE;
+
+        if (ukFormularsModel != NULL) {
+                ukFormularsModel->release(__FILE__, __LINE__);
+                ukFormularsModel.resetPtr();
+        }
 }
 /*...e*/
 /*...e*/

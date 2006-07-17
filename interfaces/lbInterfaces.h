@@ -636,10 +636,10 @@
 #ifndef DLLEXPORT
 // Default to import. Modules redefine this in general.
 #ifdef WINDOWS
-#define DLLEXPORT
+#define DLLEXPORT LB_DLLIMPORT
 #endif
 #ifdef LB_DMF_POWER
-#define DLLEXPORT
+#define DLLEXPORT LB_DLLIMPORT
 #endif
 #ifdef LINUX
 #define DLLEXPORT
@@ -758,7 +758,7 @@ typedef lbErrCodes ( lb_I_EventHandler::*lbEvHandler)(lb_I_Unknown* uk);
 /*...e*/
 
 /*
-	CL_LOG("Releasing instance"); \
+	CL_LOG("Releasing instance");
 */
 /*...sdefine RELEASE\40\instance\41\:0:*/
 #define RELEASE(instance) \
@@ -913,7 +913,7 @@ public:
 	 * An idea may be a dummy call to it at any point after instantiation and include code
 	 * to register all defined interfaces one per livetime.
 	 */
-	virtual lbErrCodes LB_STDCALL queryInterface(char* name, void** unknown, char* file, int line) = 0;
+	virtual lbErrCodes LB_STDCALL queryInterface(char* name, void** unknown, char* file, int line) const = 0;
 
 	/**
 	 * This is an attempt to resolve any dangling references. As yet tried, a release on another
@@ -975,10 +975,8 @@ public:
 	        	_file = NULL; \
 	        	attachedClassName = NULL; \
 	        	allowDelete = 1; \
-				locked = false; \
+			locked = false; \
 	        	initialized = false; \
-			memset(before, 0, sizeof(before)); \
-			memset(after, 0, sizeof(after)); \
 		} \
 		\
 		UAP##Unknown_Reference(const UAP##Unknown_Reference& _ref) { \
@@ -996,8 +994,6 @@ public:
 			} \
 			_line = _ref._line; \
 			_autoPtr = NULL; \
-			memset(before, 0, sizeof(before)); \
-			memset(after, 0, sizeof(after)); \
 		} \
 		void operator=(const UAP##Unknown_Reference& _ref) { \
 			if (_file != NULL) { \
@@ -1023,6 +1019,11 @@ public:
 			if (_file) free(_file); \
 			if (attachedClassName != NULL) free(attachedClassName); \
 			if (_autoPtr != NULL) { \
+				if (!_TRMemValidate(_autoPtr)) { \
+					char buf[100] = ""; \
+					sprintf(buf, "FATAL: Destruct on invalid object pointer (%p).", _autoPtr); \
+					_LOG << buf LOG_ \
+				} \
 				if (allowDelete != 1) { \
 					if (_autoPtr->deleteState() == 1) { \
 						printf("Error: Instance would be deleted, but it's not allowed !!\n"); \
@@ -1032,18 +1033,6 @@ public:
 				} \
 				_autoPtr->release(_file, _line); \
 				_autoPtr = NULL; \
-			} \
-			for (int i = 0; i < sizeof(before); i++) { \
-				if (before[i] != 0) { \
-					_CL_LOG << "ERROR: Boundary buffer (before) hit! (" << __FILE__ << ", " << __LINE__ LOG_ \
-					break; \
-				} \
-			} \
-			for (int ii = 0; ii < sizeof(after); ii++) { \
-				if (after[ii] != 0) { \
-					_CL_LOG << "ERROR: Boundary buffer (after) hit! (" << __FILE__ << ", " << __LINE__ LOG_ \
-					break; \
-				} \
 			} \
 		} \
 		void LB_STDCALL setFile(char* __file) { \
@@ -1059,7 +1048,14 @@ public:
 			_line = __line; \
 		} \
 		\
-		interface* LB_STDCALL getPtr() const { return _autoPtr; } \
+		interface* LB_STDCALL getPtr() const { \
+			if (!_TRMemValidate(_autoPtr)) { \
+				char buf[100] = ""; \
+				sprintf(buf, "FATAL: getPtr() on invalid object pointer (%p).", _autoPtr); \
+				_CL_LOG << buf LOG_ \
+			} \
+			return _autoPtr; \
+		} \
 		void LB_STDCALL lock() { \
 			locked = true; \
 		} \
@@ -1075,45 +1071,95 @@ public:
 		} \
 		\
 		interface& LB_STDCALL operator * () { \
-		return *_autoPtr; } \
+			if (!_TRMemValidate(_autoPtr)) { \
+				char buf[100] = ""; \
+				sprintf(buf, "FATAL: operator * () on invalid object pointer (%p).", _autoPtr); \
+				_LOG << buf LOG_ \
+			} \
+			return *_autoPtr; \
+		} \
 		interface* LB_STDCALL operator -> () const { \
-			if (_autoPtr == NULL) { \
+			if (_TRMemValidate(_autoPtr)) { \
+				if ((initialized == false) && (_autoPtr != NULL) && (_autoPtr->getClassName() != NULL)) { \
+					char* className = _autoPtr->getClassName(); \
+					int len = strlen(className)+1; \
+					initialized = true; \
+					if (attachedClassName != NULL) free(attachedClassName); \
+					attachedClassName = (char*) malloc(len); \
+					attachedClassName[0] = 0; \
+				        strcpy(attachedClassName, className); \
+				} \
+			} else { \
+				char buf[100] = ""; \
+				sprintf(buf, "FATAL: Operate on invalid object pointer (%p).", _autoPtr); \
+				_LOG << buf LOG_ \
 			} \
 			return _autoPtr; \
 		} \
 		interface* LB_STDCALL operator -> () { \
-			if ((initialized == false) && (_autoPtr != NULL) && (_autoPtr->getClassName() != NULL)) { \
-				char* className = _autoPtr->getClassName(); \
-				int len = strlen(className)+1; \
-				initialized = true; \
-				if (attachedClassName != NULL) free(attachedClassName); \
-				attachedClassName = (char*) malloc(len); \
-				attachedClassName[0] = 0; \
-			        strcpy(attachedClassName, className); \
+			if (_TRMemValidate(_autoPtr)) { \
+				if ((initialized == false) && (_autoPtr != NULL) && (_autoPtr->getClassName() != NULL)) { \
+					char* className = _autoPtr->getClassName(); \
+					int len = strlen(className)+1; \
+					initialized = true; \
+					if (attachedClassName != NULL) free(attachedClassName); \
+					attachedClassName = (char*) malloc(len); \
+					attachedClassName[0] = 0; \
+				        strcpy(attachedClassName, className); \
+				} \
+			} else { \
+				char buf[100] = ""; \
+				sprintf(buf, "FATAL: Operate on invalid object pointer (%p).", _autoPtr); \
+				_LOG << buf LOG_ \
 			} \
 			return _autoPtr; \
 		} \
 		UAP##Unknown_Reference& LB_STDCALL operator++(int) { \
 			interface* temp = NULL; \
+			if (!_TRMemValidate(_autoPtr)) { \
+				char buf[100] = ""; \
+				sprintf(buf, "FATAL: operator++ on invalid object pointer (%p).", _autoPtr); \
+				_LOG << buf LOG_ \
+			} \
 			_autoPtr->queryInterface(#interface, (void**) &temp, __FILE__, __LINE__); \
 			return *this; \
 		} \
 		UAP##Unknown_Reference& LB_STDCALL operator--(int) { \
 			interface* temp = NULL; \
 			if (_autoPtr == NULL) return *this; \
+			if (!_TRMemValidate(_autoPtr)) { \
+				char buf[100] = ""; \
+				sprintf(buf, "FATAL: operator-- on invalid object pointer (%p).", _autoPtr); \
+				_LOG << buf LOG_ \
+			} \
 			if (_autoPtr->release(__FILE__, __LINE__) == ERR_RELEASED) _autoPtr = NULL; \
 			return *this; \
 		} \
 		interface ** LB_STDCALL operator & () { \
+			if (!_TRMemValidate(_autoPtr)) { \
+				char buf[100] = ""; \
+				sprintf(buf, "FATAL: operator& on invalid object pointer (%p).", _autoPtr); \
+				_LOG << buf LOG_ \
+			} \
 			return &_autoPtr; \
 		} \
 		\
 		UAP##Unknown_Reference& LB_STDCALL operator = (interface* autoPtr) { \
 			if (locked) return *this; \
+			if (!_TRMemValidate(_autoPtr)) { \
+				char buf[100] = ""; \
+				sprintf(buf, "FATAL: operator = on invalid old object pointer (%p).", _autoPtr); \
+				_LOG << buf LOG_ \
+			} \
 			if (_autoPtr != NULL) { \
 				_autoPtr->release(__FILE__, __LINE__); \
 			} \
 			_autoPtr = autoPtr; \
+			if (!_TRMemValidate(_autoPtr)) { \
+				char buf[100] = ""; \
+				sprintf(buf, "FATAL: operator = on invalid new object pointer (%p).", _autoPtr); \
+				_LOG << buf LOG_ \
+			} \
 			if (attachedClassName) { \
 				free(attachedClassName); \
 			} \
@@ -1124,23 +1170,31 @@ public:
 			return *this; \
 		} \
 		int LB_STDCALL operator == (const interface* b) const { \
+			if (!_TRMemValidate(_autoPtr)) { \
+				char buf[100] = ""; \
+				sprintf(buf, "FATAL: operator == on invalid object pointer (%p).", _autoPtr); \
+				_LOG << buf LOG_ \			
+				} \
 			return _autoPtr == b; \
 		} \
 		int LB_STDCALL operator != (const interface* b) const { \
+			if (!_TRMemValidate(_autoPtr)) { \
+				char buf[100] = ""; \
+				sprintf(buf, "FATAL: operator != on invalid object pointer (%p).", _autoPtr); \
+				_LOG << buf LOG_ \
+			} \
 			return _autoPtr != b; \
 		} \
 		void LB_STDCALL setDelete(int _allow) { allowDelete = _allow; } \
 		\
 		protected: \
-		char before[10]; \
 	        interface* _autoPtr; \
-	        int _line; \
-	        char* _file; \
-	        int allowDelete; \
-	        bool initialized; \
-			bool locked; \
-	        char* attachedClassName; \
-	        char after[10]; \
+	        mutable int _line; \
+	        mutable char* _file; \
+	        mutable int allowDelete; \
+	        mutable bool initialized; \
+		mutable bool locked; \
+	        mutable char* attachedClassName; \
 		}; \
 	\
         interface* _UAP##Unknown_Reference; \
@@ -1244,18 +1298,18 @@ public:
 #define DECLARE_LB_UNKNOWN() \
 private: \
 	UAP(lb_I_Module, manager) \
-	int ref; \
+	mutable int ref; \
 	lb_I_Unknown* data; \
 	int debug_macro; \
-	int further_lock; \
-	volatile int instance_counted; \
-	miniString lastQIFile; \
-	int        lastQILine; \
-	miniString lastSMFile; \
-	int        lastSMLine; \
+	mutable int further_lock; \
+	mutable int instance_counted; \
+	mutable miniString lastQIFile; \
+	mutable int        lastQILine; \
+	mutable miniString lastSMFile; \
+	mutable int        lastSMLine; \
 protected: \
 public: \
-	virtual void 		LB_STDCALL setFurtherLock(int state) { \
+	virtual void 		LB_STDCALL setFurtherLock(int state) const { \
 	    further_lock = state; \
 	} \
 	void 		LB_STDCALL setModuleManager(lb_I_Module* m, char* file, int line); \
@@ -1267,7 +1321,7 @@ public: \
 	char*           LB_STDCALL getCreationLoc() const; \
 	int 		LB_STDCALL deleteState(); \
 	char* 		LB_STDCALL _queryInterface(char* name, void** unknown, char* file, int line); \
-	lbErrCodes 	LB_STDCALL queryInterface(char* name, void** unknown, char* file, int line); \
+	lbErrCodes 	LB_STDCALL queryInterface(char* name, void** unknown, char* file, int line) const; \
 	lb_I_Unknown* 	LB_STDCALL clone(char* file, int line) const; \
 	lbErrCodes 	LB_STDCALL setData(lb_I_Unknown* u); \
 	int 		LB_STDCALL getRefCount() { return ref; } \
@@ -1349,7 +1403,7 @@ char*      LB_STDCALL classname::getCreationLoc() const { \
 	return strdup("Have no manager - location can't be found"); \
 } \
 lbErrCodes LB_STDCALL classname::release(char* file, int line) { \
-	if (TRMemValidate(this)) { \
+	if (_TRMemValidate(this)) { \
 	_CL_VERBOSE << #classname << "::release(" << __FILE__ << ", " << line << ") with ref = " << ref << " called." LOG_ \
 	ref--; \
 	char ptr[20] = ""; \
@@ -1391,7 +1445,9 @@ lbErrCodes LB_STDCALL classname::release(char* file, int line) { \
         	return ERR_REFERENCE_COUNTING; \
         } \
         } else { \
-        	printf("Error: Instance %p of object type %s was deleted prior !!!", this, #classname); \
+        	char buf[500] = ""; \
+        	sprintf(buf, "Error: Instance %p of object type %s was deleted prior (At: %s:%d) !!!", this, #classname, file, line); \
+        	_LOG << buf LOG_ \
         } \
         return ERR_INSTANCE_STILL_USED; \
 } \
@@ -1438,7 +1494,7 @@ lb_I_Unknown* LB_STDCALL classname::clone(char* file, int line) const { \
 \
 } \
 \
-lbErrCodes LB_STDCALL classname::queryInterface(char* name, void** unknown, char* file, int line) { \
+lbErrCodes LB_STDCALL classname::queryInterface(char* name, void** unknown, char* file, int line) const { \
 	char buf[1000] = ""; \
 	char _classname[100] = #classname; \
 	lastQIFile.set(file); \
@@ -1552,7 +1608,7 @@ char*      LB_STDCALL classname::getCreationLoc() const { \
 	return strdup("Have no manager - location can't be found"); \
 } \
 lbErrCodes LB_STDCALL classname::release(char* file, int line) { \
-	if (TRMemValidate(this)) { \
+	if (_TRMemValidate(this)) { \
         ref--; \
 	char ptr[20] = ""; \
 	sprintf(ptr, "%p", this); \
@@ -1623,7 +1679,7 @@ lb_I_Unknown* LB_STDCALL classname::clone(char* file, int line) const { \
 \
 } \
 \
-lbErrCodes LB_STDCALL classname::queryInterface(char* name, void** unknown, char* file, int line) { \
+lbErrCodes LB_STDCALL classname::queryInterface(char* name, void** unknown, char* file, int line) const { \
 	char buf[1000] = ""; \
 	char _classname[100] = #classname; \
 	if (further_lock == 1) { \
@@ -1760,7 +1816,7 @@ public: \
 	virtual ~singletonHolder_##name() { \
 		_CL_VERBOSE << "~singletonHolder_" << #name << "() called." LOG_ \
 		if (singleton != NULL) { \
-			if (TRMemValidate(singleton)) \
+			if (_TRMemValidate(singleton)) \
 				delete singleton; \
 			else \
 				printf("ERROR: Sinleton object has been deleted prior!\n"); \
@@ -2554,7 +2610,7 @@ public:
 	/** \brief Get the active document.
 	 * Active document per loaded application.
 	 */
-	virtual lb_I_Unknown*	LB_STDCALL getActiveDocument() = 0;
+	virtual lb_I_Unknown*		LB_STDCALL getActiveDocument() = 0;
 	
 	/** \brief Set the active document.
 	 * Active document per loaded application.
@@ -3043,11 +3099,9 @@ protected:
 #define BEGIN_PLUGINS(cls) \
 \
 void LB_STDCALL cls::setModule(char* module) { \
-	_CL_VERBOSE << #cls << "::setModule(" << module << ") called." LOG_ \
 	if (_module == NULL) { \
 		REQUEST(manager.getPtr(), lb_I_String, _module) \
 	} \
-	_CL_VERBOSE << "String _module has " << _module->getRefCount() << " references." LOG_ \
 	*_module = module; \
 } \
 lb_I_Container* cls::getPlugins() { \
@@ -3059,7 +3113,6 @@ lb_I_Container* cls::getPlugins() { \
 } \
 void LB_STDCALL cls::enumPlugins() { \
 	lbErrCodes err = ERR_NONE; \
-	_CL_VERBOSE << #cls << "::enumPlugins() called." LOG_ \
 	REQUEST(manager.getPtr(), lb_I_Container, Plugins)
 
 #define ADD_PLUGIN(plugin, namespace) \

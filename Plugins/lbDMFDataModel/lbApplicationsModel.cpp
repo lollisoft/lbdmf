@@ -27,39 +27,19 @@
             40235 Duesseldorf (germany)
 */
 /*...e*/
-#define LB_DMFDATAMODEL_DLL
-
-#ifdef _MSC_VER
-
-//#pragma warning( disable: 4101 )
-
-#endif
-
-/*...sincludes:0:*/
-
-
 #include <stdio.h>
 #include <string.h>
-//#include <lbInterfaces.h>
 #ifndef UNIX
 #include <windows.h>
 #endif
 #ifdef UNIX
-
-#ifdef __cplusplus
-extern "C" {      
-#endif            
-
-//#include <conio.h>
-
-#ifdef __cplusplus
-}      
-#endif            
-
 #endif
 
 #include <lbConfigHook.h>
+/*...sLB_PLUGINMANAGER_DLL scope:0:*/
+#define LB_DMFDATAMODEL_DLL
 #include <lbdmfdatamodel-module.h>
+/*...e*/
 
 #include <lbApplicationsModel.h>
 
@@ -184,9 +164,10 @@ bool	LB_STDCALL lbApplications::selectApplication(long _id) {
 		currentModuleName->charrep() << "', '" << 
 		currentFunctor->charrep() << "', '" << 
 		currentInterface->charrep() << "', '" << currentApplicationUID->getData() << "'" LOG_
-
+		return true;
 	} else {
 		_CL_LOG << "Error: No such application with ID = " << _id << "." LOG_
+		return false;
 	}
 }
 
@@ -340,7 +321,12 @@ lb_I_Unknown* LB_STDCALL lbPluginApplications::getImplementation() {
 }
 /*...e*/
 void LB_STDCALL lbPluginApplications::releaseImplementation() {
-	lbErrCodes err = ERR_NONE;
+        lbErrCodes err = ERR_NONE;
+
+        if (ukApplications != NULL) {
+                ukApplications->release(__FILE__, __LINE__);
+                ukApplications.resetPtr();
+        }
 }
 /*...e*/
 /*...e*/

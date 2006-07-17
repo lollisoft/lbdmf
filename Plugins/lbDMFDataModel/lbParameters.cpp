@@ -27,39 +27,19 @@
             40235 Duesseldorf (germany)
 */
 /*...e*/
-#define LB_DMFDATAMODEL_DLL
-
-#ifdef _MSC_VER
-
-//#pragma warning( disable: 4101 )
-
-#endif
-
-/*...sincludes:0:*/
-
-
 #include <stdio.h>
 #include <string.h>
-//#include <lbInterfaces.h>
 #ifndef UNIX
 #include <windows.h>
 #endif
 #ifdef UNIX
-
-#ifdef __cplusplus
-extern "C" {      
-#endif            
-
-//#include <conio.h>
-
-#ifdef __cplusplus
-}      
-#endif            
-
 #endif
 
 #include <lbConfigHook.h>
+/*...sLB_PLUGINMANAGER_DLL scope:0:*/
+#define LB_DMFDATAMODEL_DLL
 #include <lbdmfdatamodel-module.h>
+/*...e*/
 
 #include <lbParameters.h>
 
@@ -461,6 +441,12 @@ lb_I_Unknown* LB_STDCALL lbPluginFormularParameters::getImplementation() {
 }
 /*...e*/
 void LB_STDCALL lbPluginFormularParameters::releaseImplementation() {
+        lbErrCodes err = ERR_NONE;
+
+        if (ukFormularParameters != NULL) {
+                ukFormularParameters->release(__FILE__, __LINE__);
+                ukFormularParameters.resetPtr();
+        }
 }
 /*...e*/
 /*...e*/
@@ -556,6 +542,12 @@ lb_I_Unknown* LB_STDCALL lbPluginApplicationParameters::getImplementation() {
 }
 /*...e*/
 void LB_STDCALL lbPluginApplicationParameters::releaseImplementation() {
+        lbErrCodes err = ERR_NONE;
+
+        if (ukApplicationParameters != NULL) {
+                ukApplicationParameters->release(__FILE__, __LINE__);
+                ukApplicationParameters.resetPtr();
+        }
 }
 /*...e*/
 /*...e*/
