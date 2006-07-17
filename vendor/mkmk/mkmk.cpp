@@ -12,11 +12,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.82 $
+ * $Revision: 1.83 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.82 2006/06/24 06:19:54 lollisoft Exp $
+ * $Id: mkmk.cpp,v 1.83 2006/07/17 17:58:42 lollisoft Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.83  2006/07/17 17:58:42  lollisoft
+ * Faster cleanup.
+ *
  * Revision 1.82  2006/06/24 06:19:54  lollisoft
  * Commit due to travel to Duesseldorf.
  *
@@ -1116,7 +1119,9 @@ void write_clean(char* modulename = NULL) {
 #ifdef __WATCOMC__
     // Write the normal clean rule
     printf("clean:\n");
-    printf("\t\t-@rm *.exp\n");
+    printf("\t\t-@rm *.exp *.err *.ilk *.lib *.lk1 *.mk1 *.map *.mk *.mk1 *.sym *.obj *.idb *.pch *.pdb\n");
+    printf("\t\t-@rm -f *.bak\n");
+#ifdef bla
     printf("\t\t-@rm *.err\n");
     printf("\t\t-@rm *.ilk\n");
     printf("\t\t-@rm *.lib\n");
@@ -1127,10 +1132,11 @@ void write_clean(char* modulename = NULL) {
     printf("\t\t-@rm *.mk1\n");
     printf("\t\t-@rm *.sym\n");
     printf("\t\t-@rm *.obj\n");
-    printf("\t\t-@rm *.bak\n");
+    printf("\t\t-@rm -f *.bak\n");
     printf("\t\t-@rm *.idb\n");
     printf("\t\t-@rm *.pch\n");
     printf("\t\t-@rm *.pdb\n");
+#endif    
     if (modulename == NULL) {
         printf("\t\t-@rm *.dll\n");
     } else {
@@ -1593,7 +1599,7 @@ void ShowHelp(int argc, char *argv[])
 
   fprintf(stderr, "Enhanced by Lothar Behrens (lothar.behrens@lollisoft.de)\n\n");
 
-  fprintf(stderr, "MKMK: makefile generator $Revision: 1.82 $\n");
+  fprintf(stderr, "MKMK: makefile generator $Revision: 1.83 $\n");
   fprintf(stderr, "Usage: MKMK lib|exe|dll|so modulname includepath,[includepath,...] file1 [file2 file3...]\n");
   
   fprintf(stderr, "Your parameters are: ");
