@@ -30,11 +30,19 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.69 $
+ * $Revision: 1.70 $
  * $Name:  $
- * $Id: lbInterfaces-sub-classes.h,v 1.69 2006/07/02 13:06:31 lollisoft Exp $
+ * $Id: lbInterfaces-sub-classes.h,v 1.70 2006/07/17 17:40:41 lollisoft Exp $
  *
  * $Log: lbInterfaces-sub-classes.h,v $
+ * Revision 1.70  2006/07/17 17:40:41  lollisoft
+ * Changes dueto bugfix in plugin manager. Repeadable iterator problem.
+ * Not correctly finished the iteration, thus plugins in the same DLL wouldn't
+ * be found any more after first query.
+ *
+ * Code works well with improved trmem library, but there is still a crash in
+ * database classes (pgODBC library).
+ *
  * Revision 1.69  2006/07/02 13:06:31  lollisoft
  * Added feature to not clone objects when inserting into a container.
  *
@@ -859,7 +867,15 @@ classname::~classname() { \
 \
 lb_I_Unknown* classname::getObject() const { \
     lb_I_Unknown* uk = NULL; \
-    if(data == NULL) _CL_LOG << "ERROR: Element has no data. Could not return from NULL pointer!!" LOG_ \
+    if(data == NULL) { \
+    	_CL_LOG << "FATAL: Element has no data. Could not return from NULL pointer!!" LOG_ \
+    	return NULL; \
+    } \
+    if(!_TRMemValidate(data)) { \
+    	char buf[20] = ""; \
+    	sprintf(buf, "%p", data); \
+    	_LOG << "Error: Skiplist element data pointer is invalid! (" << buf << ", classname: " << data->getClassName() << ")" LOG_ \
+    } \
     data->queryInterface("lb_I_Unknown", (void**) &uk, __FILE__, __LINE__); \
     _CL_VERBOSE << "Object of " << uk->getClassName() << " has " << uk->getRefCount() << " references." LOG_ \
     return uk; \

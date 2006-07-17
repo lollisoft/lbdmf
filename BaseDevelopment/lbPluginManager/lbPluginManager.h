@@ -33,11 +33,19 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.5 $
+ * $Revision: 1.6 $
  * $Name:  $
- * $Id: lbPluginManager.h,v 1.5 2005/05/10 20:20:36 lollisoft Exp $
+ * $Id: lbPluginManager.h,v 1.6 2006/07/17 17:37:45 lollisoft Exp $
  *
  * $Log: lbPluginManager.h,v $
+ * Revision 1.6  2006/07/17 17:37:45  lollisoft
+ * Changes dueto bugfix in plugin manager. Repeadable iterator problem.
+ * Not correctly finished the iteration, thus plugins in the same DLL wouldn't
+ * be found any more after first query.
+ *
+ * Code works well with improved trmem library, but there is still a crash in
+ * database classes (pgODBC library).
+ *
  * Revision 1.5  2005/05/10 20:20:36  lollisoft
  * Include files changed to be more actially language compilant
  *
@@ -56,8 +64,6 @@
  **************************************************************/
 
 /*...e*/
-
-#include <iostream>
 
 /*...s\35\ifdef __cplusplus \123\:0:*/
 #ifdef __cplusplus

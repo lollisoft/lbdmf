@@ -1,11 +1,19 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.113 $
+# * $Revision: 1.114 $
 # * $Name:  $
-# * $Id: Makefile,v 1.113 2006/04/20 12:20:31 lollisoft Exp $
+# * $Id: Makefile,v 1.114 2006/07/17 17:37:45 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.114  2006/07/17 17:37:45  lollisoft
+# * Changes dueto bugfix in plugin manager. Repeadable iterator problem.
+# * Not correctly finished the iteration, thus plugins in the same DLL wouldn't
+# * be found any more after first query.
+# *
+# * Code works well with improved trmem library, but there is still a crash in
+# * database classes (pgODBC library).
+# *
 # * Revision 1.113  2006/04/20 12:20:31  lollisoft
 # * Changed make order to catch up all targets before propably non existing directories.
 # *
@@ -613,6 +621,25 @@ ALLTARGETS = \
 	../Samples/HelloWorld \
 	../Doc/html \
 	$(BASEDIRECTORIES)
+
+ALLDIRS = \
+	lbHook \
+	lbDB \
+	lbModule \
+	lbclasses \
+	lbMetaApplication \
+	lbPluginManager \
+	../vendor/propgrid \
+	../vendor/wxaui-0.9.1/src \
+	../vendor/wxaui-0.9.1/sample \
+	../AppDevelopmentDemo/App \
+	../AppDevelopmentDemo/DynamicApp/App \
+	../Test/Console/XML \
+	../Test/GUI/wxWrapperDLL \
+	../Test/GUI/wxWrapper \
+	../Test/GUI/wxPlugins/lbLoginWizard \
+	$(BASEDIRECTORIES)
+
 
 #$(DEVROOT_MAKE)/wxwin/wx/samples/report \
 #tvision: ../vendor/tvision

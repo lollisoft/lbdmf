@@ -30,11 +30,19 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.109 $
+ * $Revision: 1.110 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.109 2006/07/02 13:30:13 lollisoft Exp $
+ * $Id: lbModule.cpp,v 1.110 2006/07/17 17:37:45 lollisoft Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.110  2006/07/17 17:37:45  lollisoft
+ * Changes dueto bugfix in plugin manager. Repeadable iterator problem.
+ * Not correctly finished the iteration, thus plugins in the same DLL wouldn't
+ * be found any more after first query.
+ *
+ * Code works well with improved trmem library, but there is still a crash in
+ * database classes (pgODBC library).
+ *
  * Revision 1.109  2006/07/02 13:30:13  lollisoft
  * Added feature to not clone objects when inserting into a container. Better error message when no interface was found.
  *
@@ -405,8 +413,6 @@ extern "C" {
 }
 #endif
 
-#include <lbConfigHook.h>
-
 #include <stdio.h>
 #ifdef OSX
 #include <sys/malloc.h>
@@ -419,6 +425,7 @@ extern "C" {
 #endif
 #endif
 
+#include <lbConfigHook.h>
 
 /*...sLB_MODULE_DLL scope:0:*/
 #define LB_MODULE_DLL
@@ -2220,9 +2227,12 @@ lb_I_FunctorEntity* LB_STDCALL lbHCInterfaceRepository::getFirstEntity() {
 	_fe->setModule(module);
 	_fe->setFunctor(functor);
 
-	if (!found) { 
-		_CL_LOG << "Error; Requested interface not found in repository! (" << searchArgument << ")" LOG_
-		_LOG << "Error; Requested interface not found in repository! (" << searchArgument << ")" LOG_
+	if (!found) {
+		// searchArgument gets overwritten by first use of _LOG :-)
+		char *iface = strdup(searchArgument);
+		_CL_LOG << "Error; Requested interface not found in repository! (" << iface << ")" LOG_
+		_LOG << "Error; Requested interface not found in repository! (" << iface << ")" LOG_
+		free(iface);
 	}
 
 	return _fe;
@@ -2720,10 +2730,14 @@ printf("lbErrCodes LB_STDCALL lbModule::initialize() called.\n");
         }
 #endif
         lbModuleContainer* MList = new lbModuleContainer();
-               
+
         MList->setModuleManager(this, __FILE__, __LINE__);
-        
+
+        if (isVerbose()) Instances();
+
         MList->queryInterface("lb_I_Container", (void**) &moduleList, __FILE__, __LINE__);
+
+        if (isVerbose()) Instances();
 
 	if (moduleList == NULL) {
 		_CL_VERBOSE << "Error: moduleList must now be initialized!" LOG_
@@ -3202,6 +3216,9 @@ lbErrCodes err = ERR_NONE;
                                 	return err;
                                 }
                                 if ((*instance) == NULL) _CL_VERBOSE << "Something goes wrong while calling functor" LOG_
+                                if (!_TRMemValidate(*instance)) {
+                                	_LOG << "Error: Functor " << functor << " doesn't use TRMem. Module: " << module LOG_
+                                }
                         }
 
 	free (_module);
@@ -3436,7 +3453,7 @@ lbErrCodes LB_STDCALL lbModule::request(const char* request, lb_I_Unknown** resu
 		*result = _result.getPtr();
 		(*result)->setModuleManager(this, __FILE__, __LINE__);
 		_result++;
-
+		if (isVerbose()) Instances();
 	} else {
 		printf("Error: Have no interface repository to locate configuration for %s\n", request); 
 	}

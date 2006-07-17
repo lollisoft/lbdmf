@@ -31,11 +31,19 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.94 $
+ * $Revision: 1.95 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.94 2006/07/02 13:25:57 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.95 2006/07/17 17:37:45 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.95  2006/07/17 17:37:45  lollisoft
+ * Changes dueto bugfix in plugin manager. Repeadable iterator problem.
+ * Not correctly finished the iteration, thus plugins in the same DLL wouldn't
+ * be found any more after first query.
+ *
+ * Code works well with improved trmem library, but there is still a crash in
+ * database classes (pgODBC library).
+ *
  * Revision 1.94  2006/07/02 13:25:57  lollisoft
  * Added active document support.
  *
@@ -2047,7 +2055,6 @@ bool LB_STDCALL lb_MetaApplication::login(const char* user, const char* pass) {
 		return false;
 	}
 }
-
 /*...e*/
 /*...slb_EventMapper:0:*/
 lb_EventMapper::lb_EventMapper() {

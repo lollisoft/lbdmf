@@ -38,11 +38,19 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.48 $
+ * $Revision: 1.49 $
  * $Name:  $
- * $Id: skiplist.cpp,v 1.48 2006/07/02 13:24:02 lollisoft Exp $
+ * $Id: skiplist.cpp,v 1.49 2006/07/17 17:37:45 lollisoft Exp $
  *
  * $Log: skiplist.cpp,v $
+ * Revision 1.49  2006/07/17 17:37:45  lollisoft
+ * Changes dueto bugfix in plugin manager. Repeadable iterator problem.
+ * Not correctly finished the iteration, thus plugins in the same DLL wouldn't
+ * be found any more after first query.
+ *
+ * Code works well with improved trmem library, but there is still a crash in
+ * database classes (pgODBC library).
+ *
  * Revision 1.48  2006/07/02 13:24:02  lollisoft
  * Added feature to not clone objects when inserting into a container.
  *
@@ -298,7 +306,7 @@ SkipNode::SkipNode(lb_I_Element* r, int level) {
 
 SkipNode::~SkipNode() { 
 
-	if (TRMemValidate(this) == 0) {
+	if (_TRMemValidate(this) == 0) {
 		_CL_LOG << "Error: Object pointer is invalid!" LOG_
 	}
 
@@ -314,7 +322,7 @@ SkipNode::~SkipNode() {
 
       		lb_I_Unknown* uk = value->getObject();
       		
-      		if (TRMemValidate(uk) == 0) {
+      		if (_TRMemValidate(uk) == 0) {
       			_CL_LOG << "ERROR: Have an invalid pointer!" LOG_
       		}
 

@@ -101,7 +101,7 @@ lbLocale::lbLocale() {
 	_lang = (char*) malloc(100);
 	_lang[0] = 0;
 	strcpy(_lang, "german");
-	REQUEST(getModuleInstance(), lb_I_Translations, translations)
+	//REQUEST(getModuleInstance(), lb_I_Translations, translations)
 }
 
 lbLocale::~lbLocale() {
@@ -117,7 +117,6 @@ void LB_STDCALL lbLocale::setLanguage(char const * lang) {
 
 void LB_STDCALL lbLocale::setTranslationData(lb_I_Unknown* uk) {
 	lbErrCodes err = ERR_NONE;
-	
 	QI(uk, lb_I_Translations, translations)
 }
 
@@ -214,7 +213,7 @@ void LB_STDCALL lbLocale::translate(char ** text, char const * to_translate) {
 			strcpy(*text, to_translate);
 			_LOG << "Translation for '" << *text << "' not found." LOG_
 		} else {
-	        UAP_REQUEST(manager.getPtr(), lb_I_String, s1)
+		        UAP_REQUEST(manager.getPtr(), lb_I_String, s1)
 			char* temp = *text;
 			
 			*s1 = translations->getTranslationTranslated();

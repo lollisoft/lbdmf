@@ -1050,7 +1050,7 @@ lbErrCodes      LB_STDCALL lbBoundColumns::setString(char* column, lb_I_String* 
 int		LB_STDCALL lbBoundColumns::getMode() {
 	return query->isAdding();
 }
-/*...e*/
+
 /*...sclass lbQuery:0:*/
 
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbQuery)

@@ -126,11 +126,13 @@
    #undef malloc
    #undef free
    #undef realloc
+   #undef memset
 
    #define malloc TRMemAlloc
    #define free TRMemFree
    #define realloc TRMemRealloc
    #define strdup TRMemStrdup
+   #define memset TRMemSet
   #endif
 
   #ifdef USE_MPATROL
@@ -142,11 +144,13 @@
    #define TRMemSetModuleName(name)
    #define TRMemSetAdrBreakPoint(ptr, c)
   #endif
+  
+#define _TRMemValidate(name) (TRMemValidate(name) == 1)
 
  #endif // MEMTRACK
 
  #ifndef MEMTRACK
-  #define TRMemValidate(name) (name != NULL)
+  #define _TRMemValidate(name) (name != NULL)
   #define TRMemOpen()
   #define TRMemStartLocalCount()
   #define TRMemStopLocalCount()
@@ -164,7 +168,7 @@
 
 #ifdef OSX
  #ifndef MEMTRACK
-  #define TRMemValidate(name) 1
+  #define _TRMemValidate(name) 1
    #define TRMemStartLocalCount()
    #define TRMemStopLocalCount()
    #define TRMemResetLocalCount()

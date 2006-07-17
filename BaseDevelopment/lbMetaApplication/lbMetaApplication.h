@@ -30,11 +30,19 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.40 $
+ * $Revision: 1.41 $
  * $Name:  $
- * $Id: lbMetaApplication.h,v 1.40 2006/07/02 13:25:57 lollisoft Exp $
+ * $Id: lbMetaApplication.h,v 1.41 2006/07/17 17:37:45 lollisoft Exp $
  *
  * $Log: lbMetaApplication.h,v $
+ * Revision 1.41  2006/07/17 17:37:45  lollisoft
+ * Changes dueto bugfix in plugin manager. Repeadable iterator problem.
+ * Not correctly finished the iteration, thus plugins in the same DLL wouldn't
+ * be found any more after first query.
+ *
+ * Code works well with improved trmem library, but there is still a crash in
+ * database classes (pgODBC library).
+ *
  * Revision 1.40  2006/07/02 13:25:57  lollisoft
  * Added active document support.
  *
@@ -315,11 +323,11 @@ public:
 	bool LB_STDCALL login(const char* user, const char* pass);
 	lb_I_Container* LB_STDCALL getApplications();
 	long LB_STDCALL getApplicationID();
-	
-	void			LB_STDCALL setActiveApplication(const char* name);
+
+	void		LB_STDCALL setActiveApplication(const char* name);
 	
 	lb_I_Unknown*	LB_STDCALL getActiveDocument();
-	void			LB_STDCALL setActiveDocument(lb_I_Unknown* doc);
+	void		LB_STDCALL setActiveDocument(lb_I_Unknown* doc);
 
 	
 protected:
@@ -344,6 +352,8 @@ protected:
 	UAP(lb_I_UserAccounts, Users)
 	/// \brief Users to Applications mapping stored in file or database.
 	UAP(lb_I_User_Applications, User_Applications)
+
+	
 
 	bool _autoload;
 	bool _autorefresh;

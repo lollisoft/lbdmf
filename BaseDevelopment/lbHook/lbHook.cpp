@@ -361,6 +361,14 @@ _Modules *findModule(const char* name) {
 } 
 /*...e*/
 
+void destroyModuleStructure(_Modules* m) {
+	if (m->next) {
+		destroyModuleStructure(m->next);
+	}
+	free(m->name);
+	delete m;
+}
+
 DLLEXPORT void LB_STDCALL lbBreak() {
 
 #ifdef LINUX
@@ -587,7 +595,7 @@ T_p_getlbModuleInstance DLL_GETMODULEINSTANCE;
 	
 #ifdef WINDOWS
 #ifndef _MSC_VER
-	char* temp = new char [strlen(functor)+2];
+	char* temp = (char*) malloc(strlen(functor)+2);
 	temp[0] = 0;
 	strcat(temp, "_");
 	strcat(temp, functor);
@@ -620,7 +628,7 @@ T_p_getlbModuleInstance DLL_GETMODULEINSTANCE;
 	
 #ifdef WINDOWS
 #ifndef _MSC_VER
-	if (temp) delete [] temp;
+	if (temp) free((void*)temp);
 	functor = NULL;
 #endif
 #endif
@@ -1216,7 +1224,8 @@ BOOL WINAPI DllMain(HINSTANCE dllHandle, DWORD reason, LPVOID situation) {
 			if (translated) free(translated);
 			if (lbLogDirectory) free(lbLogDirectory);
 			if (lbLogFile) free(lbLogFile);
-			
+
+			if (loadedModules) destroyModuleStructure(loadedModules);
                 	
                 	_CL_VERBOSE << "DLL_PROCESS_DETACH for " << __FILE__ LOG_
                         if (situation)
