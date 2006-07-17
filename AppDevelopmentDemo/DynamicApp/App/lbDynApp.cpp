@@ -398,6 +398,7 @@ lb_I_EventManager* LB_STDCALL lbDynamicApplication::getEVManager( void ) {
 	return NULL;
 }
 /*...e*/
+/*...slbErrCodes LB_STDCALL lbDynamicApplication\58\\58\uninitialize\40\\41\:0:*/
 lbErrCodes LB_STDCALL lbDynamicApplication::uninitialize() {
 		lbErrCodes err = ERR_NONE;
 		
@@ -469,13 +470,14 @@ lbErrCodes LB_STDCALL lbDynamicApplication::uninitialize() {
 
 	return ERR_NONE;
 }
+/*...e*/
 /*...slbErrCodes LB_STDCALL lbDynamicApplication\58\\58\initialize\40\char\42\ user \61\ NULL\44\ char\42\ app \61\ NULL\41\:0:*/
 lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
-	
+	_CL_LOG << "lbDynamicApplication::initialize(...) called." LOG_	
 	// To be implemented in a separate application module
 	lbErrCodes err = ERR_NONE;
 	int unused;
-	
+
 	// Get the event manager
 	
 	lb_I_Module* m = *&manager;
@@ -507,6 +509,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 		}
 	LogonApplication->setData(app);
 	
+/*...sifdef USE_RDCD_MODEL:0:*/
 #ifdef USE_RDCD_MODEL
 	// -------------------------------------------------------------------------
 	// I plan to use an object model to be used instead. The object model should
@@ -521,7 +524,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 	UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
 	UAP(lb_I_Plugin, pl)
 	UAP(lb_I_Unknown, ukPl)
-		
+	
 	pl = PM->getFirstMatchingPlugin("lb_I_RDCDModel", "RDCDModel");
 	
 	if (pl != NULL) {
@@ -566,6 +569,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 	}
 	
 #endif		
+/*...e*/
 	
 	UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
 	UAP(lb_I_Plugin, pl)
@@ -582,12 +586,24 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 	
 	UAP(lb_I_FileOperation, fOp)
 	UAP(lb_I_DatabaseOperation, fOpDB)
-		
+
+	_CL_LOG << "Try to find a lb_I_FileOperation plugin ..." LOG_
 	pl = PM->getFirstMatchingPlugin("lb_I_FileOperation", "InputStreamVisitor");
-	if (pl != NULL)	ukPl = pl->getImplementation();
+	
+	if (pl != NULL)	{
+		_CL_LOG << "Found one ..." LOG_
+		ukPl = pl->getImplementation();
+	} else {
+		_CL_LOG << "Didn't found such a plugin." LOG_	
+	}
+	
 	if (ukPl != NULL) QI(ukPl, lb_I_FileOperation, fOp)
-	isFileAvailable = fOp->begin(filename->charrep()); 
-				
+	if (fOp == NULL) {
+		_CL_LOG << "Didn't found such a plugin." LOG_
+	} else {
+		isFileAvailable = fOp->begin(filename->charrep()); 
+	}
+			
 	UAP_REQUEST(manager.getPtr(), lb_I_Database, database)
 	UAP(lb_I_Query, sampleQuery)
 		
@@ -612,7 +628,11 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 		
 	}
 	
+	_CL_LOG << "Load application settings from file or database ..." LOG_
+	
 	if (isFileAvailable || isDBAvailable) {
+/*...sLoad from file or database:16:*/
+/*...sInitialize plugin based document models:32:*/
 		UAP(lb_I_Plugin, plFormulars)
 		UAP(lb_I_Unknown, ukPlFormulars)
 		UAP(lb_I_Plugin, plFormParams)
@@ -703,6 +723,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 		} else {
 			_LOG << "Warning: No application parameter datamodel plugin implementation found." LOG_
 		}
+/*...e*/
 		
 		if (!DBOperation && 
 			(forms != NULL) && 
@@ -757,34 +778,44 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 			(appActionTypes != NULL) && 
 			(appParams != NULL)) {
 			
+			UAP(lb_I_Unknown, uk)
+			
 			*name = "Formulars";
-			document->insert(&forms, &key);
+			QI(forms, lb_I_Unknown, uk)
+			document->insert(&uk, &key);
 			
 			*name = "FormParams";
-			document->insert(&formParams, &key);
+			QI(formParams, lb_I_Unknown, uk)
+			document->insert(&uk, &key);
 			
 			*name = "AppParams";
-			document->insert(&appParams, &key);
+			QI(appParams, lb_I_Unknown, uk)
+			document->insert(&uk, &key);
 			
 			*name = "AppActions";
-			document->insert(&appActions, &key);
+			QI(appActions, lb_I_Unknown, uk)
+			document->insert(&uk, &key);
 			
 			*name = "AppActionSteps";
-			document->insert(&appActionSteps, &key);
+			QI(appActionSteps, lb_I_Unknown, uk)
+			document->insert(&uk, &key);
 			
 			*name = "AppActionTypes";
-			document->insert(&appActionTypes, &key);
+			QI(appActionTypes, lb_I_Unknown, uk)
+			document->insert(&uk, &key);
 		}		
 		*name = "ApplicationData";
 		param->setUAPContainer(*&name, *&document);
 		
 		param++;
 		metaapp->setActiveDocument(*&param);
+/*...e*/
 	} else {
 		// No file found. Create one from database...
 	}
 	
-	
+	_CL_LOG << "Begin setup menu ..." LOG_
+		
 	/*
 	 Select all events, that are configured and register it.
 	 */
