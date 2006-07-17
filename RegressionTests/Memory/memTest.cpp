@@ -245,9 +245,11 @@ int main(int argc, char *argv[]) {
 	printf("2. lbModule instance has %d references.\n", mm->getRefCount());
 
 #define MEM_TEST
-#define CONTAINER_TEST
+//#define CONTAINER_TEST
+//#define CLONE_TEST
 //#define ACCESS_TEST
 
+/*...sMEM_TEST:0:*/
 #ifdef MEM_TEST
 
 	{
@@ -259,6 +261,7 @@ int main(int argc, char *argv[]) {
 	
 		for (int i = 0; i < 50; i++) {
 			UAP_REQUEST(mm, lb_I_String, string)
+			printf("4a. lbModule instance has %d references.\n", mm->getRefCount());
 			string->setData("Test");
 		}
 
@@ -267,6 +270,8 @@ int main(int argc, char *argv[]) {
 
 	Instances();
 #endif
+/*...e*/
+
 	{
 
 		printf("5. lbModule instance has %d references.\n", mm->getRefCount());
@@ -290,8 +295,8 @@ int main(int argc, char *argv[]) {
 	
 		container->deleteAll();
 
-		#ifdef CONTAINER_TEST
-/*...sContainer test:16:*/
+/*...sCONTAINER_TEST:16:*/
+	#ifdef CONTAINER_TEST
 
 	container->insert(&uk, &key);
 	string->setData("Bla1");
@@ -317,69 +322,70 @@ int main(int argc, char *argv[]) {
 	container->insert(&uk, &key);
 	
 	string->setData("Bla3");
+	#endif
 /*...e*/
-		#endif
 
-	UAP(lb_I_Container, clone)
+/*...sCLONE_TEST:16:*/
+		#ifdef CLONE_TEST
+		UAP(lb_I_Container, clone)
 	
-	uk = container->clone(__FILE__, __LINE__);
+		uk = container->clone(__FILE__, __LINE__);
+		QI(uk, lb_I_Container, clone)
 
-	QI(uk, lb_I_Container, clone)
-
-	for (int i = 1; i <= clone->Count(); i++) {
-		UAP(lb_I_Unknown, uk)
-		UAP(lb_I_String, s)
-		
-		uk = clone->getElementAt(i);
-		
-		QI(uk, lb_I_String, s)
-		
-		_CL_LOG << "Key: " << clone->getKeyAt(i)->charrep() << ", Data: " << s->charrep() LOG_
-	}
-
-
-		#ifdef ACCESS_TEST
-/*...sContainer access and search test:16:*/
-{
-	UAP(lb_I_Unknown, ukdata)
-
-	UAP(lb_I_String, s)
-
-	ukdata = container->getElement(&key);
-	if (ukdata == NULL) printf("NULL pointer!\n");
-
-	QI(ukdata, lb_I_String, s)
-
-	UAP(lb_I_String, s1)
-
-	ukdata = container->getElement(&key);
-	if (ukdata == NULL) printf("NULL pointer!\n");
-
-	QI(ukdata, lb_I_String, s1)
-
-	s1->setData("Changed");
-	char* cp1 = s1->getData();
-	char* cp = s->getData();
-
-	printf("Have changed s1 from Bla3 to %s. s is %s\n", cp1, cp);
-	if (s != NULL) printf("Found string %s\n", s->getData());
-
-	printf("Try to dump content of container\n");	
-	while (container->hasMoreElements() == 1) {
-		UAP(lb_I_Unknown, e)
-		e = container->nextElement();
-		if (e != NULL) {
+		for (int i = 1; i <= clone->Count(); i++) {
+			UAP(lb_I_Unknown, uk)
 			UAP(lb_I_String, s)
+		
+			uk = clone->getElementAt(i);
 			
-			QI(e, lb_I_String, s)
-						
-			printf("String is: %s\n", s->getData());
+			QI(uk, lb_I_String, s)
+		
+			_CL_LOG << "Key: " << clone->getKeyAt(i)->charrep() << ", Data: " << s->charrep() LOG_
+		}
+		#endif
+/*...e*/
+
+/*...sACCESS_TEST:16:*/
+	#ifdef ACCESS_TEST
+	{
+		UAP(lb_I_Unknown, ukdata)
+
+		UAP(lb_I_String, s)
+	
+		ukdata = container->getElement(&key);
+		if (ukdata == NULL) printf("NULL pointer!\n");
+
+		QI(ukdata, lb_I_String, s)
+	
+		UAP(lb_I_String, s1)
+	
+		ukdata = container->getElement(&key);
+		if (ukdata == NULL) printf("NULL pointer!\n");
+	
+		QI(ukdata, lb_I_String, s1)
+
+		s1->setData("Changed");
+		char* cp1 = s1->getData();
+		char* cp = s->getData();
+	
+		printf("Have changed s1 from Bla3 to %s. s is %s\n", cp1, cp);
+		if (s != NULL) printf("Found string %s\n", s->getData());
+	
+		printf("Try to dump content of container\n");	
+		while (container->hasMoreElements() == 1) {
+			UAP(lb_I_Unknown, e)
+			e = container->nextElement();
+			if (e != NULL) {
+				UAP(lb_I_String, s)
+				
+				QI(e, lb_I_String, s)
+							
+				printf("String is: %s\n", s->getData());
+			}
 		}
 	}
-}
-
+	#endif
 /*...e*/
-		#endif
 
 		container->deleteAll();
 
@@ -388,6 +394,8 @@ int main(int argc, char *argv[]) {
 	printf("lbModule instance has %d references.\n", mm->getRefCount());
 
 	Instances();
+	
+	getchar();
 	
 	return 0;
 }
