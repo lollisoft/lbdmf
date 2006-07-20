@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.110 $
+ * $Revision: 1.111 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.110 2006/07/17 17:37:45 lollisoft Exp $
+ * $Id: lbModule.cpp,v 1.111 2006/07/20 17:43:23 lollisoft Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.111  2006/07/20 17:43:23  lollisoft
+ * Bugfix for stack overflow. Too many char[] arrays on the stack.
+ *
  * Revision 1.110  2006/07/17 17:37:45  lollisoft
  * Changes dueto bugfix in plugin manager. Repeadable iterator problem.
  * Not correctly finished the iteration, thus plugins in the same DLL wouldn't
@@ -2578,7 +2581,8 @@ void LB_STDCALL lbModule::printReferences(char* addr) {
 /*...svoid LB_STDCALL lbModule\58\\58\notify_create\40\lb_I_Unknown\42\ that\44\ char\42\ implName\44\ char\42\ file\44\ int line\41\:0:*/
 void LB_STDCALL lbModule::notify_create(lb_I_Unknown* that, char* implName, char* file, int line) {
 #ifdef IR_USAGE
-        char buf[1000] = "";
+        char* buf = (char*) malloc(1000);
+        buf[0] = 0;
         char addr[20] = "";
         sprintf(addr, "%p", (void*) that);
         
@@ -2595,6 +2599,7 @@ void LB_STDCALL lbModule::notify_create(lb_I_Unknown* that, char* implName, char
 #ifdef VERBOSE
         _CL_VERBOSE << "lbModule::notify_create() called" LOG_
 #endif
+	free(buf);
 #endif
 }
 /*...e*/
@@ -3168,8 +3173,9 @@ lbErrCodes LB_STDCALL lbModule::getFunctors(char* interfacename, lb_I_ConfigObje
 /*...e*/
 /*...slbErrCodes lbModule\58\\58\makeInstance\40\char\42\ functor\44\ char\42\ module\44\ lb_I_Unknown\42\\42\ instance\41\:0:*/
 lbErrCodes LB_STDCALL lbModule::makeInstance(char* functor, char* module, lb_I_Unknown** instance) {
-char msg[1000] = "";
-lbErrCodes err = ERR_NONE;
+	char* msg = (char*) malloc(1000);
+	msg[0] = 0;
+	lbErrCodes err = ERR_NONE;
                         /**
                          * ModuleHandle is the result for this loaded module.
                          */
@@ -3192,7 +3198,7 @@ lbErrCodes err = ERR_NONE;
                                 _LOG << "Error: Could not load the module '" << _module << "'" LOG_
                                 
                                 free(_module);
-                                
+                                free(msg);
                                 return err; 
                         }
 
@@ -3202,7 +3208,7 @@ lbErrCodes err = ERR_NONE;
 
                         if ((err = lbGetFunctionPtr(functor, getModuleHandle(), (void**) &DLL_LB_GET_UNKNOWN_INSTANCE)) != ERR_NONE) {
                                 free(_module);
-                                
+                                free(msg);
                                 return err;
                         } else {
                                 err = DLL_LB_GET_UNKNOWN_INSTANCE(instance, this, __FILE__, __LINE__);
@@ -3212,7 +3218,7 @@ lbErrCodes err = ERR_NONE;
                                 	_CL_VERBOSE << "Could not get an instance of type " << instance << " !" LOG_
                                 	
                                 	free(_module);
-                                	
+                                	free(msg);
                                 	return err;
                                 }
                                 if ((*instance) == NULL) _CL_VERBOSE << "Something goes wrong while calling functor" LOG_
@@ -3222,6 +3228,7 @@ lbErrCodes err = ERR_NONE;
                         }
 
 	free (_module);
+	free(msg);
         return ERR_NONE;
 }
 /*...e*/
@@ -3412,7 +3419,8 @@ typedef struct instances_of_module {
  */
 lbErrCodes LB_STDCALL lbModule::request(const char* request, lb_I_Unknown** result) {
         lbErrCodes err = ERR_NONE;
-        char buf[1000] = "";
+        char* buf = (char*) malloc(1000);
+        buf[0] = 0;
         if (moduleList == NULL) {
         	_CL_VERBOSE << "lbModule::request(...) calls initialize()." LOG_
                 initialize();
@@ -3443,6 +3451,7 @@ lbErrCodes LB_STDCALL lbModule::request(const char* request, lb_I_Unknown** resu
 
 		if (functor == NULL || module == NULL) {
 			_LOG << "Error: Requested interface (" << request << ") not found in repository!" LOG_
+			free(buf);
 			return ERR_MODULE_NO_INTERFACE;
 		}
 		
@@ -3462,9 +3471,9 @@ lbErrCodes LB_STDCALL lbModule::request(const char* request, lb_I_Unknown** resu
 #ifndef USE_INTERFACE_REPOSITORY        
 /*...sget my unknown interface:8:*/
         if (strcmp(request, "instance/XMLConfig") == 0) {
-printf("Get unknown interface of XMLConfig object\n");                
+		printf("Get unknown interface of XMLConfig object\n");                
                 xml_Instance->queryInterface("lb_I_Unknown", (void**) result, __FILE__, __LINE__);
-                
+		free(buf);                
                 return ERR_NONE;
         }
 /*...e*/
@@ -3555,6 +3564,7 @@ printf("Get unknown interface of XMLConfig object\n");
 
                         if (value == NULL) {
                                 _CL_VERBOSE << "return ERR_MODULE_NO_INTERFACE" LOG_
+                                free(buf);
                                 return ERR_MODULE_NO_INTERFACE;
                         }
                         if (strcmp(request, value) != 0) {
@@ -3563,6 +3573,7 @@ printf("Get unknown interface of XMLConfig object\n");
                                 if (value != NULL) {
                                         impl->deleteValue(value);
                                 }
+                                free(buf);
                                 return ERR_MODULE_NO_INTERFACE;
                         }
                         if (value != NULL) {
@@ -3593,6 +3604,7 @@ printf("Get unknown interface of XMLConfig object\n");
         }
         if (functorName != NULL) impl->deleteValue(functorName);
 #endif
+	free(buf);
         return ERR_NONE;
 }
 /*...e*/
