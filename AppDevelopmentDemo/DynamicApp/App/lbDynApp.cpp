@@ -192,16 +192,19 @@ _CL_LOG << "Create formular with new data model." LOG_
 				}
 			}
 			
-			// Design could not be used directly on stack. Create a copy of the value.
-			*DBName = appParams->getParameter("DBName", metaapp->getApplicationID());
-			*DBUser = appParams->getParameter("DBUser", metaapp->getApplicationID());
-			*DBPass = appParams->getParameter("DBPass", metaapp->getApplicationID());
+			// appParams->getParameter() changes results to prior issued calls. Do temporaly make copies.
+			
+			long id = metaapp->getApplicationID();			
+			
+			*DBName = appParams->getParameter("DBName", id);
+			*DBUser = appParams->getParameter("DBUser", id);
+			*DBPass = appParams->getParameter("DBPass", id);
 		
 			dbForm = gui->createDBForm(	forms->getName(),
-										formParams->getParameter("query", forms->getFormularID()), 
-										DBName->charrep(), 
-										DBUser->charrep(), 
-										DBPass->charrep());
+							formParams->getParameter("query", forms->getFormularID()), 
+							DBName->charrep(), 
+							DBUser->charrep(), 
+							DBPass->charrep());
 										
 			if (dbForm != NULL) dbForm->show();
 		} else {
@@ -594,12 +597,12 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 		_CL_LOG << "Found one ..." LOG_
 		ukPl = pl->getImplementation();
 	} else {
-		_CL_LOG << "Didn't found such a plugin." LOG_	
+		_LOG << "No lb_I_FileOperation plugin available." LOG_	
 	}
 	
 	if (ukPl != NULL) QI(ukPl, lb_I_FileOperation, fOp)
 	if (fOp == NULL) {
-		_CL_LOG << "Didn't found such a plugin." LOG_
+		_LOG << "Error: Found a lb_I_FileOperation plugin via PM->getFirstMatchingPlugin(...), but QI failed." LOG_
 	} else {
 		isFileAvailable = fOp->begin(filename->charrep()); 
 	}
@@ -809,6 +812,10 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 		
 		param++;
 		metaapp->setActiveDocument(*&param);
+
+		int id = metaapp->getApplicationID();
+		
+		_LOG << "Test for application ID: " << id LOG_
 /*...e*/
 	} else {
 		// No file found. Create one from database...
