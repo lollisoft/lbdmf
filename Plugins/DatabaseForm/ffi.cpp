@@ -118,7 +118,9 @@ FormularFieldInformation::FormularFieldInformation(char const * formularname, lb
 
 	char buf[] = "select tablename, name, specialcolumn, controltype, ro from column_types";
 
+	ROquery->skipFKCollecting();
 	ROquery->query(buf);
+	ROquery->enableFKCollecting();
 	
 	err = ROquery->first();
 
