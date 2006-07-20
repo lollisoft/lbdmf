@@ -31,11 +31,16 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.95 $
+ * $Revision: 1.96 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.95 2006/07/17 17:37:45 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.96 2006/07/20 17:41:15 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.96  2006/07/20 17:41:15  lollisoft
+ * Bugfix for stack overflow. Too many char[] arrays on the stack.
+ * Corrected missing entries in Applications list. It wasn't correctly
+ * setup while manual login. Thus, later not stored.
+ *
  * Revision 1.95  2006/07/17 17:37:45  lollisoft
  * Changes dueto bugfix in plugin manager. Repeadable iterator problem.
  * Not correctly finished the iteration, thus plugins in the same DLL wouldn't
@@ -593,10 +598,13 @@ lbErrCodes LB_STDCALL lb_MetaApplication::save() {
 			ukPl2 = pl2->getImplementation();
 			QI(ukPl2, lb_I_UserAccounts, Users)
 			
-			_CL_LOG << "Save default user data ..." LOG_
+			_LOG << "Save default user data ..." LOG_
 	}
 	
-	if (Users != NULL) Users->accept(*&fOp1);
+	if (Users != NULL) {
+		_LOG << "lb_MetaApplication::save(): Save Users list." LOG_
+		Users->accept(*&fOp1);
+	}
 
 	if (Applications == NULL) {
 			UAP(lb_I_Plugin, pl3)
@@ -605,10 +613,13 @@ lbErrCodes LB_STDCALL lb_MetaApplication::save() {
 			ukPl3 = pl3->getImplementation();
 			QI(ukPl3, lb_I_Applications, Applications)
 			
-			_CL_LOG << "Save default application data ..." LOG_
+			_LOG << "Save default application data ..." LOG_
 	}
 	
-	if (Applications != NULL) Applications->accept(*&fOp1);
+	if (Applications != NULL) {
+		_LOG << "lb_MetaApplication::save(): Save Applications list." LOG_
+		Applications->accept(*&fOp1);
+	}
 				
 	if (User_Applications == NULL) {
 			UAP(lb_I_Plugin, pl4)
@@ -617,10 +628,13 @@ lbErrCodes LB_STDCALL lb_MetaApplication::save() {
 			ukPl4 = pl4->getImplementation();
 			QI(ukPl4, lb_I_User_Applications, User_Applications)
 			
-			_CL_LOG << "Save default user - application data ..." LOG_
+			_LOG << "Save default user - application data ..." LOG_
 	}
 	
-	if (User_Applications != NULL) User_Applications->accept(*&fOp1);
+	if (User_Applications != NULL) {
+		_LOG << "lb_MetaApplication::save(): Save User_Applications list." LOG_
+		User_Applications->accept(*&fOp1);
+	}
 				
 	fOp1->end();		
 
@@ -691,7 +705,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::load() {
 			
 			return ERR_NONE;
 		} else {
-			_CL_LOG << "Error: Could not load stream operator classes!" LOG_
+			_LOG << "lb_MetaApplication::load() Error: Could not get lb_I_FileOperation plugin !" LOG_
 		}
 	} else {
 		_CL_LOG << "Error: Could not load stream operator classes!" LOG_
@@ -1009,6 +1023,7 @@ bool       LB_STDCALL lb_MetaApplication::getAutoselect() {
 	return _autoselect;
 }
 
+/*...slbErrCodes LB_STDCALL lb_MetaApplication\58\\58\propertyChanged\40\lb_I_Unknown\42\ uk\41\:0:*/
 lbErrCodes LB_STDCALL lb_MetaApplication::propertyChanged(lb_I_Unknown* uk) {
 	lbErrCodes err = ERR_NONE;
 	
@@ -1062,7 +1077,9 @@ lbErrCodes LB_STDCALL lb_MetaApplication::propertyChanged(lb_I_Unknown* uk) {
 	
 	return err;
 }
+/*...e*/
 
+/*...slb_I_Parameter\42\ LB_STDCALL lb_MetaApplication\58\\58\getParameter\40\\41\:0:*/
 lb_I_Parameter* LB_STDCALL lb_MetaApplication::getParameter() {
 	// Build up a preferences object and pass it to the property view
 	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
@@ -1099,7 +1116,7 @@ lb_I_Parameter* LB_STDCALL lb_MetaApplication::getParameter() {
 
 	return param.getPtr();
 }
-
+/*...e*/
 
 // This starts the main application
 
@@ -1177,7 +1194,8 @@ lbErrCodes LB_STDCALL lb_MetaApplication::loadApplication(char* user, char* appl
 			
 			sampleQuery = database->getQuery(0);
 			
-			char buffer[1000] = "";
+			char* buffer = (char*) malloc(1000);
+			buffer[0] = 0;
 			
 			sprintf(buffer,
 					"select Anwendungen.modulename, Anwendungen.functor, Anwendungen.interface from Anwendungen inner join User_Anwendungen on "
@@ -1197,17 +1215,18 @@ lbErrCodes LB_STDCALL lb_MetaApplication::loadApplication(char* user, char* appl
 			sampleQuery->query(buffer);
 			sampleQuery->enableFKCollecting();
 			
+			free(buffer);
 			
 			// Fill up the available applications for that user.
 			UAP_REQUEST(manager.getPtr(), lb_I_String, ModuleName)
-				UAP_REQUEST(manager.getPtr(), lb_I_String, Functor)
+			UAP_REQUEST(manager.getPtr(), lb_I_String, Functor)
 				
-				lbErrCodes DBerr = sampleQuery->first();
+			lbErrCodes DBerr = sampleQuery->first();
 			
 			if ((DBerr == ERR_NONE) || (DBerr == WARN_DB_NODATA)) {
 				
 		        ModuleName = sampleQuery->getAsString(1);
-				Functor = sampleQuery->getAsString(2);
+			Functor = sampleQuery->getAsString(2);
 				
 		        applicationName = (char*) malloc(strlen(ModuleName->charrep())+1);
 		        applicationName[0] = 0;
@@ -1231,7 +1250,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::loadApplication(char* user, char* appl
 #define PREFIX ""
 #endif
 				
-				char f[100] = "";
+			char f[100] = "";
 			char appl[100] = "";
 			
 			strcpy(f, PREFIX);
@@ -1265,14 +1284,14 @@ lbErrCodes LB_STDCALL lb_MetaApplication::loadApplication(char* user, char* appl
 			
 			QI(a, lb_I_Application, app)
 				
-				//if (dispatcher.getPtr() == NULL) _LOG << "Error: dispatcher is NULL" LOG_
+			//if (dispatcher.getPtr() == NULL) _LOG << "Error: dispatcher is NULL" LOG_
 				
-				app->setGUI(gui);
+			app->setGUI(gui);
 			app->initialize(user, application);
 			
 			_CL_LOG << "Meta application has " << app->getRefCount() << " references." LOG_
-				
-				free(applicationName);
+			
+			free(applicationName);
 		}
 		
 		//if (dispatcher.getPtr() == NULL) _LOG << "Error: dispatcher has been set to NULL" LOG_
@@ -1311,14 +1330,14 @@ lbErrCodes LB_STDCALL lb_MetaApplication::loadApplication(char* user, char* appl
 		
 		QI(a, lb_I_MetaApplication, app)
 			
-			if (dispatcher.getPtr() == NULL) _LOG << "Error: dispatcher is NULL" LOG_
+		if (dispatcher.getPtr() == NULL) _LOG << "Error: dispatcher is NULL" LOG_
 				
-				app->setGUI(gui);
+		app->setGUI(gui);
 		app->initialize();
 		
 		_CL_LOG << "Meta application has " << app->getRefCount() << " references." LOG_
 			
-			if (dispatcher.getPtr() == NULL) _LOG << "Error: dispatcher has been set to NULL" LOG_
+		if (dispatcher.getPtr() == NULL) _LOG << "Error: dispatcher has been set to NULL" LOG_
 	}
 		
         return ERR_NONE;
@@ -1767,7 +1786,12 @@ long LB_STDCALL lb_MetaApplication::getApplicationID() {
 		
 		return Applications->getApplicationID();
 	} else {
-		_CL_LOG << "Error: This should not happen." LOG_
+		if (!_logged_in) {
+			_LOG << "Error: lb_MetaApplication::getApplicationID() returns 0, because user is not logged in." LOG_
+		}
+		if (Applications->getApplicationCount() <= 0) {
+			_LOG << "Error: lb_MetaApplication::getApplicationID() returns 0, because the application count of Applications is 0." LOG_
+		}
 		return 0;
 	}
 }
@@ -1805,9 +1829,11 @@ void			LB_STDCALL lb_MetaApplication::setActiveDocument(lb_I_Unknown* doc) {
 	_CL_LOG << "Inserted document has " << ukDoc->getRefCount() << " references." LOG_
 }
 
+/*...slb_I_Container\42\ LB_STDCALL lb_MetaApplication\58\\58\getApplications\40\\41\:0:*/
 lb_I_Container* LB_STDCALL lb_MetaApplication::getApplications() {
 	lbErrCodes err = ERR_NONE;
-	UAP_REQUEST(manager.getPtr(), lb_I_Container, apps)
+	
+	UAP_REQUEST(getModuleInstance(), lb_I_Container, apps)
 	
 	if (Applications->getApplicationCount() == 0) {
 		// Maybe no data collected in the file yet
@@ -1827,7 +1853,8 @@ lb_I_Container* LB_STDCALL lb_MetaApplication::getApplications() {
 
 		if (err != ERR_NONE) {
 			_LOG << "Error: No database connection built up. Could not use database logins." LOG_
-			return FALSE;
+			apps++;
+			return apps.getPtr();
 		}
 		
 		UAP_REQUEST(manager.getPtr(), lb_I_PluginManager, PM)
@@ -1836,6 +1863,8 @@ lb_I_Container* LB_STDCALL lb_MetaApplication::getApplications() {
 		UAP(lb_I_Unknown, ukPl)
 			
 		pl = PM->getFirstMatchingPlugin("lb_I_DatabaseOperation", "DatabaseInputStreamVisitor");
+		
+		bool hasDBLoaded = false;
 		
 		if (pl != NULL) {
 			ukPl = pl->getImplementation();
@@ -1855,74 +1884,103 @@ lb_I_Container* LB_STDCALL lb_MetaApplication::getApplications() {
 				User_Applications->accept(*&fOp);
 							
 				fOp->end();
+				
+				save(); // Late save
+				
+				while (Applications->hasMoreApplications()) {
+					UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+					UAP(lb_I_KeyBase, key)
+					UAP(lb_I_Unknown, ukName)
+					
+					Applications->setNextApplication();
+					
+					*name = Applications->getApplicationName();
+					
+					QI(name, lb_I_KeyBase, key)
+					QI(name, lb_I_Unknown, ukName)
+					
+					apps->insert(&ukName, &key);
+				}
+				
+				Applications->finishApplicationIteration();
+				hasDBLoaded = true;
 			} else {
-				_CL_LOG << "Error: Could not load database stream operator classes!" LOG_
+				_LOG << "Error: Could not load database stream operator classes!" LOG_
 			}
 		} else {
-			_CL_LOG << "Error: Could not load database stream operator classes!" LOG_
+			_LOG << "Error: No database stream operation found.!" LOG_
 		}
 		
 		// A first preload of the applications is ignored yet.
 
-		sampleQuery = database->getQuery(0);
+/*...sLoad by direct SQL queries\44\ if all above fails:16:*/
+		if (!hasDBLoaded) {
 
-		char buffer[800] = "";
+			sampleQuery = database->getQuery(0);
 
-		sprintf(buffer, 
-			"select Anwendungen.name from Anwendungen inner join User_Anwendungen on "
-			"Anwendungen.id = User_Anwendungen.anwendungenid "
-			"inner join Users on User_Anwendungen.userid = Users.id where "
-			"Users.userid = '%s'"
-				, LogonUser->charrep());
+			char* buffer = (char*) malloc(1000);
+			buffer[0] = 0;
+
+			sprintf(buffer, 
+				"select Anwendungen.name from Anwendungen inner join User_Anwendungen on "
+				"Anwendungen.id = User_Anwendungen.anwendungenid "
+				"inner join Users on User_Anwendungen.userid = Users.id where "
+				"Users.userid = '%s'"
+					, LogonUser->charrep());
 
 
-		sampleQuery->skipFKCollecting();
-		sampleQuery->query(buffer);
-		sampleQuery->enableFKCollecting();
+			sampleQuery->skipFKCollecting();
+			sampleQuery->query(buffer);
+			sampleQuery->enableFKCollecting();
+			
+			free(buffer);
 	
-		lbErrCodes err = sampleQuery->first();
+			lbErrCodes err = sampleQuery->first();
 
-		if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
+/*...sLoop through:40:*/
+			if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
 
-			UAP_REQUEST(manager.getPtr(), lb_I_String, S1)	
-			UAP(lb_I_KeyBase, key)
-			UAP(lb_I_Unknown, uk_S1)
+				UAP_REQUEST(manager.getPtr(), lb_I_String, S1)	
+				UAP(lb_I_KeyBase, key)
+				UAP(lb_I_Unknown, uk_S1)
 			
-			S1 = sampleQuery->getAsString(1);
-			QI(S1, lb_I_KeyBase, key)
-			QI(S1, lb_I_Unknown, uk_S1)
+				S1 = sampleQuery->getAsString(1);
+				QI(S1, lb_I_KeyBase, key)
+				QI(S1, lb_I_Unknown, uk_S1)
 			
-			apps->insert(&uk_S1, &key);
-
-			while (err == ERR_NONE) {
-				lbErrCodes err = sampleQuery->next();
-				
-				if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
-					S1 = sampleQuery->getAsString(1);
-					QI(S1, lb_I_KeyBase, key)
-					QI(S1, lb_I_Unknown, uk_S1)
-			
-					apps->insert(&uk_S1, &key);
+				apps->insert(&uk_S1, &key);
+	
+				while (err == ERR_NONE) {
+					lbErrCodes err = sampleQuery->next();
 					
-					if (err == WARN_DB_NODATA) {
-						break;
+					if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
+						S1 = sampleQuery->getAsString(1);
+						QI(S1, lb_I_KeyBase, key)
+						QI(S1, lb_I_Unknown, uk_S1)
+				
+						apps->insert(&uk_S1, &key);
+					
+						if (err == WARN_DB_NODATA) {
+							break;
+						}
+					}
+				
+					if (err == ERR_DB_NODATA) {
+					        //box->SetSelection(0);
+					        break;
 					}
 				}
-				
-				if (err == ERR_DB_NODATA) {
-				        //box->SetSelection(0);
-				        break;
-				}
-			}
 
+			}
+/*...e*/
 		}
-	
+/*...e*/
 	} else {
 		if (Users->selectAccount(LogonUser->charrep())) {
 			long UID = Users->getUserID();
 			
 			User_Applications->finishRelationIteration();
-			
+
 			while (User_Applications->hasMoreRelations()) {
 				User_Applications->setNextRelation();
 				Applications->selectApplication(User_Applications->getApplicationID());
@@ -1936,7 +1994,6 @@ lb_I_Container* LB_STDCALL lb_MetaApplication::getApplications() {
 					UAP(lb_I_KeyBase, key)
 					UAP(lb_I_Unknown, uk_S1)
 					
-
 					*S1 = Applications->getApplicationName();
 
 					QI(S1, lb_I_KeyBase, key)
@@ -1953,7 +2010,9 @@ lb_I_Container* LB_STDCALL lb_MetaApplication::getApplications() {
 	apps++;
 	return apps.getPtr();
 }
+/*...e*/
 
+/*...sbool LB_STDCALL lb_MetaApplication\58\\58\login\40\const char\42\ user\44\ const char\42\ pass\41\:0:*/
 bool LB_STDCALL lb_MetaApplication::login(const char* user, const char* pass) {
 	lbErrCodes err = ERR_NONE;
 	
@@ -2014,7 +2073,8 @@ bool LB_STDCALL lb_MetaApplication::login(const char* user, const char* pass) {
 			
 		sampleQuery = database->getQuery(0);
 		
-		char buffer[800] = "";
+		char* buffer = (char*) malloc(1000);
+		buffer[0] = 0;
 		
 		sampleQuery->skipFKCollecting();
 		sprintf(buffer, "select userid, passwort from Users where userid = '%s' and passwort = '%s'",
@@ -2024,8 +2084,11 @@ bool LB_STDCALL lb_MetaApplication::login(const char* user, const char* pass) {
 			
 		if (sampleQuery->query(buffer) != ERR_NONE) {
 			sampleQuery->enableFKCollecting();
+			free(buffer);
 			return FALSE;
 		}
+		
+		free(buffer);
 		
 		sampleQuery->enableFKCollecting();
 		
@@ -2055,6 +2118,7 @@ bool LB_STDCALL lb_MetaApplication::login(const char* user, const char* pass) {
 		return false;
 	}
 }
+/*...e*/
 /*...e*/
 /*...slb_EventMapper:0:*/
 lb_EventMapper::lb_EventMapper() {
