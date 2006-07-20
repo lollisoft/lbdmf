@@ -149,7 +149,7 @@ DLLEXPORT void logMessage(const char *msg, char *f, int level) {
                 FILE *fp;
                 fp = fopen( f, "a" );
                 if( fp != NULL ) {
-                        char buf[1000] = "";
+                        char* buf = (char*) malloc(1000);
                         buf[0] = 0;
                         
                         int l = level;
@@ -165,7 +165,8 @@ DLLEXPORT void logMessage(const char *msg, char *f, int level) {
 #if defined (OSX) || defined (LINUX) || defined(UNIX)
                         fprintf( fp, "Pid %d\t:%s%s", getpid(), buf, msg);
 #endif						
-						fclose( fp );
+			fclose( fp );
+			free(buf);
                 }
 }
 /*...e*/

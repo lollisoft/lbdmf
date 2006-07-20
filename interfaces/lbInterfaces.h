@@ -1020,9 +1020,9 @@ public:
 			if (attachedClassName != NULL) free(attachedClassName); \
 			if (_autoPtr != NULL) { \
 				if (!_TRMemValidate(_autoPtr)) { \
-					char buf[100] = ""; \
-					sprintf(buf, "FATAL: Destruct on invalid object pointer (%p).", _autoPtr); \
-					_LOG << buf LOG_ \
+					char buf[20] = ""; \
+					sprintf(buf, "%p", _autoPtr); \
+					_LOG << "FATAL: Destruct on invalid object pointer (" << buf << ")." LOG_ \
 				} \
 				if (allowDelete != 1) { \
 					if (_autoPtr->deleteState() == 1) { \
@@ -1050,9 +1050,9 @@ public:
 		\
 		interface* LB_STDCALL getPtr() const { \
 			if (!_TRMemValidate(_autoPtr)) { \
-				char buf[100] = ""; \
-				sprintf(buf, "FATAL: getPtr() on invalid object pointer (%p).", _autoPtr); \
-				_CL_LOG << buf LOG_ \
+				char buf[20] = ""; \
+				sprintf(buf, "%p", _autoPtr); \
+				_LOG << "FATAL: getPtr() on invalid object pointer (" << buf << ")." LOG_ \
 			} \
 			return _autoPtr; \
 		} \
@@ -1072,9 +1072,9 @@ public:
 		\
 		interface& LB_STDCALL operator * () { \
 			if (!_TRMemValidate(_autoPtr)) { \
-				char buf[100] = ""; \
-				sprintf(buf, "FATAL: operator * () on invalid object pointer (%p).", _autoPtr); \
-				_LOG << buf LOG_ \
+				char buf[20] = ""; \
+				sprintf(buf, "%p", _autoPtr); \
+				_LOG << "FATAL: operator * () on invalid object pointer (" << buf << ")." LOG_ \
 			} \
 			return *_autoPtr; \
 		} \
@@ -1090,9 +1090,9 @@ public:
 				        strcpy(attachedClassName, className); \
 				} \
 			} else { \
-				char buf[100] = ""; \
-				sprintf(buf, "FATAL: Operate on invalid object pointer (%p).", _autoPtr); \
-				_LOG << buf LOG_ \
+				char buf[20] = ""; \
+				sprintf(buf, "%p", _autoPtr); \
+				_LOG << "FATAL: Operate on invalid object pointer (" << buf << ")." LOG_ \
 			} \
 			return _autoPtr; \
 		} \
@@ -1108,18 +1108,18 @@ public:
 				        strcpy(attachedClassName, className); \
 				} \
 			} else { \
-				char buf[100] = ""; \
-				sprintf(buf, "FATAL: Operate on invalid object pointer (%p).", _autoPtr); \
-				_LOG << buf LOG_ \
+				char buf[20] = ""; \
+				sprintf(buf, "%p", _autoPtr); \
+				_LOG << "FATAL: Operate on invalid object pointer (" << buf << ")." LOG_ \
 			} \
 			return _autoPtr; \
 		} \
 		UAP##Unknown_Reference& LB_STDCALL operator++(int) { \
 			interface* temp = NULL; \
 			if (!_TRMemValidate(_autoPtr)) { \
-				char buf[100] = ""; \
-				sprintf(buf, "FATAL: operator++ on invalid object pointer (%p).", _autoPtr); \
-				_LOG << buf LOG_ \
+				char buf[20] = ""; \
+				sprintf(buf, "%p", _autoPtr); \
+				_LOG << "FATAL: operator++ on invalid object pointer (" << buf << ")." LOG_ \
 			} \
 			_autoPtr->queryInterface(#interface, (void**) &temp, __FILE__, __LINE__); \
 			return *this; \
@@ -1128,18 +1128,18 @@ public:
 			interface* temp = NULL; \
 			if (_autoPtr == NULL) return *this; \
 			if (!_TRMemValidate(_autoPtr)) { \
-				char buf[100] = ""; \
-				sprintf(buf, "FATAL: operator-- on invalid object pointer (%p).", _autoPtr); \
-				_LOG << buf LOG_ \
+				char buf[20] = ""; \
+				sprintf(buf, "%p", _autoPtr); \
+				_LOG << "FATAL: operator-- on invalid object pointer (" << buf << ")." LOG_ \
 			} \
 			if (_autoPtr->release(__FILE__, __LINE__) == ERR_RELEASED) _autoPtr = NULL; \
 			return *this; \
 		} \
 		interface ** LB_STDCALL operator & () { \
 			if (!_TRMemValidate(_autoPtr)) { \
-				char buf[100] = ""; \
-				sprintf(buf, "FATAL: operator& on invalid object pointer (%p).", _autoPtr); \
-				_LOG << buf LOG_ \
+				char buf[20] = ""; \
+				sprintf(buf, "%p", _autoPtr); \
+				_LOG << "FATAL: operator& on invalid object pointer (" << buf << ")." LOG_ \
 			} \
 			return &_autoPtr; \
 		} \
@@ -1147,18 +1147,18 @@ public:
 		UAP##Unknown_Reference& LB_STDCALL operator = (interface* autoPtr) { \
 			if (locked) return *this; \
 			if (!_TRMemValidate(_autoPtr)) { \
-				char buf[100] = ""; \
-				sprintf(buf, "FATAL: operator = on invalid old object pointer (%p).", _autoPtr); \
-				_LOG << buf LOG_ \
+				char buf[20] = ""; \
+				sprintf(buf, "%p", _autoPtr); \
+				_LOG << "FATAL: operator = on invalid old object pointer (" << buf << ")." LOG_ \
 			} \
 			if (_autoPtr != NULL) { \
 				_autoPtr->release(__FILE__, __LINE__); \
 			} \
 			_autoPtr = autoPtr; \
 			if (!_TRMemValidate(_autoPtr)) { \
-				char buf[100] = ""; \
-				sprintf(buf, "FATAL: operator = on invalid new object pointer (%p).", _autoPtr); \
-				_LOG << buf LOG_ \
+				char buf[20] = ""; \
+				sprintf(buf, "%p", _autoPtr); \
+				_LOG << "FATAL: operator = on invalid new object pointer (" << buf << ")." LOG_ \
 			} \
 			if (attachedClassName) { \
 				free(attachedClassName); \
@@ -1171,17 +1171,17 @@ public:
 		} \
 		int LB_STDCALL operator == (const interface* b) const { \
 			if (!_TRMemValidate(_autoPtr)) { \
-				char buf[100] = ""; \
-				sprintf(buf, "FATAL: operator == on invalid object pointer (%p).", _autoPtr); \
-				_LOG << buf LOG_ \			
-				} \
+				char buf[20] = ""; \
+				sprintf(buf, "%p", _autoPtr); \
+				_LOG << "FATAL: operator == on invalid object pointer (" << buf << ")." LOG_ \
+			} \
 			return _autoPtr == b; \
 		} \
 		int LB_STDCALL operator != (const interface* b) const { \
 			if (!_TRMemValidate(_autoPtr)) { \
-				char buf[100] = ""; \
-				sprintf(buf, "FATAL: operator != on invalid object pointer (%p).", _autoPtr); \
-				_LOG << buf LOG_ \
+				char buf[20] = ""; \
+				sprintf(buf, "%p", _autoPtr); \
+				_LOG << "FATAL: operator != on invalid object pointer (" << buf << ")." LOG_ \
 			} \
 			return _autoPtr != b; \
 		} \
@@ -1445,9 +1445,9 @@ lbErrCodes LB_STDCALL classname::release(char* file, int line) { \
         	return ERR_REFERENCE_COUNTING; \
         } \
         } else { \
-        	char buf[500] = ""; \
-        	sprintf(buf, "Error: Instance %p of object type %s was deleted prior (At: %s:%d) !!!", this, #classname, file, line); \
-        	_LOG << buf LOG_ \
+        	char buf[20] = ""; \
+        	sprintf(buf, "%p", this); \
+        	_LOG << "Error: Instance " << buf << " of object type " << #classname << " was deleted prior (At: " << file << ":" << line << ") !!!" LOG_ \
         } \
         return ERR_INSTANCE_STILL_USED; \
 } \
@@ -1495,7 +1495,8 @@ lb_I_Unknown* LB_STDCALL classname::clone(char* file, int line) const { \
 } \
 \
 lbErrCodes LB_STDCALL classname::queryInterface(char* name, void** unknown, char* file, int line) const { \
-	char buf[1000] = ""; \
+	char* buf = (char*) malloc(1000); \
+	buf[0] = 0; \
 	char _classname[100] = #classname; \
 	lastQIFile.set(file); \
 	lastQILine = line; \
@@ -1508,6 +1509,7 @@ lbErrCodes LB_STDCALL classname::queryInterface(char* name, void** unknown, char
 	\
 	if (further_lock == 1) { \
 		_CL_LOG <<"Error: Object has been locked due to missing module manager (call setModuleManager(...) on me first)!" LOG_ \
+		free(buf); \
 		return ERR_STATE_FURTHER_LOCK; \
 	} else { \
 	} \
@@ -1529,8 +1531,10 @@ lbErrCodes LB_STDCALL classname::queryInterface(char* name, void** unknown, char
 		else { \
 	        	setFurtherLock(1); \
 	        	_CL_LOG << "Lock object due to missing manager!" LOG_ \
+	        	free(buf); \
 	        	return ERR_STATE_FURTHER_LOCK; \
 		} \
+		free(buf); \
                 return ERR_NONE; \
         }
 
@@ -1680,10 +1684,12 @@ lb_I_Unknown* LB_STDCALL classname::clone(char* file, int line) const { \
 } \
 \
 lbErrCodes LB_STDCALL classname::queryInterface(char* name, void** unknown, char* file, int line) const { \
-	char buf[1000] = ""; \
+	char* buf = (char*) malloc(1000); \
+	buf[0] = 0; \
 	char _classname[100] = #classname; \
 	if (further_lock == 1) { \
 		_CL_LOG <<"Error: Object has been locked due to missing module manager (call setModuleManager(...) on me first)!" LOG_ \
+		free(buf); \
 		return ERR_STATE_FURTHER_LOCK; \
 	} \
 	if (unknown == NULL) { \
@@ -1704,8 +1710,10 @@ lbErrCodes LB_STDCALL classname::queryInterface(char* name, void** unknown, char
 		else { \
 	        	setFurtherLock(1); \
 	        	_CL_LOG << "Lock object due to missing manager!" LOG_ \
+	        	free(buf); \
 	        	return ERR_STATE_FURTHER_LOCK; \
 		} \
+		free(buf); \
                 return ERR_NONE; \
         }
 
@@ -1736,6 +1744,7 @@ lbErrCodes LB_STDCALL classname::queryInterface(char* name, void** unknown, char
 
 #define END_IMPLEMENT_LB_UNKNOWN() \
 	_CL_VERBOSE << "Error: Requested interface '" << name << "' not found! File: " << file << " Line: " << line LOG_ \
+	free(buf); \
 	return ERR_NO_INTERFACE; \
 }
 
