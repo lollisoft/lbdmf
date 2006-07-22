@@ -196,7 +196,7 @@ long LB_STDCALL lbActionTypesModel::getActionTarget() {
 
 /*...sclass lbPluginActionTypesModel implementation:0:*/
 /*...slbPluginActionTypesModel:0:*/
-class lbPluginActionTypesModel : public virtual lb_I_PluginImpl {
+class lbPluginActionTypesModel : public lb_I_PluginImpl {
 public:
 	lbPluginActionTypesModel();
 	

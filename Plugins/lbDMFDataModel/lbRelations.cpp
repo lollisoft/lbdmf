@@ -176,7 +176,7 @@ long LB_STDCALL lbUserApplicationRelationModel::getID() {
 
 /*...sclass lbPluginUsersModel implementation:0:*/
 /*...slbPluginUsersModel:0:*/
-class lbPluginUserApplicationRelationModel : public virtual lb_I_PluginImpl {
+class lbPluginUserApplicationRelationModel : public lb_I_PluginImpl {
 public:
 	lbPluginUserApplicationRelationModel();
 	

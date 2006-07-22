@@ -238,7 +238,7 @@ long  LB_STDCALL lbFormularsModel::getTyp() {
 
 /*...sclass lbPluginFormularsModel implementation:0:*/
 /*...slbPluginFormularsModel:0:*/
-class lbPluginFormularsModel : public virtual lb_I_PluginImpl {
+class lbPluginFormularsModel : public lb_I_PluginImpl {
 public:
 	lbPluginFormularsModel();
 	

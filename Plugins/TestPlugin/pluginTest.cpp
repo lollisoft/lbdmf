@@ -119,7 +119,7 @@ void LB_STDCALL lbTest::test() {
 #endif
 /*...sclass lbPluginTest implementation:0:*/
 /*...slbPluginTest:0:*/
-class lbPluginTest : public virtual lb_I_PluginImpl {
+class lbPluginTest : public lb_I_PluginImpl {
 public:
 	lbPluginTest();
 	

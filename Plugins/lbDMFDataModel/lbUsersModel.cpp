@@ -185,7 +185,7 @@ char* LB_STDCALL lbUsersModel::getUserPassword() {
 
 /*...sclass lbPluginUsersModel implementation:0:*/
 /*...slbPluginUsersModel:0:*/
-class lbPluginUsersModel : public virtual lb_I_PluginImpl {
+class lbPluginUsersModel : public lb_I_PluginImpl {
 public:
 	lbPluginUsersModel();
 	

@@ -183,7 +183,7 @@ long LB_STDCALL lbFormularActionsModel::getFormularActionActionID() {
 
 /*...sclass lbPluginFormularActionsModel implementation:0:*/
 /*...slbPluginFormularActionsModel:0:*/
-class lbPluginFormularActionsModel : public virtual lb_I_PluginImpl {
+class lbPluginFormularActionsModel : public lb_I_PluginImpl {
 public:
 	lbPluginFormularActionsModel();
 	

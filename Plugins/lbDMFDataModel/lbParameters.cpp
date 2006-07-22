@@ -352,7 +352,7 @@ long LB_STDCALL lbApplicationParameters::getApplicationID() {
 
 /*...sclass lbPluginUsersModel implementation:0:*/
 /*...slbPluginUsersModel:0:*/
-class lbPluginFormularParameters : public virtual lb_I_PluginImpl {
+class lbPluginFormularParameters : public lb_I_PluginImpl {
 public:
 	lbPluginFormularParameters();
 	
@@ -453,7 +453,7 @@ void LB_STDCALL lbPluginFormularParameters::releaseImplementation() {
 
 /*...sclass lbPluginApplicationParameters implementation:0:*/
 /*...slbPluginApplicationParameters:0:*/
-class lbPluginApplicationParameters : public virtual lb_I_PluginImpl {
+class lbPluginApplicationParameters : public lb_I_PluginImpl {
 public:
 	lbPluginApplicationParameters();
 	

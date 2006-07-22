@@ -231,7 +231,7 @@ char* LB_STDCALL lbTranslationsModel::getTranslationLanguage() {
 
 /*...sclass lbPluginTranslationsModel implementation:0:*/
 /*...slbPluginTranslationsModel:0:*/
-class lbPluginTranslationsModel : public virtual lb_I_PluginImpl {
+class lbPluginTranslationsModel : public lb_I_PluginImpl {
 public:
 	lbPluginTranslationsModel();
 	

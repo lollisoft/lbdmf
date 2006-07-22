@@ -232,7 +232,7 @@ char*	LB_STDCALL lbApplications::getApplicationInterface() {
 
 /*...sclass lbPluginApplications implementation:0:*/
 /*...slbPluginApplications:0:*/
-class lbPluginApplications : public virtual lb_I_PluginImpl {
+class lbPluginApplications : public lb_I_PluginImpl {
 public:
 	lbPluginApplications();
 	

@@ -534,7 +534,7 @@ lb_I_Stream* LB_STDCALL lbOutputStream::getStream() {
 
 /*...sclass lbPluginOutputStream implementation:0:*/
 /*...slbPluginOutputStream:0:*/
-class lbPluginOutputStream : public virtual lb_I_PluginImpl {
+class lbPluginOutputStream : public lb_I_PluginImpl {
 public:
 	lbPluginOutputStream();
 	
