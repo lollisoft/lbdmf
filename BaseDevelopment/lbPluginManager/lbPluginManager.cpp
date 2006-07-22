@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.47 $
+ * $Revision: 1.48 $
  * $Name:  $
- * $Id: lbPluginManager.cpp,v 1.47 2006/07/17 17:37:45 lollisoft Exp $
+ * $Id: lbPluginManager.cpp,v 1.48 2006/07/22 19:27:02 lollisoft Exp $
  *
  * $Log: lbPluginManager.cpp,v $
+ * Revision 1.48  2006/07/22 19:27:02  lollisoft
+ * Removed logging messages.
+ *
  * Revision 1.47  2006/07/17 17:37:45  lollisoft
  * Changes dueto bugfix in plugin manager. Repeadable iterator problem.
  * Not correctly finished the iteration, thus plugins in the same DLL wouldn't
@@ -695,8 +698,6 @@ lb_I_Plugin* LB_STDCALL lbPluginManager::nextPlugin() {
 				
 				//plM->initialize();
 
-				_LOG << "References of plugin module are " << plM->getRefCount() LOG_
-
 				PluginContainer = plM->getPlugins();
 			
 				if (PluginContainer == NULL) {
@@ -1162,8 +1163,6 @@ bool LB_STDCALL lbPlugin::hasInterface(char* name) {
 		_LOG << "Info: Plugin name is " << _name << ", Modul is " << _module << ", Namespace is " << _namespace LOG_
 		return false;
 	}
-
-	_LOG << "Info: Query interface for " << uk->getClassName() LOG_
 
 	if (uk->queryInterface(name, (void**) &temp, __FILE__, __LINE__) == ERR_NONE) {
 		temp->release(__FILE__, __LINE__);
