@@ -203,7 +203,7 @@ long LB_STDCALL lbActionStepsModel::getActionTarget() {
 
 /*...sclass lbPluginActionStepsModel implementation:0:*/
 /*...slbPluginActionStepsModel:0:*/
-class lbPluginActionStepsModel : public virtual lb_I_PluginImpl {
+class lbPluginActionStepsModel : public lb_I_PluginImpl {
 public:
 	lbPluginActionStepsModel();
 	
@@ -228,35 +228,7 @@ BEGIN_IMPLEMENT_LB_UNKNOWN(lbPluginActionStepsModel)
         ADD_INTERFACE(lb_I_PluginImpl)
 END_IMPLEMENT_LB_UNKNOWN()
 
-//IMPLEMENT_FUNCTOR(instanceOflbPluginActionStepsModel, lbPluginActionStepsModel)
-/*...sIMPLEMENT_FUNCTOR\40\instanceOflbPluginActionStepsModel\44\ lbPluginActionStepsModel\41\:0:*/
-extern "C" { 
-lbErrCodes DLLEXPORT LB_FUNCTORCALL instanceOflbPluginActionStepsModel(lb_I_Unknown** uk, lb_I_Module* m, char* file, int line) { 
-
-	lbErrCodes err = ERR_NONE; 
-	lbPluginActionStepsModel* instance = new lbPluginActionStepsModel(); 
-        *uk = NULL; 
-        instance->setFurtherLock(0); 
-        if (m != NULL) { 
-        	instance->setModuleManager(m, __FILE__, __LINE__); 
-        } else { 
-        	_CL_LOG << "Error: Functor gets no manager. This is only possible for a manager it self." LOG_ 
-        } 
-        
-        if ((err = instance->queryInterface("lb_I_Unknown", (void**) uk, file, line)) != ERR_NONE) { 
-                _CL_LOG << "Failed to create unknown reference to instance of " << 
-                "lbPluginActionStepsModel" << ". Errcode is " << err LOG_ 
-                if (err == ERR_STATE_FURTHER_LOCK) { 
-                	_CL_LOG << "ERR_STATE_FURTHER_LOCK" LOG_ 
-                	return err; 
-                } 
-                return ERR_FUNCTOR; 
-        } 
-
-        return ERR_NONE; 
-} 
-}
-/*...e*/
+IMPLEMENT_FUNCTOR(instanceOflbPluginActionStepsModel, lbPluginActionStepsModel)
 
 /*...slbErrCodes LB_STDCALL lbPluginActionStepsModel\58\\58\setData\40\lb_I_Unknown\42\ uk\41\:0:*/
 lbErrCodes LB_STDCALL lbPluginActionStepsModel::setData(lb_I_Unknown* uk) {
