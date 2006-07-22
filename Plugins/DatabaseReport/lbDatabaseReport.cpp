@@ -658,7 +658,7 @@ void LB_STDCALL lbDBReportAction::execute(lb_I_Parameter* params) {
 
 /*...sclass lbPluginDatabaseReport implementation:0:*/
 /*...slbPluginDatabaseReport:0:*/
-class lbPluginDatabaseReport : public virtual lb_I_PluginImpl {
+class lbPluginDatabaseReport : public lb_I_PluginImpl {
 public:
 	lbPluginDatabaseReport();
 	

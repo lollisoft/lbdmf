@@ -3094,7 +3094,7 @@ bool LB_STDCALL lbDatabasePanel::isCharacterColumn(char* name)
 
 /*...sclass lbPluginDatabasePanel implementation:0:*/
 /*...slbPluginDatabasePanel:0:*/
-class lbPluginDatabasePanel : public virtual lb_I_PluginImpl {
+class lbPluginDatabasePanel : public lb_I_PluginImpl {
 public:
 	lbPluginDatabasePanel();
 	
@@ -3498,7 +3498,7 @@ bool LB_STDCALL lbDatabaseDialog::isCharacterColumn(char* name)
 
 /*...sclass lbPluginDatabaseDialog implementation:0:*/
 /*...slbPluginDatabaseDialog:0:*/
-class lbPluginDatabaseDialog : public virtual lb_I_PluginImpl {
+class lbPluginDatabaseDialog : public lb_I_PluginImpl {
 public:
 	lbPluginDatabaseDialog();
 	
