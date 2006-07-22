@@ -1524,6 +1524,11 @@ lbErrCodes LB_STDCALL classname::queryInterface(char* name, void** unknown, char
         	} \
                 ref++; \
                 *unknown = (lb_I_Unknown*) this; \
+                \
+                if (*unknown != (void*) this) { \
+                	TRMemSetPointerValid(*unknown, (void*) this); \
+                } \
+                \
                 if (manager != NULL) { \
                 	lb_I_Unknown* that = (lb_I_Unknown*) this; \
 		        manager->notify_add(that, _classname, file, line); \
@@ -1703,6 +1708,9 @@ lbErrCodes LB_STDCALL classname::queryInterface(char* name, void** unknown, char
         	} \
                 ref++; \
                 *unknown = (lb_I_Unknown*) this; \
+                if (*unknown != (void*) this) { \
+                        TRMemSetPointerValid(*unknown, (void*) this); \
+                } \
                 if (manager != NULL) { \
                 	lb_I_Unknown* that = (lb_I_Unknown*) this; \
 		        manager->notify_add(that, _classname, file, line); \
@@ -1728,6 +1736,9 @@ lbErrCodes LB_STDCALL classname::queryInterface(char* name, void** unknown, char
         if (strcmp(name, #interfaceName) == 0) { \
                 ref++; \
                 *unknown = (interfaceName*) this; \
+                if (*unknown != (void*) this) { \
+                        TRMemSetPointerValid(*unknown, (void*) this); \
+                } \
                 if (manager != NULL) { \
                 	interfaceName* that = (interfaceName*) this; \
                 	lb_I_Unknown* uk = (lb_I_Unknown*) this; \
@@ -1737,8 +1748,10 @@ lbErrCodes LB_STDCALL classname::queryInterface(char* name, void** unknown, char
 		        setFurtherLock(1); \
 		        _CL_LOG << "Error: QueryInterface can't add a reference. No manager. File: " << \
 		        file << ", Line: " << line LOG_ \
+		        free(buf); \
 	        	return ERR_STATE_FURTHER_LOCK; \
 		} \
+		free(buf); \
                 return ERR_NONE; \
         }
 
@@ -1782,6 +1795,9 @@ lbErrCodes DLLEXPORT LB_FUNCTORCALL name(lb_I_Unknown** uk, lb_I_Module* m, char
 \
 	lbErrCodes err = ERR_NONE; \
 	clsname* instance = new clsname(); \
+	if (!_TRMemValidate(instance)) { \
+		_LOG << "Error: Functor " << #name << " doesn't use TRMem's operator new !" LOG_ \ 
+	} \
         *uk = NULL; \
         instance->setFurtherLock(0); \
         if (m != NULL) { \
@@ -1856,6 +1872,9 @@ lbErrCodes DLLEXPORT LB_FUNCTORCALL name(lb_I_Unknown** uk, lb_I_Module* m, char
 	lbErrCodes err = ERR_NONE; \
 	if (singleton_##name.get() == NULL) { \
 	        clsname* instance = new clsname(); \
+		if (!_TRMemValidate(instance)) { \
+			_LOG << "Error: Singleton functor " << #name << " doesn't use TRMem's operator new !" LOG_ \ 
+		} \
 	        *uk = NULL; \
 	        char buf[100] = ""; \
 	        track_Object(instance, "IMPLEMENT_SINGLETON_FUNCTOR - Instantiating"); \
