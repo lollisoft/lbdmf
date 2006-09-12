@@ -9,6 +9,10 @@
 // Licence:     wxWindows Library Licence, Version 3.1
 ///////////////////////////////////////////////////////////////////////////////
 
+#ifdef DEBUG_MALLOC
+#undef new
+#endif
+
 #include <wx/wx.h>
 #include <wx/minifram.h>
 #include <wx/image.h>
