@@ -25,11 +25,15 @@
 #            40235 Duesseldorf (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.87 $
+# * $Revision: 1.88 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.87 2006/06/05 15:47:40 lollisoft Exp $
+# * $Id: STD_MAKE,v 1.88 2006/10/22 18:34:36 lollisoft Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.88  2006/10/22 18:34:36  lollisoft
+# * Many memory leaks resolved, but they were caused by small errors :-(
+# * This is also a sync.
+# *
 # * Revision 1.87  2006/06/05 15:47:40  lollisoft
 # * Bugfixes for missing repository entries. Deactivated RDCD code.
 # *
@@ -342,11 +346,11 @@ COMPILER=WATCOM
 
 MODE=_DEBUG
 #MODE=
-DEBUG_MEMORY=no
-#DEBUG_MEMORY=yes
+#DEBUG_MEMORY=no
+DEBUG_MEMORY=yes
 
 #DEBUG_MEMORY_TYPE=mpatrol
-#DEBUG_MEMORY_TYPE=trmem
+DEBUG_MEMORY_TYPE=trmem
 
 
 WX_DEBUG=
@@ -420,8 +424,9 @@ WATCOM_DLLTARGET=-bd
 WATCOM_LIBTARGET=
 WATCOM_THREAD_MODEL=#-bm
 
-ifeq ($(DEBUG_MEMORY), no)
+ifeq ($(MODE), _DEBUG)
 WATCOM_STDDEBUG=-d2 -hd 
+WATCOM_OPTIMIZE=-od
 endif
 
 ifeq ($(DEBUG_MEMORY), yes)
@@ -434,6 +439,10 @@ ifeq ($(DEBUG_MEMORY), yes)
 endif
 
 WATCOM_STACK=-of+
+
+# Doesn't work for current code
+#-sg
+
 WATCOM_PROFILING=#-db -en -s
 
 WATCOM_STD_C_OPS= \

@@ -71,12 +71,12 @@ lbTranslationsModel::lbTranslationsModel() {
 }
 
 lbTranslationsModel::~lbTranslationsModel() {
-
+	_CL_LOG << "lbTranslationsModel::~lbTranslationsModel() called." LOG_
 }
 
 lbErrCodes LB_STDCALL lbTranslationsModel::setData(lb_I_Unknown*) {
-		_CL_LOG << "Error: lbTranslationsModel::setData(lb_I_Unknown*) not implemented." LOG_
-		return ERR_NOT_IMPLEMENTED;
+	_CL_LOG << "Error: lbTranslationsModel::setData(lb_I_Unknown*) not implemented." LOG_
+	return ERR_NOT_IMPLEMENTED;
 }
 
 long  LB_STDCALL lbTranslationsModel::addTranslation(const char* text, const char* translated, const char* language, long _id) {
@@ -90,7 +90,7 @@ long  LB_STDCALL lbTranslationsModel::addTranslation(const char* text, const cha
 
 	UAP(lb_I_KeyBase, keyText)
 
-	_CL_LOG << "lbTranslationsModel::addTranslation('" << text << "', '" << translated << "', '" << language << "', '" << _id << "') called." LOG_
+	_CL_VERBOSE << "lbTranslationsModel::addTranslation('" << text << "', '" << translated << "', '" << language << "', '" << _id << "') called." LOG_
 
 	*Text = text;
 	*Translated = translated;
@@ -269,12 +269,12 @@ lbErrCodes LB_STDCALL lbPluginTranslationsModel::setData(lb_I_Unknown* uk) {
 /*...e*/
 
 lbPluginTranslationsModel::lbPluginTranslationsModel() {
-	_CL_VERBOSE << "lbPluginTranslationsModel::lbPluginTranslationsModel() called.\n" LOG_
+	_LOG << "lbPluginTranslationsModel::lbPluginTranslationsModel() called.\n" LOG_
 	ref = STARTREF;
 }
 
 lbPluginTranslationsModel::~lbPluginTranslationsModel() {
-	_CL_VERBOSE << "lbPluginTranslationsModel::~lbPluginTranslationsModel() called.\n" LOG_
+	_LOG << "lbPluginTranslationsModel::~lbPluginTranslationsModel() called.\n" LOG_
 }
 
 void LB_STDCALL lbPluginTranslationsModel::initialize() {
@@ -323,7 +323,7 @@ void LB_STDCALL lbPluginTranslationsModel::releaseImplementation() {
         lbErrCodes err = ERR_NONE;
 
         if (ukTranslations != NULL) {
-                ukTranslations->release(__FILE__, __LINE__);
+                ukTranslations--;
                 ukTranslations.resetPtr();
         }
 }

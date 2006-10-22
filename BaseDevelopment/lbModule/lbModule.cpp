@@ -30,11 +30,15 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.111 $
+ * $Revision: 1.112 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.111 2006/07/20 17:43:23 lollisoft Exp $
+ * $Id: lbModule.cpp,v 1.112 2006/10/22 18:34:36 lollisoft Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.112  2006/10/22 18:34:36  lollisoft
+ * Many memory leaks resolved, but they were caused by small errors :-(
+ * This is also a sync.
+ *
  * Revision 1.111  2006/07/20 17:43:23  lollisoft
  * Bugfix for stack overflow. Too many char[] arrays on the stack.
  *
@@ -1933,31 +1937,37 @@ public:
         }
         
         virtual ~lbFunctorEntity() {
-        	if (_functor) free(_functor);
-        	if (_module) free(_module);
-        	if (_interface) free(_interface);
+        	if (_functor != NULL) 
+        		free(_functor);
+        	if (_module != NULL) 
+        		free(_module);
+        	if (_interface != NULL) 
+        		free(_interface);
         }
 
 public:
 
         virtual void LB_STDCALL setFunctor(char* functor) {
-        	if (_functor) free(_functor);
-			if (functor == NULL) return;
+        	if (_functor)
+        		free(_functor);
+		if (functor == NULL) return;
         	_functor = (char*) malloc(strlen(functor)+1);
         	_functor[0] = 0;
         	strcpy(_functor, functor);
         }
         
         virtual void LB_STDCALL setModule(char* module) {
-        	if (_module) free(_module);
-			if (module == NULL) return;
+        	if (_module != NULL)
+        		free(_module);
+		if (module == NULL) return;
         	_module = (char*) malloc(strlen(module)+1);
         	_module[0] = 0;
         	strcpy(_module, module);
         }
         
         virtual void LB_STDCALL setInterface(char* iface) {
-        	if (_interface) free(_interface);
+        	if (_interface != NULL)
+ 			free(_interface);
         	_interface = (char*) malloc(strlen(iface)+1);
         	_interface[0] = 0;
         	strcpy(_interface, iface);
@@ -2050,7 +2060,7 @@ lbHCInterfaceRepository::lbHCInterfaceRepository() {
 }
 
 lbHCInterfaceRepository::~lbHCInterfaceRepository() {
-	_CL_VERBOSE << "lbHCInterfaceRepository::~lbHCInterfaceRepository() called." LOG_
+	_CL_LOG << "lbHCInterfaceRepository::~lbHCInterfaceRepository() called." LOG_
 	free(searchArgument);
 }
 
@@ -2712,7 +2722,7 @@ printf("lbErrCodes LB_STDCALL lbModule::initialize() called.\n");
 	initializing = 1;
 
         if (moduleList != NULL) {
-                _CL_VERBOSE << "Warning: lbModule::initialize() called more than once!" LOG_
+                _CL_LOG << "Warning: lbModule::initialize() called more than once!" LOG_
                 return ERR_NONE;
         }
 

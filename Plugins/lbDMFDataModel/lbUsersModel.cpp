@@ -64,8 +64,8 @@ lbUsersModel::~lbUsersModel() {
 }
 
 lbErrCodes LB_STDCALL lbUsersModel::setData(lb_I_Unknown*) {
-		_LOG << "Error: lbUsersModel::setData(lb_I_Unknown*) not implemented." LOG_
-		return ERR_NOT_IMPLEMENTED;
+	_CL_VERBOSE << "Error: lbUsersModel::setData(lb_I_Unknown*) not implemented." LOG_
+	return ERR_NOT_IMPLEMENTED;
 }
 
 long  LB_STDCALL lbUsersModel::addAccount(const char* _user, const char* _pass, long _id) {
@@ -277,7 +277,7 @@ void LB_STDCALL lbPluginUsersModel::releaseImplementation() {
         lbErrCodes err = ERR_NONE;
 
         if (ukUsersModel != NULL) {
-                ukUsersModel->release(__FILE__, __LINE__);
+                ukUsersModel--;
                 ukUsersModel.resetPtr();
         }
 }

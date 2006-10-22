@@ -60,15 +60,16 @@ lbFormularsModel::lbFormularsModel() {
 	REQUEST(getModuleInstance(), lb_I_Long, currentFormularID)
 	REQUEST(getModuleInstance(), lb_I_Long, currentApplicationID)
 	REQUEST(getModuleInstance(), lb_I_Long, currentTyp)
+	_CL_LOG << "lbFormularsModel::lbFormularsModel() called." LOG_
 }
 
 lbFormularsModel::~lbFormularsModel() {
-
+	_CL_LOG << "lbFormularsModel::~lbFormularsModel() called." LOG_
 }
 
 lbErrCodes LB_STDCALL lbFormularsModel::setData(lb_I_Unknown*) {
-		_CL_LOG << "Error: lbFormularsModel::setData(lb_I_Unknown*) not implemented." LOG_
-		return ERR_NOT_IMPLEMENTED;
+	_CL_VERBOSE << "Error: lbFormularsModel::setData(lb_I_Unknown*) not implemented." LOG_
+	return ERR_NOT_IMPLEMENTED;
 }
 
 long  LB_STDCALL lbFormularsModel::addFormular(const char* name, const char* menuname, const char* eventname, const char* menuhilfe, long anwendung_id, long typ, long formular_id) {
@@ -330,7 +331,7 @@ void LB_STDCALL lbPluginFormularsModel::releaseImplementation() {
         lbErrCodes err = ERR_NONE;
 
         if (ukFormularsModel != NULL) {
-                ukFormularsModel->release(__FILE__, __LINE__);
+                ukFormularsModel--;
                 ukFormularsModel.resetPtr();
         }
 }

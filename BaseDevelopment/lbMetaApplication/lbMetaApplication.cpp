@@ -31,11 +31,15 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.96 $
+ * $Revision: 1.97 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.96 2006/07/20 17:41:15 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.97 2006/10/22 18:34:36 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.97  2006/10/22 18:34:36  lollisoft
+ * Many memory leaks resolved, but they were caused by small errors :-(
+ * This is also a sync.
+ *
  * Revision 1.96  2006/07/20 17:41:15  lollisoft
  * Bugfix for stack overflow. Too many char[] arrays on the stack.
  * Corrected missing entries in Applications list. It wasn't correctly
@@ -564,6 +568,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::doAutoload(lb_I_Unknown* uk) {
 
 BEGIN_IMPLEMENT_SINGLETON_LB_UNKNOWN(lb_MetaApplication)
 	ADD_INTERFACE(lb_I_MetaApplication)
+	ADD_INTERFACE(lb_I_EventHandler)
 END_IMPLEMENT_LB_UNKNOWN()
 
 /*...slbErrCodes LB_STDCALL lb_MetaApplication\58\\58\save\40\\41\:0:*/

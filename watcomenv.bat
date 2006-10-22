@@ -52,7 +52,7 @@ set DEVROOT_MAKE=%DEVLW%/%BASE_MAKE%
 rem WXWIN stuff
 
 set WXWIN=%DEVLW%\%BASE%\wxwin\wx
-
+set WXDIR=%WXWIN%
 
 set PLUGIN_DIR=%DEVLW%\%BASE%\Projects\plugins
 
@@ -77,6 +77,9 @@ set BINROOT=%RUNROOT%\bin;%RUNROOT%\CPP\bin
 
 set Path=%DEVLW%\%BASE%\bin;%SystemRoot%\system32;%DEVLW%\;%WATBIN%;%DEVBIN%;%DLLROOT%;%BINROOT%
 set Path=%Path%;q:\develop\tools\cygwin\bin;Q:\develop\Tools\Perl\bin;G:\gs\gs8.15\bin
+
+rem Enable my Power++ IDE
+set Path=%Path%;"E:\Program Files\Powersoft\Power21\System"
 
 set Path=%Path%;c:\tp
 
@@ -136,4 +139,3 @@ REM -------------------
 set path=C:\Program Files\GNU\WinCvs 1.2;%PATH%
 
 start %1
-exit

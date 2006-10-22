@@ -738,30 +738,32 @@ DLLEXPORT char* LB_STDCALL translateText(char* text) {
 		UAP(lb_I_DatabaseOperation, fDBOp)
 			
 		pl = PM->getFirstMatchingPlugin("lb_I_DatabaseOperation", "DatabaseInputStreamVisitor");
-		if (pl != NULL)	ukPl = pl->getImplementation();
-		if (ukPl != NULL) QI(ukPl, lb_I_DatabaseOperation, fDBOp)
-		isFileAvailable = fDBOp->begin(*&database); 
-
-		if (isFileAvailable) {
-			UAP(lb_I_Plugin, plTranslations)
-			UAP(lb_I_Unknown, ukPlTranslations)
-			
-			plTranslations = PM->getFirstMatchingPlugin("lb_I_Translations", "Model");
-			if (plTranslations != NULL) {
-				ukPlTranslations = plTranslations->getImplementation();
-			} else {
-				_LOG << "Warning: No translations datamodel plugin found." LOG_
-			}
-			
-			ukPlTranslations->accept(*&fDBOp);
-			
-			locale->setTranslationData(*&ukPlTranslations);
-			
-			_CL_LOG << "Loaded translation data into translation model and provided it to locale." LOG_
-			
-			fDBOp->end();
-		}
 		
+		if (pl != NULL)	{
+			ukPl = pl->getImplementation();
+			if (ukPl != NULL) QI(ukPl, lb_I_DatabaseOperation, fDBOp)
+			isFileAvailable = fDBOp->begin(*&database); 
+
+			if (isFileAvailable) {
+				UAP(lb_I_Plugin, plTranslations)
+				UAP(lb_I_Unknown, ukPlTranslations)
+				
+				plTranslations = PM->getFirstMatchingPlugin("lb_I_Translations", "Model");
+				if (plTranslations != NULL) {
+					ukPlTranslations = plTranslations->getImplementation();
+				} else {
+					_LOG << "Warning: No translations datamodel plugin found." LOG_
+				}
+				
+				ukPlTranslations->accept(*&fDBOp);
+				
+				locale->setTranslationData(*&ukPlTranslations);
+				
+				_CL_LOG << "Loaded translation data into translation model and provided it to locale." LOG_
+				
+				fDBOp->end();
+			}
+		}
 	}
 	
 	locale->translate(&translated, text);

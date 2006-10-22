@@ -27,6 +27,30 @@
 /*...sPluginTest:0:*/
 /*...v\46\\46\\47\RegressionTests\47\PluginTest\47\makefile\46\module:0:*/
 /*...v\46\\46\\47\RegressionTests\47\PluginTest\47\PluginTest\46\cpp:0:*/
+
+/*...v\46\\46\\47\RegressionTests\47\PluginByInterfaceAndNamespace\47\makefile\46\module:0:*/
+/*...v\46\\46\\47\RegressionTests\47\PluginByInterfaceAndNamespace\47\PluginTest\46\cpp:0:*/
+/*...e*/
+/*...sMetaApplication:0:*/
+/*...v\46\\46\\47\RegressionTests\47\MetaApplication\47\makefile\46\module:0:*/
+/*...v\46\\46\\47\RegressionTests\47\MetaApplication\47\testMetaApplication\46\cpp:0:*/
+/*...e*/
+/*...sEvents:0:*/
+/*...v\46\\46\\47\RegressionTests\47\Events\47\makefile\46\module:0:*/
+/*...v\46\\46\\47\RegressionTests\47\Events\47\testEvents\46\cpp:0:*/
+
+/*...e*/
+/*...sTranslation:0:*/
+/*...v\46\\46\\47\RegressionTests\47\Translation\47\makefile\46\module:0:*/
+/*...v\46\\46\\47\RegressionTests\47\Translation\47\testTranslation\46\cpp:0:*/
+/*...e*/
+/*...sParameter:0:*/
+/*...v\46\\46\\47\RegressionTests\47\Parameter\47\makefile\46\module:0:*/
+/*...v\46\\46\\47\RegressionTests\47\Parameter\47\Parameter\46\cpp:0:*/
+/*...e*/
+/*...sPluginTranslationsModel:0:*/
+/*...v\46\\46\\47\RegressionTests\47\PluginTranslationsModel\47\makefile\46\module:0:*/
+/*...v\46\\46\\47\RegressionTests\47\PluginTranslationsModel\47\test\46\cpp:0:*/
 /*...e*/
 
 /*...v\46\\46\\47\RegressionTests\47\makefile:0:*/
@@ -281,6 +305,7 @@ These headers must define the per module (DLL) EXPORT variable
 /*...v\46\\46\\47\plugins\47\testplugin\47\pluginTest\46\cpp:0:*/
 /*...v\46\\46\\47\plugins\47\testplugin\47\makefile:0:*/
 
+/*...v\46\\46\\47\plugins\47\VisitorOperations\47\makefile\46\module:0:*/
 /*...v\46\\46\\47\plugins\47\VisitorOperations\47\plugin\46\cpp:0:*/
 /*...v\46\\46\\47\plugins\47\VisitorOperations\47\pluginOutputStream\46\cpp:0:*/
 /*...v\46\\46\\47\plugins\47\VisitorOperations\47\pluginInputStream\46\cpp:0:*/
@@ -297,6 +322,7 @@ These headers must define the per module (DLL) EXPORT variable
 /*...v\46\\46\\47\plugins\47\lbDMFDataModel\47\lbApplicationsModel\46\cpp:0:*/
 /*...v\46\\46\\47\plugins\47\lbDMFDataModel\47\lbActionStepsModel\46\h:0:*/
 /*...v\46\\46\\47\plugins\47\lbDMFDataModel\47\lbActionStepsModel\46\cpp:0:*/
+/*...v\46\\46\\47\plugins\47\lbDMFDataModel\47\lbTranslationsModel\46\h:0:*/
 /*...v\46\\46\\47\plugins\47\lbDMFDataModel\47\lbTranslationsModel\46\cpp:0:*/
 /*...v\46\\46\\47\plugins\47\lbDMFDataModel\47\lbParameters\46\cpp:0:*/
 /*...v\46\\46\\47\plugins\47\lbDMFDataModel\47\lbFormularsModel\46\cpp:0:*/

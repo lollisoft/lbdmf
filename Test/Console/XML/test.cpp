@@ -418,15 +418,17 @@ printf("Deleted a row\n");
 /*...sdump content:40:*/
 							printf("Try to dump content of container\n");	
 							while (container->hasMoreElements() == 1) {
-								lb_I_Unknown* e = container->nextElement();
+								UAP(lb_I_Unknown, e)
+								e = container->nextElement();
 								printf("Dump it\n");
 								if (e != NULL) {
-									lb_I_String* s;
-									if (e->queryInterface("lb_I_String", (void**) &s, __FILE__, __LINE__) != ERR_NONE) {
+									UAP(lb_I_String, s)
+									QI(e, lb_I_String, s)
+									if (s == NULL) {
 										printf("Something goes wrong :-(\n");
+									} else {
+										printf("String is: %s\n", s->getData());
 									}
-									
-									printf("String is: %s\n", s->getData());
 								}
 							}
 /*...e*/
@@ -663,15 +665,17 @@ printf("Deleted a row\n");
 	
 							printf("Try to dump content of container\n");	
 							while (container->hasMoreElements() == 1) {
-								lb_I_Unknown* e = container->nextElement();
+								UAP(lb_I_Unknown, e)
+								e = container->nextElement();
 								printf("Dump it\n");
 								if (e != NULL) {
-									lb_I_String* s;
-									if (e->queryInterface("lb_I_String", (void**) &s, __FILE__, __LINE__) != ERR_NONE) {
+									UAP(lb_I_String, s)
+									QI(e, lb_I_String, s)
+									if (s == NULL)
 										printf("Something goes wrong :-(\n");
+									} else {
+										printf("String is: %s\n", s->getData());
 									}
-									
-									printf("String is: %s\n", s->getData());
 								}
 							}
 	

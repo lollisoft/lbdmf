@@ -59,15 +59,16 @@ lbFormularActionsModel::lbFormularActionsModel() {
 	REQUEST(getModuleInstance(), lb_I_Long, currentFormularActionActionID)
 	
 	REQUEST(getModuleInstance(), lb_I_String, currentFormularActionEvent)
+	_CL_LOG << "lbFormularActionsModel::lbFormularActionsModel() called." LOG_
 }
 
 lbFormularActionsModel::~lbFormularActionsModel() {
-
+	_CL_LOG << "lbFormularActionsModel::~lbFormularActionsModel() called." LOG_
 }
 
 lbErrCodes LB_STDCALL lbFormularActionsModel::setData(lb_I_Unknown*) {
-		_CL_LOG << "Error: lbFormularActionsModel::setData(lb_I_Unknown*) not implemented." LOG_
-		return ERR_NOT_IMPLEMENTED;
+	_CL_VERBOSE << "Error: lbFormularActionsModel::setData(lb_I_Unknown*) not implemented." LOG_
+	return ERR_NOT_IMPLEMENTED;
 }
 
 long  LB_STDCALL lbFormularActionsModel::addFormularAction(long formular, long action,  const char* event, long _id) {
@@ -275,7 +276,7 @@ void LB_STDCALL lbPluginFormularActionsModel::releaseImplementation() {
         lbErrCodes err = ERR_NONE;
 
         if (ukFormularActions != NULL) {
-                ukFormularActions->release(__FILE__, __LINE__);
+                ukFormularActions--;
                 ukFormularActions.resetPtr();
         }
 }

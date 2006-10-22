@@ -153,7 +153,7 @@ IMPLEMENT_FUNCTOR(instanceOflbPluginTest, lbPluginTest)
 lbErrCodes LB_STDCALL lbPluginTest::setData(lb_I_Unknown* uk) {
 	lbErrCodes err = ERR_NONE;
 
-	_CL_VERBOSE << "lbPluginTest::setData(...) called.\n" LOG_
+	_CL_LOG << "lbPluginTest::setData(...) called.\n" LOG_
 
         return ERR_NOT_IMPLEMENTED;
 }
@@ -165,7 +165,7 @@ lbPluginTest::lbPluginTest() {
 }
 
 lbPluginTest::~lbPluginTest() {
-	_CL_VERBOSE << "lbPluginTest::~lbPluginTest() called.\n" LOG_
+	_CL_LOG << "lbPluginTest::~lbPluginTest() called.\n" LOG_
 }
 
 void LB_STDCALL lbPluginTest::initialize() {

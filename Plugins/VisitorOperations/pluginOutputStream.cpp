@@ -62,31 +62,6 @@ extern "C" {
 /*...e*/
 
 /*...e*/
-/*...smisc and includes:0:*/
-#ifdef __GNUG__
-#pragma implementation "dynamic.cpp"
-#pragma interface "dynamic.cpp"
-#endif
-
-// For compilers that support precompilation, includes "wx/wx.h".
-#include <wx/wxprec.h>
-
-/*...swx ifdef\39\s:0:*/
-#ifdef __BORLANDC__
-#pragma hdrstop
-#endif
-
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
-
-#if defined(__WXGTK__) || defined(__WXMOTIF__)
-//#include "mondrian.xpm"
-#endif
-/*...e*/
-
-#include "wx/wizard.h"
-/*...e*/
 
 /*...slbOutputStream:0:*/
 /** \brief Implementation of input stream.

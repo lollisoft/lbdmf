@@ -100,27 +100,25 @@ END_PLUGINS()
 
 lbPluginModulelbDMFDataModel::lbPluginModulelbDMFDataModel() {
 	ref = STARTREF;
-	_CL_LOG << "lbPluginModulelbDMFDataModel::lbPluginModulelbDMFDataModel() called." LOG_
+	_CL_VERBOSE << "lbPluginModulelbDMFDataModel::lbPluginModulelbDMFDataModel() called." LOG_
 }
 
 lbPluginModulelbDMFDataModel::~lbPluginModulelbDMFDataModel() {
-	_CL_LOG << "lbPluginModulelbDMFDataModel::~lbPluginModulelbDMFDataModel() called." LOG_
+	_CL_VERBOSE << "lbPluginModulelbDMFDataModel::~lbPluginModulelbDMFDataModel() called." LOG_
 }
 
 void LB_STDCALL lbPluginModulelbDMFDataModel::initialize() {
 	char ptr[20] = "";
 	sprintf(ptr, "%p", this);
 
-	_CL_LOG << "lbPluginModulelbDMFDataModel::initialize(" << ptr << ") called." LOG_
 	enumPlugins();
-	_CL_LOG << "lbPluginModulelbDMFDataModel::initialize() leaving." LOG_
 }
 
 lbErrCodes LB_STDCALL lbPluginModulelbDMFDataModel::setData(lb_I_Unknown* uk) {
         _CL_VERBOSE << "lbPluginModulelbDMFDataModel::setData(...) not implemented yet" LOG_
 
 	if (uk != NULL) {
-		_CL_LOG << "Cloning object with " << uk->getRefCount() << " references." LOG_
+		_CL_VERBOSE << "Cloning object with " << uk->getRefCount() << " references." LOG_
 	}
         
         return ERR_NOT_IMPLEMENTED;

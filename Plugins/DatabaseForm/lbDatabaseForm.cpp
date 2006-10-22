@@ -2230,7 +2230,8 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBRead() {
 				
 					while (cbMapper->hasMoreElements() == 1) {
 						UAP(lb_I_Integer, sel)
-					        lb_I_Unknown* e = cbMapper->nextElement();
+					        UAP(lb_I_Unknown, e)
+					        e = cbMapper->nextElement();
 					        QI(e, lb_I_Integer, sel)
 				        
 					        if (sel->getData() == atoi(newFK)) {
@@ -2530,7 +2531,8 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBAdd(lb_I_Unknown* uk) {
 				
 					while (cbMapper->hasMoreElements() == 1) {
 						UAP(lb_I_Integer, sel)
-					        lb_I_Unknown* e = cbMapper->nextElement();
+					        UAP(lb_I_Unknown, e)
+					        e = cbMapper->nextElement();
 					        QI(e, lb_I_Integer, sel)
 				        
 					        if (sel->getData() == atoi(newFK)) {

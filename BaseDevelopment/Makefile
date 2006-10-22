@@ -1,11 +1,15 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.114 $
+# * $Revision: 1.115 $
 # * $Name:  $
-# * $Id: Makefile,v 1.114 2006/07/17 17:37:45 lollisoft Exp $
+# * $Id: Makefile,v 1.115 2006/10/22 18:34:36 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.115  2006/10/22 18:34:36  lollisoft
+# * Many memory leaks resolved, but they were caused by small errors :-(
+# * This is also a sync.
+# *
 # * Revision 1.114  2006/07/17 17:37:45  lollisoft
 # * Changes dueto bugfix in plugin manager. Repeadable iterator problem.
 # * Not correctly finished the iteration, thus plugins in the same DLL wouldn't
@@ -683,7 +687,7 @@ $(prefix)/plugins:
 
 clean:
 	@for d in $(ALLDIRS); do \
-	    $(MAKE) -C $$d clean; \
+	  $(MAKE) -C $$d clean; \
 	done
 
 distclean:

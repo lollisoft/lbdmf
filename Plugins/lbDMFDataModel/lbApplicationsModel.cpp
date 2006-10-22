@@ -50,9 +50,10 @@ BEGIN_IMPLEMENT_LB_UNKNOWN(lbApplications)
 	ADD_INTERFACE(lb_I_Applications)
 END_IMPLEMENT_LB_UNKNOWN()
 
+/*...slbApplications\58\\58\lbApplications\40\\41\:0:*/
 lbApplications::lbApplications() {
 	ref = STARTREF;
-	_CL_LOG << "lbApplications::lbApplications() called." LOG_
+	_CL_VERBOSE << "lbApplications::lbApplications() called." LOG_
 	REQUEST(getModuleInstance(), lb_I_Container, Applications)
 	REQUEST(getModuleInstance(), lb_I_String, currentApplication)
 	REQUEST(getModuleInstance(), lb_I_String, currentTitel)
@@ -61,16 +62,19 @@ lbApplications::lbApplications() {
 	REQUEST(getModuleInstance(), lb_I_String, currentInterface)
 	REQUEST(getModuleInstance(), lb_I_Long, currentApplicationUID)
 }
-
+/*...e*/
+/*...slbApplications\58\\58\\126\lbApplications\40\\41\:0:*/
 lbApplications::~lbApplications() {
 	_CL_LOG << "lbApplications::~lbApplications() called." LOG_
 }
-
+/*...e*/
+/*...slbErrCodes LB_STDCALL lbApplications\58\\58\setData\40\lb_I_Unknown\42\\41\:0:*/
 lbErrCodes LB_STDCALL lbApplications::setData(lb_I_Unknown*) {
-		_LOG << "Error: lbApplications::setData(lb_I_Unknown*) not implemented." LOG_
-		return ERR_NOT_IMPLEMENTED;
+	_CL_LOG << "Error: lbApplications::setData(lb_I_Unknown*) not implemented." LOG_
+	return ERR_NOT_IMPLEMENTED;
 }
-
+/*...e*/
+/*...slong    LB_STDCALL lbApplications\58\\58\addApplication\40\\46\\46\\46\\41\:0:*/
 long	LB_STDCALL lbApplications::addApplication(const char* application, const char* titel, const char* modulename, const char* functor, const char* _interface, long _id) {
 	lbErrCodes err = ERR_NONE;
 	UAP_REQUEST(manager.getPtr(), lb_I_Long, _ID)
@@ -114,7 +118,8 @@ long	LB_STDCALL lbApplications::addApplication(const char* application, const ch
 
 	return false;
 }
-
+/*...e*/
+/*...sbool    LB_STDCALL lbApplications\58\\58\selectApplication\40\const char\42\ application\41\:0:*/
 bool	LB_STDCALL lbApplications::selectApplication(const char* application) {
 
 	while (hasMoreApplications()) {
@@ -128,7 +133,8 @@ bool	LB_STDCALL lbApplications::selectApplication(const char* application) {
 
 	return false;
 }
-
+/*...e*/
+/*...sbool    LB_STDCALL lbApplications\58\\58\selectApplication\40\long _id\41\:0:*/
 bool	LB_STDCALL lbApplications::selectApplication(long _id) {
 	lbErrCodes err = ERR_NONE;
 	
@@ -166,19 +172,22 @@ bool	LB_STDCALL lbApplications::selectApplication(long _id) {
 		currentInterface->charrep() << "', '" << currentApplicationUID->getData() << "'" LOG_
 		return true;
 	} else {
-		_CL_LOG << "Error: No such application with ID = " << _id << "." LOG_
+		_CL_VERBOSE << "Error: No such application with ID = " << _id << "." LOG_
 		return false;
 	}
 }
-
-int		LB_STDCALL lbApplications::getApplicationCount() {
+/*...e*/
+/*...sint     LB_STDCALL lbApplications\58\\58\getApplicationCount\40\\41\:0:*/
+int	LB_STDCALL lbApplications::getApplicationCount() {
 	return Applications->Count();
 }
-
+/*...e*/
+/*...sbool    LB_STDCALL lbApplications\58\\58\hasMoreApplications\40\\41\:0:*/
 bool	LB_STDCALL lbApplications::hasMoreApplications() {
 	return (Applications->hasMoreElements() == 1);
 }
-
+/*...e*/
+/*...svoid    LB_STDCALL lbApplications\58\\58\setNextApplication\40\\41\:0:*/
 void	LB_STDCALL lbApplications::setNextApplication() {
 	lbErrCodes err = ERR_NONE;
 	UAP_REQUEST(manager.getPtr(), lb_I_String, name)
@@ -201,34 +210,42 @@ void	LB_STDCALL lbApplications::setNextApplication() {
 	*name = "Interface";
 	param->getUAPString(*&name, *&currentInterface);
 }
-
+/*...e*/
+/*...svoid    LB_STDCALL lbApplications\58\\58\finishApplicationIteration\40\\41\:0:*/
 void	LB_STDCALL lbApplications::finishApplicationIteration() {
 	Applications->finishIteration();
 }
-
+/*...e*/
+/*...schar\42\   LB_STDCALL lbApplications\58\\58\getApplicationName\40\\41\:0:*/
 char*	LB_STDCALL lbApplications::getApplicationName() {
 	return currentApplication->charrep();
 }
-
+/*...e*/
+/*...slong    LB_STDCALL lbApplications\58\\58\getApplicationID\40\\41\:0:*/
 long	LB_STDCALL lbApplications::getApplicationID() {
 	return currentApplicationUID->getData();
 }
-
+/*...e*/
+/*...schar\42\   LB_STDCALL lbApplications\58\\58\getApplicationTitle\40\\41\:0:*/
 char*	LB_STDCALL lbApplications::getApplicationTitle() {
 	return currentTitel->charrep();
 }
-
+/*...e*/
+/*...schar\42\   LB_STDCALL lbApplications\58\\58\getApplicationFunctor\40\\41\:0:*/
 char*	LB_STDCALL lbApplications::getApplicationFunctor() {
 	return currentFunctor->charrep();
 }
-
+/*...e*/
+/*...schar\42\   LB_STDCALL lbApplications\58\\58\getApplicationModule\40\\41\:0:*/
 char*	LB_STDCALL lbApplications::getApplicationModule() {
 	return currentModuleName->charrep();
 }
-
+/*...e*/
+/*...schar\42\   LB_STDCALL lbApplications\58\\58\getApplicationInterface\40\\41\:0:*/
 char*	LB_STDCALL lbApplications::getApplicationInterface() {
 	return currentInterface->charrep();
 }
+/*...e*/
 
 /*...sclass lbPluginApplications implementation:0:*/
 /*...slbPluginApplications:0:*/
@@ -324,7 +341,7 @@ void LB_STDCALL lbPluginApplications::releaseImplementation() {
         lbErrCodes err = ERR_NONE;
 
         if (ukApplications != NULL) {
-                ukApplications->release(__FILE__, __LINE__);
+                ukApplications--;
                 ukApplications.resetPtr();
         }
 }

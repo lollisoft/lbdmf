@@ -57,15 +57,16 @@ lbFormularParameters::lbFormularParameters() {
 	REQUEST(getModuleInstance(), lb_I_String, currentParameterValue)
 	REQUEST(getModuleInstance(), lb_I_Long, currentID)
 	REQUEST(getModuleInstance(), lb_I_Long, currentFormularID)
+	_CL_LOG << "lbFormularParameters::lbFormularParameters() called." LOG_
 }
 
 lbFormularParameters::~lbFormularParameters() {
-
+	_CL_LOG << "lbFormularParameters::~lbFormularParameters() called." LOG_
 }
 
 lbErrCodes LB_STDCALL lbFormularParameters::setData(lb_I_Unknown*) {
-		_CL_LOG << "Error: lbFormularParameters::setData(lb_I_Unknown*) not implemented." LOG_
-		return ERR_NOT_IMPLEMENTED;
+	_CL_VERBOSE << "Error: lbFormularParameters::setData(lb_I_Unknown*) not implemented." LOG_
+	return ERR_NOT_IMPLEMENTED;
 }
 
 long  LB_STDCALL lbFormularParameters::addParameter(const char* name, const char* value, long formular_id, long _id) {
@@ -204,12 +205,13 @@ END_IMPLEMENT_LB_UNKNOWN()
 
 lbApplicationParameters::lbApplicationParameters() {
 	ref = STARTREF;
-	_CL_LOG << "lbApplicationParameters::lbApplicationParameters() called." LOG_
+	_CL_VERBOSE << "lbApplicationParameters::lbApplicationParameters() called." LOG_
 	REQUEST(getModuleInstance(), lb_I_Container, Parameters)
 	REQUEST(getModuleInstance(), lb_I_String, currentParameterName)
 	REQUEST(getModuleInstance(), lb_I_String, currentParameterValue)
 	REQUEST(getModuleInstance(), lb_I_Long, currentID)
 	REQUEST(getModuleInstance(), lb_I_Long, currentApplicationID)
+	_CL_LOG << "lbApplicationParameters::lbApplicationParameters() called." LOG_
 }
 
 lbApplicationParameters::~lbApplicationParameters() {
@@ -217,8 +219,8 @@ lbApplicationParameters::~lbApplicationParameters() {
 }
 
 lbErrCodes LB_STDCALL lbApplicationParameters::setData(lb_I_Unknown*) {
-		_CL_LOG << "Error: lbApplicationParameters::setData(lb_I_Unknown*) not implemented." LOG_
-		return ERR_NOT_IMPLEMENTED;
+	_CL_VERBOSE << "Error: lbApplicationParameters::setData(lb_I_Unknown*) not implemented." LOG_
+	return ERR_NOT_IMPLEMENTED;
 }
 
 long  LB_STDCALL lbApplicationParameters::addParameter(const char* name, const char* value, long application_id, long _id) {
@@ -444,7 +446,7 @@ void LB_STDCALL lbPluginFormularParameters::releaseImplementation() {
         lbErrCodes err = ERR_NONE;
 
         if (ukFormularParameters != NULL) {
-                ukFormularParameters->release(__FILE__, __LINE__);
+                ukFormularParameters--;
                 ukFormularParameters.resetPtr();
         }
 }
@@ -545,7 +547,7 @@ void LB_STDCALL lbPluginApplicationParameters::releaseImplementation() {
         lbErrCodes err = ERR_NONE;
 
         if (ukApplicationParameters != NULL) {
-                ukApplicationParameters->release(__FILE__, __LINE__);
+                ukApplicationParameters--;
                 ukApplicationParameters.resetPtr();
         }
 }

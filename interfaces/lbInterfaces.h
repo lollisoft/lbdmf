@@ -3141,6 +3141,9 @@ lb_I_Container* cls::getPlugins() { \
 } \
 void LB_STDCALL cls::enumPlugins() { \
 	lbErrCodes err = ERR_NONE; \
+	if (Plugins != NULL) { \
+		Plugins--; \
+	} \
 	REQUEST(manager.getPtr(), lb_I_Container, Plugins)
 
 #define ADD_PLUGIN(plugin, namespace) \

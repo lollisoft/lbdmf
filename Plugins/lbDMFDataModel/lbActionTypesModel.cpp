@@ -59,14 +59,15 @@ lbActionTypesModel::lbActionTypesModel() {
 	REQUEST(getModuleInstance(), lb_I_Long, currentActionTarget)
 	REQUEST(getModuleInstance(), lb_I_String, currentActionName)
 	REQUEST(getModuleInstance(), lb_I_String, currentActionSource)
+	_CL_LOG << "lbActionTypesModel::lbActionTypesModel() called." LOG_
 }
 
 lbActionTypesModel::~lbActionTypesModel() {
-
+	_CL_LOG << "lbActionTypesModel::~lbActionTypesModel() called." LOG_
 }
 
 lbErrCodes LB_STDCALL lbActionTypesModel::setData(lb_I_Unknown*) {
-		_CL_LOG << "Error: lbActionTypesModel::setData(lb_I_Unknown*) not implemented." LOG_
+		_CL_VERBOSE << "Error: lbActionTypesModel::setData(lb_I_Unknown*) not implemented." LOG_
 		return ERR_NOT_IMPLEMENTED;
 }
 
@@ -288,7 +289,7 @@ void LB_STDCALL lbPluginActionTypesModel::releaseImplementation() {
         lbErrCodes err = ERR_NONE;
 
         if (ukActions != NULL) {
-                ukActions->release(__FILE__, __LINE__);
+                ukActions--;
                 ukActions.resetPtr();
         }
 }

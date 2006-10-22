@@ -101,6 +101,12 @@ extern "C" {
 
 /*...e*/
 
+// Glogal variable for lbQuery::getTableName()
+// Would be deleted in lbQuery::~lbQuery()
+
+char *lpszTable = NULL;
+int lpszSize = 0;
+
 void _dbError_STMT(char* lp, HSTMT hstmt);
 void _dbError_ENV(char* lp, HENV henv);
 void _dbError_DBC(char* lp, HDBC hdbc);
@@ -217,7 +223,12 @@ public:
 	}
 	
 	virtual ~lbQuery() {
-		_CL_VERBOSE << "lbQuery::~lbQuery() called. (" << szSql << ")" LOG_
+		_CL_VERBOSE << "lbQuery::~lbQuery() called. (" << szSql << "). Refcount of ReadOnlyColumns is: " << ReadOnlyColumns->getRefCount() LOG_
+		if (ReadOnlyColumns->getRefCount() > 1) _CL_LOG << "Error: Object would not deleted (ReadOnlyColumns) !" LOG_
+		if (mapPKTable_PKColumns_To_FKName->getRefCount() > 1) _CL_LOG << "Error: Object would not deleted (mapPKTable_PKColumns_To_FKName) !" LOG_		
+		
+		// The global variable for getTableName() :-(
+		if (lpszTable) free(lpszTable);
 	}
 	
 	DECLARE_LB_UNKNOWN()
@@ -2380,9 +2391,6 @@ bool LB_STDCALL lbQuery::getReadonly(char* column) {
 }
 /*...e*/
 /*...schar\42\ LB_STDCALL lbQuery\58\\58\getTableName\40\char\42\ columnName\41\:0:*/
-char *lpszTable = NULL;
-int lpszSize = 0;
-
 char* LB_STDCALL lbQuery::getTableName(char* columnName) {
 		
 		SQLHSTMT	StatementHandle;

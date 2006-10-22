@@ -30,11 +30,15 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.48 $
+ * $Revision: 1.49 $
  * $Name:  $
- * $Id: lbPluginManager.cpp,v 1.48 2006/07/22 19:27:02 lollisoft Exp $
+ * $Id: lbPluginManager.cpp,v 1.49 2006/10/22 18:34:36 lollisoft Exp $
  *
  * $Log: lbPluginManager.cpp,v $
+ * Revision 1.49  2006/10/22 18:34:36  lollisoft
+ * Many memory leaks resolved, but they were caused by small errors :-(
+ * This is also a sync.
+ *
  * Revision 1.48  2006/07/22 19:27:02  lollisoft
  * Removed logging messages.
  *
@@ -305,8 +309,6 @@ private:
 	bool firstEnumerate;
 	
 	UAP(lb_I_Container, PluginModules)
-
-
 	UAP(lb_I_Container, PluginContainer)
 	
 	bool firstPlugin;
@@ -335,19 +337,22 @@ lbPluginManager::~lbPluginManager() {
 }
 
 void LB_STDCALL lbPluginManager::unload() {
-	if(PluginContainer != NULL) {
-		/**
-		 * Releasing a reference, where the instance will not be deleted,
-		 * an additional reset must be used.
-		 *
-		 * TODO: Rewrite UAP macro to reset pointer always.
-		 */
-		PluginContainer->release(__FILE__, __LINE__);
+
+	if (PluginModules == NULL) _CL_LOG << "Warning: PluginModules is NULL." LOG_
+
+	if (PluginModules != NULL) {
+		if (PluginModules->getRefCount() > 1) {
+			_CL_LOG << "Warning: lbPluginManager::unload() doesn't affect unloading PluginModules!" LOG_ 
+		}
+		PluginModules--;
+		PluginModules.resetPtr();
+	}
+
+	if (PluginContainer != NULL) {
+		PluginContainer--;
 		PluginContainer.resetPtr();
 	}
-	
-	PluginModules--;
-	PluginModules.resetPtr();
+
 	isInitialized = false;
 }
 
@@ -372,7 +377,7 @@ bool LB_STDCALL lbPluginManager::tryLoad(char* module, char* path) {
 	pluginDir[0] = 0;
 	strcat(pluginDir, path);
 				
-	/*...sbuild PREFIX:0:*/
+/*...sbuild PREFIX:0:*/
 #ifndef LINUX
 #ifdef __WATCOMC__
 #define PREFIX "_"
@@ -384,7 +389,7 @@ bool LB_STDCALL lbPluginManager::tryLoad(char* module, char* path) {
 #ifdef LINUX
 #define PREFIX ""
 #endif
-	/*...e*/
+/*...e*/
 				
 	// Instantiate an lb_I_PluginModule object
 	
@@ -403,63 +408,65 @@ bool LB_STDCALL lbPluginManager::tryLoad(char* module, char* path) {
 	strcat(pluginModule, module);
 	
 	UAP(lb_I_Unknown, ukPlugin)
-		UAP_REQUEST(manager.getPtr(), lb_I_String, pluginName)
-		pluginName->setData(module);
+	UAP_REQUEST(manager.getPtr(), lb_I_String, pluginName)
+	pluginName->setData(module);
 	
 	UAP(lb_I_KeyBase, key)
-		QI(pluginName, lb_I_KeyBase, key)
+	QI(pluginName, lb_I_KeyBase, key)
 		
-		if (PluginModules->exists(&key) != 0) {
-			_CL_VERBOSE << "Warning: Plugin already registered." LOG_
-		} else {
-			if (manager->makeInstance(PREFIX "instanceOfPluginModule", pluginModule, &ukPlugin) != ERR_NONE) {
+	if (PluginModules->exists(&key) != 0) {
+		_CL_LOG << "Warning: Plugin already registered." LOG_
+		free(pluginModule);
+		free(pluginDir);
+	} else {
+		if (manager->makeInstance(PREFIX "instanceOfPluginModule", pluginModule, &ukPlugin) != ERR_NONE) {
 				
-				// It may be a Microsoft compiled plugin...
-				if (manager->makeInstance("instanceOfPluginModule", pluginModule, &ukPlugin) == ERR_NONE) {
+			// It may be a Microsoft compiled plugin...
+			if (manager->makeInstance("instanceOfPluginModule", pluginModule, &ukPlugin) == ERR_NONE) {
 					
-					ukPlugin->setModuleManager(*&manager, __FILE__, __LINE__);
-					
-					PluginModules->insert(&ukPlugin, &key);
-					
-					UAP(lb_I_Unknown, ukPlugin1)
-						
-					ukPlugin1 = PluginModules->getElement(&key);
-					
-					UAP(lb_I_PluginModule, plM)
-					QI(ukPlugin1, lb_I_PluginModule, plM)
-						
-					plM->setModule(pluginModule);
-					plM->initialize();
-					
-					free(pluginModule);
-					free(pluginDir);
-					return true;	
-				}
-				free(pluginModule);
-				free(pluginDir);
-				
-				return false;
-				
-			} else {
 				ukPlugin->setModuleManager(*&manager, __FILE__, __LINE__);
-				PluginModules->insert(&ukPlugin, &key);
-				
-				UAP(lb_I_Unknown, ukPlugin1)
 					
+				PluginModules->insert(&ukPlugin, &key);
+					
+				UAP(lb_I_Unknown, ukPlugin1)
+						
 				ukPlugin1 = PluginModules->getElement(&key);
-				
+					
 				UAP(lb_I_PluginModule, plM)
 				QI(ukPlugin1, lb_I_PluginModule, plM)
-					
-				_CL_VERBOSE << "lb_I_PluginModule has " << plM->getRefCount() << " references." LOG_
-					
+						
 				plM->setModule(pluginModule);
 				plM->initialize();
-				
+					
 				free(pluginModule);
 				free(pluginDir);
+				return true;	
 			}
+			free(pluginModule);
+			free(pluginDir);
+				
+			return false;
+				
+		} else {
+			ukPlugin->setModuleManager(*&manager, __FILE__, __LINE__);
+			PluginModules->insert(&ukPlugin, &key);
+				
+			UAP(lb_I_Unknown, ukPlugin1)
+					
+			ukPlugin1 = PluginModules->getElement(&key);
+				
+			UAP(lb_I_PluginModule, plM)
+			QI(ukPlugin1, lb_I_PluginModule, plM)
+					
+			_CL_VERBOSE << "lb_I_PluginModule has " << plM->getRefCount() << " references." LOG_
+					
+			plM->setModule(pluginModule);
+			plM->initialize();
+				
+			free(pluginModule);
+			free(pluginDir);
 		}
+	}
 	return true;
 }
 /*...e*/
@@ -469,10 +476,9 @@ void LB_STDCALL lbPluginManager::initialize() {
 	if (!firstEnumerate) {
 		firstEnumerate = true;
 		
-		REQUEST(manager.getPtr(), lb_I_Container, PluginModules)
-	}
-
-	if (PluginModules == NULL) {
+		if (PluginModules != NULL) {
+			PluginModules--;
+		}
 		REQUEST(manager.getPtr(), lb_I_Container, PluginModules)
 	}
 
@@ -538,9 +544,10 @@ void LB_STDCALL lbPluginManager::initialize() {
 	DIR *dir;
 	struct dirent *dir_info;
 	
+/*...sfor direntry:8:*/
 	if ((dir = opendir(pluginDir)) == NULL) {
 
-	    free(pluginDir);
+	    	free(pluginDir);
 		
 		char* pwd = getenv("PWD");
 		if (pwd == NULL) pwd = ".";
@@ -564,11 +571,13 @@ void LB_STDCALL lbPluginManager::initialize() {
 			    _LOG << "Plugin directory not found." LOG_
 			    
 			    free(pluginDir);
+			    free(toFind);
 			    
 			    return;
 			}
 		}
 	}
+/*...e*/
 
 	char* toFind = (char*) malloc(strlen(mask)+strlen(pluginDir)+2);
 	toFind[0] = 0;
@@ -683,28 +692,22 @@ lb_I_Plugin* LB_STDCALL lbPluginManager::nextPlugin() {
 		
 				QI(uk, lb_I_PluginModule, plM)
 		
-				// Get all plugins of this module
+				_CL_LOG << "Got a plugin module with " << plM->getRefCount() << " references." LOG_
 
-
-				// This was a cause of the difficult bug that later on occures.
-				//
-				// The PluginContainer is a smart pointer that does the release
-				// on it's instance, when assignement operator is used. Thus a
-				// doulbe release also deletes the list of lb_I_PluginImpl instances.
-				//
-				//if (PluginContainer != NULL) {
-				//	PluginContainer->release(__FILE__, __LINE__);
-				//}
-				
-				//plM->initialize();
-
+				if (PluginContainer != NULL) {
+					PluginContainer--;
+					PluginContainer.resetPtr();
+				}
+								
 				PluginContainer = plM->getPlugins();
 			
 				if (PluginContainer == NULL) {
 					_LOG << "Error: Plugin module returned no plugin list. Maybe not initialized!" LOG_
 					return NULL;
 				}
-			
+				
+				_CL_LOG << "Got a PluginContainer with " << PluginContainer->getRefCount() << " references." LOG_
+
 				if (PluginContainer->Count() == 0) {
 					_LOG << "Error: Plugin module returned empty plugin list. Maybe not initialized!" LOG_
 				}
@@ -757,11 +760,13 @@ lb_I_Plugin* LB_STDCALL lbPluginManager::getFirstMatchingPlugin(char* match, cha
 			UAP(lb_I_Plugin, pl)
 			pl = nextPlugin();
 			if (pl == NULL) break;
-			lb_I_Unknown* uk;
 			
 			if ((strcmp(pl->getNamespace(), _namespace) == 0) && pl->hasInterface(match)) {
 				PluginContainer->finishIteration();
+				PluginModules->finishIteration();
+				
 				pl++;
+				
 				return pl.getPtr();
 			}
 		}
@@ -878,6 +883,9 @@ lbPlugin::lbPlugin() {
 /*...e*/
 /*...slbPlugin\58\\58\\126\lbPlugin\40\\41\:0:*/
 lbPlugin::~lbPlugin() {
+	if (implementation != NULL) 
+		_CL_LOG << "lbPlugin::~lbPlugin() Implementation has " << implementation->getRefCount() << " references." LOG_
+
 	if (_module) free(_module);
 	if (_name) free(_name);
 	if (_namespace) free(_namespace);
@@ -921,6 +929,8 @@ void LB_STDCALL lbPlugin::setAttached(lb_I_PluginImpl* impl) {
 	}
 	
 	QI(impl, lb_I_Unknown, implementation)
+	
+	if (implementation == NULL) _CL_LOG << "Error: lbPlugin::setAttached() failure!" LOG_
 }
 /*...e*/
 /*...slb_I_PluginImpl\42\ LB_STDCALL lbPlugin\58\\58\getAttached\40\\41\:0:*/
@@ -938,7 +948,13 @@ lb_I_PluginImpl* LB_STDCALL lbPlugin::getAttached() {
 /*...e*/
 
 void LB_STDCALL lbPlugin::uninitialize() {
-
+	lbErrCodes err = ERR_NONE;
+	if (implementation != NULL) {
+		UAP(lb_I_PluginImpl, impl)
+		QI(implementation, lb_I_PluginImpl, impl)
+	
+		impl->releaseImplementation();
+	}
 }
 /*...svoid LB_STDCALL lbPlugin\58\\58\setModule\40\char\42\ module\41\:0:*/
 void LB_STDCALL lbPlugin::setModule(char* module) {
@@ -988,22 +1004,13 @@ void LB_STDCALL lbPlugin::preinitialize() {
 	strcat(name, "instanceOf");
 	strcat(name, _name);
 
-	if (manager.getPtr() == NULL) {
-		_CL_VERBOSE << "FATAL: lbPlugin::preinitialize() uses a NULL pointer for the manager!" LOG_
-	}
-
-	_CL_LOG << "lbPlugin::preinitialize() tries to get " << name << " from " << _module LOG_
+	_CL_VERBOSE << "lbPlugin::preinitialize() tries to get " << name << " from " << _module LOG_
 
 	if (manager->makeInstance(name, _module, &ukPlugin) == ERR_NONE) {
 
 		ukPlugin->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
 
-	        UAP(lb_I_PluginImpl, impl)
-	        QI(ukPlugin, lb_I_PluginImpl, impl)
-	        //impl++;
-
 	        QI(ukPlugin, lb_I_Unknown, implementation)
-	        //implementation++;
 		
 		isPreInitialized = true;
 
@@ -1016,12 +1023,7 @@ void LB_STDCALL lbPlugin::preinitialize() {
 		
 			ukPlugin->setModuleManager(manager.getPtr(), __FILE__, __LINE__);;
 		
-			UAP(lb_I_PluginImpl, impl)
-			QI(ukPlugin, lb_I_PluginImpl, impl)
-			//impl++;
-		
 			QI(ukPlugin, lb_I_Unknown, implementation)
-			//implementation++;
 
 			isPreInitialized = true;
 
@@ -1030,7 +1032,7 @@ void LB_STDCALL lbPlugin::preinitialize() {
 		}
 	}
 
-	_CL_VERBOSE << "Preinitialized instance has " << implementation->getRefCount() << " references." LOG_
+	_CL_VERBOSE << "Preinitialized instance has " << implementation->getRefCount() << " references (implementation)." LOG_
 
 	free(name);
 }
@@ -1051,6 +1053,8 @@ void LB_STDCALL lbPlugin::initialize() {
 		impl->initialize();
 	}
 	_CL_VERBOSE << "lbPlugin::initialize() returns." LOG_
+	
+	if (implementation == NULL) _CL_LOG << "Fatal: Have no implementation, but should have one!" LOG_
 }
 
 bool LB_STDCALL lbPlugin::run() {
@@ -1134,23 +1138,9 @@ bool LB_STDCALL lbPlugin::hasInterface(char* name) {
 	
 	if (implementation == NULL) preinitialize();
 	
-	UAP(lb_I_Unknown, uk)
+	lb_I_Unknown* uk;
 
-	/*
-		This function firstly creates an instance of the implementation behind
-		the plugin. So the reference count is at STARTREF. The above UAP variable
-		then would release the instance.
-	
-		This should not be this way, because the lb_I_PluginImpl stores only one
-		reverence to the instance.
-		
-		So, at this point, we need to increment the reference count manually!
-	*/
-	
 	uk = peekImplementation();
-	// A failure of query interface let crash at function leaving.
-	// It may be a refcount problem.
-	uk++;
 	
 	/*
 		It may be a combined plugin implementation. Currently these, could not have
@@ -1171,8 +1161,6 @@ bool LB_STDCALL lbPlugin::hasInterface(char* name) {
 
 	UAP(lb_I_PluginImpl, impl)
 	QI(implementation, lb_I_PluginImpl, impl)
-	
-	
 	
 	impl->releaseImplementation();
 	

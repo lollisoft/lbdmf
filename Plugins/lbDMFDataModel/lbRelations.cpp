@@ -50,6 +50,7 @@ BEGIN_IMPLEMENT_LB_UNKNOWN(lbUserApplicationRelationModel)
 END_IMPLEMENT_LB_UNKNOWN()
 
 
+/*...slbUserApplicationRelationModel\58\\58\lbUserApplicationRelationModel\40\\41\:0:*/
 lbUserApplicationRelationModel::lbUserApplicationRelationModel() {
 	ref = STARTREF;
 	REQUEST(getModuleInstance(), lb_I_Container, Relations)
@@ -57,16 +58,19 @@ lbUserApplicationRelationModel::lbUserApplicationRelationModel() {
 	REQUEST(getModuleInstance(), lb_I_Long, currentAppID)
 	REQUEST(getModuleInstance(), lb_I_Long, currentID)
 }
-
+/*...e*/
+/*...slbUserApplicationRelationModel\58\\58\\126\lbUserApplicationRelationModel\40\\41\:0:*/
 lbUserApplicationRelationModel::~lbUserApplicationRelationModel() {
-
+	_CL_LOG << "lbUserApplicationRelationModel::~lbUserApplicationRelationModel() called." LOG_
 }
-
+/*...e*/
+/*...slbErrCodes LB_STDCALL lbUserApplicationRelationModel\58\\58\setData\40\lb_I_Unknown\42\\41\:0:*/
 lbErrCodes LB_STDCALL lbUserApplicationRelationModel::setData(lb_I_Unknown*) {
 		_LOG << "Error: lbUserApplicationRelationModel::setData(lb_I_Unknown*) not implemented." LOG_
 		return ERR_NOT_IMPLEMENTED;
 }
-
+/*...e*/
+/*...slong  LB_STDCALL lbUserApplicationRelationModel\58\\58\addRelation\40\long app_id\44\ long user_id\44\ long _id\41\:0:*/
 long  LB_STDCALL lbUserApplicationRelationModel::addRelation(long app_id, long user_id, long _id) {
 	lbErrCodes err = ERR_NONE;
 	UAP_REQUEST(manager.getPtr(), lb_I_Long, UserID)
@@ -95,7 +99,8 @@ long  LB_STDCALL lbUserApplicationRelationModel::addRelation(long app_id, long u
 
 	return -1;
 }
-
+/*...e*/
+/*...sbool  LB_STDCALL lbUserApplicationRelationModel\58\\58\selectRelation\40\long _id\41\:0:*/
 bool  LB_STDCALL lbUserApplicationRelationModel::selectRelation(long _id) {
 	lbErrCodes err = ERR_NONE;
 	UAP_REQUEST(manager.getPtr(), lb_I_Long, id)
@@ -123,24 +128,28 @@ bool  LB_STDCALL lbUserApplicationRelationModel::selectRelation(long _id) {
 	
 	return false;
 }
-
+/*...e*/
+/*...sbool LB_STDCALL lbUserApplicationRelationModel\58\\58\addFilter\40\const char\42\ filter\44\ const char\42\ value\41\:0:*/
 bool LB_STDCALL lbUserApplicationRelationModel::addFilter(const char* filter, const char* value) {
 	return false;
 }
-
+/*...e*/
+/*...sbool LB_STDCALL lbUserApplicationRelationModel\58\\58\resetFilter\40\const char\42\ filter\41\:0:*/
 bool LB_STDCALL lbUserApplicationRelationModel::resetFilter(const char* filter) {
 	return true;
 }
-
-
+/*...e*/
+/*...sint  LB_STDCALL lbUserApplicationRelationModel\58\\58\getRelationCount\40\\41\:0:*/
 int  LB_STDCALL lbUserApplicationRelationModel::getRelationCount() {
 	return Relations->Count();
 }
-
+/*...e*/
+/*...sbool  LB_STDCALL lbUserApplicationRelationModel\58\\58\hasMoreRelations\40\\41\:0:*/
 bool  LB_STDCALL lbUserApplicationRelationModel::hasMoreRelations() {
 	return Relations->hasMoreElements();
 }
-
+/*...e*/
+/*...svoid  LB_STDCALL lbUserApplicationRelationModel\58\\58\setNextRelation\40\\41\:0:*/
 void  LB_STDCALL lbUserApplicationRelationModel::setNextRelation() {
 	lbErrCodes err = ERR_NONE;
 	UAP_REQUEST(manager.getPtr(), lb_I_String, name)
@@ -157,22 +166,27 @@ void  LB_STDCALL lbUserApplicationRelationModel::setNextRelation() {
 	*name = "ID";
 	param->getUAPLong(*&name, *&currentID);
 }
-
+/*...e*/
+/*...svoid  LB_STDCALL lbUserApplicationRelationModel\58\\58\finishRelationIteration\40\\41\:0:*/
 void  LB_STDCALL lbUserApplicationRelationModel::finishRelationIteration() {
 	Relations->finishIteration();
 }
-
+/*...e*/
+/*...slong LB_STDCALL lbUserApplicationRelationModel\58\\58\getApplicationID\40\\41\:0:*/
 long LB_STDCALL lbUserApplicationRelationModel::getApplicationID() {
 	return currentAppID->getData();
 }
-
+/*...e*/
+/*...slong  LB_STDCALL lbUserApplicationRelationModel\58\\58\getUserID\40\\41\:0:*/
 long  LB_STDCALL lbUserApplicationRelationModel::getUserID() {
 	return currentUserID->getData();
 }
-
+/*...e*/
+/*...slong LB_STDCALL lbUserApplicationRelationModel\58\\58\getID\40\\41\:0:*/
 long LB_STDCALL lbUserApplicationRelationModel::getID() {
 	return currentID->getData();
 }
+/*...e*/
 
 /*...sclass lbPluginUsersModel implementation:0:*/
 /*...slbPluginUsersModel:0:*/
@@ -268,7 +282,7 @@ void LB_STDCALL lbPluginUserApplicationRelationModel::releaseImplementation() {
         lbErrCodes err = ERR_NONE;
 
         if (ukUserApplicationRelationModel != NULL) {
-                ukUserApplicationRelationModel->release(__FILE__, __LINE__);
+                ukUserApplicationRelationModel--;
                 ukUserApplicationRelationModel.resetPtr();
         }
 }

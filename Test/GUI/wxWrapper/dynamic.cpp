@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.124 2006/07/02 13:39:16 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.125 2006/10/22 18:34:36 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,15 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.124 $
+ * $Revision: 1.125 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.124 2006/07/02 13:39:16 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.125 2006/10/22 18:34:36 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.125  2006/10/22 18:34:36  lollisoft
+ * Many memory leaks resolved, but they were caused by small errors :-(
+ * This is also a sync.
+ *
  * Revision 1.124  2006/07/02 13:39:16  lollisoft
  * Minor change (PM).
  *
@@ -2079,7 +2083,8 @@ bool MyApp::OnInit(void)
 
     PM->initialize();
 
-    metaApp++;
+    /// \todo Find leak.
+    //metaApp++;
 
     lbErrCodes err = ERR_NONE;
 

@@ -30,11 +30,15 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.70 $
+ * $Revision: 1.71 $
  * $Name:  $
- * $Id: lbInterfaces-sub-classes.h,v 1.70 2006/07/17 17:40:41 lollisoft Exp $
+ * $Id: lbInterfaces-sub-classes.h,v 1.71 2006/10/22 18:34:36 lollisoft Exp $
  *
  * $Log: lbInterfaces-sub-classes.h,v $
+ * Revision 1.71  2006/10/22 18:34:36  lollisoft
+ * Many memory leaks resolved, but they were caused by small errors :-(
+ * This is also a sync.
+ *
  * Revision 1.70  2006/07/17 17:40:41  lollisoft
  * Changes dueto bugfix in plugin manager. Repeadable iterator problem.
  * Not correctly finished the iteration, thus plugins in the same DLL wouldn't
@@ -833,7 +837,7 @@ classname::classname(const lb_I_Unknown* o, const lb_I_KeyBase* _key, bool doClo
 		if (doClone) { \
 			data = o->clone(__FILE__, __LINE__); \
 			if (data->getRefCount() > 1) { \
-				_CL_LOG << "Warning: Refcount after cloning is more than 1 !!!" LOG_ \
+				_CL_LOG << "Warning: Refcount of data after cloning is more than 1 !!!" LOG_ \
 			} \
 		} else { \
 			o->queryInterface("lb_I_Unknown", (void**) &data, __FILE__, __LINE__); \
@@ -842,6 +846,11 @@ classname::classname(const lb_I_Unknown* o, const lb_I_KeyBase* _key, bool doClo
     } \
     lb_I_Unknown* uk_key = NULL; \
     key = (lb_I_KeyBase*) _key->clone(__FILE__, __LINE__); \
+    if (key != NULL) { \
+    	if (key->getRefCount() > 1) { \
+    	        _CL_LOG << "Warning: Refcount of key after cloning is more than 1 !!!" LOG_ \
+        } \
+    } \
     if (key == NULL) _CL_LOG << "Key cloning in constructor failed. May be a memory problem" LOG_ \
 } \
 \
@@ -852,14 +861,22 @@ classname::~classname() { \
         sprintf(ptr1, "%p", data); \
         if (key != NULL) { \
             key->setDebug(1); \
-            if (key->deleteState() != 1) _CL_VERBOSE << "Warning: Key wouldn't deleted in container element! (References: " << key->getRefCount() << ")(" << key->charrep() << ")" LOG_ \
+            if (key->getRefCount() > 1) { \
+            	_CL_LOG << "Warning: Key wouldn't deleted in container element! (References: " << key->getRefCount() << ")(" << key->charrep() << ")" LOG_ \
+            } \
+            if (key->deleteState() != 1) { \
+            	_CL_LOG << "Warning: Key wouldn't deleted in container element! (References: " << key->getRefCount() << ")(" << key->charrep() << ")" LOG_ \
+            } \
             RELEASE(key); \
         } \
         if (data != NULL) { \
-        	if (data->deleteState() != 1) { \
-        		_CL_VERBOSE << "Warning: Data wouldn't deleted in container element! (" << data->getClassName() << ")" LOG_ \
+        	if (data->getRefCount() > 1) { \
+        		_CL_LOG << "Warning: Data wouldn't deleted in container element! (References: " << data->getRefCount() << ")" LOG_ \
         	} \
-			RELEASE(data); \
+        	if (data->deleteState() != 1) { \
+        		_CL_LOG << "Warning: Data wouldn't deleted in container element! (References: " << data->getRefCount() << ")" LOG_ \
+        	} \
+		RELEASE(data); \
         } \
         key = NULL; \
         data = NULL; \
@@ -886,6 +903,7 @@ lb_I_KeyBase* LB_STDCALL classname::getKey() const { \
         if(key == NULL) _CL_LOG << "ERROR: Element has no key. Could not return from NULL pointer!!" LOG_ \
         key->queryInterface("lb_I_KeyBase", (void**) &kbase, __FILE__, __LINE__); \
         _CL_VERBOSE << "Key of " << key->getClassName() << " has " << key->getRefCount() << " references." LOG_ \
+        key->release(__FILE__, __LINE__); \
         return kbase; \
 } \
 \

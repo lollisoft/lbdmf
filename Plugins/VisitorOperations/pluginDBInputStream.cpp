@@ -62,31 +62,6 @@ extern "C" {
 /*...e*/
 
 /*...e*/
-/*...smisc and includes:0:*/
-#ifdef __GNUG__
-#pragma implementation "dynamic.cpp"
-#pragma interface "dynamic.cpp"
-#endif
-
-// For compilers that support precompilation, includes "wx/wx.h".
-#include <wx/wxprec.h>
-
-/*...swx ifdef\39\s:0:*/
-#ifdef __BORLANDC__
-#pragma hdrstop
-#endif
-
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
-
-#if defined(__WXGTK__) || defined(__WXMOTIF__)
-//#include "mondrian.xpm"
-#endif
-/*...e*/
-
-#include "wx/wizard.h"
-/*...e*/
 
 /*...slbDatabaseInputStream:0:*/
 /** \brief Implementation of input stream.
@@ -104,55 +79,55 @@ public:
 	DECLARE_LB_UNKNOWN()
 
 /*...sUnimplemented visitors:8:*/
-	void LB_STDCALL visit(lb_I_LogonHandler*) { _CL_LOG << "visit(lb_I_LogonHandler*)" LOG_ }
-	void LB_STDCALL visit(lb_I_LogonPage*) { _CL_LOG << "visit(lb_I_LogonPage*)" LOG_ }
-	void LB_STDCALL visit(lb_I_AppSelectPage*) { _CL_LOG << "visit(lb_I_AppSelectPage*)" LOG_ }
-	void LB_STDCALL visit(lb_I_GUI*) { _CL_LOG << "visit(lb_I_GUI*)" LOG_ }
-	void LB_STDCALL visit(lb_I_GUIApp*) { _CL_LOG << "visit(lb_I_GUIApp*)" LOG_ }
-	void LB_STDCALL visit(lb_I_Frame*) { _CL_LOG << "visit(lb_I_Frame*)" LOG_ }
-	void LB_STDCALL visit(lb_I_KeyBase*) { _CL_LOG << "visit(lb_I_KeyBase*)" LOG_ } 
-	void LB_STDCALL visit(lb_I_String*) { _CL_LOG << "visit(lb_I_String*)" LOG_ } 
-	void LB_STDCALL visit(lb_I_Integer*) { _CL_LOG << "visit(lb_I_Integer*)" LOG_ } 
-	void LB_STDCALL visit(lb_I_Long*) { _CL_LOG << "visit(lb_I_Long*)" LOG_ }
-	void LB_STDCALL visit(lb_I_Container*) { _CL_LOG << "visit(lb_I_Container*)" LOG_ } 
-	void LB_STDCALL visit(lb_I_Database*) { _CL_LOG << "visit(lb_I_Database*)" LOG_ } 
-	void LB_STDCALL visit(lb_I_ColumnBinding*) { _CL_LOG << "visit(lb_I_ColumnBinding*)" LOG_ } 
-	void LB_STDCALL visit(lb_I_BoundColumn*) { _CL_LOG << "visit(lb_I_BoundColumn*)" LOG_ } 
-	void LB_STDCALL visit(lb_I_Query*) { _CL_LOG << "visit(lb_I_Query*)" LOG_ } 
-	void LB_STDCALL visit(lb_I_MVC_View*) { _CL_LOG << "visit(lb_I_MVC_View*)" LOG_ } 
-	void LB_STDCALL visit(lb_I_Connection*) { _CL_LOG << "visit(lb_I_Connection*)" LOG_ } 
-	void LB_STDCALL visit(lb_I_InterfaceRepository*) { _CL_LOG << "visit(lb_I_InterfaceRepository*)" LOG_ } 
-	void LB_STDCALL visit(lb_I_Element*) { _CL_LOG << "visit(lb_I_Element*)" LOG_ } 
-	void LB_STDCALL visit(lb_I_Module*) { _CL_LOG << "visit(lb_I_Module*)" LOG_ } 
-	void LB_STDCALL visit(lb_I_FunctorEntity*) { _CL_LOG << "visit(lb_I_FunctorEntity*)" LOG_ }
-	void LB_STDCALL visit(lb_I_InstanceReference*) { _CL_LOG << "visit(lb_I_InstanceReference*)" LOG_ }
-	void LB_STDCALL visit(lb_I_EventHandler*) { _CL_LOG << "visit(lb_I_EventHandler*)" LOG_ }
-	void LB_STDCALL visit(lb_I_EventManager*) { _CL_LOG << "visit(lb_I_EventManager*)" LOG_ }
-	void LB_STDCALL visit(lb_I_EventMapper*) { _CL_LOG << "visit(lb_I_EventMapper*)" LOG_ }
-	void LB_STDCALL visit(lb_I_EvHandler*) { _CL_LOG << "visit(lb_I_EvHandler*)" LOG_ }
-	void LB_STDCALL visit(lb_I_Dispatcher*) { _CL_LOG << "visit(lb_I_Dispatcher*)" LOG_ }
-	void LB_STDCALL visit(lb_I_InputStream*) { _CL_LOG << "visit(lb_I_InputStream*)" LOG_ }
-	void LB_STDCALL visit(lb_I_OutputStream*) { _CL_LOG << "visit(lb_I_OutputStream*)" LOG_ }
-	void LB_STDCALL visit(lb_I_FileOperation*) { _CL_LOG << "visit(lb_I_FileOperation*)" LOG_ }
-	void LB_STDCALL visit(lb_I_Locale*) { _CL_LOG << "visit(lb_I_Locale*)" LOG_ }
-	void LB_STDCALL visit(lb_I_Parameter*) { _CL_LOG << "visit(lb_I_Parameter*)" LOG_ }
-	void LB_STDCALL visit(lb_I_Reference*) { _CL_LOG << "visit(lb_I_Reference*)" LOG_ }
-	void LB_STDCALL visit(lb_I_Log*) { _CL_LOG << "visit(lb_I_Log*)" LOG_ }
-	void LB_STDCALL visit(lb_I_Plugin*) { _CL_LOG << "visit(lb_I_Plugin*)" LOG_ }
-	void LB_STDCALL visit(lb_I_PluginImpl*) { _CL_LOG << "visit(lb_I_PluginImpl*)" LOG_ }
-	void LB_STDCALL visit(lb_I_PluginManager*) { _CL_LOG << "visit(lb_I_PluginManager*)" LOG_ }
-	void LB_STDCALL visit(lb_I_PluginModule*) { _CL_LOG << "visit(lb_I_PluginModule*)" LOG_ }
-	void LB_STDCALL visit(lb_I_wxFrame*) { _CL_LOG << "visit(lb_I_wxFrame*)" LOG_ }
-	void LB_STDCALL visit(lb_I_Window*) { _CL_LOG << "visit(lb_I_Window*)" LOG_ }
-	void LB_STDCALL visit(lb_I_Action*) { _CL_LOG << "visit(lb_I_Action*)" LOG_ }
-	void LB_STDCALL visit(lb_I_DelegatedAction*) { _CL_LOG << "visit(lb_I_DelegatedAction*)" LOG_ }
-	void LB_STDCALL visit(lb_I_Form*) { _CL_LOG << "visit(lb_I_Form*)" LOG_ }
-	void LB_STDCALL visit(lb_I_MasterDetailFormDefinition*) { _CL_LOG << "visit(lb_I_MasterDetailFormDefinition*)" LOG_ }
-	void LB_STDCALL visit(lb_I_DatabaseReport*) { _CL_LOG << "visit(lb_I_DatabaseReport*)" LOG_ }
-	void LB_STDCALL visit(lb_I_CodeGenerator*) { _CL_LOG << "visit(lb_I_CodeGenerator*)" LOG_ }
-	void LB_STDCALL visit(lb_I_Boolean*) { _CL_LOG << "visit(lb_I_Boolean*)" LOG_ }
-	void LB_STDCALL visit(lb_I_DatabaseOperation*) { _CL_LOG << "visit(lb_I_DatabaseOperation*)" LOG_ }
-	void LB_STDCALL visit(lb_I_ParameterTable*) { _CL_LOG << "visit(lb_I_ParameterTable*)" LOG_ }
+	void LB_STDCALL visit(lb_I_LogonHandler*) { _CL_VERBOSE << "visit(lb_I_LogonHandler*)" LOG_ }
+	void LB_STDCALL visit(lb_I_LogonPage*) { _CL_VERBOSE << "visit(lb_I_LogonPage*)" LOG_ }
+	void LB_STDCALL visit(lb_I_AppSelectPage*) { _CL_VERBOSE << "visit(lb_I_AppSelectPage*)" LOG_ }
+	void LB_STDCALL visit(lb_I_GUI*) { _CL_VERBOSE << "visit(lb_I_GUI*)" LOG_ }
+	void LB_STDCALL visit(lb_I_GUIApp*) { _CL_VERBOSE << "visit(lb_I_GUIApp*)" LOG_ }
+	void LB_STDCALL visit(lb_I_Frame*) { _CL_VERBOSE << "visit(lb_I_Frame*)" LOG_ }
+	void LB_STDCALL visit(lb_I_KeyBase*) { _CL_VERBOSE << "visit(lb_I_KeyBase*)" LOG_ } 
+	void LB_STDCALL visit(lb_I_String*) { _CL_VERBOSE << "visit(lb_I_String*)" LOG_ } 
+	void LB_STDCALL visit(lb_I_Integer*) { _CL_VERBOSE << "visit(lb_I_Integer*)" LOG_ } 
+	void LB_STDCALL visit(lb_I_Long*) { _CL_VERBOSE << "visit(lb_I_Long*)" LOG_ }
+	void LB_STDCALL visit(lb_I_Container*) { _CL_VERBOSE << "visit(lb_I_Container*)" LOG_ } 
+	void LB_STDCALL visit(lb_I_Database*) { _CL_VERBOSE << "visit(lb_I_Database*)" LOG_ } 
+	void LB_STDCALL visit(lb_I_ColumnBinding*) { _CL_VERBOSE << "visit(lb_I_ColumnBinding*)" LOG_ } 
+	void LB_STDCALL visit(lb_I_BoundColumn*) { _CL_VERBOSE << "visit(lb_I_BoundColumn*)" LOG_ } 
+	void LB_STDCALL visit(lb_I_Query*) { _CL_VERBOSE << "visit(lb_I_Query*)" LOG_ } 
+	void LB_STDCALL visit(lb_I_MVC_View*) { _CL_VERBOSE << "visit(lb_I_MVC_View*)" LOG_ } 
+	void LB_STDCALL visit(lb_I_Connection*) { _CL_VERBOSE << "visit(lb_I_Connection*)" LOG_ } 
+	void LB_STDCALL visit(lb_I_InterfaceRepository*) { _CL_VERBOSE << "visit(lb_I_InterfaceRepository*)" LOG_ } 
+	void LB_STDCALL visit(lb_I_Element*) { _CL_VERBOSE << "visit(lb_I_Element*)" LOG_ } 
+	void LB_STDCALL visit(lb_I_Module*) { _CL_VERBOSE << "visit(lb_I_Module*)" LOG_ } 
+	void LB_STDCALL visit(lb_I_FunctorEntity*) { _CL_VERBOSE << "visit(lb_I_FunctorEntity*)" LOG_ }
+	void LB_STDCALL visit(lb_I_InstanceReference*) { _CL_VERBOSE << "visit(lb_I_InstanceReference*)" LOG_ }
+	void LB_STDCALL visit(lb_I_EventHandler*) { _CL_VERBOSE << "visit(lb_I_EventHandler*)" LOG_ }
+	void LB_STDCALL visit(lb_I_EventManager*) { _CL_VERBOSE << "visit(lb_I_EventManager*)" LOG_ }
+	void LB_STDCALL visit(lb_I_EventMapper*) { _CL_VERBOSE << "visit(lb_I_EventMapper*)" LOG_ }
+	void LB_STDCALL visit(lb_I_EvHandler*) { _CL_VERBOSE << "visit(lb_I_EvHandler*)" LOG_ }
+	void LB_STDCALL visit(lb_I_Dispatcher*) { _CL_VERBOSE << "visit(lb_I_Dispatcher*)" LOG_ }
+	void LB_STDCALL visit(lb_I_InputStream*) { _CL_VERBOSE << "visit(lb_I_InputStream*)" LOG_ }
+	void LB_STDCALL visit(lb_I_OutputStream*) { _CL_VERBOSE << "visit(lb_I_OutputStream*)" LOG_ }
+	void LB_STDCALL visit(lb_I_FileOperation*) { _CL_VERBOSE << "visit(lb_I_FileOperation*)" LOG_ }
+	void LB_STDCALL visit(lb_I_Locale*) { _CL_VERBOSE << "visit(lb_I_Locale*)" LOG_ }
+	void LB_STDCALL visit(lb_I_Parameter*) { _CL_VERBOSE << "visit(lb_I_Parameter*)" LOG_ }
+	void LB_STDCALL visit(lb_I_Reference*) { _CL_VERBOSE << "visit(lb_I_Reference*)" LOG_ }
+	void LB_STDCALL visit(lb_I_Log*) { _CL_VERBOSE << "visit(lb_I_Log*)" LOG_ }
+	void LB_STDCALL visit(lb_I_Plugin*) { _CL_VERBOSE << "visit(lb_I_Plugin*)" LOG_ }
+	void LB_STDCALL visit(lb_I_PluginImpl*) { _CL_VERBOSE << "visit(lb_I_PluginImpl*)" LOG_ }
+	void LB_STDCALL visit(lb_I_PluginManager*) { _CL_VERBOSE << "visit(lb_I_PluginManager*)" LOG_ }
+	void LB_STDCALL visit(lb_I_PluginModule*) { _CL_VERBOSE << "visit(lb_I_PluginModule*)" LOG_ }
+	void LB_STDCALL visit(lb_I_wxFrame*) { _CL_VERBOSE << "visit(lb_I_wxFrame*)" LOG_ }
+	void LB_STDCALL visit(lb_I_Window*) { _CL_VERBOSE << "visit(lb_I_Window*)" LOG_ }
+	void LB_STDCALL visit(lb_I_Action*) { _CL_VERBOSE << "visit(lb_I_Action*)" LOG_ }
+	void LB_STDCALL visit(lb_I_DelegatedAction*) { _CL_VERBOSE << "visit(lb_I_DelegatedAction*)" LOG_ }
+	void LB_STDCALL visit(lb_I_Form*) { _CL_VERBOSE << "visit(lb_I_Form*)" LOG_ }
+	void LB_STDCALL visit(lb_I_MasterDetailFormDefinition*) { _CL_VERBOSE << "visit(lb_I_MasterDetailFormDefinition*)" LOG_ }
+	void LB_STDCALL visit(lb_I_DatabaseReport*) { _CL_VERBOSE << "visit(lb_I_DatabaseReport*)" LOG_ }
+	void LB_STDCALL visit(lb_I_CodeGenerator*) { _CL_VERBOSE << "visit(lb_I_CodeGenerator*)" LOG_ }
+	void LB_STDCALL visit(lb_I_Boolean*) { _CL_VERBOSE << "visit(lb_I_Boolean*)" LOG_ }
+	void LB_STDCALL visit(lb_I_DatabaseOperation*) { _CL_VERBOSE << "visit(lb_I_DatabaseOperation*)" LOG_ }
+	void LB_STDCALL visit(lb_I_ParameterTable*) { _CL_VERBOSE << "visit(lb_I_ParameterTable*)" LOG_ }
 
 /*...e*/
 
@@ -193,7 +168,7 @@ IMPLEMENT_FUNCTOR(instanceOflbDatabaseInputStream, lbDatabaseInputStream)
 lbErrCodes LB_STDCALL lbDatabaseInputStream::setData(lb_I_Unknown* uk) {
 	lbErrCodes err = ERR_NONE;
 		
-        _CL_LOG << "lbDatabaseInputStream::setData(...) not implemented yet" LOG_
+        _CL_VERBOSE << "lbDatabaseInputStream::setData(...) not implemented yet" LOG_
 
         return ERR_NOT_IMPLEMENTED;
 }
@@ -202,13 +177,13 @@ lbErrCodes LB_STDCALL lbDatabaseInputStream::setData(lb_I_Unknown* uk) {
 /*...slbDatabaseInputStream\58\\58\lbDatabaseInputStream\40\\41\:0:*/
 lbDatabaseInputStream::lbDatabaseInputStream() 
 {
-	_CL_LOG << "lbDatabaseInputStream::lbDatabaseInputStream() called." LOG_
+	_CL_VERBOSE << "lbDatabaseInputStream::lbDatabaseInputStream() called." LOG_
 	ref = STARTREF;
 }
 /*...e*/
 /*...slbDatabaseInputStream\58\\58\\126\lbDatabaseInputStream\40\\41\:0:*/
 lbDatabaseInputStream::~lbDatabaseInputStream() {
-	_CL_LOG << "lbDatabaseInputStream::~lbDatabaseInputStream() called." LOG_
+	_CL_VERBOSE << "lbDatabaseInputStream::~lbDatabaseInputStream() called." LOG_
 }
 /*...e*/
 
@@ -229,12 +204,12 @@ bool LB_STDCALL lbDatabaseInputStream::begin(lb_I_Database* _db) {
 		bool ret = _db->isConnected();
 
 		if (!ret) {
-			_CL_LOG << "lbDatabaseInputStream::begin(lb_I_Database* _db) Error: Must have a database connection." LOG_
+			_CL_VERBOSE << "lbDatabaseInputStream::begin(lb_I_Database* _db) Error: Must have a database connection." LOG_
 		}
 		
 		return ret;
 	} else {
-		_CL_LOG << "lbDatabaseInputStream::begin(lb_I_Database* _db) Error: Uninitialized database onject (NULL pointer)!" LOG_
+		_CL_VERBOSE << "lbDatabaseInputStream::begin(lb_I_Database* _db) Error: Uninitialized database onject (NULL pointer)!" LOG_
 	}
 	
 	return false;
@@ -251,7 +226,7 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Streamable* pm) {
 		*/
 		pm->load(db.getPtr());
 	} else {
-		_CL_LOG << "lbDatabaseInputStream::visit(lb_I_ProjectManager* pm) Error: No input stream available. Could not read from stream!" LOG_
+		_CL_VERBOSE << "lbDatabaseInputStream::visit(lb_I_ProjectManager* pm) Error: No input stream available. Could not read from stream!" LOG_
 	}
 }
 
@@ -334,6 +309,11 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Translations* trans) {
 		trans->addTranslation(qText->charrep(), qTranslated->charrep(), qLanguage->charrep(), qID->getData());
 
 		while ((err = q->next()) == ERR_NONE || err == WARN_DB_NODATA) {
+			UAP(lb_I_Long, qID)
+			UAP(lb_I_String, qText)
+			UAP(lb_I_String, qTranslated)
+			UAP(lb_I_String, qLanguage)
+		
 			qID = q->getAsLong(1);
 			qText = q->getAsString(2);
 			qTranslated = q->getAsString(3);
@@ -783,7 +763,7 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_User_Applications* user_applic
 }
 
 void LB_STDCALL lbDatabaseInputStream::visit(lb_I_MetaApplication* app) {
-	_CL_LOG << "lbDatabaseInputStream::visit(): Read data of meta application." LOG_
+	_CL_VERBOSE << "lbDatabaseInputStream::visit(): Read data of meta application." LOG_
 
 	char* temp = NULL;
 	bool  b;
@@ -819,7 +799,7 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_MetaApplication* app) {
 }
 
 void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Application*) {
-	_CL_LOG << "lbDatabaseInputStream::visit(): Read data of application." LOG_
+	_CL_VERBOSE << "lbDatabaseInputStream::visit(): Read data of application." LOG_
 }
 
 void LB_STDCALL lbDatabaseInputStream::end() {
