@@ -29,6 +29,9 @@ ALLTARGETS = \
 	Database \
 	Basetypes \
 	Memory \
+	MetaApplication \
+	Events \
+	Translation \
 	PluginTest
 
 endif
@@ -44,6 +47,9 @@ ALLTARGETS = \
 	Database \
 	Basetypes \
 	Memory \
+	MetaApplication \
+	Events \
+	Translation \
 	PluginTest
 
 endif
@@ -58,6 +64,12 @@ ALLTARGETS = \
 	Database \
 	Basetypes \
 	Memory \
+	MetaApplication \
+	Events \
+	Translation \
+	PluginByInterfaceAndNamespace \
+	Parameter \
+	PluginTranslationsModel \
 	PluginTest
 
 endif
@@ -96,8 +108,32 @@ Basetypes: dummy
 	$(MAKE) -C $@ -e MODULE=Basetypes -e TARGET=$(TARGETEXE) -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
 	$(MAKE) -C $@
 
+MetaApplication: dummy
+	$(MAKE) -C $@ -e MODULE=test$@ -e TARGET=$(TARGETEXE) -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
+	$(MAKE) -C $@
+
+Events: dummy
+	$(MAKE) -C $@ -e MODULE=test$@ -e TARGET=$(TARGETEXE) -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
+	$(MAKE) -C $@
+
+Translation: dummy
+	$(MAKE) -C $@ -e MODULE=test$@ -e TARGET=$(TARGETEXE) -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
+	$(MAKE) -C $@
+
 PluginTest: dummy
 	$(MAKE) -C $@ -e MODULE=PluginTest -e TARGET=$(TARGETEXE) -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
+	$(MAKE) -C $@
+
+Parameter: dummy
+	$(MAKE) -C $@ -e MODULE=ParameterTest -e TARGET=$(TARGETEXE) -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
+	$(MAKE) -C $@
+
+PluginTranslationsModel: dummy
+	$(MAKE) -C $@ -e MODULE=test$@ -e TARGET=$(TARGETEXE) -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
+	$(MAKE) -C $@
+
+PluginByInterfaceAndNamespace: dummy
+	$(MAKE) -C $@ -e MODULE=PluginTestInterface -e TARGET=$(TARGETEXE) -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
 	$(MAKE) -C $@
 
 clean:

@@ -129,6 +129,8 @@ lb_I_Unknown* findPluginByInterfaceAndNamespace(char* _interface, char* _namespa
 }
 
 int main(int argc, char *argv[]) {
+
+{
 	lbErrCodes err = ERR_NONE;
 	lb_I_Module* mm = NULL;
 	bool PMInitialized = false;
@@ -147,8 +149,8 @@ int main(int argc, char *argv[]) {
 	COUT << "Do you want to list plugins with plugin manager (y/n) ? ";
 	CIN >> answer;
 
-	UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
 	UAP_REQUEST(mm, lb_I_String, pre)
+	UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
 
 /*...sTest list plugins:8:*/
 	if ((strcmp(answer, "y") == 0) || (strcmp(answer, "Y") == 0)) {
@@ -240,6 +242,7 @@ int main(int argc, char *argv[]) {
 			if (PM->beginEnumPlugins()) {
 	
 				while (true) {
+					setVerbose(false);
 					UAP(lb_I_Plugin, pl)
 					pl = PM->nextPlugin();
 			
@@ -256,12 +259,15 @@ int main(int argc, char *argv[]) {
 						uk1 = pl->getImplementation();
 						if (uk1 != NULL) {
 							_CL_LOG << "Loaded: " << uk1->getClassName() LOG_
+							setVerbose(true);
 							break;
 						} else {
 							_CL_LOG << "Failed to get plugin implementation." LOG_
 						}
 					}
+					setVerbose(true);
 				}
+				setVerbose(false);
 			}
 /*...e*/
 			
@@ -271,6 +277,7 @@ int main(int argc, char *argv[]) {
 			if (PM->beginEnumPlugins()) {
 	
 				while (true) {
+					setVerbose(false);
 					UAP(lb_I_Plugin, pl)
 					pl = PM->nextPlugin();
 			
@@ -287,24 +294,27 @@ int main(int argc, char *argv[]) {
 						uk2 = pl->getImplementation();
 						if (uk2 != NULL) {
 							_CL_LOG << "Loaded: " << uk2->getClassName() LOG_
+							setVerbose(true);
 							break;
 						} else {
 							_CL_LOG << "Failed to get plugin implementation." LOG_
 						}
 					}
+					setVerbose(true);
 				}
+				setVerbose(false);
 			}
 /*...e*/
 			
 			_CL_LOG << "* Unload plugin manager *" LOG_
 			
-			PM->unload();
-			
 			_CL_LOG << "*        Unloaded       *" LOG_
 		}
 		_CL_LOG << "Have the following plugins loaded and plugin manager released:" LOG_
-		_CL_LOG << "Plugin 1: " << uk1->getClassName() LOG_
-		_CL_LOG << "Plugin 2: " << uk2->getClassName() LOG_
+		_CL_LOG << "Plugin 1: " << uk1->getClassName() << " with " << uk1->getRefCount() << " references." LOG_
+		_CL_LOG << "Plugin 2: " << uk2->getClassName() << " with " << uk2->getRefCount() << " references." LOG_
+
+		PM->unload();
 	}
 
 
@@ -386,6 +396,7 @@ int main(int argc, char *argv[]) {
 	COUT << "Do you want to find a plugin with interface and namespace (y/n) ? ";
 	CIN >> answer;
 
+/*...sDo plugin test with interface and namespace:8:*/
 	UAP_REQUEST(getModuleInstance(), lb_I_Container, plugins)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, plName)
 	UAP(lb_I_KeyBase, plKey)
@@ -414,10 +425,12 @@ int main(int argc, char *argv[]) {
 	        COUT << "Do you want to find another plugin with interface and namespace (y/n) ? ";
 	        CIN >> answer;
 	}
+/*...e*/
 
 	COUT << "Do you want to test problematic plugins (y/n) ? ";
 	CIN >> answer;
 
+/*...sproblematic plugins:8:*/
 	if ((strcmp(answer, "y") == 0) || (strcmp(answer, "Y") == 0) &&
 	       (strcmp(repeat, "y") == 0) || (strcmp(repeat, "Y") == 0))
 	{
@@ -429,6 +442,7 @@ int main(int argc, char *argv[]) {
 		
 		_CL_LOG << "Loaded problematic plugin. It has " << uk->getRefCount() << " references." LOG_
 	}
+/*...e*/
 
 	COUT << "Do you want to print names of yet loaded plugins (y/n) ? ";
 	CIN >> answer;
@@ -443,9 +457,17 @@ int main(int argc, char *argv[]) {
 		_CL_LOG << "Plugin loaded: " << uk->getClassName() LOG_
 	}
 
-        PM->unload();
+	_CL_LOG << "Plugin manager has " << PM->getRefCount() << " references." LOG_
 
+        PM->unload();
+        PM--;
+        PM.resetPtr();
+	
+	_CL_LOG << "Unloaded plugins." LOG_
+	
 	mm->release(__FILE__, __LINE__);
+
+}
 
 	unHookAll();
 

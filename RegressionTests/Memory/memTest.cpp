@@ -245,8 +245,9 @@ int main(int argc, char *argv[]) {
 	printf("2. lbModule instance has %d references.\n", mm->getRefCount());
 
 #define MEM_TEST
-//#define CONTAINER_TEST
-//#define CLONE_TEST
+#define CONTAINER_TEST
+#define CLONE_TEST
+#define USE_CLONE_TEST
 //#define ACCESS_TEST
 
 /*...sMEM_TEST:0:*/
@@ -290,10 +291,20 @@ int main(int argc, char *argv[]) {
 		string->setData("Bla");
 
 		container->insert(&uk, &key);
-		string->setData("Bla1");
+		string->setData("Bla2");
 		container->insert(&uk, &key);
+		string->setData("Bla3");
+		container->insert(&uk, &key);
+		
+		string->setData("Other data");
 	
 		container->deleteAll();
+
+		container->insert(&uk, &key);
+		string->setData("Bla2");
+		container->insert(&uk, &key);
+		string->setData("Bla3");
+		container->insert(&uk, &key);
 
 /*...sCONTAINER_TEST:16:*/
 	#ifdef CONTAINER_TEST
@@ -332,16 +343,20 @@ int main(int argc, char *argv[]) {
 		uk = container->clone(__FILE__, __LINE__);
 		QI(uk, lb_I_Container, clone)
 
+		#ifdef USE_CLONE_TEST
 		for (int i = 1; i <= clone->Count(); i++) {
 			UAP(lb_I_Unknown, uk)
 			UAP(lb_I_String, s)
+			UAP(lb_I_KeyBase, k)
 		
 			uk = clone->getElementAt(i);
+			k = clone->getKeyAt(i);
 			
 			QI(uk, lb_I_String, s)
 		
-			_CL_LOG << "Key: " << clone->getKeyAt(i)->charrep() << ", Data: " << s->charrep() LOG_
+			_CL_LOG << "Key: " << k->charrep() << ", Data: " << s->charrep() LOG_
 		}
+		#endif
 		#endif
 /*...e*/
 
@@ -387,7 +402,13 @@ int main(int argc, char *argv[]) {
 	#endif
 /*...e*/
 
-		container->deleteAll();
+		string->setData("Bla2");
+		container->remove(&key);
+		
+		string->setData("Bla3");
+		container->exists(&key);
+
+		//container->deleteAll();
 
 	}
 
