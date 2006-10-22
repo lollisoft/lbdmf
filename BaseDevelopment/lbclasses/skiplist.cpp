@@ -38,11 +38,19 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.49 $
+ * $Revision: 1.50 $
  * $Name:  $
- * $Id: skiplist.cpp,v 1.49 2006/07/17 17:37:45 lollisoft Exp $
+ * $Id: skiplist.cpp,v 1.50 2006/10/22 18:06:48 lollisoft Exp $
  *
  * $Log: skiplist.cpp,v $
+ * Revision 1.50  2006/10/22 18:06:48  lollisoft
+ * Bugfix in reference count handling. Internally, do not increase on searching by
+ * key, but increase reference count at returning the key.
+ *
+ * Bugfix in iteration handling. If the iterator was leaved anywhere, the deletion
+ * of the objects was affected. Only elements at and after iterator position
+ * were deleted.
+ *
  * Revision 1.49  2006/07/17 17:37:45  lollisoft
  * Changes dueto bugfix in plugin manager. Repeadable iterator problem.
  * Not correctly finished the iteration, thus plugins in the same DLL wouldn't
@@ -315,6 +323,8 @@ SkipNode::~SkipNode() {
 		    forward[i] = NULL;
 		delete [] forward; 
 	}
+	
+	
 /*
 	if (value != NULL) {
 	      	// getObject() increases the refcount for uk.
@@ -399,6 +409,9 @@ SkipList::SkipList() {
 
 /// \todo Cleanup problem, when key used multiple times.
 SkipList::~SkipList() {
+	// Bugfix. If any search leave the container in any position not at start, 
+	// the container wouldn't delete all elements.
+	finishIteration();
 	if (can_dump() == 1) {
 		while (skipiterator) {
 			SkipNode* temp = skipiterator;
@@ -439,7 +452,7 @@ void LB_STDCALL SkipList::deleteAll() {
 		head = NULL;
 	}
 
-	head = new SkipNode();
+	if (head == NULL) head = new SkipNode();
 	level = MAXLEVEL;
 
 	iteration = 0;
@@ -546,7 +559,7 @@ lb_I_Unknown* LB_STDCALL SkipList::nextElement() {
 
 	Elem e = dump_next();
 	
-	if (_currentKey) _currentKey->release(__FILE__, __LINE__);
+	//if (_currentKey) _currentKey->release(__FILE__, __LINE__);
 	_currentKey = e->getKey();
 	
 	if(e != NULL) {
@@ -559,6 +572,8 @@ lb_I_Unknown* LB_STDCALL SkipList::nextElement() {
 /*...e*/
 
 lb_I_KeyBase* LB_STDCALL SkipList::currentKey() {
+	lb_I_KeyBase* temp;
+	_currentKey->queryInterface("lb_I_KeyBase", (void**) &temp, __FILE__, __LINE__);
 	return _currentKey;
 }
 
@@ -618,7 +633,13 @@ lb_I_KeyBase* LB_STDCALL SkipList::getKeyAt(int i) {
 
 		finishIteration();
 
-		if (ii == i) return e->getKey();
+		if (ii == i) {
+			lb_I_KeyBase* kb = e->getKey();
+			lb_I_KeyBase* temp;
+			// e->getKey() Does no more increment the reference count. This avoids a leak.
+			kb->queryInterface("lb_I_KeyBase", (void**) &temp, __FILE__, __LINE__);
+			return kb;
+		}
 	}
 
 	return NULL;
@@ -849,7 +870,7 @@ END_IMPLEMENT_LB_UNKNOWN()
 IMPLEMENT_LB_ELEMENT(lbSkipListElement)
 
 lbErrCodes LB_STDCALL lbSkipListElement::setData(lb_I_Unknown* uk) {
-	_LOG << "lbSkipListElement::setData(...) not implemented yet" LOG_
+	_CL_LOG << "lbSkipListElement::setData(...) not implemented yet" LOG_
 
 	return ERR_NOT_IMPLEMENTED;
 }
