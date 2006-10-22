@@ -106,6 +106,7 @@ lbLocale::lbLocale() {
 
 lbLocale::~lbLocale() {
 	if (_lang) free(_lang);
+	_CL_LOG << "lbLocale::~lbLocale() called." LOG_
 }
 
 void LB_STDCALL lbLocale::setLanguage(char const * lang) {
@@ -254,7 +255,11 @@ lbErrCodes LB_STDCALL lbParameter::setData(lb_I_Unknown* uk) {
 	
 	if (source != NULL) {
 		UAP(lb_I_Unknown, uk)
-		uk = source->getParameterList()->clone(__FILE__, __LINE__);
+		UAP(lb_I_Container, c)
+		
+		c = source->getParameterList();
+		
+		uk = c->clone(__FILE__, __LINE__);
 		
 		QI(uk, lb_I_Container,  parameters)
 	}
