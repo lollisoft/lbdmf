@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.49 $
+ * $Revision: 1.50 $
  * $Name:  $
- * $Id: lbPluginManager.cpp,v 1.49 2006/10/22 18:34:36 lollisoft Exp $
+ * $Id: lbPluginManager.cpp,v 1.50 2006/10/23 21:20:48 lollisoft Exp $
  *
  * $Log: lbPluginManager.cpp,v $
+ * Revision 1.50  2006/10/23 21:20:48  lollisoft
+ * Small changes to compile under Linux again
+ *
  * Revision 1.49  2006/10/22 18:34:36  lollisoft
  * Many memory leaks resolved, but they were caused by small errors :-(
  * This is also a sync.
@@ -571,7 +574,6 @@ void LB_STDCALL lbPluginManager::initialize() {
 			    _LOG << "Plugin directory not found." LOG_
 			    
 			    free(pluginDir);
-			    free(toFind);
 			    
 			    return;
 			}

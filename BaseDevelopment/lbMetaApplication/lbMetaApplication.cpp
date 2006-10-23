@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.97 $
+ * $Revision: 1.98 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.97 2006/10/22 18:34:36 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.98 2006/10/23 21:20:48 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.98  2006/10/23 21:20:48  lollisoft
+ * Small changes to compile under Linux again
+ *
  * Revision 1.97  2006/10/22 18:34:36  lollisoft
  * Many memory leaks resolved, but they were caused by small errors :-(
  * This is also a sync.
@@ -2100,10 +2103,10 @@ bool LB_STDCALL lb_MetaApplication::login(const char* user, const char* pass) {
 		err = sampleQuery->first();
 		
 		if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
-			_logged_in = TRUE;
-			return TRUE;
+			_logged_in = true;
+			return true;
 		} else {
-			return FALSE;
+			return false;
 		}
 	} else {
 		// We have got users from file
@@ -2112,7 +2115,7 @@ bool LB_STDCALL lb_MetaApplication::login(const char* user, const char* pass) {
 			Users->setNextUser();
 			
 			if ((strcmp(Users->getUserName(), user) == 0) && (strcmp(Users->getUserPassword(), pass) == 0)) {
-				_logged_in = TRUE;
+				_logged_in = true;
 				Users->finishUserIteration();
 				return true;
 			}
