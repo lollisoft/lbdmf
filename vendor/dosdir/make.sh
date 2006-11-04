@@ -3,10 +3,10 @@
 cd $1
 
 if [ $OSTYPE = solaris ]; then
-	cc dosdir.c -fPIC -g -c -DUNIX \
+	gcc dosdir.c -fPIC -g -c -DUNIX \
 	    -I /usr/include \
 	    -I .
-	cc match.c -fPIC -g -c -DUNIX \
+	gcc match.c -fPIC -g -c -DUNIX \
 	    -I /usr/include \
 	    -I .
 fi
