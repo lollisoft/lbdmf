@@ -2,10 +2,20 @@
 
 cd $1
 
-cc dosdir.c -fPIC -g -c -DUNIX \
-    -I /usr/include \
-    -I .
-cc match.c -fPIC -g -c -DUNIX \
-    -I /usr/include \
-    -I .
-    
+if [ $OSTYPE = solaris ]; then
+	cc dosdir.c -fPIC -g -c -DUNIX \
+	    -I /usr/include \
+	    -I .
+	cc match.c -fPIC -g -c -DUNIX \
+	    -I /usr/include \
+	    -I .
+fi
+
+if [ $OSTYPE = linux ]; then
+	cc dosdir.c -fPIC -g -c -DUNIX \
+	    -I /usr/include \
+	    -I .
+	cc match.c -fPIC -g -c -DUNIX \
+	    -I /usr/include \
+	    -I .
+fi    
