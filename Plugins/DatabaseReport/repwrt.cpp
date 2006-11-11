@@ -671,7 +671,7 @@ void wxReportObj::Draw( wxDC & dc )
 	case POTYPE_PLOGIC:
 	case POTYPE_PCHECK:
 		{
-			wxPen *pCurrPen;
+			wxPen const *pCurrPen;
 			long  lOffs;
 
 			pCurrPen = & dc.GetPen();
@@ -728,7 +728,7 @@ void wxReportObj::Draw( wxDC & dc )
 
 	case POTYPE_LINE:
 		{
-			wxPen *pCurrPen;
+			wxPen const *pCurrPen;
 
 			pCurrPen = & dc.GetPen();
 			dc.SetPen( * wxBLACK_PEN );
@@ -1290,10 +1290,10 @@ bool wxReportWriter::SaveObjects( void )
 		dHelp = m_PageCtrl.m_dRight;		// Right-Margin
 		m_fFile.Write( &dHelp, sizeof( dHelp ) );
 
-		dHelp = m_PageCtrl.m_dYSizeMM;	// Blattgröße Y
+		dHelp = m_PageCtrl.m_dYSizeMM;	// Blattgr÷že Y
 		m_fFile.Write( &dHelp, sizeof( dHelp ) );
 
-		dHelp = m_PageCtrl.m_dXSizeMM;	// Blattgröße X
+		dHelp = m_PageCtrl.m_dXSizeMM;	// Blattgr÷že X
 		m_fFile.Write( &dHelp, sizeof( dHelp ) );
 
 		lHelp = m_lstHeader.GetCount();	// Anzahl Header-Objekte
