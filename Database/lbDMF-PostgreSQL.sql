@@ -97,6 +97,7 @@ CREATE TABLE Formulare
   id SERIAL,
   Name CHAR(30),
   MenuName CHAR(30),
+  MenuOrder INTEGER,
   EventName CHAR(30),
   MenuHilfe CHAR(100),
   AnwendungID INTEGER,
@@ -630,133 +631,152 @@ insert into Formulartypen (HandlerModule, HandlerFunctor, HandlerInterface, Besc
 'Fest verdrahtetes Formular');
 --...e
 --...sFill Formulare:0:
-insert into Formulare (Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
+insert into Formulare (MenuOrder, Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
+1,
 'Benutzer', 
 'Benutzer verwalten', 
 'manageUser', 
 'Verwaltung der Benutzer in lbDMF',
 1 , 1);
 
-insert into Formulare (Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
+insert into Formulare (MenuOrder, Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
+2,
 'Formulare', 
 'Formulare verwalten', 
 'manageFormulars', 
 'Verwaltung der Formulare in lbDMF',
 1, 1);
 
-insert into Formulare (Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
+insert into Formulare (MenuOrder, Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
+1,
 'Kunden', 
 'Kunden verwalten',
 'manageCustomers', 
 'Bietet Verwaltungsmöglichkeiten für Kunden',
 2 , 1);
 
-insert into Formulare (Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
+insert into Formulare (MenuOrder, Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
+2,
 'Reservierungen', 
 'Reservierungen verwalten', 
 'manageReservations', 
 'Bietet Verwaltungsmöglichkeiten für Reservierungen von Fahrkarten',
 2, 1);
 
-insert into Formulare (Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
+insert into Formulare (MenuOrder, Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
+1,
 'DynKunden', 
 'Kunden verwalten', 
 'manageCustomers', 
 'Bietet Verwaltungsmöglichkeiten für Kunden',
 3, 1);
 
-insert into Formulare (Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
+insert into Formulare (MenuOrder, Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
+2,
 'DynReservierungen', 
 'Reservierungen verwalten', 
 'manageReservations', 
 'Bietet Verwaltungsmöglichkeiten für Reservierungen von Fahrkarten',
 3, 1);
 
-insert into Formulare (Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
+insert into Formulare (MenuOrder, Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
+3,
 'Formular_Parameter',
 'Formularparameter verwalten', 
 'manageFormularparameters', 
 'Verwaltung der Formularparameter in lbDMF',
 1, 1);
 
-insert into Formulare (Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
+insert into Formulare (MenuOrder, Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
+4,
 'Benutzer -> Anwendungen', 
 'Anwendungen Benutzern zuordnen', 
 'manageAppsUsers', 
 'Verwaltung der Zuordnung von Benutzern zu Anwendungen',
 1, 1);
 
-insert into Formulare (Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
+insert into Formulare (MenuOrder, Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
+1,
 'Benutzer',
 'Benutzer verwalten',
 'manageUser',
 'Verwaltung der Benutzer in lbDMF',
 4, 1);
 
-insert into Formulare (Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
+insert into Formulare (MenuOrder, Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
+2,
 'Formulare',
 'Formulare verwalten',
 'manageFormulars',
 'Verwaltung der Formulare in lbDMF',
 4, 1);
 
-insert into Formulare (Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
+insert into Formulare (MenuOrder, Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
+3,
 'Formular_Parameter',
 'Formularparameter verwalten',
 'manageFormularparameters',
 'Verwaltung der Formularparameter in lbDMF',
 4, 1);
 
-insert into Formulare (Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
+insert into Formulare (MenuOrder, Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
+4,
 'Benutzer -> Anwendungen',
 'Anwendungen Benutzern zuordnen',
 'manageAppsUsers',
 'Verwaltung der Zuordnung von Benutzern zu Anwendungen',
 4, 1);
 
-insert into Formulare (Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
+insert into Formulare (MenuOrder, Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
+3,
 'Kunden',
 'Kunden verwalten',
 'manageCustomers',
 'Bietet Verwaltungsmöglichkeiten für Kunden',
 2, 1);
 
-insert into Formulare (Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
+insert into Formulare (MenuOrder, Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
+5,
 'Reservierungen',
 'Reservierungen verwalten',
 'manageReservations',
 'Bietet Verwaltungsmöglichkeiten für Reservierungen von Fahrkarten',
 4, 1);
 
-insert into Formulare (Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
+insert into Formulare (MenuOrder, Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
+3,
 'DynKunden',
 'Kunden verwalten',
 'manageDynCustomers',
 'Bietet Verwaltungsmöglichkeiten für Kunden',
 3, 1);
 
-insert into Formulare (Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
+insert into Formulare (MenuOrder, Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
+5,
 'DynReservierungen',
 'Reservierungen verwalten',
 'manageDynReservierungen',
 'Bietet Verwaltungsmöglichkeiten für Reservierungen von Fahrkarten',
 4, 1);
 
-insert into Formulare (Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
+insert into Formulare (MenuOrder, Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
+5,
 'Formulare -> Anwendung',
 'Formulare Anwendungen zuordnen',
 'manageFormularsToApps',
 'Einrichtung der Formulare zu Anwendungen',
 1, 1);
 
-insert into Formulare (Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
+insert into Formulare (MenuOrder, Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
+1,
 'Sachkonten',
 'Sachkontenverwaltung',
 'manageGeneralLedger',
 '-',
 5 , 1);
 
-insert into Formulare (Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
+insert into Formulare (MenuOrder, Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
+6,
 'Anwendungen',
 'Anwendungen',
 'manageAnwendungen',
@@ -765,35 +785,40 @@ insert into Formulare (Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) V
 
 -- 20:
 
-insert into Formulare (Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
+insert into Formulare (MenuOrder, Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
+7,
 'Anwendungen -> Formulare',
 'Anwendungen -> Formulare',
 'manageAnwendungenFormulare',
 '-',
 1, 1);
 
-insert into Formulare (Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
+insert into Formulare (MenuOrder, Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
+4,
 'Planfahrten',
 'Planfahrten verwalten',
 'managePlanfahrten',
 '-',
 3, 1);
 
-insert into Formulare (Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
+insert into Formulare (MenuOrder, Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
+5,
 'Planstrecken',
 'Planstrecken verwalten',
 'managePlanstrecken',
 '-',
 3, 1);
 
-insert into Formulare (Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
+insert into Formulare (MenuOrder, Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
+6,
 'Streckennamen',
 'Streckennamen verwalten',
 'manageStreckennamen',
 '-',
 3, 1);
 
-insert into Formulare (Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
+insert into Formulare (MenuOrder, Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
+8,
 'Aktionen',
 'Aktionen verwalten',
 'manageFormularaktionen',
@@ -802,21 +827,24 @@ insert into Formulare (Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) V
 
 -- 25:
 
-insert into Formulare (Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
+insert into Formulare (MenuOrder, Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
+9,
 'Uebersetzungen',
 'Uebersetzungen verwalten',
 'manageUebersetzungen',
 '-',
 1, 1);
 
-insert into Formulare (Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
+insert into Formulare (MenuOrder, Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
+2,
 'Artikel',
 'Artikelverwaltung',
 'manageParts',
 '-',
 5 , 1);
 
-insert into Formulare (Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
+insert into Formulare (MenuOrder, Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
+10,
 'Formularaktionen zuordnen',
 'Formularaktionen zuordnen',
 'manageAssignFormActions',
