@@ -1891,6 +1891,10 @@ void LB_STDCALL lbQuery::prepareFKList() {
 	#define TAB_LEN 100
 	#define COL_LEN 100
 
+	if (!_TRMemValidate(this)) {
+		lbBreak();
+	}
+
 	if (mapPKTable_PKColumns_To_FKName == NULL) {
 		REQUEST(manager.getPtr(), lb_I_Container, mapPKTable_PKColumns_To_FKName)
 	} else {
@@ -2093,6 +2097,11 @@ void LB_STDCALL lbQuery::prepareFKList() {
 	free(szTable);
 
 	/* Close the cursor (the hstmt is still allocated). */
+
+	if (!_TRMemValidate(this)) {
+		lbBreak();
+	}
+	
 
 	SQLFreeStmt(hstmt, SQL_DROP);
 /*...e*/
