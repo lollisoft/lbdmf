@@ -77,6 +77,12 @@
 #include <direct.h>
 #endif
 
+#ifdef OSX
+extern "C" {
+#include <objc/malloc.h>
+}
+#endif
+
 /*...sDefines:0:*/
 #ifdef LINUX
 #define HINSTANCE void*
@@ -378,13 +384,28 @@ DLLEXPORT void LB_STDCALL lbBreak() {
 #endif
 #endif
 #ifdef OSX
-//    Debugger();
+    Debugger();
 #endif
 #ifdef WINDOWS
     DebugBreak();
 #endif
 
 }
+
+#ifdef OSX
+bool LB_STDCALL OSXMemValidate(void* ptr) {
+#ifdef DEBUG_MALLOC
+	if (malloc_zone_check(0) == 1) {
+			return true;
+	} else {
+			_CL_LOG << "FATAL: Heap corruption detected!" LOG_
+	}
+#endif
+#ifndef DEBUG_MALLOC
+	return true;
+#endif
+}
+#endif
 
 #ifdef WINDOWS
 DLLEXPORT bool LB_STDCALL FileExists(char *filename)
