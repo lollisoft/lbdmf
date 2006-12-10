@@ -169,10 +169,11 @@
 
 #ifdef OSX
  #ifndef MEMTRACK
-  #define _TRMemValidate(name) 1
+  #define _TRMemValidate(name) OSXMemValidate(name)
    #define TRMemStartLocalCount()
    #define TRMemStopLocalCount()
    #define TRMemResetLocalCount()
+   #define TRMemSetPointerValid(ptr, parent)
   //#define TRMemOpen()
   //#define TRMemSetModuleName(name)
   //#define TRMemSetAdrBreakPoint(ptr)
@@ -367,6 +368,9 @@ DLLEXPORT void LB_STDCALL setInitializing(int i);
 DLLEXPORT lb_I_Log* LB_STDCALL getLoggerInstance();
 DLLEXPORT void LB_STDCALL setLoggerInstance(lb_I_Log* l);
 
+#ifdef OSX
+bool LB_STDCALL OSXMemValidate(void* ptr);
+#endif
 
 DLLEXPORT char* LB_STDCALL translateText(char* text);
 
@@ -379,9 +383,6 @@ DLLEXPORT lbErrCodes LB_STDCALL lbUnloadModule(const char* name);
  * \param name The name of the module to be load.
  * \param hinst The instance handle of the module would be stored here.
  */
-
-
-
 DLLEXPORT lbErrCodes LB_STDCALL lbLoadModule(const char* name, HINSTANCE & hinst, bool skipAutoUnload = false);
 /*...e*/
 /*...sDLLEXPORT lbErrCodes LB_STDCALL lbGetFunctionPtr\40\const char\42\ name\44\ const HINSTANCE \38\ hinst\44\ void\42\\42\ pfn\41\:0:*/

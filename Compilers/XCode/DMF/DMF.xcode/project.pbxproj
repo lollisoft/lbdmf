@@ -5,20 +5,63 @@
 	};
 	objectVersion = 39;
 	objects = {
-		2709D0AA08D4B04D00309E90 = {
-			containerPortal = 270BA7BA086C0A0900799F65;
-			isa = PBXContainerItemProxy;
-			proxyType = 1;
-			remoteGlobalIDString = 27CE9A1108D4A77600FB3DF0;
-			remoteInfo = wxWrapperDLL;
-		};
-		2709D0AB08D4B04D00309E90 = {
-			isa = PBXTargetDependency;
-			target = 27CE9A1108D4A77600FB3DF0;
-			targetProxy = 2709D0AA08D4B04D00309E90;
-		};
 		270BA7B6086C0A0900799F65 = {
 			children = (
+				276FB8AA0B22D0EC004E52BD,
+				276FB8AB0B22D0EC004E52BD,
+				276FB8AC0B22D0EC004E52BD,
+				276FB8AD0B22D0EC004E52BD,
+				276FB8AE0B22D0EC004E52BD,
+				276FB8AF0B22D0EC004E52BD,
+				276FB8B00B22D0EC004E52BD,
+				276FB8B10B22D0EC004E52BD,
+				276FB8B20B22D0EC004E52BD,
+				276FB8B30B22D0EC004E52BD,
+				276FB8B40B22D0EC004E52BD,
+				276FB8B50B22D0EC004E52BD,
+				276FB8B60B22D0EC004E52BD,
+				276FB8B70B22D0EC004E52BD,
+				276FB8B80B22D0EC004E52BD,
+				276FB8B90B22D0EC004E52BD,
+				276FB8A40B22D0C2004E52BD,
+				276FB8A50B22D0C2004E52BD,
+				276FB8A60B22D0C2004E52BD,
+				276FB8A70B22D0C2004E52BD,
+				276FB8A80B22D0C2004E52BD,
+				276FB8A90B22D0C2004E52BD,
+				2791BDB40B106FF60056C643,
+				2791BDB50B106FF60056C643,
+				2791BDB60B106FF60056C643,
+				2791BDB70B106FF60056C643,
+				2791BDB80B106FF60056C643,
+				2791BDB90B106FF60056C643,
+				2791BDBA0B106FF60056C643,
+				2791BDBB0B106FF60056C643,
+				2791BDBC0B106FF60056C643,
+				2791BDBD0B106FF60056C643,
+				2791BDBE0B106FF60056C643,
+				2791BDBF0B106FF60056C643,
+				2791BDC00B106FF60056C643,
+				2791BDC10B106FF60056C643,
+				2791BDC20B106FF60056C643,
+				2791BDC30B106FF60056C643,
+				2791BDC40B106FF60056C643,
+				2791BDC50B106FF60056C643,
+				2791BDC60B106FF60056C643,
+				2791BDC70B106FF60056C643,
+				2791BDC80B106FF60056C643,
+				2791BDC90B106FF60056C643,
+				2791BDCA0B106FF60056C643,
+				2791BDCB0B106FF60056C643,
+				2791BDCC0B106FF60056C643,
+				2791BDCD0B106FF60056C643,
+				2791BDCE0B106FF60056C643,
+				2791BDCF0B106FF60056C643,
+				2791BDD00B106FF60056C643,
+				2791BDD10B106FF60056C643,
+				2791BDD20B106FF60056C643,
+				2791BDD30B106FF60056C643,
+				27D3A6D60AF4FC3800D3C1F1,
 				27CEEFCA099686730038005D,
 				27F462A709960253007178F9,
 				27CE9A1C08D4A87C00FB3DF0,
@@ -33,7 +76,6 @@
 				27AEFF83086F5FC3005A0A3D,
 				27AEFF81086F5F9B005A0A3D,
 				27AEFF7D086F5F3F005A0A3D,
-				2790ECC2086F2D4600DA24CB,
 				27C52501086F1EC1005DB6C8,
 				27C524FF086F1EAA005DB6C8,
 				27C524FD086F1E6D005DB6C8,
@@ -42,7 +84,6 @@
 				27C524F7086F1E06005DB6C8,
 				27C524F5086F1D66005DB6C8,
 				27B91DB1086EEA3300DB17D6,
-				27CEEFD00996869B0038005D,
 				2764970D086ED80A000EB62C,
 				27B91DA9086EE5CE00DB17D6,
 			);
@@ -86,7 +127,6 @@
 				27C524DF086F1CA1005DB6C8,
 				27C524E9086F1CFA005DB6C8,
 				27C524EF086F1D13005DB6C8,
-				2790ED5A086F5AE300DA24CB,
 				27240A5408D49DBE009B29CA,
 				27240A6208D49F10009B29CA,
 				27CE9A1108D4A77600FB3DF0,
@@ -281,30 +321,6 @@
 			settings = {
 			};
 		};
-		27240A7208D4A01E009B29CA = {
-			containerPortal = 270BA7BA086C0A0900799F65;
-			isa = PBXContainerItemProxy;
-			proxyType = 1;
-			remoteGlobalIDString = 27240A5408D49DBE009B29CA;
-			remoteInfo = lbDatabaseForm;
-		};
-		27240A7308D4A01E009B29CA = {
-			isa = PBXTargetDependency;
-			target = 27240A5408D49DBE009B29CA;
-			targetProxy = 27240A7208D4A01E009B29CA;
-		};
-		27240A7408D4A026009B29CA = {
-			containerPortal = 270BA7BA086C0A0900799F65;
-			isa = PBXContainerItemProxy;
-			proxyType = 1;
-			remoteGlobalIDString = 27240A6208D49F10009B29CA;
-			remoteInfo = lbDatabaseReport;
-		};
-		27240A7508D4A026009B29CA = {
-			isa = PBXTargetDependency;
-			target = 27240A6208D49F10009B29CA;
-			targetProxy = 27240A7408D4A026009B29CA;
-		};
 		27240A8908D4A2C0009B29CA = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
@@ -360,7 +376,6 @@
 		27649709086ED80A000EB62C = {
 			buildActionMask = 2147483647;
 			files = (
-				2790ECC3086F2D4600DA24CB,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -418,7 +433,6 @@
 				27C524DE086F1C7A005DB6C8,
 				27C524ED086F1CFA005DB6C8,
 				27C524F3086F1D13005DB6C8,
-				2790ED5B086F5AE300DA24CB,
 				27240A5A08D49DBE009B29CA,
 				27240A6708D49F10009B29CA,
 				2766152F08D4ABD700675AD6,
@@ -461,20 +475,203 @@
 			settings = {
 			};
 		};
-		2790ECC2086F2D4600DA24CB = {
+		276FB8A40B22D0C2004E52BD = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.cpp.cpp;
-			name = lbHook.cpp;
-			path = /Users/lothar/develop/Projects/CPP/BaseDevelopment/lbHook/lbHook.cpp;
+			lastKnownFileType = sourcecode.c.h;
+			name = "lbInterfaces-sub-db.h";
+			path = "/Users/lothar/develop/Projects/CPP/interfaces/lbInterfaces-sub-db.h";
 			refType = 0;
 			sourceTree = "<absolute>";
 		};
-		2790ECC3086F2D4600DA24CB = {
-			fileRef = 2790ECC2086F2D4600DA24CB;
-			isa = PBXBuildFile;
-			settings = {
-			};
+		276FB8A50B22D0C2004E52BD = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = "lbInterfaces-sub-transfer.h";
+			path = "/Users/lothar/develop/Projects/CPP/interfaces/lbInterfaces-sub-transfer.h";
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		276FB8A60B22D0C2004E52BD = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = "lbInterfaces-sub-ui.h";
+			path = "/Users/lothar/develop/Projects/CPP/interfaces/lbInterfaces-sub-ui.h";
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		276FB8A70B22D0C2004E52BD = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = "lbInterfaces-sub-visitor.h";
+			path = "/Users/lothar/develop/Projects/CPP/interfaces/lbInterfaces-sub-visitor.h";
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		276FB8A80B22D0C2004E52BD = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = "lbInterfaces-sub-wxWrapper.h";
+			path = "/Users/lothar/develop/Projects/CPP/interfaces/lbInterfaces-sub-wxWrapper.h";
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		276FB8A90B22D0C2004E52BD = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = "lbInterfaces-sub-xml.h";
+			path = "/Users/lothar/develop/Projects/CPP/interfaces/lbInterfaces-sub-xml.h";
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		276FB8AA0B22D0EC004E52BD = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = "lbapp-module.h";
+			path = "/Users/lothar/develop/Projects/CPP/include/lbapp-module.h";
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		276FB8AB0B22D0EC004E52BD = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = "lbclasses-module.h";
+			path = "/Users/lothar/develop/Projects/CPP/include/lbclasses-module.h";
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		276FB8AC0B22D0EC004E52BD = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = lbConfigHook.h;
+			path = /Users/lothar/develop/Projects/CPP/include/lbConfigHook.h;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		276FB8AD0B22D0EC004E52BD = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = "lbdb-module.h";
+			path = "/Users/lothar/develop/Projects/CPP/include/lbdb-module.h";
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		276FB8AE0B22D0EC004E52BD = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = "lbdmfdatamodel-module.h";
+			path = "/Users/lothar/develop/Projects/CPP/include/lbdmfdatamodel-module.h";
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		276FB8AF0B22D0EC004E52BD = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = "lbdomconfig-module.h";
+			path = "/Users/lothar/develop/Projects/CPP/include/lbdomconfig-module.h";
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		276FB8B00B22D0EC004E52BD = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = "lbdynapp-module.h";
+			path = "/Users/lothar/develop/Projects/CPP/include/lbdynapp-module.h";
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		276FB8B10B22D0EC004E52BD = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = lbErrcodes.h;
+			path = /Users/lothar/develop/Projects/CPP/include/lbErrcodes.h;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		276FB8B20B22D0EC004E52BD = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = lbGlobal.h;
+			path = /Users/lothar/develop/Projects/CPP/include/lbGlobal.h;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		276FB8B30B22D0EC004E52BD = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = "lbhook-module.h";
+			path = "/Users/lothar/develop/Projects/CPP/include/lbhook-module.h";
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		276FB8B40B22D0EC004E52BD = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = lbinclude.h;
+			path = /Users/lothar/develop/Projects/CPP/include/lbinclude.h;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		276FB8B50B22D0EC004E52BD = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = lbkey.h;
+			path = /Users/lothar/develop/Projects/CPP/include/lbkey.h;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		276FB8B60B22D0EC004E52BD = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = "lbloginwizard-module.h";
+			path = "/Users/lothar/develop/Projects/CPP/include/lbloginwizard-module.h";
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		276FB8B70B22D0EC004E52BD = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = "lbmetaapp-module.h";
+			path = "/Users/lothar/develop/Projects/CPP/include/lbmetaapp-module.h";
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		276FB8B80B22D0EC004E52BD = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = "lbmodule-module.h";
+			path = "/Users/lothar/develop/Projects/CPP/include/lbmodule-module.h";
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		276FB8B90B22D0EC004E52BD = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = "lbpluginmanager-module.h";
+			path = "/Users/lothar/develop/Projects/CPP/include/lbpluginmanager-module.h";
+			refType = 0;
+			sourceTree = "<absolute>";
 		};
 		2790ED01086F44C100DA24CB = {
 			containerPortal = 270BA7BA086C0A0900799F65;
@@ -536,172 +733,293 @@
 			target = 2764970B086ED80A000EB62C;
 			targetProxy = 2790ED09086F450100DA24CB;
 		};
-		2790ED57086F5AE300DA24CB = {
-			buildActionMask = 2147483647;
-			files = (
-			);
-			isa = PBXResourcesBuildPhase;
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		2790ED58086F5AE300DA24CB = {
-			buildActionMask = 2147483647;
-			files = (
-				27AEFF7C086F5EDE005A0A3D,
-			);
-			isa = PBXSourcesBuildPhase;
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		2790ED59086F5AE300DA24CB = {
-			buildActionMask = 2147483647;
-			files = (
-			);
-			isa = PBXFrameworksBuildPhase;
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		2790ED5A086F5AE300DA24CB = {
-			buildPhases = (
-				2790ED57086F5AE300DA24CB,
-				2790ED58086F5AE300DA24CB,
-				2790ED59086F5AE300DA24CB,
-			);
-			buildRules = (
-			);
-			buildSettings = {
-				GCC_OPTIMIZATION_LEVEL = 3;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Carbon.framework/Headers/Carbon.h";
-				GCC_PREPROCESSOR_DEFINITIONS = "UNIX OSX LINUX TVISION LB_I_EXTENTIONS";
-				INFOPLIST_FILE = "wxWrapper-Info.plist";
-				INSTALL_PATH = "$(USER_APPS_DIR)";
-				LIBRARY_STYLE = BUNDLE;
-				OTHER_CFLAGS = "";
-				OTHER_CPLUSPLUSFLAGS = "-I$(HOME)/develop/Projects/CPP/Test/GUI/wxWrapperDLL -DUSE_WXWRAPPER_DLL -I/usr/local/lib/wx/include/mac-ansi-debug-2.6 -I/usr/local/include/wx-2.6 -D__WXDEBUG__ -D__WXMAC__ -D_FILE_OFFSET_BITS=64 -D_LARGE_FILES -DNO_GCC_PRAGMA";
-				OTHER_LDFLAGS = "-L/usr/local/lib   -framework QuickTime -framework IOKit -framework Carbon -framework Cocoa -framework System  -lwx_macd-2.6 -ldl -bind_at_load -lc $(HOME)/lib/wxAUI.so $(HOME)/lib/lbHook.so $(HOME)/lib/wxWrapperDLL.so";
-				OTHER_REZFLAGS = "";
-				PREBINDING = NO;
-				PRODUCT_NAME = wxWrapper;
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = "-Wmost -Wno-four-char-constants -Wno-unknown-pragmas";
-				WRAPPER_EXTENSION = app;
-			};
-			dependencies = (
-				2790ED5E086F5AED00DA24CB,
-				2790ED60086F5AED00DA24CB,
-				2790ED62086F5AED00DA24CB,
-				2709D0AB08D4B04D00309E90,
-				2790ED64086F5AED00DA24CB,
-				2790ED66086F5AED00DA24CB,
-				2790ED68086F5AED00DA24CB,
-				27240A7308D4A01E009B29CA,
-				27240A7508D4A026009B29CA,
-				27CEEFD7099687590038005D,
-			);
-			isa = PBXNativeTarget;
-			name = wxWrapper;
-			productName = wxWrapper;
-			productReference = 2790ED5B086F5AE300DA24CB;
-			productSettingsXML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
-<!DOCTYPE plist PUBLIC \"-//Apple Computer//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">
-<plist version=\"1.0\">
-<dict>
-	<key>CFBundleDevelopmentRegion</key>
-	<string>English</string>
-	<key>CFBundleExecutable</key>
-	<string>wxWrapper</string>
-	<key>CFBundleIdentifier</key>
-	<string>com.yourcompany.wxWrapper</string>
-	<key>CFBundleInfoDictionaryVersion</key>
-	<string>6.0</string>
-	<key>CFBundlePackageType</key>
-	<string>APPL</string>
-	<key>CFBundleSignature</key>
-	<string>????</string>
-	<key>CFBundleVersion</key>
-	<string>1.0</string>
-</dict>
-</plist>
-";
-			productType = "com.apple.product-type.application";
-		};
-		2790ED5B086F5AE300DA24CB = {
-			explicitFileType = wrapper.application;
-			includeInIndex = 0;
+		2791BDB40B106FF60056C643 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
-			path = wxWrapper.app;
-			refType = 3;
-			sourceTree = BUILT_PRODUCTS_DIR;
+			lastKnownFileType = sourcecode.c.c;
+			name = bind.c;
+			path = "/Users/lothar/psqlodbc-07.03.0200/bind.c";
+			refType = 0;
+			sourceTree = "<absolute>";
 		};
-		2790ED5D086F5AED00DA24CB = {
-			containerPortal = 270BA7BA086C0A0900799F65;
-			isa = PBXContainerItemProxy;
-			proxyType = 1;
-			remoteGlobalIDString = 2764970B086ED80A000EB62C;
-			remoteInfo = lbHook;
+		2791BDB50B106FF60056C643 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = columninfo.c;
+			path = "/Users/lothar/psqlodbc-07.03.0200/columninfo.c";
+			refType = 0;
+			sourceTree = "<absolute>";
 		};
-		2790ED5E086F5AED00DA24CB = {
-			isa = PBXTargetDependency;
-			target = 2764970B086ED80A000EB62C;
-			targetProxy = 2790ED5D086F5AED00DA24CB;
+		2791BDB60B106FF60056C643 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = connection.c;
+			path = "/Users/lothar/psqlodbc-07.03.0200/connection.c";
+			refType = 0;
+			sourceTree = "<absolute>";
 		};
-		2790ED5F086F5AED00DA24CB = {
-			containerPortal = 270BA7BA086C0A0900799F65;
-			isa = PBXContainerItemProxy;
-			proxyType = 1;
-			remoteGlobalIDString = 27C524D1086F1C61005DB6C8;
-			remoteInfo = lbClasses;
+		2791BDB70B106FF60056C643 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = convert.c;
+			path = "/Users/lothar/psqlodbc-07.03.0200/convert.c";
+			refType = 0;
+			sourceTree = "<absolute>";
 		};
-		2790ED60086F5AED00DA24CB = {
-			isa = PBXTargetDependency;
-			target = 27C524D1086F1C61005DB6C8;
-			targetProxy = 2790ED5F086F5AED00DA24CB;
+		2791BDB80B106FF60056C643 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = dlg_specific.c;
+			path = "/Users/lothar/psqlodbc-07.03.0200/dlg_specific.c";
+			refType = 0;
+			sourceTree = "<absolute>";
 		};
-		2790ED61086F5AED00DA24CB = {
-			containerPortal = 270BA7BA086C0A0900799F65;
-			isa = PBXContainerItemProxy;
-			proxyType = 1;
-			remoteGlobalIDString = 27C524D9086F1C7A005DB6C8;
-			remoteInfo = lbModule;
+		2791BDB90B106FF60056C643 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = dlg_wingui.c;
+			path = "/Users/lothar/psqlodbc-07.03.0200/dlg_wingui.c";
+			refType = 0;
+			sourceTree = "<absolute>";
 		};
-		2790ED62086F5AED00DA24CB = {
-			isa = PBXTargetDependency;
-			target = 27C524D9086F1C7A005DB6C8;
-			targetProxy = 2790ED61086F5AED00DA24CB;
+		2791BDBA0B106FF60056C643 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = drvconn.c;
+			path = "/Users/lothar/psqlodbc-07.03.0200/drvconn.c";
+			refType = 0;
+			sourceTree = "<absolute>";
 		};
-		2790ED63086F5AED00DA24CB = {
-			containerPortal = 270BA7BA086C0A0900799F65;
-			isa = PBXContainerItemProxy;
-			proxyType = 1;
-			remoteGlobalIDString = 27C524DF086F1CA1005DB6C8;
-			remoteInfo = lbDB;
+		2791BDBB0B106FF60056C643 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = environ.c;
+			path = "/Users/lothar/psqlodbc-07.03.0200/environ.c";
+			refType = 0;
+			sourceTree = "<absolute>";
 		};
-		2790ED64086F5AED00DA24CB = {
-			isa = PBXTargetDependency;
-			target = 27C524DF086F1CA1005DB6C8;
-			targetProxy = 2790ED63086F5AED00DA24CB;
+		2791BDBC0B106FF60056C643 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = execute.c;
+			path = "/Users/lothar/psqlodbc-07.03.0200/execute.c";
+			refType = 0;
+			sourceTree = "<absolute>";
 		};
-		2790ED65086F5AED00DA24CB = {
-			containerPortal = 270BA7BA086C0A0900799F65;
-			isa = PBXContainerItemProxy;
-			proxyType = 1;
-			remoteGlobalIDString = 27C524E9086F1CFA005DB6C8;
-			remoteInfo = lbPluginManager;
+		2791BDBD0B106FF60056C643 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = gpps.c;
+			path = "/Users/lothar/psqlodbc-07.03.0200/gpps.c";
+			refType = 0;
+			sourceTree = "<absolute>";
 		};
-		2790ED66086F5AED00DA24CB = {
-			isa = PBXTargetDependency;
-			target = 27C524E9086F1CFA005DB6C8;
-			targetProxy = 2790ED65086F5AED00DA24CB;
+		2791BDBE0B106FF60056C643 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = info.c;
+			path = "/Users/lothar/psqlodbc-07.03.0200/info.c";
+			refType = 0;
+			sourceTree = "<absolute>";
 		};
-		2790ED67086F5AED00DA24CB = {
-			containerPortal = 270BA7BA086C0A0900799F65;
-			isa = PBXContainerItemProxy;
-			proxyType = 1;
-			remoteGlobalIDString = 27C524EF086F1D13005DB6C8;
-			remoteInfo = lbMetaApplication;
+		2791BDBF0B106FF60056C643 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = info30.c;
+			path = "/Users/lothar/psqlodbc-07.03.0200/info30.c";
+			refType = 0;
+			sourceTree = "<absolute>";
 		};
-		2790ED68086F5AED00DA24CB = {
-			isa = PBXTargetDependency;
-			target = 27C524EF086F1D13005DB6C8;
-			targetProxy = 2790ED67086F5AED00DA24CB;
+		2791BDC00B106FF60056C643 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = lobj.c;
+			path = "/Users/lothar/psqlodbc-07.03.0200/lobj.c";
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		2791BDC10B106FF60056C643 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = md5.c;
+			path = "/Users/lothar/psqlodbc-07.03.0200/md5.c";
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		2791BDC20B106FF60056C643 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = misc.c;
+			path = "/Users/lothar/psqlodbc-07.03.0200/misc.c";
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		2791BDC30B106FF60056C643 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = multibyte.c;
+			path = "/Users/lothar/psqlodbc-07.03.0200/multibyte.c";
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		2791BDC40B106FF60056C643 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = odbcapi.c;
+			path = "/Users/lothar/psqlodbc-07.03.0200/odbcapi.c";
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		2791BDC50B106FF60056C643 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = odbcapi30.c;
+			path = "/Users/lothar/psqlodbc-07.03.0200/odbcapi30.c";
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		2791BDC60B106FF60056C643 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = options.c;
+			path = "/Users/lothar/psqlodbc-07.03.0200/options.c";
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		2791BDC70B106FF60056C643 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = parse.c;
+			path = "/Users/lothar/psqlodbc-07.03.0200/parse.c";
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		2791BDC80B106FF60056C643 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = pgapi30.c;
+			path = "/Users/lothar/psqlodbc-07.03.0200/pgapi30.c";
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		2791BDC90B106FF60056C643 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = pgtypes.c;
+			path = "/Users/lothar/psqlodbc-07.03.0200/pgtypes.c";
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		2791BDCA0B106FF60056C643 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = psqlodbc.c;
+			path = "/Users/lothar/psqlodbc-07.03.0200/psqlodbc.c";
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		2791BDCB0B106FF60056C643 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = qresult.c;
+			path = "/Users/lothar/psqlodbc-07.03.0200/qresult.c";
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		2791BDCC0B106FF60056C643 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = results.c;
+			path = "/Users/lothar/psqlodbc-07.03.0200/results.c";
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		2791BDCD0B106FF60056C643 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = setup.c;
+			path = "/Users/lothar/psqlodbc-07.03.0200/setup.c";
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		2791BDCE0B106FF60056C643 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = socket.c;
+			path = "/Users/lothar/psqlodbc-07.03.0200/socket.c";
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		2791BDCF0B106FF60056C643 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = statement.c;
+			path = "/Users/lothar/psqlodbc-07.03.0200/statement.c";
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		2791BDD00B106FF60056C643 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = tuple.c;
+			path = "/Users/lothar/psqlodbc-07.03.0200/tuple.c";
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		2791BDD10B106FF60056C643 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = tuplelist.c;
+			path = "/Users/lothar/psqlodbc-07.03.0200/tuplelist.c";
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		2791BDD20B106FF60056C643 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = win_md5.c;
+			path = "/Users/lothar/psqlodbc-07.03.0200/win_md5.c";
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		2791BDD30B106FF60056C643 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = win_unicode.c;
+			path = "/Users/lothar/psqlodbc-07.03.0200/win_unicode.c";
+			refType = 0;
+			sourceTree = "<absolute>";
 		};
 		27A8F1D5099684740010AF15 = {
 			buildPhases = (
@@ -770,12 +1088,6 @@
 			path = lbLoginWizard.so;
 			refType = 3;
 			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		27AEFF7C086F5EDE005A0A3D = {
-			fileRef = 27B91DB1086EEA3300DB17D6;
-			isa = PBXBuildFile;
-			settings = {
-			};
 		};
 		27AEFF7D086F5F3F005A0A3D = {
 			fileEncoding = 30;
@@ -1300,7 +1612,6 @@
 		27CE9A1408D4A77600FB3DF0 = {
 			buildActionMask = 2147483647;
 			files = (
-				27CEEFD10996869B0038005D,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1357,32 +1668,14 @@
 			settings = {
 			};
 		};
-		27CEEFD00996869B0038005D = {
+		27D3A6D60AF4FC3800D3C1F1 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
-			name = wxWrapperDLL.cpp;
-			path = /Users/lothar/develop/Projects/CPP/Test/GUI/wxWrapperDLL/wxWrapperDLL.cpp;
+			name = lbHook.cpp;
+			path = /Users/lothar/develop/Projects/CPP/BaseDevelopment/lbHook/lbHook.cpp;
 			refType = 0;
 			sourceTree = "<absolute>";
-		};
-		27CEEFD10996869B0038005D = {
-			fileRef = 27CEEFD00996869B0038005D;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		27CEEFD6099687590038005D = {
-			containerPortal = 270BA7BA086C0A0900799F65;
-			isa = PBXContainerItemProxy;
-			proxyType = 1;
-			remoteGlobalIDString = 27A8F1D5099684740010AF15;
-			remoteInfo = lbLoginWizard;
-		};
-		27CEEFD7099687590038005D = {
-			isa = PBXTargetDependency;
-			target = 27A8F1D5099684740010AF15;
-			targetProxy = 27CEEFD6099687590038005D;
 		};
 		27F462A709960253007178F9 = {
 			fileEncoding = 30;

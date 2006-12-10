@@ -292,7 +292,6 @@ int main(int argc, char *argv[]) {
 /*...e*/
 
 	unHookAll();
-	getchar();	
 	exit(0);
 
 /*...sbla:0:*/

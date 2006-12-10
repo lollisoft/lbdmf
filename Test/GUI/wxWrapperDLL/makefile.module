@@ -113,16 +113,22 @@ endif
 ifeq ($(LB_USE_FRAMEWORKS), yes)
 
 ifeq ($(OSTYPE), osx)
-MOD_INCL=$(STD_INCL) -I $(DEVROOT)/Projects/CPP/vendor/wxaui-0.9.1/include
+MOD_INCL=$(STD_INCL) -I $(DEVROOT)/Projects/CPP/vendor/propgrid/include -I $(DEVROOT)/Projects/CPP/vendor/wxaui-0.9.1/include
 OBJDEP=
-C_SOOPS_WX = -DOSX -DUNIX -DLINUX -DLB_I_EXTENTIONS `wx-config --inplace --cxxflags` 
+ifeq (($DEBUG), no)
+C_OPS=
+endif
+ifeq (($DEBUG), yes)
+C_OPS=-g
+endif
+C_SOOPS_WX = $(C_OPS) -DOSX -DUNIX -DLINUX -DLB_I_EXTENTIONS `wx-config --inplace --cxxflags` 
 C_SOOPS= $(C_SOOPS_WX)
 VENDORLIBS=
 ifeq ($(DEBUG), yes)
-L_OPS=$(L_SOOPS) -F$(HOME)/lib -framework wxAUI -framework lbHook -framework wxPropgrid 
+L_OPS=$(L_SOOPS) -F$(HOME)/lib -framework wxAUI -framework lbHook -framework wxPropgrid -lc /usr/lib/libgcc_s.1.dylib -lc /usr/lib/libstdc++.6.dylib 
 endif
 ifeq ($(DEBUG), no)
-L_OPS=$(L_SOOPS) -F$(HOME)/lib -framework wxAUI -framework lbHook -framework wxPropgrid
+L_OPS=$(L_SOOPS) -F$(HOME)/lib -framework wxAUI -framework lbHook -framework wxPropgrid -lc /usr/lib/libgcc_s.1.dylib -lc /usr/lib/libstdc++.6.dylib
 endif
 endif
 
@@ -136,7 +142,7 @@ OBJDEP=
 C_SOOPS_WX = -DOSX -DUNIX -DLINUX -DLB_I_EXTENTIONS `wx-config --inplace --cxxflags` 
 C_SOOPS= $(C_SOOPS_WX)
 VENDORLIBS=$(HOME)/lib/lbHook.so $(HOME)/lib/wxAUI.so 
-L_OPS=$(L_SOOPS) -L. -lwxPropgrid
+L_OPS=$(L_SOOPS) -L. -lwxPropgrid -lstdc++
 endif
 
 endif

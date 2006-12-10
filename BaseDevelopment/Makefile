@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.115 $
+# * $Revision: 1.116 $
 # * $Name:  $
-# * $Id: Makefile,v 1.115 2006/10/22 18:34:36 lollisoft Exp $
+# * $Id: Makefile,v 1.116 2006/12/10 17:05:24 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.116  2006/12/10 17:05:24  lollisoft
+# * Other changes under Mac OS X.
+# *
 # * Revision 1.115  2006/10/22 18:34:36  lollisoft
 # * Many memory leaks resolved, but they were caused by small errors :-(
 # * This is also a sync.
@@ -499,8 +502,8 @@ ALLTARGETS = \
 	../AppDevelopmentDemo/App \
 	../AppDevelopmentDemo/DynamicApp/App \
 	../Test/GUI/wxWrapperDLL \
-	../Test/GUI/wxWrapper \
 	../Test/GUI/wxPlugins/lbLoginWizard \
+	../Test/GUI/wxWrapper \
 	../Test/Console/XML \
 	$(BASEDIRECTORIES)
 

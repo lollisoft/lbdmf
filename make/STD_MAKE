@@ -25,11 +25,14 @@
 #            40235 Duesseldorf (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.88 $
+# * $Revision: 1.89 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.88 2006/10/22 18:34:36 lollisoft Exp $
+# * $Id: STD_MAKE,v 1.89 2006/12/10 17:05:24 lollisoft Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.89  2006/12/10 17:05:24  lollisoft
+# * Other changes under Mac OS X.
+# *
 # * Revision 1.88  2006/10/22 18:34:36  lollisoft
 # * Many memory leaks resolved, but they were caused by small errors :-(
 # * This is also a sync.
@@ -346,8 +349,8 @@ COMPILER=WATCOM
 
 MODE=_DEBUG
 #MODE=
-#DEBUG_MEMORY=no
-DEBUG_MEMORY=yes
+DEBUG_MEMORY=no
+#DEBUG_MEMORY=yes
 
 #DEBUG_MEMORY_TYPE=mpatrol
 DEBUG_MEMORY_TYPE=trmem

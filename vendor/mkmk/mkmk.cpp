@@ -12,11 +12,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.83 $
+ * $Revision: 1.84 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.83 2006/07/17 17:58:42 lollisoft Exp $
+ * $Id: mkmk.cpp,v 1.84 2006/12/10 17:05:24 lollisoft Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.84  2006/12/10 17:05:24  lollisoft
+ * Other changes under Mac OS X.
+ *
  * Revision 1.83  2006/07/17 17:58:42  lollisoft
  * Faster cleanup.
  *
@@ -820,6 +823,11 @@ void writeBundleTarget(char* modulename) {
   
 /// \todo Create module specific framework list to be copied instead.
   
+  printf("\t\trm -Rf %s.app/Contents/Frameworks/lbHook.framework\n", modulename);
+  printf("\t\trm -Rf %s.app/Contents/Frameworks/wxWrapperDLL.framework\n", modulename);
+  printf("\t\trm -Rf %s.app/Contents/Frameworks/wxAUI.framework\n", modulename);
+  printf("\t\trm -Rf %s.app/Contents/Frameworks/wxPropgrid.framework\n", modulename);
+
   printf("\t\tcp -R $(HOME)/lib/lbHook.framework %s.app/Contents/Frameworks\n", modulename);
   printf("\t\tcp -R $(HOME)/lib/wxWrapperDLL.framework %s.app/Contents/Frameworks\n", modulename);
   printf("\t\tcp -R $(HOME)/lib/wxAUI.framework %s.app/Contents/Frameworks\n", modulename);
@@ -1599,7 +1607,7 @@ void ShowHelp(int argc, char *argv[])
 
   fprintf(stderr, "Enhanced by Lothar Behrens (lothar.behrens@lollisoft.de)\n\n");
 
-  fprintf(stderr, "MKMK: makefile generator $Revision: 1.83 $\n");
+  fprintf(stderr, "MKMK: makefile generator $Revision: 1.84 $\n");
   fprintf(stderr, "Usage: MKMK lib|exe|dll|so modulname includepath,[includepath,...] file1 [file2 file3...]\n");
   
   fprintf(stderr, "Your parameters are: ");

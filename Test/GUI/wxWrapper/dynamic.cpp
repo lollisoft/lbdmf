@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.125 2006/10/22 18:34:36 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.126 2006/12/10 17:05:24 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.125 $
+ * $Revision: 1.126 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.125 2006/10/22 18:34:36 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.126 2006/12/10 17:05:24 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.126  2006/12/10 17:05:24  lollisoft
+ * Other changes under Mac OS X.
+ *
  * Revision 1.125  2006/10/22 18:34:36  lollisoft
  * Many memory leaks resolved, but they were caused by small errors :-(
  * This is also a sync.
@@ -2084,7 +2087,7 @@ bool MyApp::OnInit(void)
     PM->initialize();
 
     /// \todo Find leak.
-    //metaApp++;
+    metaApp++;
 
     lbErrCodes err = ERR_NONE;
 
@@ -2138,14 +2141,6 @@ bool MyApp::OnInit(void)
 
     SetTopWindow(frame);
 
-    if (metaApp != NULL) {
-        metaApp->setGUI(wxGUI);
-        metaApp->initialize();
-		if (metaApp->getGUIMaximized()) frame->Maximize();
-    } 
-
-    frame->Show(TRUE);
-
     if (PM->beginEnumPlugins()) {
 	
     while (TRUE) {
@@ -2155,6 +2150,14 @@ bool MyApp::OnInit(void)
             pl->initialize();
         }
     }
+
+    if (metaApp != NULL) {
+        metaApp->setGUI(wxGUI);
+        metaApp->initialize();
+		if (metaApp->getGUIMaximized()) frame->Maximize();
+    } 
+
+    frame->Show(TRUE);
 
     if (metaApp != NULL) metaApp->run();
 
