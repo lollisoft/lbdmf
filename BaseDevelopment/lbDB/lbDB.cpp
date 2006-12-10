@@ -224,11 +224,15 @@ public:
 	
 	virtual ~lbQuery() {
 		_CL_VERBOSE << "lbQuery::~lbQuery() called. (" << szSql << "). Refcount of ReadOnlyColumns is: " << ReadOnlyColumns->getRefCount() LOG_
-		if (ReadOnlyColumns->getRefCount() > 1) _CL_LOG << "Error: Object would not deleted (ReadOnlyColumns) !" LOG_
-		if (mapPKTable_PKColumns_To_FKName->getRefCount() > 1) _CL_LOG << "Error: Object would not deleted (mapPKTable_PKColumns_To_FKName) !" LOG_		
+		if ((ReadOnlyColumns != NULL) && (ReadOnlyColumns->getRefCount() > 1)) _CL_LOG << "Error: Object would not deleted (ReadOnlyColumns) !" LOG_
+		if ((mapPKTable_PKColumns_To_FKName != NULL) && (mapPKTable_PKColumns_To_FKName->getRefCount() > 1)) _CL_LOG << "Error: Object would not deleted (mapPKTable_PKColumns_To_FKName) !" LOG_		
 		
 		// The global variable for getTableName() :-(
-		if (lpszTable) free(lpszTable);
+		if (lpszTable) {
+			/// \todo Return a ministring object, that gets automatically deleted.
+			free(lpszTable);
+			lpszTable = NULL;
+		}
 	}
 	
 	DECLARE_LB_UNKNOWN()
@@ -1890,6 +1894,12 @@ lb_I_String* LB_STDCALL lbQuery::getPKColumn(char const * FKName) {
 void LB_STDCALL lbQuery::prepareFKList() {
 	#define TAB_LEN 100
 	#define COL_LEN 100
+	
+	void* that = this;
+
+	if (this == NULL) {
+		_CL_LOG << "Fatal: Called member function on invalid object (lbQuery::prepareFKList(), NULL) !" LOG_ 
+	}
 
 	if (!_TRMemValidate(this)) {
 		lbBreak();
@@ -1925,7 +1935,10 @@ void LB_STDCALL lbQuery::prepareFKList() {
 	UCHAR   szPkCol[COL_LEN];  /* Primary key column   */
 	UCHAR   szFkCol[COL_LEN];  /* Foreign key column   */
 
+	char    buffer1[100] = "";
 	SQLHSTMT         hstmt;
+	char    buffer2[100] = "";
+
 	SQLINTEGER      cbPkTable = TAB_LEN;
 	SQLINTEGER 	cbPkCol = TAB_LEN;
 	SQLINTEGER	cbFkTable = TAB_LEN;
@@ -1956,7 +1969,7 @@ void LB_STDCALL lbQuery::prepareFKList() {
 	strcpy((char*) szTable, temp);
 	
 	if (strlen((char* const) szTable) > 99) {
-		_CL_VERBOSE << "ERROR: Possible buffer overflows!" LOG_
+		_LOG << "ERROR: Possible buffer overflows!" LOG_
 	}
 
 	_CL_VERBOSE << "Get foreign keys for '" << szTable << "'" LOG_
@@ -2028,7 +2041,7 @@ void LB_STDCALL lbQuery::prepareFKList() {
 
 /*...sOriginally for windows \40\foreign table\41\:8:*/
 	if (strlen((char* const) szTable) > 99) {
-		_CL_VERBOSE << "ERROR: Possible buffer overflows!" LOG_
+		_LOG << "ERROR: Possible buffer overflows!" LOG_
 	}
 #endif
 	_CL_VERBOSE << "Try to get foreign keys with '" << temp << "' as foreign table" LOG_
@@ -2042,7 +2055,7 @@ void LB_STDCALL lbQuery::prepareFKList() {
 	         szTable, SQL_NTS); /* Foreign table   */
 
 	if ((retcode != SQL_SUCCESS) && (retcode != SQL_SUCCESS_WITH_INFO)) {
-		_CL_LOG << "SQLForeignKeys(...) failed!" LOG_
+		_LOG << "SQLForeignKeys(...) failed!" LOG_
 	}
 
 
@@ -2094,7 +2107,9 @@ void LB_STDCALL lbQuery::prepareFKList() {
 	   }
 	}
 
-	free(szTable);
+	if (this != that) {
+		_CL_LOG << "Fatal: Short before bug (lbQuery::prepareFKList(), NULL) !" LOG_ 
+	}
 
 	/* Close the cursor (the hstmt is still allocated). */
 
@@ -2104,6 +2119,9 @@ void LB_STDCALL lbQuery::prepareFKList() {
 	
 
 	SQLFreeStmt(hstmt, SQL_DROP);
+
+	free(szTable);
+
 /*...e*/
 
 
@@ -3107,7 +3125,7 @@ free(buffer);
 #ifndef USE_CURRENT_OF
 		retcode = SQLSetPos(hstmt, 1, SQL_UPDATE, SQL_LOCK_NO_CHANGE);
 		
-		if (retcode != SQL_SUCCESS)
+		if (retcode == SQL_ERROR)
 		{
 		        dbError("SQLSetPos()", hstmt);
 		        _LOG << "lbQuery::update(...) updating failed." LOG_
