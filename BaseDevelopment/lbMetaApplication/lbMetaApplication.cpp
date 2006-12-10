@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.98 $
+ * $Revision: 1.99 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.98 2006/10/23 21:20:48 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.99 2006/12/10 17:03:21 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.99  2006/12/10 17:03:21  lollisoft
+ * Log, don't write to console.
+ *
  * Revision 1.98  2006/10/23 21:20:48  lollisoft
  * Small changes to compile under Linux again
  *
@@ -1492,7 +1495,7 @@ lb_I_InputStream* LB_STDCALL lb_MetaApplication::askOpenFileReadStream(char* ext
 
 	if (strcmp(value->charrep(), "") == 0) return NULL;
 	
-	_CL_LOG << "Got a file name: " << value->charrep() << "." LOG_
+	_LOG << "Got a file name: " << value->charrep() << "." LOG_
 
 	UAP_REQUEST(manager.getPtr(), lb_I_InputStream, s)
 	s++;
