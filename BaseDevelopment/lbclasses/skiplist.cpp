@@ -38,11 +38,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.50 $
+ * $Revision: 1.51 $
  * $Name:  $
- * $Id: skiplist.cpp,v 1.50 2006/10/22 18:06:48 lollisoft Exp $
+ * $Id: skiplist.cpp,v 1.51 2006/12/10 16:59:41 lollisoft Exp $
  *
  * $Log: skiplist.cpp,v $
+ * Revision 1.51  2006/12/10 16:59:41  lollisoft
+ * Also check if value is  NULL.
+ *
  * Revision 1.50  2006/10/22 18:06:48  lollisoft
  * Bugfix in reference count handling. Internally, do not increase on searching by
  * key, but increase reference count at returning the key.
@@ -662,7 +665,7 @@ lb_I_Unknown* SkipList::search(lb_I_KeyBase* searchKey) { // Skiplist Search
   if (x == NULL) _LOG << "Error: NULL pointer while searching in skiplist" LOG_
   
   for (int i=level; i>=0; i--) {
-    while ((x->forward[i] != NULL) && (*(x->forward[i]->value->getKey()) < searchKey)) {
+    while ((x->forward[i] != NULL) && (x->forward[i]->value != NULL) && (*(x->forward[i]->value->getKey()) < searchKey)) {
       x = x->forward[i];
     }
   }
