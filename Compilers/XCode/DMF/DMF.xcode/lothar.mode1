@@ -240,17 +240,18 @@
 							<key>PBXSmartGroupTreeModuleOutlineStateExpansionKey</key>
 							<array>
 								<string>270BA7B6086C0A0900799F65</string>
+								<string>1C37FAAC04509CD000000102</string>
 								<string>1C37FABC05509CD000000102</string>
 							</array>
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
-									<integer>55</integer>
+									<integer>59</integer>
 									<integer>0</integer>
 								</array>
 							</array>
 							<key>PBXSmartGroupTreeModuleOutlineStateVisibleRectKey</key>
-							<string>{{0, 685}, {294, 828}}</string>
+							<string>{{0, 702}, {294, 828}}</string>
 						</dict>
 						<key>PBXTopSmartGroupGIDs</key>
 						<array/>
@@ -291,18 +292,30 @@
 										<key>PBXProjectModuleLabel</key>
 										<string>lbDB.cpp</string>
 										<key>bookmark</key>
-										<string>27B39F9E0B2C6BB700FCB551</string>
+										<string>275709430B39F9CC0050CE90</string>
 										<key>history</key>
 										<array>
-											<string>2799E9CA0B2742CE00AF10C5</string>
-											<string>27B39F670B2C060500FCB551</string>
-											<string>2799E99F0B273D1D00AF10C5</string>
+											<string>27B3A5D00B31D5B10001C065</string>
+											<string>27F6A0880B35CA2A00064FE8</string>
+											<string>27F6A09E0B35CBB500064FE8</string>
+											<string>27F6A0ED0B35D7FC00064FE8</string>
+											<string>27F6A1090B35E2E800064FE8</string>
+											<string>272AA0D10B371F780005D623</string>
+											<string>27B865390B389DD000C58BEF</string>
+											<string>27B865AC0B38ADD100C58BEF</string>
+											<string>27B865CA0B38B1C500C58BEF</string>
 										</array>
 										<key>prevStack</key>
 										<array>
 											<string>276FB90B0B22F810004E52BD</string>
 											<string>276FB90C0B22F810004E52BD</string>
 											<string>27B39F680B2C060500FCB551</string>
+											<string>27B3A5D30B31D5B10001C065</string>
+											<string>27F6A08A0B35CA2A00064FE8</string>
+											<string>27F6A09B0B35CB9500064FE8</string>
+											<string>27F6A0A10B35CBB500064FE8</string>
+											<string>27F6A0F10B35D7FC00064FE8</string>
+											<string>27B8653A0B389DD000C58BEF</string>
 										</array>
 									</dict>
 									<key>SplitCount</key>
@@ -360,9 +373,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>27B39F6A0B2C060500FCB551</string>
+				<string>2757093A0B39EAAD0050CE90</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>27B39F6B0B2C060500FCB551</string>
+				<string>2757093B0B39EAAD0050CE90</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -390,11 +403,9 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
-		<string>1C0AD2AD069F1E9B00FABCE6</string>
-		<string>27B39F660B2C05B600FCB551</string>
-		<string>/Users/lothar/develop/Projects/CPP/Compilers/XCode/DMF/DMF.xcode</string>
-		<string>27A017CE0870060900677AEE</string>
+		<string>2757093D0B39EAAD0050CE90</string>
 		<string>1CD10A99069EF8BA00B06720</string>
+		<string>/Users/lothar/develop/Projects/CPP/Compilers/XCode/DMF/DMF.xcode</string>
 	</array>
 	<key>WindowString</key>
 	<string>2 114 992 888 0 0 1280 1002 </string>
@@ -526,8 +537,8 @@
 										<string>yes</string>
 										<key>sizes</key>
 										<array>
-											<string>{{0, 0}, {448, 405}}</string>
-											<string>{{448, 0}, {832, 405}}</string>
+											<string>{{0, 0}, {512, 296}}</string>
+											<string>{{512, 0}, {768, 296}}</string>
 										</array>
 									</dict>
 									<key>VerticalSplitView</key>
@@ -542,8 +553,8 @@
 										<string>yes</string>
 										<key>sizes</key>
 										<array>
-											<string>{{0, 0}, {1280, 405}}</string>
-											<string>{{0, 405}, {1280, 399}}</string>
+											<string>{{0, 0}, {1280, 296}}</string>
+											<string>{{0, 296}, {1280, 508}}</string>
 										</array>
 									</dict>
 								</dict>
@@ -552,7 +563,7 @@
 								<key>PBXProjectModuleGUID</key>
 								<string>1C162984064C10D400B95A72</string>
 								<key>PBXProjectModuleLabel</key>
-								<string>Debug - GLUTExamples (Underwater)</string>
+								<string>Debug - DMF (wxWrapper)</string>
 							</dict>
 							<key>GeometryConfiguration</key>
 							<dict>
@@ -590,9 +601,9 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>1CD10A99069EF8BA00B06720</string>
-				<string>27B39F650B2C05B600FCB551</string>
+				<string>2757093C0B39EAAD0050CE90</string>
 				<string>1C162984064C10D400B95A72</string>
-				<string>27B39F660B2C05B600FCB551</string>
+				<string>2757093D0B39EAAD0050CE90</string>
 			</array>
 			<key>ToolbarConfiguration</key>
 			<string>xcode.toolbar.config.debug</string>
@@ -769,7 +780,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>27A017CE0870060900677AEE</string>
-				<string>27B39F790B2C24A300FCB551</string>
+				<string>27B8651C0B3899DC00C58BEF</string>
 				<string>1C78EAAC065D492600B07095</string>
 			</array>
 			<key>WindowString</key>

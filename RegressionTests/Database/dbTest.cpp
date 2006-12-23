@@ -288,6 +288,23 @@ int main(int argc, char *argv[]) {
 		query2->PrintData();
 		query2->PrintData(true);
 
+
+		UAP(lb_I_Query, query3)
+		query3 = database1->getQuery(0);
+
+		query3->query("select 'userid', 'anwendungenid' from 'user_anwendungen' where userid = 2");
+		
+		query3->first();
+		query3->add();
+		
+		*col = "userid";
+		*val = "2";
+		query3->setString(*&col, *&val);
+		
+		_CL_LOG << "Call query->update() on added row." LOG_
+		query3->update();
+		_CL_LOG << "Called query->update() on added row." LOG_
+
 	}
 /*...e*/
 

@@ -16,7 +16,7 @@ CREATE TABLE column_types
   ro BOOL DEFAULT false,
   specialColumn BOOL DEFAULT false,
   controlType char(30) DEFAULT ''
-);
+) WITH OIDS;
 --...e
 insert into column_types (name, tablename, ro) values('kundennr', 'kunden', TRUE);
 insert into column_types (name, tablename, ro) values('id', 'chart', TRUE);
@@ -37,7 +37,7 @@ CREATE TABLE actions
   source char(100),
   target INTEGER,
   PRIMARY KEY (id)
-);
+) WITH OIDS;
 --...e
 --...sCREATE TABLE action_types:0:
 -- +---------------------------------------------------------
@@ -54,7 +54,7 @@ CREATE TABLE action_types
   action_handler char(100),	-- the functor with the implementation of the handler
   module	 char(100),	-- the module with the implementation of the handler
   PRIMARY KEY (id)
-);
+) WITH OIDS;
 
 ALTER TABLE actions
 ADD CONSTRAINT cst_action_types_TypID FOREIGN KEY ( typ )
@@ -78,7 +78,7 @@ CREATE TABLE action_steps
   type		INTEGER, -- May be NULL for the first target
   what		char(100),
   PRIMARY KEY (id)
-);
+) WITH OIDS;
 
 ALTER TABLE action_steps
 ADD CONSTRAINT cst_action_target_ActionID FOREIGN KEY ( actionid )
@@ -103,7 +103,7 @@ CREATE TABLE Formulare
   AnwendungID INTEGER,
   Typ INTEGER NOT NULL,
   PRIMARY KEY (id)
-);
+) WITH OIDS;
 
 CREATE UNIQUE INDEX pk_id_Formulare ON Formulare
 (
@@ -127,7 +127,7 @@ CREATE TABLE formular_actions
   action	INTEGER,
   event		char(100),
   PRIMARY KEY (id)
-);
+) WITH OIDS;
 
 ALTER TABLE formular_actions
 ADD CONSTRAINT cst_formular_actions_formular FOREIGN KEY ( formular )
@@ -283,7 +283,7 @@ CREATE TABLE translations
   translated CHAR(100),
   language CHAR(30) default 'german',
   PRIMARY KEY (id)
-);
+) WITH OIDS;
 --...e
 --...sCREATE TABLE CodegenTarget:0:
 -- +---------------------------------------------------------
@@ -299,7 +299,7 @@ CREATE TABLE CodegenTarget
   Functor CHAR(100),
   Interface CHAR(100),
   PRIMARY KEY (id)
-);
+) WITH OIDS;
 
 CREATE UNIQUE INDEX pk_id_CodegenTarget ON CodegenTarget
 (
@@ -321,7 +321,7 @@ CREATE TABLE Anwendungen
   Functor CHAR(100),
   Interface CHAR(100),
   PRIMARY KEY (id)
-);
+) WITH OIDS;
 
 CREATE UNIQUE INDEX pk_id_Anwendungen ON Anwendungen
 (
@@ -340,7 +340,7 @@ CREATE TABLE Anwendungs_Parameter
   ParameterValue CHAR(255),
   AnwendungID INTEGER,
   PRIMARY KEY (id)
-);
+) WITH OIDS;
 
 CREATE UNIQUE INDEX pk_id_Anwendungs_Parameter ON Anwendungs_Parameter
 (
@@ -359,7 +359,7 @@ CREATE TABLE Formular_Parameters
   ParameterValue CHAR(255),
   FormularID INTEGER,
   PRIMARY KEY (id)
-);
+) WITH OIDS;
 
 CREATE UNIQUE INDEX pk_id_Formular_Parameters ON Formular_Parameters
 (
@@ -379,7 +379,7 @@ CREATE TABLE ForeignKey_VisibleData_Mapping
   PKName	CHAR(100),
   PKTable	CHAR(100),
   PRIMARY KEY (id)
-);
+) WITH OIDS;
 
 CREATE UNIQUE INDEX pk_id_ForeignKey_VisibleData_Mapping ON ForeignKey_VisibleData_Mapping
 (
@@ -396,7 +396,7 @@ CREATE TABLE Anwendungen_Formulare
   AnwendungID INTEGER NOT NULL,
   FormularID INTEGER NOT NULL,
   PRIMARY KEY (id)
-);
+) WITH OIDS;
 --...e
 --...sCREATE TABLE Anwendungsberechtigungen:0:
 -- +---------------------------------------------------------
@@ -408,7 +408,7 @@ CREATE TABLE Anwendungsberechtigungen
   idUser INTEGER,
   idFormular INTEGER,
   PRIMARY KEY (id)
-);
+) WITH OIDS;
 
 CREATE UNIQUE INDEX pk_id_Anwendungsberechtigungen ON Anwendungsberechtigungen
 (
@@ -428,7 +428,7 @@ CREATE TABLE Formulartypen
   Namespace CHAR(50),
   Beschreibung CHAR(254),
   PRIMARY KEY (id)
-);
+) WITH OIDS;
 
 CREATE UNIQUE INDEX pk_id_Formulartypen ON Formulartypen
 (
@@ -448,7 +448,7 @@ CREATE TABLE Users
   passwort CHAR(30),
   lastapp INTEGER,
   PRIMARY KEY (id)
-);
+) WITH OIDS;
 
 CREATE UNIQUE INDEX pk_id ON Users
 (
@@ -462,10 +462,10 @@ CREATE UNIQUE INDEX pk_id ON Users
 CREATE TABLE User_Anwendungen
 (
   id SERIAL,
-  userid INTEGER NOT NULL,
-  AnwendungenId INTEGER NOT NULL,
+  userid INTEGER,
+  AnwendungenId INTEGER,
   PRIMARY KEY (id)
-);
+) WITH OIDS;
 
 CREATE UNIQUE INDEX pk_id_User_Anwendungen ON User_Anwendungen
 (
@@ -482,7 +482,7 @@ CREATE TABLE report_parameters
   name CHAR(50) NOT NULL,
   value INTEGER  NOT NULL,
   PRIMARY KEY (id)
-);
+) WITH OIDS;
           
 CREATE UNIQUE INDEX pk_id_report_parameters ON report_parameters
 (
@@ -513,7 +513,7 @@ CREATE TABLE report_texts
   line INTEGER,
   text CHAR(255),
   PRIMARY KEY (id)
-);
+) WITH OIDS;
 
 CREATE UNIQUE INDEX pk_id_report_texts ON report_texts
 (

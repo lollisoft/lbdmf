@@ -1121,12 +1121,15 @@
 		};
 		27AEFF83086F5FC3005A0A3D = {
 			fileEncoding = 30;
+			indentWidth = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			name = lbMetaApplication.cpp;
 			path = /Users/lothar/develop/Projects/CPP/BaseDevelopment/lbMetaApplication/lbMetaApplication.cpp;
 			refType = 0;
 			sourceTree = "<absolute>";
+			tabWidth = 4;
+			usesTabs = 1;
 		};
 		27AEFF84086F5FC3005A0A3D = {
 			fileRef = 27AEFF83086F5FC3005A0A3D;

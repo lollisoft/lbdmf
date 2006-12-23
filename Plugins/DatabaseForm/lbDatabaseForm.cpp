@@ -592,6 +592,8 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 
 			FKColumnQuery = lbDMF_DB->getQuery(0);
 			
+			_CL_LOG << "Query for showing visible column of a foreign key: " << buffer << "." LOG_
+			
 			FKColumnQuery->query(buffer);
 			
 			err = FKColumnQuery->first();
@@ -1082,10 +1084,15 @@ _CL_LOG << "Connect event handlers" LOG_
 	
 	//Centre();
 
-_CL_LOG << "lbDatabasePanel::init(...) ready. Move to first row." LOG_
+	_CL_LOG << "lbDatabasePanel::init(...) ready. Move to first row." LOG_
 
-// Crashes without debug information
-	lbDBFirst(NULL);
+	if (sampleQuery->dataFetched()) {
+		lbDBFirst(NULL);
+	} else {
+		nextButton->Disable();
+		lastButton->Disable();
+		deleteButton->Disable();
+	}
 }
 /*...e*/
 
@@ -1290,6 +1297,7 @@ void LB_STDCALL lbDatabasePanel::ignoreForeignKeys(char* toTable) {
 
 /*...svoid LB_STDCALL lbDatabasePanel\58\\58\updateFromMaster\40\\41\:0:*/
 void LB_STDCALL lbDatabasePanel::updateFromMaster() {
+	lbErrCodes err = ERR_NONE;
 
 	UAP_REQUEST(manager.getPtr(), lb_I_String, newWhereClause)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, newMasterIDQuery)
@@ -1386,7 +1394,7 @@ void LB_STDCALL lbDatabasePanel::updateFromMaster() {
 
 	PKQuery = database->getQuery(0);
 
-	lbErrCodes err = PKQuery->query(newMasterIDQuery->charrep());
+	err = PKQuery->query(newMasterIDQuery->charrep());
 
 	if (err == ERR_NONE) {
 
@@ -1589,13 +1597,37 @@ void LB_STDCALL lbDatabasePanel::updateFromMaster() {
 
 	_CL_LOG << "Have created new query: " << newQuery->charrep() LOG_
 
-	sampleQuery->query(newQuery->charrep());
+	err = sampleQuery->query(newQuery->charrep());
+	
+	if (err != ERR_NONE) {
+			_CL_LOG << "Error: Failed to get data for detail form." LOG_
+			noDataAvailable = true;
+			lbDBClear();
+			firstButton->Disable();
+			prevButton->Disable();
+			lastButton->Disable();
+			nextButton->Disable();
+			deleteButton->Disable();
+			noDataAvailable = false;	
+	} else {
+		err = sampleQuery->first();
 
-	if (lbDBFirst(NULL) == ERR_DB_NODATA) {
-		// Assume no data available
-		noDataAvailable = true;
-		lbDBClear();
-		noDataAvailable = false;	
+		if ((err != ERR_NONE) && (err != WARN_DB_NODATA)) {
+			_CL_LOG << "Error: Failed to get data for detail form (after moving to first)." LOG_
+			noDataAvailable = true;
+			lbDBClear();
+			firstButton->Disable();
+			prevButton->Disable();
+			lastButton->Disable();
+			nextButton->Disable();
+			deleteButton->Disable();
+			noDataAvailable = false;	
+		} else {
+			lbDBRead();
+			lastButton->Enable();
+			nextButton->Enable();
+			deleteButton->Enable();
+		}
 	}
 	
 	SetTitle(formName);
@@ -1604,6 +1636,8 @@ void LB_STDCALL lbDatabasePanel::updateFromMaster() {
 
 /*...svoid LB_STDCALL lbDatabasePanel\58\\58\updateFromDetail\40\\41\:0:*/
 void LB_STDCALL lbDatabasePanel::updateFromDetail() {
+	lbErrCodes err = ERR_NONE;
+	
 	UAP_REQUEST(manager.getPtr(), lb_I_String, newWhereClause)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, newMasterIDQuery)
 	
@@ -1712,7 +1746,7 @@ void LB_STDCALL lbDatabasePanel::updateFromDetail() {
 
 	PKQuery = database->getQuery(0);
 
-	lbErrCodes err = PKQuery->query(newMasterIDQuery->charrep());
+	err = PKQuery->query(newMasterIDQuery->charrep());
 
 	if (err == ERR_NONE) {
 
@@ -1908,13 +1942,37 @@ void LB_STDCALL lbDatabasePanel::updateFromDetail() {
 	
 	sampleQuery = database->getQuery(0);
 
-	sampleQuery->query(newQuery->charrep());
+	err = sampleQuery->query(newQuery->charrep());
+	
+	if (err != ERR_NONE) {
+			_CL_LOG << "Error: Failed to get data for master form." LOG_
+			noDataAvailable = true;
+			lbDBClear();
+			firstButton->Disable();
+			prevButton->Disable();
+			lastButton->Disable();
+			nextButton->Disable();
+			deleteButton->Disable();
+			noDataAvailable = false;	
+	} else {
+		err = sampleQuery->first();
 
-	if (lbDBFirst(NULL) == ERR_DB_NODATA) {
-		// Assume no data available
-		noDataAvailable = true;
-		lbDBClear();
-		noDataAvailable = false;	
+		if ((err != ERR_NONE) && (err != WARN_DB_NODATA)) {
+			_CL_LOG << "Error: Failed to get data for master form (after moving to first)." LOG_
+			noDataAvailable = true;
+			lbDBClear();
+			firstButton->Disable();
+			prevButton->Disable();
+			lastButton->Disable();
+			nextButton->Disable();
+			deleteButton->Disable();
+			noDataAvailable = false;	
+		} else {
+			lbDBRead();
+			lastButton->Enable();
+			nextButton->Enable();
+			deleteButton->Enable();
+		}
 	}
 	
 	SetTitle(formName);
@@ -1950,7 +2008,7 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBClear() {
 			if (sampleQuery->hasFKColumn(name) == 1) {
 /*...sUpdate drop down box:32:*/
 				wxChoice* cbox = (wxChoice*) w;
-				
+				if (cbox->IsEnabled()) sampleQuery->setNull(name);
 				cbox->SetSelection(-1);
 /*...e*/
 			} else {
@@ -2005,6 +2063,8 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBClear() {
 /*...slbErrCodes LB_STDCALL lbDatabasePanel\58\\58\lbDBUpdate\40\\41\:0:*/
 lbErrCodes LB_STDCALL lbDatabasePanel::lbDBUpdate() {
 	//if (noDataAvailable) return ERR_NONE;
+	UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
+
 	SetTitle(formName);
 
 	int columns = sampleQuery->getColumns();
@@ -2055,7 +2115,9 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBUpdate() {
 					uk_mapping = cbMapper->getElement(&key_pos);
 					
 					if (uk_mapping == NULL)  { 
-						printf("ERROR: cbMapper didn't found an entry for above search argument\n");
+						if (!sampleQuery->isNullable(name)) {
+							if (!meta->askYesNo(_trans("Failed to save data. Not all fields are filled."))) return ERR_UPDATE_FAILED;
+						}
 					} else {
 						UAP(lb_I_Integer, FK_id)
 					
@@ -2071,6 +2133,10 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBUpdate() {
 						val->setData(pp);
 					
 						sampleQuery->setString(*&col, *&val);
+					}
+				} else {
+					if (!sampleQuery->isNullable(name)) {
+						if (!meta->askYesNo(_trans("Failed to save data. Not all fields are filled."))) return ERR_UPDATE_FAILED;
 					}
 				}
 /*...e*/
@@ -2160,6 +2226,10 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBUpdate() {
 		*newTitle += ": Update failed !";
 
 		SetTitle(newTitle->charrep());
+
+		if (meta->askYesNo("Error while updating data. Would you re - read the current data and retry ?")) {
+			lbDBRead();
+		}
 		
 		_LOG << "Update a database record failed." LOG_
 
@@ -2319,12 +2389,12 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBRead() {
 
 /*...slbErrCodes LB_STDCALL lbDatabasePanel\58\\58\lbDBFirst\40\lb_I_Unknown\42\ uk\41\:0:*/
 lbErrCodes LB_STDCALL lbDatabasePanel::lbDBFirst(lb_I_Unknown* uk) {
+	lbErrCodes err = ERR_NONE;
 
-	lbErrCodes err = lbDBUpdate();
-_CL_LOG << "lbDBClear();" LOG_
+	if (lbDBUpdate() != ERR_NONE) return ERR_UPDATE_FAILED;
+
 	lbDBClear();
 
-_CL_LOG << "sampleQuery->first();" LOG_	
 	err = sampleQuery->first();
 
 	while (err == ERR_DB_ROWDELETED) err = sampleQuery->next();
@@ -2346,7 +2416,7 @@ _CL_LOG << "return ERR_NONE;" LOG_
 /*...e*/
 /*...slbErrCodes LB_STDCALL lbDatabasePanel\58\\58\lbDBNext\40\lb_I_Unknown\42\ uk\41\:0:*/
 lbErrCodes LB_STDCALL lbDatabasePanel::lbDBNext(lb_I_Unknown* uk) {
-	lbDBUpdate();
+	if (lbDBUpdate() != ERR_NONE) return ERR_UPDATE_FAILED;
 
 	lbErrCodes err = sampleQuery->next();
 
@@ -2377,7 +2447,7 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBNext(lb_I_Unknown* uk) {
 /*...e*/
 /*...slbErrCodes LB_STDCALL lbDatabasePanel\58\\58\lbDBPrev\40\lb_I_Unknown\42\ uk\41\:0:*/
 lbErrCodes LB_STDCALL lbDatabasePanel::lbDBPrev(lb_I_Unknown* uk) {
-	lbDBUpdate();
+	if (lbDBUpdate() != ERR_NONE) return ERR_UPDATE_FAILED;
 
 	lbErrCodes err = sampleQuery->previous();
 
@@ -2408,7 +2478,7 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBPrev(lb_I_Unknown* uk) {
 /*...e*/
 /*...slbErrCodes LB_STDCALL lbDatabasePanel\58\\58\lbDBLast\40\lb_I_Unknown\42\ uk\41\:0:*/
 lbErrCodes LB_STDCALL lbDatabasePanel::lbDBLast(lb_I_Unknown* uk) {
-	lbDBUpdate();
+	if (lbDBUpdate() != ERR_NONE) return ERR_UPDATE_FAILED;
 	lbDBClear();
 
 	lbErrCodes err = sampleQuery->last();
@@ -2433,9 +2503,10 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBLast(lb_I_Unknown* uk) {
 lbErrCodes LB_STDCALL lbDatabasePanel::lbDBAdd(lb_I_Unknown* uk) {
 	lbErrCodes errUpdate = ERR_NONE;
 	_CL_LOG << "lbDatabasePanel::lbDBAdd() called. Have query: " << getQuery() LOG_
+	UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
 
 	if (sampleQuery->isAdding() == 0) {
-		errUpdate = lbDBUpdate();
+		if (sampleQuery->dataFetched()) errUpdate = lbDBUpdate();
 
 		lbDBClear();
 
@@ -2458,6 +2529,9 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBAdd(lb_I_Unknown* uk) {
 		_CL_LOG << "Query is in add mode." LOG_
 	}
 	
+	char* foreignkey = NULL;
+	char* foreignkey_value = NULL;
+	
 /*...sPrefill data to hidden fields\46\ This would mostly be combo boxes\46\:8:*/
 	if (MasterDetailRelationData != NULL) {
 	
@@ -2474,9 +2548,14 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBAdd(lb_I_Unknown* uk) {
 			uk = MasterDetailRelationData->getElementAt(i);
 			key = MasterDetailRelationData->getKeyAt(i);
 			
+			
 			QI(uk, lb_I_String, value)
 			
 			_CL_LOG << "Set control '" << key->charrep() << "' with ref = " << key->getRefCount() << " to '" << value->charrep() << "'" LOG_
+
+			foreignkey = strdup(key->charrep());
+			foreignkey_value = strdup(value->charrep());
+
 			
 			wxWindow* w = FindWindowByName(wxString(key->charrep()), this);
 		
@@ -2629,12 +2708,63 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBAdd(lb_I_Unknown* uk) {
 		
 		if (allNaviDisabled == true) {
 			lbDBFirst(NULL);
+			lbDBClear();
 		} else {
-			if (lbDBLast(NULL) != ERR_NONE) {
-				_CL_LOG << "Move to last after updating failed." LOG_
-				lbDBFirst(NULL);
+			if (sampleQuery->dataFetched()) {
+				if (foreignkey != NULL) {
+					if (sampleQuery->isNull(foreignkey)) {
+						_CL_LOG << "Column for foreignkey binding is set to NULL. -- Wrong" LOG_
+						UAP_REQUEST(manager.getPtr(), lb_I_String, col)
+						UAP_REQUEST(manager.getPtr(), lb_I_String, val)
+						
+						*col = foreignkey;
+						*val = foreignkey_value;
+						
+						sampleQuery->setString(*&col, *&val);
+					} else {
+						_CL_LOG << "Column for foreignkey binding is not set to NULL." LOG_				
+					}
+				}
+				if (lbDBLast(NULL) != ERR_NONE) {
+					_CL_LOG << "Move to last after updating failed." LOG_
+					lbDBFirst(NULL);
+				} else {
+					lbDBClear();
+				}
 			} else {
-				_CL_LOG << "Move to last after updating succeeded." LOG_
+				if (foreignkey != NULL) {
+					if (sampleQuery->isNull(foreignkey)) {
+						_CL_LOG << "Column for foreignkey binding is set to NULL. -- Wrong" LOG_
+						UAP_REQUEST(manager.getPtr(), lb_I_String, col)
+						UAP_REQUEST(manager.getPtr(), lb_I_String, val)
+						
+						*col = foreignkey;
+						*val = foreignkey_value;
+						
+						sampleQuery->setString(*&col, *&val);
+					} else {
+						_CL_LOG << "Column for foreignkey binding is not set to NULL." LOG_				
+					}
+				}
+			
+				if (sampleQuery->update() == ERR_NONE) {
+					if (sampleQuery->last() == ERR_NONE) 
+						lbDBRead();
+					else
+						_LOG << "Error: Moving to new record failed." LOG_
+				} else {
+					if (meta->askYesNo("Error: Adding new record failed!\n\nDo you want to retry ?")) {
+						lbDBClear();
+						if (sampleQuery->update() != ERR_NONE) {
+							UAP_REQUEST(manager.getPtr(), lb_I_String, newTitle)
+							newTitle->setData(formName);
+							*newTitle += ": Add failed !";
+							_LOG << newTitle->charrep() LOG_
+							SetTitle(_trans(newTitle->charrep()));
+							_LOG << "Fatal: Adding a new record failed." LOG_
+						}
+					}
+				}
 			}
 		}
 	}

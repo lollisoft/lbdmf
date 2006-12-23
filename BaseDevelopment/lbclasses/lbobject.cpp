@@ -149,7 +149,7 @@ void LB_STDCALL lbLocale::translate(char ** text, char const * to_translate) {
 		
 		UAP(lb_I_Query, sampleQuery)
 			
-		sampleQuery = database->getQuery(0);
+			sampleQuery = database->getQuery(0);
 		
 		char buffer[800] = "";
 		
@@ -188,13 +188,13 @@ void LB_STDCALL lbLocale::translate(char ** text, char const * to_translate) {
 			
 			_LOG << "Translation for '" << to_translate << "' not found. Insert into database" LOG_
 				
-			buffer[0] = 0;
+				buffer[0] = 0;
 			
 			sprintf(buffer, "insert into translations (text, translated) values('%s', '%s')", to_translate, to_translate);
 			
 			/* Sybase SQL Anywhere 5.5 has problems with state 24000. Maybe an auto commit problem */
 			UAP(lb_I_Query, sampleQuery1)
-			sampleQuery1 = database->getQuery(0);
+				sampleQuery1 = database->getQuery(0);
 			sampleQuery1->skipFKCollecting();
 			sampleQuery1->query(buffer);
 			sampleQuery1->enableFKCollecting();
@@ -205,16 +205,53 @@ void LB_STDCALL lbLocale::translate(char ** text, char const * to_translate) {
 		sampleQuery->enableFKCollecting();
 	} else {
 		if (translations->selectText(to_translate, _lang) == false) {
-			// Insert a default
+			UAP_REQUEST(manager.getPtr(), lb_I_Database, database)
+			
+			_LOG << "Translate text with SQL statements..." LOG_
+			
+			database->init();
+			
+			char* lbDMFPasswd = getenv("lbDMFPasswd");
+			char* lbDMFUser   = getenv("lbDMFUser");
+			
+			if (!lbDMFUser) lbDMFUser = "dba";
+			if (!lbDMFPasswd) lbDMFPasswd = "trainres";
+			
+			if (database->connect("lbDMF", lbDMFUser, lbDMFPasswd) != ERR_NONE) {
+				char* temp = *text;
+				*text = (char*) malloc(strlen(to_translate)+1);
+				*text[0] = 0;
+				strcpy(*text, to_translate);
+				if (temp) free(temp);
+				return;
+			}
+			char buffer[800] = "";
 			char* temp = *text;
 			*text = (char*) malloc(strlen(to_translate) + 1);
 			*text[0] = 0;
 			if (temp) free(temp);
 			
+			_LOG << "Translation for '" << to_translate << "' not found. Insert into database" LOG_
+				
+				buffer[0] = 0;
+			
+			sprintf(buffer, "insert into translations (text, translated) values('%s', '%s')", to_translate, to_translate);
+			
+			/* Sybase SQL Anywhere 5.5 has problems with state 24000. Maybe an auto commit problem */
+			UAP(lb_I_Query, sampleQuery1)
+				sampleQuery1 = database->getQuery(0);
+			sampleQuery1->skipFKCollecting();
+			
+			//sampleQuery1->query(buffer);
+			sampleQuery1->enableFKCollecting();
+			
+			// Also store into translations object.
+			
+			//translations->addTranslation(to_translate, *text, _lang);
+			
 			strcpy(*text, to_translate);
-			_LOG << "Translation for '" << *text << "' not found." LOG_
 		} else {
-		        UAP_REQUEST(manager.getPtr(), lb_I_String, s1)
+			UAP_REQUEST(manager.getPtr(), lb_I_String, s1)
 			char* temp = *text;
 			
 			*s1 = translations->getTranslationTranslated();

@@ -252,6 +252,36 @@ public:
 	virtual bool	LB_STDCALL isNull(int pos) = 0;
 
 	/**
+	 * \brief NULL indicator for named column.
+	 */
+	virtual bool	LB_STDCALL isNull(char const * name) = 0;
+
+	/**
+	 * \brief NULL indicator for pos column.
+	 */
+	virtual bool	LB_STDCALL isNullable(int pos) = 0;
+
+	/**
+	 * \brief NULL indicator for named column.
+	 */
+	virtual bool	LB_STDCALL isNullable(char const * name) = 0;
+
+	/**
+	 * \brief NULL indicator for pos column.
+	 */
+	virtual bool	LB_STDCALL setNull(int pos) = 0;
+
+	/**
+	 * \brief NULL indicator for named column.
+	 */
+	virtual bool	LB_STDCALL setNull(char const * name) = 0;
+	
+	/**
+	 * \brief Returns false if query is not in any valid cursor position.
+	 */	
+	virtual bool	LB_STDCALL dataFetched() = 0;
+
+	/**
 	 * \brief Supported column types
 	 */
 	enum lbDBColumnTypes {
@@ -419,7 +449,17 @@ public:
 	/**
 	 * \brief Indicates NULL data in the column.
 	 */
+	virtual bool LB_STDCALL isNullable() = 0;
+	
+	/**
+	 * \brief Indicates NULL data in the column.
+	 */
 	virtual bool LB_STDCALL isNull() = 0;
+	
+	/**
+	 * \brief Set NULL data in the column.
+	 */
+	virtual bool LB_STDCALL setNull() = 0;
 	
 	/**
 	 * \brief Type of the column.
@@ -508,16 +548,28 @@ public:
 	 * \param q The query.
 	 * \param column The number of the column to bind.
 	 */
-	virtual lbErrCodes   LB_STDCALL bindColumn(lb_I_Query* q, int column, bool ro) = 0;
+	virtual lbErrCodes	LB_STDCALL bindColumn(lb_I_Query* q, int column, bool ro) = 0;
 
-	virtual void	     LB_STDCALL unbindReadonlyColumns() = 0;	
+	virtual void		LB_STDCALL bindNullColumn() = 0;
+
+	virtual void		LB_STDCALL unbindReadonlyColumns() = 0;	
 	
-	virtual void	     LB_STDCALL rebindReadonlyColumns() = 0;	
+	virtual void		LB_STDCALL rebindReadonlyColumns() = 0;	
 
 	/**
 	 * \brief Rebind column.
 	 */
 	virtual void LB_STDCALL rebind() = 0;
+
+	/** \brief Returns true when data has been provided or column is set to NULL.
+	 */
+	virtual bool LB_STDCALL hasValidData() = 0;
+
+	/** \brief Invalidates all data.
+	 * This function is used indirectly on lbQuery::add() to mark data as invalid.
+	 * You have to either set a value or call setNull per column. 
+	 */
+	virtual void	LB_STDCALL invalidateData() = 0;
 
 protected:
 	/**
@@ -612,11 +664,40 @@ public:
 	 */
 	virtual lb_I_BoundColumn* LB_STDCALL getBoundColumn(int column) = 0;
 
+	/**
+	 * \brief Indicate those columns having NULL values.
+	 */
+	virtual void LB_STDCALL indicateNullValues() = 0;
+	
+	/**
+	 * \brief Set a specific column to be NULL.
+	 */
+	virtual bool LB_STDCALL setNull(int pos) = 0;
+
+	/**
+	 * \brief NULL indicator for pos column.
+	 */
+	virtual bool LB_STDCALL isNullable(int pos) = 0;
+
+	/**
+	 * \brief NULL indicator for named column.
+	 */
+	virtual bool LB_STDCALL isNullable(char const * name) = 0;
 
 	/**
 	 * \brief NULL indicator for pos column.
 	 */
 	virtual bool LB_STDCALL isNull(int pos) = 0;
+
+	/**
+	 * \brief NULL indicator for named column.
+	 */
+	virtual bool LB_STDCALL isNull(char const * name) = 0;
+
+	/**
+	 * \brief NULL indicator for named column.
+	 */
+	virtual bool LB_STDCALL setNull(char const * name) = 0;
 
 	/**
 	 * \brief Unbind readonly columns.
@@ -720,6 +801,16 @@ public:
 	 * Returns 1 if adding mode is active. Otherwise it returns 0.
 	 */
 	virtual int		LB_STDCALL getMode() = 0;
+	
+	/** \brief Returns true if all columns have valid data.
+	 */
+	virtual bool	LB_STDCALL hasValidData() = 0;
+	
+	/** \brief Invalidates all data.
+	 * This function is used on lbQuery::add() to mark data as invalid.
+	 * You have to either set a value or call setNull per column. 
+	 */
+	virtual void	LB_STDCALL invalidateData() = 0;
 };
 /*...e*/
 /*...sclass lb_I_MVC_View:0:*/

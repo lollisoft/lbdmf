@@ -86,7 +86,10 @@ extern "C" {
 #define CHECK_ROWSTAT() \
 	if (RowStat[0] == SQL_ROW_DELETED) { \
 		reopen(); \
-		if (haveData == false) return ERR_DB_NODATA; \
+		if (haveData == false) { \
+			_dataFetched = false; \
+			return ERR_DB_NODATA; \
+		} \
 	} \
 	if (RowStat[0] == SQL_ROW_NOROW) { \
 		if (retcode == SQL_NO_DATA) { \
@@ -170,7 +173,15 @@ public:
 	void		LB_STDCALL unbindReadonlyColumns();
 	void		LB_STDCALL rebindReadonlyColumns();
 
+	void		LB_STDCALL indicateNullValues();
+	bool		LB_STDCALL setNull(int pos);
+	bool		LB_STDCALL setNull(char const * name);
+
+	bool		LB_STDCALL isNullable(int pos);
+	bool		LB_STDCALL isNullable(char const * name);
 	bool		LB_STDCALL isNull(int pos);
+	bool		LB_STDCALL isNull(char const * name);
+
 	lb_I_Query::lbDBColumnTypes LB_STDCALL getColumnType(int pos);
 	lb_I_Query::lbDBColumnTypes LB_STDCALL getColumnType(char* name);
 	int 		LB_STDCALL getColumnIndex(char* name);
@@ -179,7 +190,11 @@ public:
 	bool		LB_STDCALL getReadonly(char* column);
 
 	void		LB_STDCALL rebind();
-			
+	
+	
+	bool		LB_STDCALL hasValidData();
+	void		LB_STDCALL invalidateData();
+		
 	int LB_STDCALL getArraySize() { return ArraySize; }
 
 private:
@@ -211,6 +226,7 @@ public:
 		cursor = 1;
 		haveData = false;
 		mode = 0;
+		_dataFetched = false;
 		_autoRefresh = false;
 
 		preparingFKColumns = 0;
@@ -275,10 +291,12 @@ public:
 
 	void LB_STDCALL skipPeeking() { peeking = false; }
 
-        /* Set the SQL query */
-        lbErrCodes LB_STDCALL query(char* q, bool bind);
+	/* Set the SQL query */
+	lbErrCodes LB_STDCALL query(char* q, bool bind);
         
-        lbErrCodes LB_STDCALL bind();
+	lbErrCodes LB_STDCALL bind();
+
+	bool LB_STDCALL dataFetched();
 
 	lbErrCodes LB_STDCALL add();
 	int LB_STDCALL isAdding() { return mode; }
@@ -317,7 +335,12 @@ public:
 	int 			LB_STDCALL getPKColumns();
 	lb_I_String* 		LB_STDCALL getPKColumn(int pos);
 
-	virtual bool		LB_STDCALL isNull(int pos);
+	bool		LB_STDCALL isNullable(int pos);
+	bool		LB_STDCALL isNullable(char const * name);
+	bool		LB_STDCALL isNull(int pos);
+	bool		LB_STDCALL isNull(char const * name);
+	bool		LB_STDCALL setNull(int pos);
+	bool		LB_STDCALL setNull(char const * name);
 
 	virtual lb_I_Query::lbDBColumnTypes LB_STDCALL getColumnType(int pos);
 	virtual lb_I_Query::lbDBColumnTypes LB_STDCALL getColumnType(char* name);
@@ -374,8 +397,14 @@ public:
 #endif
 
 private:
-	int	cursor;
+	int		cursor;
+
+	/// If any function such as first or next has been successfully called.
+	bool	_dataFetched;
+	
+	/// Indicates a look forward to indicate if any more data is available.
 	bool 	peeking;
+	
 	bool	haveData;
 	HENV    henv;
 	HDBC    hdbc;
@@ -383,15 +412,15 @@ private:
 	HSTMT   hupdatestmt;
 	RETCODE retcode;
 	char    szSql[1000];
-	int	databound;
+	int		databound;
 	int     firstfetched;
-	int	_readonly; // readonly = 1, else = 0
-	bool _autoRefresh;
-	int	mode;  // insert = 1, select = 0
+	int		_readonly; // readonly = 1, else = 0
+	bool	_autoRefresh;
+	int		mode;  // insert = 1, select = 0
 //	char* lpszTable;
 
-	static int     skipFKCollections;
-	int	preparingFKColumns;
+	static	int     skipFKCollections;
+	int		preparingFKColumns;
 	
 	// Number of columns for the query
 	SQLSMALLINT cols;
@@ -432,12 +461,18 @@ public:
 	lbBoundColumn() {
 		ref = STARTREF;
 		bound = 0;
-		cbBufferLength = 0;
 		buffer = NULL;
 		//colName = NULL;
 		ColumnSize = 0;
 		rows = 2;
+		mode = 0;
+		cbBufferLength = new long[rows];
+		cbBufferLength[0] = 0;
+		cbBufferLength[1] = 0;
 		isReadonly = true;
+		// Binding a column may allow this.
+		_isNullable = false;
+		_hasValidData = false;
 		columnName = NULL;
 	}
 	
@@ -463,6 +498,8 @@ public:
 				break;
 		}
 		
+		if (cbBufferLength != NULL) delete[] cbBufferLength;
+		
 		if ((bound != 0) && (buffer != NULL)) {
 			free(buffer);
 			buffer = NULL;
@@ -481,7 +518,9 @@ public:
 
 
 
+	virtual bool LB_STDCALL isNullable();
 	virtual bool LB_STDCALL isNull();
+	virtual bool LB_STDCALL setNull();
 	virtual lb_I_Query::lbDBColumnTypes LB_STDCALL getType();
 	virtual lb_I_Unknown* LB_STDCALL getData();
 	virtual lbErrCodes LB_STDCALL getAsString(lb_I_String* result, int asParameter = 0);
@@ -495,13 +534,18 @@ public:
 
 	lb_I_String* LB_STDCALL getColumnName();
 
-	lbErrCodes LB_STDCALL prepareBoundColumn(lb_I_Query* q, int column);
-	lbErrCodes LB_STDCALL bindColumn(lb_I_Query* q, int column, bool ro);
+	lbErrCodes	LB_STDCALL prepareBoundColumn(lb_I_Query* q, int column);
+	lbErrCodes	LB_STDCALL bindColumn(lb_I_Query* q, int column, bool ro);
+	void		LB_STDCALL bindNullColumn();
+
 
 	void	   LB_STDCALL unbindReadonlyColumns();
 	void	   LB_STDCALL rebindReadonlyColumns();
 
 	void	   LB_STDCALL rebind();
+	
+	bool	LB_STDCALL hasValidData();
+	void	LB_STDCALL invalidateData();
 	
 protected:
 
@@ -535,8 +579,11 @@ protected:
 
 	char*		columnName;
 
-	int		bound;
+	int			bound;
+	int			mode;
 	bool		isReadonly;
+	bool		_isNullable;
+	bool		_hasValidData;
 	SQLSMALLINT     _DataType;
 	int 		_column;
 	void*		buffer;
@@ -549,7 +596,7 @@ protected:
 	 * This normally contains the buffer length of the filled data. If there is NULL data,
 	 * it will indicated by SQL_NULL_DATA.
 	 */
-	long		cbBufferLength;
+	long*		cbBufferLength;
 	SQLUINTEGER     ColumnSize; //new (long);
 	int		rows;
 	HSTMT 		hstmt;
@@ -607,11 +654,14 @@ lbErrCodes      LB_STDCALL lbBoundColumns::setBoundColumns(lb_I_Container* bc) {
 }
 /*...e*/
 
-/*...sbool LB_STDCALL lbBoundColumns\58\\58\isNull\40\int pos\41\:0:*/
-bool LB_STDCALL lbBoundColumns::isNull(int pos) {
+bool LB_STDCALL lbBoundColumns::isNull(char const * name) {
+	int pos = getColumnIndex((char*) name);
+	return isNull(pos);
+}
 
+bool LB_STDCALL lbBoundColumns::isNull(int pos) {
 	lbErrCodes err = ERR_NONE;
-	if (boundColumns != NULL) {
+	if ((boundColumns != NULL) && (pos > -1)) {
 		UAP_REQUEST(manager.getPtr(), lb_I_Integer, integerKey) 
 		integerKey->setData(pos);
 		UAP(lb_I_Unknown, ukdata)
@@ -631,7 +681,35 @@ bool LB_STDCALL lbBoundColumns::isNull(int pos) {
 	// What to answer here ??
 	return false;
 }
-/*...e*/
+
+bool LB_STDCALL lbBoundColumns::isNullable(char const * name) {
+	int pos = getColumnIndex((char*) name);
+	return isNullable(pos);
+}
+
+bool LB_STDCALL lbBoundColumns::isNullable(int pos) {
+	lbErrCodes err = ERR_NONE;
+	if ((boundColumns != NULL) && (pos > -1)) {
+		UAP_REQUEST(manager.getPtr(), lb_I_Integer, integerKey) 
+		integerKey->setData(pos);
+		UAP(lb_I_Unknown, ukdata)
+		UAP(lb_I_KeyBase, key)
+		
+		QI(integerKey, lb_I_KeyBase, key)
+
+		ukdata = boundColumns->getElement(&key);
+		if (ukdata == NULL) printf("NULL pointer!\n");
+
+		UAP(lb_I_BoundColumn, bc)
+		lbErrCodes err = ukdata->queryInterface("lb_I_BoundColumn", (void**) &bc, __FILE__, __LINE__);
+
+		return bc->isNullable();
+	}
+
+	// What to answer here ??
+	return false;
+}
+
 /*...svoid LB_STDCALL lbBoundColumns\58\\58\rebind\40\\41\:0:*/
 void LB_STDCALL lbBoundColumns::rebind() {
 	lbErrCodes err = ERR_NONE;
@@ -650,6 +728,90 @@ void LB_STDCALL lbBoundColumns::rebind() {
 	}
 }
 /*...e*/
+
+void LB_STDCALL lbBoundColumns::indicateNullValues() {
+	lbErrCodes err = ERR_NONE;
+	
+	if (boundColumns != NULL) {
+		while (boundColumns->hasMoreElements() == 1) {
+			UAP(lb_I_Unknown, uk)
+			UAP(lb_I_BoundColumn, bc)
+			
+			uk = boundColumns->nextElement();
+			
+			QI(uk, lb_I_BoundColumn, bc)
+			
+			if (bc->isNull()) {
+				bc->bindNullColumn();
+			}
+		}
+	}
+}
+
+void	LB_STDCALL lbBoundColumns::invalidateData() {
+	lbErrCodes err = ERR_NONE;
+	
+	while ((boundColumns != NULL) && (boundColumns->hasMoreElements())) {
+		UAP(lb_I_Unknown, uk)
+		UAP(lb_I_BoundColumn, bc)
+		uk = boundColumns->nextElement();
+		
+		QI(uk, lb_I_BoundColumn, bc)
+		
+		if (bc != NULL) {
+			bc->invalidateData();
+		}
+	}
+}
+
+bool	LB_STDCALL lbBoundColumns::hasValidData() {
+	lbErrCodes err = ERR_NONE;
+	
+	while ((boundColumns != NULL) && (boundColumns->hasMoreElements())) {
+		UAP(lb_I_Unknown, uk)
+		UAP(lb_I_BoundColumn, bc)
+		uk = boundColumns->nextElement();
+		
+		QI(uk, lb_I_BoundColumn, bc)
+		
+		if (bc != NULL) {
+			if (!bc->hasValidData()) return false;
+		}
+	}
+	
+	return true;
+}
+
+
+bool LB_STDCALL lbBoundColumns::setNull(char const * name) {
+	lbErrCodes err = ERR_NONE;
+	
+	int pos = getColumnIndex((char*) name);
+
+	return setNull(pos);
+}
+
+bool LB_STDCALL lbBoundColumns::setNull(int pos) {
+	lbErrCodes err = ERR_NONE;
+	if ((boundColumns != NULL) && (pos > -1)) {
+		UAP_REQUEST(manager.getPtr(), lb_I_Integer, integerKey) 
+		integerKey->setData(pos);
+		UAP(lb_I_Unknown, ukdata)
+		UAP(lb_I_KeyBase, key)
+		
+		QI(integerKey, lb_I_KeyBase, key)
+
+		ukdata = boundColumns->getElement(&key);
+		if (ukdata == NULL) printf("NULL pointer!\n");
+
+		UAP(lb_I_BoundColumn, bc)
+		lbErrCodes err = ukdata->queryInterface("lb_I_BoundColumn", (void**) &bc, __FILE__, __LINE__);
+
+		bc->setNull();
+	}
+	return true;
+}
+
 /*...svoid LB_STDCALL lbBoundColumns\58\\58\unbindReadonlyColumns\40\\41\:0:*/
 void LB_STDCALL lbBoundColumns::unbindReadonlyColumns() {
 	lbErrCodes err = ERR_NONE;
@@ -1424,9 +1586,15 @@ char* LB_STDCALL lbQuery::addWhereClause(const char* query, char* where) {
 	return strdup("ERROR: Not implemented.");
 }
 
+bool LB_STDCALL lbQuery::dataFetched() {
+	return _dataFetched;
+}
+
 /*...slbErrCodes LB_STDCALL lbQuery\58\\58\query\40\char\42\ q\44\ bool bind\41\:0:*/
 lbErrCodes LB_STDCALL lbQuery::query(char* q, bool bind) {
 	lbBoundColumns* boundcols = NULL;
+
+	_dataFetched = false;
 
     if (q == NULL) {
 		_LOG << "Error: Have got a NULL pointer for the query to execute!" LOG_
@@ -2165,60 +2333,63 @@ void LB_STDCALL lbQuery::prepareFKList() {
 
 	    sprintf(buffer, "select PKTable, PKName from ForeignKey_VisibleData_Mapping where FKTable = '%s' and FKName = '%s'", table, column);
 
-	    _CL_VERBOSE << "Query: " << buffer LOG_
+	    _CL_LOG << "Query: " << buffer LOG_
 
 	    q = db->getQuery(0);
 
 	    skipFKCollections = 1;
 	    err = q->query(buffer);
 	    skipFKCollections = 0;
-	    
-	    err = q->first();
 
-	    if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
-		UAP_REQUEST(manager.getPtr(), lb_I_String, FKName)
-	        UAP_REQUEST(manager.getPtr(), lb_I_String, PKTable)
-	        UAP_REQUEST(manager.getPtr(), lb_I_String, PKName)
-		UAP_REQUEST(manager.getPtr(), lb_I_String, PKTable_PKName)
-	
-		UAP_REQUEST(manager.getPtr(), lb_I_String, PKColumn)
-	
-		PKTable = q->getAsString(1);
-		PKName = q->getAsString(2);
-		
-	        FKName->setData(column);
-		
-		UAP(lb_I_Unknown, uk_PKTable)
-		UAP(lb_I_KeyBase, key_FKName)
+	    if ((err != ERR_NONE) || (err != WARN_DB_NODATA)) {
+				_CL_VERBOSE << "No foreign key to primary data mapping found." LOG_
+		} else {
+			err = q->first();
 
-		UAP(lb_I_Unknown, uk_FKName)
-		UAP(lb_I_KeyBase, key_PKTable_PKName)
+			if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
+				UAP_REQUEST(manager.getPtr(), lb_I_String, FKName)
+				UAP_REQUEST(manager.getPtr(), lb_I_String, PKTable)
+				UAP_REQUEST(manager.getPtr(), lb_I_String, PKName)
+				UAP_REQUEST(manager.getPtr(), lb_I_String, PKTable_PKName)
+	
+				UAP_REQUEST(manager.getPtr(), lb_I_String, PKColumn)
+	
+				PKTable = q->getAsString(1);
+				PKName = q->getAsString(2);
+		
+				FKName->setData(column);
+		
+				UAP(lb_I_Unknown, uk_PKTable)
+				UAP(lb_I_KeyBase, key_FKName)
+
+				UAP(lb_I_Unknown, uk_FKName)
+				UAP(lb_I_KeyBase, key_PKTable_PKName)
 	      
-	        QI(FKName, lb_I_KeyBase, key_FKName)
-	        QI(PKTable, lb_I_Unknown, uk_PKTable)
+				QI(FKName, lb_I_KeyBase, key_FKName)
+				QI(PKTable, lb_I_Unknown, uk_PKTable)
 
 
-		if (isVerbose())
-		printf("%-s ( %-s ) <-- %-s ( %-s )\n", PKTable->charrep(), PKName->charrep(), table, FKName->charrep());
+				if (isVerbose())
+					printf("%-s ( %-s ) <-- %-s ( %-s )\n", PKTable->charrep(), PKName->charrep(), table, FKName->charrep());
 
-	        ForeignColumns->insert(&uk_PKTable, &key_FKName);
+				ForeignColumns->insert(&uk_PKTable, &key_FKName);
 	        
-	        *PKTable_PKName = PKTable->charrep();
-	        PKColumn = getPKColumn(FKName->charrep());
-	        *PKTable_PKName += PKColumn->charrep();
-	        
-	        QI(PKTable_PKName, lb_I_KeyBase, key_PKTable_PKName)
-	        QI(FKName, lb_I_Unknown, uk_FKName)
+				*PKTable_PKName = PKTable->charrep();
+				PKColumn = getPKColumn(FKName->charrep());
+				*PKTable_PKName += PKColumn->charrep();
 
-		_CL_VERBOSE << "Insert map for '" << key_PKTable_PKName->charrep() << 
-		"' to '" << FKName->charrep() << "'" LOG_
+				QI(PKTable_PKName, lb_I_KeyBase, key_PKTable_PKName)
+				QI(FKName, lb_I_Unknown, uk_FKName)
 
-	        mapPKTable_PKColumns_To_FKName->insert(&uk_FKName, &key_PKTable_PKName);
+				_CL_VERBOSE << "Insert map for '" << key_PKTable_PKName->charrep() << 
+					"' to '" << FKName->charrep() << "'" LOG_
+
+				mapPKTable_PKColumns_To_FKName->insert(&uk_FKName, &key_PKTable_PKName);
 	        
-	    } else {
-	    	_CL_VERBOSE << "No foreign key to primary data mapping found." LOG_
-	    }
-	    
+			} else {
+				_CL_VERBOSE << "No foreign key to primary data mapping found." LOG_
+			}
+		}	    
 	    free(column);
 	}
 /*...e*/
@@ -2356,11 +2527,31 @@ lb_I_String* LB_STDCALL lbQuery::getPKColumn(int pos) {
 	return NULL;
 }
 /*...e*/
-/*...sbool LB_STDCALL lbQuery\58\\58\isNull\40\int pos\41\:0:*/
+
+bool LB_STDCALL lbQuery::isNullable(int pos) {
+	return boundColumns->isNullable(pos);
+}
+
+bool	LB_STDCALL lbQuery::isNullable(char const * name) {
+	return boundColumns->isNullable(name);
+}
+
 bool LB_STDCALL lbQuery::isNull(int pos) {
 	return boundColumns->isNull(pos);
 }
-/*...e*/
+
+bool	LB_STDCALL lbQuery::isNull(char const * name) {
+	return boundColumns->isNull(name);
+}
+
+bool	LB_STDCALL lbQuery::setNull(int pos) {
+	return boundColumns->setNull(pos);
+}
+
+bool	LB_STDCALL lbQuery::setNull(char const * name) {
+	return boundColumns->setNull(name);
+}
+
 /*...slb_I_Query\58\\58\lbDBColumnTypes LB_STDCALL lbQuery\58\\58\getColumnType\40\int pos\41\:0:*/
 lb_I_Query::lbDBColumnTypes LB_STDCALL lbQuery::getColumnType(int pos) {
 	return boundColumns->getColumnType(pos);
@@ -2632,64 +2823,81 @@ lbErrCodes LB_STDCALL lbQuery::absolute(int pos) {
 
 /*...slbErrCodes LB_STDCALL lbQuery\58\\58\first\40\\41\:0:*/
 lbErrCodes LB_STDCALL lbQuery::first() {
-        UWORD   RowStat[20];
-        UDWORD  RowsFetched = 0;
-
-	cursor = 1;
-
-	memset(&RowStat[0], 0, sizeof(UWORD)*20);
-
-        // Indicate, that data must prebound to a buffer
-        databound = 0;
-
-	fetchstatus = -1;
-
-#ifndef USE_FETCH_SCROLL
-        retcode = SQLExtendedFetch(hstmt, SQL_FETCH_FIRST, 0, &RowsFetched, &RowStat[0]);
-
-	CHECK_ROWSTAT()
+	UWORD   RowStat[20];
+	UDWORD  RowsFetched = 0;
 	
+	cursor = 1;
+	
+	memset(&RowStat[0], 0, sizeof(UWORD)*20);
+	
+	// Indicate, that data must prebound to a buffer
+	databound = 0;
+	
+	fetchstatus = -1;
+	
+#ifndef USE_FETCH_SCROLL
+	retcode = SQLExtendedFetch(hstmt, SQL_FETCH_FIRST, 0, &RowsFetched, &RowStat[0]);
+	
+	CHECK_ROWSTAT()
+		
 	if (peeking == false) {
-	        return (retcode == SQL_NO_DATA) ? ERR_DB_NODATA : ERR_NONE;
+		if (retcode == SQL_NO_DATA) {
+			_dataFetched = false;
+			return ERR_DB_NODATA;
+		} else {
+			_dataFetched = true;
+			return ERR_NONE;
+		}
 	}
 #endif
-
+	
 #ifdef USE_FETCH_SCROLL
 	retcode = SQLFetchScroll(hstmt, SQL_FETCH_FIRST, 0);
 #endif
-	if (retcode == SQL_NO_DATA) return ERR_DB_NODATA;
-        if (retcode == SQL_ERROR || retcode == SQL_SUCCESS_WITH_INFO) {
-                _LOG << "lbQuery::first(): Error while fetching next row" LOG_
-                dbError("SQLExtendedFetch()", hstmt);
-                
-                // Unsave !!
-                if (retcode == SQL_SUCCESS_WITH_INFO) return ERR_NONE;
-                
-                return ERR_DB_FETCHFIRST;
-        }
-		retcode = SQLExtendedFetch(hstmt, SQL_FETCH_NEXT, 0, &RowsFetched, &RowStat[0]);
+	if (retcode == SQL_NO_DATA) {
+		_dataFetched = false;
+		return ERR_DB_NODATA;
+	}
+	
+	if (retcode == SQL_ERROR || retcode == SQL_SUCCESS_WITH_INFO) {
+		_LOG << "lbQuery::first(): Error while fetching next row" LOG_
+		dbError("SQLExtendedFetch()", hstmt);
 		
-		if (retcode == SQL_NO_DATA) {
-			retcode = SQLExtendedFetch(hstmt, SQL_FETCH_PREV, 0, &RowsFetched, &RowStat[0]);
-			
-			if (retcode == SQL_NO_DATA) {
-				_LOG << "FATAL ERROR: Resultset indication for no data has been failed!" LOG_
-				fetchstatus = 2;
-				return ERR_DB_NODATA;
-			}
-			fetchstatus = 1;
-			return WARN_DB_NODATA;
-		} else {
-			retcode = SQLExtendedFetch(hstmt, SQL_FETCH_PREV, 0, &RowsFetched, &RowStat[0]);
-			
-			if (retcode == SQL_NO_DATA) {
-				_LOG << "FATAL ERROR: Resultset indication for no data has been failed!" LOG_
-				fetchstatus = 2;
-				return ERR_DB_NODATA;
-			}
-			fetchstatus = 0;
+		// Unsave !!
+		if (retcode == SQL_SUCCESS_WITH_INFO) {
+			_dataFetched = true;
 			return ERR_NONE;
 		}
+		_dataFetched = false;
+		return ERR_DB_FETCHFIRST;
+	}
+	retcode = SQLExtendedFetch(hstmt, SQL_FETCH_NEXT, 0, &RowsFetched, &RowStat[0]);
+	
+	if (retcode == SQL_NO_DATA) {
+		retcode = SQLExtendedFetch(hstmt, SQL_FETCH_PREV, 0, &RowsFetched, &RowStat[0]);
+		
+		if (retcode == SQL_NO_DATA) {
+			_LOG << "FATAL ERROR: Resultset indication for no data has been failed!" LOG_
+			fetchstatus = 2;
+			_dataFetched = false;
+			return ERR_DB_NODATA;
+		}
+		fetchstatus = 1;
+		_dataFetched = true;
+		return WARN_DB_NODATA;
+	} else {
+		retcode = SQLExtendedFetch(hstmt, SQL_FETCH_PREV, 0, &RowsFetched, &RowStat[0]);
+		
+		if (retcode == SQL_NO_DATA) {
+			_LOG << "FATAL ERROR: Resultset indication for no data has been failed!" LOG_
+			fetchstatus = 2;
+			_dataFetched = false;
+			return ERR_DB_NODATA;
+		}
+		fetchstatus = 0;
+		_dataFetched = true;
+		return ERR_NONE;
+	}
 }
 /*...e*/
 /*...slbErrCodes LB_STDCALL lbQuery\58\\58\next\40\\41\:0:*/
@@ -2697,27 +2905,33 @@ lbErrCodes LB_STDCALL lbQuery::next() {
 	UWORD   RowStat[20];
 	UDWORD  RowsFetched = 0;
 	databound = 0; // Indicate, that data must prebound to a buffer
-
+	
 	memset(&RowStat[0], 0, sizeof(UWORD)*20);
-
+	
 #ifndef USE_FETCH_SCROLL
 	retcode = SQLExtendedFetch(hstmt, SQL_FETCH_NEXT, 0, &RowsFetched, &RowStat[0]);
-
+	
 	CHECK_ROWSTAT()
-
-	if (peeking == false) {
-		if (retcode == SQL_SUCCESS) cursor++;
-		return (retcode == SQL_NO_DATA) ? ERR_DB_NODATA : ERR_NONE;
-	}
+		
+		if (peeking == false) {
+			if (retcode == SQL_SUCCESS) cursor++;
+			if (retcode == SQL_NO_DATA) {
+				_dataFetched = false;
+				return ERR_DB_NODATA;
+			} else {
+				_dataFetched = true;
+				return ERR_NONE;
+			}
+		}
 	
 	if (retcode == SQL_NO_DATA) {
 		retcode = SQLExtendedFetch(hstmt, SQL_FETCH_PREV, 0, &RowsFetched, &RowStat[0]);
-		
-		fetchstatus = 1;
+		_dataFetched = false;		
+		fetchstatus = 2; /// \todo Why was this 1 ?
 		return ERR_DB_NODATA; // Really no data
 	} else {
 		if (retcode == SQL_SUCCESS) cursor++;
-	
+		
 		retcode = SQLExtendedFetch(hstmt, SQL_FETCH_NEXT, 0, &RowsFetched, &RowStat[0]);
 		
 		if (retcode == SQL_NO_DATA) {
@@ -2726,9 +2940,11 @@ lbErrCodes LB_STDCALL lbQuery::next() {
 			if (retcode == SQL_NO_DATA) {
 				_LOG << "FATAL ERROR: Resultset indication for no data has been failed!" LOG_
 				fetchstatus = 2;
+				_dataFetched = false;
 				return ERR_DB_NODATA; // ERROR: Go back to intented row failed after peek
 			}
 			fetchstatus = 1;
+			_dataFetched = true;
 			return WARN_DB_NODATA; // Warn for no more data
 		} else {
 			retcode = SQLExtendedFetch(hstmt, SQL_FETCH_PREV, 0, &RowsFetched, &RowStat[0]);
@@ -2736,14 +2952,16 @@ lbErrCodes LB_STDCALL lbQuery::next() {
 			if (retcode == SQL_NO_DATA) {
 				_LOG << "FATAL ERROR: Resultset indication for no data has been failed!" LOG_
 				fetchstatus = 2;
+				_dataFetched = false;
 				return ERR_DB_NODATA;
 			}
 			fetchstatus = 0;
+			_dataFetched = true;
 			return ERR_NONE;
 		}
 	}
 #endif
-
+	
 #ifdef USE_FETCH_SCROLL
 	retcode = SQLFetchScroll(hstmt, SQL_FETCH_NEXT, 0);
 #endif
@@ -2751,28 +2969,34 @@ lbErrCodes LB_STDCALL lbQuery::next() {
 /*...e*/
 /*...slbErrCodes LB_STDCALL lbQuery\58\\58\previous\40\\41\:0:*/
 lbErrCodes LB_STDCALL lbQuery::previous() {
-        UWORD   RowStat[20];
-        UDWORD  RowsFetched = 0;
-
+	UWORD   RowStat[20];
+	UDWORD  RowsFetched = 0;
+	
 	memset(&RowStat[0], 0, sizeof(UWORD)*20);
-
-        // Indicate, that data must prebound to a buffer
-        databound = 0;
-
+	
+	// Indicate, that data must prebound to a buffer
+	databound = 0;
+	
 #ifndef USE_FETCH_SCROLL
-        retcode = SQLExtendedFetch(hstmt, SQL_FETCH_PREV, 0, &RowsFetched, &RowStat[0]);
-
+	retcode = SQLExtendedFetch(hstmt, SQL_FETCH_PREV, 0, &RowsFetched, &RowStat[0]);
+	
 	CHECK_ROWSTAT()
-
-	if (peeking == false) {
-		if (retcode == SQL_SUCCESS) cursor--;
-	        return (retcode == SQL_NO_DATA) ? ERR_DB_NODATA : ERR_NONE;
-	}
-
+		
+		if (peeking == false) {
+			if (retcode == SQL_SUCCESS) cursor--;
+			if (retcode == SQL_NO_DATA) {
+				_dataFetched = false;
+				return ERR_DB_NODATA;
+			} else {
+				_dataFetched = true;
+				return ERR_NONE;
+			}
+		}
+	
 	if (retcode == SQL_NO_DATA) {
 		retcode = SQLExtendedFetch(hstmt, SQL_FETCH_NEXT, 0, &RowsFetched, &RowStat[0]);
-		
-		fetchstatus = -1;
+		_dataFetched = false;
+		fetchstatus = -2; /// \todo Why was this -1 ?
 		return ERR_DB_NODATA;
 	} else {
 		if (retcode == SQL_SUCCESS) cursor--;
@@ -2784,9 +3008,11 @@ lbErrCodes LB_STDCALL lbQuery::previous() {
 			if (retcode == SQL_NO_DATA) {
 				_LOG << "FATAL ERROR: Resultset indication for no data has been failed!" LOG_
 				fetchstatus = -2;
+				_dataFetched = false;
 				return ERR_DB_NODATA;
 			}
 			fetchstatus = -1;
+			_dataFetched = true;
 			return WARN_DB_NODATA;
 		} else {
 			retcode = SQLExtendedFetch(hstmt, SQL_FETCH_NEXT, 0, &RowsFetched, &RowStat[0]);
@@ -2794,14 +3020,16 @@ lbErrCodes LB_STDCALL lbQuery::previous() {
 			if (retcode == SQL_NO_DATA) {
 				_LOG << "FATAL ERROR: Resultset indication for no data has been failed!" LOG_
 				fetchstatus = -2;
+				_dataFetched = false;
 				return ERR_DB_NODATA;
 			}
 			fetchstatus = 0;
+			_dataFetched = true;
 			return ERR_NONE;
 		}
 	}
 #endif
-
+	
 #ifdef USE_FETCH_SCROLL
 	retcode = SQLFetchScroll(hstmt, SQL_FETCH_PREV, 0);
 #endif
@@ -2809,64 +3037,79 @@ lbErrCodes LB_STDCALL lbQuery::previous() {
 /*...e*/
 /*...slbErrCodes LB_STDCALL lbQuery\58\\58\last\40\\41\:0:*/
 lbErrCodes LB_STDCALL lbQuery::last() {
-        UWORD   RowStat[20];
-        UDWORD  RowsFetched = 0;
-
+	UWORD   RowStat[20];
+	UDWORD  RowsFetched = 0;
+	
 	cursor = -1;
-
+	
 	memset(&RowStat[0], sizeof(UWORD)*20, 0);
-
-        // Indicate, that data must prebound to a buffer
-        databound = 0;
-
+	
+	// Indicate, that data must prebound to a buffer
+	databound = 0;
+	
 	fetchstatus = 1;
-        
+	
 #ifndef USE_FETCH_SCROLL
-        retcode = SQLExtendedFetch(hstmt, SQL_FETCH_LAST, 0, &RowsFetched, &RowStat[0]);
-        
-        CHECK_ROWSTAT()
-
-	if (peeking == false) {
-	        return (retcode == SQL_NO_DATA) ? ERR_DB_NODATA : ERR_NONE;
-	}
-        
+	retcode = SQLExtendedFetch(hstmt, SQL_FETCH_LAST, 0, &RowsFetched, &RowStat[0]);
+	
+	CHECK_ROWSTAT()
+		
+		if (peeking == false) {
+			if (retcode == SQL_NO_DATA) {
+				_dataFetched = false;
+				return ERR_DB_NODATA;
+			} else {
+				_dataFetched = true;
+				return ERR_NONE;
+			}
+		}
+	
 #endif
 #ifdef USE_FETCH_SCROLL
 	retcode = SQLFetchScroll(hstmt, SQL_FETCH_LAST, 0);
 #endif
 	if (retcode == SQL_NO_DATA) {
-	        return ERR_DB_NODATA;
+		_dataFetched = false;
+		return ERR_DB_NODATA;
 	}
-        if (retcode == SQL_ERROR || retcode == SQL_SUCCESS_WITH_INFO) {
-                _LOG << "lbQuery::last(): Error while fetching next row" LOG_
-                dbError("SQLExtendedFetch()", hstmt);
+	if (retcode == SQL_ERROR || retcode == SQL_SUCCESS_WITH_INFO) {
+		_LOG << "lbQuery::last(): Error while fetching next row" LOG_
+		dbError("SQLExtendedFetch()", hstmt);
 		// Unsave !!
-		if (retcode == SQL_SUCCESS_WITH_INFO) return ERR_NONE;
-                return ERR_DB_FETCHLAST;
-        }
-		retcode = SQLExtendedFetch(hstmt, SQL_FETCH_PREV, 0, &RowsFetched, &RowStat[0]);
-		
-		if (retcode == SQL_NO_DATA) {
-			retcode = SQLExtendedFetch(hstmt, SQL_FETCH_NEXT, 0, &RowsFetched, &RowStat[0]);
-			
-			if (retcode == SQL_NO_DATA) {
-				_LOG << "FATAL ERROR: Resultset indication for no data has been failed!" LOG_
-				fetchstatus = -2;
-				return ERR_DB_NODATA;
-			}
-			fetchstatus = -1;
-			return WARN_DB_NODATA;
-		} else {
-			retcode = SQLExtendedFetch(hstmt, SQL_FETCH_NEXT, 0, &RowsFetched, &RowStat[0]);
-			
-			if (retcode == SQL_NO_DATA) {
-				_LOG << "FATAL ERROR: Resultset indication for no data has been failed!" LOG_
-				fetchstatus = -2;
-				return ERR_DB_NODATA;
-			}
-			fetchstatus = 0;
+		if (retcode == SQL_SUCCESS_WITH_INFO) {
+			_dataFetched = true;
 			return ERR_NONE;
 		}
+		_dataFetched = false;
+		return ERR_DB_FETCHLAST;
+	}
+	retcode = SQLExtendedFetch(hstmt, SQL_FETCH_PREV, 0, &RowsFetched, &RowStat[0]);
+	
+	if (retcode == SQL_NO_DATA) {
+		retcode = SQLExtendedFetch(hstmt, SQL_FETCH_NEXT, 0, &RowsFetched, &RowStat[0]);
+		
+		if (retcode == SQL_NO_DATA) {
+			_LOG << "FATAL ERROR: Resultset indication for no data has been failed!" LOG_
+			fetchstatus = -2;
+			_dataFetched = false;
+			return ERR_DB_NODATA;
+		}
+		fetchstatus = -1;
+		_dataFetched = true;
+		return WARN_DB_NODATA;
+	} else {
+		retcode = SQLExtendedFetch(hstmt, SQL_FETCH_NEXT, 0, &RowsFetched, &RowStat[0]);
+		
+		if (retcode == SQL_NO_DATA) {
+			_LOG << "FATAL ERROR: Resultset indication for no data has been failed!" LOG_
+			fetchstatus = -2;
+			_dataFetched = false;
+			return ERR_DB_NODATA;
+		}
+		fetchstatus = 0;
+		_dataFetched = true;
+		return ERR_NONE;
+	}
 }
 /*...e*/
 /*...slbErrCodes LB_STDCALL lbQuery\58\\58\setString\40\lb_I_String\42\ columnName\44\ lb_I_String\42\ value\41\:0:*/
@@ -2888,6 +3131,8 @@ lbErrCodes LB_STDCALL lbQuery::add() {
 	if (_readonly == 1) return ERR_DB_READONLY;
 
 	mode = 1;
+
+	if (boundColumns != NULL) boundColumns->invalidateData();
 
 	return ERR_NONE;
 }
@@ -3008,18 +3253,29 @@ lbErrCodes LB_STDCALL lbQuery::update() {
 	char* CursorName = (char*) malloc(cbMAXSQL);
 	CursorName[0] = 0;
 
-	if (boundColumns != NULL) boundColumns->unbindReadonlyColumns();
-
+	if (boundColumns != NULL) {
+		boundColumns->indicateNullValues();
+		boundColumns->unbindReadonlyColumns();
+		
+		if ((mode == 1) && (!boundColumns->hasValidData())) {
+			_CL_LOG << "Error: Query has not got valid data to be added." LOG_
+			mode = 0;
+			free(CursorName);
+			return ERR_DB_UPDATEFAILED;
+		}
+	}
+	
 	if (mode == 1) {
+	
 		retcode = SQLSetPos(hstmt, 2, SQL_ADD, SQL_LOCK_NO_CHANGE);
 		
 		if (retcode != SQL_SUCCESS)
 		{
-		        dbError("SQLSetPos()", hstmt);
+		        //dbError("SQLSetPos()", hstmt);
 		        _LOG << "lbQuery::update(...) adding failed." LOG_
 		        
 		        if (boundColumns != NULL) boundColumns->rebindReadonlyColumns();
-		        
+				free(CursorName);
 		        return ERR_DB_UPDATEFAILED;
 		}
 
@@ -3115,6 +3371,7 @@ printf("Query is: '%s'\n", buffer);
 		{
 		        dbError("SQLExecDirect() for update", hupdatestmt);
 		        _LOG << "lbQuery::update(...) failed." LOG_
+				free(CursorName);
 		        return ERR_DB_UPDATEFAILED;
 		}
 
@@ -3127,8 +3384,10 @@ free(buffer);
 		
 		if (retcode == SQL_ERROR)
 		{
-		        dbError("SQLSetPos()", hstmt);
+		        //dbError("SQLSetPos()", hstmt);
 		        _LOG << "lbQuery::update(...) updating failed." LOG_
+
+				free(CursorName);
 		        
 		        if (boundColumns != NULL) boundColumns->rebindReadonlyColumns();
 		        
@@ -3175,8 +3434,40 @@ BEGIN_IMPLEMENT_LB_UNKNOWN(lbBoundColumn)
 END_IMPLEMENT_LB_UNKNOWN()
 
 bool LB_STDCALL lbBoundColumn::isNull() {
-	return (cbBufferLength == SQL_NULL_DATA);
+	long i = 0;
+	if (mode == 1) {
+		i = cbBufferLength[1];
+		if (i == SQL_NULL_DATA)
+			return true;
+		else
+			return false;
+	} else {
+		i = cbBufferLength[0];
+		if (i == SQL_NULL_DATA)
+			return true;
+		else
+			return false;
+	}
 }
+
+bool LB_STDCALL lbBoundColumn::isNullable() {
+	return _isNullable;
+}
+
+bool LB_STDCALL lbBoundColumn::setNull() {
+	long i = 0;
+	if (mode == 1) {
+		cbBufferLength[1] = SQL_NULL_DATA;
+		i = cbBufferLength[1];
+	} else {
+		cbBufferLength[0] = SQL_NULL_DATA;
+		i = cbBufferLength[1];
+	}
+	
+	_hasValidData = true;
+	return true;
+}
+
 /*...slb_I_Query\58\\58\lbDBColumnTypes LB_STDCALL lbBoundColumn\58\\58\getType\40\\41\:0:*/
 lb_I_Query::lbDBColumnTypes LB_STDCALL lbBoundColumn::getType() {
 	switch (_DataType) {
@@ -3227,10 +3518,11 @@ lbErrCodes LB_STDCALL lbBoundColumn::setData(lb_I_Unknown* uk) {
          * would write to an deleted pointer.
          */
 
-	setColumn(column->getColumnName_c_str());
+		setColumn(column->getColumnName_c_str());
+		leaveOwnership(*&column, this);
 
-	leaveOwnership(*&column, this);
-        
+		_hasValidData = true;
+		
         return ERR_NOT_IMPLEMENTED;
 }
 /*...e*/
@@ -3243,6 +3535,10 @@ lbErrCodes LB_STDCALL lbBoundColumn::leaveOwnership(lb_I_BoundColumn* oldOwner, 
 	nO->setData(oO->bound, oO->_DataType, oO->buffer, oO->columnName);
 	oO->bound = 0;
 	nO->isReadonly = oO->isReadonly;
+	
+	nO->cbBufferLength = oO->cbBufferLength;
+	oO->cbBufferLength = NULL;
+	
 	if (oO->buffer != NULL) oO->buffer = NULL;
 
 	return ERR_NONE;
@@ -3393,6 +3689,7 @@ lbErrCodes LB_STDCALL lbBoundColumn::setFromLong(lb_I_Long* set, int mode) {
 			}
 		}
 	}
+	_hasValidData = true;
 	return err;
 }
 /*...slbErrCodes LB_STDCALL lbBoundColumn\58\\58\setFromString\40\lb_I_String\42\ set\44\ int mode\41\:0:*/
@@ -3421,7 +3718,7 @@ lbErrCodes LB_STDCALL lbBoundColumn::setFromString(lb_I_String* set, int mode) {
 					char* bb = (char*) buffer;
 					
 					char* b = strcpy(bb + ColumnSize + 1, set->getData());
-					cbBufferLength = strlen((char*) buffer);
+					cbBufferLength[1] = strlen((char*) buffer);
 				}
 					break;
 				case SQL_INTEGER:
@@ -3504,7 +3801,7 @@ lbErrCodes LB_STDCALL lbBoundColumn::setFromString(lb_I_String* set, int mode) {
 					
 				{
 					char* b = strcpy((char*) buffer, set->getData());
-					cbBufferLength = strlen((char*) buffer);
+					cbBufferLength[0] = strlen((char*) buffer);
 				}
 					break;
 				case SQL_INTEGER:
@@ -3544,7 +3841,7 @@ lbErrCodes LB_STDCALL lbBoundColumn::setFromString(lb_I_String* set, int mode) {
 			}
 			
 		}
-		
+		_hasValidData = true;
 		return ERR_NONE;
 	}
 /*...e*/
@@ -3632,6 +3929,46 @@ void       LB_STDCALL lbBoundColumn::checkReadonly(int column)
 		free(CharacterAttributePtr);
 	}	
 /*...e*/
+void LB_STDCALL lbBoundColumn::bindNullColumn() {
+/*...svars:8:*/
+	SQLSMALLINT     ColumnNumber = 0;
+	SQLCHAR         ColumnName[1000] = "";
+	SQLSMALLINT     BufferLength = 500;
+	SQLSMALLINT     DataType = 0;
+	SQLSMALLINT     NameLength = 0;
+	
+	SQLSMALLINT     DecimalDigits = 0;
+	SQLSMALLINT     Nullable = 0;
+/*...e*/
+
+// Assume readonly for now ...
+
+	if (mode == 1)
+		cbBufferLength[1] = SQL_NULL_DATA;
+	else
+		cbBufferLength[0] = SQL_NULL_DATA;
+
+	SQLRETURN ret;
+
+	ret = SQLDescribeCol( hstmt, _column, ColumnName,
+	                                BufferLength, &NameLength, &DataType,
+	                                &ColumnSize, &DecimalDigits, &Nullable);
+
+	_isNullable = Nullable == 1;
+
+	if (ret != SQL_SUCCESS) {
+		printf("Error: Failed to get column description for column %d.\n", _column);
+		query->dbError("SQLDescribeCol()", hstmt);
+	}
+
+	ret = SQLBindCol(hstmt, _column, DataType, buffer, 0, cbBufferLength);
+
+	if (ret != SQL_SUCCESS) {
+	        printf("Error while binding a NULL column!\n");
+	        query->dbError("SQLBindCol()", hstmt);
+	}
+}
+
 /*...slbErrCodes LB_STDCALL lbBoundColumn\58\\58\bindColumn\40\lb_I_Query\42\ q\44\ int column\44\ bool ro\41\:0:*/
 lbErrCodes LB_STDCALL lbBoundColumn::bindColumn(lb_I_Query* q, int column, bool ro) {
 	hstmt = ((lbQuery*) q)->getCurrentStatement();
@@ -3653,12 +3990,20 @@ lbErrCodes LB_STDCALL lbBoundColumn::bindColumn(lb_I_Query* q, int column, bool 
 
 // Assume readonly for now ...
 
-	cbBufferLength = 0;
+	if (mode == 1)
+		cbBufferLength[1] = 0;
+	else
+		cbBufferLength[0] = 0;
+		
 	SQLRETURN ret;
 
 	if (ro == true) {
 		_CL_LOG << "Bind a column that is read only (" << columnName << ")" LOG_
-		cbBufferLength = SQL_COLUMN_IGNORE;
+		if (mode == 1)
+			cbBufferLength[1] = SQL_COLUMN_IGNORE;
+		else
+			cbBufferLength[0] = SQL_COLUMN_IGNORE;
+		
 		isReadonly = true;
 	} else {
 		// Check, if there are aggregates to be readonly
@@ -3669,6 +4014,8 @@ lbErrCodes LB_STDCALL lbBoundColumn::bindColumn(lb_I_Query* q, int column, bool 
 	ret = SQLDescribeCol( hstmt, column, ColumnName,
 	                                BufferLength, &NameLength, &DataType,
 	                                &ColumnSize, &DecimalDigits, &Nullable);
+
+	_isNullable = Nullable == 1;
 
 	if (ret != SQL_SUCCESS) {
 		printf("Error: Failed to get column description for column %d.\n", column);
@@ -3694,7 +4041,7 @@ lbErrCodes LB_STDCALL lbBoundColumn::bindColumn(lb_I_Query* q, int column, bool 
 			bound = 1;			     // Try a spacer for bugfix
 			memset(buffer, 0, (ColumnSize+1)*rows+20);
 
-			ret = SQLBindCol(hstmt, column, SQL_C_CHAR, buffer, (ColumnSize+1), &cbBufferLength);
+			ret = SQLBindCol(hstmt, column, SQL_C_CHAR, buffer, (ColumnSize+1), cbBufferLength);
 			
 			if (ret != SQL_SUCCESS) {
 				printf("Error while binding a column!\n");
@@ -3710,7 +4057,7 @@ lbErrCodes LB_STDCALL lbBoundColumn::bindColumn(lb_I_Query* q, int column, bool 
 			bound = 1;			     // Try a spacer for bugfix
 			memset(buffer, 0, (ColumnSize+1)*rows+20);
 
-			ret = SQLBindCol(hstmt, column, SQL_C_CHAR, buffer, (ColumnSize+1), &cbBufferLength);
+			ret = SQLBindCol(hstmt, column, SQL_C_CHAR, buffer, (ColumnSize+1), cbBufferLength);
 			
 			if (ret != SQL_SUCCESS) {
 				printf("Error while binding a column!\n");
@@ -3731,7 +4078,7 @@ lbErrCodes LB_STDCALL lbBoundColumn::bindColumn(lb_I_Query* q, int column, bool 
 			bound = 1;			     // Try a spacer for bugfix
 			memset(buffer, 0, (ColumnSize+1)*rows+20);
 
-			ret = SQLBindCol(hstmt, column, SQL_C_CHAR, buffer, (ColumnSize+1), &cbBufferLength);
+			ret = SQLBindCol(hstmt, column, SQL_C_CHAR, buffer, (ColumnSize+1), cbBufferLength);
 			
 			if (ret != SQL_SUCCESS) {
 				printf("Error while binding a column!\n");
@@ -3747,7 +4094,7 @@ lbErrCodes LB_STDCALL lbBoundColumn::bindColumn(lb_I_Query* q, int column, bool 
 			bound = 1;			     // Try a spacer for bugfix
 			memset(buffer, 0, (ColumnSize+1)*rows+20);
 			
-			ret = SQLBindCol(hstmt, column, SQL_C_DEFAULT, buffer, (ColumnSize+1), &cbBufferLength);
+			ret = SQLBindCol(hstmt, column, SQL_C_DEFAULT, buffer, (ColumnSize+1), cbBufferLength);
 			
 			if (ret != SQL_SUCCESS) {
 				printf("Error while binding a column!\n");
@@ -3769,7 +4116,7 @@ lbErrCodes LB_STDCALL lbBoundColumn::bindColumn(lb_I_Query* q, int column, bool 
 			_DataType = DataType;
 			bound = 1;
 			memset(buffer, 0, sizeof(long)*rows);
-			SQLBindCol(hstmt, column, DataType, buffer, sizeof(long), &cbBufferLength);
+			SQLBindCol(hstmt, column, DataType, buffer, sizeof(long), cbBufferLength);
 			if (ret != SQL_SUCCESS) {
 			        printf("Error while binding a column!\n");
 			        query->dbError("SQLBindCol()", hstmt);
@@ -3788,11 +4135,11 @@ lbErrCodes LB_STDCALL lbBoundColumn::bindColumn(lb_I_Query* q, int column, bool 
 			bound = 1;
 #ifndef _MSC_VER
 			memset(buffer, 0, sizeof(long long)*rows);
-			ret = SQLBindCol(hstmt, column, SQL_C_DEFAULT, buffer, sizeof(long long), &cbBufferLength);
+			ret = SQLBindCol(hstmt, column, SQL_C_DEFAULT, buffer, sizeof(long long), cbBufferLength);
 #endif
 #ifdef _MSC_VER
 			memset(buffer, 0, sizeof(__int64)*rows);
-			ret = SQLBindCol(hstmt, column, SQL_C_DEFAULT, buffer, sizeof(__int64), &cbBufferLength);
+			ret = SQLBindCol(hstmt, column, SQL_C_DEFAULT, buffer, sizeof(__int64), cbBufferLength);
 #endif
 			if (ret != SQL_SUCCESS) {
 			        printf("Error while binding a column!\n");
@@ -3809,14 +4156,14 @@ lbErrCodes LB_STDCALL lbBoundColumn::bindColumn(lb_I_Query* q, int column, bool 
 			_DataType = DataType;
 			bound = 1;
 			memset(buffer, 0, sizeof(bool)*rows);
-			ret = SQLBindCol(hstmt, column, SQL_BIT, buffer, sizeof(bool), &cbBufferLength);
+			ret = SQLBindCol(hstmt, column, SQL_BIT, buffer, sizeof(bool), cbBufferLength);
 #endif
 #ifdef OSX
 			buffer = malloc((sizeof(long))*rows);
 			_DataType = DataType;
 			bound = 1;
 			memset(buffer, 0, sizeof(long)*rows);
-			ret = SQLBindCol(hstmt, column, SQL_BIT, buffer, sizeof(long), &cbBufferLength);
+			ret = SQLBindCol(hstmt, column, SQL_BIT, buffer, sizeof(long), cbBufferLength);
 #endif
 			if (ret != SQL_SUCCESS) {
 				_LOG << "Error: Binding column '" << columnName << "' failed!" LOG_
@@ -3948,7 +4295,7 @@ void LB_STDCALL lbBoundColumn::unbindReadonlyColumns() {
 			_CL_VERBOSE << "Unbind date" LOG_
 			bound = 0;
 
-			ret = SQLBindCol(hstmt, _column, SQL_C_CHAR, NULL, (ColumnSize+1), &cbBufferLength);
+			ret = SQLBindCol(hstmt, _column, SQL_C_CHAR, NULL, (ColumnSize+1), cbBufferLength);
 			break;
 		case SQL_FLOAT:	
 		case SQL_CHAR:
@@ -3961,28 +4308,28 @@ void LB_STDCALL lbBoundColumn::unbindReadonlyColumns() {
 			_CL_VERBOSE << "Unbind char" LOG_
 			bound = 0;
 
-			ret = SQLBindCol(hstmt, _column, SQL_C_CHAR, NULL, (ColumnSize+1), &cbBufferLength);
+			ret = SQLBindCol(hstmt, _column, SQL_C_CHAR, NULL, (ColumnSize+1), cbBufferLength);
 			break;
 		case SQL_BINARY:
 			_CL_VERBOSE << "Unbind binary" LOG_
 			bound = 0;
 			
-			ret = SQLBindCol(hstmt, _column, SQL_C_DEFAULT, NULL, (ColumnSize+1), &cbBufferLength);
+			ret = SQLBindCol(hstmt, _column, SQL_C_DEFAULT, NULL, (ColumnSize+1), cbBufferLength);
 			break;
 		case SQL_INTEGER:
 			_CL_VERBOSE << "Unbind integer" LOG_
 			bound = 0;
 
-			SQLBindCol(hstmt, _column, SQL_C_DEFAULT, NULL, sizeof(long), &cbBufferLength);
+			SQLBindCol(hstmt, _column, SQL_C_DEFAULT, NULL, sizeof(long), cbBufferLength);
 			break;
 		case SQL_BIGINT:
 			_CL_VERBOSE << "Unbind big integer" LOG_
 			bound = 0;
 #ifndef _MSC_VER
-			SQLBindCol(hstmt, _column, SQL_C_DEFAULT, NULL, sizeof(long long), &cbBufferLength);
+			SQLBindCol(hstmt, _column, SQL_C_DEFAULT, NULL, sizeof(long long), cbBufferLength);
 #endif
 #ifdef _MSC_VER
-			SQLBindCol(hstmt, _column, SQL_C_DEFAULT, NULL, sizeof(__int64), &cbBufferLength);
+			SQLBindCol(hstmt, _column, SQL_C_DEFAULT, NULL, sizeof(__int64), cbBufferLength);
 #endif
 			break;
 #ifdef BIND_BOOL_DEFAULT
@@ -3991,10 +4338,10 @@ void LB_STDCALL lbBoundColumn::unbindReadonlyColumns() {
 			_CL_VERBOSE << "Unbind bit" LOG_
 			bound = 0;
 #ifdef OSX
-			SQLBindCol(hstmt, _column, SQL_BIT, NULL, sizeof(long), &cbBufferLength);
+			SQLBindCol(hstmt, _column, SQL_BIT, NULL, sizeof(long), cbBufferLength);
 #endif
 #ifndef OSX
-			SQLBindCol(hstmt, _column, SQL_BIT, NULL, sizeof(bool), &cbBufferLength);
+			SQLBindCol(hstmt, _column, SQL_BIT, NULL, sizeof(bool), cbBufferLength);
 #endif			
 			if (ret != SQL_SUCCESS) {
 			        printf("Error while unbinding a column!\n");
@@ -4027,7 +4374,7 @@ void LB_STDCALL lbBoundColumn::rebindReadonlyColumns() {
 			_CL_VERBOSE << "Rebind date" LOG_
 			bound = 1;
 
-			ret = SQLBindCol(hstmt, _column, SQL_C_CHAR, buffer, (ColumnSize+1), &cbBufferLength);
+			ret = SQLBindCol(hstmt, _column, SQL_C_CHAR, buffer, (ColumnSize+1), cbBufferLength);
 			break;
 		case SQL_FLOAT:
 		case SQL_CHAR:
@@ -4041,28 +4388,28 @@ void LB_STDCALL lbBoundColumn::rebindReadonlyColumns() {
 			_CL_VERBOSE << "Rebind char" LOG_
 			bound = 1;
 
-			ret = SQLBindCol(hstmt, _column, SQL_C_CHAR, buffer, (ColumnSize+1), &cbBufferLength);
+			ret = SQLBindCol(hstmt, _column, SQL_C_CHAR, buffer, (ColumnSize+1), cbBufferLength);
 			break;
 		case SQL_BINARY:
 			_CL_VERBOSE << "Rebind binary" LOG_
 			bound = 1;
 			
-			ret = SQLBindCol(hstmt, _column, SQL_C_DEFAULT, buffer, (ColumnSize+1), &cbBufferLength);
+			ret = SQLBindCol(hstmt, _column, SQL_C_DEFAULT, buffer, (ColumnSize+1), cbBufferLength);
 			break;
 		case SQL_INTEGER:
 			_CL_VERBOSE << "Rebind integer" LOG_
 			bound = 1;
 
-			SQLBindCol(hstmt, _column, SQL_C_DEFAULT, buffer, sizeof(long), &cbBufferLength);
+			SQLBindCol(hstmt, _column, SQL_C_DEFAULT, buffer, sizeof(long), cbBufferLength);
 			break;
 		case SQL_BIGINT:
 			_CL_VERBOSE << "Rebind big integer" LOG_
 			bound = 1;
 #ifndef _MSC_VER
-			SQLBindCol(hstmt, _column, SQL_C_DEFAULT, buffer, sizeof(long long), &cbBufferLength);
+			SQLBindCol(hstmt, _column, SQL_C_DEFAULT, buffer, sizeof(long long), cbBufferLength);
 #endif
 #ifdef _MSC_VER
-			SQLBindCol(hstmt, _column, SQL_C_DEFAULT, buffer, sizeof(__int64), &cbBufferLength);
+			SQLBindCol(hstmt, _column, SQL_C_DEFAULT, buffer, sizeof(__int64), cbBufferLength);
 #endif
 			break;
 #ifdef BIND_BOOL_DEFAULT
@@ -4071,10 +4418,10 @@ void LB_STDCALL lbBoundColumn::rebindReadonlyColumns() {
 			_CL_VERBOSE << "Rebind bit" LOG_
 			bound = 1;
 #ifdef OSX
-			SQLBindCol(hstmt, _column, SQL_BIT, buffer, sizeof(long), &cbBufferLength);
+			SQLBindCol(hstmt, _column, SQL_BIT, buffer, sizeof(long), cbBufferLength);
 #endif
 #ifndef OSX
-			SQLBindCol(hstmt, _column, SQL_BIT, buffer, sizeof(bool), &cbBufferLength);
+			SQLBindCol(hstmt, _column, SQL_BIT, buffer, sizeof(bool), cbBufferLength);
 #endif
 			if (ret != SQL_SUCCESS) {
 			        printf("Error while binding a column!\n");
@@ -4095,9 +4442,26 @@ void LB_STDCALL lbBoundColumn::rebindReadonlyColumns() {
 	}
 }
 /*...e*/
+
+void	LB_STDCALL lbBoundColumn::invalidateData() {
+	// No extra function for adding mode.
+	mode = 1;
+	_hasValidData = false;
+}
+
+bool	LB_STDCALL lbBoundColumn::hasValidData() {
+	if (!(_hasValidData || isReadonly)) {
+		_CL_LOG << "Bound column '" << columnName << "' has no valid data." LOG_
+	}
+	return _hasValidData || isReadonly;
+}
+
+
 /*...svoid LB_STDCALL lbBoundColumn\58\\58\rebind\40\\41\:0:*/
 void LB_STDCALL lbBoundColumn::rebind() {
 	SQLRETURN ret = SQL_SUCCESS;
+	
+	mode = 0;
 
 /*...sRebind:8:*/
 	switch (_DataType) {
@@ -4106,7 +4470,7 @@ void LB_STDCALL lbBoundColumn::rebind() {
 			_CL_VERBOSE << "Rebind date" LOG_
 			bound = 1;
 
-			ret = SQLBindCol(hstmt, _column, SQL_C_CHAR, buffer, (ColumnSize+1), &cbBufferLength);
+			ret = SQLBindCol(hstmt, _column, SQL_C_CHAR, buffer, (ColumnSize+1), cbBufferLength);
 			break;
 		case SQL_FLOAT:
 		case SQL_CHAR:
@@ -4120,28 +4484,28 @@ void LB_STDCALL lbBoundColumn::rebind() {
 			_CL_VERBOSE << "Rebind char" LOG_
 			bound = 1;
 
-			ret = SQLBindCol(hstmt, _column, SQL_C_CHAR, buffer, (ColumnSize+1), &cbBufferLength);
+			ret = SQLBindCol(hstmt, _column, SQL_C_CHAR, buffer, (ColumnSize+1), cbBufferLength);
 			break;
 		case SQL_BINARY:
 			_CL_VERBOSE << "Rebind binary" LOG_
 			bound = 1;
 			
-			ret = SQLBindCol(hstmt, _column, SQL_C_DEFAULT, buffer, (ColumnSize+1), &cbBufferLength);
+			ret = SQLBindCol(hstmt, _column, SQL_C_DEFAULT, buffer, (ColumnSize+1), cbBufferLength);
 			break;
 		case SQL_INTEGER:
 			_CL_VERBOSE << "Rebind integer" LOG_
 			bound = 1;
 
-			SQLBindCol(hstmt, _column, SQL_C_DEFAULT, buffer, sizeof(long), &cbBufferLength);
+			SQLBindCol(hstmt, _column, SQL_C_DEFAULT, buffer, sizeof(long), cbBufferLength);
 			break;
 		case SQL_BIGINT:
 			_CL_VERBOSE << "Rebind big integer" LOG_
 			bound = 1;
 #ifndef _MSC_VER
-			SQLBindCol(hstmt, _column, SQL_C_DEFAULT, buffer, sizeof(long long), &cbBufferLength);
+			SQLBindCol(hstmt, _column, SQL_C_DEFAULT, buffer, sizeof(long long), cbBufferLength);
 #endif
 #ifdef _MSC_VER
-			SQLBindCol(hstmt, _column, SQL_C_DEFAULT, buffer, sizeof(__int64), &cbBufferLength);
+			SQLBindCol(hstmt, _column, SQL_C_DEFAULT, buffer, sizeof(__int64), cbBufferLength);
 #endif
 			break;
 #ifdef BIND_BOOL_DEFAULT
@@ -4150,10 +4514,10 @@ void LB_STDCALL lbBoundColumn::rebind() {
 			_CL_VERBOSE << "Rebind bit" LOG_
 			bound = 1;
 #ifdef OSX
-			SQLBindCol(hstmt, _column, _DataType, buffer, sizeof(long), &cbBufferLength);
+			SQLBindCol(hstmt, _column, _DataType, buffer, sizeof(long), cbBufferLength);
 #endif
 #ifndef OSX
-			SQLBindCol(hstmt, _column, _DataType, buffer, sizeof(bool), &cbBufferLength);
+			SQLBindCol(hstmt, _column, _DataType, buffer, sizeof(bool), cbBufferLength);
 #endif
 			if (ret != SQL_SUCCESS) {
 			        printf("Error while binding a column!\n");

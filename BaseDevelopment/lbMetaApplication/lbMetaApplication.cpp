@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.99 $
+ * $Revision: 1.100 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.99 2006/12/10 17:03:21 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.100 2006/12/23 15:42:42 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.100  2006/12/23 15:42:42  lollisoft
+ * Many changes to get a more stable release. Still having problems with database updates on foreign keys.
+ *
  * Revision 1.99  2006/12/10 17:03:21  lollisoft
  * Log, don't write to console.
  *
@@ -1226,28 +1229,20 @@ lbErrCodes LB_STDCALL lb_MetaApplication::loadApplication(char* user, char* appl
 			sampleQuery->query(buffer);
 			sampleQuery->enableFKCollecting();
 			
-			free(buffer);
 			
 			// Fill up the available applications for that user.
 			UAP_REQUEST(manager.getPtr(), lb_I_String, ModuleName)
-			UAP_REQUEST(manager.getPtr(), lb_I_String, Functor)
+				UAP_REQUEST(manager.getPtr(), lb_I_String, Functor)
 				
-			lbErrCodes DBerr = sampleQuery->first();
+				lbErrCodes DBerr = sampleQuery->first();
 			
 			if ((DBerr == ERR_NONE) || (DBerr == WARN_DB_NODATA)) {
+				ModuleName = sampleQuery->getAsString(1);
+				Functor = sampleQuery->getAsString(2);
 				
-		        ModuleName = sampleQuery->getAsString(1);
-			Functor = sampleQuery->getAsString(2);
-				
-		        applicationName = (char*) malloc(strlen(ModuleName->charrep())+1);
-		        applicationName[0] = 0;
+				applicationName = (char*) malloc(strlen(ModuleName->charrep())+1);
+				applicationName[0] = 0;
 				strcpy(applicationName, ModuleName->charrep());		        
-			} else {
-				_CL_LOG << "Error: Query to get application data failed. '" << buffer << "'" LOG_
-			}
-			
-			
-			UAP(lb_I_Unknown, a)
 				
 #ifndef LINUX
 #ifdef __WATCOMC__
@@ -1261,50 +1256,57 @@ lbErrCodes LB_STDCALL lb_MetaApplication::loadApplication(char* user, char* appl
 #define PREFIX ""
 #endif
 				
-			char f[100] = "";
-			char appl[100] = "";
-			
-			strcpy(f, PREFIX);
-			strcat(f, Functor->charrep());
-			strcpy(appl, applicationName);
-			
-			
+				char f[100] = "";
+				char appl[100] = "";
+				UAP(lb_I_Unknown, a)
+					
+					strcpy(f, PREFIX);
+				strcat(f, Functor->charrep());
+				strcpy(appl, applicationName);
+				
+				
 #ifdef WINDOWS
-			manager->preload(appl);
-			manager->makeInstance(f, appl, &a);
+				manager->preload(appl);
+				manager->makeInstance(f, appl, &a);
 #endif
 #ifdef LINUX
-			strcat(appl, ".so");		
-			manager->preload(appl);
-			manager->makeInstance(f, appl, &a);
+				strcat(appl, ".so");		
+				manager->preload(appl);
+				manager->makeInstance(f, appl, &a);
 #endif
-			if (a == NULL) {
-				_CL_LOG << "ERROR: Application could not be loaded - either not found or not configured." LOG_
-				return ERR_NONE;
-			}
-			
-			if (moduleName == NULL) {
-				moduleName = (char*) malloc(strlen(appl)+1);
-				moduleName[0] = 0;
-				strcpy(moduleName, appl);
+				
+				if (a == NULL) {
+					_CL_LOG << "ERROR: Application could not be loaded - either not found or not configured." LOG_
+					return ERR_NONE;
+				}
+				
+				if (moduleName == NULL) {
+					moduleName = (char*) malloc(strlen(appl)+1);
+					moduleName[0] = 0;
+					strcpy(moduleName, appl);
+				} else {
+					_CL_LOG << "ERROR: Multiple applications not yet supported." LOG_
+				}
+				
+				a->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+				
+				QI(a, lb_I_Application, app)
+					
+					//if (dispatcher.getPtr() == NULL) _LOG << "Error: dispatcher is NULL" LOG_
+					
+					app->setGUI(gui);
+				app->initialize(user, application);
+				
+				_CL_LOG << "Meta application has " << app->getRefCount() << " references." LOG_
+					
+					free(applicationName);
+				
 			} else {
-				_CL_LOG << "ERROR: Multiple applications not yet supported." LOG_
+				_LOG << "Error: Query to get application data failed. '" << buffer << "'" LOG_
 			}
+			free(buffer);
 			
-			a->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
-			
-			QI(a, lb_I_Application, app)
-				
-			//if (dispatcher.getPtr() == NULL) _LOG << "Error: dispatcher is NULL" LOG_
-				
-			app->setGUI(gui);
-			app->initialize(user, application);
-			
-			_CL_LOG << "Meta application has " << app->getRefCount() << " references." LOG_
-			
-			free(applicationName);
 		}
-		
 		//if (dispatcher.getPtr() == NULL) _LOG << "Error: dispatcher has been set to NULL" LOG_
 	} else {
 		
@@ -1341,14 +1343,14 @@ lbErrCodes LB_STDCALL lb_MetaApplication::loadApplication(char* user, char* appl
 		
 		QI(a, lb_I_MetaApplication, app)
 			
-		if (dispatcher.getPtr() == NULL) _LOG << "Error: dispatcher is NULL" LOG_
+			if (dispatcher.getPtr() == NULL) _LOG << "Error: dispatcher is NULL" LOG_
 				
-		app->setGUI(gui);
+				app->setGUI(gui);
 		app->initialize();
 		
 		_CL_LOG << "Meta application has " << app->getRefCount() << " references." LOG_
 			
-		if (dispatcher.getPtr() == NULL) _LOG << "Error: dispatcher has been set to NULL" LOG_
+			if (dispatcher.getPtr() == NULL) _LOG << "Error: dispatcher has been set to NULL" LOG_
 	}
 		
         return ERR_NONE;

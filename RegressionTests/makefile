@@ -43,6 +43,7 @@ TARGETDLL=so
 TARGETEXE=elf
 
 ALLTARGETS = \
+	Database/FKTest \
 	Database/Plain-ODBC-Test \
 	Database \
 	Basetypes \
@@ -91,6 +92,10 @@ mkrelease:
 	cd ../..; tar cvzf lbDMF-0.3.2.3.tgz CPP; cd CPP/BaseDevelopment
 
 dummy:
+
+Database/FKTest: dummy
+	$(MAKE) -C $@ -e MODULE=fkTest -e TARGET=$(TARGETEXE) -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
+	$(MAKE) -C $@
 
 Database/Plain-ODBC-Test: dummy
 	$(MAKE) -C $@ -e MODULE=plainTest -e TARGET=$(TARGETEXE) -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
