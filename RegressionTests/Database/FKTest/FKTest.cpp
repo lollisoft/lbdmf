@@ -32,7 +32,6 @@
 #pragma warning( disable: 4101 )
 
 #endif
-/*...sincludes:0:*/
 #ifdef WINDOWS
 #include <windows.h>
 #endif
@@ -99,13 +98,25 @@ int main(int argc, char *argv[]) {
 
 		query1->skipFKCollecting();
 		query1->query("delete from \"user_anwendungen\"");
-		query1->query("insert \"user_anwendungen\" (userid) values(1)");
+		query1->query("insert \"user_anwendungen\" (userid,anwendungenid) values(1,1)");
+		query1->query("insert \"user_anwendungen\" (userid,anwendungenid) values(1,2)");
+		query1->query("insert \"user_anwendungen\" (userid,anwendungenid) values(1,3)");
+		query1->query("insert \"user_anwendungen\" (userid,anwendungenid) values(1,4)");
+		query1->query("insert \"user_anwendungen\" (userid,anwendungenid) values(1,5)");
 		query1->enableFKCollecting();
 
 		query->query("select \"userid\", \"anwendungenid\" from \"user_anwendungen\" where userid = 2");
 		
 		query->first();
-
+		query->update();
+		query->next();
+		query->update();
+		query->next();
+		query->update();
+		query->next();
+		query->update();
+		query->next();
+		query->update();
 		query->add();
 		*col = "userid";
 		*val = "2";
@@ -158,59 +169,10 @@ int main(int argc, char *argv[]) {
 		_CL_LOG << "Called query->update() on added row with default values." LOG_
 
 	}
-/*...e*/
 
 	unHookAll();
 	exit(0);
 
-/*...sbla:0:*/
-#ifdef bla
-
-	UAP(lb_I_Query, query1)
-	UAP(lb_I_Query, query2)
-	UAP(lb_I_Query, query3)
-
-	query1 = database->getQuery(0);
-	query1->query("insert into regressiontest (test) values('Nix')");
-	query1->query("insert into regressiontest (btest) values(true)");
-	query1->query("insert into regressiontest (btest1) values(true)");
-
-	query2 = database->getQuery(0);
-	query2->query("select test, btest, btest1 from regressiontest");
-
-//	query2->PrintData();
-	
-	
-	query3->query("select tablename, name, 'specialColumn', 'controlType', ro from column_types");
-//	query3->PrintData();
-
-	_CL_LOG << "Test datatypes..." LOG_
-	lb_I_Query::lbDBColumnTypes coltype = query3->getColumnType(5);
-
-	switch (coltype) {
-		case lb_I_Query::lbDBColumnBit:
-			_CL_LOG << "lb_I_Query::lbDBColumnBit" LOG_
-			break;
-					
-		case lb_I_Query::lbDBColumnChar:
-			_CL_LOG << "lb_I_Query::lbDBColumnChar" LOG_
-			break;
-					
-		case lb_I_Query::lbDBColumnBinary:
-			_CL_LOG << "lb_I_Query::lbDBColumn" LOG_
-			break;
-
-		case lb_I_Query::lbDBColumnInteger:
-			_CL_LOG << "lb_I_Query::lbDBColumnInteger" LOG_
-			break;
-					
-		case lb_I_Query::lbDBColumnUnknown:
-			_CL_LOG << "lb_I_Query::lbDBColumnUnknown" LOG_
-			break;
-	}
-
-#endif
-/*...e*/
 }
 
         return 0;
