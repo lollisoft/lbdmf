@@ -62,6 +62,7 @@ TARGETEXE=exe
 
 ALLTARGETS = \
 	Database/Plain-ODBC-Test \
+	Database/FKTest \
 	Database \
 	Basetypes \
 	Memory \
