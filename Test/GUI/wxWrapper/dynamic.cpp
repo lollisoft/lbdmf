@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.127 2006/12/23 15:42:43 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.128 2006/12/31 11:24:25 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.127 $
+ * $Revision: 1.128 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.127 2006/12/23 15:42:43 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.128 2006/12/31 11:24:25 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.128  2006/12/31 11:24:25  lollisoft
+ * Bugfix in the order of meta application initialisation.
+ *
  * Revision 1.127  2006/12/23 15:42:43  lollisoft
  * Many changes to get a more stable release. Still having problems with database updates on foreign keys.
  *
@@ -2144,6 +2147,12 @@ bool MyApp::OnInit(void)
 
     SetTopWindow(frame);
 
+    if (metaApp != NULL) {
+        metaApp->setGUI(wxGUI);
+        metaApp->initialize();
+	if (metaApp->getGUIMaximized()) frame->Maximize();
+    } 
+
     if (PM->beginEnumPlugins()) {
 	
     while (TRUE) {
@@ -2153,12 +2162,6 @@ bool MyApp::OnInit(void)
             pl->initialize();
         }
     }
-
-    if (metaApp != NULL) {
-        metaApp->setGUI(wxGUI);
-        metaApp->initialize();
-		if (metaApp->getGUIMaximized()) frame->Maximize();
-    } 
 
     frame->Show(TRUE);
 
