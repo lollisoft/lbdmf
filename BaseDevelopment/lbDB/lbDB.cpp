@@ -174,8 +174,8 @@ public:
 	void		LB_STDCALL rebindReadonlyColumns();
 
 	void		LB_STDCALL indicateNullValues();
-	bool		LB_STDCALL setNull(int pos);
-	bool		LB_STDCALL setNull(char const * name);
+	bool		LB_STDCALL setNull(int pos, bool b);
+	bool		LB_STDCALL setNull(char const * name, bool b);
 
 	bool		LB_STDCALL isNullable(int pos);
 	bool		LB_STDCALL isNullable(char const * name);
@@ -191,6 +191,8 @@ public:
 
 	void		LB_STDCALL rebind();
 	
+	void		LB_STDCALL add();
+	void		LB_STDCALL finishadd();
 	
 	bool		LB_STDCALL hasValidData();
 	void		LB_STDCALL invalidateData();
@@ -339,11 +341,13 @@ public:
 	bool		LB_STDCALL isNullable(char const * name);
 	bool		LB_STDCALL isNull(int pos);
 	bool		LB_STDCALL isNull(char const * name);
-	bool		LB_STDCALL setNull(int pos);
-	bool		LB_STDCALL setNull(char const * name);
+	bool		LB_STDCALL setNull(int pos, bool b = true);
+	bool		LB_STDCALL setNull(char const * name, bool b = true);
 
-	virtual lb_I_Query::lbDBColumnTypes LB_STDCALL getColumnType(int pos);
-	virtual lb_I_Query::lbDBColumnTypes LB_STDCALL getColumnType(char* name);
+	lb_I_Query::lbDBColumnTypes LB_STDCALL getColumnType(int pos);
+	lb_I_Query::lbDBColumnTypes LB_STDCALL getColumnType(char* name);
+
+	lbDBCaseSensity    LB_STDCALL getCaseSensity();
 
 	void			LB_STDCALL setReadonly(char* column, bool updateable = true);
 	bool			LB_STDCALL getReadonly(char* column);
@@ -356,14 +360,14 @@ public:
         lbErrCodes	LB_STDCALL first();
         lbErrCodes	LB_STDCALL next();
         lbErrCodes	LB_STDCALL previous();
-		lbErrCodes	LB_STDCALL last();
-		char* LB_STDCALL setWhereClause(const char* query, char* where);
+	lbErrCodes	LB_STDCALL last();
+	char* 		LB_STDCALL setWhereClause(const char* query, char* where);
 	
-		char* LB_STDCALL addWhereClause(const char* query, char* where);
+	char* 		LB_STDCALL addWhereClause(const char* query, char* where);
 		
-		void LB_STDCALL setAutoRefresh(bool b);
+	void		LB_STDCALL setAutoRefresh(bool b);
 
-		void		LB_STDCALL reopen();
+	void		LB_STDCALL reopen();
 
 #ifdef UNBOUND
         virtual char* 		LB_STDCALL getChar(int column);
@@ -520,7 +524,7 @@ public:
 
 	virtual bool LB_STDCALL isNullable();
 	virtual bool LB_STDCALL isNull();
-	virtual bool LB_STDCALL setNull();
+	virtual bool LB_STDCALL setNull(bool b);
 	virtual lb_I_Query::lbDBColumnTypes LB_STDCALL getType();
 	virtual lb_I_Unknown* LB_STDCALL getData();
 	virtual lbErrCodes LB_STDCALL getAsString(lb_I_String* result, int asParameter = 0);
@@ -532,17 +536,20 @@ public:
 	void		LB_STDCALL setReadonly(bool updateable);
 	bool		LB_STDCALL getReadonly() { return isReadonly; }
 
-	lb_I_String* LB_STDCALL getColumnName();
+	lb_I_String*	LB_STDCALL getColumnName();
 
 	lbErrCodes	LB_STDCALL prepareBoundColumn(lb_I_Query* q, int column);
 	lbErrCodes	LB_STDCALL bindColumn(lb_I_Query* q, int column, bool ro);
 	void		LB_STDCALL bindNullColumn();
 
 
-	void	   LB_STDCALL unbindReadonlyColumns();
-	void	   LB_STDCALL rebindReadonlyColumns();
+	void		LB_STDCALL unbindReadonlyColumns();
+	void		LB_STDCALL rebindReadonlyColumns();
 
-	void	   LB_STDCALL rebind();
+	void		LB_STDCALL rebind();
+	
+	void		LB_STDCALL add();
+	void		LB_STDCALL finishadd();
 	
 	bool	LB_STDCALL hasValidData();
 	void	LB_STDCALL invalidateData();
@@ -729,6 +736,40 @@ void LB_STDCALL lbBoundColumns::rebind() {
 }
 /*...e*/
 
+void LB_STDCALL lbBoundColumns::add() {
+	lbErrCodes err = ERR_NONE;
+	
+	if (boundColumns != NULL) {
+		while (boundColumns->hasMoreElements() == 1) {
+			UAP(lb_I_Unknown, uk)
+			UAP(lb_I_BoundColumn, bc)
+			
+			uk = boundColumns->nextElement();
+			
+			QI(uk, lb_I_BoundColumn, bc)
+			
+			bc->add();
+		}
+	}
+}
+
+void LB_STDCALL lbBoundColumns::finishadd() {
+	lbErrCodes err = ERR_NONE;
+	
+	if (boundColumns != NULL) {
+		while (boundColumns->hasMoreElements() == 1) {
+			UAP(lb_I_Unknown, uk)
+			UAP(lb_I_BoundColumn, bc)
+			
+			uk = boundColumns->nextElement();
+			
+			QI(uk, lb_I_BoundColumn, bc)
+			
+			bc->finishadd();
+		}
+	}
+}
+
 void LB_STDCALL lbBoundColumns::indicateNullValues() {
 	lbErrCodes err = ERR_NONE;
 	
@@ -783,15 +824,15 @@ bool	LB_STDCALL lbBoundColumns::hasValidData() {
 }
 
 
-bool LB_STDCALL lbBoundColumns::setNull(char const * name) {
+bool LB_STDCALL lbBoundColumns::setNull(char const * name, bool b) {
 	lbErrCodes err = ERR_NONE;
 	
 	int pos = getColumnIndex((char*) name);
 
-	return setNull(pos);
+	return setNull(pos, b);
 }
 
-bool LB_STDCALL lbBoundColumns::setNull(int pos) {
+bool LB_STDCALL lbBoundColumns::setNull(int pos, bool b) {
 	lbErrCodes err = ERR_NONE;
 	if ((boundColumns != NULL) && (pos > -1)) {
 		UAP_REQUEST(manager.getPtr(), lb_I_Integer, integerKey) 
@@ -807,7 +848,7 @@ bool LB_STDCALL lbBoundColumns::setNull(int pos) {
 		UAP(lb_I_BoundColumn, bc)
 		lbErrCodes err = ukdata->queryInterface("lb_I_BoundColumn", (void**) &bc, __FILE__, __LINE__);
 
-		bc->setNull();
+		bc->setNull(b);
 	}
 	return true;
 }
@@ -1589,6 +1630,23 @@ char* LB_STDCALL lbQuery::addWhereClause(const char* query, char* where) {
 bool LB_STDCALL lbQuery::dataFetched() {
 	return _dataFetched;
 }
+lb_I_Query::lbDBCaseSensity    LB_STDCALL lbQuery::getCaseSensity() {
+	SQLUINTEGER    fFuncs;
+	
+	retcode = SQLGetInfo(hdbc, SQL_IDENTIFIER_CASE, (SQLPOINTER)&fFuncs, sizeof(fFuncs), NULL);
+
+
+	switch (fFuncs) {
+		case SQL_IC_UPPER: return lb_I_Query::lbDBCaseUpper;
+		case SQL_IC_LOWER: return lb_I_Query::lbDBCaseLower;
+		case SQL_IC_SENSITIVE: return lb_I_Query::lbDBCaseSensibility;
+		case SQL_IC_MIXED: return lb_I_Query::lbDBCaseMixed;
+	}
+
+	_LOG << "Warning: ODBC conformance error!" LOG_
+	
+	return lb_I_Query::lbDBCaseSensibility;
+}
 
 /*...slbErrCodes LB_STDCALL lbQuery\58\\58\query\40\char\42\ q\44\ bool bind\41\:0:*/
 lbErrCodes LB_STDCALL lbQuery::query(char* q, bool bind) {
@@ -1911,7 +1969,21 @@ lb_I_String* LB_STDCALL lbQuery::getFKColumn(char* table, char* primary) {
 
 	result = mapPKTable_PKColumns_To_FKName->getElement(&key_PKTable_PKName);
 
-	if (result == NULL) return NULL;
+	if (result == NULL) {
+		while (mapPKTable_PKColumns_To_FKName->hasMoreElements() == 1) {
+			UAP(lb_I_KeyBase, key)
+			UAP(lb_I_Unknown, value)
+			UAP(lb_I_String, s)
+			
+			value = mapPKTable_PKColumns_To_FKName->nextElement();
+			key = mapPKTable_PKColumns_To_FKName->currentKey();
+			QI(value, lb_I_String, s)
+			
+			_LOG << "Element in 'mapPKTable_PKColumns_To_FKName' : " << s->charrep() << "' with key '" << key->charrep() << "'" LOG_
+		}
+		
+		return NULL;
+	}
 
 	QI(result, lb_I_String, FKName)
 
@@ -2142,76 +2214,9 @@ void LB_STDCALL lbQuery::prepareFKList() {
 
 	_CL_VERBOSE << "Get foreign keys for '" << szTable << "'" LOG_
 
-#ifdef bla
-	_CL_VERBOSE << "Try to get foreign keys with '" << temp << "' as primary table" LOG_
-	
-	retcode = SQLForeignKeys(hstmt,
-	         NULL, 0,      /* Primary catalog   */
-	         NULL, 0,      /* Primary schema   */
-	         szTable, SQL_NTS, /* Primary table   */
-	         NULL, 0,      /* Foreign schema   */
-	         NULL, 0,      /* Foreign table   */
-	         NULL, 0);  
-
-	if ((retcode != SQL_SUCCESS) && (retcode != SQL_SUCCESS_WITH_INFO)) {
-		_CL_LOG << "SQLForeignKeys(...) for " << szTable << " failed!" LOG_
-	}
-
-	while ((retcode == SQL_SUCCESS) || (retcode == SQL_SUCCESS_WITH_INFO)) {
-
-	/* Fetch and display the result set. This will be all of the */
-	/* foreign keys in other tables that refer to the ORDERS */
-	/* primary key.                 */
-
-	   retcode = SQLFetch(hstmt);
-
-	   if (retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO) {
-	      lbErrCodes err = ERR_NONE;
-
-	      //if (isVerbose()) 
-	      printf("%s ( %s ) <-- %s ( %s )\n", szPkTable, szPkCol, szFkTable, szFkCol);
-	      
-	      
-	      UAP_REQUEST(manager.getPtr(), lb_I_String, FKName)
-	      UAP_REQUEST(manager.getPtr(), lb_I_String, PKTable)
-	      
-	      UAP_REQUEST(manager.getPtr(), lb_I_String, PKTable_PKName)
-	      
-	      FKName->setData((char*) szFkCol);
-	      PKTable->setData((char*) szPkTable);
-
-	      FKName->toLower();
-	      
-	      UAP(lb_I_Unknown, uk_PKTable)
-	      UAP(lb_I_KeyBase, key_FKName)
-	      
-	      UAP(lb_I_Unknown, uk_FKName)
-	      UAP(lb_I_KeyBase, key_PKTable_PKName)
-	      
-	      QI(FKName, lb_I_KeyBase, key_FKName)
-	      QI(PKTable, lb_I_Unknown, uk_PKTable)
-
-	      ForeignColumns->insert(&uk_PKTable, &key_FKName);
-	      
-	      *PKTable_PKName = (char*) szPkTable;
-	      *PKTable_PKName += (char*) szPkCol;
-	      
-	      QI(PKTable_PKName, lb_I_KeyBase, key_PKTable_PKName)
-	      QI(FKName, lb_I_Unknown, uk_FKName)
-
-	      _CL_VERBOSE << "Insert map for '" << key_PKTable_PKName->charrep() << 
-		"' to '" << FKName->charrep() << "'" LOG_
-	      
-	      mapPKTable_PKColumns_To_FKName->insert(&uk_FKName, &key_PKTable_PKName);
-	   }
-	}
 /*...e*/
 
 /*...sOriginally for windows \40\foreign table\41\:8:*/
-	if (strlen((char* const) szTable) > 99) {
-		_LOG << "ERROR: Possible buffer overflows!" LOG_
-	}
-#endif
 	_CL_VERBOSE << "Try to get foreign keys with '" << temp << "' as foreign table" LOG_
 	
 	retcode = SQLForeignKeys(hstmt,
@@ -2238,7 +2243,7 @@ void LB_STDCALL lbQuery::prepareFKList() {
 	   if (retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO) {
 	      lbErrCodes err = ERR_NONE;
 
-	      if (isVerbose()) 
+	      //if (isVerbose()) 
 	      printf("%s ( %s ) <-- %s ( %s )\n", szPkTable, szPkCol, szFkTable, szFkCol);
 	      
 	      
@@ -2251,6 +2256,7 @@ void LB_STDCALL lbQuery::prepareFKList() {
 	      PKTable->setData((char*) szPkTable);
 
 	      FKName->toLower();
+	      PKTable->toLower();
 	      
 	      UAP(lb_I_Unknown, uk_PKTable)
 	      UAP(lb_I_KeyBase, key_FKName)
@@ -2265,6 +2271,8 @@ void LB_STDCALL lbQuery::prepareFKList() {
 	      
 	      *PKTable_PKName = (char*) szPkTable;
 	      *PKTable_PKName += (char*) szPkCol;
+	      
+	      PKTable_PKName->toLower();
 	      
 	      QI(PKTable_PKName, lb_I_KeyBase, key_PKTable_PKName)
 	      QI(FKName, lb_I_Unknown, uk_FKName)
@@ -2358,6 +2366,9 @@ void LB_STDCALL lbQuery::prepareFKList() {
 				PKName = q->getAsString(2);
 		
 				FKName->setData(column);
+				FKName->toLower();
+				PKTable->toLower();
+		
 		
 				UAP(lb_I_Unknown, uk_PKTable)
 				UAP(lb_I_KeyBase, key_FKName)
@@ -2369,7 +2380,7 @@ void LB_STDCALL lbQuery::prepareFKList() {
 				QI(PKTable, lb_I_Unknown, uk_PKTable)
 
 
-				if (isVerbose())
+				//if (isVerbose())
 					printf("%-s ( %-s ) <-- %-s ( %-s )\n", PKTable->charrep(), PKName->charrep(), table, FKName->charrep());
 
 				ForeignColumns->insert(&uk_PKTable, &key_FKName);
@@ -2380,6 +2391,8 @@ void LB_STDCALL lbQuery::prepareFKList() {
 
 				QI(PKTable_PKName, lb_I_KeyBase, key_PKTable_PKName)
 				QI(FKName, lb_I_Unknown, uk_FKName)
+
+				PKTable_PKName->toLower();
 
 				_CL_VERBOSE << "Insert map for '" << key_PKTable_PKName->charrep() << 
 					"' to '" << FKName->charrep() << "'" LOG_
@@ -2544,12 +2557,12 @@ bool	LB_STDCALL lbQuery::isNull(char const * name) {
 	return boundColumns->isNull(name);
 }
 
-bool	LB_STDCALL lbQuery::setNull(int pos) {
-	return boundColumns->setNull(pos);
+bool	LB_STDCALL lbQuery::setNull(int pos, bool b) {
+	return boundColumns->setNull(pos, b);
 }
 
-bool	LB_STDCALL lbQuery::setNull(char const * name) {
-	return boundColumns->setNull(name);
+bool	LB_STDCALL lbQuery::setNull(char const * name, bool b) {
+	return boundColumns->setNull(name, b);
 }
 
 /*...slb_I_Query\58\\58\lbDBColumnTypes LB_STDCALL lbQuery\58\\58\getColumnType\40\int pos\41\:0:*/
@@ -2628,7 +2641,11 @@ char* LB_STDCALL lbQuery::getTableName(char* columnName) {
 		
 		SQLRETURN retcode;
 		int index = boundColumns->getColumnIndex(columnName);
+
+		SQLUINTEGER    fFuncs;
 		
+		retcode = SQLGetInfo(hdbc, SQL_IDENTIFIER_CASE, (SQLPOINTER)&fFuncs, sizeof(fFuncs), NULL);
+	
 		retcode = SQLColAttribute(
 				  hstmt,
 				  index, 
@@ -3132,7 +3149,10 @@ lbErrCodes LB_STDCALL lbQuery::add() {
 
 	mode = 1;
 
-	if (boundColumns != NULL) boundColumns->invalidateData();
+	if (boundColumns != NULL) {
+		boundColumns->invalidateData();
+		boundColumns->add();
+	}
 
 	return ERR_NONE;
 }
@@ -3280,6 +3300,7 @@ lbErrCodes LB_STDCALL lbQuery::update() {
 		}
 
 		mode = 0;
+		boundColumns->finishadd();
 	} else {
 #ifdef USE_CURRENT_OF
 /*...susing WHERE CURRENT OF \46\\46\\46\:0:*/
@@ -3433,6 +3454,14 @@ BEGIN_IMPLEMENT_LB_UNKNOWN(lbBoundColumn)
         ADD_INTERFACE(lb_I_BoundColumn)
 END_IMPLEMENT_LB_UNKNOWN()
 
+void LB_STDCALL lbBoundColumn::add() {
+	mode = 1;
+}
+
+void LB_STDCALL lbBoundColumn::finishadd() {
+	mode = 0;
+}
+
 bool LB_STDCALL lbBoundColumn::isNull() {
 	long i = 0;
 	if (mode == 1) {
@@ -3454,17 +3483,24 @@ bool LB_STDCALL lbBoundColumn::isNullable() {
 	return _isNullable;
 }
 
-bool LB_STDCALL lbBoundColumn::setNull() {
-	long i = 0;
-	if (mode == 1) {
-		cbBufferLength[1] = SQL_NULL_DATA;
-		i = cbBufferLength[1];
+bool LB_STDCALL lbBoundColumn::setNull(bool b) {
+	if (b == true) {
+		if (mode == 1) {
+			cbBufferLength[1] = SQL_NULL_DATA;
+		} else {
+			cbBufferLength[0] = SQL_NULL_DATA;
+		}
+		_hasValidData = true;
 	} else {
-		cbBufferLength[0] = SQL_NULL_DATA;
-		i = cbBufferLength[1];
+		if (mode == 1) {
+			cbBufferLength[1] = 0;
+		} else {
+			cbBufferLength[0] = 0;
+		}
+		rebind();
+		_hasValidData = false;		
 	}
 	
-	_hasValidData = true;
 	return true;
 }
 
@@ -4445,7 +4481,6 @@ void LB_STDCALL lbBoundColumn::rebindReadonlyColumns() {
 
 void	LB_STDCALL lbBoundColumn::invalidateData() {
 	// No extra function for adding mode.
-	mode = 1;
 	_hasValidData = false;
 }
 
