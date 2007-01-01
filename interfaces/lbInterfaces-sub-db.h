@@ -269,12 +269,12 @@ public:
 	/**
 	 * \brief NULL indicator for pos column.
 	 */
-	virtual bool	LB_STDCALL setNull(int pos) = 0;
+	virtual bool	LB_STDCALL setNull(int pos, bool b = true) = 0;
 
 	/**
 	 * \brief NULL indicator for named column.
 	 */
-	virtual bool	LB_STDCALL setNull(char const * name) = 0;
+	virtual bool	LB_STDCALL setNull(char const * name, bool b = true) = 0;
 	
 	/**
 	 * \brief Returns false if query is not in any valid cursor position.
@@ -307,6 +307,15 @@ public:
 	 */
 	virtual lbDBColumnTypes	   LB_STDCALL getColumnType(char* name) = 0;
 
+
+	enum lbDBCaseSensity {
+		lbDBCaseLower,
+		lbDBCaseUpper,
+		lbDBCaseMixed,
+		lbDBCaseSensibility
+	};
+
+	virtual lbDBCaseSensity    LB_STDCALL getCaseSensity() = 0;
 
 	/** \brief Set updateability of column.
 	 *
@@ -373,23 +382,26 @@ public:
 	 */        
         virtual lbErrCodes LB_STDCALL last() = 0;
 
+
+	virtual void	   LB_STDCALL reopen() = 0;
+
 	/** \brief Build new SQL query with where clause.
 	 *
 	 * This function copies the result into a new buffer. You have to free() it.
 	 */
-		virtual char* LB_STDCALL setWhereClause(const char* query, char* where) = 0;
+	virtual char* LB_STDCALL setWhereClause(const char* query, char* where) = 0;
 	
 	/** \brief Add to an existing where clause.
 	 *
 	 * This function copies the result into a new buffer. You have to free() it.
 	 */
 	 
-		virtual char* LB_STDCALL addWhereClause(const char* query, char* where) = 0;
+	virtual char* LB_STDCALL addWhereClause(const char* query, char* where) = 0;
 		
-		/** \brief Set autorefresh on update.
-		 *
-		 */
-		virtual void LB_STDCALL setAutoRefresh(bool b) = 0;
+	/** \brief Set autorefresh on update.
+	 *
+	 */
+	virtual void LB_STDCALL setAutoRefresh(bool b) = 0;
     /* Accessors */
 #ifdef UNBOUND        
 	/**
@@ -459,7 +471,7 @@ public:
 	/**
 	 * \brief Set NULL data in the column.
 	 */
-	virtual bool LB_STDCALL setNull() = 0;
+	virtual bool LB_STDCALL setNull(bool b) = 0;
 	
 	/**
 	 * \brief Type of the column.
@@ -560,6 +572,10 @@ public:
 	 * \brief Rebind column.
 	 */
 	virtual void LB_STDCALL rebind() = 0;
+
+	virtual void LB_STDCALL add() = 0;
+	virtual void LB_STDCALL finishadd() = 0;
+
 
 	/** \brief Returns true when data has been provided or column is set to NULL.
 	 */
@@ -672,7 +688,7 @@ public:
 	/**
 	 * \brief Set a specific column to be NULL.
 	 */
-	virtual bool LB_STDCALL setNull(int pos) = 0;
+	virtual bool LB_STDCALL setNull(int pos, bool b) = 0;
 
 	/**
 	 * \brief NULL indicator for pos column.
@@ -697,7 +713,7 @@ public:
 	/**
 	 * \brief NULL indicator for named column.
 	 */
-	virtual bool LB_STDCALL setNull(char const * name) = 0;
+	virtual bool LB_STDCALL setNull(char const * name, bool b) = 0;
 
 	/**
 	 * \brief Unbind readonly columns.
@@ -713,6 +729,9 @@ public:
 	 * \brief Rebind all columns.
 	 */
 	virtual void LB_STDCALL rebind() = 0;
+
+	virtual void LB_STDCALL add() = 0;
+	virtual void LB_STDCALL finishadd() = 0;
 
 	/**
 	 * \brief Get the type of a column.
