@@ -13,6 +13,8 @@
 #pragma implementation "repwrt.h"
 #endif
 
+#include <lbConfigHook.h>
+
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
 
@@ -115,7 +117,6 @@ ReportPreviewFrame::ReportPreviewFrame(
 
 ReportPreviewFrame::~ReportPreviewFrame( void )
 {
-	printf("ReportPreviewFrame::~ReportPreviewFrame( void ) called.\n");
 }
 
 void ReportPreviewFrame::OnCloseWindow( wxCloseEvent &event )
@@ -123,8 +124,12 @@ void ReportPreviewFrame::OnCloseWindow( wxCloseEvent &event )
 	// When the preview frame closes, we need to close
 	// the corresponding report file also. This is done
 	// in ...FinishReport()
+	
+	printf("ReportPreviewFrame::OnCloseWindow( wxCloseEvent &event ) called.\n");
+	
 	if ( m_pRepWrt )
 	{
+        printf("ReportPreviewFrame::OnCloseWindow( wxCloseEvent &event ) calls m_pRepWrt->FinishReport().\n");
 		m_pRepWrt->FinishReport();
 	}
 
@@ -209,11 +214,6 @@ wxReportObj::wxReportObj(
 )
 {
 	Init( dXPos, dYPos, dXSize, dYSize );
-}
-
-void wxReportObj::SetSize(double dXSize, double dYSize) {
-	m_sizSize.x    = (int)(100.0 * dXSize);
-	m_sizSize.y    = (int)(100.0 * dYSize);
 }
 
 void wxReportObj::Init( double dXPos, double dYPos, double dXSize, double dYSize )
@@ -1128,9 +1128,7 @@ wxReportWriter::~wxReportWriter()
 #else
 	g_PrintSettings.Free();
 #endif
-	
-	printf("wxReportWriter::~wxReportWriter() called.\n");
-	
+
 	FinishReport();
 
 	// De-allocation  of our section list
@@ -1290,10 +1288,10 @@ bool wxReportWriter::SaveObjects( void )
 		dHelp = m_PageCtrl.m_dRight;		// Right-Margin
 		m_fFile.Write( &dHelp, sizeof( dHelp ) );
 
-		dHelp = m_PageCtrl.m_dYSizeMM;	// Blattgr÷že Y
+		dHelp = m_PageCtrl.m_dYSizeMM;	// Blattgröße Y
 		m_fFile.Write( &dHelp, sizeof( dHelp ) );
 
-		dHelp = m_PageCtrl.m_dXSizeMM;	// Blattgr÷že X
+		dHelp = m_PageCtrl.m_dXSizeMM;	// Blattgröße X
 		m_fFile.Write( &dHelp, sizeof( dHelp ) );
 
 		lHelp = m_lstHeader.GetCount();	// Anzahl Header-Objekte
@@ -2350,7 +2348,6 @@ void wxReportWriter::Draw(wxDC& dc)
 		pObj = (wxReportObj *)pNode->GetData();
 
 		pObj->ResetPos();
-		pObj->SetScale( dScale );	// MM --> log.Units
 
 	    pNode = pNode->GetNext();
 	}
@@ -2437,7 +2434,6 @@ void wxReportWriter::Draw(wxDC& dc)
 						objHelp.SetHeight( 0.0 );
 						objHelp.SetWidth( dMaxX - dMinX );
 						objHelp.SetMargins( &m_PageCtrl );
-						objHelp.SetScale( dScale );
 
 						objHelp.Draw( dc );
 					}
@@ -2843,7 +2839,7 @@ void wxReportSelector::SetupList( void )
 
 	pLst = (wxListCtrl *)FindWindow( ID_LC_REPORT );
 	pLst->ClearAll();
-	pLst->InsertColumn( 0, wxT("Date"), wxLIST_FORMAT_LEFT, 130 );
+	pLst->InsertColumn( 0, wxT("Date"), wxLIST_FORMAT_LEFT, 120 );
 	pLst->InsertColumn( 1, wxT("User"), wxLIST_FORMAT_LEFT,  80 );
 	pLst->InsertColumn( 2, wxT("Info"), wxLIST_FORMAT_LEFT, 200 );
 

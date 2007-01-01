@@ -61,7 +61,7 @@
 
 class wxReportWriter;
 
-class WXDLLEXPORT ReportPreviewFrame : public wxPreviewFrame
+class  ReportPreviewFrame : public wxPreviewFrame
 {
 public:
 	ReportPreviewFrame(
@@ -85,7 +85,7 @@ private:
 };
 
 
-class WXDLLEXPORT wxPrintSettings
+class  wxPrintSettings
 {
 private:
 	// print data
@@ -113,7 +113,7 @@ public:
 //  Margins
 //  ('Right' margin unused)
 // -------------------------------------
-class WXDLLEXPORT wxReportWriterCtrl
+class  wxReportWriterCtrl
 {
 public:
 	double		m_dTop;
@@ -134,7 +134,7 @@ public:
 // -------------------------------------
 //  A Report/Print object
 // -------------------------------------
-class WXDLLEXPORT wxReportObj
+class  wxReportObj
 {
 private:
 	// Pointer to the Page-Control/Margins
@@ -189,9 +189,6 @@ public:
 	long        GetLocalLong( void ) { return m_lLocal; };
 	int         GetType( void )      { return m_nType; };
 	wxString &  GetString( void )    { return m_strLocal; };
-
-	void		SetSize(double dXSize, double dYSize);
-	double		GetWidth() { return m_sizSize.x/100; }
 
 	bool		SaveSettings( wxFFile &fFile );
 	bool		SaveData( wxFFile &fFile );
@@ -252,7 +249,7 @@ WX_DECLARE_EXPORTED_LIST(wxReportObj, wxReportObjList);
 // -------------------------------------
 //  
 // -------------------------------------
-class WXDLLEXPORT wxReportSection
+class  wxReportSection
 {
 public:
 	wxReportObjList *m_pList;
@@ -268,13 +265,13 @@ WX_DECLARE_EXPORTED_LIST(wxReportSection, wxReportSectionList);
 
 
 
-class WXDLLEXPORT ReportPrintout;
+class  ReportPrintout;
 
 
 // -------------------------------------
 //  THE REPORT (page)
 // -------------------------------------
-class WXDLLEXPORT wxReportWriter: public wxFrame
+class  wxReportWriter: public wxFrame
 {
 private:
 	wxString            m_strFilename;
@@ -376,7 +373,7 @@ public:
 // -------------------------------------
 //  Printout Handling
 // -------------------------------------
-class WXDLLEXPORT ReportPrintout: public wxPrintout
+class  ReportPrintout: public wxPrintout
 {
 public:
     ReportPrintout(wxReportWriter *pFrame, wxChar *szTitle = wxT("Polix Druck") );
@@ -417,7 +414,7 @@ private:
 
 wxSizer *SelectPrintFunc( wxWindow *parent, bool call_fit = TRUE, bool set_sizer = TRUE );
 
-class WXDLLEXPORT wxReportSelector : public wxDialog
+class  wxReportSelector : public wxDialog
 {
 private:
 	wxArrayString m_aFiles;
