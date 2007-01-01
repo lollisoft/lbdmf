@@ -255,6 +255,7 @@ lbDatabasePanel::~lbDatabasePanel() {
 }
 /*...e*/
 
+/*...svoid LB_STDCALL lbDatabasePanel\58\\58\create\40\int parentId\41\:0:*/
 void LB_STDCALL lbDatabasePanel::create(int parentId) {
 	wxWindow* w = FindWindowById(parentId);
 	
@@ -262,6 +263,10 @@ void LB_STDCALL lbDatabasePanel::create(int parentId) {
 	SetFocus();
 	_created = true;
 }
+/*...e*/
+
+/*...sMacros DISABLE_EOF\44\ DISABLE_BOF\44\ DISABLE_FOR_ONE_DATA\44\ DISABLE_FOR_NO_DATA:0:*/
+
 
 #define DISABLE_EOF() \
 	if (allNaviDisabled == false) { \
@@ -296,6 +301,8 @@ void LB_STDCALL lbDatabasePanel::create(int parentId) {
 	DISABLE_FOR_ONE_DATA() \
 	deleteButton->Disable(); \
 	allNaviDisabled = true;
+
+/*...e*/
 
 
 /*...slbErrCodes LB_STDCALL lbDatabasePanel\58\\58\registerEventHandler\40\lb_I_Dispatcher\42\ dispatcher\41\:0:*/
@@ -1423,6 +1430,15 @@ void LB_STDCALL lbDatabasePanel::updateFromMaster() {
 						colName->charrep()
 						);
 		
+				if (fk == NULL) {
+					_LOG << "Error: could not get foreign column for '" << PKQuery->getTableName(colName->charrep()) << "." << colName->charrep() << "' on newMasterIDQuery '" << newMasterIDQuery->charrep() << "' !" LOG_
+					_LOG << "Have master form '" << masterForm->charrep() << 
+					           "', source field name '" << SourceFieldName->charrep() << 
+					           "' and source field value '" << SourceFieldValue->charrep() <<
+		        			   "' for detail form '" << formName << "'" LOG_
+					return;
+				}
+				
 				*newWhereClause += fk->charrep();
 
 				wxWindow* w = FindWindowByName(wxString(fk->charrep()), this);
@@ -1466,6 +1482,15 @@ void LB_STDCALL lbDatabasePanel::updateFromMaster() {
 					colName->charrep()
 					);
 		
+			if (fk == NULL) {
+				_LOG << "Error: could not get foreign column for '" << PKQuery->getTableName(colName->charrep()) << "." << colName->charrep() << "' on newMasterIDQuery '" << newMasterIDQuery->charrep() << "' !" LOG_
+				_LOG << "Have master form '" << masterForm->charrep() << 
+				           "', source field name '" << SourceFieldName->charrep() << 
+				           "' and source field value '" << SourceFieldValue->charrep() <<
+	        			   "' for detail form '" << formName << "'" LOG_
+				return;
+			}
+
 			*newWhereClause += fk->charrep();
 
 			wxWindow* w = FindWindowByName(wxString(fk->charrep()), this);
@@ -1514,6 +1539,15 @@ void LB_STDCALL lbDatabasePanel::updateFromMaster() {
 						colName->charrep()
 						);
 		
+				if (fk == NULL) {
+					_LOG << "Error: could not get foreign column for '" << PKQuery->getTableName(colName->charrep()) << "." << colName->charrep() << "' on newMasterIDQuery '" << newMasterIDQuery->charrep() << "' !" LOG_
+					_LOG << "Have master form '" << masterForm->charrep() << 
+					           "', source field name '" << SourceFieldName->charrep() << 
+					           "' and source field value '" << SourceFieldValue->charrep() <<
+		        			   "' for detail form '" << formName << "'" LOG_
+					return;
+				}
+				
 				*newWhereClause += fk->charrep();
 
 				wxWindow* w = FindWindowByName(wxString(fk->charrep()), this);
@@ -1556,6 +1590,15 @@ void LB_STDCALL lbDatabasePanel::updateFromMaster() {
 					colName->charrep()
 					);
 		
+			if (fk == NULL) {
+				_LOG << "Error: could not get foreign column for '" << PKQuery->getTableName(colName->charrep()) << "." << colName->charrep() << "' on newMasterIDQuery '" << newMasterIDQuery->charrep() << "' !" LOG_
+				_LOG << "Have master form '" << masterForm->charrep() << 
+				           "', source field name '" << SourceFieldName->charrep() << 
+				           "' and source field value '" << SourceFieldValue->charrep() <<
+	        			   "' for detail form '" << formName << "'" LOG_
+				return;
+			}
+
 			*newWhereClause += fk->charrep();
 
 			wxWindow* w = FindWindowByName(wxString(fk->charrep()), this);
@@ -2008,7 +2051,8 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBClear() {
 			if (sampleQuery->hasFKColumn(name) == 1) {
 /*...sUpdate drop down box:32:*/
 				wxChoice* cbox = (wxChoice*) w;
-				if (cbox->IsEnabled()) sampleQuery->setNull(name);
+				if (sampleQuery->isAdding() == 1)
+					if (cbox->IsEnabled()) sampleQuery->setNull(name);
 				cbox->SetSelection(-1);
 /*...e*/
 			} else {
@@ -2132,6 +2176,7 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBUpdate() {
 						col->setData(name);
 						val->setData(pp);
 					
+						sampleQuery->setNull(name, false);
 						sampleQuery->setString(*&col, *&val);
 					}
 				} else {
@@ -2400,17 +2445,23 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBFirst(lb_I_Unknown* uk) {
 	while (err == ERR_DB_ROWDELETED) err = sampleQuery->next();
 
 	if (err == ERR_DB_NODATA) {
-		DISABLE_FOR_NO_DATA()
+		sampleQuery->reopen();
+		
+		err = sampleQuery->first();
+		
+		if (err == ERR_DB_NODATA) {
+			DISABLE_FOR_NO_DATA()
 
-		return ERR_DB_NODATA;
+			return ERR_DB_NODATA;
+		} else {
+			DISABLE_BOF()
+		}
 	}
 
-_CL_LOG << "lbDBRead();" LOG_	
 	lbDBRead();
 	
-_CL_LOG << "DISABLE_BOF()" LOG_	
 	DISABLE_BOF()
-_CL_LOG << "return ERR_NONE;" LOG_
+
 	return ERR_NONE;
 }
 /*...e*/
@@ -2429,9 +2480,18 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBNext(lb_I_Unknown* uk) {
 	}
 
 	if (err == ERR_DB_NODATA) {
-		prevButton->Disable();
-		firstButton->Disable();
-		return ERR_DB_NODATA;
+		sampleQuery->reopen();
+		
+		err = sampleQuery->last();
+		
+		if (err == ERR_DB_NODATA) {
+			prevButton->Disable();
+			firstButton->Disable();
+			return ERR_DB_NODATA;
+		} else {
+			DISABLE_EOF()
+		}
+		
 	} else {
 		prevButton->Enable();
 		firstButton->Enable();
@@ -2460,9 +2520,17 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBPrev(lb_I_Unknown* uk) {
 	}
 
 	if (err == ERR_DB_NODATA) {
-		nextButton->Disable();
-		lastButton->Disable();
-		return ERR_DB_NODATA;
+	
+		sampleQuery->reopen();
+		err = sampleQuery->first();
+		
+		if (err == ERR_DB_NODATA) {
+			nextButton->Disable();
+			lastButton->Disable();
+			return ERR_DB_NODATA;
+		} else {
+			DISABLE_BOF()
+		}
 	} else {
 		nextButton->Enable();
 		lastButton->Enable();
@@ -2486,9 +2554,14 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBLast(lb_I_Unknown* uk) {
 	while (err == ERR_DB_ROWDELETED) err = sampleQuery->previous();
 
 	if (err == ERR_DB_NODATA) {
-		DISABLE_FOR_NO_DATA()
+		sampleQuery->reopen();
+		err = sampleQuery->last();
+	
+		if (err == ERR_DB_NODATA) {
+			DISABLE_FOR_NO_DATA()
 
-		return ERR_DB_NODATA;
+			return ERR_DB_NODATA;
+		}
 	}
 
 	lbDBRead();
@@ -2508,8 +2581,6 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBAdd(lb_I_Unknown* uk) {
 	if (sampleQuery->isAdding() == 0) {
 		if (sampleQuery->dataFetched()) errUpdate = lbDBUpdate();
 
-		lbDBClear();
-
 		if (sampleQuery->add() != ERR_NONE) {
 			UAP_REQUEST(manager.getPtr(), lb_I_String, newTitle)
 
@@ -2521,7 +2592,9 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBAdd(lb_I_Unknown* uk) {
 
 			SetTitle(_trans(newTitle->charrep()));
 		} else {
-			// Fake a successfull update
+			// Delete fields and set foreign key columns to NULL
+			
+			lbDBClear();
 			
 			errUpdate = ERR_NONE;
 		}
@@ -2746,9 +2819,9 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBAdd(lb_I_Unknown* uk) {
 						_CL_LOG << "Column for foreignkey binding is not set to NULL." LOG_				
 					}
 				}
-			
+				
 				if (sampleQuery->update() == ERR_NONE) {
-					if (sampleQuery->last() == ERR_NONE) 
+					if (sampleQuery->last() == ERR_NONE)
 						lbDBRead();
 					else
 						_LOG << "Error: Moving to new record failed." LOG_
