@@ -181,7 +181,6 @@ lbErrCodes LB_STDCALL lbDynamicApplication::getDynamicDBForm(lb_I_Unknown* uk) {
 #endif
 
 		if ((forms != NULL) && (forms->getFormularCount() > 0)) {
-_CL_LOG << "Create formular with new data model." LOG_		
 			forms->finishFormularIteration();
 			while (forms->hasMoreFormulars()) {
 				forms->setNextFormular();
@@ -195,6 +194,8 @@ _CL_LOG << "Create formular with new data model." LOG_
 			// appParams->getParameter() changes results to prior issued calls. Do temporaly make copies.
 			
 			long id = metaapp->getApplicationID();			
+
+_CL_LOG << "Create formular with new data model (application id = " << id << ")" LOG_		
 			
 			*DBName = appParams->getParameter("DBName", id);
 			*DBUser = appParams->getParameter("DBUser", id);

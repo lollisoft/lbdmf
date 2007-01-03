@@ -94,7 +94,7 @@ long	LB_STDCALL lbApplications::addApplication(const char* application, const ch
 	*Functor = functor;
 	*Interface = _interface;
 
-	_CL_VERBOSE << "lbApplications::addApplication('" << application << "', '" << titel << "', '" << modulename << "', '" << functor << "', '" << _interface << "', '" << _ID->getData() << "') called" LOG_
+	_CL_LOG << "lbApplications::addApplication('" << application << "', '" << titel << "', '" << modulename << "', '" << functor << "', '" << _interface << "', '" << _ID->getData() << "') called" LOG_
 
 	*paramname = "ID";
 	param->setUAPLong(*&paramname, *&_ID);

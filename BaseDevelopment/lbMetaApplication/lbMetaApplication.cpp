@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.100 $
+ * $Revision: 1.101 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.100 2006/12/23 15:42:42 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.101 2007/01/03 17:08:39 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.101  2007/01/03 17:08:39  lollisoft
+ * Activated more logging and added more error messages.
+ *
  * Revision 1.100  2006/12/23 15:42:42  lollisoft
  * Many changes to get a more stable release. Still having problems with database updates on foreign keys.
  *
@@ -677,6 +680,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::load() {
 			QI(ukPl, lb_I_FileOperation, fOp)
 			
 			if (!fOp->begin("MetaApp.mad")) {
+				_LOG << "Error: fOp->begin('MetaApp.mad') failed !" LOG_
 				return ERR_FILE_READ;
 			}
 			
@@ -1852,6 +1856,8 @@ lb_I_Container* LB_STDCALL lb_MetaApplication::getApplications() {
 		// Maybe no data collected in the file yet
 		// Fallback to manually read out the applications
 	
+		_LOG << "Info: Have no applications in '" << Applications->getClassName() << "'. Create the list from database." LOG_
+	
 		UAP_REQUEST(manager.getPtr(), lb_I_Database, database)
 		UAP(lb_I_Query, sampleQuery)
 		database->init();
@@ -1928,7 +1934,7 @@ lb_I_Container* LB_STDCALL lb_MetaApplication::getApplications() {
 
 /*...sLoad by direct SQL queries\44\ if all above fails:16:*/
 		if (!hasDBLoaded) {
-
+			_LOG << "Info: All streaming operations have been failed. Use database API directly." LOG_
 			sampleQuery = database->getQuery(0);
 
 			char* buffer = (char*) malloc(1000);
