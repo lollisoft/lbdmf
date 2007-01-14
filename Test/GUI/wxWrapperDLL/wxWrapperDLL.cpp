@@ -511,10 +511,12 @@ lbErrCodes LB_STDCALL lb_wxFrame::registerEventHandler(lb_I_Dispatcher* disp) {
 	eman->registerEvent("switchPanelUse", on_panel_usage);
 	eman->registerEvent("ShowPropertyPanel", _showLeftPropertyBar);
 	eman->registerEvent("setPreferredPropertyPanelByNamespace", temp);
+	eman->registerEvent("showMsgBox", temp);
 	
 	disp->addEventHandlerFn(this, (lbEvHandler) &lb_wxFrame::showLeftPropertyBar, "ShowPropertyPanel");
 	disp->addEventHandlerFn(this, (lbEvHandler) &lb_wxFrame::switchPanelUse, "switchPanelUse");
 	disp->addEventHandlerFn(this, (lbEvHandler) &lb_wxFrame::setPreferredPropertyPanelByNamespace, "setPreferredPropertyPanelByNamespace");
+	disp->addEventHandlerFn(this, (lbEvHandler) &lb_wxFrame::showMsgBox, "showMsgBox");
 	
 	Connect( _showLeftPropertyBar,  -1, wxEVT_COMMAND_MENU_SELECTED,
 			 (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
@@ -1397,6 +1399,25 @@ lbErrCodes LB_STDCALL lb_wxFrame::setPreferredPropertyPanelByNamespace(lb_I_Unkn
 	}
 	
 	*PanelNamespace = _namespace->charrep();
+	
+	return err;
+}
+
+lbErrCodes LB_STDCALL lb_wxFrame::showMsgBox(lb_I_Unknown* uk) {
+	lbErrCodes err = ERR_NONE;
+	
+	UAP(lb_I_Parameter, param)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, msg)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, title)
+	QI(uk, lb_I_Parameter, param)
+		
+	parameter->setData("msg");
+	param->getUAPString(*&parameter, *&msg);
+	parameter->setData("title");
+	param->getUAPString(*&parameter, *&title);
+
+	gui->msgBox(title->charrep(), msg->charrep());
 	
 	return err;
 }

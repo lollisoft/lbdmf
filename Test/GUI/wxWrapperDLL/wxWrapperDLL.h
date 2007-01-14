@@ -33,11 +33,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.17 $
+ * $Revision: 1.18 $
  * $Name:  $
- * $Id: wxWrapperDLL.h,v 1.17 2006/03/24 17:15:40 lollisoft Exp $
+ * $Id: wxWrapperDLL.h,v 1.18 2007/01/14 15:03:45 lollisoft Exp $
  *
  * $Log: wxWrapperDLL.h,v $
+ * Revision 1.18  2007/01/14 15:03:45  lollisoft
+ * Added a new handler to show a simple message box.
+ *
  * Revision 1.17  2006/03/24 17:15:40  lollisoft
  * Added GUI state for maximized or not.
  * Size events didn't work ??
@@ -269,6 +272,8 @@ public:
 	lbErrCodes LB_STDCALL switchPanelUse(lb_I_Unknown* uk);
 	
 	lbErrCodes LB_STDCALL setPreferredPropertyPanelByNamespace(lb_I_Unknown* uk);
+	lbErrCodes LB_STDCALL showMsgBox(lb_I_Unknown* uk);
+	
 	
 	wxMenuBar* menu_bar;
 	

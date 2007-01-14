@@ -2595,6 +2595,10 @@ public:
 	 */
 	virtual bool LB_STDCALL askYesNo(char* msg) = 0;
 	
+	/** \brief Show a simple message box.
+	 */
+	virtual void LB_STDCALL msgBox(char* title, char* msg) = 0;
+	
 	/** \brief Let the GUI show the given parameters in a property panel.
 	 *
 	 */
