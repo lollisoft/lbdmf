@@ -287,6 +287,7 @@ void LB_STDCALL lbAction::delegate(lb_I_Parameter* params) {
 					}
 					
 					result->setModuleManager(getModuleInstance(), __FILE__, __LINE__);
+					action->setActionID(id->charrep());
 					actions->insert(&result, &ukey);
 					/*...e*/
 				}
@@ -297,7 +298,6 @@ void LB_STDCALL lbAction::delegate(lb_I_Parameter* params) {
 			
 			QI(uk, lb_I_DelegatedAction, action)
 				
-				action->setActionID(id->charrep());
 			action->execute(*&params);
 			
 			_CL_LOG << "References for delegated action are " << action->getRefCount() << "." LOG_
@@ -485,17 +485,22 @@ void LB_STDCALL lbDetailFormAction::setActionID(char* id) {
 /*...svoid LB_STDCALL lbDetailFormAction\58\\58\openDetailForm\40\lb_I_String\42\ formularname\44\ lb_I_Parameter\42\ params\41\:0:*/
 void LB_STDCALL lbDetailFormAction::openDetailForm(lb_I_String* formularname, lb_I_Parameter* params) {
 	lbErrCodes err = ERR_NONE;
+	UAP_REQUEST(manager.getPtr(), lb_I_String, actionID)
 
 	if (detailForm != NULL) {
 		_CL_VERBOSE << "Show previously created form." LOG_
 	
 		UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
 		
+		// Pass my action ID
+		parameter->setData("actionID");
+		*actionID = myActionID;
+		params->setUAPString(*&parameter, *&actionID);
+		
 		parameter->setData("source value");
 		params->getUAPString(*&parameter, *&SourceFieldValue);
 		parameter->setData("source Form");
 		params->getUAPString(*&parameter, *&masterForm);
-		
 		*parameter = " - ";
 		*parameter += SourceFieldValue->charrep();
 		
@@ -533,6 +538,10 @@ void LB_STDCALL lbDetailFormAction::openDetailForm(lb_I_String* formularname, lb
 		params->getUAPString(*&parameter, *&DBPass);
 		parameter->setData("source Form");
 		params->getUAPString(*&parameter, *&masterForm);
+		parameter->setData("actionID");
+		*actionID = myActionID;
+		params->getUAPString(*&parameter, *&actionID);
+
 	//	parameter->setData("source field");
 	//	params->getUAPString(*&parameter, *&SourceFieldName);
 		parameter->setData("source value");
@@ -851,17 +860,22 @@ void LB_STDCALL lbMasterFormAction::setActionID(char* id) {
 /*...svoid LB_STDCALL lbMasterFormAction\58\\58\openMasterForm\40\lb_I_String\42\ formularname\44\ lb_I_Parameter\42\ params\41\:0:*/
 void LB_STDCALL lbMasterFormAction::openMasterForm(lb_I_String* formularname, lb_I_Parameter* params) {
 	lbErrCodes err = ERR_NONE;
+	UAP_REQUEST(manager.getPtr(), lb_I_String, actionID)
 
 	if (masterForm != NULL) {
 		_CL_VERBOSE << "Show previously created form." LOG_
 	
 		UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
 		
+		// Pass my action ID
+		parameter->setData("actionID");
+		*actionID = myActionID;
+		params->setUAPString(*&parameter, *&actionID);
+
 		parameter->setData("source value");
 		params->getUAPString(*&parameter, *&SourceFieldValue);
 		parameter->setData("source Form");
 		params->getUAPString(*&parameter, *&detailForm);
-
 		*parameter = " - ";
 		*parameter += SourceFieldValue->charrep();
 		
@@ -900,6 +914,11 @@ void LB_STDCALL lbMasterFormAction::openMasterForm(lb_I_String* formularname, lb
 		params->getUAPString(*&parameter, *&DBPass);
 		parameter->setData("source Form");
 		params->getUAPString(*&parameter, *&detailForm);
+		
+		parameter->setData("actionID");
+		*actionID = myActionID;
+		params->setUAPString(*&parameter, *&actionID);
+
 		//	parameter->setData("source field");
 		//	params->getUAPString(*&parameter, *&SourceFieldName);
 		parameter->setData("source value");
