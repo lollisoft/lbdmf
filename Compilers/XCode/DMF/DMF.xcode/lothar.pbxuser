@@ -344,26 +344,9 @@
 		};
 		perUserProjectItems = {
 			2727DA820B5A6FB400B9E3C8 = 2727DA820B5A6FB400B9E3C8;
-			2727DA830B5A6FB400B9E3C8 = 2727DA830B5A6FB400B9E3C8;
-			2727DA840B5A6FB400B9E3C8 = 2727DA840B5A6FB400B9E3C8;
-			2727DA850B5A6FB400B9E3C8 = 2727DA850B5A6FB400B9E3C8;
-			2727DA860B5A6FB400B9E3C8 = 2727DA860B5A6FB400B9E3C8;
-			2727DA870B5A6FB400B9E3C8 = 2727DA870B5A6FB400B9E3C8;
-			2727DA880B5A6FB400B9E3C8 = 2727DA880B5A6FB400B9E3C8;
-			2727DAA10B5A76F400B9E3C8 = 2727DAA10B5A76F400B9E3C8;
 			2747C79B0B5A7916005311B2 = 2747C79B0B5A7916005311B2;
 			2747C79C0B5A7916005311B2 = 2747C79C0B5A7916005311B2;
-			2747C79D0B5A7916005311B2 = 2747C79D0B5A7916005311B2;
-			2747C7A40B5A792C005311B2 = 2747C7A40B5A792C005311B2;
-			2747C7A60B5A792E005311B2 = 2747C7A60B5A792E005311B2;
-			2747C7A70B5A7A07005311B2 = 2747C7A70B5A7A07005311B2;
-			2747C7A80B5A7A0A005311B2 = 2747C7A80B5A7A0A005311B2;
-			2747C7A90B5A7A4B005311B2 = 2747C7A90B5A7A4B005311B2;
-			2747C7AA0B5A7A84005311B2 = 2747C7AA0B5A7A84005311B2;
-			2747C7AB0B5A7AED005311B2 = 2747C7AB0B5A7AED005311B2;
-			2747C7AC0B5A7B27005311B2 = 2747C7AC0B5A7B27005311B2;
-			2747C7AF0B5A7BBA005311B2 = 2747C7AF0B5A7BBA005311B2;
-			2747C7B00B5A7C11005311B2 = 2747C7B00B5A7C11005311B2;
+			2747C7B20B5A7F7A005311B2 = 2747C7B20B5A7F7A005311B2;
 			275BBCF70B4D3BB400CA8C6A = 275BBCF70B4D3BB400CA8C6A;
 			275BBCFE0B4D3F1F00CA8C6A = 275BBCFE0B4D3F1F00CA8C6A;
 			275BBD0F0B4D448A00CA8C6A = 275BBD0F0B4D448A00CA8C6A;
@@ -518,82 +501,12 @@
 		vrLen = 1203;
 		vrLoc = 87221;
 	};
-	2727DA830B5A6FB400B9E3C8 = {
-		fRef = 27F462A709960253007178F9;
-		isa = PBXTextBookmark;
-		name = "Actions.cpp: 422";
-		rLen = 0;
-		rLoc = 10329;
-		rType = 0;
-		vrLen = 1201;
-		vrLoc = 9155;
-	};
-	2727DA840B5A6FB400B9E3C8 = {
-		fRef = 27CE9A1D08D4A87C00FB3DF0;
-		isa = PBXTextBookmark;
-		name = "lbDatabaseForm.cpp: 1173";
-		rLen = 0;
-		rLoc = 32651;
-		rType = 0;
-		vrLen = 1910;
-		vrLoc = 27987;
-	};
-	2727DA850B5A6FB400B9E3C8 = {
-		fRef = 27F462A709960253007178F9;
-		isa = PBXTextBookmark;
-		name = "Actions.cpp: 22";
-		rLen = 0;
-		rLoc = 1016;
-		rType = 0;
-		vrLen = 1392;
-		vrLoc = 0;
-	};
-	2727DA860B5A6FB400B9E3C8 = {
-		fRef = 27CE9A1D08D4A87C00FB3DF0;
-		isa = PBXTextBookmark;
-		name = "lbDatabaseForm.cpp: 1749";
-		rLen = 0;
-		rLoc = 50085;
-		rType = 0;
-		vrLen = 1904;
-		vrLoc = 49023;
-	};
-	2727DA870B5A6FB400B9E3C8 = {
-		fRef = 27F462A709960253007178F9;
-		isa = PBXTextBookmark;
-		name = "Actions.cpp: 422";
-		rLen = 0;
-		rLoc = 10329;
-		rType = 0;
-		vrLen = 1201;
-		vrLoc = 9155;
-	};
-	2727DA880B5A6FB400B9E3C8 = {
-		fRef = 27CE9A1D08D4A87C00FB3DF0;
-		isa = PBXTextBookmark;
-		name = "lbDatabasePanel::OnActionButton";
-		rLen = 31;
-		rLoc = 80405;
-		rType = 0;
-		vrLen = 1203;
-		vrLoc = 87221;
-	};
 	2727DA970B5A700300B9E3C8 = {
 		fileReference = 27F462A709960253007178F9;
 		functionName = "lbMasterFormAction::setActionID()";
 		isa = PBXFileBreakpoint;
 		lineNumber = 852;
 		state = 1;
-	};
-	2727DAA10B5A76F400B9E3C8 = {
-		fRef = 27F462A709960253007178F9;
-		isa = PBXTextBookmark;
-		name = "Actions.cpp: 371";
-		rLen = 0;
-		rLoc = 9108;
-		rType = 0;
-		vrLen = 1305;
-		vrLoc = 8396;
 	};
 	272AA1690B373D0B0005D623 = {
 		isa = PBXFileReference;
@@ -644,107 +557,7 @@
 		vrLen = 1415;
 		vrLoc = 12190;
 	};
-	2747C79D0B5A7916005311B2 = {
-		fRef = 27CE9A1D08D4A87C00FB3DF0;
-		isa = PBXTextBookmark;
-		name = "lbDatabasePanel::updateFromDetail";
-		rLen = 33;
-		rLoc = 48542;
-		rType = 0;
-		vrLen = 1852;
-		vrLoc = 48670;
-	};
-	2747C7A40B5A792C005311B2 = {
-		fRef = 27CE9A1D08D4A87C00FB3DF0;
-		isa = PBXTextBookmark;
-		name = "lbDatabasePanel::updateFromDetail";
-		rLen = 33;
-		rLoc = 48542;
-		rType = 0;
-		vrLen = 1852;
-		vrLoc = 48670;
-	};
-	2747C7A60B5A792E005311B2 = {
-		fRef = 27CE9A1D08D4A87C00FB3DF0;
-		isa = PBXTextBookmark;
-		name = "lbDatabasePanel::updateFromDetail";
-		rLen = 33;
-		rLoc = 48542;
-		rType = 0;
-		vrLen = 1852;
-		vrLoc = 48670;
-	};
-	2747C7A70B5A7A07005311B2 = {
-		fRef = 27CE9A1D08D4A87C00FB3DF0;
-		isa = PBXTextBookmark;
-		name = "lbDatabasePanel::updateFromDetail";
-		rLen = 33;
-		rLoc = 48542;
-		rType = 0;
-		vrLen = 1852;
-		vrLoc = 48670;
-	};
-	2747C7A80B5A7A0A005311B2 = {
-		fRef = 27CE9A1D08D4A87C00FB3DF0;
-		isa = PBXTextBookmark;
-		name = "lbDatabasePanel::updateFromDetail";
-		rLen = 33;
-		rLoc = 48542;
-		rType = 0;
-		vrLen = 1852;
-		vrLoc = 48670;
-	};
-	2747C7A90B5A7A4B005311B2 = {
-		fRef = 27CE9A1D08D4A87C00FB3DF0;
-		isa = PBXTextBookmark;
-		name = "lbDatabasePanel::updateFromDetail";
-		rLen = 33;
-		rLoc = 48542;
-		rType = 0;
-		vrLen = 1852;
-		vrLoc = 48670;
-	};
-	2747C7AA0B5A7A84005311B2 = {
-		fRef = 27CE9A1D08D4A87C00FB3DF0;
-		isa = PBXTextBookmark;
-		name = "lbDatabasePanel::updateFromDetail";
-		rLen = 33;
-		rLoc = 48542;
-		rType = 0;
-		vrLen = 1852;
-		vrLoc = 48670;
-	};
-	2747C7AB0B5A7AED005311B2 = {
-		fRef = 27CE9A1D08D4A87C00FB3DF0;
-		isa = PBXTextBookmark;
-		name = "lbDatabasePanel::updateFromDetail";
-		rLen = 33;
-		rLoc = 48542;
-		rType = 0;
-		vrLen = 1852;
-		vrLoc = 48670;
-	};
-	2747C7AC0B5A7B27005311B2 = {
-		fRef = 27CE9A1D08D4A87C00FB3DF0;
-		isa = PBXTextBookmark;
-		name = "lbDatabasePanel::updateFromDetail";
-		rLen = 33;
-		rLoc = 48542;
-		rType = 0;
-		vrLen = 1852;
-		vrLoc = 48670;
-	};
-	2747C7AF0B5A7BBA005311B2 = {
-		fRef = 27CE9A1D08D4A87C00FB3DF0;
-		isa = PBXTextBookmark;
-		name = "lbDatabasePanel::updateFromDetail";
-		rLen = 33;
-		rLoc = 48542;
-		rType = 0;
-		vrLen = 1852;
-		vrLoc = 48670;
-	};
-	2747C7B00B5A7C11005311B2 = {
+	2747C7B20B5A7F7A005311B2 = {
 		fRef = 27CE9A1D08D4A87C00FB3DF0;
 		isa = PBXTextBookmark;
 		name = "lbDatabasePanel::updateFromDetail";
