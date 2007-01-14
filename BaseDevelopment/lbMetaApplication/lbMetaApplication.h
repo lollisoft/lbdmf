@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.41 $
+ * $Revision: 1.42 $
  * $Name:  $
- * $Id: lbMetaApplication.h,v 1.41 2006/07/17 17:37:45 lollisoft Exp $
+ * $Id: lbMetaApplication.h,v 1.42 2007/01/14 15:06:15 lollisoft Exp $
  *
  * $Log: lbMetaApplication.h,v $
+ * Revision 1.42  2007/01/14 15:06:15  lollisoft
+ * Added a new function to show a simple message box.
+ *
  * Revision 1.41  2006/07/17 17:37:45  lollisoft
  * Changes dueto bugfix in plugin manager. Repeadable iterator problem.
  * Not correctly finished the iteration, thus plugins in the same DLL wouldn't
@@ -301,6 +304,7 @@ public:
 	
 	lb_I_InputStream* LB_STDCALL askOpenFileReadStream(char* extentions);
 	bool			  LB_STDCALL askYesNo(char* msg);
+	void			  LB_STDCALL msgBox(char* title, char* msg);
 	
 	/** \brief Let the GUI show the given parameters in a property panel.
 	 *

@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.101 $
+ * $Revision: 1.102 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.101 2007/01/03 17:08:39 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.102 2007/01/14 15:06:15 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.102  2007/01/14 15:06:15  lollisoft
+ * Added a new function to show a simple message box.
+ *
  * Revision 1.101  2007/01/03 17:08:39  lollisoft
  * Activated more logging and added more error messages.
  *
@@ -1472,6 +1475,31 @@ bool LB_STDCALL lb_MetaApplication::askYesNo(char* msg) {
 	return false;
 }
 /*...e*/
+void LB_STDCALL lb_MetaApplication::msgBox(char* title, char* msg) {
+	lbErrCodes err = ERR_NONE;
+	
+	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, value)
+	UAP_REQUEST(manager.getPtr(), lb_I_Integer, i)
+
+	parameter->setData("msg");
+	value->setData(msg);
+	param->setUAPString(*&parameter, *&value);
+	parameter->setData("title");
+	value->setData(title);
+	param->setUAPString(*&parameter, *&value);
+
+	UAP(lb_I_Unknown, uk)
+	QI(param, lb_I_Unknown, uk)
+	
+	UAP_REQUEST(manager.getPtr(), lb_I_String, result)
+	UAP(lb_I_Unknown, uk_result)
+	QI(result, lb_I_Unknown, uk_result)
+	
+	dispatcher->dispatch("showMsgBox", uk.getPtr(), &uk_result);
+}
+
 lb_I_InputStream* LB_STDCALL lb_MetaApplication::askOpenFileReadStream(char* extentions) {
 	lbErrCodes err = ERR_NONE;
 	
