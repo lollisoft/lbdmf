@@ -287,17 +287,17 @@ void LB_STDCALL lbAction::delegate(lb_I_Parameter* params) {
 					}
 					
 					result->setModuleManager(getModuleInstance(), __FILE__, __LINE__);
-					action->setActionID(id->charrep());
 					actions->insert(&result, &ukey);
 					/*...e*/
 				}
 			
 			UAP(lb_I_Unknown, uk)
 				
-				uk = actions->getElement(&ukey);
+			uk = actions->getElement(&ukey);
 			
 			QI(uk, lb_I_DelegatedAction, action)
 				
+			action->setActionID(id->charrep());	
 			action->execute(*&params);
 			
 			_CL_LOG << "References for delegated action are " << action->getRefCount() << "." LOG_
@@ -368,14 +368,14 @@ void LB_STDCALL lbAction::delegate(lb_I_Parameter* params) {
 			
 			UAP(lb_I_Unknown, uk)
 				
-				uk = actions->getElement(&ukey);
+			uk = actions->getElement(&ukey);
 			
 			QI(uk, lb_I_DelegatedAction, action)
-				action->setActionID(id->charrep());
+			action->setActionID(id->charrep());
 			
 			_CL_LOG << "Execute delegated action..." LOG_
 				
-				action->execute(*&params);
+			action->execute(*&params);
 		}
 	}
 }
@@ -530,6 +530,10 @@ void LB_STDCALL lbDetailFormAction::openDetailForm(lb_I_String* formularname, lb
 
 		UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
 
+		parameter->setData("actionID");
+		*actionID = myActionID;
+		params->setUAPString(*&parameter, *&actionID);
+		
 		parameter->setData("DBName");
 		params->getUAPString(*&parameter, *&DBName);
 		parameter->setData("DBUser");
@@ -538,9 +542,6 @@ void LB_STDCALL lbDetailFormAction::openDetailForm(lb_I_String* formularname, lb
 		params->getUAPString(*&parameter, *&DBPass);
 		parameter->setData("source Form");
 		params->getUAPString(*&parameter, *&masterForm);
-		parameter->setData("actionID");
-		*actionID = myActionID;
-		params->getUAPString(*&parameter, *&actionID);
 
 	//	parameter->setData("source field");
 	//	params->getUAPString(*&parameter, *&SourceFieldName);

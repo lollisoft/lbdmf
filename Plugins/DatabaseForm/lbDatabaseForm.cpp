@@ -1310,6 +1310,7 @@ void LB_STDCALL lbDatabasePanel::updateFromMaster() {
 	UAP_REQUEST(manager.getPtr(), lb_I_String, newMasterIDQuery)
 	
 	UAP_REQUEST(manager.getPtr(), lb_I_String, newQuery)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, actionID)
 	
 	// Using the new = and += operators of the string interface. 
 	// Note: If used in an UAP, explizit 'dereferencing' must be used.
@@ -1339,6 +1340,13 @@ void LB_STDCALL lbDatabasePanel::updateFromMaster() {
 	_params->getUAPString(*&parameter, *&SourceFieldValue);
 	parameter->setData("application");
 	_params->getUAPString(*&parameter, *&app);
+	parameter->setData("actionID");
+	_params->getUAPString(*&parameter, *&actionID);
+	if (actionID->charrep() == NULL) {
+		UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
+
+		meta->msgBox(_trans("Error"), _trans("No action ID has been transferred!"));
+	}
 /*...e*/
 
 	masterForm->trim();
@@ -1354,6 +1362,32 @@ void LB_STDCALL lbDatabasePanel::updateFromMaster() {
 /*...sDetermine the primary key values of the current master entry\44\ based on the value of the \42\\38\SourceFieldName\46\:8:*/
 	UAP(lb_I_String, colName)
 	int columns = _master->getPrimaryColumns();
+	
+	if (columns == 0) {
+		UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
+		
+		if (meta->askYesNo(_trans("Failed to modify result set based on master detail relation. Should I try to fix it."))) {
+			/// \todo Fixing code.
+			REQUEST(manager.getPtr(), lb_I_Database, database)
+			UAP(lb_I_Query, correctionQuery)
+			UAP_REQUEST(manager.getPtr(), lb_I_String, SQL)
+
+			database->init();
+			database->connect(DBName->charrep(), DBUser->charrep(), DBPass->charrep());
+
+			correctionQuery = database->getQuery(0);
+			
+			*SQL = "update action_steps set type = (select id from action_types where bezeichnung = 'Open master form' and module = 'lbDatabaseForm') where id = ";
+			*SQL += actionID->charrep();
+			
+			correctionQuery->skipFKCollecting();
+			correctionQuery->query(SQL->charrep());
+			correctionQuery->enableFKCollecting();
+		}
+
+		return;
+	}
+
 	bool isChar = _master->isCharacterColumn(SourceFieldName->charrep());
 	
 	for (int i = 1; i <= columns-1; i++) {
@@ -1685,7 +1719,8 @@ void LB_STDCALL lbDatabasePanel::updateFromDetail() {
 	UAP_REQUEST(manager.getPtr(), lb_I_String, newMasterIDQuery)
 	
 	UAP_REQUEST(manager.getPtr(), lb_I_String, newQuery)
-	
+	UAP_REQUEST(manager.getPtr(), lb_I_String, actionID)
+
 	// Using the new = and += operators of the string interface. 
 	// Note: If used in an UAP, explizit 'dereferencing' must be used.
 	
@@ -1714,6 +1749,13 @@ void LB_STDCALL lbDatabasePanel::updateFromDetail() {
 	_params->getUAPString(*&parameter, *&SourceFieldValue);
 	parameter->setData("application");
 	_params->getUAPString(*&parameter, *&app);
+	parameter->setData("actionID");
+	_params->getUAPString(*&parameter, *&actionID);
+	if (actionID->charrep() == NULL) {
+		UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
+
+		meta->msgBox(_trans("Error"), _trans("No action ID has been transferred!"));
+	}
 /*...e*/
 
 	detailForm->trim();
@@ -1729,6 +1771,32 @@ void LB_STDCALL lbDatabasePanel::updateFromDetail() {
 /*...sDetermine the foreign key values of the current detail entry\44\ based on the value of the \42\\38\SourceFieldName\46\:8:*/
 	UAP(lb_I_String, colName)
 	int columns = _detail->getForeignColumns();
+	
+	if (columns == 0) {
+		UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
+		
+		if (meta->askYesNo(_trans("Failed to modify result set based on master detail relation. Should I try to fix it."))) {
+			/// \todo Fixing code.
+			REQUEST(manager.getPtr(), lb_I_Database, database)
+			UAP(lb_I_Query, correctionQuery)
+			UAP_REQUEST(manager.getPtr(), lb_I_String, SQL)
+
+			database->init();
+			database->connect(DBName->charrep(), DBUser->charrep(), DBPass->charrep());
+
+			correctionQuery = database->getQuery(0);
+			
+			*SQL = "update action_steps set type = (select id from action_types where bezeichnung = 'Open detail form' and module = 'lbDatabaseForm') where id = ";
+			*SQL += actionID->charrep();
+			
+			correctionQuery->skipFKCollecting();
+			correctionQuery->query(SQL->charrep());
+			correctionQuery->enableFKCollecting();
+		}
+
+		return;
+	}
+	
 	bool isChar = _detail->isCharacterColumn(SourceFieldName->charrep());
 	
 	char* sourceTable = strdup(_detail->getTableName(SourceFieldName->charrep()));
