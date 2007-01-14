@@ -150,7 +150,7 @@
  #endif // MEMTRACK
 
  #ifndef MEMTRACK
-  #define _TRMemValidate(name) (name != NULL)
+  #define _TRMemValidate(name) 1
   #define TRMemOpen()
   #define TRMemStartLocalCount()
   #define TRMemStopLocalCount()

@@ -1513,8 +1513,8 @@ lbErrCodes LB_STDCALL lbQuery::init(HENV _henv, HDBC _hdbc, int readonly) {
 
         if (retcode != SQL_SUCCESS)
         {
-                dbError( "SQLSetStmtOption()", hstmt);
                 _LOG << "lbDatabase::getQuery() failed due to setting concurrency settings." LOG_
+                dbError( "SQLSetStmtOption()", hstmt);
                 SQLFreeEnv(henv);
                 return ERR_DB_ALLOCSTATEMENT;
         }

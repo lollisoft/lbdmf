@@ -25,11 +25,14 @@
 #            40235 Duesseldorf (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.89 $
+# * $Revision: 1.90 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.89 2006/12/10 17:05:24 lollisoft Exp $
+# * $Id: STD_MAKE,v 1.90 2007/01/14 16:02:14 lollisoft Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.90  2007/01/14 16:02:14  lollisoft
+# * Corrections under Linux - Debug mode activated.
+# *
 # * Revision 1.89  2006/12/10 17:05:24  lollisoft
 # * Other changes under Mac OS X.
 # *
@@ -607,7 +610,7 @@ endif
 ifeq ($(OSTYPE), linux)
 
 DEBUG_MEMORY=no
-DEBUG=no
+DEBUG=yes
 
 
 ifeq ($(DEBUG), yes)
