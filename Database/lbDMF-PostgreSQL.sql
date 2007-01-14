@@ -209,6 +209,12 @@ insert into actions (name, typ, source, target) values(
 'name',
 6);
 
+insert into actions (name, typ, source, target) values(
+'Parameter',
+1,
+'name',
+4);
+
 -- Let print a reservation based on customers id for master report data.
 -- The customer would have more than one reservation. In general, these
 -- reservation entries should be the sub reports.
@@ -711,6 +717,8 @@ insert into Formulare (MenuOrder, Name, MenuName, EventName, MenuHilfe, Anwendun
 'Verwaltung der Formulare in lbDMF',
 4, 1);
 
+-- 10
+
 insert into Formulare (MenuOrder, Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
 3,
 'Formular_Parameter',
@@ -783,8 +791,6 @@ insert into Formulare (MenuOrder, Name, MenuName, EventName, MenuHilfe, Anwendun
 '-',
 1 , 1);
 
--- 20:
-
 insert into Formulare (MenuOrder, Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
 7,
 'Anwendungen -> Formulare',
@@ -792,6 +798,8 @@ insert into Formulare (MenuOrder, Name, MenuName, EventName, MenuHilfe, Anwendun
 'manageAnwendungenFormulare',
 '-',
 1, 1);
+
+-- 20
 
 insert into Formulare (MenuOrder, Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
 4,
@@ -825,8 +833,6 @@ insert into Formulare (MenuOrder, Name, MenuName, EventName, MenuHilfe, Anwendun
 '-',
 1, 1);
 
--- 25:
-
 insert into Formulare (MenuOrder, Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
 9,
 'Uebersetzungen',
@@ -834,6 +840,8 @@ insert into Formulare (MenuOrder, Name, MenuName, EventName, MenuHilfe, Anwendun
 'manageUebersetzungen',
 '-',
 1, 1);
+
+-- 25:
 
 insert into Formulare (MenuOrder, Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
 2,
@@ -850,6 +858,15 @@ insert into Formulare (MenuOrder, Name, MenuName, EventName, MenuHilfe, Anwendun
 'manageAssignFormActions',
 '-',
 1 , 1);
+
+insert into Formulare (MenuOrder, Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
+11,
+'Anwendungsparameter',
+'Anwendungsparameter verwalten',
+'manageAppParams',
+'-',
+1 , 1);
+
 --...e
 
 --...sFill formular_actions:0:
@@ -865,6 +882,7 @@ insert into formular_actions (formular, action, event) values(6, 7, 'evt_Print_C
 insert into formular_actions (formular, action, event) values(1, 4, 'evt_Manage_User_Apps');
 insert into formular_actions (formular, action, event) values(19, 5, 'evt_Manage_Apps_Forms');
 insert into formular_actions (formular, action, event) values(2, 6, 'evt_Manage_Form_Parameters');
+insert into formular_actions (formular, action, event) values(19, 8, 'evt_Manage_Apps_Parameters');
 
 --...e
 
@@ -991,6 +1009,11 @@ insert into Formular_Parameters (ParameterName, ParameterValue, FormularID) Valu
 'select formular, action, event from formular_actions order by formular',
 27);
 
+insert into Formular_Parameters (ParameterName, ParameterValue, FormularID) Values (
+'query',
+'select * from anwendungs_parameter',
+28);
+
 --...e
 --...sFill Anwendungs_Parameter:0:
 insert into Anwendungs_Parameter (ParameterName, ParameterValue, AnwendungID) Values ('DBName', 'trainres', 3);
@@ -1039,6 +1062,7 @@ insert into Anwendungen_Formulare (AnwendungID,FormularID) Values (1, 24);
 insert into Anwendungen_Formulare (AnwendungID,FormularID) Values (1, 25);
 insert into Anwendungen_Formulare (AnwendungID,FormularID) Values (5, 26);
 insert into Anwendungen_Formulare (AnwendungID,FormularID) Values (5, 27);
+insert into Anwendungen_Formulare (AnwendungID,FormularID) Values (1, 28);
 --...e
 --...sFill User_Anwendungen:0:
 insert into User_Anwendungen (userid, AnwendungenId) Values (1, 1);
