@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.112 $
+ * $Revision: 1.113 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.112 2006/10/22 18:34:36 lollisoft Exp $
+ * $Id: lbModule.cpp,v 1.113 2007/01/15 23:37:30 lollisoft Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.113  2007/01/15 23:37:30  lollisoft
+ * Changed code that valgrind mentioned as using uninitialized variable in boolean expression
+ *
  * Revision 1.112  2006/10/22 18:34:36  lollisoft
  * Many memory leaks resolved, but they were caused by small errors :-(
  * This is also a sync.
@@ -2045,6 +2048,7 @@ public:
 	int invalidSearchStatus;
 private:
 };
+
 
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbHCInterfaceRepository)
         ADD_INTERFACE(lb_I_InterfaceRepository)

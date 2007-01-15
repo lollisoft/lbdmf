@@ -31,10 +31,13 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.45 $
+ * $Revision: 1.46 $
  * $Name:  $
- * $Id: misc.cpp,v 1.45 2005/12/11 19:14:23 lollisoft Exp $
+ * $Id: misc.cpp,v 1.46 2007/01/15 23:37:30 lollisoft Exp $
  * $Log: misc.cpp,v $
+ * Revision 1.46  2007/01/15 23:37:30  lollisoft
+ * Changed code that valgrind mentioned as using uninitialized variable in boolean expression
+ *
  * Revision 1.45  2005/12/11 19:14:23  lollisoft
  * Release changes for 0.6.0. Added todo entries.
  *
@@ -300,6 +303,7 @@ public:
     
     
     virtual lb_I_Log& LB_STDCALL operator<< (const int i);
+    virtual lb_I_Log& LB_STDCALL operator<< (const long i);
     virtual lb_I_Log& LB_STDCALL operator<< (const char c);
     virtual lb_I_Log& LB_STDCALL operator<< (const char* string);
 /*...e*/
@@ -598,10 +602,19 @@ void LB_STDCALL lbLog::_realloc(int add_size) {
 } 
  
 lb_I_Log& LB_STDCALL lbLog::operator<< (/*lb_I_Log* logger,*/ const int i) {
-	char s[1000] = "";
 	_realloc(strlen(itoa(i)) + 1);
 	lastsize = lastsize + strlen(itoa(i)) + 1;
 	strcat(logmessage, itoa(i));
+	return *this;
+}
+lb_I_Log& LB_STDCALL lbLog::operator<< (/*lb_I_Log* logger,*/ const long i) {
+	char buf[20];
+	int len;
+	sprintf(buf, "%ld", i);
+	len = strlen(buf);
+	_realloc(len + 1);
+	lastsize = lastsize + len + 1;
+	strcat(logmessage, buf);
 	return *this;
 }
 lb_I_Log& LB_STDCALL lbLog::operator<< (/*lb_I_Log* logger,*/ const char c) {

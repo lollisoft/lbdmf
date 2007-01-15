@@ -792,6 +792,35 @@ typedef lbErrCodes ( lb_I_EventHandler::*lbEvHandler)(lb_I_Unknown* uk);
 
 #define USE_UAP
 
+class miniLong {
+public:
+	miniLong() {
+		l = 0;
+	}
+	
+	miniLong(long _l) {
+		l = _l;
+	}
+	
+	miniLong(const miniLong& _l) {
+		l = _l.l;
+	}
+	
+	~miniLong() {
+	}
+	
+	operator long() { return l; }
+	
+	miniLong& LB_STDCALL operator = (const long _l) {
+		l = _l;
+		return *this;
+	}
+	
+	long get() { return l; }
+	long set(long _l) { l = _l; }
+	long l;
+};
+
 class miniString {
 public:
 	miniString() {
@@ -1302,11 +1331,11 @@ private: \
 	lb_I_Unknown* data; \
 	int debug_macro; \
 	mutable int further_lock; \
-	mutable int instance_counted; \
+	mutable miniLong instance_counted; \
 	mutable miniString lastQIFile; \
-	mutable int        lastQILine; \
+	mutable miniLong   lastQILine; \
 	mutable miniString lastSMFile; \
-	mutable int        lastSMLine; \
+	mutable miniLong   lastSMLine; \
 protected: \
 public: \
 	virtual void 		LB_STDCALL setFurtherLock(int state) const { \
@@ -1420,7 +1449,7 @@ lbErrCodes LB_STDCALL classname::release(char* file, int line) { \
         		if (manager->can_delete(this, #classname) == 1)	{ \
         			manager->notify_destroy(this, #classname, file, line); \
         			\
-        			if (instance_counted == 112233) { \
+        			if (instance_counted.get() == 112233) { \
         				InstanceCount(-1); \
         			} else { \
         				_CL_LOG << "There may be a problem with the instance count system !" LOG_ \
@@ -1502,8 +1531,8 @@ lbErrCodes LB_STDCALL classname::queryInterface(char* name, void** unknown, char
 	lastQILine = line; \
 	_CL_VERBOSE << #classname << "::queryInterface(" << file << ", " << line << ") with ref = " << ref << " called." LOG_ \
 	\
-	if (instance_counted != 112233) { \
-		instance_counted = 112233; \
+	if (instance_counted.get() != 112233) { \
+		instance_counted.set(112233); \
 		InstanceCount(1); \
 	} \
 	\

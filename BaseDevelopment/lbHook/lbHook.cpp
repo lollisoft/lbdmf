@@ -268,7 +268,13 @@ DLLEXPORT char* LB_STDCALL itoa(int ptr) {
         return buf;                         
 }                                           
 
-DLLEXPORT char* LB_STDCALL ltoa(void* ptr) {
+DLLEXPORT char* LB_STDCALL ltoa(const long ptr) {
+        static char buf[20] = "";           
+        sprintf(buf, "%ld", ptr);            
+        return buf;                         
+}                                           
+
+DLLEXPORT char* LB_STDCALL ptoa(void* ptr) {
         static char buf[20] = "";
 	sprintf(buf, "%p", ptr);
         return buf;

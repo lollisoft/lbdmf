@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.71 $
+ * $Revision: 1.72 $
  * $Name:  $
- * $Id: lbInterfaces-sub-classes.h,v 1.71 2006/10/22 18:34:36 lollisoft Exp $
+ * $Id: lbInterfaces-sub-classes.h,v 1.72 2007/01/15 23:37:30 lollisoft Exp $
  *
  * $Log: lbInterfaces-sub-classes.h,v $
+ * Revision 1.72  2007/01/15 23:37:30  lollisoft
+ * Changed code that valgrind mentioned as using uninitialized variable in boolean expression
+ *
  * Revision 1.71  2006/10/22 18:34:36  lollisoft
  * Many memory leaks resolved, but they were caused by small errors :-(
  * This is also a sync.
@@ -1533,6 +1536,7 @@ public:
     
     
     virtual lb_I_Log& LB_STDCALL operator<< (const int i) = 0;
+    virtual lb_I_Log& LB_STDCALL operator<< (const long i) = 0;
     virtual lb_I_Log& LB_STDCALL operator<< (const char c) = 0;
     virtual lb_I_Log& LB_STDCALL operator<< (const char* string) = 0;
     

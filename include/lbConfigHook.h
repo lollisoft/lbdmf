@@ -405,8 +405,9 @@ DLLEXPORT lbErrCodes LB_STDCALL releaseInstance(lb_I_Unknown* inst);
 DLLEXPORT void LB_STDCALL unHookAll();
 /*...e*/
 
-DLLEXPORT char* LB_STDCALL ltoa(void* ptr);
+DLLEXPORT char* LB_STDCALL ptoa(void* ptr);
 DLLEXPORT char* LB_STDCALL itoa(int ptr);
+DLLEXPORT char* LB_STDCALL itoa(const long ptr);
 
 
 DLLEXPORT void LB_STDCALL InstanceCount(int inst);
