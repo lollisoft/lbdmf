@@ -125,6 +125,8 @@ public:
 	
 	virtual ~lbPluginTest();
 
+	bool LB_STDCALL canAutorun();
+	lbErrCodes LB_STDCALL autorun();
 /*...sfrom plugin interface:8:*/
 	void LB_STDCALL initialize();
 	
@@ -166,6 +168,15 @@ lbPluginTest::lbPluginTest() {
 
 lbPluginTest::~lbPluginTest() {
 	_CL_LOG << "lbPluginTest::~lbPluginTest() called.\n" LOG_
+}
+
+bool LB_STDCALL lbPluginTest::canAutorun() {
+	return false;
+}
+
+lbErrCodes LB_STDCALL lbPluginTest::autorun() {
+	lbErrCodes err = ERR_NONE;
+	return err;
 }
 
 void LB_STDCALL lbPluginTest::initialize() {

@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.42 $
+ * $Revision: 1.43 $
  * $Name:  $
- * $Id: lbMetaApplication.h,v 1.42 2007/01/14 15:06:15 lollisoft Exp $
+ * $Id: lbMetaApplication.h,v 1.43 2007/01/29 20:12:59 lollisoft Exp $
  *
  * $Log: lbMetaApplication.h,v $
+ * Revision 1.43  2007/01/29 20:12:59  lollisoft
+ * Checkin for Linux.
+ *
  * Revision 1.42  2007/01/14 15:06:15  lollisoft
  * Added a new function to show a simple message box.
  *
@@ -297,6 +300,13 @@ public:
 	lbErrCodes LB_STDCALL addButton(char* buttonText, char* evHandler, int x, int y, int w, int h);
 	lbErrCodes LB_STDCALL addLabel(char* text, int x, int y, int w, int h);
 	lbErrCodes LB_STDCALL addTextField(char* name, int x, int y, int w, int h);
+	
+	void LB_STDCALL addStatusBar();
+	
+	void LB_STDCALL addStatusBar_TextArea(char* name);
+	
+	void LB_STDCALL setStatusText(char* name, char* value);
+
 	
 	lbErrCodes LB_STDCALL enableEvent(char* name);
 	lbErrCodes LB_STDCALL disableEvent(char* name);

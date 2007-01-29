@@ -203,6 +203,8 @@ public:
 	
 	virtual ~lbPluginActionTypesModel();
 
+	bool LB_STDCALL canAutorun();
+	lbErrCodes LB_STDCALL autorun();
 /*...sfrom plugin interface:8:*/
 	void LB_STDCALL initialize();
 	
@@ -241,6 +243,15 @@ lbPluginActionTypesModel::lbPluginActionTypesModel() {
 
 lbPluginActionTypesModel::~lbPluginActionTypesModel() {
 	_CL_VERBOSE << "lbPluginActionTypesModel::~lbPluginActionTypesModel() called.\n" LOG_
+}
+
+bool LB_STDCALL lbPluginActionTypesModel::canAutorun() {
+	return false;
+}
+
+lbErrCodes LB_STDCALL lbPluginActionTypesModel::autorun() {
+	lbErrCodes err = ERR_NONE;
+	return err;
 }
 
 void LB_STDCALL lbPluginActionTypesModel::initialize() {

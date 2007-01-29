@@ -237,6 +237,8 @@ public:
 	
 	virtual ~lbPluginTranslationsModel();
 
+	bool LB_STDCALL canAutorun();
+	lbErrCodes LB_STDCALL autorun();
 /*...sfrom plugin interface:8:*/
 	void LB_STDCALL initialize();
 	
@@ -275,6 +277,15 @@ lbPluginTranslationsModel::lbPluginTranslationsModel() {
 
 lbPluginTranslationsModel::~lbPluginTranslationsModel() {
 	_LOG << "lbPluginTranslationsModel::~lbPluginTranslationsModel() called.\n" LOG_
+}
+
+bool LB_STDCALL lbPluginTranslationsModel::canAutorun() {
+	return false;
+}
+
+lbErrCodes LB_STDCALL lbPluginTranslationsModel::autorun() {
+	lbErrCodes err = ERR_NONE;
+	return err;
 }
 
 void LB_STDCALL lbPluginTranslationsModel::initialize() {

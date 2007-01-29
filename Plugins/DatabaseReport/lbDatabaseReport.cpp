@@ -664,6 +664,8 @@ public:
 	
 	virtual ~lbPluginDatabaseReport();
 
+	bool LB_STDCALL canAutorun();
+	lbErrCodes LB_STDCALL autorun();
 /*...sfrom plugin interface:8:*/
 	void LB_STDCALL initialize();
 	
@@ -707,6 +709,15 @@ lbPluginDatabaseReport::lbPluginDatabaseReport() {
 
 lbPluginDatabaseReport::~lbPluginDatabaseReport() {
 	_CL_VERBOSE << "lbPluginDatabaseReport::~lbPluginDatabaseReport() called." LOG_
+}
+
+bool LB_STDCALL lbPluginDatabaseReport::canAutorun() {
+	return false;
+}
+
+lbErrCodes LB_STDCALL lbPluginDatabaseReport::autorun() {
+	lbErrCodes err = ERR_NONE;
+	return err;
 }
 
 void LB_STDCALL lbPluginDatabaseReport::initialize() {

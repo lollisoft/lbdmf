@@ -33,11 +33,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.18 $
+ * $Revision: 1.19 $
  * $Name:  $
- * $Id: wxWrapperDLL.h,v 1.18 2007/01/14 15:03:45 lollisoft Exp $
+ * $Id: wxWrapperDLL.h,v 1.19 2007/01/29 20:12:59 lollisoft Exp $
  *
  * $Log: wxWrapperDLL.h,v $
+ * Revision 1.19  2007/01/29 20:12:59  lollisoft
+ * Checkin for Linux.
+ *
  * Revision 1.18  2007/01/14 15:03:45  lollisoft
  * Added a new handler to show a simple message box.
  *
@@ -274,8 +277,26 @@ public:
 	lbErrCodes LB_STDCALL setPreferredPropertyPanelByNamespace(lb_I_Unknown* uk);
 	lbErrCodes LB_STDCALL showMsgBox(lb_I_Unknown* uk);
 	
+	// Statusbar handlers
+	
+	/// \brief Add a status bar to the frame. 
+	lbErrCodes LB_STDCALL addStatusBar(lb_I_Unknown* uk);
+	
+	/// \brief Add a information text area to the statusbar.
+	lbErrCodes LB_STDCALL addStatusBarTextArea(lb_I_Unknown* uk);
+	
+	/// \brief Remove a information text area to the statusbar.
+	lbErrCodes LB_STDCALL removeStatusBarTextArea(lb_I_Unknown* uk);
+	
+	/// \brief Set text in a given text status bar area.
+	lbErrCodes LB_STDCALL setText_To_StatusBarTextArea(lb_I_Unknown* uk);
 	
 	wxMenuBar* menu_bar;
+	wxStatusBar* status_bar;
+	int *stb_withs;
+	int stb_areas;
+	UAP(lb_I_Container, statusbar_name_mappings)
+	
 	
 	// Splitter window handling
 	wxScrolledWindow *m_left, *m_right;

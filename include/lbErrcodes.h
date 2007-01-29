@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.29 $
+ * $Revision: 1.30 $
  * $Name:  $
- * $Id: lbErrcodes.h,v 1.29 2006/06/24 06:19:54 lollisoft Exp $
+ * $Id: lbErrcodes.h,v 1.30 2007/01/29 20:12:59 lollisoft Exp $
  *
  * $Log: lbErrcodes.h,v $
+ * Revision 1.30  2007/01/29 20:12:59  lollisoft
+ * Checkin for Linux.
+ *
  * Revision 1.29  2006/06/24 06:19:54  lollisoft
  * Commit due to travel to Duesseldorf.
  *
@@ -175,6 +178,7 @@ enum lbErrCodes {
 	ERR_DISP_HANDLER_EXSISTS,
 	ERR_REGISTER_HANDLER,
 	ERR_DISPATCH_FAILS,
+	ERR_DISPATCH_PARAMETER_WRONG,
 
 /* Errcodes for appbus dispatcher in connected state */
 
@@ -272,7 +276,9 @@ enum lbErrCodes {
 	ERR_FILE_WRITE_DEFAULT,
 	ERR_FILE_READ_DEFAULT,
 	ERR_FILE_WRITE,
-	ERR_FILE_READ
+	ERR_FILE_READ,
+	
+	ERR_PLUGIN_NOT_INITIALIZED
 };
 /*...e*/
 

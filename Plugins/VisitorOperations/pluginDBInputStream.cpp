@@ -826,6 +826,8 @@ public:
 	
 	virtual ~lbPluginDatabaseInputStream();
 
+	bool LB_STDCALL canAutorun();
+	lbErrCodes LB_STDCALL autorun();
 /*...sfrom plugin interface:8:*/
 	void LB_STDCALL initialize();
 	
@@ -865,6 +867,15 @@ lbPluginDatabaseInputStream::lbPluginDatabaseInputStream() {
 
 lbPluginDatabaseInputStream::~lbPluginDatabaseInputStream() {
 	_CL_VERBOSE << "lbPluginDatabaseInputStream::~lbPluginDatabaseInputStream() called.\n" LOG_
+}
+
+bool LB_STDCALL lbPluginDatabaseInputStream::canAutorun() {
+	return false;
+}
+
+lbErrCodes LB_STDCALL lbPluginDatabaseInputStream::autorun() {
+	lbErrCodes err = ERR_NONE;
+	return err;
 }
 
 void LB_STDCALL lbPluginDatabaseInputStream::initialize() {

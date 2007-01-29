@@ -245,6 +245,8 @@ public:
 	
 	virtual ~lbPluginFormularsModel();
 
+	bool LB_STDCALL canAutorun();
+	lbErrCodes LB_STDCALL autorun();
 /*...sfrom plugin interface:8:*/
 	void LB_STDCALL initialize();
 	
@@ -283,6 +285,15 @@ lbPluginFormularsModel::lbPluginFormularsModel() {
 
 lbPluginFormularsModel::~lbPluginFormularsModel() {
 	_CL_VERBOSE << "lbPluginFormularsModel::~lbPluginFormularsModel() called.\n" LOG_
+}
+
+bool LB_STDCALL lbPluginFormularsModel::canAutorun() {
+	return false;
+}
+
+lbErrCodes LB_STDCALL lbPluginFormularsModel::autorun() {
+	lbErrCodes err = ERR_NONE;
+	return err;
 }
 
 void LB_STDCALL lbPluginFormularsModel::initialize() {

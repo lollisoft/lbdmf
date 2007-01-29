@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.128 2006/12/31 11:24:25 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.129 2007/01/29 20:12:59 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.128 $
+ * $Revision: 1.129 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.128 2006/12/31 11:24:25 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.129 2007/01/29 20:12:59 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.129  2007/01/29 20:12:59  lollisoft
+ * Checkin for Linux.
+ *
  * Revision 1.128  2006/12/31 11:24:25  lollisoft
  * Bugfix in the order of meta application initialisation.
  *
@@ -2159,7 +2162,7 @@ bool MyApp::OnInit(void)
         UAP(lb_I_Plugin, pl)
         pl = PM->nextPlugin();
         if (pl == NULL) break;
-            pl->initialize();
+            pl->autorun();
         }
     }
 

@@ -360,6 +360,8 @@ public:
 	
 	virtual ~lbPluginFormularParameters();
 
+	bool LB_STDCALL canAutorun();
+	lbErrCodes LB_STDCALL autorun();
 /*...sfrom plugin interface:8:*/
 	void LB_STDCALL initialize();
 	
@@ -398,6 +400,15 @@ lbPluginFormularParameters::lbPluginFormularParameters() {
 
 lbPluginFormularParameters::~lbPluginFormularParameters() {
 	_CL_VERBOSE << "lbPluginUsersModel::~lbPluginUsersModel() called.\n" LOG_
+}
+
+bool LB_STDCALL lbPluginFormularParameters::canAutorun() {
+	return false;
+}
+
+lbErrCodes LB_STDCALL lbPluginFormularParameters::autorun() {
+	lbErrCodes err = ERR_NONE;
+	return err;
 }
 
 void LB_STDCALL lbPluginFormularParameters::initialize() {
@@ -461,6 +472,8 @@ public:
 	
 	virtual ~lbPluginApplicationParameters();
 
+	bool LB_STDCALL canAutorun();
+	lbErrCodes LB_STDCALL autorun();
 /*...sfrom plugin interface:8:*/
 	void LB_STDCALL initialize();
 	
@@ -499,6 +512,15 @@ lbPluginApplicationParameters::lbPluginApplicationParameters() {
 
 lbPluginApplicationParameters::~lbPluginApplicationParameters() {
 	_CL_VERBOSE << "lbPluginApplicationParameters::~lbPluginApplicationParameters() called.\n" LOG_
+}
+
+bool LB_STDCALL lbPluginApplicationParameters::canAutorun() {
+	return false;
+}
+
+lbErrCodes LB_STDCALL lbPluginApplicationParameters::autorun() {
+	lbErrCodes err = ERR_NONE;
+	return err;
 }
 
 void LB_STDCALL lbPluginApplicationParameters::initialize() {

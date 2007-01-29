@@ -549,6 +549,8 @@ public:
 
 	DECLARE_LB_UNKNOWN()
 	
+	bool LB_STDCALL canAutorun();
+	lbErrCodes LB_STDCALL autorun();
 	/** \brief Init the menu emtries.
 	 *
 	 * This connects the login feature to a menu.
@@ -597,9 +599,12 @@ lbPluginLoginWizard::lbPluginLoginWizard() {
 lbPluginLoginWizard::~lbPluginLoginWizard() {
 	_CL_VERBOSE << "lbPluginLoginWizard::~lbPluginLoginWizard() called." LOG_
 }
-	
-/*...svoid LB_STDCALL lbPluginLoginWizard\58\\58\initialize\40\\41\:0:*/
-void LB_STDCALL lbPluginLoginWizard::initialize() {
+
+bool LB_STDCALL lbPluginLoginWizard::canAutorun() {
+	return true;
+}
+
+lbErrCodes LB_STDCALL lbPluginLoginWizard::autorun() {
 	lbErrCodes err = ERR_NONE;
 	
 	UAP_REQUEST(manager.getPtr(), lb_I_EventManager, ev)
@@ -627,6 +632,11 @@ void LB_STDCALL lbPluginLoginWizard::initialize() {
 	free(file);
 	free(entry);
 
+	return err;
+}
+
+/*...svoid LB_STDCALL lbPluginLoginWizard\58\\58\initialize\40\\41\:0:*/
+void LB_STDCALL lbPluginLoginWizard::initialize() {
 }
 /*...e*/
 

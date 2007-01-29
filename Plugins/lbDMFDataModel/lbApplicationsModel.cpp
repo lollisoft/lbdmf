@@ -255,6 +255,8 @@ public:
 	
 	virtual ~lbPluginApplications();
 
+	bool LB_STDCALL canAutorun();
+	lbErrCodes LB_STDCALL autorun();
 /*...sfrom plugin interface:8:*/
 	void LB_STDCALL initialize();
 	
@@ -293,6 +295,15 @@ lbPluginApplications::lbPluginApplications() {
 
 lbPluginApplications::~lbPluginApplications() {
 	_CL_VERBOSE << "lbPluginApplications::~lbPluginApplications() called.\n" LOG_
+}
+
+bool LB_STDCALL lbPluginApplications::canAutorun() {
+	return false;
+}
+
+lbErrCodes LB_STDCALL lbPluginApplications::autorun() {
+	lbErrCodes err = ERR_NONE;
+	return err;
 }
 
 void LB_STDCALL lbPluginApplications::initialize() {

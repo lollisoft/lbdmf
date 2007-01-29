@@ -3291,6 +3291,16 @@ void lbDatabasePanel::OnDispatch(wxCommandEvent& event ) {
         }
 }
 /*...e*/
+
+void lbDatabasePanel::OnMouseMove(wxMouseEvent& evt)
+{
+	wxPoint pt = evt.GetPosition();
+	if (evt.Dragging() && evt.LeftIsDown())
+	{
+		wxPoint pos = ClientToScreen(pt);
+		//Move(wxPoint(pos.x - m_delta.x, pos.y - m_delta.y));
+	}
+}
 /*...svoid\9\\9\  lbDatabasePanel\58\\58\OnPaint\40\wxCommandEvent\38\ event \41\:0:*/
 void lbDatabasePanel::OnPaint(wxCommandEvent& event ) {
 
@@ -3373,6 +3383,8 @@ public:
 	
 	virtual ~lbPluginDatabasePanel();
 
+	bool LB_STDCALL canAutorun();
+	lbErrCodes LB_STDCALL autorun();
 /*...sfrom plugin interface:8:*/
 	void LB_STDCALL initialize();
 	
@@ -3427,6 +3439,15 @@ lbPluginDatabasePanel::~lbPluginDatabasePanel() {
 		_CL_LOG << "dbForm is not NULL." LOG_
 		_CL_LOG << "*******************" LOG_
 	}
+}
+
+bool LB_STDCALL lbPluginDatabasePanel::canAutorun() {
+	return false;
+}
+
+lbErrCodes LB_STDCALL lbPluginDatabasePanel::autorun() {
+	lbErrCodes err = ERR_NONE;
+	return err;
 }
 
 void LB_STDCALL lbPluginDatabasePanel::initialize() {
@@ -3777,6 +3798,8 @@ public:
 	
 	virtual ~lbPluginDatabaseDialog();
 
+	bool LB_STDCALL canAutorun();
+	lbErrCodes LB_STDCALL autorun();
 /*...sfrom plugin interface:8:*/
 	void LB_STDCALL initialize();
 	
@@ -3835,7 +3858,16 @@ lbPluginDatabaseDialog::~lbPluginDatabaseDialog() {
 
 void LB_STDCALL lbPluginDatabaseDialog::initialize() {
 }
-	
+
+bool LB_STDCALL lbPluginDatabaseDialog::canAutorun() {
+	return false;
+}
+
+lbErrCodes LB_STDCALL lbPluginDatabaseDialog::autorun() {
+	lbErrCodes err = ERR_NONE;
+	return err;
+}
+
 bool LB_STDCALL lbPluginDatabaseDialog::run() {
 	return true;
 }

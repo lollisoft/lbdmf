@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.50 $
+ * $Revision: 1.51 $
  * $Name:  $
- * $Id: lbPluginManager.cpp,v 1.50 2006/10/23 21:20:48 lollisoft Exp $
+ * $Id: lbPluginManager.cpp,v 1.51 2007/01/29 20:12:59 lollisoft Exp $
  *
  * $Log: lbPluginManager.cpp,v $
+ * Revision 1.51  2007/01/29 20:12:59  lollisoft
+ * Checkin for Linux.
+ *
  * Revision 1.50  2006/10/23 21:20:48  lollisoft
  * Small changes to compile under Linux again
  *
@@ -835,6 +838,8 @@ public:
 
 	void 			LB_STDCALL preinitialize();
 
+	bool			LB_STDCALL canAutorun();
+	lbErrCodes		LB_STDCALL autorun();
 	void 			LB_STDCALL initialize();
 	bool 			LB_STDCALL run();
 	void 			LB_STDCALL uninitialize();
@@ -1039,6 +1044,34 @@ void LB_STDCALL lbPlugin::preinitialize() {
 	free(name);
 }
 /*...e*/
+
+bool			LB_STDCALL lbPlugin::canAutorun() {
+	lbErrCodes err = ERR_NONE;
+	UAP(lb_I_PluginImpl, impl)
+	QI(implementation, lb_I_PluginImpl, impl)
+	
+	if (impl != NULL) return impl->canAutorun();
+	return false;
+}
+
+lbErrCodes		LB_STDCALL lbPlugin::autorun() {
+	lbErrCodes err = ERR_NONE;
+	UAP(lb_I_PluginImpl, impl)
+	
+	preinitialize();
+	
+	QI(implementation, lb_I_PluginImpl, impl)
+	
+	if (isPreInitialized) {
+		UAP(lb_I_PluginImpl, impl)		
+		QI(implementation, lb_I_PluginImpl, impl)
+
+		return impl->autorun();
+	}
+	
+	return ERR_PLUGIN_NOT_INITIALIZED;
+}
+
 
 void LB_STDCALL lbPlugin::initialize() {
 	lbErrCodes err = ERR_NONE;

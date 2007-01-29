@@ -66,6 +66,7 @@
 
 #include "wx/wizard.h"
 #include "wx/splitter.h"
+#include "wx/statusbr.h"
 #include <wx/treectrl.h>
 #include <wx/artprov.h>
 
@@ -512,11 +513,20 @@ lbErrCodes LB_STDCALL lb_wxFrame::registerEventHandler(lb_I_Dispatcher* disp) {
 	eman->registerEvent("ShowPropertyPanel", _showLeftPropertyBar);
 	eman->registerEvent("setPreferredPropertyPanelByNamespace", temp);
 	eman->registerEvent("showMsgBox", temp);
+
+	eman->registerEvent("addStatusBar", temp);
+	eman->registerEvent("addStatusBar_TextArea", temp);
+	eman->registerEvent("setStatusText", temp);
 	
 	disp->addEventHandlerFn(this, (lbEvHandler) &lb_wxFrame::showLeftPropertyBar, "ShowPropertyPanel");
 	disp->addEventHandlerFn(this, (lbEvHandler) &lb_wxFrame::switchPanelUse, "switchPanelUse");
 	disp->addEventHandlerFn(this, (lbEvHandler) &lb_wxFrame::setPreferredPropertyPanelByNamespace, "setPreferredPropertyPanelByNamespace");
 	disp->addEventHandlerFn(this, (lbEvHandler) &lb_wxFrame::showMsgBox, "showMsgBox");
+
+	disp->addEventHandlerFn(this, (lbEvHandler) &lb_wxFrame::addStatusBar, "addStatusBar");
+	disp->addEventHandlerFn(this, (lbEvHandler) &lb_wxFrame::addStatusBarTextArea, "addStatusBar_TextArea");
+	disp->addEventHandlerFn(this, (lbEvHandler) &lb_wxFrame::setText_To_StatusBarTextArea, "setStatusText");
+
 	
 	Connect( _showLeftPropertyBar,  -1, wxEVT_COMMAND_MENU_SELECTED,
 			 (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
@@ -1144,7 +1154,8 @@ lb_wxFrame::lb_wxFrame(wxFrame *frame, char *title, int x, int y, int w, int h):
 {
 	menu_bar = NULL;
 	guiCleanedUp = 0;
-
+	stb_areas = 1;
+	status_bar = NULL;
 	// Splitter window handling
 	m_left = m_right = NULL;
 	m_splitter = NULL;
@@ -1566,6 +1577,107 @@ wxPoint lb_wxFrame::GetStartPosition()
     wxPoint pt = ClientToScreen(wxPoint(0,0));
     return wxPoint(pt.x + x, pt.y + x);
 }
+
+lbErrCodes LB_STDCALL lb_wxFrame::addStatusBar(lb_I_Unknown* uk) {
+	if (status_bar == NULL) {
+		wxStatusBar* statusBar = new wxStatusBar(this, wxID_ANY, wxST_SIZEGRIP);
+		SetStatusBar(statusBar);
+		stb_withs = new int[stb_areas];
+		stb_withs[0] = -1;
+		stb_areas = 1;
+		
+		statusBar->SetStatusWidths(stb_areas, stb_withs);
+		statusBar->SetStatusText(wxT("Ready"), 0);
+		status_bar = statusBar;
+	} else {
+		if (stb_withs == NULL) {
+				gui->msgBox("Error", "Statusbar withs fields array is not implemented!");
+		} else {
+			status_bar->SetFieldsCount(stb_areas, stb_withs);
+			status_bar->SetStatusText(wxT("Ready"), 0);
+		}
+	}
+}
+	
+lbErrCodes LB_STDCALL lb_wxFrame::addStatusBarTextArea(lb_I_Unknown* uk) {
+	lbErrCodes err = ERR_DISPATCH_PARAMETER_WRONG;
+	stb_areas++;
+	int* new_stb_withs = new int [stb_areas];
+	
+	UAP_REQUEST(manager.getPtr(), lb_I_Integer, index)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, name)
+
+	UAP(lb_I_Parameter, param)
+	UAP(lb_I_KeyBase, key)
+	UAP(lb_I_Unknown, value)
+
+	if (statusbar_name_mappings == NULL) {
+		REQUEST(manager.getPtr(), lb_I_Container, statusbar_name_mappings)
+	}
+	
+	QI(uk, lb_I_Parameter, param)
+	QI(index, lb_I_Unknown, value)
+	
+	*parameter = "Name";
+	param->getUAPString(*&parameter, *&name);
+	QI(name, lb_I_KeyBase, key)
+	
+	if (key != NULL) {
+		for (int i = 1; i < stb_areas; i++) {
+			new_stb_withs[i-1] = stb_withs[i-1];
+		}
+		new_stb_withs[stb_areas-1] = -1;
+		delete[] stb_withs;
+		stb_withs = new_stb_withs;
+		addStatusBar(uk);
+	
+		index->setData(stb_areas);
+				
+		statusbar_name_mappings->insert(&value, &key);
+		
+		err = ERR_NONE;
+	}
+
+	return err;
+}
+	
+lbErrCodes LB_STDCALL lb_wxFrame::removeStatusBarTextArea(lb_I_Unknown* uk) {
+
+}
+	
+lbErrCodes LB_STDCALL lb_wxFrame::setText_To_StatusBarTextArea(lb_I_Unknown* uk) {
+	lbErrCodes err = ERR_DISPATCH_PARAMETER_WRONG;
+	UAP(lb_I_Parameter, params)
+	
+	QI(uk, lb_I_Parameter, params)
+	
+	if (params != NULL) {
+		UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
+		UAP_REQUEST(manager.getPtr(), lb_I_String, name)
+		UAP_REQUEST(manager.getPtr(), lb_I_String, value)
+	
+		*parameter = "Name";
+		params->getUAPString(*&parameter, *&name);
+		*parameter = "Value";
+		params->getUAPString(*&parameter, *&value);
+
+		UAP(lb_I_KeyBase, key)
+		QI(name, lb_I_KeyBase, key)
+		
+		UAP(lb_I_Integer, index)
+		UAP(lb_I_Unknown, uk_index)
+		uk_index = statusbar_name_mappings->getElement(&key); 
+		QI(uk_index, lb_I_Integer, index)
+		
+		status_bar->SetStatusText(value->charrep(), index->getData() - 1);
+	
+		err = ERR_NONE;
+	}
+
+	return err;
+}
+
 
 lbErrCodes LB_STDCALL lb_wxFrame::showLeftPropertyBar(lb_I_Unknown* uk) {
 	lbErrCodes err = ERR_NONE;

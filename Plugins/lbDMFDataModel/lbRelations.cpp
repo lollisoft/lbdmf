@@ -196,6 +196,8 @@ public:
 	
 	virtual ~lbPluginUserApplicationRelationModel();
 
+	bool LB_STDCALL canAutorun();
+	lbErrCodes LB_STDCALL autorun();
 /*...sfrom plugin interface:8:*/
 	void LB_STDCALL initialize();
 	
@@ -234,6 +236,15 @@ lbPluginUserApplicationRelationModel::lbPluginUserApplicationRelationModel() {
 
 lbPluginUserApplicationRelationModel::~lbPluginUserApplicationRelationModel() {
 	_CL_VERBOSE << "lbPluginUsersModel::~lbPluginUsersModel() called.\n" LOG_
+}
+
+bool LB_STDCALL lbPluginUserApplicationRelationModel::canAutorun() {
+	return false;
+}
+
+lbErrCodes LB_STDCALL lbPluginUserApplicationRelationModel::autorun() {
+	lbErrCodes err = ERR_NONE;
+	return err;
 }
 
 void LB_STDCALL lbPluginUserApplicationRelationModel::initialize() {

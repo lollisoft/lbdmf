@@ -334,6 +334,23 @@ CREATE UNIQUE INDEX pk_id_Anwendungen ON Anwendungen
   id
 );
 --...e
+
+-- +---------------------------------------------------------
+-- | TABLE: Applevel_Plugin_Registry
+-- | Used to register plugins at application level. These
+-- | plugins must have autostart capabilities determined by
+-- | a call to canAutorun() of the plugin.
+-- |
+-- | These plugins shouldn't run manually by run()
+-- +---------------------------------------------------------
+
+CREATE TABLE Applevel_Plugin_Registry
+(
+  id SERIAL,
+  AnwendungID INTEGER,
+  PRIMARY KEY (id)
+) WITH OIDS;
+
 --...sCREATE TABLE Anwendungs_Parameter:0:
 -- +---------------------------------------------------------
 -- | TABLE: Anwendungs_Parameter

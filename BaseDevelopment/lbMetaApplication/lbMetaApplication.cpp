@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.102 $
+ * $Revision: 1.103 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.102 2007/01/14 15:06:15 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.103 2007/01/29 20:12:59 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.103  2007/01/29 20:12:59  lollisoft
+ * Checkin for Linux.
+ *
  * Revision 1.102  2007/01/14 15:06:15  lollisoft
  * Added a new function to show a simple message box.
  *
@@ -960,6 +963,10 @@ lbErrCodes LB_STDCALL lb_MetaApplication::initialize(char* user, char* appName) 
 		}
 	}
 	
+	
+	addStatusBar();
+	addStatusBar_TextArea("Info");
+	
 	/*
 	 
 	   Here it would be the best to get user accounts into the new account list.
@@ -992,8 +999,12 @@ lbErrCodes LB_STDCALL lb_MetaApplication::initialize(char* user, char* appName) 
 			char* u = strdup(LogonUser->charrep());
 			
 			_logged_in = true;
+
+			setStatusText("Info", "Loading application ...");
 			
 			loadApplication(u, a);
+			
+			setStatusText("Info", "Loading application done.");
 			
 			free(a);
 			free(u);
@@ -1091,7 +1102,9 @@ lbErrCodes LB_STDCALL lb_MetaApplication::propertyChanged(lb_I_Unknown* uk) {
 				toggleEvent("doAutoload");
 		}
 		
-		
+		if (strcmp(key->charrep(), "GeneralLast application") == 0) {
+			setApplicationName(value->charrep());
+		}
 	} else {
 		_LOG << "ERROR: Could not decode parameter structure!" LOG_
 	}
@@ -1128,6 +1141,11 @@ lb_I_Parameter* LB_STDCALL lb_MetaApplication::getParameter() {
 	parameterGeneral->setData("Autoopen last application");
 	b->setData(_autoload);
 	paramGeneral->setUAPBoolean(*&parameterGeneral, *&b);
+
+	parameterGeneral->setData("Last application");
+	b->setData(_autoload);
+	getApplicationName(&value);
+	paramGeneral->setUAPString(*&parameterGeneral, *&value);
 
 	registerPropertyChangeEventGroup(parameter->charrep(), *&paramGeneral, this, (lbEvHandler) &lb_MetaApplication::propertyChanged);
 	
@@ -1475,6 +1493,66 @@ bool LB_STDCALL lb_MetaApplication::askYesNo(char* msg) {
 	return false;
 }
 /*...e*/
+
+void LB_STDCALL lb_MetaApplication::addStatusBar() {
+	lbErrCodes err = ERR_NONE;
+	
+	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
+	UAP(lb_I_Unknown, uk)
+	QI(param, lb_I_Unknown, uk)
+	
+	UAP_REQUEST(manager.getPtr(), lb_I_String, result)
+	UAP(lb_I_Unknown, uk_result)
+	QI(result, lb_I_Unknown, uk_result)
+	
+	dispatcher->dispatch("addStatusBar", uk.getPtr(), &uk_result);
+}
+	
+void LB_STDCALL lb_MetaApplication::addStatusBar_TextArea(char* name) {
+	lbErrCodes err = ERR_NONE;
+	
+	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, Value)
+
+	*parameter = "Name";
+	*Value = name;
+	param->setUAPString(*&parameter, *&Value);
+
+	UAP(lb_I_Unknown, uk)
+	QI(param, lb_I_Unknown, uk)
+	
+	UAP_REQUEST(manager.getPtr(), lb_I_String, result)
+	UAP(lb_I_Unknown, uk_result)
+	QI(result, lb_I_Unknown, uk_result)
+	
+	dispatcher->dispatch("addStatusBar_TextArea", uk.getPtr(), &uk_result);
+}
+	
+void LB_STDCALL lb_MetaApplication::setStatusText(char* name, char* value) {
+	lbErrCodes err = ERR_NONE;
+	
+	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, Value)
+
+	*parameter = "Name";
+	*Value = name;
+	param->setUAPString(*&parameter, *&Value);
+	*parameter = "Value";
+	*Value = value;
+	param->setUAPString(*&parameter, *&Value);
+
+	UAP(lb_I_Unknown, uk)
+	QI(param, lb_I_Unknown, uk)
+	
+	UAP_REQUEST(manager.getPtr(), lb_I_String, result)
+	UAP(lb_I_Unknown, uk_result)
+	QI(result, lb_I_Unknown, uk_result)
+	
+	dispatcher->dispatch("setStatusText", uk.getPtr(), &uk_result);
+}
+
 void LB_STDCALL lb_MetaApplication::msgBox(char* title, char* msg) {
 	lbErrCodes err = ERR_NONE;
 	

@@ -30,11 +30,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.32 $
+ * $Revision: 1.33 $
  * $Name:  $
- * $Id: lbDatabaseForm.h,v 1.32 2006/07/02 13:12:54 lollisoft Exp $
+ * $Id: lbDatabaseForm.h,v 1.33 2007/01/29 20:12:59 lollisoft Exp $
  *
  * $Log: lbDatabaseForm.h,v $
+ * Revision 1.33  2007/01/29 20:12:59  lollisoft
+ * Checkin for Linux.
+ *
  * Revision 1.32  2006/07/02 13:12:54  lollisoft
  * Begun with data model classes support.
  *
@@ -663,6 +666,7 @@ public:
 	lbErrCodes LB_STDCALL OnActionButton(lb_I_Unknown* uk);
 
 	void OnDispatch(wxCommandEvent& event);
+	void OnMouseMove(wxMouseEvent& evt);
 
 	/** \brief Paint the control.
 	 *

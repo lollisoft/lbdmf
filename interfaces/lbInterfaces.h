@@ -2628,6 +2628,12 @@ public:
 	 */
 	virtual void LB_STDCALL msgBox(char* title, char* msg) = 0;
 	
+	virtual void LB_STDCALL addStatusBar() = 0;
+	
+	virtual void LB_STDCALL addStatusBar_TextArea(char* name) = 0;
+	
+	virtual void LB_STDCALL setStatusText(char* name, char* value) = 0;
+	
 	/** \brief Let the GUI show the given parameters in a property panel.
 	 *
 	 */
@@ -3228,6 +3234,18 @@ public:
 	 */
 	virtual void LB_STDCALL initialize() = 0;
 
+	/** \brief Indicates autorunability.
+	 *
+	 * A plugin needs autorun features to extend the UI. But a plugin shouldn't
+	 * simply initialized. It should be registered to the application.
+	 */
+	virtual bool LB_STDCALL canAutorun() = 0;
+	
+	/** \brief Autorun this plugin.
+	 * Implement this function for autorun capabilities.
+	 */
+	virtual lbErrCodes LB_STDCALL autorun() = 0;
+
 	/** \brief Forwarder for running the plugin.
 	 *
 	 * Let the plugin implementation run.
@@ -3327,6 +3345,18 @@ public:
 	 * Let the plugin initialize it self.
 	 */
 	virtual void LB_STDCALL initialize() = 0;
+	
+	/** \brief Autorun this plugin.
+	 * Implement this function for autorun capabilities.
+	 */
+	virtual lbErrCodes LB_STDCALL autorun() = 0;
+
+	/** \brief Indicates autorunability.
+	 *
+	 * A plugin needs autorun features to extend the UI. But a plugin shouldn't
+	 * simply initialized. It should be registered to the application.
+	 */
+	virtual bool LB_STDCALL canAutorun() = 0;
 	
 	/**
 	 * Run the plugin.

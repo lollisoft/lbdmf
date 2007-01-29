@@ -834,7 +834,8 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 	
 	char* b =
 		"select Formulare.eventname, Formulare.menuname from Formulare inner join "
-		"Anwendungen on Formulare.anwendungid = Anwendungen.id inner join "
+		"anwendungen_formulare on anwendungen_formulare.formularid = formulare.id inner join "
+		"Anwendungen on anwendungen_formulare.anwendungid = Anwendungen.id inner join "
 		"User_Anwendungen on Anwendungen.id = User_Anwendungen.anwendungenid inner join Users on "
 		"User_Anwendungen.userid = Users.id where "
 		"Users.userid = '%s' and Anwendungen.name = '%s' order by Formulare.menuorder";
