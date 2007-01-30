@@ -173,7 +173,7 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 191702197;
+			PBXPerProjectTemplateStateSaveDate = 191873314;
 			PBXPrepackagedSmartGroups_v2 = (
 				{
 					PBXTransientLocationAtTop = bottom;
@@ -350,15 +350,10 @@
 					};
 				},
 			);
-			PBXWorkspaceStateSaveDate = 191702197;
+			PBXWorkspaceStateSaveDate = 191873314;
 		};
 		perUserProjectItems = {
 			270607FF0B6CB9DF00DFDF9C = 270607FF0B6CB9DF00DFDF9C;
-			272B77580B6D27940070F69F = 272B77580B6D27940070F69F;
-			272B77590B6D27940070F69F = 272B77590B6D27940070F69F;
-			272B775A0B6D27940070F69F = 272B775A0B6D27940070F69F;
-			272B778F0B6D6D720070F69F = 272B778F0B6D6D720070F69F;
-			272B77900B6D6D720070F69F = 272B77900B6D6D720070F69F;
 			275BBCF70B4D3BB400CA8C6A = 275BBCF70B4D3BB400CA8C6A;
 			275BBCFE0B4D3F1F00CA8C6A = 275BBCFE0B4D3F1F00CA8C6A;
 			276FB90B0B22F810004E52BD = 276FB90B0B22F810004E52BD;
@@ -389,9 +384,6 @@
 			278593870B6CD8DE00112EF0 = 278593870B6CD8DE00112EF0;
 			278593990B6CE13E00112EF0 = 278593990B6CE13E00112EF0;
 			2785939A0B6CE13E00112EF0 = 2785939A0B6CE13E00112EF0;
-			278593A40B6CE4CC00112EF0 = 278593A40B6CE4CC00112EF0;
-			278593A50B6CE4CC00112EF0 = 278593A50B6CE4CC00112EF0;
-			278593B40B6CEA6B00112EF0 = 278593B40B6CEA6B00112EF0;
 			278594000B6CF51E00112EF0 = 278594000B6CF51E00112EF0;
 			2785940B0B6CF61F00112EF0 = 2785940B0B6CF61F00112EF0;
 			2785940E0B6CF61F00112EF0 = 2785940E0B6CF61F00112EF0;
@@ -488,7 +480,6 @@
 			278594AE0B6CF61F00112EF0 = 278594AE0B6CF61F00112EF0;
 			278594B10B6CF62900112EF0 = 278594B10B6CF62900112EF0;
 			278594B50B6CF67400112EF0 = 278594B50B6CF67400112EF0;
-			278594CC0B6CF81B00112EF0 = 278594CC0B6CF81B00112EF0;
 			278594F90B6CFD4900112EF0 = 278594F90B6CFD4900112EF0;
 			278594FE0B6CFFC900112EF0 = 278594FE0B6CFFC900112EF0;
 			278595090B6D014C00112EF0 = 278595090B6D014C00112EF0;
@@ -512,12 +503,28 @@
 			27B39F680B2C060500FCB551 = 27B39F680B2C060500FCB551;
 			27B3A5D30B31D5B10001C065 = 27B3A5D30B31D5B10001C065;
 			27B8653A0B389DD000C58BEF = 27B8653A0B389DD000C58BEF;
+			27C11D410B6FC2D6005475D0 = 27C11D410B6FC2D6005475D0;
+			27C11D580B6FC685005475D0 = 27C11D580B6FC685005475D0;
+			27C11D5B0B6FC6CE005475D0 = 27C11D5B0B6FC6CE005475D0;
+			27C11D5E0B6FC7F3005475D0 = 27C11D5E0B6FC7F3005475D0;
+			27C11D640B6FC8A4005475D0 = 27C11D640B6FC8A4005475D0;
+			27C11D6B0B6FC971005475D0 = 27C11D6B0B6FC971005475D0;
+			27C11D6E0B6FC9D0005475D0 = 27C11D6E0B6FC9D0005475D0;
+			27C11D710B6FC9E7005475D0 = 27C11D710B6FC9E7005475D0;
+			27C11D750B6FCA1E005475D0 = 27C11D750B6FCA1E005475D0;
+			27C11D7E0B6FCC14005475D0 = 27C11D7E0B6FCC14005475D0;
+			27C11D800B6FCCA2005475D0 = 27C11D800B6FCCA2005475D0;
+			27C11D810B6FCCA2005475D0 = 27C11D810B6FCCA2005475D0;
+			27C11D860B6FCD7E005475D0 = 27C11D860B6FCD7E005475D0;
+			27C11D870B6FCD7E005475D0 = 27C11D870B6FCD7E005475D0;
+			27C11D8F0B6FCEAB005475D0 = 27C11D8F0B6FCEAB005475D0;
+			27C11D900B6FCEAB005475D0 = 27C11D900B6FCEAB005475D0;
+			27C11D940B6FE4A5005475D0 = 27C11D940B6FE4A5005475D0;
 			27F6A08A0B35CA2A00064FE8 = 27F6A08A0B35CA2A00064FE8;
 			27F6A09B0B35CB9500064FE8 = 27F6A09B0B35CB9500064FE8;
 			27F6A0A10B35CBB500064FE8 = 27F6A0A10B35CBB500064FE8;
 			27F6A0F10B35D7FC00064FE8 = 27F6A0F10B35D7FC00064FE8;
 			27FD80D40B6D194C003565AE = 27FD80D40B6D194C003565AE;
-			27FD81230B6D2483003565AE = 27FD81230B6D2483003565AE;
 		};
 		sourceControlManager = 270BA7BB086C0A0900799F65;
 		userBuildSettings = {
@@ -651,56 +658,6 @@
 		isa = PBXFileBreakpoint;
 		lineNumber = 141;
 		state = 1;
-	};
-	272B77580B6D27940070F69F = {
-		fRef = 2778C29B0B5A4D49003524C2;
-		isa = PBXTextBookmark;
-		name = "wxWrapperDLL.cpp: lb_wxFrame";
-		rLen = 0;
-		rLoc = 44336;
-		rType = 0;
-		vrLen = 1144;
-		vrLoc = 44045;
-	};
-	272B77590B6D27940070F69F = {
-		fRef = 27B91DB1086EEA3300DB17D6;
-		isa = PBXTextBookmark;
-		name = "dynamic.cpp: 2162";
-		rLen = 0;
-		rLoc = 62025;
-		rType = 0;
-		vrLen = 1104;
-		vrLoc = 61496;
-	};
-	272B775A0B6D27940070F69F = {
-		fRef = 2778C29B0B5A4D49003524C2;
-		isa = PBXTextBookmark;
-		name = "wxWrapperDLL.cpp: lb_wxFrame";
-		rLen = 0;
-		rLoc = 44336;
-		rType = 0;
-		vrLen = 1144;
-		vrLoc = 44045;
-	};
-	272B778F0B6D6D720070F69F = {
-		fRef = 27B91DB1086EEA3300DB17D6;
-		isa = PBXTextBookmark;
-		name = "dynamic.cpp: 2149";
-		rLen = 0;
-		rLoc = 61722;
-		rType = 0;
-		vrLen = 1104;
-		vrLoc = 61496;
-	};
-	272B77900B6D6D720070F69F = {
-		fRef = 2778C29B0B5A4D49003524C2;
-		isa = PBXTextBookmark;
-		name = "wxWrapperDLL.cpp: 1626";
-		rLen = 0;
-		rLoc = 43870;
-		rType = 0;
-		vrLen = 1099;
-		vrLoc = 43391;
 	};
 	2747C7980B5A7907005311B2 = {
 		fileReference = 27CE9A1D08D4A87C00FB3DF0;
@@ -928,15 +885,15 @@
 	};
 	2778C29B0B5A4D49003524C2 = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1112, 26249}}";
-			sepNavSelRange = "{43870, 0}";
-			sepNavVisRect = "{{0, 22502}, {860, 659}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1112, 26347}}";
+			sepNavSelRange = "{43030, 0}";
+			sepNavVisRect = "{{0, 22160}, {634, 653}}";
 		};
 	};
 	2778C29D0B5A4DC3003524C2 = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {848, 7447}}";
-			sepNavSelRange = "{9151, 0}";
+			sepNavIntBoundsRect = "{{0, 0}, {848, 7475}}";
+			sepNavSelRange = "{9227, 0}";
 			sepNavVisRect = "{{0, 3850}, {634, 653}}";
 			sepNavWindowFrame = "{{15, 439}, {750, 558}}";
 		};
@@ -1311,36 +1268,6 @@
 		rType = 0;
 		vrLen = 1441;
 		vrLoc = 17457;
-	};
-	278593A40B6CE4CC00112EF0 = {
-		fRef = 2778C29B0B5A4D49003524C2;
-		isa = PBXTextBookmark;
-		name = "wxWrapperDLL.cpp: 520";
-		rLen = 0;
-		rLoc = 12410;
-		rType = 0;
-		vrLen = 1216;
-		vrLoc = 15973;
-	};
-	278593A50B6CE4CC00112EF0 = {
-		fRef = 2778C29D0B5A4DC3003524C2;
-		isa = PBXTextBookmark;
-		name = "\t/// \\brief Add a status bar to the frame. \n\tlbErrCodes LB_STDCALL addStatusBar(lb_I_Unknown* uk);\n\t\n\t/// \\brief Add a information text area to the statusbar.\n\tlbErrCodes LB_STDCALL addStatusBarTextArea(lb_I_Unknown* uk);\n\t\n\t/// \\brief Remove a information text area to the statusbar.\n\tlbErrCodes LB_STDCALL removeStatusBarTextArea(lb_I_Unknown* uk);\n\t\n\t/// \\brief Set text in a given text status bar area.\n\tlbErrCodes LB_STDCALL setText_To_StatusBarTextArea(lb_I_Unknown* uk);\n";
-		rLen = 478;
-		rLoc = 8617;
-		rType = 0;
-		vrLen = 904;
-		vrLoc = 8456;
-	};
-	278593B40B6CEA6B00112EF0 = {
-		fRef = 2778C29D0B5A4DC3003524C2;
-		isa = PBXTextBookmark;
-		name = statusbar_name_mappings;
-		rLen = 23;
-		rLoc = 9199;
-		rType = 0;
-		vrLen = 851;
-		vrLoc = 8592;
 	};
 	278594000B6CF51E00112EF0 = {
 		fRef = 276FB8A90B22D0C2004E52BD;
@@ -2302,16 +2229,6 @@
 		vrLen = 888;
 		vrLoc = 30990;
 	};
-	278594CC0B6CF81B00112EF0 = {
-		fRef = 2778C29D0B5A4DC3003524C2;
-		isa = PBXTextBookmark;
-		name = "wxWrapperDLL.h: stb_withs";
-		rLen = 0;
-		rLoc = 9151;
-		rType = 0;
-		vrLen = 1119;
-		vrLoc = 8590;
-	};
 	278594F90B6CFD4900112EF0 = {
 		fRef = 27C52501086F1EC1005DB6C8;
 		isa = PBXTextBookmark;
@@ -2875,11 +2792,181 @@
 	};
 	27B91DB1086EEA3300DB17D6 = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {2756, 40711}}";
-			sepNavSelRange = "{61722, 0}";
-			sepNavVisRect = "{{0, 29935}, {634, 653}}";
+			sepNavIntBoundsRect = "{{0, 0}, {2756, 40753}}";
+			sepNavSelRange = "{61771, 0}";
+			sepNavVisRect = "{{0, 29904}, {634, 653}}";
 			sepNavWindowFrame = "{{15, 439}, {750, 558}}";
 		};
+	};
+	27C11D410B6FC2D6005475D0 = {
+		fRef = 27B91DB1086EEA3300DB17D6;
+		isa = PBXTextBookmark;
+		name = "dynamic.cpp: 2164";
+		rLen = 0;
+		rLoc = 62093;
+		rType = 0;
+		vrLen = 1024;
+		vrLoc = 61459;
+	};
+	27C11D580B6FC685005475D0 = {
+		fRef = 2778C29B0B5A4D49003524C2;
+		isa = PBXTextBookmark;
+		name = "wxWrapperDLL.cpp: 1596";
+		rLen = 0;
+		rLoc = 43127;
+		rType = 0;
+		vrLen = 1446;
+		vrLoc = 0;
+	};
+	27C11D5B0B6FC6CE005475D0 = {
+		fRef = 2778C29D0B5A4DC3003524C2;
+		isa = PBXTextBookmark;
+		name = "wxWrapperDLL.h: stb_areas";
+		rLen = 0;
+		rLoc = 9241;
+		rType = 0;
+		vrLen = 1190;
+		vrLoc = 8530;
+	};
+	27C11D5E0B6FC7F3005475D0 = {
+		fRef = 2778C29B0B5A4D49003524C2;
+		isa = PBXTextBookmark;
+		name = "wxWrapperDLL.cpp: statusBar";
+		rLen = 0;
+		rLoc = 42788;
+		rType = 0;
+		vrLen = 1288;
+		vrLoc = 42005;
+	};
+	27C11D640B6FC8A4005475D0 = {
+		fRef = 2778C29D0B5A4DC3003524C2;
+		isa = PBXTextBookmark;
+		name = "wxWrapperDLL.h: status_bar";
+		rLen = 0;
+		rLoc = 9193;
+		rType = 0;
+		vrLen = 1156;
+		vrLoc = 8530;
+	};
+	27C11D6B0B6FC971005475D0 = {
+		fRef = 2778C29B0B5A4D49003524C2;
+		isa = PBXTextBookmark;
+		name = "wxWrapperDLL.cpp: modMan";
+		rLen = 0;
+		rLoc = 43028;
+		rType = 0;
+		vrLen = 1199;
+		vrLoc = 42205;
+	};
+	27C11D6E0B6FC9D0005475D0 = {
+		fRef = 2778C29D0B5A4DC3003524C2;
+		isa = PBXTextBookmark;
+		name = "wxWrapperDLL.h: stb_withs";
+		rLen = 0;
+		rLoc = 9193;
+		rType = 0;
+		vrLen = 1164;
+		vrLoc = 8530;
+	};
+	27C11D710B6FC9E7005475D0 = {
+		fRef = 2778C29B0B5A4D49003524C2;
+		isa = PBXTextBookmark;
+		name = "wxWrapperDLL.cpp: 1596";
+		rLen = 0;
+		rLoc = 43017;
+		rType = 0;
+		vrLen = 1199;
+		vrLoc = 42205;
+	};
+	27C11D750B6FCA1E005475D0 = {
+		fRef = 27B91DB1086EEA3300DB17D6;
+		isa = PBXTextBookmark;
+		name = "dynamic.cpp: 2153";
+		rLen = 0;
+		rLoc = 61824;
+		rType = 0;
+		vrLen = 1023;
+		vrLoc = 61459;
+	};
+	27C11D7E0B6FCC14005475D0 = {
+		fRef = 2778C29B0B5A4D49003524C2;
+		isa = PBXTextBookmark;
+		name = "wxWrapperDLL.cpp: modMan";
+		rLen = 0;
+		rLoc = 43075;
+		rType = 0;
+		vrLen = 1270;
+		vrLoc = 41985;
+	};
+	27C11D800B6FCCA2005475D0 = {
+		fRef = 2778C29D0B5A4DC3003524C2;
+		isa = PBXTextBookmark;
+		name = "wxWrapperDLL.h: 297";
+		rLen = 0;
+		rLoc = 9227;
+		rType = 0;
+		vrLen = 1164;
+		vrLoc = 8530;
+	};
+	27C11D810B6FCCA2005475D0 = {
+		fRef = 2778C29D0B5A4DC3003524C2;
+		isa = PBXTextBookmark;
+		name = "wxWrapperDLL.h: 297";
+		rLen = 0;
+		rLoc = 9227;
+		rType = 0;
+		vrLen = 1164;
+		vrLoc = 8530;
+	};
+	27C11D860B6FCD7E005475D0 = {
+		fRef = 2778C29B0B5A4D49003524C2;
+		isa = PBXTextBookmark;
+		name = "wxWrapperDLL.cpp: 1596";
+		rLen = 0;
+		rLoc = 43030;
+		rType = 0;
+		vrLen = 1332;
+		vrLoc = 42627;
+	};
+	27C11D870B6FCD7E005475D0 = {
+		fRef = 2778C29B0B5A4D49003524C2;
+		isa = PBXTextBookmark;
+		name = "wxWrapperDLL.cpp: 1596";
+		rLen = 0;
+		rLoc = 43030;
+		rType = 0;
+		vrLen = 1332;
+		vrLoc = 42627;
+	};
+	27C11D8F0B6FCEAB005475D0 = {
+		fRef = 27B91DB1086EEA3300DB17D6;
+		isa = PBXTextBookmark;
+		name = "dynamic.cpp: 2150";
+		rLen = 0;
+		rLoc = 61771;
+		rType = 0;
+		vrLen = 1023;
+		vrLoc = 61459;
+	};
+	27C11D900B6FCEAB005475D0 = {
+		fRef = 27B91DB1086EEA3300DB17D6;
+		isa = PBXTextBookmark;
+		name = "dynamic.cpp: 2150";
+		rLen = 0;
+		rLoc = 61771;
+		rType = 0;
+		vrLen = 1023;
+		vrLoc = 61459;
+	};
+	27C11D940B6FE4A5005475D0 = {
+		fRef = 2778C29D0B5A4DC3003524C2;
+		isa = PBXTextBookmark;
+		name = "wxWrapperDLL.h: 297";
+		rLen = 0;
+		rLoc = 9227;
+		rType = 0;
+		vrLen = 1164;
+		vrLoc = 8530;
 	};
 	27C32A83099F75C7002D6183 = {
 		isa = PBXFileReference;
@@ -3090,15 +3177,5 @@
 		rType = 0;
 		vrLen = 1382;
 		vrLoc = 6679;
-	};
-	27FD81230B6D2483003565AE = {
-		fRef = 2778C29B0B5A4D49003524C2;
-		isa = PBXTextBookmark;
-		name = "wxWrapperDLL.cpp: 1642";
-		rLen = 0;
-		rLoc = 44183;
-		rType = 0;
-		vrLen = 955;
-		vrLoc = 42756;
 	};
 }

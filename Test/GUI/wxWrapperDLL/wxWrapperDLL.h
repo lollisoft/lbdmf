@@ -33,11 +33,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.19 $
+ * $Revision: 1.20 $
  * $Name:  $
- * $Id: wxWrapperDLL.h,v 1.19 2007/01/29 20:12:59 lollisoft Exp $
+ * $Id: wxWrapperDLL.h,v 1.20 2007/01/30 20:43:37 lollisoft Exp $
  *
  * $Log: wxWrapperDLL.h,v $
+ * Revision 1.20  2007/01/30 20:43:37  lollisoft
+ * Probably fixed the bug in status bar handling.
+ *
  * Revision 1.19  2007/01/29 20:12:59  lollisoft
  * Checkin for Linux.
  *
@@ -292,9 +295,8 @@ public:
 	lbErrCodes LB_STDCALL setText_To_StatusBarTextArea(lb_I_Unknown* uk);
 	
 	wxMenuBar* menu_bar;
-	wxStatusBar* status_bar;
 	int *stb_withs;
-	int stb_areas;
+	long stb_areas;
 	UAP(lb_I_Container, statusbar_name_mappings)
 	
 	
