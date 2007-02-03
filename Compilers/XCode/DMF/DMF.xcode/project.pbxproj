@@ -7,6 +7,7 @@
 	objects = {
 		270BA7B6086C0A0900799F65 = {
 			children = (
+				27E413E20B73EFAF0050006B,
 				2778C2EA0B5A57D2003524C2,
 				2778C2B10B5A4FD3003524C2,
 				2778C29D0B5A4DC3003524C2,
@@ -1247,6 +1248,7 @@
 		27C524D2086F1C61005DB6C8 = {
 			buildActionMask = 2147483647;
 			files = (
+				27E413E30B73EFAF0050006B,
 			);
 			isa = PBXHeadersBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1740,6 +1742,21 @@
 			path = /Users/lothar/develop/Projects/CPP/BaseDevelopment/lbHook/lbHook.cpp;
 			refType = 0;
 			sourceTree = "<absolute>";
+		};
+		27E413E20B73EFAF0050006B = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = lbobject.h;
+			path = /Users/lothar/develop/Projects/CPP/BaseDevelopment/lbclasses/lbobject.h;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		27E413E30B73EFAF0050006B = {
+			fileRef = 27E413E20B73EFAF0050006B;
+			isa = PBXBuildFile;
+			settings = {
+			};
 		};
 		27F462A709960253007178F9 = {
 			fileEncoding = 30;

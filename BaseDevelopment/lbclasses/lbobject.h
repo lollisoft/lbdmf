@@ -31,10 +31,13 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.35 $
+ * $Revision: 1.36 $
  * $Name:  $
- * $Id: lbobject.h,v 1.35 2006/07/02 13:22:22 lollisoft Exp $
+ * $Id: lbobject.h,v 1.36 2007/02/03 11:04:36 lollisoft Exp $
  * $Log: lbobject.h,v $
+ * Revision 1.36  2007/02/03 11:04:36  lollisoft
+ * Implemented directory location property handler. This is used in lbMetaApplication.
+ *
  * Revision 1.35  2006/07/02 13:22:22  lollisoft
  * Added support for preloaded translation data model.
  *
@@ -303,6 +306,12 @@ public:
 	virtual void LB_STDCALL setUAPInteger(lb_I_String*& parameter, lb_I_Integer*& p);
 	virtual lbErrCodes LB_STDCALL getUAPInteger(lb_I_String*& parameter, lb_I_Integer*& p);
 	
+	virtual void LB_STDCALL setUAPFileLocation(lb_I_String*& parameter, lb_I_FileLocation*& p);
+	virtual lbErrCodes LB_STDCALL getUAPFileLocation(lb_I_String*& parameter, lb_I_FileLocation*& p);
+	
+	virtual void LB_STDCALL setUAPDirLocation(lb_I_String*& parameter, lb_I_DirLocation*& p);
+	virtual lbErrCodes LB_STDCALL getUAPDirLocation(lb_I_String*& parameter, lb_I_DirLocation*& p);
+	
 	virtual void LB_STDCALL setUAPBoolean(lb_I_String*& parameter, lb_I_Boolean*& p);
 	virtual lbErrCodes LB_STDCALL getUAPBoolean(lb_I_String*& parameter, lb_I_Boolean*& p);
 	
@@ -370,8 +379,47 @@ public:
 private:
 
 	char keyType[10];
-	char* key;    
 	char* stringdata;
+};
+/*...e*/
+/*...sclass lbFileLocation:0:*/
+class lbFileLocation : public lb_I_FileLocation
+{
+public:
+	lbFileLocation();
+	virtual ~lbFileLocation();
+
+	DECLARE_LB_UNKNOWN()
+	
+	DECLARE_LB_KEYBASE()
+	
+	virtual void LB_STDCALL setData(char* path);
+	virtual char* LB_STDCALL getData() const;
+	
+private:
+
+    char keyType[10];
+    char* _path;
+};
+/*...e*/
+/*...sclass lbDirLocation:0:*/
+class lbDirLocation : public lb_I_DirLocation
+{
+public:
+	lbDirLocation();
+	virtual ~lbDirLocation();
+
+	DECLARE_LB_UNKNOWN()
+	
+	DECLARE_LB_KEYBASE()
+	
+	virtual void LB_STDCALL setData(char* path);
+	virtual char* LB_STDCALL getData() const;
+	
+private:
+
+    char keyType[10];
+    char* _path;
 };
 /*...e*/
 /*...sclass lbInteger:0:*/
@@ -466,6 +514,8 @@ extern "C" {
 /*...e*/
 
 DECLARE_FUNCTOR(instanceOfInteger)
+DECLARE_FUNCTOR(instanceOfFileLocation)
+DECLARE_FUNCTOR(instanceOfDirLocation)
 DECLARE_FUNCTOR(instanceOfLong)
 DECLARE_FUNCTOR(instanceOfBoolean)
 DECLARE_FUNCTOR(instanceOfString)

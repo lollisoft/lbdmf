@@ -22,9 +22,9 @@
     The author of this work will be reached by e-Mail or paper mail.
     e-Mail: lothar.behrens@lollisoft.de
     p-Mail: Lothar Behrens
-            Rosmarinstr. 3
+            Heinrich-Scheufelen-Platz 2
             
-            40235 Duesseldorf (germany)
+            73252 Lenningen (germany)
 */
 /*...e*/
 /*...sincludes:0:*/
@@ -128,6 +128,8 @@ public:
 	void LB_STDCALL visit(lb_I_Boolean*) { _CL_VERBOSE << "visit(lb_I_Boolean*)" LOG_ }
 	void LB_STDCALL visit(lb_I_DatabaseOperation*) { _CL_VERBOSE << "visit(lb_I_DatabaseOperation*)" LOG_ }
 	void LB_STDCALL visit(lb_I_ParameterTable*) { _CL_VERBOSE << "visit(lb_I_ParameterTable*)" LOG_ }
+	void LB_STDCALL visit(lb_I_FileLocation*)  { _CL_VERBOSE << "visit(lb_I_FileLocation*)" LOG_ }
+	void LB_STDCALL visit(lb_I_DirLocation*)  { _CL_VERBOSE << "visit(lb_I_DirLocation*)" LOG_ }
 
 /*...e*/
 

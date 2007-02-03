@@ -71,6 +71,8 @@ extern "C" {
 #endif            
 
 IMPLEMENT_FUNCTOR(instanceOfInteger, lbInteger)
+IMPLEMENT_FUNCTOR(instanceOfFileLocation, lbFileLocation)
+IMPLEMENT_FUNCTOR(instanceOfDirLocation, lbDirLocation)
 IMPLEMENT_FUNCTOR(instanceOfLong, lbLong)
 IMPLEMENT_FUNCTOR(instanceOfBoolean, lbBoolean)
 IMPLEMENT_FUNCTOR(instanceOfString, lbString)
@@ -531,6 +533,94 @@ lbErrCodes LB_STDCALL lbParameter::getUAPInteger(lb_I_String*& parameter, lb_I_I
 	return ERR_NONE;
 }
 
+void LB_STDCALL lbParameter::setUAPFileLocation(lb_I_String*& parameter, lb_I_FileLocation*& p) {
+	lbErrCodes err = ERR_NONE;
+	if (parameters == NULL) {
+		REQUEST(manager.getPtr(), lb_I_Container, parameters)
+		if (parameters == NULL) {
+			_LOG << "Error: Could not get container instance for parameres" LOG_
+			return;
+		}
+	}	
+	
+	UAP(lb_I_KeyBase, k_parameter)
+	QI(parameter, lb_I_KeyBase, k_parameter)
+
+	UAP(lb_I_Unknown, uk_p)
+	QI(p, lb_I_Unknown, uk_p)
+	
+	
+	parameters->insert(&uk_p, &k_parameter);
+}
+
+lbErrCodes LB_STDCALL lbParameter::getUAPFileLocation(lb_I_String*& parameter, lb_I_FileLocation*& p) {
+	lbErrCodes err = ERR_NONE;
+	
+	if (parameters == NULL) return ERR_PARAM_NOT_FOUND;
+
+	lb_I_String* pp = parameter;
+	UAP(lb_I_KeyBase, key)
+	QI(pp, lb_I_KeyBase, key)
+	
+	UAP(lb_I_Unknown, uk_p_fileloc)
+
+	uk_p_fileloc = parameters->getElement(&key);
+
+	if (uk_p_fileloc == NULL) return ERR_PARAM_NOT_FOUND;
+
+	UAP(lb_I_FileLocation, fileloc)
+	QI(uk_p_fileloc, lb_I_FileLocation, fileloc)
+	
+	if (fileloc.getPtr() != NULL) p->setData(fileloc->getData());
+	
+	
+	return ERR_NONE;
+}
+
+void LB_STDCALL lbParameter::setUAPDirLocation(lb_I_String*& parameter, lb_I_DirLocation*& p) {
+	lbErrCodes err = ERR_NONE;
+	if (parameters == NULL) {
+		REQUEST(manager.getPtr(), lb_I_Container, parameters)
+		if (parameters == NULL) {
+			_LOG << "Error: Could not get container instance for parameres" LOG_
+			return;
+		}
+	}	
+	
+	UAP(lb_I_KeyBase, k_parameter)
+	QI(parameter, lb_I_KeyBase, k_parameter)
+
+	UAP(lb_I_Unknown, uk_p)
+	QI(p, lb_I_Unknown, uk_p)
+	
+	
+	parameters->insert(&uk_p, &k_parameter);
+}
+
+lbErrCodes LB_STDCALL lbParameter::getUAPDirLocation(lb_I_String*& parameter, lb_I_DirLocation*& p) {
+	lbErrCodes err = ERR_NONE;
+	
+	if (parameters == NULL) return ERR_PARAM_NOT_FOUND;
+
+	lb_I_String* pp = parameter;
+	UAP(lb_I_KeyBase, key)
+	QI(pp, lb_I_KeyBase, key)
+	
+	UAP(lb_I_Unknown, uk_p_fileloc)
+
+	uk_p_fileloc = parameters->getElement(&key);
+
+	if (uk_p_fileloc == NULL) return ERR_PARAM_NOT_FOUND;
+
+	UAP(lb_I_DirLocation, fileloc)
+	QI(uk_p_fileloc, lb_I_DirLocation, fileloc)
+	
+	if (fileloc.getPtr() != NULL) p->setData(fileloc->getData());
+	
+	
+	return ERR_NONE;
+}
+
 void LB_STDCALL lbParameter::setUAPBoolean(lb_I_String*& parameter, lb_I_Boolean*& p) {
 	lbErrCodes err = ERR_NONE;
 	if (parameters == NULL) {
@@ -605,7 +695,6 @@ lbErrCodes LB_STDCALL lbReference::get(lb_I_Unknown*& r) {
 lbString::lbString() {
 	ref = STARTREF;
 	stringdata = NULL;
-	key = NULL;
 }
 
 lbString::~lbString() {
@@ -617,9 +706,7 @@ lbString::~lbString() {
 
 	if (stringdata != NULL) free(stringdata);
 	
-	if (key != NULL) free(key);
 	stringdata = NULL;
-	key = NULL;
 }
 
 lb_I_String& LB_STDCALL lbString::operator += (const lb_I_String* toAppend) {
@@ -641,10 +728,6 @@ lb_I_String& LB_STDCALL lbString::operator += (const char* toAppend) {
 	if (toAppend != NULL) strcat(stringdata, toAppend);
 	
 	free(temp);
-	free(key);
-	
-	key = (char*) malloc(strlen(stringdata)+1);
-	strcpy(key, stringdata);
 		
 	return *this;
 }
@@ -661,32 +744,20 @@ lb_I_String& LB_STDCALL lbString::operator = (const char* toAppend) {
 	strcat(stringdata, toAppend);
 	
 	free(temp);
-	free(key);
-	
-	key = (char*) malloc(strlen(stringdata)+1);
-	strcpy(key, stringdata);
 	
 	return *this;
 }
 
 void LB_STDCALL lbString::setData(char const * p) {
 	if (stringdata != NULL) free(stringdata);
-	if (key != NULL) free(key);
 	
 	stringdata = NULL;
-	key = NULL;
 	
 	if (p == NULL) return;
 
 	stringdata = (char*) malloc(strlen(p)+1);
 	stringdata[0] = 0;
 	strcpy(stringdata, p);
-	
-	if (key != NULL) free(key);
-	
-	key = (char*) malloc(strlen(p)+1);
-	key[0] = 0;
-	strcpy(key, p);
 }
 
 #define NUL '\0'
@@ -723,18 +794,11 @@ char* LB_STDCALL lbString::stristr(const char *String, const char *Pattern)
 void LB_STDCALL lbString::trim() {
 	while (stringdata[strlen(stringdata)-1] == ' ') 
 		stringdata[strlen(stringdata)-1] = 0;
-	
-	if (key != NULL) free(key);
-	
-	key = (char*) malloc(strlen(stringdata)+1);
-	key[0] = 0;
-	key = strcpy(key, stringdata);
 }
 
 void LB_STDCALL lbString::toLower() {
 	for (int i = 0; i < strlen(stringdata); i++) {
 		stringdata[i] = tolower(stringdata[i]);
-		key[i] = tolower(key[i]);
 	}
 }
 
@@ -803,12 +867,12 @@ int LB_STDCALL lbString::equals(const lb_I_KeyBase* _key) const {
 /*...sVERBOSE:0:*/
 #ifdef VERBOSE
         printf("Stringvergleich %s == %s = %d\n", 
-        	key, 
-        	((const lbString*) _key)->key, 
-        	strcmp(key, ((const lbString*) _key)->key));
+        	stringdata, 
+        	((const lbString*) _key)->stringdata, 
+        	strcmp(stringdata, ((const lbString*) _key)->stringdata));
 #endif        	
 /*...e*/
-	return strcmp(key, ((const lbString*) _key)->key) == 0 ? 1 : 0;
+	return strcmp(stringdata, ((const lbString*) _key)->stringdata) == 0 ? 1 : 0;
     } else {
     	_LOG << "Error: Comparing wrong key types" LOG_
     	return 0;
@@ -817,7 +881,7 @@ int LB_STDCALL lbString::equals(const lb_I_KeyBase* _key) const {
 
 int LB_STDCALL lbString::greater(const lb_I_KeyBase* _key) const {
     if (strcmp(getKeyType(), _key->getKeyType()) == 0)
-	return strcmp(key, ((const lbString*) _key)->key) > 0 ? 1 : 0;
+	return strcmp(stringdata, ((const lbString*) _key)->stringdata) > 0 ? 1 : 0;
     else {
     	_LOG << "Error: Comparing wrong key types" LOG_
     	return 0;
@@ -826,7 +890,7 @@ int LB_STDCALL lbString::greater(const lb_I_KeyBase* _key) const {
 
 int LB_STDCALL lbString::lessthan(const lb_I_KeyBase* _key) const {
     if (strcmp(getKeyType(), _key->getKeyType()) == 0)
-	return strcmp(key, ((const lbString*) _key)->key) < 0 ? 1 : 0;
+	return strcmp(stringdata, ((const lbString*) _key)->stringdata) < 0 ? 1 : 0;
     else {
     	_LOG << "Error: Comparing wrong key types" LOG_
     	return 0;
@@ -834,10 +898,170 @@ int LB_STDCALL lbString::lessthan(const lb_I_KeyBase* _key) const {
 }
 
 char* LB_STDCALL lbString::charrep() const {
-    return key;
+	// No need for an extra key representation.
+    return stringdata;
 }
 /*...e*/
 /*...e*/
+/*...slbFileLocation:0:*/
+lbFileLocation::lbFileLocation() {
+	ref = STARTREF;
+	_path = NULL;
+}
+
+lbFileLocation::~lbFileLocation() {
+	if (_path != NULL) free(_path);
+}
+
+void lbFileLocation::setData(char* path) {
+	if (_path != NULL) free(_path);
+	_path = strdup(path);
+}
+
+char* lbFileLocation::getData() const {
+	return _path;
+}
+
+BEGIN_IMPLEMENT_LB_UNKNOWN(lbFileLocation)
+	ADD_INTERFACE(lb_I_FileLocation)
+	ADD_INTERFACE(lb_I_KeyBase)
+END_IMPLEMENT_LB_UNKNOWN()
+
+lbErrCodes LB_STDCALL lbFileLocation::setData(lb_I_Unknown* uk) {
+	lbErrCodes err= ERR_NONE;
+	UAP(lb_I_FileLocation, f)
+	QI(uk, lb_I_FileLocation, f)
+	
+	setData(f->getData());
+	
+	return err;
+}
+
+/*...sKey:0:*/
+char* LB_STDCALL lbFileLocation::getKeyType() const {
+    return "fileloc";
+}
+
+int LB_STDCALL lbFileLocation::equals(const lb_I_KeyBase* _key) const {
+    if (strcmp(getKeyType(), _key->getKeyType()) == 0) {
+/*...sVERBOSE:0:*/
+#ifdef VERBOSE
+        printf("Stringvergleich %s == %s = %d\n", 
+        	_path, 
+        	((const lbFileLocation*) _key)->_path, 
+        	strcmp(_path, ((const lbFileLocation*) _key)->_path));
+#endif        	
+/*...e*/
+	return strcmp(_path, ((const lbFileLocation*) _key)->_path) == 0 ? 1 : 0;
+    } else {
+    	_LOG << "Error: Comparing wrong key types" LOG_
+    	return 0;
+    }
+}
+
+int LB_STDCALL lbFileLocation::greater(const lb_I_KeyBase* _key) const {
+    if (strcmp(getKeyType(), _key->getKeyType()) == 0)
+	return strcmp(_path, ((const lbFileLocation*) _key)->_path) > 0 ? 1 : 0;
+    else {
+    	_LOG << "Error: Comparing wrong key types" LOG_
+    	return 0;
+    }
+}
+
+int LB_STDCALL lbFileLocation::lessthan(const lb_I_KeyBase* _key) const {
+    if (strcmp(getKeyType(), _key->getKeyType()) == 0)
+	return strcmp(_path, ((const lbFileLocation*) _key)->_path) < 0 ? 1 : 0;
+    else {
+    	_LOG << "Error: Comparing wrong key types" LOG_
+    	return 0;
+    }
+}
+
+char* LB_STDCALL lbFileLocation::charrep() const {
+	return _path;
+}
+/*...e*/
+/*...e*/
+/*...slbFileLocation:0:*/
+lbDirLocation::lbDirLocation() {
+	ref = STARTREF;
+	_path = NULL;
+}
+
+lbDirLocation::~lbDirLocation() {
+	if (_path != NULL) free(_path);
+}
+
+void lbDirLocation::setData(char* path) {
+	if (_path != NULL) free(_path);
+	_path = strdup(path);
+}
+
+char* lbDirLocation::getData() const {
+	return _path;
+}
+
+BEGIN_IMPLEMENT_LB_UNKNOWN(lbDirLocation)
+	ADD_INTERFACE(lb_I_DirLocation)
+	ADD_INTERFACE(lb_I_KeyBase)
+END_IMPLEMENT_LB_UNKNOWN()
+
+lbErrCodes LB_STDCALL lbDirLocation::setData(lb_I_Unknown* uk) {
+	lbErrCodes err= ERR_NONE;
+	UAP(lb_I_DirLocation, f)
+	QI(uk, lb_I_DirLocation, f)
+	
+	setData(f->getData());
+	
+	return err;
+}
+
+/*...sKey:0:*/
+char* LB_STDCALL lbDirLocation::getKeyType() const {
+    return "dirloc";
+}
+
+int LB_STDCALL lbDirLocation::equals(const lb_I_KeyBase* _key) const {
+    if (strcmp(getKeyType(), _key->getKeyType()) == 0) {
+/*...sVERBOSE:0:*/
+#ifdef VERBOSE
+        printf("Stringvergleich %s == %s = %d\n", 
+        	_path, 
+        	((const lbDirLocation*) _key)->_path, 
+        	strcmp(_path, ((const lbDirLocation*) _key)->_path));
+#endif        	
+/*...e*/
+	return strcmp(_path, ((const lbDirLocation*) _key)->_path) == 0 ? 1 : 0;
+    } else {
+    	_LOG << "Error: Comparing wrong key types" LOG_
+    	return 0;
+    }
+}
+
+int LB_STDCALL lbDirLocation::greater(const lb_I_KeyBase* _key) const {
+    if (strcmp(getKeyType(), _key->getKeyType()) == 0)
+	return strcmp(_path, ((const lbDirLocation*) _key)->_path) > 0 ? 1 : 0;
+    else {
+    	_LOG << "Error: Comparing wrong key types" LOG_
+    	return 0;
+    }
+}
+
+int LB_STDCALL lbDirLocation::lessthan(const lb_I_KeyBase* _key) const {
+    if (strcmp(getKeyType(), _key->getKeyType()) == 0)
+	return strcmp(_path, ((const lbDirLocation*) _key)->_path) < 0 ? 1 : 0;
+    else {
+    	_LOG << "Error: Comparing wrong key types" LOG_
+    	return 0;
+    }
+}
+
+char* LB_STDCALL lbDirLocation::charrep() const {
+	return _path;
+}
+/*...e*/
+/*...e*/
+
 /*...slbInteger:0:*/
 lbInteger::lbInteger() {
 	ref = STARTREF;

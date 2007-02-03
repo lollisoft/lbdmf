@@ -2525,6 +2525,16 @@ public:
 	 */
 	virtual bool	   LB_STDCALL getAutoselect() = 0;
 
+	/** \brief Base directory for files.
+	 * This parameter is for setup the base directory for files needed by meta application.
+	 */
+	virtual char*	   LB_STDCALL getDirLocation() = 0;
+	
+	/** \brief Base directory for files.
+	 * This parameter is for setup the base directory for files needed by meta application.
+	 */
+	virtual void	   LB_STDCALL setDirLocation(char* dirloc) = 0;
+	
 	/**
 	 * Initialize the application module. Optionally, provide user and application name.
 	 */

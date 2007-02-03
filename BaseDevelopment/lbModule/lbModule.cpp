@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.113 $
+ * $Revision: 1.114 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.113 2007/01/15 23:37:30 lollisoft Exp $
+ * $Id: lbModule.cpp,v 1.114 2007/02/03 11:04:36 lollisoft Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.114  2007/02/03 11:04:36  lollisoft
+ * Implemented directory location property handler. This is used in lbMetaApplication.
+ *
  * Revision 1.113  2007/01/15 23:37:30  lollisoft
  * Changed code that valgrind mentioned as using uninitialized variable in boolean expression
  *
@@ -2146,6 +2149,18 @@ lb_I_FunctorEntity* LB_STDCALL lbHCInterfaceRepository::getFirstEntity() {
 	
 	if (strcmp(searchArgument, "lb_I_Integer") == 0) {
 		functor = PREFIX "instanceOfInteger";
+		module = "lbClasses";
+		found = true;
+	}
+	
+	if (strcmp(searchArgument, "lb_I_FileLocation") == 0) {
+		functor = PREFIX "instanceOfFileLocation";
+		module = "lbClasses";
+		found = true;
+	}
+
+	if (strcmp(searchArgument, "lb_I_DirLocation") == 0) {
+		functor = PREFIX "instanceOfDirLocation";
 		module = "lbClasses";
 		found = true;
 	}

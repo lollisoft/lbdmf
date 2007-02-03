@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.43 $
+ * $Revision: 1.44 $
  * $Name:  $
- * $Id: lbMetaApplication.h,v 1.43 2007/01/29 20:12:59 lollisoft Exp $
+ * $Id: lbMetaApplication.h,v 1.44 2007/02/03 11:04:36 lollisoft Exp $
  *
  * $Log: lbMetaApplication.h,v $
+ * Revision 1.44  2007/02/03 11:04:36  lollisoft
+ * Implemented directory location property handler. This is used in lbMetaApplication.
+ *
  * Revision 1.43  2007/01/29 20:12:59  lollisoft
  * Checkin for Linux.
  *
@@ -242,10 +245,12 @@ public:
 	lbErrCodes LB_STDCALL setUserName(char* user);
 	lbErrCodes LB_STDCALL setApplicationName(char* app);
 
+	void	   LB_STDCALL setDirLocation(char* dirloc);
 	void	   LB_STDCALL setAutoload(bool b);
 	void	   LB_STDCALL setAutorefreshData(bool b);
 	void	   LB_STDCALL setAutoselect(bool b);
 	bool	   LB_STDCALL getAutorefreshData();
+	char*	   LB_STDCALL getDirLocation();
 	bool	   LB_STDCALL getAutoload();
 	bool	   LB_STDCALL getAutoselect();
 	void	   LB_STDCALL setGUIMaximized(bool b);
@@ -369,6 +374,7 @@ protected:
 
 	
 
+	char* _dirloc;
 	bool _autoload;
 	bool _autorefresh;
 	bool _autoselect;

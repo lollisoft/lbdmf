@@ -1462,6 +1462,34 @@ wxPropertyGrid* lb_wxFrame::CreatePropertyGrid(wxWindow* parent) {
 	return pg;
 }
 
+void lb_wxFrame::populateFileLocation(wxPropertyGrid* pg, lb_I_Unknown* uk, lb_I_KeyBase* name, char* category) {
+	lbErrCodes err = ERR_NONE;
+	UAP(lb_I_FileLocation, s)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, category_name)
+	QI(uk, lb_I_FileLocation, s)
+	
+	_CL_LOG << "Add file location property (" << name->charrep() << "): " << s->charrep() LOG_
+	
+	if (category) *category_name = category;
+	*category_name += name->charrep();
+	
+	pg->Append(wxFileProperty (name->charrep(), category_name->charrep(), s->charrep()));
+}
+
+void lb_wxFrame::populateDirLocation(wxPropertyGrid* pg, lb_I_Unknown* uk, lb_I_KeyBase* name, char* category) {
+	lbErrCodes err = ERR_NONE;
+	UAP(lb_I_DirLocation, s)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, category_name)
+	QI(uk, lb_I_DirLocation, s)
+	
+	_CL_LOG << "Add file location property (" << name->charrep() << "): " << s->charrep() LOG_
+	
+	if (category) *category_name = category;
+	*category_name += name->charrep();
+	
+	pg->Append(wxDirProperty (name->charrep(), category_name->charrep(), s->charrep()));
+}
+
 void lb_wxFrame::populateString(wxPropertyGrid* pg, lb_I_Unknown* uk, lb_I_KeyBase* name, char* category) {
 	lbErrCodes err = ERR_NONE;
 	UAP(lb_I_String, s)
@@ -1513,9 +1541,24 @@ void lb_wxFrame::populateProperties(wxPropertyGrid* pg, lb_I_Container* properti
 			uk = properties->getElementAt(i);
 			key = properties->getKeyAt(i);
 			
-			if (strcmp(uk->getClassName(), "lbString") == 0) populateString(pg, *&uk, *&key, category);
-			if (strcmp(uk->getClassName(), "lbInteger") == 0) populateInteger(pg, *&uk, *&key, category);
-			if (strcmp(uk->getClassName(), "lbBoolean") == 0) populateBoolean(pg, *&uk, *&key, category);
+			bool found = false;
+			
+			if (strcmp(uk->getClassName(), "lbString") == 0) {
+				populateString(pg, *&uk, *&key, category);
+				found = true;
+			}
+			if (strcmp(uk->getClassName(), "lbDirLocation") == 0) {
+				populateDirLocation(pg, *&uk, *&key, category);
+				found = true;
+			}
+			if (strcmp(uk->getClassName(), "lbInteger") == 0) {
+				populateInteger(pg, *&uk, *&key, category);
+				found = true;
+			}
+			if (strcmp(uk->getClassName(), "lbBoolean") == 0) {
+				populateBoolean(pg, *&uk, *&key, category);
+				found = true;
+			}
 			if (strcmp(uk->getClassName(), "lbParameter") == 0) {
 				UAP(lb_I_Container, props)
 				UAP(lb_I_Parameter, param)
@@ -1527,7 +1570,13 @@ void lb_wxFrame::populateProperties(wxPropertyGrid* pg, lb_I_Container* properti
 				props = param->getParameterList();
 				
 				populateProperties(pg, *&props, key->charrep());
+				found = true;				
 			}
+			
+			if (found == false) {
+				_LOG << "No handler for parameter of type " << uk->getClassName() << " found." LOG_ 
+			}
+			
 		}
 }
 

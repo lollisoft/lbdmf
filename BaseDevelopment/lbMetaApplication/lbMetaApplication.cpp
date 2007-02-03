@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.103 $
+ * $Revision: 1.104 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.103 2007/01/29 20:12:59 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.104 2007/02/03 11:04:36 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.104  2007/02/03 11:04:36  lollisoft
+ * Implemented directory location property handler. This is used in lbMetaApplication.
+ *
  * Revision 1.103  2007/01/29 20:12:59  lollisoft
  * Checkin for Linux.
  *
@@ -464,6 +467,7 @@ lb_MetaApplication::lb_MetaApplication() {
 	_autoselect = false;
 	_autorefresh = false;
 	_logged_in = false;
+	_dirloc = strdup("");
 	_loading_object_data = false;
 	
 	REQUEST(getModuleInstance(), lb_I_Container, activeDocuments)
@@ -498,6 +502,8 @@ lb_MetaApplication::~lb_MetaApplication() {
 	_CL_LOG << "Unloaded module." LOG_	
 	
 	free(moduleName);
+	
+	if (_dirloc != NULL) free(_dirloc);
 }
 /*...e*/
 
@@ -1035,6 +1041,11 @@ void       LB_STDCALL lb_MetaApplication::setAutoload(bool b) {
 	_autoload = b;
 }
 
+void       LB_STDCALL lb_MetaApplication::setDirLocation(char* dirloc) {
+	if (_dirloc != NULL) free(_dirloc);
+	_dirloc = strdup(dirloc);
+}
+
 void       LB_STDCALL lb_MetaApplication::setAutorefreshData(bool b) {
 	_autorefresh = b;
 }
@@ -1045,6 +1056,10 @@ void       LB_STDCALL lb_MetaApplication::setAutoselect(bool b) {
 
 bool       LB_STDCALL lb_MetaApplication::getAutoload() {
 	return _autoload;
+}
+
+char*       LB_STDCALL lb_MetaApplication::getDirLocation() {
+	return _dirloc;
 }
 
 bool       LB_STDCALL lb_MetaApplication::getAutorefreshData() {
@@ -1076,6 +1091,10 @@ lbErrCodes LB_STDCALL lb_MetaApplication::propertyChanged(lb_I_Unknown* uk) {
 		param->getUAPString(*&name, *&value);
 		
 		QI(parameterName, lb_I_KeyBase, key)
+		
+		if (strcmp(key->charrep(), "GeneralBase directory") == 0) {
+					setDirLocation(value->charrep());
+		}
 		
 		if (strcmp(key->charrep(), "GeneralAutorefresh updated data") == 0) {
 				if (strcmp(value->charrep(), "1") == 0) {
@@ -1125,11 +1144,16 @@ lb_I_Parameter* LB_STDCALL lb_MetaApplication::getParameter() {
 	
 	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, value)
+	UAP_REQUEST(manager.getPtr(), lb_I_DirLocation, dirloc)
 	UAP_REQUEST(manager.getPtr(), lb_I_Boolean, b)
 
 
 	parameter->setData("General");
 	//--------------------------------------------------------
+	parameterGeneral->setData("Base directory");
+	dirloc->setData(_dirloc);
+	paramGeneral->setUAPDirLocation(*&parameterGeneral, *&dirloc);
+	
 	parameterGeneral->setData("Autoselect last application");
 	b->setData(_autoselect);
 	paramGeneral->setUAPBoolean(*&parameterGeneral, *&b);
@@ -1143,7 +1167,6 @@ lb_I_Parameter* LB_STDCALL lb_MetaApplication::getParameter() {
 	paramGeneral->setUAPBoolean(*&parameterGeneral, *&b);
 
 	parameterGeneral->setData("Last application");
-	b->setData(_autoload);
 	getApplicationName(&value);
 	paramGeneral->setUAPString(*&parameterGeneral, *&value);
 

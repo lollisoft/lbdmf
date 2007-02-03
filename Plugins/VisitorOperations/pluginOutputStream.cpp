@@ -22,9 +22,9 @@
     The author of this work will be reached by e-Mail or paper mail.
     e-Mail: lothar.behrens@lollisoft.de
     p-Mail: Lothar Behrens
-            Rosmarinstr. 3
+            Heinrich-Scheufelen-Platz 2
             
-            40235 Duesseldorf (germany)
+            73252 Lenningen (germany)
 */
 /*...e*/
 /*...sincludes:0:*/
@@ -145,6 +145,8 @@ public:
 	void LB_STDCALL visit(lb_I_Action_Types*);
 	void LB_STDCALL visit(lb_I_Action_Steps*);
 	void LB_STDCALL visit(lb_I_Translations*);
+	void LB_STDCALL visit(lb_I_FileLocation*);
+	void LB_STDCALL visit(lb_I_DirLocation*);
 
 	/** \brief Start save operation.
 	 *
@@ -373,6 +375,14 @@ void LB_STDCALL lbOutputStream::visit(lb_I_Formular_Actions* formular_actions) {
 		*oStream << formular_actions->getFormularActionActionID();
 		*oStream << formular_actions->getFormularActionEvent();
 	}
+}
+
+void LB_STDCALL lbOutputStream::visit(lb_I_FileLocation* fileloc) {
+		*oStream << fileloc->charrep();
+}
+
+void LB_STDCALL lbOutputStream::visit(lb_I_DirLocation* fileloc) {
+		*oStream << fileloc->charrep();
 }
 
 void LB_STDCALL lbOutputStream::visit(lb_I_ApplicationParameter* apps) {

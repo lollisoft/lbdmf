@@ -33,11 +33,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.20 $
+ * $Revision: 1.21 $
  * $Name:  $
- * $Id: wxWrapperDLL.h,v 1.20 2007/01/30 20:43:37 lollisoft Exp $
+ * $Id: wxWrapperDLL.h,v 1.21 2007/02/03 11:04:36 lollisoft Exp $
  *
  * $Log: wxWrapperDLL.h,v $
+ * Revision 1.21  2007/02/03 11:04:36  lollisoft
+ * Implemented directory location property handler. This is used in lbMetaApplication.
+ *
  * Revision 1.20  2007/01/30 20:43:37  lollisoft
  * Probably fixed the bug in status bar handling.
  *
@@ -264,6 +267,8 @@ public:
 	void populateProperties(wxPropertyGrid* pg, lb_I_Container* properties, char* category = NULL);
 	void populateInteger(wxPropertyGrid* pg, lb_I_Unknown* uk, lb_I_KeyBase* name, char* category = NULL);
 	void populateString(wxPropertyGrid* pg, lb_I_Unknown* uk, lb_I_KeyBase* name, char* category = NULL);
+	void populateFileLocation(wxPropertyGrid* pg, lb_I_Unknown* uk, lb_I_KeyBase* name, char* category = NULL);
+	void populateDirLocation(wxPropertyGrid* pg, lb_I_Unknown* uk, lb_I_KeyBase* name, char* category = NULL);
 	void populateBoolean(wxPropertyGrid* pg, lb_I_Unknown* uk, lb_I_KeyBase* name, char* category = NULL);
 
 	wxPropertyGrid* CreatePropertyGrid(wxWindow* parent);

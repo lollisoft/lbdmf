@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.72 $
+ * $Revision: 1.73 $
  * $Name:  $
- * $Id: lbInterfaces-sub-classes.h,v 1.72 2007/01/15 23:37:30 lollisoft Exp $
+ * $Id: lbInterfaces-sub-classes.h,v 1.73 2007/02/03 11:04:36 lollisoft Exp $
  *
  * $Log: lbInterfaces-sub-classes.h,v $
+ * Revision 1.73  2007/02/03 11:04:36  lollisoft
+ * Implemented directory location property handler. This is used in lbMetaApplication.
+ *
  * Revision 1.72  2007/01/15 23:37:30  lollisoft
  * Changed code that valgrind mentioned as using uninitialized variable in boolean expression
  *
@@ -553,6 +556,70 @@ public:
 		virtual lb_I_String& LB_STDCALL operator = (const lb_I_String* toAppend) = 0;
 };
 /*...e*/
+/*...sclass lb_I_FileLocation:0:*/
+/**
+ * \brief A file location class.
+ *
+ * This is a set of base interfaces that are compatible to the lb_I_Container interface.
+ * The file location class is used to store the location of a file to distinguish from a normal
+ * string.
+ */
+class lb_I_FileLocation : public lb_I_KeyBase {
+public:
+		/** 
+	 	 * \brief Set path as the file location.
+		 *
+		 * \param path string value to be set.
+		 */        
+        virtual void LB_STDCALL setData(char* path) = 0;
+        
+        /**
+         * \brief Get the path value.
+         */
+        virtual char* LB_STDCALL getData() const = 0;
+	
+        /**
+         * \brief Set data from other lb_I_FileLocation instance.
+         *
+         * This member is used in lb_I_Container implementation via clone.
+         */
+		virtual lbErrCodes LB_STDCALL setData( lb_I_Unknown * uk) = 0;        
+};
+/*...e*/
+/*...sclass lb_I_DirLocation:0:*/
+/**
+ * \brief A dir location class.
+ *
+ * This is a set of base interfaces that are compatible to the lb_I_Container interface.
+ * The dir location class is used to store file path and to distinguish from a normal
+ * string.
+ *
+ * It will be used in my lb_I_MetaApplication implementation to store a default directory
+ * for icon files.
+ */
+class lb_I_DirLocation : public lb_I_KeyBase {
+public:
+		/** 
+	 	 * \brief Set path as the file location.
+		 *
+		 * \param path string value to be set.
+		 */        
+        virtual void LB_STDCALL setData(char* path) = 0;
+        
+        /**
+         * \brief Get the path value.
+         */
+        virtual char* LB_STDCALL getData() const = 0;
+	
+        /**
+         * \brief Set data from other lb_I_FileLocation instance.
+         *
+         * This member is used in lb_I_Container implementation via clone.
+         */
+		virtual lbErrCodes LB_STDCALL setData( lb_I_Unknown * uk) = 0;        
+};
+/*...e*/
+
 /*...sclass lb_I_Integer:0:*/
 /**
  * \brief A basic integer class.
@@ -738,6 +805,12 @@ public:
 
 	virtual void LB_STDCALL setUAPInteger(lb_I_String*& parameter, lb_I_Integer*& p) = 0;
 	virtual lbErrCodes LB_STDCALL getUAPInteger(lb_I_String*& parameter, lb_I_Integer*& p) = 0;
+	
+	virtual void LB_STDCALL setUAPDirLocation(lb_I_String*& parameter, lb_I_DirLocation*& p) = 0;
+	virtual lbErrCodes LB_STDCALL getUAPDirLocation(lb_I_String*& parameter, lb_I_DirLocation*& p) = 0;
+	
+	virtual void LB_STDCALL setUAPFileLocation(lb_I_String*& parameter, lb_I_FileLocation*& p) = 0;
+	virtual lbErrCodes LB_STDCALL getUAPFileLocation(lb_I_String*& parameter, lb_I_FileLocation*& p) = 0;
 	
 	virtual void LB_STDCALL setUAPBoolean(lb_I_String*& parameter, lb_I_Boolean*& p) = 0;
 	virtual lbErrCodes LB_STDCALL getUAPBoolean(lb_I_String*& parameter, lb_I_Boolean*& p) = 0;
