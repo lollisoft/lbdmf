@@ -33,11 +33,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.21 $
+ * $Revision: 1.22 $
  * $Name:  $
- * $Id: wxWrapperDLL.h,v 1.21 2007/02/03 11:04:36 lollisoft Exp $
+ * $Id: wxWrapperDLL.h,v 1.22 2007/02/08 22:36:06 lollisoft Exp $
  *
  * $Log: wxWrapperDLL.h,v $
+ * Revision 1.22  2007/02/08 22:36:06  lollisoft
+ * Partial toolbar implementation
+ *
  * Revision 1.21  2007/02/03 11:04:36  lollisoft
  * Implemented directory location property handler. This is used in lbMetaApplication.
  *
@@ -298,6 +301,19 @@ public:
 	
 	/// \brief Set text in a given text status bar area.
 	lbErrCodes LB_STDCALL setText_To_StatusBarTextArea(lb_I_Unknown* uk);
+
+        /// \brief Add a toolbar to the frame.
+	lbErrCodes LB_STDCALL addToolBar(lb_I_Unknown* uk);
+	
+	/// \brief Add a tool to the toolbar.
+	lbErrCodes LB_STDCALL addTool_To_ToolBar(lb_I_Unknown* uk);
+	
+	/// \brief Remove a tool from the toolbar.
+	lbErrCodes LB_STDCALL removeTool_From_ToolBar(lb_I_Unknown* uk);
+
+	/// \brief Toggle a tool from the toolbar.
+	lbErrCodes LB_STDCALL toggleTool_From_ToolBar(lb_I_Unknown* uk);
+	
 	
 	wxMenuBar* menu_bar;
 	int *stb_withs;

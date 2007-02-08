@@ -2582,6 +2582,18 @@ public:
 	 * Basic functions to be used for a UI application
 	 */
 
+	/// \brief Add a toolbar to the main window.
+	virtual lbErrCodes LB_STDCALL addToolBar(char* toolbarName) = 0;
+
+	/// \brief Add or insert a tool to the toolbar.
+	virtual lbErrCodes LB_STDCALL addToolBarButton(char* toolbarName, char* entry, char* evHandler, char* afterentry = NULL) = 0; 
+
+	/// \brief Remove a tool from the toolbar.
+	virtual lbErrCodes LB_STDCALL removeToolBarButton(char* toolbarName, char* entry) = 0; 
+
+	/// \brief Activate or deactivate a tool.
+	virtual lbErrCodes LB_STDCALL toggleToolBarButton(char* toolbarName, char* entry) = 0; 
+
 	/** Add a menubar name after. 
 	 */
 	virtual lbErrCodes LB_STDCALL addMenuBar(char* name, char* after) = 0;

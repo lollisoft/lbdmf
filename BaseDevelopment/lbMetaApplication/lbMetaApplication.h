@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.44 $
+ * $Revision: 1.45 $
  * $Name:  $
- * $Id: lbMetaApplication.h,v 1.44 2007/02/03 11:04:36 lollisoft Exp $
+ * $Id: lbMetaApplication.h,v 1.45 2007/02/08 22:36:05 lollisoft Exp $
  *
  * $Log: lbMetaApplication.h,v $
+ * Revision 1.45  2007/02/08 22:36:05  lollisoft
+ * Partial toolbar implementation
+ *
  * Revision 1.44  2007/02/03 11:04:36  lollisoft
  * Implemented directory location property handler. This is used in lbMetaApplication.
  *
@@ -305,6 +308,14 @@ public:
 	lbErrCodes LB_STDCALL addButton(char* buttonText, char* evHandler, int x, int y, int w, int h);
 	lbErrCodes LB_STDCALL addLabel(char* text, int x, int y, int w, int h);
 	lbErrCodes LB_STDCALL addTextField(char* name, int x, int y, int w, int h);
+	
+	lbErrCodes LB_STDCALL addToolBar(char* toolbarName);
+	lbErrCodes LB_STDCALL addToolBarButton(char* toolbarName, char* entry, char* evHandler, char* afterentry = NULL);
+	lbErrCodes LB_STDCALL removeToolBarButton(char* toolbarName, char* entry);
+	lbErrCodes LB_STDCALL toggleToolBarButton(char* toolbarName, char* entry);
+
+	lbErrCodes LB_STDCALL addToolBarTool(char* toolbarName, char* tooltype, char* entry, char* evHandler, char* afterentry);
+		
 	
 	void LB_STDCALL addStatusBar();
 	

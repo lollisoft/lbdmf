@@ -22,20 +22,23 @@
     The author of this work will be reached by e-Mail or paper mail.
     e-Mail: lothar.behrens@lollisoft.de
     p-Mail: Lothar Behrens
-            Rosmarinstr. 3
+            Heinrich-Scheufelen-Platz 2
             
-            40235 Duesseldorf (germany)
+            73252 Lenningen (germany)
 */
 /*...e*/
 	
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.104 $
+ * $Revision: 1.105 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.104 2007/02/03 11:04:36 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.105 2007/02/08 22:36:05 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.105  2007/02/08 22:36:05  lollisoft
+ * Partial toolbar implementation
+ *
  * Revision 1.104  2007/02/03 11:04:36  lollisoft
  * Implemented directory location property handler. This is used in lbMetaApplication.
  *
@@ -1406,6 +1409,131 @@ lbErrCodes LB_STDCALL lb_MetaApplication::loadApplication(char* user, char* appl
 /*...e*/
 
 /*...sBasic functions to be used for a UI application:0:*/
+
+lbErrCodes LB_STDCALL lb_MetaApplication::addToolBar(char* toolbarName)	{
+	lbErrCodes err = ERR_NONE;
+
+	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, value)
+
+	parameter->setData("toolbarName");
+	value->setData(toolbarName);
+	param->setUAPString(*&parameter, *&value);
+
+	UAP(lb_I_Unknown, uk)
+	QI(param, lb_I_Unknown, uk)
+	
+	UAP_REQUEST(manager.getPtr(), lb_I_String, result)
+	UAP(lb_I_Unknown, uk_result)
+	QI(result, lb_I_Unknown, uk_result)
+	
+	dispatcher->dispatch("addToolBar", uk.getPtr(), &uk_result);
+
+	return err;
+}
+
+lbErrCodes LB_STDCALL lb_MetaApplication::addToolBarButton(char* toolbarName, char* entry, char* evHandler, char* afterentry) {
+	return addToolBarTool(toolbarName, "Button", entry, evHandler, afterentry);
+}
+
+lbErrCodes LB_STDCALL lb_MetaApplication::addToolBarTool(char* toolbarName, char* tooltype, char* entry, char* evHandler, char* afterentry) {
+	lbErrCodes err = ERR_NONE;
+
+	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, value)
+
+	parameter->setData("toolbarName");
+	value->setData(toolbarName);
+	param->setUAPString(*&parameter, *&value);
+
+	parameter->setData("tooltype");
+	value->setData(tooltype);
+	param->setUAPString(*&parameter, *&value);
+
+	parameter->setData("entry");
+	value->setData(entry);
+	param->setUAPString(*&parameter, *&value);
+
+	parameter->setData("evHandler");
+	value->setData(evHandler);
+	param->setUAPString(*&parameter, *&value);
+
+	if (afterentry != NULL) {
+		parameter->setData("afterentry");
+		value->setData(afterentry);
+		param->setUAPString(*&parameter, *&value);
+	}
+	
+	UAP(lb_I_Unknown, uk)
+	QI(param, lb_I_Unknown, uk)
+	
+	UAP_REQUEST(manager.getPtr(), lb_I_String, result)
+	UAP(lb_I_Unknown, uk_result)
+	QI(result, lb_I_Unknown, uk_result)
+	
+	dispatcher->dispatch("addTool_To_ToolBar", uk.getPtr(), &uk_result);
+
+	return err;
+}
+
+lbErrCodes LB_STDCALL lb_MetaApplication::removeToolBarButton(char* toolbarName, char* entry) {
+	lbErrCodes err = ERR_NONE;
+
+	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, value)
+
+	parameter->setData("toolbarName");
+	value->setData(toolbarName);
+	param->setUAPString(*&parameter, *&value);
+
+	parameter->setData("entry");
+	value->setData(entry);
+	param->setUAPString(*&parameter, *&value);
+
+	UAP(lb_I_Unknown, uk)
+	QI(param, lb_I_Unknown, uk)
+	
+	UAP_REQUEST(manager.getPtr(), lb_I_String, result)
+	UAP(lb_I_Unknown, uk_result)
+	QI(result, lb_I_Unknown, uk_result)
+	
+	dispatcher->dispatch("removeTool_From_ToolBar", uk.getPtr(), &uk_result);
+
+	return err;
+}
+
+lbErrCodes LB_STDCALL lb_MetaApplication::toggleToolBarButton(char* toolbarName, char* entry) {
+	lbErrCodes err = ERR_NONE;
+
+	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, value)
+
+	parameter->setData("toolbarName");
+	value->setData(toolbarName);
+	param->setUAPString(*&parameter, *&value);
+
+	parameter->setData("entry");
+	value->setData(entry);
+	param->setUAPString(*&parameter, *&value);
+
+	UAP(lb_I_Unknown, uk)
+	QI(param, lb_I_Unknown, uk)
+	
+	UAP_REQUEST(manager.getPtr(), lb_I_String, result)
+	UAP(lb_I_Unknown, uk_result)
+	QI(result, lb_I_Unknown, uk_result)
+	
+	dispatcher->dispatch("toggleTool_From_ToolBar", uk.getPtr(), &uk_result);
+
+	return err;
+}
+
+
+
 /*...slbErrCodes LB_STDCALL lb_MetaApplication\58\\58\addMenuBar\40\char\42\ name\44\ char\42\ after\41\:0:*/
 lbErrCodes LB_STDCALL lb_MetaApplication::addMenuBar(char* name, char* after) {
 	lbErrCodes err = ERR_NONE;

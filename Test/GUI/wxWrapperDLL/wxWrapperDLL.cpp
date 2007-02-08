@@ -517,6 +517,11 @@ lbErrCodes LB_STDCALL lb_wxFrame::registerEventHandler(lb_I_Dispatcher* disp) {
 	eman->registerEvent("addStatusBar", temp);
 	eman->registerEvent("addStatusBar_TextArea", temp);
 	eman->registerEvent("setStatusText", temp);
+
+	eman->registerEvent("addToolBar", temp);
+	eman->registerEvent("addTool_To_ToolBar", temp);
+	eman->registerEvent("removeTool_From_ToolBar", temp);
+	eman->registerEvent("toggleTool_From_ToolBar", temp);
 	
 	disp->addEventHandlerFn(this, (lbEvHandler) &lb_wxFrame::showLeftPropertyBar, "ShowPropertyPanel");
 	disp->addEventHandlerFn(this, (lbEvHandler) &lb_wxFrame::switchPanelUse, "switchPanelUse");
@@ -527,6 +532,10 @@ lbErrCodes LB_STDCALL lb_wxFrame::registerEventHandler(lb_I_Dispatcher* disp) {
 	disp->addEventHandlerFn(this, (lbEvHandler) &lb_wxFrame::addStatusBarTextArea, "addStatusBar_TextArea");
 	disp->addEventHandlerFn(this, (lbEvHandler) &lb_wxFrame::setText_To_StatusBarTextArea, "setStatusText");
 
+	disp->addEventHandlerFn(this, (lbEvHandler) &lb_wxFrame::addToolBar, "addToolBar");
+	disp->addEventHandlerFn(this, (lbEvHandler) &lb_wxFrame::addTool_To_ToolBar, "addTool_To_ToolBar");
+	disp->addEventHandlerFn(this, (lbEvHandler) &lb_wxFrame::removeTool_From_ToolBar, "removeTool_From_ToolBar");
+	disp->addEventHandlerFn(this, (lbEvHandler) &lb_wxFrame::toggleTool_From_ToolBar, "toggleTool_From_ToolBar");
 	
 	Connect( _showLeftPropertyBar,  -1, wxEVT_COMMAND_MENU_SELECTED,
 			 (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
@@ -1624,6 +1633,28 @@ wxPoint lb_wxFrame::GetStartPosition()
     x += 20;
     wxPoint pt = ClientToScreen(wxPoint(0,0));
     return wxPoint(pt.x + x, pt.y + x);
+}
+
+lbErrCodes LB_STDCALL lb_wxFrame::addToolBar(lb_I_Unknown* uk) {
+    wxToolBar* tb = GetToolBar();
+    
+    if (tb == NULL) {
+	tb = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_HORIZONTAL|wxNO_BORDER);
+    } else {
+    
+    }
+}
+
+lbErrCodes LB_STDCALL lb_wxFrame::addTool_To_ToolBar(lb_I_Unknown* uk) {
+
+}
+
+lbErrCodes LB_STDCALL lb_wxFrame::removeTool_From_ToolBar(lb_I_Unknown* uk) {
+
+}
+
+lbErrCodes LB_STDCALL lb_wxFrame::toggleTool_From_ToolBar(lb_I_Unknown* uk) {
+
 }
 
 lbErrCodes LB_STDCALL lb_wxFrame::addStatusBar(lb_I_Unknown* uk) {
