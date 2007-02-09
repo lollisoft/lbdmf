@@ -2586,7 +2586,7 @@ public:
 	virtual lbErrCodes LB_STDCALL addToolBar(char* toolbarName) = 0;
 
 	/// \brief Add or insert a tool to the toolbar.
-	virtual lbErrCodes LB_STDCALL addToolBarButton(char* toolbarName, char* entry, char* evHandler, char* afterentry = NULL) = 0; 
+	virtual lbErrCodes LB_STDCALL addToolBarButton(char* toolbarName, char* entry, char* evHandler, char* toolbarimage, char* afterentry = NULL) = 0; 
 
 	/// \brief Remove a tool from the toolbar.
 	virtual lbErrCodes LB_STDCALL removeToolBarButton(char* toolbarName, char* entry) = 0; 

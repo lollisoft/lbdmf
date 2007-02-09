@@ -31,11 +31,15 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.105 $
+ * $Revision: 1.106 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.105 2007/02/08 22:36:05 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.106 2007/02/09 21:35:51 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.106  2007/02/09 21:35:51  lollisoft
+ * Implemented remaining stuff for basic toolbar support.
+ * But these seems not to show the bitmap on Mac OS X.
+ *
  * Revision 1.105  2007/02/08 22:36:05  lollisoft
  * Partial toolbar implementation
  *
@@ -470,7 +474,7 @@ lb_MetaApplication::lb_MetaApplication() {
 	_autoselect = false;
 	_autorefresh = false;
 	_logged_in = false;
-	_dirloc = strdup("");
+	_dirloc = strdup(".");
 	_loading_object_data = false;
 	
 	REQUEST(getModuleInstance(), lb_I_Container, activeDocuments)
@@ -1433,11 +1437,11 @@ lbErrCodes LB_STDCALL lb_MetaApplication::addToolBar(char* toolbarName)	{
 	return err;
 }
 
-lbErrCodes LB_STDCALL lb_MetaApplication::addToolBarButton(char* toolbarName, char* entry, char* evHandler, char* afterentry) {
-	return addToolBarTool(toolbarName, "Button", entry, evHandler, afterentry);
+lbErrCodes LB_STDCALL lb_MetaApplication::addToolBarButton(char* toolbarName, char* entry, char* evHandler, char* toolbarimage, char* afterentry) {
+	return addToolBarTool(toolbarName, "Button", entry, evHandler, toolbarimage, afterentry);
 }
 
-lbErrCodes LB_STDCALL lb_MetaApplication::addToolBarTool(char* toolbarName, char* tooltype, char* entry, char* evHandler, char* afterentry) {
+lbErrCodes LB_STDCALL lb_MetaApplication::addToolBarTool(char* toolbarName, char* tooltype, char* entry, char* evHandler, char* toolbarimage, char* afterentry) {
 	lbErrCodes err = ERR_NONE;
 
 	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
@@ -1458,6 +1462,10 @@ lbErrCodes LB_STDCALL lb_MetaApplication::addToolBarTool(char* toolbarName, char
 
 	parameter->setData("evHandler");
 	value->setData(evHandler);
+	param->setUAPString(*&parameter, *&value);
+
+	parameter->setData("toolbarimage");
+	value->setData(toolbarimage);
 	param->setUAPString(*&parameter, *&value);
 
 	if (afterentry != NULL) {

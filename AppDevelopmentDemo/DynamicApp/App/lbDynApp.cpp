@@ -833,7 +833,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 	sampleQuery = database->getQuery(0);	
 	
 	char* b =
-		"select Formulare.eventname, Formulare.menuname from Formulare inner join "
+		"select Formulare.eventname, Formulare.menuname, Formulare.toolbarimage from Formulare inner join "
 		"anwendungen_formulare on anwendungen_formulare.formularid = formulare.id inner join "
 		"Anwendungen on anwendungen_formulare.anwendungid = Anwendungen.id inner join "
 		"User_Anwendungen on Anwendungen.id = User_Anwendungen.anwendungenid inner join Users on "
@@ -864,13 +864,17 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 	free(ed);
 	free(menu);
 	
+	bool toolbaradded = false;
+	
 	lbErrCodes DBerr = sampleQuery->first();
 	if ((DBerr == ERR_NONE) || (DBerr == WARN_DB_NODATA)) {
 		UAP(lb_I_String, EventName)
 		UAP(lb_I_String, MenuName)
+		UAP(lb_I_String, ToolBarImage)
 		
 		EventName = sampleQuery->getAsString(1);
 		MenuName = sampleQuery->getAsString(2);
+		ToolBarImage = sampleQuery->getAsString(3);
 		
 		if (eman->resolveEvent(EventName->charrep(), unused) == ERR_EVENT_NOTREGISTERED) {
 			
@@ -880,6 +884,17 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 										  (lbEvHandler) &lbDynamicApplication::getDynamicDBForm, EventName->charrep());
 			
 			metaapp->addMenuEntry(_trans(app), MenuName->charrep(), EventName->charrep(), "");
+			
+			if (strcmp(ToolBarImage->charrep(), "") != 0) {
+				if (toolbaradded == false) {
+					metaapp->addToolBar("MainToolBar");
+					toolbaradded = true;
+				}
+				
+				ToolBarImage->trim();
+				
+				metaapp->addToolBarButton("MainToolBar", MenuName->charrep(), EventName->charrep(), ToolBarImage->charrep());
+			}
 			
 		} else {
 			_CL_VERBOSE << "WARNING: Event name already reserved. Ignore it for menucreation." LOG_

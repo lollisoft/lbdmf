@@ -30,11 +30,15 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.45 $
+ * $Revision: 1.46 $
  * $Name:  $
- * $Id: lbMetaApplication.h,v 1.45 2007/02/08 22:36:05 lollisoft Exp $
+ * $Id: lbMetaApplication.h,v 1.46 2007/02/09 21:35:51 lollisoft Exp $
  *
  * $Log: lbMetaApplication.h,v $
+ * Revision 1.46  2007/02/09 21:35:51  lollisoft
+ * Implemented remaining stuff for basic toolbar support.
+ * But these seems not to show the bitmap on Mac OS X.
+ *
  * Revision 1.45  2007/02/08 22:36:05  lollisoft
  * Partial toolbar implementation
  *
@@ -310,11 +314,11 @@ public:
 	lbErrCodes LB_STDCALL addTextField(char* name, int x, int y, int w, int h);
 	
 	lbErrCodes LB_STDCALL addToolBar(char* toolbarName);
-	lbErrCodes LB_STDCALL addToolBarButton(char* toolbarName, char* entry, char* evHandler, char* afterentry = NULL);
+	lbErrCodes LB_STDCALL addToolBarButton(char* toolbarName, char* entry, char* evHandler, char* toolbarimage, char* afterentry = NULL);
 	lbErrCodes LB_STDCALL removeToolBarButton(char* toolbarName, char* entry);
 	lbErrCodes LB_STDCALL toggleToolBarButton(char* toolbarName, char* entry);
 
-	lbErrCodes LB_STDCALL addToolBarTool(char* toolbarName, char* tooltype, char* entry, char* evHandler, char* afterentry);
+	lbErrCodes LB_STDCALL addToolBarTool(char* toolbarName, char* tooltype, char* entry, char* evHandler, char* toolbarimage, char* afterentry);
 		
 	
 	void LB_STDCALL addStatusBar();

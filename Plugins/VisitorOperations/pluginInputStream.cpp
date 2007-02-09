@@ -509,6 +509,9 @@ void LB_STDCALL lbInputStreamOpr::visit(lb_I_MetaApplication* app) {
 
 	*iStream >> b;
 	app->setGUIMaximized(b);
+	
+	*iStream >> temp;
+	app->setDirLocation(temp);
 }
 
 void LB_STDCALL lbInputStreamOpr::visit(lb_I_Application*) {

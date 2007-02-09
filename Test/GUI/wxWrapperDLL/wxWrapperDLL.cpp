@@ -1639,13 +1639,82 @@ lbErrCodes LB_STDCALL lb_wxFrame::addToolBar(lb_I_Unknown* uk) {
     wxToolBar* tb = GetToolBar();
     
     if (tb == NULL) {
-	tb = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_HORIZONTAL|wxNO_BORDER);
+		tb = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_HORIZONTAL|wxNO_BORDER);
+	
+		SetToolBar(tb);
     } else {
     
     }
 }
 
 lbErrCodes LB_STDCALL lb_wxFrame::addTool_To_ToolBar(lb_I_Unknown* uk) {
+	lbErrCodes err = ERR_DISPATCH_PARAMETER_WRONG;
+	UAP(lb_I_Parameter, params)
+	
+	QI(uk, lb_I_Parameter, params)
+	
+	if (params != NULL) {
+		UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
+		UAP_REQUEST(manager.getPtr(), lb_I_String, name)
+		UAP_REQUEST(manager.getPtr(), lb_I_String, toolbarName)
+		UAP_REQUEST(manager.getPtr(), lb_I_String, tooltype)
+		UAP_REQUEST(manager.getPtr(), lb_I_String, entry)
+		UAP_REQUEST(manager.getPtr(), lb_I_String, evHandler)
+		UAP_REQUEST(manager.getPtr(), lb_I_String, toolbarimage)
+	
+		*parameter = "toolbarName";
+		params->getUAPString(*&parameter, *&name);
+		*parameter = "tooltype";
+		params->getUAPString(*&parameter, *&tooltype);
+		*parameter = "entry";
+		params->getUAPString(*&parameter, *&entry);
+		*parameter = "evHandler";
+		params->getUAPString(*&parameter, *&evHandler);
+		*parameter = "toolbarimage";
+		params->getUAPString(*&parameter, *&toolbarimage);
+
+		wxToolBar* tb = GetToolBar();
+		
+		if (tb != NULL) {
+			UAP_REQUEST(manager.getPtr(), lb_I_EventManager, ev_manager)
+
+			int EvNr = 0;
+	
+			if (ev_manager->resolveEvent(evHandler->getData(), EvNr) == ERR_EVENT_NOTREGISTERED) {
+				_CL_LOG << "ERROR: Could not resolve a toolbar entry (" << entry->charrep() << ")" LOG_
+		
+				return ERR_EVENT_NOTREGISTERED;
+			}
+
+			UAP_REQUEST(getModuleManager(), lb_I_MetaApplication, app)
+
+			UAP_REQUEST(manager.getPtr(), lb_I_String, toolbarfile)
+			UAP_REQUEST(manager.getPtr(), lb_I_String, images)
+	
+			*toolbarfile += app->getDirLocation();
+
+#ifdef OSX
+			*images = "/toolbarimages/";
+#endif
+#ifdef LINUX
+			*images = "/toolbarimages/";
+#endif
+#ifdef WINDOWS
+			*images = "\\toolbarimages\\";
+#endif
+			*toolbarfile += images->charrep();
+			*toolbarfile += toolbarimage->charrep();
+
+			_LOG << "Add a toolbar tool with image '" << toolbarfile->charrep() << "'" LOG_
+			wxBitmap bm = wxBitmap(toolbarfile->charrep(), wxBITMAP_TYPE_XPM);
+			
+			
+			tb->AddTool(EvNr, bm, entry->charrep());
+			tb->Realize();
+		}
+		
+		err = ERR_NONE;
+	}
 
 }
 

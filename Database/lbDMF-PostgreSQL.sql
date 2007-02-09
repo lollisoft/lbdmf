@@ -100,6 +100,7 @@ CREATE TABLE Formulare
   MenuOrder INTEGER,
   EventName CHAR(30),
   MenuHilfe CHAR(100),
+  ToolBarImage CHAR(100),
   AnwendungID INTEGER,
   Typ INTEGER NOT NULL,
   PRIMARY KEY (id)
@@ -694,6 +695,8 @@ insert into Formulare (MenuOrder, Name, MenuName, EventName, MenuHilfe, Anwendun
 'Bietet Verwaltungsmöglichkeiten für Kunden',
 3, 1);
 
+-- 5
+
 insert into Formulare (MenuOrder, Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
 2,
 'DynReservierungen', 
@@ -775,6 +778,8 @@ insert into Formulare (MenuOrder, Name, MenuName, EventName, MenuHilfe, Anwendun
 'manageDynCustomers',
 'Bietet Verwaltungsmöglichkeiten für Kunden',
 3, 1);
+
+-- 15
 
 insert into Formulare (MenuOrder, Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
 5,
@@ -883,6 +888,8 @@ insert into Formulare (MenuOrder, Name, MenuName, EventName, MenuHilfe, Anwendun
 'manageAppParams',
 '-',
 1 , 1);
+
+-- 28
 
 --...e
 

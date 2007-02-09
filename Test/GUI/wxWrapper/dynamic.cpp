@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.129 2007/01/29 20:12:59 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.130 2007/02/09 21:35:51 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,15 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.129 $
+ * $Revision: 1.130 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.129 2007/01/29 20:12:59 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.130 2007/02/09 21:35:51 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.130  2007/02/09 21:35:51  lollisoft
+ * Implemented remaining stuff for basic toolbar support.
+ * But these seems not to show the bitmap on Mac OS X.
+ *
  * Revision 1.129  2007/01/29 20:12:59  lollisoft
  * Checkin for Linux.
  *
@@ -2157,7 +2161,7 @@ bool MyApp::OnInit(void)
     } 
 
     if (PM->beginEnumPlugins()) {
-	
+		
     while (TRUE) {
         UAP(lb_I_Plugin, pl)
         pl = PM->nextPlugin();
@@ -2165,7 +2169,7 @@ bool MyApp::OnInit(void)
             pl->autorun();
         }
     }
-
+	
     frame->Show(TRUE);
 
     if (metaApp != NULL) metaApp->run();

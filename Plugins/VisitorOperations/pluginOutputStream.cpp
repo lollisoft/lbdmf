@@ -492,6 +492,8 @@ void LB_STDCALL lbOutputStream::visit(lb_I_MetaApplication* app) {
 
 	b = app->getGUIMaximized();
 	*oStream << b;
+	
+	*oStream << app->getDirLocation();
 }
 
 void LB_STDCALL lbOutputStream::visit(lb_I_Application*) {
