@@ -1,0 +1,831 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://web.resource.org/cc/"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://inkscape.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="744.09448819"
+   height="1052.3622047"
+   id="svg2"
+   sodipodi:version="0.32"
+   inkscape:version="0.42"
+   sodipodi:docbase="/Users/lothar/develop/Projects/CPP/Test/GUI/wxWrapper/Inkscape Icons"
+   sodipodi:docname="Kopf 1.svg"
+   inkscape:export-filename="/Users/lothar/develop/Projects/CPP/Test/GUI/wxWrapper/Inkscape Icons/Kopf 1.png"
+   inkscape:export-xdpi="7.5500002"
+   inkscape:export-ydpi="7.5500002">
+  <defs
+     id="defs4">
+    <linearGradient
+       id="linearGradient2038">
+      <stop
+         style="stop-color:#000fe2;stop-opacity:1.0000000;"
+         offset="0.0000000"
+         id="stop2040" />
+      <stop
+         style="stop-color:#c5acff;stop-opacity:0;"
+         offset="1"
+         id="stop2042" />
+    </linearGradient>
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.75069212"
+     inkscape:cx="372.04724"
+     inkscape:cy="526.18109"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     inkscape:window-width="1087"
+     inkscape:window-height="953"
+     inkscape:window-x="0"
+     inkscape:window-y="22"
+     showguides="true"
+     inkscape:guide-bbox="true" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <rect
+       style="fill:#9996d0;fill-opacity:1.0000000;fill-rule:nonzero;stroke:none;stroke-opacity:1.0000000"
+       id="rect5533"
+       width="224.65138"
+       height="222.00194"
+       x="33.302597"
+       y="249.07027"
+       rx="5.8250594"
+       ry="3.8354764"
+       inkscape:export-filename="/Users/lothar/develop/Projects/CPP/Test/GUI/wxWrapper/toolbarimages/formulare.png"
+       inkscape:export-xdpi="12.819863"
+       inkscape:export-ydpi="12.819863" />
+    <rect
+       style="fill:#f3f3f3;fill-opacity:1.0000000;fill-rule:nonzero;stroke:none;stroke-opacity:1.0000000"
+       id="rect5621"
+       width="99.943260"
+       height="16.233685"
+       x="140.80382"
+       y="354.52023"
+       rx="5.8250599"
+       ry="3.8354764"
+       inkscape:export-filename="/Users/lothar/develop/Projects/CPP/Test/GUI/wxWrapper/toolbarimages/formulare.png"
+       inkscape:export-xdpi="12.819863"
+       inkscape:export-ydpi="12.819863" />
+    <rect
+       style="fill:#f3f3f3;fill-opacity:1.0000000;fill-rule:nonzero;stroke:none;stroke-opacity:1.0000000"
+       id="rect5625"
+       width="99.943260"
+       height="16.233685"
+       x="141.01291"
+       y="377.01547"
+       rx="5.8250599"
+       ry="3.8354764"
+       inkscape:export-filename="/Users/lothar/develop/Projects/CPP/Test/GUI/wxWrapper/toolbarimages/formulare.png"
+       inkscape:export-xdpi="12.819863"
+       inkscape:export-ydpi="12.819863" />
+    <rect
+       style="fill:#f3f3f3;fill-opacity:1.0000000;fill-rule:nonzero;stroke:none;stroke-opacity:1.0000000"
+       id="rect5627"
+       width="99.943260"
+       height="16.233685"
+       x="140.59474"
+       y="398.81503"
+       rx="5.8250599"
+       ry="3.8354764"
+       inkscape:export-filename="/Users/lothar/develop/Projects/CPP/Test/GUI/wxWrapper/toolbarimages/formulare.png"
+       inkscape:export-xdpi="12.819863"
+       inkscape:export-ydpi="12.819863" />
+    <rect
+       style="fill:#f3f3f3;fill-opacity:1.0000000;fill-rule:nonzero;stroke:none;stroke-opacity:1.0000000"
+       id="rect5629"
+       width="99.943260"
+       height="16.233685"
+       x="140.59474"
+       y="419.68689"
+       rx="5.8250599"
+       ry="3.8354764"
+       inkscape:export-filename="/Users/lothar/develop/Projects/CPP/Test/GUI/wxWrapper/toolbarimages/formulare.png"
+       inkscape:export-xdpi="12.819863"
+       inkscape:export-ydpi="12.819863" />
+    <text
+       xml:space="preserve"
+       style="font-size:17.616199px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125.00000%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1.0000000;stroke:none;stroke-width:1.0000000px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1.0000000;font-family:Courier New"
+       x="38.188473"
+       y="344.55063"
+       id="text5658"
+       sodipodi:linespacing="125.00000%"
+       transform="scale(0.949518,1.053166)"
+       inkscape:export-filename="/Users/lothar/develop/Projects/CPP/Test/GUI/wxWrapper/toolbarimages/formulare.png"
+       inkscape:export-xdpi="12.819863"
+       inkscape:export-ydpi="12.819863"><tspan
+         sodipodi:role="line"
+         x="38.188473"
+         y="344.55063"
+         id="tspan5666">Name</tspan><tspan
+         sodipodi:role="line"
+         x="38.188473"
+         y="366.57088"
+         id="tspan5668">Vorname</tspan><tspan
+         sodipodi:role="line"
+         x="38.188473"
+         y="388.59113"
+         id="tspan5672">Straße</tspan><tspan
+         sodipodi:role="line"
+         x="38.188473"
+         y="410.61138"
+         id="tspan5674">Hausnummer</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:56.348034px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125.00000%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1.0000000;stroke:none;stroke-width:1.0000000px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1.0000000;font-family:Courier New"
+       x="54.645996"
+       y="225.17004"
+       id="text5676"
+       sodipodi:linespacing="125.00000%"
+       transform="scale(0.706422,1.415585)"
+       inkscape:export-filename="/Users/lothar/develop/Projects/CPP/Test/GUI/wxWrapper/toolbarimages/formulare.png"
+       inkscape:export-xdpi="12.819863"
+       inkscape:export-ydpi="12.819863"><tspan
+         sodipodi:role="line"
+         id="tspan5678"
+         x="54.645996"
+         y="225.17004">Formulare</tspan></text>
+    <path
+       style="fill:#eea414;fill-opacity:0.49079755;fill-rule:evenodd;stroke:#000000;stroke-width:0.98633146px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1.0000000"
+       d="M 164.50664,77.786327 L 155.22539,86.876392 L 147.38164,107.09343 L 148.81914,124.54392 L 153.78789,138.49824 L 162.38164,156.64797 L 164.50664,167.80534 L 163.78789,183.15812 L 163.53789,184.25258 C 166.69209,184.07117 170.05907,183.89574 180.97539,183.06692 C 196.37057,181.89804 215.81914,178.11147 215.81914,178.11146 C 219.45288,177.26856 221.29347,176.16937 223.60039,174.22007 C 225.07882,172.14964 225.51334,170.06715 225.47539,167.16690 C 225.01515,163.58180 222.64564,160.74591 220.10039,157.52961 C 219.25285,155.43808 219.08678,153.50943 219.85039,151.51010 C 220.82243,149.44886 222.39448,148.18828 223.31914,146.31144 C 223.20950,145.31969 222.54582,144.17482 221.72539,142.90646 C 223.40823,140.97960 224.64857,138.22845 225.19414,135.61009 C 224.24780,134.81524 223.90111,134.60352 222.69414,133.11716 C 221.54470,131.21532 221.14483,129.68227 221.03789,126.48962 C 223.17152,124.33618 225.09456,122.13502 226.88164,120.13570 C 229.20481,117.34875 229.18177,117.29824 230.66289,114.48101 C 231.56997,112.40993 232.11890,109.87720 230.85039,106.94142 C 228.08044,107.20220 222.36094,105.16634 220.19414,103.53645 C 213.28184,98.692989 206.01919,92.120919 199.63164,84.049048 L 197.35039,84.778685 L 182.35039,78.485563 L 164.50664,77.786327 z "
+       id="path4683"
+       inkscape:export-filename="/Users/lothar/develop/Projects/CPP/Test/GUI/wxWrapper/toolbarimages/kopf.png"
+       inkscape:export-xdpi="15.095303"
+       inkscape:export-ydpi="15.095303" />
+    <path
+       sodipodi:type="arc"
+       style="fill:none;fill-opacity:0.81595093;fill-rule:nonzero;stroke:none;stroke-opacity:1.0000000"
+       id="path3593"
+       sodipodi:cx="317.70682"
+       sodipodi:cy="358.33600"
+       sodipodi:rx="89.917023"
+       sodipodi:ry="109.23253"
+       d="M 407.62384 358.33600 A 89.917023 109.23253 0 1 1  227.78979,358.33600 A 89.917023 109.23253 0 1 1  407.62384 358.33600 z"
+       transform="matrix(0.718557,0.000000,0.000000,0.661508,-90.42124,-151.3083)"
+       inkscape:export-filename="/Users/lothar/develop/Projects/CPP/Test/GUI/wxWrapper/toolbarimages/kopf.png"
+       inkscape:export-xdpi="15.095303"
+       inkscape:export-ydpi="15.095303" />
+    <path
+       style="fill:none;fill-opacity:0.75000000;fill-rule:evenodd;stroke:none;stroke-width:1.0000000px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1.0000000"
+       d="M 197.45085,81.785294 C 197.63261,130.58805 197.63261,130.58805 197.63261,130.58805"
+       id="path3597"
+       inkscape:export-filename="/Users/lothar/develop/Projects/CPP/Test/GUI/wxWrapper/toolbarimages/kopf.png"
+       inkscape:export-xdpi="15.095303"
+       inkscape:export-ydpi="15.095303" />
+    <path
+       style="fill:none;fill-opacity:0.75000000;fill-rule:evenodd;stroke:#000000;stroke-width:1.0483099px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1.0000000"
+       d="M 221.64351,143.16240 C 213.41023,148.33313 208.40792,147.02213 208.40792,147.02213"
+       id="path3611"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="/Users/lothar/develop/Projects/CPP/Test/GUI/wxWrapper/toolbarimages/kopf.png"
+       inkscape:export-xdpi="15.095303"
+       inkscape:export-ydpi="15.095303" />
+    <path
+       style="fill:none;fill-opacity:0.75000000;fill-rule:evenodd;stroke:#000000;stroke-width:1.5108137px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1.0000000"
+       d="M 216.57021,118.90490 C 219.05063,118.90490 219.05063,118.90490 219.05063,118.90490"
+       id="path3613"
+       inkscape:export-filename="/Users/lothar/develop/Projects/CPP/Test/GUI/wxWrapper/toolbarimages/kopf.png"
+       inkscape:export-xdpi="15.095303"
+       inkscape:export-ydpi="15.095303" />
+    <path
+       style="fill:none;fill-opacity:0.75000000;fill-rule:evenodd;stroke:#000000;stroke-width:0.98633146px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1.0000000"
+       d="M 180.24691,107.48124 C 189.33472,104.29845 194.24214,107.83489 194.24214,107.83489"
+       id="path3635"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="/Users/lothar/develop/Projects/CPP/Test/GUI/wxWrapper/toolbarimages/kopf.png"
+       inkscape:export-xdpi="15.095303"
+       inkscape:export-ydpi="15.095303" />
+    <path
+       style="fill:none;fill-opacity:0.75000000;fill-rule:evenodd;stroke:#000000;stroke-width:0.98633146px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1.0000000"
+       d="M 180.33779,107.39281 C 191.97019,109.86832 194.33302,107.92329 194.33302,107.92329"
+       id="path3637"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="/Users/lothar/develop/Projects/CPP/Test/GUI/wxWrapper/toolbarimages/kopf.png"
+       inkscape:export-xdpi="15.095303"
+       inkscape:export-ydpi="15.095303" />
+    <path
+       style="fill:none;fill-opacity:0.75000000;fill-rule:evenodd;stroke:#000000;stroke-width:0.98633146px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1.0000000"
+       d="M 178.59571,107.50119 C 189.78840,91.166465 198.62674,86.154781 198.62674,86.154781"
+       id="path3639"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="/Users/lothar/develop/Projects/CPP/Test/GUI/wxWrapper/toolbarimages/kopf.png"
+       inkscape:export-xdpi="15.095303"
+       inkscape:export-ydpi="15.095303" />
+    <path
+       style="fill:none;fill-opacity:0.75000000;fill-rule:evenodd;stroke:#000000;stroke-width:0.98633146px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1.0000000"
+       d="M 178.98687,107.32631 C 191.99712,89.753839 198.10912,89.339512 198.10912,89.339512"
+       id="path3643"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="/Users/lothar/develop/Projects/CPP/Test/GUI/wxWrapper/toolbarimages/kopf.png"
+       inkscape:export-xdpi="15.095303"
+       inkscape:export-ydpi="15.095303" />
+    <path
+       style="fill:none;fill-opacity:0.75000000;fill-rule:evenodd;stroke:#000000;stroke-width:0.98633146px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1.0000000"
+       d="M 198.45372,86.397458 C 198.27196,89.580244 198.27196,89.580244 198.27196,89.580244"
+       id="path3645"
+       inkscape:export-filename="/Users/lothar/develop/Projects/CPP/Test/GUI/wxWrapper/toolbarimages/kopf.png"
+       inkscape:export-xdpi="15.095303"
+       inkscape:export-ydpi="15.095303" />
+    <path
+       style="fill:#16137f;fill-opacity:1.0000000;fill-rule:evenodd;stroke:#000000;stroke-width:0.98633146px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1.0000000"
+       d="M 197.61684,89.746688 C 198.13093,105.25062 194.27530,107.25113 194.27530,107.25113 C 185.92142,105.25062 187.20664,96.998525 187.20664,96.998525"
+       id="path3647"
+       sodipodi:nodetypes="ccc"
+       inkscape:export-filename="/Users/lothar/develop/Projects/CPP/Test/GUI/wxWrapper/toolbarimages/kopf.png"
+       inkscape:export-xdpi="15.095303"
+       inkscape:export-ydpi="15.095303" />
+    <path
+       style="fill:#0e0300;fill-opacity:0.81595093;fill-rule:evenodd;stroke:#000000;stroke-width:0.97065276px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1.0000000"
+       d="M 42.709825,102.93495 C 41.667325,96.313872 41.790185,88.230064 41.790185,88.230064 C 42.273405,83.960548 42.756635,79.691021 43.239855,75.421504 C 46.131815,68.630118 49.023785,61.838741 51.915745,55.047354 C 58.368935,48.133029 64.822125,41.218703 71.275315,34.304378 C 80.791685,31.048259 90.308065,27.792131 99.824435,24.536012 C 113.28153,21.691896 126.39107,17.495304 140.19572,17.694271 C 155.47820,18.556984 168.67535,22.124658 183.95783,27.382931 C 190.20187,29.184600 193.21611,31.167336 197.72237,33.307119 C 203.70936,38.643453 207.97602,43.262515 211.75117,49.555199 C 212.91809,54.263296 215.31380,58.971402 215.25192,63.679499 C 214.16875,69.164524 210.13647,72.736848 207.57874,77.265522 C 204.23239,79.714253 200.88605,82.162993 197.53970,84.611725 C 192.54360,82.518502 187.54751,80.425279 182.55141,78.332057 C 176.60368,78.099478 170.65594,77.866899 164.70821,77.634319 C 161.61539,80.657859 158.52256,83.681408 155.42974,86.704947 C 152.81274,93.449773 150.19573,100.19460 147.57873,106.93943 C 148.05455,112.75393 148.53037,118.56844 149.00619,124.38294 C 150.67156,129.03454 152.33692,133.68614 154.00229,138.33775 C 156.85720,144.38483 159.71211,150.43191 162.56702,156.47900 C 163.28075,160.20028 163.99448,163.92157 164.70821,167.64284 C 164.47030,172.75960 164.23238,177.87637 163.99447,182.99313 C 162.42583,187.48193 160.85720,191.97075 159.28856,196.45956 C 156.12164,198.60593 152.95472,200.75230 149.78780,202.89867 C 144.76908,203.24089 139.75035,203.58312 134.73163,203.92535 C 130.21135,203.92535 125.69108,203.92535 121.17080,203.92535 C 117.58734,203.87221 114.00388,203.81906 110.42042,203.76591 C 105.34242,201.15439 100.26441,198.54285 95.186405,195.93132 C 86.725405,187.53351 78.264405,179.13569 69.803405,170.73788 C 64.034105,161.14394 58.264805,151.55002 52.495505,141.95609 C 50.198115,132.47679 47.900725,122.99751 45.603335,113.51822 C 44.677835,109.97302 43.752325,106.42782 42.826825,102.88262"
+       id="path3633"
+       sodipodi:nodetypes="cccccccccccccccccccccccccccccccc"
+       inkscape:export-filename="/Users/lothar/develop/Projects/CPP/Test/GUI/wxWrapper/toolbarimages/kopf.png"
+       inkscape:export-xdpi="15.095303"
+       inkscape:export-ydpi="15.095303" />
+    <g
+       id="g5491"
+       transform="matrix(-1.000000,-2.911746e-2,0.000000,1.000000,788.7940,-404.9203)">
+      <path
+         id="path5493"
+         d="M 338.58518,513.99004 C 297.01046,515.47733 292.02150,512.50273 292.02150,512.50273 L 331.93323,502.09165 L 305.32540,479.78221 L 484.92819,479.78221 L 458.32036,505.06625 L 463.30934,516.96462 L 338.58518,513.99004 z "
+         style="fill:#3632e4;fill-opacity:1.0000000;fill-rule:evenodd;stroke:#000000;stroke-width:1.1806068px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1.0000000" />
+      <path
+         id="path5495"
+         d="M 331.04212,501.38426 L 331.91712,502.13426 L 292.01087,512.54051 C 292.01087,512.54051 296.99866,515.52779 338.57337,514.04051 L 463.29212,517.00926 L 458.29212,505.10301 L 458.91712,504.50926 L 331.04212,501.38426 z "
+         style="fill:#cccbe6;fill-opacity:1.0000000;fill-rule:evenodd;stroke:#000000;stroke-width:1.1806068px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1.0000000" />
+    </g>
+    <path
+       sodipodi:type="arc"
+       style="fill:#e2e1f3;fill-opacity:1.0000000;fill-rule:nonzero;stroke:none;stroke-opacity:1.0000000"
+       id="path5497"
+       sodipodi:cx="227.78979"
+       sodipodi:cy="93.330536"
+       sodipodi:rx="1.8316430"
+       sodipodi:ry="2.5809515"
+       d="M 229.62144 93.330536 A 1.8316430 2.5809515 0 1 1  225.95815,93.330536 A 1.8316430 2.5809515 0 1 1  229.62144 93.330536 z"
+       transform="matrix(1.000000,0.000000,0.000000,0.972850,-34.46819,7.817502)"
+       inkscape:export-filename="/Users/lothar/develop/Projects/CPP/Test/GUI/wxWrapper/toolbarimages/kopf.png"
+       inkscape:export-xdpi="15.095303"
+       inkscape:export-ydpi="15.095303" />
+    <rect
+       style="fill:#f3f3f3;fill-opacity:1.0000000;fill-rule:nonzero;stroke:none;stroke-opacity:1.0000000"
+       id="rect5623"
+       width="2.0000000"
+       height="0.0000000"
+       x="246.50000"
+       y="561.36218"
+       rx="5.8250599"
+       ry="0.0000000" />
+    <rect
+       style="fill:#3e3c59;fill-opacity:1.0000000;fill-rule:nonzero;stroke:none;stroke-opacity:1.0000000"
+       id="rect5701"
+       width="225.87018"
+       height="229.48692"
+       x="379.11954"
+       y="227.81793"
+       rx="5.8250594"
+       ry="3.8354764"
+       inkscape:export-filename="/Users/lothar/develop/Projects/CPP/Test/GUI/wxWrapper/toolbarimages/applications.png"
+       inkscape:export-xdpi="11.729438"
+       inkscape:export-ydpi="11.729438" />
+    <rect
+       style="fill:#d4d3e7;fill-opacity:1.0000000;fill-rule:nonzero;stroke:none;stroke-opacity:1.0000000"
+       id="rect5703"
+       width="225.87018"
+       height="229.48692"
+       x="358.12152"
+       y="243.38188"
+       rx="5.8250594"
+       ry="3.8354764"
+       inkscape:export-filename="/Users/lothar/develop/Projects/CPP/Test/GUI/wxWrapper/toolbarimages/applications.png"
+       inkscape:export-xdpi="11.729438"
+       inkscape:export-ydpi="11.729438" />
+    <rect
+       style="fill:#f3f3f3;fill-opacity:1.0000000;fill-rule:nonzero;stroke:none;stroke-opacity:1.0000000"
+       id="rect5705"
+       width="100.48548"
+       height="16.781017"
+       x="466.20599"
+       y="352.38718"
+       rx="5.8250599"
+       ry="3.8354764"
+       inkscape:export-filename="/Users/lothar/develop/Projects/CPP/Test/GUI/wxWrapper/toolbarimages/applications.png"
+       inkscape:export-xdpi="11.729438"
+       inkscape:export-ydpi="11.729438" />
+    <rect
+       style="fill:#f3f3f3;fill-opacity:1.0000000;fill-rule:nonzero;stroke:none;stroke-opacity:1.0000000"
+       id="rect5707"
+       width="100.48548"
+       height="16.781017"
+       x="466.41617"
+       y="375.64087"
+       rx="5.8250599"
+       ry="3.8354764"
+       inkscape:export-filename="/Users/lothar/develop/Projects/CPP/Test/GUI/wxWrapper/toolbarimages/applications.png"
+       inkscape:export-xdpi="11.729438"
+       inkscape:export-ydpi="11.729438" />
+    <rect
+       style="fill:#f3f3f3;fill-opacity:1.0000000;fill-rule:nonzero;stroke:none;stroke-opacity:1.0000000"
+       id="rect5709"
+       width="100.48548"
+       height="16.781017"
+       x="465.99576"
+       y="398.17538"
+       rx="5.8250599"
+       ry="3.8354764"
+       inkscape:export-filename="/Users/lothar/develop/Projects/CPP/Test/GUI/wxWrapper/toolbarimages/applications.png"
+       inkscape:export-xdpi="11.729438"
+       inkscape:export-ydpi="11.729438" />
+    <rect
+       style="fill:#f3f3f3;fill-opacity:1.0000000;fill-rule:nonzero;stroke:none;stroke-opacity:1.0000000"
+       id="rect5711"
+       width="100.48548"
+       height="16.781017"
+       x="465.99576"
+       y="419.75098"
+       rx="5.8250599"
+       ry="3.8354764"
+       inkscape:export-filename="/Users/lothar/develop/Projects/CPP/Test/GUI/wxWrapper/toolbarimages/applications.png"
+       inkscape:export-xdpi="11.729438"
+       inkscape:export-ydpi="11.729438" />
+    <text
+       xml:space="preserve"
+       style="font-size:17.959236px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125.00000%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1.0000000;stroke:none;stroke-width:1.0000000px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1.0000000;font-family:Courier New"
+       x="385.6069"
+       y="338.06937"
+       id="text5713"
+       sodipodi:linespacing="125.00000%"
+       transform="scale(0.936435,1.067880)"
+       inkscape:export-filename="/Users/lothar/develop/Projects/CPP/Test/GUI/wxWrapper/toolbarimages/applications.png"
+       inkscape:export-xdpi="11.729438"
+       inkscape:export-ydpi="11.729438"><tspan
+         sodipodi:role="line"
+         x="385.60690"
+         y="338.06937"
+         id="tspan5715">Name</tspan><tspan
+         sodipodi:role="line"
+         x="385.60690"
+         y="360.51841"
+         id="tspan5717">Vorname</tspan><tspan
+         sodipodi:role="line"
+         x="385.60690"
+         y="382.96746"
+         id="tspan5719">Straße</tspan><tspan
+         sodipodi:role="line"
+         x="385.60690"
+         y="405.41650"
+         id="tspan5721">Hausnummer</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:57.445282px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125.00000%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1.0000000;stroke:none;stroke-width:1.0000000px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1.0000000;font-family:Courier New"
+       x="521.68347"
+       y="219.74113"
+       id="text5723"
+       sodipodi:linespacing="125.00000%"
+       transform="scale(0.696688,1.435363)"
+       inkscape:export-filename="/Users/lothar/develop/Projects/CPP/Test/GUI/wxWrapper/toolbarimages/applications.png"
+       inkscape:export-xdpi="11.729438"
+       inkscape:export-ydpi="11.729438"><tspan
+         sodipodi:role="line"
+         id="tspan5725"
+         x="521.68347"
+         y="219.74113">Formulare</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:151.98863px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125.00000%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1.0000000;stroke:none;stroke-width:1.0000000px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1.0000000;font-family:Courier New"
+       x="497.54788"
+       y="329.04498"
+       id="text5727"
+       sodipodi:linespacing="125.00000%"
+       transform="scale(0.788099,1.268876)"
+       inkscape:export-filename="/Users/lothar/develop/Projects/CPP/Test/GUI/wxWrapper/toolbarimages/applications.png"
+       inkscape:export-xdpi="11.729438"
+       inkscape:export-ydpi="11.729438"><tspan
+         sodipodi:role="line"
+         id="tspan5729"
+         x="497.54788"
+         y="329.04498">App</tspan></text>
+    <rect
+       style="fill:#3e3c59;fill-opacity:1.0000000;fill-rule:nonzero;stroke:none;stroke-opacity:1.0000000"
+       id="rect5731"
+       width="225.87018"
+       height="234.83463"
+       x="142.82791"
+       y="672.48920"
+       rx="5.8250594"
+       ry="3.8354764"
+       inkscape:export-filename="/Users/lothar/develop/Projects/CPP/Test/GUI/wxWrapper/toolbarimages/user_add_to_app.png"
+       inkscape:export-xdpi="8.1500854"
+       inkscape:export-ydpi="8.1500854" />
+    <rect
+       style="fill:#d4d3e7;fill-opacity:1.0000000;fill-rule:nonzero;stroke:none;stroke-opacity:1.0000000"
+       id="rect5733"
+       width="225.87018"
+       height="234.83463"
+       x="121.82990"
+       y="688.41577"
+       rx="5.8250594"
+       ry="3.8354764"
+       inkscape:export-filename="/Users/lothar/develop/Projects/CPP/Test/GUI/wxWrapper/toolbarimages/user_add_to_app.png"
+       inkscape:export-xdpi="8.1500854"
+       inkscape:export-ydpi="8.1500854" />
+    <rect
+       style="fill:#f3f3f3;fill-opacity:1.0000000;fill-rule:nonzero;stroke:none;stroke-opacity:1.0000000"
+       id="rect5735"
+       width="100.48548"
+       height="17.172064"
+       x="229.91435"
+       y="799.96124"
+       rx="5.8250599"
+       ry="3.8354764"
+       inkscape:export-filename="/Users/lothar/develop/Projects/CPP/Test/GUI/wxWrapper/toolbarimages/user_add_to_app.png"
+       inkscape:export-xdpi="8.1500854"
+       inkscape:export-ydpi="8.1500854" />
+    <rect
+       style="fill:#f3f3f3;fill-opacity:1.0000000;fill-rule:nonzero;stroke:none;stroke-opacity:1.0000000"
+       id="rect5737"
+       width="100.48548"
+       height="17.172064"
+       x="230.12453"
+       y="823.75684"
+       rx="5.8250599"
+       ry="3.8354764"
+       inkscape:export-filename="/Users/lothar/develop/Projects/CPP/Test/GUI/wxWrapper/toolbarimages/user_add_to_app.png"
+       inkscape:export-xdpi="8.1500854"
+       inkscape:export-ydpi="8.1500854" />
+    <rect
+       style="fill:#f3f3f3;fill-opacity:1.0000000;fill-rule:nonzero;stroke:none;stroke-opacity:1.0000000"
+       id="rect5739"
+       width="100.48548"
+       height="17.172064"
+       x="229.70412"
+       y="846.81641"
+       rx="5.8250599"
+       ry="3.8354764"
+       inkscape:export-filename="/Users/lothar/develop/Projects/CPP/Test/GUI/wxWrapper/toolbarimages/user_add_to_app.png"
+       inkscape:export-xdpi="8.1500854"
+       inkscape:export-ydpi="8.1500854" />
+    <rect
+       style="fill:#f3f3f3;fill-opacity:1.0000000;fill-rule:nonzero;stroke:none;stroke-opacity:1.0000000"
+       id="rect5741"
+       width="100.48548"
+       height="17.172064"
+       x="229.70412"
+       y="868.89484"
+       rx="5.8250599"
+       ry="3.8354764"
+       inkscape:export-filename="/Users/lothar/develop/Projects/CPP/Test/GUI/wxWrapper/toolbarimages/user_add_to_app.png"
+       inkscape:export-xdpi="8.1500854"
+       inkscape:export-ydpi="8.1500854" />
+    <text
+       xml:space="preserve"
+       style="font-size:18.167290px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125.00000%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1.0000000;stroke:none;stroke-width:1.0000000px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1.0000000;font-family:Courier New"
+       x="134.81982"
+       y="748.70856"
+       id="text5743"
+       sodipodi:linespacing="125.00000%"
+       transform="scale(0.925711,1.080251)"
+       inkscape:export-filename="/Users/lothar/develop/Projects/CPP/Test/GUI/wxWrapper/toolbarimages/user_add_to_app.png"
+       inkscape:export-xdpi="8.1500854"
+       inkscape:export-ydpi="8.1500854"><tspan
+         sodipodi:role="line"
+         x="134.81982"
+         y="748.70856"
+         id="tspan5745">Name</tspan><tspan
+         sodipodi:role="line"
+         x="134.81982"
+         y="771.41767"
+         id="tspan5747">Vorname</tspan><tspan
+         sodipodi:role="line"
+         x="134.81982"
+         y="794.12678"
+         id="tspan5749">Straße</tspan><tspan
+         sodipodi:role="line"
+         x="134.81982"
+         y="816.83589"
+         id="tspan5751">Hausnummer</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:58.110779px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125.00000%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1.0000000;stroke:none;stroke-width:1.0000000px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1.0000000;font-family:Courier New"
+       x="184.63383"
+       y="524.88007"
+       id="text5753"
+       sodipodi:linespacing="125.00000%"
+       transform="scale(0.688710,1.451990)"
+       inkscape:export-filename="/Users/lothar/develop/Projects/CPP/Test/GUI/wxWrapper/toolbarimages/user_add_to_app.png"
+       inkscape:export-xdpi="8.1500854"
+       inkscape:export-ydpi="8.1500854"><tspan
+         sodipodi:role="line"
+         id="tspan5755"
+         x="184.63383"
+         y="524.88007">Formulare</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:153.74931px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125.00000%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1.0000000;stroke:none;stroke-width:1.0000000px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1.0000000;font-family:Courier New"
+       x="200.01355"
+       y="675.15253"
+       id="text5757"
+       sodipodi:linespacing="125.00000%"
+       transform="scale(0.779074,1.283575)"
+       inkscape:export-filename="/Users/lothar/develop/Projects/CPP/Test/GUI/wxWrapper/toolbarimages/user_add_to_app.png"
+       inkscape:export-xdpi="8.1500854"
+       inkscape:export-ydpi="8.1500854"><tspan
+         sodipodi:role="line"
+         id="tspan5759"
+         x="200.01355"
+         y="675.15253">App</tspan></text>
+    <path
+       style="fill:#eea414;fill-opacity:0.49079755;fill-rule:evenodd;stroke:#000000;stroke-width:0.99775749px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1.0000000"
+       d="M 138.53383,800.06554 L 129.25258,809.36744 L 121.40883,830.05559 L 122.84633,847.91273 L 127.81508,862.19223 L 136.40883,880.76490 L 138.53383,892.18227 L 137.81508,907.89281 L 137.56508,909.01277 C 140.71928,908.82714 144.08626,908.64762 155.00258,907.79949 C 170.39776,906.60337 189.84633,902.72856 189.84633,902.72855 C 193.48007,901.86601 195.32066,900.74120 197.62758,898.74648 C 199.10601,896.62780 199.54053,894.49678 199.50258,891.52895 C 199.04234,887.86031 196.67283,884.95833 194.12758,881.66708 C 193.28004,879.52681 193.11397,877.55322 193.87758,875.50730 C 194.84962,873.39803 196.42167,872.10807 197.34633,870.18750 C 197.23669,869.17264 196.57301,868.00109 195.75258,866.70317 C 197.43542,864.73141 198.67576,861.91615 199.22133,859.23677 C 198.27499,858.42340 197.92830,858.20675 196.72133,856.68575 C 195.57189,854.73959 195.17202,853.17082 195.06508,849.90377 C 197.19871,847.70015 199.12175,845.44770 200.90883,843.40179 C 203.23200,840.54989 203.20896,840.49821 204.69008,837.61533 C 205.59716,835.49598 206.14609,832.90423 204.87758,829.90004 C 202.10763,830.16690 196.38813,828.08360 194.22133,826.41573 C 187.30903,821.45940 180.04638,814.73418 173.65883,806.47421 L 171.37758,807.22085 L 156.37758,800.78108 L 138.53383,800.06554 z "
+       id="path5787"
+       inkscape:export-filename="/Users/lothar/develop/Projects/CPP/Test/GUI/wxWrapper/toolbarimages/user_add_to_app.png"
+       inkscape:export-xdpi="8.1500854"
+       inkscape:export-ydpi="8.1500854" />
+    <path
+       sodipodi:type="arc"
+       style="fill:none;fill-opacity:0.81595093;fill-rule:nonzero;stroke:none;stroke-opacity:1.0000000"
+       id="path5789"
+       sodipodi:cx="317.70682"
+       sodipodi:cy="358.33600"
+       sodipodi:rx="89.917023"
+       sodipodi:ry="109.23253"
+       d="M 407.62384 358.33600 A 89.917023 109.23253 0 1 1  227.78979,358.33600 A 89.917023 109.23253 0 1 1  407.62384 358.33600 z"
+       transform="matrix(0.718557,0.000000,0.000000,0.676923,-116.3940,565.6323)"
+       inkscape:export-filename="/Users/lothar/develop/Projects/CPP/Test/GUI/wxWrapper/toolbarimages/user_add_to_app.png"
+       inkscape:export-xdpi="8.1500854"
+       inkscape:export-ydpi="8.1500854" />
+    <path
+       style="fill:none;fill-opacity:0.75000000;fill-rule:evenodd;stroke:none;stroke-width:1.0000000px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1.0000000"
+       d="M 171.47804,804.15770 C 171.65980,854.09771 171.65980,854.09771 171.65980,854.09771"
+       id="path5791"
+       inkscape:export-filename="/Users/lothar/develop/Projects/CPP/Test/GUI/wxWrapper/toolbarimages/user_add_to_app.png"
+       inkscape:export-xdpi="8.1500854"
+       inkscape:export-ydpi="8.1500854" />
+    <path
+       style="fill:none;fill-opacity:0.75000000;fill-rule:evenodd;stroke:#000000;stroke-width:1.0604539px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1.0000000"
+       d="M 195.67070,866.96507 C 187.43742,872.25630 182.43511,870.91475 182.43511,870.91475"
+       id="path5793"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="/Users/lothar/develop/Projects/CPP/Test/GUI/wxWrapper/toolbarimages/user_add_to_app.png"
+       inkscape:export-xdpi="8.1500854"
+       inkscape:export-ydpi="8.1500854" />
+    <path
+       style="fill:none;fill-opacity:0.75000000;fill-rule:evenodd;stroke:#000000;stroke-width:1.5283155px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1.0000000"
+       d="M 190.59740,842.14231 C 193.07782,842.14231 193.07782,842.14231 193.07782,842.14231"
+       id="path5795"
+       inkscape:export-filename="/Users/lothar/develop/Projects/CPP/Test/GUI/wxWrapper/toolbarimages/user_add_to_app.png"
+       inkscape:export-xdpi="8.1500854"
+       inkscape:export-ydpi="8.1500854" />
+    <path
+       style="fill:none;fill-opacity:0.75000000;fill-rule:evenodd;stroke:#000000;stroke-width:0.99775749px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1.0000000"
+       d="M 154.27410,830.45244 C 163.36191,827.19548 168.26933,830.81433 168.26933,830.81433"
+       id="path5797"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="/Users/lothar/develop/Projects/CPP/Test/GUI/wxWrapper/toolbarimages/user_add_to_app.png"
+       inkscape:export-xdpi="8.1500854"
+       inkscape:export-ydpi="8.1500854" />
+    <path
+       style="fill:none;fill-opacity:0.75000000;fill-rule:evenodd;stroke:#000000;stroke-width:0.99775749px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1.0000000"
+       d="M 154.36498,830.36195 C 165.99738,832.89515 168.36021,830.90479 168.36021,830.90479"
+       id="path5799"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="/Users/lothar/develop/Projects/CPP/Test/GUI/wxWrapper/toolbarimages/user_add_to_app.png"
+       inkscape:export-xdpi="8.1500854"
+       inkscape:export-ydpi="8.1500854" />
+    <path
+       style="fill:none;fill-opacity:0.75000000;fill-rule:evenodd;stroke:#000000;stroke-width:0.99775749px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1.0000000"
+       d="M 152.62290,830.47286 C 163.81559,813.75748 172.65393,808.62901 172.65393,808.62901"
+       id="path5801"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="/Users/lothar/develop/Projects/CPP/Test/GUI/wxWrapper/toolbarimages/user_add_to_app.png"
+       inkscape:export-xdpi="8.1500854"
+       inkscape:export-ydpi="8.1500854" />
+    <path
+       style="fill:none;fill-opacity:0.75000000;fill-rule:evenodd;stroke:#000000;stroke-width:0.99775749px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1.0000000"
+       d="M 153.01406,830.29390 C 166.02431,812.31194 172.13631,811.88796 172.13631,811.88796"
+       id="path5803"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="/Users/lothar/develop/Projects/CPP/Test/GUI/wxWrapper/toolbarimages/user_add_to_app.png"
+       inkscape:export-xdpi="8.1500854"
+       inkscape:export-ydpi="8.1500854" />
+    <path
+       style="fill:none;fill-opacity:0.75000000;fill-rule:evenodd;stroke:#000000;stroke-width:0.99775749px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1.0000000"
+       d="M 172.48091,808.87735 C 172.29915,812.13430 172.29915,812.13430 172.29915,812.13430"
+       id="path5805"
+       inkscape:export-filename="/Users/lothar/develop/Projects/CPP/Test/GUI/wxWrapper/toolbarimages/user_add_to_app.png"
+       inkscape:export-xdpi="8.1500854"
+       inkscape:export-ydpi="8.1500854" />
+    <path
+       style="fill:#16137f;fill-opacity:1.0000000;fill-rule:evenodd;stroke:#000000;stroke-width:0.99775749px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1.0000000"
+       d="M 171.64403,812.30462 C 172.15812,828.16984 168.30249,830.21697 168.30249,830.21697 C 159.94861,828.16984 161.23383,819.72544 161.23383,819.72544"
+       id="path5807"
+       sodipodi:nodetypes="ccc"
+       inkscape:export-filename="/Users/lothar/develop/Projects/CPP/Test/GUI/wxWrapper/toolbarimages/user_add_to_app.png"
+       inkscape:export-xdpi="8.1500854"
+       inkscape:export-ydpi="8.1500854" />
+    <path
+       style="fill:#0e0300;fill-opacity:0.81595093;fill-rule:evenodd;stroke:#000000;stroke-width:0.98189712px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1.0000000"
+       d="M 16.737010,825.80021 C 15.694510,819.02484 15.817370,810.75265 15.817370,810.75265 C 16.300590,806.38365 16.783820,802.01463 17.267040,797.64562 C 20.159000,790.69598 23.050970,783.74634 25.942930,776.79669 C 32.396120,769.72125 38.849310,762.64579 45.302500,755.57035 C 54.818870,752.23835 64.335250,748.90634 73.851630,745.57435 C 87.308720,742.66395 100.41826,738.36957 114.22291,738.57318 C 129.50539,739.45599 142.70254,743.10681 157.98502,748.48761 C 164.22906,750.33126 167.24330,752.36020 171.74956,754.54985 C 177.73655,760.01053 182.00321,764.73723 185.77836,771.17656 C 186.94528,775.99436 189.34099,780.81218 189.27911,785.62999 C 188.19594,791.24283 184.16366,794.89841 181.60593,799.53261 C 178.25958,802.03840 174.91324,804.54420 171.56689,807.05000 C 166.57079,804.90800 161.57470,802.76600 156.57860,800.62399 C 150.63087,800.38600 144.68313,800.14800 138.73540,799.91000 C 135.64258,803.00400 132.54975,806.09801 129.45693,809.19199 C 126.83993,816.09400 124.22292,822.99600 121.60592,829.89801 C 122.08174,835.84800 122.55756,841.79800 123.03338,847.74800 C 124.69875,852.50799 126.36411,857.26799 128.02948,862.02800 C 130.88439,868.21599 133.73930,874.40399 136.59421,880.59199 C 137.30794,884.39999 138.02167,888.20799 138.73540,892.01598 C 138.49749,897.25197 138.25957,902.48798 138.02166,907.72398 C 136.45302,912.31738 134.88439,916.91080 133.31575,921.50421 C 130.14883,923.70060 126.98191,925.89699 123.81499,928.09337 C 118.79627,928.44357 113.77754,928.79377 108.75882,929.14398 C 104.23854,929.14398 99.718270,929.14398 95.197990,929.14398 C 91.614530,929.08960 88.031070,929.03521 84.447610,928.98082 C 79.369610,926.30845 74.291600,923.63605 69.213600,920.96366 C 60.752590,912.37016 52.291590,903.77665 43.830590,895.18314 C 38.061290,885.36564 32.291990,875.54815 26.522690,865.73065 C 24.225300,856.03046 21.927910,846.33028 19.630520,836.63010 C 18.705020,833.00229 17.779510,829.37447 16.854010,825.74666"
+       id="path5809"
+       sodipodi:nodetypes="cccccccccccccccccccccccccccccccc"
+       inkscape:export-filename="/Users/lothar/develop/Projects/CPP/Test/GUI/wxWrapper/toolbarimages/user_add_to_app.png"
+       inkscape:export-xdpi="8.1500854"
+       inkscape:export-ydpi="8.1500854" />
+    <path
+       sodipodi:type="arc"
+       style="fill:#e2e1f3;fill-opacity:1.0000000;fill-rule:nonzero;stroke:none;stroke-opacity:1.0000000"
+       id="path5811"
+       sodipodi:cx="227.78979"
+       sodipodi:cy="93.330536"
+       sodipodi:rx="1.8316430"
+       sodipodi:ry="2.5809515"
+       d="M 229.62144 93.330536 A 1.8316430 2.5809515 0 1 1  225.95815,93.330536 A 1.8316430 2.5809515 0 1 1  229.62144 93.330536 z"
+       transform="matrix(1.000000,0.000000,0.000000,0.995520,-60.44104,728.4662)"
+       inkscape:export-filename="/Users/lothar/develop/Projects/CPP/Test/GUI/wxWrapper/toolbarimages/user_add_to_app.png"
+       inkscape:export-xdpi="8.1500854"
+       inkscape:export-ydpi="8.1500854" />
+    <rect
+       style="fill:#18eb38;fill-opacity:1.0000000;fill-rule:nonzero;stroke:none;stroke-opacity:1.0000000"
+       id="rect5813"
+       width="198.48351"
+       height="46.623642"
+       x="522.18475"
+       y="91.915176"
+       rx="5.8250594"
+       ry="3.8354764" />
+    <rect
+       style="fill:#18eb38;fill-opacity:1.0000000;fill-rule:nonzero;stroke:none;stroke-opacity:1.0000000"
+       id="rect5815"
+       width="198.48351"
+       height="46.623642"
+       x="13.987072"
+       y="-642.74017"
+       rx="5.8250594"
+       ry="3.8354764"
+       transform="matrix(0.000000,1.000000,-1.000000,0.000000,0.000000,0.000000)" />
+    <rect
+       style="fill:#18eb38;fill-opacity:1.0000000;fill-rule:nonzero;stroke:none;stroke-opacity:1.0000000"
+       id="rect5817"
+       width="198.48351"
+       height="47.710106"
+       x="160.67538"
+       y="900.10577"
+       rx="5.8250594"
+       ry="3.8354764"
+       inkscape:export-filename="/Users/lothar/develop/Projects/CPP/Test/GUI/wxWrapper/toolbarimages/user_add_to_app.png"
+       inkscape:export-xdpi="8.1500854"
+       inkscape:export-ydpi="8.1500854" />
+    <rect
+       style="fill:#18eb38;fill-opacity:1.0000000;fill-rule:nonzero;stroke:none;stroke-opacity:1.0000000"
+       id="rect5819"
+       width="203.10875"
+       height="46.623642"
+       x="820.36169"
+       y="-281.23083"
+       rx="5.8250594"
+       ry="3.8354764"
+       transform="matrix(0.000000,1.000000,-1.000000,0.000000,0.000000,0.000000)"
+       inkscape:export-filename="/Users/lothar/develop/Projects/CPP/Test/GUI/wxWrapper/toolbarimages/user_add_to_app.png"
+       inkscape:export-xdpi="8.1500854"
+       inkscape:export-ydpi="8.1500854" />
+    <rect
+       style="fill:#9996d0;fill-opacity:1.0000000;fill-rule:nonzero;stroke:none;stroke-opacity:1.0000000"
+       id="rect5821"
+       width="224.65138"
+       height="222.00194"
+       x="420.81223"
+       y="722.83118"
+       rx="5.8250594"
+       ry="3.8354764"
+       inkscape:export-filename="/Users/lothar/develop/Projects/CPP/Test/GUI/wxWrapper/toolbarimages/formular_params.png"
+       inkscape:export-xdpi="10.976432"
+       inkscape:export-ydpi="10.976432" />
+    <rect
+       style="fill:#f3f3f3;fill-opacity:1.0000000;fill-rule:nonzero;stroke:none;stroke-opacity:1.0000000"
+       id="rect5823"
+       width="99.943260"
+       height="16.233685"
+       x="528.31348"
+       y="828.28113"
+       rx="5.8250599"
+       ry="3.8354764"
+       inkscape:export-filename="/Users/lothar/develop/Projects/CPP/Test/GUI/wxWrapper/toolbarimages/formular_params.png"
+       inkscape:export-xdpi="10.976432"
+       inkscape:export-ydpi="10.976432" />
+    <rect
+       style="fill:#f3f3f3;fill-opacity:1.0000000;fill-rule:nonzero;stroke:none;stroke-opacity:1.0000000"
+       id="rect5825"
+       width="99.943260"
+       height="16.233685"
+       x="528.52258"
+       y="850.77637"
+       rx="5.8250599"
+       ry="3.8354764"
+       inkscape:export-filename="/Users/lothar/develop/Projects/CPP/Test/GUI/wxWrapper/toolbarimages/formular_params.png"
+       inkscape:export-xdpi="10.976432"
+       inkscape:export-ydpi="10.976432" />
+    <rect
+       style="fill:#f3f3f3;fill-opacity:1.0000000;fill-rule:nonzero;stroke:none;stroke-opacity:1.0000000"
+       id="rect5827"
+       width="99.943260"
+       height="16.233685"
+       x="528.10437"
+       y="872.57593"
+       rx="5.8250599"
+       ry="3.8354764"
+       inkscape:export-filename="/Users/lothar/develop/Projects/CPP/Test/GUI/wxWrapper/toolbarimages/formular_params.png"
+       inkscape:export-xdpi="10.976432"
+       inkscape:export-ydpi="10.976432" />
+    <rect
+       style="fill:#f3f3f3;fill-opacity:1.0000000;fill-rule:nonzero;stroke:none;stroke-opacity:1.0000000"
+       id="rect5829"
+       width="99.943260"
+       height="16.233685"
+       x="528.10437"
+       y="893.44781"
+       rx="5.8250599"
+       ry="3.8354764"
+       inkscape:export-filename="/Users/lothar/develop/Projects/CPP/Test/GUI/wxWrapper/toolbarimages/formular_params.png"
+       inkscape:export-xdpi="10.976432"
+       inkscape:export-ydpi="10.976432" />
+    <text
+       xml:space="preserve"
+       style="font-size:17.616199px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125.00000%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1.0000000;stroke:none;stroke-width:1.0000000px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1.0000000;font-family:Courier New"
+       x="446.30045"
+       y="794.39526"
+       id="text5831"
+       sodipodi:linespacing="125.00000%"
+       transform="scale(0.949518,1.053166)"
+       inkscape:export-filename="/Users/lothar/develop/Projects/CPP/Test/GUI/wxWrapper/toolbarimages/formular_params.png"
+       inkscape:export-xdpi="10.976432"
+       inkscape:export-ydpi="10.976432"><tspan
+         sodipodi:role="line"
+         x="446.30045"
+         y="794.39526"
+         id="tspan5833">Name</tspan><tspan
+         sodipodi:role="line"
+         x="446.30045"
+         y="816.41551"
+         id="tspan5835">Vorname</tspan><tspan
+         sodipodi:role="line"
+         x="446.30045"
+         y="838.43576"
+         id="tspan5837">Straße</tspan><tspan
+         sodipodi:role="line"
+         x="446.30045"
+         y="860.45601"
+         id="tspan5839">Hausnummer</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:56.348080px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125.00000%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1.0000000;stroke:none;stroke-width:1.0000000px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1.0000000;font-family:Courier New"
+       x="603.19891"
+       y="559.8454"
+       id="text5841"
+       sodipodi:linespacing="125.00000%"
+       transform="scale(0.706422,1.415585)"
+       inkscape:export-filename="/Users/lothar/develop/Projects/CPP/Test/GUI/wxWrapper/toolbarimages/formular_params.png"
+       inkscape:export-xdpi="10.976432"
+       inkscape:export-ydpi="10.976432"><tspan
+         sodipodi:role="line"
+         id="tspan5843"
+         x="603.19891"
+         y="559.84540">Formulare</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:379.38434px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125.00000%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1.0000000;stroke:none;stroke-width:1.0000000px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1.0000000;font-family:Courier New"
+       x="446.64905"
+       y="956.12231"
+       id="text5845"
+       sodipodi:linespacing="125.00000%"
+       transform="scale(1.080230,0.925728)"
+       inkscape:export-filename="/Users/lothar/develop/Projects/CPP/Test/GUI/wxWrapper/toolbarimages/formular_params.png"
+       inkscape:export-xdpi="10.976432"
+       inkscape:export-ydpi="10.976432"><tspan
+         sodipodi:role="line"
+         x="446.64905"
+         y="956.12231"
+         id="tspan5849">?</tspan></text>
+  </g>
+</svg>
