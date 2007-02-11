@@ -90,6 +90,7 @@ extern "C" {
 /*...e*/
 
 #include "wx/wizard.h"
+#include <wx/image.h>
 /*...e*/
 
 #include <lbDatabaseForm.h>
@@ -342,6 +343,10 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 	UAP(lb_I_Unknown, uk)
 	UAP(lb_I_Parameter, params)
 	
+	if (ImageButtonMapperList == NULL) {
+		REQUEST(manager.getPtr(), lb_I_Container, ImageButtonMapperList)
+	}
+	
 	uk = meta->getActiveDocument();
 	QI(uk, lb_I_Parameter, params)
 
@@ -479,6 +484,9 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 		eman->registerEvent(eventName,  DatabaseAdd);
 
 		sprintf(eventName, "%pDatabaseDelete", this);
+		eman->registerEvent(eventName,  DatabaseDelete);
+
+		sprintf(eventName, "%pImageButtonClick", this);
 		eman->registerEvent(eventName,  DatabaseDelete);
 
 		dispatcher->setEventManager(eman.getPtr());
@@ -759,17 +767,71 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 /*...sCreate controls based on configuration in a database:40:*/
 				//printf("Creating a special control. (%s)\n", FFI->getControlType(name));
 
-				lbOwnerDrawControl *ownerdraw = new lbOwnerDrawControl();
-				ownerdraw->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
-				ownerdraw->init(this);
-				
-				ownerdraw->SetName(name);
-				
-				sizerRight->Add(ownerdraw, 1, 0, 5);
+				char* type = FFI->getControlType(name);
 
-				if (FFI->isReadonly(name)) {
-				        ownerdraw->Disable();
+				if (strcmp(type, "toolbarimagefile") == 0) {
+					UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, app)
+					UAP_REQUEST(manager.getPtr(), lb_I_String, file)
+					UAP_REQUEST(manager.getPtr(), lb_I_String, images)
+					
+					*file = app->getDirLocation();
+					
+#ifdef OSX
+							*images = "/toolbarimages/";
+#endif
+#ifdef LINUX
+							*images = "/toolbarimages/";
+#endif
+#ifdef WINDOWS
+							*images = "\\toolbarimages\\";
+#endif
+
+					*file += images->charrep();
+					*file += "new.xpm";
+
+					int ImageButonClick;
+					sprintf(eventName, "%pImageButtonClick%s", this, name);
+					eman->registerEvent(eventName,  ImageButonClick);
+					
+					wxImage im = wxImage(file->charrep(), wxBITMAP_TYPE_XPM);
+					wxBitmap bm = wxBitmap(im);
+					wxBitmapButton* imagebutton = new wxBitmapButton(this, ImageButonClick, bm);
+					imagebutton->SetName(name);
+					sizerRight->Add(imagebutton, 1, wxEXPAND | wxALL, 5);
+					
+					
+					UAP_REQUEST(manager.getPtr(), lb_I_String, element)
+					UAP_REQUEST(manager.getPtr(), lb_I_String, elementname)
+					UAP(lb_I_KeyBase, key)
+					UAP(lb_I_Unknown, uk)
+					
+					*elementname = name;
+					*element = "";
+					
+					QI(element, lb_I_Unknown, uk)
+					QI(elementname, lb_I_KeyBase, key)
+					
+					ImageButtonMapperList->insert(&uk, &key);
+					
+					this->Connect( ImageButonClick,  -1, wxEVT_COMMAND_BUTTON_CLICKED,
+						(wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) &lbDatabasePanel::OnImageButtonClick);
 				}
+				
+				if (strcmp(type, "ownerdraw") == 0) {
+					lbOwnerDrawControl *ownerdraw = new lbOwnerDrawControl();
+					ownerdraw->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+					ownerdraw->init(this);
+				
+					ownerdraw->SetName(name);
+				
+					sizerRight->Add(ownerdraw, 1, 0, 5);
+
+					if (FFI->isReadonly(name)) {
+				        ownerdraw->Disable();
+					}
+				}
+				
+				free(type);
 
 				createdControl = true;
 /*...e*/
@@ -2256,6 +2318,24 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBUpdate() {
 			} else {
 				if (FFI->isSpecialColumn(name)) {
 					_CL_LOG << "lbDatabasePanel::lbDBUpdate() updates special column" LOG_
+					lbErrCodes err = ERR_NONE;
+					
+					char* type = FFI->getControlType(name);
+
+					if (strcmp(type, "toolbarimagefile") == 0) {
+						UAP_REQUEST(manager.getPtr(), lb_I_String, filename)
+						UAP_REQUEST(manager.getPtr(), lb_I_String, controlname)
+						*controlname = name;
+						UAP(lb_I_KeyBase, key)
+						QI(controlname, lb_I_KeyBase, key)
+						
+						UAP(lb_I_Unknown, uk)
+						
+						uk = ImageButtonMapperList->getElement(&key);
+						QI(uk, lb_I_String, filename)
+						
+						sampleQuery->setString(*&controlname, *&filename);
+					}
 				} else {
 /*...sUpdate controls:40:*/
 				lb_I_Query::lbDBColumnTypes coltype = sampleQuery->getColumnType(i);
@@ -2431,6 +2511,63 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBRead() {
 /*...e*/
 			} else {
 				if (FFI->isSpecialColumn(name)) {
+					lbErrCodes err = ERR_NONE;
+					char* type = FFI->getControlType(name);
+
+					if (strcmp(type, "toolbarimagefile") == 0) {
+						UAP_REQUEST(manager.getPtr(), lb_I_String, filename)
+						UAP_REQUEST(manager.getPtr(), lb_I_String, controlname)
+						UAP_REQUEST(manager.getPtr(), lb_I_String, toolbarfile)
+						UAP_REQUEST(manager.getPtr(), lb_I_String, images)
+
+						*controlname = name;
+						UAP(lb_I_KeyBase, key)
+						QI(controlname, lb_I_KeyBase, key)
+						
+						UAP(lb_I_Unknown, uk)
+						
+						uk = ImageButtonMapperList->getElement(&key);
+						QI(uk, lb_I_String, filename)
+						
+						UAP(lb_I_String, s)
+							
+						s = sampleQuery->getAsString(i);
+
+						if (strcmp(s->charrep(), "") == 0) {
+						} else {
+							UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, app)
+							*toolbarfile += app->getDirLocation();
+
+#ifdef OSX
+							*images = "/toolbarimages/";
+#endif
+#ifdef LINUX
+							*images = "/toolbarimages/";
+#endif
+#ifdef WINDOWS
+							*images = "\\toolbarimages\\";
+#endif
+							*toolbarfile += images->charrep();
+							*toolbarfile += s->charrep();
+							*filename = s->charrep();
+							
+							wxString f = wxString(s->charrep());
+							
+							wxImage* im;
+							
+							if (f.Upper().Contains(".XPM") == 1) {
+								im = new wxImage(toolbarfile->charrep(), wxBITMAP_TYPE_XPM);
+							}
+
+							if (f.Upper().Contains(".PNG") == 1) {
+								im = new wxImage(toolbarfile->charrep(), wxBITMAP_TYPE_PNG);
+							}
+							
+							wxBitmap bm = wxBitmap(im);
+							wxBitmapButton* bmb = (wxBitmapButton*) w;
+							bmb->SetBitmapLabel(bm);
+						}
+					}
 				} else {
 /*...sfill controls with data:40:*/
 				lb_I_Query::lbDBColumnTypes coltype = sampleQuery->getColumnType(i);
@@ -3259,6 +3396,68 @@ lbErrCodes LB_STDCALL lbDatabasePanel::OnActionButton(lb_I_Unknown* uk) {
 	return ERR_NONE;
 }
 /*...e*/
+
+void lbDatabasePanel::OnImageButtonClick(wxCommandEvent& event ) {
+
+	wxObject* o = event.GetEventObject();
+	
+	if (o != NULL) {
+		lbErrCodes err = ERR_NONE;
+		UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, app)
+		UAP_REQUEST(manager.getPtr(), lb_I_String, filename)
+		UAP_REQUEST(manager.getPtr(), lb_I_String, newfilename)
+		UAP_REQUEST(manager.getPtr(), lb_I_String, images)
+		UAP_REQUEST(manager.getPtr(), lb_I_String, controlname)
+
+		wxBitmapButton* bmb = (wxBitmapButton*) o;
+		*controlname = bmb->GetName().c_str();
+
+		UAP(lb_I_KeyBase, key)
+		QI(controlname, lb_I_KeyBase, key)
+						
+		UAP(lb_I_Unknown, uk)
+						
+		uk = ImageButtonMapperList->getElement(&key);
+		QI(uk, lb_I_String, filename)
+		
+#ifdef OSX
+		*images = "/toolbarimages/";
+#endif
+#ifdef LINUX
+		*images = "/toolbarimages/";
+#endif
+#ifdef WINDOWS
+		*images = "\\toolbarimages\\";
+#endif
+		*newfilename = app->getDirLocation();
+		*newfilename += images->charrep();
+		
+		wxFileDialog fileDialog(NULL, _trans("Choose a toolbar image"), newfilename->charrep(), "", "*.xpm|*.png", wxOPEN);
+
+		if (fileDialog.ShowModal() == wxID_OK) {
+			*filename = fileDialog.GetFilename().c_str();
+
+			wxString f = wxString(filename->charrep());
+							
+			wxImage* im;
+							
+			if (f.Upper().Contains(".XPM") == 1) {
+				im = new wxImage(fileDialog.GetPath().c_str(), wxBITMAP_TYPE_XPM);
+			}
+
+			if (f.Upper().Contains(".PNG") == 1) {
+				im = new wxImage(fileDialog.GetPath().c_str(), wxBITMAP_TYPE_PNG);
+			}
+
+			wxBitmap bm = wxBitmap(im);
+			bmb->SetBitmapLabel(bm);
+		}
+		
+	} else {
+		_LOG << "Error: Image button click event didn't work!" LOG_
+	}
+
+}
 
 /*...svoid \9\\9\  lbDatabasePanel\58\\58\OnDispatch\40\wxCommandEvent\38\ event \41\:0:*/
 void lbDatabasePanel::OnDispatch(wxCommandEvent& event ) {

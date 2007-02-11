@@ -907,12 +907,14 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 			/*...sget rest of menu entries:24:*/
 			UAP(lb_I_String, EventName)
 			UAP(lb_I_String, MenuName)
-			
+			UAP(lb_I_String, ToolBarImage)
+
 			DBerr = sampleQuery->next();
 			
 			if ((DBerr == ERR_NONE) || (DBerr == WARN_DB_NODATA)) {
 				EventName = sampleQuery->getAsString(1);
 				MenuName = sampleQuery->getAsString(2);
+				ToolBarImage = sampleQuery->getAsString(3);
 				
 				if (eman->resolveEvent(EventName->charrep(), unused) == ERR_EVENT_NOTREGISTERED) {
 					eman->registerEvent(EventName->charrep(), unused);
@@ -921,6 +923,18 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 												  (lbEvHandler) &lbDynamicApplication::getDynamicDBForm, EventName->charrep());
 					
 					metaapp->addMenuEntry(_trans(app), MenuName->charrep(), EventName->charrep(), "");
+					
+					if (strcmp(ToolBarImage->charrep(), "") != 0) {
+						if (toolbaradded == false) {
+							metaapp->addToolBar("MainToolBar");
+							toolbaradded = true;
+						}
+						
+						ToolBarImage->trim();
+						
+						metaapp->addToolBarButton("MainToolBar", MenuName->charrep(), EventName->charrep(), ToolBarImage->charrep());
+					}
+					
 				} else {
 					_CL_VERBOSE << "WARNING: Event name already reserved. Ignore it for menucreation." LOG_
 				}

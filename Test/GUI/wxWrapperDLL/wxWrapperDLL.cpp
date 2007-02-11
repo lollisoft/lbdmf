@@ -67,6 +67,7 @@
 #include "wx/wizard.h"
 #include "wx/splitter.h"
 #include "wx/statusbr.h"
+#include <wx/image.h>
 #include <wx/treectrl.h>
 #include <wx/artprov.h>
 
@@ -1641,6 +1642,9 @@ lbErrCodes LB_STDCALL lb_wxFrame::addToolBar(lb_I_Unknown* uk) {
     if (tb == NULL) {
 		tb = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_HORIZONTAL|wxNO_BORDER);
 	
+		wxImage::AddHandler(new wxXPMHandler);
+		wxImage::AddHandler(new wxPNGHandler);
+	
 		SetToolBar(tb);
     } else {
     
@@ -1706,8 +1710,20 @@ lbErrCodes LB_STDCALL lb_wxFrame::addTool_To_ToolBar(lb_I_Unknown* uk) {
 			*toolbarfile += toolbarimage->charrep();
 
 			_LOG << "Add a toolbar tool with image '" << toolbarfile->charrep() << "'" LOG_
-			wxBitmap bm = wxBitmap(toolbarfile->charrep(), wxBITMAP_TYPE_XPM);
-			
+
+			wxString f = wxString(toolbarimage->charrep());
+							
+			wxImage* im;
+							
+			if (f.Upper().Contains(".XPM") == 1) {
+				im = new wxImage(toolbarfile->charrep(), wxBITMAP_TYPE_XPM);
+			}
+
+			if (f.Upper().Contains(".PNG") == 1) {
+				im = new wxImage(toolbarfile->charrep(), wxBITMAP_TYPE_PNG);
+			}
+
+			wxBitmap bm = wxBitmap(im);
 			
 			tb->AddTool(EvNr, bm, entry->charrep());
 			tb->Realize();

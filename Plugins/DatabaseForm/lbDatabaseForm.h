@@ -30,11 +30,15 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.33 $
+ * $Revision: 1.34 $
  * $Name:  $
- * $Id: lbDatabaseForm.h,v 1.33 2007/01/29 20:12:59 lollisoft Exp $
+ * $Id: lbDatabaseForm.h,v 1.34 2007/02/11 22:37:29 lollisoft Exp $
  *
  * $Log: lbDatabaseForm.h,v $
+ * Revision 1.34  2007/02/11 22:37:29  lollisoft
+ * Working icon configuration on formulars.
+ * These icons would be shown in toolbar.
+ *
  * Revision 1.33  2007/01/29 20:12:59  lollisoft
  * Checkin for Linux.
  *
@@ -666,6 +670,7 @@ public:
 	lbErrCodes LB_STDCALL OnActionButton(lb_I_Unknown* uk);
 
 	void OnDispatch(wxCommandEvent& event);
+	void OnImageButtonClick(wxCommandEvent& event);
 	void OnMouseMove(wxMouseEvent& evt);
 
 	/** \brief Paint the control.
@@ -697,6 +702,11 @@ public:
 	 * Store a container for each combo box with key(pos) and data(id). 
 	 */
 	UAP(lb_I_Container, ComboboxMapperList)
+	
+	/*
+	 * An image button will be loaded from a file name. This filename must be stored here.
+	 */
+	UAP(lb_I_Container, ImageButtonMapperList)
 	
 	/* Storage for all yet loaded actions. */
 	UAP(lb_I_Container, actions)
