@@ -794,10 +794,11 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 					eman->registerEvent(eventName,  ImageButonClick);
 					
 					wxImage im = wxImage(file->charrep(), wxBITMAP_TYPE_XPM);
+					im.Rescale(16, 16);
 					wxBitmap bm = wxBitmap(im);
 					wxBitmapButton* imagebutton = new wxBitmapButton(this, ImageButonClick, bm);
 					imagebutton->SetName(name);
-					sizerRight->Add(imagebutton, 1, wxEXPAND | wxALL, 5);
+					sizerRight->Add(imagebutton, wxALIGN_LEFT, 5);
 					
 					
 					UAP_REQUEST(manager.getPtr(), lb_I_String, element)
@@ -3432,7 +3433,7 @@ void lbDatabasePanel::OnImageButtonClick(wxCommandEvent& event ) {
 		*newfilename = app->getDirLocation();
 		*newfilename += images->charrep();
 		
-		wxFileDialog fileDialog(NULL, _trans("Choose a toolbar image"), newfilename->charrep(), "", "*.xpm|*.png", wxOPEN);
+		wxFileDialog fileDialog(NULL, _trans("Choose a toolbar image"), newfilename->charrep(), "", wxT("XPM Files (*.xpm)|*.xpm|PNG Files (*.png)|*.png"), wxOPEN);
 
 		if (fileDialog.ShowModal() == wxID_OK) {
 			*filename = fileDialog.GetFilename().c_str();
