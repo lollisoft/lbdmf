@@ -33,11 +33,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.22 $
+ * $Revision: 1.23 $
  * $Name:  $
- * $Id: wxWrapperDLL.h,v 1.22 2007/02/08 22:36:06 lollisoft Exp $
+ * $Id: wxWrapperDLL.h,v 1.23 2007/02/18 18:46:39 lollisoft Exp $
  *
  * $Log: wxWrapperDLL.h,v $
+ * Revision 1.23  2007/02/18 18:46:39  lollisoft
+ * Toolbar now works bood under Mac OS X.
+ *
  * Revision 1.22  2007/02/08 22:36:06  lollisoft
  * Partial toolbar implementation
  *
@@ -232,7 +235,7 @@ public:
 	 */
 	void OnCheck(wxCommandEvent& event);
 	
-#ifdef USE_WXAUI	
+#ifdef USE_WXAUI
 	void OnSize(wxSizeEvent& event);
 	void OnEraseBackground(wxEraseEvent& event);
 #endif

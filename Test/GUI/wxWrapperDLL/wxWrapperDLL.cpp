@@ -94,6 +94,8 @@
 
 #include <wxWrapperDLL.h>
 
+#define DYNAMIC_QUIT		1000
+
 /*...swxAppSelectPage:0:*/
 class wxAppSelectPage :
 public lb_I_Unknown,
@@ -869,10 +871,10 @@ lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::createDBForm(char* formName, char* query
 			sizerMain->Add(notebook, 1, wxEXPAND | wxALL, 0);
 	
 			frame->SetSizer(sizerMain);
-			
+#ifdef USE_WXAUI			
 			frame->getAUIManager().AddPane(notebook,   wxCENTER, wxT("Workplace"));
-
 			frame->getAUIManager().Update();
+#endif
 		}
 	}
 	
@@ -1269,7 +1271,7 @@ void lb_wxFrame::OnAbout(wxCommandEvent& WXUNUSED(event) )
 BEGIN_EVENT_TABLE(lb_wxFrame, wxFrame)
     EVT_PG_CHANGED( PGID, lb_wxFrame::OnPropertyGridChange )
     EVT_ERASE_BACKGROUND(lb_wxFrame::OnEraseBackground)
-    EVT_SIZE(lb_wxFrame::OnSize)	
+    EVT_SIZE(lb_wxFrame::OnSize)
 END_EVENT_TABLE()
 
 
@@ -1282,6 +1284,7 @@ void lb_wxFrame::OnEraseBackground(wxEraseEvent& event)
 void lb_wxFrame::OnSize(wxSizeEvent& event)
 {
 	_CL_LOG << "OnSize() called for " << event.GetEventObject()->GetClassInfo()->GetClassName() << "." LOG_
+	m_mgr.Update();
     event.Skip();
 }
 
@@ -1640,12 +1643,52 @@ lbErrCodes LB_STDCALL lb_wxFrame::addToolBar(lb_I_Unknown* uk) {
     wxToolBar* tb = GetToolBar();
     
     if (tb == NULL) {
-		tb = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_HORIZONTAL|wxNO_BORDER);
+		tb = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_HORIZONTAL|wxTB_DOCKABLE);
 	
 		wxImage::AddHandler(new wxXPMHandler);
 		wxImage::AddHandler(new wxPNGHandler);
 	
+		tb->SetToolBitmapSize(wxSize(32, 32));
+
+		UAP_REQUEST(manager.getPtr(), lb_I_String, toolbarfile)
+		UAP_REQUEST(manager.getPtr(), lb_I_String, images)
+		UAP_REQUEST(getModuleManager(), lb_I_MetaApplication, app)
+	
+		*toolbarfile += app->getDirLocation();
+
+#ifdef OSX
+		*images = "/toolbarimages/";
+#endif
+#ifdef LINUX
+		*images = "/toolbarimages/";
+#endif
+#ifdef WINDOWS
+		*images = "\\toolbarimages\\";
+#endif
+		*toolbarfile += images->charrep();
+		*toolbarfile += "exit.png";
+
+		wxImage* im;
+							
+		im = new wxImage(toolbarfile->charrep(), wxBITMAP_TYPE_PNG);
+
+		wxBitmap bm = wxBitmap(im);
+			
+		tb->AddTool(DYNAMIC_QUIT, bm, _trans("Exit"));
+
+		tb->Realize();
+
+#ifndef USE_WXAUI
 		SetToolBar(tb);
+#endif
+
+#ifdef USE_WXAUI
+		m_mgr.AddPane(tb, wxPaneInfo().
+				  Name(wxT("tb1")).Caption(wxT("Database forms")).
+                  ToolbarPane().Top().
+                  LeftDockable(false).RightDockable(false));
+		m_mgr.Update();
+#endif
     } else {
     
     }
@@ -1677,7 +1720,14 @@ lbErrCodes LB_STDCALL lb_wxFrame::addTool_To_ToolBar(lb_I_Unknown* uk) {
 		*parameter = "toolbarimage";
 		params->getUAPString(*&parameter, *&toolbarimage);
 
-		wxToolBar* tb = GetToolBar();
+		wxToolBar* tb;
+		
+#ifndef USE_WXAUI
+		tb = GetToolBar();
+#endif
+#ifdef USE_WXAUI
+		tb = m_mgr.GetPane("tb1").window;
+#endif
 		
 		if (tb != NULL) {
 			UAP_REQUEST(manager.getPtr(), lb_I_EventManager, ev_manager)
@@ -1727,6 +1777,16 @@ lbErrCodes LB_STDCALL lb_wxFrame::addTool_To_ToolBar(lb_I_Unknown* uk) {
 			
 			tb->AddTool(EvNr, bm, entry->charrep());
 			tb->Realize();
+
+#ifdef USE_WXAUI			
+			m_mgr.DetachPane(tb);
+			
+			m_mgr.AddPane(tb, wxPaneInfo().
+				  Name(wxT("tb1")).Caption(wxT("Database forms")).
+                  ToolbarPane().Top().
+                  LeftDockable(false).RightDockable(false));
+			m_mgr.Update();
+#endif
 		}
 		
 		err = ERR_NONE;
