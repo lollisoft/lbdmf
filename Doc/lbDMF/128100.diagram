@@ -1,0 +1,23 @@
+format 24
+
+usecasecanvas 128100 usecase_ref 128100 // Manual Login
+  xyzwh 255 43 3005 64 32 label_xy 267 26
+note 128115 "A user triggers this event"
+  xyzwh 70 7 2000 162 35
+classcanvas 128228 class_ref 129138 // User
+  xyz 16 39 3005 label_xy 24 80
+usecasecanvas 128482 usecase_ref 128098 // Use Application
+  xyzwh 323 181 3005 64 32 label_xy 319 212
+usecasecanvas 128866 usecase_ref 128226 // Automatic Login
+  xyzwh 170 118 3005 64 32 label_xy 163 150
+line 128610 --->
+  from ref 128100 z 3004 to ref 128482
+line 128738 --->
+  from ref 128228 z 3004 to ref 128100
+line 128994 --->
+  from ref 128228 z 3004 to ref 128866
+line 129122 --->
+  from ref 128866 z 3004 to ref 128482
+simplerelationcanvas 129250 simplerelation_ref 128098
+  from ref 128866 z 3004 stereotype "<<once used>>" xyz 204 95 3000 to ref 128100
+end

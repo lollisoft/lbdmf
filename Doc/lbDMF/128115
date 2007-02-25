@@ -1,0 +1,81 @@
+format 24
+"Event Management" // Event Management
+  // class settings
+  //class diagram settings
+  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default shadow default
+  //use case diagram settings
+  package_name_in_tab default show_context default auto_label_position default shadow default
+  //sequence diagram settings
+  show_full_operations_definition default write_horizontally default drawing_language default shadow default
+  //collaboration diagram settings
+  show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default shadow default
+  //component diagram settings
+  package_name_in_tab default show_context default auto_label_position default shadow default
+  draw_component_as_icon default show_component_req_prov default show_component_rea default
+  //deployment diagram settings
+  package_name_in_tab default show_context default write_horizontally default auto_label_position default shadow default
+  draw_component_as_icon default show_component_req_prov default show_component_rea default
+  //state diagram settings
+  package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default shadow default
+  show_activities default region_horizontally default drawing_language default
+  
+  usecaseview 128115 "Event triggering"
+    //use case diagram settings
+    package_name_in_tab default show_context default auto_label_position default shadow default
+    //sequence diagram settings
+    show_full_operations_definition default write_horizontally default drawing_language default shadow default
+    //collaboration diagram settings
+    show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default shadow default
+    usecasediagram 128115 "Triggering an event"
+      package_name_in_tab default show_context default auto_label_position default shadow default
+      size A4
+    end
+
+    usecasediagram 128243 "Register an event"
+      package_name_in_tab default show_context default auto_label_position default shadow default
+      size A4
+    end
+
+    usecase 128115 "Trigger Event"
+      //use case diagram settings
+      package_name_in_tab default show_context default auto_label_position default shadow default
+      //sequence diagram settings
+      show_full_operations_definition default write_horizontally default drawing_language default shadow default
+      //collaboration diagram settings
+      show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default shadow default
+    end
+
+    usecase 128243 "Handle Event"
+      //use case diagram settings
+      package_name_in_tab default show_context default auto_label_position default shadow default
+      //sequence diagram settings
+      show_full_operations_definition default write_horizontally default drawing_language default shadow default
+      //collaboration diagram settings
+      show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default shadow default
+    end
+
+    class 128076 "lb_I_EventHandler"
+       stereotype "actor"
+      
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+    end
+
+    usecase 128076 "Register event"
+      //use case diagram settings
+      package_name_in_tab default show_context default auto_label_position default shadow default
+      //sequence diagram settings
+      show_full_operations_definition default write_horizontally default drawing_language default shadow default
+      //collaboration diagram settings
+      show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default shadow default
+    end
+  end
+
+  package_ref 128243 // Events
+end

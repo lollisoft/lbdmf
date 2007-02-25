@@ -1,0 +1,14 @@
+format 24
+
+classcanvas 128243 class_ref 128115 // evMenuLoginClicked
+  xyz 84 41 3005 label_xy 55 81
+usecasecanvas 128371 usecase_ref 128115 // Trigger Event
+  xyzwh 201 102 3005 64 32 label_xy 201 134
+usecasecanvas 128755 usecase_ref 128243 // Handle Event
+  xyzwh 335 151 3005 64 32 label_xy 335 183
+line 128499 --->
+  from ref 128243 z 3004 to point 186 58
+  line 128627 z 3004 to ref 128371
+line 128883 --->
+  from ref 128371 z 3004 to ref 128755
+end

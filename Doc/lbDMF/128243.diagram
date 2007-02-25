@@ -1,0 +1,9 @@
+format 24
+
+classcanvas 128076 class_ref 128076 // lb_I_EventHandler
+  xyz 45 36 3005 label_xy 22 76
+usecasecanvas 128204 usecase_ref 128076 // Register event
+  xyzwh 229 53 3005 64 32 label_xy 226 85
+line 128332 --->
+  from ref 128076 z 3004 to ref 128204
+end
