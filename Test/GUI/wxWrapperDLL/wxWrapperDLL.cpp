@@ -1643,7 +1643,7 @@ lbErrCodes LB_STDCALL lb_wxFrame::addToolBar(lb_I_Unknown* uk) {
     wxToolBar* tb = GetToolBar();
     
     if (tb == NULL) {
-		tb = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_HORIZONTAL|wxTB_DOCKABLE);
+		tb = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_HORIZONTAL);
 	
 		wxImage::AddHandler(new wxXPMHandler);
 		wxImage::AddHandler(new wxPNGHandler);
@@ -1726,7 +1726,7 @@ lbErrCodes LB_STDCALL lb_wxFrame::addTool_To_ToolBar(lb_I_Unknown* uk) {
 		tb = GetToolBar();
 #endif
 #ifdef USE_WXAUI
-		tb = m_mgr.GetPane("tb1").window;
+		tb = (wxToolBar*) m_mgr.GetPane("tb1").window;
 #endif
 		
 		if (tb != NULL) {
