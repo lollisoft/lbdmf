@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.116 $
+# * $Revision: 1.117 $
 # * $Name:  $
-# * $Id: Makefile,v 1.116 2006/12/10 17:05:24 lollisoft Exp $
+# * $Id: Makefile,v 1.117 2007/02/27 21:40:34 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.117  2007/02/27 21:40:34  lollisoft
+# * Added new plugin
+# *
 # * Revision 1.116  2006/12/10 17:05:24  lollisoft
 # * Other changes under Mac OS X.
 # *
@@ -423,6 +426,7 @@ ifndef RPMBUILD
 ifeq ($(OSTYPE), linux)
 BASEDIRECTORIES= \
 	../Plugins \
+	../AppDevelopmentDemo/DynaminApp/Plugins \
 	../Modules \
 	../RegressionTests \
 	../AppDevelopment
@@ -438,6 +442,7 @@ ifdef RPMBUILD
 ifeq ($(OSTYPE), linux)
 BASEDIRECTORIES= \
 	../Plugins \
+	../AppDevelopmentDemo/DynaminApp/Plugins \
 	../Modules
 endif
 endif
@@ -446,6 +451,7 @@ endif
 ifeq ($(OSTYPE), Windows_NT)
 BASEDIRECTORIES= \
 	../Plugins \
+	../AppDevelopmentDemo/DynaminApp/Plugins \
 	../Modules \
 	../RegressionTests \
 	../vendor/wxaui-0.9.1/sample \
@@ -464,6 +470,7 @@ ifeq ($(OSTYPE), osx)
 
 BASEDIRECTORIES= \
 	../Plugins \
+	../AppDevelopmentDemo/DynaminApp/Plugins \
 	../Modules \
 	../RegressionTests \
 	../vendor/wxaui-0.9.1/sample \
@@ -857,6 +864,9 @@ endif
 	$(MAKE) -k -s -C $@
 
 ../Plugins: dummy
+	$(MAKE) -s -C $@
+
+../AppDevelopmentDemo/DynamicApp/Plugins: dummy
 	$(MAKE) -s -C $@
 
 ../Modules: dummy
