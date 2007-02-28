@@ -1,5 +1,7 @@
-format 24
+format 29
 "lbDMF"
+  revision 3
+  modified_by 2 "lothar"
 
 
   
@@ -12,7 +14,9 @@ format 24
   //sequence diagram settings
   show_full_operations_definition no write_horizontally yes drawing_language uml shadow yes
   //collaboration diagram settings
-  show_full_operations_definition no show_hierarchical_rank no write_horizontally yes drawing_language uml shadow yes
+  show_full_operations_definition no show_hierarchical_rank no write_horizontally yes drawing_language uml package_name_in_tab no show_context no shadow yes
+  //object diagram settings
+   write_horizontally yes package_name_in_tab no show_context no auto_label_position yes shadow yes
   //component diagram settings
   package_name_in_tab no show_context no auto_label_position yes shadow yes
   draw_component_as_icon no show_component_req_prov no show_component_rea no
@@ -20,17 +24,20 @@ format 24
   package_name_in_tab no show_context no write_horizontally yes auto_label_position yes shadow yes
   draw_component_as_icon no show_component_req_prov no show_component_rea no
   //state diagram settings
-  package_name_in_tab no show_context no auto_label_position yes write_trans_label_horizontally yes shadow yes
+  package_name_in_tab no show_context no auto_label_position yes write_trans_label_horizontally yes show_trans_definition no shadow yes
   show_activities yes region_horizontally yes drawing_language uml
+  //activity diagram settings
+  package_name_in_tab no show_context no show_opaque_action_definition no auto_label_position yes write_flow_label_horizontally no shadow yes
+  show_infonote yes drawing_language uml
   
-  class_color yellow duration_color transparent continuation_color gray note_color blue fragment_color transparent usecase_color yellow package_color transparent component_color green artifact_color green deploymentnode_color gray state_color yellow stateaction_color transparent 
-  font_size 8
+  class_color yellow duration_color transparent continuation_color gray note_color blue fragment_color transparent subject_color transparent usecase_color yellow package_color transparent component_color green artifact_color green deploymentnode_color gray state_color yellow stateaction_color transparent activity_color transparent activityregion_color transparent activityaction_color transparent parameterpin_color white 
+  font_size 12
   diagram_format A4
 
   mark_for_import
-
+  
   ncouples 1
-  key "#file" value "Q:\\develop\\Projects\\CPP\\Doc\\lbDMF\\IgnoreIdentifers.txt"
+  key "#file" value "./IgnoreIdentifers.txt"
   package_ref 128071 // interfaces
 
   package_ref 128199 // unknown
@@ -38,8 +45,6 @@ format 24
   package_ref 128327 // include
 
   package_ref 128455 // BaseDevelopment
-
-  package_ref 130247 // AppDevelopmentDemo
 
   package_ref 130759 // Plugins
 
@@ -51,7 +56,9 @@ format 24
     //sequence diagram settings
     show_full_operations_definition default write_horizontally default drawing_language default shadow default
     //collaboration diagram settings
-    show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default shadow default
+    show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default shadow default
+    //object diagram settings
+     write_horizontally default package_name_in_tab default show_context default auto_label_position default shadow default
     comment "This usecase describes the login"
     usecasediagram 128100 "Manual Login"
       package_name_in_tab default show_context default auto_label_position default shadow default
@@ -64,7 +71,9 @@ format 24
       //sequence diagram settings
       show_full_operations_definition default write_horizontally default drawing_language default shadow default
       //collaboration diagram settings
-      show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default shadow default
+      show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default shadow default
+      //object diagram settings
+       write_horizontally default package_name_in_tab default show_context default auto_label_position default shadow default
     end
   end
 

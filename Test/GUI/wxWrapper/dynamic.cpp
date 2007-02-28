@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.130 2007/02/09 21:35:51 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.131 2007/02/28 19:24:30 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.130 $
+ * $Revision: 1.131 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.130 2007/02/09 21:35:51 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.131 2007/02/28 19:24:30 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.131  2007/02/28 19:24:30  lollisoft
+ * New plugin compiles under Mac OS X.
+ *
  * Revision 1.130  2007/02/09 21:35:51  lollisoft
  * Implemented remaining stuff for basic toolbar support.
  * But these seems not to show the bitmap on Mac OS X.
@@ -2112,26 +2115,30 @@ bool MyApp::OnInit(void)
         wxGUI = new lb_wxGUI();
         wxGUI->setModuleManager(mm.getPtr(), __FILE__, __LINE__);
 
-	// Register Events, that I provide
+		// Register Events, that I provide
 
-	ev_manager->registerEvent("AddMenu", AddMenu);
-	ev_manager->registerEvent("AddMenuBar", AddMenuBar);
-	ev_manager->registerEvent("AddButton", AddButton);	
+		ev_manager->registerEvent("AddMenu", AddMenu);
+		ev_manager->registerEvent("AddMenuBar", AddMenuBar);
+		ev_manager->registerEvent("AddButton", AddButton);	
 
-	ev_manager->registerEvent("showLeft", AddButton);	
+		ev_manager->registerEvent("showLeft", AddButton);	
 	
-	ev_manager->registerEvent("AddMenuEntry", AddMenuEntry);
-	ev_manager->registerEvent("AddLabel", AddLabel);
-	ev_manager->registerEvent("AddTextField", AddTextField);
-	ev_manager->registerEvent("askOpenFileReadStream", AskOpenFileReadStream);
-	ev_manager->registerEvent("askYesNo", _askYesNo);
-	ev_manager->registerEvent("enableEvent", _enableEvent);
-	ev_manager->registerEvent("disableEvent", _disableEvent);
-	ev_manager->registerEvent("toggleEvent", _toggleEvent);
+		ev_manager->registerEvent("AddMenuEntry", AddMenuEntry);
+		ev_manager->registerEvent("AddLabel", AddLabel);
+		ev_manager->registerEvent("AddTextField", AddTextField);
+		ev_manager->registerEvent("askOpenFileReadStream", AskOpenFileReadStream);
+		ev_manager->registerEvent("askYesNo", _askYesNo);
+		ev_manager->registerEvent("enableEvent", _enableEvent);
+		ev_manager->registerEvent("disableEvent", _disableEvent);
+		ev_manager->registerEvent("toggleEvent", _toggleEvent);
 
         registerEventHandler(*&disp);
     }
 
+    if (metaApp != NULL) {
+        metaApp->setGUI(wxGUI);
+	}
+	
     UAP(lb_I_Unknown, uk)
     uk = wxGUI->createFrame();
     uk++;
@@ -2155,9 +2162,12 @@ bool MyApp::OnInit(void)
     SetTopWindow(frame);
 
     if (metaApp != NULL) {
-        metaApp->setGUI(wxGUI);
         metaApp->initialize();
-	if (metaApp->getGUIMaximized()) frame->Maximize();
+		
+		metaApp->addToolBar("Main Toolbar");
+		metaApp->addToolBarButton("Main Toolbar", "Properties", "ShowPropertyPanel", "configure.png");
+		
+		if (metaApp->getGUIMaximized()) frame->Maximize();
     } 
 
     if (PM->beginEnumPlugins()) {

@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.117 $
+# * $Revision: 1.118 $
 # * $Name:  $
-# * $Id: Makefile,v 1.117 2007/02/27 21:40:34 lollisoft Exp $
+# * $Id: Makefile,v 1.118 2007/02/28 19:24:29 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.118  2007/02/28 19:24:29  lollisoft
+# * New plugin compiles under Mac OS X.
+# *
 # * Revision 1.117  2007/02/27 21:40:34  lollisoft
 # * Added new plugin
 # *
@@ -426,7 +429,7 @@ ifndef RPMBUILD
 ifeq ($(OSTYPE), linux)
 BASEDIRECTORIES= \
 	../Plugins \
-	../AppDevelopmentDemo/DynaminApp/Plugins \
+	../AppDevelopmentDemo/DynamicApp/Plugins \
 	../Modules \
 	../RegressionTests \
 	../AppDevelopment
@@ -442,7 +445,7 @@ ifdef RPMBUILD
 ifeq ($(OSTYPE), linux)
 BASEDIRECTORIES= \
 	../Plugins \
-	../AppDevelopmentDemo/DynaminApp/Plugins \
+	../AppDevelopmentDemo/DynamicApp/Plugins \
 	../Modules
 endif
 endif
@@ -451,7 +454,7 @@ endif
 ifeq ($(OSTYPE), Windows_NT)
 BASEDIRECTORIES= \
 	../Plugins \
-	../AppDevelopmentDemo/DynaminApp/Plugins \
+	../AppDevelopmentDemo/DynamicApp/Plugins \
 	../Modules \
 	../RegressionTests \
 	../vendor/wxaui-0.9.1/sample \
@@ -470,11 +473,11 @@ ifeq ($(OSTYPE), osx)
 
 BASEDIRECTORIES= \
 	../Plugins \
-	../AppDevelopmentDemo/DynaminApp/Plugins \
 	../Modules \
 	../RegressionTests \
 	../vendor/wxaui-0.9.1/sample \
 	../AppDevelopment \
+	../AppDevelopmentDemo/DynamicApp/Plugins \
 	../vendor/tvision/examples/lbDMF
 
 TARGETDLL=sobundle

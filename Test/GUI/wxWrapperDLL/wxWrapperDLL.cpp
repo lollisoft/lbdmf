@@ -504,6 +504,7 @@ lb_wxFrame::lb_wxFrame() //:
 /*...slbErrCodes LB_STDCALL lb_wxFrame\58\\58\registerEventHandler\40\lb_I_Dispatcher\42\ disp\41\:0:*/
 lbErrCodes LB_STDCALL lb_wxFrame::registerEventHandler(lb_I_Dispatcher* disp) {
 	UAP_REQUEST(getModuleInstance(), lb_I_EventManager, eman)
+	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, metaapp)
 
 	int temp;
 
@@ -1640,58 +1641,114 @@ wxPoint lb_wxFrame::GetStartPosition()
 }
 
 lbErrCodes LB_STDCALL lb_wxFrame::addToolBar(lb_I_Unknown* uk) {
+	lbErrCodes err = ERR_DISPATCH_PARAMETER_WRONG;
+
     wxToolBar* tb = GetToolBar();
     
     if (tb == NULL) {
 		tb = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_HORIZONTAL);
 	
-		wxImage::AddHandler(new wxXPMHandler);
-		wxImage::AddHandler(new wxPNGHandler);
-	
-		tb->SetToolBitmapSize(wxSize(32, 32));
+		UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
+		UAP_REQUEST(manager.getPtr(), lb_I_String, name)
+		
+		UAP(lb_I_Parameter, params)
+		QI(uk, lb_I_Parameter, params)
+		
+		if (params != NULL) {
+			err = ERR_NONE;
 
-		UAP_REQUEST(manager.getPtr(), lb_I_String, toolbarfile)
-		UAP_REQUEST(manager.getPtr(), lb_I_String, images)
-		UAP_REQUEST(getModuleManager(), lb_I_MetaApplication, app)
-	
-		*toolbarfile += app->getDirLocation();
+			*parameter = "toolbarName";
+			params->getUAPString(*&parameter, *&name);
 
+			wxToolBar* tb;
+			wxToolBar* maintb;
+			
+#ifndef USE_WXAUI
+			tb = GetToolBar();
+#endif
+#ifdef USE_WXAUI
+			maintb = (wxToolBar*) m_mgr.GetPane("Main Toolbar").window;
+#endif
+
+			if (maintb == NULL) {
+				maintb = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_HORIZONTAL|wxTB_DOCKABLE);
+				
+				wxImage::AddHandler(new wxXPMHandler);
+				wxImage::AddHandler(new wxPNGHandler);
+				
+				maintb->SetToolBitmapSize(wxSize(32, 32));
+				
+				UAP_REQUEST(manager.getPtr(), lb_I_String, toolbarfile)
+				UAP_REQUEST(manager.getPtr(), lb_I_String, images)
+				UAP_REQUEST(getModuleManager(), lb_I_MetaApplication, app)
+					
+				*toolbarfile += app->getDirLocation();
+				
 #ifdef OSX
-		*images = "/toolbarimages/";
+				*images = "/toolbarimages/";
 #endif
 #ifdef LINUX
-		*images = "/toolbarimages/";
+				*images = "/toolbarimages/";
 #endif
 #ifdef WINDOWS
-		*images = "\\toolbarimages\\";
+				*images = "\\toolbarimages\\";
 #endif
-		*toolbarfile += images->charrep();
-		*toolbarfile += "exit.png";
-
-		wxImage* im;
-							
-		im = new wxImage(toolbarfile->charrep(), wxBITMAP_TYPE_PNG);
-
-		wxBitmap bm = wxBitmap(im);
-			
-		tb->AddTool(DYNAMIC_QUIT, bm, _trans("Exit"));
-
-		tb->Realize();
-
+				*toolbarfile += images->charrep();
+				*toolbarfile += "exit.png";
+				
+				wxImage* im;
+				
+				im = new wxImage(toolbarfile->charrep(), wxBITMAP_TYPE_PNG);
+				
+				wxBitmap bm = wxBitmap(im);
+				
+				maintb->AddTool(DYNAMIC_QUIT, bm, _trans("Exit"));
+				
+				maintb->Realize();
+				
 #ifndef USE_WXAUI
-		SetToolBar(tb);
+				SetToolBar(maintb);
 #endif
+				
+#ifdef USE_WXAUI
+				m_mgr.AddPane(maintb, wxPaneInfo().
+							  Name(wxT("Main Toolbar")).Caption(wxT("Main Toolbar")).
+							  ToolbarPane().Top().
+							  LeftDockable(false).RightDockable(false));
+				m_mgr.Update();
+#endif
+			}
 
 #ifdef USE_WXAUI
-		m_mgr.AddPane(tb, wxPaneInfo().
-				  Name(wxT("tb1")).Caption(wxT("Database forms")).
-                  ToolbarPane().Top().
-                  LeftDockable(false).RightDockable(false));
-		m_mgr.Update();
+			tb = (wxToolBar*) m_mgr.GetPane(name->charrep()).window;
 #endif
-    } else {
-    
-    }
+
+			if (tb == NULL) {
+				tb = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_HORIZONTAL|wxTB_DOCKABLE);
+				
+				wxImage::AddHandler(new wxXPMHandler);
+				wxImage::AddHandler(new wxPNGHandler);
+				
+				tb->SetToolBitmapSize(wxSize(32, 32));
+				
+#ifndef USE_WXAUI
+				SetToolBar(tb);
+#endif
+				
+#ifdef USE_WXAUI
+				m_mgr.AddPane(tb, wxPaneInfo().
+							  Name(wxT(name->charrep())).Caption(wxT(name->charrep())).
+							  ToolbarPane().Top().
+							  LeftDockable(false).RightDockable(false));
+				m_mgr.Update();
+#endif
+			} else {
+				
+			}
+		}
+	}
+	
+	return err;
 }
 
 lbErrCodes LB_STDCALL lb_wxFrame::addTool_To_ToolBar(lb_I_Unknown* uk) {
@@ -1703,7 +1760,6 @@ lbErrCodes LB_STDCALL lb_wxFrame::addTool_To_ToolBar(lb_I_Unknown* uk) {
 	if (params != NULL) {
 		UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
 		UAP_REQUEST(manager.getPtr(), lb_I_String, name)
-		UAP_REQUEST(manager.getPtr(), lb_I_String, toolbarName)
 		UAP_REQUEST(manager.getPtr(), lb_I_String, tooltype)
 		UAP_REQUEST(manager.getPtr(), lb_I_String, entry)
 		UAP_REQUEST(manager.getPtr(), lb_I_String, evHandler)
@@ -1726,7 +1782,7 @@ lbErrCodes LB_STDCALL lb_wxFrame::addTool_To_ToolBar(lb_I_Unknown* uk) {
 		tb = GetToolBar();
 #endif
 #ifdef USE_WXAUI
-		tb = (wxToolBar*) m_mgr.GetPane("tb1").window;
+		tb = (wxToolBar*) m_mgr.GetPane(name->charrep()).window;
 #endif
 		
 		if (tb != NULL) {
@@ -1782,7 +1838,7 @@ lbErrCodes LB_STDCALL lb_wxFrame::addTool_To_ToolBar(lb_I_Unknown* uk) {
 			m_mgr.DetachPane(tb);
 			
 			m_mgr.AddPane(tb, wxPaneInfo().
-				  Name(wxT("tb1")).Caption(wxT("Database forms")).
+				  Name(wxT(name->charrep())).Caption(wxT(name->charrep())).
                   ToolbarPane().Top().
                   LeftDockable(false).RightDockable(false));
 			m_mgr.Update();

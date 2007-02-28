@@ -68,6 +68,8 @@ public:
 
 	virtual lbErrCodes LB_STDCALL registerEventHandler(lb_I_Dispatcher* disp);	
 
+	void test() {}
+
 	/**
 	 * \brief The main handler to create dynamic forms
 	 */
