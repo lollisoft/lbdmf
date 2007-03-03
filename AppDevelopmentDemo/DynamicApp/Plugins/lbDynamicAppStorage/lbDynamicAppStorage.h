@@ -37,6 +37,7 @@ public:
 
 	DECLARE_LB_UNKNOWN()
 
+	lbErrCodes LB_STDCALL setStreamObject(lb_I_Unknown*) { return ERR_NONE; }
 	lbErrCodes	LB_STDCALL load(lb_I_InputStream* iStream);
 	lbErrCodes	LB_STDCALL save(lb_I_OutputStream* oStream);
 

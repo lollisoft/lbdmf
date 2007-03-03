@@ -234,6 +234,21 @@ public:
 	};
 #endif
 
+	/** \brief Set the instance from where the data comes.
+	 * A visitor implementation may not contain code to store
+	 * or load private data. Using a plugin delegate that would
+	 * do the job, this function is used to set hat object has to
+	 * be streamed.
+	 *
+	 * Currently, this is for implementations of the lb_I_Application
+	 * interface.
+	 *
+	 * Application classes would have fully different intentions, thus
+	 * one visitor plugin wouldn't capable to handle them even it could
+	 * handle parts of it, it couldn't handle the whole. 
+	 */
+	virtual lbErrCodes LB_STDCALL setStreamObject(lb_I_Unknown* streamObject) = 0;
+
 	/** \brief Save to a filebased stream.
 	 */
 	virtual lbErrCodes LB_STDCALL save(lb_I_OutputStream* oStream) = 0;

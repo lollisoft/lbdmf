@@ -731,46 +731,15 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 		}
 /*...e*/
 		
-		if (!DBOperation && 
-			(forms != NULL) && 
-			(formParams != NULL) && 
-			(appActions != NULL) && 
-			(appActionSteps != NULL) && 
-			(appActionTypes != NULL) && 
-			(appParams != NULL)) {
-			_LOG << "Load application data from file ..." LOG_
-			forms->accept(*&fOp);
-			formParams->accept(*&fOp);
-			appParams->accept(*&fOp);
-			appActions->accept(*&fOp);
-			appActionTypes->accept(*&fOp);
-			appActionSteps->accept(*&fOp);
-		}
 		
-		if (DBOperation && 
-			(forms != NULL) && 
-			(formParams != NULL) && 
-			(appActions != NULL) && 
-			(appActionSteps != NULL) && 
-			(appActionTypes != NULL) && 
-			(appParams != NULL)) {
-			_LOG << "Load application data from database ..." LOG_
-			forms->accept(*&fOpDB);
-			formParams->accept(*&fOpDB);
-			appParams->accept(*&fOpDB);
-			appActions->accept(*&fOpDB);
-			appActionTypes->accept(*&fOpDB);
-			appActionSteps->accept(*&fOpDB);
-		}
-		
-		if (!DBOperation) fOp->end();
-		if (DBOperation) fOpDB->end();
+		// Only this part is how to load the data. So here I have to set the correct handler for the load delegation routine.
 		
 		// Loading the application related data succeeded. Put these into a parameter object for reference.
 		
 		UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
 		UAP_REQUEST(manager.getPtr(), lb_I_Container, document)
 		UAP_REQUEST(manager.getPtr(), lb_I_String, name)
+		UAP_REQUEST(manager.getPtr(), lb_I_String, value)
 		UAP(lb_I_KeyBase, key)
 		QI(name, lb_I_KeyBase, key)
 		
@@ -812,9 +781,60 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 		}		
 		*name = "ApplicationData";
 		param->setUAPContainer(*&name, *&document);
+
+		*name = "StorageDelegateInterface";
+		*value = "lb_I_Streamable";
+		param->setUAPString(*&name, *&value);
+
+		*name = "StorageDelegateNamespace";
+		*value = "DynamicAppXMLStorage";
+		param->setUAPString(*&name, *&value);
 		
 		param++;
 		metaapp->setActiveDocument(*&param);
+		
+		
+		if (!DBOperation && 
+			(forms != NULL) && 
+			(formParams != NULL) && 
+			(appActions != NULL) && 
+			(appActionSteps != NULL) && 
+			(appActionTypes != NULL) && 
+			(appParams != NULL)) {
+			_LOG << "Load application data from file ..." LOG_
+			
+			
+			
+			
+			forms->accept(*&fOp);
+			formParams->accept(*&fOp);
+			appParams->accept(*&fOp);
+			appActions->accept(*&fOp);
+			appActionTypes->accept(*&fOp);
+			appActionSteps->accept(*&fOp);
+		}
+		
+		if (DBOperation && 
+			(forms != NULL) && 
+			(formParams != NULL) && 
+			(appActions != NULL) && 
+			(appActionSteps != NULL) && 
+			(appActionTypes != NULL) && 
+			(appParams != NULL)) {
+			_LOG << "Load application data from database ..." LOG_
+			
+			
+			forms->accept(*&fOpDB);
+			formParams->accept(*&fOpDB);
+			appParams->accept(*&fOpDB);
+			appActions->accept(*&fOpDB);
+			appActionTypes->accept(*&fOpDB);
+			appActionSteps->accept(*&fOpDB);
+		}
+		
+		if (!DBOperation) fOp->end();
+		if (DBOperation) fOpDB->end();
+
 
 		int id = metaapp->getApplicationID();
 		

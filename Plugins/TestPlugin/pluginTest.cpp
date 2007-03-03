@@ -76,6 +76,9 @@ public:
 	DECLARE_LB_UNKNOWN()
 	
 	void LB_STDCALL test();
+	
+	lbErrCodes LB_STDCALL setStreamObject(lb_I_Unknown*) { return ERR_NONE; }
+	
 	lbErrCodes LB_STDCALL save(lb_I_OutputStream* oStream) { return ERR_NONE; }
 	lbErrCodes LB_STDCALL load(lb_I_InputStream* iStream) { return ERR_NONE; }
 	lbErrCodes LB_STDCALL save(lb_I_Database* oDB) { return ERR_NONE; }
