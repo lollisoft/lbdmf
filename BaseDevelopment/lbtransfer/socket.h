@@ -99,52 +99,53 @@ class lb_Transfer_Data;
 
 // In DLL lbTransfer DLLEXPORT must be ""
 
-class lbSocket {
+class lbSocket : public lb_I_Socket {
 public:
         lbSocket();
 	lbSocket(const lbSocket& s);
         virtual ~lbSocket();
+
+
+	DECLARE_LB_UNKNOWN()
         
 	/**
 	 * Is this object valid ?
 	 */
-	int isValid();
+	int LB_STDCALL isValid();
 
-	static int gethostname(char* &name);
+	char* LB_STDCALL gethostname();
 
-	void initSymbolic(char *host, char* service);
-        void reinit(char *mysockaddr="");
+	void LB_STDCALL initSymbolic(char *host, char* service);
+        void LB_STDCALL reinit(char *mysockaddr="");
 
-	lbErrCodes neagleOff(SOCKET s);
+	int LB_STDCALL isServer() { return _isServer; }
 
-	int isServer() { return _isServer; }
-
-	lbErrCodes recvInteger(int& i);
-	lbErrCodes sendInteger(int i);
+	lbErrCodes LB_STDCALL recvInteger(int& i);
+	lbErrCodes LB_STDCALL sendInteger(int i);
 	
-	lbErrCodes send(void* buf, int len);		
+	lbErrCodes LB_STDCALL send(void* buf, int len);		
 
 	/**
 	 * Buffer must be allocated.
 	 */	
-	lbErrCodes recv(void* buf, int & len);
+	lbErrCodes LB_STDCALL recv(void* buf, int & len);
 		
-        lbErrCodes recv_charbuf(char *buf);
-        lbErrCodes send_charbuf(char *buf, int len);
+        lbErrCodes LB_STDCALL recv_charbuf(char *buf);
+        lbErrCodes LB_STDCALL send_charbuf(char *buf, int len);
 
 	/**
 	 * Send and recieve a data buffer and automatically split off to
 	 * the max amount of packet size.
 	 */
-	lbErrCodes recv(lb_Transfer_Data & data);
-	lbErrCodes send(lb_Transfer_Data & data);
+	lbErrCodes LB_STDCALL recv(lb_I_Transfer_Data* data);
+	lbErrCodes LB_STDCALL send(lb_I_Transfer_Data* data);
 
 
 	/**
 	 * Like the lbTransfer, here I must provide a lbSocket as a result.
 	 * At this time you have to delete the instance after use.
 	 */
-        lbErrCodes accept(lbSocket *& s);
+        lb_I_Socket* LB_STDCALL accept();
 
 private:
 	// These functions must not be locket
@@ -156,6 +157,7 @@ private:
 	int close();
         int connect();
         int setSockConnection(SOCKET s);
+	lbErrCodes LB_STDCALL neagleOff(SOCKET s);
 
 	unsigned long inet_addrFromString(char* addr);
 	
@@ -193,5 +195,20 @@ private:
   int _isServer;
   LB_SOCK_STATE lbSockState;
 };
+
+
+/*...sifdef __cplusplus:0:*/
+#ifdef __cplusplus
+extern "C" {
+#endif
+/*...e*/
+
+DECLARE_FUNCTOR(instanceOflbSocket)
+
+/*...sendif __cplusplus:0:*/
+#ifdef __cplusplus
+}
+#endif
+/*...e*/
 
 #endif // _LB_SOCKET_

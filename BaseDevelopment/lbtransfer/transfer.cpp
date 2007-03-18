@@ -30,8 +30,27 @@
 #include "module.h"
 
 #include <conio.h>
+
+#include <lbConfigHook.h>
+
 #include <lbInclude.h>
 #include <signal.h>
+
+#include <socket.h>
+#include <transfer.h>
+
+
+#ifdef __cplusplus
+extern "C" {       
+#endif            
+
+IMPLEMENT_FUNCTOR(instanceOflbTransfer, lbTransfer)
+IMPLEMENT_FUNCTOR(instanceOflbTransferDataObject, lbTransferDataObject)
+IMPLEMENT_FUNCTOR(instanceOflb_Transfer_Data, lb_Transfer_Data)
+	
+#ifdef __cplusplus
+}
+#endif            
 
 lbCritSect transferSection;
 
@@ -60,6 +79,32 @@ public:
 
 lbTransferModule transModule; // Module initializion
 
+BEGIN_IMPLEMENT_LB_UNKNOWN(lb_Transfer_Data)
+	ADD_INTERFACE(lb_I_Transfer_Data)
+END_IMPLEMENT_LB_UNKNOWN()
+
+lbErrCodes LB_STDCALL lb_Transfer_Data::setData(lb_I_Unknown* uk) {
+        _CL_VERBOSE << "lb_Transfer_Data::setData(...) not implemented yet" LOG_
+        return ERR_NOT_IMPLEMENTED;
+}
+
+BEGIN_IMPLEMENT_LB_UNKNOWN(lbTransfer)
+	ADD_INTERFACE(lb_I_Transfer)
+END_IMPLEMENT_LB_UNKNOWN()
+
+lbErrCodes LB_STDCALL lbTransfer::setData(lb_I_Unknown* uk) {
+        _CL_VERBOSE << "lbTransfer::setData(...) not implemented yet" LOG_
+        return ERR_NOT_IMPLEMENTED;
+}
+
+BEGIN_IMPLEMENT_LB_UNKNOWN(lbTransferDataObject)
+	ADD_INTERFACE(lb_I_Transfer_DataObject)
+END_IMPLEMENT_LB_UNKNOWN()
+
+lbErrCodes LB_STDCALL lbTransferDataObject::setData(lb_I_Unknown* uk) {
+        _CL_VERBOSE << "lbTransferDataObject::setData(...) not implemented yet" LOG_
+        return ERR_NOT_IMPLEMENTED;
+}
 
 /*...slbTransferDataObject:0:*/
 lbTransferDataObject::lbTransferDataObject() {
@@ -72,7 +117,7 @@ lbTransferDataObject::~lbTransferDataObject() {
 void lbTransferDataObject::setType() {
         OTyp = LB_DATA_TRANSFER_OBJECT;
 }
-
+#ifdef USE_CLONE
 lbObject* lbTransferDataObject::clone() const {
         lbLock lock(transferSection, "transferSection");
         
@@ -95,23 +140,30 @@ lbObject* lbTransferDataObject::clone() const {
 /*...e*/
         return o;
 }
+#endif
 
-
-void lbTransferDataObject::setData(pLB_TRANSFER_DATA pData) {
-        data = pData;
-        if (data == NULL) LOG("lbTransferDataObject::setData(): Error, data pointer is null");
+void lbTransferDataObject::setTransferData(pLB_TRANSFER_DATA pData) {
+        mydata = pData;
+        if (mydata == NULL) LOG("lbTransferDataObject::setData(): Error, data pointer is null");
 }
 
-pLB_TRANSFER_DATA lbTransferDataObject::getData() const {
-        if (data == NULL) LOG("lbTransferDataObject::getData(): Error, data pointer is null");
-        return data;
+pLB_TRANSFER_DATA lbTransferDataObject::getTransferData() const {
+        if (mydata == NULL) LOG("lbTransferDataObject::getData(): Error, data pointer is null");
+        return mydata;
 }
 /*...e*/
 /*...slb_Transfer_Data:0:*/
 /*...slb_Transfer_Data\58\\58\lb_Transfer_Data\40\\41\:0:*/
 lb_Transfer_Data::lb_Transfer_Data(int _serverside) {
-        elements = new lbComponentDictionary();
-        elementscopy = elements;
+	lbErrCodes err = ERR_NONE;
+	REQUEST(manager.getPtr(), lb_I_Container, elements)
+	REQUEST(manager.getPtr(), lb_I_Integer, intKey)
+	REQUEST(manager.getPtr(), lb_I_String, clientHost)
+	
+	QI(intKey, lb_I_KeyBase, key)
+	
+        //elements = new lbComponentDictionary();
+        //*elementscopy = elements->clone(__FILE__, __LINE__);
 
         elements->deleteAll();
         
@@ -119,10 +171,13 @@ lb_Transfer_Data::lb_Transfer_Data(int _serverside) {
         ref = 0;
         serverside=_serverside;
 
-        lbSocket::gethostname(clientHost);      
-        clientPid = lbGetCurrentProcessId();
-        clientTid = lbGetCurrentThreadId();
+	UAP_REQUEST(manager.getPtr(), lb_I_Socket, s)
+
+        *clientHost = s->gethostname();
+        clientPid = lbTransferGetCurrentProcessId();
+        clientTid = lbTransferGetCurrentThreadId();
 }
+
 /*...e*/
 /*...slb_Transfer_Data\58\\58\\126\lb_Transfer_Data\40\\41\:0:*/
 lb_Transfer_Data::~lb_Transfer_Data() {
@@ -130,26 +185,27 @@ lb_Transfer_Data::~lb_Transfer_Data() {
                 //delete elements;
         }
 
-        if (clientHost != NULL) free(clientHost);
+        //if (clientHost != NULL) free(clientHost);
 }
 /*...e*/
 
 /*...slb_Transfer_Data\58\\58\lb_Transfer_Data\40\const lb_Transfer_Data \38\ t\41\:0:*/
 lb_Transfer_Data::lb_Transfer_Data(const lb_I_Transfer_Data & t) {
         elements = ((lb_Transfer_Data&) t).elements;
-        elementscopy = ((lb_Transfer_Data&) t).elementscopy;
+//        elementscopy = ((lb_Transfer_Data&) t).elementscopy;
 
         packet_count = ((lb_Transfer_Data&) t).packet_count;
         currentPos = ((lb_Transfer_Data&) t).currentPos;
 
         if (((lb_Transfer_Data&) t).clientHost != NULL)
-                clientHost = strdup(((lb_Transfer_Data&) t).clientHost);
+                *clientHost = t.getClientHost();
         else
-                clientHost = strdup("No host given!");
+                *clientHost = "No host given!";
 
-        clientPid = ((lb_Transfer_Data&) t).clientPid;
-        clientTid = ((lb_Transfer_Data&) t).clientTid;
-        serverside = ((lb_Transfer_Data&) t).serverside;
+        clientPid = t.getClientPid();
+        clientTid = t.getClientTid();
+        serverside = 0;
+        if (t.isServerSide()) serverside = 1;
         ref++;
 }
 /*...e*/
@@ -157,19 +213,20 @@ lb_Transfer_Data::lb_Transfer_Data(const lb_I_Transfer_Data & t) {
 /*...slb_Transfer_Data\58\\58\assign \40\const lb_I_Transfer_Data \38\ t\41\:0:*/
 lb_I_Transfer_Data& lb_Transfer_Data::assign (const lb_I_Transfer_Data & t) {
         elements = ((lb_Transfer_Data&) t).elements;
-        elementscopy = ((lb_Transfer_Data&) t).elementscopy;
+        //elementscopy = ((lb_Transfer_Data&) t).elementscopy;
 
-        packet_count = ((lb_Transfer_Data&) t).packet_count;
-        currentPos = ((lb_Transfer_Data&) t).currentPos;
+        packet_count = t.getPacketCount();
+        currentPos = t.getCurrentPos();
 
-        if (((lb_Transfer_Data&) t).clientHost != NULL)
-                clientHost = strdup(((lb_Transfer_Data&) t).clientHost);
+        if (t.getClientHost() != NULL)
+                *clientHost = t.getClientHost();
         else
-                clientHost = strdup("No host given!");
+                *clientHost = "No host given!";
 
-        clientPid = ((lb_Transfer_Data&) t).clientPid;
-        clientTid = ((lb_Transfer_Data&) t).clientTid;
-        serverside = ((lb_Transfer_Data&) t).serverside;
+        clientPid = t.getClientPid();
+        clientTid = t.getClientTid();
+        serverside = 0;
+        if (t.isServerSide()) serverside = 1;
         return *this;
 }
 /*...e*/
@@ -179,16 +236,20 @@ int lb_Transfer_Data::hasMorePackets() const {
         return elements->hasMoreElements();
 }
 /*...e*/
-/*...slb_Transfer_Data\58\\58\addPacket\40\pLB_TRANSFER_DATA data\41\:0:*/
+/*...slb_Transfer_Data\58\\58\addPacket\40\pLB_TRANSFER_DATA mydata\41\:0:*/
 int lb_Transfer_Data::addPacket(pLB_TRANSFER_DATA data) {
         return 0;
 }
 /*...e*/
 /*...slb_Transfer_Data\58\\58\getNextPacket\40\\41\:0:*/
 pLB_TRANSFER_DATA lb_Transfer_Data::getNextPacket() const {
+	lbErrCodes err = ERR_NONE;
         char msg[100] = "";
-        lbTransferDataObject *o = (lbTransferDataObject*) elements->nextObject();
-        if (o->getData() == NULL) LOG("lbTransferDataObject contains no data!");
+        UAP(lb_I_Unknown, uk)
+        UAP(lb_I_Transfer_DataObject, o)
+        uk = elements->nextElement();
+        QI(uk, lb_Transfer_DataObject, o)       
+        if (o->getTransferData() == NULL) LOG("lbTransferDataObject contains no data!");
 
 /*...sTRANSFER_VERBOSE:0:*/
 #ifdef TRANSFER_VERBOSE 
@@ -197,9 +258,12 @@ pLB_TRANSFER_DATA lb_Transfer_Data::getNextPacket() const {
 #endif
 /*...e*/
         
-        return o->getData();
+        return o->getTransferData();
 }
 /*...e*/
+int lb_Transfer_Data::getCurrentPos() const {
+	return currentPos;
+}
 /*...slb_Transfer_Data\58\\58\getPacketCount\40\\41\:0:*/
 int lb_Transfer_Data::getPacketCount() const {
         return packet_count;
@@ -230,7 +294,7 @@ int lb_Transfer_Data::incrementPosition() {
 /*...e*/
 /*...slb_Transfer_Data\58\\58\getPacketType\40\LB_PACKET_TYPE \38\ type\41\:0:*/
 int lb_Transfer_Data::getPacketType(LB_PACKET_TYPE & type) {
-        lbTransferDataObject *o;
+	lbErrCodes err = ERR_NONE;
 /*...sTRANSFER_VERBOSE:0:*/
 #ifdef TRANSFER_VERBOSE 
         char msg[100];
@@ -239,13 +303,21 @@ int lb_Transfer_Data::getPacketType(LB_PACKET_TYPE & type) {
 #endif
 /*...e*/
         char buf[100] = "";
+        UAP_REQUEST(manager.getPtr(), lb_I_Integer, integerKey)
+        UAP(lb_I_KeyBase, k)
+        integerKey->setData(currentPos);
+        QI(integerKey, lb_I_KeyBase, k)
+        UAP(lb_I_Unknown, uk)
+        UAP(lb_I_Transfer_DataObject, o)
         
-        o = (lbTransferDataObject*) elements->getElement(lbKey(currentPos));
+        uk = elements->getElement(&k);
+        QI(uk, lb_I_Transfer_DataObject, o)
         
         if (o == NULL) LOG("lb_Transfer_Data::getPacketType() Error, can't get packet type from a NULL pointer object");
         
-        type = o->getData()->packet_type;
+        type = o->getTransferData()->packet_type;
         
+        /// \todo Why yet ever 1 ?
         return 1;
 }
 /*...e*/
@@ -270,7 +342,7 @@ int lb_Transfer_Data::deleteAll() {
 
 /*...slb_Transfer_Data setters:0:*/
 /*...slb_Transfer_Data\58\\58\add\40\const char\42\ c\41\:0:*/
-void lb_Transfer_Data::add(const char* c) {
+void LB_STDCALL lb_Transfer_Data::add(const char* c) {
         if (c != NULL) {
                 int len = strlen(c)+1;// '\0' at the end must also be in buffer
                 
@@ -279,49 +351,53 @@ void lb_Transfer_Data::add(const char* c) {
 }
 /*...e*/
 /*...slb_Transfer_Data\58\\58\add\40\const void\42\ buf\44\ int len\41\:0:*/
-void lb_Transfer_Data::add(const void* buf, int len) {
+void LB_STDCALL lb_Transfer_Data::add(const void* buf, int len) {
         if (buf != NULL) {
                 add((void*) buf, len, PACKET_LB_VOID);
         }
 }
 /*...e*/
 /*...slb_Transfer_Data\58\\58\add\40\int i\41\:0:*/
-void lb_Transfer_Data::add(int i) {
+void LB_STDCALL lb_Transfer_Data::add(int i) {
         int len = sizeof(i);
         
         add((void*) &i, len, PACKET_LB_INT);
 }
 /*...e*/
 /*...slb_Transfer_Data\58\\58\add\40\unsigned long ul\41\:0:*/
-void lb_Transfer_Data::add(unsigned long ul) {
+void LB_STDCALL lb_Transfer_Data::add(unsigned long ul) {
         int len = sizeof(ul);
         
         add((void*) &ul, len, PACKET_LB_ULONG);
 }
 /*...e*/
-void lb_Transfer_Data::add(short s) {
+void LB_STDCALL lb_Transfer_Data::add(short s) {
 }
-void lb_Transfer_Data::add(long l) {
+void LB_STDCALL lb_Transfer_Data::add(long l) {
 }
-void lb_Transfer_Data::add(unsigned short us) {
+void LB_STDCALL lb_Transfer_Data::add(unsigned short us) {
 }
 /*...e*/
 
 /*...slb_Transfer_Data getters:0:*/
 /*...slbErrCodes lb_Transfer_Data\58\\58\get\40\int\38\ i\41\:0:*/
-lbErrCodes lb_Transfer_Data::get(int& i) {
+lbErrCodes LB_STDCALL lb_Transfer_Data::get(int& i) {
+	lbErrCodes err = ERR_NONE;
         LB_PACKET_TYPE type;
         
         getPacketType(type);
         
         if (type == PACKET_LB_INT) {
-                lbKey key = lbKey(currentPos);
-                lbTransferDataObject *o;
-                o = (lbTransferDataObject*) elements->getElement(key);
+                intKey->setData(currentPos);
+                UAP(lb_I_Unknown, uk)
+                UAP(lb_I_Transfer_DataObject, o)
+                uk = elements->getElement(&key);
+                QI(uk, lb_I_Transfer_DataObject, o)
+
+		pLB_TRANSFER_DATA trans = o->getTransferData();
                 
-                //c = (char*) malloc(o->getData()->packet_size);
-                memcpy(&i, (void const*) &(o->getData()->data), 
-                          o->getData()->packet_size);
+                //c = (char*) malloc(trans->packet_size);
+                memcpy(&i, (void const*) &(trans->data), trans->packet_size);
                 return ERR_NONE;
         } else {
                 LOG("lb_Transfer_Data::get() called with wrong attempt of data type!");
@@ -330,18 +406,21 @@ lbErrCodes lb_Transfer_Data::get(int& i) {
 }
 /*...e*/
 /*...slbErrCodes lb_Transfer_Data\58\\58\get\40\unsigned long\38\ ul\41\:0:*/
-lbErrCodes lb_Transfer_Data::get(unsigned long& ul) {
+lbErrCodes LB_STDCALL lb_Transfer_Data::get(unsigned long& ul) {
+	lbErrCodes err = ERR_NONE;
         LB_PACKET_TYPE type;
         
         getPacketType(type);
         
         if (type == PACKET_LB_ULONG) {
-                lbKey key = lbKey(currentPos);
-                lbTransferDataObject *o;
-                o = (lbTransferDataObject*) elements->getElement(key);
+                intKey->setData(currentPos);
+                UAP(lb_I_Unknown, uk)
+                UAP(lb_I_Transfer_DataObject, o)
+                uk = elements->getElement(&key);
+                QI(uk, lb_I_Transfer_DataObject, o)
                 
-                memcpy(&ul, (void const*) &(o->getData()->data), 
-                          o->getData()->packet_size);
+                memcpy(&ul, (void const*) &(o->getTransferData()->data), 
+                          o->getTransferData()->packet_size);
                 return ERR_NONE;
         } else {
                 LOG("lb_Transfer_Data::get() called with wrong attempt of data type!");
@@ -350,19 +429,22 @@ lbErrCodes lb_Transfer_Data::get(unsigned long& ul) {
 }
 /*...e*/
 /*...slbErrCodes lb_Transfer_Data\58\\58\get\40\char\42\ \38\ c\41\:0:*/
-lbErrCodes lb_Transfer_Data::get(char* & c) {
+lbErrCodes LB_STDCALL lb_Transfer_Data::get(char* & c) {
+	lbErrCodes err = ERR_NONE;
         LB_PACKET_TYPE type;
         
         getPacketType(type);
         
         if (type == PACKET_LB_CHAR) {
-                lbKey key = lbKey(currentPos);
-                lbTransferDataObject *o;
-                o = (lbTransferDataObject*) elements->getElement(key);
+                intKey->setData(currentPos);
+                UAP(lb_I_Unknown, uk)
+                UAP(lb_I_Transfer_DataObject, o)
+                uk = elements->getElement(&key);
+                QI(uk, lb_I_Transfer_DataObject, o)
                 
-                c = (char*) malloc(o->getData()->packet_size);
-                memcpy(c, (void const*) &(o->getData()->data), 
-                          o->getData()->packet_size);
+                c = (char*) malloc(o->getTransferData()->packet_size);
+                memcpy(c, (void const*) &(o->getTransferData()->data), 
+                          o->getTransferData()->packet_size);
                 return ERR_NONE;
         } else {
                 LOG("lb_Transfer_Data::get() called with wrong attempt of data type!");
@@ -371,32 +453,35 @@ lbErrCodes lb_Transfer_Data::get(char* & c) {
 }
 /*...e*/
 /*...slbErrCodes lb_Transfer_Data\58\\58\get\40\void\42\ \38\ v\44\ int \38\ len\41\:0:*/
-lbErrCodes lb_Transfer_Data::get(void* & v, int & len) {
+lbErrCodes LB_STDCALL lb_Transfer_Data::get(void* & v, int & len) {
+	lbErrCodes err = ERR_NONE;
         LB_PACKET_TYPE type;
 
         getPacketType(type);
 
         if (type == PACKET_LB_VOID) {
-                lbKey key = lbKey(currentPos);
-                lbTransferDataObject *o;
-                o = (lbTransferDataObject*) elements->getElement(key);
+                intKey->setData(currentPos);
+                UAP(lb_I_Unknown, uk)
+                UAP(lb_I_Transfer_DataObject, o)
+                uk = elements->getElement(&key);
+                QI(uk, lb_I_Transfer_DataObject, o)
 
-                v = (char*) malloc(o->getData()->packet_size);
-                memcpy(v, (void const*) &(o->getData()->data),
-                          o->getData()->packet_size);
+                v = (char*) malloc(o->getTransferData()->packet_size);
+                memcpy(v, (void const*) &(o->getTransferData()->data),
+                          o->getTransferData()->packet_size);
                 return ERR_NONE;
         } else return ERR_TRANSFER_DATA_INCORRECT_TYPE;
 }
 /*...e*/
-lbErrCodes lb_Transfer_Data::get(short & s) {
+lbErrCodes LB_STDCALL lb_Transfer_Data::get(short & s) {
 	return ERR_NOT_IMPLEMENTED;
 }
 
-lbErrCodes lb_Transfer_Data::get(long & l) {
+lbErrCodes LB_STDCALL lb_Transfer_Data::get(long & l) {
 	return ERR_NOT_IMPLEMENTED;
 }
 
-lbErrCodes lb_Transfer_Data::get(unsigned short & us) {
+lbErrCodes LB_STDCALL lb_Transfer_Data::get(unsigned short & us) {
 	return ERR_NOT_IMPLEMENTED;
 }
 
@@ -411,6 +496,7 @@ lbErrCodes lb_Transfer_Data::get(unsigned short & us) {
 // This should not longer be verbose
 
 void lb_Transfer_Data::add(const void* buf, int len, LB_PACKET_TYPE type) {
+	lbErrCodes err = ERR_NONE;
         lbLock lock(transferSection, "transferSection");
 //#define TRANSFER_VERBOSE      
         char msg[100];
@@ -452,12 +538,12 @@ LOG(msg);
 LOG("Done memcpy");
 #endif
 /*...e*/
-                lbTransferDataObject o;
-                o.setData(data);
+                UAP_REQUEST(manager.getPtr(), lb_I_Transfer_DataObject, o)
+                o->setTransferData(data);
 
-                if (o.getData() == NULL) 
-                  LOG("lbTransferDataObject::add(): Error, add does not work correctly!");
-                else {
+                if (o->getTransferData() == NULL) {
+                  _LOG << "lbTransferDataObject::add(): Error, add does not work correctly!" LOG_
+                } else {
 /*...sTRANSFER_VERBOSE:0:*/
 #ifdef TRANSFER_VERBOSE 
                   sprintf(msg, "lbTransferDataObject has it's data pointer at %p", (void*) (o.getData()));
@@ -471,7 +557,10 @@ LOG("Done memcpy");
                 LOG(msg);
 #endif
 /*...e*/
-                lbKey key = lbKey(packet_count);
+		UAP(lb_I_KeyBase, key)
+                UAP_REQUEST(manager.getPtr(), lb_I_Integer,  integerkey)
+                integerkey->setData(packet_count);
+                QI(integerkey, lb_I_KeyBase, key)
 /*...sTRANSFER_VERBOSE:0:*/
 #ifdef TRANSFER_VERBOSE
 LOG("Created");         
@@ -483,7 +572,7 @@ LOG("Created");
                 if ((void*)elements != (void*)elementscopy) 
                   LOG("Error: elements pointer has been overwritten!");
 */
-                if (elements->exists(key) == 1) {
+                if (elements->exists(&key) == 1) {
                         LOG("lb_Transfer_Data::add(...) Error: Creating key for packetcount (prior in list)");
                 }
 /*...sTRANSFER_VERBOSE:0:*/
@@ -491,17 +580,21 @@ LOG("Created");
 LOG("lb_Transfer_Data::add(...) Checked key for packet count nonexistence in list");
 #endif
 /*...e*/
-                elements->insert(o, key);
+		UAP(lb_I_Unknown, uk)
+		QI(o, lb_I_Unknown, uk)
+                elements->insert(&uk, &key);
 /*...sTRANSFER_VERBOSE:0:*/
 #ifdef TRANSFER_VERBOSE
 LOG("Inserted");
 #endif          
 /*...e*/
-                if (elements->exists(key) == 0)
-                  LOG("lb_Transfer_Data::add(...): Error, add could not insert object");
-                else {
-                        lbTransferDataObject *e;
-                        e = (lbTransferDataObject*) elements->getElement(key);
+                if (elements->exists(&key) == 0) {
+                  _LOG << "lb_Transfer_Data::add(...): Error, add could not insert object" LOG_
+                } else {
+                	UAP(lb_I_Unknown, uk)
+                	UAP(lb_I_Transfer_DataObject, e)
+                        uk = elements->getElement(&key);
+                        QI(uk, lb_I_Transfer_DataObject, e)
                         
                         if (e != NULL) {
 /*...sTRANSFER_VERBOSE:0:*/
@@ -510,8 +603,9 @@ LOG("Inserted");
                                 LOG(msg);
 #endif                  
 /*...e*/
-                                if (e->getData() == NULL)
-                                  LOG("lb_Transfer_Data::add(...): Error, lbTransferDataObject has no data!");
+                                if (e->getTransferData() == NULL) {
+                                  _LOG << "lb_Transfer_Data::add(...): Error, lbTransferDataObject has no data!" LOG_
+                        	}
                         }
                 }
 /*...sTRANSFER_VERBOSE:0:*/
@@ -542,11 +636,6 @@ LOGENABLE("lbTransfer::lbTransfer()");
 /*...slbTransfer\58\\58\\126\lbTransfer\40\\41\:0:*/
 lbTransfer::~lbTransfer() {
         COUT << "lbTransfer::~lbTransfer() called" << ENDL;
-        if (sock != NULL) {
-                LOG("lbTransfer::~lbTransfer() Deletes sock instance");
-                delete sock;
-                sock = NULL;
-        }
 }
 /*...e*/
 /*...slbTransfer\58\\58\init\40\char \42\target\41\:0:*/
@@ -1076,8 +1165,9 @@ lbErrCodes lbTransfer::waitForDatatype(char* &result) {
 /*...e*/
 /*...e*/
 
-int lbTransfer::gethostname(char* &name) {
-        return sock->gethostname(name);
+int lbTransfer::gethostname(lb_I_String* name) {
+	if (name != NULL) *name = sock->gethostname();
+	return 0;
 }
 
 /*...slbTransfer\58\\58\getLastError\40\\41\:0:*/
@@ -1087,8 +1177,8 @@ lbErrCodes lbTransfer::getLastError() {
 /*...e*/
 
 
-/*...slbTransfer\58\\58\setSockConnection\40\lbSocket\42\ s\41\:0:*/
-int lbTransfer::setSockConnection(lbSocket* s) {
+/*...slbTransfer\58\\58\setSockConnection\40\lb_I_Socket\42\ s\41\:0:*/
+int lbTransfer::setSockConnection(lb_I_Socket* s) {
         state = LB_STATE_CONNECTED;
         sock = s;
         connected = 1;  
@@ -1097,21 +1187,24 @@ int lbTransfer::setSockConnection(lbSocket* s) {
 /*...e*/
 
 /*...slbTransfer\58\\58\accept\40\\41\:0:*/
-int lbTransfer::accept(lbTransfer*& t) {
+int lbTransfer::accept(lb_I_Transfer* t) {
         if (state == LB_STATE_CONNECTED) {
                 LOG("lbTransfer::accept(lbTransfer*& t) State error: Accept can not be called!");
                 return NULL;
         }
         fprintf(stderr, "Waiting for a connection...\n");
-        lbSocket *s = NULL;
-        if (sock == NULL) LOG("lbTransfer::accept(lbTransfer*& t) Error: Internal sock instance points to NULL!");
-        if (sock->accept(s) == ERR_NONE) {
+        UAP_REQUEST(getModuleManager(), lb_I_Socket, s)
+
+        if (sock == NULL) 
+        	_LOG << "lbTransfer::accept(lbTransfer*& t) Error: Internal sock instance points to NULL!" LOG_
+        s = sock->accept();	
+        if (s != NULL) {
 /*...sTRANSFER_VERBOSE:0:*/
 #ifdef TRANSFER_VERBOSE
                 LOG("lbTransfer::accept(lbTransfer*& t): Create a lbTransfer object for the connected client");
 #endif
 /*...e*/
-                t = new lbTransfer();
+                //t = new lbTransfer();
                  
                 if (s == NULL) {
                         LOG("t->setSockConnection(s) Error: s is a NULL pointer!"); 
@@ -1121,25 +1214,25 @@ int lbTransfer::accept(lbTransfer*& t) {
                 // t cannot call accept or those functions that
                 // are outside of connected state
                 
-                t->setSockConnection(s);
+                t->setSockConnection(s.getPtr());
                 return 1;
         } else {
-                LOG("lbTransfer::accept(lbTransfer*& t): Error, failed to accept on serversocket");
+                LOG("lbTransfer::accept(lb_I_Transfer* t): Error, failed to accept on serversocket");
                 return 0;
         }
 }
 /*...e*/
 
-/*...slbTransfer\58\\58\operator\60\\60\ \40\const lb_Transfer_Data\38\ req\41\:0:*/
-void lbTransfer::operator<< (const lb_Transfer_Data& req) {
+/*...slbTransfer\58\\58\operator\60\\60\ \40\lb_I_Transfer_Data\42\ req\41\:0:*/
+void lbTransfer::operator<< (lb_I_Transfer_Data* req) {
         if (laststate == 1)
                 laststate = send(req);
         else
                 LOG("Transfer: There was a previous error. Could not send any more");
 }
 /*...e*/
-/*...slbTransfer\58\\58\operator\62\\62\ \40\lb_Transfer_Data\38\ res\41\:0:*/
-void lbTransfer::operator>> (lb_Transfer_Data& res) {
+/*...slbTransfer\58\\58\operator\62\\62\ \40\lb_I_Transfer_Data\42\ res\41\:0:*/
+void lbTransfer::operator>> (lb_I_Transfer_Data* res) {
 /*...sTRANSFER_VERBOSE:0:*/
 #ifdef TRANSFER_VERBOSE
 LOGENABLE("lbTransfer::operator>> (lb_Transfer_Data& res) called");
@@ -1154,8 +1247,8 @@ LOGENABLE("lbTransfer::operator>> (lb_Transfer_Data& res) called");
 }
 /*...e*/
 
-/*...slbTransfer\58\\58\send\40\const lb_Transfer_Data \38\ data\41\:0:*/
-int lbTransfer::send(const lb_Transfer_Data & data) {
+/*...slbTransfer\58\\58\send\40\lb_I_Transfer_Data\42\ data\41\:0:*/
+int lbTransfer::send(lb_I_Transfer_Data* data) {
         char buf[MAXBUFLEN];
         char msg[100];
         lastError = ERR_NONE;
@@ -1166,9 +1259,12 @@ LOG(msg);
 #endif  
 /*...e*/
 
-if (data.serverside == 0) {
+if (!data->isServerSide()) {
 /*...sClient sends internal data:0:*/
-        if (sendBuffer((byte*) &data.clientPid, sizeof(data.clientPid)) == 0) {
+	DWORD cP = data->getClientPid();
+	DWORD cT = data->getClientTid();
+	char* h  = data->getClientHost();
+        if (sendBuffer((byte*) &cP, sizeof(DWORD)) == 0) {
                 LOG("lbTransfer::send(...) Error: Could not send internal pid");
                 return 0;
         }
@@ -1176,7 +1272,7 @@ if (data.serverside == 0) {
                 LOG("Could not get answer 'Got buffer'");
                 return 0;
         }
-        if (sendBuffer((byte*) &data.clientTid, sizeof(data.clientTid)) == 0) {
+        if (sendBuffer((byte*) &cT, sizeof(DWORD)) == 0) {
                 LOG("lbTransfer::send(...) Error: Could not send internal tid");
                 return 0;
         }
@@ -1184,7 +1280,7 @@ if (data.serverside == 0) {
                 LOG("Could not get answer 'Got buffer'");
                 return 0;
         }
-        if (sendString(data.clientHost) == 0) {
+        if (sendString(h) == 0) {
                 LOG("lbTransfer::send(...) Error: Could not send internal client hostname");
                 return 0;
         }       
@@ -1208,13 +1304,13 @@ LOG("lbTransfer::send(...) Call waitforAnswer('Datatype ok')");
                 return 0;
         }
 
-        if (sendDataCount(data.getPacketCount()) == 0) {
+        if (sendDataCount(data->getPacketCount()) == 0) {
                 lastError = ERR_TRANSFER_FAILED;
                 return 0;
         }
 
-        while (data.hasMorePackets()) {
-                pLB_TRANSFER_DATA pData = data.getNextPacket();
+        while (data->hasMorePackets()) {
+                pLB_TRANSFER_DATA pData = data->getNextPacket();
 /*...sTRANSFER_VERBOSE:0:*/
 #ifdef TRANSFER_VERBOSE
                 sprintf(msg, "Send a packet (pData) with address %p", (void*) pData);
@@ -1289,8 +1385,8 @@ LOG("lbTransfer::send(...) Have sent all packets. Returning with success");
         return 1;
 }
 /*...e*/
-/*...slbTransfer\58\\58\recv\40\lb_Transfer_Data \38\ data\41\:0:*/
-int lbTransfer::recv(lb_Transfer_Data & data) {
+/*...slbTransfer\58\\58\recv\40\lb_I_Transfer_Data\42\ data\41\:0:*/
+int lbTransfer::recv(lb_I_Transfer_Data* data) {
         char* result = NULL;
         int len;
         void* buf = NULL;
@@ -1304,16 +1400,20 @@ LOG("lbTransfer::recv(lb_Transfer_Data & data): waitForDatatype(result)...");
 #endif
 /*...e*/
 
-if (data.serverside == 1) {
-/*...sServerside recieves internal data :0:*/
+	if (data->isServerSide()) {
+/*...sServerside recieves internal data :16:*/
 
         if (waitForBuffer((byte*&) buf, len) == 0) {
                 LOG("lbTransfer::send(...) Error: Could not send internal pid");
                 lastError = ERR_TRANSFER_FAILED;
                 return 0;
         }
-        memcpy((void*) &data.clientPid, buf, len);
+
+        char* h;
+
+	data->setClientPid(*(DWORD*)buf);
         delete buf;
+
         if (sendString("Got buffer") == 0) {
                 LOG("Could not get answer 'Got buffer'");
                 lastError = ERR_TRANSFER_FAILED;
@@ -1325,7 +1425,8 @@ if (data.serverside == 1) {
                 lastError = ERR_TRANSFER_FAILED;
                 return 0;
         }
-        memcpy((void*) &data.clientTid, buf, len);
+        
+        data->setClientTid(*(DWORD*)buf);
         delete buf;
 
         if (sendString("Got buffer") == 0) {
@@ -1334,11 +1435,12 @@ if (data.serverside == 1) {
                 return 0;
         }
 
-        if (waitForString(data.clientHost) == 0) {
+        if (waitForString(h) == 0) {
                 LOG("lbTransfer::send(...) Error: Could not send internal client hostname");
                 lastError = ERR_TRANSFER_FAILED;
                 return 0;
         }       
+        data->setClientHost(h);
 
         if (sendString("ok") == 0) {
                 lastError = ERR_TRANSFER_FAILED;
@@ -1346,7 +1448,7 @@ if (data.serverside == 1) {
         }
 
 /*...e*/
-}
+	}
 
         if ((err = waitForDatatype(result)) == ERR_NONE) {
           if (strcmp(result, "lb_Transfer_Data") == 0)
@@ -1460,7 +1562,7 @@ if (data.serverside == 1) {
                 LOG(msg);
 #endif          
 /*...e*/
-                data.add(buf, len, type);
+                data->add(buf, len, type);
 /*...sTRANSFER_VERBOSE:28:*/
 #ifdef TRANSFER_VERBOSE
                 LOG("lbTransfer::recv(...) Answer with 'Got buffer'");
@@ -1477,6 +1579,7 @@ if (data.serverside == 1) {
 #endif
 /*...e*/
             }
+
 /*...e*/
 /*...sTRANSFER_VERBOSE:16:*/
 #ifdef TRANSFER_VERBOSE    

@@ -39,7 +39,10 @@
 /*...e*/
 
 #include <iostream>
+#include <lbConfigHook.h>
 #include <lbInclude.h>
+
+#include <socket.h>
 
 /*...s\35\ifdef __WXGTK__:0:*/
 #ifdef __WXGTK__
@@ -52,18 +55,38 @@
 /*...e*/
 /*...e*/
 
+
+#ifdef __cplusplus
+extern "C" {       
+#endif            
+
+IMPLEMENT_FUNCTOR(instanceOflbSocket, lbSocket)
+
+#ifdef __cplusplus
+}
+#endif            
+
 lbCritSect socketSection;
 
 lbMutex sendMutex;
 lbMutex recvMutex;
+
+BEGIN_IMPLEMENT_LB_UNKNOWN(lbSocket)
+	ADD_INTERFACE(lb_I_Socket)
+END_IMPLEMENT_LB_UNKNOWN()
+
+lbErrCodes LB_STDCALL lbSocket::setData(lb_I_Unknown* uk) {
+        _CL_VERBOSE << "lbSocket::setData(...) not implemented yet" LOG_
+        return ERR_NOT_IMPLEMENTED;
+}
 
 
 /*...sclass lbSocketModule:0:*/
 class lbSocketModule {
 public:
 	lbSocketModule() {
-		sendMutex.CreateMutex(LB_SEND_MUTEX);
-		recvMutex.CreateMutex(LB_RECV_MUTEX);
+		sendMutex.createMutex(LB_SEND_MUTEX);
+		recvMutex.createMutex(LB_RECV_MUTEX);
 	}
 	virtual ~lbSocketModule() {
 		COUT << "Deinit socket module" << ENDL;
@@ -80,11 +103,11 @@ class lbMutexLocker {
 public:
 	lbMutexLocker(lbMutex m) {
 		mutex = m;
-		mutex.Enter();
+		mutex.enter();
 	}
 	
 	virtual ~lbMutexLocker() {
-		mutex.Release();
+		mutex.release();
 	}
 	
 	lbMutex mutex;
@@ -103,11 +126,11 @@ int LogWSAError(char* msg) {
 	   ) { 
 /*...slog it:8:*/
 	  if (strlen(_buf)+strlen(msg) >99) {	
-		  LOG("LogWSAError(char* msg) Error: Buffer overflow");
+		  _LOG << "LogWSAError(char* msg) Error: Buffer overflow" LOG_
 		  return 0;
 	  } else {	
 		  sprintf(buf, "Socket error (%d) at '%s'", lastError, msg);
-		  LOG(buf);
+		  _LOG << buf LOG_
 	  }
 /*...e*/
 	}
@@ -139,7 +162,7 @@ lbSocket::lbSocket(const lbSocket& s) {
 	lbLock lock(socketSection, "socketSection");	
 /*...sSOCKET_VERBOSE:0:*/
 #ifdef SOCKET_VERBOSE
-	LOG("lbSocket::lbSocket(const lbSocket& s) called");
+	_LOG << "lbSocket::lbSocket(const lbSocket& s) called" LOG_
 #endif
 /*...e*/
 	/*WSADATA*/ 	Data = s.Data;
@@ -159,14 +182,14 @@ lbSocket::lbSocket(const lbSocket& s) {
 
 lbSocket::~lbSocket() {
 	COUT << "lbSocket::~lbSocket() called" << ENDL;
-	LOG("lbSocket::~lbSocket() called");
+	_LOG << "lbSocket::~lbSocket() called" LOG_
 	
 	if (lbSockState == LB_SOCK_CONNECTED) close();
 	sockUse--;
 	
 	if (sockUse == 0) {
 		if (WSACleanup() == SOCKET_ERROR) {
-			LOG("Winsock library could not be unloaded - how ever?");
+			_LOG << "Winsock library could not be unloaded - how ever?" LOG_
 			COUT << "Winsock library could not be unloaded - how ever?" << ENDL;
 		}
 	}
@@ -185,7 +208,7 @@ return 1;
 	if (_isServer == 1) {
 /*...sSOCKET_VERBOSE:0:*/
 		#ifdef SOCKET_VERBOSE
-		LOG("lbSocket::isValid() called on server");
+		_LOG << "lbSocket::isValid() called on server" LOG_
 		#endif
 /*...e*/
 		// Let the server blocking
@@ -199,13 +222,13 @@ return 1;
 		}
 /*...sSOCKET_VERBOSE:0:*/
 		#ifdef SOCKET_VERBOSE
-		LOG("lbSocket::isValid() leaving on server");
+		_LOG << "lbSocket::isValid() leaving on server" LOG_
 		#endif
 /*...e*/
 	} else {
 /*...sSOCKET_VERBOSE:0:*/
 		#ifdef SOCKET_VERBOSE
-		LOG("lbSocket::isValid() called on client");
+		_LOG << "lbSocket::isValid() called on client" LOG_
 		#endif
 /*...e*/
 		numread = ::ioctlsocket(serverSocket, FIONREAD, (u_long FAR*)&pendingBytes);
@@ -216,7 +239,7 @@ return 1;
 		}
 /*...sSOCKET_VERBOSE:0:*/
 		#ifdef SOCKET_VERBOSE
-		LOG("lbSocket::isValid() leaving on client");
+		_LOG << "lbSocket::isValid() leaving on client" LOG_
 		#endif
 /*...e*/
 	}
@@ -226,20 +249,20 @@ return 1;
 		#ifdef SOCKET_VERBOSE
 		char buf[100] = "";
 		sprintf(buf, "lbSocket::isValid() Ok. Have %d bytes of data pending", pendingBytes);
-		LOG(buf);
+		_LOG << buf LOG_
 		#endif
 /*...e*/
 	} else {
 /*...sSOCKET_VERBOSE:0:*/
 		#ifdef SOCKET_VERBOSE
-		LOG("lbSocket::isValid() leave with no data");	
+		_LOG << "lbSocket::isValid() leave with no data" LOG_
 		#endif
 /*...e*/
 		return 0;
 	}
 /*...sSOCKET_VERBOSE:0:*/
 	#ifdef SOCKET_VERBOSE
-	LOG("lbSocket::isValid() leave with data");	
+	_LOG << "lbSocket::isValid() leave with data") LOG_
 	#endif
 /*...e*/
 	return 1;
@@ -256,7 +279,7 @@ lbErrCodes lbSocket::neagleOff(SOCKET s) {
                (char*)(&opt), 
                sizeof(int)) != 0)
         {
-        	LOG("Error: NeagleOff failed");
+        	_LOG << "Error: NeagleOff failed" LOG_
         	return ERR_SOCKET_NEAGLEOFF;
         }
         
@@ -268,20 +291,20 @@ lbErrCodes lbSocket::neagleOff(SOCKET s) {
 int lbSocket::connect()
 {
       if (lbSockState == LB_SOCK_CONNECTED) {
-      	LOG("lbSocket::connect(): ERROR: Illegal state for this function");
+      	_LOG << "lbSocket::connect(): ERROR: Illegal state for this function" LOG_
       	return 0;
       }
 #ifdef WINDOWS
       status=::connect(serverSocket, (LPSOCKADDR) &serverSockAddr, sizeof(serverSockAddr));
       if (status == SOCKET_ERROR)
       {
-        LOG("lbSocket::connect(): ERROR: connect to unsuccessful");
+        _LOG << "lbSocket::connect(): ERROR: connect to unsuccessful" LOG_
         status=closesocket(serverSocket);
         if (status == SOCKET_ERROR)
-          LOG("lbSocket::connect(): ERROR: closesocket unsuccessful");
+          _LOG << "lbSocket::connect(): ERROR: closesocket unsuccessful" LOG_
         status=WSACleanup();
         if (status == SOCKET_ERROR)
-          LOG("lbSocket::connect(): ERROR: WSACleanup unsuccessful");
+          _LOG << "lbSocket::connect(): ERROR: WSACleanup unsuccessful" LOG_
         return 0;  
       }
 #endif
@@ -332,19 +355,19 @@ LOGENABLE("lbSocket::listen()");
 
 
       if (lbSockState == LB_SOCK_CONNECTED) {
-      	LOG("lbSocket::listen(): ERROR: Illegal state for this function");
+      	_LOG << "lbSocket::listen(): ERROR: Illegal state for this function" LOG_
       	return 0;
       }
     /* allow the socket to take connections */
 #ifdef WINDOWS
     status=::listen(serverSocket, 1);
     if (status == SOCKET_ERROR)
-      LOG("lbSocket::listen(): ERROR: listen unsuccessful");
+      _LOG << "lbSocket::listen(): ERROR: listen unsuccessful" LOG_
 #endif
 #ifdef __WXGTK__
     status=::listen(serverSocket, 1);
     if (status < 0)
-      LOG("lbSocket::listen(): ERROR: listen unsuccessful");
+      _LOG << "lbSocket::listen(): ERROR: listen unsuccessful" LOG_
 #endif
 
 
@@ -352,23 +375,25 @@ LOGENABLE("lbSocket::listen()");
 }
 /*...e*/
 /*...slbSocket\58\\58\accept\40\lbSocket\42\\38\ s\41\:0:*/
-lbErrCodes lbSocket::accept(lbSocket *& s)
+lb_I_Socket* lbSocket::accept()
 {
+    lb_I_Socket* s = NULL;
+
 /*...sSOCKET_VERBOSE:0:*/
 #ifdef SOCKET_VERBOSE
 LOGENABLE("lbSocket::accept(lbSocket *& s)");
 #endif
 /*...e*/
       if (lbSockState == LB_SOCK_CONNECTED) {
-      	LOG("lbSocket::accept(lbSocket** s): ERROR: Illegal state for this function");
-      	return ERR_SOCKET_STATE;
+      	_LOG << "lbSocket::accept(lbSocket** s): ERROR: Illegal state for this function" LOG_
+      	return NULL; //ERR_SOCKET_STATE;
       }
 /*...sWINDOWS:0:*/
 #ifdef WINDOWS
     /* accept the connection request when one
        is received */
     clientSocket=::accept(serverSocket, (LPSOCKADDR) &clientSockAddr, &addrLen);
-    if (clientSocket == SOCKET_ERROR) LOG("Error while accepting on socket");
+    if (clientSocket == SOCKET_ERROR) _LOG << "Error while accepting on socket" LOG_
 
 #endif
 /*...e*/
@@ -378,20 +403,19 @@ LOGENABLE("lbSocket::accept(lbSocket *& s)");
 #endif
 /*...e*/
 
-    if (neagleOff(clientSocket) != ERR_NONE) LOG("Error: Subsequent");
+    if (neagleOff(clientSocket) != ERR_NONE) _LOG << "Error: Subsequent" LOG_
 
     if (clientSocket == INVALID_SOCKET) {
-    	s = NULL;
-    	LOG("lbSocket::accept(lbSocket** s): Created clientSocket is invalid");
-    	return ERR_SOCKET_CLIENT_S_INVALID;
+    	_LOG << "lbSocket::accept(lbSocket** s): Created clientSocket is invalid" LOG_
+    	return NULL; //ERR_SOCKET_CLIENT_S_INVALID;
     }
 /*...sSOCKET_VERBOSE:0:*/
 #ifdef SOCKET_VERBOSE    
-    LOG("lbSocket::accept(lbSocket*& s): Create a new lbSocket for the client");    
+    _LOG << "lbSocket::accept(lbSocket*& s): Create a new lbSocket for the client" LOG_
 #endif
 /*...e*/
-    s = new lbSocket();
-    s->setSockConnection(clientSocket);
+    lbSocket* socket = new lbSocket();
+    socket->setSockConnection(clientSocket);
     
     // Be secure clientSocket of this instance is INVALID_SOCKET
     
@@ -399,14 +423,16 @@ LOGENABLE("lbSocket::accept(lbSocket *& s)");
     
 /*...sSOCKET_VERBOSE:0:*/
 #ifdef SOCKET_VERBOSE
-    LOG("lbSocket::accept(lbSocket*& s): Created");
+    _LOG << "lbSocket::accept(lbSocket*& s): Created" LOG_
 #endif
 /*...e*/
 
     // This socket can never be in connected state
     //lbSockState = LB_SOCK_CONNECTED;
 
-    return ERR_NONE;
+    socket->queryInterface("lb_I_Socket", (void**) &s, __FILE__, __LINE__);
+
+    return s;
 }
 /*...e*/
 /*...slbSocket\58\\58\bind\40\\41\:0:*/
@@ -416,12 +442,12 @@ int lbSocket::bind()
     /* associate the socket with the address */
     status=::bind(serverSocket, (LPSOCKADDR) &serverSockAddr, sizeof(serverSockAddr));
     if (status == SOCKET_ERROR)
-      LOG("lbSocket::bind(): ERROR: bind unsuccessful");
+      _LOG << "lbSocket::bind(): ERROR: bind unsuccessful" LOG_
 #endif
 #ifdef __WXGTK__
     status=::bind(serverSocket, (sockaddr*) &serverSockAddr, sizeof(serverSockAddr));
     if (status < 0)
-      LOG("lbSocket::bind(): ERROR: bind unsuccessful");
+      _LOG << "lbSocket::bind(): ERROR: bind unsuccessful" LOG_
 #endif
     return 1;  
 }
@@ -438,14 +464,14 @@ int lbSocket::socket()
   }  
 
 
-  if (neagleOff(serverSocket) != ERR_NONE) LOG("Error: Subsequent");
+  if (neagleOff(serverSocket) != ERR_NONE) _LOG << "Error: Subsequent" LOG_
 
 
 #endif
 #ifdef __WXGTK__
   serverSocket=::socket(AF_INET, SOCK_STREAM, 0);
   if (serverSocket < 0)
-    LOG("lbSocket::socket(): ERROR: socket unsuccessful");
+    _LOG << "lbSocket::socket(): ERROR: socket unsuccessful" LOG_
 #endif
 
   return 1;  
@@ -462,18 +488,13 @@ int lbSocket::setSockConnection(SOCKET s) {
 }
 /*...e*/
 
-/*...slbSocket\58\\58\gethostname\40\char \42\ \38\ name\41\:0:*/
-int lbSocket::gethostname(char * & name) {
-	char buf[100];
+/*...slbSocket\58\\58\gethostname\40\\41\:0:*/
+char* lbSocket::gethostname() {
+	static char buf[100];
 	
 	::gethostname(buf, sizeof(buf));
 	
-	if (strlen(buf) > 0) {
-		name = strdup(buf);
-		return 1;
-	}
-	
-	return 0;
+	return buf;
 }
 /*...e*/
 
@@ -509,7 +530,7 @@ int lbSocket::startup()
 		/* initialize the Windows Socket DLL */
 		status=WSAStartup(MAKEWORD(1, 1), &Data);
 		if (status != 0) 
-		  LOG("lbSocket::startup(): ERROR: WSAStartup unsuccessful");
+		  _LOG << "lbSocket::startup(): ERROR: WSAStartup unsuccessful" LOG_
 		/* zero the sockaddr_in structure */
 		memset(&serverSockAddr, 0, sizeof(serverSockAddr));
 		startupflag = 1;
@@ -525,7 +546,7 @@ void lbSocket::reinit(char *mysockaddr)
 {
 /*...sSOCKET_VERBOSE:0:*/
 #ifdef SOCKET_VERBOSE
-LOG("lbSocket::reinit(char *mysockaddr): This function should not be used");
+_LOG << "lbSocket::reinit(char *mysockaddr): This function should not be used" LOG_
 #endif
 /*...e*/
 #ifdef WINDOWS
@@ -573,14 +594,14 @@ void lbSocket::initSymbolic(char* host, char* service) {
 /*...sSOCKET_VERBOSE:0:*/
 #ifdef SOCKET_VERBOSE
 	sprintf(msg, "void lbSocket::initSymbolic(char* host, char* service): Init for %s %s", host, service);
-	LOG(msg);	
+	_LOG << msg LOG_
 #endif
 /*...e*/
 	if (strcmp(host, "localhost") == 0)
 	{
 /*...sSOCKET_VERBOSE:0:*/
 #ifdef SOCKET_VERBOSE
-		LOG("lbSocket::initSymbolic(char* host, char* service): Socket initializing as server");
+		_LOG << "lbSocket::initSymbolic(char* host, char* service): Socket initializing as server" LOG_
 #endif
 /*...e*/
 		serverMode = 1;
@@ -589,14 +610,14 @@ void lbSocket::initSymbolic(char* host, char* service) {
 #ifdef SOCKET_VERBOSE
 	 else {
 
-		LOG("lbSocket::initSymbolic(char* host, char* service): Socket initializing as client");
+		_LOG << "lbSocket::initSymbolic(char* host, char* service): Socket initializing as client" LOG_
 
 	}
 #endif
 /*...e*/
 /*...sSOCKET_VERBOSE:0:*/
 #ifdef SOCKET_VERBOSE	
-	LOG("lbSocket::initSymbolic(char* host, char* service) called");
+	_LOG << "lbSocket::initSymbolic(char* host, char* service) called" LOG_
 #endif
 /*...e*/
 	
@@ -614,18 +635,18 @@ void lbSocket::initSymbolic(char* host, char* service) {
  */
 /*...e*/
 
-	if(s == NULL) LOG("lbSocket::initSymbolic(char* host, char* service): No service entry found");
+	if(s == NULL) _LOG << "lbSocket::initSymbolic(char* host, char* service): No service entry found" LOG_
 /*...sSOCKET_VERBOSE:0:*/
 #ifdef SOCKET_VERBOSE
  	sprintf(msg, "Got hostaddress: %d", inet_addrFromString(host));
- 	LOG(msg);
+ 	_LOG << msg LOG_
 #endif
 /*...e*/
  	u_short port = s->s_port;
 /*...sSOCKET_VERBOSE:0:*/
 #ifdef SOCKET_VERBOSE
 	sprintf(msg, "lbSocket::init(char* hostaddr, char* port) with %s %d calling", host, port);
-	LOG(msg); 
+	_LOG << msg LOG_
 #endif
 /*...e*/
  	init((serverMode == 1) ? 0 : inet_addrFromString(host), port);
@@ -636,7 +657,7 @@ void lbSocket::init( unsigned long mysockaddr, u_short port)
 {
 /*...sSOCKET_VERBOSE:0:*/
 #ifdef SOCKET_VERBOSE
-LOG("lbSocket::init( unsigned long mysockaddr, u_short port) called");
+_LOG << "lbSocket::init( unsigned long mysockaddr, u_short port) called" LOG_
 #endif
 /*...e*/
   char buf[100];
@@ -667,7 +688,7 @@ LOG("lbSocket::init( unsigned long mysockaddr, u_short port) called");
     serverSockAddr.sin_addr.s_addr=htonl(INADDR_ANY);
 /*...sVERBOSE:0:*/
 #ifdef SOCKET_VERBOSE
-LOG("lbSocket::init( unsigned long mysockaddr, u_short port): Initializing as server");
+_LOG << "lbSocket::init( unsigned long mysockaddr, u_short port): Initializing as server" LOG_
 #endif
 /*...e*/
   }
@@ -678,13 +699,13 @@ LOG("lbSocket::init( unsigned long mysockaddr, u_short port): Initializing as se
   {
 /*...sVERBOSE:0:*/
 #ifdef SOCKET_VERBOSE
-    LOG("lbSocket::init(char *mysockaddr, u_short port) bind...");
+    _LOG << "lbSocket::init(char *mysockaddr, u_short port) bind..." LOG_
 #endif
 /*...e*/
     bind();
 /*...sVERBOSE:0:*/
 #ifdef SOCKET_VERBOSE
-    LOG("lbSocket::init(char *mysockaddr, u_short port) listen...");
+    _LOG << "lbSocket::init(char *mysockaddr, u_short port) listen..." LOG_
 #endif
 /*...e*/
     listen();
@@ -693,13 +714,13 @@ LOG("lbSocket::init( unsigned long mysockaddr, u_short port): Initializing as se
   {
 /*...sVERBOSE:0:*/
 #ifdef SOCKET_VERBOSE
-    LOG("lbSocket::init(char *mysockaddr, u_short port) connect...");
+    _LOG << "lbSocket::init(char *mysockaddr, u_short port) connect..." LOG_
 #endif
 /*...e*/
     connect();
 /*...sVERBOSE:0:*/
 #ifdef SOCKET_VERBOSE
-    LOG("lbSocket::init(char *mysockaddr, u_short port) connected");
+    _LOG << "lbSocket::init(char *mysockaddr, u_short port) connected" LOG_
 #endif
 /*...e*/
   }
@@ -734,13 +755,13 @@ LOG("lbSocket::init( unsigned long mysockaddr, u_short port): Initializing as se
   {
 /*...sVERBOSE:0:*/
 #ifdef SOCKET_VERBOSE
-    LOG("lbSocket::init(char *mysockaddr, u_short port) bind...");
+    _LOG << "lbSocket::init(char *mysockaddr, u_short port) bind..." LOG_
 #endif
 /*...e*/
     bind();
 /*...sVERBOSE:0:*/
 #ifdef SOCKET_VERBOSE
-    LOG("lbSocket::init(char *mysockaddr, u_short port) listen...");
+    _LOG << "lbSocket::init(char *mysockaddr, u_short port) listen..." LOG_
 #endif
 /*...e*/
     listen();
@@ -749,13 +770,13 @@ LOG("lbSocket::init( unsigned long mysockaddr, u_short port): Initializing as se
   {
 /*...sVERBOSE:0:*/
 #ifdef SOCKET_VERBOSE
-    LOG("lbSocket::init(char *mysockaddr, u_short port) connect...");
+    _LOG << "lbSocket::init(char *mysockaddr, u_short port) connect..." LOG_
 #endif
 /*...e*/
     connect();
 /*...sVERBOSE:0:*/
 #ifdef SOCKET_VERBOSE
-    LOG("lbSocket::init(char *mysockaddr, u_short port) connected");
+    _LOG << "lbSocket::init(char *mysockaddr, u_short port) connected" LOG_
 #endif
 /*...e*/
   }
@@ -776,7 +797,7 @@ lbErrCodes lbSocket::sendInteger(int i) {
 	{
 		return err;
 	} else {
-		LOG("lbSocket: Error while sending an integer");
+		_LOG << "lbSocket: Error while sending an integer" LOG_
 		return err;
 	}
 }
@@ -788,7 +809,7 @@ lbErrCodes lbSocket::recvInteger(int& i) {
         // Wait for a datapacket
 /*...sSOCKET_VERBOSE:0:*/
 #ifdef SOCKET_VERBOSE
-LOG("lbSocket::recvInteger(): Enter");
+_LOG << "lbSocket::recvInteger(): Enter" LOG_
 #endif
 /*...e*/
 
@@ -796,11 +817,11 @@ LOG("lbSocket::recvInteger(): Enter");
 		int number = atoi(buf);
 		i = number;
 	} else {
-		LOG("lbSocket: Error while recieving an integer");
+		_LOG << "lbSocket: Error while recieving an integer" LOG_
 	}
 /*...sSOCKET_VERBOSE:0:*/
 #ifdef SOCKET_VERBOSE
-LOG("lbSocket::recvInteger(): Leave");
+_LOG << "lbSocket::recvInteger(): Leave" LOG_
 #endif
 /*...e*/
 	return err;
@@ -811,11 +832,11 @@ LOG("lbSocket::recvInteger(): Leave");
 lbErrCodes lbSocket::recv(void* buf, int & len) {
 /*...sSOCKET_VERBOSE:0:*/
 #ifdef SOCKET_VERBOSE
-LOG("lbSocket::recv(void* buf, int & len): Enter");
+_LOG << "lbSocket::recv(void* buf, int & len): Enter" LOG_
 #endif
 /*...e*/
 
-//LOG("Enter recv");
+//_LOG << "Enter recv" LOG_
 //    lbMutexLocker mlock(recvMutex);
     
     lbErrCodes err = ERR_NONE;
@@ -828,27 +849,27 @@ LOG("lbSocket::recv(void* buf, int & len): Enter");
   while (isValid() == 0) {
 /*...sSOCKET_VERBOSE:0:*/
 #ifdef SOCKET_VERBOSE
-  	LOG("lbSocket::recv(...) Failed while isValid() check!");
+  	_LOG << "lbSocket::recv(...) Failed while isValid() check!" LOG_
 #endif
 /*...e*/
   	lb_sleep(100);
   } 
 /*...sSOCKET_VERBOSE:0:*/
 #ifdef SOCKET_VERBOSE
-  LOG("lbSocket::recv(...) Have valid data");
+  _LOG << "lbSocket::recv(...) Have valid data" LOG_
 #endif
 /*...e*/
 
     if (_isServer == 1)
     {
-      if (clBackup != clientSocket) LOG("Error, socket variable has been changed since got from accept");
+      if (clBackup != clientSocket) _LOG << "Error, socket variable has been changed since got from accept" LOG_
 
 // Empfange Packetgr”áe
     numrcv=::recv(clientSocket,
     		(char*)&len, sizeof(len),
     		NO_FLAGS_SET);
 
-    if (numrcv != sizeof(len)) LOG("Error: Packet size not sent correctly");
+    if (numrcv != sizeof(len)) _LOG << "Error: Packet size not sent correctly" LOG_
 
       numrcv=::recv(clientSocket, bufpos, len, NO_FLAGS_SET);
     }  
@@ -859,7 +880,7 @@ LOG("lbSocket::recv(void* buf, int & len): Enter");
     		(char*)&len, sizeof(len),
     		NO_FLAGS_SET);
 
-    if (numrcv != sizeof(len)) LOG("Error: Packet size not sent correctly");
+    if (numrcv != sizeof(len)) _LOG << "Error: Packet size not sent correctly" LOG_
      
       numrcv=::recv(serverSocket, bufpos, len, NO_FLAGS_SET);
     }
@@ -887,21 +908,22 @@ LOG("lbSocket::recv(void* buf, int & len): Enter");
     if ((numrcv == 0) || (numrcv == SOCKET_ERROR))
     {
       if (_isServer == 0)
-      	LOG("lbSocket::recv(void* buf, int & len): Connection terminated by server.");
+      	_LOG << "lbSocket::recv(void* buf, int & len): Connection terminated by server." LOG_
       else
-      	LOG("lbSocket::recv(void* buf, int & len): Connection terminated by client.");	
+      	_LOG << "lbSocket::recv(void* buf, int & len): Connection terminated by client." LOG_
 
       status= closesocket( (_isServer==0) ? clientSocket : serverSocket);
 
       if (status == SOCKET_ERROR)
-        LOG("ERROR: closesocket unsuccessful");
+        _LOG << "ERROR: closesocket unsuccessful" LOG_
 #ifdef AUTOCLEANUP        
       status=WSACleanup();
       if (status == SOCKET_ERROR)
-        LOG"ERROR: WSACleanup unsuccessful");
+        _LOG << "ERROR: WSACleanup unsuccessful" LOG_
 #endif        
       return err;
     }
+    
 /*...e*/
 #endif
 /*...e*/
@@ -930,7 +952,7 @@ LOG("lbSocket::recv(void* buf, int & len): Enter");
     len = numrcv;    
 /*...sSOCKET_VERBOSE:0:*/
 #ifdef SOCKET_VERBOSE
-LOG("lbSocket::recv(void* buf, int & len): Leave");
+_LOG << "lbSocket::recv(void* buf, int & len): Leave" LOG_
 #endif
 /*...e*/
     return err;
@@ -944,7 +966,7 @@ int lastError = 0;
 char msg[100];
 char *bufpos = (char*) buf;
 int numsnt = 0;
-//LOG("Enter send");
+//_LOG << "Enter send" LOG_
 //lbMutexLocker mlock(sendMutex);
 
 #ifdef WINDOWS
@@ -952,7 +974,7 @@ if (_isServer == 0) {
 /*...sSOCKET_VERBOSE:0:*/
 #ifdef SOCKET_VERBOSE
     sprintf(msg, "Client: lbSocket::send_charbuf(char *buf='%s', int len) called", buf);
-    LOG(msg);
+    _LOG << msg LOG_
 #endif
 /*...e*/
 
@@ -961,7 +983,7 @@ if (_isServer == 0) {
     		(char*)&len, sizeof(len),
     		NO_FLAGS_SET);
 
-    if (numsnt != sizeof(len)) LOG("Error: Packet size not sent correctly");
+    if (numsnt != sizeof(len)) _LOG << "Error: Packet size not sent correctly" LOG_
 
     numsnt=::send(serverSocket, bufpos, len, NO_FLAGS_SET);
 }
@@ -969,7 +991,7 @@ if (_isServer == 1) {
 /*...sSOCKET_VERBOSE:0:*/
 #ifdef SOCKET_VERBOSE
     sprintf(msg, "Server: lbSocket::send_charbuf(char *buf='%s', int len) called", buf);
-    LOG(msg);
+    _LOG << msg LOG_
 #endif
 /*...e*/
 // Sende Packetgr”áe
@@ -977,7 +999,7 @@ if (_isServer == 1) {
     		(char*)&len, sizeof(len),
     		NO_FLAGS_SET);
 
-    if (numsnt != sizeof(len)) LOG("Error: Packet size not sent correctly");
+    if (numsnt != sizeof(len)) _LOG << "Error: Packet size not sent correctly" LOG_
 
     numsnt=::send(clientSocket, bufpos, len, NO_FLAGS_SET);
 }
@@ -993,17 +1015,17 @@ if (_isServer == 1) {
 
       char msg[100] = "";
       sprintf(msg, "lbSocket::send(void *buf, int len) Error: numsnt(%d) != len(%d)", numsnt, len);
-      LOG(msg);
-      LOG("lbSocket::send(void *buf, int len): Connection terminated");
+      _LOG << msg LOG_
+      _LOG << "lbSocket::send(void *buf, int len): Connection terminated" LOG_
       status=closesocket((_isServer == 1) ? serverSocket : clientSocket);
       if (status == SOCKET_ERROR)
-        LOG("ERROR: closesocket unsuccessful");
+        _LOG << "ERROR: closesocket unsuccessful" LOG_
       status=WSACleanup();
       if (status == SOCKET_ERROR)
-        LOG("ERROR: WSACleanup unsuccessful");
+        _LOG << "ERROR: WSACleanup unsuccessful" LOG_
       return err;  
     } else if (numsnt != len) {
-    		LOG("lbSocket::send(void* buf, int len) Error: Could not send all data at once!");
+    		_LOG << "lbSocket::send(void* buf, int len) Error: Could not send all data at once!" LOG_
 	}
 #endif
 /*...s__WXGTK__:0:*/
@@ -1034,7 +1056,7 @@ if (_isServer == 1) {
 
 /*...sSOCKET_VERBOSE:0:*/
 #ifdef SOCKET_VERBOSE
-    LOG("lbSocket::send(char *buf, int len) returning");
+    _LOG << "lbSocket::send(char *buf, int len) returning" LOG_
 #endif
 /*...e*/
 
@@ -1052,18 +1074,18 @@ lbErrCodes lbSocket::recv_charbuf(char *buf)
     int len = 0; // Packet len haeder
 
     if (lbSockState != LB_SOCK_CONNECTED) {
-      LOG("Error: Can not recieve on unconnected socket");
+      _LOG << "Error: Can not recieve on unconnected socket" LOG_
       return ERR_SOCKET_UNCONNECTED;
     }
     
-//LOG("Enter recv");    
+//_LOG << "Enter recv" LOG_
 //    lbMutexLocker mlock(recvMutex);
     
 /*...sSOCKET_VERBOSE:0:*/
 #ifdef SOCKET_VERBOSE
 char msg[100];
 sprintf(msg, "lbSocket::recv_charbuf(char *buf) enter");
-LOG(msg);
+_LOG << msg LOG_
 #endif
 /*...e*/
 
@@ -1072,14 +1094,14 @@ LOG(msg);
   while (isValid() == 0) {
 /*...sSOCKET_VERBOSE:0:*/
 #ifdef SOCKET_VERBOSE
-  	LOG("lbSocket::recv_charbuf(...) Failed while isValid() check!");
+  	_LOG << "lbSocket::recv_charbuf(...) Failed while isValid() check!" LOG_
 #endif
 /*...e*/
   	lb_sleep(100);
   } 
 /*...sSOCKET_VERBOSE:0:*/
 #ifdef SOCKET_VERBOSE
-  LOG("lbSocket::recv_charbuf(...) Have valid data");
+  _LOG << "lbSocket::recv_charbuf(...) Have valid data" LOG_
 #endif
 /*...e*/
 
@@ -1091,7 +1113,7 @@ LOG(msg);
     		(char*)&len, sizeof(len),
     		NO_FLAGS_SET);
 
-    if (numrcv != sizeof(len)) LOG("Error: Packet size not recv correctly");
+    if (numrcv != sizeof(len)) _LOG << "Error: Packet size not recv correctly" LOG_
       
     numrcv=::recv(clientSocket, buf,
       len, NO_FLAGS_SET);
@@ -1105,7 +1127,7 @@ LOG(msg);
     		(char*)&len, sizeof(len),
     		NO_FLAGS_SET);
 
-    if (numrcv != sizeof(len)) LOG("Error: Packet size not recv correctly");
+    if (numrcv != sizeof(len)) _LOG << "Error: Packet size not recv correctly" LOG_
   
     numrcv=::recv(serverSocket, buf,
       len, NO_FLAGS_SET);
@@ -1130,11 +1152,11 @@ LOG(msg);
 
 
       if (status == SOCKET_ERROR)
-        LOG("ERROR: closesocket unsuccessful");
+        _LOG << "ERROR: closesocket unsuccessful" LOG_
 #ifdef AUTOCLEANUP        
       status=WSACleanup();
       if (status == SOCKET_ERROR)
-        LOG("ERROR: WSACleanup unsuccessful");
+        _LOG << "ERROR: WSACleanup unsuccessful" LOG_
 #endif        
       return ERR_SOCKET_RECV;//err;
     }
@@ -1165,7 +1187,7 @@ LOG(msg);
 /*...sSOCKET_VERBOSE:0:*/
 #ifdef SOCKET_VERBOSE
 sprintf(msg, "lbSocket::recv_charbuf(char *buf) Leave");
-LOG(msg);
+_LOG << msg LOG_
 #endif
 /*...e*/
     
@@ -1181,14 +1203,14 @@ char msg[100];
 #ifdef WINDOWS
    int numsnt;
    len++;
-//LOG("Enter send");
+//_LOG << "Enter send" LOG_
 //   lbMutexLocker mlock(sendMutex);
 
 if (_isServer == 0) {
 /*...sVERBOSE:0:*/
 #ifdef SOCKET_VERBOSE
     sprintf(msg, "Client: lbSocket::send_charbuf(char *buf='%s', int len) called", buf);
-    LOG(msg);
+    _LOG << msg LOG_
 #endif
 /*...e*/
 
@@ -1197,7 +1219,7 @@ if (_isServer == 0) {
     		(char*)&len, sizeof(len),
     		NO_FLAGS_SET);
 
-    if (numsnt != sizeof(len)) LOG("Error: Packet size not sent correctly");
+    if (numsnt != sizeof(len)) _LOG << "Error: Packet size not sent correctly" LOG_
     		
 // Sende Packet    		
     numsnt=::send(serverSocket,
@@ -1208,7 +1230,7 @@ if (_isServer == 1) {
 /*...sVERBOSE:0:*/
 #ifdef SOCKET_VERBOSE
     sprintf(msg, "Server: lbSocket::send_charbuf(char *buf='%s', int len) called", buf);
-    LOG(msg);
+    _LOG << msg LOG_
 #endif
 /*...e*/
 
@@ -1217,7 +1239,7 @@ if (_isServer == 1) {
     		(char*)&len, sizeof(len),
     		NO_FLAGS_SET);
 
-    if (numsnt != sizeof(len)) LOG("Error: Packet size not sent correctly");
+    if (numsnt != sizeof(len)) _LOG << "Error: Packet size not sent correctly" LOG_
 
     numsnt=::send(clientSocket,
                 buf, len,
@@ -1225,7 +1247,7 @@ if (_isServer == 1) {
 }
                 
                 
-    if (numsnt == SOCKET_ERROR) LOG("lbSocket::send_charbuf(char *buf, int len) Error: Got SOCKET_ERROR");            
+    if (numsnt == SOCKET_ERROR) _LOG << "lbSocket::send_charbuf(char *buf, int len) Error: Got SOCKET_ERROR" LOG_
     if ((numsnt != len) && (numsnt == SOCKET_ERROR))
     {
       if (_isServer == 0) {
@@ -1236,20 +1258,20 @@ if (_isServer == 1) {
       
       err = mapWSAErrcode(lastError, _isServer);
       
-      LOG("lbSocket::send_charbuf(char *buf, int len): Connection terminated");
+      _LOG << "lbSocket::send_charbuf(char *buf, int len): Connection terminated" LOG_
       status=closesocket(serverSocket);
       if (status == SOCKET_ERROR)
-        LOG("ERROR: closesocket unsuccessful");
+        _LOG << "ERROR: closesocket unsuccessful" LOG_
       status=WSACleanup();
       if (status == SOCKET_ERROR)
-        LOG("ERROR: WSACleanup unsuccessful");
+        _LOG << "ERROR: WSACleanup unsuccessful" LOG_
       return err;  
     } else if (numsnt != len) {
 	    	char msg[100] = "";
 	    	sprintf(msg, "Sent only %d bytes from %d bytes", numsnt, len);
-	    	LOG(msg);
+	    	_LOG << msg LOG_
     	
-	    	LOG("lbSocket::send_charbuf(char *buf, int len) Error: Could not send all data at once!");
+	    	_LOG << "lbSocket::send_charbuf(char *buf, int len) Error: Could not send all data at once!" LOG_
 	    }
 #endif
 #ifdef __WXGTK__
@@ -1278,8 +1300,8 @@ if (_isServer == 1) {
 
 /*...sVERBOSE:0:*/
 #ifdef SOCKET_VERBOSE
-    if (_isServer == 0) LOG("Client: lbSocket::send_charbuf(char *buf, int len) returning");
-    if (_isServer == 1) LOG("Server: lbSocket::send_charbuf(char *buf, int len) returning");
+    if (_isServer == 0) _LOG << "Client: lbSocket::send_charbuf(char *buf, int len) returning" LOG_
+    if (_isServer == 1) _LOG << "Server: lbSocket::send_charbuf(char *buf, int len) returning" LOG_
 #endif
 /*...e*/
 
@@ -1287,19 +1309,19 @@ if (_isServer == 1) {
 }
 /*...e*/
 
-/*...slbSocket\58\\58\recv\40\lb_Transfer_Data \38\ data\41\:0:*/
-lbErrCodes lbSocket::recv(lb_Transfer_Data & data) {
+/*...slbSocket\58\\58\recv\40\lb_I_Transfer_Data\42\ data\41\:0:*/
+lbErrCodes lbSocket::recv(lb_I_Transfer_Data* data) {
 	int i;
-LOG("lbSocket::recv(lb_Transfer_Data & data) Not implemented!");	
+_LOG << "lbSocket::recv(lb_Transfer_Data & data) Not implemented!" LOG_
 	if (recvInteger(i) == 1) {
 	}
 
 	return ERR_SOCKET_NOT_IMPLEMENTED;
 }
 /*...e*/
-/*...slbSocket\58\\58\send\40\lb_Transfer_Data \38\ data\41\:0:*/
-lbErrCodes lbSocket::send(lb_Transfer_Data & data) {
-LOG("lbSocket::recv(lb_Transfer_Data & data) Not implemented!");	
+/*...slbSocket\58\\58\send\40\lb_I_Transfer_Data\42\ data\41\:0:*/
+lbErrCodes lbSocket::send(lb_I_Transfer_Data* data) {
+_LOG << "lbSocket::recv(lb_Transfer_Data & data) Not implemented!" LOG_
 	return ERR_SOCKET_NOT_IMPLEMENTED;
 }
 /*...e*/
