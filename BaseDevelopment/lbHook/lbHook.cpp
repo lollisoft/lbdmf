@@ -398,6 +398,14 @@ DLLEXPORT void LB_STDCALL lbBreak() {
 
 }
 
+DLLEXPORT bool LB_STDCALL lbPtrValidate(void* ptr) {
+	if (ptr != NULL) {
+		return true;
+	} else {
+		return false;
+	}
+}
+
 #ifdef OSX
 bool LB_STDCALL OSXMemValidate(void* ptr) {
 #ifdef DEBUG_MALLOC
@@ -1225,6 +1233,64 @@ char* LB_STDCALL lbStringKey::charrep() const {
     return key;
 }
 /*...e*/
+
+
+/*...sThread and Process based functions:0:*/
+DWORD 
+#ifdef LINUX
+DLLEXPORT 
+#endif
+#ifdef WINDOWS
+LB_DLLEXPORT
+#endif
+LB_STDCALL lbGetCurrentThreadId() {
+#ifdef WINDOWS
+	return ::GetCurrentThreadId();
+#else
+//#error "Only Windows target is supported"
+#endif
+}
+
+DWORD
+#ifdef LINUX
+DLLEXPORT 
+#endif
+#ifdef WINDOWS
+LB_DLLEXPORT
+#endif
+LB_STDCALL lbGetCurrentProcessId() {
+#ifdef WINDOWS
+	return ::GetCurrentProcessId();
+#else
+//#error "Only Windows target is supported"
+#endif
+}
+/*...e*/
+
+
+
+#ifdef __WXGTK__
+void delay(long mikrosek)
+{
+        struct timeval timeout;
+
+        timeout.tv_sec = mikrosek / 1000000;
+        timeout.tv_usec = mikrosek % 1000000;
+        select (0, NULL, NULL, NULL, &timeout);
+}
+#endif
+
+
+DLLEXPORT void LB_STDCALL lb_sleep(int ms)
+{
+#ifdef WINDOWS
+        ::Sleep(ms);
+#endif
+#ifdef __WXGTK__
+        delay(ms * 1000);
+#endif
+}
+
 
 #ifdef WINDOWS
 /*...sDllMain:0:*/
