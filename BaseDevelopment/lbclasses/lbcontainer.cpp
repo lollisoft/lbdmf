@@ -36,10 +36,13 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.28 $
+ * $Revision: 1.29 $
  * $Name:  $
- * $Id: lbcontainer.cpp,v 1.28 2005/06/27 10:32:09 lollisoft Exp $
+ * $Id: lbcontainer.cpp,v 1.29 2007/04/22 13:34:11 lollisoft Exp $
  * $Log: lbcontainer.cpp,v $
+ * Revision 1.29  2007/04/22 13:34:11  lollisoft
+ * Minor change in include location.
+ *
  * Revision 1.28  2005/06/27 10:32:09  lollisoft
  * Mostly changes to conio.h conflicts while XCode build
  *
@@ -157,11 +160,10 @@ extern "C" {
 #include <iostream>
 
 //#include <lbInclude.h>
-#include <lbInterfaces.h>
+#include <lbConfigHook.h>
 #ifndef UNIX
 #include <lbthread.h>
 #endif
-#include <lbConfigHook.h>
 #include <lbelement.h>
 #include <lbcontainer.h>
 #ifndef UNIX
