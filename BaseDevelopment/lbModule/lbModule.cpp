@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.114 $
+ * $Revision: 1.115 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.114 2007/02/03 11:04:36 lollisoft Exp $
+ * $Id: lbModule.cpp,v 1.115 2007/04/22 13:49:41 lollisoft Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.115  2007/04/22 13:49:41  lollisoft
+ * Added socket and transfer to repository.
+ *
  * Revision 1.114  2007/02/03 11:04:36  lollisoft
  * Implemented directory location property handler. This is used in lbMetaApplication.
  *
@@ -2246,6 +2249,18 @@ lb_I_FunctorEntity* LB_STDCALL lbHCInterfaceRepository::getFirstEntity() {
 	if (strcmp(searchArgument, "lb_I_Locale") == 0) {
 		functor = PREFIX "instanceOfLocale";
 		module = "lbClasses";
+		found = true;
+	}
+
+	if (strcmp(searchArgument, "lb_I_Socket") == 0) {
+		functor = PREFIX "instanceOflbSocket";
+		module = "lbtransfer";
+		found = true;
+	}
+
+	if (strcmp(searchArgument, "lb_I_Transfer") == 0) {
+		functor = PREFIX "instanceOflbTransfer";
+		module = "lbtransfer";
 		found = true;
 	}
 
