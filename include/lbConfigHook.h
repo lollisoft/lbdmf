@@ -112,10 +112,10 @@
 #ifndef TRMEM_DEFINED
  #define TRMEM_DEFINED
  #ifdef MEMTRACK
- #ifdef LINUX
-  #define USE_MPATROL
-  #include <mpatrol.h>
- #endif
+  #ifdef LINUX
+   #define USE_MPATROL
+   #include <mpatrol.h>
+  #endif
 
 
   #ifdef WINDOWS
@@ -145,12 +145,12 @@
    #define TRMemSetAdrBreakPoint(ptr, c)
   #endif
   
-#define _TRMemValidate(name) (TRMemValidate(name) == 1)
+  #define _TRMemValidate(name) lbPtrValidate(name)
 
  #endif // MEMTRACK
 
  #ifndef MEMTRACK
-  #define _TRMemValidate(name) 1
+  #define _TRMemValidate(name) name != NULL
   #define TRMemOpen()
   #define TRMemStartLocalCount()
   #define TRMemStopLocalCount()
@@ -372,6 +372,8 @@ DLLEXPORT void LB_STDCALL setLoggerInstance(lb_I_Log* l);
 bool LB_STDCALL OSXMemValidate(void* ptr);
 #endif
 
+DLLEXPORT bool LB_STDCALL lbPtrValidate(void* ptr);
+
 DLLEXPORT char* LB_STDCALL translateText(char* text);
 
 DLLEXPORT bool LB_STDCALL FileExists(char *filename);
@@ -405,10 +407,15 @@ DLLEXPORT lbErrCodes LB_STDCALL releaseInstance(lb_I_Unknown* inst);
 DLLEXPORT void LB_STDCALL unHookAll();
 /*...e*/
 
+DLLEXPORT void LB_STDCALL lb_sleep(int ms);
+
+
 DLLEXPORT char* LB_STDCALL ptoa(void* ptr);
 DLLEXPORT char* LB_STDCALL itoa(int ptr);
 DLLEXPORT char* LB_STDCALL itoa(const long ptr);
 
+DLLEXPORT DWORD LB_STDCALL lbGetCurrentThreadId();
+DLLEXPORT DWORD LB_STDCALL lbGetCurrentProcessId();
 
 DLLEXPORT void LB_STDCALL InstanceCount(int inst);
 DLLEXPORT void LB_STDCALL Instances();
