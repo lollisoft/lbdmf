@@ -136,6 +136,15 @@ public:
 	DWORD LB_STDCALL getClientTid() const { return clientTid; }
 	void LB_STDCALL setClientTid(DWORD _tid) { clientTid = _tid; }
 
+	lbErrCodes LB_STDCALL requestString(char* ident, char*& data);
+	
+	lbErrCodes LB_STDCALL requestString(char* ident);
+	
+	lbErrCodes LB_STDCALL requestInteger(char* ident, int& data);
+	
+	lbErrCodes LB_STDCALL requestULong(char* ident, unsigned long& data);
+
+	lbErrCodes LB_STDCALL makeProtoErrAnswer(char* msg, char* where);
 /*...ssetters:8:*/
 	/**
 	 * Data member operations
@@ -208,7 +217,7 @@ public:
 	/**
 	 * Got a connection...
 	 */
-	int LB_STDCALL accept(lb_I_Transfer* t);
+	lb_I_Transfer* LB_STDCALL accept();
 
 	void LB_STDCALL operator<< (lb_I_Transfer_Data* req);
 	void LB_STDCALL operator>> (lb_I_Transfer_Data* res);

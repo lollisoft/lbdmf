@@ -340,6 +340,112 @@ int lb_Transfer_Data::deleteAll() {
 }
 /*...e*/
 
+/*...slb_Transfer_Data\58\\58\requestString\40\ident\41\:0:*/
+lbErrCodes lb_Transfer_Data::requestString(char* ident) {
+char* buffer = NULL;
+	if (get(buffer) == ERR_TRANSFER_DATA_INCORRECT_TYPE) {
+		return ERR_APP_SERVER_REQUEST_CHAR;
+	}
+
+	if (strcmp(buffer, ident) != 0) {
+		return ERR_APP_SERVER_REQUEST_CHAR;
+	}
+	
+	incrementPosition();
+
+	return ERR_NONE;
+}
+/*...e*/
+/*...slb_Transfer_Data\58\\58\requestString\40\ident\44\ data\41\:0:*/
+lbErrCodes lb_Transfer_Data::requestString(char* ident, char*& data) {
+char* buffer = NULL;
+
+	if (get(buffer) == ERR_TRANSFER_DATA_INCORRECT_TYPE) {
+		return ERR_TRANSFER_DATA_INCORRECT_TYPE;
+	}
+
+char msg[100] = "";	
+
+	if (strcmp(buffer, ident) != 0) {
+		_LOG << "Error: Identifer not wanted" LOG_
+		return ERR_TRANSFER_PROTOCOL;
+	}
+	
+	incrementPosition();
+
+	if (get(buffer) == ERR_TRANSFER_DATA_INCORRECT_TYPE) {
+		_LOG << "Error: Requested buffer is not of type LB_CHAR" LOG_
+		return ERR_TRANSFER_DATA_INCORRECT_TYPE;
+	}
+
+	if (buffer != NULL) 
+		data = buffer;
+	else {
+		_LOG << "lb_Transfer_Data::requestString(...) Error: Could not get real data (NULL pointer)!" LOG_
+		return ERR_TRANSFER_NULLPTR;
+	}
+	
+	incrementPosition();
+	
+	return ERR_NONE;
+}
+/*...e*/
+/*...slb_Transfer_Data\58\\58\requestInteger\40\ident\44\ data\41\:0:*/
+lbErrCodes lb_Transfer_Data::requestInteger(char* ident, int& data) {
+char* buffer = NULL;
+
+	if (get(buffer) == ERR_TRANSFER_DATA_INCORRECT_TYPE) {
+		return ERR_TRANSFER_DATA_INCORRECT_TYPE;
+	}
+
+	if (strcmp(buffer, ident) != 0) {
+		return ERR_TRANSFER_PROTOCOL;
+	}
+	
+	incrementPosition();
+
+	if (get(data) == ERR_TRANSFER_DATA_INCORRECT_TYPE) {
+		return ERR_TRANSFER_DATA_INCORRECT_TYPE;
+	}
+
+	incrementPosition();
+
+	return ERR_NONE;
+}
+/*...e*/
+/*...slb_Transfer_Data\58\\58\requestULong\40\ident\44\ data\41\:0:*/
+lbErrCodes lb_Transfer_Data::requestULong(char* ident, unsigned long& data) {
+char* buffer = NULL;
+
+	if (get(buffer) == ERR_TRANSFER_DATA_INCORRECT_TYPE) {
+		return ERR_TRANSFER_DATA_INCORRECT_TYPE;
+	}
+
+	if (strcmp(buffer, ident) != 0) {
+		return ERR_TRANSFER_PROTOCOL;
+	}
+	
+	incrementPosition();
+
+	if (get(data) == ERR_TRANSFER_DATA_INCORRECT_TYPE) {
+		return ERR_TRANSFER_DATA_INCORRECT_TYPE;
+	}
+
+	incrementPosition();
+
+	return ERR_NONE;
+}
+/*...e*/
+
+lbErrCodes LB_STDCALL lb_Transfer_Data::makeProtoErrAnswer(char* msg, char* where) {
+	add("Error");
+	add(msg);
+	
+	_LOG << where << "Cause: " << msg LOG_
+
+	return ERR_NONE;
+}
+
 /*...slb_Transfer_Data setters:0:*/
 /*...slb_Transfer_Data\58\\58\add\40\const char\42\ c\41\:0:*/
 void LB_STDCALL lb_Transfer_Data::add(const char* c) {
@@ -1187,16 +1293,19 @@ int lbTransfer::setSockConnection(lb_I_Socket* s) {
 /*...e*/
 
 /*...slbTransfer\58\\58\accept\40\\41\:0:*/
-int lbTransfer::accept(lb_I_Transfer* t) {
+lb_I_Transfer* lbTransfer::accept() {
         if (state == LB_STATE_CONNECTED) {
                 LOG("lbTransfer::accept(lbTransfer*& t) State error: Accept can not be called!");
                 return NULL;
         }
         fprintf(stderr, "Waiting for a connection...\n");
-        UAP_REQUEST(getModuleManager(), lb_I_Socket, s)
+        UAP(lb_I_Socket, s)
 
-        if (sock == NULL) 
+        if (sock == NULL) {
         	_LOG << "lbTransfer::accept(lbTransfer*& t) Error: Internal sock instance points to NULL!" LOG_
+        	return NULL;
+	}
+	
         s = sock->accept();	
         if (s != NULL) {
 /*...sTRANSFER_VERBOSE:0:*/
@@ -1204,7 +1313,7 @@ int lbTransfer::accept(lb_I_Transfer* t) {
                 LOG("lbTransfer::accept(lbTransfer*& t): Create a lbTransfer object for the connected client");
 #endif
 /*...e*/
-                //t = new lbTransfer();
+               UAP_REQUEST(getModuleInstance(), lb_I_Transfer, t)
                  
                 if (s == NULL) {
                         LOG("t->setSockConnection(s) Error: s is a NULL pointer!"); 
@@ -1215,10 +1324,11 @@ int lbTransfer::accept(lb_I_Transfer* t) {
                 // are outside of connected state
                 
                 t->setSockConnection(s.getPtr());
-                return 1;
+                t++;
+                return t.getPtr();
         } else {
                 LOG("lbTransfer::accept(lb_I_Transfer* t): Error, failed to accept on serversocket");
-                return 0;
+                return NULL;
         }
 }
 /*...e*/
