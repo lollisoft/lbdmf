@@ -31,11 +31,15 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.106 $
+ * $Revision: 1.107 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.106 2007/02/09 21:35:51 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.107 2007/04/22 13:48:22 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.107  2007/04/22 13:48:22  lollisoft
+ * Bugfix if application would be loaded by environment.
+ * Added 'Main Toolbar' initialisation to here.
+ *
  * Revision 1.106  2007/02/09 21:35:51  lollisoft
  * Implemented remaining stuff for basic toolbar support.
  * But these seems not to show the bitmap on Mac OS X.
@@ -976,7 +980,8 @@ lbErrCodes LB_STDCALL lb_MetaApplication::initialize(char* user, char* appName) 
 		}
 	}
 	
-	
+	addToolBar("Main Toolbar");
+
 	addStatusBar();
 	addStatusBar_TextArea("Info");
 	
@@ -1024,6 +1029,9 @@ lbErrCodes LB_STDCALL lb_MetaApplication::initialize(char* user, char* appName) 
 			
 		}
 	}
+
+	addToolBarButton("Main Toolbar", "Properties", "ShowPropertyPanel", "configure.png");
+
 	
 	if (getAutoload()) 
 		toggleEvent("doAutoload");
@@ -1396,7 +1404,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::loadApplication(char* user, char* appl
 			return ERR_NONE;
 		}
 		
-		QI(a, lb_I_MetaApplication, app)
+		QI(a, lb_I_Application, app)
 			
 			if (dispatcher.getPtr() == NULL) _LOG << "Error: dispatcher is NULL" LOG_
 				
