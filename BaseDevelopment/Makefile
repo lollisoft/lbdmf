@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.118 $
+# * $Revision: 1.119 $
 # * $Name:  $
-# * $Id: Makefile,v 1.118 2007/02/28 19:24:29 lollisoft Exp $
+# * $Id: Makefile,v 1.119 2007/04/22 14:05:20 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.119  2007/04/22 14:05:20  lollisoft
+# * Many changes due to client/server redesign.
+# *
 # * Revision 1.118  2007/02/28 19:24:29  lollisoft
 # * New plugin compiles under Mac OS X.
 # *
@@ -432,7 +435,9 @@ BASEDIRECTORIES= \
 	../AppDevelopmentDemo/DynamicApp/Plugins \
 	../Modules \
 	../RegressionTests \
-	../AppDevelopment
+	../AppDevelopment \
+	../ServerPlugins \
+	../ClientPlugins
 	
 
 #	../vendor/tvision-set \
@@ -446,7 +451,9 @@ ifeq ($(OSTYPE), linux)
 BASEDIRECTORIES= \
 	../Plugins \
 	../AppDevelopmentDemo/DynamicApp/Plugins \
-	../Modules
+	../Modules \
+	../ServerPlugins \
+	../ClientPlugins
 endif
 endif
 
@@ -458,7 +465,9 @@ BASEDIRECTORIES= \
 	../Modules \
 	../RegressionTests \
 	../vendor/wxaui-0.9.1/sample \
-	../AppDevelopment
+	../AppDevelopment \
+	../ServerPlugins \
+	../ClientPlugins
 
 # Don't compile these every time.
 #	../vendor/propgrid \
@@ -478,6 +487,8 @@ BASEDIRECTORIES= \
 	../vendor/wxaui-0.9.1/sample \
 	../AppDevelopment \
 	../AppDevelopmentDemo/DynamicApp/Plugins \
+	../ServerPlugins \
+	../ClientPlugins \
 	../vendor/tvision/examples/lbDMF
 
 TARGETDLL=sobundle
@@ -622,6 +633,8 @@ ALLTARGETS = \
 	../../dll/libs \
 	../../plugins/libs \
 	lbHook \
+	lbtransfer \
+	lbcs \
 	lbDB \
 	lbModule \
 	lbclasses \
@@ -869,6 +882,12 @@ endif
 ../Plugins: dummy
 	$(MAKE) -s -C $@
 
+../ServerPlugins: dummy
+	$(MAKE) -s -C $@
+
+../ClientPlugins: dummy
+	$(MAKE) -s -C $@
+
 ../AppDevelopmentDemo/DynamicApp/Plugins: dummy
 	$(MAKE) -s -C $@
 
@@ -922,6 +941,14 @@ lbclasses: dummy
 	$(MAKE) -s -C lbclasses
 
 lbMetaApplication: dummy
+	$(MAKE) -s -C $@ -e MODULE=$@ -e TARGET=$(TARGETDLL) -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@
+
+lbtransfer: dummy
+	$(MAKE) -s -C $@ -e MODULE=$@ -e TARGET=$(TARGETDLL) -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@
+
+lbcs: dummy
 	$(MAKE) -s -C $@ -e MODULE=$@ -e TARGET=$(TARGETDLL) -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@
 

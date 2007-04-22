@@ -132,6 +132,7 @@
 /*...v\46\\46\\47\include\47\lbInclude\46\h:0:*/
 /*...v\46\\46\\47\include\47\lbGlobal\46\h:0:*/
 /*...v\46\\46\\47\include\47\lbErrcodes\46\h:0:*/
+
 These headers must define the per module (DLL) EXPORT variable
 
 /*...v\46\\46\\47\include\47\lbclasses\45\module\46\h:0:*/
@@ -228,7 +229,6 @@ These headers must define the per module (DLL) EXPORT variable
 /*...vlbcs\47\appbus\46\cpp:0:*/
 /*...vlbcs\47\appcs\46\h:0:*/
 /*...vlbcs\47\appcs\46\cpp:0:*/
-
 /*...e*/
 /*...slbClasses:0:*/
 /*...vlbclasses\47\makefile:0:*/
@@ -261,6 +261,8 @@ These headers must define the per module (DLL) EXPORT variable
 /*...vlbtransfer\47\socket\46\cpp:0:*/
 /*...vlbtransfer\47\transfer\46\h:0:*/
 /*...vlbtransfer\47\transfer\46\cpp:0:*/
+/*...vlbtransfer\47\lbthread\46\h:0:*/
+/*...vlbtransfer\47\lbthread\46\cpp:0:*/
 
 
 /*...e*/
@@ -281,6 +283,7 @@ These headers must define the per module (DLL) EXPORT variable
 /*...e*/
 /*...e*/
 /*...sPlugins:0:*/
+/*...sDatabase form:0:*/
 /*...v\46\\46\\47\plugins\47\databaseform\47\lbDatabaseForm\46\h:0:*/
 /*...v\46\\46\\47\plugins\47\databaseform\47\lbDatabaseForm\46\cpp:0:*/
 /*...v\46\\46\\47\plugins\47\databaseform\47\Actions\46\cpp:0:*/
@@ -291,7 +294,9 @@ These headers must define the per module (DLL) EXPORT variable
 /*...v\46\\46\\47\plugins\47\databaseform\47\makefile\46\bat:0:*/
 /*...v\46\\46\\47\plugins\47\databaseform\47\makefile\46\module:0:*/
 /*...v\46\\46\\47\plugins\47\databaseform\47\makefile:0:*/
+/*...e*/
 
+/*...sDatabase report:0:*/
 /*...v\46\\46\\47\plugins\47\databasereport\47\makefile\46\module:0:*/
 /*...v\46\\46\\47\plugins\47\databasereport\47\lbDatabaseReport\46\cpp:0:*/
 /*...v\46\\46\\47\plugins\47\databasereport\47\lbDatabaseReport\46\h:0:*/
@@ -299,22 +304,30 @@ These headers must define the per module (DLL) EXPORT variable
 /*...v\46\\46\\47\plugins\47\databasereport\47\repwrt\46\cpp:0:*/
 
 /*...v\46\\46\\47\plugins\47\databasereport\47\plugin\46\cpp:0:*/
+/*...e*/
 
+/*...sLogin wizard:0:*/
 /*...v\46\\46\\47\Test\47\GUI\47\wxPlugins\47\lbLoginWizard\47\makefile:0:*/
 /*...v\46\\46\\47\Test\47\GUI\47\wxPlugins\47\lbLoginWizard\47\makefile\46\module:0:*/
 /*...v\46\\46\\47\Test\47\GUI\47\wxPlugins\47\lbLoginWizard\47\lbLoginWizard\46\h:0:*/
 /*...v\46\\46\\47\Test\47\GUI\47\wxPlugins\47\lbLoginWizard\47\lbLoginWizard\46\cpp:0:*/
+/*...e*/
 
+/*...sTest pluguin:0:*/
 /*...v\46\\46\\47\plugins\47\testplugin\47\plugin\46\cpp:0:*/
 /*...v\46\\46\\47\plugins\47\testplugin\47\pluginTest\46\cpp:0:*/
 /*...v\46\\46\\47\plugins\47\testplugin\47\makefile:0:*/
+/*...e*/
 
+/*...sVisitor plugin:0:*/
 /*...v\46\\46\\47\plugins\47\VisitorOperations\47\makefile\46\module:0:*/
 /*...v\46\\46\\47\plugins\47\VisitorOperations\47\plugin\46\cpp:0:*/
 /*...v\46\\46\\47\plugins\47\VisitorOperations\47\pluginOutputStream\46\cpp:0:*/
 /*...v\46\\46\\47\plugins\47\VisitorOperations\47\pluginInputStream\46\cpp:0:*/
 /*...v\46\\46\\47\plugins\47\VisitorOperations\47\pluginDBInputStream\46\cpp:0:*/
+/*...e*/
 
+/*...slbDMF datamodel plugin:0:*/
 /*...v\46\\46\\47\plugins\47\lbDMFDataModel\47\makefile:0:*/
 /*...v\46\\46\\47\plugins\47\lbDMFDataModel\47\makefile\46\module:0:*/
 /*...v\46\\46\\47\plugins\47\lbDMFDataModel\47\plugin\46\cpp:0:*/
@@ -333,10 +346,36 @@ These headers must define the per module (DLL) EXPORT variable
 /*...v\46\\46\\47\plugins\47\lbDMFDataModel\47\lbFormularActionsModel\46\cpp:0:*/
 /*...v\46\\46\\47\plugins\47\lbDMFDataModel\47\lbActionTypesModel\46\cpp:0:*/
 /*...v\46\\46\\47\plugins\47\lbDMFDataModel\47\lbActionsModel\46\cpp:0:*/
+/*...e*/
 
 
 
 /*...v\46\\46\\47\plugins\47\makefile:0:*/
+/*...e*/
+/*...sServerPlugins:0:*/
+/*...sApplicationBus:0:*/
+/*...sServer:0:*/
+/*...v\46\\46\\47\ServerPlugins\47\ApplicationBus\47\appbus\46\h:0:*/
+/*...v\46\\46\\47\ServerPlugins\47\ApplicationBus\47\appbus\46\cpp:0:*/
+
+/*...v\46\\46\\47\ServerPlugins\47\ApplicationBus\47\servermodul\46\cpp:0:*/
+
+/*...v\46\\46\\47\ServerPlugins\47\ApplicationBus\47\makefile\46\module:0:*/
+/*...v\46\\46\\47\ServerPlugins\47\ApplicationBus\47\makefile:0:*/
+/*...e*/
+/*...sClient:0:*/
+/*...v\46\\46\\47\ClientPlugins\47\ApplicationBus\47\appbusclient\46\h:0:*/
+/*...v\46\\46\\47\ClientPlugins\47\ApplicationBus\47\appbusclient\46\cpp:0:*/
+
+/*...v\46\\46\\47\ClientPlugins\47\ApplicationBus\47\clientmodul\46\cpp:0:*/
+
+
+/*...v\46\\46\\47\ClientPlugins\47\ApplicationBus\47\makefile\46\module:0:*/
+/*...e*/
+/*...e*/
+
+/*...v\46\\46\\47\ServerPlugins\47\makefile:0:*/
+
 /*...e*/
 /*...sTest:0:*/
 /*...v\46\\46\\47\Test\47\GUI\47\wxwrapper\47\wxwrapper\46\lnk:0:*/
