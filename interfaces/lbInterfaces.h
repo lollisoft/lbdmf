@@ -3,7 +3,7 @@
 
     DMF Distributed Multiplatform Framework (the initial goal of this library)
     This file is part of lbDMF.
-    Copyright (C) 2002  Lothar Behrens (lothar.behrens@lollisoft.de)
+    Copyright (C) 2000-2007  Lothar Behrens (lothar.behrens@lollisoft.de)
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Lesser General Public
@@ -733,6 +733,10 @@ class lb_I_AppSelectPage;
 class lb_I_LogonHandler;
 class lb_I_DatabaseOperation;
 class lb_I_Document;
+class lb_I_Socket;
+class lb_I_Transfer_DataObject;
+class lb_I_Transfer;
+class lb_I_ThreadImplementation;
 /*...e*/
 
 /*...scallback \47\ handler typedefs:0:*/
@@ -741,12 +745,12 @@ class lb_I_Document;
  */
 ///////////////////////////////////////////////////////////////
 // Type for lb protocol callback functions. This should be an interface.
-typedef lbErrCodes (lb_I_ProtocolTarget::*lbProtocolCallback)( lb_I_Transfer_Data const &, lb_I_Transfer_Data&);
-typedef lbErrCodes (lb_I_CallbackTarget::*lbMemberCallback)( const char* handlername, lb_I_Transfer_Data&);
+typedef lbErrCodes (LB_STDCALL lb_I_ProtocolTarget::*lbProtocolCallback)(lb_I_Transfer_Data* , lb_I_Transfer_Data*);
+typedef lbErrCodes (LB_STDCALL lb_I_CallbackTarget::*lbMemberCallback)( const char* handlername, lb_I_Transfer_Data*);
 
 
 
-typedef lbErrCodes (lb_I_EventSink::*lb_I_EventCallback)(lb_I_Unknown* question, lb_I_Unknown* answer); 
+typedef lbErrCodes (LB_STDCALL lb_I_EventSink::*lb_I_EventCallback)(lb_I_Unknown* question, lb_I_Unknown* answer); 
 
 
 #ifndef TVISION
@@ -792,6 +796,7 @@ typedef lbErrCodes ( lb_I_EventHandler::*lbEvHandler)(lb_I_Unknown* uk);
 
 #define USE_UAP
 
+/*...sclass miniLong:0:*/
 class miniLong {
 public:
 	miniLong() {
@@ -817,10 +822,12 @@ public:
 	}
 	
 	long get() { return l; }
-	long set(long _l) { l = _l; }
+	void set(long _l) { l = _l; }
 	long l;
 };
+/*...e*/
 
+/*...sclass miniString:0:*/
 class miniString {
 public:
 	miniString() {
@@ -849,6 +856,7 @@ public:
 protected:
 	char* ptr;
 };
+/*...e*/
 
 	/* setData must check the type of this ! */
 	/* = may also be possible */
@@ -994,6 +1002,34 @@ public:
  *  \brief An automatic pointer implementation via macro.
  */
 
+#ifdef MEMTRACK
+
+#define UAP_CHECKPOINTER_INVALID(ptr, msg) \
+	if (!_TRMemValidate(ptr)) { \
+		char buf[20] = ""; \
+		sprintf(buf, "%p", ptr); \
+		_LOG << msg << " ( " << buf << ")." LOG_ \
+	}
+#endif
+
+#ifndef MEMTRACK
+#define UAP_CHECKPOINTER_INVALID(ptr, msg)
+#endif
+
+
+#ifdef MEMTRACK
+#define UAP_CHECKPOINTER(ptr, msg) \
+	if (_TRMemValidate(ptr)) { \
+		char buf[20] = ""; \
+		sprintf(buf, "%p", ptr); \
+		_LOG << msg << " ( " << buf << ")." LOG_ \
+	}
+#endif
+
+#ifndef MEMTRACK
+#define UAP_CHECKPOINTER(ptr, msg)
+#endif
+
 #define UAP(interface, Unknown_Reference) \
 		class UAP##Unknown_Reference { \
 \
@@ -1048,11 +1084,7 @@ public:
 			if (_file) free(_file); \
 			if (attachedClassName != NULL) free(attachedClassName); \
 			if (_autoPtr != NULL) { \
-				if (!_TRMemValidate(_autoPtr)) { \
-					char buf[20] = ""; \
-					sprintf(buf, "%p", _autoPtr); \
-					_LOG << "FATAL: Destruct on invalid object pointer (" << buf << ")." LOG_ \
-				} \
+				UAP_CHECKPOINTER_INVALID(_autoPtr, "FATAL: Destruct on invalid object pointer") \
 				if (allowDelete != 1) { \
 					if (_autoPtr->deleteState() == 1) { \
 						printf("Error: Instance would be deleted, but it's not allowed !!\n"); \
@@ -1078,11 +1110,7 @@ public:
 		} \
 		\
 		interface* LB_STDCALL getPtr() const { \
-			if (!_TRMemValidate(_autoPtr)) { \
-				char buf[20] = ""; \
-				sprintf(buf, "%p", _autoPtr); \
-				_LOG << "FATAL: getPtr() on invalid object pointer (" << buf << ")." LOG_ \
-			} \
+			UAP_CHECKPOINTER_INVALID(_autoPtr, "FATAL: getPtr() on invalid object pointer") \
 			return _autoPtr; \
 		} \
 		void LB_STDCALL lock() { \
@@ -1100,16 +1128,12 @@ public:
 		} \
 		\
 		interface& LB_STDCALL operator * () { \
-			if (!_TRMemValidate(_autoPtr)) { \
-				char buf[20] = ""; \
-				sprintf(buf, "%p", _autoPtr); \
-				_LOG << "FATAL: operator * () on invalid object pointer (" << buf << ")." LOG_ \
-			} \
+			UAP_CHECKPOINTER_INVALID(_autoPtr, "FATAL: operator * () on invalid object pointer") \
 			return *_autoPtr; \
 		} \
 		interface* LB_STDCALL operator -> () const { \
-			if (_TRMemValidate(_autoPtr)) { \
-				if ((initialized == false) && (_autoPtr != NULL) && (_autoPtr->getClassName() != NULL)) { \
+			UAP_CHECKPOINTER_INVALID(_autoPtr, "FATAL: Operate on invalid object pointer") \
+			if ((initialized == false) && (_autoPtr != NULL) && (_autoPtr->getClassName() != NULL)) { \
 					char* className = _autoPtr->getClassName(); \
 					int len = strlen(className)+1; \
 					initialized = true; \
@@ -1117,17 +1141,12 @@ public:
 					attachedClassName = (char*) malloc(len); \
 					attachedClassName[0] = 0; \
 				        strcpy(attachedClassName, className); \
-				} \
-			} else { \
-				char buf[20] = ""; \
-				sprintf(buf, "%p", _autoPtr); \
-				_LOG << "FATAL: Operate on invalid object pointer (" << buf << ")." LOG_ \
 			} \
 			return _autoPtr; \
 		} \
 		interface* LB_STDCALL operator -> () { \
-			if (_TRMemValidate(_autoPtr)) { \
-				if ((initialized == false) && (_autoPtr != NULL) && (_autoPtr->getClassName() != NULL)) { \
+			UAP_CHECKPOINTER_INVALID(_autoPtr, "FATAL: Operate on invalid object pointer") \
+			if ((initialized == false) && (_autoPtr != NULL) && (_autoPtr->getClassName() != NULL)) { \
 					char* className = _autoPtr->getClassName(); \
 					int len = strlen(className)+1; \
 					initialized = true; \
@@ -1135,60 +1154,35 @@ public:
 					attachedClassName = (char*) malloc(len); \
 					attachedClassName[0] = 0; \
 				        strcpy(attachedClassName, className); \
-				} \
-			} else { \
-				char buf[20] = ""; \
-				sprintf(buf, "%p", _autoPtr); \
-				_LOG << "FATAL: Operate on invalid object pointer (" << buf << ")." LOG_ \
 			} \
 			return _autoPtr; \
 		} \
 		UAP##Unknown_Reference& LB_STDCALL operator++(int) { \
 			interface* temp = NULL; \
-			if (!_TRMemValidate(_autoPtr)) { \
-				char buf[20] = ""; \
-				sprintf(buf, "%p", _autoPtr); \
-				_LOG << "FATAL: operator++ on invalid object pointer (" << buf << ")." LOG_ \
-			} \
+			UAP_CHECKPOINTER_INVALID(_autoPtr, "FATAL: operator++ on invalid object pointer") \
 			_autoPtr->queryInterface(#interface, (void**) &temp, __FILE__, __LINE__); \
 			return *this; \
 		} \
 		UAP##Unknown_Reference& LB_STDCALL operator--(int) { \
 			interface* temp = NULL; \
 			if (_autoPtr == NULL) return *this; \
-			if (!_TRMemValidate(_autoPtr)) { \
-				char buf[20] = ""; \
-				sprintf(buf, "%p", _autoPtr); \
-				_LOG << "FATAL: operator-- on invalid object pointer (" << buf << ")." LOG_ \
-			} \
+			UAP_CHECKPOINTER_INVALID(_autoPtr, "FATAL: operator-- on invalid object pointer") \
 			if (_autoPtr->release(__FILE__, __LINE__) == ERR_RELEASED) _autoPtr = NULL; \
 			return *this; \
 		} \
 		interface ** LB_STDCALL operator & () { \
-			if (!_TRMemValidate(_autoPtr)) { \
-				char buf[20] = ""; \
-				sprintf(buf, "%p", _autoPtr); \
-				_LOG << "FATAL: operator& on invalid object pointer (" << buf << ")." LOG_ \
-			} \
+			UAP_CHECKPOINTER_INVALID(_autoPtr, "FATAL: operator& on invalid object pointer") \
 			return &_autoPtr; \
 		} \
 		\
 		UAP##Unknown_Reference& LB_STDCALL operator = (interface* autoPtr) { \
 			if (locked) return *this; \
-			if (!_TRMemValidate(_autoPtr)) { \
-				char buf[20] = ""; \
-				sprintf(buf, "%p", _autoPtr); \
-				_LOG << "FATAL: operator = on invalid old object pointer (" << buf << ")." LOG_ \
-			} \
+			UAP_CHECKPOINTER_INVALID(_autoPtr, "FATAL: operator = on invalid old object pointer") \
 			if (_autoPtr != NULL) { \
 				_autoPtr->release(__FILE__, __LINE__); \
 			} \
 			_autoPtr = autoPtr; \
-			if (!_TRMemValidate(_autoPtr)) { \
-				char buf[20] = ""; \
-				sprintf(buf, "%p", _autoPtr); \
-				_LOG << "FATAL: operator = on invalid new object pointer (" << buf << ")." LOG_ \
-			} \
+			UAP_CHECKPOINTER_INVALID(_autoPtr, "FATAL: operator = on invalid new object pointer") \
 			if (attachedClassName) { \
 				free(attachedClassName); \
 			} \
@@ -1199,19 +1193,11 @@ public:
 			return *this; \
 		} \
 		int LB_STDCALL operator == (const interface* b) const { \
-			if (!_TRMemValidate(_autoPtr)) { \
-				char buf[20] = ""; \
-				sprintf(buf, "%p", _autoPtr); \
-				_LOG << "FATAL: operator == on invalid object pointer (" << buf << ")." LOG_ \
-			} \
+			UAP_CHECKPOINTER_INVALID(_autoPtr, "FATAL: operator == on invalid object pointer") \
 			return _autoPtr == b; \
 		} \
 		int LB_STDCALL operator != (const interface* b) const { \
-			if (!_TRMemValidate(_autoPtr)) { \
-				char buf[20] = ""; \
-				sprintf(buf, "%p", _autoPtr); \
-				_LOG << "FATAL: operator != on invalid object pointer (" << buf << ")." LOG_ \
-			} \
+			UAP_CHECKPOINTER_INVALID(_autoPtr, "FATAL: operator != on invalid object pointer") \
 			return _autoPtr != b; \
 		} \
 		void LB_STDCALL setDelete(int _allow) { allowDelete = _allow; } \
@@ -2023,6 +2009,19 @@ public:
 };
 /*...e*/
 
+class lb_I_DispatchFunction : public lb_I_Unknown {
+public:
+
+	/// Store the function handler.
+	virtual lbErrCodes LB_STDCALL setFunction(const char* service, lb_I_CallbackTarget* handlerInstance, lbMemberCallback fn) = 0;
+	
+	/// Get the protocol callback function.
+	virtual lbMemberCallback LB_STDCALL getFunction() = 0;
+	
+	/// Get the protocol handler instance.
+	virtual lb_I_CallbackTarget* LB_STDCALL getHandlerInstance() = 0;
+};
+
 /*...sclass lb_I_CallbackManager:0:*/
 /** \brief An attempt for registering callbacks.
  */
@@ -2036,8 +2035,8 @@ public:
 	
 	 
 /*...e*/
-	virtual lbErrCodes addCallbackHandler(const char* handlername, lbMemberCallback cbFn) = 0;
-	virtual lbErrCodes delCallbackHandler(const char* handlername) = 0;
+	virtual lbErrCodes LB_STDCALL addCallbackHandler(const char* handlername, lbMemberCallback cbFn) = 0;
+	virtual lbErrCodes LB_STDCALL delCallbackHandler(const char* handlername) = 0;
 };
 /*...e*/
 /*...sclass lb_I_CallbackDispatcher dispatches over names:0:*/
@@ -2045,13 +2044,13 @@ public:
  */
 class lb_I_CallbackDispatcher {
 public:
-	virtual lbErrCodes dispatch(const char* request, lb_I_Transfer_Data& result) = 0;
+	virtual lbErrCodes LB_STDCALL dispatch(const char* request, lb_I_Transfer_Data* result) = 0;
 };
 /*...e*/
 /*...sclass lb_I_CallbackTarget:0:*/
 /** \brief An attempt to let classes register their callbacks.
  */
-class lb_I_CallbackTarget {
+class lb_I_CallbackTarget : public lb_I_Unknown {
 public:
 /*...sdocu:0:*/
 
@@ -2061,7 +2060,24 @@ public:
 	 */
 	  
 /*...e*/
-	virtual lbErrCodes registerCallbacks() = 0; 
+	virtual lbErrCodes LB_STDCALL registerCallbacks() = 0; 
+};
+/*...e*/
+
+/*...sclass lb_I_DispatchProtocol:0:*/
+/** \brief Class to hold a protocol based handler.
+ */
+class lb_I_DispatchProtocol : public lb_I_Unknown {
+public:
+
+	/// Store the protocol handler.
+	virtual lbErrCodes LB_STDCALL setProto(const char* service, lb_I_ProtocolTarget* handlerInstance, lbProtocolCallback fn);
+	
+	/// Get the protocol callback function.
+	virtual lbProtocolCallback LB_STDCALL getProto() = 0;
+	
+	/// Get the protocol handler instance.
+	virtual lb_I_ProtocolTarget* LB_STDCALL getProtocolHandlerInstance() = 0;
 };
 /*...e*/
 
@@ -2085,8 +2101,8 @@ public:
 	
 	 
 /*...e*/
-	virtual lbErrCodes addProtocolHandler(const char* handlername, lbProtocolCallback cbFn) = 0;
-	virtual lbErrCodes delProtocolHandler(const char* handlername) = 0;
+	virtual lbErrCodes LB_STDCALL addProtocolHandler(const char* handlername, lb_I_ProtocolTarget* handlerInstance, lbProtocolCallback cbFn) = 0;
+	virtual lbErrCodes LB_STDCALL delProtocolHandler(const char* handlername) = 0;
 };
 /*...e*/
 /*...sclass lb_I_ProtocolDispatcher dispatches over protocol haeder:0:*/
@@ -2094,7 +2110,7 @@ public:
  */
 class lb_I_ProtocolDispatcher {
 public:
-	virtual lbErrCodes dispatch(const lb_I_Transfer_Data& request, lb_I_Transfer_Data& result) = 0;
+	virtual lbErrCodes LB_STDCALL dispatch(lb_I_Transfer_Data* request, lb_I_Transfer_Data* result) = 0;
 };
 /*...e*/
 /*...sdocu:0:*/
@@ -2105,7 +2121,7 @@ public:
 /*...sclass lb_I_ProtocolTarget:0:*/
 /** \brief An attempt for a protocol based callback handler.
  */
-class lb_I_ProtocolTarget {
+class lb_I_ProtocolTarget : public lb_I_Unknown {
 public:
 /*...sdocu:0:*/
 
@@ -2115,10 +2131,39 @@ public:
 	 */
 	  
 /*...e*/
-	virtual lbErrCodes registerProtocols() = 0; 
+	/** \brief The service for these protocols.
+	 * Each protocol target class could define the service name, under which
+	 * they should be reachable.
+	 *
+	 * The service name could be overwritten to use another service.
+	 */
+	virtual char* LB_STDCALL getServiceName() = 0;
+	virtual lbErrCodes LB_STDCALL registerProtocols(lb_I_ProtocolManager* protoMgr) = 0; 
 };
 /*...e*/
 
+class lb_I_ApplicationServer :
+	public lb_I_ProtocolManager,
+	public lb_I_ProtocolDispatcher,
+	public lb_I_ProtocolTarget {
+public:	
+	virtual bool LB_STDCALL isConnected(lb_I_Transfer_Data* request) = 0;
+	virtual lbErrCodes LB_STDCALL waitForRequest(lb_I_Transfer* _clt, lb_I_Transfer_Data* request) = 0;
+	virtual lbErrCodes LB_STDCALL answerRequest(lb_I_Transfer* _clt, lb_I_Transfer_Data* result) = 0;
+
+	virtual void LB_STDCALL autostartServerPlugins(bool start) = 0;
+	virtual lbErrCodes LB_STDCALL activateServerPlugin(char* name) = 0;	
+	virtual void LB_STDCALL run() = 0;
+};
+
+class lb_I_ApplicationClient :
+	public lb_I_Unknown,
+	//public lb_I_Requestable,
+	public lb_I_CallbackManager,
+	public lb_I_CallbackDispatcher {
+	
+	
+};
 /*...sclass lb_I_EventConnector:0:*/
 /** \brief ???
  */
@@ -2242,6 +2287,21 @@ public:
 	virtual lbErrCodes LB_STDCALL call(lb_I_Unknown* evData, lb_I_Unknown** evResult) = 0; 
 };
 /*...e*/
+/*...sclass lb_I_EventHandler:0:*/
+/**
+ * \brief An event handler class. It handles one or more events.
+ *
+ * The event handler registers all it's handlers by get a call of registerEventHandler.
+ * It get's an external dispatcher, to don't need to provide it's own dispatcher.
+ */
+class lb_I_EventHandler {
+public:
+	/**
+	 * Register all the handlers by this class to the given dispatcher.
+	 */
+	virtual lbErrCodes LB_STDCALL registerEventHandler(lb_I_Dispatcher* disp) = 0;
+};
+/*...e*/
 
 /*...sclass lb_I_DispatchRequest:0:*/
 /**
@@ -2347,21 +2407,6 @@ public:
 };
 /*...e*/
 
-/*...sclass lb_I_EventHandler:0:*/
-/**
- * \brief An event handler class. It handles one or more events.
- *
- * The event handler registers all it's handlers by get a call of registerEventHandler.
- * It get's an external dispatcher, to don't need to provide it's own dispatcher.
- */
-class lb_I_EventHandler {
-public:
-	/**
-	 * Register all the handlers by this class to the given dispatcher.
-	 */
-	virtual lbErrCodes LB_STDCALL registerEventHandler(lb_I_Dispatcher* disp) = 0;
-};
-/*...e*/
 
 class lb_I_DatabaseForm;
 class lb_I_GUI;
@@ -2442,6 +2487,7 @@ public:
 
 class lb_I_InputStream;
 
+/*...slbDMF ORM:0:*/
 /*...sclass lb_I_MetaApplication:0:*/
 /**
  * \brief Interface from a wrapper and lbDMF
@@ -2856,6 +2902,7 @@ public:
 };
 /*...e*/
 
+/*...sclass lb_I_User_Applications:0:*/
 class lb_I_User_Applications : public lb_I_Unknown {
 public:
 	/** \brief Add a new application.
@@ -2914,7 +2961,9 @@ public:
 	
 	virtual long		LB_STDCALL getID() = 0;
 };
+/*...e*/
 
+/*...sclass lb_I_Formulars:0:*/
 class lb_I_Formulars : public lb_I_Unknown {
 public:
 	/** \brief Ignore all other data.
@@ -2925,7 +2974,7 @@ public:
 
 	virtual long		LB_STDCALL addFormular(const char* name, const char* menuname, const char* eventname, const char* menuhilfe, long anwendung_id, long typ, long formular_id = -1) = 0;
 	virtual bool		LB_STDCALL selectFormular(long _id) = 0;
-	virtual int			LB_STDCALL getFormularCount() = 0;
+	virtual int		LB_STDCALL getFormularCount() = 0;
 	virtual bool		LB_STDCALL hasMoreFormulars() = 0;
 	virtual void		LB_STDCALL setNextFormular() = 0;
 	virtual void		LB_STDCALL finishFormularIteration() = 0;
@@ -2938,13 +2987,14 @@ public:
 	virtual long		LB_STDCALL getTyp() = 0;
 	virtual long		LB_STDCALL getFormularID() = 0;
 };
+/*...e*/
 
-
+/*...sclass lb_I_ParameterTable:0:*/
 class lb_I_ParameterTable : public lb_I_Unknown {
 public:
 	virtual bool		LB_STDCALL selectParameter(long _id) = 0;
 
-	virtual int			LB_STDCALL getParameterCount() = 0;
+	virtual int		LB_STDCALL getParameterCount() = 0;
 	virtual bool		LB_STDCALL hasMoreParameters() = 0;
 	virtual void		LB_STDCALL setNextParameter() = 0;
 	virtual void		LB_STDCALL finishParameterIteration() = 0;
@@ -2953,26 +3003,32 @@ public:
 	virtual char*		LB_STDCALL getParameterName() = 0;
 	virtual char*		LB_STDCALL getParameterValue() = 0;
 };
+/*...e*/
 
+/*...sclass lb_I_FormularParameter:0:*/
 class lb_I_FormularParameter : public lb_I_ParameterTable {
 public:
 	virtual long		LB_STDCALL addParameter(const char* name, const char* value, long formular_id, long _id = -1) = 0;
 	virtual long		LB_STDCALL getFormularID() = 0;
 	virtual char*		LB_STDCALL getParameter(const char* name, long formular_id) = 0;
 };
+/*...e*/
 
+/*...sclass lb_I_ApplicationParameter:0:*/
 class lb_I_ApplicationParameter : public lb_I_ParameterTable {
 public:
 	virtual long		LB_STDCALL addParameter(const char* name, const char* value, long anwendungs_id, long _id = -1) = 0;
 	virtual long		LB_STDCALL getApplicationID() = 0;
 	virtual char*		LB_STDCALL getParameter(const char* name, long application_id) = 0;
 };
+/*...e*/
 
+/*...sclass lb_I_FKPK_Mapping:0:*/
 class lb_I_FKPK_Mapping : public lb_I_Unknown {
 public:
 	virtual long		LB_STDCALL addMapping(const char* PKTable, const char* PKName, const char* FKTable, const char* FKName, long _id = -1) = 0;
 	virtual bool		LB_STDCALL selectMapping(long _id) = 0;
-	virtual int			LB_STDCALL getMappingCount() = 0;
+	virtual int		LB_STDCALL getMappingCount() = 0;
 	virtual bool		LB_STDCALL hasMoreMappings() = 0;
 	virtual void		LB_STDCALL setNextMapping() = 0;
 	virtual void		LB_STDCALL finishMappingIteration() = 0;
@@ -2983,12 +3039,14 @@ public:
 	virtual char*		LB_STDCALL getFKTable() = 0;
 	virtual char*		LB_STDCALL getFKName() = 0;
 };
+/*...e*/
 
+/*...sclass lb_I_Actions:0:*/
 class lb_I_Actions : public lb_I_Unknown {
 public:
 	virtual long		LB_STDCALL addAction(const char* name, long typ, const char* source, long target, long _id = -1) = 0;
 	virtual bool		LB_STDCALL selectAction(long _id) = 0;
-	virtual int			LB_STDCALL getActionCount() = 0;
+	virtual int		LB_STDCALL getActionCount() = 0;
 	virtual bool		LB_STDCALL hasMoreActions() = 0;
 	virtual void		LB_STDCALL setNextAction() = 0;
 	virtual void		LB_STDCALL finishActionIteration() = 0;
@@ -3001,12 +3059,14 @@ public:
 	virtual char*		LB_STDCALL getActionName() = 0;
 	
 };
+/*...e*/
 
+/*...sclass lb_I_Action_Steps:0:*/
 class lb_I_Action_Steps : public lb_I_Unknown {
 public:
 	virtual long		LB_STDCALL addActionStep(const char* bezeichnung, long actionid, long orderNo, long type, const char* what, long _id = -1) = 0;
 	virtual bool		LB_STDCALL selectActionStep(long _id) = 0;
-	virtual int			LB_STDCALL getActionStepCount() = 0;
+	virtual int		LB_STDCALL getActionStepCount() = 0;
 	virtual bool		LB_STDCALL hasMoreActionSteps() = 0;
 	virtual void		LB_STDCALL setNextActionStep() = 0;
 	virtual void		LB_STDCALL finishActionStepIteration() = 0;
@@ -3020,12 +3080,14 @@ public:
 	virtual char*		LB_STDCALL getActionStepWhat() = 0;
 	
 };
+/*...e*/
 
+/*...sclass lb_I_Action_Types:0:*/
 class lb_I_Action_Types : public lb_I_Unknown {
 public:
 	virtual long		LB_STDCALL addActionTypes(const char* bezeichnung, const char* action_handler , const char* module, long _id = -1) = 0;
 	virtual bool		LB_STDCALL selectActionTypes(long _id) = 0;
-	virtual int			LB_STDCALL getActionTypesCount() = 0;
+	virtual int		LB_STDCALL getActionTypesCount() = 0;
 	virtual bool		LB_STDCALL hasMoreActionTypes() = 0;
 	virtual void		LB_STDCALL setNextActionType() = 0;
 	virtual void		LB_STDCALL finishActionTypeIteration() = 0;
@@ -3037,12 +3099,14 @@ public:
 	virtual char*		LB_STDCALL getActionTypeModule() = 0;
 	
 };
+/*...e*/
 
+/*...sclass lb_I_Formular_Actions:0:*/
 class lb_I_Formular_Actions : public lb_I_Unknown {
 public:
 	virtual long		LB_STDCALL addFormularAction(long formular, long action, const char* event, long _id = -1) = 0;
 	virtual bool		LB_STDCALL selectFormularAction(long _id) = 0;
-	virtual int			LB_STDCALL getFormularActionsCount() = 0;
+	virtual int		LB_STDCALL getFormularActionsCount() = 0;
 	virtual bool		LB_STDCALL hasMoreFormularActions() = 0;
 	virtual void		LB_STDCALL setNextFormularAction() = 0;
 	virtual void		LB_STDCALL finishFormularActionIteration() = 0;
@@ -3054,13 +3118,15 @@ public:
 	virtual char*		LB_STDCALL getFormularActionEvent() = 0;
 	
 };
+/*...e*/
 
+/*...sclass lb_I_Translations:0:*/
 class lb_I_Translations : public lb_I_Unknown {
 public:
 	virtual long		LB_STDCALL addTranslation(const char* text, const char* translated, const char* language, long _id = -1) = 0;
 	virtual bool		LB_STDCALL selectTranslation(long _id) = 0;
 	virtual bool		LB_STDCALL selectText(const char* text, const char* language) = 0;
-	virtual int			LB_STDCALL getTranslationsCount() = 0;
+	virtual int		LB_STDCALL getTranslationsCount() = 0;
 	virtual bool		LB_STDCALL hasMoreTranslations() = 0;
 	virtual void		LB_STDCALL setNextTranslation() = 0;
 	virtual void		LB_STDCALL finishTranslationIteration() = 0;
@@ -3070,12 +3136,14 @@ public:
 	virtual char*		LB_STDCALL getTranslationTranslated() = 0;
 	virtual char*		LB_STDCALL getTranslationLanguage() = 0;
 };
+/*...e*/
+/*...e*/
 
-
-
+/*...slbDMF Plugin interfaces:0:*/
 class lb_I_Plugin;
 class lb_I_PluginImpl;
 class lb_I_PluginModule;
+class lb_I_ApplicationServerModul;
 
 /** \brief The plugin manager
  *
@@ -3119,6 +3187,25 @@ public:
 	 */
 	virtual lb_I_Plugin* LB_STDCALL nextPlugin() = 0;
 
+	/** \brief Starts listing of server plugins.
+	 *
+	 * This function does only list those plugins
+	 *
+	 * As of lb_I_Container interface, this is similar to the beginning of
+	 * enumerating its objects.
+	 */
+	virtual bool LB_STDCALL beginEnumServerPlugins() = 0;
+	
+	/** \brief Get the next server plugin.
+	 *
+	 * Gets the next plugin handle instance. This does not
+	 * load an instance of the plugin implementation. But it
+	 * loads the module.
+	 *
+	 * To finally use the plugin, you must attach to it.
+	 */
+	virtual lb_I_Plugin* LB_STDCALL nextServerPlugin() = 0;
+
 	/** \brief Find first matching plugin.
 	 *
 	 * This function searches for a plugin, that matches the match string.
@@ -3127,6 +3214,17 @@ public:
 	 * The order, in that this function will search is decided by the match string.
 	 */
 	virtual lb_I_Plugin* LB_STDCALL getFirstMatchingPlugin(char* match, char* _namespace) = 0;
+	virtual lb_I_Plugin* LB_STDCALL getFirstMatchingServerPlugin(char* match, char* _namespace) = 0;
+
+	/** \brief Find first matching server plugin.
+	 *
+	 * This function searches for a server plugin, that matches the match string.
+	 *
+	 * The match string could be a functor name, an interface name or partial of them.
+	 * The order, in that this function will search is decided by the match string.
+	 */
+	//virtual lb_I_Plugin* LB_STDCALL getFirstMatchingServerPlugin(char* match, char* _namespace) = 0;
+	
 	
 	/** \brief Put in a plugin (via DnD as an example).
 	 *
@@ -3415,8 +3513,22 @@ public:
 };
 /*...e*/
 
+class lb_I_ApplicationServerModul : public lb_I_PluginModule {
+public:
+	virtual char* LB_STDCALL getServiceName() = 0;
+	
+	/// Why did I need this, if I could get the protocol handlers from the list of plugins ?
+	virtual void LB_STDCALL registerModul(lb_I_ProtocolManager* pMgr) = 0;
+};
+
+class lb_I_Proxy {
+
+};
+/*...e*/
+
 class lb_I_Parameter;
 
+/*...slbDMF Formular action interfaces:0:*/
 /**
  * \brief This interface is intended as a way to delegate actions.
  * 
@@ -3450,6 +3562,7 @@ public:
 	virtual void LB_STDCALL execute(lb_I_Parameter* params) = 0;
 	virtual void LB_STDCALL setActionID(char* id) = 0;
 };
+/*...e*/
 
 #include <lbInterfaces-sub-transfer.h>
 #include <lbInterfaces-sub-xml.h>
@@ -3458,4 +3571,5 @@ public:
 #include <lbInterfaces-sub-db.h>
 #include <lbInterfaces-sub-wxWrapper.h>
 #include <lbInterfaces-sub-visitor.h>
+
 #endif // __LB_INTERFACES__

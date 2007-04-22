@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.73 $
+ * $Revision: 1.74 $
  * $Name:  $
- * $Id: lbInterfaces-sub-classes.h,v 1.73 2007/02/03 11:04:36 lollisoft Exp $
+ * $Id: lbInterfaces-sub-classes.h,v 1.74 2007/04/22 13:43:37 lollisoft Exp $
  *
  * $Log: lbInterfaces-sub-classes.h,v $
+ * Revision 1.74  2007/04/22 13:43:37  lollisoft
+ * Many changes relating threads and client server code.
+ *
  * Revision 1.73  2007/02/03 11:04:36  lollisoft
  * Implemented directory location property handler. This is used in lbMetaApplication.
  *
@@ -456,6 +459,7 @@ void LB_STDCALL classname::setType() {              \
 /*...e*/
 /*...e*/
 
+/*...sclass lb_I_Locale:0:*/
 /**
  * An attempt for i18n.
  *
@@ -486,6 +490,7 @@ public:
 	 */
 	virtual void LB_STDCALL setTranslationData(lb_I_Unknown* uk) = 0;
 };
+/*...e*/
 
 // Keyable interfaces
 /*...sclass lb_I_String:0:*/
@@ -1653,13 +1658,50 @@ public:
 };
 #endif
 /*...e*/
+/*...sclass lb_I_ThreadImplementation:0:*/
+class lb_I_ThreadImplementation;
+class lb_I_Thread;
+
+typedef void (LB_STDCALL lb_I_ThreadImplementation::*lbThreadFunction)(lb_I_Thread* threadHost);
+
+class lb_I_ThreadImplementation : public lb_I_Unknown {
+public:
+	/** \brief The function, that represents the thread.
+	 * This function should be used to run the thread.
+	 * Each new thread may have the same function pointer,
+	 * but this could be changed by the thread implementation
+	 * on behalf of logic.
+	 */
+	virtual lbThreadFunction LB_STDCALL getThreadFunction() = 0;
+	
+	/** \brief Indicator for done thread.
+	 * This function indicates, if a thread has been finished.
+	 */
+	virtual bool LB_STDCALL isFinished() = 0;
+};
+/*...e*/
+
+class lb_I_ApplicationServerThread :
+	public lb_I_ThreadImplementation,
+	public lb_I_ProtocolManager,
+	public lb_I_ProtocolDispatcher {
+public:	
+	virtual bool LB_STDCALL isConnected(lb_I_Transfer_Data* request) = 0;
+	virtual lbErrCodes LB_STDCALL init(lb_I_Transfer* _clt, lb_I_ApplicationServer* _server) = 0;
+};
+
+class lb_I_ProtocolThread :
+	public lb_I_ThreadImplementation {
+public:
+	virtual lbErrCodes LB_STDCALL init(lb_I_Transfer* _clt, lb_I_ApplicationServerThread* _parentthread) = 0;
+};
+
 /*...sclass lb_I_Thread:0:*/
 class lb_I_Thread : public lb_I_Unknown {
-protected:
-        lb_I_Thread() {}
-        virtual ~lb_I_Thread() {}
-
 public: 
+
+	virtual lb_I_ThreadImplementation* LB_STDCALL getThreadImplementation() = 0; 
+	virtual lbErrCodes LB_STDCALL setThreadImplementation(lb_I_ThreadImplementation* impl) = 0; 
 
         virtual lbErrCodes LB_STDCALL create() = 0;
 
@@ -1668,12 +1710,6 @@ public:
         
         virtual lbErrCodes LB_STDCALL pause() = 0;
         virtual lbErrCodes LB_STDCALL resume() = 0;
-
-
-private:
-        // no copy ctor/assignment operator
-        lb_I_Thread(const lb_I_Thread&) {}
-        lb_I_Thread& operator=(const lb_I_Thread&) { return *this; }
 };
 /*...e*/
 /*...sclass lb_I_Mutex:0:*/

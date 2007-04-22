@@ -1,3 +1,4 @@
+/*...sCopyright:0:*/
 /*
     DMF Distributed Multiplatform Framework (the initial goal of this library)
     This file is part of lbDMF.
@@ -21,10 +22,11 @@
     The author of this work will be reached by e-Mail or paper mail.
     e-Mail: lothar.behrens@lollisoft.de
     p-Mail: Lothar Behrens
-	    Rosmarinstr. 3
+	    Heinrich-Scheufelen-Platz 2
 	    
-	    40235 Duesseldorf (germany)
+	    73252 Lenningen (germany)
 */
+/*...e*/
 /**
  *  \file lbInterfaces-sub-transfer.h
  *  Include for data transfer interfaces.
@@ -60,64 +62,86 @@ typedef struct {
 /**
  * \brief Protocolbased data transfer.
  */
-class lb_I_Transfer_Data {
-protected:
-        lb_I_Transfer_Data() {}
-        virtual ~lb_I_Transfer_Data() {}
+class lb_I_Transfer_Data : public lb_I_Unknown {
 public:
 
-        lb_I_Transfer_Data& operator= (const lb_I_Transfer_Data & t) {
+        lb_I_Transfer_Data& LB_STDCALL operator= (const lb_I_Transfer_Data & t) {
                 return assign(t);
         }
 
-        virtual lb_I_Transfer_Data& assign(const lb_I_Transfer_Data & t) = 0;
+        virtual lb_I_Transfer_Data& LB_STDCALL assign(const lb_I_Transfer_Data & t) = 0;
         
-        virtual int hasMorePackets() const = 0;
-        virtual pLB_TRANSFER_DATA getNextPacket() const = 0;
+        virtual int LB_STDCALL hasMorePackets() const = 0;
+        virtual pLB_TRANSFER_DATA  LB_STDCALL getNextPacket() const = 0;
 
-        virtual int getPacketCount() const = 0;
-        virtual LB_PACKET_TYPE getNextPacketType() = 0;
+        virtual int LB_STDCALL getPacketCount() const = 0;
+        virtual LB_PACKET_TYPE LB_STDCALL getNextPacketType() = 0;
+        
+        virtual int LB_STDCALL getCurrentPos() const = 0;
 
-        virtual int addPacket(pLB_TRANSFER_DATA data) = 0;
+        virtual int LB_STDCALL addPacket(pLB_TRANSFER_DATA data) = 0;
 
-        virtual int resetPositionCount() = 0;
-        virtual int incrementPosition() = 0;
-        virtual int getPacketType(LB_PACKET_TYPE & type) = 0;
+        virtual int LB_STDCALL resetPositionCount() = 0;
+        virtual int LB_STDCALL incrementPosition() = 0;
+        virtual int LB_STDCALL getPacketType(LB_PACKET_TYPE & type) = 0;
 
-        virtual int deleteAll() = 0;
+        virtual int LB_STDCALL deleteAll() = 0;
 
-/*...ssetters:8:*/
+	virtual bool LB_STDCALL isServerSide() const = 0;
+	
+
+	virtual DWORD LB_STDCALL getClientPid() const = 0;
+	virtual void LB_STDCALL setClientPid(DWORD _pid) = 0;
+
+	virtual char* LB_STDCALL getClientHost() const = 0;
+	virtual void LB_STDCALL setClientHost(char* host) = 0;
+
+	virtual DWORD LB_STDCALL getClientTid() const = 0;
+	virtual void LB_STDCALL setClientTid(DWORD _tid) = 0;
+
+        virtual lbErrCodes LB_STDCALL requestString(char* ident, char*& data) = 0;
+
+        virtual lbErrCodes LB_STDCALL requestString(char* ident) = 0;
+
+        virtual lbErrCodes LB_STDCALL requestInteger(char* ident, int& data) = 0;
+
+        virtual lbErrCodes LB_STDCALL requestULong(char* ident, unsigned long& data) = 0;	
+
+	virtual lbErrCodes LB_STDCALL makeProtoErrAnswer(char* msg, char* where) = 0;
+
+/*...ssimple setters:8:*/
         /**
          * Data member operations
          */
 
-        virtual void add(int i) = 0;
-        virtual void add(const char* c) = 0;
-        virtual void add(short s) = 0;
-        virtual void add(long l) = 0;
-        virtual void add(unsigned short us) = 0;
-        virtual void add(unsigned long ul) = 0;
-        virtual void add(const void* buf, int len) = 0;
+        virtual void LB_STDCALL add(int i) = 0;
+        virtual void LB_STDCALL add(const char* c) = 0;
+        virtual void LB_STDCALL add(short s) = 0;
+        virtual void LB_STDCALL add(long l) = 0;
+        virtual void LB_STDCALL add(unsigned short us) = 0;
+        virtual void LB_STDCALL add(unsigned long ul) = 0;
+        virtual void LB_STDCALL add(const void* buf, int len) = 0;
 /*...e*/
 
-/*...sgetters:8:*/
-        virtual lbErrCodes get(int& i) = 0;
-        virtual lbErrCodes get(char* & c) = 0;
-        virtual lbErrCodes get(short & s) = 0;
-        virtual lbErrCodes get(long & l) = 0;
-        virtual lbErrCodes get(unsigned short & us) = 0;
-        virtual lbErrCodes get(unsigned long & ul) = 0;
+/*...ssimple getters:8:*/
+        virtual lbErrCodes LB_STDCALL get(int& i) = 0;
+        virtual lbErrCodes LB_STDCALL get(char* & c) = 0;
+        virtual lbErrCodes LB_STDCALL get(short & s) = 0;
+        virtual lbErrCodes LB_STDCALL get(long & l) = 0;
+        virtual lbErrCodes LB_STDCALL get(unsigned short & us) = 0;
+        virtual lbErrCodes LB_STDCALL get(unsigned long & ul) = 0;
 
-        virtual lbErrCodes get(void* & v, int & len) = 0;
+        virtual lbErrCodes LB_STDCALL get(void* & v, int & len) = 0;
 /*...e*/
         
         /**
          * The really function who is adding
          */
-        //void add(const void* buf, int len, LB_PACKET_TYPE type);
+        virtual void LB_STDCALL add(const void* buf, int len, LB_PACKET_TYPE type) = 0;
 };
 /*...e*/
 
+/*...sclass lb_I_Stream:0:*/
 /** \brief Base of streams.
  *
  * This interface currently is used for passing into lb_I_FileOperation.
@@ -147,7 +171,9 @@ public:
 	 */
 	virtual bool LB_STDCALL close() = 0;
 };
+/*...e*/
 
+/*...sclass lb_I_InputStream:0:*/
 /**
  * \brief Filebased data reader.
  */
@@ -181,7 +207,9 @@ public:
 	virtual lb_I_InputStream& LB_STDCALL operator>> (char*& string) = 0;
 
 };
+/*...e*/
 
+/*...sclass lb_I_OutputStream:0:*/
 /**
  * \brief Filebased data writer.
  */
@@ -215,7 +243,9 @@ public:
 	virtual lb_I_OutputStream& LB_STDCALL operator<< (const char* string) = 0;
 	
 };
+/*...e*/
 
+/*...sclass lb_I_Streamable:0:*/
 /**
  * \brief Interface for loadable and saveable objects.
  */
@@ -265,5 +295,87 @@ public:
 	 */
 	virtual lbErrCodes LB_STDCALL load(lb_I_Database* iDB) = 0;
 };
+/*...e*/
+
+/*...sclass lb_I_Transfer_DataObject:0:*/
+class lb_I_Transfer_DataObject : public lb_I_Unknown {
+public:
+
+	virtual void LB_STDCALL setTransferData(pLB_TRANSFER_DATA pData) = 0;
+	virtual pLB_TRANSFER_DATA LB_STDCALL getTransferData() const = 0;
+};
+/*...e*/
+
+/*...sclass lb_I_Transfer:0:*/
+class lb_I_Transfer : public lb_I_Unknown {
+public:
+	virtual void LB_STDCALL init(char *target) = 0;
+
+	virtual int LB_STDCALL isConnected() = 0;
+
+	/**
+	 * Got a connection...
+	 */
+	virtual lb_I_Transfer* LB_STDCALL accept() = 0;
+
+	virtual void LB_STDCALL operator<< (lb_I_Transfer_Data* req) = 0;
+	virtual void LB_STDCALL operator>> (lb_I_Transfer_Data* res) = 0;
+
+	/**
+	 * This function allows checking for validness of this instance
+	 */
+	virtual int LB_STDCALL isValid() = 0;
+
+	virtual int LB_STDCALL gethostname(lb_I_String* name) = 0;
+	
+	virtual lbErrCodes LB_STDCALL getLastError() = 0;
+	
+	virtual int LB_STDCALL setSockConnection(lb_I_Socket* s) = 0;
+};
+
+/*...e*/
+/*...sclass lb_I_Socket:0:*/
+class lb_I_Socket : public lb_I_Unknown
+{
+public:
+        
+	/**
+	 * Is this object valid ?
+	 */
+	virtual int LB_STDCALL isValid() = 0;
+
+	virtual char* LB_STDCALL gethostname() = 0;
+
+	virtual void LB_STDCALL initSymbolic(char *host, char* service) = 0;
+        virtual void LB_STDCALL reinit(char *mysockaddr="") = 0;
+
+//	virtual lbErrCodes LB_STDCALL neagleOff(SOCKET s);
+
+	virtual int LB_STDCALL isServer() = 0; //{ return _isServer; }
+
+	virtual lbErrCodes LB_STDCALL recvInteger(int& i) = 0;
+	virtual lbErrCodes LB_STDCALL sendInteger(int i) = 0;
+	
+	virtual lbErrCodes LB_STDCALL send(void* buf, int len) = 0;
+
+	/**
+	 * Buffer must be allocated.
+	 */	
+	virtual lbErrCodes LB_STDCALL recv(void* buf, int & len) = 0;
+		
+        virtual lbErrCodes LB_STDCALL recv_charbuf(char *buf) = 0;
+        virtual lbErrCodes LB_STDCALL send_charbuf(char *buf, int len) = 0;
+
+	/**
+	 * Send and recieve a data buffer and automatically split off to
+	 * the max amount of packet size.
+	 */
+	virtual lbErrCodes LB_STDCALL recv(lb_I_Transfer_Data* data) = 0;
+	virtual lbErrCodes LB_STDCALL send(lb_I_Transfer_Data* data) = 0;
+
+
+        virtual lb_I_Socket* LB_STDCALL accept() = 0;
+};
+/*...e*/
 
 #endif // __LB_SUB_TRANSFER__

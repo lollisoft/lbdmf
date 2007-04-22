@@ -74,6 +74,21 @@ virtual void LB_STDCALL visit(lb_I_Action_Steps*) = 0;
 virtual void LB_STDCALL visit(lb_I_Translations*) = 0;
 virtual void LB_STDCALL visit(lb_I_FileLocation*) = 0;
 virtual void LB_STDCALL visit(lb_I_DirLocation*) = 0;
+virtual void LB_STDCALL visit(lb_I_Socket*) = 0;
+virtual void LB_STDCALL visit(lb_I_Transfer*) = 0;
+virtual void LB_STDCALL visit(lb_I_Transfer_Data*) = 0;
+virtual void LB_STDCALL visit(lb_I_Transfer_DataObject*) = 0;
+virtual void LB_STDCALL visit(lb_I_Thread*) = 0;
+virtual void LB_STDCALL visit(lb_I_ThreadImplementation*) = 0;
+virtual void LB_STDCALL visit(lb_I_DispatchProtocol*) = 0;
+virtual void LB_STDCALL visit(lb_I_ProtocolTarget*) = 0;
+virtual void LB_STDCALL visit(lb_I_CallbackTarget*) = 0;
+virtual void LB_STDCALL visit(lb_I_ProtocolManager*) = 0;
+virtual void LB_STDCALL visit(lb_I_ApplicationServer*) = 0;
+virtual void LB_STDCALL visit(lb_I_DispatchFunction*) = 0;
+virtual void LB_STDCALL visit(lb_I_ApplicationClient*) = 0;
+virtual void LB_STDCALL visit(lb_I_ApplicationServerThread*) = 0;
+virtual void LB_STDCALL visit(lb_I_Proxy*) = 0;
 //virtual ~Aspect(){} 
 };   
 
