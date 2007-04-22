@@ -1315,6 +1315,7 @@ void lb_wxFrame::OnBuildMenu(wxCommandEvent& WXUNUSED(event) ) {
 
 }
 /*...e*/
+/*...svoid lb_wxFrame\58\\58\OnPropertyGridChange \40\ wxPropertyGridEvent\38\ event \41\:0:*/
 void lb_wxFrame::OnPropertyGridChange ( wxPropertyGridEvent& event )
 {
 	lbErrCodes err = ERR_NONE;
@@ -1357,6 +1358,7 @@ void lb_wxFrame::OnPropertyGridChange ( wxPropertyGridEvent& event )
 		
 	dispatcher->dispatch(PropertyEvent, uk.getPtr(), &uk_result);
 }
+/*...e*/
 /*...slb_wxFrame\58\\58\OnDispatch\40\wxCommandEvent\38\ event \41\:0:*/
 void lb_wxFrame::OnDispatch(wxCommandEvent& event ) {
         switch (event.GetId()) {
@@ -1406,7 +1408,7 @@ void lb_wxFrame::OnDispatch(wxCommandEvent& event ) {
         }
 }
 /*...e*/
-
+/*...slbErrCodes LB_STDCALL lb_wxFrame\58\\58\setPreferredPropertyPanelByNamespace\40\lb_I_Unknown\42\ uk\41\:0:*/
 lbErrCodes LB_STDCALL lb_wxFrame::setPreferredPropertyPanelByNamespace(lb_I_Unknown* uk) {
 	lbErrCodes err = ERR_NONE;
 	
@@ -1426,7 +1428,8 @@ lbErrCodes LB_STDCALL lb_wxFrame::setPreferredPropertyPanelByNamespace(lb_I_Unkn
 	
 	return err;
 }
-
+/*...e*/
+/*...slbErrCodes LB_STDCALL lb_wxFrame\58\\58\showMsgBox\40\lb_I_Unknown\42\ uk\41\:0:*/
 lbErrCodes LB_STDCALL lb_wxFrame::showMsgBox(lb_I_Unknown* uk) {
 	lbErrCodes err = ERR_NONE;
 	
@@ -1445,8 +1448,8 @@ lbErrCodes LB_STDCALL lb_wxFrame::showMsgBox(lb_I_Unknown* uk) {
 	
 	return err;
 }
-
-
+/*...e*/
+/*...swxPropertyGrid\42\ lb_wxFrame\58\\58\CreatePropertyGrid\40\wxWindow\42\ parent\41\:0:*/
 wxPropertyGrid* lb_wxFrame::CreatePropertyGrid(wxWindow* parent) {
 	wxPropertyGrid* pg = new wxPropertyGrid(
 		parent,
@@ -1475,7 +1478,8 @@ wxPropertyGrid* lb_wxFrame::CreatePropertyGrid(wxWindow* parent) {
 	 
 	return pg;
 }
-
+/*...e*/
+/*...svoid lb_wxFrame\58\\58\populateFileLocation\40\wxPropertyGrid\42\ pg\44\ lb_I_Unknown\42\ uk\44\ lb_I_KeyBase\42\ name\44\ char\42\ category\41\:0:*/
 void lb_wxFrame::populateFileLocation(wxPropertyGrid* pg, lb_I_Unknown* uk, lb_I_KeyBase* name, char* category) {
 	lbErrCodes err = ERR_NONE;
 	UAP(lb_I_FileLocation, s)
@@ -1489,7 +1493,8 @@ void lb_wxFrame::populateFileLocation(wxPropertyGrid* pg, lb_I_Unknown* uk, lb_I
 	
 	pg->Append(wxFileProperty (name->charrep(), category_name->charrep(), s->charrep()));
 }
-
+/*...e*/
+/*...svoid lb_wxFrame\58\\58\populateDirLocation\40\wxPropertyGrid\42\ pg\44\ lb_I_Unknown\42\ uk\44\ lb_I_KeyBase\42\ name\44\ char\42\ category\41\:0:*/
 void lb_wxFrame::populateDirLocation(wxPropertyGrid* pg, lb_I_Unknown* uk, lb_I_KeyBase* name, char* category) {
 	lbErrCodes err = ERR_NONE;
 	UAP(lb_I_DirLocation, s)
@@ -1503,7 +1508,8 @@ void lb_wxFrame::populateDirLocation(wxPropertyGrid* pg, lb_I_Unknown* uk, lb_I_
 	
 	pg->Append(wxDirProperty (name->charrep(), category_name->charrep(), s->charrep()));
 }
-
+/*...e*/
+/*...svoid lb_wxFrame\58\\58\populateString\40\wxPropertyGrid\42\ pg\44\ lb_I_Unknown\42\ uk\44\ lb_I_KeyBase\42\ name\44\ char\42\ category\41\:0:*/
 void lb_wxFrame::populateString(wxPropertyGrid* pg, lb_I_Unknown* uk, lb_I_KeyBase* name, char* category) {
 	lbErrCodes err = ERR_NONE;
 	UAP(lb_I_String, s)
@@ -1517,7 +1523,8 @@ void lb_wxFrame::populateString(wxPropertyGrid* pg, lb_I_Unknown* uk, lb_I_KeyBa
 	
 	pg->Append(wxStringProperty (name->charrep(), category_name->charrep(), s->charrep()));
 }
-
+/*...e*/
+/*...svoid lb_wxFrame\58\\58\populateBoolean\40\wxPropertyGrid\42\ pg\44\ lb_I_Unknown\42\ uk\44\ lb_I_KeyBase\42\ name\44\ char\42\ category\41\:0:*/
 void lb_wxFrame::populateBoolean(wxPropertyGrid* pg, lb_I_Unknown* uk, lb_I_KeyBase* name, char* category) {
 	lbErrCodes err = ERR_NONE;
 	UAP(lb_I_Boolean, s)
@@ -1531,7 +1538,8 @@ void lb_wxFrame::populateBoolean(wxPropertyGrid* pg, lb_I_Unknown* uk, lb_I_KeyB
 	
 	pg->Append(wxBoolProperty (name->charrep(), category_name->charrep(), s->getData()));
 }
-
+/*...e*/
+/*...svoid lb_wxFrame\58\\58\populateInteger\40\wxPropertyGrid\42\ pg\44\ lb_I_Unknown\42\ uk\44\ lb_I_KeyBase\42\ name\44\ char\42\ category\41\:0:*/
 void lb_wxFrame::populateInteger(wxPropertyGrid* pg, lb_I_Unknown* uk, lb_I_KeyBase* name, char* category) {
 	lbErrCodes err = ERR_NONE;
 	UAP(lb_I_Integer, i)
@@ -1545,7 +1553,8 @@ void lb_wxFrame::populateInteger(wxPropertyGrid* pg, lb_I_Unknown* uk, lb_I_KeyB
 
 	pg->Append(wxIntProperty (name->charrep(), category_name->charrep(), i->getData()));
 }
-
+/*...e*/
+/*...svoid lb_wxFrame\58\\58\populateProperties\40\wxPropertyGrid\42\ pg\44\ lb_I_Container\42\ properties\44\ char\42\ category\41\:0:*/
 void lb_wxFrame::populateProperties(wxPropertyGrid* pg, lb_I_Container* properties, char* category) {
 	lbErrCodes err = ERR_NONE;
 		for (int i = 1; i <= properties->Count(); i++) {
@@ -1593,7 +1602,8 @@ void lb_wxFrame::populateProperties(wxPropertyGrid* pg, lb_I_Container* properti
 			
 		}
 }
-
+/*...e*/
+/*...swxTreeCtrl\42\ lb_wxFrame\58\\58\CreateTreeCtrl\40\wxWindow\42\ parent\41\:0:*/
 wxTreeCtrl* lb_wxFrame::CreateTreeCtrl(wxWindow* parent) {
     wxTreeCtrl* tree = new wxTreeCtrl(parent, -1,
                                       wxPoint(0,0), wxSize(160,250),
@@ -1631,6 +1641,7 @@ wxTreeCtrl* lb_wxFrame::CreateTreeCtrl(wxWindow* parent) {
 
     return tree;
 }
+/*...e*/
 
 wxPoint lb_wxFrame::GetStartPosition()
 {
@@ -1640,117 +1651,123 @@ wxPoint lb_wxFrame::GetStartPosition()
     return wxPoint(pt.x + x, pt.y + x);
 }
 
+/*...slbErrCodes LB_STDCALL lb_wxFrame\58\\58\addToolBar\40\lb_I_Unknown\42\ uk\41\:0:*/
 lbErrCodes LB_STDCALL lb_wxFrame::addToolBar(lb_I_Unknown* uk) {
 	lbErrCodes err = ERR_DISPATCH_PARAMETER_WRONG;
+	wxToolBar* tb;
 
-    wxToolBar* tb = GetToolBar();
-    
-    if (tb == NULL) {
-		tb = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_HORIZONTAL);
-	
-		UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
-		UAP_REQUEST(manager.getPtr(), lb_I_String, name)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, name)
 		
-		UAP(lb_I_Parameter, params)
-		QI(uk, lb_I_Parameter, params)
-		
-		if (params != NULL) {
-			err = ERR_NONE;
+	UAP(lb_I_Parameter, params)
+	QI(uk, lb_I_Parameter, params)
 
-			*parameter = "toolbarName";
-			params->getUAPString(*&parameter, *&name);
+	if (params != NULL) {
+		err = ERR_NONE;
 
-			wxToolBar* tb;
-			wxToolBar* maintb;
-			
-#ifndef USE_WXAUI
-			tb = GetToolBar();
-#endif
+		*parameter = "toolbarName";
+		params->getUAPString(*&parameter, *&name);
+	}
+
+/*...sInit main toolbar \40\exit tool\41\:8:*/
+	wxToolBar* maintb;
 #ifdef USE_WXAUI
-			maintb = (wxToolBar*) m_mgr.GetPane("Main Toolbar").window;
+	maintb = (wxToolBar*) m_mgr.GetPane("Main Toolbar").window;
 #endif
-
-			if (maintb == NULL) {
-				maintb = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_HORIZONTAL|wxTB_DOCKABLE);
+	if (maintb == NULL) {
+		maintb = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_HORIZONTAL);
 				
-				wxImage::AddHandler(new wxXPMHandler);
-				wxImage::AddHandler(new wxPNGHandler);
+		wxImage::AddHandler(new wxXPMHandler);
+		wxImage::AddHandler(new wxPNGHandler);
 				
-				maintb->SetToolBitmapSize(wxSize(32, 32));
+		maintb->SetToolBitmapSize(wxSize(32, 32));
 				
-				UAP_REQUEST(manager.getPtr(), lb_I_String, toolbarfile)
-				UAP_REQUEST(manager.getPtr(), lb_I_String, images)
-				UAP_REQUEST(getModuleManager(), lb_I_MetaApplication, app)
+		UAP_REQUEST(manager.getPtr(), lb_I_String, toolbarfile)
+		UAP_REQUEST(manager.getPtr(), lb_I_String, images)
+		UAP_REQUEST(getModuleManager(), lb_I_MetaApplication, app)
 					
-				*toolbarfile += app->getDirLocation();
+		*toolbarfile += app->getDirLocation();
 				
 #ifdef OSX
-				*images = "/toolbarimages/";
+		*images = "/toolbarimages/";
 #endif
 #ifdef LINUX
-				*images = "/toolbarimages/";
+		*images = "/toolbarimages/";
 #endif
 #ifdef WINDOWS
-				*images = "\\toolbarimages\\";
+		*images = "\\toolbarimages\\";
 #endif
-				*toolbarfile += images->charrep();
-				*toolbarfile += "exit.png";
+		*toolbarfile += images->charrep();
+		*toolbarfile += "exit.png";
 				
-				wxImage* im;
+		wxImage* im;
 				
-				im = new wxImage(toolbarfile->charrep(), wxBITMAP_TYPE_PNG);
+		im = new wxImage(toolbarfile->charrep(), wxBITMAP_TYPE_PNG);
 				
-				wxBitmap bm = wxBitmap(im);
+		wxBitmap bm = wxBitmap(im);
 				
-				maintb->AddTool(DYNAMIC_QUIT, bm, _trans("Exit"));
+		maintb->AddTool(DYNAMIC_QUIT, bm, _trans("Exit"));
 				
-				maintb->Realize();
+		maintb->Realize();
+		maintb->SetSize(wxSize(maintb->GetToolSize().GetWidth()*maintb->GetToolsCount(), maintb->GetToolSize().GetHeight()));
 				
 #ifndef USE_WXAUI
-				SetToolBar(maintb);
+		SetToolBar(maintb);
 #endif
 				
 #ifdef USE_WXAUI
-				m_mgr.AddPane(maintb, wxPaneInfo().
-							  Name(wxT("Main Toolbar")).Caption(wxT("Main Toolbar")).
-							  ToolbarPane().Top().
-							  LeftDockable(false).RightDockable(false));
-				m_mgr.Update();
+		m_mgr.AddPane(maintb, wxPaneInfo().
+			  Name(wxT("Main Toolbar")).Caption(wxT("Main Toolbar")).
+			  ToolbarPane().Top().
+			  LeftDockable(false).RightDockable(false));
+		m_mgr.Update();
 #endif
-			}
+	}
+/*...e*/
 
-#ifdef USE_WXAUI
-			tb = (wxToolBar*) m_mgr.GetPane(name->charrep()).window;
-#endif
-
-			if (tb == NULL) {
-				tb = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_HORIZONTAL|wxTB_DOCKABLE);
-				
-				wxImage::AddHandler(new wxXPMHandler);
-				wxImage::AddHandler(new wxPNGHandler);
-				
-				tb->SetToolBitmapSize(wxSize(32, 32));
-				
 #ifndef USE_WXAUI
-				SetToolBar(tb);
+	tb = GetToolBar();
+#endif
+#ifdef USE_WXAUI
+	tb = (wxToolBar*) m_mgr.GetPane(name->charrep()).window;
+#endif
+    
+	if ((tb == NULL) && (params != NULL)) {
+		tb = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_HORIZONTAL|wxTB_DOCKABLE);
+
+		wxImage::AddHandler(new wxXPMHandler);
+		wxImage::AddHandler(new wxPNGHandler);
+
+		tb->SetToolBitmapSize(wxSize(32, 32));
+
+		err = ERR_NONE;
+
+		*parameter = "toolbarName";
+		params->getUAPString(*&parameter, *&name);
+			
+		wxImage::AddHandler(new wxXPMHandler);
+		wxImage::AddHandler(new wxPNGHandler);
+
+#ifndef USE_WXAUI
+		SetToolBar(tb);
 #endif
 				
 #ifdef USE_WXAUI
-				m_mgr.AddPane(tb, wxPaneInfo().
-							  Name(wxT(name->charrep())).Caption(wxT(name->charrep())).
-							  ToolbarPane().Top().
-							  LeftDockable(false).RightDockable(false));
-				m_mgr.Update();
+		m_mgr.AddPane(tb, wxPaneInfo().
+					  Name(wxT(name->charrep())).Caption(wxT(name->charrep())).
+					  ToolbarPane().Top().
+					  LeftDockable(false).RightDockable(false));
+		m_mgr.Update();
 #endif
-			} else {
-				
-			}
-		}
+    
+		return ERR_NONE;
 	}
 	
 	return err;
 }
+/*...e*/
 
+/*...slbErrCodes LB_STDCALL lb_wxFrame\58\\58\addTool_To_ToolBar\40\lb_I_Unknown\42\ uk\41\:0:*/
 lbErrCodes LB_STDCALL lb_wxFrame::addTool_To_ToolBar(lb_I_Unknown* uk) {
 	lbErrCodes err = ERR_DISPATCH_PARAMETER_WRONG;
 	UAP(lb_I_Parameter, params)
@@ -1833,29 +1850,32 @@ lbErrCodes LB_STDCALL lb_wxFrame::addTool_To_ToolBar(lb_I_Unknown* uk) {
 			
 			tb->AddTool(EvNr, bm, entry->charrep());
 			tb->Realize();
-
+			tb->SetSize(wxSize(tb->GetToolSize().GetWidth()*tb->GetToolsCount(), tb->GetToolSize().GetHeight()));
+			
 #ifdef USE_WXAUI			
 			m_mgr.DetachPane(tb);
 			
 			m_mgr.AddPane(tb, wxPaneInfo().
 				  Name(wxT(name->charrep())).Caption(wxT(name->charrep())).
-                  ToolbarPane().Top().
-                  LeftDockable(false).RightDockable(false));
+        		          ToolbarPane().Top().
+                		  LeftDockable(false).RightDockable(false));
 			m_mgr.Update();
 #endif
 		}
 		
 		err = ERR_NONE;
 	}
+	return err;
 
 }
+/*...e*/
 
 lbErrCodes LB_STDCALL lb_wxFrame::removeTool_From_ToolBar(lb_I_Unknown* uk) {
-
+	return ERR_NONE;
 }
 
 lbErrCodes LB_STDCALL lb_wxFrame::toggleTool_From_ToolBar(lb_I_Unknown* uk) {
-
+	return ERR_NONE;
 }
 
 lbErrCodes LB_STDCALL lb_wxFrame::addStatusBar(lb_I_Unknown* uk) {
@@ -1880,6 +1900,8 @@ lbErrCodes LB_STDCALL lb_wxFrame::addStatusBar(lb_I_Unknown* uk) {
 			sb->SetStatusText(wxT("Ready"), 0);
 		}
 	}
+	
+	return ERR_NONE;
 }
 	
 lbErrCodes LB_STDCALL lb_wxFrame::addStatusBarTextArea(lb_I_Unknown* uk) {
@@ -1930,7 +1952,7 @@ lbErrCodes LB_STDCALL lb_wxFrame::addStatusBarTextArea(lb_I_Unknown* uk) {
 }
 	
 lbErrCodes LB_STDCALL lb_wxFrame::removeStatusBarTextArea(lb_I_Unknown* uk) {
-
+	return ERR_NONE;
 }
 	
 lbErrCodes LB_STDCALL lb_wxFrame::setText_To_StatusBarTextArea(lb_I_Unknown* uk) {

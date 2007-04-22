@@ -33,11 +33,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.23 $
+ * $Revision: 1.24 $
  * $Name:  $
- * $Id: wxWrapperDLL.h,v 1.23 2007/02/18 18:46:39 lollisoft Exp $
+ * $Id: wxWrapperDLL.h,v 1.24 2007/04/22 13:57:27 lollisoft Exp $
  *
  * $Log: wxWrapperDLL.h,v $
+ * Revision 1.24  2007/04/22 13:57:27  lollisoft
+ * Toolbar improvements.
+ *
  * Revision 1.23  2007/02/18 18:46:39  lollisoft
  * Toolbar now works bood under Mac OS X.
  *
@@ -159,7 +162,8 @@
 /*...e*/
 
 #include <iostream>
-
+#include <wx/listimpl.cpp>
+    
 // ID for the menu commands
 #define DYNAMIC_QUIT            1000
 #define DYNAMIC_TEXT            1001
@@ -172,6 +176,37 @@
 #define PGID					1007
 
 class lb_wxGUI;
+
+	class ToolCount {
+	public:
+		ToolCount(wxString& _name) {
+			count = 0;
+			name = 	_name;
+		}
+
+		wxString& getName() {
+			return name;
+		}
+		
+		void incCount() {
+			count++;
+		}
+		
+		void decCount() {
+			count--;
+		}
+		
+		int getCount() {
+			return count;
+		}
+		
+		wxString name;
+		int count;
+	};
+	
+WX_DECLARE_LIST(ToolCount, ToolCountList);
+
+WX_DEFINE_LIST(ToolCountList);
 
 /*...sclass lb_wxFrame:0:*/
 /**
@@ -338,6 +373,9 @@ public:
 	// Registered event handler IS's
 	int on_panel_usage;
 	int _showLeftPropertyBar;
+
+
+	ToolCountList myToolCountList;
 	
 #ifdef USE_WXAUI
 private:
