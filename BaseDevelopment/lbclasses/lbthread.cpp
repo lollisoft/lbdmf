@@ -47,9 +47,9 @@ extern "C" {
 
 #include <iostream>
 
-//#include <lbInterfaces.h>
-#include <lbthread.h>
 #include <lbConfigHook.h>
+
+#include <lbthread.h>
 
 int lbThread::threadCount = 0;
 
@@ -519,8 +519,16 @@ _CL_VERBOSE << "lbThreadInternal::WinThreadStart: Null pointer: thread" LOG_
 #endif
 /*...e*/
     }
+
+// Did I have to release the impl instance on leave scope ?
+
+    lb_I_ThreadImplementation* impl = thread->getThreadImplementation();
     
-    DWORD ret = (DWORD)thread->Entry();
+    (impl->*(lbThreadFunction) impl->getThreadFunction()) (thread);
+    
+    //DWORD ret = (DWORD)thread->Entry();
+
+    DWORD ret = 0;
 
 /*...sTHREAD_VERBOSE:0:*/
 #ifdef THREAD_VERBOSE
@@ -578,6 +586,16 @@ lbThread::~lbThread() {
 		_CL_VERBOSE << "lbThread::~lbThread() called OnExit()" LOG_
 	}
 	if (pThreadImpl != NULL) delete pThreadImpl;
+}
+
+lb_I_ThreadImplementation* LB_STDCALL lbThread::getThreadImplementation() {
+	_impl++;
+	return _impl.getPtr();
+}
+
+lbErrCodes LB_STDCALL lbThread::setThreadImplementation(lb_I_ThreadImplementation* impl) {
+	_impl = impl;
+	return ERR_NONE;
 }
 
 lbErrCodes LB_STDCALL lbThread::create() {
@@ -711,6 +729,9 @@ _CL_VERBOSE << "lbThread::OnExit() leave" LOG_
 /*...e*/
 
 #endif
+
+#ifdef bla
+
 /*...sextern C begin:0:*/
 #ifdef __cplusplus
 extern "C" {
@@ -752,3 +773,5 @@ LB_STDCALL lbGetCurrentProcessId() {
 }
 #endif
 /*...e*/
+
+#endif

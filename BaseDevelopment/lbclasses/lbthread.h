@@ -55,7 +55,7 @@ typedef enum
 } lbMutexError;
 /*...e*/
 
-/*...sclass DLLEXPORT lbMutex:0:*/
+/*...sclass lbMutex:0:*/
 
 class lbMutex : public lb_I_Mutex
 {
@@ -81,7 +81,7 @@ private:
 /*...e*/
 
 /*...sclass lbCritSect\44\ lbLock:0:*/
-class DLLEXPORT lbLock;
+class lbLock;
 
 class lbCritSect : public lb_I_CriticalSection {
 public:
@@ -116,20 +116,22 @@ protected:
 
 class lbThreadInternal; // For various operating systems
 
-/*...sclass DLLEXPORT lbThread:0:*/
-class DLLEXPORT lbThread : public lb_I_Thread {
+/*...sclass lbThread:0:*/
+class lbThread : public lb_I_Thread {
 public:
 	lbThread();
 	virtual ~lbThread();
-	
 
-	virtual lbErrCodes LB_STDCALL create();
+	lb_I_ThreadImplementation* LB_STDCALL getThreadImplementation();	
+	lbErrCodes LB_STDCALL setThreadImplementation(lb_I_ThreadImplementation* impl);
 
-	virtual lbErrCodes LB_STDCALL run(); 
-	virtual lbErrCodes LB_STDCALL stop();
+	lbErrCodes LB_STDCALL create();
+
+	lbErrCodes LB_STDCALL run(); 
+	lbErrCodes LB_STDCALL stop();
 	
-	virtual lbErrCodes LB_STDCALL pause();
-	virtual lbErrCodes LB_STDCALL resume();
+	lbErrCodes LB_STDCALL pause();
+	lbErrCodes LB_STDCALL resume();
 
 	/**
 	 * Call this function once a process
@@ -142,15 +144,9 @@ public:
 	void LB_STDCALL OnExit();
 	
 	/**
-	 * Implementation of a specific thread must implement this
+	 * Main thread routine.
 	 */
-//	static DWORD WinThreadStart(lbThread *thread);
-
-protected:
-
-	// entry point for the thread - called by Run() and executes in the context
-	// of this thread.
-	virtual void *Entry() = 0;
+	static DWORD WinThreadStart(lbThread *thread);
 
 private:
 //	HANDLE lb_hThread;	
@@ -164,6 +160,8 @@ private:
 
         // the (platform-dependent) thread class implementation
         lbThreadInternal *pThreadImpl;	
+
+	UAP(lb_I_ThreadImplementation, _impl)
         
         static int threadCount;
 };
@@ -171,6 +169,8 @@ private:
 
 
 /*...e*/
+
+#ifdef bla
 
 #ifdef __cplusplus
 extern "C" {
@@ -183,5 +183,6 @@ DWORD DLLEXPORT LB_STDCALL lbGetCurrentProcessId();
 }
 #endif
 
+#endif
 
 #endif
