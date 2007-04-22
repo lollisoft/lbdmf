@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.30 $
+ * $Revision: 1.31 $
  * $Name:  $
- * $Id: lbErrcodes.h,v 1.30 2007/01/29 20:12:59 lollisoft Exp $
+ * $Id: lbErrcodes.h,v 1.31 2007/04/22 13:39:42 lollisoft Exp $
  *
  * $Log: lbErrcodes.h,v $
+ * Revision 1.31  2007/04/22 13:39:42  lollisoft
+ * Added another error code.
+ *
  * Revision 1.30  2007/01/29 20:12:59  lollisoft
  * Checkin for Linux.
  *
@@ -238,6 +241,7 @@ enum lbErrCodes {
 	ERR_TRANSFER_NULLPTR,
 	ERR_TRANSFER_ENDED,
 	ERR_TRANSFER_SEND_DATATYPE,
+	ERR_TRANSFER_PROTOCOL,
 	
 	ERR_SOCKET_UNKNOWN,
 	ERR_SOCKET_STATE,
