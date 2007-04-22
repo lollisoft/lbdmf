@@ -126,9 +126,8 @@ C_ELFOPS += `wx-config --inplace --cxxflags` -DUSE_WXWRAPPER_DLL -DOSX -DUNIX -D
 ifeq ($(DEBUG), yes)
 C_ELFOPS += -D__WXDEBUG__
 endif
-
 L_OPS = -F$(HOME)/lib -framework wxPropgrid -framework lbHook -framework wxAUI `wx-config --inplace --libs` -o
-VENDORLIBS=
+VENDORLIBS=-lc /usr/lib/libgcc_s.1.dylib
 endif
 
 endif

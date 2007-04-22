@@ -1,39 +1,49 @@
-format 22
+format 29
 "lbDB" // BaseDevelopment::lbDB
+  revision 1
+  modified_by 2 "lothar"
   // class settings
   //class diagram settings
-  draw_all_relations default hide_attributes default hide_operations default show_full_members_definition default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default
+  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default shadow default
   //use case diagram settings
-  package_name_in_tab default show_context default auto_label_position default
+  package_name_in_tab default show_context default auto_label_position default shadow default
   //sequence diagram settings
-  show_full_operations_definition default write_horizontally default drawing_language default
+  show_full_operations_definition default write_horizontally default drawing_language default shadow default
   //collaboration diagram settings
-  show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default
+  show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default shadow default
+  //object diagram settings
+   write_horizontally default package_name_in_tab default show_context default auto_label_position default shadow default
   //component diagram settings
-  package_name_in_tab default show_context default auto_label_position default
+  package_name_in_tab default show_context default auto_label_position default shadow default
   draw_component_as_icon default show_component_req_prov default show_component_rea default
   //deployment diagram settings
-  package_name_in_tab default show_context default write_horizontally default auto_label_position default
+  package_name_in_tab default show_context default write_horizontally default auto_label_position default shadow default
   draw_component_as_icon default show_component_req_prov default show_component_rea default
   //state diagram settings
-  package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default
+  package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default shadow default
   show_activities default region_horizontally default drawing_language default
+  //activity diagram settings
+  package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default shadow default
+  show_infonote default drawing_language default
   
   classview 128711 "lbDB"
     //class diagram settings
-    draw_all_relations default hide_attributes default hide_operations default show_full_members_definition default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default
-    //col diagram settings
-    show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default
-    //seq diagram settings
-    show_full_operations_definition default write_horizontally default drawing_language default
+    draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default shadow default
+    //collaboration diagram settings
+    show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default shadow default
+    //object diagram settings
+     write_horizontally default package_name_in_tab default show_context default auto_label_position default shadow default
+    //sequence diagram settings
+    show_full_operations_definition default write_horizontally default drawing_language default shadow default
     //state diagram settings
-    package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default
+    package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default shadow default
     show_activities default region_horizontally default drawing_language default
     //class settings
-    class 144711 "lbFakeDelete"
-      
-      
-      cpp_decl "${comment}${template}class ${name}${inherit} {
+    //activity diagram settings
+    package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default shadow default
+    show_infonote default drawing_language default
+    
+    class 144711 "lbFakeDelete"cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
 "
@@ -66,10 +76,7 @@ ${inlines}
       end
     end
 
-    class 151879 "lbDBView"
-      
-      
-      cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 151879 "lbDBView"cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
 "
@@ -78,14 +85,6 @@ ${inlines}
       explicit_switch_type ""
       
       comment "...sclass def lbDBView:0:"
-      classrelation 144455 // <generalisation>
-	relation 144455 ---|>
-	  a public
-	    cpp default "Generated"
-	    classrelation_ref 144455 // <generalisation>
-	  b parent class_ref 152007 // lb_I_MVC_View
-      end
-
       operation 227015 "lbDBView"
 	cpp_inline public explicit_return_type ""
 	nparams 0
@@ -105,9 +104,9 @@ ${inlines}
       end
 
       operation 227271 "setViewSource"
-	cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 1
-	  param inout name "q" type class_ref 141767 // lb_I_Unknown
+	  param inout name "q" explicit_type "lb_I_Unknown"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
@@ -123,10 +122,7 @@ ${body}}
       end
     end
 
-    class 152135 "lbBoundColumns"
-      
-      
-      cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 152135 "lbBoundColumns"cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
 "
@@ -137,14 +133,6 @@ ${inlines}
       comment "...e
 ...e
 ...sclass def lbBoundColumns:0:"
-      classrelation 144583 // <generalisation>
-	relation 144583 ---|>
-	  a public
-	    cpp default "Generated"
-	    classrelation_ref 144583 // <generalisation>
-	  b parent class_ref 131399 // lb_I_ColumnBinding
-      end
-
       operation 227399 "lbBoundColumns"
 	cpp_inline public explicit_return_type ""
 	nparams 0
@@ -166,9 +154,9 @@ ${inlines}
       end
 
       operation 227655 "setBoundColumns"
-	public return_type class_ref 128711 // lbErrCodes
+	public explicit_return_type "lbErrCodes"
 	nparams 1
-	  param inout name "bc" type class_ref 140103 // lb_I_Container
+	  param inout name "bc" explicit_type "lb_I_Container"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
@@ -179,7 +167,7 @@ ${body}}
       end
 
       operation 227783 "getBoundColumn"
-	public return_type class_ref 152263 // lb_I_BoundColumn
+	public explicit_return_type "lb_I_BoundColumn"
 	nparams 1
 	  param in name "column" explicit_type "int"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract};
@@ -210,10 +198,10 @@ ${body}}
       end
 
       operation 228039 "setQuery"
-	public return_type class_ref 128711 // lbErrCodes
+	public explicit_return_type "lbErrCodes"
 	nparams 2
-	  param inout name "q" type class_ref 152391 // lb_I_Query
-	  param inout name "ReadonlyColumns" type class_ref 140103 // lb_I_Container
+	  param inout name "q" explicit_type "lb_I_Query"
+	  param inout name "ReadonlyColumns" explicit_type "lb_I_Container"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}, ${t1} * ${p1}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "//...e
@@ -244,10 +232,10 @@ ${body}}
       end
 
       operation 228295 "getString"
-	public return_type class_ref 128711 // lbErrCodes
+	public explicit_return_type "lbErrCodes"
 	nparams 2
 	  param in name "column" explicit_type "int"
-	  param inout name "instance" type class_ref 141255 // lb_I_String
+	  param inout name "instance" explicit_type "lb_I_String"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}, ${t1} * ${p1}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "//...e
@@ -264,10 +252,10 @@ ${body}}
       end
 
       operation 228423 "getLong"
-	public return_type class_ref 128711 // lbErrCodes
+	public explicit_return_type "lbErrCodes"
 	nparams 2
 	  param in name "column" explicit_type "int"
-	  param inout name "instance" type class_ref 141639 // lb_I_Long
+	  param inout name "instance" explicit_type "lb_I_Long"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}, ${t1} * ${p1}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "//...e
@@ -280,10 +268,10 @@ ${body}}
       end
 
       operation 228551 "getString"
-	public return_type class_ref 128711 // lbErrCodes
+	public explicit_return_type "lbErrCodes"
 	nparams 2
 	  param inout name "column" explicit_type "char"
-	  param inout name "instance" type class_ref 141255 // lb_I_String
+	  param inout name "instance" explicit_type "lb_I_String"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}, ${t1} * ${p1}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "//...e
@@ -296,10 +284,10 @@ ${body}}
       end
 
       operation 228679 "setString"
-	public return_type class_ref 128711 // lbErrCodes
+	public explicit_return_type "lbErrCodes"
 	nparams 2
 	  param inout name "column" explicit_type "char"
-	  param inout name "instance" type class_ref 141255 // lb_I_String
+	  param inout name "instance" explicit_type "lb_I_String"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}, ${t1} * ${p1}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "//...slbErrCodes      LB_STDCALL lbBoundColumns\\58\\\\58\\setString\\40\\char\\42\\ column\\44\\ lb_I_String\\42\\ instance\\41\\:0:
@@ -358,7 +346,7 @@ ${body}}
       end
 
       operation 229191 "getColumnType"
-	public return_type class_ref 152519 // lbDBColumnTypes
+	public explicit_return_type "lbDBColumnTypes"
 	nparams 1
 	  param in name "pos" explicit_type "int"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract};
@@ -374,7 +362,7 @@ ${body}}
       end
 
       operation 229319 "getColumnType"
-	public return_type class_ref 152519 // lbDBColumnTypes
+	public explicit_return_type "lbDBColumnTypes"
 	nparams 1
 	  param inout name "name" explicit_type "char"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
@@ -472,10 +460,7 @@ ${body}}
       end
     end
 
-    class 152647 "lbQuery"
-      
-      
-      cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 152647 "lbQuery"cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
 "
@@ -487,14 +472,6 @@ ${inlines}
 ...sclass def lbQuery:0:
 * \\brief Implementation using ODBC backend.
  "
-      classrelation 144839 // <generalisation>
-	relation 144839 ---|>
-	  a public
-	    cpp default "Generated"
-	    classrelation_ref 144839 // <generalisation>
-	  b parent class_ref 152391 // lb_I_Query
-      end
-
       operation 230087 "lbQuery"
 	cpp_inline public explicit_return_type ""
 	nparams 1
@@ -542,9 +519,9 @@ ${inlines}
       end
 
       operation 230343 "registerView"
-	cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 1
-	  param inout name "view" type class_ref 152007 // lb_I_MVC_View
+	  param inout name "view" explicit_type "lb_I_MVC_View"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
@@ -571,9 +548,9 @@ ${body}}
       end
 
       operation 230471 "unregisterView"
-	cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 1
-	  param inout name "view" type class_ref 152007 // lb_I_MVC_View
+	  param inout name "view" explicit_type "lb_I_MVC_View"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
@@ -644,7 +621,7 @@ ${body}}
 	public explicit_return_type "void"
 	nparams 2
 	  param inout name "lp" explicit_type "char"
-	  param in name "hstmt" type class_ref 152775 // HSTMT
+	  param in name "hstmt" explicit_type "HSTMT"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}, ${t1} ${p1}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "//...e
@@ -728,7 +705,7 @@ ${body}}
       end
 
       operation 231879 "query"
-	public return_type class_ref 128711 // lbErrCodes
+	public explicit_return_type "lbErrCodes"
 	nparams 2
 	  param inout name "q" explicit_type "char"
 	  param in name "bind" explicit_type "bool"
@@ -745,7 +722,7 @@ ${body}}
       end
 
       operation 232007 "bind"
-	public return_type class_ref 128711 // lbErrCodes
+	public explicit_return_type "lbErrCodes"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -760,7 +737,7 @@ ${body}}
       end
 
       operation 232135 "add"
-	public return_type class_ref 128711 // lbErrCodes
+	public explicit_return_type "lbErrCodes"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -784,7 +761,7 @@ ${body}}
       end
 
       operation 232391 "remove"
-	public return_type class_ref 128711 // lbErrCodes
+	public explicit_return_type "lbErrCodes"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -803,7 +780,7 @@ ${body}}
       end
 
       operation 232519 "update"
-	public return_type class_ref 128711 // lbErrCodes
+	public explicit_return_type "lbErrCodes"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -896,7 +873,7 @@ ${body}}
       end
 
       operation 233287 "getFKColumn"
-	public return_type class_ref 141255 // lb_I_String
+	public explicit_return_type "lb_I_String"
 	nparams 1
 	  param in name "pos" explicit_type "int"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract};
@@ -912,7 +889,7 @@ ${body}}
       end
 
       operation 233415 "getFKColumn"
-	public return_type class_ref 141255 // lb_I_String
+	public explicit_return_type "lb_I_String"
 	nparams 2
 	  param inout name "table" explicit_type "char"
 	  param inout name "primary" explicit_type "char"
@@ -929,7 +906,7 @@ ${body}}
       end
 
       operation 233543 "getPKTable"
-	public return_type class_ref 141255 // lb_I_String
+	public explicit_return_type "lb_I_String"
 	nparams 1
 	  param in name "FKName" explicit_type "char"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}const ${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
@@ -945,7 +922,7 @@ ${body}}
       end
 
       operation 233671 "getPKColumn"
-	public return_type class_ref 141255 // lb_I_String
+	public explicit_return_type "lb_I_String"
 	nparams 1
 	  param in name "FKName" explicit_type "char"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}const ${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
@@ -976,7 +953,7 @@ ${body}}
       end
 
       operation 233927 "getPKColumn"
-	public return_type class_ref 141255 // lb_I_String
+	public explicit_return_type "lb_I_String"
 	nparams 1
 	  param in name "pos" explicit_type "int"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract};
@@ -1008,7 +985,7 @@ ${body}}
       end
 
       operation 234183 "getColumnType"
-	cpp_virtual public return_type class_ref 152519 // lbDBColumnTypes
+	cpp_virtual public explicit_return_type "lbDBColumnTypes"
 	nparams 1
 	  param in name "pos" explicit_type "int"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract};
@@ -1024,7 +1001,7 @@ ${body}}
       end
 
       operation 234311 "getColumnType"
-	cpp_virtual public return_type class_ref 152519 // lbDBColumnTypes
+	cpp_virtual public explicit_return_type "lbDBColumnTypes"
 	nparams 1
 	  param inout name "name" explicit_type "char"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
@@ -1084,7 +1061,7 @@ ${body}}
       end
 
       operation 234823 "absolute"
-	public return_type class_ref 128711 // lbErrCodes
+	public explicit_return_type "lbErrCodes"
 	nparams 1
 	  param in name "pos" explicit_type "int"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract};
@@ -1100,7 +1077,7 @@ ${body}}
       end
 
       operation 234951 "first"
-	public return_type class_ref 128711 // lbErrCodes
+	public explicit_return_type "lbErrCodes"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -1115,7 +1092,7 @@ ${body}}
       end
 
       operation 235079 "next"
-	public return_type class_ref 128711 // lbErrCodes
+	public explicit_return_type "lbErrCodes"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -1130,7 +1107,7 @@ ${body}}
       end
 
       operation 235207 "previous"
-	public return_type class_ref 128711 // lbErrCodes
+	public explicit_return_type "lbErrCodes"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -1145,7 +1122,7 @@ ${body}}
       end
 
       operation 235335 "last"
-	public return_type class_ref 128711 // lbErrCodes
+	public explicit_return_type "lbErrCodes"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -1238,7 +1215,7 @@ ${body}}
       end
 
       operation 236103 "getAsString"
-	public return_type class_ref 141255 // lb_I_String
+	public explicit_return_type "lb_I_String"
 	nparams 1
 	  param in name "column" explicit_type "int"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract};
@@ -1251,7 +1228,7 @@ ${body}}
       end
 
       operation 236231 "getAsLong"
-	public return_type class_ref 141639 // lb_I_Long
+	public explicit_return_type "lb_I_Long"
 	nparams 1
 	  param in name "column" explicit_type "int"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract};
@@ -1264,10 +1241,10 @@ ${body}}
       end
 
       operation 236359 "setString"
-	public return_type class_ref 128711 // lbErrCodes
+	public explicit_return_type "lbErrCodes"
 	nparams 2
-	  param inout name "columnName" type class_ref 141255 // lb_I_String
-	  param inout name "value" type class_ref 141255 // lb_I_String
+	  param inout name "columnName" explicit_type "lb_I_String"
+	  param inout name "value" explicit_type "lb_I_String"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}, ${t1} * ${p1}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "//...e
@@ -1281,10 +1258,10 @@ ${body}}
       end
 
       operation 236487 "init"
-	public return_type class_ref 128711 // lbErrCodes
+	public explicit_return_type "lbErrCodes"
 	nparams 3
-	  param in name "_henv" type class_ref 152903 // HENV
-	  param in name "_hdbc" type class_ref 153031 // HDBC
+	  param in name "_henv" explicit_type "HENV"
+	  param in name "_hdbc" explicit_type "HDBC"
 	  param in name "readonly" explicit_type "int"
 	    defaultvalue " 1"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${const}${volatile}${throw}${abstract};
@@ -1300,7 +1277,7 @@ ${body}}
       end
 
       operation 236615 "executeDirect"
-	public return_type class_ref 128711 // lbErrCodes
+	public explicit_return_type "lbErrCodes"
 	nparams 1
 	  param inout name "SQL" explicit_type "char"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
@@ -1316,7 +1293,7 @@ ${body}}
       end
 
       operation 236743 "getCurrentStatement"
-	cpp_inline public return_type class_ref 152775 // HSTMT
+	cpp_inline public explicit_return_type "HSTMT"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract} {
 		return hstmt;
@@ -1342,7 +1319,7 @@ ${body}}
       end
 
       operation 236999 "getBoundColumns"
-	cpp_inline public return_type class_ref 131399 // lb_I_ColumnBinding
+	cpp_inline public explicit_return_type "lb_I_ColumnBinding"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}${)}${const}${volatile}${throw}${abstract} {
 		return boundColumns.getPtr();
@@ -1376,51 +1353,6 @@ ${body}}
 	idl_decl ""
       end
 
-      classrelation 144967 // henv (<directional aggregation by value>)
-	relation 144967 *-->
-	  a role_name "henv" multiplicity "" private
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	    classrelation_ref 144967 // henv (<directional aggregation by value>)
-	  b parent class_ref 152903 // HENV
-      end
-
-      classrelation 145095 // hdbc (<directional aggregation by value>)
-	relation 145095 *-->
-	  a role_name "hdbc" multiplicity "" private
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	    classrelation_ref 145095 // hdbc (<directional aggregation by value>)
-	  b parent class_ref 153031 // HDBC
-      end
-
-      classrelation 145223 // hstmt (<directional aggregation by value>)
-	relation 145223 *-->
-	  a role_name "hstmt" multiplicity "" private
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	    classrelation_ref 145223 // hstmt (<directional aggregation by value>)
-	  b parent class_ref 152775 // HSTMT
-      end
-
-      classrelation 145351 // hupdatestmt (<directional aggregation by value>)
-	relation 145351 *-->
-	  a role_name "hupdatestmt" multiplicity "" private
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	    classrelation_ref 145351 // hupdatestmt (<directional aggregation by value>)
-	  b parent class_ref 152775 // HSTMT
-      end
-
-      classrelation 145479 // retcode (<directional aggregation by value>)
-	relation 145479 *-->
-	  a role_name "retcode" multiplicity "" private
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	    classrelation_ref 145479 // retcode (<directional aggregation by value>)
-	  b parent class_ref 153159 // RETCODE
-      end
-
       attribute 153927 "szSql"
 	private explicit_type "char"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}[1000]${value};
@@ -1451,7 +1383,7 @@ ${body}}
 "
 	java_decl ""
 	idl_decl ""
-	comment " readonly = 1, else = 0"
+	comment " readonly = 1, else = 0"
       end
 
       attribute 154439 "_autoRefresh"
@@ -1468,7 +1400,7 @@ ${body}}
 "
 	java_decl ""
 	idl_decl ""
-	comment " insert = 1, select = 0"
+	comment " insert = 1, select = 0"
       end
 
       attribute 154695 "skipFKCollections"
@@ -1488,15 +1420,6 @@ ${body}}
 	idl_decl ""
       end
 
-      classrelation 145607 // cols (<directional aggregation by value>)
-	relation 145607 *-->
-	  a role_name "cols" multiplicity "" private
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	    classrelation_ref 145607 // cols (<directional aggregation by value>)
-	  b parent class_ref 131911 // SQLSMALLINT
-      end
-
       attribute 154951 "count"
 	private explicit_type "int"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
@@ -1514,10 +1437,7 @@ ${body}}
       end
     end
 
-    class 153287 "lbBoundColumn"
-      
-      
-      cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 153287 "lbBoundColumn"cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
 "
@@ -1527,14 +1447,6 @@ ${inlines}
       
       comment "...e
 ...sclass def lbBoundColumn:0:"
-      classrelation 145735 // <generalisation>
-	relation 145735 ---|>
-	  a public
-	    cpp default "Generated"
-	    classrelation_ref 145735 // <generalisation>
-	  b parent class_ref 152263 // lb_I_BoundColumn
-      end
-
       operation 237127 "lbBoundColumn"
 	cpp_inline public explicit_return_type ""
 	nparams 0
@@ -1614,7 +1526,7 @@ ${inlines}
       end
 
       operation 237639 "getType"
-	cpp_virtual public return_type class_ref 152519 // lbDBColumnTypes
+	cpp_virtual public explicit_return_type "lbDBColumnTypes"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -1628,7 +1540,7 @@ ${body}}
       end
 
       operation 237767 "getData"
-	cpp_virtual public return_type class_ref 141767 // lb_I_Unknown
+	cpp_virtual public explicit_return_type "lb_I_Unknown"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -1643,9 +1555,9 @@ ${body}}
       end
 
       operation 237895 "getAsString"
-	cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 2
-	  param inout name "result" type class_ref 141255 // lb_I_String
+	  param inout name "result" explicit_type "lb_I_String"
 	  param in name "asParameter" explicit_type "int"
 	    defaultvalue " 0"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}, ${t1} ${p1}${)}${const}${volatile}${throw}${abstract};
@@ -1660,9 +1572,9 @@ ${body}}
       end
 
       operation 238023 "getAsLong"
-	cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 2
-	  param inout name "result" type class_ref 141639 // lb_I_Long
+	  param inout name "result" explicit_type "lb_I_Long"
 	  param in name "asParameter" explicit_type "int"
 	    defaultvalue " 0"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}, ${t1} ${p1}${)}${const}${volatile}${throw}${abstract};
@@ -1677,9 +1589,9 @@ ${body}}
       end
 
       operation 238151 "setFromString"
-	cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 2
-	  param inout name "set" type class_ref 141255 // lb_I_String
+	  param inout name "set" explicit_type "lb_I_String"
 	  param in name "mode" explicit_type "int"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}, ${t1} ${p1}${)}${const}${volatile}${throw}${abstract};
 "
@@ -1691,9 +1603,9 @@ ${body}}
       end
 
       operation 238279 "setFromLong"
-	cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 2
-	  param inout name "set" type class_ref 141639 // lb_I_Long
+	  param inout name "set" explicit_type "lb_I_Long"
 	  param in name "mode" explicit_type "int"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}, ${t1} ${p1}${)}${const}${volatile}${throw}${abstract};
 "
@@ -1740,7 +1652,7 @@ ${body}}
       end
 
       operation 238791 "getColumnName"
-	public return_type class_ref 141255 // lb_I_String
+	public explicit_return_type "lb_I_String"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -1752,9 +1664,9 @@ ${body}}
       end
 
       operation 238919 "prepareBoundColumn"
-	public return_type class_ref 128711 // lbErrCodes
+	public explicit_return_type "lbErrCodes"
 	nparams 2
-	  param inout name "q" type class_ref 152391 // lb_I_Query
+	  param inout name "q" explicit_type "lb_I_Query"
 	  param in name "column" explicit_type "int"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}, ${t1} ${p1}${)}${const}${volatile}${throw}${abstract};
 "
@@ -1766,9 +1678,9 @@ ${body}}
       end
 
       operation 239047 "bindColumn"
-	public return_type class_ref 128711 // lbErrCodes
+	public explicit_return_type "lbErrCodes"
 	nparams 3
-	  param inout name "q" type class_ref 152391 // lb_I_Query
+	  param inout name "q" explicit_type "lb_I_Query"
 	  param in name "column" explicit_type "int"
 	  param in name "ro" explicit_type "bool"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${const}${volatile}${throw}${abstract};
@@ -1826,10 +1738,10 @@ ${body}}
       end
 
       operation 239687 "setData"
-	cpp_virtual cpp_inline protected return_type class_ref 128711 // lbErrCodes
+	cpp_virtual cpp_inline protected explicit_return_type "lbErrCodes"
 	nparams 4
 	  param in name "b" explicit_type "int"
-	  param in name "dt" type class_ref 131911 // SQLSMALLINT
+	  param in name "dt" explicit_type "SQLSMALLINT"
 	  param inout name "bu" explicit_type "void"
 	  param inout name "name" explicit_type "char"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} * ${p2}, ${t3} * ${p3}${)}${const}${volatile}${throw}${abstract} {
@@ -1851,10 +1763,10 @@ ${body}}
       end
 
       operation 239815 "leaveOwnership"
-	cpp_virtual protected return_type class_ref 128711 // lbErrCodes
+	cpp_virtual protected explicit_return_type "lbErrCodes"
 	nparams 2
-	  param inout name "oldOwner" type class_ref 152263 // lb_I_BoundColumn
-	  param inout name "newOwner" type class_ref 152263 // lb_I_BoundColumn
+	  param inout name "oldOwner" explicit_type "lb_I_BoundColumn"
+	  param inout name "newOwner" explicit_type "lb_I_BoundColumn"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}, ${t1} * ${p1}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "//...e
@@ -1865,7 +1777,7 @@ ${body}}
 "
 	
 	
-	comment " I call my self to leave my ownership"
+	comment " I call my self to leave my ownership"
       end
 
       operation 239943 "setColumn"
@@ -1906,15 +1818,6 @@ ${body}}
 "
 	java_decl ""
 	idl_decl ""
-      end
-
-      classrelation 145863 // _DataType (<directional aggregation by value>)
-	relation 145863 *-->
-	  a role_name "_DataType" multiplicity "" protected
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	    classrelation_ref 145863 // _DataType (<directional aggregation by value>)
-	  b parent class_ref 131911 // SQLSMALLINT
       end
 
       attribute 155591 "_column"
@@ -1958,16 +1861,6 @@ ${body}}
 	idl_decl ""
       end
 
-      classrelation 146119 // ColumnSize (<directional aggregation by value>)
-	relation 146119 *-->
-	  a role_name "ColumnSize" multiplicity "" protected
-	    comment "new (long);"
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	    classrelation_ref 146119 // ColumnSize (<directional aggregation by value>)
-	  b parent class_ref 153415 // SQLUINTEGER
-      end
-
       attribute 156103 "rows"
 	protected explicit_type "int"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
@@ -1976,20 +1869,12 @@ ${body}}
 	idl_decl ""
       end
 
-      classrelation 146247 // hstmt (<directional aggregation by value>)
-	relation 146247 *-->
-	  a role_name "hstmt" multiplicity "" protected
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	    classrelation_ref 146247 // hstmt (<directional aggregation by value>)
-	  b parent class_ref 152775 // HSTMT
-      end
     end
   end
 
   deploymentview 128583 "lbDB"
     //deployment diagram settings
-    package_name_in_tab default show_context default write_horizontally default auto_label_position default
+    package_name_in_tab default show_context default write_horizontally default auto_label_position default shadow default
     draw_component_as_icon default show_component_req_prov default show_component_rea default
     artifact 138055 "lbFakeDelete"
       stereotype "source"

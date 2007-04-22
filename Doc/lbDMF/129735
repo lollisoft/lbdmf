@@ -1,38 +1,50 @@
-format 22
+format 29
 "lbModule" // BaseDevelopment::lbModule
+  revision 1
+  modified_by 2 "lothar"
   // class settings
   //class diagram settings
-  draw_all_relations default hide_attributes default hide_operations default show_full_members_definition default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default
+  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default shadow default
   //use case diagram settings
-  package_name_in_tab default show_context default auto_label_position default
+  package_name_in_tab default show_context default auto_label_position default shadow default
   //sequence diagram settings
-  show_full_operations_definition default write_horizontally default drawing_language default
+  show_full_operations_definition default write_horizontally default drawing_language default shadow default
   //collaboration diagram settings
-  show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default
+  show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default shadow default
+  //object diagram settings
+   write_horizontally default package_name_in_tab default show_context default auto_label_position default shadow default
   //component diagram settings
-  package_name_in_tab default show_context default auto_label_position default
+  package_name_in_tab default show_context default auto_label_position default shadow default
   draw_component_as_icon default show_component_req_prov default show_component_rea default
   //deployment diagram settings
-  package_name_in_tab default show_context default write_horizontally default auto_label_position default
+  package_name_in_tab default show_context default write_horizontally default auto_label_position default shadow default
   draw_component_as_icon default show_component_req_prov default show_component_rea default
   //state diagram settings
-  package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default
+  package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default shadow default
   show_activities default region_horizontally default drawing_language default
+  //activity diagram settings
+  package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default shadow default
+  show_infonote default drawing_language default
   
   classview 129479 "lbModule"
     //class diagram settings
-    draw_all_relations default hide_attributes default hide_operations default show_full_members_definition default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default
-    //col diagram settings
-    show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default
-    //seq diagram settings
-    show_full_operations_definition default write_horizontally default drawing_language default
+    draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default shadow default
+    //collaboration diagram settings
+    show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default shadow default
+    //object diagram settings
+     write_horizontally default package_name_in_tab default show_context default auto_label_position default shadow default
+    //sequence diagram settings
+    show_full_operations_definition default write_horizontally default drawing_language default shadow default
     //state diagram settings
-    package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default
+    package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default shadow default
     show_activities default region_horizontally default drawing_language default
     //class settings
+    //activity diagram settings
+    package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default shadow default
+    show_infonote default drawing_language default
+    
     class 154183 "_referenceList"
        stereotype "struct"
-      
       cpp_decl "${comment}${template}struct ${name}${inherit} {
 ${members}};
 ${inlines}
@@ -80,8 +92,8 @@ ${inlines}
     end
 
     class 154311 "referenceList"
-       stereotype "typedef" base_type class_ref 154183 // _referenceList
-      
+       stereotype "typedef"
+       base_type class_ref 154183 // _referenceList
       cpp_decl "${comment}typedef ${type} ${name}, *preferenceList;
 "
       java_decl ""
@@ -92,7 +104,6 @@ ${inlines}
 
     class 154439 "_instanceList"
        stereotype "struct"
-      
       cpp_decl "${comment}${template}struct ${name}${inherit} {
 ${members}};
 ${inlines}
@@ -155,8 +166,8 @@ ${inlines}
     end
 
     class 154567 "instanceList"
-       stereotype "typedef" base_type class_ref 154439 // _instanceList
-      
+       stereotype "typedef"
+       base_type class_ref 154439 // _instanceList
       cpp_decl "${comment}typedef ${type} ${name}, *pinstanceList;
 "
       java_decl ""
@@ -167,7 +178,6 @@ ${inlines}
 
     class 154695 "_classnameList"
        stereotype "struct"
-      
       cpp_decl "${comment}${template}struct ${name}${inherit} {
 ${members}};
 ${inlines}
@@ -206,8 +216,8 @@ ${inlines}
     end
 
     class 154823 "classnameList"
-       stereotype "typedef" base_type class_ref 154695 // _classnameList
-      
+       stereotype "typedef"
+       base_type class_ref 154695 // _classnameList
       cpp_decl "${comment}typedef ${type} ${name}, *pclassnameList;
 "
       java_decl ""
@@ -216,10 +226,7 @@ ${inlines}
       
     end
 
-    class 154951 "lbInstance"
-      
-      
-      cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 154951 "lbInstance"cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
 "
@@ -229,14 +236,6 @@ ${inlines}
       
       comment "...sclass lbInstance:0:
 ...sclass lbInstance:0:"
-      classrelation 147527 // <generalisation>
-	relation 147527 ---|>
-	  a public
-	    cpp default "Generated"
-	    classrelation_ref 147527 // <generalisation>
-	  b parent class_ref 155079 // lb_I_Instance
-      end
-
       attribute 157639 "addr"
 	private explicit_type "char"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
@@ -433,10 +432,7 @@ ${body}}
       end
     end
 
-    class 155207 "lbInstanceReference"
-      
-      
-      cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 155207 "lbInstanceReference"cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
 "
@@ -447,14 +443,6 @@ ${inlines}
       comment "...e
 ...e
 ...sclass lbInstanceReference:0:"
-      classrelation 147655 // <generalisation>
-	relation 147655 ---|>
-	  a public
-	    cpp default "Generated"
-	    classrelation_ref 147655 // <generalisation>
-	  b parent class_ref 155335 // lb_I_InstanceReference
-      end
-
       attribute 158279 "file"
 	private explicit_type "char"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
@@ -567,10 +555,7 @@ ${body}}
       end
     end
 
-    class 155463 "InstanceRepository"
-      
-      
-      cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 155463 "InstanceRepository"cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
 "
@@ -591,7 +576,7 @@ ${inlines}
       operation 243527 "InstanceRepository"
 	public explicit_return_type ""
 	nparams 1
-	  param inout name "m" type class_ref 155591 // lb_I_Module
+	  param inout name "m" explicit_type "lb_I_Module"
 	cpp_decl "    ${comment}${inline}${name}${(}${t0} * ${p0}${)}${volatile}${throw};
 "
 	cpp_def "//...e
@@ -746,7 +731,7 @@ ${body}}
       operation 244679 "loadContainer"
 	public explicit_return_type "void"
 	nparams 1
-	  param inout name "m" type class_ref 155591 // lb_I_Module
+	  param inout name "m" explicit_type "lb_I_Module"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "//...e
@@ -801,15 +786,6 @@ ${body}}
 	idl_decl ""
       end
 
-      classrelation 148039 // manager (<unidirectional association>)
-	relation 148039 --->
-	  a role_name "manager" multiplicity "" public
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
-"
-	    classrelation_ref 148039 // manager (<unidirectional association>)
-	  b parent class_ref 155591 // lb_I_Module
-      end
-
       attribute 159047 "skip"
 	public explicit_type "int"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
@@ -827,10 +803,7 @@ ${body}}
       end
     end
 
-    class 155719 "lbModuleContainer"
-      
-      
-      cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 155719 "lbModuleContainer"cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
 "
@@ -839,18 +812,10 @@ ${inlines}
       explicit_switch_type ""
       
       comment "...sclass lbModuleContainer:0:"
-      classrelation 148167 // <generalisation>
-	relation 148167 ---|>
-	  a public
-	    cpp default "Generated"
-	    classrelation_ref 148167 // <generalisation>
-	  b parent class_ref 140103 // lb_I_Container
-      end
-
       operation 244807 "lbModuleContainer"
 	public explicit_return_type ""
 	nparams 1
-	  param in name "c" type class_ref 140103 // lb_I_Container
+	  param in name "c" explicit_type "lb_I_Container"
 	cpp_decl "    ${comment}${inline}${name}${(}const ${t0} * ${p0}${)}${volatile}${throw};
 "
 	cpp_def "${comment}${inline}${class}::${name}${(}const ${t0} * ${p0}${)}${throw}{
@@ -861,9 +826,9 @@ ${body}}
       end
 
       operation 244935 "operator ="
-	public return_type class_ref 140103 // lb_I_Container
+	public explicit_return_type "lb_I_Container"
 	nparams 1
-	  param in name "c" type class_ref 140103 // lb_I_Container
+	  param in name "c" explicit_type "lb_I_Container"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}const ${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "${comment}${inline}${type} * ${class}::${name}${(}const ${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
@@ -966,15 +931,6 @@ ${body}}
 	
       end
 
-      classrelation 148295 // <dependency>
-	relation 148295 -_->
-	  stereotype "friend"
-	  a protected
-	    cpp default "Generated"
-	    classrelation_ref 148295 // <dependency>
-	  b parent class_ref 155847 // lb_I_InterfaceRepository
-      end
-
       attribute 159303 "_functor"
 	public explicit_type "char"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
@@ -1000,10 +956,7 @@ ${body}}
       end
     end
 
-    class 155975 "lbHCInterfaceRepository"
-      
-      
-      cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 155975 "lbHCInterfaceRepository"cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
 "
@@ -1013,14 +966,6 @@ ${inlines}
       
       comment "...e
 ...sclass lbHCInterfaceRepository:0:"
-      classrelation 148423 // <generalisation>
-	relation 148423 ---|>
-	  a public
-	    cpp default "Generated"
-	    classrelation_ref 148423 // <generalisation>
-	  b parent class_ref 155847 // lb_I_InterfaceRepository
-      end
-
       operation 245959 "lbHCInterfaceRepository"
 	public explicit_return_type ""
 	nparams 0
@@ -1046,7 +991,7 @@ ${body}}
       end
 
       operation 246215 "getFirstEntity"
-	public return_type class_ref 156103 // lb_I_FunctorEntity
+	public explicit_return_type "lb_I_FunctorEntity"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -1087,7 +1032,7 @@ ${body}}
 "
 	java_decl ""
 	idl_decl ""
-	comment " current interface index"
+	comment " current interface index"
       end
 
       attribute 159943 "len"
@@ -1123,10 +1068,7 @@ ${body}}
       end
     end
 
-    class 156231 "lbModule"
-      
-      
-      cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 156231 "lbModule"cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
 "
@@ -1136,14 +1078,6 @@ ${inlines}
       
       comment "...sclass lbModule and implementation:0:
 ...sclass lbModule:0:"
-      classrelation 148551 // <generalisation>
-	relation 148551 ---|>
-	  a public
-	    cpp default "Generated"
-	    classrelation_ref 148551 // <generalisation>
-	  b parent class_ref 155591 // lb_I_Module
-      end
-
       operation 246471 "lbModule"
 	public explicit_return_type ""
 	nparams 0
@@ -1172,10 +1106,10 @@ ${body}}
       end
 
       operation 246727 "request"
-	cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 2
 	  param in name "request" explicit_type "char"
-	  param inout name "result" type class_ref 141767 // lb_I_Unknown
+	  param inout name "result" explicit_type "lb_I_Unknown"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} * ${p0}, ${t1} * * ${p1}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "//...sDocu for Module management:0:
@@ -1226,7 +1160,7 @@ ${body}}
       end
 
       operation 246855 "uninitialize"
-	cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -1276,7 +1210,7 @@ ${body}}
       operation 247239 "notify_create"
 	cpp_virtual public explicit_return_type "void"
 	nparams 4
-	  param inout name "that" type class_ref 141767 // lb_I_Unknown
+	  param inout name "that" explicit_type "lb_I_Unknown"
 	  param inout name "implName" explicit_type "char"
 	  param inout name "file" explicit_type "char"
 	    defaultvalue " \"\""
@@ -1297,7 +1231,7 @@ ${body}}
       operation 247367 "notify_add"
 	cpp_virtual public explicit_return_type "void"
 	nparams 4
-	  param inout name "that" type class_ref 141767 // lb_I_Unknown
+	  param inout name "that" explicit_type "lb_I_Unknown"
 	  param inout name "implName" explicit_type "char"
 	  param inout name "file" explicit_type "char"
 	  param in name "line" explicit_type "int"
@@ -1316,7 +1250,7 @@ ${body}}
       operation 247495 "notify_release"
 	cpp_virtual public explicit_return_type "void"
 	nparams 4
-	  param inout name "that" type class_ref 141767 // lb_I_Unknown
+	  param inout name "that" explicit_type "lb_I_Unknown"
 	  param inout name "implName" explicit_type "char"
 	  param inout name "file" explicit_type "char"
 	  param in name "line" explicit_type "int"
@@ -1335,7 +1269,7 @@ ${body}}
       operation 247623 "notify_destroy"
 	cpp_virtual public explicit_return_type "void"
 	nparams 4
-	  param inout name "that" type class_ref 141767 // lb_I_Unknown
+	  param inout name "that" explicit_type "lb_I_Unknown"
 	  param inout name "implName" explicit_type "char"
 	  param inout name "file" explicit_type "char"
 	  param in name "line" explicit_type "int"
@@ -1354,7 +1288,7 @@ ${body}}
       operation 247751 "can_delete"
 	cpp_virtual public explicit_return_type "int"
 	nparams 4
-	  param inout name "that" type class_ref 141767 // lb_I_Unknown
+	  param inout name "that" explicit_type "lb_I_Unknown"
 	  param inout name "implName" explicit_type "char"
 	  param inout name "file" explicit_type "char"
 	    defaultvalue " \"\""
@@ -1373,10 +1307,10 @@ ${body}}
       end
 
       operation 247879 "getObjectInstance"
-	cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 2
 	  param in name "name" explicit_type "char"
-	  param inout name "inst" type class_ref 140103 // lb_I_Container
+	  param inout name "inst" explicit_type "lb_I_Container"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} * ${p0}, ${t1} * & ${p1}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "//...e
@@ -1390,11 +1324,11 @@ ${body}}
       end
 
       operation 248007 "getFunctors"
-	cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 3
 	  param inout name "interfacename" explicit_type "char"
-	  param inout name "node" type class_ref 147783 // lb_I_ConfigObject
-	  param inout name "uk" type class_ref 141767 // lb_I_Unknown
+	  param inout name "node" explicit_type "lb_I_ConfigObject"
+	  param inout name "uk" explicit_type "lb_I_Unknown"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}, ${t1} * ${p1}, ${t2} * & ${p2}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "//...e
@@ -1408,11 +1342,11 @@ ${body}}
       end
 
       operation 248135 "getInstance"
-	cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 3
 	  param inout name "functorname" explicit_type "char"
-	  param inout name "node" type class_ref 147783 // lb_I_ConfigObject
-	  param inout name "uk" type class_ref 141767 // lb_I_Unknown
+	  param inout name "node" explicit_type "lb_I_ConfigObject"
+	  param inout name "uk" explicit_type "lb_I_Unknown"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}, ${t1} * ${p1}, ${t2} * & ${p2}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "//...e
@@ -1425,10 +1359,10 @@ ${body}}
       end
 
       operation 248263 "getDefaultImpl"
-	cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 4
 	  param inout name "interfacename" explicit_type "char"
-	  param inout name "node" type class_ref 147783 // lb_I_ConfigObject
+	  param inout name "node" explicit_type "lb_I_ConfigObject"
 	  param inout name "implTor" explicit_type "char"
 	  param inout name "module" explicit_type "char"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}, ${t1} * * ${p1}, ${t2} * & ${p2}, ${t3} * & ${p3}${)}${const}${volatile}${throw}${abstract};
@@ -1444,7 +1378,7 @@ ${body}}
       end
 
       operation 248391 "load"
-	cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 1
 	  param inout name "name" explicit_type "char"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
@@ -1460,7 +1394,7 @@ ${body}}
       end
 
       operation 248519 "preload"
-	cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 1
 	  param inout name "name" explicit_type "char"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
@@ -1473,11 +1407,11 @@ ${body}}
       end
 
       operation 248647 "makeInstance"
-	cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 3
 	  param inout name "functor" explicit_type "char"
 	  param inout name "module" explicit_type "char"
-	  param inout name "instance" type class_ref 141767 // lb_I_Unknown
+	  param inout name "instance" explicit_type "lb_I_Unknown"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}, ${t1} * ${p1}, ${t2} * * ${p2}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "//...e
@@ -1493,7 +1427,7 @@ ${body}}
       operation 248775 "getXMLConfigObject"
 	protected explicit_return_type "void"
 	nparams 1
-	  param inout name "inst" type class_ref 156359 // lb_I_XMLConfig
+	  param inout name "inst" explicit_type "lb_I_XMLConfig"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * * ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * * ${p0}${)}${const}${volatile}${throw}${staticnl}{
@@ -1506,7 +1440,7 @@ ${body}}
       operation 248903 "getXMLConfigObject"
 	protected explicit_return_type "void"
 	nparams 1
-	  param inout name "inst" type class_ref 155847 // lb_I_InterfaceRepository
+	  param inout name "inst" explicit_type "lb_I_InterfaceRepository"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * * ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * * ${p0}${)}${const}${volatile}${throw}${staticnl}{
@@ -1517,9 +1451,9 @@ ${body}}
       end
 
       operation 249031 "findFunctorNode"
-	protected return_type class_ref 147783 // lb_I_ConfigObject
+	protected explicit_return_type "lb_I_ConfigObject"
 	nparams 2
-	  param inout name "_node" type class_ref 147783 // lb_I_ConfigObject
+	  param inout name "_node" explicit_type "lb_I_ConfigObject"
 	  param in name "request" explicit_type "char"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}${t0} * * ${p0}, const ${t1} * ${p1}${)}${const}${volatile}${throw}${abstract};
 "
@@ -1547,7 +1481,7 @@ ${body}}
       operation 249159 "findFunctorModule"
 	protected explicit_return_type "char"
 	nparams 1
-	  param inout name "_node" type class_ref 147783 // lb_I_ConfigObject
+	  param inout name "_node" explicit_type "lb_I_ConfigObject"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}${t0} * * ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "//...e
@@ -1563,7 +1497,7 @@ ${body}}
       operation 249287 "findFunctorName"
 	protected explicit_return_type "char"
 	nparams 1
-	  param inout name "___node" type class_ref 147783 // lb_I_ConfigObject
+	  param inout name "___node" explicit_type "lb_I_ConfigObject"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}${t0} * * ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "//...e
@@ -1593,10 +1527,7 @@ ${body}}
       end
     end
 
-    class 156487 "lbNamedValue"
-      
-      
-      cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 156487 "lbNamedValue"cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
 "
@@ -1605,14 +1536,6 @@ ${inlines}
       explicit_switch_type ""
       
       comment "...sclass lbNamedValue:0:"
-      classrelation 148679 // <generalisation>
-	relation 148679 ---|>
-	  a public
-	    cpp default "Generated"
-	    classrelation_ref 148679 // <generalisation>
-	  b parent class_ref 141767 // lb_I_Unknown
-      end
-
       operation 249415 "lbNamedValue"
 	cpp_inline public explicit_return_type ""
 	nparams 0
@@ -1636,7 +1559,7 @@ ${inlines}
       end
 
       operation 249671 "setName"
-	public return_type class_ref 128711 // lbErrCodes
+	public explicit_return_type "lbErrCodes"
 	nparams 1
 	  param in name "_name" explicit_type "char"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} * const ${p0}${)}${const}${volatile}${throw}${abstract};
@@ -1652,9 +1575,9 @@ ${body}}
       end
 
       operation 249799 "setValue"
-	public return_type class_ref 128711 // lbErrCodes
+	public explicit_return_type "lbErrCodes"
 	nparams 1
-	  param inout name "_value" type class_ref 141767 // lb_I_Unknown
+	  param inout name "_value" explicit_type "lb_I_Unknown"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "//...e
@@ -1674,9 +1597,9 @@ ${body}}
       end
 
       operation 249927 "getValue"
-	public return_type class_ref 128711 // lbErrCodes
+	public explicit_return_type "lbErrCodes"
 	nparams 1
-	  param inout name "_value" type class_ref 141767 // lb_I_Unknown
+	  param inout name "_value" explicit_type "lb_I_Unknown"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * & ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "//...e
@@ -1697,19 +1620,10 @@ ${body}}
 	idl_decl ""
       end
 
-      classrelation 148807 // uk_value (<unidirectional association>)
-	relation 148807 --->
-	  a role_name "uk_value" multiplicity "" public
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
-"
-	    classrelation_ref 148807 // uk_value (<unidirectional association>)
-	  b parent class_ref 141767 // lb_I_Unknown
-      end
     end
 
     class 156615 "instances_of_module"
        stereotype "struct"
-      
       cpp_decl "${comment}${template}struct ${name}${inherit} {
 ${members}};
 ${inlines}
@@ -1736,8 +1650,8 @@ ${inlines}
     end
 
     class 156743 "instModule"
-       stereotype "typedef" base_type class_ref 156615 // instances_of_module
-      
+       stereotype "typedef"
+       base_type class_ref 156615 // instances_of_module
       cpp_decl "${comment}typedef ${type} ${name};
 "
       java_decl ""
@@ -1749,7 +1663,7 @@ ${inlines}
 
   deploymentview 129351 "lbModule"
     //deployment diagram settings
-    package_name_in_tab default show_context default write_horizontally default auto_label_position default
+    package_name_in_tab default show_context default write_horizontally default auto_label_position default shadow default
     draw_component_as_icon default show_component_req_prov default show_component_rea default
     artifact 142023 "_referenceList"
       stereotype "source"

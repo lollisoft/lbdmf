@@ -1,39 +1,49 @@
-format 22
+format 29
 "DatabaseForm" // Plugins::DatabaseForm
+  revision 1
+  modified_by 2 "lothar"
   // class settings
   //class diagram settings
-  draw_all_relations default hide_attributes default hide_operations default show_full_members_definition default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default
+  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default shadow default
   //use case diagram settings
-  package_name_in_tab default show_context default auto_label_position default
+  package_name_in_tab default show_context default auto_label_position default shadow default
   //sequence diagram settings
-  show_full_operations_definition default write_horizontally default drawing_language default
+  show_full_operations_definition default write_horizontally default drawing_language default shadow default
   //collaboration diagram settings
-  show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default
+  show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default shadow default
+  //object diagram settings
+   write_horizontally default package_name_in_tab default show_context default auto_label_position default shadow default
   //component diagram settings
-  package_name_in_tab default show_context default auto_label_position default
+  package_name_in_tab default show_context default auto_label_position default shadow default
   draw_component_as_icon default show_component_req_prov default show_component_rea default
   //deployment diagram settings
-  package_name_in_tab default show_context default write_horizontally default auto_label_position default
+  package_name_in_tab default show_context default write_horizontally default auto_label_position default shadow default
   draw_component_as_icon default show_component_req_prov default show_component_rea default
   //state diagram settings
-  package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default
+  package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default shadow default
   show_activities default region_horizontally default drawing_language default
+  //activity diagram settings
+  package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default shadow default
+  show_infonote default drawing_language default
   
   classview 130247 "DatabaseForm"
     //class diagram settings
-    draw_all_relations default hide_attributes default hide_operations default show_full_members_definition default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default
-    //col diagram settings
-    show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default
-    //seq diagram settings
-    show_full_operations_definition default write_horizontally default drawing_language default
+    draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default shadow default
+    //collaboration diagram settings
+    show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default shadow default
+    //object diagram settings
+     write_horizontally default package_name_in_tab default show_context default auto_label_position default shadow default
+    //sequence diagram settings
+    show_full_operations_definition default write_horizontally default drawing_language default shadow default
     //state diagram settings
-    package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default
+    package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default shadow default
     show_activities default region_horizontally default drawing_language default
     //class settings
-    class 159687 "lbConfigure_FK_PK_MappingDialog"
-      
-      
-      cpp_decl "${comment}${template}class ${name}${inherit} {
+    //activity diagram settings
+    package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default shadow default
+    show_infonote default drawing_language default
+    
+    class 159687 "lbConfigure_FK_PK_MappingDialog"cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
 "
@@ -42,30 +52,6 @@ ${inlines}
       explicit_switch_type ""
       
       comment "...sclass lbConfigure_FK_PK_MappingDialog:0:"
-      classrelation 152263 // <generalisation>
-	relation 152263 ---|>
-	  a public
-	    cpp default "Generated"
-	    classrelation_ref 152263 // <generalisation>
-	  b parent class_ref 159815 // lb_I_Window
-      end
-
-      classrelation 152391 // <generalisation>
-	relation 152391 ---|>
-	  a public
-	    cpp default "Generated"
-	    classrelation_ref 152391 // <generalisation>
-	  b parent class_ref 133191 // lb_I_EventHandler
-      end
-
-      classrelation 152519 // <generalisation>
-	relation 152519 ---|>
-	  a public
-	    cpp default "Generated"
-	    classrelation_ref 152519 // <generalisation>
-	  b parent class_ref 159943 // wxDialog
-      end
-
       operation 262855 "lbConfigure_FK_PK_MappingDialog"
 	public explicit_return_type ""
 	nparams 0
@@ -133,7 +119,7 @@ ${body}}
       operation 263495 "init"
 	public explicit_return_type "void"
 	nparams 4
-	  param inout name "query" type class_ref 152391 // lb_I_Query
+	  param inout name "query" explicit_type "lb_I_Query"
 	  param inout name "DBName" explicit_type "char"
 	  param inout name "DBUser" explicit_type "char"
 	  param inout name "DBPass" explicit_type "char"
@@ -168,9 +154,9 @@ ${body}}
       end
 
       operation 263879 "selectedColumn"
-	public return_type class_ref 128711 // lbErrCodes
+	public explicit_return_type "lbErrCodes"
 	nparams 1
-	  param inout name "uk" type class_ref 141767 // lb_I_Unknown
+	  param inout name "uk" explicit_type "lb_I_Unknown"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "//...e
@@ -188,9 +174,9 @@ ${body}}
       end
 
       operation 264007 "registerEventHandler"
-	public return_type class_ref 128711 // lbErrCodes
+	public explicit_return_type "lbErrCodes"
 	nparams 1
-	  param inout name "dispatcher" type class_ref 133575 // lb_I_Dispatcher
+	  param inout name "dispatcher" explicit_type "lb_I_Dispatcher"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "//...e
@@ -215,7 +201,7 @@ ${body}}
       operation 264135 "OnDispatch"
 	public explicit_return_type "void"
 	nparams 1
-	  param inout name "event" type class_ref 160071 // wxCommandEvent
+	  param inout name "event" explicit_type "wxCommandEvent"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "//...e
@@ -231,7 +217,7 @@ ${body}}
       operation 264263 "OnPKComboBoxSelected"
 	public explicit_return_type "void"
 	nparams 1
-	  param inout name "event" type class_ref 160071 // wxCommandEvent
+	  param inout name "event" explicit_type "wxCommandEvent"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "//...e
@@ -250,78 +236,6 @@ ${body}}
 "
 	java_decl ""
 	idl_decl ""
-      end
-
-      classrelation 152647 // firstButton (<unidirectional association>)
-	relation 152647 --->
-	  a role_name "firstButton" multiplicity "" public
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
-"
-	    classrelation_ref 152647 // firstButton (<unidirectional association>)
-	  b parent class_ref 160199 // wxWindow
-      end
-
-      classrelation 152775 // cBoxFKNames (<unidirectional association>)
-	relation 152775 --->
-	  a role_name "cBoxFKNames" multiplicity "" public
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
-"
-	    classrelation_ref 152775 // cBoxFKNames (<unidirectional association>)
-	  b parent class_ref 160327 // wxChoice
-      end
-
-      classrelation 152903 // cBoxPKNames (<unidirectional association>)
-	relation 152903 --->
-	  a role_name "cBoxPKNames" multiplicity "" public
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
-"
-	    classrelation_ref 152903 // cBoxPKNames (<unidirectional association>)
-	  b parent class_ref 160327 // wxChoice
-      end
-
-      classrelation 153031 // label (<unidirectional association>)
-	relation 153031 --->
-	  a role_name "label" multiplicity "" public
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
-"
-	    classrelation_ref 153031 // label (<unidirectional association>)
-	  b parent class_ref 160455 // wxStaticText
-      end
-
-      classrelation 153159 // labelF (<unidirectional association>)
-	relation 153159 --->
-	  a role_name "labelF" multiplicity "" public
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
-"
-	    classrelation_ref 153159 // labelF (<unidirectional association>)
-	  b parent class_ref 160455 // wxStaticText
-      end
-
-      classrelation 153287 // prevButton (<unidirectional association>)
-	relation 153287 --->
-	  a role_name "prevButton" multiplicity "" public
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
-"
-	    classrelation_ref 153287 // prevButton (<unidirectional association>)
-	  b parent class_ref 160199 // wxWindow
-      end
-
-      classrelation 153415 // nextButton (<unidirectional association>)
-	relation 153415 --->
-	  a role_name "nextButton" multiplicity "" public
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
-"
-	    classrelation_ref 153415 // nextButton (<unidirectional association>)
-	  b parent class_ref 160199 // wxWindow
-      end
-
-      classrelation 153543 // lastButton (<unidirectional association>)
-	relation 153543 --->
-	  a role_name "lastButton" multiplicity "" public
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
-"
-	    classrelation_ref 153543 // lastButton (<unidirectional association>)
-	  b parent class_ref 160199 // wxWindow
       end
 
       attribute 162503 "pass"
@@ -357,10 +271,7 @@ ${body}}
       end
     end
 
-    class 160583 "lbAction"
-      
-      
-      cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 160583 "lbAction"cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
 "
@@ -370,14 +281,6 @@ ${inlines}
       
       comment "...e
 ...sclass lbAction:0:"
-      classrelation 153671 // <generalisation>
-	relation 153671 ---|>
-	  a public
-	    cpp default "Generated"
-	    classrelation_ref 153671 // <generalisation>
-	  b parent class_ref 136775 // lb_I_Action
-      end
-
       operation 264391 "lbAction"
 	public explicit_return_type ""
 	nparams 0
@@ -418,7 +321,7 @@ ${body}}
       operation 264775 "execute"
 	public explicit_return_type "void"
 	nparams 1
-	  param inout name "params" type class_ref 141127 // lb_I_Parameter
+	  param inout name "params" explicit_type "lb_I_Parameter"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
@@ -454,7 +357,7 @@ ${body}}
       operation 265031 "execute"
 	public explicit_return_type "void"
 	nparams 1
-	  param inout name "params" type class_ref 141127 // lb_I_Parameter
+	  param inout name "params" explicit_type "lb_I_Parameter"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "//...e
@@ -470,7 +373,7 @@ ${body}}
       operation 265159 "setDatabase"
 	public explicit_return_type "void"
 	nparams 1
-	  param inout name "_db" type class_ref 160711 // lb_I_Database
+	  param inout name "_db" explicit_type "lb_I_Database"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
@@ -481,10 +384,7 @@ ${body}}
       end
     end
 
-    class 160839 "lbMasterFormAction"
-      
-      
-      cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 160839 "lbMasterFormAction"cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
 "
@@ -494,14 +394,6 @@ ${inlines}
       
       comment "...e
 ...sclass lbMasterFormAction:0:"
-      classrelation 153799 // <generalisation>
-	relation 153799 ---|>
-	  a public
-	    cpp default "Generated"
-	    classrelation_ref 153799 // <generalisation>
-	  b parent class_ref 136903 // lb_I_DelegatedAction
-      end
-
       operation 265287 "lbMasterFormAction"
 	public explicit_return_type ""
 	nparams 0
@@ -542,7 +434,7 @@ ${body}}
       operation 265671 "execute"
 	public explicit_return_type "void"
 	nparams 1
-	  param inout name "params" type class_ref 141127 // lb_I_Parameter
+	  param inout name "params" explicit_type "lb_I_Parameter"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "//...e
@@ -558,7 +450,7 @@ ${body}}
       operation 265799 "setDatabase"
 	public explicit_return_type "void"
 	nparams 1
-	  param inout name "_db" type class_ref 160711 // lb_I_Database
+	  param inout name "_db" explicit_type "lb_I_Database"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
@@ -577,10 +469,7 @@ ${body}}
       end
     end
 
-    class 160967 "lbSQLQueryAction"
-      
-      
-      cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 160967 "lbSQLQueryAction"cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
 "
@@ -590,14 +479,6 @@ ${inlines}
       
       comment "...e
 ...sclass lbSQLQueryAction:0:"
-      classrelation 153927 // <generalisation>
-	relation 153927 ---|>
-	  a public
-	    cpp default "Generated"
-	    classrelation_ref 153927 // <generalisation>
-	  b parent class_ref 136903 // lb_I_DelegatedAction
-      end
-
       operation 265927 "lbSQLQueryAction"
 	public explicit_return_type ""
 	nparams 0
@@ -638,7 +519,7 @@ ${body}}
       operation 266311 "execute"
 	public explicit_return_type "void"
 	nparams 1
-	  param inout name "params" type class_ref 141127 // lb_I_Parameter
+	  param inout name "params" explicit_type "lb_I_Parameter"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
@@ -651,7 +532,7 @@ ${body}}
       operation 266439 "setDatabase"
 	public explicit_return_type "void"
 	nparams 1
-	  param inout name "_db" type class_ref 160711 // lb_I_Database
+	  param inout name "_db" explicit_type "lb_I_Database"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
@@ -708,7 +589,7 @@ ${body}}
       end
 
       operation 266951 "getAction"
-	public return_type class_ref 136775 // lb_I_Action
+	public explicit_return_type "lb_I_Action"
 	nparams 1
 	  param inout name "id" explicit_type "char"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
@@ -753,10 +634,7 @@ ${body}}
       end
     end
 
-    class 161095 "FormularFieldInformation"
-      
-      
-      cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 161095 "FormularFieldInformation"cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
 "
@@ -774,7 +652,7 @@ ${inlines}
 	public explicit_return_type ""
 	nparams 2
 	  param in name "formularname" explicit_type "char"
-	  param inout name "query" type class_ref 152391 // lb_I_Query
+	  param inout name "query" explicit_type "lb_I_Query"
 	cpp_decl "    ${comment}${inline}${name}${(}const ${t0} * ${p0}, ${t1} * ${p1}${)}${volatile}${throw};
 "
 	cpp_def "${comment}${inline}${class}::${name}${(}const ${t0} * ${p0}, ${t1} * ${p1}${)}${throw}{
@@ -844,19 +722,10 @@ ${body}}
 	
       end
 
-      classrelation 154055 // _query (<unidirectional association>)
-	relation 154055 --->
-	  a role_name "_query" multiplicity "" protected
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
-"
-	    classrelation_ref 154055 // _query (<unidirectional association>)
-	  b parent class_ref 152391 // lb_I_Query
-      end
-
       operation 267975 "setMasterForm"
 	protected explicit_return_type "void"
 	nparams 1
-	  param inout name "master" type class_ref 161223 // lb_I_DatabaseForm
+	  param inout name "master" explicit_type "lb_I_DatabaseForm"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
@@ -892,7 +761,7 @@ ${body}}
       end
 
       operation 268359 "getMasterColumn"
-	protected return_type class_ref 141255 // lb_I_String
+	protected explicit_return_type "lb_I_String"
 	nparams 1
 	  param in name "pos" explicit_type "int"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract};
@@ -905,7 +774,7 @@ ${body}}
       end
 
       operation 268487 "getMasterForm"
-	protected return_type class_ref 161223 // lb_I_DatabaseForm
+	protected explicit_return_type "lb_I_DatabaseForm"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -945,7 +814,7 @@ ${body}}
       end
 
       operation 268871 "setName"
-	protected return_type class_ref 128711 // lbErrCodes
+	protected explicit_return_type "lbErrCodes"
 	nparams 2
 	  param in name "name" explicit_type "char"
 	  param in name "appention" explicit_type "char"
@@ -968,7 +837,7 @@ ${body}}
       end
 
       operation 269127 "addButton"
-	cpp_inline protected return_type class_ref 128711 // lbErrCodes
+	cpp_inline protected explicit_return_type "lbErrCodes"
 	nparams 6
 	  param inout name "buttonText" explicit_type "char"
 	  param inout name "evHandler" explicit_type "char"
@@ -983,7 +852,7 @@ ${body}}
       end
 
       operation 269255 "addLabel"
-	cpp_inline protected return_type class_ref 128711 // lbErrCodes
+	cpp_inline protected explicit_return_type "lbErrCodes"
 	nparams 5
 	  param inout name "text" explicit_type "char"
 	  param in name "x" explicit_type "int"
@@ -997,7 +866,7 @@ ${body}}
       end
 
       operation 269383 "addTextField"
-	cpp_inline protected return_type class_ref 128711 // lbErrCodes
+	cpp_inline protected explicit_return_type "lbErrCodes"
 	nparams 5
 	  param inout name "name" explicit_type "char"
 	  param in name "x" explicit_type "int"
@@ -1011,7 +880,7 @@ ${body}}
       end
 
       operation 269511 "addOwnerDrawn"
-	cpp_inline protected return_type class_ref 128711 // lbErrCodes
+	cpp_inline protected explicit_return_type "lbErrCodes"
 	nparams 5
 	  param inout name "name" explicit_type "char"
 	  param in name "x" explicit_type "int"
@@ -1124,8 +993,8 @@ ${body}}
       operation 270663 "setMasterForm"
 	protected explicit_return_type "void"
 	nparams 2
-	  param inout name "master" type class_ref 161223 // lb_I_DatabaseForm
-	  param inout name "params" type class_ref 141127 // lb_I_Parameter
+	  param inout name "master" explicit_type "lb_I_DatabaseForm"
+	  param inout name "params" explicit_type "lb_I_Parameter"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}, ${t1} * ${p1}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}, ${t1} * ${p1}${)}${const}${volatile}${throw}${staticnl}{
@@ -1139,8 +1008,8 @@ ${body}}
       operation 270791 "setDetailForm"
 	protected explicit_return_type "void"
 	nparams 2
-	  param inout name "master" type class_ref 161223 // lb_I_DatabaseForm
-	  param inout name "params" type class_ref 141127 // lb_I_Parameter
+	  param inout name "master" explicit_type "lb_I_DatabaseForm"
+	  param inout name "params" explicit_type "lb_I_Parameter"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}, ${t1} * ${p1}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}, ${t1} * ${p1}${)}${const}${volatile}${throw}${staticnl}{
@@ -1212,7 +1081,7 @@ ${body}}
       end
 
       operation 271559 "getPrimaryColumn"
-	protected return_type class_ref 141255 // lb_I_String
+	protected explicit_return_type "lb_I_String"
 	nparams 1
 	  param in name "pos" explicit_type "int"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract};
@@ -1238,7 +1107,7 @@ ${body}}
       end
 
       operation 271815 "getForeignColumn"
-	protected return_type class_ref 141255 // lb_I_String
+	protected explicit_return_type "lb_I_String"
 	nparams 1
 	  param in name "pos" explicit_type "int"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract};
@@ -1303,9 +1172,9 @@ ${body}}
       end
 
       operation 272455 "lbDBFirst"
-	protected return_type class_ref 128711 // lbErrCodes
+	protected explicit_return_type "lbErrCodes"
 	nparams 1
-	  param inout name "uk" type class_ref 141767 // lb_I_Unknown
+	  param inout name "uk" explicit_type "lb_I_Unknown"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
@@ -1322,9 +1191,9 @@ ${body}}
       end
 
       operation 272583 "lbDBNext"
-	protected return_type class_ref 128711 // lbErrCodes
+	protected explicit_return_type "lbErrCodes"
 	nparams 1
-	  param inout name "uk" type class_ref 141767 // lb_I_Unknown
+	  param inout name "uk" explicit_type "lb_I_Unknown"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
@@ -1340,9 +1209,9 @@ ${body}}
       end
 
       operation 272711 "lbDBPrev"
-	protected return_type class_ref 128711 // lbErrCodes
+	protected explicit_return_type "lbErrCodes"
 	nparams 1
-	  param inout name "uk" type class_ref 141767 // lb_I_Unknown
+	  param inout name "uk" explicit_type "lb_I_Unknown"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
@@ -1358,9 +1227,9 @@ ${body}}
       end
 
       operation 272839 "lbDBLast"
-	protected return_type class_ref 128711 // lbErrCodes
+	protected explicit_return_type "lbErrCodes"
 	nparams 1
-	  param inout name "uk" type class_ref 141767 // lb_I_Unknown
+	  param inout name "uk" explicit_type "lb_I_Unknown"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
@@ -1376,9 +1245,9 @@ ${body}}
       end
 
       operation 272967 "lbDBAdd"
-	protected return_type class_ref 128711 // lbErrCodes
+	protected explicit_return_type "lbErrCodes"
 	nparams 1
-	  param inout name "uk" type class_ref 141767 // lb_I_Unknown
+	  param inout name "uk" explicit_type "lb_I_Unknown"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
@@ -1394,9 +1263,9 @@ ${body}}
       end
 
       operation 273095 "lbDBDelete"
-	protected return_type class_ref 128711 // lbErrCodes
+	protected explicit_return_type "lbErrCodes"
 	nparams 1
-	  param inout name "uk" type class_ref 141767 // lb_I_Unknown
+	  param inout name "uk" explicit_type "lb_I_Unknown"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
@@ -1412,7 +1281,7 @@ ${body}}
       end
 
       operation 273223 "lbDBUpdate"
-	protected return_type class_ref 128711 // lbErrCodes
+	protected explicit_return_type "lbErrCodes"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -1429,7 +1298,7 @@ ${body}}
       end
 
       operation 273351 "lbDBClear"
-	protected return_type class_ref 128711 // lbErrCodes
+	protected explicit_return_type "lbErrCodes"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -1446,7 +1315,7 @@ ${body}}
       end
 
       operation 273479 "lbDBRead"
-	protected return_type class_ref 128711 // lbErrCodes
+	protected explicit_return_type "lbErrCodes"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -1463,9 +1332,9 @@ ${body}}
       end
 
       operation 273607 "registerEventHandler"
-	protected return_type class_ref 128711 // lbErrCodes
+	protected explicit_return_type "lbErrCodes"
 	nparams 1
-	  param inout name "dispatcher" type class_ref 133575 // lb_I_Dispatcher
+	  param inout name "dispatcher" explicit_type "lb_I_Dispatcher"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
@@ -1487,9 +1356,9 @@ ${body}}
       end
 
       operation 273735 "OnActionButton"
-	protected return_type class_ref 128711 // lbErrCodes
+	protected explicit_return_type "lbErrCodes"
 	nparams 1
-	  param inout name "uk" type class_ref 141767 // lb_I_Unknown
+	  param inout name "uk" explicit_type "lb_I_Unknown"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
@@ -1507,7 +1376,7 @@ ${body}}
       operation 273863 "OnDispatch"
 	protected explicit_return_type "void"
 	nparams 1
-	  param inout name "event" type class_ref 160071 // wxCommandEvent
+	  param inout name "event" explicit_type "wxCommandEvent"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
@@ -1520,7 +1389,7 @@ ${body}}
       operation 273991 "OnPaint"
 	protected explicit_return_type "void"
 	nparams 1
-	  param inout name "event" type class_ref 160071 // wxCommandEvent
+	  param inout name "event" explicit_type "wxCommandEvent"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
@@ -1545,51 +1414,6 @@ ${body}}
 "
 	java_decl ""
 	idl_decl ""
-      end
-
-      classrelation 154183 // firstButton (<unidirectional association>)
-	relation 154183 --->
-	  a role_name "firstButton" multiplicity "" protected
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
-"
-	    classrelation_ref 154183 // firstButton (<unidirectional association>)
-	  b parent class_ref 160199 // wxWindow
-      end
-
-      classrelation 154311 // prevButton (<unidirectional association>)
-	relation 154311 --->
-	  a role_name "prevButton" multiplicity "" protected
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
-"
-	    classrelation_ref 154311 // prevButton (<unidirectional association>)
-	  b parent class_ref 160199 // wxWindow
-      end
-
-      classrelation 154439 // nextButton (<unidirectional association>)
-	relation 154439 --->
-	  a role_name "nextButton" multiplicity "" protected
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
-"
-	    classrelation_ref 154439 // nextButton (<unidirectional association>)
-	  b parent class_ref 160199 // wxWindow
-      end
-
-      classrelation 154567 // lastButton (<unidirectional association>)
-	relation 154567 --->
-	  a role_name "lastButton" multiplicity "" protected
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
-"
-	    classrelation_ref 154567 // lastButton (<unidirectional association>)
-	  b parent class_ref 160199 // wxWindow
-      end
-
-      classrelation 154695 // deleteButton (<unidirectional association>)
-	relation 154695 --->
-	  a role_name "deleteButton" multiplicity "" protected
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
-"
-	    classrelation_ref 154695 // deleteButton (<unidirectional association>)
-	  b parent class_ref 160199 // wxWindow
       end
 
       attribute 163399 "allNaviDisabled"
@@ -1657,47 +1481,9 @@ ${body}}
 	  b parent class_ref 161095 // FormularFieldInformation
       end
 
-      classrelation 154951 // fa (<unidirectional association>)
-	relation 154951 --->
-	  a role_name "fa" multiplicity "" protected
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
-"
-	    classrelation_ref 154951 // fa (<unidirectional association>)
-	  b parent class_ref 161351 // FormularActions
-      end
-
-      classrelation 155079 // _master (<unidirectional association>)
-	relation 155079 --->
-	  a role_name "_master" multiplicity "" protected
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
-"
-	    classrelation_ref 155079 // _master (<unidirectional association>)
-	  b parent class_ref 161223 // lb_I_DatabaseForm
-      end
-
-      classrelation 155207 // _detail (<unidirectional association>)
-	relation 155207 --->
-	  a role_name "_detail" multiplicity "" protected
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
-"
-	    classrelation_ref 155207 // _detail (<unidirectional association>)
-	  b parent class_ref 161223 // lb_I_DatabaseForm
-      end
-
-      classrelation 155335 // _params (<unidirectional association>)
-	relation 155335 --->
-	  a role_name "_params" multiplicity "" protected
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
-"
-	    classrelation_ref 155335 // _params (<unidirectional association>)
-	  b parent class_ref 141127 // lb_I_Parameter
-      end
     end
 
-    class 161479 "lbDatabaseDialog"
-      
-      
-      cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 161479 "lbDatabaseDialog"cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
 "
@@ -1708,22 +1494,6 @@ ${inlines}
       comment "...e
 ...e
 ...sclass lbDatabaseDialog:0:"
-      classrelation 155463 // <generalisation>
-	relation 155463 ---|>
-	  a public
-	    cpp default "Generated"
-	    classrelation_ref 155463 // <generalisation>
-	  b parent class_ref 161223 // lb_I_DatabaseForm
-      end
-
-      classrelation 155591 // <generalisation>
-	relation 155591 ---|>
-	  a public
-	    cpp default "Generated"
-	    classrelation_ref 155591 // <generalisation>
-	  b parent class_ref 159943 // wxDialog
-      end
-
       operation 274119 "lbDatabaseDialog"
 	public explicit_return_type ""
 	nparams 0
@@ -1755,7 +1525,7 @@ ${body}}
       end
 
       operation 274375 "setName"
-	public return_type class_ref 128711 // lbErrCodes
+	public explicit_return_type "lbErrCodes"
 	nparams 2
 	  param in name "name" explicit_type "char"
 	  param in name "appention" explicit_type "char"
@@ -1769,7 +1539,7 @@ ${body}}
       end
 
       operation 274503 "addButton"
-	cpp_inline public return_type class_ref 128711 // lbErrCodes
+	cpp_inline public explicit_return_type "lbErrCodes"
 	nparams 6
 	  param inout name "buttonText" explicit_type "char"
 	  param inout name "evHandler" explicit_type "char"
@@ -1784,7 +1554,7 @@ ${body}}
       end
 
       operation 274631 "addLabel"
-	cpp_inline public return_type class_ref 128711 // lbErrCodes
+	cpp_inline public explicit_return_type "lbErrCodes"
 	nparams 5
 	  param inout name "text" explicit_type "char"
 	  param in name "x" explicit_type "int"
@@ -1798,7 +1568,7 @@ ${body}}
       end
 
       operation 274759 "addTextField"
-	cpp_inline public return_type class_ref 128711 // lbErrCodes
+	cpp_inline public explicit_return_type "lbErrCodes"
 	nparams 5
 	  param inout name "name" explicit_type "char"
 	  param in name "x" explicit_type "int"
@@ -1812,7 +1582,7 @@ ${body}}
       end
 
       operation 274887 "addOwnerDrawn"
-	cpp_inline public return_type class_ref 128711 // lbErrCodes
+	cpp_inline public explicit_return_type "lbErrCodes"
 	nparams 5
 	  param inout name "name" explicit_type "char"
 	  param in name "x" explicit_type "int"
@@ -1929,8 +1699,8 @@ ${body}}
       operation 276039 "setMasterForm"
 	public explicit_return_type "void"
 	nparams 2
-	  param inout name "master" type class_ref 161223 // lb_I_DatabaseForm
-	  param inout name "params" type class_ref 141127 // lb_I_Parameter
+	  param inout name "master" explicit_type "lb_I_DatabaseForm"
+	  param inout name "params" explicit_type "lb_I_Parameter"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}, ${t1} * ${p1}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}, ${t1} * ${p1}${)}${const}${volatile}${throw}${staticnl}{
@@ -1944,8 +1714,8 @@ ${body}}
       operation 276167 "setDetailForm"
 	public explicit_return_type "void"
 	nparams 2
-	  param inout name "detail" type class_ref 161223 // lb_I_DatabaseForm
-	  param inout name "params" type class_ref 141127 // lb_I_Parameter
+	  param inout name "detail" explicit_type "lb_I_DatabaseForm"
+	  param inout name "params" explicit_type "lb_I_Parameter"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}, ${t1} * ${p1}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "//...e
@@ -2035,7 +1805,7 @@ ${body}}
       end
 
       operation 276935 "getPrimaryColumn"
-	public return_type class_ref 141255 // lb_I_String
+	public explicit_return_type "lb_I_String"
 	nparams 1
 	  param in name "pos" explicit_type "int"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract};
@@ -2066,7 +1836,7 @@ ${body}}
       end
 
       operation 277191 "getForeignColumn"
-	public return_type class_ref 141255 // lb_I_String
+	public explicit_return_type "lb_I_String"
 	nparams 1
 	  param in name "pos" explicit_type "int"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract};
@@ -2137,9 +1907,9 @@ ${body}}
       end
 
       operation 277831 "lbDBFirst"
-	public return_type class_ref 128711 // lbErrCodes
+	public explicit_return_type "lbErrCodes"
 	nparams 1
-	  param inout name "uk" type class_ref 141767 // lb_I_Unknown
+	  param inout name "uk" explicit_type "lb_I_Unknown"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "//...e
@@ -2159,9 +1929,9 @@ ${body}}
       end
 
       operation 277959 "lbDBNext"
-	public return_type class_ref 128711 // lbErrCodes
+	public explicit_return_type "lbErrCodes"
 	nparams 1
-	  param inout name "uk" type class_ref 141767 // lb_I_Unknown
+	  param inout name "uk" explicit_type "lb_I_Unknown"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "//...e
@@ -2180,9 +1950,9 @@ ${body}}
       end
 
       operation 278087 "lbDBPrev"
-	public return_type class_ref 128711 // lbErrCodes
+	public explicit_return_type "lbErrCodes"
 	nparams 1
-	  param inout name "uk" type class_ref 141767 // lb_I_Unknown
+	  param inout name "uk" explicit_type "lb_I_Unknown"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "//...e
@@ -2201,9 +1971,9 @@ ${body}}
       end
 
       operation 278215 "lbDBLast"
-	public return_type class_ref 128711 // lbErrCodes
+	public explicit_return_type "lbErrCodes"
 	nparams 1
-	  param inout name "uk" type class_ref 141767 // lb_I_Unknown
+	  param inout name "uk" explicit_type "lb_I_Unknown"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "//...e
@@ -2222,9 +1992,9 @@ ${body}}
       end
 
       operation 278343 "lbDBAdd"
-	public return_type class_ref 128711 // lbErrCodes
+	public explicit_return_type "lbErrCodes"
 	nparams 1
-	  param inout name "uk" type class_ref 141767 // lb_I_Unknown
+	  param inout name "uk" explicit_type "lb_I_Unknown"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "//...e
@@ -2243,9 +2013,9 @@ ${body}}
       end
 
       operation 278471 "lbDBDelete"
-	public return_type class_ref 128711 // lbErrCodes
+	public explicit_return_type "lbErrCodes"
 	nparams 1
-	  param inout name "uk" type class_ref 141767 // lb_I_Unknown
+	  param inout name "uk" explicit_type "lb_I_Unknown"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "//...e
@@ -2264,7 +2034,7 @@ ${body}}
       end
 
       operation 278599 "lbDBUpdate"
-	public return_type class_ref 128711 // lbErrCodes
+	public explicit_return_type "lbErrCodes"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -2284,7 +2054,7 @@ ${body}}
       end
 
       operation 278727 "lbDBClear"
-	public return_type class_ref 128711 // lbErrCodes
+	public explicit_return_type "lbErrCodes"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -2304,7 +2074,7 @@ ${body}}
       end
 
       operation 278855 "lbDBRead"
-	public return_type class_ref 128711 // lbErrCodes
+	public explicit_return_type "lbErrCodes"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -2324,9 +2094,9 @@ ${body}}
       end
 
       operation 278983 "registerEventHandler"
-	public return_type class_ref 128711 // lbErrCodes
+	public explicit_return_type "lbErrCodes"
 	nparams 1
-	  param inout name "dispatcher" type class_ref 133575 // lb_I_Dispatcher
+	  param inout name "dispatcher" explicit_type "lb_I_Dispatcher"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
@@ -2348,9 +2118,9 @@ ${body}}
       end
 
       operation 279111 "OnActionButton"
-	public return_type class_ref 128711 // lbErrCodes
+	public explicit_return_type "lbErrCodes"
 	nparams 1
-	  param inout name "uk" type class_ref 141767 // lb_I_Unknown
+	  param inout name "uk" explicit_type "lb_I_Unknown"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "//...e
@@ -2371,7 +2141,7 @@ ${body}}
       operation 279239 "OnDispatch"
 	public explicit_return_type "void"
 	nparams 1
-	  param inout name "event" type class_ref 160071 // wxCommandEvent
+	  param inout name "event" explicit_type "wxCommandEvent"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "//...e
@@ -2387,7 +2157,7 @@ ${body}}
       operation 279367 "OnPaint"
 	public explicit_return_type "void"
 	nparams 1
-	  param inout name "event" type class_ref 160071 // wxCommandEvent
+	  param inout name "event" explicit_type "wxCommandEvent"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "//...e
@@ -2418,10 +2188,7 @@ ${body}}
       end
     end
 
-    class 165703 "lbOwnerDrawControl"
-      
-      
-      cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 165703 "lbOwnerDrawControl"cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
 "
@@ -2471,22 +2238,6 @@ ${inlines}
 
 ...e
 ...sclass lbOwnerDrawControl:0:"
-      classrelation 161351 // <generalisation>
-	relation 161351 ---|>
-	  a public
-	    cpp default "Generated"
-	    classrelation_ref 161351 // <generalisation>
-	  b parent class_ref 165831 // lb_I_Control
-      end
-
-      classrelation 161479 // <generalisation>
-	relation 161479 ---|>
-	  a public
-	    cpp default "Generated"
-	    classrelation_ref 161479 // <generalisation>
-	  b parent class_ref 165959 // wxControl
-      end
-
       operation 301895 "lbOwnerDrawControl"
 	public explicit_return_type ""
 	nparams 0
@@ -2533,7 +2284,7 @@ ${body}}
       operation 302407 "init"
 	public explicit_return_type "void"
 	nparams 1
-	  param inout name "parent" type class_ref 159815 // lb_I_Window
+	  param inout name "parent" explicit_type "lb_I_Window"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
@@ -2546,7 +2297,7 @@ ${body}}
       operation 302535 "OnPaint"
 	public explicit_return_type "void"
 	nparams 1
-	  param inout name "event" type class_ref 166087 // wxPaintEvent
+	  param inout name "event" explicit_type "wxPaintEvent"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
@@ -2557,10 +2308,7 @@ ${body}}
       end
     end
 
-    class 166215 "lbPluginDatabasePanel"
-      
-      
-      cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 166215 "lbPluginDatabasePanel"cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
 "
@@ -2571,22 +2319,6 @@ ${inlines}
       comment "...e
 ...sclass lbPluginDatabasePanel implementation:0:
 ...slbPluginDatabasePanel:0:"
-      classrelation 161607 // <generalisation>
-	relation 161607 ---|>
-	  a public
-	    cpp default "Generated"
-	    classrelation_ref 161607 // <generalisation>
-	  b parent class_ref 166343 // virtual
-      end
-
-      classrelation 161735 // <generalisation>
-	relation 161735 ---|>
-	  a private
-	    cpp default "Generated"
-	    classrelation_ref 161735 // <generalisation>
-	  b parent class_ref 136263 // lb_I_PluginImpl
-      end
-
       operation 302663 "lbPluginDatabasePanel"
 	public explicit_return_type ""
 	nparams 0
@@ -2637,7 +2369,7 @@ ${body}}
       end
 
       operation 303175 "peekImplementation"
-	public return_type class_ref 141767 // lb_I_Unknown
+	public explicit_return_type "lb_I_Unknown"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -2649,7 +2381,7 @@ ${body}}
       end
 
       operation 303303 "getImplementation"
-	public return_type class_ref 141767 // lb_I_Unknown
+	public explicit_return_type "lb_I_Unknown"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -2873,7 +2605,7 @@ char* LB_STDCALL lbDatabaseDialog::getQuery() {
 char* LB_STDCALL lbDatabaseDialog::getColumnName(int pos) {
 	return panel->"
 	nparams 1
-	  param in name "" type class_ref 166471 // pos
+	  param in name "" explicit_type "pos"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
@@ -2890,10 +2622,7 @@ ${body}}
       end
     end
 
-    class 166599 "lbPluginDatabaseDialog"
-      
-      
-      cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 166599 "lbPluginDatabaseDialog"cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
 "
@@ -2904,22 +2633,6 @@ ${inlines}
       comment "...e
 ...sclass lbPluginDatabaseDialog implementation:0:
 ...slbPluginDatabaseDialog:0:"
-      classrelation 161863 // <generalisation>
-	relation 161863 ---|>
-	  a public
-	    cpp default "Generated"
-	    classrelation_ref 161863 // <generalisation>
-	  b parent class_ref 166343 // virtual
-      end
-
-      classrelation 161991 // <generalisation>
-	relation 161991 ---|>
-	  a private
-	    cpp default "Generated"
-	    classrelation_ref 161991 // <generalisation>
-	  b parent class_ref 136263 // lb_I_PluginImpl
-      end
-
       operation 303687 "lbPluginDatabaseDialog"
 	public explicit_return_type ""
 	nparams 0
@@ -2970,7 +2683,7 @@ ${body}}
       end
 
       operation 304199 "peekImplementation"
-	public return_type class_ref 141767 // lb_I_Unknown
+	public explicit_return_type "lb_I_Unknown"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -2982,7 +2695,7 @@ ${body}}
       end
 
       operation 304327 "getImplementation"
-	public return_type class_ref 141767 // lb_I_Unknown
+	public explicit_return_type "lb_I_Unknown"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -3006,10 +2719,7 @@ ${body}}
       end
     end
 
-    class 166727 "lbPluginModuleDatabaseForm"
-      
-      
-      cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 166727 "lbPluginModuleDatabaseForm"cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
 "
@@ -3018,14 +2728,6 @@ ${inlines}
       explicit_switch_type ""
       
       comment "...sclass lbPluginModuleDatabaseForm:0:"
-      classrelation 162119 // <generalisation>
-	relation 162119 ---|>
-	  a public
-	    cpp default "Generated"
-	    classrelation_ref 162119 // <generalisation>
-	  b parent class_ref 136519 // lb_I_PluginModule
-      end
-
       operation 304583 "lbPluginModuleDatabaseForm"
 	public explicit_return_type ""
 	nparams 0
@@ -3054,7 +2756,7 @@ ${body}}
 
   deploymentview 130119 "DatabaseForm"
     //deployment diagram settings
-    package_name_in_tab default show_context default write_horizontally default auto_label_position default
+    package_name_in_tab default show_context default write_horizontally default auto_label_position default shadow default
     draw_component_as_icon default show_component_req_prov default show_component_rea default
     artifact 145607 "lbConfigure_FK_PK_MappingDialog"
       stereotype "source"

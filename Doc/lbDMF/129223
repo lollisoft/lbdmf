@@ -1,38 +1,50 @@
-format 22
+format 29
 "lbtransfer" // BaseDevelopment::lbtransfer
+  revision 1
+  modified_by 2 "lothar"
   // class settings
   //class diagram settings
-  draw_all_relations default hide_attributes default hide_operations default show_full_members_definition default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default
+  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default shadow default
   //use case diagram settings
-  package_name_in_tab default show_context default auto_label_position default
+  package_name_in_tab default show_context default auto_label_position default shadow default
   //sequence diagram settings
-  show_full_operations_definition default write_horizontally default drawing_language default
+  show_full_operations_definition default write_horizontally default drawing_language default shadow default
   //collaboration diagram settings
-  show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default
+  show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default shadow default
+  //object diagram settings
+   write_horizontally default package_name_in_tab default show_context default auto_label_position default shadow default
   //component diagram settings
-  package_name_in_tab default show_context default auto_label_position default
+  package_name_in_tab default show_context default auto_label_position default shadow default
   draw_component_as_icon default show_component_req_prov default show_component_rea default
   //deployment diagram settings
-  package_name_in_tab default show_context default write_horizontally default auto_label_position default
+  package_name_in_tab default show_context default write_horizontally default auto_label_position default shadow default
   draw_component_as_icon default show_component_req_prov default show_component_rea default
   //state diagram settings
-  package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default
+  package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default shadow default
   show_activities default region_horizontally default drawing_language default
+  //activity diagram settings
+  package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default shadow default
+  show_infonote default drawing_language default
   
   classview 129095 "lbtransfer"
     //class diagram settings
-    draw_all_relations default hide_attributes default hide_operations default show_full_members_definition default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default
-    //col diagram settings
-    show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default
-    //seq diagram settings
-    show_full_operations_definition default write_horizontally default drawing_language default
+    draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default shadow default
+    //collaboration diagram settings
+    show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default shadow default
+    //object diagram settings
+     write_horizontally default package_name_in_tab default show_context default auto_label_position default shadow default
+    //sequence diagram settings
+    show_full_operations_definition default write_horizontally default drawing_language default shadow default
     //state diagram settings
-    package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default
+    package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default shadow default
     show_activities default region_horizontally default drawing_language default
     //class settings
+    //activity diagram settings
+    package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default shadow default
+    show_infonote default drawing_language default
+    
     class 146119 "LB_SOCK_STATE"
        stereotype "enum"
-      
       cpp_decl "${comment}enum ${name} {
 ${items}
 };
@@ -71,10 +83,7 @@ ${items}
       end
     end
 
-    class 146247 "lbSocket"
-      
-      
-      cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 146247 "lbSocket"cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
 "
@@ -82,7 +91,7 @@ ${inlines}
       idl_decl ""
       explicit_switch_type ""
       
-      comment " In DLL lbTransfer DLLEXPORT must be \"\""
+      comment " In DLL lbTransfer DLLEXPORT must be \"\""
       operation 211143 "lbSocket"
 	public explicit_return_type ""
 	nparams 0
@@ -192,9 +201,9 @@ ${body}}
       end
 
       operation 212039 "neagleOff"
-	public return_type class_ref 128711 // lbErrCodes
+	public explicit_return_type "lbErrCodes"
 	nparams 1
-	  param in name "s" type class_ref 146375 // SOCKET
+	  param in name "s" explicit_type "SOCKET"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "//...e
@@ -217,7 +226,7 @@ ${body}}
       end
 
       operation 212295 "recvInteger"
-	public return_type class_ref 128711 // lbErrCodes
+	public explicit_return_type "lbErrCodes"
 	nparams 1
 	  param inout name "i" explicit_type "int"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
@@ -233,7 +242,7 @@ ${body}}
       end
 
       operation 212423 "sendInteger"
-	public return_type class_ref 128711 // lbErrCodes
+	public explicit_return_type "lbErrCodes"
 	nparams 1
 	  param in name "i" explicit_type "int"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract};
@@ -249,7 +258,7 @@ ${body}}
       end
 
       operation 212551 "send"
-	public return_type class_ref 128711 // lbErrCodes
+	public explicit_return_type "lbErrCodes"
 	nparams 2
 	  param inout name "buf" explicit_type "void"
 	  param in name "len" explicit_type "int"
@@ -266,7 +275,7 @@ ${body}}
       end
 
       operation 212679 "recv"
-	public return_type class_ref 128711 // lbErrCodes
+	public explicit_return_type "lbErrCodes"
 	nparams 2
 	  param inout name "buf" explicit_type "void"
 	  param inout name "len" explicit_type "int"
@@ -286,7 +295,7 @@ ${body}}
       end
 
       operation 212807 "recv_charbuf"
-	public return_type class_ref 128711 // lbErrCodes
+	public explicit_return_type "lbErrCodes"
 	nparams 1
 	  param inout name "buf" explicit_type "char"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
@@ -302,7 +311,7 @@ ${body}}
       end
 
       operation 212935 "send_charbuf"
-	public return_type class_ref 128711 // lbErrCodes
+	public explicit_return_type "lbErrCodes"
 	nparams 2
 	  param inout name "buf" explicit_type "char"
 	  param in name "len" explicit_type "int"
@@ -319,9 +328,9 @@ ${body}}
       end
 
       operation 213063 "recv"
-	public return_type class_ref 128711 // lbErrCodes
+	public explicit_return_type "lbErrCodes"
 	nparams 1
-	  param inout name "data" type class_ref 146503 // lb_Transfer_Data
+	  param inout name "data" explicit_type "lb_Transfer_Data"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "//...e
@@ -339,9 +348,9 @@ ${body}}
       end
 
       operation 213191 "send"
-	public return_type class_ref 128711 // lbErrCodes
+	public explicit_return_type "lbErrCodes"
 	nparams 1
-	  param inout name "data" type class_ref 146503 // lb_Transfer_Data
+	  param inout name "data" explicit_type "lb_Transfer_Data"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "//...e
@@ -355,7 +364,7 @@ ${body}}
       end
 
       operation 213319 "accept"
-	public return_type class_ref 128711 // lbErrCodes
+	public explicit_return_type "lbErrCodes"
 	nparams 1
 	  param inout name "s" type class_ref 146247 // lbSocket
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * & ${p0}${)}${const}${volatile}${throw}${abstract};
@@ -387,14 +396,14 @@ ${body}}
 "
 	
 	
-	comment " These functions must not be locket"
+	comment " These functions must not be locket"
       end
 
       operation 213575 "init"
 	private explicit_return_type "void"
 	nparams 2
 	  param in name "mysockaddr" explicit_type "ulong"
-	  param in name "port" type class_ref 146631 // u_short
+	  param in name "port" explicit_type "u_short"
 	    defaultvalue " PORT"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${const}${volatile}${throw}${abstract};
 "
@@ -486,7 +495,7 @@ ${body}}
       operation 214343 "setSockConnection"
 	private explicit_return_type "int"
 	nparams 1
-	  param in name "s" type class_ref 146375 // SOCKET
+	  param in name "s" explicit_type "SOCKET"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "//...e
@@ -533,60 +542,6 @@ ${body}}
 	idl_decl ""
       end
 
-      classrelation 139207 // Data (<directional aggregation by value>)
-	relation 139207 *-->
-	  a role_name "Data" multiplicity "" private
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	    classrelation_ref 139207 // Data (<directional aggregation by value>)
-	  b parent class_ref 146759 // WSADATA
-      end
-
-      classrelation 139335 // serverSockAddr (<directional aggregation by value>)
-	relation 139335 *-->
-	  a role_name "serverSockAddr" multiplicity "" private
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	    classrelation_ref 139335 // serverSockAddr (<directional aggregation by value>)
-	  b parent class_ref 146887 // SOCKADDR_IN
-      end
-
-      classrelation 139463 // clientSockAddr (<directional aggregation by value>)
-	relation 139463 *-->
-	  a role_name "clientSockAddr" multiplicity "" private
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	    classrelation_ref 139463 // clientSockAddr (<directional aggregation by value>)
-	  b parent class_ref 146887 // SOCKADDR_IN
-      end
-
-      classrelation 139591 // serverSocket (<directional aggregation by value>)
-	relation 139591 *-->
-	  a role_name "serverSocket" multiplicity "" private
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	    classrelation_ref 139591 // serverSocket (<directional aggregation by value>)
-	  b parent class_ref 146375 // SOCKET
-      end
-
-      classrelation 139719 // clientSocket (<directional aggregation by value>)
-	relation 139719 *-->
-	  a role_name "clientSocket" multiplicity "" private
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	    classrelation_ref 139719 // clientSocket (<directional aggregation by value>)
-	  b parent class_ref 146375 // SOCKET
-      end
-
-      classrelation 139847 // clBackup (<directional aggregation by value>)
-	relation 139847 *-->
-	  a role_name "clBackup" multiplicity "" private
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	    classrelation_ref 139847 // clBackup (<directional aggregation by value>)
-	  b parent class_ref 146375 // SOCKET
-      end
-
       attribute 148295 "status"
 	private explicit_type "int"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
@@ -601,7 +556,7 @@ ${body}}
 "
 	java_decl ""
 	idl_decl ""
-	comment "=sizeof(SOCKADDR_IN);"
+	comment "=sizeof(SOCKADDR_IN);"
       end
 
       attribute 148551 "destAddr"
@@ -610,7 +565,7 @@ ${body}}
 "
 	java_decl ""
 	idl_decl ""
-	comment " for client init"
+	comment " for client init"
       end
 
       attribute 148679 "startupflag"
@@ -619,24 +574,6 @@ ${body}}
 "
 	java_decl ""
 	idl_decl ""
-      end
-
-      classrelation 139975 // <directional aggregation by value>
-	relation 139975 *-->
-	  a role_name "" multiplicity "" private
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}struct ${type} ${name}${value};
-"
-	    classrelation_ref 139975 // <directional aggregation by value>
-	  b parent class_ref 147015 // sockaddr_in
-      end
-
-      classrelation 140103 // <directional aggregation by value>
-	relation 140103 *-->
-	  a role_name "" multiplicity "" private
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}struct ${type} ${name}${value};
-"
-	    classrelation_ref 140103 // <directional aggregation by value>
-	  b parent class_ref 147015 // sockaddr_in
       end
 
       attribute 148807 "numrcv"
@@ -667,7 +604,6 @@ ${body}}
 
     class 147143 "LB_TRANSFER_STATE"
        stereotype "enum"
-      
       cpp_decl "${comment}enum ${name} {
 ${items}
 };
@@ -691,10 +627,7 @@ ${items}
       end
     end
 
-    class 156999 "lbSocketModule"
-      
-      
-      cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 156999 "lbSocketModule"cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
 "
@@ -727,10 +660,7 @@ ${inlines}
       end
     end
 
-    class 157127 "lbMutexLocker"
-      
-      
-      cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 157127 "lbMutexLocker"cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
 "
@@ -774,10 +704,7 @@ ${inlines}
       end
     end
 
-    class 157255 "lbTransferModule"
-      
-      
-      cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 157255 "lbTransferModule"cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
 "
@@ -814,10 +741,7 @@ ${inlines}
       end
     end
 
-    class 157383 "lbTransferDataObject"
-      
-      
-      cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 157383 "lbTransferDataObject"cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
 "
@@ -830,7 +754,7 @@ ${inlines}
 
   deploymentview 128839 "lbtransfer"
     //deployment diagram settings
-    package_name_in_tab default show_context default write_horizontally default auto_label_position default
+    package_name_in_tab default show_context default write_horizontally default auto_label_position default shadow default
     draw_component_as_icon default show_component_req_prov default show_component_rea default
     artifact 138695 "LB_SOCK_STATE"
       stereotype "source"

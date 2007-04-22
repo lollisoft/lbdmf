@@ -1,5 +1,7 @@
-format 24
+format 29
 "wxWrapper" // Test::GUI::wxWrapper
+  revision 1
+  modified_by 2 "lothar"
   // class settings
   //class diagram settings
   draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default shadow default
@@ -8,7 +10,9 @@ format 24
   //sequence diagram settings
   show_full_operations_definition default write_horizontally default drawing_language default shadow default
   //collaboration diagram settings
-  show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default shadow default
+  show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default shadow default
+  //object diagram settings
+   write_horizontally default package_name_in_tab default show_context default auto_label_position default shadow default
   //component diagram settings
   package_name_in_tab default show_context default auto_label_position default shadow default
   draw_component_as_icon default show_component_req_prov default show_component_rea default
@@ -16,24 +20,30 @@ format 24
   package_name_in_tab default show_context default write_horizontally default auto_label_position default shadow default
   draw_component_as_icon default show_component_req_prov default show_component_rea default
   //state diagram settings
-  package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default shadow default
+  package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default shadow default
   show_activities default region_horizontally default drawing_language default
+  //activity diagram settings
+  package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default shadow default
+  show_infonote default drawing_language default
   
   classview 128370 "wxWrapper"
     //class diagram settings
     draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default shadow default
-    //col diagram settings
-    show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default shadow default
-    //seq diagram settings
+    //collaboration diagram settings
+    show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default shadow default
+    //object diagram settings
+     write_horizontally default package_name_in_tab default show_context default auto_label_position default shadow default
+    //sequence diagram settings
     show_full_operations_definition default write_horizontally default drawing_language default shadow default
     //state diagram settings
-    package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default shadow default
+    package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default shadow default
     show_activities default region_horizontally default drawing_language default
     //class settings
-    class 128882 "lb_wxFrame"
-      
-      
-      cpp_decl "${comment}${template}class ${name}${inherit} {
+    //activity diagram settings
+    package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default shadow default
+    show_infonote default drawing_language default
+    
+    class 128882 "lb_wxFrame"cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
 "
@@ -47,22 +57,6 @@ ${inlines}
  *
  * It implements the main event handling interface via OnDispatch.
  "
-      classrelation 131442 // <generalisation>
-	relation 131442 ---|>
-	  a public
-	    cpp default "${type}"
-	    classrelation_ref 131442 // <generalisation>
-	  b parent class_ref 161735 // wxFrame
-      end
-
-      classrelation 131570 // <generalisation>
-	relation 131570 ---|>
-	  a public
-	    cpp default "${type}"
-	    classrelation_ref 131570 // <generalisation>
-	  b parent class_ref 169159 // lb_I_wxFrame
-      end
-
       operation 131442 "lb_wxFrame"
 	cpp_inline public explicit_return_type ""
 	nparams 0
@@ -97,7 +91,7 @@ ${body}}
       operation 131698 "lb_wxFrame"
 	public explicit_return_type ""
 	nparams 6
-	  param inout name "frame" type class_ref 161735 // wxFrame
+	  param inout name "frame" explicit_type "wxFrame"
 	  param inout name "title" explicit_type "char"
 	  param in name "x" explicit_type "int"
 	  param in name "y" explicit_type "int"
@@ -140,7 +134,7 @@ ${body}}
       operation 131954 "OnQuit"
 	public explicit_return_type "void"
 	nparams 1
-	  param inout name "event" type class_ref 160071 // wxCommandEvent
+	  param inout name "event" explicit_type "wxCommandEvent"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
@@ -153,7 +147,7 @@ ${body}}
       operation 132082 "OnVerbose"
 	public explicit_return_type "void"
 	nparams 1
-	  param inout name "event" type class_ref 160071 // wxCommandEvent
+	  param inout name "event" explicit_type "wxCommandEvent"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
@@ -166,7 +160,7 @@ ${body}}
       operation 132210 "OnAbout"
 	public explicit_return_type "void"
 	nparams 1
-	  param inout name "event" type class_ref 160071 // wxCommandEvent
+	  param inout name "event" explicit_type "wxCommandEvent"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
@@ -197,7 +191,7 @@ ${body}}
       operation 132466 "OnDispatch"
 	public explicit_return_type "void"
 	nparams 1
-	  param inout name "event" type class_ref 160071 // wxCommandEvent
+	  param inout name "event" explicit_type "wxCommandEvent"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "//...slb_wxFrame\\58\\\\58\\OnDispatch\\40\\wxCommandEvent\\38\\ event \\41\\:0:
@@ -221,7 +215,7 @@ ${body}}
       operation 132594 "OnBuildMenu"
 	public explicit_return_type "void"
 	nparams 1
-	  param inout name "event" type class_ref 160071 // wxCommandEvent
+	  param inout name "event" explicit_type "wxCommandEvent"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
@@ -237,7 +231,7 @@ ${body}}
       operation 132722 "OnCheck"
 	public explicit_return_type "void"
 	nparams 1
-	  param inout name "event" type class_ref 160071 // wxCommandEvent
+	  param inout name "event" explicit_type "wxCommandEvent"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
@@ -251,7 +245,7 @@ ${body}}
       end
 
       operation 132850 "getMenuBar"
-	cpp_inline public return_type class_ref 172231 // wxMenuBar
+	cpp_inline public explicit_return_type "wxMenuBar"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}${)}${const}${volatile}${throw}${abstract} {
 		return menu_bar;
@@ -265,7 +259,7 @@ ${body}}
       end
 
       operation 132978 "getEventFunction"
-	cpp_virtual cpp_inline public return_type class_ref 172359 // lb_I_EventCallback
+	cpp_virtual cpp_inline public explicit_return_type "lb_I_EventCallback"
 	nparams 1
 	  param inout name "name" explicit_type "char"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { return NULL; };
@@ -279,10 +273,10 @@ ${body}}
       end
 
       operation 133106 "Connect"
-	cpp_virtual cpp_inline public return_type class_ref 128711 // lbErrCodes
+	cpp_virtual cpp_inline public explicit_return_type "lbErrCodes"
 	nparams 2
 	  param inout name "evName" explicit_type "char"
-	  param in name "evFn" type class_ref 172359 // lb_I_EventCallback
+	  param in name "evFn" explicit_type "lb_I_EventCallback"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}, ${t1} ${p1}${)}${const}${volatile}${throw}${abstract} { return ERR_NONE; };
 "
 	
@@ -290,9 +284,9 @@ ${body}}
       end
 
       operation 133234 "getSinkEventList"
-	cpp_virtual cpp_inline public return_type class_ref 128711 // lbErrCodes
+	cpp_virtual cpp_inline public explicit_return_type "lbErrCodes"
 	nparams 1
-	  param inout name "c" type class_ref 140103 // lb_I_Container
+	  param inout name "c" explicit_type "lb_I_Container"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { return ERR_NONE; };
 "
 	
@@ -300,9 +294,9 @@ ${body}}
       end
 
       operation 133362 "registerEvents"
-	cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 1
-	  param inout name "object" type class_ref 172487 // lb_I_EventConnector
+	  param inout name "object" explicit_type "lb_I_EventConnector"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
@@ -313,9 +307,9 @@ ${body}}
       end
 
       operation 133490 "createEventsource"
-	cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 1
-	  param inout name "object" type class_ref 172487 // lb_I_EventConnector
+	  param inout name "object" explicit_type "lb_I_EventConnector"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "//...e
@@ -329,22 +323,13 @@ ${body}}
       end
 
       operation 133618 "getEventsource"
-	cpp_virtual cpp_inline public return_type class_ref 141767 // lb_I_Unknown
+	cpp_virtual cpp_inline public explicit_return_type "lb_I_Unknown"
 	nparams 1
-	  param inout name "object" type class_ref 172487 // lb_I_EventConnector
+	  param inout name "object" explicit_type "lb_I_EventConnector"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { return NULL; };
 "
 	
 	
-      end
-
-      classrelation 131698 // menu_bar (<unidirectional association>)
-	relation 131698 --->
-	  a role_name "menu_bar" multiplicity "" public
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
-"
-	    classrelation_ref 131698 // menu_bar (<unidirectional association>)
-	  b parent class_ref 172231 // wxMenuBar
       end
 
       classrelation 131826 // gui (<unidirectional association>)
@@ -365,10 +350,7 @@ ${body}}
       end
     end
 
-    class 129010 "lb_wxGUI"
-      
-      
-      cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 129010 "lb_wxGUI"cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
 "
@@ -377,22 +359,6 @@ ${inlines}
       explicit_switch_type ""
       
       comment "...sclass lb_wxGUI:0:"
-      classrelation 131954 // <generalisation>
-	relation 131954 ---|>
-	  a public
-	    cpp default "${type}"
-	    classrelation_ref 131954 // <generalisation>
-	  b parent class_ref 172743 // lb_I_wxGUI
-      end
-
-      classrelation 132082 // <generalisation>
-	relation 132082 ---|>
-	  a public
-	    cpp default "${type}"
-	    classrelation_ref 132082 // <generalisation>
-	  b parent class_ref 133191 // lb_I_EventHandler
-      end
-
       operation 133746 "lb_wxGUI"
 	cpp_inline public explicit_return_type ""
 	nparams 0
@@ -427,7 +393,7 @@ ${inlines}
       end
 
       operation 134002 "createMenu"
-	cpp_virtual public return_type class_ref 141767 // lb_I_Unknown
+	cpp_virtual public explicit_return_type "lb_I_Unknown"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -445,7 +411,7 @@ ${body}}
       end
 
       operation 134130 "createMenuBar"
-	cpp_virtual public return_type class_ref 141767 // lb_I_Unknown
+	cpp_virtual public explicit_return_type "lb_I_Unknown"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -463,7 +429,7 @@ ${body}}
       end
 
       operation 134258 "createMenuEntry"
-	cpp_virtual public return_type class_ref 141767 // lb_I_Unknown
+	cpp_virtual public explicit_return_type "lb_I_Unknown"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -481,7 +447,7 @@ ${body}}
       end
 
       operation 134386 "createDBForm"
-	public return_type class_ref 161223 // lb_I_DatabaseForm
+	public explicit_return_type "lb_I_DatabaseForm"
 	nparams 5
 	  param inout name "formName" explicit_type "char"
 	  param inout name "queryString" explicit_type "char"
@@ -507,7 +473,7 @@ ${body}}
 	public explicit_return_type "void"
 	nparams 2
 	  param inout name "formName" explicit_type "char"
-	  param inout name "form" type class_ref 161223 // lb_I_DatabaseForm
+	  param inout name "form" explicit_type "lb_I_DatabaseForm"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}, ${t1} * ${p1}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "//...e
@@ -520,7 +486,7 @@ ${body}}
       end
 
       operation 134642 "createLoginForm"
-	public return_type class_ref 169287 // lb_I_Form
+	public explicit_return_type "lb_I_Form"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -538,7 +504,7 @@ ${body}}
       end
 
       operation 134770 "getFrame"
-	cpp_virtual public return_type class_ref 134471 // lb_I_Frame
+	cpp_virtual public explicit_return_type "lb_I_Frame"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -558,7 +524,7 @@ ${body}}
       end
 
       operation 134898 "registerEvent"
-	cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 2
 	  param inout name "EvName" explicit_type "char"
 	  param inout name "EvNr" explicit_type "int"
@@ -586,9 +552,9 @@ ${body}}
       end
 
       operation 135026 "registerEventHandler"
-	cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 1
-	  param inout name "disp" type class_ref 133575 // lb_I_Dispatcher
+	  param inout name "disp" explicit_type "lb_I_Dispatcher"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "//...e
@@ -611,9 +577,9 @@ ${body}}
       end
 
       operation 135154 "addDispatcher"
-	cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 1
-	  param inout name "disp" type class_ref 133575 // lb_I_Dispatcher
+	  param inout name "disp" explicit_type "lb_I_Dispatcher"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "//...e
@@ -634,10 +600,10 @@ ${body}}
       end
 
       operation 135282 "dispatchEvent"
-	cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 2
 	  param in name "EvNr" explicit_type "int"
-	  param inout name "EvData" type class_ref 141767 // lb_I_Unknown
+	  param inout name "EvData" explicit_type "lb_I_Unknown"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}, ${t1} * ${p1}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "//...e
@@ -654,9 +620,9 @@ ${body}}
       end
 
       operation 135410 "setDiapatcher"
-	public return_type class_ref 128711 // lbErrCodes
+	public explicit_return_type "lbErrCodes"
 	nparams 1
-	  param inout name "disp" type class_ref 133575 // lb_I_Dispatcher
+	  param inout name "disp" explicit_type "lb_I_Dispatcher"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
@@ -667,7 +633,7 @@ ${body}}
       end
 
       operation 135538 "getDispatcher"
-	public return_type class_ref 133575 // lb_I_Dispatcher
+	public explicit_return_type "lb_I_Dispatcher"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -679,10 +645,10 @@ ${body}}
       end
 
       operation 135666 "queryEvent"
-	cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 2
 	  param inout name "EvName" explicit_type "char"
-	  param inout name "EvData" type class_ref 141767 // lb_I_Unknown
+	  param inout name "EvData" explicit_type "lb_I_Unknown"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}, ${t1} * ${p1}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "//...e
@@ -712,7 +678,7 @@ ${body}}
       end
 
       operation 135794 "deactivateMenuEntry"
-	cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -736,7 +702,7 @@ ${body}}
       end
 
       operation 135922 "activateMenuEntry"
-	cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -754,7 +720,7 @@ ${body}}
       end
 
       operation 136050 "gotoMenuRoot"
-	cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -772,7 +738,7 @@ ${body}}
       end
 
       operation 136178 "gotoMenuEntry"
-	cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 1
 	  param inout name "entry" explicit_type "char"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
@@ -791,9 +757,9 @@ ${body}}
       end
 
       operation 136306 "addMenuEntry"
-	cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 1
-	  param inout name "entry" type class_ref 141767 // lb_I_Unknown
+	  param inout name "entry" explicit_type "lb_I_Unknown"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "//...e
@@ -810,9 +776,9 @@ ${body}}
       end
 
       operation 136434 "insertMenuEntry"
-	cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 1
-	  param inout name "entry" type class_ref 141767 // lb_I_Unknown
+	  param inout name "entry" explicit_type "lb_I_Unknown"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "//...e
@@ -829,7 +795,7 @@ ${body}}
       end
 
       operation 136562 "msgBox"
-	cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 2
 	  param inout name "windowTitle" explicit_type "char"
 	  param inout name "msg" explicit_type "char"
@@ -850,9 +816,9 @@ ${body}}
       end
 
       operation 136690 "setDispatcher"
-	cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 1
-	  param inout name "disp" type class_ref 133575 // lb_I_Dispatcher
+	  param inout name "disp" explicit_type "lb_I_Dispatcher"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
@@ -863,7 +829,7 @@ ${body}}
       end
 
       operation 136818 "addMenuBar"
-	cpp_virtual cpp_inline public return_type class_ref 128711 // lbErrCodes
+	cpp_virtual cpp_inline public explicit_return_type "lbErrCodes"
 	nparams 1
 	  param inout name "name" explicit_type "char"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { return ERR_NONE; };
@@ -877,7 +843,7 @@ ${body}}
       end
 
       operation 136946 "addMenu"
-	cpp_virtual cpp_inline public return_type class_ref 128711 // lbErrCodes
+	cpp_virtual cpp_inline public explicit_return_type "lbErrCodes"
 	nparams 1
 	  param inout name "name" explicit_type "char"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { return ERR_NONE; };
@@ -890,7 +856,7 @@ ${body}}
       end
 
       operation 137074 "addMenuEntry"
-	cpp_virtual cpp_inline public return_type class_ref 128711 // lbErrCodes
+	cpp_virtual cpp_inline public explicit_return_type "lbErrCodes"
 	nparams 4
 	  param inout name "in_menu" explicit_type "char"
 	  param inout name "entry" explicit_type "char"
@@ -914,7 +880,7 @@ ${body}}
       end
 
       operation 137202 "addButton"
-	cpp_virtual cpp_inline public return_type class_ref 128711 // lbErrCodes
+	cpp_virtual cpp_inline public explicit_return_type "lbErrCodes"
 	nparams 6
 	  param inout name "buttonText" explicit_type "char"
 	  param inout name "evHandler" explicit_type "char"
@@ -940,7 +906,7 @@ ${body}}
       end
 
       operation 137330 "addLabel"
-	cpp_virtual cpp_inline public return_type class_ref 128711 // lbErrCodes
+	cpp_virtual cpp_inline public explicit_return_type "lbErrCodes"
 	nparams 5
 	  param inout name "text" explicit_type "char"
 	  param in name "x" explicit_type "int"
@@ -954,7 +920,7 @@ ${body}}
       end
 
       operation 137458 "addTextField"
-	cpp_virtual cpp_inline public return_type class_ref 128711 // lbErrCodes
+	cpp_virtual cpp_inline public explicit_return_type "lbErrCodes"
 	nparams 5
 	  param inout name "name" explicit_type "char"
 	  param in name "x" explicit_type "int"
@@ -968,7 +934,7 @@ ${body}}
       end
 
       operation 137586 "findDBForm"
-	public return_type class_ref 161223 // lb_I_DatabaseForm
+	public explicit_return_type "lb_I_DatabaseForm"
 	nparams 1
 	  param inout name "name" explicit_type "char"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
@@ -987,7 +953,7 @@ ${body}}
       end
 
       operation 137714 "cleanup"
-	public return_type class_ref 128711 // lbErrCodes
+	public explicit_return_type "lbErrCodes"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -1062,48 +1028,12 @@ ${body}}
 	idl_decl ""
       end
 
-      classrelation 132210 // _main_frame (<unidirectional association>)
-	relation 132210 --->
-	  a role_name "_main_frame" multiplicity "" public
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
-"
-	    classrelation_ref 132210 // _main_frame (<unidirectional association>)
-	  b parent class_ref 141767 // lb_I_Unknown
-      end
-
-      classrelation 132338 // myDispatcher (<unidirectional association>)
-	relation 132338 --->
-	  a role_name "myDispatcher" multiplicity "" public
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
-"
-	    classrelation_ref 132338 // myDispatcher (<unidirectional association>)
-	  b parent class_ref 133575 // lb_I_Dispatcher
-      end
-
-      classrelation 132466 // sampleQuery (<unidirectional association>)
-	relation 132466 --->
-	  a role_name "sampleQuery" multiplicity "" public
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
-"
-	    classrelation_ref 132466 // sampleQuery (<unidirectional association>)
-	  b parent class_ref 152391 // lb_I_Query
-      end
-
       attribute 128882 "handlersInitialized"
 	public explicit_type "bool"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
 	idl_decl ""
-      end
-
-      classrelation 132594 // dialog (<unidirectional association>)
-	relation 132594 --->
-	  a role_name "dialog" multiplicity "" public
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
-"
-	    classrelation_ref 132594 // dialog (<unidirectional association>)
-	  b parent class_ref 161223 // lb_I_DatabaseForm
       end
 
       classrelation 132722 // frame (<unidirectional association>)
@@ -1118,7 +1048,6 @@ ${body}}
 
     class 129138 "User"
        stereotype "actor"
-      
       cpp_decl ""
       java_decl ""
       idl_decl ""
@@ -1131,46 +1060,6 @@ ${body}}
  *
  * It is used to demonstrate a GUI sample application.
  "
-      classrelation 132850 // <generalisation>
-	relation 132850 ---|>
-	  a public
-	    cpp default "${type}"
-	    classrelation_ref 132850 // <generalisation>
-	  b parent class_ref 141767 // lb_I_Unknown
-      end
-
-      classrelation 132978 // <generalisation>
-	relation 132978 ---|>
-	  a public
-	    cpp default "${type}"
-	    classrelation_ref 132978 // <generalisation>
-	  b parent class_ref 168775 // lb_I_GUIApp
-      end
-
-      classrelation 133106 // <generalisation>
-	relation 133106 ---|>
-	  a public
-	    cpp default "${type}"
-	    classrelation_ref 133106 // <generalisation>
-	  b parent class_ref 172487 // lb_I_EventConnector
-      end
-
-      classrelation 133234 // <generalisation>
-	relation 133234 ---|>
-	  a public
-	    cpp default "${type}"
-	    classrelation_ref 133234 // <generalisation>
-	  b parent class_ref 133191 // lb_I_EventHandler
-      end
-
-      classrelation 133362 // <generalisation>
-	relation 133362 ---|>
-	  a public
-	    cpp default "${type}"
-	    classrelation_ref 133362 // <generalisation>
-	  b parent class_ref 172999 // wxApp
-      end
-
       operation 138098 "User"
 	cpp_inline public explicit_return_type ""
 	nparams 0
@@ -1243,9 +1132,9 @@ ${body}}
       end
 
       operation 138610 "getConnectorEventList"
-	cpp_virtual cpp_inline public return_type class_ref 128711 // lbErrCodes
+	cpp_virtual cpp_inline public explicit_return_type "lbErrCodes"
 	nparams 1
-	  param inout name "c" type class_ref 140103 // lb_I_Container
+	  param inout name "c" explicit_type "lb_I_Container"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { return ERR_NONE; };
 "
 	
@@ -1268,9 +1157,9 @@ ${body}}
       end
 
       operation 138738 "createEventsource"
-	cpp_virtual cpp_inline public return_type class_ref 128711 // lbErrCodes
+	cpp_virtual cpp_inline public explicit_return_type "lbErrCodes"
 	nparams 1
-	  param inout name "object" type class_ref 172487 // lb_I_EventConnector
+	  param inout name "object" explicit_type "lb_I_EventConnector"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { return ERR_NONE; };
 "
 	
@@ -1278,9 +1167,9 @@ ${body}}
       end
 
       operation 138866 "registerEventHandler"
-	cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 1
-	  param inout name "disp" type class_ref 133575 // lb_I_Dispatcher
+	  param inout name "disp" explicit_type "lb_I_Dispatcher"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "//...e
@@ -1297,9 +1186,9 @@ ${body}}
       end
 
       operation 138994 "addMenu"
-	public return_type class_ref 128711 // lbErrCodes
+	public explicit_return_type "lbErrCodes"
 	nparams 1
-	  param inout name "uk" type class_ref 141767 // lb_I_Unknown
+	  param inout name "uk" explicit_type "lb_I_Unknown"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "//...e
@@ -1318,9 +1207,9 @@ ${body}}
       end
 
       operation 139122 "askOpenFileReadStream"
-	public return_type class_ref 128711 // lbErrCodes
+	public explicit_return_type "lbErrCodes"
 	nparams 1
-	  param inout name "uk" type class_ref 141767 // lb_I_Unknown
+	  param inout name "uk" explicit_type "lb_I_Unknown"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "//...e
@@ -1337,9 +1226,9 @@ ${body}}
       end
 
       operation 139250 "askYesNo"
-	public return_type class_ref 128711 // lbErrCodes
+	public explicit_return_type "lbErrCodes"
 	nparams 1
-	  param inout name "uk" type class_ref 141767 // lb_I_Unknown
+	  param inout name "uk" explicit_type "lb_I_Unknown"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "//...e
@@ -1356,9 +1245,9 @@ ${body}}
       end
 
       operation 139378 "addMenuBar"
-	public return_type class_ref 128711 // lbErrCodes
+	public explicit_return_type "lbErrCodes"
 	nparams 1
-	  param inout name "uk" type class_ref 141767 // lb_I_Unknown
+	  param inout name "uk" explicit_type "lb_I_Unknown"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "//...e
@@ -1376,9 +1265,9 @@ ${body}}
       end
 
       operation 139506 "addMenuEntry"
-	public return_type class_ref 128711 // lbErrCodes
+	public explicit_return_type "lbErrCodes"
 	nparams 1
-	  param inout name "uk" type class_ref 141767 // lb_I_Unknown
+	  param inout name "uk" explicit_type "lb_I_Unknown"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "//...e
@@ -1404,9 +1293,9 @@ ${body}}
       end
 
       operation 139634 "enableEvent"
-	public return_type class_ref 128711 // lbErrCodes
+	public explicit_return_type "lbErrCodes"
 	nparams 1
-	  param inout name "uk" type class_ref 141767 // lb_I_Unknown
+	  param inout name "uk" explicit_type "lb_I_Unknown"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "//...e
@@ -1424,9 +1313,9 @@ ${body}}
       end
 
       operation 139762 "disableEvent"
-	public return_type class_ref 128711 // lbErrCodes
+	public explicit_return_type "lbErrCodes"
 	nparams 1
-	  param inout name "uk" type class_ref 141767 // lb_I_Unknown
+	  param inout name "uk" explicit_type "lb_I_Unknown"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "//...e
@@ -1444,9 +1333,9 @@ ${body}}
       end
 
       operation 139890 "toggleEvent"
-	public return_type class_ref 128711 // lbErrCodes
+	public explicit_return_type "lbErrCodes"
 	nparams 1
-	  param inout name "uk" type class_ref 141767 // lb_I_Unknown
+	  param inout name "uk" explicit_type "lb_I_Unknown"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "//...e
@@ -1464,9 +1353,9 @@ ${body}}
       end
 
       operation 140018 "addButton"
-	public return_type class_ref 128711 // lbErrCodes
+	public explicit_return_type "lbErrCodes"
 	nparams 1
-	  param inout name "uk" type class_ref 141767 // lb_I_Unknown
+	  param inout name "uk" explicit_type "lb_I_Unknown"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "//...e
@@ -1491,9 +1380,9 @@ ${body}}
       end
 
       operation 140146 "addLabel"
-	public return_type class_ref 128711 // lbErrCodes
+	public explicit_return_type "lbErrCodes"
 	nparams 1
-	  param inout name "uk" type class_ref 141767 // lb_I_Unknown
+	  param inout name "uk" explicit_type "lb_I_Unknown"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "//...e
@@ -1510,9 +1399,9 @@ ${body}}
       end
 
       operation 140274 "addTextField"
-	public return_type class_ref 128711 // lbErrCodes
+	public explicit_return_type "lbErrCodes"
 	nparams 1
-	  param inout name "uk" type class_ref 141767 // lb_I_Unknown
+	  param inout name "uk" explicit_type "lb_I_Unknown"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "//...e
@@ -1529,9 +1418,9 @@ ${body}}
       end
 
       operation 140402 "HandleGetFrame"
-	public return_type class_ref 128711 // lbErrCodes
+	public explicit_return_type "lbErrCodes"
 	nparams 1
-	  param inout name "uk" type class_ref 141767 // lb_I_Unknown
+	  param inout name "uk" explicit_type "lb_I_Unknown"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "//...e
@@ -1549,9 +1438,9 @@ ${body}}
       end
 
       operation 140530 "HandleAddMenu"
-	public return_type class_ref 128711 // lbErrCodes
+	public explicit_return_type "lbErrCodes"
 	nparams 1
-	  param inout name "uk" type class_ref 141767 // lb_I_Unknown
+	  param inout name "uk" explicit_type "lb_I_Unknown"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "//...e
@@ -1673,20 +1562,9 @@ ${body}}
 	  b parent class_ref 129266 // MyFrame
       end
 
-      classrelation 133618 // panel (<unidirectional association>)
-	relation 133618 --->
-	  a role_name "panel" multiplicity "" public
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
-"
-	    classrelation_ref 133618 // panel (<unidirectional association>)
-	  b parent class_ref 173255 // wxPanel
-      end
     end
 
-    class 129266 "MyFrame"
-      
-      
-      cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 129266 "MyFrame"cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
 "
@@ -1696,18 +1574,10 @@ ${inlines}
       
       comment "...sclass MyFrame:0:
  Define a new frame type"
-      classrelation 133746 // <generalisation>
-	relation 133746 ---|>
-	  a public
-	    cpp default "${type}"
-	    classrelation_ref 133746 // <generalisation>
-	  b parent class_ref 161735 // wxFrame
-      end
-
       operation 140658 "MyFrame"
 	public explicit_return_type ""
 	nparams 6
-	  param inout name "frame" type class_ref 161735 // wxFrame
+	  param inout name "frame" explicit_type "wxFrame"
 	  param inout name "title" explicit_type "char"
 	  param in name "x" explicit_type "int"
 	  param in name "y" explicit_type "int"
@@ -1730,7 +1600,7 @@ ${body}}
       operation 140786 "OnVerbose"
 	public explicit_return_type "void"
 	nparams 1
-	  param inout name "event" type class_ref 160071 // wxCommandEvent
+	  param inout name "event" explicit_type "wxCommandEvent"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
@@ -1743,7 +1613,7 @@ ${body}}
       operation 140914 "OnQuit"
 	public explicit_return_type "void"
 	nparams 1
-	  param inout name "event" type class_ref 160071 // wxCommandEvent
+	  param inout name "event" explicit_type "wxCommandEvent"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
@@ -1756,7 +1626,7 @@ ${body}}
       operation 141042 "OnAbout"
 	public explicit_return_type "void"
 	nparams 1
-	  param inout name "event" type class_ref 160071 // wxCommandEvent
+	  param inout name "event" explicit_type "wxCommandEvent"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
@@ -1767,10 +1637,7 @@ ${body}}
       end
     end
 
-    class 129394 "cleanUp"
-      
-      
-      cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 129394 "cleanUp"cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
 "

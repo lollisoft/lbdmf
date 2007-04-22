@@ -1,5 +1,7 @@
-format 24
+format 29
 "lbLoginWizard" // Test::GUI::wxPlugins::lbLoginWizard
+  revision 1
+  modified_by 2 "lothar"
   // class settings
   //class diagram settings
   draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default shadow default
@@ -8,7 +10,9 @@ format 24
   //sequence diagram settings
   show_full_operations_definition default write_horizontally default drawing_language default shadow default
   //collaboration diagram settings
-  show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default shadow default
+  show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default shadow default
+  //object diagram settings
+   write_horizontally default package_name_in_tab default show_context default auto_label_position default shadow default
   //component diagram settings
   package_name_in_tab default show_context default auto_label_position default shadow default
   draw_component_as_icon default show_component_req_prov default show_component_rea default
@@ -16,24 +20,30 @@ format 24
   package_name_in_tab default show_context default write_horizontally default auto_label_position default shadow default
   draw_component_as_icon default show_component_req_prov default show_component_rea default
   //state diagram settings
-  package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default shadow default
+  package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default shadow default
   show_activities default region_horizontally default drawing_language default
+  //activity diagram settings
+  package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default shadow default
+  show_infonote default drawing_language default
   
   classview 128242 "lbLoginWizard"
     //class diagram settings
     draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default shadow default
-    //col diagram settings
-    show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default shadow default
-    //seq diagram settings
+    //collaboration diagram settings
+    show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default shadow default
+    //object diagram settings
+     write_horizontally default package_name_in_tab default show_context default auto_label_position default shadow default
+    //sequence diagram settings
     show_full_operations_definition default write_horizontally default drawing_language default shadow default
     //state diagram settings
-    package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default shadow default
+    package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default shadow default
     show_activities default region_horizontally default drawing_language default
     //class settings
-    class 128242 "lbPluginModuleLoginWizard"
-      
-      
-      cpp_decl "${comment}${template}class ${name}${inherit} {
+    //activity diagram settings
+    package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default shadow default
+    show_infonote default drawing_language default
+    
+    class 128242 "lbPluginModuleLoginWizard"cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
 "
@@ -44,14 +54,6 @@ ${inlines}
       comment "* \\brief This is the plugin module definition class for the login wizard.
  *
  "
-      classrelation 128114 // <generalisation>
-	relation 128114 ---|>
-	  a public
-	    cpp default "${type}"
-	    classrelation_ref 128114 // <generalisation>
-	  b parent class_ref 136519 // lb_I_PluginModule
-      end
-
       operation 128114 "lbPluginModuleLoginWizard"
 	public explicit_return_type ""
 	nparams 0
@@ -77,10 +79,7 @@ ${body}}
       end
     end
 
-    class 128370 "wxAppSelectPage"
-      
-      
-      cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 128370 "wxAppSelectPage"cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
 "
@@ -90,30 +89,6 @@ ${inlines}
       
       comment "...e
 ...swxAppSelectPage:0:"
-      classrelation 128242 // <generalisation>
-	relation 128242 ---|>
-	  a public
-	    cpp default "${type}"
-	    classrelation_ref 128242 // <generalisation>
-	  b parent class_ref 141767 // lb_I_Unknown
-      end
-
-      classrelation 128370 // <generalisation>
-	relation 128370 ---|>
-	  a public
-	    cpp default "${type}"
-	    classrelation_ref 128370 // <generalisation>
-	  b parent class_ref 168647 // lb_I_AppSelectPage
-      end
-
-      classrelation 128498 // <generalisation>
-	relation 128498 ---|>
-	  a public
-	    cpp default "${type}"
-	    classrelation_ref 128498 // <generalisation>
-	  b parent class_ref 170951 // wxWizardPageSimple
-      end
-
       operation 128370 "wxAppSelectPage"
 	cpp_inline public explicit_return_type ""
 	nparams 0
@@ -138,7 +113,7 @@ ${body}}
       end
 
       operation 128626 "getSelectedApp"
-	cpp_inline public return_type class_ref 161991 // wxString
+	cpp_inline public explicit_return_type "wxString"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract} { return app; };
 "
@@ -206,7 +181,7 @@ ${body}}
       operation 129010 "OnWizardPageChanging"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "event" type class_ref 171079 // wxWizardEvent
+	  param inout name "event" explicit_type "wxWizardEvent"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract} {
 		if (event.GetDirection()) {
 			int sel = box->GetSelection();
@@ -229,48 +204,12 @@ ${body}}
 	comment "...e"
       end
 
-      classrelation 128626 // m_checkbox (<unidirectional association>)
-	relation 128626 --->
-	  a role_name "m_checkbox" multiplicity "" private
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
-"
-	    classrelation_ref 128626 // m_checkbox (<unidirectional association>)
-	  b parent class_ref 171207 // wxCheckBox
-      end
-
       attribute 128114 "userid"
 	private explicit_type "char"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
 "
 	java_decl ""
 	idl_decl ""
-      end
-
-      classrelation 128754 // box (<unidirectional association>)
-	relation 128754 --->
-	  a role_name "box" multiplicity "" private
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
-"
-	    classrelation_ref 128754 // box (<unidirectional association>)
-	  b parent class_ref 160327 // wxChoice
-      end
-
-      classrelation 128882 // app (<directional aggregation by value>)
-	relation 128882 *-->
-	  a role_name "app" multiplicity "" private
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	    classrelation_ref 128882 // app (<directional aggregation by value>)
-	  b parent class_ref 161991 // wxString
-      end
-
-      classrelation 129010 // sizerMain (<unidirectional association>)
-	relation 129010 --->
-	  a role_name "sizerMain" multiplicity "" private
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
-"
-	    classrelation_ref 129010 // sizerMain (<unidirectional association>)
-	  b parent class_ref 171335 // wxBoxSizer
       end
 
       attribute 128242 "buf"
@@ -282,10 +221,7 @@ ${body}}
       end
     end
 
-    class 128498 "wxLogonPage"
-      
-      
-      cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 128498 "wxLogonPage"cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
 "
@@ -295,30 +231,6 @@ ${inlines}
       
       comment "...e
 ...swxLogonPage:0:"
-      classrelation 129138 // <generalisation>
-	relation 129138 ---|>
-	  a public
-	    cpp default "${type}"
-	    classrelation_ref 129138 // <generalisation>
-	  b parent class_ref 141767 // lb_I_Unknown
-      end
-
-      classrelation 129266 // <generalisation>
-	relation 129266 ---|>
-	  a public
-	    cpp default "${type}"
-	    classrelation_ref 129266 // <generalisation>
-	  b parent class_ref 168519 // lb_I_LogonPage
-      end
-
-      classrelation 129394 // <generalisation>
-	relation 129394 ---|>
-	  a public
-	    cpp default "${type}"
-	    classrelation_ref 129394 // <generalisation>
-	  b parent class_ref 170951 // wxWizardPageSimple
-      end
-
       operation 129138 "~wxLogonPage"
 	cpp_virtual cpp_inline public explicit_return_type ""
 	nparams 0
@@ -332,7 +244,7 @@ ${inlines}
       operation 129266 "wxLogonPage"
 	cpp_inline public explicit_return_type ""
 	nparams 1
-	  param inout name "parent" type class_ref 171591 // wxWizard
+	  param inout name "parent" explicit_type "wxWizard"
 	cpp_decl "    ${comment}${inline}${name}${(}${t0} * ${p0}${)}${volatile}${throw} : wxWizardPageSimple(parent)
 	{
 	        //m_bitmap = wxBITMAP(wiztest2);
@@ -378,7 +290,7 @@ ${body}}
       operation 129650 "OnWizardCancel"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "event" type class_ref 171079 // wxWizardEvent
+	  param inout name "event" explicit_type "wxWizardEvent"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${abstract} {
 	        if ( wxMessageBox(_T(\"Do you really want to cancel?\"), _T(\"Question\"),
 	                          wxICON_QUESTION | wxYES_NO, this) != wxYES )
@@ -394,7 +306,7 @@ ${body}}
       end
 
       operation 129778 "createTextCtrl"
-	cpp_inline public return_type class_ref 128711 // lbErrCodes
+	cpp_inline public explicit_return_type "lbErrCodes"
 	nparams 1
 	  param inout name "_name" explicit_type "char"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} {
@@ -416,7 +328,7 @@ ${body}}
       end
 
       operation 129906 "createPasswdCtrl"
-	cpp_inline public return_type class_ref 128711 // lbErrCodes
+	cpp_inline public explicit_return_type "lbErrCodes"
 	nparams 1
 	  param inout name "_name" explicit_type "char"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} {
@@ -478,7 +390,7 @@ ${body}}
       operation 130162 "init"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "parent" type class_ref 160199 // wxWindow
+	  param inout name "parent" explicit_type "wxWindow"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} {
 		char prefix[100] = \"\";
 		sprintf(prefix, \"%p\", this);
@@ -532,78 +444,6 @@ ${body}}
 	idl_decl ""
       end
 
-      classrelation 129522 // OkButton (<unidirectional association>)
-	relation 129522 --->
-	  a role_name "OkButton" multiplicity "" public
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
-"
-	    classrelation_ref 129522 // OkButton (<unidirectional association>)
-	  b parent class_ref 160199 // wxWindow
-      end
-
-      classrelation 129650 // CancelButton (<unidirectional association>)
-	relation 129650 --->
-	  a role_name "CancelButton" multiplicity "" public
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
-"
-	    classrelation_ref 129650 // CancelButton (<unidirectional association>)
-	  b parent class_ref 160199 // wxWindow
-      end
-
-      classrelation 129778 // textValue (<directional aggregation by value>)
-	relation 129778 *-->
-	  a role_name "textValue" multiplicity "" public
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	    classrelation_ref 129778 // textValue (<directional aggregation by value>)
-	  b parent class_ref 161991 // wxString
-      end
-
-      classrelation 129906 // sizerMain (<unidirectional association>)
-	relation 129906 --->
-	  a role_name "sizerMain" multiplicity "" public
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
-"
-	    classrelation_ref 129906 // sizerMain (<unidirectional association>)
-	  b parent class_ref 171335 // wxBoxSizer
-      end
-
-      classrelation 130034 // sizerHor (<unidirectional association>)
-	relation 130034 --->
-	  a role_name "sizerHor" multiplicity "" public
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
-"
-	    classrelation_ref 130034 // sizerHor (<unidirectional association>)
-	  b parent class_ref 171335 // wxBoxSizer
-      end
-
-      classrelation 130162 // sizerAddRem (<unidirectional association>)
-	relation 130162 --->
-	  a role_name "sizerAddRem" multiplicity "" public
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
-"
-	    classrelation_ref 130162 // sizerAddRem (<unidirectional association>)
-	  b parent class_ref 171335 // wxBoxSizer
-      end
-
-      classrelation 130290 // sizerLeft (<unidirectional association>)
-	relation 130290 --->
-	  a role_name "sizerLeft" multiplicity "" public
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
-"
-	    classrelation_ref 130290 // sizerLeft (<unidirectional association>)
-	  b parent class_ref 171335 // wxBoxSizer
-      end
-
-      classrelation 130418 // sizerRight (<unidirectional association>)
-	relation 130418 --->
-	  a role_name "sizerRight" multiplicity "" public
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
-"
-	    classrelation_ref 130418 // sizerRight (<unidirectional association>)
-	  b parent class_ref 171335 // wxBoxSizer
-      end
-
       classrelation 130546 // appselect (<unidirectional association>)
 	relation 130546 --->
 	  a role_name "appselect" multiplicity "" public
@@ -616,7 +456,6 @@ ${body}}
 
     class 128626 "lbLoginHandler"
        stereotype "implementation class"
-      
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
@@ -627,30 +466,6 @@ ${inlines}
       
       comment "...e
 ...e"
-      classrelation 130674 // <generalisation>
-	relation 130674 ---|>
-	  a public
-	    cpp default "${type}"
-	    classrelation_ref 130674 // <generalisation>
-	  b parent class_ref 141767 // lb_I_Unknown
-      end
-
-      classrelation 130802 // <generalisation>
-	relation 130802 ---|>
-	  a public
-	    cpp default "${type}"
-	    classrelation_ref 130802 // <generalisation>
-	  b parent class_ref 171847 // lb_I_LogonHandler
-      end
-
-      classrelation 130930 // <generalisation>
-	relation 130930 ---|>
-	  a public
-	    cpp default "${type}"
-	    classrelation_ref 130930 // <generalisation>
-	  b parent class_ref 133191 // lb_I_EventHandler
-      end
-
       operation 130290 "lbLoginHandler"
 	public explicit_return_type ""
 	nparams 0
@@ -676,9 +491,9 @@ ${body}}
       end
 
       operation 130546 "runLogin"
-	public return_type class_ref 128711 // lbErrCodes
+	public explicit_return_type "lbErrCodes"
 	nparams 1
-	  param inout name "uk" type class_ref 141767 // lb_I_Unknown
+	  param inout name "uk" explicit_type "lb_I_Unknown"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
@@ -686,24 +501,6 @@ ${body}}
 "
 	
 	
-      end
-
-      classrelation 131058 // wizard (<unidirectional association>)
-	relation 131058 --->
-	  a role_name "wizard" multiplicity "" public
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
-"
-	    classrelation_ref 131058 // wizard (<unidirectional association>)
-	  b parent class_ref 171591 // wxWizard
-      end
-
-      classrelation 131186 // page1 (<unidirectional association>)
-	relation 131186 --->
-	  a role_name "page1" multiplicity "" public
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
-"
-	    classrelation_ref 131186 // page1 (<unidirectional association>)
-	  b parent class_ref 170951 // wxWizardPageSimple
       end
 
       classrelation 128100 // <dependency>
@@ -723,10 +520,7 @@ ${body}}
       end
     end
 
-    class 128754 "lbPluginLoginWizard"
-      
-      
-      cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 128754 "lbPluginLoginWizard"cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
 "
@@ -737,14 +531,6 @@ ${inlines}
       comment "* \\brief Implements a wizard based login plugin.
  *
  "
-      classrelation 131314 // <generalisation>
-	relation 131314 ---|>
-	  a public
-	    cpp default "${type}"
-	    classrelation_ref 131314 // <generalisation>
-	  b parent class_ref 136263 // lb_I_PluginImpl
-      end
-
       operation 130674 "lbPluginLoginWizard"
 	public explicit_return_type ""
 	nparams 0
@@ -790,7 +576,7 @@ ${body}}
       end
 
       operation 131058 "getImplementation"
-	cpp_virtual public return_type class_ref 141767 // lb_I_Unknown
+	cpp_virtual public explicit_return_type "lb_I_Unknown"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -813,7 +599,7 @@ ${body}}
       end
 
       operation 131186 "peekImplementation"
-	cpp_virtual public return_type class_ref 141767 // lb_I_Unknown
+	cpp_virtual public explicit_return_type "lb_I_Unknown"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "

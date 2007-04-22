@@ -297,6 +297,12 @@ public:
 };
 /*...e*/
 
+class lb_I_XMLStreamable :
+	public lb_I_Unknown,
+	public lb_I_Streamable {
+	
+};
+
 /*...sclass lb_I_Transfer_DataObject:0:*/
 class lb_I_Transfer_DataObject : public lb_I_Unknown {
 public:

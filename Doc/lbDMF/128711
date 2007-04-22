@@ -1,39 +1,49 @@
-format 22
+format 29
 "lbcs" // BaseDevelopment::lbcs
+  revision 1
+  modified_by 2 "lothar"
   // class settings
   //class diagram settings
-  draw_all_relations default hide_attributes default hide_operations default show_full_members_definition default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default
+  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default shadow default
   //use case diagram settings
-  package_name_in_tab default show_context default auto_label_position default
+  package_name_in_tab default show_context default auto_label_position default shadow default
   //sequence diagram settings
-  show_full_operations_definition default write_horizontally default drawing_language default
+  show_full_operations_definition default write_horizontally default drawing_language default shadow default
   //collaboration diagram settings
-  show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default
+  show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default shadow default
+  //object diagram settings
+   write_horizontally default package_name_in_tab default show_context default auto_label_position default shadow default
   //component diagram settings
-  package_name_in_tab default show_context default auto_label_position default
+  package_name_in_tab default show_context default auto_label_position default shadow default
   draw_component_as_icon default show_component_req_prov default show_component_rea default
   //deployment diagram settings
-  package_name_in_tab default show_context default write_horizontally default auto_label_position default
+  package_name_in_tab default show_context default write_horizontally default auto_label_position default shadow default
   draw_component_as_icon default show_component_req_prov default show_component_rea default
   //state diagram settings
-  package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default
+  package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default shadow default
   show_activities default region_horizontally default drawing_language default
+  //activity diagram settings
+  package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default shadow default
+  show_infonote default drawing_language default
   
   classview 128583 "lbcs"
     //class diagram settings
-    draw_all_relations default hide_attributes default hide_operations default show_full_members_definition default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default
-    //col diagram settings
-    show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default
-    //seq diagram settings
-    show_full_operations_definition default write_horizontally default drawing_language default
+    draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default shadow default
+    //collaboration diagram settings
+    show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default shadow default
+    //object diagram settings
+     write_horizontally default package_name_in_tab default show_context default auto_label_position default shadow default
+    //sequence diagram settings
+    show_full_operations_definition default write_horizontally default drawing_language default shadow default
     //state diagram settings
-    package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default
+    package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default shadow default
     show_activities default region_horizontally default drawing_language default
     //class settings
-    class 144071 "lbConnection"
-      
-      
-      cpp_decl "${comment}${template}class ${name}${inherit} {
+    //activity diagram settings
+    package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default shadow default
+    show_infonote default drawing_language default
+    
+    class 144071 "lbConnection"cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
 "
@@ -46,7 +56,7 @@ ${inlines}
       classrelation 137159 // <generalisation>
 	relation 137159 ---|>
 	  a public
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 137159 // <generalisation>
 	  b parent class_ref 140615 // lbObject
       end
@@ -133,10 +143,7 @@ ${body}}
       end
     end
 
-    class 144199 "lbDispatchProto"
-      
-      
-      cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 144199 "lbDispatchProto"cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
 "
@@ -151,7 +158,7 @@ ${inlines}
       classrelation 137287 // <generalisation>
 	relation 137287 ---|>
 	  a public
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 137287 // <generalisation>
 	  b parent class_ref 140615 // lbObject
       end
@@ -160,7 +167,7 @@ ${inlines}
 	public explicit_return_type ""
 	nparams 2
 	  param in name "service" explicit_type "char"
-	  param in name "fn" type class_ref 144327 // lbProtocolCallback
+	  param in name "fn" explicit_type "lbProtocolCallback"
 	cpp_decl "    ${comment}${inline}${name}${(}const ${t0} * ${p0}, ${t1} ${p1}${)}${volatile}${throw};
 "
 	cpp_def "//...e
@@ -213,7 +220,7 @@ ${body}}
       end
 
       operation 201031 "getProto"
-	public return_type class_ref 144327 // lbProtocolCallback
+	public explicit_return_type "lbProtocolCallback"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -224,20 +231,9 @@ ${body}}
 	
       end
 
-      classrelation 137415 // dispProto (<directional aggregation by value>)
-	relation 137415 *-->
-	  a role_name "dispProto" multiplicity "" public
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	    classrelation_ref 137415 // dispProto (<directional aggregation by value>)
-	  b parent class_ref 144327 // lbProtocolCallback
-      end
     end
 
-    class 144455 "lbDispatchFn"
-      
-      
-      cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 144455 "lbDispatchFn"cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
 "
@@ -253,7 +249,7 @@ ${inlines}
       classrelation 137543 // <generalisation>
 	relation 137543 ---|>
 	  a public
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 137543 // <generalisation>
 	  b parent class_ref 140615 // lbObject
       end
@@ -262,7 +258,7 @@ ${inlines}
 	public explicit_return_type ""
 	nparams 2
 	  param in name "service" explicit_type "char"
-	  param in name "fn" type class_ref 144583 // lbMemberCallback
+	  param in name "fn" explicit_type "lbMemberCallback"
 	cpp_decl "    ${comment}${inline}${name}${(}const ${t0} * ${p0}, ${t1} ${p1}${)}${volatile}${throw};
 "
 	cpp_def "//...e
@@ -316,7 +312,7 @@ ${body}}
       end
 
       operation 201671 "getFn"
-	public return_type class_ref 144583 // lbMemberCallback
+	public explicit_return_type "lbMemberCallback"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -327,20 +323,9 @@ ${body}}
 	
       end
 
-      classrelation 137671 // dispFn (<directional aggregation by value>)
-	relation 137671 *-->
-	  a role_name "dispFn" multiplicity "" public
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	    classrelation_ref 137671 // dispFn (<directional aggregation by value>)
-	  b parent class_ref 144583 // lbMemberCallback
-      end
     end
 
-    class 151495 "lbAppServerThread"
-      
-      
-      cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 151495 "lbAppServerThread"cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
 "
@@ -350,19 +335,11 @@ ${inlines}
       
       comment "#include <lbInterfaces.h>
 ...slbAppServerThread:0:"
-      classrelation 144071 // <generalisation>
-	relation 144071 ---|>
-	  a public
-	    cpp default "Generated"
-	    classrelation_ref 144071 // <generalisation>
-	  b parent class_ref 150983 // lbThread
-      end
-
       operation 226631 "lbAppServerThread"
 	public explicit_return_type ""
 	nparams 2
-	  param inout name "_clt" type class_ref 151623 // lbTransfer
-	  param inout name "_server" type class_ref 151751 // lbAppServer
+	  param inout name "_clt" explicit_type "lbTransfer"
+	  param inout name "_server" explicit_type "lbAppServer"
 	cpp_decl "    ${comment}${inline}${name}${(}${t0} * ${p0}, ${t1} * ${p1}${)}${volatile}${throw};
 "
 	cpp_def "//...e
@@ -404,29 +381,12 @@ ${body}}
 	
       end
 
-      classrelation 144199 // clt (<unidirectional association>)
-	relation 144199 --->
-	  a role_name "clt" multiplicity "" protected
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
-"
-	    classrelation_ref 144199 // clt (<unidirectional association>)
-	  b parent class_ref 151623 // lbTransfer
-      end
-
-      classrelation 144327 // server (<unidirectional association>)
-	relation 144327 --->
-	  a role_name "server" multiplicity "" protected
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
-"
-	    classrelation_ref 144327 // server (<unidirectional association>)
-	  b parent class_ref 151751 // lbAppServer
-      end
     end
   end
 
   deploymentview 128455 "lbcs"
     //deployment diagram settings
-    package_name_in_tab default show_context default write_horizontally default auto_label_position default
+    package_name_in_tab default show_context default write_horizontally default auto_label_position default shadow default
     draw_component_as_icon default show_component_req_prov default show_component_rea default
     artifact 137671 "lbConnection"
       stereotype "source"

@@ -1,39 +1,49 @@
-format 22
+format 29
 "VisitorOperations" // Plugins::VisitorOperations
+  revision 1
+  modified_by 2 "lothar"
   // class settings
   //class diagram settings
-  draw_all_relations default hide_attributes default hide_operations default show_full_members_definition default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default
+  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default shadow default
   //use case diagram settings
-  package_name_in_tab default show_context default auto_label_position default
+  package_name_in_tab default show_context default auto_label_position default shadow default
   //sequence diagram settings
-  show_full_operations_definition default write_horizontally default drawing_language default
+  show_full_operations_definition default write_horizontally default drawing_language default shadow default
   //collaboration diagram settings
-  show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default
+  show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default shadow default
+  //object diagram settings
+   write_horizontally default package_name_in_tab default show_context default auto_label_position default shadow default
   //component diagram settings
-  package_name_in_tab default show_context default auto_label_position default
+  package_name_in_tab default show_context default auto_label_position default shadow default
   draw_component_as_icon default show_component_req_prov default show_component_rea default
   //deployment diagram settings
-  package_name_in_tab default show_context default write_horizontally default auto_label_position default
+  package_name_in_tab default show_context default write_horizontally default auto_label_position default shadow default
   draw_component_as_icon default show_component_req_prov default show_component_rea default
   //state diagram settings
-  package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default
+  package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default shadow default
   show_activities default region_horizontally default drawing_language default
+  //activity diagram settings
+  package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default shadow default
+  show_infonote default drawing_language default
   
   classview 130759 "VisitorOperations"
     //class diagram settings
-    draw_all_relations default hide_attributes default hide_operations default show_full_members_definition default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default
-    //col diagram settings
-    show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default
-    //seq diagram settings
-    show_full_operations_definition default write_horizontally default drawing_language default
+    draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default shadow default
+    //collaboration diagram settings
+    show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default shadow default
+    //object diagram settings
+     write_horizontally default package_name_in_tab default show_context default auto_label_position default shadow default
+    //sequence diagram settings
+    show_full_operations_definition default write_horizontally default drawing_language default shadow default
     //state diagram settings
-    package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default
+    package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default shadow default
     show_activities default region_horizontally default drawing_language default
     //class settings
-    class 168135 "lbPluginModuleVisitors"
-      
-      
-      cpp_decl "${comment}${template}class ${name}${inherit} {
+    //activity diagram settings
+    package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default shadow default
+    show_infonote default drawing_language default
+    
+    class 168135 "lbPluginModuleVisitors"cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
 "
@@ -46,14 +56,6 @@ ${inlines}
 ...e
 #include <lbDatabaseForm.h>
 ...sclass lbPluginModuleVisitors:0:"
-      classrelation 163783 // <generalisation>
-	relation 163783 ---|>
-	  a public
-	    cpp default "Generated"
-	    classrelation_ref 163783 // <generalisation>
-	  b parent class_ref 136519 // lb_I_PluginModule
-      end
-
       operation 310471 "lbPluginModuleVisitors"
 	public explicit_return_type ""
 	nparams 0
@@ -79,10 +81,7 @@ ${body}}
       end
     end
 
-    class 168263 "lbDatabaseInputStream"
-      
-      
-      cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 168263 "lbDatabaseInputStream"cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
 "
@@ -98,14 +97,6 @@ ${inlines}
  * Implements lb_I_FileOperation to specify, that this operation has to do
  * with files. Here loading from file.
  "
-      classrelation 163911 // <generalisation>
-	relation 163911 ---|>
-	  a public
-	    cpp default "Generated"
-	    classrelation_ref 163911 // <generalisation>
-	  b parent class_ref 168391 // lb_I_DatabaseOperation
-      end
-
       operation 310727 "lbDatabaseInputStream"
 	public explicit_return_type ""
 	nparams 0
@@ -133,7 +124,7 @@ ${body}}
       operation 310983 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 168519 // lb_I_LogonPage
+	  param inout name "" explicit_type "lb_I_LogonPage"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_LogonPage*)\" LOG_ };
 "
 	
@@ -143,7 +134,7 @@ ${body}}
       operation 311111 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 168647 // lb_I_AppSelectPage
+	  param inout name "" explicit_type "lb_I_AppSelectPage"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_AppSelectPage*)\" LOG_ };
 "
 	
@@ -153,7 +144,7 @@ ${body}}
       operation 311239 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 145095 // lb_I_GUI
+	  param inout name "" explicit_type "lb_I_GUI"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_GUI*)\" LOG_ };
 "
 	
@@ -163,7 +154,7 @@ ${body}}
       operation 311367 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 168775 // lb_I_GUIApp
+	  param inout name "" explicit_type "lb_I_GUIApp"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_GUIApp*)\" LOG_ };
 "
 	
@@ -173,7 +164,7 @@ ${body}}
       operation 311495 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 134471 // lb_I_Frame
+	  param inout name "" explicit_type "lb_I_Frame"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_Frame*)\" LOG_ };
 "
 	
@@ -183,7 +174,7 @@ ${body}}
       operation 311623 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 139847 // lb_I_KeyBase
+	  param inout name "" explicit_type "lb_I_KeyBase"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_KeyBase*)\" LOG_ };
 "
 	
@@ -193,7 +184,7 @@ ${body}}
       operation 311751 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 141255 // lb_I_String
+	  param inout name "" explicit_type "lb_I_String"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_String*)\" LOG_ };
 "
 	
@@ -203,7 +194,7 @@ ${body}}
       operation 311879 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 141383 // lb_I_Integer
+	  param inout name "" explicit_type "lb_I_Integer"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_Integer*)\" LOG_ };
 "
 	
@@ -213,7 +204,7 @@ ${body}}
       operation 312007 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 141639 // lb_I_Long
+	  param inout name "" explicit_type "lb_I_Long"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_Long*)\" LOG_ };
 "
 	
@@ -223,7 +214,7 @@ ${body}}
       operation 312135 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 140103 // lb_I_Container
+	  param inout name "" explicit_type "lb_I_Container"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_Container*)\" LOG_ };
 "
 	
@@ -233,7 +224,7 @@ ${body}}
       operation 312263 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 160711 // lb_I_Database
+	  param inout name "" explicit_type "lb_I_Database"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_Database*)\" LOG_ };
 "
 	
@@ -243,7 +234,7 @@ ${body}}
       operation 312391 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 131399 // lb_I_ColumnBinding
+	  param inout name "" explicit_type "lb_I_ColumnBinding"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_ColumnBinding*)\" LOG_ };
 "
 	
@@ -253,7 +244,7 @@ ${body}}
       operation 312519 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 152263 // lb_I_BoundColumn
+	  param inout name "" explicit_type "lb_I_BoundColumn"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_BoundColumn*)\" LOG_ };
 "
 	
@@ -263,7 +254,7 @@ ${body}}
       operation 312647 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 152391 // lb_I_Query
+	  param inout name "" explicit_type "lb_I_Query"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_Query*)\" LOG_ };
 "
 	
@@ -273,7 +264,7 @@ ${body}}
       operation 312775 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 152007 // lb_I_MVC_View
+	  param inout name "" explicit_type "lb_I_MVC_View"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_MVC_View*)\" LOG_ };
 "
 	
@@ -283,7 +274,7 @@ ${body}}
       operation 312903 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 168903 // lb_I_Connection
+	  param inout name "" explicit_type "lb_I_Connection"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_Connection*)\" LOG_ };
 "
 	
@@ -293,7 +284,7 @@ ${body}}
       operation 313031 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 155847 // lb_I_InterfaceRepository
+	  param inout name "" explicit_type "lb_I_InterfaceRepository"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_InterfaceRepository*)\" LOG_ };
 "
 	
@@ -303,7 +294,7 @@ ${body}}
       operation 313159 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 140359 // lb_I_Element
+	  param inout name "" explicit_type "lb_I_Element"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_Element*)\" LOG_ };
 "
 	
@@ -313,7 +304,7 @@ ${body}}
       operation 313287 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 155591 // lb_I_Module
+	  param inout name "" explicit_type "lb_I_Module"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_Module*)\" LOG_ };
 "
 	
@@ -323,7 +314,7 @@ ${body}}
       operation 313415 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 156103 // lb_I_FunctorEntity
+	  param inout name "" explicit_type "lb_I_FunctorEntity"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_FunctorEntity*)\" LOG_ };
 "
 	
@@ -333,7 +324,7 @@ ${body}}
       operation 313543 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 155335 // lb_I_InstanceReference
+	  param inout name "" explicit_type "lb_I_InstanceReference"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_InstanceReference*)\" LOG_ };
 "
 	
@@ -343,7 +334,7 @@ ${body}}
       operation 313671 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 133191 // lb_I_EventHandler
+	  param inout name "" explicit_type "lb_I_EventHandler"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_EventHandler*)\" LOG_ };
 "
 	
@@ -353,7 +344,7 @@ ${body}}
       operation 313799 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 134855 // lb_I_EventManager
+	  param inout name "" explicit_type "lb_I_EventManager"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_EventManager*)\" LOG_ };
 "
 	
@@ -363,7 +354,7 @@ ${body}}
       operation 313927 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 134983 // lb_I_EventMapper
+	  param inout name "" explicit_type "lb_I_EventMapper"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_EventMapper*)\" LOG_ };
 "
 	
@@ -373,7 +364,7 @@ ${body}}
       operation 314055 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 135367 // lb_I_EvHandler
+	  param inout name "" explicit_type "lb_I_EvHandler"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_EvHandler*)\" LOG_ };
 "
 	
@@ -383,7 +374,7 @@ ${body}}
       operation 314183 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 133575 // lb_I_Dispatcher
+	  param inout name "" explicit_type "lb_I_Dispatcher"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_Dispatcher*)\" LOG_ };
 "
 	
@@ -393,7 +384,7 @@ ${body}}
       operation 314311 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 145223 // lb_I_InputStream
+	  param inout name "" explicit_type "lb_I_InputStream"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_InputStream*)\" LOG_ };
 "
 	
@@ -403,7 +394,7 @@ ${body}}
       operation 314439 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 150599 // lb_I_OutputStream
+	  param inout name "" explicit_type "lb_I_OutputStream"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_OutputStream*)\" LOG_ };
 "
 	
@@ -413,7 +404,7 @@ ${body}}
       operation 314567 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 169031 // lb_I_FileOperation
+	  param inout name "" explicit_type "lb_I_FileOperation"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_FileOperation*)\" LOG_ };
 "
 	
@@ -423,7 +414,7 @@ ${body}}
       operation 314695 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 135879 // lb_I_Locale
+	  param inout name "" explicit_type "lb_I_Locale"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_Locale*)\" LOG_ };
 "
 	
@@ -433,7 +424,7 @@ ${body}}
       operation 314823 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 141127 // lb_I_Parameter
+	  param inout name "" explicit_type "lb_I_Parameter"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_Parameter*)\" LOG_ };
 "
 	
@@ -443,7 +434,7 @@ ${body}}
       operation 314951 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 136007 // lb_I_Reference
+	  param inout name "" explicit_type "lb_I_Reference"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_Reference*)\" LOG_ };
 "
 	
@@ -453,7 +444,7 @@ ${body}}
       operation 315079 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 151367 // lb_I_Log
+	  param inout name "" explicit_type "lb_I_Log"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_Log*)\" LOG_ };
 "
 	
@@ -463,7 +454,7 @@ ${body}}
       operation 315207 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 136135 // lb_I_Plugin
+	  param inout name "" explicit_type "lb_I_Plugin"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_Plugin*)\" LOG_ };
 "
 	
@@ -473,7 +464,7 @@ ${body}}
       operation 315335 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 136263 // lb_I_PluginImpl
+	  param inout name "" explicit_type "lb_I_PluginImpl"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_PluginImpl*)\" LOG_ };
 "
 	
@@ -483,7 +474,7 @@ ${body}}
       operation 315463 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 136391 // lb_I_PluginManager
+	  param inout name "" explicit_type "lb_I_PluginManager"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_PluginManager*)\" LOG_ };
 "
 	
@@ -493,7 +484,7 @@ ${body}}
       operation 315591 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 136519 // lb_I_PluginModule
+	  param inout name "" explicit_type "lb_I_PluginModule"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_PluginModule*)\" LOG_ };
 "
 	
@@ -503,7 +494,7 @@ ${body}}
       operation 315719 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 169159 // lb_I_wxFrame
+	  param inout name "" explicit_type "lb_I_wxFrame"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_wxFrame*)\" LOG_ };
 "
 	
@@ -513,7 +504,7 @@ ${body}}
       operation 315847 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 159815 // lb_I_Window
+	  param inout name "" explicit_type "lb_I_Window"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_Window*)\" LOG_ };
 "
 	
@@ -523,7 +514,7 @@ ${body}}
       operation 315975 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 136775 // lb_I_Action
+	  param inout name "" explicit_type "lb_I_Action"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_Action*)\" LOG_ };
 "
 	
@@ -533,7 +524,7 @@ ${body}}
       operation 316103 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 136903 // lb_I_DelegatedAction
+	  param inout name "" explicit_type "lb_I_DelegatedAction"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_DelegatedAction*)\" LOG_ };
 "
 	
@@ -543,7 +534,7 @@ ${body}}
       operation 316231 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 169287 // lb_I_Form
+	  param inout name "" explicit_type "lb_I_Form"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_Form*)\" LOG_ };
 "
 	
@@ -553,7 +544,7 @@ ${body}}
       operation 316359 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 169415 // lb_I_MasterDetailFormDefinition
+	  param inout name "" explicit_type "lb_I_MasterDetailFormDefinition"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_MasterDetailFormDefinition*)\" LOG_ };
 "
 	
@@ -563,7 +554,7 @@ ${body}}
       operation 316487 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 169543 // lb_I_DatabaseReport
+	  param inout name "" explicit_type "lb_I_DatabaseReport"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_DatabaseReport*)\" LOG_ };
 "
 	
@@ -573,7 +564,7 @@ ${body}}
       operation 316615 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 137031 // lb_I_CodeGenerator
+	  param inout name "" explicit_type "lb_I_CodeGenerator"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_CodeGenerator*)\" LOG_ };
 "
 	
@@ -583,7 +574,7 @@ ${body}}
       operation 316743 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 141511 // lb_I_Boolean
+	  param inout name "" explicit_type "lb_I_Boolean"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_Boolean*)\" LOG_ };
 "
 	
@@ -593,7 +584,7 @@ ${body}}
       operation 316871 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 168391 // lb_I_DatabaseOperation
+	  param inout name "" explicit_type "lb_I_DatabaseOperation"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_DatabaseOperation*)\" LOG_ };
 "
 	
@@ -603,7 +594,7 @@ ${body}}
       operation 316999 "visit"
 	public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 169671 // lb_I_Streamable
+	  param inout name "" explicit_type "lb_I_Streamable"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
@@ -617,7 +608,7 @@ ${body}}
       operation 317127 "visit"
 	public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 135111 // lb_I_Application
+	  param inout name "" explicit_type "lb_I_Application"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
@@ -630,7 +621,7 @@ ${body}}
       operation 317255 "visit"
 	public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 135239 // lb_I_MetaApplication
+	  param inout name "" explicit_type "lb_I_MetaApplication"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
@@ -643,7 +634,7 @@ ${body}}
       operation 317383 "visit"
 	public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 137415 // lb_I_UserAccounts
+	  param inout name "" explicit_type "lb_I_UserAccounts"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
@@ -656,7 +647,7 @@ ${body}}
       operation 317511 "visit"
 	public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 137543 // lb_I_Applications
+	  param inout name "" explicit_type "lb_I_Applications"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
@@ -684,7 +675,7 @@ ${body}}
       operation 317767 "begin"
 	public explicit_return_type "bool"
 	nparams 1
-	  param inout name "_db" type class_ref 160711 // lb_I_Database
+	  param inout name "_db" explicit_type "lb_I_Database"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
@@ -801,7 +792,7 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_UserAccounts* users) {
 			qID = q->getAsLong(1);
 			qUID = q->"
 	nparams 1
-	  param in name "" type class_ref 169799 // 2
+	  param in name "" explicit_type "2"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
@@ -812,10 +803,7 @@ ${body}}
       end
     end
 
-    class 169927 "lbPluginDatabaseInputStream"
-      
-      
-      cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 169927 "lbPluginDatabaseInputStream"cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
 "
@@ -837,14 +825,6 @@ lb_I_Stream* LB_STDCALL lbDatabaseInputStream::getStream() {
 ...e
 ...sclass lbPluginDatabaseInputStream implementation:0:
 ...slbPluginDatabaseInputStream:0:"
-      classrelation 164039 // <generalisation>
-	relation 164039 ---|>
-	  a public
-	    cpp default "Generated"
-	    classrelation_ref 164039 // <generalisation>
-	  b parent class_ref 136263 // lb_I_PluginImpl
-      end
-
       operation 318151 "lbPluginDatabaseInputStream"
 	public explicit_return_type ""
 	nparams 0
@@ -895,7 +875,7 @@ ${body}}
       end
 
       operation 318663 "peekImplementation"
-	public return_type class_ref 141767 // lb_I_Unknown
+	public explicit_return_type "lb_I_Unknown"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -907,7 +887,7 @@ ${body}}
       end
 
       operation 318791 "getImplementation"
-	public return_type class_ref 141767 // lb_I_Unknown
+	public explicit_return_type "lb_I_Unknown"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -931,10 +911,7 @@ ${body}}
       end
     end
 
-    class 170055 "lbInputStreamOpr"
-      
-      
-      cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 170055 "lbInputStreamOpr"cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
 "
@@ -950,14 +927,6 @@ ${inlines}
  * Implements lb_I_FileOperation to specify, that this operation has to do
  * with files. Here loading from file.
  "
-      classrelation 164167 // <generalisation>
-	relation 164167 ---|>
-	  a public
-	    cpp default "Generated"
-	    classrelation_ref 164167 // <generalisation>
-	  b parent class_ref 169031 // lb_I_FileOperation
-      end
-
       operation 319047 "lbInputStreamOpr"
 	public explicit_return_type ""
 	nparams 0
@@ -985,7 +954,7 @@ ${body}}
       operation 319303 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 168519 // lb_I_LogonPage
+	  param inout name "" explicit_type "lb_I_LogonPage"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_LogonPage*)\" LOG_ };
 "
 	
@@ -995,7 +964,7 @@ ${body}}
       operation 319431 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 168647 // lb_I_AppSelectPage
+	  param inout name "" explicit_type "lb_I_AppSelectPage"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_AppSelectPage*)\" LOG_ };
 "
 	
@@ -1005,7 +974,7 @@ ${body}}
       operation 319559 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 145095 // lb_I_GUI
+	  param inout name "" explicit_type "lb_I_GUI"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_GUI*)\" LOG_ };
 "
 	
@@ -1015,7 +984,7 @@ ${body}}
       operation 319687 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 168775 // lb_I_GUIApp
+	  param inout name "" explicit_type "lb_I_GUIApp"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_GUIApp*)\" LOG_ };
 "
 	
@@ -1025,7 +994,7 @@ ${body}}
       operation 319815 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 134471 // lb_I_Frame
+	  param inout name "" explicit_type "lb_I_Frame"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_Frame*)\" LOG_ };
 "
 	
@@ -1035,7 +1004,7 @@ ${body}}
       operation 319943 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 139847 // lb_I_KeyBase
+	  param inout name "" explicit_type "lb_I_KeyBase"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_KeyBase*)\" LOG_ };
 "
 	
@@ -1045,7 +1014,7 @@ ${body}}
       operation 320071 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 141255 // lb_I_String
+	  param inout name "" explicit_type "lb_I_String"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_String*)\" LOG_ };
 "
 	
@@ -1055,7 +1024,7 @@ ${body}}
       operation 320199 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 141383 // lb_I_Integer
+	  param inout name "" explicit_type "lb_I_Integer"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_Integer*)\" LOG_ };
 "
 	
@@ -1065,7 +1034,7 @@ ${body}}
       operation 320327 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 141639 // lb_I_Long
+	  param inout name "" explicit_type "lb_I_Long"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_Long*)\" LOG_ };
 "
 	
@@ -1075,7 +1044,7 @@ ${body}}
       operation 320455 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 140103 // lb_I_Container
+	  param inout name "" explicit_type "lb_I_Container"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_Container*)\" LOG_ };
 "
 	
@@ -1085,7 +1054,7 @@ ${body}}
       operation 320583 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 160711 // lb_I_Database
+	  param inout name "" explicit_type "lb_I_Database"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_Database*)\" LOG_ };
 "
 	
@@ -1095,7 +1064,7 @@ ${body}}
       operation 320711 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 131399 // lb_I_ColumnBinding
+	  param inout name "" explicit_type "lb_I_ColumnBinding"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_ColumnBinding*)\" LOG_ };
 "
 	
@@ -1105,7 +1074,7 @@ ${body}}
       operation 320839 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 152263 // lb_I_BoundColumn
+	  param inout name "" explicit_type "lb_I_BoundColumn"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_BoundColumn*)\" LOG_ };
 "
 	
@@ -1115,7 +1084,7 @@ ${body}}
       operation 320967 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 152391 // lb_I_Query
+	  param inout name "" explicit_type "lb_I_Query"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_Query*)\" LOG_ };
 "
 	
@@ -1125,7 +1094,7 @@ ${body}}
       operation 321095 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 152007 // lb_I_MVC_View
+	  param inout name "" explicit_type "lb_I_MVC_View"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_MVC_View*)\" LOG_ };
 "
 	
@@ -1135,7 +1104,7 @@ ${body}}
       operation 321223 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 168903 // lb_I_Connection
+	  param inout name "" explicit_type "lb_I_Connection"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_Connection*)\" LOG_ };
 "
 	
@@ -1145,7 +1114,7 @@ ${body}}
       operation 321351 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 155847 // lb_I_InterfaceRepository
+	  param inout name "" explicit_type "lb_I_InterfaceRepository"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_InterfaceRepository*)\" LOG_ };
 "
 	
@@ -1155,7 +1124,7 @@ ${body}}
       operation 321479 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 140359 // lb_I_Element
+	  param inout name "" explicit_type "lb_I_Element"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_Element*)\" LOG_ };
 "
 	
@@ -1165,7 +1134,7 @@ ${body}}
       operation 321607 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 155591 // lb_I_Module
+	  param inout name "" explicit_type "lb_I_Module"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_Module*)\" LOG_ };
 "
 	
@@ -1175,7 +1144,7 @@ ${body}}
       operation 321735 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 156103 // lb_I_FunctorEntity
+	  param inout name "" explicit_type "lb_I_FunctorEntity"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_FunctorEntity*)\" LOG_ };
 "
 	
@@ -1185,7 +1154,7 @@ ${body}}
       operation 321863 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 155335 // lb_I_InstanceReference
+	  param inout name "" explicit_type "lb_I_InstanceReference"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_InstanceReference*)\" LOG_ };
 "
 	
@@ -1195,7 +1164,7 @@ ${body}}
       operation 321991 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 133191 // lb_I_EventHandler
+	  param inout name "" explicit_type "lb_I_EventHandler"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_EventHandler*)\" LOG_ };
 "
 	
@@ -1205,7 +1174,7 @@ ${body}}
       operation 322119 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 134855 // lb_I_EventManager
+	  param inout name "" explicit_type "lb_I_EventManager"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_EventManager*)\" LOG_ };
 "
 	
@@ -1215,7 +1184,7 @@ ${body}}
       operation 322247 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 134983 // lb_I_EventMapper
+	  param inout name "" explicit_type "lb_I_EventMapper"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_EventMapper*)\" LOG_ };
 "
 	
@@ -1225,7 +1194,7 @@ ${body}}
       operation 322375 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 135367 // lb_I_EvHandler
+	  param inout name "" explicit_type "lb_I_EvHandler"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_EvHandler*)\" LOG_ };
 "
 	
@@ -1235,7 +1204,7 @@ ${body}}
       operation 322503 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 133575 // lb_I_Dispatcher
+	  param inout name "" explicit_type "lb_I_Dispatcher"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_Dispatcher*)\" LOG_ };
 "
 	
@@ -1245,7 +1214,7 @@ ${body}}
       operation 322631 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 145223 // lb_I_InputStream
+	  param inout name "" explicit_type "lb_I_InputStream"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_InputStream*)\" LOG_ };
 "
 	
@@ -1255,7 +1224,7 @@ ${body}}
       operation 322759 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 150599 // lb_I_OutputStream
+	  param inout name "" explicit_type "lb_I_OutputStream"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_OutputStream*)\" LOG_ };
 "
 	
@@ -1265,7 +1234,7 @@ ${body}}
       operation 322887 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 169031 // lb_I_FileOperation
+	  param inout name "" explicit_type "lb_I_FileOperation"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_FileOperation*)\" LOG_ };
 "
 	
@@ -1275,7 +1244,7 @@ ${body}}
       operation 323015 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 135879 // lb_I_Locale
+	  param inout name "" explicit_type "lb_I_Locale"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_Locale*)\" LOG_ };
 "
 	
@@ -1285,7 +1254,7 @@ ${body}}
       operation 323143 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 141127 // lb_I_Parameter
+	  param inout name "" explicit_type "lb_I_Parameter"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_Parameter*)\" LOG_ };
 "
 	
@@ -1295,7 +1264,7 @@ ${body}}
       operation 323271 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 136007 // lb_I_Reference
+	  param inout name "" explicit_type "lb_I_Reference"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_Reference*)\" LOG_ };
 "
 	
@@ -1305,7 +1274,7 @@ ${body}}
       operation 323399 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 151367 // lb_I_Log
+	  param inout name "" explicit_type "lb_I_Log"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_Log*)\" LOG_ };
 "
 	
@@ -1315,7 +1284,7 @@ ${body}}
       operation 323527 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 136135 // lb_I_Plugin
+	  param inout name "" explicit_type "lb_I_Plugin"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_Plugin*)\" LOG_ };
 "
 	
@@ -1325,7 +1294,7 @@ ${body}}
       operation 323655 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 136263 // lb_I_PluginImpl
+	  param inout name "" explicit_type "lb_I_PluginImpl"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_PluginImpl*)\" LOG_ };
 "
 	
@@ -1335,7 +1304,7 @@ ${body}}
       operation 323783 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 136391 // lb_I_PluginManager
+	  param inout name "" explicit_type "lb_I_PluginManager"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_PluginManager*)\" LOG_ };
 "
 	
@@ -1345,7 +1314,7 @@ ${body}}
       operation 323911 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 136519 // lb_I_PluginModule
+	  param inout name "" explicit_type "lb_I_PluginModule"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_PluginModule*)\" LOG_ };
 "
 	
@@ -1355,7 +1324,7 @@ ${body}}
       operation 324039 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 169159 // lb_I_wxFrame
+	  param inout name "" explicit_type "lb_I_wxFrame"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_wxFrame*)\" LOG_ };
 "
 	
@@ -1365,7 +1334,7 @@ ${body}}
       operation 324167 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 159815 // lb_I_Window
+	  param inout name "" explicit_type "lb_I_Window"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_Window*)\" LOG_ };
 "
 	
@@ -1375,7 +1344,7 @@ ${body}}
       operation 324295 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 136775 // lb_I_Action
+	  param inout name "" explicit_type "lb_I_Action"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_Action*)\" LOG_ };
 "
 	
@@ -1385,7 +1354,7 @@ ${body}}
       operation 324423 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 136903 // lb_I_DelegatedAction
+	  param inout name "" explicit_type "lb_I_DelegatedAction"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_DelegatedAction*)\" LOG_ };
 "
 	
@@ -1395,7 +1364,7 @@ ${body}}
       operation 324551 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 169287 // lb_I_Form
+	  param inout name "" explicit_type "lb_I_Form"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_Form*)\" LOG_ };
 "
 	
@@ -1405,7 +1374,7 @@ ${body}}
       operation 324679 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 169415 // lb_I_MasterDetailFormDefinition
+	  param inout name "" explicit_type "lb_I_MasterDetailFormDefinition"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_MasterDetailFormDefinition*)\" LOG_ };
 "
 	
@@ -1415,7 +1384,7 @@ ${body}}
       operation 324807 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 169543 // lb_I_DatabaseReport
+	  param inout name "" explicit_type "lb_I_DatabaseReport"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_DatabaseReport*)\" LOG_ };
 "
 	
@@ -1425,7 +1394,7 @@ ${body}}
       operation 324935 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 137031 // lb_I_CodeGenerator
+	  param inout name "" explicit_type "lb_I_CodeGenerator"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_CodeGenerator*)\" LOG_ };
 "
 	
@@ -1435,7 +1404,7 @@ ${body}}
       operation 325063 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 141511 // lb_I_Boolean
+	  param inout name "" explicit_type "lb_I_Boolean"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_Boolean*)\" LOG_ };
 "
 	
@@ -1445,7 +1414,7 @@ ${body}}
       operation 325191 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "pm" type class_ref 168391 // lb_I_DatabaseOperation
+	  param inout name "pm" explicit_type "lb_I_DatabaseOperation"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_DatabaseOperation*)\" LOG_ };
 "
 	
@@ -1455,7 +1424,7 @@ ${body}}
       operation 325319 "visit"
 	public explicit_return_type "void"
 	nparams 1
-	  param inout name "pm" type class_ref 169671 // lb_I_Streamable
+	  param inout name "pm" explicit_type "lb_I_Streamable"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
@@ -1469,7 +1438,7 @@ ${body}}
       operation 325447 "visit"
 	public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 135111 // lb_I_Application
+	  param inout name "" explicit_type "lb_I_Application"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
@@ -1482,7 +1451,7 @@ ${body}}
       operation 325575 "visit"
 	public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 135239 // lb_I_MetaApplication
+	  param inout name "" explicit_type "lb_I_MetaApplication"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
@@ -1495,7 +1464,7 @@ ${body}}
       operation 325703 "visit"
 	public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 137415 // lb_I_UserAccounts
+	  param inout name "" explicit_type "lb_I_UserAccounts"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
@@ -1508,7 +1477,7 @@ ${body}}
       operation 325831 "visit"
 	public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 137543 // lb_I_Applications
+	  param inout name "" explicit_type "lb_I_Applications"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
@@ -1534,7 +1503,7 @@ ${body}}
       operation 326087 "begin"
 	public explicit_return_type "bool"
 	nparams 1
-	  param inout name "stream" type class_ref 170183 // lb_I_Stream
+	  param inout name "stream" explicit_type "lb_I_Stream"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
@@ -1557,7 +1526,7 @@ ${body}}
       end
 
       operation 326343 "getStream"
-	public return_type class_ref 170183 // lb_I_Stream
+	public explicit_return_type "lb_I_Stream"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -1673,10 +1642,7 @@ void LB_STDCALL lbInputStreamOpr::visit(lb_I_Applications* app) {
       end
     end
 
-    class 170311 "lbPluginInputStream"
-      
-      
-      cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 170311 "lbPluginInputStream"cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
 "
@@ -1687,14 +1653,6 @@ ${inlines}
       comment "...e
 ...sclass lbPluginInputStream implementation:0:
 ...slbPluginInputStream:0:"
-      classrelation 164295 // <generalisation>
-	relation 164295 ---|>
-	  a public
-	    cpp default "Generated"
-	    classrelation_ref 164295 // <generalisation>
-	  b parent class_ref 136263 // lb_I_PluginImpl
-      end
-
       operation 326471 "lbPluginInputStream"
 	public explicit_return_type ""
 	nparams 0
@@ -1745,7 +1703,7 @@ ${body}}
       end
 
       operation 326983 "peekImplementation"
-	public return_type class_ref 141767 // lb_I_Unknown
+	public explicit_return_type "lb_I_Unknown"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -1757,7 +1715,7 @@ ${body}}
       end
 
       operation 327111 "getImplementation"
-	public return_type class_ref 141767 // lb_I_Unknown
+	public explicit_return_type "lb_I_Unknown"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -1781,10 +1739,7 @@ ${body}}
       end
     end
 
-    class 170439 "lbOutputStream"
-      
-      
-      cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 170439 "lbOutputStream"cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
 "
@@ -1800,14 +1755,6 @@ ${inlines}
  * Implements lb_I_FileOperation to specify, that this operation has to do
  * with files. Here loading from file.
  "
-      classrelation 164423 // <generalisation>
-	relation 164423 ---|>
-	  a public
-	    cpp default "Generated"
-	    classrelation_ref 164423 // <generalisation>
-	  b parent class_ref 169031 // lb_I_FileOperation
-      end
-
       operation 327367 "lbOutputStream"
 	public explicit_return_type ""
 	nparams 0
@@ -1835,7 +1782,7 @@ ${body}}
       operation 327623 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 168519 // lb_I_LogonPage
+	  param inout name "" explicit_type "lb_I_LogonPage"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_LogonPage*)\" LOG_ };
 "
 	
@@ -1845,7 +1792,7 @@ ${body}}
       operation 327751 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 168647 // lb_I_AppSelectPage
+	  param inout name "" explicit_type "lb_I_AppSelectPage"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_AppSelectPage*)\" LOG_ };
 "
 	
@@ -1855,7 +1802,7 @@ ${body}}
       operation 327879 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 145095 // lb_I_GUI
+	  param inout name "" explicit_type "lb_I_GUI"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_GUI*)\" LOG_ };
 "
 	
@@ -1865,7 +1812,7 @@ ${body}}
       operation 328007 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 168775 // lb_I_GUIApp
+	  param inout name "" explicit_type "lb_I_GUIApp"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_GUIApp*)\" LOG_ };
 "
 	
@@ -1875,7 +1822,7 @@ ${body}}
       operation 328135 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 134471 // lb_I_Frame
+	  param inout name "" explicit_type "lb_I_Frame"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_Frame*)\" LOG_ };
 "
 	
@@ -1885,7 +1832,7 @@ ${body}}
       operation 328263 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 139847 // lb_I_KeyBase
+	  param inout name "" explicit_type "lb_I_KeyBase"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_KeyBase*)\" LOG_ };
 "
 	
@@ -1895,7 +1842,7 @@ ${body}}
       operation 328391 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 141255 // lb_I_String
+	  param inout name "" explicit_type "lb_I_String"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_String*)\" LOG_ };
 "
 	
@@ -1905,7 +1852,7 @@ ${body}}
       operation 328519 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 141383 // lb_I_Integer
+	  param inout name "" explicit_type "lb_I_Integer"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_Integer*)\" LOG_ };
 "
 	
@@ -1915,7 +1862,7 @@ ${body}}
       operation 328647 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 141639 // lb_I_Long
+	  param inout name "" explicit_type "lb_I_Long"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_Long*)\" LOG_ };
 "
 	
@@ -1925,7 +1872,7 @@ ${body}}
       operation 328775 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 140103 // lb_I_Container
+	  param inout name "" explicit_type "lb_I_Container"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_Container*)\" LOG_ };
 "
 	
@@ -1935,7 +1882,7 @@ ${body}}
       operation 328903 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 160711 // lb_I_Database
+	  param inout name "" explicit_type "lb_I_Database"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_Database*)\" LOG_ };
 "
 	
@@ -1945,7 +1892,7 @@ ${body}}
       operation 329031 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 131399 // lb_I_ColumnBinding
+	  param inout name "" explicit_type "lb_I_ColumnBinding"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_ColumnBinding*)\" LOG_ };
 "
 	
@@ -1955,7 +1902,7 @@ ${body}}
       operation 329159 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 152263 // lb_I_BoundColumn
+	  param inout name "" explicit_type "lb_I_BoundColumn"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_BoundColumn*)\" LOG_ };
 "
 	
@@ -1965,7 +1912,7 @@ ${body}}
       operation 329287 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 152391 // lb_I_Query
+	  param inout name "" explicit_type "lb_I_Query"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_Query*)\" LOG_ };
 "
 	
@@ -1975,7 +1922,7 @@ ${body}}
       operation 329415 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 152007 // lb_I_MVC_View
+	  param inout name "" explicit_type "lb_I_MVC_View"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_MVC_View*)\" LOG_ };
 "
 	
@@ -1985,7 +1932,7 @@ ${body}}
       operation 329543 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 168903 // lb_I_Connection
+	  param inout name "" explicit_type "lb_I_Connection"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_Connection*)\" LOG_ };
 "
 	
@@ -1995,7 +1942,7 @@ ${body}}
       operation 329671 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 155847 // lb_I_InterfaceRepository
+	  param inout name "" explicit_type "lb_I_InterfaceRepository"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_InterfaceRepository*)\" LOG_ };
 "
 	
@@ -2005,7 +1952,7 @@ ${body}}
       operation 329799 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 140359 // lb_I_Element
+	  param inout name "" explicit_type "lb_I_Element"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_Element*)\" LOG_ };
 "
 	
@@ -2015,7 +1962,7 @@ ${body}}
       operation 329927 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 155591 // lb_I_Module
+	  param inout name "" explicit_type "lb_I_Module"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_Module*)\" LOG_ };
 "
 	
@@ -2025,7 +1972,7 @@ ${body}}
       operation 330055 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 156103 // lb_I_FunctorEntity
+	  param inout name "" explicit_type "lb_I_FunctorEntity"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_FunctorEntity*)\" LOG_ };
 "
 	
@@ -2035,7 +1982,7 @@ ${body}}
       operation 330183 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 155335 // lb_I_InstanceReference
+	  param inout name "" explicit_type "lb_I_InstanceReference"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_InstanceReference*)\" LOG_ };
 "
 	
@@ -2045,7 +1992,7 @@ ${body}}
       operation 330311 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 133191 // lb_I_EventHandler
+	  param inout name "" explicit_type "lb_I_EventHandler"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_EventHandler*)\" LOG_ };
 "
 	
@@ -2055,7 +2002,7 @@ ${body}}
       operation 330439 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 134855 // lb_I_EventManager
+	  param inout name "" explicit_type "lb_I_EventManager"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_EventManager*)\" LOG_ };
 "
 	
@@ -2065,7 +2012,7 @@ ${body}}
       operation 330567 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 134983 // lb_I_EventMapper
+	  param inout name "" explicit_type "lb_I_EventMapper"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_EventMapper*)\" LOG_ };
 "
 	
@@ -2075,7 +2022,7 @@ ${body}}
       operation 330695 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 135367 // lb_I_EvHandler
+	  param inout name "" explicit_type "lb_I_EvHandler"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_EvHandler*)\" LOG_ };
 "
 	
@@ -2085,7 +2032,7 @@ ${body}}
       operation 330823 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 133575 // lb_I_Dispatcher
+	  param inout name "" explicit_type "lb_I_Dispatcher"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_Dispatcher*)\" LOG_ };
 "
 	
@@ -2095,7 +2042,7 @@ ${body}}
       operation 330951 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 145223 // lb_I_InputStream
+	  param inout name "" explicit_type "lb_I_InputStream"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_InputStream*)\" LOG_ };
 "
 	
@@ -2105,7 +2052,7 @@ ${body}}
       operation 331079 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 150599 // lb_I_OutputStream
+	  param inout name "" explicit_type "lb_I_OutputStream"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_OutputStream*)\" LOG_ };
 "
 	
@@ -2115,7 +2062,7 @@ ${body}}
       operation 331207 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 169031 // lb_I_FileOperation
+	  param inout name "" explicit_type "lb_I_FileOperation"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_FileOperation*)\" LOG_ };
 "
 	
@@ -2125,7 +2072,7 @@ ${body}}
       operation 331335 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 135879 // lb_I_Locale
+	  param inout name "" explicit_type "lb_I_Locale"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_Locale*)\" LOG_ };
 "
 	
@@ -2135,7 +2082,7 @@ ${body}}
       operation 331463 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 141127 // lb_I_Parameter
+	  param inout name "" explicit_type "lb_I_Parameter"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_Parameter*)\" LOG_ };
 "
 	
@@ -2145,7 +2092,7 @@ ${body}}
       operation 331591 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 136007 // lb_I_Reference
+	  param inout name "" explicit_type "lb_I_Reference"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_Reference*)\" LOG_ };
 "
 	
@@ -2155,7 +2102,7 @@ ${body}}
       operation 331719 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 151367 // lb_I_Log
+	  param inout name "" explicit_type "lb_I_Log"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_Log*)\" LOG_ };
 "
 	
@@ -2165,7 +2112,7 @@ ${body}}
       operation 331847 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 136135 // lb_I_Plugin
+	  param inout name "" explicit_type "lb_I_Plugin"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_Plugin*)\" LOG_ };
 "
 	
@@ -2175,7 +2122,7 @@ ${body}}
       operation 331975 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 136263 // lb_I_PluginImpl
+	  param inout name "" explicit_type "lb_I_PluginImpl"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_PluginImpl*)\" LOG_ };
 "
 	
@@ -2185,7 +2132,7 @@ ${body}}
       operation 332103 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 136391 // lb_I_PluginManager
+	  param inout name "" explicit_type "lb_I_PluginManager"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_PluginManager*)\" LOG_ };
 "
 	
@@ -2195,7 +2142,7 @@ ${body}}
       operation 332231 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 136519 // lb_I_PluginModule
+	  param inout name "" explicit_type "lb_I_PluginModule"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_PluginModule*)\" LOG_ };
 "
 	
@@ -2205,7 +2152,7 @@ ${body}}
       operation 332359 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 169159 // lb_I_wxFrame
+	  param inout name "" explicit_type "lb_I_wxFrame"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_wxFrame*)\" LOG_ };
 "
 	
@@ -2215,7 +2162,7 @@ ${body}}
       operation 332487 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 159815 // lb_I_Window
+	  param inout name "" explicit_type "lb_I_Window"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_Window*)\" LOG_ };
 "
 	
@@ -2225,7 +2172,7 @@ ${body}}
       operation 332615 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 136775 // lb_I_Action
+	  param inout name "" explicit_type "lb_I_Action"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_Action*)\" LOG_ };
 "
 	
@@ -2235,7 +2182,7 @@ ${body}}
       operation 332743 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 136903 // lb_I_DelegatedAction
+	  param inout name "" explicit_type "lb_I_DelegatedAction"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_DelegatedAction*)\" LOG_ };
 "
 	
@@ -2245,7 +2192,7 @@ ${body}}
       operation 332871 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 169287 // lb_I_Form
+	  param inout name "" explicit_type "lb_I_Form"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_Form*)\" LOG_ };
 "
 	
@@ -2255,7 +2202,7 @@ ${body}}
       operation 332999 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 169415 // lb_I_MasterDetailFormDefinition
+	  param inout name "" explicit_type "lb_I_MasterDetailFormDefinition"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_MasterDetailFormDefinition*)\" LOG_ };
 "
 	
@@ -2265,7 +2212,7 @@ ${body}}
       operation 333127 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 169543 // lb_I_DatabaseReport
+	  param inout name "" explicit_type "lb_I_DatabaseReport"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_DatabaseReport*)\" LOG_ };
 "
 	
@@ -2275,7 +2222,7 @@ ${body}}
       operation 333255 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 137031 // lb_I_CodeGenerator
+	  param inout name "" explicit_type "lb_I_CodeGenerator"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_CodeGenerator*)\" LOG_ };
 "
 	
@@ -2285,7 +2232,7 @@ ${body}}
       operation 333383 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 141511 // lb_I_Boolean
+	  param inout name "" explicit_type "lb_I_Boolean"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_Boolean*)\" LOG_ };
 "
 	
@@ -2295,7 +2242,7 @@ ${body}}
       operation 333511 "visit"
 	cpp_inline public explicit_return_type "void"
 	nparams 1
-	  param inout name "pm" type class_ref 168391 // lb_I_DatabaseOperation
+	  param inout name "pm" explicit_type "lb_I_DatabaseOperation"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} { _CL_LOG << \"visit(lb_I_DatabaseOperation*)\" LOG_ };
 "
 	
@@ -2305,7 +2252,7 @@ ${body}}
       operation 333639 "visit"
 	public explicit_return_type "void"
 	nparams 1
-	  param inout name "pm" type class_ref 169671 // lb_I_Streamable
+	  param inout name "pm" explicit_type "lb_I_Streamable"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
@@ -2319,7 +2266,7 @@ ${body}}
       operation 333767 "visit"
 	public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 135111 // lb_I_Application
+	  param inout name "" explicit_type "lb_I_Application"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
@@ -2332,7 +2279,7 @@ ${body}}
       operation 333895 "visit"
 	public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 135239 // lb_I_MetaApplication
+	  param inout name "" explicit_type "lb_I_MetaApplication"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
@@ -2345,7 +2292,7 @@ ${body}}
       operation 334023 "visit"
 	public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 137415 // lb_I_UserAccounts
+	  param inout name "" explicit_type "lb_I_UserAccounts"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
@@ -2358,7 +2305,7 @@ ${body}}
       operation 334151 "visit"
 	public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 137543 // lb_I_Applications
+	  param inout name "" explicit_type "lb_I_Applications"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
@@ -2389,7 +2336,7 @@ ${body}}
       operation 334407 "begin"
 	public explicit_return_type "bool"
 	nparams 1
-	  param inout name "stream" type class_ref 170183 // lb_I_Stream
+	  param inout name "stream" explicit_type "lb_I_Stream"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
@@ -2416,7 +2363,7 @@ ${body}}
       end
 
       operation 334663 "getStream"
-	public return_type class_ref 170183 // lb_I_Stream
+	public explicit_return_type "lb_I_Stream"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -2431,7 +2378,7 @@ ${body}}
 
   deploymentview 130631 "VisitorOperations"
     //deployment diagram settings
-    package_name_in_tab default show_context default write_horizontally default auto_label_position default
+    package_name_in_tab default show_context default write_horizontally default auto_label_position default shadow default
     draw_component_as_icon default show_component_req_prov default show_component_rea default
     artifact 149319 "lbPluginModuleVisitors"
       stereotype "source"

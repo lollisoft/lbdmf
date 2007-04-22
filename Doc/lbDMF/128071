@@ -1,38 +1,50 @@
-format 22
+format 29
 "interfaces" // interfaces
+  revision 1
+  modified_by 2 "lothar"
   // class settings
   //class diagram settings
-  draw_all_relations default hide_attributes default hide_operations default show_full_members_definition default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default
+  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default shadow default
   //use case diagram settings
-  package_name_in_tab default show_context default auto_label_position default
+  package_name_in_tab default show_context default auto_label_position default shadow default
   //sequence diagram settings
-  show_full_operations_definition default write_horizontally default drawing_language default
+  show_full_operations_definition default write_horizontally default drawing_language default shadow default
   //collaboration diagram settings
-  show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default
+  show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default shadow default
+  //object diagram settings
+   write_horizontally default package_name_in_tab default show_context default auto_label_position default shadow default
   //component diagram settings
-  package_name_in_tab default show_context default auto_label_position default
+  package_name_in_tab default show_context default auto_label_position default shadow default
   draw_component_as_icon default show_component_req_prov default show_component_rea default
   //deployment diagram settings
-  package_name_in_tab default show_context default write_horizontally default auto_label_position default
+  package_name_in_tab default show_context default write_horizontally default auto_label_position default shadow default
   draw_component_as_icon default show_component_req_prov default show_component_rea default
   //state diagram settings
-  package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default
+  package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default shadow default
   show_activities default region_horizontally default drawing_language default
+  //activity diagram settings
+  package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default shadow default
+  show_infonote default drawing_language default
   
   classview 128071 "interfaces"
     //class diagram settings
-    draw_all_relations default hide_attributes default hide_operations default show_full_members_definition default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default
-    //col diagram settings
-    show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default
-    //seq diagram settings
-    show_full_operations_definition default write_horizontally default drawing_language default
+    draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default shadow default
+    //collaboration diagram settings
+    show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default shadow default
+    //object diagram settings
+     write_horizontally default package_name_in_tab default show_context default auto_label_position default shadow default
+    //sequence diagram settings
+    show_full_operations_definition default write_horizontally default drawing_language default shadow default
     //state diagram settings
-    package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default
+    package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default shadow default
     show_activities default region_horizontally default drawing_language default
     //class settings
+    //activity diagram settings
+    package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default shadow default
+    show_infonote default drawing_language default
+    
     class 128071 "lb_I_KeyBase"
       abstract 
-      
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
@@ -50,7 +62,7 @@ ${inlines}
       classrelation 128071 // <generalisation>
 	relation 128071 ---|>
 	  a public
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 128071 // <generalisation>
 	  b parent class_ref 128199 // lb_I_Unknown
       end
@@ -166,7 +178,6 @@ ${inlines}
 
     class 128199 "lb_I_Unknown"
       abstract 
-      
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
@@ -205,7 +216,7 @@ ${body}}
       end
 
       operation 185671 "release"
-	abstract cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	abstract cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 2
 	  param inout name "file" explicit_type "char"
 	  param in name "line" explicit_type "int"
@@ -320,7 +331,7 @@ ${body}}
       end
 
       operation 186695 "queryInterface"
-	abstract cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	abstract cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 4
 	  param inout name "name" explicit_type "char"
 	  param inout name "unknown" explicit_type "void"
@@ -395,7 +406,7 @@ ${body}}
       end
 
       operation 187079 "setData"
-	abstract cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	abstract cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 1
 	  param inout name "u" type class_ref 128199 // lb_I_Unknown
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
@@ -421,7 +432,6 @@ ${body}}
 
     class 128327 "ObjectTyp"
        stereotype "enum"
-      
       cpp_decl "${comment}enum ${name} {
 ${items}
 };
@@ -540,7 +550,6 @@ ${items}
 
     class 128455 "lb_I_Object"
       abstract 
-      
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
@@ -625,7 +634,6 @@ ${inlines}
 
     class 128583 "lb_I_String"
       abstract 
-      
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
@@ -644,7 +652,7 @@ ${inlines}
       classrelation 128199 // <generalisation>
 	relation 128199 ---|>
 	  a public
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 128199 // <generalisation>
 	  b parent class_ref 128071 // lb_I_KeyBase
       end
@@ -742,7 +750,7 @@ ${inlines}
       end
 
       operation 131143 "setData"
-	abstract cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	abstract cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 1
 	  param inout name "uk" type class_ref 128199 // lb_I_Unknown
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
@@ -802,7 +810,6 @@ ${inlines}
 
     class 128839 "lb_I_Integer"
       abstract 
-      
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
@@ -821,7 +828,7 @@ ${inlines}
       classrelation 128327 // <generalisation>
 	relation 128327 ---|>
 	  a public
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 128327 // <generalisation>
 	  b parent class_ref 128071 // lb_I_KeyBase
       end
@@ -878,7 +885,7 @@ ${inlines}
       end
 
       operation 132295 "setData"
-	abstract cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	abstract cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 1
 	  param inout name "uk" type class_ref 128199 // lb_I_Unknown
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
@@ -895,7 +902,6 @@ ${inlines}
 
     class 128967 "lb_I_Boolean"
       abstract 
-      
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
@@ -914,7 +920,7 @@ ${inlines}
       classrelation 128455 // <generalisation>
 	relation 128455 ---|>
 	  a public
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 128455 // <generalisation>
 	  b parent class_ref 128071 // lb_I_KeyBase
       end
@@ -971,7 +977,7 @@ ${inlines}
       end
 
       operation 132935 "setData"
-	abstract cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	abstract cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 1
 	  param inout name "uk" type class_ref 128199 // lb_I_Unknown
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
@@ -988,7 +994,6 @@ ${inlines}
 
     class 129095 "lb_I_Long"
       abstract 
-      
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
@@ -1007,7 +1012,7 @@ ${inlines}
       classrelation 128583 // <generalisation>
 	relation 128583 ---|>
 	  a public
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 128583 // <generalisation>
 	  b parent class_ref 128071 // lb_I_KeyBase
       end
@@ -1050,7 +1055,7 @@ ${inlines}
       end
 
       operation 133575 "setData"
-	abstract cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	abstract cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 1
 	  param inout name "uk" type class_ref 128199 // lb_I_Unknown
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
@@ -1062,7 +1067,6 @@ ${inlines}
 
     class 129223 "lb_I_Parameter"
       abstract 
-      
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
@@ -1082,7 +1086,7 @@ ${inlines}
       classrelation 128711 // <generalisation>
 	relation 128711 ---|>
 	  a public
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 128711 // <generalisation>
 	  b parent class_ref 128199 // lb_I_Unknown
       end
@@ -1144,7 +1148,7 @@ ${inlines}
       end
 
       operation 134343 "getChar"
-	abstract cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	abstract cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 3
 	  param inout name "parameter" explicit_type "char"
 	  param inout name "buffer" explicit_type "char"
@@ -1170,7 +1174,7 @@ ${inlines}
       end
 
       operation 134599 "getString"
-	abstract cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	abstract cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 2
 	  param inout name "parameter" type class_ref 128583 // lb_I_String
 	  param inout name "p" type class_ref 128583 // lb_I_String
@@ -1198,7 +1202,7 @@ ${inlines}
       end
 
       operation 134855 "getUAPString"
-	abstract cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	abstract cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 2
 	  param inout name "parameter" type class_ref 128583 // lb_I_String
 	  param inout name "p" type class_ref 128583 // lb_I_String
@@ -1265,7 +1269,7 @@ ${inlines}
       end
 
       operation 135111 "getUAPInteger"
-	abstract cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	abstract cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 2
 	  param inout name "parameter" type class_ref 128583 // lb_I_String
 	  param inout name "p" type class_ref 128839 // lb_I_Integer
@@ -1287,7 +1291,7 @@ ${inlines}
       end
 
       operation 135367 "getUAPBoolean"
-	abstract cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	abstract cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 2
 	  param inout name "parameter" type class_ref 128583 // lb_I_String
 	  param inout name "p" type class_ref 128967 // lb_I_Boolean
@@ -1309,7 +1313,7 @@ ${inlines}
       end
 
       operation 135623 "getUAPContainer"
-	abstract cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	abstract cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 2
 	  param inout name "parameter" type class_ref 128583 // lb_I_String
 	  param inout name "p" type class_ref 129351 // lb_I_Container
@@ -1331,7 +1335,7 @@ ${inlines}
       end
 
       operation 135879 "getUAPParameter"
-	abstract cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	abstract cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 2
 	  param inout name "parameter" type class_ref 128583 // lb_I_String
 	  param inout name "p" type class_ref 129223 // lb_I_Parameter
@@ -1353,7 +1357,7 @@ ${inlines}
       end
 
       operation 136135 "getUAPLong"
-	abstract cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	abstract cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 2
 	  param inout name "parameter" type class_ref 128583 // lb_I_String
 	  param inout name "p" type class_ref 129095 // lb_I_Long
@@ -1391,7 +1395,6 @@ ${inlines}
 
     class 129351 "lb_I_Container"
       abstract 
-      
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
@@ -1412,7 +1415,7 @@ ${inlines}
       classrelation 128967 // <generalisation>
 	relation 128967 ---|>
 	  a public
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 128967 // <generalisation>
 	  b parent class_ref 128199 // lb_I_Unknown
       end
@@ -1430,7 +1433,7 @@ ${inlines}
       end
 
       operation 138311 "insert"
-	abstract cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	abstract cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 2
 	  param inout name "e" type class_ref 128199 // lb_I_Unknown
 	  param inout name "key" type class_ref 128071 // lb_I_KeyBase
@@ -1448,7 +1451,7 @@ ${inlines}
       end
 
       operation 138439 "remove"
-	abstract cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	abstract cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 1
 	  param inout name "key" type class_ref 128071 // lb_I_KeyBase
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * * const ${p0}${)}${const}${volatile}${throw}${abstract};
@@ -1609,7 +1612,6 @@ ${inlines}
 
     class 129479 "lb_I_Element"
       abstract 
-      
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
@@ -1623,7 +1625,7 @@ ${inlines}
       classrelation 128839 // <generalisation>
 	relation 128839 ---|>
 	  a public
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 128839 // <generalisation>
 	  b parent class_ref 128199 // lb_I_Unknown
       end
@@ -1767,7 +1769,6 @@ ${inlines}
 
     class 129607 "lb_I_Module"
       abstract 
-      
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
@@ -1782,17 +1783,9 @@ ${inlines}
       classrelation 129095 // <generalisation>
 	relation 129095 ---|>
 	  a public
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 129095 // <generalisation>
 	  b parent class_ref 128199 // lb_I_Unknown
-      end
-
-      classrelation 129223 // <generalisation>
-	relation 129223 ---|>
-	  a public
-	    cpp default "Generated"
-	    classrelation_ref 129223 // <generalisation>
-	  b parent class_ref 129735 // lb_I_Requestable
       end
 
       operation 139975 "lb_I_Module"
@@ -1893,7 +1886,7 @@ ${inlines}
       end
 
       operation 140999 "load"
-	abstract cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	abstract cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 1
 	  param inout name "name" explicit_type "char"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
@@ -1908,7 +1901,7 @@ ${inlines}
       end
 
       operation 141127 "preload"
-	abstract cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	abstract cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 1
 	  param inout name "name" explicit_type "char"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
@@ -1928,7 +1921,7 @@ ${inlines}
       end
 
       operation 141383 "getFunctors"
-	abstract cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	abstract cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 3
 	  param inout name "interfacename" explicit_type "char"
 	  param inout name "node" type class_ref 129863 // lb_I_ConfigObject
@@ -1954,7 +1947,7 @@ ${inlines}
       end
 
       operation 141511 "getInstance"
-	abstract cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	abstract cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 3
 	  param inout name "functorname" explicit_type "char"
 	  param inout name "node" type class_ref 129863 // lb_I_ConfigObject
@@ -1966,7 +1959,7 @@ ${inlines}
       end
 
       operation 141639 "getObjectInstance"
-	abstract cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	abstract cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 2
 	  param in name "name" explicit_type "char"
 	  param inout name "inst" type class_ref 129351 // lb_I_Container
@@ -1977,11 +1970,11 @@ ${inlines}
 	comment "*
          *
          
-virtual lbErrCodes getObjectInstance(char* name, lb_I_Requestable*& inst) = 0; "
+virtual lbErrCodes getObjectInstance(char* name, lb_I_Requestable*& inst) = 0; "
       end
 
       operation 141767 "makeInstance"
-	abstract cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	abstract cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 3
 	  param inout name "functor" explicit_type "char"
 	  param inout name "module" explicit_type "char"
@@ -2004,7 +1997,6 @@ virtual lbErrCodes getObjectInstance(char* name, lb_I_Requestable*& inst) = 0; 
 
     class 129863 "lb_I_ConfigObject"
       abstract 
-      
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
@@ -2019,7 +2011,7 @@ ${inlines}
       classrelation 132807 // <generalisation>
 	relation 132807 ---|>
 	  a public
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 132807 // <generalisation>
 	  b parent class_ref 128199 // lb_I_Unknown
       end
@@ -2044,7 +2036,7 @@ ${inlines}
       end
 
       operation 182087 "getParam"
-	abstract cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	abstract cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 2
 	  param in name "name" explicit_type "char"
 	  param inout name "value" type class_ref 128583 // lb_I_String
@@ -2060,7 +2052,7 @@ ${inlines}
       end
 
       operation 182215 "findObject"
-	abstract cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	abstract cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 2
 	  param in name "name" explicit_type "char"
 	  param inout name "object" type class_ref 129863 // lb_I_ConfigObject
@@ -2078,7 +2070,7 @@ ${inlines}
       end
 
       operation 182343 "getParent"
-	abstract cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	abstract cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 1
 	  param inout name "_parent" type class_ref 129863 // lb_I_ConfigObject
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * * ${p0}${)}${const}${volatile}${throw}${abstract};
@@ -2114,18 +2106,18 @@ ${inlines}
       end
 
       operation 182599 "getFirstChildren"
-	abstract cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	abstract cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 1
 	  param inout name "children" type class_ref 129863 // lb_I_ConfigObject
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * * ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	
 	
-	comment " Simple list access functions"
+	comment " Simple list access functions"
       end
 
       operation 182727 "getNextChildren"
-	abstract cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	abstract cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 1
 	  param inout name "children" type class_ref 129863 // lb_I_ConfigObject
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * * ${p0}${)}${const}${volatile}${throw}${abstract};
@@ -2135,7 +2127,7 @@ ${inlines}
       end
 
       operation 182855 "getAttribute"
-	abstract cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	abstract cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 2
 	  param in name "name" explicit_type "char"
 	  param inout name "attr" type class_ref 138055 // lb_I_Attribute
@@ -2188,7 +2180,7 @@ ${inlines}
       end
 
       operation 182983 "getAttributeValue"
-	abstract cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	abstract cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 2
 	  param in name "name" explicit_type "char"
 	  param inout name "attr" explicit_type "char"
@@ -2199,7 +2191,7 @@ ${inlines}
       end
 
       operation 183111 "deleteValue"
-	abstract cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	abstract cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 1
 	  param inout name "attr" explicit_type "char"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * & ${p0}${)}${const}${volatile}${throw}${abstract};
@@ -2215,7 +2207,7 @@ ${inlines}
 "
 	
 	
-	comment "	virtual lbErrCodes getDefaultImpl(char* interfacename, lb_I_ConfigObject* node, char*& implTor, char*& module) = 0;"
+	comment "	virtual lbErrCodes getDefaultImpl(char* interfacename, lb_I_ConfigObject* node, char*& implTor, char*& module) = 0;"
       end
 
       classrelation 132935 // <dependency>
@@ -2230,7 +2222,6 @@ ${inlines}
 
     class 129991 "lb_I_Instance"
       abstract 
-      
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
@@ -2244,7 +2235,7 @@ ${inlines}
       classrelation 129351 // <generalisation>
 	relation 129351 ---|>
 	  a public
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 129351 // <generalisation>
 	  b parent class_ref 128071 // lb_I_KeyBase
       end
@@ -2377,7 +2368,6 @@ ${inlines}
 
     class 130119 "lb_I_InstanceReference"
       abstract 
-      
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
@@ -2391,7 +2381,7 @@ ${inlines}
       classrelation 129479 // <generalisation>
 	relation 129479 ---|>
 	  a public
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 129479 // <generalisation>
 	  b parent class_ref 128199 // lb_I_Unknown
       end
@@ -2456,7 +2446,6 @@ ${inlines}
 
     class 130247 "lb_I_Log"
       abstract 
-      
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
@@ -2470,7 +2459,7 @@ ${inlines}
       classrelation 129607 // <generalisation>
 	relation 129607 ---|>
 	  a public
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 129607 // <generalisation>
 	  b parent class_ref 128199 // lb_I_Unknown
       end
@@ -2506,7 +2495,7 @@ ${inlines}
 	
 	comment "...e
  This order does not work with visual C++ !!??
-    virtual void LB_STDCALL log(const char *msg, long line, char* file) = 0;"
+    virtual void LB_STDCALL log(const char *msg, long line, char* file) = 0;"
       end
 
       operation 144711 "log"
@@ -2519,7 +2508,7 @@ ${inlines}
 "
 	
 	
-	comment " Take it here...    "
+	comment " Take it here...    "
       end
 
       operation 144839 "log"
@@ -2615,7 +2604,6 @@ ${inlines}
 
     class 130375 "lb_I_Runnable"
       abstract 
-      
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
@@ -2627,7 +2615,7 @@ ${inlines}
       classrelation 129735 // <generalisation>
 	relation 129735 ---|>
 	  a public
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 129735 // <generalisation>
 	  b parent class_ref 128199 // lb_I_Unknown
       end
@@ -2651,7 +2639,7 @@ ${inlines}
       end
 
       operation 146247 "run"
-	abstract cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	abstract cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -2662,7 +2650,6 @@ ${inlines}
 
     class 130503 "lb_I_ZThread"
       abstract 
-      
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
@@ -2674,7 +2661,7 @@ ${inlines}
       classrelation 129863 // <generalisation>
 	relation 129863 ---|>
 	  a public
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 129863 // <generalisation>
 	  b parent class_ref 130375 // lb_I_Runnable
       end
@@ -2727,7 +2714,7 @@ ${inlines}
       end
 
       operation 147015 "kill"
-	abstract cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	abstract cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -2736,7 +2723,7 @@ ${inlines}
       end
 
       operation 147143 "join"
-	abstract cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	abstract cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -2745,7 +2732,7 @@ ${inlines}
       end
 
       operation 147271 "run"
-	abstract cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	abstract cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 1
 	  param inout name "target" type class_ref 130375 // lb_I_Runnable
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
@@ -2755,7 +2742,7 @@ ${inlines}
       end
 
       operation 147399 "interrupt"
-	abstract cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	abstract cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -2770,7 +2757,7 @@ ${inlines}
 "
 	
 	
-	comment " The set/getPriority functions are not implemented yet"
+	comment " The set/getPriority functions are not implemented yet"
       end
 
       operation 147655 "isKilled"
@@ -2792,7 +2779,7 @@ ${inlines}
       end
 
       operation 147911 "setDaemon"
-	abstract cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	abstract cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 1
 	  param in name "flag" explicit_type "bool"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract};
@@ -2802,7 +2789,7 @@ ${inlines}
       end
 
       operation 148039 "setNotify"
-	abstract cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	abstract cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 1
 	  param in name "flag" explicit_type "bool"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract};
@@ -2821,7 +2808,7 @@ ${inlines}
       end
 
       operation 148295 "sleep"
-	abstract cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	abstract cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 1
 	  param in name "s" explicit_type "ulong"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract};
@@ -2831,7 +2818,7 @@ ${inlines}
       end
 
       operation 148423 "yield"
-	abstract cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	abstract cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -2842,7 +2829,6 @@ ${inlines}
 
     class 130631 "lb_I_Thread"
       abstract 
-      
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
@@ -2856,7 +2842,7 @@ ${inlines}
       classrelation 129991 // <generalisation>
 	relation 129991 ---|>
 	  a public
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 129991 // <generalisation>
 	  b parent class_ref 128199 // lb_I_Unknown
       end
@@ -2880,7 +2866,7 @@ ${inlines}
       end
 
       operation 148807 "create"
-	abstract cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	abstract cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -2889,7 +2875,7 @@ ${inlines}
       end
 
       operation 148935 "run"
-	abstract cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	abstract cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -2898,7 +2884,7 @@ ${inlines}
       end
 
       operation 149063 "stop"
-	abstract cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	abstract cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -2907,7 +2893,7 @@ ${inlines}
       end
 
       operation 149191 "pause"
-	abstract cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	abstract cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -2916,7 +2902,7 @@ ${inlines}
       end
 
       operation 149319 "resume"
-	abstract cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	abstract cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -2932,7 +2918,7 @@ ${inlines}
 "
 	
 	
-	comment " no copy ctor/assignment operator"
+	comment " no copy ctor/assignment operator"
       end
 
       operation 149575 "operator ="
@@ -2948,7 +2934,6 @@ ${inlines}
 
     class 130759 "lb_I_Mutex"
       abstract 
-      
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
@@ -3018,7 +3003,6 @@ ${inlines}
 
     class 130887 "lb_I_CriticalSection"
       abstract 
-      
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
@@ -3047,7 +3031,7 @@ ${inlines}
       end
 
       operation 150727 "enter"
-	abstract cpp_virtual protected return_type class_ref 128711 // lbErrCodes
+	abstract cpp_virtual protected explicit_return_type "lbErrCodes"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -3056,7 +3040,7 @@ ${inlines}
       end
 
       operation 150855 "leave"
-	abstract cpp_virtual protected return_type class_ref 128711 // lbErrCodes
+	abstract cpp_virtual protected explicit_return_type "lbErrCodes"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -3074,10 +3058,7 @@ ${inlines}
       end
     end
 
-    class 131015 "lb_I_Lock"
-      
-      
-      cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 131015 "lb_I_Lock"cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
 "
@@ -3127,10 +3108,7 @@ ${inlines}
       end
     end
 
-    class 131143 "DLLEXPORT"
-      
-      
-      cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 131143 "DLLEXPORT"cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
 "
@@ -3144,7 +3122,6 @@ ${inlines}
 
     class 131271 "lb_I_Query"
       abstract 
-      
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
@@ -3163,7 +3140,7 @@ ${inlines}
       classrelation 130247 // <generalisation>
 	relation 130247 ---|>
 	  a public
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 130247 // <generalisation>
 	  b parent class_ref 128199 // lb_I_Unknown
       end
@@ -3193,9 +3170,9 @@ ${inlines}
       end
 
       operation 151751 "setView"
-	abstract cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	abstract cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 1
-	  param inout name "cb" type class_ref 131399 // lb_I_ColumnBinding
+	  param inout name "cb" explicit_type "lb_I_ColumnBinding"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	
@@ -3208,7 +3185,7 @@ ${inlines}
       end
 
       operation 151879 "registerView"
-	abstract cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	abstract cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 1
 	  param inout name "view" type class_ref 131527 // lb_I_MVC_View
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
@@ -3231,7 +3208,7 @@ ${inlines}
       end
 
       operation 152007 "unregisterView"
-	abstract cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	abstract cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 1
 	  param inout name "view" type class_ref 131527 // lb_I_MVC_View
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
@@ -3312,7 +3289,7 @@ ${inlines}
       end
 
       operation 152775 "query"
-	abstract cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	abstract cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 2
 	  param inout name "q" explicit_type "char"
 	  param in name "bind" explicit_type "bool"
@@ -3329,7 +3306,7 @@ ${inlines}
       end
 
       operation 152903 "bind"
-	abstract cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	abstract cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -3345,7 +3322,7 @@ ${inlines}
       end
 
       operation 153031 "add"
-	abstract cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	abstract cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -3378,7 +3355,7 @@ ${inlines}
       end
 
       operation 153287 "remove"
-	abstract cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	abstract cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -3390,7 +3367,7 @@ ${inlines}
       end
 
       operation 153415 "update"
-	abstract cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	abstract cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -3612,7 +3589,6 @@ ${inlines}
 
       class 131655 "lbDBColumnTypes"
 	visibility public stereotype "enum"
-	
 	cpp_decl "${comment}enum ${name} {
 ${items}
 };
@@ -3756,7 +3732,7 @@ ${items}
       end
 
       operation 156103 "absolute"
-	abstract cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	abstract cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 1
 	  param in name "pos" explicit_type "int"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract};
@@ -3770,7 +3746,7 @@ ${items}
       end
 
       operation 156231 "first"
-	abstract cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	abstract cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -3784,7 +3760,7 @@ ${items}
       end
 
       operation 156359 "next"
-	abstract cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	abstract cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -3803,7 +3779,7 @@ ${items}
       end
 
       operation 156487 "previous"
-	abstract cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	abstract cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -3817,7 +3793,7 @@ ${items}
       end
 
       operation 156615 "last"
-	abstract cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	abstract cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -3902,7 +3878,7 @@ ${items}
       end
 
       operation 157383 "setString"
-	abstract cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	abstract cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 2
 	  param inout name "columnName" type class_ref 128583 // lb_I_String
 	  param inout name "value" type class_ref 128583 // lb_I_String
@@ -3939,7 +3915,6 @@ ${items}
 
     class 131527 "lb_I_MVC_View"
       abstract 
-      
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
@@ -3953,7 +3928,7 @@ ${inlines}
       classrelation 130503 // <generalisation>
 	relation 130503 ---|>
 	  a public
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 130503 // <generalisation>
 	  b parent class_ref 128199 // lb_I_Unknown
       end
@@ -3977,7 +3952,7 @@ ${inlines}
       end
 
       operation 162759 "updateView"
-	abstract cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	abstract cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -3989,7 +3964,7 @@ ${inlines}
       end
 
       operation 162887 "setViewSource"
-	abstract cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	abstract cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 1
 	  param inout name "q" type class_ref 128199 // lb_I_Unknown
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
@@ -4007,7 +3982,6 @@ ${inlines}
 
     class 131783 "lb_I_BoundColumn"
       abstract 
-      
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
@@ -4026,7 +4000,7 @@ ${inlines}
       classrelation 130375 // <generalisation>
 	relation 130375 ---|>
 	  a public
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 130375 // <generalisation>
 	  b parent class_ref 128199 // lb_I_Unknown
       end
@@ -4136,7 +4110,7 @@ ${inlines}
       end
 
       operation 158535 "getAsString"
-	abstract cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	abstract cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 2
 	  param inout name "result" type class_ref 128583 // lb_I_String
 	  param in name "asParameter" explicit_type "int"
@@ -4154,7 +4128,7 @@ ${inlines}
       end
 
       operation 158663 "getAsLong"
-	abstract cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	abstract cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 2
 	  param inout name "result" type class_ref 129095 // lb_I_Long
 	  param in name "asParameter" explicit_type "int"
@@ -4172,7 +4146,7 @@ ${inlines}
       end
 
       operation 158791 "setFromString"
-	abstract cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	abstract cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 2
 	  param inout name "set" type class_ref 128583 // lb_I_String
 	  param in name "mode" explicit_type "int"
@@ -4212,7 +4186,7 @@ ${inlines}
       end
 
       operation 159175 "prepareBoundColumn"
-	abstract cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	abstract cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 2
 	  param inout name "q" type class_ref 131271 // lb_I_Query
 	  param in name "column" explicit_type "int"
@@ -4228,7 +4202,7 @@ ${inlines}
       end
 
       operation 159303 "bindColumn"
-	abstract cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	abstract cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 3
 	  param inout name "q" type class_ref 131271 // lb_I_Query
 	  param in name "column" explicit_type "int"
@@ -4278,7 +4252,7 @@ ${inlines}
       end
 
       operation 159815 "leaveOwnership"
-	abstract cpp_virtual protected return_type class_ref 128711 // lbErrCodes
+	abstract cpp_virtual protected explicit_return_type "lbErrCodes"
 	nparams 2
 	  param inout name "oldOwner" type class_ref 131783 // lb_I_BoundColumn
 	  param inout name "newOwner" type class_ref 131783 // lb_I_BoundColumn
@@ -4301,12 +4275,12 @@ ${inlines}
       end
 
       operation 159943 "bindColumn"
-	cpp_virtual protected return_type class_ref 128711 // lbErrCodes
+	cpp_virtual protected explicit_return_type "lbErrCodes"
 	nparams 4
-	  param in name "stmt" type class_ref 131911 // SQLSMALLINT
-	  param in name "column" type class_ref 132039 // SQLCHAR
-	  param in name "name" type class_ref 131911 // SQLSMALLINT
-	  param in name "length" type class_ref 131911 // SQLSMALLINT
+	  param in name "stmt" explicit_type "SQLSMALLINT"
+	  param in name "column" explicit_type "SQLCHAR"
+	  param in name "name" explicit_type "SQLSMALLINT"
+	  param in name "length" explicit_type "SQLSMALLINT"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
@@ -4334,7 +4308,7 @@ ${inlines}
       end
 
       operation 160199 "setBoundColumns"
-	abstract cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	abstract cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 1
 	  param inout name "bc" type class_ref 129351 // lb_I_Container
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
@@ -4493,7 +4467,7 @@ ${inlines}
       end
 
       operation 161735 "getString"
-	abstract cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	abstract cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 2
 	  param in name "column" explicit_type "int"
 	  param inout name "instance" type class_ref 128583 // lb_I_String
@@ -4512,7 +4486,7 @@ ${inlines}
       end
 
       operation 161863 "getLong"
-	abstract cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	abstract cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 2
 	  param in name "column" explicit_type "int"
 	  param inout name "instance" type class_ref 129095 // lb_I_Long
@@ -4531,7 +4505,7 @@ ${inlines}
       end
 
       operation 161991 "getString"
-	abstract cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	abstract cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 2
 	  param inout name "column" explicit_type "char"
 	  param inout name "instance" type class_ref 128583 // lb_I_String
@@ -4550,7 +4524,7 @@ ${inlines}
       end
 
       operation 162119 "setString"
-	abstract cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	abstract cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 2
 	  param inout name "column" explicit_type "char"
 	  param inout name "instance" type class_ref 128583 // lb_I_String
@@ -4569,7 +4543,7 @@ ${inlines}
       end
 
       operation 162247 "setQuery"
-	abstract cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	abstract cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 2
 	  param inout name "q" type class_ref 131271 // lb_I_Query
 	  param inout name "ReadonlyColumns" type class_ref 129351 // lb_I_Container
@@ -4596,7 +4570,6 @@ ${inlines}
 
     class 132167 "lb_I_Connection"
       abstract 
-      
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
@@ -4614,7 +4587,7 @@ ${inlines}
       classrelation 130631 // <generalisation>
 	relation 130631 ---|>
 	  a public
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 130631 // <generalisation>
 	  b parent class_ref 128199 // lb_I_Unknown
       end
@@ -4646,7 +4619,6 @@ ${inlines}
 
     class 132295 "lb_I_Database"
       abstract 
-      
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
@@ -4666,7 +4638,7 @@ ${inlines}
       classrelation 130759 // <generalisation>
 	relation 130759 ---|>
 	  a public
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 130759 // <generalisation>
 	  b parent class_ref 128199 // lb_I_Unknown
       end
@@ -4696,7 +4668,7 @@ ${inlines}
       end
 
       operation 163527 "init"
-	abstract cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	abstract cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -4708,7 +4680,7 @@ ${inlines}
       end
 
       operation 163655 "setUser"
-	abstract cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	abstract cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 1
 	  param inout name "_user" explicit_type "char"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
@@ -4718,7 +4690,7 @@ ${inlines}
       end
 
       operation 163783 "setDB"
-	abstract cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	abstract cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 1
 	  param inout name "_db" explicit_type "char"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
@@ -4740,7 +4712,7 @@ ${inlines}
       end
 
       operation 164039 "connect"
-	abstract cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	abstract cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 3
 	  param inout name "DSN" explicit_type "char"
 	  param inout name "user" explicit_type "char"
@@ -4765,7 +4737,7 @@ ${inlines}
       end
 
       operation 164167 "connect"
-	abstract cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	abstract cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 1
 	  param inout name "pass" explicit_type "char"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
@@ -4796,7 +4768,6 @@ ${inlines}
 
     class 132423 "lb_I_DatabaseForm"
       abstract 
-      
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
@@ -4811,7 +4782,7 @@ ${inlines}
       classrelation 130887 // <generalisation>
 	relation 130887 ---|>
 	  a public
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 130887 // <generalisation>
 	  b parent class_ref 132551 // lb_I_Form
       end
@@ -5067,7 +5038,6 @@ ${inlines}
 
     class 132551 "lb_I_Form"
       abstract 
-      
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
@@ -5085,21 +5055,13 @@ ${inlines}
       classrelation 131399 // <generalisation>
 	relation 131399 ---|>
 	  a public
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 131399 // <generalisation>
 	  b parent class_ref 133063 // lb_I_Window
       end
 
-      classrelation 131527 // <generalisation>
-	relation 131527 ---|>
-	  a public
-	    cpp default "Generated"
-	    classrelation_ref 131527 // <generalisation>
-	  b parent class_ref 133191 // lb_I_EventHandler
-      end
-
       operation 169287 "setName"
-	abstract cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	abstract cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 2
 	  param in name "name" explicit_type "char"
 	  param in name "appention" explicit_type "char"
@@ -5114,7 +5076,7 @@ ${inlines}
       end
 
       operation 169415 "addButton"
-	abstract cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	abstract cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 6
 	  param inout name "buttonText" explicit_type "char"
 	  param inout name "evHandler" explicit_type "char"
@@ -5133,7 +5095,7 @@ ${inlines}
       end
 
       operation 169543 "addLabel"
-	abstract cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	abstract cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 5
 	  param inout name "text" explicit_type "char"
 	  param in name "x" explicit_type "int"
@@ -5151,7 +5113,7 @@ ${inlines}
       end
 
       operation 169671 "addTextField"
-	abstract cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	abstract cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 5
 	  param inout name "name" explicit_type "char"
 	  param in name "x" explicit_type "int"
@@ -5169,7 +5131,7 @@ ${inlines}
       end
 
       operation 169799 "addOwnerDrawn"
-	abstract cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	abstract cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 5
 	  param inout name "name" explicit_type "char"
 	  param in name "x" explicit_type "int"
@@ -5209,7 +5171,6 @@ ${inlines}
 
     class 132679 "lb_I_DatabaseReport"
       abstract 
-      
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
@@ -5230,7 +5191,7 @@ ${inlines}
       classrelation 131015 // <generalisation>
 	relation 131015 ---|>
 	  a public
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 131015 // <generalisation>
 	  b parent class_ref 128199 // lb_I_Unknown
       end
@@ -5383,7 +5344,7 @@ ${inlines}
       end
 
       operation 168007 "setName"
-	abstract cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	abstract cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 2
 	  param in name "name" explicit_type "char"
 	  param in name "appention" explicit_type "char"
@@ -5400,7 +5361,6 @@ ${inlines}
 
     class 132807 "lb_I_MasterDetailFormDefinition"
       abstract 
-      
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
@@ -5417,7 +5377,7 @@ ${inlines}
       classrelation 131143 // <generalisation>
 	relation 131143 ---|>
 	  a public
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 131143 // <generalisation>
 	  b parent class_ref 128199 // lb_I_Unknown
       end
@@ -5523,7 +5483,6 @@ ${inlines}
 
     class 132935 "LB_PACKET_TYPE"
        stereotype "enum"
-      
       cpp_decl "${comment}enum ${name} {
 ${items}
 };
@@ -5599,7 +5558,6 @@ ${items}
 
     class 133063 "lb_I_Window"
       abstract 
-      
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
@@ -5616,7 +5574,7 @@ ${inlines}
       classrelation 131271 // <generalisation>
 	relation 131271 ---|>
 	  a public
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 131271 // <generalisation>
 	  b parent class_ref 128199 // lb_I_Unknown
       end
@@ -5641,10 +5599,7 @@ ${inlines}
       end
     end
 
-    class 133319 "lb_I_GUIApp"
-      
-      
-      cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 133319 "lb_I_GUIApp"cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
 "
@@ -5657,7 +5612,6 @@ ${inlines}
 
     class 133447 "lb_I_GUI"
       abstract 
-      
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
@@ -5673,7 +5627,7 @@ ${inlines}
       classrelation 131655 // <generalisation>
 	relation 131655 ---|>
 	  a public
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 131655 // <generalisation>
 	  b parent class_ref 128199 // lb_I_Unknown
       end
@@ -5792,7 +5746,7 @@ ${inlines}
       end
 
       operation 171207 "deactivateMenuEntry"
-	abstract cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	abstract cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -5807,7 +5761,7 @@ ${inlines}
       end
 
       operation 171335 "activateMenuEntry"
-	abstract cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	abstract cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -5820,7 +5774,7 @@ ${inlines}
       end
 
       operation 171463 "gotoMenuRoot"
-	abstract cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	abstract cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -5833,7 +5787,7 @@ ${inlines}
       end
 
       operation 171591 "gotoMenuEntry"
-	abstract cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	abstract cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 1
 	  param inout name "entry" explicit_type "char"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
@@ -5846,7 +5800,7 @@ ${inlines}
       end
 
       operation 171719 "insertMenuEntry"
-	abstract cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	abstract cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 1
 	  param inout name "entry" type class_ref 128199 // lb_I_Unknown
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
@@ -5859,7 +5813,7 @@ ${inlines}
       end
 
       operation 171847 "addMenuEntry"
-	abstract cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	abstract cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 1
 	  param inout name "entry" type class_ref 128199 // lb_I_Unknown
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
@@ -5872,7 +5826,7 @@ ${inlines}
       end
 
       operation 171975 "addMenuBar"
-	abstract cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	abstract cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 1
 	  param inout name "name" explicit_type "char"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
@@ -5904,7 +5858,7 @@ ${inlines}
       end
 
       operation 172103 "addMenu"
-	abstract cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	abstract cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 1
 	  param inout name "name" explicit_type "char"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
@@ -5917,7 +5871,7 @@ ${inlines}
       end
 
       operation 172231 "addMenuEntry"
-	abstract cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	abstract cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 4
 	  param inout name "in_menu" explicit_type "char"
 	  param inout name "entry" explicit_type "char"
@@ -5941,7 +5895,7 @@ ${inlines}
       end
 
       operation 172359 "msgBox"
-	abstract cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	abstract cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 2
 	  param inout name "windowTitle" explicit_type "char"
 	  param inout name "msg" explicit_type "char"
@@ -5957,9 +5911,9 @@ ${inlines}
       end
 
       operation 172487 "setDispatcher"
-	abstract cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	abstract cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 1
-	  param inout name "disp" type class_ref 133575 // lb_I_Dispatcher
+	  param inout name "disp" explicit_type "lb_I_Dispatcher"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	
@@ -6010,10 +5964,7 @@ ${inlines}
       end
     end
 
-    class 133703 "lb_I_wxGUI"
-      
-      
-      cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 133703 "lb_I_wxGUI"cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
 "
@@ -6026,7 +5977,7 @@ ${inlines}
       classrelation 131783 // <generalisation>
 	relation 131783 ---|>
 	  a public
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 131783 // <generalisation>
 	  b parent class_ref 133447 // lb_I_GUI
       end
@@ -6034,7 +5985,6 @@ ${inlines}
 
     class 133831 "lb_I_Control"
       abstract 
-      
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
@@ -6050,7 +6000,7 @@ ${inlines}
       classrelation 131911 // <generalisation>
 	relation 131911 ---|>
 	  a public
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 131911 // <generalisation>
 	  b parent class_ref 133063 // lb_I_Window
       end
@@ -6070,10 +6020,7 @@ ${inlines}
       end
     end
 
-    class 133959 "lb_I_LogonPage"
-      
-      
-      cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 133959 "lb_I_LogonPage"cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
 "
@@ -6083,10 +6030,7 @@ ${inlines}
       
     end
 
-    class 134087 "lb_I_AppSelectPage"
-      
-      
-      cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 134087 "lb_I_AppSelectPage"cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
 "
@@ -6096,10 +6040,7 @@ ${inlines}
       
     end
 
-    class 134215 "lb_I_LogonHandler"
-      
-      
-      cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 134215 "lb_I_LogonHandler"cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
 "
@@ -6111,7 +6052,6 @@ ${inlines}
 
     class 134343 "lb_I_Aspect"
       abstract 
-      
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
@@ -6128,7 +6068,7 @@ ${inlines}
       classrelation 132039 // <generalisation>
 	relation 132039 ---|>
 	  a public
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 132039 // <generalisation>
 	  b parent class_ref 128199 // lb_I_Unknown
       end
@@ -6143,7 +6083,7 @@ ${inlines}
 	
 	comment " abstract interface for visitors 
  The lb_I_Streamable interface would possibly go impossible
-virtual void LB_STDCALL visit(lb_I_Unknown*) { printf(\"Error: Catch all visitor called!\\n\"); }"
+virtual void LB_STDCALL visit(lb_I_Unknown*) { printf(\"Error: Catch all visitor called!\\n\"); }"
       end
 
       operation 173255 "visit"
@@ -6164,7 +6104,7 @@ virtual void LB_STDCALL visit(lb_I_Unknown*) { printf(\"Error: Catch all visitor
 "
 	
 	
-	comment " Conflict with the catchall. Don't use MI."
+	comment " Conflict with the catchall. Don't use MI."
       end
 
       operation 173511 "visit"
@@ -6175,7 +6115,7 @@ virtual void LB_STDCALL visit(lb_I_Unknown*) { printf(\"Error: Catch all visitor
 "
 	
 	
-	comment " As above"
+	comment " As above"
       end
 
       operation 173639 "visit"
@@ -6186,13 +6126,13 @@ virtual void LB_STDCALL visit(lb_I_Unknown*) { printf(\"Error: Catch all visitor
 "
 	
 	
-	comment " This is the wxApp class !! ??"
+	comment " This is the wxApp class !! ??"
       end
 
       operation 173767 "visit"
 	abstract cpp_virtual public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 134471 // lb_I_Frame
+	  param inout name "" explicit_type "lb_I_Frame"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	
@@ -6262,7 +6202,7 @@ virtual void LB_STDCALL visit(lb_I_Unknown*) { printf(\"Error: Catch all visitor
       operation 174663 "visit"
 	abstract cpp_virtual public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 131399 // lb_I_ColumnBinding
+	  param inout name "" explicit_type "lb_I_ColumnBinding"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	
@@ -6362,7 +6302,7 @@ virtual void LB_STDCALL visit(lb_I_Unknown*) { printf(\"Error: Catch all visitor
       operation 175943 "visit"
 	abstract cpp_virtual public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 134855 // lb_I_EventManager
+	  param inout name "" explicit_type "lb_I_EventManager"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	
@@ -6372,7 +6312,7 @@ virtual void LB_STDCALL visit(lb_I_Unknown*) { printf(\"Error: Catch all visitor
       operation 176071 "visit"
 	abstract cpp_virtual public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 134983 // lb_I_EventMapper
+	  param inout name "" explicit_type "lb_I_EventMapper"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	
@@ -6382,7 +6322,7 @@ virtual void LB_STDCALL visit(lb_I_Unknown*) { printf(\"Error: Catch all visitor
       operation 176199 "visit"
 	abstract cpp_virtual public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 135111 // lb_I_Application
+	  param inout name "" explicit_type "lb_I_Application"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	
@@ -6392,7 +6332,7 @@ virtual void LB_STDCALL visit(lb_I_Unknown*) { printf(\"Error: Catch all visitor
       operation 176327 "visit"
 	abstract cpp_virtual public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 135239 // lb_I_MetaApplication
+	  param inout name "" explicit_type "lb_I_MetaApplication"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	
@@ -6402,7 +6342,7 @@ virtual void LB_STDCALL visit(lb_I_Unknown*) { printf(\"Error: Catch all visitor
       operation 176455 "visit"
 	abstract cpp_virtual public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 135367 // lb_I_EvHandler
+	  param inout name "" explicit_type "lb_I_EvHandler"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	
@@ -6412,7 +6352,7 @@ virtual void LB_STDCALL visit(lb_I_Unknown*) { printf(\"Error: Catch all visitor
       operation 176583 "visit"
 	abstract cpp_virtual public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 133575 // lb_I_Dispatcher
+	  param inout name "" explicit_type "lb_I_Dispatcher"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	
@@ -6452,7 +6392,7 @@ virtual void LB_STDCALL visit(lb_I_Unknown*) { printf(\"Error: Catch all visitor
       operation 177095 "visit"
 	abstract cpp_virtual public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 135879 // lb_I_Locale
+	  param inout name "" explicit_type "lb_I_Locale"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	
@@ -6472,7 +6412,7 @@ virtual void LB_STDCALL visit(lb_I_Unknown*) { printf(\"Error: Catch all visitor
       operation 177351 "visit"
 	abstract cpp_virtual public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 136007 // lb_I_Reference
+	  param inout name "" explicit_type "lb_I_Reference"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	
@@ -6492,7 +6432,7 @@ virtual void LB_STDCALL visit(lb_I_Unknown*) { printf(\"Error: Catch all visitor
       operation 177607 "visit"
 	abstract cpp_virtual public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 136135 // lb_I_Plugin
+	  param inout name "" explicit_type "lb_I_Plugin"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	
@@ -6502,7 +6442,7 @@ virtual void LB_STDCALL visit(lb_I_Unknown*) { printf(\"Error: Catch all visitor
       operation 177735 "visit"
 	abstract cpp_virtual public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 136263 // lb_I_PluginImpl
+	  param inout name "" explicit_type "lb_I_PluginImpl"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	
@@ -6512,7 +6452,7 @@ virtual void LB_STDCALL visit(lb_I_Unknown*) { printf(\"Error: Catch all visitor
       operation 177863 "visit"
 	abstract cpp_virtual public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 136391 // lb_I_PluginManager
+	  param inout name "" explicit_type "lb_I_PluginManager"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	
@@ -6522,7 +6462,7 @@ virtual void LB_STDCALL visit(lb_I_Unknown*) { printf(\"Error: Catch all visitor
       operation 177991 "visit"
 	abstract cpp_virtual public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 136519 // lb_I_PluginModule
+	  param inout name "" explicit_type "lb_I_PluginModule"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	
@@ -6552,7 +6492,7 @@ virtual void LB_STDCALL visit(lb_I_Unknown*) { printf(\"Error: Catch all visitor
       operation 178375 "visit"
 	abstract cpp_virtual public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 136775 // lb_I_Action
+	  param inout name "" explicit_type "lb_I_Action"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	
@@ -6582,7 +6522,7 @@ virtual void LB_STDCALL visit(lb_I_Unknown*) { printf(\"Error: Catch all visitor
       operation 178759 "visit"
 	abstract cpp_virtual public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 136903 // lb_I_DelegatedAction
+	  param inout name "" explicit_type "lb_I_DelegatedAction"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	
@@ -6602,7 +6542,7 @@ virtual void LB_STDCALL visit(lb_I_Unknown*) { printf(\"Error: Catch all visitor
       operation 179015 "visit"
 	abstract cpp_virtual public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 137031 // lb_I_CodeGenerator
+	  param inout name "" explicit_type "lb_I_CodeGenerator"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	
@@ -6632,7 +6572,7 @@ virtual void LB_STDCALL visit(lb_I_Unknown*) { printf(\"Error: Catch all visitor
       operation 179399 "visit"
 	abstract cpp_virtual public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 137415 // lb_I_UserAccounts
+	  param inout name "" explicit_type "lb_I_UserAccounts"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	
@@ -6642,7 +6582,7 @@ virtual void LB_STDCALL visit(lb_I_Unknown*) { printf(\"Error: Catch all visitor
       operation 179527 "visit"
 	abstract cpp_virtual public explicit_return_type "void"
 	nparams 1
-	  param inout name "" type class_ref 137543 // lb_I_Applications
+	  param inout name "" explicit_type "lb_I_Applications"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	
@@ -6652,7 +6592,6 @@ virtual void LB_STDCALL visit(lb_I_Unknown*) { printf(\"Error: Catch all visitor
 
     class 134599 "lb_I_InterfaceRepository"
       abstract 
-      
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
@@ -6666,7 +6605,7 @@ ${inlines}
       classrelation 133447 // <generalisation>
 	relation 133447 ---|>
 	  a public
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 133447 // <generalisation>
 	  b parent class_ref 128199 // lb_I_Unknown
       end
@@ -6715,7 +6654,6 @@ ${inlines}
 
     class 134727 "lb_I_FunctorEntity"
       abstract 
-      
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
@@ -6734,7 +6672,7 @@ ${inlines}
       classrelation 133191 // <generalisation>
 	relation 133191 ---|>
 	  a public
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 133191 // <generalisation>
 	  b parent class_ref 128199 // lb_I_Unknown
       end
@@ -6824,10 +6762,7 @@ ${inlines}
       end
     end
 
-    class 135495 "lb_I_InputStream"
-      
-      
-      cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 135495 "lb_I_InputStream"cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
 "
@@ -6837,10 +6772,7 @@ ${inlines}
       
     end
 
-    class 135623 "lb_I_OutputStream"
-      
-      
-      cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 135623 "lb_I_OutputStream"cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
 "
@@ -6852,7 +6784,6 @@ ${inlines}
 
     class 135751 "lb_I_FileOperation"
       abstract 
-      
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
@@ -6869,7 +6800,7 @@ ${inlines}
       classrelation 132167 // <generalisation>
 	relation 132167 ---|>
 	  a public
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 132167 // <generalisation>
 	  b parent class_ref 134343 // lb_I_Aspect
       end
@@ -6961,7 +6892,6 @@ ${inlines}
 
     class 136647 "lb_I_wxFrame"
       abstract 
-      
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
@@ -6982,21 +6912,13 @@ ${inlines}
       classrelation 132423 // <generalisation>
 	relation 132423 ---|>
 	  a public
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 132423 // <generalisation>
 	  b parent class_ref 128199 // lb_I_Unknown
       end
 
-      classrelation 132551 // <generalisation>
-	relation 132551 ---|>
-	  a public
-	    cpp default "Generated"
-	    classrelation_ref 132551 // <generalisation>
-	  b parent class_ref 137799 // lb_I_EventSink
-      end
-
       operation 181063 "getPeer"
-	abstract cpp_virtual public return_type class_ref 137927 // lb_wxFrame
+	abstract cpp_virtual public explicit_return_type "lb_wxFrame"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -7005,10 +6927,7 @@ ${inlines}
       end
     end
 
-    class 137159 "lb_I_Streamable"
-      
-      
-      cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 137159 "lb_I_Streamable"cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
 "
@@ -7020,7 +6939,6 @@ ${inlines}
 
     class 137287 "lb_I_DatabaseOperation"
       abstract 
-      
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
@@ -7032,7 +6950,7 @@ ${inlines}
       classrelation 132295 // <generalisation>
 	relation 132295 ---|>
 	  a public
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 132295 // <generalisation>
 	  b parent class_ref 134343 // lb_I_Aspect
       end
@@ -7099,10 +7017,7 @@ ${inlines}
       end
     end
 
-    class 137671 "lb_I_Stream"
-      
-      
-      cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 137671 "lb_I_Stream"cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
 "
@@ -7114,7 +7029,6 @@ ${inlines}
 
     class 138055 "lb_I_Attribute"
       abstract 
-      
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
@@ -7127,7 +7041,7 @@ ${inlines}
       classrelation 132679 // <generalisation>
 	relation 132679 ---|>
 	  a public
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 132679 // <generalisation>
 	  b parent class_ref 128199 // lb_I_Unknown
       end
@@ -7151,7 +7065,7 @@ ${inlines}
       end
 
       operation 181447 "getName"
-	abstract cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	abstract cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 1
 	  param inout name "name" explicit_type "char"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * & ${p0}${)}${const}${volatile}${throw}${abstract};
@@ -7161,7 +7075,7 @@ ${inlines}
       end
 
       operation 181575 "getValue"
-	abstract cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	abstract cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 1
 	  param inout name "value" explicit_type "char"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * & ${p0}${)}${const}${volatile}${throw}${abstract};
@@ -7171,7 +7085,7 @@ ${inlines}
       end
 
       operation 181703 "getType"
-	abstract cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	abstract cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 1
 	  param inout name "type" explicit_type "char"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * & ${p0}${)}${const}${volatile}${throw}${abstract};
@@ -7183,7 +7097,6 @@ ${inlines}
 
     class 138183 "lb_I_XMLConfig"
       abstract 
-      
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
@@ -7197,7 +7110,7 @@ ${inlines}
       classrelation 133063 // <generalisation>
 	relation 133063 ---|>
 	  a public
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 133063 // <generalisation>
 	  b parent class_ref 128199 // lb_I_Unknown
       end
@@ -7221,7 +7134,7 @@ ${inlines}
       end
 
       operation 183623 "parse"
-	abstract cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	abstract cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -7230,7 +7143,7 @@ ${inlines}
       end
 
       operation 183751 "hasConfigObject"
-	abstract cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	abstract cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 2
 	  param in name "cfgObjectName" explicit_type "char"
 	  param inout name "count" explicit_type "int"
@@ -7247,7 +7160,7 @@ ${inlines}
       end
 
       operation 183879 "getConfigObject"
-	abstract cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	abstract cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 2
 	  param inout name "cfgObj" type class_ref 129863 // lb_I_ConfigObject
 	  param in name "cfgObjectName" explicit_type "char"
@@ -7263,8 +7176,8 @@ ${inlines}
     end
 
     class 138311 "byte"
-       stereotype "typedef" explicit_base_type "unsigned short"
-      
+       stereotype "typedef"
+       explicit_base_type "unsigned short"
       cpp_decl "${comment}typedef ${type} ${name};
 "
       java_decl ""
@@ -7274,8 +7187,8 @@ ${inlines}
     end
 
     class 138439 "u_short"
-       stereotype "typedef" explicit_base_type "unsigned short"
-      
+       stereotype "typedef"
+       explicit_base_type "unsigned short"
       cpp_decl "${comment}typedef ${type} ${name};
 "
       java_decl ""
@@ -7285,8 +7198,8 @@ ${inlines}
     end
 
     class 138567 "DWORD"
-       stereotype "typedef" explicit_base_type "unsigned long"
-      
+       stereotype "typedef"
+       explicit_base_type "unsigned long"
       cpp_decl "${comment}typedef ${type} ${name};
 "
       java_decl ""
@@ -7296,8 +7209,8 @@ ${inlines}
     end
 
     class 138695 "LB_DATA"
-       stereotype "typedef" explicit_base_type "unsigned short"
-      
+       stereotype "typedef"
+       explicit_base_type "unsigned short"
       cpp_decl "${comment}typedef ${type} ${name};
 "
       java_decl ""
@@ -7307,8 +7220,8 @@ ${inlines}
     end
 
     class 138823 "lbProtocolCallback"
-       stereotype "typedef" base_type class_ref 128711 // lbErrCodes
-      
+       stereotype "typedef"
+       explicit_base_type "lbErrCodes"
       cpp_decl "${comment}typedef ${type}(lb_I_ProtocolTarget::* ${name})( lb_I_Transfer_Data const &, lb_I_Transfer_Data&);
 "
       java_decl ""
@@ -7321,74 +7234,43 @@ ${inlines}
  * This is a base class for all callback able objects
  
 /////////////////////////////////////////////////////////////
- Type for lb protocol callback functions. This should be an interface."
-      classrelation 133575 // <realization>
-	relation 133575 -_-|>
-	  a public
-	    cpp default "Generated"
-	    classrelation_ref 133575 // <realization>
-	  b parent class_ref 128711 // lbErrCodes
-      end
+ Type for lb protocol callback functions. This should be an interface."
     end
 
     class 138951 "lbMemberCallback"
-       stereotype "typedef" base_type class_ref 128711 // lbErrCodes
-      
+       stereotype "typedef"
+       explicit_base_type "lbErrCodes"
       cpp_decl "${comment}typedef ${type}(lb_I_CallbackTarget::* ${name})( const char* handlername, lb_I_Transfer_Data&);
 "
       java_decl ""
       idl_decl ""
       explicit_switch_type ""
       
-      classrelation 133703 // <realization>
-	relation 133703 -_-|>
-	  a public
-	    cpp default "Generated"
-	    classrelation_ref 133703 // <realization>
-	  b parent class_ref 128711 // lbErrCodes
-      end
     end
 
     class 139079 "lb_I_EventCallback"
-       stereotype "typedef" base_type class_ref 128711 // lbErrCodes
-      
+       stereotype "typedef"
+       explicit_base_type "lbErrCodes"
       cpp_decl "${comment}typedef ${type}(lb_I_EventSink::* ${name})(lb_I_Unknown* question, lb_I_Unknown* answer);
 "
       java_decl ""
       idl_decl ""
       explicit_switch_type ""
       
-      classrelation 133831 // <realization>
-	relation 133831 -_-|>
-	  a public
-	    cpp default "Generated"
-	    classrelation_ref 133831 // <realization>
-	  b parent class_ref 128711 // lbErrCodes
-      end
     end
 
     class 139207 "lbEvHandler"
-       stereotype "typedef" base_type class_ref 128711 // lbErrCodes
-      
+       stereotype "typedef"
+       explicit_base_type "lbErrCodes"
       cpp_decl "${comment}typedef ${type}(LB_STDCALL lb_I_EventHandler::* ${name})(lb_I_Unknown* uk);
 "
       java_decl ""
       idl_decl ""
       explicit_switch_type ""
       
-      classrelation 133959 // <realization>
-	relation 133959 -_-|>
-	  a public
-	    cpp default "Generated"
-	    classrelation_ref 133959 // <realization>
-	  b parent class_ref 128711 // lbErrCodes
-      end
     end
 
-    class 139335 "UAP"
-      
-      
-      cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 139335 "UAP"cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
 "
@@ -7401,7 +7283,7 @@ ${inlines}
 
   deploymentview 128071 "interfaces"
     //deployment diagram settings
-    package_name_in_tab default show_context default write_horizontally default auto_label_position default
+    package_name_in_tab default show_context default write_horizontally default auto_label_position default shadow default
     draw_component_as_icon default show_component_req_prov default show_component_rea default
     artifact 128071 "lb_I_KeyBase"
       stereotype "source"
@@ -8668,4 +8550,6 @@ ${namespace_end}"
       end
     end
   end
+
+  package_ref 128002 // interfaces
 end

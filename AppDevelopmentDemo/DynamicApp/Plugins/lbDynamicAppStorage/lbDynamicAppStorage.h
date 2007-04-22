@@ -29,8 +29,7 @@
 /*...e*/
 
 class lbDynamicAppStorage :
-    public lb_I_Unknown, 
-    public lb_I_Streamable {
+    public lb_I_XMLStreamable {
 public:
 	lbDynamicAppStorage();
 	virtual ~lbDynamicAppStorage();

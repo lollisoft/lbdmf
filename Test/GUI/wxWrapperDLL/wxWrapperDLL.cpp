@@ -494,6 +494,7 @@ lb_wxFrame::lb_wxFrame() //:
 	m_left = m_right = NULL;
 	m_splitter = NULL;
 	m_replacewindow = NULL;
+	stb_areas = 1;
 	
 	_isSplitted = false;
 
@@ -1709,7 +1710,13 @@ lbErrCodes LB_STDCALL lb_wxFrame::addToolBar(lb_I_Unknown* uk) {
 		maintb->AddTool(DYNAMIC_QUIT, bm, _trans("Exit"));
 				
 		maintb->Realize();
-		maintb->SetSize(wxSize(maintb->GetToolSize().GetWidth()*maintb->GetToolsCount(), maintb->GetToolSize().GetHeight()));
+
+#ifdef WINDOWS
+		wxSize s = wxSize(maintb->GetToolSize().GetWidth()*maintb->GetToolsCount(), maintb->GetToolSize().GetHeight());
+		
+		maintb->SetSize(s);
+		maintb->SetMinSize(s);
+#endif
 				
 #ifndef USE_WXAUI
 		SetToolBar(maintb);
@@ -1719,6 +1726,7 @@ lbErrCodes LB_STDCALL lb_wxFrame::addToolBar(lb_I_Unknown* uk) {
 		m_mgr.AddPane(maintb, wxPaneInfo().
 			  Name(wxT("Main Toolbar")).Caption(wxT("Main Toolbar")).
 			  ToolbarPane().Top().
+			  Fixed().
 			  LeftDockable(false).RightDockable(false));
 		m_mgr.Update();
 #endif
@@ -1756,6 +1764,7 @@ lbErrCodes LB_STDCALL lb_wxFrame::addToolBar(lb_I_Unknown* uk) {
 		m_mgr.AddPane(tb, wxPaneInfo().
 					  Name(wxT(name->charrep())).Caption(wxT(name->charrep())).
 					  ToolbarPane().Top().
+					  //Fixed().
 					  LeftDockable(false).RightDockable(false));
 		m_mgr.Update();
 #endif
@@ -1850,7 +1859,11 @@ lbErrCodes LB_STDCALL lb_wxFrame::addTool_To_ToolBar(lb_I_Unknown* uk) {
 			
 			tb->AddTool(EvNr, bm, entry->charrep());
 			tb->Realize();
-			tb->SetSize(wxSize(tb->GetToolSize().GetWidth()*tb->GetToolsCount(), tb->GetToolSize().GetHeight()));
+#ifdef WINDOWS			
+			wxSize s = wxSize(tb->GetToolSize().GetWidth()*tb->GetToolsCount(), tb->GetToolSize().GetHeight());
+			tb->SetSize(s);
+#endif
+			//tb->SetMinSize(s);
 			
 #ifdef USE_WXAUI			
 			m_mgr.DetachPane(tb);
@@ -1858,6 +1871,8 @@ lbErrCodes LB_STDCALL lb_wxFrame::addTool_To_ToolBar(lb_I_Unknown* uk) {
 			m_mgr.AddPane(tb, wxPaneInfo().
 				  Name(wxT(name->charrep())).Caption(wxT(name->charrep())).
         		          ToolbarPane().Top().
+						  //Fixed().
+						  //MinSize(wxSize(tb->GetToolSize().GetWidth()*tb->GetToolsCount(), tb->GetToolSize().GetHeight())).
                 		  LeftDockable(false).RightDockable(false));
 			m_mgr.Update();
 #endif

@@ -1,39 +1,49 @@
-format 22
+format 29
 "lbDOMConfig" // BaseDevelopment::lbXMLConfig::lbDOMConfig
+  revision 1
+  modified_by 2 "lothar"
   // class settings
   //class diagram settings
-  draw_all_relations default hide_attributes default hide_operations default show_full_members_definition default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default
+  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default shadow default
   //use case diagram settings
-  package_name_in_tab default show_context default auto_label_position default
+  package_name_in_tab default show_context default auto_label_position default shadow default
   //sequence diagram settings
-  show_full_operations_definition default write_horizontally default drawing_language default
+  show_full_operations_definition default write_horizontally default drawing_language default shadow default
   //collaboration diagram settings
-  show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default
+  show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default shadow default
+  //object diagram settings
+   write_horizontally default package_name_in_tab default show_context default auto_label_position default shadow default
   //component diagram settings
-  package_name_in_tab default show_context default auto_label_position default
+  package_name_in_tab default show_context default auto_label_position default shadow default
   draw_component_as_icon default show_component_req_prov default show_component_rea default
   //deployment diagram settings
-  package_name_in_tab default show_context default write_horizontally default auto_label_position default
+  package_name_in_tab default show_context default write_horizontally default auto_label_position default shadow default
   draw_component_as_icon default show_component_req_prov default show_component_rea default
   //state diagram settings
-  package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default
+  package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default shadow default
   show_activities default region_horizontally default drawing_language default
+  //activity diagram settings
+  package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default shadow default
+  show_infonote default drawing_language default
   
   classview 129863 "lbDOMConfig"
     //class diagram settings
-    draw_all_relations default hide_attributes default hide_operations default show_full_members_definition default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default
-    //col diagram settings
-    show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default
-    //seq diagram settings
-    show_full_operations_definition default write_horizontally default drawing_language default
+    draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default shadow default
+    //collaboration diagram settings
+    show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default shadow default
+    //object diagram settings
+     write_horizontally default package_name_in_tab default show_context default auto_label_position default shadow default
+    //sequence diagram settings
+    show_full_operations_definition default write_horizontally default drawing_language default shadow default
     //state diagram settings
-    package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default
+    package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default shadow default
     show_activities default region_horizontally default drawing_language default
     //class settings
-    class 157767 "DOMTreeErrorReporter"
-      
-      
-      cpp_decl "${comment}${template}class ${name}${inherit} {
+    //activity diagram settings
+    package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default shadow default
+    show_infonote default drawing_language default
+    
+    class 157767 "DOMTreeErrorReporter"cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
 "
@@ -44,14 +54,6 @@ ${inlines}
       comment "...e
 ...sclass DOMTreeErrorReporter:0:
 ...sclass DOMTreeErrorReporter:0:"
-      classrelation 149447 // <generalisation>
-	relation 149447 ---|>
-	  a public
-	    cpp default "Generated"
-	    classrelation_ref 149447 // <generalisation>
-	  b parent class_ref 157895 // ErrorHandler
-      end
-
       operation 252743 "DOMTreeErrorReporter"
 	cpp_inline public explicit_return_type ""
 	nparams 0
@@ -62,7 +64,7 @@ ${inlines}
 	
 	comment " -----------------------------------------------------------------------
   Constructors and Destructor
- -----------------------------------------------------------------------"
+ -----------------------------------------------------------------------"
       end
 
       operation 252871 "~DOMTreeErrorReporter"
@@ -78,7 +80,7 @@ ${inlines}
       operation 252999 "warning"
 	public explicit_return_type "void"
 	nparams 1
-	  param in name "" type class_ref 149959 // SAXParseException
+	  param in name "" explicit_type "SAXParseException"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "//...e
@@ -91,13 +93,13 @@ ${body}}
 	
 	comment " -----------------------------------------------------------------------
   Implementation of the error handler interface
- -----------------------------------------------------------------------"
+ -----------------------------------------------------------------------"
       end
 
       operation 253127 "error"
 	public explicit_return_type "void"
 	nparams 1
-	  param in name "toCatch" type class_ref 149959 // SAXParseException
+	  param in name "toCatch" explicit_type "SAXParseException"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "//...e
@@ -113,7 +115,7 @@ ${body}}
       operation 253255 "fatalError"
 	public explicit_return_type "void"
 	nparams 1
-	  param in name "toCatch" type class_ref 149959 // SAXParseException
+	  param in name "toCatch" explicit_type "SAXParseException"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "//...e
@@ -142,10 +144,7 @@ ${body}}
       end
     end
 
-    class 158023 "lbDOMNode"
-      
-      
-      cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 158023 "lbDOMNode"cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
 "
@@ -156,14 +155,6 @@ ${inlines}
       comment "...e
 ...e
 ...sclass lbDOMNode \\58\\ public lb_I_ConfigObject:0:"
-      classrelation 149575 // <generalisation>
-	relation 149575 ---|>
-	  a public
-	    cpp default "Generated"
-	    classrelation_ref 149575 // <generalisation>
-	  b parent class_ref 147783 // lb_I_ConfigObject
-      end
-
       operation 253511 "lbDOMNode"
 	cpp_inline private explicit_return_type ""
 	nparams 1
@@ -222,10 +213,10 @@ ${body}}
       end
 
       operation 254023 "findObject"
-	cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 2
 	  param in name "name" explicit_type "char"
-	  param inout name "object" type class_ref 147783 // lb_I_ConfigObject
+	  param inout name "object" explicit_type "lb_I_ConfigObject"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} * ${p0}, ${t1} * & ${p1}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "//...e
@@ -239,9 +230,9 @@ ${body}}
       end
 
       operation 254151 "getParent"
-	cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 1
-	  param inout name "_parent" type class_ref 147783 // lb_I_ConfigObject
+	  param inout name "_parent" explicit_type "lb_I_ConfigObject"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * * ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "//...e
@@ -255,9 +246,9 @@ ${body}}
       end
 
       operation 254279 "getFirstChildren"
-	cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 1
-	  param inout name "children" type class_ref 147783 // lb_I_ConfigObject
+	  param inout name "children" explicit_type "lb_I_ConfigObject"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * * ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "//...e
@@ -271,9 +262,9 @@ ${body}}
       end
 
       operation 254407 "getNextChildren"
-	cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 1
-	  param inout name "children" type class_ref 147783 // lb_I_ConfigObject
+	  param inout name "children" explicit_type "lb_I_ConfigObject"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * * ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "//...e
@@ -302,10 +293,10 @@ ${body}}
       end
 
       operation 254663 "getAttribute"
-	cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 2
 	  param in name "name" explicit_type "char"
-	  param inout name "attr" type class_ref 148423 // lb_I_Attribute
+	  param inout name "attr" explicit_type "lb_I_Attribute"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} * ${p0}, ${t1} * & ${p1}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "//...e
@@ -319,7 +310,7 @@ ${body}}
       end
 
       operation 254791 "getAttributeValue"
-	cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 2
 	  param in name "name" explicit_type "char"
 	  param inout name "attr" explicit_type "char"
@@ -336,7 +327,7 @@ ${body}}
       end
 
       operation 254919 "deleteValue"
-	cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 1
 	  param inout name "attr" explicit_type "char"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * & ${p0}${)}${const}${volatile}${throw}${abstract};
@@ -367,9 +358,9 @@ ${body}}
       end
 
       operation 255175 "setChildrens"
-	cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 1
-	  param inout name "_childs" type class_ref 158151 // lbNodeList
+	  param inout name "_childs" explicit_type "lbNodeList"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "//...e
@@ -382,13 +373,13 @@ ${body}}
 	
 	comment "...e
  Some more needed functions not available in the interface
- Bad here - no interface"
+ Bad here - no interface"
       end
 
       operation 255303 "setParent"
-	cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 1
-	  param inout name "_parent" type class_ref 147783 // lb_I_ConfigObject
+	  param inout name "_parent" explicit_type "lb_I_ConfigObject"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "//...e
@@ -401,9 +392,9 @@ ${body}}
       end
 
       operation 255431 "setNode"
-	cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 1
-	  param in name "_node" type class_ref 158279 // DOM_Node
+	  param in name "_node" explicit_type "DOM_Node"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "//...slbDOMNode\\58\\\\58\\setNode\\40\\DOM_Node _node\\41\\:0:
@@ -418,7 +409,7 @@ ${body}}
       operation 255559 "createAbstractedChildList"
 	public return_type class_ref 158407 // lbDOMContainer
 	nparams 1
-	  param in name "_node" type class_ref 158279 // DOM_Node
+	  param in name "_node" explicit_type "DOM_Node"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "//...e
@@ -429,15 +420,6 @@ ${body}}
 "
 	
 	
-      end
-
-      classrelation 149703 // node (<directional aggregation by value>)
-	relation 149703 *-->
-	  a role_name "node" multiplicity "" protected
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	    classrelation_ref 149703 // node (<directional aggregation by value>)
-	  b parent class_ref 158279 // DOM_Node
       end
 
       attribute 161479 "getNameValue"
@@ -456,33 +438,6 @@ ${body}}
 	idl_decl ""
       end
 
-      classrelation 149831 // _UAPUnknown_Reference (<unidirectional association>)
-	relation 149831 --->
-	  a role_name "_UAPUnknown_Reference" multiplicity "" protected
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
-"
-	    classrelation_ref 149831 // _UAPUnknown_Reference (<unidirectional association>)
-	  b parent class_ref 140103 // lb_I_Container
-      end
-
-      classrelation 149959 // lbDOMchilds (<directional aggregation by value>)
-	relation 149959 *-->
-	  a role_name "lbDOMchilds" multiplicity "" protected
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	    classrelation_ref 149959 // lbDOMchilds (<directional aggregation by value>)
-	  b parent class_ref 158535 // UAPUnknown_Reference
-      end
-
-      classrelation 150087 // c (<unidirectional association>)
-	relation 150087 --->
-	  a role_name "c" multiplicity "" protected
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
-"
-	    classrelation_ref 150087 // c (<unidirectional association>)
-	  b parent class_ref 140103 // lb_I_Container
-      end
-
       classrelation 150215 // <dependency>
 	relation 150215 -_->
 	  stereotype "friend"
@@ -493,10 +448,7 @@ ${body}}
       end
     end
 
-    class 158407 "lbDOMContainer"
-      
-      
-      cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 158407 "lbDOMContainer"cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
 "
@@ -507,14 +459,6 @@ ${inlines}
       comment "...e
 ...sContainer for DOM elements:0:
 ...sclass lbDOMContainer:0:"
-      classrelation 150343 // <generalisation>
-	relation 150343 ---|>
-	  a public
-	    cpp default "Generated"
-	    classrelation_ref 150343 // <generalisation>
-	  b parent class_ref 140103 // lb_I_Container
-      end
-
       operation 255687 "lbDOMContainer"
 	public explicit_return_type ""
 	nparams 2
@@ -532,7 +476,7 @@ ${body}}
       operation 255815 "lbDOMContainer"
 	public explicit_return_type ""
 	nparams 1
-	  param in name "c" type class_ref 140103 // lb_I_Container
+	  param in name "c" explicit_type "lb_I_Container"
 	cpp_decl "    ${comment}${inline}${name}${(}const ${t0} * ${p0}${)}${volatile}${throw};
 "
 	cpp_def "${comment}${inline}${class}::${name}${(}const ${t0} * ${p0}${)}${throw}{
@@ -543,9 +487,9 @@ ${body}}
       end
 
       operation 255943 "operator ="
-	public return_type class_ref 140103 // lb_I_Container
+	public explicit_return_type "lb_I_Container"
 	nparams 1
-	  param in name "c" type class_ref 140103 // lb_I_Container
+	  param in name "c" explicit_type "lb_I_Container"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}const ${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "${comment}${inline}${type} * ${class}::${name}${(}const ${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
@@ -580,10 +524,7 @@ ${body}}
       end
     end
 
-    class 158663 "lbDOMConfig"
-      
-      
-      cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 158663 "lbDOMConfig"cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
 "
@@ -595,14 +536,6 @@ ${inlines}
 ...e
 ...sclass lbDOMConfig \\58\\ public lb_I_XMLConfig:0:
 ...sclass lbDOMConfig:0:"
-      classrelation 150599 // <generalisation>
-	relation 150599 ---|>
-	  a public
-	    cpp default "Generated"
-	    classrelation_ref 150599 // <generalisation>
-	  b parent class_ref 156359 // lb_I_XMLConfig
-      end
-
       operation 256839 "lbDOMConfig"
 	cpp_inline protected explicit_return_type ""
 	nparams 1
@@ -665,7 +598,7 @@ ${body}}
       end
 
       operation 257351 "hasConfigObject"
-	cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 2
 	  param in name "cfgObjectName" explicit_type "char"
 	  param inout name "count" explicit_type "int"
@@ -679,9 +612,9 @@ ${body}}
       end
 
       operation 257479 "getConfigObject"
-	cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 2
-	  param inout name "cfgObj" type class_ref 147783 // lb_I_ConfigObject
+	  param inout name "cfgObj" explicit_type "lb_I_ConfigObject"
 	  param in name "cfgObjectName" explicit_type "char"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * * ${p0}, const ${t1} * const ${p1}${)}${const}${volatile}${throw}${abstract};
 "
@@ -693,7 +626,7 @@ ${body}}
       end
 
       operation 257607 "findNodesAtTreePos"
-	protected return_type class_ref 140103 // lb_I_Container
+	protected explicit_return_type "lb_I_Container"
 	nparams 1
 	  param in name "treePos" explicit_type "char"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}const ${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
@@ -713,9 +646,9 @@ ${body}}
       end
 
       operation 257735 "createAbstractedChildList"
-	protected return_type class_ref 140103 // lb_I_Container
+	protected explicit_return_type "lb_I_Container"
 	nparams 1
-	  param in name "node" type class_ref 158279 // DOM_Node
+	  param in name "node" explicit_type "DOM_Node"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}const ${t0} ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "${comment}${inline}${type} * ${class}::${name}${(}const ${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
@@ -733,30 +666,12 @@ ${body}}
 	idl_decl ""
       end
 
-      classrelation 150727 // errReporter (<unidirectional association>)
-	relation 150727 --->
-	  a role_name "errReporter" multiplicity "" protected
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
-"
-	    classrelation_ref 150727 // errReporter (<unidirectional association>)
-	  b parent class_ref 157895 // ErrorHandler
-      end
-
       attribute 161863 "errorsOccured"
 	protected explicit_type "int"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
 	idl_decl ""
-      end
-
-      classrelation 150855 // doc (<directional aggregation by value>)
-	relation 150855 *-->
-	  a role_name "doc" multiplicity "" protected
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	    classrelation_ref 150855 // doc (<directional aggregation by value>)
-	  b parent class_ref 158919 // DOM_Document
       end
 
       attribute 161991 "haveFunctorList"
@@ -768,10 +683,7 @@ ${body}}
       end
     end
 
-    class 158791 "lbDOMAttribute"
-      
-      
-      cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 158791 "lbDOMAttribute"cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
 "
@@ -782,14 +694,6 @@ ${inlines}
       comment "...e
 ...e
 ...sclass lbDOMAttribute \\58\\ public lb_I_Attribute:0:"
-      classrelation 150471 // <generalisation>
-	relation 150471 ---|>
-	  a public
-	    cpp default "Generated"
-	    classrelation_ref 150471 // <generalisation>
-	  b parent class_ref 148423 // lb_I_Attribute
-      end
-
       operation 256327 "lbDOMAttribute"
 	cpp_inline private explicit_return_type ""
 	nparams 0
@@ -800,7 +704,7 @@ ${inlines}
       end
 
       operation 256455 "getName"
-	cpp_virtual private return_type class_ref 128711 // lbErrCodes
+	cpp_virtual private explicit_return_type "lbErrCodes"
 	nparams 1
 	  param inout name "name" explicit_type "char"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * & ${p0}${)}${const}${volatile}${throw}${abstract};
@@ -813,7 +717,7 @@ ${body}}
       end
 
       operation 256583 "getValue"
-	cpp_virtual private return_type class_ref 128711 // lbErrCodes
+	cpp_virtual private explicit_return_type "lbErrCodes"
 	nparams 1
 	  param inout name "value" explicit_type "char"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * & ${p0}${)}${const}${volatile}${throw}${abstract};
@@ -826,7 +730,7 @@ ${body}}
       end
 
       operation 256711 "getType"
-	cpp_virtual private return_type class_ref 128711 // lbErrCodes
+	cpp_virtual private explicit_return_type "lbErrCodes"
 	nparams 1
 	  param inout name "type" explicit_type "char"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * & ${p0}${)}${const}${volatile}${throw}${abstract};
@@ -842,7 +746,7 @@ ${body}}
 
   deploymentview 129735 "lbDOMConfig"
     //deployment diagram settings
-    package_name_in_tab default show_context default write_horizontally default auto_label_position default
+    package_name_in_tab default show_context default write_horizontally default auto_label_position default shadow default
     draw_component_as_icon default show_component_req_prov default show_component_rea default
     artifact 144583 "DOMTreeErrorReporter"
       stereotype "source"

@@ -1,39 +1,49 @@
-format 22
+format 29
 "TestPlugin" // Plugins::TestPlugin
+  revision 1
+  modified_by 2 "lothar"
   // class settings
   //class diagram settings
-  draw_all_relations default hide_attributes default hide_operations default show_full_members_definition default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default
+  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default shadow default
   //use case diagram settings
-  package_name_in_tab default show_context default auto_label_position default
+  package_name_in_tab default show_context default auto_label_position default shadow default
   //sequence diagram settings
-  show_full_operations_definition default write_horizontally default drawing_language default
+  show_full_operations_definition default write_horizontally default drawing_language default shadow default
   //collaboration diagram settings
-  show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default
+  show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default shadow default
+  //object diagram settings
+   write_horizontally default package_name_in_tab default show_context default auto_label_position default shadow default
   //component diagram settings
-  package_name_in_tab default show_context default auto_label_position default
+  package_name_in_tab default show_context default auto_label_position default shadow default
   draw_component_as_icon default show_component_req_prov default show_component_rea default
   //deployment diagram settings
-  package_name_in_tab default show_context default write_horizontally default auto_label_position default
+  package_name_in_tab default show_context default write_horizontally default auto_label_position default shadow default
   draw_component_as_icon default show_component_req_prov default show_component_rea default
   //state diagram settings
-  package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default
+  package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default shadow default
   show_activities default region_horizontally default drawing_language default
+  //activity diagram settings
+  package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default shadow default
+  show_infonote default drawing_language default
   
   classview 130631 "TestPlugin"
     //class diagram settings
-    draw_all_relations default hide_attributes default hide_operations default show_full_members_definition default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default
-    //col diagram settings
-    show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default
-    //seq diagram settings
-    show_full_operations_definition default write_horizontally default drawing_language default
+    draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default shadow default
+    //collaboration diagram settings
+    show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default shadow default
+    //object diagram settings
+     write_horizontally default package_name_in_tab default show_context default auto_label_position default shadow default
+    //sequence diagram settings
+    show_full_operations_definition default write_horizontally default drawing_language default shadow default
     //state diagram settings
-    package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default
+    package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default shadow default
     show_activities default region_horizontally default drawing_language default
     //class settings
-    class 167751 "lbPluginModuleTest"
-      
-      
-      cpp_decl "${comment}${template}class ${name}${inherit} {
+    //activity diagram settings
+    package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default shadow default
+    show_infonote default drawing_language default
+    
+    class 167751 "lbPluginModuleTest"cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
 "
@@ -44,14 +54,6 @@ ${inlines}
       comment "...e
 #include <lbDatabaseForm.h>
 ...sclass lbPluginModuleTest:0:"
-      classrelation 163271 // <generalisation>
-	relation 163271 ---|>
-	  a public
-	    cpp default "Generated"
-	    classrelation_ref 163271 // <generalisation>
-	  b parent class_ref 136519 // lb_I_PluginModule
-      end
-
       operation 309063 "lbPluginModuleTest"
 	public explicit_return_type ""
 	nparams 0
@@ -77,10 +79,7 @@ ${body}}
       end
     end
 
-    class 167879 "lbTest"
-      
-      
-      cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 167879 "lbTest"cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
 "
@@ -88,14 +87,6 @@ ${inlines}
       idl_decl ""
       explicit_switch_type ""
       
-      classrelation 163399 // <generalisation>
-	relation 163399 ---|>
-	  a public
-	    cpp default "Generated"
-	    classrelation_ref 163399 // <generalisation>
-	  b parent class_ref 141767 // lb_I_Unknown
-      end
-
       operation 309319 "lbTest"
 	public explicit_return_type ""
 	nparams 0
@@ -127,10 +118,7 @@ ${body}}
       end
     end
 
-    class 168007 "lbPluginTest"
-      
-      
-      cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 168007 "lbPluginTest"cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
 "
@@ -140,22 +128,6 @@ ${inlines}
       
       comment "...sclass lbPluginTest implementation:0:
 ...slbPluginTest:0:"
-      classrelation 163527 // <generalisation>
-	relation 163527 ---|>
-	  a public
-	    cpp default "Generated"
-	    classrelation_ref 163527 // <generalisation>
-	  b parent class_ref 166343 // virtual
-      end
-
-      classrelation 163655 // <generalisation>
-	relation 163655 ---|>
-	  a private
-	    cpp default "Generated"
-	    classrelation_ref 163655 // <generalisation>
-	  b parent class_ref 136263 // lb_I_PluginImpl
-      end
-
       operation 309575 "lbPluginTest"
 	public explicit_return_type ""
 	nparams 0
@@ -206,7 +178,7 @@ ${body}}
       end
 
       operation 310087 "peekImplementation"
-	public return_type class_ref 141767 // lb_I_Unknown
+	public explicit_return_type "lb_I_Unknown"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -218,7 +190,7 @@ ${body}}
       end
 
       operation 310215 "getImplementation"
-	public return_type class_ref 141767 // lb_I_Unknown
+	public explicit_return_type "lb_I_Unknown"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -245,7 +217,7 @@ ${body}}
 
   deploymentview 130503 "TestPlugin"
     //deployment diagram settings
-    package_name_in_tab default show_context default write_horizontally default auto_label_position default
+    package_name_in_tab default show_context default write_horizontally default auto_label_position default shadow default
     draw_component_as_icon default show_component_req_prov default show_component_rea default
     artifact 148935 "lbPluginModuleTest"
       stereotype "source"

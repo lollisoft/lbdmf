@@ -1,38 +1,50 @@
-format 22
+format 29
 "lbXMLConfig" // BaseDevelopment::lbXMLConfig::lbXMLConfig
+  revision 1
+  modified_by 2 "lothar"
   // class settings
   //class diagram settings
-  draw_all_relations default hide_attributes default hide_operations default show_full_members_definition default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default
+  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default shadow default
   //use case diagram settings
-  package_name_in_tab default show_context default auto_label_position default
+  package_name_in_tab default show_context default auto_label_position default shadow default
   //sequence diagram settings
-  show_full_operations_definition default write_horizontally default drawing_language default
+  show_full_operations_definition default write_horizontally default drawing_language default shadow default
   //collaboration diagram settings
-  show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default
+  show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default shadow default
+  //object diagram settings
+   write_horizontally default package_name_in_tab default show_context default auto_label_position default shadow default
   //component diagram settings
-  package_name_in_tab default show_context default auto_label_position default
+  package_name_in_tab default show_context default auto_label_position default shadow default
   draw_component_as_icon default show_component_req_prov default show_component_rea default
   //deployment diagram settings
-  package_name_in_tab default show_context default write_horizontally default auto_label_position default
+  package_name_in_tab default show_context default write_horizontally default auto_label_position default shadow default
   draw_component_as_icon default show_component_req_prov default show_component_rea default
   //state diagram settings
-  package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default
+  package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default shadow default
   show_activities default region_horizontally default drawing_language default
+  //activity diagram settings
+  package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default shadow default
+  show_infonote default drawing_language default
   
   classview 129223 "lbXMLConfig"
     //class diagram settings
-    draw_all_relations default hide_attributes default hide_operations default show_full_members_definition default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default
-    //col diagram settings
-    show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default
-    //seq diagram settings
-    show_full_operations_definition default write_horizontally default drawing_language default
+    draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default shadow default
+    //collaboration diagram settings
+    show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default shadow default
+    //object diagram settings
+     write_horizontally default package_name_in_tab default show_context default auto_label_position default shadow default
+    //sequence diagram settings
+    show_full_operations_definition default write_horizontally default drawing_language default shadow default
     //state diagram settings
-    package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default
+    package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default shadow default
     show_activities default region_horizontally default drawing_language default
     //class settings
+    //activity diagram settings
+    package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default shadow default
+    show_infonote default drawing_language default
+    
     class 147271 "_lbAttribut"
        stereotype "struct"
-      
       cpp_decl "${comment}${template}struct ${name}${inherit} {
 ${members}};
 ${inlines}
@@ -76,10 +88,7 @@ ${inlines}
       end
     end
 
-    class 147399 "lbConfigObject"
-      
-      
-      cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 147399 "lbConfigObject"cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
 "
@@ -91,17 +100,9 @@ ${inlines}
       classrelation 140871 // <generalisation>
 	relation 140871 ---|>
 	  a public
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 140871 // <generalisation>
 	  b parent class_ref 148039 // XMLHandler
-      end
-
-      classrelation 140999 // <generalisation>
-	relation 140999 ---|>
-	  a public
-	    cpp default "Generated"
-	    classrelation_ref 140999 // <generalisation>
-	  b parent class_ref 147783 // lb_I_ConfigObject
       end
 
       operation 214599 "lbConfigObject"
@@ -167,8 +168,8 @@ ${body}}
       operation 215111 "startElement"
 	cpp_virtual public return_type class_ref 148039 // XMLHandler
 	nparams 2
-	  param in name "name" type class_ref 148167 // XMLCh
-	  param inout name "attributes" type class_ref 148295 // AttributeList
+	  param in name "name" explicit_type "XMLCh"
+	  param inout name "attributes" explicit_type "AttributeList"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}const ${t0} * const ${p0}, ${t1} & ${p1}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "//...e
@@ -183,7 +184,7 @@ ${body}}
       end
 
       operation 215239 "release"
-	cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -198,7 +199,7 @@ ${body}}
       end
 
       operation 215367 "queryInterface"
-	cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 2
 	  param inout name "name" explicit_type "char"
 	  param inout name "unknown" explicit_type "void"
@@ -215,10 +216,10 @@ ${body}}
       end
 
       operation 215495 "findObject"
-	cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 2
 	  param in name "name" explicit_type "char"
-	  param inout name "object" type class_ref 147783 // lb_I_ConfigObject
+	  param inout name "object" explicit_type "lb_I_ConfigObject"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} * ${p0}, ${t1} * & ${p1}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "//...e
@@ -235,10 +236,10 @@ ${body}}
       end
 
       operation 215623 "getAttribute"
-	cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 2
 	  param in name "name" explicit_type "char"
-	  param inout name "attr" type class_ref 148423 // lb_I_Attribute
+	  param inout name "attr" explicit_type "lb_I_Attribute"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} * ${p0}, ${t1} * & ${p1}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "//...e
@@ -254,7 +255,7 @@ ${body}}
       operation 215751 "setGeneralParseError"
 	public explicit_return_type "void"
 	nparams 1
-	  param in name "_parseError" type class_ref 148551 // BOOL
+	  param in name "_parseError" explicit_type "BOOL"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "//...e
@@ -268,7 +269,7 @@ ${body}}
       end
 
       operation 215879 "getGeneralParseError"
-	public return_type class_ref 148551 // BOOL
+	public explicit_return_type "BOOL"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -321,15 +322,6 @@ ${body}}
 	idl_decl ""
       end
 
-      classrelation 141127 // parseError (<directional aggregation by value>)
-	relation 141127 *-->
-	  a role_name "parseError" multiplicity "" private
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	    classrelation_ref 141127 // parseError (<directional aggregation by value>)
-	  b parent class_ref 148551 // BOOL
-      end
-
       attribute 149703 "deep"
 	private explicit_type "int"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
@@ -347,39 +339,12 @@ ${body}}
 	  b parent class_ref 147399 // lbConfigObject
       end
 
-      classrelation 141383 // childs (<directional aggregation by value>)
-	relation 141383 *-->
-	  a role_name "childs" multiplicity "" private
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	    classrelation_ref 141383 // childs (<directional aggregation by value>)
-	  b parent class_ref 148679 // plbElementList
-      end
-
       attribute 149831 "_name"
 	private explicit_type "char"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
 "
 	java_decl ""
 	idl_decl ""
-      end
-
-      classrelation 141511 // attribut_list (<directional aggregation by value>)
-	relation 141511 *-->
-	  a role_name "attribut_list" multiplicity "" private
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	    classrelation_ref 141511 // attribut_list (<directional aggregation by value>)
-	  b parent class_ref 148807 // plbAttribut
-      end
-
-      classrelation 141639 // all_elements (<directional aggregation by value>)
-	relation 141639 *-->
-	  a role_name "all_elements" multiplicity "" init_value "= NULL" class_relation private
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	    classrelation_ref 141639 // all_elements (<directional aggregation by value>)
-	  b parent class_ref 148679 // plbElementList
       end
 
       attribute 149959 "ref"
@@ -401,8 +366,8 @@ ${body}}
     end
 
     class 147527 "lbAttribut"
-       stereotype "typedef" base_type class_ref 147271 // _lbAttribut
-      
+       stereotype "typedef"
+       base_type class_ref 147271 // _lbAttribut
       cpp_decl "${comment}typedef ${type} ${name}, *plbAttribut;
 "
       java_decl ""
@@ -413,7 +378,6 @@ ${body}}
 
     class 147655 "_lbElementList"
        stereotype "struct"
-      
       cpp_decl "${comment}${template}struct ${name}${inherit} {
 ${members}};
 ${inlines}
@@ -422,15 +386,6 @@ ${inlines}
       idl_decl ""
       explicit_switch_type ""
       
-      classrelation 140615 // obj (<unidirectional association>)
-	relation 140615 --->
-	  a role_name "obj" multiplicity "" public
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
-"
-	    classrelation_ref 140615 // obj (<unidirectional association>)
-	  b parent class_ref 147783 // lb_I_ConfigObject
-      end
-
       classrelation 140743 // next (<unidirectional association>)
 	relation 140743 --->
 	  a role_name "next" multiplicity "" public
@@ -442,8 +397,8 @@ ${inlines}
     end
 
     class 147911 "lbElementList"
-       stereotype "typedef" base_type class_ref 147655 // _lbElementList
-      
+       stereotype "typedef"
+       base_type class_ref 147655 // _lbElementList
       cpp_decl "${comment}typedef ${type} ${name}, *plbElementList;
 "
       java_decl ""
@@ -454,7 +409,6 @@ ${inlines}
 
     class 148039 "XMLHandler"
       abstract 
-      
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
@@ -468,12 +422,12 @@ ${inlines}
  by every object that can receive data from the
  XMLTreeBuilder dispatcher. These objects will
  never be called directly by SAX.
-"
+"
       operation 218823 "startElement"
 	abstract cpp_virtual public return_type class_ref 148039 // XMLHandler
 	nparams 2
-	  param in name "name" type class_ref 148167 // XMLCh
-	  param inout name "attributes" type class_ref 148295 // AttributeList
+	  param in name "name" explicit_type "XMLCh"
+	  param inout name "attributes" explicit_type "AttributeList"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}const ${t0} * const ${p0}, ${t1} & ${p1}${)}${const}${volatile}${throw}${abstract};
 "
 	
@@ -487,13 +441,13 @@ ${inlines}
 "
 	
 	
-	comment " Returns whether or not to pop the handler stack"
+	comment " Returns whether or not to pop the handler stack"
       end
 
       operation 219079 "characters"
 	cpp_virtual cpp_inline public explicit_return_type "void"
 	nparams 2
-	  param in name "chars" type class_ref 148167 // XMLCh
+	  param in name "chars" explicit_type "XMLCh"
 	  param in name "length" explicit_type "uint"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} * const ${p0}, const ${t1} ${p1}${)}${const}${volatile}${throw}${abstract} {};
 "
@@ -502,10 +456,7 @@ ${inlines}
       end
     end
 
-    class 148935 "TopLevel"
-      
-      
-      cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 148935 "TopLevel"cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
 "
@@ -517,7 +468,7 @@ ${inlines}
       classrelation 141767 // <generalisation>
 	relation 141767 ---|>
 	  a public
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 141767 // <generalisation>
 	  b parent class_ref 148039 // XMLHandler
       end
@@ -551,8 +502,8 @@ ${inlines}
       operation 216519 "startElement"
 	cpp_virtual public return_type class_ref 148039 // XMLHandler
 	nparams 2
-	  param in name "name" type class_ref 148167 // XMLCh
-	  param inout name "attributes" type class_ref 148295 // AttributeList
+	  param in name "name" explicit_type "XMLCh"
+	  param inout name "attributes" explicit_type "AttributeList"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}const ${t0} * const ${p0}, ${t1} & ${p1}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "//////////////////////////////////////
@@ -586,10 +537,7 @@ ${body}}
       end
     end
 
-    class 149063 "NullHandler"
-      
-      
-      cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 149063 "NullHandler"cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
 "
@@ -599,11 +547,11 @@ ${inlines}
       
       comment "/////////////////////////////////////////////////
 	NullHandler
-/////////////////////////////////////////////////"
+/////////////////////////////////////////////////"
       classrelation 141895 // <generalisation>
 	relation 141895 ---|>
 	  a public
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 141895 // <generalisation>
 	  b parent class_ref 148039 // XMLHandler
       end
@@ -620,8 +568,8 @@ ${inlines}
       operation 216903 "startElement"
 	cpp_virtual cpp_inline public return_type class_ref 148039 // XMLHandler
 	nparams 2
-	  param in name "name" type class_ref 148167 // XMLCh
-	  param inout name "attributes" type class_ref 148295 // AttributeList
+	  param in name "name" explicit_type "XMLCh"
+	  param inout name "attributes" explicit_type "AttributeList"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}const ${t0} * const ${p0}, ${t1} & ${p1}${)}${const}${volatile}${throw}${abstract} { return NULL; };
 "
 	
@@ -640,7 +588,7 @@ ${inlines}
       operation 217159 "characters"
 	cpp_virtual cpp_inline public explicit_return_type "void"
 	nparams 2
-	  param in name "chars" type class_ref 148167 // XMLCh
+	  param in name "chars" explicit_type "XMLCh"
 	  param in name "length" explicit_type "uint"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} * const ${p0}, const ${t1} ${p1}${)}${const}${volatile}${throw}${abstract} { };
 "
@@ -649,10 +597,7 @@ ${inlines}
       end
     end
 
-    class 149191 "CharacterHandler"
-      
-      
-      cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 149191 "CharacterHandler"cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
 "
@@ -666,11 +611,11 @@ ${inlines}
  To be used if data will be held between tags
  instead of in attributes. This handler is for
  string data. 
-/////////////////////////////////////////////////"
+/////////////////////////////////////////////////"
       classrelation 142023 // <generalisation>
 	relation 142023 ---|>
 	  a public
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 142023 // <generalisation>
 	  b parent class_ref 148039 // XMLHandler
       end
@@ -678,7 +623,7 @@ ${inlines}
       operation 217287 "CharacterHandler"
 	cpp_inline public explicit_return_type ""
 	nparams 1
-	  param inout name "wstr" type class_ref 149319 // wstring
+	  param inout name "wstr" explicit_type "wstring"
 	cpp_decl "    ${comment}${inline}${name}${(}${t0} & ${p0}${)}${volatile}${throw} : m_DestString(wstr) {};
 "
 	
@@ -688,8 +633,8 @@ ${inlines}
       operation 217415 "startElement"
 	cpp_virtual cpp_inline public return_type class_ref 148039 // XMLHandler
 	nparams 2
-	  param in name "name" type class_ref 148167 // XMLCh
-	  param inout name "attributes" type class_ref 148295 // AttributeList
+	  param in name "name" explicit_type "XMLCh"
+	  param inout name "attributes" explicit_type "AttributeList"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}const ${t0} * const ${p0}, ${t1} & ${p1}${)}${const}${volatile}${throw}${abstract} { return NULL; };
 "
 	
@@ -708,7 +653,7 @@ ${inlines}
       operation 217671 "characters"
 	cpp_virtual cpp_inline public explicit_return_type "void"
 	nparams 2
-	  param in name "chars" type class_ref 148167 // XMLCh
+	  param in name "chars" explicit_type "XMLCh"
 	  param in name "length" explicit_type "uint"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} * const ${p0}, const ${t1} ${p1}${)}${const}${volatile}${throw}${abstract} { m_DestString = chars;};
 "
@@ -717,7 +662,7 @@ ${inlines}
       end
 
       attribute 150215 "m_DestString"
-	public type class_ref 149319 // wstring
+	public explicit_type "wstring"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} & ${name}${value};
 "
 	java_decl ""
@@ -725,10 +670,7 @@ ${inlines}
       end
     end
 
-    class 149447 "DoubleHandler"
-      
-      
-      cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 149447 "DoubleHandler"cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
 "
@@ -742,11 +684,11 @@ ${inlines}
  To be used if data will be held between tags
  instead of in attributes. This handler is for
  strings that get converted to double. 
-/////////////////////////////////////////////////"
+/////////////////////////////////////////////////"
       classrelation 142151 // <generalisation>
 	relation 142151 ---|>
 	  a public
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 142151 // <generalisation>
 	  b parent class_ref 148039 // XMLHandler
       end
@@ -764,8 +706,8 @@ ${inlines}
       operation 217927 "startElement"
 	cpp_virtual cpp_inline public return_type class_ref 148039 // XMLHandler
 	nparams 2
-	  param in name "name" type class_ref 148167 // XMLCh
-	  param inout name "attributes" type class_ref 148295 // AttributeList
+	  param in name "name" explicit_type "XMLCh"
+	  param inout name "attributes" explicit_type "AttributeList"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}const ${t0} * const ${p0}, ${t1} & ${p1}${)}${const}${volatile}${throw}${abstract} { return NULL; };
 "
 	
@@ -784,7 +726,7 @@ ${inlines}
       operation 218183 "characters"
 	cpp_virtual cpp_inline public explicit_return_type "void"
 	nparams 2
-	  param in name "chars" type class_ref 148167 // XMLCh
+	  param in name "chars" explicit_type "XMLCh"
 	  param in name "length" explicit_type "uint"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} * const ${p0}, const ${t1} ${p1}${)}${const}${volatile}${throw}${abstract} { wchar_t* stop; m_DestDouble = wcstod(chars, &stop);};
 "
@@ -801,10 +743,7 @@ ${inlines}
       end
     end
 
-    class 149575 "IntHandler"
-      
-      
-      cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 149575 "IntHandler"cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
 "
@@ -818,11 +757,11 @@ ${inlines}
  To be used if data will be held between tags
  instead of in attributes. This handler is for
  strings that get converted to int. 
-/////////////////////////////////////////////////"
+/////////////////////////////////////////////////"
       classrelation 142279 // <generalisation>
 	relation 142279 ---|>
 	  a public
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 142279 // <generalisation>
 	  b parent class_ref 148039 // XMLHandler
       end
@@ -836,14 +775,14 @@ ${inlines}
 	
 	
 	comment " The ctor takes as a n argument the place
- to put the int after it is read."
+ to put the int after it is read."
       end
 
       operation 218439 "startElement"
 	cpp_virtual cpp_inline public return_type class_ref 148039 // XMLHandler
 	nparams 2
-	  param in name "name" type class_ref 148167 // XMLCh
-	  param inout name "attributes" type class_ref 148295 // AttributeList
+	  param in name "name" explicit_type "XMLCh"
+	  param inout name "attributes" explicit_type "AttributeList"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}const ${t0} * const ${p0}, ${t1} & ${p1}${)}${const}${volatile}${throw}${abstract} { return NULL; };
 "
 	
@@ -862,7 +801,7 @@ ${inlines}
       operation 218695 "characters"
 	cpp_virtual cpp_inline public explicit_return_type "void"
 	nparams 2
-	  param in name "chars" type class_ref 148167 // XMLCh
+	  param in name "chars" explicit_type "XMLCh"
 	  param in name "length" explicit_type "uint"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} * const ${p0}, const ${t1} ${p1}${)}${const}${volatile}${throw}${abstract} { m_DestInt = _wtoi(chars);};
 "
@@ -879,10 +818,7 @@ ${inlines}
       end
     end
 
-    class 149703 "XMLTreeBuilder"
-      
-      
-      cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 149703 "XMLTreeBuilder"cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
 "
@@ -895,15 +831,7 @@ ${inlines}
  responsible for dispatching the SAX event to
  whichever object is currently responsible for
  handling it. This object is at the top of the stack.
-"
-      classrelation 142407 // <generalisation>
-	relation 142407 ---|>
-	  a public
-	    cpp default "Generated"
-	    classrelation_ref 142407 // <generalisation>
-	  b parent class_ref 149831 // HandlerBase
-      end
-
+"
       operation 219207 "XMLTreeBuilder"
 	public explicit_return_type ""
 	nparams 0
@@ -927,7 +855,7 @@ ${body}}
 	
 	comment " -----------------------------------------------------------------------
   Constructors
- -----------------------------------------------------------------------"
+ -----------------------------------------------------------------------"
       end
 
       operation 219335 "~XMLTreeBuilder"
@@ -954,13 +882,13 @@ ${body}}
 	
 	comment " -----------------------------------------------------------------------
   Implementations of the SAX DocumentHandler interface
- -----------------------------------------------------------------------"
+ -----------------------------------------------------------------------"
       end
 
       operation 219591 "endElement"
 	public explicit_return_type "void"
 	nparams 1
-	  param in name "name" type class_ref 148167 // XMLCh
+	  param in name "name" explicit_type "XMLCh"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} * const ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "${comment}${inline}${type} ${class}::${name}${(}const ${t0} * const ${p0}${)}${const}${volatile}${throw}${staticnl}{
@@ -973,7 +901,7 @@ ${body}}
       operation 219719 "characters"
 	public explicit_return_type "void"
 	nparams 2
-	  param in name "chars" type class_ref 148167 // XMLCh
+	  param in name "chars" explicit_type "XMLCh"
 	  param in name "length" explicit_type "uint"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} * const ${p0}, const ${t1} ${p1}${)}${const}${volatile}${throw}${abstract};
 "
@@ -1007,8 +935,8 @@ ${body}}
       operation 219975 "startElement"
 	public explicit_return_type "void"
 	nparams 2
-	  param in name "name" type class_ref 148167 // XMLCh
-	  param inout name "attributes" type class_ref 148295 // AttributeList
+	  param in name "name" explicit_type "XMLCh"
+	  param inout name "attributes" explicit_type "AttributeList"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} * const ${p0}, ${t1} & ${p1}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "${comment}${inline}${type} ${class}::${name}${(}const ${t0} * const ${p0}, ${t1} & ${p1}${)}${const}${volatile}${throw}${staticnl}{
@@ -1021,7 +949,7 @@ ${body}}
       operation 220103 "warning"
 	public explicit_return_type "void"
 	nparams 1
-	  param in name "e" type class_ref 149959 // SAXParseException
+	  param in name "e" explicit_type "SAXParseException"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "${comment}${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
@@ -1031,13 +959,13 @@ ${body}}
 	
 	comment " -----------------------------------------------------------------------
   Implementations of the SAX ErrorHandler interface
- -----------------------------------------------------------------------"
+ -----------------------------------------------------------------------"
       end
 
       operation 220231 "error"
 	public explicit_return_type "void"
 	nparams 1
-	  param in name "e" type class_ref 149959 // SAXParseException
+	  param in name "e" explicit_type "SAXParseException"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "// ---------------------------------------------------------------------------
@@ -1058,7 +986,7 @@ ${body}}
       operation 220359 "fatalError"
 	public explicit_return_type "void"
 	nparams 1
-	  param in name "e" type class_ref 149959 // SAXParseException
+	  param in name "e" explicit_type "SAXParseException"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "${comment}${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
@@ -1071,9 +999,9 @@ ${body}}
       operation 220487 "notationDecl"
 	public explicit_return_type "void"
 	nparams 3
-	  param in name "name" type class_ref 148167 // XMLCh
-	  param in name "publicId" type class_ref 148167 // XMLCh
-	  param in name "systemId" type class_ref 148167 // XMLCh
+	  param in name "name" explicit_type "XMLCh"
+	  param in name "publicId" explicit_type "XMLCh"
+	  param in name "systemId" explicit_type "XMLCh"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} * const ${p0}, const ${t1} * const ${p1}, const ${t2} * const ${p2}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "${comment}${inline}${type} ${class}::${name}${(}const ${t0} * const ${p0}, const ${t1} * const ${p1}, const ${t2} * const ${p2}${)}${const}${volatile}${throw}${staticnl}{
@@ -1083,16 +1011,16 @@ ${body}}
 	
 	comment " -----------------------------------------------------------------------
   Implementation of the SAX DTDHandler interface
- -----------------------------------------------------------------------"
+ -----------------------------------------------------------------------"
       end
 
       operation 220615 "unparsedEntityDecl"
 	public explicit_return_type "void"
 	nparams 4
-	  param in name "name" type class_ref 148167 // XMLCh
-	  param in name "publicId" type class_ref 148167 // XMLCh
-	  param in name "systemId" type class_ref 148167 // XMLCh
-	  param in name "notationName" type class_ref 148167 // XMLCh
+	  param in name "name" explicit_type "XMLCh"
+	  param in name "publicId" explicit_type "XMLCh"
+	  param in name "systemId" explicit_type "XMLCh"
+	  param in name "notationName" explicit_type "XMLCh"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} * const ${p0}, const ${t1} * const ${p1}, const ${t2} * const ${p2}, const ${t3} * const ${p3}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "// ---------------------------------------------------------------------------
@@ -1142,10 +1070,7 @@ ${body}}
       end
     end
 
-    class 159047 "lbXMLConfig"
-      
-      
-      cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 159047 "lbXMLConfig"cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
 "
@@ -1155,14 +1080,6 @@ ${inlines}
       
       comment "...sclass lbXMLConfig \\58\\ public lb_I_XMLConfig:0:
 ...sclass lbXMLConfig:0:"
-      classrelation 150983 // <generalisation>
-	relation 150983 ---|>
-	  a public
-	    cpp default "Generated"
-	    classrelation_ref 150983 // <generalisation>
-	  b parent class_ref 156359 // lb_I_XMLConfig
-      end
-
       operation 257863 "lbXMLConfig"
 	public explicit_return_type ""
 	nparams 0
@@ -1214,7 +1131,7 @@ ${body}}
       end
 
       operation 258247 "release"
-	cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -1229,7 +1146,7 @@ ${body}}
       end
 
       operation 258375 "queryInterface"
-	cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 2
 	  param inout name "name" explicit_type "char"
 	  param inout name "unknown" explicit_type "void"
@@ -1246,7 +1163,7 @@ ${body}}
       end
 
       operation 258503 "parse"
-	cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -1261,7 +1178,7 @@ ${body}}
       end
 
       operation 258631 "hasConfigObject"
-	cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 1
 	  param in name "cfgObjectName" explicit_type "char"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
@@ -1277,9 +1194,9 @@ ${body}}
       end
 
       operation 258759 "getConfigObject"
-	cpp_virtual public return_type class_ref 128711 // lbErrCodes
+	cpp_virtual public explicit_return_type "lbErrCodes"
 	nparams 2
-	  param inout name "cfgObj" type class_ref 147783 // lb_I_ConfigObject
+	  param inout name "cfgObj" explicit_type "lb_I_ConfigObject"
 	  param in name "cfgObjectName" explicit_type "char"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * & ${p0}, const ${t1} * const ${p1}${)}${const}${volatile}${throw}${abstract};
 "
@@ -1331,7 +1248,7 @@ ${body}}
 
   deploymentview 128967 "lbXMLConfig"
     //deployment diagram settings
-    package_name_in_tab default show_context default write_horizontally default auto_label_position default
+    package_name_in_tab default show_context default write_horizontally default auto_label_position default shadow default
     draw_component_as_icon default show_component_req_prov default show_component_rea default
     artifact 138951 "_lbAttribut"
       stereotype "source"

@@ -32,11 +32,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.52 $
+ * $Revision: 1.53 $
  * $Name:  $
- * $Id: lbPluginManager.cpp,v 1.52 2007/04/22 13:51:46 lollisoft Exp $
+ * $Id: lbPluginManager.cpp,v 1.53 2007/04/22 20:39:38 lollisoft Exp $
  *
  * $Log: lbPluginManager.cpp,v $
+ * Revision 1.53  2007/04/22 20:39:38  lollisoft
+ * Minimal changes on Mac.
+ *
  * Revision 1.52  2007/04/22 13:51:46  lollisoft
  * Added code to scan for server plugins. Stuff is related to client/server
  * redesign and is not yet tested.
@@ -797,7 +800,7 @@ void LB_STDCALL lbPluginManager::initialize() {
 #endif
 #ifdef LINUX
 		tryLoad(dir_info->d_name, pluginDir);
-		tryLoadServerModule(find.name, pluginDir);
+		tryLoadServerModule(dir_info->d_name, pluginDir);
 #endif
 		
 #ifdef WINDOWS
@@ -810,7 +813,7 @@ void LB_STDCALL lbPluginManager::initialize() {
 		while ((dir_info = readdir(dir)) != NULL) {
 			if (strstr(dir_info->d_name, ".so") != NULL) {
 			    tryLoad(dir_info->d_name, pluginDir);
-			    tryLoadServerModule(find.name, pluginDir);
+			    tryLoadServerModule(dir_info->d_name, pluginDir);
 			}
 		}
 #endif

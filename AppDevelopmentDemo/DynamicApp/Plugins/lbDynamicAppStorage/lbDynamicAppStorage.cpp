@@ -46,7 +46,7 @@
 IMPLEMENT_FUNCTOR(instanceOflbDynamicAppStorage, lbDynamicAppStorage)
 
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbDynamicAppStorage)
-	ADD_INTERFACE(lb_I_Streamable)
+	ADD_INTERFACE(lb_I_XMLStreamable)
 END_IMPLEMENT_LB_UNKNOWN()
 
 
