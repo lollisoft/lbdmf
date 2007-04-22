@@ -31,10 +31,13 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.12 $
+ * $Revision: 1.13 $
  * $Name:  $
- * $Id: lb_misc.h,v 1.12 2005/05/10 20:20:37 lollisoft Exp $
+ * $Id: lb_misc.h,v 1.13 2007/04/22 13:33:16 lollisoft Exp $
  * $Log: lb_misc.h,v $
+ * Revision 1.13  2007/04/22 13:33:16  lollisoft
+ * Removed lb_sleep.
+ *
  * Revision 1.12  2005/05/10 20:20:37  lollisoft
  * Include files changed to be more actially language compilant
  *
@@ -102,7 +105,6 @@
 extern "C" {
 #endif
 /*...e*/
-void lb_sleep(int ms);
 
 DECLARE_SINGLETON_FUNCTOR(instanceOfLogger)
 

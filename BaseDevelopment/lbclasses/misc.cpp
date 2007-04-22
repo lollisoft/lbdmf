@@ -31,10 +31,13 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.46 $
+ * $Revision: 1.47 $
  * $Name:  $
- * $Id: misc.cpp,v 1.46 2007/01/15 23:37:30 lollisoft Exp $
+ * $Id: misc.cpp,v 1.47 2007/04/22 13:36:42 lollisoft Exp $
  * $Log: misc.cpp,v $
+ * Revision 1.47  2007/04/22 13:36:42  lollisoft
+ * Removed lb_sleep.
+ *
  * Revision 1.46  2007/01/15 23:37:30  lollisoft
  * Changed code that valgrind mentioned as using uninitialized variable in boolean expression
  *
@@ -652,28 +655,4 @@ lb_I_Log& LB_STDCALL lbLog::operator<< (/*lb_I_Log* logger,*/ const char* string
 
 
 #endif //  LOG_DEFINED
-
-#ifdef __WXGTK__
-void delay(long mikrosek)
-{
-        struct timeval timeout;
-
-        timeout.tv_sec = mikrosek / 1000000;
-        timeout.tv_usec = mikrosek % 1000000;
-        select (0, NULL, NULL, NULL, &timeout);
-}
-#endif
-
-
-void lb_sleep(int ms)
-{
-#ifdef WINDOWS
-        ::Sleep(ms);
-#endif
-#ifdef __WXGTK__
-        delay(ms * 1000);
-#endif
-}
-
-
 
