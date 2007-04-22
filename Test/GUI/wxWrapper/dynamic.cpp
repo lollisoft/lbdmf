@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.131 2007/02/28 19:24:30 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.132 2007/04/22 13:55:43 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.131 $
+ * $Revision: 1.132 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.131 2007/02/28 19:24:30 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.132 2007/04/22 13:55:43 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.132  2007/04/22 13:55:43  lollisoft
+ * Mainlz added a spash screen.
+ *
  * Revision 1.131  2007/02/28 19:24:30  lollisoft
  * New plugin compiles under Mac OS X.
  *
@@ -496,6 +499,8 @@
 #include "wx/wizard.h"
 #include "wx/splitter.h"
 #include "wx/treectrl.h"
+#include <wx/splash.h>
+#include <wx/image.h>
 /*...e*/
 
 // ID for the menu commands
@@ -2077,9 +2082,21 @@ bool MyApp::OnInit(void)
     char b[100] = "";
     wxStopWatch sw;
 
+
     UAP(lb_I_Module, mm)
     mm = getModuleInstance();
 
+    wxImage::AddHandler(new wxPNGHandler);
+
+    wxBitmap bitmap;
+    if (bitmap.LoadFile("splash.png", wxBITMAP_TYPE_PNG))
+    {
+      wxSplashScreen* splash = new wxSplashScreen(bitmap,
+          wxSPLASH_CENTRE_ON_SCREEN|wxSPLASH_TIMEOUT,
+          6000, NULL, -1, wxDefaultPosition, wxDefaultSize,
+          wxSIMPLE_BORDER|wxSTAY_ON_TOP);
+    }
+    wxYield();
 
     if (mm == NULL) {
 	wxMessageDialog dialog(NULL, "Module manager not found. could not run application.", "Error", wxOK);
@@ -2093,12 +2110,14 @@ bool MyApp::OnInit(void)
 
 
     
+    UAP_REQUEST(mm.getPtr(), lb_I_Dispatcher, disp)
+	REQUEST(mm.getPtr(), lb_I_EventManager, ev_manager)        
+
     UAP_REQUEST(mm.getPtr(), lb_I_String, string)
     UAP_REQUEST(mm.getPtr(), lb_I_Database, tempDB) // Preload this module
     UAP_REQUEST(mm.getPtr(), lb_I_PluginManager, PM)
     UAP_REQUEST(mm.getPtr(), lb_I_MetaApplication, metaApp)
-    UAP_REQUEST(mm.getPtr(), lb_I_Dispatcher, disp)
-	REQUEST(mm.getPtr(), lb_I_EventManager, ev_manager)        
+
 
     PM->initialize();
 
@@ -2164,10 +2183,7 @@ bool MyApp::OnInit(void)
     if (metaApp != NULL) {
         metaApp->initialize();
 		
-		metaApp->addToolBar("Main Toolbar");
-		metaApp->addToolBarButton("Main Toolbar", "Properties", "ShowPropertyPanel", "configure.png");
-		
-		if (metaApp->getGUIMaximized()) frame->Maximize();
+	if (metaApp->getGUIMaximized()) frame->Maximize();
     } 
 
     if (PM->beginEnumPlugins()) {
