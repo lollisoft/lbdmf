@@ -869,13 +869,11 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 	if (sampleQuery == NULL) printf("NULL pointer !\n");
 	
 	_CL_LOG << "lbDynamicApplication::Initialize('" << user << "', '" << app << "');" LOG_
-		_CL_LOG << "Query: " << buffer LOG_
+	_CL_LOG << "Query: " << buffer LOG_
 		
-		sampleQuery->skipFKCollecting();
+	sampleQuery->skipFKCollecting();
 	sampleQuery->query(buffer);
 	sampleQuery->enableFKCollecting();
-	
-	free(buffer);
 	
 	char* ed = strdup(_trans("&Edit"));
 	
@@ -885,6 +883,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 	
 	free(ed);
 	free(menu);
+	free(buffer);
 	
 	bool toolbaradded = false;
 	
@@ -903,19 +902,19 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 			eman->registerEvent(EventName->charrep(), unused);
 			
 			dispatcher->addEventHandlerFn(this, 
-										  (lbEvHandler) &lbDynamicApplication::getDynamicDBForm, EventName->charrep());
+				  (lbEvHandler) &lbDynamicApplication::getDynamicDBForm, EventName->charrep());
 			
 			metaapp->addMenuEntry(_trans(app), MenuName->charrep(), EventName->charrep(), "");
 			
 			if (strcmp(ToolBarImage->charrep(), "") != 0) {
 				if (toolbaradded == false) {
-					metaapp->addToolBar("MainToolBar");
+					metaapp->addToolBar(app);
 					toolbaradded = true;
 				}
 				
 				ToolBarImage->trim();
 				
-				metaapp->addToolBarButton("MainToolBar", MenuName->charrep(), EventName->charrep(), ToolBarImage->charrep());
+				metaapp->addToolBarButton(app, MenuName->charrep(), EventName->charrep(), ToolBarImage->charrep());
 			}
 			
 		} else {
@@ -948,13 +947,13 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 					
 					if (strcmp(ToolBarImage->charrep(), "") != 0) {
 						if (toolbaradded == false) {
-							metaapp->addToolBar("MainToolBar");
+							metaapp->addToolBar(app);
 							toolbaradded = true;
 						}
 						
 						ToolBarImage->trim();
 						
-						metaapp->addToolBarButton("MainToolBar", MenuName->charrep(), EventName->charrep(), ToolBarImage->charrep());
+						metaapp->addToolBarButton(app, MenuName->charrep(), EventName->charrep(), ToolBarImage->charrep());
 					}
 					
 				} else {
@@ -966,6 +965,8 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 			/*...e*/
 		}
 		
+	} else {
+		_CL_LOG << "Error: No forms are defined for application." LOG_
 	}
 	
 	return ERR_NONE;
