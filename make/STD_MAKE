@@ -25,11 +25,14 @@
 #            40235 Duesseldorf (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.90 $
+# * $Revision: 1.91 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.90 2007/01/14 16:02:14 lollisoft Exp $
+# * $Id: STD_MAKE,v 1.91 2007/04/22 13:44:40 lollisoft Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.91  2007/04/22 13:44:40  lollisoft
+# * A release build again.
+# *
 # * Revision 1.90  2007/01/14 16:02:14  lollisoft
 # * Corrections under Linux - Debug mode activated.
 # *
@@ -350,9 +353,9 @@ COMPILER=WATCOM
 
 #COMPILER=MICROSOFT
 
-MODE=_DEBUG
-#MODE=
-DEBUG_MEMORY=no
+#MODE=_DEBUG
+MODE=
+#DEBUG_MEMORY=no
 #DEBUG_MEMORY=yes
 
 #DEBUG_MEMORY_TYPE=mpatrol
