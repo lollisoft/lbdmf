@@ -21,10 +21,12 @@ call make_dist_base.bat AppDevelopmentDemo\DynamicApp\App
 call make_dist_base.bat AppDevelopmentDemo\DynamicApp\Doc
 call make_dist_base.bat BaseDevelopment\lbHook 
 call make_dist_base.bat BaseDevelopment\lbclasses 
+call make_dist_base.bat BaseDevelopment\lbcs
 call make_dist_base.bat BaseDevelopment\lbDB 
 call make_dist_base.bat BaseDevelopment\lbPluginManager
 call make_dist_base.bat BaseDevelopment\lbMetaApplication 
 call make_dist_base.bat BaseDevelopment\lbModule 
+call make_dist_base.bat BaseDevelopment\lbtransfer
 call make_dist_base.bat BaseDevelopment\lbXMLConfig\lbDOMConfig 
 call make_dist_base.bat Plugins
 call make_dist_base.bat vendor\mkmk

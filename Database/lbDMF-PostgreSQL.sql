@@ -7,6 +7,29 @@
 --USE jedi;
 SET SESSION AUTHORIZATION 'dba';
 
+DROP TABLE column_types;
+DROP TABLE formular_actions;
+DROP TABLE translations;
+DROP TABLE CodegenTarget;
+DROP TABLE Applevel_Plugin_Registry;
+DROP TABLE Anwendungs_Parameter;
+DROP TABLE Formular_Parameters;
+DROP TABLE ForeignKey_VisibleData_Mapping;
+DROP TABLE Anwendungen_Formulare;
+DROP TABLE Anwendungsberechtigungen;
+DROP TABLE Formulare;
+DROP TABLE Formulartypen;
+DROP TABLE User_Anwendungen;
+DROP TABLE report_parameters;
+DROP TABLE report_texts;
+DROP TABLE Users;
+DROP TABLE Anwendungen;
+
+DROP TABLE action_steps;
+DROP TABLE actions;
+DROP TABLE action_types;
+
+
 --...sCREATE TABLE column_types:0:
 CREATE TABLE column_types
 (
@@ -21,7 +44,8 @@ CREATE TABLE column_types
 insert into column_types (name, tablename, ro) values('kundennr', 'kunden', TRUE);
 insert into column_types (name, tablename, ro) values('id', 'chart', TRUE);
 insert into column_types (name, tablename, ro) values('language', 'translations', TRUE);
---...sActions:0:
+insert into column_types (name, tablename, ro, controltype, specialcolumn) values('toolbarimage', 'formulare', FALSE, 'toolbarimagefile', TRUE);
+
 --...sCREATE TABLE actions:0:
 -- +---------------------------------------------------------
 -- | TABLE: Actions
@@ -102,7 +126,7 @@ CREATE TABLE Formulare
   MenuHilfe CHAR(100),
   ToolBarImage CHAR(100),
   AnwendungID INTEGER,
-  Typ INTEGER NOT NULL,
+  Typ INTEGER,
   PRIMARY KEY (id)
 ) WITH OIDS;
 
@@ -370,7 +394,6 @@ CREATE UNIQUE INDEX pk_id_Anwendungs_Parameter ON Anwendungs_Parameter
 (
   id
 );
---...e
 --...e
 --...sCREATE TABLE Formular_Parameters:0:
 -- +---------------------------------------------------------
@@ -655,40 +678,45 @@ insert into Formulartypen (HandlerModule, HandlerFunctor, HandlerInterface, Besc
 'Fest verdrahtetes Formular');
 --...e
 --...sFill Formulare:0:
-insert into Formulare (MenuOrder, Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
+insert into Formulare (MenuOrder, toolbarimage, Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
 1,
+'kuser.png',
 'Benutzer', 
 'Benutzer verwalten', 
 'manageUser', 
 'Verwaltung der Benutzer in lbDMF',
 1 , 1);
 
-insert into Formulare (MenuOrder, Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
-2,
+insert into Formulare (MenuOrder, toolbarimage, Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
+5,
+'kpersonalizer.png',
 'Formulare', 
 'Formulare verwalten', 
 'manageFormulars', 
 'Verwaltung der Formulare in lbDMF',
 1, 1);
 
-insert into Formulare (MenuOrder, Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
+insert into Formulare (MenuOrder, toolbarimage, Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
 1,
+'kuser.png',
 'Kunden', 
 'Kunden verwalten',
 'manageCustomers', 
 'Bietet Verwaltungsmöglichkeiten für Kunden',
 2 , 1);
 
-insert into Formulare (MenuOrder, Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
+insert into Formulare (MenuOrder, toolbarimage, Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
 2,
+'kedit.png',
 'Reservierungen', 
 'Reservierungen verwalten', 
 'manageReservations', 
 'Bietet Verwaltungsmöglichkeiten für Reservierungen von Fahrkarten',
 2, 1);
 
-insert into Formulare (MenuOrder, Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
+insert into Formulare (MenuOrder, toolbarimage, Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
 1,
+'kuser.png',
 'DynKunden', 
 'Kunden verwalten', 
 'manageCustomers', 
@@ -697,40 +725,45 @@ insert into Formulare (MenuOrder, Name, MenuName, EventName, MenuHilfe, Anwendun
 
 -- 5
 
-insert into Formulare (MenuOrder, Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
+insert into Formulare (MenuOrder, toolbarimage, Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
 2,
+'kedit.png',
 'DynReservierungen', 
 'Reservierungen verwalten', 
 'manageReservations', 
 'Bietet Verwaltungsmöglichkeiten für Reservierungen von Fahrkarten',
 3, 1);
 
-insert into Formulare (MenuOrder, Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
-3,
+insert into Formulare (MenuOrder, toolbarimage, Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
+6,
+'formular_params.png',
 'Formular_Parameter',
 'Formularparameter verwalten', 
 'manageFormularparameters', 
 'Verwaltung der Formularparameter in lbDMF',
 1, 1);
 
-insert into Formulare (MenuOrder, Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
-4,
-'Benutzer -> Anwendungen', 
-'Anwendungen Benutzern zuordnen', 
+insert into Formulare (MenuOrder, toolbarimage, Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
+2,
+'User_application.png',
+'Anwendungen -> Benutzer', 
+'Benutzer Anwendungen zuordnen', 
 'manageAppsUsers', 
 'Verwaltung der Zuordnung von Benutzern zu Anwendungen',
 1, 1);
 
-insert into Formulare (MenuOrder, Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
+insert into Formulare (MenuOrder, toolbarimage, Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
 1,
+'kuser.png',
 'Benutzer',
 'Benutzer verwalten',
 'manageUser',
 'Verwaltung der Benutzer in lbDMF',
 4, 1);
 
-insert into Formulare (MenuOrder, Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
+insert into Formulare (MenuOrder, toolbarimage, Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
 2,
+'view_detailed.png',
 'Formulare',
 'Formulare verwalten',
 'manageFormulars',
@@ -739,40 +772,45 @@ insert into Formulare (MenuOrder, Name, MenuName, EventName, MenuHilfe, Anwendun
 
 -- 10
 
-insert into Formulare (MenuOrder, Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
+insert into Formulare (MenuOrder, toolbarimage, Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
 3,
+'package_utilities.png',
 'Formular_Parameter',
 'Formularparameter verwalten',
 'manageFormularparameters',
 'Verwaltung der Formularparameter in lbDMF',
 4, 1);
 
-insert into Formulare (MenuOrder, Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
+insert into Formulare (MenuOrder, toolbarimage, Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
 4,
+'password.png',
 'Benutzer -> Anwendungen',
 'Anwendungen Benutzern zuordnen',
 'manageAppsUsers',
 'Verwaltung der Zuordnung von Benutzern zu Anwendungen',
 4, 1);
 
-insert into Formulare (MenuOrder, Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
+insert into Formulare (MenuOrder, toolbarimage, Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
 3,
+'kuser.png',
 'Kunden',
 'Kunden verwalten',
 'manageCustomers',
 'Bietet Verwaltungsmöglichkeiten für Kunden',
 2, 1);
 
-insert into Formulare (MenuOrder, Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
+insert into Formulare (MenuOrder, toolbarimage, Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
 5,
+'kedit.png',
 'Reservierungen',
 'Reservierungen verwalten',
 'manageReservations',
 'Bietet Verwaltungsmöglichkeiten für Reservierungen von Fahrkarten',
 4, 1);
 
-insert into Formulare (MenuOrder, Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
+insert into Formulare (MenuOrder, toolbarimage, Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
 3,
+'kuser.png',
 'DynKunden',
 'Kunden verwalten',
 'manageDynCustomers',
@@ -781,40 +819,45 @@ insert into Formulare (MenuOrder, Name, MenuName, EventName, MenuHilfe, Anwendun
 
 -- 15
 
-insert into Formulare (MenuOrder, Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
+insert into Formulare (MenuOrder, toolbarimage, Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
 5,
+'kedit.png',
 'DynReservierungen',
 'Reservierungen verwalten',
 'manageDynReservierungen',
 'Bietet Verwaltungsmöglichkeiten für Reservierungen von Fahrkarten',
 4, 1);
 
-insert into Formulare (MenuOrder, Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
-5,
+insert into Formulare (MenuOrder, toolbarimage, Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
+4,
+'app_formulare.png',
 'Formulare -> Anwendung',
 'Formulare Anwendungen zuordnen',
 'manageFormularsToApps',
 'Einrichtung der Formulare zu Anwendungen',
 1, 1);
 
-insert into Formulare (MenuOrder, Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
+insert into Formulare (MenuOrder, toolbarimage, Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
 1,
+'kcmdf.png',
 'Sachkonten',
 'Sachkontenverwaltung',
 'manageGeneralLedger',
 '-',
 5 , 1);
 
-insert into Formulare (MenuOrder, Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
-6,
+insert into Formulare (MenuOrder, toolbarimage, Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
+2,
+'kthememgr.png',
 'Anwendungen',
 'Anwendungen',
 'manageAnwendungen',
 '-',
 1 , 1);
 
-insert into Formulare (MenuOrder, Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
-7,
+insert into Formulare (MenuOrder, toolbarimage, Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
+4,
+'app_formulare.png',
 'Anwendungen -> Formulare',
 'Anwendungen -> Formulare',
 'manageAnwendungenFormulare',
@@ -823,40 +866,45 @@ insert into Formulare (MenuOrder, Name, MenuName, EventName, MenuHilfe, Anwendun
 
 -- 20
 
-insert into Formulare (MenuOrder, Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
+insert into Formulare (MenuOrder, toolbarimage, Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
 4,
+'formular_params.png',
 'Planfahrten',
 'Planfahrten verwalten',
 'managePlanfahrten',
 '-',
 3, 1);
 
-insert into Formulare (MenuOrder, Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
+insert into Formulare (MenuOrder, toolbarimage, Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
 5,
+'formular_params.png',
 'Planstrecken',
 'Planstrecken verwalten',
 'managePlanstrecken',
 '-',
 3, 1);
 
-insert into Formulare (MenuOrder, Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
+insert into Formulare (MenuOrder, toolbarimage, Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
 6,
+'formular_params.png',
 'Streckennamen',
 'Streckennamen verwalten',
 'manageStreckennamen',
 '-',
 3, 1);
 
-insert into Formulare (MenuOrder, Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
+insert into Formulare (MenuOrder, toolbarimage, Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
 8,
+'cache.png',
 'Aktionen',
 'Aktionen verwalten',
 'manageFormularaktionen',
 '-',
 1, 1);
 
-insert into Formulare (MenuOrder, Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
+insert into Formulare (MenuOrder, toolbarimage, Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
 9,
+'babelfish.png',
 'Uebersetzungen',
 'Uebersetzungen verwalten',
 'manageUebersetzungen',
@@ -865,24 +913,27 @@ insert into Formulare (MenuOrder, Name, MenuName, EventName, MenuHilfe, Anwendun
 
 -- 25:
 
-insert into Formulare (MenuOrder, Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
+insert into Formulare (MenuOrder, toolbarimage, Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
 2,
+'formular_params.png',
 'Artikel',
 'Artikelverwaltung',
 'manageParts',
 '-',
 5 , 1);
 
-insert into Formulare (MenuOrder, Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
-10,
+insert into Formulare (MenuOrder, toolbarimage, Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
+7,
+'actions_formulare.png',
 'Formularaktionen zuordnen',
 'Formularaktionen zuordnen',
 'manageAssignFormActions',
 '-',
 1 , 1);
 
-insert into Formulare (MenuOrder, Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
-11,
+insert into Formulare (MenuOrder, toolbarimage, Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
+3,
+'app_params.png',
 'Anwendungsparameter',
 'Anwendungsparameter verwalten',
 'manageAppParams',
@@ -965,7 +1016,7 @@ insert into Formular_Parameters (ParameterName, ParameterValue, FormularID) Valu
 
 insert into Formular_Parameters (ParameterName, ParameterValue, FormularID) Values (
 'query',
-'select "name", "menuname", "eventname", "menuhilfe", "anwendungid", "typ" from "formulare"',
+'select "toolbarimage", "name", "menuname", "eventname", "menuhilfe", "anwendungid", "typ" from "formulare"',
 2);
 
 insert into Formular_Parameters (ParameterName, ParameterValue, FormularID) Values (
@@ -1077,7 +1128,7 @@ insert into Anwendungen_Formulare (AnwendungID,FormularID) Values (4, 16);
 insert into Anwendungen_Formulare (AnwendungID,FormularID) Values (5, 18);
 
 insert into Anwendungen_Formulare (AnwendungID,FormularID) Values (1, 19);
-insert into Anwendungen_Formulare (AnwendungID,FormularID) Values (1, 20);
+insert into Anwendungen_Formulare (AnwendungID,FormularID) Values (1, 17);
 insert into Anwendungen_Formulare (AnwendungID,FormularID) Values (3, 21);
 insert into Anwendungen_Formulare (AnwendungID,FormularID) Values (3, 22);
 insert into Anwendungen_Formulare (AnwendungID,FormularID) Values (3, 23);
@@ -1086,6 +1137,7 @@ insert into Anwendungen_Formulare (AnwendungID,FormularID) Values (1, 24);
 insert into Anwendungen_Formulare (AnwendungID,FormularID) Values (1, 25);
 insert into Anwendungen_Formulare (AnwendungID,FormularID) Values (5, 26);
 insert into Anwendungen_Formulare (AnwendungID,FormularID) Values (5, 27);
+insert into Anwendungen_Formulare (AnwendungID,FormularID) Values (1, 27);
 insert into Anwendungen_Formulare (AnwendungID,FormularID) Values (1, 28);
 --...e
 --...sFill User_Anwendungen:0:

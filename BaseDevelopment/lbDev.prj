@@ -225,6 +225,7 @@ These headers must define the per module (DLL) EXPORT variable
 
 /*...e*/
 /*...slbCS:0:*/
+/*...vlbcs\47\makefile\46\module:0:*/
 /*...vlbcs\47\appbus\46\h:0:*/
 /*...vlbcs\47\appbus\46\cpp:0:*/
 /*...vlbcs\47\appcs\46\h:0:*/
