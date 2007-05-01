@@ -528,6 +528,12 @@ void LB_STDCALL lbInputStreamOpr::visit(lb_I_MetaApplication* app) {
 	
 	*iStream >> temp;
 	app->setDirLocation(temp);
+	
+	*iStream >> b;
+	if (b) app->setPropertyPaneLayoutFloating();
+	
+	*iStream >> b;
+	if (b) app->setPropertyPaneLayoutLeft();
 }
 
 void LB_STDCALL lbInputStreamOpr::visit(lb_I_Application*) {
