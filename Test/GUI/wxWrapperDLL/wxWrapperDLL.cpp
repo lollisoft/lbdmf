@@ -1893,6 +1893,7 @@ lbErrCodes LB_STDCALL lb_wxFrame::toggleTool_From_ToolBar(lb_I_Unknown* uk) {
 	return ERR_NONE;
 }
 
+/*...slbErrCodes LB_STDCALL lb_wxFrame\58\\58\addStatusBar\40\lb_I_Unknown\42\ uk\41\:0:*/
 lbErrCodes LB_STDCALL lb_wxFrame::addStatusBar(lb_I_Unknown* uk) {
 	wxStatusBar *sb = GetStatusBar();
 	if (sb == NULL) {
@@ -1918,7 +1919,9 @@ lbErrCodes LB_STDCALL lb_wxFrame::addStatusBar(lb_I_Unknown* uk) {
 	
 	return ERR_NONE;
 }
+/*...e*/
 	
+/*...slbErrCodes LB_STDCALL lb_wxFrame\58\\58\addStatusBarTextArea\40\lb_I_Unknown\42\ uk\41\:0:*/
 lbErrCodes LB_STDCALL lb_wxFrame::addStatusBarTextArea(lb_I_Unknown* uk) {
 	lbErrCodes err = ERR_DISPATCH_PARAMETER_WRONG;
 	stb_areas++;
@@ -1965,11 +1968,13 @@ lbErrCodes LB_STDCALL lb_wxFrame::addStatusBarTextArea(lb_I_Unknown* uk) {
 
 	return err;
 }
+/*...e*/
 	
 lbErrCodes LB_STDCALL lb_wxFrame::removeStatusBarTextArea(lb_I_Unknown* uk) {
 	return ERR_NONE;
 }
 	
+/*...slbErrCodes LB_STDCALL lb_wxFrame\58\\58\setText_To_StatusBarTextArea\40\lb_I_Unknown\42\ uk\41\:0:*/
 lbErrCodes LB_STDCALL lb_wxFrame::setText_To_StatusBarTextArea(lb_I_Unknown* uk) {
 	lbErrCodes err = ERR_DISPATCH_PARAMETER_WRONG;
 	UAP(lb_I_Parameter, params)
@@ -2002,6 +2007,7 @@ lbErrCodes LB_STDCALL lb_wxFrame::setText_To_StatusBarTextArea(lb_I_Unknown* uk)
 
 	return err;
 }
+/*...e*/
 
 
 lbErrCodes LB_STDCALL lb_wxFrame::showLeftPropertyBar(lb_I_Unknown* uk) {
@@ -2145,7 +2151,8 @@ lbErrCodes LB_STDCALL lb_wxFrame::showLeftPropertyBar(lb_I_Unknown* uk) {
 
 		m_mgr.AddPane(pg, wxPaneInfo().
 			Name(wxT("Properties")).Caption(wxT("Properties")).
-			Float().FloatingPosition(GetStartPosition()).
+			//Float().FloatingPosition(GetStartPosition()).
+			Left().
 			FloatingSize(wxSize(300,200)));
 
 		m_mgr.Update();
