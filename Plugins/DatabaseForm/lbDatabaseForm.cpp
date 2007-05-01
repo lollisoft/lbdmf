@@ -794,7 +794,7 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 					eman->registerEvent(eventName,  ImageButonClick);
 					
 					wxImage im = wxImage(file->charrep(), wxBITMAP_TYPE_XPM);
-					im.Rescale(16, 16);
+					im.Rescale(32, 32);
 					wxBitmap bm = wxBitmap(im);
 					wxBitmapButton* imagebutton = new wxBitmapButton(this, ImageButonClick, bm);
 					imagebutton->SetName(name);
