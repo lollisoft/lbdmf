@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.46 $
+ * $Revision: 1.47 $
  * $Name:  $
- * $Id: lbMetaApplication.h,v 1.46 2007/02/09 21:35:51 lollisoft Exp $
+ * $Id: lbMetaApplication.h,v 1.47 2007/05/01 08:39:21 lollisoft Exp $
  *
  * $Log: lbMetaApplication.h,v $
+ * Revision 1.47  2007/05/01 08:39:21  lollisoft
+ * Added more propertypanel functionality.
+ *
  * Revision 1.46  2007/02/09 21:35:51  lollisoft
  * Implemented remaining stuff for basic toolbar support.
  * But these seems not to show the bitmap on Mac OS X.
@@ -363,6 +366,13 @@ public:
 	lb_I_Unknown*	LB_STDCALL getActiveDocument();
 	void		LB_STDCALL setActiveDocument(lb_I_Unknown* doc);
 
+	void                    LB_STDCALL setPropertyPaneLayoutFloating();
+	void                    LB_STDCALL setPropertyPaneLayoutLeft();
+	bool                    LB_STDCALL isPropertyPaneLayoutFloating();
+	bool                    LB_STDCALL isPropertyPaneLayoutLeft();
+
+	void                    LB_STDCALL showPropertyPanel();
+
 	
 protected:
 	lb_I_GUI* gui;
@@ -387,8 +397,9 @@ protected:
 	/// \brief Users to Applications mapping stored in file or database.
 	UAP(lb_I_User_Applications, User_Applications)
 
+	bool isPropertyPanelFloating;
+	bool isPropertyPanelLeft;
 	
-
 	char* _dirloc;
 	bool _autoload;
 	bool _autorefresh;

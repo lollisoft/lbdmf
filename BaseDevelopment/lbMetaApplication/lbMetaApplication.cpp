@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.107 $
+ * $Revision: 1.108 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.107 2007/04/22 13:48:22 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.108 2007/05/01 08:39:21 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.108  2007/05/01 08:39:21  lollisoft
+ * Added more propertypanel functionality.
+ *
  * Revision 1.107  2007/04/22 13:48:22  lollisoft
  * Bugfix if application would be loaded by environment.
  * Added 'Main Toolbar' initialisation to here.
@@ -478,6 +481,10 @@ lb_MetaApplication::lb_MetaApplication() {
 	_autoselect = false;
 	_autorefresh = false;
 	_logged_in = false;
+	
+	isPropertyPanelFloating = false;
+	isPropertyPanelLeft = true;
+	
 	_dirloc = strdup(".");
 	_loading_object_data = false;
 	
@@ -1044,6 +1051,38 @@ lbErrCodes LB_STDCALL lb_MetaApplication::initialize(char* user, char* appName) 
 }
 /*...e*/
 
+void                    LB_STDCALL lb_MetaApplication::setPropertyPaneLayoutFloating() {
+
+}
+
+void                    LB_STDCALL lb_MetaApplication::setPropertyPaneLayoutLeft() {
+
+}
+
+bool                    LB_STDCALL lb_MetaApplication::isPropertyPaneLayoutFloating() {
+	return isPropertyPanelFloating;
+}
+
+bool                    LB_STDCALL lb_MetaApplication::isPropertyPaneLayoutLeft() {
+	return isPropertyPanelLeft;
+}
+
+void                    LB_STDCALL lb_MetaApplication::showPropertyPanel() {
+	lbErrCodes err = ERR_NONE;
+
+	UAP_REQUEST(manager.getPtr(), lb_I_String, s)
+
+
+	UAP(lb_I_Unknown, uk)
+	QI(s, lb_I_Unknown, uk)
+
+	UAP_REQUEST(manager.getPtr(), lb_I_String, result)
+	UAP(lb_I_Unknown, uk_result)
+	QI(result, lb_I_Unknown, uk_result)
+
+	dispatcher->dispatch("ShowPropertyPanel", uk.getPtr(), &uk_result);
+}
+
 void	   LB_STDCALL lb_MetaApplication::setGUIMaximized(bool b) {
 	_GUIMaximized = b;
 }
@@ -1422,6 +1461,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::loadApplication(char* user, char* appl
 
 /*...sBasic functions to be used for a UI application:0:*/
 
+/*...slbErrCodes LB_STDCALL lb_MetaApplication\58\\58\addToolBar\40\char\42\ toolbarName\41\:0:*/
 lbErrCodes LB_STDCALL lb_MetaApplication::addToolBar(char* toolbarName)	{
 	lbErrCodes err = ERR_NONE;
 
@@ -1444,11 +1484,13 @@ lbErrCodes LB_STDCALL lb_MetaApplication::addToolBar(char* toolbarName)	{
 
 	return err;
 }
+/*...e*/
 
 lbErrCodes LB_STDCALL lb_MetaApplication::addToolBarButton(char* toolbarName, char* entry, char* evHandler, char* toolbarimage, char* afterentry) {
 	return addToolBarTool(toolbarName, "Button", entry, evHandler, toolbarimage, afterentry);
 }
 
+/*...slbErrCodes LB_STDCALL lb_MetaApplication\58\\58\addToolBarTool\40\char\42\ toolbarName\44\ char\42\ tooltype\44\ char\42\ entry\44\ char\42\ evHandler\44\ char\42\ toolbarimage\44\ char\42\ afterentry\41\:0:*/
 lbErrCodes LB_STDCALL lb_MetaApplication::addToolBarTool(char* toolbarName, char* tooltype, char* entry, char* evHandler, char* toolbarimage, char* afterentry) {
 	lbErrCodes err = ERR_NONE;
 
@@ -1493,7 +1535,8 @@ lbErrCodes LB_STDCALL lb_MetaApplication::addToolBarTool(char* toolbarName, char
 
 	return err;
 }
-
+/*...e*/
+/*...slbErrCodes LB_STDCALL lb_MetaApplication\58\\58\removeToolBarButton\40\char\42\ toolbarName\44\ char\42\ entry\41\:0:*/
 lbErrCodes LB_STDCALL lb_MetaApplication::removeToolBarButton(char* toolbarName, char* entry) {
 	lbErrCodes err = ERR_NONE;
 
@@ -1520,7 +1563,8 @@ lbErrCodes LB_STDCALL lb_MetaApplication::removeToolBarButton(char* toolbarName,
 
 	return err;
 }
-
+/*...e*/
+/*...slbErrCodes LB_STDCALL lb_MetaApplication\58\\58\toggleToolBarButton\40\char\42\ toolbarName\44\ char\42\ entry\41\:0:*/
 lbErrCodes LB_STDCALL lb_MetaApplication::toggleToolBarButton(char* toolbarName, char* entry) {
 	lbErrCodes err = ERR_NONE;
 
@@ -1547,8 +1591,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::toggleToolBarButton(char* toolbarName,
 
 	return err;
 }
-
-
+/*...e*/
 
 /*...slbErrCodes LB_STDCALL lb_MetaApplication\58\\58\addMenuBar\40\char\42\ name\44\ char\42\ after\41\:0:*/
 lbErrCodes LB_STDCALL lb_MetaApplication::addMenuBar(char* name, char* after) {
@@ -1661,6 +1704,7 @@ bool LB_STDCALL lb_MetaApplication::askYesNo(char* msg) {
 }
 /*...e*/
 
+/*...svoid LB_STDCALL lb_MetaApplication\58\\58\addStatusBar\40\\41\:0:*/
 void LB_STDCALL lb_MetaApplication::addStatusBar() {
 	lbErrCodes err = ERR_NONE;
 	
@@ -1674,7 +1718,8 @@ void LB_STDCALL lb_MetaApplication::addStatusBar() {
 	
 	dispatcher->dispatch("addStatusBar", uk.getPtr(), &uk_result);
 }
-	
+/*...e*/
+/*...svoid LB_STDCALL lb_MetaApplication\58\\58\addStatusBar_TextArea\40\char\42\ name\41\:0:*/
 void LB_STDCALL lb_MetaApplication::addStatusBar_TextArea(char* name) {
 	lbErrCodes err = ERR_NONE;
 	
@@ -1695,7 +1740,8 @@ void LB_STDCALL lb_MetaApplication::addStatusBar_TextArea(char* name) {
 	
 	dispatcher->dispatch("addStatusBar_TextArea", uk.getPtr(), &uk_result);
 }
-	
+/*...e*/
+/*...svoid LB_STDCALL lb_MetaApplication\58\\58\setStatusText\40\char\42\ name\44\ char\42\ value\41\:0:*/
 void LB_STDCALL lb_MetaApplication::setStatusText(char* name, char* value) {
 	lbErrCodes err = ERR_NONE;
 	
@@ -1719,7 +1765,9 @@ void LB_STDCALL lb_MetaApplication::setStatusText(char* name, char* value) {
 	
 	dispatcher->dispatch("setStatusText", uk.getPtr(), &uk_result);
 }
+/*...e*/
 
+/*...svoid LB_STDCALL lb_MetaApplication\58\\58\msgBox\40\char\42\ title\44\ char\42\ msg\41\:0:*/
 void LB_STDCALL lb_MetaApplication::msgBox(char* title, char* msg) {
 	lbErrCodes err = ERR_NONE;
 	
@@ -1744,7 +1792,9 @@ void LB_STDCALL lb_MetaApplication::msgBox(char* title, char* msg) {
 	
 	dispatcher->dispatch("showMsgBox", uk.getPtr(), &uk_result);
 }
+/*...e*/
 
+/*...slb_I_InputStream\42\ LB_STDCALL lb_MetaApplication\58\\58\askOpenFileReadStream\40\char\42\ extentions\41\:0:*/
 lb_I_InputStream* LB_STDCALL lb_MetaApplication::askOpenFileReadStream(char* extentions) {
 	lbErrCodes err = ERR_NONE;
 	
@@ -1782,6 +1832,7 @@ lb_I_InputStream* LB_STDCALL lb_MetaApplication::askOpenFileReadStream(char* ext
 
 	return s.getPtr();
 }
+/*...e*/
 
 
 /*...slb_MetaApplication\58\\58\addLabel\40\char\42\ text\44\ int x\44\ int y\44\ int w\44\ int h\41\:0:*/
@@ -1874,6 +1925,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::addButton(char* buttonText, char* evHa
 }
 /*...e*/
 
+/*...slbErrCodes LB_STDCALL lb_MetaApplication\58\\58\enableEvent\40\char\42\ name\41\:0:*/
 lbErrCodes LB_STDCALL lb_MetaApplication::enableEvent(char* name) {
 	lbErrCodes err = ERR_NONE;
 
@@ -1897,7 +1949,8 @@ lbErrCodes LB_STDCALL lb_MetaApplication::enableEvent(char* name) {
 
 	return err;
 }
-
+/*...e*/
+/*...slbErrCodes LB_STDCALL lb_MetaApplication\58\\58\disableEvent\40\char\42\ name\41\:0:*/
 lbErrCodes LB_STDCALL lb_MetaApplication::disableEvent(char* name) {
 	lbErrCodes err = ERR_NONE;
 
@@ -1921,7 +1974,8 @@ lbErrCodes LB_STDCALL lb_MetaApplication::disableEvent(char* name) {
 
 	return err;
 }
-
+/*...e*/
+/*...slbErrCodes LB_STDCALL lb_MetaApplication\58\\58\toggleEvent\40\char\42\ name\41\:0:*/
 lbErrCodes LB_STDCALL lb_MetaApplication::toggleEvent(char* name) {
 	lbErrCodes err = ERR_NONE;
 
@@ -1945,7 +1999,9 @@ lbErrCodes LB_STDCALL lb_MetaApplication::toggleEvent(char* name) {
 
 	return err;
 }
+/*...e*/
 
+/*...slbErrCodes LB_STDCALL lb_MetaApplication\58\\58\showPropertyPanel\40\lb_I_Parameter\42\ params\41\:0:*/
 lbErrCodes LB_STDCALL lb_MetaApplication::showPropertyPanel(lb_I_Parameter* params) {
 	lbErrCodes err = ERR_NONE;
 
@@ -1960,7 +2016,9 @@ lbErrCodes LB_STDCALL lb_MetaApplication::showPropertyPanel(lb_I_Parameter* para
 
 	return ERR_NONE;
 }
+/*...e*/
 
+/*...slbErrCodes LB_STDCALL lb_MetaApplication\58\\58\registerPropertyChangeEventGroup\40\\46\\46\\46\\41\:0:*/
 lbErrCodes LB_STDCALL lb_MetaApplication::registerPropertyChangeEventGroup(char* name, lb_I_Parameter* params, lb_I_EventHandler* target, lbEvHandler handler) {
 	lbErrCodes err = ERR_NONE;
 	
@@ -1985,6 +2043,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::registerPropertyChangeEventGroup(char*
 	
 	return err;
 }
+/*...e*/
 
 
 /*...slb_MetaApplication\58\\58\addMenuEntry\40\char\42\ in_menu\44\ char\42\ entry\44\ char\42\ evHandler\44\ char\42\ afterentry\41\:0:*/
@@ -2027,6 +2086,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::addMenuEntry(char* in_menu, char* entr
 	return ERR_NONE;
 }
 /*...e*/
+/*...slbErrCodes LB_STDCALL lb_MetaApplication\58\\58\addMenuEntryCheckable\40\\46\\46\\46\\41\:0:*/
 lbErrCodes LB_STDCALL lb_MetaApplication::addMenuEntryCheckable(char* in_menu, char* entry, char* evHandler, char* afterentry) {
 	lbErrCodes err = ERR_NONE;
 	
@@ -2068,6 +2128,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::addMenuEntryCheckable(char* in_menu, c
 	
 	return ERR_NONE;
 }
+/*...e*/
 /*...e*/
 
 long LB_STDCALL lb_MetaApplication::getApplicationID() {
