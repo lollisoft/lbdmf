@@ -2751,6 +2751,17 @@ public:
 	 * Active document per loaded application.
 	 */
 	virtual void			LB_STDCALL setActiveDocument(lb_I_Unknown* doc) = 0;
+	
+	/** \brief Set PropertyPane layout to floating.
+	 *
+	 */
+	virtual void			LB_STDCALL setPropertyPaneLayoutFloating() = 0;
+	virtual void			LB_STDCALL setPropertyPaneLayoutLeft() = 0;
+	virtual bool			LB_STDCALL isPropertyPaneLayoutFloating() = 0;
+	virtual bool			LB_STDCALL isPropertyPaneLayoutLeft() = 0;
+	
+	virtual void			LB_STDCALL showPropertyPanel() = 0;
+	
 };
 /*...e*/
 
