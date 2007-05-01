@@ -509,6 +509,10 @@ void LB_STDCALL lbOutputStream::visit(lb_I_MetaApplication* app) {
 	*oStream << b;
 	
 	*oStream << app->getDirLocation();
+	
+	*oStream << app->isPropertyPaneLayoutFloating();
+	
+	*oStream << app->isPropertyPaneLayoutLeft();
 }
 
 void LB_STDCALL lbOutputStream::visit(lb_I_Application*) {
