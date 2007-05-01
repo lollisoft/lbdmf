@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.132 2007/04/22 13:55:43 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.133 2007/05/01 16:07:41 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.132 $
+ * $Revision: 1.133 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.132 2007/04/22 13:55:43 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.133 2007/05/01 16:07:41 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.133  2007/05/01 16:07:41  lollisoft
+ * Added code to show left property bar.
+ *
  * Revision 1.132  2007/04/22 13:55:43  lollisoft
  * Mainlz added a spash screen.
  *
@@ -2182,7 +2185,9 @@ bool MyApp::OnInit(void)
 
     if (metaApp != NULL) {
         metaApp->initialize();
-		
+
+	if (metaApp->isPropertyPaneLayoutLeft()) metaApp->showPropertyPanel();
+	if (metaApp->isPropertyPaneLayoutFloating()) metaApp->showPropertyPanel();
 	if (metaApp->getGUIMaximized()) frame->Maximize();
     } 
 
