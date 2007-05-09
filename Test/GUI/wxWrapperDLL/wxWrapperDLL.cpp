@@ -1327,14 +1327,16 @@ void lb_wxFrame::OnPropertyGridChange ( wxPropertyGridEvent& event )
 	// Get resulting value - wxVariant is convenient here.
 	wxVariant PropertyValue = event.GetPropertyValue();
 	
-	_CL_LOG << "Property has been changed " << PropertyName.c_str() << " to '" << PropertyValue.MakeString().c_str() << "'" LOG_
-
 	UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, name)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, value)
 	UAP_REQUEST(getModuleInstance(), lb_I_Integer, evId)
 	
 	int PropertyEvent;
+	
+	if (eman == NULL) {
+		REQUEST(getModuleInstance(), lb_I_EventManager, eman)
+	}
 	
 	eman->resolveEvent((char*) PropertyName.c_str(), PropertyEvent);
 	
@@ -1356,7 +1358,12 @@ void lb_wxFrame::OnPropertyGridChange ( wxPropertyGridEvent& event )
 	UAP_REQUEST(getModuleInstance(), lb_I_String, result)
 	UAP(lb_I_Unknown, uk_result)
 	QI(result, lb_I_Unknown, uk_result)
-		
+	
+	if (dispatcher == NULL) {
+		REQUEST(getModuleInstance(), lb_I_Dispatcher, dispatcher)
+		dispatcher->setEventManager(eman.getPtr());
+	}				
+	
 	dispatcher->dispatch(PropertyEvent, uk.getPtr(), &uk_result);
 }
 /*...e*/
@@ -1741,7 +1748,7 @@ lbErrCodes LB_STDCALL lb_wxFrame::addToolBar(lb_I_Unknown* uk) {
 #endif
     
 	if ((tb == NULL) && (params != NULL)) {
-		tb = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_HORIZONTAL|wxTB_DOCKABLE);
+		tb = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_HORIZONTAL);
 
 		wxImage::AddHandler(new wxXPMHandler);
 		wxImage::AddHandler(new wxPNGHandler);
