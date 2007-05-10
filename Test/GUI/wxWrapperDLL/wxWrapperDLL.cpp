@@ -32,7 +32,7 @@
 #define USE_WXAUI
 
 #ifdef OSX
-#define IN_PANEL
+//#define IN_PANEL
 #endif
 
 #ifdef LINUX
