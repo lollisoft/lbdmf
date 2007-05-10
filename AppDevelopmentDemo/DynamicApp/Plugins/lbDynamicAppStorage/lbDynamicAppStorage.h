@@ -28,22 +28,46 @@
 */
 /*...e*/
 
-class lbDynamicAppStorage :
-    public lb_I_XMLStreamable {
+/** \brief Storage implementation for XML.
+ */
+class lbDynamicAppXMLStorage :
+    public lb_I_StandaloneStreamable {
 public:
-	lbDynamicAppStorage();
-	virtual ~lbDynamicAppStorage();
+	lbDynamicAppXMLStorage();
+	virtual ~lbDynamicAppXMLStorage();
 
 	DECLARE_LB_UNKNOWN()
 
-	lbErrCodes LB_STDCALL setStreamObject(lb_I_Unknown*) { return ERR_NONE; }
+	lbErrCodes LB_STDCALL setOperator(lb_I_Unknown* _op) { op = _op; return ERR_NONE; }
+	lbErrCodes	LB_STDCALL load(lb_I_InputStream* iStream);
+	lbErrCodes	LB_STDCALL save(lb_I_OutputStream* oStream);
+
+	lbErrCodes	LB_STDCALL load(lb_I_Database* iDB);
+	lbErrCodes	LB_STDCALL save(lb_I_Database* oDB);
+	
+	UAP(lb_I_Unknown, op)
+};
+
+/** \brief Storage implementation for internal fileformat.
+ */
+class lbDynamicAppInternalStorage :
+    public lb_I_StandaloneStreamable {
+public:
+	lbDynamicAppInternalStorage();
+	virtual ~lbDynamicAppInternalStorage();
+
+	DECLARE_LB_UNKNOWN()
+
+	lbErrCodes LB_STDCALL setOperator(lb_I_Unknown* _op) { op = _op; return ERR_NONE; }
 	lbErrCodes	LB_STDCALL load(lb_I_InputStream* iStream);
 	lbErrCodes	LB_STDCALL save(lb_I_OutputStream* oStream);
 
 	lbErrCodes	LB_STDCALL load(lb_I_Database* iDB);
 	lbErrCodes	LB_STDCALL save(lb_I_Database* oDB);
 
+	UAP(lb_I_Unknown, op)
 };
 
-DECLARE_FUNCTOR(instanceOflbDynamicAppStorage)
+DECLARE_FUNCTOR(instanceOflbDynamicAppInternalStorage)
+DECLARE_FUNCTOR(instanceOflbDynamicAppXMLStorage)
 

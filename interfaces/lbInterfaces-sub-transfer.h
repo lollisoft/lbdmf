@@ -248,6 +248,9 @@ public:
 /*...sclass lb_I_Streamable:0:*/
 /**
  * \brief Interface for loadable and saveable objects.
+ *
+ * Use this interface, if you implement streamable objects, that do not delegate the operation for different
+ * formats. (No lb_I_Unknown base interface)
  */
 class lb_I_Streamable {
 public:
@@ -277,7 +280,7 @@ public:
 	 * one visitor plugin wouldn't capable to handle them even it could
 	 * handle parts of it, it couldn't handle the whole. 
 	 */
-	virtual lbErrCodes LB_STDCALL setStreamObject(lb_I_Unknown* streamObject) = 0;
+	virtual lbErrCodes LB_STDCALL setOperator(lb_I_Unknown* streamObject) = 0;
 
 	/** \brief Save to a filebased stream.
 	 */
@@ -297,7 +300,15 @@ public:
 };
 /*...e*/
 
-class lb_I_XMLStreamable :
+/** \brief A separate stream implementation interface.
+ *
+ * This interface is used to load and store files with delagated storage usage.
+ * Done so in my lb_I_Application sample classes.
+ *
+ * I do not see a nessesary for separate interfaces for different file formats.
+ * This could be handled by plugin namespaces.
+ */
+class lb_I_StandaloneStreamable :
 	public lb_I_Unknown,
 	public lb_I_Streamable {
 	

@@ -416,7 +416,28 @@ lbErrCodes LB_STDCALL lbDynamicApplication::uninitialize() {
 		UAP_REQUEST(manager.getPtr(), lb_I_String, filename)
 		*filename = LogonApplication->charrep();
 		*filename += ".daf"; // Dynamic application forms 
+
+
+		// Get the active document and set temporary a different storage handler (daf)
+		UAP_REQUEST(manager.getPtr(), lb_I_String, param)
+		UAP_REQUEST(manager.getPtr(), lb_I_String, StorageInterface)
+		UAP_REQUEST(manager.getPtr(), lb_I_String, StorageNamespace)
+		UAP_REQUEST(manager.getPtr(), lb_I_String, tempStorageInterface)
+		UAP_REQUEST(manager.getPtr(), lb_I_String, tempStorageNamespace)
+		UAP(lb_I_Unknown, ukDoc)
+		UAP(lb_I_Parameter, document)
+		ukDoc = metaapp->getActiveDocument();
+		QI(ukDoc, lb_I_Parameter, document)
+
+		if (document != NULL) {
+			*param = "StorageDelegateNamespace";
+			document->getUAPString(*&param, *&StorageNamespace);
 			
+			*tempStorageNamespace = "lbDynAppInternalFormat";
+		}
+		
+		/// \todo Move storing procedure to a storage handler.
+
 		pl = PM->getFirstMatchingPlugin("lb_I_FileOperation", "OutputStreamVisitor");
 		
 		if (pl == NULL) {
@@ -437,6 +458,8 @@ lbErrCodes LB_STDCALL lbDynamicApplication::uninitialize() {
 				success = fOp->begin(filename->charrep()); 
 			
 				if (success) {
+					accept(*&fOp);
+#ifdef moved_to_plugin				
 					if (forms != NULL) {
 						_CL_LOG << "Save a forms model object..." LOG_
 						forms->accept(*&fOp);
@@ -466,7 +489,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::uninitialize() {
 						_CL_LOG << "Save a appActionSteps model object..." LOG_
 						appActionSteps->accept(*&fOp);
 					}
-					
+#endif					
 					fOp->end();
 				} else {
 				// No file found. Create one from database...
@@ -839,6 +862,11 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 		int id = metaapp->getApplicationID();
 		
 		_LOG << "Test for application ID: " << id LOG_
+		
+		// Test if the lbDynamicAppStorage plugin is available. If so, add a menu entry for application export.
+		
+		
+		
 /*...e*/
 	} else {
 		// No file found. Create one from database...

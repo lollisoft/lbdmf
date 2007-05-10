@@ -249,8 +249,8 @@
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
-									<integer>66</integer>
-									<integer>0</integer>
+									<integer>97</integer>
+									<integer>96</integer>
 								</array>
 							</array>
 							<key>PBXSmartGroupTreeModuleOutlineStateVisibleRectKey</key>
@@ -295,7 +295,7 @@
 										<key>PBXProjectModuleLabel</key>
 										<string>wxWrapperDLL.cpp</string>
 										<key>bookmark</key>
-										<string>273A8D780BDBB3A9002820B8</string>
+										<string>272F28220BF1E11A00800AD5</string>
 										<key>history</key>
 										<array>
 											<string>2778C2A50B5A4E1E003524C2</string>
@@ -380,7 +380,7 @@
 											<string>27519D220B9050730079C19C</string>
 											<string>27519D3F0B9051E10079C19C</string>
 											<string>27519D400B9051E10079C19C</string>
-											<string>27967E0F0B90793900D1F60B</string>
+											<string>273A8D780BDBB3A9002820B8</string>
 										</array>
 										<key>prevStack</key>
 										<array>
@@ -524,9 +524,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>273A8D6F0BDBB26E002820B8</string>
+				<string>272F281A0BF1E0E100800AD5</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>273A8D700BDBB26E002820B8</string>
+				<string>272F281B0BF1E0E100800AD5</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -555,9 +555,9 @@
 	<key>WindowOrderList</key>
 	<array>
 		<string>27A017CE0870060900677AEE</string>
-		<string>273A8D720BDBB26E002820B8</string>
-		<string>/Users/lothar/develop/Projects/CPP/Compilers/XCode/DMF/DMF.xcode</string>
+		<string>272F28170BF1E08300800AD5</string>
 		<string>1CD10A99069EF8BA00B06720</string>
+		<string>/Users/lothar/develop/Projects/CPP/Compilers/XCode/DMF/DMF.xcode</string>
 	</array>
 	<key>WindowString</key>
 	<string>2 137 1267 865 0 0 1280 1002 </string>
@@ -689,8 +689,8 @@
 										<string>yes</string>
 										<key>sizes</key>
 										<array>
-											<string>{{0, 0}, {223, 280}}</string>
-											<string>{{223, 0}, {896, 280}}</string>
+											<string>{{0, 0}, {212, 280}}</string>
+											<string>{{212, 0}, {907, 280}}</string>
 										</array>
 									</dict>
 									<key>VerticalSplitView</key>
@@ -753,9 +753,9 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>1CD10A99069EF8BA00B06720</string>
-				<string>273A8D710BDBB26E002820B8</string>
+				<string>272F28160BF1E08300800AD5</string>
 				<string>1C162984064C10D400B95A72</string>
-				<string>273A8D720BDBB26E002820B8</string>
+				<string>272F28170BF1E08300800AD5</string>
 			</array>
 			<key>ToolbarConfiguration</key>
 			<string>xcode.toolbar.config.debug</string>
@@ -764,7 +764,7 @@
 			<key>WindowToolGUID</key>
 			<string>1CD10A99069EF8BA00B06720</string>
 			<key>WindowToolIsVisible</key>
-			<true/>
+			<false/>
 		</dict>
 		<dict>
 			<key>FirstTimeWindowDisplayed</key>
@@ -917,7 +917,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>27A017CE0870060900677AEE</string>
-				<string>273A8D730BDBB26E002820B8</string>
+				<string>272F281C0BF1E0E100800AD5</string>
 				<string>1C78EAAC065D492600B07095</string>
 			</array>
 			<key>WindowString</key>
