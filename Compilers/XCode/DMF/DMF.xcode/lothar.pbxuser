@@ -175,7 +175,7 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 200401023;
+			PBXPerProjectTemplateStateSaveDate = 200581449;
 			PBXPrepackagedSmartGroups_v2 = (
 				{
 					PBXTransientLocationAtTop = bottom;
@@ -352,12 +352,12 @@
 					};
 				},
 			);
-			PBXWorkspaceStateSaveDate = 200401023;
+			PBXWorkspaceStateSaveDate = 200581449;
 		};
 		perUserProjectItems = {
 			270607FF0B6CB9DF00DFDF9C = 270607FF0B6CB9DF00DFDF9C;
+			270C24130BF4A25E00DB4B50 = 270C24130BF4A25E00DB4B50;
 			272F28220BF1E11A00800AD5 = 272F28220BF1E11A00800AD5;
-			273A8D780BDBB3A9002820B8 = 273A8D780BDBB3A9002820B8;
 			27519D220B9050730079C19C = 27519D220B9050730079C19C;
 			27519D3F0B9051E10079C19C = 27519D3F0B9051E10079C19C;
 			27519D400B9051E10079C19C = 27519D400B9051E10079C19C;
@@ -549,6 +549,16 @@
 		wantsCodeCompletionTabCompletes = 1;
 		wantsIndex = 1;
 	};
+	270C24130BF4A25E00DB4B50 = {
+		fRef = 2778C29B0B5A4D49003524C2;
+		isa = PBXTextBookmark;
+		name = "wxWrapperDLL.cpp: 393";
+		rLen = 0;
+		rLoc = 9009;
+		rType = 0;
+		vrLen = 1210;
+		vrLoc = 8693;
+	};
 	2713D5B70B7D10CE00081E9F = {
 		isa = PBXFileReference;
 		lastKnownFileType = sourcecode.cpp.cpp;
@@ -650,7 +660,7 @@
 		functionName = "lbMasterFormAction::setActionID()";
 		isa = PBXFileBreakpoint;
 		lineNumber = 852;
-		state = 1;
+		state = 2;
 	};
 	272AA1690B373D0B0005D623 = {
 		isa = PBXFileReference;
@@ -665,10 +675,11 @@
 		functionName = "main()";
 		isa = PBXFileBreakpoint;
 		lineNumber = 141;
-		state = 1;
+		state = 2;
 	};
 	272F28210BF1E11500800AD5 = {
 		isa = PBXFileReference;
+		lastKnownFileType = wrapper.application;
 		name = wxWrapper.app;
 		path = /Users/lothar/bin/wxWrapper.app;
 		refType = 0;
@@ -684,29 +695,19 @@
 		vrLen = 1226;
 		vrLoc = 8693;
 	};
-	273A8D780BDBB3A9002820B8 = {
-		fRef = 2778C29B0B5A4D49003524C2;
-		isa = PBXTextBookmark;
-		name = "wxWrapperDLL.cpp: 394";
-		rLen = 0;
-		rLoc = 9009;
-		rType = 0;
-		vrLen = 1226;
-		vrLoc = 8693;
-	};
 	2747C7980B5A7907005311B2 = {
 		fileReference = 27CE9A1D08D4A87C00FB3DF0;
 		functionName = "lbDatabasePanel::updateFromMaster()";
 		isa = PBXFileBreakpoint;
 		lineNumber = 1399;
-		state = 1;
+		state = 2;
 	};
 	2747C79A0B5A790D005311B2 = {
 		fileReference = 27CE9A1D08D4A87C00FB3DF0;
 		functionName = "lbDatabasePanel::updateFromDetail()";
 		isa = PBXFileBreakpoint;
 		lineNumber = 1808;
-		state = 1;
+		state = 2;
 	};
 	27519D220B9050730079C19C = {
 		fRef = 27240A6808D49FA3009B29CA;
@@ -977,9 +978,9 @@
 	};
 	2778C29B0B5A4D49003524C2 = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1112, 30897}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1112, 30995}}";
 			sepNavSelRange = "{9009, 0}";
-			sepNavVisRect = "{{0, 5376}, {909, 629}}";
+			sepNavVisRect = "{{0, 5362}, {909, 629}}";
 		};
 	};
 	2778C29D0B5A4DC3003524C2 = {
@@ -1059,9 +1060,9 @@
 	};
 	2778C2EA0B5A57D2003524C2 = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1304, 48467}}";
-			sepNavSelRange = "{84609, 21}";
-			sepNavVisRect = "{{0, 36681}, {909, 629}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1304, 50217}}";
+			sepNavSelRange = "{25820, 0}";
+			sepNavVisRect = "{{0, 11525}, {1078, 456}}";
 			sepNavWindowFrame = "{{15, 439}, {750, 558}}";
 		};
 	};
@@ -2687,7 +2688,7 @@
 	};
 	2799E9B40B2740DA00AF10C5 = {
 		isa = PBXSymbolicBreakpoint;
-		state = 1;
+		state = 2;
 		symbolName = malloc_printf;
 	};
 	27A813F90B5A6AF000F11118 = {
@@ -2882,9 +2883,9 @@
 	};
 	27C524FB086F1E54005DB6C8 = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {909, 18717}}";
-			sepNavSelRange = "{18742, 0}";
-			sepNavVisRect = "{{0, 10488}, {909, 629}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1078, 18717}}";
+			sepNavSelRange = "{28424, 0}";
+			sepNavVisRect = "{{0, 16509}, {1078, 456}}";
 			sepNavWindowFrame = "{{84, 376}, {750, 558}}";
 		};
 	};
@@ -2905,9 +2906,9 @@
 	};
 	27C52501086F1EC1005DB6C8 = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {909, 12319}}";
-			sepNavSelRange = "{19957, 25}";
-			sepNavVisRect = "{{0, 9548}, {909, 630}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1078, 12319}}";
+			sepNavSelRange = "{11444, 0}";
+			sepNavVisRect = "{{0, 5015}, {1078, 456}}";
 			sepNavWindowFrame = "{{15, 439}, {750, 558}}";
 		};
 	};
@@ -3021,9 +3022,9 @@
 	};
 	27E413E20B73EFAF0050006B = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {2756, 7685}}";
-			sepNavSelRange = "{13299, 0}";
-			sepNavVisRect = "{{0, 7056}, {909, 629}}";
+			sepNavIntBoundsRect = "{{0, 0}, {2756, 7727}}";
+			sepNavSelRange = "{8466, 0}";
+			sepNavVisRect = "{{0, 3951}, {1078, 456}}";
 		};
 	};
 	27E413FA0B73F3B00050006B = {
@@ -3134,9 +3135,9 @@
 	};
 	27F462A709960253007178F9 = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {818, 17009}}";
-			sepNavSelRange = "{11789, 34}";
-			sepNavVisRect = "{{0, 6986}, {634, 672}}";
+			sepNavIntBoundsRect = "{{0, 0}, {818, 17387}}";
+			sepNavSelRange = "{4767, 0}";
+			sepNavVisRect = "{{0, 2513}, {784, 828}}";
 		};
 	};
 	27F6A08A0B35CA2A00064FE8 = {

@@ -202,53 +202,56 @@ insert into actions (name, typ, source, target) values(
 'Reserve a trip',
 1,
 'kundennr',
-1);
+0);
 
 insert into actions (name, typ, source, target) values(
 'Remove a reserved trip',
 1,
 'kundennr',
-2);
+0);
 
 insert into actions (name, typ, source, target) values(
 'Streckenname bearbeiten',
 1,
 'bezeichnung',
-3);
+0);
 
 insert into actions (name, typ, source, target) values(
 'Anwendungen',
 1,
 'userid',
-4);
+0);
 
 insert into actions (name, typ, source, target) values(
 'Formulare',
 1,
 'name',
-5);
+0);
 
 insert into actions (name, typ, source, target) values(
 'Parameter',
 1,
 'name',
-6);
+0);
 
 insert into actions (name, typ, source, target) values(
-'Parameter',
+'Anwendungsparameter',
 1,
 'name',
-4);
-
--- Let print a reservation based on customers id for master report data.
--- The customer would have more than one reservation. In general, these
--- reservation entries should be the sub reports.
+0);
 
 insert into actions (name, typ, source, target) values(
-'Reservierungen drucken',
+'Aktionsschritte',
 1,
-'kundenid',
-7);
+'name',
+0);
+
+insert into actions (name, typ, source, target) values(
+'Aktionen',
+1,
+'name',
+0);
+
 --...e
 --...sFill action_steps:0:
 insert into action_steps (bezeichnung, a_order_nr, what, type, actionid) values(
@@ -278,7 +281,7 @@ insert into action_steps (bezeichnung, a_order_nr, what, type, actionid) values(
 insert into action_steps (bezeichnung, a_order_nr, what, type, actionid) values(
 'Open applications for user',
 1,
-'Benutzer -> Anwendungen',
+'Anwendungen -> Benutzer',
 4, 4);
 
 insert into action_steps (bezeichnung, a_order_nr, what, type, actionid) values(
@@ -294,10 +297,22 @@ insert into action_steps (bezeichnung, a_order_nr, what, type, actionid) values(
 4, 6);
 
 insert into action_steps (bezeichnung, a_order_nr, what, type, actionid) values(
-'Print reservations for customers',
+'Opens application parameters',
 1,
-'DynReservierungen',
-6, 7);
+'Anwendungsparameter',
+4, 7);
+
+insert into action_steps (bezeichnung, a_order_nr, what, type, actionid) values(
+'Opens action steps',
+1,
+'Aktionsschritte zuordnen',
+4, 8);
+
+insert into action_steps (bezeichnung, a_order_nr, what, type, actionid) values(
+'Opens actions',
+1,
+'Formularaktionen zuordnen',
+4, 9);
 --...e
 --...e
 
@@ -942,6 +957,15 @@ insert into Formulare (MenuOrder, toolbarimage, Name, MenuName, EventName, MenuH
 
 -- 28
 
+insert into Formulare (MenuOrder, toolbarimage, Name, MenuName, EventName, MenuHilfe, AnwendungID, Typ) Values (
+8,
+'action_steps.png',
+'Aktionsschritte zuordnen',
+'Aktionsschritte zuordnen',
+'manageActionSteps',
+'Jede Aktion kann mehrere Schritte beinhalten',
+1 , 1);
+
 --...e
 
 --...sFill formular_actions:0:
@@ -957,7 +981,9 @@ insert into formular_actions (formular, action, event) values(6, 7, 'evt_Print_C
 insert into formular_actions (formular, action, event) values(1, 4, 'evt_Manage_User_Apps');
 insert into formular_actions (formular, action, event) values(19, 5, 'evt_Manage_Apps_Forms');
 insert into formular_actions (formular, action, event) values(2, 6, 'evt_Manage_Form_Parameters');
-insert into formular_actions (formular, action, event) values(19, 8, 'evt_Manage_Apps_Parameters');
+insert into formular_actions (formular, action, event) values(2, 9, 'evt_Manage_Form_Actions');
+insert into formular_actions (formular, action, event) values(19, 7, 'evt_Manage_Apps_Parameters');
+insert into formular_actions (formular, action, event) values(24, 8, 'evt_Manage_Action_Steps');
 
 --...e
 
@@ -1089,6 +1115,11 @@ insert into Formular_Parameters (ParameterName, ParameterValue, FormularID) Valu
 'select * from anwendungs_parameter',
 28);
 
+insert into Formular_Parameters (ParameterName, ParameterValue, FormularID) Values (
+'query',
+'select * from action_steps',
+29);
+
 --...e
 --...sFill Anwendungs_Parameter:0:
 insert into Anwendungs_Parameter (ParameterName, ParameterValue, AnwendungID) Values ('DBName', 'trainres', 3);
@@ -1139,6 +1170,7 @@ insert into Anwendungen_Formulare (AnwendungID,FormularID) Values (5, 26);
 insert into Anwendungen_Formulare (AnwendungID,FormularID) Values (5, 27);
 insert into Anwendungen_Formulare (AnwendungID,FormularID) Values (1, 27);
 insert into Anwendungen_Formulare (AnwendungID,FormularID) Values (1, 28);
+insert into Anwendungen_Formulare (AnwendungID,FormularID) Values (1, 29);
 --...e
 --...sFill User_Anwendungen:0:
 insert into User_Anwendungen (userid, AnwendungenId) Values (1, 1);

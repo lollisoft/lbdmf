@@ -22,9 +22,9 @@
     The author of this work will be reached by e-Mail or paper mail.
     e-Mail: lothar.behrens@lollisoft.de
     p-Mail: Lothar Behrens
-            Rosmarinstr. 3
+            Heinrich-Scheufelen-Platz 2
             
-            40235 Duesseldorf (germany)
+            73252 Lenningen (germany)
 */
 /*...e*/
 
@@ -200,9 +200,12 @@ void LB_STDCALL lbAction::delegate(lb_I_Parameter* params) {
 	char* pluginModule = NULL;
 	
 	
-	UAP_REQUEST(manager.getPtr(), lb_I_String, id)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, id)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, parameter)
+	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
 		
+	lbBreak();
+				
 	if (actions == NULL) {
 		REQUEST(manager.getPtr(), lb_I_Container, actions)
 	}
@@ -298,11 +301,15 @@ void LB_STDCALL lbAction::delegate(lb_I_Parameter* params) {
 			QI(uk, lb_I_DelegatedAction, action)
 				
 			action->setActionID(id->charrep());	
+
+			wxString msg = wxString("Execute delegated action '") + wxString(action->getClassName()) + wxString("'");
+			meta->setStatusText("Info", msg);
+
 			action->execute(*&params);
 			
 			_CL_LOG << "References for delegated action are " << action->getRefCount() << "." LOG_
 				
-				err = query->next();
+			err = query->next();
 		}
 		
 		if (err == WARN_DB_NODATA) {
@@ -373,16 +380,21 @@ void LB_STDCALL lbAction::delegate(lb_I_Parameter* params) {
 			QI(uk, lb_I_DelegatedAction, action)
 			action->setActionID(id->charrep());
 			
-			_CL_LOG << "Execute delegated action..." LOG_
+			wxString msg = wxString("Execute delegated action '") + wxString(action->getClassName()) + wxString("'");
+			meta->setStatusText("Info", msg);
 				
 			action->execute(*&params);
 		}
+	} else {
+		wxString errmsg = wxString("Error: Query for action handlers didn't found any handlers.");
+		meta->setStatusText("Info", errmsg.c_str());
 	}
 }
 /*...e*/
 
 /*...svoid LB_STDCALL lbAction\58\\58\execute\40\lb_I_Parameter\42\ params\41\:0:*/
 void LB_STDCALL lbAction::execute(lb_I_Parameter* params) {
+	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
 	REQUEST(manager.getPtr(), lb_I_Database, db)
 	UAP(lb_I_Query, query)
 
@@ -403,7 +415,7 @@ void LB_STDCALL lbAction::execute(lb_I_Parameter* params) {
 	q[0] = 0;
 	sprintf(q, buf, myActionID);
 
-	_CL_LOG << "Get action steps from id = " << myActionID LOG_
+	_LOG << "Get action steps from id = " << myActionID << ". Query is " << q LOG_
 	
 	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
 
@@ -434,6 +446,9 @@ void LB_STDCALL lbAction::execute(lb_I_Parameter* params) {
 			
 			delegate(*&params);
 		}
+	} else {
+		wxString errmsg = wxString("Fehler: Abfrage '") + wxString(buf) + wxString("' hat keine Daten geliefert.!");
+		meta->setStatusText("Info", errmsg.c_str());
 	}
 }
 /*...e*/
@@ -758,8 +773,12 @@ void LB_STDCALL lbDetailFormAction::execute(lb_I_Parameter* params) {
 	}
 /*...e*/
 
+	UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
 	UAP_REQUEST(manager.getPtr(), lb_I_Database, database)
 	UAP(lb_I_Query, query)
+
+	wxString msg = wxString("lbDetailFormAction::execute(") + wxString(myActionID) + wxString(")");
+	meta->setStatusText("Info", msg.c_str());
 
 	database->init();
 
@@ -777,8 +796,6 @@ void LB_STDCALL lbDetailFormAction::execute(lb_I_Parameter* params) {
 	char* q = (char*) malloc(strlen(buf)+strlen(myActionID)+1);
 	q[0] = 0;
 	sprintf(q, buf, myActionID);
-
-	_CL_LOG << "lbDetailFormAction::execute(" << myActionID << ")" LOG_
 
 	if (query->query(q) == ERR_NONE) {
 	
@@ -811,6 +828,9 @@ void LB_STDCALL lbDetailFormAction::execute(lb_I_Parameter* params) {
 			openDetailForm(*&what, *&params);
 /*...e*/
 		}
+	} else {
+		wxString errmsg = wxString("lbDetailFormAction::execute(") + wxString(myActionID) + wxString(") failed.");
+		meta->setStatusText("Info", errmsg.c_str());
 	}
 }
 /*...e*/
@@ -1119,8 +1139,12 @@ void LB_STDCALL lbMasterFormAction::execute(lb_I_Parameter* params) {
 	}
 /*...e*/
 
+	UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
 	UAP_REQUEST(manager.getPtr(), lb_I_Database, database)
 	UAP(lb_I_Query, query)
+
+	wxString msg = wxString("lbMasterFormAction::execute(") + wxString(myActionID) + wxString(")");
+	meta->setStatusText("Info", msg.c_str());
 
 	database->init();
 
@@ -1166,6 +1190,9 @@ void LB_STDCALL lbMasterFormAction::execute(lb_I_Parameter* params) {
 			openMasterForm(*&what, *&params);
 /*...e*/
 		}
+	} else {
+		wxString errmsg = wxString("lbMasterFormAction::execute(") + wxString(myActionID) + wxString(") failed.");
+		meta->setStatusText("Info", errmsg.c_str());
 	}
 }
 /*...e*/
@@ -1210,5 +1237,8 @@ void LB_STDCALL lbSQLQueryAction::setActionID(char* id) {
 void LB_STDCALL lbSQLQueryAction::execute(lb_I_Parameter* params) {
 	_CL_LOG << "lbSQLQueryAction::execute()" LOG_
 	
+	UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
+	wxString msg = wxString("lbSQLQueryAction::execute(") + wxString(myActionID) + wxString(")");
+	meta->setStatusText("Info", msg.c_str());
 }
 /*...e*/

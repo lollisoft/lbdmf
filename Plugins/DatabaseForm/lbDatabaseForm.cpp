@@ -1157,7 +1157,8 @@ _CL_LOG << "Connect event handlers" LOG_
 	_CL_LOG << "lbDatabasePanel::init(...) ready. Move to first row." LOG_
 
 	if (sampleQuery->dataFetched()) {
-		lbDBFirst(NULL);
+		sampleQuery->first();
+		lbDBRead();
 	} else {
 		nextButton->Disable();
 		lastButton->Disable();
@@ -3118,6 +3119,10 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBDelete(lb_I_Unknown* uk) {
 lbErrCodes LB_STDCALL lbDatabasePanel::OnActionButton(lb_I_Unknown* uk) {
 	lbErrCodes err = ERR_NONE;
 	
+	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
+	
+	meta->setStatusText("Info", "Executing action ...");
+	
 /*...sDoc:8:*/
 	/*
 		An action button event may need some additional data to proceed.
@@ -3153,6 +3158,8 @@ lbErrCodes LB_STDCALL lbDatabasePanel::OnActionButton(lb_I_Unknown* uk) {
 		QI(uk, lb_I_Integer, eventID)
 		
 		UAP_REQUEST(manager.getPtr(), lb_I_EventManager, eman)
+
+		meta->setStatusText("Info", "Reversing event name to ID ...");
 		
 		char* eventName = (char*) strdup(eman->reverseEvent(eventID->getData()));
 		
@@ -3175,6 +3182,8 @@ lbErrCodes LB_STDCALL lbDatabasePanel::OnActionButton(lb_I_Unknown* uk) {
 
 		if (fa == NULL) fa = new FormularActions;	
 
+		meta->setStatusText("Info", "Lookup action source field ...");
+
 		s = fa->getActionSourceDataField(reversedEvent);
 
 		/*
@@ -3184,6 +3193,15 @@ lbErrCodes LB_STDCALL lbDatabasePanel::OnActionButton(lb_I_Unknown* uk) {
 		wxWindow* w = FindWindowByName(wxString(s), this);
 		
 		wxString value;
+		wxString errmsg;
+		
+		if (w == NULL) 	{
+			errmsg = wxString("Error: Didn't found a control with given name: ") + wxString(s);
+			meta->setStatusText("Info", errmsg.c_str());
+		} else {
+			errmsg = wxString("Found a control with given name: ") + wxString(s);
+			meta->setStatusText("Info", errmsg.c_str());
+		}
 		
 		if (sampleQuery->hasFKColumn(s) == 1) {
 /*...sGet the content from choice control:40:*/
@@ -3281,6 +3299,10 @@ lbErrCodes LB_STDCALL lbDatabasePanel::OnActionButton(lb_I_Unknown* uk) {
 		_CL_LOG << "Have these event: " << reversedEvent << "." LOG_		
 		_CL_LOG << "Have got source field: " << s << "." LOG_
 		_CL_LOG << "The value for the field is " << value.c_str() << "." LOG_		
+
+		errmsg = wxString("Data for the required field '") + wxString(s) + wxString("' is '") + value + wxString("'");
+		meta->setStatusText("Info", errmsg.c_str());
+
 
 /*...sShema doc for actions:16:*/
 		/*
@@ -3386,6 +3408,8 @@ lbErrCodes LB_STDCALL lbDatabasePanel::OnActionButton(lb_I_Unknown* uk) {
 
 		param->setUAPString(*&parameter, *&v);
 /*...e*/
+
+		meta->setStatusText("Info", errmsg.c_str());
 
 		action->execute(*&param);
 
