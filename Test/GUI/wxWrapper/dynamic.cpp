@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.133 2007/05/01 16:07:41 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.134 2007/05/11 21:21:02 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.133 $
+ * $Revision: 1.134 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.133 2007/05/01 16:07:41 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.134 2007/05/11 21:21:02 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.134  2007/05/11 21:21:02  lollisoft
+ * Linux compiler is more restrictive with const char*
+ *
  * Revision 1.133  2007/05/01 16:07:41  lollisoft
  * Added code to show left property bar.
  *
@@ -2091,10 +2094,11 @@ bool MyApp::OnInit(void)
 
     wxImage::AddHandler(new wxPNGHandler);
 
+    wxSplashScreen* splash;
     wxBitmap bitmap;
     if (bitmap.LoadFile("splash.png", wxBITMAP_TYPE_PNG))
     {
-      wxSplashScreen* splash = new wxSplashScreen(bitmap,
+          splash = new wxSplashScreen(bitmap,
           wxSPLASH_CENTRE_ON_SCREEN|wxSPLASH_TIMEOUT,
           6000, NULL, -1, wxDefaultPosition, wxDefaultSize,
           wxSIMPLE_BORDER|wxSTAY_ON_TOP);
@@ -2202,6 +2206,10 @@ bool MyApp::OnInit(void)
     }
 	
     frame->Show(TRUE);
+    
+#ifdef LINUX
+    if (splash != NULL) splash->Raise();
+#endif
 
     if (metaApp != NULL) metaApp->run();
 

@@ -2700,7 +2700,7 @@ public:
 	
 	virtual void LB_STDCALL addStatusBar_TextArea(char* name) = 0;
 	
-	virtual void LB_STDCALL setStatusText(char* name, char* value) = 0;
+	virtual void LB_STDCALL setStatusText(char* name, const char* value) = 0;
 	
 	/** \brief Let the GUI show the given parameters in a property panel.
 	 *

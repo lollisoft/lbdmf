@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.108 $
+ * $Revision: 1.109 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.108 2007/05/01 08:39:21 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.109 2007/05/11 21:21:01 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.109  2007/05/11 21:21:01  lollisoft
+ * Linux compiler is more restrictive with const char*
+ *
  * Revision 1.108  2007/05/01 08:39:21  lollisoft
  * Added more propertypanel functionality.
  *
@@ -1742,7 +1745,7 @@ void LB_STDCALL lb_MetaApplication::addStatusBar_TextArea(char* name) {
 }
 /*...e*/
 /*...svoid LB_STDCALL lb_MetaApplication\58\\58\setStatusText\40\char\42\ name\44\ char\42\ value\41\:0:*/
-void LB_STDCALL lb_MetaApplication::setStatusText(char* name, char* value) {
+void LB_STDCALL lb_MetaApplication::setStatusText(char* name, const char* value) {
 	lbErrCodes err = ERR_NONE;
 	
 	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)

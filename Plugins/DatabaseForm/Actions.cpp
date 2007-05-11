@@ -204,8 +204,6 @@ void LB_STDCALL lbAction::delegate(lb_I_Parameter* params) {
 	UAP_REQUEST(getModuleInstance(), lb_I_String, parameter)
 	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
 		
-	lbBreak();
-				
 	if (actions == NULL) {
 		REQUEST(manager.getPtr(), lb_I_Container, actions)
 	}
@@ -303,7 +301,7 @@ void LB_STDCALL lbAction::delegate(lb_I_Parameter* params) {
 			action->setActionID(id->charrep());	
 
 			wxString msg = wxString("Execute delegated action '") + wxString(action->getClassName()) + wxString("'");
-			meta->setStatusText("Info", msg);
+			meta->setStatusText("Info", msg.c_str());
 
 			action->execute(*&params);
 			
@@ -381,7 +379,7 @@ void LB_STDCALL lbAction::delegate(lb_I_Parameter* params) {
 			action->setActionID(id->charrep());
 			
 			wxString msg = wxString("Execute delegated action '") + wxString(action->getClassName()) + wxString("'");
-			meta->setStatusText("Info", msg);
+			meta->setStatusText("Info", msg.c_str());
 				
 			action->execute(*&params);
 		}
@@ -1239,6 +1237,6 @@ void LB_STDCALL lbSQLQueryAction::execute(lb_I_Parameter* params) {
 	
 	UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
 	wxString msg = wxString("lbSQLQueryAction::execute(") + wxString(myActionID) + wxString(")");
-	meta->setStatusText("Info", msg.c_str());
+	meta->setStatusText("Info", (char*) msg.c_str());
 }
 /*...e*/

@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.47 $
+ * $Revision: 1.48 $
  * $Name:  $
- * $Id: lbMetaApplication.h,v 1.47 2007/05/01 08:39:21 lollisoft Exp $
+ * $Id: lbMetaApplication.h,v 1.48 2007/05/11 21:21:02 lollisoft Exp $
  *
  * $Log: lbMetaApplication.h,v $
+ * Revision 1.48  2007/05/11 21:21:02  lollisoft
+ * Linux compiler is more restrictive with const char*
+ *
  * Revision 1.47  2007/05/01 08:39:21  lollisoft
  * Added more propertypanel functionality.
  *
@@ -328,7 +331,7 @@ public:
 	
 	void LB_STDCALL addStatusBar_TextArea(char* name);
 	
-	void LB_STDCALL setStatusText(char* name, char* value);
+	void LB_STDCALL setStatusText(char* name, const char* value);
 
 	
 	lbErrCodes LB_STDCALL enableEvent(char* name);
