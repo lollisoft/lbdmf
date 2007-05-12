@@ -86,6 +86,8 @@ public:
 
 	virtual void LB_STDCALL show() = 0;
 	virtual void LB_STDCALL destroy() = 0;
+	
+	virtual char* LB_STDCALL getFormName() = 0;
 };
 /*...e*/
 class lb_I_GUIApp {
