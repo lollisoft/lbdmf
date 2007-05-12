@@ -1778,6 +1778,7 @@ void LB_STDCALL lbDatabasePanel::updateFromMaster() {
 /*...svoid LB_STDCALL lbDatabasePanel\58\\58\updateFromDetail\40\\41\:0:*/
 void LB_STDCALL lbDatabasePanel::updateFromDetail() {
 	lbErrCodes err = ERR_NONE;
+	UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
 	
 	UAP_REQUEST(manager.getPtr(), lb_I_String, newWhereClause)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, newMasterIDQuery)
@@ -1816,8 +1817,6 @@ void LB_STDCALL lbDatabasePanel::updateFromDetail() {
 	parameter->setData("actionID");
 	_params->getUAPString(*&parameter, *&actionID);
 	if (actionID->charrep() == NULL) {
-		UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
-
 		meta->msgBox(_trans("Error"), _trans("No action ID has been transferred!"));
 	}
 /*...e*/
@@ -1826,7 +1825,7 @@ void LB_STDCALL lbDatabasePanel::updateFromDetail() {
 	SourceFieldName->trim();
 	SourceFieldValue->trim();
 
-	_CL_LOG << "Have detail form '" << detailForm->charrep() << 
+	_LOG << "Have detail form '" << detailForm->charrep() << 
 	           "', source field name '" << SourceFieldName->charrep() << 
 	           "' and source field value '" << SourceFieldValue->charrep() <<
 	           "' for master form '" << formName << "'" LOG_
@@ -1886,8 +1885,6 @@ void LB_STDCALL lbDatabasePanel::updateFromDetail() {
 		*newMasterIDQuery += colName->charrep();
 	}
 
-	free(sourceTable);
-	
 	*newMasterIDQuery += " from ";
 	*newMasterIDQuery += _detail->getTableName(SourceFieldName->charrep());
 	*newMasterIDQuery += " where ";
@@ -1903,7 +1900,7 @@ void LB_STDCALL lbDatabasePanel::updateFromDetail() {
 	if (isChar) *newMasterIDQuery += "'";
 /*...e*/
 	
-	_CL_LOG << "lbDatabasePanel::updateFromDetail() generated new master id query: \n'" <<
+	_LOG << "lbDatabasePanel::updateFromDetail() generated new master id query: \n'" <<
 		newMasterIDQuery->charrep() << "'" LOG_
 
 	if (MasterDetailRelationData == NULL) {
@@ -1915,16 +1912,26 @@ void LB_STDCALL lbDatabasePanel::updateFromDetail() {
 /*...sRetrieve the values from the primary keys and build up the where clause to be used in detail form:8:*/
 	REQUEST(manager.getPtr(), lb_I_Database, database)
 	UAP(lb_I_Query, PKQuery)
+	UAP(lb_I_Query, sourceTableQuery)
 
 	database->init();
 	database->connect(DBName->charrep(), DBUser->charrep(), DBPass->charrep());
 
 	PKQuery = database->getQuery(0);
+	sourceTableQuery = database->getQuery(0);
 
 	err = PKQuery->query(newMasterIDQuery->charrep());
 
-	if (err == ERR_NONE) {
+	UAP_REQUEST(getModuleInstance(), lb_I_String, st)
 
+	if (sourceTableQuery->query(getQuery()) != ERR_NONE) {
+		*st = "Unknown table";
+		meta->setStatusText("Info", "Error: Could not get table name of target formular!");
+	} else {
+		*st = sourceTableQuery->getTableName(sourceTableQuery->getColumnName(0));
+	}
+
+	if (err == ERR_NONE) {
 		UAP_REQUEST(manager.getPtr(), lb_I_String, colName)
 		UAP(lb_I_String, colValue)
 
@@ -1934,6 +1941,7 @@ void LB_STDCALL lbDatabasePanel::updateFromDetail() {
 
 
 		while (err == ERR_NONE) {
+			int subClause = 0;
 			*newWhereClause += "(";
 			
 			for (int i = 1; i <= columns-1; i++) {
@@ -1944,35 +1952,47 @@ void LB_STDCALL lbDatabasePanel::updateFromDetail() {
 				bool isChar = PKQuery->getColumnType(i) == lb_I_Query::lbDBColumnChar;
 		
 				UAP(lb_I_String, fk)
+				UAP(lb_I_String, pt)
 		
-				fk = PKQuery->getPKColumn(colName->charrep());
-				*newWhereClause += fk->charrep();
-
-				wxWindow* w = FindWindowByName(wxString(fk->charrep()), this);
-				if (w) w->Hide();
-				w = FindWindowByName(wxString(fk->charrep())+wxString("_lbl"), this);
-				if (w) w->Hide();
-
-				if (isChar) 
-					*newWhereClause += " = '";
-				else
-					*newWhereClause += " = ";
-	
-				*newWhereClause += colValue->charrep();
-			
-				if (isChar) *newWhereClause += "'";
-			
-				*newWhereClause += " and ";
-
-				UAP(lb_I_Unknown, uk_colValue)
-				UAP(lb_I_KeyBase, key_fk)
+				pt = PKQuery->getPKTable(colName->charrep());
 				
-				QI(colValue, lb_I_Unknown, uk_colValue)
-				QI(fk, lb_I_KeyBase, key_fk)
+				_LOG << "Compare strings '" << pt->charrep() << "' == '" << st->charrep() << "'." LOG_
+				
+				if (*pt == *&st) {
+					if (subClause == 0) {
+						subClause++;
+					} else {
+						*newWhereClause += " and ";
+						subClause++;				
+					}
+				
+					fk = PKQuery->getPKColumn(colName->charrep());
+					*newWhereClause += fk->charrep();
 
-				MasterDetailRelationData->insert(&uk_colValue, &key_fk);
+					wxWindow* w = FindWindowByName(wxString(fk->charrep()), this);
+					if (w) w->Hide();
+					w = FindWindowByName(wxString(fk->charrep())+wxString("_lbl"), this);
+					if (w) w->Hide();
 
-				_CL_VERBOSE << "Set control '" << fk->charrep() << "' to '" << colValue->charrep() << "'" LOG_
+					if (isChar) 
+						*newWhereClause += " = '";
+					else
+						*newWhereClause += " = ";
+	
+					*newWhereClause += colValue->charrep();
+			
+					if (isChar) *newWhereClause += "'";
+			
+					UAP(lb_I_Unknown, uk_colValue)
+					UAP(lb_I_KeyBase, key_fk)
+				
+					QI(colValue, lb_I_Unknown, uk_colValue)
+					QI(fk, lb_I_KeyBase, key_fk)
+
+					MasterDetailRelationData->insert(&uk_colValue, &key_fk);
+
+					_CL_VERBOSE << "Set control '" << fk->charrep() << "' to '" << colValue->charrep() << "'" LOG_
+				}
 /*...e*/
 			}
 
@@ -1984,34 +2004,47 @@ void LB_STDCALL lbDatabasePanel::updateFromDetail() {
 		
 				UAP(lb_I_String, fk)
 		
-				fk = PKQuery->getPKColumn(colName->charrep());
-				*newWhereClause += fk->charrep();
-
-				wxWindow* w = FindWindowByName(wxString(fk->charrep()), this);
-				if (w) w->Hide();
-				w = FindWindowByName(wxString(fk->charrep())+wxString("_lbl"), this);
-				if (w) w->Hide();
-
-				if (isChar) 
-					*newWhereClause += " = '";
-				else
-					*newWhereClause += " = ";
-	
-				*newWhereClause += colValue->charrep();
-			
-				if (isChar) *newWhereClause += "'";
-			
-				//*newWhereClause += " and ";
-
-				UAP(lb_I_Unknown, uk_colValue)
-				UAP(lb_I_KeyBase, key_fk)
+				UAP(lb_I_String, pt)
 				
-				QI(colValue, lb_I_Unknown, uk_colValue)
-				QI(fk, lb_I_KeyBase, key_fk)
+				pt = PKQuery->getPKTable(colName->charrep());
+				
+				_LOG << "Compare strings '" << pt->charrep() << "' == '" << st->charrep() << "'." LOG_
 
-				MasterDetailRelationData->insert(&uk_colValue, &key_fk);
+				if (*pt == *&st) {
+					if (subClause == 0) {
+						subClause++;
+					} else {
+						*newWhereClause += " and ";
+						subClause++;				
+					}
 
-				_CL_VERBOSE << "Set control '" << fk->charrep() << "' to '" << colValue->charrep() << "'" LOG_
+					fk = PKQuery->getPKColumn(colName->charrep());
+					*newWhereClause += fk->charrep();
+
+					wxWindow* w = FindWindowByName(wxString(fk->charrep()), this);
+					if (w) w->Hide();
+					w = FindWindowByName(wxString(fk->charrep())+wxString("_lbl"), this);
+					if (w) w->Hide();
+
+					if (isChar) 
+						*newWhereClause += " = '";
+					else
+						*newWhereClause += " = ";
+	
+					*newWhereClause += colValue->charrep();
+			
+					if (isChar) *newWhereClause += "'";
+			
+					UAP(lb_I_Unknown, uk_colValue)
+					UAP(lb_I_KeyBase, key_fk)
+				
+					QI(colValue, lb_I_Unknown, uk_colValue)
+					QI(fk, lb_I_KeyBase, key_fk)
+
+					MasterDetailRelationData->insert(&uk_colValue, &key_fk);
+
+					_CL_VERBOSE << "Set control '" << fk->charrep() << "' to '" << colValue->charrep() << "'" LOG_
+				}
 /*...e*/
 			
 			*newWhereClause += ") or ";
@@ -2020,6 +2053,7 @@ void LB_STDCALL lbDatabasePanel::updateFromDetail() {
 		}
 		
 		if (err == WARN_DB_NODATA) {
+			int subClause = 0;
 			*newWhereClause += "(";
 			
 			for (int i = 1; i <= columns-1; i++) {
@@ -2030,35 +2064,46 @@ void LB_STDCALL lbDatabasePanel::updateFromDetail() {
 				bool isChar = PKQuery->getColumnType(i) == lb_I_Query::lbDBColumnChar;
 		
 				UAP(lb_I_String, fk)
-		
-				fk = PKQuery->getPKColumn(colName->charrep());
-				*newWhereClause += fk->charrep();
-
-				wxWindow* w = FindWindowByName(wxString(fk->charrep()), this);
-				if (w) w->Hide();
-				w = FindWindowByName(wxString(fk->charrep())+wxString("_lbl"), this);
-				if (w) w->Hide();
-
-				if (isChar) 
-					*newWhereClause += " = '";
-				else
-					*newWhereClause += " = ";
-	
-				*newWhereClause += colValue->charrep();
-			
-				if (isChar) *newWhereClause += "'";
-			
-				*newWhereClause += " and ";
-
-				UAP(lb_I_Unknown, uk_colValue)
-				UAP(lb_I_KeyBase, key_fk)
+				UAP(lb_I_String, pt)
 				
-				QI(colValue, lb_I_Unknown, uk_colValue)
-				QI(fk, lb_I_KeyBase, key_fk)
+				pt = PKQuery->getPKTable(colName->charrep());
+				
+				_LOG << "Compare strings '" << pt->charrep() << "' == '" << st->charrep() << "'." LOG_
 
-				MasterDetailRelationData->insert(&uk_colValue, &key_fk);
+				if (*pt == *&st) {
+					if (subClause == 0) {
+						subClause++;
+					} else {
+						*newWhereClause += " and ";
+						subClause++;				
+					}
+					fk = PKQuery->getPKColumn(colName->charrep());
+					*newWhereClause += fk->charrep();
 
-				_CL_VERBOSE << "Set control '" << fk->charrep() << "' to '" << colValue->charrep() << "'" LOG_
+					wxWindow* w = FindWindowByName(wxString(fk->charrep()), this);
+					if (w) w->Hide();
+					w = FindWindowByName(wxString(fk->charrep())+wxString("_lbl"), this);
+					if (w) w->Hide();
+
+					if (isChar) 
+						*newWhereClause += " = '";
+					else
+						*newWhereClause += " = ";
+	
+					*newWhereClause += colValue->charrep();
+			
+					if (isChar) *newWhereClause += "'";
+			
+					UAP(lb_I_Unknown, uk_colValue)
+					UAP(lb_I_KeyBase, key_fk)
+				
+					QI(colValue, lb_I_Unknown, uk_colValue)
+					QI(fk, lb_I_KeyBase, key_fk)
+
+					MasterDetailRelationData->insert(&uk_colValue, &key_fk);
+
+					_CL_VERBOSE << "Set control '" << fk->charrep() << "' to '" << colValue->charrep() << "'" LOG_
+				}
 /*...e*/
 			}
 			
@@ -2069,35 +2114,47 @@ void LB_STDCALL lbDatabasePanel::updateFromDetail() {
 				bool isChar = PKQuery->getColumnType(columns) == lb_I_Query::lbDBColumnChar;
 		
 				UAP(lb_I_String, fk)
-		
-				fk = PKQuery->getPKColumn(colName->charrep());
-				*newWhereClause += fk->charrep();
-
-				wxWindow* w = FindWindowByName(wxString(fk->charrep()), this);
-				if (w) w->Hide();
-				w = FindWindowByName(wxString(fk->charrep())+wxString("_lbl"), this);
-				if (w) w->Hide();
-
-				if (isChar) 
-					*newWhereClause += " = '";
-				else
-					*newWhereClause += " = ";
-	
-				*newWhereClause += colValue->charrep();
-			
-				if (isChar) *newWhereClause += "'";
-			
-				//*newWhereClause += " and ";
-
-				UAP(lb_I_Unknown, uk_colValue)
-				UAP(lb_I_KeyBase, key_fk)
+				UAP(lb_I_String, pt)
 				
-				QI(colValue, lb_I_Unknown, uk_colValue)
-				QI(fk, lb_I_KeyBase, key_fk)
+				pt = PKQuery->getPKTable(colName->charrep());
+				
+				_LOG << "Compare strings '" << pt->charrep() << "' == '" << st->charrep() << "'." LOG_
 
-				MasterDetailRelationData->insert(&uk_colValue, &key_fk);
+				if (*pt == *&st) {
+					if (subClause == 0) {
+						subClause++;
+					} else {
+						*newWhereClause += " and ";
+						subClause++;				
+					}
 
-				_CL_VERBOSE << "Set control '" << fk->charrep() << "' to '" << colValue->charrep() << "'" LOG_
+					fk = PKQuery->getPKColumn(colName->charrep());
+					*newWhereClause += fk->charrep();
+
+					wxWindow* w = FindWindowByName(wxString(fk->charrep()), this);
+					if (w) w->Hide();
+					w = FindWindowByName(wxString(fk->charrep())+wxString("_lbl"), this);
+					if (w) w->Hide();
+
+					if (isChar) 
+						*newWhereClause += " = '";
+					else
+						*newWhereClause += " = ";
+	
+					*newWhereClause += colValue->charrep();
+			
+					if (isChar) *newWhereClause += "'";
+			
+					UAP(lb_I_Unknown, uk_colValue)
+					UAP(lb_I_KeyBase, key_fk)
+				
+					QI(colValue, lb_I_Unknown, uk_colValue)
+					QI(fk, lb_I_KeyBase, key_fk)
+
+					MasterDetailRelationData->insert(&uk_colValue, &key_fk);
+
+					_CL_VERBOSE << "Set control '" << fk->charrep() << "' to '" << colValue->charrep() << "'" LOG_
+				}
 /*...e*/
 
 			*newWhereClause += ")";
@@ -2109,11 +2166,13 @@ void LB_STDCALL lbDatabasePanel::updateFromDetail() {
 	}
 /*...e*/
 
+	free(sourceTable);
+
 	newQuery->setData(getQuery());
 	
 	*newQuery += newWhereClause->charrep();
 	
-	_CL_LOG << "Have new query for detail form: '" << newQuery->charrep() << "'" LOG_
+	_LOG << "Have new query for detail form: '" << newQuery->charrep() << "'" LOG_
 	
 	sampleQuery = database->getQuery(0);
 
@@ -3422,6 +3481,7 @@ lbErrCodes LB_STDCALL lbDatabasePanel::OnActionButton(lb_I_Unknown* uk) {
 }
 /*...e*/
 
+/*...svoid lbDatabasePanel\58\\58\OnImageButtonClick\40\wxCommandEvent\38\ event \41\:0:*/
 void lbDatabasePanel::OnImageButtonClick(wxCommandEvent& event ) {
 
 	wxObject* o = event.GetEventObject();
@@ -3483,6 +3543,7 @@ void lbDatabasePanel::OnImageButtonClick(wxCommandEvent& event ) {
 	}
 
 }
+/*...e*/
 
 /*...svoid \9\\9\  lbDatabasePanel\58\\58\OnDispatch\40\wxCommandEvent\38\ event \41\:0:*/
 void lbDatabasePanel::OnDispatch(wxCommandEvent& event ) {
@@ -3839,6 +3900,10 @@ lbErrCodes LB_STDCALL lbDatabaseDialog::setName(char const * name, char const * 
 	return panel->setName(name, appention);
 }
 /*...e*/
+
+char*      LB_STDCALL lbDatabaseDialog::getFormName() {
+	return panel->getFormName();
+}
 
 /*...schar\42\ LB_STDCALL lbDatabaseDialog\58\\58\getQuery\40\\41\:0:*/
 char* LB_STDCALL lbDatabaseDialog::getQuery() {
