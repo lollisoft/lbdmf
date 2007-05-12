@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.74 $
+ * $Revision: 1.75 $
  * $Name:  $
- * $Id: lbInterfaces-sub-classes.h,v 1.74 2007/04/22 13:43:37 lollisoft Exp $
+ * $Id: lbInterfaces-sub-classes.h,v 1.75 2007/05/12 17:44:02 lollisoft Exp $
  *
  * $Log: lbInterfaces-sub-classes.h,v $
+ * Revision 1.75  2007/05/12 17:44:02  lollisoft
+ * Added equal operators to lb_I_String interface.
+ *
  * Revision 1.74  2007/04/22 13:43:37  lollisoft
  * Many changes relating threads and client server code.
  *
@@ -548,17 +551,20 @@ public:
          */
         virtual lbErrCodes LB_STDCALL setData( lb_I_Unknown * uk) = 0;
         
-		/** \brief Adds the given char* array.
-		 *
-		 */
-		virtual lb_I_String& LB_STDCALL operator += (const char* toAppend) = 0;
-		
-		virtual lb_I_String& LB_STDCALL operator = (const char* toAppend) = 0;
+	/** \brief Adds the given char* array.
+	 *
+	 */
+	virtual lb_I_String& LB_STDCALL operator += (const char* toAppend) = 0;
+	
+	virtual lb_I_String& LB_STDCALL operator = (const char* toAppend) = 0;
 
+	virtual int LB_STDCALL operator == (const char* toCompare) const = 0;
 
-		virtual lb_I_String& LB_STDCALL operator += (const lb_I_String* toAppend) = 0;
+	virtual int LB_STDCALL operator == (const lb_I_String* toCompare) const = 0;
+
+	virtual lb_I_String& LB_STDCALL operator += (const lb_I_String* toAppend) = 0;
 		
-		virtual lb_I_String& LB_STDCALL operator = (const lb_I_String* toAppend) = 0;
+	virtual lb_I_String& LB_STDCALL operator = (const lb_I_String* toAppend) = 0;
 };
 /*...e*/
 /*...sclass lb_I_FileLocation:0:*/
