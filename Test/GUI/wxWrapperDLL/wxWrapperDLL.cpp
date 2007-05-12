@@ -1133,11 +1133,14 @@ lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::findDBForm(char* name) {
 void LB_STDCALL lb_wxGUI::showForm(char* name) {
 	if (frame->isPanelUsage()) {
 		int num = notebook->GetPageCount();
+		
+		lb_I_DatabaseForm* f = findDBForm(name);
+		
 		for (int i = 0; i < num; i++) {
-		    if (strncmp(notebook->GetPageText(i).c_str(), name, strlen(name)) == 0) {
-				notebook->SetPageText(i, notebook->GetPageText(i));
+		    if ((strncmp(notebook->GetPageText(i).c_str(), name, strlen(name)) == 0)) {
+				notebook->SetPageText(i, f->getFormName());
 				notebook->SetSelection(i);
-			}
+		    }
 		}
 	} else {
 		lb_I_DatabaseForm* f = findDBForm(name);
