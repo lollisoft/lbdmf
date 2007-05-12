@@ -30,11 +30,15 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.34 $
+ * $Revision: 1.35 $
  * $Name:  $
- * $Id: lbDatabaseForm.h,v 1.34 2007/02/11 22:37:29 lollisoft Exp $
+ * $Id: lbDatabaseForm.h,v 1.35 2007/05/12 17:50:32 lollisoft Exp $
  *
  * $Log: lbDatabaseForm.h,v $
+ * Revision 1.35  2007/05/12 17:50:32  lollisoft
+ * Added getFormName to enable bugfix in wxWrapperDLL.cpp.
+ * Will also be usefull in general.
+ *
  * Revision 1.34  2007/02/11 22:37:29  lollisoft
  * Working icon configuration on formulars.
  * These icons would be shown in toolbar.
@@ -778,6 +782,8 @@ public:
 	virtual ~lbDatabaseDialog();
 
 	lbErrCodes LB_STDCALL setName(char const * name, char const * appention);
+
+	char*      LB_STDCALL getFormName();
 
 	lbErrCodes LB_STDCALL addButton(char* buttonText, char* evHandler, int x, int y, int w, int h) { return ERR_NONE; };
 	lbErrCodes LB_STDCALL addLabel(char* text, int x, int y, int w, int h) { return ERR_NONE; };
