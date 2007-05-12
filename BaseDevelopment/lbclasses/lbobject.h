@@ -31,10 +31,13 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.36 $
+ * $Revision: 1.37 $
  * $Name:  $
- * $Id: lbobject.h,v 1.36 2007/02/03 11:04:36 lollisoft Exp $
+ * $Id: lbobject.h,v 1.37 2007/05/12 17:46:51 lollisoft Exp $
  * $Log: lbobject.h,v $
+ * Revision 1.37  2007/05/12 17:46:51  lollisoft
+ * Added equal operators to lb_I_String implementation.
+ *
  * Revision 1.36  2007/02/03 11:04:36  lollisoft
  * Implemented directory location property handler. This is used in lbMetaApplication.
  *
@@ -373,6 +376,10 @@ public:
 
 	lb_I_String& LB_STDCALL operator += (const lb_I_String* toAppend);
 	lb_I_String& LB_STDCALL operator = (const lb_I_String* toAppend);
+
+	int LB_STDCALL operator == (const char* toCompare) const;
+	int LB_STDCALL operator == (const lb_I_String* toCompare) const;
+	
 
 	DECLARE_LB_KEYBASE()
 

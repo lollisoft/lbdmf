@@ -732,6 +732,14 @@ lb_I_String& LB_STDCALL lbString::operator += (const char* toAppend) {
 	return *this;
 }
 
+int LB_STDCALL lbString::operator == (const char* toCompare) const {
+	return strcmp(charrep(), toCompare) == 0;
+}
+
+int LB_STDCALL lbString::operator == (const lb_I_String* toCompare) const {
+	return strcmp(charrep(), toCompare->charrep()) == 0;
+}
+
 lb_I_String& LB_STDCALL lbString::operator = (const lb_I_String* toAppend) {
 		return *this = toAppend->charrep();
 }
