@@ -125,7 +125,7 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::save(lb_I_OutputStream* oStre
 	UAP(lb_I_Aspect, aspect)
 	QI(op, lb_I_Aspect, aspect)
 
-	UAP(lb_I_Uknkown, uk)
+	UAP(lb_I_Unknown, uk)
 
 	UAP(lb_I_Formulars, forms)
 	UAP(lb_I_FormularParameter, formParams)
@@ -134,16 +134,15 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::save(lb_I_OutputStream* oStre
 	UAP(lb_I_Action_Steps, appActionSteps)
 	UAP(lb_I_Action_Types, appActionTypes)
 
-	UAP_REQUEST(getMuduleInstance(), lb_I_MetaApplication, meta)
+	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
 	
 	UAP(lb_I_Unknown, ukDoc)
-	UAP(lb_I_Parameter, document)
+	UAP(lb_I_Container, document)
 	ukDoc = meta->getActiveDocument();
-	QI(ukDoc, lb_I_Parameter, document)
+	QI(ukDoc, lb_I_Container, document)
 
 	UAP_REQUEST(getModuleInstance(), lb_I_String, name)
 
-	UAP(lb_I_Unknown, uk)
 	UAP(lb_I_KeyBase, key)
 	QI(name, lb_I_KeyBase, key)
 			
