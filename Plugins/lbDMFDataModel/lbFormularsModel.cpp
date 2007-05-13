@@ -69,7 +69,6 @@ lbFormularsModel::~lbFormularsModel() {
 
 lbErrCodes LB_STDCALL lbFormularsModel::setData(lb_I_Unknown*) {
 	_LOG << "Error: lbFormularsModel::setData(lb_I_Unknown*) not implemented." LOG_
-	lbBreak();
 	return ERR_NOT_IMPLEMENTED;
 }
 
