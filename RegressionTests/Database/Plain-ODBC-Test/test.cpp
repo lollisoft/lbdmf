@@ -593,6 +593,11 @@ int main(void)
 	
 	printf("Number of columns: %d.\n", count);
 	
+	// Force an error
+	char* columnName = getColumnName(hstmt_select, 0);
+	
+	printf("Have got column name '%s' for column 0\n", columnName);
+	
 	PrintData(hstmt_select, count, false);
 	
 	first( hstmt_select);
