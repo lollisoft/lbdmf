@@ -172,6 +172,8 @@ public:
 	/**
 	 * \brief Get the name of a column.
 	 *
+	 * The first column is 1. 
+	 *
 	 * \param col Integer index of the column.
 	 */
 	virtual char*      LB_STDCALL getColumnName(int col) = 0;
