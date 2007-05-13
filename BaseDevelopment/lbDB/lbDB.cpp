@@ -2624,6 +2624,16 @@ bool LB_STDCALL lbQuery::getReadonly(char* column) {
 /*...schar\42\ LB_STDCALL lbQuery\58\\58\getTableName\40\char\42\ columnName\41\:0:*/
 char* LB_STDCALL lbQuery::getTableName(char* columnName) {
 		
+		if (columnName == NULL) {
+			_LOG << "Error: lbQuery::getTableName(char* columnName) called with a NULL pointer as parameter." LOG_
+			return "";
+		}
+		
+		if (strlen(columnName) == 0) {
+			_LOG << "Error: lbQuery::getTableName(char* columnName) called with an empty string as parameter." LOG_
+			return "";
+		}
+		
 		SQLHSTMT	StatementHandle;
 		SQLUSMALLINT	ColumnNumber;
 		SQLUSMALLINT	FieldIdentifier;
