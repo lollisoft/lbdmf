@@ -1,3 +1,33 @@
+/*...sLicence:0:*/
+/*
+    DMF Distributed Multiplatform Framework (the initial goal of this library)
+    This file is part of lbDMF.
+    Copyright (C) 2002  Lothar Behrens (lothar.behrens@lollisoft.de)
+
+    This library is free software; you can redistribute it and/or
+    modify it under the terms of the GNU Lesser General Public
+    License as published by the Free Software Foundation; either
+    version 2.1 of the License, or (at your option) any later version.
+
+    This library is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+    Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public
+    License along with this library; if not, write to the Free Software
+    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+
+    The author of this work will be reached by e-Mail or paper mail.
+    e-Mail: lothar.behrens@lollisoft.de
+    p-Mail: Lothar Behrens
+            Heinrich-Scheufelen-Platz 2
+            
+            73252 Lenningen (germany)
+*/
+/*...e*/
+
 /*...sincludes:0:*/
 
 
@@ -74,6 +104,7 @@ public:
 	 * \brief The main handler to create dynamic forms
 	 */
 	lbErrCodes LB_STDCALL getDynamicDBForm(lb_I_Unknown* uk);
+	lbErrCodes LB_STDCALL exportApplicationToXML(lb_I_Unknown* uk);
 
 protected:
 	lb_I_GUI* gui;
@@ -128,6 +159,75 @@ lbErrCodes LB_STDCALL lbDynamicApplication::registerEventHandler(lb_I_Dispatcher
 /*...e*/
 
 /*...sevent handlers\44\ that can be registered:0:*/
+lbErrCodes LB_STDCALL lbDynamicApplication::exportApplicationToXML(lb_I_Unknown* uk) {
+	lbErrCodes err = ERR_NONE;
+
+	UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+	UAP(lb_I_Plugin, pl)
+	UAP(lb_I_Unknown, ukPl)
+
+	if (metaapp == NULL) {
+		REQUEST(manager.getPtr(), lb_I_MetaApplication, metaapp)
+	}
+	
+	metaapp->setStatusText("Info", "Exporting to XML ...");
+	
+	// Need to derive filename from given application name
+	UAP_REQUEST(manager.getPtr(), lb_I_String, filename)
+	*filename = LogonApplication->charrep();
+	*filename += ".dax"; // Dynamic application forms 
+	
+	
+	// Get the active document and set temporary a different storage handler (daf)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, param)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, StorageInterface)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, StorageNamespace)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, tempStorageInterface)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, tempStorageNamespace)
+	UAP(lb_I_Unknown, ukDoc)
+	UAP(lb_I_Parameter, document)
+	ukDoc = metaapp->getActiveDocument();
+	QI(ukDoc, lb_I_Parameter, document)
+		
+	if (document != NULL) {
+		*param = "StorageDelegateNamespace";
+		document->getUAPString(*&param, *&StorageNamespace);
+			
+		*tempStorageNamespace = "lbDynAppXMLFormat";
+		document->setUAPString(*&param, *&tempStorageNamespace);
+	}
+	
+	
+	pl = PM->getFirstMatchingPlugin("lb_I_FileOperation", "XMLOutputStreamVisitor");
+	
+	if (pl == NULL) {
+		_LOG << "Error: Could not save dynamic application data. No plugin found." LOG_
+		return ERR_FILE_WRITE;
+	}
+	
+	if (pl != NULL) {
+		ukPl = pl->getImplementation();
+		
+		UAP(lb_I_FileOperation, fOp)
+			
+			QI(ukPl, lb_I_FileOperation, fOp)
+			
+			if (fOp != NULL) {
+				bool success = false;
+				
+				success = fOp->begin(filename->charrep()); 
+				
+				if (success) {
+					accept(*&fOp);
+					fOp->end();
+				} else {
+					// No file found. Create one from database...
+				}
+			}
+	}
+	return err;
+}
+
 lbErrCodes LB_STDCALL lbDynamicApplication::getDynamicDBForm(lb_I_Unknown* uk) {
 	lbErrCodes err = ERR_NONE;
 	
@@ -865,7 +965,23 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 		
 		// Test if the lbDynamicAppStorage plugin is available. If so, add a menu entry for application export.
 		
-		
+		UAP(lb_I_Plugin, plDynamicAppStorage)
+		UAP(lb_I_Unknown, ukPlDynamicAppStorage)
+
+		plDynamicAppStorage = PM->getFirstMatchingPlugin("lb_I_StandaloneStreamable", "lbDynAppXMLFormat");
+		if (plDynamicAppStorage != NULL) {
+			ukPlDynamicAppStorage = plDynamicAppStorage->getImplementation();
+			
+			if (eman->resolveEvent("evtExportApplicationToXML", unused) == ERR_EVENT_NOTREGISTERED) {
+				eman->registerEvent("evtExportApplicationToXML", unused);
+			
+				dispatcher->addEventHandlerFn(this, 
+					(lbEvHandler) &lbDynamicApplication::exportApplicationToXML, "evtExportApplicationToXML");
+			
+				metaapp->addMenuEntry(_trans("&File"), "export Application to XML", "evtExportApplicationToXML", "");
+			}
+		}
+
 		
 /*...e*/
 	} else {
