@@ -223,6 +223,8 @@ bool LB_STDCALL lbXMLOutputStream::begin(char* file) {
 		oStream->setFileName(file);
 		bool ret = oStream->open();
 
+		oStream->setBinary();		
+
 		if (!ret) {
 			_CL_LOG << "lbXMLOutputStream::begin(" << file << ") Error: Open file failed." LOG_
 		}
@@ -259,20 +261,20 @@ void LB_STDCALL lbXMLOutputStream::visit(lb_I_Streamable* pm) {
 }
 
 void LB_STDCALL lbXMLOutputStream::visit(lb_I_UserAccounts* users) {
-	*oStream << "<users>";
+	*oStream << "<users>" << "\n";
 	
 	users->finishUserIteration();
 	
 	while (users->hasMoreUsers()) {
 		users->setNextUser();
-		*oStream << "<user ID=\"" << users->getUserID() << "\" name=\"" << users->getUserName() << "\" password=\"" << users->getUserPassword() << "\">";
+		*oStream << "<user ID=\"" << users->getUserID() << "\" name=\"" << users->getUserName() << "\" password=\"" << users->getUserPassword() << "\">" << "\n";
 	}
 
-	*oStream << "</users>";
+	*oStream << "</users>" << "\n";
 }
 
 void LB_STDCALL lbXMLOutputStream::visit(lb_I_Translations* trans) {
-	*oStream << "<translations>";
+	*oStream << "<translations>" << "\n";
 
 	trans->finishTranslationIteration();
 	
@@ -282,14 +284,14 @@ void LB_STDCALL lbXMLOutputStream::visit(lb_I_Translations* trans) {
 		"<translation ID=\"" << trans->getTranslationID() << 
 		"\" text=\"" << trans->getTranslationText() << 
 		"\" translated=\"" << trans->getTranslationTranslated() << 
-		"language=\"" << trans->getTranslationLanguage() << "\">";
+		"\" language=\"" << trans->getTranslationLanguage() << "\">" << "\n";
 	}
 	
-	*oStream << "</translations>";
+	*oStream << "</translations>" << "\n";
 }
 
 void LB_STDCALL lbXMLOutputStream::visit(lb_I_FormularParameter* forms) {
-	*oStream << "<formularparameter>";
+	*oStream << "<formularparameter>" << "\n";
 	
 	forms->finishParameterIteration();
 	
@@ -299,14 +301,14 @@ void LB_STDCALL lbXMLOutputStream::visit(lb_I_FormularParameter* forms) {
 		"<parameter ID=\"" << forms->getParameterID() << 
 		"\" name=\"" << forms->getParameterName() << 
 		"\" value=\"" << forms->getParameterValue() << 
-		"formularid=\"" << forms->getFormularID() << "\">";
+		"\" formularid=\"" << forms->getFormularID() << "\">" << "\n";
 	}
 
-	*oStream << "</formularparameter>";
+	*oStream << "</formularparameter>" << "\n";
 }
 
 void LB_STDCALL lbXMLOutputStream::visit(lb_I_Actions* actions) {
-	*oStream << "<actions>";
+	*oStream << "<actions>" << "\n";
 	
 	actions->finishActionIteration();
 	
@@ -317,14 +319,14 @@ void LB_STDCALL lbXMLOutputStream::visit(lb_I_Actions* actions) {
 		"\" name=\"" << actions->getActionName() << 
 		"\" source=\"" << actions->getActionSource() << 
 		"\" typ=\"" << actions->getActionTyp() << 
-		"target=\"" << actions->getActionTarget() << "\">";
+		"\" target=\"" << actions->getActionTarget() << "\">" << "\n";
 	}
 
-	*oStream << "</actions>";
+	*oStream << "</actions>" << "\n";
 }
 
 void LB_STDCALL lbXMLOutputStream::visit(lb_I_Action_Steps* action_steps) {
-	*oStream << "<actionsteps>";
+	*oStream << "<actionsteps>" << "\n";
 	
 	action_steps->finishActionStepIteration();
 	
@@ -336,13 +338,13 @@ void LB_STDCALL lbXMLOutputStream::visit(lb_I_Action_Steps* action_steps) {
 		"\" substep=\"" << action_steps->getActionStepOrderNo() << 
 		"\" steptyp=\"" << action_steps->getActionStepType() << 
 		"\" stepname=\"" << action_steps->getActionStepBezeichnung() << 
-		"what=\"" << action_steps->getActionStepWhat() << "\">";
+		"\" what=\"" << action_steps->getActionStepWhat() << "\">" << "\n";
 	}
-	*oStream << "</actionsteps>";
+	*oStream << "</actionsteps>" << "\n";
 }
 
 void LB_STDCALL lbXMLOutputStream::visit(lb_I_Action_Types* action_types) {
-	*oStream << "<actiontypes>";
+	*oStream << "<actiontypes>" << "\n";
 	
 	action_types->finishActionTypeIteration();
 	
@@ -352,13 +354,13 @@ void LB_STDCALL lbXMLOutputStream::visit(lb_I_Action_Types* action_types) {
 		"<type ID=\"" << action_types->getActionTypeID() << 
 		"\" typename=\"" << action_types->getActionTypeBezeichnung() << 
 		"\" handler=\"" << action_types->getActionTypeHandler() << 
-		"module=\"" << action_types->getActionTypeModule() << "\">";
+		"\" module=\"" << action_types->getActionTypeModule() << "\">" << "\n";
 	}
-	*oStream << "</actiontypes>";
+	*oStream << "</actiontypes>" << "\n";
 }
 
 void LB_STDCALL lbXMLOutputStream::visit(lb_I_Formular_Actions* formular_actions) {
-	*oStream << "<formularactions>";
+	*oStream << "<formularactions>" << "\n";
 
 	formular_actions->finishFormularActionIteration();
 	
@@ -368,21 +370,21 @@ void LB_STDCALL lbXMLOutputStream::visit(lb_I_Formular_Actions* formular_actions
 		"<action ID=\"" << formular_actions->getFormularActionID() << 
 		"\" formularid=\"" << formular_actions->getFormularActionFormularID() << 
 		"\" actionid=\"" << formular_actions->getFormularActionActionID() << 
-		"event=\"" << formular_actions->getFormularActionEvent() << "\">";
+		"\" event=\"" << formular_actions->getFormularActionEvent() << "\">" << "\n";
 	}
-	*oStream << "</formularactions>";
+	*oStream << "</formularactions>" << "\n";
 }
 
 void LB_STDCALL lbXMLOutputStream::visit(lb_I_FileLocation* fileloc) {
-	*oStream << "<filelocation loc=\"" << fileloc->charrep() << "\">";
+	*oStream << "<filelocation loc=\"" << fileloc->charrep() << "\">" << "\n";
 }
 
 void LB_STDCALL lbXMLOutputStream::visit(lb_I_DirLocation* fileloc) {
-	*oStream << "<directorylocation loc=\"" << fileloc->charrep() << "\">";
+	*oStream << "<directorylocation loc=\"" << fileloc->charrep() << "\">" << "\n";
 }
 
 void LB_STDCALL lbXMLOutputStream::visit(lb_I_ApplicationParameter* apps) {
-	*oStream << "<applicationparameter>";
+	*oStream << "<applicationparameter>" << "\n";
 	
 	apps->finishParameterIteration();
 	
@@ -392,13 +394,13 @@ void LB_STDCALL lbXMLOutputStream::visit(lb_I_ApplicationParameter* apps) {
 		"<parameter ID=\"" << apps->getParameterID() << 
 		"\" name=\"" << apps->getParameterName() << 
 		"\" value=\"" << apps->getParameterValue() << 
-		"applicationid=\"" << apps->getApplicationID() << "\">";
+		"\" applicationid=\"" << apps->getApplicationID() << "\">" << "\n";
 	}
-	*oStream << "</applicationparameter>";
+	*oStream << "</applicationparameter>" << "\n";
 }
 
 void LB_STDCALL lbXMLOutputStream::visit(lb_I_Formulars* forms) {
-	*oStream << "<formulare>";
+	*oStream << "<formulare>" << "\n";
 	
 	forms->finishFormularIteration();
 	
@@ -410,14 +412,14 @@ void LB_STDCALL lbXMLOutputStream::visit(lb_I_Formulars* forms) {
 		"\" menuname=\"" << forms->getMenuName() << 
 		"\" eventname=\"" << forms->getEventName() << 
 		"\" menuhelp=\"" << forms->getMenuHelp() << 
-		"\" applicationid=\"" << forms->getApplicationID() << 
-		"typid=\"" << forms->getTyp() << "\">";
+		"\" applicationid=\"" << forms->getApplicationID() <<
+		"\" typid=\"" << forms->getTyp() << "\">" << "\n";
 	}
-	*oStream << "</formulare>";
+	*oStream << "</formulare>" << "\n";
 }
 
 void LB_STDCALL lbXMLOutputStream::visit(lb_I_Applications* app) {
-	*oStream << "<applications>";
+	*oStream << "<applications>" << "\n";
 	
 	app->finishApplicationIteration();
 	
@@ -429,13 +431,13 @@ void LB_STDCALL lbXMLOutputStream::visit(lb_I_Applications* app) {
 		"\" title=\"" << app->getApplicationTitle() << 
 		"\" module=\"" << app->getApplicationModule() << 
 		"\" functor=\"" << app->getApplicationFunctor() << 
-		"interface=\"" << app->getApplicationInterface() << "\">";
+		"\" interface=\"" << app->getApplicationInterface() << "\">" << "\n";
 	}
-	*oStream << "</applications>";
+	*oStream << "</applications>" << "\n";
 }
 
 void LB_STDCALL lbXMLOutputStream::visit(lb_I_User_Applications* app) {
-	*oStream << "<usersapplications>";
+	*oStream << "<usersapplications>" << "\n";
 	
 	app->finishRelationIteration();
 	
@@ -444,35 +446,35 @@ void LB_STDCALL lbXMLOutputStream::visit(lb_I_User_Applications* app) {
 		*oStream << 
 		"<assignment ID=\"" << app->getID() << 
 		"\" userid=\"" << app->getUserID() << 
-		"applicationid=\"" << app->getApplicationID() << "\">";
+		"\" applicationid=\"" << app->getApplicationID() << "\">" << "\n";
 	}
-	*oStream << "</usersapplications>";
+	*oStream << "</usersapplications>" << "\n";
 }
 
 void LB_STDCALL lbXMLOutputStream::visit(lb_I_MetaApplication* app) {
-	*oStream << "<metaapplication>";
+	*oStream << "<metaapplication>" << "\n";
 
 	UAP_REQUEST(manager.getPtr(), lb_I_String, temp)
 	bool  b;
 	int count;
 
-	*oStream << "<autorefreshdata setting=\"" << app->getAutorefreshData() << "\">";
+	*oStream << "<autorefreshdata setting=\"" << app->getAutorefreshData() << "\">" << "\n";
 
 	app->getApplicationName(&temp);
-	*oStream << "<applicationname name=\"" << temp->charrep() << "\">";
+	*oStream << "<applicationname name=\"" << temp->charrep() << "\">" << "\n";
 
 	app->getUserName(&temp);
-	*oStream << "<username name=\"" << temp->charrep() << "\">";
+	*oStream << "<username name=\"" << temp->charrep() << "\">" << "\n";
 
-	*oStream << "<autoload value=\"" << app->getAutoload() << "\">";
+	*oStream << "<autoload value=\"" << app->getAutoload() << "\">" << "\n";
 
-	*oStream << "<autoselect value=\"" << app->getAutoselect() << "\">";
+	*oStream << "<autoselect value=\"" << app->getAutoselect() << "\">" << "\n";
 
-	*oStream << "<guimaximized value=\"" << app->getGUIMaximized() << "\">";
+	*oStream << "<guimaximized value=\"" << app->getGUIMaximized() << "\">" << "\n";
 	
-	*oStream << "<dirlocation value=\"" << app->getDirLocation() << "\">";
+	*oStream << "<dirlocation value=\"" << app->getDirLocation() << "\">" << "\n";
 
-	*oStream << "</metaapplication>";
+	*oStream << "</metaapplication>" << "\n";
 }
 
 void LB_STDCALL lbXMLOutputStream::visit(lb_I_Application*) {

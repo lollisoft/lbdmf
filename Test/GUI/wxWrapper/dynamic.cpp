@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.134 2007/05/11 21:21:02 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.135 2007/05/13 20:30:54 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.134 $
+ * $Revision: 1.135 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.134 2007/05/11 21:21:02 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.135 2007/05/13 20:30:54 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.135  2007/05/13 20:30:54  lollisoft
+ * First (partly) working XML export.
+ *
  * Revision 1.134  2007/05/11 21:21:02  lollisoft
  * Linux compiler is more restrictive with const char*
  *
@@ -2101,7 +2104,7 @@ bool MyApp::OnInit(void)
           splash = new wxSplashScreen(bitmap,
           wxSPLASH_CENTRE_ON_SCREEN|wxSPLASH_TIMEOUT,
           6000, NULL, -1, wxDefaultPosition, wxDefaultSize,
-          wxSIMPLE_BORDER|wxSTAY_ON_TOP);
+          wxSIMPLE_BORDER); //|wxSTAY_ON_TOP);
     }
     wxYield();
 

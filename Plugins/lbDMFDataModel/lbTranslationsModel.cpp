@@ -75,7 +75,7 @@ lbTranslationsModel::~lbTranslationsModel() {
 }
 
 lbErrCodes LB_STDCALL lbTranslationsModel::setData(lb_I_Unknown*) {
-	_CL_LOG << "Error: lbTranslationsModel::setData(lb_I_Unknown*) not implemented." LOG_
+	_LOG << "Error: lbTranslationsModel::setData(lb_I_Unknown*) not implemented." LOG_
 	return ERR_NOT_IMPLEMENTED;
 }
 

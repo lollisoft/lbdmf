@@ -67,7 +67,7 @@ lbFormularActionsModel::~lbFormularActionsModel() {
 }
 
 lbErrCodes LB_STDCALL lbFormularActionsModel::setData(lb_I_Unknown*) {
-	_CL_VERBOSE << "Error: lbFormularActionsModel::setData(lb_I_Unknown*) not implemented." LOG_
+	_LOG << "Error: lbFormularActionsModel::setData(lb_I_Unknown*) not implemented." LOG_
 	return ERR_NOT_IMPLEMENTED;
 }
 

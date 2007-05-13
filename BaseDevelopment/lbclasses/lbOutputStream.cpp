@@ -108,12 +108,15 @@ public:
 	bool LB_STDCALL close();
 
 	void LB_STDCALL logdirect(const char *msg, char *f, int level);
-    
+
 	lb_I_OutputStream& LB_STDCALL operator<< (const int i);
 	lb_I_OutputStream& LB_STDCALL operator<< (const long i);
 	lb_I_OutputStream& LB_STDCALL operator<< (const bool b);
 	lb_I_OutputStream& LB_STDCALL operator<< (const char c);
 	lb_I_OutputStream& LB_STDCALL operator<< (const char* string);
+
+	void LB_STDCALL setBinary();
+    
 /*...e*/
 
 /*...sprivate:0:*/
@@ -130,6 +133,7 @@ public:
 	int	offset;
 
 	ofstream* _ostream;
+	bool _binary;
 
 /*...e*/
 
@@ -176,12 +180,17 @@ lbOutputStream::lbOutputStream() {
         logmessage = NULL;
         lastsize = 0;
 	_ostream = NULL;
+	_binary = false;
 }
 /*...e*/
 /*...slbOutputStream\58\\58\logdirect\40\\46\\46\\46\\41\:0:*/
 void LB_STDCALL lbOutputStream::logdirect(const char *msg, char *f, int level) {
 }
 /*...e*/
+
+void LB_STDCALL lbOutputStream::setBinary() {
+	_binary = true;
+}
 
 void LB_STDCALL lbOutputStream::setFileName(char* name) {
 	f[0] = 0;
@@ -214,7 +223,10 @@ void LB_STDCALL lbOutputStream::_realloc(int add_size) {
 lb_I_OutputStream& LB_STDCALL lbOutputStream::operator<< (const int i) {
 	if (!isOpen) return *this;
 
-	*_ostream << i << endl;
+	if (_binary)
+		*_ostream << i;
+	else
+		*_ostream << i << endl;
 	
 	return *this;
 }
@@ -222,7 +234,10 @@ lb_I_OutputStream& LB_STDCALL lbOutputStream::operator<< (const int i) {
 lb_I_OutputStream& LB_STDCALL lbOutputStream::operator<< (const long i) {
 	if (!isOpen) return *this;
 
-	*_ostream << i << endl;
+	if (_binary)
+		*_ostream << i;
+	else
+		*_ostream << i << endl;
 	
 	return *this;
 }
@@ -236,7 +251,10 @@ lb_I_OutputStream& LB_STDCALL lbOutputStream::operator<< (const bool b) {
 	else
 		_b = 0;
 		
-	*_ostream << _b << endl;	
+	if (_binary)
+		*_ostream << _b;
+	else
+		*_ostream << _b << endl;	
 	
 	return *this;
 }
@@ -244,8 +262,10 @@ lb_I_OutputStream& LB_STDCALL lbOutputStream::operator<< (const bool b) {
 lb_I_OutputStream& LB_STDCALL lbOutputStream::operator<< (const char c) {
 	if (!isOpen) return *this;
 
-	*_ostream << c << endl;
-
+	if (_binary)
+		*_ostream << c;
+	else
+		*_ostream << c << endl;
 	return *this;
 }
 
@@ -258,9 +278,12 @@ lb_I_OutputStream& LB_STDCALL lbOutputStream::operator<< (const char* string) {
 #ifdef __WATCOMC__
 	String s(string);
 #endif
-	*_ostream << strlen(string) << endl;
-	*_ostream << s << endl;
-
+	if (!_binary) *_ostream << strlen(string) << endl;
+	if (_binary)
+		*_ostream << s;
+	else
+		*_ostream << s << endl;
+		
 	return *this;
 }
 

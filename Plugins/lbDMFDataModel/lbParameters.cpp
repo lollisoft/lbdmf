@@ -65,7 +65,7 @@ lbFormularParameters::~lbFormularParameters() {
 }
 
 lbErrCodes LB_STDCALL lbFormularParameters::setData(lb_I_Unknown*) {
-	_CL_VERBOSE << "Error: lbFormularParameters::setData(lb_I_Unknown*) not implemented." LOG_
+	_LOG << "Error: lbFormularParameters::setData(lb_I_Unknown*) not implemented." LOG_
 	return ERR_NOT_IMPLEMENTED;
 }
 
@@ -219,7 +219,7 @@ lbApplicationParameters::~lbApplicationParameters() {
 }
 
 lbErrCodes LB_STDCALL lbApplicationParameters::setData(lb_I_Unknown*) {
-	_CL_VERBOSE << "Error: lbApplicationParameters::setData(lb_I_Unknown*) not implemented." LOG_
+	_LOG << "Error: lbApplicationParameters::setData(lb_I_Unknown*) not implemented." LOG_
 	return ERR_NOT_IMPLEMENTED;
 }
 

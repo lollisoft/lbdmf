@@ -313,6 +313,14 @@ int LB_STDCALL lbParameter::Count() {
 
 void LB_STDCALL lbParameter::setCloning(bool doClone) {
 	cloning = doClone;
+	if (parameters == NULL) {
+		REQUEST(manager.getPtr(), lb_I_Container, parameters)
+		if (parameters == NULL) {
+			_LOG << "Error: Could not get container instance for parameres" LOG_
+			return;
+		}
+	}	
+	parameters->setCloning(cloning);
 }
 
 

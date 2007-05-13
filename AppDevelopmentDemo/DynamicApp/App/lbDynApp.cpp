@@ -743,7 +743,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 	
 	if (!lbDMFUser) lbDMFUser = "dba";
 	if (!lbDMFPasswd) lbDMFPasswd = "trainres";
-	
+
 	if (!isFileAvailable) {
 		if ((database != NULL) && (database->connect("lbDMF", lbDMFUser, lbDMFPasswd) != ERR_NONE)) {
 			_LOG << "Fatal: No file and no database configuration available. Cannot proceed!" LOG_
@@ -758,7 +758,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 	}
 	
 	_CL_LOG << "Load application settings from file or database ..." LOG_
-	
+
 	if (isFileAvailable || isDBAvailable) {
 /*...sLoad from file or database:16:*/
 /*...sInitialize plugin based document models:32:*/
@@ -869,6 +869,52 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 		param->setCloning(false);
 		document->setCloning(false);
 
+		*name = "StorageDelegateInterface";
+		*value = "lb_I_Streamable";
+		param->setUAPString(*&name, *&value);
+
+		*name = "StorageDelegateNamespace";
+		*value = "DynamicAppXMLStorage";
+		param->setUAPString(*&name, *&value);
+		
+		if (!DBOperation && 
+			(forms != NULL) && 
+			(formParams != NULL) && 
+			(appActions != NULL) && 
+			(appActionSteps != NULL) && 
+			(appActionTypes != NULL) && 
+			(appParams != NULL)) {
+			_LOG << "Load application data from file ..." LOG_
+			
+			forms->accept(*&fOp);
+			formParams->accept(*&fOp);
+			appParams->accept(*&fOp);
+			appActions->accept(*&fOp);
+			appActionTypes->accept(*&fOp);
+			appActionSteps->accept(*&fOp);
+		}
+		
+		if (DBOperation && 
+			(forms != NULL) && 
+			(formParams != NULL) && 
+			(appActions != NULL) && 
+			(appActionSteps != NULL) && 
+			(appActionTypes != NULL) && 
+			(appParams != NULL)) {
+			_LOG << "Load application data from database ..." LOG_
+			
+			
+			forms->accept(*&fOpDB);
+			formParams->accept(*&fOpDB);
+			appParams->accept(*&fOpDB);
+			appActions->accept(*&fOpDB);
+			appActionTypes->accept(*&fOpDB);
+			appActionSteps->accept(*&fOpDB);
+		}
+		
+		if (!DBOperation) fOp->end();
+		if (DBOperation) fOpDB->end();
+
 		if ((forms != NULL) && 
 			(formParams != NULL) && 
 			(appActions != NULL) && 
@@ -902,62 +948,12 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 			QI(appActionTypes, lb_I_Unknown, uk)
 			document->insert(&uk, &key);
 		}		
+
 		*name = "ApplicationData";
 		param->setUAPContainer(*&name, *&document);
 
-		*name = "StorageDelegateInterface";
-		*value = "lb_I_Streamable";
-		param->setUAPString(*&name, *&value);
-
-		*name = "StorageDelegateNamespace";
-		*value = "DynamicAppXMLStorage";
-		param->setUAPString(*&name, *&value);
-		
 		param++;
 		metaapp->setActiveDocument(*&param);
-		
-		
-		if (!DBOperation && 
-			(forms != NULL) && 
-			(formParams != NULL) && 
-			(appActions != NULL) && 
-			(appActionSteps != NULL) && 
-			(appActionTypes != NULL) && 
-			(appParams != NULL)) {
-			_LOG << "Load application data from file ..." LOG_
-			
-			
-			
-			
-			forms->accept(*&fOp);
-			formParams->accept(*&fOp);
-			appParams->accept(*&fOp);
-			appActions->accept(*&fOp);
-			appActionTypes->accept(*&fOp);
-			appActionSteps->accept(*&fOp);
-		}
-		
-		if (DBOperation && 
-			(forms != NULL) && 
-			(formParams != NULL) && 
-			(appActions != NULL) && 
-			(appActionSteps != NULL) && 
-			(appActionTypes != NULL) && 
-			(appParams != NULL)) {
-			_LOG << "Load application data from database ..." LOG_
-			
-			
-			forms->accept(*&fOpDB);
-			formParams->accept(*&fOpDB);
-			appParams->accept(*&fOpDB);
-			appActions->accept(*&fOpDB);
-			appActionTypes->accept(*&fOpDB);
-			appActionSteps->accept(*&fOpDB);
-		}
-		
-		if (!DBOperation) fOp->end();
-		if (DBOperation) fOpDB->end();
-
 
 		int id = metaapp->getApplicationID();
 		

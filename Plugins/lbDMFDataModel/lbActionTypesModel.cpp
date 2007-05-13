@@ -67,8 +67,8 @@ lbActionTypesModel::~lbActionTypesModel() {
 }
 
 lbErrCodes LB_STDCALL lbActionTypesModel::setData(lb_I_Unknown*) {
-		_CL_VERBOSE << "Error: lbActionTypesModel::setData(lb_I_Unknown*) not implemented." LOG_
-		return ERR_NOT_IMPLEMENTED;
+	_LOG << "Error: lbActionTypesModel::setData(lb_I_Unknown*) not implemented." LOG_
+	return ERR_NOT_IMPLEMENTED;
 }
 
 long  LB_STDCALL lbActionTypesModel::addAction(const char* name, long typ, const char* source, long target, long _id) {

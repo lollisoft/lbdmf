@@ -25,11 +25,14 @@
 #            40235 Duesseldorf (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.91 $
+# * $Revision: 1.92 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.91 2007/04/22 13:44:40 lollisoft Exp $
+# * $Id: STD_MAKE,v 1.92 2007/05/13 20:30:54 lollisoft Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.92  2007/05/13 20:30:54  lollisoft
+# * First (partly) working XML export.
+# *
 # * Revision 1.91  2007/04/22 13:44:40  lollisoft
 # * A release build again.
 # *
@@ -353,8 +356,8 @@ COMPILER=WATCOM
 
 #COMPILER=MICROSOFT
 
-#MODE=_DEBUG
-MODE=
+MODE=_DEBUG
+#MODE=
 #DEBUG_MEMORY=no
 #DEBUG_MEMORY=yes
 

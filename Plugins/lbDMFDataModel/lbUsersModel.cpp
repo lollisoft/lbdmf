@@ -64,7 +64,7 @@ lbUsersModel::~lbUsersModel() {
 }
 
 lbErrCodes LB_STDCALL lbUsersModel::setData(lb_I_Unknown*) {
-	_CL_VERBOSE << "Error: lbUsersModel::setData(lb_I_Unknown*) not implemented." LOG_
+	_LOG << "Error: lbUsersModel::setData(lb_I_Unknown*) not implemented." LOG_
 	return ERR_NOT_IMPLEMENTED;
 }
 

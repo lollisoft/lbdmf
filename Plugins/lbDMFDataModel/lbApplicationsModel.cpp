@@ -70,7 +70,7 @@ lbApplications::~lbApplications() {
 /*...e*/
 /*...slbErrCodes LB_STDCALL lbApplications\58\\58\setData\40\lb_I_Unknown\42\\41\:0:*/
 lbErrCodes LB_STDCALL lbApplications::setData(lb_I_Unknown*) {
-	_CL_LOG << "Error: lbApplications::setData(lb_I_Unknown*) not implemented." LOG_
+	_LOG << "Error: lbApplications::setData(lb_I_Unknown*) not implemented." LOG_
 	return ERR_NOT_IMPLEMENTED;
 }
 /*...e*/

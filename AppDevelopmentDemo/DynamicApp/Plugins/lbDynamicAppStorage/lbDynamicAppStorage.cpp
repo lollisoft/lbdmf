@@ -75,6 +75,94 @@ lbErrCodes LB_STDCALL lbDynamicAppXMLStorage::load(lb_I_InputStream* iStream) {
 lbErrCodes LB_STDCALL lbDynamicAppXMLStorage::save(lb_I_OutputStream* oStream) {
 	lbErrCodes err = ERR_NONE;
 
+	UAP(lb_I_Aspect, aspect)
+	QI(op, lb_I_Aspect, aspect)
+
+	UAP(lb_I_Unknown, uk)
+
+	UAP(lb_I_Formulars, forms)
+	UAP(lb_I_FormularParameter, formParams)
+	UAP(lb_I_ApplicationParameter, appParams)
+	UAP(lb_I_Actions, appActions)
+	UAP(lb_I_Action_Steps, appActionSteps)
+	UAP(lb_I_Action_Types, appActionTypes)
+
+	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, param)
+	UAP_REQUEST(getModuleInstance(), lb_I_Container, document)
+	UAP(lb_I_Unknown, ukParams)
+	
+	UAP(lb_I_Parameter, params)
+
+	ukParams = meta->getActiveDocument();
+	QI(ukParams, lb_I_Parameter, params)
+
+	*param = "ApplicationData";
+
+	document->setCloning(false);
+
+	params->getUAPContainer(*&param, *&document);	
+
+	UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+
+	UAP(lb_I_KeyBase, key)
+	QI(name, lb_I_KeyBase, key)
+			
+	*name = "Formulars";
+	uk = document->getElement(&key);
+	QI(uk, lb_I_Formulars, forms)
+			
+	*name = "FormParams";
+	uk = document->getElement(&key);
+	QI(uk, lb_I_FormularParameter, formParams)
+			
+	*name = "AppParams";
+	uk = document->getElement(&key);
+	QI(uk, lb_I_ApplicationParameter, appParams)
+	
+	*name = "AppActions";
+	uk = document->getElement(&key);
+	QI(uk, lb_I_Actions, appActions)
+			
+	*name = "AppActionSteps";
+	uk = document->getElement(&key);
+	QI(uk, lb_I_Action_Steps, appActionSteps)
+			
+	*name = "AppActionTypes";
+	uk = document->getElement(&key);
+	QI(uk, lb_I_Action_Types, appActionTypes)
+
+
+	if (forms != NULL) {
+		_CL_LOG << "Save a forms model object..." LOG_
+		forms->accept(*&aspect);
+	}
+
+	if (formParams != NULL) {
+		_CL_LOG << "Save a formParams model object..." LOG_
+		formParams->accept(*&aspect);
+	}
+
+	if (appParams != NULL) {
+		_CL_LOG << "Save a appParams model object..." LOG_
+		appParams->accept(*&aspect);
+	}
+					
+	if (appActions != NULL) {
+		_CL_LOG << "Save a appActions model object..." LOG_
+		appActions->accept(*&aspect);
+	}
+			
+	if (appActionTypes != NULL) {
+		_CL_LOG << "Save a appActionTypes model object..." LOG_
+		appActionTypes->accept(*&aspect);
+	}
+					
+	if (appActionSteps != NULL) {
+		_CL_LOG << "Save a appActionSteps model object..." LOG_
+		appActionSteps->accept(*&aspect);
+	}
+
 	return err;
 }
 

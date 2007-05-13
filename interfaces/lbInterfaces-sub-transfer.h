@@ -216,7 +216,6 @@ public:
 class lb_I_OutputStream : 
 	public lb_I_Stream {
 public:
-
 	/** \brief Write an int data type.
 	 *
 	 */
@@ -242,6 +241,7 @@ public:
 	 */
 	virtual lb_I_OutputStream& LB_STDCALL operator<< (const char* string) = 0;
 	
+	virtual void LB_STDCALL setBinary() = 0;
 };
 /*...e*/
 

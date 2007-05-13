@@ -74,7 +74,7 @@ lbActionStepsModel::~lbActionStepsModel() {
 }
 
 lbErrCodes LB_STDCALL lbActionStepsModel::setData(lb_I_Unknown*) {
-	_CL_VERBOSE << "Error: lbActionStepsModel::setData(lb_I_Unknown*) not implemented." LOG_
+	_LOG << "Error: lbActionStepsModel::setData(lb_I_Unknown*) not implemented." LOG_
 	return ERR_NOT_IMPLEMENTED;
 }
 

@@ -199,7 +199,9 @@ bool LB_STDCALL lbInputStream::close() {
 
 bool LB_STDCALL lbInputStream::open() {
 	if (!isOpen) {
-		if (!FileExists(f)) return false;
+		if (!FileExists(f)) {
+			return false;
+		}
 		_istream = new ifstream(f);
 	}
 

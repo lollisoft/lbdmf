@@ -38,7 +38,7 @@ public:
 
 	DECLARE_LB_UNKNOWN()
 
-	lbErrCodes LB_STDCALL setOperator(lb_I_Unknown* _op) { op = _op; return ERR_NONE; }
+	lbErrCodes LB_STDCALL setOperator(lb_I_Unknown* _op) { op = _op; op++; return ERR_NONE; }
 	lbErrCodes	LB_STDCALL load(lb_I_InputStream* iStream);
 	lbErrCodes	LB_STDCALL save(lb_I_OutputStream* oStream);
 
@@ -58,7 +58,7 @@ public:
 
 	DECLARE_LB_UNKNOWN()
 
-	lbErrCodes LB_STDCALL setOperator(lb_I_Unknown* _op) { op = _op; return ERR_NONE; }
+	lbErrCodes LB_STDCALL setOperator(lb_I_Unknown* _op) { op = _op; op++; return ERR_NONE; }
 	lbErrCodes	LB_STDCALL load(lb_I_InputStream* iStream);
 	lbErrCodes	LB_STDCALL save(lb_I_OutputStream* oStream);
 
