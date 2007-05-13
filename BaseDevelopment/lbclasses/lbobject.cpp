@@ -244,12 +244,12 @@ void LB_STDCALL lbLocale::translate(char ** text, char const * to_translate) {
 				sampleQuery1 = database->getQuery(0);
 			sampleQuery1->skipFKCollecting();
 			
-			//sampleQuery1->query(buffer);
+			sampleQuery1->query(buffer);
 			sampleQuery1->enableFKCollecting();
 			
 			// Also store into translations object.
 			
-			//translations->addTranslation(to_translate, *text, _lang);
+			translations->addTranslation(to_translate, *text, _lang);
 			
 			strcpy(*text, to_translate);
 		} else {
