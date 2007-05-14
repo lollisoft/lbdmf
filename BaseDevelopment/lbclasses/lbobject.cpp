@@ -22,9 +22,9 @@
     The author of this work will be reached by e-Mail or paper mail.
     e-Mail: lothar.behrens@lollisoft.de
     p-Mail: Lothar Behrens
-            Rosmarinstr. 3
+            Heinrich-Scheufelen-Platz 2
             
-            40235 Duesseldorf (germany)
+            73252 Lenningen (germany)
 */
 /*...e*/
 
@@ -763,6 +763,28 @@ lb_I_String& LB_STDCALL lbString::operator = (const char* toAppend) {
 	
 	return *this;
 }
+
+lb_I_String& LB_STDCALL lbString::replace(const char* toReplace, const char* with) {
+	UAP_REQUEST(getModuleInstance(), lb_I_String, rep)
+	
+	char* token = strtok(stringdata, toReplace);
+
+	if ((token != NULL) && (token != stringdata)) {
+		*rep += with;
+	} 
+	
+	while(token != NULL) 
+	{ 
+		*rep += token;
+		token = strtok(NULL, toReplace); 
+		if (token != NULL) *rep += with;
+	} 
+	
+	setData(rep->charrep());
+	
+	return *this;
+}
+
 
 void LB_STDCALL lbString::setData(char const * p) {
 	if (stringdata != NULL) free(stringdata);

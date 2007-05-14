@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.119 $
+# * $Revision: 1.120 $
 # * $Name:  $
-# * $Id: Makefile,v 1.119 2007/04/22 14:05:20 lollisoft Exp $
+# * $Id: Makefile,v 1.120 2007/05/14 19:19:14 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.120  2007/05/14 19:19:14  lollisoft
+# * Unfinished changes. Go to Linux.
+# *
 # * Revision 1.119  2007/04/22 14:05:20  lollisoft
 # * Many changes due to client/server redesign.
 # *
@@ -482,11 +485,11 @@ ifeq ($(OSTYPE), osx)
 
 BASEDIRECTORIES= \
 	../Plugins \
+	../AppDevelopmentDemo/DynamicApp/Plugins \
 	../Modules \
 	../RegressionTests \
 	../vendor/wxaui-0.9.1/sample \
 	../AppDevelopment \
-	../AppDevelopmentDemo/DynamicApp/Plugins \
 	../ServerPlugins \
 	../ClientPlugins \
 	../vendor/tvision/examples/lbDMF

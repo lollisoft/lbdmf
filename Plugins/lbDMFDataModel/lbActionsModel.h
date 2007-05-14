@@ -22,9 +22,9 @@
     The author of this work will be reached by e-Mail or paper mail.
     e-Mail: lothar.behrens@lollisoft.de
     p-Mail: Lothar Behrens
-            Rosmarinstr. 3
-            
-            40235 Duesseldorf (germany)
+            Heinrich-Scheufelen-Platz 2
+
+            73252 Lenningen (germany)
 */
 /*...e*/
 
@@ -49,6 +49,9 @@ public:
 	char*		LB_STDCALL getActionSource();
 	char*		LB_STDCALL getActionName();
 	
+	bool		LB_STDCALL ismarked();
+	void		LB_STDCALL mark();
+	void		LB_STDCALL unmark();
 
 	UAP(lb_I_Container, Actions)
 	UAP(lb_I_Long, currentActionID)
@@ -56,6 +59,8 @@ public:
 	UAP(lb_I_Long, currentActionTarget)
 	UAP(lb_I_String, currentActionName)
 	UAP(lb_I_String, currentActionSource)
+	
+	UAP(lb_I_Long, marked)
 };
 
 DECLARE_FUNCTOR(instanceOflbActionsModel)

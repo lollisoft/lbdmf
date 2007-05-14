@@ -22,9 +22,9 @@
     The author of this work will be reached by e-Mail or paper mail.
     e-Mail: lothar.behrens@lollisoft.de
     p-Mail: Lothar Behrens
-            Rosmarinstr. 3
-            
-            40235 Duesseldorf (germany)
+            Heinrich-Scheufelen-Platz 2
+
+            73252 Lenningen (germany)
 */
 /*...e*/
 
@@ -52,6 +52,9 @@ public:
 	char*	LB_STDCALL getApplicationModule();
 	char*	LB_STDCALL getApplicationInterface();
 
+	bool		LB_STDCALL ismarked();
+	void		LB_STDCALL mark();
+	void		LB_STDCALL unmark();
 
 	DECLARE_LB_UNKNOWN()
 	
@@ -64,6 +67,8 @@ public:
 	UAP(lb_I_String, currentInterface)
 
 	UAP(lb_I_Long, currentApplicationUID)
+	
+	UAP(lb_I_Long, marked)	
 };
 
 DECLARE_FUNCTOR(instanceOflbApplications)

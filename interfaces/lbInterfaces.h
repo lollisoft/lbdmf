@@ -2486,6 +2486,8 @@ public:
 /*...e*/
 
 class lb_I_InputStream;
+class lb_I_Applications;
+
 
 /*...slbDMF ORM:0:*/
 /*...sclass lb_I_MetaApplication:0:*/
@@ -2762,6 +2764,7 @@ public:
 	
 	virtual void			LB_STDCALL showPropertyPanel() = 0;
 	
+	virtual lb_I_Applications* LB_STDCALL getApplicationModel() = 0;
 };
 /*...e*/
 
@@ -2840,6 +2843,10 @@ public:
 	/** \brief Get current user password.
 	 */
 	virtual char*		LB_STDCALL getUserPassword() = 0;
+	
+	virtual bool		LB_STDCALL ismarked() = 0;
+	virtual void		LB_STDCALL mark() = 0;
+	virtual void		LB_STDCALL unmark() = 0;
 };
 /*...e*/
 
@@ -2910,6 +2917,10 @@ public:
 	 * Each application entry has an associated id.
 	 */
 	virtual long		LB_STDCALL getApplicationID() = 0;
+	
+	virtual bool		LB_STDCALL ismarked() = 0;
+	virtual void		LB_STDCALL mark() = 0;
+	virtual void		LB_STDCALL unmark() = 0;
 };
 /*...e*/
 
@@ -2971,6 +2982,10 @@ public:
 	virtual long		LB_STDCALL getUserID() = 0;
 	
 	virtual long		LB_STDCALL getID() = 0;
+
+	virtual bool		LB_STDCALL ismarked() = 0;
+	virtual void		LB_STDCALL mark() = 0;
+	virtual void		LB_STDCALL unmark() = 0;
 };
 /*...e*/
 
@@ -2997,6 +3012,10 @@ public:
 	virtual long		LB_STDCALL getApplicationID() = 0;
 	virtual long		LB_STDCALL getTyp() = 0;
 	virtual long		LB_STDCALL getFormularID() = 0;
+
+	virtual bool		LB_STDCALL ismarked() = 0;
+	virtual void		LB_STDCALL mark() = 0;
+	virtual void		LB_STDCALL unmark() = 0;
 };
 /*...e*/
 
@@ -3005,7 +3024,7 @@ class lb_I_ParameterTable : public lb_I_Unknown {
 public:
 	virtual bool		LB_STDCALL selectParameter(long _id) = 0;
 
-	virtual int		LB_STDCALL getParameterCount() = 0;
+	virtual int			LB_STDCALL getParameterCount() = 0;
 	virtual bool		LB_STDCALL hasMoreParameters() = 0;
 	virtual void		LB_STDCALL setNextParameter() = 0;
 	virtual void		LB_STDCALL finishParameterIteration() = 0;
@@ -3013,6 +3032,10 @@ public:
 	virtual long		LB_STDCALL getParameterID() = 0;
 	virtual char*		LB_STDCALL getParameterName() = 0;
 	virtual char*		LB_STDCALL getParameterValue() = 0;
+
+	virtual bool		LB_STDCALL ismarked() = 0;
+	virtual void		LB_STDCALL mark() = 0;
+	virtual void		LB_STDCALL unmark() = 0;
 };
 /*...e*/
 
@@ -3049,6 +3072,10 @@ public:
 	virtual char*		LB_STDCALL getPKName() = 0;
 	virtual char*		LB_STDCALL getFKTable() = 0;
 	virtual char*		LB_STDCALL getFKName() = 0;
+
+	virtual bool		LB_STDCALL ismarked() = 0;
+	virtual void		LB_STDCALL mark() = 0;
+	virtual void		LB_STDCALL unmark() = 0;
 };
 /*...e*/
 
@@ -3069,6 +3096,9 @@ public:
 	virtual char*		LB_STDCALL getActionSource() = 0;
 	virtual char*		LB_STDCALL getActionName() = 0;
 	
+	virtual bool		LB_STDCALL ismarked() = 0;
+	virtual void		LB_STDCALL mark() = 0;
+	virtual void		LB_STDCALL unmark() = 0;
 };
 /*...e*/
 
@@ -3077,7 +3107,7 @@ class lb_I_Action_Steps : public lb_I_Unknown {
 public:
 	virtual long		LB_STDCALL addActionStep(const char* bezeichnung, long actionid, long orderNo, long type, const char* what, long _id = -1) = 0;
 	virtual bool		LB_STDCALL selectActionStep(long _id) = 0;
-	virtual int		LB_STDCALL getActionStepCount() = 0;
+	virtual int			LB_STDCALL getActionStepCount() = 0;
 	virtual bool		LB_STDCALL hasMoreActionSteps() = 0;
 	virtual void		LB_STDCALL setNextActionStep() = 0;
 	virtual void		LB_STDCALL finishActionStepIteration() = 0;
@@ -3090,6 +3120,9 @@ public:
 	virtual char*		LB_STDCALL getActionStepBezeichnung() = 0;
 	virtual char*		LB_STDCALL getActionStepWhat() = 0;
 	
+	virtual bool		LB_STDCALL ismarked() = 0;
+	virtual void		LB_STDCALL mark() = 0;
+	virtual void		LB_STDCALL unmark() = 0;
 };
 /*...e*/
 
@@ -3109,6 +3142,9 @@ public:
 	virtual char*		LB_STDCALL getActionTypeHandler() = 0;
 	virtual char*		LB_STDCALL getActionTypeModule() = 0;
 	
+	virtual bool		LB_STDCALL ismarked() = 0;
+	virtual void		LB_STDCALL mark() = 0;
+	virtual void		LB_STDCALL unmark() = 0;
 };
 /*...e*/
 
@@ -3128,6 +3164,9 @@ public:
 
 	virtual char*		LB_STDCALL getFormularActionEvent() = 0;
 	
+	virtual bool		LB_STDCALL ismarked() = 0;
+	virtual void		LB_STDCALL mark() = 0;
+	virtual void		LB_STDCALL unmark() = 0;
 };
 /*...e*/
 
@@ -3146,6 +3185,10 @@ public:
 	virtual char*		LB_STDCALL getTranslationText() = 0;
 	virtual char*		LB_STDCALL getTranslationTranslated() = 0;
 	virtual char*		LB_STDCALL getTranslationLanguage() = 0;
+
+	virtual bool		LB_STDCALL ismarked() = 0;
+	virtual void		LB_STDCALL mark() = 0;
+	virtual void		LB_STDCALL unmark() = 0;
 };
 /*...e*/
 /*...e*/

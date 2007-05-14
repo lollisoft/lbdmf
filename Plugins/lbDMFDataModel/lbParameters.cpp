@@ -57,6 +57,8 @@ lbFormularParameters::lbFormularParameters() {
 	REQUEST(getModuleInstance(), lb_I_String, currentParameterValue)
 	REQUEST(getModuleInstance(), lb_I_Long, currentID)
 	REQUEST(getModuleInstance(), lb_I_Long, currentFormularID)
+	
+	REQUEST(getModuleInstance(), lb_I_Long, marked)
 	_CL_LOG << "lbFormularParameters::lbFormularParameters() called." LOG_
 }
 
@@ -77,6 +79,7 @@ long  LB_STDCALL lbFormularParameters::addParameter(const char* name, const char
 	UAP_REQUEST(manager.getPtr(), lb_I_Long, FormularID)
 	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, paramname)
+	UAP_REQUEST(manager.getPtr(), lb_I_Long, marked)
 
 	_CL_VERBOSE << "Add a parameter to lbFormularParameters: " << name LOG_
 
@@ -127,10 +130,25 @@ bool  LB_STDCALL lbFormularParameters::selectParameter(long _id) {
 		param->getUAPLong(*&name, *&currentID);
 		*name = "FormularID";
 		param->getUAPLong(*&name, *&currentFormularID);
+		*name = "marked";
+		param->getUAPLong(*&name, *&marked);
 		
 		return true;
 	}
 	
+	return false;
+}
+
+void LB_STDCALL lbFormularParameters::mark() {
+	marked->setData((long) 1);
+}
+
+void LB_STDCALL lbFormularParameters::unmark() {
+	marked->setData((long) 0);
+}
+
+bool LB_STDCALL lbFormularParameters::ismarked() {
+	if (marked->getData() == 1) return true;
 	return false;
 }
 
@@ -159,6 +177,8 @@ void  LB_STDCALL lbFormularParameters::setNextParameter() {
 	param->getUAPLong(*&name, *&currentID);
 	*name = "FormularID";
 	param->getUAPLong(*&name, *&currentFormularID);
+	*name = "marked";
+	param->getUAPLong(*&name, *&marked);
 }
 
 void  LB_STDCALL lbFormularParameters::finishParameterIteration() {
@@ -211,6 +231,8 @@ lbApplicationParameters::lbApplicationParameters() {
 	REQUEST(getModuleInstance(), lb_I_String, currentParameterValue)
 	REQUEST(getModuleInstance(), lb_I_Long, currentID)
 	REQUEST(getModuleInstance(), lb_I_Long, currentApplicationID)
+	
+	REQUEST(getModuleInstance(), lb_I_Long, marked)
 	_CL_LOG << "lbApplicationParameters::lbApplicationParameters() called." LOG_
 }
 
@@ -231,6 +253,7 @@ long  LB_STDCALL lbApplicationParameters::addParameter(const char* name, const c
 	UAP_REQUEST(manager.getPtr(), lb_I_Long, ApplicationID)
 	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, paramname)
+	UAP_REQUEST(manager.getPtr(), lb_I_Long, marked)
 
 	_CL_VERBOSE << "Add a parameter to lbApplicationParameters: " << name LOG_
 
@@ -247,6 +270,8 @@ long  LB_STDCALL lbApplicationParameters::addParameter(const char* name, const c
 	param->setUAPLong(*&paramname, *&ID);
 	*paramname = "ApplicationID";
 	param->setUAPLong(*&paramname, *&ApplicationID);
+	*paramname = "marked";
+	param->setUAPLong(*&paramname, *&marked);
 	
 	UAP(lb_I_KeyBase, key)
 	UAP(lb_I_Unknown, ukParam)
@@ -281,6 +306,8 @@ bool  LB_STDCALL lbApplicationParameters::selectParameter(long _id) {
 		param->getUAPLong(*&name, *&currentID);
 		*name = "ApplicationID";
 		param->getUAPLong(*&name, *&currentApplicationID);
+		*name = "marked";
+		param->getUAPLong(*&name, *&marked);
 		
 		return true;
 	}
@@ -313,6 +340,21 @@ void  LB_STDCALL lbApplicationParameters::setNextParameter() {
 	param->getUAPLong(*&name, *&currentID);
 	*name = "ApplicationID";
 	param->getUAPLong(*&name, *&currentApplicationID);
+	*name = "marked";
+	param->getUAPLong(*&name, *&marked);
+}
+
+void LB_STDCALL lbApplicationParameters::mark() {
+	marked->setData((long) 1);
+}
+
+void LB_STDCALL lbApplicationParameters::unmark() {
+	marked->setData((long) 0);
+}
+
+bool LB_STDCALL lbApplicationParameters::ismarked() {
+	if (marked->getData() == 1) return true;
+	return false;
 }
 
 void  LB_STDCALL lbApplicationParameters::finishParameterIteration() {

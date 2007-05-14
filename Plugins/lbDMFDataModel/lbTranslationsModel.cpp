@@ -66,6 +66,8 @@ lbTranslationsModel::lbTranslationsModel() {
 	REQUEST(getModuleInstance(), lb_I_String, currentTranslationLanguage)
 	REQUEST(getModuleInstance(), lb_I_String, currentTranslationText)
 	REQUEST(getModuleInstance(), lb_I_String, currentTranslationTranslated)
+	
+	REQUEST(getModuleInstance(), lb_I_Long, marked)
 
 	_CL_LOG << "lbTranslationsModel::lbTranslationsModel() called." LOG_
 }
@@ -87,6 +89,7 @@ long  LB_STDCALL lbTranslationsModel::addTranslation(const char* text, const cha
 	UAP_REQUEST(manager.getPtr(), lb_I_Long, ID)
 	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, paramname)
+	UAP_REQUEST(manager.getPtr(), lb_I_Long, marked)
 
 	UAP(lb_I_KeyBase, keyText)
 
@@ -105,6 +108,8 @@ long  LB_STDCALL lbTranslationsModel::addTranslation(const char* text, const cha
 	param->setUAPLong(*&paramname, *&ID);
 	*paramname = "Language";
 	param->setUAPString(*&paramname, *&Language);
+	*paramname = "marked";
+	param->setUAPLong(*&paramname, *&marked);
 	
 	UAP(lb_I_KeyBase, key)
 	UAP(lb_I_Unknown, ukParam)
@@ -175,10 +180,25 @@ bool  LB_STDCALL lbTranslationsModel::selectTranslation(long _id) {
 		param->getUAPLong(*&name, *&currentTranslationID);
 		*name = "Language";
 		param->getUAPString(*&name, *&currentTranslationLanguage);
+		*name = "marked";
+		param->getUAPLong(*&name, *&marked);
 		
 		return true;
 	}
 	
+	return false;
+}
+
+void LB_STDCALL lbTranslationsModel::mark() {
+	marked->setData((long) 1);
+}
+
+void LB_STDCALL lbTranslationsModel::unmark() {
+	marked->setData((long) 0);
+}
+
+bool LB_STDCALL lbTranslationsModel::ismarked() {
+	if (marked->getData() == 1) return true;
 	return false;
 }
 
@@ -207,6 +227,8 @@ void  LB_STDCALL lbTranslationsModel::setNextTranslation() {
 	param->getUAPLong(*&name, *&currentTranslationID);
 	*name = "Language";
 	param->getUAPString(*&name, *&currentTranslationLanguage);
+	*name = "marked";
+	param->getUAPLong(*&name, *&marked);
 }
 
 void  LB_STDCALL lbTranslationsModel::finishTranslationIteration() {

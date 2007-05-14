@@ -192,7 +192,6 @@ END_IMPLEMENT_LB_UNKNOWN()
 
 IMPLEMENT_FUNCTOR(instanceOflbXMLOutputStream, lbXMLOutputStream)
 
-
 /*...slbErrCodes LB_STDCALL lbXMLOutputStream\58\\58\setData\40\lb_I_Unknown\42\ uk\41\:0:*/
 lbErrCodes LB_STDCALL lbXMLOutputStream::setData(lb_I_Unknown* uk) {
 	lbErrCodes err = ERR_NONE;
@@ -297,10 +296,16 @@ void LB_STDCALL lbXMLOutputStream::visit(lb_I_FormularParameter* forms) {
 	
 	while (forms->hasMoreParameters()) {
 		forms->setNextParameter();
+		
+		UAP_REQUEST(getModuleInstance(), lb_I_String, Value)
+		
+		*Value = forms->getParameterValue();
+		*Value = Value->replace("\"", "&quot;");
+		
 		*oStream << 
 		"<parameter ID=\"" << forms->getParameterID() << 
 		"\" name=\"" << forms->getParameterName() << 
-		"\" value=\"" << forms->getParameterValue() << 
+		"\" value=\"" << Value->charrep() << 
 		"\" formularid=\"" << forms->getFormularID() << "\">" << "\n";
 	}
 
@@ -311,12 +316,22 @@ void LB_STDCALL lbXMLOutputStream::visit(lb_I_Actions* actions) {
 	*oStream << "<actions>" << "\n";
 	
 	actions->finishActionIteration();
+
+	UAP_REQUEST(getModuleInstance(), lb_I_String, Name)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, Source)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, Typ)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, Target)
 	
 	while (actions->hasMoreActions()) {
 		actions->setNextAction();
+		
+		*Name = actions->getActionName();
+		
+		*Name = Name->replace("\"", "&quot;");
+		
 		*oStream << 
 		"<action ID=\"" << actions->getActionID() << 
-		"\" name=\"" << actions->getActionName() << 
+		"\" name=\"" << Name->charrep() << 
 		"\" source=\"" << actions->getActionSource() << 
 		"\" typ=\"" << actions->getActionTyp() << 
 		"\" target=\"" << actions->getActionTarget() << "\">" << "\n";

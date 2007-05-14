@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.75 $
+ * $Revision: 1.76 $
  * $Name:  $
- * $Id: lbInterfaces-sub-classes.h,v 1.75 2007/05/12 17:44:02 lollisoft Exp $
+ * $Id: lbInterfaces-sub-classes.h,v 1.76 2007/05/14 19:19:17 lollisoft Exp $
  *
  * $Log: lbInterfaces-sub-classes.h,v $
+ * Revision 1.76  2007/05/14 19:19:17  lollisoft
+ * Unfinished changes. Go to Linux.
+ *
  * Revision 1.75  2007/05/12 17:44:02  lollisoft
  * Added equal operators to lb_I_String interface.
  *
@@ -565,6 +568,8 @@ public:
 	virtual lb_I_String& LB_STDCALL operator += (const lb_I_String* toAppend) = 0;
 		
 	virtual lb_I_String& LB_STDCALL operator = (const lb_I_String* toAppend) = 0;
+	
+	virtual lb_I_String& LB_STDCALL replace(const char* toReplace, const char* with) = 0;
 };
 /*...e*/
 /*...sclass lb_I_FileLocation:0:*/

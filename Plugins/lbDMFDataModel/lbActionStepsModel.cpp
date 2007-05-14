@@ -63,9 +63,12 @@ lbActionStepsModel::lbActionStepsModel() {
 	REQUEST(getModuleInstance(), lb_I_Container, Actions)
 	REQUEST(getModuleInstance(), lb_I_Long, currentActionID)
 	REQUEST(getModuleInstance(), lb_I_Long, currentActionTyp)
-	REQUEST(getModuleInstance(), lb_I_Long, currentActionTarget)
+	REQUEST(getModuleInstance(), lb_I_String, currentActionWhat)
 	REQUEST(getModuleInstance(), lb_I_String, currentActionName)
 	REQUEST(getModuleInstance(), lb_I_String, currentActionSource)
+		
+	REQUEST(getModuleInstance(), lb_I_Long, marked)
+
 	_CL_LOG << "lbActionStepsModel::lbActionStepsModel() called." LOG_
 }
 
@@ -78,13 +81,16 @@ lbErrCodes LB_STDCALL lbActionStepsModel::setData(lb_I_Unknown*) {
 	return ERR_NOT_IMPLEMENTED;
 }
 
-long  LB_STDCALL lbActionStepsModel::addAction(const char* name, long typ, const char* source, long target, long _id) {
+long  LB_STDCALL lbActionStepsModel::addAction(const char* bezeichnung, long actionid, long orderNo, long type, const char* what, long _id) {
 	lbErrCodes err = ERR_NONE;
-	UAP_REQUEST(manager.getPtr(), lb_I_String, Name)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, Source)
 	UAP_REQUEST(manager.getPtr(), lb_I_Long, ID)
+
+	UAP_REQUEST(manager.getPtr(), lb_I_String, Bezeichnung)
+	UAP_REQUEST(manager.getPtr(), lb_I_Long, Actionid)
+	UAP_REQUEST(manager.getPtr(), lb_I_Long, OrderNo)
 	UAP_REQUEST(manager.getPtr(), lb_I_Long, Typ)
-	UAP_REQUEST(manager.getPtr(), lb_I_Long, Target)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, What)
+	UAP_REQUEST(manager.getPtr(), lb_I_Long, marked)
 	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, paramname)
 
@@ -106,6 +112,8 @@ long  LB_STDCALL lbActionStepsModel::addAction(const char* name, long typ, const
 	param->setUAPLong(*&paramname, *&ID);
 	*paramname = "Target";
 	param->setUAPLong(*&paramname, *&Target);
+	*paramname = "marked";
+	param->setUAPLong(*&paramname, *&marked);
 	
 	UAP(lb_I_KeyBase, key)
 	UAP(lb_I_Unknown, ukParam)
@@ -115,6 +123,19 @@ long  LB_STDCALL lbActionStepsModel::addAction(const char* name, long typ, const
 	Actions->insert(&ukParam, &key);
 
 	return -1;
+}
+
+bool LB_STDCALL lbActionStepsModel::ismarked() {
+	if (marked->getData() == 1) return true;
+	return false;
+}
+
+void LB_STDCALL lbActionStepsModel::mark() {
+	marked->setData((long) 1);
+}
+
+void LB_STDCALL lbActionStepsModel::unmark() {
+	marked->setData((long) 0);
 }
 
 bool  LB_STDCALL lbActionStepsModel::selectAction(long _id) {
@@ -142,6 +163,8 @@ bool  LB_STDCALL lbActionStepsModel::selectAction(long _id) {
 		param->getUAPLong(*&name, *&currentActionTyp);
 		*name = "Target";
 		param->getUAPLong(*&name, *&currentActionTarget);
+		*name = "marked";
+		param->getUAPLong(*&name, *&marked);
 		
 		return true;
 	}
@@ -176,6 +199,8 @@ void  LB_STDCALL lbActionStepsModel::setNextAction() {
 	param->getUAPLong(*&name, *&currentActionTyp);
 	*name = "Target";
 	param->getUAPLong(*&name, *&currentActionTarget);
+	*name = "marked";
+	param->getUAPLong(*&name, *&marked);
 }
 
 void  LB_STDCALL lbActionStepsModel::finishActionIteration() {

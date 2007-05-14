@@ -57,6 +57,8 @@ lbUserApplicationRelationModel::lbUserApplicationRelationModel() {
 	REQUEST(getModuleInstance(), lb_I_Long, currentUserID)
 	REQUEST(getModuleInstance(), lb_I_Long, currentAppID)
 	REQUEST(getModuleInstance(), lb_I_Long, currentID)
+	
+	REQUEST(getModuleInstance(), lb_I_Long, marked)
 }
 /*...e*/
 /*...slbUserApplicationRelationModel\58\\58\\126\lbUserApplicationRelationModel\40\\41\:0:*/
@@ -78,6 +80,7 @@ long  LB_STDCALL lbUserApplicationRelationModel::addRelation(long app_id, long u
 	UAP_REQUEST(manager.getPtr(), lb_I_Long, ID)
 	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, paramname)
+	UAP_REQUEST(manager.getPtr(), lb_I_Long, marked)
 
 	UserID->setData(user_id);
 	AppID->setData(app_id);
@@ -89,6 +92,8 @@ long  LB_STDCALL lbUserApplicationRelationModel::addRelation(long app_id, long u
 	param->setUAPLong(*&paramname, *&AppID);
 	*paramname = "ID";
 	param->setUAPLong(*&paramname, *&ID);
+	*paramname = "marked";
+	param->setUAPLong(*&paramname, *&marked);
 	
 	UAP(lb_I_KeyBase, key)
 	UAP(lb_I_Unknown, ukParam)
@@ -122,6 +127,8 @@ bool  LB_STDCALL lbUserApplicationRelationModel::selectRelation(long _id) {
 		param->getUAPLong(*&name, *&currentAppID);
 		*name = "ID";
 		param->getUAPLong(*&name, *&currentID);
+		*name = "marked";
+		param->getUAPLong(*&name, *&marked);
 		
 		return true;
 	}
@@ -129,6 +136,19 @@ bool  LB_STDCALL lbUserApplicationRelationModel::selectRelation(long _id) {
 	return false;
 }
 /*...e*/
+
+void LB_STDCALL lbUserApplicationRelationModel::mark() {
+	marked->setData((long) 1);
+}
+
+void LB_STDCALL lbUserApplicationRelationModel::unmark() {
+	marked->setData((long) 0);
+}
+
+bool LB_STDCALL lbUserApplicationRelationModel::ismarked() {
+	if (marked->getData() == 1) return true;
+	return false;
+}
 /*...sbool LB_STDCALL lbUserApplicationRelationModel\58\\58\addFilter\40\const char\42\ filter\44\ const char\42\ value\41\:0:*/
 bool LB_STDCALL lbUserApplicationRelationModel::addFilter(const char* filter, const char* value) {
 	return false;
@@ -165,6 +185,8 @@ void  LB_STDCALL lbUserApplicationRelationModel::setNextRelation() {
 	param->getUAPLong(*&name, *&currentAppID);
 	*name = "ID";
 	param->getUAPLong(*&name, *&currentID);
+	*name = "marked";
+	param->getUAPLong(*&name, *&marked);
 }
 /*...e*/
 /*...svoid  LB_STDCALL lbUserApplicationRelationModel\58\\58\finishRelationIteration\40\\41\:0:*/

@@ -22,19 +22,22 @@
     The author of this work will be reached by e-Mail or paper mail.
     e-Mail: lothar.behrens@lollisoft.de
     p-Mail: Lothar Behrens
-            Rosmarinstr. 3
+            Heinrich-Scheufelen-Platz 2
             
-            40235 Duesseldorf (germany)
+            73252 Lenningen (germany)
 */
 /*...e*/
 
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.37 $
+ * $Revision: 1.38 $
  * $Name:  $
- * $Id: lbobject.h,v 1.37 2007/05/12 17:46:51 lollisoft Exp $
+ * $Id: lbobject.h,v 1.38 2007/05/14 19:19:15 lollisoft Exp $
  * $Log: lbobject.h,v $
+ * Revision 1.38  2007/05/14 19:19:15  lollisoft
+ * Unfinished changes. Go to Linux.
+ *
  * Revision 1.37  2007/05/12 17:46:51  lollisoft
  * Added equal operators to lb_I_String implementation.
  *
@@ -380,7 +383,8 @@ public:
 	int LB_STDCALL operator == (const char* toCompare) const;
 	int LB_STDCALL operator == (const lb_I_String* toCompare) const;
 	
-
+	lb_I_String& LB_STDCALL replace(const char* toReplace, const char* with);
+ 
 	DECLARE_LB_KEYBASE()
 
 private:

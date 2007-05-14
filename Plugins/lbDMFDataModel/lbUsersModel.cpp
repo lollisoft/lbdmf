@@ -57,6 +57,8 @@ lbUsersModel::lbUsersModel() {
 	REQUEST(getModuleInstance(), lb_I_String, currentUserName)
 	REQUEST(getModuleInstance(), lb_I_String, currentUserPassword)
 	REQUEST(getModuleInstance(), lb_I_Long, currentUserID)
+	
+	REQUEST(getModuleInstance(), lb_I_Long, marked)
 }
 
 lbUsersModel::~lbUsersModel() {
@@ -75,6 +77,7 @@ long  LB_STDCALL lbUsersModel::addAccount(const char* _user, const char* _pass, 
 	UAP_REQUEST(manager.getPtr(), lb_I_Long, ID)
 	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, paramname)
+	UAP_REQUEST(manager.getPtr(), lb_I_Long, marked)
 
 	*User = _user;
 	*Pass = _pass;
@@ -86,6 +89,8 @@ long  LB_STDCALL lbUsersModel::addAccount(const char* _user, const char* _pass, 
 	param->setUAPString(*&paramname, *&Pass);
 	*paramname = "ID";
 	param->setUAPLong(*&paramname, *&ID);
+	*paramname = "marked";
+	param->setUAPLong(*&paramname, *&marked);
 	
 	UAP(lb_I_KeyBase, key)
 	UAP(lb_I_Unknown, ukParam)
@@ -134,6 +139,8 @@ bool LB_STDCALL lbUsersModel::selectAccount(long user_id) {
 		param->getUAPString(*&name, *&currentUserPassword);
 		*name = "ID";
 		param->getUAPLong(*&name, *&currentUserID);
+		*name = "marked";
+		param->getUAPLong(*&name, *&marked);
 		
 		return true;
 	}
@@ -141,6 +148,18 @@ bool LB_STDCALL lbUsersModel::selectAccount(long user_id) {
 	return false;
 }
 
+void LB_STDCALL lbUsersModel::mark() {
+	marked->setData((long) 1);
+}
+
+void LB_STDCALL lbUsersModel::unmark() {
+	marked->setData((long) 0);
+}
+
+bool LB_STDCALL lbUsersModel::ismarked() {
+	if (marked->getData() == 1) return true;
+	return false;
+}
 
 long  LB_STDCALL lbUsersModel::getUserCount() {
 	return Users->Count();
@@ -165,6 +184,8 @@ void  LB_STDCALL lbUsersModel::setNextUser() {
 	param->getUAPString(*&name, *&currentUserPassword);
 	*name = "ID";
 	param->getUAPLong(*&name, *&currentUserID);
+	*name = "marked";
+	param->getUAPLong(*&name, *&marked);
 }
 
 void  LB_STDCALL lbUsersModel::finishUserIteration() {

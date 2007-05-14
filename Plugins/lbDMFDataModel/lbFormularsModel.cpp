@@ -81,6 +81,7 @@ long  LB_STDCALL lbFormularsModel::addFormular(const char* name, const char* men
 	UAP_REQUEST(manager.getPtr(), lb_I_Long, AnwendungID)
 	UAP_REQUEST(manager.getPtr(), lb_I_Long, FormularID)
 	UAP_REQUEST(manager.getPtr(), lb_I_Long, Typ)
+	UAP_REQUEST(manager.getPtr(), lb_I_Long, marked)
 	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, paramname)
 
@@ -107,7 +108,9 @@ long  LB_STDCALL lbFormularsModel::addFormular(const char* name, const char* men
 	param->setUAPLong(*&paramname, *&AnwendungID);
 	*paramname = "Typ";
 	param->setUAPLong(*&paramname, *&Typ);
-	
+	*paramname = "marked";
+	param->setUAPLong(*&paramname, *&marked);
+
 	UAP(lb_I_KeyBase, key)
 	UAP(lb_I_Unknown, ukParam)
 	QI(FormularID, lb_I_KeyBase, key)
@@ -163,6 +166,8 @@ bool LB_STDCALL lbFormularsModel::selectFormular(long user_id) {
 		param->getUAPLong(*&paramname, *&currentApplicationID);
 		*paramname = "Typ";
 		param->getUAPLong(*&paramname, *&currentTyp);
+		*paramname = "marked";
+		param->getUAPLong(*&paramname, *&marked);
 		
 		return true;
 	}
@@ -170,6 +175,18 @@ bool LB_STDCALL lbFormularsModel::selectFormular(long user_id) {
 	return false;
 }
 
+bool LB_STDCALL lbFormularsModel::ismarked() {
+	if (marked->getData() == 1) return true;
+	return false;
+}
+
+void LB_STDCALL lbFormularsModel::mark() {
+	marked->setData((long) 1);
+}
+
+void LB_STDCALL lbFormularsModel::unmark() {
+	marked->setData((long) 0);
+}
 
 int  LB_STDCALL lbFormularsModel::getFormularCount() {
 	return Formulars->Count();
@@ -202,6 +219,8 @@ void  LB_STDCALL lbFormularsModel::setNextFormular() {
 	param->getUAPLong(*&paramname, *&currentApplicationID);
 	*paramname = "Typ";
 	param->getUAPLong(*&paramname, *&currentTyp);
+	*paramname = "marked";
+	param->getUAPLong(*&paramname, *&marked);
 	
 }
 

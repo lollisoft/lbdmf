@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.109 $
+ * $Revision: 1.110 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.109 2007/05/11 21:21:01 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.110 2007/05/14 19:19:14 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.110  2007/05/14 19:19:14  lollisoft
+ * Unfinished changes. Go to Linux.
+ *
  * Revision 1.109  2007/05/11 21:21:01  lollisoft
  * Linux compiler is more restrictive with const char*
  *
@@ -2367,6 +2370,16 @@ lb_I_Container* LB_STDCALL lb_MetaApplication::getApplications() {
 	return apps.getPtr();
 }
 /*...e*/
+
+lb_I_Applications* LB_STDCALL lb_MetaApplication::getApplicationModel() {
+	if (Applications == NULL) {
+		REQUEST(getModuleInstance(), lb_I_Applications, Applications)
+	}
+	
+	Applications++;
+	
+	return Applications.getPtr();
+}
 
 /*...sbool LB_STDCALL lb_MetaApplication\58\\58\login\40\const char\42\ user\44\ const char\42\ pass\41\:0:*/
 bool LB_STDCALL lb_MetaApplication::login(const char* user, const char* pass) {

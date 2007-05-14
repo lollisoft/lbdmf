@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.48 $
+ * $Revision: 1.49 $
  * $Name:  $
- * $Id: lbMetaApplication.h,v 1.48 2007/05/11 21:21:02 lollisoft Exp $
+ * $Id: lbMetaApplication.h,v 1.49 2007/05/14 19:19:14 lollisoft Exp $
  *
  * $Log: lbMetaApplication.h,v $
+ * Revision 1.49  2007/05/14 19:19:14  lollisoft
+ * Unfinished changes. Go to Linux.
+ *
  * Revision 1.48  2007/05/11 21:21:02  lollisoft
  * Linux compiler is more restrictive with const char*
  *
@@ -375,7 +378,8 @@ public:
 	bool                    LB_STDCALL isPropertyPaneLayoutLeft();
 
 	void                    LB_STDCALL showPropertyPanel();
-
+	
+	lb_I_Applications*		LB_STDCALL getApplicationModel();
 	
 protected:
 	lb_I_GUI* gui;

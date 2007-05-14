@@ -22,9 +22,9 @@
     The author of this work will be reached by e-Mail or paper mail.
     e-Mail: lothar.behrens@lollisoft.de
     p-Mail: Lothar Behrens
-            Rosmarinstr. 3
-            
-            40235 Duesseldorf (germany)
+            Heinrich-Scheufelen-Platz 2
+
+            73252 Lenningen (germany)
 */
 /*...e*/
 #include <stdio.h>
@@ -59,6 +59,8 @@ lbFormularActionsModel::lbFormularActionsModel() {
 	REQUEST(getModuleInstance(), lb_I_Long, currentFormularActionActionID)
 	
 	REQUEST(getModuleInstance(), lb_I_String, currentFormularActionEvent)
+	
+	REQUEST(getModuleInstance(), lb_I_Long, marked)
 	_CL_LOG << "lbFormularActionsModel::lbFormularActionsModel() called." LOG_
 }
 
@@ -77,6 +79,7 @@ long  LB_STDCALL lbFormularActionsModel::addFormularAction(long formular, long a
 	UAP_REQUEST(manager.getPtr(), lb_I_Long, ActionID)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, Event)
 	UAP_REQUEST(manager.getPtr(), lb_I_Long, ID)
+	UAP_REQUEST(manager.getPtr(), lb_I_Long, marked)
 	
 	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, paramname)
@@ -94,6 +97,8 @@ long  LB_STDCALL lbFormularActionsModel::addFormularAction(long formular, long a
 	param->setUAPLong(*&paramname, *&ID);
 	*paramname = "Event";
 	param->setUAPString(*&paramname, *&Event);
+	*paramname = "marked";
+	param->setUAPLong(*&paramname, *&marked);
 	
 	UAP(lb_I_KeyBase, key)
 	UAP(lb_I_Unknown, ukParam)
@@ -128,11 +133,26 @@ bool  LB_STDCALL lbFormularActionsModel::selectFormularAction(long _id) {
 		param->getUAPLong(*&name, *&currentFormularActionID);
 		*name = "Event";
 		param->getUAPString(*&name, *&currentFormularActionEvent);
+		*name = "marked";
+		param->getUAPLong(*&name, *&marked);
 		
 		return true;
 	}
 	
 	return false;
+}
+
+bool LB_STDCALL lbFormularActionsModel::ismarked() {
+	if (marked->getData() == 1) return true;
+	return false;
+}
+
+void LB_STDCALL lbFormularActionsModel::mark() {
+	marked->setData((long) 1);
+}
+
+void LB_STDCALL lbFormularActionsModel::unmark() {
+	marked->setData((long) 0);
 }
 
 int  LB_STDCALL lbFormularActionsModel::getFormularActionsCount() {
@@ -160,6 +180,8 @@ void  LB_STDCALL lbFormularActionsModel::setNextFormularAction() {
 	param->getUAPLong(*&name, *&currentFormularActionID);
 	*name = "Event";
 	param->getUAPString(*&name, *&currentFormularActionEvent);
+	*name = "marked";
+	param->getUAPLong(*&name, *&marked);
 }
 
 void  LB_STDCALL lbFormularActionsModel::finishFormularActionIteration() {

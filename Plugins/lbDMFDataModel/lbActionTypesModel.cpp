@@ -59,6 +59,8 @@ lbActionTypesModel::lbActionTypesModel() {
 	REQUEST(getModuleInstance(), lb_I_Long, currentActionTarget)
 	REQUEST(getModuleInstance(), lb_I_String, currentActionName)
 	REQUEST(getModuleInstance(), lb_I_String, currentActionSource)
+	
+	REQUEST(getModuleInstance(), lb_I_Long, marked)
 	_CL_LOG << "lbActionTypesModel::lbActionTypesModel() called." LOG_
 }
 
@@ -78,6 +80,7 @@ long  LB_STDCALL lbActionTypesModel::addAction(const char* name, long typ, const
 	UAP_REQUEST(manager.getPtr(), lb_I_Long, ID)
 	UAP_REQUEST(manager.getPtr(), lb_I_Long, Typ)
 	UAP_REQUEST(manager.getPtr(), lb_I_Long, Target)
+	UAP_REQUEST(manager.getPtr(), lb_I_Long, marked)
 	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, paramname)
 
@@ -99,6 +102,8 @@ long  LB_STDCALL lbActionTypesModel::addAction(const char* name, long typ, const
 	param->setUAPLong(*&paramname, *&ID);
 	*paramname = "Target";
 	param->setUAPLong(*&paramname, *&Target);
+	*paramname = "marked";
+	param->setUAPLong(*&paramname, *&marked);
 	
 	UAP(lb_I_KeyBase, key)
 	UAP(lb_I_Unknown, ukParam)
@@ -135,11 +140,26 @@ bool  LB_STDCALL lbActionTypesModel::selectAction(long _id) {
 		param->getUAPLong(*&name, *&currentActionTyp);
 		*name = "Target";
 		param->getUAPLong(*&name, *&currentActionTarget);
+		*name = "marked";
+		param->getUAPLong(*&name, *&marked);
 		
 		return true;
 	}
 	
 	return false;
+}
+
+bool LB_STDCALL lbActionTypesModel::ismarked() {
+	if (marked->getData() == 1) return true;
+	return false;
+}
+
+void LB_STDCALL lbActionTypesModel::mark() {
+	marked->setData((long) 1);
+}
+
+void LB_STDCALL lbActionTypesModel::unmark() {
+	marked->setData((long) 0);
 }
 
 int  LB_STDCALL lbActionTypesModel::getActionCount() {
@@ -169,6 +189,8 @@ void  LB_STDCALL lbActionTypesModel::setNextAction() {
 	param->getUAPLong(*&name, *&currentActionTyp);
 	*name = "Target";
 	param->getUAPLong(*&name, *&currentActionTarget);
+	*name = "marked";
+	param->getUAPLong(*&name, *&marked);
 }
 
 void  LB_STDCALL lbActionTypesModel::finishActionIteration() {

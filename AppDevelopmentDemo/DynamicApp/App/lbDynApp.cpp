@@ -124,6 +124,7 @@ protected:
 	// Preloaded data from database, if plugins are available.
 	UAP(lb_I_Formulars, forms)
 	UAP(lb_I_FormularParameter, formParams)
+	UAP(lb_I_Formular_Actions, formActions)
 	UAP(lb_I_ApplicationParameter, appParams)
 	UAP(lb_I_Actions, appActions)
 	UAP(lb_I_Action_Steps, appActionSteps)
@@ -559,37 +560,6 @@ lbErrCodes LB_STDCALL lbDynamicApplication::uninitialize() {
 			
 				if (success) {
 					accept(*&fOp);
-#ifdef moved_to_plugin				
-					if (forms != NULL) {
-						_CL_LOG << "Save a forms model object..." LOG_
-						forms->accept(*&fOp);
-					}
-
-					if (formParams != NULL) {
-						_CL_LOG << "Save a formParams model object..." LOG_
-						formParams->accept(*&fOp);
-					}
-
-					if (appParams != NULL) {
-						_CL_LOG << "Save a appParams model object..." LOG_
-						appParams->accept(*&fOp);
-					}
-					
-					if (appActions != NULL) {
-						_CL_LOG << "Save a appActions model object..." LOG_
-						appActions->accept(*&fOp);
-					}
-					
-					if (appActionTypes != NULL) {
-						_CL_LOG << "Save a appActionTypes model object..." LOG_
-						appActionTypes->accept(*&fOp);
-					}
-					
-					if (appActionSteps != NULL) {
-						_CL_LOG << "Save a appActionSteps model object..." LOG_
-						appActionSteps->accept(*&fOp);
-					}
-#endif					
 					fOp->end();
 				} else {
 				// No file found. Create one from database...
@@ -766,6 +736,8 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 		UAP(lb_I_Unknown, ukPlFormulars)
 		UAP(lb_I_Plugin, plFormParams)
 		UAP(lb_I_Unknown, ukPlFormParams)
+		UAP(lb_I_Plugin, plFormActions)
+		UAP(lb_I_Formular_Actions, ukPlFormActions)
 		UAP(lb_I_Plugin, plAppParams)
 		UAP(lb_I_Unknown, ukPlAppParams)
 		UAP(lb_I_Plugin, plAppActions)
@@ -786,6 +758,19 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 			QI(ukPlAppActions, lb_I_Actions, appActions)
 		} else {
 			_LOG << "Warning: No actions datamodel plugin implementation found." LOG_
+		}
+
+		plFormActions = PM->getFirstMatchingPlugin("lb_I_Formular_Actions", "Model");
+		if (plFormActions != NULL) {
+			ukPlFormActions = plFormActions->getImplementation();
+		} else {
+			_LOG << "Warning: No actions datamodel plugin found." LOG_
+		}
+		
+		if (ukPlFormActions != NULL) { 
+			QI(ukPlFormActions, lb_I_Formular_Actions, formActions)
+		} else {
+			_LOG << "Warning: No formular action association datamodel plugin implementation found." LOG_
 		}
 
 		plAppActionTypes = PM->getFirstMatchingPlugin("lb_I_Action_Types", "Model");
@@ -887,6 +872,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 			_LOG << "Load application data from file ..." LOG_
 			
 			forms->accept(*&fOp);
+			formActions->accept(*&fOp);
 			formParams->accept(*&fOp);
 			appParams->accept(*&fOp);
 			appActions->accept(*&fOp);
@@ -905,6 +891,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 			
 			
 			forms->accept(*&fOpDB);
+			formActions->accept(*&fOpDB);
 			formParams->accept(*&fOpDB);
 			appParams->accept(*&fOpDB);
 			appActions->accept(*&fOpDB);
@@ -926,6 +913,10 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 			
 			*name = "Formulars";
 			QI(forms, lb_I_Unknown, uk)
+			document->insert(&uk, &key);
+			
+			*name = "FormActions";
+			QI(formActions, lb_I_Unknown, uk)
 			document->insert(&uk, &key);
 			
 			*name = "FormParams";

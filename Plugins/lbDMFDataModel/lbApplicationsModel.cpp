@@ -61,6 +61,8 @@ lbApplications::lbApplications() {
 	REQUEST(getModuleInstance(), lb_I_String, currentModuleName)
 	REQUEST(getModuleInstance(), lb_I_String, currentInterface)
 	REQUEST(getModuleInstance(), lb_I_Long, currentApplicationUID)
+	
+	REQUEST(getModuleInstance(), lb_I_Long, marked)
 }
 /*...e*/
 /*...slbApplications\58\\58\\126\lbApplications\40\\41\:0:*/
@@ -83,6 +85,7 @@ long	LB_STDCALL lbApplications::addApplication(const char* application, const ch
 	UAP_REQUEST(manager.getPtr(), lb_I_String, ModuleName)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, Functor)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, Interface)
+	UAP_REQUEST(manager.getPtr(), lb_I_Long, marked)
 	
 	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, paramname)
@@ -108,6 +111,8 @@ long	LB_STDCALL lbApplications::addApplication(const char* application, const ch
 	param->setUAPString(*&paramname, *&Functor);
 	*paramname = "Interface";
 	param->setUAPString(*&paramname, *&Interface);
+	*paramname = "marked";
+	param->setUAPLong(*&paramname, *&marked);
 	
 	UAP(lb_I_KeyBase, key)
 	UAP(lb_I_Unknown, ukParam)
@@ -163,6 +168,8 @@ bool	LB_STDCALL lbApplications::selectApplication(long _id) {
 		param->getUAPString(*&name, *&currentModuleName);
 		*name = "Interface";
 		param->getUAPString(*&name, *&currentInterface);
+		*name = "marked";
+		param->getUAPLong(*&name, *&marked);
 
 		_CL_VERBOSE << "lbApplications::selectApplication('" << _id << "') selects '" << 
 		currentApplication->charrep() << "', '" << 
@@ -177,6 +184,20 @@ bool	LB_STDCALL lbApplications::selectApplication(long _id) {
 	}
 }
 /*...e*/
+
+bool LB_STDCALL lbApplications::ismarked() {
+	if (marked->getData() == 1) return true;
+	return false;
+}
+
+void LB_STDCALL lbApplications::mark() {
+	marked->setData((long) 1);
+}
+
+void LB_STDCALL lbApplications::unmark() {
+	marked->setData((long) 0);
+}
+
 /*...sint     LB_STDCALL lbApplications\58\\58\getApplicationCount\40\\41\:0:*/
 int	LB_STDCALL lbApplications::getApplicationCount() {
 	return Applications->Count();
@@ -209,6 +230,8 @@ void	LB_STDCALL lbApplications::setNextApplication() {
 	param->getUAPString(*&name, *&currentFunctor);
 	*name = "Interface";
 	param->getUAPString(*&name, *&currentInterface);
+	*name = "marked";
+	param->getUAPLong(*&name, *&marked);
 }
 /*...e*/
 /*...svoid    LB_STDCALL lbApplications\58\\58\finishApplicationIteration\40\\41\:0:*/

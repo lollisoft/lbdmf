@@ -22,9 +22,9 @@
     The author of this work will be reached by e-Mail or paper mail.
     e-Mail: lothar.behrens@lollisoft.de
     p-Mail: Lothar Behrens
-            Rosmarinstr. 3
-            
-            40235 Duesseldorf (germany)
+            Heinrich-Scheufelen-Platz 2
+
+            73252 Lenningen (germany)
 */
 /*...e*/
 
@@ -48,6 +48,10 @@ public:
 	long		LB_STDCALL getTyp();
 	long		LB_STDCALL getFormularID();
 
+	bool		LB_STDCALL ismarked();
+	void		LB_STDCALL mark();
+	void		LB_STDCALL unmark();
+
 	DECLARE_LB_UNKNOWN()
 	
 	UAP(lb_I_Container, Formulars)
@@ -60,6 +64,8 @@ public:
 	UAP(lb_I_Long, currentApplicationID)
 	UAP(lb_I_Long, currentTyp)
 	UAP(lb_I_Long, currentFormularID)
+
+	UAP(lb_I_Long, marked)
 };
 
 

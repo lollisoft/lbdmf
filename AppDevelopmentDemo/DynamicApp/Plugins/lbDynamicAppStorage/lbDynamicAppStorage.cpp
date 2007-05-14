@@ -80,10 +80,13 @@ lbErrCodes LB_STDCALL lbDynamicAppXMLStorage::save(lb_I_OutputStream* oStream) {
 
 	UAP(lb_I_Unknown, uk)
 
+	UAP(lb_I_Applications, applications)
+
 	UAP(lb_I_Formulars, forms)
 	UAP(lb_I_FormularParameter, formParams)
 	UAP(lb_I_ApplicationParameter, appParams)
 	UAP(lb_I_Actions, appActions)
+	UAP(lb_I_Formular_Actions, formActions)
 	UAP(lb_I_Action_Steps, appActionSteps)
 	UAP(lb_I_Action_Types, appActionTypes)
 
@@ -112,6 +115,10 @@ lbErrCodes LB_STDCALL lbDynamicAppXMLStorage::save(lb_I_OutputStream* oStream) {
 	uk = document->getElement(&key);
 	QI(uk, lb_I_Formulars, forms)
 			
+	*name = "FormActions";
+	uk = document->getElement(&key);
+	QI(uk, lb_I_Formulars, formActions)
+			
 	*name = "FormParams";
 	uk = document->getElement(&key);
 	QI(uk, lb_I_FormularParameter, formParams)
@@ -133,36 +140,74 @@ lbErrCodes LB_STDCALL lbDynamicAppXMLStorage::save(lb_I_OutputStream* oStream) {
 	QI(uk, lb_I_Action_Types, appActionTypes)
 
 
-	if (forms != NULL) {
-		_CL_LOG << "Save a forms model object..." LOG_
-		forms->accept(*&aspect);
-	}
+	// Mark that data sets, that are related to this application
+	applications = meta->getApplicationModel();
+	applications->selectApplication(meta->getApplicationID());
+	applications->mark();
 
-	if (formParams != NULL) {
-		_CL_LOG << "Save a formParams model object..." LOG_
-		formParams->accept(*&aspect);
-	}
+	if ((forms != NULL) &&
+	    (formParams != NULL) &&
+		(appParams != NULL) &&
+		(appActions != NULL) &&
+		(appActionTypes != NULL) &&
+		(appActionSteps != NULL)) {
 
-	if (appParams != NULL) {
-		_CL_LOG << "Save a appParams model object..." LOG_
-		appParams->accept(*&aspect);
-	}
+		forms->finishFormularIteration();
+		while (forms->hasMoreFormulars()) {
+			forms->setNextFormular();
+
+			if (forms->getApplicationID() == meta->getApplicationID()) {
+				forms->mark():
+
+				formParams->finishParameterIteration();
+				while (formParams->hasMoreParameters()) {
+					formParams->setNextParameter();
+
+					if (formParams->getFormularID() == forms->getFormularID()) {
+						formParams->mark();
+					}
 					
-	if (appActions != NULL) {
-		_CL_LOG << "Save a appActions model object..." LOG_
-		appActions->accept(*&aspect);
-	}
+					formActions->finishFormularActionIteration();
+					while (formActions->hasMoreFormularActions()) {
+						formActions->setNextFormularAction();
+						if (formActions->getFormularActionFormularID() == forms->getFormularID()) {
+							formActions->mark();
+							
+							appActions->finishActionIteration();
+							while (appActions->hasMoreActions()) {
+								if (appActions->getActionID() == formActions->getFormularActionActionID()) {
+									appActions->mark();
+									
+									appActionSteps->finishActionIteration();
+									while (appActionSteps->hasMoreActions()) {
+										if (appActionSteps->
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		
+		appParams->finishParameterIteration();
+		while (appParams->hasMoreParameters()) {
+			appParams->setNextParameter();
 			
-	if (appActionTypes != NULL) {
-		_CL_LOG << "Save a appActionTypes model object..." LOG_
+			if (appParams->getApplicationID() == meta->getApplicationID()) {
+				appParams->mark();
+			} 
+		}
+
+
+		forms->accept(*&aspect);
+		formActions->accept(*&aspect);
+		formParams->accept(*&aspect);
+		appParams->accept(*&aspect);
+		appActions->accept(*&aspect);
 		appActionTypes->accept(*&aspect);
-	}
-					
-	if (appActionSteps != NULL) {
-		_CL_LOG << "Save a appActionSteps model object..." LOG_
 		appActionSteps->accept(*&aspect);
 	}
-
 	return err;
 }
 
@@ -224,6 +269,8 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::save(lb_I_OutputStream* oStre
 
 	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
 	
+	meta->setStatusText("Info", "Store internal file format ...");
+	
 	UAP(lb_I_Unknown, ukDoc)
 	UAP(lb_I_Container, document)
 	ukDoc = meta->getActiveDocument();
@@ -240,23 +287,23 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::save(lb_I_OutputStream* oStre
 			
 	*name = "FormParams";
 	uk = document->getElement(&key);
-	QI(formParams, lb_I_FormularParameter, formParams)
+	QI(uk, lb_I_FormularParameter, formParams)
 			
 	*name = "AppParams";
 	uk = document->getElement(&key);
-	QI(appParams, lb_I_ApplicationParameter, appParams)
+	QI(uk, lb_I_ApplicationParameter, appParams)
 	
 	*name = "AppActions";
 	uk = document->getElement(&key);
-	QI(appActions, lb_I_Actions, appActions)
+	QI(uk, lb_I_Actions, appActions)
 			
 	*name = "AppActionSteps";
 	uk = document->getElement(&key);
-	QI(appActionSteps, lb_I_Action_Steps, appActionSteps)
+	QI(uk, lb_I_Action_Steps, appActionSteps)
 			
 	*name = "AppActionTypes";
 	uk = document->getElement(&key);
-	QI(appActionTypes, lb_I_Action_Types, appActionTypes)
+	QI(uk, lb_I_Action_Types, appActionTypes)
 
 
 	if (forms != NULL) {

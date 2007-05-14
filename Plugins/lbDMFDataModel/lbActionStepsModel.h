@@ -22,40 +22,45 @@
     The author of this work will be reached by e-Mail or paper mail.
     e-Mail: lothar.behrens@lollisoft.de
     p-Mail: Lothar Behrens
-            Rosmarinstr. 3
-            
-            40235 Duesseldorf (germany)
+            Heinrich-Scheufelen-Platz 2
+
+            73252 Lenningen (germany)
 */
 /*...e*/
 
-class lbActionStepsModel : public lb_I_Actions {
+class lbActionStepsModel : public lb_I_Action_Steps {
 public:
 	lbActionStepsModel();
 	virtual ~lbActionStepsModel();
 
 	DECLARE_LB_UNKNOWN()
 
-	long		LB_STDCALL addAction(const char* name, long typ, const char* source, long target, long _id = -1);
-	bool		LB_STDCALL selectAction(long _id);
-	int			LB_STDCALL getActionCount();
-	bool		LB_STDCALL hasMoreActions();
-	void		LB_STDCALL setNextAction();
-	void		LB_STDCALL finishActionIteration();
+	long		LB_STDCALL addActionStep(const char* bezeichnung, long actionid, long orderNo, long type, const char* what, long _id = -1);
+	bool		LB_STDCALL selectActionStep(long _id);
+	int			LB_STDCALL getActionStepCount();
+	bool		LB_STDCALL hasMoreActionSteps();
+	void		LB_STDCALL setNextActionStep();
+	void		LB_STDCALL finishActionStepIteration();
 	
-	long		LB_STDCALL getActionID();
-	long		LB_STDCALL getActionTyp();
-	long		LB_STDCALL getActionTarget();
-
-	char*		LB_STDCALL getActionSource();
-	char*		LB_STDCALL getActionName();
+	long		LB_STDCALL getActionStepID();
+	long		LB_STDCALL getActionStepActionID();
+	long		LB_STDCALL getActionStepOrderNo();
+	long		LB_STDCALL getActionStepType();
+	char*		LB_STDCALL getActionStepBezeichnung();
+	char*		LB_STDCALL getActionStepWhat();
 	
+	bool		LB_STDCALL ismarked();
+	void		LB_STDCALL mark();
+	void		LB_STDCALL unmark();
 
 	UAP(lb_I_Container, Actions)
 	UAP(lb_I_Long, currentActionID)
 	UAP(lb_I_Long, currentActionTyp)
-	UAP(lb_I_Long, currentActionTarget)
+	UAP(lb_I_String, currentActionWhat)
 	UAP(lb_I_String, currentActionName)
 	UAP(lb_I_String, currentActionSource)
+
+	UAP(lb_I_Long, marked)
 };
 
 DECLARE_FUNCTOR(instanceOflbActionStepsModel)
