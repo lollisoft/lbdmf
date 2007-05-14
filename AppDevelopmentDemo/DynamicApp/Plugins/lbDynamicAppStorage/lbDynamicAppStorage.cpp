@@ -69,6 +69,7 @@ lbErrCodes LB_STDCALL lbDynamicAppXMLStorage::setData(lb_I_Unknown*) {
 lbErrCodes LB_STDCALL lbDynamicAppXMLStorage::load(lb_I_InputStream* iStream) {
 	lbErrCodes err = ERR_NONE;
 
+
 	return err;
 }
 
@@ -157,7 +158,7 @@ lbErrCodes LB_STDCALL lbDynamicAppXMLStorage::save(lb_I_OutputStream* oStream) {
 			forms->setNextFormular();
 
 			if (forms->getApplicationID() == meta->getApplicationID()) {
-				forms->mark():
+				forms->mark();
 
 				formParams->finishParameterIteration();
 				while (formParams->hasMoreParameters()) {
@@ -178,9 +179,11 @@ lbErrCodes LB_STDCALL lbDynamicAppXMLStorage::save(lb_I_OutputStream* oStream) {
 								if (appActions->getActionID() == formActions->getFormularActionActionID()) {
 									appActions->mark();
 									
-									appActionSteps->finishActionIteration();
-									while (appActionSteps->hasMoreActions()) {
-										if (appActionSteps->
+									appActionSteps->finishActionStepIteration();
+									while (appActionSteps->hasMoreActionSteps()) {
+										if (appActionSteps->getActionStepActionID() == appActions->getActionID()) {
+										    appActionSteps->mark();
+										}
 									}
 								}
 							}

@@ -38,7 +38,7 @@ public:
 	long		LB_STDCALL addTranslation(const char* text, const char* translated, const char* language, long _id = -1);
 	bool		LB_STDCALL selectTranslation(long _id);
 	bool		LB_STDCALL selectText(const char* text, const char* language);
-	int			LB_STDCALL getTranslationsCount();
+	int		LB_STDCALL getTranslationsCount();
 	bool		LB_STDCALL hasMoreTranslations();
 	void		LB_STDCALL setNextTranslation();
 	void		LB_STDCALL finishTranslationIteration();

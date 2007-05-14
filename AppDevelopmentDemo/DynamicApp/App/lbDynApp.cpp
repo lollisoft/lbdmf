@@ -737,7 +737,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 		UAP(lb_I_Plugin, plFormParams)
 		UAP(lb_I_Unknown, ukPlFormParams)
 		UAP(lb_I_Plugin, plFormActions)
-		UAP(lb_I_Formular_Actions, ukPlFormActions)
+		UAP(lb_I_Unknown, ukPlFormActions)
 		UAP(lb_I_Plugin, plAppParams)
 		UAP(lb_I_Unknown, ukPlAppParams)
 		UAP(lb_I_Plugin, plAppActions)

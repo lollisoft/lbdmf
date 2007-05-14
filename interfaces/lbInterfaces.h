@@ -3107,7 +3107,7 @@ class lb_I_Action_Steps : public lb_I_Unknown {
 public:
 	virtual long		LB_STDCALL addActionStep(const char* bezeichnung, long actionid, long orderNo, long type, const char* what, long _id = -1) = 0;
 	virtual bool		LB_STDCALL selectActionStep(long _id) = 0;
-	virtual int			LB_STDCALL getActionStepCount() = 0;
+	virtual int		LB_STDCALL getActionStepCount() = 0;
 	virtual bool		LB_STDCALL hasMoreActionSteps() = 0;
 	virtual void		LB_STDCALL setNextActionStep() = 0;
 	virtual void		LB_STDCALL finishActionStepIteration() = 0;

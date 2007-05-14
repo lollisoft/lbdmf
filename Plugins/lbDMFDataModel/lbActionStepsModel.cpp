@@ -61,11 +61,12 @@ END_IMPLEMENT_LB_UNKNOWN()
 lbActionStepsModel::lbActionStepsModel() {
 	ref = STARTREF;
 	REQUEST(getModuleInstance(), lb_I_Container, Actions)
-	REQUEST(getModuleInstance(), lb_I_Long, currentActionID)
-	REQUEST(getModuleInstance(), lb_I_Long, currentActionTyp)
-	REQUEST(getModuleInstance(), lb_I_String, currentActionWhat)
-	REQUEST(getModuleInstance(), lb_I_String, currentActionName)
-	REQUEST(getModuleInstance(), lb_I_String, currentActionSource)
+	REQUEST(getModuleInstance(), lb_I_Long, currentActionStepID)
+	REQUEST(getModuleInstance(), lb_I_Long, currentActionStepActionID)
+	REQUEST(getModuleInstance(), lb_I_Long, currentActionStepType)
+	REQUEST(getModuleInstance(), lb_I_String, currentActionStepWhat)
+	REQUEST(getModuleInstance(), lb_I_String, currentActionStepBezeichnung)
+	REQUEST(getModuleInstance(), lb_I_Long, currentActionStepOrderNo)
 		
 	REQUEST(getModuleInstance(), lb_I_Long, marked)
 
@@ -81,12 +82,12 @@ lbErrCodes LB_STDCALL lbActionStepsModel::setData(lb_I_Unknown*) {
 	return ERR_NOT_IMPLEMENTED;
 }
 
-long  LB_STDCALL lbActionStepsModel::addAction(const char* bezeichnung, long actionid, long orderNo, long type, const char* what, long _id) {
+long  LB_STDCALL lbActionStepsModel::addActionStep(const char* bezeichnung, long actionid, long orderNo, long type, const char* what, long _id) {
 	lbErrCodes err = ERR_NONE;
 	UAP_REQUEST(manager.getPtr(), lb_I_Long, ID)
 
 	UAP_REQUEST(manager.getPtr(), lb_I_String, Bezeichnung)
-	UAP_REQUEST(manager.getPtr(), lb_I_Long, Actionid)
+	UAP_REQUEST(manager.getPtr(), lb_I_Long, ActionId)
 	UAP_REQUEST(manager.getPtr(), lb_I_Long, OrderNo)
 	UAP_REQUEST(manager.getPtr(), lb_I_Long, Typ)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, What)
@@ -94,24 +95,26 @@ long  LB_STDCALL lbActionStepsModel::addAction(const char* bezeichnung, long act
 	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, paramname)
 
-	_CL_VERBOSE << "Add a parameter to lbActionStepsModel: " << name LOG_
+	_CL_VERBOSE << "Add a parameter to lbActionStepsModel: " << bezeichnung LOG_
 
-	*Name = name;
-	*Source = source;
-	Typ->setData(typ);
-	Target->setData(target);
+	*Bezeichnung = bezeichnung;
+	ActionId->setData(actionid);
+	Typ->setData(type);
+	*What = what;
 	ID->setData(_id);
 	
-	*paramname = "Name";
-	param->setUAPString(*&paramname, *&Name);
-	*paramname = "Source";
-	param->setUAPString(*&paramname, *&Source);
+	*paramname = "Bezeichnung";
+	param->setUAPString(*&paramname, *&Bezeichnung);
+	*paramname = "ActionId";
+	param->setUAPLong(*&paramname, *&ActionId);
 	*paramname = "Typ";
 	param->setUAPLong(*&paramname, *&Typ);
 	*paramname = "ID";
 	param->setUAPLong(*&paramname, *&ID);
-	*paramname = "Target";
-	param->setUAPLong(*&paramname, *&Target);
+	*paramname = "OrderNo";
+	param->setUAPLong(*&paramname, *&OrderNo);
+	*paramname = "What";
+	param->setUAPString(*&paramname, *&What);
 	*paramname = "marked";
 	param->setUAPLong(*&paramname, *&marked);
 	
@@ -138,7 +141,7 @@ void LB_STDCALL lbActionStepsModel::unmark() {
 	marked->setData((long) 0);
 }
 
-bool  LB_STDCALL lbActionStepsModel::selectAction(long _id) {
+bool  LB_STDCALL lbActionStepsModel::selectActionStep(long _id) {
 	lbErrCodes err = ERR_NONE;
 	UAP_REQUEST(manager.getPtr(), lb_I_Long, id)
 	UAP(lb_I_Unknown, uk)
@@ -153,16 +156,18 @@ bool  LB_STDCALL lbActionStepsModel::selectAction(long _id) {
 		UAP(lb_I_Parameter, param)
 		QI(uk, lb_I_Parameter, param)
 		
-		*name = "Name";
-		param->getUAPString(*&name, *&currentActionName);
-		*name = "Source";
-		param->getUAPString(*&name, *&currentActionSource);
+		*name = "Bezeichnung";
+		param->getUAPString(*&name, *&currentActionStepBezeichnung);
+		*name = "ActionId";
+		param->getUAPLong(*&name, *&currentActionStepActionID);
 		*name = "ID";
-		param->getUAPLong(*&name, *&currentActionID);
+		param->getUAPLong(*&name, *&currentActionStepID);
+		*name = "OrderNo";
+		param->getUAPLong(*&name, *&currentActionStepOrderNo);
 		*name = "Typ";
-		param->getUAPLong(*&name, *&currentActionTyp);
-		*name = "Target";
-		param->getUAPLong(*&name, *&currentActionTarget);
+		param->getUAPLong(*&name, *&currentActionStepType);
+		*name = "What";
+		param->getUAPString(*&name, *&currentActionStepWhat);
 		*name = "marked";
 		param->getUAPLong(*&name, *&marked);
 		
@@ -172,15 +177,15 @@ bool  LB_STDCALL lbActionStepsModel::selectAction(long _id) {
 	return false;
 }
 
-int  LB_STDCALL lbActionStepsModel::getActionCount() {
+int  LB_STDCALL lbActionStepsModel::getActionStepCount() {
 	return Actions->Count();
 }
 
-bool  LB_STDCALL lbActionStepsModel::hasMoreActions() {
+bool  LB_STDCALL lbActionStepsModel::hasMoreActionSteps() {
 	return Actions->hasMoreElements();
 }
 
-void  LB_STDCALL lbActionStepsModel::setNextAction() {
+void  LB_STDCALL lbActionStepsModel::setNextActionStep() {
 	lbErrCodes err = ERR_NONE;
 	UAP_REQUEST(manager.getPtr(), lb_I_String, name)
 	UAP(lb_I_Parameter, param)
@@ -189,42 +194,40 @@ void  LB_STDCALL lbActionStepsModel::setNextAction() {
 	uk = Actions->nextElement();
 	QI(uk, lb_I_Parameter, param)
 	
-	*name = "Name";
-	param->getUAPString(*&name, *&currentActionName);
-	*name = "Source";
-	param->getUAPString(*&name, *&currentActionSource);
+	*name = "Bezeichnung";
+	param->getUAPString(*&name, *&currentActionStepBezeichnung);
+	*name = "ActionId";
+	param->getUAPLong(*&name, *&currentActionStepActionID);
 	*name = "ID";
-	param->getUAPLong(*&name, *&currentActionID);
+	param->getUAPLong(*&name, *&currentActionStepID);
+	*name = "OrderNo";
+	param->getUAPLong(*&name, *&currentActionStepOrderNo);
 	*name = "Typ";
-	param->getUAPLong(*&name, *&currentActionTyp);
-	*name = "Target";
-	param->getUAPLong(*&name, *&currentActionTarget);
+	param->getUAPLong(*&name, *&currentActionStepType);
+	*name = "What";
+	param->getUAPString(*&name, *&currentActionStepWhat);
 	*name = "marked";
 	param->getUAPLong(*&name, *&marked);
 }
 
-void  LB_STDCALL lbActionStepsModel::finishActionIteration() {
+void  LB_STDCALL lbActionStepsModel::finishActionStepIteration() {
 	Actions->finishIteration();
 }
 
-long LB_STDCALL lbActionStepsModel::getActionID() {
-	return currentActionID->getData();
+long LB_STDCALL lbActionStepsModel::getActionStepID() {
+	return currentActionStepID->getData();
 }
 
-char*  LB_STDCALL lbActionStepsModel::getActionName() {
-	return currentActionName->charrep();
+char*  LB_STDCALL lbActionStepsModel::getActionStepBezeichnung() {
+	return currentActionStepBezeichnung->charrep();
 }
 
-char*  LB_STDCALL lbActionStepsModel::getActionSource() {
-	return currentActionSource->charrep();
+char*  LB_STDCALL lbActionStepsModel::getActionStepWhat() {
+	return currentActionStepWhat->charrep();
 }
 
-long LB_STDCALL lbActionStepsModel::getActionTyp() {
-	return currentActionTyp->getData();
-}
-
-long LB_STDCALL lbActionStepsModel::getActionTarget() {
-	return currentActionTarget->getData();
+long LB_STDCALL lbActionStepsModel::getActionStepType() {
+	return currentActionStepType->getData();
 }
 
 /*...sclass lbPluginActionStepsModel implementation:0:*/

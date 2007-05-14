@@ -37,16 +37,17 @@ public:
 
 	long		LB_STDCALL addActionStep(const char* bezeichnung, long actionid, long orderNo, long type, const char* what, long _id = -1);
 	bool		LB_STDCALL selectActionStep(long _id);
-	int			LB_STDCALL getActionStepCount();
+	
+	int		LB_STDCALL getActionStepCount();
 	bool		LB_STDCALL hasMoreActionSteps();
 	void		LB_STDCALL setNextActionStep();
 	void		LB_STDCALL finishActionStepIteration();
 	
+	char*		LB_STDCALL getActionStepBezeichnung();
 	long		LB_STDCALL getActionStepID();
 	long		LB_STDCALL getActionStepActionID();
 	long		LB_STDCALL getActionStepOrderNo();
 	long		LB_STDCALL getActionStepType();
-	char*		LB_STDCALL getActionStepBezeichnung();
 	char*		LB_STDCALL getActionStepWhat();
 	
 	bool		LB_STDCALL ismarked();
@@ -54,11 +55,12 @@ public:
 	void		LB_STDCALL unmark();
 
 	UAP(lb_I_Container, Actions)
-	UAP(lb_I_Long, currentActionID)
-	UAP(lb_I_Long, currentActionTyp)
-	UAP(lb_I_String, currentActionWhat)
-	UAP(lb_I_String, currentActionName)
-	UAP(lb_I_String, currentActionSource)
+	UAP(lb_I_Long, currentActionStepID)
+	UAP(lb_I_String, currentActionStepBezeichnung)
+	UAP(lb_I_Long, currentActionStepActionID)
+	UAP(lb_I_Long, currentActionStepOrderNo)
+	UAP(lb_I_Long, currentActionStepType)
+	UAP(lb_I_String, currentActionStepWhat)
 
 	UAP(lb_I_Long, marked)
 };
