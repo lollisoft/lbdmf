@@ -155,6 +155,8 @@ lbErrCodes LB_STDCALL lbDynamicAppXMLStorage::save(lb_I_OutputStream* oStream) {
 		(appActionTypes != NULL) &&
 		(appActionSteps != NULL)) {
 
+		*oStream << "<lbDMF>\n";
+		
 		forms->accept(*&aspect);
 		formActions->accept(*&aspect);
 		formParams->accept(*&aspect);
@@ -162,6 +164,8 @@ lbErrCodes LB_STDCALL lbDynamicAppXMLStorage::save(lb_I_OutputStream* oStream) {
 		appActions->accept(*&aspect);
 		appActionTypes->accept(*&aspect);
 		appActionSteps->accept(*&aspect);
+
+		*oStream << "</lbDMF>\n";
 	}
 	return err;
 }
