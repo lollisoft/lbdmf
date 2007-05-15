@@ -45,7 +45,7 @@
 IMPLEMENT_FUNCTOR(instanceOflbFormularActionsModel, lbFormularActionsModel)
 
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbFormularActionsModel)
-	ADD_INTERFACE(lb_I_Actions)
+	ADD_INTERFACE(lb_I_Formular_Actions)
 END_IMPLEMENT_LB_UNKNOWN()
 
 
@@ -143,7 +143,7 @@ bool  LB_STDCALL lbFormularActionsModel::selectFormularAction(long _id) {
 }
 
 bool LB_STDCALL lbFormularActionsModel::ismarked() {
-	if (marked->getData() == 1) return true;
+	if (marked->getData() == (long) 1) return true;
 	return false;
 }
 
@@ -153,6 +153,42 @@ void LB_STDCALL lbFormularActionsModel::mark() {
 
 void LB_STDCALL lbFormularActionsModel::unmark() {
 	marked->setData((long) 0);
+}
+
+void		LB_STDCALL lbFormularActionsModel::deleteUnmarked() {
+	lbErrCodes err = ERR_NONE;
+	FormularActions->finishIteration();
+	while (hasMoreFormularActions()) {
+		setNextFormularAction();
+		if (!ismarked()) {
+			UAP_REQUEST(manager.getPtr(), lb_I_Long, ID)
+			ID->setData(getFormularActionID());
+			
+			UAP(lb_I_KeyBase, key)
+			QI(ID, lb_I_KeyBase, key)
+			
+			FormularActions->remove(&key);
+			FormularActions->finishIteration();
+		}
+	}
+}
+
+void		LB_STDCALL lbFormularActionsModel::deleteMarked() {
+	lbErrCodes err = ERR_NONE;
+	FormularActions->finishIteration();
+	while (hasMoreFormularActions()) {
+		setNextFormularAction();
+		if (ismarked()) {
+			UAP_REQUEST(manager.getPtr(), lb_I_Long, ID)
+			ID->setData(getFormularActionID());
+			
+			UAP(lb_I_KeyBase, key)
+			QI(ID, lb_I_KeyBase, key)
+			
+			FormularActions->remove(&key);
+			FormularActions->finishIteration();
+		}
+	}
 }
 
 int  LB_STDCALL lbFormularActionsModel::getFormularActionsCount() {

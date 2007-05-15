@@ -535,6 +535,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::uninitialize() {
 			document->getUAPString(*&param, *&StorageNamespace);
 			
 			*tempStorageNamespace = "lbDynAppInternalFormat";
+			document->setUAPString(*&param, *&tempStorageNamespace);
 		}
 		
 		/// \todo Move storing procedure to a storage handler.
@@ -901,6 +902,73 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 		
 		if (!DBOperation) fOp->end();
 		if (DBOperation) fOpDB->end();
+
+		// Here I should delete all unrelated data.
+		
+		forms->finishFormularIteration();
+		while (forms->hasMoreFormulars()) {
+			forms->setNextFormular();
+			
+			if (forms->getApplicationID() == metaapp->getApplicationID()) {
+				metaapp->setStatusText("Info", "Mark form to be exported ...");
+				forms->mark();
+				
+				formParams->finishParameterIteration();
+				while (formParams->hasMoreParameters()) {
+					formParams->setNextParameter();
+					
+					if (formParams->getFormularID() == forms->getFormularID()) {
+						metaapp->setStatusText("Info", "Mark formular parameters to be exported ...");
+						formParams->mark();
+					}
+				}
+				
+				formActions->finishFormularActionIteration();
+				while (formActions->hasMoreFormularActions()) {
+					formActions->setNextFormularAction();
+					if (formActions->getFormularActionFormularID() == forms->getFormularID()) {
+						metaapp->setStatusText("Info", "Mark formular actions to be exported ...");
+						formActions->mark();
+						
+						appActions->finishActionIteration();
+						while (appActions->hasMoreActions()) {
+							appActions->setNextAction();
+							if (appActions->getActionID() == formActions->getFormularActionActionID()) {
+								metaapp->setStatusText("Info", "Mark actions to be exported ...");
+								appActions->mark();
+								
+								appActionSteps->finishActionStepIteration();
+								while (appActionSteps->hasMoreActionSteps()) {
+									appActionSteps->setNextActionStep();
+									if (appActionSteps->getActionStepActionID() == appActions->getActionID()) {
+										metaapp->setStatusText("Info", "Mark action steps to be exported ...");
+										appActionSteps->mark();
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		
+		appParams->finishParameterIteration();
+		while (appParams->hasMoreParameters()) {
+			appParams->setNextParameter();
+			
+			if (appParams->getApplicationID() == metaapp->getApplicationID()) {
+				appParams->mark();
+			} 
+		}
+
+		forms->deleteUnmarked();
+		formActions->deleteUnmarked();
+		formParams->deleteUnmarked();
+		appParams->deleteUnmarked();
+		appActions->deleteUnmarked();
+		appActionTypes->deleteUnmarked();
+		appActionSteps->deleteUnmarked();
+
 
 		if ((forms != NULL) && 
 			(formParams != NULL) && 

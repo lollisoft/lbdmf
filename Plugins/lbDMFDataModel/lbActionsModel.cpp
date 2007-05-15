@@ -74,6 +74,43 @@ lbErrCodes LB_STDCALL lbActionsModel::setData(lb_I_Unknown*) {
 	return ERR_NOT_IMPLEMENTED;
 }
 
+void		LB_STDCALL lbActionsModel::deleteUnmarked() {
+	lbErrCodes err = ERR_NONE;
+	Actions->finishIteration();
+	while (hasMoreActions()) {
+		setNextAction();
+		if (!ismarked()) {
+			UAP_REQUEST(manager.getPtr(), lb_I_Long, ID)
+			ID->setData(getActionID());
+			
+			UAP(lb_I_KeyBase, key)
+			QI(ID, lb_I_KeyBase, key)
+			
+			Actions->remove(&key);
+			Actions->finishIteration();
+		}
+	}
+}
+
+void		LB_STDCALL lbActionsModel::deleteMarked() {
+	lbErrCodes err = ERR_NONE;
+	Actions->finishIteration();
+	while (hasMoreActions()) {
+		setNextAction();
+		if (ismarked()) {
+			UAP_REQUEST(manager.getPtr(), lb_I_Long, ID)
+			ID->setData(getActionID());
+			
+			UAP(lb_I_KeyBase, key)
+			QI(ID, lb_I_KeyBase, key)
+			
+			Actions->remove(&key);
+			Actions->finishIteration();
+		}
+	}
+}
+
+
 long  LB_STDCALL lbActionsModel::addAction(const char* name, long typ, const char* source, long target, long _id) {
 	lbErrCodes err = ERR_NONE;
 	UAP_REQUEST(manager.getPtr(), lb_I_String, Name)
@@ -151,7 +188,7 @@ bool  LB_STDCALL lbActionsModel::selectAction(long _id) {
 }
 
 bool LB_STDCALL lbActionsModel::ismarked() {
-	if (marked->getData() == 1) return true;
+	if (marked->getData() == (long) 1) return true;
 	return false;
 }
 

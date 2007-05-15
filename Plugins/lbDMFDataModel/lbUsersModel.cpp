@@ -157,12 +157,48 @@ void LB_STDCALL lbUsersModel::unmark() {
 }
 
 bool LB_STDCALL lbUsersModel::ismarked() {
-	if (marked->getData() == 1) return true;
+	if (marked->getData() == (long) 1) return true;
 	return false;
 }
 
 long  LB_STDCALL lbUsersModel::getUserCount() {
 	return Users->Count();
+}
+
+void		LB_STDCALL lbUsersModel::deleteUnmarked() {
+	lbErrCodes err = ERR_NONE;
+	Users->finishIteration();
+	while (hasMoreUsers()) {
+		setNextUser();
+		if (!ismarked()) {
+			UAP_REQUEST(manager.getPtr(), lb_I_Long, ID)
+			ID->setData(getUserID());
+			
+			UAP(lb_I_KeyBase, key)
+			QI(ID, lb_I_KeyBase, key)
+			
+			Users->remove(&key);
+			Users->finishIteration();
+		}
+	}
+}
+
+void		LB_STDCALL lbUsersModel::deleteMarked() {
+	lbErrCodes err = ERR_NONE;
+	Users->finishIteration();
+	while (hasMoreUsers()) {
+		setNextUser();
+		if (ismarked()) {
+			UAP_REQUEST(manager.getPtr(), lb_I_Long, ID)
+			ID->setData(getUserID());
+			
+			UAP(lb_I_KeyBase, key)
+			QI(ID, lb_I_KeyBase, key)
+			
+			Users->remove(&key);
+			Users->finishIteration();
+		}
+	}
 }
 
 bool  LB_STDCALL lbUsersModel::hasMoreUsers() {

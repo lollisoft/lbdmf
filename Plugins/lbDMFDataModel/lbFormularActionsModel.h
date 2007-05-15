@@ -52,6 +52,9 @@ public:
 	void		LB_STDCALL mark();
 	void		LB_STDCALL unmark();
 
+	void		LB_STDCALL deleteUnmarked();
+	void		LB_STDCALL deleteMarked();
+
 	UAP(lb_I_Container, FormularActions)
 	
 	UAP(lb_I_Long, currentFormularActionID)

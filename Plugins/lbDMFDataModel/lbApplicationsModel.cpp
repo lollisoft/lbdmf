@@ -76,6 +76,44 @@ lbErrCodes LB_STDCALL lbApplications::setData(lb_I_Unknown*) {
 	return ERR_NOT_IMPLEMENTED;
 }
 /*...e*/
+
+void		LB_STDCALL lbApplications::deleteUnmarked() {
+	lbErrCodes err = ERR_NONE;
+	Applications->finishIteration();
+	while (hasMoreApplications()) {
+		setNextApplication();
+		if (!ismarked()) {
+			UAP_REQUEST(manager.getPtr(), lb_I_Long, ID)
+			ID->setData(getApplicationID());
+			
+			UAP(lb_I_KeyBase, key)
+			QI(ID, lb_I_KeyBase, key)
+			
+			Applications->remove(&key);
+			Applications->finishIteration();
+		}
+	}
+}
+
+void		LB_STDCALL lbApplications::deleteMarked() {
+	lbErrCodes err = ERR_NONE;
+	Applications->finishIteration();
+	while (hasMoreApplications()) {
+		setNextApplication();
+		if (ismarked()) {
+			UAP_REQUEST(manager.getPtr(), lb_I_Long, ID)
+			ID->setData(getApplicationID());
+			
+			UAP(lb_I_KeyBase, key)
+			QI(ID, lb_I_KeyBase, key)
+			
+			Applications->remove(&key);
+			Applications->finishIteration();
+		}
+	}
+}
+
+
 /*...slong    LB_STDCALL lbApplications\58\\58\addApplication\40\\46\\46\\46\\41\:0:*/
 long	LB_STDCALL lbApplications::addApplication(const char* application, const char* titel, const char* modulename, const char* functor, const char* _interface, long _id) {
 	lbErrCodes err = ERR_NONE;
@@ -186,7 +224,7 @@ bool	LB_STDCALL lbApplications::selectApplication(long _id) {
 /*...e*/
 
 bool LB_STDCALL lbApplications::ismarked() {
-	if (marked->getData() == 1) return true;
+	if (marked->getData() == (long) 1) return true;
 	return false;
 }
 

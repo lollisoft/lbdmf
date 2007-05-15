@@ -22,9 +22,9 @@
     The author of this work will be reached by e-Mail or paper mail.
     e-Mail: lothar.behrens@lollisoft.de
     p-Mail: Lothar Behrens
-            Rosmarinstr. 3
-            
-            40235 Duesseldorf (germany)
+            Heinrich-Scheufelen-Platz 2
+
+            73252 Lenningen (germany)
 */
 /*...e*/
 #include <stdio.h>
@@ -60,6 +60,7 @@ lbFormularsModel::lbFormularsModel() {
 	REQUEST(getModuleInstance(), lb_I_Long, currentFormularID)
 	REQUEST(getModuleInstance(), lb_I_Long, currentApplicationID)
 	REQUEST(getModuleInstance(), lb_I_Long, currentTyp)
+	REQUEST(getModuleInstance(), lb_I_Long, marked)
 	_CL_LOG << "lbFormularsModel::lbFormularsModel() called." LOG_
 }
 
@@ -120,20 +121,42 @@ long  LB_STDCALL lbFormularsModel::addFormular(const char* name, const char* men
 
 	return -1;
 }
-/*
-bool LB_STDCALL lbFormularsModel::selectFormular(const char* _user) {
+
+void		LB_STDCALL lbFormularsModel::deleteUnmarked() {
+	lbErrCodes err = ERR_NONE;
+	Formulars->finishIteration();
 	while (hasMoreFormulars()) {
 		setNextFormular();
-		
-		if (strcmp(getName(), _user) == 0) {
-			finishFormularIteration();			
-			return true;
+		if (!ismarked()) {
+			UAP_REQUEST(manager.getPtr(), lb_I_Long, ID)
+			ID->setData(getFormularID());
+			
+			UAP(lb_I_KeyBase, key)
+			QI(ID, lb_I_KeyBase, key)
+			
+			Formulars->remove(&key);
+			Formulars->finishIteration();
 		}
 	}
-
-	return false;
 }
-*/
+
+void		LB_STDCALL lbFormularsModel::deleteMarked() {
+	lbErrCodes err = ERR_NONE;
+	Formulars->finishIteration();
+	while (hasMoreFormulars()) {
+		setNextFormular();
+		if (ismarked()) {
+			UAP_REQUEST(manager.getPtr(), lb_I_Long, ID)
+			ID->setData(getFormularID());
+			
+			UAP(lb_I_KeyBase, key)
+			QI(ID, lb_I_KeyBase, key)
+			
+			Formulars->remove(&key);
+			Formulars->finishIteration();
+		}
+	}
+}
 
 bool LB_STDCALL lbFormularsModel::selectFormular(long user_id) {
 	lbErrCodes err = ERR_NONE;
@@ -176,7 +199,7 @@ bool LB_STDCALL lbFormularsModel::selectFormular(long user_id) {
 }
 
 bool LB_STDCALL lbFormularsModel::ismarked() {
-	if (marked->getData() == 1) return true;
+	if (marked->getData() == (long) 1) return true;
 	return false;
 }
 

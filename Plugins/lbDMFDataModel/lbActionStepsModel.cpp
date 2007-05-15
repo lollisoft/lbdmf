@@ -82,6 +82,43 @@ lbErrCodes LB_STDCALL lbActionStepsModel::setData(lb_I_Unknown*) {
 	return ERR_NOT_IMPLEMENTED;
 }
 
+void		LB_STDCALL lbActionStepsModel::deleteUnmarked() {
+	lbErrCodes err = ERR_NONE;
+	Actions->finishIteration();
+	while (hasMoreActionSteps()) {
+		setNextActionStep();
+		if (!ismarked()) {
+			UAP_REQUEST(manager.getPtr(), lb_I_Long, ID)
+			ID->setData(getActionStepID());
+			
+			UAP(lb_I_KeyBase, key)
+			QI(ID, lb_I_KeyBase, key)
+			
+			Actions->remove(&key);
+			Actions->finishIteration();
+		}
+	}
+}
+
+void		LB_STDCALL lbActionStepsModel::deleteMarked() {
+	lbErrCodes err = ERR_NONE;
+	Actions->finishIteration();
+	while (hasMoreActionSteps()) {
+		setNextActionStep();
+		if (ismarked()) {
+			UAP_REQUEST(manager.getPtr(), lb_I_Long, ID)
+			ID->setData(getActionStepID());
+			
+			UAP(lb_I_KeyBase, key)
+			QI(ID, lb_I_KeyBase, key)
+			
+			Actions->remove(&key);
+			Actions->finishIteration();
+		}
+	}
+}
+
+
 long  LB_STDCALL lbActionStepsModel::addActionStep(const char* bezeichnung, long actionid, long orderNo, long type, const char* what, long _id) {
 	lbErrCodes err = ERR_NONE;
 	UAP_REQUEST(manager.getPtr(), lb_I_Long, ID)
@@ -129,7 +166,7 @@ long  LB_STDCALL lbActionStepsModel::addActionStep(const char* bezeichnung, long
 }
 
 bool LB_STDCALL lbActionStepsModel::ismarked() {
-	if (marked->getData() == 1) return true;
+	if (marked->getData() == (long) 1) return true;
 	return false;
 }
 
@@ -216,6 +253,14 @@ void  LB_STDCALL lbActionStepsModel::finishActionStepIteration() {
 
 long LB_STDCALL lbActionStepsModel::getActionStepID() {
 	return currentActionStepID->getData();
+}
+
+long LB_STDCALL lbActionStepsModel::getActionStepOrderNo() {
+	return currentActionStepOrderNo->getData();
+}
+
+long LB_STDCALL lbActionStepsModel::getActionStepActionID() {
+	return currentActionStepActionID->getData();
 }
 
 char*  LB_STDCALL lbActionStepsModel::getActionStepBezeichnung() {

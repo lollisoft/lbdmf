@@ -148,12 +148,48 @@ void LB_STDCALL lbFormularParameters::unmark() {
 }
 
 bool LB_STDCALL lbFormularParameters::ismarked() {
-	if (marked->getData() == 1) return true;
+	if (marked->getData() == (long) 1) return true;
 	return false;
 }
 
 int  LB_STDCALL lbFormularParameters::getParameterCount() {
 	return Parameters->Count();
+}
+
+void		LB_STDCALL lbFormularParameters::deleteUnmarked() {
+	lbErrCodes err = ERR_NONE;
+	Parameters->finishIteration();
+	while (hasMoreParameters()) {
+		setNextParameter();
+		if (!ismarked()) {
+			UAP_REQUEST(manager.getPtr(), lb_I_Long, ID)
+			ID->setData(getParameterID());
+			
+			UAP(lb_I_KeyBase, key)
+			QI(ID, lb_I_KeyBase, key)
+			
+			Parameters->remove(&key);
+			Parameters->finishIteration();
+		}
+	}
+}
+
+void		LB_STDCALL lbFormularParameters::deleteMarked() {
+	lbErrCodes err = ERR_NONE;
+	Parameters->finishIteration();
+	while (hasMoreParameters()) {
+		setNextParameter();
+		if (ismarked()) {
+			UAP_REQUEST(manager.getPtr(), lb_I_Long, ID)
+			ID->setData(getParameterID());
+			
+			UAP(lb_I_KeyBase, key)
+			QI(ID, lb_I_KeyBase, key)
+			
+			Parameters->remove(&key);
+			Parameters->finishIteration();
+		}
+	}
 }
 
 bool  LB_STDCALL lbFormularParameters::hasMoreParameters() {
@@ -319,6 +355,42 @@ int  LB_STDCALL lbApplicationParameters::getParameterCount() {
 	return Parameters->Count();
 }
 
+void		LB_STDCALL lbApplicationParameters::deleteUnmarked() {
+	lbErrCodes err = ERR_NONE;
+	Parameters->finishIteration();
+	while (hasMoreParameters()) {
+		setNextParameter();
+		if (!ismarked()) {
+			UAP_REQUEST(manager.getPtr(), lb_I_Long, ID)
+			ID->setData(getParameterID());
+			
+			UAP(lb_I_KeyBase, key)
+			QI(ID, lb_I_KeyBase, key)
+			
+			Parameters->remove(&key);
+			Parameters->finishIteration();
+		}
+	}
+}
+
+void		LB_STDCALL lbApplicationParameters::deleteMarked() {
+	lbErrCodes err = ERR_NONE;
+	Parameters->finishIteration();
+	while (hasMoreParameters()) {
+		setNextParameter();
+		if (ismarked()) {
+			UAP_REQUEST(manager.getPtr(), lb_I_Long, ID)
+			ID->setData(getParameterID());
+			
+			UAP(lb_I_KeyBase, key)
+			QI(ID, lb_I_KeyBase, key)
+			
+			Parameters->remove(&key);
+			Parameters->finishIteration();
+		}
+	}
+}
+
 bool  LB_STDCALL lbApplicationParameters::hasMoreParameters() {
 	return Parameters->hasMoreElements();
 }
@@ -353,7 +425,7 @@ void LB_STDCALL lbApplicationParameters::unmark() {
 }
 
 bool LB_STDCALL lbApplicationParameters::ismarked() {
-	if (marked->getData() == 1) return true;
+	if (marked->getData() == (long) 1) return true;
 	return false;
 }
 

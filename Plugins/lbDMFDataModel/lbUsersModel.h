@@ -48,6 +48,9 @@ public:
 	void		LB_STDCALL mark();
 	void		LB_STDCALL unmark();
 
+	void		LB_STDCALL deleteUnmarked();
+	void		LB_STDCALL deleteMarked();
+
 	DECLARE_LB_UNKNOWN()
 	
 	UAP(lb_I_Container, Users)

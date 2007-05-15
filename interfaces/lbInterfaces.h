@@ -2847,6 +2847,9 @@ public:
 	virtual bool		LB_STDCALL ismarked() = 0;
 	virtual void		LB_STDCALL mark() = 0;
 	virtual void		LB_STDCALL unmark() = 0;
+	
+	virtual void		LB_STDCALL deleteUnmarked() = 0;
+	virtual void		LB_STDCALL deleteMarked() = 0;
 };
 /*...e*/
 
@@ -2921,6 +2924,9 @@ public:
 	virtual bool		LB_STDCALL ismarked() = 0;
 	virtual void		LB_STDCALL mark() = 0;
 	virtual void		LB_STDCALL unmark() = 0;
+	
+	virtual void		LB_STDCALL deleteUnmarked() = 0;
+	virtual void		LB_STDCALL deleteMarked() = 0;
 };
 /*...e*/
 
@@ -2986,6 +2992,9 @@ public:
 	virtual bool		LB_STDCALL ismarked() = 0;
 	virtual void		LB_STDCALL mark() = 0;
 	virtual void		LB_STDCALL unmark() = 0;
+
+	virtual void		LB_STDCALL deleteUnmarked() = 0;
+	virtual void		LB_STDCALL deleteMarked() = 0;
 };
 /*...e*/
 
@@ -3016,6 +3025,9 @@ public:
 	virtual bool		LB_STDCALL ismarked() = 0;
 	virtual void		LB_STDCALL mark() = 0;
 	virtual void		LB_STDCALL unmark() = 0;
+
+	virtual void		LB_STDCALL deleteUnmarked() = 0;
+	virtual void		LB_STDCALL deleteMarked() = 0;
 };
 /*...e*/
 
@@ -3036,6 +3048,9 @@ public:
 	virtual bool		LB_STDCALL ismarked() = 0;
 	virtual void		LB_STDCALL mark() = 0;
 	virtual void		LB_STDCALL unmark() = 0;
+
+	virtual void		LB_STDCALL deleteUnmarked() = 0;
+	virtual void		LB_STDCALL deleteMarked() = 0;
 };
 /*...e*/
 
@@ -3076,6 +3091,9 @@ public:
 	virtual bool		LB_STDCALL ismarked() = 0;
 	virtual void		LB_STDCALL mark() = 0;
 	virtual void		LB_STDCALL unmark() = 0;
+
+	virtual void		LB_STDCALL deleteUnmarked() = 0;
+	virtual void		LB_STDCALL deleteMarked() = 0;
 };
 /*...e*/
 
@@ -3099,6 +3117,9 @@ public:
 	virtual bool		LB_STDCALL ismarked() = 0;
 	virtual void		LB_STDCALL mark() = 0;
 	virtual void		LB_STDCALL unmark() = 0;
+
+	virtual void		LB_STDCALL deleteUnmarked() = 0;
+	virtual void		LB_STDCALL deleteMarked() = 0;
 };
 /*...e*/
 
@@ -3123,6 +3144,9 @@ public:
 	virtual bool		LB_STDCALL ismarked() = 0;
 	virtual void		LB_STDCALL mark() = 0;
 	virtual void		LB_STDCALL unmark() = 0;
+
+	virtual void		LB_STDCALL deleteUnmarked() = 0;
+	virtual void		LB_STDCALL deleteMarked() = 0;
 };
 /*...e*/
 
@@ -3145,6 +3169,9 @@ public:
 	virtual bool		LB_STDCALL ismarked() = 0;
 	virtual void		LB_STDCALL mark() = 0;
 	virtual void		LB_STDCALL unmark() = 0;
+
+	virtual void		LB_STDCALL deleteUnmarked() = 0;
+	virtual void		LB_STDCALL deleteMarked() = 0;
 };
 /*...e*/
 
@@ -3167,6 +3194,9 @@ public:
 	virtual bool		LB_STDCALL ismarked() = 0;
 	virtual void		LB_STDCALL mark() = 0;
 	virtual void		LB_STDCALL unmark() = 0;
+
+	virtual void		LB_STDCALL deleteUnmarked() = 0;
+	virtual void		LB_STDCALL deleteMarked() = 0;
 };
 /*...e*/
 
@@ -3189,6 +3219,9 @@ public:
 	virtual bool		LB_STDCALL ismarked() = 0;
 	virtual void		LB_STDCALL mark() = 0;
 	virtual void		LB_STDCALL unmark() = 0;
+
+	virtual void		LB_STDCALL deleteUnmarked() = 0;
+	virtual void		LB_STDCALL deleteMarked() = 0;
 };
 /*...e*/
 /*...e*/

@@ -198,12 +198,48 @@ void LB_STDCALL lbTranslationsModel::unmark() {
 }
 
 bool LB_STDCALL lbTranslationsModel::ismarked() {
-	if (marked->getData() == 1) return true;
+	if (marked->getData() == (long) 1) return true;
 	return false;
 }
 
 int  LB_STDCALL lbTranslationsModel::getTranslationsCount() {
 	return Translations->Count();
+}
+
+void		LB_STDCALL lbTranslationsModel::deleteUnmarked() {
+	lbErrCodes err = ERR_NONE;
+	Translations->finishIteration();
+	while (hasMoreTranslations()) {
+		setNextTranslation();
+		if (!ismarked()) {
+			UAP_REQUEST(manager.getPtr(), lb_I_Long, ID)
+			ID->setData(getTranslationID());
+			
+			UAP(lb_I_KeyBase, key)
+			QI(ID, lb_I_KeyBase, key)
+			
+			Translations->remove(&key);
+			Translations->finishIteration();
+		}
+	}
+}
+
+void		LB_STDCALL lbTranslationsModel::deleteMarked() {
+	lbErrCodes err = ERR_NONE;
+	Translations->finishIteration();
+	while (hasMoreTranslations()) {
+		setNextTranslation();
+		if (ismarked()) {
+			UAP_REQUEST(manager.getPtr(), lb_I_Long, ID)
+			ID->setData(getTranslationID());
+			
+			UAP(lb_I_KeyBase, key)
+			QI(ID, lb_I_KeyBase, key)
+			
+			Translations->remove(&key);
+			Translations->finishIteration();
+		}
+	}
 }
 
 bool  LB_STDCALL lbTranslationsModel::hasMoreTranslations() {

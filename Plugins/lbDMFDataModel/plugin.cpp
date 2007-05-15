@@ -96,6 +96,7 @@ BEGIN_PLUGINS(lbPluginModulelbDMFDataModel)
 	ADD_PLUGIN(lbPluginActionTypesModel, Model)
 	ADD_PLUGIN(lbPluginActionStepsModel, Model)
 	ADD_PLUGIN(lbPluginTranslationsModel, Model)
+	ADD_PLUGIN(lbPluginFormularActionsModel, Model)
 END_PLUGINS()
 
 lbPluginModulelbDMFDataModel::lbPluginModulelbDMFDataModel() {

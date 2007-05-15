@@ -146,7 +146,7 @@ void LB_STDCALL lbUserApplicationRelationModel::unmark() {
 }
 
 bool LB_STDCALL lbUserApplicationRelationModel::ismarked() {
-	if (marked->getData() == 1) return true;
+	if (marked->getData() == (long) 1) return true;
 	return false;
 }
 /*...sbool LB_STDCALL lbUserApplicationRelationModel\58\\58\addFilter\40\const char\42\ filter\44\ const char\42\ value\41\:0:*/
@@ -164,6 +164,44 @@ int  LB_STDCALL lbUserApplicationRelationModel::getRelationCount() {
 	return Relations->Count();
 }
 /*...e*/
+
+void		LB_STDCALL lbUserApplicationRelationModel::deleteUnmarked() {
+	lbErrCodes err = ERR_NONE;
+	Relations->finishIteration();
+	while (hasMoreRelations()) {
+		setNextRelation();
+		if (!ismarked()) {
+			UAP_REQUEST(manager.getPtr(), lb_I_Long, ID)
+			ID->setData(getID());
+			
+			UAP(lb_I_KeyBase, key)
+			QI(ID, lb_I_KeyBase, key)
+			
+			Relations->remove(&key);
+			Relations->finishIteration();
+		}
+	}
+}
+
+void		LB_STDCALL lbUserApplicationRelationModel::deleteMarked() {
+	lbErrCodes err = ERR_NONE;
+	Relations->finishIteration();
+	while (hasMoreRelations()) {
+		setNextRelation();
+		if (ismarked()) {
+			UAP_REQUEST(manager.getPtr(), lb_I_Long, ID)
+			ID->setData(getID());
+			
+			UAP(lb_I_KeyBase, key)
+			QI(ID, lb_I_KeyBase, key)
+			
+			Relations->remove(&key);
+			Relations->finishIteration();
+		}
+	}
+}
+
+
 /*...sbool  LB_STDCALL lbUserApplicationRelationModel\58\\58\hasMoreRelations\40\\41\:0:*/
 bool  LB_STDCALL lbUserApplicationRelationModel::hasMoreRelations() {
 	return Relations->hasMoreElements();

@@ -102,9 +102,7 @@ lbErrCodes LB_STDCALL lbDynamicAppXMLStorage::save(lb_I_OutputStream* oStream) {
 	QI(ukParams, lb_I_Parameter, params)
 
 	*param = "ApplicationData";
-
 	document->setCloning(false);
-
 	params->getUAPContainer(*&param, *&document);	
 
 	UAP_REQUEST(getModuleInstance(), lb_I_String, name)
@@ -118,7 +116,7 @@ lbErrCodes LB_STDCALL lbDynamicAppXMLStorage::save(lb_I_OutputStream* oStream) {
 			
 	*name = "FormActions";
 	uk = document->getElement(&key);
-	QI(uk, lb_I_Formulars, formActions)
+	QI(uk, lb_I_Formular_Actions, formActions)
 			
 	*name = "FormParams";
 	uk = document->getElement(&key);
@@ -143,65 +141,19 @@ lbErrCodes LB_STDCALL lbDynamicAppXMLStorage::save(lb_I_OutputStream* oStream) {
 
 	// Mark that data sets, that are related to this application
 	applications = meta->getApplicationModel();
+	
+	meta->setStatusText("Info", "Mark application to be exported ...");
+	
 	applications->selectApplication(meta->getApplicationID());
 	applications->mark();
 
 	if ((forms != NULL) &&
 	    (formParams != NULL) &&
+	    (formActions != NULL) &&
 		(appParams != NULL) &&
 		(appActions != NULL) &&
 		(appActionTypes != NULL) &&
 		(appActionSteps != NULL)) {
-
-		forms->finishFormularIteration();
-		while (forms->hasMoreFormulars()) {
-			forms->setNextFormular();
-
-			if (forms->getApplicationID() == meta->getApplicationID()) {
-				forms->mark();
-
-				formParams->finishParameterIteration();
-				while (formParams->hasMoreParameters()) {
-					formParams->setNextParameter();
-
-					if (formParams->getFormularID() == forms->getFormularID()) {
-						formParams->mark();
-					}
-					
-					formActions->finishFormularActionIteration();
-					while (formActions->hasMoreFormularActions()) {
-						formActions->setNextFormularAction();
-						if (formActions->getFormularActionFormularID() == forms->getFormularID()) {
-							formActions->mark();
-							
-							appActions->finishActionIteration();
-							while (appActions->hasMoreActions()) {
-								if (appActions->getActionID() == formActions->getFormularActionActionID()) {
-									appActions->mark();
-									
-									appActionSteps->finishActionStepIteration();
-									while (appActionSteps->hasMoreActionSteps()) {
-										if (appActionSteps->getActionStepActionID() == appActions->getActionID()) {
-										    appActionSteps->mark();
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-		
-		appParams->finishParameterIteration();
-		while (appParams->hasMoreParameters()) {
-			appParams->setNextParameter();
-			
-			if (appParams->getApplicationID() == meta->getApplicationID()) {
-				appParams->mark();
-			} 
-		}
-
 
 		forms->accept(*&aspect);
 		formActions->accept(*&aspect);
@@ -258,6 +210,8 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_InputStream* iStrea
 lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::save(lb_I_OutputStream* oStream) {
 	lbErrCodes err = ERR_NONE;
 
+	_LOG << "lbDynamicAppInternalStorage::save() called." LOG_
+
 	UAP(lb_I_Aspect, aspect)
 	QI(op, lb_I_Aspect, aspect)
 
@@ -265,19 +219,33 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::save(lb_I_OutputStream* oStre
 
 	UAP(lb_I_Formulars, forms)
 	UAP(lb_I_FormularParameter, formParams)
+	UAP(lb_I_Formular_Actions, formActions)
 	UAP(lb_I_ApplicationParameter, appParams)
 	UAP(lb_I_Actions, appActions)
 	UAP(lb_I_Action_Steps, appActionSteps)
 	UAP(lb_I_Action_Types, appActionTypes)
 
 	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, param)
 	
 	meta->setStatusText("Info", "Store internal file format ...");
 	
+	_LOG << "Get active document" LOG_
+	
 	UAP(lb_I_Unknown, ukDoc)
-	UAP(lb_I_Container, document)
-	ukDoc = meta->getActiveDocument();
-	QI(ukDoc, lb_I_Container, document)
+	UAP_REQUEST(getModuleInstance(), lb_I_Container, document)
+
+	UAP(lb_I_Unknown, ukParams)
+	UAP(lb_I_Parameter, params)
+
+	ukParams = meta->getActiveDocument();
+	QI(ukParams, lb_I_Parameter, params)
+
+	_LOG << "Retrieve document container with name 'ApplicationData'" LOG_
+
+	*param = "ApplicationData";
+	document->setCloning(false);
+	params->getUAPContainer(*&param, *&document);	
 
 	UAP_REQUEST(getModuleInstance(), lb_I_String, name)
 
@@ -287,6 +255,10 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::save(lb_I_OutputStream* oStre
 	*name = "Formulars";
 	uk = document->getElement(&key);
 	QI(uk, lb_I_Formulars, forms)
+			
+	*name = "FormActions";
+	uk = document->getElement(&key);
+	QI(uk, lb_I_Formular_Actions, formActions)
 			
 	*name = "FormParams";
 	uk = document->getElement(&key);
@@ -308,34 +280,22 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::save(lb_I_OutputStream* oStre
 	uk = document->getElement(&key);
 	QI(uk, lb_I_Action_Types, appActionTypes)
 
+	_LOG << "Start storing the data" LOG_
 
-	if (forms != NULL) {
-		_CL_LOG << "Save a forms model object..." LOG_
+	if ((forms != NULL) &&
+	    (formParams != NULL) &&
+	    (formActions != NULL) &&
+		(appParams != NULL) &&
+		(appActions != NULL) &&
+		(appActionTypes != NULL) &&
+		(appActionSteps != NULL)) {
+
 		forms->accept(*&aspect);
-	}
-
-	if (formParams != NULL) {
-		_CL_LOG << "Save a formParams model object..." LOG_
+		formActions->accept(*&aspect);
 		formParams->accept(*&aspect);
-	}
-
-	if (appParams != NULL) {
-		_CL_LOG << "Save a appParams model object..." LOG_
 		appParams->accept(*&aspect);
-	}
-					
-	if (appActions != NULL) {
-		_CL_LOG << "Save a appActions model object..." LOG_
 		appActions->accept(*&aspect);
-	}
-			
-	if (appActionTypes != NULL) {
-		_CL_LOG << "Save a appActionTypes model object..." LOG_
 		appActionTypes->accept(*&aspect);
-	}
-					
-	if (appActionSteps != NULL) {
-		_CL_LOG << "Save a appActionSteps model object..." LOG_
 		appActionSteps->accept(*&aspect);
 	}
 
@@ -466,5 +426,117 @@ void LB_STDCALL lbPluginDynamicAppXMLStorage::releaseImplementation() {
 /*...e*/
 /*...e*/
 
+//==================================
+
+/*...sclass lbPluginDynamicAppInternalStorage implementation:0:*/
+/*...slbPluginDynamicAppInternalStorage:0:*/
+class lbPluginDynamicAppInternalStorage : public lb_I_PluginImpl {
+public:
+	lbPluginDynamicAppInternalStorage();
+	
+	virtual ~lbPluginDynamicAppInternalStorage();
+
+	bool LB_STDCALL canAutorun();
+	lbErrCodes LB_STDCALL autorun();
+/*...sfrom plugin interface:8:*/
+	void LB_STDCALL initialize();
+	
+	bool LB_STDCALL run();
+
+	lb_I_Unknown* LB_STDCALL peekImplementation();
+	lb_I_Unknown* LB_STDCALL getImplementation();
+	void LB_STDCALL releaseImplementation();
+/*...e*/
+
+	DECLARE_LB_UNKNOWN()
+	
+	UAP(lb_I_Unknown, ukActions)
+};
+
+BEGIN_IMPLEMENT_LB_UNKNOWN(lbPluginDynamicAppInternalStorage)
+        ADD_INTERFACE(lb_I_PluginImpl)
+END_IMPLEMENT_LB_UNKNOWN()
+
+IMPLEMENT_FUNCTOR(instanceOflbPluginDynamicAppInternalStorage, lbPluginDynamicAppInternalStorage)
+
+/*...slbErrCodes LB_STDCALL lbPluginDynamicAppStorage\58\\58\setData\40\lb_I_Unknown\42\ uk\41\:0:*/
+lbErrCodes LB_STDCALL lbPluginDynamicAppInternalStorage::setData(lb_I_Unknown* uk) {
+	lbErrCodes err = ERR_NONE;
+
+	_CL_VERBOSE << "lbPluginDynamicAppStorage::setData(...) called.\n" LOG_
+
+        return ERR_NOT_IMPLEMENTED;
+}
+/*...e*/
+
+lbPluginDynamicAppInternalStorage::lbPluginDynamicAppInternalStorage() {
+	_CL_VERBOSE << "lbPluginDynamicAppStorage::lbPluginDynamicAppStorage() called.\n" LOG_
+	ref = STARTREF;
+}
+
+lbPluginDynamicAppInternalStorage::~lbPluginDynamicAppInternalStorage() {
+	_CL_VERBOSE << "lbPluginDynamicAppStorage::~lbPluginDynamicAppStorage() called.\n" LOG_
+}
+
+bool LB_STDCALL lbPluginDynamicAppInternalStorage::canAutorun() {
+	return false;
+}
+
+lbErrCodes LB_STDCALL lbPluginDynamicAppInternalStorage::autorun() {
+	lbErrCodes err = ERR_NONE;
+	return err;
+}
+
+void LB_STDCALL lbPluginDynamicAppInternalStorage::initialize() {
+}
+	
+bool LB_STDCALL lbPluginDynamicAppInternalStorage::run() {
+	return true;
+}
+
+/*...slb_I_Unknown\42\ LB_STDCALL lbPluginDynamicAppStorage\58\\58\peekImplementation\40\\41\:0:*/
+lb_I_Unknown* LB_STDCALL lbPluginDynamicAppInternalStorage::peekImplementation() {
+	lbErrCodes err = ERR_NONE;
+
+	if (ukActions == NULL) {
+		lbDynamicAppInternalStorage* DynamicAppStorage = new lbDynamicAppInternalStorage();
+		DynamicAppStorage->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+		QI(DynamicAppStorage, lb_I_Unknown, ukActions)
+	} else {
+		_CL_VERBOSE << "lbPluginDatabasePanel::peekImplementation() Implementation already peeked.\n" LOG_
+	}
+	
+	return ukActions.getPtr();
+}
+/*...e*/
+/*...slb_I_Unknown\42\ LB_STDCALL lbPluginDynamicAppStorage\58\\58\getImplementation\40\\41\:0:*/
+lb_I_Unknown* LB_STDCALL lbPluginDynamicAppInternalStorage::getImplementation() {
+	lbErrCodes err = ERR_NONE;
+
+	if (ukActions == NULL) {
+
+		_CL_VERBOSE << "Warning: peekImplementation() has not been used prior.\n" LOG_
+	
+		lbDynamicAppInternalStorage* DynamicAppStorage = new lbDynamicAppInternalStorage();
+		DynamicAppStorage->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+	
+		QI(DynamicAppStorage, lb_I_Unknown, ukActions)
+	}
+	
+	lb_I_Unknown* r = ukActions.getPtr();
+	ukActions.resetPtr();
+	return r;
+}
+/*...e*/
+void LB_STDCALL lbPluginDynamicAppInternalStorage::releaseImplementation() {
+        lbErrCodes err = ERR_NONE;
+
+        if (ukActions != NULL) {
+                ukActions--;
+                ukActions.resetPtr();
+        }
+}
+/*...e*/
+/*...e*/
 
 
