@@ -961,6 +961,8 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 			} 
 		}
 
+/// \todo Mark does not store the flag in the container.
+/*
 		forms->deleteUnmarked();
 		formActions->deleteUnmarked();
 		formParams->deleteUnmarked();
@@ -968,7 +970,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 		appActions->deleteUnmarked();
 		appActionTypes->deleteUnmarked();
 		appActionSteps->deleteUnmarked();
-
+*/
 
 		if ((forms != NULL) && 
 			(formParams != NULL) && 
