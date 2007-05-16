@@ -1924,11 +1924,12 @@ void LB_STDCALL lbDatabasePanel::updateFromDetail() {
 
 	UAP_REQUEST(getModuleInstance(), lb_I_String, st)
 
+	_LOG << "Try to get table name for old query: " << getQuery() LOG_
 	if (sourceTableQuery->query(getQuery()) != ERR_NONE) {
 		*st = "Unknown table";
 		meta->setStatusText("Info", "Error: Could not get table name of target formular!");
 	} else {
-		*st = sourceTableQuery->getTableName(sourceTableQuery->getColumnName(0));
+		*st = sourceTableQuery->getTableName(sourceTableQuery->getColumnName(1));
 	}
 
 	if (err == ERR_NONE) {
