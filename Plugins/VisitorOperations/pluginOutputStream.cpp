@@ -153,6 +153,8 @@ public:
 	void LB_STDCALL visit(lb_I_Applications*);
 	void LB_STDCALL visit(lb_I_User_Applications*);
 	void LB_STDCALL visit(lb_I_Formulars*);
+	void LB_STDCALL visit(lb_I_Formular_Fields*);
+	void LB_STDCALL visit(lb_I_Column_Types*);
 	void LB_STDCALL visit(lb_I_ApplicationParameter*);
 	void LB_STDCALL visit(lb_I_FormularParameter*);
 	void LB_STDCALL visit(lb_I_Actions*);
@@ -436,6 +438,52 @@ void LB_STDCALL lbOutputStream::visit(lb_I_Formulars* forms) {
 		*oStream << forms->getMenuHelp();
 		*oStream << forms->getApplicationID();
 		*oStream << forms->getTyp();
+	}
+}
+
+void LB_STDCALL lbOutputStream::visit(lb_I_Formular_Fields* formularfields) {
+	int count;
+
+	count = formularfields->getFieldCount();
+	*oStream << count;
+	
+	formularfields->finishFieldsIteration();
+	
+	while (formularfields->hasMoreFields()) {
+		formularfields->setNextField();
+		
+		*oStream << formularfields->getID();
+		*oStream << formularfields->getName();
+		*oStream << formularfields->getDBType();
+		if (formularfields->isFK())
+			*oStream << (long) 1;
+		else
+			*oStream << (long) 0;
+		*oStream << formularfields->getFKName();
+		*oStream << formularfields->getFKTable();
+		*oStream << formularfields->getFormularID();
+	}
+}
+
+void LB_STDCALL lbOutputStream::visit(lb_I_Column_Types* columntypes) {
+	int count;
+
+	count = columntypes->getTypeCount();
+	*oStream << count;
+	
+	columntypes->finishTypeIteration();
+	
+	while (columntypes->hasMoreTypes()) {
+		columntypes->setNextType();
+		
+		*oStream << columntypes->getTableName();
+		*oStream << columntypes->getName();
+		*oStream << columntypes->getSpecialColumn();
+		*oStream << columntypes->getControlType();
+		if (columntypes->getReadonly() == true) 
+			*oStream << (long) 1;
+		else
+			*oStream << (long) 0;
 	}
 }
 

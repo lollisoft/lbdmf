@@ -64,6 +64,7 @@ virtual void LB_STDCALL visit(lb_I_UserAccounts*) = 0;
 virtual void LB_STDCALL visit(lb_I_Applications*) = 0;
 virtual void LB_STDCALL visit(lb_I_User_Applications*) = 0;
 virtual void LB_STDCALL visit(lb_I_Formulars*) = 0;
+virtual void LB_STDCALL visit(lb_I_Formular_Fields*) = 0;
 virtual void LB_STDCALL visit(lb_I_ParameterTable*) = 0;
 virtual void LB_STDCALL visit(lb_I_ApplicationParameter*) = 0;
 virtual void LB_STDCALL visit(lb_I_FormularParameter*) = 0;
@@ -89,6 +90,7 @@ virtual void LB_STDCALL visit(lb_I_DispatchFunction*) = 0;
 virtual void LB_STDCALL visit(lb_I_ApplicationClient*) = 0;
 virtual void LB_STDCALL visit(lb_I_ApplicationServerThread*) = 0;
 virtual void LB_STDCALL visit(lb_I_Proxy*) = 0;
+virtual void LB_STDCALL visit(lb_I_Column_Types*) = 0;
 //virtual ~Aspect(){} 
 };   
 

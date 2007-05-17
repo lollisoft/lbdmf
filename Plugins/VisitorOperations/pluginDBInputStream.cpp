@@ -156,6 +156,8 @@ public:
 	void LB_STDCALL visit(lb_I_Applications*);
 	void LB_STDCALL visit(lb_I_User_Applications*);
 	void LB_STDCALL visit(lb_I_Formulars*);
+	void LB_STDCALL visit(lb_I_Formular_Fields*);
+	void LB_STDCALL visit(lb_I_Column_Types*);
 	void LB_STDCALL visit(lb_I_Formular_Actions*);
 	void LB_STDCALL visit(lb_I_Action_Types*);
 	void LB_STDCALL visit(lb_I_Action_Steps*);
@@ -638,6 +640,265 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_ApplicationParameter* params) 
 	}
 }
 
+void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Formular_Fields* formularfields) {
+	lbErrCodes err = ERR_NONE;
+	UAP(lb_I_Query, q)
+		
+		if (db == NULL) {
+			_LOG << "FATAL: Database imput stream could not work without a database!" LOG_
+			return;
+		}
+	
+	q = db->getQuery(0);
+	
+	q->skipFKCollecting();
+	// 1 = Dynamisch aufgebautes Datenbankformular
+	if (q->query("select id from formulare where typ = 1") != ERR_NONE) {
+		_LOG << "Error: Access to formular table failed. Read formulars would be skipped." LOG_
+		return;
+	}
+	
+	err = q->first(); 
+	
+	while (err == ERR_NONE) {
+		UAP(lb_I_Long, FormularID)
+		UAP(lb_I_Query, query_query)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, query)
+		
+		query_query = db->getQuery(0);
+		
+		FormularID = q->getAsLong(1);
+		
+		*query = "select parametervalue from formular_parameters where formularid = ";
+		*query += FormularID->charrep();
+		
+		if (query_query->query(query->charrep()) == ERR_NONE) {
+			// Query succeeded
+			UAP(lb_I_String, formularquery)
+			UAP(lb_I_Query, form_query)
+			
+			lbErrCodes qqerr = query_query->first();
+			
+			if ((qqerr == ERR_NONE) || (qqerr == WARN_DB_NODATA)) {
+				// Get the stored query for the formular with id = FormularID
+				formularquery = query_query->getAsString(1);
+				form_query = db->getQuery(0);
+				
+				form_query->enableFKCollecting();
+				if (form_query->query(formularquery->charrep()) == ERR_NONE) {
+					// formular query is valid
+					int columns = form_query->getColumns();
+					for (int i = 1; i <= columns; i++) {
+						char* name = NULL;
+						name = strdup(form_query->getColumnName(i));
+						
+						if (form_query->hasFKColumn(name) == 1) {
+							UAP(lb_I_String, t)
+							UAP(lb_I_String, c)
+							UAP(lb_I_Query, fkpkmapping_query)
+							fkpkmapping_query = db->getQuery(0);
+							
+							t = form_query->getPKTable(name);
+							c = form_query->getPKColumn(name);
+							
+							char* buffer = (char*) malloc(1000);
+							buffer[0] = 0;
+							
+							sprintf(buffer, "select PKName, PKTable	from ForeignKey_VisibleData_Mapping "
+									"where FKName = '%s' and FKTable = '%s'", name, form_query->getTableName(name));
+							
+							if (fkpkmapping_query->query(buffer) == ERR_NONE) {
+								UAP(lb_I_String, PKName)
+								UAP(lb_I_String, PKTable)
+								lbErrCodes err = fkpkmapping_query->first();
+								
+								if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
+									PKName = fkpkmapping_query->getAsString(1);
+									PKTable = fkpkmapping_query->getAsString(2);
+									
+									lb_I_Query::lbDBColumnTypes coltype = form_query->getColumnType(i);
+									
+									switch (coltype) {
+										case lb_I_Query::lbDBColumnBit:
+											formularfields->addField(name, "Bit", true, PKName->charrep(), PKTable->charrep(), FormularID->getData());
+											break;
+										case lb_I_Query::lbDBColumnFloat:
+											formularfields->addField(name, "Float", true, PKName->charrep(), PKTable->charrep(), FormularID->getData());
+											break;
+										case lb_I_Query::lbDBColumnChar:
+											formularfields->addField(name, "String", true, PKName->charrep(), PKTable->charrep(), FormularID->getData());
+											break;
+										case lb_I_Query::lbDBColumnBinary:
+											formularfields->addField(name, "Binary", true, PKName->charrep(), PKTable->charrep(), FormularID->getData());
+											break;
+											
+										case lb_I_Query::lbDBColumnBigInteger:
+										case lb_I_Query::lbDBColumnInteger:
+											formularfields->addField(name, "Integer", true, PKName->charrep(), PKTable->charrep(), FormularID->getData());
+											break;
+										case lb_I_Query::lbDBColumnUnknown:
+											_CL_LOG << "lbDatabasePanel::init(...) Creating control failed due to unknown column type" LOG_
+											break;
+									}
+								}
+							}
+						} else {
+							lb_I_Query::lbDBColumnTypes coltype = form_query->getColumnType(i);
+							
+							switch (coltype) {
+								case lb_I_Query::lbDBColumnBit:
+									formularfields->addField(name, "Bit", false, "", "", FormularID->getData());
+									break;
+								case lb_I_Query::lbDBColumnFloat:
+									formularfields->addField(name, "Float", false, "", "", FormularID->getData());
+									break;
+								case lb_I_Query::lbDBColumnChar:
+									formularfields->addField(name, "String", false, "", "", FormularID->getData());
+									break;
+								case lb_I_Query::lbDBColumnBinary:
+									formularfields->addField(name, "Binary", false, "", "", FormularID->getData());
+									break;
+									
+								case lb_I_Query::lbDBColumnBigInteger:
+								case lb_I_Query::lbDBColumnInteger:
+									formularfields->addField(name, "Integer", true, "", "", FormularID->getData());
+									break;
+								case lb_I_Query::lbDBColumnUnknown:
+									_CL_LOG << "lbDatabasePanel::init(...) Creating control failed due to unknown column type" LOG_
+									break;
+							}
+						}
+					}
+				} else {
+					_LOG << "Error: Query '" << formularquery->charrep() << "' failed!" LOG_
+				}
+			}
+		} else {
+			_LOG << "Error: Query '" << query->charrep() << "' failed!" LOG_
+		}
+		err = q->next();
+	}
+
+	
+	if (err == WARN_DB_NODATA) {
+		UAP(lb_I_Long, FormularID)
+		UAP(lb_I_Query, query_query)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, query)
+		
+		query_query = db->getQuery(0);
+		
+		FormularID = q->getAsLong(1);
+		
+		*query = "select parametervalue from formular_parameters where formularid = ";
+		*query += FormularID->charrep();
+		
+		if (query_query->query(query->charrep()) == ERR_NONE) {
+			// Query succeeded
+			UAP(lb_I_String, formularquery)
+			UAP(lb_I_Query, form_query)
+			
+			lbErrCodes qqerr = query_query->first();
+			
+			if ((qqerr == ERR_NONE) || (qqerr == WARN_DB_NODATA)) {
+				// Get the stored query for the formular with id = FormularID
+				formularquery = query_query->getAsString(1);
+				form_query = db->getQuery(0);
+				
+				form_query->enableFKCollecting();
+				if (form_query->query(formularquery->charrep()) == ERR_NONE) {
+					// formular query is valid
+					int columns = form_query->getColumns();
+					for (int i = 1; i <= columns; i++) {
+						char* name = NULL;
+						name = strdup(form_query->getColumnName(i));
+						
+						if (form_query->hasFKColumn(name) == 1) {
+							UAP(lb_I_String, t)
+							UAP(lb_I_String, c)
+							UAP(lb_I_Query, fkpkmapping_query)
+							fkpkmapping_query = db->getQuery(0);
+							
+							t = form_query->getPKTable(name);
+							c = form_query->getPKColumn(name);
+							
+							char* buffer = (char*) malloc(1000);
+							buffer[0] = 0;
+							
+							sprintf(buffer, "select PKName, PKTable	from ForeignKey_VisibleData_Mapping "
+									"where FKName = '%s' and FKTable = '%s'", name, form_query->getTableName(name));
+							
+							if (fkpkmapping_query->query(buffer) == ERR_NONE) {
+								UAP(lb_I_String, PKName)
+								UAP(lb_I_String, PKTable)
+								lbErrCodes err = fkpkmapping_query->first();
+								
+								if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
+									PKName = fkpkmapping_query->getAsString(1);
+									PKTable = fkpkmapping_query->getAsString(2);
+									
+									lb_I_Query::lbDBColumnTypes coltype = form_query->getColumnType(i);
+									
+									switch (coltype) {
+										case lb_I_Query::lbDBColumnBit:
+											formularfields->addField(name, "Bit", true, PKName->charrep(), PKTable->charrep(), FormularID->getData());
+											break;
+										case lb_I_Query::lbDBColumnFloat:
+											formularfields->addField(name, "Float", true, PKName->charrep(), PKTable->charrep(), FormularID->getData());
+											break;
+										case lb_I_Query::lbDBColumnChar:
+											formularfields->addField(name, "String", true, PKName->charrep(), PKTable->charrep(), FormularID->getData());
+											break;
+										case lb_I_Query::lbDBColumnBinary:
+											formularfields->addField(name, "Binary", true, PKName->charrep(), PKTable->charrep(), FormularID->getData());
+											break;
+											
+										case lb_I_Query::lbDBColumnBigInteger:
+										case lb_I_Query::lbDBColumnInteger:
+											formularfields->addField(name, "Integer", true, PKName->charrep(), PKTable->charrep(), FormularID->getData());
+											break;
+										case lb_I_Query::lbDBColumnUnknown:
+											_CL_LOG << "lbDatabasePanel::init(...) Creating control failed due to unknown column type" LOG_
+											break;
+									}
+								}
+							}
+						} else {
+							lb_I_Query::lbDBColumnTypes coltype = form_query->getColumnType(i);
+							
+							switch (coltype) {
+								case lb_I_Query::lbDBColumnBit:
+									formularfields->addField(name, "Bit", false, "", "", FormularID->getData());
+									break;
+								case lb_I_Query::lbDBColumnFloat:
+									formularfields->addField(name, "Float", false, "", "", FormularID->getData());
+									break;
+								case lb_I_Query::lbDBColumnChar:
+									formularfields->addField(name, "String", false, "", "", FormularID->getData());
+									break;
+								case lb_I_Query::lbDBColumnBinary:
+									formularfields->addField(name, "Binary", false, "", "", FormularID->getData());
+									break;
+									
+								case lb_I_Query::lbDBColumnBigInteger:
+								case lb_I_Query::lbDBColumnInteger:
+									formularfields->addField(name, "Integer", true, "", "", FormularID->getData());
+									break;
+								case lb_I_Query::lbDBColumnUnknown:
+									_CL_LOG << "lbDatabasePanel::init(...) Creating control failed due to unknown column type" LOG_
+									break;
+							}
+						}
+					}
+				} else {
+					_LOG << "Error: Query '" << formularquery->charrep() << "' failed!" LOG_
+				}
+			}
+		} else {
+			_LOG << "Error: Query '" << query->charrep() << "' failed!" LOG_
+		}
+	}
+}
+
 void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Formulars* forms) {
 	lbErrCodes err = ERR_NONE;
 	UAP(lb_I_Query, q)
@@ -689,6 +950,55 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Formulars* forms) {
 			Typ = q->getAsLong(7);
 			
 			forms->addFormular(FormularName->charrep(), MenuName->charrep(), EventName->charrep(), MenuHilfe->charrep(), AnwendungID->getData(), Typ->getData(), FormularID->getData());
+		}
+	}
+}
+
+void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Column_Types* columntypes) {
+	lbErrCodes err = ERR_NONE;
+	UAP(lb_I_Query, q)
+	
+	if (db == NULL) {
+		_LOG << "FATAL: Database imput stream could not work without a database!" LOG_
+		return;
+	}
+	
+	q = db->getQuery(0);
+	
+	q->skipFKCollecting();
+	
+	if (q->query("select tablename, name, specialcolumn, controltype, ro from column_types") != ERR_NONE) {
+		_LOG << "Error: Access to column types table failed. Read column types would be skipped." LOG_
+		return;
+	}
+	
+	err = q->first(); 
+
+	if ((err != ERR_NONE) && (err != WARN_DB_NODATA)) {
+		_LOG << "Error: No column types found. All column types may be deleted accidantly." LOG_
+	} else {
+		UAP(lb_I_Long, Readonly)
+		UAP(lb_I_String, TableName)
+		UAP(lb_I_String, Name)
+		UAP(lb_I_String, SpecialColumn)
+		UAP(lb_I_String, ControlType)
+
+		TableName = q->getAsString(1);
+		Name = q->getAsString(2);
+		SpecialColumn = q->getAsString(3);
+		ControlType = q->getAsString(4);		
+		Readonly = q->getAsLong(5);
+		
+		columntypes->addType(TableName->charrep(), Name->charrep(), SpecialColumn->charrep(), ControlType->charrep(), (Readonly->getData() == (long) 1) ? true : false);
+
+		while ((err = q->next()) == ERR_NONE || err == WARN_DB_NODATA) {
+			TableName = q->getAsString(1);
+			Name = q->getAsString(2);
+			SpecialColumn = q->getAsString(3);
+			ControlType = q->getAsString(4);		
+			Readonly = q->getAsLong(5);
+		
+			columntypes->addType(TableName->charrep(), Name->charrep(), SpecialColumn->charrep(), ControlType->charrep(), (Readonly->getData() == (long) 1) ? true : false);
 		}
 	}
 }

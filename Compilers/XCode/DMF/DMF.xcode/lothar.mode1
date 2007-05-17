@@ -295,7 +295,7 @@
 										<key>PBXProjectModuleLabel</key>
 										<string>wxWrapperDLL.cpp</string>
 										<key>bookmark</key>
-										<string>27210CF60BF99F7900F2E5FF</string>
+										<string>27CB0C080BFCB19A00E67BE5</string>
 										<key>history</key>
 										<array>
 											<string>2778C2A50B5A4E1E003524C2</string>
@@ -380,7 +380,7 @@
 											<string>27519D220B9050730079C19C</string>
 											<string>27519D3F0B9051E10079C19C</string>
 											<string>27519D400B9051E10079C19C</string>
-											<string>27CB94150BF83F6F00CB7AE8</string>
+											<string>27210CF60BF99F7900F2E5FF</string>
 										</array>
 										<key>prevStack</key>
 										<array>
@@ -524,9 +524,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>27210CED0BF99E4700F2E5FF</string>
+				<string>27CB0BF60BFCAA3200E67BE5</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>27210CEE0BF99E4700F2E5FF</string>
+				<string>27CB0BF70BFCAA3200E67BE5</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -555,7 +555,7 @@
 	<key>WindowOrderList</key>
 	<array>
 		<string>27A017CE0870060900677AEE</string>
-		<string>27210CF00BF99E4700F2E5FF</string>
+		<string>27CB0BF90BFCAA3200E67BE5</string>
 		<string>/Users/lothar/develop/Projects/CPP/Compilers/XCode/DMF/DMF.xcode</string>
 		<string>1CD10A99069EF8BA00B06720</string>
 	</array>
@@ -689,8 +689,8 @@
 										<string>yes</string>
 										<key>sizes</key>
 										<array>
-											<string>{{0, 0}, {156, 280}}</string>
-											<string>{{156, 0}, {963, 280}}</string>
+											<string>{{0, 0}, {395, 298}}</string>
+											<string>{{395, 0}, {724, 298}}</string>
 										</array>
 									</dict>
 									<key>VerticalSplitView</key>
@@ -705,8 +705,8 @@
 										<string>yes</string>
 										<key>sizes</key>
 										<array>
-											<string>{{0, 0}, {1119, 280}}</string>
-											<string>{{0, 280}, {1119, 488}}</string>
+											<string>{{0, 0}, {1119, 298}}</string>
+											<string>{{0, 298}, {1119, 470}}</string>
 										</array>
 									</dict>
 								</dict>
@@ -753,9 +753,9 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>1CD10A99069EF8BA00B06720</string>
-				<string>27210CEF0BF99E4700F2E5FF</string>
+				<string>27CB0BF80BFCAA3200E67BE5</string>
 				<string>1C162984064C10D400B95A72</string>
-				<string>27210CF00BF99E4700F2E5FF</string>
+				<string>27CB0BF90BFCAA3200E67BE5</string>
 			</array>
 			<key>ToolbarConfiguration</key>
 			<string>xcode.toolbar.config.debug</string>
@@ -917,7 +917,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>27A017CE0870060900677AEE</string>
-				<string>27210CF10BF99E4700F2E5FF</string>
+				<string>27CB0BFA0BFCAA3200E67BE5</string>
 				<string>1C78EAAC065D492600B07095</string>
 			</array>
 			<key>WindowString</key>

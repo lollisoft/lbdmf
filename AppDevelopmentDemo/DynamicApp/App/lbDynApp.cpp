@@ -123,6 +123,8 @@ protected:
 	
 	// Preloaded data from database, if plugins are available.
 	UAP(lb_I_Formulars, forms)
+	UAP(lb_I_Formular_Fields, formularfields)
+	UAP(lb_I_Column_Types, columntypes)
 	UAP(lb_I_FormularParameter, formParams)
 	UAP(lb_I_Formular_Actions, formActions)
 	UAP(lb_I_ApplicationParameter, appParams)
@@ -733,8 +735,12 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 	if (isFileAvailable || isDBAvailable) {
 /*...sLoad from file or database:16:*/
 /*...sInitialize plugin based document models:32:*/
+		UAP(lb_I_Plugin, plFormularFields)
+		UAP(lb_I_Unknown, ukPlFormularFields)
 		UAP(lb_I_Plugin, plFormulars)
 		UAP(lb_I_Unknown, ukPlFormulars)
+		UAP(lb_I_Plugin, plColumnTypes)
+		UAP(lb_I_Unknown, ukPlColumnTypes)
 		UAP(lb_I_Plugin, plFormParams)
 		UAP(lb_I_Unknown, ukPlFormParams)
 		UAP(lb_I_Plugin, plFormActions)
@@ -748,6 +754,19 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 		UAP(lb_I_Plugin, plAppActionSteps)
 		UAP(lb_I_Unknown, ukPlAppActionSteps)
 		
+		plColumnTypes = PM->getFirstMatchingPlugin("lb_I_Column_Types", "Model");
+		if (plColumnTypes != NULL) {
+			ukPlColumnTypes = plColumnTypes->getImplementation();
+		} else {
+			_LOG << "Warning: No column types datamodel plugin found." LOG_
+		}
+		
+		if (ukPlColumnTypes != NULL) { 
+			QI(ukPlColumnTypes, lb_I_Column_Types, columntypes)
+		} else {
+			_LOG << "Warning: No column types datamodel plugin implementation found." LOG_
+		}
+
 		plAppActions = PM->getFirstMatchingPlugin("lb_I_Actions", "Model");
 		if (plAppActions != NULL) {
 			ukPlAppActions = plAppActions->getImplementation();
@@ -813,6 +832,19 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 			_LOG << "Warning: No formular datamodel plugin implementation found." LOG_
 		}
 		
+		plFormularFields = PM->getFirstMatchingPlugin("lb_I_Formular_Fields", "Model");
+		if (plFormularFields != NULL) {
+			ukPlFormularFields = plFormularFields->getImplementation();
+		} else {
+			_LOG << "Warning: No formular datamodel plugin found." LOG_
+		}
+		
+		if (ukPlFormularFields != NULL) { 
+			QI(ukPlFormularFields, lb_I_Formular_Fields, formularfields)
+		} else {
+			_LOG << "Warning: No formular datamodel plugin implementation found." LOG_
+		}
+		
 		plFormParams = PM->getFirstMatchingPlugin("lb_I_FormularParameter", "Model");
 		if (plFormParams != NULL) {
 			ukPlFormParams = plFormParams->getImplementation();
@@ -865,6 +897,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 		
 		if (!DBOperation && 
 			(forms != NULL) && 
+			(formularfields != NULL) && 
 			(formParams != NULL) && 
 			(appActions != NULL) && 
 			(appActionSteps != NULL) && 
@@ -873,6 +906,8 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 			_LOG << "Load application data from file ..." LOG_
 			
 			forms->accept(*&fOp);
+			formularfields->accept(*&fOp);
+			columntypes->accept(*&fOp);
 			formActions->accept(*&fOp);
 			formParams->accept(*&fOp);
 			appParams->accept(*&fOp);
@@ -883,6 +918,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 		
 		if (DBOperation && 
 			(forms != NULL) && 
+			(formularfields != NULL) && 
 			(formParams != NULL) && 
 			(appActions != NULL) && 
 			(appActionSteps != NULL) && 
@@ -892,6 +928,8 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 			
 			
 			forms->accept(*&fOpDB);
+			formularfields->accept(*&fOpDB);
+			columntypes->accept(*&fOpDB);
 			formActions->accept(*&fOpDB);
 			formParams->accept(*&fOpDB);
 			appParams->accept(*&fOpDB);
@@ -903,6 +941,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 		if (!DBOperation) fOp->end();
 		if (DBOperation) fOpDB->end();
 
+#ifdef bla
 		// Here I should delete all unrelated data.
 		
 		forms->finishFormularIteration();
@@ -960,7 +999,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 				appParams->mark();
 			} 
 		}
-
+#endif
 /// \todo Mark does not store the flag in the container.
 /*
 		forms->deleteUnmarked();
@@ -973,6 +1012,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 */
 
 		if ((forms != NULL) && 
+			(formularfields != NULL) && 
 			(formParams != NULL) && 
 			(appActions != NULL) && 
 			(appActionSteps != NULL) && 
@@ -983,6 +1023,14 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 			
 			*name = "Formulars";
 			QI(forms, lb_I_Unknown, uk)
+			document->insert(&uk, &key);
+			
+			*name = "FormularFields";
+			QI(formularfields, lb_I_Unknown, uk)
+			document->insert(&uk, &key);
+			
+			*name = "ColumnTypes";
+			QI(columntypes, lb_I_Unknown, uk)
 			document->insert(&uk, &key);
 			
 			*name = "FormActions";

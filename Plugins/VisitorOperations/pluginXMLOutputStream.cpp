@@ -153,6 +153,8 @@ public:
 	void LB_STDCALL visit(lb_I_Applications*);
 	void LB_STDCALL visit(lb_I_User_Applications*);
 	void LB_STDCALL visit(lb_I_Formulars*);
+	void LB_STDCALL visit(lb_I_Formular_Fields*);
+	void LB_STDCALL visit(lb_I_Column_Types*);
 	void LB_STDCALL visit(lb_I_ApplicationParameter*);
 	void LB_STDCALL visit(lb_I_FormularParameter*);
 	void LB_STDCALL visit(lb_I_Actions*);
@@ -431,6 +433,50 @@ void LB_STDCALL lbXMLOutputStream::visit(lb_I_Formulars* forms) {
 		"\" typid=\"" << forms->getTyp() << "\"/>" << "\n";
 	}
 	*oStream << "</formulare>" << "\n";
+}
+
+void LB_STDCALL lbXMLOutputStream::visit(lb_I_Formular_Fields* formularfields) {
+	*oStream << "<formularfields>" << "\n";
+	
+	formularfields->finishFieldsIteration();
+	
+	while (formularfields->hasMoreFields()) {
+		formularfields->setNextField();
+		*oStream << 
+		"<formular ID=\"" << formularfields->getID() << 
+		"\" name=\"" << formularfields->getName() << 
+		"\" dbtype=\"" << formularfields->getDBType();
+		
+		if (formularfields->isFK())
+			*oStream << "\" isfk=\"" << "1"; 
+		else
+			*oStream << "\" isfk=\"" << "0";
+			 
+		*oStream << "\" fkname=\"" << formularfields->getFKName() << 
+		"\" fktable=\"" << formularfields->getFKTable() << 
+		"\" formularid=\"" << formularfields->getFormularID() << "\"/>" << "\n";
+	}
+	*oStream << "</formularfields>" << "\n";
+}
+
+void LB_STDCALL lbXMLOutputStream::visit(lb_I_Column_Types* columntypes) {
+	*oStream << "<columntypes>" << "\n";
+	
+	columntypes->finishTypeIteration();
+	
+	while (columntypes->hasMoreTypes()) {
+		columntypes->setNextType();
+		*oStream << 
+		"<columntype tablename=\"" << columntypes->getTableName() << 
+		"\" name=\"" << columntypes->getName() << 
+		"\" specialcolumn=\"" << columntypes->getSpecialColumn() << 
+		"\" controltype=\"" << columntypes->getControlType();
+		if (columntypes->getReadonly() == true)
+			*oStream << "\" readonly=\"" << "1" << "\"/>" << "\n";
+		else
+			*oStream << "\" readonly=\"" << "0" << "\"/>" << "\n";
+	}
+	*oStream << "</columntypes>" << "\n";
 }
 
 void LB_STDCALL lbXMLOutputStream::visit(lb_I_Applications* app) {

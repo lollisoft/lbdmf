@@ -68,6 +68,44 @@ public:
 	UAP(lb_I_Long, marked)
 };
 
+class lbColumnTypes : public lb_I_Column_Types {
+public:
+	lbColumnTypes();
+	virtual ~lbColumnTypes();
+
+	long		LB_STDCALL addType(const char* tablename, const char* name, const char* specialcolumn, const char* controltype, bool readonly);
+	bool		LB_STDCALL selectType(const char* tablename, const char* name);
+	int			LB_STDCALL getTypeCount();
+	bool		LB_STDCALL hasMoreTypes();
+	void		LB_STDCALL setNextType();
+	void		LB_STDCALL finishTypeIteration();
+	
+	char*		LB_STDCALL getTableName();
+	char*		LB_STDCALL getName();
+	char*		LB_STDCALL getSpecialColumn();
+	char*		LB_STDCALL getControlType();
+	bool		LB_STDCALL getReadonly();
+
+	bool		LB_STDCALL ismarked();
+	void		LB_STDCALL mark();
+	void		LB_STDCALL unmark();
+
+	void		LB_STDCALL deleteUnmarked();
+	void		LB_STDCALL deleteMarked();
+
+	DECLARE_LB_UNKNOWN()
+	
+	UAP(lb_I_Container, ColumnTypes)
+	
+	UAP(lb_I_String, currentTableName)
+	UAP(lb_I_String, currentName)
+	UAP(lb_I_String, currentSpecialColumn)
+	UAP(lb_I_String, currentControlType)
+	UAP(lb_I_Long, currentReadonly)
+
+	UAP(lb_I_Long, marked)
+};
+
 class lbApplicationParameters : public lb_I_ApplicationParameter {
 public:
 	lbApplicationParameters();

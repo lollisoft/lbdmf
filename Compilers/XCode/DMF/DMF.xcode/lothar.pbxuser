@@ -175,7 +175,7 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 200908325;
+			PBXPerProjectTemplateStateSaveDate = 201107983;
 			PBXPrepackagedSmartGroups_v2 = (
 				{
 					PBXTransientLocationAtTop = bottom;
@@ -352,7 +352,7 @@
 					};
 				},
 			);
-			PBXWorkspaceStateSaveDate = 200908325;
+			PBXWorkspaceStateSaveDate = 201107983;
 		};
 		perUserProjectItems = {
 			270607FF0B6CB9DF00DFDF9C = 270607FF0B6CB9DF00DFDF9C;
@@ -501,7 +501,7 @@
 			27B8653A0B389DD000C58BEF = 27B8653A0B389DD000C58BEF;
 			27B96CDF0B7FBC3100EB6A0F = 27B96CDF0B7FBC3100EB6A0F;
 			27B96CE50B7FC32400EB6A0F = 27B96CE50B7FC32400EB6A0F;
-			27CB94150BF83F6F00CB7AE8 = 27CB94150BF83F6F00CB7AE8;
+			27CB0C080BFCB19A00E67BE5 = 27CB0C080BFCB19A00E67BE5;
 			27D4DD090B904B8700954FEA = 27D4DD090B904B8700954FEA;
 			27E413BB0B73E1340050006B = 27E413BB0B73E1340050006B;
 			27E413C70B73E3880050006B = 27E413C70B73E3880050006B;
@@ -2187,6 +2187,11 @@
 		path = /Users/lothar/develop/Projects/CPP/Plugins/VisitorOperations/pluginDBInputStream.cpp;
 		refType = 0;
 		sourceTree = "<absolute>";
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1124, 16029}}";
+			sepNavSelRange = "{23089, 0}";
+			sepNavVisRect = "{{0, 9066}, {711, 428}}";
+		};
 	};
 	2785953A0B6D077B00112EF0 = {
 		isa = PBXFileReference;
@@ -2902,7 +2907,7 @@
 			sepNavWindowFrame = "{{15, 439}, {750, 558}}";
 		};
 	};
-	27CB94150BF83F6F00CB7AE8 = {
+	27CB0C080BFCB19A00E67BE5 = {
 		fRef = 2778C29B0B5A4D49003524C2;
 		isa = PBXTextBookmark;
 		name = "wxWrapperDLL.cpp: 393";

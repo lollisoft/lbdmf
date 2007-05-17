@@ -737,6 +737,8 @@ class lb_I_Socket;
 class lb_I_Transfer_DataObject;
 class lb_I_Transfer;
 class lb_I_ThreadImplementation;
+class lb_I_Column_Types;
+class lb_I_Formular_Fields;
 /*...e*/
 
 /*...scallback \47\ handler typedefs:0:*/
@@ -3030,6 +3032,60 @@ public:
 	virtual void		LB_STDCALL deleteMarked() = 0;
 };
 /*...e*/
+
+/*...sclass lb_I_Formulars:0:*/
+class lb_I_Formular_Fields : public lb_I_Unknown {
+public:
+	virtual long		LB_STDCALL addField(const char* name, const char* dbtype, bool isFK, const char* FKName, const char* FKTable, long formular_id, long fieldid = -1) = 0;
+	virtual bool		LB_STDCALL selectField(long _id) = 0;
+	virtual int			LB_STDCALL getFieldCount() = 0;
+	virtual bool		LB_STDCALL hasMoreFields() = 0;
+	virtual void		LB_STDCALL setNextField() = 0;
+	virtual void		LB_STDCALL finishFieldsIteration() = 0;
+	
+	virtual char*		LB_STDCALL getName() = 0;
+	virtual char*		LB_STDCALL getDBType() = 0;
+	virtual char*		LB_STDCALL getFKName() = 0;
+	virtual char*		LB_STDCALL getFKTable() = 0;
+	virtual long		LB_STDCALL getFormularID() = 0;
+	virtual long		LB_STDCALL getID() = 0;
+	virtual bool		LB_STDCALL isFK() = 0;
+
+	virtual bool		LB_STDCALL ismarked() = 0;
+	virtual void		LB_STDCALL mark() = 0;
+	virtual void		LB_STDCALL unmark() = 0;
+
+	virtual void		LB_STDCALL deleteUnmarked() = 0;
+	virtual void		LB_STDCALL deleteMarked() = 0;
+};
+/*...e*/
+
+/*...sclass lb_I_Formulars:0:*/
+class lb_I_Column_Types : public lb_I_Unknown {
+public:
+	// const char* tablename, const char* name are together the logically key
+	virtual long		LB_STDCALL addType(const char* tablename, const char* name, const char* specialcolumn, const char* controltype, bool readonly) = 0;
+	virtual bool		LB_STDCALL selectType(const char* tablename, const char* name) = 0;
+	virtual int			LB_STDCALL getTypeCount() = 0;
+	virtual bool		LB_STDCALL hasMoreTypes() = 0;
+	virtual void		LB_STDCALL setNextType() = 0;
+	virtual void		LB_STDCALL finishTypeIteration() = 0;
+	
+	virtual char*		LB_STDCALL getTableName() = 0;
+	virtual char*		LB_STDCALL getName() = 0;
+	virtual char*		LB_STDCALL getSpecialColumn() = 0;
+	virtual char*		LB_STDCALL getControlType() = 0;
+	virtual bool		LB_STDCALL getReadonly() = 0;
+
+	virtual bool		LB_STDCALL ismarked() = 0;
+	virtual void		LB_STDCALL mark() = 0;
+	virtual void		LB_STDCALL unmark() = 0;
+
+	virtual void		LB_STDCALL deleteUnmarked() = 0;
+	virtual void		LB_STDCALL deleteMarked() = 0;
+};
+/*...e*/
+
 
 /*...sclass lb_I_ParameterTable:0:*/
 class lb_I_ParameterTable : public lb_I_Unknown {

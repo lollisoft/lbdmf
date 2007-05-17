@@ -154,6 +154,8 @@ public:
 	void LB_STDCALL visit(lb_I_Applications*);
 	void LB_STDCALL visit(lb_I_User_Applications*);
 	void LB_STDCALL visit(lb_I_Formulars*);
+	void LB_STDCALL visit(lb_I_Formular_Fields*);
+	void LB_STDCALL visit(lb_I_Column_Types*);
 	void LB_STDCALL visit(lb_I_ApplicationParameter*);
 	void LB_STDCALL visit(lb_I_FormularParameter*);
 	void LB_STDCALL visit(lb_I_Actions*);
@@ -430,6 +432,34 @@ void LB_STDCALL lbInputStreamOpr::visit(lb_I_DirLocation* fileloc) {
 		fileloc->setData(f); 
 }
 
+void LB_STDCALL lbInputStreamOpr::visit(lb_I_Formular_Fields* formularfields) {
+	// Number of users
+	int   count = 0;
+	int FormularID;
+	int ID;
+	long isFK;
+	char* Name = NULL;
+	char* DBType = NULL;
+	char* FKName = NULL;
+	char* FKTable = NULL;
+	char* EventName = NULL;
+	
+	*iStream >> count;
+
+	for (int i = 0; i < count; i++) {
+		
+		*iStream >> ID;
+		*iStream >> Name;
+		*iStream >> DBType;
+		*iStream >> isFK;
+		*iStream >> FKName;
+		*iStream >> FKTable;
+		*iStream >> FormularID;
+		
+		formularfields->addField(Name, DBType, (isFK == 1) ? 1 : 0, FKName, FKTable, FormularID, ID);
+	}
+}
+
 void LB_STDCALL lbInputStreamOpr::visit(lb_I_Formulars* forms) {
 	// Number of users
 	int   count = 0;
@@ -454,6 +484,29 @@ void LB_STDCALL lbInputStreamOpr::visit(lb_I_Formulars* forms) {
 		*iStream >> Typ;
 		
 		forms->addFormular(FormularName, MenuName, EventName, MenuHilfe, AnwendungID, Typ, FormularID);
+	}
+}
+
+void LB_STDCALL lbInputStreamOpr::visit(lb_I_Column_Types* columntypes) {
+	// Number of users
+	int   count = 0;
+	long readonly;
+	char* TableName = NULL;
+	char* Name = NULL;
+	char* SpecialColumn = NULL;
+	char* ControlType = NULL;
+	
+	*iStream >> count;
+
+	for (int i = 0; i < count; i++) {
+		
+		*iStream >> TableName;
+		*iStream >> Name;
+		*iStream >> SpecialColumn;
+		*iStream >> ControlType;
+		*iStream >> readonly;
+		
+		columntypes->addType(TableName, Name, SpecialColumn, ControlType, (readonly == 1) ? true : false);
 	}
 }
 

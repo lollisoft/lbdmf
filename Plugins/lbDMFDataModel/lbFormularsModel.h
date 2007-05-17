@@ -72,4 +72,49 @@ public:
 };
 
 
+class lbFormularFieldsModel : public lb_I_Formular_Fields {
+public:
+	lbFormularFieldsModel();
+	virtual ~lbFormularFieldsModel();
+
+	long		LB_STDCALL addField(const char* name, const char* dbtype, bool isFK, const char* FKName, const char* FKTable, long formular_id, long fieldid = -1);
+	bool		LB_STDCALL selectField(long _id);
+	int			LB_STDCALL getFieldCount();
+	bool		LB_STDCALL hasMoreFields();
+	void		LB_STDCALL setNextField();
+	void		LB_STDCALL finishFieldsIteration();
+	
+	char*		LB_STDCALL getName();
+	char*		LB_STDCALL getDBType();
+	char*		LB_STDCALL getFKName();
+	char*		LB_STDCALL getFKTable();
+	long		LB_STDCALL getFormularID();
+	long		LB_STDCALL getID();
+	bool		LB_STDCALL isFK();
+
+	bool		LB_STDCALL ismarked();
+	void		LB_STDCALL mark();
+	void		LB_STDCALL unmark();
+
+	void		LB_STDCALL deleteUnmarked();
+	void		LB_STDCALL deleteMarked();
+
+	DECLARE_LB_UNKNOWN()
+
+	UAP(lb_I_Container, FormularFields)
+	
+	UAP(lb_I_String, currentName)
+	UAP(lb_I_String, currentDBType)
+	UAP(lb_I_Long, currentisFK)
+	UAP(lb_I_String, currentFKName)
+	UAP(lb_I_String, currentFKTable)
+	
+	UAP(lb_I_Long, currentID)
+	UAP(lb_I_Long, currentFormularID)
+
+	UAP(lb_I_Long, marked)
+};
+
+
+DECLARE_FUNCTOR(instanceOflbFormularFieldsModel)
 DECLARE_FUNCTOR(instanceOflbFormularsModel)

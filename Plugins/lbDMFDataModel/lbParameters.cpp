@@ -252,6 +252,223 @@ long LB_STDCALL lbFormularParameters::getFormularID() {
 	return currentFormularID->getData();
 }
 
+IMPLEMENT_FUNCTOR(instanceOflbColumnTypes, lbColumnTypes)
+
+BEGIN_IMPLEMENT_LB_UNKNOWN(lbColumnTypes)
+	ADD_INTERFACE(lb_I_Column_Types)
+END_IMPLEMENT_LB_UNKNOWN()
+
+
+lbColumnTypes::lbColumnTypes() {
+	ref = STARTREF;
+	REQUEST(getModuleInstance(), lb_I_Container, ColumnTypes)
+	REQUEST(getModuleInstance(), lb_I_String, currentTableName)
+	REQUEST(getModuleInstance(), lb_I_String, currentName)
+	REQUEST(getModuleInstance(), lb_I_String, currentSpecialColumn)
+	REQUEST(getModuleInstance(), lb_I_String, currentControlType)
+	REQUEST(getModuleInstance(), lb_I_Long, currentReadonly)
+	
+	REQUEST(getModuleInstance(), lb_I_Long, marked)
+	_CL_LOG << "lbColumnTypes::lbColumnTypes() called." LOG_
+}
+
+lbColumnTypes::~lbColumnTypes() {
+	_CL_LOG << "lbColumnTypes::~lbColumnTypes() called." LOG_
+}
+
+lbErrCodes LB_STDCALL lbColumnTypes::setData(lb_I_Unknown*) {
+	_LOG << "Error: lbColumnTypes::setData(lb_I_Unknown*) not implemented." LOG_
+	return ERR_NOT_IMPLEMENTED;
+}
+
+long  LB_STDCALL lbColumnTypes::addType(const char* tablename, const char* name, const char* specialcolumn, const char* controltype, bool readonly) {
+	lbErrCodes err = ERR_NONE;
+	UAP_REQUEST(manager.getPtr(), lb_I_String, TableName)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, Name)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, SpecialColumn)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, ControlType)
+	UAP_REQUEST(manager.getPtr(), lb_I_Long, Readonly)
+	UAP_REQUEST(manager.getPtr(), lb_I_Long, marked)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, paramname)
+	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
+
+	_CL_VERBOSE << "Add a parameter to lbColumnTypes: " << name LOG_
+
+	*TableName = tablename;
+	*Name = name;
+	*SpecialColumn = specialcolumn;
+	*ControlType = controltype;
+	Readonly->setData(readonly);
+	
+	*paramname = "TableName";
+	param->setUAPString(*&paramname, *&TableName);
+	*paramname = "Name";
+	param->setUAPString(*&paramname, *&Name);
+	*paramname = "SpecialColumn";
+	param->setUAPString(*&paramname, *&SpecialColumn);
+	*paramname = "ControlType";
+	param->setUAPString(*&paramname, *&ControlType);
+	*paramname = "Readonly";
+	param->setUAPLong(*&paramname, *&Readonly);
+	*paramname = "marked";
+	param->setUAPLong(*&paramname, *&marked);
+	
+	UAP(lb_I_KeyBase, key)
+	UAP(lb_I_Unknown, ukParam)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, sKey)
+	
+	*sKey = TableName->charrep();
+	*sKey += Name->charrep();
+	
+	QI(sKey, lb_I_KeyBase, key)
+	QI(param, lb_I_Unknown, ukParam)
+	
+	ColumnTypes->insert(&ukParam, &key);
+
+	return -1;
+}
+
+bool  LB_STDCALL lbColumnTypes::selectType(const char* tablename, const char* name) {
+	lbErrCodes err = ERR_NONE;
+	UAP_REQUEST(manager.getPtr(), lb_I_String, sKey)
+	UAP(lb_I_Unknown, uk)
+	UAP(lb_I_KeyBase, key)
+	*sKey = tablename;
+	*sKey += name;
+
+	QI(sKey, lb_I_KeyBase, key)
+	uk = ColumnTypes->getElement(&key);
+	
+	if (uk != NULL) {
+		UAP_REQUEST(manager.getPtr(), lb_I_String, name)
+		UAP(lb_I_Parameter, param)
+		QI(uk, lb_I_Parameter, param)
+		
+		*name = "TableName";
+		param->getUAPString(*&name, *&currentTableName);
+		*name = "Name";
+		param->getUAPString(*&name, *&currentName);
+		*name = "SpecialColumn";
+		param->getUAPString(*&name, *&currentSpecialColumn);
+		*name = "ControlType";
+		param->getUAPString(*&name, *&currentControlType);
+		*name = "Readonly";
+		param->getUAPLong(*&name, *&currentReadonly);
+		*name = "marked";
+		param->getUAPLong(*&name, *&marked);
+		
+		return true;
+	}
+	
+	return false;
+}
+
+void LB_STDCALL lbColumnTypes::mark() {
+	marked->setData((long) 1);
+}
+
+void LB_STDCALL lbColumnTypes::unmark() {
+	marked->setData((long) 0);
+}
+
+bool LB_STDCALL lbColumnTypes::ismarked() {
+	if (marked->getData() == (long) 1) return true;
+	return false;
+}
+
+int  LB_STDCALL lbColumnTypes::getTypeCount() {
+	return ColumnTypes->Count();
+}
+
+void		LB_STDCALL lbColumnTypes::deleteUnmarked() {
+	lbErrCodes err = ERR_NONE;
+	ColumnTypes->finishIteration();
+	while (hasMoreTypes()) {
+		setNextType();
+		if (!ismarked()) {
+			UAP_REQUEST(manager.getPtr(), lb_I_String, ID)
+			*ID = getTableName();
+			*ID += getName();
+			
+			UAP(lb_I_KeyBase, key)
+			QI(ID, lb_I_KeyBase, key)
+			
+			ColumnTypes->remove(&key);
+			ColumnTypes->finishIteration();
+		}
+	}
+}
+
+void		LB_STDCALL lbColumnTypes::deleteMarked() {
+	lbErrCodes err = ERR_NONE;
+	ColumnTypes->finishIteration();
+	while (hasMoreTypes()) {
+		setNextType();
+		if (ismarked()) {
+			UAP_REQUEST(manager.getPtr(), lb_I_String, ID)
+			*ID = getTableName();
+			*ID += getName();
+			
+			UAP(lb_I_KeyBase, key)
+			QI(ID, lb_I_KeyBase, key)
+			
+			ColumnTypes->remove(&key);
+			ColumnTypes->finishIteration();
+		}
+	}
+}
+
+bool  LB_STDCALL lbColumnTypes::hasMoreTypes() {
+	return ColumnTypes->hasMoreElements();
+}
+
+void  LB_STDCALL lbColumnTypes::setNextType() {
+	lbErrCodes err = ERR_NONE;
+	UAP_REQUEST(manager.getPtr(), lb_I_String, name)
+	UAP(lb_I_Parameter, param)
+	UAP(lb_I_Unknown, uk)
+	
+	uk = ColumnTypes->nextElement();
+	QI(uk, lb_I_Parameter, param)
+	
+	*name = "TableName";
+	param->getUAPString(*&name, *&currentTableName);
+	*name = "Name";
+	param->getUAPString(*&name, *&currentName);
+	*name = "SpecialColumn";
+	param->getUAPString(*&name, *&currentSpecialColumn);
+	*name = "ControlType";
+	param->getUAPString(*&name, *&currentControlType);
+	*name = "Readonly";
+	param->getUAPLong(*&name, *&currentReadonly);
+	*name = "marked";
+	param->getUAPLong(*&name, *&marked);
+}
+
+void  LB_STDCALL lbColumnTypes::finishTypeIteration() {
+	ColumnTypes->finishIteration();
+}
+
+char*  LB_STDCALL lbColumnTypes::getTableName() {
+	return currentTableName->charrep();
+}
+
+char*  LB_STDCALL lbColumnTypes::getName() {
+	return currentName->charrep();
+}
+
+char*  LB_STDCALL lbColumnTypes::getSpecialColumn() {
+	return currentSpecialColumn->charrep();
+}
+
+char*  LB_STDCALL lbColumnTypes::getControlType() {
+	return currentControlType->charrep();
+}
+
+bool  LB_STDCALL lbColumnTypes::getReadonly() {
+	return currentReadonly->getData() == (long) 1;
+}
+
 IMPLEMENT_FUNCTOR(instanceOflbApplicationParameters, lbApplicationParameters)
 
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbApplicationParameters)
@@ -464,6 +681,117 @@ long LB_STDCALL lbApplicationParameters::getApplicationID() {
 	return currentApplicationID->getData();
 }
 
+/*...sclass lbPluginUsersModel implementation:0:*/
+/*...slbPluginUsersModel:0:*/
+class lbPluginColumnTypes : public lb_I_PluginImpl {
+public:
+	lbPluginColumnTypes();
+	
+	virtual ~lbPluginColumnTypes();
+
+	bool LB_STDCALL canAutorun();
+	lbErrCodes LB_STDCALL autorun();
+/*...sfrom plugin interface:8:*/
+	void LB_STDCALL initialize();
+	
+	bool LB_STDCALL run();
+
+	lb_I_Unknown* LB_STDCALL peekImplementation();
+	lb_I_Unknown* LB_STDCALL getImplementation();
+	void LB_STDCALL releaseImplementation();
+/*...e*/
+
+	DECLARE_LB_UNKNOWN()
+	
+	UAP(lb_I_Unknown, ukColumnTypes)
+};
+
+BEGIN_IMPLEMENT_LB_UNKNOWN(lbPluginColumnTypes)
+        ADD_INTERFACE(lb_I_PluginImpl)
+END_IMPLEMENT_LB_UNKNOWN()
+
+IMPLEMENT_FUNCTOR(instanceOflbPluginColumnTypes, lbPluginColumnTypes)
+
+/*...slbErrCodes LB_STDCALL lbPluginUsersModel\58\\58\setData\40\lb_I_Unknown\42\ uk\41\:0:*/
+lbErrCodes LB_STDCALL lbPluginColumnTypes::setData(lb_I_Unknown* uk) {
+	lbErrCodes err = ERR_NONE;
+
+	_CL_VERBOSE << "lbPluginUsersModel::setData(...) called.\n" LOG_
+
+        return ERR_NOT_IMPLEMENTED;
+}
+/*...e*/
+
+lbPluginColumnTypes::lbPluginColumnTypes() {
+	_CL_VERBOSE << "lbPluginUsersModel::lbPluginUsersModel() called.\n" LOG_
+	ref = STARTREF;
+}
+
+lbPluginColumnTypes::~lbPluginColumnTypes() {
+	_CL_VERBOSE << "lbPluginUsersModel::~lbPluginUsersModel() called.\n" LOG_
+}
+
+bool LB_STDCALL lbPluginColumnTypes::canAutorun() {
+	return false;
+}
+
+lbErrCodes LB_STDCALL lbPluginColumnTypes::autorun() {
+	lbErrCodes err = ERR_NONE;
+	return err;
+}
+
+void LB_STDCALL lbPluginColumnTypes::initialize() {
+}
+	
+bool LB_STDCALL lbPluginColumnTypes::run() {
+	return true;
+}
+
+/*...slb_I_Unknown\42\ LB_STDCALL lbPluginUsersModel\58\\58\peekImplementation\40\\41\:0:*/
+lb_I_Unknown* LB_STDCALL lbPluginColumnTypes::peekImplementation() {
+	lbErrCodes err = ERR_NONE;
+
+	if (ukColumnTypes == NULL) {
+		lbColumnTypes* Users_ApplicationModel = new lbColumnTypes();
+		Users_ApplicationModel->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+	
+		QI(Users_ApplicationModel, lb_I_Unknown, ukColumnTypes)
+	} else {
+		_CL_VERBOSE << "lbPluginDatabasePanel::peekImplementation() Implementation already peeked.\n" LOG_
+	}
+	
+	return ukColumnTypes.getPtr();
+}
+/*...e*/
+/*...slb_I_Unknown\42\ LB_STDCALL lbPluginUsersModel\58\\58\getImplementation\40\\41\:0:*/
+lb_I_Unknown* LB_STDCALL lbPluginColumnTypes::getImplementation() {
+	lbErrCodes err = ERR_NONE;
+
+	if (ukColumnTypes == NULL) {
+
+		_CL_VERBOSE << "Warning: peekImplementation() has not been used prior.\n" LOG_
+	
+		lbColumnTypes* Users_ApplicationModel = new lbColumnTypes();
+		Users_ApplicationModel->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+	
+		QI(Users_ApplicationModel, lb_I_Unknown, ukColumnTypes)
+	}
+	
+	lb_I_Unknown* r = ukColumnTypes.getPtr();
+	ukColumnTypes.resetPtr();
+	return r;
+}
+/*...e*/
+void LB_STDCALL lbPluginColumnTypes::releaseImplementation() {
+        lbErrCodes err = ERR_NONE;
+
+        if (ukColumnTypes != NULL) {
+                ukColumnTypes--;
+                ukColumnTypes.resetPtr();
+        }
+}
+/*...e*/
+/*...e*/
 
 
 /*...sclass lbPluginUsersModel implementation:0:*/
