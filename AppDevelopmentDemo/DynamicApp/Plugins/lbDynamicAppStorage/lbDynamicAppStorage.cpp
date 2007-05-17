@@ -167,8 +167,10 @@ lbErrCodes LB_STDCALL lbDynamicAppXMLStorage::save(lb_I_OutputStream* oStream) {
 		(appActionTypes != NULL) &&
 		(appActionSteps != NULL)) {
 
-		*oStream << "<lbDMF>\n";
+		*oStream << "<lbDMF applicationid=\"";
+		*oStream << meta->getApplicationID() << "\">\n";
 		
+		applications->accept(*&aspect);
 		forms->accept(*&aspect);
 		formularfields->accept(*&aspect);
 		columntypes->accept(*&aspect);
