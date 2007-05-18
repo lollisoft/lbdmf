@@ -454,6 +454,7 @@ void LB_STDCALL lbOutputStream::visit(lb_I_Formular_Fields* formularfields) {
 		
 		*oStream << formularfields->getID();
 		*oStream << formularfields->getName();
+		*oStream << formularfields->getTableName();
 		*oStream << formularfields->getDBType();
 		if (formularfields->isFK())
 			*oStream << (long) 1;

@@ -439,6 +439,7 @@ void LB_STDCALL lbInputStreamOpr::visit(lb_I_Formular_Fields* formularfields) {
 	int ID;
 	long isFK;
 	char* Name = NULL;
+	char* TableName = NULL;
 	char* DBType = NULL;
 	char* FKName = NULL;
 	char* FKTable = NULL;
@@ -450,13 +451,14 @@ void LB_STDCALL lbInputStreamOpr::visit(lb_I_Formular_Fields* formularfields) {
 		
 		*iStream >> ID;
 		*iStream >> Name;
+		*iStream >> TableName;
 		*iStream >> DBType;
 		*iStream >> isFK;
 		*iStream >> FKName;
 		*iStream >> FKTable;
 		*iStream >> FormularID;
 		
-		formularfields->addField(Name, DBType, (isFK == 1) ? 1 : 0, FKName, FKTable, FormularID, ID);
+		formularfields->addField(Name, TableName, DBType, (isFK == 1) ? 1 : 0, FKName, FKTable, FormularID, ID);
 	}
 }
 

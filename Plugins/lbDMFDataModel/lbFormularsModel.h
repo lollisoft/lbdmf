@@ -77,7 +77,7 @@ public:
 	lbFormularFieldsModel();
 	virtual ~lbFormularFieldsModel();
 
-	long		LB_STDCALL addField(const char* name, const char* dbtype, bool isFK, const char* FKName, const char* FKTable, long formular_id, long fieldid = -1);
+	long		LB_STDCALL addField(const char* name, const char* tablename, const char* dbtype, bool isFK, const char* FKName, const char* FKTable, long formular_id, long fieldid = -1);
 	bool		LB_STDCALL selectField(long _id);
 	int			LB_STDCALL getFieldCount();
 	bool		LB_STDCALL hasMoreFields();
@@ -85,6 +85,7 @@ public:
 	void		LB_STDCALL finishFieldsIteration();
 	
 	char*		LB_STDCALL getName();
+	char*		LB_STDCALL getTableName();
 	char*		LB_STDCALL getDBType();
 	char*		LB_STDCALL getFKName();
 	char*		LB_STDCALL getFKTable();
@@ -104,6 +105,7 @@ public:
 	UAP(lb_I_Container, FormularFields)
 	
 	UAP(lb_I_String, currentName)
+	UAP(lb_I_String, currentTableName)
 	UAP(lb_I_String, currentDBType)
 	UAP(lb_I_Long, currentisFK)
 	UAP(lb_I_String, currentFKName)

@@ -690,7 +690,10 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Formular_Fields* formularfield
 					int columns = form_query->getColumns();
 					for (int i = 1; i <= columns; i++) {
 						char* name = NULL;
+						char* tablename = NULL;
 						name = strdup(form_query->getColumnName(i));
+						tablename = strdup(form_query->getTableName(name));
+						
 						
 						if (form_query->hasFKColumn(name) == 1) {
 							UAP(lb_I_String, t)
@@ -720,21 +723,21 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Formular_Fields* formularfield
 									
 									switch (coltype) {
 										case lb_I_Query::lbDBColumnBit:
-											formularfields->addField(name, "Bit", true, PKName->charrep(), PKTable->charrep(), FormularID->getData());
+											formularfields->addField(name, tablename, "Bit", true, PKName->charrep(), PKTable->charrep(), FormularID->getData());
 											break;
 										case lb_I_Query::lbDBColumnFloat:
-											formularfields->addField(name, "Float", true, PKName->charrep(), PKTable->charrep(), FormularID->getData());
+											formularfields->addField(name, tablename,  "Float", true, PKName->charrep(), PKTable->charrep(), FormularID->getData());
 											break;
 										case lb_I_Query::lbDBColumnChar:
-											formularfields->addField(name, "String", true, PKName->charrep(), PKTable->charrep(), FormularID->getData());
+											formularfields->addField(name, tablename,  "String", true, PKName->charrep(), PKTable->charrep(), FormularID->getData());
 											break;
 										case lb_I_Query::lbDBColumnBinary:
-											formularfields->addField(name, "Binary", true, PKName->charrep(), PKTable->charrep(), FormularID->getData());
+											formularfields->addField(name, tablename,  "Binary", true, PKName->charrep(), PKTable->charrep(), FormularID->getData());
 											break;
 											
 										case lb_I_Query::lbDBColumnBigInteger:
 										case lb_I_Query::lbDBColumnInteger:
-											formularfields->addField(name, "Integer", true, PKName->charrep(), PKTable->charrep(), FormularID->getData());
+											formularfields->addField(name, tablename,  "Integer", true, PKName->charrep(), PKTable->charrep(), FormularID->getData());
 											break;
 										case lb_I_Query::lbDBColumnUnknown:
 											_CL_LOG << "lbDatabasePanel::init(...) Creating control failed due to unknown column type" LOG_
@@ -747,27 +750,29 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Formular_Fields* formularfield
 							
 							switch (coltype) {
 								case lb_I_Query::lbDBColumnBit:
-									formularfields->addField(name, "Bit", false, "", "", FormularID->getData());
+									formularfields->addField(name, tablename,  "Bit", false, "", "", FormularID->getData());
 									break;
 								case lb_I_Query::lbDBColumnFloat:
-									formularfields->addField(name, "Float", false, "", "", FormularID->getData());
+									formularfields->addField(name, tablename,  "Float", false, "", "", FormularID->getData());
 									break;
 								case lb_I_Query::lbDBColumnChar:
-									formularfields->addField(name, "String", false, "", "", FormularID->getData());
+									formularfields->addField(name, tablename,  "String", false, "", "", FormularID->getData());
 									break;
 								case lb_I_Query::lbDBColumnBinary:
-									formularfields->addField(name, "Binary", false, "", "", FormularID->getData());
+									formularfields->addField(name, tablename,  "Binary", false, "", "", FormularID->getData());
 									break;
 									
 								case lb_I_Query::lbDBColumnBigInteger:
 								case lb_I_Query::lbDBColumnInteger:
-									formularfields->addField(name, "Integer", true, "", "", FormularID->getData());
+									formularfields->addField(name, tablename,  "Integer", true, "", "", FormularID->getData());
 									break;
 								case lb_I_Query::lbDBColumnUnknown:
 									_CL_LOG << "lbDatabasePanel::init(...) Creating control failed due to unknown column type" LOG_
 									break;
 							}
 						}
+						free(name);
+						free(tablename);
 					}
 				} else {
 					_LOG << "Error: Query '" << formularquery->charrep() << "' failed!" LOG_
@@ -810,8 +815,9 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Formular_Fields* formularfield
 					int columns = form_query->getColumns();
 					for (int i = 1; i <= columns; i++) {
 						char* name = NULL;
+						char* tablename = NULL;
 						name = strdup(form_query->getColumnName(i));
-						
+						tablename = strdup(form_query->getTableName(name));
 						if (form_query->hasFKColumn(name) == 1) {
 							UAP(lb_I_String, t)
 							UAP(lb_I_String, c)
@@ -840,21 +846,21 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Formular_Fields* formularfield
 									
 									switch (coltype) {
 										case lb_I_Query::lbDBColumnBit:
-											formularfields->addField(name, "Bit", true, PKName->charrep(), PKTable->charrep(), FormularID->getData());
+											formularfields->addField(name, tablename, "Bit", true, PKName->charrep(), PKTable->charrep(), FormularID->getData());
 											break;
 										case lb_I_Query::lbDBColumnFloat:
-											formularfields->addField(name, "Float", true, PKName->charrep(), PKTable->charrep(), FormularID->getData());
+											formularfields->addField(name, tablename, "Float", true, PKName->charrep(), PKTable->charrep(), FormularID->getData());
 											break;
 										case lb_I_Query::lbDBColumnChar:
-											formularfields->addField(name, "String", true, PKName->charrep(), PKTable->charrep(), FormularID->getData());
+											formularfields->addField(name, tablename, "String", true, PKName->charrep(), PKTable->charrep(), FormularID->getData());
 											break;
 										case lb_I_Query::lbDBColumnBinary:
-											formularfields->addField(name, "Binary", true, PKName->charrep(), PKTable->charrep(), FormularID->getData());
+											formularfields->addField(name, tablename, "Binary", true, PKName->charrep(), PKTable->charrep(), FormularID->getData());
 											break;
 											
 										case lb_I_Query::lbDBColumnBigInteger:
 										case lb_I_Query::lbDBColumnInteger:
-											formularfields->addField(name, "Integer", true, PKName->charrep(), PKTable->charrep(), FormularID->getData());
+											formularfields->addField(name, tablename, "Integer", true, PKName->charrep(), PKTable->charrep(), FormularID->getData());
 											break;
 										case lb_I_Query::lbDBColumnUnknown:
 											_CL_LOG << "lbDatabasePanel::init(...) Creating control failed due to unknown column type" LOG_
@@ -867,27 +873,29 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Formular_Fields* formularfield
 							
 							switch (coltype) {
 								case lb_I_Query::lbDBColumnBit:
-									formularfields->addField(name, "Bit", false, "", "", FormularID->getData());
+									formularfields->addField(name, tablename, "Bit", false, "", "", FormularID->getData());
 									break;
 								case lb_I_Query::lbDBColumnFloat:
-									formularfields->addField(name, "Float", false, "", "", FormularID->getData());
+									formularfields->addField(name, tablename, "Float", false, "", "", FormularID->getData());
 									break;
 								case lb_I_Query::lbDBColumnChar:
-									formularfields->addField(name, "String", false, "", "", FormularID->getData());
+									formularfields->addField(name, tablename, "String", false, "", "", FormularID->getData());
 									break;
 								case lb_I_Query::lbDBColumnBinary:
-									formularfields->addField(name, "Binary", false, "", "", FormularID->getData());
+									formularfields->addField(name, tablename, "Binary", false, "", "", FormularID->getData());
 									break;
 									
 								case lb_I_Query::lbDBColumnBigInteger:
 								case lb_I_Query::lbDBColumnInteger:
-									formularfields->addField(name, "Integer", true, "", "", FormularID->getData());
+									formularfields->addField(name, tablename, "Integer", true, "", "", FormularID->getData());
 									break;
 								case lb_I_Query::lbDBColumnUnknown:
 									_CL_LOG << "lbDatabasePanel::init(...) Creating control failed due to unknown column type" LOG_
 									break;
 							}
 						}
+						free(name);
+						free(tablename);
 					}
 				} else {
 					_LOG << "Error: Query '" << formularquery->charrep() << "' failed!" LOG_

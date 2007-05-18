@@ -402,6 +402,7 @@ lbFormularFieldsModel::lbFormularFieldsModel() {
 	ref = STARTREF;
 	REQUEST(getModuleInstance(), lb_I_Container, FormularFields)
 	REQUEST(getModuleInstance(), lb_I_String, currentName)
+	REQUEST(getModuleInstance(), lb_I_String, currentTableName)
 	REQUEST(getModuleInstance(), lb_I_String, currentDBType)
 	REQUEST(getModuleInstance(), lb_I_Long, currentisFK)
 	REQUEST(getModuleInstance(), lb_I_String, currentFKName)
@@ -422,9 +423,10 @@ lbErrCodes LB_STDCALL lbFormularFieldsModel::setData(lb_I_Unknown*) {
 	return ERR_NOT_IMPLEMENTED;
 }
 
-long  LB_STDCALL lbFormularFieldsModel::addField(const char* name, const char* dbtype, bool isFK, const char* FKName, const char* FKTable, long formular_id, long fieldid) {
+long  LB_STDCALL lbFormularFieldsModel::addField(const char* name, const char* tablename, const char* dbtype, bool isFK, const char* FKName, const char* FKTable, long formular_id, long fieldid) {
 	lbErrCodes err = ERR_NONE;
 	UAP_REQUEST(manager.getPtr(), lb_I_String, Name)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, TableName)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, dbType)
 	UAP_REQUEST(manager.getPtr(), lb_I_Long, IsFK)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, fkName)
@@ -436,6 +438,7 @@ long  LB_STDCALL lbFormularFieldsModel::addField(const char* name, const char* d
 	UAP_REQUEST(manager.getPtr(), lb_I_String, paramname)
 
 	*Name = name;
+	*TableName = tablename;
 	*dbType = dbtype;
 	if (isFK)
 		IsFK->setData((long) 1);
@@ -449,6 +452,8 @@ long  LB_STDCALL lbFormularFieldsModel::addField(const char* name, const char* d
 	
 	*paramname = "Name";
 	param->setUAPString(*&paramname, *&Name);
+	*paramname = "TableName";
+	param->setUAPString(*&paramname, *&TableName);
 	*paramname = "DBType";
 	param->setUAPString(*&paramname, *&dbType);
 	*paramname = "IsFK";
@@ -529,6 +534,8 @@ bool LB_STDCALL lbFormularFieldsModel::selectField(long user_id) {
 		
 		*paramname = "Name";
 		param->getUAPString(*&paramname, *&currentName);
+		*paramname = "TableName";
+		param->getUAPString(*&paramname, *&currentTableName);
 		*paramname = "DBType";
 		param->getUAPString(*&paramname, *&currentDBType);
 		*paramname = "IsFK";
@@ -582,6 +589,8 @@ void  LB_STDCALL lbFormularFieldsModel::setNextField() {
 		
 	*paramname = "Name";
 	param->getUAPString(*&paramname, *&currentName);
+	*paramname = "TableName";
+	param->getUAPString(*&paramname, *&currentTableName);
 	*paramname = "DBType";
 	param->getUAPString(*&paramname, *&currentDBType);
 	*paramname = "IsFK";
@@ -605,6 +614,10 @@ void  LB_STDCALL lbFormularFieldsModel::finishFieldsIteration() {
 
 char* LB_STDCALL lbFormularFieldsModel::getName() {
 	return currentName->charrep();
+}
+
+char* LB_STDCALL lbFormularFieldsModel::getTableName() {
+	return currentTableName->charrep();
 }
 
 char* LB_STDCALL lbFormularFieldsModel::getDBType() {

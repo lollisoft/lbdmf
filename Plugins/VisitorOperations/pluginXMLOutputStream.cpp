@@ -445,6 +445,7 @@ void LB_STDCALL lbXMLOutputStream::visit(lb_I_Formular_Fields* formularfields) {
 		*oStream << 
 		"<formular ID=\"" << formularfields->getID() << 
 		"\" name=\"" << formularfields->getName() << 
+		"\" tablename=\"" << formularfields->getTableName() << 
 		"\" dbtype=\"" << formularfields->getDBType();
 		
 		if (formularfields->isFK())
