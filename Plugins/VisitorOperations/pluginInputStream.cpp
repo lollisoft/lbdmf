@@ -165,6 +165,8 @@ public:
 	void LB_STDCALL visit(lb_I_Translations*);
 	void LB_STDCALL visit(lb_I_FileLocation*);
 	void LB_STDCALL visit(lb_I_DirLocation*);
+	void LB_STDCALL visit(lb_I_DBColumns*);
+	void LB_STDCALL visit(lb_I_DBTables*);
 
 	bool LB_STDCALL begin(char* file);
 	bool LB_STDCALL begin(lb_I_Stream* stream);
@@ -265,6 +267,14 @@ void LB_STDCALL lbInputStreamOpr::visit(lb_I_UserAccounts* users) {
 		
 		users->addAccount(User, Pass, UID);
 	}
+}
+
+void LB_STDCALL lbInputStreamOpr::visit(lb_I_DBColumns* columns) {
+
+}
+
+void LB_STDCALL lbInputStreamOpr::visit(lb_I_DBTables* tables) {
+
 }
 
 void LB_STDCALL lbInputStreamOpr::visit(lb_I_Translations* trans) {

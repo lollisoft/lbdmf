@@ -755,6 +755,11 @@ lb_I_String& LB_STDCALL lbString::operator = (const lb_I_String* toAppend) {
 lb_I_String& LB_STDCALL lbString::operator = (const char* toAppend) {
 	char* temp = stringdata;
 
+	if (toAppend == NULL) {
+		setData("");
+		return *this;
+	}
+	
 	stringdata = (char*) malloc(strlen(toAppend)+1);
 	stringdata[0] = 0;
 	strcat(stringdata, toAppend);
@@ -867,6 +872,7 @@ lb_I_Unknown* lbString::clone() const {
 }
 
 void lbString::setData(char* p) {
+	idf (p == NULL) return;
 	stringdata = strdup(p);
 }
 

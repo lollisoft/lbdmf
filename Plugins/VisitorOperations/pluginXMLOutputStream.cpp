@@ -164,7 +164,9 @@ public:
 	void LB_STDCALL visit(lb_I_Translations*);
 	void LB_STDCALL visit(lb_I_FileLocation*);
 	void LB_STDCALL visit(lb_I_DirLocation*);
-
+	void LB_STDCALL visit(lb_I_DBColumns*);
+	void LB_STDCALL visit(lb_I_DBTables*);
+	
 	/** \brief Start save operation.
 	 *
 	 * This initializes an input file stream with a given name.
@@ -312,6 +314,52 @@ void LB_STDCALL lbXMLOutputStream::visit(lb_I_FormularParameter* forms) {
 	}
 
 	*oStream << "</formularparameter>" << "\n";
+}
+
+void LB_STDCALL lbXMLOutputStream::visit(lb_I_DBColumns* dbcolumns) {
+	_LOG << "lbXMLOutputStream::visit(lb_I_DBColumns* dbcolumns) called" LOG_
+	*oStream << "<dbcolumns>" << "\n";
+	
+	dbcolumns->finishColumnIteration();
+	
+	while (dbcolumns->hasMoreColumns()) {
+		dbcolumns->setNextColumn();
+		
+		_LOG << 
+		"<column tablename=\"" << dbcolumns->getColumnTableName() << 
+		"\" name=\"" << dbcolumns->getColumnName() <<
+		"\" typ=\"" << dbcolumns->getColumnTyp() <<
+		"\" len=\"" << dbcolumns->getColumnLen() <<
+		"\"/>" LOG_
+
+		*oStream << 
+		"<column tablename=\"" << dbcolumns->getColumnTableName() << 
+		"\" name=\"" << dbcolumns->getColumnName() <<
+		"\" typ=\"" << dbcolumns->getColumnTyp() <<
+		"\" len=\"" << dbcolumns->getColumnLen() <<
+		"\"/>" << "\n";
+	}
+
+	*oStream << "</dbcolumns>" << "\n";
+	_LOG << "lbXMLOutputStream::visit(lb_I_DBColumns* dbcolumns) leaving" LOG_
+}
+
+void LB_STDCALL lbXMLOutputStream::visit(lb_I_DBTables* dbtable) {
+	*oStream << "<dbtables" << " count=\"" << dbtable->getTableCount() << "\">" << "\n";
+	
+	dbtable->finishTableIteration();
+	
+	while (dbtable->hasMoreTables()) {
+		dbtable->setNextTable();
+		_LOG  << 
+		"<table ID=\"" << dbtable->getTableID() << 
+		"\" name=\"" << dbtable->getTableName() << "\"/>" LOG_
+		*oStream << 
+		"<table ID=\"" << dbtable->getTableID() << 
+		"\" name=\"" << dbtable->getTableName() << "\"/>" << "\n";
+	}
+
+	*oStream << "</dbtables>" << "\n";
 }
 
 void LB_STDCALL lbXMLOutputStream::visit(lb_I_Actions* actions) {
@@ -540,7 +588,7 @@ void LB_STDCALL lbXMLOutputStream::visit(lb_I_MetaApplication* app) {
 }
 
 void LB_STDCALL lbXMLOutputStream::visit(lb_I_Application*) {
-	_CL_LOG << "Save a lb_I_Application object." LOG_
+	_LOG << "Save a lb_I_Application object." LOG_
 	
 	lbErrCodes err = ERR_NONE;
 	
@@ -589,6 +637,7 @@ void LB_STDCALL lbXMLOutputStream::visit(lb_I_Application*) {
 			mystream->save(*&oStream);
 		}
 	}
+	_LOG << "Saved a lb_I_Application object." LOG_
 }
 
 void LB_STDCALL lbXMLOutputStream::end() {

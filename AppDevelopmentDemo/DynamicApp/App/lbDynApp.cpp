@@ -131,6 +131,8 @@ protected:
 	UAP(lb_I_Actions, appActions)
 	UAP(lb_I_Action_Steps, appActionSteps)
 	UAP(lb_I_Action_Types, appActionTypes)
+	UAP(lb_I_DBTables, dbTables)
+	UAP(lb_I_DBColumns, dbColumns)
 
 
 	char hdsihd[100];
@@ -753,7 +755,37 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 		UAP(lb_I_Unknown, ukPlAppActionTypes)
 		UAP(lb_I_Plugin, plAppActionSteps)
 		UAP(lb_I_Unknown, ukPlAppActionSteps)
+		UAP(lb_I_Plugin, plDBTables)
+		UAP(lb_I_Unknown, ukPlDBTables)
+		UAP(lb_I_Plugin, plDBColumns)
+		UAP(lb_I_Unknown, ukPlDBColumns)
+
+		plDBColumns = PM->getFirstMatchingPlugin("lb_I_DBColumns", "Model");
+		if (plDBColumns != NULL) {
+			ukPlDBColumns = plDBColumns->getImplementation();
+		} else {
+			_LOG << "Warning: No column types datamodel plugin found." LOG_
+		}
 		
+		if (ukPlDBColumns != NULL) { 
+			QI(ukPlDBColumns, lb_I_DBColumns, dbColumns)
+		} else {
+			_LOG << "Warning: No column types datamodel plugin implementation found." LOG_
+		}
+
+		plDBTables = PM->getFirstMatchingPlugin("lb_I_DBTables", "Model");
+		if (plDBTables != NULL) {
+			ukPlDBTables = plDBTables->getImplementation();
+		} else {
+			_LOG << "Warning: No column types datamodel plugin found." LOG_
+		}
+		
+		if (ukPlDBTables != NULL) { 
+			QI(ukPlDBTables, lb_I_DBTables, dbTables)
+		} else {
+			_LOG << "Warning: No column types datamodel plugin implementation found." LOG_
+		}
+
 		plColumnTypes = PM->getFirstMatchingPlugin("lb_I_Column_Types", "Model");
 		if (plColumnTypes != NULL) {
 			ukPlColumnTypes = plColumnTypes->getImplementation();
@@ -897,6 +929,8 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 		
 		if (!DBOperation && 
 			(forms != NULL) && 
+			(dbColumns != NULL) && 
+			(dbTables != NULL) && 
 			(formularfields != NULL) && 
 			(formParams != NULL) && 
 			(appActions != NULL) && 
@@ -906,6 +940,8 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 			_LOG << "Load application data from file ..." LOG_
 			
 			forms->accept(*&fOp);
+			dbTables->accept(*&fOp);
+			dbColumns->accept(*&fOp);
 			formularfields->accept(*&fOp);
 			columntypes->accept(*&fOp);
 			formActions->accept(*&fOp);
@@ -918,6 +954,8 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 		
 		if (DBOperation && 
 			(forms != NULL) && 
+			(dbColumns != NULL) && 
+			(dbTables != NULL) && 
 			(formularfields != NULL) && 
 			(formParams != NULL) && 
 			(appActions != NULL) && 
@@ -928,6 +966,8 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 			
 			
 			forms->accept(*&fOpDB);
+			dbTables->accept(*&fOpDB);
+			dbColumns->accept(*&fOpDB);
 			formularfields->accept(*&fOpDB);
 			columntypes->accept(*&fOpDB);
 			formActions->accept(*&fOpDB);
@@ -1023,6 +1063,14 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 			
 			*name = "Formulars";
 			QI(forms, lb_I_Unknown, uk)
+			document->insert(&uk, &key);
+			
+			*name = "DBTables";
+			QI(dbTables, lb_I_Unknown, uk)
+			document->insert(&uk, &key);
+			
+			*name = "DBColumns";
+			QI(dbColumns, lb_I_Unknown, uk)
 			document->insert(&uk, &key);
 			
 			*name = "FormularFields";

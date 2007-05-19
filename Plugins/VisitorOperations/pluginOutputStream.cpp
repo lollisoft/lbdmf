@@ -164,6 +164,8 @@ public:
 	void LB_STDCALL visit(lb_I_Translations*);
 	void LB_STDCALL visit(lb_I_FileLocation*);
 	void LB_STDCALL visit(lb_I_DirLocation*);
+	void LB_STDCALL visit(lb_I_DBColumns*);
+	void LB_STDCALL visit(lb_I_DBTables*);
 
 	/** \brief Start save operation.
 	 *
@@ -282,6 +284,15 @@ void LB_STDCALL lbOutputStream::visit(lb_I_UserAccounts* users) {
 		*oStream << users->getUserPassword();
 	}
 }
+
+void LB_STDCALL lbOutputStream::visit(lb_I_DBColumns* columns) {
+
+}
+
+void LB_STDCALL lbOutputStream::visit(lb_I_DBTables* tables) {
+
+}
+
 
 void LB_STDCALL lbOutputStream::visit(lb_I_Translations* trans) {
 	int count;

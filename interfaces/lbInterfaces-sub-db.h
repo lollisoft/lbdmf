@@ -936,7 +936,8 @@ public:
 	 */	
 	virtual lb_I_Query* LB_STDCALL getQuery(int readonly = 1) = 0;
 	
-	
+	virtual lb_I_Container* LB_STDCALL getTables() = 0;
+	virtual lb_I_Container* LB_STDCALL getColumns() = 0;
 };
 /*...e*/
 /*...sclass lb_I_DatabaseForm:0:*/

@@ -114,6 +114,10 @@ void _dbError_STMT(char* lp, HSTMT hstmt);
 void _dbError_ENV(char* lp, HENV henv);
 void _dbError_DBC(char* lp, HDBC hdbc);
 
+#define TAB_LEN 128+1
+#define REM_LEN 254+1
+#define COL_LEN 100
+
 
 class lbQuery;
 class lbBoundColumn;
@@ -2028,9 +2032,6 @@ lb_I_String* LB_STDCALL lbQuery::getPKTable(char const * FKName) {
 /*...e*/
 /*...slb_I_String\42\ LB_STDCALL lbQuery\58\\58\getPKColumn\40\char const \42\ FKName\41\:0:*/
 lb_I_String* LB_STDCALL lbQuery::getPKColumn(char const * FKName) {
-	#define TAB_LEN 100
-	#define COL_LEN 100
-
 	unsigned char*   szTable = NULL;     /* Table to display   */
 
 	UCHAR   szPkTable[TAB_LEN];  /* Primary key table name */
@@ -4714,6 +4715,8 @@ public:
 	lbErrCodes	LB_STDCALL setUser(char* _user);
 	lbErrCodes	LB_STDCALL setDB(char* _db);	
 	
+	lb_I_Container* LB_STDCALL getTables();
+	lb_I_Container* LB_STDCALL getColumns();
 	
 private:
 	RETCODE  retcode;
@@ -4949,6 +4952,248 @@ lb_I_Query* LB_STDCALL lbDatabase::getQuery(int readonly) {
 	return q;
 }
 /*...e*/
+
+lb_I_Container* LB_STDCALL lbDatabase::getTables() {
+	lbErrCodes err = ERR_NONE;
+	UAP_REQUEST(getModuleInstance(), lb_I_Container, tables)
+	tables++;
+	
+	UCHAR			szTableCatalog[TAB_LEN];
+	UCHAR			szTableSchema[TAB_LEN];
+	UCHAR			szTableName[TAB_LEN];
+	UCHAR			szTableType[TAB_LEN];
+	UCHAR			szTableRemarks[REM_LEN];
+	
+	SQLHSTMT		hstmt;
+	
+	SQLINTEGER		cbTableCatalog = TAB_LEN;
+	SQLINTEGER		cbTableSchema = TAB_LEN;
+	SQLINTEGER		cbTableName = TAB_LEN;
+	SQLINTEGER		cbTableType = TAB_LEN;
+	SQLINTEGER		cbTableRemarks = REM_LEN;
+	SQLRETURN		retcode;
+	
+	retcode = SQLAllocStmt(hdbc, &hstmt); /* Statement handle */
+	
+	if (retcode != SQL_SUCCESS)
+	{
+		_LOG << "Error: Failed to get statement handle from database connection!" LOG_
+		return tables.getPtr();
+	}
+	
+	SQLBindCol(hstmt, 1, SQL_C_CHAR, szTableCatalog, TAB_LEN, &cbTableCatalog);
+	SQLBindCol(hstmt, 2, SQL_C_CHAR, szTableSchema, TAB_LEN, &cbTableSchema);
+	SQLBindCol(hstmt, 3, SQL_C_CHAR, szTableName, TAB_LEN, &cbTableName);
+	SQLBindCol(hstmt, 4, SQL_C_CHAR, szTableType, TAB_LEN, &cbTableType);
+	SQLBindCol(hstmt, 5, SQL_C_CHAR, szTableRemarks, REM_LEN, &cbTableRemarks);
+	
+	retcode = SQLTables(hstmt, NULL, 0, NULL, 0, NULL, 0, NULL, 0);
+		
+	UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, value)
+
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, index)
+	UAP(lb_I_KeyBase, key)
+	QI(index, lb_I_KeyBase, key)
+	
+	long i = 0;
+	
+	while(retcode == SQL_SUCCESS) {
+		retcode = SQLFetch(hstmt);
+		if (retcode == SQL_ERROR || retcode == SQL_SUCCESS_WITH_INFO) {
+			_LOG << "Error: Some error happened while fetching tables." LOG_
+			tables->deleteAll();
+			SQLFreeHandle(SQL_HANDLE_STMT, hstmt);
+			return tables.getPtr();
+		}
+		if (retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO){
+            ;   /* Process fetched data */
+			
+			UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
+			
+			*value = szTableCatalog;
+			*name = "TableCatalog";
+			param->setUAPString(*&name, *&value);
+			*value = szTableSchema;
+			*name = "TableSchema";
+			param->setUAPString(*&name, *&value);
+			*value = szTableName;
+			*name = "TableName";
+			param->setUAPString(*&name, *&value);
+			*value = szTableType;
+			*name = "TableTyp";
+			param->setUAPString(*&name, *&value);
+			*value = szTableRemarks;
+			*name = "TableRemarks";
+			param->setUAPString(*&name, *&value);
+
+			index->setData(++i);
+
+			UAP(lb_I_Unknown, uk)
+			QI(param, lb_I_Unknown, uk)
+				 
+			tables->insert(&uk, &key);
+		}
+	}
+	
+	SQLFreeHandle(SQL_HANDLE_STMT, hstmt);
+	
+	return tables.getPtr();
+}
+
+lb_I_Container* LB_STDCALL lbDatabase::getColumns() {
+	lbErrCodes err = ERR_NONE;
+	UAP_REQUEST(getModuleInstance(), lb_I_Container, columns)
+	columns++;
+	
+	SQLCHAR       szCatalog[TAB_LEN], szSchema[TAB_LEN];
+	SQLCHAR       szTableName[TAB_LEN], szColumnName[TAB_LEN];
+	SQLCHAR       szTypeName[TAB_LEN], szRemarks[REM_LEN];
+	SQLCHAR       szColumnDefault[TAB_LEN], szIsNullable[TAB_LEN];
+	SQLINTEGER    ColumnSize, BufferLength, CharOctetLength, OrdinalPosition;
+	SQLSMALLINT   DataType, DecimalDigits, NumPrecRadix, Nullable;
+	SQLSMALLINT   SQLDataType, DatetimeSubtypeCode;
+	SQLRETURN     retcode;
+	SQLHSTMT      hstmt;
+	
+	/* Declare buffers for bytes available to return */
+	
+	SQLINTEGER cbCatalog, cbSchema, cbTableName, cbColumnName;
+	SQLINTEGER cbDataType, cbTypeName, cbColumnSize, cbBufferLength;
+	SQLINTEGER cbDecimalDigits, cbNumPrecRadix, cbNullable, cbRemarks;
+	SQLINTEGER cbColumnDefault, cbSQLDataType, cbDatetimeSubtypeCode, cbCharOctetLength;
+	SQLINTEGER cbOrdinalPosition, cbIsNullable;
+	
+	retcode = SQLAllocStmt(hdbc, &hstmt); /* Statement handle */
+	
+	if (retcode != SQL_SUCCESS)
+	{
+		_LOG << "Error: Failed to get statement handle from database connection!" LOG_
+		return columns.getPtr();
+	}
+
+	
+	retcode = SQLColumns(hstmt, NULL, 0, NULL, 0, NULL, 0, NULL, 0);     
+	
+	if (retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO) {
+		 /* Bind columns in result set to buffers */
+							 
+		 SQLBindCol(hstmt, 1, SQL_C_CHAR, szCatalog, TAB_LEN,&cbCatalog);
+		 SQLBindCol(hstmt, 2, SQL_C_CHAR, szSchema, TAB_LEN, &cbSchema);
+		 SQLBindCol(hstmt, 3, SQL_C_CHAR, szTableName, TAB_LEN,&cbTableName);
+		 SQLBindCol(hstmt, 4, SQL_C_CHAR, szColumnName, TAB_LEN, &cbColumnName);
+		 SQLBindCol(hstmt, 5, SQL_C_SSHORT, &DataType, 0, &cbDataType);
+		 SQLBindCol(hstmt, 6, SQL_C_CHAR, szTypeName, TAB_LEN, &cbTypeName);
+		 SQLBindCol(hstmt, 7, SQL_C_SLONG, &ColumnSize, 0, &cbColumnSize);
+		 SQLBindCol(hstmt, 8, SQL_C_SLONG, &BufferLength, 0, &cbBufferLength);
+		 SQLBindCol(hstmt, 9, SQL_C_SSHORT, &DecimalDigits, 0, &cbDecimalDigits);
+		 SQLBindCol(hstmt, 10, SQL_C_SSHORT, &NumPrecRadix, 0, &cbNumPrecRadix);
+		 SQLBindCol(hstmt, 11, SQL_C_SSHORT, &Nullable, 0, &cbNullable);
+		 SQLBindCol(hstmt, 12, SQL_C_CHAR, szRemarks, REM_LEN, &cbRemarks);
+		 SQLBindCol(hstmt, 13, SQL_C_CHAR, szColumnDefault, TAB_LEN, &cbColumnDefault);
+		 SQLBindCol(hstmt, 14, SQL_C_SSHORT, &SQLDataType, 0, &cbSQLDataType);
+		 SQLBindCol(hstmt, 15, SQL_C_SSHORT, &DatetimeSubtypeCode, 0, &cbDatetimeSubtypeCode);
+		 SQLBindCol(hstmt, 16, SQL_C_SLONG, &CharOctetLength, 0, &cbCharOctetLength);
+		 SQLBindCol(hstmt, 17, SQL_C_SLONG, &OrdinalPosition, 0, &cbOrdinalPosition);
+		 SQLBindCol(hstmt, 18, SQL_C_CHAR, szIsNullable, TAB_LEN, &cbIsNullable);
+		 
+		 
+		UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, value)
+		UAP_REQUEST(getModuleInstance(), lb_I_Long, number)
+
+		UAP_REQUEST(getModuleInstance(), lb_I_Long, index)
+		UAP(lb_I_KeyBase, key)
+		QI(index, lb_I_KeyBase, key)
+	
+		long i = 0;
+		
+		_LOG << "lbDatabase::getColumns() short before fetching column informations." LOG_
+		
+		while(retcode == SQL_SUCCESS) {
+			retcode = SQLFetch(hstmt);
+			if (retcode == SQL_ERROR || retcode == SQL_SUCCESS_WITH_INFO) {
+				 _LOG << "Error: Some error happened while fetching tables." LOG_
+				 columns->deleteAll();
+				 SQLFreeHandle(SQL_HANDLE_STMT, hstmt);
+				 return columns.getPtr();
+			 }
+			 if (retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO){
+				 ;   /* Process fetched data */
+				 
+				 UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
+					 
+				 *value = szCatalog;
+				 *name = "TableCatalog";
+				 param->setUAPString(*&name, *&value);
+				 *value = szSchema;
+				 *name = "TableSchema";
+				 param->setUAPString(*&name, *&value);
+				 *value = szTableName;
+				 *name = "TableName";
+				 param->setUAPString(*&name, *&value);
+				 *value = szColumnName;
+				 *name = "ColumnName";
+				 param->setUAPString(*&name, *&value);
+				 number->setData((long)DataType);
+				 *name = "DataType";
+				 param->setUAPLong(*&name, *&number);
+				 *value = szTypeName;
+				 *name = "TypeName";
+				 param->setUAPString(*&name, *&value);
+				 number->setData((long)ColumnSize);
+				 *name = "ColumnSize";
+				 param->setUAPLong(*&name, *&number);
+				 number->setData((long)BufferLength);
+				 *name = "BufferLength";
+				 param->setUAPLong(*&name, *&number);
+				 number->setData((long)DecimalDigits);
+				 *name = "DecimalDigits";
+				 param->setUAPLong(*&name, *&number);
+				 number->setData((long)NumPrecRadix);
+				 *name = "NumPrecRadix";
+				 param->setUAPLong(*&name, *&number);
+				 number->setData((long)Nullable);
+				 *name = "Nullable";
+				 param->setUAPLong(*&name, *&number);
+				 *value = szRemarks;
+				 *name = "Remarks";
+				 param->setUAPString(*&name, *&value);
+				 *value = szColumnDefault;
+				 *name = "ColumnDefault";
+				 param->setUAPString(*&name, *&value);
+				 number->setData((long)SQLDataType);
+				 *name = "SQLDataType";
+				 param->setUAPLong(*&name, *&number);
+				 number->setData((long)DatetimeSubtypeCode);
+				 *name = "DatetimeSubtypeCode";
+				 param->setUAPLong(*&name, *&number);
+				 number->setData((long)CharOctetLength);
+				 *name = "CharOctetLength";
+				 param->setUAPLong(*&name, *&number);
+				 number->setData((long)OrdinalPosition);
+				 *name = "OrdinalPosition";
+				 param->setUAPLong(*&name, *&number);
+				 *value = szIsNullable;
+				 *name = "IsNullable";
+				 param->setUAPString(*&name, *&value);
+
+				 index->setData(++i);
+				 
+				 UAP(lb_I_Unknown, uk)
+				 QI(param, lb_I_Unknown, uk)
+				 
+				columns->insert(&uk, &key);
+			 }
+		 }
+	}
+	
+	
+	SQLFreeHandle(SQL_HANDLE_STMT, hstmt);
+	
+	return columns.getPtr();
+}
+
 /*...svoid _dbError_STMT\40\char\42\ lp\44\ HSTMT hstmt\41\:0:*/
 void _dbError_STMT(char* lp, HSTMT hstmt) {
 	SQLCHAR  SqlState[6], SQLStmt[100], Msg[SQL_MAX_MESSAGE_LENGTH];

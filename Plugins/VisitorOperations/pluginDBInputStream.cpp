@@ -166,6 +166,8 @@ public:
 	void LB_STDCALL visit(lb_I_FormularParameter*);
 	void LB_STDCALL visit(lb_I_Actions*);
 	void LB_STDCALL visit(lb_I_Translations*);
+	void LB_STDCALL visit(lb_I_DBColumns*);
+	void LB_STDCALL visit(lb_I_DBTables*);
 
 	bool LB_STDCALL begin(const char* DBName, const char* DBUser, const char* DBPass);
 	bool LB_STDCALL begin(lb_I_Database* _db);
@@ -290,6 +292,133 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_UserAccounts* users) {
 		
 			users->addAccount(qUID->charrep(), qPWD->charrep(), qID->getData());
 		}
+	}
+}
+
+
+
+void LB_STDCALL lbDatabaseInputStream::visit(lb_I_DBTables* tables) {
+	lbErrCodes err = ERR_NONE;
+	UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+	if (db == NULL) {
+		_LOG << "FATAL: Database imput stream could not work without a database!" LOG_
+		return;
+	}
+	
+	UAP(lb_I_Container, Tables)
+	
+	Tables = db->getTables();
+	
+	long i = 0;
+	
+	while (Tables->hasMoreElements() == 1) {
+		UAP(lb_I_Unknown, uk)
+		UAP(lb_I_Parameter, param)
+		
+		uk = Tables->nextElement();
+		QI(uk, lb_I_Parameter, param)
+		
+		UAP_REQUEST(getModuleInstance(), lb_I_String, szTableCatalog)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, szTableSchema)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, szTableName)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, szTableType)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, szTableRemarks)
+
+		*name = "TableCatalog";
+		param->getUAPString(*&name, *&szTableCatalog);
+		*name = "TableSchema";
+		param->getUAPString(*&name, *&szTableSchema);
+		*name = "TableName";
+		param->getUAPString(*&name, *&szTableName);
+		*name = "TableTyp";
+		param->getUAPString(*&name, *&szTableType);
+		*name = "TableRemarks";
+		param->getUAPString(*&name, *&szTableRemarks);
+		
+		tables->addTable(szTableCatalog->charrep(), szTableSchema->charrep(), szTableName->charrep(), szTableType->charrep(), szTableRemarks->charrep(), ++i);
+	}	
+}
+
+void LB_STDCALL lbDatabaseInputStream::visit(lb_I_DBColumns* columns) {
+	lbErrCodes err = ERR_NONE;
+	UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+	
+	if (db == NULL) {
+		_LOG << "FATAL: Database imput stream could not work without a database!" LOG_
+		return;
+	}
+	UAP(lb_I_Container, Columns)
+	
+	Columns = db->getColumns();
+	
+	long i = 0;
+	
+	while (Columns->hasMoreElements() == 1) {
+		UAP(lb_I_Unknown, uk)
+		UAP(lb_I_Parameter, param)
+		
+		uk = Columns->nextElement();
+		QI(uk, lb_I_Parameter, param)
+			
+		UAP_REQUEST(getModuleInstance(), lb_I_String, szCatalog)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, szSchema)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, szTableName)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, szColumnName)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, szTypeName)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, szRemarks)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, szIsNullable)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, szColumnDefault)
+
+		UAP_REQUEST(getModuleInstance(), lb_I_Long, DataType)
+		UAP_REQUEST(getModuleInstance(), lb_I_Long, ColumnSize)
+		UAP_REQUEST(getModuleInstance(), lb_I_Long, BufferLength)
+		UAP_REQUEST(getModuleInstance(), lb_I_Long, DecimalDigits)
+		UAP_REQUEST(getModuleInstance(), lb_I_Long, NumPrecRadix)
+		UAP_REQUEST(getModuleInstance(), lb_I_Long, Nullable)
+		UAP_REQUEST(getModuleInstance(), lb_I_Long, SQLDataType)
+		UAP_REQUEST(getModuleInstance(), lb_I_Long, DatetimeSubtypeCode)
+		UAP_REQUEST(getModuleInstance(), lb_I_Long, CharOctetLength)
+		UAP_REQUEST(getModuleInstance(), lb_I_Long, OrdinalPosition)
+
+		*name = "TableCatalog";
+		param->getUAPString(*&name, *&szCatalog);
+		*name = "TableSchema";
+		param->getUAPString(*&name, *&szSchema);
+		*name = "TableName";
+		param->getUAPString(*&name, *&szTableName);
+		*name = "ColumnName";
+		param->getUAPString(*&name, *&szColumnName);
+		
+		*name = "DataType";
+		param->getUAPLong(*&name, *&DataType);
+		*name = "TypeName";
+		param->getUAPString(*&name, *&szTypeName);
+		*name = "ColumnSize";
+		param->getUAPLong(*&name, *&ColumnSize);
+		*name = "BufferLength";
+		param->getUAPLong(*&name, *&BufferLength);
+		*name = "DecimalDigits";
+		param->getUAPLong(*&name, *&DecimalDigits);
+		*name = "NumPrecRadix";
+		param->getUAPLong(*&name, *&NumPrecRadix);
+		*name = "Nullable";
+		param->getUAPLong(*&name, *&Nullable);
+		*name = "Remarks";
+		param->getUAPString(*&name, *&szRemarks);
+		*name = "ColumnDefault";
+		param->getUAPString(*&name, *&szColumnDefault);
+		*name = "SQLDataType";
+		param->getUAPLong(*&name, *&SQLDataType);
+		*name = "DatetimeSubtypeCode";
+		param->getUAPLong(*&name, *&DatetimeSubtypeCode);
+		*name = "CharOctetLength";
+		param->getUAPLong(*&name, *&CharOctetLength);
+		*name = "OrdinalPosition";
+		param->getUAPLong(*&name, *&OrdinalPosition);
+		*name = "IsNullable";
+		param->getUAPString(*&name, *&szIsNullable);
+		
+		columns->addColumn(szColumnName->charrep(), szTypeName->charrep(), ColumnSize->getData(), false, "", "", szTableName->charrep(), ++i);
 	}
 }
 

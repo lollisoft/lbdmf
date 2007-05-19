@@ -3281,6 +3281,59 @@ public:
 	virtual void		LB_STDCALL deleteMarked() = 0;
 };
 /*...e*/
+
+class lb_I_DBTables : public lb_I_Unknown {
+public:
+	virtual long		LB_STDCALL addTable(const char* catalog, const char* schema, const char* name, const char* type, const char* remarks, long _id = -1) = 0;
+	virtual bool		LB_STDCALL selectTable(long _id) = 0;
+	virtual int			LB_STDCALL getTableCount() = 0;
+	virtual bool		LB_STDCALL hasMoreTables() = 0;
+	virtual void		LB_STDCALL setNextTable() = 0;
+	virtual void		LB_STDCALL finishTableIteration() = 0;
+	
+	virtual long		LB_STDCALL getTableID() = 0;
+	virtual char*		LB_STDCALL getTableCatalog() = 0;
+	virtual char*		LB_STDCALL getTableSchema() = 0;
+	virtual char*		LB_STDCALL getTableName() = 0;
+	virtual char*		LB_STDCALL getTableType() = 0;
+	virtual char*		LB_STDCALL getTableRemarks() = 0;
+
+	virtual bool		LB_STDCALL ismarked() = 0;
+	virtual void		LB_STDCALL mark() = 0;
+	virtual void		LB_STDCALL unmark() = 0;
+
+	virtual void		LB_STDCALL deleteUnmarked() = 0;
+	virtual void		LB_STDCALL deleteMarked() = 0;
+};
+
+class lb_I_DBColumns : public lb_I_Unknown {
+public:
+	virtual long		LB_STDCALL addColumn(const char* name, const char* typ, long len, bool isfk, const char* PKTable, const char* PKField, const char* tablename, long _id = -1) = 0;
+	virtual bool		LB_STDCALL selectColumn(long _id) = 0;
+	virtual int			LB_STDCALL getColumnCount() = 0;
+	virtual bool		LB_STDCALL hasMoreColumns() = 0;
+	virtual void		LB_STDCALL setNextColumn() = 0;
+	virtual void		LB_STDCALL finishColumnIteration() = 0;
+	
+	virtual long		LB_STDCALL getColumnID() = 0;
+	virtual char*		LB_STDCALL getColumnTableName() = 0;
+	virtual char*		LB_STDCALL getColumnName() = 0;
+	virtual char*		LB_STDCALL getColumnTyp() = 0;
+	virtual long		LB_STDCALL getColumnLen() = 0;
+	virtual bool		LB_STDCALL isFK() = 0;
+	virtual char*		LB_STDCALL getColumnPKTable() = 0;
+	virtual char*		LB_STDCALL getColumnPKField() = 0;
+
+	virtual bool		LB_STDCALL ismarked() = 0;
+	virtual void		LB_STDCALL mark() = 0;
+	virtual void		LB_STDCALL unmark() = 0;
+
+	virtual void		LB_STDCALL deleteUnmarked() = 0;
+	virtual void		LB_STDCALL deleteMarked() = 0;
+};
+
+
+
 /*...e*/
 
 /*...slbDMF Plugin interfaces:0:*/

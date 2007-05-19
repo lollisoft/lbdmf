@@ -1408,8 +1408,11 @@ void LB_STDCALL lbDatabasePanel::updateFromMaster() {
 	_params->getUAPString(*&parameter, *&actionID);
 	if (actionID->charrep() == NULL) {
 		UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
+		UAP_REQUEST(manager.getPtr(), lb_I_String, msg)
+		
+		*msg = _trans("No action ID has been transferred!");
 
-		meta->msgBox(_trans("Error"), _trans("No action ID has been transferred!"));
+		meta->msgBox(_trans("Error"), msg->charrep());
 	}
 /*...e*/
 
@@ -1417,7 +1420,7 @@ void LB_STDCALL lbDatabasePanel::updateFromMaster() {
 	SourceFieldName->trim();
 	SourceFieldValue->trim();
 
-	_CL_LOG << "Have master form '" << masterForm->charrep() << 
+	_LOG << "Have master form '" << masterForm->charrep() << 
 	           "', source field name '" << SourceFieldName->charrep() << 
 	           "' and source field value '" << SourceFieldValue->charrep() <<
 	           "' for detail form '" << formName << "'" LOG_
@@ -1481,13 +1484,13 @@ void LB_STDCALL lbDatabasePanel::updateFromMaster() {
 	if (isChar) *newMasterIDQuery += "'";
 /*...e*/
 	
-	_CL_LOG << "lbDatabasePanel::updateFromMaster() generated new master id query: \n'" <<
+	_LOG << "lbDatabasePanel::updateFromMaster() generated new master id query: \n'" <<
 		newMasterIDQuery->charrep() << "'" LOG_
 
 	if (MasterDetailRelationData == NULL) {
 		REQUEST(manager.getPtr(), lb_I_Container, MasterDetailRelationData)
 	} else {
-	        MasterDetailRelationData->deleteAll();
+		MasterDetailRelationData->deleteAll();
 	}
 
 /*...sRetrieve the values from the primary keys and build up the where clause to be used in detail form:8:*/
@@ -1736,7 +1739,7 @@ void LB_STDCALL lbDatabasePanel::updateFromMaster() {
 
 	*newQuery = sampleQuery->setWhereClause(getQuery(), newWhereClause->charrep());
 
-	_CL_LOG << "Have created new query: " << newQuery->charrep() LOG_
+	_LOG << "Have created new query: " << newQuery->charrep() LOG_
 
 	err = sampleQuery->query(newQuery->charrep());
 	

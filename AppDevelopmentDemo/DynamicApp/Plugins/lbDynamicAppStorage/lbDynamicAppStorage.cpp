@@ -92,6 +92,8 @@ lbErrCodes LB_STDCALL lbDynamicAppXMLStorage::save(lb_I_OutputStream* oStream) {
 	UAP(lb_I_Formular_Actions, formActions)
 	UAP(lb_I_Action_Steps, appActionSteps)
 	UAP(lb_I_Action_Types, appActionTypes)
+	UAP(lb_I_DBTables, dbTables)
+	UAP(lb_I_DBColumns, dbColumns)
 
 	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, param)
@@ -115,6 +117,14 @@ lbErrCodes LB_STDCALL lbDynamicAppXMLStorage::save(lb_I_OutputStream* oStream) {
 	*name = "Formulars";
 	uk = document->getElement(&key);
 	QI(uk, lb_I_Formulars, forms)
+			
+	*name = "DBTables";
+	uk = document->getElement(&key);
+	QI(uk, lb_I_DBTables, dbTables)
+			
+	*name = "DBColumns";
+	uk = document->getElement(&key);
+	QI(uk, lb_I_DBColumns, dbColumns)
 			
 	*name = "FormularFields";
 	uk = document->getElement(&key);
@@ -159,6 +169,8 @@ lbErrCodes LB_STDCALL lbDynamicAppXMLStorage::save(lb_I_OutputStream* oStream) {
 
 	if ((forms != NULL) &&
 	    (formularfields != NULL) &&
+	    (dbColumns != NULL) &&
+	    (dbTables != NULL) &&
 	    (columntypes != NULL) &&
 	    (formParams != NULL) &&
 	    (formActions != NULL) &&
@@ -172,6 +184,11 @@ lbErrCodes LB_STDCALL lbDynamicAppXMLStorage::save(lb_I_OutputStream* oStream) {
 		
 		applications->accept(*&aspect);
 		forms->accept(*&aspect);
+	_LOG << "lbDynamicAppXMLStorage::save(lb_I_OutputStream* oStream) Save dbTables" LOG_
+		dbTables->accept(*&aspect);
+	_LOG << "lbDynamicAppXMLStorage::save(lb_I_OutputStream* oStream) Save dbColumns" LOG_
+		dbColumns->accept(*&aspect);
+	_LOG << "lbDynamicAppXMLStorage::save(lb_I_OutputStream* oStream) Save formularfields" LOG_
 		formularfields->accept(*&aspect);
 		columntypes->accept(*&aspect);
 		formActions->accept(*&aspect);
@@ -183,6 +200,7 @@ lbErrCodes LB_STDCALL lbDynamicAppXMLStorage::save(lb_I_OutputStream* oStream) {
 
 		*oStream << "</lbDMF>\n";
 	}
+	_LOG << "lbDynamicAppXMLStorage::save(lb_I_OutputStream* oStream) returns" LOG_
 	return err;
 }
 
@@ -246,6 +264,8 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::save(lb_I_OutputStream* oStre
 	UAP(lb_I_Actions, appActions)
 	UAP(lb_I_Action_Steps, appActionSteps)
 	UAP(lb_I_Action_Types, appActionTypes)
+	UAP(lb_I_DBTables, dbTables)
+	UAP(lb_I_DBColumns, dbColumns)
 
 	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, param)
@@ -277,6 +297,14 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::save(lb_I_OutputStream* oStre
 	*name = "Formulars";
 	uk = document->getElement(&key);
 	QI(uk, lb_I_Formulars, forms)
+			
+	*name = "DBTables";
+	uk = document->getElement(&key);
+	QI(uk, lb_I_DBTables, dbTables)
+			
+	*name = "DBColumns";
+	uk = document->getElement(&key);
+	QI(uk, lb_I_DBColumns, dbColumns)
 			
 	*name = "FormularFields";
 	uk = document->getElement(&key);
@@ -313,6 +341,8 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::save(lb_I_OutputStream* oStre
 	_LOG << "Start storing the data" LOG_
 
 	if ((forms != NULL) &&
+	    (dbColumns != NULL) &&
+	    (dbTables != NULL) &&
 	    (formularfields != NULL) &&
 	    (formParams != NULL) &&
 	    (columntypes != NULL) &&
@@ -323,6 +353,8 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::save(lb_I_OutputStream* oStre
 		(appActionSteps != NULL)) {
 
 		forms->accept(*&aspect);
+		dbTables->accept(*&aspect);
+		dbColumns->accept(*&aspect);
 		formularfields->accept(*&aspect);
 		columntypes->accept(*&aspect);
 		formActions->accept(*&aspect);

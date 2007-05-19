@@ -91,6 +91,8 @@ virtual void LB_STDCALL visit(lb_I_ApplicationClient*) = 0;
 virtual void LB_STDCALL visit(lb_I_ApplicationServerThread*) = 0;
 virtual void LB_STDCALL visit(lb_I_Proxy*) = 0;
 virtual void LB_STDCALL visit(lb_I_Column_Types*) = 0;
+virtual void LB_STDCALL visit(lb_I_DBColumns*) = 0;
+virtual void LB_STDCALL visit(lb_I_DBTables*) = 0;
 //virtual ~Aspect(){} 
 };   
 
