@@ -83,7 +83,11 @@ long  LB_STDCALL lbDBTableModel::addTable(const char* catalog, const char* schem
 	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, paramname)
 
+	*Catalog = catalog;
+	*Schema = schema;
 	*Name = name;
+	*Type = type;
+	*Remarks = remarks;
 	ID->setData(_id);
 	
 	*paramname = "Catalog";
