@@ -168,6 +168,8 @@ public:
 	void LB_STDCALL visit(lb_I_Translations*);
 	void LB_STDCALL visit(lb_I_DBColumns*);
 	void LB_STDCALL visit(lb_I_DBTables*);
+	void LB_STDCALL visit(lb_I_DBPrimaryKeys*);
+	void LB_STDCALL visit(lb_I_DBForeignKeys*);
 
 	bool LB_STDCALL begin(const char* DBName, const char* DBUser, const char* DBPass);
 	bool LB_STDCALL begin(lb_I_Database* _db);
@@ -295,7 +297,127 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_UserAccounts* users) {
 	}
 }
 
+void LB_STDCALL lbDatabaseInputStream::visit(lb_I_DBForeignKeys* fkeys) {
+	lbErrCodes err = ERR_NONE;
+	UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
+	if (db == NULL) {
+		_LOG << "FATAL: Database imput stream could not work without a database!" LOG_
+		return;
+	}
+	
+	UAP(lb_I_Container, Tables)
+	
+	Tables = db->getForeignKeys();
+	
+	long i = 0;
+	
+	while (Tables->hasMoreElements() == 1) {
+		UAP(lb_I_Unknown, uk)
+		UAP(lb_I_Parameter, param)
+		
+		uk = Tables->nextElement();
+		QI(uk, lb_I_Parameter, param)
+		
+		UAP_REQUEST(getModuleInstance(), lb_I_String, currentPKTableCatalog)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, currentPKTableSchema)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, currentPKTableName)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, currentPKTableColumnName)
 
+		UAP_REQUEST(getModuleInstance(), lb_I_String, currentFKTableCatalog)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, currentFKTableSchema)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, currentFKTableName)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, currentFKTableColumnName)
+
+		UAP_REQUEST(getModuleInstance(), lb_I_Long, currentID)
+		UAP_REQUEST(getModuleInstance(), lb_I_Long, currentKeySequence)
+		UAP_REQUEST(getModuleInstance(), lb_I_Long, currentUpdateRule)
+		UAP_REQUEST(getModuleInstance(), lb_I_Long, currentDeleteRule)
+
+		*paramname = "PKTableCatalog";
+		param->getUAPString(*&paramname, *&currentPKTableCatalog);
+		*paramname = "PKTableSchema";
+		param->getUAPString(*&paramname, *&currentPKTableSchema);
+		*paramname = "PKTableName";
+		param->getUAPString(*&paramname, *&currentPKTableName);
+		*paramname = "PKTableColumnName";
+		param->getUAPString(*&paramname, *&currentPKTableColumnName);
+		
+		*paramname = "FKTableCatalog";
+		param->getUAPString(*&paramname, *&currentFKTableCatalog);
+		*paramname = "FKTableSchema";
+		param->getUAPString(*&paramname, *&currentFKTableSchema);
+		*paramname = "FKTableName";
+		param->getUAPString(*&paramname, *&currentFKTableName);
+		*paramname = "FKTableColumnName";
+		param->getUAPString(*&paramname, *&currentFKTableColumnName);
+		
+		*paramname = "KeySequence";
+		param->getUAPLong(*&paramname, *&currentKeySequence);
+		*paramname = "UpdateRule";
+		param->getUAPLong(*&paramname, *&currentUpdateRule);
+		*paramname = "DeleteRule";
+		param->getUAPLong(*&paramname, *&currentDeleteRule);
+		
+		*paramname = "ID";
+		param->getUAPLong(*&paramname, *&currentID);
+		
+		fkeys->addForeignKey(	currentPKTableCatalog->charrep(), currentPKTableSchema->charrep(), currentPKTableName->charrep(), currentPKTableColumnName->charrep(), 
+								currentFKTableCatalog->charrep(), currentFKTableSchema->charrep(), currentFKTableName->charrep(), currentFKTableColumnName->charrep(), 
+								currentKeySequence->getData(), currentUpdateRule->getData(), currentDeleteRule->getData(), ++i);
+	}	
+}
+
+void LB_STDCALL lbDatabaseInputStream::visit(lb_I_DBPrimaryKeys* pkeys) {
+	lbErrCodes err = ERR_NONE;
+	UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
+	if (db == NULL) {
+		_LOG << "FATAL: Database imput stream could not work without a database!" LOG_
+		return;
+	}
+	
+	UAP(lb_I_Container, Tables)
+	
+	Tables = db->getPrimaryKeys();
+	
+	long i = 0;
+	
+	while (Tables->hasMoreElements() == 1) {
+		UAP(lb_I_Unknown, uk)
+		UAP(lb_I_Parameter, param)
+		
+		uk = Tables->nextElement();
+		QI(uk, lb_I_Parameter, param)
+		
+		UAP_REQUEST(getModuleInstance(), lb_I_String, currentTableCatalog)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, currentTableSchema)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, currentTableName)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, currentColumnName)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, currentColumnName_V2)
+	
+		UAP_REQUEST(getModuleInstance(), lb_I_Long, currentID)
+		UAP_REQUEST(getModuleInstance(), lb_I_Long, currentKeySequence)
+
+		*paramname = "TableCatalog";
+		param->getUAPString(*&paramname, *&currentTableCatalog);
+		*paramname = "TableSchema";
+		param->getUAPString(*&paramname, *&currentTableSchema);
+		*paramname = "TableName";
+		param->getUAPString(*&paramname, *&currentTableName);
+		*paramname = "ColumnName";
+		param->getUAPString(*&paramname, *&currentColumnName);
+		*paramname = "ColumnName_V2";
+		param->getUAPString(*&paramname, *&currentColumnName_V2);
+
+		*paramname = "KeySequence";
+		param->getUAPLong(*&paramname, *&currentKeySequence);
+
+		*paramname = "ID";
+		param->getUAPLong(*&paramname, *&currentID);
+		
+		pkeys->addPrimaryKey(	currentTableCatalog->charrep(), currentTableSchema->charrep(), currentTableName->charrep(), currentColumnName->charrep(), 
+								currentKeySequence->getData(), currentColumnName_V2->charrep(), ++i);
+	}	
+}
 
 void LB_STDCALL lbDatabaseInputStream::visit(lb_I_DBTables* tables) {
 	lbErrCodes err = ERR_NONE;

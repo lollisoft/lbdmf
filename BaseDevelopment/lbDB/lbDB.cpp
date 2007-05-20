@@ -4718,6 +4718,9 @@ public:
 	lb_I_Container* LB_STDCALL getTables();
 	lb_I_Container* LB_STDCALL getColumns();
 	
+	lb_I_Container* LB_STDCALL getForeignKeys();
+	lb_I_Container* LB_STDCALL getPrimaryKeys();
+	
 private:
 	RETCODE  retcode;
 	HENV     henv;	
@@ -5011,19 +5014,19 @@ lb_I_Container* LB_STDCALL lbDatabase::getTables() {
 			
 			UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
 			
-			*value = szTableCatalog;
+			*value = (const char*) szTableCatalog;
 			*name = "TableCatalog";
 			param->setUAPString(*&name, *&value);
-			*value = szTableSchema;
+			*value = (const char*) szTableSchema;
 			*name = "TableSchema";
 			param->setUAPString(*&name, *&value);
-			*value = szTableName;
+			*value = (const char*) szTableName;
 			*name = "TableName";
 			param->setUAPString(*&name, *&value);
-			*value = szTableType;
+			*value = (const char*) szTableType;
 			*name = "TableTyp";
 			param->setUAPString(*&name, *&value);
-			*value = szTableRemarks;
+			*value = (const char*) szTableRemarks;
 			*name = "TableRemarks";
 			param->setUAPString(*&name, *&value);
 
@@ -5123,27 +5126,24 @@ lb_I_Container* LB_STDCALL lbDatabase::getColumns() {
 				 
 				 UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
 					 
-				 *value = szCatalog;
+				 *value = (const char*) szCatalog;
 				 *name = "TableCatalog";
 				 param->setUAPString(*&name, *&value);
-				 *value = szSchema;
+				 *value = (const char*) szSchema;
 				 *name = "TableSchema";
 				 param->setUAPString(*&name, *&value);
-				 *value = szTableName;
+				 *value = (const char*) szTableName;
 				 *name = "TableName";
 				 param->setUAPString(*&name, *&value);
-				 *value = szColumnName;
+				 *value = (const char*) szColumnName;
 				 *name = "ColumnName";
 				 param->setUAPString(*&name, *&value);
 				 number->setData((long)DataType);
 				 *name = "DataType";
 				 param->setUAPLong(*&name, *&number);
-				 *value = szTypeName;
+				 *value = (const char*) szTypeName;
 				 *name = "TypeName";
 				 param->setUAPString(*&name, *&value);
-				 number->setData((long)ColumnSize);
-				 *name = "ColumnSize";
-				 param->setUAPLong(*&name, *&number);
 				 number->setData((long)BufferLength);
 				 *name = "BufferLength";
 				 param->setUAPLong(*&name, *&number);
@@ -5156,10 +5156,10 @@ lb_I_Container* LB_STDCALL lbDatabase::getColumns() {
 				 number->setData((long)Nullable);
 				 *name = "Nullable";
 				 param->setUAPLong(*&name, *&number);
-				 *value = szRemarks;
+				 *value = (const char*) szRemarks;
 				 *name = "Remarks";
 				 param->setUAPString(*&name, *&value);
-				 *value = szColumnDefault;
+				 *value = (const char*) szColumnDefault;
 				 *name = "ColumnDefault";
 				 param->setUAPString(*&name, *&value);
 				 number->setData((long)SQLDataType);
@@ -5174,9 +5174,12 @@ lb_I_Container* LB_STDCALL lbDatabase::getColumns() {
 				 number->setData((long)OrdinalPosition);
 				 *name = "OrdinalPosition";
 				 param->setUAPLong(*&name, *&number);
-				 *value = szIsNullable;
+				 *value = (const char*) szIsNullable;
 				 *name = "IsNullable";
 				 param->setUAPString(*&name, *&value);
+				 number->setData((long)ColumnSize);
+				 *name = "ColumnSize";
+				 param->setUAPLong(*&name, *&number);
 
 				 index->setData(++i);
 				 
@@ -5194,6 +5197,290 @@ lb_I_Container* LB_STDCALL lbDatabase::getColumns() {
 	return columns.getPtr();
 }
 
+lb_I_Container* LB_STDCALL lbDatabase::getPrimaryKeys() {
+	lbErrCodes err = ERR_NONE;
+	_LOG << "lbDatabase::getPrimaryKeys() called." LOG_
+#define TAB_LEN SQL_MAX_TABLE_NAME_LEN + 1
+#define COL_LEN SQL_MAX_COLUMN_NAME_LEN + 1
+	UAP_REQUEST(getModuleInstance(), lb_I_Container, PrimaryKeys)
+	PrimaryKeys++;
+
+	UCHAR TableCatalog[TAB_LEN];
+	UCHAR TableSchema[TAB_LEN];
+	UCHAR TableName[TAB_LEN];
+	UCHAR ColumnName[COL_LEN];
+	UCHAR ColumnName_V2[COL_LEN];
+	
+	SQLSMALLINT KeySequence;
+
+	SQLINTEGER cbTableCatalog;
+	SQLINTEGER cbTableSchema;
+	SQLINTEGER cbTableName;
+	SQLINTEGER cbColumnName;
+	SQLINTEGER cbColumnName_V2;
+	SQLINTEGER cbKeySequence;
+
+	
+	SQLHSTMT      hstmt;
+	SQLRETURN     retcode;
+	
+		
+	retcode = SQLAllocStmt(hdbc, &hstmt); /* Statement handle */
+	
+	if (retcode != SQL_SUCCESS)
+	{
+		_LOG << "Error: Failed to get statement handle from database connection!" LOG_
+		return PrimaryKeys.getPtr();
+	}
+
+	UAP(lb_I_Container, tables)
+	
+	
+	tables = getTables();
+	
+	
+	while (tables->hasMoreElements() == 1) {
+		UAP(lb_I_Unknown, uk)
+		UAP(lb_I_Parameter, param)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, tablename)
+		uk = tables->nextElement();
+		QI(uk, lb_I_Parameter, param)
+			
+		*paramname = "TableName";
+		param->getUAPString(*&paramname, *&tablename);
+		
+		retcode = SQLPrimaryKeys(hstmt, NULL, 0, NULL, 0, tablename->charrep(), SQL_NTS);
+		
+		UAP_REQUEST(getModuleInstance(), lb_I_Long, index)
+		UAP(lb_I_KeyBase, key)
+		QI(index, lb_I_KeyBase, key)
+			
+		long i = 0;
+		
+		if  ((retcode == SQL_SUCCESS) || (retcode == SQL_SUCCESS_WITH_INFO)) {
+			SQLBindCol(hstmt, 1, SQL_C_CHAR, TableCatalog, TAB_LEN, &cbTableCatalog);
+			SQLBindCol(hstmt, 2, SQL_C_CHAR, TableSchema, TAB_LEN, &cbTableSchema);
+			SQLBindCol(hstmt, 3, SQL_C_CHAR, TableName, TAB_LEN, &cbTableName);
+			SQLBindCol(hstmt, 4, SQL_C_CHAR, ColumnName, COL_LEN, &cbColumnName);
+			SQLBindCol(hstmt, 5, SQL_C_SSHORT, &KeySequence, TAB_LEN, &cbKeySequence);
+			SQLBindCol(hstmt, 6, SQL_C_CHAR, ColumnName_V2, COL_LEN, &cbColumnName_V2);
+		} else {
+			_LOG << "lbDatabase::getPrimaryKeys() failed with call to SQLPrimaryKeys!" LOG_
+			
+			_dbError_STMT("Error message from driver: ", hstmt);
+		}
+		
+		while ((retcode == SQL_SUCCESS) || (retcode == SQL_SUCCESS_WITH_INFO)) {
+			
+			/* Fetch and display the result set. This will be a list of the */
+			/* columns in the primary key of the ORDERS table. */
+			
+			retcode = SQLFetch(hstmt);
+			if (retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO) {
+				UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
+				UAP_REQUEST(getModuleInstance(), lb_I_Long, number)
+				UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+				UAP_REQUEST(getModuleInstance(), lb_I_String, value)
+				
+				*name = "TableCatalog";
+				*value = (const char*) TableCatalog;
+				param->setUAPString(*&name, *&value);
+				*name = "TableSchema";
+				*value = (const char*) TableSchema;
+				param->setUAPString(*&name, *&value);
+				*name = "TableName";
+				*value = (const char*) TableName;
+				param->setUAPString(*&name, *&value);
+				*name = "ColumnName";
+				*value = (const char*) ColumnName;
+				param->setUAPString(*&name, *&value);
+				*name = "ColumnName_V2";
+				*value = (const char*) ColumnName_V2;
+				param->setUAPString(*&name, *&value);
+				
+				*name = "KeySequence";
+				number->setData(KeySequence);
+				param->setUAPLong(*&name, *&number);
+				
+				index->setData(++i);
+				
+				UAP(lb_I_Unknown, uk)
+					QI(param, lb_I_Unknown, uk)
+#ifdef bla
+					_LOG << "Insert a primary key entry: TableCatalog=" << (const char*) TableCatalog << 
+					", TableSchema=" << (const char*) TableSchema << 
+					", TableName=" << (const char*) TableName << 
+					", ColumnName=" << (const char*) ColumnName << 
+					", ColumnName_V2=" << (const char*) ColumnName_V2 LOG_
+#endif			
+					
+					PrimaryKeys->insert(&uk, &key);
+			}	
+		}
+		SQLFreeStmt(hstmt, SQL_CLOSE);
+	}
+
+	SQLFreeStmt(hstmt, SQL_DROP);
+	
+	
+	PrimaryKeys->finishIteration();
+	return PrimaryKeys.getPtr();
+}
+
+lb_I_Container* LB_STDCALL lbDatabase::getForeignKeys() {
+	lbErrCodes err = ERR_NONE;
+#define TAB_LEN SQL_MAX_TABLE_NAME_LEN + 1
+#define COL_LEN SQL_MAX_COLUMN_NAME_LEN + 1
+	UAP_REQUEST(getModuleInstance(), lb_I_Container, ForeignKeys)
+	ForeignKeys++;
+	
+	UCHAR PKTableCatalog[TAB_LEN];
+	UCHAR PKTableSchema[TAB_LEN];
+	UCHAR PKTableName[TAB_LEN];
+	UCHAR PKTableColumnName[COL_LEN];
+
+	UCHAR FKTableCatalog[TAB_LEN];
+	UCHAR FKTableSchema[TAB_LEN];
+	UCHAR FKTableName[TAB_LEN];
+	UCHAR FKTableColumnName[COL_LEN];
+
+	SQLSMALLINT KeySequence;
+	SQLSMALLINT UpdateRule;
+	SQLSMALLINT DeleteRule;
+
+	SQLINTEGER cbKeySequence;
+	SQLINTEGER cbUpdateRule;
+	SQLINTEGER cbDeleteRule;
+
+
+	SQLINTEGER cbPKTableCatalog;
+	SQLINTEGER cbPKTableSchema;
+	SQLINTEGER cbPKTableName;
+	SQLINTEGER cbPKTableColumnName;
+
+	SQLINTEGER cbFKTableCatalog;
+	SQLINTEGER cbFKTableSchema;
+	SQLINTEGER cbFKTableName;
+	SQLINTEGER cbFKTableColumnName;
+
+	SQLHSTMT		hstmt;
+
+	retcode = SQLAllocStmt(hdbc, &hstmt); /* Statement handle */
+	
+	if (retcode != SQL_SUCCESS)
+	{
+		_LOG << "Error: Failed to get statement handle from database connection!" LOG_
+		return ForeignKeys.getPtr();
+	}
+
+	
+	SQLBindCol(hstmt, 1, SQL_C_CHAR, PKTableCatalog, TAB_LEN, &cbPKTableCatalog);
+	SQLBindCol(hstmt, 2, SQL_C_CHAR, PKTableSchema, TAB_LEN, &cbPKTableSchema);
+	SQLBindCol(hstmt, 3, SQL_C_CHAR, PKTableName, TAB_LEN, &cbPKTableName);
+	SQLBindCol(hstmt, 4, SQL_C_CHAR, PKTableColumnName, COL_LEN, &cbPKTableColumnName);
+	
+	SQLBindCol(hstmt, 5, SQL_C_CHAR, FKTableCatalog, TAB_LEN, &cbFKTableCatalog);
+	SQLBindCol(hstmt, 6, SQL_C_CHAR, FKTableSchema, TAB_LEN, &cbFKTableSchema);
+	SQLBindCol(hstmt, 7, SQL_C_CHAR, FKTableName, TAB_LEN, &cbFKTableName);
+	SQLBindCol(hstmt, 8, SQL_C_CHAR, FKTableColumnName, COL_LEN, &cbFKTableColumnName);
+	
+	
+	SQLBindCol(hstmt, 9, SQL_C_SSHORT, &KeySequence, TAB_LEN, &cbKeySequence);
+	SQLBindCol(hstmt, 10, SQL_C_SSHORT, &UpdateRule, TAB_LEN, &cbUpdateRule);
+	SQLBindCol(hstmt, 11, SQL_C_SSHORT, &DeleteRule, TAB_LEN, &cbDeleteRule);
+	
+	
+	UAP(lb_I_Container, tables)
+	
+	
+	tables = getTables();
+	
+	
+	while (tables->hasMoreElements() == 1) {
+		UAP(lb_I_Unknown, uk)
+		UAP(lb_I_Parameter, param)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, tablename)
+		uk = tables->nextElement();
+		QI(uk, lb_I_Parameter, param)
+			
+		*paramname = "TableName";
+		param->getUAPString(*&paramname, *&tablename);
+		
+		retcode = SQLForeignKeys(hstmt, NULL, 0, NULL, 0, tablename->charrep(), SQL_NTS, NULL, 0, NULL, 0, NULL, 0);        
+		
+		UAP_REQUEST(getModuleInstance(), lb_I_Long, index)
+			UAP(lb_I_KeyBase, key)
+			QI(index, lb_I_KeyBase, key)
+			
+			long i = 0;
+		
+		while ((retcode == SQL_SUCCESS) || (retcode == SQL_SUCCESS_WITH_INFO)) {
+			retcode = SQLFetch(hstmt);
+			if (retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO) {
+				UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
+				UAP_REQUEST(getModuleInstance(), lb_I_Long, number)
+				UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+				UAP_REQUEST(getModuleInstance(), lb_I_String, value)
+				
+				*name = "PKTableCatalog";
+				*value = (const char*) PKTableCatalog;
+				param->setUAPString(*&name, *&value);
+				*name = "PKTableSchema";
+				*value = (const char*) PKTableSchema;
+				param->setUAPString(*&name, *&value);
+				*name = "PKTableName";
+				*value = (const char*) PKTableName;
+				param->setUAPString(*&name, *&value);
+				*name = "PKTableColumnName";
+				*value = (const char*) PKTableColumnName;
+				param->setUAPString(*&name, *&value);
+				
+				*name = "FKTableCatalog";
+				*value = (const char*) FKTableCatalog;
+				param->setUAPString(*&name, *&value);
+				*name = "FKTableSchema";
+				*value = (const char*) FKTableSchema;
+				param->setUAPString(*&name, *&value);
+				*name = "FKTableName";
+				*value = (const char*) FKTableName;
+				param->setUAPString(*&name, *&value);
+				*name = "FKTableColumnName";
+				*value = (const char*) FKTableColumnName;
+				param->setUAPString(*&name, *&value);
+				
+				
+				
+				*name = "KeySequence";
+				number->setData(KeySequence);
+				param->setUAPLong(*&name, *&number);
+				
+				*name = "UpdateRule";
+				number->setData(UpdateRule);
+				param->setUAPLong(*&name, *&number);
+				
+				*name = "DeleteRule";
+				number->setData(DeleteRule);
+				param->setUAPLong(*&name, *&number);
+				
+				index->setData(++i);
+				
+				UAP(lb_I_Unknown, uk)
+					QI(param, lb_I_Unknown, uk)
+					
+					ForeignKeys->insert(&uk, &key);
+			}
+		}
+		SQLFreeStmt(hstmt, SQL_CLOSE);
+	}
+	
+	SQLFreeStmt(hstmt, SQL_DROP);
+
+	ForeignKeys->finishIteration();
+	return ForeignKeys.getPtr();
+}
+
 /*...svoid _dbError_STMT\40\char\42\ lp\44\ HSTMT hstmt\41\:0:*/
 void _dbError_STMT(char* lp, HSTMT hstmt) {
 	SQLCHAR  SqlState[6], SQLStmt[100], Msg[SQL_MAX_MESSAGE_LENGTH];
@@ -5206,8 +5493,8 @@ void _dbError_STMT(char* lp, HSTMT hstmt) {
 	while ((rc = SQLGetDiagRec(SQL_HANDLE_STMT, hstmt, i, SqlState, &NativeError,
 	      Msg, sizeof(Msg), &MsgLen)) != SQL_NO_DATA) {
 	
-		_CL_LOG << "Error in lbQuery: (" << lp << ") " << 
-			SqlState << ": " << (int) NativeError << " - " << Msg LOG_
+		_LOG << "Error in lbQuery: (" << lp << ") " << 
+			(const char*) SqlState << ": " << (int) NativeError << " - " << (const char*) Msg LOG_
 		i++;
 	}
 }

@@ -101,6 +101,8 @@ BEGIN_PLUGINS(lbPluginModulelbDMFDataModel)
 	ADD_PLUGIN(lbPluginFormularActionsModel, Model)
 	ADD_PLUGIN(lbPluginDBColumnsModel, Model)
 	ADD_PLUGIN(lbPluginDBTableModel, Model)
+	ADD_PLUGIN(lbPluginDBForeignKeysModel, Model)
+	ADD_PLUGIN(lbPluginDBPrimaryKeysModel, Model)
 END_PLUGINS()
 
 lbPluginModulelbDMFDataModel::lbPluginModulelbDMFDataModel() {

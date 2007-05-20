@@ -3332,7 +3332,71 @@ public:
 	virtual void		LB_STDCALL deleteMarked() = 0;
 };
 
+class lb_I_DBForeignKeys : public lb_I_Unknown {
+public:
+	/** \brief Add a foreign key information.
+	 * This function is based on ODBC 1.0 and therefore didn't support the last three columns returned by the SQLForeignKeys function.
+	 */
+	virtual long		LB_STDCALL addForeignKey(	const char* pktable_cat, const char* pktable_schem, const char* pktable_name, const char* pkcolumn_name, 
+													const char* fktable_cat, const char* fktable_schem, const char* fktable_name, const char* fkcolumn_name, 
+													long key_seq, long update_rule, long delete_rule, long _id = -1) = 0;
+	virtual bool		LB_STDCALL selectForeignKey(long _id) = 0;
+	virtual int			LB_STDCALL getForeignKeyCount() = 0;
+	virtual bool		LB_STDCALL hasMoreForeignKeys() = 0;
+	virtual void		LB_STDCALL setNextForeignKey() = 0;
+	virtual void		LB_STDCALL finishForeignKeyIteration() = 0;
+	
+	virtual long		LB_STDCALL getForeignKeyID() = 0;
+	virtual char*		LB_STDCALL getForeignKeyPKTableCatalog() = 0;
+	virtual char*		LB_STDCALL getForeignKeyPKTableSchema() = 0;
+	virtual char*		LB_STDCALL getForeignKeyPKTableName() = 0;
+	virtual char*		LB_STDCALL getForeignKeyPKTableColumnName() = 0;
 
+	virtual char*		LB_STDCALL getForeignKeyFKTableCatalog() = 0;
+	virtual char*		LB_STDCALL getForeignKeyFKTableSchema() = 0;
+	virtual char*		LB_STDCALL getForeignKeyFKTableName() = 0;
+	virtual char*		LB_STDCALL getForeignKeyFKTableColumnName() = 0;
+
+	virtual long		LB_STDCALL getForeignKeyKeySequence() = 0;
+	virtual long		LB_STDCALL getForeignKeyUpdateRule() = 0;
+	virtual long		LB_STDCALL getForeignKeyDeleteRule() = 0;
+
+
+	virtual bool		LB_STDCALL ismarked() = 0;
+	virtual void		LB_STDCALL mark() = 0;
+	virtual void		LB_STDCALL unmark() = 0;
+
+	virtual void		LB_STDCALL deleteUnmarked() = 0;
+	virtual void		LB_STDCALL deleteMarked() = 0;
+};
+
+class lb_I_DBPrimaryKeys : public lb_I_Unknown {
+public:
+	virtual long		LB_STDCALL addPrimaryKey(	const char* pktable_cat, const char* pktable_schem, const char* pktable_name, const char* pkcolumn_name, 
+													long key_seq, const char* column_name, long _id = -1) = 0;
+	virtual bool		LB_STDCALL selectPrimaryKey(long _id) = 0;
+	virtual int			LB_STDCALL getPrimaryKeyCount() = 0;
+	virtual bool		LB_STDCALL hasMorePrimaryKeys() = 0;
+	virtual void		LB_STDCALL setNextPrimaryKey() = 0;
+	virtual void		LB_STDCALL finishPrimaryKeyIteration() = 0;
+	
+	virtual long		LB_STDCALL getPrimaryKeyID() = 0;
+	virtual char*		LB_STDCALL getPrimaryKeyTableCatalog() = 0;
+	virtual char*		LB_STDCALL getPrimaryKeyTableSchema() = 0;
+	virtual char*		LB_STDCALL getPrimaryKeyTableName() = 0;
+	virtual char*		LB_STDCALL getPrimaryKeyColumnName() = 0;
+	virtual char*		LB_STDCALL getPrimaryKeyColumnName_ODBC_V_2() = 0;
+
+	virtual long		LB_STDCALL getPrimaryKeySequence() = 0;
+
+
+	virtual bool		LB_STDCALL ismarked() = 0;
+	virtual void		LB_STDCALL mark() = 0;
+	virtual void		LB_STDCALL unmark() = 0;
+
+	virtual void		LB_STDCALL deleteUnmarked() = 0;
+	virtual void		LB_STDCALL deleteMarked() = 0;
+};
 
 /*...e*/
 

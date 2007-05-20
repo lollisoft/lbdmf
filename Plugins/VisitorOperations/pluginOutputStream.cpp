@@ -166,6 +166,8 @@ public:
 	void LB_STDCALL visit(lb_I_DirLocation*);
 	void LB_STDCALL visit(lb_I_DBColumns*);
 	void LB_STDCALL visit(lb_I_DBTables*);
+	void LB_STDCALL visit(lb_I_DBPrimaryKeys*);
+	void LB_STDCALL visit(lb_I_DBForeignKeys*);
 
 	/** \brief Start save operation.
 	 *
@@ -286,13 +288,95 @@ void LB_STDCALL lbOutputStream::visit(lb_I_UserAccounts* users) {
 }
 
 void LB_STDCALL lbOutputStream::visit(lb_I_DBColumns* columns) {
+	int count;
 
+	count = columns->getColumnCount();
+	*oStream << count;
+	
+	columns->finishColumnIteration();
+	
+	while (columns->hasMoreColumns()) {
+		columns->setNextColumn();
+		
+		*oStream << columns->getColumnID();
+		*oStream << columns->getColumnName();
+		*oStream << columns->getColumnTyp();
+		*oStream << columns->getColumnLen();
+		*oStream << columns->getColumnPKTable();
+		*oStream << columns->getColumnPKField();
+		*oStream << columns->getColumnTableName();
+	}
 }
 
 void LB_STDCALL lbOutputStream::visit(lb_I_DBTables* tables) {
+	int count;
 
+	count = tables->getTableCount();
+	*oStream << count;
+	
+	tables->finishTableIteration();
+	
+	while (tables->hasMoreTables()) {
+		tables->setNextTable();
+		
+		*oStream << tables->getTableID();
+		*oStream << tables->getTableCatalog();
+		*oStream << tables->getTableSchema();
+		*oStream << tables->getTableName();
+		*oStream << tables->getTableType();
+		*oStream << tables->getTableRemarks();
+	}
 }
 
+void LB_STDCALL lbOutputStream::visit(lb_I_DBForeignKeys* fkeys) {
+	int count;
+
+	count = fkeys->getForeignKeyCount();
+	*oStream << count;
+	
+	fkeys->finishForeignKeyIteration();
+	
+	while (fkeys->hasMoreForeignKeys()) {
+		fkeys->setNextForeignKey();
+		
+		*oStream << fkeys->getForeignKeyID();
+		
+		*oStream << fkeys->getForeignKeyPKTableCatalog();
+		*oStream << fkeys->getForeignKeyPKTableSchema();
+		*oStream << fkeys->getForeignKeyPKTableName();
+		*oStream << fkeys->getForeignKeyPKTableColumnName();
+		
+		*oStream << fkeys->getForeignKeyFKTableCatalog();
+		*oStream << fkeys->getForeignKeyFKTableSchema();
+		*oStream << fkeys->getForeignKeyFKTableName();
+		*oStream << fkeys->getForeignKeyFKTableColumnName();
+		
+		*oStream << fkeys->getForeignKeyKeySequence();
+		*oStream << fkeys->getForeignKeyUpdateRule();
+		*oStream << fkeys->getForeignKeyDeleteRule();
+	}
+}
+
+void LB_STDCALL lbOutputStream::visit(lb_I_DBPrimaryKeys* pkeys) {
+	int count;
+
+	count = pkeys->getPrimaryKeyCount();
+	*oStream << count;
+	
+	pkeys->finishPrimaryKeyIteration();
+	
+	while (pkeys->hasMorePrimaryKeys()) {
+		pkeys->setNextPrimaryKey();
+		
+		*oStream << pkeys->getPrimaryKeyID();
+		*oStream << pkeys->getPrimaryKeyTableCatalog();
+		*oStream << pkeys->getPrimaryKeyTableSchema();
+		*oStream << pkeys->getPrimaryKeyTableName();
+		*oStream << pkeys->getPrimaryKeyColumnName();
+		*oStream << pkeys->getPrimaryKeySequence();
+		*oStream << pkeys->getPrimaryKeyColumnName_ODBC_V_2();
+	}
+}
 
 void LB_STDCALL lbOutputStream::visit(lb_I_Translations* trans) {
 	int count;

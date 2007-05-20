@@ -167,6 +167,8 @@ public:
 	void LB_STDCALL visit(lb_I_DirLocation*);
 	void LB_STDCALL visit(lb_I_DBColumns*);
 	void LB_STDCALL visit(lb_I_DBTables*);
+	void LB_STDCALL visit(lb_I_DBPrimaryKeys*);
+	void LB_STDCALL visit(lb_I_DBForeignKeys*);
 
 	bool LB_STDCALL begin(char* file);
 	bool LB_STDCALL begin(lb_I_Stream* stream);
@@ -269,12 +271,133 @@ void LB_STDCALL lbInputStreamOpr::visit(lb_I_UserAccounts* users) {
 	}
 }
 
-void LB_STDCALL lbInputStreamOpr::visit(lb_I_DBColumns* columns) {
+void LB_STDCALL lbInputStreamOpr::visit(lb_I_DBForeignKeys* fkeys) {
+	// Number of users
+	int   count = 0;
+	*iStream >> count;
 
+	int   ID;
+	int KeySequence;
+	int UpdateRule;
+	int DeleteRule;
+
+	char* PKTableCatalog = NULL;
+	char* PKTableSchema = NULL;
+	char* PKTableName = NULL;
+	char* PKColumnName = NULL;
+
+	char* FKTableCatalog = NULL;
+	char* FKTableSchema = NULL;
+	char* FKTableName = NULL;
+	char* FKColumnName = NULL;
+
+
+	for (int i = 0; i < count; i++) {
+		// Load a user entry.
+		
+		*iStream >> ID;
+		*iStream >> PKTableCatalog;
+		*iStream >> PKTableSchema;
+		*iStream >> PKTableName;
+		*iStream >> PKColumnName;
+
+		*iStream >> FKTableCatalog;
+		*iStream >> FKTableSchema;
+		*iStream >> FKTableName;
+		*iStream >> FKColumnName;
+
+		*iStream >> KeySequence;
+		*iStream >> UpdateRule;
+		*iStream >> DeleteRule;
+		
+		fkeys->addForeignKey(	PKTableCatalog, PKTableSchema, PKTableName, PKColumnName,
+								FKTableCatalog, FKTableSchema, FKTableName, PKColumnName,
+								KeySequence, UpdateRule, DeleteRule, ID);
+	}
+}
+
+void LB_STDCALL lbInputStreamOpr::visit(lb_I_DBPrimaryKeys* pkeys) {
+	// Number of users
+	int   count = 0;
+	*iStream >> count;
+
+	long ID;
+	long KeySequence;
+
+	char* TableCatalog = NULL;
+	char* TableSchema = NULL;
+	char* TableName = NULL;
+	char* ColumnName = NULL;
+	char* ColumnName_V2 = NULL;
+
+
+	for (int i = 0; i < count; i++) {
+		// Load a user entry.
+		
+		*iStream >> ID;
+		*iStream >> TableCatalog;
+		*iStream >> TableSchema;
+		*iStream >> TableName;
+		*iStream >> ColumnName;
+		*iStream >> KeySequence;
+		*iStream >> ColumnName_V2;
+		
+		pkeys->addPrimaryKey(TableCatalog, TableSchema, TableName, ColumnName, KeySequence, ColumnName_V2, ID);
+	}
+}
+
+void LB_STDCALL lbInputStreamOpr::visit(lb_I_DBColumns* columns) {
+	// Number of users
+	int   count = 0;
+	*iStream >> count;
+
+	long   ID;
+	char* name = NULL;
+	char* typ = NULL;
+	int   len;
+	char* PKTable = NULL;
+	char* PKField = NULL;
+	char* tablename = NULL;
+
+	for (int i = 0; i < count; i++) {
+		// Load a user entry.
+		
+		*iStream >> ID;
+		*iStream >> name;
+		*iStream >> typ;
+		*iStream >> len;
+		*iStream >> PKTable;
+		*iStream >> PKField;
+		*iStream >> tablename;
+		
+		columns->addColumn(name, typ, len, false, PKTable, PKField, tablename, ID);
+	}
 }
 
 void LB_STDCALL lbInputStreamOpr::visit(lb_I_DBTables* tables) {
+	// Number of users
+	int   count = 0;
+	*iStream >> count;
 
+	int   ID;
+	char* catalog = NULL;
+	char* schema = NULL;
+	char* name = NULL;
+	char* type = NULL;
+	char* remarks = NULL;
+
+	for (int i = 0; i < count; i++) {
+		// Load a user entry.
+		
+		*iStream >> ID;
+		*iStream >> catalog;
+		*iStream >> schema;
+		*iStream >> name;
+		*iStream >> type;
+		*iStream >> remarks;
+		
+		tables->addTable(catalog, schema, name, type, remarks, ID);
+	}
 }
 
 void LB_STDCALL lbInputStreamOpr::visit(lb_I_Translations* trans) {

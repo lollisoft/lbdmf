@@ -108,3 +108,108 @@ public:
 	UAP(lb_I_Long, currentisFK)
 	UAP(lb_I_Long, marked)
 };
+
+class lbDBForeignKeysModel : public lb_I_DBForeignKeys {
+public:
+	lbDBForeignKeysModel();
+	virtual ~lbDBForeignKeysModel();
+
+	DECLARE_LB_UNKNOWN()
+
+	/** \brief Add a foreign key information.
+	 * This function is based on ODBC 1.0 and therefore didn't support the last three columns returned by the SQLForeignKeys function.
+	 */
+	long		LB_STDCALL addForeignKey(	const char* pktable_cat, const char* pktable_schem, const char* pktable_name, const char* pkcolumn_name, 
+													const char* fktable_cat, const char* fktable_schem, const char* fktable_name, const char* fkcolumn_name, 
+													long key_seq, long update_rule, long delete_rule, long _id = -1);
+	bool		LB_STDCALL selectForeignKey(long _id);
+	int			LB_STDCALL getForeignKeyCount();
+	bool		LB_STDCALL hasMoreForeignKeys();
+	void		LB_STDCALL setNextForeignKey();
+	void		LB_STDCALL finishForeignKeyIteration();
+	
+	long		LB_STDCALL getForeignKeyID();
+	char*		LB_STDCALL getForeignKeyPKTableCatalog();
+	char*		LB_STDCALL getForeignKeyPKTableSchema();
+	char*		LB_STDCALL getForeignKeyPKTableName();
+	char*		LB_STDCALL getForeignKeyPKTableColumnName();
+
+	char*		LB_STDCALL getForeignKeyFKTableCatalog();
+	char*		LB_STDCALL getForeignKeyFKTableSchema();
+	char*		LB_STDCALL getForeignKeyFKTableName();
+	char*		LB_STDCALL getForeignKeyFKTableColumnName();
+
+	long		LB_STDCALL getForeignKeyKeySequence();
+	long		LB_STDCALL getForeignKeyUpdateRule();
+	long		LB_STDCALL getForeignKeyDeleteRule();
+
+
+	bool		LB_STDCALL ismarked();
+	void		LB_STDCALL mark();
+	void		LB_STDCALL unmark();
+
+	void		LB_STDCALL deleteUnmarked();
+	void		LB_STDCALL deleteMarked();
+	
+	UAP(lb_I_Container, ForeignKeys)
+	UAP(lb_I_String, currentPKTableCatalog)
+	UAP(lb_I_String, currentPKTableSchema)
+	UAP(lb_I_String, currentPKTableName)
+	UAP(lb_I_String, currentPKTableColumnName)
+
+	UAP(lb_I_String, currentFKTableCatalog)
+	UAP(lb_I_String, currentFKTableSchema)
+	UAP(lb_I_String, currentFKTableName)
+	UAP(lb_I_String, currentFKTableColumnName)
+
+	UAP(lb_I_Long, currentID)
+	UAP(lb_I_Long, currentKeySequence)
+	UAP(lb_I_Long, currentUpdateRule)
+	UAP(lb_I_Long, currentDeleteRule)
+	
+	UAP(lb_I_Long, marked)
+};
+
+class lbDBPrimaryKeysModel : public lb_I_DBPrimaryKeys {
+public:
+	lbDBPrimaryKeysModel();
+	virtual ~lbDBPrimaryKeysModel();
+
+	DECLARE_LB_UNKNOWN()
+
+	long		LB_STDCALL addPrimaryKey(	const char* pktable_cat, const char* pktable_schem, const char* pktable_name, const char* pkcolumn_name, 
+													long key_seq, const char* column_name, long _id = -1);
+	bool		LB_STDCALL selectPrimaryKey(long _id);
+	int			LB_STDCALL getPrimaryKeyCount();
+	bool		LB_STDCALL hasMorePrimaryKeys();
+	void		LB_STDCALL setNextPrimaryKey();
+	void		LB_STDCALL finishPrimaryKeyIteration();
+	
+	long		LB_STDCALL getPrimaryKeyID();
+	char*		LB_STDCALL getPrimaryKeyTableCatalog();
+	char*		LB_STDCALL getPrimaryKeyTableSchema();
+	char*		LB_STDCALL getPrimaryKeyTableName();
+	char*		LB_STDCALL getPrimaryKeyColumnName();
+	char*		LB_STDCALL getPrimaryKeyColumnName_ODBC_V_2();
+
+	long		LB_STDCALL getPrimaryKeySequence();
+
+
+	bool		LB_STDCALL ismarked();
+	void		LB_STDCALL mark();
+	void		LB_STDCALL unmark();
+
+	void		LB_STDCALL deleteUnmarked();
+	void		LB_STDCALL deleteMarked();
+
+	UAP(lb_I_Container, PrimaryKeys)
+	UAP(lb_I_String, currentTableCatalog)
+	UAP(lb_I_String, currentTableSchema)
+	UAP(lb_I_String, currentTableName)
+	UAP(lb_I_String, currentColumnName)
+	UAP(lb_I_String, currentColumnName_V2)
+	
+	UAP(lb_I_Long, currentID)
+	UAP(lb_I_Long, currentKeySequence)
+	UAP(lb_I_Long, marked)
+};

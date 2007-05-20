@@ -133,6 +133,8 @@ protected:
 	UAP(lb_I_Action_Types, appActionTypes)
 	UAP(lb_I_DBTables, dbTables)
 	UAP(lb_I_DBColumns, dbColumns)
+	UAP(lb_I_DBPrimaryKeys, dbPrimaryKeys)
+	UAP(lb_I_DBForeignKeys, dbForeignKeys)
 
 
 	char hdsihd[100];
@@ -759,6 +761,36 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 		UAP(lb_I_Unknown, ukPlDBTables)
 		UAP(lb_I_Plugin, plDBColumns)
 		UAP(lb_I_Unknown, ukPlDBColumns)
+		UAP(lb_I_Plugin, plDBPrimaryKeys)
+		UAP(lb_I_Unknown, ukPlDBPrimaryKeys)
+		UAP(lb_I_Plugin, plDBForeignKeys)
+		UAP(lb_I_Unknown, ukPlDBForeignKeys)
+
+		plDBPrimaryKeys = PM->getFirstMatchingPlugin("lb_I_DBPrimaryKeys", "Model");
+		if (plDBPrimaryKeys != NULL) {
+			ukPlDBPrimaryKeys = plDBPrimaryKeys->getImplementation();
+		} else {
+			_LOG << "Warning: No primary keys datamodel plugin found." LOG_
+		}
+		
+		if (ukPlDBPrimaryKeys != NULL) { 
+			QI(ukPlDBPrimaryKeys, lb_I_DBPrimaryKeys, dbPrimaryKeys)
+		} else {
+			_LOG << "Warning: No primary keys datamodel plugin implementation found." LOG_
+		}
+
+		plDBForeignKeys = PM->getFirstMatchingPlugin("lb_I_DBForeignKeys", "Model");
+		if (plDBForeignKeys != NULL) {
+			ukPlDBForeignKeys = plDBForeignKeys->getImplementation();
+		} else {
+			_LOG << "Warning: No foreign keys datamodel plugin found." LOG_
+		}
+		
+		if (ukPlDBForeignKeys != NULL) { 
+			QI(ukPlDBForeignKeys, lb_I_DBForeignKeys, dbForeignKeys)
+		} else {
+			_LOG << "Warning: No foreign keys datamodel plugin implementation found." LOG_
+		}
 
 		plDBColumns = PM->getFirstMatchingPlugin("lb_I_DBColumns", "Model");
 		if (plDBColumns != NULL) {
@@ -930,6 +962,8 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 		if (!DBOperation && 
 			(forms != NULL) && 
 			(dbColumns != NULL) && 
+			(dbPrimaryKeys != NULL) && 
+			(dbForeignKeys != NULL) && 
 			(dbTables != NULL) && 
 			(formularfields != NULL) && 
 			(formParams != NULL) && 
@@ -940,6 +974,8 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 			_LOG << "Load application data from file ..." LOG_
 			
 			forms->accept(*&fOp);
+			dbPrimaryKeys->accept(*&fOp);
+			dbForeignKeys->accept(*&fOp);
 			dbTables->accept(*&fOp);
 			dbColumns->accept(*&fOp);
 			formularfields->accept(*&fOp);
@@ -955,6 +991,8 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 		if (DBOperation && 
 			(forms != NULL) && 
 			(dbColumns != NULL) && 
+			(dbPrimaryKeys != NULL) && 
+			(dbForeignKeys != NULL) && 
 			(dbTables != NULL) && 
 			(formularfields != NULL) && 
 			(formParams != NULL) && 
@@ -966,6 +1004,10 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 			
 			
 			forms->accept(*&fOpDB);
+			_LOG << "Read primary and foreign keys from database" LOG_
+			dbPrimaryKeys->accept(*&fOpDB);
+			dbForeignKeys->accept(*&fOpDB);
+			_LOG << "Have read primary and foreign keys from database" LOG_
 			dbTables->accept(*&fOpDB);
 			dbColumns->accept(*&fOpDB);
 			formularfields->accept(*&fOpDB);
@@ -1053,6 +1095,8 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 
 		if ((forms != NULL) && 
 			(formularfields != NULL) && 
+			(dbPrimaryKeys != NULL) && 
+			(dbForeignKeys != NULL) && 
 			(formParams != NULL) && 
 			(appActions != NULL) && 
 			(appActionSteps != NULL) && 
@@ -1063,6 +1107,14 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 			
 			*name = "Formulars";
 			QI(forms, lb_I_Unknown, uk)
+			document->insert(&uk, &key);
+			
+			*name = "DBPrimaryKeys";
+			QI(dbPrimaryKeys, lb_I_Unknown, uk)
+			document->insert(&uk, &key);
+			
+			*name = "DBForeignKeys";
+			QI(dbForeignKeys, lb_I_Unknown, uk)
 			document->insert(&uk, &key);
 			
 			*name = "DBTables";

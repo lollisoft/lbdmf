@@ -166,6 +166,8 @@ public:
 	void LB_STDCALL visit(lb_I_DirLocation*);
 	void LB_STDCALL visit(lb_I_DBColumns*);
 	void LB_STDCALL visit(lb_I_DBTables*);
+	void LB_STDCALL visit(lb_I_DBPrimaryKeys*);
+	void LB_STDCALL visit(lb_I_DBForeignKeys*);
 	
 	/** \brief Start save operation.
 	 *
@@ -316,6 +318,55 @@ void LB_STDCALL lbXMLOutputStream::visit(lb_I_FormularParameter* forms) {
 	*oStream << "</formularparameter>" << "\n";
 }
 
+void LB_STDCALL lbXMLOutputStream::visit(lb_I_DBForeignKeys* fkeys) {
+	*oStream << "<foreignkeys>" << "\n";
+	
+	fkeys->finishForeignKeyIteration();
+	
+	while (fkeys->hasMoreForeignKeys()) {
+		fkeys->setNextForeignKey();
+		
+		*oStream << 
+		"<foreignkey ID=\"" << fkeys->getForeignKeyID() << 
+		"\" pkcatalog=\"" << fkeys->getForeignKeyPKTableCatalog() << 
+		"\" pkschema=\"" << fkeys->getForeignKeyPKTableSchema() << 
+		"\" pktable=\"" << fkeys->getForeignKeyPKTableName() << 
+		"\" pkcolumn=\"" << fkeys->getForeignKeyPKTableColumnName() << 
+		"\" fkcatalog=\"" << fkeys->getForeignKeyFKTableCatalog() << 
+		"\" fkschema=\"" << fkeys->getForeignKeyFKTableSchema() << 
+		"\" fktable=\"" << fkeys->getForeignKeyFKTableName() << 
+		"\" fkcolumn=\"" << fkeys->getForeignKeyFKTableColumnName() << 
+		"\" keysequence=\"" << fkeys->getForeignKeyKeySequence() << 
+		"\" updaterule=\"" << fkeys->getForeignKeyUpdateRule() << 
+		"\" deleterule=\"" << fkeys->getForeignKeyDeleteRule() << "\"/>" << "\n";
+	}
+
+	*oStream << "</foreignkeys>" << "\n";
+}
+
+void LB_STDCALL lbXMLOutputStream::visit(lb_I_DBPrimaryKeys* pkeys) {
+	*oStream << "<primarykeys>" << "\n";
+	
+	pkeys->finishPrimaryKeyIteration();
+	
+	while (pkeys->hasMorePrimaryKeys()) {
+		pkeys->setNextPrimaryKey();
+		
+//		"\" pkcolumn_v2=\"" << pkeys->getPrimaryKeyColumnName_ODBC_V_2() << 
+
+		*oStream << 
+		"<primarykey ID=\"" << pkeys->getPrimaryKeyID() << 
+		"\" pkcatalog=\"" << pkeys->getPrimaryKeyTableCatalog() << 
+		"\" pkschema=\"" << pkeys->getPrimaryKeyTableSchema() << 
+		"\" pktable=\"" << pkeys->getPrimaryKeyTableName() << 
+		"\" pkcolumn=\"" << pkeys->getPrimaryKeyColumnName() << 
+		"\" keysequence=\"" << pkeys->getPrimaryKeySequence() << 
+		"\"/>\n";
+	}
+
+	*oStream << "</primarykeys>" << "\n";
+}
+
 void LB_STDCALL lbXMLOutputStream::visit(lb_I_DBColumns* dbcolumns) {
 	_LOG << "lbXMLOutputStream::visit(lb_I_DBColumns* dbcolumns) called" LOG_
 	*oStream << "<dbcolumns>" << "\n";
@@ -325,13 +376,6 @@ void LB_STDCALL lbXMLOutputStream::visit(lb_I_DBColumns* dbcolumns) {
 	while (dbcolumns->hasMoreColumns()) {
 		dbcolumns->setNextColumn();
 		
-		_LOG << 
-		"<column tablename=\"" << dbcolumns->getColumnTableName() << 
-		"\" name=\"" << dbcolumns->getColumnName() <<
-		"\" typ=\"" << dbcolumns->getColumnTyp() <<
-		"\" len=\"" << dbcolumns->getColumnLen() <<
-		"\"/>" LOG_
-
 		*oStream << 
 		"<column tablename=\"" << dbcolumns->getColumnTableName() << 
 		"\" name=\"" << dbcolumns->getColumnName() <<
