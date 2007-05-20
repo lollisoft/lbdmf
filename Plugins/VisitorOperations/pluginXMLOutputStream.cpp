@@ -395,9 +395,6 @@ void LB_STDCALL lbXMLOutputStream::visit(lb_I_DBTables* dbtable) {
 	
 	while (dbtable->hasMoreTables()) {
 		dbtable->setNextTable();
-		_LOG  << 
-		"<table ID=\"" << dbtable->getTableID() << 
-		"\" name=\"" << dbtable->getTableName() << "\"/>" LOG_
 		*oStream << 
 		"<table ID=\"" << dbtable->getTableID() << 
 		"\" name=\"" << dbtable->getTableName() << "\"/>" << "\n";

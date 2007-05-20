@@ -568,6 +568,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::uninitialize() {
 				if (success) {
 					accept(*&fOp);
 					fOp->end();
+					_LOG << "Saved application data to " << filename->charrep() << "." LOG_
 				} else {
 				// No file found. Create one from database...
 				}
@@ -1004,10 +1005,8 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 			
 			
 			forms->accept(*&fOpDB);
-			_LOG << "Read primary and foreign keys from database" LOG_
 			dbPrimaryKeys->accept(*&fOpDB);
 			dbForeignKeys->accept(*&fOpDB);
-			_LOG << "Have read primary and foreign keys from database" LOG_
 			dbTables->accept(*&fOpDB);
 			dbColumns->accept(*&fOpDB);
 			formularfields->accept(*&fOpDB);
