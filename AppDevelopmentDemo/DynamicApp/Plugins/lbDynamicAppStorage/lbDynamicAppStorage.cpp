@@ -160,7 +160,7 @@ lbErrCodes LB_STDCALL lbDynamicAppXMLStorage::save(lb_I_OutputStream* oStream) {
 	uk = document->getElement(&key);
 	QI(uk, lb_I_Actions, appActions)
 			
-	*name = "AppActionSteps";
+	*name = "AppAction_Steps";
 	uk = document->getElement(&key);
 	QI(uk, lb_I_Action_Steps, appActionSteps)
 			
@@ -351,7 +351,7 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::save(lb_I_OutputStream* oStre
 	uk = document->getElement(&key);
 	QI(uk, lb_I_Actions, appActions)
 			
-	*name = "AppActionSteps";
+	*name = "AppAction_Steps";
 	uk = document->getElement(&key);
 	QI(uk, lb_I_Action_Steps, appActionSteps)
 			

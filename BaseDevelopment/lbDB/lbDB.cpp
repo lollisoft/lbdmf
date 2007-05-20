@@ -5250,7 +5250,7 @@ lb_I_Container* LB_STDCALL lbDatabase::getPrimaryKeys() {
 		*paramname = "TableName";
 		param->getUAPString(*&paramname, *&tablename);
 		
-		retcode = SQLPrimaryKeys(hstmt, NULL, 0, NULL, 0, tablename->charrep(), SQL_NTS);
+		retcode = SQLPrimaryKeys(hstmt, NULL, 0, NULL, 0, (SQLCHAR*) tablename->charrep(), SQL_NTS);
 		
 		UAP_REQUEST(getModuleInstance(), lb_I_Long, index)
 		UAP(lb_I_KeyBase, key)
@@ -5408,7 +5408,7 @@ lb_I_Container* LB_STDCALL lbDatabase::getForeignKeys() {
 		*paramname = "TableName";
 		param->getUAPString(*&paramname, *&tablename);
 		
-		retcode = SQLForeignKeys(hstmt, NULL, 0, NULL, 0, tablename->charrep(), SQL_NTS, NULL, 0, NULL, 0, NULL, 0);        
+		retcode = SQLForeignKeys(hstmt, NULL, 0, NULL, 0, (SQLCHAR*) tablename->charrep(), SQL_NTS, NULL, 0, NULL, 0, NULL, 0);        
 		
 		UAP_REQUEST(getModuleInstance(), lb_I_Long, index)
 			UAP(lb_I_KeyBase, key)

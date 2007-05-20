@@ -28,7 +28,7 @@
 */
 /*...e*/
 
-class lbActionTypesModel : public lb_I_Actions {
+class lbActionTypesModel : public lb_I_Action_Types {
 public:
 	lbActionTypesModel();
 	virtual ~lbActionTypesModel();

@@ -1148,7 +1148,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 			QI(appActions, lb_I_Unknown, uk)
 			document->insert(&uk, &key);
 			
-			*name = "AppActionSteps";
+			*name = "AppAction_Steps";
 			QI(appActionSteps, lb_I_Unknown, uk)
 			document->insert(&uk, &key);
 			

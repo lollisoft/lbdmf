@@ -328,11 +328,11 @@ void LB_STDCALL lbXMLOutputStream::visit(lb_I_DBForeignKeys* fkeys) {
 		
 		*oStream << 
 		"<foreignkey ID=\"" << fkeys->getForeignKeyID() << 
-		"\" pkcatalog=\"" << fkeys->getForeignKeyPKTableCatalog() << 
+//		"\" pkcatalog=\"" << fkeys->getForeignKeyPKTableCatalog() << 
 		"\" pkschema=\"" << fkeys->getForeignKeyPKTableSchema() << 
 		"\" pktable=\"" << fkeys->getForeignKeyPKTableName() << 
 		"\" pkcolumn=\"" << fkeys->getForeignKeyPKTableColumnName() << 
-		"\" fkcatalog=\"" << fkeys->getForeignKeyFKTableCatalog() << 
+//		"\" fkcatalog=\"" << fkeys->getForeignKeyFKTableCatalog() << 
 		"\" fkschema=\"" << fkeys->getForeignKeyFKTableSchema() << 
 		"\" fktable=\"" << fkeys->getForeignKeyFKTableName() << 
 		"\" fkcolumn=\"" << fkeys->getForeignKeyFKTableColumnName() << 
@@ -356,7 +356,7 @@ void LB_STDCALL lbXMLOutputStream::visit(lb_I_DBPrimaryKeys* pkeys) {
 
 		*oStream << 
 		"<primarykey ID=\"" << pkeys->getPrimaryKeyID() << 
-		"\" pkcatalog=\"" << pkeys->getPrimaryKeyTableCatalog() << 
+//		"\" pkcatalog=\"" << pkeys->getPrimaryKeyTableCatalog() << 
 		"\" pkschema=\"" << pkeys->getPrimaryKeyTableSchema() << 
 		"\" pktable=\"" << pkeys->getPrimaryKeyTableName() << 
 		"\" pkcolumn=\"" << pkeys->getPrimaryKeyColumnName() << 
@@ -450,6 +450,7 @@ void LB_STDCALL lbXMLOutputStream::visit(lb_I_Action_Steps* action_steps) {
 }
 
 void LB_STDCALL lbXMLOutputStream::visit(lb_I_Action_Types* action_types) {
+_LOG "lbXMLOutputStream::visit(lb_I_Action_Types* action_types) called" LOG_
 	*oStream << "<actiontypes>" << "\n";
 	
 	action_types->finishActionTypeIteration();
