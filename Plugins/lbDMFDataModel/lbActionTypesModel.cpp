@@ -53,12 +53,11 @@ END_IMPLEMENT_LB_UNKNOWN()
 lbActionTypesModel::lbActionTypesModel() {
 	ref = STARTREF;
 
-	REQUEST(getModuleInstance(), lb_I_Container, Actions)
-	REQUEST(getModuleInstance(), lb_I_Long, currentActionID)
-	REQUEST(getModuleInstance(), lb_I_Long, currentActionTyp)
-	REQUEST(getModuleInstance(), lb_I_Long, currentActionTarget)
-	REQUEST(getModuleInstance(), lb_I_String, currentActionName)
-	REQUEST(getModuleInstance(), lb_I_String, currentActionSource)
+	REQUEST(getModuleInstance(), lb_I_Container, ActionTypes)
+	REQUEST(getModuleInstance(), lb_I_Long, currentActionTypesID)
+	REQUEST(getModuleInstance(), lb_I_String, currentActionTypesBezeichnung)
+	REQUEST(getModuleInstance(), lb_I_String, currentActionTypesHandler)
+	REQUEST(getModuleInstance(), lb_I_String, currentActionTypesModule)
 	
 	REQUEST(getModuleInstance(), lb_I_Long, marked)
 	_LOG << "lbActionTypesModel::lbActionTypesModel() called." LOG_
@@ -75,70 +74,66 @@ lbErrCodes LB_STDCALL lbActionTypesModel::setData(lb_I_Unknown*) {
 
 void		LB_STDCALL lbActionTypesModel::deleteUnmarked() {
 	lbErrCodes err = ERR_NONE;
-	Actions->finishIteration();
-	while (hasMoreActions()) {
-		setNextAction();
+	ActionTypes->finishIteration();
+	while (hasMoreActionTypes()) {
+		setNextActionType();
 		if (!ismarked()) {
 			UAP_REQUEST(manager.getPtr(), lb_I_Long, ID)
-			ID->setData(getActionID());
+			ID->setData(getActionTypeID());
 			
 			UAP(lb_I_KeyBase, key)
 			QI(ID, lb_I_KeyBase, key)
 			
-			Actions->remove(&key);
-			Actions->finishIteration();
+			ActionTypes->remove(&key);
+			ActionTypes->finishIteration();
 		}
 	}
 }
 
 void		LB_STDCALL lbActionTypesModel::deleteMarked() {
 	lbErrCodes err = ERR_NONE;
-	Actions->finishIteration();
-	while (hasMoreActions()) {
-		setNextAction();
+	ActionTypes->finishIteration();
+	while (hasMoreActionTypes()) {
+		setNextActionType();
 		if (ismarked()) {
 			UAP_REQUEST(manager.getPtr(), lb_I_Long, ID)
-			ID->setData(getActionID());
+			ID->setData(getActionTypeID());
 			
 			UAP(lb_I_KeyBase, key)
 			QI(ID, lb_I_KeyBase, key)
 			
-			Actions->remove(&key);
-			Actions->finishIteration();
+			ActionTypes->remove(&key);
+			ActionTypes->finishIteration();
 		}
 	}
 }
 
 
-long  LB_STDCALL lbActionTypesModel::addAction(const char* name, long typ, const char* source, long target, long _id) {
+long  LB_STDCALL lbActionTypesModel::addActionTypes(const char* bezeichnung, const char* action_handler , const char* module, long _id) {
 	lbErrCodes err = ERR_NONE;
-	UAP_REQUEST(manager.getPtr(), lb_I_String, Name)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, Source)
-	UAP_REQUEST(manager.getPtr(), lb_I_Long, ID)
-	UAP_REQUEST(manager.getPtr(), lb_I_Long, Typ)
-	UAP_REQUEST(manager.getPtr(), lb_I_Long, Target)
-	UAP_REQUEST(manager.getPtr(), lb_I_Long, marked)
-	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, paramname)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, ActionTypesBezeichnung)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, ActionTypesHandler)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, ActionTypesModule)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, marked)
+	UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
 
-	_CL_VERBOSE << "Add a parameter to lbActionTypesModel: " << name LOG_
+	_CL_VERBOSE << "Add a parameter to lbActionTypesModel: " << bezeichnung LOG_
 
-	*Name = name;
-	*Source = source;
-	Typ->setData(typ);
-	Target->setData(target);
+	*ActionTypesBezeichnung = bezeichnung;
+	*ActionTypesHandler = action_handler;
+	*ActionTypesModule = module;
 	ID->setData(_id);
 	
-	*paramname = "Name";
-	param->setUAPString(*&paramname, *&Name);
-	*paramname = "Source";
-	param->setUAPString(*&paramname, *&Source);
-	*paramname = "Typ";
-	param->setUAPLong(*&paramname, *&Typ);
+	*paramname = "ActionTypesBezeichnung";
+	param->setUAPString(*&paramname, *&ActionTypesBezeichnung);
+	*paramname = "ActionTypesHandler";
+	param->setUAPString(*&paramname, *&ActionTypesHandler);
+	*paramname = "ActionTypesModule";
+	param->setUAPString(*&paramname, *&ActionTypesModule);
 	*paramname = "ID";
 	param->setUAPLong(*&paramname, *&ID);
-	*paramname = "Target";
-	param->setUAPLong(*&paramname, *&Target);
 	*paramname = "marked";
 	param->setUAPLong(*&paramname, *&marked);
 	
@@ -147,12 +142,12 @@ long  LB_STDCALL lbActionTypesModel::addAction(const char* name, long typ, const
 	QI(ID, lb_I_KeyBase, key)
 	QI(param, lb_I_Unknown, ukParam)
 	
-	Actions->insert(&ukParam, &key);
+	ActionTypes->insert(&ukParam, &key);
 
 	return -1;
 }
 
-bool  LB_STDCALL lbActionTypesModel::selectAction(long _id) {
+bool  LB_STDCALL lbActionTypesModel::selectActionType(long _id) {
 	lbErrCodes err = ERR_NONE;
 	UAP_REQUEST(manager.getPtr(), lb_I_Long, id)
 	UAP(lb_I_Unknown, uk)
@@ -160,25 +155,23 @@ bool  LB_STDCALL lbActionTypesModel::selectAction(long _id) {
 	id->setData(_id);
 
 	QI(id, lb_I_KeyBase, key)
-	uk = Actions->getElement(&key);
+	uk = ActionTypes->getElement(&key);
 	
 	if (uk != NULL) {
-		UAP_REQUEST(manager.getPtr(), lb_I_String, name)
+		UAP_REQUEST(manager.getPtr(), lb_I_String, paramname)
 		UAP(lb_I_Parameter, param)
 		QI(uk, lb_I_Parameter, param)
 		
-		*name = "Name";
-		param->getUAPString(*&name, *&currentActionName);
-		*name = "Source";
-		param->getUAPString(*&name, *&currentActionSource);
-		*name = "ID";
-		param->getUAPLong(*&name, *&currentActionID);
-		*name = "Typ";
-		param->getUAPLong(*&name, *&currentActionTyp);
-		*name = "Target";
-		param->getUAPLong(*&name, *&currentActionTarget);
-		*name = "marked";
-		param->getUAPLong(*&name, *&marked);
+		*paramname = "ActionTypesBezeichnung";
+		param->getUAPString(*&paramname, *&currentActionTypesBezeichnung);
+		*paramname = "ActionTypesHandler";
+		param->getUAPString(*&paramname, *&currentActionTypesHandler);
+		*paramname = "ActionTypesModule";
+		param->getUAPString(*&paramname, *&currentActionTypesModule);
+		*paramname = "ID";
+		param->getUAPLong(*&paramname, *&currentActionTypesID);
+		*paramname = "marked";
+		param->setUAPLong(*&paramname, *&marked);
 		
 		return true;
 	}
@@ -199,59 +192,53 @@ void LB_STDCALL lbActionTypesModel::unmark() {
 	marked->setData((long) 0);
 }
 
-int  LB_STDCALL lbActionTypesModel::getActionCount() {
-	return Actions->Count();
+int  LB_STDCALL lbActionTypesModel::getActionTypesCount() {
+	return ActionTypes->Count();
 }
 
-bool  LB_STDCALL lbActionTypesModel::hasMoreActions() {
-	return Actions->hasMoreElements();
+bool  LB_STDCALL lbActionTypesModel::hasMoreActionTypes() {
+	return ActionTypes->hasMoreElements();
 }
 
-void  LB_STDCALL lbActionTypesModel::setNextAction() {
+void  LB_STDCALL lbActionTypesModel::setNextActionType() {
 	lbErrCodes err = ERR_NONE;
-	UAP_REQUEST(manager.getPtr(), lb_I_String, name)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, paramname)
 	UAP(lb_I_Parameter, param)
 	UAP(lb_I_Unknown, uk)
 	
-	uk = Actions->nextElement();
+	uk = ActionTypes->nextElement();
 	QI(uk, lb_I_Parameter, param)
 	
-	*name = "Name";
-	param->getUAPString(*&name, *&currentActionName);
-	*name = "Source";
-	param->getUAPString(*&name, *&currentActionSource);
-	*name = "ID";
-	param->getUAPLong(*&name, *&currentActionID);
-	*name = "Typ";
-	param->getUAPLong(*&name, *&currentActionTyp);
-	*name = "Target";
-	param->getUAPLong(*&name, *&currentActionTarget);
-	*name = "marked";
-	param->getUAPLong(*&name, *&marked);
+	*paramname = "ActionTypesBezeichnung";
+	param->getUAPString(*&paramname, *&currentActionTypesBezeichnung);
+	*paramname = "ActionTypesHandler";
+	param->getUAPString(*&paramname, *&currentActionTypesHandler);
+	*paramname = "ActionTypesModule";
+	param->getUAPString(*&paramname, *&currentActionTypesModule);
+	*paramname = "ID";
+	param->getUAPLong(*&paramname, *&currentActionTypesID);
+	*paramname = "marked";
+	param->setUAPLong(*&paramname, *&marked);
 }
 
-void  LB_STDCALL lbActionTypesModel::finishActionIteration() {
-	Actions->finishIteration();
+void  LB_STDCALL lbActionTypesModel::finishActionTypeIteration() {
+	ActionTypes->finishIteration();
 }
 
-long LB_STDCALL lbActionTypesModel::getActionID() {
-	return currentActionID->getData();
+long LB_STDCALL lbActionTypesModel::getActionTypeID() {
+	return currentActionTypesID->getData();
 }
 
-char*  LB_STDCALL lbActionTypesModel::getActionName() {
-	return currentActionName->charrep();
+char*  LB_STDCALL lbActionTypesModel::getActionTypeBezeichnung() {
+	return currentActionTypesBezeichnung->charrep();
 }
 
-char*  LB_STDCALL lbActionTypesModel::getActionSource() {
-	return currentActionSource->charrep();
+char*  LB_STDCALL lbActionTypesModel::getActionTypeHandler() {
+	return currentActionTypesHandler->charrep();
 }
 
-long LB_STDCALL lbActionTypesModel::getActionTyp() {
-	return currentActionTyp->getData();
-}
-
-long LB_STDCALL lbActionTypesModel::getActionTarget() {
-	return currentActionTarget->getData();
+char*  LB_STDCALL lbActionTypesModel::getActionTypeModule() {
+	return currentActionTypesModule->charrep();
 }
 
 /*...sclass lbPluginActionTypesModel implementation:0:*/

@@ -35,19 +35,18 @@ public:
 
 	DECLARE_LB_UNKNOWN()
 
-	long		LB_STDCALL addAction(const char* name, long typ, const char* source, long target, long _id = -1);
-	bool		LB_STDCALL selectAction(long _id);
-	int			LB_STDCALL getActionCount();
-	bool		LB_STDCALL hasMoreActions();
-	void		LB_STDCALL setNextAction();
-	void		LB_STDCALL finishActionIteration();
+	long		LB_STDCALL addActionTypes(const char* bezeichnung, const char* action_handler , const char* module, long _id = -1);
+	bool		LB_STDCALL selectActionType(long _id);
+	int			LB_STDCALL getActionTypesCount();
+	bool		LB_STDCALL hasMoreActionTypes();
+	void		LB_STDCALL setNextActionType();
+	void		LB_STDCALL finishActionTypeIteration();
 	
-	long		LB_STDCALL getActionID();
-	long		LB_STDCALL getActionTyp();
-	long		LB_STDCALL getActionTarget();
+	long		LB_STDCALL getActionTypeID();
 
-	char*		LB_STDCALL getActionSource();
-	char*		LB_STDCALL getActionName();
+	char*		LB_STDCALL getActionTypeBezeichnung();
+	char*		LB_STDCALL getActionTypeHandler();
+	char*		LB_STDCALL getActionTypeModule();
 	
 	bool		LB_STDCALL ismarked();
 	void		LB_STDCALL mark();
@@ -56,12 +55,11 @@ public:
 	void		LB_STDCALL deleteUnmarked();
 	void		LB_STDCALL deleteMarked();
 
-	UAP(lb_I_Container, Actions)
-	UAP(lb_I_Long, currentActionID)
-	UAP(lb_I_Long, currentActionTyp)
-	UAP(lb_I_Long, currentActionTarget)
-	UAP(lb_I_String, currentActionName)
-	UAP(lb_I_String, currentActionSource)
+	UAP(lb_I_Container, ActionTypes)
+	UAP(lb_I_Long, currentActionTypesID)
+	UAP(lb_I_String, currentActionTypesBezeichnung)
+	UAP(lb_I_String, currentActionTypesHandler)
+	UAP(lb_I_String, currentActionTypesModule)
 	
 	UAP(lb_I_Long, marked)
 };

@@ -3159,7 +3159,7 @@ class lb_I_Actions : public lb_I_Unknown {
 public:
 	virtual long		LB_STDCALL addAction(const char* name, long typ, const char* source, long target, long _id = -1) = 0;
 	virtual bool		LB_STDCALL selectAction(long _id) = 0;
-	virtual int		LB_STDCALL getActionCount() = 0;
+	virtual int			LB_STDCALL getActionCount() = 0;
 	virtual bool		LB_STDCALL hasMoreActions() = 0;
 	virtual void		LB_STDCALL setNextAction() = 0;
 	virtual void		LB_STDCALL finishActionIteration() = 0;
@@ -3185,7 +3185,7 @@ class lb_I_Action_Steps : public lb_I_Unknown {
 public:
 	virtual long		LB_STDCALL addActionStep(const char* bezeichnung, long actionid, long orderNo, long type, const char* what, long _id = -1) = 0;
 	virtual bool		LB_STDCALL selectActionStep(long _id) = 0;
-	virtual int		LB_STDCALL getActionStepCount() = 0;
+	virtual int			LB_STDCALL getActionStepCount() = 0;
 	virtual bool		LB_STDCALL hasMoreActionSteps() = 0;
 	virtual void		LB_STDCALL setNextActionStep() = 0;
 	virtual void		LB_STDCALL finishActionStepIteration() = 0;
@@ -3211,8 +3211,8 @@ public:
 class lb_I_Action_Types : public lb_I_Unknown {
 public:
 	virtual long		LB_STDCALL addActionTypes(const char* bezeichnung, const char* action_handler , const char* module, long _id = -1) = 0;
-	virtual bool		LB_STDCALL selectActionTypes(long _id) = 0;
-	virtual int		LB_STDCALL getActionTypesCount() = 0;
+	virtual bool		LB_STDCALL selectActionType(long _id) = 0;
+	virtual int			LB_STDCALL getActionTypesCount() = 0;
 	virtual bool		LB_STDCALL hasMoreActionTypes() = 0;
 	virtual void		LB_STDCALL setNextActionType() = 0;
 	virtual void		LB_STDCALL finishActionTypeIteration() = 0;
