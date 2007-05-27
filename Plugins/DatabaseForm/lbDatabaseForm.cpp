@@ -377,7 +377,7 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 		uk = document->getElement(&key);
 		QI(uk, lb_I_Actions, appActions)
 		
-		*name = "AppActionSteps";
+		*name = "AppAction_Steps";
 		uk = document->getElement(&key);
 		QI(uk, lb_I_Action_Steps, appActionSteps)
 		
