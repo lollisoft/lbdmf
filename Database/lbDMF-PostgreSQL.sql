@@ -986,8 +986,6 @@ insert into formular_actions (formular, action, event) values(5, 2, 'evt_Some_Te
 
 insert into formular_actions (formular, action, event) values(21, 3, 'evt_Manage_Train_Trip_Name');
 
-insert into formular_actions (formular, action, event) values(6, 7, 'evt_Print_Customer_Reservations');
-
 -- Actions for 'lbDMF Manager' application
 
 insert into formular_actions (formular, action, event) values(1, 4, 'evt_Manage_User_Apps');
