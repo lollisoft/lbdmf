@@ -85,28 +85,42 @@ public:
 	 * For each event, it gets an numeric identifer so it may
 	 * be able to dispatch that events.
 	 */
-	virtual lbErrCodes LB_STDCALL initialize(char* user = NULL, char* app = NULL);
-	virtual lbErrCodes LB_STDCALL uninitialize();
-	virtual lbErrCodes LB_STDCALL run();
-	virtual lbErrCodes LB_STDCALL getGUI(lb_I_GUI** _gui);
-	virtual lbErrCodes LB_STDCALL getUserName(lb_I_String** user);
-	virtual lbErrCodes LB_STDCALL getApplicationName(lb_I_String** app);
-	virtual lbErrCodes LB_STDCALL setUserName(char* user);
-	virtual lbErrCodes LB_STDCALL setApplicationName(char* app);
+	lbErrCodes LB_STDCALL initialize(char* user = NULL, char* app = NULL);
+	lbErrCodes LB_STDCALL uninitialize();
+	lbErrCodes LB_STDCALL run();
+	lbErrCodes LB_STDCALL getGUI(lb_I_GUI** _gui);
+	lbErrCodes LB_STDCALL getUserName(lb_I_String** user);
+	lbErrCodes LB_STDCALL getApplicationName(lb_I_String** app);
+	lbErrCodes LB_STDCALL setUserName(char* user);
+	lbErrCodes LB_STDCALL setApplicationName(char* app);
 	
-	virtual lb_I_EventManager* LB_STDCALL getEVManager( void );
+	lb_I_EventManager* LB_STDCALL getEVManager( void );
 
-	virtual lbErrCodes LB_STDCALL registerEventHandler(lb_I_Dispatcher* disp);	
-
-	void test() {}
+	lbErrCodes LB_STDCALL registerEventHandler(lb_I_Dispatcher* disp);	
 
 	/**
 	 * \brief The main handler to create dynamic forms
 	 */
 	lbErrCodes LB_STDCALL getDynamicDBForm(lb_I_Unknown* uk);
 	lbErrCodes LB_STDCALL exportApplicationToXML(lb_I_Unknown* uk);
+	
+	/** \brief Get a custom database form based on type selected in the formular table.
+	 * A custom database form could be installed traditionally by placing the module
+	 * into the right place and then modify the data structure regarding that database form,
+	 *
+	 * or by using plugin technology and simply let the plugin let do this work. Therefore
+	 * the plugin must either be activated before reading in the configuration.
+	 */
+	lbErrCodes LB_STDCALL getCustomDBForm(lb_I_Unknown* uk);
+	
 
 protected:
+
+	/** \brief Load the database forms.
+	 */
+	void LB_STDCALL activateDBForms(char* user, char* app);
+
+
 	lb_I_GUI* gui;
 	UAP(lb_I_EventManager, eman)
 	UAP(lb_I_Dispatcher, dispatcher)
@@ -231,6 +245,89 @@ lbErrCodes LB_STDCALL lbDynamicApplication::exportApplicationToXML(lb_I_Unknown*
 					// No file found. Create one from database...
 				}
 			}
+	}
+	return err;
+}
+
+lbErrCodes LB_STDCALL lbDynamicApplication::getCustomDBForm(lb_I_Unknown* uk) {
+	lbErrCodes err = ERR_NONE;
+	
+	if (gui != NULL) {
+		UAP(lb_I_FixedDatabaseForm, dbForm)
+		UAP(lb_I_Integer, eventID)
+		
+		QI(uk, lb_I_Integer, eventID)
+		
+		char* eventName = eman->reverseEvent(eventID->getData());
+		
+		if ((forms != NULL) && (forms->getFormularCount() > 0)) {
+			forms->finishFormularIteration();
+			while (forms->hasMoreFormulars()) {
+				forms->setNextFormular();
+				
+				if (strcmp(forms->getEventName(), eventName) == 0) {
+					forms->finishFormularIteration();
+					break;
+				}
+			}
+		}
+		
+		UAP(lb_I_Query, q)
+		UAP_REQUEST(getModuleInstance(), lb_I_Long, typ)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, sql)
+		q = database->getQuery(0);
+		
+		typ->setData(forms->getTyp());
+		
+		*sql = "SELECT handlerfunctor, handlermodule, handlerinterface, namespace from formulartypen where id = ";
+		*sql += typ->charrep();
+
+		_LOG << "Query for custom database formular: " << sql->charrep() LOG_
+		
+		if (q->query(sql->charrep()) == ERR_NONE) {
+			
+			err = q->first();
+			
+			if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
+				UAP(lb_I_String, functor)
+				UAP(lb_I_String, module)
+				UAP(lb_I_String, interface)
+				UAP(lb_I_String, namesp)
+				
+				functor = q->getAsString(1);
+				module = q->getAsString(2);
+				interface = q->getAsString(3);
+				namesp = q->getAsString(4);
+				
+				if (*namesp == "") {
+					
+				} else {
+					if (*interface == "lb_I_FixedDatabaseForm") { 
+						UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+						UAP(lb_I_Plugin, pl)
+						UAP(lb_I_Unknown, ukPl)
+						
+						pl = PM->getFirstMatchingPlugin("lb_I_FixedDatabaseForm", namesp->charrep());
+						
+						if (pl == NULL) {
+							return ERR_NONE;
+						}
+						
+						if (pl != NULL) {
+							ukPl = pl->getImplementation();
+							
+							QI(ukPl, lb_I_FixedDatabaseForm, dbForm)
+
+							dbForm = gui->addCustomDBForm(dbForm.getPtr(), forms->getName());
+								
+							if (dbForm != NULL) dbForm->show();
+						}
+					} else {
+						// Unsupported
+					}
+				}
+			}		
+		}
 	}
 	return err;
 }
@@ -710,11 +807,12 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 	} else {
 		isFileAvailable = fOp->begin(filename->charrep()); 
 	}
-			
-	UAP_REQUEST(manager.getPtr(), lb_I_Database, database)
+
 	UAP(lb_I_Query, sampleQuery)
-		
-	database->init();
+	if (database == NULL) {
+		REQUEST(manager.getPtr(), lb_I_Database, database)
+		database->init();
+	}
 	
 	char* lbDMFPasswd = getenv("lbDMFPasswd");
 	char* lbDMFUser   = getenv("lbDMFUser");
@@ -1200,10 +1298,19 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 	
 	database->connect("lbDMF", lbDMFUser, lbDMFPasswd);
 	
+	activateDBForms(user, app);
+	
+	return ERR_NONE;
+}
+
+void LB_STDCALL lbDynamicApplication::activateDBForms(char* user, char* app) {
+	UAP(lb_I_Query, sampleQuery)
+	bool toolbaradded = false;
+	int unused;
 	sampleQuery = database->getQuery(0);	
 	
 	char* b =
-		"select Formulare.eventname, Formulare.menuname, Formulare.toolbarimage from Formulare inner join "
+		"select Formulare.eventname, Formulare.menuname, Formulare.toolbarimage, Formulare.typ from Formulare inner join "
 		"anwendungen_formulare on anwendungen_formulare.formularid = formulare.id inner join "
 		"Anwendungen on anwendungen_formulare.anwendungid = Anwendungen.id inner join "
 		"User_Anwendungen on Anwendungen.id = User_Anwendungen.anwendungenid inner join Users on "
@@ -1232,25 +1339,28 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 	free(ed);
 	free(menu);
 	free(buffer);
-	
-	bool toolbaradded = false;
+
 	
 	lbErrCodes DBerr = sampleQuery->first();
 	if ((DBerr == ERR_NONE) || (DBerr == WARN_DB_NODATA)) {
 		UAP(lb_I_String, EventName)
 		UAP(lb_I_String, MenuName)
 		UAP(lb_I_String, ToolBarImage)
+		UAP(lb_I_Long, Typ)
 		
 		EventName = sampleQuery->getAsString(1);
 		MenuName = sampleQuery->getAsString(2);
 		ToolBarImage = sampleQuery->getAsString(3);
+		Typ = sampleQuery->getAsLong(4);
 		
 		if (eman->resolveEvent(EventName->charrep(), unused) == ERR_EVENT_NOTREGISTERED) {
 			
 			eman->registerEvent(EventName->charrep(), unused);
 			
-			dispatcher->addEventHandlerFn(this, 
-				  (lbEvHandler) &lbDynamicApplication::getDynamicDBForm, EventName->charrep());
+			if (Typ->getData() == 1L)
+				dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDynamicApplication::getDynamicDBForm, EventName->charrep());
+			else
+				dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDynamicApplication::getCustomDBForm, EventName->charrep());
 			
 			metaapp->addMenuEntry(_trans(app), MenuName->charrep(), EventName->charrep(), "");
 			
@@ -1269,14 +1379,15 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 			_CL_VERBOSE << "WARNING: Event name already reserved. Ignore it for menucreation." LOG_
 		}
 		
-		if (DBerr == WARN_DB_NODATA) return ERR_NONE;
-		if (DBerr == ERR_DB_NODATA) return ERR_NONE;
+		if (DBerr == WARN_DB_NODATA) return;
+		if (DBerr == ERR_DB_NODATA) return;
 #define TRUE 1
 		while (TRUE) {
 			/*...sget rest of menu entries:24:*/
 			UAP(lb_I_String, EventName)
 			UAP(lb_I_String, MenuName)
 			UAP(lb_I_String, ToolBarImage)
+			UAP(lb_I_Long, Typ)
 
 			DBerr = sampleQuery->next();
 			
@@ -1284,25 +1395,28 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 				EventName = sampleQuery->getAsString(1);
 				MenuName = sampleQuery->getAsString(2);
 				ToolBarImage = sampleQuery->getAsString(3);
+				Typ = sampleQuery->getAsLong(4);
 				
 				if (eman->resolveEvent(EventName->charrep(), unused) == ERR_EVENT_NOTREGISTERED) {
 					eman->registerEvent(EventName->charrep(), unused);
 					
-					dispatcher->addEventHandlerFn(this,
-												  (lbEvHandler) &lbDynamicApplication::getDynamicDBForm, EventName->charrep());
+				if (Typ->getData() == 1L)
+					dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDynamicApplication::getDynamicDBForm, EventName->charrep());
+				else
+					dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDynamicApplication::getCustomDBForm, EventName->charrep());
 					
-					metaapp->addMenuEntry(_trans(app), MenuName->charrep(), EventName->charrep(), "");
+				metaapp->addMenuEntry(_trans(app), MenuName->charrep(), EventName->charrep(), "");
 					
-					if (strcmp(ToolBarImage->charrep(), "") != 0) {
-						if (toolbaradded == false) {
-							metaapp->addToolBar(app);
-							toolbaradded = true;
-						}
-						
-						ToolBarImage->trim();
-						
-						metaapp->addToolBarButton(app, MenuName->charrep(), EventName->charrep(), ToolBarImage->charrep());
+				if (strcmp(ToolBarImage->charrep(), "") != 0) {
+					if (toolbaradded == false) {
+						metaapp->addToolBar(app);
+						toolbaradded = true;
 					}
+						
+					ToolBarImage->trim();
+						
+					metaapp->addToolBarButton(app, MenuName->charrep(), EventName->charrep(), ToolBarImage->charrep());
+				}
 					
 				} else {
 					_CL_VERBOSE << "WARNING: Event name already reserved. Ignore it for menucreation." LOG_
@@ -1316,9 +1430,8 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 	} else {
 		_CL_LOG << "Error: No forms are defined for application." LOG_
 	}
-	
-	return ERR_NONE;
 }
+
 
 /*...e*/
 lbErrCodes LB_STDCALL lbDynamicApplication::getUserName(lb_I_String** user) {

@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.135 2007/05/13 20:30:54 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.136 2007/06/06 21:33:24 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.135 $
+ * $Revision: 1.136 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.135 2007/05/13 20:30:54 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.136 2007/06/06 21:33:24 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.136  2007/06/06 21:33:24  lollisoft
+ * Made bugfixes and enhancements that were required.
+ *
  * Revision 1.135  2007/05/13 20:30:54  lollisoft
  * First (partly) working XML export.
  *
@@ -1491,6 +1494,8 @@ lbErrCodes LB_STDCALL lb_wxGUI::cleanup() {
 
 		UAP(lb_I_DatabaseForm, d)		
 		QI(form, lb_I_DatabaseForm, d)
+		UAP(lb_I_FixedDatabaseForm, fd)		
+		QI(form, lb_I_FixedDatabaseForm, fd)
 		
 		/* Really needed here !
 		 * The wxWidgets system doesn't have a or at least has it's own reference counting system.
@@ -1498,20 +1503,25 @@ lbErrCodes LB_STDCALL lb_wxGUI::cleanup() {
 		 * So here I must ensure, that the object it self doesn't get deleted in the container.
 		 * wxWidgets should call the destructor of the form.
 		 */
-		 
-		 
-		_CL_LOG << "Destroy a form with " << d->getRefCount() << " references ..." LOG_
-		 
-		d++;
 		
-		d->destroy();
-		
-		_CL_LOG << "Destroyed the form." LOG_
+		if (d != NULL) {
+			_CL_LOG << "Destroy a dynamic form with " << d->getRefCount() << " references ..." LOG_
+			d++;
+			d->destroy();
+			_CL_LOG << "Destroyed the dynamic form." LOG_
+		}
+
+		if (fd != NULL) {
+			_CL_LOG << "Destroy a custom form with " << fd->getRefCount() << " references ..." LOG_
+			fd++;
+			fd->destroy();
+			_CL_LOG << "Destroyed the custom form." LOG_
+		}
 	}
 	
 	forms->detachAll();
 
-        return ERR_NONE;
+    return ERR_NONE;
 }
 /*...e*/
 /*...slb_I_Form\42\ LB_STDCALL lb_wxGUI\58\\58\createLoginForm\40\\41\:0:*/
@@ -2074,7 +2084,7 @@ int MyApp::OnExit() {
 	UAP_REQUEST(manager.getPtr(), lb_I_PluginManager, PM)
 	
 	metaApp->unloadApplication();
-	
+
 	metaApp->save();
 	
 	PM->unload();

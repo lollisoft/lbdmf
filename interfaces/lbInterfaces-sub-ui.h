@@ -250,11 +250,18 @@ public:
 	virtual lbErrCodes LB_STDCALL setDispatcher(lb_I_Dispatcher* disp) = 0;	
 	
 	/**
-	 * \brief Find any window.
+	 * \brief Find any dynamic database window.
 	 *
-	 * This function finds any window by their name.
+	 * This function finds any dynamic database window by their name.
 	 */
 	virtual lb_I_DatabaseForm* LB_STDCALL findDBForm(char* name) = 0;
+	
+	/**
+	 * \brief Find any custom database window.
+	 *
+	 * This function finds any custom database window by their name.
+	 */
+	virtual lb_I_FixedDatabaseForm* LB_STDCALL findCustomDBForm(char* name) = 0;
 	
 	/**
 	 * \brief Show form with given name.
@@ -264,6 +271,12 @@ public:
 	/** \brief Set the app's icon.
 	 */
 	virtual void LB_STDCALL setIcon(char* name) = 0;
+	
+	/** \brief Add an existing instance of a formular.
+	 * Expected is a panel based formular, that could be placed into a notebook like
+	 * control or in a dialog based control.
+	 */
+	virtual lb_I_FixedDatabaseForm* LB_STDCALL addCustomDBForm(lb_I_FixedDatabaseForm* form, const char* formName) = 0;
 };
 /*...e*/
 /*...sclass lb_I_wxGUI:0:*/

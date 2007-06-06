@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.110 $
+ * $Revision: 1.111 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.110 2007/05/14 19:19:14 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.111 2007/06/06 21:33:23 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.111  2007/06/06 21:33:23  lollisoft
+ * Made bugfixes and enhancements that were required.
+ *
  * Revision 1.110  2007/05/14 19:19:14  lollisoft
  * Unfinished changes. Go to Linux.
  *
@@ -1262,6 +1265,12 @@ lbErrCodes LB_STDCALL lb_MetaApplication::unloadApplication() {
 		app->uninitialize();
 		app--;
 		app.resetPtr();
+		
+		if (activeDocuments != NULL) {
+			_LOG << "Manually delete all active documents." LOG_
+			activeDocuments->deleteAll();
+			_LOG << "Deleted all active documents." LOG_
+		}
 	}
 	
 	return ERR_NONE;

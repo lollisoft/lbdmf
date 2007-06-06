@@ -171,7 +171,7 @@ public:
          */
         lbErrCodes	LB_STDCALL getString(int column, lb_I_String* instance);
         lbErrCodes	LB_STDCALL getLong(int column, lb_I_Long* instance);
-        lbErrCodes	LB_STDCALL getString(char* column, lb_I_String* instance);
+        lbErrCodes	LB_STDCALL getString(const char* column, lb_I_String* instance);
         lbErrCodes      LB_STDCALL setString(char* column, lb_I_String* instance);
 
 	void		LB_STDCALL unbindReadonlyColumns();
@@ -378,6 +378,7 @@ public:
 #endif
 #ifndef UNBOUND       
         lb_I_String*	LB_STDCALL getAsString(int column);
+        lb_I_String*	LB_STDCALL getAsString(const char* column);
 		lb_I_Long*		LB_STDCALL getAsLong(int column);
 		lbErrCodes		LB_STDCALL setString(lb_I_String* columnName, lb_I_String* value);
 #endif        
@@ -1237,7 +1238,9 @@ lbErrCodes	LB_STDCALL lbBoundColumns::getString(int column, lb_I_String* instanc
 	return ERR_NONE;
 }
 /*...e*/
-lbErrCodes	LB_STDCALL lbBoundColumns::getString(char* column, lb_I_String* instance) {
+lbErrCodes	LB_STDCALL lbBoundColumns::getString(const char* column, lb_I_String* instance) {
+	getString(getColumnIndex(column), instance);
+	
 	return ERR_NONE;
 }
 /*...slbErrCodes      LB_STDCALL lbBoundColumns\58\\58\setString\40\char\42\ column\44\ lb_I_String\42\ instance\41\:0:*/
@@ -1847,6 +1850,17 @@ char* LB_STDCALL lbQuery::getChar(int column) {
 #endif
 #ifndef UNBOUND
 lb_I_String* LB_STDCALL lbQuery::getAsString(int column) {
+	UAP_REQUEST(manager.getPtr(), lb_I_String, string)
+	
+	// Caller get's an owner
+	string++;
+	
+	boundColumns->getString(column, *&string);
+	
+	return string.getPtr();
+}
+
+lb_I_String* LB_STDCALL lbQuery::getAsString(const char* column) {
 	UAP_REQUEST(manager.getPtr(), lb_I_String, string)
 	
 	// Caller get's an owner

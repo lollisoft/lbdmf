@@ -33,11 +33,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.24 $
+ * $Revision: 1.25 $
  * $Name:  $
- * $Id: wxWrapperDLL.h,v 1.24 2007/04/22 13:57:27 lollisoft Exp $
+ * $Id: wxWrapperDLL.h,v 1.25 2007/06/06 21:33:25 lollisoft Exp $
  *
  * $Log: wxWrapperDLL.h,v $
+ * Revision 1.25  2007/06/06 21:33:25  lollisoft
+ * Made bugfixes and enhancements that were required.
+ *
  * Revision 1.24  2007/04/22 13:57:27  lollisoft
  * Toolbar improvements.
  *
@@ -428,6 +431,8 @@ public:
         virtual lb_I_Unknown* LB_STDCALL createMenuBar();
         virtual lb_I_Unknown* LB_STDCALL createMenuEntry();
 
+	virtual lb_I_FixedDatabaseForm* LB_STDCALL addCustomDBForm(lb_I_FixedDatabaseForm* form, const char* formName);
+
 	virtual lb_I_DatabaseForm* LB_STDCALL createDBForm(char* formName, char* queryString, char* DBName, char* DBUser, char* DBPass);
 
 	virtual lb_I_Form* LB_STDCALL createLoginForm();
@@ -546,6 +551,7 @@ public:
 	void LB_STDCALL registerDBForm(char* formName, lb_I_DatabaseForm* form);
 
 	lb_I_DatabaseForm* LB_STDCALL findDBForm(char* name);
+	lb_I_FixedDatabaseForm* LB_STDCALL findCustomDBForm(char* name);
 
 	void LB_STDCALL showForm(char* name);
 

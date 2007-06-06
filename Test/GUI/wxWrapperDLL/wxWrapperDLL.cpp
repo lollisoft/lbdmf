@@ -734,6 +734,8 @@ lbErrCodes LB_STDCALL lb_wxGUI::cleanup() {
 
 		UAP(lb_I_DatabaseForm, d)		
 		QI(form, lb_I_DatabaseForm, d)
+		UAP(lb_I_FixedDatabaseForm, fd)		
+		QI(form, lb_I_FixedDatabaseForm, fd)
 		
 		/* Really needed here !
 		 * The wxWidgets system doesn't have a or at least has it's own reference counting system.
@@ -741,15 +743,20 @@ lbErrCodes LB_STDCALL lb_wxGUI::cleanup() {
 		 * So here I must ensure, that the object it self doesn't get deleted in the container.
 		 * wxWidgets should call the destructor of the form.
 		 */
-		 
-		 
-		_CL_LOG << "Destroy a form with " << d->getRefCount() << " references ..." LOG_
-		 
-		//d++;
 		
-		d->destroy();
-		
-		_CL_LOG << "Destroyed the form." LOG_
+		if (d != NULL) {
+			_CL_LOG << "Destroy a dynamic form with " << d->getRefCount() << " references ..." LOG_
+			d++;
+			d->destroy();
+			_CL_LOG << "Destroyed the dynamic form." LOG_
+		}
+
+		if (fd != NULL) {
+			_CL_LOG << "Destroy a custom form with " << fd->getRefCount() << " references ..." LOG_
+			fd++;
+			fd->destroy();
+			_CL_LOG << "Destroyed the custom form." LOG_
+		}
 	}
 	
 	forms->detachAll();
@@ -854,6 +861,121 @@ lb_I_Form* LB_STDCALL lb_wxGUI::createLoginForm() {
 	return NULL;
 }
 /*...e*/
+
+lb_I_FixedDatabaseForm* LB_STDCALL lb_wxGUI::addCustomDBForm(lb_I_FixedDatabaseForm* form, const char* formName) {
+	lbErrCodes err = ERR_NONE;
+    
+	_LOG << "lb_wxGUI::addCustomDBForm() called with '" << formName << "'." LOG_
+	
+	if (frame->isPanelUsage()) {
+		if (!notebook) {
+			notebook = new wxNotebook(frame, -1);
+			sizerMain = new wxBoxSizer(wxVERTICAL);
+			
+			frame->SetAutoLayout(TRUE);
+			notebook->SetAutoLayout(TRUE);
+	
+			sizerMain->Add(notebook, 1, wxEXPAND | wxALL, 0);
+	
+			frame->SetSizer(sizerMain);
+#ifdef USE_WXAUI			
+			frame->getAUIManager().AddPane(notebook,   wxCENTER, wxT("Workplace"));
+			frame->getAUIManager().Update();
+#endif
+		}
+	}
+	
+	UAP(lb_I_FixedDatabaseForm, _dialog)
+	
+	if (forms == NULL) {
+		REQUEST(getModuleManager(), lb_I_Container, forms)
+	}	
+
+	UAP(lb_I_Unknown, uk)
+	UAP(lb_I_KeyBase, key)
+	
+	UAP_REQUEST(getModuleManager(), lb_I_String, fName)
+	fName->setData(form->getFormName());
+	
+	QI(fName, lb_I_KeyBase, key)
+	
+	uk = forms->getElement(&key);	
+	
+	if (uk != NULL) {
+		QI(uk, lb_I_FixedDatabaseForm, _dialog)
+	}
+
+	if (_dialog.getPtr() == NULL) {
+		QI(form, lb_I_Unknown, uk)
+		forms->insert(&uk, &key);
+		
+		form->destroy();
+		form = NULL;
+		
+		//-------------------------------------------------------
+		
+		TRMemStopLocalCount();
+		TRMemResetLocalCount();
+		
+		uk = forms->getElement(&key);
+		
+		if (uk != NULL) {
+		        QI(uk, lb_I_FixedDatabaseForm, _dialog)
+		}
+
+		//_dialog->setName(formName);
+
+		if (frame->isPanelUsage()) {
+			_dialog->create(notebook->GetId());
+		}
+		
+		_LOG << "Initialize custom form..." LOG_
+		_dialog->init();
+		
+		if (frame->isPanelUsage()) {
+			wxWindow* w = frame->FindWindowById(_dialog->getId());
+			w->Fit();
+			
+			notebook->AddPage(w, _dialog->getFormName(), true);
+			
+			if (!frame->IsMaximized()) {
+				notebook->SetSizeHints(frame->FindWindowById(_dialog->getId())->GetSize());
+				notebook->Fit();
+			}
+			
+			if (frame->isSplitted()) {
+				if (!frame->IsMaximized()) frame->Fit();
+			} else {
+				if (!frame->IsMaximized()) {
+		
+					frame->SetSizeHints(notebook->GetSize());
+					frame->Fit();
+					frame->Centre();
+				}
+			}	
+		}
+		
+	} else {
+		if (frame->isPanelUsage()) {
+			int num = notebook->GetPageCount();
+			for (int i = 0; i < num; i++) {
+				if (strncmp(notebook->GetPageText(i).c_str(), _dialog->getFormName(), strlen(_dialog->getFormName())) == 0) {
+					notebook->SetSelection(i);
+				}
+			}
+		}
+	}
+/*...e*/
+
+	_dialog++;
+
+	UAP_REQUEST(getModuleManager(), lb_I_MetaApplication, app)
+	app->enableEvent("ShowPropertyPanel");
+	
+	return _dialog.getPtr();
+}
+
+
 /*...slb_I_DatabaseForm\42\ LB_STDCALL lb_wxGUI\58\\58\createDBForm\40\char\42\ formName\44\ char\42\ queryString\44\ char\42\ DBName\44\ char\42\ DBUser\44\ char\42\ DBPass\41\:0:*/
 lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::createDBForm(char* formName, char* queryString, char* DBName, char* DBUser, char* DBPass) {
 	lbErrCodes err = ERR_NONE;
@@ -1104,6 +1226,33 @@ lbErrCodes LB_STDCALL lb_wxGUI::msgBox(char* windowTitle, char* msg) {
         return ERR_NONE;
 }
 /*...e*/
+lb_I_FixedDatabaseForm* LB_STDCALL lb_wxGUI::findCustomDBForm(char* name) {
+	lbErrCodes err = ERR_NONE;
+	
+	UAP_REQUEST(getModuleManager(), lb_I_String, fName)
+	UAP(lb_I_KeyBase, key)
+	UAP(lb_I_Unknown, uk)
+	
+	fName->setData(name);
+	
+	QI(fName, lb_I_KeyBase, key)
+	
+	uk = forms->getElement(&key);
+	
+	if (uk == NULL) {
+		_CL_LOG << "Error: No form with name '" << name << "' found." LOG_
+		return NULL;
+	}
+	
+	UAP(lb_I_FixedDatabaseForm, w)
+	QI(uk, lb_I_FixedDatabaseForm, w)
+	// Not really needed, because my dialogs are forced to not be smart.
+	if (w != NULL) {
+		w++;
+		return w.getPtr();
+	}
+	return NULL;
+}
 /*...slb_I_DatabaseForm\42\ LB_STDCALL lb_wxGUI\58\\58\findDBForm\40\char\42\ name\41\:0:*/
 lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::findDBForm(char* name) {
 	lbErrCodes err = ERR_NONE;
@@ -1126,8 +1275,12 @@ lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::findDBForm(char* name) {
 	UAP(lb_I_DatabaseForm, w)
 	QI(uk, lb_I_DatabaseForm, w)
 	// Not really needed, because my dialogs are forced to not be smart.
-	w++;
-	return w.getPtr();
+	
+	if (w != NULL) {
+		w++;
+		return w.getPtr();
+	}
+	return NULL;
 }
 /*...e*/
 void LB_STDCALL lb_wxGUI::showForm(char* name) {
@@ -1136,16 +1289,35 @@ void LB_STDCALL lb_wxGUI::showForm(char* name) {
 		
 		lb_I_DatabaseForm* f = findDBForm(name);
 		
-		for (int i = 0; i < num; i++) {
-		    if ((strncmp(notebook->GetPageText(i).c_str(), name, strlen(name)) == 0)) {
-				notebook->SetPageText(i, f->getFormName());
-				notebook->SetSelection(i);
-		    }
+		if (f != NULL) {
+			for (int i = 0; i < num; i++) {
+				if ((strncmp(notebook->GetPageText(i).c_str(), name, strlen(name)) == 0)) {
+					notebook->SetPageText(i, f->getFormName());
+					notebook->SetSelection(i);
+				}
+			}
+		} else {
+			lb_I_FixedDatabaseForm* f = findCustomDBForm(name);
+			if (f != NULL) {
+				for (int i = 0; i < num; i++) {
+					if ((strncmp(notebook->GetPageText(i).c_str(), name, strlen(name)) == 0)) {
+						notebook->SetPageText(i, f->getFormName());
+						notebook->SetSelection(i);
+					}
+				}
+			}
 		}
 	} else {
 		lb_I_DatabaseForm* f = findDBForm(name);
 		
-		if (f) f->show();
+		if (f != NULL) { 
+			f->show();
+		} else {
+			lb_I_FixedDatabaseForm* f = findCustomDBForm(name);
+			if (f != NULL) { 
+				f->show();
+			}
+		}
 	}
 }
 

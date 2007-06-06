@@ -772,6 +772,21 @@ lb_I_String& LB_STDCALL lbString::operator = (const char* toAppend) {
 lb_I_String& LB_STDCALL lbString::replace(const char* toReplace, const char* with) {
 	UAP_REQUEST(getModuleInstance(), lb_I_String, rep)
 	
+	bool trailing = false;
+
+	char* temp = malloc(strlen(stringdata)+1);
+	
+	temp[0] = 0;
+	int ii = 0;
+	
+	for (int i = strlen(stringdata)-1; i >= 0; i--) {
+		temp[ii++] = stringdata[i];
+	}
+	
+	if (strncmp(temp, toReplace, strlen(toReplace)) == 0) trailing = true;
+	
+	free(temp);
+	
 	char* token = strtok(stringdata, toReplace);
 
 	if ((token != NULL) && (token != stringdata)) {
@@ -784,6 +799,8 @@ lb_I_String& LB_STDCALL lbString::replace(const char* toReplace, const char* wit
 		token = strtok(NULL, toReplace); 
 		if (token != NULL) *rep += with;
 	} 
+	
+	if (trailing) *rep += with;
 	
 	setData(rep->charrep());
 	

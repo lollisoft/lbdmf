@@ -31,6 +31,8 @@
 			2747C7980B5A7907005311B2,
 			2747C79A0B5A790D005311B2,
 			27519D3C0B9051CF0079C19C,
+			279259780C16DD810060C9FB,
+			27492C250C170E1800CC17D9,
 		);
 		codeSenseManager = 270BA7BC086C0A0900799F65;
 		executables = (
@@ -175,7 +177,7 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 201107983;
+			PBXPerProjectTemplateStateSaveDate = 202837518;
 			PBXPrepackagedSmartGroups_v2 = (
 				{
 					PBXTransientLocationAtTop = bottom;
@@ -352,11 +354,11 @@
 					};
 				},
 			);
-			PBXWorkspaceStateSaveDate = 201107983;
+			PBXWorkspaceStateSaveDate = 202837518;
 		};
 		perUserProjectItems = {
 			270607FF0B6CB9DF00DFDF9C = 270607FF0B6CB9DF00DFDF9C;
-			27210CF60BF99F7900F2E5FF = 27210CF60BF99F7900F2E5FF;
+			27492C2D0C170E8700CC17D9 = 27492C2D0C170E8700CC17D9;
 			27519D220B9050730079C19C = 27519D220B9050730079C19C;
 			27519D3F0B9051E10079C19C = 27519D3F0B9051E10079C19C;
 			27519D400B9051E10079C19C = 27519D400B9051E10079C19C;
@@ -494,6 +496,7 @@
 			27921FFC0B7F633F009467AA = 27921FFC0B7F633F009467AA;
 			279220280B7F6D67009467AA = 279220280B7F6D67009467AA;
 			2792202F0B7F6EE9009467AA = 2792202F0B7F6EE9009467AA;
+			2792597A0C16DDC80060C9FB = 2792597A0C16DDC80060C9FB;
 			2797C3760B83834B005EF671 = 2797C3760B83834B005EF671;
 			27A813F90B5A6AF000F11118 = 27A813F90B5A6AF000F11118;
 			27B39F680B2C060500FCB551 = 27B39F680B2C060500FCB551;
@@ -501,7 +504,6 @@
 			27B8653A0B389DD000C58BEF = 27B8653A0B389DD000C58BEF;
 			27B96CDF0B7FBC3100EB6A0F = 27B96CDF0B7FBC3100EB6A0F;
 			27B96CE50B7FC32400EB6A0F = 27B96CE50B7FC32400EB6A0F;
-			27CB0C080BFCB19A00E67BE5 = 27CB0C080BFCB19A00E67BE5;
 			27D4DD090B904B8700954FEA = 27D4DD090B904B8700954FEA;
 			27E413BB0B73E1340050006B = 27E413BB0B73E1340050006B;
 			27E413C70B73E3880050006B = 27E413C70B73E3880050006B;
@@ -586,7 +588,7 @@
 		environmentEntries = (
 		);
 		isa = PBXExecutable;
-		launchableReference = 272F28210BF1E11500800AD5;
+		launchableReference = 273F65300C035764008F91F5;
 		libgmallocEnabled = 0;
 		name = wxWrapper;
 		savedGlobals = {
@@ -595,16 +597,6 @@
 		);
 		sourceDirectories = (
 		);
-	};
-	27210CF60BF99F7900F2E5FF = {
-		fRef = 2778C29B0B5A4D49003524C2;
-		isa = PBXTextBookmark;
-		name = "wxWrapperDLL.cpp: 393";
-		rLen = 0;
-		rLoc = 9009;
-		rType = 0;
-		vrLen = 1210;
-		vrLoc = 8693;
 	};
 	27240A5408D49DBE009B29CA = {
 		activeExec = 0;
@@ -677,11 +669,11 @@
 		lineNumber = 141;
 		state = 2;
 	};
-	272F28210BF1E11500800AD5 = {
+	273F65300C035764008F91F5 = {
 		isa = PBXFileReference;
 		lastKnownFileType = wrapper.application;
 		name = wxWrapper.app;
-		path = /Users/lothar/bin/wxWrapper.app;
+		path = /Users/lothar/develop/Projects/CPP/Test/GUI/wxWrapper/wxWrapper.app;
 		refType = 0;
 		sourceTree = "<absolute>";
 	};
@@ -698,6 +690,23 @@
 		isa = PBXFileBreakpoint;
 		lineNumber = 1808;
 		state = 2;
+	};
+	27492C250C170E1800CC17D9 = {
+		fileReference = 2792596C0C16DD290060C9FB;
+		functionName = "Anwendungen::OnActionButton_evt_Manage_Apps_Forms()";
+		isa = PBXFileBreakpoint;
+		lineNumber = 6291;
+		state = 1;
+	};
+	27492C2D0C170E8700CC17D9 = {
+		fRef = 2778C29B0B5A4D49003524C2;
+		isa = PBXTextBookmark;
+		name = "wxWrapperDLL.cpp: 393";
+		rLen = 0;
+		rLoc = 9009;
+		rType = 0;
+		vrLen = 1210;
+		vrLoc = 8693;
 	};
 	27519D220B9050730079C19C = {
 		fRef = 27240A6808D49FA3009B29CA;
@@ -968,7 +977,7 @@
 	};
 	2778C29B0B5A4D49003524C2 = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1112, 31037}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1112, 32717}}";
 			sepNavSelRange = "{9009, 0}";
 			sepNavVisRect = "{{0, 5362}, {909, 629}}";
 		};
@@ -2187,11 +2196,6 @@
 		path = /Users/lothar/develop/Projects/CPP/Plugins/VisitorOperations/pluginDBInputStream.cpp;
 		refType = 0;
 		sourceTree = "<absolute>";
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1124, 16029}}";
-			sepNavSelRange = "{23089, 0}";
-			sepNavVisRect = "{{0, 9066}, {711, 428}}";
-		};
 	};
 	2785953A0B6D077B00112EF0 = {
 		isa = PBXFileReference;
@@ -2664,6 +2668,31 @@
 		vrLen = 1180;
 		vrLoc = 18394;
 	};
+	2792596C0C16DD290060C9FB = {
+		isa = PBXFileReference;
+		lastKnownFileType = sourcecode.cpp.cpp;
+		name = lbDMFManager.cpp;
+		path = /Users/lothar/develop/Projects/CPP/AppDevelopment/DynamicApp/Code/Targets/lbDMF/App/lbDMFManager.cpp;
+		refType = 0;
+		sourceTree = "<absolute>";
+	};
+	279259780C16DD810060C9FB = {
+		fileReference = 2792596C0C16DD290060C9FB;
+		functionName = "lbPluginModulelbDMFManager::initialize()";
+		isa = PBXFileBreakpoint;
+		lineNumber = 652;
+		state = 2;
+	};
+	2792597A0C16DDC80060C9FB = {
+		fRef = 2778C29B0B5A4D49003524C2;
+		isa = PBXTextBookmark;
+		name = "wxWrapperDLL.cpp: 393";
+		rLen = 0;
+		rLoc = 9009;
+		rType = 0;
+		vrLen = 1210;
+		vrLoc = 8693;
+	};
 	2797C3760B83834B005EF671 = {
 		fRef = 27CE9A1D08D4A87C00FB3DF0;
 		isa = PBXTextBookmark;
@@ -2906,16 +2935,6 @@
 			sepNavVisRect = "{{0, 5015}, {1078, 456}}";
 			sepNavWindowFrame = "{{15, 439}, {750, 558}}";
 		};
-	};
-	27CB0C080BFCB19A00E67BE5 = {
-		fRef = 2778C29B0B5A4D49003524C2;
-		isa = PBXTextBookmark;
-		name = "wxWrapperDLL.cpp: 393";
-		rLen = 0;
-		rLoc = 9009;
-		rType = 0;
-		vrLen = 1210;
-		vrLoc = 8693;
 	};
 	27CE9A1108D4A77600FB3DF0 = {
 		activeExec = 0;

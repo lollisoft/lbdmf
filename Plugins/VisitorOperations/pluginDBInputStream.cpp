@@ -903,8 +903,8 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Formular_Fields* formularfield
 	q = db->getQuery(0);
 	
 	q->skipFKCollecting();
-	// 1 = Dynamisch aufgebautes Datenbankformular
-	if (q->query("select id from formulare where typ = 1") != ERR_NONE) {
+	// Get all formulars, even one is custom
+	if (q->query("select id from formulare") != ERR_NONE) {
 		_LOG << "Error: Access to formular table failed. Read formulars would be skipped." LOG_
 		return;
 	}
@@ -1015,7 +1015,7 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Formular_Fields* formularfield
 									
 								case lb_I_Query::lbDBColumnBigInteger:
 								case lb_I_Query::lbDBColumnInteger:
-									formularfields->addField(name, tablename,  "Integer", true, "", "", FormularID->getData());
+									formularfields->addField(name, tablename,  "Integer", false, "", "", FormularID->getData());
 									break;
 								case lb_I_Query::lbDBColumnUnknown:
 									_CL_LOG << "lbDatabasePanel::init(...) Creating control failed due to unknown column type" LOG_
@@ -1138,7 +1138,7 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Formular_Fields* formularfield
 									
 								case lb_I_Query::lbDBColumnBigInteger:
 								case lb_I_Query::lbDBColumnInteger:
-									formularfields->addField(name, tablename, "Integer", true, "", "", FormularID->getData());
+									formularfields->addField(name, tablename, "Integer", false, "", "", FormularID->getData());
 									break;
 								case lb_I_Query::lbDBColumnUnknown:
 									_CL_LOG << "lbDatabasePanel::init(...) Creating control failed due to unknown column type" LOG_

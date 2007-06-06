@@ -419,6 +419,8 @@ public:
 	 * Builds a lb_I_String instance and fills in the data of the bound column.
 	 */
         virtual lb_I_String*    LB_STDCALL getAsString(int column) = 0;
+
+        virtual lb_I_String*    LB_STDCALL getAsString(const char* column) = 0;
         
         /**
          * \brief Set string to column.
@@ -795,7 +797,7 @@ public:
 	 * \param column Name of the column.
 	 * \param instance String instance to be filled with the value.
 	 */
-        virtual lbErrCodes      LB_STDCALL getString(char* column, lb_I_String* instance) = 0;
+        virtual lbErrCodes      LB_STDCALL getString(const char* column, lb_I_String* instance) = 0;
         
 	/**
 	 * \brief Set the column as string representation.
@@ -1057,6 +1059,92 @@ public:
 /*...e*/
 };
 /*...e*/
+/**
+ * \brief An attempt for a fixed database form interface.
+ */
+class lb_I_FixedDatabaseForm : 
+	public lb_I_Form
+	{
+public:
+	/** \brief Initialize the form.
+	 *
+	 */
+	virtual void LB_STDCALL init() = 0;
+
+	/**
+	 * \brief Get the used SQL query.
+	 *
+	 * This function is used to compare the in used query with the query, that should be used (from the database).
+	 * Using this avoids additional usage of a container for it and enables recreation of a changed form at runtime.
+	 */
+	virtual char* LB_STDCALL getQuery() = 0;
+	
+	/** \brief Set a filter for the form.
+	 *
+	 * Setup a filter to be used in the form. The filter must specify a typical where clause or
+	 * a part of it. To reset the filter, you need a call to this function without a parameter.
+	 *
+	 * Sample to show only data for one customer: kdnummer = 100001
+	 */
+	virtual void LB_STDCALL setFilter(char* filter = NULL) = 0;
+
+	/** \brief Get the table name based on column name.
+	 *
+	 * Return the related table name, that contains the given column name.
+	 */
+	virtual char* LB_STDCALL getTableName(char* columnName) = 0;
+
+/*...sMaster Detail form interface part:8:*/
+	/** \brief Get the number of master columns.
+	 *
+	 * Needed to access the column name.
+	 */
+	virtual int LB_STDCALL getPrimaryColumns() = 0;
+
+	/** \brief Get the number of foreign columns related to given primary tables.
+	 *
+	 * Needed to access the column name.
+	 */
+	virtual int LB_STDCALL getForeignColumns(char* primaryTable = NULL) = 0;
+
+	/** \brief Get the primary column at position pos.
+	 *
+	 * Warning: You must cleanup.
+	 */
+	virtual lb_I_String* LB_STDCALL getPrimaryColumn(int pos) = 0;
+
+	/** \brief Get the foreign column at position pos.
+	 *
+	 * Warning: You must cleanup.
+	 */
+	virtual lb_I_String* LB_STDCALL getForeignColumn(int pos) = 0;
+
+	/** \brief Return if the control is of type char.
+	 *
+	 */
+	virtual bool LB_STDCALL isCharacterColumn(char* name) = 0;
+
+	/** \brief Get the value of a control.
+	 *
+	 */
+	virtual const char* LB_STDCALL getControlValue(char* name) = 0;
+
+	/** \brief Get the value of a control.
+	 *
+	 */
+	virtual const char* LB_STDCALL getControlValue(int pos) = 0;
+
+	/** \brief Get the number of controls.
+	 *
+	 * Return the number of controls in the form. This includes all
+	 * controls.
+	 */
+	virtual int LB_STDCALL getControls() = 0;
+
+	virtual char* LB_STDCALL getColumnName(int pos) = 0;
+/*...e*/
+};
+
 /*...sclass lb_I_DatabaseReport:0:*/
 /**
  * \brief An attempt for a report based on database queries.

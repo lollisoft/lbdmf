@@ -311,7 +311,7 @@ void LB_STDCALL lbInputStreamOpr::visit(lb_I_DBForeignKeys* fkeys) {
 		*iStream >> DeleteRule;
 		
 		fkeys->addForeignKey(	PKTableCatalog, PKTableSchema, PKTableName, PKColumnName,
-								FKTableCatalog, FKTableSchema, FKTableName, PKColumnName,
+								FKTableCatalog, FKTableSchema, FKTableName, FKColumnName,
 								KeySequence, UpdateRule, DeleteRule, ID);
 	}
 }

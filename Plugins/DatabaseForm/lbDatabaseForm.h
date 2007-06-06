@@ -22,19 +22,22 @@
     The author of this work will be reached by e-Mail or paper mail.
     e-Mail: lothar.behrens@lollisoft.de
     p-Mail: Lothar Behrens
-            Rosmarinstr. 3
+            Heinrich-Scheufelen-Platz 2
             
-            40235 Duesseldorf (germany)
+            73252 Lenningen (germany)
 */
 /*...e*/
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.35 $
+ * $Revision: 1.36 $
  * $Name:  $
- * $Id: lbDatabaseForm.h,v 1.35 2007/05/12 17:50:32 lollisoft Exp $
+ * $Id: lbDatabaseForm.h,v 1.36 2007/06/06 21:33:24 lollisoft Exp $
  *
  * $Log: lbDatabaseForm.h,v $
+ * Revision 1.36  2007/06/06 21:33:24  lollisoft
+ * Made bugfixes and enhancements that were required.
+ *
  * Revision 1.35  2007/05/12 17:50:32  lollisoft
  * Added getFormName to enable bugfix in wxWrapperDLL.cpp.
  * Will also be usefull in general.

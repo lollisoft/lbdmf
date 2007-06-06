@@ -881,6 +881,7 @@ void LB_STDCALL lbMasterFormAction::openMasterForm(lb_I_String* formularname, lb
 	lbErrCodes err = ERR_NONE;
 	UAP_REQUEST(manager.getPtr(), lb_I_String, actionID)
 
+	/// \todo This is a possible bug if there are more than one such form.
 	if (masterForm != NULL) {
 		_CL_VERBOSE << "Show previously created form." LOG_
 	

@@ -739,6 +739,7 @@ class lb_I_Transfer;
 class lb_I_ThreadImplementation;
 class lb_I_Column_Types;
 class lb_I_Formular_Fields;
+class lb_I_FixedDatabaseForm;
 /*...e*/
 
 /*...scallback \47\ handler typedefs:0:*/
@@ -1313,7 +1314,7 @@ public:
  
  
 #define DECLARE_LB_UNKNOWN() \
-private: \
+protected: \
 	UAP(lb_I_Module, manager) \
 	mutable int ref; \
 	lb_I_Unknown* data; \
@@ -1324,7 +1325,6 @@ private: \
 	mutable miniLong   lastQILine; \
 	mutable miniString lastSMFile; \
 	mutable miniLong   lastSMLine; \
-protected: \
 public: \
 	virtual void 		LB_STDCALL setFurtherLock(int state) const { \
 	    further_lock = state; \
