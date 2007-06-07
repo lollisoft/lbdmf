@@ -774,7 +774,7 @@ lb_I_String& LB_STDCALL lbString::replace(const char* toReplace, const char* wit
 	
 	bool trailing = false;
 
-	char* temp = malloc(strlen(stringdata)+1);
+	char* temp = (char*) malloc(strlen(stringdata)+1);
 	
 	temp[0] = 0;
 	int ii = 0;

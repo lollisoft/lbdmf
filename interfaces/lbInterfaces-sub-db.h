@@ -750,7 +750,7 @@ public:
 	/**
 	 * \brief Get the index of the bound column.
 	 */
-	virtual int             LB_STDCALL getColumnIndex(char* name) = 0;
+	virtual int             LB_STDCALL getColumnIndex(const char* name) = 0;
 
 	/**
 	 * \brief Set the column updateability.

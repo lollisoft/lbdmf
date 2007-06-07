@@ -188,7 +188,7 @@ public:
 
 	lb_I_Query::lbDBColumnTypes LB_STDCALL getColumnType(int pos);
 	lb_I_Query::lbDBColumnTypes LB_STDCALL getColumnType(char* name);
-	int 		LB_STDCALL getColumnIndex(char* name);
+	int 		LB_STDCALL getColumnIndex(const char* name);
 
 	void		LB_STDCALL setReadonly(char* column, bool updateable);
 	bool		LB_STDCALL getReadonly(char* column);
@@ -667,7 +667,7 @@ lbErrCodes      LB_STDCALL lbBoundColumns::setBoundColumns(lb_I_Container* bc) {
 /*...e*/
 
 bool LB_STDCALL lbBoundColumns::isNull(char const * name) {
-	int pos = getColumnIndex((char*) name);
+	int pos = getColumnIndex(name);
 	return isNull(pos);
 }
 
@@ -695,7 +695,7 @@ bool LB_STDCALL lbBoundColumns::isNull(int pos) {
 }
 
 bool LB_STDCALL lbBoundColumns::isNullable(char const * name) {
-	int pos = getColumnIndex((char*) name);
+	int pos = getColumnIndex(name);
 	return isNullable(pos);
 }
 
@@ -832,7 +832,7 @@ bool	LB_STDCALL lbBoundColumns::hasValidData() {
 bool LB_STDCALL lbBoundColumns::setNull(char const * name, bool b) {
 	lbErrCodes err = ERR_NONE;
 	
-	int pos = getColumnIndex((char*) name);
+	int pos = getColumnIndex(name);
 
 	return setNull(pos, b);
 }
@@ -922,7 +922,7 @@ lb_I_Query::lbDBColumnTypes LB_STDCALL lbBoundColumns::getColumnType(int pos) {
 }
 /*...e*/
 /*...sint LB_STDCALL lbBoundColumns\58\\58\getColumnIndex\40\char\42\ name\41\:0:*/
-int LB_STDCALL lbBoundColumns::getColumnIndex(char* name) {
+int LB_STDCALL lbBoundColumns::getColumnIndex(const char* name) {
 
 	lbErrCodes err = ERR_NONE;
 	if (boundColumns != NULL) {
