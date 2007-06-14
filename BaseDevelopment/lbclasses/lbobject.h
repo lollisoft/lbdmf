@@ -31,10 +31,13 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.38 $
+ * $Revision: 1.39 $
  * $Name:  $
- * $Id: lbobject.h,v 1.38 2007/05/14 19:19:15 lollisoft Exp $
+ * $Id: lbobject.h,v 1.39 2007/06/14 20:49:36 lollisoft Exp $
  * $Log: lbobject.h,v $
+ * Revision 1.39  2007/06/14 20:49:36  lollisoft
+ * Improvements in memory allocations.
+ *
  * Revision 1.38  2007/05/14 19:19:15  lollisoft
  * Unfinished changes. Go to Linux.
  *
@@ -391,6 +394,7 @@ private:
 
 	char keyType[10];
 	char* stringdata;
+	long buffersize;
 };
 /*...e*/
 /*...sclass lbFileLocation:0:*/

@@ -703,6 +703,7 @@ lbErrCodes LB_STDCALL lbReference::get(lb_I_Unknown*& r) {
 lbString::lbString() {
 	ref = STARTREF;
 	stringdata = NULL;
+	buffersize = 0L;
 }
 
 lbString::~lbString() {
@@ -725,18 +726,23 @@ lb_I_String& LB_STDCALL lbString::operator += (const char* toAppend) {
 	char* temp = stringdata;
 
 	if (stringdata == NULL) {
-		stringdata = (char*) malloc(strlen(toAppend)+1);
+		buffersize = strlen(toAppend)+1;
+		stringdata = (char*) malloc(buffersize);
 		stringdata[0] = 0;
 	} else {
-		stringdata = (char*) malloc(strlen(stringdata)+strlen(toAppend)+1);
-		stringdata[0] = 0;
-		strcat(stringdata, temp);
+		long s = strlen(stringdata)+strlen(toAppend)*2;
+		if (buffersize >= s) {
+		} else {
+			buffersize = s;
+			stringdata = (char*) malloc(s);
+			stringdata[0] = 0;
+			strcat(stringdata, temp);
+			free(temp);
+		}
 	}
 
 	if (toAppend != NULL) strcat(stringdata, toAppend);
 	
-	free(temp);
-		
 	return *this;
 }
 
@@ -753,18 +759,32 @@ lb_I_String& LB_STDCALL lbString::operator = (const lb_I_String* toAppend) {
 }
 
 lb_I_String& LB_STDCALL lbString::operator = (const char* toAppend) {
-	char* temp = stringdata;
-
 	if (toAppend == NULL) {
 		setData("");
 		return *this;
 	}
+
+    long s = strlen(toAppend)+1;
 	
-	stringdata = (char*) malloc(strlen(toAppend)+1);
-	stringdata[0] = 0;
-	strcat(stringdata, toAppend);
-	
-	free(temp);
+	if (stringdata == NULL) {
+		buffersize = s;
+		stringdata = (char*) malloc(s);
+		stringdata[0] = 0;
+		strcat(stringdata, toAppend);
+	} else {
+		if (buffersize >= s) {
+			// Buffer is big enough
+			stringdata[0] = 0;
+			strcat(stringdata, toAppend);
+		} else {
+			char* temp = stringdata;
+			buffersize = s;
+			stringdata = (char*) malloc(s);
+			stringdata[0] = 0;
+			strcat(stringdata, toAppend);
+			free(temp);
+		}
+	}
 	
 	return *this;
 }
@@ -815,6 +835,7 @@ void LB_STDCALL lbString::setData(char const * p) {
 	
 	if (p == NULL) return;
 
+	buffersize = strlen(p)+1;
 	stringdata = (char*) malloc(strlen(p)+1);
 	stringdata[0] = 0;
 	strcpy(stringdata, p);
@@ -865,39 +886,6 @@ void LB_STDCALL lbString::toLower() {
 char* LB_STDCALL lbString::getData() const {
 	return stringdata;
 }
-
-/*...sbla:0:*/
-#ifdef bla
-
-void lbString::setType() {
-	OTyp = LB_STRING;
-}
-
-
-lb_I_Unknown* lbString::clone() const {
-	lbString* cloned = new lbString();
-	
-	cloned->setData(getData());
-	
-	lb_I_Unknown* uk_cloned = NULL;
-	
-	if (cloned->queryInterface("lb_I_Unknown", (void**) &uk_cloned) != ERR_NONE) {
-		_CL_VERBOSE << "Error while getting interface" LOG_
-	}
-	
-	return uk_cloned;
-}
-
-void lbString::setData(char* p) {
-	idf (p == NULL) return;
-	stringdata = strdup(p);
-}
-
-char* lbString::getData() const {
-	return stringdata;
-}
-#endif
-/*...e*/
 
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbString)
 	ADD_INTERFACE(lb_I_String)
