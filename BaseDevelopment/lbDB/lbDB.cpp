@@ -3303,7 +3303,7 @@ lbErrCodes LB_STDCALL lbQuery::update() {
 		boundColumns->unbindReadonlyColumns();
 		
 		if ((mode == 1) && (!boundColumns->hasValidData())) {
-			_CL_LOG << "Error: Query has not got valid data to be added." LOG_
+			_LOG << "Error: Query has not got valid data to be added." LOG_
 			mode = 0;
 			free(CursorName);
 			return ERR_DB_UPDATEFAILED;
@@ -4511,9 +4511,9 @@ void	LB_STDCALL lbBoundColumn::invalidateData() {
 
 bool	LB_STDCALL lbBoundColumn::hasValidData() {
 	if (!(_hasValidData || isReadonly)) {
-		_CL_LOG << "Bound column '" << columnName << "' has no valid data." LOG_
+		_LOG << "Bound column '" << columnName << "' has no valid data." LOG_
 	}
-	return _hasValidData || isReadonly;
+	return _hasValidData || isReadonly || _isNullable;
 }
 
 
@@ -4975,6 +4975,8 @@ lb_I_Container* LB_STDCALL lbDatabase::getTables() {
 	UAP_REQUEST(getModuleInstance(), lb_I_Container, tables)
 	tables++;
 	
+	tables->setCloning(false);
+	
 	UCHAR			szTableCatalog[TAB_LEN];
 	UCHAR			szTableSchema[TAB_LEN];
 	UCHAR			szTableName[TAB_LEN];
@@ -5063,6 +5065,8 @@ lb_I_Container* LB_STDCALL lbDatabase::getColumns() {
 	UAP_REQUEST(getModuleInstance(), lb_I_Container, columns)
 	columns++;
 	
+	columns->setCloning(false);
+
 	SQLCHAR       szCatalog[TAB_LEN], szSchema[TAB_LEN];
 	SQLCHAR       szTableName[TAB_LEN], szColumnName[TAB_LEN];
 	SQLCHAR       szTypeName[TAB_LEN], szRemarks[REM_LEN];
@@ -5140,57 +5144,74 @@ lb_I_Container* LB_STDCALL lbDatabase::getColumns() {
 				 
 				 UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
 					 
-				 *value = (const char*) szCatalog;
-				 *name = "TableCatalog";
-				 param->setUAPString(*&name, *&value);
-				 *value = (const char*) szSchema;
-				 *name = "TableSchema";
-				 param->setUAPString(*&name, *&value);
-				 *value = (const char*) szTableName;
-				 *name = "TableName";
-				 param->setUAPString(*&name, *&value);
-				 *value = (const char*) szColumnName;
-				 *name = "ColumnName";
-				 param->setUAPString(*&name, *&value);
-				 number->setData((long)DataType);
-				 *name = "DataType";
-				 param->setUAPLong(*&name, *&number);
-				 *value = (const char*) szTypeName;
-				 *name = "TypeName";
-				 param->setUAPString(*&name, *&value);
-				 number->setData((long)BufferLength);
-				 *name = "BufferLength";
-				 param->setUAPLong(*&name, *&number);
-				 number->setData((long)DecimalDigits);
-				 *name = "DecimalDigits";
-				 param->setUAPLong(*&name, *&number);
-				 number->setData((long)NumPrecRadix);
-				 *name = "NumPrecRadix";
-				 param->setUAPLong(*&name, *&number);
-				 number->setData((long)Nullable);
-				 *name = "Nullable";
-				 param->setUAPLong(*&name, *&number);
-				 *value = (const char*) szRemarks;
-				 *name = "Remarks";
-				 param->setUAPString(*&name, *&value);
-				 *value = (const char*) szColumnDefault;
-				 *name = "ColumnDefault";
-				 param->setUAPString(*&name, *&value);
-				 number->setData((long)SQLDataType);
-				 *name = "SQLDataType";
-				 param->setUAPLong(*&name, *&number);
 				 number->setData((long)DatetimeSubtypeCode);
 				 *name = "DatetimeSubtypeCode";
 				 param->setUAPLong(*&name, *&number);
+				 
+				 *value = (const char*) szCatalog;
+				 *name = "TableCatalog";
+				 param->setUAPString(*&name, *&value);
+				 
+				 *value = (const char*) szSchema;
+				 *name = "TableSchema";
+				 param->setUAPString(*&name, *&value);
+				 
+				 *value = (const char*) szTableName;
+				 *name = "TableName";
+				 param->setUAPString(*&name, *&value);
+				 
+				 *value = (const char*) szColumnName;
+				 *name = "ColumnName";
+				 param->setUAPString(*&name, *&value);
+				 
+				 number->setData((long)DataType);
+				 *name = "DataType";
+				 param->setUAPLong(*&name, *&number);
+				 
+				 *value = (const char*) szTypeName;
+				 *name = "TypeName";
+				 param->setUAPString(*&name, *&value);
+				 
+				 number->setData((long)BufferLength);
+				 *name = "BufferLength";
+				 param->setUAPLong(*&name, *&number);
+				 
+				 number->setData((long)DecimalDigits);
+				 *name = "DecimalDigits";
+				 param->setUAPLong(*&name, *&number);
+				 
+				 number->setData((long)NumPrecRadix);
+				 *name = "NumPrecRadix";
+				 param->setUAPLong(*&name, *&number);
+				 
+				 number->setData((long)Nullable);
+				 *name = "Nullable";
+				 param->setUAPLong(*&name, *&number);
+				 
+				 *value = (const char*) szRemarks;
+				 *name = "Remarks";
+				 param->setUAPString(*&name, *&value);
+				 
+				 *value = (const char*) szColumnDefault;
+				 *name = "ColumnDefault";
+				 param->setUAPString(*&name, *&value);
+				 
+				 number->setData((long)SQLDataType);
+				 *name = "SQLDataType";
+				 param->setUAPLong(*&name, *&number);
+				 
 				 number->setData((long)CharOctetLength);
 				 *name = "CharOctetLength";
 				 param->setUAPLong(*&name, *&number);
+				 
 				 number->setData((long)OrdinalPosition);
 				 *name = "OrdinalPosition";
 				 param->setUAPLong(*&name, *&number);
+				 
 				 *value = (const char*) szIsNullable;
 				 *name = "IsNullable";
 				 param->setUAPString(*&name, *&value);
+				 
 				 number->setData((long)ColumnSize);
 				 *name = "ColumnSize";
 				 param->setUAPLong(*&name, *&number);
