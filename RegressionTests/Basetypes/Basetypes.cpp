@@ -213,5 +213,24 @@ int main(int argc, char *argv[]) {
 		free(buf);
 	}
 	
+	_CL_LOG << "Test string appending..." LOG_
+	
+	UAP_REQUEST(getModuleInstance(), lb_I_String, testappend)
+	
+	*testappend = "1 part.";
+	*testappend += " 2 part.";
+	*testappend += " 3 part.";
+	*testappend += " 4 part.";
+	*testappend += " 5 part.";
+	*testappend += " 6 part.";
+	*testappend += " 7 part.";
+	*testappend += " 8 part.";
+	*testappend += " 9 part.";
+	*testappend += " 10 part.";
+	*testappend += " 11 part.";
+	
+	
+	_CL_LOG << "Produced this string: " << testappend->charrep() LOG_
+	
         return 0;
 }

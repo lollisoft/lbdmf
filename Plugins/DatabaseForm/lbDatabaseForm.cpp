@@ -22,9 +22,9 @@
     The author of this work will be reached by e-Mail or paper mail.
     e-Mail: lothar.behrens@lollisoft.de
     p-Mail: Lothar Behrens
-            Rosmarinstr. 3
+            Heinrich-Scheufelen-Platz 2
             
-            40235 Duesseldorf (germany)
+            73252 Lenningen (germany)
 */
 /*...e*/
 
@@ -792,6 +792,8 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 					int ImageButonClick;
 					sprintf(eventName, "%pImageButtonClick%s", this, name);
 					eman->registerEvent(eventName,  ImageButonClick);
+					
+					_LOG << "Assign a file to an image button: " << file->charrep() LOG_
 					
 					wxImage im = wxImage(file->charrep(), wxBITMAP_TYPE_XPM);
 					im.Rescale(32, 32);
@@ -2619,6 +2621,8 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBRead() {
 							wxString f = wxString(s->charrep());
 							
 							wxImage* im;
+							
+							_LOG << "Assign a file to an image button: " << toolbarfile->charrep() LOG_
 							
 							if (f.Upper().Contains(".XPM") == 1) {
 								im = new wxImage(toolbarfile->charrep(), wxBITMAP_TYPE_XPM);

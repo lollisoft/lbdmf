@@ -98,14 +98,16 @@ int main(int argc, char *argv[]) {
 
 		query1->skipFKCollecting();
 		query1->query("delete from \"user_anwendungen\"");
-		query1->query("insert \"user_anwendungen\" (userid,anwendungenid) values(1,1)");
-		query1->query("insert \"user_anwendungen\" (userid,anwendungenid) values(1,2)");
-		query1->query("insert \"user_anwendungen\" (userid,anwendungenid) values(1,3)");
-		query1->query("insert \"user_anwendungen\" (userid,anwendungenid) values(1,4)");
-		query1->query("insert \"user_anwendungen\" (userid,anwendungenid) values(1,5)");
+		query1->query("insert user_anwendungen (userid,anwendungenid) values(1,1)");
+		query1->query("insert user_anwendungen (userid,anwendungenid) values(1,2)");
+		query1->query("insert user_anwendungen (userid,anwendungenid) values(1,3)");
+		query1->query("insert user_anwendungen (userid,anwendungenid) values(1,4)");
+		query1->query("insert user_anwendungen (userid,anwendungenid) values(1,5)");
 		query1->enableFKCollecting();
 
-		query->query("select \"userid\", \"anwendungenid\" from \"user_anwendungen\" where userid = 2");
+		query->query("select \"userid\", \"anwendungenid\" from \"user_anwendungen\"");
+		
+		query->PrintData();
 		
 		query->first();
 		query->update();
@@ -119,7 +121,7 @@ int main(int argc, char *argv[]) {
 		query->update();
 		query->add();
 		*col = "userid";
-		*val = "2";
+		*val = "1";
 		query->setString(*&col, *&val);
 		*col = "anwendungenid";
 		*val = "1";
@@ -153,7 +155,9 @@ int main(int argc, char *argv[]) {
 		if (!query->isNull("anwendungenid")) _CL_LOG << "Error: Expect column 'anwendungenid' to be NULL!" LOG_
 	
 		_CL_LOG << "Call query->update() on added row with all fk values proper set to NULL." LOG_
-		query->update();
+		if (query->update() != ERR_NONE) {
+			_CL_LOG << "Error adding wrong key values." LOG_
+		}
 		_CL_LOG << "Called query->update() on added row with all fk values proper set to NULL." LOG_
 
 		query->add(); // Affect the next two calls.

@@ -295,7 +295,7 @@
 										<key>PBXProjectModuleLabel</key>
 										<string>wxWrapperDLL.cpp</string>
 										<key>bookmark</key>
-										<string>27492C2D0C170E8700CC17D9</string>
+										<string>271C5AF00C21501100AB10BE</string>
 										<key>history</key>
 										<array>
 											<string>2778C2A50B5A4E1E003524C2</string>
@@ -380,7 +380,7 @@
 											<string>27519D220B9050730079C19C</string>
 											<string>27519D3F0B9051E10079C19C</string>
 											<string>27519D400B9051E10079C19C</string>
-											<string>2792597A0C16DDC80060C9FB</string>
+											<string>27EAF40C0C212FCC009C8CAA</string>
 										</array>
 										<key>prevStack</key>
 										<array>
@@ -524,9 +524,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>27492C270C170E8600CC17D9</string>
+				<string>271C5ADF0C214BD900AB10BE</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>27492C280C170E8600CC17D9</string>
+				<string>271C5AE00C214BD900AB10BE</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -554,10 +554,9 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
-		<string>27A017CE0870060900677AEE</string>
-		<string>27492C2A0C170E8600CC17D9</string>
+		<string>271C5AE20C214BD900AB10BE</string>
 		<string>/Users/lothar/develop/Projects/CPP/Compilers/XCode/DMF/DMF.xcode</string>
-		<string>1C0AD2AD069F1E9B00FABCE6</string>
+		<string>27A017CE0870060900677AEE</string>
 		<string>1CD10A99069EF8BA00B06720</string>
 	</array>
 	<key>WindowString</key>
@@ -690,8 +689,8 @@
 										<string>yes</string>
 										<key>sizes</key>
 										<array>
-											<string>{{0, 0}, {358, 298}}</string>
-											<string>{{358, 0}, {761, 298}}</string>
+											<string>{{0, 0}, {335, 298}}</string>
+											<string>{{335, 0}, {784, 298}}</string>
 										</array>
 									</dict>
 									<key>VerticalSplitView</key>
@@ -754,9 +753,9 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>1CD10A99069EF8BA00B06720</string>
-				<string>27492C290C170E8600CC17D9</string>
+				<string>271C5AE10C214BD900AB10BE</string>
 				<string>1C162984064C10D400B95A72</string>
-				<string>27492C2A0C170E8600CC17D9</string>
+				<string>271C5AE20C214BD900AB10BE</string>
 			</array>
 			<key>ToolbarConfiguration</key>
 			<string>xcode.toolbar.config.debug</string>
@@ -883,6 +882,8 @@
 					<key>Dock</key>
 					<array>
 						<dict>
+							<key>BecomeActive</key>
+							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>
@@ -918,7 +919,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>27A017CE0870060900677AEE</string>
-				<string>27492C2B0C170E8600CC17D9</string>
+				<string>271C5AE30C214BD900AB10BE</string>
 				<string>1C78EAAC065D492600B07095</string>
 			</array>
 			<key>WindowString</key>
@@ -926,7 +927,7 @@
 			<key>WindowToolGUID</key>
 			<string>27A017CE0870060900677AEE</string>
 			<key>WindowToolIsVisible</key>
-			<false/>
+			<true/>
 		</dict>
 		<dict>
 			<key>FirstTimeWindowDisplayed</key>
