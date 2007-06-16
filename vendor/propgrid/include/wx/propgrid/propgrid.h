@@ -3922,9 +3922,8 @@ public:
     %pythoncode {
         def MapType(class_,factory):
             """\
-            Registers Python type/class to property mapping.
-
-            factory: Property builder function/class.
+            Registers Python type/class to property mapping.\
+            factory: Property builder function/class.\
             """
             global _type2property
             try:
@@ -3937,7 +3936,7 @@ public:
 
         def DoDefaultTypeMappings(self):
             """\
-            Map built-in properties.
+            Map built-in properties.\
             """
             global _type2property
             try:
@@ -3964,9 +3963,8 @@ public:
 
         def GetPropertyValue(self,p):
             """\
-            Returns Python object value for property.
-
-            Caches getters on value type id basis for performance purposes.
+            Returns Python object value for property.\
+            Caches getters on value type id basis for performance purposes.\
             """
             global _vt2getter
             vtid = self.GetPVTI(p)
@@ -4010,8 +4008,8 @@ public:
 
         def SetPropertyValueArrstr2(self,p,v):
             """\
-            NB: We must implement this in Python because SWIG has problems combining
-                conversion of list to wxArrayXXX and overloaded arguments.
+            NB: We must implement this in Python because SWIG has problems combining\
+                conversion of list to wxArrayXXX and overloaded arguments.\
             """
             if not isinstance(p,basestring):
                 self._SetPropertyValueArrstr(p,v)
@@ -4021,9 +4019,9 @@ public:
 
         def SetPropertyValueArrint2(self,p,v):
             """\
-            NB: We must implement this in Python because SWIG has problems combining
-                conversion of list to wxArrayXXX and overloaded arguments.
-            """
+            NB: We must implement this in Python because SWIG has problems combining\
+                conversion of list to wxArrayXXX and overloaded arguments.\
+		    """
             if not isinstance(p,basestring):
                 self._SetPropertyValueArrint(p,v)
             else:
@@ -4032,9 +4030,8 @@ public:
 
         def SetPropertyValue(self,p,v):
             """\
-            Set property value from Python object.
-
-            Caches setters on value type id basis for performance purposes.
+            Set property value from Python object.\
+            Caches setters on value type id basis for performance purposes.\
             """
             cls = self.__class__
             if not isinstance(v,basestring):
@@ -4082,7 +4079,7 @@ public:
 
         def DoDefaultValueTypeMappings(self):
             """\
-            Map pg value type ids to getter methods.
+            Map pg value type ids to getter methods.\
             """
             global _vt2getter
             try:
@@ -4109,16 +4106,15 @@ public:
 
         def GetPropertyValues(self,dict_=None,as_strings=False):
             """\
-            Returns values in the grid.
-
-            dict_: if not given, then a new one is created. dict_ can be
-              object as well, in which case it's __dict__ is used.
-            as_strings: if True, then string representations of values
-              are fetched instead of native types. Useful for config and such.
-
-            Return value: dictionary with values. It is always a dictionary,
-            so if dict_ was object with __dict__ attribute, then that attribute
-            is returned.
+            Returns values in the grid.\
+			\
+            dict_: if not given, then a new one is created. dict_ can be\
+              object as well, in which case it's __dict__ is used.\
+            as_strings: if True, then string representations of values\
+              are fetched instead of native types. Useful for config and such.\
+            Return value: dictionary with values. It is always a dictionary,\
+            so if dict_ was object with __dict__ attribute, then that attribute\
+            is returned.\
             """
 
             if dict_ is None:
@@ -4141,14 +4137,12 @@ public:
 
         def SetPropertyValues(self,dict_):
             """\
-            Sets property values from dict_, which can be either
-            dictionary or an object with __dict__ attribute.
-
-            autofill: If true, keys with not relevant properties
-              are auto-created. For more info, see AutoFill.
-
-            Notes:
-              * Keys starting with underscore are ignored.
+            Sets property values from dict_, which can be either\
+            dictionary or an object with __dict__ attribute.\
+            autofill: If true, keys with not relevant properties\
+              are auto-created. For more info, see AutoFill.\
+            Notes:\
+              * Keys starting with underscore are ignored.\
             """
 
             autofill = False
@@ -4214,8 +4208,8 @@ public:
 
         def AutoFill(self,obj,parent=None):
             """\
-            Clears properties and re-fills to match members and
-            values of given object or dictionary obj.
+            Clears properties and re-fills to match members and\
+            values of given object or dictionary obj.\
             """
 
             self.edited_objects[parent] = obj
