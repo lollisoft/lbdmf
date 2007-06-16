@@ -1061,12 +1061,12 @@ wxTreeCtrl* MyFrame::CreateTreeCtrl()
     wxTreeItemId root = tree->AddRoot(wxT("wxAUI Project"));
     wxArrayTreeItemIds items;
 
-
+#ifndef SOLARIS
     wxImageList* imglist = new wxImageList(16, 16, true, 2);
     imglist->Add(wxArtProvider::GetBitmap(wxART_FOLDER, wxART_OTHER, wxSize(16,16)));
     imglist->Add(wxArtProvider::GetBitmap(wxART_NORMAL_FILE, wxART_OTHER, wxSize(16,16)));
     tree->AssignImageList(imglist);
-
+#endif
     items.Add(tree->AppendItem(root, wxT("Item 1"), 0));
     items.Add(tree->AppendItem(root, wxT("Item 2"), 0));
     items.Add(tree->AppendItem(root, wxT("Item 3"), 0));

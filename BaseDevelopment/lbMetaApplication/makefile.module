@@ -51,6 +51,11 @@ LNKDLLOPS = $(L_DLLOPS_MICROSOFT)
 endif
 endif
 
+ifeq ($(OSTYPE), solaris)
+MOD_INCL=$(STD_INCL) -I../lbHook/linuxCode
+VENDORLIBS=-L$(prefix)/lib -llbHook
+endif    
+
 ifeq ($(OSTYPE), linux)
 MOD_INCL=$(STD_INCL) -I../lbHook/linuxCode
 VENDORLIBS=-L$(prefix)/lib -llbHook

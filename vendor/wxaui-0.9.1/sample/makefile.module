@@ -106,6 +106,16 @@ endif
 
 endif
 
+ifeq ($(OSTYPE), solaris)
+MOD_INCL=$(STD_INCL) -I ../include -I ../wxWrapperDLL
+OBJDEP=
+
+C_ELFOPS += `wx-config --inplace --cxxflags` -DUSE_WXWRAPPER_DLL -DUNIX -DLINUX -DLB_I_EXTENTIONS
+L_OPS = `wx-config --inplace --libs` -o
+
+VENDORLIBS=-L$(prefix)/lib -lwxAUI 
+endif
+
 ifeq ($(OSTYPE), linux)
 MOD_INCL=$(STD_INCL) -I ../include -I ../wxWrapperDLL
 OBJDEP=

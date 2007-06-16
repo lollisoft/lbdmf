@@ -407,7 +407,7 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 		REQUEST(manager.getPtr(), lb_I_Container, ignoredPKTables)
 	}
 
-	SetTitle(formName);
+	SetName(formName);
 
 /*...sSizers:8:*/
 	wxBoxSizer* sizerMain  = new wxBoxSizer(wxVERTICAL);
@@ -1776,7 +1776,7 @@ void LB_STDCALL lbDatabasePanel::updateFromMaster() {
 		}
 	}
 	
-	SetTitle(formName);
+	SetName(formName);
 }
 /*...e*/
 
@@ -2215,7 +2215,7 @@ void LB_STDCALL lbDatabasePanel::updateFromDetail() {
 		}
 	}
 	
-	SetTitle(formName);
+	SetName(formName);
 }
 /*...e*/
 
@@ -2306,7 +2306,7 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBUpdate() {
 	//if (noDataAvailable) return ERR_NONE;
 	UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
 
-	SetTitle(formName);
+	SetName(formName);
 
 	int columns = sampleQuery->getColumns();
 	
@@ -2485,7 +2485,7 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBUpdate() {
 		
 		*newTitle += ": Update failed !";
 
-		SetTitle(newTitle->charrep());
+		SetName(newTitle->charrep());
 
 		if (meta->askYesNo("Error while updating data. Would you re - read the current data and retry ?")) {
 			lbDBRead();
@@ -2502,7 +2502,7 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBUpdate() {
 /*...slbErrCodes LB_STDCALL lbDatabasePanel\58\\58\lbDBRead\40\\41\:0:*/
 lbErrCodes LB_STDCALL lbDatabasePanel::lbDBRead() {
 
-	SetTitle(formName);
+	SetName(formName);
 
 	int columns = sampleQuery->getColumns();
 	
@@ -2632,7 +2632,7 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBRead() {
 								im = new wxImage(toolbarfile->charrep(), wxBITMAP_TYPE_PNG);
 							}
 							
-							wxBitmap bm = wxBitmap(im);
+							wxBitmap bm = wxBitmap(*im);
 							wxBitmapButton* bmb = (wxBitmapButton*) w;
 							bmb->SetBitmapLabel(bm);
 						}
@@ -2864,7 +2864,7 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBAdd(lb_I_Unknown* uk) {
 			
 			_LOG << newTitle->charrep() LOG_
 
-			SetTitle(_trans(newTitle->charrep()));
+			SetName(_trans(newTitle->charrep()));
 		} else {
 			// Delete fields and set foreign key columns to NULL
 			
@@ -3049,7 +3049,7 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBAdd(lb_I_Unknown* uk) {
 		
 		_LOG << newTitle->charrep() LOG_
 		
-		SetTitle(_trans(newTitle->charrep()));
+		SetName(_trans(newTitle->charrep()));
 	} else {
 		_CL_LOG << "Updating after add succeeded. Move to last." LOG_
 		
@@ -3107,7 +3107,7 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBAdd(lb_I_Unknown* uk) {
 							newTitle->setData(formName);
 							*newTitle += ": Add failed !";
 							_LOG << newTitle->charrep() LOG_
-							SetTitle(_trans(newTitle->charrep()));
+							SetName(_trans(newTitle->charrep()));
 							_LOG << "Fatal: Adding a new record failed." LOG_
 						}
 					}
@@ -3542,7 +3542,7 @@ void lbDatabasePanel::OnImageButtonClick(wxCommandEvent& event ) {
 				im = new wxImage(fileDialog.GetPath().c_str(), wxBITMAP_TYPE_PNG);
 			}
 
-			wxBitmap bm = wxBitmap(im);
+			wxBitmap bm = wxBitmap(*im);
 			bmb->SetBitmapLabel(bm);
 		}
 		
@@ -3889,7 +3889,7 @@ void LB_STDCALL lbDatabaseDialog::init(char* _SQLString, char* DBName, char* DBU
 
 	panel->init(_SQLString, DBName, DBUser, DBPass);
 
-	SetTitle(panel->getFormName());
+	SetName(panel->getFormName());
 
 	SetAutoLayout(TRUE);
 		

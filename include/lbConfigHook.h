@@ -144,8 +144,13 @@
    #define TRMemSetModuleName(name)
    #define TRMemSetAdrBreakPoint(ptr, c)
   #endif
-  
-  #define _TRMemValidate(name) lbPtrValidate(name)
+
+#ifdef SOLARIS  
+#define _TRMemValidate(name) (TRMemValidate(name) == true)
+#endif
+#ifndef SOLARIS
+#define _TRMemValidate(name) lbPtrValidate(name)
+#endif
 
  #endif // MEMTRACK
 
@@ -375,6 +380,8 @@ bool LB_STDCALL OSXMemValidate(void* ptr);
 DLLEXPORT bool LB_STDCALL lbPtrValidate(void* ptr);
 
 DLLEXPORT char* LB_STDCALL translateText(char* text);
+DLLEXPORT void LB_STDCALL uninitLocale();
+
 
 DLLEXPORT bool LB_STDCALL FileExists(char *filename);
 

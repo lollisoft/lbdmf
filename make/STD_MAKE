@@ -20,16 +20,19 @@
 #    The author of this work will be reached by e-Mail or paper mail.
 #    e-Mail: lothar.behrens@lollisoft.de
 #    p-Mail: Lothar Behrens
-#            Rosmarinstr. 3
+#            Heinrich-Scheufelen-Platz  2
 #
-#            40235 Duesseldorf (germany)
+#            73252 Lenningen (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.92 $
+# * $Revision: 1.93 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.92 2007/05/13 20:30:54 lollisoft Exp $
+# * $Id: STD_MAKE,v 1.93 2007/06/16 10:26:54 lollisoft Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.93  2007/06/16 10:26:54  lollisoft
+# * This changes let the application successfully run under Solaris. Also a bug is fixed that caused a crash at application exit.
+# *
 # * Revision 1.92  2007/05/13 20:30:54  lollisoft
 # * First (partly) working XML export.
 # *
@@ -663,6 +666,58 @@ endif
 #-lefence
 CC =cc
 CPP=cc
+LD =cc -s
+CP =cp
+EXEDIR =
+endif
+
+ifeq ($(OSTYPE), solaris)
+
+DEBUG_MEMORY=no
+DEBUG=yes
+
+
+ifeq ($(DEBUG), yes)
+# as of a note in google
+DEBUG_CXX_FLAGS=-gstabs
+endif
+
+ifeq ($(DEBUG), no)
+DEBUG_CXX_FLAGS=
+endif
+
+STD_INCL = -I $(DEVROOT)/Projects/CPP/BaseDevelopment/lbHook/linuxCode \
+	-I $(DEVROOT)/Projects/CPP/interfaces \
+	-I $(DEVROOT)/Projects/CPP/include \
+	-I $(DEVROOT)/Projects/CPP/BaseDevelopment/lbclasses \
+	-I /usr/include \
+	-I $(HOME)/mpatrol/src \
+	-I . 
+
+STD_INCL_CPP = $(STD_INCL)
+
+OBJ =o
+C_OPS   = -c $(DEBUG_CXX_FLAGS) -DSOLARIS -DUNIX -DLINUX -DTVISION
+
+ifeq ($(DEBUG_MEMORY), yes)
+C_OPS += -DDEBUG_MALLOC -DUSE_MPATROL
+endif
+
+C_SOOPS = $(C_OPS)
+C_ELFOPS= $(C_OPS)
+L_OPS   = -o
+
+ifeq ($(DEBUG_MEMORY), yes)
+LIBS    = -ldl -lstdc++ -lmpatrol -lbfd 
+endif
+
+ifeq ($(DEBUG_MEMORY), no)
+LIBS    = -ldl -lstdc++
+endif
+
+#-lefence
+CC =gcc
+CPP=g++
 LD =cc -s
 CP =cp
 EXEDIR =

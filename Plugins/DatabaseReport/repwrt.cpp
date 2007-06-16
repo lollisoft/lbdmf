@@ -816,7 +816,7 @@ bool wxReportObj::SaveSettings( wxFFile &fFile )
 	if ( m_pFont )
 		pFt = m_pFont;
 	else
-		pFt = wxSWISS_FONT;
+		pFt = (wxFont*) wxSWISS_FONT;
 
 	lHelp = pFt->GetPointSize();
 	fFile.Write( &lHelp, sizeof( lHelp ) );

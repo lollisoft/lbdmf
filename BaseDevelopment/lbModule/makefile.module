@@ -50,6 +50,12 @@ endif
 # ../lbHook/conio.o
 endif
 
+ifeq ($(OSTYPE), solaris)
+MOD_INCL=$(STD_INCL)
+OBJDEP=
+VENDORLIBS=-L$(prefix)/lib -llbHook
+endif    
+
 ifeq ($(OSTYPE), linux)
 MOD_INCL=$(STD_INCL)
 OBJDEP=

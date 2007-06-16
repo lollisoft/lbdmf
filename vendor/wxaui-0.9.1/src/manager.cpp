@@ -765,10 +765,10 @@ BEGIN_EVENT_TABLE(wxFloatingPane, wxFloatingPaneBaseClass)
 END_EVENT_TABLE()
 
 
-class wxPseudoTransparentFrame : public wxFrame
+class lb_wxPseudoTransparentFrame : public wxFrame
 {
 public:
-    wxPseudoTransparentFrame(wxWindow* parent = NULL,
+    lb_wxPseudoTransparentFrame(wxWindow* parent = NULL,
                 wxWindowID id = -1,
                 const wxString& title = wxT(""),
                 const wxPoint& pos = wxDefaultPosition,
@@ -840,7 +840,7 @@ public:
     }
 
 #ifdef __WXGTK__
-    void wxPseudoTransparentFrame::OnWindowCreate(wxWindowCreateEvent& WXUNUSED(event)) {m_CanSetShape=true; SetTransparency(0);}
+    void lb_wxPseudoTransparentFrame::OnWindowCreate(wxWindowCreateEvent& WXUNUSED(event)) {m_CanSetShape=true; SetTransparency(0);}
 #endif
 
 private:
@@ -851,17 +851,17 @@ private:
 
     wxRegion m_Region;
 
-    DECLARE_DYNAMIC_CLASS(wxPseudoTransparentFrame);
+    DECLARE_DYNAMIC_CLASS(lb_wxPseudoTransparentFrame);
     DECLARE_EVENT_TABLE();
 };
 
 
-IMPLEMENT_DYNAMIC_CLASS( wxPseudoTransparentFrame, wxFrame )
+IMPLEMENT_DYNAMIC_CLASS( lb_wxPseudoTransparentFrame, wxFrame )
 
-BEGIN_EVENT_TABLE(wxPseudoTransparentFrame, wxFrame)
-    EVT_PAINT(wxPseudoTransparentFrame::OnPaint)
+BEGIN_EVENT_TABLE(lb_wxPseudoTransparentFrame, wxFrame)
+    EVT_PAINT(lb_wxPseudoTransparentFrame::OnPaint)
 #ifdef __WXGTK__
-    EVT_WINDOW_CREATE(wxPseudoTransparentFrame::OnWindowCreate)
+    EVT_WINDOW_CREATE(lb_wxPseudoTransparentFrame::OnWindowCreate)
 #endif
 END_EVENT_TABLE()
 
@@ -891,7 +891,7 @@ static void DrawResizeHint(wxDC& dc, const wxRect& rect)
 // will make a frame window transparent by a certain amount
 static void MakeWindowTransparent(wxWindow* wnd, int amount)
 {
-    bool realtransparency = !(wnd && wnd->IsKindOf(CLASSINFO(wxPseudoTransparentFrame)));
+    bool realtransparency = !(wnd && wnd->IsKindOf(CLASSINFO(lb_wxPseudoTransparentFrame)));
     if (realtransparency)
     {
 #ifdef __WXMSW__
@@ -925,7 +925,7 @@ static void MakeWindowTransparent(wxWindow* wnd, int amount)
     {
         if (wnd)
         {
-            ((wxPseudoTransparentFrame *)wnd)->SetTransparency(amount);
+            ((lb_wxPseudoTransparentFrame *)wnd)->SetTransparency(amount);
             wnd->Refresh();
         }
     }
@@ -3166,7 +3166,7 @@ bool wxFrameManager::DoDrop(wxDockInfoArray& docks,
 
 void wxFrameManager::OnHintFadeTimer(wxTimerEvent& event)
 {
-    bool realtransparency = !(m_hint_wnd && m_hint_wnd->IsKindOf(CLASSINFO(wxPseudoTransparentFrame)));
+    bool realtransparency = !(m_hint_wnd && m_hint_wnd->IsKindOf(CLASSINFO(lb_wxPseudoTransparentFrame)));
     if (!m_hint_wnd || m_hint_fadeamt >= (realtransparency?50:128))
     {
         m_hint_fadetimer.Stop();
@@ -3222,7 +3222,7 @@ void wxFrameManager::ShowHint(const wxRect& rect)
         }
         else
         {
-            m_hint_wnd = new wxPseudoTransparentFrame (m_frame, -1, wxEmptyString, pt, size,
+            m_hint_wnd = new lb_wxPseudoTransparentFrame (m_frame, -1, wxEmptyString, pt, size,
                                         wxFRAME_FLOAT_ON_PARENT |
                                         wxFRAME_NO_TASKBAR |
                                         wxNO_BORDER);

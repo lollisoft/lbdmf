@@ -8,6 +8,10 @@
 #
 #.PHONY: dummy
 
+ifeq ($(OSTYPE), solaris)
+DEVROOT_MAKE=$(DEVROOT)
+endif
+
 ifeq ($(OSTYPE), linux)
 DEVROOT_MAKE=$(DEVROOT)
 endif
@@ -18,6 +22,17 @@ endif
 
 
 Path=$(PATH)
+
+ifeq ($(OSTYPE), solaris)
+
+TARGETDLL=so
+TARGETEXE=elf
+TARGETWXPLUGIN=wxsoplugin
+TARGETPLUGIN=soplugin
+
+ALLTARGETS = \
+	lbDynamicAppStorage
+endif
 
 ifeq ($(OSTYPE), linux)
 

@@ -741,6 +741,14 @@ DLLEXPORT char* LB_STDCALL getTRMemTrackBreak() {
 
 UAP(lb_I_Locale, locale)
 
+
+DLLEXPORT void LB_STDCALL uninitLocale() {
+	if (locale != NULL) {
+		locale--;
+		locale.resetPtr();
+	}
+}
+
 DLLEXPORT char* LB_STDCALL translateText(char* text) {
 	lbErrCodes err = ERR_NONE;
 	if (locale == NULL) {

@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.136 2007/06/06 21:33:24 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.137 2007/06/16 10:26:54 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -42,20 +42,23 @@
     The author of this work will be reached by e-Mail or paper mail.
     e-Mail: lothar.behrens@lollisoft.de
     p-Mail: Lothar Behrens
-            Rosmarinstr. 3
+            Heinrich-Scheufelen-Platz 2
             
-            40235 Duesseldorf (germany)
+            73252 Lenningen (germany)
 */
 /*...e*/
 /*...e*/
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.136 $
+ * $Revision: 1.137 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.136 2007/06/06 21:33:24 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.137 2007/06/16 10:26:54 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.137  2007/06/16 10:26:54  lollisoft
+ * This changes let the application successfully run under Solaris. Also a bug is fixed that caused a crash at application exit.
+ *
  * Revision 1.136  2007/06/06 21:33:24  lollisoft
  * Made bugfixes and enhancements that were required.
  *
@@ -513,6 +516,7 @@
 #include "wx/treectrl.h"
 #include <wx/splash.h>
 #include <wx/image.h>
+#include <wx/notebook.h>
 /*...e*/
 
 // ID for the menu commands
@@ -1864,8 +1868,8 @@ public wxApp
 
 		if (wxGUI) delete wxGUI;
 
+
 		printf("MyApp::~MyApp() called.\n");
-		
 	}
 
 	/**

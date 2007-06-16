@@ -8,6 +8,10 @@
 #
 #.PHONY: dummy
 
+ifeq ($(OSTYPE), solaris)
+DEVROOT_MAKE=$(DEVROOT)
+endif
+
 ifeq ($(OSTYPE), linux)
 DEVROOT_MAKE=$(DEVROOT)
 endif
@@ -18,6 +22,21 @@ endif
 
 
 Path=$(PATH)
+
+ifeq ($(OSTYPE), solaris)
+
+TARGETDLL=so
+TARGETEXE=elf
+TARGETWXPLUGIN=wxsoplugin
+TARGETPLUGIN=soplugin
+
+ALLTARGETS = \
+	TestPlugin \
+	VisitorOperations \
+	DatabaseForm \
+	lbDMFDataModel \
+	DatabaseReport
+endif
 
 ifeq ($(OSTYPE), linux)
 

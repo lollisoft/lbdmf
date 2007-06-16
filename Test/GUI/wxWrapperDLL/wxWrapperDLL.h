@@ -33,11 +33,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.25 $
+ * $Revision: 1.26 $
  * $Name:  $
- * $Id: wxWrapperDLL.h,v 1.25 2007/06/06 21:33:25 lollisoft Exp $
+ * $Id: wxWrapperDLL.h,v 1.26 2007/06/16 10:26:54 lollisoft Exp $
  *
  * $Log: wxWrapperDLL.h,v $
+ * Revision 1.26  2007/06/16 10:26:54  lollisoft
+ * This changes let the application successfully run under Solaris. Also a bug is fixed that caused a crash at application exit.
+ *
  * Revision 1.25  2007/06/06 21:33:25  lollisoft
  * Made bugfixes and enhancements that were required.
  *
@@ -369,6 +372,10 @@ public:
 	
 	bool _isSplitted;            
 	bool panelUsage;
+
+#ifdef SOLARIS
+	bool skipfirstResizeEvent;
+#endif
 	
 	lb_wxGUI* gui;
 	int guiCleanedUp;

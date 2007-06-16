@@ -22,13 +22,14 @@
     The author of this work will be reached by e-Mail or paper mail.
     e-Mail: lothar.behrens@lollisoft.de
     p-Mail: Lothar Behrens
-            Rosmarinstr. 3
+            Heinrich-Scheufelen-Platz 2
             
-            40235 Duesseldorf (germany)
+            73252 Lenningen (germany)
 */
 /*...e*/
 
 #define USE_PROPGRID
+
 #define USE_WXAUI
 
 #ifdef OSX
@@ -36,6 +37,10 @@
 #endif
 
 #ifdef LINUX
+//#define IN_PANEL
+#endif
+
+#ifdef SOLARIS
 //#define IN_PANEL
 #endif
 
@@ -66,10 +71,13 @@
 
 #include "wx/wizard.h"
 #include "wx/splitter.h"
+#include "wx/imaglist.h"
+#include "wx/window.h"
 #include "wx/statusbr.h"
 #include <wx/image.h>
 #include <wx/treectrl.h>
 #include <wx/artprov.h>
+#include <wx/notebook.h>
 
 #ifdef USE_PROPGRID
 // Necessary header file
@@ -417,7 +425,7 @@ void wxLogonPage::init(wxWindow* parent) {
 	char prefix[100] = "";
 	sprintf(prefix, "%p", this);
 
-	SetTitle("Login");
+	SetLabel("Login");
 
 	sizerMain  = new wxBoxSizer(wxVERTICAL);
 	sizerHor   = new wxBoxSizer(wxHORIZONTAL);
@@ -495,6 +503,10 @@ lb_wxFrame::lb_wxFrame() //:
 	m_splitter = NULL;
 	m_replacewindow = NULL;
 	stb_areas = 1;
+
+#ifdef SOLARIS
+	skipfirstResizeEvent = true;
+#endif
 	
 	_isSplitted = false;
 
@@ -581,10 +593,6 @@ lbErrCodes LB_STDCALL lb_wxFrame::registerEventHandler(lb_I_Dispatcher* disp) {
 	menu_bar->Append(file_menu, _trans("&File"));
 
 	SetMenuBar(menu_bar);
-
-#ifdef USE_WXAUI
-	m_mgr.Update();
-#endif
 
 	return ERR_NONE;
 }
@@ -1349,6 +1357,10 @@ lb_wxFrame::lb_wxFrame(wxFrame *frame, char *title, int x, int y, int w, int h):
 	m_splitter = NULL;
 	m_replacewindow = NULL;
 	
+#ifdef SOLARIS
+	skipfirstResizeEvent = true;
+#endif
+	
 	_isSplitted = false;
 }
 
@@ -1461,8 +1473,21 @@ void lb_wxFrame::OnEraseBackground(wxEraseEvent& event)
 void lb_wxFrame::OnSize(wxSizeEvent& event)
 {
 	_CL_LOG << "OnSize() called for " << event.GetEventObject()->GetClassInfo()->GetClassName() << "." LOG_
+
+#ifdef SOLARIS
+#ifdef bla
+	if (skipfirstResizeEvent == false) {
+		m_mgr.Update();
+		event.Skip();
+	}
+	skipfirstResizeEvent = false;
+#endif
+#endif
+#ifndef SOLARIS
 	m_mgr.Update();
-    event.Skip();
+	event.Skip();
+#endif
+	
 }
 
 #endif
@@ -1887,7 +1912,7 @@ lbErrCodes LB_STDCALL lb_wxFrame::addToolBar(lb_I_Unknown* uk) {
 				
 		im = new wxImage(toolbarfile->charrep(), wxBITMAP_TYPE_PNG);
 				
-		wxBitmap bm = wxBitmap(im);
+		wxBitmap bm = wxBitmap(*im);
 				
 		maintb->AddTool(DYNAMIC_QUIT, bm, _trans("Exit"));
 				
@@ -2037,7 +2062,7 @@ lbErrCodes LB_STDCALL lb_wxFrame::addTool_To_ToolBar(lb_I_Unknown* uk) {
 				im = new wxImage(toolbarfile->charrep(), wxBITMAP_TYPE_PNG);
 			}
 
-			wxBitmap bm = wxBitmap(im);
+			wxBitmap bm = wxBitmap(*im);
 			
 			tb->AddTool(EvNr, bm, entry->charrep());
 			tb->Realize();

@@ -92,6 +92,8 @@ extern "C" {
 #include "wx/wizard.h"
 #include "wx/splitter.h"
 #include "wx/treectrl.h"
+#include <wx/notebook.h>
+
 /*...e*/
 
 #ifndef OSX

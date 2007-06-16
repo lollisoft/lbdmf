@@ -365,7 +365,7 @@ DECLARE_LB_UNKNOWN()
 		char prefix[100] = "";
 		sprintf(prefix, "%p", this);
 
-		SetTitle("Login");
+		SetLabel("Login");
 
 		sizerMain  = new wxBoxSizer(wxVERTICAL);
 		sizerHor   = new wxBoxSizer(wxHORIZONTAL);

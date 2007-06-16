@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.120 $
+# * $Revision: 1.121 $
 # * $Name:  $
-# * $Id: Makefile,v 1.120 2007/05/14 19:19:14 lollisoft Exp $
+# * $Id: Makefile,v 1.121 2007/06/16 10:26:51 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.121  2007/06/16 10:26:51  lollisoft
+# * This changes let the application successfully run under Solaris. Also a bug is fixed that caused a crash at application exit.
+# *
 # * Revision 1.120  2007/05/14 19:19:14  lollisoft
 # * Unfinished changes. Go to Linux.
 # *
@@ -397,6 +400,15 @@
 #
 #.PHONY: dummy
 
+ifeq ($(OSTYPE), solaris)
+DEVROOT_MAKE=$(DEVROOT)
+
+ifndef prefix
+prefix=$(HOME)
+endif
+
+endif
+
 ifeq ($(OSTYPE), linux)
 DEVROOT_MAKE=$(DEVROOT)
 
@@ -432,6 +444,15 @@ Path=$(PATH)
 MAKE_CONFIG_FILE=$(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
 
 ifndef RPMBUILD 
+ifeq ($(OSTYPE), solaris)
+BASEDIRECTORIES= \
+	../Plugins \
+	../Modules \
+	../RegressionTests \
+	../AppDevelopmentDemo/DynamicApp/Plugins \
+	../AppDevelopment
+endif
+
 ifeq ($(OSTYPE), linux)
 BASEDIRECTORIES= \
 	../Plugins \
@@ -450,6 +471,11 @@ endif
 endif
 
 ifdef RPMBUILD 
+ifeq ($(OSTYPE), solaris)
+BASEDIRECTORIES= \
+	../Plugins \
+	../Modules
+endif
 ifeq ($(OSTYPE), linux)
 BASEDIRECTORIES= \
 	../Plugins \
@@ -551,6 +577,69 @@ ALLDIRS = \
 	../Test/GUI/wxPlugins/lbLoginWizard \
 	$(BASEDIRECTORIES)
 
+
+endif
+
+ifeq ($(OSTYPE), solaris)
+
+TARGETDLL=so
+TARGETFRAMEWORK=so
+TARGETEXE=elf
+TARGETSHARED=so
+TARGETWXEXE=elf
+TARGETWXSO=wxso
+TARGET_TV_DLL=tvision_dll
+TARGET_TV_EXE=tvision_elf
+TARGETPLUGIN=soplugin
+TARGETWXPLUGIN=wxsoplugin
+
+ifdef RPMBUILD
+ALLDIRS = \
+	../vendor/dosdir \
+	../vendor/mkmk \
+	lbHook \
+	lbDB \
+	lbModule \
+	lbclasses \
+	lbMetaApplication \
+	lbPluginManager \
+	../vendor/propgrid \
+	../vendor/wxaui-0.9.1/src \
+	../AppDevelopmentDemo/App \
+	../AppDevelopmentDemo/DynamicApp/App \
+	../Test/GUI/wxWrapperDLL \
+	../Test/GUI/wxWrapper \
+	../Test/GUI/wxPlugins/lbLoginWizard \
+	$(BASEDIRECTORIES)
+endif
+
+ifndef RPMBUILD
+ALLDIRS = \
+	../vendor/dosdir \
+	../vendor/mkmk \
+	lbHook \
+	lbDB \
+	lbModule \
+	lbclasses \
+	lbMetaApplication \
+	lbPluginManager \
+	../vendor/propgrid \
+	../vendor/wxaui-0.9.1/src \
+	../AppDevelopmentDemo/App \
+	../AppDevelopmentDemo/DynamicApp/App \
+	../Test/Console/XML \
+	../Test/GUI/wxWrapperDLL \
+	../Test/GUI/wxWrapper \
+	../Test/GUI/wxPlugins/lbLoginWizard \
+	$(BASEDIRECTORIES)
+endif
+
+ALLTARGETS = \
+	$(prefix)/bin \
+	$(prefix)/lib \
+	$(prefix)/plugins \
+	../include/lbkey.h \
+	$(ALLDIRS)
 
 endif
 
@@ -766,6 +855,17 @@ dummy:
 ../include/lbkey.h: dummy
 	touch ../include/lbkey.h
 
+ifeq ($(OSTYPE), solaris)
+../vendor/dosdir: dummy
+	$@/make.sh $@
+	cd ../BaseDevelopment
+
+../vendor/mkmk: dummy
+	$@/make.sh $@
+	cp $@/mkmk $(HOME)/bin
+	cd ../BaseDevelopment
+endif
+
 ifeq ($(OSTYPE), linux)
 ../vendor/dosdir: dummy
 	$@/make.sh $@
@@ -810,6 +910,39 @@ ifeq ($(OSTYPE), osx)
 
 ../Test/GUI/wxWrapperDLL: dummy
 	$(MAKE) -s -C $@ -e MODULE=wxWrapperDLL -e TARGET=$(TARGETWXFRAMEWORK) -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@
+endif
+
+ifeq ($(OSTYPE), solaris)
+../vendor/wxaui-0.9.1/src: dummy
+	$(MAKE) -s -C $@ -e MODULE=libwxAUI -e TARGET=$(TARGETWXSO) -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@
+	$(MAKE) -s -C $@ install-strip
+
+../vendor/propgrid: dummy
+	$(MAKE) -s -C $@ -e MODULE=libwxPropgrid -e TARGET=$(TARGETWXSO) -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@
+	$(MAKE) -s -C $@ install-strip
+
+../vendor/wxaui-0.9.1/sample: dummy
+	$(MAKE) -s -C $@ -e MODULE=wxAUISample -e TARGET=$(TARGETWXEXE) -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@
+
+../Test/GUI/wxWrapperDLL: dummy
+	$(MAKE) -s -C $@ -e MODULE=libwxWrapperDLL -e TARGET=$(TARGETWXSO) -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@
+	$(MAKE) -s -C $@ install-strip
+
+../Test/GUI/wxWrapper: dummy
+	$(MAKE) -s -C $@ -e MODULE=wxWrapper -e TARGET=$(TARGETWXEXE) -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@
+	cp ../Test/GUI/wxWrapper/wxWrapper $(HOME)/bin
+
+#../Test/GUI/wxWrapper: dummy
+#	$(MAKE) -s -C $@ -f makefile.wx-sample
+
+../Test/GUI/wxPlugins/lbLoginWizard: dummy
+	$(MAKE) -s -C $@ -e MODULE=lbLoginWizard -e TARGET=$(TARGETWXPLUGIN) -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@
 endif
 
@@ -920,9 +1053,16 @@ lbHook: dummy
 ifeq ($(OSTYPE), linux)
 	$(MAKE) -s -C $@ -e MODULE=lib$@ -e TARGET=$(TARGETFRAMEWORK) -f $(MAKE_CONFIG_FILE)
 else
+ifeq ($(OSTYPE), solaris)
+	$(MAKE) -s -C $@ -e MODULE=lib$@ -e TARGET=$(TARGETFRAMEWORK) -f $(MAKE_CONFIG_FILE)
+else
 	$(MAKE) -s -C $@ -e MODULE=$@ -e TARGET=$(TARGETFRAMEWORK) -f $(MAKE_CONFIG_FILE)
 endif
+endif
 	$(MAKE) -s -C $@
+ifeq ($(OSTYPE), solaris)
+	$(MAKE) -s -C $@ install-strip
+endif
 ifeq ($(OSTYPE), linux)
 	$(MAKE) -s -C $@ install-strip
 endif

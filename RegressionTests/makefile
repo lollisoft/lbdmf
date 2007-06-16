@@ -8,6 +8,10 @@
 #
 #.PHONY: dummy
 
+ifeq ($(OSTYPE), solaris)
+DEVROOT_MAKE=$(DEVROOT)
+endif
+
 ifeq ($(OSTYPE), linux)
 DEVROOT_MAKE=$(DEVROOT)
 endif
@@ -19,6 +23,22 @@ endif
 
 Path=$(PATH)
 
+ifeq ($(OSTYPE), solaris)
+
+TARGETDLL=so
+TARGETEXE=elf
+
+ALLTARGETS = \
+	Database/Plain-ODBC-Test \
+	Database \
+	Basetypes \
+	Memory \
+	MetaApplication \
+	Events \
+	Translation \
+	PluginTest
+
+endif
 ifeq ($(OSTYPE), linux)
 
 TARGETDLL=so

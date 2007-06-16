@@ -65,8 +65,12 @@ endif
 
 endif
 
+ifeq ($(OSTYPE), solaris)
+MOD_INCL=$(STD_INCL) -I ../linuxCode
+endif    
+
 ifeq ($(OSTYPE), linux)
-MOD_INCL=$(STD_INCL) -I ../linuxCode -I /sw/include
+MOD_INCL=$(STD_INCL) -I ../linuxCode
 endif    
 
 ifeq ($(OSTYPE), osx)

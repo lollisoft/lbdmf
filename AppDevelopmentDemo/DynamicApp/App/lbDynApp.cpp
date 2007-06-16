@@ -252,6 +252,17 @@ lbErrCodes LB_STDCALL lbDynamicApplication::exportApplicationToXML(lb_I_Unknown*
 lbErrCodes LB_STDCALL lbDynamicApplication::getCustomDBForm(lb_I_Unknown* uk) {
 	lbErrCodes err = ERR_NONE;
 	
+
+	if (metaapp == NULL) {
+		REQUEST(manager.getPtr(), lb_I_MetaApplication, metaapp)
+	}
+
+	if (gui == NULL) {
+		metaapp->getGUI(&gui);
+	}
+	
+	metaapp->setStatusText("Info", "Loading custom database formular ...");
+
 	if (gui != NULL) {
 		UAP(lb_I_FixedDatabaseForm, dbForm)
 		UAP(lb_I_Integer, eventID)
@@ -267,6 +278,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::getCustomDBForm(lb_I_Unknown* uk) {
 				
 				if (strcmp(forms->getEventName(), eventName) == 0) {
 					forms->finishFormularIteration();
+					metaapp->setStatusText("Info", "Found the form by reversing event ID ...");
 					break;
 				}
 			}
@@ -282,7 +294,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::getCustomDBForm(lb_I_Unknown* uk) {
 		*sql = "SELECT handlerfunctor, handlermodule, handlerinterface, namespace from formulartypen where id = ";
 		*sql += typ->charrep();
 
-		_LOG << "Query for custom database formular: " << sql->charrep() LOG_
+		_LOG << "Query for custom database formular (" << forms->getName() << "): " << sql->charrep() LOG_
 		
 		if (q->query(sql->charrep()) == ERR_NONE) {
 			
@@ -300,7 +312,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::getCustomDBForm(lb_I_Unknown* uk) {
 				namesp = q->getAsString(4);
 				
 				if (*namesp == "") {
-					
+						metaapp->setStatusText("Info", "Error: No namespace stored in the database !");
 				} else {
 					if (*interface == "lb_I_FixedDatabaseForm") { 
 						UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
@@ -320,14 +332,24 @@ lbErrCodes LB_STDCALL lbDynamicApplication::getCustomDBForm(lb_I_Unknown* uk) {
 
 							dbForm = gui->addCustomDBForm(dbForm.getPtr(), forms->getName());
 								
-							if (dbForm != NULL) dbForm->show();
+							if (dbForm != NULL) {
+								dbForm->show();
+							} else {
+								metaapp->setStatusText("Info", "Error: Database form was not loaded by the GUI !");
+							}
 						}
 					} else {
+						metaapp->setStatusText("Info", "Error: Unsupported interface !");
 						// Unsupported
 					}
 				}
 			}		
+		} else {
+			_LOG << "Error: Query to get target formular failed. (" << sql->charrep() << ")" LOG_
+			metaapp->setStatusText("Info", "Error: Query to get target formular failed !");
 		}
+	} else {
+		metaapp->setStatusText("Info", "Error: Have no instance of GUI !");
 	}
 	return err;
 }

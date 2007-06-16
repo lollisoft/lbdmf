@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.111 $
+ * $Revision: 1.112 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.111 2007/06/06 21:33:23 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.112 2007/06/16 10:26:51 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.112  2007/06/16 10:26:51  lollisoft
+ * This changes let the application successfully run under Solaris. Also a bug is fixed that caused a crash at application exit.
+ *
  * Revision 1.111  2007/06/06 21:33:23  lollisoft
  * Made bugfixes and enhancements that were required.
  *
@@ -1272,6 +1275,8 @@ lbErrCodes LB_STDCALL lb_MetaApplication::unloadApplication() {
 			_LOG << "Deleted all active documents." LOG_
 		}
 	}
+
+	uninitLocale();
 	
 	return ERR_NONE;
 }
