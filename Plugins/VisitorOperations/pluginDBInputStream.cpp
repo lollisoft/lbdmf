@@ -170,6 +170,14 @@ public:
 	void LB_STDCALL visit(lb_I_DBTables*);
 	void LB_STDCALL visit(lb_I_DBPrimaryKeys*);
 	void LB_STDCALL visit(lb_I_DBForeignKeys*);
+	
+	void LB_STDCALL visit(lb_I_DBReportTextblock*);
+	void LB_STDCALL visit(lb_I_DBReportProperties*);
+	void LB_STDCALL visit(lb_I_Reports*);
+	void LB_STDCALL visit(lb_I_ReportParameters*);
+	void LB_STDCALL visit(lb_I_ReportElements*);
+	void LB_STDCALL visit(lb_I_ReportElementTypes*);
+	void LB_STDCALL visit(lb_I_ReportTexts*);
 
 	bool LB_STDCALL begin(const char* DBName, const char* DBUser, const char* DBPass);
 	bool LB_STDCALL begin(lb_I_Database* _db);
@@ -253,6 +261,206 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Streamable* pm) {
 		_CL_VERBOSE << "lbDatabaseInputStream::visit(lb_I_ProjectManager* pm) Error: No input stream available. Could not read from stream!" LOG_
 	}
 }
+
+void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Reports* reports) {
+	lbErrCodes err = ERR_NONE;
+	UAP(lb_I_Query, q)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, query)
+	
+	if (db == NULL) {
+		_LOG << "FATAL: Database imput stream could not work without a database!" LOG_
+		return;
+	}
+	
+	q = db->getQuery(0);
+
+	*query = "select id, name, description from reports";
+
+	err = q->query(query->charrep());
+	
+	if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
+			err = q->first();
+			
+			while ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
+				UAP(lb_I_Long, ID)
+				UAP(lb_I_String, Name)
+				UAP(lb_I_String, Description)
+			
+				ID = q->getAsLong(1);
+				Name = q->getAsString(2);
+				Description = q->getAsString(3);
+			
+				reports->addReport(Name->charrep(), Description->charrep(), ID->getData());	
+			
+				err = q->next();
+			}
+	}
+}
+
+void LB_STDCALL lbDatabaseInputStream::visit(lb_I_ReportParameters* reportparameters) {
+	lbErrCodes err = ERR_NONE;
+	UAP(lb_I_Query, q)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, query)
+	
+	if (db == NULL) {
+		_LOG << "FATAL: Database imput stream could not work without a database!" LOG_
+		return;
+	}
+	
+	q = db->getQuery(0);
+
+	*query = "select id, reportid, name, value from report_parameters";
+
+	err = q->query(query->charrep());
+	
+	if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
+			err = q->first();
+			
+			while ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
+				UAP(lb_I_Long, ID)
+				UAP(lb_I_Long, ReportID)
+				UAP(lb_I_String, Name)
+				UAP(lb_I_String, Value)
+			
+				ID = q->getAsLong(1);
+				ReportID = q->getAsLong(2);
+				Name = q->getAsString(3);
+				Value = q->getAsString(4);
+			
+				reportparameters->addParameter(ReportID->getData(), Name->charrep(), Value->charrep(), ID->getData());	
+			
+				err = q->next();
+			}
+	}
+}
+
+void LB_STDCALL lbDatabaseInputStream::visit(lb_I_ReportElements* reportelements) {
+	lbErrCodes err = ERR_NONE;
+	UAP(lb_I_Query, q)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, query)
+	
+	if (db == NULL) {
+		_LOG << "FATAL: Database imput stream could not work without a database!" LOG_
+		return;
+	}
+	
+	q = db->getQuery(0);
+
+	*query = "select id, reportid, typ, name, x, y, w, h, description from report_elements";
+
+	err = q->query(query->charrep());
+	
+	if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
+			err = q->first();
+			
+			while ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
+				UAP(lb_I_Long, ID)
+				UAP(lb_I_Long, ReportID)
+				UAP(lb_I_Long, Typ)
+				UAP(lb_I_Long, X)
+				UAP(lb_I_Long, Y)
+				UAP(lb_I_Long, W)
+				UAP(lb_I_Long, H)
+				UAP(lb_I_String, Name)
+				UAP(lb_I_String, Description)
+			
+				ID = q->getAsLong(1);
+				ReportID = q->getAsLong(2);
+				Typ = q->getAsLong(3);
+				Name = q->getAsString(4);
+				X = q->getAsLong(5);
+				Y = q->getAsLong(6);
+				W = q->getAsLong(7);
+				H = q->getAsLong(8);
+				Description = q->getAsString(9);
+			
+				reportelements->addElement(ReportID->getData(), Name->charrep(), Typ->getData(), X->getData(), Y->getData(), W->getData(), H->getData(), Description->charrep(), ID->getData());	
+			
+				err = q->next();
+			}
+	}
+}
+
+void LB_STDCALL lbDatabaseInputStream::visit(lb_I_ReportElementTypes* reportelementtypes) {
+	lbErrCodes err = ERR_NONE;
+	UAP(lb_I_Query, q)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, query)
+	
+	if (db == NULL) {
+		_LOG << "FATAL: Database imput stream could not work without a database!" LOG_
+		return;
+	}
+	
+	q = db->getQuery(0);
+
+	*query = "select id, name, description from report_element_types";
+
+	err = q->query(query->charrep());
+	
+	if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
+			err = q->first();
+			
+			while ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
+				UAP(lb_I_Long, ID)
+				UAP(lb_I_String, Name)
+				UAP(lb_I_String, Description)
+			
+				ID = q->getAsLong(1);
+				Name = q->getAsString(2);
+				Description = q->getAsString(3);
+			
+				reportelementtypes->addElementType(Name->charrep(), Description->charrep(), ID->getData());	
+			
+				err = q->next();
+			}
+	}
+}
+
+void LB_STDCALL lbDatabaseInputStream::visit(lb_I_ReportTexts* textlines) {
+	lbErrCodes err = ERR_NONE;
+	UAP(lb_I_Query, q)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, query)
+	
+	if (db == NULL) {
+		_LOG << "FATAL: Database imput stream could not work without a database!" LOG_
+		return;
+	}
+	
+	q = db->getQuery(0);
+
+	*query = "select id, elementid, line, text from report_texts";
+
+	err = q->query(query->charrep());
+	
+	if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
+			err = q->first();
+			
+			while ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
+				UAP(lb_I_Long, ID)
+				UAP(lb_I_Long, ElementID)
+				UAP(lb_I_Long, Line)
+				UAP(lb_I_String, Text)
+			
+				ID = q->getAsLong(1);
+				ElementID = q->getAsLong(2);
+				Line = q->getAsLong(3);
+				Text = q->getAsString(4);
+			
+				textlines->addText(ElementID->getData(), Line->getData(), Text->charrep(), ID->getData());	
+			
+				err = q->next();
+			}
+	}
+}
+
+void LB_STDCALL lbDatabaseInputStream::visit(lb_I_DBReportTextblock*) {
+
+}
+
+void LB_STDCALL lbDatabaseInputStream::visit(lb_I_DBReportProperties*) {
+
+}
+
 
 void LB_STDCALL lbDatabaseInputStream::visit(lb_I_UserAccounts* users) {
 	lbErrCodes err = ERR_NONE;

@@ -113,6 +113,18 @@ public:
 	 */
 	lbErrCodes LB_STDCALL getCustomDBForm(lb_I_Unknown* uk);
 	
+	/** \brief Print a report over menu/toolbar entry.
+	 * A report may be based on a form, thus it's query is the data source.
+	 * 
+	 * On the other hand, it may be special reports not shown as forms. In that
+	 * way, a separate configuration is needed.
+	 */
+	lbErrCodes LB_STDCALL printReport(lb_I_Unknown* uk);
+
+	/** \brief Use dynamic versions again.
+	 *
+	 */
+	lbErrCodes LB_STDCALL resetCustomDBFormsToDynamic(lb_I_Unknown* uk);
 
 protected:
 
@@ -150,6 +162,11 @@ protected:
 	UAP(lb_I_DBPrimaryKeys, dbPrimaryKeys)
 	UAP(lb_I_DBForeignKeys, dbForeignKeys)
 
+	UAP(lb_I_Reports, reports)
+	UAP(lb_I_ReportParameters, reportparams)
+	UAP(lb_I_ReportElements, reportelements)
+	UAP(lb_I_ReportElementTypes, reportelementtypes)
+	UAP(lb_I_ReportTexts, reporttextblocks)
 
 	char hdsihd[100];
 };
@@ -353,6 +370,42 @@ lbErrCodes LB_STDCALL lbDynamicApplication::getCustomDBForm(lb_I_Unknown* uk) {
 	}
 	return err;
 }
+
+lbErrCodes LB_STDCALL lbDynamicApplication::resetCustomDBFormsToDynamic(lb_I_Unknown* uk) {
+	lbErrCodes err = ERR_NONE;
+	
+	if(database == NULL) {
+		REQUEST(manager.getPtr(), lb_I_Database, database)
+		database->init();
+		
+		char* lbDMFPasswd = getenv("lbDMFPasswd");
+		char* lbDMFUser   = getenv("lbDMFUser");
+		
+		if (!lbDMFUser) lbDMFUser = "dba";
+		if (!lbDMFPasswd) lbDMFPasswd = "trainres";
+		
+		database->connect("lbDMF", lbDMFUser, lbDMFPasswd);
+	}
+	
+	UAP(lb_I_Query, sampleQuery)
+	sampleQuery = database->getQuery(0);
+
+	UAP_REQUEST(getModuleInstance(), lb_I_String, q)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, id)
+	
+	id->setData(metaapp->getApplicationID());
+	
+	*q = "update formulare set typ = 1 where anwendungid = ";
+	*q += id->charrep();
+
+	sampleQuery->skipFKCollecting();
+	sampleQuery->query(q->charrep());
+	sampleQuery->enableFKCollecting();
+	
+
+	return err;
+}
+
 
 lbErrCodes LB_STDCALL lbDynamicApplication::getDynamicDBForm(lb_I_Unknown* uk) {
 	lbErrCodes err = ERR_NONE;
@@ -697,6 +750,24 @@ lbErrCodes LB_STDCALL lbDynamicApplication::uninitialize() {
 	return ERR_NONE;
 }
 /*...e*/
+
+#define AQUIRE_PLUGIN(interface, ns, name, errmsgpart) \
+		UAP(lb_I_Plugin, pl##name) \
+		UAP(lb_I_Unknown, uk##name) \
+		pl##name = PM->getFirstMatchingPlugin(#interface, #ns); \
+		if (pl##name != NULL) { \
+			uk##name = pl##name->getImplementation(); \
+		} else { \
+			_LOG << "Warning: No " #errmsgpart " datamodel plugin found." LOG_ \
+		} \
+		\
+		if (uk##name != NULL) { \
+			QI(uk##name, interface, name) \
+		} else { \
+			_LOG << "Warning: No " #errmsgpart " datamodel plugin implementation found." LOG_ \
+		}
+
+
 /*...slbErrCodes LB_STDCALL lbDynamicApplication\58\\58\initialize\40\char\42\ user \61\ NULL\44\ char\42\ app \61\ NULL\41\:0:*/
 lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 	_CL_LOG << "lbDynamicApplication::initialize(...) called." LOG_	
@@ -860,201 +931,25 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 	if (isFileAvailable || isDBAvailable) {
 /*...sLoad from file or database:16:*/
 /*...sInitialize plugin based document models:32:*/
-		UAP(lb_I_Plugin, plFormularFields)
-		UAP(lb_I_Unknown, ukPlFormularFields)
-		UAP(lb_I_Plugin, plFormulars)
-		UAP(lb_I_Unknown, ukPlFormulars)
-		UAP(lb_I_Plugin, plColumnTypes)
-		UAP(lb_I_Unknown, ukPlColumnTypes)
-		UAP(lb_I_Plugin, plFormParams)
-		UAP(lb_I_Unknown, ukPlFormParams)
-		UAP(lb_I_Plugin, plFormActions)
-		UAP(lb_I_Unknown, ukPlFormActions)
-		UAP(lb_I_Plugin, plAppParams)
-		UAP(lb_I_Unknown, ukPlAppParams)
-		UAP(lb_I_Plugin, plAppActions)
-		UAP(lb_I_Unknown, ukPlAppActions)
-		UAP(lb_I_Plugin, plAppActionTypes)
-		UAP(lb_I_Unknown, ukPlAppActionTypes)
-		UAP(lb_I_Plugin, plAppActionSteps)
-		UAP(lb_I_Unknown, ukPlAppActionSteps)
-		UAP(lb_I_Plugin, plDBTables)
-		UAP(lb_I_Unknown, ukPlDBTables)
-		UAP(lb_I_Plugin, plDBColumns)
-		UAP(lb_I_Unknown, ukPlDBColumns)
-		UAP(lb_I_Plugin, plDBPrimaryKeys)
-		UAP(lb_I_Unknown, ukPlDBPrimaryKeys)
-		UAP(lb_I_Plugin, plDBForeignKeys)
-		UAP(lb_I_Unknown, ukPlDBForeignKeys)
+		AQUIRE_PLUGIN(lb_I_Reports, Model, reports, "'database report'")
+		AQUIRE_PLUGIN(lb_I_ReportParameters, Model, reportparams, "'database report parameter'")
+		AQUIRE_PLUGIN(lb_I_ReportElements, Model, reportelements, "'database report elements'")
+		AQUIRE_PLUGIN(lb_I_ReportElementTypes, Model, reportelementtypes, "'database report element types'")
+		AQUIRE_PLUGIN(lb_I_ReportTexts, Model, reporttextblocks, "'database report text blocks'")
+		AQUIRE_PLUGIN(lb_I_DBPrimaryKeys, Model, dbPrimaryKeys, "'primary keys'")
+		AQUIRE_PLUGIN(lb_I_DBForeignKeys, Model, dbForeignKeys, "'foreign keys'")
+		AQUIRE_PLUGIN(lb_I_DBColumns, Model, dbColumns, "'database columns'")
+		AQUIRE_PLUGIN(lb_I_DBTables, Model, dbTables, "'database tables'")
+		AQUIRE_PLUGIN(lb_I_Column_Types, Model, columntypes, "'column types'")
+		AQUIRE_PLUGIN(lb_I_Actions, Model, appActions, "'actions'")
+		AQUIRE_PLUGIN(lb_I_Formular_Actions, Model, formActions, "'formular actions'")
+		AQUIRE_PLUGIN(lb_I_Action_Types, Model, appActionTypes, "'action types'")
+		AQUIRE_PLUGIN(lb_I_Action_Steps, Model, appActionSteps, "'action steps'")
+		AQUIRE_PLUGIN(lb_I_Formulars, Model, forms, "'formulars'")
+		AQUIRE_PLUGIN(lb_I_Formular_Fields, Model, formularfields, "'formular fields'")
+		AQUIRE_PLUGIN(lb_I_FormularParameter, Model, formParams, "'formular parameters'")
+		AQUIRE_PLUGIN(lb_I_ApplicationParameter, Model, appParams, "'application parameters'")
 
-		plDBPrimaryKeys = PM->getFirstMatchingPlugin("lb_I_DBPrimaryKeys", "Model");
-		if (plDBPrimaryKeys != NULL) {
-			ukPlDBPrimaryKeys = plDBPrimaryKeys->getImplementation();
-		} else {
-			_LOG << "Warning: No primary keys datamodel plugin found." LOG_
-		}
-		
-		if (ukPlDBPrimaryKeys != NULL) { 
-			QI(ukPlDBPrimaryKeys, lb_I_DBPrimaryKeys, dbPrimaryKeys)
-		} else {
-			_LOG << "Warning: No primary keys datamodel plugin implementation found." LOG_
-		}
-
-		plDBForeignKeys = PM->getFirstMatchingPlugin("lb_I_DBForeignKeys", "Model");
-		if (plDBForeignKeys != NULL) {
-			ukPlDBForeignKeys = plDBForeignKeys->getImplementation();
-		} else {
-			_LOG << "Warning: No foreign keys datamodel plugin found." LOG_
-		}
-		
-		if (ukPlDBForeignKeys != NULL) { 
-			QI(ukPlDBForeignKeys, lb_I_DBForeignKeys, dbForeignKeys)
-		} else {
-			_LOG << "Warning: No foreign keys datamodel plugin implementation found." LOG_
-		}
-
-		plDBColumns = PM->getFirstMatchingPlugin("lb_I_DBColumns", "Model");
-		if (plDBColumns != NULL) {
-			ukPlDBColumns = plDBColumns->getImplementation();
-		} else {
-			_LOG << "Warning: No column types datamodel plugin found." LOG_
-		}
-		
-		if (ukPlDBColumns != NULL) { 
-			QI(ukPlDBColumns, lb_I_DBColumns, dbColumns)
-		} else {
-			_LOG << "Warning: No column types datamodel plugin implementation found." LOG_
-		}
-
-		plDBTables = PM->getFirstMatchingPlugin("lb_I_DBTables", "Model");
-		if (plDBTables != NULL) {
-			ukPlDBTables = plDBTables->getImplementation();
-		} else {
-			_LOG << "Warning: No column types datamodel plugin found." LOG_
-		}
-		
-		if (ukPlDBTables != NULL) { 
-			QI(ukPlDBTables, lb_I_DBTables, dbTables)
-		} else {
-			_LOG << "Warning: No column types datamodel plugin implementation found." LOG_
-		}
-
-		plColumnTypes = PM->getFirstMatchingPlugin("lb_I_Column_Types", "Model");
-		if (plColumnTypes != NULL) {
-			ukPlColumnTypes = plColumnTypes->getImplementation();
-		} else {
-			_LOG << "Warning: No column types datamodel plugin found." LOG_
-		}
-		
-		if (ukPlColumnTypes != NULL) { 
-			QI(ukPlColumnTypes, lb_I_Column_Types, columntypes)
-		} else {
-			_LOG << "Warning: No column types datamodel plugin implementation found." LOG_
-		}
-
-		plAppActions = PM->getFirstMatchingPlugin("lb_I_Actions", "Model");
-		if (plAppActions != NULL) {
-			ukPlAppActions = plAppActions->getImplementation();
-		} else {
-			_LOG << "Warning: No actions datamodel plugin found." LOG_
-		}
-		
-		if (ukPlAppActions != NULL) { 
-			QI(ukPlAppActions, lb_I_Actions, appActions)
-		} else {
-			_LOG << "Warning: No actions datamodel plugin implementation found." LOG_
-		}
-
-		plFormActions = PM->getFirstMatchingPlugin("lb_I_Formular_Actions", "Model");
-		if (plFormActions != NULL) {
-			ukPlFormActions = plFormActions->getImplementation();
-		} else {
-			_LOG << "Warning: No actions datamodel plugin found." LOG_
-		}
-		
-		if (ukPlFormActions != NULL) { 
-			QI(ukPlFormActions, lb_I_Formular_Actions, formActions)
-		} else {
-			_LOG << "Warning: No formular action association datamodel plugin implementation found." LOG_
-		}
-
-		plAppActionTypes = PM->getFirstMatchingPlugin("lb_I_Action_Types", "Model");
-		if (plAppActionTypes != NULL) {
-			ukPlAppActionTypes = plAppActionTypes->getImplementation();
-		} else {
-			_LOG << "Warning: No action_types datamodel plugin found." LOG_
-		}
-		
-		if (ukPlAppActionTypes != NULL) { 
-			QI(ukPlAppActionTypes, lb_I_Action_Types, appActionTypes)
-		} else {
-			_LOG << "Warning: No action_types datamodel plugin implementation found." LOG_
-		}
-
-		plAppActionSteps = PM->getFirstMatchingPlugin("lb_I_Action_Steps", "Model");
-		if (plAppActionSteps != NULL) {
-			ukPlAppActionSteps = plAppActionSteps->getImplementation();
-		} else {
-			_LOG << "Warning: No action_steps datamodel plugin found." LOG_
-		}
-		
-		if (ukPlAppActionSteps != NULL) { 
-			QI(ukPlAppActionSteps, lb_I_Action_Steps, appActionSteps)
-		} else {
-			_LOG << "Warning: No action_steps datamodel plugin implementation found." LOG_
-		}
-
-		plFormulars = PM->getFirstMatchingPlugin("lb_I_Formulars", "Model");
-		if (plFormulars != NULL) {
-			ukPlFormulars = plFormulars->getImplementation();
-		} else {
-			_LOG << "Warning: No formular datamodel plugin found." LOG_
-		}
-		
-		if (ukPlFormulars != NULL) { 
-			QI(ukPlFormulars, lb_I_Formulars, forms)
-		} else {
-			_LOG << "Warning: No formular datamodel plugin implementation found." LOG_
-		}
-		
-		plFormularFields = PM->getFirstMatchingPlugin("lb_I_Formular_Fields", "Model");
-		if (plFormularFields != NULL) {
-			ukPlFormularFields = plFormularFields->getImplementation();
-		} else {
-			_LOG << "Warning: No formular datamodel plugin found." LOG_
-		}
-		
-		if (ukPlFormularFields != NULL) { 
-			QI(ukPlFormularFields, lb_I_Formular_Fields, formularfields)
-		} else {
-			_LOG << "Warning: No formular datamodel plugin implementation found." LOG_
-		}
-		
-		plFormParams = PM->getFirstMatchingPlugin("lb_I_FormularParameter", "Model");
-		if (plFormParams != NULL) {
-			ukPlFormParams = plFormParams->getImplementation();
-		} else {
-			_LOG << "Warning: No formular parameter datamodel plugin found." LOG_
-		}
-		
-		if (ukPlFormParams != NULL) { 
-			QI(ukPlFormParams, lb_I_FormularParameter, formParams)
-		} else {
-			_LOG << "Warning: No formular parameter datamodel plugin implementation found." LOG_
-		}
-		
-		plAppParams = PM->getFirstMatchingPlugin("lb_I_ApplicationParameter", "Model");
-		if (plAppParams != NULL) {
-			ukPlAppParams = plAppParams->getImplementation();
-		} else {
-			_LOG << "Warning: No application parameter datamodel plugin found." LOG_
-		}
-		
-		if (ukPlAppParams != NULL) {
-			QI(ukPlAppParams, lb_I_ApplicationParameter, appParams)
-		} else {
-			_LOG << "Warning: No application parameter datamodel plugin implementation found." LOG_
-		}
 /*...e*/
 		
 		
@@ -1081,6 +976,11 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 		param->setUAPString(*&name, *&value);
 		
 		if (!DBOperation && 
+			(reports != NULL) && 
+			(reportparams != NULL) && 
+			(reportelements != NULL) && 
+			(reportelementtypes != NULL) && 
+			(reporttextblocks != NULL) && 
 			(forms != NULL) && 
 			(dbColumns != NULL) && 
 			(dbPrimaryKeys != NULL) && 
@@ -1093,7 +993,14 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 			(appActionTypes != NULL) && 
 			(appParams != NULL)) {
 			_LOG << "Load application data from file ..." LOG_
+
 			
+			reports->accept(*&fOp);
+			reportparams->accept(*&fOp);
+			reportelements->accept(*&fOp);
+			reportelementtypes->accept(*&fOp);
+			reporttextblocks->accept(*&fOp);
+
 			forms->accept(*&fOp);
 			dbPrimaryKeys->accept(*&fOp);
 			dbForeignKeys->accept(*&fOp);
@@ -1110,6 +1017,11 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 		}
 		
 		if (DBOperation && 
+			(reports != NULL) && 
+			(reportparams != NULL) && 
+			(reportelements != NULL) && 
+			(reportelementtypes != NULL) && 
+			(reporttextblocks != NULL) && 
 			(forms != NULL) && 
 			(dbColumns != NULL) && 
 			(dbPrimaryKeys != NULL) && 
@@ -1124,6 +1036,12 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 			_LOG << "Load application data from database ..." LOG_
 			
 			
+			reports->accept(*&fOpDB);
+			reportparams->accept(*&fOpDB);
+			reportelements->accept(*&fOpDB);
+			reportelementtypes->accept(*&fOpDB);
+			reporttextblocks->accept(*&fOpDB);
+
 			forms->accept(*&fOpDB);
 			dbPrimaryKeys->accept(*&fOpDB);
 			dbForeignKeys->accept(*&fOpDB);
@@ -1213,6 +1131,11 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 */
 
 		if ((forms != NULL) && 
+			(reports != NULL) && 
+			(reportparams != NULL) && 
+			(reportelements != NULL) && 
+			(reportelementtypes != NULL) && 
+			(reporttextblocks != NULL) && 
 			(formularfields != NULL) && 
 			(dbPrimaryKeys != NULL) && 
 			(dbForeignKeys != NULL) && 
@@ -1223,7 +1146,30 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 			(appParams != NULL)) {
 			
 			UAP(lb_I_Unknown, uk)
+
+
+			*name = "Reports";
+			QI(reports, lb_I_Unknown, uk)
+			document->insert(&uk, &key);
 			
+			*name = "Reportparams";
+			QI(reportparams, lb_I_Unknown, uk)
+			document->insert(&uk, &key);
+			
+			*name = "Reportelements";
+			QI(reportelements, lb_I_Unknown, uk)
+			document->insert(&uk, &key);
+			
+			*name = "Reportelementtypes";
+			QI(reportelementtypes, lb_I_Unknown, uk)
+			document->insert(&uk, &key);
+			
+			*name = "Reporttextblocks";
+			QI(reporttextblocks, lb_I_Unknown, uk)
+			document->insert(&uk, &key);
+			
+
+		
 			*name = "Formulars";
 			QI(forms, lb_I_Unknown, uk)
 			document->insert(&uk, &key);
@@ -1321,6 +1267,17 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 	database->connect("lbDMF", lbDMFUser, lbDMFPasswd);
 	
 	activateDBForms(user, app);
+	
+	UAP_REQUEST(getModuleInstance(), lb_I_String, editMenu)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, menuEntry)
+	
+	*editMenu = _trans("&Edit");
+	*menuEntry = _trans("Set all forms back to dynamic");
+	
+	eman->registerEvent("resetCustomDBFormsToDynamic", unused);
+	dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDynamicApplication::resetCustomDBFormsToDynamic, "resetCustomDBFormsToDynamic");
+	metaapp->addMenuEntry(editMenu->charrep(), menuEntry->charrep(), "resetCustomDBFormsToDynamic", "");
+
 	
 	return ERR_NONE;
 }

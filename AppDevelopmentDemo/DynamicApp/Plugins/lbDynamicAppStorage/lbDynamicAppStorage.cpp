@@ -97,6 +97,12 @@ lbErrCodes LB_STDCALL lbDynamicAppXMLStorage::save(lb_I_OutputStream* oStream) {
 	UAP(lb_I_DBPrimaryKeys, dbPrimaryKeys)
 	UAP(lb_I_DBForeignKeys, dbForeignKeys)
 
+	UAP(lb_I_Reports, reports)
+	UAP(lb_I_ReportParameters, reportparams)
+	UAP(lb_I_ReportElements, reportelements)
+	UAP(lb_I_ReportElementTypes, reportelementtypes)
+	UAP(lb_I_ReportTexts, reporttextblocks)
+
 	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, param)
 	UAP_REQUEST(getModuleInstance(), lb_I_Container, document)
@@ -115,6 +121,29 @@ lbErrCodes LB_STDCALL lbDynamicAppXMLStorage::save(lb_I_OutputStream* oStream) {
 
 	UAP(lb_I_KeyBase, key)
 	QI(name, lb_I_KeyBase, key)
+
+
+	*name = "Reports";
+	uk = document->getElement(&key);
+	QI(uk, lb_I_Reports, reports)
+			
+	*name = "Reportparams";
+	uk = document->getElement(&key);
+	QI(uk, lb_I_ReportParameters, reportparams)
+			
+	*name = "Reportelements";
+	uk = document->getElement(&key);
+	QI(uk, lb_I_ReportElements, reportelements)
+			
+	*name = "Reportelementtypes";
+	uk = document->getElement(&key);
+	QI(uk, lb_I_ReportElementTypes, reportelementtypes)
+			
+	*name = "Reporttextblocks";
+	uk = document->getElement(&key);
+	QI(uk, lb_I_ReportTexts, reporttextblocks)
+			
+
 			
 	*name = "Formulars";
 	uk = document->getElement(&key);
@@ -280,6 +309,12 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::save(lb_I_OutputStream* oStre
 	UAP(lb_I_DBPrimaryKeys, dbPrimaryKeys)
 	UAP(lb_I_DBForeignKeys, dbForeignKeys)
 
+	UAP(lb_I_Reports, reports)
+	UAP(lb_I_ReportParameters, reportparams)
+	UAP(lb_I_ReportElements, reportelements)
+	UAP(lb_I_ReportElementTypes, reportelementtypes)
+	UAP(lb_I_ReportTexts, reporttextblocks)
+
 	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, param)
 	
@@ -306,6 +341,29 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::save(lb_I_OutputStream* oStre
 
 	UAP(lb_I_KeyBase, key)
 	QI(name, lb_I_KeyBase, key)
+			
+			
+	*name = "Reports";
+	uk = document->getElement(&key);
+	QI(uk, lb_I_Reports, reports)
+			
+	*name = "Reportparams";
+	uk = document->getElement(&key);
+	QI(uk, lb_I_ReportParameters, reportparams)
+			
+	*name = "Reportelements";
+	uk = document->getElement(&key);
+	QI(uk, lb_I_ReportElements, reportelements)
+			
+	*name = "Reportelementtypes";
+	uk = document->getElement(&key);
+	QI(uk, lb_I_ReportElementTypes, reportelementtypes)
+			
+	*name = "Reporttextblocks";
+	uk = document->getElement(&key);
+	QI(uk, lb_I_ReportTexts, reporttextblocks)
+
+
 			
 	*name = "Formulars";
 	uk = document->getElement(&key);

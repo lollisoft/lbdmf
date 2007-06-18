@@ -22,9 +22,9 @@
     The author of this work will be reached by e-Mail or paper mail.
     e-Mail: lothar.behrens@lollisoft.de
     p-Mail: Lothar Behrens
-            Rosmarinstr. 3
+            Heinrich-Scheufelen-Platz 2
             
-            40235 Duesseldorf (germany)
+            73252 Lenningen (germany)
 */
 /*...e*/
 
@@ -107,137 +107,144 @@ extern "C" {
 #include <lbDatabaseReport.h>
 
 
-/*...sclass lbDBReportProperties:0:*/
-class lbDBReportProperties {
-public:
-	lbDBReportProperties();
-	virtual ~lbDBReportProperties();
-	
-	void  initData(char* report);
-	int   getIntParameter(char* name);
-	float getFloatParameter(char* name);
-	lb_I_String* getCharParameter(char* name);
-	lb_I_String* getTextLine(int line, char* name);
-	
-	char* _report;
-	
-	UAP(lb_I_Parameter, params)
-	UAP(lb_I_Parameter, textlines)
-};
+/*
+BEGIN_IMPLEMENT_LB_UNKNOWN(lbDBReportProperties)
+	ADD_INTERFACE(lb_I_DBReportProperties)
+END_IMPLEMENT_LB_UNKNOWN()
 
-
+lbErrCodes lbDBReportProperties::setData(lb_I_Unknown* uk) {
+	return ERR_NOT_IMPLEMENTED;
+}
+*/
 lbDBReportProperties::lbDBReportProperties() {
 	REQUEST(getModuleInstance(), lb_I_Parameter, params)
 	REQUEST(getModuleInstance(), lb_I_Parameter, textlines)
+	REQUEST(getModuleInstance(), lb_I_Container, textblocks)
 	_report = NULL;
 }
 
 lbDBReportProperties::~lbDBReportProperties() {
 }
 
-void  lbDBReportProperties::initData(char* report) {
-        UAP_REQUEST(getModuleInstance(), lb_I_Database, ReportCFGDB)
-        UAP(lb_I_Query, query)
-        UAP(lb_I_Query, tquery)
-
-        ReportCFGDB->init();
-
-        char* lbDMFPasswd = getenv("lbDMFPasswd");
-        char* lbDMFUser   = getenv("lbDMFUser");
-
-        if (!lbDMFUser) lbDMFUser = "dba";
-        if (!lbDMFPasswd) lbDMFPasswd = "trainres";
-
-        ReportCFGDB->connect("lbDMF", lbDMFUser, lbDMFPasswd);
-
-        query = ReportCFGDB->getQuery(0);
-
-        // Get all the parameters for a given report
-
-/*...v\46\\46\\47\\46\\46\\47\Database\47\lbDMF\45\PostgreSQL\46\sql:0:*/
-
-       	UAP_REQUEST(getModuleInstance(), lb_I_String, value)
-       	UAP_REQUEST(getModuleInstance(), lb_I_String, key)
-
-	char buf[] = "select name, value from report_parameters where report = '%s'";
-	char* buffer = (char*) malloc(strlen(buf) + strlen(report) + 1);
-	buffer[0] = 0;
+long lbDBReportProperties::getReportID(const char* name) {
+	UAP(lb_I_Query, reportidQuery)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, q)
 	
-	sprintf(buffer, buf, report);
-	_report = strdup(report);
-        
-        if (query->query(buffer) == ERR_NONE) {
-        	lbErrCodes err = query->first();
-        	
-               	while(err == ERR_NONE) {
-        		
-	        	*key = query->getAsString(1);
-	        	*value = query->getAsString(2);
-        	
-        		key->trim();
-        		value->trim();
-
-			//_CL_LOG << "Insert in lbDBReportProperties: " << key->charrep() << " = " << value->charrep() LOG_
-        	
-	        	params->setUAPString(*&key, *&value);
-        		
-        		err = query->next();
-        	}
-        	
-        	if (err == WARN_DB_NODATA) {
-	        	*key = query->getAsString(1);
-	        	*value = query->getAsString(2);
-	        	
-	        	key->trim();
-	        	value->trim();
-	        	
-			//_CL_LOG << "Insert in lbDBReportProperties: " << key->charrep() << " = " << value->charrep() LOG_
-
-	        	params->setUAPString(*&key, *&value);
-        	}
-        }
-
-	tquery = ReportCFGDB->getQuery(0);
-
-	char buf1[] = "select line, text from report_texts where report = '%s'";
-	free(buffer);
-	buffer = (char*) malloc(strlen(buf1) + strlen(report) + 1);
-	buffer[0] = 0;
+	reportidQuery = ReportCFGDB->getQuery(0);
 	
-	sprintf(buffer, buf1, report);
-
+	*q = "select id from reports where name = '";
+	*q += name;
+	*q += "'";
+	
+	if (reportidQuery->query(q->charrep()) == ERR_NONE) {
+		lbErrCodes err = ERR_NONE;
 		
-        if (tquery->query(buffer) == ERR_NONE) {
-        	lbErrCodes err = tquery->first();
-        	
-               	while(err == ERR_NONE) {
-        		
-	        	*key = tquery->getAsString(1);
-	        	*value = tquery->getAsString(2);
-        	
-        		key->trim();
-        		value->trim();
-        		
-			_CL_LOG << "Insert in lbDBReportProperties: " << key->charrep() << " = " << value->charrep() LOG_
+		err = reportidQuery->first();
+		
+		if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
+			UAP(lb_I_Long, ID)
+		
+			ID = reportidQuery->getAsLong(1);
+			
+			return ID->getData();
+		} else {
+			_LOG << "Error: Failed to retrieve report ID from given report name (no data found for query " << q->charrep() << ")." LOG_
+		}
+	
+	} else {
+		_LOG << "Error: Failed to retrieve report ID from given report name (Query failed)." LOG_
+	}
+	
+	return (long) -1;
+}
 
-	        	textlines->setUAPString(*&key, *&value);
-        		
-        		err = tquery->next();
-        	}
-        	
-        	if (err == WARN_DB_NODATA) {
-	        	*key = tquery->getAsString(1);
-	        	*value = tquery->getAsString(2);
-	        	
-	        	key->trim();
-	        	value->trim();
-	        	
-			_CL_LOG << "Insert in lbDBReportProperties: " << key->charrep() << " = " << value->charrep() LOG_
 
-	        	textlines->setUAPString(*&key, *&value);
-        	}
-        }
-        
+void  lbDBReportProperties::initReportParameters(long id) {
+	UAP_REQUEST(getModuleInstance(), lb_I_String, buffer)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
+	
+	if (ReportCFGDB == NULL) {
+		REQUEST(getModuleInstance(), lb_I_Database, ReportCFGDB)
+		ReportCFGDB->init();
+    }
+	
+	UAP(lb_I_Query, query)
+	
+	query = ReportCFGDB->getQuery(0);
+	
+	ID->setData(id);
+	
+	*buffer = "select name, value from report_parameters where reportid = ";
+	*buffer += ID->charrep();
+	
+	
+	if (query->query(buffer->charrep()) == ERR_NONE) {
+		lbErrCodes err = query->first();
+		
+		while(err == ERR_NONE) {
+			UAP(lb_I_String, key)
+			UAP(lb_I_String, value)
+			
+			key = query->getAsString(1);
+			value = query->getAsString(2);
+        	
+			key->trim();
+			value->trim();
+			
+			//_CL_LOG << "Insert in lbDBReportProperties: " << key->charrep() << " = " << value->charrep() LOG_
+        	
+			params->setUAPString(*&key, *&value);
+			
+			err = query->next();
+		}
+		
+		if (err == WARN_DB_NODATA) {
+			UAP(lb_I_String, key)
+			UAP(lb_I_String, value)
+
+			key = query->getAsString(1);
+			value = query->getAsString(2);
+			
+			key->trim();
+			value->trim();
+			
+			//_CL_LOG << "Insert in lbDBReportProperties: " << key->charrep() << " = " << value->charrep() LOG_
+			
+			params->setUAPString(*&key, *&value);
+		}
+	}
+}
+
+long  lbDBReportProperties::initData(char* report) {
+	if (ReportCFGDB == NULL) {
+		REQUEST(getModuleInstance(), lb_I_Database, ReportCFGDB)
+		ReportCFGDB->init();
+    }
+	    
+	UAP(lb_I_Query, query)
+
+	if (_report) free(_report);
+	if (report) _report = strdup(report);
+	
+
+	char* lbDMFPasswd = getenv("lbDMFPasswd");
+	char* lbDMFUser   = getenv("lbDMFUser");
+
+	if (!lbDMFUser) lbDMFUser = "dba";
+	if (!lbDMFPasswd) lbDMFPasswd = "trainres";
+
+	ReportCFGDB->connect("lbDMF", lbDMFUser, lbDMFPasswd);
+
+	query = ReportCFGDB->getQuery(0);
+ 
+	UAP_REQUEST(getModuleInstance(), lb_I_String, value)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, key)
+
+	long id = getReportID(report);
+
+	initReportParameters(id);
+	
+	return id;
 }
 
 int   lbDBReportProperties::getIntParameter(char* name) {
@@ -265,7 +272,7 @@ int   lbDBReportProperties::getIntParameter(char* name) {
 		
 		query = ReportCFGDB->getQuery(0);
 		
-		char buf[] = "insert into report_parameters (report, name, value) values ('%s', '%s', 30)";
+		char buf[] = "insert into report_parameters (report, name, value) values ('%s', '%s', 12)";
 		char* buffer = (char*) malloc(strlen(buf) + 1 + strlen(name) + strlen(_report));
 		buffer[0] = 0;
 		sprintf(buffer, buf, _report, name);
@@ -472,7 +479,7 @@ void LB_STDCALL lbDBReportAction::openReport(lb_I_String* reportname, lb_I_Param
 		query = database->getQuery(0);
 /*...e*/
 
-		_CL_LOG << "Try to open report '" << reportname->charrep() << "'." LOG_
+		_LOG << "Try to open report '" << reportname->charrep() << "'. Query: " << buffer LOG_
 
 		if (query->query(buffer) == ERR_NONE) {
 			lbErrCodes err = query->first();
@@ -558,9 +565,14 @@ void LB_STDCALL lbDBReportAction::openReport(lb_I_String* reportname, lb_I_Param
 						
 						SourceFieldName->trim();
 						
-						if (strcmp(SourceFieldName->charrep(), "") != 0)
-							report->addAndCondition(SourceFieldName->charrep(), SourceFieldValue->charrep());
+						//if (strcmp(SourceFieldName->charrep(), "") != 0)
+						//	report->addAndCondition(SourceFieldName->charrep(), SourceFieldValue->charrep());
 						
+						_LOG << "Initialize the report with the given query. (" << sql->charrep() << ")" LOG_
+						
+						report->addReplacer("ReservingID", "100002");
+						
+						report->setName(reportname->charrep());
 						report->init(sql->charrep(), DBName->charrep(), DBUser->charrep(), DBPass->charrep());
 /*...e*/
 						
@@ -817,6 +829,8 @@ lbDatabaseReport::lbDatabaseReport() {
 	untranslated_ReportName = NULL;
 	hasConditions = false;
 	
+	REQUEST(getModuleInstance(), lb_I_Parameter, replacers)
+	
 	_CL_LOG << "lbDatabaseReport::lbDatabaseReport() called." LOG_
 }
 /*...e*/
@@ -836,6 +850,293 @@ void LB_STDCALL lbDatabaseReport::setFrame(lb_I_Unknown* _frame) {
 	frame = __frame;
 }
 
+lbErrCodes LB_STDCALL lbDatabaseReport::addReplacer(char const * name, char const * value) {
+	lbErrCodes err = ERR_NONE;
+	
+	UAP_REQUEST(getModuleInstance(), lb_I_String, rep)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, repval)
+	
+	*rep = "{";
+	*rep += name;
+	*rep += "}";
+	*repval = value;
+
+	replacers->setUAPString(*&rep, *&repval);
+	
+	return err;
+}
+
+void  lbDatabaseReport::initTextBlocks(long id) {
+	lbErrCodes err = ERR_NONE;
+	
+#ifdef OSX
+#undef LINUX
+	wxFont			fntBig(properties->getIntParameter("fntBig-Mac"),
+				wxSWISS, wxITALIC, wxBOLD, true, "Arial");
+				
+	wxFont			fntSmall(properties->getIntParameter("fntSmall-Mac"),
+				wxSWISS, wxNORMAL, wxNORMAL, false , "Arial");
+				
+	wxFont			fntHdr(properties->getIntParameter("fntHdr-Mac"),
+				wxSWISS, wxNORMAL, wxBOLD, false, "Arial");
+#endif
+
+#ifdef LINUX
+	wxFont			fntBig(properties->getIntParameter("fntBig-Mac"),
+				wxSWISS, wxITALIC, wxBOLD, true, "Arial");
+				
+	wxFont			fntSmall(properties->getIntParameter("fntSmall-Mac"),
+				wxSWISS, wxNORMAL, wxNORMAL, false , "Arial");
+				
+	wxFont			fntHdr(properties->getIntParameter("fntHdr-Mac"),
+				wxSWISS, wxNORMAL, wxBOLD, false, "Arial");
+#endif
+
+#ifdef OSX
+#define LINUX
+#endif
+
+#ifdef WINDOWS
+	wxFont			fntBig(properties->getIntParameter("fntBig-Windows"),
+				wxSWISS, wxITALIC, wxBOLD, true, "Arial");
+				
+	wxFont			fntSmall(properties->getIntParameter("fntSmall-Windows"),
+				wxSWISS, wxNORMAL, wxNORMAL, false , "Arial");
+				
+	wxFont			fntHdr(properties->getIntParameter("fntHdr-Windows"),
+				wxSWISS, wxNORMAL, wxBOLD, false, "Arial");
+#endif
+
+	
+	
+	
+	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
+	UAP(lb_I_Parameter, params)
+	UAP(lb_I_Unknown, uk)
+	
+	uk = meta->getActiveDocument();
+	QI(uk, lb_I_Parameter, params)
+	
+	if (params != NULL) {
+		UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+		UAP_REQUEST(getModuleInstance(), lb_I_Container, document)
+		UAP(lb_I_KeyBase, key)
+		QI(name, lb_I_KeyBase, key)
+
+		*name = "ApplicationData";
+		document->setCloning(false);
+		params->getUAPContainer(*&name, *&document);
+		
+		UAP(lb_I_Reports, reports)
+		UAP(lb_I_ReportParameters, reportparams)
+		UAP(lb_I_ReportElements, reportelements)
+		UAP(lb_I_ReportElementTypes, reportelementtypes)
+		UAP(lb_I_ReportTexts, reporttextblocks)
+	
+			
+		*name = "Reports";
+		uk = document->getElement(&key);
+		QI(uk, lb_I_Reports, reports)
+
+		*name = "Reportelements";
+		uk = document->getElement(&key);
+		QI(uk, lb_I_ReportElements, reportelements)
+
+		*name = "Reporttextblocks";
+		uk = document->getElement(&key);
+		QI(uk, lb_I_ReportTexts, reporttextblocks)
+
+		_LOG << "Prepare report with id = " << id LOG_
+
+		reports->selectReport(id);
+
+		reportelements->finishElementIteration();
+		
+		while (reportelements->hasMoreElements()) {
+			reportelements->setNextElement();
+			_LOG << "Check for report element " << reportelements->getElementName() << " with reportid = " << reportelements->getElementReportID() LOG_
+			if (reportelements->getElementReportID() == id) {
+				
+				// The report element matches to this report
+				
+				long x = reportelements->getElementX();
+				long y = reportelements->getElementX();
+				
+				_LOG << "Have a report element for given report: '" << reportelements->getElementName() << "' with typ '" << reportelements->getElementTyp() << "'." LOG_
+				
+				switch (reportelements->getElementTyp()) {
+					case 1: // Text block
+					{
+						UAP_REQUEST(getModuleInstance(), lb_I_Container, lines)
+						UAP(lb_I_KeyBase, key)
+						UAP(lb_I_Unknown, ukLine)
+						
+						_LOG << "Have a report text block element..." LOG_
+						
+						reporttextblocks->finishTextIteration();
+						
+						while (reporttextblocks->hasMoreTexts()) {
+							reporttextblocks->setNextText();
+							
+							_LOG << "Check report text block, if to be inserted: '" << reporttextblocks->getLine() << "'." LOG_
+							if (reporttextblocks->getElementID() == reportelements->getElementID()) {
+								UAP_REQUEST(getModuleInstance(), lb_I_String, l)
+								UAP_REQUEST(getModuleInstance(), lb_I_Long, i)
+								
+								*l = reporttextblocks->getText();
+								i->setData(reporttextblocks->getLine());
+						
+								QI(i, lb_I_KeyBase, key)
+								QI(l, lb_I_Unknown, ukLine)
+								
+								_LOG << "Insert a line of text into report text block: '" << reporttextblocks->getLine() << "'." LOG_
+								
+								lines->insert(&ukLine, &key);
+							}
+						}
+						
+						// Lines added. Now I should be able to iterate these lines sorted, even they came in unsorted.
+						
+						lines->finishIteration();
+						
+						int ii = 1;
+						
+						while (lines->hasMoreElements() == 1) {
+								UAP(lb_I_Unknown, ukLine)
+								UAP(lb_I_String, line)
+								
+								ukLine = lines->nextElement();
+								QI(ukLine, lb_I_String, line)
+								
+						        pObj = new wxReportObj( x, (LineSpace * ii) + y - ii, TextBlockSize, 6 );
+								pObj->SetFont(&fntSmall);
+								wxString data = wxString(line->charrep());
+								
+								wxString pattern = data.AfterFirst('{');
+								
+								pattern = pattern.BeforeFirst('}');
+								
+								UAP_REQUEST(getModuleInstance(), lb_I_String, p)
+								UAP_REQUEST(getModuleInstance(), lb_I_String, r)
+								*r = "";
+									
+								*p = "{";
+								*p += pattern.c_str();
+								*p += "}";
+								
+								if (strcmp(p->charrep(), "{}") != 0) {
+									replacers->getUAPString(*&p, *&r);
+									
+									if (strcmp(r->charrep(), "") != 0) data.Replace(p->charrep(), r->charrep());
+								}
+								
+								pObj->SetData(data);
+								pObj->SetIncrements( 0.0, LPI6 );
+								//pObj->SetLeftAlign();
+								pReport->AddHeaderObj( pObj );
+								ii++;
+						}
+					}
+						
+					
+						break;
+					default:
+						break;
+				}
+			
+			}
+		}
+	}
+	
+	
+#ifdef bla
+
+
+		*name = "Reportparams";
+		uk = document->getElement(&key);
+		QI(uk, lb_I_ReportParameters, reportparams)
+				
+		*name = "Reportelements";
+		uk = document->getElement(&key);
+		QI(uk, lb_I_ReportElements, reportelements)
+				
+		*name = "Reportelementtypes";
+		uk = document->getElement(&key);
+		QI(uk, lb_I_ReportElementTypes, reportelementtypes)
+				
+		*name = "Reporttextblocks";
+		uk = document->getElement(&key);
+		QI(uk, lb_I_ReportTexts, reporttextblocks)
+
+
+
+
+
+
+    UAP(lb_I_String, buffer)
+    UAP(lb_I_Query, tquery)
+    UAP(lb_I_Query, textblockquery)
+	tquery = ReportCFGDB->getQuery(0);
+	
+	*buffer = "select id, x, y, w, h from report_elements where reportid = ";
+	*buffer += ID->charrep();
+	*buffer += " and type = 1"; // For textblocks
+
+	if (tquery->query(buffer->charrep()) == ERR_NONE) {
+		lbErrCodes err = ERR_NONE;
+		
+		err = tquery->first();
+		
+		while ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
+			lbErrCodes tblerr = ERR_NONE;
+			lbDBReportTextBlock* tb = new lbDBReportTextBlock();
+			
+			UAP(lb_I_Long, ID)
+			UAP(lb_I_Long, x)
+			UAP(lb_I_Long, y)
+			UAP(lb_I_Long, w)
+			UAP(lb_I_Long, h)
+			
+			ID = tquery->getAsLong(1);
+			x = tquery->getAsLong(2);
+			y = tquery->getAsLong(3);
+			w = tquery->getAsLong(4);
+			h = tquery->getAsLong(5);
+			
+			tb->setPosition(x->getData(), y->getData(), w->getData(), h->getData());
+		
+			UAP_REQUEST(getModuleInstance(), lb_I_String, textblocklinesquery)	
+
+			*textblocklinesquery = "select line, text from report_texts where elementid = ";
+			*textblocklinesquery += ID->charrep();
+			
+			textblockquery = ReportCFGDB->getQuery(0);
+			
+			tblerr = textblockquery->query(textblocklinesquery);
+			
+			if (tblerr == ERR_NONE) {
+				tblerr = textblockquery->first();
+				
+				while ((tblerr == ERR_NONE) || (tblerr == WARN_DB_NODATA)) {
+					UAP(lb_I_Long, line)
+					UAP(lb_I_String, text)
+					
+					line = textblockquery->getAsLong(1);
+					text = textblockquery->getAsString(2);
+				
+					tb->addLine(line->getData(), text->charrep());
+				}
+				
+			}
+		}
+	
+	}
+
+	
+#endif
+}
+
+
 /*...svoid LB_STDCALL lbDatabaseReport\58\\58\init\40\char\42\ SQLString\44\ char\42\ DBName\44\ char\42\ DBUser\44\ char\42\ DBPass\41\:0:*/
 void LB_STDCALL lbDatabaseReport::init(char* SQLString, char* DBName, char* DBUser, char* DBPass) {
 	_CL_LOG << "lbDatabaseReport::init('" << 
@@ -843,9 +1144,11 @@ void LB_STDCALL lbDatabaseReport::init(char* SQLString, char* DBName, char* DBUs
 			DBName << "', '" << 
 			DBUser << "', '*****') for '" << untranslated_ReportName << "' called." LOG_
 
-	lbDBReportProperties* properties = new lbDBReportProperties();
+	properties = new lbDBReportProperties();
 
-	properties->initData("dummy");
+	// Init the report with name 'dummy'
+	_LOG << "Init database report with name '" << untranslated_ReportName << "'" LOG_
+	long reportid = properties->initData(untranslated_ReportName);
 
 	int colstep = 0;
 
@@ -893,7 +1196,7 @@ void LB_STDCALL lbDatabaseReport::init(char* SQLString, char* DBName, char* DBUs
 #endif
 
 
-	wxReportWriter* pReport = new wxReportWriter(0, wxT("Test Report"), wxPoint(10,10), wxSize( 100, 100 ) );
+	pReport = new wxReportWriter(0, wxT("Test Report"), wxPoint(10,10), wxSize( 100, 100 ) );
 	pReport->SetPath( wxT(".") );
 
 	//pReport->SetOrientation(wxLANDSCAPE);
@@ -919,15 +1222,11 @@ void LB_STDCALL lbDatabaseReport::init(char* SQLString, char* DBName, char* DBUs
 /*...e*/
 
 	
-	float LineSpace = LPI6;
-	float offset = 10;
-
+	LineSpace = LPI6;
+	float offset = properties->getIntParameter("ReportOffsetX");
+	currentColstep = properties->getIntParameter("ReportOffsetY");
+	TextBlockSize = properties->getIntParameter("TextBlockSize");
 	int ii = 1;
-	UAP(lb_I_String, tLine)
-	
-	tLine = properties->getTextLine(ii, "dummy");
-
-	int TextBlockSize = properties->getIntParameter("TextBlockSize");
 
 /*...sPrepare query:8:*/
 	UAP_REQUEST(manager.getPtr(), lb_I_Database, database)
@@ -983,11 +1282,11 @@ void LB_STDCALL lbDatabaseReport::init(char* SQLString, char* DBName, char* DBUs
 			
 		query = database->getQuery(0);
 		
-		_CL_LOG << "SQL string: " << newQuery->charrep() LOG_ 
+		_LOG << "SQL string for database report: " << newQuery->charrep() LOG_ 
 		
 		err = query->query(newQuery->charrep());
 	} else {
-		_CL_LOG << "SQL string: " << SQLString LOG_
+		_LOG << "SQL string for database report: " << SQLString LOG_
 	}
 /*...e*/
 /*...e*/
@@ -1010,37 +1309,8 @@ void LB_STDCALL lbDatabaseReport::init(char* SQLString, char* DBName, char* DBUs
 		replacer->setUAPString(*&pattern, *&AndConditionValue);
 	}
 	        
+	initTextBlocks(reportid);
 
-	while (tLine.getPtr() != NULL) {
-	        pObj = new wxReportObj( 0, (LineSpace * ii) + offset - ii, TextBlockSize, 6 );
-	        
-		pObj->SetFont(&fntSmall);
-			
-	        wxString data = wxString(tLine->charrep());
-
-	        wxString pattern = data.AfterFirst('{');
-	        
-	        pattern = pattern.BeforeFirst('}');
-	        
-	        UAP_REQUEST(getModuleInstance(), lb_I_String, p)
-	        UAP_REQUEST(getModuleInstance(), lb_I_String, r)
-	        
-	        *p = "{";
-	        *p += pattern.c_str();
-	        *p += "}";
-	        
-		if (strcmp(p->charrep(), "{}") != 0) {
-			replacer->getUAPString(*&p, *&r);
-			data.Replace(p->charrep(), r->charrep());
-		}
-			
-	        pObj->SetData(data);
-	        pObj->SetIncrements( 0.0, LPI6 );
-	        //pObj->SetLeftAlign();
-	        pReport->AddHeaderObj( pObj );
-		ii++;
-		tLine = properties->getTextLine(ii, "dummy");
-	}
 /*...e*/
 
 	_coly = (LineSpace * ii) + offset;
@@ -1064,7 +1334,6 @@ void LB_STDCALL lbDatabaseReport::init(char* SQLString, char* DBName, char* DBUs
 		strValue = new wxString* [cols];
 		colsteps = new int* [cols];
 
-		int currentColstep = 0;
 
 		wxBitmap bm(100, 20);
 		wxMemoryDC dc;
@@ -1079,6 +1348,8 @@ void LB_STDCALL lbDatabaseReport::init(char* SQLString, char* DBName, char* DBUs
 		}
 		
 		double scalingFactor = 2.5;
+		
+		// Calculate the column width's
 		
 		if (query->first() == ERR_NONE)
 			for (int i = 1; i <= cols; i++) {
@@ -1201,6 +1472,11 @@ void LB_STDCALL lbDatabaseReport::init(char* SQLString, char* DBName, char* DBUs
 
 		currentColstep = 0;
 
+		char buf[100] = "";
+
+		sprintf(buf, "%f, %f", currentColstep, _coly + LineSpace);
+		_LOG << "Create a report Column at x, y:" << buf LOG_
+
 		pObj = new wxReportObj( currentColstep, _coly + LineSpace, *(colsteps[0]), 6 );
 		pObj->SetRef( strValue[0] );
 		pObj->SetFont(&fntSmall);
@@ -1210,6 +1486,9 @@ void LB_STDCALL lbDatabaseReport::init(char* SQLString, char* DBName, char* DBUs
 		currentColstep += *(colsteps[0]);
 	
 		for (int i = 2; i <= cols; i++) {
+			sprintf(buf, "%f, %f", currentColstep, _coly + LineSpace);
+			_LOG << "Create a report Column at x, y:" << buf LOG_
+			
 			pObj = new wxReportObj( currentColstep, _coly + LineSpace, *(colsteps[i-1]), 6 );
 			pObj->SetRef( strValue[i-1] );
 			pObj->SetFont(&fntSmall);
@@ -1227,10 +1506,15 @@ void LB_STDCALL lbDatabaseReport::init(char* SQLString, char* DBName, char* DBUs
 
 /*...sAll lines exept last:32:*/
 		while (err == ERR_NONE) {
+			UAP_REQUEST(getModuleInstance(), lb_I_String, reportline)
+			*reportline = "";
 			for (int i = 1; i < cols; i++) {
 				UAP(lb_I_String, value)
 			
 				value = query->getAsString(i);
+			
+				*reportline += value->charrep();
+				*reportline += ";";
 			
 				*(strValue[i-1]) = value->charrep();
 			}
@@ -1238,21 +1522,29 @@ void LB_STDCALL lbDatabaseReport::init(char* SQLString, char* DBName, char* DBUs
 			UAP(lb_I_String, value)
 			
 			value = query->getAsString(cols);
+			*reportline += value->charrep();
 
 			*(strValue[cols-1]) = value->charrep();
 			
 			pReport->SaveData();
 			
+			_LOG << "Have created a database report line: '" << reportline->charrep() << "'" LOG_
+
 			err = query->next();
 		}
 /*...e*/
 		
 /*...sLast line:32:*/
 		if (err == WARN_DB_NODATA) {
+			UAP_REQUEST(getModuleInstance(), lb_I_String, reportline)
+			*reportline = "";
+
 			for (int i = 1; i <= cols; i++) {
 				UAP(lb_I_String, value)
 			
 				value = query->getAsString(i);
+				*reportline += value->charrep();
+				*reportline += ";";
 
 				*(strValue[i-1]) = value->charrep();
 				
@@ -1261,10 +1553,13 @@ void LB_STDCALL lbDatabaseReport::init(char* SQLString, char* DBName, char* DBUs
 			UAP(lb_I_String, value)
 			
 			value = query->getAsString(cols);
+			*reportline += value->charrep();
 
 			*(strValue[cols-1]) = value->charrep();
 
 			pReport->SaveData();
+
+			_LOG << "Have created the last database report line: '" << reportline->charrep() << "'" LOG_
 		}
 /*...e*/
 		
@@ -1276,7 +1571,7 @@ void LB_STDCALL lbDatabaseReport::init(char* SQLString, char* DBName, char* DBUs
 		delete [] colsteps;
 /*...e*/
 	} else {
-		_CL_LOG << "Error: Query returns no data!" LOG_
+		_LOG << "Error: Query for database report failed!" LOG_
 	}
 
 	pReport->HorizLine();

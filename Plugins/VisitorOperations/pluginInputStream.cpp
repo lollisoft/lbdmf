@@ -170,6 +170,16 @@ public:
 	void LB_STDCALL visit(lb_I_DBPrimaryKeys*);
 	void LB_STDCALL visit(lb_I_DBForeignKeys*);
 
+	void LB_STDCALL visit(lb_I_DBReportTextblock*);
+	void LB_STDCALL visit(lb_I_DBReportProperties*);
+
+	void LB_STDCALL visit(lb_I_Reports*);
+	void LB_STDCALL visit(lb_I_ReportParameters*);
+	void LB_STDCALL visit(lb_I_ReportElements*);
+	void LB_STDCALL visit(lb_I_ReportElementTypes*);
+	void LB_STDCALL visit(lb_I_ReportTexts*);
+
+
 	bool LB_STDCALL begin(char* file);
 	bool LB_STDCALL begin(lb_I_Stream* stream);
 	void LB_STDCALL end();
@@ -250,6 +260,34 @@ void LB_STDCALL lbInputStreamOpr::visit(lb_I_Streamable* pm) {
 	} else {
 		_CL_LOG << "lbInputStreamOpr::visit(lb_I_ProjectManager* pm) Error: No input stream available. Could not read from stream!" LOG_
 	}
+}
+
+void LB_STDCALL lbInputStreamOpr::visit(lb_I_Reports*) {
+
+}
+
+void LB_STDCALL lbInputStreamOpr::visit(lb_I_ReportParameters*) {
+
+}
+
+void LB_STDCALL lbInputStreamOpr::visit(lb_I_ReportElements*) {
+
+}
+
+void LB_STDCALL lbInputStreamOpr::visit(lb_I_ReportElementTypes*) {
+
+}
+
+void LB_STDCALL lbInputStreamOpr::visit(lb_I_ReportTexts*) {
+
+}
+
+void LB_STDCALL lbInputStreamOpr::visit(lb_I_DBReportTextblock*) {
+
+}
+
+void LB_STDCALL lbInputStreamOpr::visit(lb_I_DBReportProperties*) {
+
 }
 
 void LB_STDCALL lbInputStreamOpr::visit(lb_I_UserAccounts* users) {

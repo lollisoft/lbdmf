@@ -169,6 +169,15 @@ public:
 	void LB_STDCALL visit(lb_I_DBPrimaryKeys*);
 	void LB_STDCALL visit(lb_I_DBForeignKeys*);
 	
+	void LB_STDCALL visit(lb_I_DBReportTextblock*);
+	void LB_STDCALL visit(lb_I_DBReportProperties*);
+
+	void LB_STDCALL visit(lb_I_Reports*);
+	void LB_STDCALL visit(lb_I_ReportParameters*);
+	void LB_STDCALL visit(lb_I_ReportElements*);
+	void LB_STDCALL visit(lb_I_ReportElementTypes*);
+	void LB_STDCALL visit(lb_I_ReportTexts*);
+	
 	/** \brief Start save operation.
 	 *
 	 * This initializes an input file stream with a given name.
@@ -263,6 +272,34 @@ bool LB_STDCALL lbXMLOutputStream::begin(lb_I_Stream* stream) {
 
 void LB_STDCALL lbXMLOutputStream::visit(lb_I_Streamable* pm) {
 		_CL_LOG << "lbXMLOutputStream::visit(lb_I_Streamable* pm) Error: Private format. Could not generate XML for it !" LOG_
+}
+
+void LB_STDCALL lbXMLOutputStream::visit(lb_I_Reports*) {
+
+}
+
+void LB_STDCALL lbXMLOutputStream::visit(lb_I_ReportParameters*) {
+
+}
+
+void LB_STDCALL lbXMLOutputStream::visit(lb_I_ReportElements*) {
+
+}
+
+void LB_STDCALL lbXMLOutputStream::visit(lb_I_ReportElementTypes*) {
+
+}
+
+void LB_STDCALL lbXMLOutputStream::visit(lb_I_ReportTexts*) {
+
+}
+
+void LB_STDCALL lbXMLOutputStream::visit(lb_I_DBReportTextblock*) {
+
+}
+
+void LB_STDCALL lbXMLOutputStream::visit(lb_I_DBReportProperties*) {
+
 }
 
 void LB_STDCALL lbXMLOutputStream::visit(lb_I_UserAccounts* users) {

@@ -740,6 +740,8 @@ class lb_I_ThreadImplementation;
 class lb_I_Column_Types;
 class lb_I_Formular_Fields;
 class lb_I_FixedDatabaseForm;
+class lb_I_DBReportTextblock;
+class lb_I_DBReportProperties;
 /*...e*/
 
 /*...scallback \47\ handler typedefs:0:*/
@@ -3397,6 +3399,92 @@ public:
 	virtual void		LB_STDCALL deleteUnmarked() = 0;
 	virtual void		LB_STDCALL deleteMarked() = 0;
 };
+
+/// \brief List of database reports.
+class lb_I_Reports : public lb_I_Unknown {
+public:
+	virtual long		LB_STDCALL addReport(const char* name, const char* description, long _id = -1) = 0;
+
+	virtual bool		LB_STDCALL selectReport(long _id) = 0;
+	virtual int			LB_STDCALL getReportCount() = 0;
+	virtual bool		LB_STDCALL hasMoreReports() = 0;
+	virtual void		LB_STDCALL setNextReport() = 0;
+	virtual void		LB_STDCALL finishReportIteration() = 0;
+
+	virtual long		LB_STDCALL getReportID() = 0;
+	virtual char*		LB_STDCALL getReportName() = 0;
+	virtual char*		LB_STDCALL getReportDescription() = 0;
+};
+
+class lb_I_ReportParameters : public lb_I_Unknown {
+public:
+	virtual long		LB_STDCALL addParameter(long reportid, const char* name, const char* value, long _id = -1) = 0;
+
+	virtual bool		LB_STDCALL selectParameter(long _id) = 0;
+	virtual int			LB_STDCALL getParameterCount() = 0;
+	virtual bool		LB_STDCALL hasMoreParameters() = 0;
+	virtual void		LB_STDCALL setNextParameter() = 0;
+	virtual void		LB_STDCALL finishParameterIteration() = 0;
+
+	virtual long		LB_STDCALL getReportID() = 0;
+	virtual long		LB_STDCALL getParameterID() = 0;
+	virtual char*		LB_STDCALL getParameterName() = 0;
+	virtual char*		LB_STDCALL getParameterValue() = 0;
+};
+
+class lb_I_ReportElements : public lb_I_Unknown {
+public:
+	virtual long		LB_STDCALL addElement(long reportid, const char* name, long typ, long x, long y, long w, long h, const char* description, long _id = -1) = 0;
+
+	virtual bool		LB_STDCALL selectElement(long _id) = 0;
+	virtual int			LB_STDCALL getElementCount() = 0;
+	virtual bool		LB_STDCALL hasMoreElements() = 0;
+	virtual void		LB_STDCALL setNextElement() = 0;
+	virtual void		LB_STDCALL finishElementIteration() = 0;
+
+	virtual long		LB_STDCALL getElementReportID() = 0;
+	virtual long		LB_STDCALL getElementID() = 0;
+	virtual char*		LB_STDCALL getElementName() = 0;
+	virtual char*		LB_STDCALL getElementDescription() = 0;
+	virtual long		LB_STDCALL getElementTyp() = 0;
+	virtual long		LB_STDCALL getElementX() = 0;
+	virtual long		LB_STDCALL getElementY() = 0;
+	virtual long		LB_STDCALL getElementW() = 0;
+	virtual long		LB_STDCALL getElementH() = 0;
+};
+
+class lb_I_ReportElementTypes : public lb_I_Unknown {
+public:
+	virtual long		LB_STDCALL addElementType(const char* name, const char* description, long _id = -1) = 0;
+
+	virtual bool		LB_STDCALL selectElementType(long _id) = 0;
+	virtual int			LB_STDCALL getElementTypeCount() = 0;
+	virtual bool		LB_STDCALL hasMoreElementTypes() = 0;
+	virtual void		LB_STDCALL setNextElementType() = 0;
+	virtual void		LB_STDCALL finishElementTypeIteration() = 0;
+
+	virtual char*		LB_STDCALL getElementName() = 0;
+	virtual char*		LB_STDCALL getElementDescription() = 0;
+};
+
+class lb_I_ReportTexts : public lb_I_Unknown {
+public:
+	virtual long		LB_STDCALL addText(long elementid, long line, const char* text, long _id = -1) = 0;
+
+	virtual bool		LB_STDCALL selectText(long _id) = 0;
+	virtual int			LB_STDCALL getTextCount() = 0;
+	virtual bool		LB_STDCALL hasMoreTexts() = 0;
+	virtual void		LB_STDCALL setNextText() = 0;
+	virtual void		LB_STDCALL finishTextIteration() = 0;
+
+	virtual char*		LB_STDCALL getText() = 0;
+	virtual long		LB_STDCALL getLine() = 0;
+	virtual long		LB_STDCALL getElementID() = 0;
+	virtual long		LB_STDCALL getID() = 0;
+};
+
+
+
 
 /*...e*/
 

@@ -32,11 +32,18 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.53 $
+ * $Revision: 1.54 $
  * $Name:  $
- * $Id: lbPluginManager.cpp,v 1.53 2007/04/22 20:39:38 lollisoft Exp $
+ * $Id: lbPluginManager.cpp,v 1.54 2007/06/18 22:54:50 lollisoft Exp $
  *
  * $Log: lbPluginManager.cpp,v $
+ * Revision 1.54  2007/06/18 22:54:50  lollisoft
+ * Partly rewrite of the database report classes works.
+ * There are still the issues to place the report to the
+ * correct location.
+ *
+ * Currently the sample text blocks are good.
+ *
  * Revision 1.53  2007/04/22 20:39:38  lollisoft
  * Minimal changes on Mac.
  *
@@ -1374,7 +1381,7 @@ void LB_STDCALL lbPlugin::preinitialize() {
 			isPreInitialized = true;
 
 		} else {
-			_LOG << "lbPlugin::preinitialize() failed to load plugin! Maybe the configured plugin is not implemented, or not with that name." LOG_
+			_LOG << "lbPlugin::preinitialize() failed to load plugin (name = '" << name << "', module = '" << _module << "')! Maybe the configured plugin is not implemented, or not with that name." LOG_
 		}
 	}
 

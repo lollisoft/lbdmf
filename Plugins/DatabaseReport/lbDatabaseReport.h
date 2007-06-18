@@ -61,6 +61,39 @@ protected:
 	UAP(lb_I_DatabaseReport, report)
 };
 /*...e*/
+
+/*...sclass lbDBReportProperties:0:*/
+class lbDBReportProperties {
+//: public lb_I_DBReportProperties {
+public:
+	lbDBReportProperties();
+	virtual ~lbDBReportProperties();
+	
+	long  initData(char* report);
+	int   getIntParameter(char* name);
+	float getFloatParameter(char* name);
+	lb_I_String* getCharParameter(char* name);
+	lb_I_String* getTextLine(int line, char* name);
+
+	//DECLARE_LB_UNKNOWN()
+	
+
+private:
+	long getReportID(const char* name);
+	void initReportParameters(long id);
+	
+	char* _report;
+	
+	UAP(lb_I_Database, ReportCFGDB)
+	
+	UAP(lb_I_Parameter, params)
+	UAP(lb_I_Parameter, textlines)
+	
+	UAP(lb_I_Container, textblocks)
+	
+};
+
+
 /*...sclass lbDatabaseReport:0:*/
 class lbDatabaseReport :
         public lb_I_DatabaseReport {
@@ -92,7 +125,14 @@ public:
 	
 	lbErrCodes LB_STDCALL setName(char const * name, char const * appention);
 	
+	lbErrCodes LB_STDCALL addReplacer(char const * name, char const * value);
+	
 	DECLARE_LB_UNKNOWN()
+
+private:
+
+	void initTextBlocks(long id);
+
 
 	char* ReportFileName;
 		
@@ -104,15 +144,27 @@ public:
 	wxFrame		*frame;
 	
 	wxReportObj	*pObj;
+	wxReportWriter* pReport;
 
 	// Array of report values
 	wxString**	strValue;
 	int**		colsteps;
 
+	// Report settings
+	lbDBReportProperties* properties;
+	
+	float LineSpace;
+	float offset;
+	int currentColstep;
+	int TextBlockSize;
+
+
 	bool		hasConditions;
 	
 	UAP(lb_I_String, AndConditionColumn)
 	UAP(lb_I_String, AndConditionValue)
+	
+	UAP(lb_I_Parameter, replacers)
 };
 /*...e*/
 

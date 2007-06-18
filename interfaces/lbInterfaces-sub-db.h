@@ -1145,6 +1145,45 @@ public:
 /*...e*/
 };
 
+class lb_I_DBReportTextblock : public lb_I_Unknown {
+	virtual void LB_STDCALL getPosition(long& x, long& y, long& w, long& h) = 0;
+	virtual void LB_STDCALL setPosition(long x, long y, long w, long h) = 0;
+
+	virtual void LB_STDCALL addLine(long line, const char* text) = 0;
+	virtual bool LB_STDCALL hasMoreLines() = 0;
+	virtual lb_I_String* LB_STDCALL getNextLine() = 0;
+};
+
+class lb_I_DBReportProperties : public lb_I_Unknown {
+	/** \brief Add a named parameter.
+	 */
+	virtual lbErrCodes LB_STDCALL addParameter(const char* name, const char* value) = 0;
+
+	/** \brief Add a text block element.
+	 */
+	virtual lbErrCodes LB_STDCALL addTextBlock(lb_I_DBReportTextblock* tb) = 0;
+
+	/** \brief Get the number of parameters.
+	 */
+	virtual long		LB_STDCALL getParameterCount() = 0;
+	
+	/** \brief Begin or indicate end of iteration.
+	 */
+	virtual bool		LB_STDCALL hasMoreParameters() = 0;
+
+	/** \brief Iterate to next parameter.
+	 */
+	virtual void		LB_STDCALL setNextParameter() = 0;
+
+	/** \brief Stop iteration.
+	 */
+	virtual void		LB_STDCALL finishParameterIteration() = 0;
+
+	lb_I_String* getParameterByName(const char* name);
+	lb_I_String* getParameterName();
+	lb_I_String* getParameterValue();
+};
+
 /*...sclass lb_I_DatabaseReport:0:*/
 /**
  * \brief An attempt for a report based on database queries.
@@ -1228,6 +1267,12 @@ public:
 	 * \brief Set the name for the report.
 	 */
 	virtual lbErrCodes LB_STDCALL setName(char const * name, char const * appention = NULL) = 0;
+	
+	/** \brief Add a replacer item.
+	 * A replacer item is a name surrounding with brackets ({}). This enables text templates
+	 * that could be customized by data from database.
+	 */
+	virtual lbErrCodes LB_STDCALL addReplacer(const char* name, const char* value) = 0;
 };
 /*...e*/
 

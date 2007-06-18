@@ -123,6 +123,14 @@ virtual void LB_STDCALL visit(lb_I_DBColumns*) = 0;
 virtual void LB_STDCALL visit(lb_I_DBTables*) = 0;
 virtual void LB_STDCALL visit(lb_I_DBPrimaryKeys*) = 0;
 virtual void LB_STDCALL visit(lb_I_DBForeignKeys*) = 0;
+virtual void LB_STDCALL visit(lb_I_DBReportProperties*) = 0;
+virtual void LB_STDCALL visit(lb_I_DBReportTextblock*) = 0;
+virtual void LB_STDCALL visit(lb_I_Reports*) = 0;
+virtual void LB_STDCALL visit(lb_I_ReportParameters*) = 0;
+virtual void LB_STDCALL visit(lb_I_ReportElements*) = 0;
+virtual void LB_STDCALL visit(lb_I_ReportElementTypes*) = 0;
+virtual void LB_STDCALL visit(lb_I_ReportTexts*) = 0;
+
 //virtual ~Aspect(){} 
 };   
 

@@ -86,6 +86,12 @@ END_IMPLEMENT_LB_UNKNOWN()
 IMPLEMENT_FUNCTOR(instanceOfPluginModule, lbPluginModulelbDMFDataModel)
 
 BEGIN_PLUGINS(lbPluginModulelbDMFDataModel)
+	ADD_PLUGIN(lbPluginReportsModel, Model)
+	ADD_PLUGIN(lbPluginReportElementsModel, Model)
+	ADD_PLUGIN(lbPluginReportElementTypesModel, Model)
+	ADD_PLUGIN(lbPluginReportTextsModel, Model)
+	ADD_PLUGIN(lbPluginReportParametersModel, Model)
+
 	ADD_PLUGIN(lbPluginApplications, Model)
 	ADD_PLUGIN(lbPluginUsersModel, Model)	
 	ADD_PLUGIN(lbPluginFormularsModel, Model)	

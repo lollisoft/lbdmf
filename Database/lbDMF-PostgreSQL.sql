@@ -7,28 +7,7 @@
 --USE jedi;
 SET SESSION AUTHORIZATION 'dba';
 
-DROP TABLE column_types;
-DROP TABLE formular_actions;
-DROP TABLE translations;
-DROP TABLE CodegenTarget;
-DROP TABLE Applevel_Plugin_Registry;
-DROP TABLE Anwendungs_Parameter;
-DROP TABLE Formular_Parameters;
-DROP TABLE ForeignKey_VisibleData_Mapping;
-DROP TABLE Anwendungen_Formulare;
-DROP TABLE Anwendungsberechtigungen;
-DROP TABLE Formulare;
-DROP TABLE Formulartypen;
-DROP TABLE User_Anwendungen;
-DROP TABLE report_parameters;
-DROP TABLE report_texts;
-DROP TABLE Users;
-DROP TABLE Anwendungen;
-
-DROP TABLE action_steps;
-DROP TABLE actions;
-DROP TABLE action_types;
-
+DROP TABLE column_types;DROP TABLE formular_actions;DROP TABLE translations;DROP TABLE CodegenTarget;DROP TABLE Applevel_Plugin_Registry;DROP TABLE Anwendungs_Parameter;DROP TABLE Formular_Parameters;DROP TABLE ForeignKey_VisibleData_Mapping;DROP TABLE Anwendungen_Formulare;DROP TABLE Anwendungsberechtigungen;DROP TABLE Formulare;DROP TABLE Formulartypen;DROP TABLE User_Anwendungen;DROP TABLE report_parameters;DROP TABLE report_texts;DROP TABLE report_elements;DROP TABLE report_element_types;DROP TABLE reports;DROP TABLE Users;DROP TABLE Anwendungen;DROP TABLE action_steps;DROP TABLE actions;DROP TABLE action_types;
 
 --...sCREATE TABLE column_types:0:
 CREATE TABLE column_types
@@ -258,6 +237,12 @@ insert into actions (name, typ, source, target) values(
 'action',
 0);
 
+insert into actions (name, typ, source, target) values(
+'Formulare drucken',
+1,
+'name',
+0);
+
 --...e
 --...sFill action_steps:0:
 insert into action_steps (bezeichnung, a_order_nr, what, type, actionid) values(
@@ -325,6 +310,12 @@ insert into action_steps (bezeichnung, a_order_nr, what, type, actionid) values(
 1,
 'Aktionen',
 5, 10);
+
+insert into action_steps (bezeichnung, a_order_nr, what, type, actionid) values(
+'Prints a list of formulars',
+1,
+'Formulare',
+6, 11);
 --...e
 --...e
 
@@ -546,15 +537,28 @@ CREATE UNIQUE INDEX pk_id_User_Anwendungen ON User_Anwendungen
   id
 );
 --...e
+
+CREATE TABLE reports
+(
+  id SERIAL,
+  name CHAR(50),
+  description CHAR(200),
+  PRIMARY KEY (id)
+) WITH OIDS;
+
+insert into reports (name, description) values ('dummy', 'Ein dummy Report');
+insert into reports (name, description) values ('Formulare', 'Ein Report aller Formulare');
+
+
 --...sCREATE TABLE report_parameters:0:
 --DROP TABLE report_parameters;
 
 CREATE TABLE report_parameters
 (
   id SERIAL,
-  report CHAR(50),
-  name CHAR(50) NOT NULL,
-  value INTEGER  NOT NULL,
+  reportid INTEGER,
+  name CHAR(50),
+  value INTEGER,
   PRIMARY KEY (id)
 ) WITH OIDS;
           
@@ -563,19 +567,81 @@ CREATE UNIQUE INDEX pk_id_report_parameters ON report_parameters
   id
 );
             
+
+ALTER TABLE report_parameters
+ADD CONSTRAINT cst_report_parameters FOREIGN KEY ( reportid )
+   REFERENCES reports ( id );
+
             
-insert into report_parameters (report, name, value) values ('dummy', 'colstepHDR', 41);
-insert into report_parameters (report, name, value) values ('dummy', 'colstep', 30);
-insert into report_parameters (report, name, value) values ('dummy', '_coly', 0);
-insert into report_parameters (report, name, value) values ('dummy', 'fntBig', 12);
-insert into report_parameters (report, name, value) values ('dummy', 'fntSmall', 6);
-insert into report_parameters (report, name, value) values ('dummy', 'fntHdr', 10);
-insert into report_parameters (report, name, value) values ('dummy', 'erwachsene', 22);
-insert into report_parameters (report, name, value) values ('dummy', 'kinder', 15);
-insert into report_parameters (report, name, value) values ('dummy', 'planfahrtid', 20);
-insert into report_parameters (report, name, value) values ('dummy', 'kundenid', 18);
-insert into report_parameters (report, name, value) values ('dummy', 'TextBlockSize', 120);
+insert into report_parameters (reportid, name, value) values (1, 'colstepHDR', 41);
+insert into report_parameters (reportid, name, value) values (1, 'colstep', 30);
+insert into report_parameters (reportid, name, value) values (1, '_coly', 0);
+insert into report_parameters (reportid, name, value) values (1, 'fntBig', 12);
+insert into report_parameters (reportid, name, value) values (1, 'fntSmall', 6);
+insert into report_parameters (reportid, name, value) values (1, 'fntHdr', 10);
+insert into report_parameters (reportid, name, value) values (1, 'erwachsene', 22);
+insert into report_parameters (reportid, name, value) values (1, 'kinder', 15);
+insert into report_parameters (reportid, name, value) values (1, 'planfahrtid', 20);
+insert into report_parameters (reportid, name, value) values (1, 'kundenid', 18);
+insert into report_parameters (reportid, name, value) values (1, 'TextBlockSize', 120);
+insert into report_parameters (reportid, name, value) values (1, 'fntBig-Mac', 12);
+insert into report_parameters (reportid, name, value) values (1, 'fntSmall-Mac', 10);
+insert into report_parameters (reportid, name, value) values (1, 'fntHdr-Mac', 15);
+
+insert into report_parameters (reportid, name, value) values (2, 'colstepHDR', 41);
+insert into report_parameters (reportid, name, value) values (2, 'colstep', 30);
+insert into report_parameters (reportid, name, value) values (2, '_coly', 0);
+insert into report_parameters (reportid, name, value) values (2, 'fntBig', 12);
+insert into report_parameters (reportid, name, value) values (2, 'fntSmall', 6);
+insert into report_parameters (reportid, name, value) values (2, 'fntHdr', 10);
+insert into report_parameters (reportid, name, value) values (2, 'erwachsene', 22);
+insert into report_parameters (reportid, name, value) values (2, 'kinder', 15);
+insert into report_parameters (reportid, name, value) values (2, 'planfahrtid', 20);
+insert into report_parameters (reportid, name, value) values (2, 'kundenid', 18);
+insert into report_parameters (reportid, name, value) values (2, 'TextBlockSize', 120);
+insert into report_parameters (reportid, name, value) values (2, 'fntBig-Mac', 12);
+insert into report_parameters (reportid, name, value) values (2, 'fntSmall-Mac', 10);
+insert into report_parameters (reportid, name, value) values (2, 'fntHdr-Mac', 15);
+
 --...e
+
+CREATE TABLE report_element_types
+(
+  id SERIAL,
+  name CHAR(50),
+  description CHAR(200),
+  PRIMARY KEY (id)
+) WITH OIDS;
+
+insert into report_element_types (name, description) values ('textblock', 'A block of text');
+insert into report_element_types (name, description) values ('image', 'An image');
+insert into report_element_types (name, description) values ('subreport', 'A subreport based on current row');
+
+CREATE TABLE report_elements
+(
+  id SERIAL,
+  reportid INTEGER,
+  typ INTEGER,
+  name CHAR(50),
+  x INTEGER,
+  y INTEGER,
+  w INTEGER,
+  h INTEGER,
+  description CHAR(200),
+  PRIMARY KEY (id)
+);
+
+insert into report_elements (reportid, typ, name, x, y, w, h, description) values (1, 1, 'Reservierungsanschreiben', 50, 50, 500, 500, 'Deutsche version');
+insert into report_elements (reportid, typ, name, x, y, w, h, description) values (2, 1, 'Formularliste', 50, 50, 500, 500, 'Deutsche version');
+
+ALTER TABLE report_elements
+ADD CONSTRAINT cst_report_elements_reportid FOREIGN KEY ( reportid )
+   REFERENCES reports ( id );
+
+ALTER TABLE report_elements
+ADD CONSTRAINT cst_report_elements_typ FOREIGN KEY ( typ )
+   REFERENCES report_element_types ( id );
+
 --...sCREATE TABLE report_texts:0:
 -- +---------------------------------------------------------
 -- | TABLE: report_texts
@@ -583,7 +649,7 @@ insert into report_parameters (report, name, value) values ('dummy', 'TextBlockS
 CREATE TABLE report_texts
 (
   id SERIAL,
-  report CHAR(50),
+  elementid INTEGER,
   line INTEGER,
   text CHAR(255),
   PRIMARY KEY (id)
@@ -594,15 +660,32 @@ CREATE UNIQUE INDEX pk_id_report_texts ON report_texts
   id
 );
 
-insert into report_texts (report, line, text) values('dummy', 1, 'Sehr geehrte{Ansprache} {Name},');
-insert into report_texts (report, line, text) values('dummy', 2, '');
-insert into report_texts (report, line, text) values('dummy', 3, 'hiermit bestÑtigen wir Ihnen ihre Reservierung fÅr unten aufgelistete Fahrten.');
-insert into report_texts (report, line, text) values('dummy', 4, 'Die Reservierung bleibt bis zum Zahlungseingang unter Vorbehalt. HierfÅr');
-insert into report_texts (report, line, text) values('dummy', 5, 'bitten wir um VerstÑndniss.');
-insert into report_texts (report, line, text) values('dummy', 6, '');
-insert into report_texts (report, line, text) values('dummy', 7, 'Bitte verwenden Sie als Verwendungszweck folgende Nummer: {Reservierungsnummer}');
-insert into report_texts (report, line, text) values('dummy', 8, '');
-insert into report_texts (report, line, text) values('dummy', 9, 'Wir bedanken uns fÅr Ihre Reservierung und verbleiben.');
+ALTER TABLE report_texts
+ADD CONSTRAINT cst_report_texts FOREIGN KEY ( elementid )
+   REFERENCES report_elements ( id );
+
+
+insert into report_texts (elementid, line, text) values(1, 1, 'Sehr geehrte Damen und Herren,');
+insert into report_texts (elementid, line, text) values(1, 2, '');
+insert into report_texts (elementid, line, text) values(1, 3, 'hiermit bestaetigen wir Ihnen ihre Reservierung fuer unten aufgelistete Fahrten.');
+insert into report_texts (elementid, line, text) values(1, 4, 'Die Reservierung bleibt bis zum Zahlungseingang unter Vorbehalt. HierfÅr');
+insert into report_texts (elementid, line, text) values(1, 5, 'bitten wir um Verstaendniss.');
+insert into report_texts (elementid, line, text) values(1, 6, '');
+insert into report_texts (elementid, line, text) values(1, 7, 'Bitte verwenden Sie als Verwendungszweck folgende Nummer: {ReservingID}');
+insert into report_texts (elementid, line, text) values(1, 8, '');
+insert into report_texts (elementid, line, text) values(1, 9, 'Wir bedanken uns fuer Ihre Reservierung und verbleiben.');
+
+
+insert into report_texts (elementid, line, text) values(2, 1, 'Liste der verwendeten Formulare');
+insert into report_texts (elementid, line, text) values(2, 2, '');
+insert into report_texts (elementid, line, text) values(2, 3, 'Die hier aufgelisteten Formulare sind fur die Anwendung ''{ApplicationID}''');
+insert into report_texts (elementid, line, text) values(2, 4, '');
+
+
+
+
+
+
 --...e
 
 --...sFOREIGN KEYS:0:
@@ -992,6 +1075,7 @@ insert into formular_actions (formular, action, event) values(1, 4, 'evt_Manage_
 insert into formular_actions (formular, action, event) values(19, 5, 'evt_Manage_Apps_Forms');
 insert into formular_actions (formular, action, event) values(2, 6, 'evt_Manage_Form_Parameters');
 insert into formular_actions (formular, action, event) values(2, 9, 'evt_Manage_Form_Actions');
+insert into formular_actions (formular, action, event) values(2, 11, 'evt_Manage_Form_Print_Forms');
 insert into formular_actions (formular, action, event) values(19, 7, 'evt_Manage_Apps_Parameters');
 insert into formular_actions (formular, action, event) values(24, 8, 'evt_Manage_Action_Steps');
 insert into formular_actions (formular, action, event) values(27, 10, 'evt_Manage_A_F_A_Assoc');
