@@ -254,7 +254,7 @@ int   lbDBReportProperties::getIntParameter(char* name) {
 	
 	*key = name;
 	
-	*value = "30";
+	*value = "12";
 	
 	if (params->getUAPString(*&key, *&value) != ERR_NONE) {
 		UAP_REQUEST(getModuleInstance(), lb_I_Database, ReportCFGDB)
@@ -272,16 +272,27 @@ int   lbDBReportProperties::getIntParameter(char* name) {
 		
 		query = ReportCFGDB->getQuery(0);
 		
-		char buf[] = "insert into report_parameters (report, name, value) values ('%s', '%s', 12)";
-		char* buffer = (char*) malloc(strlen(buf) + 1 + strlen(name) + strlen(_report));
-		buffer[0] = 0;
-		sprintf(buffer, buf, _report, name);
+		UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
+		ID->setData(getReportID(_report));
+		
+		UAP_REQUEST(getModuleInstance(), lb_I_String, SQL)
+		
+		*SQL = "insert into report_parameters (reportid, name, value) values (";
+		*SQL += ID->charrep();
+		*SQL += ", '";
+		*SQL += name;
+		*SQL += "', ";
+		*SQL += value->charrep();
+		*SQL += ")";
 		
 		query->skipFKCollecting();		
-		query->query(buffer);
+		query->query(SQL->charrep());
 		query->enableFKCollecting();
-		
-		free(buffer);
+
+		key->trim();
+		value->trim();
+			
+		params->setUAPString(*&key, *&value);
 	}
 
 	i = atoi(value->charrep());
@@ -960,9 +971,9 @@ void  lbDatabaseReport::initTextBlocks(long id) {
 				// The report element matches to this report
 				
 				long x = reportelements->getElementX();
-				long y = reportelements->getElementX();
+				long y = reportelements->getElementY();
 				
-				_LOG << "Have a report element for given report: '" << reportelements->getElementName() << "' with typ '" << reportelements->getElementTyp() << "'." LOG_
+				_LOG << "Have a report element x, y (" << x << ", " << y << ") for given report: '" << reportelements->getElementName() << "' with typ '" << reportelements->getElementTyp() << "'." LOG_
 				
 				switch (reportelements->getElementTyp()) {
 					case 1: // Text block
@@ -1007,6 +1018,8 @@ void  lbDatabaseReport::initTextBlocks(long id) {
 								
 								ukLine = lines->nextElement();
 								QI(ukLine, lb_I_String, line)
+								
+								_LOG << "Place text block line to x, y: " << x << ", " << (long) (LineSpace * ii) + y - ii LOG_
 								
 						        pObj = new wxReportObj( x, (LineSpace * ii) + y - ii, TextBlockSize, 6 );
 								pObj->SetFont(&fntSmall);
@@ -1223,8 +1236,11 @@ void LB_STDCALL lbDatabaseReport::init(char* SQLString, char* DBName, char* DBUs
 
 	
 	LineSpace = LPI6;
-	float offset = properties->getIntParameter("ReportOffsetX");
-	currentColstep = properties->getIntParameter("ReportOffsetY");
+	float offsetHeaderX = properties->getIntParameter("ReportOffsetHeaderX");
+	float offsetHeaderY = properties->getIntParameter("ReportOffsetHeaderY");
+	float offsetX = properties->getIntParameter("ReportOffsetX");
+	float offsetY = properties->getIntParameter("ReportOffsetY");
+	currentColstep = 0;
 	TextBlockSize = properties->getIntParameter("TextBlockSize");
 	int ii = 1;
 
@@ -1313,7 +1329,7 @@ void LB_STDCALL lbDatabaseReport::init(char* SQLString, char* DBName, char* DBUs
 
 /*...e*/
 
-	_coly = (LineSpace * ii) + offset;
+	_coly = (LineSpace * ii) + offsetY;
 
 	_CL_LOG << "Col Y value is " << _coly LOG_
 
@@ -1419,11 +1435,11 @@ void LB_STDCALL lbDatabaseReport::init(char* SQLString, char* DBName, char* DBUs
 			UAP_REQUEST(getModuleInstance(), lb_I_String, colName)
 			*colName = query->getColumnName(i);
 
-			pObj = new wxReportObj( currentColstep, _coly, *(colsteps[i-1]), 5 );
+			pObj = new wxReportObj( currentColstep + offsetHeaderX, offsetHeaderY, *(colsteps[i-1]), 5 );
 			pObj->SetData(colName->charrep());
 			pObj->SetFont( &fntHdr );
 
-			pObj->SetRightAlign();
+			//pObj->SetRightAlign();
 
 			pReport->AddHeaderObj( pObj );
 			
@@ -1474,26 +1490,26 @@ void LB_STDCALL lbDatabaseReport::init(char* SQLString, char* DBName, char* DBUs
 
 		char buf[100] = "";
 
-		sprintf(buf, "%f, %f", currentColstep, _coly + LineSpace);
+		sprintf(buf, "%f, %f", currentColstep + offsetX, _coly + LineSpace);
 		_LOG << "Create a report Column at x, y:" << buf LOG_
 
-		pObj = new wxReportObj( currentColstep, _coly + LineSpace, *(colsteps[0]), 6 );
+		pObj = new wxReportObj( currentColstep + offsetX, _coly + LineSpace + offsetY, *(colsteps[0]), 6 );
 		pObj->SetRef( strValue[0] );
 		pObj->SetFont(&fntSmall);
 		pObj->SetIncrements( 0.0, LPI6 );
-		pObj->SetRightAlign();
+		//pObj->SetRightAlign();
 		pReport->AddDataObj( pObj );
 		currentColstep += *(colsteps[0]);
 	
 		for (int i = 2; i <= cols; i++) {
-			sprintf(buf, "%f, %f", currentColstep, _coly + LineSpace);
+			sprintf(buf, "%f, %f", currentColstep + offsetX, _coly + LineSpace);
 			_LOG << "Create a report Column at x, y:" << buf LOG_
 			
-			pObj = new wxReportObj( currentColstep, _coly + LineSpace, *(colsteps[i-1]), 6 );
+			pObj = new wxReportObj( currentColstep + offsetX, _coly + LineSpace + offsetY, *(colsteps[i-1]), 6 );
 			pObj->SetRef( strValue[i-1] );
 			pObj->SetFont(&fntSmall);
 			pObj->SetIncrements( 0.0, LPI6 );
-			pObj->SetRightAlign();
+			//pObj->SetRightAlign();
 			pReport->AddDataObj( pObj );
 			currentColstep += *(colsteps[i-1]);
 		}
