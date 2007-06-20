@@ -600,9 +600,20 @@ insert into report_parameters (reportid, name, value) values (2, 'planfahrtid', 
 insert into report_parameters (reportid, name, value) values (2, 'kundenid', 18);
 insert into report_parameters (reportid, name, value) values (2, 'TextBlockSize', 120);
 insert into report_parameters (reportid, name, value) values (2, 'fntBig-Mac', 12);
-insert into report_parameters (reportid, name, value) values (2, 'fntSmall-Mac', 10);
-insert into report_parameters (reportid, name, value) values (2, 'fntHdr-Mac', 15);
-
+insert into report_parameters (reportid, name, value) values (2, 'fntSmall-Mac', 8);
+insert into report_parameters (reportid, name, value) values (2, 'fntHdr-Mac', 10);
+insert into report_parameters (reportid, name, value) values (2, 'ReportOffsetHeaderX', 0);
+insert into report_parameters (reportid, name, value) values (2, 'ReportOffsetHeaderY', 50);
+insert into report_parameters (reportid, name, value) values (2, 'ReportOffsetX', 0);
+insert into report_parameters (reportid, name, value) values (2, 'ReportOffsetY', 25);
+insert into report_parameters (reportid, name, value) values (2, 'overwriteColumnWidths', 0);
+insert into report_parameters (reportid, name, value) values (2, 'typ', 10);
+insert into report_parameters (reportid, name, value) values (2, 'menuname', 35);
+insert into report_parameters (reportid, name, value) values (2, 'eventname', 35);
+insert into report_parameters (reportid, name, value) values (2, 'toolbarimage', 30);
+insert into report_parameters (reportid, name, value) values (2, 'name', 35);
+insert into report_parameters (reportid, name, value) values (2, 'menuhilfe', 35);
+insert into report_parameters (reportid, name, value) values (2, 'anwendungid', 20);
 --...e
 
 CREATE TABLE report_element_types
