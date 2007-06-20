@@ -135,6 +135,7 @@ public:
 	virtual void		LB_STDCALL setNextElementType();
 	virtual void		LB_STDCALL finishElementTypeIteration();
 
+	virtual long		LB_STDCALL getElementID();
 	virtual char*		LB_STDCALL getElementName();
 	virtual char*		LB_STDCALL getElementDescription();
 

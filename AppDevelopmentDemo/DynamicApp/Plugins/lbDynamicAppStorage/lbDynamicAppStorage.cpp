@@ -207,6 +207,11 @@ lbErrCodes LB_STDCALL lbDynamicAppXMLStorage::save(lb_I_OutputStream* oStream) {
 	applications->mark();
 
 	if ((forms != NULL) &&
+	    (reports != NULL) &&
+	    (reportparams != NULL) &&
+	    (reportelements != NULL) &&
+	    (reportelementtypes != NULL) &&
+	    (reporttextblocks != NULL) &&
 	    (formularfields != NULL) &&
 	    (dbColumns != NULL) &&
 	    (dbPrimaryKeys != NULL) &&
@@ -223,6 +228,12 @@ lbErrCodes LB_STDCALL lbDynamicAppXMLStorage::save(lb_I_OutputStream* oStream) {
 		*oStream << "<lbDMF applicationid=\"";
 		*oStream << meta->getApplicationID() << "\">\n";
 		
+		reports->accept(*&aspect);
+		reportparams->accept(*&aspect);
+		reportelements->accept(*&aspect);
+		reportelementtypes->accept(*&aspect);
+		reporttextblocks->accept(*&aspect);
+	
 		applications->accept(*&aspect);
 		forms->accept(*&aspect);
 		dbPrimaryKeys->accept(*&aspect);
@@ -420,6 +431,11 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::save(lb_I_OutputStream* oStre
 	_LOG << "Start storing the data" LOG_
 
 	if ((forms != NULL) &&
+	    (reports != NULL) &&
+	    (reportparams != NULL) &&
+	    (reportelements != NULL) &&
+	    (reportelementtypes != NULL) &&
+	    (reporttextblocks != NULL) &&
 	    (dbPrimaryKeys != NULL) &&
 	    (dbForeignKeys != NULL) &&
 	    (dbColumns != NULL) &&
@@ -432,6 +448,12 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::save(lb_I_OutputStream* oStre
 		(appActions != NULL) &&
 		(appActionTypes != NULL) &&
 		(appActionSteps != NULL)) {
+
+		reports->accept(*&aspect);
+		reportparams->accept(*&aspect);
+		reportelements->accept(*&aspect);
+		reportelementtypes->accept(*&aspect);
+		reporttextblocks->accept(*&aspect);
 
 		forms->accept(*&aspect);
 		dbPrimaryKeys->accept(*&aspect);

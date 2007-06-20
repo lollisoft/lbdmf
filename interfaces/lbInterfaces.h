@@ -3463,6 +3463,7 @@ public:
 	virtual void		LB_STDCALL setNextElementType() = 0;
 	virtual void		LB_STDCALL finishElementTypeIteration() = 0;
 
+	virtual long		LB_STDCALL getElementID() = 0;
 	virtual char*		LB_STDCALL getElementName() = 0;
 	virtual char*		LB_STDCALL getElementDescription() = 0;
 };

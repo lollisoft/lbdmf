@@ -963,6 +963,10 @@ void		LB_STDCALL lbReportElementTypes::finishElementTypeIteration() {
 	ElementTypes->finishIteration();
 }
 
+long		LB_STDCALL lbReportElementTypes::getElementID() {
+	return currentID->getData();
+}
+
 char*		LB_STDCALL lbReportElementTypes::getElementName() {
 	return currentName->charrep();
 }

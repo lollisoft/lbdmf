@@ -279,24 +279,97 @@ void LB_STDCALL lbOutputStream::visit(lb_I_Streamable* pm) {
 
 }
 
-void LB_STDCALL lbOutputStream::visit(lb_I_Reports*) {
+void LB_STDCALL lbOutputStream::visit(lb_I_Reports* reports) {
+	int count;
 
+	count = reports->getReportCount();
+	*oStream << count;
+	
+	reports->finishReportIteration();
+	
+	while (reports->hasMoreReports()) {
+		reports->setNextReport();
+		
+		*oStream << reports->getReportID();
+		*oStream << reports->getReportName();
+		*oStream << reports->getReportDescription();
+	}
 }
 
-void LB_STDCALL lbOutputStream::visit(lb_I_ReportParameters*) {
+void LB_STDCALL lbOutputStream::visit(lb_I_ReportParameters* reportparameters) {
+	int count;
 
+	count = reportparameters->getParameterCount();
+	*oStream << count;
+	
+	reportparameters->finishParameterIteration();
+	
+	while (reportparameters->hasMoreParameters()) {
+		reportparameters->setNextParameter();
+		
+		*oStream << reportparameters->getParameterID();
+		*oStream << reportparameters->getReportID();
+		*oStream << reportparameters->getParameterName();
+		*oStream << reportparameters->getParameterValue();
+	}
 }
 
-void LB_STDCALL lbOutputStream::visit(lb_I_ReportElements*) {
+void LB_STDCALL lbOutputStream::visit(lb_I_ReportElements* reportelements) {
+	int count;
 
+	count = reportelements->getElementCount();
+	*oStream << count;
+	
+	reportelements->finishElementIteration();
+	
+	while (reportelements->hasMoreElements()) {
+		reportelements->setNextElement();
+		
+		*oStream << reportelements->getElementID();
+		*oStream << reportelements->getElementReportID();
+		*oStream << reportelements->getElementName();
+		*oStream << reportelements->getElementTyp();
+		*oStream << reportelements->getElementX();
+		*oStream << reportelements->getElementY();
+		*oStream << reportelements->getElementW();
+		*oStream << reportelements->getElementH();
+		*oStream << reportelements->getElementDescription();
+	}
 }
 
-void LB_STDCALL lbOutputStream::visit(lb_I_ReportElementTypes*) {
+void LB_STDCALL lbOutputStream::visit(lb_I_ReportElementTypes* reportelementtypes) {
+	int count;
 
+	count = reportelementtypes->getElementTypeCount();
+	*oStream << count;
+	
+	reportelementtypes->finishElementTypeIteration();
+	
+	while (reportelementtypes->hasMoreElementTypes()) {
+		reportelementtypes->setNextElementType();
+		
+		*oStream << reportelementtypes->getElementID();
+		*oStream << reportelementtypes->getElementName();
+		*oStream << reportelementtypes->getElementDescription();
+	}
 }
 
-void LB_STDCALL lbOutputStream::visit(lb_I_ReportTexts*) {
+void LB_STDCALL lbOutputStream::visit(lb_I_ReportTexts* reporttexts) {
+	int count;
 
+	count = reporttexts->getTextCount();
+	*oStream << count;
+	
+	reporttexts->finishTextIteration();
+	
+	while (reporttexts->hasMoreTexts()) {
+		reporttexts->setNextText();
+		
+		*oStream << reporttexts->getID();
+		*oStream << reporttexts->getElementID();
+		*oStream << reporttexts->getLine();
+		*oStream << reporttexts->getText();
+	}
 }
 
 void LB_STDCALL lbOutputStream::visit(lb_I_DBReportTextblock*) {

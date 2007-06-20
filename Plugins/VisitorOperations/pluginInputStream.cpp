@@ -262,24 +262,105 @@ void LB_STDCALL lbInputStreamOpr::visit(lb_I_Streamable* pm) {
 	}
 }
 
-void LB_STDCALL lbInputStreamOpr::visit(lb_I_Reports*) {
-
+void LB_STDCALL lbInputStreamOpr::visit(lb_I_Reports* reports) {
+	int count = 0;
+	*iStream >> count;
+	
+	for (int i = 0; i < count; i++) {
+		long ID;
+		char* Name = NULL;
+		char* Description = NULL;
+		
+		*iStream >> ID;
+		*iStream >> Name;
+		*iStream >> Description;
+		
+		reports->addReport(Name, Description, ID);
+	}
 }
 
-void LB_STDCALL lbInputStreamOpr::visit(lb_I_ReportParameters*) {
-
+void LB_STDCALL lbInputStreamOpr::visit(lb_I_ReportParameters* reportparameters) {
+	int count = 0;
+	*iStream >> count;
+	
+	for (int i = 0; i < count; i++) {
+		long ID;
+		long ReportID;
+		char* Name = NULL;
+		char* Value = NULL;
+		
+		*iStream >> ID;
+		*iStream >> ReportID;
+		*iStream >> Name;
+		*iStream >> Value;
+		
+		reportparameters->addParameter(ReportID, Name, Value, ID);
+	}
 }
 
-void LB_STDCALL lbInputStreamOpr::visit(lb_I_ReportElements*) {
-
+void LB_STDCALL lbInputStreamOpr::visit(lb_I_ReportElements* reportelements) {
+	int count = 0;
+	*iStream >> count;
+	
+	for (int i = 0; i < count; i++) {
+		long ID;
+		long ReportID;
+		char* Name = NULL;
+		long Typ;
+		long x;
+		long y;
+		long w;
+		long h;
+		char* Description = NULL;
+		
+		*iStream >> ID;
+		*iStream >> ReportID;
+		*iStream >> Name;
+		*iStream >> Typ;
+		*iStream >> x;
+		*iStream >> y;
+		*iStream >> w;
+		*iStream >> h;
+		*iStream >> Description;
+		
+		reportelements->addElement(ReportID, Name, Typ, x, y, w, h, Description, ID);
+	}
 }
 
-void LB_STDCALL lbInputStreamOpr::visit(lb_I_ReportElementTypes*) {
-
+void LB_STDCALL lbInputStreamOpr::visit(lb_I_ReportElementTypes* reportelementtypes) {
+	int count = 0;
+	*iStream >> count;
+	
+	for (int i = 0; i < count; i++) {
+		long ID;
+		char* Name = NULL;
+		char* Description = NULL;
+		
+		*iStream >> ID;
+		*iStream >> Name;
+		*iStream >> Description;
+		
+		reportelementtypes->addElementType(Name, Description, ID);
+	}
 }
 
-void LB_STDCALL lbInputStreamOpr::visit(lb_I_ReportTexts*) {
-
+void LB_STDCALL lbInputStreamOpr::visit(lb_I_ReportTexts* reporttexts) {
+	int count = 0;
+	*iStream >> count;
+	
+	for (int i = 0; i < count; i++) {
+		long ID;
+		long ElementID;
+		long Line;
+		char* Text = NULL;
+		
+		*iStream >> ID;
+		*iStream >> ElementID;
+		*iStream >> Line;
+		*iStream >> Text;
+		
+		reporttexts->addText(ElementID, Line, Text , ID);
+	}
 }
 
 void LB_STDCALL lbInputStreamOpr::visit(lb_I_DBReportTextblock*) {
