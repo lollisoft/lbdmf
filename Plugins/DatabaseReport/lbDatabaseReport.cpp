@@ -247,6 +247,52 @@ long  lbDBReportProperties::initData(char* report) {
 	return id;
 }
 
+void lbDBReportProperties::setIntParameter(char* name, int _value) {
+	UAP_REQUEST(getModuleInstance(), lb_I_Database, ReportCFGDB)
+	UAP(lb_I_Query, query)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, value)
+	UAP_REQUEST(getModuleInstance(), lb_I_Integer, V)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, key)
+	
+	*key = name;
+	V->setData(_value);
+	*value = V->charrep();
+	
+	ReportCFGDB->init();
+	
+	char* lbDMFPasswd = getenv("lbDMFPasswd");
+	char* lbDMFUser   = getenv("lbDMFUser");
+	
+	if (!lbDMFUser) lbDMFUser = "dba";
+	if (!lbDMFPasswd) lbDMFPasswd = "trainres";
+	
+	ReportCFGDB->connect("lbDMF", lbDMFUser, lbDMFPasswd);
+	
+	query = ReportCFGDB->getQuery(0);
+	
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
+	ID->setData(getReportID(_report));
+	
+	UAP_REQUEST(getModuleInstance(), lb_I_String, SQL)
+		
+	*SQL = "insert into report_parameters (reportid, name, value) values (";
+	*SQL += ID->charrep();
+	*SQL += ", '";
+	*SQL += name;
+	*SQL += "', ";
+	*SQL += value->charrep();
+	*SQL += ")";
+	
+	query->skipFKCollecting();		
+	query->query(SQL->charrep());
+	query->enableFKCollecting();
+	
+	key->trim();
+	value->trim();
+	
+	params->setUAPString(*&key, *&value);
+}
+
 int   lbDBReportProperties::getIntParameter(char* name) {
 	int i = 0;
 	UAP_REQUEST(getModuleInstance(), lb_I_String, value)
@@ -257,42 +303,7 @@ int   lbDBReportProperties::getIntParameter(char* name) {
 	*value = "12";
 	
 	if (params->getUAPString(*&key, *&value) != ERR_NONE) {
-		UAP_REQUEST(getModuleInstance(), lb_I_Database, ReportCFGDB)
-		UAP(lb_I_Query, query)
-		
-		ReportCFGDB->init();
-		
-		char* lbDMFPasswd = getenv("lbDMFPasswd");
-		char* lbDMFUser   = getenv("lbDMFUser");
-		
-		if (!lbDMFUser) lbDMFUser = "dba";
-		if (!lbDMFPasswd) lbDMFPasswd = "trainres";
-		
-		ReportCFGDB->connect("lbDMF", lbDMFUser, lbDMFPasswd);
-		
-		query = ReportCFGDB->getQuery(0);
-		
-		UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
-		ID->setData(getReportID(_report));
-		
-		UAP_REQUEST(getModuleInstance(), lb_I_String, SQL)
-		
-		*SQL = "insert into report_parameters (reportid, name, value) values (";
-		*SQL += ID->charrep();
-		*SQL += ", '";
-		*SQL += name;
-		*SQL += "', ";
-		*SQL += value->charrep();
-		*SQL += ")";
-		
-		query->skipFKCollecting();		
-		query->query(SQL->charrep());
-		query->enableFKCollecting();
-
-		key->trim();
-		value->trim();
-			
-		params->setUAPString(*&key, *&value);
+		setIntParameter(name, 12);
 	}
 
 	i = atoi(value->charrep());
@@ -576,8 +587,8 @@ void LB_STDCALL lbDBReportAction::openReport(lb_I_String* reportname, lb_I_Param
 						
 						SourceFieldName->trim();
 						
-						//if (strcmp(SourceFieldName->charrep(), "") != 0)
-						//	report->addAndCondition(SourceFieldName->charrep(), SourceFieldValue->charrep());
+						if (strcmp(SourceFieldName->charrep(), "") != 0)
+							report->addAndCondition(SourceFieldName->charrep(), SourceFieldValue->charrep());
 						
 						_LOG << "Initialize the report with the given query. (" << sql->charrep() << ")" LOG_
 						
@@ -734,6 +745,10 @@ lbPluginDatabaseReport::lbPluginDatabaseReport() {
 
 lbPluginDatabaseReport::~lbPluginDatabaseReport() {
 	_CL_VERBOSE << "lbPluginDatabaseReport::~lbPluginDatabaseReport() called." LOG_
+	if (dbReport != NULL) {
+		// The window is self closing.
+		dbReport.resetPtr();
+	}
 }
 
 bool LB_STDCALL lbPluginDatabaseReport::canAutorun() {
@@ -1209,7 +1224,7 @@ void LB_STDCALL lbDatabaseReport::init(char* SQLString, char* DBName, char* DBUs
 #endif
 
 
-	pReport = new wxReportWriter(0, wxT("Test Report"), wxPoint(10,10), wxSize( 100, 100 ) );
+	pReport = new wxReportWriter(0, untranslated_ReportName, wxPoint(10,10), wxSize( 100, 100 ) );
 	pReport->SetPath( wxT(".") );
 
 	//pReport->SetOrientation(wxLANDSCAPE);
@@ -1221,11 +1236,6 @@ void LB_STDCALL lbDatabaseReport::init(char* SQLString, char* DBName, char* DBUs
 
 	pObj = new wxReportObj(  0,  0, 100, 30 );
 	pObj->SetBitmap( wxT("PLG.png") );
-	pReport->AddHeaderObj( pObj );
-
-	pObj = new wxReportObj( 70, 7, 50, 20 );
-	pObj->SetData( wxString(untranslated_ReportName) );
-	pObj->SetFont( &fntBig );
 	pReport->AddHeaderObj( pObj );
 
 	pObj = new wxReportObj( 120, 7, 50, 20 );
@@ -1257,9 +1267,13 @@ void LB_STDCALL lbDatabaseReport::init(char* SQLString, char* DBName, char* DBUs
 	lbErrCodes err;
 	err = query->query(SQLString);
 
+	bool skipFilterColumn = false;
+
 /*...sRebuild query\44\ if there are conditions:16:*/
 	if ((hasConditions) && (query->hasColumnName(AndConditionColumn->charrep())) && (err == ERR_NONE)) {
 		UAP_REQUEST(manager.getPtr(), lb_I_String, newQuery)
+		
+		skipFilterColumn = true;
 		
 		bool isChar = query->getColumnType(AndConditionColumn->charrep()) == lb_I_Query::lbDBColumnChar;
 		
@@ -1327,6 +1341,22 @@ void LB_STDCALL lbDatabaseReport::init(char* SQLString, char* DBName, char* DBUs
 	        
 	initTextBlocks(reportid);
 
+	pObj = new wxReportObj( 0, 7, 50, 20 );
+	pObj->SetData( wxString(untranslated_ReportName) );
+	pObj->SetFont( &fntBig );
+	pReport->AddHeaderObj( pObj );
+
+	if (skipFilterColumn == true) {
+		pObj = new wxReportObj( 0, 14, 50, 20 );
+		wxString headline = wxString("Gefiltert nach ") + 
+					wxString(AndConditionColumn->charrep() +
+					wxString(" = ") + wxString(AndConditionValue->charrep()));
+
+		pObj->SetData( headline );
+		pObj->SetFont( &fntSmall );
+		pReport->AddHeaderObj( pObj );
+	}
+
 /*...e*/
 
 	_coly = (LineSpace * ii) + offsetY;
@@ -1364,7 +1394,12 @@ void LB_STDCALL lbDatabaseReport::init(char* SQLString, char* DBName, char* DBUs
 		}
 		
 		double scalingFactor = 2.5;
+		int overwriteColumnWidths = properties->getIntParameter("overwriteColumnWidths");
 		
+		if (overwriteColumnWidths == 12) {
+			properties->setIntParameter("overwriteColumnWidths", 1);
+			overwriteColumnWidths = 1;
+		}
 		// Calculate the column width's
 		
 		if (query->first() == ERR_NONE)
@@ -1373,30 +1408,36 @@ void LB_STDCALL lbDatabaseReport::init(char* SQLString, char* DBName, char* DBUs
 				UAP_REQUEST(getModuleInstance(), lb_I_String, colName)
 			
 				*colName = query->getColumnName(i);
-				int width = properties->getIntParameter(colName->charrep());
-			
-				if ((width+4) > *(colsteps[i-1])) 
-					*(colsteps[i-1]) = width+4;
-
-				wxCoord w = 0;
-				wxCoord h = 0;
 				
-				value = query->getAsString(i);
-				value->trim();
-
-				if (strcmp(value->charrep(), "") == 0) {
-					*value = " ";
+				if (strcmp(AndConditionColumn->charrep(), colName->charrep()) != 0) { 
+					int width = properties->getIntParameter(colName->charrep());
+					
+					if ((width)/scalingFactor > *(colsteps[i-1])) {
+						*(colsteps[i-1]) = width;
+					}
+					
+					wxCoord w = 0;
+					wxCoord h = 0;
+					
+					value = query->getAsString(i);
+					value->trim();
+					
+					if (strcmp(value->charrep(), "") == 0) {
+						*value = " ";
+					}
+					
+					// Workaround to a crash in GetTextExtent
+					wxString temp = wxString(value->charrep());
+					
+					dc.GetTextExtent(temp, &w, &h, NULL, NULL, &fntSmall);
+					
+					if (overwriteColumnWidths == 1) {
+						if ((w/scalingFactor) > *(colsteps[i-1])) {
+							*(colsteps[i-1]) = w/scalingFactor;
+							properties->setIntParameter(colName->charrep(), w);
+						}
+					}
 				}
-
-				// Workaround to a crash in GetTextExtent
-				wxString temp = wxString(value->charrep());
-
-				dc.GetTextExtent(temp, &w, &h, NULL, NULL, &fntSmall);
-			
-				if ((w/scalingFactor) > *(colsteps[i-1])) {
-					*(colsteps[i-1]) = w/scalingFactor;
-				}
-
 			}
 		
 		while(query->next() == ERR_NONE) {
@@ -1405,41 +1446,55 @@ void LB_STDCALL lbDatabaseReport::init(char* SQLString, char* DBName, char* DBUs
 				UAP_REQUEST(getModuleInstance(), lb_I_String, colName)
 			
 				*colName = query->getColumnName(i);
-				int width = properties->getIntParameter(colName->charrep());
-			
-				if ((width+4) > *(colsteps[i-1])) 
-					*(colsteps[i-1]) = width+4;
-
-				wxCoord w = 0;
-				wxCoord h = 0;
 				
-				value = query->getAsString(i);
-				value->trim();
-				
-				if (strcmp(value->charrep(), "") == 0) {
-					*value = " ";
-				}
-				
-				// Workaround to a crash in GetTextExtent
-				wxString temp = wxString(value->charrep());
-
-				dc.GetTextExtent(temp, &w, &h, NULL, NULL, &fntSmall);
-			
-				if ((w/scalingFactor) > *(colsteps[i-1])) {
-					*(colsteps[i-1]) = w/scalingFactor;
+				if (strcmp(AndConditionColumn->charrep(), colName->charrep()) != 0) { 
+					int width = properties->getIntParameter(colName->charrep());
+					
+					if ((width)/scalingFactor > *(colsteps[i-1])) {
+						*(colsteps[i-1]) = width;
+					}
+					
+					wxCoord w = 0;
+					wxCoord h = 0;
+					
+					value = query->getAsString(i);
+					value->trim();
+					
+					if (strcmp(value->charrep(), "") == 0) {
+						*value = " ";
+					}
+					
+					// Workaround to a crash in GetTextExtent
+					wxString temp = wxString(value->charrep());
+					
+					dc.GetTextExtent(temp, &w, &h, NULL, NULL, &fntSmall);
+					
+					if (overwriteColumnWidths == 1) {
+						if ((w/scalingFactor) > *(colsteps[i-1])) {
+							*(colsteps[i-1]) = w/scalingFactor;
+							properties->setIntParameter(colName->charrep(), w);
+						}
+					}
 				}
 			}
 		}
+		
+		currentColstep = 0;
 		
 		for (int i = 1; i <= cols; i++) {
 			UAP_REQUEST(getModuleInstance(), lb_I_String, colName)
 			*colName = query->getColumnName(i);
 
+			char buf[100] = "";
+
+			sprintf(buf, "%f, %f (%d)", currentColstep + offsetHeaderX, offsetHeaderY);
+			_LOG << "Create a report header Column at x, y (witdh):" << buf LOG_
+
 			pObj = new wxReportObj( currentColstep + offsetHeaderX, offsetHeaderY, *(colsteps[i-1]), 5 );
 			pObj->SetData(colName->charrep());
 			pObj->SetFont( &fntHdr );
 
-			//pObj->SetRightAlign();
+			pObj->SetRightAlign(false);
 
 			pReport->AddHeaderObj( pObj );
 			
@@ -1497,7 +1552,7 @@ void LB_STDCALL lbDatabaseReport::init(char* SQLString, char* DBName, char* DBUs
 		pObj->SetRef( strValue[0] );
 		pObj->SetFont(&fntSmall);
 		pObj->SetIncrements( 0.0, LPI6 );
-		//pObj->SetRightAlign();
+		pObj->SetRightAlign(false);
 		pReport->AddDataObj( pObj );
 		currentColstep += *(colsteps[0]);
 	
@@ -1509,7 +1564,7 @@ void LB_STDCALL lbDatabaseReport::init(char* SQLString, char* DBName, char* DBUs
 			pObj->SetRef( strValue[i-1] );
 			pObj->SetFont(&fntSmall);
 			pObj->SetIncrements( 0.0, LPI6 );
-			//pObj->SetRightAlign();
+			pObj->SetRightAlign(false);
 			pReport->AddDataObj( pObj );
 			currentColstep += *(colsteps[i-1]);
 		}

@@ -2348,8 +2348,10 @@ void wxReportWriter::Draw(wxDC& dc)
 		pObj = (wxReportObj *)pNode->GetData();
 
 		pObj->ResetPos();
-
-	    pNode = pNode->GetNext();
+		// Lothar
+		pObj->SetScale( dScale );
+	    
+		pNode = pNode->GetNext();
 	}
 
 	// Drawing report-objects
@@ -2434,6 +2436,9 @@ void wxReportWriter::Draw(wxDC& dc)
 						objHelp.SetHeight( 0.0 );
 						objHelp.SetWidth( dMaxX - dMinX );
 						objHelp.SetMargins( &m_PageCtrl );
+						
+						// Lothar
+						objHelp.SetScale( dScale );
 
 						objHelp.Draw( dc );
 					}

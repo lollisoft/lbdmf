@@ -71,6 +71,7 @@ public:
 	
 	long  initData(char* report);
 	int   getIntParameter(char* name);
+	void  setIntParameter(char* name, int _value);
 	float getFloatParameter(char* name);
 	lb_I_String* getCharParameter(char* name);
 	lb_I_String* getTextLine(int line, char* name);
