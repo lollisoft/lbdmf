@@ -320,18 +320,18 @@ lbErrCodes LB_STDCALL lbDynamicApplication::getCustomDBForm(lb_I_Unknown* uk) {
 			if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
 				UAP(lb_I_String, functor)
 				UAP(lb_I_String, module)
-				UAP(lb_I_String, interface)
+				UAP(lb_I_String, _interface)
 				UAP(lb_I_String, namesp)
 				
 				functor = q->getAsString(1);
 				module = q->getAsString(2);
-				interface = q->getAsString(3);
+				_interface = q->getAsString(3);
 				namesp = q->getAsString(4);
 				
 				if (*namesp == "") {
 						metaapp->setStatusText("Info", "Error: No namespace stored in the database !");
 				} else {
-					if (*interface == "lb_I_FixedDatabaseForm") { 
+					if (*_interface == "lb_I_FixedDatabaseForm") { 
 						UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
 						UAP(lb_I_Plugin, pl)
 						UAP(lb_I_Unknown, ukPl)

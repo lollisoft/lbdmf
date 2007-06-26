@@ -194,7 +194,7 @@
 //#undef wxPG_ICON_WIDTH
 
 // Need to force disable tooltips?
-#if !wxUSE_TOOLTIPS
+#ifndef wxUSE_TOOLTIPS
     #undef wxPG_SUPPORT_TOOLTIPS
     #define wxPG_SUPPORT_TOOLTIPS       0
 #endif

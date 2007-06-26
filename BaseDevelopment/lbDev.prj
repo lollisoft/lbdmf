@@ -72,6 +72,7 @@
 /*...v\46\\46\\47\vendor\47\mkmk\47\makefile\46\module:0:*/
 
 /*...v\46\\46\\47\vendor\47\wxaui\45\0\46\9\46\1\47\src\47\makefile\46\module:0:*/
+/*...v\46\\46\\47\vendor\47\propgrid\47\include\47\wx\47\propgrid\47\propgrid\46\h:0:*/
 /*...v\46\\46\\47\vendor\47\propgrid\47\makefile\46\module:0:*/
 
 /*...vG\58\\47\download\47\CPPProjects\47\STLport\45\4\46\6\46\2_OW\47\src\47\common_rules\46\mak:0:*/
@@ -351,6 +352,9 @@ These headers must define the per module (DLL) EXPORT variable
 /*...v\46\\46\\47\plugins\47\lbDMFDataModel\47\lbFormularActionsModel\46\cpp:0:*/
 /*...v\46\\46\\47\plugins\47\lbDMFDataModel\47\lbActionTypesModel\46\cpp:0:*/
 /*...v\46\\46\\47\plugins\47\lbDMFDataModel\47\lbActionsModel\46\cpp:0:*/
+/*...v\46\\46\\47\plugins\47\lbDMFDataModel\47\lbDatabaseModel\46\cpp:0:*/
+/*...v\46\\46\\47\plugins\47\lbDMFDataModel\47\lbDatabaseModel\46\h:0:*/
+
 /*...e*/
 
 
