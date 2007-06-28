@@ -278,6 +278,17 @@ lb_I_OutputStream& LB_STDCALL lbOutputStream::operator<< (const char* string) {
 #ifdef __WATCOMC__
 	String s(string);
 #endif
+
+	if (strlen(string) == 0) {
+		if (!_binary) *_ostream << 1 << endl;
+		if (_binary)
+			*_ostream << " ";
+		else
+			*_ostream << " " << endl;
+		
+		return *this;
+	}
+
 	if (!_binary) *_ostream << strlen(string) << endl;
 	if (_binary)
 		*_ostream << s;
