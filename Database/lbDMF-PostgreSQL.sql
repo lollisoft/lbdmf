@@ -5,7 +5,19 @@
 -- +---------------------------------------------------------
 
 --USE jedi;
+SET SESSION AUTHORIZATION 'postgres';
+
+CREATE OR REPLACE FUNCTION plpgsql_call_handler()
+  RETURNS language_handler AS
+'$libdir/plpgsql', 'plpgsql_call_handler'
+  LANGUAGE 'c' VOLATILE;
+
+DROP LANGUAGE plpgsql;
+CREATE LANGUAGE plpgsql HANDLER plpgsql_call_handler;
+
 SET SESSION AUTHORIZATION 'dba';
+
+
 
 DROP TABLE column_types;DROP TABLE formular_actions;DROP TABLE translations;DROP TABLE CodegenTarget;DROP TABLE Applevel_Plugin_Registry;DROP TABLE Anwendungs_Parameter;DROP TABLE Formular_Parameters;DROP TABLE ForeignKey_VisibleData_Mapping;DROP TABLE Anwendungen_Formulare;DROP TABLE Anwendungsberechtigungen;DROP TABLE Formulare;DROP TABLE Formulartypen;DROP TABLE User_Anwendungen;DROP TABLE report_parameters;DROP TABLE report_texts;DROP TABLE report_elements;DROP TABLE report_element_types;DROP TABLE reports;DROP TABLE Users;DROP TABLE Anwendungen;DROP TABLE action_steps;DROP TABLE actions;DROP TABLE action_types;
 
