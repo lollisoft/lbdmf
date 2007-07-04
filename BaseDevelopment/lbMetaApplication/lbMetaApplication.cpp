@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.112 $
+ * $Revision: 1.113 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.112 2007/06/16 10:26:51 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.113 2007/07/04 16:09:30 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.113  2007/07/04 16:09:30  lollisoft
+ * Some console messages or errors have been changed.
+ *
  * Revision 1.112  2007/06/16 10:26:51  lollisoft
  * This changes let the application successfully run under Solaris. Also a bug is fixed that caused a crash at application exit.
  *
@@ -768,7 +771,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::load() {
 			_LOG << "lb_MetaApplication::load() Error: Could not get lb_I_FileOperation plugin !" LOG_
 		}
 	} else {
-		_CL_LOG << "Error: Could not load stream operator classes!" LOG_
+		_LOG << "Error: Could not load stream operator classes!" LOG_
 	}
 	return ERR_FILE_READ;
 }
@@ -994,6 +997,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::initialize(char* user, char* appName) 
 		
 
 	if (load() != ERR_NONE) {
+		_LOG << "ERROR: Could not load file for MetaApplication data. Save a default file !" LOG_
 		if (save() != ERR_NONE) {
 			_LOG << "ERROR: Could not save a default file for MetaApplication data!" LOG_
 		}
