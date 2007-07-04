@@ -91,6 +91,7 @@ IMPLEMENT_FUNCTOR(instanceOfPluginModule, lbPluginModuleDynamicAppStorage)
 BEGIN_PLUGINS(lbPluginModuleDynamicAppStorage)
 	ADD_PLUGIN(lbPluginDynamicAppInternalStorage,	lbDynAppInternalFormat)
 	ADD_PLUGIN(lbPluginDynamicAppXMLStorage,		lbDynAppXMLFormat)
+	ADD_PLUGIN(lbPluginDynamicAppBoUMLImport,		lbDynAppUMLImport)
 END_PLUGINS()
 
 

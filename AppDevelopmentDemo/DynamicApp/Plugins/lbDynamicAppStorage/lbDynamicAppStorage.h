@@ -29,6 +29,11 @@
 /*...e*/
 
 /** \brief Storage implementation for XML.
+ *
+ * This class is used to export the internal representation of an application model. Thus, with this
+ * file, you will be able to do what ever you want.
+ *
+ * Currently there is only implemented the save function.
  */
 class lbDynamicAppXMLStorage :
     public lb_I_StandaloneStreamable {
@@ -64,10 +69,31 @@ public:
 
 	lbErrCodes	LB_STDCALL load(lb_I_Database* iDB);
 	lbErrCodes	LB_STDCALL save(lb_I_Database* oDB);
-
+	
 	UAP(lb_I_Unknown, op)
 };
 
+/** \brief Storage implementation for importing an application model from UML (BoUML via XMI).
+ */
+class lbDynamicAppBoUMLImport :
+    public lb_I_StandaloneStreamable {
+public:
+	lbDynamicAppBoUMLImport();
+	virtual ~lbDynamicAppBoUMLImport();
+
+	DECLARE_LB_UNKNOWN()
+
+	lbErrCodes LB_STDCALL setOperator(lb_I_Unknown* _op) { op = _op; op++; return ERR_NONE; }
+	lbErrCodes	LB_STDCALL load(lb_I_InputStream* iStream);
+	lbErrCodes	LB_STDCALL save(lb_I_OutputStream* oStream);
+
+	lbErrCodes	LB_STDCALL load(lb_I_Database* iDB);
+	lbErrCodes	LB_STDCALL save(lb_I_Database* oDB);
+	
+	UAP(lb_I_Unknown, op)
+};
+
+DECLARE_FUNCTOR(instanceOflbDynamicAppBoUMLImport)
 DECLARE_FUNCTOR(instanceOflbDynamicAppInternalStorage)
 DECLARE_FUNCTOR(instanceOflbDynamicAppXMLStorage)
 

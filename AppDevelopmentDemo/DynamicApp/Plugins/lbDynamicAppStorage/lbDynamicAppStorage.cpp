@@ -43,6 +43,23 @@
 
 #include <lbDynamicAppStorage.h>
 
+// Includes for the libxml / libxslt libraries
+
+#include <libxml/xmlmemory.h>
+#include <libxml/debugXML.h>
+#include <libxml/HTMLtree.h>
+#include <libxml/xmlIO.h>
+#include <libxml/DOCBparser.h>
+#include <libxml/xinclude.h>
+#include <libxml/catalog.h>
+#include <libxslt/xslt.h>
+#include <libxslt/xsltInternals.h>
+#include <libxslt/transform.h>
+#include <libxslt/xsltutils.h>
+extern int xmlLoadExtDtdDefaultValue;
+
+
+
 IMPLEMENT_FUNCTOR(instanceOflbDynamicAppXMLStorage, lbDynamicAppXMLStorage)
 
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbDynamicAppXMLStorage)
@@ -485,6 +502,239 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::save(lb_I_Database* oDB) {
 	return err;
 }
 
+IMPLEMENT_FUNCTOR(instanceOflbDynamicAppBoUMLImport, lbDynamicAppBoUMLImport)
+
+BEGIN_IMPLEMENT_LB_UNKNOWN(lbDynamicAppBoUMLImport)
+	ADD_INTERFACE(lb_I_StandaloneStreamable)
+END_IMPLEMENT_LB_UNKNOWN()
+
+
+lbDynamicAppBoUMLImport::lbDynamicAppBoUMLImport() {
+	ref = STARTREF;
+
+	_CL_LOG << "lbDynamicAppBoUMLImport::lbDynamicAppBoUMLImport() called." LOG_
+}
+
+lbDynamicAppBoUMLImport::~lbDynamicAppBoUMLImport() {
+	_CL_LOG << "lbDynamicAppBoUMLImport::~lbDynamicAppBoUMLImport() called." LOG_
+}
+
+lbErrCodes LB_STDCALL lbDynamicAppBoUMLImport::setData(lb_I_Unknown*) {
+		_CL_VERBOSE << "Error: lbDynamicAppBoUMLImport::setData(lb_I_Unknown*) not implemented." LOG_
+		return ERR_NOT_IMPLEMENTED;
+}
+
+
+lbErrCodes LB_STDCALL lbDynamicAppBoUMLImport::load(lb_I_InputStream* iStream) {
+	lbErrCodes err = ERR_NONE;
+	xsltStylesheetPtr cur = NULL;
+	xmlDocPtr doc, res;
+	xmlDocPtr stylesheetdoc;
+	
+	const char *params[16 + 1];
+	
+	params[0] = NULL;
+	
+	xmlSubstituteEntitiesDefault(1);
+    xmlLoadExtDtdDefaultValue = 1;
+	
+	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, metaapp)
+		
+		// Read the provided stream as the XMI document to be translated.
+		
+	UAP(lb_I_String, xmidoc)
+	xmidoc = iStream->getAsString();
+	xmlChar* URL = (xmlChar*) iStream->getFileName();
+	doc = xmlReadMemory((xmlChar*) xmidoc->charrep(), strlen(xmidoc->charrep()), URL, NULL, 0);
+	if (doc == NULL) {
+		_LOG << "Error: Failed to load in-memory XMI document as an XML document." LOG_
+		return; 
+	}
+	
+	// Read the stylesheet document to get SQL script for database creation
+	metaapp->setStatusText("Info", "Importing application database model ...");
+
+	if (metaapp->askYesNo("Would you create the database for the application to be imported ?")) {
+		UAP(lb_I_String, styledoc)
+		UAP_REQUEST(getModuleInstance(), lb_I_InputStream, input)
+		
+		input = metaapp->askOpenFileReadStream("xsl");
+		if (input->open()) {
+			_LOG << "Try to get the file as a string..." LOG_
+			styledoc = input->getAsString();
+			_LOG << "Got the file as s string." LOG_
+			
+			xmlChar* URL = (xmlChar*) input->getFileName();
+			_LOG << "Read the string as an in memory XML document." LOG_
+			stylesheetdoc = xmlReadMemory((xmlChar*) styledoc->charrep(), strlen(styledoc->charrep()), URL, NULL, 0);
+			if (stylesheetdoc == NULL) {
+				_LOG << "Error: Failed to load in-memory XMI stylesheet document as an XML document." LOG_
+				return; 
+			}
+
+			_LOG << "Parse xml document as stylesheet." LOG_
+			cur = xsltParseStylesheetDoc(stylesheetdoc);
+			
+			xmlChar* result = NULL;
+			int len = 0;
+
+			_LOG << "Apply the stylesheet document." LOG_
+
+			res = xsltApplyStylesheet(cur, doc, params);
+
+			_LOG << "Save resulting document as a string." LOG_
+
+			xsltSaveResultToString(&result, &len, res, cur);
+			
+			xsltFreeStylesheet(cur);
+			xmlFreeDoc(res);
+			
+			// Apply the resulting SQL script to the database
+			
+			_LOG << "Prepare database creation..." LOG_
+
+			UAP_REQUEST(getModuleInstance(), lb_I_Database, database)
+			UAP(lb_I_Query, sampleQuery)
+				
+			database->init();
+			
+			char* lbDMFPasswd = getenv("lbDMFPasswd");
+			char* lbDMFUser   = getenv("lbDMFUser");
+			
+			if (!lbDMFUser) lbDMFUser = "dba";
+			if (!lbDMFPasswd) lbDMFPasswd = "trainres";
+			
+			if ((database != NULL) && (database->connect("CRM", lbDMFUser, lbDMFPasswd) != ERR_NONE)) {
+				_LOG << "Warning: No system database available." LOG_
+			}
+			
+			sampleQuery = database->getQuery(0);
+			
+			if (result == NULL) {
+				_LOG << "Error: Did not got the translation from XSLT file." LOG_
+				return;
+			}
+			
+			_LOG << "Create database... (script is " << (const char*) result << ")" LOG_
+			sampleQuery->skipFKCollecting();
+			if (sampleQuery->query((char*) result) != ERR_NONE) {
+				metaapp->msgBox("Error", "Failed to apply SQL Script imported from UML definition (XMI)!");
+				sampleQuery->enableFKCollecting();
+
+				xmlFreeDoc(doc);
+				
+				xsltCleanupGlobals();
+				xmlCleanupParser();	
+				
+				return err;
+			} else {
+				_LOG << "Database has been created." LOG_
+			}
+		}	
+	}
+	
+	// Read the stylesheet document to import application definition into system database
+	
+	metaapp->setStatusText("Info", "Importing lbDMF application definition ...");
+
+	if (metaapp->askYesNo("Would you create the application definition for the application to be imported ?")) {
+		UAP(lb_I_String, styledoc)
+		UAP_REQUEST(getModuleInstance(), lb_I_InputStream, input)
+		
+		input = metaapp->askOpenFileReadStream("xsl");
+		if (input->open()) {
+			_LOG << "Try to get the file as a string..." LOG_
+			styledoc = input->getAsString();
+			_LOG << "Got the file as s string." LOG_
+			
+			xmlChar* URL = (xmlChar*) input->getFileName();
+			_LOG << "Read the string as an in memory XML document." LOG_
+			stylesheetdoc = xmlReadMemory((xmlChar*) styledoc->charrep(), strlen(styledoc->charrep()), URL, NULL, 0);
+			if (stylesheetdoc == NULL) {
+				_LOG << "Error: Failed to load in-memory XMI stylesheet document as an XML document." LOG_
+				return; 
+			}
+
+			_LOG << "Parse xml document as stylesheet." LOG_
+			cur = xsltParseStylesheetDoc(stylesheetdoc);
+			
+			xmlChar* result = NULL;
+			int len = 0;
+
+			_LOG << "Apply the stylesheet document." LOG_
+
+			res = xsltApplyStylesheet(cur, doc, params);
+
+			_LOG << "Save resulting document as a string." LOG_
+
+			xsltSaveResultToString(&result, &len, res, cur);
+			
+			xsltFreeStylesheet(cur);
+			xmlFreeDoc(res);
+			
+			// Apply the resulting SQL script to the database
+			
+			_LOG << "Prepare database creation..." LOG_
+
+			UAP_REQUEST(getModuleInstance(), lb_I_Database, database)
+			UAP(lb_I_Query, sampleQuery)
+				
+			database->init();
+			
+			char* lbDMFPasswd = getenv("lbDMFPasswd");
+			char* lbDMFUser   = getenv("lbDMFUser");
+			
+			if (!lbDMFUser) lbDMFUser = "dba";
+			if (!lbDMFPasswd) lbDMFPasswd = "trainres";
+			
+			if ((database != NULL) && (database->connect("lbDMF", lbDMFUser, lbDMFPasswd) != ERR_NONE)) {
+				_LOG << "Warning: No system database available." LOG_
+			}
+			
+			sampleQuery = database->getQuery(0);
+			
+			_LOG << "Create database..." LOG_
+			sampleQuery->skipFKCollecting();
+			if (sampleQuery->query((char*) result) != ERR_NONE) {
+				metaapp->msgBox("Error", "Failed to apply SQL Script imported from UML definition (XMI)!");
+				sampleQuery->enableFKCollecting();
+
+				xmlFreeDoc(doc);
+				
+				xsltCleanupGlobals();
+				xmlCleanupParser();	
+				
+				return err;
+			} else {
+				_LOG << "Database has been created." LOG_
+				sampleQuery->enableFKCollecting();
+			}
+		}	
+	}
+
+	xmlFreeDoc(doc);
+				
+	xsltCleanupGlobals();
+	xmlCleanupParser();	
+
+	return err;
+}
+
+lbErrCodes LB_STDCALL lbDynamicAppBoUMLImport::save(lb_I_OutputStream* oStream) {
+	lbErrCodes err = ERR_NONE;
+	return err;
+}
+
+lbErrCodes LB_STDCALL lbDynamicAppBoUMLImport::load(lb_I_Database* iDB) {
+	lbErrCodes err = ERR_NONE;
+	return err;
+}
+
+lbErrCodes LB_STDCALL lbDynamicAppBoUMLImport::save(lb_I_Database* oDB) {
+	lbErrCodes err = ERR_NONE;
+	return err;
+}
+
 
 /*...sclass lbPluginDynamicAppXMLStorage implementation:0:*/
 /*...slbPluginDynamicAppXMLStorage:0:*/
@@ -700,6 +950,118 @@ lb_I_Unknown* LB_STDCALL lbPluginDynamicAppInternalStorage::getImplementation() 
 }
 /*...e*/
 void LB_STDCALL lbPluginDynamicAppInternalStorage::releaseImplementation() {
+        lbErrCodes err = ERR_NONE;
+
+        if (ukActions != NULL) {
+                ukActions--;
+                ukActions.resetPtr();
+        }
+}
+/*...e*/
+/*...e*/
+
+
+/*...sclass lbPluginDynamicAppBoUMLImport implementation:0:*/
+/*...slbPluginDynamicAppBoUMLImport:0:*/
+class lbPluginDynamicAppBoUMLImport : public lb_I_PluginImpl {
+public:
+	lbPluginDynamicAppBoUMLImport();
+	
+	virtual ~lbPluginDynamicAppBoUMLImport();
+
+	bool LB_STDCALL canAutorun();
+	lbErrCodes LB_STDCALL autorun();
+/*...sfrom plugin interface:8:*/
+	void LB_STDCALL initialize();
+	
+	bool LB_STDCALL run();
+
+	lb_I_Unknown* LB_STDCALL peekImplementation();
+	lb_I_Unknown* LB_STDCALL getImplementation();
+	void LB_STDCALL releaseImplementation();
+/*...e*/
+
+	DECLARE_LB_UNKNOWN()
+	
+	UAP(lb_I_Unknown, ukActions)
+};
+
+BEGIN_IMPLEMENT_LB_UNKNOWN(lbPluginDynamicAppBoUMLImport)
+        ADD_INTERFACE(lb_I_PluginImpl)
+END_IMPLEMENT_LB_UNKNOWN()
+
+IMPLEMENT_FUNCTOR(instanceOflbPluginDynamicAppBoUMLImport, lbPluginDynamicAppBoUMLImport)
+
+/*...slbErrCodes LB_STDCALL lbPluginDynamicAppStorage\58\\58\setData\40\lb_I_Unknown\42\ uk\41\:0:*/
+lbErrCodes LB_STDCALL lbPluginDynamicAppBoUMLImport::setData(lb_I_Unknown* uk) {
+	lbErrCodes err = ERR_NONE;
+
+	_CL_VERBOSE << "lbPluginDynamicAppStorage::setData(...) called.\n" LOG_
+
+        return ERR_NOT_IMPLEMENTED;
+}
+/*...e*/
+
+lbPluginDynamicAppBoUMLImport::lbPluginDynamicAppBoUMLImport() {
+	_CL_VERBOSE << "lbPluginDynamicAppStorage::lbPluginDynamicAppStorage() called.\n" LOG_
+	ref = STARTREF;
+}
+
+lbPluginDynamicAppBoUMLImport::~lbPluginDynamicAppBoUMLImport() {
+	_CL_VERBOSE << "lbPluginDynamicAppStorage::~lbPluginDynamicAppStorage() called.\n" LOG_
+}
+
+bool LB_STDCALL lbPluginDynamicAppBoUMLImport::canAutorun() {
+	return false;
+}
+
+lbErrCodes LB_STDCALL lbPluginDynamicAppBoUMLImport::autorun() {
+	lbErrCodes err = ERR_NONE;
+	return err;
+}
+
+void LB_STDCALL lbPluginDynamicAppBoUMLImport::initialize() {
+}
+	
+bool LB_STDCALL lbPluginDynamicAppBoUMLImport::run() {
+	return true;
+}
+
+/*...slb_I_Unknown\42\ LB_STDCALL lbPluginDynamicAppStorage\58\\58\peekImplementation\40\\41\:0:*/
+lb_I_Unknown* LB_STDCALL lbPluginDynamicAppBoUMLImport::peekImplementation() {
+	lbErrCodes err = ERR_NONE;
+
+	if (ukActions == NULL) {
+		lbDynamicAppBoUMLImport* DynamicAppStorage = new lbDynamicAppBoUMLImport();
+		DynamicAppStorage->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+		QI(DynamicAppStorage, lb_I_Unknown, ukActions)
+	} else {
+		_CL_VERBOSE << "lbPluginDatabasePanel::peekImplementation() Implementation already peeked.\n" LOG_
+	}
+	
+	return ukActions.getPtr();
+}
+/*...e*/
+/*...slb_I_Unknown\42\ LB_STDCALL lbPluginDynamicAppStorage\58\\58\getImplementation\40\\41\:0:*/
+lb_I_Unknown* LB_STDCALL lbPluginDynamicAppBoUMLImport::getImplementation() {
+	lbErrCodes err = ERR_NONE;
+
+	if (ukActions == NULL) {
+
+		_CL_VERBOSE << "Warning: peekImplementation() has not been used prior.\n" LOG_
+	
+		lbDynamicAppBoUMLImport* DynamicAppStorage = new lbDynamicAppBoUMLImport();
+		DynamicAppStorage->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+	
+		QI(DynamicAppStorage, lb_I_Unknown, ukActions)
+	}
+	
+	lb_I_Unknown* r = ukActions.getPtr();
+	ukActions.resetPtr();
+	return r;
+}
+/*...e*/
+void LB_STDCALL lbPluginDynamicAppBoUMLImport::releaseImplementation() {
         lbErrCodes err = ERR_NONE;
 
         if (ukActions != NULL) {
