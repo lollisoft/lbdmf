@@ -1086,7 +1086,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 				appActionSteps->accept(*&fOp);
 			}
 			
-			if (DBOperation && 
+			if (!isFileAvailable && DBOperation && 
 				(reports != NULL) && 
 				(reportparams != NULL) && 
 				(reportelements != NULL) && 
@@ -1133,38 +1133,39 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 			// from the connection settings of the running application.
 			
 			
-			if (strcmp(appParams->getParameter("DBName", metaapp->getApplicationID()), "lbDMF") == 0) {
-				// Is system database
-				dbPrimaryKeys->accept(*&fOpDB);
-				dbForeignKeys->accept(*&fOpDB);
-				dbTables->accept(*&fOpDB);
-				dbColumns->accept(*&fOpDB);
-			} else {
-				UAP_REQUEST(getModuleInstance(), lb_I_Database, customDB)
-				UAP(lb_I_DatabaseOperation, fOpCustomDB)
-				
-				if ((customDB != NULL) && (customDB->connect(	appParams->getParameter("DBName", metaapp->getApplicationID()), 
-																appParams->getParameter("DBUser", metaapp->getApplicationID()), 
-																appParams->getParameter("DBPass", metaapp->getApplicationID())) != ERR_NONE)) {
-					_LOG << "Fatal: No custom database available. Cannot read database model for custom application!" LOG_
+			if (!isFileAvailable) {
+				if (strcmp(appParams->getParameter("DBName", metaapp->getApplicationID()), "lbDMF") == 0) {
+					// Is system database
+					dbPrimaryKeys->accept(*&fOpDB);
+					dbForeignKeys->accept(*&fOpDB);
+					dbTables->accept(*&fOpDB);
+					dbColumns->accept(*&fOpDB);
 				} else {
-					pl = PM->getFirstMatchingPlugin("lb_I_DatabaseOperation", "DatabaseInputStreamVisitor");
-					if (pl != NULL)	ukPl = pl->getImplementation();
-					if (ukPl != NULL) QI(ukPl, lb_I_DatabaseOperation, fOpCustomDB)
-						
-						if (fOpCustomDB != NULL) {
-							fOpCustomDB->begin(customDB.getPtr());
+					UAP_REQUEST(getModuleInstance(), lb_I_Database, customDB)
+					UAP(lb_I_DatabaseOperation, fOpCustomDB)
+					
+					if ((customDB != NULL) && (customDB->connect(	appParams->getParameter("DBName", metaapp->getApplicationID()), 
+																	appParams->getParameter("DBUser", metaapp->getApplicationID()), 
+																	appParams->getParameter("DBPass", metaapp->getApplicationID())) != ERR_NONE)) {
+						_LOG << "Fatal: No custom database available. Cannot read database model for custom application!" LOG_
+					} else {
+						pl = PM->getFirstMatchingPlugin("lb_I_DatabaseOperation", "DatabaseInputStreamVisitor");
+						if (pl != NULL)	ukPl = pl->getImplementation();
+						if (ukPl != NULL) QI(ukPl, lb_I_DatabaseOperation, fOpCustomDB)
 							
-							dbPrimaryKeys->accept(*&fOpCustomDB);
-							dbForeignKeys->accept(*&fOpCustomDB);
-							dbTables->accept(*&fOpCustomDB);
-							dbColumns->accept(*&fOpCustomDB);
-							
-							fOpCustomDB->end();
-						}
+							if (fOpCustomDB != NULL) {
+								fOpCustomDB->begin(customDB.getPtr());
+								
+								dbPrimaryKeys->accept(*&fOpCustomDB);
+								dbForeignKeys->accept(*&fOpCustomDB);
+								dbTables->accept(*&fOpCustomDB);
+								dbColumns->accept(*&fOpCustomDB);
+								
+								fOpCustomDB->end();
+							}
+					}
 				}
-			}
-				
+			}				
 			if (!DBOperation) fOp->end();
 			if (DBOperation) fOpDB->end();
 				
