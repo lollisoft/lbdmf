@@ -181,6 +181,8 @@ class lb_I_InputStream :
 	public lb_I_Stream {
 public:
 
+	virtual lb_I_String* LB_STDCALL getAsString() = 0;
+
 	/** \brief Read an int data type.
 	 *
 	 */
