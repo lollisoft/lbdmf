@@ -108,6 +108,8 @@ public:
 	
 	bool LB_STDCALL read();
     
+	lb_I_String* LB_STDCALL getAsString();
+
 	lb_I_InputStream& LB_STDCALL operator>> (int& i);
 	lb_I_InputStream& LB_STDCALL operator>> (long& i);
 	lb_I_InputStream& LB_STDCALL operator>> (bool& b);
@@ -186,6 +188,46 @@ void LB_STDCALL lbInputStream::setFileName(char* name) {
 const char* LB_STDCALL lbInputStream::getFileName() {
 	return f;
 }
+
+lb_I_String* LB_STDCALL lbInputStream::getAsString() {
+	UAP_REQUEST(getModuleInstance(), lb_I_String, string)
+	
+	int size = 0;
+
+#ifndef __WATCOMC__
+	std::string s;	
+#endif
+#ifdef __WATCOMC__
+	char* buf = NULL;
+	String s;	
+#endif
+
+#ifndef __WATCOMC__
+  while (std::getline(*_istream, s)) {
+	*string += s.c_str();
+	*string += "\n";
+  }
+#endif
+
+#ifdef __WATCOMC__ 
+  buf = (char*) malloc(1000);
+  while (!_istream->eof()) {
+	buf[0] = 0;
+	_istream->getline(buf, 1000);
+	if (strlen(buf) == 0) {
+		*string += "\n";
+	} else {
+		*string += buf;
+		*string += "\n";
+	}
+  }
+  free(buf);
+#endif
+  
+  string++;
+  return string.getPtr();
+}
+
 
 bool LB_STDCALL lbInputStream::close() {
 	if (isOpen) {
