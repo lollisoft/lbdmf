@@ -420,7 +420,7 @@ private:
 	HSTMT   hstmt;
 	HSTMT   hupdatestmt;
 	RETCODE retcode;
-	char    szSql[1000];
+	char    szSql[5000];
 	int		databound;
 	int     firstfetched;
 	int		_readonly; // readonly = 1, else = 0
@@ -1666,7 +1666,7 @@ lbErrCodes LB_STDCALL lbQuery::query(char* q, bool bind) {
 		return ERR_DB_QUERYFAILED;
 	}
 	
-	if (strlen(q) >= 1000) printf("WARNING: Bufferoverflow in %s at %d\n", __FILE__, __LINE__);
+	if (strlen(q) >= 5000) printf("WARNING: Bufferoverflow in %s at %d\n", __FILE__, __LINE__);
 
 	lstrcpy(szSql, q);
 
