@@ -15,9 +15,24 @@
    sodipodi:version="0.32"
    inkscape:version="0.42"
    sodipodi:docbase="/Users/lothar/develop/Projects/CPP/Test/GUI/wxWrapper/Inkscape Icons"
-   sodipodi:docname="Splash Screen.svg">
+   sodipodi:docname="Splash Screen.svg"
+   inkscape:export-filename="/Users/lothar/develop/Projects/CPP/Test/GUI/wxWrapper/splash.png"
+   inkscape:export-xdpi="27.999004"
+   inkscape:export-ydpi="27.999004">
   <defs
      id="defs7257">
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient2281">
+      <stop
+         style="stop-color:#27bc2d;stop-opacity:1;"
+         offset="0"
+         id="stop2283" />
+      <stop
+         style="stop-color:#27bc2d;stop-opacity:0;"
+         offset="1"
+         id="stop2285" />
+    </linearGradient>
     <linearGradient
        id="linearGradient1691">
       <stop
@@ -768,7 +783,7 @@
        xlink:href="#linearGradient1683"
        id="linearGradient111336"
        gradientUnits="userSpaceOnUse"
-       gradientTransform="matrix(-4.959103e-18,1.475472,-0.677749,-2.277933e-18,-1.260409e-12,-2.320421e-12)"
+       gradientTransform="matrix(-4.959103e-18,1.475472,-0.677749,-2.277933e-18,-1.601470e-12,-2.604638e-12)"
        x1="-97.308411"
        y1="-435.86899"
        x2="313.85217"
@@ -778,7 +793,7 @@
        xlink:href="#linearGradient1683"
        id="linearGradient111338"
        gradientUnits="userSpaceOnUse"
-       gradientTransform="matrix(-4.959103e-18,1.475472,-0.677749,-2.277933e-18,-1.260409e-12,-2.320421e-12)"
+       gradientTransform="matrix(-4.959103e-18,1.475472,-0.677749,-2.277933e-18,-1.601470e-12,-2.604638e-12)"
        x1="309.53091"
        y1="-418.63443"
        x2="-90.248940"
@@ -798,7 +813,7 @@
        xlink:href="#linearGradient1683"
        id="linearGradient111342"
        gradientUnits="userSpaceOnUse"
-       gradientTransform="matrix(-4.959103e-18,1.475472,-0.677749,-2.277933e-18,-2.113060e-12,-2.263579e-12)"
+       gradientTransform="matrix(-4.959103e-18,1.475472,-0.677749,-2.277933e-18,-2.056217e-12,-1.865676e-12)"
        x1="-97.308411"
        y1="-435.86899"
        x2="313.85217"
@@ -808,7 +823,7 @@
        xlink:href="#linearGradient1683"
        id="linearGradient111344"
        gradientUnits="userSpaceOnUse"
-       gradientTransform="matrix(-4.959103e-18,1.475472,-0.677749,-2.277933e-18,-2.113060e-12,-2.263579e-12)"
+       gradientTransform="matrix(-4.959103e-18,1.475472,-0.677749,-2.277933e-18,-2.056217e-12,-1.865676e-12)"
        x1="309.53091"
        y1="-418.63443"
        x2="-90.248940"
@@ -828,7 +843,7 @@
        xlink:href="#linearGradient1683"
        id="linearGradient111354"
        gradientUnits="userSpaceOnUse"
-       gradientTransform="matrix(-4.959103e-18,1.475472,-0.677749,-2.277933e-18,-1.715157e-12,-2.604637e-12)"
+       gradientTransform="matrix(-4.959103e-18,1.475472,-0.677749,-2.277933e-18,-1.601470e-12,-2.661481e-12)"
        x1="-97.308411"
        y1="-435.86899"
        x2="313.85217"
@@ -838,7 +853,7 @@
        xlink:href="#linearGradient1683"
        id="linearGradient111356"
        gradientUnits="userSpaceOnUse"
-       gradientTransform="matrix(-4.959103e-18,1.475472,-0.677749,-2.277933e-18,-1.715157e-12,-2.604637e-12)"
+       gradientTransform="matrix(-4.959103e-18,1.475472,-0.677749,-2.277933e-18,-1.601470e-12,-2.661481e-12)"
        x1="309.53091"
        y1="-418.63443"
        x2="-90.248940"
@@ -858,7 +873,7 @@
        xlink:href="#linearGradient1683"
        id="linearGradient111360"
        gradientUnits="userSpaceOnUse"
-       gradientTransform="matrix(-4.959103e-18,1.475472,-0.677749,-2.277933e-18,-1.828844e-12,-3.002541e-12)"
+       gradientTransform="matrix(-4.959103e-18,1.475472,-0.677749,-2.277933e-18,-1.715157e-12,-3.286758e-12)"
        x1="-97.308411"
        y1="-435.86899"
        x2="313.85217"
@@ -868,7 +883,7 @@
        xlink:href="#linearGradient1683"
        id="linearGradient111362"
        gradientUnits="userSpaceOnUse"
-       gradientTransform="matrix(-4.959103e-18,1.475472,-0.677749,-2.277933e-18,-1.828844e-12,-3.002541e-12)"
+       gradientTransform="matrix(-4.959103e-18,1.475472,-0.677749,-2.277933e-18,-1.715157e-12,-3.286758e-12)"
        x1="309.53091"
        y1="-418.63443"
        x2="-90.248940"
@@ -899,7 +914,7 @@
        xlink:href="#linearGradient13206"
        id="radialGradient111374"
        gradientUnits="userSpaceOnUse"
-       gradientTransform="matrix(1.150346,-5.038369e-16,2.430515e-16,1.150346,-16.11730,-74.46758)"
+       gradientTransform="matrix(1.150346,-5.937413e-16,2.458339e-16,1.150346,-16.11730,-74.46758)"
        cx="107.20115"
        cy="495.30679"
        fx="107.20115"
@@ -1114,6 +1129,15 @@
        y1="742.38037"
        x2="441.36029"
        y2="116.08578" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient2281"
+       id="linearGradient2287"
+       x1="-167.46451"
+       y1="23.787580"
+       x2="706.01508"
+       y2="965.77545"
+       gradientUnits="userSpaceOnUse" />
   </defs>
   <sodipodi:namedview
      id="base"
@@ -1124,13 +1148,13 @@
      inkscape:pageshadow="2"
      inkscape:zoom="0.52548449"
      inkscape:cx="372.04724"
-     inkscape:cy="527.91283"
+     inkscape:cy="485.02966"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
-     inkscape:window-width="889"
-     inkscape:window-height="716"
-     inkscape:window-x="20"
-     inkscape:window-y="42" />
+     inkscape:window-width="912"
+     inkscape:window-height="838"
+     inkscape:window-x="39"
+     inkscape:window-y="22" />
   <metadata
      id="metadata7260">
     <rdf:RDF>
@@ -1146,8 +1170,22 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1">
+    <rect
+       style="fill:url(#linearGradient2287);fill-opacity:1.0;fill-rule:nonzero;stroke:none;stroke-width:1.6211483;stroke-miterlimit:4.0000000;stroke-dasharray:none;stroke-opacity:1.0000000"
+       id="rect1550"
+       width="726.94818"
+       height="1037.1382"
+       x="9.5150290"
+       y="9.5150290"
+       inkscape:export-filename="/Users/lothar/develop/Projects/CPP/Test/GUI/wxWrapper/splash.png"
+       inkscape:export-xdpi="49.419998"
+       inkscape:export-ydpi="49.419998" />
     <g
-       id="g111490">
+       id="g111490"
+       transform="matrix(1.000000,0.000000,0.000000,1.062790,0.000000,-10.20071)"
+       inkscape:export-filename="/Users/lothar/develop/Projects/CPP/Test/GUI/wxWrapper/splash.png"
+       inkscape:export-xdpi="49.419998"
+       inkscape:export-ydpi="49.419998">
       <g
          transform="matrix(3.351341,0.724149,-0.636220,2.932587,-3145.203,-1225.743)"
          id="g43078"
@@ -1589,5 +1627,52 @@
         </g>
       </g>
     </g>
+    <text
+       xml:space="preserve"
+       style="font-size:94.087608px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125.00000%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1.0000000;stroke:none;stroke-width:1.0000000px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1.0000000;font-family:Courier New"
+       x="11.233437"
+       y="75.886642"
+       id="text2289"
+       sodipodi:linespacing="125.00000%"
+       transform="scale(0.990948,1.009135)"
+       inkscape:export-filename="/Users/lothar/develop/Projects/CPP/Test/GUI/wxWrapper/splash.png"
+       inkscape:export-xdpi="49.419998"
+       inkscape:export-ydpi="49.419998"><tspan
+         sodipodi:role="line"
+         id="tspan2291"
+         x="11.233437"
+         y="75.886642">wxWrapper</tspan><tspan
+         sodipodi:role="line"
+         x="11.233437"
+         y="193.49615"
+         id="tspan2293" /><tspan
+         sodipodi:role="line"
+         x="11.233437"
+         y="311.10566"
+         id="tspan2295" /><tspan
+         sodipodi:role="line"
+         x="11.233437"
+         y="428.71517"
+         id="tspan2297" /><tspan
+         sodipodi:role="line"
+         x="11.233437"
+         y="546.32468"
+         id="tspan2301"></tspan><tspan
+         sodipodi:role="line"
+         x="11.233437"
+         y="663.93419"
+         id="tspan2307"></tspan><tspan
+         sodipodi:role="line"
+         x="11.233437"
+         y="781.54370"
+         id="tspan2311">from ideas to</tspan><tspan
+         sodipodi:role="line"
+         x="11.233437"
+         y="899.15322"
+         id="tspan2303">Prototypes in </tspan><tspan
+         sodipodi:role="line"
+         x="11.233437"
+         y="1016.7627"
+         id="tspan2305">minutes.</tspan></text>
   </g>
 </svg>
