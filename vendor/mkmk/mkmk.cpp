@@ -12,11 +12,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.84 $
+ * $Revision: 1.85 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.84 2006/12/10 17:05:24 lollisoft Exp $
+ * $Id: mkmk.cpp,v 1.85 2007/07/05 16:40:32 lollisoft Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.85  2007/07/05 16:40:32  lollisoft
+ * Corrected Mac icon copy rule.
+ *
  * Revision 1.84  2006/12/10 17:05:24  lollisoft
  * Other changes under Mac OS X.
  *
@@ -833,7 +836,7 @@ void writeBundleTarget(char* modulename) {
   printf("\t\tcp -R $(HOME)/lib/wxAUI.framework %s.app/Contents/Frameworks\n", modulename);
   printf("\t\tcp -R $(HOME)/lib/wxPropgrid.framework %s.app/Contents/Frameworks\n", modulename);
   printf("\t\tmkdir -p %s.app/Contents/Resources\n", modulename);
-  printf("\t\tset -e \"s/IDENTIFIER/`echo . | sed -e 's,\\.\\./,,g' | sed -e 's,/,.,g'`/\" -e \"s/EXECUTABLE/%s/\" -e \"s/VERSION/$(MKMK_WX_VERSION)/\" $(HOME)/wxMac-$(MKMK_WX_VERSION)/src/mac/carbon/wxmac.icns %s.app/Contents/Resources/wxmac.icns\n", modulename, modulename);
+  printf("\t\tcp wxmac.icns %s.app/Contents/Resources/wxmac.icns\n", modulename, modulename);
   printf("\t\tsed -e \"s/IDENTIFIER/`echo . | sed -e 's,\\.\\./,,g' | sed -e 's,/,.,g'`/\" -e \"s/EXECUTABLE/%s/\" -e \"s/VERSION/$(MKMK_WX_VERSION)/\" $(HOME)/wxMac-$(MKMK_WX_VERSION)/src/mac/carbon/Info.plist.in >%s.app/Contents/Info.plist\n", modulename, modulename);
   printf("\t\techo -n \"APPL????\" >%s.app/Contents/PkgInfo\n", modulename);
   printf("\t\tln -f %s %s.app/Contents/MacOS/%s\n", modulename, modulename, modulename);
@@ -1607,7 +1610,7 @@ void ShowHelp(int argc, char *argv[])
 
   fprintf(stderr, "Enhanced by Lothar Behrens (lothar.behrens@lollisoft.de)\n\n");
 
-  fprintf(stderr, "MKMK: makefile generator $Revision: 1.84 $\n");
+  fprintf(stderr, "MKMK: makefile generator $Revision: 1.85 $\n");
   fprintf(stderr, "Usage: MKMK lib|exe|dll|so modulname includepath,[includepath,...] file1 [file2 file3...]\n");
   
   fprintf(stderr, "Your parameters are: ");
