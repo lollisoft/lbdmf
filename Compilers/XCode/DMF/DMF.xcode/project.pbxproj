@@ -136,6 +136,7 @@
 				27240A6208D49F10009B29CA,
 				27CE9A1108D4A77600FB3DF0,
 				27A8F1D5099684740010AF15,
+				2773F2300C3D1A070037A8EB,
 			);
 		};
 		27240A5408D49DBE009B29CA = {
@@ -443,6 +444,7 @@
 				2766152F08D4ABD700675AD6,
 				2766157408D4AD6C00675AD6,
 				27ACE22A09976271000541A3,
+				2773F2310C3D1A070037A8EB,
 			);
 			isa = PBXGroup;
 			name = Products;
@@ -677,6 +679,108 @@
 			path = "/Users/lothar/develop/Projects/CPP/include/lbpluginmanager-module.h";
 			refType = 0;
 			sourceTree = "<absolute>";
+		};
+		2773F22D0C3D1A070037A8EB = {
+			buildActionMask = 2147483647;
+			files = (
+			);
+			isa = PBXResourcesBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2773F22E0C3D1A070037A8EB = {
+			buildActionMask = 2147483647;
+			files = (
+				2773F2330C3D1A730037A8EB,
+			);
+			isa = PBXSourcesBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2773F22F0C3D1A070037A8EB = {
+			buildActionMask = 2147483647;
+			files = (
+			);
+			isa = PBXFrameworksBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2773F2300C3D1A070037A8EB = {
+			buildPhases = (
+				2773F22D0C3D1A070037A8EB,
+				2773F22E0C3D1A070037A8EB,
+				2773F22F0C3D1A070037A8EB,
+			);
+			buildRules = (
+			);
+			buildSettings = {
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				INFOPLIST_FILE = "wxWrapper-Info.plist";
+				INSTALL_PATH = "$(USER_APPS_DIR)";
+				LIBRARY_STYLE = STATIC;
+				OPTIMIZATION_CFLAGS = "";
+				OTHER_CFLAGS = "";
+				OTHER_CPLUSPLUSFLAGS = "-DUNIX -DLINUX -DOSX `wx-config --inplace --cxxflags` -DUSE_WXWRAPPER_DLL -DOSX -DUNIX -DLINUX -DLB_I_EXTENTIONS -D__WXDEBUG__ -I /Users/lothar/develop/Projects/CPP/BaseDevelopment/lbHook/linuxCode -I /Users/lothar/develop/Projects/CPP/interfaces -I /Users/lothar/develop/Projects/CPP/include -I /Users/lothar/develop/Projects/CPP/BaseDevelopment/lbclasses -I /usr/include -I .  -I /Users/lothar/develop/Projects/CPP/vendor/propgrid/include -I ../wxWrapperDLL";
+				OTHER_LDFLAGS = "-L. -F/Users/lothar/lib -framework wxPropgrid -framework wxAUI -framework wxWrapperDLL -framework lbHook `wx-config --inplace --libs`  -lc /usr/lib/libgcc_s.1.dylib -lc /usr/lib/libstdc++.6.dylib -bind_at_load -lc";
+				OTHER_REZFLAGS = "";
+				PREBINDING = NO;
+				PRODUCT_NAME = "";
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = "-Wmost -Wno-four-char-constants -Wno-unknown-pragmas";
+			};
+			dependencies = (
+				2773F2360C3D1AFF0037A8EB,
+			);
+			isa = PBXNativeTarget;
+			name = wxWrapper;
+			productName = wxWrapper;
+			productReference = 2773F2310C3D1A070037A8EB;
+			productSettingsXML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
+<!DOCTYPE plist PUBLIC \"-//Apple Computer//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">
+<plist version=\"1.0\">
+<dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>English</string>
+	<key>CFBundleExecutable</key>
+	<string>wxWrapper</string>
+	<key>CFBundleIdentifier</key>
+	<string>com.yourcompany.wxWrapper</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleSignature</key>
+	<string>????</string>
+	<key>CFBundleVersion</key>
+	<string>1.0</string>
+</dict>
+</plist>
+";
+			productType = "com.apple.product-type.application";
+		};
+		2773F2310C3D1A070037A8EB = {
+			explicitFileType = wrapper.application;
+			includeInIndex = 0;
+			isa = PBXFileReference;
+			path = .app;
+			refType = 3;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		2773F2330C3D1A730037A8EB = {
+			fileRef = 27B91DB1086EEA3300DB17D6;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2773F2350C3D1AFF0037A8EB = {
+			containerPortal = 270BA7BA086C0A0900799F65;
+			isa = PBXContainerItemProxy;
+			proxyType = 1;
+			remoteGlobalIDString = 2764970B086ED80A000EB62C;
+			remoteInfo = lbHook;
+		};
+		2773F2360C3D1AFF0037A8EB = {
+			isa = PBXTargetDependency;
+			target = 2764970B086ED80A000EB62C;
+			targetProxy = 2773F2350C3D1AFF0037A8EB;
 		};
 		2778C29B0B5A4D49003524C2 = {
 			fileEncoding = 30;
