@@ -726,7 +726,7 @@ void LB_STDCALL lbInputStreamOpr::visit(lb_I_Formulars* forms) {
 	char* EventName = NULL;
 	
 	*iStream >> count;
-
+_LOG << "Read " << count << " formulars." LOG_
 	for (int i = 0; i < count; i++) {
 		
 		*iStream >> FormularID;

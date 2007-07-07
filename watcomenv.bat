@@ -81,7 +81,7 @@ set Path=%Path%;q:\develop\tools\cygwin\bin;Q:\develop\Tools\Perl\bin;G:\gs\gs8.
 rem Enable my Power++ IDE
 set Path=%Path%;"E:\Program Files\Powersoft\Power21\System"
 
-set Path=%Path%;c:\tp
+set Path=%Path%;c:\tp;Q:\develop\Tools\Bakefile\src
 
 set MSC=%MSVCDir%\Bin;%MSVCDir%\Lib
 

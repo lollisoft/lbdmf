@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.121 $
+# * $Revision: 1.122 $
 # * $Name:  $
-# * $Id: Makefile,v 1.121 2007/06/16 10:26:51 lollisoft Exp $
+# * $Id: Makefile,v 1.122 2007/07/07 16:37:32 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.122  2007/07/07 16:37:32  lollisoft
+# * Changes to let xslt code work.
+# *
 # * Revision 1.121  2007/06/16 10:26:51  lollisoft
 # * This changes let the application successfully run under Solaris. Also a bug is fixed that caused a crash at application exit.
 # *
@@ -734,6 +737,7 @@ ALLTARGETS = \
 	lbPluginManager \
 	../vendor/wxaui-0.9.1/src \
 	../vendor/propgrid \
+	../vendor/libxslt-1.1.21/libxslt \
 	../AppDevelopmentDemo/App \
 	../AppDevelopmentDemo/DynamicApp/App \
 	../Test/Console/XML \
@@ -831,6 +835,10 @@ dummy:
 
 ../vendor/c-goldparser: dummy
 	$(MAKE) -s -C $@ -e MODULE=gold -e TARGET=$(TARGETEXE) -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@
+
+../vendor/libxslt-1.1.21/libxslt: dummy
+	$(MAKE) -s -C $@ -e MODULE=lbxslt -e TARGET=$(TARGETDLL) -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@
 
 ../vendor/tvision: dummy

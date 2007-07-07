@@ -177,23 +177,13 @@ int main(int argc, char *argv[]) {
 	out->open();
 	
 	int n = 0;
-		
-	*out << "Testdata1: " << n++;
-	*out << "Testdata2: " << n++;
-	*out << "Testdata3: " << n++;
-	*out << "Testdata4: " << n++;
-	*out << "Testdata5: " << n++;
-	*out << "Testdata6: " << n++;
-	*out << "Testdata7: " << n++;
-	*out << "Testdata8: " << n++;
-	*out << "Testdata9: " << n++;
-	*out << "Testdata10: " << n++;
-	*out << "Testdata11: " << n++;
-	*out << "Testdata12: " << n++;
-	*out << "Testdata13: " << n++;
-	*out << "Testdata14: " << n++;
-	*out << "Testdata15: " << n++;
-	*out << "Testdata16: " << n++;
+
+	int count = 10;
+	
+	*out << count;
+	for (int i = 0; i < count; i++) {
+		*out << "Testline: " << i;
+	}
 
 	out->close();
 	
@@ -204,9 +194,10 @@ int main(int argc, char *argv[]) {
 	in->open();
 	
 	char* buf = NULL;
+
+	*in >> count;	
 	
-	
-	for (int i = 0; i < 16; i++) {
+	for (int i = 0; i < count; i++) {
 		n = 0;
 		*in >> buf >> n;
 		_CL_LOG << "'" << buf << "', " << n LOG_;

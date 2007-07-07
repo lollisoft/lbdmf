@@ -94,6 +94,8 @@ long  LB_STDCALL lbFormularsModel::addFormular(const char* name, const char* men
 	AnwendungID->setData(anwendung_id);
 	Typ->setData(typ);
 	FormularID->setData(formular_id);
+
+	_LOG << "lbFormularsModel::addFormular('" << name << "', '" << menuname << "'...) called." LOG_
 	
 	*paramname = "FormularName";
 	param->setUAPString(*&paramname, *&FormularName);

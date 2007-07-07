@@ -56,8 +56,21 @@
 #include <libxslt/xsltInternals.h>
 #include <libxslt/transform.h>
 #include <libxslt/xsltutils.h>
-extern int xmlLoadExtDtdDefaultValue;
 
+#ifndef __WATCOMC_ 
+extern int xmlLoadExtDtdDefaultValue;
+#endif
+#ifdef __WATCOMC__
+#define xsltSaveResultToString lb_xsltSaveResultToString
+#define xsltParseStylesheetDoc lb_xsltParseStylesheetDoc
+#define xsltApplyStylesheet lb_xsltApplyStylesheet
+#define xsltFreeStylesheet lb_xsltFreeStylesheet
+#define xmlSubstituteEntitiesDefault lb_xmlSubstituteEntitiesDefault
+#define xmlFreeDoc lb_xmlFreeDoc
+#define xsltCleanupGlobals lb_xsltCleanupGlobals
+#define xmlCleanupParser lb_xmlCleanupParser
+#define xmlReadMemory lb_xmlReadMemory
+#endif
 
 
 IMPLEMENT_FUNCTOR(instanceOflbDynamicAppXMLStorage, lbDynamicAppXMLStorage)
@@ -536,7 +549,12 @@ lbErrCodes LB_STDCALL lbDynamicAppBoUMLImport::load(lb_I_InputStream* iStream) {
 	params[0] = NULL;
 	
 	xmlSubstituteEntitiesDefault(1);
+#ifndef __WATCOMC__	
     xmlLoadExtDtdDefaultValue = 1;
+#endif
+#ifdef __WATCOMC__
+    setxmlLoadExtDtdDefaultValue(1);
+#endif
 	
 	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, metaapp)
 		
@@ -545,10 +563,10 @@ lbErrCodes LB_STDCALL lbDynamicAppBoUMLImport::load(lb_I_InputStream* iStream) {
 	UAP(lb_I_String, xmidoc)
 	xmidoc = iStream->getAsString();
 	xmlChar* URL = (xmlChar*) iStream->getFileName();
-	doc = xmlReadMemory((xmlChar*) xmidoc->charrep(), strlen(xmidoc->charrep()), URL, NULL, 0);
+	doc = xmlReadMemory((char const*) xmidoc->charrep(), strlen(xmidoc->charrep()), (char const*) URL, NULL, 0);
 	if (doc == NULL) {
 		_LOG << "Error: Failed to load in-memory XMI document as an XML document." LOG_
-		return; 
+		return err; 
 	}
 	
 	// Read the stylesheet document to get SQL script for database creation
@@ -566,10 +584,10 @@ lbErrCodes LB_STDCALL lbDynamicAppBoUMLImport::load(lb_I_InputStream* iStream) {
 			
 			xmlChar* URL = (xmlChar*) input->getFileName();
 			_LOG << "Read the string as an in memory XML document." LOG_
-			stylesheetdoc = xmlReadMemory((xmlChar*) styledoc->charrep(), strlen(styledoc->charrep()), URL, NULL, 0);
+			stylesheetdoc = xmlReadMemory((char const*) styledoc->charrep(), strlen(styledoc->charrep()), (char const*) URL, NULL, 0);
 			if (stylesheetdoc == NULL) {
 				_LOG << "Error: Failed to load in-memory XMI stylesheet document as an XML document." LOG_
-				return; 
+				return err; 
 			}
 
 			_LOG << "Parse xml document as stylesheet." LOG_
@@ -612,7 +630,7 @@ lbErrCodes LB_STDCALL lbDynamicAppBoUMLImport::load(lb_I_InputStream* iStream) {
 			
 			if (result == NULL) {
 				_LOG << "Error: Did not got the translation from XSLT file." LOG_
-				return;
+				return err;
 			}
 			
 			_LOG << "Create database... (script is " << (const char*) result << ")" LOG_
@@ -649,10 +667,10 @@ lbErrCodes LB_STDCALL lbDynamicAppBoUMLImport::load(lb_I_InputStream* iStream) {
 			
 			xmlChar* URL = (xmlChar*) input->getFileName();
 			_LOG << "Read the string as an in memory XML document." LOG_
-			stylesheetdoc = xmlReadMemory((xmlChar*) styledoc->charrep(), strlen(styledoc->charrep()), URL, NULL, 0);
+			stylesheetdoc = xmlReadMemory((char const*) styledoc->charrep(), strlen(styledoc->charrep()), (char const*) URL, NULL, 0);
 			if (stylesheetdoc == NULL) {
 				_LOG << "Error: Failed to load in-memory XMI stylesheet document as an XML document." LOG_
-				return; 
+				return err; 
 			}
 
 			_LOG << "Parse xml document as stylesheet." LOG_
