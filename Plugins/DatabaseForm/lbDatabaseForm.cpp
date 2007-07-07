@@ -1171,6 +1171,13 @@ _CL_LOG << "Connect event handlers" LOG_
 
 void  LB_STDCALL lbDatabasePanel::reopen() {
 	sampleQuery->reopen();
+	
+	prevButton->Enable();
+	firstButton->Enable();
+	lastButton->Enable();
+	nextButton->Enable();
+	deleteButton->Enable();
+
 	if (sampleQuery->isFirst()) lbDBFirst(NULL);
 	if (sampleQuery->isLast()) lbDBLast(NULL);
 	lbDBRead();
