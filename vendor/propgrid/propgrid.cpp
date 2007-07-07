@@ -400,7 +400,7 @@ static bool wxPGIsWindowBuffered( const wxWindow* wnd )
 static bool wxPGIsWindowBuffered( const wxWindow* wnd )
 {
     //wxLogDebug(wxT("is_double_buffered: %i"),(int)GTK_WIDGET_DOUBLE_BUFFERED(wnd->GetHandle()));
-    return GTK_WIDGET_DOUBLE_BUFFERED(wnd->GetHandle());
+    return false; // GTK_WIDGET_DOUBLE_BUFFERED(wnd->GetHandle());
 }
 
 #elif defined(__WXMAC_OSX__) || defined(__WXCOCOA__)
