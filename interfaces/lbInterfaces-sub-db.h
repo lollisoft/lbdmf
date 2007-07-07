@@ -147,6 +147,14 @@ public:
 	 */
 	virtual int LB_STDCALL isAdding() = 0;
 	
+	/** \brief Is current row the first.
+	 */
+	virtual bool LB_STDCALL isFirst() = 0;
+	
+	/** \brief Is current row the last.
+	 */
+	virtual bool LB_STDCALL isLast() = 0;
+	
 	/**
 	 * \brief Deletes the current entry.
 	 */
@@ -1056,6 +1064,11 @@ public:
 	virtual void LB_STDCALL ignoreForeignKeys(char* toTable) = 0;
 
 	virtual char* LB_STDCALL getColumnName(int pos) = 0;
+	
+	/** \brief Reopen the form.
+	 * Used in SQL actions to ensure valid data (after deletion of some data for sample).
+	 */
+	virtual void LB_STDCALL reopen() = 0;
 /*...e*/
 };
 /*...e*/
