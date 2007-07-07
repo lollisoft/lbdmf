@@ -255,6 +255,12 @@ insert into actions (name, typ, source, target) values(
 'name',
 0);
 
+insert into actions (name, typ, source, target) values(
+'Anwendung loeschen',
+1,
+'name',
+0);
+
 --...e
 --...sFill action_steps:0:
 insert into action_steps (bezeichnung, a_order_nr, what, type, actionid) values(
@@ -328,6 +334,12 @@ insert into action_steps (bezeichnung, a_order_nr, what, type, actionid) values(
 1,
 'Formulare',
 6, 11);
+
+insert into action_steps (bezeichnung, a_order_nr, what, type, actionid) values(
+'Deletes the actual application without any warning.',
+1,
+'select "DropApplication"(''{name}'')',
+2, 12);
 --...e
 --...e
 
@@ -1102,6 +1114,7 @@ insert into formular_actions (formular, action, event) values(2, 11, 'evt_Manage
 insert into formular_actions (formular, action, event) values(19, 7, 'evt_Manage_Apps_Parameters');
 insert into formular_actions (formular, action, event) values(24, 8, 'evt_Manage_Action_Steps');
 insert into formular_actions (formular, action, event) values(27, 10, 'evt_Manage_A_F_A_Assoc');
+insert into formular_actions (formular, action, event) values(19, 12, 'evt_DropApplication');
 
 --...e
 
