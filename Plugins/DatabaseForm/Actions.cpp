@@ -1236,8 +1236,143 @@ void LB_STDCALL lbSQLQueryAction::setActionID(char* id) {
 void LB_STDCALL lbSQLQueryAction::execute(lb_I_Parameter* params) {
 	_CL_LOG << "lbSQLQueryAction::execute()" LOG_
 	
+	UAP_REQUEST(manager.getPtr(), lb_I_String, SourceFormName)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, SourceFieldName)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, SourceFieldValue)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, app)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, DBName)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, DBUser)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, DBPass)
+
 	UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
+	UAP_REQUEST(manager.getPtr(), lb_I_Database, database)
+	UAP(lb_I_Query, query)
+
+	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
+
+	parameter->setData("DBName");
+	params->getUAPString(*&parameter, *&DBName);
+	parameter->setData("DBUser");
+	params->getUAPString(*&parameter, *&DBUser);
+	parameter->setData("DBPass");
+	params->getUAPString(*&parameter, *&DBPass);
+	parameter->setData("source value");
+	params->getUAPString(*&parameter, *&SourceFieldValue);
+	parameter->setData("source field");
+	params->getUAPString(*&parameter, *&SourceFieldName);
+	parameter->setData("source Form");
+	params->getUAPString(*&parameter, *&SourceFormName);
+
+
 	wxString msg = wxString("lbSQLQueryAction::execute(") + wxString(myActionID) + wxString(")");
-	meta->setStatusText("Info", (char*) msg.c_str());
+	meta->setStatusText("Info", msg.c_str());
+
+	database->init();
+
+	char* lbDMFPasswd = getenv("lbDMFPasswd");
+	char* lbDMFUser   = getenv("lbDMFUser");
+
+	if (!lbDMFUser) lbDMFUser = "dba";
+	if (!lbDMFPasswd) lbDMFPasswd = "trainres";
+
+	database->connect("lbDMF", lbDMFUser, lbDMFPasswd);
+
+	query = database->getQuery(0);	
+	
+	char buf[] = "select what from action_steps where id = %s";
+	char* q = (char*) malloc(strlen(buf)+strlen(myActionID)+1);
+	q[0] = 0;
+	sprintf(q, buf, myActionID);
+
+	UAP_REQUEST(getModuleInstance(), lb_I_Database, db)
+	db->init();
+	if (db->connect(DBName->charrep(), DBUser->charrep(), DBPass->charrep()) != ERR_NONE) {
+		meta->msgBox("Error", "Failed to execute SQL query. Connection failed.");
+		return;
+	}
+	
+	if (query->query(q) == ERR_NONE) {
+	
+		lbErrCodes err = query->first();
+	
+		while(err == ERR_NONE) {
+/*...sFor each row open the detail form with given params:24:*/
+			UAP_REQUEST(manager.getPtr(), lb_I_String, what)
+			UAP_REQUEST(getModuleInstance(), lb_I_String, rep)
+			what = query->getAsString(1);
+			what->trim();
+		
+			*rep = "{";
+			*rep +=  SourceFieldName->charrep();
+			*rep += "}"; 
+		
+			wxString s = wxString(what->charrep());
+		
+			s.Replace(rep->charrep(), SourceFieldValue->charrep());
+
+			UAP(lb_I_Query, q)
+			q = db->getQuery(0);
+			q->skipFKCollecting();
+			if (q->query(s.c_str()) != ERR_NONE) {
+				UAP_REQUEST(getModuleInstance(), lb_I_String, msg)
+				q->enableFKCollecting();
+				*msg = "Failed to execute SQL query. Propably missing a parameter (SQL: ";
+				*msg += s.c_str();
+				*msg += ")";
+				meta->msgBox("Error", msg->charrep());
+				return;
+			}
+			q->enableFKCollecting();
+
+			err = query->next();
+/*...e*/
+		}
+		
+		if (err == WARN_DB_NODATA) {
+/*...sOpen the detail form with given params:24:*/
+			UAP_REQUEST(manager.getPtr(), lb_I_String, what)
+			UAP_REQUEST(getModuleInstance(), lb_I_String, rep)
+			what = query->getAsString(1);
+			what->trim();
+		
+			*rep = "{";
+			*rep +=  SourceFieldName->charrep();
+			*rep += "}"; 
+		
+			wxString s = wxString(what->charrep());
+		
+			s.Replace(rep->charrep(), SourceFieldValue->charrep());
+
+			UAP(lb_I_Query, q)
+			q = db->getQuery(0);
+			q->skipFKCollecting();
+			if (q->query(s.c_str()) != ERR_NONE) {
+				UAP_REQUEST(getModuleInstance(), lb_I_String, msg)
+				q->enableFKCollecting();
+				*msg = "Failed to execute SQL query. Propably missing a parameter (SQL: ";
+				*msg += s.c_str();
+				*msg += ")";
+				meta->msgBox("Error", msg->charrep());
+				return;
+			}
+			q->enableFKCollecting();
+/*...e*/
+		}
+	} else {
+		wxString errmsg = wxString("lbSQLQueryAction::execute(") + wxString(myActionID) + wxString(") failed.");
+		meta->setStatusText("Info", errmsg.c_str());
+	}
+	
+	lb_I_GUI* gui;
+
+	meta->getGUI(&gui);
+	
+	if (gui != NULL) {
+		UAP(lb_I_DatabaseForm, f)
+		
+		f = gui->findDBForm(SourceFormName->charrep());
+		
+		if (f != NULL) f->reopen();
+	}
 }
 /*...e*/
