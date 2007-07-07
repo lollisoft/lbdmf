@@ -1169,6 +1169,13 @@ _CL_LOG << "Connect event handlers" LOG_
 }
 /*...e*/
 
+void  LB_STDCALL lbDatabasePanel::reopen() {
+	sampleQuery->reopen();
+	if (sampleQuery->isFirst()) lbDBFirst(NULL);
+	if (sampleQuery->isLast()) lbDBLast(NULL);
+	lbDBRead();
+}
+
 /*...slbErrCodes LB_STDCALL lbDatabasePanel\58\\58\setName\40\char const \42\ name\44\ char const \42\ appention\41\:0:*/
 lbErrCodes LB_STDCALL lbDatabasePanel::setName(char const * name, char const * appention) {
 	if (formName) free(formName);
@@ -3973,6 +3980,10 @@ void LB_STDCALL lbDatabaseDialog::updateFromDetail() {
 	panel->updateFromDetail();
 }
 /*...e*/
+
+void  LB_STDCALL lbDatabaseDialog::reopen() {
+	panel->reopen();
+}
 
 /*...svoid LB_STDCALL lbDatabaseDialog\58\\58\setFilter\40\char\42\ filter\41\:0:*/
 void LB_STDCALL lbDatabaseDialog::setFilter(char* filter) {

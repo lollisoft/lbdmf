@@ -30,11 +30,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.36 $
+ * $Revision: 1.37 $
  * $Name:  $
- * $Id: lbDatabaseForm.h,v 1.36 2007/06/06 21:33:24 lollisoft Exp $
+ * $Id: lbDatabaseForm.h,v 1.37 2007/07/07 16:22:57 lollisoft Exp $
  *
  * $Log: lbDatabaseForm.h,v $
+ * Revision 1.37  2007/07/07 16:22:57  lollisoft
+ * Added reopen implementation.
+ *
  * Revision 1.36  2007/06/06 21:33:24  lollisoft
  * Made bugfixes and enhancements that were required.
  *
@@ -591,6 +594,8 @@ public:
 	
 	char* LB_STDCALL getColumnName(int pos);
 
+	void  LB_STDCALL reopen();
+
 /*...sData navigation and other handlers:8:*/
 	/**
 	 * Database navigation
@@ -837,6 +842,8 @@ public:
 	char* LB_STDCALL getTableName(char* columnName);
 	
 	char* LB_STDCALL getColumnName(int pos);
+
+	void  LB_STDCALL reopen();
 
 /*...sData navigation and other handlers:8:*/
 	/**
