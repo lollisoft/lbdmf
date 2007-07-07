@@ -234,7 +234,7 @@ public:
 		mode = 0;
 		_dataFetched = false;
 		_autoRefresh = false;
-
+		szSql = NULL;
 		preparingFKColumns = 0;
 		
 		fetchstatus = 0;
@@ -245,7 +245,10 @@ public:
 	}
 	
 	virtual ~lbQuery() {
-		_CL_VERBOSE << "lbQuery::~lbQuery() called. (" << szSql << "). Refcount of ReadOnlyColumns is: " << ReadOnlyColumns->getRefCount() LOG_
+		if (szSql != NULL) {
+			_CL_VERBOSE << "lbQuery::~lbQuery() called. (" << szSql << "). Refcount of ReadOnlyColumns is: " << ReadOnlyColumns->getRefCount() LOG_
+			free(szSql);
+		}
 		if ((ReadOnlyColumns != NULL) && (ReadOnlyColumns->getRefCount() > 1)) _CL_LOG << "Error: Object would not deleted (ReadOnlyColumns) !" LOG_
 		if ((mapPKTable_PKColumns_To_FKName != NULL) && (mapPKTable_PKColumns_To_FKName->getRefCount() > 1)) _CL_LOG << "Error: Object would not deleted (mapPKTable_PKColumns_To_FKName) !" LOG_		
 		
@@ -420,7 +423,7 @@ private:
 	HSTMT   hstmt;
 	HSTMT   hupdatestmt;
 	RETCODE retcode;
-	char    szSql[5000];
+	char*   szSql;
 	int		databound;
 	int     firstfetched;
 	int		_readonly; // readonly = 1, else = 0
@@ -1666,9 +1669,9 @@ lbErrCodes LB_STDCALL lbQuery::query(char* q, bool bind) {
 		return ERR_DB_QUERYFAILED;
 	}
 	
-	if (strlen(q) >= 5000) printf("WARNING: Bufferoverflow in %s at %d\n", __FILE__, __LINE__);
-
-	lstrcpy(szSql, q);
+	if (szSql != NULL) free(szSql);
+	
+	szSql = strdup(q);
 
 /*...sdoc:0:*/
 #ifdef bla
