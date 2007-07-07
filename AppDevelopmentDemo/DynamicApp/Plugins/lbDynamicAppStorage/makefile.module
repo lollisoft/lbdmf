@@ -111,10 +111,10 @@ endif
 ifeq ($(OSTYPE), linux)
 MOD_INCL=$(STD_INCL)
 OBJDEP=
-C_SOOPS_WX = -DUNIX -DLINUX -DLB_I_EXTENTIONS `wx-config --cxxflags`
+C_SOOPS_WX = -DUNIX -DLINUX -DLB_I_EXTENTIONS `wx-config --cxxflags` -I /usr/include -I /usr/include/libxml2
 C_SOOPS+= $(DEBUG_CXX_FLAGS) $(C_SOOPS_WX)
 VENDORLIBS=-L$(prefix)/lib -llbHook 
-L_OPS=$(L_SOOPS) `wx-config --inplace --libs` 
+L_OPS=$(L_SOOPS) `wx-config --inplace --libs` `xslt-config --libs` `xml2-config --libs`
 endif
 
 ifeq ($(LB_USE_FRAMEWORKS), yes)

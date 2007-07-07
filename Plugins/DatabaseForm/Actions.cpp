@@ -1313,7 +1313,8 @@ void LB_STDCALL lbSQLQueryAction::execute(lb_I_Parameter* params) {
 			UAP(lb_I_Query, q)
 			q = db->getQuery(0);
 			q->skipFKCollecting();
-			if (q->query(s.c_str()) != ERR_NONE) {
+			*what = s.c_str();
+			if (q->query(what->charrep()) != ERR_NONE) {
 				UAP_REQUEST(getModuleInstance(), lb_I_String, msg)
 				q->enableFKCollecting();
 				*msg = "Failed to execute SQL query. Propably missing a parameter (SQL: ";
@@ -1346,7 +1347,8 @@ void LB_STDCALL lbSQLQueryAction::execute(lb_I_Parameter* params) {
 			UAP(lb_I_Query, q)
 			q = db->getQuery(0);
 			q->skipFKCollecting();
-			if (q->query(s.c_str()) != ERR_NONE) {
+			*what = s.c_str();
+			if (q->query(what->charrep()) != ERR_NONE) {
 				UAP_REQUEST(getModuleInstance(), lb_I_String, msg)
 				q->enableFKCollecting();
 				*msg = "Failed to execute SQL query. Propably missing a parameter (SQL: ";

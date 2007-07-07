@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.137 2007/06/16 10:26:54 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.138 2007/07/07 18:12:40 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.137 $
+ * $Revision: 1.138 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.137 2007/06/16 10:26:54 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.138 2007/07/07 18:12:40 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.138  2007/07/07 18:12:40  lollisoft
+ * Some type conflicts resolved.
+ *
  * Revision 1.137  2007/06/16 10:26:54  lollisoft
  * This changes let the application successfully run under Solaris. Also a bug is fixed that caused a crash at application exit.
  *
@@ -2111,7 +2114,7 @@ bool MyApp::OnInit(void)
 
     wxImage::AddHandler(new wxPNGHandler);
 
-    wxSplashScreen* splash;
+    wxSplashScreen* splash = NULL;
     wxBitmap bitmap;
     if (bitmap.LoadFile("splash.png", wxBITMAP_TYPE_PNG))
     {
