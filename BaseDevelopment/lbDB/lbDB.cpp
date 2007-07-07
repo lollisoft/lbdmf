@@ -344,6 +344,9 @@ public:
 	int 			LB_STDCALL getPKColumns();
 	lb_I_String* 		LB_STDCALL getPKColumn(int pos);
 
+	bool		LB_STDCALL isFirst();
+	bool		LB_STDCALL isLast();
+
 	bool		LB_STDCALL isNullable(int pos);
 	bool		LB_STDCALL isNullable(char const * name);
 	bool		LB_STDCALL isNull(int pos);
@@ -2767,6 +2770,16 @@ char* LB_STDCALL lbQuery::getColumnName(int col) {
 	return lbQuery_column_Name;
 }
 /*...e*/
+
+bool LB_STDCALL lbQuery::isFirst() {
+	return fetchstatus == -1;
+}
+
+bool LB_STDCALL lbQuery::isLast() {
+	return fetchstatus == 1;
+}
+
+
 
 /*...svoid LB_STDCALL lbQuery\58\\58\reopen\40\\41\:0:*/
 void LB_STDCALL lbQuery::reopen() {
