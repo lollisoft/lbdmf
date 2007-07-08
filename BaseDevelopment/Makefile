@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.122 $
+# * $Revision: 1.123 $
 # * $Name:  $
-# * $Id: Makefile,v 1.122 2007/07/07 16:37:32 lollisoft Exp $
+# * $Id: Makefile,v 1.123 2007/07/08 16:30:29 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.123  2007/07/08 16:30:29  lollisoft
+# * Removed some targets in rpmbuild verion.
+# *
 # * Revision 1.122  2007/07/07 16:37:32  lollisoft
 # * Changes to let xslt code work.
 # *
@@ -483,9 +486,7 @@ ifeq ($(OSTYPE), linux)
 BASEDIRECTORIES= \
 	../Plugins \
 	../AppDevelopmentDemo/DynamicApp/Plugins \
-	../Modules \
-	../ServerPlugins \
-	../ClientPlugins
+	../Modules
 endif
 endif
 
