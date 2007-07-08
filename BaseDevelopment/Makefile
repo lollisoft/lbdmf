@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.123 $
+# * $Revision: 1.124 $
 # * $Name:  $
-# * $Id: Makefile,v 1.123 2007/07/08 16:30:29 lollisoft Exp $
+# * $Id: Makefile,v 1.124 2007/07/08 16:50:27 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.124  2007/07/08 16:50:27  lollisoft
+# * Removed some targets. Last removal failed ??
+# *
 # * Revision 1.123  2007/07/08 16:30:29  lollisoft
 # * Removed some targets in rpmbuild verion.
 # *
@@ -498,9 +501,7 @@ BASEDIRECTORIES= \
 	../Modules \
 	../RegressionTests \
 	../vendor/wxaui-0.9.1/sample \
-	../AppDevelopment \
-	../ServerPlugins \
-	../ClientPlugins
+	../AppDevelopment
 
 # Don't compile these every time.
 #	../vendor/propgrid \
