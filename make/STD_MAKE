@@ -25,11 +25,14 @@
 #            73252 Lenningen (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.93 $
+# * $Revision: 1.94 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.93 2007/06/16 10:26:54 lollisoft Exp $
+# * $Id: STD_MAKE,v 1.94 2007/07/08 12:51:10 lollisoft Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.94  2007/07/08 12:51:10  lollisoft
+# * Switched debugging off.
+# *
 # * Revision 1.93  2007/06/16 10:26:54  lollisoft
 # * This changes let the application successfully run under Solaris. Also a bug is fixed that caused a crash at application exit.
 # *
@@ -359,13 +362,13 @@ COMPILER=WATCOM
 
 #COMPILER=MICROSOFT
 
-MODE=_DEBUG
-#MODE=
-#DEBUG_MEMORY=no
+#MODE=_DEBUG
+MODE=
+DEBUG_MEMORY=no
 #DEBUG_MEMORY=yes
 
 #DEBUG_MEMORY_TYPE=mpatrol
-DEBUG_MEMORY_TYPE=trmem
+#DEBUG_MEMORY_TYPE=trmem
 
 
 WX_DEBUG=
@@ -619,7 +622,7 @@ endif
 ifeq ($(OSTYPE), linux)
 
 DEBUG_MEMORY=no
-DEBUG=yes
+DEBUG=no
 
 
 ifeq ($(DEBUG), yes)
@@ -674,7 +677,7 @@ endif
 ifeq ($(OSTYPE), solaris)
 
 DEBUG_MEMORY=no
-DEBUG=yes
+DEBUG=no
 
 
 ifeq ($(DEBUG), yes)
@@ -728,7 +731,7 @@ ifeq ($(OSTYPE), osx)
 #LB_USE_FRAMEWORKS=no
 LB_USE_FRAMEWORKS=yes
 
-DEBUG=yes
+DEBUG=no
 
 
 STD_INCL = -I $(DEVROOT)/Projects/CPP/BaseDevelopment/lbHook/linuxCode \
