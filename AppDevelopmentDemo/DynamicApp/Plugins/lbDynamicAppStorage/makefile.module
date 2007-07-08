@@ -102,9 +102,9 @@ endif
 ifeq ($(OSTYPE), solaris)
 MOD_INCL=$(STD_INCL)
 OBJDEP=
-C_SOOPS_WX = -DLB_I_EXTENTIONS `wx-config --cxxflags`
+C_SOOPS_WX = -DLB_I_EXTENTIONS `wx-config --cxxflags` -I `xslt-config --prefix`/include -I `xml2-config --prefix`/include/libxml2
 C_SOOPS+= $(DEBUG_CXX_FLAGS) $(C_SOOPS_WX)
-VENDORLIBS=-L$(prefix)/lib -llbHook 
+VENDORLIBS=-L$(prefix)/lib -llbHook `xslt-config --libs` `xml2-config --libs`
 L_OPS=$(L_SOOPS) `wx-config --inplace --libs` 
 endif
 
