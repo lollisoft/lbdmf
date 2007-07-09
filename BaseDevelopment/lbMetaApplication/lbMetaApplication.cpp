@@ -31,11 +31,16 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.113 $
+ * $Revision: 1.114 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.113 2007/07/04 16:09:30 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.114 2007/07/09 20:14:10 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.114  2007/07/09 20:14:10  lollisoft
+ * Moved loading application database schema to that
+ * point, when exporting application to XML. This way
+ * loading the application is a bit faster.
+ *
  * Revision 1.113  2007/07/04 16:09:30  lollisoft
  * Some console messages or errors have been changed.
  *
@@ -2362,7 +2367,7 @@ lb_I_Container* LB_STDCALL lb_MetaApplication::getApplications() {
 				User_Applications->setNextRelation();
 				Applications->selectApplication(User_Applications->getApplicationID());
 
-				_CL_LOG <<	"Check if user '" << Users->getUserName() <<
+				_LOG <<	"Check if user '" << Users->getUserName() <<
 							"' has rights on application '" << Applications->getApplicationName() << "'. (" << User_Applications->getApplicationID() << ") " <<
 							UID << " = " << User_Applications->getUserID() LOG_
 				

@@ -135,7 +135,7 @@ long	LB_STDCALL lbApplications::addApplication(const char* application, const ch
 	*Functor = functor;
 	*Interface = _interface;
 
-	_CL_LOG << "lbApplications::addApplication('" << application << "', '" << titel << "', '" << modulename << "', '" << functor << "', '" << _interface << "', '" << _ID->getData() << "') called" LOG_
+	_LOG << "lbApplications::addApplication('" << application << "', '" << titel << "', '" << modulename << "', '" << functor << "', '" << _interface << "', '" << _ID->getData() << "') called" LOG_
 
 	*paramname = "ID";
 	param->setUAPLong(*&paramname, *&_ID);
@@ -217,7 +217,7 @@ bool	LB_STDCALL lbApplications::selectApplication(long _id) {
 		currentInterface->charrep() << "', '" << currentApplicationUID->getData() << "'" LOG_
 		return true;
 	} else {
-		_CL_VERBOSE << "Error: No such application with ID = " << _id << "." LOG_
+		_LOG << "Error: No such application with ID = " << _id << " Generated ID = " << ID->charrep() << "." LOG_
 		return false;
 	}
 }

@@ -345,10 +345,6 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::save(lb_I_OutputStream* oStre
 	UAP(lb_I_Actions, appActions)
 	UAP(lb_I_Action_Steps, appActionSteps)
 	UAP(lb_I_Action_Types, appActionTypes)
-	UAP(lb_I_DBTables, dbTables)
-	UAP(lb_I_DBColumns, dbColumns)
-	UAP(lb_I_DBPrimaryKeys, dbPrimaryKeys)
-	UAP(lb_I_DBForeignKeys, dbForeignKeys)
 
 	UAP(lb_I_Reports, reports)
 	UAP(lb_I_ReportParameters, reportparams)
@@ -410,22 +406,6 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::save(lb_I_OutputStream* oStre
 	uk = document->getElement(&key);
 	QI(uk, lb_I_Formulars, forms)
 			
-	*name = "DBPrimaryKeys";
-	uk = document->getElement(&key);
-	QI(uk, lb_I_DBPrimaryKeys, dbPrimaryKeys)
-			
-	*name = "DBForeignKeys";
-	uk = document->getElement(&key);
-	QI(uk, lb_I_DBForeignKeys, dbForeignKeys)
-			
-	*name = "DBTables";
-	uk = document->getElement(&key);
-	QI(uk, lb_I_DBTables, dbTables)
-			
-	*name = "DBColumns";
-	uk = document->getElement(&key);
-	QI(uk, lb_I_DBColumns, dbColumns)
-			
 	*name = "FormularFields";
 	uk = document->getElement(&key);
 	QI(uk, lb_I_Formular_Fields, formularfields)
@@ -466,10 +446,6 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::save(lb_I_OutputStream* oStre
 	    (reportelements != NULL) &&
 	    (reportelementtypes != NULL) &&
 	    (reporttextblocks != NULL) &&
-	    (dbPrimaryKeys != NULL) &&
-	    (dbForeignKeys != NULL) &&
-	    (dbColumns != NULL) &&
-	    (dbTables != NULL) &&
 	    (formularfields != NULL) &&
 	    (formParams != NULL) &&
 	    (columntypes != NULL) &&
@@ -486,10 +462,6 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::save(lb_I_OutputStream* oStre
 		reporttextblocks->accept(*&aspect);
 
 		forms->accept(*&aspect);
-		dbPrimaryKeys->accept(*&aspect);
-		dbForeignKeys->accept(*&aspect);
-		dbTables->accept(*&aspect);
-		dbColumns->accept(*&aspect);
 		formularfields->accept(*&aspect);
 		columntypes->accept(*&aspect);
 		formActions->accept(*&aspect);

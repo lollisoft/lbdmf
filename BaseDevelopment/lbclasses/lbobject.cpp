@@ -340,6 +340,10 @@ void LB_STDCALL lbParameter::setUAPContainer(lb_I_String*& parameter, lb_I_Conta
 
 	UAP(lb_I_Unknown, uk_p)
 	QI(p, lb_I_Unknown, uk_p)
+
+	if (parameters->exists(&k_parameter)) {
+		parameters->remove(&k_parameter);
+	}
 	
 	parameters->insert(&uk_p, &k_parameter);
 }
@@ -1292,15 +1296,15 @@ char* LB_STDCALL lbLong::getKeyType() const {
 }
 
 int LB_STDCALL lbLong::equals(const lb_I_KeyBase* _key) const {
-    return key == ((lbLong*) _key)->key;
+    return longdata == ((lbLong*) _key)->longdata;
 }
 
 int LB_STDCALL lbLong::greater(const lb_I_KeyBase* _key) const {
-    return key > ((lbLong*) _key)->key;
+    return longdata > ((lbLong*) _key)->longdata;
 }
 
 int LB_STDCALL lbLong::lessthan(const lb_I_KeyBase* _key) const {
-    return key < ((lbLong*) _key)->key;
+    return longdata < ((lbLong*) _key)->longdata;
 }
 
 char* LB_STDCALL lbLong::charrep() const {

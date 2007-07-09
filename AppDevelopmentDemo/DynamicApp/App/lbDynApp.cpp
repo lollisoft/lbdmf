@@ -67,6 +67,24 @@ extern "C" {
 
 #include <lbDynApp.h>
 /*...e*/
+
+#define AQUIRE_PLUGIN(interface, ns, name, errmsgpart) \
+		UAP(lb_I_Plugin, pl##name) \
+		UAP(lb_I_Unknown, uk##name) \
+		pl##name = PM->getFirstMatchingPlugin(#interface, #ns); \
+		if (pl##name != NULL) { \
+			uk##name = pl##name->getImplementation(); \
+		} else { \
+			_LOG << "Warning: No " #errmsgpart " datamodel plugin found." LOG_ \
+		} \
+		\
+		if (uk##name != NULL) { \
+			QI(uk##name, interface, name) \
+		} else { \
+			_LOG << "Warning: No " #errmsgpart " datamodel plugin implementation found." LOG_ \
+		}
+
+
 /*...sclass lb_DynamicApplication:0:*/
 class lbDynamicApplication : 
 public lb_I_Application,
@@ -129,12 +147,18 @@ public:
 	 */
 	lbErrCodes LB_STDCALL resetCustomDBFormsToDynamic(lb_I_Unknown* uk);
 
+	/** \brief Load database model.
+	 * Must be used before exporting to XML.
+	 */
+	lbErrCodes LB_STDCALL loadDatabaseSchema(lb_I_Unknown* uk);
+
 protected:
 
 	/** \brief Load the database forms.
 	 */
 	void LB_STDCALL activateDBForms(char* user, char* app);
 
+	bool haveLoadedDBModel;
 
 	lb_I_GUI* gui;
 	UAP(lb_I_EventManager, eman)
@@ -179,6 +203,7 @@ protected:
 lbDynamicApplication::lbDynamicApplication() {
 	ref = STARTREF;
 	gui = NULL;
+	haveLoadedDBModel = false;
 	_CL_LOG << "lbDynamicApplication::lbDynamicApplication() called." LOG_
 }
 
@@ -199,6 +224,133 @@ lbErrCodes LB_STDCALL lbDynamicApplication::registerEventHandler(lb_I_Dispatcher
 }
 /*...e*/
 
+lbErrCodes LB_STDCALL lbDynamicApplication::loadDatabaseSchema(lb_I_Unknown* uk) {
+	lbErrCodes err = ERR_NONE;
+	UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+	UAP(lb_I_Plugin, pl)
+	UAP(lb_I_Unknown, ukPl)
+
+	bool isDBAvailable = false;
+	UAP(lb_I_DatabaseOperation, fOpDB)
+		
+	UAP(lb_I_Query, sampleQuery)
+
+	if (database == NULL) {
+		REQUEST(manager.getPtr(), lb_I_Database, database)
+		database->init();
+	}
+	
+	char* lbDMFPasswd = getenv("lbDMFPasswd");
+	char* lbDMFUser   = getenv("lbDMFUser");
+	
+	if (!lbDMFUser) lbDMFUser = "dba";
+	if (!lbDMFPasswd) lbDMFPasswd = "trainres";
+	
+	if ((database != NULL) && (database->connect("lbDMF", lbDMFUser, lbDMFPasswd) != ERR_NONE)) {
+		_LOG << "Warning: No system database available." LOG_
+	} else {
+		pl = PM->getFirstMatchingPlugin("lb_I_DatabaseOperation", "DatabaseInputStreamVisitor");
+		if (pl != NULL)	ukPl = pl->getImplementation();
+		if (ukPl != NULL) QI(ukPl, lb_I_DatabaseOperation, fOpDB)
+			isDBAvailable = fOpDB->begin(database.getPtr());
+	}
+	
+	_CL_LOG << "Load database schema from target database ..." LOG_
+		
+	if (isDBAvailable) {
+		AQUIRE_PLUGIN(lb_I_DBPrimaryKeys, Model, dbPrimaryKeys, "'primary keys'")
+		AQUIRE_PLUGIN(lb_I_DBForeignKeys, Model, dbForeignKeys, "'foreign keys'")
+		AQUIRE_PLUGIN(lb_I_DBColumns, Model, dbColumns, "'database columns'")
+		AQUIRE_PLUGIN(lb_I_DBTables, Model, dbTables, "'database tables'")
+		
+		UAP(lb_I_Parameter, param)
+		UAP_REQUEST(manager.getPtr(), lb_I_Container, document)
+		UAP_REQUEST(manager.getPtr(), lb_I_String, name)
+		UAP_REQUEST(manager.getPtr(), lb_I_String, value)
+		UAP(lb_I_KeyBase, key)
+		QI(name, lb_I_KeyBase, key)
+		
+		UAP(lb_I_Unknown, uk)
+		uk = metaapp->getActiveDocument();
+		QI(uk, lb_I_Parameter, param)
+	
+		document->setCloning(false);
+				
+		if (strcmp(appParams->getParameter("DBName", metaapp->getApplicationID()), "lbDMF") == 0) {
+			// Is system database
+			dbPrimaryKeys->accept(*&fOpDB);
+			dbForeignKeys->accept(*&fOpDB);
+			dbTables->accept(*&fOpDB);
+			dbColumns->accept(*&fOpDB);
+			fOpDB->end();
+		} else {
+			UAP_REQUEST(getModuleInstance(), lb_I_Database, customDB)
+			UAP(lb_I_DatabaseOperation, fOpCustomDB)
+			UAP_REQUEST(getModuleInstance(), lb_I_String, dbname)
+			UAP_REQUEST(getModuleInstance(), lb_I_String, dbuser)
+			UAP_REQUEST(getModuleInstance(), lb_I_String, dbpass)
+			customDB->init();
+			
+			*dbname = appParams->getParameter("DBName", metaapp->getApplicationID());
+			*dbuser = appParams->getParameter("DBUser", metaapp->getApplicationID());
+			*dbpass = appParams->getParameter("DBPass", metaapp->getApplicationID());
+			
+			if ((customDB != NULL) && (customDB->connect(dbname->charrep(), dbuser->charrep(), dbpass->charrep()) != ERR_NONE)) {
+				_LOG << "Fatal: No custom database available. Cannot read database model for custom application!" LOG_
+			} else {
+				pl = PM->getFirstMatchingPlugin("lb_I_DatabaseOperation", "DatabaseInputStreamVisitor");
+				if (pl != NULL)	ukPl = pl->getImplementation();
+				if (ukPl != NULL) QI(ukPl, lb_I_DatabaseOperation, fOpCustomDB)
+				
+				if (fOpCustomDB != NULL) {
+					fOpCustomDB->begin(customDB.getPtr());
+					
+					dbPrimaryKeys->accept(*&fOpCustomDB);
+					dbForeignKeys->accept(*&fOpCustomDB);
+					dbTables->accept(*&fOpCustomDB);
+					dbColumns->accept(*&fOpCustomDB);
+					
+					fOpCustomDB->end();
+				}
+			}
+		}
+		
+
+		if ((dbPrimaryKeys != NULL) && 
+			(dbForeignKeys != NULL) && 
+			(dbTables != NULL) && 
+			(dbColumns != NULL)) {
+			
+			UAP(lb_I_Unknown, uk)
+
+			*name = "ApplicationData";
+			param->getUAPContainer(*&name, *&document);
+			
+			*name = "DBPrimaryKeys";
+			QI(dbPrimaryKeys, lb_I_Unknown, uk)
+			document->insert(&uk, &key);
+			
+			*name = "DBForeignKeys";
+			QI(dbForeignKeys, lb_I_Unknown, uk)
+			document->insert(&uk, &key);
+			
+			*name = "DBTables";
+			QI(dbTables, lb_I_Unknown, uk)
+			document->insert(&uk, &key);
+			
+			*name = "DBColumns";
+			QI(dbColumns, lb_I_Unknown, uk)
+			document->insert(&uk, &key);
+			
+			*name = "ApplicationData";
+			param->setUAPContainer(*&name, *&document);
+		}		
+
+		haveLoadedDBModel = true;
+	}
+}
+
+
 lbErrCodes LB_STDCALL lbDynamicApplication::importUMLXMIDocIntoApplication(lb_I_Unknown* uk) {
 	lbErrCodes err = ERR_NONE;
 
@@ -209,7 +361,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::importUMLXMIDocIntoApplication(lb_I_
 	if (metaapp == NULL) {
 		REQUEST(manager.getPtr(), lb_I_MetaApplication, metaapp)
 	}
-	
+
 	metaapp->setStatusText("Info", "Importing from UML (XMI) file ...");
 
 	// Need to ask for the XMI file exported from BoUML
@@ -263,7 +415,6 @@ lbErrCodes LB_STDCALL lbDynamicApplication::importUMLXMIDocIntoApplication(lb_I_
 		}
 	}
 	return err;
-
 }
 
 
@@ -279,6 +430,15 @@ lbErrCodes LB_STDCALL lbDynamicApplication::exportApplicationToXML(lb_I_Unknown*
 		REQUEST(manager.getPtr(), lb_I_MetaApplication, metaapp)
 	}
 	
+	if (haveLoadedDBModel == false) {
+		metaapp->setStatusText("Info", "Loading target database schema ...");
+		loadDatabaseSchema(NULL);
+		if (haveLoadedDBModel == false) {
+			metaapp->msgBox("Error", "Failed to load target database schema.\n\nThis is required for XML export.");
+			return err;
+		}
+	}
+
 	metaapp->setStatusText("Info", "Exporting to XML ...");
 	
 	// Need to derive filename from given application name
@@ -287,7 +447,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::exportApplicationToXML(lb_I_Unknown*
 	*filename += ".dax"; // Dynamic application forms 
 	
 	
-	// Get the active document and set temporary a different storage handler (daf)
+	// Get the active document and set temporary a different storage handler (dax)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, param)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, StorageInterface)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, StorageNamespace)
@@ -822,23 +982,6 @@ lbErrCodes LB_STDCALL lbDynamicApplication::uninitialize() {
 }
 /*...e*/
 
-#define AQUIRE_PLUGIN(interface, ns, name, errmsgpart) \
-		UAP(lb_I_Plugin, pl##name) \
-		UAP(lb_I_Unknown, uk##name) \
-		pl##name = PM->getFirstMatchingPlugin(#interface, #ns); \
-		if (pl##name != NULL) { \
-			uk##name = pl##name->getImplementation(); \
-		} else { \
-			_LOG << "Warning: No " #errmsgpart " datamodel plugin found." LOG_ \
-		} \
-		\
-		if (uk##name != NULL) { \
-			QI(uk##name, interface, name) \
-		} else { \
-			_LOG << "Warning: No " #errmsgpart " datamodel plugin implementation found." LOG_ \
-		}
-
-
 /*...slbErrCodes LB_STDCALL lbDynamicApplication\58\\58\initialize\40\char\42\ user \61\ NULL\44\ char\42\ app \61\ NULL\41\:0:*/
 lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 	_CL_LOG << "lbDynamicApplication::initialize(...) called." LOG_	
@@ -876,68 +1019,6 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 			REQUEST(manager.getPtr(), lb_I_String, LogonApplication)
 		}
 	LogonApplication->setData(app);
-	
-/*...sifdef USE_RDCD_MODEL:0:*/
-#ifdef USE_RDCD_MODEL
-	// -------------------------------------------------------------------------
-	// I plan to use an object model to be used instead. The object model should
-	// fasten up the application setup.
-	//
-	// In a next step, the RDCD model should be loaded after the user has been
-	// logged in. Thus, the login and user data must be separated from the app
-	// configuration data. To ensure authenticated usage, the model may ask the
-	// login 'service' for the password before enabling the interface completely.
-	// -------------------------------------------------------------------------
-	
-	UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
-	UAP(lb_I_Plugin, pl)
-	UAP(lb_I_Unknown, ukPl)
-	
-	pl = PM->getFirstMatchingPlugin("lb_I_RDCDModel", "RDCDModel");
-	
-	if (pl != NULL) {
-		ukPl = pl->getImplementation();
-		if (ukPl != NULL) {
-			QI(ukPl, lb_I_RDCDModel, model)
-			
-			if (model != NULL) {
-				// Have a valid model instance
-				_CL_LOG << "Suceeded loading a lbRDCDModel instance as plugin." LOG_
-				
-				// Need to derive filename from given application name
-				UAP_REQUEST(manager.getPtr(), lb_I_String, filename)
-				*filename = LogonApplication->charrep();
-				*filename += ".daf"; // Dynamic application forms 
-				
-				pl = PM->getFirstMatchingPlugin("lb_I_FileOperation", "InputStreamVisitor");
-				
-				if (pl != NULL) {
-					ukPl = pl->getImplementation();
-					
-					UAP(lb_I_FileOperation, fOp)
-					QI(ukPl, lb_I_FileOperation, fOp)
-						
-					if (fOp != NULL) {
-						if (fOp->begin(filename->charrep())) {
-							UAP(lb_I_Unknown, ukAcceptor)
-							QI(model, lb_I_Unknown, ukAcceptor)
-							ukAcceptor->accept(*&fOp);
-								
-							fOp->end();
-								
-						} else {
-							// No file found. Create one from database...
-						}
-					} else {
-						_LOG << "Error: Could not get a valid file operation instance." LOG_
-					}
-				}
-			}
-		}
-	}
-	
-#endif		
-/*...e*/
 	
 	UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
 	UAP(lb_I_Plugin, pl)
@@ -1006,10 +1087,6 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 			AQUIRE_PLUGIN(lb_I_ReportElements, Model, reportelements, "'database report elements'")
 			AQUIRE_PLUGIN(lb_I_ReportElementTypes, Model, reportelementtypes, "'database report element types'")
 			AQUIRE_PLUGIN(lb_I_ReportTexts, Model, reporttextblocks, "'database report text blocks'")
-			AQUIRE_PLUGIN(lb_I_DBPrimaryKeys, Model, dbPrimaryKeys, "'primary keys'")
-			AQUIRE_PLUGIN(lb_I_DBForeignKeys, Model, dbForeignKeys, "'foreign keys'")
-			AQUIRE_PLUGIN(lb_I_DBColumns, Model, dbColumns, "'database columns'")
-			AQUIRE_PLUGIN(lb_I_DBTables, Model, dbTables, "'database tables'")
 			AQUIRE_PLUGIN(lb_I_Column_Types, Model, columntypes, "'column types'")
 			AQUIRE_PLUGIN(lb_I_Actions, Model, appActions, "'actions'")
 			AQUIRE_PLUGIN(lb_I_Formular_Actions, Model, formActions, "'formular actions'")
@@ -1052,10 +1129,6 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 				(reportelementtypes != NULL) && 
 				(reporttextblocks != NULL) && 
 				(forms != NULL) && 
-				(dbColumns != NULL) && 
-				(dbPrimaryKeys != NULL) && 
-				(dbForeignKeys != NULL) && 
-				(dbTables != NULL) && 
 				(formularfields != NULL) && 
 				(formParams != NULL) && 
 				(appActions != NULL) && 
@@ -1072,10 +1145,6 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 				reporttextblocks->accept(*&fOp);
 				
 				forms->accept(*&fOp);
-				dbPrimaryKeys->accept(*&fOp);
-				dbForeignKeys->accept(*&fOp);
-				dbTables->accept(*&fOp);
-				dbColumns->accept(*&fOp);
 				formularfields->accept(*&fOp);
 				columntypes->accept(*&fOp);
 				formActions->accept(*&fOp);
@@ -1093,10 +1162,6 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 				(reportelementtypes != NULL) && 
 				(reporttextblocks != NULL) && 
 				(forms != NULL) && 
-				(dbColumns != NULL) && 
-				(dbPrimaryKeys != NULL) && 
-				(dbForeignKeys != NULL) && 
-				(dbTables != NULL) && 
 				(formularfields != NULL) && 
 				(formParams != NULL) && 
 				(appActions != NULL) && 
@@ -1123,121 +1188,8 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 				appActionSteps->accept(*&fOpDB);
 			}
 			
-			
-			
-			// These data should be separated from the usual loading procedure because if a custom application is loaded,
-			// the database model of that application is needed in the XML export functionality.
-			//
-			// appParams are loaded, thus I can get the database connection settings of the running application.
-			// This may differ from the system database of dynamic application. If so, do load the following data
-			// from the connection settings of the running application.
-			
-			
-			if (!isFileAvailable) {
-				if (strcmp(appParams->getParameter("DBName", metaapp->getApplicationID()), "lbDMF") == 0) {
-					// Is system database
-					dbPrimaryKeys->accept(*&fOpDB);
-					dbForeignKeys->accept(*&fOpDB);
-					dbTables->accept(*&fOpDB);
-					dbColumns->accept(*&fOpDB);
-				} else {
-					UAP_REQUEST(getModuleInstance(), lb_I_Database, customDB)
-					UAP(lb_I_DatabaseOperation, fOpCustomDB)
-					
-					if ((customDB != NULL) && (customDB->connect(	appParams->getParameter("DBName", metaapp->getApplicationID()), 
-																	appParams->getParameter("DBUser", metaapp->getApplicationID()), 
-																	appParams->getParameter("DBPass", metaapp->getApplicationID())) != ERR_NONE)) {
-						_LOG << "Fatal: No custom database available. Cannot read database model for custom application!" LOG_
-					} else {
-						pl = PM->getFirstMatchingPlugin("lb_I_DatabaseOperation", "DatabaseInputStreamVisitor");
-						if (pl != NULL)	ukPl = pl->getImplementation();
-						if (ukPl != NULL) QI(ukPl, lb_I_DatabaseOperation, fOpCustomDB)
-							
-							if (fOpCustomDB != NULL) {
-								fOpCustomDB->begin(customDB.getPtr());
-								
-								dbPrimaryKeys->accept(*&fOpCustomDB);
-								dbForeignKeys->accept(*&fOpCustomDB);
-								dbTables->accept(*&fOpCustomDB);
-								dbColumns->accept(*&fOpCustomDB);
-								
-								fOpCustomDB->end();
-							}
-					}
-				}
-			}				
 			if (!DBOperation) fOp->end();
 			if (DBOperation) fOpDB->end();
-				
-#ifdef bla
-				// Here I should delete all unrelated data.
-				
-				forms->finishFormularIteration();
-				while (forms->hasMoreFormulars()) {
-					forms->setNextFormular();
-					
-					if (forms->getApplicationID() == metaapp->getApplicationID()) {
-						metaapp->setStatusText("Info", "Mark form to be exported ...");
-						forms->mark();
-						
-						formParams->finishParameterIteration();
-						while (formParams->hasMoreParameters()) {
-							formParams->setNextParameter();
-							
-							if (formParams->getFormularID() == forms->getFormularID()) {
-								metaapp->setStatusText("Info", "Mark formular parameters to be exported ...");
-								formParams->mark();
-							}
-						}
-						
-						formActions->finishFormularActionIteration();
-						while (formActions->hasMoreFormularActions()) {
-							formActions->setNextFormularAction();
-							if (formActions->getFormularActionFormularID() == forms->getFormularID()) {
-								metaapp->setStatusText("Info", "Mark formular actions to be exported ...");
-								formActions->mark();
-								
-								appActions->finishActionIteration();
-								while (appActions->hasMoreActions()) {
-									appActions->setNextAction();
-									if (appActions->getActionID() == formActions->getFormularActionActionID()) {
-										metaapp->setStatusText("Info", "Mark actions to be exported ...");
-										appActions->mark();
-										
-										appActionSteps->finishActionStepIteration();
-										while (appActionSteps->hasMoreActionSteps()) {
-											appActionSteps->setNextActionStep();
-											if (appActionSteps->getActionStepActionID() == appActions->getActionID()) {
-												metaapp->setStatusText("Info", "Mark action steps to be exported ...");
-												appActionSteps->mark();
-											}
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-				
-				appParams->finishParameterIteration();
-				while (appParams->hasMoreParameters()) {
-					appParams->setNextParameter();
-					
-					if (appParams->getApplicationID() == metaapp->getApplicationID()) {
-						appParams->mark();
-					} 
-				}
-#endif
-				/// \todo Mark does not store the flag in the container.
-				/*
-				 forms->deleteUnmarked();
-				 formActions->deleteUnmarked();
-				 formParams->deleteUnmarked();
-				 appParams->deleteUnmarked();
-				 appActions->deleteUnmarked();
-				 appActionTypes->deleteUnmarked();
-				 appActionSteps->deleteUnmarked();
-				 */
 				
 				if ((forms != NULL) && 
 					(reports != NULL) && 
@@ -1246,8 +1198,6 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 					(reportelementtypes != NULL) && 
 					(reporttextblocks != NULL) && 
 					(formularfields != NULL) && 
-					(dbPrimaryKeys != NULL) && 
-					(dbForeignKeys != NULL) && 
 					(formParams != NULL) && 
 					(appActions != NULL) && 
 					(appActionSteps != NULL) && 
@@ -1281,22 +1231,6 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 					
 					*name = "Formulars";
 					QI(forms, lb_I_Unknown, uk)
-						document->insert(&uk, &key);
-					
-					*name = "DBPrimaryKeys";
-					QI(dbPrimaryKeys, lb_I_Unknown, uk)
-						document->insert(&uk, &key);
-					
-					*name = "DBForeignKeys";
-					QI(dbForeignKeys, lb_I_Unknown, uk)
-						document->insert(&uk, &key);
-					
-					*name = "DBTables";
-					QI(dbTables, lb_I_Unknown, uk)
-						document->insert(&uk, &key);
-					
-					*name = "DBColumns";
-					QI(dbColumns, lb_I_Unknown, uk)
 						document->insert(&uk, &key);
 					
 					*name = "FormularFields";
