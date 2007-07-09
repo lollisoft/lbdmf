@@ -1115,14 +1115,25 @@ char* LB_STDCALL lbDirLocation::charrep() const {
 lbInteger::lbInteger() {
 	ref = STARTREF;
 	integerdata = 0;
+	key = NULL;
 }
 
 lbInteger::~lbInteger() {
+	free(key);
 }
 
 void lbInteger::setData(int p) {
+	if (key == NULL) {
+		key = (char*) malloc(20);
+	}
+#ifndef UNIX
+	itoa(p, key, 10);
+#endif
+#ifdef UNIX
+	sprintf(key, "%d", p);
+#endif
+
 	integerdata = p;
-	key = p;
 }
 
 int lbInteger::getData() const {
@@ -1151,29 +1162,19 @@ char* LB_STDCALL lbInteger::getKeyType() const {
 }
 
 int LB_STDCALL lbInteger::equals(const lb_I_KeyBase* _key) const {
-    return key == ((lbInteger*) _key)->key;
+    return integerdata == ((lbInteger*) _key)->integerdata;
 }
 
 int LB_STDCALL lbInteger::greater(const lb_I_KeyBase* _key) const {
-    return key > ((lbInteger*) _key)->key;
+    return integerdata > ((lbInteger*) _key)->integerdata;
 }
 
 int LB_STDCALL lbInteger::lessthan(const lb_I_KeyBase* _key) const {
-    return key < ((lbInteger*) _key)->key;
+    return integerdata < ((lbInteger*) _key)->integerdata;
 }
 
 char* LB_STDCALL lbInteger::charrep() const {
-	static char buf[100];
-	buf[0] = 0;
-	
-#ifndef UNIX
-	itoa(key, buf, 10);
-#endif
-#ifdef UNIX
-	sprintf(buf, "%d", key);
-#endif
-    
-	return buf;
+	return key;
 }
 /*...e*/
 /*...e*/
@@ -1181,6 +1182,7 @@ char* LB_STDCALL lbInteger::charrep() const {
 lbBoolean::lbBoolean() {
 	ref = STARTREF;
 	integerdata = 0;
+	key = "false";
 }
 
 lbBoolean::~lbBoolean() {
@@ -1188,7 +1190,8 @@ lbBoolean::~lbBoolean() {
 
 void lbBoolean::setData(bool p) {
 	integerdata = p;
-	key = p;
+	if (p == 0) key = "false";
+	else key = "true";
 }
 
 bool lbBoolean::getData() const {
@@ -1217,19 +1220,19 @@ char* LB_STDCALL lbBoolean::getKeyType() const {
 }
 
 int LB_STDCALL lbBoolean::equals(const lb_I_KeyBase* _key) const {
-    return key == ((lbBoolean*) _key)->key;
+    return integerdata == ((lbBoolean*) _key)->integerdata;
 }
 
 int LB_STDCALL lbBoolean::greater(const lb_I_KeyBase* _key) const {
-    return key > ((lbBoolean*) _key)->key;
+    return integerdata > ((lbBoolean*) _key)->integerdata;
 }
 
 int LB_STDCALL lbBoolean::lessthan(const lb_I_KeyBase* _key) const {
-    return key < ((lbBoolean*) _key)->key;
+    return integerdata < ((lbBoolean*) _key)->integerdata;
 }
 
 char* LB_STDCALL lbBoolean::charrep() const {
-	if (key) return "true";
+	if (integerdata == 1) return "true";
 	else return "false";
 }
 /*...e*/
@@ -1238,16 +1241,27 @@ char* LB_STDCALL lbBoolean::charrep() const {
 lbLong::lbLong() {
 	ref = STARTREF;
 	longdata = 0;
-	key = 0;
+	key = NULL;
 	strcpy(keyType, "UL");
 }
 
 lbLong::~lbLong() {
+	free(key);
 }
 
 void lbLong::setData(long p) {
 	longdata = p;
-	key = p;
+
+	if (key == NULL) {
+		key = (char*) malloc(30);
+	}
+	
+#ifndef UNIX
+	itoa(longdata, key, 10);
+#endif
+#ifdef UNIX
+	sprintf(key, "%d", longdata);
+#endif
 }
 
 long lbLong::getData() const {
@@ -1265,8 +1279,8 @@ lbErrCodes LB_STDCALL lbLong::setData(lb_I_Unknown* uk) {
 	
 	if (uk != NULL) {
 		QI(uk, lb_I_Long, l)
-		longdata = l->getData();
-		key = l->getData();
+		long _l = l->getData();
+		setData(_l);
 	}
 	
 	return ERR_NONE;
@@ -1290,17 +1304,7 @@ int LB_STDCALL lbLong::lessthan(const lb_I_KeyBase* _key) const {
 }
 
 char* LB_STDCALL lbLong::charrep() const {
-	static char buf[100];
-	buf[0] = 0;
-	
-#ifndef UNIX
-	itoa(key, buf, 10);
-#endif
-#ifdef UNIX
-	sprintf(buf, "%d", key);
-#endif
-    
-	return buf;
+	return key;
 }
 /*...e*/
 /*...e*/

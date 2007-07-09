@@ -31,10 +31,13 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.39 $
+ * $Revision: 1.40 $
  * $Name:  $
- * $Id: lbobject.h,v 1.39 2007/06/14 20:49:36 lollisoft Exp $
+ * $Id: lbobject.h,v 1.40 2007/07/09 12:07:12 lollisoft Exp $
  * $Log: lbobject.h,v $
+ * Revision 1.40  2007/07/09 12:07:12  lollisoft
+ * Removed unnessesary strcpy usage.
+ *
  * Revision 1.39  2007/06/14 20:49:36  lollisoft
  * Improvements in memory allocations.
  *
@@ -454,7 +457,7 @@ public:
 private:
 
     char keyType[10];
-    int key;
+    char* key;
     int integerdata;
 };
 /*...e*/
@@ -475,7 +478,7 @@ public:
 private:
 
     char keyType[10];
-    bool key;
+    char* key;
     bool integerdata;
 };
 /*...e*/
@@ -496,7 +499,7 @@ public:
 private:
 
     char keyType[10];
-    unsigned long key;
+    char* key;
 	long longdata;
 };
 /*...e*/
