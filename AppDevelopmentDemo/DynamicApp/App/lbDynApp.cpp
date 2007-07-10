@@ -348,6 +348,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::loadDatabaseSchema(lb_I_Unknown* uk)
 
 		haveLoadedDBModel = true;
 	}
+	return err;
 }
 
 
