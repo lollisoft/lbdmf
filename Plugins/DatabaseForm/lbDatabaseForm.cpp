@@ -460,6 +460,7 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 	int DatabaseLast;
 	int DatabaseAdd;
 	int DatabaseDelete;
+	int ImageButtonClick;
 /*...e*/
 	
 	UAP_REQUEST(manager.getPtr(), lb_I_EventManager, eman)
@@ -486,8 +487,8 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 		sprintf(eventName, "%pDatabaseDelete", this);
 		eman->registerEvent(eventName,  DatabaseDelete);
 
-		sprintf(eventName, "%pImageButtonClick", this);
-		eman->registerEvent(eventName,  DatabaseDelete);
+//		sprintf(eventName, "%pImageButtonClick", this);
+//		eman->registerEvent(eventName,  ImageButtonClick);
 
 		dispatcher->setEventManager(eman.getPtr());
 
@@ -3140,6 +3141,12 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBDelete(lb_I_Unknown* uk) {
 	lbErrCodes err = ERR_NONE;
 
 	err = sampleQuery->remove();
+
+	if (err == ERR_DB_ROWDELETED) {
+		UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
+		meta->msgBox("Error", "Could not delete entry. It is in use.");
+		return ERR_NONE;
+	}
 
 	if (err == INFO_DB_REOPENED) {
 		lbDBRead();
