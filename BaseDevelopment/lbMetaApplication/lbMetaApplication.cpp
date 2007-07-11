@@ -31,11 +31,15 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.114 $
+ * $Revision: 1.115 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.114 2007/07/09 20:14:10 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.115 2007/07/11 14:49:14 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.115  2007/07/11 14:49:14  lollisoft
+ * Added flag to force database usage and changed code to
+ * support the flag.
+ *
  * Revision 1.114  2007/07/09 20:14:10  lollisoft
  * Moved loading application database schema to that
  * point, when exporting application to XML. This way
@@ -739,36 +743,35 @@ lbErrCodes LB_STDCALL lb_MetaApplication::load() {
 			QI(this, lb_I_Unknown, ukAcceptor)
 			ukAcceptor->accept(*&fOp);
 
-/*...sRead an Users list:24:*/
-			// Read an Users list
 			UAP(lb_I_Plugin, pl2)
 			UAP(lb_I_Unknown, ukPl2)
 			pl2 = PM->getFirstMatchingPlugin("lb_I_UserAccounts", "Model");
 			ukPl2 = pl2->getImplementation();
-			ukPl2->accept(*&fOp);
 
-			QI(ukPl2, lb_I_UserAccounts, Users)
-/*...e*/
-
-/*...sRead an Applications list:24:*/
-			// Read an Applications list
 			UAP(lb_I_Plugin, pl3)
 			UAP(lb_I_Unknown, ukPl3)
 			pl3 = PM->getFirstMatchingPlugin("lb_I_Applications", "Model");
 			ukPl3 = pl3->getImplementation();
-			ukPl3->accept(*&fOp);
-		
-			QI(ukPl3, lb_I_Applications, Applications)
-/*...e*/
 
 			UAP(lb_I_Plugin, pl4)
 			UAP(lb_I_Unknown, ukPl4)
 			pl4 = PM->getFirstMatchingPlugin("lb_I_User_Applications", "Model");
 			ukPl4 = pl4->getImplementation();
-			ukPl4->accept(*&fOp);
-		
+
+			// Database read will be forced by login.
+			if (!_force_use_database) {
+				// Read an Users list
+				ukPl2->accept(*&fOp);
+				// Read an Applications list
+				ukPl3->accept(*&fOp);
+				// Read users applications
+				ukPl4->accept(*&fOp);
+			}
+
+			QI(ukPl2, lb_I_UserAccounts, Users)
+			QI(ukPl3, lb_I_Applications, Applications)
 			QI(ukPl4, lb_I_User_Applications, User_Applications)
-		
+
 			fOp->end();
 			
 			return ERR_NONE;
@@ -1125,8 +1128,17 @@ void       LB_STDCALL lb_MetaApplication::setAutorefreshData(bool b) {
 	_autorefresh = b;
 }
 
+
 void       LB_STDCALL lb_MetaApplication::setAutoselect(bool b) {
 	_autoselect = b;
+}
+
+void       LB_STDCALL lb_MetaApplication::setLoadFromDatabase(bool b) {
+	_force_use_database = b;
+}
+
+bool       LB_STDCALL lb_MetaApplication::getLoadFromDatabase() {
+	return _force_use_database;
 }
 
 bool       LB_STDCALL lb_MetaApplication::getAutoload() {
@@ -1196,6 +1208,14 @@ lbErrCodes LB_STDCALL lb_MetaApplication::propertyChanged(lb_I_Unknown* uk) {
 				toggleEvent("doAutoload");
 		}
 		
+		if (strcmp(key->charrep(), "GeneralPrefer database configuration") == 0) {
+				if (strcmp(value->charrep(), "1") == 0) {
+					_force_use_database = true;
+				} else {
+					_force_use_database = false;
+				}
+		}
+		
 		if (strcmp(key->charrep(), "GeneralLast application") == 0) {
 			setApplicationName(value->charrep());
 		}
@@ -1241,9 +1261,15 @@ lb_I_Parameter* LB_STDCALL lb_MetaApplication::getParameter() {
 	b->setData(_autoload);
 	paramGeneral->setUAPBoolean(*&parameterGeneral, *&b);
 
+	parameterGeneral->setData("Prefer database configuration");
+	b->setData(_force_use_database);
+	paramGeneral->setUAPBoolean(*&parameterGeneral, *&b);
+
 	parameterGeneral->setData("Last application");
 	getApplicationName(&value);
 	paramGeneral->setUAPString(*&parameterGeneral, *&value);
+
+
 
 	registerPropertyChangeEventGroup(parameter->charrep(), *&paramGeneral, this, (lbEvHandler) &lb_MetaApplication::propertyChanged);
 	

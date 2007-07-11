@@ -22,19 +22,23 @@
     The author of this work will be reached by e-Mail or paper mail.
     e-Mail: lothar.behrens@lollisoft.de
     p-Mail: Lothar Behrens
-            Rosmarinstr. 3
+            Heinrich-Scheufelen-Platz 2
             
-            40235 Duesseldorf (germany)
+            73252 Lenningen (germany)
 */
 /*...e*/
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.49 $
+ * $Revision: 1.50 $
  * $Name:  $
- * $Id: lbMetaApplication.h,v 1.49 2007/05/14 19:19:14 lollisoft Exp $
+ * $Id: lbMetaApplication.h,v 1.50 2007/07/11 14:49:14 lollisoft Exp $
  *
  * $Log: lbMetaApplication.h,v $
+ * Revision 1.50  2007/07/11 14:49:14  lollisoft
+ * Added flag to force database usage and changed code to
+ * support the flag.
+ *
  * Revision 1.49  2007/05/14 19:19:14  lollisoft
  * Unfinished changes. Go to Linux.
  *
@@ -380,7 +384,8 @@ public:
 	void                    LB_STDCALL showPropertyPanel();
 	
 	lb_I_Applications*		LB_STDCALL getApplicationModel();
-	
+	void                    LB_STDCALL setLoadFromDatabase(bool b);
+	bool                    LB_STDCALL getLoadFromDatabase();
 protected:
 	lb_I_GUI* gui;
 	
@@ -408,6 +413,7 @@ protected:
 	bool isPropertyPanelLeft;
 	
 	char* _dirloc;
+	bool _force_use_database;
 	bool _autoload;
 	bool _autorefresh;
 	bool _autoselect;
