@@ -2919,7 +2919,7 @@ lbErrCodes LB_STDCALL lbQuery::first() {
 	
 	if (retcode == SQL_ERROR || retcode == SQL_SUCCESS_WITH_INFO) {
 		_LOG << "lbQuery::first(): Error while fetching next row" LOG_
-		dbError("SQLExtendedFetch()", hstmt);
+		//dbError("SQLExtendedFetch()", hstmt);
 		
 		// Unsave !!
 		if (retcode == SQL_SUCCESS_WITH_INFO) {
