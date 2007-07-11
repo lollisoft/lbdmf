@@ -708,11 +708,14 @@ lbErrCodes LB_STDCALL lbDynamicApplication::getDynamicDBForm(lb_I_Unknown* uk) {
 			
 			long id = metaapp->getApplicationID();			
 
-_CL_LOG << "Create formular with new data model (application id = " << id << ")" LOG_		
-			
 			*DBName = appParams->getParameter("DBName", id);
 			*DBUser = appParams->getParameter("DBUser", id);
 			*DBPass = appParams->getParameter("DBPass", id);
+
+			if (*DBName == "") {
+				metaapp->msgBox("Information", "Your local application configuration is out of sync.\n\nPlease activate 'Prefer database configuration' at least for one application restart.\n\nThen restart the application.");
+				return err;
+			}
 		
 			dbForm = gui->createDBForm(	forms->getName(),
 							formParams->getParameter("query", forms->getFormularID()), 
@@ -1066,7 +1069,9 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 	if (!lbDMFUser) lbDMFUser = "dba";
 	if (!lbDMFPasswd) lbDMFPasswd = "trainres";
 
-	if (!isFileAvailable) {
+	
+
+	if (!isFileAvailable || metaapp->getLoadFromDatabase()) {
 		if ((database != NULL) && (database->connect("lbDMF", lbDMFUser, lbDMFPasswd) != ERR_NONE)) {
 			_LOG << "Warning: No system database available." LOG_
 		} else {
