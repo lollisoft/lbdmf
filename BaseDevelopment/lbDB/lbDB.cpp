@@ -3292,7 +3292,7 @@ UDWORD  RowsFetched = 0;
 	{
 	        //dbError("SQLSetPos(SQL_DELETE)", hstmt);
 	        _CL_LOG << "lbQuery::remove(...) deleting failed." LOG_
-	        return ERR_NONE;
+	        return ERR_DB_ROWDELETED;
 	}
 
 	reopen();
