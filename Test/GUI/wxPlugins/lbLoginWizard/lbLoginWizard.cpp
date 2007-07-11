@@ -135,7 +135,7 @@ public:
 	wxAppSelectPage(wxWizard *parent) : wxWizardPageSimple(parent)
 	{
 			//m_bitmap = wxBITMAP(wiztest2);
-
+                        userid = NULL;
 			sizerMain  = new wxBoxSizer(wxVERTICAL);
 
 			wxStaticText* text = new wxStaticText(this, -1, _trans("Application:"));
