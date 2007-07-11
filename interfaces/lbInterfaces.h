@@ -2769,6 +2769,11 @@ public:
 	virtual void			LB_STDCALL showPropertyPanel() = 0;
 	
 	virtual lb_I_Applications* LB_STDCALL getApplicationModel() = 0;
+
+	/** \brief Set loading of application from database.
+	 */
+	virtual void	   LB_STDCALL setLoadFromDatabase(bool b) = 0;
+	virtual bool	   LB_STDCALL getLoadFromDatabase() = 0;
 };
 /*...e*/
 

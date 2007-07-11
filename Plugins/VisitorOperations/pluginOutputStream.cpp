@@ -767,6 +767,8 @@ void LB_STDCALL lbOutputStream::visit(lb_I_MetaApplication* app) {
 	*oStream << app->isPropertyPaneLayoutFloating();
 	
 	*oStream << app->isPropertyPaneLayoutLeft();
+
+	*oStream << app->getLoadFromDatabase();
 }
 
 void LB_STDCALL lbOutputStream::visit(lb_I_Application*) {
