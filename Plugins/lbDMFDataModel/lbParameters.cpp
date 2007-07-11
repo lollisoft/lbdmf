@@ -664,6 +664,9 @@ char*  LB_STDCALL lbApplicationParameters::getParameter(const char* name, long a
 	while (hasMoreParameters()) {
 		setNextParameter();
 		
+		_LOG << "Compare '" << name << "'='" << getParameterName() << 
+		    "' and '" << getApplicationID() << "'='" << application_id << "'" LOG_
+		
 		if ((strcmp(getParameterName(), name) == 0) && (getApplicationID() == application_id)) {
 			finishParameterIteration();
 			return getParameterValue();
