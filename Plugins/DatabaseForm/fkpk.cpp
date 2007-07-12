@@ -22,9 +22,9 @@
     The author of this work will be reached by e-Mail or paper mail.
     e-Mail: lothar.behrens@lollisoft.de
     p-Mail: Lothar Behrens
-            Rosmarinstr. 3
+            Heinrich-Scheufelen-Platz 2
             
-            40235 Duesseldorf (germany)
+            73252 Lenningen (germany)
 */
 /*...e*/
 
@@ -126,11 +126,11 @@ void lbConfigure_FK_PK_MappingDialog::OnFKComboBoxSelected( wxCommandEvent &even
 	
 	queryDB->init();
 	
-	queryDB->connect(_DBName, _DBUser, _DBPass);
+	queryDB->connect(_DBName, _DBName, _DBUser, _DBPass);
 	
 	UAP(lb_I_Query, sampleQuery)
 	
-	sampleQuery = queryDB->getQuery(0);
+	sampleQuery = queryDB->getQuery(_DBName, 0);
 
 	sampleQuery->query(buffer);
 	
@@ -158,7 +158,7 @@ void lbConfigure_FK_PK_MappingDialog::OnPKComboBoxSelected( wxCommandEvent &even
 	if (!lbDMFUser) lbDMFUser = "dba";
 	if (!lbDMFPasswd) lbDMFPasswd = "trainres";
 	
-	database->connect("lbDMF", lbDMFUser, lbDMFPasswd);
+	database->connect("lbDMF", "lbDMF", lbDMFUser, lbDMFPasswd);
 
 	UAP(lb_I_String, PKTable)
 	
@@ -186,7 +186,7 @@ void lbConfigure_FK_PK_MappingDialog::OnPKComboBoxSelected( wxCommandEvent &even
 
 	sprintf(buffer, buf, FKName.c_str(), fkTable, PKName.c_str(), PKTable->charrep());
 
-	query = database->getQuery(0);
+	query = database->getQuery("lbDMF", 0);
 	
 	query->skipFKCollecting();
 	query->query(buffer);

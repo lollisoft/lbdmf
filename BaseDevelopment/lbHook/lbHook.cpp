@@ -772,7 +772,7 @@ DLLEXPORT char* LB_STDCALL translateText(char* text) {
 		if (!lbDMFUser) lbDMFUser = "dba";
 		if (!lbDMFPasswd) lbDMFPasswd = "trainres";
 		
-		if (database->connect("lbDMF", lbDMFUser, lbDMFPasswd) != ERR_NONE) {
+		if (database->connect("lbDMF", "lbDMF", lbDMFUser, lbDMFPasswd) != ERR_NONE) {
 			return text;
 		}
 		

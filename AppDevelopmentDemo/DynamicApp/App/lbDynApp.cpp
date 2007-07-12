@@ -246,13 +246,13 @@ lbErrCodes LB_STDCALL lbDynamicApplication::loadDatabaseSchema(lb_I_Unknown* uk)
 	if (!lbDMFUser) lbDMFUser = "dba";
 	if (!lbDMFPasswd) lbDMFPasswd = "trainres";
 	
-	if ((database != NULL) && (database->connect("lbDMF", lbDMFUser, lbDMFPasswd) != ERR_NONE)) {
+	if ((database != NULL) && (database->connect("lbDMF", "lbDMF", lbDMFUser, lbDMFPasswd) != ERR_NONE)) {
 		_LOG << "Warning: No system database available." LOG_
 	} else {
 		pl = PM->getFirstMatchingPlugin("lb_I_DatabaseOperation", "DatabaseInputStreamVisitor");
 		if (pl != NULL)	ukPl = pl->getImplementation();
 		if (ukPl != NULL) QI(ukPl, lb_I_DatabaseOperation, fOpDB)
-			isDBAvailable = fOpDB->begin(database.getPtr());
+			isDBAvailable = fOpDB->begin("lbDMF", database.getPtr());
 	}
 	
 	_CL_LOG << "Load database schema from target database ..." LOG_
@@ -295,7 +295,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::loadDatabaseSchema(lb_I_Unknown* uk)
 			*dbuser = appParams->getParameter("DBUser", metaapp->getApplicationID());
 			*dbpass = appParams->getParameter("DBPass", metaapp->getApplicationID());
 			
-			if ((customDB != NULL) && (customDB->connect(dbname->charrep(), dbuser->charrep(), dbpass->charrep()) != ERR_NONE)) {
+			if ((customDB != NULL) && (customDB->connect(dbname->charrep(), dbname->charrep(), dbuser->charrep(), dbpass->charrep()) != ERR_NONE)) {
 				_LOG << "Fatal: No custom database available. Cannot read database model for custom application!" LOG_
 			} else {
 				pl = PM->getFirstMatchingPlugin("lb_I_DatabaseOperation", "DatabaseInputStreamVisitor");
@@ -303,7 +303,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::loadDatabaseSchema(lb_I_Unknown* uk)
 				if (ukPl != NULL) QI(ukPl, lb_I_DatabaseOperation, fOpCustomDB)
 				
 				if (fOpCustomDB != NULL) {
-					fOpCustomDB->begin(customDB.getPtr());
+					fOpCustomDB->begin(dbname->charrep(), customDB.getPtr());
 					
 					dbPrimaryKeys->accept(*&fOpCustomDB);
 					dbForeignKeys->accept(*&fOpCustomDB);
@@ -616,11 +616,11 @@ lbErrCodes LB_STDCALL lbDynamicApplication::resetCustomDBFormsToDynamic(lb_I_Unk
 		if (!lbDMFUser) lbDMFUser = "dba";
 		if (!lbDMFPasswd) lbDMFPasswd = "trainres";
 		
-		database->connect("lbDMF", lbDMFUser, lbDMFPasswd);
+		database->connect("lbDMF", "lbDMF", lbDMFUser, lbDMFPasswd);
 	}
 	
 	UAP(lb_I_Query, sampleQuery)
-	sampleQuery = database->getQuery(0);
+	sampleQuery = database->getQuery("lbDMF", 0);
 
 	UAP_REQUEST(getModuleInstance(), lb_I_String, q)
 	UAP_REQUEST(getModuleInstance(), lb_I_Long, id)
@@ -737,10 +737,10 @@ lbErrCodes LB_STDCALL lbDynamicApplication::getDynamicDBForm(lb_I_Unknown* uk) {
 				if (!lbDMFUser) lbDMFUser = "dba";
 				if (!lbDMFPasswd) lbDMFPasswd = "trainres";
 				
-				database->connect("lbDMF", lbDMFUser, lbDMFPasswd);
+				database->connect("lbDMF", "lbDMF", lbDMFUser, lbDMFPasswd);
 			}
 			
-			sampleQuery = database->getQuery(0);
+			sampleQuery = database->getQuery("lbDMF", 0);
 			
 			char* b =
 				"select Formulare.id, Formulare.name from Formulare "
@@ -1072,13 +1072,13 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 	
 
 	if (!isFileAvailable || metaapp->getLoadFromDatabase()) {
-		if ((database != NULL) && (database->connect("lbDMF", lbDMFUser, lbDMFPasswd) != ERR_NONE)) {
+		if ((database != NULL) && (database->connect("lbDMF", "lbDMF", lbDMFUser, lbDMFPasswd) != ERR_NONE)) {
 			_LOG << "Warning: No system database available." LOG_
 		} else {
 			pl = PM->getFirstMatchingPlugin("lb_I_DatabaseOperation", "DatabaseInputStreamVisitor");
 			if (pl != NULL)	ukPl = pl->getImplementation();
 			if (ukPl != NULL) QI(ukPl, lb_I_DatabaseOperation, fOpDB)
-				isDBAvailable = fOpDB->begin(database.getPtr());
+				isDBAvailable = fOpDB->begin("lbDMF", database.getPtr());
 			DBOperation = true;
 		}
 	}	
@@ -1329,7 +1329,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 	 Select all events, that are configured and register it.
 	 */
 	
-	database->connect("lbDMF", lbDMFUser, lbDMFPasswd);
+	database->connect("lbDMF", "lbDMF", lbDMFUser, lbDMFPasswd);
 	
 	activateDBForms(user, app);
 	
@@ -1351,7 +1351,7 @@ void LB_STDCALL lbDynamicApplication::activateDBForms(char* user, char* app) {
 	UAP(lb_I_Query, sampleQuery)
 	bool toolbaradded = false;
 	int unused;
-	sampleQuery = database->getQuery(0);	
+	sampleQuery = database->getQuery("lbDMF", 0);	
 	
 	char* b =
 		"select Formulare.eventname, Formulare.menuname, Formulare.toolbarimage, Formulare.typ from Formulare inner join "

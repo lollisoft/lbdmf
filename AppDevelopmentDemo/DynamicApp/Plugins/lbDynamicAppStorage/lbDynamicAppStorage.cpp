@@ -594,11 +594,11 @@ lbErrCodes LB_STDCALL lbDynamicAppBoUMLImport::load(lb_I_InputStream* iStream) {
 			if (!lbDMFUser) lbDMFUser = "dba";
 			if (!lbDMFPasswd) lbDMFPasswd = "trainres";
 			
-			if ((database != NULL) && (database->connect("CRM", lbDMFUser, lbDMFPasswd) != ERR_NONE)) {
+			if ((database != NULL) && (database->connect("CRM", "CRM", lbDMFUser, lbDMFPasswd) != ERR_NONE)) {
 				_LOG << "Warning: No system database available." LOG_
 			}
 			
-			sampleQuery = database->getQuery(0);
+			sampleQuery = database->getQuery("CRM", 0);
 			
 			if (result == NULL) {
 				_LOG << "Error: Did not got the translation from XSLT file." LOG_
@@ -677,11 +677,11 @@ lbErrCodes LB_STDCALL lbDynamicAppBoUMLImport::load(lb_I_InputStream* iStream) {
 			if (!lbDMFUser) lbDMFUser = "dba";
 			if (!lbDMFPasswd) lbDMFPasswd = "trainres";
 			
-			if ((database != NULL) && (database->connect("lbDMF", lbDMFUser, lbDMFPasswd) != ERR_NONE)) {
+			if ((database != NULL) && (database->connect("lbDMF", "lbDMF", lbDMFUser, lbDMFPasswd) != ERR_NONE)) {
 				_LOG << "Warning: No system database available." LOG_
 			}
 			
-			sampleQuery = database->getQuery(0);
+			sampleQuery = database->getQuery("lbDMF", 0);
 			
 			_LOG << "Create database..." LOG_
 			sampleQuery->skipFKCollecting();

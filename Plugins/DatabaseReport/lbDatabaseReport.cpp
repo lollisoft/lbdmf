@@ -130,13 +130,13 @@ long lbDBReportProperties::getReportID(const char* name) {
 	UAP(lb_I_Query, reportidQuery)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, q)
 	
-	reportidQuery = ReportCFGDB->getQuery(0);
+	reportidQuery = ReportCFGDB->getQuery("lbDMF", 0);
 	
 	*q = "select id from reports where name = '";
 	*q += name;
 	*q += "'";
 	
-	if (reportidQuery->query(q->charrep()) == ERR_NONE) {
+	if (reportidQuery->query("lbDMF", q->charrep()) == ERR_NONE) {
 		lbErrCodes err = ERR_NONE;
 		
 		err = reportidQuery->first();
@@ -170,7 +170,7 @@ void  lbDBReportProperties::initReportParameters(long id) {
 	
 	UAP(lb_I_Query, query)
 	
-	query = ReportCFGDB->getQuery(0);
+	query = ReportCFGDB->getQuery("lbDMF", 0);
 	
 	ID->setData(id);
 	
@@ -233,9 +233,9 @@ long  lbDBReportProperties::initData(char* report) {
 	if (!lbDMFUser) lbDMFUser = "dba";
 	if (!lbDMFPasswd) lbDMFPasswd = "trainres";
 
-	ReportCFGDB->connect("lbDMF", lbDMFUser, lbDMFPasswd);
+	ReportCFGDB->connect("lbDMF", "lbDMF", lbDMFUser, lbDMFPasswd);
 
-	query = ReportCFGDB->getQuery(0);
+	query = ReportCFGDB->getQuery("lbDMF", 0);
  
 	UAP_REQUEST(getModuleInstance(), lb_I_String, value)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, key)
@@ -266,9 +266,9 @@ void lbDBReportProperties::setIntParameter(char* name, int _value) {
 	if (!lbDMFUser) lbDMFUser = "dba";
 	if (!lbDMFPasswd) lbDMFPasswd = "trainres";
 	
-	ReportCFGDB->connect("lbDMF", lbDMFUser, lbDMFPasswd);
+	ReportCFGDB->connect("lbDMF", "lbDMF", lbDMFUser, lbDMFPasswd);
 	
-	query = ReportCFGDB->getQuery(0);
+	query = ReportCFGDB->getQuery("lbDMF", 0);
 	
 	UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
 	ID->setData(getReportID(_report));
@@ -496,9 +496,9 @@ void LB_STDCALL lbDBReportAction::openReport(lb_I_String* reportname, lb_I_Param
 		if (!lbDMFUser) lbDMFUser = "dba";
 		if (!lbDMFPasswd) lbDMFPasswd = "trainres";
 		
-		database->connect("lbDMF", lbDMFUser, lbDMFPasswd);
+		database->connect("lbDMF", "lbDMF", lbDMFUser, lbDMFPasswd);
 		
-		query = database->getQuery(0);
+		query = database->getQuery("lbDMF", 0);
 /*...e*/
 
 		_LOG << "Try to open report '" << reportname->charrep() << "'. Query: " << buffer LOG_
@@ -520,7 +520,7 @@ void LB_STDCALL lbDBReportAction::openReport(lb_I_String* reportname, lb_I_Param
 
 				UAP(lb_I_Query, query1)
 
-				query1 = database->getQuery(0);
+				query1 = database->getQuery("lbDMF", 0);
 
 				err = query1->query(buffer);
 				
@@ -649,9 +649,9 @@ void LB_STDCALL lbDBReportAction::execute(lb_I_Parameter* params) {
 	if (!lbDMFUser) lbDMFUser = "dba";
 	if (!lbDMFPasswd) lbDMFPasswd = "trainres";
 
-	database->connect("lbDMF", lbDMFUser, lbDMFPasswd);
+	database->connect("lbDMF", "lbDMF", lbDMFUser, lbDMFPasswd);
 
-	query = database->getQuery(0);	
+	query = database->getQuery("lbDMF", 0);	
 	
 	char buf[] = "select what from action_steps where id = %s";
 	char* q = (char*) malloc(strlen(buf)+strlen(myActionID)+1);
@@ -1104,7 +1104,7 @@ void  lbDatabaseReport::initTextBlocks(long id) {
     UAP(lb_I_String, buffer)
     UAP(lb_I_Query, tquery)
     UAP(lb_I_Query, textblockquery)
-	tquery = ReportCFGDB->getQuery(0);
+	tquery = ReportCFGDB->getQuery("lbDMF", 0);
 	
 	*buffer = "select id, x, y, w, h from report_elements where reportid = ";
 	*buffer += ID->charrep();
@@ -1138,7 +1138,7 @@ void  lbDatabaseReport::initTextBlocks(long id) {
 			*textblocklinesquery = "select line, text from report_texts where elementid = ";
 			*textblocklinesquery += ID->charrep();
 			
-			textblockquery = ReportCFGDB->getQuery(0);
+			textblockquery = ReportCFGDB->getQuery("lbDMF", 0);
 			
 			tblerr = textblockquery->query(textblocklinesquery);
 			
@@ -1260,9 +1260,9 @@ void LB_STDCALL lbDatabaseReport::init(char* SQLString, char* DBName, char* DBUs
 	
 	database->init();
 	
-	database->connect(DBName, DBUser, DBPass);
+	database->connect(DBName, DBName, DBUser, DBPass);
 	
-	query = database->getQuery(0);
+	query = database->getQuery(DBName, 0);
 	
 	lbErrCodes err;
 	err = query->query(SQLString);
@@ -1310,7 +1310,7 @@ void LB_STDCALL lbDatabaseReport::init(char* SQLString, char* DBName, char* DBUs
 			free(temp);
 		}
 			
-		query = database->getQuery(0);
+		query = database->getQuery(DBName, 0);
 		
 		_LOG << "SQL string for database report: " << newQuery->charrep() LOG_ 
 		

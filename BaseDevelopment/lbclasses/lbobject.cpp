@@ -140,7 +140,7 @@ void LB_STDCALL lbLocale::translate(char ** text, char const * to_translate) {
 		if (!lbDMFUser) lbDMFUser = "dba";
 		if (!lbDMFPasswd) lbDMFPasswd = "trainres";
 		
-		if (database->connect("lbDMF", lbDMFUser, lbDMFPasswd) != ERR_NONE) {
+		if (database->connect("lbDMF", "lbDMF", lbDMFUser, lbDMFPasswd) != ERR_NONE) {
 			char* temp = *text;
 			*text = (char*) malloc(strlen(to_translate)+1);
 			*text[0] = 0;
@@ -151,7 +151,7 @@ void LB_STDCALL lbLocale::translate(char ** text, char const * to_translate) {
 		
 		UAP(lb_I_Query, sampleQuery)
 			
-			sampleQuery = database->getQuery(0);
+			sampleQuery = database->getQuery("lbDMF", 0);
 		
 		char buffer[800] = "";
 		
@@ -219,7 +219,7 @@ void LB_STDCALL lbLocale::translate(char ** text, char const * to_translate) {
 			if (!lbDMFUser) lbDMFUser = "dba";
 			if (!lbDMFPasswd) lbDMFPasswd = "trainres";
 			
-			if (database->connect("lbDMF", lbDMFUser, lbDMFPasswd) != ERR_NONE) {
+			if (database->connect("lbDMF", "lbDMF", lbDMFUser, lbDMFPasswd) != ERR_NONE) {
 				char* temp = *text;
 				*text = (char*) malloc(strlen(to_translate)+1);
 				*text[0] = 0;
@@ -241,7 +241,7 @@ void LB_STDCALL lbLocale::translate(char ** text, char const * to_translate) {
 			
 			/* Sybase SQL Anywhere 5.5 has problems with state 24000. Maybe an auto commit problem */
 			UAP(lb_I_Query, sampleQuery1)
-				sampleQuery1 = database->getQuery(0);
+				sampleQuery1 = database->getQuery("lbDMF", 0);
 			sampleQuery1->skipFKCollecting();
 			
 			sampleQuery1->query(buffer);

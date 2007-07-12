@@ -22,9 +22,9 @@
     The author of this work will be reached by e-Mail or paper mail.
     e-Mail: lothar.behrens@lollisoft.de
     p-Mail: Lothar Behrens
-            Rosmarinstr. 3
+            Heinrich-Scheufelen-Platz 2
             
-            40235 Duesseldorf (germany)
+            73252 Lenningen (germany)
 */
 /*...e*/
 #ifdef _MSC_VER
@@ -82,7 +82,7 @@ int main(int argc, char *argv[]) {
 		if (!lbDMFUser) lbDMFUser = "dba";
 		if (!lbDMFPasswd) lbDMFPasswd = "trainres";
 
-		database->connect("lbDMF", lbDMFUser, lbDMFPasswd);
+		database->connect("lbDMF", "lbDMF", lbDMFUser, lbDMFPasswd);
 
 		UAP_REQUEST(mm, lb_I_String, col)
 		UAP_REQUEST(mm, lb_I_String, val)
@@ -91,9 +91,9 @@ int main(int argc, char *argv[]) {
 		UAP(lb_I_Query, query1)
 		UAP(lb_I_Query, query2)
 		
-		query = database->getQuery(0);
-		query1 = database->getQuery(0);
-		query2 = database->getQuery(0);
+		query = database->getQuery("lbDMF", 0);
+		query1 = database->getQuery("lbDMF", 0);
+		query2 = database->getQuery("lbDMF", 0);
 
 
 		query1->skipFKCollecting();

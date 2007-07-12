@@ -213,7 +213,7 @@ void LB_STDCALL lbAction::delegate(lb_I_Parameter* params) {
 	
 	UAP(lb_I_Query, query)
 		
-	query = db->getQuery(0);
+	query = db->getQuery("lbDMF", 0);
 	
 	char buf[] = "select action_handler, module from action_types inner join "
 		"action_steps on action_types.id = action_steps.type where action_steps.id = %s";
@@ -404,9 +404,9 @@ void LB_STDCALL lbAction::execute(lb_I_Parameter* params) {
 	if (!lbDMFUser) lbDMFUser = "dba";
 	if (!lbDMFPasswd) lbDMFPasswd = "trainres";
 
-	db->connect("lbDMF", lbDMFUser, lbDMFPasswd);
+	db->connect("lbDMF", "lbDMF", lbDMFUser, lbDMFPasswd);
 
-	query = db->getQuery(0);	
+	query = db->getQuery("lbDMF", 0);	
 	
 	char buf[] = "select id from action_steps where actionid = %s";
 	char* q = (char*) malloc(strlen(buf)+strlen(myActionID)+1);
@@ -597,9 +597,9 @@ void LB_STDCALL lbDetailFormAction::openDetailForm(lb_I_String* formularname, lb
 		if (!lbDMFUser) lbDMFUser = "dba";
 		if (!lbDMFPasswd) lbDMFPasswd = "trainres";
 		
-		database->connect("lbDMF", lbDMFUser, lbDMFPasswd);
+		database->connect("lbDMF", "lbDMF", lbDMFUser, lbDMFPasswd);
 		
-		query = database->getQuery(0);
+		query = database->getQuery("lbDMF", 0);
 /*...e*/
 
 		if (query->query(buffer) == ERR_NONE) {
@@ -786,9 +786,9 @@ void LB_STDCALL lbDetailFormAction::execute(lb_I_Parameter* params) {
 	if (!lbDMFUser) lbDMFUser = "dba";
 	if (!lbDMFPasswd) lbDMFPasswd = "trainres";
 
-	database->connect("lbDMF", lbDMFUser, lbDMFPasswd);
+	database->connect("lbDMF", "lbDMF", lbDMFUser, lbDMFPasswd);
 
-	query = database->getQuery(0);	
+	query = database->getQuery("lbDMF", 0);	
 	
 	char buf[] = "select what from action_steps where id = %s";
 	char* q = (char*) malloc(strlen(buf)+strlen(myActionID)+1);
@@ -986,9 +986,9 @@ void LB_STDCALL lbMasterFormAction::openMasterForm(lb_I_String* formularname, lb
 		if (!lbDMFUser) lbDMFUser = "dba";
 		if (!lbDMFPasswd) lbDMFPasswd = "trainres";
 		
-		database->connect("lbDMF", lbDMFUser, lbDMFPasswd);
+		database->connect("lbDMF", "lbDMF", lbDMFUser, lbDMFPasswd);
 		
-		query = database->getQuery(0);
+		query = database->getQuery("lbDMF", 0);
 /*...e*/
 
 		if (query->query(buffer) == ERR_NONE) {
@@ -1153,9 +1153,9 @@ void LB_STDCALL lbMasterFormAction::execute(lb_I_Parameter* params) {
 	if (!lbDMFUser) lbDMFUser = "dba";
 	if (!lbDMFPasswd) lbDMFPasswd = "trainres";
 
-	database->connect("lbDMF", lbDMFUser, lbDMFPasswd);
+	database->connect("lbDMF", "lbDMF", lbDMFUser, lbDMFPasswd);
 
-	query = database->getQuery(0);	
+	query = database->getQuery("lbDMF", 0);	
 	
 	char buf[] = "select what from action_steps where id = %s";
 	char* q = (char*) malloc(strlen(buf)+strlen(myActionID)+1);
@@ -1275,9 +1275,9 @@ void LB_STDCALL lbSQLQueryAction::execute(lb_I_Parameter* params) {
 	if (!lbDMFUser) lbDMFUser = "dba";
 	if (!lbDMFPasswd) lbDMFPasswd = "trainres";
 
-	database->connect("lbDMF", lbDMFUser, lbDMFPasswd);
+	database->connect("lbDMF", "lbDMF", lbDMFUser, lbDMFPasswd);
 
-	query = database->getQuery(0);	
+	query = database->getQuery("lbDMF", 0);	
 	
 	char buf[] = "select what from action_steps where id = %s";
 	char* q = (char*) malloc(strlen(buf)+strlen(myActionID)+1);
@@ -1286,7 +1286,7 @@ void LB_STDCALL lbSQLQueryAction::execute(lb_I_Parameter* params) {
 
 	UAP_REQUEST(getModuleInstance(), lb_I_Database, db)
 	db->init();
-	if (db->connect(DBName->charrep(), DBUser->charrep(), DBPass->charrep()) != ERR_NONE) {
+	if (db->connect(DBName->charrep(), DBName->charrep(), DBUser->charrep(), DBPass->charrep()) != ERR_NONE) {
 		meta->msgBox("Error", "Failed to execute SQL query. Connection failed.");
 		return;
 	}
@@ -1311,7 +1311,7 @@ void LB_STDCALL lbSQLQueryAction::execute(lb_I_Parameter* params) {
 			s.Replace(rep->charrep(), SourceFieldValue->charrep());
 
 			UAP(lb_I_Query, q)
-			q = db->getQuery(0);
+			q = db->getQuery(DBName->charrep(), 0);
 			q->skipFKCollecting();
 			*what = s.c_str();
 			if (q->query(what->charrep()) != ERR_NONE) {
@@ -1345,7 +1345,7 @@ void LB_STDCALL lbSQLQueryAction::execute(lb_I_Parameter* params) {
 			s.Replace(rep->charrep(), SourceFieldValue->charrep());
 
 			UAP(lb_I_Query, q)
-			q = db->getQuery(0);
+			q = db->getQuery(DBName->charrep(), 0);
 			q->skipFKCollecting();
 			*what = s.c_str();
 			if (q->query(what->charrep()) != ERR_NONE) {

@@ -932,9 +932,9 @@ public:
 	 * \param user User to connect as.
 	 * \param passwd The passord. 
 	 */
-	virtual lbErrCodes LB_STDCALL connect(char* DSN, char* user, char* passwd) = 0;
+	virtual lbErrCodes LB_STDCALL connect(char* connectionname, char* DSN, char* user, char* passwd) = 0;
 
-	virtual lbErrCodes LB_STDCALL connect(char* pass) = 0;
+	virtual lbErrCodes LB_STDCALL connect(char* connectionname, char* pass) = 0;
 
 	/**
 	 * \brief Get a query instance.
@@ -944,7 +944,7 @@ public:
 	 *
 	 * \param readonly Set 0 to have write access. Default is readonly.
 	 */	
-	virtual lb_I_Query* LB_STDCALL getQuery(int readonly = 1) = 0;
+	virtual lb_I_Query* LB_STDCALL getQuery(char* connectionname, int readonly = 1) = 0;
 	
 	virtual lb_I_Container* LB_STDCALL getTables() = 0;
 	virtual lb_I_Container* LB_STDCALL getColumns() = 0;

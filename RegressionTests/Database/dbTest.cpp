@@ -87,14 +87,14 @@ int main(int argc, char *argv[]) {
 	if (!lbDMFUser) lbDMFUser = "dba";
 	if (!lbDMFPasswd) lbDMFPasswd = "trainres";
 
-	database->connect("lbDMF", lbDMFUser, lbDMFPasswd);
+	database->connect("lbDMF", "lbDMF", lbDMFUser, lbDMFPasswd);
 
 	UAP(lb_I_Query, query)
 	UAP(lb_I_Query, query1)
 	UAP(lb_I_Query, query2)
 	UAP(lb_I_Query, query3)
 
-	query = database->getQuery(0);
+	query = database->getQuery("lbDMF", 0);
 
 	char buf[] = "create table regressiontest ("
 			"test char(100) DEFAULT 'Nothing',\n"
@@ -104,17 +104,17 @@ int main(int argc, char *argv[]) {
 
 	query->query(buf);
 
-	query1 = database->getQuery(0);
+	query1 = database->getQuery("lbDMF", 0);
 	query1->query("insert into regressiontest (test) values('Nix')");
 	query1->query("insert into regressiontest (btest) values(true)");
 	query1->query("insert into regressiontest (btest1) values(true)");
 
-	query2 = database->getQuery(0);
+	query2 = database->getQuery("lbDMF", 0);
 	query2->query("select test, btest, btest1 from regressiontest");
 
 	query2->PrintData();
 	
-	query3 = database->getQuery(0);
+	query3 = database->getQuery("lbDMF", 0);
 	
 	query3->query("drop table regressiontest");
 	query3->query("select tablename, name, \"specialColumn\", \"controlType\", ro from column_types");
@@ -207,17 +207,17 @@ int main(int argc, char *argv[]) {
 		if (!lbDMFUser) lbDMFUser = "dba";
 		if (!lbDMFPasswd) lbDMFPasswd = "trainres";
 
-		database->connect("lbDMF", lbDMFUser, lbDMFPasswd);
+		database->connect("lbDMF", "lbDMF", lbDMFUser, lbDMFPasswd);
 
 		UAP(lb_I_Query, query2)
 		UAP(lb_I_Query, queryA)
 		UAP(lb_I_Query, query)
 		UAP(lb_I_Query, query1)
 
-		query = database->getQuery(0);
+		query = database->getQuery("lbDMF", 0);
 
 
-		query1 = database->getQuery(0);
+		query1 = database->getQuery("lbDMF", 0);
 		query1->skipFKCollecting();
 		query1->query("drop table regressiontest");
 
@@ -255,9 +255,9 @@ int main(int argc, char *argv[]) {
 		if (!lbDMFUser) lbDMFUser = "dba";
 		if (!lbDMFPasswd) lbDMFPasswd = "trainres";
 
-		database1->connect("lbDMF", lbDMFUser, lbDMFPasswd);
+		database1->connect("lbDMF", "lbDMF", lbDMFUser, lbDMFPasswd);
 
-		query2 = database1->getQuery(0);
+		query2 = database1->getQuery("lbDMF", 0);
 		query2->enableFKCollecting();
 		query2->skipPeeking();
 		query2->query("select id, test, btest, btest1 from regressiontest order by id");
@@ -290,7 +290,7 @@ int main(int argc, char *argv[]) {
 
 
 		UAP(lb_I_Query, query3)
-		query3 = database1->getQuery(0);
+		query3 = database1->getQuery("lbDMF", 0);
 
 		query3->query("select 'userid', 'anwendungenid' from 'user_anwendungen' where userid = 2");
 		
@@ -318,12 +318,12 @@ int main(int argc, char *argv[]) {
 	UAP(lb_I_Query, query2)
 	UAP(lb_I_Query, query3)
 
-	query1 = database->getQuery(0);
+	query1 = database->getQuery("lbDMF", 0);
 	query1->query("insert into regressiontest (test) values('Nix')");
 	query1->query("insert into regressiontest (btest) values(true)");
 	query1->query("insert into regressiontest (btest1) values(true)");
 
-	query2 = database->getQuery(0);
+	query2 = database->getQuery("lbDMF", 0);
 	query2->query("select test, btest, btest1 from regressiontest");
 
 //	query2->PrintData();
@@ -357,11 +357,11 @@ int main(int argc, char *argv[]) {
 			break;
 	}
 #ifdef TEST_SNORT
-	database->connect("snort", "snort", "Muffin.345");
+	database->connect("snort", "snort", "snort", "Muffin.345");
 	
 	UAP(lb_I_Query, query4)
 
-	query4 = database->getQuery(0);
+	query4 = database->getQuery("snort", 0);
 
 	char userQuery[1000] = "";
 	

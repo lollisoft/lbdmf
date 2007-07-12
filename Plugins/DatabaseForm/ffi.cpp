@@ -22,9 +22,9 @@
     The author of this work will be reached by e-Mail or paper mail.
     e-Mail: lothar.behrens@lollisoft.de
     p-Mail: Lothar Behrens
-            Rosmarinstr. 3
+            Heinrich-Scheufelen-Platz 2
             
-            40235 Duesseldorf (germany)
+            73252 Lenningen (germany)
 */
 /*...e*/
 /*...sincludes:0:*/
@@ -110,11 +110,11 @@ FormularFieldInformation::FormularFieldInformation(char const * formularname, lb
 	if (!lbDMFUser) lbDMFUser = "dba";
 	if (!lbDMFPasswd) lbDMFPasswd = "trainres";
 
-	database->connect("lbDMF", lbDMFUser, lbDMFPasswd);
+	database->connect("lbDMF", "lbDMF", lbDMFUser, lbDMFPasswd);
 
 	UAP(lb_I_Query, ROquery)
 
-	ROquery = database->getQuery(0);
+	ROquery = database->getQuery("lbDMF", 0);
 
 	char buf[] = "select tablename, name, specialcolumn, controltype, ro from column_types";
 

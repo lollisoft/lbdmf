@@ -137,7 +137,7 @@ if (a == b) {
 	UAP_REQUEST(mm, lb_I_Database, database)
 
 	database->init();
-	database->connect("trainres", "dba", "trainres");
+	database->connect("trainres", "trainres", "dba", "trainres");
 	
 	UAP_REQUEST(mm, lb_I_Database, database1)
 
@@ -145,7 +145,7 @@ if (a == b) {
 	UAP(lb_I_Query, query1)
 	UAP(lb_I_Query, query2)
 
-	query = database->getQuery(0);
+	query = database->getQuery("trainres", 0);
 
 
 #ifdef USE_PK
@@ -174,10 +174,10 @@ if (a == b) {
 	PrintData(*&query);
 
 	database1->init();
-	database1->connect("lbDMF", "dba", "trainres");
+	database1->connect("lbDMF", "lbDMF", "dba", "trainres");
 	
-	query1 = database1->getQuery(0);
-	query2 = database1->getQuery(0);
+	query1 = database1->getQuery("lbDMF", 0);
+	query2 = database1->getQuery("lbDMF", 0);
 	
 	query1->query("select * from users order by id");
 	query2->query("select * from formulare order by id");	
@@ -199,11 +199,11 @@ if (a == b) {
 	UAP(lb_I_Query, query12)
 	
 	db1->init();
-	db1->connect("trainres", "dba", "trainres");
+	db1->connect("trainres", "trainres", "dba", "trainres");
 	database2->init();
-	database2->connect("trainres", "dba", "trainres");
+	database2->connect("trainres", "trainres", "dba", "trainres");
 	
-	query11 = db1->getQuery(0);
+	query11 = db1->getQuery("trainres", 0);
 	
 	UAP_REQUEST(mm, lb_I_String, t1)
 	UAP_REQUEST(mm, lb_I_String, t2)
@@ -225,7 +225,7 @@ printf("Created table test\n");
 	query11->query("insert into test values ('Test5', 5)");
 	query11->query("insert into test values ('Test6', 6)");
 
-	query12 = database2->getQuery(0);
+	query12 = database2->getQuery("trainres", 0);
 
 	query12->query("select text, id from test");
 

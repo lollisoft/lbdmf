@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.115 $
+ * $Revision: 1.116 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.115 2007/07/11 14:49:14 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.116 2007/07/12 11:02:32 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.116  2007/07/12 11:02:32  lollisoft
+ * Important bugfix in database classes. Connetcion problems should be fixed.
+ *
  * Revision 1.115  2007/07/11 14:49:14  lollisoft
  * Added flag to force database usage and changed code to
  * support the flag.
@@ -1358,12 +1361,12 @@ lbErrCodes LB_STDCALL lb_MetaApplication::loadApplication(char* user, char* appl
 		
 		database->init();
 		
-		if (database->connect("lbDMF", lbDMFUser, lbDMFPasswd) != ERR_NONE) {
+		if (database->connect("lbDMF", "lbDMF", lbDMFUser, lbDMFPasswd) != ERR_NONE) {
 			_LOG << "Error: Connection to database failed." LOG_
 			return ERR_NONE;
 		} else {
 			
-			sampleQuery = database->getQuery(0);
+			sampleQuery = database->getQuery("lbDMF", 0);
 			
 			char* buffer = (char*) malloc(1000);
 			buffer[0] = 0;
@@ -2257,7 +2260,7 @@ lb_I_Container* LB_STDCALL lb_MetaApplication::getApplications() {
 		if (!lbDMFUser) lbDMFUser = "dba";
 		if (!lbDMFPasswd) lbDMFPasswd = "trainres";
 
-		database->connect("lbDMF", lbDMFUser, lbDMFPasswd);
+		database->connect("lbDMF", "lbDMF", lbDMFUser, lbDMFPasswd);
 
 		if (err != ERR_NONE) {
 			_LOG << "Error: No database connection built up. Could not use database logins." LOG_
@@ -2324,7 +2327,7 @@ lb_I_Container* LB_STDCALL lb_MetaApplication::getApplications() {
 /*...sLoad by direct SQL queries\44\ if all above fails:16:*/
 		if (!hasDBLoaded) {
 			_LOG << "Info: All streaming operations have been failed. Use database API directly." LOG_
-			sampleQuery = database->getQuery(0);
+			sampleQuery = database->getQuery("lbDMF", 0);
 
 			char* buffer = (char*) malloc(1000);
 			buffer[0] = 0;
@@ -2448,7 +2451,7 @@ bool LB_STDCALL lb_MetaApplication::login(const char* user, const char* pass) {
 		if (!lbDMFUser) lbDMFUser = "dba";
 		if (!lbDMFPasswd) lbDMFPasswd = "trainres";
 		
-		err = database->connect("lbDMF", lbDMFUser, lbDMFPasswd);
+		err = database->connect("lbDMF", "lbDMF", lbDMFUser, lbDMFPasswd);
 		
 		if (err != ERR_NONE) {
 			_LOG << "Error: No database connection built up. Could not use database logins." LOG_
@@ -2489,7 +2492,7 @@ bool LB_STDCALL lb_MetaApplication::login(const char* user, const char* pass) {
 		
 		UAP(lb_I_Query, sampleQuery)
 			
-		sampleQuery = database->getQuery(0);
+		sampleQuery = database->getQuery("lbDMF", 0);
 		
 		char* buffer = (char*) malloc(1000);
 		buffer[0] = 0;

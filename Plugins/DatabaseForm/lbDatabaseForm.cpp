@@ -431,7 +431,7 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 	REQUEST(manager.getPtr(), lb_I_Database, database)
 
 	database->init();
-	if (database->connect(DBName, DBUser, DBPass) != ERR_NONE) {
+	if (database->connect(DBName, DBName, DBUser, DBPass) != ERR_NONE) {
 		_LOG << "Error: Could not connect to given database: '" << DBName << "'" LOG_
 
 		return;
@@ -450,7 +450,7 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 		_DBPass->setData(DBPass);
 	}
 
-	sampleQuery = database->getQuery(0);
+	sampleQuery = database->getQuery(DBName, 0);
 /*...e*/
 		
 /*...svariables:8:*/
@@ -604,9 +604,9 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 			if (!lbDMFUser) lbDMFUser = "dba";
 			if (!lbDMFPasswd) lbDMFPasswd = "trainres";
 
-			lbDMF_DB->connect("lbDMF", lbDMFUser, lbDMFPasswd);
+			lbDMF_DB->connect("lbDMF", "lbDMF", lbDMFUser, lbDMFPasswd);
 
-			FKColumnQuery = lbDMF_DB->getQuery(0);
+			FKColumnQuery = lbDMF_DB->getQuery("lbDMF", 0);
 			
 			_CL_LOG << "Query for showing visible column of a foreign key: " << buffer << "." LOG_
 			
@@ -641,7 +641,7 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 			
 				FKColumnQuery.resetPtr();
 
-				FKColumnQuery = lbDMF_DB->getQuery(0);
+				FKColumnQuery = lbDMF_DB->getQuery(DBName, 0);
 
 				FKColumnQuery->query(buffer);
 
@@ -672,9 +672,9 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 				
 				UAP(lb_I_Query, ReplacementColumnQuery)
 				
-				database->connect(DBName, DBUser, DBPass);
+				database->connect(DBName, DBName, DBUser, DBPass);
 				
-				ReplacementColumnQuery = database->getQuery(0);
+				ReplacementColumnQuery = database->getQuery(DBName, 0);
 				
 				ReplacementColumnQuery->query(buffer);
 				
@@ -1015,7 +1015,7 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 /*...sAction handler initializion:8:*/
 	UAP(lb_I_Query, actionQuery)
 	
-	actionQuery = database->getQuery(0);
+	actionQuery = database->getQuery("lbDMF", 0);
 
 
 	char *_actionquery = "select actions.name, formular_actions.event from actions "
@@ -1387,6 +1387,8 @@ void LB_STDCALL lbDatabasePanel::ignoreForeignKeys(char* toTable) {
 void LB_STDCALL lbDatabasePanel::updateFromMaster() {
 	lbErrCodes err = ERR_NONE;
 
+	_LOG << "lbDatabasePanel::updateFromMaster() called." LOG_
+
 	UAP_REQUEST(manager.getPtr(), lb_I_String, newWhereClause)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, newMasterIDQuery)
 	
@@ -1433,6 +1435,18 @@ void LB_STDCALL lbDatabasePanel::updateFromMaster() {
 	}
 /*...e*/
 
+	if (DBUser->charrep() == NULL) {
+		_LOG << "Error: No user name for database passed!" LOG_
+	} 
+	
+	if (DBName->charrep() == NULL) {
+		_LOG << "Error: No database name for database passed!" LOG_
+	}
+	
+	if (DBPass->charrep() == NULL) {
+		_LOG << "Error: No password for database passed!" LOG_
+	}
+
 	masterForm->trim();
 	SourceFieldName->trim();
 	SourceFieldValue->trim();
@@ -1457,9 +1471,9 @@ void LB_STDCALL lbDatabasePanel::updateFromMaster() {
 			UAP_REQUEST(manager.getPtr(), lb_I_String, SQL)
 
 			database->init();
-			database->connect(DBName->charrep(), DBUser->charrep(), DBPass->charrep());
+			database->connect("lbDMF", "lbDMF", DBUser->charrep(), DBPass->charrep());
 
-			correctionQuery = database->getQuery(0);
+			correctionQuery = database->getQuery("lbDMF", 0);
 			
 			*SQL = "update action_steps set type = (select id from action_types where bezeichnung = 'Open master form' and module = 'lbDatabaseForm') where id = ";
 			*SQL += actionID->charrep();
@@ -1515,9 +1529,19 @@ void LB_STDCALL lbDatabasePanel::updateFromMaster() {
 	UAP(lb_I_Query, PKQuery)
 
 	database->init();
-	database->connect(DBName->charrep(), DBUser->charrep(), DBPass->charrep());
+	
+	_LOG << "Info: Connect to database." LOG_
+	_LOG << "Info: DBName: " << DBName->charrep() LOG_
+	_LOG << "Info: DBUser: " << DBUser->charrep() LOG_
+	
+	
+	if (database->connect(DBName->charrep(), DBName->charrep(), DBUser->charrep(), DBPass->charrep()) != ERR_NONE) {
+		_LOG << "Error: Failed to connect to database." LOG_
+		_LOG << "Info: DBName: " << DBName->charrep() LOG_
+		_LOG << "Info: DBUser: " << DBUser->charrep() LOG_
+	}
 
-	PKQuery = database->getQuery(0);
+	PKQuery = database->getQuery(DBName->charrep(), 0);
 
 	err = PKQuery->query(newMasterIDQuery->charrep());
 
@@ -1752,11 +1776,20 @@ void LB_STDCALL lbDatabasePanel::updateFromMaster() {
 	}
 /*...e*/
 
-	sampleQuery = database->getQuery(0);
+	// Savely reconnect due to the possibility of connection overriding
+	if (database->connect(DBName->charrep(), DBName->charrep(), DBUser->charrep(), DBPass->charrep()) != ERR_NONE) {
+		_LOG << "Error: Failed to connect to database." LOG_
+		_LOG << "Info: DBName: " << DBName->charrep() LOG_
+		_LOG << "Info: DBUser: " << DBUser->charrep() LOG_
+	}
+
+	sampleQuery = database->getQuery(DBName->charrep(), 0);
 
 	*newQuery = sampleQuery->setWhereClause(getQuery(), newWhereClause->charrep());
 
-	_LOG << "Have created new query: " << newQuery->charrep() LOG_
+	_LOG << "Have created new query: '" << newQuery->charrep() << "'" LOG_ 
+	_LOG << " ... On database '" << DBName->charrep() << "', with user" LOG_ 
+	_LOG << " ... '" << DBUser->charrep() << "'" LOG_
 
 	err = sampleQuery->query(newQuery->charrep());
 	
@@ -1805,6 +1838,9 @@ void LB_STDCALL lbDatabasePanel::updateFromDetail() {
 	
 	UAP_REQUEST(manager.getPtr(), lb_I_String, newQuery)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, actionID)
+
+	_LOG << "lbDatabasePanel::updateFromDetail() called." LOG_
+
 
 	// Using the new = and += operators of the string interface. 
 	// Note: If used in an UAP, explizit 'dereferencing' must be used.
@@ -1865,9 +1901,9 @@ void LB_STDCALL lbDatabasePanel::updateFromDetail() {
 			UAP_REQUEST(manager.getPtr(), lb_I_String, SQL)
 
 			database->init();
-			database->connect(DBName->charrep(), DBUser->charrep(), DBPass->charrep());
+			database->connect(DBName->charrep(), DBName->charrep(), DBUser->charrep(), DBPass->charrep());
 
-			correctionQuery = database->getQuery(0);
+			correctionQuery = database->getQuery(DBName->charrep(), 0);
 			
 			*SQL = "update action_steps set type = (select id from action_types where bezeichnung = 'Open detail form' and module = 'lbDatabaseForm') where id = ";
 			*SQL += actionID->charrep();
@@ -1935,10 +1971,10 @@ void LB_STDCALL lbDatabasePanel::updateFromDetail() {
 	UAP(lb_I_Query, sourceTableQuery)
 
 	database->init();
-	database->connect(DBName->charrep(), DBUser->charrep(), DBPass->charrep());
+	database->connect(DBName->charrep(), DBName->charrep(), DBUser->charrep(), DBPass->charrep());
 
-	PKQuery = database->getQuery(0);
-	sourceTableQuery = database->getQuery(0);
+	PKQuery = database->getQuery(DBName->charrep(), 0);
+	sourceTableQuery = database->getQuery(DBName->charrep(), 0);
 
 	err = PKQuery->query(newMasterIDQuery->charrep());
 
@@ -2195,7 +2231,7 @@ void LB_STDCALL lbDatabasePanel::updateFromDetail() {
 	
 	_LOG << "Have new query for detail form: '" << newQuery->charrep() << "'" LOG_
 	
-	sampleQuery = database->getQuery(0);
+	sampleQuery = database->getQuery(DBName->charrep(), 0);
 
 	err = sampleQuery->query(newQuery->charrep());
 	

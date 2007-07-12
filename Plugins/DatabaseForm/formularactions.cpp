@@ -152,11 +152,11 @@ char* FormularActions::getActionTargetID(char* what) {
 	if (!lbDMFUser) lbDMFUser = "dba";
 	if (!lbDMFPasswd) lbDMFPasswd = "trainres";
 	
-	database->connect("lbDMF", lbDMFUser, lbDMFPasswd);	
+	database->connect("lbDMF", "lbDMF", lbDMFUser, lbDMFPasswd);	
 
 	UAP(lb_I_Query, query)
 	
-	query = database->getQuery(0);
+	query = database->getQuery("lbDMF", 0);
 	
 	char buf[] = "select action from formular_actions where event = '%s'";
 	
@@ -199,11 +199,11 @@ char* FormularActions::getActionSourceDataField(char* what) {
 	if (!lbDMFUser) lbDMFUser = "dba";
 	if (!lbDMFPasswd) lbDMFPasswd = "trainres";
 	
-	database->connect("lbDMF", lbDMFUser, lbDMFPasswd);	
+	database->connect("lbDMF", "lbDMF", lbDMFUser, lbDMFPasswd);	
 
 	UAP(lb_I_Query, query)
 	
-	query = database->getQuery(0);
+	query = database->getQuery("lbDMF", 0);
 	
 	char buf[] = "select source from actions where id = %s";
 	

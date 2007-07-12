@@ -1892,7 +1892,11 @@ int LB_STDCALL lbQuery::getColumns() {
 	SWORD count = 0;
 	retcode = SQLNumResultCols(hstmt, &count);
 
-	if (retcode != SQL_SUCCESS) dbError("lbQuery::getColumns()", hstmt);
+	if (retcode == SQL_SUCCESS) return count;
+	
+	//dbError("lbQuery::getColumns()", hstmt);
+	
+	_LOG << "lbQuery::getColumns() failed!" LOG_
 	
 	return count;
 }
@@ -2350,7 +2354,7 @@ void LB_STDCALL lbQuery::prepareFKList() {
         if (!user) user = "dba";
         if (!pass) pass = "trainres";
 	
-        db->connect("lbDMF", user, pass);
+        db->connect("lbDMF", "lbDMF", user, pass);
 
 	
 	for (int i = 1; i <= getColumns(); i++) { 
@@ -2364,7 +2368,7 @@ void LB_STDCALL lbQuery::prepareFKList() {
 
 	    _CL_LOG << "Query: " << buffer LOG_
 
-	    q = db->getQuery(0);
+	    q = db->getQuery("lbDMF", 0);
 
 	    skipFKCollections = 1;
 	    err = q->query(buffer);
@@ -4737,10 +4741,10 @@ public:
 	 *		user	database user
 	 *		passwd	database password
 	 */
-	lbErrCodes	LB_STDCALL connect(char* DSN, char* user, char* passwd);
-	lb_I_Query*	LB_STDCALL getQuery(int readonly = 1);
+	lbErrCodes	LB_STDCALL connect(char* connectionname, char* DSN, char* user, char* passwd);
+	lb_I_Query*	LB_STDCALL getQuery(char* connectionname, int readonly = 1);
 
-	lbErrCodes	LB_STDCALL connect(char* pass);
+	lbErrCodes	LB_STDCALL connect(char* connectionname, char* pass);
 
 	lbErrCodes	LB_STDCALL setUser(char* _user);
 	lbErrCodes	LB_STDCALL setDB(char* _db);	
@@ -4828,9 +4832,9 @@ lbErrCodes LB_STDCALL lbDatabase::setDB(char* _db) {
 	return ERR_NONE;
 }
 
-lbErrCodes LB_STDCALL lbDatabase::connect(char* pass) {
+lbErrCodes LB_STDCALL lbDatabase::connect(char* connectionname, char* pass) {
 	_CL_VERBOSE << "lbDatabase::connect(char* pass) called. DB:" << db << ", U:" << user << ", P:" << pass LOG_
-	return connect(db, user, pass);
+	return connect(connectionname, db, user, pass);
 }
 
 bool LB_STDCALL lbDatabase::isConnected() {
@@ -4838,7 +4842,7 @@ bool LB_STDCALL lbDatabase::isConnected() {
 }
 
 /*...slbErrCodes LB_STDCALL lbDatabase\58\\58\connect\40\char\42\ DSN\44\ char\42\ user\44\ char\42\ passwd\41\:0:*/
-lbErrCodes LB_STDCALL lbDatabase::connect(char* DSN, char* user, char* passwd) {
+lbErrCodes LB_STDCALL lbDatabase::connect(char* connectionname, char* DSN, char* user, char* passwd) {
 	lbErrCodes err = ERR_NONE;
 
 	// Put me to unconnected state, if anything goes wrong...
@@ -4848,41 +4852,16 @@ lbErrCodes LB_STDCALL lbDatabase::connect(char* DSN, char* user, char* passwd) {
 	    UAP_REQUEST(manager.getPtr(), lb_I_Container, container)
 	    container->queryInterface("lb_I_Container", (void**) &connPooling, __FILE__, __LINE__);
 	}
-
-	char* DSN_user = (char*) malloc(strlen(DSN)+1+strlen(user)+1);
-	DSN_user[0] = 0;
 	
-	// Build the key for the connection
-	
-	strcat(DSN_user, DSN);	
-	strcat(DSN_user, "-");
-	strcat(DSN_user, user);
-	
-	UAP_REQUEST(manager.getPtr(), lb_I_String, dsn_user)
-	dsn_user->setData(DSN_user);
-	
-	free(DSN_user);
+	UAP_REQUEST(manager.getPtr(), lb_I_String, ConnectionName)
+	*ConnectionName = connectionname;
 	
 	UAP(lb_I_KeyBase, key)
 	UAP(lb_I_Unknown, uk)
 	
-	QI(dsn_user, lb_I_KeyBase, key)
+	QI(ConnectionName, lb_I_KeyBase, key)
 	
-	if (connPooling->exists(&key) == 1) {
-	    UAP(lb_I_Connection, con)
-	    
-	    uk = connPooling->getElement(&key);
-	    
-	    QI(uk, lb_I_Connection, con)
-	    
-	    if (con != NULL) {
-			lbConnection* c = (lbConnection*) con.getPtr();
-		
-			hdbc = c->getConnection();
-			connected = true;
-		}
-	    	
-	} else {
+	if (connPooling->exists(&key) != 1) {
 	    _CL_VERBOSE << "SQLAllocConnect(henv, &hdbc);" LOG_
 
 	    retcode = SQLAllocConnect(henv, &hdbc); /* Connection handle */
@@ -4968,9 +4947,38 @@ lbErrCodes LB_STDCALL lbDatabase::connect(char* DSN, char* user, char* passwd) {
 	return ERR_NONE;
 }
 /*...e*/
-lb_I_Query* LB_STDCALL lbDatabase::getQuery(int readonly) {
+lb_I_Query* LB_STDCALL lbDatabase::getQuery(char* connectionname, int readonly) {
+	lbErrCodes err = ERR_NONE;
 	lbQuery* query = new lbQuery;
 	query->setModuleManager(*&manager, __FILE__, __LINE__);
+
+	if (connectionname == NULL) {
+		_LOG << "lbDatabase::getQuery() Error: Did not got a connection name." LOG_
+		return NULL;
+	}
+
+	UAP_REQUEST(manager.getPtr(), lb_I_String, ConnectionName)
+	*ConnectionName = connectionname;
+	
+	UAP(lb_I_KeyBase, key)
+	UAP(lb_I_Unknown, uk)
+	
+	QI(ConnectionName, lb_I_KeyBase, key)
+	
+	if (connPooling->exists(&key) == 1) {
+	    UAP(lb_I_Connection, con)
+	    
+	    uk = connPooling->getElement(&key);
+	    
+	    QI(uk, lb_I_Connection, con)
+	    
+	    if (con != NULL) {
+			lbConnection* c = (lbConnection*) con.getPtr();
+		
+			hdbc = c->getConnection();
+			connected = true;
+		}
+	}
 
 	if (query->init(henv, hdbc, readonly) != ERR_NONE) {
 		_LOG << "ERROR: Initializion of query has been failed!" LOG_

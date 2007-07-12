@@ -195,13 +195,13 @@ public:
 	 *
 	 * Start the database operation with the given parameters.
 	 */
-	virtual bool LB_STDCALL begin(const char* DBName, const char* DBUser, const char* DBPass) = 0;
+	virtual bool LB_STDCALL begin(const char* connectionname, const char* DBName, const char* DBUser, const char* DBPass) = 0;
 	
 	/** \brief Start the operation.
 	 *
 	 * Start the database operation with the given database instance.
 	 */
-	virtual bool LB_STDCALL begin(lb_I_Database* _db) = 0;
+	virtual bool LB_STDCALL begin(const char* connectionname, lb_I_Database* _db) = 0;
 	
 	/** \brief End the operation.
 	 *
