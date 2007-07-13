@@ -751,6 +751,7 @@ DLLEXPORT void LB_STDCALL uninitLocale() {
 
 DLLEXPORT char* LB_STDCALL translateText(char* text) {
 	lbErrCodes err = ERR_NONE;
+
 	if (locale == NULL) {
 		REQUEST(getModuleInstance(), lb_I_Locale, locale)
 		
@@ -785,7 +786,7 @@ DLLEXPORT char* LB_STDCALL translateText(char* text) {
 		if (pl != NULL)	{
 			ukPl = pl->getImplementation();
 			if (ukPl != NULL) QI(ukPl, lb_I_DatabaseOperation, fDBOp)
-			isFileAvailable = fDBOp->begin(*&database); 
+			isFileAvailable = fDBOp->begin("lbDMF", *&database); 
 
 			if (isFileAvailable) {
 				UAP(lb_I_Plugin, plTranslations)

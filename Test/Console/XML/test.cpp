@@ -162,7 +162,7 @@ if (a == b) {
 
 	UAP(lb_I_Query, testquery)
 	
-	testquery = database->getQuery(0);
+	testquery = database->getQuery("lbDMF", 0);
 
 #ifdef USE_PK
 	testquery->query("select x, y, w, h, id from world order by id");

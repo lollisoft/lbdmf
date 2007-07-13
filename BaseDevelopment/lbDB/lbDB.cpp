@@ -4887,7 +4887,7 @@ lbErrCodes LB_STDCALL lbDatabase::connect(char* connectionname, char* DSN, char*
 
             if (retcode != SQL_SUCCESS)
             {
-				_LOG << "SQLSetConnectOption(hdbc, SQL_LOGIN_TIMEOUT, 15) failed." LOG_
+		_LOG << "SQLSetConnectOption(hdbc, SQL_LOGIN_TIMEOUT, 15) failed." LOG_
                 _dbError_DBC( "SQLSetConnectOption()", hdbc);
                 SQLFreeEnv(henv);
                 return ERR_DB_CONNECT;
@@ -4941,8 +4941,8 @@ lbErrCodes LB_STDCALL lbDatabase::connect(char* connectionname, char* DSN, char*
 	    }
 	    
 	    connPooling->insert(&uk, &key);
-		connected = true;
 	}
+	connected = true;
 
 	return ERR_NONE;
 }

@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.116 $
+ * $Revision: 1.117 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.116 2007/07/12 11:02:32 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.117 2007/07/13 12:28:36 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.117  2007/07/13 12:28:36  lollisoft
+ * Remaining code changes done and fixed database login bug.
+ *
  * Revision 1.116  2007/07/12 11:02:32  lollisoft
  * Important bugfix in database classes. Connetcion problems should be fixed.
  *
@@ -2284,7 +2287,7 @@ lb_I_Container* LB_STDCALL lb_MetaApplication::getApplications() {
 				UAP(lb_I_DatabaseOperation, fOp)
 				QI(ukPl, lb_I_DatabaseOperation, fOp)
 				
-				if (!fOp->begin(database.getPtr())) {
+				if (!fOp->begin("lbDMF", database.getPtr())) {
 					_LOG << "FATAL: Failed to start reading application list from database!" LOG_
 					apps++;
 					return apps.getPtr();
@@ -2472,8 +2475,8 @@ bool LB_STDCALL lb_MetaApplication::login(const char* user, const char* pass) {
 				UAP(lb_I_DatabaseOperation, fOp)
 				QI(ukPl, lb_I_DatabaseOperation, fOp)
 				
-				if (!fOp->begin(database.getPtr())) {
-					return ERR_FILE_READ;
+				if (!fOp->begin("lbDMF", database.getPtr())) {
+					return false;
 				}
 				
 				Users->accept(*&fOp);

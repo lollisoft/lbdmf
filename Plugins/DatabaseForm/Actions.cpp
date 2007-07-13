@@ -619,7 +619,7 @@ void LB_STDCALL lbDetailFormAction::openDetailForm(lb_I_String* formularname, lb
 
 				UAP(lb_I_Query, query)
 
-				query = database->getQuery(0);
+				query = database->getQuery("lbDMF", 0);
 
 				err = query->query(buffer);
 /*...e*/
@@ -1008,7 +1008,7 @@ void LB_STDCALL lbMasterFormAction::openMasterForm(lb_I_String* formularname, lb
 
 				UAP(lb_I_Query, query)
 
-				query = database->getQuery(0);
+				query = database->getQuery("lbDMF", 0);
 
 				err = query->query(buffer);
 /*...e*/

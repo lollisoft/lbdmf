@@ -196,7 +196,7 @@ void LB_STDCALL lbLocale::translate(char ** text, char const * to_translate) {
 			
 			/* Sybase SQL Anywhere 5.5 has problems with state 24000. Maybe an auto commit problem */
 			UAP(lb_I_Query, sampleQuery1)
-				sampleQuery1 = database->getQuery(0);
+				sampleQuery1 = database->getQuery("lbDMF", 0);
 			sampleQuery1->skipFKCollecting();
 			sampleQuery1->query(buffer);
 			sampleQuery1->enableFKCollecting();

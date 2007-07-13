@@ -536,7 +536,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::getCustomDBForm(lb_I_Unknown* uk) {
 		UAP(lb_I_Query, q)
 		UAP_REQUEST(getModuleInstance(), lb_I_Long, typ)
 		UAP_REQUEST(getModuleInstance(), lb_I_String, sql)
-		q = database->getQuery(0);
+		q = database->getQuery("lbDMF", 0);
 		
 		typ->setData(forms->getTyp());
 		
@@ -788,7 +788,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::getDynamicDBForm(lb_I_Unknown* uk) {
 			
 			UAP(lb_I_Query, formularQuery)
 				
-			formularQuery = database->getQuery(0);
+			formularQuery = database->getQuery("lbDMF", 0);
 			
 			// It is an internal formular and I don't distinguish between 
 			// different formular implementations yet
@@ -826,7 +826,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::getDynamicDBForm(lb_I_Unknown* uk) {
 			
 			UAP(lb_I_Query, DBConnQuery)
 				
-			DBConnQuery = database->getQuery(0);
+			DBConnQuery = database->getQuery("lbDMF", 0);
 			
 			DBConnQuery->query(buffer);
 			

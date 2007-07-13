@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.138 2007/07/07 18:12:40 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.139 2007/07/13 12:28:37 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.138 $
+ * $Revision: 1.139 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.138 2007/07/07 18:12:40 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.139 2007/07/13 12:28:37 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.139  2007/07/13 12:28:37  lollisoft
+ * Remaining code changes done and fixed database login bug.
+ *
  * Revision 1.138  2007/07/07 18:12:40  lollisoft
  * Some type conflicts resolved.
  *
@@ -775,9 +778,9 @@ public:
 		if (!lbDMFUser) lbDMFUser = "dba";
 		if (!lbDMFPasswd) lbDMFPasswd = "trainres";
 
-		database->connect("lbDMF", lbDMFUser, lbDMFPasswd);
+		database->connect("lbDMF", "lbDMF", lbDMFUser, lbDMFPasswd);
 
-		sampleQuery = database->getQuery(0);
+		sampleQuery = database->getQuery("lbDMF", 0);
 
 		char buffer[800] = "";
 
@@ -1004,7 +1007,7 @@ DECLARE_LB_UNKNOWN()
 		if (!lbDMFUser) lbDMFUser = "dba";
 		if (!lbDMFPasswd) lbDMFPasswd = "trainres";
 
-		err = database->connect("lbDMF", lbDMFUser, lbDMFPasswd);
+		err = database->connect("lbDMF", "lbDMF", lbDMFUser, lbDMFPasswd);
 
 		if (err != ERR_NONE) {
 			char* buf = strdup(_trans("Login to database failed.\n\nYou could not use the dynamic features of the\napplication without a proper configured database."));
@@ -1017,7 +1020,7 @@ DECLARE_LB_UNKNOWN()
 			free(buf1);		
 		}
 
-		sampleQuery = database->getQuery(0);
+		sampleQuery = database->getQuery("lbDMF", 0);
 
 		char buffer[800] = "";
 

@@ -1135,7 +1135,7 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Formular_Fields* formularfield
 		UAP(lb_I_Query, query_query)
 		UAP_REQUEST(getModuleInstance(), lb_I_String, query)
 		
-		query_query = db->getQuery(0);
+		query_query = db->getQuery("lbDMF", 0);
 		
 		FormularID = q->getAsLong(1);
 		
