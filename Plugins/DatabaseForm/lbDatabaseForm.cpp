@@ -691,6 +691,9 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 					
 					data->trim();
 					
+					if (*data == "") *data = "<empty>";
+					if (data->charrep() == NULL) *data = "<empty>";
+					
 					possible_fk = ReplacementColumnQuery->getAsString(2);
 					
 					int possible_fk_pos = atoi(possible_fk->charrep());
@@ -728,6 +731,9 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 						data = ReplacementColumnQuery->getAsString(1);
 						
 						data->trim();
+						
+						if (*data == "") *data = "<empty>";
+						if (data->charrep() == NULL) *data = "<empty>";
 						
 						possible_fk = ReplacementColumnQuery->getAsString(2);
 					
