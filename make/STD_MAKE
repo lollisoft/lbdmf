@@ -25,11 +25,14 @@
 #            73252 Lenningen (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.95 $
+# * $Revision: 1.96 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.95 2007/07/13 12:28:37 lollisoft Exp $
+# * $Id: STD_MAKE,v 1.96 2007/07/14 09:49:11 lollisoft Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.96  2007/07/14 09:49:11  lollisoft
+# * No debugging.
+# *
 # * Revision 1.95  2007/07/13 12:28:37  lollisoft
 # * Remaining code changes done and fixed database login bug.
 # *
@@ -365,8 +368,8 @@ COMPILER=WATCOM
 
 #COMPILER=MICROSOFT
 
-MODE=_DEBUG
-#MODE=
+#MODE=_DEBUG
+MODE=
 DEBUG_MEMORY=no
 #DEBUG_MEMORY=yes
 
