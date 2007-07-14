@@ -2637,7 +2637,7 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBRead() {
 				if (FFI->isSpecialColumn(name)) {
 					lbErrCodes err = ERR_NONE;
 					char* type = FFI->getControlType(name);
-
+					
 					if (strcmp(type, "toolbarimagefile") == 0) {
 						UAP_REQUEST(manager.getPtr(), lb_I_String, filename)
 						UAP_REQUEST(manager.getPtr(), lb_I_String, controlname)
@@ -2692,6 +2692,7 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBRead() {
 							wxBitmap bm = wxBitmap(*im);
 							wxBitmapButton* bmb = (wxBitmapButton*) w;
 							bmb->SetBitmapLabel(bm);
+							bmb->Refresh();
 						}
 					}
 				} else {

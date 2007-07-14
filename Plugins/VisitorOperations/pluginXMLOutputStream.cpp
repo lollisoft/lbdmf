@@ -472,16 +472,23 @@ void LB_STDCALL lbXMLOutputStream::visit(lb_I_Action_Steps* action_steps) {
 	*oStream << "<actionsteps>" << "\n";
 	
 	action_steps->finishActionStepIteration();
+
+	UAP_REQUEST(getModuleInstance(), lb_I_String, What)
 	
 	while (action_steps->hasMoreActionSteps()) {
 		action_steps->setNextActionStep();
+
+		*What = action_steps->getActionStepWhat();
+
+		*What = What->replace("\"", "&quot;");
+
 		*oStream << 
 		"<action ID=\"" << action_steps->getActionStepID() << 
 		"\" actionid=\"" << action_steps->getActionStepActionID() << 
 		"\" substep=\"" << action_steps->getActionStepOrderNo() << 
 		"\" steptyp=\"" << action_steps->getActionStepType() << 
 		"\" stepname=\"" << action_steps->getActionStepBezeichnung() << 
-		"\" what=\"" << action_steps->getActionStepWhat() << "\"/>" << "\n";
+		"\" what=\"" << What->charrep() << "\"/>" << "\n";
 	}
 	*oStream << "</actionsteps>" << "\n";
 }

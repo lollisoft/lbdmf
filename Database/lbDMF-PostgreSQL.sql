@@ -15,6 +15,28 @@ CREATE OR REPLACE FUNCTION plpgsql_call_handler()
 DROP LANGUAGE plpgsql;
 CREATE LANGUAGE plpgsql HANDLER plpgsql_call_handler;
 
+-- Function: "DropApplication"("varchar")
+
+-- DROP FUNCTION "DropApplication"("varchar");
+
+-- The function is not complete.
+
+CREATE OR REPLACE FUNCTION "DropApplication"("varchar")
+  RETURNS bool AS
+'	select id from anwendungen where name = $1;
+
+	delete from formular_parameters where formularid in (select id from formulare where anwendungid in (select id from anwendungen where name = $1));
+	delete from anwendungs_parameter where anwendungid in (select id from anwendungen where name = $1);
+	delete from anwendungen_formulare where anwendungid in (select id from anwendungen where name = $1);
+	delete from user_anwendungen where anwendungenid in (select id from anwendungen where name = $1);
+	delete from formular_actions where formular in (select id from formulare where anwendungid in (select id from anwendungen where name = $1));
+	delete from formulare where anwendungid in (select id from anwendungen where name = $1);
+	delete from anwendungen where id in (select id from anwendungen where name = $1);
+
+	select true;'
+  LANGUAGE 'sql' VOLATILE;
+
+
 SET SESSION AUTHORIZATION 'dba';
 
 

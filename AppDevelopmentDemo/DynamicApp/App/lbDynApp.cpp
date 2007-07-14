@@ -1161,7 +1161,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 				appActionSteps->accept(*&fOp);
 			}
 			
-			if (!isFileAvailable && DBOperation && 
+			if ((metaapp->getLoadFromDatabase() || !isFileAvailable) && DBOperation && 
 				(reports != NULL) && 
 				(reportparams != NULL) && 
 				(reportelements != NULL) && 

@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.117 $
+ * $Revision: 1.118 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.117 2007/07/13 12:28:36 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.118 2007/07/14 08:50:26 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.118  2007/07/14 08:50:26  lollisoft
+ * Hopefully the last changes for 1.0rc1 release.
+ *
  * Revision 1.117  2007/07/13 12:28:36  lollisoft
  * Remaining code changes done and fixed database login bug.
  *
@@ -511,6 +514,7 @@ lb_MetaApplication::lb_MetaApplication() {
 	_autoselect = false;
 	_autorefresh = false;
 	_logged_in = false;
+	_force_use_database = false;
 	
 	isPropertyPanelFloating = false;
 	isPropertyPanelLeft = true;
@@ -764,19 +768,23 @@ lbErrCodes LB_STDCALL lb_MetaApplication::load() {
 			pl4 = PM->getFirstMatchingPlugin("lb_I_User_Applications", "Model");
 			ukPl4 = pl4->getImplementation();
 
+			QI(ukPl2, lb_I_UserAccounts, Users)
+			QI(ukPl3, lb_I_Applications, Applications)
+			QI(ukPl4, lb_I_User_Applications, User_Applications)
+
 			// Database read will be forced by login.
 			if (!_force_use_database) {
+				_LOG << "Read users, applications and user associations from file." LOG_
 				// Read an Users list
 				ukPl2->accept(*&fOp);
 				// Read an Applications list
 				ukPl3->accept(*&fOp);
 				// Read users applications
 				ukPl4->accept(*&fOp);
+			} else {
+				UAP(lb_I_Container, apps)
+				apps = getApplications();
 			}
-
-			QI(ukPl2, lb_I_UserAccounts, Users)
-			QI(ukPl3, lb_I_Applications, Applications)
-			QI(ukPl4, lb_I_User_Applications, User_Applications)
 
 			fOp->end();
 			
