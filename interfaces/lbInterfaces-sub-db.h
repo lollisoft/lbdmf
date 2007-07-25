@@ -946,11 +946,11 @@ public:
 	 */	
 	virtual lb_I_Query* LB_STDCALL getQuery(char* connectionname, int readonly = 1) = 0;
 	
-	virtual lb_I_Container* LB_STDCALL getTables() = 0;
-	virtual lb_I_Container* LB_STDCALL getColumns() = 0;
+	virtual lb_I_Container* LB_STDCALL getTables(char* connectionname) = 0;
+	virtual lb_I_Container* LB_STDCALL getColumns(char* connectionname) = 0;
 
-	virtual lb_I_Container* LB_STDCALL getForeignKeys() = 0;
-	virtual lb_I_Container* LB_STDCALL getPrimaryKeys() = 0;
+	virtual lb_I_Container* LB_STDCALL getForeignKeys(char* connectionname) = 0;
+	virtual lb_I_Container* LB_STDCALL getPrimaryKeys(char* connectionname) = 0;
 };
 /*...e*/
 /*...sclass lb_I_DatabaseForm:0:*/

@@ -283,7 +283,7 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Reports* reports) {
 		return;
 	}
 	
-	q = db->getQuery(ConnectionName->charrep(), 0);
+	q = db->getQuery("lbDMF", 0);
 
 	*query = "select id, name, description from reports";
 
@@ -318,7 +318,7 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_ReportParameters* reportparame
 		return;
 	}
 	
-	q = db->getQuery(ConnectionName->charrep(), 0);
+	q = db->getQuery("lbDMF", 0);
 
 	*query = "select id, reportid, name, value from report_parameters";
 
@@ -355,7 +355,7 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_ReportElements* reportelements
 		return;
 	}
 	
-	q = db->getQuery(ConnectionName->charrep(), 0);
+	q = db->getQuery("lbDMF", 0);
 
 	*query = "select id, reportid, typ, name, x, y, w, h, description from report_elements";
 
@@ -402,7 +402,7 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_ReportElementTypes* reportelem
 		return;
 	}
 	
-	q = db->getQuery(ConnectionName->charrep(), 0);
+	q = db->getQuery("lbDMF", 0);
 
 	*query = "select id, name, description from report_element_types";
 
@@ -437,7 +437,7 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_ReportTexts* textlines) {
 		return;
 	}
 	
-	q = db->getQuery(ConnectionName->charrep(), 0);
+	q = db->getQuery("lbDMF", 0);
 
 	*query = "select id, elementid, line, text from report_texts";
 
@@ -482,7 +482,7 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_UserAccounts* users) {
 		return;
 	}
 	
-	q = db->getQuery(ConnectionName->charrep(), 0);
+	q = db->getQuery("lbDMF", 0);
 	
 	q->skipFKCollecting();
 	
@@ -526,7 +526,7 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_DBForeignKeys* fkeys) {
 	
 	UAP(lb_I_Container, Tables)
 	
-	Tables = db->getForeignKeys();
+	Tables = db->getForeignKeys(ConnectionName->charrep());
 	
 	long i = 0;
 	
@@ -596,7 +596,7 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_DBPrimaryKeys* pkeys) {
 	
 	UAP(lb_I_Container, Tables)
 	
-	Tables = db->getPrimaryKeys();
+	Tables = db->getPrimaryKeys(ConnectionName->charrep());
 	
 	long i = 0;
 	
@@ -648,7 +648,7 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_DBTables* tables) {
 	
 	UAP(lb_I_Container, Tables)
 	
-	Tables = db->getTables();
+	Tables = db->getTables(ConnectionName->charrep());
 	
 	long i = 0;
 	
@@ -690,7 +690,7 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_DBColumns* columns) {
 	}
 	UAP(lb_I_Container, Columns)
 	
-	Columns = db->getColumns();
+	Columns = db->getColumns(ConnectionName->charrep());
 	
 	long i = 0;
 	
@@ -772,7 +772,7 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Translations* trans) {
 		return;
 	}
 	
-	q = db->getQuery(ConnectionName->charrep(), 0);
+	q = db->getQuery("lbDMF", 0);
 	
 	q->skipFKCollecting();
 	
@@ -823,7 +823,7 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_FormularParameter* params) {
 		return;
 	}
 	
-	q = db->getQuery(ConnectionName->charrep(), 0);
+	q = db->getQuery("lbDMF", 0);
 	
 	q->skipFKCollecting();
 	
@@ -869,7 +869,7 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Actions* actions) {
 		return;
 	}
 	
-	q = db->getQuery(ConnectionName->charrep(), 0);
+	q = db->getQuery("lbDMF", 0);
 	
 	q->skipFKCollecting();
 	
@@ -921,7 +921,7 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Action_Steps* action_steps) {
 		return;
 	}
 	
-	q = db->getQuery(ConnectionName->charrep(), 0);
+	q = db->getQuery("lbDMF", 0);
 	
 	q->skipFKCollecting();
 	
@@ -975,7 +975,7 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Action_Types* action_types) {
 		return;
 	}
 	
-	q = db->getQuery(ConnectionName->charrep(), 0);
+	q = db->getQuery("lbDMF", 0);
 	
 	q->skipFKCollecting();
 	
@@ -1024,7 +1024,7 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Formular_Actions* formular_act
 		return;
 	}
 	
-	q = db->getQuery(ConnectionName->charrep(), 0);
+	q = db->getQuery("lbDMF", 0);
 	
 	q->skipFKCollecting();
 	
@@ -1073,7 +1073,7 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_ApplicationParameter* params) 
 		return;
 	}
 	
-	q = db->getQuery(ConnectionName->charrep(), 0);
+	q = db->getQuery("lbDMF", 0);
 	
 	q->skipFKCollecting();
 	
@@ -1114,13 +1114,13 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Formular_Fields* formularfield
 	lbErrCodes err = ERR_NONE;
 	UAP(lb_I_Query, q)
 		
-		if (db == NULL) {
-			_LOG << "FATAL: Database imput stream could not work without a database!" LOG_
-			return;
-		}
+	if (db == NULL) {
+		_LOG << "FATAL: Database imput stream could not work without a database!" LOG_
+		return;
+	}
 	
-	q = db->getQuery(ConnectionName->charrep(), 0);
-	
+	q = db->getQuery("lbDMF", 0);
+
 	q->skipFKCollecting();
 	// Get all formulars, even one is custom
 	if (q->query("select id from formulare") != ERR_NONE) {
@@ -1132,12 +1132,14 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Formular_Fields* formularfield
 	
 	while (err == ERR_NONE) {
 		UAP(lb_I_Long, FormularID)
+		UAP(lb_I_Long, AnwendungID)
 		UAP(lb_I_Query, query_query)
+
 		UAP_REQUEST(getModuleInstance(), lb_I_String, query)
 		
-		query_query = db->getQuery("lbDMF", 0);
-		
 		FormularID = q->getAsLong(1);
+
+		query_query = db->getQuery("lbDMF", 0);
 		
 		*query = "select parametervalue from formular_parameters where formularid = ";
 		*query += FormularID->charrep();
@@ -1169,7 +1171,7 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Formular_Fields* formularfield
 							UAP(lb_I_String, t)
 							UAP(lb_I_String, c)
 							UAP(lb_I_Query, fkpkmapping_query)
-							fkpkmapping_query = db->getQuery(ConnectionName->charrep(), 0);
+							fkpkmapping_query = db->getQuery("lbDMF", 0);
 							
 							t = form_query->getPKTable(name);
 							c = form_query->getPKColumn(name);
@@ -1260,7 +1262,7 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Formular_Fields* formularfield
 		UAP(lb_I_Query, query_query)
 		UAP_REQUEST(getModuleInstance(), lb_I_String, query)
 		
-		query_query = db->getQuery(ConnectionName->charrep(), 0);
+		query_query = db->getQuery("lbDMF", 0);
 		
 		FormularID = q->getAsLong(1);
 		
@@ -1292,7 +1294,7 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Formular_Fields* formularfield
 							UAP(lb_I_String, t)
 							UAP(lb_I_String, c)
 							UAP(lb_I_Query, fkpkmapping_query)
-							fkpkmapping_query = db->getQuery(ConnectionName->charrep(), 0);
+							fkpkmapping_query = db->getQuery("lbDMF", 0);
 							
 							t = form_query->getPKTable(name);
 							c = form_query->getPKColumn(name);
@@ -1386,7 +1388,7 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Formulars* forms) {
 		return;
 	}
 	
-	q = db->getQuery(ConnectionName->charrep(), 0);
+	q = db->getQuery("lbDMF", 0);
 	
 	q->skipFKCollecting();
 	
@@ -1441,7 +1443,7 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Column_Types* columntypes) {
 		return;
 	}
 	
-	q = db->getQuery(ConnectionName->charrep(), 0);
+	q = db->getQuery("lbDMF", 0);
 	
 	q->skipFKCollecting();
 	
@@ -1485,7 +1487,7 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Applications* applications) {
 	lbErrCodes err = ERR_NONE;
 	UAP(lb_I_Query, q)
 	
-	q = db->getQuery(ConnectionName->charrep(), 0);
+	q = db->getQuery("lbDMF", 0);
 	
 	q->skipFKCollecting();
 
@@ -1533,7 +1535,7 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_User_Applications* user_applic
 	lbErrCodes err = ERR_NONE;
 	UAP(lb_I_Query, q)
 	
-	q = db->getQuery(ConnectionName->charrep(), 0);
+	q = db->getQuery("lbDMF", 0);
 	
 	q->skipFKCollecting();
 
