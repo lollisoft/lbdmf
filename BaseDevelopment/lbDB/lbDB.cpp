@@ -22,9 +22,9 @@
     The author of this work will be reached by e-Mail or paper mail.
     e-Mail: lothar.behrens@lollisoft.de
     p-Mail: Lothar Behrens
-            Rosmarinstr. 3
+            Heinrich-Scheufelen-Platz 2
             
-            40235 Duesseldorf (germany)
+            73252 Lenningen (germany)
 */
 /*...e*/
 
@@ -1923,7 +1923,7 @@ int LB_STDCALL lbQuery::hasFKColumn(char* FKName) {
 		UAP_REQUEST(manager.getPtr(), lb_I_String, s)
 	
 		s->setData(FKName);
-		s->toLower();
+		//s->toLower();
 		
 		QI(s, lb_I_KeyBase, key)
 	
@@ -2034,7 +2034,7 @@ lb_I_String* LB_STDCALL lbQuery::getPKTable(char const * FKName) {
 	UAP_REQUEST(manager.getPtr(), lb_I_String, s)
 	
 	s->setData(FKName);
-	s->toLower();
+	//s->toLower();
 	
 	QI(s, lb_I_KeyBase, key)
 	
@@ -2050,7 +2050,9 @@ lb_I_String* LB_STDCALL lbQuery::getPKTable(char const * FKName) {
 		
 		return string.getPtr();
 	}
-
+	
+	_LOG << "Error: Didn't found primary table from foreign key name. (" << FKName << ")" LOG_
+	
 	return NULL;
 }
 /*...e*/
@@ -2125,10 +2127,10 @@ lb_I_String* LB_STDCALL lbQuery::getPKColumn(char const * FKName) {
 	      if (isVerbose()) printf("%-s ( %-s ) <-- %-s ( %-s ) compare foreign column with: %s\n", szPkTable, szPkCol, szFkTable, szFkCol, FKName);
 	      
 	      *comp = (char*) szFkCol;
-	      comp->toLower();
+	      //comp->toLower();
 	      
 	      *comp1 = FKName;
-	      comp1->toLower();
+	      //comp1->toLower();
 	      
 	      if (strcmp(comp1->charrep(), comp->charrep()) == 0) {
 	      	UAP_REQUEST(manager.getPtr(), lb_I_String, c)
@@ -2280,8 +2282,8 @@ void LB_STDCALL lbQuery::prepareFKList() {
 	      FKName->setData((char*) szFkCol);
 	      PKTable->setData((char*) szPkTable);
 
-	      FKName->toLower();
-	      PKTable->toLower();
+	      //FKName->toLower();
+	      //PKTable->toLower();
 	      
 	      UAP(lb_I_Unknown, uk_PKTable)
 	      UAP(lb_I_KeyBase, key_FKName)
@@ -2297,7 +2299,7 @@ void LB_STDCALL lbQuery::prepareFKList() {
 	      *PKTable_PKName = (char*) szPkTable;
 	      *PKTable_PKName += (char*) szPkCol;
 	      
-	      PKTable_PKName->toLower();
+	      //PKTable_PKName->toLower();
 	      
 	      QI(PKTable_PKName, lb_I_KeyBase, key_PKTable_PKName)
 	      QI(FKName, lb_I_Unknown, uk_FKName)
@@ -2391,8 +2393,8 @@ void LB_STDCALL lbQuery::prepareFKList() {
 				PKName = q->getAsString(2);
 		
 				FKName->setData(column);
-				FKName->toLower();
-				PKTable->toLower();
+				//FKName->toLower();
+				//PKTable->toLower();
 		
 		
 				UAP(lb_I_Unknown, uk_PKTable)
@@ -2417,7 +2419,7 @@ void LB_STDCALL lbQuery::prepareFKList() {
 				QI(PKTable_PKName, lb_I_KeyBase, key_PKTable_PKName)
 				QI(FKName, lb_I_Unknown, uk_FKName)
 
-				PKTable_PKName->toLower();
+				//PKTable_PKName->toLower();
 
 				_CL_VERBOSE << "Insert map for '" << key_PKTable_PKName->charrep() << 
 					"' to '" << FKName->charrep() << "'" LOG_
@@ -2693,8 +2695,9 @@ char* LB_STDCALL lbQuery::getTableName(char* columnName) {
 				  NumericAttributePtr);
 			
 		if ((retcode == SQL_ERROR) || (retcode == SQL_SUCCESS_WITH_INFO)) {
-			_CL_LOG << "ERROR: SQLColAttribute(...) failed." LOG_
-			dbError("SQLColAttribute()", hstmt);
+			_LOG << "ERROR: SQLColAttribute('" << columnName << "') failed." LOG_
+			//dbError("SQLColAttribute()", hstmt);
+			
 		}
 		
 		if (lpszTable == NULL) {
@@ -4749,11 +4752,11 @@ public:
 	lbErrCodes	LB_STDCALL setUser(char* _user);
 	lbErrCodes	LB_STDCALL setDB(char* _db);	
 	
-	lb_I_Container* LB_STDCALL getTables();
-	lb_I_Container* LB_STDCALL getColumns();
+	lb_I_Container* LB_STDCALL getTables(char* connectionname);
+	lb_I_Container* LB_STDCALL getColumns(char* connectionname);
 	
-	lb_I_Container* LB_STDCALL getForeignKeys();
-	lb_I_Container* LB_STDCALL getPrimaryKeys();
+	lb_I_Container* LB_STDCALL getForeignKeys(char* connectionname);
+	lb_I_Container* LB_STDCALL getPrimaryKeys(char* connectionname);
 	
 private:
 	RETCODE  retcode;
@@ -4994,10 +4997,33 @@ lb_I_Query* LB_STDCALL lbDatabase::getQuery(char* connectionname, int readonly) 
 }
 /*...e*/
 
-lb_I_Container* LB_STDCALL lbDatabase::getTables() {
+lb_I_Container* LB_STDCALL lbDatabase::getTables(char* connectionname) {
 	lbErrCodes err = ERR_NONE;
 	UAP_REQUEST(getModuleInstance(), lb_I_Container, tables)
 	tables++;
+	
+	UAP_REQUEST(manager.getPtr(), lb_I_String, ConnectionName)
+	*ConnectionName = connectionname;
+	
+	UAP(lb_I_KeyBase, key)
+	UAP(lb_I_Unknown, uk)
+	
+	QI(ConnectionName, lb_I_KeyBase, key)
+	
+	if (connPooling->exists(&key) == 1) {
+	    UAP(lb_I_Connection, con)
+	    
+	    uk = connPooling->getElement(&key);
+	    
+	    QI(uk, lb_I_Connection, con)
+	    
+	    if (con != NULL) {
+			lbConnection* c = (lbConnection*) con.getPtr();
+		
+			hdbc = c->getConnection();
+			connected = true;
+		}
+	}
 	
 	tables->setCloning(false);
 	
@@ -5036,7 +5062,6 @@ lb_I_Container* LB_STDCALL lbDatabase::getTables() {
 	UAP_REQUEST(getModuleInstance(), lb_I_String, value)
 
 	UAP_REQUEST(getModuleInstance(), lb_I_Long, index)
-	UAP(lb_I_KeyBase, key)
 	QI(index, lb_I_KeyBase, key)
 	
 	long i = 0;
@@ -5084,10 +5109,33 @@ lb_I_Container* LB_STDCALL lbDatabase::getTables() {
 	return tables.getPtr();
 }
 
-lb_I_Container* LB_STDCALL lbDatabase::getColumns() {
+lb_I_Container* LB_STDCALL lbDatabase::getColumns(char* connectionname) {
 	lbErrCodes err = ERR_NONE;
 	UAP_REQUEST(getModuleInstance(), lb_I_Container, columns)
 	columns++;
+	
+	UAP_REQUEST(manager.getPtr(), lb_I_String, ConnectionName)
+	*ConnectionName = connectionname;
+	
+	UAP(lb_I_KeyBase, key)
+	UAP(lb_I_Unknown, uk)
+	
+	QI(ConnectionName, lb_I_KeyBase, key)
+	
+	if (connPooling->exists(&key) == 1) {
+	    UAP(lb_I_Connection, con)
+	    
+	    uk = connPooling->getElement(&key);
+	    
+	    QI(uk, lb_I_Connection, con)
+	    
+	    if (con != NULL) {
+			lbConnection* c = (lbConnection*) con.getPtr();
+		
+			hdbc = c->getConnection();
+			connected = true;
+		}
+	}
 	
 	columns->setCloning(false);
 
@@ -5256,7 +5304,7 @@ lb_I_Container* LB_STDCALL lbDatabase::getColumns() {
 	return columns.getPtr();
 }
 
-lb_I_Container* LB_STDCALL lbDatabase::getPrimaryKeys() {
+lb_I_Container* LB_STDCALL lbDatabase::getPrimaryKeys(char* connectionname) {
 	lbErrCodes err = ERR_NONE;
 	_LOG << "lbDatabase::getPrimaryKeys() called." LOG_
 #define TAB_LEN SQL_MAX_TABLE_NAME_LEN + 1
@@ -5283,6 +5331,28 @@ lb_I_Container* LB_STDCALL lbDatabase::getPrimaryKeys() {
 	SQLHSTMT      hstmt;
 	SQLRETURN     retcode;
 	
+	UAP_REQUEST(manager.getPtr(), lb_I_String, ConnectionName)
+	*ConnectionName = connectionname;
+	
+	UAP(lb_I_KeyBase, key)
+	UAP(lb_I_Unknown, uk)
+	
+	QI(ConnectionName, lb_I_KeyBase, key)
+	
+	if (connPooling->exists(&key) == 1) {
+	    UAP(lb_I_Connection, con)
+	    
+	    uk = connPooling->getElement(&key);
+	    
+	    QI(uk, lb_I_Connection, con)
+	    
+	    if (con != NULL) {
+			lbConnection* c = (lbConnection*) con.getPtr();
+		
+			hdbc = c->getConnection();
+			connected = true;
+		}
+	}
 		
 	retcode = SQLAllocStmt(hdbc, &hstmt); /* Statement handle */
 	
@@ -5295,7 +5365,7 @@ lb_I_Container* LB_STDCALL lbDatabase::getPrimaryKeys() {
 	UAP(lb_I_Container, tables)
 	
 	
-	tables = getTables();
+	tables = getTables(connectionname);
 	
 	
 	while (tables->hasMoreElements() == 1) {
@@ -5387,7 +5457,7 @@ lb_I_Container* LB_STDCALL lbDatabase::getPrimaryKeys() {
 	return PrimaryKeys.getPtr();
 }
 
-lb_I_Container* LB_STDCALL lbDatabase::getForeignKeys() {
+lb_I_Container* LB_STDCALL lbDatabase::getForeignKeys(char* connectionname) {
 	lbErrCodes err = ERR_NONE;
 #define TAB_LEN SQL_MAX_TABLE_NAME_LEN + 1
 #define COL_LEN SQL_MAX_COLUMN_NAME_LEN + 1
@@ -5425,6 +5495,29 @@ lb_I_Container* LB_STDCALL lbDatabase::getForeignKeys() {
 
 	SQLHSTMT		hstmt;
 
+	UAP_REQUEST(manager.getPtr(), lb_I_String, ConnectionName)
+	*ConnectionName = connectionname;
+	
+	UAP(lb_I_KeyBase, key)
+	UAP(lb_I_Unknown, uk)
+	
+	QI(ConnectionName, lb_I_KeyBase, key)
+	
+	if (connPooling->exists(&key) == 1) {
+	    UAP(lb_I_Connection, con)
+	    
+	    uk = connPooling->getElement(&key);
+	    
+	    QI(uk, lb_I_Connection, con)
+	    
+	    if (con != NULL) {
+			lbConnection* c = (lbConnection*) con.getPtr();
+		
+			hdbc = c->getConnection();
+			connected = true;
+		}
+	}
+	
 	retcode = SQLAllocStmt(hdbc, &hstmt); /* Statement handle */
 	
 	if (retcode != SQL_SUCCESS)
@@ -5453,7 +5546,7 @@ lb_I_Container* LB_STDCALL lbDatabase::getForeignKeys() {
 	UAP(lb_I_Container, tables)
 	
 	
-	tables = getTables();
+	tables = getTables(connectionname);
 	
 	
 	while (tables->hasMoreElements() == 1) {
