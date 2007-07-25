@@ -27,7 +27,7 @@
 #ifdef __WXMSW__
 #include <sqlext.h>
 #else
-#include <wx/isqlext.h>		// because we need TIMESTAMP_STRUCT
+#include <sqlext.h>
 #endif
 #include <wx/variant.h>
 #include <wx/print.h>
