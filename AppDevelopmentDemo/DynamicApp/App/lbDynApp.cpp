@@ -1077,11 +1077,102 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 		} else {
 			pl = PM->getFirstMatchingPlugin("lb_I_DatabaseOperation", "DatabaseInputStreamVisitor");
 			if (pl != NULL)	ukPl = pl->getImplementation();
-			if (ukPl != NULL) QI(ukPl, lb_I_DatabaseOperation, fOpDB)
-				isDBAvailable = fOpDB->begin("lbDMF", database.getPtr());
-			DBOperation = true;
+			if (ukPl != NULL) QI(ukPl, lb_I_DatabaseOperation, fOpDB) 
+			if (fOpDB != NULL) {
+				UAP(lb_I_ApplicationParameter, appParams)
+				AQUIRE_PLUGIN(lb_I_ApplicationParameter, Model, appParams, "'application parameters'")
+			
+				if (fOpDB->begin("lbDMF", database.getPtr())) {
+					_LOG << "System database is available. Read database connection parameters from there." LOG_
+					appParams->accept(*&fOpDB);
+					fOpDB->end();
+				} else {
+					// System database is not available
+					UAP(lb_I_Formulars, forms)
+					UAP(lb_I_Formular_Fields, formularfields)
+					UAP(lb_I_Column_Types, columntypes)
+					UAP(lb_I_FormularParameter, formParams)
+					UAP(lb_I_Formular_Actions, formActions)
+					UAP(lb_I_Actions, appActions)
+					UAP(lb_I_Action_Steps, appActionSteps)
+					UAP(lb_I_Action_Types, appActionTypes)
+					UAP(lb_I_DBTables, dbTables)
+					UAP(lb_I_DBColumns, dbColumns)
+					UAP(lb_I_DBPrimaryKeys, dbPrimaryKeys)
+					UAP(lb_I_DBForeignKeys, dbForeignKeys)
+
+					UAP(lb_I_Reports, reports)
+					UAP(lb_I_ReportParameters, reportparams)
+					UAP(lb_I_ReportElements, reportelements)
+					UAP(lb_I_ReportElementTypes, reportelementtypes)
+					UAP(lb_I_ReportTexts, reporttextblocks)
+					
+					if (isFileAvailable) {
+						AQUIRE_PLUGIN(lb_I_Reports, Model, reports, "'database report'")
+						AQUIRE_PLUGIN(lb_I_ReportParameters, Model, reportparams, "'database report parameter'")
+						AQUIRE_PLUGIN(lb_I_ReportElements, Model, reportelements, "'database report elements'")
+						AQUIRE_PLUGIN(lb_I_ReportElementTypes, Model, reportelementtypes, "'database report element types'")
+						AQUIRE_PLUGIN(lb_I_ReportTexts, Model, reporttextblocks, "'database report text blocks'")
+						AQUIRE_PLUGIN(lb_I_Column_Types, Model, columntypes, "'column types'")
+						AQUIRE_PLUGIN(lb_I_Actions, Model, appActions, "'actions'")
+						AQUIRE_PLUGIN(lb_I_Formular_Actions, Model, formActions, "'formular actions'")
+						AQUIRE_PLUGIN(lb_I_Action_Types, Model, appActionTypes, "'action types'")
+						AQUIRE_PLUGIN(lb_I_Action_Steps, Model, appActionSteps, "'action steps'")
+						AQUIRE_PLUGIN(lb_I_Formulars, Model, forms, "'formulars'")
+						AQUIRE_PLUGIN(lb_I_Formular_Fields, Model, formularfields, "'formular fields'")
+						AQUIRE_PLUGIN(lb_I_FormularParameter, Model, formParams, "'formular parameters'")
+						
+						
+						metaapp->setStatusText("Info", "Preload application data from file ...");
+						
+						reports->accept(*&fOp);
+						reportparams->accept(*&fOp);
+						reportelements->accept(*&fOp);
+						reportelementtypes->accept(*&fOp);
+						reporttextblocks->accept(*&fOp);
+						
+						forms->accept(*&fOp);
+						formularfields->accept(*&fOp);
+						columntypes->accept(*&fOp);
+						formActions->accept(*&fOp);
+						formParams->accept(*&fOp);
+						appParams->accept(*&fOp);
+						appActions->accept(*&fOp);
+						appActionTypes->accept(*&fOp);
+						appActionSteps->accept(*&fOp);
+						fOp->end();
+					} else {
+						// FATAL: No system database and no file.
+						metaapp->msgBox("Fatal", "No system database has been setup and no previously created file is available.");
+						return ERR_NONE;
+					}
+				}
+			
+				// If the applications database is not the system database, also connect to that database too. 
+				if (strcmp(appParams->getParameter("DBName", metaapp->getApplicationID()), "lbDMF") != 0) {
+					UAP_REQUEST(getModuleInstance(), lb_I_String, DBName)
+					UAP_REQUEST(getModuleInstance(), lb_I_String, DBUser)
+					UAP_REQUEST(getModuleInstance(), lb_I_String, DBPass)
+					
+					*DBName = appParams->getParameter("DBName", metaapp->getApplicationID());
+					*DBUser = appParams->getParameter("DBUser", metaapp->getApplicationID());
+					*DBPass = appParams->getParameter("DBPass", metaapp->getApplicationID());
+					
+					if ((database != NULL) && (database->connect(DBName->charrep(), DBName->charrep(), DBUser->charrep(), DBPass->charrep()) != ERR_NONE)) {
+						_LOG << "Warning: No application database available. (DBName=" << DBName->charrep() << ", DBUser=" << DBUser->charrep() << ", ApplicationID=" << metaapp->getApplicationID() << ")" LOG_
+					}				
+				}
+				
+				// Pass the applications ODBC database name.
+				isDBAvailable = fOpDB->begin(appParams->getParameter("DBName", metaapp->getApplicationID()), database.getPtr());			
+				DBOperation = true;
+			}
 		}
-	}	
+	}
+	
+
+		
+	
 	
 	_CL_LOG << "Load application settings from file or database ..." LOG_
 
