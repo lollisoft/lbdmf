@@ -1497,24 +1497,27 @@ void LB_STDCALL lbDatabasePanel::updateFromMaster() {
 	for (int i = 1; i <= columns-1; i++) {
 		colName = _master->getPrimaryColumn(i);
 		
+		*newMasterIDQuery += "\"";
 		*newMasterIDQuery += colName->charrep();
-		*newMasterIDQuery += ", ";
+		*newMasterIDQuery += "\", \"";
 	}
 
 	colName = _master->getPrimaryColumn(columns);
 		
+	*newMasterIDQuery += "\"";
 	*newMasterIDQuery += colName->charrep();
+	*newMasterIDQuery += "\"";
 
 	
-	*newMasterIDQuery += " from ";
+	*newMasterIDQuery += " from \"";
 	*newMasterIDQuery += _master->getTableName(SourceFieldName->charrep());
-	*newMasterIDQuery += " where ";
+	*newMasterIDQuery += "\" where \"";
 	*newMasterIDQuery += SourceFieldName->charrep();
 
 	if (isChar) 
-		*newMasterIDQuery += " = '";
+		*newMasterIDQuery += "\" = '";
 	else
-		*newMasterIDQuery += " = ";
+		*newMasterIDQuery += "\" = ";
 	
 	*newMasterIDQuery += SourceFieldValue->charrep();
 

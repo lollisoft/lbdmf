@@ -118,7 +118,7 @@ void lbConfigure_FK_PK_MappingDialog::OnFKComboBoxSelected( wxCommandEvent &even
 	
 	PKTable = sourceQuery->getPKTable(s.c_str());
 	
-	char buf[] = "select * from %s";
+	char buf[] = "select * from \"%s\"";
 	char* buffer = (char*) malloc(strlen(buf)+strlen(PKTable->charrep())+1);
 	sprintf(buffer, buf, PKTable->charrep());
 	
@@ -138,6 +138,12 @@ void lbConfigure_FK_PK_MappingDialog::OnFKComboBoxSelected( wxCommandEvent &even
 		char* name = sampleQuery->getColumnName(i);
 		cBoxPKNames->Append(wxString(name));
 	}
+	
+	if (sampleQuery->getColumns() == 0) {
+		_LOG << "Error: Should have got some columns from the query: " << buffer LOG_
+	}
+	
+	free(buffer);
 	
 	cBoxPKNames->Enable();
 	cBoxPKNames->SetSelection(-1);
