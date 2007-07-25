@@ -529,6 +529,12 @@ DLLEXPORT lbErrCodes LB_STDCALL lbLoadModule(const char* name, HINSTANCE & hinst
 					free(newname);
 						
 					return ERR_NONE;
+				} else {
+					char* errmsg = dlerror();
+					
+					if (errmsg != NULL) {
+						printf("DLERROR: %s\n", errmsg);
+					}
 				}
 				
 				free(newname);
@@ -558,6 +564,12 @@ DLLEXPORT lbErrCodes LB_STDCALL lbLoadModule(const char* name, HINSTANCE & hinst
 				free(newname);
 				
 				return ERR_NONE;
+			} else {
+					char* errmsg = dlerror();
+					
+					if (errmsg != NULL) {
+						printf("DLERROR: %s\n", errmsg);
+					}
 			}
 			
 			free(newname);
