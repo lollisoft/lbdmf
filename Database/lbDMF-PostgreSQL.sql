@@ -820,7 +820,7 @@ insert into Anwendungen (Name, Titel, ModuleName, Functor, Interface) Values (
 insert into Anwendungen (Name, Titel, ModuleName, Functor, Interface) Values (
 'lbDMF Codegenerator',
 'Generiert Code von lbDMF Daten',
-'lbDMFAppWriter',
+'lbDMFProjectApp',
 'instanceOfApplication',
 'lb_I_Application');
 
