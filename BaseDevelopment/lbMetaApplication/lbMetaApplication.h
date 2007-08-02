@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.50 $
+ * $Revision: 1.51 $
  * $Name:  $
- * $Id: lbMetaApplication.h,v 1.50 2007/07/11 14:49:14 lollisoft Exp $
+ * $Id: lbMetaApplication.h,v 1.51 2007/08/02 07:01:57 lollisoft Exp $
  *
  * $Log: lbMetaApplication.h,v $
+ * Revision 1.51  2007/08/02 07:01:57  lollisoft
+ * Added member function to remove a toolbar.
+ *
  * Revision 1.50  2007/07/11 14:49:14  lollisoft
  * Added flag to force database usage and changed code to
  * support the flag.
@@ -327,6 +330,7 @@ public:
 	lbErrCodes LB_STDCALL addTextField(char* name, int x, int y, int w, int h);
 	
 	lbErrCodes LB_STDCALL addToolBar(char* toolbarName);
+	lbErrCodes LB_STDCALL removeToolBar(char* toolbarName);
 	lbErrCodes LB_STDCALL addToolBarButton(char* toolbarName, char* entry, char* evHandler, char* toolbarimage, char* afterentry = NULL);
 	lbErrCodes LB_STDCALL removeToolBarButton(char* toolbarName, char* entry);
 	lbErrCodes LB_STDCALL toggleToolBarButton(char* toolbarName, char* entry);

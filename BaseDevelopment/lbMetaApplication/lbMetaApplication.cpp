@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.118 $
+ * $Revision: 1.119 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.118 2007/07/14 08:50:26 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.119 2007/08/02 07:06:06 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.119  2007/08/02 07:06:06  lollisoft
+ * Added member function to remove a toolbar.
+ *
  * Revision 1.118  2007/07/14 08:50:26  lollisoft
  * Hopefully the last changes for 1.0rc1 release.
  *
@@ -1529,6 +1532,29 @@ lbErrCodes LB_STDCALL lb_MetaApplication::loadApplication(char* user, char* appl
 /*...e*/
 
 /*...sBasic functions to be used for a UI application:0:*/
+
+lbErrCodes LB_STDCALL lb_MetaApplication::removeToolBar(char* toolbarName)	{
+	lbErrCodes err = ERR_NONE;
+
+	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, value)
+
+	parameter->setData("toolbarName");
+	value->setData(toolbarName);
+	param->setUAPString(*&parameter, *&value);
+
+	UAP(lb_I_Unknown, uk)
+	QI(param, lb_I_Unknown, uk)
+	
+	UAP_REQUEST(manager.getPtr(), lb_I_String, result)
+	UAP(lb_I_Unknown, uk_result)
+	QI(result, lb_I_Unknown, uk_result)
+	
+	dispatcher->dispatch("removeToolBar", uk.getPtr(), &uk_result);
+
+	return err;
+}
 
 /*...slbErrCodes LB_STDCALL lb_MetaApplication\58\\58\addToolBar\40\char\42\ toolbarName\41\:0:*/
 lbErrCodes LB_STDCALL lb_MetaApplication::addToolBar(char* toolbarName)	{

@@ -2637,6 +2637,9 @@ public:
 	/// \brief Add a toolbar to the main window.
 	virtual lbErrCodes LB_STDCALL addToolBar(char* toolbarName) = 0;
 
+	/// \brief Remove a toolbar to the main window.
+	virtual lbErrCodes LB_STDCALL removeToolBar(char* toolbarName) = 0;
+
 	/// \brief Add or insert a tool to the toolbar.
 	virtual lbErrCodes LB_STDCALL addToolBarButton(char* toolbarName, char* entry, char* evHandler, char* toolbarimage, char* afterentry = NULL) = 0; 
 
