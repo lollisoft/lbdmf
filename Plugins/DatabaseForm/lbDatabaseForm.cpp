@@ -933,7 +933,12 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 						s = sampleQuery->getAsString(i);
 						wxDateTime dt;
 						dt.ParseDate(wxString(s->charrep()));
+#ifdef WINDOWS						
+						wxDatePickerCtrl *date = new wxDatePickerCtrl(this, -1, dt, wxPoint(), wxDefaultSize, wxDP_DROPDOWN|wxDP_SHOWCENTURY);
+#endif
+#ifndef WINDOWS
 						wxDatePickerCtrl *date = new wxDatePickerCtrl(this, -1, dt, wxPoint(), wxDefaultSize);
+#endif
 						date->SetName(name);
 						sizerRight->Add(date, 1, wxEXPAND | wxALL, 5);
 						
