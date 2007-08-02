@@ -33,11 +33,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.26 $
+ * $Revision: 1.27 $
  * $Name:  $
- * $Id: wxWrapperDLL.h,v 1.26 2007/06/16 10:26:54 lollisoft Exp $
+ * $Id: wxWrapperDLL.h,v 1.27 2007/08/02 07:12:00 lollisoft Exp $
  *
  * $Log: wxWrapperDLL.h,v $
+ * Revision 1.27  2007/08/02 07:12:00  lollisoft
+ * Added member function to remove a toolbar.
+ *
  * Revision 1.26  2007/06/16 10:26:54  lollisoft
  * This changes let the application successfully run under Solaris. Also a bug is fixed that caused a crash at application exit.
  *
@@ -348,6 +351,9 @@ public:
 
         /// \brief Add a toolbar to the frame.
 	lbErrCodes LB_STDCALL addToolBar(lb_I_Unknown* uk);
+	
+	/// \brief Add a tool to the toolbar.
+	lbErrCodes LB_STDCALL removeToolBar(lb_I_Unknown* uk);
 	
 	/// \brief Add a tool to the toolbar.
 	lbErrCodes LB_STDCALL addTool_To_ToolBar(lb_I_Unknown* uk);
