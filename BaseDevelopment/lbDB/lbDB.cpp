@@ -1927,7 +1927,8 @@ int LB_STDCALL lbQuery::hasFKColumn(char* FKName) {
 		
 		QI(s, lb_I_KeyBase, key)
 	
-		if (ForeignColumns->exists(&key) == 1) {
+		if (ForeignColumns != NULL) {
+			if (ForeignColumns->exists(&key) == 1) {
 			UAP(lb_I_Unknown, uk)
 			UAP(lb_I_String, s)
 			
@@ -1936,8 +1937,8 @@ int LB_STDCALL lbQuery::hasFKColumn(char* FKName) {
 			
 			// Check, if FKName does not point from other table to me
 			if (strcmp(s->charrep(), getTableName(FKName)) != 0) return 1;
+			}
 		}
-
 	}
 
 	return 0;
@@ -2581,6 +2582,7 @@ bool LB_STDCALL lbQuery::isNull(int pos) {
 }
 
 bool	LB_STDCALL lbQuery::isNull(char const * name) {
+	if (boundColumns == NULL) return true;
 	return boundColumns->isNull(name);
 }
 
@@ -3179,7 +3181,11 @@ lbErrCodes LB_STDCALL lbQuery::last() {
 /*...e*/
 /*...slbErrCodes LB_STDCALL lbQuery\58\\58\setString\40\lb_I_String\42\ columnName\44\ lb_I_String\42\ value\41\:0:*/
 lbErrCodes LB_STDCALL lbQuery::setString(lb_I_String* columnName, lb_I_String* value) {
-
+	if (boundColumns == NULL) {
+		_LOG << "lbQuery::setString() failed!" LOG_
+		return ERR_NONE;
+	}
+	
 	if (_readonly == 1) return ERR_DB_READONLY;
 	if (mode == 1) {
 		boundColumns->setString(columnName->charrep(), value);
@@ -3330,6 +3336,10 @@ lbErrCodes LB_STDCALL lbQuery::update() {
 			mode = 0;
 			free(CursorName);
 			return ERR_DB_UPDATEFAILED;
+		}
+	} else {
+		if (mode == 1) {
+			_LOG << "Error: Be in add mode, but have no bound columns instance!" LOG_
 		}
 	}
 	
@@ -3564,6 +3574,8 @@ lb_I_Query::lbDBColumnTypes LB_STDCALL lbBoundColumn::getType() {
 			
 		case SQL_DATE:
 		case SQL_TYPE_DATE:
+			return lb_I_Query::lbDBColumnDate;
+
 		case SQL_CHAR:
 		case SQL_VARCHAR:
 		case SQL_LONGVARCHAR: 
@@ -3785,9 +3797,22 @@ lbErrCodes LB_STDCALL lbBoundColumn::setFromString(lb_I_String* set, int mode) {
 		
 		if (mode == 1) {
 			switch (_DataType) {
-				case SQL_FLOAT:
 				case SQL_DATE:
 				case SQL_TYPE_DATE:
+				{
+					// Must set an offset for the insert buffer
+					
+					char* bb = (char*) buffer;
+					
+					char* b = strcpy(bb + ColumnSize + 1, set->getData());
+					cbBufferLength[1] = strlen((char*) buffer);
+					if (cbBufferLength[1] > ColumnSize+1) {
+						_LOG << "Error: Set a date from string exceeds buffer size. Buffer size is " << (long) ColumnSize+1 << ", input is '" << set->charrep() << "'" LOG_
+					}
+
+				}
+					break;
+				case SQL_FLOAT:
 				case SQL_CHAR:
 				case SQL_VARCHAR:
 				case SQL_LONGVARCHAR:
@@ -3872,9 +3897,17 @@ lbErrCodes LB_STDCALL lbBoundColumn::setFromString(lb_I_String* set, int mode) {
 			}
 		} else {
 			switch (_DataType) {
-				case SQL_FLOAT:
 				case SQL_DATE:
 				case SQL_TYPE_DATE:
+				{
+					char* b = strcpy((char*) buffer, set->getData());
+					cbBufferLength[0] = strlen((char*) buffer);
+					if (cbBufferLength[0] > ColumnSize+1) {
+						_LOG << "Error: Set a date from string exceeds buffer size. Buffer size is " << (long) ColumnSize+1 << ", input is '" << set->charrep() << "'" LOG_
+					}
+				}
+					break;
+				case SQL_FLOAT:
 				case SQL_CHAR:
 				case SQL_VARCHAR:
 				case SQL_LONGVARCHAR:
@@ -3886,6 +3919,9 @@ lbErrCodes LB_STDCALL lbBoundColumn::setFromString(lb_I_String* set, int mode) {
 				{
 					char* b = strcpy((char*) buffer, set->getData());
 					cbBufferLength[0] = strlen((char*) buffer);
+					if (cbBufferLength[0] > ColumnSize+1) {
+						_LOG << "Error: Set a string from string exceeds buffer size. Buffer size is " << (long) ColumnSize+1 << ", input is '" << set->charrep() << "'" LOG_
+					}
 				}
 					break;
 				case SQL_INTEGER:
