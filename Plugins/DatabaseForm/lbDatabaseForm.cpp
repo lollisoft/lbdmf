@@ -91,6 +91,7 @@ extern "C" {
 
 #include "wx/wizard.h"
 #include <wx/image.h>
+#include <wx/datectrl.h>
 /*...e*/
 
 #include <lbDatabaseForm.h>
@@ -652,6 +653,9 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 /*...sHave mapping to visible data for the combobox:64:*/
 				UAP_REQUEST(manager.getPtr(), lb_I_String, PKName)
 				UAP_REQUEST(manager.getPtr(), lb_I_String, PKTable)
+
+				UAP_REQUEST(manager.getPtr(), lb_I_String, TargetPKColumn)
+
 				UAP(lb_I_String, s)
 				
 				
@@ -667,8 +671,12 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 				
 				buffer[0] = 0;
 				
+				*TargetPKColumn = sampleQuery->getPKColumn(name);
+				
 				// This query is dynamic. Thus it could not mapped to an object. Also these data is from target database, not config database.
-				sprintf(buffer, "select %s, id from %s order by id", PKName->charrep(), PKTable->charrep());
+				sprintf(buffer, "select \"%s\", \"%s\" from \"%s\" order by \"%s\"", PKName->charrep(), TargetPKColumn->charrep(), PKTable->charrep(), TargetPKColumn->charrep());
+				
+				_LOG << "Fill combobox based on the following query: " << buffer LOG_
 				
 				UAP(lb_I_Query, ReplacementColumnQuery)
 				
@@ -913,6 +921,24 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 						
 						if (FFI->isReadonly(name)) {
 							text->Disable();
+						}
+
+						createdControl = true;
+					}
+					break;
+				case lb_I_Query::lbDBColumnDate:
+					{
+						UAP(lb_I_String, s)
+						
+						s = sampleQuery->getAsString(i);
+						wxDateTime dt;
+						dt.ParseDate(wxString(s->charrep()));
+						wxDatePickerCtrl *date = new wxDatePickerCtrl(this, -1, dt, wxPoint(), wxDefaultSize);
+						date->SetName(name);
+						sizerRight->Add(date, 1, wxEXPAND | wxALL, 5);
+						
+						if (FFI->isReadonly(name)) {
+							date->Disable();
 						}
 
 						createdControl = true;
@@ -1508,9 +1534,14 @@ void LB_STDCALL lbDatabasePanel::updateFromMaster() {
 	*newMasterIDQuery += colName->charrep();
 	*newMasterIDQuery += "\"";
 
+	UAP_REQUEST(getModuleInstance(), lb_I_String, tableName)
 	
-	*newMasterIDQuery += " from \"";
-	*newMasterIDQuery += _master->getTableName(SourceFieldName->charrep());
+	*tableName = _master->getTableName(SourceFieldName->charrep());
+	
+	tableName->replace("\"", "");
+	
+	*newMasterIDQuery += " from \"";	
+	*newMasterIDQuery += tableName->charrep();
 	*newMasterIDQuery += "\" where \"";
 	*newMasterIDQuery += SourceFieldName->charrep();
 
@@ -1750,7 +1781,9 @@ void LB_STDCALL lbDatabasePanel::updateFromMaster() {
 				return;
 			}
 
+			*newWhereClause += "\"";
 			*newWhereClause += fk->charrep();
+			*newWhereClause += "\"";
 
 			wxWindow* w = FindWindowByName(wxString(fk->charrep()), this);
 			if (w) w->Hide();
@@ -1950,10 +1983,11 @@ void LB_STDCALL lbDatabasePanel::updateFromDetail() {
 		*newMasterIDQuery += colName->charrep();
 	}
 
-	*newMasterIDQuery += " from ";
+	*newMasterIDQuery += " from '";
 	*newMasterIDQuery += _detail->getTableName(SourceFieldName->charrep());
-	*newMasterIDQuery += " where ";
+	*newMasterIDQuery += "' where \"";
 	*newMasterIDQuery += SourceFieldName->charrep();
+	*newMasterIDQuery += "\"";
 
 	if (isChar) 
 		*newMasterIDQuery += " = '";
@@ -2327,11 +2361,21 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBClear() {
 						}
 						break;
 					
+
 					case lb_I_Query::lbDBColumnChar:
 						{
 							wxTextCtrl* tx = (wxTextCtrl*) w;
 			
 							tx->SetValue(wxString(""));
+						}
+						break;
+			
+					case lb_I_Query::lbDBColumnDate:
+						{
+							wxDatePickerCtrl* tx = (wxDatePickerCtrl*) w;
+							wxDateTime dt = wxDateTime::Now();
+			
+							tx->SetValue(dt);
 						}
 						break;
 			
@@ -2501,6 +2545,22 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBUpdate() {
 								val->setData(v.c_str());
 
 								sampleQuery->setString(*&col, *&val);
+							}
+						}
+						break;
+					
+					case lb_I_Query::lbDBColumnDate:
+						{
+							if (!sampleQuery->getReadonly(name)) {
+								wxDatePickerCtrl* tx = (wxDatePickerCtrl*) w;
+			
+								wxDateTime v = tx->GetValue();
+			
+								col->setData(name);
+								val->setData(v.FormatISODate().c_str());
+
+								sampleQuery->setString(*&col, *&val);
+								_LOG << "lbDatabasePanel::lbDBUpdate() sets date column value to '" << val->charrep() << "'" LOG_
 							}
 						}
 						break;
@@ -2737,6 +2797,20 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBRead() {
 							tx->SetValue(wxString(s->charrep()));
 						}
 						break;
+					case lb_I_Query::lbDBColumnDate:
+						{
+							UAP(lb_I_String, s)
+							
+							s = sampleQuery->getAsString(i);
+							
+							wxDatePickerCtrl* tx = (wxDatePickerCtrl*) w;
+							
+							wxDateTime dt;
+							dt.ParseDate(wxString(s->charrep()));
+
+							tx->SetValue(dt);
+						}
+						break;
 					
 					case lb_I_Query::lbDBColumnBigInteger:
 					case lb_I_Query::lbDBColumnInteger:
@@ -2959,7 +3033,7 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBAdd(lb_I_Unknown* uk) {
 			
 			QI(uk, lb_I_String, value)
 			
-			_CL_LOG << "Set control '" << key->charrep() << "' with ref = " << key->getRefCount() << " to '" << value->charrep() << "'" LOG_
+			_LOG << "Set control '" << key->charrep() << "' with ref = " << key->getRefCount() << " to '" << value->charrep() << "'" LOG_
 
 			foreignkey = strdup(key->charrep());
 			foreignkey_value = strdup(value->charrep());
@@ -2969,7 +3043,7 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBAdd(lb_I_Unknown* uk) {
 		
 			if (w != NULL) {
 				if (sampleQuery->hasFKColumn(key->charrep()) == 1) {
-					_CL_LOG << "Set dropdown control '" << 
+					_LOG << "lbDatabasePanel::lbDBAdd() Set dropdown control '" << 
 						key->charrep() << 
 						"' to '" << 
 						value->charrep() << "'" LOG_
@@ -3033,6 +3107,8 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBAdd(lb_I_Unknown* uk) {
 					    free(newFK);
 					    newFK = NULL;
 					}
+				} else {
+					_LOG << "lbDatabasePanel::lbDBAdd() Error: Have no combobox mapper values." LOG_
 				}
 /*...e*/
 				} else {
@@ -3084,6 +3160,7 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBAdd(lb_I_Unknown* uk) {
 						}
 						break;
 					case lb_I_Query::lbDBColumnUnknown:
+						_CL_LOG << "Error: Setting hidden control of unknown type'" << key->charrep() << "'." LOG_
 						break;
 				}
 
@@ -3154,7 +3231,7 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBAdd(lb_I_Unknown* uk) {
 						_CL_LOG << "Column for foreignkey binding is not set to NULL." LOG_				
 					}
 				}
-				
+				_LOG << "lbDatabasePanel::lbDBAdd() Actually update record data." LOG_
 				if (sampleQuery->update() == ERR_NONE) {
 					if (sampleQuery->last() == ERR_NONE)
 						lbDBRead();
