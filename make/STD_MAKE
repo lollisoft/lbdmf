@@ -25,11 +25,14 @@
 #            73252 Lenningen (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.96 $
+# * $Revision: 1.97 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.96 2007/07/14 09:49:11 lollisoft Exp $
+# * $Id: STD_MAKE,v 1.97 2007/08/02 07:34:24 lollisoft Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.97  2007/08/02 07:34:24  lollisoft
+# * Added GCC 4 support but deactivated it because of wxPropgrid makes problems.
+# *
 # * Revision 1.96  2007/07/14 09:49:11  lollisoft
 # * No debugging.
 # *
@@ -734,10 +737,13 @@ endif
 
 ifeq ($(OSTYPE), osx)
 
+COMPILER_VERSION=
+#COMPILER_VERSION=-4
+
 #LB_USE_FRAMEWORKS=no
 LB_USE_FRAMEWORKS=yes
 
-DEBUG=no
+DEBUG=yes
 
 
 STD_INCL = -I $(DEVROOT)/Projects/CPP/BaseDevelopment/lbHook/linuxCode \
@@ -759,9 +765,9 @@ C_ELFOPS= $(C_OPS)
 L_OPS   = -o
 LIBS    = #-lc /usr/lib/libSystem.dylib #-lcurses #-llibstdc++
 #-lefence
-CC =c++
-CPP =c++
-LD =c++
+CC =c++$(COMPILER_VERSION)
+CPP =c++$(COMPILER_VERSION)
+LD =c++$(COMPILER_VERSION)
 CP =cp
 EXEDIR =
 endif
