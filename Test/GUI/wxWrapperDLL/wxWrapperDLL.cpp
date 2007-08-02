@@ -542,6 +542,8 @@ lbErrCodes LB_STDCALL lb_wxFrame::registerEventHandler(lb_I_Dispatcher* disp) {
 	eman->registerEvent("removeTool_From_ToolBar", temp);
 	eman->registerEvent("toggleTool_From_ToolBar", temp);
 	
+	eman->registerEvent("removeToolBar", temp);
+	
 	disp->addEventHandlerFn(this, (lbEvHandler) &lb_wxFrame::showLeftPropertyBar, "ShowPropertyPanel");
 	disp->addEventHandlerFn(this, (lbEvHandler) &lb_wxFrame::switchPanelUse, "switchPanelUse");
 	disp->addEventHandlerFn(this, (lbEvHandler) &lb_wxFrame::setPreferredPropertyPanelByNamespace, "setPreferredPropertyPanelByNamespace");
@@ -552,6 +554,7 @@ lbErrCodes LB_STDCALL lb_wxFrame::registerEventHandler(lb_I_Dispatcher* disp) {
 	disp->addEventHandlerFn(this, (lbEvHandler) &lb_wxFrame::setText_To_StatusBarTextArea, "setStatusText");
 
 	disp->addEventHandlerFn(this, (lbEvHandler) &lb_wxFrame::addToolBar, "addToolBar");
+	disp->addEventHandlerFn(this, (lbEvHandler) &lb_wxFrame::removeToolBar, "removeToolBar");
 	disp->addEventHandlerFn(this, (lbEvHandler) &lb_wxFrame::addTool_To_ToolBar, "addTool_To_ToolBar");
 	disp->addEventHandlerFn(this, (lbEvHandler) &lb_wxFrame::removeTool_From_ToolBar, "removeTool_From_ToolBar");
 	disp->addEventHandlerFn(this, (lbEvHandler) &lb_wxFrame::toggleTool_From_ToolBar, "toggleTool_From_ToolBar");
@@ -1861,6 +1864,33 @@ wxPoint lb_wxFrame::GetStartPosition()
     return wxPoint(pt.x + x, pt.y + x);
 }
 
+lbErrCodes LB_STDCALL lb_wxFrame::removeToolBar(lb_I_Unknown* uk) {
+	lbErrCodes err = ERR_DISPATCH_PARAMETER_WRONG;
+	wxToolBar* tb;
+
+	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, name)
+		
+	UAP(lb_I_Parameter, params)
+	QI(uk, lb_I_Parameter, params)
+
+	if (params != NULL) {
+		err = ERR_NONE;
+
+		*parameter = "toolbarName";
+		params->getUAPString(*&parameter, *&name);
+
+#ifdef USE_WXAUI
+		tb = (wxToolBar*) m_mgr.GetPane(name->charrep()).window;
+		m_mgr.DetachPane(tb);
+		m_mgr.Update();
+		tb->Destroy();
+#endif
+	}
+
+	return ERR_NONE;
+}
+
 /*...slbErrCodes LB_STDCALL lb_wxFrame\58\\58\addToolBar\40\lb_I_Unknown\42\ uk\41\:0:*/
 lbErrCodes LB_STDCALL lb_wxFrame::addToolBar(lb_I_Unknown* uk) {
 	lbErrCodes err = ERR_DISPATCH_PARAMETER_WRONG;
@@ -1887,6 +1917,15 @@ lbErrCodes LB_STDCALL lb_wxFrame::addToolBar(lb_I_Unknown* uk) {
 	if (maintb == NULL) {
 		maintb = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_HORIZONTAL);
 				
+#ifdef USE_WXAUI
+		m_mgr.AddPane(maintb, wxPaneInfo().
+			  Name(wxT("Main Toolbar")).Caption(wxT("Main Toolbar")).
+			  ToolbarPane().Top().
+			  Fixed().
+			  LeftDockable(false).RightDockable(false));
+		m_mgr.Update();
+#endif
+
 		wxImage::AddHandler(new wxXPMHandler);
 		wxImage::AddHandler(new wxPNGHandler);
 				
@@ -1920,18 +1959,19 @@ lbErrCodes LB_STDCALL lb_wxFrame::addToolBar(lb_I_Unknown* uk) {
 				
 		maintb->Realize();
 
-#ifdef WINDOWS
 		wxSize s = wxSize(maintb->GetToolSize().GetWidth()*maintb->GetToolsCount(), maintb->GetToolSize().GetHeight());
 		
 		maintb->SetSize(s);
 		maintb->SetMinSize(s);
-#endif
+		maintb->Fit();
 				
 #ifndef USE_WXAUI
 		SetToolBar(maintb);
 #endif
 				
 #ifdef USE_WXAUI
+		m_mgr.DetachPane(maintb);
+
 		m_mgr.AddPane(maintb, wxPaneInfo().
 			  Name(wxT("Main Toolbar")).Caption(wxT("Main Toolbar")).
 			  ToolbarPane().Top().
@@ -2068,10 +2108,12 @@ lbErrCodes LB_STDCALL lb_wxFrame::addTool_To_ToolBar(lb_I_Unknown* uk) {
 			
 			tb->AddTool(EvNr, bm, entry->charrep());
 			tb->Realize();
-#ifdef WINDOWS			
-			wxSize s = wxSize(tb->GetToolSize().GetWidth()*tb->GetToolsCount(), tb->GetToolSize().GetHeight());
+
+			_LOG << "Toolbar size is " << (long) tb->GetToolsCount() << "." LOG_
+
+			wxSize s = wxSize(tb->GetSize().GetHeight()*tb->GetToolsCount(), tb->GetSize().GetHeight());
 			tb->SetSize(s);
-#endif
+			tb->Fit();
 			//tb->SetMinSize(s);
 			
 #ifdef USE_WXAUI			
@@ -2083,8 +2125,20 @@ lbErrCodes LB_STDCALL lb_wxFrame::addTool_To_ToolBar(lb_I_Unknown* uk) {
 						  //Fixed().
 						  //MinSize(wxSize(tb->GetToolSize().GetWidth()*tb->GetToolsCount(), tb->GetToolSize().GetHeight())).
                 		  LeftDockable(false).RightDockable(false));
+
+			wxToolBar* maintb = tb = (wxToolBar*) m_mgr.GetPane(wxT("Main Toolbar")).window;
+			m_mgr.DetachPane(maintb);
+			
+			m_mgr.AddPane(maintb, wxPaneInfo().
+				  Name(wxT("Main Toolbar")).Caption(wxT("Main Toolbar")).
+        		          ToolbarPane().Top().
+						  //Fixed().
+						  //MinSize(wxSize(tb->GetToolSize().GetWidth()*tb->GetToolsCount(), tb->GetToolSize().GetHeight())).
+                		  LeftDockable(false).RightDockable(false));
+
 			m_mgr.Update();
 #endif
+
 		}
 		
 		err = ERR_NONE;
