@@ -193,12 +193,7 @@ public:
 	 * add some overhead to the request packets like encryption or so.
 	 */
 /*...e*/
-	lbErrCodes _connected(lb_I_Transfer* _clt); 
 
-	lbErrCodes LB_STDCALL dispatch(lb_I_Transfer_Data* request, lb_I_Transfer_Data*  result);
-	lbErrCodes LB_STDCALL addProtocolHandler(const char* handlername, lb_I_ProtocolTarget* handlerInstance, lbProtocolCallback cbFn);
-	lbErrCodes LB_STDCALL delProtocolHandler(const char* handlername);
-	
 protected:
 
 	lbErrCodes LB_STDCALL HandleConnect(lb_I_Transfer_Data* request, lb_I_Transfer_Data*  result);

@@ -3,8 +3,8 @@
 
 [Setup]
 AppName=lbDMF Development Environment
-AppVerName=lbDMF Development Environment 1.0rc1
-OutputBaseFilename=lbDMF-Source-1.0rc1
+AppVerName=lbDMF Development Environment 1.0rc2
+OutputBaseFilename=lbDMF-Source-1.0rc2
 AppPublisher=Lothar Behrens
 AppPublisherURL=http://www.lollisoft.de
 AppSupportURL=http://www.sourceforge.net/projects/lbdmf
@@ -19,8 +19,13 @@ Name: "desktopicon"; Description: "Create a &desktop icon"; GroupDescription: "A
 
 [Files]
 ;Source: "c:\log\*.*"; DestDir: "c:\log"; CopyMode: alwaysoverwrite
+Source: "Q:\Develop\Projects\CPP\Database\*.*"; DestDir: "{app}\Database"; CopyMode: alwaysoverwrite; Flags: recursesubdirs;
 Source: "Q:\Develop\Projects\CPP\watcomenv.bat"; DestDir: "{app}"; CopyMode: alwaysoverwrite
 Source: "Q:\Develop\Projects\CPP\dist\*.*"; DestDir: "{app}"; CopyMode: alwaysoverwrite; Flags: recursesubdirs;
+Source: "Q:\Develop\Projects\dll\psqlodbc.dll"; DestDir: "{app}\Develop\Projects\dll"; CopyMode: alwaysoverwrite;
+Source: "Q:\Develop\Projects\CPP\installODBC.bat"; DestDir: "{app}"; CopyMode: alwaysoverwrite;
+Source: "Q:\Develop\Projects\CPP\Test\GUI\wxWrapper\splash.png"; DestDir: "{app}\Develop\Projects\CPP\BaseDevelopment"; CopyMode: alwaysoverwrite;
+Source: "Q:\Develop\Projects\CPP\Test\GUI\wxWrapper\toolbarimages\*.*"; DestDir: "{app}\Develop\Projects\CPP\BaseDevelopment\toolbarimages"; CopyMode: alwaysoverwrite;
 
 
 [Icons]
@@ -30,4 +35,4 @@ Name: "{userdesktop}\lbDMF Develop"; Filename: "{app}\watcomenv.bat"; MinVersion
 
 [Run]
 ;Filename: "{app}\watcomenv.bat"; Description: "Launch My Program"; Flags: shellexec postinstall skipifsilent
-
+Filename: "{app}\installODBC.bat"; Description: "Install ODBC driver settings"; Flags: shellexec postinstall

@@ -33,6 +33,8 @@ call make_dist_base.bat vendor\mkmk
 call make_dist_base.bat vendor\dosdir
 call make_dist_base.bat vendor\propgrid
 call make_dist_base.bat vendor\wxaui-0.9.1
+call make_dist_base.bat vendor\libxml2-2.6.29
+call make_dist_base.bat vendor\libxslt-1.1.21
 call make_dist_base.bat include 
 call make_dist_base.bat interfaces 
 call make_dist_base.bat make
@@ -54,6 +56,7 @@ copy q:\develop\Projects\CPP\watcomenv.bat %DEVROOT%
 copy q:\develop\Projects\CPP\watcomenv.bat.lnk dist
 copy q:\develop\ide.bat %DEVROOT%
 del *.idb
+del %DEVROOT%\vendor\libxml2-2.6.29\bakefile\watcom\*.obj
 
 "Q:\develop\Tools\Inno Setup 3\iscc" q:\develop\Projects\CPP\dist.iss
 "Q:\develop\Tools\Inno Setup 3\iscc" q:\develop\Projects\CPP\bindist.iss

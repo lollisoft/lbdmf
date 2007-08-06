@@ -105,7 +105,7 @@ public:
     DECLARE_LB_ELEMENT(lbSkipListElement)
 #ifndef UNIX
 #ifndef _MSC_VER
-    lb_I_Unknown* getObject() const;
+//    lb_I_Unknown* getObject() const;
 #endif
 #endif
 };

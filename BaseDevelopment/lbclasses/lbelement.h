@@ -31,10 +31,13 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.13 $
+ * $Revision: 1.14 $
  * $Name:  $
- * $Id: lbelement.h,v 1.13 2005/03/31 09:02:42 lollisoft Exp $
+ * $Id: lbelement.h,v 1.14 2007/08/06 19:10:29 lollisoft Exp $
  * $Log: lbelement.h,v $
+ * Revision 1.14  2007/08/06 19:10:29  lollisoft
+ * Improved installation process on Windows.
+ *
  * Revision 1.13  2005/03/31 09:02:42  lollisoft
  * Copyright text problems under linux.
  *
@@ -120,7 +123,7 @@ public:
     DECLARE_LB_ELEMENT(lbElement)
 #ifndef UNIX
 #ifndef _MSC_VER
-    lb_I_Unknown* getObject() const;
+//    lb_I_Unknown* getObject() const;
 #endif
 #endif
     int operator == (const lb_I_Element &a) const;

@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.139 2007/07/13 12:28:37 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.140 2007/08/06 19:10:29 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.139 $
+ * $Revision: 1.140 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.139 2007/07/13 12:28:37 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.140 2007/08/06 19:10:29 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.140  2007/08/06 19:10:29  lollisoft
+ * Improved installation process on Windows.
+ *
  * Revision 1.139  2007/07/13 12:28:37  lollisoft
  * Remaining code changes done and fixed database login bug.
  *
@@ -2939,7 +2942,7 @@ cleanUp clean_up;
 #ifndef LINUX
 wxAppConsole *wxCreateApp()
     {
-        wxApp::CheckBuildOptions(wxBuildOptions());
+        //wxApp::CheckBuildOptions(wxBuildOptions());
         return new MyApp;
     }
 

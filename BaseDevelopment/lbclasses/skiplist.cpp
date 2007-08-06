@@ -38,11 +38,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.51 $
+ * $Revision: 1.52 $
  * $Name:  $
- * $Id: skiplist.cpp,v 1.51 2006/12/10 16:59:41 lollisoft Exp $
+ * $Id: skiplist.cpp,v 1.52 2007/08/06 19:10:29 lollisoft Exp $
  *
  * $Log: skiplist.cpp,v $
+ * Revision 1.52  2007/08/06 19:10:29  lollisoft
+ * Improved installation process on Windows.
+ *
  * Revision 1.51  2006/12/10 16:59:41  lollisoft
  * Also check if value is  NULL.
  *
@@ -251,6 +254,9 @@
 //#include <conio.h>
 
 #ifdef LINUX
+#include <string.h>
+#endif
+#ifdef WINDOWS
 #include <string.h>
 #endif
 

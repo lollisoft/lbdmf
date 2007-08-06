@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.124 $
+# * $Revision: 1.125 $
 # * $Name:  $
-# * $Id: Makefile,v 1.124 2007/07/08 16:50:27 lollisoft Exp $
+# * $Id: Makefile,v 1.125 2007/08/06 19:10:29 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.125  2007/08/06 19:10:29  lollisoft
+# * Improved installation process on Windows.
+# *
 # * Revision 1.124  2007/07/08 16:50:27  lollisoft
 # * Removed some targets. Last removal failed ??
 # *
@@ -727,6 +730,7 @@ bla = \
 	../../open-watcom
 
 ALLTARGETS = \
+	../../lib \
 	../../dll/libs \
 	../../plugins/libs \
 	lbHook \
@@ -737,8 +741,9 @@ ALLTARGETS = \
 	lbclasses \
 	lbMetaApplication \
 	lbPluginManager \
-	../vendor/wxaui-0.9.1/src \
 	../vendor/propgrid \
+	../vendor/wxaui-0.9.1/src \
+	../vendor/libxml2-2.6.29/bakefile \
 	../vendor/libxslt-1.1.21/libxslt \
 	../AppDevelopmentDemo/App \
 	../AppDevelopmentDemo/DynamicApp/App \
@@ -791,6 +796,9 @@ install-strip:
 	echo mkdir -p $(prefix)/lib
 	cp ~/lib/libwx_gtk2_Lollisoft-2.6.so $(prefix)/lib
 
+../../lib:
+	-mkdir ../../lib
+
 ../../dll/libs:
 	-mkdir ../../dll/libs
 
@@ -838,6 +846,9 @@ dummy:
 ../vendor/c-goldparser: dummy
 	$(MAKE) -s -C $@ -e MODULE=gold -e TARGET=$(TARGETEXE) -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@
+
+../vendor/libxml2-2.6.29/bakefile: dummy
+	$(MAKE) -s -C $@ -f makefile.lbDMF
 
 ../vendor/libxslt-1.1.21/libxslt: dummy
 	$(MAKE) -s -C $@ -e MODULE=lbxslt -e TARGET=$(TARGETDLL) -f $(MAKE_CONFIG_FILE)
