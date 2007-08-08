@@ -186,6 +186,9 @@ public:
 	bool		LB_STDCALL isNull(int pos);
 	bool		LB_STDCALL isNull(char const * name);
 
+	bool		LB_STDCALL isBound(int pos);
+	bool		LB_STDCALL isBound(char const * name);
+
 	lb_I_Query::lbDBColumnTypes LB_STDCALL getColumnType(int pos);
 	lb_I_Query::lbDBColumnTypes LB_STDCALL getColumnType(char* name);
 	int 		LB_STDCALL getColumnIndex(const char* name);
@@ -236,6 +239,7 @@ public:
 		_autoRefresh = false;
 		szSql = NULL;
 		preparingFKColumns = 0;
+		cursorname = NULL;
 		
 		fetchstatus = 0;
 		
@@ -258,6 +262,7 @@ public:
 			free(lpszTable);
 			lpszTable = NULL;
 		}
+		if (cursorname != NULL) free (cursorname);
 	}
 	
 	DECLARE_LB_UNKNOWN()
@@ -387,6 +392,11 @@ public:
         lb_I_String*	LB_STDCALL getAsString(const char* column);
 		lb_I_Long*		LB_STDCALL getAsLong(int column);
 		lbErrCodes		LB_STDCALL setString(lb_I_String* columnName, lb_I_String* value);
+		
+		lb_I_BinaryData* LB_STDCALL getBinaryData(int column);
+		lb_I_BinaryData* LB_STDCALL getBinaryData(const char* column);
+		lbErrCodes LB_STDCALL setBinaryData(int column, lb_I_BinaryData* value);
+		lbErrCodes LB_STDCALL setBinaryData(const char* column, lb_I_BinaryData* value);
 #endif        
 	
 		lbErrCodes LB_STDCALL init(HENV _henv, HDBC _hdbc, int readonly = 1);
@@ -424,6 +434,7 @@ private:
 	HENV    henv;
 	HDBC    hdbc;
 	HSTMT   hstmt;
+	char*	cursorname;
 	HSTMT   hupdatestmt;
 	RETCODE retcode;
 	char*   szSql;
@@ -535,6 +546,7 @@ public:
 
 	virtual bool LB_STDCALL isNullable();
 	virtual bool LB_STDCALL isNull();
+	virtual bool LB_STDCALL isBound();
 	virtual bool LB_STDCALL setNull(bool b);
 	virtual lb_I_Query::lbDBColumnTypes LB_STDCALL getType();
 	virtual lb_I_Unknown* LB_STDCALL getData();
@@ -671,6 +683,34 @@ lbErrCodes      LB_STDCALL lbBoundColumns::setBoundColumns(lb_I_Container* bc) {
 	return ERR_NONE;
 }
 /*...e*/
+
+bool LB_STDCALL lbBoundColumns::isBound(int pos) {
+	lbErrCodes err = ERR_NONE;
+	if ((boundColumns != NULL) && (pos > -1)) {
+		UAP_REQUEST(manager.getPtr(), lb_I_Integer, integerKey) 
+		integerKey->setData(pos);
+		UAP(lb_I_Unknown, ukdata)
+		UAP(lb_I_KeyBase, key)
+		
+		QI(integerKey, lb_I_KeyBase, key)
+
+		ukdata = boundColumns->getElement(&key);
+		if (ukdata == NULL) printf("NULL pointer!\n");
+
+		UAP(lb_I_BoundColumn, bc)
+		lbErrCodes err = ukdata->queryInterface("lb_I_BoundColumn", (void**) &bc, __FILE__, __LINE__);
+
+		return bc->isBound();
+	}
+
+	// What to answer here ??
+	return false;
+}
+
+bool LB_STDCALL lbBoundColumns::isBound(char const * name) {
+	int pos = getColumnIndex(name);
+	return isBound(pos);
+}
 
 bool LB_STDCALL lbBoundColumns::isNull(char const * name) {
 	int pos = getColumnIndex(name);
@@ -1676,66 +1716,7 @@ lbErrCodes LB_STDCALL lbQuery::query(char* q, bool bind) {
 	
 	szSql = strdup(q);
 
-/*...sdoc:0:*/
-#ifdef bla
-
-Using SQLSetPos
-	Before an application calls SQLSetPos, it must perform the following sequence of steps: 
-
-	If the application will call SQLSetPos with Operation set to SQL_UPDATE, call SQLBindCol 
-	(or SQLSetDescRec) for each column to specify its data type and bind buffers for the columns data and length.
-
-
-	If the application will call SQLSetPos with Operation set to SQL_DELETE or SQL_UPDATE, 
-	call SQLColAttribute to make sure that the columns to be deleted or updated are updatable.
-
-
-	Call SQLExecDirect, SQLExecute, or a catalog function to create a result set.
-
-
-	Call SQLFetch or SQLFetchScroll to retrieve the data.
-	Note In ODBC 3.x, SQLSetPos can be called before SQLFetch or SQLFetchScroll. For more information, 
-	see the Block Cursors, Scrollable Cursors, and Backward Compatibility section in Appendix G, 
-	Driver Guidelines for Backward Compatibility.
-
-#endif
 /*...e*/
-/*...sbla:0:*/
-/*
-	char cursorname[100] = "";
-	
-	sprintf(cursorname, "Cursor-%p", this);
-
-	retcode = SQLSetCursorName(hstmt, cursorname, SQL_NTS);
-*/	
-/*...e*/
-// Moved from lbBoundColumns::setQuery(...)
-// As Luf states, here it should be.
-#ifdef bla
-	const int ArraySize = 1;
-	SQLUSMALLINT RowStatusArray[ArraySize];
-
-	// Set the array size to one.
-	SQLSetStmtAttr(hstmt, SQL_ATTR_ROW_ARRAY_SIZE, (SQLPOINTER) ArraySize, 0);
-	
-	// Why this construct ??
-	SQLINTEGER csrType = SQL_CURSOR_KEYSET_DRIVEN;
-	
-	if ((retcode = SQLSetStmtAttr(hstmt, SQL_ATTR_CURSOR_TYPE, (SQLPOINTER) csrType, 0)) != SQL_SUCCESS) {
-		if (retcode != SQL_SUCCESS_WITH_INFO) 
-			_CL_LOG << "lbQuery::query(...) Error: Failed to set cursor to keyset driven." LOG_
-	}
-
-	if ((retcode = SQLSetStmtAttr(hstmt, SQL_ATTR_ROW_BIND_TYPE, SQL_BIND_BY_COLUMN, 0)) != SQL_SUCCESS) {
-		if (retcode != SQL_SUCCESS_WITH_INFO) 
-			_CL_LOG << "lbQuery::query(...) Error: Failed to set binding by column." LOG_
-	}
-	
-	if ((retcode = SQLSetStmtAttr(hstmt, SQL_ATTR_ROW_STATUS_PTR, RowStatusArray, 0)) != SQL_SUCCESS) {
-		if (retcode != SQL_SUCCESS_WITH_INFO) 
-			_CL_LOG << "lbQuery::query(...) Error: Failed to set rowstatus array." LOG_
-	}
-#endif
 	retcode = SQLExecDirect(hstmt, (unsigned char*) szSql, SQL_NTS);
 
 	if ((retcode != SQL_SUCCESS) && (retcode != SQL_SUCCESS_WITH_INFO))
@@ -1745,6 +1726,17 @@ Using SQLSetPos
 		return ERR_DB_QUERYFAILED;
         }
 
+	short int cbCursorname = 100;
+	if (cursorname != NULL) free(cursorname);
+	cursorname = (char*) malloc(cbCursorname);
+
+	retcode = SQLGetCursorName(hstmt, cursorname, cbCursorname, &cbCursorname);
+
+	if (retcode != SQL_SUCCESS) {
+		_LOG << "lbQuery::query(...) Failed to get cursor name." LOG_
+		cursorname[0] = 0;
+	}
+	
 	if (bind == true) {
 		retcode = SQLNumResultCols(hstmt, &cols);
 
@@ -1884,6 +1876,258 @@ lb_I_Long* LB_STDCALL lbQuery::getAsLong(int column) {
 	boundColumns->getLong(column, *&value);
 	return value.getPtr();
 }
+
+lb_I_BinaryData* LB_STDCALL lbQuery::getBinaryData(int column) {
+	// Declare a binary buffer to retrieve 5000 bytes of data at a time.
+	SQLCHAR       BinaryPtr[5000];
+	SQLUINTEGER   PartID;
+	SQLINTEGER    PartIDInd, BinaryLenOrInd, NumBytes;
+	SQLRETURN     rc, retcode; 
+	SQLHSTMT      hstmt_blob;
+
+	UAP_REQUEST(getModuleInstance(), lb_I_BinaryData, binarydata)
+
+	if (boundColumns != NULL) {
+		if (boundColumns->isBound(column)) {
+			_LOG << "Error: binary column " << column << "shouldn't be bound!" LOG_
+			binarydata->append((void*) "", 1);
+			binarydata++;
+			return binarydata.getPtr();
+		} else {
+			while ((rc = SQLGetData(hstmt, column, SQL_C_BINARY, BinaryPtr, sizeof(BinaryPtr),
+									&BinaryLenOrInd)) != SQL_NO_DATA) {
+				NumBytes = (BinaryLenOrInd > 5000) || (BinaryLenOrInd == SQL_NO_TOTAL) ? 5000 : BinaryLenOrInd;
+				if (BinaryLenOrInd == SQL_NULL_DATA) {
+					binarydata->append("", 1);
+					binarydata++;
+					return binarydata.getPtr();
+				}
+				if (BinaryLenOrInd == 0) {
+					binarydata->append("", 1);
+					binarydata++;
+					return binarydata.getPtr();
+				}
+				binarydata->append(BinaryPtr, NumBytes-1);
+			}
+		}
+	}
+
+	binarydata->append((void*) "", 1);
+
+	binarydata++;
+	return binarydata.getPtr();
+}
+
+lb_I_BinaryData* LB_STDCALL lbQuery::getBinaryData(const char* column) {
+	if (boundColumns != NULL) {
+		int i = boundColumns->getColumnIndex(column);
+		return getBinaryData(i);
+	}
+	_LOG << "lbQuery::getBinaryData('" << column << "') Error: No bound columns!" LOG_
+	UAP_REQUEST(getModuleInstance(), lb_I_BinaryData, binary)
+	binary++;
+	binary->append("", 1);
+	return binary.getPtr();
+}
+
+lbErrCodes LB_STDCALL lbQuery::setBinaryData(int column, lb_I_BinaryData* value) {
+#define LB_BLOCKSIZE 10
+#define USE_CURRENT_OF 
+
+#ifdef USE_CURRENT_OF
+#undef USE_CURRENT_OF
+	UAP_REQUEST(getModuleInstance(), lb_I_String, update_query)
+
+	SQLRETURN     rc, retcode; 
+	SQLCHAR       BinaryPtr[LB_BLOCKSIZE];
+	void*		  tempBuffer;
+	long		  remainingsize;
+	SQLINTEGER    BinaryLenOrIndCurrentOf;
+	SQLINTEGER    BinaryLenOrInd;
+
+	retcode = SQLAllocStmt(hdbc, &hupdatestmt); /* Statement handle */
+
+	if (retcode != SQL_SUCCESS)
+	{
+	        _LOG << "lbDatabase::getQuery() failed due to statement allocation." LOG_
+        	return ERR_DB_ALLOCSTATEMENT;
+	}
+
+	retcode = SQLSetStmtOption(hupdatestmt, SQL_ATTR_CONCURRENCY, SQL_CONCUR_ROWVER);
+
+	retcode = SQLSetStmtOption(hupdatestmt, SQL_CURSOR_TYPE, SQL_CURSOR_KEYSET_DRIVEN);
+
+	if (retcode == SQL_SUCCESS_WITH_INFO) {
+		_LOG << "lbDatabase::getQuery() failed due to setting cursor type." LOG_
+	} else
+        if (retcode != SQL_SUCCESS)
+        {
+                _LOG << "lbDatabase::getQuery() failed due to setting cursor type." LOG_
+                return ERR_DB_ALLOCSTATEMENT;
+        }
+
+    SQLINTEGER size = 1;
+
+	if (retcode != SQL_SUCCESS) {
+		_LOG << "lbDatabase::getQuery() failed due to set statement attributes." LOG_
+		return ERR_DB_ALLOCSTATEMENT;
+	}	
+
+	remainingsize = value->getSize();
+	BinaryLenOrInd = value->getSize();
+	
+	BinaryLenOrIndCurrentOf = strlen(cursorname)+1;
+
+	rc = SQLBindCol(hstmt, column, SQL_C_BINARY, (void *)BinaryPtr, 0, &BinaryLenOrIndCurrentOf);
+	memcpy(BinaryPtr, cursorname, BinaryLenOrIndCurrentOf);
+
+	update();
+	reopen();
+	
+	rc = SQLBindCol(hstmt, column, SQL_C_BINARY, NULL, 0, 0);
+
+	tempBuffer = value->getData();
+	BinaryLenOrInd = value->getSize();
+	remainingsize = value->getSize();
+	
+	if (value->getSize() <= LB_BLOCKSIZE) {
+		memcpy(BinaryPtr, tempBuffer, value->getSize());
+	} else {
+		memcpy(BinaryPtr, tempBuffer, LB_BLOCKSIZE);
+	}
+
+
+	*update_query = "UPDATE \"";
+	*update_query += getTableName(getColumnName(column));
+	*update_query += "\" SET \"";
+	*update_query += getColumnName(column);
+	*update_query += "\" = ? WHERE \"";
+	*update_query += getColumnName(column);
+	*update_query += "\" LIKE '";
+	*update_query += cursorname;
+	*update_query += "%'";
+	
+	_LOG << "Prepare positioned BLOB update: '" << update_query->charrep() << "' with length of data = " << BinaryLenOrInd LOG_
+
+	retcode = SQLPrepare(hupdatestmt, update_query->charrep(), SQL_NTS);
+
+	if (retcode != SQL_SUCCESS) {
+		_LOG << "Preparing update statement failed." LOG_
+	}
+
+	retcode = SQLBindParameter(hupdatestmt, 1, SQL_PARAM_INPUT,
+                  SQL_C_BINARY, SQL_LONGVARBINARY,
+                  0, 0, (SQLPOINTER) &BinaryPtr, 0, &BinaryLenOrInd);
+
+	if (retcode != SQL_SUCCESS) {
+		_LOG << "Binding update parameter failed." LOG_
+	}
+
+	_LOG << "Executing positioned BLOB update: '" << update_query->charrep() << "' with length of data = " << BinaryLenOrInd LOG_
+
+	retcode = SQLExecute(hupdatestmt);
+
+	long iteration = 0;
+
+	if ((retcode != SQL_SUCCESS) && (retcode != SQL_NEED_DATA)) {
+		_LOG << "Execute query failed." LOG_
+		_dbError_STMT("Executing positioned BLOB update failed.", hupdatestmt);
+	}
+	
+	if (retcode == SQL_NEED_DATA) 
+	{ 
+		_LOG << "lbQuery::setBinaryData() Needs more data ..." << remainingsize	LOG_
+		retcode = SQLParamData(hupdatestmt, (void **)  &BinaryPtr); 
+		while(retcode == SQL_NEED_DATA) 
+		{ 
+			_LOG << "lbQuery::setBinaryData() Needs more data ..." << remainingsize	LOG_
+			tempBuffer += LB_BLOCKSIZE;
+			remainingsize -= LB_BLOCKSIZE;
+			
+			if (remainingsize <= LB_BLOCKSIZE) {
+				memcpy(BinaryPtr, tempBuffer, remainingsize);
+			} else {
+				memcpy(BinaryPtr, tempBuffer, LB_BLOCKSIZE);
+			}
+			
+			
+			retcode = SQLPutData(hupdatestmt, BinaryPtr, SQL_NTS); 
+			/* check for error here */ 
+			retcode = SQLParamData(hupdatestmt, (void **)  &BinaryPtr); 
+		} 
+		
+	} 
+	
+	SQLFreeStmt(hupdatestmt, SQL_DROP);
+#endif
+
+#ifdef USE_SETPOS
+	// Declare a binary buffer to retrieve 5000 bytes of data at a time.
+	SQLCHAR       BinaryPtr[LB_BLOCKSIZE];
+	SQLUINTEGER   PartID;
+	SQLINTEGER    PartIDInd, BinaryLenOrInd, NumBytes;
+	SQLINTEGER	  longDataLen;
+	SQLRETURN     rc, retcode; 
+	SQLHSTMT      hstmt_blob;
+	
+	void*		  tempBuffer;
+	long		  remainingsize;
+	
+	tempBuffer = value->getData();
+	
+	if (value->getSize() <= LB_BLOCKSIZE) {
+		memcpy(BinaryPtr, tempBuffer, value->getSize());
+	} else {
+		memcpy(BinaryPtr, tempBuffer, LB_BLOCKSIZE);
+	}
+	
+	remainingsize = value->getSize();
+				
+	longDataLen = SQL_LEN_DATA_AT_EXEC(value->getSize());
+	
+	rc = SQLBindCol(hstmt, column, SQL_C_BINARY, (void *)BinaryPtr, 0, &longDataLen);
+	
+	retcode = SQLSetPos(hstmt, 1, SQL_UPDATE, SQL_LOCK_NO_CHANGE); 
+	
+	long iteration = 0;
+	
+	if (retcode == SQL_NEED_DATA) 
+	{ 
+		retcode = SQLParamData(hstmt, (void **)  &BinaryPtr); 
+		while(retcode == SQL_NEED_DATA) 
+		{ 
+			tempBuffer += LB_BLOCKSIZE;
+			remainingsize -= LB_BLOCKSIZE;
+			
+			if (remainingsize <= LB_BLOCKSIZE) {
+				memcpy(BinaryPtr, tempBuffer, remainingsize);
+			} else {
+				memcpy(BinaryPtr, tempBuffer, LB_BLOCKSIZE);
+			}
+			
+			
+			retcode = SQLPutData(hstmt, BinaryPtr, SQL_NTS); 
+			/* check for error here */ 
+			retcode = SQLParamData(hstmt, (void **)  &BinaryPtr); 
+		} 
+		
+	} 
+	
+	rc = SQLBindCol(hstmt, column, SQL_C_BINARY, NULL, 0, 0);
+#endif
+	
+	return ERR_NONE;
+}
+
+lbErrCodes LB_STDCALL lbQuery::setBinaryData(const char* column, lb_I_BinaryData* value) {
+	if (boundColumns != NULL) {
+		int i = boundColumns->getColumnIndex(column);
+		return setBinaryData(i, value);
+	}
+
+	return ERR_NONE;
+}
+
 
 #endif
 /*...e*/
@@ -2849,7 +3093,7 @@ lbErrCodes LB_STDCALL lbQuery::absolute(int pos) {
 	if (retcode == SQL_NO_DATA) return ERR_DB_NODATA;
         if (retcode == SQL_ERROR || retcode == SQL_SUCCESS_WITH_INFO) {
                 _LOG << "lbQuery::first(): Error while fetching next row" LOG_
-                dbError("SQLExtendedFetch()", hstmt);
+                //dbError("SQLExtendedFetch()", hstmt);
                 
                 // Unsave !!
                 if (retcode == SQL_SUCCESS_WITH_INFO) return ERR_NONE;
@@ -3520,6 +3764,10 @@ void LB_STDCALL lbBoundColumn::finishadd() {
 	mode = 0;
 }
 
+bool LB_STDCALL lbBoundColumn::isBound() {
+	return bound == 1;
+}
+
 bool LB_STDCALL lbBoundColumn::isNull() {
 	long i = 0;
 	if (mode == 1) {
@@ -3588,6 +3836,7 @@ lb_I_Query::lbDBColumnTypes LB_STDCALL lbBoundColumn::getType() {
 		case SQL_BIGINT: 
 			return lb_I_Query::lbDBColumnBigInteger;
 			
+		case SQL_LONGVARBINARY:
 		case SQL_BINARY:
 			return lb_I_Query::lbDBColumnBinary;
 		
@@ -4292,8 +4541,11 @@ lbErrCodes LB_STDCALL lbBoundColumn::bindColumn(lb_I_Query* q, int column, bool 
 			}
 			break;
 #endif
+		case SQL_LONGVARBINARY:
+			bound = 0;
+			break;
 		default:
-			_CL_LOG << "lbBoundColumn::bindColumn(...) failed: Unknown or not supported datatype for column '" << columnName << "': " << DataType LOG_
+			_LOG << "lbBoundColumn::bindColumn(...) failed: Unknown or not supported datatype for column '" << columnName << "': " << DataType LOG_
 			break;
 	}
 	
@@ -4469,6 +4721,9 @@ void LB_STDCALL lbBoundColumn::unbindReadonlyColumns() {
 			}
 			break;
 #endif
+		case SQL_LONGVARBINARY:
+			bound = 0;
+			break;
 		default:
 			_CL_VERBOSE << "lbBoundColumn::unbindReadonlyColumns(...) failed: Unknown or not supported datatype for column '" << columnName << "': " << _DataType LOG_
 			break;
@@ -4549,6 +4804,9 @@ void LB_STDCALL lbBoundColumn::rebindReadonlyColumns() {
 			}
 			break;
 #endif
+		case SQL_LONGVARBINARY:
+			bound = 0;
+			break;
 		default:
 			_CL_VERBOSE << "lbBoundColumn::rebindReadonlyColumns(...) failed: Unknown or not supported datatype for column '" << columnName << "': " << _DataType LOG_
 			break;

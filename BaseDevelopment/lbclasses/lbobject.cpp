@@ -71,6 +71,7 @@ extern "C" {
 #endif            
 
 IMPLEMENT_FUNCTOR(instanceOfInteger, lbInteger)
+IMPLEMENT_FUNCTOR(instanceOfBinaryData, lbBinaryData)
 IMPLEMENT_FUNCTOR(instanceOfFileLocation, lbFileLocation)
 IMPLEMENT_FUNCTOR(instanceOfDirLocation, lbDirLocation)
 IMPLEMENT_FUNCTOR(instanceOfLong, lbLong)
@@ -1241,6 +1242,80 @@ char* LB_STDCALL lbBoolean::charrep() const {
 }
 /*...e*/
 /*...e*/
+lbBinaryData::lbBinaryData() {
+	ref = STARTREF;
+	blob = NULL;
+}
+
+lbBinaryData::~lbBinaryData() {
+	free(blob);
+}
+
+lbErrCodes LB_STDCALL lbBinaryData::append(void* value, long len) {
+	if (blob == NULL) {
+		setData(value, len);
+		return ERR_NONE;
+	}
+	
+	blob = realloc(blob, size + len);
+	memcpy(blob+size, value, len); 
+}
+
+lbErrCodes LB_STDCALL lbBinaryData::setData(void* value, long len) {
+	if (value == NULL) {
+		free(blob);
+		blob = NULL;
+		size = 0L;
+		return ERR_NONE;
+	}
+	
+	if (blob != NULL) free(blob);
+
+	if (len == 0L) {
+		_LOG << "lbBinaryData::setData(...) Warning: Zero allocation ignored." LOG_
+		blob = strdup("");
+		size = 1;
+		return;
+	}
+
+	blob = malloc(len);
+	
+	if (blob == NULL) {
+		_LOG << "lbBinaryData::setData(...) Error: Memory allocation failed! (" << len << " bytes should be allocated)" LOG_
+		size = 0;
+		return ERR_MEMORY_ALLOC;
+	}
+	
+	memcpy(blob, value, len);
+	size = len;
+	return ERR_NONE;
+}
+
+void* LB_STDCALL lbBinaryData::getData() const {
+	return blob;
+}
+
+long LB_STDCALL lbBinaryData::getSize() const {
+	return size;
+}
+
+BEGIN_IMPLEMENT_LB_UNKNOWN(lbBinaryData)
+	ADD_INTERFACE(lb_I_BinaryData)
+END_IMPLEMENT_LB_UNKNOWN()
+
+lbErrCodes LB_STDCALL lbBinaryData::setData(lb_I_Unknown* uk) {
+	lbErrCodes err = ERR_NONE;
+	UAP(lb_I_BinaryData, l)
+	
+	if (uk != NULL) {
+		QI(uk, lb_I_BinaryData, l)
+		void* _l = l->getData();
+		setData(_l);
+	}
+	
+	return ERR_NONE;
+}
+
 /*...slbLong:0:*/
 lbLong::lbLong() {
 	ref = STARTREF;

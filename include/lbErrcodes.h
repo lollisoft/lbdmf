@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.31 $
+ * $Revision: 1.32 $
  * $Name:  $
- * $Id: lbErrcodes.h,v 1.31 2007/04/22 13:39:42 lollisoft Exp $
+ * $Id: lbErrcodes.h,v 1.32 2007/08/08 19:48:50 lollisoft Exp $
  *
  * $Log: lbErrcodes.h,v $
+ * Revision 1.32  2007/08/08 19:48:50  lollisoft
+ * Changes to allow using BLOB data fields. Not completely finished.
+ *
  * Revision 1.31  2007/04/22 13:39:42  lollisoft
  * Added another error code.
  *
@@ -282,7 +285,9 @@ enum lbErrCodes {
 	ERR_FILE_WRITE,
 	ERR_FILE_READ,
 	
-	ERR_PLUGIN_NOT_INITIALIZED
+	ERR_PLUGIN_NOT_INITIALIZED,
+	
+	ERR_MEMORY_ALLOC
 };
 /*...e*/
 

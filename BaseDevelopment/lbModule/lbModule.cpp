@@ -22,19 +22,22 @@
     The author of this work will be reached by e-Mail or paper mail.
     e-Mail: lothar.behrens@lollisoft.de
     p-Mail: Lothar Behrens
-            Rosmarinstr. 3
+            Heinrich-Scheufelen-Platz 2
             
-            40235 Duesseldorf (germany)
+            73252 Lenningen (germany)
 */
 /*...e*/
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.115 $
+ * $Revision: 1.116 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.115 2007/04/22 13:49:41 lollisoft Exp $
+ * $Id: lbModule.cpp,v 1.116 2007/08/08 19:48:49 lollisoft Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.116  2007/08/08 19:48:49  lollisoft
+ * Changes to allow using BLOB data fields. Not completely finished.
+ *
  * Revision 1.115  2007/04/22 13:49:41  lollisoft
  * Added socket and transfer to repository.
  *
@@ -2261,6 +2264,12 @@ lb_I_FunctorEntity* LB_STDCALL lbHCInterfaceRepository::getFirstEntity() {
 	if (strcmp(searchArgument, "lb_I_Transfer") == 0) {
 		functor = PREFIX "instanceOflbTransfer";
 		module = "lbtransfer";
+		found = true;
+	}
+
+	if (strcmp(searchArgument, "lb_I_BinaryData") == 0) {
+		functor = PREFIX "instanceOfBinaryData";
+		module = "lbClasses";
 		found = true;
 	}
 

@@ -447,6 +447,22 @@ public:
 		 * The database column must be of valit integer type. 
 		 */
 		virtual lb_I_Long* LB_STDCALL getAsLong(int column) = 0;
+		
+		/** \brief Get BLOB data.
+		 */
+		virtual lb_I_BinaryData* LB_STDCALL getBinaryData(int column) = 0;
+		
+		/** \brief Get BLOB data.
+		 */
+		virtual lb_I_BinaryData* LB_STDCALL getBinaryData(const char* column) = 0;
+
+		/** \brief Set BLOB data.
+		 */
+		virtual lbErrCodes LB_STDCALL setBinaryData(int column, lb_I_BinaryData* value) = 0;
+		
+		/** \brief Get BLOB data.
+		 */
+		virtual lbErrCodes LB_STDCALL setBinaryData(const char* column, lb_I_BinaryData* value) = 0;
 #endif
 };
 /*...e*/
@@ -484,6 +500,11 @@ public:
 	 * \brief Set NULL data in the column.
 	 */
 	virtual bool LB_STDCALL setNull(bool b) = 0;
+
+	/**
+	 * \brief A binary column is not bound.
+	 */
+	virtual bool LB_STDCALL isBound() = 0;
 	
 	/**
 	 * \brief Type of the column.
@@ -741,6 +762,9 @@ public:
 	 * \brief Rebind all columns.
 	 */
 	virtual void LB_STDCALL rebind() = 0;
+
+	virtual bool LB_STDCALL isBound(int pos) = 0;
+	virtual bool LB_STDCALL isBound(char const * name) = 0;
 
 	virtual void LB_STDCALL add() = 0;
 	virtual void LB_STDCALL finishadd() = 0;

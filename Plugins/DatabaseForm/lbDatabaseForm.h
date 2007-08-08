@@ -30,11 +30,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.37 $
+ * $Revision: 1.38 $
  * $Name:  $
- * $Id: lbDatabaseForm.h,v 1.37 2007/07/07 16:22:57 lollisoft Exp $
+ * $Id: lbDatabaseForm.h,v 1.38 2007/08/08 19:48:50 lollisoft Exp $
  *
  * $Log: lbDatabaseForm.h,v $
+ * Revision 1.38  2007/08/08 19:48:50  lollisoft
+ * Changes to allow using BLOB data fields. Not completely finished.
+ *
  * Revision 1.37  2007/07/07 16:22:57  lollisoft
  * Added reopen implementation.
  *
@@ -547,6 +550,8 @@ public:
 	lbErrCodes LB_STDCALL addTextField(char* name, int x, int y, int w, int h) { return ERR_NONE; };
 
 	lbErrCodes LB_STDCALL addOwnerDrawn(char* name, int x, int y, int w, int h) { return ERR_NONE; };
+
+	void LB_STDCALL addLabel(char* text, wxSizer* sizer, bool hideThisColumn);
 
 	void LB_STDCALL create(int parentId);
 	int  LB_STDCALL getId() { return GetId(); }

@@ -22,19 +22,22 @@
     The author of this work will be reached by e-Mail or paper mail.
     e-Mail: lothar.behrens@lollisoft.de
     p-Mail: Lothar Behrens
-            Rosmarinstr. 3
+            Heinrich-Scheufelen-Platz 2
             
-            40235 Duesseldorf (germany)
+            73252 Lenningen (germany)
 */
 /*...e*/
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.76 $
+ * $Revision: 1.77 $
  * $Name:  $
- * $Id: lbInterfaces-sub-classes.h,v 1.76 2007/05/14 19:19:17 lollisoft Exp $
+ * $Id: lbInterfaces-sub-classes.h,v 1.77 2007/08/08 19:48:50 lollisoft Exp $
  *
  * $Log: lbInterfaces-sub-classes.h,v $
+ * Revision 1.77  2007/08/08 19:48:50  lollisoft
+ * Changes to allow using BLOB data fields. Not completely finished.
+ *
  * Revision 1.76  2007/05/14 19:19:17  lollisoft
  * Unfinished changes. Go to Linux.
  *
@@ -497,6 +500,26 @@ public:
 	virtual void LB_STDCALL setTranslationData(lb_I_Unknown* uk) = 0;
 };
 /*...e*/
+
+class lb_I_BinaryData : public lb_I_Unknown {
+public:
+	/** \brief Append data chunk.
+	 *
+	 */
+	virtual lbErrCodes LB_STDCALL append(void*, long) = 0;
+
+	/** \brief Set binary data.
+	 */
+	virtual lbErrCodes LB_STDCALL setData(void*, long) = 0;
+
+	/** \brief Get binary data.
+	 */
+	virtual void* LB_STDCALL getData() const = 0;
+
+	/** \brief Get binary data.
+	 */
+	virtual long LB_STDCALL getSize() const = 0;
+};
 
 // Keyable interfaces
 /*...sclass lb_I_String:0:*/

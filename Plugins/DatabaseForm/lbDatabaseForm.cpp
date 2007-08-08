@@ -413,15 +413,15 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 /*...sSizers:8:*/
 	wxBoxSizer* sizerMain  = new wxBoxSizer(wxVERTICAL);
 	
-	wxBoxSizer* sizerHor   = new wxBoxSizer(wxHORIZONTAL);
+	wxBoxSizer* sizerHor   = NULL;
 	
 	wxBoxSizer* sizerAddRem = new wxBoxSizer(wxHORIZONTAL);
 	wxBoxSizer* sizerNavi  = new wxBoxSizer(wxHORIZONTAL);
 
 	wxBoxSizer* sizerActions = new wxBoxSizer(wxHORIZONTAL);
 	
-	wxBoxSizer* sizerLeft  = new wxBoxSizer(wxVERTICAL);	
-	wxBoxSizer* sizerRight = new wxBoxSizer(wxVERTICAL);
+	//wxBoxSizer* sizerLeft  = new wxBoxSizer(wxVERTICAL);	
+	//wxBoxSizer* sizerRight = new wxBoxSizer(wxVERTICAL);
 /*...e*/
 
 /*...sDatabase connection and the stuff:8:*/
@@ -537,6 +537,7 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 	REQUEST(manager.getPtr(), lb_I_Container, ComboboxMapperList)
 
 	for(int i = 1; i <= columns; i++) {
+		sizerHor = new wxBoxSizer(wxHORIZONTAL);
 		char* name = NULL;
 
 		bool createdControl = false;
@@ -769,8 +770,11 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 /*...e*/
 				}
 				
-				if (hideThisColumn == false) sizerRight->Add(cbox, 1, wxEXPAND | wxALL, 5);
-				
+				if (hideThisColumn == false) {
+					addLabel(name, sizerHor, hideThisColumn);
+					sizerHor->Add(cbox, 1, wxALL, 5);
+					sizerMain->Add(sizerHor, 0, wxEXPAND | wxALL, 5);
+				}
 				createdControl = true;
 /*...e*/
 			}
@@ -815,7 +819,9 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 					wxBitmap bm = wxBitmap(im);
 					wxBitmapButton* imagebutton = new wxBitmapButton(this, ImageButonClick, bm);
 					imagebutton->SetName(name);
-					sizerRight->Add(imagebutton, wxALIGN_LEFT, 5);
+					
+					addLabel(name, sizerHor, hideThisColumn);
+					sizerHor->Add(imagebutton, wxALIGN_LEFT, 5);
 					
 					
 					UAP_REQUEST(manager.getPtr(), lb_I_String, element)
@@ -842,10 +848,47 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 				
 					ownerdraw->SetName(name);
 				
-					sizerRight->Add(ownerdraw, 1, 0, 5);
+					addLabel(name, sizerHor, hideThisColumn);
+					sizerHor->Add(ownerdraw, 1, 0, 5);
+					sizerMain->Add(sizerHor, 1, wxALL, 5);
 
 					if (FFI->isReadonly(name)) {
 				        ownerdraw->Disable();
+					}
+				}
+
+				if (strcmp(type, "image") == 0) {
+					UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, app)
+					UAP_REQUEST(manager.getPtr(), lb_I_String, file)
+					UAP_REQUEST(manager.getPtr(), lb_I_String, images)
+					
+					*file = app->getDirLocation();
+					
+#ifdef OSX
+							*images = "/toolbarimages/";
+#endif
+#ifdef LINUX
+							*images = "/toolbarimages/";
+#endif
+#ifdef WINDOWS
+							*images = "\\toolbarimages\\";
+#endif
+
+					*file += images->charrep();
+					*file += "new.xpm";
+
+					wxImage im = wxImage(file->charrep(), wxBITMAP_TYPE_XPM);
+					im.Rescale(32, 32);
+					wxBitmap bm = wxBitmap(im);
+					wxStaticBitmap *bitmap = new wxStaticBitmap(this, -1, bm);
+					bitmap->SetName(name);
+				
+					addLabel(name, sizerHor, hideThisColumn);
+					sizerHor->Add(bitmap, 1, wxALL, 5);
+					sizerMain->Add(sizerHor, 1, wxEXPAND | wxALL, 5);
+
+					if (FFI->isReadonly(name)) {
+				        bitmap->Disable();
 					}
 				}
 				
@@ -863,7 +906,9 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 						wxCheckBox *check = new wxCheckBox(this, -1, 
 							"", wxPoint());
 						check->SetName(name);
-						sizerRight->Add(check, 1, wxEXPAND | wxALL, 5);	
+						addLabel(name, sizerHor, hideThisColumn);
+						sizerHor->Add(check, 1, wxALL, 5);	
+						sizerMain->Add(sizerHor, 0, wxEXPAND | wxALL, 5);
 
 						if (FFI->isReadonly(name)) {
 						        check->Disable();
@@ -900,7 +945,10 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 						
 						wxTextCtrl *text = new wxTextCtrl(this, -1, s->charrep(), wxPoint(), wxDefaultSize, 0, val);
 						text->SetName(name);
-						sizerRight->Add(text, 1, wxEXPAND | wxALL, 5);
+
+						addLabel(name, sizerHor, hideThisColumn);
+						sizerHor->Add(text, 1, wxALL, 5);
+						sizerMain->Add(sizerHor, 0, wxEXPAND | wxALL, 5);
 						
 						if (FFI->isReadonly(name)) {
 							text->Disable();
@@ -912,12 +960,15 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 				case lb_I_Query::lbDBColumnChar:
 					{
 						UAP(lb_I_String, s)
-						
+						//wxFlexGridSizer* sizerHor = new wxFlexGridSizer(wxHORIZONTAL);
 						s = sampleQuery->getAsString(i);
 						
 						wxTextCtrl *text = new wxTextCtrl(this, -1, s->charrep(), wxPoint(), wxDefaultSize);
 						text->SetName(name);
-						sizerRight->Add(text, 1, wxEXPAND | wxALL, 5);
+
+						addLabel(name, sizerHor, hideThisColumn);
+						sizerHor->Add(text, 1, wxALL, 5);
+						sizerMain->Add(sizerHor, 0, wxEXPAND | wxALL, 5);
 						
 						if (FFI->isReadonly(name)) {
 							text->Disable();
@@ -940,7 +991,10 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 						wxDatePickerCtrl *date = new wxDatePickerCtrl(this, -1, dt, wxPoint(), wxDefaultSize);
 #endif
 						date->SetName(name);
-						sizerRight->Add(date, 1, wxEXPAND | wxALL, 5);
+
+						addLabel(name, sizerHor, hideThisColumn);
+						sizerHor->Add(date, 1, wxALL, 5);
+						sizerMain->Add(sizerHor, 0, wxEXPAND | wxALL, 5);
 						
 						if (FFI->isReadonly(name)) {
 							date->Disable();
@@ -951,6 +1005,39 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 					break;
 					
 				case lb_I_Query::lbDBColumnBinary:
+				{
+					UAP(lb_I_BinaryData, binary)
+					
+					binary = sampleQuery->getBinaryData(name);
+					
+					if (binary == NULL) {
+						wxTextCtrl *text = new wxTextCtrl(this, -1, "", wxPoint(), wxSize(200, 20), wxTE_MULTILINE);
+						text->SetName(name);
+						addLabel(name, sizerHor, hideThisColumn);
+						sizerHor->Add(text, 1, wxEXPAND | wxALL, 5);
+						sizerMain->Add(sizerHor, 1, wxEXPAND | wxALL, 5);
+						
+						if (FFI->isReadonly(name)) {
+							text->Disable();
+						}
+					} else {
+						char* buffer = (char*) malloc(binary->getSize()+1);
+						memcpy((void*) buffer, binary->getData(), binary->getSize());
+						buffer[binary->getSize()] = 0;
+						
+						wxTextCtrl *text = new wxTextCtrl(this, -1, buffer, wxPoint(), wxSize(200, 20), wxTE_MULTILINE);
+						free(buffer);
+						text->SetName(name);
+						addLabel(name, sizerHor, hideThisColumn);
+						sizerHor->Add(text, 1, wxEXPAND | wxALIGN_TOP | wxALL, 5);
+						sizerMain->Add(sizerHor, 1, wxEXPAND | wxALL, 5);
+						
+						if (FFI->isReadonly(name)) {
+							text->Disable();
+						}
+					}
+					createdControl = true;
+				}
 					break;
 
 				case lb_I_Query::lbDBColumnBigInteger:
@@ -979,14 +1066,16 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 						s = sampleQuery->getAsString(i);
 					
 						wxTextCtrl *text = new wxTextCtrl(this, -1, s->charrep(), wxPoint(), wxDefaultSize, 0, val);
-					        text->SetName(name);
-					        sizerRight->Add(text, 1, wxEXPAND | wxALL, 5);
+				        text->SetName(name);
+						addLabel(name, sizerHor, hideThisColumn);
+						sizerHor->Add(text, 1, wxALL, 5);
+						sizerMain->Add(sizerHor, 0, wxEXPAND | wxALL, 5);
 						
 						if (FFI->isReadonly(name)) {
  							text->Disable();
 						}
 
-					        createdControl = true;
+				        createdControl = true;
 					}
 					break;
 				case lb_I_Query::lbDBColumnUnknown:
@@ -996,7 +1085,7 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 /*...e*/
 			}
 		}
-		
+#ifdef bla		
 		if (createdControl) {
 			char* tLabel = (char*) malloc(strlen(name) + 6);
 		
@@ -1010,17 +1099,17 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 						
 			label->SetName(_trans(tLabel));
 			
-			if (hideThisColumn == false) sizerLeft->Add(label, 1, wxEXPAND | wxALL, 5);
+			if (hideThisColumn == false) sizerHor->Add(label, 1, wxALL, 5);
 			
 			free(tLabel);
 		}	
-		
+#endif		
 		free(name);
 	}
 /*...e*/
 
-	sizerHor->Add(sizerLeft, 1, wxEXPAND | wxALL, 5);
-	sizerHor->Add(sizerRight, 1, wxEXPAND | wxALL, 5);
+	//sizerHor->Add(sizerLeft, 1, wxSHAPED | wxALL, 5);
+	//sizerHor->Add(sizerRight, 1, wxSHAPED | wxALL, 5);
 
 	wxButton *button1 = new wxButton(this, DatabaseFirst, _trans("First"));
 	wxButton *button2 = new wxButton(this, DatabasePrev, _trans("Prev"));
@@ -1182,7 +1271,7 @@ _CL_LOG << "Connect event handlers" LOG_
 
 	SetAutoLayout(TRUE);
 	
-	sizerMain->Add(sizerHor, 0, wxEXPAND | wxALL, 5);
+	//sizerMain->Add(sizerHor, 0, wxEXPAND | wxALL, 5);
 	sizerMain->Add(sizerActions, 0, wxEXPAND | wxALL, 5);
 	sizerMain->Add(sizerAddRem, 0, wxEXPAND | wxALL, 5);
 	sizerMain->Add(sizerNavi, 0, wxEXPAND | wxALL, 5);
@@ -1206,6 +1295,18 @@ _CL_LOG << "Connect event handlers" LOG_
 	}
 }
 /*...e*/
+
+void LB_STDCALL lbDatabasePanel::addLabel(char* text, wxSizer* sizer, bool hideThisColumn) {
+	char* tLabel = (char*) malloc(strlen(text) + 6);
+	tLabel[0] = 0;
+	tLabel = strcat(tLabel, text); 
+	wxStaticText *label = new wxStaticText(this, -1, _trans(tLabel), wxPoint());
+	tLabel = strcat(tLabel, "_lbl");
+	label->SetName(_trans(tLabel));
+	if (hideThisColumn == false) sizer->Add(label, 1, wxALL|wxADJUST_MINSIZE, 5);
+	
+	free(tLabel);
+}
 
 void  LB_STDCALL lbDatabasePanel::reopen() {
 	sampleQuery->reopen();
@@ -2585,6 +2686,28 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBUpdate() {
 							}
 						}
 						break;
+					case lb_I_Query::lbDBColumnBinary:
+						{
+							if (!sampleQuery->getReadonly(name)) {
+								wxTextCtrl* tx = (wxTextCtrl*) w;
+			
+								wxString v = tx->GetValue();
+			
+								col->setData(name);
+
+								UAP_REQUEST(getModuleInstance(), lb_I_BinaryData, binary)
+								
+								if (v.Length() > 0) { 
+									int len = v.Length()+1;
+									void* buffer = malloc(len);
+									memcpy(buffer, v.c_str(), len);
+									binary->setData(buffer, len);
+									free(buffer);
+									sampleQuery->setBinaryData(col->charrep(), *&binary);
+								}
+							}
+						}
+						break;
 					
 					
 					case lb_I_Query::lbDBColumnUnknown:
@@ -2826,6 +2949,17 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBRead() {
 							
 							wxTextCtrl* tx = (wxTextCtrl*) w;
 							tx->SetValue(wxString(s->charrep()));
+						}
+						break;
+					case lb_I_Query::lbDBColumnBinary:
+						{
+							UAP(lb_I_BinaryData, binary)
+							
+							binary = sampleQuery->getBinaryData(i);
+							binary->append("\0", 1);
+							
+							wxTextCtrl* tx = (wxTextCtrl*) w;
+							tx->SetValue(wxString((char*) binary->getData()));
 						}
 						break;
 					case lb_I_Query::lbDBColumnUnknown:

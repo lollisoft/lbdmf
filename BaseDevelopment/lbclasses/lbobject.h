@@ -31,10 +31,13 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.40 $
+ * $Revision: 1.41 $
  * $Name:  $
- * $Id: lbobject.h,v 1.40 2007/07/09 12:07:12 lollisoft Exp $
+ * $Id: lbobject.h,v 1.41 2007/08/08 19:48:50 lollisoft Exp $
  * $Log: lbobject.h,v $
+ * Revision 1.41  2007/08/08 19:48:50  lollisoft
+ * Changes to allow using BLOB data fields. Not completely finished.
+ *
  * Revision 1.40  2007/07/09 12:07:12  lollisoft
  * Removed unnessesary strcpy usage.
  *
@@ -482,6 +485,23 @@ private:
     bool integerdata;
 };
 /*...e*/
+class lbBinaryData : public lb_I_BinaryData
+{
+public:
+	lbBinaryData();
+	virtual ~lbBinaryData();
+
+	DECLARE_LB_UNKNOWN()
+	
+	lbErrCodes LB_STDCALL append(void* value, long len);
+	lbErrCodes LB_STDCALL setData(void* value, long len);
+	void* LB_STDCALL getData() const;
+	long LB_STDCALL getSize() const;
+
+private:	
+	void* blob;
+	long size;
+};
 /*...sclass lbLong:0:*/
 class lbLong : public lb_I_Long
 {
@@ -532,6 +552,7 @@ extern "C" {
 /*...e*/
 
 DECLARE_FUNCTOR(instanceOfInteger)
+DECLARE_FUNCTOR(instanceOfBinaryData)
 DECLARE_FUNCTOR(instanceOfFileLocation)
 DECLARE_FUNCTOR(instanceOfDirLocation)
 DECLARE_FUNCTOR(instanceOfLong)
