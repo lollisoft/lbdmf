@@ -2956,7 +2956,7 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBRead() {
 							UAP(lb_I_BinaryData, binary)
 							
 							binary = sampleQuery->getBinaryData(i);
-							binary->append("\0", 1);
+							binary->append((void*) "\0", 1);
 							
 							wxTextCtrl* tx = (wxTextCtrl*) w;
 							tx->SetValue(wxString((char*) binary->getData()));

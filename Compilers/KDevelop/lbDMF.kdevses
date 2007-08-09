@@ -1,33 +1,7 @@
 <?xml version = '1.0' encoding = 'UTF-8'?>
 <!DOCTYPE KDevPrjSession>
 <KDevPrjSession>
- <DocsAndViews NumberOfDocuments="5" >
-  <Doc0 NumberOfViews="1" URL="file:/home/lothar/develop/Projects/CPP/AppDevelopmentDemo/DynamicApp/Plugins/lbDynamicAppStorage/lbDynamicAppStorage.h" >
-   <View0 line="0" Type="???" >
-    <AdditionalSettings Top="2" Width="774" Attach="1" Height="533" Left="2" MinMaxMode="0" />
-   </View0>
-  </Doc0>
-  <Doc1 NumberOfViews="1" URL="file:/home/lothar/develop/Projects/CPP/AppDevelopmentDemo/DynamicApp/Plugins/lbDynamicAppStorage/lbDynamicAppStorage.cpp" >
-   <View0 line="77" Type="???" >
-    <AdditionalSettings Top="2" Width="774" Attach="1" Height="507" Left="2" MinMaxMode="0" />
-   </View0>
-  </Doc1>
-  <Doc2 NumberOfViews="1" URL="file:/home/lothar/develop/Projects/CPP/AppDevelopmentDemo/DynamicApp/Plugins/lbDynamicAppStorage/plugin.cpp" >
-   <View0 line="0" Type="???" >
-    <AdditionalSettings Top="2" Width="774" Attach="1" Height="507" Left="2" MinMaxMode="0" />
-   </View0>
-  </Doc2>
-  <Doc3 NumberOfViews="1" URL="file:/home/lothar/develop/Projects/CPP/AppDevelopmentDemo/DynamicApp/App/lbDynApp.h" >
-   <View0 line="0" Type="???" >
-    <AdditionalSettings Top="2" Width="774" Attach="1" Height="507" Left="2" MinMaxMode="0" />
-   </View0>
-  </Doc3>
-  <Doc4 NumberOfViews="1" URL="file:/home/lothar/develop/Projects/CPP/AppDevelopmentDemo/DynamicApp/App/lbDynApp.cpp" >
-   <View0 line="485" Type="???" >
-    <AdditionalSettings Top="2" Width="774" Attach="1" Height="507" Left="2" MinMaxMode="0" />
-   </View0>
-  </Doc4>
- </DocsAndViews>
+ <DocsAndViews NumberOfDocuments="0" />
  <pluginList>
   <kdevvalgrind>
    <executable path="" params="" />

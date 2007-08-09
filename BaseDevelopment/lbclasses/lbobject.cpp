@@ -1258,7 +1258,7 @@ lbErrCodes LB_STDCALL lbBinaryData::append(void* value, long len) {
 	}
 	
 	blob = realloc(blob, size + len);
-	memcpy(blob+size, value, len); 
+	memcpy(((char*)blob)+size, value, len); 
 }
 
 lbErrCodes LB_STDCALL lbBinaryData::setData(void* value, long len) {
@@ -1275,7 +1275,7 @@ lbErrCodes LB_STDCALL lbBinaryData::setData(void* value, long len) {
 		_LOG << "lbBinaryData::setData(...) Warning: Zero allocation ignored." LOG_
 		blob = strdup("");
 		size = 1;
-		return;
+		return ERR_NONE;
 	}
 
 	blob = malloc(len);
@@ -1310,7 +1310,7 @@ lbErrCodes LB_STDCALL lbBinaryData::setData(lb_I_Unknown* uk) {
 	if (uk != NULL) {
 		QI(uk, lb_I_BinaryData, l)
 		void* _l = l->getData();
-		setData(_l);
+		setData(_l, l->getSize());
 	}
 	
 	return ERR_NONE;

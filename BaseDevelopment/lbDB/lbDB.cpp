@@ -1730,7 +1730,7 @@ lbErrCodes LB_STDCALL lbQuery::query(char* q, bool bind) {
 	if (cursorname != NULL) free(cursorname);
 	cursorname = (char*) malloc(cbCursorname);
 
-	retcode = SQLGetCursorName(hstmt, cursorname, cbCursorname, &cbCursorname);
+	retcode = SQLGetCursorName(hstmt, (SQLCHAR*) cursorname, cbCursorname, &cbCursorname);
 
 	if (retcode != SQL_SUCCESS) {
 		_LOG << "lbQuery::query(...) Failed to get cursor name." LOG_
@@ -1898,12 +1898,12 @@ lb_I_BinaryData* LB_STDCALL lbQuery::getBinaryData(int column) {
 									&BinaryLenOrInd)) != SQL_NO_DATA) {
 				NumBytes = (BinaryLenOrInd > 5000) || (BinaryLenOrInd == SQL_NO_TOTAL) ? 5000 : BinaryLenOrInd;
 				if (BinaryLenOrInd == SQL_NULL_DATA) {
-					binarydata->append("", 1);
+					binarydata->append((void*) "", 1);
 					binarydata++;
 					return binarydata.getPtr();
 				}
 				if (BinaryLenOrInd == 0) {
-					binarydata->append("", 1);
+					binarydata->append((void*) "", 1);
 					binarydata++;
 					return binarydata.getPtr();
 				}
@@ -1926,7 +1926,7 @@ lb_I_BinaryData* LB_STDCALL lbQuery::getBinaryData(const char* column) {
 	_LOG << "lbQuery::getBinaryData('" << column << "') Error: No bound columns!" LOG_
 	UAP_REQUEST(getModuleInstance(), lb_I_BinaryData, binary)
 	binary++;
-	binary->append("", 1);
+	binary->append((void*)"", 1);
 	return binary.getPtr();
 }
 
@@ -2009,7 +2009,7 @@ lbErrCodes LB_STDCALL lbQuery::setBinaryData(int column, lb_I_BinaryData* value)
 	
 	_LOG << "Prepare positioned BLOB update: '" << update_query->charrep() << "' with length of data = " << BinaryLenOrInd LOG_
 
-	retcode = SQLPrepare(hupdatestmt, update_query->charrep(), SQL_NTS);
+	retcode = SQLPrepare(hupdatestmt, (SQLCHAR*) update_query->charrep(), SQL_NTS);
 
 	if (retcode != SQL_SUCCESS) {
 		_LOG << "Preparing update statement failed." LOG_
@@ -2041,7 +2041,7 @@ lbErrCodes LB_STDCALL lbQuery::setBinaryData(int column, lb_I_BinaryData* value)
 		while(retcode == SQL_NEED_DATA) 
 		{ 
 			_LOG << "lbQuery::setBinaryData() Needs more data ..." << remainingsize	LOG_
-			tempBuffer += LB_BLOCKSIZE;
+			((char*) tempBuffer) += LB_BLOCKSIZE;
 			remainingsize -= LB_BLOCKSIZE;
 			
 			if (remainingsize <= LB_BLOCKSIZE) {
