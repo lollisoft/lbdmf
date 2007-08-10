@@ -332,13 +332,7 @@ typedef struct _boundColumn {
 * This function prints the current row based on a fixed SQL query.
 */
 void PrintCurrent(int cols, HSTMT hstmt) {
-	char* temp;
-	temp = strdup(id);
-	trim(temp);
-	printf("%19s", temp);
-	free(temp);
-	
-	temp = strdup(test);
+	char* temp = strdup(test);
 	trim(temp);
 	printf("%19s", temp);
 	free(temp);
@@ -427,11 +421,11 @@ void setQuery(unsigned char* q, HSTMT &hstmt) {
 	
 	if (retcode != SQL_SUCCESS) dbError("SQLExecDirect()", hstmt);
 
-	retcode = SQLBindCol(hstmt, 2, SQL_C_CHAR, test, sizeof(test), &cbBufferLength);
+	retcode = SQLBindCol(hstmt, 1, SQL_C_CHAR, test, sizeof(test), &cbBufferLength);
 	if (retcode != SQL_SUCCESS) dbError("SQLBindCol()", hstmt);
-	retcode = SQLBindCol(hstmt, 3, SQL_C_CHAR, btest, sizeof(btest), &cbBufferLength);
+	retcode = SQLBindCol(hstmt, 2, SQL_C_CHAR, btest, sizeof(btest), &cbBufferLength);
 	if (retcode != SQL_SUCCESS) dbError("SQLBindCol()", hstmt);
-	retcode = SQLBindCol(hstmt, 4, SQL_C_CHAR, btest1, sizeof(btest1), &cbBufferLength);
+	retcode = SQLBindCol(hstmt, 3, SQL_C_CHAR, btest1, sizeof(btest1), &cbBufferLength);
 	if (retcode != SQL_SUCCESS) dbError("SQLBindCol()", hstmt);
 }
 
@@ -441,17 +435,17 @@ void testBlobUpdate(int column, HDBC hdbc, HSTMT hstmt, void* buffer, long buffe
 	long BLOB_SIZE = 100; 
 	char shortbuffer[7] = "123456";
 	char* BinaryPtr = NULL;
-	void* tempBuffer;
+	char* tempBuffer;
 	SQLINTEGER    PutDataSize;
 
-	long cbBufferLength = 6;
+	long cbBufferLength = 7;
 	long remainingsize = buffersize;
 	long realBufferSize;
 	HSTMT hupdatestmt;
 	
 	printf("Testing BLOB data handling.\n");
 	
-	tempBuffer = buffer;
+	tempBuffer = (char*) buffer;
 	
 	retcode = SQLAllocStmt (hdbc, &hupdatestmt);
 	
@@ -463,7 +457,7 @@ void testBlobUpdate(int column, HDBC hdbc, HSTMT hstmt, void* buffer, long buffe
 	retcode = SQLSetStmtOption(hupdatestmt, SQL_CURSOR_TYPE, SQL_CURSOR_KEYSET_DRIVEN);
 	if (retcode != SQL_SUCCESS) printf("SQLSetStmtOption() failed.\n");
 	
-	retcode = SQLBindCol(hstmt, 5, SQL_C_BINARY, shortbuffer, 7, &cbBufferLength);
+	retcode = SQLBindCol(hstmt, 4, SQL_C_CHAR, shortbuffer, 7, &cbBufferLength);
 	if (retcode != SQL_SUCCESS) printf("SQLBindCol() failed.\n");
 	
 	printf("Update blob column with marker data...\n");
@@ -473,7 +467,7 @@ void testBlobUpdate(int column, HDBC hdbc, HSTMT hstmt, void* buffer, long buffe
 	update(hstmt);
 
 	printf("Unbind BLOB column...\n");
-	retcode = SQLBindCol(hstmt, 5, SQL_C_BINARY, NULL, 0, 0);
+	retcode = SQLBindCol(hstmt, 4, SQL_C_CHAR, NULL, 0, 0);
 	if (retcode != SQL_SUCCESS) printf("SQLBindCol() failed.\n");
 	
 	printf("Refresh resultset...\n");
@@ -482,7 +476,7 @@ void testBlobUpdate(int column, HDBC hdbc, HSTMT hstmt, void* buffer, long buffe
 	char* query = "UPDATE regressiontest SET blobdata = ? where blobdata LIKE '123456%'";
 	
 	printf("Prepare statement...\n");
-	retcode = SQLPrepare(hupdatestmt, query, SQL_NTS);
+	retcode = SQLPrepare(hupdatestmt, (unsigned char*) query, SQL_NTS);
 	if (retcode != SQL_SUCCESS) {
 		printf("Preparing update statement failed.\n");
 	}
@@ -492,7 +486,7 @@ void testBlobUpdate(int column, HDBC hdbc, HSTMT hstmt, void* buffer, long buffe
 		BinaryLenOrInd = SQL_LEN_DATA_AT_EXEC(buffersize);
 
 		realBufferSize = BLOB_SIZE;
-		BinaryPtr = malloc(realBufferSize);
+		BinaryPtr = (char*) malloc(realBufferSize);
 		 
 		
 		printf("Call SQLBindParameter with a length indicator value of %d.\n", BinaryLenOrInd);
@@ -504,7 +498,7 @@ void testBlobUpdate(int column, HDBC hdbc, HSTMT hstmt, void* buffer, long buffe
 	} else {
 		realBufferSize = remainingsize;
 		BinaryLenOrInd = remainingsize;
-		BinaryPtr = malloc(remainingsize);
+		BinaryPtr = (char*) malloc(remainingsize);
 		retcode = SQLBindParameter(hupdatestmt, 1, SQL_PARAM_INPUT,
                   SQL_C_BINARY, SQL_LONGVARBINARY,
                   0, 0, (SQLPOINTER) &BinaryPtr, BinaryLenOrInd, &BinaryLenOrInd);
@@ -539,7 +533,7 @@ void testBlobUpdate(int column, HDBC hdbc, HSTMT hstmt, void* buffer, long buffe
 				PutDataSize = remainingsize;
 				retcode = SQLPutData(hupdatestmt, BinaryPtr, PutDataSize); 
 				retcode = SQLParamData(hupdatestmt, (void **)  &putDataBuffer); 
-				((char*) tempBuffer) += realBufferSize;
+				tempBuffer += realBufferSize;
 				remainingsize -= realBufferSize;
 			} else {
 				printf("Copy maximum memory piece of %d bytes.\n", realBufferSize);
@@ -547,7 +541,7 @@ void testBlobUpdate(int column, HDBC hdbc, HSTMT hstmt, void* buffer, long buffe
 				PutDataSize = realBufferSize;
 				retcode = SQLPutData(hupdatestmt, BinaryPtr, PutDataSize); 
 				retcode = SQLParamData(hupdatestmt, (void **)  &putDataBuffer); 
-				((char*) tempBuffer) += realBufferSize;
+				tempBuffer += realBufferSize;
 				remainingsize -= realBufferSize;
 			}
 			printf("Copied memory piece.\n");
@@ -604,7 +598,7 @@ int main(void)
 			"test char(100) DEFAULT 'Nothing',"
 			"btest bool DEFAULT false,"
 			"btest1 bool DEFAULT false,"
-			"blobdata bytea DEFAULT '',"
+			"blobdata bytea,"
 			"CONSTRAINT regressiontest_pkey PRIMARY KEY (id)"
 			")");
 		TargetDatabase = 2;
@@ -722,40 +716,6 @@ int main(void)
 	
 	testBlobRead(5, hstmt_select, &blob_buffer, 10000);
 
-	next(  hstmt_select);
-	
-	//remove(hstmt_select, id);
-	//update(hstmt_select);
-	
-	next(  hstmt_select);
-	
-	//remove(hstmt_select, id);
-	//update(hstmt_select);
-	
-	first(hstmt_select);
-
-	// Close Cursor
-	setQuery(buf5, hstmt_select);
-	
-	//refresh(hstmt_select);
-	
-	absolute(hstmt_select, 1);
-	
-	PrintData(hstmt_select, count, false, false);
-	
-	first( hstmt_select);
-	
-	printf("Test changing data...\n");
-	
-	sprintf(btest, "%d", 1); 
-	sprintf(btest1, "%d", 1); 
-	update(hstmt_select);
-	
-	PrintData(hstmt_select, count, false);
-	
-	PrintData(hstmt_select, count, true);
-	
-	// Free the allocated statement handles
 	retcode = SQLFreeStmt (hstmt_select, SQL_DROP);
 	
 	// Free the allocated connection handle
