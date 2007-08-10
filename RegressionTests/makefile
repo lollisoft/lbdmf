@@ -65,6 +65,7 @@ TARGETEXE=elf
 ALLTARGETS = \
 	Database/FKTest \
 	Database/Plain-ODBC-Test \
+	Database/Plain-ODBC-Test-Blob \
 	Database \
 	Basetypes \
 	Memory \
@@ -81,6 +82,7 @@ TARGETDLL=dll
 TARGETEXE=exe
 
 ALLTARGETS = \
+	Database/Plain-ODBC-Test-Blob \
 	Database/Plain-ODBC-Test \
 	Database/FKTest \
 	Database \
@@ -120,6 +122,10 @@ Database/FKTest: dummy
 
 Database/Plain-ODBC-Test: dummy
 	$(MAKE) -C $@ -e MODULE=plainTest -e TARGET=$(TARGETEXE) -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
+	$(MAKE) -C $@
+
+Database/Plain-ODBC-Test-Blob: dummy
+	$(MAKE) -C $@ -e MODULE=plainTestBlob -e TARGET=$(TARGETEXE) -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
 	$(MAKE) -C $@
 
 Database: dummy

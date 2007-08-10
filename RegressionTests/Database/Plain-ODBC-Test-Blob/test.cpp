@@ -1,59 +1,24 @@
 /*
-	Based on Dave's post at google, this version is as close as possible to the scenario
-	on what the crashes will happen.
+	This test is aimed to check BLOB capabilities of ODBC drivers in different versions.
 
-	The scenario is aimed to be similar to my GUI with navigation, add and delete buttons,
-	except the peek testing to inform the GUI about no more data before that really happens.
-
-	It asks for the target database and then creates a table regarding to the SQL syntax
-	of the database. It fills 6 rows of data into the table and later it tries to delete
-	row 2 + 3.
-
-	After this has been done a second data output will be performed to show the changes in
-	non reverse and reverse order.
-
-	Google posting: VARCHAR, CHAR types changed ?
-	http://groups.google.com/group/pgsql.interfaces.odbc/browse_frm/thread/df155225d9d4a291/e9903c90492969b2#e9903c90492969b2
   
-	Test's:
+	Test's: These tests currently are for the following databases.
 	
-	MSSQL:		Deletes the two rows, but no detection of them to be deleted.
-				There would be no datachanges, except the value in the primary
-				key (id = 0).
-	  
-				All 6 rows would be printed out.
+	MSSQL:			Not yet adopted.
 		
-	Sybase:			There is a hang. Don't know why ?
+	Sybase:			Not yet adopted.
 		  
-	PostgreSQL:		The data would be deleted and with my modified version of the ODBC driver
-				I detect bodus pointer values (Linux/Windows).
-			
-				Driver version 07.03.0200 without changes does crash.
-				Driver version 07.03.0200 with changes does not crash, but detection of
-				bodus pointers does not result in a comparable output as of MSSQL.
-			  
-				Google posting: QR_get_value_backend_row returns invalid pointers !
-				http://groups.google.com/group/pgsql.interfaces.odbc/browse_frm/thread/5eab6fe60712e7b6/a15b55bedd0bb9a4#a15b55bedd0bb9a4
-				
-	MySQL:			Not tested.
-
+	PostgreSQL:		No special notes.
+					
+	MySQL:			Not yet adopted.
   
-	TODO:	Find out, what are the reason's for the different database vendors.
-
-		Fix the undefined behaviour in PostgreSQL driver version 07.03.0200.
-
-		Why is there a difference between using 
-
-		SQL_ATTR_ODBC_CURSORS = SQL_CUR_USE_IF_NEEDED
+	TODO:			Adapt to the listed databases.
 	
-		and
-
-		SQL_ATTR_ODBC_CURSORS = SQL_CUR_USE_ODBC
 */
 /*
 	DMF Distributed Multiplatform Framework (the initial goal of this library)
 	This file is part of lbDMF.
-	Copyright (C) 2002  Lothar Behrens (lothar.behrens@lollisoft.de)
+	Copyright (C) 2007  Lothar Behrens (lothar.behrens@lollisoft.de)
 
 	This library is free software; you can redistribute it and/or
 	modify it under the terms of the GNU Lesser General Public
@@ -97,6 +62,10 @@ void PrintHeader(int cols, HSTMT hstmt);
 void PrintCurrent(int cols, HSTMT hstmt);
 void _dbError_DBC(char* lp, HDBC hdbc);
 
+
+void testBlobUpdate(int column, HDBC hdbc, HSTMT hstmt, void* buffer, long buffersize);
+void testBlobRead(int column, HSTMT hstmt, void** buffer, long size);
+
 // Fixed bound columns
 char id[10] = "";
 char test[200] = "";
@@ -115,7 +84,6 @@ void refresh(HSTMT hstmt) {
 	if (retcode != SQL_SUCCESS)
 	{
 		printf("ERROR: Refreshing data failed.\n");
-		dbError("SQLSetPos(SQL_REFRESH)", hstmt);
 	}
 }
 
@@ -166,7 +134,7 @@ void update(HSTMT hstmt) {
 	
 	if (retcode != SQL_SUCCESS)
 	{
-		dbError("SQLSetPos(SQL_UPDATE)", hstmt);
+		printf("SQLSetPos(SQL_UPDATE) failed.\n");
 	}
 }
 
@@ -278,8 +246,8 @@ char* getColumnName(HSTMT hstmt, int col) {
 		if (ret == SQL_SUCCESS_WITH_INFO) {
 			strcpy(lbQuery_column_Name, (char*) ColumnName);
 		} else {
-			dbError("SQLDescribeCol()", hstmt);
-			strcpy(lbQuery_column_Name, "");
+			printf("SQLDescribeCol() failed.\n");
+			strcpy(lbQuery_column_Name, "unknown");
 		}
 		
 		return lbQuery_column_Name;
@@ -427,6 +395,9 @@ void dbError(char* lp, HSTMT hstmt)
 	SQLSMALLINT i, MsgLen;
 	SQLRETURN  rc;
 	
+	printf("%s\n", lp);
+	return;
+	
 	i = 1;
 	
 	printf("Any error happens in %s\n", lp);
@@ -440,8 +411,9 @@ void dbError(char* lp, HSTMT hstmt)
 }
 
 // This statement crashes inside SQLExecDirect(...)
-UCHAR buf5[] = "select id, test, btest, btest1 from regressiontest";
-	
+UCHAR buf5[] = "select test, btest, btest1 from regressiontest";
+
+UCHAR buf5_blob[] = "select test, btest, btest1, blobdata from regressiontest";
 
 void setQuery(unsigned char* q, HSTMT &hstmt) {
 	RETCODE retcode;
@@ -455,8 +427,6 @@ void setQuery(unsigned char* q, HSTMT &hstmt) {
 	
 	if (retcode != SQL_SUCCESS) dbError("SQLExecDirect()", hstmt);
 
-	retcode = SQLBindCol(hstmt, 1, SQL_C_CHAR, id, sizeof(id), &cbBufferLength);
-	if (retcode != SQL_SUCCESS) dbError("SQLBindCol()", hstmt);
 	retcode = SQLBindCol(hstmt, 2, SQL_C_CHAR, test, sizeof(test), &cbBufferLength);
 	if (retcode != SQL_SUCCESS) dbError("SQLBindCol()", hstmt);
 	retcode = SQLBindCol(hstmt, 3, SQL_C_CHAR, btest, sizeof(btest), &cbBufferLength);
@@ -464,6 +434,136 @@ void setQuery(unsigned char* q, HSTMT &hstmt) {
 	retcode = SQLBindCol(hstmt, 4, SQL_C_CHAR, btest1, sizeof(btest1), &cbBufferLength);
 	if (retcode != SQL_SUCCESS) dbError("SQLBindCol()", hstmt);
 }
+
+void testBlobUpdate(int column, HDBC hdbc, HSTMT hstmt, void* buffer, long buffersize) {
+	RETCODE retcode;
+	SQLINTEGER    BinaryLenOrInd;
+	long BLOB_SIZE = 100; 
+	char shortbuffer[7] = "123456";
+	char* BinaryPtr = NULL;
+	void* tempBuffer;
+	SQLINTEGER    PutDataSize;
+
+	long cbBufferLength = 6;
+	long remainingsize = buffersize;
+	long realBufferSize;
+	HSTMT hupdatestmt;
+	
+	printf("Testing BLOB data handling.\n");
+	
+	tempBuffer = buffer;
+	
+	retcode = SQLAllocStmt (hdbc, &hupdatestmt);
+	
+	printf("Set select statement options...\n");
+	
+	retcode = SQLSetStmtOption(hupdatestmt, SQL_ATTR_CONCURRENCY, SQL_CONCUR_ROWVER);
+	if (retcode != SQL_SUCCESS) printf("SQLSetStmtOption() failed.\n");
+	
+	retcode = SQLSetStmtOption(hupdatestmt, SQL_CURSOR_TYPE, SQL_CURSOR_KEYSET_DRIVEN);
+	if (retcode != SQL_SUCCESS) printf("SQLSetStmtOption() failed.\n");
+	
+	retcode = SQLBindCol(hstmt, 5, SQL_C_BINARY, shortbuffer, 7, &cbBufferLength);
+	if (retcode != SQL_SUCCESS) printf("SQLBindCol() failed.\n");
+	
+	printf("Update blob column with marker data...\n");
+	first(hstmt);
+	char* change = "123456";
+	memcpy(shortbuffer, change, 7);
+	update(hstmt);
+
+	printf("Unbind BLOB column...\n");
+	retcode = SQLBindCol(hstmt, 5, SQL_C_BINARY, NULL, 0, 0);
+	if (retcode != SQL_SUCCESS) printf("SQLBindCol() failed.\n");
+	
+	printf("Refresh resultset...\n");
+	//retcode = SQLSetPos(hstmt, 1, SQL_REFRESH, SQL_LOCK_NO_CHANGE);
+	
+	char* query = "UPDATE regressiontest SET blobdata = ? where blobdata LIKE '123456%'";
+	
+	printf("Prepare statement...\n");
+	retcode = SQLPrepare(hupdatestmt, query, SQL_NTS);
+	if (retcode != SQL_SUCCESS) {
+		printf("Preparing update statement failed.\n");
+	}
+
+	if (remainingsize > BLOB_SIZE) {
+		//BinaryLenOrInd = SQL_LEN_DATA_AT_EXEC(value->getSize());
+		BinaryLenOrInd = SQL_LEN_DATA_AT_EXEC(buffersize);
+
+		realBufferSize = BLOB_SIZE;
+		BinaryPtr = malloc(realBufferSize);
+		 
+		
+		printf("Call SQLBindParameter with a length indicator value of %d.\n", BinaryLenOrInd);
+		
+		retcode = SQLBindParameter(hupdatestmt, 1, SQL_PARAM_INPUT,
+                  SQL_C_BINARY, SQL_LONGVARBINARY,
+                  0, 0, (SQLPOINTER) 1, 0, &BinaryLenOrInd);
+
+	} else {
+		realBufferSize = remainingsize;
+		BinaryLenOrInd = remainingsize;
+		BinaryPtr = malloc(remainingsize);
+		retcode = SQLBindParameter(hupdatestmt, 1, SQL_PARAM_INPUT,
+                  SQL_C_BINARY, SQL_LONGVARBINARY,
+                  0, 0, (SQLPOINTER) &BinaryPtr, BinaryLenOrInd, &BinaryLenOrInd);
+	}
+	
+	if (retcode != SQL_SUCCESS) {
+		printf("Binding update parameter failed.\n");
+	}
+
+	//retcode = SQLSetPos(hstmt, 1, SQL_REFRESH, SQL_LOCK_NO_CHANGE);
+	
+	printf("Execute statement...\n");
+	retcode = SQLExecute(hupdatestmt);
+
+	long iteration = 0;
+
+	if ((retcode != SQL_SUCCESS) && (retcode != SQL_NEED_DATA)) {
+		printf("Execute query failed.\n");
+	}
+	
+	if (retcode == SQL_NEED_DATA) 
+	{ 
+		SQLPOINTER putDataBuffer;
+		retcode = SQLParamData(hupdatestmt, (void **)  &putDataBuffer); 
+		while(retcode == SQL_NEED_DATA) 
+		{ 
+			printf("lbQuery::setBinaryData() Needs more data ... %d.\n", remainingsize);
+
+			if (remainingsize <= realBufferSize) {
+				printf("Copy lesser memory piece of %d bytes.\n", remainingsize);
+				memcpy(BinaryPtr, tempBuffer, remainingsize);
+				PutDataSize = remainingsize;
+				retcode = SQLPutData(hupdatestmt, BinaryPtr, PutDataSize); 
+				retcode = SQLParamData(hupdatestmt, (void **)  &putDataBuffer); 
+				((char*) tempBuffer) += realBufferSize;
+				remainingsize -= realBufferSize;
+			} else {
+				printf("Copy maximum memory piece of %d bytes.\n", realBufferSize);
+				memcpy(BinaryPtr, tempBuffer, realBufferSize);
+				PutDataSize = realBufferSize;
+				retcode = SQLPutData(hupdatestmt, BinaryPtr, PutDataSize); 
+				retcode = SQLParamData(hupdatestmt, (void **)  &putDataBuffer); 
+				((char*) tempBuffer) += realBufferSize;
+				remainingsize -= realBufferSize;
+			}
+			printf("Copied memory piece.\n");
+		} 
+		
+	} 
+	//retcode = SQLSetPos(hstmt, 1, SQL_REFRESH, SQL_LOCK_NO_CHANGE);
+
+	SQLFreeStmt(hupdatestmt, SQL_DROP);
+
+}
+
+void testBlobRead(int column, HSTMT hstmt, void** buffer, long size) {
+
+}
+
 
 int main(void)
 {
@@ -474,6 +574,7 @@ int main(void)
 	UCHAR       user[64] = "dba";                       // UserID buffer 
 	UCHAR       passwd[64] = "trainres";                // Password buffer
 	
+	int			TargetDatabase = 0;
 	
 	char *buf1;
 	
@@ -495,6 +596,7 @@ int main(void)
 			"btest1 BIT DEFAULT 0,\n"
 			"PRIMARY KEY (id)\n"
 			")");
+		TargetDatabase = 1;
 		break;
 	case 2:
 		buf1 = strdup("create table regressiontest ("
@@ -502,8 +604,10 @@ int main(void)
 			"test char(100) DEFAULT 'Nothing',"
 			"btest bool DEFAULT false,"
 			"btest1 bool DEFAULT false,"
+			"blobdata bytea DEFAULT '',"
 			"CONSTRAINT regressiontest_pkey PRIMARY KEY (id)"
 			")");
+		TargetDatabase = 2;
 		break;
 	case 3:
 		DSN = (unsigned char*) strdup("trainresMSSQL");
@@ -514,6 +618,7 @@ int main(void)
 			"btest1 BIT DEFAULT 0,"
 			"CONSTRAINT regressiontest_pkey PRIMARY KEY (id)"
 			")");
+		TargetDatabase = 3;
 		break;
 	}
 	
@@ -542,15 +647,15 @@ int main(void)
 	printf("Set select statement options...\n");
 	
 	retcode = SQLSetStmtOption(hstmt_select, SQL_ATTR_CONCURRENCY, SQL_CONCUR_ROWVER);
-	if (retcode != SQL_SUCCESS) dbError("SQLSetStmtOption()", hstmt_select);
+	if (retcode != SQL_SUCCESS) printf("SQLSetStmtOption()");
 	
 	retcode = SQLSetStmtOption(hstmt_select, SQL_CURSOR_TYPE, SQL_CURSOR_KEYSET_DRIVEN);
-	if (retcode != SQL_SUCCESS) dbError("SQLSetStmtOption()", hstmt_select);
+	if (retcode != SQL_SUCCESS) printf("SQLSetStmtOption()");
 	
 	UCHAR buf6[] = "drop table regressiontest";
 	
 	retcode = SQLExecDirect(hstmt, buf6, sizeof(buf6));
-	if (retcode != SQL_SUCCESS) dbError("SQLExecDirect()", hstmt);
+	if (retcode != SQL_SUCCESS) printf("SQLExecDirect() failed.\n");
 	
 	
 	UCHAR *buf2 = ((select == 3) || (select == 1)) ? (UCHAR*) "insert into regressiontest (test) values('Nix')" : (UCHAR*) "insert into regressiontest (test) values('Nix')";
@@ -563,31 +668,37 @@ int main(void)
 	
 	//if ((select == 2) || (select == 3)) {
 	retcode = SQLExecDirect(hstmt, (unsigned char*) buf1, SQL_NTS);
-	if (retcode != SQL_SUCCESS) dbError("SQLExecDirect()", hstmt);
+	if (retcode != SQL_SUCCESS) printf("SQLExecDirect() failed.\n");
 	//}
 	
 	retcode = SQLExecDirect(hstmt, buf2, SQL_NTS);
-	if (retcode != SQL_SUCCESS) dbError("SQLExecDirect()", hstmt);
+	if (retcode != SQL_SUCCESS) printf("SQLExecDirect() failed.\n");
 	retcode = SQLExecDirect(hstmt, buf3, SQL_NTS);
-	if (retcode != SQL_SUCCESS) dbError("SQLExecDirect()", hstmt);
+	if (retcode != SQL_SUCCESS) printf("SQLExecDirect() failed.\n");
 	retcode = SQLExecDirect(hstmt, buf4, SQL_NTS);
-	if (retcode != SQL_SUCCESS) dbError("SQLExecDirect()", hstmt);
+	if (retcode != SQL_SUCCESS) printf("SQLExecDirect() failed.\n");
 	
 	retcode = SQLExecDirect(hstmt, buf12, SQL_NTS);
-	if (retcode != SQL_SUCCESS) dbError("SQLExecDirect()", hstmt);
+	if (retcode != SQL_SUCCESS) printf("SQLExecDirect() failed.\n");
 	retcode = SQLExecDirect(hstmt, buf13, SQL_NTS);
-	if (retcode != SQL_SUCCESS) dbError("SQLExecDirect()", hstmt);
+	if (retcode != SQL_SUCCESS) printf("SQLExecDirect() failed.\n");
 	retcode = SQLExecDirect(hstmt, buf14, SQL_NTS);
-	if (retcode != SQL_SUCCESS) dbError("SQLExecDirect()", hstmt);
+	if (retcode != SQL_SUCCESS) printf("SQLExecDirect() failed.\n");
 
 	retcode = SQLFreeStmt (hstmt, SQL_DROP);
 
-	setQuery(buf5, hstmt_select);
+	if (TargetDatabase == 2) {
+		printf("Set query to '%s'\n", buf5_blob);
+		setQuery(buf5_blob, hstmt_select);
+	} else {
+		setQuery(buf5, hstmt_select);
+	}
+
 
 	SWORD count = 0;
 	retcode = SQLNumResultCols(hstmt_select, &count);
 	
-	//if (count == 0) count = 4;
+	count = 4;
 	
 	if (retcode != SQL_SUCCESS) dbError("SQLNumResultCols()", hstmt_select);
 	
@@ -601,16 +712,28 @@ int main(void)
 	PrintData(hstmt_select, count, false);
 	
 	first( hstmt_select);
+
+	void* blob_buffer = malloc(10000);
+	memset(blob_buffer, 'A', 10000);
+	
+	testBlobUpdate(5, hdbc, hstmt_select, blob_buffer, 10000);
+	
+	free(blob_buffer);
+	
+	testBlobRead(5, hstmt_select, &blob_buffer, 10000);
+
 	next(  hstmt_select);
 	
-	remove(hstmt_select, id);
+	//remove(hstmt_select, id);
 	//update(hstmt_select);
 	
 	next(  hstmt_select);
 	
-	remove(hstmt_select, id);
+	//remove(hstmt_select, id);
 	//update(hstmt_select);
 	
+	first(hstmt_select);
+
 	// Close Cursor
 	setQuery(buf5, hstmt_select);
 	
