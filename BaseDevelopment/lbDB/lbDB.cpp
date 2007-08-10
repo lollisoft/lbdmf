@@ -1894,8 +1894,7 @@ lb_I_BinaryData* LB_STDCALL lbQuery::getBinaryData(int column) {
 			binarydata++;
 			return binarydata.getPtr();
 		} else {
-			while ((rc = SQLGetData(hstmt, column, SQL_C_BINARY, BinaryPtr, sizeof(BinaryPtr),
-									&BinaryLenOrInd)) != SQL_NO_DATA) {
+			while ((rc = SQLGetData(hstmt, column, SQL_C_BINARY, BinaryPtr, sizeof(BinaryPtr), &BinaryLenOrInd)) != SQL_NO_DATA) {
 				NumBytes = (BinaryLenOrInd > 5000) || (BinaryLenOrInd == SQL_NO_TOTAL) ? 5000 : BinaryLenOrInd;
 				if (BinaryLenOrInd == SQL_NULL_DATA) {
 					binarydata->append((void*) "", 1);
@@ -1931,7 +1930,7 @@ lb_I_BinaryData* LB_STDCALL lbQuery::getBinaryData(const char* column) {
 }
 
 lbErrCodes LB_STDCALL lbQuery::setBinaryData(int column, lb_I_BinaryData* value) {
-#define LB_BLOCKSIZE 10
+#define LB_BLOCKSIZE 1000
 #define USE_CURRENT_OF 
 
 #ifdef USE_CURRENT_OF
@@ -1939,12 +1938,15 @@ lbErrCodes LB_STDCALL lbQuery::setBinaryData(int column, lb_I_BinaryData* value)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, update_query)
 
 	SQLRETURN     rc, retcode; 
-	SQLCHAR       BinaryPtr[LB_BLOCKSIZE];
+	SQLCHAR*       BinaryPtr;
+	SQLCHAR       BinaryPtrCur[100];
+	long		  realBufferSize;
 	void*		  tempBuffer;
 	long		  remainingsize;
 	SQLINTEGER    BinaryLenOrIndCurrentOf;
 	SQLINTEGER    BinaryLenOrInd;
-
+	SQLINTEGER    PutDataSize;
+ 
 	retcode = SQLAllocStmt(hdbc, &hupdatestmt); /* Statement handle */
 
 	if (retcode != SQL_SUCCESS)
@@ -1978,25 +1980,17 @@ lbErrCodes LB_STDCALL lbQuery::setBinaryData(int column, lb_I_BinaryData* value)
 	
 	BinaryLenOrIndCurrentOf = strlen(cursorname)+1;
 
-	rc = SQLBindCol(hstmt, column, SQL_C_BINARY, (void *)BinaryPtr, 0, &BinaryLenOrIndCurrentOf);
-	memcpy(BinaryPtr, cursorname, BinaryLenOrIndCurrentOf);
+	rc = SQLBindCol(hstmt, column, SQL_C_BINARY, (void *)BinaryPtrCur, BinaryLenOrIndCurrentOf, &BinaryLenOrIndCurrentOf);
+	memcpy(BinaryPtrCur, cursorname, BinaryLenOrIndCurrentOf);
 
 	update();
-	reopen();
 	
-	rc = SQLBindCol(hstmt, column, SQL_C_BINARY, NULL, 0, 0);
+	retcode = SQLBindCol(hstmt, column, SQL_C_BINARY, NULL, 0, 0);
 
 	tempBuffer = value->getData();
 	BinaryLenOrInd = value->getSize();
 	remainingsize = value->getSize();
 	
-	if (value->getSize() <= LB_BLOCKSIZE) {
-		memcpy(BinaryPtr, tempBuffer, value->getSize());
-	} else {
-		memcpy(BinaryPtr, tempBuffer, LB_BLOCKSIZE);
-	}
-
-
 	*update_query = "UPDATE \"";
 	*update_query += getTableName(getColumnName(column));
 	*update_query += "\" SET \"";
@@ -2015,9 +2009,29 @@ lbErrCodes LB_STDCALL lbQuery::setBinaryData(int column, lb_I_BinaryData* value)
 		_LOG << "Preparing update statement failed." LOG_
 	}
 
-	retcode = SQLBindParameter(hupdatestmt, 1, SQL_PARAM_INPUT,
+	if (remainingsize > LB_BLOCKSIZE) {
+		//BinaryLenOrInd = SQL_LEN_DATA_AT_EXEC(value->getSize());
+		BinaryLenOrInd = SQL_LEN_DATA_AT_EXEC(value->getSize());
+
+		realBufferSize = LB_BLOCKSIZE;
+		BinaryPtr = malloc(realBufferSize);
+		 
+		
+		_LOG << "Call SQLBindParameter with a length indicator value of " << BinaryLenOrInd << "." LOG_
+		
+		retcode = SQLBindParameter(hupdatestmt, 1, SQL_PARAM_INPUT,
                   SQL_C_BINARY, SQL_LONGVARBINARY,
-                  0, 0, (SQLPOINTER) &BinaryPtr, 0, &BinaryLenOrInd);
+                  value->getSize(), 0, (SQLPOINTER) 1, LB_BLOCKSIZE, &BinaryLenOrInd);
+
+	} else {
+		realBufferSize = remainingsize;
+		BinaryLenOrInd = remainingsize;
+		BinaryPtr = malloc(remainingsize);
+		retcode = SQLBindParameter(hupdatestmt, 1, SQL_PARAM_INPUT,
+                  SQL_C_BINARY, SQL_LONGVARBINARY,
+                  0, 0, (SQLPOINTER) &BinaryPtr, BinaryLenOrInd, &BinaryLenOrInd);
+	}
+	
 
 	if (retcode != SQL_SUCCESS) {
 		_LOG << "Binding update parameter failed." LOG_
@@ -2025,39 +2039,49 @@ lbErrCodes LB_STDCALL lbQuery::setBinaryData(int column, lb_I_BinaryData* value)
 
 	_LOG << "Executing positioned BLOB update: '" << update_query->charrep() << "' with length of data = " << BinaryLenOrInd LOG_
 
+	retcode = SQLSetPos(hstmt, 1, SQL_REFRESH, SQL_LOCK_NO_CHANGE);
+	//retcode = SQLSetPos(hupdatestmt, 1, SQL_REFRESH, SQL_LOCK_NO_CHANGE);
 	retcode = SQLExecute(hupdatestmt);
 
 	long iteration = 0;
 
 	if ((retcode != SQL_SUCCESS) && (retcode != SQL_NEED_DATA)) {
 		_LOG << "Execute query failed." LOG_
-		_dbError_STMT("Executing positioned BLOB update failed.", hupdatestmt);
+		//_dbError_STMT("Executing positioned BLOB update failed.", hupdatestmt);
 	}
 	
 	if (retcode == SQL_NEED_DATA) 
 	{ 
-		_LOG << "lbQuery::setBinaryData() Needs more data ..." << remainingsize	LOG_
-		retcode = SQLParamData(hupdatestmt, (void **)  &BinaryPtr); 
+		SQLPOINTER putDataBuffer;
+		retcode = SQLParamData(hupdatestmt, (void **)  &putDataBuffer); 
 		while(retcode == SQL_NEED_DATA) 
 		{ 
 			_LOG << "lbQuery::setBinaryData() Needs more data ..." << remainingsize	LOG_
-			((char*) tempBuffer) += LB_BLOCKSIZE;
-			remainingsize -= LB_BLOCKSIZE;
-			
-			if (remainingsize <= LB_BLOCKSIZE) {
+
+			if (remainingsize <= realBufferSize) {
+				_LOG << "Copy lesser memory piece of " << remainingsize << " bytes." LOG_
 				memcpy(BinaryPtr, tempBuffer, remainingsize);
+				PutDataSize = remainingsize;
+				retcode = SQLPutData(hupdatestmt, BinaryPtr, PutDataSize); 
+				retcode = SQLParamData(hupdatestmt, (void **)  &putDataBuffer); 
+				((char*) tempBuffer) += realBufferSize;
+				remainingsize -= realBufferSize;
 			} else {
-				memcpy(BinaryPtr, tempBuffer, LB_BLOCKSIZE);
+				while (remainingsize > realBufferSize) {
+					_LOG << "Copy maximum memory piece of " << realBufferSize << " bytes." LOG_
+					memcpy(BinaryPtr, tempBuffer, realBufferSize);
+					PutDataSize = realBufferSize;
+					retcode = SQLPutData(hupdatestmt, BinaryPtr, PutDataSize); 
+					retcode = SQLParamData(hupdatestmt, (void **)  &putDataBuffer); 
+					((char*) tempBuffer) += realBufferSize;
+					remainingsize -= realBufferSize;
+				}
 			}
-			
-			
-			retcode = SQLPutData(hupdatestmt, BinaryPtr, SQL_NTS); 
-			/* check for error here */ 
-			retcode = SQLParamData(hupdatestmt, (void **)  &BinaryPtr); 
 		} 
 		
 	} 
-	
+	retcode = SQLSetPos(hstmt, 1, SQL_REFRESH, SQL_LOCK_NO_CHANGE);
+
 	SQLFreeStmt(hupdatestmt, SQL_DROP);
 #endif
 
