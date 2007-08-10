@@ -4,11 +4,11 @@
   
 	Test's: These tests currently are for the following databases.
 	
-	MSSQL:			Not yet adopted.
+	MSSQL:			Stores only the first BLOB_SIZE of data.
 		
 	Sybase:			Not yet adopted.
 		  
-	PostgreSQL:		No special notes.
+	PostgreSQL:		Stores only the first BLOB_SIZE of data.
 					
 	MySQL:			Not yet adopted.
   
@@ -389,8 +389,8 @@ void dbError(char* lp, HSTMT hstmt)
 	SQLSMALLINT i, MsgLen;
 	SQLRETURN  rc;
 	
-	printf("%s\n", lp);
-	return;
+//	printf("%s\n", lp);
+//	return;
 	
 	i = 1;
 	
@@ -473,12 +473,19 @@ void testBlobUpdate(int column, HDBC hdbc, HSTMT hstmt, void* buffer, long buffe
 	printf("Refresh resultset...\n");
 	//retcode = SQLSetPos(hstmt, 1, SQL_REFRESH, SQL_LOCK_NO_CHANGE);
 	
-	char* query = "UPDATE regressiontest SET blobdata = ? where blobdata LIKE '123456%'";
+	short int cbCursorname = 100;
+	char* cursorname = (char*) malloc(100);
+	
+	SQLGetCursorName(hstmt, (SQLCHAR*) cursorname, cbCursorname, &cbCursorname);
+	
+	char* query = (char*) malloc(1000);
+	
+	sprintf(query, "UPDATE regressiontest SET blobdata = ?");
 	
 	printf("Prepare statement...\n");
 	retcode = SQLPrepare(hupdatestmt, (unsigned char*) query, SQL_NTS);
 	if (retcode != SQL_SUCCESS) {
-		printf("Preparing update statement failed.\n");
+		dbError("Preparing update statement failed.", hupdatestmt);
 	}
 
 	if (remainingsize > BLOB_SIZE) {
@@ -492,23 +499,23 @@ void testBlobUpdate(int column, HDBC hdbc, HSTMT hstmt, void* buffer, long buffe
 		printf("Call SQLBindParameter with a length indicator value of %d.\n", BinaryLenOrInd);
 		
 		retcode = SQLBindParameter(hupdatestmt, 1, SQL_PARAM_INPUT,
-                  SQL_C_BINARY, SQL_LONGVARBINARY,
-                  0, 0, (SQLPOINTER) 1, 0, &BinaryLenOrInd);
+                  SQL_C_CHAR, SQL_LONGVARCHAR,
+                  remainingsize, 0, (SQLPOINTER) 1, buffersize, &BinaryLenOrInd);
 
 	} else {
 		realBufferSize = remainingsize;
 		BinaryLenOrInd = remainingsize;
 		BinaryPtr = (char*) malloc(remainingsize);
 		retcode = SQLBindParameter(hupdatestmt, 1, SQL_PARAM_INPUT,
-                  SQL_C_BINARY, SQL_LONGVARBINARY,
+                  SQL_C_CHAR, SQL_LONGVARCHAR,
                   0, 0, (SQLPOINTER) &BinaryPtr, BinaryLenOrInd, &BinaryLenOrInd);
 	}
 	
 	if (retcode != SQL_SUCCESS) {
-		printf("Binding update parameter failed.\n");
+		dbError("Binding update parameter failed.", hupdatestmt);
 	}
 
-	//retcode = SQLSetPos(hstmt, 1, SQL_REFRESH, SQL_LOCK_NO_CHANGE);
+	retcode = SQLSetPos(hstmt, 1, SQL_REFRESH, SQL_LOCK_NO_CHANGE);
 	
 	printf("Execute statement...\n");
 	retcode = SQLExecute(hupdatestmt);
@@ -516,7 +523,7 @@ void testBlobUpdate(int column, HDBC hdbc, HSTMT hstmt, void* buffer, long buffe
 	long iteration = 0;
 
 	if ((retcode != SQL_SUCCESS) && (retcode != SQL_NEED_DATA)) {
-		printf("Execute query failed.\n");
+		dbError("Execute query failed.", hupdatestmt);
 	}
 	
 	if (retcode == SQL_NEED_DATA) 
@@ -548,7 +555,7 @@ void testBlobUpdate(int column, HDBC hdbc, HSTMT hstmt, void* buffer, long buffe
 		} 
 		
 	} 
-	//retcode = SQLSetPos(hstmt, 1, SQL_REFRESH, SQL_LOCK_NO_CHANGE);
+	retcode = SQLSetPos(hstmt, 1, SQL_REFRESH, SQL_LOCK_NO_CHANGE);
 
 	SQLFreeStmt(hupdatestmt, SQL_DROP);
 
@@ -610,6 +617,7 @@ int main(void)
 			"test char(100) DEFAULT 'Nothing',"
 			"btest BIT DEFAULT 0,"
 			"btest1 BIT DEFAULT 0,"
+			"blobdata text,"
 			"CONSTRAINT regressiontest_pkey PRIMARY KEY (id)"
 			")");
 		TargetDatabase = 3;
@@ -681,7 +689,7 @@ int main(void)
 
 	retcode = SQLFreeStmt (hstmt, SQL_DROP);
 
-	if (TargetDatabase == 2) {
+	if ((TargetDatabase == 2) || (TargetDatabase == 3)) {
 		printf("Set query to '%s'\n", buf5_blob);
 		setQuery(buf5_blob, hstmt_select);
 	} else {
