@@ -1,0 +1,83 @@
+# Define your module based settings
+
+#    DMF Distributed Multiplatform Framework (the initial goal of this library)
+#    This file is part of lbDMF.
+#    Copyright (C) 2002  Lothar Behrens (lothar.behrens@lollisoft.de)
+#
+#    This library is free software; you can redistribute it and/or
+#    modify it under the terms of the GNU Lesser General Public
+#    License as published by the Free Software Foundation; either
+#    version 2.1 of the License, or (at your option) any later version.
+#
+#    This library is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+#    Lesser General Public License for more details.
+#
+#    You should have received a copy of the GNU Lesser General Public
+#    License along with this library; if not, write to the Free Software
+#    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+#
+#
+#    The author of this work will be reached by e-Mail or paper mail.
+#    e-Mail: lothar.behrens@lollisoft.de
+#    p-Mail: Lothar Behrens
+#            Rosmarinstr. 3
+#
+#            40235 Duesseldorf (germany)
+
+ifeq ($(OSTYPE), Windows_NT)
+MOD_INCL=$(STD_INCL)
+MOD_INCL_CPP=$(STD_INCL_CPP)
+OBJDEP=
+LIBS = $(BASE_LIBS) $(DEVROOT_MAKE)/projects/dll/libs/lbhook.lib,$(DEVROOT_MAKE)/tools/watcom/lib386/nt/odbc32.lib
+
+# use global setup
+#COMPILER=MICROSOFT
+ifeq ($(COMPILER), MICROSOFT)
+MOD_INCL = $(STD_INCL_MICROSOFT)
+MOD_INCL += $(foreach s, $(INCLS), /I "$s")
+CC=Cl
+C_DLLOPS= $(C_DLLOPS_MICROSOFT$(MODE))
+C_EXEOPS= $(C_EXEOPS_MICROSOFT$(MODE))
+C_LIBOPS= $(C_LIBOPS_MICROSOFT$(MODE))
+LINK=  $(LINK_MICROSOFT)
+L_DLLOPS= $(L_DLLOPS_MICROSOFT)
+LNKDLLOPS = $(L_DLLOPS_MICROSOFT)
+COMPILERFLAGS = $(LIBS)
+endif
+
+endif
+
+ifeq ($(OSTYPE), solaris)
+MOD_INCL=$(STD_INCL)
+OBJDEP=
+VENDORLIBS=-L$(prefix)/lib -llbHook /usr/local/lib/libodbc.so
+endif    
+
+ifeq ($(OSTYPE), linux)
+MOD_INCL=$(STD_INCL)
+OBJDEP=
+VENDORLIBS=-L$(prefix)/lib -llbHook /usr/lib/libodbc.so
+endif    
+
+ifeq ($(LB_USE_FRAMEWORKS), yes)
+
+ifeq ($(OSTYPE), osx)
+MOD_INCL=$(STD_INCL)
+OBJDEP=
+LIBS = #-F$(HOME)/lib -framework lbHook
+VENDORLIBS=/usr/lib/libiodbc.dylib
+endif    
+
+endif
+
+ifeq ($(LB_USE_FRAMEWORKS), no)
+
+ifeq ($(OSTYPE), osx)
+MOD_INCL=$(STD_INCL)
+OBJDEP=
+VENDORLIBS=$(HOME)/lib/lbHook.so /usr/lib/libiodbc.dylib
+endif    
+
+endif
