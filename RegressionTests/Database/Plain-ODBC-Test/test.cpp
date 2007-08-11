@@ -17,7 +17,7 @@
   
 	Test's:
 	
-	MSSQL:			Deletes the two rows, but no detection of them to be deleted.
+	MSSQL:		Deletes the two rows, but no detection of them to be deleted.
 				There would be no datachanges, except the value in the primary
 				key (id = 0).
 	  
