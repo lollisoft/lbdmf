@@ -1266,6 +1266,8 @@ lbErrCodes LB_STDCALL lbBinaryData::append(void* value, long len) {
 	memcpy((void*)temp, value, len);
 	
 	size += len;
+
+    return ERR_NONE;
 }
 
 lbErrCodes LB_STDCALL lbBinaryData::setData(void* value, long len) {
