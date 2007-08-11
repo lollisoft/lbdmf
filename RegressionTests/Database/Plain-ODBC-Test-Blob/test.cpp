@@ -389,8 +389,8 @@ void dbError(char* lp, HSTMT hstmt)
 	SQLSMALLINT i, MsgLen;
 	SQLRETURN  rc;
 	
-//	printf("%s\n", lp);
-//	return;
+	printf("%s\n", lp);
+	return;
 	
 	i = 1;
 	
@@ -429,10 +429,11 @@ void setQuery(unsigned char* q, HSTMT &hstmt) {
 	if (retcode != SQL_SUCCESS) dbError("SQLBindCol()", hstmt);
 }
 
+#define BLOB_SIZE 100
+
 void testBlobUpdate(int column, HDBC hdbc, HSTMT hstmt, void* buffer, long buffersize) {
 	RETCODE retcode;
 	SQLINTEGER    BinaryLenOrInd;
-	long BLOB_SIZE = 100; 
 	char shortbuffer[7] = "123456";
 	char* BinaryPtr = NULL;
 	char* tempBuffer;
@@ -489,8 +490,9 @@ void testBlobUpdate(int column, HDBC hdbc, HSTMT hstmt, void* buffer, long buffe
 	}
 
 	if (remainingsize > BLOB_SIZE) {
+		printf("Buffer is bigger than %d.\n", BLOB_SIZE);
 		//BinaryLenOrInd = SQL_LEN_DATA_AT_EXEC(value->getSize());
-		BinaryLenOrInd = SQL_LEN_DATA_AT_EXEC(buffersize);
+		BinaryLenOrInd = SQL_LEN_DATA_AT_EXEC(0);
 
 		realBufferSize = BLOB_SIZE;
 		BinaryPtr = (char*) malloc(realBufferSize);
@@ -499,24 +501,25 @@ void testBlobUpdate(int column, HDBC hdbc, HSTMT hstmt, void* buffer, long buffe
 		printf("Call SQLBindParameter with a length indicator value of %d.\n", BinaryLenOrInd);
 		
 		retcode = SQLBindParameter(hupdatestmt, 1, SQL_PARAM_INPUT,
-                  SQL_C_CHAR, SQL_LONGVARCHAR,
-                  remainingsize, 0, (SQLPOINTER) 1, buffersize, &BinaryLenOrInd);
+                  SQL_C_BINARY, SQL_LONGVARBINARY,
+                  0, 0, (SQLPOINTER) BinaryPtr, buffersize, &BinaryLenOrInd);
 
 	} else {
+		printf("Buffer is %d.\n", BLOB_SIZE);
 		realBufferSize = remainingsize;
 		BinaryLenOrInd = remainingsize;
 		BinaryPtr = (char*) malloc(remainingsize);
 		retcode = SQLBindParameter(hupdatestmt, 1, SQL_PARAM_INPUT,
                   SQL_C_CHAR, SQL_LONGVARCHAR,
-                  0, 0, (SQLPOINTER) &BinaryPtr, BinaryLenOrInd, &BinaryLenOrInd);
+                  BLOB_SIZE, 0, (SQLPOINTER) 0, BLOB_SIZE, &BinaryLenOrInd);
 	}
 	
 	if (retcode != SQL_SUCCESS) {
 		dbError("Binding update parameter failed.", hupdatestmt);
 	}
-
+#ifdef WINDOWS
 	retcode = SQLSetPos(hstmt, 1, SQL_REFRESH, SQL_LOCK_NO_CHANGE);
-	
+#endif	
 	printf("Execute statement...\n");
 	retcode = SQLExecute(hupdatestmt);
 
@@ -554,15 +557,41 @@ void testBlobUpdate(int column, HDBC hdbc, HSTMT hstmt, void* buffer, long buffe
 			printf("Copied memory piece.\n");
 		} 
 		
-	} 
+	}
+#ifdef WINDOWS 
 	retcode = SQLSetPos(hstmt, 1, SQL_REFRESH, SQL_LOCK_NO_CHANGE);
-
+#endif
 	SQLFreeStmt(hupdatestmt, SQL_DROP);
 
 }
 
 void testBlobRead(int column, HSTMT hstmt, void** buffer, long size) {
-
+	// Declare a binary buffer to retrieve 5000 bytes of data at a time.
+	SQLCHAR       BinaryPtr[BLOB_SIZE/2];
+	SQLUINTEGER   PartID;
+	SQLINTEGER    PartIDInd, BinaryLenOrInd, NumBytes;
+	SQLRETURN     rc; 
+	
+	BinaryLenOrInd = size;
+	
+	// Retrieve the picture data in parts. Send each part and the number 
+	// of bytes in each part to a function that displays it. The number 
+	// of bytes is always 5000 if there were more than 5000 bytes 
+	// available to return (cbBinaryBuffer > 5000). Code to check if 
+	// rc equals SQL_ERROR or SQL_SUCCESS_WITH_INFO not shown.
+	
+	while ((rc = SQLGetData(hstmt, column, SQL_C_BINARY, BinaryPtr, sizeof(BinaryPtr), &BinaryLenOrInd)) != SQL_NO_DATA) {
+		//if (rc == SQL_SUCCESS_WITH_INFO) {
+			NumBytes = (BinaryLenOrInd > BLOB_SIZE/2) || (BinaryLenOrInd == SQL_NO_TOTAL) ? BLOB_SIZE/2 : BinaryLenOrInd;
+			printf("Got image part at %p with num bytes %d.\n", BinaryPtr, NumBytes);
+		//}
+		
+		if (rc == SQL_SUCCESS) break;
+		if (rc == SQL_ERROR) {
+			dbError("There was an error with SQLGetData() !\n", hstmt);
+			break;
+		}
+	}
 }
 
 
@@ -718,11 +747,13 @@ int main(void)
 	void* blob_buffer = malloc(10000);
 	memset(blob_buffer, 'A', 10000);
 	
-	testBlobUpdate(5, hdbc, hstmt_select, blob_buffer, 10000);
+	testBlobUpdate(4, hdbc, hstmt_select, blob_buffer, 10000);
 	
 	free(blob_buffer);
+	last(hstmt_select);
+	first(hstmt_select);
 	
-	testBlobRead(5, hstmt_select, &blob_buffer, 10000);
+	testBlobRead(4, hstmt_select, &blob_buffer, 10000);
 
 	retcode = SQLFreeStmt (hstmt_select, SQL_DROP);
 	

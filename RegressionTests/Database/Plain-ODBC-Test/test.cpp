@@ -73,9 +73,9 @@
 	The author of this work will be reached by e-Mail or paper mail.
 	e-Mail: lothar.behrens@lollisoft.de
 	p-Mail: Lothar Behrens
-	Rosmarinstr. 3
+	Heinrich-Scheufelen-Platz 2
 		  
-	40235 Duesseldorf (germany)
+	73252 Lenningen (germany)
 */
 
 #ifdef WINDOWS
