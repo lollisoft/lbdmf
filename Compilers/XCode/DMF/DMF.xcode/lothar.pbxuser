@@ -36,7 +36,6 @@
 		);
 		codeSenseManager = 270BA7BC086C0A0900799F65;
 		executables = (
-			271766A20B386F4D001AEC58,
 			2773F2320C3D1A070037A8EB,
 		);
 		perUserDictionary = {
@@ -73,8 +72,8 @@
 				PBXFileTableDataSourceColumnSortingKey = PBXExecutablesDataSource_NameID;
 				PBXFileTableDataSourceColumnWidthsKey = (
 					22,
-					591.7974,
-					307.5835,
+					414.7974,
+					218.5835,
 				);
 				PBXFileTableDataSourceColumnsKey = (
 					PBXExecutablesDataSource_ActiveFlagID,
@@ -178,7 +177,7 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 205330913;
+			PBXPerProjectTemplateStateSaveDate = 208442597;
 			PBXPrepackagedSmartGroups_v2 = (
 				{
 					PBXTransientLocationAtTop = bottom;
@@ -355,10 +354,11 @@
 					};
 				},
 			);
-			PBXWorkspaceStateSaveDate = 205330913;
+			PBXWorkspaceStateSaveDate = 208442597;
 		};
 		perUserProjectItems = {
 			270607FF0B6CB9DF00DFDF9C = 270607FF0B6CB9DF00DFDF9C;
+			273C9E550C6CA89A00A1E074 = 273C9E550C6CA89A00A1E074;
 			27519D220B9050730079C19C = 27519D220B9050730079C19C;
 			27519D3F0B9051E10079C19C = 27519D3F0B9051E10079C19C;
 			27519D400B9051E10079C19C = 27519D400B9051E10079C19C;
@@ -369,9 +369,7 @@
 			2770B8B90B7F7CC500F220FE = 2770B8B90B7F7CC500F220FE;
 			2773F23C0C3D1B740037A8EB = 2773F23C0C3D1B740037A8EB;
 			2773F23D0C3D1B740037A8EB = 2773F23D0C3D1B740037A8EB;
-			2773F23E0C3D1B740037A8EB = 2773F23E0C3D1B740037A8EB;
 			2773F23F0C3D1B740037A8EB = 2773F23F0C3D1B740037A8EB;
-			2773F2400C3D1B740037A8EB = 2773F2400C3D1B740037A8EB;
 			2773F2530C3D1F3E0037A8EB = 2773F2530C3D1F3E0037A8EB;
 			27779ED10B7D186600B22C2B = 27779ED10B7D186600B22C2B;
 			2778C2A50B5A4E1E003524C2 = 2778C2A50B5A4E1E003524C2;
@@ -563,45 +561,6 @@
 		refType = 0;
 		sourceTree = "<absolute>";
 	};
-	271766A20B386F4D001AEC58 = {
-		activeArgIndex = 2147483647;
-		activeArgIndices = (
-		);
-		argumentStrings = (
-		);
-		configStateDict = {
-			"PBXLSLaunchAction-0" = {
-				PBXLSLaunchAction = 0;
-				PBXLSLaunchStartAction = 1;
-				PBXLSLaunchStdioStyle = 2;
-				PBXLSLaunchStyle = 0;
-				class = PBXLSRunLaunchConfig;
-				displayName = "Executable Runner";
-				identifier = com.apple.Xcode.launch.runConfig;
-				remoteHostInfo = "";
-				startActionInfo = "";
-			};
-		};
-		cppStopOnCatchEnabled = 0;
-		cppStopOnThrowEnabled = 0;
-		customDataFormattersEnabled = 1;
-		debuggerPlugin = GDBDebugging;
-		disassemblyDisplayState = 0;
-		dylibVariantSuffix = "";
-		enableDebugStr = 1;
-		environmentEntries = (
-		);
-		isa = PBXExecutable;
-		launchableReference = 273F65300C035764008F91F5;
-		libgmallocEnabled = 0;
-		name = wxWrapper;
-		savedGlobals = {
-		};
-		shlibInfoDictList = (
-		);
-		sourceDirectories = (
-		);
-	};
 	27240A5408D49DBE009B29CA = {
 		activeExec = 0;
 	};
@@ -673,13 +632,15 @@
 		lineNumber = 141;
 		state = 2;
 	};
-	273F65300C035764008F91F5 = {
-		isa = PBXFileReference;
-		lastKnownFileType = wrapper.application;
-		name = wxWrapper.app;
-		path = /Users/lothar/develop/Projects/CPP/Test/GUI/wxWrapper/wxWrapper.app;
-		refType = 0;
-		sourceTree = "<absolute>";
+	273C9E550C6CA89A00A1E074 = {
+		fRef = 27B91DB1086EEA3300DB17D6;
+		isa = PBXTextBookmark;
+		name = "dynamic.cpp: 2265";
+		rLen = 0;
+		rLoc = 65560;
+		rType = 0;
+		vrLen = 922;
+		vrLoc = 18443;
 	};
 	2747C7980B5A7907005311B2 = {
 		fileReference = 27CE9A1D08D4A87C00FB3DF0;
@@ -978,6 +939,7 @@
 		customDataFormattersEnabled = 1;
 		debuggerPlugin = GDBDebugging;
 		disassemblyDisplayState = 0;
+		dylibVariantSuffix = "";
 		enableDebugStr = 1;
 		environmentEntries = (
 		);
@@ -1003,29 +965,9 @@
 		vrLen = 1364;
 		vrLoc = 0;
 	};
-	2773F23E0C3D1B740037A8EB = {
-		fRef = 27B91DB1086EEA3300DB17D6;
-		isa = PBXTextBookmark;
-		name = "dynamic.cpp: 2265";
-		rLen = 0;
-		rLoc = 65560;
-		rType = 0;
-		vrLen = 1901;
-		vrLoc = 64416;
-	};
 	2773F23F0C3D1B740037A8EB = {
 		fRef = 279FCFE00C3D11DF0036A75B;
 		isa = PBXBookmark;
-	};
-	2773F2400C3D1B740037A8EB = {
-		fRef = 276FB8AA0B22D0EC004E52BD;
-		isa = PBXTextBookmark;
-		name = "lbapp-module.h: 1";
-		rLen = 0;
-		rLoc = 0;
-		rType = 0;
-		vrLen = 1364;
-		vrLoc = 0;
 	};
 	2773F2530C3D1F3E0037A8EB = {
 		fRef = 27B91DB1086EEA3300DB17D6;
@@ -2784,9 +2726,6 @@
 		path = /Users/lothar/develop/Projects/CPP/Test/GUI/wxWrapper/wxmac.icns;
 		refType = 0;
 		sourceTree = "<absolute>";
-		uiCtxt = {
-			sepNavWindowFrame = "{{15, 337}, {847, 660}}";
-		};
 	};
 	27A813F90B5A6AF000F11118 = {
 		fRef = 2778C2EA0B5A57D2003524C2;
@@ -2870,9 +2809,9 @@
 	};
 	27B91DB1086EEA3300DB17D6 = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {2756, 41593}}";
+			sepNavIntBoundsRect = "{{0, 0}, {2756, 41719}}";
 			sepNavSelRange = "{65560, 0}";
-			sepNavVisRect = "{{0, 6951}, {909, 629}}";
+			sepNavVisRect = "{{0, 6846}, {643, 645}}";
 			sepNavWindowFrame = "{{15, 439}, {750, 558}}";
 		};
 	};

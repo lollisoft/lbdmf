@@ -716,13 +716,12 @@
 				INFOPLIST_FILE = "wxWrapper-Info.plist";
 				INSTALL_PATH = "$(USER_APPS_DIR)";
 				LIBRARY_STYLE = STATIC;
-				OPTIMIZATION_CFLAGS = "";
 				OTHER_CFLAGS = "";
 				OTHER_CPLUSPLUSFLAGS = "-DUNIX -DLINUX -DOSX `wx-config --inplace --cxxflags` -DUSE_WXWRAPPER_DLL -DOSX -DUNIX -DLINUX -DLB_I_EXTENTIONS -D__WXDEBUG__ -I /Users/lothar/develop/Projects/CPP/BaseDevelopment/lbHook/linuxCode -I /Users/lothar/develop/Projects/CPP/interfaces -I /Users/lothar/develop/Projects/CPP/include -I /Users/lothar/develop/Projects/CPP/BaseDevelopment/lbclasses -I /usr/include -I .  -I /Users/lothar/develop/Projects/CPP/vendor/propgrid/include -I ../wxWrapperDLL";
 				OTHER_LDFLAGS = "-L. -F/Users/lothar/lib -framework wxPropgrid -framework wxAUI -framework wxWrapperDLL -framework lbHook `wx-config --inplace --libs`  -lc /usr/lib/libgcc_s.1.dylib -lc /usr/lib/libstdc++.6.dylib -bind_at_load -lc";
 				OTHER_REZFLAGS = "";
 				PREBINDING = NO;
-				PRODUCT_NAME = "";
+				PRODUCT_NAME = wxWrapper;
 				SECTORDER_FLAGS = "";
 				WARNING_CFLAGS = "-Wmost -Wno-four-char-constants -Wno-unknown-pragmas";
 			};
@@ -760,7 +759,7 @@
 			explicitFileType = wrapper.application;
 			includeInIndex = 0;
 			isa = PBXFileReference;
-			path = .app;
+			path = wxWrapper.app;
 			refType = 3;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};

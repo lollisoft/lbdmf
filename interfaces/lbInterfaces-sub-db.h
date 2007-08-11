@@ -128,6 +128,14 @@ public:
 	 */
 	virtual lbErrCodes LB_STDCALL bind() = 0;
 
+	/**
+	 * \brief Unbind all columns.
+	 *
+	 * There are some problems with the ODBC driver for PostgreSQL. (At least the 07.03.0200 version)
+	 * To avoid crashes in SQLSetPos with SQL_REFRESH when logging is on, this function must be called.
+	 */
+	virtual void LB_STDCALL unbind() = 0;
+
 	/* Manipulation */
 	/**
 	 * \brief Begin adding a row.
@@ -605,6 +613,7 @@ public:
 	 * \brief Rebind column.
 	 */
 	virtual void LB_STDCALL rebind() = 0;
+	virtual void LB_STDCALL unbind() = 0;
 
 	virtual void LB_STDCALL add() = 0;
 	virtual void LB_STDCALL finishadd() = 0;
@@ -762,6 +771,7 @@ public:
 	 * \brief Rebind all columns.
 	 */
 	virtual void LB_STDCALL rebind() = 0;
+	virtual void LB_STDCALL unbind() = 0;
 
 	virtual bool LB_STDCALL isBound(int pos) = 0;
 	virtual bool LB_STDCALL isBound(char const * name) = 0;

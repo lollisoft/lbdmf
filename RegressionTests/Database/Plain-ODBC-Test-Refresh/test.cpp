@@ -408,6 +408,28 @@ void dbError(char* lp, HSTMT hstmt)
 // This statement crashes inside SQLExecDirect(...)
 UCHAR buf5[] = "select test, btest, btest1 from regressiontest";
 
+void bind(HSTMT hstmt) {
+	RETCODE retcode;
+	long cbBufferLength = 0;
+	retcode = SQLBindCol(hstmt, 1, SQL_C_CHAR, test, sizeof(test), &cbBufferLength);
+	if (retcode != SQL_SUCCESS) dbError("SQLBindCol()", hstmt);
+	retcode = SQLBindCol(hstmt, 2, SQL_C_CHAR, btest, sizeof(btest), &cbBufferLength);
+	if (retcode != SQL_SUCCESS) dbError("SQLBindCol()", hstmt);
+	retcode = SQLBindCol(hstmt, 3, SQL_C_CHAR, btest1, sizeof(btest1), &cbBufferLength);
+	if (retcode != SQL_SUCCESS) dbError("SQLBindCol()", hstmt);
+}
+
+void unbind(HSTMT hstmt) {
+	RETCODE retcode;
+	long cbBufferLength = 0;
+	retcode = SQLBindCol(hstmt, 1, SQL_C_CHAR, NULL, sizeof(test), &cbBufferLength);
+	if (retcode != SQL_SUCCESS) dbError("SQLBindCol()", hstmt);
+	retcode = SQLBindCol(hstmt, 2, SQL_C_CHAR, NULL, sizeof(btest), &cbBufferLength);
+	if (retcode != SQL_SUCCESS) dbError("SQLBindCol()", hstmt);
+	retcode = SQLBindCol(hstmt, 3, SQL_C_CHAR, NULL, sizeof(btest1), &cbBufferLength);
+	if (retcode != SQL_SUCCESS) dbError("SQLBindCol()", hstmt);
+}
+
 void setQuery(unsigned char* q, HSTMT &hstmt) {
 	RETCODE retcode;
 	long cbBufferLength = 0;
@@ -420,12 +442,7 @@ void setQuery(unsigned char* q, HSTMT &hstmt) {
 	
 	if (retcode != SQL_SUCCESS) dbError("SQLExecDirect()", hstmt);
 
-	retcode = SQLBindCol(hstmt, 1, SQL_C_CHAR, test, sizeof(test), &cbBufferLength);
-	if (retcode != SQL_SUCCESS) dbError("SQLBindCol()", hstmt);
-	retcode = SQLBindCol(hstmt, 2, SQL_C_CHAR, btest, sizeof(btest), &cbBufferLength);
-	if (retcode != SQL_SUCCESS) dbError("SQLBindCol()", hstmt);
-	retcode = SQLBindCol(hstmt, 3, SQL_C_CHAR, btest1, sizeof(btest1), &cbBufferLength);
-	if (retcode != SQL_SUCCESS) dbError("SQLBindCol()", hstmt);
+	bind(hstmt);
 }
 
 #define BLOB_SIZE 100
@@ -578,7 +595,12 @@ int main(void)
 	first(hstmt_select);
 
 	printf("Do a refresh.\n");
+	unbind(hstmt_select);
 	refresh(hstmt_select);
+	bind(hstmt_select);
+	first(hstmt_select);
+	PrintData(hstmt_select, count, false);
+
 	printf("Done a refresh.\n");
 
 	retcode = SQLFreeStmt (hstmt_select, SQL_DROP);

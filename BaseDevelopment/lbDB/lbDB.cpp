@@ -197,6 +197,7 @@ public:
 	bool		LB_STDCALL getReadonly(char* column);
 
 	void		LB_STDCALL rebind();
+	void		LB_STDCALL unbind();
 	
 	void		LB_STDCALL add();
 	void		LB_STDCALL finishadd();
@@ -309,6 +310,7 @@ public:
 	lbErrCodes LB_STDCALL query(char* q, bool bind);
         
 	lbErrCodes LB_STDCALL bind();
+	void LB_STDCALL unbind();
 
 	bool LB_STDCALL dataFetched();
 
@@ -570,6 +572,7 @@ public:
 	void		LB_STDCALL rebindReadonlyColumns();
 
 	void		LB_STDCALL rebind();
+	void		LB_STDCALL unbind();
 	
 	void		LB_STDCALL add();
 	void		LB_STDCALL finishadd();
@@ -766,6 +769,23 @@ bool LB_STDCALL lbBoundColumns::isNullable(int pos) {
 
 	// What to answer here ??
 	return false;
+}
+
+void LB_STDCALL lbBoundColumns::unbind() {
+	lbErrCodes err = ERR_NONE;
+	
+	if (boundColumns != NULL) {
+		while (boundColumns->hasMoreElements() == 1) {
+			UAP(lb_I_Unknown, uk)
+			UAP(lb_I_BoundColumn, bc)
+			
+			uk = boundColumns->nextElement();
+			
+			QI(uk, lb_I_BoundColumn, bc)
+			
+			bc->unbind();
+		}
+	}
 }
 
 /*...svoid LB_STDCALL lbBoundColumns\58\\58\rebind\40\\41\:0:*/
@@ -1879,13 +1899,15 @@ lb_I_Long* LB_STDCALL lbQuery::getAsLong(int column) {
 
 lb_I_BinaryData* LB_STDCALL lbQuery::getBinaryData(int column) {
 	// Declare a binary buffer to retrieve 5000 bytes of data at a time.
-	SQLCHAR       BinaryPtr[5000];
+	SQLCHAR       BinaryPtr[1000];
 	SQLUINTEGER   PartID;
 	SQLINTEGER    PartIDInd, BinaryLenOrInd, NumBytes;
 	SQLRETURN     rc, retcode; 
 	SQLHSTMT      hstmt_blob;
 
 	UAP_REQUEST(getModuleInstance(), lb_I_BinaryData, binarydata)
+
+	BinaryLenOrInd = (SQLINTEGER) -1;
 
 	if (boundColumns != NULL) {
 		if (boundColumns->isBound(column)) {
@@ -1895,18 +1917,21 @@ lb_I_BinaryData* LB_STDCALL lbQuery::getBinaryData(int column) {
 			return binarydata.getPtr();
 		} else {
 			while ((rc = SQLGetData(hstmt, column, SQL_C_BINARY, BinaryPtr, sizeof(BinaryPtr), &BinaryLenOrInd)) != SQL_NO_DATA) {
-				NumBytes = (BinaryLenOrInd > 5000) || (BinaryLenOrInd == SQL_NO_TOTAL) ? 5000 : BinaryLenOrInd;
+				NumBytes = (BinaryLenOrInd > 1000) || (BinaryLenOrInd == SQL_NO_TOTAL) ? 1000 : BinaryLenOrInd;
+				_CL_VERBOSE << "Read data piece of " << NumBytes LOG_
 				if (BinaryLenOrInd == SQL_NULL_DATA) {
+					_CL_VERBOSE << "Returning predefined empty data due to SQL_NULL_DATA" LOG_
 					binarydata->append((void*) "", 1);
 					binarydata++;
 					return binarydata.getPtr();
 				}
 				if (BinaryLenOrInd == 0) {
+					_CL_VERBOSE << "Returning predefined empty data due to zero data" LOG_
 					binarydata->append((void*) "", 1);
 					binarydata++;
 					return binarydata.getPtr();
 				}
-				binarydata->append(BinaryPtr, NumBytes-1);
+				binarydata->append(BinaryPtr, NumBytes);
 			}
 		}
 	}
@@ -1933,6 +1958,11 @@ lbErrCodes LB_STDCALL lbQuery::setBinaryData(int column, lb_I_BinaryData* value)
 #define LB_BLOCKSIZE 1000
 #define USE_CURRENT_OF 
 
+	if (mode == 1) {
+		_LOG << "Add mode. Skip adding empty blobs." LOG_
+		return ERR_NONE;
+	}
+	
 #ifdef USE_CURRENT_OF
 #undef USE_CURRENT_OF
 	UAP_REQUEST(getModuleInstance(), lb_I_String, update_query)
@@ -1981,12 +2011,18 @@ lbErrCodes LB_STDCALL lbQuery::setBinaryData(int column, lb_I_BinaryData* value)
 	BinaryLenOrIndCurrentOf = strlen(cursorname)+1;
 
 	rc = SQLBindCol(hstmt, column, SQL_C_BINARY, (void *)BinaryPtrCur, BinaryLenOrIndCurrentOf, &BinaryLenOrIndCurrentOf);
+
 	memcpy(BinaryPtrCur, cursorname, BinaryLenOrIndCurrentOf);
 
 	update();
+	retcode = SQLBindCol(hstmt, column, SQL_C_BINARY, NULL, BinaryLenOrIndCurrentOf, &BinaryLenOrIndCurrentOf);
+	if (retcode != SQL_SUCCESS) {
+		_LOG << "lbQuery:setBinaryData() Failed to unbind column!" LOG_
+	}
 	
-	retcode = SQLBindCol(hstmt, column, SQL_C_BINARY, NULL, 0, 0);
-
+	unbind();
+	retcode = SQLSetPos(hstmt, 1, SQL_REFRESH, SQL_LOCK_NO_CHANGE);
+	
 	tempBuffer = value->getData();
 	BinaryLenOrInd = value->getSize();
 	remainingsize = value->getSize();
@@ -2001,7 +2037,7 @@ lbErrCodes LB_STDCALL lbQuery::setBinaryData(int column, lb_I_BinaryData* value)
 	*update_query += cursorname;
 	*update_query += "%'";
 	
-	_LOG << "Prepare positioned BLOB update: '" << update_query->charrep() << "' with length of data = " << BinaryLenOrInd LOG_
+	_CL_VERBOSE << "Prepare positioned BLOB update: '" << update_query->charrep() << "' with length of data = " << BinaryLenOrInd LOG_
 
 	retcode = SQLPrepare(hupdatestmt, (SQLCHAR*) update_query->charrep(), SQL_NTS);
 
@@ -2009,45 +2045,34 @@ lbErrCodes LB_STDCALL lbQuery::setBinaryData(int column, lb_I_BinaryData* value)
 		_LOG << "Preparing update statement failed." LOG_
 	}
 
-	if (remainingsize > LB_BLOCKSIZE) {
-		//BinaryLenOrInd = SQL_LEN_DATA_AT_EXEC(value->getSize());
-		BinaryLenOrInd = SQL_LEN_DATA_AT_EXEC(value->getSize());
+	BinaryLenOrInd = SQL_LEN_DATA_AT_EXEC(value->getSize());
 
-		realBufferSize = LB_BLOCKSIZE;
-		BinaryPtr = malloc(realBufferSize);
-		 
-		
-		_LOG << "Call SQLBindParameter with a length indicator value of " << BinaryLenOrInd << "." LOG_
-		
-		retcode = SQLBindParameter(hupdatestmt, 1, SQL_PARAM_INPUT,
-                  SQL_C_BINARY, SQL_LONGVARBINARY,
-                  value->getSize(), 0, (SQLPOINTER) 1, LB_BLOCKSIZE, &BinaryLenOrInd);
-
-	} else {
+	if (remainingsize < LB_BLOCKSIZE) {
 		realBufferSize = remainingsize;
-		BinaryLenOrInd = remainingsize;
-		BinaryPtr = malloc(remainingsize);
-		retcode = SQLBindParameter(hupdatestmt, 1, SQL_PARAM_INPUT,
-                  SQL_C_BINARY, SQL_LONGVARBINARY,
-                  0, 0, (SQLPOINTER) &BinaryPtr, BinaryLenOrInd, &BinaryLenOrInd);
+	} else {
+		realBufferSize = LB_BLOCKSIZE;
 	}
+	BinaryPtr = malloc(realBufferSize);
 	
-
+	_CL_VERBOSE << "Call SQLBindParameter with a length indicator value of " << BinaryLenOrInd << "." LOG_
+	
+	retcode = SQLBindParameter(hupdatestmt, 1, SQL_PARAM_INPUT,
+			  SQL_C_BINARY, SQL_LONGVARBINARY,
+			  value->getSize(), 0, (SQLPOINTER) 1, 0, &BinaryLenOrInd);
+	
 	if (retcode != SQL_SUCCESS) {
 		_LOG << "Binding update parameter failed." LOG_
 	}
 
-	_LOG << "Executing positioned BLOB update: '" << update_query->charrep() << "' with length of data = " << BinaryLenOrInd LOG_
+	_CL_VERBOSE << "Executing positioned BLOB update: '" << update_query->charrep() << "' with length of data = " << BinaryLenOrInd LOG_
 
 	retcode = SQLSetPos(hstmt, 1, SQL_REFRESH, SQL_LOCK_NO_CHANGE);
-	//retcode = SQLSetPos(hupdatestmt, 1, SQL_REFRESH, SQL_LOCK_NO_CHANGE);
 	retcode = SQLExecute(hupdatestmt);
 
 	long iteration = 0;
 
 	if ((retcode != SQL_SUCCESS) && (retcode != SQL_NEED_DATA)) {
 		_LOG << "Execute query failed." LOG_
-		//_dbError_STMT("Executing positioned BLOB update failed.", hupdatestmt);
 	}
 	
 	if (retcode == SQL_NEED_DATA) 
@@ -2056,31 +2081,32 @@ lbErrCodes LB_STDCALL lbQuery::setBinaryData(int column, lb_I_BinaryData* value)
 		retcode = SQLParamData(hupdatestmt, (void **)  &putDataBuffer); 
 		while(retcode == SQL_NEED_DATA) 
 		{ 
-			_LOG << "lbQuery::setBinaryData() Needs more data ..." << remainingsize	LOG_
+			_CL_VERBOSE << "lbQuery::setBinaryData() Needs more data ..." << remainingsize	LOG_
+
+			while (remainingsize > LB_BLOCKSIZE) {
+				_CL_VERBOSE << "Copy maximum memory piece of " << LB_BLOCKSIZE << " bytes." LOG_
+				memcpy(BinaryPtr, tempBuffer, LB_BLOCKSIZE);
+				PutDataSize = LB_BLOCKSIZE;
+				retcode = SQLPutData(hupdatestmt, BinaryPtr, PutDataSize); 
+				((char*) tempBuffer) += LB_BLOCKSIZE;
+				remainingsize -= LB_BLOCKSIZE;
+			}
 
 			if (remainingsize <= realBufferSize) {
-				_LOG << "Copy lesser memory piece of " << remainingsize << " bytes." LOG_
+				_CL_VERBOSE << "Copy lesser memory piece of " << remainingsize << " bytes." LOG_
 				memcpy(BinaryPtr, tempBuffer, remainingsize);
 				PutDataSize = remainingsize;
 				retcode = SQLPutData(hupdatestmt, BinaryPtr, PutDataSize); 
-				retcode = SQLParamData(hupdatestmt, (void **)  &putDataBuffer); 
-				((char*) tempBuffer) += realBufferSize;
-				remainingsize -= realBufferSize;
-			} else {
-				while (remainingsize > realBufferSize) {
-					_LOG << "Copy maximum memory piece of " << realBufferSize << " bytes." LOG_
-					memcpy(BinaryPtr, tempBuffer, realBufferSize);
-					PutDataSize = realBufferSize;
-					retcode = SQLPutData(hupdatestmt, BinaryPtr, PutDataSize); 
-					retcode = SQLParamData(hupdatestmt, (void **)  &putDataBuffer); 
-					((char*) tempBuffer) += realBufferSize;
-					remainingsize -= realBufferSize;
-				}
+				((char*) tempBuffer) += remainingsize;
+				remainingsize -= remainingsize;
 			}
 		} 
-		
+		retcode = SQLParamData(hupdatestmt, (void **)  &putDataBuffer); 
 	} 
 	retcode = SQLSetPos(hstmt, 1, SQL_REFRESH, SQL_LOCK_NO_CHANGE);
+	bind();
+
+	reopen();
 
 	SQLFreeStmt(hupdatestmt, SQL_DROP);
 #endif
@@ -3056,7 +3082,9 @@ bool LB_STDCALL lbQuery::isLast() {
 	return fetchstatus == 1;
 }
 
-
+void LB_STDCALL lbQuery::unbind() {
+	if (boundColumns != NULL) boundColumns->unbind();
+}
 
 /*...svoid LB_STDCALL lbQuery\58\\58\reopen\40\\41\:0:*/
 void LB_STDCALL lbQuery::reopen() {
@@ -4855,6 +4883,85 @@ bool	LB_STDCALL lbBoundColumn::hasValidData() {
 		_LOG << "Bound column '" << columnName << "' has no valid data." LOG_
 	}
 	return _hasValidData || isReadonly || _isNullable;
+}
+
+void LB_STDCALL lbBoundColumn::unbind() {
+	SQLRETURN ret = SQL_SUCCESS;
+	
+	mode = 0;
+
+/*...sRebind:8:*/
+	switch (_DataType) {
+		case SQL_DATE:
+		case SQL_TYPE_DATE:
+			_CL_VERBOSE << "Rebind date" LOG_
+			bound = 1;
+
+			ret = SQLBindCol(hstmt, _column, SQL_C_CHAR, NULL, (ColumnSize+1), cbBufferLength);
+			break;
+		case SQL_FLOAT:
+		case SQL_CHAR:
+		case SQL_VARCHAR:
+		case SQL_LONGVARCHAR:
+#ifndef BIND_BOOL_DEFAULT
+		case SQL_BIT:
+		case SQL_TINYINT:
+#endif		
+		
+			_CL_VERBOSE << "Rebind char" LOG_
+			bound = 1;
+
+			ret = SQLBindCol(hstmt, _column, SQL_C_CHAR, NULL, (ColumnSize+1), cbBufferLength);
+			break;
+		case SQL_BINARY:
+			_CL_VERBOSE << "Rebind binary" LOG_
+			bound = 1;
+			
+			ret = SQLBindCol(hstmt, _column, SQL_C_DEFAULT, NULL, (ColumnSize+1), cbBufferLength);
+			break;
+		case SQL_INTEGER:
+			_CL_VERBOSE << "Rebind integer" LOG_
+			bound = 1;
+
+			SQLBindCol(hstmt, _column, SQL_C_DEFAULT, NULL, sizeof(long), cbBufferLength);
+			break;
+		case SQL_BIGINT:
+			_CL_VERBOSE << "Rebind big integer" LOG_
+			bound = 1;
+#ifndef _MSC_VER
+			SQLBindCol(hstmt, _column, SQL_C_DEFAULT, NULL, sizeof(long long), cbBufferLength);
+#endif
+#ifdef _MSC_VER
+			SQLBindCol(hstmt, _column, SQL_C_DEFAULT, NULL, sizeof(__int64), cbBufferLength);
+#endif
+			break;
+#ifdef BIND_BOOL_DEFAULT
+		case SQL_BIT:
+		case SQL_TINYINT:
+			_CL_VERBOSE << "Rebind bit" LOG_
+			bound = 1;
+#ifdef OSX
+			SQLBindCol(hstmt, _column, _DataType, NULL, sizeof(long), cbBufferLength);
+#endif
+#ifndef OSX
+			SQLBindCol(hstmt, _column, _DataType, NULL, sizeof(bool), cbBufferLength);
+#endif
+			if (ret != SQL_SUCCESS) {
+			        printf("Error while binding a column!\n");
+			        query->dbError("SQLBindCol()", hstmt);
+			}
+			break;
+#endif
+		default:
+			_CL_VERBOSE << "lbBoundColumn::rebindReadonlyColumns(...) failed: Unknown or not supported datatype for column '" << columnName << "': " << _DataType LOG_
+			break;
+	}
+/*...e*/
+
+	if (ret != SQL_SUCCESS) {
+	        printf("Error while binding column %s!\n", columnName);
+	        query->dbError("SQLBindCol()", hstmt);
+	}
 }
 
 

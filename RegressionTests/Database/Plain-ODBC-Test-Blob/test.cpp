@@ -6,7 +6,7 @@
 	
 	MSSQL:			Stores only the first BLOB_SIZE of data.
 		
-	Sybase:			Not yet adopted.
+	Sybase:			Application hang.
 		  
 	PostgreSQL:		Stores only the first BLOB_SIZE of data.
 					
@@ -459,7 +459,7 @@ void testBlobUpdate(int column, HDBC hdbc, HSTMT hstmt, void* buffer, long buffe
 	retcode = SQLSetStmtOption(hupdatestmt, SQL_CURSOR_TYPE, SQL_CURSOR_KEYSET_DRIVEN);
 	if (retcode != SQL_SUCCESS) printf("SQLSetStmtOption() failed.\n");
 	
-	retcode = SQLBindCol(hstmt, 4, SQL_C_CHAR, shortbuffer, 7, &cbBufferLength);
+	retcode = SQLBindCol(hstmt, column, SQL_C_CHAR, shortbuffer, 7, &cbBufferLength);
 	if (retcode != SQL_SUCCESS) printf("SQLBindCol() failed.\n");
 	
 	printf("Update blob column with marker data...\n");
@@ -469,7 +469,7 @@ void testBlobUpdate(int column, HDBC hdbc, HSTMT hstmt, void* buffer, long buffe
 	update(hstmt);
 
 	printf("Unbind BLOB column...\n");
-	retcode = SQLBindCol(hstmt, 4, SQL_C_CHAR, NULL, 0, 0);
+	retcode = SQLBindCol(hstmt, column, SQL_C_CHAR, NULL, 0, 0);
 	if (retcode != SQL_SUCCESS) printf("SQLBindCol() failed.\n");
 	
 	printf("Refresh resultset...\n");
@@ -482,7 +482,12 @@ void testBlobUpdate(int column, HDBC hdbc, HSTMT hstmt, void* buffer, long buffe
 	
 	char* query = (char*) malloc(1000);
 	
+#ifndef WINDOWS
+	sprintf(query, "UPDATE regressiontest SET blobdata = ? where blobdata LIKE '123456%'");
+#endif
+#ifdef WINDOWS
 	sprintf(query, "UPDATE regressiontest SET blobdata = ?");
+#endif
 	
 	printf("Prepare statement...\n");
 	retcode = SQLPrepare(hupdatestmt, (unsigned char*) query, SQL_NTS);
@@ -503,7 +508,7 @@ void testBlobUpdate(int column, HDBC hdbc, HSTMT hstmt, void* buffer, long buffe
 		
 		retcode = SQLBindParameter(hupdatestmt, 1, SQL_PARAM_INPUT,
                   SQL_C_CHAR, SQL_LONGVARCHAR,
-                  buffersize, 0, (SQLPOINTER) BinaryPtr, buffersize, &BinaryLenOrInd);
+                  buffersize, 0, (SQLPOINTER) 1, 0, &BinaryLenOrInd);
 
 	} else {
 		printf("Buffer is %d.\n", BLOB_SIZE);
@@ -539,38 +544,47 @@ void testBlobUpdate(int column, HDBC hdbc, HSTMT hstmt, void* buffer, long buffe
 		{ 
 			printf("lbQuery::setBinaryData() Needs more data ... %d.\n", remainingsize);
 
-			if (remainingsize <= realBufferSize) {
+			if (remainingsize < realBufferSize) {
 				printf("Copy lesser memory piece of %d bytes.\n", remainingsize);
-				memcpy(Data, tempBuffer, remainingsize);
+				memcpy(BinaryPtr, tempBuffer, remainingsize);
 				PutDataSize = remainingsize;
-				retcode = SQLPutData(hupdatestmt, Data, PutDataSize); 
-				retcode = SQLParamData(hupdatestmt, (void **)  &putDataBuffer); 
-				tempBuffer += realBufferSize;
-				remainingsize -= realBufferSize;
-			} else {
-				printf("Copy maximum memory piece of %d bytes.\n", realBufferSize);
-				memcpy(Data, tempBuffer, realBufferSize);
-				PutDataSize = realBufferSize;
-				retcode = SQLPutData(hupdatestmt, Data, PutDataSize); 
-				
+				retcode = SQLPutData(hupdatestmt, BinaryPtr, PutDataSize); 
+
 				if (retcode == SQL_ERROR) dbError("SQLPutData() SQL_ERROR.", hupdatestmt);
 				if (retcode == SQL_INVALID_HANDLE) dbError("SQLPutData() SQL_INVALID_HANDLE.", hupdatestmt);
 				if (retcode == SQL_SUCCESS_WITH_INFO) dbError("SQLPutData() info SQL_SUCCESS_WITH_INFO.", hupdatestmt);
 				if (retcode == SQL_SUCCESS) dbError("SQLPutData() SQL_SUCCESS.", hupdatestmt);
 				if (retcode == SQL_STILL_EXECUTING) dbError("SQLPutData() SQL_STILL_EXECUTING.", hupdatestmt);
-				
-				retcode = SQLParamData(hupdatestmt, (void **)  &putDataBuffer); 
-
-				if (retcode == SQL_ERROR) dbError("SQLParamData() SQL_ERROR.", hupdatestmt);
-				if (retcode == SQL_INVALID_HANDLE) dbError("SQLParamData() SQL_INVALID_HANDLE.", hupdatestmt);
-				if (retcode == SQL_SUCCESS_WITH_INFO) dbError("SQLParamData() info SQL_SUCCESS_WITH_INFO.", hupdatestmt);
-				if (retcode == SQL_SUCCESS) dbError("SQLParamData() SQL_SUCCESS.", hupdatestmt);
-				if (retcode == SQL_STILL_EXECUTING) dbError("SQLParamData() SQL_STILL_EXECUTING.", hupdatestmt);
-
 
 				tempBuffer += realBufferSize;
 				remainingsize -= realBufferSize;
+			} else {
+				printf("Copy maximum memory piece of %d bytes.\n", BLOB_SIZE);
+				memcpy(BinaryPtr, tempBuffer, BLOB_SIZE);
+				PutDataSize = BLOB_SIZE;
+
+				while (remainingsize >= BLOB_SIZE) {
+					retcode = SQLPutData(hupdatestmt, BinaryPtr, PutDataSize); 
+					
+					if (retcode == SQL_ERROR) dbError("SQLPutData() SQL_ERROR.", hupdatestmt);
+					if (retcode == SQL_INVALID_HANDLE) dbError("SQLPutData() SQL_INVALID_HANDLE.", hupdatestmt);
+					if (retcode == SQL_SUCCESS_WITH_INFO) dbError("SQLPutData() info SQL_SUCCESS_WITH_INFO.", hupdatestmt);
+					if (retcode == SQL_SUCCESS) dbError("SQLPutData() SQL_SUCCESS.", hupdatestmt);
+					if (retcode == SQL_STILL_EXECUTING) dbError("SQLPutData() SQL_STILL_EXECUTING.", hupdatestmt);
+					
+					tempBuffer += realBufferSize;
+					remainingsize -= realBufferSize;
+				}
 			}
+
+			retcode = SQLParamData(hupdatestmt, (void **)  &putDataBuffer); 
+
+			if (retcode == SQL_ERROR) dbError("SQLParamData() SQL_ERROR.", hupdatestmt);
+			if (retcode == SQL_INVALID_HANDLE) dbError("SQLParamData() SQL_INVALID_HANDLE.", hupdatestmt);
+			if (retcode == SQL_SUCCESS_WITH_INFO) dbError("SQLParamData() info SQL_SUCCESS_WITH_INFO.", hupdatestmt);
+			if (retcode == SQL_SUCCESS) dbError("SQLParamData() SQL_SUCCESS.", hupdatestmt);
+			if (retcode == SQL_STILL_EXECUTING) dbError("SQLParamData() SQL_STILL_EXECUTING.", hupdatestmt);
+
 			printf("Copied memory piece.\n");
 		} 
 		free(Data);
@@ -765,16 +779,25 @@ int main(void)
 	
 	first( hstmt_select);
 
-	void* blob_buffer = malloc(10000);
-	memset(blob_buffer, 'A', 10000);
-	
-	testBlobUpdate(4, hdbc, hstmt_select, blob_buffer, 10000);
-	
-	free(blob_buffer);
-	last(hstmt_select);
-	first(hstmt_select);
-	
-	testBlobRead(4, hstmt_select, &blob_buffer, 10000);
+	int buffersize = 500;
+
+	while (buffersize > 50) {
+		void* blob_buffer = malloc(buffersize);
+		memset(blob_buffer, 'A', buffersize);
+
+		last(hstmt_select);
+		first(hstmt_select);
+		
+		testBlobUpdate(4, hdbc, hstmt_select, blob_buffer, buffersize);
+		
+		free(blob_buffer);
+		last(hstmt_select);
+		first(hstmt_select);
+		
+		testBlobRead(4, hstmt_select, &blob_buffer, buffersize);
+		
+		buffersize -= 50;
+	}
 
 	retcode = SQLFreeStmt (hstmt_select, SQL_DROP);
 	

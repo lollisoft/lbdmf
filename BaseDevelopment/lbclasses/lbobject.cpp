@@ -1258,7 +1258,14 @@ lbErrCodes LB_STDCALL lbBinaryData::append(void* value, long len) {
 	}
 	
 	blob = realloc(blob, size + len);
-	memcpy(((char*)blob)+size, value, len); 
+	
+	char* temp = (char*) blob;
+	
+	temp += size;
+	
+	memcpy((void*)temp, value, len);
+	
+	size += len;
 }
 
 lbErrCodes LB_STDCALL lbBinaryData::setData(void* value, long len) {
