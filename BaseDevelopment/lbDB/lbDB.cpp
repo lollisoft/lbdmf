@@ -1971,7 +1971,7 @@ lbErrCodes LB_STDCALL lbQuery::setBinaryData(int column, lb_I_BinaryData* value)
 	SQLCHAR*       BinaryPtr;
 	SQLCHAR       BinaryPtrCur[100];
 	long		  realBufferSize;
-	void*		  tempBuffer;
+	char*		  tempBuffer;
 	long		  remainingsize;
 	SQLINTEGER    BinaryLenOrIndCurrentOf;
 	SQLINTEGER    BinaryLenOrInd;
@@ -2023,7 +2023,7 @@ lbErrCodes LB_STDCALL lbQuery::setBinaryData(int column, lb_I_BinaryData* value)
 	unbind();
 	retcode = SQLSetPos(hstmt, 1, SQL_REFRESH, SQL_LOCK_NO_CHANGE);
 	
-	tempBuffer = value->getData();
+	tempBuffer = (char*) value->getData();
 	BinaryLenOrInd = value->getSize();
 	remainingsize = value->getSize();
 	
@@ -2052,7 +2052,7 @@ lbErrCodes LB_STDCALL lbQuery::setBinaryData(int column, lb_I_BinaryData* value)
 	} else {
 		realBufferSize = LB_BLOCKSIZE;
 	}
-	BinaryPtr = malloc(realBufferSize);
+	BinaryPtr = (SQLCHAR*) malloc(realBufferSize);
 	
 	_CL_VERBOSE << "Call SQLBindParameter with a length indicator value of " << BinaryLenOrInd << "." LOG_
 	
@@ -2085,19 +2085,19 @@ lbErrCodes LB_STDCALL lbQuery::setBinaryData(int column, lb_I_BinaryData* value)
 
 			while (remainingsize > LB_BLOCKSIZE) {
 				_CL_VERBOSE << "Copy maximum memory piece of " << LB_BLOCKSIZE << " bytes." LOG_
-				memcpy(BinaryPtr, tempBuffer, LB_BLOCKSIZE);
+				memcpy(BinaryPtr, (void*) tempBuffer, LB_BLOCKSIZE);
 				PutDataSize = LB_BLOCKSIZE;
 				retcode = SQLPutData(hupdatestmt, BinaryPtr, PutDataSize); 
-				((char*) tempBuffer) += LB_BLOCKSIZE;
+				tempBuffer += LB_BLOCKSIZE;
 				remainingsize -= LB_BLOCKSIZE;
 			}
 
 			if (remainingsize <= realBufferSize) {
 				_CL_VERBOSE << "Copy lesser memory piece of " << remainingsize << " bytes." LOG_
-				memcpy(BinaryPtr, tempBuffer, remainingsize);
+				memcpy(BinaryPtr, (char*) tempBuffer, remainingsize);
 				PutDataSize = remainingsize;
 				retcode = SQLPutData(hupdatestmt, BinaryPtr, PutDataSize); 
-				((char*) tempBuffer) += remainingsize;
+				tempBuffer += remainingsize;
 				remainingsize -= remainingsize;
 			}
 		} 
