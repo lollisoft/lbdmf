@@ -389,9 +389,10 @@ void dbError(char* lp, HSTMT hstmt)
 	SQLSMALLINT i, MsgLen;
 	SQLRETURN  rc;
 	
+#ifndef WINDOWS	
 	printf("%s\n", lp);
 	return;
-	
+#endif	
 	i = 1;
 	
 	printf("Any error happens in %s\n", lp);
@@ -492,7 +493,7 @@ void testBlobUpdate(int column, HDBC hdbc, HSTMT hstmt, void* buffer, long buffe
 	if (remainingsize > BLOB_SIZE) {
 		printf("Buffer is bigger than %d.\n", BLOB_SIZE);
 		//BinaryLenOrInd = SQL_LEN_DATA_AT_EXEC(value->getSize());
-		BinaryLenOrInd = SQL_LEN_DATA_AT_EXEC(0);
+		BinaryLenOrInd = SQL_LEN_DATA_AT_EXEC(buffersize);
 
 		realBufferSize = BLOB_SIZE;
 		BinaryPtr = (char*) malloc(realBufferSize);
@@ -501,8 +502,8 @@ void testBlobUpdate(int column, HDBC hdbc, HSTMT hstmt, void* buffer, long buffe
 		printf("Call SQLBindParameter with a length indicator value of %d.\n", BinaryLenOrInd);
 		
 		retcode = SQLBindParameter(hupdatestmt, 1, SQL_PARAM_INPUT,
-                  SQL_C_BINARY, SQL_LONGVARBINARY,
-                  0, 0, (SQLPOINTER) BinaryPtr, buffersize, &BinaryLenOrInd);
+                  SQL_C_CHAR, SQL_LONGVARCHAR,
+                  buffersize, 0, (SQLPOINTER) BinaryPtr, buffersize, &BinaryLenOrInd);
 
 	} else {
 		printf("Buffer is %d.\n", BLOB_SIZE);
@@ -532,6 +533,7 @@ void testBlobUpdate(int column, HDBC hdbc, HSTMT hstmt, void* buffer, long buffe
 	if (retcode == SQL_NEED_DATA) 
 	{ 
 		SQLPOINTER putDataBuffer;
+		SQLCHAR*    Data = (SQLCHAR*) malloc(realBufferSize);
 		retcode = SQLParamData(hupdatestmt, (void **)  &putDataBuffer); 
 		while(retcode == SQL_NEED_DATA) 
 		{ 
@@ -539,24 +541,39 @@ void testBlobUpdate(int column, HDBC hdbc, HSTMT hstmt, void* buffer, long buffe
 
 			if (remainingsize <= realBufferSize) {
 				printf("Copy lesser memory piece of %d bytes.\n", remainingsize);
-				memcpy(BinaryPtr, tempBuffer, remainingsize);
+				memcpy(Data, tempBuffer, remainingsize);
 				PutDataSize = remainingsize;
-				retcode = SQLPutData(hupdatestmt, BinaryPtr, PutDataSize); 
+				retcode = SQLPutData(hupdatestmt, Data, PutDataSize); 
 				retcode = SQLParamData(hupdatestmt, (void **)  &putDataBuffer); 
 				tempBuffer += realBufferSize;
 				remainingsize -= realBufferSize;
 			} else {
 				printf("Copy maximum memory piece of %d bytes.\n", realBufferSize);
-				memcpy(BinaryPtr, tempBuffer, realBufferSize);
+				memcpy(Data, tempBuffer, realBufferSize);
 				PutDataSize = realBufferSize;
-				retcode = SQLPutData(hupdatestmt, BinaryPtr, PutDataSize); 
+				retcode = SQLPutData(hupdatestmt, Data, PutDataSize); 
+				
+				if (retcode == SQL_ERROR) dbError("SQLPutData() SQL_ERROR.", hupdatestmt);
+				if (retcode == SQL_INVALID_HANDLE) dbError("SQLPutData() SQL_INVALID_HANDLE.", hupdatestmt);
+				if (retcode == SQL_SUCCESS_WITH_INFO) dbError("SQLPutData() info SQL_SUCCESS_WITH_INFO.", hupdatestmt);
+				if (retcode == SQL_SUCCESS) dbError("SQLPutData() SQL_SUCCESS.", hupdatestmt);
+				if (retcode == SQL_STILL_EXECUTING) dbError("SQLPutData() SQL_STILL_EXECUTING.", hupdatestmt);
+				
 				retcode = SQLParamData(hupdatestmt, (void **)  &putDataBuffer); 
+
+				if (retcode == SQL_ERROR) dbError("SQLParamData() SQL_ERROR.", hupdatestmt);
+				if (retcode == SQL_INVALID_HANDLE) dbError("SQLParamData() SQL_INVALID_HANDLE.", hupdatestmt);
+				if (retcode == SQL_SUCCESS_WITH_INFO) dbError("SQLParamData() info SQL_SUCCESS_WITH_INFO.", hupdatestmt);
+				if (retcode == SQL_SUCCESS) dbError("SQLParamData() SQL_SUCCESS.", hupdatestmt);
+				if (retcode == SQL_STILL_EXECUTING) dbError("SQLParamData() SQL_STILL_EXECUTING.", hupdatestmt);
+
+
 				tempBuffer += realBufferSize;
 				remainingsize -= realBufferSize;
 			}
 			printf("Copied memory piece.\n");
 		} 
-		
+		free(Data);
 	}
 #ifdef WINDOWS 
 	retcode = SQLSetPos(hstmt, 1, SQL_REFRESH, SQL_LOCK_NO_CHANGE);
@@ -618,7 +635,7 @@ int main(void)
 	
 	switch (select) {
 	case 1:
-		DSN = (unsigned char*) strdup("lbDMF-sybase");
+		DSN = (unsigned char*) strdup("trainres");
 		buf1 = strdup("create table regressiontest (\n"
 			"id INTEGER NOT NULL DEFAULT AUTOINCREMENT,\n"
 			"test char(100) DEFAULT 'Nothing',\n"
@@ -675,13 +692,15 @@ int main(void)
 	retcode = SQLAllocStmt (hdbc, &hstmt);
 	retcode = SQLAllocStmt (hdbc, &hstmt_select);
 	
-	printf("Set select statement options...\n");
+	if (TargetDatabase != 1) {
+        printf("Set select statement options...\n");
 	
-	retcode = SQLSetStmtOption(hstmt_select, SQL_ATTR_CONCURRENCY, SQL_CONCUR_ROWVER);
-	if (retcode != SQL_SUCCESS) printf("SQLSetStmtOption()");
+        retcode = SQLSetStmtOption(hstmt_select, SQL_ATTR_CONCURRENCY, SQL_CONCUR_ROWVER);
+        if (retcode != SQL_SUCCESS) printf("SQLSetStmtOption()");
 	
-	retcode = SQLSetStmtOption(hstmt_select, SQL_CURSOR_TYPE, SQL_CURSOR_KEYSET_DRIVEN);
-	if (retcode != SQL_SUCCESS) printf("SQLSetStmtOption()");
+        retcode = SQLSetStmtOption(hstmt_select, SQL_CURSOR_TYPE, SQL_CURSOR_KEYSET_DRIVEN);
+        if (retcode != SQL_SUCCESS) printf("SQLSetStmtOption()");
+	}
 	
 	UCHAR buf6[] = "drop table regressiontest";
 	
@@ -717,6 +736,8 @@ int main(void)
 	if (retcode != SQL_SUCCESS) printf("SQLExecDirect() failed.\n");
 
 	retcode = SQLFreeStmt (hstmt, SQL_DROP);
+
+    printf("Set database query.\n");
 
 	if ((TargetDatabase == 2) || (TargetDatabase == 3)) {
 		printf("Set query to '%s'\n", buf5_blob);
