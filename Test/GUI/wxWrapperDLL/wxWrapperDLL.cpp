@@ -1525,12 +1525,13 @@ void lb_wxFrame::OnBuildMenu(wxCommandEvent& WXUNUSED(event) ) {
 void lb_wxFrame::OnPropertyGridChange ( wxPropertyGridEvent& event )
 {
 	lbErrCodes err = ERR_NONE;
+
+	wxPGProperty* pProperty = event.GetPropertyPtr();
 	
 	// Get name of changed property
 	const wxString& PropertyName = event.GetPropertyName();
 	
-	// Get resulting value - wxVariant is convenient here.
-	wxVariant PropertyValue = event.GetPropertyValue();
+	wxString PropValue = pProperty->GetValueAsString();
 	
 	UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, name)
@@ -1548,9 +1549,11 @@ void lb_wxFrame::OnPropertyGridChange ( wxPropertyGridEvent& event )
 	name->setData("eventId");
 	evId->setData(PropertyEvent);
 	param->setUAPInteger(*&name, *&evId);
-	
+
+	_CL_LOG << "Property '" << PropertyName.c_str() << "' changed to '" << PropValue.c_str() << "'" LOG_
+
 	name->setData("value");
-	value->setData((char*) PropertyValue.MakeString().c_str());
+	value->setData((char*) PropValue.c_str());
 	param->setUAPString(*&name, *&value);
 	
 	name->setData("name");

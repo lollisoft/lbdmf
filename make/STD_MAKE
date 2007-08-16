@@ -25,11 +25,14 @@
 #            73252 Lenningen (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.98 $
+# * $Revision: 1.99 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.98 2007/08/06 19:10:29 lollisoft Exp $
+# * $Id: STD_MAKE,v 1.99 2007/08/16 09:45:00 lollisoft Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.99  2007/08/16 09:45:00  lollisoft
+# * Changes in propgrid and related stuff that let the application correctly change boolean properties.
+# *
 # * Revision 1.98  2007/08/06 19:10:29  lollisoft
 # * Improved installation process on Windows.
 # *
@@ -690,12 +693,13 @@ endif
 ifeq ($(OSTYPE), solaris)
 
 DEBUG_MEMORY=no
-DEBUG=no
+DEBUG=yes
 
 
 ifeq ($(DEBUG), yes)
 # as of a note in google
-DEBUG_CXX_FLAGS=-gstabs
+#DEBUG_CXX_FLAGS=-gstabs
+DEBUG_CXX_FLAGS=-g
 endif
 
 ifeq ($(DEBUG), no)

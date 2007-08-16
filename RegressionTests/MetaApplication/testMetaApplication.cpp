@@ -68,5 +68,30 @@ int main(int argc, char *argv[]) {
 	
 	UAP_REQUEST(mm, lb_I_MetaApplication, meta)
 
+	//meta->initialize();
+
+	meta->setLoadFromDatabase(true);
+	meta->save();
+	meta->setLoadFromDatabase(false);
+	meta->load();
+	
+	if (meta->getLoadFromDatabase() == false) {
+		_CL_LOG << "Failed to save LoadFromDatabase flag!" LOG_
+	} else {
+		_CL_LOG << "Test 1: Saving and loading meta application data succeeded." LOG_
+	}
+	
+	meta->setLoadFromDatabase(false);
+	meta->save();
+	meta->setLoadFromDatabase(true);
+	meta->load();
+	
+	if (meta->getLoadFromDatabase() == true) {
+		_CL_LOG << "Failed to save LoadFromDatabase flag!" LOG_
+	} else {
+		_CL_LOG << "Test 2: Saving and loading meta application data succeeded." LOG_
+	}
+	
+
         return 0;
 }

@@ -497,7 +497,7 @@ wxBoolPropertyClass::wxBoolPropertyClass( const wxString& label, const wxString&
     if ( value ) useVal = 1;
     else useVal = 0;
     DoSetValue(useVal);
-
+    
     m_flags |= wxPG_PROP_USE_DCC;
 }
 

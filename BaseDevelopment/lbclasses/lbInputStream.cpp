@@ -274,7 +274,10 @@ lb_I_InputStream& LB_STDCALL lbInputStream::operator>> (long& i) {
 }
 
 lb_I_InputStream& LB_STDCALL lbInputStream::operator>> (bool& b) {
-	if (!isOpen) return *this;
+	if (!isOpen) {
+		_LOG << "Warning: Tried to read a boolean value on closed file!" LOG_
+		return *this;
+	}
 	
 	int _b;
 

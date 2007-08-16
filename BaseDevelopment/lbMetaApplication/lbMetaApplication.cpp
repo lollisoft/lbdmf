@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.119 $
+ * $Revision: 1.120 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.119 2007/08/02 07:06:06 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.120 2007/08/16 09:44:59 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.120  2007/08/16 09:44:59  lollisoft
+ * Changes in propgrid and related stuff that let the application correctly change boolean properties.
+ *
  * Revision 1.119  2007/08/02 07:06:06  lollisoft
  * Added member function to remove a toolbar.
  *
@@ -1201,7 +1204,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::propertyChanged(lb_I_Unknown* uk) {
 		}
 		
 		if (strcmp(key->charrep(), "GeneralAutorefresh updated data") == 0) {
-				if (strcmp(value->charrep(), "1") == 0) {
+				if ((strcmp(value->charrep(), "1") == 0) || (strcmp(value->charrep(), "True") == 0)) {
 					setAutorefreshData(true);
 				} else {
 					setAutorefreshData(false);
@@ -1209,7 +1212,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::propertyChanged(lb_I_Unknown* uk) {
 		}
 		
 		if (strcmp(key->charrep(), "GeneralAutoselect last application") == 0) {
-				if (strcmp(value->charrep(), "1") == 0) {
+				if ((strcmp(value->charrep(), "1") == 0) || (strcmp(value->charrep(), "True") == 0)) {
 					setAutoselect(true);
 				} else {
 					setAutoselect(false);
@@ -1217,7 +1220,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::propertyChanged(lb_I_Unknown* uk) {
 		}
 		
 		if (strcmp(key->charrep(), "GeneralAutoopen last application") == 0) {
-				if (strcmp(value->charrep(), "1") == 0) {
+				if ((strcmp(value->charrep(), "1") == 0) || (strcmp(value->charrep(), "True") == 0)) {
 					setAutoload(true);
 				} else {
 					setAutoload(false);
@@ -1226,9 +1229,11 @@ lbErrCodes LB_STDCALL lb_MetaApplication::propertyChanged(lb_I_Unknown* uk) {
 		}
 		
 		if (strcmp(key->charrep(), "GeneralPrefer database configuration") == 0) {
-				if (strcmp(value->charrep(), "1") == 0) {
+				if ((strcmp(value->charrep(), "1") == 0) || (strcmp(value->charrep(), "True") == 0)) {
+					_CL_LOG << "Prefer database configuration = 1" LOG_
 					_force_use_database = true;
 				} else {
+					_CL_LOG << "Prefer database configuration = 0" LOG_
 					_force_use_database = false;
 				}
 		}

@@ -844,7 +844,8 @@ void LB_STDCALL lbInputStreamOpr::visit(lb_I_MetaApplication* app) {
 	if (b) app->setPropertyPaneLayoutLeft();
 	
 	*iStream >> b;
-	app->setLoadFromDatabase(b);
+	if (b) app->setLoadFromDatabase(true);
+	else app->setLoadFromDatabase(false);
 }
 
 void LB_STDCALL lbInputStreamOpr::visit(lb_I_Application*) {

@@ -44,7 +44,7 @@
 #include "wx/dcbuffer.h"
 #include "wx/tooltip.h"
 #include "wx/timer.h"
-
+#include "wx/msgdlg.h"
 #if defined(__WXMSW__) && !defined(__WXUNIVERSAL__)
     #include "wx/msw/uxtheme.h"
 #endif
@@ -623,10 +623,9 @@ void wxPGVListBoxComboPopup::SendComboBoxEvent( int selection )
         void* clientData = m_clientDatas[selection];
         if ( m_clientDataItemsType == wxClientData_Object )
             evt.SetClientObject((wxClientData*)clientData);
-        else
+        else 
             evt.SetClientData(clientData);
     }
-
     m_combo->GetEventHandler()->AddPendingEvent(evt);
 }
 

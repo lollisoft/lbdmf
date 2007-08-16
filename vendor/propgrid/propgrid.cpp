@@ -57,6 +57,7 @@
 #include "wx/timer.h"
 #include "wx/dcbuffer.h"
 
+#include <lbConfigHook.h>
 
 // This define is necessary to prevent macro clearing
 #define __wxPG_SOURCE_FILE__
@@ -2636,13 +2637,22 @@ bool wxPGChoiceEditor::CopyValueFromControl ( wxPGProperty* property, wxWindow* 
 
     int index = cb->GetSelection();
 
+    _CL_LOG << "Have a combobox change: " << index LOG_
+
     if ( index != property->GetChoiceInfo( (wxPGChoiceInfo*) NULL ) ||
         // Changing unspecified always causes event (returning
         // true here should be enough to trigger it).
          property->IsFlagSet(wxPG_PROP_UNSPECIFIED)
        )
     {
+        _CL_LOG << "Set the property value: " << index LOG_
         property->SetValueFromInt(index,0);
+        
+        wxString r = property->GetValueAsString();
+        wxPGVariant v = property->DoGetValue();
+        _CL_LOG << "Stored value: " << r LOG_
+        
+        
         return true;
     }
     return false;
@@ -7246,6 +7256,10 @@ void wxPropertyGrid::DoPropertyChanged( wxPGProperty* p )
         if ( m_wndPrimary ) m_wndPrimary->Refresh();
         if ( m_wndSecondary ) m_wndSecondary->Refresh();
 #endif
+
+	wxString propValueDebug = changedProperty->GetValueAsString();
+	
+	_CL_LOG << "Property changed: " << propValueDebug.c_str() LOG_
 
         SendEvent( wxEVT_PG_CHANGED, changedProperty );
     }
