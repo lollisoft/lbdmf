@@ -57,7 +57,9 @@
 #include "wx/timer.h"
 #include "wx/dcbuffer.h"
 
+#ifdef SOLARIS
 #include <lbConfigHook.h>
+#endif
 
 // This define is necessary to prevent macro clearing
 #define __wxPG_SOURCE_FILE__
@@ -2636,21 +2638,26 @@ bool wxPGChoiceEditor::CopyValueFromControl ( wxPGProperty* property, wxWindow* 
     wxPGOwnerDrawnComboBox* cb = (wxPGOwnerDrawnComboBox*)ctrl;
 
     int index = cb->GetSelection();
-
+#ifdef SOLARIS
     _CL_LOG << "Have a combobox change: " << index LOG_
-
+#endif
     if ( index != property->GetChoiceInfo( (wxPGChoiceInfo*) NULL ) ||
         // Changing unspecified always causes event (returning
         // true here should be enough to trigger it).
          property->IsFlagSet(wxPG_PROP_UNSPECIFIED)
        )
     {
+#ifdef SOLARIS
         _CL_LOG << "Set the property value: " << index LOG_
+#endif
         property->SetValueFromInt(index,0);
         
         wxString r = property->GetValueAsString();
         wxPGVariant v = property->DoGetValue();
+
+#ifdef SOLARIS
         _CL_LOG << "Stored value: " << r LOG_
+#endif
         
         
         return true;
@@ -7258,8 +7265,10 @@ void wxPropertyGrid::DoPropertyChanged( wxPGProperty* p )
 #endif
 
 	wxString propValueDebug = changedProperty->GetValueAsString();
-	
+
+#ifdef SOLARIS
 	_CL_LOG << "Property changed: " << propValueDebug.c_str() LOG_
+#endif
 
         SendEvent( wxEVT_PG_CHANGED, changedProperty );
     }
