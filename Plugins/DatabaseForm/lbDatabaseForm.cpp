@@ -821,9 +821,9 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 					imagebutton->SetName(name);
 					
 					addLabel(name, sizerHor, hideThisColumn);
-					sizerHor->Add(imagebutton, wxALIGN_LEFT, 5);
-					
-					
+					sizerHor->Add(imagebutton, 1, wxALL, 5);
+					sizerMain->Add(sizerHor, 0, wxEXPAND | wxALL, 5);
+
 					UAP_REQUEST(manager.getPtr(), lb_I_String, element)
 					UAP_REQUEST(manager.getPtr(), lb_I_String, elementname)
 					UAP(lb_I_KeyBase, key)
