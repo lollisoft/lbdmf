@@ -151,6 +151,12 @@ public:
 	 * Must be used before exporting to XML.
 	 */
 	lbErrCodes LB_STDCALL loadDatabaseSchema(lb_I_Unknown* uk);
+	
+	/** \brief Edit global properties when lbDMF Manager is running.
+	 */
+	lbErrCodes LB_STDCALL editProperties(lb_I_Unknown* uk);
+
+	lbErrCodes LB_STDCALL OnPropertiesDataChange(lb_I_Unknown* uk);
 
 protected:
 
@@ -195,6 +201,8 @@ protected:
 	UAP(lb_I_ReportElementTypes, reportelementtypes)
 	UAP(lb_I_ReportTexts, reporttextblocks)
 
+
+
 	char hdsihd[100];
 };
 /*...e*/
@@ -223,6 +231,70 @@ lbErrCodes LB_STDCALL lbDynamicApplication::registerEventHandler(lb_I_Dispatcher
 	return ERR_NONE;
 }
 /*...e*/
+
+lbErrCodes LB_STDCALL lbDynamicApplication::editProperties(lb_I_Unknown* uk) {
+	lbErrCodes err = ERR_NONE;
+	
+	UAP_REQUEST(getModuleInstance(), lb_I_String, appname)
+		
+	metaapp->getApplicationName(&appname);
+	
+	if (*appname == "lbDMF Manager") {
+		// Build up a preferences object and pass it to the property view
+		UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
+		
+		// General parameters for this application
+		UAP_REQUEST(manager.getPtr(), lb_I_Parameter, paramGeneral)
+		UAP_REQUEST(manager.getPtr(), lb_I_String, parameterGeneral)
+		UAP_REQUEST(manager.getPtr(), lb_I_String, valueGeneral)
+		
+		// Project manager parameters
+		UAP_REQUEST(manager.getPtr(), lb_I_Parameter, paramProject)
+		UAP_REQUEST(manager.getPtr(), lb_I_String, parameterProject)
+		UAP_REQUEST(manager.getPtr(), lb_I_String, valueProject)
+		UAP_REQUEST(manager.getPtr(), lb_I_Boolean, boolProject)
+		
+		
+		UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
+		UAP_REQUEST(manager.getPtr(), lb_I_String, value)
+		UAP_REQUEST(manager.getPtr(), lb_I_Integer, i)
+		
+		parameter->setData("lbDMF Manager");
+		//--------------------------------------------------------
+		/*
+		 parameterProject->setData("Autoopen last project");
+		 boolProject->setData(true);
+		 paramProject->setUAPBoolean(*&parameterProject, *&boolProject);
+		 */
+		
+		parameterProject->setData("Target database to import db schema");
+		valueProject->setData("CRM");
+		paramProject->setUAPString(*&parameterProject, *&valueProject);
+		
+		parameterProject->setData("Target database user");
+		valueProject->setData("dba");
+		paramProject->setUAPString(*&parameterProject, *&valueProject);
+		
+		parameterProject->setData("Target database password");
+		valueProject->setData("trainres");
+		paramProject->setUAPString(*&parameterProject, *&valueProject);
+		
+		metaapp->registerPropertyChangeEventGroup(	parameter->charrep(), *&paramProject, 
+													this, (lbEvHandler) &lbDynamicApplication::OnPropertiesDataChange);
+		
+		param->setUAPParameter(*&parameter, *&paramProject);
+		
+		metaapp->showPropertyPanel(*&param);
+	}
+	
+	return ERR_NONE;
+}
+
+lbErrCodes LB_STDCALL lbDynamicApplication::OnProjectDataChange(lb_I_Unknown* uk) {
+	_CL_LOG << "lbDynamicApplication::OnProjectDataChange() called." LOG_
+	return ERR_NONE;
+}
+
 
 lbErrCodes LB_STDCALL lbDynamicApplication::loadDatabaseSchema(lb_I_Unknown* uk) {
 	lbErrCodes err = ERR_NONE;
@@ -1395,20 +1467,38 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 					}
 				}
 
-				plDynamicAppStorageUMLXMIImport = PM->getFirstMatchingPlugin("lb_I_StandaloneStreamable", "lbDynAppUMLImport");
-				if (plDynamicAppStorageUMLXMIImport != NULL) {
-					ukPlDynamicAppStorageUMLXMIImport = plDynamicAppStorageUMLXMIImport->getImplementation();
+				UAP_REQUEST(getModuleInstance(), lb_I_String, appname)
+		
+				metaapp->getApplicationName(&appname);
+	
+				if (*appname == "lbDMF Manager") {
 					
-					if (eman->resolveEvent("importUMLXMIDocIntoApplication", unused) == ERR_EVENT_NOTREGISTERED) {
-						eman->registerEvent("importUMLXMIDocIntoApplication", unused);
+					plDynamicAppStorageUMLXMIImport = PM->getFirstMatchingPlugin("lb_I_StandaloneStreamable", "lbDynAppUMLImport");
+					if (plDynamicAppStorageUMLXMIImport != NULL) {
+						ukPlDynamicAppStorageUMLXMIImport = plDynamicAppStorageUMLXMIImport->getImplementation();
 						
-						dispatcher->addEventHandlerFn(this, 
-													  (lbEvHandler) &lbDynamicApplication::importUMLXMIDocIntoApplication, "importUMLXMIDocIntoApplication");
-						
-						metaapp->addMenuEntry(_trans("&File"), "import Application from UML (as XMI file)", "importUMLXMIDocIntoApplication", "");
+						if (eman->resolveEvent("importUMLXMIDocIntoApplication", unused) == ERR_EVENT_NOTREGISTERED) {
+							eman->registerEvent("importUMLXMIDocIntoApplication", unused);
+							
+							dispatcher->addEventHandlerFn(this, 
+														  (lbEvHandler) &lbDynamicApplication::importUMLXMIDocIntoApplication, "importUMLXMIDocIntoApplication");
+							
+							metaapp->addMenuEntry(_trans("&File"), "import Application from UML (as XMI file)", "importUMLXMIDocIntoApplication", "");
+							
+							// Possibly here I should add additional property fields such as target database name (ODBC name), user and password.
+							
+							
+							if (eman->resolveEvent("editProperties", unused) == ERR_EVENT_NOTREGISTERED) {
+								eman->registerEvent("editProperties", unused);
+								dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDynamicApplication::editProperties, "editProperties");
+								metaapp->addMenuEntry("Edit", "&edit Properties" , "editProperties", "");
+							}
+							
+							editProperties(NULL);
+						}
 					}
-				}
-				
+					
+				}				
 				/*...e*/
 		} else {
 		// No file found. Create one from database...
