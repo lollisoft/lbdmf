@@ -519,6 +519,28 @@ lbErrCodes LB_STDCALL lbDynamicAppBoUMLImport::load(lb_I_InputStream* iStream) {
 	const char *params[16 + 1];
 	
 	params[0] = NULL;
+
+	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, metaapp)
+
+	UAP_REQUEST(getModuleInstance(), lb_I_String, param)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, DBName)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, DBUser)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, DBPass)
+
+	UAP(lb_I_Unknown, ukDoc)
+	UAP(lb_I_Parameter, document)
+	ukDoc = metaapp->getActiveDocument();
+	QI(ukDoc, lb_I_Parameter, document)
+								
+	if (document != NULL) {
+		*param = "UMLImportDBName";
+		document->getUAPString(*&param, *&DBName);
+		*param = "UMLImportDBUser";
+		document->getUAPString(*&param, *&DBUser);
+		*param = "UMLImportDBPass";
+		document->getUAPString(*&param, *&DBPass);
+	}
+
 	
 	xmlSubstituteEntitiesDefault(1);
 #ifndef __WATCOMC__	
@@ -527,10 +549,8 @@ lbErrCodes LB_STDCALL lbDynamicAppBoUMLImport::load(lb_I_InputStream* iStream) {
 #ifdef __WATCOMC__
     setxmlLoadExtDtdDefaultValue(1);
 #endif
-	
-	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, metaapp)
 		
-		// Read the provided stream as the XMI document to be translated.
+	// Read the provided stream as the XMI document to be translated.
 		
 	UAP(lb_I_String, xmidoc)
 	xmidoc = iStream->getAsString();
@@ -588,17 +608,12 @@ lbErrCodes LB_STDCALL lbDynamicAppBoUMLImport::load(lb_I_InputStream* iStream) {
 				
 			database->init();
 			
-			char* lbDMFPasswd = getenv("lbDMFPasswd");
-			char* lbDMFUser   = getenv("lbDMFUser");
-			
-			if (!lbDMFUser) lbDMFUser = "dba";
-			if (!lbDMFPasswd) lbDMFPasswd = "trainres";
-			
-			if ((database != NULL) && (database->connect("CRM", "CRM", lbDMFUser, lbDMFPasswd) != ERR_NONE)) {
-				_LOG << "Warning: No system database available." LOG_
+			if ((database != NULL) && (database->connect(DBName->charrep(), DBName->charrep(), DBUser->charrep(), DBPass->charrep()) != ERR_NONE)) {
+				metaapp->msgBox("Error", "Could not login to given database.\nPlease check the following:\n\n1. ODBC setup is correct.\n2. Database is created.\n3. Login credentials are correct.");
+				return;
 			}
 			
-			sampleQuery = database->getQuery("CRM", 0);
+			sampleQuery = database->getQuery(DBName->charrep(), 0);
 			
 			if (result == NULL) {
 				_LOG << "Error: Did not got the translation from XSLT file." LOG_
@@ -615,10 +630,11 @@ lbErrCodes LB_STDCALL lbDynamicAppBoUMLImport::load(lb_I_InputStream* iStream) {
 				
 				xsltCleanupGlobals();
 				xmlCleanupParser();	
-				
+				free(result);
 				return err;
 			} else {
 				_LOG << "Database has been created." LOG_
+				free(result);
 			}
 		}	
 	}
@@ -678,7 +694,8 @@ lbErrCodes LB_STDCALL lbDynamicAppBoUMLImport::load(lb_I_InputStream* iStream) {
 			if (!lbDMFPasswd) lbDMFPasswd = "trainres";
 			
 			if ((database != NULL) && (database->connect("lbDMF", "lbDMF", lbDMFUser, lbDMFPasswd) != ERR_NONE)) {
-				_LOG << "Warning: No system database available." LOG_
+				metaapp->msgBox("Error", "Could not login to given database.\nPlease check the following:\n\n1. ODBC setup is correct.\n2. Database is created.\n3. Login credentials are correct.");
+				return;
 			}
 			
 			sampleQuery = database->getQuery("lbDMF", 0);
@@ -693,11 +710,13 @@ lbErrCodes LB_STDCALL lbDynamicAppBoUMLImport::load(lb_I_InputStream* iStream) {
 				
 				xsltCleanupGlobals();
 				xmlCleanupParser();	
+				free(result);
 				
 				return err;
 			} else {
 				_LOG << "Database has been created." LOG_
 				sampleQuery->enableFKCollecting();
+				free(result);
 			}
 		}	
 	}

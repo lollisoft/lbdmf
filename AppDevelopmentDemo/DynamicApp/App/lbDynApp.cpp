@@ -202,6 +202,10 @@ protected:
 	UAP(lb_I_ReportTexts, reporttextblocks)
 
 
+	UAP(lb_I_String, UMLImportTargetDBName)
+	UAP(lb_I_String, UMLImportTargetDBUser)
+	UAP(lb_I_String, UMLImportTargetDBPass)
+
 
 	char hdsihd[100];
 };
@@ -213,6 +217,10 @@ lbDynamicApplication::lbDynamicApplication() {
 	gui = NULL;
 	haveLoadedDBModel = false;
 	_CL_LOG << "lbDynamicApplication::lbDynamicApplication() called." LOG_
+	
+	REQUEST(getModuleInstance(), lb_I_String, UMLImportTargetDBName)
+	REQUEST(getModuleInstance(), lb_I_String, UMLImportTargetDBUser)
+	REQUEST(getModuleInstance(), lb_I_String, UMLImportTargetDBPass)
 }
 
 lbDynamicApplication::~lbDynamicApplication() {
@@ -239,6 +247,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::editProperties(lb_I_Unknown* uk) {
 		
 	metaapp->getApplicationName(&appname);
 	
+	// Guard, if this function is called accidently, but unintented.
 	if (*appname == "lbDMF Manager") {
 		// Build up a preferences object and pass it to the property view
 		UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
@@ -259,7 +268,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::editProperties(lb_I_Unknown* uk) {
 		UAP_REQUEST(manager.getPtr(), lb_I_String, value)
 		UAP_REQUEST(manager.getPtr(), lb_I_Integer, i)
 		
-		parameter->setData("lbDMF Manager");
+		parameter->setData("lbDMF Manager Import Definitions");
 		//--------------------------------------------------------
 		/*
 		 parameterProject->setData("Autoopen last project");
@@ -267,15 +276,15 @@ lbErrCodes LB_STDCALL lbDynamicApplication::editProperties(lb_I_Unknown* uk) {
 		 paramProject->setUAPBoolean(*&parameterProject, *&boolProject);
 		 */
 		
-		parameterProject->setData("Target database to import db schema");
+		parameterProject->setData("DB Name");
 		valueProject->setData("CRM");
 		paramProject->setUAPString(*&parameterProject, *&valueProject);
 		
-		parameterProject->setData("Target database user");
+		parameterProject->setData("DB User");
 		valueProject->setData("dba");
 		paramProject->setUAPString(*&parameterProject, *&valueProject);
 		
-		parameterProject->setData("Target database password");
+		parameterProject->setData("DB Password");
 		valueProject->setData("trainres");
 		paramProject->setUAPString(*&parameterProject, *&valueProject);
 		
@@ -292,6 +301,58 @@ lbErrCodes LB_STDCALL lbDynamicApplication::editProperties(lb_I_Unknown* uk) {
 
 lbErrCodes LB_STDCALL lbDynamicApplication::OnPropertiesDataChange(lb_I_Unknown* uk) {
 	_CL_LOG << "lbDynamicApplication::OnProjectDataChange() called." LOG_
+	
+	lbErrCodes err = ERR_NONE;
+	
+	UAP(lb_I_Parameter, param)
+	QI(uk, lb_I_Parameter, param)
+	
+	if (param != NULL) {
+		UAP_REQUEST(manager.getPtr(), lb_I_String, name)
+		UAP_REQUEST(manager.getPtr(), lb_I_String, parameterName)
+		UAP_REQUEST(manager.getPtr(), lb_I_String, value)
+		
+		UAP(lb_I_KeyBase, key)
+		
+		name->setData("name");
+		param->getUAPString(*&name, *&parameterName);
+		
+		name->setData("value");
+		param->getUAPString(*&name, *&value);
+		
+		QI(parameterName, lb_I_KeyBase, key)
+		
+		if (strcmp(key->charrep(), "lbDMF Manager Import DefinitionsDB Name") == 0) {
+					*UMLImportTargetDBName = value->charrep();
+		}
+		
+		if (strcmp(key->charrep(), "lbDMF Manager Import DefinitionsDB User") == 0) {
+					*UMLImportTargetDBUser = value->charrep();
+		}
+		
+		if (strcmp(key->charrep(), "lbDMF Manager Import DefinitionsDB Password") == 0) {
+					*UMLImportTargetDBPass = value->charrep();
+		}
+	} else {
+		_LOG << "ERROR: Could not decode parameter structure!" LOG_
+	}
+	
+	
+	UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
+	UAP(lb_I_Unknown, ukDoc)
+	UAP(lb_I_Parameter, document)
+	ukDoc = metaapp->getActiveDocument();
+	QI(ukDoc, lb_I_Parameter, document)
+								
+	if (document != NULL) {
+		*paramname = "UMLImportDBName";
+		document->setUAPString(*&paramname, *&UMLImportTargetDBName);
+		*paramname = "UMLImportDBUser";
+		document->setUAPString(*&paramname, *&UMLImportTargetDBUser);
+		*paramname = "UMLImportDBPass";
+		document->setUAPString(*&paramname, *&UMLImportTargetDBPass);
+	}
+	
 	return ERR_NONE;
 }
 
@@ -1473,6 +1534,8 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 	
 				if (*appname == "lbDMF Manager") {
 					
+					// Only lbDMF Manager should enable import functionality, because this is logically the designer.
+				
 					plDynamicAppStorageUMLXMIImport = PM->getFirstMatchingPlugin("lb_I_StandaloneStreamable", "lbDynAppUMLImport");
 					if (plDynamicAppStorageUMLXMIImport != NULL) {
 						ukPlDynamicAppStorageUMLXMIImport = plDynamicAppStorageUMLXMIImport->getImplementation();
@@ -1494,10 +1557,24 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 								metaapp->addMenuEntry("Edit", "&edit Properties" , "editProperties", "");
 							}
 							
+							UAP_REQUEST(getModuleInstance(), lb_I_String, param)
+							UAP(lb_I_Unknown, ukDoc)
+							UAP(lb_I_Parameter, document)
+							ukDoc = metaapp->getActiveDocument();
+							QI(ukDoc, lb_I_Parameter, document)
+								
+							if (document != NULL) {
+								*param = "UMLImportDBName";
+								document->setUAPString(*&param, *&UMLImportTargetDBName);
+								*param = "UMLImportDBUser";
+								document->setUAPString(*&param, *&UMLImportTargetDBUser);
+								*param = "UMLImportDBPass";
+								document->setUAPString(*&param, *&UMLImportTargetDBPass);
+							}
+							
 							editProperties(NULL);
 						}
-					}
-					
+					}					
 				}				
 				/*...e*/
 		} else {
