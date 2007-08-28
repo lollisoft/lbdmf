@@ -2275,9 +2275,23 @@ lbErrCodes LB_STDCALL lb_wxFrame::setText_To_StatusBarTextArea(lb_I_Unknown* uk)
 }
 /*...e*/
 
-
 lbErrCodes LB_STDCALL lb_wxFrame::showLeftPropertyBar(lb_I_Unknown* uk) {
 	lbErrCodes err = ERR_NONE;
+
+#ifdef USE_WXAUI
+	wxPropertyGrid* oldpg = (wxPropertyGrid*) m_mgr.GetPane("Properties").window;
+
+	if (oldpg != NULL) {
+		m_mgr.DetachPane(oldpg);
+		m_mgr.AddPane(oldpg, wxPaneInfo().
+			Name(wxT("Properties")).Caption(wxT("Properties")).
+			//Float().FloatingPosition(GetStartPosition()).
+			Left().
+			FloatingSize(wxSize(300,200)));
+		m_mgr.Update();
+		return ERR_NONE;
+	}
+#endif
 
 	if (currentProperties == NULL) {
 		REQUEST(manager.getPtr(), lb_I_Parameter, currentProperties)
@@ -2414,6 +2428,8 @@ lbErrCodes LB_STDCALL lb_wxFrame::showLeftPropertyBar(lb_I_Unknown* uk) {
 		}
 			
 		pg->SetSizeHints(leftPanel->GetSize());
+
+		
 
 		m_mgr.AddPane(pg, wxPaneInfo().
 			Name(wxT("Properties")).Caption(wxT("Properties")).
