@@ -290,7 +290,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::editProperties(lb_I_Unknown* uk) {
 	return ERR_NONE;
 }
 
-lbErrCodes LB_STDCALL lbDynamicApplication::OnProjectDataChange(lb_I_Unknown* uk) {
+lbErrCodes LB_STDCALL lbDynamicApplication::OnPropertiesDataChange(lb_I_Unknown* uk) {
 	_CL_LOG << "lbDynamicApplication::OnProjectDataChange() called." LOG_
 	return ERR_NONE;
 }
