@@ -610,7 +610,7 @@ lbErrCodes LB_STDCALL lbDynamicAppBoUMLImport::load(lb_I_InputStream* iStream) {
 			
 			if ((database != NULL) && (database->connect(DBName->charrep(), DBName->charrep(), DBUser->charrep(), DBPass->charrep()) != ERR_NONE)) {
 				metaapp->msgBox("Error", "Could not login to given database.\nPlease check the following:\n\n1. ODBC setup is correct.\n2. Database is created.\n3. Login credentials are correct.");
-				return;
+				return ERR_DB_CONNECT;
 			}
 			
 			sampleQuery = database->getQuery(DBName->charrep(), 0);
@@ -695,7 +695,7 @@ lbErrCodes LB_STDCALL lbDynamicAppBoUMLImport::load(lb_I_InputStream* iStream) {
 			
 			if ((database != NULL) && (database->connect("lbDMF", "lbDMF", lbDMFUser, lbDMFPasswd) != ERR_NONE)) {
 				metaapp->msgBox("Error", "Could not login to given database.\nPlease check the following:\n\n1. ODBC setup is correct.\n2. Database is created.\n3. Login credentials are correct.");
-				return;
+				return ERR_DB_CONNECT;
 			}
 			
 			sampleQuery = database->getQuery("lbDMF", 0);
