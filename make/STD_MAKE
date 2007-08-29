@@ -25,11 +25,14 @@
 #            73252 Lenningen (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.99 $
+# * $Revision: 1.100 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.99 2007/08/16 09:45:00 lollisoft Exp $
+# * $Id: STD_MAKE,v 1.100 2007/08/29 14:52:11 lollisoft Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.100  2007/08/29 14:52:11  lollisoft
+# * Release build for 10.rc2
+# *
 # * Revision 1.99  2007/08/16 09:45:00  lollisoft
 # * Changes in propgrid and related stuff that let the application correctly change boolean properties.
 # *
@@ -377,8 +380,8 @@ COMPILER=WATCOM
 
 #COMPILER=MICROSOFT
 
-MODE=_DEBUG
-#MODE=
+#MODE=_DEBUG
+MODE=
 DEBUG_MEMORY=no
 #DEBUG_MEMORY=yes
 
