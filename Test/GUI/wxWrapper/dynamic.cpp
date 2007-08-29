@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.141 2007/08/28 14:54:21 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.142 2007/08/29 10:15:18 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.141 $
+ * $Revision: 1.142 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.141 2007/08/28 14:54:21 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.142 2007/08/29 10:15:18 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.142  2007/08/29 10:15:18  lollisoft
+ * Deactivated code to show property panel.
+ *
  * Revision 1.141  2007/08/28 14:54:21  lollisoft
  * Solved layout issues with properties. If it is opened, no new window would be created. If it was closed the hidden
  * property grid window will be reused.
@@ -2220,9 +2223,9 @@ bool MyApp::OnInit(void)
     if (metaApp != NULL) {
         metaApp->initialize();
 
-		if (metaApp->isPropertyPaneLayoutLeft()) metaApp->showPropertyPanel();
-		if (metaApp->isPropertyPaneLayoutFloating()) metaApp->showPropertyPanel();
-		if (metaApp->getGUIMaximized()) frame->Maximize();
+	//if (metaApp->isPropertyPaneLayoutLeft()) metaApp->showPropertyPanel();
+	//if (metaApp->isPropertyPaneLayoutFloating()) metaApp->showPropertyPanel();
+	if (metaApp->getGUIMaximized()) frame->Maximize();
     } 
 
     if (PM->beginEnumPlugins()) {
