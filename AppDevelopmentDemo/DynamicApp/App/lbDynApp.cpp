@@ -1575,6 +1575,9 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 							editProperties(NULL);
 						}
 					}					
+				} else {
+					if (metaapp->isPropertyPaneLayoutLeft()) metaapp->showPropertyPanel();
+					if (metaapp->isPropertyPaneLayoutFloating()) metaapp->showPropertyPanel();
 				}				
 				/*...e*/
 		} else {
