@@ -1205,6 +1205,14 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 	
 
 	if (!isFileAvailable || metaapp->getLoadFromDatabase()) {
+	
+		// File for current application is not available. Assume the MetaApp.mad file is too old.
+		bool b = metaapp->getLoadFromDatabase();
+		metaapp->setLoadFromDatabase(true);
+		metaapp->load();
+		metaapp->setLoadFromDatabase(b);
+		
+	
 		if ((database != NULL) && (database->connect("lbDMF", "lbDMF", lbDMFUser, lbDMFPasswd) != ERR_NONE)) {
 			_LOG << "Warning: No system database available." LOG_
 		} else {
