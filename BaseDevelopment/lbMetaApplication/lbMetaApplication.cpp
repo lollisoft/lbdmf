@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.120 $
+ * $Revision: 1.121 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.120 2007/08/16 09:44:59 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.121 2007/08/31 16:06:07 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.121  2007/08/31 16:06:07  lollisoft
+ * Removed last application property. Not required to edit.
+ *
  * Revision 1.120  2007/08/16 09:44:59  lollisoft
  * Changes in propgrid and related stuff that let the application correctly change boolean properties.
  *
@@ -1210,7 +1213,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::propertyChanged(lb_I_Unknown* uk) {
 					setAutorefreshData(false);
 				}
 		}
-		
+/*		
 		if (strcmp(key->charrep(), "GeneralAutoselect last application") == 0) {
 				if ((strcmp(value->charrep(), "1") == 0) || (strcmp(value->charrep(), "True") == 0)) {
 					setAutoselect(true);
@@ -1218,7 +1221,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::propertyChanged(lb_I_Unknown* uk) {
 					setAutoselect(false);
 				}
 		}
-		
+*/		
 		if (strcmp(key->charrep(), "GeneralAutoopen last application") == 0) {
 				if ((strcmp(value->charrep(), "1") == 0) || (strcmp(value->charrep(), "True") == 0)) {
 					setAutoload(true);
@@ -1286,11 +1289,11 @@ lb_I_Parameter* LB_STDCALL lb_MetaApplication::getParameter() {
 	parameterGeneral->setData("Prefer database configuration");
 	b->setData(_force_use_database);
 	paramGeneral->setUAPBoolean(*&parameterGeneral, *&b);
-
+/*
 	parameterGeneral->setData("Last application");
 	getApplicationName(&value);
 	paramGeneral->setUAPString(*&parameterGeneral, *&value);
-
+*/
 
 
 	registerPropertyChangeEventGroup(parameter->charrep(), *&paramGeneral, this, (lbEvHandler) &lb_MetaApplication::propertyChanged);
