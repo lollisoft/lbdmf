@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.121 $
+ * $Revision: 1.122 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.121 2007/08/31 16:06:07 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.122 2007/08/31 16:49:50 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.122  2007/08/31 16:49:50  lollisoft
+ * This should fix loaded application name overwrite bug.
+ *
  * Revision 1.121  2007/08/31 16:06:07  lollisoft
  * Removed last application property. Not required to edit.
  *
@@ -1361,9 +1364,6 @@ lbErrCodes LB_STDCALL lb_MetaApplication::loadApplication(char* user, char* appl
 			REQUEST(manager.getPtr(), lb_I_String, LogonApplication)
         }
 	
-	LogonApplication->setData(application);
-	
-	
 	char* applicationName = getenv("TARGET_APPLICATION");
 	
 	char* lbDMFPasswd = getenv("lbDMFPasswd");
@@ -1476,18 +1476,16 @@ lbErrCodes LB_STDCALL lb_MetaApplication::loadApplication(char* user, char* appl
 					
 					//if (dispatcher.getPtr() == NULL) _LOG << "Error: dispatcher is NULL" LOG_
 					
-					app->setGUI(gui);
+				app->setGUI(gui);
 				app->initialize(user, application);
 				
-				_CL_LOG << "Meta application has " << app->getRefCount() << " references." LOG_
-					
-					free(applicationName);
-				
+				// Setting currently loaded application here, because it may be overwritten by app->initialize() when set prior that call. 
+				LogonApplication->setData(application);
+				free(applicationName);
 			} else {
 				_LOG << "Error: Query to get application data failed. '" << buffer << "'" LOG_
 			}
 			free(buffer);
-			
 		}
 		//if (dispatcher.getPtr() == NULL) _LOG << "Error: dispatcher has been set to NULL" LOG_
 	} else {
