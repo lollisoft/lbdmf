@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.122 $
+ * $Revision: 1.123 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.122 2007/08/31 16:49:50 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.123 2007/09/04 11:41:46 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.123  2007/09/04 11:41:46  lollisoft
+ * Some corrections in setting correct application name.
+ *
  * Revision 1.122  2007/08/31 16:49:50  lollisoft
  * This should fix loaded application name overwrite bug.
  *
@@ -911,6 +914,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::initialize(char* user, char* appName) 
 			REQUEST(manager.getPtr(), lb_I_String, LogonApplication)
 			LogonApplication->setData(appName);
 		}
+
 	
 /*...sdispatch integer values:8:*/
 	/*
@@ -1363,6 +1367,8 @@ lbErrCodes LB_STDCALL lb_MetaApplication::loadApplication(char* user, char* appl
         if (LogonApplication == NULL) {
 			REQUEST(manager.getPtr(), lb_I_String, LogonApplication)
         }
+
+	LogonApplication->setData(application);
 	
 	char* applicationName = getenv("TARGET_APPLICATION");
 	
@@ -1523,14 +1529,16 @@ lbErrCodes LB_STDCALL lb_MetaApplication::loadApplication(char* user, char* appl
 		
 		QI(a, lb_I_Application, app)
 			
-			if (dispatcher.getPtr() == NULL) _LOG << "Error: dispatcher is NULL" LOG_
-				
-				app->setGUI(gui);
+		if (dispatcher.getPtr() == NULL) _LOG << "Error: dispatcher is NULL" LOG_
+			
+		app->setGUI(gui);
 		app->initialize();
+		// Setting currently loaded application here, because it may be overwritten by app->initialize() when set prior that call. 
+		LogonApplication->setData(application);
 		
 		_CL_LOG << "Meta application has " << app->getRefCount() << " references." LOG_
 			
-			if (dispatcher.getPtr() == NULL) _LOG << "Error: dispatcher has been set to NULL" LOG_
+		if (dispatcher.getPtr() == NULL) _LOG << "Error: dispatcher has been set to NULL" LOG_
 	}
 		
         return ERR_NONE;
@@ -2258,7 +2266,9 @@ lb_I_Unknown*	LB_STDCALL lb_MetaApplication::getActiveDocument() {
 	
 	QI(LogonApplication, lb_I_KeyBase, key)
 
-	return activeDocuments->getElement(&key);
+	lb_I_Unknown* ukDoc = activeDocuments->getElement(&key);
+	if (ukDoc == NULL) _LOG << "Active document for '" << LogonApplication->charrep() << "' not found!" LOG_
+	return ukDoc;
 }
 
 void			LB_STDCALL lb_MetaApplication::setActiveDocument(lb_I_Unknown* doc) {
@@ -2274,7 +2284,7 @@ void			LB_STDCALL lb_MetaApplication::setActiveDocument(lb_I_Unknown* doc) {
 		activeDocuments->remove(&key);
 	}
 
-	_CL_LOG << "Insert active document for application '" << LogonApplication->charrep() << "'" LOG_
+	_LOG << "Insert active document for application '" << LogonApplication->charrep() << "'" LOG_
 
 	activeDocuments->insert(&ukDoc, &key);
 	

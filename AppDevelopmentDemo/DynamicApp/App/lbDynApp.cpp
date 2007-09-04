@@ -1155,6 +1155,8 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 		if (LogonApplication == NULL) {
 			REQUEST(manager.getPtr(), lb_I_String, LogonApplication)
 		}
+
+	_LOG << "lbDynamicApplication::initialize('" << user << "', '" << app << "') called." LOG_
 	LogonApplication->setData(app);
 	
 	UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
@@ -1211,6 +1213,8 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 		metaapp->setLoadFromDatabase(true);
 		metaapp->load();
 		metaapp->setLoadFromDatabase(b);
+		LogonApplication->setData(app);
+		metaapp->setApplicationName(app);
 		
 	
 		if ((database != NULL) && (database->connect("lbDMF", "lbDMF", lbDMFUser, lbDMFPasswd) != ERR_NONE)) {
