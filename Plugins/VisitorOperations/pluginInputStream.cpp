@@ -845,7 +845,7 @@ void LB_STDCALL lbInputStreamOpr::visit(lb_I_MetaApplication* app) {
 	
 	*iStream >> b;
 	if (b) app->setLoadFromDatabase(true);
-	else app->setLoadFromDatabase(false);
+	//else app->setLoadFromDatabase(false);
 }
 
 void LB_STDCALL lbInputStreamOpr::visit(lb_I_Application*) {
