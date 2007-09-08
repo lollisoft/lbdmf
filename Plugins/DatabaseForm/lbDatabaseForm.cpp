@@ -2736,6 +2736,7 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBUpdate() {
 		SetName(newTitle->charrep());
 
 		if (meta->askYesNo("Error while updating data. Would you re - read the current data and retry ?")) {
+			sampleQuery->reopen();
 			lbDBRead();
 		}
 		
