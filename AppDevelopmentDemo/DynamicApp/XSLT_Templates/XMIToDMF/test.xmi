@@ -1,0 +1,624 @@
+<?xml version="1.0"  encoding="ISO-8859-1"?>
+<XMI xmi.version="1.2" xmlns:UML="org.omg.xmi.namespace.UML">
+<XMI.header>
+	<XMI.documentation>
+		<XMI.exporter>Bouml</XMI.exporter>
+		<XMI.exporterVersion>1.4.4</XMI.exporterVersion>
+	</XMI.documentation>
+	<XMI.metamodel XMI.name="UML" XMI.version="1.4"/>
+</XMI.header>
+<XMI.content>
+	<UML:Model name="BoUML" xmi.id="BOUML_0x31aa10">
+		<UML:Namespace.ownedElement>
+			<UML:Package xmi.id="BOUML_0x31e5e0" name ="CRM">
+				<UML:Namespace.ownedElement>
+					<UML:Class name="Kunde" xmi.id="BOUML_0x338af0" visibility="public" isAbstract="false" isActive="false" >
+						<UML:Classifier.feature>
+							<UML:Attribute name="Kundennummer" xmi.id="BOUML_0x3351d0" visibility="protected" ownerScope="instance">
+								<UML:StructuralFeature.type>
+									<UML:DataType xmi.idref="BOUML_datatype_0"/>
+								</UML:StructuralFeature.type>
+							</UML:Attribute>
+							<UML:Attribute name="Firmenname" xmi.id="BOUML_0x3393f0" visibility="protected" ownerScope="instance">
+								<UML:StructuralFeature.type>
+									<UML:DataType xmi.idref="BOUML_datatype_1"/>
+								</UML:StructuralFeature.type>
+							</UML:Attribute>
+						</UML:Classifier.feature>
+					</UML:Class>
+					<UML:Association name="(Stadt)" xmi.id="BOUML_0x33aee0">
+						<UML:Association.connection>
+							<UML:AssociationEnd visibility="protected" ownerScope="instance" name="" aggregation="none" isOrdered="false" isNavigable="true" type="BOUML_0x333ae0">
+								<UML:AssociationEnd.participant>
+									<UML:Class xmi.idref="BOUML_0x333ae0"/>
+								</UML:AssociationEnd.participant>
+								<UML:ModelElement.stereotype>
+									<UML:Stereotype name="masterdetail_action"/>
+								</UML:ModelElement.stereotype>
+								<UML:ModelElement.taggedValue>
+									<UML:TaggedValue tag="stereotype" value="masterdetail_action"/>
+								</UML:ModelElement.taggedValue>
+							</UML:AssociationEnd>
+							<UML:AssociationEnd visibility="protected" ownerScope="instance" name="" aggregation="aggregate" isOrdered="false" isNavigable="true" type="BOUML_0x338af0">
+								<UML:AssociationEnd.participant>
+									<UML:Class xmi.idref="BOUML_0x338af0"/>
+								</UML:AssociationEnd.participant>
+								<UML:ModelElement.stereotype>
+									<UML:Stereotype name="masterdetail_action"/>
+								</UML:ModelElement.stereotype>
+								<UML:ModelElement.taggedValue>
+									<UML:TaggedValue tag="stereotype" value="masterdetail_action"/>
+								</UML:ModelElement.taggedValue>
+							</UML:AssociationEnd>
+						</UML:Association.connection>
+					</UML:Association>
+					<UML:Association name="(Name)" xmi.id="BOUML_0x332ca0">
+						<UML:Association.connection>
+							<UML:AssociationEnd visibility="protected" ownerScope="instance" name="" aggregation="none" isOrdered="false" isNavigable="true" type="BOUML_0x332b50">
+								<UML:AssociationEnd.participant>
+									<UML:Class xmi.idref="BOUML_0x332b50"/>
+								</UML:AssociationEnd.participant>
+								<UML:ModelElement.stereotype>
+									<UML:Stereotype name="masterdetail_action"/>
+								</UML:ModelElement.stereotype>
+								<UML:ModelElement.taggedValue>
+									<UML:TaggedValue tag="stereotype" value="masterdetail_action"/>
+								</UML:ModelElement.taggedValue>
+							</UML:AssociationEnd>
+							<UML:AssociationEnd visibility="protected" ownerScope="instance" name="" aggregation="aggregate" isOrdered="false" isNavigable="true" type="BOUML_0x338af0">
+								<UML:AssociationEnd.participant>
+									<UML:Class xmi.idref="BOUML_0x338af0"/>
+								</UML:AssociationEnd.participant>
+								<UML:ModelElement.stereotype>
+									<UML:Stereotype name="masterdetail_action"/>
+								</UML:ModelElement.stereotype>
+								<UML:ModelElement.taggedValue>
+									<UML:TaggedValue tag="stereotype" value="masterdetail_action"/>
+								</UML:ModelElement.taggedValue>
+							</UML:AssociationEnd>
+						</UML:Association.connection>
+					</UML:Association>
+					<UML:Class name="Auftrag" xmi.id="BOUML_0x32fcd0" visibility="public" isAbstract="false" isActive="false" >
+						<UML:Classifier.feature>
+							<UML:Attribute name="Auftragsdatum" xmi.id="BOUML_0x3500f0" visibility="protected" ownerScope="instance">
+								<UML:StructuralFeature.type>
+									<UML:DataType xmi.idref="BOUML_datatype_2"/>
+								</UML:StructuralFeature.type>
+							</UML:Attribute>
+							<UML:Attribute name="Gesamtpreis" xmi.id="BOUML_0x338590" visibility="protected" ownerScope="instance">
+								<UML:StructuralFeature.type>
+									<UML:DataType xmi.idref="BOUML_datatype_3"/>
+								</UML:StructuralFeature.type>
+							</UML:Attribute>
+							<UML:Attribute name="Auftragsnummer" xmi.id="BOUML_0x335330" visibility="protected" ownerScope="instance">
+								<UML:StructuralFeature.type>
+									<UML:DataType xmi.idref="BOUML_datatype_0"/>
+								</UML:StructuralFeature.type>
+							</UML:Attribute>
+							<UML:Operation name="Drucken" xmi.id="BOUML_0x34b860" visibility="public" ownerScope="instance" isAbstract="false">
+								<UML:BehavioralFeature.parameter>
+								</UML:BehavioralFeature.parameter>
+							</UML:Operation>
+						</UML:Classifier.feature>
+					</UML:Class>
+					<UML:Association name="(Firmanname)" xmi.id="BOUML_0x37ea40">
+						<UML:Association.connection>
+							<UML:AssociationEnd visibility="protected" ownerScope="instance" name="" aggregation="none" isOrdered="false" isNavigable="true" type="BOUML_0x338af0">
+								<UML:AssociationEnd.participant>
+									<UML:Class xmi.idref="BOUML_0x338af0"/>
+								</UML:AssociationEnd.participant>
+								<UML:ModelElement.stereotype>
+									<UML:Stereotype name="masterdetail_action"/>
+								</UML:ModelElement.stereotype>
+								<UML:ModelElement.taggedValue>
+									<UML:TaggedValue tag="stereotype" value="masterdetail_action"/>
+								</UML:ModelElement.taggedValue>
+							</UML:AssociationEnd>
+							<UML:AssociationEnd visibility="protected" ownerScope="instance" name="" aggregation="aggregate" isOrdered="false" isNavigable="true" type="BOUML_0x32fcd0">
+								<UML:AssociationEnd.participant>
+									<UML:Class xmi.idref="BOUML_0x32fcd0"/>
+								</UML:AssociationEnd.participant>
+								<UML:ModelElement.stereotype>
+									<UML:Stereotype name="masterdetail_action"/>
+								</UML:ModelElement.stereotype>
+								<UML:ModelElement.taggedValue>
+									<UML:TaggedValue tag="stereotype" value="masterdetail_action"/>
+								</UML:ModelElement.taggedValue>
+							</UML:AssociationEnd>
+						</UML:Association.connection>
+					</UML:Association>
+					<UML:Association xmi.id="BOUML_0x330940">
+						<UML:Association.connection>
+							<UML:AssociationEnd visibility="protected" ownerScope="instance" name="" aggregation="none" isOrdered="false" isNavigable="true" type="BOUML_0x33eb20">
+								<UML:AssociationEnd.participant>
+									<UML:Class xmi.idref="BOUML_0x33eb20"/>
+								</UML:AssociationEnd.participant>
+							</UML:AssociationEnd>
+							<UML:AssociationEnd visibility="protected" ownerScope="instance" name="" aggregation="aggregate" isOrdered="false" isNavigable="true" type="BOUML_0x32fcd0">
+								<UML:AssociationEnd.participant>
+									<UML:Class xmi.idref="BOUML_0x32fcd0"/>
+								</UML:AssociationEnd.participant>
+							</UML:AssociationEnd>
+						</UML:Association.connection>
+					</UML:Association>
+					<UML:Class name="Auftragspositionen" xmi.id="BOUML_0x332da0" visibility="public" isAbstract="false" isActive="false" >
+						<UML:Classifier.feature>
+							<UML:Attribute name="Preis" xmi.id="BOUML_0x338260" visibility="protected" ownerScope="instance">
+								<UML:StructuralFeature.type>
+									<UML:DataType xmi.idref="BOUML_datatype_3"/>
+								</UML:StructuralFeature.type>
+							</UML:Attribute>
+							<UML:Attribute name="Menge" xmi.id="BOUML_0x32de90" visibility="protected" ownerScope="instance">
+								<UML:StructuralFeature.type>
+									<UML:DataType xmi.idref="BOUML_datatype_0"/>
+								</UML:StructuralFeature.type>
+							</UML:Attribute>
+						</UML:Classifier.feature>
+					</UML:Class>
+					<UML:Association name="(Auftragsnummer)" xmi.id="BOUML_0x31f5d0">
+						<UML:Association.connection>
+							<UML:AssociationEnd visibility="protected" ownerScope="instance" name="" aggregation="none" isOrdered="false" isNavigable="true" type="BOUML_0x32fcd0">
+								<UML:AssociationEnd.participant>
+									<UML:Class xmi.idref="BOUML_0x32fcd0"/>
+								</UML:AssociationEnd.participant>
+								<UML:ModelElement.stereotype>
+									<UML:Stereotype name="masterdetail_action"/>
+								</UML:ModelElement.stereotype>
+								<UML:ModelElement.taggedValue>
+									<UML:TaggedValue tag="stereotype" value="masterdetail_action"/>
+								</UML:ModelElement.taggedValue>
+							</UML:AssociationEnd>
+							<UML:AssociationEnd visibility="protected" ownerScope="instance" name="" aggregation="aggregate" isOrdered="false" isNavigable="true" type="BOUML_0x332da0">
+								<UML:AssociationEnd.participant>
+									<UML:Class xmi.idref="BOUML_0x332da0"/>
+								</UML:AssociationEnd.participant>
+								<UML:ModelElement.stereotype>
+									<UML:Stereotype name="masterdetail_action"/>
+								</UML:ModelElement.stereotype>
+								<UML:ModelElement.taggedValue>
+									<UML:TaggedValue tag="stereotype" value="masterdetail_action"/>
+								</UML:ModelElement.taggedValue>
+							</UML:AssociationEnd>
+						</UML:Association.connection>
+					</UML:Association>
+					<UML:Association xmi.id="BOUML_0x32f5e0">
+						<UML:Association.connection>
+							<UML:AssociationEnd visibility="protected" ownerScope="instance" name="" aggregation="none" isOrdered="false" isNavigable="true" type="BOUML_0x32ce00">
+								<UML:AssociationEnd.participant>
+									<UML:Class xmi.idref="BOUML_0x32ce00"/>
+								</UML:AssociationEnd.participant>
+							</UML:AssociationEnd>
+							<UML:AssociationEnd visibility="protected" ownerScope="instance" name="" aggregation="aggregate" isOrdered="false" isNavigable="true" type="BOUML_0x332da0">
+								<UML:AssociationEnd.participant>
+									<UML:Class xmi.idref="BOUML_0x332da0"/>
+								</UML:AssociationEnd.participant>
+							</UML:AssociationEnd>
+						</UML:Association.connection>
+					</UML:Association>
+					<UML:Class name="Artikel" xmi.id="BOUML_0x32ce00" visibility="public" isAbstract="false" isActive="false" >
+						<UML:Classifier.feature>
+							<UML:Attribute name="Name" xmi.id="BOUML_0x31cad0" visibility="protected" ownerScope="instance">
+								<UML:StructuralFeature.type>
+									<UML:DataType xmi.idref="BOUML_datatype_1"/>
+								</UML:StructuralFeature.type>
+							</UML:Attribute>
+							<UML:Attribute name="Preis" xmi.id="BOUML_0x31e6b0" visibility="protected" ownerScope="instance">
+								<UML:StructuralFeature.type>
+									<UML:DataType xmi.idref="BOUML_datatype_3"/>
+								</UML:StructuralFeature.type>
+							</UML:Attribute>
+							<UML:Attribute name="Einheit" xmi.id="BOUML_0x31e840" visibility="protected" ownerScope="instance">
+								<UML:StructuralFeature.type>
+									<UML:DataType xmi.idref="BOUML_datatype_0"/>
+								</UML:StructuralFeature.type>
+							</UML:Attribute>
+							<UML:Attribute name="Beschreibung" xmi.id="BOUML_0x31e290" visibility="protected" ownerScope="instance">
+								<UML:StructuralFeature.type>
+									<UML:DataType xmi.idref="BOUML_datatype_1"/>
+								</UML:StructuralFeature.type>
+							</UML:Attribute>
+							<UML:Attribute name="Menge" xmi.id="BOUML_0x335e80" visibility="protected" ownerScope="instance">
+								<UML:StructuralFeature.type>
+									<UML:DataType xmi.idref="BOUML_datatype_3"/>
+								</UML:StructuralFeature.type>
+							</UML:Attribute>
+						</UML:Classifier.feature>
+					</UML:Class>
+					<UML:Association name="(Lieferantennummer)" xmi.id="BOUML_0x32c620">
+						<UML:Association.connection>
+							<UML:AssociationEnd visibility="protected" ownerScope="instance" name="" aggregation="none" isOrdered="false" isNavigable="true" type="BOUML_0x3332e0">
+								<UML:AssociationEnd.participant>
+									<UML:Class xmi.idref="BOUML_0x3332e0"/>
+								</UML:AssociationEnd.participant>
+								<UML:ModelElement.stereotype>
+									<UML:Stereotype name="masterdetail_action"/>
+								</UML:ModelElement.stereotype>
+								<UML:ModelElement.taggedValue>
+									<UML:TaggedValue tag="stereotype" value="masterdetail_action"/>
+								</UML:ModelElement.taggedValue>
+							</UML:AssociationEnd>
+							<UML:AssociationEnd visibility="protected" ownerScope="instance" name="" aggregation="aggregate" isOrdered="false" isNavigable="true" type="BOUML_0x32ce00">
+								<UML:AssociationEnd.participant>
+									<UML:Class xmi.idref="BOUML_0x32ce00"/>
+								</UML:AssociationEnd.participant>
+								<UML:ModelElement.stereotype>
+									<UML:Stereotype name="masterdetail_action"/>
+								</UML:ModelElement.stereotype>
+								<UML:ModelElement.taggedValue>
+									<UML:TaggedValue tag="stereotype" value="masterdetail_action"/>
+								</UML:ModelElement.taggedValue>
+							</UML:AssociationEnd>
+						</UML:Association.connection>
+					</UML:Association>
+					<UML:Class name="Angebot" xmi.id="BOUML_0x33eb20" visibility="public" isAbstract="false" isActive="false" >
+						<UML:Classifier.feature>
+							<UML:Attribute name="Angebotsnummer" xmi.id="BOUML_0x31bbf0" visibility="protected" ownerScope="instance">
+								<UML:StructuralFeature.type>
+									<UML:DataType xmi.idref="BOUML_datatype_0"/>
+								</UML:StructuralFeature.type>
+							</UML:Attribute>
+							<UML:Attribute name="Angebotsdatum" xmi.id="BOUML_0x31bca0" visibility="protected" ownerScope="instance">
+								<UML:StructuralFeature.type>
+									<UML:DataType xmi.idref="BOUML_datatype_2"/>
+								</UML:StructuralFeature.type>
+							</UML:Attribute>
+							<UML:Attribute name="Gesamtpreis" xmi.id="BOUML_0x31c060" visibility="protected" ownerScope="instance">
+								<UML:StructuralFeature.type>
+									<UML:DataType xmi.idref="BOUML_datatype_3"/>
+								</UML:StructuralFeature.type>
+							</UML:Attribute>
+							<UML:Operation name="Drucken" xmi.id="BOUML_0x31c220" visibility="public" ownerScope="instance" isAbstract="false">
+								<UML:BehavioralFeature.parameter>
+								</UML:BehavioralFeature.parameter>
+							</UML:Operation>
+						</UML:Classifier.feature>
+					</UML:Class>
+					<UML:Association name="(Firmenname)" xmi.id="BOUML_0x31e950">
+						<UML:Association.connection>
+							<UML:AssociationEnd visibility="protected" ownerScope="instance" name="" aggregation="none" isOrdered="false" isNavigable="true" type="BOUML_0x338af0">
+								<UML:AssociationEnd.participant>
+									<UML:Class xmi.idref="BOUML_0x338af0"/>
+								</UML:AssociationEnd.participant>
+								<UML:ModelElement.stereotype>
+									<UML:Stereotype name="masterdetail_action"/>
+								</UML:ModelElement.stereotype>
+								<UML:ModelElement.taggedValue>
+									<UML:TaggedValue tag="stereotype" value="masterdetail_action"/>
+								</UML:ModelElement.taggedValue>
+							</UML:AssociationEnd>
+							<UML:AssociationEnd visibility="protected" ownerScope="instance" name="" aggregation="aggregate" isOrdered="false" isNavigable="true" type="BOUML_0x33eb20">
+								<UML:AssociationEnd.participant>
+									<UML:Class xmi.idref="BOUML_0x33eb20"/>
+								</UML:AssociationEnd.participant>
+								<UML:ModelElement.stereotype>
+									<UML:Stereotype name="masterdetail_action"/>
+								</UML:ModelElement.stereotype>
+								<UML:ModelElement.taggedValue>
+									<UML:TaggedValue tag="stereotype" value="masterdetail_action"/>
+								</UML:ModelElement.taggedValue>
+							</UML:AssociationEnd>
+						</UML:Association.connection>
+					</UML:Association>
+					<UML:Class name="Angebotspositionen" xmi.id="BOUML_0x32aef0" visibility="public" isAbstract="false" isActive="false" >
+						<UML:Classifier.feature>
+							<UML:Attribute name="Menge" xmi.id="BOUML_0x336c30" visibility="protected" ownerScope="instance">
+								<UML:StructuralFeature.type>
+									<UML:DataType xmi.idref="BOUML_datatype_3"/>
+								</UML:StructuralFeature.type>
+							</UML:Attribute>
+							<UML:Attribute name="Preis" xmi.id="BOUML_0x336df0" visibility="protected" ownerScope="instance">
+								<UML:StructuralFeature.type>
+									<UML:DataType xmi.idref="BOUML_datatype_3"/>
+								</UML:StructuralFeature.type>
+							</UML:Attribute>
+						</UML:Classifier.feature>
+					</UML:Class>
+					<UML:Association name="(Angebotsnummer)" xmi.id="BOUML_0x32c9a0">
+						<UML:Association.connection>
+							<UML:AssociationEnd visibility="protected" ownerScope="instance" name="" aggregation="none" isOrdered="false" isNavigable="true" type="BOUML_0x33eb20">
+								<UML:AssociationEnd.participant>
+									<UML:Class xmi.idref="BOUML_0x33eb20"/>
+								</UML:AssociationEnd.participant>
+								<UML:ModelElement.stereotype>
+									<UML:Stereotype name="masterdetail_action"/>
+								</UML:ModelElement.stereotype>
+								<UML:ModelElement.taggedValue>
+									<UML:TaggedValue tag="stereotype" value="masterdetail_action"/>
+								</UML:ModelElement.taggedValue>
+							</UML:AssociationEnd>
+							<UML:AssociationEnd visibility="protected" ownerScope="instance" name="" aggregation="aggregate" isOrdered="false" isNavigable="true" type="BOUML_0x32aef0">
+								<UML:AssociationEnd.participant>
+									<UML:Class xmi.idref="BOUML_0x32aef0"/>
+								</UML:AssociationEnd.participant>
+								<UML:ModelElement.stereotype>
+									<UML:Stereotype name="masterdetail_action"/>
+								</UML:ModelElement.stereotype>
+								<UML:ModelElement.taggedValue>
+									<UML:TaggedValue tag="stereotype" value="masterdetail_action"/>
+								</UML:ModelElement.taggedValue>
+							</UML:AssociationEnd>
+						</UML:Association.connection>
+					</UML:Association>
+					<UML:Association xmi.id="BOUML_0x332480">
+						<UML:Association.connection>
+							<UML:AssociationEnd visibility="protected" ownerScope="instance" name="" aggregation="none" isOrdered="false" isNavigable="true" type="BOUML_0x32ce00">
+								<UML:AssociationEnd.participant>
+									<UML:Class xmi.idref="BOUML_0x32ce00"/>
+								</UML:AssociationEnd.participant>
+							</UML:AssociationEnd>
+							<UML:AssociationEnd visibility="protected" ownerScope="instance" name="" aggregation="aggregate" isOrdered="false" isNavigable="true" type="BOUML_0x32aef0">
+								<UML:AssociationEnd.participant>
+									<UML:Class xmi.idref="BOUML_0x32aef0"/>
+								</UML:AssociationEnd.participant>
+							</UML:AssociationEnd>
+						</UML:Association.connection>
+					</UML:Association>
+					<UML:Class name="Rechnung" xmi.id="BOUML_0x34b6c0" visibility="public" isAbstract="false" isActive="false" >
+						<UML:Classifier.feature>
+							<UML:Attribute name="Rechnungsnummer" xmi.id="BOUML_0x330ef0" visibility="protected" ownerScope="instance">
+								<UML:StructuralFeature.type>
+									<UML:DataType xmi.idref="BOUML_datatype_0"/>
+								</UML:StructuralFeature.type>
+							</UML:Attribute>
+							<UML:Attribute name="Rechnungsdatum" xmi.id="BOUML_0x331010" visibility="protected" ownerScope="instance">
+								<UML:StructuralFeature.type>
+									<UML:DataType xmi.idref="BOUML_datatype_2"/>
+								</UML:StructuralFeature.type>
+							</UML:Attribute>
+							<UML:Attribute name="Gesamtpreis" xmi.id="BOUML_0x333c40" visibility="protected" ownerScope="instance">
+								<UML:StructuralFeature.type>
+									<UML:DataType xmi.idref="BOUML_datatype_3"/>
+								</UML:StructuralFeature.type>
+							</UML:Attribute>
+							<UML:Operation name="Drucken" xmi.id="BOUML_0x334f50" visibility="public" ownerScope="instance" isAbstract="false">
+								<UML:BehavioralFeature.parameter>
+								</UML:BehavioralFeature.parameter>
+							</UML:Operation>
+						</UML:Classifier.feature>
+					</UML:Class>
+					<UML:Association name="(Firmenname)" xmi.id="BOUML_0x335ca0">
+						<UML:Association.connection>
+							<UML:AssociationEnd visibility="protected" ownerScope="instance" name="" aggregation="none" isOrdered="false" isNavigable="true" type="BOUML_0x338af0">
+								<UML:AssociationEnd.participant>
+									<UML:Class xmi.idref="BOUML_0x338af0"/>
+								</UML:AssociationEnd.participant>
+								<UML:ModelElement.stereotype>
+									<UML:Stereotype name="masterdetail_action"/>
+								</UML:ModelElement.stereotype>
+								<UML:ModelElement.taggedValue>
+									<UML:TaggedValue tag="stereotype" value="masterdetail_action"/>
+								</UML:ModelElement.taggedValue>
+							</UML:AssociationEnd>
+							<UML:AssociationEnd visibility="protected" ownerScope="instance" name="" aggregation="aggregate" isOrdered="false" isNavigable="true" type="BOUML_0x34b6c0">
+								<UML:AssociationEnd.participant>
+									<UML:Class xmi.idref="BOUML_0x34b6c0"/>
+								</UML:AssociationEnd.participant>
+								<UML:ModelElement.stereotype>
+									<UML:Stereotype name="masterdetail_action"/>
+								</UML:ModelElement.stereotype>
+								<UML:ModelElement.taggedValue>
+									<UML:TaggedValue tag="stereotype" value="masterdetail_action"/>
+								</UML:ModelElement.taggedValue>
+							</UML:AssociationEnd>
+						</UML:Association.connection>
+					</UML:Association>
+					<UML:Association xmi.id="BOUML_0x380660">
+						<UML:Association.connection>
+							<UML:AssociationEnd visibility="protected" ownerScope="instance" name="" aggregation="none" isOrdered="false" isNavigable="true" type="BOUML_0x32fcd0">
+								<UML:AssociationEnd.participant>
+									<UML:Class xmi.idref="BOUML_0x32fcd0"/>
+								</UML:AssociationEnd.participant>
+							</UML:AssociationEnd>
+							<UML:AssociationEnd visibility="protected" ownerScope="instance" name="" aggregation="aggregate" isOrdered="false" isNavigable="true" type="BOUML_0x34b6c0">
+								<UML:AssociationEnd.participant>
+									<UML:Class xmi.idref="BOUML_0x34b6c0"/>
+								</UML:AssociationEnd.participant>
+							</UML:AssociationEnd>
+						</UML:Association.connection>
+					</UML:Association>
+					<UML:Class name="Rechnungspositionen" xmi.id="BOUML_0x33c150" visibility="public" isAbstract="false" isActive="false" >
+						<UML:Classifier.feature>
+							<UML:Attribute name="Preis" xmi.id="BOUML_0x334270" visibility="protected" ownerScope="instance">
+								<UML:StructuralFeature.type>
+									<UML:DataType xmi.idref="BOUML_datatype_3"/>
+								</UML:StructuralFeature.type>
+							</UML:Attribute>
+							<UML:Attribute name="menge" xmi.id="BOUML_0x3343d0" visibility="protected" ownerScope="instance">
+								<UML:StructuralFeature.type>
+									<UML:DataType xmi.idref="BOUML_datatype_0"/>
+								</UML:StructuralFeature.type>
+							</UML:Attribute>
+						</UML:Classifier.feature>
+					</UML:Class>
+					<UML:Association name="(Rechnungsnummer)" xmi.id="BOUML_0x332e90">
+						<UML:Association.connection>
+							<UML:AssociationEnd visibility="protected" ownerScope="instance" name="" aggregation="none" isOrdered="false" isNavigable="true" type="BOUML_0x34b6c0">
+								<UML:AssociationEnd.participant>
+									<UML:Class xmi.idref="BOUML_0x34b6c0"/>
+								</UML:AssociationEnd.participant>
+								<UML:ModelElement.stereotype>
+									<UML:Stereotype name="masterdetail_action"/>
+								</UML:ModelElement.stereotype>
+								<UML:ModelElement.taggedValue>
+									<UML:TaggedValue tag="stereotype" value="masterdetail_action"/>
+								</UML:ModelElement.taggedValue>
+							</UML:AssociationEnd>
+							<UML:AssociationEnd visibility="protected" ownerScope="instance" name="" aggregation="aggregate" isOrdered="false" isNavigable="true" type="BOUML_0x33c150">
+								<UML:AssociationEnd.participant>
+									<UML:Class xmi.idref="BOUML_0x33c150"/>
+								</UML:AssociationEnd.participant>
+								<UML:ModelElement.stereotype>
+									<UML:Stereotype name="masterdetail_action"/>
+								</UML:ModelElement.stereotype>
+								<UML:ModelElement.taggedValue>
+									<UML:TaggedValue tag="stereotype" value="masterdetail_action"/>
+								</UML:ModelElement.taggedValue>
+							</UML:AssociationEnd>
+						</UML:Association.connection>
+					</UML:Association>
+					<UML:Association xmi.id="BOUML_0x334d40">
+						<UML:Association.connection>
+							<UML:AssociationEnd visibility="protected" ownerScope="instance" name="" aggregation="none" isOrdered="false" isNavigable="true" type="BOUML_0x32ce00">
+								<UML:AssociationEnd.participant>
+									<UML:Class xmi.idref="BOUML_0x32ce00"/>
+								</UML:AssociationEnd.participant>
+							</UML:AssociationEnd>
+							<UML:AssociationEnd visibility="protected" ownerScope="instance" name="" aggregation="aggregate" isOrdered="false" isNavigable="true" type="BOUML_0x33c150">
+								<UML:AssociationEnd.participant>
+									<UML:Class xmi.idref="BOUML_0x33c150"/>
+								</UML:AssociationEnd.participant>
+							</UML:AssociationEnd>
+						</UML:Association.connection>
+					</UML:Association>
+					<UML:Class name="Lieferant" xmi.id="BOUML_0x3332e0" visibility="public" isAbstract="false" isActive="false" >
+						<UML:Classifier.feature>
+							<UML:Attribute name="Lieferantennummer" xmi.id="BOUML_0x331fa0" visibility="protected" ownerScope="instance">
+								<UML:StructuralFeature.type>
+									<UML:DataType xmi.idref="BOUML_datatype_0"/>
+								</UML:StructuralFeature.type>
+							</UML:Attribute>
+							<UML:Attribute name="Name" xmi.id="BOUML_0x3320c0" visibility="protected" ownerScope="instance">
+								<UML:StructuralFeature.type>
+									<UML:DataType xmi.idref="BOUML_datatype_1"/>
+								</UML:StructuralFeature.type>
+							</UML:Attribute>
+						</UML:Classifier.feature>
+					</UML:Class>
+					<UML:Association name="(Stadt)" xmi.id="BOUML_0x332880">
+						<UML:Association.connection>
+							<UML:AssociationEnd visibility="protected" ownerScope="instance" name="" aggregation="none" isOrdered="false" isNavigable="true" type="BOUML_0x333ae0">
+								<UML:AssociationEnd.participant>
+									<UML:Class xmi.idref="BOUML_0x333ae0"/>
+								</UML:AssociationEnd.participant>
+								<UML:ModelElement.stereotype>
+									<UML:Stereotype name="masterdetail_action"/>
+								</UML:ModelElement.stereotype>
+								<UML:ModelElement.taggedValue>
+									<UML:TaggedValue tag="stereotype" value="masterdetail_action"/>
+								</UML:ModelElement.taggedValue>
+							</UML:AssociationEnd>
+							<UML:AssociationEnd visibility="protected" ownerScope="instance" name="" aggregation="aggregate" isOrdered="false" isNavigable="true" type="BOUML_0x3332e0">
+								<UML:AssociationEnd.participant>
+									<UML:Class xmi.idref="BOUML_0x3332e0"/>
+								</UML:AssociationEnd.participant>
+								<UML:ModelElement.stereotype>
+									<UML:Stereotype name="masterdetail_action"/>
+								</UML:ModelElement.stereotype>
+								<UML:ModelElement.taggedValue>
+									<UML:TaggedValue tag="stereotype" value="masterdetail_action"/>
+								</UML:ModelElement.taggedValue>
+							</UML:AssociationEnd>
+						</UML:Association.connection>
+					</UML:Association>
+					<UML:Class name="Adresse" xmi.id="BOUML_0x333ae0" visibility="public" isAbstract="false" isActive="false" >
+						<UML:Classifier.feature>
+							<UML:Attribute name="Strasse" xmi.id="BOUML_0x32e660" visibility="protected" ownerScope="instance">
+								<UML:StructuralFeature.type>
+									<UML:DataType xmi.idref="BOUML_datatype_1"/>
+								</UML:StructuralFeature.type>
+							</UML:Attribute>
+							<UML:Attribute name="Hausnummer" xmi.id="BOUML_0x32e750" visibility="protected" ownerScope="instance">
+								<UML:StructuralFeature.type>
+									<UML:DataType xmi.idref="BOUML_datatype_1"/>
+								</UML:StructuralFeature.type>
+							</UML:Attribute>
+							<UML:Attribute name="Stadt" xmi.id="BOUML_0x32d1f0" visibility="protected" ownerScope="instance">
+								<UML:StructuralFeature.type>
+									<UML:DataType xmi.idref="BOUML_datatype_1"/>
+								</UML:StructuralFeature.type>
+							</UML:Attribute>
+							<UML:Attribute name="Plz" xmi.id="BOUML_0x32d3b0" visibility="protected" ownerScope="instance">
+								<UML:StructuralFeature.type>
+									<UML:DataType xmi.idref="BOUML_datatype_1"/>
+								</UML:StructuralFeature.type>
+							</UML:Attribute>
+						</UML:Classifier.feature>
+					</UML:Class>
+					<UML:Class name="Kontakte" xmi.id="BOUML_0x332b50" visibility="public" isAbstract="false" isActive="false" >
+						<UML:Classifier.feature>
+							<UML:Attribute name="Name" xmi.id="BOUML_0x32eb30" visibility="protected" ownerScope="instance">
+								<UML:StructuralFeature.type>
+									<UML:DataType xmi.idref="BOUML_datatype_1"/>
+								</UML:StructuralFeature.type>
+							</UML:Attribute>
+							<UML:Attribute name="Vorname" xmi.id="BOUML_0x330510" visibility="protected" ownerScope="instance">
+								<UML:StructuralFeature.type>
+									<UML:DataType xmi.idref="BOUML_datatype_1"/>
+								</UML:StructuralFeature.type>
+							</UML:Attribute>
+							<UML:Attribute name="Telefon" xmi.id="BOUML_0x3306d0" visibility="protected" ownerScope="instance">
+								<UML:StructuralFeature.type>
+									<UML:DataType xmi.idref="BOUML_datatype_1"/>
+								</UML:StructuralFeature.type>
+							</UML:Attribute>
+							<UML:Attribute name="Fax" xmi.id="BOUML_0x31fbe0" visibility="protected" ownerScope="instance">
+								<UML:StructuralFeature.type>
+									<UML:DataType xmi.idref="BOUML_datatype_1"/>
+								</UML:StructuralFeature.type>
+							</UML:Attribute>
+							<UML:Attribute name="eMail" xmi.id="BOUML_0x32ba60" visibility="protected" ownerScope="instance">
+								<UML:StructuralFeature.type>
+									<UML:DataType xmi.idref="BOUML_datatype_1"/>
+								</UML:StructuralFeature.type>
+							</UML:Attribute>
+							<UML:Attribute name="Bild" xmi.id="BOUML_0x32bc20" visibility="protected" ownerScope="instance">
+								<UML:StructuralFeature.type>
+									<UML:DataType xmi.idref="BOUML_datatype_4"/>
+								</UML:StructuralFeature.type>
+							</UML:Attribute>
+							<UML:Attribute name="Notiz" xmi.id="BOUML_0x32bde0" visibility="protected" ownerScope="instance">
+								<UML:StructuralFeature.type>
+									<UML:DataType xmi.idref="BOUML_datatype_5"/>
+								</UML:StructuralFeature.type>
+							</UML:Attribute>
+						</UML:Classifier.feature>
+					</UML:Class>
+					<UML:Association name="(Stadt)" xmi.id="BOUML_0x32d6d0">
+						<UML:Association.connection>
+							<UML:AssociationEnd visibility="protected" ownerScope="instance" name="" aggregation="none" isOrdered="false" isNavigable="true" type="BOUML_0x333ae0">
+								<UML:AssociationEnd.participant>
+									<UML:Class xmi.idref="BOUML_0x333ae0"/>
+								</UML:AssociationEnd.participant>
+								<UML:ModelElement.stereotype>
+									<UML:Stereotype name="masterdetail_action"/>
+								</UML:ModelElement.stereotype>
+								<UML:ModelElement.taggedValue>
+									<UML:TaggedValue tag="stereotype" value="masterdetail_action"/>
+								</UML:ModelElement.taggedValue>
+							</UML:AssociationEnd>
+							<UML:AssociationEnd visibility="protected" ownerScope="instance" name="" aggregation="aggregate" isOrdered="false" isNavigable="true" type="BOUML_0x332b50">
+								<UML:AssociationEnd.participant>
+									<UML:Class xmi.idref="BOUML_0x332b50"/>
+								</UML:AssociationEnd.participant>
+								<UML:ModelElement.stereotype>
+									<UML:Stereotype name="masterdetail_action"/>
+								</UML:ModelElement.stereotype>
+								<UML:ModelElement.taggedValue>
+									<UML:TaggedValue tag="stereotype" value="masterdetail_action"/>
+								</UML:ModelElement.taggedValue>
+							</UML:AssociationEnd>
+						</UML:Association.connection>
+					</UML:Association>
+				<!-- for pack CRM-->
+				</UML:Namespace.ownedElement>
+			</UML:Package>
+			<UML:Actor name="Admin" xmi.id="BOUML_0x3809e0" visibility="public" isAbstract="false" isActive="false" >
+			</UML:Actor>
+			<UML:UseCase name="Kunden bearbeiten" xmi.id="BOUML_0x380b10" visibility="public" isAbstract="false" isActive="false" >
+				<UML:ModelElement.stereotype>
+					<UML:Stereotype name="Form"/>
+				</UML:ModelElement.stereotype>
+				<UML:ModelElement.taggedValue>
+					<UML:TaggedValue tag="stereotype" value="Form"/>
+				</UML:ModelElement.taggedValue>
+			</UML:UseCase>
+			<UML:DataType xmi.id="BOUML_datatype_5" name = "bigstring" visibility="private" isRoot="false" isLeaf="false" isAbstract="false"/>
+			<UML:DataType xmi.id="BOUML_datatype_2" name = "date" visibility="private" isRoot="false" isLeaf="false" isAbstract="false"/>
+			<UML:DataType xmi.id="BOUML_datatype_3" name = "float" visibility="private" isRoot="false" isLeaf="false" isAbstract="false"/>
+			<UML:DataType xmi.id="BOUML_datatype_4" name = "image" visibility="private" isRoot="false" isLeaf="false" isAbstract="false"/>
+			<UML:DataType xmi.id="BOUML_datatype_0" name = "int" visibility="private" isRoot="false" isLeaf="false" isAbstract="false"/>
+			<UML:DataType xmi.id="BOUML_datatype_1" name = "string" visibility="private" isRoot="false" isLeaf="false" isAbstract="false"/>
+		</UML:Namespace.ownedElement>
+	</UML:Model>
+</XMI.content>
+</XMI>

@@ -1,0 +1,9 @@
+format 41
+
+classcanvas 128002 class_ref 129154 // Admin
+  xyz 215 144 3005 label_xy 217 184
+usecasecanvas 128130 usecase_ref 128002 // Kunden bearbeiten
+  xyzwh 440 148 3005 64 32 label_xy 419 183
+line 128642 --->
+  from ref 128002 z 3004 stereotype "<<open>>" xyz 318 163 3000 to ref 128130
+end

@@ -1,0 +1,17 @@
+format 29
+
+activityobjectcanvas 128130 activityobject_ref 128002 // activity object Admin forms
+  show_infonote default drawing_language default
+  xyzwh 92 75 2000 123 31
+end
+activityactioncanvas 128386 activityaction_ref 128002 // activity action Open Database Form
+  show_infonote default drawing_language default
+  show_opaque_action_definition default
+  xyzwh 342 198 2000 100 60
+end
+flowcanvas 128514 flow_ref 128002 // <flow>
+  
+  from ref 128130 z 1999 to ref 128386
+  show_infonote default drawing_language default write_horizontally default
+end
+end
