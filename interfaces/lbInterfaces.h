@@ -37,7 +37,7 @@
  */
 
 /*...sMain page documentation:0:*/
-/** \mainpage Distributed Multiplatform Framework (0.7.0)
+/** \mainpage Distributed Multiplatform Framework (1.0rc2)
  * \section intro_sec Introduction to DMF - Distributed Multiplatform Framework
  *
  * This is the introduction for the users of DMF after the first installation.
@@ -52,9 +52,9 @@
  *
  * My latest version of binary build tools. <a href="http://sourceforge.net/project/showfiles.php?group_id=70545&package_id=69806">Binary Build Tools</a>
  *
- * Open Watcom compiler, at least version 1.2. <a href="http://www.openwatcom.org">Open Watcom</a>
+ * Open Watcom compiler, at least version 1.3, but 1.6 is also tested. <a href="http://www.openwatcom.org">Open Watcom</a>
  * 
- * The wxWidgets source code. Tested version is 2.4.2 and 2.6.1 <a href="http://www.wxwidgets.org">wxWidgets</a>
+ * The wxWidgets source code. Tested versions are 2.4.2, 2.6.1 and 2.8.4 <a href="http://www.wxwidgets.org">wxWidgets</a>
  *
  * I have included <a href="http://www.daily.de/RepWrt/">wxReportWriter</a>. This project allows me to create database
  * reports on the fly. But this feature doesn't work under Linux yet. Currently these files have minimal changes compared
