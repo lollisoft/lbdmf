@@ -31,7 +31,9 @@ Source: "Q:\Develop\Projects\CPP\Database\*.*"; DestDir: "{app}\Database"; CopyM
 Source: "Q:\develop\Projects\CPP\Test\GUI\wxWrapper\toolbarimages\*.xpm"; DestDir: "{app}\toolbarimages"; CopyMode: alwaysoverwrite;
 Source: "Q:\develop\Projects\CPP\Test\GUI\wxWrapper\toolbarimages\*.png"; DestDir: "{app}\toolbarimages"; CopyMode: alwaysoverwrite;
 Source: "Q:\develop\Projects\CPP\BaseDevelopment\MetaApp-Bindist.mad"; DestDir: "{app}"; DestName: "MetaApp.mad"; CopyMode: alwaysoverwrite;
-Source: "Q:\develop\Projects\CPP\AppDevelopment\XSLT_Templates\XMIToDMF\*.*"; DestDir: "{app}\XSLT"; CopyMode: alwaysoverwrite;
+Source: "Q:\develop\Projects\CPP\AppDevelopmentDemo\DynamicApp\XMIToDMF\*.*"; DestDir: "{app}\XSLT"; CopyMode: alwaysoverwrite;
+Source: "Q:\develop\Projects\CPP\AppDevelopmentDemo\DynamicApp\BoUML\*.*"; DestDir: "{app}\BoUML"; CopyMode: alwaysoverwrite;
+Source: "Q:\develop\Projects\CPP\AppDevelopmentDemo\DynamicApp\Doc\DynamicApp.pdf"; DestDir: "{app}\Doc"; CopyMode: alwaysoverwrite;
 ; --- My current binary only file
 Source: "Q:\Develop\Projects\dll\lbClasses.dll"; DestDir: "{app}\Develop\Projects\dll"; CopyMode: alwaysoverwrite;
 Source: "Q:\Develop\Projects\dll\lbDB.dll"; DestDir: "{app}\Develop\Projects\dll"; CopyMode: alwaysoverwrite;
