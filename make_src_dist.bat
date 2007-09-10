@@ -57,6 +57,9 @@ copy q:\develop\Projects\CPP\watcomenv.bat.lnk dist
 copy q:\develop\ide.bat %DEVROOT%
 del *.idb
 del %DEVROOT%\vendor\libxml2-2.6.29\bakefile\watcom\*.obj
+del %DEVROOT%\AppDevelopmentDemo\DynamicApp\Doc\*.tiff
+del %DEVROOT%\AppDevelopmentDemo\DynamicApp\Doc\*.rtf
+del %DEVROOT%\AppDevelopmentDemo\DynamicApp\Doc\*.odt
 
 "Q:\develop\Tools\Inno Setup 3\iscc" q:\develop\Projects\CPP\dist.iss
 "Q:\develop\Tools\Inno Setup 3\iscc" q:\develop\Projects\CPP\bindist.iss
