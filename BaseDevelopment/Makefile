@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.125 $
+# * $Revision: 1.126 $
 # * $Name:  $
-# * $Id: Makefile,v 1.125 2007/08/06 19:10:29 lollisoft Exp $
+# * $Id: Makefile,v 1.126 2007/09/12 08:11:11 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.126  2007/09/12 08:11:11  lollisoft
+# * Deacivated copying wx library.
+# *
 # * Revision 1.125  2007/08/06 19:10:29  lollisoft
 # * Improved installation process on Windows.
 # *
@@ -794,7 +797,7 @@ install-strip:
 		$(MAKE) -C $$sub_target install-strip; \
 	done
 	echo mkdir -p $(prefix)/lib
-	cp ~/lib/libwx_gtk2_Lollisoft-2.6.so $(prefix)/lib
+	#cp ~/lib/lib`wx-config --basename`-2.6.so $(prefix)/lib
 
 ../../lib:
 	-mkdir ../../lib
