@@ -12,7 +12,7 @@ Prefix: /usr
 Url: http://www.lollisoft.de
 Autoreqprov: on
 Provides: lbdmf
-
+BuildRequires: wx-gtk-devel >= 2.6.2
 
 
 %description
