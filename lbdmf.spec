@@ -14,9 +14,9 @@ Autoreqprov: on
 Provides: lbdmf
 
 %if %suse_version <= 910
-Requires: wxGTK-devel >= 2.6.2 
+BuildRequires: wxGTK-devel >= 2.6.2 
 %else
-Requires: wxGTK >= 2.6.2
+BuildRequires: wxGTK >= 2.6.2
 %endif
 
 
