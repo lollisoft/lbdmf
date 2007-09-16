@@ -1959,7 +1959,7 @@ lbErrCodes LB_STDCALL lb_wxFrame::addToolBar(lb_I_Unknown* uk) {
 #ifdef OSX
 #endif
 #ifdef LINUX
-		    *toolbarfile = "/opt/lbdmf";			
+		    *toolbarfile = "/usr/share/lbdmf";			
 		    *toolbarfile += images->charrep();
 	    	    *toolbarfile += "exit.png";
 #endif
@@ -2114,7 +2114,7 @@ lbErrCodes LB_STDCALL lb_wxFrame::addTool_To_ToolBar(lb_I_Unknown* uk) {
 #ifdef OSX
 #endif
 #ifdef LINUX
-			    *toolbarfile = "/opt/lbdmf";			
+			    *toolbarfile = "/usr/share/lbdmf";			
     			    *toolbarfile += images->charrep();
 			    *toolbarfile += toolbarimage->charrep();
 #endif
