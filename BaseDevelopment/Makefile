@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.128 $
+# * $Revision: 1.129 $
 # * $Name:  $
-# * $Id: Makefile,v 1.128 2007/09/16 12:25:35 lollisoft Exp $
+# * $Id: Makefile,v 1.129 2007/09/16 13:51:51 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.129  2007/09/16 13:51:51  lollisoft
+# * Try to echo into o script.
+# *
 # * Revision 1.128  2007/09/16 12:25:35  lollisoft
 # * Trouble with special characters.
 # *
@@ -825,7 +828,10 @@ install-strip:
 	mkdir -p $(prefix)/opt/lbdmf/toolbarimages
 	cp $(DEVROOT_MAKE)/Projects/CPP/Test/GUI/wxWrapper/toolbarimages/*.png $(prefix)/opt/lbdmf/toolbarimages
 	cp $(DEVROOT_MAKE)/Projects/CPP/Test/GUI/wxWrapper/toolbarimages/*.xpm $(prefix)/opt/lbdmf/toolbarimages
-	ldd ~/bin/wxWrapper | grep `wx-config --basename` | awk -v VERSION=`wx-config --version-full | awk 'BEGIN { FS="."; } { printf("%s.%s\n", \$3, \$4); }'` -v PREFIX=$(prefix) 'BEGIN { printf("#/bin/sh\n\n"); } { LIBRARY=\$1; printf("cp `wx-config --prefix`/lib/%s %s/%s.%s\n", LIBRARY, PREFIX, LIBRARY, VERSION);}'
+	echo ldd ~/bin/wxWrapper | grep `wx-config --basename` | awk -v VERSION=`wx-config --version-full | awk 'BEGIN { FS="."; } { printf("%s.%s\n", \$3, \$4); }'` -v PREFIX=$(prefix) 'BEGIN { printf("#/bin/sh\n\n"); } { LIBRARY=\$1; printf("cp `wx-config --prefix`/lib/%s %s/%s.%s\n", LIBRARY, PREFIX, LIBRARY, VERSION);}' > copy-wxGTK-libs.sh
+	chmod +x copy-wxGTK-libs.sh
+	./copy-wxGTK-libs.sh
+	rm copy-wxGTK-libs.sh
 
 endif
 
