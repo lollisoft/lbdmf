@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.127 $
+# * $Revision: 1.128 $
 # * $Name:  $
-# * $Id: Makefile,v 1.127 2007/09/16 09:44:05 lollisoft Exp $
+# * $Id: Makefile,v 1.128 2007/09/16 12:25:35 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.128  2007/09/16 12:25:35  lollisoft
+# * Trouble with special characters.
+# *
 # * Revision 1.127  2007/09/16 09:44:05  lollisoft
 # * Try to use tested ldd command to include required wxWidgets libraries.
 # *
@@ -822,7 +825,7 @@ install-strip:
 	mkdir -p $(prefix)/opt/lbdmf/toolbarimages
 	cp $(DEVROOT_MAKE)/Projects/CPP/Test/GUI/wxWrapper/toolbarimages/*.png $(prefix)/opt/lbdmf/toolbarimages
 	cp $(DEVROOT_MAKE)/Projects/CPP/Test/GUI/wxWrapper/toolbarimages/*.xpm $(prefix)/opt/lbdmf/toolbarimages
-	ldd ~/bin/wxWrapper | grep `wx-config --basename` | awk -v VERSION=`wx-config --version-full | awk 'BEGIN { FS="."; } { printf("%s.%s\n", $3, $4); }'` -v PREFIX=$(prefix) 'BEGIN { printf("#/bin/sh\n\n"); } { LIBRARY=$1; printf("cp `wx-config --prefix`/lib/%s %s/%s.%s\n", LIBRARY, PREFIX, LIBRARY, VERSION);}'
+	ldd ~/bin/wxWrapper | grep `wx-config --basename` | awk -v VERSION=`wx-config --version-full | awk 'BEGIN { FS="."; } { printf("%s.%s\n", \$3, \$4); }'` -v PREFIX=$(prefix) 'BEGIN { printf("#/bin/sh\n\n"); } { LIBRARY=\$1; printf("cp `wx-config --prefix`/lib/%s %s/%s.%s\n", LIBRARY, PREFIX, LIBRARY, VERSION);}'
 
 endif
 
