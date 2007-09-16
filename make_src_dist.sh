@@ -44,4 +44,4 @@ cp lbdmf-$1/Projects/CPP/configure lbdmf-$1
 tar cvzf lbdmf-$1.tgz lbdmf-$1/
 cp lbdmf-$1.tgz /usr/src/packages/SOURCES
 cd ..
-rpmbuild -ba lbdmf.spec
+rpmbuild -bs lbdmf-noreq.spec
