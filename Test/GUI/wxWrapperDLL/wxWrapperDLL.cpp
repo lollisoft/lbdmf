@@ -78,6 +78,7 @@
 #include <wx/treectrl.h>
 #include <wx/artprov.h>
 #include <wx/notebook.h>
+#include <wx/file.h>
 
 #ifdef USE_PROPGRID
 // Necessary header file
@@ -1952,8 +1953,22 @@ lbErrCodes LB_STDCALL lb_wxFrame::addToolBar(lb_I_Unknown* uk) {
 		*toolbarfile += images->charrep();
 		*toolbarfile += "exit.png";
 				
+
+		if (!wxFile::Exists(toolbarfile->charrep())) {
+		    // Fallback
+#ifdef OSX
+#endif
+#ifdef LINUX
+		    *toolbarfile = "/opt/lbdmf";			
+		    *toolbarfile += images->charrep();
+	    	    *toolbarfile += "exit.png";
+#endif
+#ifdef WINDOWS
+#endif			    
+		}
+
 		wxImage* im;
-				
+		
 		im = new wxImage(toolbarfile->charrep(), wxBITMAP_TYPE_PNG);
 				
 		wxBitmap bm = wxBitmap(*im);
@@ -2079,7 +2094,7 @@ lbErrCodes LB_STDCALL lb_wxFrame::addTool_To_ToolBar(lb_I_Unknown* uk) {
 			UAP_REQUEST(manager.getPtr(), lb_I_String, toolbarfile)
 			UAP_REQUEST(manager.getPtr(), lb_I_String, images)
 	
-			*toolbarfile += app->getDirLocation();
+			*toolbarfile = app->getDirLocation();
 
 #ifdef OSX
 			*images = "/toolbarimages/";
@@ -2090,8 +2105,23 @@ lbErrCodes LB_STDCALL lb_wxFrame::addTool_To_ToolBar(lb_I_Unknown* uk) {
 #ifdef WINDOWS
 			*images = "\\toolbarimages\\";
 #endif
+
 			*toolbarfile += images->charrep();
 			*toolbarfile += toolbarimage->charrep();
+
+			if (!wxFile::Exists(toolbarfile->charrep())) {
+			    // Fallback
+#ifdef OSX
+#endif
+#ifdef LINUX
+			    *toolbarfile = "/opt/lbdmf";			
+    			    *toolbarfile += images->charrep();
+			    *toolbarfile += toolbarimage->charrep();
+#endif
+#ifdef WINDOWS
+#endif			    
+			}
+
 
 			_LOG << "Add a toolbar tool with image '" << toolbarfile->charrep() << "'" LOG_
 
