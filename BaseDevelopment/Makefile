@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.126 $
+# * $Revision: 1.127 $
 # * $Name:  $
-# * $Id: Makefile,v 1.126 2007/09/12 08:11:11 lollisoft Exp $
+# * $Id: Makefile,v 1.127 2007/09/16 09:44:05 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.127  2007/09/16 09:44:05  lollisoft
+# * Try to use tested ldd command to include required wxWidgets libraries.
+# *
 # * Revision 1.126  2007/09/12 08:11:11  lollisoft
 # * Deacivated copying wx library.
 # *
@@ -792,12 +795,36 @@ install:
 		$(MAKE) -C $$sub_target install; \
 	done
 
+ifndef RPMBUILD
+
 install-strip:
 	for sub_target in $(ALLDIRS); do \
 		$(MAKE) -C $$sub_target install-strip; \
 	done
 	echo mkdir -p $(prefix)/lib
-	#cp ~/lib/lib`wx-config --basename`-2.6.so $(prefix)/lib
+	mkdir -p $(prefix)/opt
+	mkdir -p $(prefix)/opt/lbdmf
+	mkdir -p $(prefix)/opt/lbdmf/toolbarimages
+	cp $(DEVROOT_MAKE)/Projects/CPP/Test/GUI/wxWrapper/toolbarimages/*.png $(prefix)/opt/lbdmf/toolbarimages
+	cp $(DEVROOT_MAKE)/Projects/CPP/Test/GUI/wxWrapper/toolbarimages/*.xpm $(prefix)/opt/lbdmf/toolbarimages
+
+endif
+
+ifdef RPMBUILD
+
+install-strip:
+	for sub_target in $(ALLDIRS); do \
+		$(MAKE) -C $$sub_target install-strip; \
+	done
+	echo mkdir -p $(prefix)/lib
+	mkdir -p $(prefix)/opt
+	mkdir -p $(prefix)/opt/lbdmf
+	mkdir -p $(prefix)/opt/lbdmf/toolbarimages
+	cp $(DEVROOT_MAKE)/Projects/CPP/Test/GUI/wxWrapper/toolbarimages/*.png $(prefix)/opt/lbdmf/toolbarimages
+	cp $(DEVROOT_MAKE)/Projects/CPP/Test/GUI/wxWrapper/toolbarimages/*.xpm $(prefix)/opt/lbdmf/toolbarimages
+	ldd ~/bin/wxWrapper | grep `wx-config --basename` | awk -v VERSION=`wx-config --version-full | awk 'BEGIN { FS="."; } { printf("%s.%s\n", $3, $4); }'` -v PREFIX=$(prefix) 'BEGIN { printf("#/bin/sh\n\n"); } { LIBRARY=$1; printf("cp `wx-config --prefix`/lib/%s %s/%s.%s\n", LIBRARY, PREFIX, LIBRARY, VERSION);}'
+
+endif
 
 ../../lib:
 	-mkdir ../../lib
