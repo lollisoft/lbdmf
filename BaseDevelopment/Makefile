@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.130 $
+# * $Revision: 1.131 $
 # * $Name:  $
-# * $Id: Makefile,v 1.130 2007/09/16 16:18:47 lollisoft Exp $
+# * $Id: Makefile,v 1.131 2007/09/16 21:40:02 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.131  2007/09/16 21:40:02  lollisoft
+# * Other place for toolbar images.
+# *
 # * Revision 1.130  2007/09/16 16:18:47  lollisoft
 # * Using copy script without creating it. (Added to repo)
 # *
@@ -814,8 +817,8 @@ install-strip:
 	mkdir -p $(prefix)/opt
 	mkdir -p $(prefix)/opt/lbdmf
 	mkdir -p $(prefix)/opt/lbdmf/toolbarimages
-	cp $(DEVROOT_MAKE)/Projects/CPP/Test/GUI/wxWrapper/toolbarimages/*.png $(prefix)/opt/lbdmf/toolbarimages
-	cp $(DEVROOT_MAKE)/Projects/CPP/Test/GUI/wxWrapper/toolbarimages/*.xpm $(prefix)/opt/lbdmf/toolbarimages
+	cp $(DEVROOT_MAKE)/Projects/CPP/Test/GUI/wxWrapper/toolbarimages/*.png $(prefix)/share/lbdmf/toolbarimages
+	cp $(DEVROOT_MAKE)/Projects/CPP/Test/GUI/wxWrapper/toolbarimages/*.xpm $(prefix)/share/lbdmf/toolbarimages
 
 endif
 
@@ -829,8 +832,8 @@ install-strip:
 	mkdir -p $(prefix)/opt
 	mkdir -p $(prefix)/opt/lbdmf
 	mkdir -p $(prefix)/opt/lbdmf/toolbarimages
-	cp $(DEVROOT_MAKE)/Projects/CPP/Test/GUI/wxWrapper/toolbarimages/*.png $(prefix)/opt/lbdmf/toolbarimages
-	cp $(DEVROOT_MAKE)/Projects/CPP/Test/GUI/wxWrapper/toolbarimages/*.xpm $(prefix)/opt/lbdmf/toolbarimages
+	cp $(DEVROOT_MAKE)/Projects/CPP/Test/GUI/wxWrapper/toolbarimages/*.png $(prefix)/share/lbdmf/toolbarimages
+	cp $(DEVROOT_MAKE)/Projects/CPP/Test/GUI/wxWrapper/toolbarimages/*.xpm $(prefix)/share/lbdmf/toolbarimages
 	./copy-wxGTK-libs.sh $(prefix)
 
 endif
