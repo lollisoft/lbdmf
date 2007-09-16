@@ -633,10 +633,16 @@ T_p_getlbModuleInstance DLL_GETMODULEINSTANCE;
 		#ifdef OSX
 			libname = "lbModule.so";
 		#endif
+		#ifdef LINUX
+			libname = "lbModule.so";
+		#endif
 	}
 
 	if (functor == NULL) {
 		#ifdef OSX
+			functor = "getlb_ModuleInstance";
+		#endif
+		#ifdef LINUX
 			functor = "getlb_ModuleInstance";
 		#endif
 	}
