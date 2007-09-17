@@ -17,3 +17,4 @@ Type=Application
 X-DCOP-ServiceType=
 X-KDE-SubstituteUID=false
 X-KDE-Username=
+Categories=Development;GUIDesigner
