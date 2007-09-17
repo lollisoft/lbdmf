@@ -54,7 +54,7 @@ sed 's,^\.,\%attr(-\,root\,root) ,' $RPM_BUILD_DIR/file.list.%{name}.files >> $R
 sed 's,^\.,\%attr(-\,root\,root) ,' $RPM_BUILD_DIR/file.list.%{name}.libs >> $RPM_BUILD_DIR/file.list.%{name}
 
 %post
-cp %{prefix}/share/lbdmf/wxWrapper.desktop `pwd`/Desktop
+cp %{prefix}/share/lbdmf/wxWrapper.desktop /home/`who | awk 'BEGIN {} { print $$1; }'`/Desktop
 ldconfig
 
 %postun
