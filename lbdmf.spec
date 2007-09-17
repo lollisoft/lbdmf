@@ -57,10 +57,6 @@ sed 's,^\.,\%attr(-\,root\,root) ,' $RPM_BUILD_DIR/file.list.%{name}.libs >> $RP
 %post
 ldconfig
 
-%postun
-rm /usr/share/applications/wxWrapper.desktop
-rm /usr/share/desktop-data/wxWrapper.desktop
-
 %clean
 rm -rf $RPM_BUILD_ROOT
 rm -rf $RPM_BUILD_DIR/file.list.%{name}
