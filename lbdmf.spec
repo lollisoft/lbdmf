@@ -44,7 +44,7 @@ fi
 make DESTDIR="%{buildroot}" install-strip
 cd $RPM_BUILD_ROOT
 
-%suse_update_desktop_file -i wxWrapper Development Design 
+%suse_update_desktop_file -i -N wxWrapper wxWrapper Development Design 
 
 find . -type d -fprint $RPM_BUILD_DIR/file.list.%{name}.dirs
 find . -type f -fprint $RPM_BUILD_DIR/file.list.%{name}.files.tmp
