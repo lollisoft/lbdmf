@@ -58,7 +58,7 @@ cp %{prefix}/share/lbdmf/wxWrapper.desktop /home/`who | awk 'BEGIN {} { print $$
 ldconfig
 
 %postun
-rm `pwd`/Desktop/wxWrapper.desktop
+rm /home/`who | awk 'BEGIN {} { print $$1; }'`/Desktop/wxWrapper.desktop
 
 %clean
 rm -rf $RPM_BUILD_ROOT
