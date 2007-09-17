@@ -41,10 +41,9 @@ else
 fi
 
 %install
+
 make DESTDIR="%{buildroot}" install-strip
 cd $RPM_BUILD_ROOT
-
-%suse_update_desktop_file %{prefix}/share/lbdmf/wxWrapper.desktop 
 
 find . -type d -fprint $RPM_BUILD_DIR/file.list.%{name}.dirs
 find . -type f -fprint $RPM_BUILD_DIR/file.list.%{name}.files.tmp
@@ -55,6 +54,7 @@ sed 's,^\.,\%attr(-\,root\,root) ,' $RPM_BUILD_DIR/file.list.%{name}.files >> $R
 sed 's,^\.,\%attr(-\,root\,root) ,' $RPM_BUILD_DIR/file.list.%{name}.libs >> $RPM_BUILD_DIR/file.list.%{name}
 
 %post
+%suse_update_desktop_file %{prefix}/share/lbdmf/wxWrapper.desktop 
 ldconfig
 
 %clean
