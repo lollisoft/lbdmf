@@ -41,7 +41,6 @@ else
 fi
 
 %install
-%suse_update_desktop_file $RPM_BUILD_ROOT%{prefix}/share/lbdmf/wxWrapper.desktop 
 make DESTDIR="%{buildroot}" install-strip
 cd $RPM_BUILD_ROOT
 
