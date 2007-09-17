@@ -54,7 +54,11 @@ sed 's,^\.,\%attr(-\,root\,root) ,' $RPM_BUILD_DIR/file.list.%{name}.files >> $R
 sed 's,^\.,\%attr(-\,root\,root) ,' $RPM_BUILD_DIR/file.list.%{name}.libs >> $RPM_BUILD_DIR/file.list.%{name}
 
 %post
+cp %{prefix}/share/lbdmf/wxWrapper.desktop `pwd`/Desktop
 ldconfig
+
+%postun
+rm `pwd`/Desktop/wxWrapper.desktop
 
 %clean
 rm -rf $RPM_BUILD_ROOT
