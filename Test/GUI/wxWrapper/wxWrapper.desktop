@@ -1,0 +1,19 @@
+[Desktop Entry]
+Comment=
+Comment[de]=
+Encoding=UTF-8
+Exec='/usr/bin/wxWrapper'
+GenericName=Programm für Rapid Application Prototyping
+GenericName[de]=Programm für Rapid Application Prototyping
+Icon=/usr/share/lbdmf/lbdmf.png
+MimeType=
+Name=wxWrapper
+Name[de]=wxWrapper
+Path=
+StartupNotify=true
+Terminal=false
+TerminalOptions=
+Type=Application
+X-DCOP-ServiceType=
+X-KDE-SubstituteUID=false
+X-KDE-Username=
