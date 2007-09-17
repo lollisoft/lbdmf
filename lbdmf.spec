@@ -14,10 +14,10 @@ Autoreqprov: on
 Provides: lbdmf
 
 %if %suse_version <= 910
-BuildRequires: wxGTK-devel >= 2.6.2 unixODBC-devel >= 2.2.8
+BuildRequires: wxGTK-devel >= 2.6.2 unixODBC-devel >= 2.2.8 update-desktop-files
 Requires: unixODBC >= 2.2.8 desktop-file-utils
 %else
-BuildRequires: wxGTK >= 2.6.2
+BuildRequires: wxGTK >= 2.6.2 update-desktop-files
 %endif
 
 
@@ -42,8 +42,9 @@ fi
 
 %install
 make DESTDIR="%{buildroot}" install-strip
-
 cd $RPM_BUILD_ROOT
+
+%suse_update_desktop_file -i wxWrapper Development RAD
 
 find . -type d -fprint $RPM_BUILD_DIR/file.list.%{name}.dirs
 find . -type f -fprint $RPM_BUILD_DIR/file.list.%{name}.files.tmp
@@ -54,9 +55,6 @@ sed 's,^\.,\%attr(-\,root\,root) ,' $RPM_BUILD_DIR/file.list.%{name}.files >> $R
 sed 's,^\.,\%attr(-\,root\,root) ,' $RPM_BUILD_DIR/file.list.%{name}.libs >> $RPM_BUILD_DIR/file.list.%{name}
 
 %post
-mkdir -p %{buildroot}%{_datadir}/applications
-%suse_update_desktop_file wxWrapper Utility DatabaseUtility
-
 ldconfig
 
 %postun
