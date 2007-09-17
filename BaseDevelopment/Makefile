@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.133 $
+# * $Revision: 1.134 $
 # * $Name:  $
-# * $Id: Makefile,v 1.133 2007/09/17 11:06:24 lollisoft Exp $
+# * $Id: Makefile,v 1.134 2007/09/17 11:07:56 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.134  2007/09/17 11:07:56  lollisoft
+# * Added desktop symbol to Linux installation. Small correction.
+# *
 # * Revision 1.133  2007/09/17 11:06:24  lollisoft
 # * Added desktop symbol to Linux installation.
 # *
@@ -841,7 +844,7 @@ install-strip:
 	cp $(DEVROOT_MAKE)/Projects/CPP/Test/GUI/wxWrapper/toolbarimages/*.png $(prefix)/share/lbdmf/toolbarimages
 	cp $(DEVROOT_MAKE)/Projects/CPP/Test/GUI/wxWrapper/toolbarimages/*.xpm $(prefix)/share/lbdmf/toolbarimages
 	cp $(DEVROOT_MAKE)/Projects/CPP/Test/GUI/wxWrapper/lbdmf.png $(prefix)/share/lbdmf
-	cp $(DEVROOT_MAKE)/Projects/CPP/Test/GUI/wxWrapper/wxWrapper.desktop `pwd`/Desktop 
+	cp $(DEVROOT_MAKE)/Projects/CPP/Test/GUI/wxWrapper/wxWrapper.desktop $(prefix)/share/lbdmf 
 	./copy-wxGTK-libs.sh $(prefix)
 
 endif
