@@ -3796,6 +3796,11 @@ void LB_STDCALL lbQuery::dbError(char* lp, HSTMT hstmt)
 		_CL_LOG << "Error in lbQuery: (" << lp << ") " << 
 			SqlState << ": " << (int) NativeError << " - " << Msg LOG_
 		i++;
+		
+		if (i > 10) {
+			_CL_LOG << "Break after 10 messages." LOG_
+			break;
+		}
 	}
 }
 
