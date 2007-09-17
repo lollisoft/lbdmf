@@ -55,7 +55,7 @@ sed 's,^\.,\%attr(-\,root\,root) ,' $RPM_BUILD_DIR/file.list.%{name}.libs >> $RP
 
 %post
 mkdir -p %{buildroot}%{_datadir}/applications
-desktop-file-install -vendor Lollisoft --dir %{buildroot}%{_datadir}/applications --add-category lbDMF %{prefix}/share/lbdmf/wxWrapper.desktop
+%suse_update_desktop_file wxWrapper Utility DatabaseUtility
 
 ldconfig
 
