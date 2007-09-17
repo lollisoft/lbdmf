@@ -15,7 +15,7 @@ Provides: lbdmf
 
 %if %suse_version <= 910
 BuildRequires: wxGTK-devel >= 2.6.2 unixODBC-devel >= 2.2.8
-Requires: unixODBC >= 2.2.8
+Requires: unixODBC >= 2.2.8 desktop-file-utils
 %else
 BuildRequires: wxGTK >= 2.6.2
 %endif
@@ -54,8 +54,9 @@ sed 's,^\.,\%attr(-\,root\,root) ,' $RPM_BUILD_DIR/file.list.%{name}.files >> $R
 sed 's,^\.,\%attr(-\,root\,root) ,' $RPM_BUILD_DIR/file.list.%{name}.libs >> $RPM_BUILD_DIR/file.list.%{name}
 
 %post
-cp %{prefix}/share/lbdmf/wxWrapper.desktop /usr/share/applications
-cp %{prefix}/share/lbdmf/wxWrapper.desktop /usr/share/desktop-data
+mkdir -p %{buildroot}%{_datadir}/applications
+desktop-file-install -vendor Lollisoft --dir %{buildroot}%{_datadir}/applications --add-category lbDMF %{prefix}/share/lbdmf/wxWrapper.desktop
+
 ldconfig
 
 %postun
