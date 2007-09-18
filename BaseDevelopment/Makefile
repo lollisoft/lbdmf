@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.135 $
+# * $Revision: 1.136 $
 # * $Name:  $
-# * $Id: Makefile,v 1.135 2007/09/18 06:49:26 lollisoft Exp $
+# * $Id: Makefile,v 1.136 2007/09/18 09:02:53 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.136  2007/09/18 09:02:53  lollisoft
+# * Try again from SuSE specification. (http://forgeftp.novell.com//library/SUSE%20Package%20Conventions/spc.pdf)
+# *
 # * Revision 1.135  2007/09/18 06:49:26  lollisoft
 # * Added desktop file to /share/applications.
 # *
@@ -848,7 +851,6 @@ install-strip:
 	cp $(DEVROOT_MAKE)/Projects/CPP/Test/GUI/wxWrapper/toolbarimages/*.xpm $(prefix)/share/lbdmf/toolbarimages
 	cp $(DEVROOT_MAKE)/Projects/CPP/Test/GUI/wxWrapper/lbdmf.png $(prefix)/share/lbdmf
 	cp $(DEVROOT_MAKE)/Projects/CPP/Test/GUI/wxWrapper/wxWrapper.desktop $(prefix)/share/lbdmf 
-	cp $(DEVROOT_MAKE)/Projects/CPP/Test/GUI/wxWrapper/wxWrapper.desktop $(prefix)/share/applications 
 	./copy-wxGTK-libs.sh $(prefix)
 
 endif
