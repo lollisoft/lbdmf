@@ -92,6 +92,7 @@ extern "C" {
 #include "wx/wizard.h"
 #include <wx/image.h>
 #include <wx/datectrl.h>
+#include <wx/file.h>
 /*...e*/
 
 #include <lbDatabaseForm.h>
@@ -808,6 +809,21 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 					*file += images->charrep();
 					*file += "new.xpm";
 
+					if (!wxFile::Exists(file->charrep())) {
+						// Fallback
+			#ifdef OSX
+			#endif
+			#ifdef LINUX
+						*file = "/usr/share/lbdmf";			
+						*file += images->charrep();
+						*file += "new.xpm";
+			#endif
+			#ifdef WINDOWS
+			#endif			    
+					}
+
+
+
 					int ImageButonClick;
 					sprintf(eventName, "%pImageButtonClick%s", this, name);
 					eman->registerEvent(eventName,  ImageButonClick);
@@ -876,6 +892,20 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 
 					*file += images->charrep();
 					*file += "new.xpm";
+
+					if (!wxFile::Exists(file->charrep())) {
+						// Fallback
+			#ifdef OSX
+			#endif
+			#ifdef LINUX
+						*file = "/usr/share/lbdmf";			
+						*file += images->charrep();
+						*file += "new.xpm";
+			#endif
+			#ifdef WINDOWS
+			#endif			    
+					}
+
 
 					wxImage im = wxImage(file->charrep(), wxBITMAP_TYPE_XPM);
 					im.Rescale(32, 32);
@@ -2865,6 +2895,20 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBRead() {
 #endif
 							*toolbarfile += images->charrep();
 							*toolbarfile += s->charrep();
+
+							if (!wxFile::Exists(toolbarfile->charrep())) {
+								// Fallback
+					#ifdef OSX
+					#endif
+					#ifdef LINUX
+								*toolbarfile = "/usr/share/lbdmf";			
+								*toolbarfile += images->charrep();
+								*toolbarfile += s->charrep();
+					#endif
+					#ifdef WINDOWS
+					#endif			    
+							}
+
 							*filename = s->charrep();
 							
 							wxString f = wxString(s->charrep());
