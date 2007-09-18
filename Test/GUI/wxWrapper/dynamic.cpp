@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.142 2007/08/29 10:15:18 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.143 2007/09/18 12:29:33 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.142 $
+ * $Revision: 1.143 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.142 2007/08/29 10:15:18 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.143 2007/09/18 12:29:33 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.143  2007/09/18 12:29:33  lollisoft
+ * Added code to find splash screen on fallback location.
+ *
  * Revision 1.142  2007/08/29 10:15:18  lollisoft
  * Deactivated code to show property panel.
  *
@@ -533,6 +536,7 @@
 #include <wx/splash.h>
 #include <wx/image.h>
 #include <wx/notebook.h>
+#include <wx/file.h>
 /*...e*/
 
 // ID for the menu commands
@@ -2135,7 +2139,18 @@ bool MyApp::OnInit(void)
           wxSPLASH_CENTRE_ON_SCREEN|wxSPLASH_TIMEOUT,
           6000, NULL, -1, wxDefaultPosition, wxDefaultSize,
           wxSIMPLE_BORDER); //|wxSTAY_ON_TOP);
-    }
+    } else if (wxFile::Exists("/usr/share/lbdmf/splash.png")) {
+		if (bitmap.LoadFile("/usr/share/lbdmf/splash.png", wxBITMAP_TYPE_PNG))
+		{
+			splash = new wxSplashScreen(bitmap,
+										wxSPLASH_CENTRE_ON_SCREEN|wxSPLASH_TIMEOUT,
+										6000, NULL, -1, wxDefaultPosition, wxDefaultSize,
+										wxSIMPLE_BORDER); //|wxSTAY_ON_TOP);
+		}	
+	}
+
+	
+	
     wxYield();
 
     if (mm == NULL) {
