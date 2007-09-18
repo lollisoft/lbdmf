@@ -52,8 +52,9 @@ sed '1,2d;s,^\.,\%attr(-\,root\,root) \%dir ,' $RPM_BUILD_DIR/file.list.%{name}.
 sed 's,^\.,\%attr(-\,root\,root) ,' $RPM_BUILD_DIR/file.list.%{name}.files >> $RPM_BUILD_DIR/file.list.%{name}
 sed 's,^\.,\%attr(-\,root\,root) ,' $RPM_BUILD_DIR/file.list.%{name}.libs >> $RPM_BUILD_DIR/file.list.%{name}
 
+%suse_update_desktop_file -c wxWrapper 'Rapid Database GUI Designer' 'Database designer based on wxWrapper' '%{prefix}/bin/wxWrapper' %{prefix}/share/lbdmf/lbdmf.png Development
+
 %post
-%suse_update_desktop_file -c wxWrapper wxWrapper 'GUI wrapper' '%{prefix}/bin/wxWrapper' %{prefix}/share/lbdmf/lbdmf.png 
 ldconfig
 
 %clean
