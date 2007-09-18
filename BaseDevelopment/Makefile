@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.136 $
+# * $Revision: 1.137 $
 # * $Name:  $
-# * $Id: Makefile,v 1.136 2007/09/18 09:02:53 lollisoft Exp $
+# * $Id: Makefile,v 1.137 2007/09/18 12:22:42 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.137  2007/09/18 12:22:42  lollisoft
+# * Added splash screen image to the correct install location.
+# *
 # * Revision 1.136  2007/09/18 09:02:53  lollisoft
 # * Try again from SuSE specification. (http://forgeftp.novell.com//library/SUSE%20Package%20Conventions/spc.pdf)
 # *
@@ -849,6 +852,7 @@ install-strip:
 	mkdir -p $(prefix)/share/lbdmf/toolbarimages
 	cp $(DEVROOT_MAKE)/Projects/CPP/Test/GUI/wxWrapper/toolbarimages/*.png $(prefix)/share/lbdmf/toolbarimages
 	cp $(DEVROOT_MAKE)/Projects/CPP/Test/GUI/wxWrapper/toolbarimages/*.xpm $(prefix)/share/lbdmf/toolbarimages
+	cp $(DEVROOT_MAKE)/Projects/CPP/Test/GUI/wxWrapper/splash.png $(prefix)/share/lbdmf
 	cp $(DEVROOT_MAKE)/Projects/CPP/Test/GUI/wxWrapper/lbdmf.png $(prefix)/share/lbdmf
 	cp $(DEVROOT_MAKE)/Projects/CPP/Test/GUI/wxWrapper/wxWrapper.desktop $(prefix)/share/lbdmf 
 	./copy-wxGTK-libs.sh $(prefix)
