@@ -333,7 +333,7 @@ public:
 	 */
 
 	int			LB_STDCALL getColumns();
-	bool			LB_STDCALL lbQuery::hasColumnName(char* name);
+	bool			LB_STDCALL hasColumnName(char* name);
 
 	char*			LB_STDCALL getColumnName(int col);
 
