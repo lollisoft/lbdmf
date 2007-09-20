@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.116 $
+ * $Revision: 1.117 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.116 2007/08/08 19:48:49 lollisoft Exp $
+ * $Id: lbModule.cpp,v 1.117 2007/09/20 14:27:31 lollisoft Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.117  2007/09/20 14:27:31  lollisoft
+ * Removed some console log messages under solaris.
+ *
  * Revision 1.116  2007/08/08 19:48:49  lollisoft
  * Changes to allow using BLOB data fields. Not completely finished.
  *
@@ -2757,7 +2760,8 @@ lbErrCodes LB_STDCALL lbModule::setData(lb_I_Unknown* uk) {
 /*...e*/
 /*...slbErrCodes LB_STDCALL lbModule\58\\58\initialize\40\\41\:0:*/
 lbErrCodes LB_STDCALL lbModule::initialize() {
-printf("lbErrCodes LB_STDCALL lbModule::initialize() called.\n");
+	_CL_LOG << "lbErrCodes LB_STDCALL lbModule::initialize() called." LOG_
+	
 	if (initializing == 1) {
 		_CL_VERBOSE << "Warning: Initialize while initializing (loop)" LOG_
 	}

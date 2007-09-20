@@ -52,6 +52,7 @@ endif
 endif
 
 ifeq ($(OSTYPE), solaris)
+C_SOOPS = $(C_OPS)
 MOD_INCL=$(STD_INCL)
 OBJDEP=
 VENDORLIBS=-L$(prefix)/lib -llbHook

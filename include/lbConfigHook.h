@@ -22,9 +22,9 @@
     The author of this work will be reached by e-Mail or paper mail.
     e-Mail: lothar.behrens@lollisoft.de
     p-Mail: Lothar Behrens
-            Rosmarinstr. 3
+            Heinrich-Scheufelen-Platz 2
             
-            40235 Duesseldorf (germany)
+            73252 Lenningen (germany)
 */
 /*...e*/
 
@@ -231,22 +231,22 @@
 /*...s LOG_:0:*/
 #define  LOG_  << '\n'; }
 /*...e*/
-#ifndef __MISC
-#define _CL_LOG \
-{ \
-        COUT << __FILE__ << ", " << __LINE__ << ": "\
-        
-#endif
-#ifdef __MISC
-#define _CL_LOG \
-{ \
-        COUT << __FILE__ << ", " << __LINE__ << ": "\
-        
-#endif
 
 #define _CL_VERBOSE \
     if (isVerbose()) { \
-	COUT \
+        COUT << __FILE__ << ", " << __LINE__ << ": "
+        
+#ifndef SOLARIS
+#define _CL_LOG \
+{ \
+        COUT << __FILE__ << ", " << __LINE__ << ": "        
+#endif
+
+#ifdef SOLARIS
+#define _CL_LOG \
+    if (isVerbose()) { \
+        COUT << __FILE__ << ", " << __LINE__ << ": "
+#endif
 
 
 /*...sLOG\40\msg\41\:0:*/

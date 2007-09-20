@@ -53,6 +53,7 @@ endif
 
 ifeq ($(OSTYPE), solaris)
 MOD_INCL=$(STD_INCL)
+C_SOOPS= $(C_OPS)
 OBJDEP=
 VENDORLIBS=-L$(prefix)/lib -llbHook /usr/local/lib/libodbc.so
 endif    
