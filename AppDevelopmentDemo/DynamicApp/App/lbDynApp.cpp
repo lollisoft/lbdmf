@@ -634,17 +634,17 @@ lbErrCodes LB_STDCALL lbDynamicApplication::exportApplicationToXML(lb_I_Unknown*
 lbErrCodes LB_STDCALL lbDynamicApplication::getCustomDBForm(lb_I_Unknown* uk) {
 	lbErrCodes err = ERR_NONE;
 	
-
+	
 	if (metaapp == NULL) {
 		REQUEST(manager.getPtr(), lb_I_MetaApplication, metaapp)
 	}
-
+	
 	if (gui == NULL) {
 		metaapp->getGUI(&gui);
 	}
 	
 	metaapp->setStatusText("Info", "Loading custom database formular ...");
-
+	
 	if (gui != NULL) {
 		UAP(lb_I_FixedDatabaseForm, dbForm)
 		UAP(lb_I_Integer, eventID)
@@ -667,35 +667,34 @@ lbErrCodes LB_STDCALL lbDynamicApplication::getCustomDBForm(lb_I_Unknown* uk) {
 		}
 		
 		UAP(lb_I_Query, q)
-		UAP_REQUEST(getModuleInstance(), lb_I_Long, typ)
-		UAP_REQUEST(getModuleInstance(), lb_I_String, sql)
-		q = database->getQuery("lbDMF", 0);
+			UAP_REQUEST(getModuleInstance(), lb_I_Long, typ)
+			UAP_REQUEST(getModuleInstance(), lb_I_String, sql)
+			q = database->getQuery("lbDMF", 0);
 		
 		typ->setData(forms->getTyp());
 		
-		*sql = "SELECT handlerfunctor, handlermodule, handlerinterface, namespace from formulartypen where id = ";
-		*sql += typ->charrep();
-
-		_LOG << "Query for custom database formular (" << forms->getName() << "): " << sql->charrep() LOG_
+		*sql = "SELECT handlerfunctor, handlermodule, handlerinterface, namespace from formulartypen where namespace = '";
+		*sql += "FixedDBForm_";
+		*sql += forms->getName();
+		*sql += "'";
 		
-		if (q->query(sql->charrep()) == ERR_NONE) {
+		_LOG << "Query for custom database formular (" << forms->getName() << "): " << sql->charrep() LOG_
 			
-			err = q->first();
-			
-			if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
-				UAP(lb_I_String, functor)
-				UAP(lb_I_String, module)
-				UAP(lb_I_String, _interface)
-				UAP(lb_I_String, namesp)
+			if (q->query(sql->charrep()) == ERR_NONE) {
 				
-				functor = q->getAsString(1);
-				module = q->getAsString(2);
-				_interface = q->getAsString(3);
-				namesp = q->getAsString(4);
+				err = q->first();
 				
-				if (*namesp == "") {
-						metaapp->setStatusText("Info", "Error: No namespace stored in the database !");
-				} else {
+				if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
+					UAP(lb_I_String, functor)
+					UAP(lb_I_String, module)
+					UAP(lb_I_String, _interface)
+					UAP(lb_I_String, namesp)
+					
+					functor = q->getAsString(1);
+					module = q->getAsString(2);
+					_interface = q->getAsString(3);
+					namesp = q->getAsString(4);
+					
 					if (*_interface == "lb_I_FixedDatabaseForm") { 
 						UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
 						UAP(lb_I_Plugin, pl)
@@ -711,11 +710,12 @@ lbErrCodes LB_STDCALL lbDynamicApplication::getCustomDBForm(lb_I_Unknown* uk) {
 							ukPl = pl->getImplementation();
 							
 							QI(ukPl, lb_I_FixedDatabaseForm, dbForm)
-
-							dbForm = gui->addCustomDBForm(dbForm.getPtr(), forms->getName());
 								
+								dbForm = gui->addCustomDBForm(dbForm.getPtr(), forms->getName());
+							
 							if (dbForm != NULL) {
 								dbForm->show();
+								metaapp->setStatusText("Info", "Database form created. Ready.");
 							} else {
 								metaapp->setStatusText("Info", "Error: Database form was not loaded by the GUI !");
 							}
@@ -724,12 +724,11 @@ lbErrCodes LB_STDCALL lbDynamicApplication::getCustomDBForm(lb_I_Unknown* uk) {
 						metaapp->setStatusText("Info", "Error: Unsupported interface !");
 						// Unsupported
 					}
-				}
-			}		
-		} else {
-			_LOG << "Error: Query to get target formular failed. (" << sql->charrep() << ")" LOG_
-			metaapp->setStatusText("Info", "Error: Query to get target formular failed !");
-		}
+				}		
+			} else {
+				_LOG << "Error: Query to get target formular failed. (" << sql->charrep() << ")" LOG_
+				metaapp->setStatusText("Info", "Error: Query to get target formular failed !");
+			}
 	} else {
 		metaapp->setStatusText("Info", "Error: Have no instance of GUI !");
 	}
