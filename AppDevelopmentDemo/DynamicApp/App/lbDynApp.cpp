@@ -68,22 +68,6 @@ extern "C" {
 #include <lbDynApp.h>
 /*...e*/
 
-#define AQUIRE_PLUGIN(interface, ns, name, errmsgpart) \
-		UAP(lb_I_Plugin, pl##name) \
-		UAP(lb_I_Unknown, uk##name) \
-		pl##name = PM->getFirstMatchingPlugin(#interface, #ns); \
-		if (pl##name != NULL) { \
-			uk##name = pl##name->getImplementation(); \
-		} else { \
-			_LOG << "Warning: No " #errmsgpart " datamodel plugin found." LOG_ \
-		} \
-		\
-		if (uk##name != NULL) { \
-			QI(uk##name, interface, name) \
-		} else { \
-			_LOG << "Warning: No " #errmsgpart " datamodel plugin implementation found." LOG_ \
-		}
-
 
 /*...sclass lb_DynamicApplication:0:*/
 class lbDynamicApplication : 
@@ -553,6 +537,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::importUMLXMIDocIntoApplication(lb_I_
 
 
 /*...sevent handlers\44\ that can be registered:0:*/
+/// \todo Create a handler that writes the XML stuff in a predefined output stream.
 lbErrCodes LB_STDCALL lbDynamicApplication::exportApplicationToXML(lb_I_Unknown* uk) {
 	lbErrCodes err = ERR_NONE;
 
