@@ -3691,6 +3691,23 @@ void LB_STDCALL cls::enumPlugins() { \
 
 #define END_PLUGINS() }
 
+#define AQUIRE_PLUGIN(interface, ns, name, errmsgpart) \
+		UAP(lb_I_Plugin, pl##name) \
+		UAP(lb_I_Unknown, uk##name) \
+		pl##name = PM->getFirstMatchingPlugin(#interface, #ns); \
+		if (pl##name != NULL) { \
+			uk##name = pl##name->getImplementation(); \
+		} else { \
+			_LOG << "Warning: No " #errmsgpart " datamodel plugin found." LOG_ \
+		} \
+		\
+		if (uk##name != NULL) { \
+			QI(uk##name, interface, name) \
+		} else { \
+			_LOG << "Warning: No " #errmsgpart " datamodel plugin implementation found." LOG_ \
+		}
+
+
 /*...e*/
 
 /**
