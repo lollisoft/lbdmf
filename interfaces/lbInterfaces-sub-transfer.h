@@ -219,7 +219,7 @@ class lb_I_OutputStream :
 	public lb_I_Stream {
 public:
 
-	virtual void LB_STDCALL writeToBuffer(bool buffer) = 0;
+	virtual void LB_STDCALL writeToBuffer(bool _buffer) = 0;
 	virtual lb_I_String* LB_STDCALL getAsString() = 0;
 
 	/** \brief Write an int data type.
