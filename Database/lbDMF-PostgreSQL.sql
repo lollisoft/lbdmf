@@ -69,7 +69,7 @@ insert into column_types (name, tablename, ro, controltype, specialcolumn) value
 CREATE TABLE actions
 (
   id SERIAL,
-  name char(50) NOT NULL,
+  name char(50),
   typ  INTEGER,
   source char(100),
   target INTEGER,
