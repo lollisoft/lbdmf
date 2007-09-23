@@ -1322,6 +1322,11 @@ lbErrCodes      LB_STDCALL lbBoundColumns::setString(char* column, lb_I_String* 
 	QI(Column, lb_I_KeyBase, key)
 	ukdata = ColumnNameMapping->getElement(&key);
 
+	if (ukdata == NULL) {
+		_LOG << "Error: Column '" << column << "' not found." LOG_
+		return ERR_DB_COLUMN_NOT_FOUND;
+	}
+
 	UAP(lb_I_KeyBase, index)
 	QI(ukdata, lb_I_KeyBase, index)
 
@@ -3502,6 +3507,8 @@ lbErrCodes LB_STDCALL lbQuery::add() {
 	if (boundColumns != NULL) {
 		boundColumns->invalidateData();
 		boundColumns->add();
+	} else {
+		_LOG << "Error: Did not have bound columns. Could not really add data." LOG_
 	}
 
 	return ERR_NONE;
