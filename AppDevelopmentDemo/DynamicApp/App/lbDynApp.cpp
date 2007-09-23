@@ -104,7 +104,19 @@ public:
 	 * \brief The main handler to create dynamic forms
 	 */
 	lbErrCodes LB_STDCALL getDynamicDBForm(lb_I_Unknown* uk);
+
+	/**
+	 * \brief Export the application model as XML file.
+	 */
 	lbErrCodes LB_STDCALL exportApplicationToXML(lb_I_Unknown* uk);
+
+	/**
+	 * \brief Export the application model into XML memory block.
+	 *
+	 * This is achieved by providing a lb_I_OutputStream instance
+	 * with the flag set to buffer.
+	 */
+	lbErrCodes LB_STDCALL exportApplicationToXMLBuffer(lb_I_Unknown* uk);
 
 	/** \brief Import an UML XMI document as an application configuration. */
 	lbErrCodes LB_STDCALL importUMLXMIDocIntoApplication(lb_I_Unknown* uk);
@@ -535,6 +547,102 @@ lbErrCodes LB_STDCALL lbDynamicApplication::importUMLXMIDocIntoApplication(lb_I_
 	return err;
 }
 
+lbErrCodes LB_STDCALL lbDynamicApplication::exportApplicationToXMLBuffer(lb_I_Unknown* uk) {
+	lbErrCodes err = ERR_NONE;
+
+	UAP(lb_I_Parameter, param)
+	QI(uk, lb_I_Parameter, param)
+	if (param == NULL) {
+		metaapp->msgBox("Error", "Failed to export datamodel as XML into buffer.\n\nNo parameter of type lb_I_Parameter provided to store the result as memorybuffer parameter.\nThis is a software developer error.");
+		return err;
+	}
+
+	UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+	UAP(lb_I_Plugin, pl)
+	UAP(lb_I_Unknown, ukPl)
+
+	if (metaapp == NULL) {
+		REQUEST(manager.getPtr(), lb_I_MetaApplication, metaapp)
+	}
+	
+	if (haveLoadedDBModel == false) {
+		metaapp->setStatusText("Info", "Loading target database schema ...");
+		loadDatabaseSchema(NULL);
+		if (haveLoadedDBModel == false) {
+			metaapp->msgBox("Error", "Failed to load target database schema.\n\nThis is required for XML export.");
+			return err;
+		}
+	}
+
+	metaapp->setStatusText("Info", "Exporting XML to memory buffer");
+	
+	UAP_REQUEST(manager.getPtr(), lb_I_OutputStream, exportfile)
+	
+	// Get the active document and set temporary a different storage handler (dax)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, StorageInterface)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, StorageNamespace)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, tempStorageInterface)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, tempStorageNamespace)
+	UAP(lb_I_Unknown, ukDoc)
+	UAP(lb_I_Parameter, document)
+	ukDoc = metaapp->getActiveDocument();
+	QI(ukDoc, lb_I_Parameter, document)
+		
+	if (document != NULL) {
+		*name = "StorageDelegateNamespace";
+		document->getUAPString(*&name, *&StorageNamespace);
+			
+		*tempStorageNamespace = "lbDynAppXMLFormat";
+		document->setUAPString(*&name, *&tempStorageNamespace);
+	}
+	
+	
+	pl = PM->getFirstMatchingPlugin("lb_I_FileOperation", "XMLOutputStreamVisitor");
+	
+	if (pl == NULL) {
+		_LOG << "Error: Could not save dynamic application data. No plugin found." LOG_
+		return ERR_FILE_WRITE;
+	}
+	
+	if (pl != NULL) {
+		ukPl = pl->getImplementation();
+		
+		UAP(lb_I_FileOperation, fOp)
+			
+			QI(ukPl, lb_I_FileOperation, fOp)
+			
+			if (fOp != NULL) {
+				bool success = false;
+				
+				exportfile->writeToBuffer(true);
+				success = fOp->begin(exportfile.getPtr()); 
+				
+				if (success) {
+					accept(*&fOp);
+					fOp->end();
+				} else {
+					// No file found. Create one from database...
+				}
+				
+				UAP(lb_I_String, buffer)
+				// Need to derive filename from given application name
+				UAP_REQUEST(manager.getPtr(), lb_I_String, filename)
+				*filename = LogonApplication->charrep();
+				*filename += ".dax"; // Dynamic application forms 
+
+		
+				buffer = exportfile->getAsString();
+				
+				*name = "memorybuffer";
+				param->setUAPString(*&name, *&buffer);
+				
+				*name = "filename";
+				param->setUAPString(*&name, *&filename);
+			}
+	}
+	return err;
+}
 
 /*...sevent handlers\44\ that can be registered:0:*/
 /// \todo Create a handler that writes the XML stuff in a predefined output stream.
@@ -1570,6 +1678,28 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 							
 							editProperties(NULL);
 						}
+						
+						//exportApplicationToXMLBuffer
+						
+						UAP(lb_I_Plugin, plDynamicAppStorageXMLExportBuffer)
+						UAP(lb_I_Unknown, ukPlDynamicAppStorageXMLExportBuffer)
+							
+						plDynamicAppStorageXMLFormat = PM->getFirstMatchingPlugin("lb_I_DelegatedAction", "XsltTransformer");
+
+						// Xslt transforming is available as a delegated action (in forms as buttons), enable it.
+						if (plDynamicAppStorageXMLFormat != NULL) {
+							ukPlDynamicAppStorageXMLFormat = plDynamicAppStorageXMLFormat->getImplementation();
+							
+							if (eman->resolveEvent("exportApplicationToXMLBuffer", unused) == ERR_EVENT_NOTREGISTERED) {
+								eman->registerEvent("exportApplicationToXMLBuffer", unused);
+								
+								dispatcher->addEventHandlerFn(this, 
+															  (lbEvHandler) &lbDynamicApplication::exportApplicationToXMLBuffer, "exportApplicationToXMLBuffer");
+								
+								//metaapp->addMenuEntry(_trans("&File"), "export Application to XML", "exportApplicationToXMLBuffer", "");
+							}
+						}
+						
 					}					
 				} else {
 					if (metaapp->isPropertyPaneLayoutLeft()) metaapp->showPropertyPanel();
