@@ -22,19 +22,22 @@
     The author of this work will be reached by e-Mail or paper mail.
     e-Mail: lothar.behrens@lollisoft.de
     p-Mail: Lothar Behrens
-            Rosmarinstr. 3
+            Heinrich-Scheufelen-Platz 2
             
-            40235 Duesseldorf (germany)
+            73252 Lenningen (germany)
 */
 /*...e*/
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.32 $
+ * $Revision: 1.33 $
  * $Name:  $
- * $Id: lbErrcodes.h,v 1.32 2007/08/08 19:48:50 lollisoft Exp $
+ * $Id: lbErrcodes.h,v 1.33 2007/09/23 11:20:00 lollisoft Exp $
  *
  * $Log: lbErrcodes.h,v $
+ * Revision 1.33  2007/09/23 11:20:00  lollisoft
+ * New error code to catch unknown column names.
+ *
  * Revision 1.32  2007/08/08 19:48:50  lollisoft
  * Changes to allow using BLOB data fields. Not completely finished.
  *
@@ -275,6 +278,7 @@ enum lbErrCodes {
 	ERR_UPDATE_FAILED,
 	WARN_DB_NODATA,
 	INFO_DB_REOPENED,
+	ERR_DB_COLUMN_NOT_FOUND,
 	
 /* Errcodes for parameter handling */	
 	
