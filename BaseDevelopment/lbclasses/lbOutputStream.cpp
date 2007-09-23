@@ -94,11 +94,6 @@ public:
 	    		logmessage = NULL;
 	    	}
 			
-			if (buffer != NULL) {
-				free(buffer);
-				buffer = NULL;
-			}
-    	
 	    	close();
 	}
 /*...e*/
@@ -145,7 +140,7 @@ public:
 	bool _binary;
 
 	bool _writeToBuffer;
-	char* buffer;
+	UAP(lb_I_String, buffer)
 
 /*...e*/
 
@@ -195,7 +190,7 @@ lbOutputStream::lbOutputStream() {
 	_binary = false;
 	
 	_writeToBuffer = false;
-	buffer = NULL;
+	REQUEST(getModuleInstance(), lb_I_String, buffer)
 }
 /*...e*/
 /*...slbOutputStream\58\\58\logdirect\40\\46\\46\\46\\41\:0:*/
@@ -208,11 +203,8 @@ void LB_STDCALL lbOutputStream::writeToBuffer(bool _buffer) {
 }
 
 lb_I_String* LB_STDCALL lbOutputStream::getAsString() {
-	UAP_REQUEST(getModuleInstance(), lb_I_String, s)
-	
-	*s = buffer;
-	s++;
-	return s.getPtr();
+	buffer++;
+	return buffer.getPtr();
 }
 
 
@@ -251,6 +243,18 @@ void LB_STDCALL lbOutputStream::_realloc(int add_size) {
 lb_I_OutputStream& LB_STDCALL lbOutputStream::operator<< (const int i) {
 	if (!isOpen) return *this;
 
+	if (_writeToBuffer) {
+		UAP_REQUEST(getModuleInstance(), lb_I_Integer, toBuffer)
+		toBuffer->setData(i);
+		
+		if (_binary) {
+			*buffer += toBuffer->charrep();
+		} else {
+			*buffer += toBuffer->charrep();
+			*buffer += "\n";		
+		}
+	}
+
 	if (_binary)
 		*_ostream << i;
 	else
@@ -261,6 +265,18 @@ lb_I_OutputStream& LB_STDCALL lbOutputStream::operator<< (const int i) {
 
 lb_I_OutputStream& LB_STDCALL lbOutputStream::operator<< (const long i) {
 	if (!isOpen) return *this;
+
+	if (_writeToBuffer) {
+		UAP_REQUEST(getModuleInstance(), lb_I_Long, toBuffer)
+		toBuffer->setData(i);
+		
+		if (_binary) {
+			*buffer += toBuffer->charrep();
+		} else {
+			*buffer += toBuffer->charrep();
+			*buffer += "\n";		
+		}
+	}
 
 	if (_binary)
 		*_ostream << i;
@@ -278,6 +294,18 @@ lb_I_OutputStream& LB_STDCALL lbOutputStream::operator<< (const bool b) {
 		_b = 1;
 	else
 		_b = 0;
+
+	if (_writeToBuffer) {
+		UAP_REQUEST(getModuleInstance(), lb_I_Integer, toBuffer)
+		toBuffer->setData(_b);
+		
+		if (_binary) {
+			*buffer += toBuffer->charrep();
+		} else {
+			*buffer += toBuffer->charrep();
+			*buffer += "\n";		
+		}
+	}
 		
 	if (_binary)
 		*_ostream << _b;
@@ -289,6 +317,17 @@ lb_I_OutputStream& LB_STDCALL lbOutputStream::operator<< (const bool b) {
 
 lb_I_OutputStream& LB_STDCALL lbOutputStream::operator<< (const char c) {
 	if (!isOpen) return *this;
+
+	if (_writeToBuffer) {
+		char temp[2] = "";
+		temp[0] = c;
+		if (_binary) {
+			*buffer += temp;
+		} else {
+			*buffer += temp;
+			*buffer += "\n";		
+		}
+	}
 
 	if (_binary)
 		*_ostream << c;
@@ -306,6 +345,18 @@ lb_I_OutputStream& LB_STDCALL lbOutputStream::operator<< (const char* string) {
 #ifdef __WATCOMC__
 	String s(string);
 #endif
+
+	if (_writeToBuffer) {
+		UAP_REQUEST(getModuleInstance(), lb_I_String, toBuffer)
+		toBuffer->setData(string);
+		
+		if (_binary) {
+			*buffer += toBuffer->charrep();
+		} else {
+			*buffer += toBuffer->charrep();
+			*buffer += "\n";		
+		}
+	}
 
 	if (strlen(string) == 0) {
 		if (!_binary) *_ostream << 1 << endl;
