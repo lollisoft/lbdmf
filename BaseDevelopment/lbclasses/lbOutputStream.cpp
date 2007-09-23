@@ -22,9 +22,9 @@
     The author of this work will be reached by e-Mail or paper mail.
     e-Mail: lothar.behrens@lollisoft.de
     p-Mail: Lothar Behrens
-            Rosmarinstr. 3
+            Heinrich-Scheufelen-Platz 2
             
-            40235 Duesseldorf (germany)
+            73252 Lenningen (germany)
 */
 /*...e*/
 
@@ -93,6 +93,11 @@ public:
 	    		free(logmessage);
 	    		logmessage = NULL;
 	    	}
+			
+			if (buffer != NULL) {
+				free(buffer);
+				buffer = NULL;
+			}
     	
 	    	close();
 	}
@@ -102,6 +107,10 @@ public:
     DECLARE_LB_UNKNOWN()
 
 /*...slb_I_OutputStream:0:*/
+
+	void LB_STDCALL writeToBuffer(bool _buffer);
+	lb_I_String* LB_STDCALL getAsString();
+
 	void LB_STDCALL setFileName(char* name);
 	const char* LB_STDCALL getFileName();
 	bool LB_STDCALL open();
@@ -134,6 +143,9 @@ public:
 
 	ofstream* _ostream;
 	bool _binary;
+
+	bool _writeToBuffer;
+	char* buffer;
 
 /*...e*/
 
@@ -181,12 +193,28 @@ lbOutputStream::lbOutputStream() {
         lastsize = 0;
 	_ostream = NULL;
 	_binary = false;
+	
+	_writeToBuffer = false;
+	buffer = NULL;
 }
 /*...e*/
 /*...slbOutputStream\58\\58\logdirect\40\\46\\46\\46\\41\:0:*/
 void LB_STDCALL lbOutputStream::logdirect(const char *msg, char *f, int level) {
 }
 /*...e*/
+
+void LB_STDCALL lbOutputStream::writeToBuffer(bool _buffer) {
+	_writeToBuffer = _buffer;
+}
+
+lb_I_String* LB_STDCALL lbOutputStream::getAsString() {
+	UAP_REQUEST(getModuleInstance(), lb_I_String, s)
+	
+	*s = buffer;
+	s++;
+	return s.getPtr();
+}
+
 
 void LB_STDCALL lbOutputStream::setBinary() {
 	_binary = true;
