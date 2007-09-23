@@ -404,8 +404,13 @@ lbErrCodes LB_STDCALL lbDynamicApplication::loadDatabaseSchema(lb_I_Unknown* uk)
 		QI(uk, lb_I_Parameter, param)
 	
 		document->setCloning(false);
+
+		// Get the application ID, that would be stored inside the XML document
+		UAP_REQUEST(getModuleInstance(), lb_I_Integer, AppID)
+		*name = "SaveApplicationID";
+		param->getUAPInteger(*&name, *&AppID);	
 				
-		if (strcmp(appParams->getParameter("DBName", metaapp->getApplicationID()), "lbDMF") == 0) {
+		if (strcmp(appParams->getParameter("DBName", AppID->getData()), "lbDMF") == 0) {
 			// Is system database
 			dbPrimaryKeys->accept(*&fOpDB);
 			dbForeignKeys->accept(*&fOpDB);
@@ -420,9 +425,9 @@ lbErrCodes LB_STDCALL lbDynamicApplication::loadDatabaseSchema(lb_I_Unknown* uk)
 			UAP_REQUEST(getModuleInstance(), lb_I_String, dbpass)
 			customDB->init();
 			
-			*dbname = appParams->getParameter("DBName", metaapp->getApplicationID());
-			*dbuser = appParams->getParameter("DBUser", metaapp->getApplicationID());
-			*dbpass = appParams->getParameter("DBPass", metaapp->getApplicationID());
+			*dbname = appParams->getParameter("DBName", AppID->getData());
+			*dbuser = appParams->getParameter("DBUser", AppID->getData());
+			*dbpass = appParams->getParameter("DBPass", AppID->getData());
 			
 			if ((customDB != NULL) && (customDB->connect(dbname->charrep(), dbname->charrep(), dbuser->charrep(), dbpass->charrep()) != ERR_NONE)) {
 				_LOG << "Fatal: No custom database available. Cannot read database model for custom application!" LOG_
@@ -649,6 +654,11 @@ lbErrCodes LB_STDCALL lbDynamicApplication::exportApplicationToXMLBuffer(lb_I_Un
 lbErrCodes LB_STDCALL lbDynamicApplication::exportApplicationToXML(lb_I_Unknown* uk) {
 	lbErrCodes err = ERR_NONE;
 
+	// Need to derive filename from given application name
+	UAP_REQUEST(manager.getPtr(), lb_I_String, filename)
+	*filename = LogonApplication->charrep();
+	*filename += ".dax"; // Dynamic application forms 
+
 	UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
 	UAP(lb_I_Plugin, pl)
 	UAP(lb_I_Unknown, ukPl)
@@ -656,24 +666,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::exportApplicationToXML(lb_I_Unknown*
 	if (metaapp == NULL) {
 		REQUEST(manager.getPtr(), lb_I_MetaApplication, metaapp)
 	}
-	
-	if (haveLoadedDBModel == false) {
-		metaapp->setStatusText("Info", "Loading target database schema ...");
-		loadDatabaseSchema(NULL);
-		if (haveLoadedDBModel == false) {
-			metaapp->msgBox("Error", "Failed to load target database schema.\n\nThis is required for XML export.");
-			return err;
-		}
-	}
 
-	metaapp->setStatusText("Info", "Exporting to XML ...");
-	
-	// Need to derive filename from given application name
-	UAP_REQUEST(manager.getPtr(), lb_I_String, filename)
-	*filename = LogonApplication->charrep();
-	*filename += ".dax"; // Dynamic application forms 
-	
-	
 	// Get the active document and set temporary a different storage handler (dax)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, param)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, StorageInterface)
@@ -691,8 +684,23 @@ lbErrCodes LB_STDCALL lbDynamicApplication::exportApplicationToXML(lb_I_Unknown*
 			
 		*tempStorageNamespace = "lbDynAppXMLFormat";
 		document->setUAPString(*&param, *&tempStorageNamespace);
+		
+		*param = "SaveApplicationID";
+		UAP_REQUEST(getModuleInstance(), lb_I_Integer, AppID)
+		AppID->setData(metaapp->getApplicationID());
+		document->setUAPInteger(*&param, *&AppID);
 	}
 	
+	if (haveLoadedDBModel == false) {
+		metaapp->setStatusText("Info", "Loading target database schema ...");
+		loadDatabaseSchema(NULL);
+		if (haveLoadedDBModel == false) {
+			metaapp->msgBox("Error", "Failed to load target database schema.\n\nThis is required for XML export.");
+			return err;
+		}
+	}
+
+	metaapp->setStatusText("Info", "Exporting to XML ...");
 	
 	pl = PM->getFirstMatchingPlugin("lb_I_FileOperation", "XMLOutputStreamVisitor");
 	

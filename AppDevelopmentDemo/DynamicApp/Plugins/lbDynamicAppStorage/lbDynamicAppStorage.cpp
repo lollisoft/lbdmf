@@ -147,6 +147,11 @@ lbErrCodes LB_STDCALL lbDynamicAppXMLStorage::save(lb_I_OutputStream* oStream) {
 	document->setCloning(false);
 	params->getUAPContainer(*&param, *&document);	
 
+	// Get the application ID, that would be stored inside the XML document
+	UAP_REQUEST(getModuleInstance(), lb_I_Integer, AppID)
+	*param = "SaveApplicationID";
+	params->getUAPInteger(*&param, *&AppID);	
+
 	UAP_REQUEST(getModuleInstance(), lb_I_String, name)
 
 	UAP(lb_I_KeyBase, key)
@@ -227,13 +232,12 @@ lbErrCodes LB_STDCALL lbDynamicAppXMLStorage::save(lb_I_OutputStream* oStream) {
 	uk = document->getElement(&key);
 	QI(uk, lb_I_Action_Types, appActionTypes)
 
-
 	// Mark that data sets, that are related to this application
 	applications = meta->getApplicationModel();
 	
 	meta->setStatusText("Info", "Mark application to be exported ...");
 	
-	applications->selectApplication(meta->getApplicationID());
+	applications->selectApplication(AppID->getData());
 	applications->mark();
 
 	if ((forms != NULL) &&
@@ -256,7 +260,7 @@ lbErrCodes LB_STDCALL lbDynamicAppXMLStorage::save(lb_I_OutputStream* oStream) {
 		(appActionSteps != NULL)) {
 
 		*oStream << "<lbDMF applicationid=\"";
-		*oStream << meta->getApplicationID() << "\">\n";
+		*oStream << AppID->charrep() << "\">\n";
 		
 		reports->accept(*&aspect);
 		reportparams->accept(*&aspect);
