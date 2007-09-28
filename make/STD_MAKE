@@ -25,11 +25,14 @@
 #            73252 Lenningen (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.100 $
+# * $Revision: 1.101 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.100 2007/08/29 14:52:11 lollisoft Exp $
+# * $Id: STD_MAKE,v 1.101 2007/09/28 18:26:35 lollisoft Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.101  2007/09/28 18:26:35  lollisoft
+# * Some bugfixes on Windows regarding xslt processing.
+# *
 # * Revision 1.100  2007/08/29 14:52:11  lollisoft
 # * Release build for 10.rc2
 # *
@@ -380,8 +383,8 @@ COMPILER=WATCOM
 
 #COMPILER=MICROSOFT
 
-#MODE=_DEBUG
-MODE=
+MODE=_DEBUG
+#MODE=
 DEBUG_MEMORY=no
 #DEBUG_MEMORY=yes
 

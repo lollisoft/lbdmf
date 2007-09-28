@@ -190,6 +190,23 @@ $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
 	@$(MKMK) $(TARGET) $(_MODULE) ../dosdir *.c *.cpp >> makefile
 
 endif
+ifeq ($(TARGET), xsltdll)
+
+makefile: makefile.module \
+$(DEVROOT_MAKE)/Projects/CPP/BaseDevelopment/Makefile \
+$(DEVROOT_MAKE)/Projects/CPP/make/makefile.template \
+$(DEVROOT_MAKE)/Projects/CPP/make/STD_MAKE \
+$(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
+	@cat $(DEVROOT_MAKE)/Projects/CPP/make/makefile.template > makefile
+	@cat makefile.module >> makefile
+	@echo Path=$(PATH) >> makefile
+	@rm -f $(_MODULE).bak
+	@echo all: $(_MODULE).dll >> makefile
+	@rm -f $(DEVROOT_MAKE)/Projects/CPP/include/lbkey.h
+	@cp -f $(DEVROOT_MAKE)/Projects/CPP/BaseDevelopment/lbclasses/lbkey.h $(DEVROOT_MAKE)/Projects/CPP/include
+	@$(MKMK) dll $(_MODULE) ../dosdir ../libexslt/*.c *.c *.cpp >> makefile
+
+endif
 
 ifeq ($(TARGET), bundle)
 

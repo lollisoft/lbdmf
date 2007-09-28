@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.137 $
+# * $Revision: 1.138 $
 # * $Name:  $
-# * $Id: Makefile,v 1.137 2007/09/18 12:22:42 lollisoft Exp $
+# * $Id: Makefile,v 1.138 2007/09/28 18:26:34 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.138  2007/09/28 18:26:34  lollisoft
+# * Some bugfixes on Windows regarding xslt processing.
+# *
 # * Revision 1.137  2007/09/18 12:22:42  lollisoft
 # * Added splash screen image to the correct install location.
 # *
@@ -754,6 +757,7 @@ endif
 ifeq ($(OSTYPE), Windows_NT)
 
 TARGETDLL=dll
+TARGETXSLTDLL=xsltdll
 TARGETFRAMEWORK=dll
 TARGETSHARED=dll
 TARGETEXE=exe
@@ -917,7 +921,7 @@ dummy:
 	$(MAKE) -s -C $@ -f makefile.lbDMF
 
 ../vendor/libxslt-1.1.21/libxslt: dummy
-	$(MAKE) -s -C $@ -e MODULE=lbxslt -e TARGET=$(TARGETDLL) -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@ -e MODULE=lbxslt -e TARGET=$(TARGETXSLTDLL) -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@
 
 ../vendor/tvision: dummy

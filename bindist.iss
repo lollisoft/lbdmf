@@ -60,9 +60,11 @@ Source: "Q:\Develop\Projects\dll\libexslt.dll"; DestDir: "{app}\Develop\Projects
 Source: "Q:\Develop\Projects\dll\libxml2.dll"; DestDir: "{app}\Develop\Projects\dll"; CopyMode: alwaysoverwrite;
 Source: "Q:\Develop\Projects\dll\libxslt.dll"; DestDir: "{app}\Develop\Projects\dll"; CopyMode: alwaysoverwrite;
 
+Source: "Q:\develop\Projects\CPP\Test\GUI\wxWrapper\lbdmf.ico"; DestDir: "{app}"; CopyMode: alwaysoverwrite;
+
 [Icons]
-Name: "{group}\lbDMF"; Filename: "{app}\binsample.bat"; WorkingDir: "{app}"
-Name: "{userdesktop}\lbDMF"; Filename: "{app}\binsample.bat"; MinVersion: 4,4; Tasks: desktopicon; WorkingDir: "{app}"
+Name: "{group}\lbDMF"; IconFilename: "{app}\lbdmf.ico"; Filename: "{app}\binsample.bat"; WorkingDir: "{app}"
+Name: "{userdesktop}\lbDMF"; IconFilename: "{app}\lbdmf.ico"; Filename: "{app}\binsample.bat"; MinVersion: 4,4; Tasks: desktopicon; WorkingDir: "{app}"
 ;Name: "{userdesktop}\lbDMF Help"; Filename: "{app}\Doc\html\index.html"; MinVersion: 4,4; Tasks: desktopicon; WorkingDir: "{app}\develop\projects\cpp\BaseDevelopment"
 
 [Run]
