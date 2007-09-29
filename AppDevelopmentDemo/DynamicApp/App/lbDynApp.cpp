@@ -619,8 +619,17 @@ lbErrCodes LB_STDCALL lbDynamicApplication::exportApplicationToXMLBuffer(lb_I_Un
 			
 			if (fOp != NULL) {
 				bool success = false;
+
+				// Need to derive filename from given application name
+				UAP_REQUEST(manager.getPtr(), lb_I_String, filename)
+				*filename = LogonApplication->charrep();
+				*filename += ".dax"; // Dynamic application forms 
 				
 				exportfile->writeToBuffer(true);
+				
+				// Only required if file is used after code generation
+				//exportfile->setFileName(filename->charrep());
+				
 				success = fOp->begin(exportfile.getPtr()); 
 				
 				if (success) {
@@ -631,10 +640,6 @@ lbErrCodes LB_STDCALL lbDynamicApplication::exportApplicationToXMLBuffer(lb_I_Un
 				}
 				
 				UAP(lb_I_String, buffer)
-				// Need to derive filename from given application name
-				UAP_REQUEST(manager.getPtr(), lb_I_String, filename)
-				*filename = LogonApplication->charrep();
-				*filename += ".dax"; // Dynamic application forms 
 
 		
 				buffer = exportfile->getAsString();

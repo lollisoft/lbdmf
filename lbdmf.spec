@@ -14,10 +14,11 @@ Autoreqprov: on
 Provides: lbdmf
 
 %if %suse_version <= 910
-BuildRequires: wxGTK-devel >= 2.6.2 unixODBC-devel >= 2.2.8 update-desktop-files
-Requires: unixODBC >= 2.2.8 desktop-file-utils
+BuildRequires: wxGTK-devel >= 2.6.2 unixODBC-devel >= 2.2.11 update-desktop-files
+Requires: unixODBC >= 2.2.11 desktop-file-utils
 %else
-BuildRequires: wxGTK >= 2.6.2 update-desktop-files
+BuildRequires: wxGTK >= 2.6.2 desktop-file-utils unixODBC-devel >= 2.2.11 
+Requires: unixODBC >= 2.2.11 desktop-file-utils
 %endif
 
 

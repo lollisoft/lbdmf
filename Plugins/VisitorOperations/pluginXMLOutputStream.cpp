@@ -257,7 +257,9 @@ bool LB_STDCALL lbXMLOutputStream::begin(lb_I_Stream* stream) {
 	if (stream != NULL) {
 		_CL_LOG << "lbXMLOutputStream::begin(lb_I_Stream*): Got a stream (" << stream->getClassName() << ")." LOG_
 		QI(stream, lb_I_OutputStream, oStream)
+
 		bool ret = oStream->open();
+		oStream->setBinary();		
 
 		if (!ret) {
 			_CL_LOG << "lbXMLOutputStream::begin(lb_I_Stream* stream) Error: Open file failed." LOG_
