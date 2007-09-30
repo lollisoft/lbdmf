@@ -26,6 +26,16 @@ Requires: unixODBC >= 2.2.11 desktop-file-utils
 This is a framework to develop software. It's origin goal was to make me independent from other
 (commercial) frameworks and development tools.
 
+This release also is tested to build properly on SuSE Linux 9.1 and openSuSE 10.1.
+
+You will need to install the following packages when building on 10.1:
+
+*	GTK+-devel from DVD/CD
+*	latest wxGTK version in src tgz from www.wxwidgets.org 
+*	pkgconfig from your install DVD/CD
+*	unixODBC from the vendor at www.unixodbc.org and compile it.
+*	pgsqlodbc.so in version 07.03.0200 from www.postgresql.org
+
 %prep
 rm -rf $RPM_BUILD_ROOT 
 mkdir $RPM_BUILD_ROOT
