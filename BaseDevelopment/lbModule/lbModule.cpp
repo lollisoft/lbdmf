@@ -30,11 +30,15 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.117 $
+ * $Revision: 1.118 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.117 2007/09/20 14:27:31 lollisoft Exp $
+ * $Id: lbModule.cpp,v 1.118 2007/09/30 13:04:41 lollisoft Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.118  2007/09/30 13:04:41  lollisoft
+ * Bugfix: Had a strcpy problem when no module were found.
+ * No idea why this exactly happened then. It was propably a buffer overrun, because wrongly null terminated.
+ *
  * Revision 1.117  2007/09/20 14:27:31  lollisoft
  * Removed some console log messages under solaris.
  *
@@ -3230,63 +3234,55 @@ lbErrCodes LB_STDCALL lbModule::getFunctors(char* interfacename, lb_I_ConfigObje
 /*...e*/
 /*...slbErrCodes lbModule\58\\58\makeInstance\40\char\42\ functor\44\ char\42\ module\44\ lb_I_Unknown\42\\42\ instance\41\:0:*/
 lbErrCodes LB_STDCALL lbModule::makeInstance(char* functor, char* module, lb_I_Unknown** instance) {
-	char* msg = (char*) malloc(1000);
-	msg[0] = 0;
 	lbErrCodes err = ERR_NONE;
-                        /**
-                         * ModuleHandle is the result for this loaded module.
-                         */
-         		HINSTANCE h = getModuleHandle();
-         	
-			char* _module = (char*) malloc(strlen(module)+10);
-			_module[0] = 0;
-			strcpy(_module, module);
-	
-			#ifdef LINUX
-			if (strchr(_module, '.') == NULL) 
-				strcat(_module, ".so");
-			else
-			if ((_module[0] == '.') && (_module[strlen(_module)-3] != '.')) 
-				strcat(_module, ".so");
-			#endif
+	HINSTANCE h = getModuleHandle();
 		
-                        if ((err = lbLoadModule(_module, h)) != ERR_NONE) {
-                                // report error if still loaded
-                                _LOG << "Error: Could not load the module '" << _module << "'" LOG_
-                                
-                                free(_module);
-                                free(msg);
-                                return err; 
-                        }
-
-                        setModuleHandle(h);
-                        
-                        if (getModuleHandle() == 0) _CL_VERBOSE << "Error: Module could not be loaded '" << module << "'" LOG_
-
-                        if ((err = lbGetFunctionPtr(functor, getModuleHandle(), (void**) &DLL_LB_GET_UNKNOWN_INSTANCE)) != ERR_NONE) {
-                                free(_module);
-                                free(msg);
-                                return err;
-                        } else {
-                                err = DLL_LB_GET_UNKNOWN_INSTANCE(instance, this, __FILE__, __LINE__);
-
-                                if (err != ERR_NONE) 
-                                {
-                                	_CL_VERBOSE << "Could not get an instance of type " << instance << " !" LOG_
-                                	
-                                	free(_module);
-                                	free(msg);
-                                	return err;
-                                }
-                                if ((*instance) == NULL) _CL_VERBOSE << "Something goes wrong while calling functor" LOG_
-                                if (!_TRMemValidate(*instance)) {
-                                	_LOG << "Error: Functor " << functor << " doesn't use TRMem. Module: " << module LOG_
-                                }
-                        }
-
+//	_LOG << "Allocate " << (int) strlen(module) << " bytes memory for " << module LOG_
+	char* _module = (char*) malloc(strlen(module)+10);
+	_module[0] = 0;
+	strcpy(_module, module);
+		
+#ifdef LINUX
+	if (strchr(_module, '.') == NULL) 
+		strcat(_module, ".so");
+	else
+		if ((_module[0] == '.') && (_module[strlen(_module)-3] != '.')) 
+			strcat(_module, ".so");
+#endif
+	
+	if ((err = lbLoadModule(_module, h)) != ERR_NONE) {
+		// report error if still loaded
+		_LOG << "Error: Could not load the module '" << _module << "'" LOG_
+		
+		free(_module);
+		return err; 
+	}
+	
+	setModuleHandle(h);
+	
+	if (getModuleHandle() == 0) _CL_VERBOSE << "Error: Module could not be loaded '" << module << "'" LOG_
+		
+	if ((err = lbGetFunctionPtr(functor, getModuleHandle(), (void**) &DLL_LB_GET_UNKNOWN_INSTANCE)) != ERR_NONE) {
+		free(_module);
+		return err;
+	} else {
+		err = DLL_LB_GET_UNKNOWN_INSTANCE(instance, this, __FILE__, __LINE__);
+			
+		if (err != ERR_NONE) 
+		{
+			_CL_VERBOSE << "Could not get an instance of type " << instance << " !" LOG_
+				
+			free(_module);
+			return err;
+		}
+		if ((*instance) == NULL) _CL_VERBOSE << "Something goes wrong while calling functor" LOG_
+			if (!_TRMemValidate(*instance)) {
+				_LOG << "Error: Functor " << functor << " doesn't use TRMem. Module: " << module LOG_
+			}
+	}
+			
 	free (_module);
-	free(msg);
-        return ERR_NONE;
+	return ERR_NONE;
 }
 /*...e*/
 
