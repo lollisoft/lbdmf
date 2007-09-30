@@ -257,8 +257,8 @@ public:
 	long            m_lSections;
 	bool			m_boSaved;
 
-	wxReportSection::wxReportSection( void ) { m_boSaved = false; m_pList = 0; m_lPreviousSection = -1L; };
-	wxReportSection::~wxReportSection( void ) { if ( m_pList ) delete m_pList; };
+	wxReportSection( void ) { m_boSaved = false; m_pList = 0; m_lPreviousSection = -1L; };
+	~wxReportSection( void ) { if ( m_pList ) delete m_pList; };
 };
 
 WX_DECLARE_EXPORTED_LIST(wxReportSection, wxReportSectionList);
