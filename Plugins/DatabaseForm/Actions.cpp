@@ -168,8 +168,10 @@ void makePluginName(char* path, char* module, char*& result) {
 #ifdef LINUX
 		strcat(pluginModule, "/");
 #endif
+#ifndef LINUX
 #ifdef OSX
 		strcat(pluginModule, "/");
+#endif
 #endif
 		strcat(pluginModule, module);
 		/*...e*/
@@ -267,6 +269,7 @@ void LB_STDCALL lbAction::delegate(lb_I_Parameter* params) {
 					
 					makePluginName(home, module->charrep(), pluginModule);
 					
+					_LOG << "Try to load a plugin at: " << pluginModule LOG_
 					if (manager->makeInstance(ah, pluginModule,  &result) != ERR_NONE) {
 						
 						free(pluginModule);
@@ -274,6 +277,7 @@ void LB_STDCALL lbAction::delegate(lb_I_Parameter* params) {
 						if (pwd == NULL) pwd = ".";
 						makePluginName(pwd, module->charrep(), pluginModule);
 						
+						_LOG << "Try to load a plugin at: " << pluginModule LOG_
 						if (manager->makeInstance(ah, pluginModule,  &result) != ERR_NONE) {
 						
 							free(pluginModule);
@@ -284,8 +288,22 @@ void LB_STDCALL lbAction::delegate(lb_I_Parameter* params) {
 							    _CL_LOG << "ERROR: Plugin could not be loaded." LOG_
 							}
 						}
-						
 					}
+					
+					if (result == NULL) {
+						UAP_REQUEST(getModuleInstance(), lb_I_String, errmsg)
+						
+						*errmsg = "Failed to load module for configured action!\n\n";
+						*errmsg += "Module: ";
+						*errmsg += module->charrep();
+						*errmsg += "\nAction handler: ";
+						*errmsg += action_handler->charrep();
+						
+						
+						meta->msgBox("Error", errmsg->charrep());
+						return;
+					}
+
 					
 					result->setModuleManager(getModuleInstance(), __FILE__, __LINE__);
 					actions->insert(&result, &ukey);
@@ -345,14 +363,14 @@ void LB_STDCALL lbAction::delegate(lb_I_Parameter* params) {
 					#endif
 					
 					makePluginName(home, module->charrep(), pluginModule);
-					
+					_LOG << "Try to load a plugin at: " << pluginModule LOG_
 					if (manager->makeInstance(ah, pluginModule,  &result) != ERR_NONE) {
 						
 						free(pluginModule);
 						char* pwd = getenv("PWD");
 						if (pwd == NULL) pwd = ".";
 						makePluginName(pwd, module->charrep(), pluginModule);
-						
+						_LOG << "Try to load a plugin at: " << pluginModule LOG_
 						if (manager->makeInstance(ah, pluginModule,  &result) != ERR_NONE) {
 						
 							free(pluginModule);
@@ -366,6 +384,20 @@ void LB_STDCALL lbAction::delegate(lb_I_Parameter* params) {
 						
 					}
 					
+					if (result == NULL) {
+						UAP_REQUEST(getModuleInstance(), lb_I_String, errmsg)
+						
+						*errmsg = "Failed to load module for configured action!\n\n";
+						*errmsg += "Module: ";
+						*errmsg += module->charrep();
+						*errmsg += "\nAction handler: ";
+						*errmsg += action_handler->charrep();
+						
+						
+						meta->msgBox("Error", errmsg->charrep());
+						return;
+					}
+
 					result->setModuleManager(getModuleInstance(), __FILE__, __LINE__);
 					actions->insert(&result, &ukey);
 					/*...e*/
