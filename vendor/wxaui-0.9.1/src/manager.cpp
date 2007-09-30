@@ -840,7 +840,7 @@ public:
     }
 
 #ifdef __WXGTK__
-    void lb_wxPseudoTransparentFrame::OnWindowCreate(wxWindowCreateEvent& WXUNUSED(event)) {m_CanSetShape=true; SetTransparency(0);}
+    void OnWindowCreate(wxWindowCreateEvent& WXUNUSED(event)) {m_CanSetShape=true; SetTransparency(0);}
 #endif
 
 private:
