@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.143 2007/09/18 12:29:33 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.144 2007/09/30 14:24:37 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.143 $
+ * $Revision: 1.144 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.143 2007/09/18 12:29:33 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.144 2007/09/30 14:24:37 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.144  2007/09/30 14:24:37  lollisoft
+ * Check for exsisting splash screen to avoid error messages.
+ *
  * Revision 1.143  2007/09/18 12:29:33  lollisoft
  * Added code to find splash screen on fallback location.
  *
@@ -2133,21 +2136,18 @@ bool MyApp::OnInit(void)
 
     wxSplashScreen* splash = NULL;
     wxBitmap bitmap;
-    if (bitmap.LoadFile("splash.png", wxBITMAP_TYPE_PNG))
+    if (wxFile::Exists("splash.png") && bitmap.LoadFile("splash.png", wxBITMAP_TYPE_PNG))
     {
-          splash = new wxSplashScreen(bitmap,
-          wxSPLASH_CENTRE_ON_SCREEN|wxSPLASH_TIMEOUT,
-          6000, NULL, -1, wxDefaultPosition, wxDefaultSize,
-          wxSIMPLE_BORDER); //|wxSTAY_ON_TOP);
-    } else if (wxFile::Exists("/usr/share/lbdmf/splash.png")) {
-		if (bitmap.LoadFile("/usr/share/lbdmf/splash.png", wxBITMAP_TYPE_PNG))
-		{
-			splash = new wxSplashScreen(bitmap,
-										wxSPLASH_CENTRE_ON_SCREEN|wxSPLASH_TIMEOUT,
-										6000, NULL, -1, wxDefaultPosition, wxDefaultSize,
-										wxSIMPLE_BORDER); //|wxSTAY_ON_TOP);
-		}	
-	}
+		splash = new wxSplashScreen(bitmap,
+		wxSPLASH_CENTRE_ON_SCREEN|wxSPLASH_TIMEOUT,
+		6000, NULL, -1, wxDefaultPosition, wxDefaultSize,
+		wxSIMPLE_BORDER); //|wxSTAY_ON_TOP);
+    } else if (wxFile::Exists("/usr/share/lbdmf/splash.png") && bitmap.LoadFile("/usr/share/lbdmf/splash.png", wxBITMAP_TYPE_PNG)) {
+		splash = new wxSplashScreen(bitmap,
+									wxSPLASH_CENTRE_ON_SCREEN|wxSPLASH_TIMEOUT,
+									6000, NULL, -1, wxDefaultPosition, wxDefaultSize,
+									wxSIMPLE_BORDER); //|wxSTAY_ON_TOP);
+	}	
 
 	
 	
