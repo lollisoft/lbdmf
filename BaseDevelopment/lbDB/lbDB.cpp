@@ -5544,7 +5544,7 @@ lb_I_Container* LB_STDCALL lbDatabase::getTables(char* connectionname) {
 			QI(param, lb_I_Unknown, uk)
 
 			*msg = "Get table ";
-			*msg += szTableName;
+			*msg += (const char*) szTableName;
 			*msg += " ...";
 
 			meta->setStatusText("Info", msg->charrep());
@@ -5747,9 +5747,9 @@ lb_I_Container* LB_STDCALL lbDatabase::getColumns(char* connectionname) {
 				 QI(param, lb_I_Unknown, uk)
 				 
 				*msg = "Get column ";
-				*msg += szColumnName;
+				*msg += (const char*) szColumnName;
 				*msg += " of table ";
-				*msg += szTableName;
+				*msg += (const char*) szTableName;
 				*msg += " ...";
 
 				meta->setStatusText("Info", msg->charrep());
@@ -5904,9 +5904,9 @@ lb_I_Container* LB_STDCALL lbDatabase::getPrimaryKeys(char* connectionname) {
 					QI(param, lb_I_Unknown, uk)
 
 					*msg = "Get primary column ";
-					*msg += ColumnName;
+					*msg += (const char*) ColumnName;
 					*msg += " of table ";
-					*msg += TableName;
+					*msg += (const char*) TableName;
 					*msg += " ...";
 
 					meta->setStatusText("Info", msg->charrep());
@@ -6093,13 +6093,13 @@ lb_I_Container* LB_STDCALL lbDatabase::getForeignKeys(char* connectionname) {
 					QI(param, lb_I_Unknown, uk)
 					
 					*msg = "Get foreign column ";
-					*msg += FKTableColumnName;
+					*msg += (const char*) FKTableColumnName;
 					*msg += " of table ";
-					*msg += FKTableName;
+					*msg += (const char*) FKTableName;
 					*msg += " pointing to column ";
-					*msg += PKTableColumnName;
+					*msg += (const char*) PKTableColumnName;
 					*msg += " of table ";
-					*msg += PKTableName;
+					*msg += (const char*) PKTableName;
 					*msg += " ...";
 
 					meta->setStatusText("Info", msg->charrep());
