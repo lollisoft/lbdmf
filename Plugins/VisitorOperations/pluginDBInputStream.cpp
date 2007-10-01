@@ -291,12 +291,12 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Reports* reports) {
 	err = q->query(query->charrep());
 	
 	if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
+			UAP(lb_I_Long, ID)
+			UAP(lb_I_String, Name)
+			UAP(lb_I_String, Description)
 			err = q->first();
 			
 			while ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
-				UAP(lb_I_Long, ID)
-				UAP(lb_I_String, Name)
-				UAP(lb_I_String, Description)
 			
 				ID = q->getAsLong(1);
 				Name = q->getAsString(2);
@@ -326,14 +326,13 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_ReportParameters* reportparame
 	err = q->query(query->charrep());
 	
 	if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
+			UAP(lb_I_Long, ID)
+			UAP(lb_I_Long, ReportID)
+			UAP(lb_I_String, Name)
+			UAP(lb_I_String, Value)
 			err = q->first();
 			
 			while ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
-				UAP(lb_I_Long, ID)
-				UAP(lb_I_Long, ReportID)
-				UAP(lb_I_String, Name)
-				UAP(lb_I_String, Value)
-			
 				ID = q->getAsLong(1);
 				ReportID = q->getAsLong(2);
 				Name = q->getAsString(3);
@@ -363,19 +362,18 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_ReportElements* reportelements
 	err = q->query(query->charrep());
 	
 	if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
+			UAP(lb_I_Long, ID)
+			UAP(lb_I_Long, ReportID)
+			UAP(lb_I_Long, Typ)
+			UAP(lb_I_Long, X)
+			UAP(lb_I_Long, Y)
+			UAP(lb_I_Long, W)
+			UAP(lb_I_Long, H)
+			UAP(lb_I_String, Name)
+			UAP(lb_I_String, Description)
 			err = q->first();
 			
 			while ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
-				UAP(lb_I_Long, ID)
-				UAP(lb_I_Long, ReportID)
-				UAP(lb_I_Long, Typ)
-				UAP(lb_I_Long, X)
-				UAP(lb_I_Long, Y)
-				UAP(lb_I_Long, W)
-				UAP(lb_I_Long, H)
-				UAP(lb_I_String, Name)
-				UAP(lb_I_String, Description)
-			
 				ID = q->getAsLong(1);
 				ReportID = q->getAsLong(2);
 				Typ = q->getAsLong(3);
@@ -410,13 +408,12 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_ReportElementTypes* reportelem
 	err = q->query(query->charrep());
 	
 	if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
+			UAP(lb_I_Long, ID)
+			UAP(lb_I_String, Name)
+			UAP(lb_I_String, Description)
 			err = q->first();
 			
 			while ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
-				UAP(lb_I_Long, ID)
-				UAP(lb_I_String, Name)
-				UAP(lb_I_String, Description)
-			
 				ID = q->getAsLong(1);
 				Name = q->getAsString(2);
 				Description = q->getAsString(3);
@@ -445,14 +442,13 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_ReportTexts* textlines) {
 	err = q->query(query->charrep());
 	
 	if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
+			UAP(lb_I_Long, ID)
+			UAP(lb_I_Long, ElementID)
+			UAP(lb_I_Long, Line)
+			UAP(lb_I_String, Text)
 			err = q->first();
 			
 			while ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
-				UAP(lb_I_Long, ID)
-				UAP(lb_I_Long, ElementID)
-				UAP(lb_I_Long, Line)
-				UAP(lb_I_String, Text)
-			
 				ID = q->getAsLong(1);
 				ElementID = q->getAsLong(2);
 				Line = q->getAsLong(3);
@@ -530,6 +526,21 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_DBForeignKeys* fkeys) {
 	Tables = db->getForeignKeys(ConnectionName->charrep());
 	
 	long i = 0;
+
+	UAP_REQUEST(getModuleInstance(), lb_I_String, currentPKTableCatalog)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, currentPKTableSchema)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, currentPKTableName)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, currentPKTableColumnName)
+
+	UAP_REQUEST(getModuleInstance(), lb_I_String, currentFKTableCatalog)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, currentFKTableSchema)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, currentFKTableName)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, currentFKTableColumnName)
+
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, currentID)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, currentKeySequence)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, currentUpdateRule)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, currentDeleteRule)
 	
 	while (Tables->hasMoreElements() == 1) {
 		UAP(lb_I_Unknown, uk)
@@ -538,21 +549,6 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_DBForeignKeys* fkeys) {
 		uk = Tables->nextElement();
 		QI(uk, lb_I_Parameter, param)
 		
-		UAP_REQUEST(getModuleInstance(), lb_I_String, currentPKTableCatalog)
-		UAP_REQUEST(getModuleInstance(), lb_I_String, currentPKTableSchema)
-		UAP_REQUEST(getModuleInstance(), lb_I_String, currentPKTableName)
-		UAP_REQUEST(getModuleInstance(), lb_I_String, currentPKTableColumnName)
-
-		UAP_REQUEST(getModuleInstance(), lb_I_String, currentFKTableCatalog)
-		UAP_REQUEST(getModuleInstance(), lb_I_String, currentFKTableSchema)
-		UAP_REQUEST(getModuleInstance(), lb_I_String, currentFKTableName)
-		UAP_REQUEST(getModuleInstance(), lb_I_String, currentFKTableColumnName)
-
-		UAP_REQUEST(getModuleInstance(), lb_I_Long, currentID)
-		UAP_REQUEST(getModuleInstance(), lb_I_Long, currentKeySequence)
-		UAP_REQUEST(getModuleInstance(), lb_I_Long, currentUpdateRule)
-		UAP_REQUEST(getModuleInstance(), lb_I_Long, currentDeleteRule)
-
 		*paramname = "PKTableCatalog";
 		param->getUAPString(*&paramname, *&currentPKTableCatalog);
 		*paramname = "PKTableSchema";
@@ -601,6 +597,15 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_DBPrimaryKeys* pkeys) {
 	
 	long i = 0;
 	
+	UAP_REQUEST(getModuleInstance(), lb_I_String, currentTableCatalog)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, currentTableSchema)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, currentTableName)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, currentColumnName)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, currentColumnName_V2)
+	
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, currentID)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, currentKeySequence)
+
 	while (Tables->hasMoreElements() == 1) {
 		UAP(lb_I_Unknown, uk)
 		UAP(lb_I_Parameter, param)
@@ -608,15 +613,6 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_DBPrimaryKeys* pkeys) {
 		uk = Tables->nextElement();
 		QI(uk, lb_I_Parameter, param)
 		
-		UAP_REQUEST(getModuleInstance(), lb_I_String, currentTableCatalog)
-		UAP_REQUEST(getModuleInstance(), lb_I_String, currentTableSchema)
-		UAP_REQUEST(getModuleInstance(), lb_I_String, currentTableName)
-		UAP_REQUEST(getModuleInstance(), lb_I_String, currentColumnName)
-		UAP_REQUEST(getModuleInstance(), lb_I_String, currentColumnName_V2)
-	
-		UAP_REQUEST(getModuleInstance(), lb_I_Long, currentID)
-		UAP_REQUEST(getModuleInstance(), lb_I_Long, currentKeySequence)
-
 		*paramname = "TableCatalog";
 		param->getUAPString(*&paramname, *&currentTableCatalog);
 		*paramname = "TableSchema";
@@ -653,6 +649,12 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_DBTables* tables) {
 	
 	long i = 0;
 	
+	UAP_REQUEST(getModuleInstance(), lb_I_String, szTableCatalog)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, szTableSchema)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, szTableName)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, szTableType)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, szTableRemarks)
+
 	while (Tables->hasMoreElements() == 1) {
 		UAP(lb_I_Unknown, uk)
 		UAP(lb_I_Parameter, param)
@@ -660,12 +662,6 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_DBTables* tables) {
 		uk = Tables->nextElement();
 		QI(uk, lb_I_Parameter, param)
 		
-		UAP_REQUEST(getModuleInstance(), lb_I_String, szTableCatalog)
-		UAP_REQUEST(getModuleInstance(), lb_I_String, szTableSchema)
-		UAP_REQUEST(getModuleInstance(), lb_I_String, szTableName)
-		UAP_REQUEST(getModuleInstance(), lb_I_String, szTableType)
-		UAP_REQUEST(getModuleInstance(), lb_I_String, szTableRemarks)
-
 		*name = "TableCatalog";
 		param->getUAPString(*&name, *&szTableCatalog);
 		*name = "TableSchema";
@@ -695,32 +691,32 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_DBColumns* columns) {
 	
 	long i = 0;
 	
+	UAP_REQUEST(getModuleInstance(), lb_I_String, szCatalog)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, szSchema)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, szTableName)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, szColumnName)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, szTypeName)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, szRemarks)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, szIsNullable)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, szColumnDefault)
+
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, DataType)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, ColumnSize)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, BufferLength)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, DecimalDigits)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, NumPrecRadix)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, Nullable)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, SQLDataType)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, DatetimeSubtypeCode)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, CharOctetLength)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, OrdinalPosition)
+
 	while (Columns->hasMoreElements() == 1) {
 		UAP(lb_I_Unknown, uk)
 		UAP(lb_I_Parameter, param)
 		
 		uk = Columns->nextElement();
 		QI(uk, lb_I_Parameter, param)
-			
-		UAP_REQUEST(getModuleInstance(), lb_I_String, szCatalog)
-		UAP_REQUEST(getModuleInstance(), lb_I_String, szSchema)
-		UAP_REQUEST(getModuleInstance(), lb_I_String, szTableName)
-		UAP_REQUEST(getModuleInstance(), lb_I_String, szColumnName)
-		UAP_REQUEST(getModuleInstance(), lb_I_String, szTypeName)
-		UAP_REQUEST(getModuleInstance(), lb_I_String, szRemarks)
-		UAP_REQUEST(getModuleInstance(), lb_I_String, szIsNullable)
-		UAP_REQUEST(getModuleInstance(), lb_I_String, szColumnDefault)
-
-		UAP_REQUEST(getModuleInstance(), lb_I_Long, DataType)
-		UAP_REQUEST(getModuleInstance(), lb_I_Long, ColumnSize)
-		UAP_REQUEST(getModuleInstance(), lb_I_Long, BufferLength)
-		UAP_REQUEST(getModuleInstance(), lb_I_Long, DecimalDigits)
-		UAP_REQUEST(getModuleInstance(), lb_I_Long, NumPrecRadix)
-		UAP_REQUEST(getModuleInstance(), lb_I_Long, Nullable)
-		UAP_REQUEST(getModuleInstance(), lb_I_Long, SQLDataType)
-		UAP_REQUEST(getModuleInstance(), lb_I_Long, DatetimeSubtypeCode)
-		UAP_REQUEST(getModuleInstance(), lb_I_Long, CharOctetLength)
-		UAP_REQUEST(getModuleInstance(), lb_I_Long, OrdinalPosition)
 
 		*name = "TableCatalog";
 		param->getUAPString(*&name, *&szCatalog);
@@ -800,11 +796,6 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Translations* trans) {
 		trans->addTranslation(qText->charrep(), qTranslated->charrep(), qLanguage->charrep(), qID->getData());
 
 		while ((err = q->next()) == ERR_NONE || err == WARN_DB_NODATA) {
-			UAP(lb_I_Long, qID)
-			UAP(lb_I_String, qText)
-			UAP(lb_I_String, qTranslated)
-			UAP(lb_I_String, qLanguage)
-		
 			qID = q->getAsLong(1);
 			qText = q->getAsString(2);
 			qTranslated = q->getAsString(3);

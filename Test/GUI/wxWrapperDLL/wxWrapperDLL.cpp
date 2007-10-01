@@ -2296,7 +2296,10 @@ lbErrCodes LB_STDCALL lb_wxFrame::setText_To_StatusBarTextArea(lb_I_Unknown* uk)
 		QI(uk_index, lb_I_Integer, index)
 		
 		wxStatusBar* sb = GetStatusBar();
-		if (sb != NULL) sb->SetStatusText(value->charrep(), index->getData() - 1);
+		if (sb != NULL) {
+		    sb->SetStatusText(value->charrep(), index->getData() - 1);
+		    sb->Update();
+		}
 	
 		err = ERR_NONE;
 	}
