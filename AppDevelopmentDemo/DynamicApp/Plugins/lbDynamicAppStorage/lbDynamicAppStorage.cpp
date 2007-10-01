@@ -235,7 +235,7 @@ lbErrCodes LB_STDCALL lbDynamicAppXMLStorage::save(lb_I_OutputStream* oStream) {
 	// Mark that data sets, that are related to this application
 	applications = meta->getApplicationModel();
 	
-	meta->setStatusText("Info", "Mark application to be exported ...");
+	meta->setStatusText("Info", "Write XML document ...");
 	
 	applications->selectApplication(AppID->getData());
 	applications->mark();
@@ -262,30 +262,51 @@ lbErrCodes LB_STDCALL lbDynamicAppXMLStorage::save(lb_I_OutputStream* oStream) {
 		*oStream << "<lbDMF applicationid=\"";
 		*oStream << AppID->charrep() << "\">\n";
 		
+		meta->setStatusText("Info", "Write XML document (reports) ...");
 		reports->accept(*&aspect);
+		meta->setStatusText("Info", "Write XML document (reportparams) ...");
 		reportparams->accept(*&aspect);
+		meta->setStatusText("Info", "Write XML document (reportelements) ...");
 		reportelements->accept(*&aspect);
+		meta->setStatusText("Info", "Write XML document (reportelementtypes) ...");
 		reportelementtypes->accept(*&aspect);
+		meta->setStatusText("Info", "Write XML document (reporttextblocks) ...");
 		reporttextblocks->accept(*&aspect);
 	
+		meta->setStatusText("Info", "Write XML document (applications) ...");
 		applications->accept(*&aspect);
+		meta->setStatusText("Info", "Write XML document (forms) ...");
 		forms->accept(*&aspect);
+		meta->setStatusText("Info", "Write XML document (dbPrimaryKeys) ...");
 		dbPrimaryKeys->accept(*&aspect);
+		meta->setStatusText("Info", "Write XML document (dbForeignKeys) ...");
 		dbForeignKeys->accept(*&aspect);
+		meta->setStatusText("Info", "Write XML document (dbTables) ...");
 		dbTables->accept(*&aspect);
+		meta->setStatusText("Info", "Write XML document (dbColumns) ...");
 		dbColumns->accept(*&aspect);
+		meta->setStatusText("Info", "Write XML document (formularfields) ...");
 		formularfields->accept(*&aspect);
+		meta->setStatusText("Info", "Write XML document (columntypes) ...");
 		columntypes->accept(*&aspect);
+		meta->setStatusText("Info", "Write XML document (formActions) ...");
 		formActions->accept(*&aspect);
+		meta->setStatusText("Info", "Write XML document (formParams) ...");
 		formParams->accept(*&aspect);
+		meta->setStatusText("Info", "Write XML document (appParams) ...");
 		appParams->accept(*&aspect);
+		meta->setStatusText("Info", "Write XML document (appActions) ...");
 		appActions->accept(*&aspect);
+		meta->setStatusText("Info", "Write XML document (appActionTypes) ...");
 		appActionTypes->accept(*&aspect);
+		meta->setStatusText("Info", "Write XML document (appActionSteps) ...");
 		appActionSteps->accept(*&aspect);
 
 		*oStream << "</lbDMF>\n";
 	}
 	_LOG << "lbDynamicAppXMLStorage::save(lb_I_OutputStream* oStream) returns" LOG_
+
+	meta->setStatusText("Info", "Done writing XML document ...");
 	return err;
 }
 

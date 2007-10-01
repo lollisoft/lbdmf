@@ -5439,6 +5439,8 @@ lb_I_Container* LB_STDCALL lbDatabase::getTables(char* connectionname) {
 	UAP_REQUEST(getModuleInstance(), lb_I_Container, tables)
 	tables++;
 	
+	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
+	
 	UAP_REQUEST(manager.getPtr(), lb_I_String, ConnectionName)
 	*ConnectionName = connectionname;
 	
@@ -5493,6 +5495,8 @@ lb_I_Container* LB_STDCALL lbDatabase::getTables(char* connectionname) {
 	SQLBindCol(hstmt, 4, SQL_C_CHAR, szTableType, TAB_LEN, &cbTableType);
 	SQLBindCol(hstmt, 5, SQL_C_CHAR, szTableRemarks, REM_LEN, &cbTableRemarks);
 	
+	meta->setStatusText("Info", "Get tables ...");
+	
 	retcode = SQLTables(hstmt, NULL, 0, NULL, 0, NULL, 0, NULL, 0);
 		
 	UAP_REQUEST(getModuleInstance(), lb_I_String, name)
@@ -5502,6 +5506,8 @@ lb_I_Container* LB_STDCALL lbDatabase::getTables(char* connectionname) {
 	QI(index, lb_I_KeyBase, key)
 	
 	long i = 0;
+
+	UAP_REQUEST(getModuleInstance(), lb_I_String, msg)
 	
 	while(retcode == SQL_SUCCESS) {
 		retcode = SQLFetch(hstmt);
@@ -5536,6 +5542,12 @@ lb_I_Container* LB_STDCALL lbDatabase::getTables(char* connectionname) {
 
 			UAP(lb_I_Unknown, uk)
 			QI(param, lb_I_Unknown, uk)
+
+			*msg = "Get table ";
+			*msg += szTableName;
+			*msg += " ...";
+
+			meta->setStatusText("Info", msg->charrep());
 				 
 			tables->insert(&uk, &key);
 		}
@@ -5550,6 +5562,10 @@ lb_I_Container* LB_STDCALL lbDatabase::getColumns(char* connectionname) {
 	lbErrCodes err = ERR_NONE;
 	UAP_REQUEST(getModuleInstance(), lb_I_Container, columns)
 	columns++;
+
+	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, msg)
+	meta->setStatusText("Info", "Get columns ...");
 	
 	UAP_REQUEST(manager.getPtr(), lb_I_String, ConnectionName)
 	*ConnectionName = connectionname;
@@ -5639,7 +5655,7 @@ lb_I_Container* LB_STDCALL lbDatabase::getColumns(char* connectionname) {
 		long i = 0;
 		
 		_LOG << "lbDatabase::getColumns() short before fetching column informations." LOG_
-		
+
 		while(retcode == SQL_SUCCESS) {
 			retcode = SQLFetch(hstmt);
 			if (retcode == SQL_ERROR || retcode == SQL_SUCCESS_WITH_INFO) {
@@ -5730,6 +5746,15 @@ lb_I_Container* LB_STDCALL lbDatabase::getColumns(char* connectionname) {
 				 UAP(lb_I_Unknown, uk)
 				 QI(param, lb_I_Unknown, uk)
 				 
+				*msg = "Get column ";
+				*msg += szColumnName;
+				*msg += " of table ";
+				*msg += szTableName;
+				*msg += " ...";
+
+				meta->setStatusText("Info", msg->charrep());
+				 
+				 
 				columns->insert(&uk, &key);
 			 }
 		 }
@@ -5748,6 +5773,10 @@ lb_I_Container* LB_STDCALL lbDatabase::getPrimaryKeys(char* connectionname) {
 #define COL_LEN SQL_MAX_COLUMN_NAME_LEN + 1
 	UAP_REQUEST(getModuleInstance(), lb_I_Container, PrimaryKeys)
 	PrimaryKeys++;
+
+	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, msg)
+	meta->setStatusText("Info", "Get primary keys ...");
 
 	UCHAR TableCatalog[TAB_LEN];
 	UCHAR TableSchema[TAB_LEN];
@@ -5873,13 +5902,14 @@ lb_I_Container* LB_STDCALL lbDatabase::getPrimaryKeys(char* connectionname) {
 				
 				UAP(lb_I_Unknown, uk)
 					QI(param, lb_I_Unknown, uk)
-#ifdef bla
-					_LOG << "Insert a primary key entry: TableCatalog=" << (const char*) TableCatalog << 
-					", TableSchema=" << (const char*) TableSchema << 
-					", TableName=" << (const char*) TableName << 
-					", ColumnName=" << (const char*) ColumnName << 
-					", ColumnName_V2=" << (const char*) ColumnName_V2 LOG_
-#endif			
+
+					*msg = "Get primary column ";
+					*msg += ColumnName;
+					*msg += " of table ";
+					*msg += TableName;
+					*msg += " ...";
+
+					meta->setStatusText("Info", msg->charrep());
 					
 					PrimaryKeys->insert(&uk, &key);
 			}	
@@ -5901,6 +5931,10 @@ lb_I_Container* LB_STDCALL lbDatabase::getForeignKeys(char* connectionname) {
 	UAP_REQUEST(getModuleInstance(), lb_I_Container, ForeignKeys)
 	ForeignKeys++;
 	
+	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, msg)
+	meta->setStatusText("Info", "Get foreign keys ...");
+		
 	UCHAR PKTableCatalog[TAB_LEN];
 	UCHAR PKTableSchema[TAB_LEN];
 	UCHAR PKTableName[TAB_LEN];
@@ -6057,6 +6091,19 @@ lb_I_Container* LB_STDCALL lbDatabase::getForeignKeys(char* connectionname) {
 				
 				UAP(lb_I_Unknown, uk)
 					QI(param, lb_I_Unknown, uk)
+					
+					*msg = "Get foreign column ";
+					*msg += FKTableColumnName;
+					*msg += " of table ";
+					*msg += FKTableName;
+					*msg += " pointing to column ";
+					*msg += PKTableColumnName;
+					*msg += " of table ";
+					*msg += PKTableName;
+					*msg += " ...";
+
+					meta->setStatusText("Info", msg->charrep());
+	
 					
 					ForeignKeys->insert(&uk, &key);
 			}
