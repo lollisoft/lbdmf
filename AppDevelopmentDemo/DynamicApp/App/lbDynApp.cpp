@@ -955,7 +955,9 @@ lbErrCodes LB_STDCALL lbDynamicApplication::getDynamicDBForm(lb_I_Unknown* uk) {
 				return err;
 			}
 		
-			dbForm = gui->createDBForm(	forms->getName(),
+			*formName = forms->getName();
+		
+			dbForm = gui->createDBForm(	formName->charrep(),
 							formParams->getParameter("query", forms->getFormularID()), 
 							DBName->charrep(), 
 							DBUser->charrep(), 
@@ -1101,8 +1103,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::getDynamicDBForm(lb_I_Unknown* uk) {
 					
 				}		
 			
-			_CL_LOG << "Create a database form for " << formName->charrep() << " with " << query->charrep() LOG_
-				
+				*formName = forms->getName();
 				dbForm = gui->createDBForm(formName->charrep(), query->charrep(), 
 										   DBName->charrep(), DBUser->charrep(), DBPass->charrep());
 			

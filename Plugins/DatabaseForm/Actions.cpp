@@ -108,8 +108,10 @@ lbErrCodes LB_STDCALL lbAction::setData(lb_I_Unknown* uk) {
 }
 
 lbAction::lbAction() {
+	lbErrCodes err = ERR_NONE;
 	ref = STARTREF;
 	myActionID = NULL;
+	initialized = false;
 }
 
 lbAction::~lbAction() {
@@ -181,6 +183,78 @@ void makePluginName(char* path, char* module, char*& result) {
 
 /*...svoid LB_STDCALL lbAction\58\\58\delegate\40\lb_I_Parameter\42\ params\41\:0:*/
 void LB_STDCALL lbAction::delegate(lb_I_Parameter* params) {
+	lbErrCodes err = ERR_NONE;
+	
+	UAP(lb_I_Unknown, uk)
+	UAP(lb_I_Parameter, docparams)
+	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
+	
+	uk = meta->getActiveDocument();
+	QI(uk, lb_I_Parameter, docparams)
+
+	if (docparams != NULL && !initialized) {
+		initialized = true;
+		// Try to retrieve current document's data. Later on this will be preffered before plain SQL queries.
+		UAP_REQUEST(getModuleInstance(), lb_I_Container, document)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+		UAP(lb_I_KeyBase, key)
+		UAP(lb_I_Unknown, uk)
+
+		docparams->setCloning(false);
+		document->setCloning(false);
+		
+		QI(name, lb_I_KeyBase, key)
+		*name = "ApplicationData";
+		docparams->getUAPContainer(*&name, *&document);
+
+		*name = "Formulars";
+		uk = document->getElement(&key);
+		QI(uk, lb_I_Formulars, forms)
+
+		*name = "FormularFields";
+		uk = document->getElement(&key);
+		QI(uk, lb_I_Formular_Fields, formularfields)
+
+		*name = "FormActions";
+		uk = document->getElement(&key);
+		QI(uk, lb_I_Formular_Actions, formActions)
+
+		*name = "FormParams";
+		uk = document->getElement(&key);
+		QI(uk, lb_I_FormularParameter, formParams)
+
+		*name = "AppParams";
+		uk = document->getElement(&key);
+		QI(uk, lb_I_ApplicationParameter, appParams)
+
+		*name = "AppActions";
+		uk = document->getElement(&key);
+		QI(uk, lb_I_Actions, appActions)
+		
+		*name = "AppAction_Steps";
+		uk = document->getElement(&key);
+		QI(uk, lb_I_Action_Steps, appActionSteps)
+		
+		*name = "AppActionTypes";
+		uk = document->getElement(&key);
+		QI(uk, lb_I_Action_Types, appActionTypes)
+
+
+		if ((forms == NULL) || 
+		(formParams == NULL) || 
+		(appActions == NULL) || 
+		(appActionSteps == NULL) || 
+		(appActionTypes == NULL) ||
+		(appParams == NULL)) {
+			_LOG << "Error: Could not recieve one of the required document elements of application!" LOG_
+		} else {
+			// Preload more data.
+			
+			
+		}
+	}
+
+	
 	/*
 	 Resolve the parameters that we need here.
 	 Currently only the id of the action step.
@@ -204,7 +278,6 @@ void LB_STDCALL lbAction::delegate(lb_I_Parameter* params) {
 	
 	UAP_REQUEST(getModuleInstance(), lb_I_String, id)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, parameter)
-	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
 		
 	if (actions == NULL) {
 		REQUEST(manager.getPtr(), lb_I_Container, actions)
@@ -212,212 +285,318 @@ void LB_STDCALL lbAction::delegate(lb_I_Parameter* params) {
 	
 	parameter->setData("id");
 	params->getUAPString(*&parameter, *&id);
-	
-	UAP(lb_I_Query, query)
+
+	if ((appActionTypes != NULL) && (appActionSteps != NULL)) {
+		_LOG << "Execute actions based on lbDMFDataModel classes." LOG_
+		appActionTypes->finishActionTypeIteration();
+		appActionSteps->finishActionStepIteration();
 		
-	query = db->getQuery("lbDMF", 0);
-	
-	char buf[] = "select action_handler, module from action_types inner join "
-		"action_steps on action_types.id = action_steps.type where action_steps.id = %s";
-	
-	char* q = (char*) malloc(strlen(buf)+strlen(id->charrep())+1);
-	q[0] = 0;
-	sprintf(q, buf, id->charrep());
-	
-	if (query->query(q) == ERR_NONE) {
-		lbErrCodes err = ERR_NONE;
-		UAP_REQUEST(manager.getPtr(), lb_I_String, key)
-		UAP(lb_I_KeyBase, ukey)
-			
-		err = query->first();
+		UAP_REQUEST(getModuleInstance(), lb_I_Container, OrderNumbers_To_ActionIDs)
+		UAP_REQUEST(getModuleInstance(), lb_I_Long, ActionID)
+		UAP_REQUEST(getModuleInstance(), lb_I_Long, ActionOrderNo)
+		UAP(lb_I_Unknown, ukActionId)
+		UAP(lb_I_KeyBase, keyOrderNo)
+		QI(ActionID, lb_I_Unknown, ukActionId)
+		QI(ActionOrderNo, lb_I_KeyBase, keyOrderNo)
 		
-		while (err == ERR_NONE) {
-			UAP_REQUEST(manager.getPtr(), lb_I_String, action_handler)
-			UAP_REQUEST(manager.getPtr(), lb_I_String, module)
-			UAP(lb_I_DelegatedAction, action)
+		// Use separate container to sort relevant action steps by their order number
+		
+		while (appActionSteps->hasMoreActionSteps()) {
+			appActionSteps->setNextActionStep();
+		
+			ActionID->setData(appActionSteps->getActionStepActionID());
 			
-			action_handler = query->getAsString(1);
-			module = query->getAsString(2);
-			action_handler->trim();
-			module->trim();
-			
-			key->setData(module->charrep());
-			*key += *&action_handler;
-			
-			QI(key, lb_I_KeyBase, ukey)
-				
-				if (actions->exists(&ukey) == 0) {
-					/*...sInstanciate one and insert into actions:32:*/
-					
-					UAP(lb_I_Unknown, result)
-					
-					char* ah = (char*) malloc(strlen(PREFIX)+strlen(action_handler->charrep())+1);
-					ah[0] = 0;
-					
-					strcat(ah, PREFIX);
-					strcat(ah, action_handler->charrep());
-					
-					char* home = NULL;
-					
-					#ifdef LINUX
-					home = getenv("HOME");
-					#endif
-					#ifdef WINDOWS
-					home = getenv("USERPROFILE");
-					#endif
-					
-					
-					makePluginName(home, module->charrep(), pluginModule);
-					
-					_LOG << "Try to load a plugin at: " << pluginModule LOG_
-					if (manager->makeInstance(ah, pluginModule,  &result) != ERR_NONE) {
-						
-						free(pluginModule);
-						char* pwd = getenv("PWD");
-						if (pwd == NULL) pwd = ".";
-						makePluginName(pwd, module->charrep(), pluginModule);
-						
-						_LOG << "Try to load a plugin at: " << pluginModule LOG_
-						if (manager->makeInstance(ah, pluginModule,  &result) != ERR_NONE) {
-						
-							free(pluginModule);
-							char* pwd = "/usr";
-							makePluginName(pwd, module->charrep(), pluginModule);
-						
-							if (manager->makeInstance(ah, pluginModule,  &result) != ERR_NONE) {
-							    _CL_LOG << "ERROR: Plugin could not be loaded." LOG_
-							}
-						}
-					}
-					
-					if (result == NULL) {
-						UAP_REQUEST(getModuleInstance(), lb_I_String, errmsg)
-						
-						*errmsg = "Failed to load module for configured action!\n\n";
-						*errmsg += "Module: ";
-						*errmsg += module->charrep();
-						*errmsg += "\nAction handler: ";
-						*errmsg += action_handler->charrep();
-						
-						
-						meta->msgBox("Error", errmsg->charrep());
-						return;
-					}
-
-					
-					result->setModuleManager(getModuleInstance(), __FILE__, __LINE__);
-					actions->insert(&result, &ukey);
-					/*...e*/
-				}
-			
-			UAP(lb_I_Unknown, uk)
-				
-			uk = actions->getElement(&ukey);
-			
-			QI(uk, lb_I_DelegatedAction, action)
-				
-			action->setActionID(id->charrep());	
-
-			wxString msg = wxString("Execute delegated action '") + wxString(action->getClassName()) + wxString("'");
-			meta->setStatusText("Info", msg.c_str());
-
-			action->execute(*&params);
-			
-			_CL_LOG << "References for delegated action are " << action->getRefCount() << "." LOG_
-				
-			err = query->next();
+			/// \todo Worse. Need better operators and assignment operators		
+			if (strcmp(ActionID->charrep(), id->charrep()) == 0) {
+				// Get the id of the action step <---------------------------------------------\
+				ActionID->setData(appActionSteps->getActionStepID());
+				ActionOrderNo->setData(appActionSteps->getActionStepOrderNo());
+				OrderNumbers_To_ActionIDs->insert(&ukActionId, &keyOrderNo);
+			}
 		}
 		
-		if (err == WARN_DB_NODATA) {
+		// Use the ordered temporal container to delegate actions.                              |
+		
+		while (OrderNumbers_To_ActionIDs->hasMoreElements() == 1) {
 			UAP_REQUEST(manager.getPtr(), lb_I_String, action_handler)
 			UAP_REQUEST(manager.getPtr(), lb_I_String, module)
-			UAP(lb_I_DelegatedAction, action)
+			UAP_REQUEST(manager.getPtr(), lb_I_String, key)
+			UAP(lb_I_KeyBase, keybase)
+			QI(key, lb_I_KeyBase, keybase)
+
+			ukActionId = OrderNumbers_To_ActionIDs->nextElement();
+			appActionSteps->selectActionStep(ActionID->getData()); // The stored action step id /
 			
-			action_handler = query->getAsString(1);
-			module = query->getAsString(2);
-			action_handler->trim();
-			module->trim();
+			appActionTypes->selectActionType(appActionSteps->getActionStepType());
 			
-			key->setData(module->charrep());
+			*action_handler = appActionTypes->getActionTypeHandler();
+			*module = appActionTypes->getActionTypeModule();
+			
+			*key = *&module;
 			*key += *&action_handler;
-			
-			QI(key, lb_I_KeyBase, ukey)
-				
-				if (actions->exists(&ukey) == 0) {
-					
-					UAP(lb_I_Unknown, result)
-					
-					char* ah = (char*) malloc(strlen(PREFIX)+strlen(action_handler->charrep())+1);
-					ah[0] = 0;
-					
-					strcat(ah, PREFIX);
-					strcat(ah, action_handler->charrep());
-					
-					char* home = NULL;
-					
-					#ifdef LINUX
-					home = getenv("HOME");
-					#endif
-					#ifdef WINDOWS
-					home = getenv("USERPROFILE");
-					#endif
-					
-					makePluginName(home, module->charrep(), pluginModule);
+
+			if (actions->exists(&keybase) == 0) {
+				/*...sInstanciate one and insert into actions:32:*/
+				UAP(lb_I_Unknown, result)
+				char* ah = (char*) malloc(strlen(PREFIX)+strlen(action_handler->charrep())+1);
+				ah[0] = 0;
+				strcat(ah, PREFIX);
+				strcat(ah, action_handler->charrep());
+				char* home = NULL;
+#ifdef LINUX
+				home = getenv("HOME");
+#endif
+#ifdef WINDOWS
+				home = getenv("USERPROFILE");
+#endif
+				makePluginName(home, module->charrep(), pluginModule);
+				_LOG << "Try to load a plugin at: " << pluginModule LOG_
+				if (manager->makeInstance(ah, pluginModule,  &result) != ERR_NONE) {
+					free(pluginModule);
+					char* pwd = getenv("PWD");
+					if (pwd == NULL) pwd = ".";
+					makePluginName(pwd, module->charrep(), pluginModule);
+						
 					_LOG << "Try to load a plugin at: " << pluginModule LOG_
 					if (manager->makeInstance(ah, pluginModule,  &result) != ERR_NONE) {
-						
 						free(pluginModule);
-						char* pwd = getenv("PWD");
-						if (pwd == NULL) pwd = ".";
+						char* pwd = "/usr";
 						makePluginName(pwd, module->charrep(), pluginModule);
-						_LOG << "Try to load a plugin at: " << pluginModule LOG_
 						if (manager->makeInstance(ah, pluginModule,  &result) != ERR_NONE) {
-						
-							free(pluginModule);
-							char* pwd = "/usr";
-							makePluginName(pwd, module->charrep(), pluginModule);
-						
-							if (manager->makeInstance(ah, pluginModule,  &result) != ERR_NONE) {
-							    _CL_LOG << "ERROR: Plugin could not be loaded." LOG_
-							}
+							_CL_LOG << "ERROR: Plugin could not be loaded." LOG_
 						}
-						
 					}
-					
-					if (result == NULL) {
-						UAP_REQUEST(getModuleInstance(), lb_I_String, errmsg)
-						
-						*errmsg = "Failed to load module for configured action!\n\n";
-						*errmsg += "Module: ";
-						*errmsg += module->charrep();
-						*errmsg += "\nAction handler: ";
-						*errmsg += action_handler->charrep();
-						
-						
-						meta->msgBox("Error", errmsg->charrep());
-						return;
-					}
-
-					result->setModuleManager(getModuleInstance(), __FILE__, __LINE__);
-					actions->insert(&result, &ukey);
-					/*...e*/
 				}
-			
+				if (result == NULL) {
+					UAP_REQUEST(getModuleInstance(), lb_I_String, errmsg)
+					*errmsg = "Failed to load module for configured action!\n\n";
+					*errmsg += "Module: ";
+					*errmsg += module->charrep();
+					*errmsg += "\nAction handler: ";
+					*errmsg += action_handler->charrep();
+					meta->msgBox("Error", errmsg->charrep());
+					return;
+				}
+				result->setModuleManager(getModuleInstance(), __FILE__, __LINE__);
+				actions->insert(&result, &keybase);
+				/*...e*/
+			}
+			UAP(lb_I_DelegatedAction, action)
 			UAP(lb_I_Unknown, uk)
-				
-			uk = actions->getElement(&ukey);
-			
+			uk = actions->getElement(&keybase);
 			QI(uk, lb_I_DelegatedAction, action)
-			action->setActionID(id->charrep());
-			
+			action->setActionID(id->charrep());	
 			wxString msg = wxString("Execute delegated action '") + wxString(action->getClassName()) + wxString("'");
 			meta->setStatusText("Info", msg.c_str());
-				
 			action->execute(*&params);
 		}
 	} else {
-		wxString errmsg = wxString("Error: Query for action handlers didn't found any handlers.");
-		meta->setStatusText("Info", errmsg.c_str());
+		UAP(lb_I_Query, query)
+		
+		query = db->getQuery("lbDMF", 0);
+		
+		char buf[] = "select action_handler, module from action_types inner join "
+			"action_steps on action_types.id = action_steps.type where action_steps.id = %s";
+		
+		char* q = (char*) malloc(strlen(buf)+strlen(id->charrep())+1);
+		q[0] = 0;
+		sprintf(q, buf, id->charrep());
+		
+		if (query->query(q) == ERR_NONE) {
+			lbErrCodes err = ERR_NONE;
+			UAP_REQUEST(manager.getPtr(), lb_I_String, key)
+			UAP(lb_I_KeyBase, ukey)
+				
+			err = query->first();
+			
+			while (err == ERR_NONE) {
+				UAP_REQUEST(manager.getPtr(), lb_I_String, action_handler)
+				UAP_REQUEST(manager.getPtr(), lb_I_String, module)
+				UAP(lb_I_DelegatedAction, action)
+				
+				action_handler = query->getAsString(1);
+				module = query->getAsString(2);
+				action_handler->trim();
+				module->trim();
+				
+				key->setData(module->charrep());
+				*key += *&action_handler;
+				
+				QI(key, lb_I_KeyBase, ukey)
+					
+					if (actions->exists(&ukey) == 0) {
+						/*...sInstanciate one and insert into actions:32:*/
+						
+						UAP(lb_I_Unknown, result)
+						
+						char* ah = (char*) malloc(strlen(PREFIX)+strlen(action_handler->charrep())+1);
+						ah[0] = 0;
+						
+						strcat(ah, PREFIX);
+						strcat(ah, action_handler->charrep());
+						
+						char* home = NULL;
+						
+#ifdef LINUX
+						home = getenv("HOME");
+#endif
+#ifdef WINDOWS
+						home = getenv("USERPROFILE");
+#endif
+						
+						
+						makePluginName(home, module->charrep(), pluginModule);
+						
+						_LOG << "Try to load a plugin at: " << pluginModule LOG_
+							if (manager->makeInstance(ah, pluginModule,  &result) != ERR_NONE) {
+								
+								free(pluginModule);
+								char* pwd = getenv("PWD");
+								if (pwd == NULL) pwd = ".";
+								makePluginName(pwd, module->charrep(), pluginModule);
+								
+								_LOG << "Try to load a plugin at: " << pluginModule LOG_
+									if (manager->makeInstance(ah, pluginModule,  &result) != ERR_NONE) {
+										
+										free(pluginModule);
+										char* pwd = "/usr";
+										makePluginName(pwd, module->charrep(), pluginModule);
+										
+										if (manager->makeInstance(ah, pluginModule,  &result) != ERR_NONE) {
+											_CL_LOG << "ERROR: Plugin could not be loaded." LOG_
+										}
+									}
+							}
+						
+						if (result == NULL) {
+							UAP_REQUEST(getModuleInstance(), lb_I_String, errmsg)
+							
+							*errmsg = "Failed to load module for configured action!\n\n";
+							*errmsg += "Module: ";
+							*errmsg += module->charrep();
+							*errmsg += "\nAction handler: ";
+							*errmsg += action_handler->charrep();
+							
+							
+							meta->msgBox("Error", errmsg->charrep());
+							return;
+						}
+						
+						
+						result->setModuleManager(getModuleInstance(), __FILE__, __LINE__);
+						actions->insert(&result, &ukey);
+						/*...e*/
+					}
+				
+				UAP(lb_I_Unknown, uk)
+					
+				uk = actions->getElement(&ukey);
+				
+				QI(uk, lb_I_DelegatedAction, action)
+					
+				action->setActionID(id->charrep());	
+				
+				wxString msg = wxString("Execute delegated action '") + wxString(action->getClassName()) + wxString("'");
+				meta->setStatusText("Info", msg.c_str());
+				
+				action->execute(*&params);
+				
+				_CL_LOG << "References for delegated action are " << action->getRefCount() << "." LOG_
+					
+					err = query->next();
+			}
+			
+			if (err == WARN_DB_NODATA) {
+				UAP_REQUEST(manager.getPtr(), lb_I_String, action_handler)
+				UAP_REQUEST(manager.getPtr(), lb_I_String, module)
+				UAP(lb_I_DelegatedAction, action)
+				
+				action_handler = query->getAsString(1);
+				module = query->getAsString(2);
+				action_handler->trim();
+				module->trim();
+				
+				key->setData(module->charrep());
+				*key += *&action_handler;
+				
+				QI(key, lb_I_KeyBase, ukey)
+					
+					if (actions->exists(&ukey) == 0) {
+						
+						UAP(lb_I_Unknown, result)
+						
+						char* ah = (char*) malloc(strlen(PREFIX)+strlen(action_handler->charrep())+1);
+						ah[0] = 0;
+						
+						strcat(ah, PREFIX);
+						strcat(ah, action_handler->charrep());
+						
+						char* home = NULL;
+						
+#ifdef LINUX
+						home = getenv("HOME");
+#endif
+#ifdef WINDOWS
+						home = getenv("USERPROFILE");
+#endif
+						
+						makePluginName(home, module->charrep(), pluginModule);
+						_LOG << "Try to load a plugin at: " << pluginModule LOG_
+							if (manager->makeInstance(ah, pluginModule,  &result) != ERR_NONE) {
+								
+								free(pluginModule);
+								char* pwd = getenv("PWD");
+								if (pwd == NULL) pwd = ".";
+								makePluginName(pwd, module->charrep(), pluginModule);
+								_LOG << "Try to load a plugin at: " << pluginModule LOG_
+									if (manager->makeInstance(ah, pluginModule,  &result) != ERR_NONE) {
+										
+										free(pluginModule);
+										char* pwd = "/usr";
+										makePluginName(pwd, module->charrep(), pluginModule);
+										
+										if (manager->makeInstance(ah, pluginModule,  &result) != ERR_NONE) {
+											_CL_LOG << "ERROR: Plugin could not be loaded." LOG_
+										}
+									}
+								
+							}
+						
+						if (result == NULL) {
+							UAP_REQUEST(getModuleInstance(), lb_I_String, errmsg)
+							
+							*errmsg = "Failed to load module for configured action!\n\n";
+							*errmsg += "Module: ";
+							*errmsg += module->charrep();
+							*errmsg += "\nAction handler: ";
+							*errmsg += action_handler->charrep();
+							
+							
+							meta->msgBox("Error", errmsg->charrep());
+							return;
+						}
+						
+						result->setModuleManager(getModuleInstance(), __FILE__, __LINE__);
+						actions->insert(&result, &ukey);
+						/*...e*/
+					}
+				
+				UAP(lb_I_Unknown, uk)
+					
+					uk = actions->getElement(&ukey);
+				
+				QI(uk, lb_I_DelegatedAction, action)
+					action->setActionID(id->charrep());
+				
+				wxString msg = wxString("Execute delegated action '") + wxString(action->getClassName()) + wxString("'");
+				meta->setStatusText("Info", msg.c_str());
+				
+				action->execute(*&params);
+			}
+		} else {
+			wxString errmsg = wxString("Error: Query for action handlers didn't found any handlers.");
+			meta->setStatusText("Info", errmsg.c_str());
+		}
 	}
 }
 /*...e*/

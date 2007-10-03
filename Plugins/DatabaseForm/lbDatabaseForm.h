@@ -30,11 +30,16 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.38 $
+ * $Revision: 1.39 $
  * $Name:  $
- * $Id: lbDatabaseForm.h,v 1.38 2007/08/08 19:48:50 lollisoft Exp $
+ * $Id: lbDatabaseForm.h,v 1.39 2007/10/03 17:39:19 lollisoft Exp $
  *
  * $Log: lbDatabaseForm.h,v $
+ * Revision 1.39  2007/10/03 17:39:19  lollisoft
+ * Changes to use data model classes instead of SQL queries.
+ * At the end the SQL queries for the system data should
+ * reside in visitor operations.
+ *
  * Revision 1.38  2007/08/08 19:48:50  lollisoft
  * Changes to allow using BLOB data fields. Not completely finished.
  *
@@ -293,11 +298,21 @@ protected:
 
 	void LB_STDCALL delegate(lb_I_Parameter* params);
 	
-
+	bool initialized;
 	char* myActionID;
 	UAP(lb_I_Database, db)
 	
 	UAP(lb_I_Container, actions)
+
+	UAP(lb_I_Formulars, forms)
+	UAP(lb_I_Formular_Fields, formularfields)
+	UAP(lb_I_Formular_Actions, formActions)
+	UAP(lb_I_FormularParameter, formParams)
+	UAP(lb_I_ApplicationParameter, appParams)
+	UAP(lb_I_Actions, appActions)
+	UAP(lb_I_Action_Steps, appActionSteps)
+	UAP(lb_I_Action_Types, appActionTypes)
+
 };
 /*...e*/
 
@@ -743,6 +758,8 @@ public:
 
 	// Preloaded data from database, if plugins are available.
 	UAP(lb_I_Formulars, forms)
+	UAP(lb_I_Formular_Fields, formularfields)
+	UAP(lb_I_Formular_Actions, formActions)
 	UAP(lb_I_FormularParameter, formParams)
 	UAP(lb_I_ApplicationParameter, appParams)
 	UAP(lb_I_Actions, appActions)

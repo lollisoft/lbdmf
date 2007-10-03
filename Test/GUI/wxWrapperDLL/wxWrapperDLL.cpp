@@ -996,7 +996,7 @@ lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::createDBForm(char* formName, char* query
 
 	// Locate the form instance in the container
 	
-	_CL_LOG << "Create database formular for '" << formName << "', '" << queryString << "', '" << DBName << "', '" << DBUser << "', '" << DBPass << "'" LOG_
+	_LOG << "Create database formular for '" << formName << "', '" << queryString << "', '" << DBName << "', '" << DBUser << "', '" << DBPass << "'" LOG_
 
 	if (frame->isPanelUsage()) {
 		if (!notebook) {
@@ -1109,18 +1109,22 @@ lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::createDBForm(char* formName, char* query
 		        QI(uk, lb_I_DatabaseForm, _dialog)
 		}
 
+		_LOG << "Set formname to " << formName LOG_
 		_dialog->setName(formName);
 
 		if (frame->isPanelUsage()) {
 			_dialog->create(notebook->GetId());
 		}
 		
+		_LOG << "Formname before init is " << formName LOG_
 		_dialog->init(queryString, DBName, DBUser, DBPass);
+		_LOG << "Formname after init is " << formName LOG_
 		
 		if (frame->isPanelUsage()) {
 			wxWindow* w = frame->FindWindowById(_dialog->getId());
 			w->Fit();
 			
+			_LOG << "Add notebook pane with name " << formName LOG_
 			notebook->AddPage(w, formName, true);
 			
 			if (!frame->IsMaximized()) {

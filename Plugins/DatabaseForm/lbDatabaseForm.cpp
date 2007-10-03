@@ -358,6 +358,9 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 		UAP_REQUEST(manager.getPtr(), lb_I_String, name)
 		UAP(lb_I_KeyBase, key)
 		UAP(lb_I_Unknown, uk)
+
+		params->setCloning(false);
+		document->setCloning(false);
 		
 		QI(name, lb_I_KeyBase, key)
 		*name = "ApplicationData";
@@ -366,7 +369,15 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 		*name = "Formulars";
 		uk = document->getElement(&key);
 		QI(uk, lb_I_Formulars, forms)
-		
+
+		*name = "FormularFields";
+		uk = document->getElement(&key);
+		QI(uk, lb_I_Formular_Fields, formularfields)
+
+		*name = "FormActions";
+		uk = document->getElement(&key);
+		QI(uk, lb_I_Formular_Actions, formActions)
+
 		*name = "FormParams";
 		uk = document->getElement(&key);
 		QI(uk, lb_I_FormularParameter, formParams)
@@ -593,7 +604,100 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 			
 			char* buffer = (char*) malloc(1000);
 			buffer[0] = 0;
+
+#ifdef bla			
+			UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
+			UAP_REQUEST(getModuleInstance(), lb_I_String, param)
+			UAP_REQUEST(getModuleInstance(), lb_I_Container, document)
+			UAP(lb_I_Unknown, ukParams)
+			UAP(lb_I_Parameter, params)
+			ukParams = meta->getActiveDocument();
+			QI(ukParams, lb_I_Parameter, params)
+			UAP_REQUEST(getModuleInstance(), lb_I_String, elementname)
+			UAP(lb_I_KeyBase, elementkey)
+			QI(elementname, lb_I_KeyBase, elementkey)
+
+			UAP(lb_I_Formulars, formulars)
+			UAP(lb_I_Formular_Fields, formularfields)
+
+			*param = "ApplicationData";
+			document->setCloning(false);
+			params->getUAPContainer(*&param, *&document);	
+
+			*elementname = "Formulars";
+			uk = document->getElement(&elementkey);
+			QI(uk, lb_I_Formulars, formulars)
+
+			*elementname = "FormularFields";
+			uk = document->getElement(&elementkey);
+			QI(uk, lb_I_Formular_Fields, formularfields)
+#endif
 			
+			bool definitionFound = false;
+
+			long ID = meta->getApplicationID();
+			while (forms->hasMoreFormulars()) {
+				forms->setNextFormular();
+				
+				if (forms->getApplicationID() == ID) {
+					if (strcmp(formName, forms->getName()) == 0) {
+						forms->finishFormularIteration();
+						break;
+					}
+				}
+			}
+			
+			long FormID = forms->getFormularID();
+			
+			while (formularfields->hasMoreFields()) {
+				formularfields->setNextField();
+				
+				if (formularfields->getFormularID() == FormID) {
+					if (strcmp(formularfields->getName(), name) == 0) {
+						definitionFound = true;
+						formularfields->finishFieldsIteration();
+						break;
+					}
+				}
+			}
+			
+			if (definitionFound == false) {
+				_CL_VERBOSE << "ERROR: No data column definition to be displayed instead of primary key.\n" LOG_
+				lbConfigure_FK_PK_MappingDialog* fkpkPanel = new lbConfigure_FK_PK_MappingDialog();
+				fkpkPanel->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+				// Pass through the target connection and the current query	
+				fkpkPanel->init(sampleQuery.getPtr(), DBName, DBUser, DBPass);
+				fkpkPanel->show();
+				fkpkPanel->destroy();
+				
+				long ID = meta->getApplicationID();
+				while (forms->hasMoreFormulars()) {
+					forms->setNextFormular();
+					
+					if (forms->getApplicationID() == ID) {
+						if (strcmp(formName, forms->getName()) == 0) {
+							forms->finishFormularIteration();
+							break;
+						}
+					}
+				}
+				
+				long FormID = forms->getFormularID();
+				
+				while (formularfields->hasMoreFields()) {
+					formularfields->setNextField();
+					
+					if (formularfields->getFormularID() == FormID) {
+						if (strcmp(formularfields->getName(), name) == 0) {
+							definitionFound = true;
+							formularfields->finishFieldsIteration();
+							break;
+						}
+					}
+				}
+			}
+
+#ifdef USE_FKPK_QUERY			
 /*...sGet column to display instead key:56:*/
 			sprintf(buffer, "select PKName, PKTable	from ForeignKey_VisibleData_Mapping "
 					"where FKName = '%s' and FKTable = '%s'", name, sampleQuery->getTableName(name));
@@ -627,30 +731,22 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 			
 			if (err == ERR_DB_NODATA) {
 				_CL_VERBOSE << "ERROR: No data column definition to be displayed instead of primary key.\n" LOG_
-			
-	
 				lbConfigure_FK_PK_MappingDialog* fkpkPanel = new lbConfigure_FK_PK_MappingDialog();
-				
 				fkpkPanel->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
-				
 				// Pass through the target connection and the current query	
 				fkpkPanel->init(sampleQuery.getPtr(), DBName, DBUser, DBPass);
-				
 				fkpkPanel->show();
-				
 				fkpkPanel->destroy();
 
 				FKColumnQuery1 = FKColumnQuery.getPtr();
-			
 				FKColumnQuery.resetPtr();
-
 				FKColumnQuery = lbDMF_DB->getQuery(DBName, 0);
-
 				FKColumnQuery->query(buffer);
-
 				err = FKColumnQuery->first();
 			}
-
+#else
+			err = ERR_NONE;
+#endif			
 			if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
 /*...sHave mapping to visible data for the combobox:64:*/
 				UAP_REQUEST(manager.getPtr(), lb_I_String, PKName)
@@ -660,10 +756,13 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 
 				UAP(lb_I_String, s)
 				
-				
+#ifdef USE_FKPK_QUERY			
 				PKName = FKColumnQuery->getAsString(1);
 				PKTable = FKColumnQuery->getAsString(2);
-					
+#else
+				*PKName = formularfields->getFKName(); /// \todo Semantically wrong. The foreign key of this query points to primary table's ID value. The function should be renamed.
+				*PKTable = formularfields->getFKTable(); 
+#endif					
 				wxChoice *cbox = new wxChoice(this, -1);
 				cbox->SetName(name);
 				
@@ -1169,102 +1268,125 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 	sizerAddRem->Add(buttonDelete, 1, wxEXPAND | wxALL, 5);
 
 /*...sAction handler initializion:8:*/
-	UAP(lb_I_Query, actionQuery)
-	
-	actionQuery = database->getQuery("lbDMF", 0);
 
+	//   formulars      <-      NM               ->   actions
+	if ((forms != NULL) && (formActions != NULL) && (appActions != NULL)) {
+		forms->finishFormularIteration();
+		formActions->finishFormularActionIteration();
+		appActions->finishActionIteration();
+		
+		while (forms->hasMoreFormulars()) {
+			forms->setNextFormular();
 
-	char *_actionquery = "select actions.name, formular_actions.event from actions "
+/*			
+			_LOG << "Compare formular '" << forms->getName() << 
+				"' of application " << forms->getApplicationID() << 
+				" with login application id " << meta->getApplicationID() LOG_
+*/
+			
+			if (forms->getApplicationID() == meta->getApplicationID()) {
+				if (strcmp(forms->getName(), formName) == 0) {
+					long FormID = forms->getFormularID();
+					
+					while (formActions->hasMoreFormularActions()) {
+						formActions->setNextFormularAction();
+						
+						if (formActions->getFormularActionFormularID() == FormID) {
+							// Actions for this formular
+							long ActionID = formActions->getFormularActionActionID();
+							char* eventName = formActions->getFormularActionEvent();
+							
+							appActions->selectAction(ActionID);
+							char* actionName = appActions->getActionName();
+							
+							int actionID = 0;
+							char *evName = (char*) malloc(strlen(eventName) + 20);
+							sprintf(evName, "%p(%s)", this, eventName);
+							eman->registerEvent(evName, actionID);
+							wxButton *actionButton = new wxButton(this, actionID, _trans(actionName));
+							dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDatabasePanel::OnActionButton, evName);
+							this->Connect( actionID,  -1, wxEVT_COMMAND_BUTTON_CLICKED,
+											(wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) &lbDatabasePanel::OnDispatch);
+							sizerActions->Add(actionButton, 1, wxEXPAND | wxALL, 5);
+						}
+					}
+				}
+			}
+		}
+	} else {
+		UAP(lb_I_Query, actionQuery)
+		_LOG << "Create actions for formular '" << formName << "' by query." LOG_
+		actionQuery = database->getQuery("lbDMF", 0);
+
+		char *_actionquery = "select actions.name, formular_actions.event from actions "
 			     "inner join formular_actions on actions.id = formular_actions.action "
 			     "inner join Formulare on formular_actions.formular = Formulare.id "
 			     "where Formulare.name = '%s'";
-
-	char *buf = (char*) malloc(strlen(_actionquery) + strlen(base_formName) + 1);
-	buf[0] = 0;
-	
-	sprintf(buf, _actionquery, base_formName);
-
-	_CL_LOG << "Have action query: '" << buf << "'" LOG_ 
-
-	actionQuery->skipFKCollecting();	
-	actionQuery->query(buf);
-	actionQuery->enableFKCollecting();
-	free(buf);
-
-	err = actionQuery->first();
-	
-/*...sloop through and find actions:16:*/
-	while (err == ERR_NONE) {
-		UAP(lb_I_String, action)
-		UAP(lb_I_String, actionWhat)
 		
-		action = actionQuery->getAsString(1);
-		actionWhat = actionQuery->getAsString(2);
-
-		actionWhat->trim();
-
-		int actionID = 0;
+		char *buf = (char*) malloc(strlen(_actionquery) + strlen(base_formName) + 1);
+		buf[0] = 0;
 		
-		char *eventName = (char*) malloc(strlen(actionWhat->charrep()) + 20);
+		sprintf(buf, _actionquery, base_formName);
 		
-		sprintf(eventName, "%p(%s)", this, actionWhat->charrep());
+		_CL_LOG << "Have action query: '" << buf << "'" LOG_ 
+			
+		actionQuery->skipFKCollecting();	
+		actionQuery->query(buf);
+		actionQuery->enableFKCollecting();
+		free(buf);
 		
-		eman->registerEvent(eventName, actionID);
+		err = actionQuery->first();
 		
-		action->trim();
+		/*...sloop through and find actions:16:*/
+		while (err == ERR_NONE) {
+			UAP(lb_I_String, action)
+			UAP(lb_I_String, actionWhat)
+			
+			action = actionQuery->getAsString(1);
+			actionWhat = actionQuery->getAsString(2);
+			
+			actionWhat->trim();
+			
+			int actionID = 0;
+			char *eventName = (char*) malloc(strlen(actionWhat->charrep()) + 20);
+			sprintf(eventName, "%p(%s)", this, actionWhat->charrep());
+			eman->registerEvent(eventName, actionID);
+			action->trim();
+			wxButton *actionButton = new wxButton(this, actionID, _trans(action->charrep())); //, wxPoint(), wxSize(100,20));
+			dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDatabasePanel::OnActionButton, eventName);
+			this->Connect( actionID,  -1, wxEVT_COMMAND_BUTTON_CLICKED,
+						   (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) &lbDatabasePanel::OnDispatch);
+			sizerActions->Add(actionButton, 1, wxEXPAND | wxALL, 5);
+			_CL_LOG << "Added an action (while loop): " << eventName LOG_
+			free(eventName);
+			err = actionQuery->next();
+		}
 		
-		wxButton *actionButton = new wxButton(this, actionID, _trans(action->charrep())); //, wxPoint(), wxSize(100,20));
-		
-		dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDatabasePanel::OnActionButton, eventName);
-		
-		this->Connect( actionID,  -1, wxEVT_COMMAND_BUTTON_CLICKED,
-		        (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) &lbDatabasePanel::OnDispatch);
-	
-		sizerActions->Add(actionButton, 1, wxEXPAND | wxALL, 5);
-
-		_CL_LOG << "Added an action (while loop): " << eventName LOG_
-
-		free(eventName);
-
-		err = actionQuery->next();
+		/*...e*/
+		/*...sget last action:16:*/
+		if (err == WARN_DB_NODATA) {
+			UAP(lb_I_String, action)
+			UAP(lb_I_String, actionWhat)
+			action = actionQuery->getAsString(1);
+			actionWhat = actionQuery->getAsString(2);
+			actionWhat->trim();
+			int actionID = 0;
+			char *eventName = (char*) malloc(strlen(actionWhat->charrep()) + 20);
+			sprintf(eventName, "%p(%s)", this, actionWhat->charrep());
+			eman->registerEvent(eventName, actionID);
+			action->trim();
+			wxButton *actionButton = new wxButton(this, actionID, _trans(action->charrep())); //, wxPoint(), wxSize(100,20));
+			dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDatabasePanel::OnActionButton, eventName);
+			this->Connect( actionID,  -1, wxEVT_COMMAND_BUTTON_CLICKED,
+						   (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) &lbDatabasePanel::OnDispatch);
+			sizerActions->Add(actionButton, 1, wxEXPAND | wxALL, 5);
+			_CL_LOG << "Added an action: " << eventName LOG_
+			free(eventName);
+		}
+/*...e*/
+/*...e*/
 	}
-/*...e*/
-/*...sget last action:16:*/
-	if (err == WARN_DB_NODATA) {
-		UAP(lb_I_String, action)
-		UAP(lb_I_String, actionWhat)
-		
-		action = actionQuery->getAsString(1);
-		actionWhat = actionQuery->getAsString(2);
-
-		actionWhat->trim();
-
-		int actionID = 0;
-		
-		char *eventName = (char*) malloc(strlen(actionWhat->charrep()) + 20);
-		
-		sprintf(eventName, "%p(%s)", this, actionWhat->charrep());
-
-		eman->registerEvent(eventName, actionID);
-		
-		action->trim();
-		
-		wxButton *actionButton = new wxButton(this, actionID, _trans(action->charrep())); //, wxPoint(), wxSize(100,20));
-
-		dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDatabasePanel::OnActionButton, eventName);
-		
-		this->Connect( actionID,  -1, wxEVT_COMMAND_BUTTON_CLICKED,
-		        (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) &lbDatabasePanel::OnDispatch);
-		
-		sizerActions->Add(actionButton, 1, wxEXPAND | wxALL, 5);
-
-		_CL_LOG << "Added an action: " << eventName LOG_
-		
-		free(eventName);
 	
-	}
-/*...e*/
-/*...e*/
 
 _CL_LOG << "Connect event handlers" LOG_
 /*...sconnect event handlers:8:*/

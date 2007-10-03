@@ -243,14 +243,15 @@
 							<array>
 								<string>270BA7B6086C0A0900799F65</string>
 								<string>1C37FBAC04509CD000000102</string>
+								<string>275A5D2E0CA3E69E00D366CC</string>
 								<string>1C37FAAC04509CD000000102</string>
 								<string>1C37FABC05509CD000000102</string>
 							</array>
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
-									<integer>98</integer>
-									<integer>97</integer>
+									<integer>70</integer>
+									<integer>0</integer>
 								</array>
 							</array>
 							<key>PBXSmartGroupTreeModuleOutlineStateVisibleRectKey</key>
@@ -269,7 +270,7 @@
 							<real>294</real>
 						</array>
 						<key>RubberWindowFrame</key>
-						<string>2 121 1001 881 0 0 1280 1002 </string>
+						<string>23 121 1001 881 0 0 1280 1002 </string>
 					</dict>
 					<key>Module</key>
 					<string>PBXSmartGroupTreeModule</string>
@@ -285,7 +286,7 @@
 								<key>PBXProjectModuleGUID</key>
 								<string>1CE0B20306471E060097A5F4</string>
 								<key>PBXProjectModuleLabel</key>
-								<string>dynamic.cpp</string>
+								<string>formularactions.cpp</string>
 								<key>PBXSplitModuleInNavigatorKey</key>
 								<dict>
 									<key>Split0</key>
@@ -293,9 +294,9 @@
 										<key>PBXProjectModuleGUID</key>
 										<string>1CE0B20406471E060097A5F4</string>
 										<key>PBXProjectModuleLabel</key>
-										<string>dynamic.cpp</string>
+										<string>formularactions.cpp</string>
 										<key>bookmark</key>
-										<string>273C9E550C6CA89A00A1E074</string>
+										<string>275A5D360CA3E6A300D366CC</string>
 										<key>history</key>
 										<array>
 											<string>2778C2A50B5A4E1E003524C2</string>
@@ -328,7 +329,6 @@
 											<string>278594370B6CF61F00112EF0</string>
 											<string>278594380B6CF61F00112EF0</string>
 											<string>278594390B6CF61F00112EF0</string>
-											<string>2785943A0B6CF61F00112EF0</string>
 											<string>2785943B0B6CF61F00112EF0</string>
 											<string>2785943D0B6CF61F00112EF0</string>
 											<string>2785943E0B6CF61F00112EF0</string>
@@ -381,7 +381,8 @@
 											<string>279FCFDE0C3D11DF0036A75B</string>
 											<string>2773F23C0C3D1B740037A8EB</string>
 											<string>2773F23D0C3D1B740037A8EB</string>
-											<string>2773F2530C3D1F3E0037A8EB</string>
+											<string>275A5D2F0CA3E69E00D366CC</string>
+											<string>275A5D300CA3E69E00D366CC</string>
 										</array>
 										<key>prevStack</key>
 										<array>
@@ -469,6 +470,7 @@
 											<string>27E413FA0B73F3B00050006B</string>
 											<string>27E414380B73FEC20050006B</string>
 											<string>2773F23F0C3D1B740037A8EB</string>
+											<string>275A5D310CA3E69E00D366CC</string>
 										</array>
 									</dict>
 									<key>SplitCount</key>
@@ -482,7 +484,7 @@
 								<key>Frame</key>
 								<string>{{0, 0}, {684, 677}}</string>
 								<key>RubberWindowFrame</key>
-								<string>2 121 1001 881 0 0 1280 1002 </string>
+								<string>23 121 1001 881 0 0 1280 1002 </string>
 							</dict>
 							<key>Module</key>
 							<string>PBXNavigatorGroup</string>
@@ -502,7 +504,7 @@
 								<key>Frame</key>
 								<string>{{0, 684}, {684, 155}}</string>
 								<key>RubberWindowFrame</key>
-								<string>2 121 1001 881 0 0 1280 1002 </string>
+								<string>23 121 1001 881 0 0 1280 1002 </string>
 							</dict>
 							<key>Module</key>
 							<string>XCDetailModule</string>
@@ -526,9 +528,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>273C9E100C6C952100A1E074</string>
+				<string>275A5D330CA3E69E00D366CC</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>273C9E110C6C952100A1E074</string>
+				<string>275A5D340CA3E69E00D366CC</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -559,7 +561,7 @@
 		<string>/Users/lothar/develop/Projects/CPP/Compilers/XCode/DMF/DMF.xcode</string>
 	</array>
 	<key>WindowString</key>
-	<string>2 121 1001 881 0 0 1280 1002 </string>
+	<string>23 121 1001 881 0 0 1280 1002 </string>
 	<key>WindowTools</key>
 	<array>
 		<dict>
