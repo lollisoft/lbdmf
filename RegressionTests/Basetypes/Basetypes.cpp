@@ -122,6 +122,19 @@ int main(int argc, char *argv[]) {
 
 	_CL_LOG << "Test basetypes" LOG_
 
+	UAP_REQUEST(mm, lb_I_Long, l1)
+	UAP_REQUEST(mm, lb_I_Long, l2)
+
+	l1->setData(1);
+	l2->setData(1);
+
+	if (l1->equals(*&l2)) {
+	    _CL_LOG << "Long values are equal." LOG_
+	} else {
+	    _CL_LOG << "Long values are not equal." LOG_	
+	}
+
+
 	UAP_REQUEST(mm, lb_I_String, string1)
 	char buf1[100] = "";
 	UAP_REQUEST(mm, lb_I_String, string2)

@@ -22,9 +22,9 @@
     The author of this work will be reached by e-Mail or paper mail.
     e-Mail: lothar.behrens@lollisoft.de
     p-Mail: Lothar Behrens
-            Rosmarinstr. 3
+            Heinrich-Scheufelen-Platz 2
             
-            40235 Duesseldorf (germany)
+	    73252 Lenningen (germany)
 */
 /*...e*/
 /*...sclass lbDBReportAction:0:*/
@@ -37,7 +37,7 @@ public:
 	lbDBReportAction();
 	virtual ~lbDBReportAction();
 
-	void LB_STDCALL setActionID(char* id);	
+	void LB_STDCALL setActionID(long id);	
 	void LB_STDCALL execute(lb_I_Parameter* params);
 
 	void LB_STDCALL setDatabase(lb_I_Database* _db);
@@ -48,7 +48,7 @@ protected:
 
 	void LB_STDCALL openReport(lb_I_String* reportname, lb_I_Parameter* params);
 
-	char* myActionID;
+	long myActionID;
 	UAP(lb_I_Database, db)
 	UAP(lb_I_String, app)
 	UAP(lb_I_String, masterForm)

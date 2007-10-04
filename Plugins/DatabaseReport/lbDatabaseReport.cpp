@@ -367,13 +367,12 @@ lbErrCodes LB_STDCALL lbDBReportAction::setData(lb_I_Unknown* uk) {
 
 lbDBReportAction::lbDBReportAction() {
 	ref = STARTREF;
-	myActionID = NULL;
+	myActionID = -1;
 	report = NULL;
 }
 
 lbDBReportAction::~lbDBReportAction() {
 	_CL_LOG << "lbDBReportAction::~lbDBReportAction() called." LOG_
-	free(myActionID);
 
 	if (report != NULL) { 
 		_CL_LOG << "Destroy a report..." LOG_
@@ -386,14 +385,8 @@ void LB_STDCALL lbDBReportAction::setDatabase(lb_I_Database* _db) {
 	db++;
 }
 
-void LB_STDCALL lbDBReportAction::setActionID(char* id) {
-	free(myActionID);
-	
-	if ((id != NULL) && (strlen(id) > 0)) {
-		myActionID = strdup(id);
-	} else {
-		_CL_LOG << "Error: Got an invalid action ID!" LOG_
-	}
+void LB_STDCALL lbDBReportAction::setActionID(long id) {
+	myActionID = id;
 }
 
 /*...svoid LB_STDCALL lbDBReportAction\58\\58\openReport\40\lb_I_String\42\ reportname\44\ lb_I_Parameter\42\ params\41\:0:*/
@@ -653,8 +646,8 @@ void LB_STDCALL lbDBReportAction::execute(lb_I_Parameter* params) {
 
 	query = database->getQuery("lbDMF", 0);	
 	
-	char buf[] = "select what from action_steps where id = %s";
-	char* q = (char*) malloc(strlen(buf)+strlen(myActionID)+1);
+	char buf[] = "select what from action_steps where id = %d";
+	char* q = (char*) malloc(strlen(buf)+20);
 	q[0] = 0;
 	sprintf(q, buf, myActionID);
 
