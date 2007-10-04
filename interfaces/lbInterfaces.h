@@ -3920,7 +3920,7 @@ public:
 	
 	/** \brief What is my action (from the database).
 	 */
-	virtual void LB_STDCALL setActionID(char* id) = 0;
+	virtual void LB_STDCALL setActionID(long id) = 0;
 };
 
 /**
@@ -3935,7 +3935,7 @@ public:
 	/** \brief The delegated action
 	 */
 	virtual void LB_STDCALL execute(lb_I_Parameter* params) = 0;
-	virtual void LB_STDCALL setActionID(char* id) = 0;
+	virtual void LB_STDCALL setActionID(long id) = 0;
 };
 /*...e*/
 

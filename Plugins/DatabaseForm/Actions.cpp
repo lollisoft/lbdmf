@@ -110,12 +110,12 @@ lbErrCodes LB_STDCALL lbAction::setData(lb_I_Unknown* uk) {
 lbAction::lbAction() {
 	lbErrCodes err = ERR_NONE;
 	ref = STARTREF;
-	myActionID = NULL;
+	myActionID = -1;
 	initialized = false;
 }
 
 lbAction::~lbAction() {
-	free(myActionID);
+	
 	_CL_LOG << "lbAction::~lbAction() called." LOG_
 	if (actions != NULL) {
 		_CL_LOG << "Have " << actions->Count() << " elements in action list." LOG_
@@ -125,15 +125,8 @@ lbAction::~lbAction() {
 }
 
 /*...svoid LB_STDCALL lbAction\58\\58\setActionID\40\char\42\ id\41\:0:*/
-void LB_STDCALL lbAction::setActionID(char* id) {
-	
-	free(myActionID);
-	
-	if ((id != NULL) && (strlen(id) > 0)) {
-		myActionID = strdup(id);
-	} else {
-		_CL_LOG << "Error: Got an invalid action ID!" LOG_
-	}
+void LB_STDCALL lbAction::setActionID(long id) {
+	myActionID = id;
 }
 /*...e*/
 
@@ -276,7 +269,7 @@ void LB_STDCALL lbAction::delegate(lb_I_Parameter* params) {
 	char* pluginModule = NULL;
 	
 	
-	UAP_REQUEST(getModuleInstance(), lb_I_String, id)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, id)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, parameter)
 		
 	if (actions == NULL) {
@@ -284,7 +277,7 @@ void LB_STDCALL lbAction::delegate(lb_I_Parameter* params) {
 	}
 	
 	parameter->setData("id");
-	params->getUAPString(*&parameter, *&id);
+	params->getUAPLong(*&parameter, *&id);
 
 	if ((appActionTypes != NULL) && (appActionSteps != NULL)) {
 		_LOG << "Execute actions based on lbDMFDataModel classes." LOG_
@@ -385,9 +378,10 @@ void LB_STDCALL lbAction::delegate(lb_I_Parameter* params) {
 			UAP(lb_I_Unknown, uk)
 			uk = actions->getElement(&keybase);
 			QI(uk, lb_I_DelegatedAction, action)
-			action->setActionID(id->charrep());	
+			action->setActionID(id->getData());	
 			wxString msg = wxString("Execute delegated action '") + wxString(action->getClassName()) + wxString("'");
 			meta->setStatusText("Info", msg.c_str());
+			_LOG << "Execute delegated action by document model..." LOG_
 			action->execute(*&params);
 		}
 	} else {
@@ -494,7 +488,7 @@ void LB_STDCALL lbAction::delegate(lb_I_Parameter* params) {
 				
 				QI(uk, lb_I_DelegatedAction, action)
 					
-				action->setActionID(id->charrep());	
+				action->setActionID(id->getData());	
 				
 				wxString msg = wxString("Execute delegated action '") + wxString(action->getClassName()) + wxString("'");
 				meta->setStatusText("Info", msg.c_str());
@@ -583,10 +577,10 @@ void LB_STDCALL lbAction::delegate(lb_I_Parameter* params) {
 				
 				UAP(lb_I_Unknown, uk)
 					
-					uk = actions->getElement(&ukey);
+				uk = actions->getElement(&ukey);
 				
 				QI(uk, lb_I_DelegatedAction, action)
-					action->setActionID(id->charrep());
+				action->setActionID(id->getData());
 				
 				wxString msg = wxString("Execute delegated action '") + wxString(action->getClassName()) + wxString("'");
 				meta->setStatusText("Info", msg.c_str());
@@ -619,8 +613,8 @@ void LB_STDCALL lbAction::execute(lb_I_Parameter* params) {
 
 	query = db->getQuery("lbDMF", 0);	
 	
-	char buf[] = "select id from action_steps where actionid = %s";
-	char* q = (char*) malloc(strlen(buf)+strlen(myActionID)+1);
+	char buf[] = "select id from action_steps where actionid = %d";
+	char* q = (char*) malloc(strlen(buf)+10);
 	q[0] = 0;
 	sprintf(q, buf, myActionID);
 
@@ -633,12 +627,12 @@ void LB_STDCALL lbAction::execute(lb_I_Parameter* params) {
 		lbErrCodes err = query->first();
 	
 		while(err == ERR_NONE) {
-			UAP_REQUEST(manager.getPtr(), lb_I_String, id)
+			UAP_REQUEST(manager.getPtr(), lb_I_Long, id)
 			
-			id = query->getAsString(1);
+			id = query->getAsLong(1);
 			
 			parameter->setData("id");
-			params->setUAPString(*&parameter, *&id);
+			params->setUAPLong(*&parameter, *&id);
 			
 			delegate(*&params);
 			
@@ -646,12 +640,12 @@ void LB_STDCALL lbAction::execute(lb_I_Parameter* params) {
 		}
 		
 		if (err == WARN_DB_NODATA) {
-			UAP_REQUEST(manager.getPtr(), lb_I_String, id)
+			UAP_REQUEST(manager.getPtr(), lb_I_Long, id)
 			
-			id = query->getAsString(1);
+			id = query->getAsLong(1);
 			
 			parameter->setData("id");
-			params->setUAPString(*&parameter, *&id);
+			params->setUAPLong(*&parameter, *&id);
 			
 			delegate(*&params);
 		}
@@ -678,17 +672,11 @@ lbErrCodes LB_STDCALL lbDetailFormAction::setData(lb_I_Unknown* uk) {
 
 lbDetailFormAction::lbDetailFormAction() {
 	ref = STARTREF;
-	myActionID = NULL;
+	myActionID = -1;
 	detailForm = NULL;
 }
 
 lbDetailFormAction::~lbDetailFormAction() {
-	free(myActionID);
-
-// lb_I_GUI implementation does this from now
-//	if (detailForm != NULL) { 
-//	    detailForm->destroy();
-//	}
 }
 
 void LB_STDCALL lbDetailFormAction::setDatabase(lb_I_Database* _db) {
@@ -696,30 +684,34 @@ void LB_STDCALL lbDetailFormAction::setDatabase(lb_I_Database* _db) {
 	db++;
 }
 
-void LB_STDCALL lbDetailFormAction::setActionID(char* id) {
-	free(myActionID);
-	
-	if ((id != NULL) && (strlen(id) > 0)) {
-		myActionID = strdup(id);
-	} else {
-		_CL_LOG << "Error: Got an invalid action ID!" LOG_
-	}
+void LB_STDCALL lbDetailFormAction::setActionID(long id) {
+	myActionID = id;
 }
 
 /*...svoid LB_STDCALL lbDetailFormAction\58\\58\openDetailForm\40\lb_I_String\42\ formularname\44\ lb_I_Parameter\42\ params\41\:0:*/
 void LB_STDCALL lbDetailFormAction::openDetailForm(lb_I_String* formularname, lb_I_Parameter* params) {
 	lbErrCodes err = ERR_NONE;
-	UAP_REQUEST(manager.getPtr(), lb_I_String, actionID)
+	UAP_REQUEST(manager.getPtr(), lb_I_Long, actionID)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
+
+	parameter->setData("DBName");
+	params->getUAPString(*&parameter, *&DBName);
+	parameter->setData("DBUser");
+	params->getUAPString(*&parameter, *&DBUser);
+	parameter->setData("DBPass");
+	params->getUAPString(*&parameter, *&DBPass);
+	parameter->setData("source Form");
+	params->getUAPString(*&parameter, *&masterForm);
+	parameter->setData("source value");
+	params->getUAPString(*&parameter, *&SourceFieldValue);
 
 	if (detailForm != NULL) {
 		_CL_VERBOSE << "Show previously created form." LOG_
 	
-		UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
-		
 		// Pass my action ID
 		parameter->setData("actionID");
-		*actionID = myActionID;
-		params->setUAPString(*&parameter, *&actionID);
+		actionID->setData(myActionID);
+		params->setUAPLong(*&parameter, *&actionID);
 		
 		parameter->setData("source value");
 		params->getUAPString(*&parameter, *&SourceFieldValue);
@@ -749,28 +741,102 @@ void LB_STDCALL lbDetailFormAction::openDetailForm(lb_I_String* formularname, lb
 	} else {
 		UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
 		UAP(lb_I_GUI, gui)
-	
 		meta->getGUI(&gui);
 
-		UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
+
+		UAP(lb_I_Unknown, uk)
+		UAP(lb_I_Parameter, docparams)
+			
+		uk = meta->getActiveDocument();
+		QI(uk, lb_I_Parameter, docparams)
+			
+		if (docparams != NULL) {
+			// Try to retrieve current document's data. Later on this will be preffered before plain SQL queries.
+			UAP_REQUEST(getModuleInstance(), lb_I_Container, document)
+			UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+			UAP(lb_I_Action_Steps, appActionSteps)
+			UAP(lb_I_KeyBase, key)
+
+			UAP(lb_I_Unknown, uk)
+			UAP(lb_I_Formulars, forms)
+			UAP(lb_I_FormularParameter, formParams)
+			
+			docparams->setCloning(false);
+			document->setCloning(false);
+			
+			QI(name, lb_I_KeyBase, key)
+			*name = "ApplicationData";
+			docparams->getUAPContainer(*&name, *&document);
+			
+			*name = "Formulars";
+			uk = document->getElement(&key);
+			QI(uk, lb_I_Formulars, forms)
+
+			*name = "FormParams";
+			uk = document->getElement(&key);
+			QI(uk, lb_I_FormularParameter, formParams)
+			
+			
+			if ((formParams != NULL) && (forms != NULL)) {
+				UAP_REQUEST(getModuleInstance(), lb_I_String, SQL)
+				long AppID = meta->getApplicationID();
+				
+				while (forms->hasMoreFormulars()) {
+					forms->setNextFormular();
+					
+					if ((forms->getApplicationID() == AppID) && (strcmp(forms->getName(), formularname->charrep()) == 0)) {
+						UAP(lb_I_DatabaseForm, f)
+						UAP(lb_I_DatabaseForm, master)
+						UAP(lb_I_DatabaseForm, form)
+						long FormularID = forms->getFormularID();
+						*SQL = formParams->getParameter("query", FormularID);
+						forms->finishFormularIteration();
+						form = gui->createDBForm(formularname->charrep(),
+									SQL->charrep(),
+									DBName->charrep(), 
+									DBUser->charrep(), 
+									DBPass->charrep());
+						if (form == NULL) {
+							_CL_LOG << "Error: Bail out, detail form could not be created." LOG_
+							return; 
+						}
+						detailForm = form.getPtr();
+						*parameter = " - ";
+						*parameter += SourceFieldValue->charrep();
+						form->setName(formularname->charrep(), parameter->charrep());
+						f = gui->findDBForm(masterForm->charrep());
+						if (f == NULL) {
+							_CL_LOG << "Error: Bail out, no master form found." LOG_
+							
+							if (detailForm != NULL) {
+								// Cleanup
+								detailForm->destroy();
+							}
+							
+							return; 
+						}
+						QI(f, lb_I_DatabaseForm, master)						
+						UAP_REQUEST(manager.getPtr(), lb_I_String, table)
+						master->getPrimaryColumns();
+						*table = master->getTableName(master->getColumnName(1));
+						form->ignoreForeignKeys(table->charrep());
+						form->setMasterForm(*&master, *&params);
+						gui->showForm(formularname->charrep());
+						form++;
+						return;
+					}
+				}
+				meta->setStatusText("Info", "Did not found detailform.");
+				return;
+			}
+		}
+
+		// - old database variant -
 
 		parameter->setData("actionID");
-		*actionID = myActionID;
-		params->setUAPString(*&parameter, *&actionID);
+		actionID->setData(myActionID);
+		params->setUAPLong(*&parameter, *&actionID);
 		
-		parameter->setData("DBName");
-		params->getUAPString(*&parameter, *&DBName);
-		parameter->setData("DBUser");
-		params->getUAPString(*&parameter, *&DBUser);
-		parameter->setData("DBPass");
-		params->getUAPString(*&parameter, *&DBPass);
-		parameter->setData("source Form");
-		params->getUAPString(*&parameter, *&masterForm);
-
-	//	parameter->setData("source field");
-	//	params->getUAPString(*&parameter, *&SourceFieldName);
-		parameter->setData("source value");
-		params->getUAPString(*&parameter, *&SourceFieldValue);
 		parameter->setData("application");
 		params->getUAPString(*&parameter, *&app);
 
@@ -958,6 +1024,7 @@ void LB_STDCALL lbDetailFormAction::openDetailForm(lb_I_String* formularname, lb
 
 /*...svoid LB_STDCALL lbDetailFormAction\58\\58\execute\40\lb_I_Parameter\42\ params\41\:0:*/
 void LB_STDCALL lbDetailFormAction::execute(lb_I_Parameter* params) {
+	lbErrCodes err = ERR_NONE;
 /*...sInit variables for params:8:*/
 	if (masterForm == NULL) {
 		REQUEST(manager.getPtr(), lb_I_String, masterForm)
@@ -983,11 +1050,55 @@ void LB_STDCALL lbDetailFormAction::execute(lb_I_Parameter* params) {
 /*...e*/
 
 	UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
+	
+	
+	UAP(lb_I_Unknown, uk)
+	UAP(lb_I_Parameter, docparams)
+		
+	uk = meta->getActiveDocument();
+	QI(uk, lb_I_Parameter, docparams)
+		
+	if (docparams != NULL) {
+		// Try to retrieve current document's data. Later on this will be preffered before plain SQL queries.
+		UAP_REQUEST(getModuleInstance(), lb_I_Container, document)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+		UAP(lb_I_Action_Steps, appActionSteps)
+		UAP(lb_I_KeyBase, key)
+		UAP(lb_I_Unknown, uk)
+		
+		docparams->setCloning(false);
+		document->setCloning(false);
+		
+		QI(name, lb_I_KeyBase, key)
+		*name = "ApplicationData";
+		docparams->getUAPContainer(*&name, *&document);
+		
+		*name = "AppAction_Steps";
+		uk = document->getElement(&key);
+		QI(uk, lb_I_Action_Steps, appActionSteps)
+		
+		
+		if (appActionSteps != NULL) {
+			UAP_REQUEST(getModuleInstance(), lb_I_String, msg)
+			UAP_REQUEST(getModuleInstance(), lb_I_String, What)
+
+			appActionSteps->selectActionStep(myActionID);
+			*What = appActionSteps->getActionStepWhat();
+			
+			*msg = "Open detail form (";
+			*msg += What->charrep();
+			*msg += ")";
+			
+			meta->setStatusText("Info", msg->charrep());
+			openDetailForm(*&What, *&params);
+			return;
+		}
+	}
+
+	// - Old database variant -
+	
 	UAP_REQUEST(manager.getPtr(), lb_I_Database, database)
 	UAP(lb_I_Query, query)
-
-	wxString msg = wxString("lbDetailFormAction::execute(") + wxString(myActionID) + wxString(")");
-	meta->setStatusText("Info", msg.c_str());
 
 	database->init();
 
@@ -1001,8 +1112,8 @@ void LB_STDCALL lbDetailFormAction::execute(lb_I_Parameter* params) {
 
 	query = database->getQuery("lbDMF", 0);	
 	
-	char buf[] = "select what from action_steps where id = %s";
-	char* q = (char*) malloc(strlen(buf)+strlen(myActionID)+1);
+	char buf[] = "select what from action_steps where id = %d";
+	char* q = (char*) malloc(strlen(buf)+20);
 	q[0] = 0;
 	sprintf(q, buf, myActionID);
 
@@ -1017,7 +1128,13 @@ void LB_STDCALL lbDetailFormAction::execute(lb_I_Parameter* params) {
 			what = query->getAsString(1);
 			what->trim();
 			
-			_CL_LOG << "Open detail form (" << what->charrep() << ")" LOG_
+			UAP_REQUEST(getModuleInstance(), lb_I_String, msg)
+			
+			*msg = "Open detail form (";
+			*msg += what->charrep();
+			*msg += ")";
+			
+			meta->setStatusText("Info", msg->charrep());
 			
 			openDetailForm(*&what, *&params);
 			
@@ -1032,14 +1149,28 @@ void LB_STDCALL lbDetailFormAction::execute(lb_I_Parameter* params) {
 			what = query->getAsString(1);
 			what->trim();
 			
-			_CL_LOG << "Open detail form (" << what->charrep() << ")" LOG_
+			UAP_REQUEST(getModuleInstance(), lb_I_String, msg)
+			
+			*msg = "Open detail form (";
+			*msg += what->charrep();
+			*msg += ")";
+			
+			meta->setStatusText("Info", msg->charrep());
 
 			openDetailForm(*&what, *&params);
 /*...e*/
 		}
 	} else {
-		wxString errmsg = wxString("lbDetailFormAction::execute(") + wxString(myActionID) + wxString(") failed.");
-		meta->setStatusText("Info", errmsg.c_str());
+		UAP_REQUEST(getModuleInstance(), lb_I_String, msg)
+		UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
+		
+		ID->setData(myActionID);
+		
+		*msg = "lbDetailFormAction::execute(";
+		*msg += ID->charrep();
+		*msg += ") failed.";
+
+		meta->setStatusText("Info", msg->charrep());
 	}
 }
 /*...e*/
@@ -1059,17 +1190,11 @@ lbErrCodes LB_STDCALL lbMasterFormAction::setData(lb_I_Unknown* uk) {
 
 lbMasterFormAction::lbMasterFormAction() {
 	ref = STARTREF;
-	myActionID = NULL;
+	myActionID = -1;
 	masterForm = NULL;
 }
 
 lbMasterFormAction::~lbMasterFormAction() {
-	free(myActionID);
-
-// lb_I_GUI implementation does this from now
-//	if (masterForm != NULL) { 
-//	    masterForm->destroy();
-//	}
 }
 
 void LB_STDCALL lbMasterFormAction::setDatabase(lb_I_Database* _db) {
@@ -1077,31 +1202,34 @@ void LB_STDCALL lbMasterFormAction::setDatabase(lb_I_Database* _db) {
 	db++;
 }
 
-void LB_STDCALL lbMasterFormAction::setActionID(char* id) {
-	free(myActionID);
-	
-	if ((id != NULL) && (strlen(id) > 0)) {
-		myActionID = strdup(id);
-	} else {
-		_CL_LOG << "Error: Got an invalid action ID!" LOG_
-	}
+void LB_STDCALL lbMasterFormAction::setActionID(long id) {
+	myActionID = id;
 }
 
 /*...svoid LB_STDCALL lbMasterFormAction\58\\58\openMasterForm\40\lb_I_String\42\ formularname\44\ lb_I_Parameter\42\ params\41\:0:*/
 void LB_STDCALL lbMasterFormAction::openMasterForm(lb_I_String* formularname, lb_I_Parameter* params) {
 	lbErrCodes err = ERR_NONE;
-	UAP_REQUEST(manager.getPtr(), lb_I_String, actionID)
+	UAP_REQUEST(manager.getPtr(), lb_I_Long, actionID)
+
+	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
+		
+	parameter->setData("DBName");
+	params->getUAPString(*&parameter, *&DBName);
+	parameter->setData("DBUser");
+	params->getUAPString(*&parameter, *&DBUser);
+	parameter->setData("DBPass");
+	params->getUAPString(*&parameter, *&DBPass);
+	parameter->setData("source Form");
+	params->getUAPString(*&parameter, *&detailForm);
 
 	/// \todo This is a possible bug if there are more than one such form.
 	if (masterForm != NULL) {
 		_CL_VERBOSE << "Show previously created form." LOG_
 	
-		UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
-		
 		// Pass my action ID
 		parameter->setData("actionID");
-		*actionID = myActionID;
-		params->setUAPString(*&parameter, *&actionID);
+		actionID->setData(myActionID);
+		params->setUAPLong(*&parameter, *&actionID);
 
 		parameter->setData("source value");
 		params->getUAPString(*&parameter, *&SourceFieldValue);
@@ -1131,24 +1259,87 @@ void LB_STDCALL lbMasterFormAction::openMasterForm(lb_I_String* formularname, lb
 	} else {
 		UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
 		UAP(lb_I_GUI, gui)
-		
 		meta->getGUI(&gui);
 		
-		
-		UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
+
+		UAP(lb_I_Unknown, uk)
+		UAP(lb_I_Parameter, docparams)
 			
-		parameter->setData("DBName");
-		params->getUAPString(*&parameter, *&DBName);
-		parameter->setData("DBUser");
-		params->getUAPString(*&parameter, *&DBUser);
-		parameter->setData("DBPass");
-		params->getUAPString(*&parameter, *&DBPass);
-		parameter->setData("source Form");
-		params->getUAPString(*&parameter, *&detailForm);
-		
+		uk = meta->getActiveDocument();
+		QI(uk, lb_I_Parameter, docparams)
+			
+		if (docparams != NULL) {
+			// Try to retrieve current document's data. Later on this will be preffered before plain SQL queries.
+			UAP_REQUEST(getModuleInstance(), lb_I_Container, document)
+			UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+			UAP(lb_I_Action_Steps, appActionSteps)
+			UAP(lb_I_KeyBase, key)
+			UAP(lb_I_Unknown, uk)
+			
+			UAP(lb_I_Formulars, forms)
+			UAP(lb_I_FormularParameter, formParams)
+			
+			docparams->setCloning(false);
+			document->setCloning(false);
+			
+			QI(name, lb_I_KeyBase, key)
+			*name = "ApplicationData";
+			docparams->getUAPContainer(*&name, *&document);
+			
+			*name = "Formulars";
+			uk = document->getElement(&key);
+			QI(uk, lb_I_Formulars, forms)
+
+			*name = "FormParams";
+			uk = document->getElement(&key);
+			QI(uk, lb_I_FormularParameter, formParams)
+			
+			
+			if ((formParams != NULL) && (forms != NULL)) {
+				UAP_REQUEST(getModuleInstance(), lb_I_String, SQL)
+				long AppID = meta->getApplicationID();
+				
+				while (forms->hasMoreFormulars()) {
+					forms->setNextFormular();
+					
+					if ((forms->getApplicationID() == AppID) && (strcmp(forms->getName(), formularname->charrep()) == 0)) {
+						UAP_REQUEST(getModuleInstance(), lb_I_String, table)
+						UAP(lb_I_DatabaseForm, form)
+						UAP(lb_I_DatabaseForm, f)
+						UAP(lb_I_DatabaseForm, detail)
+
+						long FormularID = forms->getFormularID();
+						*SQL = formParams->getParameter("query", FormularID);
+						form = gui->createDBForm(formularname->charrep(),
+											SQL->charrep(),
+											DBName->charrep(),
+											DBUser->charrep(),
+											DBPass->charrep());
+						masterForm = form.getPtr();
+						*parameter = " - ";
+						*parameter += SourceFieldValue->charrep();
+						form->setName(formularname->charrep(), parameter->charrep());
+						f = gui->findDBForm(detailForm->charrep());
+						QI(f, lb_I_DatabaseForm, detail)
+						detail->getPrimaryColumns();
+						*table = detail->getTableName(detail->getColumnName(1));
+						form->ignoreForeignKeys(table->charrep());
+						form->setDetailForm(*&detail, *&params);
+						gui->showForm(formularname->charrep());
+						form++;
+						return;
+					}
+				}
+				meta->setStatusText("Info", "Did not found masterform.");
+				return;
+			}
+		}
+
+		// - old database variant -
+
 		parameter->setData("actionID");
-		*actionID = myActionID;
-		params->setUAPString(*&parameter, *&actionID);
+		actionID->setData(myActionID);
+		params->setUAPLong(*&parameter, *&actionID);
 
 		//	parameter->setData("source field");
 		//	params->getUAPString(*&parameter, *&SourceFieldName);
@@ -1325,6 +1516,7 @@ void LB_STDCALL lbMasterFormAction::openMasterForm(lb_I_String* formularname, lb
 
 /*...svoid LB_STDCALL lbMasterFormAction\58\\58\execute\40\lb_I_Parameter\42\ params\41\:0:*/
 void LB_STDCALL lbMasterFormAction::execute(lb_I_Parameter* params) {
+	lbErrCodes err = ERR_NONE;
 /*...sInit variables for params:8:*/
 	if (masterForm == NULL) {
 		REQUEST(manager.getPtr(), lb_I_String, detailForm)
@@ -1350,11 +1542,54 @@ void LB_STDCALL lbMasterFormAction::execute(lb_I_Parameter* params) {
 /*...e*/
 
 	UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
+	
+	UAP(lb_I_Unknown, uk)
+	UAP(lb_I_Parameter, docparams)
+		
+	uk = meta->getActiveDocument();
+	QI(uk, lb_I_Parameter, docparams)
+		
+	if (docparams != NULL) {
+		// Try to retrieve current document's data. Later on this will be preffered before plain SQL queries.
+		UAP_REQUEST(getModuleInstance(), lb_I_Container, document)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+		UAP(lb_I_Action_Steps, appActionSteps)
+		UAP(lb_I_KeyBase, key)
+		UAP(lb_I_Unknown, uk)
+		
+		docparams->setCloning(false);
+		document->setCloning(false);
+		
+		QI(name, lb_I_KeyBase, key)
+		*name = "ApplicationData";
+		docparams->getUAPContainer(*&name, *&document);
+		
+		*name = "AppAction_Steps";
+		uk = document->getElement(&key);
+		QI(uk, lb_I_Action_Steps, appActionSteps)
+		
+		
+		if (appActionSteps != NULL) {
+			UAP_REQUEST(getModuleInstance(), lb_I_String, msg)
+			UAP_REQUEST(getModuleInstance(), lb_I_String, What)
+
+			appActionSteps->selectActionStep(myActionID);
+			*What = appActionSteps->getActionStepWhat();
+			
+			*msg = "Open master form (";
+			*msg += What->charrep();
+			*msg += ")";
+			
+			meta->setStatusText("Info", msg->charrep());
+			openMasterForm(*&What, *&params);
+			return;
+		}
+	}
+	
+	// - Old database variant -
+	
 	UAP_REQUEST(manager.getPtr(), lb_I_Database, database)
 	UAP(lb_I_Query, query)
-
-	wxString msg = wxString("lbMasterFormAction::execute(") + wxString(myActionID) + wxString(")");
-	meta->setStatusText("Info", msg.c_str());
 
 	database->init();
 
@@ -1368,8 +1603,8 @@ void LB_STDCALL lbMasterFormAction::execute(lb_I_Parameter* params) {
 
 	query = database->getQuery("lbDMF", 0);	
 	
-	char buf[] = "select what from action_steps where id = %s";
-	char* q = (char*) malloc(strlen(buf)+strlen(myActionID)+1);
+	char buf[] = "select what from action_steps where id = %d";
+	char* q = (char*) malloc(strlen(buf)+20);
 	q[0] = 0;
 	sprintf(q, buf, myActionID);
 
@@ -1401,8 +1636,16 @@ void LB_STDCALL lbMasterFormAction::execute(lb_I_Parameter* params) {
 /*...e*/
 		}
 	} else {
-		wxString errmsg = wxString("lbMasterFormAction::execute(") + wxString(myActionID) + wxString(") failed.");
-		meta->setStatusText("Info", errmsg.c_str());
+		UAP_REQUEST(getModuleInstance(), lb_I_String, msg)
+		UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
+		
+		ID->setData(myActionID);
+		
+		*msg = "lbMasterFormAction::execute(";
+		*msg += ID->charrep();
+		*msg += ") failed.";
+
+		meta->setStatusText("Info", msg->charrep());
 	}
 }
 /*...e*/
@@ -1422,11 +1665,10 @@ lbErrCodes LB_STDCALL lbSQLQueryAction::setData(lb_I_Unknown* uk) {
 
 lbSQLQueryAction::lbSQLQueryAction() {
 	ref = STARTREF;
-	myActionID = NULL;
+	myActionID = -1;
 }
 
 lbSQLQueryAction::~lbSQLQueryAction() {
-	free(myActionID);
 }
 
 void LB_STDCALL lbSQLQueryAction::setDatabase(lb_I_Database* _db) {
@@ -1434,17 +1676,12 @@ void LB_STDCALL lbSQLQueryAction::setDatabase(lb_I_Database* _db) {
 	db++;
 }
 
-void LB_STDCALL lbSQLQueryAction::setActionID(char* id) {
-	free(myActionID);
-	
-	if ((id != NULL) && (strlen(id) > 0)) {
-		myActionID = strdup(id);
-	} else {
-		_CL_LOG << "Error: Got an invalid action ID!" LOG_
-	}
+void LB_STDCALL lbSQLQueryAction::setActionID(long id) {
+	myActionID = id;
 }
 
 void LB_STDCALL lbSQLQueryAction::execute(lb_I_Parameter* params) {
+	lbErrCodes err = ERR_NONE;
 	_CL_LOG << "lbSQLQueryAction::execute()" LOG_
 	
 	UAP_REQUEST(manager.getPtr(), lb_I_String, SourceFormName)
@@ -1456,9 +1693,7 @@ void LB_STDCALL lbSQLQueryAction::execute(lb_I_Parameter* params) {
 	UAP_REQUEST(manager.getPtr(), lb_I_String, DBPass)
 
 	UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
-	UAP_REQUEST(manager.getPtr(), lb_I_Database, database)
-	UAP(lb_I_Query, query)
-
+	
 	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
 
 	parameter->setData("DBName");
@@ -1473,10 +1708,89 @@ void LB_STDCALL lbSQLQueryAction::execute(lb_I_Parameter* params) {
 	params->getUAPString(*&parameter, *&SourceFieldName);
 	parameter->setData("source Form");
 	params->getUAPString(*&parameter, *&SourceFormName);
+	
+	UAP(lb_I_Unknown, uk)
+	UAP(lb_I_Parameter, docparams)
+		
+	uk = meta->getActiveDocument();
+	QI(uk, lb_I_Parameter, docparams)
+		
+	if (docparams != NULL) {
+		// Try to retrieve current document's data. Later on this will be preffered before plain SQL queries.
+		UAP_REQUEST(getModuleInstance(), lb_I_Container, document)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+		UAP(lb_I_Action_Steps, appActionSteps)
+		UAP(lb_I_KeyBase, key)
+		UAP(lb_I_Unknown, uk)
+		
+		docparams->setCloning(false);
+		document->setCloning(false);
+		
+		QI(name, lb_I_KeyBase, key)
+		*name = "ApplicationData";
+		docparams->getUAPContainer(*&name, *&document);
+		
+		*name = "AppAction_Steps";
+		uk = document->getElement(&key);
+		QI(uk, lb_I_Action_Steps, appActionSteps)
+		
+		
+		if (appActionSteps != NULL) {
+			UAP_REQUEST(getModuleInstance(), lb_I_String, msg)
+			UAP_REQUEST(getModuleInstance(), lb_I_String, What)
+
+			appActionSteps->selectActionStep(myActionID);
+			*What = appActionSteps->getActionStepWhat();
+			
+			*msg = "Execute query (";
+			*msg += What->charrep();
+			*msg += ")";
+			
+			meta->setStatusText("Info", msg->charrep());
+
+			UAP_REQUEST(getModuleInstance(), lb_I_Database, db)
+			db->init();
+			if (db->connect(DBName->charrep(), DBName->charrep(), DBUser->charrep(), DBPass->charrep()) != ERR_NONE) {
+				meta->msgBox("Error", "Failed to execute SQL query. Connection failed.");
+				return;
+			}
+
+			UAP_REQUEST(getModuleInstance(), lb_I_String, rep)
+
+			*rep = "{";
+			*rep +=  SourceFieldName->charrep();
+			*rep += "}"; 
+		
+			wxString s = wxString(What->charrep());
+		
+			s.Replace(rep->charrep(), SourceFieldValue->charrep());
+
+			UAP(lb_I_Query, q)
+			q = db->getQuery(DBName->charrep(), 0);
+			q->skipFKCollecting();
+			*What = s.c_str();
+			
+			if (q->query(What->charrep()) != ERR_NONE) {
+				UAP_REQUEST(getModuleInstance(), lb_I_String, msg)
+				q->enableFKCollecting();
+				*msg = "Failed to execute SQL query. Propably missing a parameter (SQL: ";
+				*msg += s.c_str();
+				*msg += ")";
+				meta->msgBox("Error", msg->charrep());
+				return;
+			}
+			q->enableFKCollecting();
+
+			return;
+		}
+	}
+	
+	// - Old database variant -
+		
+	UAP_REQUEST(manager.getPtr(), lb_I_Database, database)
+	UAP(lb_I_Query, query)
 
 
-	wxString msg = wxString("lbSQLQueryAction::execute(") + wxString(myActionID) + wxString(")");
-	meta->setStatusText("Info", msg.c_str());
 
 	database->init();
 
@@ -1490,8 +1804,8 @@ void LB_STDCALL lbSQLQueryAction::execute(lb_I_Parameter* params) {
 
 	query = database->getQuery("lbDMF", 0);	
 	
-	char buf[] = "select what from action_steps where id = %s";
-	char* q = (char*) malloc(strlen(buf)+strlen(myActionID)+1);
+	char buf[] = "select what from action_steps where id = %d";
+	char* q = (char*) malloc(strlen(buf)+20);
 	q[0] = 0;
 	sprintf(q, buf, myActionID);
 
@@ -1572,8 +1886,16 @@ void LB_STDCALL lbSQLQueryAction::execute(lb_I_Parameter* params) {
 /*...e*/
 		}
 	} else {
-		wxString errmsg = wxString("lbSQLQueryAction::execute(") + wxString(myActionID) + wxString(") failed.");
-		meta->setStatusText("Info", errmsg.c_str());
+		UAP_REQUEST(getModuleInstance(), lb_I_String, msg)
+		UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
+		
+		ID->setData(myActionID);
+		
+		*msg = "lbSQLQueryAction::execute(";
+		*msg += ID->charrep();
+		*msg += ") failed.";
+
+		meta->setStatusText("Info", msg->charrep());
 	}
 	
 	lb_I_GUI* gui;

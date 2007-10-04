@@ -131,7 +131,7 @@ FormularFieldInformation::FormularFieldInformation(char const * formularname, lb
 	        UAP(lb_I_String, columnType)
 	        UAP(lb_I_String, ro)
 
-	        tablename = ROquery->getAsString(1);
+        tablename = ROquery->getAsString(1);
 		fieldname = ROquery->getAsString(2);
 		specialColumn = ROquery->getAsString(3);
 		columnType = ROquery->getAsString(4);

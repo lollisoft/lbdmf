@@ -1275,15 +1275,11 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 		formActions->finishFormularActionIteration();
 		appActions->finishActionIteration();
 		
+		if (fa == NULL) fa = new FormularActions;	
+		
 		while (forms->hasMoreFormulars()) {
 			forms->setNextFormular();
 
-/*			
-			_LOG << "Compare formular '" << forms->getName() << 
-				"' of application " << forms->getApplicationID() << 
-				" with login application id " << meta->getApplicationID() LOG_
-*/
-			
 			if (forms->getApplicationID() == meta->getApplicationID()) {
 				if (strcmp(forms->getName(), formName) == 0) {
 					long FormID = forms->getFormularID();
@@ -1298,6 +1294,9 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 							
 							appActions->selectAction(ActionID);
 							char* actionName = appActions->getActionName();
+							
+							// Helps to faster lookup the action ID from event name
+							fa->addRegisteredAction(ActionID, eventName);
 							
 							int actionID = 0;
 							char *evName = (char*) malloc(strlen(eventName) + 20);
@@ -1683,7 +1682,7 @@ void LB_STDCALL lbDatabasePanel::updateFromMaster() {
 	UAP_REQUEST(manager.getPtr(), lb_I_String, newMasterIDQuery)
 	
 	UAP_REQUEST(manager.getPtr(), lb_I_String, newQuery)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, actionID)
+	UAP_REQUEST(manager.getPtr(), lb_I_Long, actionID)
 	
 	// Using the new = and += operators of the string interface. 
 	// Note: If used in an UAP, explizit 'dereferencing' must be used.
@@ -1714,8 +1713,8 @@ void LB_STDCALL lbDatabasePanel::updateFromMaster() {
 	parameter->setData("application");
 	_params->getUAPString(*&parameter, *&app);
 	parameter->setData("actionID");
-	_params->getUAPString(*&parameter, *&actionID);
-	if (actionID->charrep() == NULL) {
+	_params->getUAPLong(*&parameter, *&actionID);
+	if (actionID->getData() == -1) {
 		UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
 		UAP_REQUEST(manager.getPtr(), lb_I_String, msg)
 		
@@ -2137,7 +2136,7 @@ void LB_STDCALL lbDatabasePanel::updateFromDetail() {
 	UAP_REQUEST(manager.getPtr(), lb_I_String, newMasterIDQuery)
 	
 	UAP_REQUEST(manager.getPtr(), lb_I_String, newQuery)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, actionID)
+	UAP_REQUEST(manager.getPtr(), lb_I_Long, actionID)
 
 	_LOG << "lbDatabasePanel::updateFromDetail() called." LOG_
 
@@ -2171,7 +2170,7 @@ void LB_STDCALL lbDatabasePanel::updateFromDetail() {
 	parameter->setData("application");
 	_params->getUAPString(*&parameter, *&app);
 	parameter->setData("actionID");
-	_params->getUAPString(*&parameter, *&actionID);
+	_params->getUAPLong(*&parameter, *&actionID);
 	if (actionID->charrep() == NULL) {
 		meta->msgBox(_trans("Error"), _trans("No action ID has been transferred!"));
 	}
@@ -3697,7 +3696,7 @@ lbErrCodes LB_STDCALL lbDatabasePanel::OnActionButton(lb_I_Unknown* uk) {
 
 		// Regarding to the event name, we must get back some information from the database.
 
-		if (fa == NULL) fa = new FormularActions;	
+		//if (fa == NULL) fa = new FormularActions;	
 
 		meta->setStatusText("Info", "Lookup action source field ...");
 

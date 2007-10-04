@@ -93,14 +93,34 @@ extern "C" {
 
 #include <lbDatabaseForm.h>
 
+void FormularActions::addRegisteredAction(long ActionID, char* eventName) {
+	lbErrCodes err = ERR_NONE;
+	if (eventmapping == NULL) {
+		REQUEST(getModuleInstance(), lb_I_Container, eventmapping)
+	}
+	
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, EvName)
+	
+	UAP(lb_I_Unknown, uk)
+	UAP(lb_I_KeyBase, key)
+	
+	QI(ID, lb_I_Unknown, uk)
+	QI(EvName, lb_I_KeyBase, key)
+	
+	*EvName = eventName;
+	ID->setData(ActionID);
+	
+	if (!eventmapping->exists(&key)) eventmapping->insert(&uk, &key);
+}
 
 
 /*...slb_I_Action\42\ FormularActions\58\\58\getAction\40\char\42\ id\41\:0:*/
-lb_I_Action* FormularActions::getAction(char* id) {
+lb_I_Action* FormularActions::getAction(long id) {
 	lbErrCodes err = ERR_NONE;
 	
 	UAP(lb_I_Unknown, uk)
-	UAP_REQUEST(getModuleInstance(), lb_I_String, ID)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
 	UAP(lb_I_KeyBase, key)
 	ID->setData(id);
 	QI(ID, lb_I_KeyBase, key)
@@ -134,14 +154,53 @@ lb_I_Action* FormularActions::getAction(char* id) {
 	return action;
 }
 /*...e*/
-/*...schar\42\ FormularActions\58\\58\getActionTargetID\40\char\42\ what\41\:0:*/
-char* FormularActions::getActionTargetID(char* what) {
+
+long FormularActions::getActionTargetIDLong(char* reversed_event) {
 	lbErrCodes err = ERR_NONE;
+	if (eventmapping != NULL) {
+		UAP_REQUEST(getModuleInstance(), lb_I_String, eventname)
+		UAP(lb_I_KeyBase, key)
+		UAP(lb_I_Unknown, uk)
+		UAP(lb_I_Long, ActionID)
+		QI(eventname, lb_I_KeyBase, key)
+		
+		*eventname = reversed_event;
+		
+		if (eventmapping->exists(&key)) {
+			uk = eventmapping->getElement(&key);
+			QI(uk, lb_I_Long, ActionID)
+				
+			return ActionID->getData();
+		}
+	}	
+}
+
+/*...schar\42\ FormularActions\58\\58\getActionTargetID\40\char\42\ what\41\:0:*/
+char* FormularActions::getActionTargetID(char* reversed_event) {
+	lbErrCodes err = ERR_NONE;
+
+	if (eventmapping != NULL) {
+		UAP_REQUEST(getModuleInstance(), lb_I_String, eventname)
+		UAP(lb_I_KeyBase, key)
+		UAP(lb_I_Unknown, uk)
+		UAP(lb_I_Long, ActionID)
+		QI(eventname, lb_I_KeyBase, key)
+		
+		*eventname = reversed_event;
+		
+		if (eventmapping->exists(&key)) {
+			uk = eventmapping->getElement(&key);
+			QI(uk, lb_I_Long, ActionID)
+			
+			_LOG << "Returning action ID by event mapping." LOG_
+			return ActionID->charrep();
+		}
+	}	
 	
 	UAP_REQUEST(getModuleInstance(), lb_I_Database, database)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, What)
 	
-	What->setData(what);
+	What->setData(reversed_event);
 	What->trim();
 
 	database->init();
@@ -186,8 +245,44 @@ char* FormularActions::getActionTargetID(char* what) {
 }
 /*...e*/
 /*...schar\42\ FormularActions\58\\58\getActionSourceDataField\40\char\42\ what\41\:0:*/
-char* FormularActions::getActionSourceDataField(char* what) {
+char* FormularActions::getActionSourceDataField(char* reversed_event) {
 	lbErrCodes err = ERR_NONE;
+	
+	if (eventmapping != NULL) {
+		UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
+		
+		UAP(lb_I_Unknown, uk)
+		UAP(lb_I_Parameter, params)
+		
+		uk = meta->getActiveDocument();
+		QI(uk, lb_I_Parameter, params)
+			
+		if (params != NULL) {
+			// Try to retrieve current document's data. Later on this will be preffered before plain SQL queries.
+			UAP_REQUEST(getModuleInstance(), lb_I_Container, document)
+			UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+			UAP(lb_I_KeyBase, key)
+			UAP(lb_I_Unknown, uk)
+			
+			params->setCloning(false);
+			document->setCloning(false);
+			
+			QI(name, lb_I_KeyBase, key)
+			*name = "ApplicationData";
+			params->getUAPContainer(*&name, *&document);
+			
+			*name = "AppActions";
+			uk = document->getElement(&key);
+			QI(uk, lb_I_Actions, appActions)
+		}
+		
+		
+		if (appActions != NULL) {
+			appActions->selectAction(getActionTargetIDLong(reversed_event));
+			_LOG << "Returning action source by event mapping." LOG_
+			return appActions->getActionSource();
+		}
+	}
 	
 	UAP_REQUEST(getModuleInstance(), lb_I_Database, database)
 	
@@ -209,7 +304,7 @@ char* FormularActions::getActionSourceDataField(char* what) {
 	
 	char* buffer = (char*) malloc(strlen(buf)+20);
 	
-	sprintf(buffer, buf, getActionTargetID(what));
+	sprintf(buffer, buf, getActionTargetID(reversed_event));
 
 	query->query(buffer);
 
@@ -230,10 +325,10 @@ char* FormularActions::getActionSourceDataField(char* what) {
 }
 /*...e*/
 /*...schar\42\ FormularActions\58\\58\getActionID\40\char\42\ what\41\:0:*/
-char* FormularActions::getActionID(char* what) {
+long FormularActions::getActionID(char* what) {
 	lbErrCodes err = ERR_NONE;
 	
 	// Get it from the foreign key in formular_actions
-	return getActionTargetID(what);
+	return getActionTargetIDLong(what);
 }
 /*...e*/

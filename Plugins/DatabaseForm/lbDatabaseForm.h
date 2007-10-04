@@ -30,11 +30,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.39 $
+ * $Revision: 1.40 $
  * $Name:  $
- * $Id: lbDatabaseForm.h,v 1.39 2007/10/03 17:39:19 lollisoft Exp $
+ * $Id: lbDatabaseForm.h,v 1.40 2007/10/04 13:10:43 lollisoft Exp $
  *
  * $Log: lbDatabaseForm.h,v $
+ * Revision 1.40  2007/10/04 13:10:43  lollisoft
+ * Replaced more SQL queries by data model usage.
+ *
  * Revision 1.39  2007/10/03 17:39:19  lollisoft
  * Changes to use data model classes instead of SQL queries.
  * At the end the SQL queries for the system data should
@@ -289,7 +292,7 @@ public:
 	lbAction();
 	virtual ~lbAction();
 
-	void LB_STDCALL setActionID(char* id);	
+	void LB_STDCALL setActionID(long id);	
 	void LB_STDCALL execute(lb_I_Parameter* params);
 	
 	DECLARE_LB_UNKNOWN()
@@ -299,7 +302,7 @@ protected:
 	void LB_STDCALL delegate(lb_I_Parameter* params);
 	
 	bool initialized;
-	char* myActionID;
+	long myActionID;
 	UAP(lb_I_Database, db)
 	
 	UAP(lb_I_Container, actions)
@@ -323,7 +326,7 @@ public:
 	lbDetailFormAction();
 	virtual ~lbDetailFormAction();
 
-	void LB_STDCALL setActionID(char* id);	
+	void LB_STDCALL setActionID(long id);	
 	void LB_STDCALL execute(lb_I_Parameter* params);
 
 	void LB_STDCALL setDatabase(lb_I_Database* _db);
@@ -334,7 +337,7 @@ protected:
 
 	void LB_STDCALL openDetailForm(lb_I_String* formularname, lb_I_Parameter* params);
 
-	char* myActionID;
+	long myActionID;
 	UAP(lb_I_Database, db)
 	UAP(lb_I_String, app)
 	UAP(lb_I_String, masterForm)
@@ -354,7 +357,7 @@ public:
 	lbMasterFormAction();
 	virtual ~lbMasterFormAction();
 
-	void LB_STDCALL setActionID(char* id);	
+	void LB_STDCALL setActionID(long id);	
 	void LB_STDCALL execute(lb_I_Parameter* params);
 
 	void LB_STDCALL setDatabase(lb_I_Database* _db);
@@ -365,7 +368,7 @@ protected:
 
 	void LB_STDCALL openMasterForm(lb_I_String* formularname, lb_I_Parameter* params);
 
-	char* myActionID;
+	long myActionID;
 	UAP(lb_I_Database, db)
 	UAP(lb_I_String, app)
 	UAP(lb_I_String, detailForm)
@@ -385,7 +388,7 @@ public:
 	lbSQLQueryAction();
 	virtual ~lbSQLQueryAction();
 
-	void LB_STDCALL setActionID(char* id);	
+	void LB_STDCALL setActionID(long id);	
 	void LB_STDCALL execute(lb_I_Parameter* params);
 
 	void LB_STDCALL setDatabase(lb_I_Database* _db);
@@ -393,7 +396,7 @@ public:
 	DECLARE_LB_UNKNOWN()
 	
 protected:
-	char* myActionID;
+	long myActionID;
 	UAP(lb_I_Database, db)
 };
 /*...e*/
@@ -427,25 +430,37 @@ public:
 		if (actions != NULL) _CL_LOG << "Actions has " << actions->getRefCount() << " references." LOG_		
 	}
 	
+	
+	/** \brief Add a mapping from event name to it's action ID.
+	 */
+	void addRegisteredAction(long ActionID, char* eventName);
+	
 	/** \brief ID of action target.
 	 *
 	 * Get the ID of the action target based on the 'what' data field.
 	 * This is needed, when 
 	 */
-	char* getActionTargetID(char* what);
+	char* getActionTargetID(char* reversed_event);
+
+	/** \brief ID of action target as long.
+	 *
+	 * Get the ID of the action target based on the 'what' data field.
+	 * This is needed, when 
+	 */
+	long getActionTargetIDLong(char* reversed_event);
 	
 	/** \brief Source field of the action. */
-	char* getActionSourceDataField(char* what);
+	char* getActionSourceDataField(char* reversed_event);
 
 	/** \brief ID for the action. */
-	char* getActionID(char* what);
+	long getActionID(char* reversed_event);
 
 	/** \brief Get the action instance. 
 	 *
 	 * This function creates the requested action instance, stores it for caching and
 	 * then returns a reference to it.
 	 */
-	lb_I_Action* getAction(char* id);
+	lb_I_Action* getAction(long id);
 	
 	/** \brief Validate the form.
 	 *
@@ -461,7 +476,9 @@ public:
 	bool update() { return true; }
 	
 protected:
+	UAP(lb_I_Container, eventmapping)
 	UAP(lb_I_Container, actions)
+	UAP(lb_I_Actions, appActions)
 	char buffer[100];
 };
 /*...e*/
