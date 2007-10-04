@@ -1812,7 +1812,7 @@ void LB_STDCALL lbDatabasePanel::updateFromMaster() {
 	if (isChar) *newMasterIDQuery += "'";
 /*...e*/
 	
-	_LOG << "lbDatabasePanel::updateFromMaster() generated new master id query: \n'" <<
+	_LOG << "lbDatabasePanel::updateFromMaster() generated new master id query: '" <<
 		newMasterIDQuery->charrep() << "'" LOG_
 
 	if (MasterDetailRelationData == NULL) {
@@ -2035,6 +2035,9 @@ void LB_STDCALL lbDatabasePanel::updateFromMaster() {
 				           "', source field name '" << SourceFieldName->charrep() << 
 				           "' and source field value '" << SourceFieldValue->charrep() <<
 	        			   "' for detail form '" << formName << "'" LOG_
+						   
+				*newWhereClause += "'";
+				_LOG << "New where clause until yet: '" << newWhereClause->charrep() LOG_
 				return;
 			}
 
@@ -3661,7 +3664,7 @@ lbErrCodes LB_STDCALL lbDatabasePanel::OnActionButton(lb_I_Unknown* uk) {
 /*...e*/
 
 	if (uk != NULL) {
-		char* s = NULL;
+		UAP_REQUEST(getModuleInstance(), lb_I_String, s)
 		
 /*...sResolve the related data for the action button \40\to be cached later\41\:16:*/
 		char* reversedEvent = NULL;
@@ -3700,26 +3703,26 @@ lbErrCodes LB_STDCALL lbDatabasePanel::OnActionButton(lb_I_Unknown* uk) {
 
 		meta->setStatusText("Info", "Lookup action source field ...");
 
-		s = fa->getActionSourceDataField(reversedEvent);
+		*s = fa->getActionSourceDataField(reversedEvent);
 
 		/*
 		  Now I can get the data from the source field and put it into the event parameters.
 		 */
 
-		wxWindow* w = FindWindowByName(wxString(s), this);
+		wxWindow* w = FindWindowByName(wxString(s->charrep()), this);
 		
 		wxString value;
 		wxString errmsg;
 		
 		if (w == NULL) 	{
-			errmsg = wxString("Error: Didn't found a control with given name: ") + wxString(s);
+			errmsg = wxString("Error: Didn't found a control with given name: ") + wxString(s->charrep());
 			meta->setStatusText("Info", errmsg.c_str());
 		} else {
-			errmsg = wxString("Found a control with given name: ") + wxString(s);
+			errmsg = wxString("Found a control with given name: ") + wxString(s->charrep());
 			meta->setStatusText("Info", errmsg.c_str());
 		}
 		
-		if (sampleQuery->hasFKColumn(s) == 1) {
+		if (sampleQuery->hasFKColumn(s->charrep()) == 1) {
 /*...sGet the content from choice control:40:*/
 				wxChoice* cbox = (wxChoice*) w;		
 			
@@ -3731,7 +3734,7 @@ lbErrCodes LB_STDCALL lbDatabasePanel::OnActionButton(lb_I_Unknown* uk) {
 					UAP_REQUEST(manager.getPtr(), lb_I_Integer, key)
 					UAP_REQUEST(manager.getPtr(), lb_I_String, cbName)
 					
-					cbName->setData(s);
+					cbName->setData(s->charrep());
 					
 					UAP(lb_I_KeyBase, key_cbName)
 					UAP(lb_I_Unknown, uk_cbMapper)
@@ -3773,7 +3776,7 @@ lbErrCodes LB_STDCALL lbDatabasePanel::OnActionButton(lb_I_Unknown* uk) {
 /*...e*/
 		} else {
 /*...sGet the content from text control:40:*/
-				lb_I_Query::lbDBColumnTypes coltype = sampleQuery->getColumnType(s);
+				lb_I_Query::lbDBColumnTypes coltype = sampleQuery->getColumnType(s->charrep());
 
 				switch (coltype) {
 					case lb_I_Query::lbDBColumnBit:
@@ -3813,10 +3816,10 @@ lbErrCodes LB_STDCALL lbDatabasePanel::OnActionButton(lb_I_Unknown* uk) {
 /*...e*/
 		
 		_CL_LOG << "Have these event: " << reversedEvent << "." LOG_		
-		_CL_LOG << "Have got source field: " << s << "." LOG_
+		_CL_LOG << "Have got source field: " << s->charrep() << "." LOG_
 		_CL_LOG << "The value for the field is " << value.c_str() << "." LOG_		
 
-		errmsg = wxString("Data for the required field '") + wxString(s) + wxString("' is '") + value + wxString("'");
+		errmsg = wxString("Data for the required field '") + wxString(s->charrep()) + wxString("' is '") + value + wxString("'");
 		meta->setStatusText("Info", errmsg.c_str());
 
 
@@ -3910,7 +3913,7 @@ lbErrCodes LB_STDCALL lbDatabasePanel::OnActionButton(lb_I_Unknown* uk) {
 		param->setUAPString(*&parameter, *&v);
 
 		parameter->setData("source field");
-		v->setData(s);
+		v->setData(s->charrep());
 		param->setUAPString(*&parameter, *&v);
 
 		parameter->setData("source value");
@@ -3929,8 +3932,6 @@ lbErrCodes LB_STDCALL lbDatabasePanel::OnActionButton(lb_I_Unknown* uk) {
 
 		action->execute(*&param);
 
-		free(s);
-		
 		free(eventName);
 	}
 

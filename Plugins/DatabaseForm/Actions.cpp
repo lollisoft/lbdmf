@@ -286,29 +286,32 @@ void LB_STDCALL lbAction::delegate(lb_I_Parameter* params) {
 		
 		UAP_REQUEST(getModuleInstance(), lb_I_Container, OrderNumbers_To_ActionIDs)
 		UAP_REQUEST(getModuleInstance(), lb_I_Long, ActionID)
+		UAP_REQUEST(getModuleInstance(), lb_I_Long, ActionStepID)
 		UAP_REQUEST(getModuleInstance(), lb_I_Long, ActionOrderNo)
-		UAP(lb_I_Unknown, ukActionId)
+		UAP(lb_I_Unknown, ukActionStepId)
 		UAP(lb_I_KeyBase, keyOrderNo)
-		QI(ActionID, lb_I_Unknown, ukActionId)
+		QI(ActionStepID, lb_I_Unknown, ukActionStepId)
 		QI(ActionOrderNo, lb_I_KeyBase, keyOrderNo)
 		
 		// Use separate container to sort relevant action steps by their order number
 		
 		while (appActionSteps->hasMoreActionSteps()) {
 			appActionSteps->setNextActionStep();
-		
-			ActionID->setData(appActionSteps->getActionStepActionID());
-			
-			/// \todo Worse. Need better operators and assignment operators		
-			if (strcmp(ActionID->charrep(), id->charrep()) == 0) {
-				// Get the id of the action step <---------------------------------------------\
-				ActionID->setData(appActionSteps->getActionStepID());
+
+			long a = id->getData();
+
+			_LOG << "Compare " << a << " with " << appActionSteps->getActionStepActionID() << "." LOG_
+
+			if (a == appActionSteps->getActionStepActionID()) {
+				// Get the id of the action step <--------------------------------------------------\
+				_LOG << "Successfully compared " << a << " with " << appActionSteps->getActionStepActionID() << "." LOG_
+				ActionStepID->setData(appActionSteps->getActionStepID());
 				ActionOrderNo->setData(appActionSteps->getActionStepOrderNo());
-				OrderNumbers_To_ActionIDs->insert(&ukActionId, &keyOrderNo);
+				OrderNumbers_To_ActionIDs->insert(&ukActionStepId, &keyOrderNo);
 			}
 		}
 		
-		// Use the ordered temporal container to delegate actions.                              |
+		// Use the ordered temporal container to delegate actions.                                  |
 		
 		while (OrderNumbers_To_ActionIDs->hasMoreElements() == 1) {
 			UAP_REQUEST(manager.getPtr(), lb_I_String, action_handler)
@@ -317,8 +320,10 @@ void LB_STDCALL lbAction::delegate(lb_I_Parameter* params) {
 			UAP(lb_I_KeyBase, keybase)
 			QI(key, lb_I_KeyBase, keybase)
 
-			ukActionId = OrderNumbers_To_ActionIDs->nextElement();
-			appActionSteps->selectActionStep(ActionID->getData()); // The stored action step id /
+			ukActionStepId = OrderNumbers_To_ActionIDs->nextElement();
+			appActionSteps->selectActionStep(ActionStepID->getData()); // The stored action step id /
+			
+			_LOG << "Got action step type " << appActionSteps->getActionStepType() << " for action step ID " << ActionStepID->getData() LOG_ 
 			
 			appActionTypes->selectActionType(appActionSteps->getActionStepType());
 			
@@ -327,6 +332,8 @@ void LB_STDCALL lbAction::delegate(lb_I_Parameter* params) {
 			
 			*key = *&module;
 			*key += *&action_handler;
+
+			_LOG << "Got action handler '" << action_handler->charrep() << "' from '" << module->charrep() << "'" LOG_
 
 			if (actions->exists(&keybase) == 0) {
 				/*...sInstanciate one and insert into actions:32:*/
@@ -691,6 +698,8 @@ void LB_STDCALL lbDetailFormAction::setActionID(long id) {
 /*...svoid LB_STDCALL lbDetailFormAction\58\\58\openDetailForm\40\lb_I_String\42\ formularname\44\ lb_I_Parameter\42\ params\41\:0:*/
 void LB_STDCALL lbDetailFormAction::openDetailForm(lb_I_String* formularname, lb_I_Parameter* params) {
 	lbErrCodes err = ERR_NONE;
+	_LOG "lbDetailFormAction::openDetailForm() called." LOG_
+
 	UAP_REQUEST(manager.getPtr(), lb_I_Long, actionID)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
 
@@ -1025,6 +1034,7 @@ void LB_STDCALL lbDetailFormAction::openDetailForm(lb_I_String* formularname, lb
 /*...svoid LB_STDCALL lbDetailFormAction\58\\58\execute\40\lb_I_Parameter\42\ params\41\:0:*/
 void LB_STDCALL lbDetailFormAction::execute(lb_I_Parameter* params) {
 	lbErrCodes err = ERR_NONE;
+	_LOG "lbDetailFormAction::execute() called" LOG_
 /*...sInit variables for params:8:*/
 	if (masterForm == NULL) {
 		REQUEST(manager.getPtr(), lb_I_String, masterForm)
@@ -1209,6 +1219,7 @@ void LB_STDCALL lbMasterFormAction::setActionID(long id) {
 /*...svoid LB_STDCALL lbMasterFormAction\58\\58\openMasterForm\40\lb_I_String\42\ formularname\44\ lb_I_Parameter\42\ params\41\:0:*/
 void LB_STDCALL lbMasterFormAction::openMasterForm(lb_I_String* formularname, lb_I_Parameter* params) {
 	lbErrCodes err = ERR_NONE;
+	_LOG "lbMasterFormAction::openMasterForm() called." LOG_
 	UAP_REQUEST(manager.getPtr(), lb_I_Long, actionID)
 
 	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
@@ -1517,6 +1528,7 @@ void LB_STDCALL lbMasterFormAction::openMasterForm(lb_I_String* formularname, lb
 /*...svoid LB_STDCALL lbMasterFormAction\58\\58\execute\40\lb_I_Parameter\42\ params\41\:0:*/
 void LB_STDCALL lbMasterFormAction::execute(lb_I_Parameter* params) {
 	lbErrCodes err = ERR_NONE;
+	_LOG "lbMasterFormAction::execute() called" LOG_
 /*...sInit variables for params:8:*/
 	if (masterForm == NULL) {
 		REQUEST(manager.getPtr(), lb_I_String, detailForm)
