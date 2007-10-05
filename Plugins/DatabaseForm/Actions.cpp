@@ -677,19 +677,15 @@ void LB_STDCALL lbDetailFormAction::openDetailForm(lb_I_String* formularname, lb
 	params->getUAPString(*&parameter, *&masterForm);
 	parameter->setData("source value");
 	params->getUAPString(*&parameter, *&SourceFieldValue);
+	parameter->setData("actionID");
+	actionID->setData(myActionID);
+	params->setUAPLong(*&parameter, *&actionID);
+	parameter->setData("application");
+	params->getUAPString(*&parameter, *&app);
 
 	if (detailForm != NULL) {
 		_CL_VERBOSE << "Show previously created form." LOG_
 	
-		// Pass my action ID
-		parameter->setData("actionID");
-		actionID->setData(myActionID);
-		params->setUAPLong(*&parameter, *&actionID);
-		
-		parameter->setData("source value");
-		params->getUAPString(*&parameter, *&SourceFieldValue);
-		parameter->setData("source Form");
-		params->getUAPString(*&parameter, *&masterForm);
 		*parameter = " - ";
 		*parameter += SourceFieldValue->charrep();
 		
@@ -805,13 +801,6 @@ void LB_STDCALL lbDetailFormAction::openDetailForm(lb_I_String* formularname, lb
 		}
 
 		// - old database variant -
-
-		parameter->setData("actionID");
-		actionID->setData(myActionID);
-		params->setUAPLong(*&parameter, *&actionID);
-		
-		parameter->setData("application");
-		params->getUAPString(*&parameter, *&app);
 
 		//lb_I_DatabaseForm* f = gui->findDBForm(masterForm->charrep());
 
@@ -1198,15 +1187,15 @@ void LB_STDCALL lbMasterFormAction::openMasterForm(lb_I_String* formularname, lb
 	params->getUAPString(*&parameter, *&detailForm);
 	parameter->setData("source value");
 	params->getUAPString(*&parameter, *&SourceFieldValue);
-
+	parameter->setData("actionID");
+	actionID->setData(myActionID);
+	params->setUAPLong(*&parameter, *&actionID);
+	parameter->setData("application");
+	params->getUAPString(*&parameter, *&app);
+		
 	/// \todo This is a possible bug if there are more than one such form.
 	if (masterForm != NULL) {
 		_CL_VERBOSE << "Show previously created form." LOG_
-	
-		// Pass my action ID
-		parameter->setData("actionID");
-		actionID->setData(myActionID);
-		params->setUAPLong(*&parameter, *&actionID);
 
 		*parameter = " - ";
 		*parameter += SourceFieldValue->charrep();
@@ -1310,16 +1299,6 @@ void LB_STDCALL lbMasterFormAction::openMasterForm(lb_I_String* formularname, lb
 
 		// - old database variant -
 
-		parameter->setData("actionID");
-		actionID->setData(myActionID);
-		params->setUAPLong(*&parameter, *&actionID);
-
-		//	parameter->setData("source field");
-		//	params->getUAPString(*&parameter, *&SourceFieldName);
-		parameter->setData("source value");
-		params->getUAPString(*&parameter, *&SourceFieldValue);
-		parameter->setData("application");
-		params->getUAPString(*&parameter, *&app);
 		
 		lb_I_DatabaseForm* f = gui->findDBForm(detailForm->charrep());
 

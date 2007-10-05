@@ -605,50 +605,35 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 			char* buffer = (char*) malloc(1000);
 			buffer[0] = 0;
 
-#ifdef bla			
-			UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
-			UAP_REQUEST(getModuleInstance(), lb_I_String, param)
-			UAP_REQUEST(getModuleInstance(), lb_I_Container, document)
-			UAP(lb_I_Unknown, ukParams)
-			UAP(lb_I_Parameter, params)
-			ukParams = meta->getActiveDocument();
-			QI(ukParams, lb_I_Parameter, params)
-			UAP_REQUEST(getModuleInstance(), lb_I_String, elementname)
-			UAP(lb_I_KeyBase, elementkey)
-			QI(elementname, lb_I_KeyBase, elementkey)
-
-			UAP(lb_I_Formulars, formulars)
-			UAP(lb_I_Formular_Fields, formularfields)
-
-			*param = "ApplicationData";
-			document->setCloning(false);
-			params->getUAPContainer(*&param, *&document);	
-
-			*elementname = "Formulars";
-			uk = document->getElement(&elementkey);
-			QI(uk, lb_I_Formulars, formulars)
-
-			*elementname = "FormularFields";
-			uk = document->getElement(&elementkey);
-			QI(uk, lb_I_Formular_Fields, formularfields)
-#endif
-			
 			bool definitionFound = false;
+			bool formFound = false;
 
-			long ID = meta->getApplicationID();
+			UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
+			UAP_REQUEST(getModuleInstance(), lb_I_Long, FID)
+			ID->setData(meta->getApplicationID());
+			
+			forms->finishFormularIteration();
 			while (forms->hasMoreFormulars()) {
 				forms->setNextFormular();
+				FID->setData(forms->getApplicationID());
 				
-				if (forms->getApplicationID() == ID) {
+				if (FID->equals(*&ID)) {
 					if (strcmp(formName, forms->getName()) == 0) {
 						forms->finishFormularIteration();
+						formFound = true;
+						_LOG << "Found formular name in datamodel." LOG_
 						break;
 					}
 				}
 			}
 			
+			if (formFound == false) {
+						_LOG << "Didn't not found formular name for application " << ID->getData() << " in datamodel. (" << formName << ")" LOG_
+			}
+			
 			long FormID = forms->getFormularID();
 			
+			formularfields->finishFieldsIteration();
 			while (formularfields->hasMoreFields()) {
 				formularfields->setNextField();
 				
@@ -2243,9 +2228,9 @@ void LB_STDCALL lbDatabasePanel::updateFromDetail() {
 		*newMasterIDQuery += colName->charrep();
 	}
 
-	*newMasterIDQuery += " from '";
+	*newMasterIDQuery += " from \"";
 	*newMasterIDQuery += _detail->getTableName(SourceFieldName->charrep());
-	*newMasterIDQuery += "' where \"";
+	*newMasterIDQuery += "\" where \"";
 	*newMasterIDQuery += SourceFieldName->charrep();
 	*newMasterIDQuery += "\"";
 
@@ -3641,76 +3626,23 @@ lbErrCodes LB_STDCALL lbDatabasePanel::OnActionButton(lb_I_Unknown* uk) {
 	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
 	
 	meta->setStatusText("Info", "Executing action ...");
-	
-/*...sDoc:8:*/
-	/*
-		An action button event may need some additional data to proceed.
-		If a user presses, for sample, 'reserve a trip' in a customer form,
-		the action will need the customer number to be added to the event,
-		that would be generated.
-		
-		So, for this sample I need the field that must be forwarded as additional
-		data.
-		
-		The 'action' is 'Reserve a trip', having a target with id = 1 and 
-		bezeichnung = 'Customer want to reserve a trip'.
-		
-		So the Button has the text 'Reserve a trip' and maybe have a help text of
-		'Customer want to reserve a trip'.
-		
-		To get the source data field for that action, I will need the action_steps.id field.
-		ID would be retrieved in two steps. The retrival is implemented in FormularActions class.
-	 */
-/*...e*/
 
 	if (uk != NULL) {
 		UAP_REQUEST(getModuleInstance(), lb_I_String, s)
 		
 /*...sResolve the related data for the action button \40\to be cached later\41\:16:*/
 		char* reversedEvent = NULL;
-//DebugBreak();		
-/*...sReverse the event ID from given uk data:32:*/
-		/* The parameter is the id of the event, that has been emitted.
-		   Resolve the name of that id. */
-		
 		UAP(lb_I_Integer, eventID)
 		QI(uk, lb_I_Integer, eventID)
-		
 		UAP_REQUEST(manager.getPtr(), lb_I_EventManager, eman)
-
 		meta->setStatusText("Info", "Reversing event name to ID ...");
-		
 		char* eventName = (char*) strdup(eman->reverseEvent(eventID->getData()));
-		
-		/*
-		  This event name has a prefix of the pointer for the instance of the form.
-		  
-		  That pointer must be removed in any way, before I can get other data from
-		  the configuration database.
-		 */
-
 		reversedEvent = strdup(strtok(eventName, "("));
-
 		free(reversedEvent);
-
 		reversedEvent = strdup(strtok(NULL, ")"));
-	
-/*...e*/
-
-		// Regarding to the event name, we must get back some information from the database.
-
-		//if (fa == NULL) fa = new FormularActions;	
-
 		meta->setStatusText("Info", "Lookup action source field ...");
-
 		*s = fa->getActionSourceDataField(reversedEvent);
-
-		/*
-		  Now I can get the data from the source field and put it into the event parameters.
-		 */
-
 		wxWindow* w = FindWindowByName(wxString(s->charrep()), this);
-		
 		wxString value;
 		wxString errmsg;
 		
@@ -3723,54 +3655,33 @@ lbErrCodes LB_STDCALL lbDatabasePanel::OnActionButton(lb_I_Unknown* uk) {
 		}
 		
 		if (sampleQuery->hasFKColumn(s->charrep()) == 1) {
-/*...sGet the content from choice control:40:*/
 				wxChoice* cbox = (wxChoice*) w;		
-			
 				int pos = cbox->GetSelection();
-				
 				if (pos != -1) {
 					lbErrCodes err = ERR_NONE;
-
 					UAP_REQUEST(manager.getPtr(), lb_I_Integer, key)
 					UAP_REQUEST(manager.getPtr(), lb_I_String, cbName)
-					
 					cbName->setData(s->charrep());
-					
 					UAP(lb_I_KeyBase, key_cbName)
 					UAP(lb_I_Unknown, uk_cbMapper)
 					UAP(lb_I_Container, cbMapper)
-					
 					QI(cbName, lb_I_KeyBase, key_cbName)
-					
 					uk_cbMapper = ComboboxMapperList->getElement(&key_cbName);
-					
 					QI(uk_cbMapper, lb_I_Container, cbMapper)
-					
 					key->setData(pos);
-					
 					UAP(lb_I_KeyBase, key_pos)
-					
 					QI(key, lb_I_KeyBase, key_pos)
-				
 					UAP(lb_I_Unknown, uk_mapping)
-					
 					uk_mapping = cbMapper->getElement(&key_pos);
-					
 					if (uk_mapping == NULL)  { 
 						printf("ERROR: cbMapper didn't found an entry for above search argument\n");
 					} else {
 						UAP(lb_I_Integer, FK_id)
-					
 						QI(uk_mapping, lb_I_Integer, FK_id)
-					
 						int p = FK_id->getData();
-					
 						char pp[20] = "";
-						
 						sprintf(pp, "%d", p);
-					
 						value = pp;
-					
 					}
 				}
 /*...e*/
@@ -3821,72 +3732,6 @@ lbErrCodes LB_STDCALL lbDatabasePanel::OnActionButton(lb_I_Unknown* uk) {
 
 		errmsg = wxString("Data for the required field '") + wxString(s->charrep()) + wxString("' is '") + value + wxString("'");
 		meta->setStatusText("Info", errmsg.c_str());
-
-
-/*...sShema doc for actions:16:*/
-		/*
-		   The current database shema has no entry for an event to be used
-		   as a forwardable event. So here I suggest to add a prefix to the
-		   event name that is configured and routed to here.
-		   
-		   A handler then could be a plugin similar to the plugin version of the
-		   login wizard.
-		   
-		   The remaining problem would be the initializion of the configuration data.
-		   
-		   The plugin must take care about all the configuration data it needs to be
-		   called. It also must know, from where the events can occur.
-		   
-		   In the case of a type 1 action - eg Buttonpress, the what field contains only
-		   an event identifer. To be able to forward the event, the plugin must provide
-		   a handler for it.
-		   
-		   I suggest as prefix the type of the action. In the case of Buttonpress their ID 1.
-		   
-		   In the case of a type 2 event - eg. a 'Dynamic detail form' event ID = 2, the 'what'
-		   field does not contain only the event name that would be routed to here.
-		   
-		   It also contains the information about the form to open. As in the mailto b.allgaier@...,
-		   I have defined a sample for opening a form:
-
-		   
-			Data fields:
-		
-				'Aktion Name' char(20)
-				'Aktion Typ' int 		-> 	'ActionTypes':'id'
-									'ActionTypes':'Bezeichnung'
-				'Action Source Data' char(20) (Eigentlich die Kunden ID)
-				'Action Target' int		->	'ActionTarget':'id'
-									'ActionTarget':'Bezeichnung'
-									'ActionTarget':'A_Order_Nr'
-									'ActionTarget':'What'
-
-			Sample that issues an event handler in a plugin:
-
-				'Reserve a trip'
-				'1' int		 		-> 	'AktionTypes':'1'
-									'AktionTypes':'Buttonpress'
-
-				'kundennr'	(The customer id, not the ID of the row)
-				'1' int				->	'ActionTarget':'1'
-									'ActionTarget':'Customer want to reserve a trip'
-									'ActionTarget':'1'
-									'ActionTarget':'evt_Reserve_Customer_Trip'
-
-			Sample that opens a detail formular:
-
-				'Reserved trips ...'
-				'2' int		 		-> 	'AktionTypes':'2'
-									'AktionTypes':'Dynamic detail form'
-
-				'kundennr'	(The customer id, not the ID of the row)
-				'1' int				->	'ActionTarget':'1'
-									'ActionTarget':'Overview of the customers trips'
-									'ActionTarget':'1'
-									'ActionTarget':'OpenForm:TripsOverview'
-
-		*/
-/*...e*/
 
 		UAP(lb_I_Action, action)
 		action = fa->getAction(fa->getActionID(reversedEvent));
