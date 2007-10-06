@@ -174,10 +174,8 @@ void makePluginName(char* path, char* module, char*& result) {
 		free(pluginDir);
 }
 
-/*...svoid LB_STDCALL lbAction\58\\58\delegate\40\lb_I_Parameter\42\ params\41\:0:*/
-void LB_STDCALL lbAction::delegate(lb_I_Parameter* params) {
+void LB_STDCALL lbAction::loadDataModel() {
 	lbErrCodes err = ERR_NONE;
-	
 	UAP(lb_I_Unknown, uk)
 	UAP(lb_I_Parameter, docparams)
 	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
@@ -211,7 +209,7 @@ void LB_STDCALL lbAction::delegate(lb_I_Parameter* params) {
 		*name = "FormActions";
 		uk = document->getElement(&key);
 		QI(uk, lb_I_Formular_Actions, formActions)
-
+		
 		*name = "FormParams";
 		uk = document->getElement(&key);
 		QI(uk, lb_I_FormularParameter, formParams)
@@ -227,7 +225,7 @@ void LB_STDCALL lbAction::delegate(lb_I_Parameter* params) {
 		*name = "AppAction_Steps";
 		uk = document->getElement(&key);
 		QI(uk, lb_I_Action_Steps, appActionSteps)
-		
+
 		*name = "AppActionTypes";
 		uk = document->getElement(&key);
 		QI(uk, lb_I_Action_Types, appActionTypes)
@@ -242,12 +240,17 @@ void LB_STDCALL lbAction::delegate(lb_I_Parameter* params) {
 			_LOG << "Error: Could not recieve one of the required document elements of application!" LOG_
 		} else {
 			// Preload more data.
-			
-			
 		}
 	}
+}
 
+/*...svoid LB_STDCALL lbAction\58\\58\delegate\40\lb_I_Parameter\42\ params\41\:0:*/
+void LB_STDCALL lbAction::delegate(lb_I_Parameter* params) {
+	lbErrCodes err = ERR_NONE;
+	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
 	
+	loadDataModel();
+
 	/*
 	 Resolve the parameters that we need here.
 	 Currently only the id of the action step.
@@ -286,8 +289,6 @@ void LB_STDCALL lbAction::delegate(lb_I_Parameter* params) {
 		UAP_REQUEST(getModuleInstance(), lb_I_String, key)
 		UAP(lb_I_KeyBase, keybase)
 		QI(key, lb_I_KeyBase, keybase)
-		
-		// Use separate container to sort relevant action steps by their order number
 		
 		appActionSteps->selectActionStep(id->getData());
 		appActionTypes->selectActionType(appActionSteps->getActionStepType());
@@ -568,61 +569,105 @@ void LB_STDCALL lbAction::delegate(lb_I_Parameter* params) {
 
 /*...svoid LB_STDCALL lbAction\58\\58\execute\40\lb_I_Parameter\42\ params\41\:0:*/
 void LB_STDCALL lbAction::execute(lb_I_Parameter* params) {
+	lbErrCodes err = ERR_NONE;
 	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
-	REQUEST(manager.getPtr(), lb_I_Database, db)
-	UAP(lb_I_Query, query)
-
-	db->init();
-
-	char* lbDMFPasswd = getenv("lbDMFPasswd");
-	char* lbDMFUser   = getenv("lbDMFUser");
-
-	if (!lbDMFUser) lbDMFUser = "dba";
-	if (!lbDMFPasswd) lbDMFPasswd = "trainres";
-
-	db->connect("lbDMF", "lbDMF", lbDMFUser, lbDMFPasswd);
-
-	query = db->getQuery("lbDMF", 0);	
-	
-	char buf[] = "select id from action_steps where actionid = %d";
-	char* q = (char*) malloc(strlen(buf)+10);
-	q[0] = 0;
-	sprintf(q, buf, myActionID);
-
-	_LOG << "Get action steps from id = " << myActionID << ". Query is " << q LOG_
-	
 	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
-
-	if (query->query(q) == ERR_NONE) {
 	
-		lbErrCodes err = query->first();
+	loadDataModel();
 	
-		while(err == ERR_NONE) {
-			UAP_REQUEST(manager.getPtr(), lb_I_Long, id)
-			
-			id = query->getAsLong(1);
-			
-			parameter->setData("id");
-			params->setUAPLong(*&parameter, *&id);
-			
-			delegate(*&params);
-			
-			err = query->next();
-		}
+	if (appActionSteps != NULL) {
+		UAP_REQUEST(getModuleInstance(), lb_I_Container, sortedActionSteps)
+		UAP_REQUEST(getModuleInstance(), lb_I_Long, order)
+		UAP_REQUEST(getModuleInstance(), lb_I_Long, stepid)
+		UAP(lb_I_KeyBase, key)
+		UAP(lb_I_Unknown, uk)
 		
-		if (err == WARN_DB_NODATA) {
-			UAP_REQUEST(manager.getPtr(), lb_I_Long, id)
+		QI(order, lb_I_KeyBase, key)
+		QI(stepid, lb_I_Unknown, uk)
+		
+		UAP_REQUEST(getModuleInstance(), lb_I_Long, actionid)
+		UAP_REQUEST(getModuleInstance(), lb_I_Long, actionidcmp)
+		
+		actionidcmp->setData(myActionID);
+		
+		appActionSteps->finishActionStepIteration();
+		while (appActionSteps->hasMoreActionSteps()) {
+			appActionSteps->setNextActionStep();
 			
-			id = query->getAsLong(1);
+			actionid->setData(appActionSteps->getActionStepActionID());
 			
-			parameter->setData("id");
-			params->setUAPLong(*&parameter, *&id);
-			
-			delegate(*&params);
+			if (actionidcmp->equals(*&actionid)) {
+				order->setData(appActionSteps->getActionStepOrderNo());
+				stepid->setData(appActionSteps->getActionStepID());
+				sortedActionSteps->insert(&uk, &key);
+			}
 		}
+		appActionSteps->finishActionStepIteration();
+		
+		sortedActionSteps->finishIteration();
+		while (sortedActionSteps->hasMoreElements() == 1) {
+			uk = sortedActionSteps->nextElement();
+		
+			parameter->setData("id");
+			params->setUAPLong(*&parameter, *&stepid);
+				
+			delegate(*&params);		
+		}
+		return;
 	} else {
-		wxString errmsg = wxString("Fehler: Abfrage '") + wxString(buf) + wxString("' hat keine Daten geliefert.!");
-		meta->setStatusText("Info", errmsg.c_str());
+		REQUEST(manager.getPtr(), lb_I_Database, db)
+		UAP(lb_I_Query, query)
+		
+		db->init();
+		
+		char* lbDMFPasswd = getenv("lbDMFPasswd");
+		char* lbDMFUser   = getenv("lbDMFUser");
+		
+		if (!lbDMFUser) lbDMFUser = "dba";
+		if (!lbDMFPasswd) lbDMFPasswd = "trainres";
+		
+		db->connect("lbDMF", "lbDMF", lbDMFUser, lbDMFPasswd);
+		
+		query = db->getQuery("lbDMF", 0);	
+		
+		char buf[] = "select id from action_steps where actionid = %d";
+		char* q = (char*) malloc(strlen(buf)+10);
+		q[0] = 0;
+		sprintf(q, buf, myActionID);
+		
+		_LOG << "Get action steps from id = " << myActionID << ". Query is " << q LOG_
+			
+			if (query->query(q) == ERR_NONE) {
+				
+				lbErrCodes err = query->first();
+				
+				while(err == ERR_NONE) {
+					UAP_REQUEST(manager.getPtr(), lb_I_Long, id)
+					
+					id = query->getAsLong(1);
+					
+					parameter->setData("id");
+					params->setUAPLong(*&parameter, *&id);
+					
+					delegate(*&params);
+					
+					err = query->next();
+				}
+				
+				if (err == WARN_DB_NODATA) {
+					UAP_REQUEST(manager.getPtr(), lb_I_Long, id)
+					
+					id = query->getAsLong(1);
+					
+					parameter->setData("id");
+					params->setUAPLong(*&parameter, *&id);
+					
+					delegate(*&params);
+				}
+			} else {
+				wxString errmsg = wxString("Fehler: Abfrage '") + wxString(buf) + wxString("' hat keine Daten geliefert.!");
+				meta->setStatusText("Info", errmsg.c_str());
+			}
 	}
 }
 /*...e*/

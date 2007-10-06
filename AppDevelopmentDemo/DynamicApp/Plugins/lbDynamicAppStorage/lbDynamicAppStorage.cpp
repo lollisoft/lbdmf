@@ -347,14 +347,168 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::setData(lb_I_Unknown*) {
 
 lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_InputStream* iStream) {
 	lbErrCodes err = ERR_NONE;
+	_LOG << "lbDynamicAppInternalStorage::load(lb_I_InputStream*) called." LOG_
+	UAP(lb_I_Aspect, aspect)
+	QI(op, lb_I_Aspect, aspect)
+	UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
 
+	UAP(lb_I_Formulars, forms)
+	UAP(lb_I_Formular_Fields, formularfields)
+	UAP(lb_I_Column_Types, columntypes)
+	UAP(lb_I_FormularParameter, formParams)
+	UAP(lb_I_Formular_Actions, formActions)
+	UAP(lb_I_ApplicationParameter, appParams)
+	UAP(lb_I_Actions, appActions)
+	UAP(lb_I_Action_Steps, appActionSteps)
+	UAP(lb_I_Action_Types, appActionTypes)
+	UAP(lb_I_DBTables, dbTables)
+	UAP(lb_I_DBColumns, dbColumns)
+	UAP(lb_I_DBPrimaryKeys, dbPrimaryKeys)
+	UAP(lb_I_DBForeignKeys, dbForeignKeys)
+
+	UAP(lb_I_Reports, reports)
+	UAP(lb_I_ReportParameters, reportparams)
+	UAP(lb_I_ReportElements, reportelements)
+	UAP(lb_I_ReportElementTypes, reportelementtypes)
+	UAP(lb_I_ReportTexts, reporttextblocks)
+
+	AQUIRE_PLUGIN(lb_I_Reports, Model, reports, "'database report'")
+	AQUIRE_PLUGIN(lb_I_ReportParameters, Model, reportparams, "'database report parameter'")
+	AQUIRE_PLUGIN(lb_I_ReportElements, Model, reportelements, "'database report elements'")
+	AQUIRE_PLUGIN(lb_I_ReportElementTypes, Model, reportelementtypes, "'database report element types'")
+	AQUIRE_PLUGIN(lb_I_ReportTexts, Model, reporttextblocks, "'database report text blocks'")
+	AQUIRE_PLUGIN(lb_I_Column_Types, Model, columntypes, "'column types'")
+	AQUIRE_PLUGIN(lb_I_Actions, Model, appActions, "'actions'")
+	AQUIRE_PLUGIN(lb_I_Formular_Actions, Model, formActions, "'formular actions'")
+	AQUIRE_PLUGIN(lb_I_Action_Types, Model, appActionTypes, "'action types'")
+	AQUIRE_PLUGIN(lb_I_Action_Steps, Model, appActionSteps, "'action steps'")
+	AQUIRE_PLUGIN(lb_I_Formulars, Model, forms, "'formulars'")
+	AQUIRE_PLUGIN(lb_I_Formular_Fields, Model, formularfields, "'formular fields'")
+	AQUIRE_PLUGIN(lb_I_FormularParameter, Model, formParams, "'formular parameters'")
+	AQUIRE_PLUGIN(lb_I_ApplicationParameter, Model, appParams, "'application parameters'")
+
+	reports->accept(*&aspect);
+	reportparams->accept(*&aspect);
+	reportelements->accept(*&aspect);
+	reportelementtypes->accept(*&aspect);
+	reporttextblocks->accept(*&aspect);
+	
+	forms->accept(*&aspect);
+	formularfields->accept(*&aspect);
+	columntypes->accept(*&aspect);
+	formActions->accept(*&aspect);
+	formParams->accept(*&aspect);
+	appParams->accept(*&aspect);
+	appActions->accept(*&aspect);
+	appActionTypes->accept(*&aspect);
+	appActionSteps->accept(*&aspect);
+
+	UAP(lb_I_Unknown, ukDoc)
+	UAP(lb_I_KeyBase, key)
+	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, metaapp)
+	UAP_REQUEST(getModuleInstance(), lb_I_Container, document)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+	UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
+	QI(name, lb_I_KeyBase, key)
+
+	if ((forms != NULL) && 
+		(reports != NULL) && 
+		(reportparams != NULL) && 
+		(reportelements != NULL) && 
+		(reportelementtypes != NULL) && 
+		(reporttextblocks != NULL) && 
+		(formularfields != NULL) && 
+		(formParams != NULL) && 
+		(appActions != NULL) && 
+		(appActionSteps != NULL) && 
+		(appActionTypes != NULL) && 
+		(appParams != NULL)) {
+		
+		UAP(lb_I_Unknown, uk)
+		
+		metaapp->setStatusText("Info", "Load internal file format ...");
+		
+		_LOG << "Get active document" LOG_
+		
+
+		UAP(lb_I_Unknown, ukParams)
+		UAP(lb_I_Parameter, params)
+
+		ukParams = metaapp->getActiveDocument();
+		QI(ukParams, lb_I_Parameter, params)
+		
+		*name = "Reports";
+		QI(reports, lb_I_Unknown, uk)
+		document->insert(&uk, &key);
+		
+		*name = "Reportparams";
+		QI(reportparams, lb_I_Unknown, uk)
+		document->insert(&uk, &key);
+		
+		*name = "Reportelements";
+		QI(reportelements, lb_I_Unknown, uk)
+		document->insert(&uk, &key);
+		
+		*name = "Reportelementtypes";
+		QI(reportelementtypes, lb_I_Unknown, uk)
+		document->insert(&uk, &key);
+		
+		*name = "Reporttextblocks";
+		QI(reporttextblocks, lb_I_Unknown, uk)
+		document->insert(&uk, &key);
+		
+		
+		
+		*name = "Formulars";
+		QI(forms, lb_I_Unknown, uk)
+		document->insert(&uk, &key);
+		
+		*name = "FormularFields";
+		QI(formularfields, lb_I_Unknown, uk)
+		document->insert(&uk, &key);
+		
+		*name = "ColumnTypes";
+		QI(columntypes, lb_I_Unknown, uk)
+		document->insert(&uk, &key);
+		
+		*name = "FormActions";
+		QI(formActions, lb_I_Unknown, uk)
+		document->insert(&uk, &key);
+		
+		*name = "FormParams";
+		QI(formParams, lb_I_Unknown, uk)
+		document->insert(&uk, &key);
+		
+		*name = "AppParams";
+		QI(appParams, lb_I_Unknown, uk)
+		document->insert(&uk, &key);
+		
+		*name = "AppActions";
+		QI(appActions, lb_I_Unknown, uk)
+		document->insert(&uk, &key);
+		
+		*name = "AppAction_Steps";
+		QI(appActionSteps, lb_I_Unknown, uk)
+		document->insert(&uk, &key);
+		
+		*name = "AppActionTypes";
+		QI(appActionTypes, lb_I_Unknown, uk)
+		document->insert(&uk, &key);
+	}		
+	
+	*name = "ApplicationData";
+	param->setUAPContainer(*&name, *&document);
+	
+	param++;
+	metaapp->setActiveDocument(*&param);
+	
 	return err;
 }
 
 lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::save(lb_I_OutputStream* oStream) {
 	lbErrCodes err = ERR_NONE;
 
-	_LOG << "lbDynamicAppInternalStorage::save() called." LOG_
+	_LOG << "lbDynamicAppInternalStorage::save(lb_I_OutputStream*) called." LOG_
 
 	UAP(lb_I_Aspect, aspect)
 	QI(op, lb_I_Aspect, aspect)
@@ -501,8 +655,204 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::save(lb_I_OutputStream* oStre
 }
 
 lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_Database* iDB) {
+	_LOG << "lbDynamicAppInternalStorage::load(lb_I_Database*) called." LOG_
 	lbErrCodes err = ERR_NONE;
+	UAP(lb_I_Aspect, aspect)
+	QI(op, lb_I_Aspect, aspect)
+	UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
 
+	UAP(lb_I_Formulars, forms)
+	UAP(lb_I_Formular_Fields, formularfields)
+	UAP(lb_I_Column_Types, columntypes)
+	UAP(lb_I_FormularParameter, formParams)
+	UAP(lb_I_Formular_Actions, formActions)
+	UAP(lb_I_ApplicationParameter, appParams)
+	UAP(lb_I_Actions, appActions)
+	UAP(lb_I_Action_Steps, appActionSteps)
+	UAP(lb_I_Action_Types, appActionTypes)
+	UAP(lb_I_DBTables, dbTables)
+	UAP(lb_I_DBColumns, dbColumns)
+	UAP(lb_I_DBPrimaryKeys, dbPrimaryKeys)
+	UAP(lb_I_DBForeignKeys, dbForeignKeys)
+
+	UAP(lb_I_Reports, reports)
+	UAP(lb_I_ReportParameters, reportparams)
+	UAP(lb_I_ReportElements, reportelements)
+	UAP(lb_I_ReportElementTypes, reportelementtypes)
+	UAP(lb_I_ReportTexts, reporttextblocks)
+
+	AQUIRE_PLUGIN(lb_I_Reports, Model, reports, "'database report'")
+	AQUIRE_PLUGIN(lb_I_ReportParameters, Model, reportparams, "'database report parameter'")
+	AQUIRE_PLUGIN(lb_I_ReportElements, Model, reportelements, "'database report elements'")
+	AQUIRE_PLUGIN(lb_I_ReportElementTypes, Model, reportelementtypes, "'database report element types'")
+	AQUIRE_PLUGIN(lb_I_ReportTexts, Model, reporttextblocks, "'database report text blocks'")
+	AQUIRE_PLUGIN(lb_I_Column_Types, Model, columntypes, "'column types'")
+	AQUIRE_PLUGIN(lb_I_Actions, Model, appActions, "'actions'")
+	AQUIRE_PLUGIN(lb_I_Formular_Actions, Model, formActions, "'formular actions'")
+	AQUIRE_PLUGIN(lb_I_Action_Types, Model, appActionTypes, "'action types'")
+	AQUIRE_PLUGIN(lb_I_Action_Steps, Model, appActionSteps, "'action steps'")
+	AQUIRE_PLUGIN(lb_I_Formulars, Model, forms, "'formulars'")
+	AQUIRE_PLUGIN(lb_I_Formular_Fields, Model, formularfields, "'formular fields'")
+	AQUIRE_PLUGIN(lb_I_FormularParameter, Model, formParams, "'formular parameters'")
+	AQUIRE_PLUGIN(lb_I_ApplicationParameter, Model, appParams, "'application parameters'")
+
+	if (reports == NULL)  {
+		_LOG << "lb_I_Reports instance is NULL." LOG_
+	}
+	if (reportparams == NULL)  {
+		_LOG << "lb_I_ReportParameters instance is NULL." LOG_
+	}
+	if (reportelements == NULL)  {
+		_LOG << "lb_I_ReportElements instance is NULL." LOG_
+	}
+	if (reportelementtypes == NULL)  {
+		_LOG << "lb_I_ReportElementTypes instance is NULL." LOG_
+	}
+	if (reporttextblocks == NULL)  {
+		_LOG << "lb_I_ReportTexts instance is NULL." LOG_
+	}
+	if (forms == NULL)  {
+		_LOG << "lb_I_Formulars instance is NULL." LOG_
+	}
+	if (formularfields == NULL)  {
+		_LOG << "lb_I_Formular_Fields instance is NULL." LOG_
+	}
+	if (columntypes == NULL)  {
+		_LOG << "lb_I_Column_Types instance is NULL." LOG_
+	}
+	if (formParams == NULL)  {
+		_LOG << "lb_I_FormularParameter instance is NULL." LOG_
+	}
+	if (formActions == NULL)  {
+		_LOG << "lb_I_Formular_Actions instance is NULL." LOG_
+	}
+	if (appParams == NULL)  {
+		_LOG << "lb_I_ApplicationParameter instance is NULL." LOG_
+	}
+	if (appActions == NULL)  {
+		_LOG << "lb_I_Actions instance is NULL." LOG_
+	}
+	if (appActionTypes == NULL)  {
+		_LOG << "lb_I_Action_Types instance is NULL." LOG_
+	}
+	if (appActionSteps == NULL)  {
+		_LOG << "lb_I_Action_Steps instance is NULL." LOG_
+	}
+	
+	reports->accept(*&aspect);
+	reportparams->accept(*&aspect);
+	reportelements->accept(*&aspect);
+	reportelementtypes->accept(*&aspect);
+	reporttextblocks->accept(*&aspect);
+	
+	forms->accept(*&aspect);
+	formularfields->accept(*&aspect);
+	columntypes->accept(*&aspect);
+	formActions->accept(*&aspect);
+	formParams->accept(*&aspect);
+	appParams->accept(*&aspect);
+	appActions->accept(*&aspect);
+	appActionTypes->accept(*&aspect);
+	appActionSteps->accept(*&aspect);
+
+	UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+	UAP(lb_I_Unknown, ukDoc)
+	UAP_REQUEST(getModuleInstance(), lb_I_Container, document)
+	UAP(lb_I_Unknown, ukParams)
+	UAP(lb_I_Parameter, params)
+
+	ukParams = meta->getActiveDocument();
+	QI(ukParams, lb_I_Parameter, params)
+
+	_LOG << "Retrieve document container with name 'ApplicationData'" LOG_
+
+	*name = "ApplicationData";
+	document->setCloning(false);
+
+	if ((forms != NULL) && 
+		(reports != NULL) && 
+		(reportparams != NULL) && 
+		(reportelements != NULL) && 
+		(reportelementtypes != NULL) && 
+		(reporttextblocks != NULL) && 
+		(formularfields != NULL) && 
+		(formParams != NULL) && 
+		(appActions != NULL) && 
+		(appActionSteps != NULL) && 
+		(appActionTypes != NULL) && 
+		(appParams != NULL)) {
+		
+		UAP(lb_I_Unknown, uk)
+		UAP(lb_I_KeyBase, key)
+		QI(name, lb_I_KeyBase, key)
+		
+		
+		*name = "Reports";
+		QI(reports, lb_I_Unknown, uk)
+		document->insert(&uk, &key);
+		
+		*name = "Reportparams";
+		QI(reportparams, lb_I_Unknown, uk)
+		document->insert(&uk, &key);
+		
+		*name = "Reportelements";
+		QI(reportelements, lb_I_Unknown, uk)
+		document->insert(&uk, &key);
+		
+		*name = "Reportelementtypes";
+		QI(reportelementtypes, lb_I_Unknown, uk)
+		document->insert(&uk, &key);
+		
+		*name = "Reporttextblocks";
+		QI(reporttextblocks, lb_I_Unknown, uk)
+		document->insert(&uk, &key);
+		
+		
+		
+		*name = "Formulars";
+		QI(forms, lb_I_Unknown, uk)
+		document->insert(&uk, &key);
+		
+		*name = "FormularFields";
+		QI(formularfields, lb_I_Unknown, uk)
+		document->insert(&uk, &key);
+		
+		*name = "ColumnTypes";
+		QI(columntypes, lb_I_Unknown, uk)
+		document->insert(&uk, &key);
+		
+		*name = "FormActions";
+		QI(formActions, lb_I_Unknown, uk)
+		document->insert(&uk, &key);
+		
+		*name = "FormParams";
+		QI(formParams, lb_I_Unknown, uk)
+		document->insert(&uk, &key);
+		
+		*name = "AppParams";
+		QI(appParams, lb_I_Unknown, uk)
+		document->insert(&uk, &key);
+		
+		*name = "AppActions";
+		QI(appActions, lb_I_Unknown, uk)
+		document->insert(&uk, &key);
+		
+		*name = "AppAction_Steps";
+		QI(appActionSteps, lb_I_Unknown, uk)
+		document->insert(&uk, &key);
+		
+		*name = "AppActionTypes";
+		QI(appActionTypes, lb_I_Unknown, uk)
+		document->insert(&uk, &key);
+	}		
+	
+	*name = "ApplicationData";
+	params->setUAPContainer(*&name, *&document);
+	
+	params++;
+	meta->setActiveDocument(*&params);
+	
 	return err;
 }
 

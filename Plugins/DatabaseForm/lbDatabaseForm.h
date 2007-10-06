@@ -30,11 +30,15 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.40 $
+ * $Revision: 1.41 $
  * $Name:  $
- * $Id: lbDatabaseForm.h,v 1.40 2007/10/04 13:10:43 lollisoft Exp $
+ * $Id: lbDatabaseForm.h,v 1.41 2007/10/06 16:41:34 lollisoft Exp $
  *
  * $Log: lbDatabaseForm.h,v $
+ * Revision 1.41  2007/10/06 16:41:34  lollisoft
+ * Begun to move out code into visitor classes. But it does
+ * not yet work. Deactivated.
+ *
  * Revision 1.40  2007/10/04 13:10:43  lollisoft
  * Replaced more SQL queries by data model usage.
  *
@@ -298,7 +302,7 @@ public:
 	DECLARE_LB_UNKNOWN()
 	
 protected:
-
+	void LB_STDCALL loadDataModel();
 	void LB_STDCALL delegate(lb_I_Parameter* params);
 	
 	bool initialized;

@@ -103,11 +103,11 @@ lbReports::~lbReports() {
 
 long		LB_STDCALL lbReports::addReport(const char* name, const char* description, long _id) {
 	lbErrCodes err = ERR_NONE;
-	UAP_REQUEST(manager.getPtr(), lb_I_String, Name)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, Description)
-	UAP_REQUEST(manager.getPtr(), lb_I_Long, ID)
-	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, paramname)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, Name)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, Description)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
+	UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
 
 	_LOG << "lbReports::addReport('" << name << "', '" << description << "', '" << _id << "') called." LOG_
 
@@ -135,8 +135,8 @@ long		LB_STDCALL lbReports::addReport(const char* name, const char* description,
 bool		LB_STDCALL lbReports::selectReport(long _id) {
 	lbErrCodes err = ERR_NONE;
 	
-	UAP_REQUEST(manager.getPtr(), lb_I_String, name)
-	UAP_REQUEST(manager.getPtr(), lb_I_Long, ID)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
 	UAP(lb_I_Parameter, param)
 	UAP(lb_I_Unknown, uk)
 	UAP(lb_I_KeyBase, key)
@@ -172,7 +172,7 @@ bool		LB_STDCALL lbReports::hasMoreReports() {
 
 void		LB_STDCALL lbReports::setNextReport() {
 	lbErrCodes err = ERR_NONE;
-	UAP_REQUEST(manager.getPtr(), lb_I_String, name)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, name)
 	UAP(lb_I_Parameter, param)
 	UAP(lb_I_Unknown, uk)
 	
@@ -275,7 +275,7 @@ lb_I_Unknown* LB_STDCALL lbPluginReportsModel::peekImplementation() {
 
 	if (ukUserApplicationRelationModel == NULL) {
 		lbReports* Users_ApplicationModel = new lbReports();
-		Users_ApplicationModel->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+		Users_ApplicationModel->setModuleManager(getModuleInstance(), __FILE__, __LINE__);
 	
 		QI(Users_ApplicationModel, lb_I_Unknown, ukUserApplicationRelationModel)
 	} else {
@@ -294,7 +294,7 @@ lb_I_Unknown* LB_STDCALL lbPluginReportsModel::getImplementation() {
 		_CL_VERBOSE << "Warning: peekImplementation() has not been used prior.\n" LOG_
 	
 		lbReports* Users_ApplicationModel = new lbReports();
-		Users_ApplicationModel->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+		Users_ApplicationModel->setModuleManager(getModuleInstance(), __FILE__, __LINE__);
 	
 		QI(Users_ApplicationModel, lb_I_Unknown, ukUserApplicationRelationModel)
 	}
@@ -331,12 +331,12 @@ lbReportParameters::~lbReportParameters() {
 
 long		LB_STDCALL lbReportParameters::addParameter(long reportid, const char* name, const char* value, long _id) {
 	lbErrCodes err = ERR_NONE;
-	UAP_REQUEST(manager.getPtr(), lb_I_String, Name)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, Value)
-	UAP_REQUEST(manager.getPtr(), lb_I_Long, ID)
-	UAP_REQUEST(manager.getPtr(), lb_I_Long, ReportID)
-	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, paramname)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, Name)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, Value)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, ReportID)
+	UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
 
 	_LOG << "lbReportParameters::addParameter('" << reportid << "', '" << name << "', '" << value << "', '" << _id << "') called." LOG_
 
@@ -368,8 +368,8 @@ long		LB_STDCALL lbReportParameters::addParameter(long reportid, const char* nam
 bool		LB_STDCALL lbReportParameters::selectParameter(long _id) {
 	lbErrCodes err = ERR_NONE;
 	
-	UAP_REQUEST(manager.getPtr(), lb_I_String, name)
-	UAP_REQUEST(manager.getPtr(), lb_I_Long, ID)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
 	UAP(lb_I_Parameter, param)
 	UAP(lb_I_Unknown, uk)
 	UAP(lb_I_KeyBase, key)
@@ -407,7 +407,7 @@ bool		LB_STDCALL lbReportParameters::hasMoreParameters() {
 
 void		LB_STDCALL lbReportParameters::setNextParameter() {
 	lbErrCodes err = ERR_NONE;
-	UAP_REQUEST(manager.getPtr(), lb_I_String, name)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, name)
 	UAP(lb_I_Parameter, param)
 	UAP(lb_I_Unknown, uk)
 	
@@ -514,7 +514,7 @@ lb_I_Unknown* LB_STDCALL lbPluginReportParametersModel::peekImplementation() {
 
 	if (ukUserApplicationRelationModel == NULL) {
 		lbReportParameters* Users_ApplicationModel = new lbReportParameters();
-		Users_ApplicationModel->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+		Users_ApplicationModel->setModuleManager(getModuleInstance(), __FILE__, __LINE__);
 	
 		QI(Users_ApplicationModel, lb_I_Unknown, ukUserApplicationRelationModel)
 	} else {
@@ -533,7 +533,7 @@ lb_I_Unknown* LB_STDCALL lbPluginReportParametersModel::getImplementation() {
 		_CL_VERBOSE << "Warning: peekImplementation() has not been used prior.\n" LOG_
 	
 		lbReportParameters* Users_ApplicationModel = new lbReportParameters();
-		Users_ApplicationModel->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+		Users_ApplicationModel->setModuleManager(getModuleInstance(), __FILE__, __LINE__);
 	
 		QI(Users_ApplicationModel, lb_I_Unknown, ukUserApplicationRelationModel)
 	}
@@ -577,17 +577,17 @@ lbReportElements::~lbReportElements() {
 
 long		LB_STDCALL lbReportElements::addElement(long reportid, const char* name, long typ, long x, long y, long w, long h, const char* description, long _id) {
 	lbErrCodes err = ERR_NONE;
-	UAP_REQUEST(manager.getPtr(), lb_I_Long, ID)
-	UAP_REQUEST(manager.getPtr(), lb_I_Long, ReportID)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, Name)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, Description)
-	UAP_REQUEST(manager.getPtr(), lb_I_Long, Typ)
-	UAP_REQUEST(manager.getPtr(), lb_I_Long, X)
-	UAP_REQUEST(manager.getPtr(), lb_I_Long, Y)
-	UAP_REQUEST(manager.getPtr(), lb_I_Long, W)
-	UAP_REQUEST(manager.getPtr(), lb_I_Long, H)
-	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, paramname)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, ReportID)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, Name)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, Description)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, Typ)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, X)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, Y)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, W)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, H)
+	UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
 
 	_LOG << "lbReportElements::addElement('" << reportid << "', '" << name << "', '" << typ << "', '" << x << "', '" << y << "', '" << w << "', '" << h << "', '" << description << "', '" << _id << "') called." LOG_
 
@@ -633,8 +633,8 @@ long		LB_STDCALL lbReportElements::addElement(long reportid, const char* name, l
 bool		LB_STDCALL lbReportElements::selectElement(long _id) {
 	lbErrCodes err = ERR_NONE;
 	
-	UAP_REQUEST(manager.getPtr(), lb_I_String, name)
-	UAP_REQUEST(manager.getPtr(), lb_I_Long, ID)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
 	UAP(lb_I_Parameter, param)
 	UAP(lb_I_Unknown, uk)
 	UAP(lb_I_KeyBase, key)
@@ -682,7 +682,7 @@ bool		LB_STDCALL lbReportElements::hasMoreElements() {
 
 void		LB_STDCALL lbReportElements::setNextElement() {
 	lbErrCodes err = ERR_NONE;
-	UAP_REQUEST(manager.getPtr(), lb_I_String, name)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, name)
 	UAP(lb_I_Parameter, param)
 	UAP(lb_I_Unknown, uk)
 	
@@ -819,7 +819,7 @@ lb_I_Unknown* LB_STDCALL lbPluginReportElementsModel::peekImplementation() {
 
 	if (ukUserApplicationRelationModel == NULL) {
 		lbReportElements* Users_ApplicationModel = new lbReportElements();
-		Users_ApplicationModel->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+		Users_ApplicationModel->setModuleManager(getModuleInstance(), __FILE__, __LINE__);
 	
 		QI(Users_ApplicationModel, lb_I_Unknown, ukUserApplicationRelationModel)
 	} else {
@@ -838,7 +838,7 @@ lb_I_Unknown* LB_STDCALL lbPluginReportElementsModel::getImplementation() {
 		_CL_VERBOSE << "Warning: peekImplementation() has not been used prior.\n" LOG_
 	
 		lbReportElements* Users_ApplicationModel = new lbReportElements();
-		Users_ApplicationModel->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+		Users_ApplicationModel->setModuleManager(getModuleInstance(), __FILE__, __LINE__);
 	
 		QI(Users_ApplicationModel, lb_I_Unknown, ukUserApplicationRelationModel)
 	}
@@ -875,11 +875,11 @@ lbReportElementTypes::~lbReportElementTypes() {
 
 long		LB_STDCALL lbReportElementTypes::addElementType(const char* name, const char* description, long _id) {
 	lbErrCodes err = ERR_NONE;
-	UAP_REQUEST(manager.getPtr(), lb_I_String, Name)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, Description)
-	UAP_REQUEST(manager.getPtr(), lb_I_Long, ID)
-	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, paramname)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, Name)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, Description)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
+	UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
 
 	_LOG << "lbReportElementTypes::addElementType('" << name << "', '" << description << "', '" << _id << "') called." LOG_
 
@@ -907,8 +907,8 @@ long		LB_STDCALL lbReportElementTypes::addElementType(const char* name, const ch
 bool		LB_STDCALL lbReportElementTypes::selectElementType(long _id) {
 	lbErrCodes err = ERR_NONE;
 	
-	UAP_REQUEST(manager.getPtr(), lb_I_String, name)
-	UAP_REQUEST(manager.getPtr(), lb_I_Long, ID)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
 	UAP(lb_I_Parameter, param)
 	UAP(lb_I_Unknown, uk)
 	UAP(lb_I_KeyBase, key)
@@ -944,7 +944,7 @@ bool		LB_STDCALL lbReportElementTypes::hasMoreElementTypes() {
 
 void		LB_STDCALL lbReportElementTypes::setNextElementType() {
 	lbErrCodes err = ERR_NONE;
-	UAP_REQUEST(manager.getPtr(), lb_I_String, name)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, name)
 	UAP(lb_I_Parameter, param)
 	UAP(lb_I_Unknown, uk)
 	
@@ -1047,7 +1047,7 @@ lb_I_Unknown* LB_STDCALL lbPluginReportElementTypesModel::peekImplementation() {
 
 	if (ukUserApplicationRelationModel == NULL) {
 		lbReportElementTypes* Users_ApplicationModel = new lbReportElementTypes();
-		Users_ApplicationModel->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+		Users_ApplicationModel->setModuleManager(getModuleInstance(), __FILE__, __LINE__);
 	
 		QI(Users_ApplicationModel, lb_I_Unknown, ukUserApplicationRelationModel)
 	} else {
@@ -1066,7 +1066,7 @@ lb_I_Unknown* LB_STDCALL lbPluginReportElementTypesModel::getImplementation() {
 		_CL_VERBOSE << "Warning: peekImplementation() has not been used prior.\n" LOG_
 	
 		lbReportElementTypes* Users_ApplicationModel = new lbReportElementTypes();
-		Users_ApplicationModel->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+		Users_ApplicationModel->setModuleManager(getModuleInstance(), __FILE__, __LINE__);
 	
 		QI(Users_ApplicationModel, lb_I_Unknown, ukUserApplicationRelationModel)
 	}
@@ -1105,12 +1105,12 @@ lbReportTexts::~lbReportTexts() {
 	
 long		LB_STDCALL lbReportTexts::addText(long elementid, long line, const char* text, long _id) {
 	lbErrCodes err = ERR_NONE;
-	UAP_REQUEST(manager.getPtr(), lb_I_String, Text)
-	UAP_REQUEST(manager.getPtr(), lb_I_Long, ElementID)
-	UAP_REQUEST(manager.getPtr(), lb_I_Long, Line)
-	UAP_REQUEST(manager.getPtr(), lb_I_Long, ID)
-	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, paramname)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, Text)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, ElementID)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, Line)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
+	UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
 
 	_LOG << "lbReportTexts::addText('" << elementid << "', '" << line << "', '" << text << "', '" << _id << "') called." LOG_
 
@@ -1142,8 +1142,8 @@ long		LB_STDCALL lbReportTexts::addText(long elementid, long line, const char* t
 bool		LB_STDCALL lbReportTexts::selectText(long _id) {
 	lbErrCodes err = ERR_NONE;
 	
-	UAP_REQUEST(manager.getPtr(), lb_I_String, name)
-	UAP_REQUEST(manager.getPtr(), lb_I_Long, ID)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
 	UAP(lb_I_Parameter, param)
 	UAP(lb_I_Unknown, uk)
 	UAP(lb_I_KeyBase, key)
@@ -1181,7 +1181,7 @@ bool		LB_STDCALL lbReportTexts::hasMoreTexts() {
 
 void		LB_STDCALL lbReportTexts::setNextText() {
 	lbErrCodes err = ERR_NONE;
-	UAP_REQUEST(manager.getPtr(), lb_I_String, name)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, name)
 	UAP(lb_I_Parameter, param)
 	UAP(lb_I_Unknown, uk)
 	
@@ -1289,7 +1289,7 @@ lb_I_Unknown* LB_STDCALL lbPluginReportTextsModel::peekImplementation() {
 
 	if (ukUserApplicationRelationModel == NULL) {
 		lbReportTexts* reporttexts = new lbReportTexts();
-		reporttexts->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+		reporttexts->setModuleManager(getModuleInstance(), __FILE__, __LINE__);
 	
 		QI(reporttexts, lb_I_Unknown, ukUserApplicationRelationModel)
 	} else {
@@ -1308,7 +1308,7 @@ lb_I_Unknown* LB_STDCALL lbPluginReportTextsModel::getImplementation() {
 		_CL_VERBOSE << "Warning: peekImplementation() has not been used prior.\n" LOG_
 	
 		lbReportTexts* reporttexts = new lbReportTexts();
-		reporttexts->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+		reporttexts->setModuleManager(getModuleInstance(), __FILE__, __LINE__);
 	
 		QI(reporttexts, lb_I_Unknown, ukUserApplicationRelationModel)
 	}

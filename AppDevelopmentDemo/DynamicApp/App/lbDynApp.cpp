@@ -1225,12 +1225,18 @@ lbErrCodes LB_STDCALL lbDynamicApplication::uninitialize() {
 }
 /*...e*/
 
+#define USE_OLD_INITIALIZE
+
 /*...slbErrCodes LB_STDCALL lbDynamicApplication\58\\58\initialize\40\char\42\ user \61\ NULL\44\ char\42\ app \61\ NULL\41\:0:*/
 lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 	_CL_LOG << "lbDynamicApplication::initialize(...) called." LOG_	
 	// To be implemented in a separate application module
 	lbErrCodes err = ERR_NONE;
 	int unused;
+
+	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, name)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, value)
 
 	// Get the event manager
 	
@@ -1310,8 +1316,6 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 	if (!lbDMFUser) lbDMFUser = "dba";
 	if (!lbDMFPasswd) lbDMFPasswd = "trainres";
 
-	
-
 	if (!isFileAvailable || metaapp->getLoadFromDatabase()) {
 	
 		// File for current application is not available. Assume the MetaApp.mad file is too old.
@@ -1338,6 +1342,16 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 					appParams->accept(*&fOpDB);
 					fOpDB->end();
 				} else {
+#ifndef USE_OLD_INITIALIZE				
+					metaapp->setStatusText("Info", "Preload application data from file ...");
+
+					*name = "StorageDelegateNamespace";
+					*value = "lbDynAppInternalFormat";
+					param->setUAPString(*&name, *&value);
+
+					accept(*&fOp);
+#endif				
+#ifdef USE_OLD_INITIALIZE				
 					// System database is not available
 					UAP(lb_I_Formulars, forms)
 					UAP(lb_I_Formular_Fields, formularfields)
@@ -1375,6 +1389,10 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 						
 						
 						metaapp->setStatusText("Info", "Preload application data from file ...");
+
+						*name = "StorageDelegateNamespace";
+						*value = "lbDynAppInternalFormat";
+						param->setUAPString(*&name, *&value);
 						
 						reports->accept(*&fOp);
 						reportparams->accept(*&fOp);
@@ -1397,6 +1415,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 						metaapp->msgBox("Fatal", "No system database has been setup and no previously created file is available.");
 						return ERR_NONE;
 					}
+#endif // USE_OLD_INITIALIZE
 				}
 			
 				// If the applications database is not the system database, also connect to that database too. 
@@ -1421,306 +1440,345 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 		}
 	}
 	
-
-		
-	
-	
 	_CL_LOG << "Load application settings from file or database ..." LOG_
 
-		if (isFileAvailable || isDBAvailable) {
-			/*...sLoad from file or database:16:*/
-			/*...sInitialize plugin based document models:32:*/
-			AQUIRE_PLUGIN(lb_I_Reports, Model, reports, "'database report'")
-			AQUIRE_PLUGIN(lb_I_ReportParameters, Model, reportparams, "'database report parameter'")
-			AQUIRE_PLUGIN(lb_I_ReportElements, Model, reportelements, "'database report elements'")
-			AQUIRE_PLUGIN(lb_I_ReportElementTypes, Model, reportelementtypes, "'database report element types'")
-			AQUIRE_PLUGIN(lb_I_ReportTexts, Model, reporttextblocks, "'database report text blocks'")
-			AQUIRE_PLUGIN(lb_I_Column_Types, Model, columntypes, "'column types'")
-			AQUIRE_PLUGIN(lb_I_Actions, Model, appActions, "'actions'")
-			AQUIRE_PLUGIN(lb_I_Formular_Actions, Model, formActions, "'formular actions'")
-			AQUIRE_PLUGIN(lb_I_Action_Types, Model, appActionTypes, "'action types'")
-			AQUIRE_PLUGIN(lb_I_Action_Steps, Model, appActionSteps, "'action steps'")
-			AQUIRE_PLUGIN(lb_I_Formulars, Model, forms, "'formulars'")
-			AQUIRE_PLUGIN(lb_I_Formular_Fields, Model, formularfields, "'formular fields'")
-			AQUIRE_PLUGIN(lb_I_FormularParameter, Model, formParams, "'formular parameters'")
-			AQUIRE_PLUGIN(lb_I_ApplicationParameter, Model, appParams, "'application parameters'")
-			
-			/*...e*/
-			
-			
-			// Only this part is how to load the data. So here I have to set the correct handler for the load delegation routine.
-			
-			// Loading the application related data succeeded. Put these into a parameter object for reference.
-			
-			UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
-			UAP_REQUEST(manager.getPtr(), lb_I_Container, document)
-			UAP_REQUEST(manager.getPtr(), lb_I_String, name)
-			UAP_REQUEST(manager.getPtr(), lb_I_String, value)
-			UAP(lb_I_KeyBase, key)
-			QI(name, lb_I_KeyBase, key)
-			
-			param->setCloning(false);
-			document->setCloning(false);
-			
-			*name = "StorageDelegateInterface";
-			*value = "lb_I_Streamable";
-			param->setUAPString(*&name, *&value);
-			
-			*name = "StorageDelegateNamespace";
-			*value = "DynamicAppXMLStorage";
-			param->setUAPString(*&name, *&value);
-			
-			if (!DBOperation && 
-				(reports != NULL) && 
-				(reportparams != NULL) && 
-				(reportelements != NULL) && 
-				(reportelementtypes != NULL) && 
-				(reporttextblocks != NULL) && 
-				(forms != NULL) && 
-				(formularfields != NULL) && 
-				(formParams != NULL) && 
-				(appActions != NULL) && 
-				(appActionSteps != NULL) && 
-				(appActionTypes != NULL) && 
-				(appParams != NULL)) {
-				_LOG << "Load application data from file ..." LOG_
-				metaapp->setStatusText("Info", "Load application data from file ...");
-				
-				reports->accept(*&fOp);
-				reportparams->accept(*&fOp);
-				reportelements->accept(*&fOp);
-				reportelementtypes->accept(*&fOp);
-				reporttextblocks->accept(*&fOp);
-				
-				forms->accept(*&fOp);
-				formularfields->accept(*&fOp);
-				columntypes->accept(*&fOp);
-				formActions->accept(*&fOp);
-				formParams->accept(*&fOp);
-				appParams->accept(*&fOp);
-				appActions->accept(*&fOp);
-				appActionTypes->accept(*&fOp);
-				appActionSteps->accept(*&fOp);
-			}
-			
-			if ((metaapp->getLoadFromDatabase() || !isFileAvailable) && DBOperation && 
-				(reports != NULL) && 
-				(reportparams != NULL) && 
-				(reportelements != NULL) && 
-				(reportelementtypes != NULL) && 
-				(reporttextblocks != NULL) && 
-				(forms != NULL) && 
-				(formularfields != NULL) && 
-				(formParams != NULL) && 
-				(appActions != NULL) && 
-				(appActionSteps != NULL) && 
-				(appActionTypes != NULL) && 
-				(appParams != NULL)) {
-				_LOG << "Load application data from database ..." LOG_
-				metaapp->setStatusText("Info", "Load application data from database ...");
-				
-				reports->accept(*&fOpDB);
-				reportparams->accept(*&fOpDB);
-				reportelements->accept(*&fOpDB);
-				reportelementtypes->accept(*&fOpDB);
-				reporttextblocks->accept(*&fOpDB);
-				
-				forms->accept(*&fOpDB);
-				formularfields->accept(*&fOpDB);
-				columntypes->accept(*&fOpDB);
-				formActions->accept(*&fOpDB);
-				formParams->accept(*&fOpDB);
-				appParams->accept(*&fOpDB);
-				appActions->accept(*&fOpDB);
-				appActionTypes->accept(*&fOpDB);
-				appActionSteps->accept(*&fOpDB);
-			}
-			
-			if (!DBOperation) fOp->end();
-			if (DBOperation) fOpDB->end();
-				
-				if ((forms != NULL) && 
-					(reports != NULL) && 
-					(reportparams != NULL) && 
-					(reportelements != NULL) && 
-					(reportelementtypes != NULL) && 
-					(reporttextblocks != NULL) && 
-					(formularfields != NULL) && 
-					(formParams != NULL) && 
-					(appActions != NULL) && 
-					(appActionSteps != NULL) && 
-					(appActionTypes != NULL) && 
-					(appParams != NULL)) {
-					
-					UAP(lb_I_Unknown, uk)
-					
-					
-					*name = "Reports";
-					QI(reports, lb_I_Unknown, uk)
-						document->insert(&uk, &key);
-					
-					*name = "Reportparams";
-					QI(reportparams, lb_I_Unknown, uk)
-						document->insert(&uk, &key);
-					
-					*name = "Reportelements";
-					QI(reportelements, lb_I_Unknown, uk)
-						document->insert(&uk, &key);
-					
-					*name = "Reportelementtypes";
-					QI(reportelementtypes, lb_I_Unknown, uk)
-						document->insert(&uk, &key);
-					
-					*name = "Reporttextblocks";
-					QI(reporttextblocks, lb_I_Unknown, uk)
-						document->insert(&uk, &key);
-					
-					
-					
-					*name = "Formulars";
-					QI(forms, lb_I_Unknown, uk)
-						document->insert(&uk, &key);
-					
-					*name = "FormularFields";
-					QI(formularfields, lb_I_Unknown, uk)
-						document->insert(&uk, &key);
-					
-					*name = "ColumnTypes";
-					QI(columntypes, lb_I_Unknown, uk)
-						document->insert(&uk, &key);
-					
-					*name = "FormActions";
-					QI(formActions, lb_I_Unknown, uk)
-						document->insert(&uk, &key);
-					
-					*name = "FormParams";
-					QI(formParams, lb_I_Unknown, uk)
-						document->insert(&uk, &key);
-					
-					*name = "AppParams";
-					QI(appParams, lb_I_Unknown, uk)
-						document->insert(&uk, &key);
-					
-					*name = "AppActions";
-					QI(appActions, lb_I_Unknown, uk)
-						document->insert(&uk, &key);
-					
-					*name = "AppAction_Steps";
-					QI(appActionSteps, lb_I_Unknown, uk)
-						document->insert(&uk, &key);
-					
-					*name = "AppActionTypes";
-					QI(appActionTypes, lb_I_Unknown, uk)
-						document->insert(&uk, &key);
-				}		
-				
-				*name = "ApplicationData";
-				param->setUAPContainer(*&name, *&document);
-				
-				param++;
-				metaapp->setActiveDocument(*&param);
-				
-				int id = metaapp->getApplicationID();
-				
-				_LOG << "Test for application ID: " << id LOG_
-					
-				// Test if the lbDynamicAppStorage plugin is available. If so, add a menu entry for application export.
-					
-				UAP(lb_I_Plugin, plDynamicAppStorageXMLFormat)
-				UAP(lb_I_Unknown, ukPlDynamicAppStorageXMLFormat)
+	if (isFileAvailable || isDBAvailable) {
+		/*...sLoad from file or database:16:*/
+		/*...sInitialize plugin based document models:32:*/
+#ifdef USE_OLD_INITIALIZE		
+		AQUIRE_PLUGIN(lb_I_Reports, Model, reports, "'database report'")
+		AQUIRE_PLUGIN(lb_I_ReportParameters, Model, reportparams, "'database report parameter'")
+		AQUIRE_PLUGIN(lb_I_ReportElements, Model, reportelements, "'database report elements'")
+		AQUIRE_PLUGIN(lb_I_ReportElementTypes, Model, reportelementtypes, "'database report element types'")
+		AQUIRE_PLUGIN(lb_I_ReportTexts, Model, reporttextblocks, "'database report text blocks'")
+		AQUIRE_PLUGIN(lb_I_Column_Types, Model, columntypes, "'column types'")
+		AQUIRE_PLUGIN(lb_I_Actions, Model, appActions, "'actions'")
+		AQUIRE_PLUGIN(lb_I_Formular_Actions, Model, formActions, "'formular actions'")
+		AQUIRE_PLUGIN(lb_I_Action_Types, Model, appActionTypes, "'action types'")
+		AQUIRE_PLUGIN(lb_I_Action_Steps, Model, appActionSteps, "'action steps'")
+		AQUIRE_PLUGIN(lb_I_Formulars, Model, forms, "'formulars'")
+		AQUIRE_PLUGIN(lb_I_Formular_Fields, Model, formularfields, "'formular fields'")
+		AQUIRE_PLUGIN(lb_I_FormularParameter, Model, formParams, "'formular parameters'")
+		AQUIRE_PLUGIN(lb_I_ApplicationParameter, Model, appParams, "'application parameters'")
+#endif		
+		/*...e*/
+		
+		
+		// Only this part is how to load the data. So here I have to set the correct handler for the load delegation routine.
+		
+		// Loading the application related data succeeded. Put these into a parameter object for reference.
+		
+		//UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
+		//UAP_REQUEST(manager.getPtr(), lb_I_String, name)
+		//UAP_REQUEST(manager.getPtr(), lb_I_String, value)
+		UAP_REQUEST(manager.getPtr(), lb_I_Container, document)
+		UAP(lb_I_KeyBase, key)
+		QI(name, lb_I_KeyBase, key)
+		
+		param->setCloning(false);
+		document->setCloning(false);
+		
+		*name = "StorageDelegateInterface";
+		*value = "lb_I_Streamable";
+		param->setUAPString(*&name, *&value);
+		
+#ifndef USE_OLD_INITIALIZE
+		if (!DBOperation) {
+			_LOG << "Load application data from file ..." LOG_
+			metaapp->setStatusText("Info", "Load application data from file ...");
 
-				UAP(lb_I_Plugin, plDynamicAppStorageUMLXMIImport)
-				UAP(lb_I_Unknown, ukPlDynamicAppStorageUMLXMIImport)
+			*name = "StorageDelegateNamespace";
+			*value = "lbDynAppInternalFormat";
+			param->setUAPString(*&name, *&value);
+			param++;
+			metaapp->setActiveDocument(*&param);
+
+			accept(*&fOp);
+		}
+#endif		
+#ifdef USE_OLD_INITIALIZE		
+		if (!DBOperation && 
+			(reports != NULL) && 
+			(reportparams != NULL) && 
+			(reportelements != NULL) && 
+			(reportelementtypes != NULL) && 
+			(reporttextblocks != NULL) && 
+			(forms != NULL) && 
+			(formularfields != NULL) && 
+			(formParams != NULL) && 
+			(appActions != NULL) && 
+			(appActionSteps != NULL) && 
+			(appActionTypes != NULL) && 
+			(appParams != NULL)) {
+			_LOG << "Load application data from file ..." LOG_
+			metaapp->setStatusText("Info", "Load application data from file ...");
+
+			*name = "StorageDelegateNamespace";
+			*value = "lbDynAppInternalFormat";
+			param->setUAPString(*&name, *&value);
+
+			//accept(*&fOp);
+
+			
+			reports->accept(*&fOp);
+			reportparams->accept(*&fOp);
+			reportelements->accept(*&fOp);
+			reportelementtypes->accept(*&fOp);
+			reporttextblocks->accept(*&fOp);
+			
+			forms->accept(*&fOp);
+			formularfields->accept(*&fOp);
+			columntypes->accept(*&fOp);
+			formActions->accept(*&fOp);
+			formParams->accept(*&fOp);
+			appParams->accept(*&fOp);
+			appActions->accept(*&fOp);
+			appActionTypes->accept(*&fOp);
+			appActionSteps->accept(*&fOp);
+		}
+#endif
+#ifndef USE_OLD_INITIALIZE		
+		if ((metaapp->getLoadFromDatabase() || !isFileAvailable) && DBOperation) {
+			_LOG << "Load application data from database ..." LOG_
+			metaapp->setStatusText("Info", "Load application data from database ...");
+
+			*name = "StorageDelegateNamespace";
+			*value = "lbDynAppInternalFormat";
+			param->setUAPString(*&name, *&value);
+
+			param++;
+			metaapp->setActiveDocument(*&param);
+
+			accept(*&fOpDB);
+		}
+#endif
+#ifdef USE_OLD_INITIALIZE		
+		if ((metaapp->getLoadFromDatabase() || !isFileAvailable) && DBOperation && 
+			(reports != NULL) && 
+			(reportparams != NULL) && 
+			(reportelements != NULL) && 
+			(reportelementtypes != NULL) && 
+			(reporttextblocks != NULL) && 
+			(forms != NULL) && 
+			(formularfields != NULL) && 
+			(formParams != NULL) && 
+			(appActions != NULL) && 
+			(appActionSteps != NULL) && 
+			(appActionTypes != NULL) && 
+			(appParams != NULL)) {
+			_LOG << "Load application data from database ..." LOG_
+			metaapp->setStatusText("Info", "Load application data from database ...");
+
+			*name = "StorageDelegateNamespace";
+			*value = "lbDynAppInternalFormat";
+			param->setUAPString(*&name, *&value);
+
+			//accept(*&fOpDB);
+
+			
+			reports->accept(*&fOpDB);
+			reportparams->accept(*&fOpDB);
+			reportelements->accept(*&fOpDB);
+			reportelementtypes->accept(*&fOpDB);
+			reporttextblocks->accept(*&fOpDB);
+			
+			forms->accept(*&fOpDB);
+			formularfields->accept(*&fOpDB);
+			columntypes->accept(*&fOpDB);
+			formActions->accept(*&fOpDB);
+			formParams->accept(*&fOpDB);
+			appParams->accept(*&fOpDB);
+			appActions->accept(*&fOpDB);
+			appActionTypes->accept(*&fOpDB);
+			appActionSteps->accept(*&fOpDB);
+		}
+#endif // USE_OLD_INITIALIZE
+		if (!DBOperation) fOp->end();
+		if (DBOperation) fOpDB->end();
+			
+#ifdef USE_OLD_INITIALIZE		
+		if ((forms != NULL) && 
+			(reports != NULL) && 
+			(reportparams != NULL) && 
+			(reportelements != NULL) && 
+			(reportelementtypes != NULL) && 
+			(reporttextblocks != NULL) && 
+			(formularfields != NULL) && 
+			(formParams != NULL) && 
+			(appActions != NULL) && 
+			(appActionSteps != NULL) && 
+			(appActionTypes != NULL) && 
+			(appParams != NULL)) {
+			
+			UAP(lb_I_Unknown, uk)
+			
+			
+			*name = "Reports";
+			QI(reports, lb_I_Unknown, uk)
+				document->insert(&uk, &key);
+			
+			*name = "Reportparams";
+			QI(reportparams, lb_I_Unknown, uk)
+				document->insert(&uk, &key);
+			
+			*name = "Reportelements";
+			QI(reportelements, lb_I_Unknown, uk)
+				document->insert(&uk, &key);
+			
+			*name = "Reportelementtypes";
+			QI(reportelementtypes, lb_I_Unknown, uk)
+				document->insert(&uk, &key);
+			
+			*name = "Reporttextblocks";
+			QI(reporttextblocks, lb_I_Unknown, uk)
+				document->insert(&uk, &key);
+			
+			
+			
+			*name = "Formulars";
+			QI(forms, lb_I_Unknown, uk)
+				document->insert(&uk, &key);
+			
+			*name = "FormularFields";
+			QI(formularfields, lb_I_Unknown, uk)
+				document->insert(&uk, &key);
+			
+			*name = "ColumnTypes";
+			QI(columntypes, lb_I_Unknown, uk)
+				document->insert(&uk, &key);
+			
+			*name = "FormActions";
+			QI(formActions, lb_I_Unknown, uk)
+				document->insert(&uk, &key);
+			
+			*name = "FormParams";
+			QI(formParams, lb_I_Unknown, uk)
+				document->insert(&uk, &key);
+			
+			*name = "AppParams";
+			QI(appParams, lb_I_Unknown, uk)
+				document->insert(&uk, &key);
+			
+			*name = "AppActions";
+			QI(appActions, lb_I_Unknown, uk)
+				document->insert(&uk, &key);
+			
+			*name = "AppAction_Steps";
+			QI(appActionSteps, lb_I_Unknown, uk)
+				document->insert(&uk, &key);
+			
+			*name = "AppActionTypes";
+			QI(appActionTypes, lb_I_Unknown, uk)
+				document->insert(&uk, &key);
+		}		
+			
+		*name = "ApplicationData";
+		param->setUAPContainer(*&name, *&document);
+		
+		param++;
+		metaapp->setActiveDocument(*&param);
+#endif		
+		int id = metaapp->getApplicationID();
+		
+		_LOG << "Test for application ID: " << id LOG_
+			
+		// Test if the lbDynamicAppStorage plugin is available. If so, add a menu entry for application export.
+			
+		UAP(lb_I_Plugin, plDynamicAppStorageXMLFormat)
+		UAP(lb_I_Unknown, ukPlDynamicAppStorageXMLFormat)
+
+		UAP(lb_I_Plugin, plDynamicAppStorageUMLXMIImport)
+		UAP(lb_I_Unknown, ukPlDynamicAppStorageUMLXMIImport)
+			
+		plDynamicAppStorageXMLFormat = PM->getFirstMatchingPlugin("lb_I_StandaloneStreamable", "lbDynAppXMLFormat");
+		if (plDynamicAppStorageXMLFormat != NULL) {
+			ukPlDynamicAppStorageXMLFormat = plDynamicAppStorageXMLFormat->getImplementation();
+			
+			if (eman->resolveEvent("evtExportApplicationToXML", unused) == ERR_EVENT_NOTREGISTERED) {
+				eman->registerEvent("evtExportApplicationToXML", unused);
+				
+				dispatcher->addEventHandlerFn(this, 
+											  (lbEvHandler) &lbDynamicApplication::exportApplicationToXML, "evtExportApplicationToXML");
+				
+				metaapp->addMenuEntry(_trans("&File"), "export Application to XML", "evtExportApplicationToXML", "");
+			}
+		}
+
+		UAP_REQUEST(getModuleInstance(), lb_I_String, appname)
+
+		metaapp->getApplicationName(&appname);
+
+		if (*appname == "lbDMF Manager") {
+			
+			// Only lbDMF Manager should enable import functionality, because this is logically the designer.
+			
+			plDynamicAppStorageUMLXMIImport = PM->getFirstMatchingPlugin("lb_I_StandaloneStreamable", "lbDynAppUMLImport");
+			if (plDynamicAppStorageUMLXMIImport != NULL) {
+				ukPlDynamicAppStorageUMLXMIImport = plDynamicAppStorageUMLXMIImport->getImplementation();
+				
+				if (eman->resolveEvent("importUMLXMIDocIntoApplication", unused) == ERR_EVENT_NOTREGISTERED) {
+					eman->registerEvent("importUMLXMIDocIntoApplication", unused);
 					
-				plDynamicAppStorageXMLFormat = PM->getFirstMatchingPlugin("lb_I_StandaloneStreamable", "lbDynAppXMLFormat");
+					dispatcher->addEventHandlerFn(this, 
+												  (lbEvHandler) &lbDynamicApplication::importUMLXMIDocIntoApplication, "importUMLXMIDocIntoApplication");
+					
+					metaapp->addMenuEntry(_trans("&File"), "import Application from UML (as XMI file)", "importUMLXMIDocIntoApplication", "");
+					
+					// Possibly here I should add additional property fields such as target database name (ODBC name), user and password.
+					
+					
+					if (eman->resolveEvent("editProperties", unused) == ERR_EVENT_NOTREGISTERED) {
+						eman->registerEvent("editProperties", unused);
+						dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDynamicApplication::editProperties, "editProperties");
+						metaapp->addMenuEntry("Edit", "&edit Properties" , "editProperties", "");
+					}
+					
+					UAP_REQUEST(getModuleInstance(), lb_I_String, param)
+					UAP(lb_I_Unknown, ukDoc)
+					UAP(lb_I_Parameter, document)
+					ukDoc = metaapp->getActiveDocument();
+					QI(ukDoc, lb_I_Parameter, document)
+						
+					if (document != NULL) {
+						*param = "UMLImportDBName";
+						document->setUAPString(*&param, *&UMLImportTargetDBName);
+						*param = "UMLImportDBUser";
+						document->setUAPString(*&param, *&UMLImportTargetDBUser);
+						*param = "UMLImportDBPass";
+						document->setUAPString(*&param, *&UMLImportTargetDBPass);
+					}
+					
+					editProperties(NULL);
+				}
+				
+				//exportApplicationToXMLBuffer
+				
+				UAP(lb_I_Plugin, plDynamicAppStorageXMLExportBuffer)
+				UAP(lb_I_Unknown, ukPlDynamicAppStorageXMLExportBuffer)
+					
+				plDynamicAppStorageXMLFormat = PM->getFirstMatchingPlugin("lb_I_DelegatedAction", "XsltTransformer");
+
+				// Xslt transforming is available as a delegated action (in forms as buttons), enable it.
 				if (plDynamicAppStorageXMLFormat != NULL) {
 					ukPlDynamicAppStorageXMLFormat = plDynamicAppStorageXMLFormat->getImplementation();
 					
-					if (eman->resolveEvent("evtExportApplicationToXML", unused) == ERR_EVENT_NOTREGISTERED) {
-						eman->registerEvent("evtExportApplicationToXML", unused);
+					if (eman->resolveEvent("exportApplicationToXMLBuffer", unused) == ERR_EVENT_NOTREGISTERED) {
+						eman->registerEvent("exportApplicationToXMLBuffer", unused);
 						
 						dispatcher->addEventHandlerFn(this, 
-													  (lbEvHandler) &lbDynamicApplication::exportApplicationToXML, "evtExportApplicationToXML");
+													  (lbEvHandler) &lbDynamicApplication::exportApplicationToXMLBuffer, "exportApplicationToXMLBuffer");
 						
-						metaapp->addMenuEntry(_trans("&File"), "export Application to XML", "evtExportApplicationToXML", "");
+						//metaapp->addMenuEntry(_trans("&File"), "export Application to XML", "exportApplicationToXMLBuffer", "");
 					}
 				}
-
-				UAP_REQUEST(getModuleInstance(), lb_I_String, appname)
-		
-				metaapp->getApplicationName(&appname);
-	
-				if (*appname == "lbDMF Manager") {
-					
-					// Only lbDMF Manager should enable import functionality, because this is logically the designer.
 				
-					plDynamicAppStorageUMLXMIImport = PM->getFirstMatchingPlugin("lb_I_StandaloneStreamable", "lbDynAppUMLImport");
-					if (plDynamicAppStorageUMLXMIImport != NULL) {
-						ukPlDynamicAppStorageUMLXMIImport = plDynamicAppStorageUMLXMIImport->getImplementation();
-						
-						if (eman->resolveEvent("importUMLXMIDocIntoApplication", unused) == ERR_EVENT_NOTREGISTERED) {
-							eman->registerEvent("importUMLXMIDocIntoApplication", unused);
-							
-							dispatcher->addEventHandlerFn(this, 
-														  (lbEvHandler) &lbDynamicApplication::importUMLXMIDocIntoApplication, "importUMLXMIDocIntoApplication");
-							
-							metaapp->addMenuEntry(_trans("&File"), "import Application from UML (as XMI file)", "importUMLXMIDocIntoApplication", "");
-							
-							// Possibly here I should add additional property fields such as target database name (ODBC name), user and password.
-							
-							
-							if (eman->resolveEvent("editProperties", unused) == ERR_EVENT_NOTREGISTERED) {
-								eman->registerEvent("editProperties", unused);
-								dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDynamicApplication::editProperties, "editProperties");
-								metaapp->addMenuEntry("Edit", "&edit Properties" , "editProperties", "");
-							}
-							
-							UAP_REQUEST(getModuleInstance(), lb_I_String, param)
-							UAP(lb_I_Unknown, ukDoc)
-							UAP(lb_I_Parameter, document)
-							ukDoc = metaapp->getActiveDocument();
-							QI(ukDoc, lb_I_Parameter, document)
-								
-							if (document != NULL) {
-								*param = "UMLImportDBName";
-								document->setUAPString(*&param, *&UMLImportTargetDBName);
-								*param = "UMLImportDBUser";
-								document->setUAPString(*&param, *&UMLImportTargetDBUser);
-								*param = "UMLImportDBPass";
-								document->setUAPString(*&param, *&UMLImportTargetDBPass);
-							}
-							
-							editProperties(NULL);
-						}
-						
-						//exportApplicationToXMLBuffer
-						
-						UAP(lb_I_Plugin, plDynamicAppStorageXMLExportBuffer)
-						UAP(lb_I_Unknown, ukPlDynamicAppStorageXMLExportBuffer)
-							
-						plDynamicAppStorageXMLFormat = PM->getFirstMatchingPlugin("lb_I_DelegatedAction", "XsltTransformer");
-
-						// Xslt transforming is available as a delegated action (in forms as buttons), enable it.
-						if (plDynamicAppStorageXMLFormat != NULL) {
-							ukPlDynamicAppStorageXMLFormat = plDynamicAppStorageXMLFormat->getImplementation();
-							
-							if (eman->resolveEvent("exportApplicationToXMLBuffer", unused) == ERR_EVENT_NOTREGISTERED) {
-								eman->registerEvent("exportApplicationToXMLBuffer", unused);
-								
-								dispatcher->addEventHandlerFn(this, 
-															  (lbEvHandler) &lbDynamicApplication::exportApplicationToXMLBuffer, "exportApplicationToXMLBuffer");
-								
-								//metaapp->addMenuEntry(_trans("&File"), "export Application to XML", "exportApplicationToXMLBuffer", "");
-							}
-						}
-						
-					}					
-				} else {
-					if (metaapp->isPropertyPaneLayoutLeft()) metaapp->showPropertyPanel();
-					if (metaapp->isPropertyPaneLayoutFloating()) metaapp->showPropertyPanel();
-				}				
-				/*...e*/
+			}					
 		} else {
+			if (metaapp->isPropertyPaneLayoutLeft()) metaapp->showPropertyPanel();
+			if (metaapp->isPropertyPaneLayoutFloating()) metaapp->showPropertyPanel();
+		}				
+/*...e*/
+	} else {
 		// No file found. Create one from database...
 	}
 	
@@ -1729,8 +1787,6 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 	/*
 	 Select all events, that are configured and register it.
 	 */
-	
-	database->connect("lbDMF", "lbDMF", lbDMFUser, lbDMFPasswd);
 	
 	activateDBForms(user, app);
 	
@@ -1749,9 +1805,17 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 }
 
 void LB_STDCALL lbDynamicApplication::activateDBForms(char* user, char* app) {
+	char* lbDMFPasswd = getenv("lbDMFPasswd");
+	char* lbDMFUser   = getenv("lbDMFUser");
+	
+	if (!lbDMFUser) lbDMFUser = "dba";
+	if (!lbDMFPasswd) lbDMFPasswd = "trainres";
+
 	UAP(lb_I_Query, sampleQuery)
 	bool toolbaradded = false;
 	int unused;
+
+	database->connect("lbDMF", "lbDMF", lbDMFUser, lbDMFPasswd);
 	sampleQuery = database->getQuery("lbDMF", 0);	
 	
 	char* b =

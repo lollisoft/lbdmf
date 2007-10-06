@@ -276,6 +276,7 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Streamable* pm) {
 
 void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Reports* reports) {
 	lbErrCodes err = ERR_NONE;
+	_LOG << "lbDatabaseInputStream::visit(lb_I_Reports* reports) called" LOG_
 	UAP(lb_I_Query, q)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, query)
 	
@@ -311,6 +312,7 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Reports* reports) {
 
 void LB_STDCALL lbDatabaseInputStream::visit(lb_I_ReportParameters* reportparameters) {
 	lbErrCodes err = ERR_NONE;
+	_LOG << "lbDatabaseInputStream::visit(lb_I_ReportParameters* reports) called" LOG_
 	UAP(lb_I_Query, q)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, query)
 	
@@ -347,6 +349,7 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_ReportParameters* reportparame
 
 void LB_STDCALL lbDatabaseInputStream::visit(lb_I_ReportElements* reportelements) {
 	lbErrCodes err = ERR_NONE;
+	_LOG << "lbDatabaseInputStream::visit(lb_I_ReportElements* reports) called" LOG_
 	UAP(lb_I_Query, q)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, query)
 	
@@ -393,6 +396,7 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_ReportElements* reportelements
 
 void LB_STDCALL lbDatabaseInputStream::visit(lb_I_ReportElementTypes* reportelementtypes) {
 	lbErrCodes err = ERR_NONE;
+	_LOG << "lbDatabaseInputStream::visit(lb_I_ReportElementTypes* reports) called" LOG_
 	UAP(lb_I_Query, q)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, query)
 	
@@ -427,6 +431,7 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_ReportElementTypes* reportelem
 
 void LB_STDCALL lbDatabaseInputStream::visit(lb_I_ReportTexts* textlines) {
 	lbErrCodes err = ERR_NONE;
+	_LOG << "lbDatabaseInputStream::visit(lb_I_ReportTexts* reports) called" LOG_
 	UAP(lb_I_Query, q)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, query)
 	
@@ -1599,7 +1604,54 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_MetaApplication* app) {
 }
 
 void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Application*) {
-	_CL_VERBOSE << "lbDatabaseInputStream::visit(): Read data of application." LOG_
+	_LOG << "lbDatabaseInputStream::visit(): Read data of application." LOG_
+	lbErrCodes err = ERR_NONE;
+	
+	// Get the document via the active document from meta application.
+	// This way no extra interface is needed (container with named elements)
+	
+	UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, param)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, StorageInterface)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, StorageNamespace)
+	
+	UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+	UAP(lb_I_Plugin, pl)
+	UAP(lb_I_Unknown, ukPl)
+	
+	UAP(lb_I_Unknown, ukDoc)
+	UAP(lb_I_Parameter, document)
+	
+	ukDoc = meta->getActiveDocument();
+	
+	QI(ukDoc, lb_I_Parameter, document)
+	
+	if (document != NULL) {
+		*param = "StorageDelegateNamespace";
+		document->getUAPString(*&param, *&StorageNamespace);
+		
+		// Get the plugin that is responsible to save the data.		
+		pl = PM->getFirstMatchingPlugin("lb_I_StandaloneStreamable", StorageNamespace->charrep());
+		
+		if (pl != NULL)	{
+			ukPl = pl->getImplementation();
+		} else {
+			_LOG << "No 'lb_I_StandaloneStreamable' plugin with namespace '" << StorageNamespace->charrep() << "' available." LOG_	
+		}
+		
+		UAP(lb_I_StandaloneStreamable, mystream)
+	
+		if (ukPl != NULL) QI(ukPl, lb_I_StandaloneStreamable, mystream)
+			
+		if (mystream == NULL) {
+			_LOG << "Error: Found a lb_I_StandaloneStreamable plugin via PM->getFirstMatchingPlugin(...), but QI failed." LOG_
+		} else {
+			//isFileAvailable = fOp->begin(filename->charrep()); 
+			
+			mystream->setOperator(this);
+			mystream->load(*&db);
+		}
+	}
 }
 
 void LB_STDCALL lbDatabaseInputStream::end() {

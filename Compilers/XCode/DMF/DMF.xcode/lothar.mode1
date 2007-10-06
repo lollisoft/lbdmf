@@ -243,15 +243,15 @@
 							<array>
 								<string>270BA7B6086C0A0900799F65</string>
 								<string>1C37FBAC04509CD000000102</string>
-								<string>275A5D2E0CA3E69E00D366CC</string>
+								<string>27C769B90CB6277600395A7A</string>
 								<string>1C37FAAC04509CD000000102</string>
 								<string>1C37FABC05509CD000000102</string>
 							</array>
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
-									<integer>70</integer>
-									<integer>0</integer>
+									<integer>101</integer>
+									<integer>100</integer>
 								</array>
 							</array>
 							<key>PBXSmartGroupTreeModuleOutlineStateVisibleRectKey</key>
@@ -296,7 +296,7 @@
 										<key>PBXProjectModuleLabel</key>
 										<string>formularactions.cpp</string>
 										<key>bookmark</key>
-										<string>275A5D360CA3E6A300D366CC</string>
+										<string>27C769BF0CB6277600395A7A</string>
 										<key>history</key>
 										<array>
 											<string>2778C2A50B5A4E1E003524C2</string>
@@ -382,7 +382,7 @@
 											<string>2773F23C0C3D1B740037A8EB</string>
 											<string>2773F23D0C3D1B740037A8EB</string>
 											<string>275A5D2F0CA3E69E00D366CC</string>
-											<string>275A5D300CA3E69E00D366CC</string>
+											<string>27C769BA0CB6277600395A7A</string>
 										</array>
 										<key>prevStack</key>
 										<array>
@@ -470,7 +470,6 @@
 											<string>27E413FA0B73F3B00050006B</string>
 											<string>27E414380B73FEC20050006B</string>
 											<string>2773F23F0C3D1B740037A8EB</string>
-											<string>275A5D310CA3E69E00D366CC</string>
 										</array>
 									</dict>
 									<key>SplitCount</key>
@@ -528,9 +527,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>275A5D330CA3E69E00D366CC</string>
+				<string>27C769BC0CB6277600395A7A</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>275A5D340CA3E69E00D366CC</string>
+				<string>27C769BD0CB6277600395A7A</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -559,6 +558,7 @@
 	<key>WindowOrderList</key>
 	<array>
 		<string>/Users/lothar/develop/Projects/CPP/Compilers/XCode/DMF/DMF.xcode</string>
+		<string>27649700086ED745000EB62C</string>
 	</array>
 	<key>WindowString</key>
 	<string>23 121 1001 881 0 0 1280 1002 </string>
@@ -650,7 +650,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>27649700086ED745000EB62C</string>
-				<string>2773F2340C3D1A990037A8EB</string>
+				<string>27C769BE0CB6277600395A7A</string>
 				<string>1CD0528F0623707200166675</string>
 				<string>XCMainBuildResultsModuleGUID</string>
 			</array>
@@ -661,7 +661,7 @@
 			<key>WindowToolGUID</key>
 			<string>27649700086ED745000EB62C</string>
 			<key>WindowToolIsVisible</key>
-			<false/>
+			<true/>
 		</dict>
 		<dict>
 			<key>FirstTimeWindowDisplayed</key>
