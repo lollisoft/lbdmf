@@ -192,7 +192,7 @@ public:
 
 
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbInputStreamOpr)
-//	ADD_INTERFACE(lb_I_Aspect)
+	ADD_INTERFACE(lb_I_Aspect)
 	ADD_INTERFACE(lb_I_FileOperation)
 END_IMPLEMENT_LB_UNKNOWN()
 

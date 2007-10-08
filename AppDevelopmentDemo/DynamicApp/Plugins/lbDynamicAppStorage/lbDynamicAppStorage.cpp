@@ -352,6 +352,10 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_InputStream* iStrea
 	QI(op, lb_I_Aspect, aspect)
 	UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
 
+	if (aspect == NULL) {
+	    _LOG << "Error: aspect instance not available." LOG_
+	}
+
 	UAP(lb_I_Formulars, forms)
 	UAP(lb_I_Formular_Fields, formularfields)
 	UAP(lb_I_Column_Types, columntypes)
@@ -659,8 +663,15 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_Database* iDB) {
 	lbErrCodes err = ERR_NONE;
 	UAP(lb_I_Aspect, aspect)
 	QI(op, lb_I_Aspect, aspect)
+
+	if (aspect == NULL) {
+	    _LOG << "Error: aspect instance not available." LOG_
+	}
+
+
 	UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
 	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
+
 
 	UAP(lb_I_Formulars, forms)
 	UAP(lb_I_Formular_Fields, formularfields)

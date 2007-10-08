@@ -160,6 +160,8 @@ protected:
 	 */
 	void LB_STDCALL activateDBForms(char* user, char* app);
 
+	void LB_STDCALL loadDataFromActiveDocument();
+
 	bool haveLoadedDBModel;
 
 	lb_I_GUI* gui;
@@ -1225,7 +1227,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::uninitialize() {
 }
 /*...e*/
 
-#define USE_OLD_INITIALIZE
+//#define USE_OLD_INITIALIZE
 
 /*...slbErrCodes LB_STDCALL lbDynamicApplication\58\\58\initialize\40\char\42\ user \61\ NULL\44\ char\42\ app \61\ NULL\41\:0:*/
 lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
@@ -1343,6 +1345,13 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 					fOpDB->end();
 				} else {
 #ifndef USE_OLD_INITIALIZE				
+					UAP_REQUEST(manager.getPtr(), lb_I_Container, document)
+		
+					param->setCloning(false);
+					document->setCloning(false);
+					
+					UAP(lb_I_Unknown, uk)
+					UAP(lb_I_KeyBase, key)
 					metaapp->setStatusText("Info", "Preload application data from file ...");
 
 					*name = "StorageDelegateNamespace";
@@ -1350,6 +1359,8 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 					param->setUAPString(*&name, *&value);
 
 					accept(*&fOp);
+					
+					loadDataFromActiveDocument();
 #endif				
 #ifdef USE_OLD_INITIALIZE				
 					// System database is not available
@@ -1494,6 +1505,8 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 			metaapp->setActiveDocument(*&param);
 
 			accept(*&fOp);
+		
+			loadDataFromActiveDocument();
 		}
 #endif		
 #ifdef USE_OLD_INITIALIZE		
@@ -1550,6 +1563,8 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 			metaapp->setActiveDocument(*&param);
 
 			accept(*&fOpDB);
+
+			loadDataFromActiveDocument();
 		}
 #endif
 #ifdef USE_OLD_INITIALIZE		
@@ -1802,6 +1817,39 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 
 	
 	return ERR_NONE;
+}
+
+void LB_STDCALL lbDynamicApplication::loadDataFromActiveDocument() {
+    lbErrCodes err = ERR_NONE;
+    UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+    UAP_REQUEST(getModuleInstance(), lb_I_Container, document)
+    
+    UAP(lb_I_Parameter, param)
+    UAP(lb_I_Unknown, uk)
+    UAP(lb_I_KeyBase, key)
+    QI(name, lb_I_KeyBase, key)
+
+    document->setCloning(false);
+
+    uk = metaapp->getActiveDocument();
+    QI(uk, lb_I_Parameter, param)
+			
+    *name = "ApplicationData";
+    param->getUAPContainer(*&name, *&document);
+			
+    *name = "AppParams";
+    uk = document->getElement(&key);
+    QI(uk, lb_I_ApplicationParameter, appParams)
+			
+    *name = "Formulars";
+    uk = document->getElement(&key);
+    QI(uk, lb_I_Formulars, forms)
+    
+    *name = "FormParams";
+    uk = document->getElement(&key);
+    QI(uk, lb_I_FormularParameter, formParams)
+
+    if (forms == NULL) _LOG << "Error: forms is NULL." LOG_
 }
 
 void LB_STDCALL lbDynamicApplication::activateDBForms(char* user, char* app) {

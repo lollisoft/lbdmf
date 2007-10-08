@@ -192,6 +192,7 @@ public:
 
 
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbDatabaseInputStream)
+	ADD_INTERFACE(lb_I_Aspect)
 	ADD_INTERFACE(lb_I_DatabaseOperation)
 END_IMPLEMENT_LB_UNKNOWN()
 

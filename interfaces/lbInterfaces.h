@@ -1344,7 +1344,12 @@ public: \
 	lb_I_Unknown* 	LB_STDCALL clone(char* file, int line) const; \
 	lbErrCodes 	LB_STDCALL setData(lb_I_Unknown* u); \
 	int 		LB_STDCALL getRefCount() { return ref; } \
-	void		LB_STDCALL accept(lb_I_Aspect* v) { v->visit(this); }
+	void		LB_STDCALL accept(lb_I_Aspect* v) { \
+	    if (v == NULL) {\
+		_LOG << "Error: Accept method couldn't forward with a NULL pointer." LOG_\
+	    }\
+	    v->visit(this);\
+	}
 
 /*...e*/
 
