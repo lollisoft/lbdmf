@@ -415,6 +415,9 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_InputStream* iStrea
 	UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
 	QI(name, lb_I_KeyBase, key)
 
+	param->setCloning(false);
+	document->setCloning(false);
+
 	if ((forms != NULL) && 
 		(reports != NULL) && 
 		(reportparams != NULL) && 
@@ -779,6 +782,7 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_Database* iDB) {
 	_LOG << "Retrieve document container with name 'ApplicationData'" LOG_
 
 	*name = "ApplicationData";
+	params->setCloning(false);
 	document->setCloning(false);
 
 	if ((forms != NULL) && 

@@ -959,6 +959,12 @@ lbErrCodes LB_STDCALL lbDynamicApplication::getDynamicDBForm(lb_I_Unknown* uk) {
 		
 			*formName = forms->getName();
 		
+			if (*formName == "") {
+				_LOG << "Error: Datamodel does not return formular name!" LOG_
+			} else {
+				_LOG << "GUI->createDBForm() with name '" << formName->charrep() << "' will be called." LOG_
+			}
+		
 			dbForm = gui->createDBForm(	formName->charrep(),
 							formParams->getParameter("query", forms->getFormularID()), 
 							DBName->charrep(), 
