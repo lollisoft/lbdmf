@@ -33,7 +33,7 @@ public:
 	lbFormularsModel();
 	virtual ~lbFormularsModel();
 
-	long		LB_STDCALL addFormular(const char* name, const char* menuname, const char* eventname, const char* menuhilfe, long anwendung_id, long typ, long formular_id = -1);
+	long		LB_STDCALL addFormular(const char* name, const char* toolbarimage, const char* menuname, const char* eventname, const char* menuhilfe, long anwendung_id, long typ, long formular_id = -1);
 	bool		LB_STDCALL selectFormular(long _id);
 	int			LB_STDCALL getFormularCount();
 	bool		LB_STDCALL hasMoreFormulars();
@@ -41,6 +41,7 @@ public:
 	void		LB_STDCALL finishFormularIteration();
 	
 	char*		LB_STDCALL getName();
+	char*		LB_STDCALL getToolbarImage();
 	char*		LB_STDCALL getMenuName();
 	char*		LB_STDCALL getEventName();
 	char*		LB_STDCALL getMenuHelp();
@@ -61,6 +62,7 @@ public:
 	
 	UAP(lb_I_String, currentFormularName)
 	UAP(lb_I_String, currentMenuName)
+	UAP(lb_I_String, currentToolbarImage)
 	UAP(lb_I_String, currentEventName)
 	UAP(lb_I_String, currentMenuHilfe)
 	
@@ -115,6 +117,8 @@ public:
 	UAP(lb_I_Long, currentFormularID)
 
 	UAP(lb_I_Long, marked)
+	
+	long uniqueID;
 };
 
 

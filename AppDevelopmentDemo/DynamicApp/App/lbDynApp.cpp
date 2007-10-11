@@ -179,6 +179,7 @@ protected:
 #endif
 	
 	// Preloaded data from database, if plugins are available.
+	UAP(lb_I_Applications_Formulars, ApplicationFormulars)
 	UAP(lb_I_Formulars, forms)
 	UAP(lb_I_Formular_Fields, formularfields)
 	UAP(lb_I_Column_Types, columntypes)
@@ -1167,29 +1168,31 @@ lb_I_EventManager* LB_STDCALL lbDynamicApplication::getEVManager( void ) {
 /*...e*/
 /*...slbErrCodes LB_STDCALL lbDynamicApplication\58\\58\uninitialize\40\\41\:0:*/
 lbErrCodes LB_STDCALL lbDynamicApplication::uninitialize() {
-		lbErrCodes err = ERR_NONE;
+	lbErrCodes err = ERR_NONE;
+	
+	UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+	UAP(lb_I_Plugin, pl)
+	UAP(lb_I_Unknown, ukPl)
 		
-		UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
-		UAP(lb_I_Plugin, pl)
-		UAP(lb_I_Unknown, ukPl)
-
-		// Need to derive filename from given application name
-		UAP_REQUEST(manager.getPtr(), lb_I_String, filename)
-		*filename = LogonApplication->charrep();
-		*filename += ".daf"; // Dynamic application forms 
-
-
-		// Get the active document and set temporary a different storage handler (daf)
-		UAP_REQUEST(manager.getPtr(), lb_I_String, param)
-		UAP_REQUEST(manager.getPtr(), lb_I_String, StorageInterface)
-		UAP_REQUEST(manager.getPtr(), lb_I_String, StorageNamespace)
-		UAP_REQUEST(manager.getPtr(), lb_I_String, tempStorageInterface)
-		UAP_REQUEST(manager.getPtr(), lb_I_String, tempStorageNamespace)
-		UAP(lb_I_Unknown, ukDoc)
-		UAP(lb_I_Parameter, document)
-		ukDoc = metaapp->getActiveDocument();
+	// Need to derive filename from given application name
+	UAP_REQUEST(manager.getPtr(), lb_I_String, filename)
+	*filename = LogonApplication->charrep();
+	*filename += ".daf"; // Dynamic application forms 
+	
+	
+	// Get the active document and set temporary a different storage handler (daf)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, param)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, StorageInterface)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, StorageNamespace)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, tempStorageInterface)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, tempStorageNamespace)
+	UAP(lb_I_Unknown, ukDoc)
+	UAP(lb_I_Parameter, document)
+	ukDoc = metaapp->getActiveDocument();
+	
+	if (ukDoc != NULL) {
 		QI(ukDoc, lb_I_Parameter, document)
-
+		
 		if (document != NULL) {
 			*param = "StorageDelegateNamespace";
 			document->getUAPString(*&param, *&StorageNamespace);
@@ -1199,7 +1202,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::uninitialize() {
 		}
 		
 		/// \todo Move storing procedure to a storage handler.
-
+		
 		pl = PM->getFirstMatchingPlugin("lb_I_FileOperation", "OutputStreamVisitor");
 		
 		if (pl == NULL) {
@@ -1209,26 +1212,25 @@ lbErrCodes LB_STDCALL lbDynamicApplication::uninitialize() {
 		
 		if (pl != NULL) {
 			ukPl = pl->getImplementation();
-				
 			UAP(lb_I_FileOperation, fOp)
-
 			QI(ukPl, lb_I_FileOperation, fOp)
 			
 			if (fOp != NULL) {
 				bool success = false;
 				
 				success = fOp->begin(filename->charrep()); 
-			
+				
 				if (success) {
 					accept(*&fOp);
 					fOp->end();
 					_LOG << "Saved application data to " << filename->charrep() << "." LOG_
 				} else {
-				// No file found. Create one from database...
+					// No file found. Create one from database...
 				}
 			}
 		}
-
+	}		
+	
 	return ERR_NONE;
 }
 /*...e*/
@@ -1370,6 +1372,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 #endif				
 #ifdef USE_OLD_INITIALIZE				
 					// System database is not available
+					UAP(lb_I_Applications_Formulars, ApplicationFormulars)
 					UAP(lb_I_Formulars, forms)
 					UAP(lb_I_Formular_Fields, formularfields)
 					UAP(lb_I_Column_Types, columntypes)
@@ -1403,6 +1406,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 						AQUIRE_PLUGIN(lb_I_Formulars, Model, forms, "'formulars'")
 						AQUIRE_PLUGIN(lb_I_Formular_Fields, Model, formularfields, "'formular fields'")
 						AQUIRE_PLUGIN(lb_I_FormularParameter, Model, formParams, "'formular parameters'")
+						AQUIRE_PLUGIN(lb_I_Applications_Formulars, Model, ApplicationFormulars, "'formular to application assoc'")
 						
 						
 						metaapp->setStatusText("Info", "Preload application data from file ...");
@@ -1417,6 +1421,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 						reportelementtypes->accept(*&fOp);
 						reporttextblocks->accept(*&fOp);
 						
+						ApplicationFormulars->accept(*&fOp);
 						forms->accept(*&fOp);
 						formularfields->accept(*&fOp);
 						columntypes->accept(*&fOp);
@@ -1477,6 +1482,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 		AQUIRE_PLUGIN(lb_I_Formular_Fields, Model, formularfields, "'formular fields'")
 		AQUIRE_PLUGIN(lb_I_FormularParameter, Model, formParams, "'formular parameters'")
 		AQUIRE_PLUGIN(lb_I_ApplicationParameter, Model, appParams, "'application parameters'")
+		AQUIRE_PLUGIN(lb_I_Applications_Formulars, Model, ApplicationFormulars, "'formular to application assoc'")
 #endif		
 		/*...e*/
 		
@@ -1517,6 +1523,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 #endif		
 #ifdef USE_OLD_INITIALIZE		
 		if (!DBOperation && 
+			(ApplicationFormulars != NULL) && 
 			(reports != NULL) && 
 			(reportparams != NULL) && 
 			(reportelements != NULL) && 
@@ -1545,6 +1552,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 			reportelementtypes->accept(*&fOp);
 			reporttextblocks->accept(*&fOp);
 			
+			ApplicationFormulars->accept(*&fOp);
 			forms->accept(*&fOp);
 			formularfields->accept(*&fOp);
 			columntypes->accept(*&fOp);
@@ -1575,6 +1583,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 #endif
 #ifdef USE_OLD_INITIALIZE		
 		if ((metaapp->getLoadFromDatabase() || !isFileAvailable) && DBOperation && 
+			(ApplicationFormulars != NULL) && 
 			(reports != NULL) && 
 			(reportparams != NULL) && 
 			(reportelements != NULL) && 
@@ -1603,6 +1612,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 			reportelementtypes->accept(*&fOpDB);
 			reporttextblocks->accept(*&fOpDB);
 			
+			ApplicationFormulars->accept(*&fOpDB);
 			forms->accept(*&fOpDB);
 			formularfields->accept(*&fOpDB);
 			columntypes->accept(*&fOpDB);
@@ -1619,6 +1629,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 			
 #ifdef USE_OLD_INITIALIZE		
 		if ((forms != NULL) && 
+			(ApplicationFormulars != NULL) && 
 			(reports != NULL) && 
 			(reportparams != NULL) && 
 			(reportelements != NULL) && 
@@ -1655,6 +1666,10 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 				document->insert(&uk, &key);
 			
 			
+			
+			*name = "FormularApplications";
+			QI(ApplicationFormulars, lb_I_Unknown, uk)
+				document->insert(&uk, &key);
 			
 			*name = "Formulars";
 			QI(forms, lb_I_Unknown, uk)
@@ -1855,143 +1870,218 @@ void LB_STDCALL lbDynamicApplication::loadDataFromActiveDocument() {
     uk = document->getElement(&key);
     QI(uk, lb_I_FormularParameter, formParams)
 
+    *name = "FormularApplications";
+    uk = document->getElement(&key);
+    QI(uk, lb_I_Applications_Formulars, ApplicationFormulars)
+
+
+
     if (forms == NULL) _LOG << "Error: forms is NULL." LOG_
 }
 
 void LB_STDCALL lbDynamicApplication::activateDBForms(char* user, char* app) {
-	char* lbDMFPasswd = getenv("lbDMFPasswd");
-	char* lbDMFUser   = getenv("lbDMFUser");
+	lbErrCodes err = ERR_NONE;
+	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
 	
-	if (!lbDMFUser) lbDMFUser = "dba";
-	if (!lbDMFPasswd) lbDMFPasswd = "trainres";
-
-	UAP(lb_I_Query, sampleQuery)
-	bool toolbaradded = false;
-	int unused;
-
-	database->connect("lbDMF", "lbDMF", lbDMFUser, lbDMFPasswd);
-	sampleQuery = database->getQuery("lbDMF", 0);	
-	
-	char* b =
-		"select Formulare.eventname, Formulare.menuname, Formulare.toolbarimage, Formulare.typ from Formulare inner join "
-		"anwendungen_formulare on anwendungen_formulare.formularid = formulare.id inner join "
-		"Anwendungen on anwendungen_formulare.anwendungid = Anwendungen.id inner join "
-		"User_Anwendungen on Anwendungen.id = User_Anwendungen.anwendungenid inner join Users on "
-		"User_Anwendungen.userid = Users.id where "
-		"Users.userid = '%s' and Anwendungen.name = '%s' order by Formulare.menuorder";
-	
-	char* buffer = (char*) malloc(strlen(b)+strlen(user)+strlen(app)+1);
-	
-	sprintf(buffer, b, user, app);
-	
-	if (sampleQuery == NULL) printf("NULL pointer !\n");
-	
-	_CL_LOG << "lbDynamicApplication::Initialize('" << user << "', '" << app << "');" LOG_
-	_CL_LOG << "Query: " << buffer LOG_
+	if ((forms != NULL) && (ApplicationFormulars != NULL)) {
+		UAP_REQUEST(getModuleInstance(), lb_I_Long, AppID)
+		UAP_REQUEST(getModuleInstance(), lb_I_Long, AppIDComp)
+		int unused;
+		bool toolbaradded = false;
+		AppID->setData(meta->getApplicationID());
 		
-	sampleQuery->skipFKCollecting();
-	sampleQuery->query(buffer);
-	sampleQuery->enableFKCollecting();
-	
-	char* ed = strdup(_trans("&Edit"));
-	
-	char* menu = strdup(_trans(app));
-	
-	metaapp->addMenuBar(menu, ed);
-	
-	free(ed);
-	free(menu);
-	free(buffer);
+		char* ed = strdup(_trans("&Edit"));
+		char* menu = strdup(_trans(app));
+		metaapp->addMenuBar(menu, ed);
+		free(ed);
+		free(menu);
 
-	
-	lbErrCodes DBerr = sampleQuery->first();
-	if ((DBerr == ERR_NONE) || (DBerr == WARN_DB_NODATA)) {
-		UAP(lb_I_String, EventName)
-		UAP(lb_I_String, MenuName)
-		UAP(lb_I_String, ToolBarImage)
-		UAP(lb_I_Long, Typ)
-		
-		EventName = sampleQuery->getAsString(1);
-		MenuName = sampleQuery->getAsString(2);
-		ToolBarImage = sampleQuery->getAsString(3);
-		Typ = sampleQuery->getAsLong(4);
-		
-		if (eman->resolveEvent(EventName->charrep(), unused) == ERR_EVENT_NOTREGISTERED) {
+		ApplicationFormulars->finishRelationIteration();
+		while (ApplicationFormulars->hasMoreRelations()) {
+			ApplicationFormulars->setNextRelation();
+			AppIDComp->setData(ApplicationFormulars->getApplicationID());
 			
-			eman->registerEvent(EventName->charrep(), unused);
-			
-			if (Typ->getData() == 1L)
-				dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDynamicApplication::getDynamicDBForm, EventName->charrep());
-			else
-				dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDynamicApplication::getCustomDBForm, EventName->charrep());
-			
-			metaapp->addMenuEntry(_trans(app), MenuName->charrep(), EventName->charrep(), "");
-			
-			if (strcmp(ToolBarImage->charrep(), "") != 0) {
-				if (toolbaradded == false) {
-					metaapp->addToolBar(app);
-					toolbaradded = true;
+			if (AppIDComp->equals(*&AppID)) {
+				UAP_REQUEST(getModuleInstance(), lb_I_String, EventName)
+				UAP_REQUEST(getModuleInstance(), lb_I_String, MenuName)
+				UAP_REQUEST(getModuleInstance(), lb_I_String, ToolBarImage)
+				UAP_REQUEST(getModuleInstance(), lb_I_Long, Typ)
+
+				long FormID = ApplicationFormulars->getFormularID();
+				forms->selectFormular(FormID);
+				
+				*EventName = forms->getEventName();
+				*MenuName = forms->getMenuName();
+				*ToolBarImage = forms->getToolbarImage();
+				Typ->setData(forms->getTyp());
+				
+				if (eman->resolveEvent(EventName->charrep(), unused) == ERR_EVENT_NOTREGISTERED) {
+					
+					eman->registerEvent(EventName->charrep(), unused);
+					
+					if (Typ->getData() == 1L)
+						dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDynamicApplication::getDynamicDBForm, EventName->charrep());
+					else
+						dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDynamicApplication::getCustomDBForm, EventName->charrep());
+					
+					metaapp->addMenuEntry(_trans(app), MenuName->charrep(), EventName->charrep(), "");
+					
+					if (strcmp(ToolBarImage->charrep(), "") != 0) {
+						if (toolbaradded == false) {
+							metaapp->addToolBar(app);
+							toolbaradded = true;
+						}
+						
+						ToolBarImage->trim();
+						
+						metaapp->addToolBarButton(app, MenuName->charrep(), EventName->charrep(), ToolBarImage->charrep());
+					}
+					
+				} else {
+					_CL_VERBOSE << "WARNING: Event name already reserved. Ignore it for menucreation." LOG_
 				}
-				
-				ToolBarImage->trim();
-				
-				metaapp->addToolBarButton(app, MenuName->charrep(), EventName->charrep(), ToolBarImage->charrep());
 			}
-			
-		} else {
-			_CL_VERBOSE << "WARNING: Event name already reserved. Ignore it for menucreation." LOG_
+		}
+		ApplicationFormulars->finishRelationIteration();
+	} else {
+		char* lbDMFPasswd = getenv("lbDMFPasswd");
+		char* lbDMFUser   = getenv("lbDMFUser");
+		
+		if (!lbDMFUser) lbDMFUser = "dba";
+		if (!lbDMFPasswd) lbDMFPasswd = "trainres";
+		
+		UAP(lb_I_Query, sampleQuery)
+		bool toolbaradded = false;
+		int unused;
+		
+		if (database->connect("lbDMF", "lbDMF", lbDMFUser, lbDMFPasswd) != ERR_NONE) {
+			meta->msgBox("Error", "Failed to connect to required system database. (No local file available)");
+			return;
 		}
 		
-		if (DBerr == WARN_DB_NODATA) return;
-		if (DBerr == ERR_DB_NODATA) return;
-#define TRUE 1
-		while (TRUE) {
-			/*...sget rest of menu entries:24:*/
+		sampleQuery = database->getQuery("lbDMF", 0);	
+		
+		char* b =
+			"select Formulare.eventname, Formulare.menuname, Formulare.toolbarimage, Formulare.typ from Formulare inner join "
+			"anwendungen_formulare on anwendungen_formulare.formularid = formulare.id inner join "
+			"Anwendungen on anwendungen_formulare.anwendungid = Anwendungen.id inner join "
+			"User_Anwendungen on Anwendungen.id = User_Anwendungen.anwendungenid inner join Users on "
+			"User_Anwendungen.userid = Users.id where "
+			"Users.userid = '%s' and Anwendungen.name = '%s' order by Formulare.menuorder";
+		
+		char* buffer = (char*) malloc(strlen(b)+strlen(user)+strlen(app)+1);
+		
+		sprintf(buffer, b, user, app);
+		
+		if (sampleQuery == NULL) printf("NULL pointer !\n");
+		
+		_CL_LOG << "lbDynamicApplication::Initialize('" << user << "', '" << app << "');" LOG_
+			_CL_LOG << "Query: " << buffer LOG_
+			
+		sampleQuery->skipFKCollecting();
+		sampleQuery->query(buffer);
+		sampleQuery->enableFKCollecting();
+		
+		char* ed = strdup(_trans("&Edit"));
+		
+		char* menu = strdup(_trans(app));
+		
+		metaapp->addMenuBar(menu, ed);
+		
+		free(ed);
+		free(menu);
+		free(buffer);
+		
+		
+		lbErrCodes DBerr = sampleQuery->first();
+		if ((DBerr == ERR_NONE) || (DBerr == WARN_DB_NODATA)) {
 			UAP(lb_I_String, EventName)
 			UAP(lb_I_String, MenuName)
 			UAP(lb_I_String, ToolBarImage)
 			UAP(lb_I_Long, Typ)
-
-			DBerr = sampleQuery->next();
 			
-			if ((DBerr == ERR_NONE) || (DBerr == WARN_DB_NODATA)) {
-				EventName = sampleQuery->getAsString(1);
-				MenuName = sampleQuery->getAsString(2);
-				ToolBarImage = sampleQuery->getAsString(3);
-				Typ = sampleQuery->getAsLong(4);
+			EventName = sampleQuery->getAsString(1);
+			MenuName = sampleQuery->getAsString(2);
+			ToolBarImage = sampleQuery->getAsString(3);
+			Typ = sampleQuery->getAsLong(4);
+			
+			if (eman->resolveEvent(EventName->charrep(), unused) == ERR_EVENT_NOTREGISTERED) {
 				
-				if (eman->resolveEvent(EventName->charrep(), unused) == ERR_EVENT_NOTREGISTERED) {
-					eman->registerEvent(EventName->charrep(), unused);
-					
+				eman->registerEvent(EventName->charrep(), unused);
+				
 				if (Typ->getData() == 1L)
 					dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDynamicApplication::getDynamicDBForm, EventName->charrep());
 				else
 					dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDynamicApplication::getCustomDBForm, EventName->charrep());
-					
+				
 				metaapp->addMenuEntry(_trans(app), MenuName->charrep(), EventName->charrep(), "");
-					
+				
 				if (strcmp(ToolBarImage->charrep(), "") != 0) {
 					if (toolbaradded == false) {
 						metaapp->addToolBar(app);
 						toolbaradded = true;
 					}
-						
+					
 					ToolBarImage->trim();
-						
+					
 					metaapp->addToolBarButton(app, MenuName->charrep(), EventName->charrep(), ToolBarImage->charrep());
 				}
-					
-				} else {
-					_CL_VERBOSE << "WARNING: Event name already reserved. Ignore it for menucreation." LOG_
-				}
-				if (DBerr == WARN_DB_NODATA) break;
+				
+			} else {
+				_CL_VERBOSE << "WARNING: Event name already reserved. Ignore it for menucreation." LOG_
 			}
-			if (DBerr == ERR_DB_NODATA) break;
-			/*...e*/
+			
+			if (DBerr == WARN_DB_NODATA) return;
+			if (DBerr == ERR_DB_NODATA) return;
+#define TRUE 1
+			while (TRUE) {
+				/*...sget rest of menu entries:24:*/
+				UAP(lb_I_String, EventName)
+				UAP(lb_I_String, MenuName)
+				UAP(lb_I_String, ToolBarImage)
+				UAP(lb_I_Long, Typ)
+				
+				DBerr = sampleQuery->next();
+				
+				if ((DBerr == ERR_NONE) || (DBerr == WARN_DB_NODATA)) {
+					EventName = sampleQuery->getAsString(1);
+					MenuName = sampleQuery->getAsString(2);
+					ToolBarImage = sampleQuery->getAsString(3);
+					Typ = sampleQuery->getAsLong(4);
+					
+					if (eman->resolveEvent(EventName->charrep(), unused) == ERR_EVENT_NOTREGISTERED) {
+						eman->registerEvent(EventName->charrep(), unused);
+						
+						if (Typ->getData() == 1L)
+							dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDynamicApplication::getDynamicDBForm, EventName->charrep());
+						else
+							dispatcher->addEventHandlerFn(this, (lbEvHandler) &lbDynamicApplication::getCustomDBForm, EventName->charrep());
+						
+						metaapp->addMenuEntry(_trans(app), MenuName->charrep(), EventName->charrep(), "");
+						
+						if (strcmp(ToolBarImage->charrep(), "") != 0) {
+							if (toolbaradded == false) {
+								metaapp->addToolBar(app);
+								toolbaradded = true;
+							}
+							
+							ToolBarImage->trim();
+							
+							metaapp->addToolBarButton(app, MenuName->charrep(), EventName->charrep(), ToolBarImage->charrep());
+						}
+						
+					} else {
+						_CL_VERBOSE << "WARNING: Event name already reserved. Ignore it for menucreation." LOG_
+					}
+					if (DBerr == WARN_DB_NODATA) break;
+				}
+				if (DBerr == ERR_DB_NODATA) break;
+				/*...e*/
+			}
+			
+		} else {
+			_CL_LOG << "Error: No forms are defined for application." LOG_
 		}
-		
-	} else {
-		_CL_LOG << "Error: No forms are defined for application." LOG_
 	}
 }
 

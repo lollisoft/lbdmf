@@ -2947,6 +2947,30 @@ public:
 };
 /*...e*/
 
+class lb_I_Applications_Formulars : public lb_I_Unknown {
+public:
+	virtual long		LB_STDCALL addRelation(long app_id, long form_id, long _id = -1) = 0;
+	
+	/** \brief Select relation by id.
+	 */
+	virtual bool		LB_STDCALL selectRelation(long _id) = 0;
+	virtual int			LB_STDCALL getRelationCount() = 0;
+	virtual bool		LB_STDCALL hasMoreRelations() = 0;
+	virtual void		LB_STDCALL setNextRelation() = 0;
+	virtual void		LB_STDCALL finishRelationIteration() = 0;
+
+	virtual long		LB_STDCALL getApplicationID() = 0;
+	virtual long		LB_STDCALL getFormularID() = 0;
+	virtual long		LB_STDCALL getID() = 0;
+
+	virtual bool		LB_STDCALL ismarked() = 0;
+	virtual void		LB_STDCALL mark() = 0;
+	virtual void		LB_STDCALL unmark() = 0;
+
+	virtual void		LB_STDCALL deleteUnmarked() = 0;
+	virtual void		LB_STDCALL deleteMarked() = 0;
+};
+
 /*...sclass lb_I_User_Applications:0:*/
 class lb_I_User_Applications : public lb_I_Unknown {
 public:
@@ -3024,15 +3048,16 @@ public:
 	 */
 	//virtual void		LB_STDCALL setApplicationFilter(long anwendung_id) = 0;
 
-	virtual long		LB_STDCALL addFormular(const char* name, const char* menuname, const char* eventname, const char* menuhilfe, long anwendung_id, long typ, long formular_id = -1) = 0;
+	virtual long		LB_STDCALL addFormular(const char* name, const char* toolbarimage, const char* menuname, const char* eventname, const char* menuhilfe, long anwendung_id, long typ, long formular_id = -1) = 0;
 	virtual bool		LB_STDCALL selectFormular(long _id) = 0;
-	virtual int		LB_STDCALL getFormularCount() = 0;
+	virtual int			LB_STDCALL getFormularCount() = 0;
 	virtual bool		LB_STDCALL hasMoreFormulars() = 0;
 	virtual void		LB_STDCALL setNextFormular() = 0;
 	virtual void		LB_STDCALL finishFormularIteration() = 0;
 	
 	virtual char*		LB_STDCALL getName() = 0;
 	virtual char*		LB_STDCALL getMenuName() = 0;
+	virtual char*		LB_STDCALL getToolbarImage() = 0;
 	virtual char*		LB_STDCALL getEventName() = 0;
 	virtual char*		LB_STDCALL getMenuHelp() = 0;
 	virtual long		LB_STDCALL getApplicationID() = 0;

@@ -131,6 +131,7 @@ virtual void LB_STDCALL visit(lb_I_ReportElements*) = 0;
 virtual void LB_STDCALL visit(lb_I_ReportElementTypes*) = 0;
 virtual void LB_STDCALL visit(lb_I_ReportTexts*) = 0;
 virtual void LB_STDCALL visit(lb_I_BinaryData*) = 0;
+virtual void LB_STDCALL visit(lb_I_Applications_Formulars*) = 0;
 
 //virtual ~Aspect(){} 
 };   

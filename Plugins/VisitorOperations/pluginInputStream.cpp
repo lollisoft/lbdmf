@@ -179,6 +179,7 @@ public:
 	void LB_STDCALL visit(lb_I_ReportElements*);
 	void LB_STDCALL visit(lb_I_ReportElementTypes*);
 	void LB_STDCALL visit(lb_I_ReportTexts*);
+	void LB_STDCALL visit(lb_I_Applications_Formulars*);
 
 
 	bool LB_STDCALL begin(char* file);
@@ -262,6 +263,24 @@ void LB_STDCALL lbInputStreamOpr::visit(lb_I_Streamable* pm) {
 		_CL_LOG << "lbInputStreamOpr::visit(lb_I_ProjectManager* pm) Error: No input stream available. Could not read from stream!" LOG_
 	}
 }
+
+void LB_STDCALL lbInputStreamOpr::visit(lb_I_Applications_Formulars* applicationformulars) {
+	int count = 0;
+	*iStream >> count;
+	
+	for (int i = 0; i < count; i++) {
+		long ID;
+		long ApplicationID = NULL;
+		long FormularID = NULL;
+		
+		*iStream >> ID;
+		*iStream >> ApplicationID;
+		*iStream >> FormularID;
+		
+		applicationformulars->addRelation(ApplicationID, FormularID, ID);
+	}
+}
+
 
 void LB_STDCALL lbInputStreamOpr::visit(lb_I_Reports* reports) {
 	int count = 0;
@@ -725,6 +744,7 @@ void LB_STDCALL lbInputStreamOpr::visit(lb_I_Formulars* forms) {
 	char* MenuName = NULL;
 	char* MenuHilfe = NULL;
 	char* EventName = NULL;
+	char* ToolbarImage = NULL;
 	
 	*iStream >> count;
 _LOG << "Read " << count << " formulars." LOG_
@@ -737,8 +757,9 @@ _LOG << "Read " << count << " formulars." LOG_
 		*iStream >> MenuHilfe;
 		*iStream >> AnwendungID;
 		*iStream >> Typ;
+		*iStream >> ToolbarImage;
 		
-		forms->addFormular(FormularName, MenuName, EventName, MenuHilfe, AnwendungID, Typ, FormularID);
+		forms->addFormular(FormularName, ToolbarImage, MenuName, EventName, MenuHilfe, AnwendungID, Typ, FormularID);
 	}
 }
 

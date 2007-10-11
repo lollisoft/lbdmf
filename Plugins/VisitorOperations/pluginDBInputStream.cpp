@@ -179,6 +179,7 @@ public:
 	void LB_STDCALL visit(lb_I_ReportElements*);
 	void LB_STDCALL visit(lb_I_ReportElementTypes*);
 	void LB_STDCALL visit(lb_I_ReportTexts*);
+	void LB_STDCALL visit(lb_I_Applications_Formulars*);
 
 	bool LB_STDCALL begin(const char* connectionname, const char* DBName, const char* DBUser, const char* DBPass);
 	bool LB_STDCALL begin(const char* connectionname, lb_I_Database* _db);
@@ -272,6 +273,42 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Streamable* pm) {
 		pm->load(db.getPtr());
 	} else {
 		_CL_VERBOSE << "lbDatabaseInputStream::visit(lb_I_ProjectManager* pm) Error: No input stream available. Could not read from stream!" LOG_
+	}
+}
+
+void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Applications_Formulars* applicationformulars) {
+	lbErrCodes err = ERR_NONE;
+	_LOG << "lbDatabaseInputStream::visit(lb_I_Applications_Formulars* reports) called" LOG_
+	UAP(lb_I_Query, q)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, query)
+	
+	if (db == NULL) {
+		_LOG << "FATAL: Database imput stream could not work without a database!" LOG_
+		return;
+	}
+	
+	q = db->getQuery("lbDMF", 0);
+
+	*query = "select id, anwendungid, formularid from anwendungen_formulare";
+
+	err = q->query(query->charrep());
+	
+	if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
+			UAP(lb_I_Long, ID)
+			UAP(lb_I_Long, ApplicationID)
+			UAP(lb_I_Long, FormularID)
+			err = q->first();
+			
+			while ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
+			
+				ID = q->getAsLong(1);
+				ApplicationID = q->getAsLong(2);
+				FormularID = q->getAsLong(3);
+			
+				applicationformulars->addRelation(ApplicationID->getData(), FormularID->getData(), ID->getData());	
+			
+				err = q->next();
+			}
 	}
 }
 
@@ -1390,7 +1427,7 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Formulars* forms) {
 	
 	q->skipFKCollecting();
 	
-	if (q->query("select id, name, menuname, eventname, menuhilfe, anwendungid, typ from formulare") != ERR_NONE) {
+	if (q->query("select id, name, menuname, eventname, menuhilfe, anwendungid, typ, toolbarimage from formulare") != ERR_NONE) {
 		_LOG << "Error: Access to formular table failed. Read formulars would be skipped." LOG_
 		return;
 	}
@@ -1407,6 +1444,7 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Formulars* forms) {
 		UAP(lb_I_String, MenuName)
 		UAP(lb_I_String, MenuHilfe)
 		UAP(lb_I_String, EventName)
+		UAP(lb_I_String, ToolbarImage)
 
 		FormularID = q->getAsLong(1);
 		FormularName = q->getAsString(2);
@@ -1415,8 +1453,9 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Formulars* forms) {
 		MenuHilfe = q->getAsString(5);
 		AnwendungID = q->getAsLong(6);
 		Typ = q->getAsLong(7);
+		ToolbarImage = q->getAsString(8);
 		
-		forms->addFormular(FormularName->charrep(), MenuName->charrep(), EventName->charrep(), MenuHilfe->charrep(), AnwendungID->getData(), Typ->getData(), FormularID->getData());
+		forms->addFormular(FormularName->charrep(), ToolbarImage->charrep(), MenuName->charrep(), EventName->charrep(), MenuHilfe->charrep(), AnwendungID->getData(), Typ->getData(), FormularID->getData());
 
 		while ((err = q->next()) == ERR_NONE || err == WARN_DB_NODATA) {
 			FormularID = q->getAsLong(1);
@@ -1426,8 +1465,9 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Formulars* forms) {
 			MenuHilfe = q->getAsString(5);
 			AnwendungID = q->getAsLong(6);
 			Typ = q->getAsLong(7);
+			ToolbarImage = q->getAsString(8);
 			
-			forms->addFormular(FormularName->charrep(), MenuName->charrep(), EventName->charrep(), MenuHilfe->charrep(), AnwendungID->getData(), Typ->getData(), FormularID->getData());
+			forms->addFormular(FormularName->charrep(), ToolbarImage->charrep(), MenuName->charrep(), EventName->charrep(), MenuHilfe->charrep(), AnwendungID->getData(), Typ->getData(), FormularID->getData());
 		}
 	}
 }

@@ -30,11 +30,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.41 $
+ * $Revision: 1.42 $
  * $Name:  $
- * $Id: lbDatabaseForm.h,v 1.41 2007/10/06 16:41:34 lollisoft Exp $
+ * $Id: lbDatabaseForm.h,v 1.42 2007/10/11 13:38:40 lollisoft Exp $
  *
  * $Log: lbDatabaseForm.h,v $
+ * Revision 1.42  2007/10/11 13:38:40  lollisoft
+ * Propably completed offline capability from system database.
+ *
  * Revision 1.41  2007/10/06 16:41:34  lollisoft
  * Begun to move out code into visitor classes. But it does
  * not yet work. Deactivated.
@@ -210,6 +213,7 @@ public:
 	 * Default constructor - implemented in BEGIN_IMPLEMENT_LB_UNKNOWN(lbDatabaseDialog)
 	 */
 	lbConfigure_FK_PK_MappingDialog();
+	lbConfigure_FK_PK_MappingDialog(long FormularID);
 
 	/**
 	 * Destructor
@@ -286,6 +290,7 @@ public:
 	char* _DBUser;
 	char* _DBName;
 	char* _DBPass;
+	long _FoimularID;
 };
 /*...e*/
 

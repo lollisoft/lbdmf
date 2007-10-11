@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.144 2007/09/30 14:24:37 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.145 2007/10/11 13:38:40 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.144 $
+ * $Revision: 1.145 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.144 2007/09/30 14:24:37 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.145 2007/10/11 13:38:40 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.145  2007/10/11 13:38:40  lollisoft
+ * Propably completed offline capability from system database.
+ *
  * Revision 1.144  2007/09/30 14:24:37  lollisoft
  * Check for exsisting splash screen to avoid error messages.
  *
@@ -2469,6 +2472,22 @@ lbErrCodes LB_STDCALL MyApp::addMenuEntry(lb_I_Unknown* uk) {
 	parameter->setData("handlername");
 	param->getUAPString(*&parameter, *&handlername);
 
+	if ((menubar->charrep() == NULL) || (menuname->charrep() == NULL) || (handlername->charrep() == NULL)) {
+		_LOG << "Error: There are some parameters with NULL pointers!" LOG_
+		if ((menubar->charrep() == NULL)) {
+			*menubar = "Unknown menubar";
+		}
+		if ((menuname->charrep() == NULL)) {
+			*menuname = "Unknown menuname";
+		}
+		if ((handlername->charrep() == NULL)) {
+			*handlername = "Unknown handlername";
+		}
+	}
+
+	_LOG << "Add a menu entry at '" << menubar->charrep() << "' with '" << menuname->charrep() << "' that handles '" << handlername->charrep() << "'" LOG_
+
+
 	if (param->Count() > 3) {
 		parameter->setData("checkable");
 		param->getUAPString(*&parameter, *&checkable);
@@ -2484,15 +2503,24 @@ lbErrCodes LB_STDCALL MyApp::addMenuEntry(lb_I_Unknown* uk) {
 
 	wxMenuBar* mbar = frame->getMenuBar();
 	
-	wxMenu* menu = mbar->GetMenu(mbar->FindMenu(wxString(menubar->getData())));
+	int index;
+	
+	index = mbar->FindMenu(wxString(menubar->getData()));
+	
+	if (index == wxNOT_FOUND) {
+		_CL_LOG << "ERROR: Programming error. Forgotten to create the required menu. Do it here." LOG_
+		wxMenu *menu = new wxMenu;
+		mbar->Append(menu, menubar->getData());
+		index = mbar->FindMenu(wxString(menubar->getData()));
+	}
+	
+	wxMenu* menu = mbar->GetMenu(index);
 
 
 	if ((param->Count() > 3) && (strcmp(checkable->charrep(), "yes") == 0))
 		menu->AppendCheckItem(EvNr, menuname->getData());
 	else
 		menu->Append(EvNr, menuname->getData());
-
-
 
 	((wxFrame*) frame)->Connect( EvNr,  -1, wxEVT_COMMAND_MENU_SELECTED,
           (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)

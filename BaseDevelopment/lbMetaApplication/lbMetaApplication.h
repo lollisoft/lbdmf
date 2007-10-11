@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.51 $
+ * $Revision: 1.52 $
  * $Name:  $
- * $Id: lbMetaApplication.h,v 1.51 2007/08/02 07:01:57 lollisoft Exp $
+ * $Id: lbMetaApplication.h,v 1.52 2007/10/11 13:38:40 lollisoft Exp $
  *
  * $Log: lbMetaApplication.h,v $
+ * Revision 1.52  2007/10/11 13:38:40  lollisoft
+ * Propably completed offline capability from system database.
+ *
  * Revision 1.51  2007/08/02 07:01:57  lollisoft
  * Added member function to remove a toolbar.
  *
@@ -412,6 +415,7 @@ protected:
 	UAP(lb_I_UserAccounts, Users)
 	/// \brief Users to Applications mapping stored in file or database.
 	UAP(lb_I_User_Applications, User_Applications)
+//	UAP(lb_I_Applications_Formulars, ApplicationFormulars)
 
 	bool isPropertyPanelFloating;
 	bool isPropertyPanelLeft;

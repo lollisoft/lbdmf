@@ -648,7 +648,7 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 			
 			if (definitionFound == false) {
 				_CL_VERBOSE << "ERROR: No data column definition to be displayed instead of primary key.\n" LOG_
-				lbConfigure_FK_PK_MappingDialog* fkpkPanel = new lbConfigure_FK_PK_MappingDialog();
+				lbConfigure_FK_PK_MappingDialog* fkpkPanel = new lbConfigure_FK_PK_MappingDialog(FormID);
 				fkpkPanel->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
 				// Pass through the target connection and the current query	
 				fkpkPanel->init(sampleQuery.getPtr(), DBName, DBUser, DBPass);

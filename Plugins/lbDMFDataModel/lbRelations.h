@@ -65,5 +65,44 @@ public:
 	UAP(lb_I_Long, marked)
 };
 
+class lbApplicationFormularsRelationModel : public lb_I_Applications_Formulars {
+public:
+	lbApplicationFormularsRelationModel();
+	virtual ~lbApplicationFormularsRelationModel();
+	
+	long LB_STDCALL addRelation(long app_id, long form_id, long _id = -1);
+	
+	bool	LB_STDCALL selectRelation(long _id);
+	bool	LB_STDCALL addFilter(const char* filter, const char* value);
+	bool	LB_STDCALL resetFilter(const char* filter = "");
+	
+	int		LB_STDCALL getRelationCount();
+	bool	LB_STDCALL hasMoreRelations();
+	void	LB_STDCALL setNextRelation();
+	void	LB_STDCALL finishRelationIteration();
 
+	long	LB_STDCALL getApplicationID();
+	long	LB_STDCALL getFormularID();
+	long	LB_STDCALL getID();
+
+	bool		LB_STDCALL ismarked();
+	void		LB_STDCALL mark();
+	void		LB_STDCALL unmark();
+
+	void		LB_STDCALL deleteUnmarked();
+	void		LB_STDCALL deleteMarked();
+
+	DECLARE_LB_UNKNOWN()
+	
+	UAP(lb_I_Container, Relations)
+	
+	UAP(lb_I_Long, currentFormularID)
+	UAP(lb_I_Long, currentAppID)
+	UAP(lb_I_Long, currentID)
+
+	UAP(lb_I_Long, marked)
+};
+
+
+DECLARE_FUNCTOR(instanceOflbApplicationFormularsRelationModel)
 DECLARE_FUNCTOR(instanceOflbUserApplicationRelationModel)

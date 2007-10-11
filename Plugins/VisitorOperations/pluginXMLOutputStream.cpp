@@ -178,6 +178,7 @@ public:
 	void LB_STDCALL visit(lb_I_ReportElements*);
 	void LB_STDCALL visit(lb_I_ReportElementTypes*);
 	void LB_STDCALL visit(lb_I_ReportTexts*);
+	void LB_STDCALL visit(lb_I_Applications_Formulars*);
 	
 	/** \brief Start save operation.
 	 *
@@ -303,6 +304,21 @@ void LB_STDCALL lbXMLOutputStream::visit(lb_I_DBReportTextblock*) {
 
 void LB_STDCALL lbXMLOutputStream::visit(lb_I_DBReportProperties*) {
 
+}
+
+void LB_STDCALL lbXMLOutputStream::visit(lb_I_Applications_Formulars* applicationformulars) {
+	*oStream << "<applicationformulars>" << "\n";
+	
+	applicationformulars->finishRelationIteration();
+	
+	while (applicationformulars->hasMoreRelations()) {
+		applicationformulars->setNextRelation();
+		*oStream << "<applicationformular ID=\"" << applicationformulars->getID() << 
+		            "\" formularid=\"" << applicationformulars->getFormularID() << 
+					"\" applicationid=\"" << applicationformulars->getApplicationID() << "\"/>" << "\n";
+	}
+
+	*oStream << "</applicationformulars>" << "\n";
 }
 
 void LB_STDCALL lbXMLOutputStream::visit(lb_I_UserAccounts* users) {
@@ -563,6 +579,7 @@ void LB_STDCALL lbXMLOutputStream::visit(lb_I_Formulars* forms) {
 		*oStream << 
 		"<formular ID=\"" << forms->getFormularID() << 
 		"\" name=\"" << forms->getName() << 
+		"\" toolbarimage=\"" << forms->getToolbarImage() << 
 		"\" menuname=\"" << forms->getMenuName() << 
 		"\" eventname=\"" << forms->getEventName() << 
 		"\" menuhelp=\"" << forms->getMenuHelp() << 

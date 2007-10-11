@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.123 $
+ * $Revision: 1.124 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.123 2007/09/04 11:41:46 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.124 2007/10/11 13:38:39 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.124  2007/10/11 13:38:39  lollisoft
+ * Propably completed offline capability from system database.
+ *
  * Revision 1.123  2007/09/04 11:41:46  lollisoft
  * Some corrections in setting correct application name.
  *
@@ -731,7 +734,22 @@ lbErrCodes LB_STDCALL lb_MetaApplication::save() {
 		_LOG << "lb_MetaApplication::save(): Save User_Applications list." LOG_
 		User_Applications->accept(*&fOp1);
 	}
-				
+/*				
+	if (ApplicationFormulars == NULL) {
+			UAP(lb_I_Plugin, pl5)
+			UAP(lb_I_Unknown, ukPl5)
+			pl5 = PM->getFirstMatchingPlugin("lb_I_Applications_Formulars", "Model");
+			ukPl5 = pl5->getImplementation();
+			QI(ukPl5, lb_I_Applications_Formulars, ApplicationFormulars)
+			
+			_LOG << "Save default formular - application data ..." LOG_
+	}
+	
+	if (ApplicationFormulars != NULL) {
+		_LOG << "lb_MetaApplication::save(): Save ApplicationFormulars list." LOG_
+		ApplicationFormulars->accept(*&fOp1);
+	}
+*/				
 	fOp1->end();		
 
 	return ERR_NONE;
@@ -783,9 +801,18 @@ lbErrCodes LB_STDCALL lb_MetaApplication::load() {
 			pl4 = PM->getFirstMatchingPlugin("lb_I_User_Applications", "Model");
 			ukPl4 = pl4->getImplementation();
 
+/* Meta application could not know details of the application. Has it forms ?
+			UAP(lb_I_Plugin, pl5)
+			UAP(lb_I_Unknown, ukPl5)
+			pl5 = PM->getFirstMatchingPlugin("lb_I_Applications_Formulars", "Model");
+			ukPl5 = pl5->getImplementation();
+*/
+			
+
 			QI(ukPl2, lb_I_UserAccounts, Users)
 			QI(ukPl3, lb_I_Applications, Applications)
 			QI(ukPl4, lb_I_User_Applications, User_Applications)
+//			QI(ukPl5, lb_I_Applications_Formulars, ApplicationFormulars)
 
 			// Database read will be forced by login.
 			if (!_force_use_database) {
@@ -796,6 +823,14 @@ lbErrCodes LB_STDCALL lb_MetaApplication::load() {
 				ukPl3->accept(*&fOp);
 				// Read users applications
 				ukPl4->accept(*&fOp);
+				// Read applications to formular assoc
+//				ukPl5->accept(*&fOp);
+				
+				if (Users->getUserCount() == 0) {
+					_LOG << "Warning: Users list from file does not contain any data." LOG_
+				}
+				
+				
 			} else {
 				UAP(lb_I_Container, apps)
 				apps = getApplications();
@@ -1384,54 +1419,35 @@ lbErrCodes LB_STDCALL lb_MetaApplication::loadApplication(char* user, char* appl
 		 * Read the configuration from a database.
 		 */
 		
-		UAP_REQUEST(manager.getPtr(), lb_I_Database, database)
-		UAP(lb_I_Query, sampleQuery)
-		
-		database->init();
-		
-		if (database->connect("lbDMF", "lbDMF", lbDMFUser, lbDMFPasswd) != ERR_NONE) {
-			_LOG << "Error: Connection to database failed." LOG_
-			return ERR_NONE;
-		} else {
-			
-			sampleQuery = database->getQuery("lbDMF", 0);
-			
-			char* buffer = (char*) malloc(1000);
-			buffer[0] = 0;
-			
-			sprintf(buffer,
-					"select Anwendungen.modulename, Anwendungen.functor, Anwendungen.interface from Anwendungen inner join User_Anwendungen on "
-					"Anwendungen.id = User_Anwendungen.anwendungenid "
-					"inner join Users on User_Anwendungen.userid = Users.id where "
-					"Users.userid = '%s' and Anwendungen.name = '%s'"
-					, LogonUser->charrep(), LogonApplication->charrep());
-			
-			printf("%s\n", buffer);
-			
-			/*
-			 * Decide upon the interface, if this code is capable to handle this application.
-			 * First, only handle lb_I_MetaApplication types.
-			 */
-			
-			sampleQuery->skipFKCollecting();
-			sampleQuery->query(buffer);
-			sampleQuery->enableFKCollecting();
-			
-			
-			// Fill up the available applications for that user.
+		if (Applications->getApplicationCount() != 0) {
 			UAP_REQUEST(manager.getPtr(), lb_I_String, ModuleName)
-				UAP_REQUEST(manager.getPtr(), lb_I_String, Functor)
-				
-				lbErrCodes DBerr = sampleQuery->first();
+			UAP_REQUEST(manager.getPtr(), lb_I_String, Functor)
+
+			Users->selectAccount(LogonUser->charrep());
+			Applications->selectApplication(LogonApplication->charrep());
 			
-			if ((DBerr == ERR_NONE) || (DBerr == WARN_DB_NODATA)) {
-				ModuleName = sampleQuery->getAsString(1);
-				Functor = sampleQuery->getAsString(2);
+			long uid = Users->getUserID();
+			long aid = Applications->getApplicationID();
+			
+			User_Applications->finishRelationIteration();
+			while (User_Applications->hasMoreRelations()) {
+				User_Applications->setNextRelation();
 				
-				applicationName = (char*) malloc(strlen(ModuleName->charrep())+1);
-				applicationName[0] = 0;
-				strcpy(applicationName, ModuleName->charrep());		        
-				
+				if ((User_Applications->getUserID() == uid) && (User_Applications->getApplicationID() == aid)) {
+					break;
+				}
+			}
+			User_Applications->finishRelationIteration();
+			Applications->finishApplicationIteration();
+			Users->finishUserIteration();
+			
+					*ModuleName = Applications->getApplicationModule();
+					*Functor = Applications->getApplicationFunctor();
+					
+					applicationName = (char*) malloc(strlen(ModuleName->charrep())+1);
+					applicationName[0] = 0;
+					strcpy(applicationName, ModuleName->charrep());		        
+					
 #ifndef LINUX
 #ifdef __WATCOMC__
 #define PREFIX "_"
@@ -1443,55 +1459,162 @@ lbErrCodes LB_STDCALL lb_MetaApplication::loadApplication(char* user, char* appl
 #ifdef LINUX
 #define PREFIX ""
 #endif
-				
-				char f[100] = "";
-				char appl[100] = "";
-				UAP(lb_I_Unknown, a)
 					
-					strcpy(f, PREFIX);
-				strcat(f, Functor->charrep());
-				strcpy(appl, applicationName);
-				
-				
+					char f[100] = "";
+					char appl[100] = "";
+					UAP(lb_I_Unknown, a)
+						
+						strcpy(f, PREFIX);
+					strcat(f, Functor->charrep());
+					strcpy(appl, applicationName);
+					
+					
 #ifdef WINDOWS
-				manager->preload(appl);
-				manager->makeInstance(f, appl, &a);
+					manager->preload(appl);
+					manager->makeInstance(f, appl, &a);
 #endif
 #ifdef LINUX
-				strcat(appl, ".so");		
-				manager->preload(appl);
-				manager->makeInstance(f, appl, &a);
+					strcat(appl, ".so");		
+					manager->preload(appl);
+					manager->makeInstance(f, appl, &a);
 #endif
-				
-				if (a == NULL) {
-					_CL_LOG << "ERROR: Application could not be loaded - either not found or not configured." LOG_
-					return ERR_NONE;
-				}
-				
-				if (moduleName == NULL) {
-					moduleName = (char*) malloc(strlen(appl)+1);
-					moduleName[0] = 0;
-					strcpy(moduleName, appl);
-				} else {
-					_CL_LOG << "ERROR: Multiple applications not yet supported." LOG_
-				}
-				
-				a->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
-				
-				QI(a, lb_I_Application, app)
 					
-					//if (dispatcher.getPtr() == NULL) _LOG << "Error: dispatcher is NULL" LOG_
+					if (a == NULL) {
+						_CL_LOG << "ERROR: Application could not be loaded - either not found or not configured." LOG_
+						return ERR_NONE;
+					}
 					
-				app->setGUI(gui);
-				app->initialize(user, application);
-				
-				// Setting currently loaded application here, because it may be overwritten by app->initialize() when set prior that call. 
-				LogonApplication->setData(application);
-				free(applicationName);
+					if (moduleName == NULL) {
+						moduleName = (char*) malloc(strlen(appl)+1);
+						moduleName[0] = 0;
+						strcpy(moduleName, appl);
+					} else {
+						_CL_LOG << "ERROR: Multiple applications not yet supported." LOG_
+					}
+					
+					a->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+					
+					QI(a, lb_I_Application, app)
+						
+						//if (dispatcher.getPtr() == NULL) _LOG << "Error: dispatcher is NULL" LOG_
+						
+					app->setGUI(gui);
+					app->initialize(user, application);
+					
+					// Setting currently loaded application here, because it may be overwritten by app->initialize() when set prior that call. 
+					LogonApplication->setData(application);
+					free(applicationName);
+
+		} else {
+			UAP_REQUEST(manager.getPtr(), lb_I_Database, database)
+			UAP(lb_I_Query, sampleQuery)
+			
+			database->init();
+			
+			if (database->connect("lbDMF", "lbDMF", lbDMFUser, lbDMFPasswd) != ERR_NONE) {
+				_LOG << "Error: Connection to database failed." LOG_
+				return ERR_NONE;
 			} else {
-				_LOG << "Error: Query to get application data failed. '" << buffer << "'" LOG_
+				
+				sampleQuery = database->getQuery("lbDMF", 0);
+				
+				char* buffer = (char*) malloc(1000);
+				buffer[0] = 0;
+				
+				sprintf(buffer,
+						"select Anwendungen.modulename, Anwendungen.functor, Anwendungen.interface from Anwendungen inner join User_Anwendungen on "
+						"Anwendungen.id = User_Anwendungen.anwendungenid "
+						"inner join Users on User_Anwendungen.userid = Users.id where "
+						"Users.userid = '%s' and Anwendungen.name = '%s'"
+						, LogonUser->charrep(), LogonApplication->charrep());
+				
+				printf("%s\n", buffer);
+				
+				/*
+				 * Decide upon the interface, if this code is capable to handle this application.
+				 * First, only handle lb_I_MetaApplication types.
+				 */
+				
+				sampleQuery->skipFKCollecting();
+				sampleQuery->query(buffer);
+				sampleQuery->enableFKCollecting();
+				
+				
+				// Fill up the available applications for that user.
+				UAP_REQUEST(manager.getPtr(), lb_I_String, ModuleName)
+				UAP_REQUEST(manager.getPtr(), lb_I_String, Functor)
+					
+					lbErrCodes DBerr = sampleQuery->first();
+				
+				if ((DBerr == ERR_NONE) || (DBerr == WARN_DB_NODATA)) {
+					ModuleName = sampleQuery->getAsString(1);
+					Functor = sampleQuery->getAsString(2);
+					
+					applicationName = (char*) malloc(strlen(ModuleName->charrep())+1);
+					applicationName[0] = 0;
+					strcpy(applicationName, ModuleName->charrep());		        
+					
+#ifndef LINUX
+#ifdef __WATCOMC__
+#define PREFIX "_"
+#endif
+#ifdef _MSC_VER
+#define PREFIX ""
+#endif
+#endif
+#ifdef LINUX
+#define PREFIX ""
+#endif
+					
+					char f[100] = "";
+					char appl[100] = "";
+					UAP(lb_I_Unknown, a)
+						
+						strcpy(f, PREFIX);
+					strcat(f, Functor->charrep());
+					strcpy(appl, applicationName);
+					
+					
+#ifdef WINDOWS
+					manager->preload(appl);
+					manager->makeInstance(f, appl, &a);
+#endif
+#ifdef LINUX
+					strcat(appl, ".so");		
+					manager->preload(appl);
+					manager->makeInstance(f, appl, &a);
+#endif
+					
+					if (a == NULL) {
+						_CL_LOG << "ERROR: Application could not be loaded - either not found or not configured." LOG_
+						return ERR_NONE;
+					}
+					
+					if (moduleName == NULL) {
+						moduleName = (char*) malloc(strlen(appl)+1);
+						moduleName[0] = 0;
+						strcpy(moduleName, appl);
+					} else {
+						_CL_LOG << "ERROR: Multiple applications not yet supported." LOG_
+					}
+					
+					a->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
+					
+					QI(a, lb_I_Application, app)
+						
+						//if (dispatcher.getPtr() == NULL) _LOG << "Error: dispatcher is NULL" LOG_
+						
+						app->setGUI(gui);
+					app->initialize(user, application);
+					
+					// Setting currently loaded application here, because it may be overwritten by app->initialize() when set prior that call. 
+					LogonApplication->setData(application);
+					free(applicationName);
+				} else {
+					_LOG << "Error: Query to get application data failed. '" << buffer << "'" LOG_
+				}
+				free(buffer);
 			}
-			free(buffer);
 		}
 		//if (dispatcher.getPtr() == NULL) _LOG << "Error: dispatcher has been set to NULL" LOG_
 	} else {
@@ -2345,6 +2468,8 @@ lb_I_Container* LB_STDCALL lb_MetaApplication::getApplications() {
 				
 				Applications->accept(*&fOp);
 				
+				Users->accept(*&fOp);
+
 				User_Applications->accept(*&fOp);
 							
 				fOp->end();
@@ -2577,6 +2702,7 @@ bool LB_STDCALL lb_MetaApplication::login(const char* user, const char* pass) {
 	} else {
 		// We have got users from file
 		
+		Users->finishUserIteration();
 		while (Users->hasMoreUsers()) {
 			Users->setNextUser();
 			

@@ -54,6 +54,7 @@ lbFormularsModel::lbFormularsModel() {
 	REQUEST(getModuleInstance(), lb_I_Container, Formulars)
 	REQUEST(getModuleInstance(), lb_I_String, currentFormularName)
 	REQUEST(getModuleInstance(), lb_I_String, currentMenuName)
+	REQUEST(getModuleInstance(), lb_I_String, currentToolbarImage)
 	REQUEST(getModuleInstance(), lb_I_String, currentEventName)
 	REQUEST(getModuleInstance(), lb_I_String, currentMenuHilfe)
 	
@@ -73,10 +74,11 @@ lbErrCodes LB_STDCALL lbFormularsModel::setData(lb_I_Unknown*) {
 	return ERR_NOT_IMPLEMENTED;
 }
 
-long  LB_STDCALL lbFormularsModel::addFormular(const char* name, const char* menuname, const char* eventname, const char* menuhilfe, long anwendung_id, long typ, long formular_id) {
+long  LB_STDCALL lbFormularsModel::addFormular(const char* name, const char* toolbarimage, const char* menuname, const char* eventname, const char* menuhilfe, long anwendung_id, long typ, long formular_id) {
 	lbErrCodes err = ERR_NONE;
 	UAP_REQUEST(manager.getPtr(), lb_I_String, FormularName)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, MenuName)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, ToolbarImage)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, EventName)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, MenuHilfe)
 	UAP_REQUEST(manager.getPtr(), lb_I_Long, AnwendungID)
@@ -87,6 +89,7 @@ long  LB_STDCALL lbFormularsModel::addFormular(const char* name, const char* men
 	UAP_REQUEST(manager.getPtr(), lb_I_String, paramname)
 
 	*FormularName = name;
+	*ToolbarImage = toolbarimage;
 	*MenuName = menuname;
 	*EventName = eventname;
 	*MenuHilfe = menuhilfe;
@@ -99,6 +102,8 @@ long  LB_STDCALL lbFormularsModel::addFormular(const char* name, const char* men
 	
 	*paramname = "FormularName";
 	param->setUAPString(*&paramname, *&FormularName);
+	*paramname = "ToolbarImage";
+	param->setUAPString(*&paramname, *&ToolbarImage);
 	*paramname = "MenuName";
 	param->setUAPString(*&paramname, *&MenuName);
 	*paramname = "EventName";
@@ -179,6 +184,8 @@ bool LB_STDCALL lbFormularsModel::selectFormular(long user_id) {
 		
 		*paramname = "FormularName";
 		param->getUAPString(*&paramname, *&currentFormularName);
+		*paramname = "ToolbarImage";
+		param->getUAPString(*&paramname, *&currentToolbarImage);
 		*paramname = "MenuName";
 		param->getUAPString(*&paramname, *&currentMenuName);
 		*paramname = "EventName";
@@ -229,9 +236,11 @@ void  LB_STDCALL lbFormularsModel::setNextFormular() {
 		
 	uk = Formulars->nextElement();
 	QI(uk, lb_I_Parameter, param)
-		
+
 	*paramname = "FormularName";
 	param->getUAPString(*&paramname, *&currentFormularName);
+	*paramname = "ToolbarImage";
+	param->getUAPString(*&paramname, *&currentToolbarImage);
 	*paramname = "MenuName";
 	param->getUAPString(*&paramname, *&currentMenuName);
 	*paramname = "EventName";
@@ -255,6 +264,10 @@ void  LB_STDCALL lbFormularsModel::finishFormularIteration() {
 
 char* LB_STDCALL lbFormularsModel::getName() {
 	return currentFormularName->charrep();
+}
+
+char* LB_STDCALL lbFormularsModel::getToolbarImage() {
+	return currentToolbarImage->charrep();
 }
 
 char* LB_STDCALL lbFormularsModel::getMenuName() {
@@ -413,6 +426,7 @@ lbFormularFieldsModel::lbFormularFieldsModel() {
 	REQUEST(getModuleInstance(), lb_I_Long, currentFormularID)
 	REQUEST(getModuleInstance(), lb_I_Long, currentID)
 	REQUEST(getModuleInstance(), lb_I_Long, marked)
+	uniqueID = 0;
 	_CL_LOG << "lbFormularFieldsModel::lbFormularFieldsModel() called." LOG_
 }
 
@@ -449,7 +463,29 @@ long  LB_STDCALL lbFormularFieldsModel::addField(const char* name, const char* t
 	*fkName = FKName;
 	*fkTable = FKTable;
 	
-	ID->setData(fieldid);
+
+	if (fieldid == -2) {
+		finishFieldsIteration();
+		while (hasMoreFields()) {
+			setNextField();
+			
+			if ((strcmp(currentName->charrep(), Name->charrep()) == 0) && (FormularID->equals(*&currentFormularID))) {
+				UAP(lb_I_KeyBase, key)
+				QI(currentID, lb_I_KeyBase, key)
+				FormularFields->remove(&key);
+			}
+		}
+		uniqueID++;
+		ID->setData(uniqueID);
+	} else {
+		if (fieldid == -1) {
+			uniqueID++;
+			ID->setData(uniqueID);
+		} else {
+			ID->setData(fieldid);
+		}
+	}
+	
 	FormularID->setData(formular_id);
 	
 	*paramname = "Name";

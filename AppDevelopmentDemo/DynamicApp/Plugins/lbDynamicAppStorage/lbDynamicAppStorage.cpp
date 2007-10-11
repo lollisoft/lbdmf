@@ -113,6 +113,7 @@ lbErrCodes LB_STDCALL lbDynamicAppXMLStorage::save(lb_I_OutputStream* oStream) {
 
 	UAP(lb_I_Applications, applications)
 
+	UAP(lb_I_Applications_Formulars, ApplicationFormulars)
 	UAP(lb_I_Formulars, forms)
 	UAP(lb_I_Formular_Fields, formularfields)
 	UAP(lb_I_Column_Types, columntypes)
@@ -180,6 +181,10 @@ lbErrCodes LB_STDCALL lbDynamicAppXMLStorage::save(lb_I_OutputStream* oStream) {
 			
 
 			
+	*name = "FormularApplications";
+	uk = document->getElement(&key);
+	QI(uk, lb_I_Applications_Formulars, ApplicationFormulars)
+			
 	*name = "Formulars";
 	uk = document->getElement(&key);
 	QI(uk, lb_I_Formulars, forms)
@@ -241,6 +246,7 @@ lbErrCodes LB_STDCALL lbDynamicAppXMLStorage::save(lb_I_OutputStream* oStream) {
 	applications->mark();
 
 	if ((forms != NULL) &&
+	    (ApplicationFormulars != NULL) &&
 	    (reports != NULL) &&
 	    (reportparams != NULL) &&
 	    (reportelements != NULL) &&
@@ -275,6 +281,8 @@ lbErrCodes LB_STDCALL lbDynamicAppXMLStorage::save(lb_I_OutputStream* oStream) {
 	
 		meta->setStatusText("Info", "Write XML document (applications) ...");
 		applications->accept(*&aspect);
+		meta->setStatusText("Info", "Write XML document (ApplicationFormulars) ...");
+		ApplicationFormulars->accept(*&aspect);
 		meta->setStatusText("Info", "Write XML document (forms) ...");
 		forms->accept(*&aspect);
 		meta->setStatusText("Info", "Write XML document (dbPrimaryKeys) ...");
@@ -356,6 +364,7 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_InputStream* iStrea
 	    _LOG << "Error: aspect instance not available." LOG_
 	}
 
+	UAP(lb_I_Applications_Formulars, ApplicationFormulars)
 	UAP(lb_I_Formulars, forms)
 	UAP(lb_I_Formular_Fields, formularfields)
 	UAP(lb_I_Column_Types, columntypes)
@@ -390,6 +399,7 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_InputStream* iStrea
 	AQUIRE_PLUGIN(lb_I_Formular_Fields, Model, formularfields, "'formular fields'")
 	AQUIRE_PLUGIN(lb_I_FormularParameter, Model, formParams, "'formular parameters'")
 	AQUIRE_PLUGIN(lb_I_ApplicationParameter, Model, appParams, "'application parameters'")
+	AQUIRE_PLUGIN(lb_I_Applications_Formulars, Model, ApplicationFormulars, "'application formular assoc'")
 
 	reports->accept(*&aspect);
 	reportparams->accept(*&aspect);
@@ -397,6 +407,7 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_InputStream* iStrea
 	reportelementtypes->accept(*&aspect);
 	reporttextblocks->accept(*&aspect);
 	
+	ApplicationFormulars->accept(*&aspect);
 	forms->accept(*&aspect);
 	formularfields->accept(*&aspect);
 	columntypes->accept(*&aspect);
@@ -419,6 +430,7 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_InputStream* iStrea
 	document->setCloning(false);
 
 	if ((forms != NULL) && 
+		(ApplicationFormulars != NULL) && 
 		(reports != NULL) && 
 		(reportparams != NULL) && 
 		(reportelements != NULL) && 
@@ -465,6 +477,10 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_InputStream* iStrea
 		document->insert(&uk, &key);
 		
 		
+		
+		*name = "FormularApplications";
+		QI(ApplicationFormulars, lb_I_Unknown, uk)
+		document->insert(&uk, &key);
 		
 		*name = "Formulars";
 		QI(forms, lb_I_Unknown, uk)
@@ -522,6 +538,7 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::save(lb_I_OutputStream* oStre
 
 	UAP(lb_I_Unknown, uk)
 
+	UAP(lb_I_Applications_Formulars, ApplicationFormulars)
 	UAP(lb_I_Formulars, forms)
 	UAP(lb_I_Formular_Fields, formularfields)
 	UAP(lb_I_Column_Types, columntypes)
@@ -588,6 +605,10 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::save(lb_I_OutputStream* oStre
 
 
 			
+	*name = "FormularApplications";
+	uk = document->getElement(&key);
+	QI(uk, lb_I_Applications_Formulars, ApplicationFormulars)
+			
 	*name = "Formulars";
 	uk = document->getElement(&key);
 	QI(uk, lb_I_Formulars, forms)
@@ -627,6 +648,7 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::save(lb_I_OutputStream* oStre
 	_LOG << "Start storing the data" LOG_
 
 	if ((forms != NULL) &&
+	    (ApplicationFormulars != NULL) &&
 	    (reports != NULL) &&
 	    (reportparams != NULL) &&
 	    (reportelements != NULL) &&
@@ -647,6 +669,7 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::save(lb_I_OutputStream* oStre
 		reportelementtypes->accept(*&aspect);
 		reporttextblocks->accept(*&aspect);
 
+		ApplicationFormulars->accept(*&aspect);
 		forms->accept(*&aspect);
 		formularfields->accept(*&aspect);
 		columntypes->accept(*&aspect);
@@ -676,6 +699,7 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_Database* iDB) {
 	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
 
 
+	UAP(lb_I_Applications_Formulars, ApplicationFormulars)
 	UAP(lb_I_Formulars, forms)
 	UAP(lb_I_Formular_Fields, formularfields)
 	UAP(lb_I_Column_Types, columntypes)
@@ -710,6 +734,7 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_Database* iDB) {
 	AQUIRE_PLUGIN(lb_I_Formular_Fields, Model, formularfields, "'formular fields'")
 	AQUIRE_PLUGIN(lb_I_FormularParameter, Model, formParams, "'formular parameters'")
 	AQUIRE_PLUGIN(lb_I_ApplicationParameter, Model, appParams, "'application parameters'")
+	AQUIRE_PLUGIN(lb_I_Applications_Formulars, Model, ApplicationFormulars, "'application formular assoc'")
 
 	if (reports == NULL)  {
 		_LOG << "lb_I_Reports instance is NULL." LOG_
@@ -725,6 +750,9 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_Database* iDB) {
 	}
 	if (reporttextblocks == NULL)  {
 		_LOG << "lb_I_ReportTexts instance is NULL." LOG_
+	}
+	if (ApplicationFormulars == NULL)  {
+		_LOG << "lb_I_Applications_Formulars instance is NULL." LOG_
 	}
 	if (forms == NULL)  {
 		_LOG << "lb_I_Formulars instance is NULL." LOG_
@@ -760,6 +788,7 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_Database* iDB) {
 	reportelementtypes->accept(*&aspect);
 	reporttextblocks->accept(*&aspect);
 	
+	ApplicationFormulars->accept(*&aspect);
 	forms->accept(*&aspect);
 	formularfields->accept(*&aspect);
 	columntypes->accept(*&aspect);
@@ -786,6 +815,7 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_Database* iDB) {
 	document->setCloning(false);
 
 	if ((forms != NULL) && 
+		(ApplicationFormulars != NULL) && 
 		(reports != NULL) && 
 		(reportparams != NULL) && 
 		(reportelements != NULL) && 
@@ -824,6 +854,10 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_Database* iDB) {
 		document->insert(&uk, &key);
 		
 		
+		
+		*name = "FormularApplications";
+		QI(ApplicationFormulars, lb_I_Unknown, uk)
+		document->insert(&uk, &key);
 		
 		*name = "Formulars";
 		QI(forms, lb_I_Unknown, uk)

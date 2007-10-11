@@ -95,7 +95,18 @@ wxDefaultSize, wxRESIZE_BORDER|wxDEFAULT_DIALOG_STYLE)
 {
 	ref = STARTREF;
 	pass = 0;
+	_FoimularID = -1; 
 }
+
+lbConfigure_FK_PK_MappingDialog::lbConfigure_FK_PK_MappingDialog(long FormularID) 
+: wxDialog(NULL, -1, wxString(_T("lbConfigure_FK_PK_MappingDialog dialog")), wxDefaultPosition,
+wxDefaultSize, wxRESIZE_BORDER|wxDEFAULT_DIALOG_STYLE)
+{
+	ref = STARTREF;
+	pass = 0;
+	_FoimularID = FormularID; 
+}
+
 lbConfigure_FK_PK_MappingDialog::~lbConfigure_FK_PK_MappingDialog() {
 
 	if (_DBUser) free(_DBUser);
@@ -151,52 +162,125 @@ void lbConfigure_FK_PK_MappingDialog::OnFKComboBoxSelected( wxCommandEvent &even
 /*...e*/
 /*...svoid lbConfigure_FK_PK_MappingDialog\58\\58\OnPKComboBoxSelected\40\ wxCommandEvent \38\event \41\:0:*/
 void lbConfigure_FK_PK_MappingDialog::OnPKComboBoxSelected( wxCommandEvent &event ) {
+	lbErrCodes err = ERR_NONE;
 	wxString PKName = cBoxPKNames->GetStringSelection();
 	wxString FKName = cBoxFKNames->GetStringSelection();
 
-	REQUEST(manager.getPtr(), lb_I_Database, database)
-	
-	database->init();
-	
-	char* lbDMFPasswd = getenv("lbDMFPasswd");
-	char* lbDMFUser   = getenv("lbDMFUser");
-	
-	if (!lbDMFUser) lbDMFUser = "dba";
-	if (!lbDMFPasswd) lbDMFPasswd = "trainres";
-	
-	database->connect("lbDMF", "lbDMF", lbDMFUser, lbDMFPasswd);
+	UAP(lb_I_Formular_Fields, formularfields)
+	UAP(lb_I_Unknown, uk)
 
-	UAP(lb_I_String, PKTable)
+	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, param)
 	
-	char* fkTable = strdup(sourceQuery->getTableName((char*) FKName.c_str()));
-	
-	char* p = strdup(FKName.c_str());
-	
-	PKTable = sourceQuery->getPKTable(p);
-	
-	free(p);
-	
-	// Delete the entry, we now will put into the configuration
-	
-	cBoxFKNames->Delete(cBoxFKNames->GetSelection());
-	
-	UAP(lb_I_Query, query)
-	
-	char buf[] = "insert into ForeignKey_VisibleData_Mapping (FKName, FKTable, PKName, PKTable) values('%s','%s', '%s', '%s')";
+	UAP(lb_I_Unknown, ukDoc)
+	UAP_REQUEST(getModuleInstance(), lb_I_Container, document)
 
-	int size = strlen(buf)+	PKName.Length()+ strlen(fkTable)+ FKName.Length()+ strlen(PKTable->charrep())+ 1;
+	UAP(lb_I_Unknown, ukParams)
+	UAP(lb_I_Parameter, params)
 
-	char* buffer = (char*) malloc(size);
+	ukParams = meta->getActiveDocument();
+	QI(ukParams, lb_I_Parameter, params)
 
-	buffer[0] = 0;
+	*param = "ApplicationData";
+	document->setCloning(false);
+	params->getUAPContainer(*&param, *&document);	
 
-	sprintf(buffer, buf, FKName.c_str(), fkTable, PKName.c_str(), PKTable->charrep());
+	UAP_REQUEST(getModuleInstance(), lb_I_String, name)
 
-	query = database->getQuery("lbDMF", 0);
-	
-	query->skipFKCollecting();
-	query->query(buffer);
-	query->enableFKCollecting();
+	UAP(lb_I_KeyBase, key)
+	QI(name, lb_I_KeyBase, key)
+			
+			
+	*name = "FormularFields";
+	uk = document->getElement(&key);
+	QI(uk, lb_I_Formular_Fields, formularfields)
+
+
+	if (formularfields != NULL) {
+		UAP(lb_I_String, PKTable)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, fkName)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, fkTable)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, PKN)
+
+		*fkName = FKName.c_str();
+		*PKN = PKName.c_str();
+		*fkTable = sourceQuery->getTableName((char*) FKName.c_str());
+
+		lb_I_Query::lbDBColumnTypes coltype = sourceQuery->getColumnType(fkName->charrep());
+
+		
+		char* p = strdup(FKName.c_str());
+		PKTable = sourceQuery->getPKTable(p);
+		free(p);
+
+		switch (coltype) {
+			case lb_I_Query::lbDBColumnBit:																									  // Force replace
+				formularfields->addField(fkName->charrep(), fkTable->charrep(), "Bit", true, PKN->charrep(), PKTable->charrep(), _FoimularID, -2);
+				break;
+			case lb_I_Query::lbDBColumnFloat:
+				formularfields->addField(fkName->charrep(), fkTable->charrep(), "Float", true, PKN->charrep(), PKTable->charrep(), _FoimularID, -2);
+				break;
+			case lb_I_Query::lbDBColumnChar:
+				formularfields->addField(fkName->charrep(), fkTable->charrep(), "String", true, PKN->charrep(), PKTable->charrep(), _FoimularID, -2);
+				break;
+			case lb_I_Query::lbDBColumnBinary:
+				formularfields->addField(fkName->charrep(), fkTable->charrep(), "Binary", true, PKN->charrep(), PKTable->charrep(), _FoimularID, -2);
+				break;
+				
+			case lb_I_Query::lbDBColumnBigInteger:
+			case lb_I_Query::lbDBColumnInteger:
+				formularfields->addField(fkName->charrep(), fkTable->charrep(), "Integer", true, PKN->charrep(), PKTable->charrep(), _FoimularID, -2);
+				break;
+			case lb_I_Query::lbDBColumnUnknown:
+				_CL_LOG << "lbDatabasePanel::init(...) Creating control failed due to unknown column type" LOG_
+				break;
+		}
+		cBoxFKNames->Delete(cBoxFKNames->GetSelection());
+	} else {
+		REQUEST(manager.getPtr(), lb_I_Database, database)
+		
+		database->init();
+		
+		char* lbDMFPasswd = getenv("lbDMFPasswd");
+		char* lbDMFUser   = getenv("lbDMFUser");
+		
+		if (!lbDMFUser) lbDMFUser = "dba";
+		if (!lbDMFPasswd) lbDMFPasswd = "trainres";
+		
+		database->connect("lbDMF", "lbDMF", lbDMFUser, lbDMFPasswd);
+		
+		UAP(lb_I_String, PKTable)
+			
+		char* fkTable = strdup(sourceQuery->getTableName((char*) FKName.c_str()));
+		
+		char* p = strdup(FKName.c_str());
+		
+		PKTable = sourceQuery->getPKTable(p);
+		
+		free(p);
+		
+		// Delete the entry, we now will put into the configuration
+		
+		cBoxFKNames->Delete(cBoxFKNames->GetSelection());
+		
+		UAP(lb_I_Query, query)
+			
+		char buf[] = "insert into ForeignKey_VisibleData_Mapping (FKName, FKTable, PKName, PKTable) values('%s','%s', '%s', '%s')";
+		
+		int size = strlen(buf)+	PKName.Length()+ strlen(fkTable)+ FKName.Length()+ strlen(PKTable->charrep())+ 1;
+		
+		char* buffer = (char*) malloc(size);
+		
+		buffer[0] = 0;
+		
+		sprintf(buffer, buf, FKName.c_str(), fkTable, PKName.c_str(), PKTable->charrep());
+		
+		query = database->getQuery("lbDMF", 0);
+		
+		query->skipFKCollecting();
+		query->query(buffer);
+		query->enableFKCollecting();
+	}
 	
 	if (cBoxFKNames->GetCount() > 0) {
 		cBoxFKNames->SetSelection(-1);
@@ -206,10 +290,9 @@ void lbConfigure_FK_PK_MappingDialog::OnPKComboBoxSelected( wxCommandEvent &even
 	} else {
 		cBoxPKNames->Disable();
 		cBoxFKNames->Disable();
-
+		
 		firstButton->Enable();		
 	}
-	
 }
 /*...e*/
 

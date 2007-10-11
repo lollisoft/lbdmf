@@ -178,6 +178,7 @@ public:
 	void LB_STDCALL visit(lb_I_ReportElements*);
 	void LB_STDCALL visit(lb_I_ReportElementTypes*);
 	void LB_STDCALL visit(lb_I_ReportTexts*);
+	void LB_STDCALL visit(lb_I_Applications_Formulars*);
 
 	/** \brief Start save operation.
 	 *
@@ -278,6 +279,23 @@ void LB_STDCALL lbOutputStream::visit(lb_I_Streamable* pm) {
 		_CL_LOG << "lbOutputStream::visit(lb_I_ProjectManager* pm) Error: No input stream available. Could not read from stream!" LOG_
 	}
 
+}
+
+void LB_STDCALL lbOutputStream::visit(lb_I_Applications_Formulars* applicationformulars) {
+	int count;
+
+	count = applicationformulars->getRelationCount();
+	*oStream << count;
+	
+	applicationformulars->finishRelationIteration();
+	
+	while (applicationformulars->hasMoreRelations()) {
+		applicationformulars->setNextRelation();
+		
+		*oStream << applicationformulars->getID();
+		*oStream << applicationformulars->getApplicationID();
+		*oStream << applicationformulars->getFormularID();
+	}
 }
 
 void LB_STDCALL lbOutputStream::visit(lb_I_Reports* reports) {
@@ -644,6 +662,7 @@ void LB_STDCALL lbOutputStream::visit(lb_I_Formulars* forms) {
 		*oStream << forms->getMenuHelp();
 		*oStream << forms->getApplicationID();
 		*oStream << forms->getTyp();
+		*oStream << forms->getToolbarImage();
 	}
 }
 
