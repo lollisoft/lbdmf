@@ -1,0 +1,3809 @@
+format 29
+"interfaces" // interfaces::interfaces
+  revision 1
+  modified_by 2 "lothar"
+  // class settings
+  //class diagram settings
+  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default shadow default
+  //use case diagram settings
+  package_name_in_tab default show_context default auto_label_position default shadow default
+  //sequence diagram settings
+  show_full_operations_definition default write_horizontally default drawing_language default shadow default
+  //collaboration diagram settings
+  show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default shadow default
+  //object diagram settings
+   write_horizontally default package_name_in_tab default show_context default auto_label_position default shadow default
+  //component diagram settings
+  package_name_in_tab default show_context default auto_label_position default shadow default
+  draw_component_as_icon default show_component_req_prov default show_component_rea default
+  //deployment diagram settings
+  package_name_in_tab default show_context default write_horizontally default auto_label_position default shadow default
+  draw_component_as_icon default show_component_req_prov default show_component_rea default
+  //state diagram settings
+  package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default shadow default
+  show_activities default region_horizontally default drawing_language default
+  //activity diagram settings
+  package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default shadow default
+  show_infonote default drawing_language default
+  
+  classview 128002 "interfaces"
+    //class diagram settings
+    draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default shadow default
+    //collaboration diagram settings
+    show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default shadow default
+    //object diagram settings
+     write_horizontally default package_name_in_tab default show_context default auto_label_position default shadow default
+    //sequence diagram settings
+    show_full_operations_definition default write_horizontally default drawing_language default shadow default
+    //state diagram settings
+    package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default shadow default
+    show_activities default region_horizontally default drawing_language default
+    //class settings
+    //activity diagram settings
+    package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default shadow default
+    show_infonote default drawing_language default
+    
+    class 128002 "lb_I_KeyBase"cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "...sclass lb_I_KeyBase:0:
+*
+ * \\brief Interface for any class, that could be stored in lb_I_Container.
+ *
+ * Implement this interface to let your classes containable.
+ "
+      classrelation 128002 // <generalisation>
+	relation 128002 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 128002 // <generalisation>
+	  b parent class_ref 128130 // lb_I_Unknown
+      end
+
+      operation 128002 "lb_I_KeyBase"
+	cpp_inline protected explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${name}${(}${)}${volatile}${throw} {};
+"
+	
+	
+	comment "*
+	 * \\deprecated Pure abstract class has no ctor/dtor's
+	 "
+      end
+
+      operation 128130 "~lb_I_KeyBase"
+	cpp_virtual cpp_inline protected explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${virtual}${name}${(}${)}${volatile}${throw} {};
+"
+	
+	
+	comment "*
+	 * \\deprecated Pure abstract class has no ctor/dtor's
+	 "
+      end
+    end
+
+    class 128130 "lb_I_Unknown"cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "...sclass lb_I_Unknown:0:
+*
+ * \\brief Similar to IUnknown aka Microsoft COM.
+ *
+ * lb_I_Unknown is the base class for all other classes, that are used in the framework.
+ * All classes, that needs to be loaded dynamically, must inherid from this class.
+ "
+      operation 140162 "operator ="
+	private return_type class_ref 128130 // lb_I_Unknown
+	nparams 1
+	  param in name "rhs" type class_ref 128130 // lb_I_Unknown
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}const ${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} * ${class}::${name}${(}const ${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
+${body}}
+"
+	
+	
+	comment "*
+	 * Hide this operator to prevent usage. Effect ??
+	 *
+	 * Under MSVC 6.0 I get lots of warnings that there could not be created an assignement operator.
+	 
+	lb_I_Unknown& operator=(const lb_I_Unknown& rhs);
+*
+	 * Hide this operator to prevent usage. Effect ??
+	 "
+      end
+    end
+
+    class 128258 "ObjectTyp"
+       stereotype "enum"
+      cpp_decl "${comment}enum ${name} {
+${items}
+};
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "...e
+
+        Must have a type information of the key, because a string could not be compared
+        with an integer (directly). For a key, it is simply one type of interface, that
+        will be returned as their type information.
+        
+        Here, for keys, a key can be compared with another key of the same type. It is
+        simple to implement the compare function, having the type of the object.
+        
+        Where to define the type information function ?
+        
+        I tent to use a type check in the lb_I_KeyBase interface. So it is not neccesary
+        to implement a typecheck for each equals/greater function.
+
+...sclass lb_I_Object:0:
+...sdefinition of object types may cange:0:"
+      attribute 128002 "LB_OBJECT"
+	public explicit_type ""
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl ""
+	idl_decl ""
+      end
+
+      attribute 128130 "LB_STRING"
+	public explicit_type ""
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl ""
+	idl_decl ""
+      end
+
+      attribute 128258 "LB_STRINGLIST"
+	public explicit_type ""
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl ""
+	idl_decl ""
+      end
+
+      attribute 128386 "LB_GUIOBJECT"
+	public explicit_type ""
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl ""
+	idl_decl ""
+      end
+
+      attribute 128514 "LB_WXGUIOBJECT"
+	public explicit_type ""
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl ""
+	idl_decl ""
+      end
+
+      attribute 128642 "LB_DATA_TRANSFER_OBJECT"
+	public explicit_type ""
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl ""
+	idl_decl ""
+      end
+
+      attribute 128770 "LB_CONNECTION"
+	public explicit_type ""
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl ""
+	idl_decl ""
+      end
+
+      attribute 128898 "LB_APPBUSCLIENT"
+	public explicit_type ""
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl ""
+	idl_decl ""
+      end
+
+      attribute 129026 "LB_APPCLIENT_DISPATCH_FN"
+	public explicit_type ""
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl ""
+	idl_decl ""
+      end
+
+      attribute 129154 "LB_APPSERVER_DISPATCH_PROTO"
+	public explicit_type ""
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl ""
+	idl_decl ""
+      end
+
+      attribute 129282 "LB_EVENT"
+	public explicit_type ""
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl ""
+	idl_decl ""
+      end
+
+      attribute 129410 "LB_DOM_NODE"
+	public explicit_type ""
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl ""
+	idl_decl ""
+      end
+
+      attribute 129538 "LB_DOM_ATTRIBUTE"
+	public explicit_type ""
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl ""
+	idl_decl ""
+      end
+    end
+
+    class 128386 "lb_I_Object"cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "...e
+...sclass lb_I_Object:0:
+*
+ * \\brief Olt base class now declared as interface.
+ * \\deprecated use lb_I_Unknown.
+ "
+      operation 128258 "lb_I_Object"
+	cpp_inline protected explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${name}${(}${)}${volatile}${throw} {};
+"
+	
+	
+      end
+
+      operation 128386 "lb_I_Object"
+	cpp_inline protected explicit_return_type ""
+	nparams 1
+	  param in name "o" type class_ref 128386 // lb_I_Object
+	cpp_decl "    ${comment}${inline}${name}${(}const ${t0} & ${p0}${)}${volatile}${throw} {
+                //setName(o.getName());
+        };
+"
+	
+	
+      end
+
+      operation 128514 "~lb_I_Object"
+	cpp_virtual cpp_inline protected explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${virtual}${name}${(}${)}${volatile}${throw} {};
+"
+	
+	
+      end
+    end
+
+    class 128514 "lb_I_Locale"cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "...e
+...e
+*
+ * An attempt for i18n.
+ *
+ * It should be implemented as a singleton functor to be sure have the right
+ * language set once.
+ "
+      classrelation 128130 // <generalisation>
+	relation 128130 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 128130 // <generalisation>
+	  b parent class_ref 128130 // lb_I_Unknown
+      end
+    end
+
+    class 128642 "lb_I_String"cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment " Keyable interfaces
+...sclass lb_I_String:0:
+*
+ * \\brief A basic string class.
+ *
+ * This is a set of base interfaces that are compatible to the lb_I_Container interface.
+ "
+      classrelation 128258 // <generalisation>
+	relation 128258 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 128258 // <generalisation>
+	  b parent class_ref 128002 // lb_I_KeyBase
+      end
+
+      operation 128642 "lb_I_String"
+	cpp_inline protected explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${name}${(}${)}${volatile}${throw} {};
+"
+	
+	
+	comment "*
+	 * \\deprecated Pure abstract class has no ctor/dtor's
+	 "
+      end
+
+      operation 128770 "~lb_I_String"
+	cpp_virtual cpp_inline protected explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${virtual}${name}${(}${)}${volatile}${throw} {};
+"
+	
+	
+	comment "*
+	 * \\deprecated Pure abstract class has no ctor/dtor's
+	 "
+      end
+    end
+
+    class 128770 "lb_I_FileLocation"cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "...e
+...sclass lb_I_FileLocation:0:
+*
+ * \\brief A file location class.
+ *
+ * This is a set of base interfaces that are compatible to the lb_I_Container interface.
+ * The file location class is used to store the location of a file to distinguish from a normal
+ * string.
+ "
+      classrelation 128386 // <generalisation>
+	relation 128386 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 128386 // <generalisation>
+	  b parent class_ref 128002 // lb_I_KeyBase
+      end
+    end
+
+    class 128898 "lb_I_DirLocation"cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "...e
+...sclass lb_I_DirLocation:0:
+*
+ * \\brief A dir location class.
+ *
+ * This is a set of base interfaces that are compatible to the lb_I_Container interface.
+ * The dir location class is used to store file path and to distinguish from a normal
+ * string.
+ *
+ * It will be used in my lb_I_MetaApplication implementation to store a default directory
+ * for icon files.
+ "
+      classrelation 128514 // <generalisation>
+	relation 128514 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 128514 // <generalisation>
+	  b parent class_ref 128002 // lb_I_KeyBase
+      end
+    end
+
+    class 129026 "lb_I_Integer"cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "...e
+...sclass lb_I_Integer:0:
+*
+ * \\brief A basic integer class.
+ *
+ * This is a set of base interfaces that are compatible to the lb_I_Container interface.
+ "
+      classrelation 128642 // <generalisation>
+	relation 128642 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 128642 // <generalisation>
+	  b parent class_ref 128002 // lb_I_KeyBase
+      end
+
+      operation 128898 "lb_I_Integer"
+	cpp_inline protected explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${name}${(}${)}${volatile}${throw} {};
+"
+	
+	
+	comment "*
+	 * \\deprecated Pure abstract class has no ctor/dtor's
+	 "
+      end
+
+      operation 129026 "~lb_I_Integer"
+	cpp_virtual cpp_inline protected explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${virtual}${name}${(}${)}${volatile}${throw} {};
+"
+	
+	
+	comment "*
+	 * \\deprecated Pure abstract class has no ctor/dtor's
+	 "
+      end
+    end
+
+    class 129154 "lb_I_Boolean"cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "...e
+...sclass lb_I_Boolean:0:
+*
+ * \\brief A basic boolean class.
+ *
+ * This is a set of base interfaces that are compatible to the lb_I_Container interface.
+ "
+      classrelation 128770 // <generalisation>
+	relation 128770 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 128770 // <generalisation>
+	  b parent class_ref 128002 // lb_I_KeyBase
+      end
+
+      operation 129154 "lb_I_Boolean"
+	cpp_inline protected explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${name}${(}${)}${volatile}${throw} {};
+"
+	
+	
+	comment "*
+	 * \\deprecated Pure abstract class has no ctor/dtor's
+	 "
+      end
+
+      operation 129282 "~lb_I_Boolean"
+	cpp_virtual cpp_inline protected explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${virtual}${name}${(}${)}${volatile}${throw} {};
+"
+	
+	
+	comment "*
+	 * \\deprecated Pure abstract class has no ctor/dtor's
+	 "
+      end
+    end
+
+    class 129282 "lb_I_Long"cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "...e
+...sclass lb_I_Long:0:
+*
+ * \\brief A basic long class.
+ *
+ * This is a set of base interfaces that are compatible to the lb_I_Container interface.
+ "
+      classrelation 128898 // <generalisation>
+	relation 128898 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 128898 // <generalisation>
+	  b parent class_ref 128002 // lb_I_KeyBase
+      end
+
+      operation 129410 "lb_I_Long"
+	cpp_inline protected explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${name}${(}${)}${volatile}${throw} {};
+"
+	
+	
+      end
+
+      operation 129538 "~lb_I_Long"
+	cpp_virtual cpp_inline protected explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${virtual}${name}${(}${)}${volatile}${throw} {};
+"
+	
+	
+      end
+    end
+
+    class 129410 "lb_I_Parameter"cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "...e
+...sclass lb_I_Parameter:0:
+*
+ * \\brief A parameter interface. Set of parameter - value pairs.
+ *
+ * This interface is used in build up dynamic commands to be issued to
+ * event handlers (lb_I_EventHandler, lb_I_EvHandler).
+ "
+      classrelation 129026 // <generalisation>
+	relation 129026 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 129026 // <generalisation>
+	  b parent class_ref 128130 // lb_I_Unknown
+      end
+
+      operation 129666 "lb_I_Parameter"
+	cpp_inline protected explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${name}${(}${)}${volatile}${throw} {};
+"
+	
+	
+      end
+
+      operation 129794 "~lb_I_Parameter"
+	cpp_virtual cpp_inline protected explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${virtual}${name}${(}${)}${volatile}${throw} {};
+"
+	
+	
+      end
+    end
+
+    class 129538 "lb_I_Element"cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "...e
+...sclass lb_I_Element:0:"
+      classrelation 129154 // <generalisation>
+	relation 129154 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 129154 // <generalisation>
+	  b parent class_ref 128130 // lb_I_Unknown
+      end
+
+      operation 129922 "lb_I_Element"
+	cpp_inline protected explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${name}${(}${)}${volatile}${throw} {};
+"
+	
+	
+      end
+
+      operation 130050 "~lb_I_Element"
+	cpp_virtual cpp_inline protected explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${virtual}${name}${(}${)}${volatile}${throw} {};
+"
+	
+	
+      end
+    end
+
+    class 129666 "lb_I_Container"cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "...e
+...sclass lb_I_Container:0:
+* \\brief Storage for other objects.
+ *
+ * A container can store other objects. It is filled while making a copy of
+ * the object to be inserted! 
+ *
+ * Note: The documention is not complete!
+ "
+      classrelation 129282 // <generalisation>
+	relation 129282 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 129282 // <generalisation>
+	  b parent class_ref 128130 // lb_I_Unknown
+      end
+    end
+
+    class 129794 "lb_I_Module"cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "...e
+...e
+...sclass lb_I_Module:0:"
+      classrelation 129410 // <generalisation>
+	relation 129410 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 129410 // <generalisation>
+	  b parent class_ref 128130 // lb_I_Unknown
+      end
+
+      classrelation 129538 // <generalisation>
+	relation 129538 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 129538 // <generalisation>
+	  b parent class_ref 129922 // lb_I_Requestable
+      end
+
+      operation 130178 "lb_I_Module"
+	cpp_inline protected explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${name}${(}${)}${volatile}${throw} {};
+"
+	
+	
+      end
+
+      operation 130306 "~lb_I_Module"
+	cpp_virtual cpp_inline protected explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${virtual}${name}${(}${)}${volatile}${throw} {};
+"
+	
+	
+      end
+    end
+
+    class 129922 "lb_I_Requestable"cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "...e
+...sclass lb_I_Requestable:0:
+...sdocu  lb_I_Requestable:0:
+*
+ * \\deprecated Have lb_I_EventHandler for this.
+ *
+ * lb_I_Requestable is intented to implement a class that can be called
+ * for any requests. This may be the 'Meta' Application.
+ * The Meta Application did not need to provide an interface for dispatching.
+ * This is because, the client of Meta *must* not call any dispatchning -
+ * members.
+ 
+...e"
+    end
+
+    class 130050 "lb_I_Instance"cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "...e
+...sclass lb_I_Instance:0:"
+      classrelation 129666 // <generalisation>
+	relation 129666 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 129666 // <generalisation>
+	  b parent class_ref 128002 // lb_I_KeyBase
+      end
+
+      operation 130434 "lb_I_Instance"
+	cpp_inline protected explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${name}${(}${)}${volatile}${throw} {};
+"
+	
+	
+	comment "...sprotected:0:"
+      end
+
+      operation 130562 "~lb_I_Instance"
+	cpp_virtual cpp_inline protected explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${virtual}${name}${(}${)}${volatile}${throw} {};
+"
+	
+	
+      end
+    end
+
+    class 130178 "lb_I_InstanceReference"cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "...e
+...sclass lb_I_InstanceReference:0:"
+      classrelation 129794 // <generalisation>
+	relation 129794 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 129794 // <generalisation>
+	  b parent class_ref 128130 // lb_I_Unknown
+      end
+    end
+
+    class 130306 "lb_I_Log"cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "...e
+...sclass lb_I_Log:0:"
+      classrelation 129922 // <generalisation>
+	relation 129922 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 129922 // <generalisation>
+	  b parent class_ref 128130 // lb_I_Unknown
+      end
+
+      operation 130690 "lb_I_Log"
+	cpp_inline protected explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${name}${(}${)}${volatile}${throw} {};
+"
+	
+	
+	comment "...sprotected:0:"
+      end
+
+      operation 130818 "~lb_I_Log"
+	cpp_virtual cpp_inline protected explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${virtual}${name}${(}${)}${volatile}${throw} {};
+"
+	
+	
+      end
+    end
+
+    class 130434 "lb_I_Runnable"
+      abstract 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      classrelation 130050 // <generalisation>
+	relation 130050 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 130050 // <generalisation>
+	  b parent class_ref 128130 // lb_I_Unknown
+      end
+
+      operation 130946 "lb_I_Runnable"
+	cpp_inline protected explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${name}${(}${)}${volatile}${throw} {};
+"
+	
+	
+      end
+
+      operation 131074 "~lb_I_Runnable"
+	cpp_virtual cpp_inline protected explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${virtual}${name}${(}${)}${volatile}${throw} {};
+"
+	
+	
+      end
+
+      operation 131202 "run"
+	abstract cpp_virtual public explicit_return_type "lbErrCodes"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	
+	
+      end
+    end
+
+    class 130562 "lb_I_ZThread"
+      abstract 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      classrelation 130178 // <generalisation>
+	relation 130178 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 130178 // <generalisation>
+	  b parent class_ref 130434 // lb_I_Runnable
+      end
+
+      operation 131330 "lb_I_ZThread"
+	cpp_inline protected explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${name}${(}${)}${volatile}${throw} {};
+"
+	
+	
+      end
+
+      operation 131458 "~lb_I_ZThread"
+	cpp_virtual cpp_inline protected explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${virtual}${name}${(}${)}${volatile}${throw} {};
+"
+	
+	
+      end
+
+      operation 131586 "operator ->"
+	abstract cpp_virtual public return_type class_ref 130562 // lb_I_ZThread
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	
+	
+      end
+
+      operation 131714 "equals"
+	abstract const cpp_virtual public explicit_return_type "bool"
+	nparams 1
+	  param in name "t" type class_ref 130562 // lb_I_ZThread
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	
+	
+      end
+
+      operation 131842 "operator =="
+	abstract const cpp_virtual public explicit_return_type "bool"
+	nparams 1
+	  param in name "t" type class_ref 130562 // lb_I_ZThread
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	
+	
+      end
+
+      operation 131970 "kill"
+	abstract cpp_virtual public explicit_return_type "lbErrCodes"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	
+	
+      end
+
+      operation 132098 "join"
+	abstract cpp_virtual public explicit_return_type "lbErrCodes"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	
+	
+      end
+
+      operation 132226 "run"
+	abstract cpp_virtual public explicit_return_type "lbErrCodes"
+	nparams 1
+	  param inout name "target" type class_ref 130434 // lb_I_Runnable
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	
+	
+      end
+
+      operation 132354 "interrupt"
+	abstract cpp_virtual public explicit_return_type "lbErrCodes"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	
+	
+      end
+
+      operation 132482 "isInterrupted"
+	abstract cpp_virtual public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	
+	
+	comment " The set/getPriority functions are not implemented yet"
+      end
+
+      operation 132610 "isKilled"
+	abstract cpp_virtual public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	
+	
+      end
+
+      operation 132738 "isDaemon"
+	abstract cpp_virtual public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	
+	
+      end
+
+      operation 132866 "setDaemon"
+	abstract cpp_virtual public explicit_return_type "lbErrCodes"
+	nparams 1
+	  param in name "flag" explicit_type "bool"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	
+	
+      end
+
+      operation 132994 "setNotify"
+	abstract cpp_virtual public explicit_return_type "lbErrCodes"
+	nparams 1
+	  param in name "flag" explicit_type "bool"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	
+	
+      end
+
+      operation 133122 "wantNotify"
+	abstract cpp_virtual public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	
+	
+      end
+
+      operation 133250 "sleep"
+	abstract cpp_virtual public explicit_return_type "lbErrCodes"
+	nparams 1
+	  param in name "s" explicit_type "ulong"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	
+	
+      end
+
+      operation 133378 "yield"
+	abstract cpp_virtual public explicit_return_type "lbErrCodes"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	
+	
+      end
+    end
+
+    class 130690 "lb_I_Thread"cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "...e
+...sclass lb_I_Thread:0:"
+      classrelation 130306 // <generalisation>
+	relation 130306 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 130306 // <generalisation>
+	  b parent class_ref 128130 // lb_I_Unknown
+      end
+
+      operation 133506 "lb_I_Thread"
+	cpp_inline protected explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${name}${(}${)}${volatile}${throw} {};
+"
+	
+	
+      end
+
+      operation 133634 "~lb_I_Thread"
+	cpp_virtual cpp_inline protected explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${virtual}${name}${(}${)}${volatile}${throw} {};
+"
+	
+	
+      end
+
+      operation 133762 "lb_I_Thread"
+	cpp_inline private explicit_return_type ""
+	nparams 1
+	  param in name "" type class_ref 130690 // lb_I_Thread
+	cpp_decl "    ${comment}${inline}${name}${(}const ${t0} & ${p0}${)}${volatile}${throw} {};
+"
+	
+	
+	comment " no copy ctor/assignment operator"
+      end
+
+      operation 133890 "operator ="
+	cpp_inline private return_type class_ref 130690 // lb_I_Thread
+	nparams 1
+	  param in name "" type class_ref 130690 // lb_I_Thread
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} & ${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${abstract} { return *this; };
+"
+	
+	
+      end
+    end
+
+    class 130818 "lb_I_Mutex"
+      abstract 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "...e
+...sclass lb_I_Mutex:0:"
+      operation 134018 "lb_I_Mutex"
+	cpp_inline protected explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${name}${(}${)}${volatile}${throw} {};
+"
+	
+	
+      end
+
+      operation 134146 "~lb_I_Mutex"
+	cpp_virtual cpp_inline protected explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${virtual}${name}${(}${)}${volatile}${throw} {};
+"
+	
+	
+      end
+
+      operation 134274 "createMutex"
+	abstract cpp_virtual public explicit_return_type "void"
+	nparams 1
+	  param in name "name" explicit_type "int"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	
+	
+      end
+
+      operation 134402 "deleteMutex"
+	abstract cpp_virtual public explicit_return_type "void"
+	nparams 1
+	  param in name "name" explicit_type "int"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	
+	
+      end
+
+      operation 134530 "enter"
+	abstract cpp_virtual public explicit_return_type "void"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	
+	
+      end
+
+      operation 134658 "release"
+	abstract cpp_virtual public explicit_return_type "void"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	
+	
+      end
+    end
+
+    class 130946 "lb_I_CriticalSection"
+      abstract 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "...sclass lb_I_CriticalSection:0:"
+      operation 134786 "lb_I_CriticalSection"
+	cpp_inline protected explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${name}${(}${)}${volatile}${throw} {};
+"
+	
+	
+      end
+
+      operation 134914 "~lb_I_CriticalSection"
+	cpp_virtual cpp_inline protected explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${virtual}${name}${(}${)}${volatile}${throw} {};
+"
+	
+	
+      end
+
+      operation 135042 "enter"
+	abstract cpp_virtual protected explicit_return_type "lbErrCodes"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	
+	
+      end
+
+      operation 135170 "leave"
+	abstract cpp_virtual protected explicit_return_type "lbErrCodes"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	
+	
+      end
+
+      classrelation 130434 // <dependency>
+	relation 130434 -_->
+	  stereotype "friend"
+	  a default
+	    cpp default "Generated"
+	    classrelation_ref 130434 // <dependency>
+	  b parent class_ref 131074 // lb_I_Lock
+      end
+    end
+
+    class 131074 "lb_I_Lock"cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "...e
+...sclass lb_I_Lock:0:"
+      operation 135298 "lb_I_Lock"
+	cpp_inline protected explicit_return_type ""
+	nparams 2
+	  param inout name "_cso" type class_ref 130946 // lb_I_CriticalSection
+	  param inout name "_name" explicit_type "char"
+	cpp_decl "    ${comment}${inline}${name}${(}${t0} * & ${p0}, ${t1} * ${p1}${)}${volatile}${throw} {};
+"
+	
+	
+      end
+
+      operation 135426 "~lb_I_Lock"
+	cpp_virtual cpp_inline protected explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${virtual}${name}${(}${)}${volatile}${throw} {};
+"
+	
+	
+      end
+
+      operation 135554 "lb_I_Lock"
+	cpp_inline protected explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${name}${(}${)}${volatile}${throw} {};
+"
+	
+	
+      end
+
+      operation 135682 "lb_I_Lock"
+	cpp_inline protected explicit_return_type ""
+	nparams 1
+	  param in name "" type class_ref 131074 // lb_I_Lock
+	cpp_decl "    ${comment}${inline}${name}${(}const ${t0} & ${p0}${)}${volatile}${throw} {};
+"
+	
+	
+      end
+    end
+
+    class 131202 "lb_I_Query"cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "...sclass lb_I_Query:0:
+*
+ * \\brief A SQL Query interface.
+ *
+ * This is a basic interface to issue SQL queries. It should provide cursor functionality,
+ * because it has first, next, previous and last for navigation in the result of a query.
+ "
+      classrelation 130562 // <generalisation>
+	relation 130562 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 130562 // <generalisation>
+	  b parent class_ref 128130 // lb_I_Unknown
+      end
+
+      operation 135810 "lb_I_Query"
+	cpp_inline protected explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${name}${(}${)}${volatile}${throw} {};
+"
+	
+	
+	comment "*
+	 * \\deprecated Pure abstract class has no ctor/dtor's
+	 "
+      end
+
+      operation 135938 "~lb_I_Query"
+	cpp_virtual cpp_inline protected explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${virtual}${name}${(}${)}${volatile}${throw} {};
+"
+	
+	
+	comment "*
+	 * \\deprecated Pure abstract class has no ctor/dtor's
+	 "
+      end
+
+      class 131330 "lbDBColumnTypes"
+	visibility public stereotype "enum"
+	cpp_decl "${comment}enum ${name} {
+${items}
+};
+"
+	java_decl ""
+	idl_decl ""
+	explicit_switch_type ""
+	
+	attribute 129666 "lbDBColumnBit"
+	  public explicit_type ""
+	  cpp_decl "  ${name}${value},${comment}"
+	  java_decl ""
+	  idl_decl ""
+	end
+
+	attribute 129794 "lbDBColumnChar"
+	  public explicit_type ""
+	  cpp_decl "  ${name}${value},${comment}"
+	  java_decl ""
+	  idl_decl ""
+	end
+
+	attribute 129922 "lbDBColumnInteger"
+	  public explicit_type ""
+	  cpp_decl "  ${name}${value},${comment}"
+	  java_decl ""
+	  idl_decl ""
+	end
+
+	attribute 130050 "lbDBColumnBigInteger"
+	  public explicit_type ""
+	  cpp_decl "  ${name}${value},${comment}"
+	  java_decl ""
+	  idl_decl ""
+	end
+
+	attribute 130178 "lbDBColumnBinary"
+	  public explicit_type ""
+	  cpp_decl "  ${name}${value},${comment}"
+	  java_decl ""
+	  idl_decl ""
+	end
+
+	attribute 130306 "lbDBColumnDate"
+	  public explicit_type ""
+	  cpp_decl "  ${name}${value},${comment}"
+	  java_decl ""
+	  idl_decl ""
+	end
+
+	attribute 130434 "lbDBColumnFloat"
+	  public explicit_type ""
+	  cpp_decl "  ${name}${value},${comment}"
+	  java_decl ""
+	  idl_decl ""
+	end
+
+	attribute 130562 "lbDBColumnUnknown"
+	  public explicit_type ""
+	  cpp_decl "  ${name}${value},${comment}"
+	  java_decl ""
+	  idl_decl ""
+	end
+      end
+
+      class 131458 "lbDBCaseSensity"
+	visibility public stereotype "enum"
+	cpp_decl "${comment}enum ${name} {
+${items}
+};
+"
+	java_decl ""
+	idl_decl ""
+	explicit_switch_type ""
+	
+	attribute 130690 "lbDBCaseLower"
+	  public explicit_type ""
+	  cpp_decl "  ${name}${value},${comment}"
+	  java_decl ""
+	  idl_decl ""
+	end
+
+	attribute 130818 "lbDBCaseUpper"
+	  public explicit_type ""
+	  cpp_decl "  ${name}${value},${comment}"
+	  java_decl ""
+	  idl_decl ""
+	end
+
+	attribute 130946 "lbDBCaseMixed"
+	  public explicit_type ""
+	  cpp_decl "  ${name}${value},${comment}"
+	  java_decl ""
+	  idl_decl ""
+	end
+
+	attribute 131074 "lbDBCaseSensibility"
+	  public explicit_type ""
+	  cpp_decl "  ${name}${value},${comment}"
+	  java_decl ""
+	  idl_decl ""
+	end
+      end
+    end
+
+    class 131586 "lb_I_BoundColumn"cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "...e
+...sclass lb_I_BoundColumn:0:
+*
+ * \\brief A single bound column, such as a text field on a form
+ *
+ * A bounf column contains one entity of a database column.
+ "
+      classrelation 130690 // <generalisation>
+	relation 130690 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 130690 // <generalisation>
+	  b parent class_ref 128130 // lb_I_Unknown
+      end
+
+      operation 136066 "lb_I_BoundColumn"
+	cpp_inline protected explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${name}${(}${)}${volatile}${throw} {};
+"
+	
+	
+	comment "*
+	 * \\deprecated Pure abstract class has no ctor/dtor's
+	 "
+      end
+
+      operation 136194 "~lb_I_BoundColumn"
+	cpp_virtual cpp_inline protected explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${virtual}${name}${(}${)}${volatile}${throw} {};
+"
+	
+	
+	comment "*
+         * \\deprecated Pure abstract class has no ctor/dtor's
+         "
+      end
+    end
+
+    class 131714 "lb_I_MVC_View"cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "...e
+...sclass lb_I_MVC_View:0:"
+      classrelation 130818 // <generalisation>
+	relation 130818 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 130818 // <generalisation>
+	  b parent class_ref 128130 // lb_I_Unknown
+      end
+
+      operation 136322 "lb_I_MVC_View"
+	cpp_inline protected explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${name}${(}${)}${volatile}${throw} {};
+"
+	
+	
+      end
+
+      operation 136450 "~lb_I_MVC_View"
+	cpp_virtual cpp_inline protected explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${virtual}${name}${(}${)}${volatile}${throw} {};
+"
+	
+	
+      end
+    end
+
+    class 131842 "lb_I_Connection"cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "...e
+...e
+...sclass lb_I_Connection:0:
+*
+ * \\brief This is the storage for one connection per db name and user name.
+ "
+      classrelation 130946 // <generalisation>
+	relation 130946 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 130946 // <generalisation>
+	  b parent class_ref 128130 // lb_I_Unknown
+      end
+    end
+
+    class 131970 "lb_I_Database"cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "...e
+...sclass lb_I_Database:0:
+*
+ * \\brief The main class for operating with databases.
+ *
+ * This interface is used as the main access interface for operating with
+ * databases.
+ "
+      classrelation 131074 // <generalisation>
+	relation 131074 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 131074 // <generalisation>
+	  b parent class_ref 128130 // lb_I_Unknown
+      end
+
+      operation 136578 "lb_I_Database"
+	cpp_inline protected explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${name}${(}${)}${volatile}${throw} {};
+"
+	
+	
+	comment "*
+	 * \\deprecated Pure abstract class has no ctor/dtor's
+	 "
+      end
+
+      operation 136706 "~lb_I_Database"
+	cpp_virtual cpp_inline protected explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${virtual}${name}${(}${)}${volatile}${throw} {};
+"
+	
+	
+	comment "*
+	 * \\deprecated Pure abstract class has no ctor/dtor's
+	 "
+      end
+    end
+
+    class 132098 "lb_I_DatabaseForm"cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "*
+ * \\brief An attempt for a database form interface.
+ "
+      classrelation 131202 // <generalisation>
+	relation 131202 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 131202 // <generalisation>
+	  b parent class_ref 132226 // lb_I_Form
+      end
+    end
+
+    class 132226 "lb_I_Form"cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "...sclass lb_I_Form:0:
+*
+ * \\brief Base for formulars.
+ *
+ * This class enables you to create formulars with any layout caractaristics.
+ "
+      classrelation 131714 // <generalisation>
+	relation 131714 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 131714 // <generalisation>
+	  b parent class_ref 132738 // lb_I_Window
+      end
+
+      classrelation 131842 // <generalisation>
+	relation 131842 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 131842 // <generalisation>
+	  b parent class_ref 132866 // lb_I_EventHandler
+      end
+    end
+
+    class 132354 "lb_I_DatabaseReport"cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "...e
+...e
+...sclass lb_I_DatabaseReport:0:
+*
+ * \\brief An attempt for a report based on database queries.
+ *
+ * Based on the wxReportWriter project from http://www.daily.de/RepWrt/,
+ * this is an adaption to my framework.
+ "
+      classrelation 131330 // <generalisation>
+	relation 131330 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 131330 // <generalisation>
+	  b parent class_ref 128130 // lb_I_Unknown
+      end
+    end
+
+    class 132482 "lb_I_MasterDetailFormDefinition"cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "...e
+...sclass lb_I_MasterDetailFormDefinition:0:
+*
+ * \\brief Definition of a master to detail relation.
+ "
+      classrelation 131458 // <generalisation>
+	relation 131458 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 131458 // <generalisation>
+	  b parent class_ref 128130 // lb_I_Unknown
+      end
+    end
+
+    class 132610 "LB_PACKET_TYPE"
+       stereotype "enum"
+      cpp_decl "${comment}enum ${name} {
+${items}
+};
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "...senum LB_PACKET_TYPE:0:"
+      attribute 131202 "PACKET_LB_INVALIDTYPE"
+	public explicit_type ""
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl ""
+	idl_decl ""
+      end
+
+      attribute 131330 "PACKET_LB_INT"
+	public explicit_type ""
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl ""
+	idl_decl ""
+      end
+
+      attribute 131458 "PACKET_LB_CHAR"
+	public explicit_type ""
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl ""
+	idl_decl ""
+      end
+
+      attribute 131586 "PACKET_LB_SHORT"
+	public explicit_type ""
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl ""
+	idl_decl ""
+      end
+
+      attribute 131714 "PACKET_LB_LONG"
+	public explicit_type ""
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl ""
+	idl_decl ""
+      end
+
+      attribute 131842 "PACKET_LB_USHORT"
+	public explicit_type ""
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl ""
+	idl_decl ""
+      end
+
+      attribute 131970 "PACKET_LB_ULONG"
+	public explicit_type ""
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl ""
+	idl_decl ""
+      end
+
+      attribute 132098 "PACKET_LB_VOID"
+	public explicit_type ""
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl ""
+	idl_decl ""
+      end
+
+      attribute 132226 "PACKET_LB_OBJECT"
+	public explicit_type ""
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl ""
+	idl_decl ""
+      end
+    end
+
+    class 132738 "lb_I_Window"cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "* \\brief Base class for all windows and controls.
+ *
+ * This is an attempt to have an universal base interface for all windows like it
+ * is in wxWidgets and other frameworks.
+ "
+      classrelation 131586 // <generalisation>
+	relation 131586 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 131586 // <generalisation>
+	  b parent class_ref 128130 // lb_I_Unknown
+      end
+    end
+
+    class 132866 "lb_I_EventHandler"cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "...e
+...e
+...sclass lb_I_EventHandler:0:
+*
+ * \\brief An event handler class. It handles one or more events.
+ *
+ * The event handler registers all it's handlers by get a call of registerEventHandler.
+ * It get's an external dispatcher, to don't need to provide it's own dispatcher.
+ "
+    end
+
+    class 132994 "lb_I_GUIApp"cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "...e"
+    end
+
+    class 133122 "lb_I_GUI"cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "...sclass lb_I_GUI:0:
+*
+ * It seems, that this is the factory class for any GUI elements. It also knows about any instance.
+ "
+      classrelation 131970 // <generalisation>
+	relation 131970 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 131970 // <generalisation>
+	  b parent class_ref 128130 // lb_I_Unknown
+      end
+    end
+
+    class 133250 "lb_I_wxGUI"cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "...e
+...sclass lb_I_wxGUI:0:"
+      classrelation 132098 // <generalisation>
+	relation 132098 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 132098 // <generalisation>
+	  b parent class_ref 133122 // lb_I_GUI
+      end
+    end
+
+    class 133378 "lb_I_Control"cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "...e
+* \\brief Base class for a control.
+ *
+ "
+      classrelation 132226 // <generalisation>
+	relation 132226 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 132226 // <generalisation>
+	  b parent class_ref 132738 // lb_I_Window
+      end
+    end
+
+    class 133506 "lb_I_LogonPage"cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+    end
+
+    class 133634 "lb_I_AppSelectPage"cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+    end
+
+    class 133762 "lb_I_LogonHandler"cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+    end
+
+    class 133890 "lb_I_Aspect"cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "* \\brief Visitor base for all my interfaces.
+ *
+ * Implement a new class for a new operation such as save/load to/from file.
+ *
+ "
+      classrelation 132354 // <generalisation>
+	relation 132354 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 132354 // <generalisation>
+	  b parent class_ref 128130 // lb_I_Unknown
+      end
+    end
+
+    class 134018 "lb_I_FileOperation"cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "virtual ~Aspect(){} 
+* \\brief Base for any file operation.
+ *
+ * To be capable to operate on files, You need to open that file and close it.
+ "
+      classrelation 132482 // <generalisation>
+	relation 132482 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 132482 // <generalisation>
+	  b parent class_ref 133890 // lb_I_Aspect
+      end
+
+      operation 136834 "lb_I_FileOperation"
+	cpp_inline protected explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${name}${(}${)}${volatile}${throw} {};
+"
+	
+	
+      end
+
+      operation 136962 "~lb_I_FileOperation"
+	cpp_virtual cpp_inline protected explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${virtual}${name}${(}${)}${volatile}${throw} {};
+"
+	
+	
+      end
+    end
+
+    class 134146 "lb_I_DatabaseOperation"cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      classrelation 132610 // <generalisation>
+	relation 132610 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 132610 // <generalisation>
+	  b parent class_ref 133890 // lb_I_Aspect
+      end
+
+      operation 137090 "lb_I_DatabaseOperation"
+	cpp_inline protected explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${name}${(}${)}${volatile}${throw} {};
+"
+	
+	
+      end
+
+      operation 137218 "~lb_I_DatabaseOperation"
+	cpp_virtual cpp_inline protected explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${virtual}${name}${(}${)}${volatile}${throw} {};
+"
+	
+	
+      end
+    end
+
+    class 134274 "lb_I_wxFrame"
+      abstract 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "*
+ * \\brief Peer interfaces to its wx companions.
+ *
+ * Don't know, if this is really good. The derived class must be predefined and therefore
+ * The derived class name is predefined.
+ *
+ * If others like to write another GUI wrapper, say, with MFC, they need to name their
+ * class to this predefined name.
+ "
+      classrelation 132738 // <generalisation>
+	relation 132738 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 132738 // <generalisation>
+	  b parent class_ref 128130 // lb_I_Unknown
+      end
+
+      classrelation 132866 // <generalisation>
+	relation 132866 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 132866 // <generalisation>
+	  b parent class_ref 134402 // lb_I_EventSink
+      end
+
+      operation 137346 "getPeer"
+	abstract cpp_virtual public explicit_return_type "lb_wxFrame"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	
+	
+      end
+    end
+
+    class 134402 "lb_I_EventSink"cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "...e
+...sclass lb_I_EventSink:0:
+/ A Frame ??"
+    end
+
+    class 134530 "lb_I_Attribute"cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "...sclass lb_I_Attribute:0:"
+      classrelation 132994 // <generalisation>
+	relation 132994 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 132994 // <generalisation>
+	  b parent class_ref 128130 // lb_I_Unknown
+      end
+
+      operation 137474 "lb_I_Attribute"
+	cpp_inline protected explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${name}${(}${)}${volatile}${throw} {};
+"
+	
+	
+      end
+
+      operation 137602 "~lb_I_Attribute"
+	cpp_virtual cpp_inline protected explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${virtual}${name}${(}${)}${volatile}${throw} {};
+"
+	
+	
+      end
+    end
+
+    class 134658 "lb_I_ConfigObject"cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "...sWrapper for some DOM interfaces:0:
+...e
+...sclass lb_I_ConfigObject:0:"
+      classrelation 133122 // <generalisation>
+	relation 133122 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 133122 // <generalisation>
+	  b parent class_ref 128130 // lb_I_Unknown
+      end
+
+      operation 137730 "lb_I_ConfigObject"
+	cpp_inline protected explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${name}${(}${)}${volatile}${throw} {};
+"
+	
+	
+	comment "...sprotected ctor\\39\\s and dtor\\39\\s:0:"
+      end
+
+      operation 137858 "~lb_I_ConfigObject"
+	cpp_virtual cpp_inline protected explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${virtual}${name}${(}${)}${volatile}${throw} {};
+"
+	
+	
+      end
+
+      classrelation 133250 // <dependency>
+	relation 133250 -_->
+	  stereotype "friend"
+	  a default
+	    cpp default "Generated"
+	    classrelation_ref 133250 // <dependency>
+	  b parent class_ref 134786 // lb_I_XMLConfig
+      end
+    end
+
+    class 134786 "lb_I_XMLConfig"cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "...e
+...sclass lb_I_XMLConfig:0:"
+      classrelation 133378 // <generalisation>
+	relation 133378 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 133378 // <generalisation>
+	  b parent class_ref 128130 // lb_I_Unknown
+      end
+
+      operation 137986 "lb_I_XMLConfig"
+	cpp_inline protected explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${name}${(}${)}${volatile}${throw} {};
+"
+	
+	
+      end
+
+      operation 138114 "~lb_I_XMLConfig"
+	cpp_virtual cpp_inline protected explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${virtual}${name}${(}${)}${volatile}${throw} {};
+"
+	
+	
+      end
+    end
+
+    class 134914 "lb_I_FunctorEntity"cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "...e
+...sclass lb_I_FunctorEntity:0:
+*
+ * This interface will replace the recent approach of getting functors from
+ * interfaces. This is because I have produced a big memory leak. The best winn
+ * be to build a new repository code base.
+ "
+      classrelation 133506 // <generalisation>
+	relation 133506 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 133506 // <generalisation>
+	  b parent class_ref 128130 // lb_I_Unknown
+      end
+
+      operation 138242 "lb_I_FunctorEntity"
+	cpp_inline protected explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${name}${(}${)}${volatile}${throw} {};
+"
+	
+	
+      end
+
+      operation 138370 "~lb_I_FunctorEntity"
+	cpp_virtual cpp_inline protected explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${virtual}${name}${(}${)}${volatile}${throw} {};
+"
+	
+	
+      end
+
+      classrelation 133634 // <dependency>
+	relation 133634 -_->
+	  stereotype "friend"
+	  a default
+	    cpp default "Generated"
+	    classrelation_ref 133634 // <dependency>
+	  b parent class_ref 135042 // lb_I_InterfaceRepository
+      end
+    end
+
+    class 135042 "lb_I_InterfaceRepository"cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "...e
+...sclass lb_I_InterfaceRepository:0:"
+      classrelation 133762 // <generalisation>
+	relation 133762 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 133762 // <generalisation>
+	  b parent class_ref 128130 // lb_I_Unknown
+      end
+
+      operation 138498 "lb_I_InterfaceRepository"
+	cpp_inline protected explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${name}${(}${)}${volatile}${throw} {};
+"
+	
+	
+      end
+
+      operation 138626 "~lb_I_InterfaceRepository"
+	cpp_virtual cpp_inline protected explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${virtual}${name}${(}${)}${volatile}${throw} {};
+"
+	
+	
+      end
+    end
+
+    class 135170 "byte"
+       stereotype "typedef"
+       explicit_base_type "unsigned short"
+      cpp_decl "${comment}typedef ${type} ${name};
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+    end
+
+    class 135298 "u_short"
+       stereotype "typedef"
+       explicit_base_type "unsigned short"
+      cpp_decl "${comment}typedef ${type} ${name};
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+    end
+
+    class 135426 "DWORD"
+       stereotype "typedef"
+       explicit_base_type "unsigned long"
+      cpp_decl "${comment}typedef ${type} ${name};
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+    end
+
+    class 135554 "LB_DATA"
+       stereotype "typedef"
+       explicit_base_type "unsigned short"
+      cpp_decl "${comment}typedef ${type} ${name};
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+    end
+
+    class 135682 "lbProtocolCallback"
+       stereotype "typedef"
+       explicit_base_type "lbErrCodes"
+      cpp_decl "${comment}typedef ${type}(lb_I_ProtocolTarget::* ${name})( lb_I_Transfer_Data const &, lb_I_Transfer_Data&);
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "...e
+...scallback \\47\\ handler typedefs:0:
+*
+ * This is a base class for all callback able objects
+ 
+/////////////////////////////////////////////////////////////
+ Type for lb protocol callback functions. This should be an interface."
+    end
+
+    class 135810 "lbMemberCallback"
+       stereotype "typedef"
+       explicit_base_type "lbErrCodes"
+      cpp_decl "${comment}typedef ${type}(lb_I_CallbackTarget::* ${name})( const char* handlername, lb_I_Transfer_Data&);
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+    end
+
+    class 135938 "lb_I_EventCallback"
+       stereotype "typedef"
+       explicit_base_type "lbErrCodes"
+      cpp_decl "${comment}typedef ${type}(lb_I_EventSink::* ${name})(lb_I_Unknown* question, lb_I_Unknown* answer);
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+    end
+
+    class 136066 "LB_STDCALL"
+       stereotype "typedef"
+       explicit_base_type "lbErrCodes"
+      cpp_decl "${comment}typedef ${type}( ${name} lb_I_EventHandler::*lbEvHandler)(lb_I_Unknown* uk);
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+    end
+
+    class 136194 "lbEvHandler"
+       stereotype "typedef"
+       explicit_base_type "lbErrCodes"
+      cpp_decl "${comment}typedef ${type}( lb_I_EventHandler::* ${name})(lb_I_Unknown* uk);
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+    end
+
+    class 136322 "miniLong"cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      operation 138754 "miniLong"
+	cpp_inline public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${name}${(}${)}${volatile}${throw} {
+		l = 0;
+	};
+"
+	
+	
+      end
+
+      operation 138882 "miniLong"
+	cpp_inline public explicit_return_type ""
+	nparams 1
+	  param in name "_l" explicit_type "long"
+	cpp_decl "    ${comment}${inline}${name}${(}${t0} ${p0}${)}${volatile}${throw} {
+		l = _l;
+	};
+"
+	
+	
+      end
+
+      operation 139010 "miniLong"
+	cpp_inline public explicit_return_type ""
+	nparams 1
+	  param in name "_l" type class_ref 136322 // miniLong
+	cpp_decl "    ${comment}${inline}${name}${(}const ${t0} & ${p0}${)}${volatile}${throw} {
+		l = _l.l;
+	};
+"
+	
+	
+      end
+
+      operation 139138 "~miniLong"
+	cpp_inline public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${virtual}${name}${(}${)}${volatile}${throw} {
+	};
+"
+	
+	
+      end
+
+      operation 139266 "operator long"
+	cpp_inline public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${name}${(}${)}${const}${volatile}${throw}${abstract} { return l; };
+"
+	
+	
+      end
+
+      operation 139394 "get"
+	cpp_inline public explicit_return_type "long"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract} { return l; };
+"
+	
+	
+      end
+
+      operation 139522 "set"
+	cpp_inline public explicit_return_type "long"
+	nparams 1
+	  param in name "_l" explicit_type "long"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract} { l = _l; };
+"
+	
+	
+      end
+
+      attribute 132354 "l"
+	public explicit_type "long"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	idl_decl ""
+      end
+    end
+
+    class 136450 "miniString"cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      operation 139650 "miniString"
+	cpp_inline public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${name}${(}${)}${volatile}${throw} {
+		ptr = (char*) malloc(1);
+		ptr[0] = 0;
+	};
+"
+	
+	
+      end
+
+      operation 139778 "~miniString"
+	cpp_virtual cpp_inline public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${virtual}${name}${(}${)}${volatile}${throw} {
+		if (ptr) free(ptr);
+	};
+"
+	
+	
+      end
+
+      operation 139906 "get"
+	cpp_inline public explicit_return_type "char"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}${)}${const}${volatile}${throw}${abstract} {
+		return ptr;
+	};
+"
+	
+	
+      end
+
+      operation 140034 "set"
+	cpp_inline public explicit_return_type "void"
+	nparams 1
+	  param inout name "p" explicit_type "char"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract} {
+		if (p) {
+			if (ptr) free(ptr);
+			
+			ptr = (char*) malloc(strlen(p)+1);
+			ptr[0] = 0;
+			strcpy(ptr, p);
+		}
+	};
+"
+	
+	
+      end
+
+      attribute 132482 "ptr"
+	protected explicit_type "char"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	java_decl ""
+	idl_decl ""
+      end
+    end
+
+    class 136578 "LB_FUNCTORCALL"
+       stereotype "typedef"
+       explicit_base_type "lbErrCodes"
+      cpp_decl "${comment}typedef ${type}( ${name} *T_pLB_GET_UNKNOWN_INSTANCE) (lb_I_Unknown**, lb_I_Module* m, char* file, int line);
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+    end
+
+    class 136706 "lb_I_Reference"cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      classrelation 133890 // <generalisation>
+	relation 133890 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 133890 // <generalisation>
+	  b parent class_ref 128130 // lb_I_Unknown
+      end
+    end
+
+    class 136834 "lb_I_gcManager"
+      abstract 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "...e
+...sclass lb_I_gcManager:0:
+*
+ * \\brief An attempt to create garbage collection classes.
+ "
+      operation 140290 "lb_I_gcManager"
+	cpp_inline protected explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${name}${(}${)}${volatile}${throw} {};
+"
+	
+	
+      end
+
+      operation 140418 "~lb_I_gcManager"
+	cpp_virtual cpp_inline protected explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${virtual}${name}${(}${)}${volatile}${throw} {};
+"
+	
+	
+      end
+
+      operation 140546 "toTrash"
+	abstract cpp_virtual public explicit_return_type "lbErrCodes"
+	nparams 1
+	  param inout name "inst" type class_ref 128130 // lb_I_Unknown
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	
+	
+      end
+    end
+
+    class 136962 "lb_I_Exception"
+      abstract 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "...e
+ What about exceptions ?
+...sclass lb_I_Exception:0:
+*
+ * \\brief An attempt for exceptions.
+ "
+      operation 140674 "getMessage"
+	abstract cpp_virtual public explicit_return_type "lbErrCodes"
+	nparams 1
+	  param inout name "msg" explicit_type "char"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	
+	
+      end
+    end
+
+    class 137090 "lb_I_ErrorDescription"
+      abstract 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "...e
+...sclass lb_I_ErrorDescription:0:
+*
+ * \\brief An attempt for error descriptions.
+ "
+      operation 140802 "getLastError"
+	abstract cpp_virtual public explicit_return_type "lbErrCodes"
+	nparams 2
+	  param inout name "description" explicit_type "char"
+	  param in name "len" explicit_type "int"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}, ${t1} ${p1}${)}${const}${volatile}${throw}${abstract};
+"
+	
+	
+	comment " Every interface may produce errors"
+      end
+    end
+
+    class 137218 "lb_I_CallbackManager"
+      abstract 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "...e
+...sclass lb_I_CallbackManager:0:
+* \\brief An attempt for registering callbacks.
+ "
+      operation 140930 "addCallbackHandler"
+	abstract cpp_virtual public explicit_return_type "lbErrCodes"
+	nparams 2
+	  param in name "handlername" explicit_type "char"
+	  param in name "cbFn" type class_ref 135810 // lbMemberCallback
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} * ${p0}, ${t1} ${p1}${)}${const}${volatile}${throw}${abstract};
+"
+	
+	
+	comment "...sdocu:0:
+*
+	 * Implement this in your class implementing callback handling
+	 
+...e"
+      end
+
+      operation 141058 "delCallbackHandler"
+	abstract cpp_virtual public explicit_return_type "lbErrCodes"
+	nparams 1
+	  param in name "handlername" explicit_type "char"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	
+	
+      end
+    end
+
+    class 137346 "lb_I_CallbackDispatcher"
+      abstract 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "...e
+...sclass lb_I_CallbackDispatcher dispatches over names:0:
+* \\brief An attempt to dispatch a request.
+ "
+      operation 141186 "dispatch"
+	abstract cpp_virtual public explicit_return_type "lbErrCodes"
+	nparams 2
+	  param in name "request" explicit_type "char"
+	  param inout name "result" type class_ref 137474 // lb_I_Transfer_Data
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} * ${p0}, ${t1} & ${p1}${)}${const}${volatile}${throw}${abstract};
+"
+	
+	
+      end
+    end
+
+    class 137474 "lb_I_Transfer_Data"cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+    end
+
+    class 137602 "lb_I_CallbackTarget"
+      abstract 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "...e
+...sclass lb_I_CallbackTarget:0:
+* \\brief An attempt to let classes register their callbacks.
+ "
+      operation 141314 "registerCallbacks"
+	abstract cpp_virtual public explicit_return_type "lbErrCodes"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	
+	
+	comment "...sdocu:0:
+*
+	 * Implement this in the derived class for your functions
+	 * to be called back.
+	 
+...e"
+      end
+    end
+
+    class 137730 "lb_I_ProtocolManager"
+      abstract 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "...e
+...sdocu:0:
+*
+ * This interface must be used to register or deregister
+ * protocol callbacks, if an implementation is a callback target.
+ 
+...e
+...sclass lb_I_ProtocolManager:0:
+* \\brief An attempt for a protocol based callback manager.
+ "
+      operation 141442 "addProtocolHandler"
+	abstract cpp_virtual public explicit_return_type "lbErrCodes"
+	nparams 2
+	  param in name "handlername" explicit_type "char"
+	  param in name "cbFn" type class_ref 135682 // lbProtocolCallback
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} * ${p0}, ${t1} ${p1}${)}${const}${volatile}${throw}${abstract};
+"
+	
+	
+	comment "...sdocu:0:
+*
+	 * Implement this in your class implementing callback handling
+	 
+...e"
+      end
+
+      operation 141570 "delProtocolHandler"
+	abstract cpp_virtual public explicit_return_type "lbErrCodes"
+	nparams 1
+	  param in name "handlername" explicit_type "char"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} * ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	
+	
+      end
+    end
+
+    class 137858 "lb_I_ProtocolDispatcher"
+      abstract 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "...e
+...sclass lb_I_ProtocolDispatcher dispatches over protocol haeder:0:
+* \\brief An attempt for a protocol based dispatcher.
+ "
+      operation 141698 "dispatch"
+	abstract cpp_virtual public explicit_return_type "lbErrCodes"
+	nparams 2
+	  param in name "request" type class_ref 137474 // lb_I_Transfer_Data
+	  param inout name "result" type class_ref 137474 // lb_I_Transfer_Data
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} & ${p0}, ${t1} & ${p1}${)}${const}${volatile}${throw}${abstract};
+"
+	
+	
+      end
+    end
+
+    class 137986 "lb_I_ProtocolTarget"
+      abstract 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "...e
+...sdocu:0:
+*
+ * This is used by a server instance, that implements some protocols.
+ 
+...e
+...sclass lb_I_ProtocolTarget:0:
+* \\brief An attempt for a protocol based callback handler.
+ "
+      operation 141826 "registerProtocols"
+	abstract cpp_virtual public explicit_return_type "lbErrCodes"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	
+	
+	comment "...sdocu:0:
+*
+	 * Implement this in the derived class for your functions
+	 * to be called back.
+	 
+...e"
+      end
+    end
+
+    class 138114 "lb_I_EventConnector"cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "...e
+...sclass lb_I_EventConnector:0:
+* \\brief ???
+ "
+    end
+
+    class 138242 "lb_I_EventSource"cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "...e
+...sclass lb_I_EventSource:0:
+/ A Menu ??"
+    end
+
+    class 138370 "lb_I_EventMapper"cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "...e
+...sclass lb_I_EventMapper:0:
+/ ???"
+      classrelation 134018 // <generalisation>
+	relation 134018 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 134018 // <generalisation>
+	  b parent class_ref 128130 // lb_I_Unknown
+      end
+
+      classrelation 134146 // <dependency>
+	relation 134146 -_->
+	  stereotype "friend"
+	  a default
+	    cpp default "Generated"
+	    classrelation_ref 134146 // <dependency>
+	  b parent class_ref 138498 // lb_I_EventManager
+      end
+    end
+
+    class 138498 "lb_I_EventManager"cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "...e
+	virtual lbErrCodes LB_STDCALL setDiapatcher(lb_I_Dispatcher* disp) = 0;
+	virtual lb_I_Dispatcher* LB_STDCALL getDispatcher() = 0;
+...sclass lb_I_EventManager:0:
+*
+ * \\brief An event ID manager. It reserves ID's for symbolic event names.
+ * 
+ * This is used to create event ID numbers, that - for sample - are used in my
+ * GUI sample application. wxWidgets usually defines those ID's per define. Here,
+ * I am capable to manage those ID's dynamically.
+ *
+ * You are able to write a plugin module and insert menu entries dynamically to
+ * the wx application and let the app resolve that event ID correctly to the module
+ * by forwarding all those events to a OnDispatch handler. This handler forwards
+ * the event to my own event handling mechanism.
+ *
+ * This does not interfer the two different mechanisms of wx and my own.
+ *
+ * \\note A class of this interface must be singleton.
+ "
+      classrelation 134274 // <generalisation>
+	relation 134274 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 134274 // <generalisation>
+	  b parent class_ref 128130 // lb_I_Unknown
+      end
+
+      classrelation 134402 // <dependency>
+	relation 134402 -_->
+	  stereotype "friend"
+	  a default
+	    cpp default "Generated"
+	    classrelation_ref 134402 // <dependency>
+	  b parent class_ref 138626 // lb_I_Dispatcher
+      end
+    end
+
+    class 138626 "lb_I_Dispatcher"cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "...e
+...sclass lb_I_Dispatcher:0:
+*
+ * \\brief Dispatcher contains all registered event handlers.
+ *
+ * Dispatcher is used to hold all registered event handlers. If an event has been fired,
+ * one of it's dispatch members are called to forward that event to the desired handler.
+ "
+      classrelation 134914 // <generalisation>
+	relation 134914 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 134914 // <generalisation>
+	  b parent class_ref 128130 // lb_I_Unknown
+      end
+    end
+
+    class 138754 "lb_I_EvHandler"cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "...e
+...sclass lb_I_EvHandler:0:
+*
+ * \\brief An event handler entity.
+ *
+ * An event handler entity is an instance for a class, that has one or more event handlers.
+ "
+      classrelation 134530 // <generalisation>
+	relation 134530 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 134530 // <generalisation>
+	  b parent class_ref 128130 // lb_I_Unknown
+      end
+    end
+
+    class 138882 "lb_I_DispatchRequest"cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "...e
+...sclass lb_I_DispatchRequest:0:
+*
+ * \\brief An attempt to create a request packet, that could be predefined.
+ *
+ * Idea: You do not need to build up a more complex event every time. Predefine
+ * it as a class and instantiate it over REQUEST or directly and use it later.
+ "
+      classrelation 134658 // <generalisation>
+	relation 134658 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 134658 // <generalisation>
+	  b parent class_ref 128130 // lb_I_Unknown
+      end
+    end
+
+    class 139010 "lb_I_DispatchResponse"cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "...e
+...sclass lb_I_DispatchResponce:0:
+*
+ * \\brief An attempt to create a request packet response, that could be predefined.
+ *
+ * Idea: You do not need to build up a more complex response every time. Predefine
+ * it as a class and instantiate it over REQUEST or directly at start time and use it later.
+ "
+      classrelation 134786 // <generalisation>
+	relation 134786 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 134786 // <generalisation>
+	  b parent class_ref 128130 // lb_I_Unknown
+      end
+    end
+
+    class 139138 "lb_I_Frame"cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "...sclass lb_I_Frame:0:
+*
+ * It seems, that this is the factory class for any GUI elements. It also knows about any instance.
+ "
+      classrelation 135042 // <generalisation>
+	relation 135042 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 135042 // <generalisation>
+	  b parent class_ref 128130 // lb_I_Unknown
+      end
+    end
+
+    class 139266 "lb_I_Application"cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "	virtual lb_I_Unknown* LB_STDCALL createFrame() = 0;
+...e
+...sclass lb_I_Application:0:
+*
+ * \\brief Interface for a delegated application.
+ *
+ * This inteface is used when the implementation of an lb_I_MetaApplication
+ * loads an application and delegates the control to it. This would be done
+ * by a call to loadApplication in lb_I_MetaApplication.
+ "
+      classrelation 135170 // <generalisation>
+	relation 135170 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 135170 // <generalisation>
+	  b parent class_ref 128130 // lb_I_Unknown
+      end
+    end
+
+    class 139394 "lb_I_MetaApplication"
+      abstract 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "...sclass lb_I_MetaApplication:0:
+*
+ * \\brief Interface from a wrapper and lbDMF
+ *
+ * The meta application is an attempt to provide an interface for the
+ * application developer. It hides the real framework like MFC or others
+ * from the developer.
+ "
+      classrelation 135298 // <generalisation>
+	relation 135298 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 135298 // <generalisation>
+	  b parent class_ref 128130 // lb_I_Unknown
+      end
+
+      operation 141954 "getEVManager"
+	abstract cpp_virtual public return_type class_ref 138498 // lb_I_EventManager
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	
+	
+	comment "*
+	 * Get access to the main event manager, so all parts can initialize event handlers
+	 * and then initialize Actors for still initialized event handlers.
+	 "
+      end
+    end
+
+    class 139522 "lb_I_UserAccounts"cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "...e
+...sclass lb_I_UserAccounts:0:"
+      classrelation 135426 // <generalisation>
+	relation 135426 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 135426 // <generalisation>
+	  b parent class_ref 128130 // lb_I_Unknown
+      end
+    end
+
+    class 139650 "lb_I_Applications"cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "...e
+...sclass lb_I_Applications:0:"
+      classrelation 135554 // <generalisation>
+	relation 135554 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 135554 // <generalisation>
+	  b parent class_ref 128130 // lb_I_Unknown
+      end
+    end
+
+    class 139778 "lb_I_User_Applications"cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "...e"
+      classrelation 135682 // <generalisation>
+	relation 135682 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 135682 // <generalisation>
+	  b parent class_ref 128130 // lb_I_Unknown
+      end
+    end
+
+    class 139906 "lb_I_Formulars"cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      classrelation 135810 // <generalisation>
+	relation 135810 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 135810 // <generalisation>
+	  b parent class_ref 128130 // lb_I_Unknown
+      end
+    end
+
+    class 140034 "lb_I_ParameterTable"cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      classrelation 135938 // <generalisation>
+	relation 135938 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 135938 // <generalisation>
+	  b parent class_ref 128130 // lb_I_Unknown
+      end
+    end
+
+    class 140162 "lb_I_FormularParameter"cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      classrelation 136066 // <generalisation>
+	relation 136066 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 136066 // <generalisation>
+	  b parent class_ref 140034 // lb_I_ParameterTable
+      end
+    end
+
+    class 140290 "lb_I_ApplicationParameter"cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      classrelation 136194 // <generalisation>
+	relation 136194 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 136194 // <generalisation>
+	  b parent class_ref 140034 // lb_I_ParameterTable
+      end
+    end
+
+    class 140418 "lb_I_FKPK_Mapping"cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      classrelation 136322 // <generalisation>
+	relation 136322 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 136322 // <generalisation>
+	  b parent class_ref 128130 // lb_I_Unknown
+      end
+    end
+
+    class 140546 "lb_I_Actions"cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      classrelation 136450 // <generalisation>
+	relation 136450 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 136450 // <generalisation>
+	  b parent class_ref 128130 // lb_I_Unknown
+      end
+    end
+
+    class 140674 "lb_I_Action_Steps"cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      classrelation 136578 // <generalisation>
+	relation 136578 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 136578 // <generalisation>
+	  b parent class_ref 128130 // lb_I_Unknown
+      end
+    end
+
+    class 140802 "lb_I_Action_Types"cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      classrelation 136706 // <generalisation>
+	relation 136706 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 136706 // <generalisation>
+	  b parent class_ref 128130 // lb_I_Unknown
+      end
+    end
+
+    class 140930 "lb_I_Formular_Actions"cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      classrelation 136834 // <generalisation>
+	relation 136834 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 136834 // <generalisation>
+	  b parent class_ref 128130 // lb_I_Unknown
+      end
+    end
+
+    class 141058 "lb_I_Translations"cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      classrelation 136962 // <generalisation>
+	relation 136962 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 136962 // <generalisation>
+	  b parent class_ref 128130 // lb_I_Unknown
+      end
+    end
+
+    class 141186 "lb_I_PluginManager"cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "* \\brief The plugin manager
+ *
+ * The plugin manager should handle automatic loading of exsisting plugins and optionally
+ * unload plugins by a plugin management dialog.
+ 
+...sclass lb_I_PluginManager:0:"
+      classrelation 137090 // <generalisation>
+	relation 137090 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 137090 // <generalisation>
+	  b parent class_ref 128130 // lb_I_Unknown
+      end
+    end
+
+    class 141314 "lb_I_PluginModule"cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "...e
+* \\brief Plugin module
+ *
+ * The plugin module is a class per module, that should list all included plugins for one
+ * module. This should be similar to the BEGIN_IMPLEMENT_UNKNOWN and ADD_INTERFACE macros.
+ 
+...sclass lb_I_PluginModule:0:"
+      classrelation 137218 // <generalisation>
+	relation 137218 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 137218 // <generalisation>
+	  b parent class_ref 128130 // lb_I_Unknown
+      end
+    end
+
+    class 141442 "lb_I_Plugin"cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "...e
+*
+ * \\brief Interface for single plugin (forwarder). 
+ *
+ * This should be a wrapper to the plugin implementation.
+ 
+...sclass lb_I_Plugin:0:"
+      classrelation 137346 // <generalisation>
+	relation 137346 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 137346 // <generalisation>
+	  b parent class_ref 128130 // lb_I_Unknown
+      end
+    end
+
+    class 141570 "lb_I_PluginImpl"cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "...e
+...e
+*
+ * \\brief This interface must be used for each plugin implementation.
+ 
+...sclass lb_I_PluginImpl:0:"
+      classrelation 137474 // <generalisation>
+	relation 137474 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 137474 // <generalisation>
+	  b parent class_ref 128130 // lb_I_Unknown
+      end
+    end
+
+    class 141698 "lb_I_Action"cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "*
+ * \\brief This interface is intended as a way to delegate actions.
+ * 
+ * Actions may be issued with buttons, validations or any other source like
+ * timer events. The goal of this attempt is to abstract the action so it can
+ * be simply used in a form without knowing the type of the action target.
+ "
+      classrelation 137602 // <generalisation>
+	relation 137602 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 137602 // <generalisation>
+	  b parent class_ref 128130 // lb_I_Unknown
+      end
+    end
+
+    class 141826 "lb_I_DelegatedAction"cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "*
+ * \\brief This interface is intended as a way to delegate action steps.
+ *
+ * Means, that the main action (lb_I_Action) could have multiple steps,
+ * to be performed for one action, that may be visible with a button for
+ * example.
+ "
+      classrelation 137730 // <generalisation>
+	relation 137730 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 137730 // <generalisation>
+	  b parent class_ref 128130 // lb_I_Unknown
+      end
+    end
+  end
+
+  deploymentview 128002 "interfaces"
+    //deployment diagram settings
+    package_name_in_tab default show_context default write_horizontally default auto_label_position default shadow default
+    draw_component_as_icon default show_component_req_prov default show_component_rea default
+    artifact 128002 "lbInterfaces-sub-classes"
+      stereotype "source"
+      cpp_h "#ifndef _${NAME}_H
+#define _${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_classes
+	class_ref 128002 // lb_I_KeyBase
+	class_ref 128258 // ObjectTyp
+	class_ref 128386 // lb_I_Object
+	class_ref 128514 // lb_I_Locale
+	class_ref 128642 // lb_I_String
+	class_ref 128770 // lb_I_FileLocation
+	class_ref 128898 // lb_I_DirLocation
+	class_ref 129026 // lb_I_Integer
+	class_ref 129154 // lb_I_Boolean
+	class_ref 129282 // lb_I_Long
+	class_ref 129410 // lb_I_Parameter
+	class_ref 129538 // lb_I_Element
+	class_ref 129666 // lb_I_Container
+	class_ref 129794 // lb_I_Module
+	class_ref 130050 // lb_I_Instance
+	class_ref 130178 // lb_I_InstanceReference
+	class_ref 130306 // lb_I_Log
+	class_ref 130434 // lb_I_Runnable
+	class_ref 130562 // lb_I_ZThread
+	class_ref 130690 // lb_I_Thread
+	class_ref 130818 // lb_I_Mutex
+	class_ref 130946 // lb_I_CriticalSection
+	class_ref 131074 // lb_I_Lock
+      end
+    end
+
+    artifact 128130 "lbInterfaces-sub-db"
+      stereotype "source"
+      cpp_h "#ifndef _${NAME}_H
+#define _${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_classes
+	class_ref 131202 // lb_I_Query
+	class_ref 131586 // lb_I_BoundColumn
+	class_ref 131714 // lb_I_MVC_View
+	class_ref 131842 // lb_I_Connection
+	class_ref 131970 // lb_I_Database
+	class_ref 132098 // lb_I_DatabaseForm
+	class_ref 132354 // lb_I_DatabaseReport
+	class_ref 132482 // lb_I_MasterDetailFormDefinition
+      end
+    end
+
+    artifact 128258 "lbInterfaces-sub-ui"
+      stereotype "source"
+      cpp_h "#ifndef _${NAME}_H
+#define _${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_classes
+	class_ref 132738 // lb_I_Window
+	class_ref 132226 // lb_I_Form
+	class_ref 132994 // lb_I_GUIApp
+	class_ref 133122 // lb_I_GUI
+	class_ref 133250 // lb_I_wxGUI
+	class_ref 133378 // lb_I_Control
+	class_ref 133506 // lb_I_LogonPage
+	class_ref 133634 // lb_I_AppSelectPage
+	class_ref 133762 // lb_I_LogonHandler
+      end
+    end
+
+    artifact 128386 "lbInterfaces-sub-visitor"
+      stereotype "source"
+      cpp_h "#ifndef _${NAME}_H
+#define _${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_classes
+	class_ref 133890 // lb_I_Aspect
+	class_ref 134018 // lb_I_FileOperation
+	class_ref 134146 // lb_I_DatabaseOperation
+      end
+    end
+
+    artifact 128514 "lbInterfaces-sub-wxWrapper"
+      stereotype "source"
+      cpp_h "#ifndef _${NAME}_H
+#define _${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_classes
+	class_ref 134274 // lb_I_wxFrame
+      end
+    end
+
+    artifact 128642 "lbInterfaces-sub-xml"
+      stereotype "source"
+      cpp_h "#ifndef _${NAME}_H
+#define _${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_classes
+	class_ref 134530 // lb_I_Attribute
+	class_ref 134658 // lb_I_ConfigObject
+	class_ref 134786 // lb_I_XMLConfig
+	class_ref 134914 // lb_I_FunctorEntity
+	class_ref 135042 // lb_I_InterfaceRepository
+      end
+    end
+
+    artifact 128770 "lbInterfaces"
+      stereotype "source"
+      cpp_h "#ifndef _${NAME}_H
+#define _${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_classes
+	class_ref 135170 // byte
+	class_ref 135298 // u_short
+	class_ref 135426 // DWORD
+	class_ref 135554 // LB_DATA
+	class_ref 135682 // lbProtocolCallback
+	class_ref 135810 // lbMemberCallback
+	class_ref 135938 // lb_I_EventCallback
+	class_ref 136066 // LB_STDCALL
+	class_ref 136194 // lbEvHandler
+	class_ref 136322 // miniLong
+	class_ref 136450 // miniString
+	class_ref 128130 // lb_I_Unknown
+	class_ref 136578 // LB_FUNCTORCALL
+	class_ref 136706 // lb_I_Reference
+	class_ref 136834 // lb_I_gcManager
+	class_ref 136962 // lb_I_Exception
+	class_ref 137090 // lb_I_ErrorDescription
+	class_ref 129922 // lb_I_Requestable
+	class_ref 137218 // lb_I_CallbackManager
+	class_ref 137346 // lb_I_CallbackDispatcher
+	class_ref 137602 // lb_I_CallbackTarget
+	class_ref 137730 // lb_I_ProtocolManager
+	class_ref 137858 // lb_I_ProtocolDispatcher
+	class_ref 137986 // lb_I_ProtocolTarget
+	class_ref 138114 // lb_I_EventConnector
+	class_ref 138242 // lb_I_EventSource
+	class_ref 134402 // lb_I_EventSink
+	class_ref 138370 // lb_I_EventMapper
+	class_ref 138498 // lb_I_EventManager
+	class_ref 138754 // lb_I_EvHandler
+	class_ref 138882 // lb_I_DispatchRequest
+	class_ref 139010 // lb_I_DispatchResponse
+	class_ref 138626 // lb_I_Dispatcher
+	class_ref 132866 // lb_I_EventHandler
+	class_ref 139138 // lb_I_Frame
+	class_ref 139266 // lb_I_Application
+	class_ref 139394 // lb_I_MetaApplication
+	class_ref 139522 // lb_I_UserAccounts
+	class_ref 139650 // lb_I_Applications
+	class_ref 139778 // lb_I_User_Applications
+	class_ref 139906 // lb_I_Formulars
+	class_ref 140034 // lb_I_ParameterTable
+	class_ref 140162 // lb_I_FormularParameter
+	class_ref 140290 // lb_I_ApplicationParameter
+	class_ref 140418 // lb_I_FKPK_Mapping
+	class_ref 140546 // lb_I_Actions
+	class_ref 140674 // lb_I_Action_Steps
+	class_ref 140802 // lb_I_Action_Types
+	class_ref 140930 // lb_I_Formular_Actions
+	class_ref 141058 // lb_I_Translations
+	class_ref 141186 // lb_I_PluginManager
+	class_ref 141314 // lb_I_PluginModule
+	class_ref 141442 // lb_I_Plugin
+	class_ref 141570 // lb_I_PluginImpl
+	class_ref 141698 // lb_I_Action
+	class_ref 141826 // lb_I_DelegatedAction
+      end
+    end
+  end
+end
