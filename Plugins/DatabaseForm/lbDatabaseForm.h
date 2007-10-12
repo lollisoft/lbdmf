@@ -30,11 +30,17 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.42 $
+ * $Revision: 1.43 $
  * $Name:  $
- * $Id: lbDatabaseForm.h,v 1.42 2007/10/11 13:38:40 lollisoft Exp $
+ * $Id: lbDatabaseForm.h,v 1.43 2007/10/12 16:16:32 lollisoft Exp $
  *
  * $Log: lbDatabaseForm.h,v $
+ * Revision 1.43  2007/10/12 16:16:32  lollisoft
+ * React with error message, if action field was not found in formular. This is a configuration error either in UML or later in designer.
+ *
+ * Also tried to deactivate actions on empty query. This does
+ * not fully work when deleting data entries.
+ *
  * Revision 1.42  2007/10/11 13:38:40  lollisoft
  * Propably completed offline capability from system database.
  *
@@ -721,6 +727,9 @@ public:
 	lbErrCodes LB_STDCALL registerEventHandler(lb_I_Dispatcher* dispatcher);
 /*...e*/
 
+	void LB_STDCALL activateActionButtons();
+	void LB_STDCALL deactivateActionButtons();
+
 	/** \brief Handler for button actions
 	 *
 	 * This handler should be used if a button action will be added to the form.
@@ -791,6 +800,9 @@ public:
 	UAP(lb_I_Actions, appActions)
 	UAP(lb_I_Action_Steps, appActionSteps)
 	UAP(lb_I_Action_Types, appActionTypes)
+
+	// List of button names to help activating / deactivating them on data availability. 
+	UAP(lb_I_Container, actionButtons)
 
 	// l gets overwritten, while assigning a lb_I_Query* pointer to sampleQuery !!
 	// l and buf are therefore as a bugfix.

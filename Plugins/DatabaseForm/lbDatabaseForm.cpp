@@ -272,6 +272,8 @@ void LB_STDCALL lbDatabasePanel::create(int parentId) {
 
 
 #define DISABLE_EOF() \
+	if (sampleQuery->dataFetched()) activateActionButtons(); \
+	else deactivateActionButtons(); \
 	if (allNaviDisabled == false) { \
 		nextButton->Disable(); \
 		lastButton->Disable(); \
@@ -283,6 +285,8 @@ void LB_STDCALL lbDatabasePanel::create(int parentId) {
 
 
 #define DISABLE_BOF() \
+	if (sampleQuery->dataFetched()) activateActionButtons(); \
+	else deactivateActionButtons(); \
 	if (allNaviDisabled == false) { \
 		prevButton->Disable(); \
 		firstButton->Disable(); \
@@ -301,6 +305,7 @@ void LB_STDCALL lbDatabasePanel::create(int parentId) {
 
 
 #define DISABLE_FOR_NO_DATA() \
+	deactivateActionButtons(); \
 	DISABLE_FOR_ONE_DATA() \
 	deleteButton->Disable(); \
 	allNaviDisabled = true;
@@ -1254,6 +1259,10 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 
 /*...sAction handler initializion:8:*/
 
+	if (actionButtons == NULL) {
+		REQUEST(getModuleInstance(), lb_I_Container, actionButtons)
+	}
+
 	//   formulars      <-      NM               ->   actions
 	if ((forms != NULL) && (formActions != NULL) && (appActions != NULL)) {
 		forms->finishFormularIteration();
@@ -1422,15 +1431,96 @@ _CL_LOG << "Connect event handlers" LOG_
 	_CL_LOG << "lbDatabasePanel::init(...) ready. Move to first row." LOG_
 
 	if (sampleQuery->dataFetched()) {
+		activateActionButtons();
 		sampleQuery->first();
 		lbDBRead();
 	} else {
+		deactivateActionButtons();
 		nextButton->Disable();
 		lastButton->Disable();
 		deleteButton->Disable();
 	}
 }
 /*...e*/
+
+void LB_STDCALL lbDatabasePanel::activateActionButtons() {
+	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
+	if ((forms != NULL) && (formActions != NULL) && (appActions != NULL)) {
+		forms->finishFormularIteration();
+		formActions->finishFormularActionIteration();
+		appActions->finishActionIteration();
+		
+		if (fa == NULL) fa = new FormularActions;	
+		
+		while (forms->hasMoreFormulars()) {
+			forms->setNextFormular();
+
+			if (forms->getApplicationID() == meta->getApplicationID()) {
+				if (strcmp(forms->getName(), formName) == 0) {
+					long FormID = forms->getFormularID();
+					
+					while (formActions->hasMoreFormularActions()) {
+						formActions->setNextFormularAction();
+						
+						if (formActions->getFormularActionFormularID() == FormID) {
+							// Actions for this formular
+							long ActionID = formActions->getFormularActionActionID();
+							char* eventName = formActions->getFormularActionEvent();
+							char* actionName = strdup (_trans(appActions->getActionName()));
+							appActions->selectAction(ActionID);
+							
+							_LOG << "Activate action '" << actionName << "'" LOG_
+							
+							wxWindow* w = FindWindowByLabel(actionName, this);
+							if (w) w->Enable();
+							free(actionName);
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+void LB_STDCALL lbDatabasePanel::deactivateActionButtons() {
+	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
+	if ((forms != NULL) && (formActions != NULL) && (appActions != NULL)) {
+		forms->finishFormularIteration();
+		formActions->finishFormularActionIteration();
+		appActions->finishActionIteration();
+		
+		if (fa == NULL) fa = new FormularActions;	
+		
+		while (forms->hasMoreFormulars()) {
+			forms->setNextFormular();
+
+			if (forms->getApplicationID() == meta->getApplicationID()) {
+				if (strcmp(forms->getName(), formName) == 0) {
+					long FormID = forms->getFormularID();
+					
+					while (formActions->hasMoreFormularActions()) {
+						formActions->setNextFormularAction();
+						
+						if (formActions->getFormularActionFormularID() == FormID) {
+							// Actions for this formular
+							long ActionID = formActions->getFormularActionActionID();
+							char* eventName = formActions->getFormularActionEvent();
+							char* actionName = strdup (_trans(appActions->getActionName()));
+							appActions->selectAction(ActionID);
+
+							_LOG << "Deactivate action '" << actionName << "'" LOG_
+
+							wxWindow* w = FindWindowByLabel(actionName, this);
+							if (w) w->Disable();
+							free(actionName);
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
 
 void LB_STDCALL lbDatabasePanel::addLabel(char* text, wxSizer* sizer, bool hideThisColumn) {
 	char* tLabel = (char*) malloc(strlen(text) + 6);
@@ -2089,6 +2179,7 @@ void LB_STDCALL lbDatabasePanel::updateFromMaster() {
 			lastButton->Disable();
 			nextButton->Disable();
 			deleteButton->Disable();
+			deactivateActionButtons();
 			noDataAvailable = false;	
 	} else {
 		err = sampleQuery->first();
@@ -2102,11 +2193,13 @@ void LB_STDCALL lbDatabasePanel::updateFromMaster() {
 			lastButton->Disable();
 			nextButton->Disable();
 			deleteButton->Disable();
+			deactivateActionButtons();
 			noDataAvailable = false;	
 		} else {
 			lbDBRead();
 			lastButton->Enable();
 			nextButton->Enable();
+			activateActionButtons();
 			deleteButton->Enable();
 		}
 	}
@@ -2532,6 +2625,7 @@ void LB_STDCALL lbDatabasePanel::updateFromDetail() {
 			lastButton->Disable();
 			nextButton->Disable();
 			deleteButton->Disable();
+			deactivateActionButtons();
 			noDataAvailable = false;	
 	} else {
 		err = sampleQuery->first();
@@ -2545,11 +2639,13 @@ void LB_STDCALL lbDatabasePanel::updateFromDetail() {
 			lastButton->Disable();
 			nextButton->Disable();
 			deleteButton->Disable();
+			deactivateActionButtons();
 			noDataAvailable = false;	
 		} else {
 			lbDBRead();
 			lastButton->Enable();
 			nextButton->Enable();
+			activateActionButtons();
 			deleteButton->Enable();
 		}
 	}
@@ -3555,18 +3651,19 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBAdd(lb_I_Unknown* uk) {
 /*...slbErrCodes LB_STDCALL lbDatabasePanel\58\\58\lbDBDelete\40\lb_I_Unknown\42\ uk\41\:0:*/
 lbErrCodes LB_STDCALL lbDatabasePanel::lbDBDelete(lb_I_Unknown* uk) {
 	lbErrCodes err = ERR_NONE;
-
+	
 	err = sampleQuery->remove();
-
+	
 	if (err == ERR_DB_ROWDELETED) {
 		UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
 		meta->msgBox("Error", "Could not delete entry. It is in use.");
 		return ERR_NONE;
 	}
-
+	
 	if (err == INFO_DB_REOPENED) {
 		lbDBRead();
-		return ERR_NONE;	
+
+		return ERR_NONE;
 	} else {
 		if (err == ERR_DB_NODATA) {
 			err = sampleQuery->first();
@@ -3577,44 +3674,38 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBDelete(lb_I_Unknown* uk) {
 			} else {
 				lbDBClear();
 				DISABLE_FOR_NO_DATA()
+				deactivateActionButtons();
 				return ERR_NONE;
 			}
 		}
-	
-	        err = sampleQuery->next();
-
-	        if (err == WARN_DB_NODATA) {
-	        	DISABLE_EOF()
-
+		
+		err = sampleQuery->next();
+		
+		if (err == WARN_DB_NODATA) {
+			DISABLE_EOF()
 			lbDBRead();
-
 			return ERR_NONE;
-	        }
-
-	        if (err == ERR_DB_NODATA) {
-
+		}
+		
+		if (err == ERR_DB_NODATA) {
 			err = sampleQuery->first();
-
 			if (err == ERR_DB_NODATA) {
-
-				DISABLE_FOR_NO_DATA()
-			
 				lbDBClear();
-
+				DISABLE_FOR_NO_DATA()
+				deactivateActionButtons();
 				return ERR_NONE;
 			}
-	
+			
 			DISABLE_BOF()
-	        } else {
-	        	nextButton->Enable();
-	        	lastButton->Enable();
-	        	prevButton->Enable();
-	        	firstButton->Enable();
-	        }
+		} else {
+			nextButton->Enable();
+			lastButton->Enable();
+			prevButton->Enable();
+			firstButton->Enable();
+		}
 	}
 	
 	lbDBRead();
-
 	return ERR_NONE;
 }
 /*...e*/
@@ -3647,8 +3738,12 @@ lbErrCodes LB_STDCALL lbDatabasePanel::OnActionButton(lb_I_Unknown* uk) {
 		wxString errmsg;
 		
 		if (w == NULL) 	{
-			errmsg = wxString("Error: Didn't found a control with given name: ") + wxString(s->charrep());
-			meta->setStatusText("Info", errmsg.c_str());
+			UAP_REQUEST(getModuleInstance(), lb_I_String, err)
+			*err = "Didn't found a control with given name. Check, if your action settings use an existing field from the form. (";
+			*err += s->charrep();
+			*err += ")\n\nThis may also an UML design error.";
+			meta->msgBox("Error", err->charrep());
+			return ERR_NONE;
 		} else {
 			errmsg = wxString("Found a control with given name: ") + wxString(s->charrep());
 			meta->setStatusText("Info", errmsg.c_str());
@@ -3726,9 +3821,9 @@ lbErrCodes LB_STDCALL lbDatabasePanel::OnActionButton(lb_I_Unknown* uk) {
 		}
 /*...e*/
 		
-		_CL_LOG << "Have these event: " << reversedEvent << "." LOG_		
-		_CL_LOG << "Have got source field: " << s->charrep() << "." LOG_
-		_CL_LOG << "The value for the field is " << value.c_str() << "." LOG_		
+		_LOG << "Have these event: " << reversedEvent << "." LOG_		
+		_LOG << "Have got source field: " << s->charrep() << "." LOG_
+		_LOG << "The value for the field is " << value.c_str() << "." LOG_		
 
 		errmsg = wxString("Data for the required field '") + wxString(s->charrep()) + wxString("' is '") + value + wxString("'");
 		meta->setStatusText("Info", errmsg.c_str());
