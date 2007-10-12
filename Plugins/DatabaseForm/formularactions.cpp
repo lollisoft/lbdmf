@@ -172,7 +172,8 @@ long FormularActions::getActionTargetIDLong(char* reversed_event) {
 				
 			return ActionID->getData();
 		}
-	}	
+	}
+	return -1;
 }
 
 /*...schar\42\ FormularActions\58\\58\getActionTargetID\40\char\42\ what\41\:0:*/
