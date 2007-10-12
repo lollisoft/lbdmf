@@ -13,15 +13,15 @@ classcanvas 128386 class_ref 131586 // Kontakte
   xyz 310 233 3005
   end
 relationcanvas 128258 relation_ref 132226 // Stadt
-  from ref 128002 z 1999 label "Stadt" italic xyz 325 59 3000 stereotype "<<masterdetail_action>>" xyz 274 85 3000 to ref 128130
+  from ref 128002 z 1999 label "Stadt" italic xyz 325 59 1999 stereotype "<<masterdetail_action>>" xyz 274 85 3000 to ref 128130
   no_role_a no_role_b
   no_multiplicity_a no_multiplicity_b
 relationcanvas 128514 relation_ref 133762 // Stadt
-  from ref 128386 z 1999 label "Stadt" italic xyz 503 164 3000 stereotype "<<masterdetail_action>>" xyz 455 191 3000 to ref 128130
+  from ref 128386 z 1999 label "Stadt" italic xyz 503 164 1999 stereotype "<<masterdetail_action>>" xyz 455 191 3000 to ref 128130
   no_role_a no_role_b
   no_multiplicity_a no_multiplicity_b
 relationcanvas 128642 relation_ref 133506 // Name
-  from ref 128002 z 1999 label "Name" italic xyz 160 169 3000 stereotype "<<masterdetail_action>>" xyz 122 194 3000 to ref 128386
+  from ref 128002 z 1999 label "Name" italic xyz 160 169 1999 stereotype "<<masterdetail_action>>" xyz 122 194 3000 to ref 128386
   no_role_a no_role_b
   no_multiplicity_a no_multiplicity_b
 end

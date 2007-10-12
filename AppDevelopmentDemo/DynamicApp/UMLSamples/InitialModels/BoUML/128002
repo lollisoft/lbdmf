@@ -1,6 +1,6 @@
 format 41
 "CRM" // CRM
-  revision 26
+  revision 27
   modified_by 2 "lothar"
   // class settings
   //class diagram settings
@@ -70,8 +70,8 @@ ${inlines}
 	relation_ref 129026 // Firmenname
       end
 
-      classrelation 129282 // Firmanname
-	relation_ref 128642 // Firmanname
+      classrelation 129282 // (Firmenname)
+	relation_ref 128642 // Firmenname
       end
 
       classrelation 131330 // Firmenname
@@ -139,17 +139,17 @@ ${inlines}
 	idl_decl ""
       end
 
-      classrelation 129154 // (Firmanname)
-	relation 128642 o--- name "Firmanname"
+      classrelation 129154 // (Firmenname)
+	relation 128642 o--- name "Firmenname"
 	  stereotype "masterdetail_action"
 	  a role_name "" protected
 	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
 "
-	    classrelation_ref 129154 // (Firmanname)
+	    classrelation_ref 129154 // (Firmenname)
 	  b role_name "" protected
 	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
 "
-	    classrelation_ref 129282 // Firmanname
+	    classrelation_ref 129282 // (Firmenname)
       end
 
       classrelation 129538 // Auftragsnummer
@@ -796,5 +796,4 @@ ${inlines}
       size A4
     end
   end
-
 end
