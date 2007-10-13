@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.139 $
+# * $Revision: 1.140 $
 # * $Name:  $
-# * $Id: Makefile,v 1.139 2007/10/13 18:32:24 lollisoft Exp $
+# * $Id: Makefile,v 1.140 2007/10/13 20:20:32 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.140  2007/10/13 20:20:32  lollisoft
+# * Added pdf document to the rpm build.
+# *
 # * Revision 1.139  2007/10/13 18:32:24  lollisoft
 # * Try to add xsl, xmi and UML sample files.
 # *
@@ -858,6 +861,7 @@ install-strip:
 	mkdir -p $(prefix)/share/lbdmf
 	mkdir -p $(prefix)/share/lbdmf/toolbarimages
 	mkdir -p $(prefix)/share/lbdmf/BoUML
+	mkdir -p $(prefix)/share/lbdmf/Doc
 	mkdir -p $(prefix)/share/lbdmf/XMIToDMF
 	cp $(DEVROOT_MAKE)/Projects/CPP/Test/GUI/wxWrapper/toolbarimages/*.png $(prefix)/share/lbdmf/toolbarimages
 	cp $(DEVROOT_MAKE)/Projects/CPP/Test/GUI/wxWrapper/toolbarimages/*.xpm $(prefix)/share/lbdmf/toolbarimages
@@ -867,6 +871,7 @@ install-strip:
 	cp $(DEVROOT_MAKE)/Projects/CPP/AppDevelopmentDemo/DynamicApp/XMIToDMF/*.xmi $(prefix)/share/lbdmf/XMIToDMF
 	cp $(DEVROOT_MAKE)/Projects/CPP/AppDevelopmentDemo/DynamicApp/XMIToDMF/*.xsl $(prefix)/share/lbdmf/XMIToDMF
 	cp $(DEVROOT_MAKE)/Projects/CPP/AppDevelopmentDemo/DynamicApp/BoUML/* $(prefix)/share/lbdmf/BoUML
+	cp $(DEVROOT_MAKE)/Projects/CPP/AppDevelopmentDemo/DynamicApp/Doc/*.pdf $(prefix)/share/lbdmf/Doc
 	./copy-wxGTK-libs.sh $(prefix)
 
 endif
