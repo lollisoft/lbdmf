@@ -460,6 +460,8 @@ lbErrCodes LB_STDCALL lbDynamicApplication::loadDatabaseSchema(lb_I_Unknown* uk)
 			
 			UAP(lb_I_Unknown, uk)
 
+			param->setCloning(false);
+
 			*name = "ApplicationData";
 			param->getUAPContainer(*&name, *&document);
 			
@@ -1465,8 +1467,8 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 	_CL_LOG << "Load application settings from file or database ..." LOG_
 
 	if (isFileAvailable || isDBAvailable) {
-		/*...sLoad from file or database:16:*/
-		/*...sInitialize plugin based document models:32:*/
+/*...sLoad from file or database:16:*/
+/*...sInitialize plugin based document models:32:*/
 #ifdef USE_OLD_INITIALIZE		
 		AQUIRE_PLUGIN(lb_I_Reports, Model, reports, "'database report'")
 		AQUIRE_PLUGIN(lb_I_ReportParameters, Model, reportparams, "'database report parameter'")
@@ -1484,7 +1486,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 		AQUIRE_PLUGIN(lb_I_ApplicationParameter, Model, appParams, "'application parameters'")
 		AQUIRE_PLUGIN(lb_I_Applications_Formulars, Model, ApplicationFormulars, "'formular to application assoc'")
 #endif		
-		/*...e*/
+/*...e*/
 		
 		
 		// Only this part is how to load the data. So here I have to set the correct handler for the load delegation routine.
@@ -2035,7 +2037,7 @@ void LB_STDCALL lbDynamicApplication::activateDBForms(char* user, char* app) {
 			if (DBerr == ERR_DB_NODATA) return;
 #define TRUE 1
 			while (TRUE) {
-				/*...sget rest of menu entries:24:*/
+/*...sget rest of menu entries:24:*/
 				UAP(lb_I_String, EventName)
 				UAP(lb_I_String, MenuName)
 				UAP(lb_I_String, ToolBarImage)
@@ -2076,7 +2078,7 @@ void LB_STDCALL lbDynamicApplication::activateDBForms(char* user, char* app) {
 					if (DBerr == WARN_DB_NODATA) break;
 				}
 				if (DBerr == ERR_DB_NODATA) break;
-				/*...e*/
+/*...e*/
 			}
 			
 		} else {
