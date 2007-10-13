@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.138 $
+# * $Revision: 1.139 $
 # * $Name:  $
-# * $Id: Makefile,v 1.138 2007/09/28 18:26:34 lollisoft Exp $
+# * $Id: Makefile,v 1.139 2007/10/13 18:32:24 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.139  2007/10/13 18:32:24  lollisoft
+# * Try to add xsl, xmi and UML sample files.
+# *
 # * Revision 1.138  2007/09/28 18:26:34  lollisoft
 # * Some bugfixes on Windows regarding xslt processing.
 # *
@@ -854,11 +857,16 @@ install-strip:
 	mkdir -p $(prefix)/share
 	mkdir -p $(prefix)/share/lbdmf
 	mkdir -p $(prefix)/share/lbdmf/toolbarimages
+	mkdir -p $(prefix)/share/lbdmf/BoUML
+	mkdir -p $(prefix)/share/lbdmf/XMIToDMF
 	cp $(DEVROOT_MAKE)/Projects/CPP/Test/GUI/wxWrapper/toolbarimages/*.png $(prefix)/share/lbdmf/toolbarimages
 	cp $(DEVROOT_MAKE)/Projects/CPP/Test/GUI/wxWrapper/toolbarimages/*.xpm $(prefix)/share/lbdmf/toolbarimages
 	cp $(DEVROOT_MAKE)/Projects/CPP/Test/GUI/wxWrapper/splash.png $(prefix)/share/lbdmf
 	cp $(DEVROOT_MAKE)/Projects/CPP/Test/GUI/wxWrapper/lbdmf.png $(prefix)/share/lbdmf
 	cp $(DEVROOT_MAKE)/Projects/CPP/Test/GUI/wxWrapper/wxWrapper.desktop $(prefix)/share/lbdmf 
+	cp $(DEVROOT_MAKE)/Projects/CPP/AppDevelopmentDemo/DynamicApp/XMIToDMF/*.xmi $(prefix)/share/lbdmf/XMIToDMF
+	cp $(DEVROOT_MAKE)/Projects/CPP/AppDevelopmentDemo/DynamicApp/XMIToDMF/*.xsl $(prefix)/share/lbdmf/XMIToDMF
+	cp $(DEVROOT_MAKE)/Projects/CPP/AppDevelopmentDemo/DynamicApp/BoUML/* $(prefix)/share/lbdmf/BoUML
 	./copy-wxGTK-libs.sh $(prefix)
 
 endif
