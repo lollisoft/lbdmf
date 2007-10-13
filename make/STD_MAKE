@@ -25,11 +25,14 @@
 #            73252 Lenningen (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.101 $
+# * $Revision: 1.102 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.101 2007/09/28 18:26:35 lollisoft Exp $
+# * $Id: STD_MAKE,v 1.102 2007/10/13 16:36:09 lollisoft Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.102  2007/10/13 16:36:09  lollisoft
+# * Deactivated debug settings for Windows platform.
+# *
 # * Revision 1.101  2007/09/28 18:26:35  lollisoft
 # * Some bugfixes on Windows regarding xslt processing.
 # *
@@ -383,8 +386,8 @@ COMPILER=WATCOM
 
 #COMPILER=MICROSOFT
 
-MODE=_DEBUG
-#MODE=
+#MODE=_DEBUG
+MODE=
 DEBUG_MEMORY=no
 #DEBUG_MEMORY=yes
 
