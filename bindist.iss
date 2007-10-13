@@ -21,8 +21,8 @@ Name: "desktopicon"; Description: "Create a &desktop icon"; GroupDescription: "A
 Source: "Q:\Develop\Projects\CPP\installODBC.bat"; DestDir: "{app}"; CopyMode: alwaysoverwrite
 Source: "Q:\Develop\Projects\bin\wxwrapper.exe"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
 Source: "Q:\Develop\Projects\bin\xsltproc.exe"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
-Source: "Q:\Develop\Projects\CPP\BaseDevelopment\splash.png"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
-Source: "Q:\Develop\Projects\CPP\BaseDevelopment\splash.png"; DestDir: "{app}"; CopyMode: alwaysoverwrite
+Source: "Q:\Develop\Projects\CPP\Test\GUI\wxWrapper\splash.png"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
+Source: "Q:\Develop\Projects\CPP\Test\GUI\wxWrapper\splash.png"; DestDir: "{app}"; CopyMode: alwaysoverwrite
 Source: "Q:\Develop\Projects\CPP\watcomenv.bat"; DestDir: "{app}"; CopyMode: alwaysoverwrite
 Source: "Q:\Develop\Projects\CPP\binsample.bat"; DestDir: "{app}"; CopyMode: alwaysoverwrite
 Source: "Q:\Develop\Projects\dll\mspdb60.dll"; DestDir: "{app}\Develop\Projects\dll"; CopyMode: alwaysoverwrite;
