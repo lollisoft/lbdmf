@@ -25,11 +25,14 @@
 #            73252 Lenningen (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.102 $
+# * $Revision: 1.103 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.102 2007/10/13 16:36:09 lollisoft Exp $
+# * $Id: STD_MAKE,v 1.103 2007/10/14 08:19:36 lollisoft Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.103  2007/10/14 08:19:36  lollisoft
+# * No debug.
+# *
 # * Revision 1.102  2007/10/13 16:36:09  lollisoft
 # * Deactivated debug settings for Windows platform.
 # *
@@ -760,7 +763,7 @@ COMPILER_VERSION=
 #LB_USE_FRAMEWORKS=no
 LB_USE_FRAMEWORKS=yes
 
-DEBUG=yes
+DEBUG=no
 
 
 STD_INCL = -I $(DEVROOT)/Projects/CPP/BaseDevelopment/lbHook/linuxCode \
