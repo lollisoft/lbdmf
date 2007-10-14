@@ -56,7 +56,7 @@ make DESTDIR="%{buildroot}" install-strip
 cd $RPM_BUILD_ROOT
 
 %suse_update_desktop_file -c wxWrapper 'Rapid Database GUI Designer' 'Database designer based on wxWrapper' '%{prefix}/bin/wxWrapper' %{prefix}/share/lbdmf/lbdmf.png Development
-%suse_update_desktop_file -c wxWrapper-help 'Rapid Database GUI Designer help' 'Help for database designer based on wxWrapper' %{prefix}/share/lbdmf/Doc/DynamicApp.pdf %{prefix}/share/lbdmf/toolbarimages/ktip.png Development
+#%suse_update_desktop_file -c wxWrapper-help 'Rapid Database GUI Designer help' 'Help for database designer based on wxWrapper' %{prefix}/share/lbdmf/Doc/DynamicApp.pdf %{prefix}/share/lbdmf/toolbarimages/ktip.png Development
 
 find . -type d -fprint $RPM_BUILD_DIR/file.list.%{name}.dirs
 find . -type f -fprint $RPM_BUILD_DIR/file.list.%{name}.files.tmp
