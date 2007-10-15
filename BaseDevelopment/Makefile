@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.141 $
+# * $Revision: 1.142 $
 # * $Name:  $
-# * $Id: Makefile,v 1.141 2007/10/15 11:38:26 lollisoft Exp $
+# * $Id: Makefile,v 1.142 2007/10/15 12:10:58 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.142  2007/10/15 12:10:58  lollisoft
+# * Missing applications directory :-)
+# *
 # * Revision 1.141  2007/10/15 11:38:26  lollisoft
 # * Using simple echo commands to create desktop menu entry.
 # *
@@ -862,6 +865,7 @@ install-strip:
 	echo mkdir -p $(prefix)/lib
 	mkdir -p $(prefix)/share
 	mkdir -p $(prefix)/share/lbdmf
+	mkdir -p $(prefix)/share/applications
 	mkdir -p $(prefix)/share/lbdmf/toolbarimages
 	mkdir -p $(prefix)/share/lbdmf/BoUML
 	mkdir -p $(prefix)/share/lbdmf/Doc
