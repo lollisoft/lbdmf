@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.140 $
+# * $Revision: 1.141 $
 # * $Name:  $
-# * $Id: Makefile,v 1.140 2007/10/13 20:20:32 lollisoft Exp $
+# * $Id: Makefile,v 1.141 2007/10/15 11:38:26 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.141  2007/10/15 11:38:26  lollisoft
+# * Using simple echo commands to create desktop menu entry.
+# *
 # * Revision 1.140  2007/10/13 20:20:32  lollisoft
 # * Added pdf document to the rpm build.
 # *
@@ -872,6 +875,15 @@ install-strip:
 	cp $(DEVROOT_MAKE)/Projects/CPP/AppDevelopmentDemo/DynamicApp/XMIToDMF/*.xsl $(prefix)/share/lbdmf/XMIToDMF
 	cp $(DEVROOT_MAKE)/Projects/CPP/AppDevelopmentDemo/DynamicApp/BoUML/* $(prefix)/share/lbdmf/BoUML
 	cp $(DEVROOT_MAKE)/Projects/CPP/AppDevelopmentDemo/DynamicApp/Doc/*.pdf $(prefix)/share/lbdmf/Doc
+	echo "[Desktop Entry]" > "$(prefix)/share/applications/wxWrapper.desktop"
+	echo "Encoding=UTF-8" >> "$(prefix)/share/applications/wxWrapper.desktop"
+	echo "Name=Rapid Database GUI Designer" >> "$(prefix)/share/applications/wxWrapper.desktop"
+	echo "Type=Application" >> "$(prefix)/share/applications/wxWrapper.desktop"
+	echo "Comment=Database designer based on wxWrapper" >> "$(prefix)/share/applications/wxWrapper.desktop"
+	echo "Exec=wxWrapper" >> "$(prefix)/share/applications/wxWrapper.desktop"
+	echo "TryExec=wxWrapper" >> "$(prefix)/share/applications/wxWrapper.desktop"
+	echo "Icon=$(prefix)/share/lbdmf/lbdmf.png" >> "$(prefix)/share/applications/wxWrapper.desktop"
+	echo "Categories=Development;" >> "$(prefix)/share/applications/wxWrapper.desktop"
 	./copy-wxGTK-libs.sh $(prefix)
 
 endif
