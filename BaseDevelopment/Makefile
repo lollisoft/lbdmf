@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.142 $
+# * $Revision: 1.143 $
 # * $Name:  $
-# * $Id: Makefile,v 1.142 2007/10/15 12:10:58 lollisoft Exp $
+# * $Id: Makefile,v 1.143 2007/10/15 12:48:17 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.143  2007/10/15 12:48:17  lollisoft
+# * Corrected path to icon file.
+# *
 # * Revision 1.142  2007/10/15 12:10:58  lollisoft
 # * Missing applications directory :-)
 # *
@@ -886,7 +889,7 @@ install-strip:
 	echo "Comment=Database designer based on wxWrapper" >> "$(prefix)/share/applications/wxWrapper.desktop"
 	echo "Exec=wxWrapper" >> "$(prefix)/share/applications/wxWrapper.desktop"
 	echo "TryExec=wxWrapper" >> "$(prefix)/share/applications/wxWrapper.desktop"
-	echo "Icon=$(prefix)/share/lbdmf/lbdmf.png" >> "$(prefix)/share/applications/wxWrapper.desktop"
+	echo "Icon=../lbdmf/lbdmf.png" >> "$(prefix)/share/applications/wxWrapper.desktop"
 	echo "Categories=Development;" >> "$(prefix)/share/applications/wxWrapper.desktop"
 	./copy-wxGTK-libs.sh $(prefix)
 
