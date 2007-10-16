@@ -76,6 +76,10 @@ echo "Categories=Development;" >> "%{prefix}/share/applications/wxWrapper.deskto
 
 ldconfig
 
+%postun
+
+rm %{prefix}/share/applications/wxWrapper.desktop
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 rm -rf $RPM_BUILD_DIR/file.list.%{name}
