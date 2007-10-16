@@ -64,6 +64,16 @@ sed 's,^\.,\%attr(-\,root\,root) ,' $RPM_BUILD_DIR/file.list.%{name}.files >> $R
 sed 's,^\.,\%attr(-\,root\,root) ,' $RPM_BUILD_DIR/file.list.%{name}.libs >> $RPM_BUILD_DIR/file.list.%{name}
 
 %post
+echo "[Desktop Entry]" > "%{prefix}/share/applications/wxWrapper.desktop"
+echo "Encoding=UTF-8" >> "%{prefix}/share/applications/wxWrapper.desktop"
+echo "Name=Rapid Database GUI Designer" >> "%{prefix}/share/applications/wxWrapper.desktop"
+echo "Type=Application" >> "%{prefix}/share/applications/wxWrapper.desktop"
+echo "Comment=Database designer based on wxWrapper" >> "%{prefix}/share/applications/wxWrapper.desktop"
+echo "Exec=wxWrapper" >> "%{prefix}/share/applications/wxWrapper.desktop"
+echo "TryExec=wxWrapper" >> "%{prefix}/share/applications/wxWrapper.desktop"
+echo "Icon=%{prefix}/share/lbdmf/lbdmf.png" >> "%{prefix}/share/applications/wxWrapper.desktop"
+echo "Categories=Development;" >> "%{prefix}/share/applications/wxWrapper.desktop"
+
 ldconfig
 
 %clean
