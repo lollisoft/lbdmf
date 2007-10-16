@@ -119,10 +119,10 @@ void wxStringPropertyClass::SetAttribute( int id, wxVariant& value )
 
 wxPG_BEGIN_PROPERTY_CLASS_BODY(wxIntProperty,wxPGProperty,long,long)
     WX_PG_DECLARE_BASIC_TYPE_METHODS()
-    virtual bool SetValueFromInt ( long value, int flags );
+    virtual bool SetValueFromInt( long value, int flags );
 #if wxUSE_VALIDATORS
-    static wxValidator* GetClassValidator ();
-    virtual wxValidator* DoGetValidator () const;
+    static wxValidator* GetClassValidator();
+    virtual wxValidator* DoGetValidator() const;
 #endif
 wxPG_END_PROPERTY_CLASS_BODY()
 
@@ -157,10 +157,16 @@ bool wxIntPropertyClass::SetValueFromString( const wxString& text, int argFlags 
     wxString s;
     long value;
 
-    if ( text.IsNumber() )
+    if ( text.length() == 0 )
     {
-        text.ToLong(&value,0); // we know its number, so need to check retval
+        SetValueToUnspecified();
+        return true;
+    }
 
+    // We know it is a number, but let's still check
+    // the return value.
+    if ( text.IsNumber() && text.ToLong( &value, 0 ) )
+    {
         if ( m_value != value )
         {
             return StdValidationProcedure(value);
@@ -168,7 +174,7 @@ bool wxIntPropertyClass::SetValueFromString( const wxString& text, int argFlags 
     }
     else if ( argFlags & wxPG_REPORT_ERROR )
     {
-        s.Printf ( wxT("! %s: \"%s\" is not a number."), m_label.c_str(), text.c_str() );
+        s.Printf( wxT("! %s: \"%s\" is not a number."), m_label.c_str(), text.c_str() );
         ShowError(s);
     }
     return false;
@@ -265,19 +271,28 @@ wxString wxUIntPropertyClass::GetValueAsString( int ) const
 
 bool wxUIntPropertyClass::SetValueFromString( const wxString& text, int WXUNUSED(argFlags) )
 {
-    wxString s;
-    long value = 0;
+    //wxString s;
+    long unsigned value = 0;
 
-    const wxChar *start = text.c_str();
-    if ( text[0] && !wxIsalnum(text[0]) )
+    if ( text.length() == 0 )
+    {
+        SetValueToUnspecified();
+        return true;
+    }
+
+    size_t start = 0;
+    if ( text.length() > 0 && !wxIsalnum(text[0]) )
         start++;
 
-    wxChar *end;
-    value = wxStrtoul(start, &end, (unsigned int)m_realBase);
+    wxString s = text.substr(start, text.length() - start);
+    bool res = s.ToULong(&value, (unsigned int)m_realBase);
 
-    if ( m_value != value )
+    //wxChar *end;
+    //value = wxStrtoul(text.c_str() + ((size_t)start), &end, (unsigned int)m_realBase);
+
+    if ( res && m_value != (long)value )
     {
-        return StdValidationProcedure(value);
+        return StdValidationProcedure((long)value);
     }
     /*}
     else if ( argFlags & wxPG_REPORT_ERROR )
@@ -393,10 +408,28 @@ void wxPropertyGrid::DoubleToString(wxString& target,
     {
         // Remove excess zeroes (do not remove this code just yet,
         // since sprintf can't do the same consistently across platforms).
+        wxString::const_iterator i = target.end() - 1;
+        size_t new_len = target.length() - 1;
+
+        for ( ; i != target.begin(); i-- )
+        {
+            if ( wxPGGetIterChar(target, i) != wxT('0') )
+                break;
+            new_len--;
+        }
+
+        wxChar cur_char = wxPGGetIterChar(target, i);
+        if ( cur_char != wxT('.') && cur_char != wxT(',') )
+            new_len++;
+
+        if ( new_len != target.length() )
+            target.resize(new_len);
+
+        /*
         unsigned int cur_pos = target.length() - 1;
         wxChar a;
         a = target.GetChar( cur_pos );
-        while ( a == '0' && cur_pos > 0 )
+        while ( a == wxT('0') && cur_pos > 0 )
         {
             cur_pos--;
             a = target.GetChar( cur_pos );
@@ -408,6 +441,7 @@ void wxPropertyGrid::DoubleToString(wxString& target,
 
         if ( cur_pos < target.length() )
             target.Truncate( cur_pos );
+        */
     }
 }
 
@@ -425,6 +459,13 @@ bool wxFloatPropertyClass::SetValueFromString( const wxString& text, int argFlag
 {
     wxString s;
     double value;
+
+    if ( text.length() == 0 )
+    {
+        SetValueToUnspecified();
+        return true;
+    }
+
     bool res = text.ToDouble(&value);
     if ( res )
     {
@@ -474,7 +515,7 @@ wxPG_END_PROPERTY_CLASS_BODY()
 WX_PG_IMPLEMENT_CONSTFUNC(wxBoolProperty,bool)
 WX_PG_IMPLEMENT_CLASSINFO(wxBoolProperty,wxBasePropertyClass)
 wxPG_GETCLASSNAME_IMPLEMENTATION(wxBoolProperty)
-const wxPGValueType* wxBoolPropertyClass::GetValueType() const { return wxPG_VALUETYPE(bool); }
+wxPG_VALUETYPE_MSGVAL wxBoolPropertyClass::GetValueType() const { return wxPG_VALUETYPE(bool); }
 
 const wxChar* wxPG_ClassName_wxBoolProperty = wxBoolProperty_ClassName;
 
@@ -496,8 +537,8 @@ wxBoolPropertyClass::wxBoolPropertyClass( const wxString& label, const wxString&
     int useVal;
     if ( value ) useVal = 1;
     else useVal = 0;
-    DoSetValue(useVal);
-    
+    DoSetValue((long)useVal);
+
     m_flags |= wxPG_PROP_USE_DCC;
 }
 
@@ -505,7 +546,10 @@ wxBoolPropertyClass::~wxBoolPropertyClass() { }
 
 void wxBoolPropertyClass::DoSetValue( wxPGVariant value )
 {
-    if ( wxPGVariantToLong(value) != 0 )
+    long v = wxPGVariantToLong(value);
+    if ( v == 2 )
+        SetValueToUnspecified();
+    else if ( v != 0 )
         m_value = 1;
     else
         m_value = 0;
@@ -534,6 +578,8 @@ int wxBoolPropertyClass::GetChoiceInfo( wxPGChoiceInfo* choiceinfo )
 {
     if ( choiceinfo )
     {
+        // 3 choice mode (ie. true, false, unspecified) does not work well (yet).
+        //choiceinfo->m_itemCount = wxPGGlobalVars->m_numBoolChoices;
         choiceinfo->m_itemCount = 2;
         choiceinfo->m_arrWxString = wxPGGlobalVars->m_boolChoices;
     }
@@ -546,9 +592,15 @@ bool wxBoolPropertyClass::SetValueFromString( const wxString& text, int /*argFla
     if ( text.CmpNoCase(wxPGGlobalVars->m_boolChoices[1]) == 0 || text.CmpNoCase(wxT("true")) == 0 )
         value = 1;
 
+    if ( text.length() == 0 )
+    {
+        SetValueToUnspecified();
+        return true;
+    }
+
     if ( (m_value && !value) || (!m_value && value) )
     {
-        DoSetValue ( value );
+        DoSetValue( (long) value );
         return true;
     }
     /*
@@ -628,7 +680,7 @@ wxPGVariant wxBaseEnumPropertyClass::DoGetValue() const
     int val;
     GetEntry(m_index,&val);
 
-    return val;
+    return wxPGVariantCreator(val);
 }
 
 wxString wxBaseEnumPropertyClass::GetValueAsString( int ) const
@@ -710,7 +762,7 @@ bool wxBaseEnumPropertyClass::SetValueFromInt ( long value, int argFlags )
 
 // Class body is in propdev.h.
 
-wxPGProperty* wxEnumProperty ( const wxString& label, const wxString& name, const wxChar** labels,
+wxPGProperty* wxEnumProperty( const wxString& label, const wxString& name, const wxChar** labels,
     const long* values, int value )
 {
     return new wxEnumPropertyClass (label,name,labels,values,value);
@@ -719,7 +771,7 @@ wxPGProperty* wxEnumProperty ( const wxString& label, const wxString& name, cons
 wxPGProperty* wxEnumProperty( const wxString& label, const wxString& name,
     const wxArrayString& labels, const wxArrayInt& values, int value )
 {
-    return new wxEnumPropertyClass (label,name,labels,values,value);
+    return new wxEnumPropertyClass(label,name,labels,values,value);
 }
 
 wxPGProperty* wxEnumProperty( const wxString& label, const wxString& name,
@@ -728,7 +780,7 @@ wxPGProperty* wxEnumProperty( const wxString& label, const wxString& name,
     return new wxEnumPropertyClass (label,name,labels,*((const wxArrayInt*)NULL),value);
 }
 
-wxPGProperty* wxEnumProperty ( const wxString& label, const wxString& name,
+wxPGProperty* wxEnumProperty( const wxString& label, const wxString& name,
     wxPGChoices& choices, int value )
 {
     return new wxEnumPropertyClass (label,name,choices,value);
@@ -748,7 +800,7 @@ wxEnumPropertyClass::wxEnumPropertyClass ( const wxString& label, const wxString
         m_choices.Add(labels,values);
 
         if ( GetItemCount() )
-            wxEnumPropertyClass::DoSetValue( value );
+            wxEnumPropertyClass::DoSetValue( (long)value );
     }
 }
 
@@ -769,7 +821,7 @@ wxEnumPropertyClass::wxEnumPropertyClass ( const wxString& label, const wxString
         m_choices.Add(labels,values);
 
         if ( GetItemCount() )
-            wxEnumPropertyClass::DoSetValue( value );
+            wxEnumPropertyClass::DoSetValue( (long)value );
     }
 }
 
@@ -784,7 +836,7 @@ wxEnumPropertyClass::wxEnumPropertyClass ( const wxString& label, const wxString
         m_choices = choices.ExtractData();
 
         if ( GetItemCount() )
-            wxEnumPropertyClass::DoSetValue( value );
+            wxEnumPropertyClass::DoSetValue( (long)value );
     }
 }
 
@@ -795,7 +847,7 @@ wxEnumPropertyClass::wxEnumPropertyClass ( const wxString& label, const wxString
     m_choices.Assign( choices );
 
     if ( GetItemCount() )
-        wxEnumPropertyClass::DoSetValue( value );
+        wxEnumPropertyClass::DoSetValue( (long)value );
 }
 
 int wxEnumPropertyClass::GetIndexForValue( int value ) const
@@ -1134,9 +1186,9 @@ wxFlagsPropertyClass::wxFlagsPropertyClass ( const wxString& label, const wxStri
     {
         m_choices.Set(labels,values);
 
-        wxASSERT ( GetItemCount() );
+        wxASSERT( GetItemCount() );
 
-        DoSetValue( value );
+        DoSetValue( (long)value );
     }
 }
 
@@ -1308,11 +1360,12 @@ long wxFlagsPropertyClass::IdToBit ( const wxString& id ) const
     const wxArrayInt& values = GetValues();
     for ( i = 0; i < GetItemCount(); i++ )
     {
+#if wxCHECK_VERSION(2,9,0)
+        const wxString ptr = GetLabel(i);
+#else
         const wxChar* ptr = GetLabel(i);
-        if ( id == ptr
-             /*wxStrncmp(id,ptr,id_len) == 0 &&
-             ptr[id_len] == 0*/
-           )
+#endif
+        if ( id == ptr )
         {
             //*pindex = i;
             if ( values.GetCount() )
@@ -1342,7 +1395,7 @@ void wxFlagsPropertyClass::ChildChanged ( wxPGProperty* p )
     wxASSERT( this == p->GetParent() );
 
     const wxArrayInt& values = GetValues();
-    long val = p->DoGetValue().GetRawLong(); // bypass type checking
+    long val = p->DoGetValue().GetLong(); // bypass type checking
     unsigned int iip = p->GetIndexInParent();
     unsigned long vi = (1<<iip);
     if ( values.GetCount() ) vi = values[iip];
@@ -1498,13 +1551,49 @@ void wxFilePropertyClass::DoSetValue( wxPGVariant value )
     // Find index for extension.
     if ( m_indFilter < 0 && m_fnstr.length() )
     {
+        wxString ext = m_filename.GetExt();
+        int curind = 0;
+        size_t pos = 0;
+        size_t len = m_wildcard.length();
+
+        pos = m_wildcard.find(wxT("|"), pos);
+        while ( pos != wxString::npos && pos < (len-3) )
+        {
+            size_t ext_begin = pos + 3;
+
+            pos = m_wildcard.find(wxT("|"), ext_begin);
+            if ( pos == wxString::npos )
+                pos = len;
+            wxString found_ext = m_wildcard.substr(ext_begin, pos-ext_begin);
+
+            if ( found_ext.length() > 0 )
+            {
+                if ( found_ext[0] == wxT('*') )
+                {
+                    m_indFilter = curind;
+                    break;
+                }
+                if ( ext.CmpNoCase(found_ext) == 0 )
+                {
+                    m_indFilter = curind;
+                    break;
+                }
+            }
+
+            if ( pos != len )
+                pos = m_wildcard.find(wxT("|"), pos+1);
+
+            curind++;
+        }
+
+        /*
         wxChar a = wxT(' ');
         const wxChar* p = m_wildcard.c_str();
         wxString ext = m_filename.GetExt();
         int curind = 0;
         do
         {
-            while ( a && a != '|' ) { a = *p; p++; }
+            while ( a && a != wxT('|') ) { a = *p; p++; }
             if ( !a ) break;
 
             a = *p;
@@ -1541,6 +1630,7 @@ void wxFilePropertyClass::DoSetValue( wxPGVariant value )
             curind++;
 
         } while ( a );
+        */
     }
 }
 
@@ -2261,7 +2351,7 @@ void wxArrayStringPropertyClass::DoSetValue( wxPGVariant value )
 
 wxPGVariant wxArrayStringPropertyClass::DoGetValue() const
 {
-    return wxPGVariant(m_value);
+    return wxPGVariantCreator(m_value);
 }
 
 wxString wxArrayStringPropertyClass::GetValueAsString( int WXUNUSED(argFlags) ) const
@@ -2318,12 +2408,12 @@ void wxPropertyGrid::ArrayStringToString( wxString& dst, const wxArrayString& sr
 
         if ( i < (itemCount-1) )
         {
-            dst.append ( postDelim );
-            dst.append ( wxT(" ") );
-            dst.append ( preas );
+            dst.append( wxString(postDelim) );
+            dst.append( wxT(" ") );
+            dst.append( wxString(preas) );
         }
         else if ( preDelim )
-            dst.append ( postDelim );
+            dst.append( wxString(postDelim) );
     }
 }
 
@@ -2449,7 +2539,7 @@ wxPGProperty* wxCustomProperty( const wxString& label, const wxString& name )
 WX_PG_IMPLEMENT_CLASSINFO(wxCustomProperty,wxBaseParentPropertyClass)
 wxPG_GETCLASSNAME_IMPLEMENTATION(wxCustomProperty)
 
-const wxPGValueType* wxCustomPropertyClass::GetValueType() const
+wxPG_VALUETYPE_MSGVAL wxCustomPropertyClass::GetValueType() const
 {
     return wxPG_VALUETYPE(wxString);
 }

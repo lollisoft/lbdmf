@@ -13,7 +13,7 @@
 #define __WX_PG_DOX_MAINPAGE_H__
 
 /**
-    \mainpage wxPropertyGrid 1.2.3 Overview
+    \mainpage wxPropertyGrid 1.2.8 Overview
 
       wxPropertyGrid is a specialized two-column grid for editing properties
     such as strings, numbers, flagsets, fonts, and colours. It allows hierarchial,
@@ -166,7 +166,7 @@
         pg->Append( wxFileProperty(wxT("FileProperty"), wxPG_LABEL, wxEmptyString) );
 
         // Extra: set wildcard for file property (format same as in wxFileDialog).
-        pg->SetPropertyAttribute(wxT("TextFile"),
+        pg->SetPropertyAttribute(wxT("FileProperty"),
                                  wxPG_FILE_WILDCARD,
                                  wxT("All files (*.*)|*.*"));
 
@@ -217,10 +217,11 @@
         // Set new label - we need to use the new name.
         pg->SetPropertyLabel( wxT("X"), wxT("New Label") );
 
-        // Disable the property. It's text will appear greyed.
-        // This is probably the closest you can get if you want
-        // a "read-only" property.
+        // Disable the property.
         pg->DisableProperty( MyPropertyId );
+
+        // Set property as read-only.
+        pg->SetPropertyReadOnly( MyPropertyId );
 
     \endcode
 
@@ -1056,7 +1057,26 @@
     the sizer setup and SetSize calls!</b> (ie. usually at the end of the
     frame/dialog constructor)
 
-    \section proplist Property Descriptions (Updated!)
+    \subsection compilerdefines Supported Preprocessor Defines
+
+    Here is list of supported preprocessor defines (other than those that relate with
+    wxWidgets core library):
+
+    <b>wxPG_USE_WXMODULE:</b> Define as 0 to not use wxModule to manage global variables.
+    This may be needed in cases where wxPropertyGrid is linked as a plugin DLL, or when
+    wxPropertyGrid is linked statically in a DLL.
+
+    <b>WXMAKINGLIB_PROPGRID:</b> Define if you are linking wxPropertyGrid statically
+    but wxWidgets itself is DLL.
+
+    <b>WXMAKINGDLL_PROPGRID:</b> Define when building wxPropertyGrid as a DLL. This
+    should be automatically defined correctly by the Bakefile-generated makefiles.
+
+    <b>wxPG_COMPATIBILITY_1_0_0:</b> Define to make wxPropertyGrid more compatible with the
+    old 1.0.x releases.
+
+
+    \section proplist Property Type Descriptions (Updated!)
 
     Here are descriptions of built-in properties, with attributes
     (see wxPropertyGrid::SetPropertyAttribute) that apply to them.
@@ -1574,7 +1594,8 @@
 
         #include <wx/propgrid/propdev.h>
 
-        WX_PG_IMPLEMENT_STRING_PROPERTY(PROPNAME,FLAGS)
+        // FLAGS can be wxPG_NO_ESCAPE if escape sequences shall not be expanded.
+        WX_PG_IMPLEMENT_STRING_PROPERTY(PROPNAME, FLAGS)
 
         bool PROPNAMEClass::OnButtonClick( wxPropertyGrid* propgrid, wxString& value )
         {
@@ -1596,7 +1617,7 @@
 
         #include <wx/propgrid/propdev.h>
 
-        WX_PG_IMPLEMENT_STRING_PROPERTY_WITH_VALIDATOR(PROPNAME)
+        WX_PG_IMPLEMENT_STRING_PROPERTY_WITH_VALIDATOR(PROPNAME, FLAGS)
 
         bool PROPNAMEClass::OnButtonClick( wxPropertyGrid* propgrid, wxString& value )
         {
@@ -1832,7 +1853,7 @@
         //   instead of wxPG_INIT_REQUIRED_TYPE.
         WX_PG_IMPLEMENT_DERIVED_TYPE(TYPENAME,PARENTVT,DEFVAL)
 
-        // For implementing value type for a native value.
+        // For implementing value type for a POD (plain 'ol data) value.
         // Generally should not be used since it is meant for
         // wxString, int, double etc. which are already implemented.
         WX_PG_IMPLEMENT_VALUE_TYPE(TYPE,DEFPROPERTY,TYPESTRING,GETTER,DEFVAL)
@@ -1865,6 +1886,10 @@
       (search for wxPGTextCtrlEditor).
 
     - For additional information, see wxPGEditor class reference
+
+    \subsection wxpythoneditors In wxPython
+
+    - See README-propgrid-wxPython.txt
 
 */
 
