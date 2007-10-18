@@ -1,7 +1,7 @@
-format 41
+format 44
 "BoUML"
-  revision 20
-  modified_by 2 "lothar"
+  revision 21
+  modified_by 107 "lothar"
 
 
   
@@ -37,7 +37,7 @@ format 41
   mark_for_import
   
   ncouples 4
-  key "gxmi path" value "/Users/lothar/develop/Projects/CPP/AppDevelopment/XSLT_Templates/XMIToDMF/test.xmi"
+  key "gxmi path" value "/home/lothar/develop/Projects/CPP/AppDevelopment/XSLT_Templates/XMIToDMF/test.xmi"
   key "gxmi gen views" value "no"
   key "gxmi encoding" value "ISO-8859-1"
   key "gxmi taggedvalue" value "1"
@@ -52,6 +52,12 @@ format 41
     show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default
     //object diagram settings
      write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default
+    //state diagram settings
+    package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default draw_all_relations default shadow default
+    show_activities default region_horizontally default drawing_language default
+    //activity diagram settings
+    package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
+    show_infonote default drawing_language default
     usecasediagram 128258 "Admin formulars"
       package_name_in_tab default show_context default auto_label_position default draw_all_relations no shadow default
       size A4
@@ -64,6 +70,7 @@ ${members}};
 ${inlines}
 "
       java_decl ""
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -79,6 +86,12 @@ ${inlines}
       show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default
       //object diagram settings
        write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default
+      //state diagram settings
+      package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default draw_all_relations default shadow default
+      show_activities default region_horizontally default drawing_language default
+      //activity diagram settings
+      package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
+      show_infonote default drawing_language default
     end
   end
 end

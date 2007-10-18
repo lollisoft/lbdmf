@@ -1,7 +1,7 @@
-format 41
+format 44
 "CRM" // CRM
-  revision 27
-  modified_by 2 "lothar"
+  revision 28
+  modified_by 107 "lothar"
   // class settings
   //class diagram settings
   draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
@@ -42,8 +42,7 @@ format 41
     //activity diagram settings
     package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
     show_infonote default drawing_language default
-    
-    classdiagram 128130 "Project"
+    classdiagram 128130 "Kunde-Kontakte-Adresse"
       draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
       size A4
     end
@@ -55,6 +54,7 @@ ${members}};
 ${inlines}
 "
       java_decl ""
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -63,6 +63,7 @@ ${inlines}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
+	php_decl ""
 	idl_decl ""
       end
 
@@ -70,7 +71,7 @@ ${inlines}
 	relation_ref 129026 // Firmenname
       end
 
-      classrelation 129282 // (Firmenname)
+      classrelation 129282 // Firmenname
 	relation_ref 128642 // Firmenname
       end
 
@@ -109,6 +110,7 @@ ${inlines}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
+	php_decl ""
 	idl_decl ""
       end
     end
@@ -120,6 +122,7 @@ ${members}};
 ${inlines}
 "
       java_decl ""
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -128,6 +131,7 @@ ${inlines}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
+	php_decl ""
 	idl_decl ""
       end
 
@@ -136,6 +140,7 @@ ${inlines}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
+	php_decl ""
 	idl_decl ""
       end
 
@@ -149,7 +154,7 @@ ${inlines}
 	  b role_name "" protected
 	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
 "
-	    classrelation_ref 129282 // (Firmenname)
+	    classrelation_ref 129282 // Firmenname
       end
 
       classrelation 129538 // Auftragsnummer
@@ -161,6 +166,7 @@ ${inlines}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
+	php_decl ""
 	idl_decl ""
       end
 
@@ -190,6 +196,7 @@ ${inlines}
 "
 	
 	
+	
       end
     end
 
@@ -200,6 +207,7 @@ ${members}};
 ${inlines}
 "
       java_decl ""
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -208,6 +216,7 @@ ${inlines}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
+	php_decl ""
 	idl_decl ""
       end
 
@@ -216,6 +225,7 @@ ${inlines}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
+	php_decl ""
 	idl_decl ""
       end
 
@@ -252,6 +262,7 @@ ${members}};
 ${inlines}
 "
       java_decl ""
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -260,6 +271,7 @@ ${inlines}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
+	php_decl ""
 	idl_decl ""
       end
 
@@ -268,6 +280,7 @@ ${inlines}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
+	php_decl ""
 	idl_decl ""
       end
 
@@ -276,6 +289,7 @@ ${inlines}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
+	php_decl ""
 	idl_decl ""
       end
 
@@ -288,6 +302,7 @@ ${inlines}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
+	php_decl ""
 	idl_decl ""
       end
 
@@ -296,6 +311,7 @@ ${inlines}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
+	php_decl ""
 	idl_decl ""
       end
 
@@ -328,6 +344,7 @@ ${members}};
 ${inlines}
 "
       java_decl ""
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -349,6 +366,7 @@ ${inlines}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
+	php_decl ""
 	idl_decl ""
       end
 
@@ -357,6 +375,7 @@ ${inlines}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
+	php_decl ""
 	idl_decl ""
       end
 
@@ -369,6 +388,7 @@ ${inlines}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
+	php_decl ""
 	idl_decl ""
       end
 
@@ -386,6 +406,7 @@ ${inlines}
 "
 	
 	
+	
       end
     end
 
@@ -396,6 +417,7 @@ ${members}};
 ${inlines}
 "
       java_decl ""
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -404,6 +426,7 @@ ${inlines}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
+	php_decl ""
 	idl_decl ""
       end
 
@@ -412,6 +435,7 @@ ${inlines}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
+	php_decl ""
 	idl_decl ""
       end
 
@@ -448,6 +472,7 @@ ${members}};
 ${inlines}
 "
       java_decl ""
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -456,6 +481,7 @@ ${inlines}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
+	php_decl ""
 	idl_decl ""
       end
 
@@ -464,6 +490,7 @@ ${inlines}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
+	php_decl ""
 	idl_decl ""
       end
 
@@ -472,6 +499,7 @@ ${inlines}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
+	php_decl ""
 	idl_decl ""
       end
 
@@ -514,6 +542,7 @@ ${inlines}
 "
 	
 	
+	
       end
     end
 
@@ -524,6 +553,7 @@ ${members}};
 ${inlines}
 "
       java_decl ""
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -532,6 +562,7 @@ ${inlines}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
+	php_decl ""
 	idl_decl ""
       end
 
@@ -540,6 +571,7 @@ ${inlines}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
+	php_decl ""
 	idl_decl ""
       end
 
@@ -615,6 +647,7 @@ ${members}};
 ${inlines}
 "
       java_decl ""
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -627,6 +660,7 @@ ${inlines}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
+	php_decl ""
 	idl_decl ""
       end
 
@@ -635,6 +669,7 @@ ${inlines}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
+	php_decl ""
 	idl_decl ""
       end
 
@@ -659,6 +694,7 @@ ${members}};
 ${inlines}
 "
       java_decl ""
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -667,6 +703,7 @@ ${inlines}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
+	php_decl ""
 	idl_decl ""
       end
 
@@ -675,6 +712,7 @@ ${inlines}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
+	php_decl ""
 	idl_decl ""
       end
 
@@ -683,6 +721,7 @@ ${inlines}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
+	php_decl ""
 	idl_decl ""
       end
 
@@ -691,6 +730,7 @@ ${inlines}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
+	php_decl ""
 	idl_decl ""
       end
 
@@ -705,6 +745,10 @@ ${inlines}
       classrelation 137986 // (Stadt)
 	relation_ref 135042 // Stadt
       end
+
+      classrelation 128235 // (Stadt)
+	relation_ref 128107 // Stadt
+      end
     end
 
     class 131586 "Kontakte"
@@ -714,6 +758,7 @@ ${members}};
 ${inlines}
 "
       java_decl ""
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -722,6 +767,7 @@ ${inlines}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
+	php_decl ""
 	idl_decl ""
       end
 
@@ -730,6 +776,7 @@ ${inlines}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
+	php_decl ""
 	idl_decl ""
       end
 
@@ -742,6 +789,7 @@ ${inlines}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
+	php_decl ""
 	idl_decl ""
       end
 
@@ -750,6 +798,7 @@ ${inlines}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
+	php_decl ""
 	idl_decl ""
       end
 
@@ -758,6 +807,7 @@ ${inlines}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
+	php_decl ""
 	idl_decl ""
       end
 
@@ -779,6 +829,7 @@ ${inlines}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
+	php_decl ""
 	idl_decl ""
       end
 
@@ -787,13 +838,97 @@ ${inlines}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
+	php_decl ""
 	idl_decl ""
+      end
+
+      classrelation 128491 // (Name)
+	relation_ref 128235 // Name
       end
     end
 
     classdiagram 129922 "Create Customer"
       draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
       size A4
+    end
+
+    classdiagram 128107 "Konkurrenten"
+      draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
+      size A4
+    end
+
+    class 128107 "Konkurrenten"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      attribute 128107 "Firmenname"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	idl_decl ""
+      end
+
+      attribute 128235 "Webadresse"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	idl_decl ""
+      end
+
+      classrelation 128107 // (Stadt)
+	relation 128107 o--- name "Stadt"
+	  stereotype "masterdetail_action"
+	  a role_name "" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 128107 // (Stadt)
+	  b role_name "" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 128235 // (Stadt)
+      end
+
+      attribute 128363 "Kurzbeschreibung"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	idl_decl ""
+      end
+
+      attribute 128491 "Langbeschreibung"
+	protected explicit_type "bigstring"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	idl_decl ""
+      end
+
+      classrelation 128363 // (Name)
+	relation 128235 o--- name "Name"
+	  stereotype "masterdetail_action"
+	  a role_name "" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 128363 // (Name)
+	  b role_name "" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 128491 // (Name)
+      end
     end
   end
 end
