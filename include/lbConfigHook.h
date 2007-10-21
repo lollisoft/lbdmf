@@ -143,6 +143,11 @@
    #define TRMemResetLocalCount()   
    #define TRMemSetModuleName(name)
    #define TRMemSetAdrBreakPoint(ptr, c)
+   #define TRMemStartLocalCount()
+   #define TRMemStopLocalCount()
+   #define TRMemResetLocalCount()
+   #define TRMemFree(name) free(name)
+   #define TRMemSetPointerValid(p1, p2)
   #endif
 
 #ifdef SOLARIS  

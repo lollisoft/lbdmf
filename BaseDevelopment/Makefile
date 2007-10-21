@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.144 $
+# * $Revision: 1.145 $
 # * $Name:  $
-# * $Id: Makefile,v 1.144 2007/10/16 10:33:27 lollisoft Exp $
+# * $Id: Makefile,v 1.145 2007/10/21 21:30:30 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.145  2007/10/21 21:30:30  lollisoft
+# * Added mpatrol support that partly works on small test apps. wxWidgets gets very slow.
+# *
 # * Revision 1.144  2007/10/16 10:33:27  lollisoft
 # * Moved desktop menu icon creation to spec file.
 # *
@@ -1071,6 +1074,11 @@ ifeq ($(OSTYPE), linux)
 
 ../vendor/propgrid: dummy
 	$(MAKE) -s -C $@ -e MODULE=libwxPropgrid -e TARGET=$(TARGETWXSO) -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@
+	$(MAKE) -s -C $@ install-strip
+
+../vendor/mpatrol/src: dummy
+	$(MAKE) -s -C $@ -e MODULE=libmpatrol -e TARGET=$(TARGETSHARED) -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@
 	$(MAKE) -s -C $@ install-strip
 

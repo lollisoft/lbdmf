@@ -25,11 +25,14 @@
 #            73252 Lenningen (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.103 $
+# * $Revision: 1.104 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.103 2007/10/14 08:19:36 lollisoft Exp $
+# * $Id: STD_MAKE,v 1.104 2007/10/21 21:30:32 lollisoft Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.104  2007/10/21 21:30:32  lollisoft
+# * Added mpatrol support that partly works on small test apps. wxWidgets gets very slow.
+# *
 # * Revision 1.103  2007/10/14 08:19:36  lollisoft
 # * No debug.
 # *
@@ -649,8 +652,8 @@ endif
 
 ifeq ($(OSTYPE), linux)
 
-DEBUG_MEMORY=no
-DEBUG=no
+DEBUG_MEMORY=yes
+DEBUG=yes
 
 
 ifeq ($(DEBUG), yes)
@@ -687,7 +690,7 @@ C_ELFOPS= $(C_OPS)
 L_OPS   = -o
 
 ifeq ($(DEBUG_MEMORY), yes)
-LIBS    = -ldl -lstdc++ -lmpatrol -lbfd 
+LIBS    = -ldl -lstdc++ -lc ~/lib/libmpatrol.a -lbfd 
 endif
 
 ifeq ($(DEBUG_MEMORY), no)

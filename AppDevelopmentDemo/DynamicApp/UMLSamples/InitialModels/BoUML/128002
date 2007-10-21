@@ -1,7 +1,7 @@
 format 44
 "CRM" // CRM
-  revision 28
-  modified_by 107 "lothar"
+  revision 29
+  modified_by 56 "lothar"
   // class settings
   //class diagram settings
   draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
@@ -42,6 +42,11 @@ format 44
     //activity diagram settings
     package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
     show_infonote default drawing_language default
+    classdiagram 128107 "Konkurrenten"
+      draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
+      size A4
+    end
+
     classdiagram 128130 "Kunde-Kontakte-Adresse"
       draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
       size A4
@@ -746,7 +751,7 @@ ${inlines}
 	relation_ref 135042 // Stadt
       end
 
-      classrelation 128235 // (Stadt)
+      classrelation 128235 // Stadt
 	relation_ref 128107 // Stadt
       end
     end
@@ -842,17 +847,12 @@ ${inlines}
 	idl_decl ""
       end
 
-      classrelation 128491 // (Name)
+      classrelation 128491 // Name
 	relation_ref 128235 // Name
       end
     end
 
     classdiagram 129922 "Create Customer"
-      draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
-      size A4
-    end
-
-    classdiagram 128107 "Konkurrenten"
       draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
       size A4
     end
@@ -896,7 +896,7 @@ ${inlines}
 	  b role_name "" protected
 	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
 "
-	    classrelation_ref 128235 // (Stadt)
+	    classrelation_ref 128235 // Stadt
       end
 
       attribute 128363 "Kurzbeschreibung"
@@ -927,7 +927,7 @@ ${inlines}
 	  b role_name "" protected
 	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
 "
-	    classrelation_ref 128491 // (Name)
+	    classrelation_ref 128491 // Name
       end
     end
   end

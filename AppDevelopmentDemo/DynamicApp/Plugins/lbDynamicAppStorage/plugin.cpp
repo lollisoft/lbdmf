@@ -48,7 +48,9 @@ extern "C" {
 
 #include <stdio.h>
 #ifndef OSX
+#ifndef USE_MPATROL
 #include <malloc.h>
+#endif
 #endif
 #ifdef OSX
 #include <sys/malloc.h>
