@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.145 $
+# * $Revision: 1.146 $
 # * $Name:  $
-# * $Id: Makefile,v 1.145 2007/10/21 21:30:30 lollisoft Exp $
+# * $Id: Makefile,v 1.146 2007/10/28 16:59:53 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.146  2007/10/28 16:59:53  lollisoft
+# * Added databaselayer as vendor target.
+# *
 # * Revision 1.145  2007/10/21 21:30:30  lollisoft
 # * Added mpatrol support that partly works on small test apps. wxWidgets gets very slow.
 # *
@@ -609,6 +612,7 @@ ALLTARGETS = \
 	../include/lbkey.h \
 	../vendor/dosdir \
 	../vendor/mkmk \
+	../vendor/databaselayer/src/implementations/ODBC \
 	lbHook \
 	lbModule \
 	lbMetaApplication \
@@ -941,6 +945,10 @@ mkrelease:
 #	lbXMLConfig/lbDOMConfig \
 
 dummy:
+
+../vendor/databaselayer/src/implementations/ODBC: dummy
+	$(MAKE) -s -C $@ -e MODULE=databaselayer_odbc -e TARGET=$(TARGETWXSO) -e CUSTOM_FILES=../../*.cpp -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@
 
 ../vendor/c-goldparser: dummy
 	$(MAKE) -s -C $@ -e MODULE=gold -e TARGET=$(TARGETEXE) -f $(MAKE_CONFIG_FILE)
