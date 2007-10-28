@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.146 $
+# * $Revision: 1.147 $
 # * $Name:  $
-# * $Id: Makefile,v 1.146 2007/10/28 16:59:53 lollisoft Exp $
+# * $Id: Makefile,v 1.147 2007/10/28 23:22:39 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.147  2007/10/28 23:22:39  lollisoft
+# * Small changes to correctly compile generated code.
+# *
 # * Revision 1.146  2007/10/28 16:59:53  lollisoft
 # * Added databaselayer as vendor target.
 # *
@@ -853,6 +856,7 @@ install:
 	for sub_target in $(ALLDIRS); do \
 		$(MAKE) -C $$sub_target install; \
 	done
+	$(MAKE) -C ../AppDevelopment install
 
 ifndef RPMBUILD
 
