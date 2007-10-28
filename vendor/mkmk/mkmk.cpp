@@ -12,11 +12,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.85 $
+ * $Revision: 1.86 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.85 2007/07/05 16:40:32 lollisoft Exp $
+ * $Id: mkmk.cpp,v 1.86 2007/10/28 16:56:45 lollisoft Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.86  2007/10/28 16:56:45  lollisoft
+ * Corrected object file name determination problem when having path in the name.
+ *
  * Revision 1.85  2007/07/05 16:40:32  lollisoft
  * Corrected Mac icon copy rule.
  *
@@ -1610,7 +1613,7 @@ void ShowHelp(int argc, char *argv[])
 
   fprintf(stderr, "Enhanced by Lothar Behrens (lothar.behrens@lollisoft.de)\n\n");
 
-  fprintf(stderr, "MKMK: makefile generator $Revision: 1.85 $\n");
+  fprintf(stderr, "MKMK: makefile generator $Revision: 1.86 $\n");
   fprintf(stderr, "Usage: MKMK lib|exe|dll|so modulname includepath,[includepath,...] file1 [file2 file3...]\n");
   
   fprintf(stderr, "Your parameters are: ");
@@ -1815,7 +1818,8 @@ void WriteDep(FILE *f, char *Name, TIncludeParser *p)
   replace(ObjNameC, "/", "\\\\");
   
   ListFiles(f,Line,&p->l);
-
+  int len;
+  
   switch (targettype) {
         case LIB_TARGET:
                 printf("\t\t@%s $(C_LIBOPS) $(MOD_INCL) %s\n\n", Compiler, Name);
@@ -1837,31 +1841,45 @@ void WriteDep(FILE *f, char *Name, TIncludeParser *p)
 */
                 break;
         case EXE_TARGET:
-        	printf("\t\t@echo Build %s\n", NameC);
-        	if (CPPFlag == 0) printf("\t\t%s $(C_EXEOPS) $(MOD_INCL) -Fo=%s %s\n\n", Compiler, ObjNameC, Name);
-        	if (CPPFlag == 1) printf("\t\t%s $(CPP_EXEOPS) $(MOD_INCL_CPP) -Fo=%s %s\n\n", Compiler, ObjName, Name);
+				printf("\t\t@echo Build %s\n", NameC);
+				if (CPPFlag == 0) printf("\t\t%s $(C_EXEOPS) $(MOD_INCL) -Fo=%s %s\n\n", Compiler, ObjNameC, Name);
+				if (CPPFlag == 1) printf("\t\t%s $(CPP_EXEOPS) $(MOD_INCL_CPP) -Fo=%s %s\n\n", Compiler, ObjName, Name);
 //                printf("\t\t%s $(C_EXEOPS) $(MOD_INCL) %s\n\n", Compiler, Name);
                 break;
         case ELF_TARGET:
 	case ELF_BUNDLE_TARGET:
-		printf("\t\t@echo Build %s\n", NameC);
-                printf("\t\t@%s $(C_ELFOPS) $(MOD_INCL) %s -o %s\n\n", Compiler, Name, ObjName);
-                break;
-	case SO_BUNDLE_TARGET:
-        	printf("\t\t@echo Build %s\n", NameC);
-                printf("\t\t@%s -c -fPIC $(C_SOOPS) $(MOD_INCL) %s -o %s\n\n", Compiler, Name, ObjName);
-                break;
-        case SO_TARGET:
-        case SOPLUGIN_TARGET:
-                {
-                int pos = 0;
-                for (int i = 0; i < strlen(ObjName); i++) {
+				len = strlen(ObjName);
+                for (int i = len; i >= 0; i--) {
                     if (ObjName[i] == '.') {
                         ObjName[i] = 0;
                         break;
                     }
                 }
-        	printf("\t\t@echo Build %s\n", NameC);
+				printf("\t\t@echo Build %s\n", NameC);
+                printf("\t\t@%s $(C_ELFOPS) $(MOD_INCL) %s -o %s.o\n\n", Compiler, Name, ObjName);
+                break;
+	case SO_BUNDLE_TARGET:
+				len = strlen(ObjName);
+                for (int i = len; i >= 0; i--) {
+                    if (ObjName[i] == '.') {
+                        ObjName[i] = 0;
+                        break;
+                    }
+                }
+				printf("\t\t@echo Build %s\n", NameC);
+                printf("\t\t@%s -c -fPIC $(C_SOOPS) $(MOD_INCL) %s -o %s.o\n\n", Compiler, Name, ObjName);
+                break;
+        case SO_TARGET:
+        case SOPLUGIN_TARGET:
+                {
+				len = strlen(ObjName);
+                for (int i = len; i >= 0; i--) {
+                    if (ObjName[i] == '.') {
+                        ObjName[i] = 0;
+                        break;
+                    }
+                }
+				printf("\t\t@echo Build %s\n", NameC);
                 printf("\t\t@%s -c -fPIC $(C_SOOPS) $(MOD_INCL) %s -o %s.o\n\n", Compiler, Name, ObjName);
                 }
                 break;
@@ -1869,22 +1887,22 @@ void WriteDep(FILE *f, char *Name, TIncludeParser *p)
 	case WXSHARED_TARGET:
     case WXSOPLUGIN_TARGET:
                 {
-                int pos = 0;
-                for (int i = 0; i < strlen(ObjName); i++) {
+				len = strlen(ObjName);
+                for (int i = len; i >= 0; i--) {
                     if (ObjName[i] == '.') {
                         ObjName[i] = 0;
                         break;
                     }
                 }
-        	printf("\t\t@echo Build %s\n", NameC);
+				printf("\t\t@echo Build %s\n", NameC);
                 printf("\t\t@%s -c -fPIC $(C_SOOPS) $(MOD_INCL) %s -o %s.o\n\n", Compiler, Name, ObjName);
                 }
                 break;
     case FRAMEWORK_TARGET:
     case WXFRAMEWORK_TARGET:
                 {
-                int pos = 0;
-                for (int i = 0; i < strlen(ObjName); i++) {
+				len = strlen(ObjName);
+                for (int i = len; i >= 0; i--) {
                     if (ObjName[i] == '.') {
                         ObjName[i] = 0;
                         break;
