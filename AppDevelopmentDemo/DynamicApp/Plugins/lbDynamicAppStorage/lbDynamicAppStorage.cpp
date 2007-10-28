@@ -782,21 +782,36 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_Database* iDB) {
 		_LOG << "lb_I_Action_Steps instance is NULL." LOG_
 	}
 	
+	meta->setStatusText("Info", "Load database configuration (reports) ...");
 	reports->accept(*&aspect);
+	meta->setStatusText("Info", "Load database configuration (reportparams) ...");
 	reportparams->accept(*&aspect);
+	meta->setStatusText("Info", "Load database configuration (reportelements) ...");
 	reportelements->accept(*&aspect);
+	meta->setStatusText("Info", "Load database configuration (reportelementtypes) ...");
 	reportelementtypes->accept(*&aspect);
+	meta->setStatusText("Info", "Load database configuration (reporttextblocks) ...");
 	reporttextblocks->accept(*&aspect);
 	
+	meta->setStatusText("Info", "Load database configuration (ApplicationFormulars) ...");
 	ApplicationFormulars->accept(*&aspect);
+	meta->setStatusText("Info", "Load database configuration (forms) ...");
 	forms->accept(*&aspect);
+	meta->setStatusText("Info", "Load database configuration (formularfields) ...");
 	formularfields->accept(*&aspect);
+	meta->setStatusText("Info", "Load database configuration (columntypes) ...");
 	columntypes->accept(*&aspect);
+	meta->setStatusText("Info", "Load database configuration (formActions) ...");
 	formActions->accept(*&aspect);
+	meta->setStatusText("Info", "Load database configuration (formParams) ...");
 	formParams->accept(*&aspect);
+	meta->setStatusText("Info", "Load database configuration (appParams) ...");
 	appParams->accept(*&aspect);
+	meta->setStatusText("Info", "Load database configuration (appActions) ...");
 	appActions->accept(*&aspect);
+	meta->setStatusText("Info", "Load database configuration (appActionTypes) ...");
 	appActionTypes->accept(*&aspect);
+	meta->setStatusText("Info", "Load database configuration (appActionSteps) ...");
 	appActionSteps->accept(*&aspect);
 
 	UAP_REQUEST(getModuleInstance(), lb_I_String, name)
@@ -901,6 +916,7 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_Database* iDB) {
 	
 	params++;
 	meta->setActiveDocument(*&params);
+	meta->setStatusText("Info", "Load database configuration done.");
 	
 	return err;
 }
