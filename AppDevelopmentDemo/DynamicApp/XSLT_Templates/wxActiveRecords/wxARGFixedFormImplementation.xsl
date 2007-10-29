@@ -64,41 +64,18 @@
  *  <xsl:value-of select="$ApplicationName"/>
  */
  
-<xsl:call-template name="createCPPPreample"/>
-
-#ifdef __GNUG__
-#pragma implementation "<xsl:value-of select="$ApplicationName"/>.cpp"
-#pragma interface "<xsl:value-of select="$ApplicationName"/>.cpp"
-#endif
-
-// For compilers that support precompilation, includes "wx/wx.h".
-#include &lt;wx/wxprec.h&gt;
-
-#ifdef __BORLANDC__
-#pragma hdrstop
-#endif
-
-#ifndef WX_PRECOMP
-#include &lt;wx/wx.h&gt;
-#endif
-
-#include &lt;wx/wizard.h&gt;
-#include &lt;wx/image.h&gt;
-
-// Include base class definition
-#include &lt;<xsl:value-of select="$ApplicationName"/>Base.h&gt;
-//#include &lt;<xsl:value-of select="$ApplicationName"/><xsl:value-of select="$FormName"/>Implementation.h&gt; 
+<!--<xsl:call-template name="createCPPPreample"/>-->
 
 <xsl:call-template name="createFormClassImpl">
 		<xsl:with-param name="ApplicationID"><xsl:value-of select="$ApplicationID"/></xsl:with-param>
 		<xsl:with-param name="FormularID"><xsl:value-of select="$FormularID"/></xsl:with-param>
 </xsl:call-template>
-  
+<!--  
 <xsl:call-template name="createFormPlugin">
 		<xsl:with-param name="ApplicationID"><xsl:value-of select="$ApplicationID"/></xsl:with-param>
 		<xsl:with-param name="FormularID"><xsl:value-of select="$FormularID"/></xsl:with-param>
 </xsl:call-template>
-
+-->
 </exsl:document>
 
 </xsl:template>
