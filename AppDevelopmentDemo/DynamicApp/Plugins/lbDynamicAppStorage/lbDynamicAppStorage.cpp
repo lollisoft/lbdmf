@@ -204,11 +204,11 @@ lbErrCodes LB_STDCALL lbDynamicAppXMLStorage::save(lb_I_OutputStream* oStream) {
 	*name = "DBColumns";
 	uk = document->getElement(&key);
 	QI(uk, lb_I_DBColumns, dbColumns)
-			
+
 	*name = "FormularFields";
 	uk = document->getElement(&key);
 	QI(uk, lb_I_Formular_Fields, formularfields)
-			
+	
 	*name = "ColumnTypes";
 	uk = document->getElement(&key);
 	QI(uk, lb_I_Column_Types, columntypes)

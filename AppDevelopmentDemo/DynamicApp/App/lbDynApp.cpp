@@ -394,6 +394,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::loadDatabaseSchema(lb_I_Unknown* uk)
 		AQUIRE_PLUGIN(lb_I_DBForeignKeys, Model, dbForeignKeys, "'foreign keys'")
 		AQUIRE_PLUGIN(lb_I_DBColumns, Model, dbColumns, "'database columns'")
 		AQUIRE_PLUGIN(lb_I_DBTables, Model, dbTables, "'database tables'")
+		AQUIRE_PLUGIN(lb_I_Formular_Fields, Model, formularfields, "'formular fields'")
 		
 		UAP(lb_I_Parameter, param)
 		UAP_REQUEST(manager.getPtr(), lb_I_Container, document)
@@ -412,9 +413,12 @@ lbErrCodes LB_STDCALL lbDynamicApplication::loadDatabaseSchema(lb_I_Unknown* uk)
 		UAP_REQUEST(getModuleInstance(), lb_I_Integer, AppID)
 		*name = "SaveApplicationID";
 		param->getUAPInteger(*&name, *&AppID);	
+		_LOG << "Have to save application ID = " << AppID->charrep() << ", database = " << appParams->getParameter("DBName", AppID->getData()) LOG_
 				
 		if (strcmp(appParams->getParameter("DBName", AppID->getData()), "lbDMF") == 0) {
 			// Is system database
+			_LOG << "lbDynamicApplication::loadDatabaseSchema(lb_I_Unknown* uk) Using system database." LOG_
+			formularfields->accept(*&fOpDB);
 			dbPrimaryKeys->accept(*&fOpDB);
 			dbForeignKeys->accept(*&fOpDB);
 			dbTables->accept(*&fOpDB);
@@ -427,6 +431,8 @@ lbErrCodes LB_STDCALL lbDynamicApplication::loadDatabaseSchema(lb_I_Unknown* uk)
 			UAP_REQUEST(getModuleInstance(), lb_I_String, dbuser)
 			UAP_REQUEST(getModuleInstance(), lb_I_String, dbpass)
 			customDB->init();
+
+			_LOG << "lbDynamicApplication::loadDatabaseSchema(lb_I_Unknown* uk) Using custom database." LOG_
 			
 			*dbname = appParams->getParameter("DBName", AppID->getData());
 			*dbuser = appParams->getParameter("DBUser", AppID->getData());
@@ -440,8 +446,10 @@ lbErrCodes LB_STDCALL lbDynamicApplication::loadDatabaseSchema(lb_I_Unknown* uk)
 				if (ukPl != NULL) QI(ukPl, lb_I_DatabaseOperation, fOpCustomDB)
 				
 				if (fOpCustomDB != NULL) {
+					_LOG << "Reading custom configuration from " << dbname->charrep() << "." LOG_
 					fOpCustomDB->begin(dbname->charrep(), customDB.getPtr());
 					
+					formularfields->accept(*&fOpCustomDB);
 					dbPrimaryKeys->accept(*&fOpCustomDB);
 					dbForeignKeys->accept(*&fOpCustomDB);
 					dbTables->accept(*&fOpCustomDB);
@@ -465,20 +473,31 @@ lbErrCodes LB_STDCALL lbDynamicApplication::loadDatabaseSchema(lb_I_Unknown* uk)
 			*name = "ApplicationData";
 			param->getUAPContainer(*&name, *&document);
 			
+			*name = "FormularFields";
+			QI(formularfields, lb_I_Unknown, uk)
+			// The container allows multiple entries by key.
+			/// \todo Look at other places too.
+			if (document->exists(&key) == 1) document->remove(&key);
+			document->insert(&uk, &key);
+			
 			*name = "DBPrimaryKeys";
 			QI(dbPrimaryKeys, lb_I_Unknown, uk)
+			if (document->exists(&key) == 1) document->remove(&key);
 			document->insert(&uk, &key);
 			
 			*name = "DBForeignKeys";
 			QI(dbForeignKeys, lb_I_Unknown, uk)
+			if (document->exists(&key) == 1) document->remove(&key);
 			document->insert(&uk, &key);
 			
 			*name = "DBTables";
 			QI(dbTables, lb_I_Unknown, uk)
+			if (document->exists(&key) == 1) document->remove(&key);
 			document->insert(&uk, &key);
 			
 			*name = "DBColumns";
 			QI(dbColumns, lb_I_Unknown, uk)
+			if (document->exists(&key) == 1) document->remove(&key);
 			document->insert(&uk, &key);
 			
 			*name = "ApplicationData";
@@ -575,6 +594,12 @@ lbErrCodes LB_STDCALL lbDynamicApplication::exportApplicationToXMLBuffer(lb_I_Un
 		REQUEST(manager.getPtr(), lb_I_MetaApplication, metaapp)
 	}
 	
+	UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+	UAP(lb_I_Unknown, ukDoc)
+	UAP(lb_I_Parameter, document)
+	ukDoc = metaapp->getActiveDocument();
+	QI(ukDoc, lb_I_Parameter, document)
+		
 	if (haveLoadedDBModel == false) {
 		metaapp->setStatusText("Info", "Loading target database schema ...");
 		loadDatabaseSchema(NULL);
@@ -587,17 +612,10 @@ lbErrCodes LB_STDCALL lbDynamicApplication::exportApplicationToXMLBuffer(lb_I_Un
 	metaapp->setStatusText("Info", "Exporting XML to memory buffer");
 	
 	UAP_REQUEST(manager.getPtr(), lb_I_OutputStream, exportfile)
-	
+	UAP_REQUEST(manager.getPtr(), lb_I_String, StorageNamespace)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, tempStorageNamespace)
+
 	// Get the active document and set temporary a different storage handler (dax)
-	UAP_REQUEST(getModuleInstance(), lb_I_String, name)
-	UAP_REQUEST(getModuleInstance(), lb_I_String, StorageInterface)
-	UAP_REQUEST(getModuleInstance(), lb_I_String, StorageNamespace)
-	UAP_REQUEST(getModuleInstance(), lb_I_String, tempStorageInterface)
-	UAP_REQUEST(getModuleInstance(), lb_I_String, tempStorageNamespace)
-	UAP(lb_I_Unknown, ukDoc)
-	UAP(lb_I_Parameter, document)
-	ukDoc = metaapp->getActiveDocument();
-	QI(ukDoc, lb_I_Parameter, document)
 		
 	if (document != NULL) {
 		*name = "StorageDelegateNamespace";

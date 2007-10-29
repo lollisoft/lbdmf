@@ -63,17 +63,22 @@ class <xsl:value-of select="$FormularName"/>RowSet;
 ////@@begin custom forward
 ////@@end custom forward
 
+<xsl:variable name="RealTableName"><xsl:for-each select="//lbDMF/formularfields/formular[@formularid=$FormularID]">
+	<xsl:variable name="FieldName" select="@name"/>
+	<xsl:variable name="TableName" select="@tablename"/>
+	<xsl:if test="position()=1"><xsl:value-of select="@tablename"/></xsl:if></xsl:for-each></xsl:variable>
+
 ////@@begin gen arClass
+// Have Formular <xsl:value-of select="$FormularID"/>.
 class <xsl:value-of select="$FormularName"/>: public wxPostgresActiveRecord {
 protected:
 	<xsl:value-of select="$FormularName"/>Row* RowFromResult(DatabaseResultSet* result);
 public:
 
-	<xsl:variable name=RealTableName><xsl:for-each select="//lbDMF/formularfields/formular[@formularid=$FormularID]"><xsl:variable name="FieldName" select="@name"/><xsl:variable name="TableName" select="@tablename"/><xsl:if test="position()=1">"<xsl:value-of select="@tablename"/>"</xsl:if></xsl:for-each></xsl:variable>
 
 	<xsl:value-of select="$FormularName"/>();
 	<xsl:value-of select="$FormularName"/>(const wxString&amp; name,const wxString&amp; server=wxEmptyString,const wxString&amp; user=wxEmptyString,const wxString&amp; password=wxEmptyString,const wxString&amp; table=wxT("<xsl:value-of select="$RealTableName"/>"));
-	<xsl:value-of select="$FormularName"/>(DatabaseLayer* database,const wxString&amp; table=wxT("formulare"));
+	<xsl:value-of select="$FormularName"/>(DatabaseLayer* database,const wxString&amp; table=wxT("<xsl:value-of select="$RealTableName"/>"));
 	bool Create(const wxString&amp; name,const wxString&amp; server=wxEmptyString,const wxString&amp; user=wxEmptyString,const wxString&amp; password=wxEmptyString,const wxString&amp; table=wxT("<xsl:value-of select="$RealTableName"/>"));
 	
 	<xsl:value-of select="$FormularName"/>Row* New();
@@ -92,6 +97,82 @@ public:
 };
 ////@@end gen arClass
 
+////@@begin gen arRow
+class <xsl:value-of select="$FormularName"/>Row: public wxActiveRecordRow{
+public:
+	<xsl:value-of select="$FormularName"/>Row();
+	<xsl:value-of select="$FormularName"/>Row(const <xsl:value-of select="$FormularName"/>Row&amp; src);
+	<xsl:value-of select="$FormularName"/>Row(<xsl:value-of select="$FormularName"/>* activeRecord);
+	<xsl:value-of select="$FormularName"/>Row(DatabaseLayer* database,const wxString&amp; table=wxT("<xsl:value-of select="$RealTableName"/>"));
+	<xsl:value-of select="$FormularName"/>Row&amp; operator=(const <xsl:value-of select="$FormularName"/>Row&amp; src);
+	bool GetFromResult(DatabaseResultSet* result);
+public:
+
+<xsl:for-each select="//lbDMF/formularfields/formular[@formularid=$FormularID]">
+<xsl:variable name="FieldName" select="@name"/> 
+<xsl:variable name="TableName" select="@tablename"/>
+<xsl:choose>
+	<xsl:when test="@dbtype='String'">
+	wxString <xsl:value-of select="@name"/>; // <xsl:value-of select="@tablename"/>
+	</xsl:when>
+	<xsl:when test="@dbtype='Integer'">
+	int <xsl:value-of select="@name"/>; // <xsl:value-of select="@tablename"/>
+	</xsl:when>
+	<xsl:otherwise>
+	//Unknown type <xsl:value-of select="@name"/>; // <xsl:value-of select="@tablename"/>
+	</xsl:otherwise>
+</xsl:choose>
+</xsl:for-each>
+
+public:
+	// Relation Formulare Anwendungen
+	
+<xsl:for-each select="//lbDMF/formularfields/formular[@formularid=$FormularID]">
+<xsl:variable name="FieldName" select="@name"/> 
+<xsl:variable name="TableName" select="@tablename"/>
+<xsl:variable name="PKFieldName" select="@fkname"/> 
+<xsl:variable name="PKTableName" select="@fktable"/>
+<xsl:variable name="FormID" select="@formularid"/>
+<xsl:if test="@isfk='1'">
+	<xsl:variable name="TargetFormID" select="//lbDMF/formularfields/formular[@tablename=$PKTableName][@name=$PKFieldName]/@formularid"/>
+	// TargetFormID = <xsl:value-of select="$TargetFormID"/>.
+	<xsl:variable name="tempTargetForm" select="//lbDMF/formulare/formular[@ID=$TargetFormID]/@name"/>
+	<xsl:variable name="TargetForm">
+		<xsl:call-template name="SubstringReplace">
+			<xsl:with-param name="stringIn">
+		<xsl:call-template name="SubstringReplace">
+			<xsl:with-param name="stringIn">
+		<xsl:call-template name="SubstringReplace">
+			<xsl:with-param name="stringIn">
+				<xsl:value-of select="$tempTargetForm"/>
+			</xsl:with-param>
+			<xsl:with-param name="substringIn" select="'-'"/>
+			<xsl:with-param name="substringOut" select="''"/>
+		</xsl:call-template>
+			</xsl:with-param>
+			<xsl:with-param name="substringIn" select="'>'"/>
+			<xsl:with-param name="substringOut" select="''"/>
+		</xsl:call-template>
+			</xsl:with-param>
+			<xsl:with-param name="substringIn" select="' '"/>
+			<xsl:with-param name="substringOut" select="''"/>
+		</xsl:call-template>
+	</xsl:variable>
+
+	<xsl:value-of select="$TargetForm"/>Row* Get<xsl:value-of select="$TargetForm"/>(); // <xsl:value-of select="$FieldName"/>
+</xsl:if>
+</xsl:for-each>
+	
+	bool Save();
+	bool Delete();
+	
+	
+////@@begin custom arRow
+public:
+////@@end custom arRow	
+
+};
+////@@end gen arRow
 
 
 

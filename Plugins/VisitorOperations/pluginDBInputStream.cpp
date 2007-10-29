@@ -1189,9 +1189,11 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Formular_Fields* formularfield
 			if ((qqerr == ERR_NONE) || (qqerr == WARN_DB_NODATA)) {
 				// Get the stored query for the formular with id = FormularID
 				formularquery = query_query->getAsString(1);
+				_LOG << "lbDatabaseInputStream::visit(lb_I_Formular_Fields* formularfields) Get query object for " << ConnectionName->charrep() LOG_
 				form_query = db->getQuery(ConnectionName->charrep(), 0);
 				
 				form_query->enableFKCollecting();
+				_LOG << "Execute query '" << formularquery->charrep() << "'" LOG_
 				if (form_query->query(formularquery->charrep()) == ERR_NONE) {
 					// formular query is valid
 					int columns = form_query->getColumns();
@@ -1201,12 +1203,15 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Formular_Fields* formularfield
 						name = strdup(form_query->getColumnName(i));
 						tablename = strdup(form_query->getTableName(name));
 						
+						_LOG << "Check if column " << name << " from " << tablename << " is a foreign column..." LOG_
 						
 						if (form_query->hasFKColumn(name) == 1) {
 							UAP(lb_I_String, t)
 							UAP(lb_I_String, c)
 							UAP(lb_I_Query, fkpkmapping_query)
 							fkpkmapping_query = db->getQuery("lbDMF", 0);
+
+							_LOG << "Yes, is foreign column." LOG_
 							
 							t = form_query->getPKTable(name);
 							c = form_query->getPKColumn(name);
@@ -1254,7 +1259,8 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Formular_Fields* formularfield
 							}
 						} else {
 							lb_I_Query::lbDBColumnTypes coltype = form_query->getColumnType(i);
-							
+							_LOG << "No, is not foreign column." LOG_
+
 							switch (coltype) {
 								case lb_I_Query::lbDBColumnBit:
 									formularfields->addField(name, tablename,  "Bit", false, "", "", FormularID->getData());
@@ -1314,6 +1320,7 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Formular_Fields* formularfield
 			if ((qqerr == ERR_NONE) || (qqerr == WARN_DB_NODATA)) {
 				// Get the stored query for the formular with id = FormularID
 				formularquery = query_query->getAsString(1);
+				_LOG << "lbDatabaseInputStream::visit(lb_I_Formular_Fields* formularfields) Get query object for " << ConnectionName->charrep() LOG_
 				form_query = db->getQuery(ConnectionName->charrep(), 0);
 				
 				form_query->enableFKCollecting();
@@ -1325,11 +1332,16 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Formular_Fields* formularfield
 						char* tablename = NULL;
 						name = strdup(form_query->getColumnName(i));
 						tablename = strdup(form_query->getTableName(name));
+
+						_LOG << "Check if column " << name << " from " << tablename << " is a foreign column..." LOG_
+
 						if (form_query->hasFKColumn(name) == 1) {
 							UAP(lb_I_String, t)
 							UAP(lb_I_String, c)
 							UAP(lb_I_Query, fkpkmapping_query)
 							fkpkmapping_query = db->getQuery("lbDMF", 0);
+
+							_LOG << "Yes, is foreign column." LOG_
 							
 							t = form_query->getPKTable(name);
 							c = form_query->getPKColumn(name);
@@ -1377,6 +1389,7 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_Formular_Fields* formularfield
 							}
 						} else {
 							lb_I_Query::lbDBColumnTypes coltype = form_query->getColumnType(i);
+							_LOG << "No, is not foreign column." LOG_
 							
 							switch (coltype) {
 								case lb_I_Query::lbDBColumnBit:

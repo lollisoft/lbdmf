@@ -1,11 +1,17 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.147 $
+# * $Revision: 1.148 $
 # * $Name:  $
-# * $Id: Makefile,v 1.147 2007/10/28 23:22:39 lollisoft Exp $
+# * $Id: Makefile,v 1.148 2007/10/29 19:59:17 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.148  2007/10/29 19:59:17  lollisoft
+# * Added xsl templates and made bugfixes that now let
+# * the designer create code for any application. Not only
+# * 'lbDMF Manager'. The problem is the container class.
+# * It allows multible entries per key.
+# *
 # * Revision 1.147  2007/10/28 23:22:39  lollisoft
 # * Small changes to correctly compile generated code.
 # *
@@ -615,6 +621,7 @@ ALLTARGETS = \
 	../include/lbkey.h \
 	../vendor/dosdir \
 	../vendor/mkmk \
+	../vendor/wxARG/src \
 	../vendor/databaselayer/src/implementations/ODBC \
 	lbHook \
 	lbModule \
@@ -1039,6 +1046,11 @@ ifeq ($(OSTYPE), osx)
 	$(MAKE) -s -C $@ -e MODULE=wxWrapper -e TARGET=$(TARGETWXEXE) -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@
 	cp ../Test/GUI/wxWrapper/wxWrapper $(HOME)/bin
+
+../vendor/wxARG/src: dummy
+	$(MAKE) -s -C $@ -e MODULE=wxActiveRecordGenerator -e TARGET=$(TARGETWXEXE) -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@
+	cp ../vendor/wxARG/src/wxActiveRecordGenerator $(HOME)/bin
 
 ../Test/GUI/wxWrapperDLL: dummy
 	$(MAKE) -s -C $@ -e MODULE=wxWrapperDLL -e TARGET=$(TARGETWXFRAMEWORK) -f $(MAKE_CONFIG_FILE)

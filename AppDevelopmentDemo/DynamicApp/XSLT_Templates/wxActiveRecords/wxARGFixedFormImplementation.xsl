@@ -2,13 +2,13 @@
 <xsl:import href="../include/exsl.xsl"/>
 
 <!-- Template to create a plugin definition for a given class-->
-<xsl:import href="lbDMFFixedFormPlugin.xsl"/>
+<xsl:import href="wxARGFixedFormPlugin.xsl"/>
 
 <!-- Template to create a class definition for a given class -->
-<xsl:import href="lbDMFFixedFormClassDecl.xsl"/>
+<xsl:import href="wxARGFixedFormClassDecl.xsl"/>
 
 <!-- Template to create a class implementation for a given class -->
-<xsl:import href="lbDMFFixedFormClassImpl.xsl"/>
+<xsl:import href="wxARGFixedFormClassImpl.xsl"/>
 
 <xsl:output method="text" indent="no"/>
 
