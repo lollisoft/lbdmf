@@ -1,0 +1,163 @@
+# Define your module based settings
+
+#    DMF Distributed Multiplatform Framework (the initial goal of this library)
+#    This file is part of lbDMF.
+#    Copyright (C) 2002  Lothar Behrens (lothar.behrens@lollisoft.de)
+#
+#    This library is free software; you can redistribute it and/or
+#    modify it under the terms of the GNU Lesser General Public
+#    License as published by the Free Software Foundation; either
+#    version 2.1 of the License, or (at your option) any later version.
+#
+#    This library is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+#    Lesser General Public License for more details.
+#
+#    You should have received a copy of the GNU Lesser General Public
+#    License along with this library; if not, write to the Free Software
+#    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+#
+#
+#    The author of this work will be reached by e-Mail or paper mail.
+#    e-Mail: lothar.behrens@lollisoft.de
+#    p-Mail: Lothar Behrens
+#            Rosmarinstr. 3
+#
+#            40235 Duesseldorf (germany)
+
+ifeq ($(OSTYPE), Windows_NT)
+MOD_INCL=$(STD_INCL)
+OBJDEP=
+SLASH=/
+WATCOMLIBS=$(DEVROOT_MAKE)$(SLASH)Tools$(SLASH)watcom$(SLASH)lib386$(SLASH)nt
+wxBase=..$(SLASH)..$(SLASH)..$(SLASH)..$(SLASH)..$(SLASH)wxwin$(SLASH)wx$(SLASH)lib
+LIBS = $(BASE_LIBS) $(DEVROOT_MAKE)$(SLASH)projects$(SLASH)dll$(SLASH)libs$(SLASH)lbhook.lib, \
+	$(DEVROOT_MAKE)$(SLASH)projects$(SLASH)dll$(SLASH)libs$(SLASH)wxWrapperDLL.lib, \
+        $(wxBase)$(SLASH)wat_dll$(SLASH)wxmsw$(WX_VERSION)$(WX_DEBUG).lib
+	
+LIBRS =	libr $(WATCOMLIBS)$(SLASH)kernel32.lib \
+	libr $(WATCOMLIBS)$(SLASH)user32.lib \
+	libr $(WATCOMLIBS)$(SLASH)gdi32.lib \
+	libr $(WATCOMLIBS)$(SLASH)comdlg32.lib \
+	libr $(WATCOMLIBS)$(SLASH)comctl32.lib \
+	libr $(WATCOMLIBS)$(SLASH)advapi32.lib \
+	libr $(WATCOMLIBS)$(SLASH)shell32.lib \
+	libr $(WATCOMLIBS)$(SLASH)ole32.lib \
+	libr $(WATCOMLIBS)$(SLASH)oleaut32.lib \
+	libr $(WATCOMLIBS)$(SLASH)uuid.lib \
+	libr $(WATCOMLIBS)$(SLASH)rpcrt4.lib \
+	libr $(WATCOMLIBS)$(SLASH)wsock32.lib \
+	libr $(WATCOMLIBS)$(SLASH)winmm.lib
+
+
+# use global setup
+#COMPILER=MICROSOFT
+ifeq ($(COMPILER), MICROSOFT)
+MOD_INCL = $(STD_INCL_MICROSOFT) /I ../../../../../wxwin/wx/include
+MOD_INCL += $(foreach s, $(INCLS), /I "$s")
+CC=Cl
+C_DLLOPS= $(C_DLLOPS_MICROSOFT$(MODE))
+C_EXEOPS= $(C_EXEOPS_MICROSOFT$(MODE)) /D__WIN32__ /DWINVER=0x0400 /D__WINDOWS95__ /D__WINDOWS__ /D__WXMSW__ /DLB_I_EXTENTIONS /D__WXDEBUG__
+C_LIBOPS= $(C_LIBOPS_MICROSOFT$(MODE))
+LINK=  $(LINK_MICROSOFT)
+LNKDLLOPS = $(L_DLLOPS_MICROSOFT) /NODEFAULT:MSVCRTD
+MODULE=wxwrapper
+APPVER=3.50 # 4.0
+CPU=i386
+LINKFLAGS = $(L_EXEOPS_MICROSOFT) $(LIBS) $(OBJS) \
+/pdb:"$(OUTDIR)\$(MODULE).pdb" \
+/out:"$(OUTDIR)\$(MODULE).exe" \
+/INCREMENTAL:NO /DEBUG /NOLOGO -machine:$(CPU) -subsystem:windows,$(APPVER)
+endif
+
+ifeq ($(COMPILER), WATCOM)
+MOD_INCL = $(STD_INCL) -i=$(DEVROOT)\\Projects\\CPP\\vendor\\wxaui-0.9.1\\include  -i=..\\wxWrapperDLL  -i=$(DEVROOT)\\wxwin\\wx\\include -i=$(DEVROOT)\\Projects\\CPP\\vendor\\propgrid\\include
+MOD_INCL_CPP=$(STD_INCL_CPP) -i=$(DEVROOT_MAKE)/Projects/CPP/vendor/wxaui-0.9.1/include  -i=../wxWrapperDLL -i=$(DEVROOT_MAKE)/wxwin/wx/include -i=$(DEVROOT_MAKE)/Projects/CPP/vendor/propgrid/include 
+
+C_EXEOPS= $(C_EXEOPS_WATCOM$(MODE)) \
+		/DUSE_WXWRAPPER_DLL \
+		/DWXUSINGDLL \
+		/D__WIN32__ \
+		/DWINVER=0x0400 \
+		/D__WINDOWS95__ \
+		/D__WINDOWS__ \
+		/D__WXMSW__ \
+		/DLB_I_EXTENTIONS
+		
+CPP_EXEOPS= $(CPP_EXEOPS_WATCOM$(MODE)) \
+		/DUSE_WXWRAPPER_DLL \
+		/DWXUSINGDLL \
+		/D__WIN32__ \
+		/DWINVER=0x0400 \
+		/D__WINDOWS95__ \
+		/D__WINDOWS__ \
+		/D__WXMSW__ \
+		/DLB_I_EXTENTIONS
+
+ifeq ($(MODE), _DEBUG)
+C_EXEOPS+= /D__WXDEBUG__
+CPP_EXEOPS+= /D__WXDEBUG__
+endif
+		
+LINKFLAGS = $(L_EXEOPS)
+endif
+
+endif
+
+ifeq ($(OSTYPE), solaris)
+MOD_INCL=$(STD_INCL) -I $(DEVROOT)/Projects/CPP/vendor/propgrid/include -I ../wxWrapperDLL
+OBJDEP=
+
+C_ELFOPS += $(C_OPS) `wx-config --inplace --cxxflags` -DUSE_WXWRAPPER_DLL -DUNIX -DLINUX -DLB_I_EXTENTIONS
+L_OPS = `wx-config --inplace --libs` -o
+
+VENDORLIBS=-L$(prefix)/lib -llbHook -lwxWrapperDLL -lwxAUI -lwxPropgrid
+endif    
+
+ifeq ($(OSTYPE), linux)
+MOD_INCL=$(STD_INCL) -I $(DEVROOT)/Projects/CPP/vendor/propgrid/include -I ../wxWrapperDLL
+OBJDEP=
+
+C_ELFOPS += `wx-config --inplace --cxxflags` -DUSE_WXWRAPPER_DLL -DUNIX -DLINUX -DLB_I_EXTENTIONS
+L_OPS = `wx-config --inplace --libs` -o
+
+VENDORLIBS=-L$(prefix)/lib -llbHook -lwxWrapperDLL -lwxAUI -lwxPropgrid
+endif    
+
+ifeq ($(LB_USE_FRAMEWORKS), yes)
+
+ifeq ($(OSTYPE), osx)
+MOD_INCL=$(STD_INCL) -I ../include -I $(DEVROOT)/Projects/CPP/vendor/propgrid/include -I ../wxWrapperDLL
+OBJDEP=
+C_ELFOPS += `wx-config --inplace --cxxflags` -DwxUSE_COLOURPICKERCTRL -DUSE_WXWRAPPER_DLL -DOSX -DUNIX -DLINUX -DLB_I_EXTENTIONS
+
+ifeq ($(DEBUG), yes)
+C_ELFOPS +=  -D__WXDEBUG__
+L_OPS = -L. -F$(prefix)/lib -framework wxShapeFramework `wx-config --inplace --libs`  -lc /usr/lib/libgcc_s.1.dylib -lc /usr/lib/libstdc++.6.dylib -o
+endif
+
+ifeq ($(DEBUG), no)
+L_OPS = -L. -F$(prefix)/lib -framework wxShapeFramework `wx-config --inplace --libs`  -lc /usr/lib/libgcc_s.1.dylib -lc /usr/lib/libstdc++.6.dylib -o
+endif
+VENDORLIBS=
+endif
+
+endif
+
+ifeq ($(LB_USE_FRAMEWORKS), no)
+
+ifeq ($(OSTYPE), osx)
+MOD_INCL=$(STD_INCL) -I ../wxWrapperDLL
+OBJDEP=
+C_ELFOPS += -L. `wx-config --inplace --cxxflags` -DUSE_WXWRAPPER_DLL -DOSX -DUNIX -DLINUX -DLB_I_EXTENTIONS
+
+ifeq ($(DEBUG), yes)
+C_ELFOPS +=  -D__WXDEBUG__
+endif
+
+L_OPS = -lstdc++ -L. `wx-config --inplace --libs` -o
+VENDORLIBS=$(HOME)/lib/lbHook.so $(HOME)/lib/wxWrapperDLL.so $(HOME)/lib/wxAUI.so 
+endif
+
+endif
