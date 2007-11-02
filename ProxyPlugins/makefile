@@ -12,13 +12,38 @@
 #.PHONY: dummy
 
 ifeq ($(OSTYPE), linux)
+ifeq ($(CRUISECONTROL), yes)
+RELPATH=
+else
+RELPATH=/Projects/CPP
+endif
 DEVROOT_MAKE=$(DEVROOT)
 endif
 
 ifeq ($(OSTYPE), osx)
+ifeq ($(CRUISECONTROL), yes)
+RELPATH=
+else
+RELPATH=/Projects/CPP
+endif
 DEVROOT_MAKE=$(DEVROOT)
 endif
 
+ifeq ($(OSTYPE), Windows_NT)
+ifeq ($(CRUISECONTROL), yes)
+RELPATH=
+else
+RELPATH=\Projects\CPP
+endif
+endif
+
+ifeq ($(OSTYPE), solaris)
+ifeq ($(CRUISECONTROL), yes)
+RELPATH=
+else
+RELPATH=/Projects/CPP
+endif
+endif
 
 Path=$(PATH)
 

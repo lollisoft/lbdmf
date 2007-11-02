@@ -12,13 +12,38 @@
 #.PHONY: dummy
 
 ifeq ($(OSTYPE), linux)
+ifeq ($(CRUISECONTROL), yes)
+RELPATH=
+else
+RELPATH=/Projects/CPP
+endif
 DEVROOT_MAKE=$(DEVROOT)
 endif
 
 ifeq ($(OSTYPE), osx)
+ifeq ($(CRUISECONTROL), yes)
+RELPATH=
+else
+RELPATH=/Projects/CPP
+endif
 DEVROOT_MAKE=$(DEVROOT)
 endif
 
+ifeq ($(OSTYPE), Windows_NT)
+ifeq ($(CRUISECONTROL), yes)
+RELPATH=
+else
+RELPATH=\Projects\CPP
+endif
+endif
+
+ifeq ($(OSTYPE), solaris)
+ifeq ($(CRUISECONTROL), yes)
+RELPATH=
+else
+RELPATH=/Projects/CPP
+endif
+endif
 
 Path=$(PATH)
 
@@ -84,11 +109,11 @@ mkrelease:
 dummy:
 
 ApplicationBus: dummy
-	$(MAKE) -C $@ -e MODULE=ApplicationBusServer -e TARGET=$(TARGETPLUGIN) -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
+	$(MAKE) -C $@ -e MODULE=ApplicationBusServer -e TARGET=$(TARGETPLUGIN) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	$(MAKE) -C $@
 
 Fax: dummy
-	$(MAKE) -C $@ -e MODULE=FaxServer -e TARGET=$(TARGETPLUGIN) -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
+	$(MAKE) -C $@ -e MODULE=FaxServer -e TARGET=$(TARGETPLUGIN) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	$(MAKE) -C $@
 
 
