@@ -73,7 +73,7 @@ LINKFLAGS = $(L_EXEOPS_MICROSOFT) $(LIBS) $(OBJS) \
 endif
 ifeq ($(COMPILER), WATCOM)
 MOD_INCL = $(STD_INCL) -i=$(DEVROOT)\\projects\\CPP\\Test\\GUI\\wxWrapperDLL -i=$(DEVROOT)\\wxwin\\wx\\include -i=$(DEVROOT)\\Projects\\CPP\\vendor\\propgrid\\include
-MOD_INCL_CPP=$(STD_INCL_CPP) -i=$(DEVROOT_MAKE)/projects/CPP/Test/GUI/wxWrapperDLL -i=$(DEVROOT_MAKE)/wxwin/wx/include -i=$(DEVROOT_MAKE)/Projects/CPP/vendor/propgrid/include 
+MOD_INCL_CPP=$(STD_INCL_CPP) -i=$(DEVROOT_MAKE)$(RELPATH)/Test/GUI/wxWrapperDLL -i=$(DEVROOT_MAKE)/wxwin/wx/include -i=$(DEVROOT_MAKE)$(RELPATH)/vendor/propgrid/include 
 
 MOD_INCL = $(STD_INCL) -i=$(DEVROOT_MAKE)\\wxwin\\wx\\include -i=$(DEVROOT)\\wxwin\\wx\\contrib\\include
 
@@ -104,7 +104,7 @@ endif
 endif
 
 ifeq ($(OSTYPE), solaris)
-MOD_INCL=$(STD_INCL) -I $(DEVROOT)/Projects/CPP/vendor/propgrid/include -I $(DEVROOT)/Projects/CPP/Test/GUI/wxWrapperDLL
+MOD_INCL=$(STD_INCL) -I $(DEVROOT)$(RELPATH)/vendor/propgrid/include -I $(DEVROOT)$(RELPATH)/Test/GUI/wxWrapperDLL
 OBJDEP=
 C_SOOPS_WX = $(C_OPS) -DLB_I_EXTENTIONS `wx-config --inplace --cxxflags`
 C_SOOPS= $(C_SOOPS_WX)
@@ -113,7 +113,7 @@ L_OPS=$(L_SOOPS) `wx-config --inplace --libs`
 endif    
 
 ifeq ($(OSTYPE), linux)
-MOD_INCL=$(STD_INCL) -I $(DEVROOT)/Projects/CPP/vendor/propgrid/include -I $(DEVROOT)/Projects/CPP/Test/GUI/wxWrapperDLL
+MOD_INCL=$(STD_INCL) -I $(DEVROOT)$(RELPATH)/vendor/propgrid/include -I $(DEVROOT)$(RELPATH)/Test/GUI/wxWrapperDLL
 OBJDEP=
 C_SOOPS_WX = -DUNIX -DLINUX -DLB_I_EXTENTIONS `wx-config --inplace --cxxflags`
 C_SOOPS= $(C_SOOPS_WX)
@@ -124,7 +124,7 @@ endif
 ifeq ($(LB_USE_FRAMEWORKS), yes)
 
 ifeq ($(OSTYPE), osx)
-MOD_INCL=$(STD_INCL) -I $(DEVROOT)/Projects/CPP/vendor/propgrid/include -I $(DEVROOT)/Projects/CPP/Test/GUI/wxWrapperDLL
+MOD_INCL=$(STD_INCL) -I $(DEVROOT)$(RELPATH)/vendor/propgrid/include -I $(DEVROOT)$(RELPATH)/Test/GUI/wxWrapperDLL
 OBJDEP=
 C_SOOPS_WX = $(C_OPS) -DLB_I_EXTENTIONS `wx-config --inplace --cxxflags` 
 C_SOOPS= $(C_SOOPS_WX)
@@ -137,7 +137,7 @@ endif
 ifeq ($(LB_USE_FRAMEWORKS), no)
 
 ifeq ($(OSTYPE), osx)
-MOD_INCL=$(STD_INCL) -I $(DEVROOT)/Projects/CPP/Test/GUI/wxWrapperDLL
+MOD_INCL=$(STD_INCL) -I $(DEVROOT)$(RELPATH)/Test/GUI/wxWrapperDLL
 OBJDEP=
 C_SOOPS_WX = -DOSX -DUNIX -DLINUX -DLB_I_EXTENTIONS `wx-config --inplace --cxxflags` 
 C_SOOPS= $(C_SOOPS_WX)

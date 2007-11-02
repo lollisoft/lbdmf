@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.149 $
+# * $Revision: 1.150 $
 # * $Name:  $
-# * $Id: Makefile,v 1.149 2007/11/02 11:56:48 lollisoft Exp $
+# * $Id: Makefile,v 1.150 2007/11/02 22:12:50 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.150  2007/11/02 22:12:50  lollisoft
+# * Deactivated some targets that fail building.
+# *
 # * Revision 1.149  2007/11/02 11:56:48  lollisoft
 # * Changes that propably enable Cruise Control builds.
 # *
@@ -558,10 +561,11 @@ BASEDIRECTORIES= \
 	../AppDevelopmentDemo/DynamicApp/Plugins \
 	../Modules \
 	../RegressionTests \
-	../AppDevelopment \
-	../ServerPlugins \
-	../ClientPlugins
-	
+	../AppDevelopment
+
+#	../ServerPlugins \
+#	../ClientPlugins
+#	
 
 #	../vendor/tvision-set \
 #	../vendor/tvision-set/examples/lbDMF
@@ -1177,7 +1181,7 @@ endif
 	$(MAKE) -C $@
 
 ../AppDevelopment: dummy
-	$(MAKE) -k -s -C $@
+	-$(MAKE) -k -s -C $@
 
 ../Plugins: dummy
 	$(MAKE) -s -C $@
@@ -1198,7 +1202,7 @@ endif
 	$(MAKE) -s -C $@
 
 ../RegressionTests: dummy
-	$(MAKE) -s -C $@
+	$(MAKE) -s -C $@ -e CRUISECONTROL=$(CRUISECONTROL)
 
 ../AppDevelopmentDemo/App: dummy
 	$(MAKE) -s -C $@ -e MODULE=Application -e TARGET=$(TARGETDLL) -f $(MAKE_CONFIG_FILE)

@@ -1,5 +1,5 @@
 #!/bin/sh
-
+echo Cruise Control build started at: `pwd`
 echo all: BaseDevelopment > makefile
 echo \# >> makefile
 

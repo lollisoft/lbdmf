@@ -73,7 +73,7 @@ LINKFLAGS = $(L_EXEOPS_MICROSOFT) $(LIBS) $(OBJS) \
 endif
 ifeq ($(COMPILER), WATCOM)
 MOD_INCL = $(STD_INCL) -i=$(DEVROOT_MAKE)\\wxwin\\wx\\include -i=$(DEVROOT_MAKE)\\projects\\CPP\\vendor\\libxslt-1.1.21 -i=$(DEVROOT_MAKE)\\projects\\CPP\\vendor\\libxml2-2.6.29\\include 
-MOD_INCL_CPP=$(STD_INCL_CPP) -i=$(DEVROOT_MAKE)/wxwin/wx/include -i=$(DEVROOT_MAKE)/projects/CPP/vendor/libxslt-1.1.21 -i=$(DEVROOT_MAKE)/projects/CPP/vendor/libxml2-2.6.29/include
+MOD_INCL_CPP=$(STD_INCL_CPP) -i=$(DEVROOT_MAKE)/wxwin/wx/include -i=$(DEVROOT_MAKE)$(RELPATH)/vendor/libxslt-1.1.21 -i=$(DEVROOT_MAKE)$(RELPATH)/vendor/libxml2-2.6.29/include
 
 C_EXEOPS= $(C_EXEOPS_WATCOM$(MODE)) /D__WIN32__ /DWINVER=0x0400 /D__WINDOWS95__ \
 		/D__WINDOWS__ /D__WXMSW__ /DLB_I_EXTENTIONS
