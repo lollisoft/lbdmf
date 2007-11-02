@@ -1,6 +1,12 @@
 
 all: makefile
 
+ifeq ($(CRUISECONTROL), yes)
+RELPATH=
+else
+RELPATH=/Projects/CPP
+endif
+
 ifeq ($(OSTYPE), solaris)
 DEVROOT_MAKE=$(DEVROOT)
 MKMK=mkmk
@@ -20,18 +26,18 @@ _MODULE=$(MODULE)
 
 ifeq ($(TARGET), tvision_dll)
 makefile: makefile.module \
-$(DEVROOT_MAKE)/Projects/CPP/BaseDevelopment/Makefile \
-$(DEVROOT_MAKE)/Projects/CPP/make/makefile.template \
-$(DEVROOT_MAKE)/Projects/CPP/make/STD_MAKE \
-$(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
-	@cat $(DEVROOT_MAKE)/Projects/CPP/make/makefile.template > makefile
+$(DEVROOT_MAKE)$(RELPATH)/BaseDevelopment/Makefile \
+$(DEVROOT_MAKE)$(RELPATH)/make/makefile.template \
+$(DEVROOT_MAKE)$(RELPATH)/make/STD_MAKE \
+$(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
+	@cat $(DEVROOT_MAKE)$(RELPATH)/make/makefile.template > makefile
 	@cat makefile.module >> makefile
 	@echo Path=$(PATH) >> makefile
 	@echo all: $(_MODULE).dll >> makefile
-	@rm -f $(DEVROOT_MAKE)/Projects/CPP/include/lbkey.h
+	@rm -f $(DEVROOT_MAKE)$(RELPATH)/include/lbkey.h
 	@rm -f include/tv/configtv.h
 	@rm -f $(_MODULE).bak	
-	@cp -f $(DEVROOT_MAKE)/Projects/CPP/BaseDevelopment/lbclasses/lbkey.h $(DEVROOT_MAKE)/Projects/CPP/include
+	@cp -f $(DEVROOT_MAKE)$(RELPATH)/BaseDevelopment/lbclasses/lbkey.h $(DEVROOT_MAKE)$(RELPATH)/include
 	$(MKMK) $(TARGET) $(_MODULE) include,include/tv,include/cl,include/win32 \
 	classes/*.cc \
 	classes/win32/*.cc \
@@ -52,35 +58,35 @@ endif
 
 ifeq ($(TARGET), tvision_usr_dll)
 makefile: makefile.module \
-$(DEVROOT_MAKE)/Projects/CPP/BaseDevelopment/Makefile \
-$(DEVROOT_MAKE)/Projects/CPP/make/makefile.template \
-$(DEVROOT_MAKE)/Projects/CPP/make/STD_MAKE \
-$(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
-	@cat $(DEVROOT_MAKE)/Projects/CPP/make/makefile.template > makefile
+$(DEVROOT_MAKE)$(RELPATH)/BaseDevelopment/Makefile \
+$(DEVROOT_MAKE)$(RELPATH)/make/makefile.template \
+$(DEVROOT_MAKE)$(RELPATH)/make/STD_MAKE \
+$(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
+	@cat $(DEVROOT_MAKE)$(RELPATH)/make/makefile.template > makefile
 	@cat makefile.module >> makefile
 	@echo Path=$(PATH) >> makefile
 	@echo all: $(_MODULE).dll >> makefile
-	@rm -f $(DEVROOT_MAKE)/Projects/CPP/include/lbkey.h
+	@rm -f $(DEVROOT_MAKE)$(RELPATH)/include/lbkey.h
 	@rm -f include/tv/configtv.h
 	@rm -f $(_MODULE).bak	
-	@cp -f $(DEVROOT_MAKE)/Projects/CPP/BaseDevelopment/lbclasses/lbkey.h $(DEVROOT_MAKE)/Projects/CPP/include
+	@cp -f $(DEVROOT_MAKE)$(RELPATH)/BaseDevelopment/lbclasses/lbkey.h $(DEVROOT_MAKE)$(RELPATH)/include
 	$(MKMK) $(TARGET) $(_MODULE) include,include/tv,include/cl,include/win32 \
 	*.cpp >> makefile
 endif
 
 ifeq ($(TARGET), tvision_exe)
 makefile: makefile.module \
-$(DEVROOT_MAKE)/Projects/CPP/BaseDevelopment/Makefile \
-$(DEVROOT_MAKE)/Projects/CPP/make/makefile.template \
-$(DEVROOT_MAKE)/Projects/CPP/make/STD_MAKE \
-$(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
-	@cat $(DEVROOT_MAKE)/Projects/CPP/make/makefile.template > makefile
+$(DEVROOT_MAKE)$(RELPATH)/BaseDevelopment/Makefile \
+$(DEVROOT_MAKE)$(RELPATH)/make/makefile.template \
+$(DEVROOT_MAKE)$(RELPATH)/make/STD_MAKE \
+$(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
+	@cat $(DEVROOT_MAKE)$(RELPATH)/make/makefile.template > makefile
 	@cat makefile.module >> makefile
 	@echo Path=$(PATH) >> makefile
 	@echo all: $(_MODULE).exe >> makefile
 	@rm -f $(_MODULE).bak
-	@rm -f $(DEVROOT_MAKE)/Projects/CPP/include/lbkey.h
-	@cp -f $(DEVROOT_MAKE)/Projects/CPP/BaseDevelopment/lbclasses/lbkey.h $(DEVROOT_MAKE)/Projects/CPP/include
+	@rm -f $(DEVROOT_MAKE)$(RELPATH)/include/lbkey.h
+	@cp -f $(DEVROOT_MAKE)$(RELPATH)/BaseDevelopment/lbclasses/lbkey.h $(DEVROOT_MAKE)$(RELPATH)/include
 	$(MKMK) exe $(_MODULE) include,include/tv,include/cl,include/win32 \
 	*.cc \
 	>> makefile
@@ -88,16 +94,16 @@ endif
 
 ifeq ($(TARGET), tvision_elf)
 makefile: makefile.module \
-$(DEVROOT_MAKE)/Projects/CPP/BaseDevelopment/Makefile \
-$(DEVROOT_MAKE)/Projects/CPP/make/makefile.template \
-$(DEVROOT_MAKE)/Projects/CPP/make/STD_MAKE \
-$(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
-	@cat $(DEVROOT_MAKE)/Projects/CPP/make/makefile.template > makefile
+$(DEVROOT_MAKE)$(RELPATH)/BaseDevelopment/Makefile \
+$(DEVROOT_MAKE)$(RELPATH)/make/makefile.template \
+$(DEVROOT_MAKE)$(RELPATH)/make/STD_MAKE \
+$(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
+	@cat $(DEVROOT_MAKE)$(RELPATH)/make/makefile.template > makefile
 	@cat makefile.module >> makefile
 	@echo Path=$(PATH) >> makefile
 	@echo all: $(_MODULE) >> makefile
-	@rm -f $(DEVROOT_MAKE)/Projects/CPP/include/lbkey.h
-	@cp -f $(DEVROOT_MAKE)/Projects/CPP/BaseDevelopment/lbclasses/lbkey.h $(DEVROOT_MAKE)/Projects/CPP/include
+	@rm -f $(DEVROOT_MAKE)$(RELPATH)/include/lbkey.h
+	@cp -f $(DEVROOT_MAKE)$(RELPATH)/BaseDevelopment/lbclasses/lbkey.h $(DEVROOT_MAKE)$(RELPATH)/include
 	$(MKMK) elf $(_MODULE) include,include/tv,include/cl,include/win32 \
 	*.cc \
 	>> makefile
@@ -106,17 +112,17 @@ endif
 ifeq ($(TARGET), plugin)
 
 makefile: makefile.module \
-$(DEVROOT_MAKE)/Projects/CPP/BaseDevelopment/Makefile \
-$(DEVROOT_MAKE)/Projects/CPP/make/makefile.template \
-$(DEVROOT_MAKE)/Projects/CPP/make/STD_MAKE \
-$(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
-	@cat $(DEVROOT_MAKE)/Projects/CPP/make/makefile.template > makefile
+$(DEVROOT_MAKE)$(RELPATH)/BaseDevelopment/Makefile \
+$(DEVROOT_MAKE)$(RELPATH)/make/makefile.template \
+$(DEVROOT_MAKE)$(RELPATH)/make/STD_MAKE \
+$(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
+	@cat $(DEVROOT_MAKE)$(RELPATH)/make/makefile.template > makefile
 	@cat makefile.module >> makefile
 	@echo Path=$(PATH) >> makefile
 	@echo all: $(_MODULE).dll >> makefile
 	@rm -f $(_MODULE).bak
-	@rm -f $(DEVROOT_MAKE)/Projects/CPP/include/lbkey.h
-	@cp -f $(DEVROOT_MAKE)/Projects/CPP/BaseDevelopment/lbclasses/lbkey.h $(DEVROOT_MAKE)/Projects/CPP/include
+	@rm -f $(DEVROOT_MAKE)$(RELPATH)/include/lbkey.h
+	@cp -f $(DEVROOT_MAKE)$(RELPATH)/BaseDevelopment/lbclasses/lbkey.h $(DEVROOT_MAKE)$(RELPATH)/include
 	$(MKMK) $(TARGET) $(_MODULE) ../dosdir *.cpp >> makefile
 
 endif
@@ -124,17 +130,17 @@ endif
 ifeq ($(TARGET), wxplugin)
 
 makefile: makefile.module \
-$(DEVROOT_MAKE)/Projects/CPP/BaseDevelopment/Makefile \
-$(DEVROOT_MAKE)/Projects/CPP/make/makefile.template \
-$(DEVROOT_MAKE)/Projects/CPP/make/STD_MAKE \
-$(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
-	@cat $(DEVROOT_MAKE)/Projects/CPP/make/makefile.template > makefile
+$(DEVROOT_MAKE)$(RELPATH)/BaseDevelopment/Makefile \
+$(DEVROOT_MAKE)$(RELPATH)/make/makefile.template \
+$(DEVROOT_MAKE)$(RELPATH)/make/STD_MAKE \
+$(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
+	@cat $(DEVROOT_MAKE)$(RELPATH)/make/makefile.template > makefile
 	@cat makefile.module >> makefile
 	@echo Path=$(PATH) >> makefile
 	@echo all: $(_MODULE).dll >> makefile
 	@rm -f $(_MODULE).bak
-	@rm -f $(DEVROOT_MAKE)/Projects/CPP/include/lbkey.h
-	@cp -f $(DEVROOT_MAKE)/Projects/CPP/BaseDevelopment/lbclasses/lbkey.h $(DEVROOT_MAKE)/Projects/CPP/include
+	@rm -f $(DEVROOT_MAKE)$(RELPATH)/include/lbkey.h
+	@cp -f $(DEVROOT_MAKE)$(RELPATH)/BaseDevelopment/lbclasses/lbkey.h $(DEVROOT_MAKE)$(RELPATH)/include
 	$(MKMK) $(TARGET) $(_MODULE) ../dosdir *.cpp >> makefile
 
 endif
@@ -142,16 +148,16 @@ endif
 ifeq ($(TARGET), soplugin)
 
 makefile: makefile.module \
-$(DEVROOT_MAKE)/Projects/CPP/BaseDevelopment/Makefile \
-$(DEVROOT_MAKE)/Projects/CPP/make/makefile.template \
-$(DEVROOT_MAKE)/Projects/CPP/make/STD_MAKE \
-$(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
-	@cat $(DEVROOT_MAKE)/Projects/CPP/make/makefile.template > makefile
+$(DEVROOT_MAKE)$(RELPATH)/BaseDevelopment/Makefile \
+$(DEVROOT_MAKE)$(RELPATH)/make/makefile.template \
+$(DEVROOT_MAKE)$(RELPATH)/make/STD_MAKE \
+$(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
+	@cat $(DEVROOT_MAKE)$(RELPATH)/make/makefile.template > makefile
 	@cat makefile.module >> makefile
 	@echo Path=$(PATH) >> makefile
 	@echo all: $(_MODULE).so >> makefile
-	@rm -f $(DEVROOT_MAKE)/Projects/CPP/include/lbkey.h
-	@cp -f $(DEVROOT_MAKE)/Projects/CPP/BaseDevelopment/lbclasses/lbkey.h $(DEVROOT_MAKE)/Projects/CPP/include
+	@rm -f $(DEVROOT_MAKE)$(RELPATH)/include/lbkey.h
+	@cp -f $(DEVROOT_MAKE)$(RELPATH)/BaseDevelopment/lbclasses/lbkey.h $(DEVROOT_MAKE)$(RELPATH)/include
 	@$(MKMK) $(TARGET) $(_MODULE) ../dosdir *.cpp >> makefile
 
 endif
@@ -159,16 +165,16 @@ endif
 ifeq ($(TARGET), wxsoplugin)
 
 makefile: makefile.module \
-$(DEVROOT_MAKE)/Projects/CPP/BaseDevelopment/Makefile \
-$(DEVROOT_MAKE)/Projects/CPP/make/makefile.template \
-$(DEVROOT_MAKE)/Projects/CPP/make/STD_MAKE \
-$(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
-	@cat $(DEVROOT_MAKE)/Projects/CPP/make/makefile.template > makefile
+$(DEVROOT_MAKE)$(RELPATH)/BaseDevelopment/Makefile \
+$(DEVROOT_MAKE)$(RELPATH)/make/makefile.template \
+$(DEVROOT_MAKE)$(RELPATH)/make/STD_MAKE \
+$(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
+	@cat $(DEVROOT_MAKE)$(RELPATH)/make/makefile.template > makefile
 	@cat makefile.module >> makefile
 	@echo Path=$(PATH) >> makefile
 	@echo all: $(_MODULE).so >> makefile
-	@rm -f $(DEVROOT_MAKE)/Projects/CPP/include/lbkey.h
-	@cp -f $(DEVROOT_MAKE)/Projects/CPP/BaseDevelopment/lbclasses/lbkey.h $(DEVROOT_MAKE)/Projects/CPP/include
+	@rm -f $(DEVROOT_MAKE)$(RELPATH)/include/lbkey.h
+	@cp -f $(DEVROOT_MAKE)$(RELPATH)/BaseDevelopment/lbclasses/lbkey.h $(DEVROOT_MAKE)$(RELPATH)/include
 	@$(MKMK) $(TARGET) $(_MODULE) ../dosdir *.cpp >> makefile
 
 endif
@@ -176,34 +182,34 @@ endif
 ifeq ($(TARGET), dll)
 
 makefile: makefile.module \
-$(DEVROOT_MAKE)/Projects/CPP/BaseDevelopment/Makefile \
-$(DEVROOT_MAKE)/Projects/CPP/make/makefile.template \
-$(DEVROOT_MAKE)/Projects/CPP/make/STD_MAKE \
-$(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
-	@cat $(DEVROOT_MAKE)/Projects/CPP/make/makefile.template > makefile
+$(DEVROOT_MAKE)$(RELPATH)/BaseDevelopment/Makefile \
+$(DEVROOT_MAKE)$(RELPATH)/make/makefile.template \
+$(DEVROOT_MAKE)$(RELPATH)/make/STD_MAKE \
+$(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
+	@cat $(DEVROOT_MAKE)$(RELPATH)/make/makefile.template > makefile
 	@cat makefile.module >> makefile
 	@echo Path=$(PATH) >> makefile
 	@rm -f $(_MODULE).bak
 	@echo all: $(_MODULE).$(TARGET) >> makefile
-	@rm -f $(DEVROOT_MAKE)/Projects/CPP/include/lbkey.h
-	@cp -f $(DEVROOT_MAKE)/Projects/CPP/BaseDevelopment/lbclasses/lbkey.h $(DEVROOT_MAKE)/Projects/CPP/include
+	@rm -f $(DEVROOT_MAKE)$(RELPATH)/include/lbkey.h
+	@cp -f $(DEVROOT_MAKE)$(RELPATH)/BaseDevelopment/lbclasses/lbkey.h $(DEVROOT_MAKE)$(RELPATH)/include
 	@$(MKMK) $(TARGET) $(_MODULE) ../dosdir *.c *.cpp >> makefile
 
 endif
 ifeq ($(TARGET), xsltdll)
 
 makefile: makefile.module \
-$(DEVROOT_MAKE)/Projects/CPP/BaseDevelopment/Makefile \
-$(DEVROOT_MAKE)/Projects/CPP/make/makefile.template \
-$(DEVROOT_MAKE)/Projects/CPP/make/STD_MAKE \
-$(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
-	@cat $(DEVROOT_MAKE)/Projects/CPP/make/makefile.template > makefile
+$(DEVROOT_MAKE)$(RELPATH)/BaseDevelopment/Makefile \
+$(DEVROOT_MAKE)$(RELPATH)/make/makefile.template \
+$(DEVROOT_MAKE)$(RELPATH)/make/STD_MAKE \
+$(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
+	@cat $(DEVROOT_MAKE)$(RELPATH)/make/makefile.template > makefile
 	@cat makefile.module >> makefile
 	@echo Path=$(PATH) >> makefile
 	@rm -f $(_MODULE).bak
 	@echo all: $(_MODULE).dll >> makefile
-	@rm -f $(DEVROOT_MAKE)/Projects/CPP/include/lbkey.h
-	@cp -f $(DEVROOT_MAKE)/Projects/CPP/BaseDevelopment/lbclasses/lbkey.h $(DEVROOT_MAKE)/Projects/CPP/include
+	@rm -f $(DEVROOT_MAKE)$(RELPATH)/include/lbkey.h
+	@cp -f $(DEVROOT_MAKE)$(RELPATH)/BaseDevelopment/lbclasses/lbkey.h $(DEVROOT_MAKE)$(RELPATH)/include
 	@$(MKMK) dll $(_MODULE) ../dosdir ../libexslt/*.c *.c *.cpp >> makefile
 
 endif
@@ -214,16 +220,16 @@ DIRECTORIES = $(foreach s, $(DIRECTORY), "$s"/*.cpp)
 
 
 makefile: makefile.module \
-$(DEVROOT_MAKE)/Projects/CPP/BaseDevelopment/Makefile \
-$(DEVROOT_MAKE)/Projects/CPP/make/makefile.template \
-$(DEVROOT_MAKE)/Projects/CPP/make/STD_MAKE \
-$(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
-	@cat $(DEVROOT_MAKE)/Projects/CPP/make/makefile.template > makefile
+$(DEVROOT_MAKE)$(RELPATH)/BaseDevelopment/Makefile \
+$(DEVROOT_MAKE)$(RELPATH)/make/makefile.template \
+$(DEVROOT_MAKE)$(RELPATH)/make/STD_MAKE \
+$(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
+	@cat $(DEVROOT_MAKE)$(RELPATH)/make/makefile.template > makefile
 	@cat makefile.module >> makefile
 	@echo Path=$(PATH) >> makefile
 	@echo all: $(_MODULE) >> makefile
-	@rm -f $(DEVROOT_MAKE)/Projects/CPP/include/lbkey.h
-	@cp -f $(DEVROOT_MAKE)/Projects/CPP/BaseDevelopment/lbclasses/lbkey.h $(DEVROOT_MAKE)/Projects/CPP/include
+	@rm -f $(DEVROOT_MAKE)$(RELPATH)/include/lbkey.h
+	@cp -f $(DEVROOT_MAKE)$(RELPATH)/BaseDevelopment/lbclasses/lbkey.h $(DEVROOT_MAKE)$(RELPATH)/include
 	$(MKMK) $(TARGET) $(_MODULE) . *.cpp >> makefile
 endif
 
@@ -232,16 +238,16 @@ ifeq ($(TARGET), elf)
 DIRECTORIES = $(foreach s, $(DIRECTORY), $s/*.cpp)
 
 makefile: makefile.module \
-$(DEVROOT_MAKE)/Projects/CPP/BaseDevelopment/Makefile \
-$(DEVROOT_MAKE)/Projects/CPP/make/makefile.template \
-$(DEVROOT_MAKE)/Projects/CPP/make/STD_MAKE \
-$(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
-	@cat $(DEVROOT_MAKE)/Projects/CPP/make/makefile.template > makefile
+$(DEVROOT_MAKE)$(RELPATH)/BaseDevelopment/Makefile \
+$(DEVROOT_MAKE)$(RELPATH)/make/makefile.template \
+$(DEVROOT_MAKE)$(RELPATH)/make/STD_MAKE \
+$(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
+	@cat $(DEVROOT_MAKE)$(RELPATH)/make/makefile.template > makefile
 	@cat makefile.module >> makefile
 	@echo Path=$(PATH) >> makefile
 	@echo all: $(_MODULE) >> makefile
-	@rm -f $(DEVROOT_MAKE)/Projects/CPP/include/lbkey.h
-	@cp -f $(DEVROOT_MAKE)/Projects/CPP/BaseDevelopment/lbclasses/lbkey.h $(DEVROOT_MAKE)/Projects/CPP/include
+	@rm -f $(DEVROOT_MAKE)$(RELPATH)/include/lbkey.h
+	@cp -f $(DEVROOT_MAKE)$(RELPATH)/BaseDevelopment/lbclasses/lbkey.h $(DEVROOT_MAKE)$(RELPATH)/include
 	$(MKMK) $(TARGET) $(_MODULE) . *.c *.cpp >> makefile
 
 endif
@@ -249,16 +255,16 @@ endif
 ifeq ($(TARGET), so)
 
 makefile: makefile.module \
-$(DEVROOT_MAKE)/Projects/CPP/BaseDevelopment/Makefile \
-$(DEVROOT_MAKE)/Projects/CPP/make/makefile.template \
-$(DEVROOT_MAKE)/Projects/CPP/make/STD_MAKE \
-$(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
-	@cat $(DEVROOT_MAKE)/Projects/CPP/make/makefile.template > makefile
+$(DEVROOT_MAKE)$(RELPATH)/BaseDevelopment/Makefile \
+$(DEVROOT_MAKE)$(RELPATH)/make/makefile.template \
+$(DEVROOT_MAKE)$(RELPATH)/make/STD_MAKE \
+$(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
+	@cat $(DEVROOT_MAKE)$(RELPATH)/make/makefile.template > makefile
 	@cat makefile.module >> makefile
 	@echo Path=$(PATH) >> makefile
 	@echo all: $(_MODULE).so >> makefile
-	@rm -f $(DEVROOT_MAKE)/Projects/CPP/include/lbkey.h
-	@cp -f $(DEVROOT_MAKE)/Projects/CPP/BaseDevelopment/lbclasses/lbkey.h $(DEVROOT_MAKE)/Projects/CPP/include
+	@rm -f $(DEVROOT_MAKE)$(RELPATH)/include/lbkey.h
+	@cp -f $(DEVROOT_MAKE)$(RELPATH)/BaseDevelopment/lbclasses/lbkey.h $(DEVROOT_MAKE)$(RELPATH)/include
 	@$(MKMK) $(TARGET) $(_MODULE) ../dosdir *.cpp *.c >> makefile
 
 endif
@@ -266,16 +272,16 @@ endif
 ifeq ($(TARGET), sobundle)
 
 makefile: makefile.module \
-$(DEVROOT_MAKE)/Projects/CPP/BaseDevelopment/Makefile \
-$(DEVROOT_MAKE)/Projects/CPP/make/makefile.template \
-$(DEVROOT_MAKE)/Projects/CPP/make/STD_MAKE \
-$(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
-	@cat $(DEVROOT_MAKE)/Projects/CPP/make/makefile.template > makefile
+$(DEVROOT_MAKE)$(RELPATH)/BaseDevelopment/Makefile \
+$(DEVROOT_MAKE)$(RELPATH)/make/makefile.template \
+$(DEVROOT_MAKE)$(RELPATH)/make/STD_MAKE \
+$(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
+	@cat $(DEVROOT_MAKE)$(RELPATH)/make/makefile.template > makefile
 	@cat makefile.module >> makefile
 	@echo Path=$(PATH) >> makefile
 	@echo all: $(_MODULE).so >> makefile
-	@rm -f $(DEVROOT_MAKE)/Projects/CPP/include/lbkey.h
-	@cp -f $(DEVROOT_MAKE)/Projects/CPP/BaseDevelopment/lbclasses/lbkey.h $(DEVROOT_MAKE)/Projects/CPP/include
+	@rm -f $(DEVROOT_MAKE)$(RELPATH)/include/lbkey.h
+	@cp -f $(DEVROOT_MAKE)$(RELPATH)/BaseDevelopment/lbclasses/lbkey.h $(DEVROOT_MAKE)$(RELPATH)/include
 	@$(MKMK) $(TARGET) $(_MODULE) ../dosdir *.cpp >> makefile
 
 endif
@@ -283,16 +289,16 @@ endif
 ifeq ($(TARGET), framework)
 
 makefile: makefile.module \
-$(DEVROOT_MAKE)/Projects/CPP/BaseDevelopment/Makefile \
-$(DEVROOT_MAKE)/Projects/CPP/make/makefile.template \
-$(DEVROOT_MAKE)/Projects/CPP/make/STD_MAKE \
-$(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
-	@cat $(DEVROOT_MAKE)/Projects/CPP/make/makefile.template > makefile
+$(DEVROOT_MAKE)$(RELPATH)/BaseDevelopment/Makefile \
+$(DEVROOT_MAKE)$(RELPATH)/make/makefile.template \
+$(DEVROOT_MAKE)$(RELPATH)/make/STD_MAKE \
+$(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
+	@cat $(DEVROOT_MAKE)$(RELPATH)/make/makefile.template > makefile
 	@cat makefile.module >> makefile
 	@echo Path=$(PATH) >> makefile
 	@echo all: $(_MODULE).framework >> makefile
-	@rm -f $(DEVROOT_MAKE)/Projects/CPP/include/lbkey.h
-	@cp -f $(DEVROOT_MAKE)/Projects/CPP/BaseDevelopment/lbclasses/lbkey.h $(DEVROOT_MAKE)/Projects/CPP/include
+	@rm -f $(DEVROOT_MAKE)$(RELPATH)/include/lbkey.h
+	@cp -f $(DEVROOT_MAKE)$(RELPATH)/BaseDevelopment/lbclasses/lbkey.h $(DEVROOT_MAKE)$(RELPATH)/include
 	$(MKMK) $(TARGET) $(_MODULE) ../dosdir *.cpp >> makefile
 
 endif
@@ -300,16 +306,16 @@ endif
 ifeq ($(TARGET), wxframework)
 
 makefile: makefile.module \
-$(DEVROOT_MAKE)/Projects/CPP/BaseDevelopment/Makefile \
-$(DEVROOT_MAKE)/Projects/CPP/make/makefile.template \
-$(DEVROOT_MAKE)/Projects/CPP/make/STD_MAKE \
-$(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
-	@cat $(DEVROOT_MAKE)/Projects/CPP/make/makefile.template > makefile
+$(DEVROOT_MAKE)$(RELPATH)/BaseDevelopment/Makefile \
+$(DEVROOT_MAKE)$(RELPATH)/make/makefile.template \
+$(DEVROOT_MAKE)$(RELPATH)/make/STD_MAKE \
+$(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
+	@cat $(DEVROOT_MAKE)$(RELPATH)/make/makefile.template > makefile
 	@cat makefile.module >> makefile
 	@echo Path=$(PATH) >> makefile
 	@echo all: $(_MODULE).framework >> makefile
-	@rm -f $(DEVROOT_MAKE)/Projects/CPP/include/lbkey.h
-	@cp -f $(DEVROOT_MAKE)/Projects/CPP/BaseDevelopment/lbclasses/lbkey.h $(DEVROOT_MAKE)/Projects/CPP/include
+	@rm -f $(DEVROOT_MAKE)$(RELPATH)/include/lbkey.h
+	@cp -f $(DEVROOT_MAKE)$(RELPATH)/BaseDevelopment/lbclasses/lbkey.h $(DEVROOT_MAKE)$(RELPATH)/include
 	@$(MKMK) $(TARGET) $(_MODULE) ../dosdir *.cpp >> makefile
 
 endif
@@ -317,16 +323,16 @@ endif
 ifeq ($(TARGET), wxso)
 
 makefile: makefile.module \
-$(DEVROOT_MAKE)/Projects/CPP/BaseDevelopment/Makefile \
-$(DEVROOT_MAKE)/Projects/CPP/make/makefile.template \
-$(DEVROOT_MAKE)/Projects/CPP/make/STD_MAKE \
-$(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
-	@cat $(DEVROOT_MAKE)/Projects/CPP/make/makefile.template > makefile
+$(DEVROOT_MAKE)$(RELPATH)/BaseDevelopment/Makefile \
+$(DEVROOT_MAKE)$(RELPATH)/make/makefile.template \
+$(DEVROOT_MAKE)$(RELPATH)/make/STD_MAKE \
+$(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
+	@cat $(DEVROOT_MAKE)$(RELPATH)/make/makefile.template > makefile
 	@cat makefile.module >> makefile
 	@echo Path=$(PATH) >> makefile
 	@echo all: $(_MODULE).so >> makefile
-	@rm -f $(DEVROOT_MAKE)/Projects/CPP/include/lbkey.h
-	@cp -f $(DEVROOT_MAKE)/Projects/CPP/BaseDevelopment/lbclasses/lbkey.h $(DEVROOT_MAKE)/Projects/CPP/include
+	@rm -f $(DEVROOT_MAKE)$(RELPATH)/include/lbkey.h
+	@cp -f $(DEVROOT_MAKE)$(RELPATH)/BaseDevelopment/lbclasses/lbkey.h $(DEVROOT_MAKE)$(RELPATH)/include
 	@$(MKMK) $(TARGET) $(_MODULE) ../dosdir *.cpp $(CUSTOM_FILES) >> makefile
 
 endif
@@ -334,16 +340,16 @@ endif
 ifeq ($(TARGET), wxshared)
 
 makefile: makefile.module \
-$(DEVROOT_MAKE)/Projects/CPP/BaseDevelopment/Makefile \
-$(DEVROOT_MAKE)/Projects/CPP/make/makefile.template \
-$(DEVROOT_MAKE)/Projects/CPP/make/STD_MAKE \
-$(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
-	@cat $(DEVROOT_MAKE)/Projects/CPP/make/makefile.template > makefile
+$(DEVROOT_MAKE)$(RELPATH)/BaseDevelopment/Makefile \
+$(DEVROOT_MAKE)$(RELPATH)/make/makefile.template \
+$(DEVROOT_MAKE)$(RELPATH)/make/STD_MAKE \
+$(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
+	@cat $(DEVROOT_MAKE)$(RELPATH)/make/makefile.template > makefile
 	@cat makefile.module >> makefile
 	@echo Path=$(PATH) >> makefile
 	@echo all: $(_MODULE).so >> makefile
-	@rm -f $(DEVROOT_MAKE)/Projects/CPP/include/lbkey.h
-	@cp -f $(DEVROOT_MAKE)/Projects/CPP/BaseDevelopment/lbclasses/lbkey.h $(DEVROOT_MAKE)/Projects/CPP/include
+	@rm -f $(DEVROOT_MAKE)$(RELPATH)/include/lbkey.h
+	@cp -f $(DEVROOT_MAKE)$(RELPATH)/BaseDevelopment/lbclasses/lbkey.h $(DEVROOT_MAKE)$(RELPATH)/include
 	@$(MKMK) $(TARGET) $(_MODULE) ../dosdir *.cpp >> makefile
 
 endif
@@ -351,17 +357,17 @@ endif
 ifeq ($(TARGET), exe)
 
 makefile: makefile.module \
-$(DEVROOT_MAKE)/Projects/CPP/BaseDevelopment/Makefile \
-$(DEVROOT_MAKE)/Projects/CPP/make/makefile.template \
-$(DEVROOT_MAKE)/Projects/CPP/make/STD_MAKE \
-$(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
-	@cat $(DEVROOT_MAKE)/Projects/CPP/make/makefile.template > makefile
+$(DEVROOT_MAKE)$(RELPATH)/BaseDevelopment/Makefile \
+$(DEVROOT_MAKE)$(RELPATH)/make/makefile.template \
+$(DEVROOT_MAKE)$(RELPATH)/make/STD_MAKE \
+$(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
+	@cat $(DEVROOT_MAKE)$(RELPATH)/make/makefile.template > makefile
 	@cat makefile.module >> makefile
 	@echo Path=$(PATH) >> makefile
 	@rm -f $(_MODULE).bak
 	@echo all: $(_MODULE).exe >> makefile
-	@rm -f $(DEVROOT_MAKE)/Projects/CPP/include/lbkey.h
-	@cp -f $(DEVROOT_MAKE)/Projects/CPP/BaseDevelopment/lbclasses/lbkey.h $(DEVROOT_MAKE)/Projects/CPP/include
+	@rm -f $(DEVROOT_MAKE)$(RELPATH)/include/lbkey.h
+	@cp -f $(DEVROOT_MAKE)$(RELPATH)/BaseDevelopment/lbclasses/lbkey.h $(DEVROOT_MAKE)$(RELPATH)/include
 	@$(MKMK) $(TARGET) $(_MODULE) ../h *.cpp *.c >> makefile
 
 endif
@@ -369,17 +375,17 @@ endif
 ifeq ($(TARGET), wcc386)
 
 makefile: makefile.module \
-$(DEVROOT_MAKE)/Projects/CPP/BaseDevelopment/Makefile \
-$(DEVROOT_MAKE)/Projects/CPP/make/makefile.template \
-$(DEVROOT_MAKE)/Projects/CPP/make/STD_MAKE \
-$(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
-	@cat $(DEVROOT_MAKE)/Projects/CPP/make/makefile.template > makefile
+$(DEVROOT_MAKE)$(RELPATH)/BaseDevelopment/Makefile \
+$(DEVROOT_MAKE)$(RELPATH)/make/makefile.template \
+$(DEVROOT_MAKE)$(RELPATH)/make/STD_MAKE \
+$(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
+	@cat $(DEVROOT_MAKE)$(RELPATH)/make/makefile.template > makefile
 	@cat makefile.module >> makefile
 	@echo Path=$(PATH) >> makefile
 	@rm -f $(_MODULE).bak
 	@echo all: $(_MODULE).exe >> makefile
-	@rm -f $(DEVROOT_MAKE)/Projects/CPP/include/lbkey.h
-	@cp -f $(DEVROOT_MAKE)/Projects/CPP/BaseDevelopment/lbclasses/lbkey.h $(DEVROOT_MAKE)/Projects/CPP/include
+	@rm -f $(DEVROOT_MAKE)$(RELPATH)/include/lbkey.h
+	@cp -f $(DEVROOT_MAKE)$(RELPATH)/BaseDevelopment/lbclasses/lbkey.h $(DEVROOT_MAKE)$(RELPATH)/include
 	@$(MKMK) exe $(_MODULE) ../h c/*.cpp c/*.c >> makefile
 
 endif

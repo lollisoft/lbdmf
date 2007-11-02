@@ -25,11 +25,14 @@
 #            73252 Lenningen (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.105 $
+# * $Revision: 1.106 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.105 2007/10/28 23:23:55 lollisoft Exp $
+# * $Id: STD_MAKE,v 1.106 2007/11/02 11:56:48 lollisoft Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.106  2007/11/02 11:56:48  lollisoft
+# * Changes that propably enable Cruise Control builds.
+# *
 # * Revision 1.105  2007/10/28 23:23:55  lollisoft
 # * No debug / no memory debug
 # *
@@ -388,6 +391,12 @@
 # In order to use one master file for make configuration, this file
 # will be rewritten for GNU make
 
+ifeq ($(CRUISECONTROL), yes)
+RELPATH=
+else
+RELPATH=/Projects/CPP
+endif
+
 ifeq ($(OSTYPE), Windows_NT)
 
 # Set standard compiler
@@ -667,10 +676,10 @@ ifeq ($(DEBUG), no)
 DEBUG_CXX_FLAGS=
 endif
 
-STD_INCL = -I $(DEVROOT)/Projects/CPP/BaseDevelopment/lbHook/linuxCode \
-	-I $(DEVROOT)/Projects/CPP/interfaces \
-	-I $(DEVROOT)/Projects/CPP/include \
-	-I $(DEVROOT)/Projects/CPP/BaseDevelopment/lbclasses \
+STD_INCL = -I $(DEVROOT)$(RELPATH)/BaseDevelopment/lbHook/linuxCode \
+	-I $(DEVROOT)$(RELPATH)/interfaces \
+	-I $(DEVROOT)$(RELPATH)/include \
+	-I $(DEVROOT)$(RELPATH)/BaseDevelopment/lbclasses \
 	-I /usr/include \
 	-I $(HOME)/mpatrol/src \
 	-I . 
@@ -724,10 +733,10 @@ ifeq ($(DEBUG), no)
 DEBUG_CXX_FLAGS=
 endif
 
-STD_INCL = -I $(DEVROOT)/Projects/CPP/BaseDevelopment/lbHook/linuxCode \
-	-I $(DEVROOT)/Projects/CPP/interfaces \
-	-I $(DEVROOT)/Projects/CPP/include \
-	-I $(DEVROOT)/Projects/CPP/BaseDevelopment/lbclasses \
+STD_INCL = -I $(DEVROOT)$(RELPATH)/BaseDevelopment/lbHook/linuxCode \
+	-I $(DEVROOT)$(RELPATH)/interfaces \
+	-I $(DEVROOT)$(RELPATH)/include \
+	-I $(DEVROOT)$(RELPATH)/BaseDevelopment/lbclasses \
 	-I /usr/include \
 	-I $(HOME)/mpatrol/src \
 	-I . 
@@ -772,10 +781,10 @@ LB_USE_FRAMEWORKS=yes
 DEBUG=no
 
 
-STD_INCL = -I $(DEVROOT)/Projects/CPP/BaseDevelopment/lbHook/linuxCode \
-	-I $(DEVROOT)/Projects/CPP/interfaces \
-	-I $(DEVROOT)/Projects/CPP/include \
-	-I $(DEVROOT)/Projects/CPP/BaseDevelopment/lbclasses \
+STD_INCL = -I $(DEVROOT)$(RELPATH)/BaseDevelopment/lbHook/linuxCode \
+	-I $(DEVROOT)$(RELPATH)/interfaces \
+	-I $(DEVROOT)$(RELPATH)/include \
+	-I $(DEVROOT)$(RELPATH)/BaseDevelopment/lbclasses \
 	-I /usr/include \
 	-I . 
 

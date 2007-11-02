@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.148 $
+# * $Revision: 1.149 $
 # * $Name:  $
-# * $Id: Makefile,v 1.148 2007/10/29 19:59:17 lollisoft Exp $
+# * $Id: Makefile,v 1.149 2007/11/02 11:56:48 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.149  2007/11/02 11:56:48  lollisoft
+# * Changes that propably enable Cruise Control builds.
+# *
 # * Revision 1.148  2007/10/29 19:59:17  lollisoft
 # * Added xsl templates and made bugfixes that now let
 # * the designer create code for any application. Not only
@@ -484,6 +487,18 @@
 #
 #.PHONY: dummy
 
+CRUISECONTROL=$(CRUISECONTROL)
+
+ifdef CRUISECONTROL
+RELPATH=
+endif
+
+ifndef CRUISECONTROL
+RELPATH=/Projects/CPP
+endif
+
+
+
 ifeq ($(OSTYPE), solaris)
 DEVROOT_MAKE=$(DEVROOT)
 
@@ -525,7 +540,7 @@ Path=$(PATH)
 #
 # To enable one build process, these directories are predefined or checked for it's existence.
 
-MAKE_CONFIG_FILE=$(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
+MAKE_CONFIG_FILE=$(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 
 ifndef RPMBUILD 
 ifeq ($(OSTYPE), solaris)
@@ -875,8 +890,8 @@ install-strip:
 	mkdir -p $(prefix)/share
 	mkdir -p $(prefix)/share/lbdmf
 	mkdir -p $(prefix)/share/lbdmf/toolbarimages
-	cp $(DEVROOT_MAKE)/Projects/CPP/Test/GUI/wxWrapper/toolbarimages/*.png $(prefix)/share/lbdmf/toolbarimages
-	cp $(DEVROOT_MAKE)/Projects/CPP/Test/GUI/wxWrapper/toolbarimages/*.xpm $(prefix)/share/lbdmf/toolbarimages
+	cp $(DEVROOT_MAKE)$(RELPATH)/Test/GUI/wxWrapper/toolbarimages/*.png $(prefix)/share/lbdmf/toolbarimages
+	cp $(DEVROOT_MAKE)$(RELPATH)/Test/GUI/wxWrapper/toolbarimages/*.xpm $(prefix)/share/lbdmf/toolbarimages
 
 endif
 
@@ -894,15 +909,15 @@ install-strip:
 	mkdir -p $(prefix)/share/lbdmf/BoUML
 	mkdir -p $(prefix)/share/lbdmf/Doc
 	mkdir -p $(prefix)/share/lbdmf/XMIToDMF
-	cp $(DEVROOT_MAKE)/Projects/CPP/Test/GUI/wxWrapper/toolbarimages/*.png $(prefix)/share/lbdmf/toolbarimages
-	cp $(DEVROOT_MAKE)/Projects/CPP/Test/GUI/wxWrapper/toolbarimages/*.xpm $(prefix)/share/lbdmf/toolbarimages
-	cp $(DEVROOT_MAKE)/Projects/CPP/Test/GUI/wxWrapper/splash.png $(prefix)/share/lbdmf
-	cp $(DEVROOT_MAKE)/Projects/CPP/Test/GUI/wxWrapper/lbdmf.png $(prefix)/share/lbdmf
-	cp $(DEVROOT_MAKE)/Projects/CPP/Test/GUI/wxWrapper/wxWrapper.desktop $(prefix)/share/lbdmf 
-	cp $(DEVROOT_MAKE)/Projects/CPP/AppDevelopmentDemo/DynamicApp/XMIToDMF/*.xmi $(prefix)/share/lbdmf/XMIToDMF
-	cp $(DEVROOT_MAKE)/Projects/CPP/AppDevelopmentDemo/DynamicApp/XMIToDMF/*.xsl $(prefix)/share/lbdmf/XMIToDMF
-	cp $(DEVROOT_MAKE)/Projects/CPP/AppDevelopmentDemo/DynamicApp/BoUML/* $(prefix)/share/lbdmf/BoUML
-	cp $(DEVROOT_MAKE)/Projects/CPP/AppDevelopmentDemo/DynamicApp/Doc/*.pdf $(prefix)/share/lbdmf/Doc
+	cp $(DEVROOT_MAKE)$(RELPATH)/Test/GUI/wxWrapper/toolbarimages/*.png $(prefix)/share/lbdmf/toolbarimages
+	cp $(DEVROOT_MAKE)$(RELPATH)/Test/GUI/wxWrapper/toolbarimages/*.xpm $(prefix)/share/lbdmf/toolbarimages
+	cp $(DEVROOT_MAKE)$(RELPATH)/Test/GUI/wxWrapper/splash.png $(prefix)/share/lbdmf
+	cp $(DEVROOT_MAKE)$(RELPATH)/Test/GUI/wxWrapper/lbdmf.png $(prefix)/share/lbdmf
+	cp $(DEVROOT_MAKE)$(RELPATH)/Test/GUI/wxWrapper/wxWrapper.desktop $(prefix)/share/lbdmf 
+	cp $(DEVROOT_MAKE)$(RELPATH)/AppDevelopmentDemo/DynamicApp/XMIToDMF/*.xmi $(prefix)/share/lbdmf/XMIToDMF
+	cp $(DEVROOT_MAKE)$(RELPATH)/AppDevelopmentDemo/DynamicApp/XMIToDMF/*.xsl $(prefix)/share/lbdmf/XMIToDMF
+	cp $(DEVROOT_MAKE)$(RELPATH)/AppDevelopmentDemo/DynamicApp/BoUML/* $(prefix)/share/lbdmf/BoUML
+	cp $(DEVROOT_MAKE)$(RELPATH)/AppDevelopmentDemo/DynamicApp/Doc/*.pdf $(prefix)/share/lbdmf/Doc
 	./copy-wxGTK-libs.sh $(prefix)
 
 endif
@@ -1194,7 +1209,7 @@ endif
 	$(MAKE) -s -C $@
 
 #../Plugins/DatabaseForm: dummy
-#	$(MAKE) -s -C $@ -e MODULE=lbDatabaseForm -e TARGET=$(TARGETWXPLUGIN) -f $(DEVROOT_MAKE)/Projects/CPP/make/makefile.configure
+#	$(MAKE) -s -C $@ -e MODULE=lbDatabaseForm -e TARGET=$(TARGETWXPLUGIN) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 #	$(MAKE) -s -C $@
 
 lbHook: dummy

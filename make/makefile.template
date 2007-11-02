@@ -1,19 +1,39 @@
 # Standard template
 
 ifeq ($(OSTYPE), Windows_NT)
-include $(DEVROOT)\projects\CPP\make\STD_MAKE
+ifeq ($(CRUISECONTROL), yes)
+RELPATH=
+else
+RELPATH=\Projects\CPP
+endif
+include $(DEVROOT)$(RELPATH)\make\STD_MAKE
 endif
 
 ifeq ($(OSTYPE), solaris)
-include $(DEVROOT)/Projects/CPP/make/STD_MAKE
+ifeq ($(CRUISECONTROL), yes)
+RELPATH=
+else
+RELPATH=/Projects/CPP
+endif
+include $(DEVROOT)$(RELPATH)/make/STD_MAKE
 endif
 
 ifeq ($(OSTYPE), linux)
-include $(DEVROOT)/Projects/CPP/make/STD_MAKE
+ifeq ($(CRUISECONTROL), yes)
+RELPATH=
+else
+RELPATH=/Projects/CPP
+endif
+include $(DEVROOT)$(RELPATH)/make/STD_MAKE
 endif
 
 ifeq ($(OSTYPE), osx)
-include $(DEVROOT)/Projects/CPP/make/STD_MAKE
+ifeq ($(CRUISECONTROL), yes)
+RELPATH=
+else
+RELPATH=/Projects/CPP
+endif
+include $(DEVROOT)$(RELPATH)/make/STD_MAKE
 endif
 
 ifndef prefix
