@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.150 $
+# * $Revision: 1.151 $
 # * $Name:  $
-# * $Id: Makefile,v 1.150 2007/11/02 22:12:50 lollisoft Exp $
+# * $Id: Makefile,v 1.151 2007/11/03 08:20:49 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.151  2007/11/03 08:20:49  lollisoft
+# * Fix CRUISECONTROL detection.
+# *
 # * Revision 1.150  2007/11/02 22:12:50  lollisoft
 # * Deactivated some targets that fail building.
 # *
@@ -490,13 +493,9 @@
 #
 #.PHONY: dummy
 
-CRUISECONTROL=$(CRUISECONTROL)
-
-ifdef CRUISECONTROL
+ifeq ($(CRUISECONTROL), yes)
 RELPATH=
-endif
-
-ifndef CRUISECONTROL
+else
 RELPATH=/Projects/CPP
 endif
 
@@ -640,6 +639,8 @@ ALLTARGETS = \
 	../include/lbkey.h \
 	../vendor/dosdir \
 	../vendor/mkmk \
+	../vendor/wxShapeFramework/src \
+	../vendor/wxShapeFramework/example \
 	../vendor/wxARG/src \
 	../vendor/databaselayer/src/implementations/ODBC \
 	lbHook \
@@ -1070,6 +1071,14 @@ ifeq ($(OSTYPE), osx)
 	$(MAKE) -s -C $@ -e MODULE=wxActiveRecordGenerator -e TARGET=$(TARGETWXEXE) -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@
 	cp ../vendor/wxARG/src/wxActiveRecordGenerator $(HOME)/bin
+
+../vendor/wxShapeFramework/src: dummy
+	$(MAKE) -s -C $@ -e MODULE=wxShapeFramework -e TARGET=$(TARGETWXFRAMEWORK) -e CUSTOM_FILES=wxxmlserializer/*.cpp -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@
+
+../vendor/wxShapeFramework/example: dummy
+	$(MAKE) -s -C $@ -e MODULE=wxShapeFrameworkExample -e TARGET=$(TARGETWXEXE) -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@
 
 ../Test/GUI/wxWrapperDLL: dummy
 	$(MAKE) -s -C $@ -e MODULE=wxWrapperDLL -e TARGET=$(TARGETWXFRAMEWORK) -f $(MAKE_CONFIG_FILE)
