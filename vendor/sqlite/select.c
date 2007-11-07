@@ -12,12 +12,9 @@
 ** This file contains C code routines that are called by the parser
 ** to handle SELECT statements in SQLite.
 **
-** $Id: select.c,v 1.1 2007/11/07 08:27:11 lollisoft Exp $
+** $Id: select.c,v 1.2 2007/11/07 22:19:48 lollisoft Exp $
 */
-#ifdef SQLITE_DLLEXPORT
-#undef SQLITE_DLLEXPORT
-#endif
-#define SQLITE_DLLEXPORT __declspec(dllexport)
+#include "windllexport.h"
 #include "sqliteInt.h"
 
 

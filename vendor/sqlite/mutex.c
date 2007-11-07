@@ -19,12 +19,9 @@
 ** implementation is suitable for testing.
 ** debugging purposes
 **
-** $Id: mutex.c,v 1.1 2007/11/07 08:27:10 lollisoft Exp $
+** $Id: mutex.c,v 1.2 2007/11/07 22:19:48 lollisoft Exp $
 */
-#ifdef SQLITE_DLLEXPORT
-#undef SQLITE_DLLEXPORT
-#endif
-#define SQLITE_DLLEXPORT __declspec(dllexport)
+#include "windllexport.h"
 #include "sqliteInt.h"
 
 #ifdef SQLITE_MUTEX_NOOP_DEBUG

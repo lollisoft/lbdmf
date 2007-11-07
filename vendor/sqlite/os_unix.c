@@ -12,9 +12,7 @@
 **
 ** This file contains code that is specific to Unix systems.
 */
-#ifndef SQLITE_DLLEXPORT
-#define SQLITE_DLLEXPORT __declspec(dllexport)
-#endif
+#include "windllexport.h"
 #include "sqliteInt.h"
 #if OS_UNIX              /* This file is used on unix only */
 

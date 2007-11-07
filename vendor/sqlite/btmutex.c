@@ -10,17 +10,14 @@
 **
 *************************************************************************
 **
-** $Id: btmutex.c,v 1.1 2007/11/07 08:27:09 lollisoft Exp $
+** $Id: btmutex.c,v 1.2 2007/11/07 22:19:47 lollisoft Exp $
 **
 ** This file contains code used to implement mutexes on Btree objects.
 ** This code really belongs in btree.c.  But btree.c is getting too
 ** big and we want to break it down some.  This packaged seemed like
 ** a good breakout.
 */
-#ifdef SQLITE_DLLEXPORT
-#undef SQLITE_DLLEXPORT
-#endif
-#define SQLITE_DLLEXPORT __declspec(dllexport)
+#include "windllexport.h"
 #include "btreeInt.h"
 #if SQLITE_THREADSAFE && !defined(SQLITE_OMIT_SHARED_CACHE)
 

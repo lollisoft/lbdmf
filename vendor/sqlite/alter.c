@@ -12,12 +12,9 @@
 ** This file contains C code routines that used to generate VDBE code
 ** that implements the ALTER TABLE command.
 **
-** $Id: alter.c,v 1.1 2007/11/07 08:27:09 lollisoft Exp $
+** $Id: alter.c,v 1.2 2007/11/07 22:19:47 lollisoft Exp $
 */
-#ifdef SQLITE_DLLEXPORT
-#undef SQLITE_DLLEXPORT
-#endif
-#define SQLITE_DLLEXPORT __declspec(dllexport)
+#include "windllexport.h"
 #include "sqliteInt.h"
 #include <ctype.h>
 

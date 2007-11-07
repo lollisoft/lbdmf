@@ -12,12 +12,9 @@
 **
 ** This file contains code used to implement incremental BLOB I/O.
 **
-** $Id: vdbeblob.c,v 1.1 2007/11/07 08:27:12 lollisoft Exp $
+** $Id: vdbeblob.c,v 1.2 2007/11/07 22:19:48 lollisoft Exp $
 */
-#ifdef SQLITE_DLLEXPORT
-#undef SQLITE_DLLEXPORT
-#endif
-#define SQLITE_DLLEXPORT __declspec(dllexport)
+#include "windllexport.h"
 
 #include "sqliteInt.h"
 #include "vdbeInt.h"

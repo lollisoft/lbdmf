@@ -12,12 +12,9 @@
 ** This file contains the C functions that implement a memory
 ** allocation subsystem for use by SQLite.  
 **
-** $Id: mem1.c,v 1.1 2007/11/07 08:27:10 lollisoft Exp $
+** $Id: mem1.c,v 1.2 2007/11/07 22:19:48 lollisoft Exp $
 */
-#ifdef SQLITE_DLLEXPORT
-#undef SQLITE_DLLEXPORT
-#endif
-#define SQLITE_DLLEXPORT __declspec(dllexport)
+#include "windllexport.h"
 
 /*
 ** This version of the memory allocator is the default.  It is

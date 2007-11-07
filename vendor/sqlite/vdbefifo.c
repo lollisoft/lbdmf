@@ -12,10 +12,7 @@
 ** This file implements a FIFO queue of rowids used for processing
 ** UPDATE and DELETE statements.
 */
-#ifdef SQLITE_DLLEXPORT
-#undef SQLITE_DLLEXPORT
-#endif
-#define SQLITE_DLLEXPORT __declspec(dllexport)
+#include "windllexport.h"
 #include "sqliteInt.h"
 #include "vdbeInt.h"
 

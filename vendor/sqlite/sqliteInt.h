@@ -11,7 +11,7 @@
 *************************************************************************
 ** Internal interface definitions for SQLite.
 **
-** @(#) $Id: sqliteInt.h,v 1.1 2007/11/07 08:27:12 lollisoft Exp $
+** @(#) $Id: sqliteInt.h,v 1.2 2007/11/07 22:19:48 lollisoft Exp $
 */
 #ifndef _SQLITEINT_H_
 #define _SQLITEINT_H_
@@ -212,9 +212,9 @@
 ** not, there are still machines out there that use EBCDIC.)
 */
 #if 'A' == '\301'
-# define SQLITE_EBCDIC 1
+#define SQLITE_EBCDIC 1
 #else
-# define SQLITE_ASCII 1
+#define SQLITE_ASCII 1
 #endif
 
 /*
@@ -791,16 +791,18 @@ struct Table {
 ** associated with that table are on a linked list using the FKey.pNextTo
 ** field.
 */
+struct sColMap {  /* Mapping of columns in pFrom to columns in zTo */
+    int iFrom;         /* Index of column in pFrom */
+    char *zCol;        /* Name of column in zTo.  If 0 use PRIMARY KEY */
+};          /* One entry for each of nCol column s */
+
 struct FKey {
   Table *pFrom;     /* The table that constains the REFERENCES clause */
   FKey *pNextFrom;  /* Next foreign key in pFrom */
   char *zTo;        /* Name of table that the key points to */
   FKey *pNextTo;    /* Next foreign key that points to zTo */
   int nCol;         /* Number of columns in this key */
-  struct sColMap {  /* Mapping of columns in pFrom to columns in zTo */
-    int iFrom;         /* Index of column in pFrom */
-    char *zCol;        /* Name of column in zTo.  If 0 use PRIMARY KEY */
-  } *aCol;          /* One entry for each of nCol column s */
+  struct sColMap *aCol;          /* One entry for each of nCol column s */
   u8 isDeferred;    /* True if constraint checking is deferred till COMMIT */
   u8 updateConf;    /* How to resolve conflicts that occur on UPDATE */
   u8 deleteConf;    /* How to resolve conflicts that occur on DELETE */
@@ -934,6 +936,22 @@ struct Token {
 ** original Select structure that describes the SELECT statement.  These
 ** fields do not need to be freed when deallocating the AggInfo structure.
 */
+struct AggInfo_col {    /* For each column used in source tables */
+    Table *pTab;             /* Source table */
+    int iTable;              /* Cursor number of the source table */
+    int iColumn;             /* Column number within the source table */
+    int iSorterColumn;       /* Column number in the sorting index */
+    int iMem;                /* Memory location that acts as accumulator */
+    Expr *pExpr;             /* The original expression */
+};
+
+struct AggInfo_func {   /* For each aggregate function */
+    Expr *pExpr;             /* Expression encoding the function */
+    FuncDef *pFunc;          /* The aggregate function implementation */
+    int iMem;                /* Memory location that acts as accumulator */
+    int iDistinct;           /* Ephermeral table used to enforce DISTINCT */
+};
+
 struct AggInfo {
   u8 directMode;          /* Direct rendering mode means take data directly
                           ** from source tables rather than from accumulators */
@@ -942,25 +960,13 @@ struct AggInfo {
   int sortingIdx;         /* Cursor number of the sorting index */
   ExprList *pGroupBy;     /* The group by clause */
   int nSortingColumn;     /* Number of columns in the sorting index */
-  struct AggInfo_col {    /* For each column used in source tables */
-    Table *pTab;             /* Source table */
-    int iTable;              /* Cursor number of the source table */
-    int iColumn;             /* Column number within the source table */
-    int iSorterColumn;       /* Column number in the sorting index */
-    int iMem;                /* Memory location that acts as accumulator */
-    Expr *pExpr;             /* The original expression */
-  } *aCol;
+  struct AggInfo_col *aCol;
   int nColumn;            /* Number of used entries in aCol[] */
   int nColumnAlloc;       /* Number of slots allocated for aCol[] */
   int nAccumulator;       /* Number of columns that show through to the output.
                           ** Additional columns are used only as parameters to
                           ** aggregate functions */
-  struct AggInfo_func {   /* For each aggregate function */
-    Expr *pExpr;             /* Expression encoding the function */
-    FuncDef *pFunc;          /* The aggregate function implementation */
-    int iMem;                /* Memory location that acts as accumulator */
-    int iDistinct;           /* Ephermeral table used to enforce DISTINCT */
-  } *aFunc;
+  struct AggInfo_func *aFunc;
   int nFunc;              /* Number of entries in aFunc[] */
   int nFuncAlloc;         /* Number of slots allocated for aFunc[] */
 };
@@ -1065,17 +1071,19 @@ struct Expr {
 ** also be used as the argument to a function, in which case the a.zName
 ** field is not used.
 */
-struct ExprList {
-  int nExpr;             /* Number of expressions on the list */
-  int nAlloc;            /* Number of entries allocated below */
-  int iECursor;          /* VDBE Cursor associated with this ExprList */
-  struct ExprList_item {
+struct ExprList_item {
     Expr *pExpr;           /* The list of expressions */
     char *zName;           /* Token associated with this expression */
     u8 sortOrder;          /* 1 for DESC or 0 for ASC */
     u8 isAgg;              /* True if this is an aggregate like count(*) */
     u8 done;               /* A flag to indicate when processing is finished */
-  } *a;                  /* One entry for each expression */
+};                  /* One entry for each expression */
+
+struct ExprList {
+  int nExpr;             /* Number of expressions on the list */
+  int nAlloc;            /* Number of entries allocated below */
+  int iECursor;          /* VDBE Cursor associated with this ExprList */
+  struct ExprList_item *a;                  /* One entry for each expression */
 };
 
 /*
@@ -1093,11 +1101,13 @@ struct ExprList {
 **
 ** If "a" is the k-th column of table "t", then IdList.a[0].idx==k.
 */
-struct IdList {
-  struct IdList_item {
+struct IdList_item {
     char *zName;      /* Name of the identifier */
     int idx;          /* Index in some Table.aCol[] of a column named zName */
-  } *a;
+};
+
+struct IdList {
+  struct IdList_item *a;
   int nId;         /* Number of identifiers on the list */
   int nAlloc;      /* Number of entries allocated for a[] below */
 };
@@ -1127,10 +1137,8 @@ typedef u64 Bitmask;
 ** But sqlite3SrcListShiftJoinType() later shifts the jointypes so that each
 ** jointype expresses the join between the table and the previous table.
 */
-struct SrcList {
-  i16 nSrc;        /* Number of tables or subqueries in the FROM clause */
-  i16 nAlloc;      /* Number of entries allocated in a[] below */
-  struct SrcList_item {
+
+struct SrcList_item {
     char *zDatabase;  /* Name of database holding this table */
     char *zName;      /* Name of the table */
     char *zAlias;     /* The "B" part of a "A AS B" phrase.  zName is the "A" */
@@ -1142,7 +1150,13 @@ struct SrcList {
     Expr *pOn;        /* The ON clause of a join */
     IdList *pUsing;   /* The USING clause of a join */
     Bitmask colUsed;  /* Bit N (1<<N) set if column N or pTab is used */
-  } a[1];             /* One entry for each identifier on the list */
+};             /* One entry for each identifier on the list */
+
+
+struct SrcList {
+  i16 nSrc;        /* Number of tables or subqueries in the FROM clause */
+  i16 nAlloc;      /* Number of entries allocated in a[] below */
+  struct SrcList_item a[1];             /* One entry for each identifier on the list */
 };
 
 /*
@@ -1175,6 +1189,11 @@ struct SrcList {
 ** sufficient to free all of the pIdxInfo pointers.
 ** 
 */
+struct InLoop {
+    int iCur;              /* The VDBE cursor used by this IN operator */
+    int topAddr;           /* Top of the IN loop */
+};           /* Information about each nested IN operator */
+
 struct WhereLevel {
   int iFrom;            /* Which entry in the FROM clause */
   int flags;            /* Flags associated with this level */
@@ -1190,10 +1209,7 @@ struct WhereLevel {
   int op, p1, p2;       /* Opcode used to terminate the loop */
   int nEq;              /* Number of == or IN constraints on this loop */
   int nIn;              /* Number of IN operators constraining this loop */
-  struct InLoop {
-    int iCur;              /* The VDBE cursor used by this IN operator */
-    int topAddr;           /* Top of the IN loop */
-  } *aInLoop;           /* Information about each nested IN operator */
+  struct InLoop *aInLoop;           /* Information about each nested IN operator */
   sqlite3_index_info *pBestIdx;  /* Index information for this level */
 
   /* The following field is really not part of the current level.  But

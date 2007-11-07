@@ -12,12 +12,9 @@
 ** This file contains routines used for analyzing expressions and
 ** for generating VDBE code that evaluates expressions in SQLite.
 **
-** $Id: expr.c,v 1.1 2007/11/07 08:27:10 lollisoft Exp $
+** $Id: expr.c,v 1.2 2007/11/07 22:19:48 lollisoft Exp $
 */
-#ifdef SQLITE_DLLEXPORT
-#undef SQLITE_DLLEXPORT
-#endif
-#define SQLITE_DLLEXPORT __declspec(dllexport)
+#include "windllexport.h"
 #include "sqliteInt.h"
 #include <ctype.h>
 

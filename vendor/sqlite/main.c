@@ -14,12 +14,9 @@
 ** other files are for internal use by SQLite and should not be
 ** accessed by users of the library.
 **
-** $Id: main.c,v 1.1 2007/11/07 08:27:10 lollisoft Exp $
+** $Id: main.c,v 1.2 2007/11/07 22:19:48 lollisoft Exp $
 */
-#ifdef SQLITE_DLLEXPORT
-#undef SQLITE_DLLEXPORT
-#endif
-#define SQLITE_DLLEXPORT __declspec(dllexport)
+#include "windllexport.h"
 #include "sqliteInt.h"
 #include <ctype.h>
 
@@ -47,7 +44,6 @@ void (*sqlite3_io_trace)(const char*, ...) = 0;
 ** See also the "PRAGMA temp_store_directory" SQL command.
 */
 char *sqlite3_temp_directory = 0;
-
 
 /*
 ** This is the default collating function named "BINARY" which is always

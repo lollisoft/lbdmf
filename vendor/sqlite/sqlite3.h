@@ -30,10 +30,15 @@
 ** the version number) and changes its name to "SQLITE_DLLEXPORT sqlite3.h" as
 ** part of the build process.
 **
-** @(#) $Id: sqlite3.h,v 1.1 2007/11/07 08:27:11 lollisoft Exp $
+** @(#) $Id: sqlite3.h,v 1.2 2007/11/07 22:19:48 lollisoft Exp $
 */
+#ifdef WINDOWS
 #ifndef SQLITE_DLLEXPORT
-.#define SQLITE_DLLEXPORT __declspec(dllimport)
+#define SQLITE_DLLEXPORT __declspec(dllimport)
+#endif
+#endif
+#ifndef WINDOWS
+#define SQLITE_DLLEXPORT
 #endif
 
 #ifndef _SQLITE3_H_
@@ -2669,8 +2674,12 @@ int SQLITE_DLLEXPORT sqlite3_sleep(int);
 ** routines have been call and remain unchanged thereafter.
 */
 //SQLITE_EXTERN 
+#ifdef WINDOWS
 SQLITE_DLLEXPORT char * sqlite3_temp_directory;
-
+#endif
+#ifndef WINDOWS
+SQLITE_EXTERN char * sqlite3_temp_directory;
+#endif
 /*
 ** CAPI3REF:  Test To See If The Database Is In Auto-Commit Mode
 **
@@ -3094,26 +3103,32 @@ struct  sqlite3_module {
 ** a cost of N.  A binary search of a table of N entries should have a
 ** cost of approximately log(N).
 */
-struct  sqlite3_index_info {
-  /* Inputs */
-  int nConstraint;           /* Number of entries in aConstraint */
-  struct  sqlite3_index_constraint {
+struct  sqlite3_index_constraint {
      int iColumn;              /* Column on left-hand side of constraint */
      unsigned char op;         /* Constraint operator */
      unsigned char usable;     /* True if this constraint is usable */
      int iTermOffset;          /* Used internally - xBestIndex should ignore */
-  } *aConstraint;            /* Table of WHERE clause constraints */
-  int nOrderBy;              /* Number of terms in the ORDER BY clause */
-  struct  sqlite3_index_orderby {
+};            /* Table of WHERE clause constraints */
+
+struct  sqlite3_index_orderby {
      int iColumn;              /* Column number */
      unsigned char desc;       /* True for DESC.  False for ASC. */
-  } *aOrderBy;               /* The ORDER BY clause */
+};               /* The ORDER BY clause */
 
-  /* Outputs */
-  struct  sqlite3_index_constraint_usage {
+struct  sqlite3_index_constraint_usage {
     int argvIndex;           /* if >0, constraint is part of argv to xFilter */
     unsigned char omit;      /* Do not code a test for this constraint */
-  } *aConstraintUsage;
+};
+
+struct  sqlite3_index_info {
+  /* Inputs */
+  int nConstraint;           /* Number of entries in aConstraint */
+  struct  sqlite3_index_constraint *aConstraint;            /* Table of WHERE clause constraints */
+  int nOrderBy;              /* Number of terms in the ORDER BY clause */
+  struct  sqlite3_index_orderby *aOrderBy;               /* The ORDER BY clause */
+
+  /* Outputs */
+  struct  sqlite3_index_constraint_usage *aConstraintUsage;
   int idxNum;                /* Number used to identify the index */
   char *idxStr;              /* String, possibly obtained from SQLITE_DLLEXPORT sqlite3_malloc */
   int needToFreeIdxStr;      /* Free idxStr using SQLITE_DLLEXPORT sqlite3_free() if true */

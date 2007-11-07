@@ -13,10 +13,7 @@
 ** This file contains OS interface code that is common to all
 ** architectures.
 */
-#ifdef SQLITE_DLLEXPORT
-#undef SQLITE_DLLEXPORT
-#endif
-#define SQLITE_DLLEXPORT __declspec(dllexport)
+#include "windllexport.h"
 #define _SQLITE_OS_C_ 1
 #include "sqliteInt.h"
 #undef _SQLITE_OS_C_

@@ -6,10 +6,7 @@
 #include <stdio.h>
 #line 56 "parse.y"
 
-#ifdef SQLITE_DLLEXPORT
-#undef SQLITE_DLLEXPORT
-#endif
-#define SQLITE_DLLEXPORT __declspec(dllexport)
+#include "windllexport.h"
 #include "sqliteInt.h"
 
 /*
@@ -27,7 +24,7 @@ struct LimitVal {
 */
 struct LikeOp {
   Token eOperator;  /* "like" or "glob" or "regexp" */
-  int not;         /* True if the NOT keyword is present */
+  int _not;         /* True if the NOT keyword is present */
 };
 
 /*
@@ -2739,13 +2736,13 @@ static void yy_reduce(
       case 198:
       case 200:
 #line 704 "parse.y"
-{yygotominor.yy72.eOperator = yymsp[0].minor.yy0; yygotominor.yy72.not = 0;}
+{yygotominor.yy72.eOperator = yymsp[0].minor.yy0; yygotominor.yy72._not = 0;}
 #line 2742 "parse.c"
         break;
       case 199:
       case 201:
 #line 705 "parse.y"
-{yygotominor.yy72.eOperator = yymsp[0].minor.yy0; yygotominor.yy72.not = 1;}
+{yygotominor.yy72.eOperator = yymsp[0].minor.yy0; yygotominor.yy72._not = 1;}
 #line 2748 "parse.c"
         break;
       case 204:
@@ -2758,7 +2755,7 @@ static void yy_reduce(
     pList = sqlite3ExprListAppend(pParse,pList, yymsp[0].minor.yy172, 0);
   }
   yygotominor.yy172 = sqlite3ExprFunction(pParse, pList, &yymsp[-2].minor.yy72.eOperator);
-  if( yymsp[-2].minor.yy72.not ) yygotominor.yy172 = sqlite3PExpr(pParse, TK_NOT, yygotominor.yy172, 0, 0);
+  if( yymsp[-2].minor.yy72._not ) yygotominor.yy172 = sqlite3PExpr(pParse, TK_NOT, yygotominor.yy172, 0, 0);
   sqlite3ExprSpan(yygotominor.yy172, &yymsp[-3].minor.yy172->span, &yymsp[-1].minor.yy172->span);
   if( yygotominor.yy172 ) yygotominor.yy172->flags |= EP_InfixFunc;
 }

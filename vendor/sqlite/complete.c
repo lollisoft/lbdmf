@@ -16,29 +16,12 @@
 ** separating it out, the code will be automatically omitted from
 ** static links that do not use it.
 **
-** $Id: complete.c,v 1.1 2007/11/07 08:27:10 lollisoft Exp $
+** $Id: complete.c,v 1.2 2007/11/07 22:19:48 lollisoft Exp $
 */
-#ifdef SQLITE_DLLEXPORT
-#undef SQLITE_DLLEXPORT
-#endif
-#define SQLITE_DLLEXPORT __declspec(dllexport)
+#include "windllexport.h"
 #include "sqliteInt.h"
+#include "keywordhash.h"
 #ifndef SQLITE_OMIT_COMPLETE
-
-/*
-** This is defined in tokenize.c.  We just have to import the definition.
-*/
-#ifndef SQLITE_AMALGAMATION
-#ifdef SQLITE_ASCII
-extern const char sqlite3IsAsciiIdChar[];
-#define IdChar(C)  (((c=C)&0x80)!=0 || (c>0x1f && sqlite3IsAsciiIdChar[c-0x20]))
-#endif
-#ifdef SQLITE_EBCDIC
-extern const char sqlite3IsEbcdicIdChar[];
-#define IdChar(C)  (((c=C)>=0x42 && sqlite3IsEbcdicIdChar[c-0x40]))
-#endif
-#endif /* SQLITE_AMALGAMATION */
-
 
 /*
 ** Token types used by the sqlite3_complete() routine.  See the header

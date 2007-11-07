@@ -12,7 +12,7 @@
 ** This file contains routines used to translate between UTF-8, 
 ** UTF-16, UTF-16BE, and UTF-16LE.
 **
-** $Id: utf.c,v 1.1 2007/11/07 08:27:12 lollisoft Exp $
+** $Id: utf.c,v 1.2 2007/11/07 22:19:48 lollisoft Exp $
 **
 ** Notes on UTF-8:
 **
@@ -35,10 +35,7 @@
 **     0xfe 0xff   big-endian utf-16 follows
 **
 */
-#ifdef SQLITE_DLLEXPORT
-#undef SQLITE_DLLEXPORT
-#endif
-#define SQLITE_DLLEXPORT __declspec(dllexport)
+#include "windllexport.h"
 #include "sqliteInt.h"
 #include <assert.h>
 #include "vdbeInt.h"

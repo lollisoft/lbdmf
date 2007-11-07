@@ -9,16 +9,13 @@
 **    May you share freely, never taking more than you give.
 **
 *************************************************************************
-** $Id: btree.c,v 1.1 2007/11/07 08:27:09 lollisoft Exp $
+** $Id: btree.c,v 1.2 2007/11/07 22:19:47 lollisoft Exp $
 **
 ** This file implements a external (disk-based) database using BTrees.
 ** See the header comment on "btreeInt.h" for additional information.
 ** Including a description of file format and an overview of operation.
 */
-#ifdef SQLITE_DLLEXPORT
-#undef SQLITE_DLLEXPORT
-#endif
-#define SQLITE_DLLEXPORT __declspec(dllexport)
+#include "windllexport.h"
 #include "btreeInt.h"
 
 /*
@@ -506,8 +503,16 @@ static u8 *findOverflowCell(MemPage *pPage, int iCell){
   assert( sqlite3_mutex_held(pPage->pBt->mutex) );
   for(i=pPage->nOverflow-1; i>=0; i--){
     int k;
+#ifndef WINDOWS
+  struct _OvflCell {   /* Cells that will not fit on aData[] */
+    u8 *pCell;          /* Pointers to the body of the overflow cell */
+    u16 idx;            /* Insert this cell before idx-th non-overflow cell */
+  } aOvfl[5], *pOvfl;
+#endif
+#ifdef WINDOWS
     struct _OvflCell *pOvfl;
-    pOvfl = &pPage->aOvfl[i];
+#endif
+    pOvfl = (struct _OvflCell*) &pPage->aOvfl[i];
     k = pOvfl->idx;
     if( k<=iCell ){
       if( k==iCell ){

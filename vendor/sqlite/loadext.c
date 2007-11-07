@@ -12,10 +12,7 @@
 ** This file contains code used to dynamically load extensions into
 ** the SQLite library.
 */
-#ifdef SQLITE_DLLEXPORT
-#undef SQLITE_DLLEXPORT
-#endif
-#define SQLITE_DLLEXPORT __declspec(dllexport)
+#include "windllexport.h"
 #ifndef SQLITE_OMIT_LOAD_EXTENSION
 
 #define SQLITE_CORE 1  /* Disable the API redefinition in sqlite3ext.h */

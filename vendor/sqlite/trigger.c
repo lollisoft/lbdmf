@@ -10,10 +10,7 @@
 *************************************************************************
 *
 */
-#ifdef SQLITE_DLLEXPORT
-#undef SQLITE_DLLEXPORT
-#endif
-#define SQLITE_DLLEXPORT __declspec(dllexport)
+#include "windllexport.h"
 #include "sqliteInt.h"
 
 #ifndef SQLITE_OMIT_TRIGGER

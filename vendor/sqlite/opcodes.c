@@ -1,9 +1,6 @@
 /* Automatically generated.  Do not edit */
 /* See the mkopcodec.awk script for details. */
-#ifdef SQLITE_DLLEXPORT
-#undef SQLITE_DLLEXPORT
-#endif
-#define SQLITE_DLLEXPORT __declspec(dllexport)
+#include "windllexport.h"
 #if !defined(SQLITE_OMIT_EXPLAIN) || !defined(NDEBUG) || defined(VDBE_PROFILE) || defined(SQLITE_DEBUG)
 const char *sqlite3OpcodeName(int i){
  static const char *const azName[] = { "?",

@@ -16,10 +16,7 @@
 ** These routines are in a separate files so that they will not be linked
 ** if they are not used.
 */
-#ifdef SQLITE_DLLEXPORT
-#undef SQLITE_DLLEXPORT
-#endif
-#define SQLITE_DLLEXPORT __declspec(dllexport)
+#include "windllexport.h"
 #include "sqliteInt.h"
 #include <stdlib.h>
 #include <string.h>

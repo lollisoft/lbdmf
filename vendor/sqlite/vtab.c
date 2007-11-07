@@ -11,12 +11,9 @@
 *************************************************************************
 ** This file contains code used to help implement virtual tables.
 **
-** $Id: vtab.c,v 1.1 2007/11/07 08:27:13 lollisoft Exp $
+** $Id: vtab.c,v 1.2 2007/11/07 22:19:48 lollisoft Exp $
 */
-#ifdef SQLITE_DLLEXPORT
-#undef SQLITE_DLLEXPORT
-#endif
-#define SQLITE_DLLEXPORT __declspec(dllexport)
+#include "windllexport.h"
 #ifndef SQLITE_OMIT_VIRTUALTABLE
 #include "sqliteInt.h"
 

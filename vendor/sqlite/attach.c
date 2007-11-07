@@ -11,12 +11,9 @@
 *************************************************************************
 ** This file contains code used to implement the ATTACH and DETACH commands.
 **
-** $Id: attach.c,v 1.1 2007/11/07 08:27:09 lollisoft Exp $
+** $Id: attach.c,v 1.2 2007/11/07 22:19:47 lollisoft Exp $
 */
-#ifdef SQLITE_DLLEXPORT
-#undef SQLITE_DLLEXPORT
-#endif
-#define SQLITE_DLLEXPORT __declspec(dllexport)
+#include "windllexport.h"
 #include "sqliteInt.h"
 
 #ifndef SQLITE_OMIT_ATTACH
@@ -73,7 +70,7 @@ static void attachFunc(
 ){
   int i;
   int rc = 0;
-  sqlite3 *db = sqlite3_user_data(context);
+  sqlite3 *db = (sqlite3 *) sqlite3_user_data(context);
   const char *zName;
   const char *zFile;
   Db *aNew;
@@ -116,14 +113,14 @@ static void attachFunc(
   ** hash tables.
   */
   if( db->aDb==db->aDbStatic ){
-    aNew = sqlite3_malloc( sizeof(db->aDb[0])*3 );
+    aNew = (Db*) sqlite3_malloc( sizeof(db->aDb[0])*3 );
     if( aNew==0 ){
       db->mallocFailed = 1;
       return;
     }
     memcpy(aNew, db->aDb, sizeof(db->aDb[0])*2);
   }else{
-    aNew = sqlite3_realloc(db->aDb, sizeof(db->aDb[0])*(db->nDb+1) );
+    aNew = (Db*) sqlite3_realloc(db->aDb, sizeof(db->aDb[0])*(db->nDb+1) );
     if( aNew==0 ){
       db->mallocFailed = 1;
       return;
@@ -240,7 +237,7 @@ static void detachFunc(
   sqlite3_value **argv
 ){
   const char *zName = (const char *)sqlite3_value_text(argv[0]);
-  sqlite3 *db = sqlite3_user_data(context);
+  sqlite3 *db = (sqlite3*) sqlite3_user_data(context);
   int i;
   Db *pDb = 0;
   char zErr[128];
@@ -427,11 +424,30 @@ int sqlite3FixSrcList(
 ){
   int i;
   const char *zDb;
+#ifndef WINDOWS // OSX compile problem due to incomplete type ??
+  struct SrcList_item {
+    char *zDatabase;  /* Name of database holding this table */
+    char *zName;      /* Name of the table */
+    char *zAlias;     /* The "B" part of a "A AS B" phrase.  zName is the "A" */
+    Table *pTab;      /* An SQL table corresponding to zName */
+    Select *pSelect;  /* A SELECT statement used in place of a table name */
+    u8 isPopulated;   /* Temporary table associated with SELECT is populated */
+    u8 jointype;      /* Type of join between this able and the previous */
+    int iCursor;      /* The VDBE cursor number used to access this table */
+    Expr *pOn;        /* The ON clause of a join */
+    IdList *pUsing;   /* The USING clause of a join */
+    Bitmask colUsed;  /* Bit N (1<<N) set if column N or pTab is used */
+  } a[1], *pItem;             /* One entry for each identifier on the list */
+#endif
+#ifdef WINDOWS
   struct SrcList_item *pItem;
+#endif
 
   if( pList==0 ) return 0;
   zDb = pFix->zDb;
-  for(i=0, pItem=pList->a; i<pList->nSrc; i++, pItem++){
+  for(i=0, pItem= (struct SrcList_item *) pList->a; 
+	i<pList->nSrc; 
+	i++, pItem++){
     if( pItem->zDatabase==0 ){
       pItem->zDatabase = sqlite3DbStrDup(pFix->pParse->db, zDb);
     }else if( sqlite3StrICmp(pItem->zDatabase,zDb)!=0 ){
@@ -492,9 +508,20 @@ int sqlite3FixExprList(
   ExprList *pList    /* The expression to be fixed to one database */
 ){
   int i;
+#ifndef WINDOWS
+  struct ExprList_item {
+    Expr *pExpr;           /* The list of expressions */
+    char *zName;           /* Token associated with this expression */
+    u8 sortOrder;          /* 1 for DESC or 0 for ASC */
+    u8 isAgg;              /* True if this is an aggregate like count(*) */
+    u8 done;               /* A flag to indicate when processing is finished */
+  } *a, *pItem;                  /* One entry for each expression */
+#endif
+#ifdef WINDOWS
   struct ExprList_item *pItem;
+#endif
   if( pList==0 ) return 0;
-  for(i=0, pItem=pList->a; i<pList->nExpr; i++, pItem++){
+  for(i=0, pItem=(ExprList_item*) pList->a; i<pList->nExpr; i++, pItem++){
     if( sqlite3FixExpr(pFix, pItem->pExpr) ){
       return 1;
     }

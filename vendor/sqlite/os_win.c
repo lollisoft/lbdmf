@@ -12,10 +12,7 @@
 **
 ** This file contains code that is specific to windows.
 */
-#ifdef SQLITE_DLLEXPORT
-#undef SQLITE_DLLEXPORT
-#endif
-#define SQLITE_DLLEXPORT __declspec(dllexport)
+#include "windllexport.h"
 #include "sqliteInt.h"
 #if OS_WIN               /* This file is used for windows only */
 

@@ -22,12 +22,9 @@
 **     COMMIT
 **     ROLLBACK
 **
-** $Id: build.c,v 1.1 2007/11/07 08:27:10 lollisoft Exp $
+** $Id: build.c,v 1.2 2007/11/07 22:19:47 lollisoft Exp $
 */
-#ifdef SQLITE_DLLEXPORT
-#undef SQLITE_DLLEXPORT
-#endif
-#define SQLITE_DLLEXPORT __declspec(dllexport)
+#include "windllexport.h"
 #include "sqliteInt.h"
 #include <ctype.h>
 
@@ -2112,7 +2109,7 @@ void sqlite3CreateForeignKey(
   pFKey->pFrom = p;
   pFKey->pNextFrom = p->pFKey;
   z = (char*)&pFKey[1];
-  pFKey->aCol = (struct sColMap*)z;
+  (struct sColMap*) pFKey->aCol = (struct sColMap*)z;
   z += sizeof(struct sColMap)*nCol;
   pFKey->zTo = z;
   memcpy(z, pTo->z, pTo->n);

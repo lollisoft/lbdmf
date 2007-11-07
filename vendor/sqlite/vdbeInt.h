@@ -183,13 +183,14 @@ typedef struct Mem Mem;
 ** expression argument once and reused the compiled code for multiple
 ** invocations.
 */
+struct AuxData {
+    void *pAux;                   /* Aux data for the i-th argument */
+    void (*xDelete)(void *);      /* Destructor for the aux data */
+};                   /* One slot for each function argument */
 struct VdbeFunc {
   FuncDef *pFunc;               /* The definition of the function */
   int nAux;                     /* Number of entries allocated for apAux[] */
-  struct AuxData {
-    void *pAux;                   /* Aux data for the i-th argument */
-    void (*xDelete)(void *);      /* Destructor for the aux data */
-  } apAux[1];                   /* One slot for each function argument */
+  struct AuxData apAux[1];                   /* One slot for each function argument */
 };
 typedef struct VdbeFunc VdbeFunc;
 

@@ -13,10 +13,7 @@
 ** This file contains code use to implement APIs that are part of the
 ** VDBE.
 */
-#ifdef SQLITE_DLLEXPORT
-#undef SQLITE_DLLEXPORT
-#endif
-#define SQLITE_DLLEXPORT __declspec(dllexport)
+#include "windllexport.h"
 #include "sqliteInt.h"
 #include "vdbeInt.h"
 

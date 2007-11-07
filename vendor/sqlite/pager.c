@@ -18,11 +18,9 @@
 ** file simultaneously, or one process from reading the database while
 ** another is writing.
 **
-** @(#) $Id: pager.c,v 1.1 2007/11/07 08:27:11 lollisoft Exp $
+** @(#) $Id: pager.c,v 1.2 2007/11/07 22:19:48 lollisoft Exp $
 */
-#ifndef SQLITE_DLLEXPORT
-#define SQLITE_DLLEXPORT __declspec(dllexport)
-#endif
+#include "windllexport.h"
 #ifndef SQLITE_OMIT_DISKIO
 #include "sqliteInt.h"
 #include <assert.h>

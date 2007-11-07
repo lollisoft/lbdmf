@@ -16,7 +16,7 @@
 ** sqlite3RegisterDateTimeFunctions() found at the bottom of the file.
 ** All other code has file scope.
 **
-** $Id: date.c,v 1.1 2007/11/07 08:27:10 lollisoft Exp $
+** $Id: date.c,v 1.2 2007/11/07 22:19:48 lollisoft Exp $
 **
 ** SQLite processes all times and dates as Julian Day numbers.  The
 ** dates and times are stored as the number of days since noon
@@ -45,10 +45,7 @@
 **      Willmann-Bell, Inc
 **      Richmond, Virginia (USA)
 */
-#ifdef SQLITE_DLLEXPORT
-#undef SQLITE_DLLEXPORT
-#endif
-#define SQLITE_DLLEXPORT __declspec(dllexport)
+#include "windllexport.h"
 
 #include "sqliteInt.h"
 #include <ctype.h>
