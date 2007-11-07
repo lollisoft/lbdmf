@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.151 $
+# * $Revision: 1.152 $
 # * $Name:  $
-# * $Id: Makefile,v 1.151 2007/11/03 08:20:49 lollisoft Exp $
+# * $Id: Makefile,v 1.152 2007/11/07 09:25:20 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.152  2007/11/07 09:25:20  lollisoft
+# * Added sqlite target.
+# *
 # * Revision 1.151  2007/11/03 08:20:49  lollisoft
 # * Fix CRUISECONTROL detection.
 # *
@@ -837,6 +840,7 @@ ALLTARGETS = \
 	lbMetaApplication \
 	lbPluginManager \
 	../vendor/propgrid \
+	../vendor/sqlite \
 	../vendor/wxaui-0.9.1/src \
 	../vendor/libxml2-2.6.29/bakefile \
 	../vendor/libxslt-1.1.21/libxslt \
@@ -987,6 +991,10 @@ dummy:
 
 ../vendor/libxml2-2.6.29/bakefile: dummy
 	$(MAKE) -s -C $@ -f makefile.lbDMF
+
+../vendor/sqlite: dummy
+	$(MAKE) -s -C $@ -e MODULE=sqlite3 -e TARGET=$(TARGETSHARED) -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@
 
 ../vendor/libxslt-1.1.21/libxslt: dummy
 	$(MAKE) -s -C $@ -e MODULE=lbxslt -e TARGET=$(TARGETXSLTDLL) -f $(MAKE_CONFIG_FILE)
