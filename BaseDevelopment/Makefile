@@ -1,11 +1,15 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.152 $
+# * $Revision: 1.153 $
 # * $Name:  $
-# * $Id: Makefile,v 1.152 2007/11/07 09:25:20 lollisoft Exp $
+# * $Id: Makefile,v 1.153 2007/11/08 08:49:34 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.153  2007/11/08 08:49:34  lollisoft
+# * Moved around some targets (buildorder) and added targets
+# * to windows build.
+# *
 # * Revision 1.152  2007/11/07 09:25:20  lollisoft
 # * Added sqlite target.
 # *
@@ -644,8 +648,10 @@ ALLTARGETS = \
 	../vendor/mkmk \
 	../vendor/wxShapeFramework/src \
 	../vendor/wxShapeFramework/example \
-	../vendor/wxARG/src \
+	../vendor/sqlite \
 	../vendor/databaselayer/src/implementations/ODBC \
+	../vendor/databaselayer/src/implementations/Sqllite \
+	../vendor/dbwrapcontrols \
 	lbHook \
 	lbModule \
 	lbMetaApplication \
@@ -661,6 +667,8 @@ ALLTARGETS = \
 	../Test/GUI/wxWrapper \
 	../Test/Console/XML \
 	$(BASEDIRECTORIES)
+
+#	../vendor/wxARG/src \
 
 ALLDIRS = \
 	../vendor/dosdir \
@@ -709,6 +717,7 @@ ALLDIRS = \
 	lbMetaApplication \
 	lbPluginManager \
 	../vendor/propgrid \
+	../vendor/sqlite \
 	../vendor/wxaui-0.9.1/src \
 	../AppDevelopmentDemo/App \
 	../AppDevelopmentDemo/DynamicApp/App \
@@ -729,6 +738,7 @@ ALLDIRS = \
 	lbMetaApplication \
 	lbPluginManager \
 	../vendor/propgrid \
+	../vendor/sqlite \
 	../vendor/wxaui-0.9.1/src \
 	../AppDevelopmentDemo/App \
 	../AppDevelopmentDemo/DynamicApp/App \
@@ -772,6 +782,7 @@ ALLDIRS = \
 	lbMetaApplication \
 	lbPluginManager \
 	../vendor/propgrid \
+	../vendor/sqlite \
 	../vendor/wxaui-0.9.1/src \
 	../AppDevelopmentDemo/App \
 	../AppDevelopmentDemo/DynamicApp/App \
@@ -792,6 +803,7 @@ ALLDIRS = \
 	lbMetaApplication \
 	lbPluginManager \
 	../vendor/propgrid \
+	../vendor/sqlite \
 	../vendor/wxaui-0.9.1/src \
 	../vendor/wxaui-0.9.1/sample \
 	../AppDevelopmentDemo/App \
@@ -841,6 +853,9 @@ ALLTARGETS = \
 	lbPluginManager \
 	../vendor/propgrid \
 	../vendor/sqlite \
+	../vendor/databaselayer/src/implementations/ODBC \
+	../vendor/databaselayer/src/implementations/Sqllite \
+	../vendor/dbwrapcontrols \
 	../vendor/wxaui-0.9.1/src \
 	../vendor/libxml2-2.6.29/bakefile \
 	../vendor/libxslt-1.1.21/libxslt \
@@ -982,7 +997,15 @@ mkrelease:
 dummy:
 
 ../vendor/databaselayer/src/implementations/ODBC: dummy
-	$(MAKE) -s -C $@ -e MODULE=databaselayer_odbc -e TARGET=$(TARGETWXSO) -e CUSTOM_FILES=../../*.cpp -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@ -e MODULE=databaselayer_odbc -e TARGET=$(TARGETWXSHARED) -e CUSTOM_FILES=../../*.cpp -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@
+
+../vendor/databaselayer/src/implementations/Sqllite: dummy
+	$(MAKE) -s -C $@ -e MODULE=databaselayer_sqllite -e TARGET=$(TARGETWXSHARED) -e CUSTOM_FILES=../../*.cpp -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@
+
+../vendor/dbwrapcontrols: dummy
+	$(MAKE) -s -C $@ -e MODULE=dbwrapcontrols -e TARGET=$(TARGETWXEXE) -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@
 
 ../vendor/c-goldparser: dummy
