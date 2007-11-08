@@ -1,0 +1,556 @@
+object frmNewForm: TfrmNewForm
+  Left = 8
+  Top = 8
+  AutoScroll = False
+  BorderIcons = [biSystemMenu, biMinimize]
+  Caption = 'dblControls - Test'
+  ClientHeight = 265
+  ClientWidth = 432
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
+  Font.Style = []
+  OldCreateOrder = True
+  PopupMenu = MainForm.DesignerPopup
+  Visible = True
+  OnCloseQuery = FormCloseQuery
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  OnKeyDown = FormKeyDown
+  OnResize = FormResize
+  EVT_CLOSE = 'OnClose'
+  Wx_ICON.Data = {07544269746D617000000000}
+  Wx_Name = 'dmTestDlg'
+  Wx_IDName = 'ID_DIALOG1'
+  Wx_IDValue = 1000
+  Wx_Class = 'wxDialog'
+  Wx_Center = True
+  Wx_Hidden = False
+  Wx_SizeToContents = True
+  Wx_GeneralStyle = []
+  Wx_DialogStyle = [wxCAPTION, wxRESIZE_BORDER, wxSYSTEM_MENU, wxTHICK_FRAME, wxDIALOG_NO_PARENT, wxMINIMIZE_BOX, wxCLOSE_BOX]
+  Wx_Border = 0
+  Wx_BorderAlignment = []
+  PixelsPerInch = 96
+  TextHeight = 13
+  object WxBoxSizer1: TWxBoxSizer
+    Left = 0
+    Top = 0
+    Width = 432
+    Height = 265
+    Align = alClient
+    TabOrder = 0
+    Orientation = wxVertical
+    Wx_Class = 'wxBoxSizer'
+    Wx_ControlOrientation = wxControlVertical
+    Wx_IDName = 'ID_WXBOXSIZER1'
+    Wx_IDValue = 1024
+    Wx_Border = 0
+    object WxBoxSizer2: TWxBoxSizer
+      Left = 172
+      Top = 0
+      Width = 87
+      Height = 21
+      TabOrder = 0
+      Wx_Class = 'wxBoxSizer'
+      Wx_ControlOrientation = wxControlVertical
+      Wx_IDName = 'ID_WXBOXSIZER2'
+      Wx_IDValue = 1025
+      Wx_Border = 0
+      Wx_Alignment = wxALIGN_RIGHT
+      object lbStatus: TWxStaticText
+        Left = 2
+        Top = 2
+        Width = 83
+        Height = 17
+        AutoSize = False
+        Caption = 'DB is Closed'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'MS Sans Serif'
+        Font.Style = [fsBold]
+        ParentFont = False
+        TabOrder = 0
+        Wx_BGColor = clBlack
+        Wx_Class = 'wxStaticText'
+        Wx_ControlOrientation = wxControlVertical
+        Wx_FGColor = clBlack
+        Wx_GeneralStyle = []
+        Wx_Hidden = False
+        Wx_IDName = 'ID_LBSTATUS'
+        Wx_IDValue = 1222
+        Wx_LabelStyle = [wxST_NO_AUTORESIZE]
+        Wx_Border = 2
+        Wx_Alignment = wxALIGN_RIGHT
+      end
+    end
+    object WxBoxSizer3: TWxBoxSizer
+      Left = 0
+      Top = 21
+      Width = 431
+      Height = 201
+      TabOrder = 1
+      Wx_Class = 'wxBoxSizer'
+      Wx_ControlOrientation = wxControlVertical
+      Wx_IDName = 'ID_WXBOXSIZER3'
+      Wx_IDValue = 1026
+      Wx_Border = 0
+      object WxNotebook1: TWxNotebook
+        Left = 0
+        Top = 0
+        Width = 431
+        Height = 201
+        ActivePage = WxNoteBookPage2
+        TabIndex = 1
+        TabOrder = 0
+        Wx_Class = 'wxNotebook'
+        Wx_ControlOrientation = wxControlVertical
+        Wx_EventList.Strings = (
+          'EVT_UPDATE_UI:OnUpdateUI'
+          'EVT_NOTEBOOK_PAGE_CHANGED:OnPageChanged'
+          'EVT_NOTEBOOK_PAGE_CHANGING:OnPageChanging')
+        Wx_IDName = 'ID_WXNOTEBOOK1'
+        Wx_IDValue = 1027
+        Wx_Hidden = False
+        Wx_NoteBookStyle = []
+        Wx_GeneralStyle = []
+        Wx_Border = 0
+        object WxNoteBookPage1: TWxNoteBookPage
+          Caption = 'Basic Controls'
+          Wx_BKColor = clBlack
+          Wx_Class = 'wxPanel'
+          Wx_ControlOrientation = wxControlVertical
+          Wx_Default = False
+          Wx_EventList.Strings = (
+            'EVT_UPDATE_UI:OnUpdateUI')
+          Wx_FGColor = clBlack
+          Wx_GeneralStyle = []
+          Wx_Hidden = False
+          Wx_IDName = 'ID_WXNOTEBOOKPAGE1'
+          Wx_IDValue = 1028
+          object WxStaticBox1: TWxStaticBox
+            Left = 122
+            Top = 5
+            Width = 300
+            Height = 163
+            TabOrder = 0
+            Wx_BGColor = clBlack
+            Wx_Class = 'wxStaticBox'
+            Wx_ControlOrientation = wxControlVertical
+            Wx_FGColor = clBlack
+            Wx_GeneralStyle = []
+            Wx_IDName = 'ID_WXSTATICBOX1'
+            Wx_IDValue = 1182
+          end
+          object txtName: TWxEdit
+            Left = 181
+            Top = 25
+            Width = 236
+            Height = 21
+            BevelInner = bvNone
+            BevelOuter = bvNone
+            Modified = False
+            TabOrder = 1
+            Text = 'txtName'
+            Wx_BGColor = clBlack
+            Wx_Class = 'wxDBLTextCtrl'
+            Wx_ControlOrientation = wxControlVertical
+            Wx_EditStyle = []
+            Wx_FGColor = clBlack
+            Wx_GeneralStyle = []
+            Wx_Hidden = False
+            Wx_IDName = 'ID_TXTNAME'
+            Wx_IDValue = 1183
+            Wx_MaxLength = 0
+          end
+          object cbWork: TWxCheckBox
+            Left = 132
+            Top = 113
+            Width = 204
+            Height = 17
+            Caption = 'Can work over time'
+            TabOrder = 2
+            Wx_BGColor = clBlack
+            Wx_CheckBoxStyle = []
+            Wx_Class = 'wxDBLCheckBox'
+            Wx_ControlOrientation = wxControlVertical
+            Wx_FGColor = clBlack
+            Wx_GeneralStyle = []
+            Wx_Hidden = False
+            Wx_IDName = 'ID_CBWORK'
+            Wx_IDValue = 1188
+          end
+          object cbxCity: TWxComboBox
+            Left = 180
+            Top = 51
+            Width = 120
+            Height = 21
+            ItemHeight = 13
+            TabOrder = 3
+            Text = 'cbxCity'
+            Wx_BGColor = clBlack
+            Wx_Class = 'wxDBLComboBox'
+            Wx_ComboboxStyle = []
+            Wx_EditStyle = []
+            Wx_ControlOrientation = wxControlVertical
+            Wx_FGColor = clBlack
+            Wx_GeneralStyle = []
+            Wx_Hidden = False
+            Wx_IDName = 'ID_CBXCITY'
+            Wx_IDValue = 1191
+          end
+          object WxStaticText1: TWxStaticText
+            Left = 139
+            Top = 25
+            Width = 32
+            Height = 17
+            Caption = 'Name'
+            TabOrder = 4
+            Wx_BGColor = clBlack
+            Wx_Class = 'wxStaticText'
+            Wx_ControlOrientation = wxControlVertical
+            Wx_FGColor = clBlack
+            Wx_GeneralStyle = []
+            Wx_Hidden = False
+            Wx_IDName = 'ID_WXSTATICTEXT1'
+            Wx_IDValue = 1192
+            Wx_LabelStyle = []
+          end
+          object WxStaticText2: TWxStaticText
+            Left = 138
+            Top = 51
+            Width = 21
+            Height = 17
+            Caption = 'City'
+            TabOrder = 5
+            Wx_BGColor = clBlack
+            Wx_Class = 'wxStaticText'
+            Wx_ControlOrientation = wxControlVertical
+            Wx_FGColor = clBlack
+            Wx_GeneralStyle = []
+            Wx_Hidden = False
+            Wx_IDName = 'ID_WXSTATICTEXT2'
+            Wx_IDValue = 1193
+            Wx_LabelStyle = []
+          end
+          object spcAge: TWxSpinCtrl
+            Left = 180
+            Top = 79
+            Width = 121
+            Height = 22
+            MaxValue = 100000
+            MinValue = 0
+            TabOrder = 6
+            Value = 0
+            Wx_BGColor = clBlack
+            Wx_Class = 'wxDBLSpinCtrl'
+            Wx_SpinButtonStyle = []
+            Wx_EditStyle = []
+            Wx_ControlOrientation = wxControlVertical
+            Wx_FGColor = clBlack
+            Wx_GeneralStyle = []
+            Wx_Hidden = False
+            Wx_IDName = 'ID_SPCAGE'
+            Wx_IDValue = 1194
+          end
+          object WxStaticText3: TWxStaticText
+            Left = 140
+            Top = 83
+            Width = 23
+            Height = 17
+            Caption = 'Age'
+            TabOrder = 7
+            Wx_BGColor = clBlack
+            Wx_Class = 'wxStaticText'
+            Wx_ControlOrientation = wxControlVertical
+            Wx_FGColor = clBlack
+            Wx_GeneralStyle = []
+            Wx_Hidden = False
+            Wx_IDName = 'ID_WXSTATICTEXT3'
+            Wx_IDValue = 1195
+            Wx_LabelStyle = []
+          end
+          object WxStaticText4: TWxStaticText
+            Left = 133
+            Top = 143
+            Width = 38
+            Height = 17
+            Caption = 'Phone '
+            TabOrder = 8
+            Wx_BGColor = clBlack
+            Wx_Class = 'wxStaticText'
+            Wx_ControlOrientation = wxControlVertical
+            Wx_FGColor = clBlack
+            Wx_GeneralStyle = []
+            Wx_Hidden = False
+            Wx_IDName = 'ID_WXSTATICTEXT4'
+            Wx_IDValue = 1196
+            Wx_LabelStyle = []
+          end
+          object lbPhone: TWxStaticText
+            Left = 212
+            Top = 143
+            Width = 43
+            Height = 17
+            Caption = 'lbPhone'
+            TabOrder = 9
+            Wx_BGColor = clBlack
+            Wx_Class = 'wxDBLStaticText'
+            Wx_ControlOrientation = wxControlVertical
+            Wx_FGColor = clBlack
+            Wx_GeneralStyle = []
+            Wx_Hidden = False
+            Wx_IDName = 'ID_LBPHONE'
+            Wx_IDValue = 1197
+            Wx_LabelStyle = []
+          end
+          object lbNames: TWxListBox
+            Left = 4
+            Top = 8
+            Width = 113
+            Height = 161
+            ItemHeight = 13
+            TabOrder = 10
+            Wx_BGColor = clBlack
+            Wx_Class = 'wxDBLListBox'
+            Wx_ControlOrientation = wxControlVertical
+            Wx_FGColor = clBlack
+            Wx_GeneralStyle = []
+            Wx_Hidden = False
+            Wx_IDName = 'ID_LBNAMES'
+            Wx_IDValue = 1199
+            Wx_ListboxStyle = []
+            Wx_ListboxSubStyle = wxLB_SINGLE
+          end
+        end
+        object WxNoteBookPage2: TWxNoteBookPage
+          Caption = 'List View'
+          Wx_BKColor = clBlack
+          Wx_Class = 'wxPanel'
+          Wx_ControlOrientation = wxControlVertical
+          Wx_Default = False
+          Wx_EventList.Strings = (
+            'EVT_UPDATE_UI:OnUpdateUI')
+          Wx_FGColor = clBlack
+          Wx_GeneralStyle = []
+          Wx_Hidden = False
+          Wx_IDName = 'ID_WXNOTEBOOKPAGE2'
+          Wx_IDValue = 1223
+          object WxBoxSizer5: TWxBoxSizer
+            Left = 0
+            Top = 0
+            Width = 423
+            Height = 173
+            Align = alClient
+            TabOrder = 0
+            Wx_Class = 'wxBoxSizer'
+            Wx_ControlOrientation = wxControlVertical
+            Wx_IDName = 'ID_WXBOXSIZER5'
+            Wx_IDValue = 1228
+            Wx_Border = 0
+            Wx_Alignment = wxEXPAND
+            Wx_StretchFactor = 1
+            object lvAddresses: TWxListCtrl
+              Left = 5
+              Top = 5
+              Width = 410
+              Height = 155
+              Columns = <
+                item
+                  Caption = 'Name'
+                  Width = 149
+                end
+                item
+                  Caption = 'Age'
+                  Width = 61
+                end
+                item
+                  Caption = 'City'
+                  Width = 120
+                end>
+              TabOrder = 0
+              ViewStyle = vsReport
+              Wx_BGColor = clBlack
+              Wx_Class = 'wxDBLListCtrl'
+              Wx_ControlOrientation = wxControlVertical
+              Wx_FGColor = clBlack
+              Wx_GeneralStyle = []
+              Wx_IDName = 'ID_LVADDRESSES'
+              Wx_IDValue = 1229
+              Wx_ListviewStyle = []
+              Wx_ListviewView = wxLC_REPORT
+              Wx_Alignment = wxEXPAND
+              Wx_StretchFactor = 1
+            end
+          end
+        end
+      end
+    end
+    object WxBoxSizer4: TWxBoxSizer
+      Left = 25
+      Top = 222
+      Width = 380
+      Height = 35
+      TabOrder = 2
+      Wx_Class = 'wxBoxSizer'
+      Wx_ControlOrientation = wxControlVertical
+      Wx_IDName = 'ID_WXBOXSIZER4'
+      Wx_IDValue = 1200
+      Wx_Border = 0
+      Wx_Alignment = wxALIGN_RIGHT
+      object btOpen: TWxButton
+        Left = 5
+        Top = 5
+        Width = 60
+        Height = 25
+        Caption = 'Open'
+        TabOrder = 0
+        EVT_BUTTON = 'btOpenClick'
+        EVT_UPDATE_UI = 'btOpenUpdateUI'
+        Wx_BKColor = clBlack
+        Wx_ButtonStyle = []
+        Wx_Class = 'wxButton'
+        Wx_ControlOrientation = wxControlVertical
+        Wx_Default = False
+        Wx_EventList.Strings = (
+          'EVT_BUTTON:OnClick'
+          'EVT_UPDATE_UI:OnUpdateUI')
+        Wx_FGColor = clBlack
+        Wx_GeneralStyle = []
+        Wx_Hidden = False
+        Wx_IDName = 'ID_BTOPEN'
+        Wx_IDValue = 1216
+        Wx_Height = 25
+        Wx_Width = 60
+      end
+      object btClose: TWxButton
+        Left = 75
+        Top = 5
+        Width = 60
+        Height = 25
+        Caption = 'Close'
+        TabOrder = 1
+        EVT_BUTTON = 'btCloseClick'
+        EVT_UPDATE_UI = 'btCloseUpdateUI'
+        Wx_BKColor = clBlack
+        Wx_ButtonStyle = []
+        Wx_Class = 'wxButton'
+        Wx_ControlOrientation = wxControlVertical
+        Wx_Default = False
+        Wx_EventList.Strings = (
+          'EVT_BUTTON:OnClick'
+          'EVT_UPDATE_UI:OnUpdateUI')
+        Wx_FGColor = clBlack
+        Wx_GeneralStyle = []
+        Wx_Hidden = False
+        Wx_IDName = 'ID_BTCLOSE'
+        Wx_IDValue = 1217
+        Wx_Height = 25
+        Wx_Width = 60
+      end
+      object btFirst: TWxButton
+        Left = 145
+        Top = 5
+        Width = 50
+        Height = 25
+        Caption = 'First'
+        TabOrder = 2
+        EVT_BUTTON = 'btFirstClick'
+        EVT_UPDATE_UI = 'btFirstUpdateUI'
+        Wx_BKColor = clBlack
+        Wx_ButtonStyle = []
+        Wx_Class = 'wxButton'
+        Wx_ControlOrientation = wxControlVertical
+        Wx_Default = False
+        Wx_EventList.Strings = (
+          'EVT_BUTTON:OnClick'
+          'EVT_UPDATE_UI:OnUpdateUI')
+        Wx_FGColor = clBlack
+        Wx_GeneralStyle = []
+        Wx_Hidden = False
+        Wx_IDName = 'ID_BTFIRST'
+        Wx_IDValue = 1218
+        Wx_Height = 25
+        Wx_Width = 50
+      end
+      object btNext: TWxButton
+        Left = 205
+        Top = 5
+        Width = 50
+        Height = 25
+        Caption = 'Next'
+        TabOrder = 3
+        EVT_BUTTON = 'btNextClick'
+        EVT_UPDATE_UI = 'btNextUpdateUI'
+        Wx_BKColor = clBlack
+        Wx_ButtonStyle = []
+        Wx_Class = 'wxButton'
+        Wx_ControlOrientation = wxControlVertical
+        Wx_Default = False
+        Wx_EventList.Strings = (
+          'EVT_BUTTON:OnClick'
+          'EVT_UPDATE_UI:OnUpdateUI')
+        Wx_FGColor = clBlack
+        Wx_GeneralStyle = []
+        Wx_Hidden = False
+        Wx_IDName = 'ID_BTNEXT'
+        Wx_IDValue = 1219
+        Wx_Height = 25
+        Wx_Width = 50
+      end
+      object btPrevious: TWxButton
+        Left = 265
+        Top = 5
+        Width = 50
+        Height = 25
+        Caption = 'Previous'
+        TabOrder = 4
+        EVT_BUTTON = 'btPreviousClick'
+        EVT_UPDATE_UI = 'btPreviousUpdateUI'
+        Wx_BKColor = clBlack
+        Wx_ButtonStyle = []
+        Wx_Class = 'wxButton'
+        Wx_ControlOrientation = wxControlVertical
+        Wx_Default = False
+        Wx_EventList.Strings = (
+          'EVT_BUTTON:OnClick'
+          'EVT_UPDATE_UI:OnUpdateUI')
+        Wx_FGColor = clBlack
+        Wx_GeneralStyle = []
+        Wx_Hidden = False
+        Wx_IDName = 'ID_BTPREVIOUS'
+        Wx_IDValue = 1220
+        Wx_Height = 25
+        Wx_Width = 50
+      end
+      object btLast: TWxButton
+        Left = 325
+        Top = 5
+        Width = 50
+        Height = 25
+        Caption = 'Last'
+        TabOrder = 5
+        EVT_BUTTON = 'btLastClick'
+        EVT_UPDATE_UI = 'btLastUpdateUI'
+        Wx_BKColor = clBlack
+        Wx_ButtonStyle = []
+        Wx_Class = 'wxButton'
+        Wx_ControlOrientation = wxControlVertical
+        Wx_Default = False
+        Wx_EventList.Strings = (
+          'EVT_BUTTON:OnClick'
+          'EVT_UPDATE_UI:OnUpdateUI')
+        Wx_FGColor = clBlack
+        Wx_GeneralStyle = []
+        Wx_Hidden = False
+        Wx_IDName = 'ID_BTLAST'
+        Wx_IDValue = 1221
+        Wx_Height = 25
+        Wx_Width = 50
+      end
+    end
+  end
+end
