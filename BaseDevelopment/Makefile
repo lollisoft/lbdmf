@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.153 $
+# * $Revision: 1.154 $
 # * $Name:  $
-# * $Id: Makefile,v 1.153 2007/11/08 08:49:34 lollisoft Exp $
+# * $Id: Makefile,v 1.154 2007/11/09 17:29:08 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.154  2007/11/09 17:29:08  lollisoft
+# * Added missing target definitions. This reduces conditionals.
+# *
 # * Revision 1.153  2007/11/08 08:49:34  lollisoft
 # * Moved around some targets (buildorder) and added targets
 # * to windows build.
@@ -830,7 +833,9 @@ TARGETDLL=dll
 TARGETXSLTDLL=xsltdll
 TARGETFRAMEWORK=dll
 TARGETSHARED=dll
+TARGETWXSHARED=dll
 TARGETEXE=exe
+TARGETWXEXE=exe
 TARGETPLUGIN=plugin
 TARGETWXPLUGIN=wxplugin
 TARGET_TV_DLL=tvision_dll
