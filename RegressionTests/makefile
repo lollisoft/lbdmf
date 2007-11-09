@@ -39,7 +39,7 @@ ifeq ($(OSTYPE), Windows_NT)
 ifeq ($(CRUISECONTROL), yes)
 RELPATH=
 else
-RELPATH=\Projects\CPP
+RELPATH=\\Projects\\CPP
 endif
 endif
 
