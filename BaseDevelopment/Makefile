@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.154 $
+# * $Revision: 1.155 $
 # * $Name:  $
-# * $Id: Makefile,v 1.154 2007/11/09 17:29:08 lollisoft Exp $
+# * $Id: Makefile,v 1.155 2007/11/09 22:49:36 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.155  2007/11/09 22:49:36  lollisoft
+# * Modifications to build databaselayer on Linux.
+# *
 # * Revision 1.154  2007/11/09 17:29:08  lollisoft
 # * Added missing target definitions. This reduces conditionals.
 # *
@@ -652,8 +655,8 @@ ALLTARGETS = \
 	../vendor/wxShapeFramework/src \
 	../vendor/wxShapeFramework/example \
 	../vendor/sqlite \
-	../vendor/databaselayer/src/implementations/ODBC \
-	../vendor/databaselayer/src/implementations/Sqllite \
+	../vendor/databaselayer/src/Implementations/ODBC \
+	../vendor/databaselayer/src/Implementations/Sqllite \
 	../vendor/dbwrapcontrols \
 	lbHook \
 	lbModule \
@@ -767,6 +770,7 @@ TARGETDLL=so
 TARGETFRAMEWORK=so
 TARGETEXE=elf
 TARGETSHARED=so
+TARGETWXSHARED=so
 TARGETWXEXE=elf
 TARGETWXSO=wxso
 TARGET_TV_DLL=tvision_dll
@@ -786,6 +790,9 @@ ALLDIRS = \
 	lbPluginManager \
 	../vendor/propgrid \
 	../vendor/sqlite \
+	../vendor/databaselayer/src/Implementations/ODBC \
+	../vendor/databaselayer/src/Implementations/Sqllite \
+	../vendor/dbwrapcontrols \
 	../vendor/wxaui-0.9.1/src \
 	../AppDevelopmentDemo/App \
 	../AppDevelopmentDemo/DynamicApp/App \
@@ -807,6 +814,9 @@ ALLDIRS = \
 	lbPluginManager \
 	../vendor/propgrid \
 	../vendor/sqlite \
+	../vendor/databaselayer/src/Implementations/ODBC \
+	../vendor/databaselayer/src/Implementations/Sqllite \
+	../vendor/dbwrapcontrols \
 	../vendor/wxaui-0.9.1/src \
 	../vendor/wxaui-0.9.1/sample \
 	../AppDevelopmentDemo/App \
@@ -858,8 +868,8 @@ ALLTARGETS = \
 	lbPluginManager \
 	../vendor/propgrid \
 	../vendor/sqlite \
-	../vendor/databaselayer/src/implementations/ODBC \
-	../vendor/databaselayer/src/implementations/Sqllite \
+	../vendor/databaselayer/src/Implementations/ODBC \
+	../vendor/databaselayer/src/Implementations/Sqllite \
 	../vendor/dbwrapcontrols \
 	../vendor/wxaui-0.9.1/src \
 	../vendor/libxml2-2.6.29/bakefile \
@@ -1001,11 +1011,11 @@ mkrelease:
 
 dummy:
 
-../vendor/databaselayer/src/implementations/ODBC: dummy
+../vendor/databaselayer/src/Implementations/ODBC: dummy
 	$(MAKE) -s -C $@ -e MODULE=databaselayer_odbc -e TARGET=$(TARGETWXSHARED) -e CUSTOM_FILES=../../*.cpp -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@
 
-../vendor/databaselayer/src/implementations/Sqllite: dummy
+../vendor/databaselayer/src/Implementations/Sqllite: dummy
 	$(MAKE) -s -C $@ -e MODULE=databaselayer_sqllite -e TARGET=$(TARGETWXSHARED) -e CUSTOM_FILES=../../*.cpp -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@
 

@@ -60,12 +60,14 @@ endif
 endif
 
 ifeq ($(OSTYPE), solaris)
-MOD_INCL=$(STD_INCL)
+MOD_INCL=$(STD_INCL) -I ../..
 OBJDEP=
 VENDORLIBS=-L$(prefix)/lib -llbHook /usr/local/lib/libodbc.so
 endif    
 ifeq ($(OSTYPE), linux)
-MOD_INCL=$(STD_INCL)
+MOD_INCL=$(STD_INCL) -I ../..
+C_SOOPS_WX = -DOSX -DUNIX -DLINUX `wx-config --inplace --cxxflags` 
+C_SOOPS= $(C_SOOPS_WX)
 OBJDEP=
 VENDORLIBS=-L$(prefix)/lib -llbHook /usr/lib/libodbc.so
 endif    
