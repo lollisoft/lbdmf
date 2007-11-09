@@ -31,9 +31,10 @@ MOD_INCL=$(STD_INCL)
 OBJDEP=
 SLASH=/
 WATCOMLIBS=$(DEVROOT_MAKE)$(SLASH)Tools$(SLASH)watcom$(SLASH)lib386$(SLASH)nt
-wxBase=..$(SLASH)..$(SLASH)..$(SLASH)..$(SLASH)..$(SLASH)wxwin$(SLASH)wx$(SLASH)lib
+wxBase=$(DEVROOT_MAKE)$(SLASH)wxwin$(SLASH)wx$(SLASH)lib
 LIBS = $(BASE_LIBS) $(DEVROOT_MAKE)$(SLASH)projects$(SLASH)dll$(SLASH)libs$(SLASH)lbhook.lib, \
-	$(DEVROOT_MAKE)$(SLASH)projects$(SLASH)dll$(SLASH)libs$(SLASH)wxWrapperDLL.lib, \
+	$(DEVROOT_MAKE)$(SLASH)projects$(SLASH)dll$(SLASH)libs$(SLASH)sqlite3.lib, \
+	$(DEVROOT_MAKE)$(SLASH)projects$(SLASH)dll$(SLASH)libs$(SLASH)databaselayer_sqllite.lib, \
         $(wxBase)$(SLASH)wat_dll$(SLASH)wxmsw$(WX_VERSION)$(WX_DEBUG).lib
 	
 LIBRS =	libr $(WATCOMLIBS)$(SLASH)kernel32.lib \
@@ -72,8 +73,8 @@ LINKFLAGS = $(L_EXEOPS_MICROSOFT) $(LIBS) $(OBJS) \
 endif
 
 ifeq ($(COMPILER), WATCOM)
-MOD_INCL = $(STD_INCL) -i=$(DEVROOT)\\Projects\\CPP\\vendor\\wxaui-0.9.1\\include  -i=..\\wxWrapperDLL  -i=$(DEVROOT)\\wxwin\\wx\\include -i=$(DEVROOT)\\Projects\\CPP\\vendor\\propgrid\\include
-MOD_INCL_CPP=$(STD_INCL_CPP) -i=$(DEVROOT_MAKE)/Projects/CPP/vendor/wxaui-0.9.1/include  -i=../wxWrapperDLL -i=$(DEVROOT_MAKE)/wxwin/wx/include -i=$(DEVROOT_MAKE)/Projects/CPP/vendor/propgrid/include 
+MOD_INCL = $(STD_INCL) -i=..\\databaselayer\\include -i=$(DEVROOT)\\wxwin\\wx\\include -i=..\\sqlite  
+MOD_INCL_CPP=$(STD_INCL_CPP) -i=../databaselayer/include -i=$(DEVROOT_MAKE)/wxwin/wx/include -i=../sqlite 
 
 C_EXEOPS= $(C_EXEOPS_WATCOM$(MODE)) \
 		/DUSE_WXWRAPPER_DLL \
@@ -94,6 +95,8 @@ CPP_EXEOPS= $(CPP_EXEOPS_WATCOM$(MODE)) \
 		/D__WINDOWS__ \
 		/D__WXMSW__ \
 		/DLB_I_EXTENTIONS
+
+CPP_EXEOPS+= -xs -xr
 
 ifeq ($(MODE), _DEBUG)
 C_EXEOPS+= /D__WXDEBUG__
