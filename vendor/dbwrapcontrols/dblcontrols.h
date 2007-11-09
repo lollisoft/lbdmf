@@ -159,7 +159,7 @@ public:
 	void SetTableInfo(const wxString TableName,const DatabaseLayer *dbLayer,const wxWindow *HostWindow,bool ReadOnly = false);
 
     wxString GetTableName(void) {return m_strTableName;}
-    wxString SetTableName(const wxString &TableName) {m_strTableName = TableName;}
+    void SetTableName(const wxString &TableName) {m_strTableName = TableName;}
 
     const DatabaseLayer *GetDBObj(void) {return m_dbLayer;}
     void SetDBObj(const DatabaseLayer *dbLayer) {m_dbLayer = (DatabaseLayer *)dbLayer;}
