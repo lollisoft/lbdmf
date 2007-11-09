@@ -11,7 +11,7 @@
 *************************************************************************
 ** This file contains code used to implement the ATTACH and DETACH commands.
 **
-** $Id: attach.c,v 1.2 2007/11/07 22:19:47 lollisoft Exp $
+** $Id: attach.c,v 1.3 2007/11/09 17:18:29 lollisoft Exp $
 */
 #include "windllexport.h"
 #include "sqliteInt.h"
@@ -508,20 +508,10 @@ int sqlite3FixExprList(
   ExprList *pList    /* The expression to be fixed to one database */
 ){
   int i;
-#ifndef WINDOWS
-  struct ExprList_item {
-    Expr *pExpr;           /* The list of expressions */
-    char *zName;           /* Token associated with this expression */
-    u8 sortOrder;          /* 1 for DESC or 0 for ASC */
-    u8 isAgg;              /* True if this is an aggregate like count(*) */
-    u8 done;               /* A flag to indicate when processing is finished */
-  } *a, *pItem;                  /* One entry for each expression */
-#endif
-#ifdef WINDOWS
   struct ExprList_item *pItem;
-#endif
+
   if( pList==0 ) return 0;
-  for(i=0, pItem=(ExprList_item*) pList->a; i<pList->nExpr; i++, pItem++){
+  for(i=0, pItem=(struct ExprList_item*) pList->a; i<pList->nExpr; i++, pItem++){
     if( sqlite3FixExpr(pFix, pItem->pExpr) ){
       return 1;
     }
