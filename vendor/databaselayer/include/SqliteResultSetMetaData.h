@@ -1,6 +1,15 @@
 #ifndef __SQLITE_RESULT_SET_METADATA_H__
 #define __SQLITE_RESULT_SET_METADATA_H__
 
+#ifdef WINDOWS
+ #ifndef DLLEXPORT
+  #define DLLEXPORT __declspec(dllimport)
+ #endif
+#endif
+#ifndef WINDOWS
+ #define DLLEXPORT
+#endif
+
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
 
@@ -16,7 +25,7 @@
 
 #include "sqlite3.h"
 
-class SqliteResultSetMetaData : public ResultSetMetaData
+class DLLEXPORT SqliteResultSetMetaData : public ResultSetMetaData
 {
 public:
   // ctor

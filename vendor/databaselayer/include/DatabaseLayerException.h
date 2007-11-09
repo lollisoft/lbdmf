@@ -1,9 +1,18 @@
 #ifndef __DATABASE_LAYER_EXCEPTION_H__
 #define __DATABASE_LAYER_EXCEPTION_H__
 
+#ifdef WINDOWS
+ #ifndef DLLEXPORT
+  #define DLLEXPORT __declspec(dllimport)
+ #endif
+#endif
+#ifndef WINDOWS
+ #define DLLEXPORT
+#endif
+
 #ifndef DONT_USE_DATABASE_LAYER_EXCEPTIONS
 
-class DatabaseLayerException
+class DLLEXPORT DatabaseLayerException
 {
 public:
   DatabaseLayerException(int nCode, const wxString& strError)

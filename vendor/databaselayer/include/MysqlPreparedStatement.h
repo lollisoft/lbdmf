@@ -1,6 +1,15 @@
 #ifndef __MYSQL_PREPARED_STATEMENT_H__
 #define __MYSQL_PREPARED_STATEMENT_H__
 
+#ifdef WINDOWS
+ #ifndef DLLEXPORT
+  #define DLLEXPORT __declspec(dllimport)
+ #endif
+#endif
+#ifndef WINDOWS
+ #define DLLEXPORT
+#endif
+
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
 
@@ -24,7 +33,7 @@ class DatabaseResultSet;
 
 WX_DEFINE_ARRAY_PTR(MysqlPreparedStatementWrapper*, MysqlStatementWrapperArray);
     
-class MysqlPreparedStatement : public PreparedStatement
+class DLLEXPORT MysqlPreparedStatement : public PreparedStatement
 {
 public:
   // ctor

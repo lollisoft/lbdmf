@@ -1,6 +1,15 @@
 #ifndef __OTL_RESULT_SET_H__
 #define __OTL_RESULT_SET_H__
 
+#ifdef WINDOWS
+ #ifndef DLLEXPORT
+  #define DLLEXPORT __declspec(dllimport)
+ #endif
+#endif
+#ifndef WINDOWS
+ #define DLLEXPORT
+#endif
+
 #include "DatabaseResultSet.h"
 
 #ifndef OTL_STREAM_READ_ITERATOR_ON
@@ -10,7 +19,7 @@
 #include "otlv4.h"
 #include <vector>
 
-class OTLResultSet : public DatabaseResultSet
+class DLLEXPORT OTLResultSet : public DatabaseResultSet
 {
 public:
   // ctor

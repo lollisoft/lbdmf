@@ -1,6 +1,15 @@
 #ifndef __DATABASE_ERROR_REPORTER_H__
 #define __DATABASE_ERROR_REPORTER_H__
 
+#ifdef WINDOWS
+ #ifndef DLLEXPORT
+  #define DLLEXPORT __declspec(dllimport)
+ #endif
+#endif
+#ifndef WINDOWS
+ #define DLLEXPORT
+#endif
+
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
 
@@ -12,7 +21,7 @@
     #include "wx/wx.h"
 #endif
 
-class DatabaseErrorReporter
+class DLLEXPORT DatabaseErrorReporter
 {
 public:
   // ctor

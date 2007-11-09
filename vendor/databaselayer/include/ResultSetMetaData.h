@@ -1,6 +1,15 @@
 #ifndef __RESULT_SET_METADATA_H__
 #define __RESULT_SET_METADATA_H__
 
+#ifdef WINDOWS
+ #ifndef DLLEXPORT
+  #define DLLEXPORT __declspec(dllimport)
+ #endif
+#endif
+#ifndef WINDOWS
+ #define DLLEXPORT
+#endif
+
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
 
@@ -14,7 +23,7 @@
 
 #include "DatabaseStringConverter.h"
 
-class ResultSetMetaData : public DatabaseStringConverter
+class DLLEXPORT ResultSetMetaData : public DatabaseStringConverter
 {
 public:
   /// Retrieve a column's type

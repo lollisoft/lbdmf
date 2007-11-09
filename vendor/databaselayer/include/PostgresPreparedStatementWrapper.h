@@ -1,6 +1,15 @@
 #ifndef __POSTGRESQL_PREPARED_STATEMENT_WRAPPER_H__
 #define __POSTGRESQL_PREPARED_STATEMENT_WRAPPER_H__
 
+#ifdef WINDOWS
+ #ifndef DLLEXPORT
+  #define DLLEXPORT __declspec(dllimport)
+ #endif
+#endif
+#ifndef WINDOWS
+ #define DLLEXPORT
+#endif
+
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
 
@@ -20,7 +29,7 @@
 
 class DatabaseResultSet;
 
-class PostgresPreparedStatementWrapper : public DatabaseErrorReporter, public DatabaseStringConverter
+class DLLEXPORT PostgresPreparedStatementWrapper : public DatabaseErrorReporter, public DatabaseStringConverter
 {
 public:
   // ctor

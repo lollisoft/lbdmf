@@ -1,6 +1,15 @@
 #ifndef __OTL_PREPARED_STATEMENT_H__
 #define __OTL_PREPARED_STATEMENT_H__
 
+#ifdef WINDOWS
+ #ifndef DLLEXPORT
+  #define DLLEXPORT __declspec(dllimport)
+ #endif
+#endif
+#ifndef WINDOWS
+ #define DLLEXPORT
+#endif
+
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
 
@@ -23,7 +32,7 @@
 
 WX_DEFINE_ARRAY_PTR(otl_stream*, OTLStatementVector);
 
-class OTLPreparedStatement : public PreparedStatement
+class DLLEXPORT OTLPreparedStatement : public PreparedStatement
 {
 public:
   // ctor

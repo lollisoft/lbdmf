@@ -1,6 +1,15 @@
 #ifndef __OTL_DATABASE_LAYER_H__
 #define __OTL_DATABASE_LAYER_H__
 
+#ifdef WINDOWS
+ #ifndef DLLEXPORT
+  #define DLLEXPORT __declspec(dllimport)
+ #endif
+#endif
+#ifndef WINDOWS
+ #define DLLEXPORT
+#endif
+
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
 
@@ -21,7 +30,7 @@
 #endif
 #include "otlv4.h"
 
-class OTLDatabaseLayer : public DatabaseLayer
+class DLLEXPORT OTLDatabaseLayer : public DatabaseLayer
 {
 public:
   // ctor()

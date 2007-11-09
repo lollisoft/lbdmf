@@ -1,7 +1,16 @@
 #ifndef __FIREBIRD_PREPARED_STATEMENT_WRAPPER_H__
 #define __FIREBIRD_PREPARED_STATEMENT_WRAPPER_H__
 
-// For compilers that support precompilation, includes "wx.h".
+#ifdef WINDOWS
+ #ifndef DLLEXPORT
+  #define DLLEXPORT __declspec(dllimport)
+ #endif
+#endif
+#ifndef WINDOWS
+ #define DLLEXPORT
+#endif
+
+//For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
 
 #ifdef __BORLANDC__
@@ -20,7 +29,7 @@
 
 class DatabaseResultSet;
 
-class FirebirdPreparedStatementWrapper : public DatabaseErrorReporter, public DatabaseStringConverter
+class DLLEXPORT FirebirdPreparedStatementWrapper : public DatabaseErrorReporter, public DatabaseStringConverter
 {
 public:
   // ctor

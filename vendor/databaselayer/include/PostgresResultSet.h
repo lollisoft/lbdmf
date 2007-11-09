@@ -1,6 +1,15 @@
 #ifndef __POSTGRESQL_RESULT_SET_H__
 #define __POSTGRESQL_RESULT_SET_H__
 
+#ifdef WINDOWS
+ #ifndef DLLEXPORT
+  #define DLLEXPORT __declspec(dllimport)
+ #endif
+#endif
+#ifndef WINDOWS
+ #define DLLEXPORT
+#endif
+
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
 
@@ -15,7 +24,7 @@
 #include "DatabaseResultSet.h"
 #include "libpq-fe.h"
 
-class PostgresResultSet : public DatabaseResultSet
+class DLLEXPORT PostgresResultSet : public DatabaseResultSet
 {
 public:
   // ctor

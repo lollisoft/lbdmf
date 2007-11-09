@@ -1,12 +1,21 @@
 #ifndef __FIREBIRD_DATABASE_LAYER_H__
 #define __FIREBIRD_DATABASE_LAYER_H__
 
+#ifdef WINDOWS
+ #ifndef DLLEXPORT
+  #define DLLEXPORT __declspec(dllimport)
+ #endif
+#endif
+#ifndef WINDOWS
+ #define DLLEXPORT
+#endif
+
 #include "DatabaseLayer.h"
 #include "FirebirdPreparedStatement.h"
 
 #include "ibase.h"
 
-class FirebirdDatabaseLayer : public DatabaseLayer
+class DLLEXPORT FirebirdDatabaseLayer : public DatabaseLayer
 {
 public:
   // ctor()

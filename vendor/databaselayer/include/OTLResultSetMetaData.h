@@ -1,6 +1,15 @@
 #ifndef __OTL_RESULT_SET_METADATA_H__
 #define __OTL_RESULT_SET_METADATA_H__
 
+#ifdef WINDOWS
+ #ifndef DLLEXPORT
+  #define DLLEXPORT __declspec(dllimport)
+ #endif
+#endif
+#ifndef WINDOWS
+ #define DLLEXPORT
+#endif
+
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
 
@@ -20,7 +29,7 @@
 #endif
 #include "otlv4.h"
 
-class OTLResultSetMetaData : public ResultSetMetaData
+class DLLEXPORT OTLResultSetMetaData : public ResultSetMetaData
 {
 public:
   // ctor

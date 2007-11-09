@@ -1,6 +1,15 @@
 #ifndef __MYSQL_DATABASE_LAYER_H__
 #define __MYSQL_DATABASE_LAYER_H__
 
+#ifdef WINDOWS
+ #ifndef DLLEXPORT
+  #define DLLEXPORT __declspec(dllimport)
+ #endif
+#endif
+#ifndef WINDOWS
+ #define DLLEXPORT
+#endif
+
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
 
@@ -21,7 +30,7 @@
 
 WX_DECLARE_VOIDPTR_HASH_MAP(void*, PointerLookupMap);
 
-class MysqlDatabaseLayer : public DatabaseLayer
+class DLLEXPORT MysqlDatabaseLayer : public DatabaseLayer
 {
 public:
   // Information that can be specified for a MySQL database

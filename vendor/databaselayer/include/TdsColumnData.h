@@ -1,6 +1,15 @@
 #ifndef __TDS_RESULT_SET_COLUMN_METADATA_H__
 #define __TDS_RESULT_SET_COLUMN_METADATA_H__
 
+#ifdef WINDOWS
+ #ifndef DLLEXPORT
+  #define DLLEXPORT __declspec(dllimport)
+ #endif
+#endif
+#ifndef WINDOWS
+ #define DLLEXPORT
+#endif
+
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
 
@@ -14,7 +23,7 @@
 
 #include "tds.h"
 
-class TdsColumnData
+class DLLEXPORT TdsColumnData
 {
 public:
   // ctor

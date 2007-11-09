@@ -1,6 +1,15 @@
 #ifndef __ORACLE_DATABASE_LAYER_H__
 #define __ORACLE_DATABASE_LAYER_H__
 
+#ifdef WINDOWS
+ #ifndef DLLEXPORT
+  #define DLLEXPORT __declspec(dllimport)
+ #endif
+#endif
+#ifndef WINDOWS
+ #define DLLEXPORT
+#endif
+
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
 
@@ -18,7 +27,7 @@
 
 #include "occi.h"
 
-class OracleDatabaseLayer : public DatabaseLayer
+class DLLEXPORT OracleDatabaseLayer : public DatabaseLayer
 {
 public:
   // ctor()

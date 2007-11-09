@@ -1,6 +1,15 @@
 #ifndef __ORACLE_PREPARED_STATEMENT_H__
 #define __ORACLE_PREPARED_STATEMENT_H__
 
+#ifdef WINDOWS
+ #ifndef DLLEXPORT
+  #define DLLEXPORT __declspec(dllimport)
+ #endif
+#endif
+#ifndef WINDOWS
+ #define DLLEXPORT
+#endif
+
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
 
@@ -22,7 +31,7 @@
 //WX_DEFINE_ARRAY_PTR(oracle::occi::Statement*, OracleStatementVector);
 WX_DEFINE_ARRAY_PTR(OraclePreparedStatementWrapper*, OracleStatementVector);
 
-class OraclePreparedStatement : public PreparedStatement
+class DLLEXPORT OraclePreparedStatement : public PreparedStatement
 {
 public:
   // ctor

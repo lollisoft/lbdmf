@@ -1,3 +1,4 @@
+#include "../include/DatabaseLayerDLLExport.h"
 #include "../include/OdbcResultSet.h"
 #include "../include/OdbcPreparedStatement.h"
 #include "../include/OdbcDatabaseLayer.h"

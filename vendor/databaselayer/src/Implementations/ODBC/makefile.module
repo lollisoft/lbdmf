@@ -28,9 +28,17 @@
 
 
 ifeq ($(OSTYPE), Windows_NT)
-MOD_INCL=$(STD_INCL)
-MOD_INCL_CPP=$(STD_INCL_CPP)
-LIBS = $(BASE_LIBS) $(DEVROOT_MAKE)/projects/dll/libs/lbhook.lib,../../../../tools/watcom/lib386/nt/odbc32.lib
+MOD_INCL = $(STD_INCL) -i=..\\.. -i=$(DEVROOT)\\wxwin\\wx\\include
+MOD_INCL_CPP=$(STD_INCL_CPP) -i=../.. -i=$(DEVROOT_MAKE)/wxwin/wx/include
+
+SLASH=/
+
+WATCOMLIBS=$(DEVROOT_MAKE)$(SLASH)Tools$(SLASH)watcom$(SLASH)lib386$(SLASH)nt
+wxBase=$(DEVROOT_MAKE)$(SLASH)wxwin$(SLASH)wx$(SLASH)lib
+LIBS = $(BASE_LIBS) $(DEVROOT_MAKE)$(SLASH)projects$(SLASH)dll$(SLASH)libs$(SLASH)lbhook.lib,../../../../tools/watcom/lib386/nt/odbc32.lib, \
+	$(wxBase)$(SLASH)wat_dll$(SLASH)wxmsw$(WX_VERSION)$(WX_DEBUG).lib
+
+CPP_DLLOPS+= -xs
 
 # use global setup
 #COMPILER=MICROSOFT

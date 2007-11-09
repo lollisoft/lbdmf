@@ -1,3 +1,4 @@
+#include "../include/DatabaseLayerDLLExport.h"
 #include "../include/OdbcParameter.h"
 #include "../include/DatabaseLayer.h"
 

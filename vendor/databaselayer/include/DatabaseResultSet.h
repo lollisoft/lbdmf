@@ -1,6 +1,15 @@
 #ifndef __DATABASE_RESULT_SET_H__
 #define __DATABASE_RESULT_SET_H__
 
+#ifdef WINDOWS
+ #ifndef DLLEXPORT
+  #define DLLEXPORT __declspec(dllimport)
+ #endif
+#endif
+#ifndef WINDOWS
+ #define DLLEXPORT
+#endif
+
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
 
@@ -23,7 +32,7 @@
 WX_DECLARE_STRING_HASH_MAP(int, StringToIntMap);
 WX_DECLARE_HASH_SET( ResultSetMetaData*, wxPointerHash, wxPointerEqual, MetaDataHashSet );
 
-class DatabaseResultSet : public DatabaseErrorReporter, public DatabaseStringConverter
+class DLLEXPORT DatabaseResultSet : public DatabaseErrorReporter, public DatabaseStringConverter
 {
 public:
   /// Constructor

@@ -1,6 +1,15 @@
 #ifndef __ODBC_DATABASE_LAYER_H__
 #define __ODBC_DATABASE_LAYER_H__
 
+#ifdef WINDOWS
+ #ifndef DLLEXPORT
+  #define DLLEXPORT __declspec(dllimport)
+ #endif
+#endif
+#ifndef WINDOWS
+ #define DLLEXPORT
+#endif
+
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
 
@@ -23,7 +32,7 @@
 #define ERR_STATE_LEN 10
 
 
-class OdbcDatabaseLayer : public DatabaseLayer
+class DLLEXPORT OdbcDatabaseLayer : public DatabaseLayer
 {
 public:
   // ctor()

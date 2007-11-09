@@ -1,3 +1,4 @@
+#include "../include/DatabaseLayerDLLExport.h"
 #include "../include/SqlitePreparedStatement.h"
 #include "../include/SqliteResultSet.h"
 #include "../include/SqliteDatabaseLayer.h"

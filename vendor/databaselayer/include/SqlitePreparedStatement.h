@@ -1,6 +1,15 @@
 #ifndef __SQLITE_PREPARED_STATEMENT_H__
 #define __SQLITE_PREPARED_STATEMENT_H__
 
+#ifdef WINDOWS
+ #ifndef DLLEXPORT
+  #define DLLEXPORT __declspec(dllimport)
+ #endif
+#endif
+#ifndef WINDOWS
+ #define DLLEXPORT
+#endif
+
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
 
@@ -22,7 +31,7 @@ WX_DEFINE_ARRAY_PTR(sqlite3_stmt*, StatementVector);
 
 class DatabaseResultSet;
 
-class SqlitePreparedStatement : public PreparedStatement
+class DLLEXPORT SqlitePreparedStatement : public PreparedStatement
 {
 public:
   // ctor

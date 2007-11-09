@@ -1,6 +1,15 @@
 #ifndef __ODBC_RESULT_SET_METADATA_H__
 #define __ODBC_RESULT_SET_METADATA_H__
 
+#ifdef WINDOWS
+ #ifndef DLLEXPORT
+  #define DLLEXPORT __declspec(dllimport)
+ #endif
+#endif
+#ifndef WINDOWS
+ #define DLLEXPORT
+#endif
+
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
 
@@ -17,7 +26,7 @@
 #include <sql.h>
 #include <sqlext.h>
 
-class OdbcResultSetMetaData : public ResultSetMetaData
+class DLLEXPORT OdbcResultSetMetaData : public ResultSetMetaData
 {
 public:
   // ctor

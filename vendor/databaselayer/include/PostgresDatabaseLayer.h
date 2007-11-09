@@ -1,6 +1,15 @@
 #ifndef __POSTGRESQL_DATABASE_LAYER_H__
 #define __POSTGRESQL_DATABASE_LAYER_H__
 
+#ifdef WINDOWS
+ #ifndef DLLEXPORT
+  #define DLLEXPORT __declspec(dllimport)
+ #endif
+#endif
+#ifndef WINDOWS
+ #define DLLEXPORT
+#endif
+
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
 
@@ -17,7 +26,7 @@
 
 #include "libpq-fe.h"
 
-class PostgresDatabaseLayer : public DatabaseLayer
+class DLLEXPORT PostgresDatabaseLayer : public DatabaseLayer
 {
 public:
   // Information that can be specified for a PostgreSQL database

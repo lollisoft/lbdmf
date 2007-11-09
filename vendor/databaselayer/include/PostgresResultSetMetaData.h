@@ -1,6 +1,15 @@
 #ifndef __POSTGRES_RESULT_SET_METADATA_H__
 #define __POSTGRES_RESULT_SET_METADATA_H__
 
+#ifdef WINDOWS
+ #ifndef DLLEXPORT
+  #define DLLEXPORT __declspec(dllimport)
+ #endif
+#endif
+#ifndef WINDOWS
+ #define DLLEXPORT
+#endif
+
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
 
@@ -16,7 +25,7 @@
 
 #include "libpq-fe.h"
 
-class PostgresResultSetMetaData : public ResultSetMetaData
+class DLLEXPORT PostgresResultSetMetaData : public ResultSetMetaData
 {
 public:
   // ctor

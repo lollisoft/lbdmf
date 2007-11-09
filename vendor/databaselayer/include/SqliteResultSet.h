@@ -1,6 +1,15 @@
 #ifndef __SQLITE_RESULT_SET_H__
 #define __SQLITE_RESULT_SET_H__
 
+#ifdef WINDOWS
+ #ifndef DLLEXPORT
+  #define DLLEXPORT __declspec(dllimport)
+ #endif
+#endif
+#ifndef WINDOWS
+ #define DLLEXPORT
+#endif
+
 #include "DatabaseResultSet.h"
 
 #include "sqlite3.h"
@@ -8,7 +17,7 @@
 class SqlitePreparedStatement;
 class ResultSetMetaData;
 
-class SqliteResultSet : public DatabaseResultSet
+class DLLEXPORT SqliteResultSet : public DatabaseResultSet
 {
 public:
   // ctor

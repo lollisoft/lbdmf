@@ -1,3 +1,4 @@
+#include "../include/DatabaseLayerDLLExport.h"
 #include "../include/PreparedStatement.h"
 
 // ctor()

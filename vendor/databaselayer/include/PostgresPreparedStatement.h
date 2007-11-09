@@ -1,6 +1,15 @@
 #ifndef __POSTGRESQL_PREPARED_STATEMENT_H__
 #define __POSTGRESQL_PREPARED_STATEMENT_H__
 
+#ifdef WINDOWS
+ #ifndef DLLEXPORT
+  #define DLLEXPORT __declspec(dllimport)
+ #endif
+#endif
+#ifndef WINDOWS
+ #define DLLEXPORT
+#endif
+
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
 
@@ -21,7 +30,7 @@
 
 WX_DECLARE_OBJARRAY(PostgresPreparedStatementWrapper, ArrayOfPostgresPreparedStatementWrappers);
 
-class PostgresPreparedStatement : public PreparedStatement
+class DLLEXPORT PostgresPreparedStatement : public PreparedStatement
 {
 public:
   // ctor

@@ -1,6 +1,15 @@
 #ifndef __MYSQL_PREPARED_STATEMENT_RESULT_SET_H__
 #define __MYSQL_PREPARED_STATEMENT_RESULT_SET_H__
 
+#ifdef WINDOWS
+ #ifndef DLLEXPORT
+  #define DLLEXPORT __declspec(dllimport)
+ #endif
+#endif
+#ifndef WINDOWS
+ #define DLLEXPORT
+#endif
+
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
 
@@ -21,7 +30,7 @@
 
 WX_DECLARE_HASH_MAP(int, MysqlPreparedStatementParameter*, wxIntegerHash, wxIntegerEqual, IntToMysqlParameterMap);
   
-class MysqlPreparedStatementResultSet : public DatabaseResultSet
+class DLLEXPORT MysqlPreparedStatementResultSet : public DatabaseResultSet
 {
 public:
   // ctor

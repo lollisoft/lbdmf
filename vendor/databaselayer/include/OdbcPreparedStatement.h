@@ -1,6 +1,15 @@
 #ifndef __ODBC_PREPARED_STATEMENT_H__
 #define __ODBC_PREPARED_STATEMENT_H__
 
+#ifdef WINDOWS
+ #ifndef DLLEXPORT
+  #define DLLEXPORT __declspec(dllimport)
+ #endif
+#endif
+#ifndef WINDOWS
+ #define DLLEXPORT
+#endif
+
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
 
@@ -25,7 +34,7 @@ WX_DEFINE_ARRAY_PTR(OdbcParameter*, ArrayOfOdbcParameters);
 
 class DatabaseResultSet;
 
-class OdbcPreparedStatement : public PreparedStatement
+class DLLEXPORT OdbcPreparedStatement : public PreparedStatement
 {
 public:
     // ctor

@@ -1,6 +1,15 @@
 #ifndef __ODBC_RESULT_SET_H__
 #define __ODBC_RESULT_SET_H__
 
+#ifdef WINDOWS
+ #ifndef DLLEXPORT
+  #define DLLEXPORT __declspec(dllimport)
+ #endif
+#endif
+#ifndef WINDOWS
+ #define DLLEXPORT
+#endif
+
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
 
@@ -29,7 +38,7 @@ WX_DECLARE_OBJARRAY(wxVariant, ValuesArray);
 WX_DECLARE_HASH_SET( int, wxIntegerHash, wxIntegerEqual, IntegerSet );
 WX_DECLARE_HASH_MAP( int, wxMemoryBuffer, wxIntegerHash, wxIntegerEqual, BlobMap );
 
-class OdbcResultSet : public DatabaseResultSet
+class DLLEXPORT OdbcResultSet : public DatabaseResultSet
 {
 public:
   // ctor

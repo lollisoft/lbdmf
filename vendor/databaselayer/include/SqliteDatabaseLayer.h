@@ -1,6 +1,16 @@
 #ifndef __SQLITE_DATABASE_LAYER_H__
 #define __SQLITE_DATABASE_LAYER_H__
 
+#ifdef WINDOWS
+ #ifndef DLLEXPORT
+  #define DLLEXPORT __declspec(dllimport)
+ #endif
+#endif
+#ifndef WINDOWS
+ #define DLLEXPORT
+#endif
+
+
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
 
@@ -21,7 +31,7 @@
 
 class PreparedStatement;
 
-class SqliteDatabaseLayer : public DatabaseLayer
+class DLLEXPORT SqliteDatabaseLayer : public DatabaseLayer
 {
 public:
   // ctor()

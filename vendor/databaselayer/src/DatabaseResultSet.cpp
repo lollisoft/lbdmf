@@ -1,3 +1,4 @@
+#include "../include/DatabaseLayerDLLExport.h"
 #include "../include/DatabaseResultSet.h"
 #include "../include/ResultSetMetaData.h"
 

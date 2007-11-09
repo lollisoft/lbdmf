@@ -1,6 +1,15 @@
 #ifndef __FIREBIRD_PREPARED_STATEMENT_H__
 #define __FIREBIRD_PREPARED_STATEMENT_H__
 
+#ifdef WINDOWS
+ #ifndef DLLEXPORT
+  #define DLLEXPORT __declspec(dllimport)
+ #endif
+#endif
+#ifndef WINDOWS
+ #define DLLEXPORT
+#endif
+
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
 
@@ -21,7 +30,7 @@ class DatabaseResultSet;
 
 WX_DEFINE_ARRAY_PTR(FirebirdPreparedStatementWrapper*, FirebirdStatementVector);
 
-class FirebirdPreparedStatement : public PreparedStatement
+class DLLEXPORT FirebirdPreparedStatement : public PreparedStatement
 {
 public:
   // ctor

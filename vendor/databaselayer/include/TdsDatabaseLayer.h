@@ -1,6 +1,15 @@
 #ifndef __TDS_DATABASE_LAYER_H__
 #define __TDS_DATABASE_LAYER_H__
 
+#ifdef WINDOWS
+ #ifndef DLLEXPORT
+  #define DLLEXPORT __declspec(dllimport)
+ #endif
+#endif
+#ifndef WINDOWS
+ #define DLLEXPORT
+#endif
+
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
 
@@ -24,7 +33,7 @@ class TdsDatabaseLayer;
 
 WX_DECLARE_HASH_MAP(TDSCONTEXT*, TdsDatabaseLayer*, wxPointerHash, wxPointerEqual, TdsContextToDatabaseLayerMap);
 
-class TdsDatabaseLayer : public DatabaseLayer
+class DLLEXPORT TdsDatabaseLayer : public DatabaseLayer
 {
 public:
   // ctor()

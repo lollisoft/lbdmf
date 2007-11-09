@@ -1,3 +1,4 @@
+#include "../include/DatabaseLayerDLLExport.h"
 #include "../include/DatabaseLayer.h"
 #include "../include/DatabaseErrorCodes.h"
 #include "../include/DatabaseLayerException.h"

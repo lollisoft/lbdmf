@@ -1,6 +1,15 @@
 #ifndef __FIREBIRD_PARAMETER_H__
 #define __FIREBIRD_PARAMETER_H__
 
+#ifdef WINDOWS
+ #ifndef DLLEXPORT
+  #define DLLEXPORT __declspec(dllimport)
+ #endif
+#endif
+#ifndef WINDOWS
+ #define DLLEXPORT
+#endif
+
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
 
@@ -17,7 +26,7 @@
 #include "DatabaseStringConverter.h"
 #include "ibase.h"
 
-class FirebirdParameter : public DatabaseStringConverter
+class DLLEXPORT FirebirdParameter : public DatabaseStringConverter
 {
 public:
   // ctor

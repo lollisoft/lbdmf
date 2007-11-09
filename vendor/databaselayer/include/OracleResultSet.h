@@ -1,12 +1,21 @@
 #ifndef __ORACLE_RESULT_SET_H__
 #define __ORACLE_RESULT_SET_H__
 
+#ifdef WINDOWS
+ #ifndef DLLEXPORT
+  #define DLLEXPORT __declspec(dllimport)
+ #endif
+#endif
+#ifndef WINDOWS
+ #define DLLEXPORT
+#endif
+
 #include "DatabaseResultSet.h"
 
 #include "occi.h"
 #include <vector>
 
-class OracleResultSet : public DatabaseResultSet
+class DLLEXPORT OracleResultSet : public DatabaseResultSet
 {
 public:
   // ctor

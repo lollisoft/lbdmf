@@ -1,6 +1,15 @@
 #ifndef __PREPARED_STATEMENT_H__
 #define __PREPARED_STATEMENT_H__
 
+#ifdef WINDOWS
+ #ifndef DLLEXPORT
+  #define DLLEXPORT __declspec(dllimport)
+ #endif
+#endif
+#ifndef WINDOWS
+ #define DLLEXPORT
+#endif
+
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
 
@@ -21,7 +30,7 @@
 
 WX_DECLARE_HASH_SET( DatabaseResultSet*, wxPointerHash, wxPointerEqual, StatementResultSetHashSet );
 
-class PreparedStatement : public DatabaseErrorReporter, public DatabaseStringConverter
+class DLLEXPORT PreparedStatement : public DatabaseErrorReporter, public DatabaseStringConverter
 {
 public:
   /// Constructor

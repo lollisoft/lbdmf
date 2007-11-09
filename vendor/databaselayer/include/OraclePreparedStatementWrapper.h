@@ -1,6 +1,15 @@
 #ifndef __ORACLE_PREPARED_STATEMENT_WRAPPER_H__
 #define __ORACLE_PREPARED_STATEMENT_WRAPPER_H__
 
+#ifdef WINDOWS
+ #ifndef DLLEXPORT
+  #define DLLEXPORT __declspec(dllimport)
+ #endif
+#endif
+#ifndef WINDOWS
+ #define DLLEXPORT
+#endif
+
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
 
@@ -16,7 +25,7 @@
 
 #include "occi.h"
 
-class OraclePreparedStatementWrapper : public DatabaseStringConverter
+class DLLEXPORT OraclePreparedStatementWrapper : public DatabaseStringConverter
 {
   public:
     // ctor

@@ -1,3 +1,4 @@
+#include "../include/DatabaseLayerDLLExport.h"
 #include "../include/DatabaseQueryParser.h"
 
 bool IsEmptyQuery(const wxString& strQuery)

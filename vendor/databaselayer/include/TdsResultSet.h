@@ -1,13 +1,22 @@
 #ifndef __TDS_RESULT_SET_H__
 #define __TDS_RESULT_SET_H__
 
+#ifdef WINDOWS
+ #ifndef DLLEXPORT
+  #define DLLEXPORT __declspec(dllimport)
+ #endif
+#endif
+#ifndef WINDOWS
+ #define DLLEXPORT
+#endif
+
 #include "DatabaseResultSet.h"
 
 #include "tds.h"
 
 class ResultSetMetaData;
 
-class TdsResultSet : public DatabaseResultSet
+class DLLEXPORT TdsResultSet : public DatabaseResultSet
 {
 public:
   // ctor

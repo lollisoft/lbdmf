@@ -1,6 +1,14 @@
 #ifndef __DATABASE_LAYER_H__
 #define __DATABASE_LAYER_H__
 
+#ifdef WINDOWS
+ #ifndef DLLEXPORT
+  #define DLLEXPORT __declspec(dllimport)
+ #endif
+#endif
+#ifndef WINDOWS
+ #define DLLEXPORT
+#endif
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
 
@@ -24,7 +32,7 @@
 WX_DECLARE_HASH_SET( DatabaseResultSet*, wxPointerHash, wxPointerEqual, DatabaseResultSetHashSet );
 WX_DECLARE_HASH_SET( PreparedStatement*, wxPointerHash, wxPointerEqual, DatabaseStatementHashSet );
 
-class DatabaseLayer : public DatabaseErrorReporter, public DatabaseStringConverter
+class DLLEXPORT DatabaseLayer : public DatabaseErrorReporter, public DatabaseStringConverter
 {
 public:
   /// Constructor

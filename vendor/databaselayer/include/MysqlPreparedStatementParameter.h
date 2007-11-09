@@ -1,6 +1,15 @@
 #ifndef __MYSQL_PREPARED_STATEMENT_PARAMETER_H__
 #define __MYSQL_PREPARED_STATEMENT_PARAMETER_H__
 
+#ifdef WINDOWS
+ #ifndef DLLEXPORT
+  #define DLLEXPORT __declspec(dllimport)
+ #endif
+#endif
+#ifndef WINDOWS
+ #define DLLEXPORT
+#endif
+
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
 
@@ -31,7 +40,7 @@ typedef struct bind_data {
   unsigned long nBufferLength;
 } MysqlBindData;
 
-class MysqlPreparedStatementParameter : public DatabaseErrorReporter, public DatabaseStringConverter
+class DLLEXPORT MysqlPreparedStatementParameter : public DatabaseErrorReporter, public DatabaseStringConverter
 {
 public:
   // ctor

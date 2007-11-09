@@ -1,6 +1,15 @@
 #ifndef __FIREBIRD_PARAMETER_COLLECTION_H__
 #define __FIREBIRD_PARAMETER_COLLECTION_H__
 
+#ifdef WINDOWS
+ #ifndef DLLEXPORT
+  #define DLLEXPORT __declspec(dllimport)
+ #endif
+#endif
+#ifndef WINDOWS
+ #define DLLEXPORT
+#endif
+
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
 
@@ -20,7 +29,7 @@
 
 WX_DEFINE_ARRAY_PTR(FirebirdParameter*, FirebirdParameterArray);
 
-class FirebirdParameterCollection : public DatabaseStringConverter
+class DLLEXPORT FirebirdParameterCollection : public DatabaseStringConverter
 {
 public:
   // ctor
