@@ -21,7 +21,7 @@
 
 <xsl:variable name="ApplicationID" select="//lbDMF/@applicationid"/>
 <xsl:variable name="basedir" select="//lbDMF/applicationparameter/parameter[@applicationid=$ApplicationID][@name='codegenbasedir']/@value"/>
-<xsl:variable name="pluginsdir" select="'Code/Targets/lbDMF/Plugins'"/>
-<xsl:variable name="appmoduledir" select="'Code/Targets/lbDMF/Modules'"/>
+<xsl:variable name="pluginsdir" select="'Code/Targets/wxActiveRecords/Plugins'"/>
+<xsl:variable name="appmoduledir" select="'Code/Targets/wxActiveRecords/Modules'"/>
 
 </xsl:stylesheet>
