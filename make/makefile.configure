@@ -265,7 +265,7 @@ $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	@echo all: $(_MODULE).so >> makefile
 	@rm -f $(DEVROOT_MAKE)$(RELPATH)/include/lbkey.h
 	@cp -f $(DEVROOT_MAKE)$(RELPATH)/BaseDevelopment/lbclasses/lbkey.h $(DEVROOT_MAKE)$(RELPATH)/include
-	@$(MKMK) $(TARGET) $(_MODULE) ../dosdir *.cpp *.c >> makefile
+	@$(MKMK) $(TARGET) $(_MODULE) ../dosdir *.cpp *.c $(CUSTOM_FILES) >> makefile
 
 endif
 
