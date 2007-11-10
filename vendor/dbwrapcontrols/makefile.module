@@ -22,9 +22,9 @@
 #    The author of this work will be reached by e-Mail or paper mail.
 #    e-Mail: lothar.behrens@lollisoft.de
 #    p-Mail: Lothar Behrens
-#            Rosmarinstr. 3
+#            Heinrich-Scheufelen-Platz 2
 #
-#            40235 Duesseldorf (germany)
+#            73252 Lenningen (germany)
 
 ifeq ($(OSTYPE), Windows_NT)
 MOD_INCL=$(STD_INCL)
@@ -32,8 +32,7 @@ OBJDEP=
 SLASH=/
 WATCOMLIBS=$(DEVROOT_MAKE)$(SLASH)Tools$(SLASH)watcom$(SLASH)lib386$(SLASH)nt
 wxBase=$(DEVROOT_MAKE)$(SLASH)wxwin$(SLASH)wx$(SLASH)lib
-LIBS = $(BASE_LIBS) $(DEVROOT_MAKE)$(SLASH)projects$(SLASH)dll$(SLASH)libs$(SLASH)lbhook.lib, \
-	$(DEVROOT_MAKE)$(SLASH)projects$(SLASH)dll$(SLASH)libs$(SLASH)sqlite3.lib, \
+LIBS = $(BASE_LIBS) \
 	$(DEVROOT_MAKE)$(SLASH)projects$(SLASH)dll$(SLASH)libs$(SLASH)databaselayer_sqllite.lib, \
         $(wxBase)$(SLASH)wat_dll$(SLASH)wxmsw$(WX_VERSION)$(WX_DEBUG).lib
 	
