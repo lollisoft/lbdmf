@@ -14,7 +14,6 @@
 <!-- Template to create application main module -->
 <xsl:import href="wxARGApplicationModul.xsl"/>
 
-
 <xsl:output method="text" indent="no"/>
 
 <xsl:template match="lbDMF">

@@ -194,12 +194,12 @@ endif
 ifeq ($(LB_USE_FRAMEWORKS), yes)
 
 ifeq ($(OSTYPE), osx)
-MOD_INCL=$(STD_INCL)
+MOD_INCL=$(STD_INCL) -I ../../../wxActiveRecordsBase/include -I . -I $(DEVROOT)$(RELPATH)/vendor/databaselayer/include -I $(DEVROOT)$(RELPATH)/vendor/sqlite
 OBJDEP=
 C_SOOPS_WX = -g -DOSX -DUNIX -DLINUX -DLB_I_EXTENTIONS `wx-config --inplace --cxxflags` 
 C_SOOPS= $(C_SOOPS_WX)
-VENDORLIBS=-lc /usr/lib/libgcc_s.1.dylib -lc /usr/lib/libstdc++.6.dylib
-L_OPS=$(L_SOOPS) -F$(HOME)/lib -framework lbHook `wx-config --inplace --libs` 
+VENDORLIBS=-lc /usr/lib/libgcc_s.1.dylib -lc /usr/lib/libstdc++.6.dylib -lc $(prefix)/lib/wxActiveRecordsBase.so -lc $(prefix)/lib/databaselayer_sqllite.so -lc $(prefix)/lib/sqlite3.so
+L_OPS=$(L_SOOPS) -F$(HOME)/lib `wx-config --inplace --libs`  
 endif    
 
 endif

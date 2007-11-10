@@ -56,6 +56,39 @@ class <xsl:value-of select="$FormularName"/>;
 class <xsl:value-of select="$FormularName"/>Row;
 class <xsl:value-of select="$FormularName"/>RowSet;
 
+<xsl:for-each select="//lbDMF/formularfields/formular[@formularid=$FormularID]">
+<xsl:variable name="FieldName" select="@name"/> 
+<xsl:variable name="TableName" select="@tablename"/>
+<xsl:variable name="PKFieldName" select="@fkname"/> 
+<xsl:variable name="PKTableName" select="@fktable"/>
+<xsl:variable name="FormID" select="@formularid"/>
+<xsl:if test="@isfk='1'">
+	<xsl:variable name="TargetFormID" select="//lbDMF/formularfields/formular[@tablename=$PKTableName][@name=$PKFieldName]/@formularid"/>
+	<xsl:variable name="tempTargetForm" select="//lbDMF/formulare/formular[@ID=$TargetFormID]/@name"/>
+	<xsl:variable name="TargetForm">
+		<xsl:call-template name="SubstringReplace">
+			<xsl:with-param name="stringIn">
+		<xsl:call-template name="SubstringReplace">
+			<xsl:with-param name="stringIn">
+		<xsl:call-template name="SubstringReplace">
+			<xsl:with-param name="stringIn">
+				<xsl:value-of select="$tempTargetForm"/>
+			</xsl:with-param>
+			<xsl:with-param name="substringIn" select="'-'"/>
+			<xsl:with-param name="substringOut" select="''"/>
+		</xsl:call-template>
+			</xsl:with-param>
+			<xsl:with-param name="substringIn" select="'>'"/>
+			<xsl:with-param name="substringOut" select="''"/>
+		</xsl:call-template>
+			</xsl:with-param>
+			<xsl:with-param name="substringIn" select="' '"/>
+			<xsl:with-param name="substringOut" select="''"/>
+		</xsl:call-template>
+	</xsl:variable>
+class <xsl:value-of select="$TargetForm"/>Row; // <xsl:value-of select="$FieldName"/>
+</xsl:if>
+</xsl:for-each>
 
 
 ////@@end gen forward
@@ -70,7 +103,7 @@ class <xsl:value-of select="$FormularName"/>RowSet;
 
 ////@@begin gen arClass
 // Have Formular <xsl:value-of select="$FormularID"/>.
-class <xsl:value-of select="$FormularName"/>: public wxPostgresActiveRecord {
+class <xsl:value-of select="$FormularName"/>: public wxSqliteActiveRecord {
 protected:
 	<xsl:value-of select="$FormularName"/>Row* RowFromResult(DatabaseResultSet* result);
 public:
@@ -183,6 +216,7 @@ public:
 	
 	
 protected:
+	static int CMPFUNC_id(wxActiveRecordRow** item1,wxActiveRecordRow** item2);
 <xsl:for-each select="//lbDMF/formularfields/formular[@formularid=$FormularID]">
 <xsl:variable name="FieldName" select="@name"/> 
 <xsl:variable name="TableName" select="@tablename"/>

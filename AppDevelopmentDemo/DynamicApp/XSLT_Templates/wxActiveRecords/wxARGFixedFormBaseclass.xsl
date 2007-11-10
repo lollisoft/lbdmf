@@ -32,7 +32,7 @@
 
 
 <xsl:template name="CreateFixedFormBaseclass">
-
+<!--
 <exsl:document href="{$basedir}/{$pluginsdir}/{$ApplicationName}/{$ApplicationName}Base.h" method="text">
 /* Base class for fixed database formular header file
  *  <xsl:value-of select="$ApplicationName"/>
@@ -238,7 +238,8 @@ class <xsl:value-of select="$FormularName"/>;
 
 #endif //FIXED_FORMULAR_<xsl:value-of select="$ApplicationName"/>
 </exsl:document>
-
+-->
+<!--
 <exsl:document href="{$basedir}/{$pluginsdir}/{$ApplicationName}/{$ApplicationName}Base.cpp" method="text">
 /* Base class for fixed database formular
  *  <xsl:value-of select="$ApplicationName"/>
@@ -875,7 +876,7 @@ lbErrCodes LB_STDCALL lbPluginModule<xsl:value-of select="$ApplicationName"/>::s
 /*...e*/
 
 </exsl:document>
-
+-->
 </xsl:template>
 
 </xsl:stylesheet>
