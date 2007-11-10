@@ -386,7 +386,7 @@ void wxDBLListBox::OnSelected(wxCommandEvent& event)
 }
 //-------------------------------------
 BEGIN_EVENT_TABLE(wxDBLListCtrl,wxListCtrl)
-	EVT_LIST_ITEM_SELECTED(-1,OnSelected)
+	EVT_LIST_ITEM_SELECTED(-1,wxDBLListCtrl::OnSelected)
 END_EVENT_TABLE()
 
 IMPLEMENT_DYNAMIC_CLASS2(wxDBLListCtrl, wxListCtrl,IwxDBLControlInterface) 
