@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.155 $
+# * $Revision: 1.156 $
 # * $Name:  $
-# * $Id: Makefile,v 1.155 2007/11/09 22:49:36 lollisoft Exp $
+# * $Id: Makefile,v 1.156 2007/11/10 23:24:46 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.156  2007/11/10 23:24:46  lollisoft
+# * Added databaselayer test application.
+# *
 # * Revision 1.155  2007/11/09 22:49:36  lollisoft
 # * Modifications to build databaselayer on Linux.
 # *
@@ -792,6 +795,7 @@ ALLDIRS = \
 	../vendor/sqlite \
 	../vendor/databaselayer/src/Implementations/ODBC \
 	../vendor/databaselayer/src/Implementations/Sqllite \
+	../vendor/databaselayer/test \
 	../vendor/dbwrapcontrols \
 	../vendor/wxaui-0.9.1/src \
 	../AppDevelopmentDemo/App \
@@ -1017,6 +1021,10 @@ dummy:
 
 ../vendor/databaselayer/src/Implementations/Sqllite: dummy
 	$(MAKE) -s -C $@ -e MODULE=databaselayer_sqllite -e TARGET=$(TARGETWXSHARED) -e CUSTOM_FILES=../../*.cpp -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@
+
+../vendor/databaselayer/test: dummy
+	$(MAKE) -s -C $@ -e MODULE=databaselayer_test -e TARGET=$(TARGETWXSHARED) -e CUSTOM_FILES=../../*.cpp -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@
 
 ../vendor/dbwrapcontrols: dummy
