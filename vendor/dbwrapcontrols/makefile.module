@@ -124,7 +124,7 @@ OBJDEP=
 C_ELFOPS += `wx-config --inplace --cxxflags` -DUSE_WXWRAPPER_DLL -DUNIX -DLINUX -DLB_I_EXTENTIONS
 L_OPS = `wx-config --inplace --libs` -o
 
-VENDORLIBS=-L$(prefix)/lib -llbHook -lwxWrapperDLL -lwxAUI -lwxPropgrid
+VENDORLIBS=$(prefix)/lib/databaselayer_sqllite.so $(prefix)/lib/sqlite3.so
 endif    
 
 ifeq ($(LB_USE_FRAMEWORKS), yes)
