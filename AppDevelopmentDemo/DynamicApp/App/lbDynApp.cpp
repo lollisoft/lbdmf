@@ -163,6 +163,7 @@ protected:
 	void LB_STDCALL loadDataFromActiveDocument();
 
 	bool haveLoadedDBModel;
+	UAP(lb_I_String, lastExportedApp)
 
 	lb_I_GUI* gui;
 	UAP(lb_I_EventManager, eman)
@@ -217,9 +218,11 @@ lbDynamicApplication::lbDynamicApplication() {
 	haveLoadedDBModel = false;
 	_CL_LOG << "lbDynamicApplication::lbDynamicApplication() called." LOG_
 	
+	REQUEST(getModuleInstance(), lb_I_String, lastExportedApp)
 	REQUEST(getModuleInstance(), lb_I_String, UMLImportTargetDBName)
 	REQUEST(getModuleInstance(), lb_I_String, UMLImportTargetDBUser)
 	REQUEST(getModuleInstance(), lb_I_String, UMLImportTargetDBPass)
+	*lastExportedApp = "";
 }
 
 lbDynamicApplication::~lbDynamicApplication() {
@@ -414,7 +417,9 @@ lbErrCodes LB_STDCALL lbDynamicApplication::loadDatabaseSchema(lb_I_Unknown* uk)
 		*name = "SaveApplicationID";
 		param->getUAPInteger(*&name, *&AppID);	
 		_LOG << "Have to save application ID = " << AppID->charrep() << ", database = " << appParams->getParameter("DBName", AppID->getData()) LOG_
-				
+		
+		*lastExportedApp = AppID->charrep();
+		
 		if (strcmp(appParams->getParameter("DBName", AppID->getData()), "lbDMF") == 0) {
 			// Is system database
 			_LOG << "lbDynamicApplication::loadDatabaseSchema(lb_I_Unknown* uk) Using system database." LOG_
@@ -599,8 +604,14 @@ lbErrCodes LB_STDCALL lbDynamicApplication::exportApplicationToXMLBuffer(lb_I_Un
 	UAP(lb_I_Parameter, document)
 	ukDoc = metaapp->getActiveDocument();
 	QI(ukDoc, lb_I_Parameter, document)
-		
-	if (haveLoadedDBModel == false) {
+
+	document->setCloning(false);
+	
+	UAP_REQUEST(getModuleInstance(), lb_I_Integer, AppID)
+	*name = "SaveApplicationID";
+	document->getUAPInteger(*&name, *&AppID);	
+
+	if ((haveLoadedDBModel == false) || (strcmp(lastExportedApp->charrep(), AppID->charrep()) != 0)) {
 		metaapp->setStatusText("Info", "Loading target database schema ...");
 		loadDatabaseSchema(NULL);
 		if (haveLoadedDBModel == false) {
