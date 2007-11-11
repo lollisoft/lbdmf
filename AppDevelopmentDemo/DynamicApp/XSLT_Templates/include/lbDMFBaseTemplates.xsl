@@ -20,8 +20,24 @@
 </xsl:template>
 
 <xsl:variable name="ApplicationID" select="//lbDMF/@applicationid"/>
-<xsl:variable name="basedir" select="//lbDMF/applicationparameter/parameter[@applicationid=$ApplicationID][@name='codegenbasedir']/@value"/>
-<xsl:variable name="pluginsdir" select="'Code/Targets/wxActiveRecords/Plugins'"/>
-<xsl:variable name="appmoduledir" select="'Code/Targets/wxActiveRecords/Modules'"/>
+<xsl:variable name="codegenbasedir" select="//lbDMF/applicationparameter/parameter[@applicationid=$ApplicationID][@name='codegenbasedir']/@value"/>
+<xsl:variable name="codegentarget" select="//lbDMF/applicationparameter/parameter[@applicationid=$ApplicationID][@name='codegentarget']/@value"/>
+<xsl:variable name="basedir">
+<xsl:if test="$codegenbasedir=''"><xsl:value-of select="'.'"/></xsl:if>
+<xsl:if test="$codegenbasedir!=''"><xsl:value-of select="$codegenbasedir"/></xsl:if>
+</xsl:variable>
+
+<xsl:variable name="pluginsdir">
+<xsl:choose>
+<xsl:when test="$codegentarget!=''">Code/Targets/<xsl:value-of select="$codegentarget"/>/Plugins</xsl:when>
+<xsl:otherwise>Code/Targets/wxActiveRecords/Plugins</xsl:otherwise>
+</xsl:choose>
+</xsl:variable>
+<xsl:variable name="appmoduledir">
+<xsl:choose>
+<xsl:when test="$codegentarget!=''">Code/Targets/<xsl:value-of select="$codegentarget"/>/Modules</xsl:when>
+<xsl:otherwise>Code/Targets/wxActiveRecords/Modules</xsl:otherwise>
+</xsl:choose>
+</xsl:variable>
 
 </xsl:stylesheet>
