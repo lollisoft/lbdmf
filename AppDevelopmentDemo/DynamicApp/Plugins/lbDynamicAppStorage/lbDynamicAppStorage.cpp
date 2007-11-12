@@ -266,8 +266,21 @@ lbErrCodes LB_STDCALL lbDynamicAppXMLStorage::save(lb_I_OutputStream* oStream) {
 		(appActionSteps != NULL)) {
 
 		*oStream << "<lbDMF applicationid=\"";
-		*oStream << AppID->charrep() << "\">\n";
-		
+#ifdef OSX		
+		*oStream << AppID->charrep() << "\" platform=\"osx\">\n";
+#else
+#ifdef LINUX		
+		*oStream << AppID->charrep() << "\" platform=\"linux\">\n";
+#else		
+#ifdef WINDOWS		
+		*oStream << AppID->charrep() << "\" platform=\"windows\">\n";
+#else		
+#ifdef SOLARIS		
+		*oStream << AppID->charrep() << "\" platform=\"solaris\">\n";
+#endif		
+#endif		
+#endif		
+#endif		
 		meta->setStatusText("Info", "Write XML document (reports) ...");
 		reports->accept(*&aspect);
 		meta->setStatusText("Info", "Write XML document (reportparams) ...");
