@@ -94,6 +94,8 @@ C_DLLOPS+= /D__WXDEBUG__
 CPP_EXEOPS+= /D__WXDEBUG__
 CPP_DLLOPS+= /D__WXDEBUG__
 endif
+
+CPP_EXEOPS+= -xs
 		
 LINKFLAGS = $(L_EXEOPS)
 endif

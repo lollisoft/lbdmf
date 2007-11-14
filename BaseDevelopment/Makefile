@@ -1,11 +1,15 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.156 $
+# * $Revision: 1.157 $
 # * $Name:  $
-# * $Id: Makefile,v 1.156 2007/11/10 23:24:46 lollisoft Exp $
+# * $Id: Makefile,v 1.157 2007/11/14 20:45:57 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.157  2007/11/14 20:45:57  lollisoft
+# * Some changes for mkmk to compile c files in subdirectories well under Windows.
+# * Added xsltc target and some other changes.
+# *
 # * Revision 1.156  2007/11/10 23:24:46  lollisoft
 # * Added databaselayer test application.
 # *
@@ -871,9 +875,11 @@ ALLTARGETS = \
 	lbMetaApplication \
 	lbPluginManager \
 	../vendor/propgrid \
+	../vendor/xsltc \
 	../vendor/sqlite \
 	../vendor/databaselayer/src/Implementations/ODBC \
 	../vendor/databaselayer/src/Implementations/Sqllite \
+	../vendor/databaselayer/test \
 	../vendor/dbwrapcontrols \
 	../vendor/wxaui-0.9.1/src \
 	../vendor/libxml2-2.6.29/bakefile \
@@ -1024,7 +1030,11 @@ dummy:
 	$(MAKE) -s -C $@
 
 ../vendor/databaselayer/test: dummy
-	$(MAKE) -s -C $@ -e MODULE=databaselayer_test -e TARGET=$(TARGETWXSHARED) -e CUSTOM_FILES=../../*.cpp -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@ -e MODULE=databaselayer_test -e TARGET=$(TARGETWXEXE) -e CUSTOM_FILES=../../*.cpp -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@
+
+../vendor/xsltc: dummy
+	$(MAKE) -s -C $@ -e MODULE=xsltc -e TARGET=$(TARGETEXE) -e CUSTOM_FILES='src/*.cpp src/main/*.cpp src/compiler/*.cpp src/base/*.cpp src/xml/*.cpp src/net/*.cpp src/util/*.cpp src/xml/dom/standalone/*.cpp src/xpath/*.cpp src/xslt/*.cpp src/xslt/functions/*.cpp src/xslt/util/*.cpp src/xml/printer/*.cpp src/xml/util/*.cpp src/xml/parser/*.cpp src/xml/parser/expat/xmltok/*.c src/xml/parser/expat/xmlparse/*.c' -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@
 
 ../vendor/dbwrapcontrols: dummy

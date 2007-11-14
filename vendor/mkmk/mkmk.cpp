@@ -12,11 +12,15 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.87 $
+ * $Revision: 1.88 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.87 2007/11/14 17:16:37 lollisoft Exp $
+ * $Id: mkmk.cpp,v 1.88 2007/11/14 20:45:57 lollisoft Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.88  2007/11/14 20:45:57  lollisoft
+ * Some changes for mkmk to compile c files in subdirectories well under Windows.
+ * Added xsltc target and some other changes.
+ *
  * Revision 1.87  2007/11/14 17:16:37  lollisoft
  * Try to correctly write c compile rule with path's in it.
  *
@@ -457,6 +461,9 @@ void FSplit(char *s, char *p, char *n)
   l=strlen(s)-1;
   if (l<1) return;
   while (l>=0 && s[l]!=PathChar) l--;
+#ifdef WINDOWS
+//  while (l>=0 && s[l]!='\\') l--;
+#endif
   memcpy(p,s,l+1); p[l+1]=0;
   strcpy(n,&s[l+1]);
 }
@@ -1616,7 +1623,7 @@ void ShowHelp(int argc, char *argv[])
 
   fprintf(stderr, "Enhanced by Lothar Behrens (lothar.behrens@lollisoft.de)\n\n");
 
-  fprintf(stderr, "MKMK: makefile generator $Revision: 1.87 $\n");
+  fprintf(stderr, "MKMK: makefile generator $Revision: 1.88 $\n");
   fprintf(stderr, "Usage: MKMK lib|exe|dll|so modulname includepath,[includepath,...] file1 [file2 file3...]\n");
   
   fprintf(stderr, "Your parameters are: ");
@@ -1851,11 +1858,20 @@ void WriteDep(FILE *f, char *Name, TIncludeParser *p)
                         break;
                     }
                 }
+/*				len = strlen(ObjNameC);
+                for (int i = len; i >= 0; i--) {
+                    if (ObjNameC[i] == '.') {
+                        ObjNameC[i] = 0;
+                        break;
+                    }
+                }
+*/
+
 				printf("\t\t@echo Build %s\n", NameC);
-//				if (CPPFlag == 0) printf("\t\t%s $(C_EXEOPS) $(MOD_INCL) -Fo=%s %s\n\n", Compiler, ObjNameC, Name);
-//				if (CPPFlag == 1) printf("\t\t%s $(CPP_EXEOPS) $(MOD_INCL_CPP) -Fo=%s %s\n\n", Compiler, ObjName, Name);
-                if (CPPFlag == 0) printf("\t\t@%s $(C_ELFOPS) $(MOD_INCL) -Fo=%s %s\n\n", Compiler, Name, ObjName);
-                if (CPPFlag == 1) printf("\t\t@%s $(CPP_EXEOPS) $(MOD_INCL) -Fo=%s %s\n\n", Compiler, Name, ObjName);
+				if (CPPFlag == 0) printf("\t\t%s $(C_EXEOPS) $(MOD_INCL) -Fo=%s %s\n\n", Compiler, ObjNameC, NameC);
+				if (CPPFlag == 1) printf("\t\t%s $(CPP_EXEOPS) $(MOD_INCL_CPP) -Fo=%s.$(OBJ) %s\n\n", Compiler, ObjName, Name);
+//                if (CPPFlag == 0) printf("\t\t@%s $(C_ELFOPS) $(MOD_INCL) -Fo=%s %s\n\n", Compiler, Name, ObjName);
+//                if (CPPFlag == 1) printf("\t\t@%s $(CPP_EXEOPS) $(MOD_INCL_CPP) -Fo=%s %s\n\n", Compiler, Name, ObjName);
                 break;
         case ELF_TARGET:
 	case ELF_BUNDLE_TARGET:

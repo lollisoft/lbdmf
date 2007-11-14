@@ -25,11 +25,15 @@
 #            73252 Lenningen (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.106 $
+# * $Revision: 1.107 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.106 2007/11/02 11:56:48 lollisoft Exp $
+# * $Id: STD_MAKE,v 1.107 2007/11/14 20:45:57 lollisoft Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.107  2007/11/14 20:45:57  lollisoft
+# * Some changes for mkmk to compile c files in subdirectories well under Windows.
+# * Added xsltc target and some other changes.
+# *
 # * Revision 1.106  2007/11/02 11:56:48  lollisoft
 # * Changes that propably enable Cruise Control builds.
 # *
@@ -404,15 +408,15 @@ COMPILER=WATCOM
 
 #COMPILER=MICROSOFT
 
-#MODE=_DEBUG
-MODE=
+MODE=_DEBUG
+#MODE=
 DEBUG_MEMORY=no
 #DEBUG_MEMORY=yes
 
 #DEBUG_MEMORY_TYPE=mpatrol
 #DEBUG_MEMORY_TYPE=trmem
 
-WX_VERSION=26
+WX_VERSION=28
 
 WX_DEBUG=
 ifeq ($(MODE), _DEBUG)
