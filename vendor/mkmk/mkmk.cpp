@@ -12,11 +12,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.86 $
+ * $Revision: 1.87 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.86 2007/10/28 16:56:45 lollisoft Exp $
+ * $Id: mkmk.cpp,v 1.87 2007/11/14 17:16:37 lollisoft Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.87  2007/11/14 17:16:37  lollisoft
+ * Try to correctly write c compile rule with path's in it.
+ *
  * Revision 1.86  2007/10/28 16:56:45  lollisoft
  * Corrected object file name determination problem when having path in the name.
  *
@@ -1613,7 +1616,7 @@ void ShowHelp(int argc, char *argv[])
 
   fprintf(stderr, "Enhanced by Lothar Behrens (lothar.behrens@lollisoft.de)\n\n");
 
-  fprintf(stderr, "MKMK: makefile generator $Revision: 1.86 $\n");
+  fprintf(stderr, "MKMK: makefile generator $Revision: 1.87 $\n");
   fprintf(stderr, "Usage: MKMK lib|exe|dll|so modulname includepath,[includepath,...] file1 [file2 file3...]\n");
   
   fprintf(stderr, "Your parameters are: ");
@@ -1841,10 +1844,18 @@ void WriteDep(FILE *f, char *Name, TIncludeParser *p)
 */
                 break;
         case EXE_TARGET:
+				len = strlen(ObjName);
+                for (int i = len; i >= 0; i--) {
+                    if (ObjName[i] == '.') {
+                        ObjName[i] = 0;
+                        break;
+                    }
+                }
 				printf("\t\t@echo Build %s\n", NameC);
-				if (CPPFlag == 0) printf("\t\t%s $(C_EXEOPS) $(MOD_INCL) -Fo=%s %s\n\n", Compiler, ObjNameC, Name);
-				if (CPPFlag == 1) printf("\t\t%s $(CPP_EXEOPS) $(MOD_INCL_CPP) -Fo=%s %s\n\n", Compiler, ObjName, Name);
-//                printf("\t\t%s $(C_EXEOPS) $(MOD_INCL) %s\n\n", Compiler, Name);
+//				if (CPPFlag == 0) printf("\t\t%s $(C_EXEOPS) $(MOD_INCL) -Fo=%s %s\n\n", Compiler, ObjNameC, Name);
+//				if (CPPFlag == 1) printf("\t\t%s $(CPP_EXEOPS) $(MOD_INCL_CPP) -Fo=%s %s\n\n", Compiler, ObjName, Name);
+                if (CPPFlag == 0) printf("\t\t@%s $(C_ELFOPS) $(MOD_INCL) -Fo=%s %s\n\n", Compiler, Name, ObjName);
+                if (CPPFlag == 1) printf("\t\t@%s $(CPP_EXEOPS) $(MOD_INCL) -Fo=%s %s\n\n", Compiler, Name, ObjName);
                 break;
         case ELF_TARGET:
 	case ELF_BUNDLE_TARGET:
