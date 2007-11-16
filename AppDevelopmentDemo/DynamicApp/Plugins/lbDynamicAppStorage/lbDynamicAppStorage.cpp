@@ -61,6 +61,9 @@
 extern int xmlLoadExtDtdDefaultValue;
 #endif
 #ifdef __WATCOMC__
+
+// Map the orginal API functions to my versions as exported under Windows
+
 #define xsltSaveResultToString lb_xsltSaveResultToString
 #define xsltParseStylesheetDoc lb_xsltParseStylesheetDoc
 #define xsltApplyStylesheet lb_xsltApplyStylesheet

@@ -90,6 +90,7 @@ TARGETEXE=elf
 
 ALLTARGETS = \
 	Database/FKTest \
+	Database/DatabaseLayerWrapperTest \
 	Database/Plain-ODBC-Test \
 	Database/Plain-ODBC-Test-Blob \
 	Database/Plain-ODBC-Test-Refresh \
@@ -147,6 +148,11 @@ dummy:
 Database/FKTest: dummy
 	$(MAKE) -C $@ -e MODULE=fkTest -e TARGET=$(TARGETEXE) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	$(MAKE) -C $@
+
+Database/DatabaseLayerWrapperTest: dummy
+	$(MAKE) -C $@ -e MODULE=DatabaseLayerWrapperTest -e TARGET=$(TARGETEXE) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
+	$(MAKE) -C $@
+
 
 Database/Plain-ODBC-Test: dummy
 	echo CRUISECONTROL: $(CRUISECONTROL)

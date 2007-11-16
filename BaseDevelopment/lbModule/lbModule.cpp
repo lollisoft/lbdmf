@@ -30,11 +30,21 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.118 $
+ * $Revision: 1.119 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.118 2007/09/30 13:04:41 lollisoft Exp $
+ * $Id: lbModule.cpp,v 1.119 2007/11/16 20:53:19 lollisoft Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.119  2007/11/16 20:53:19  lollisoft
+ * Initial DatabaseLayer based lb_I_Query and lb_I_Database classes. Rudimentary readonly queries are working.
+ *
+ * But also full cursor functionality emulation works.
+ *
+ * More than simple queries are not tested.
+ * (No order, where, join and subqueries)
+ *
+ * See DatabaseLayerWrapperTest.
+ *
  * Revision 1.118  2007/09/30 13:04:41  lollisoft
  * Bugfix: Had a strcpy problem when no module were found.
  * No idea why this exactly happened then. It was propably a buffer overrun, because wrongly null terminated.
@@ -3513,6 +3523,12 @@ lbErrCodes LB_STDCALL lbModule::request(const char* request, lb_I_Unknown** resu
 
 		//QI(result, lb_I_InterfaceRepository, newInterfaceRepository)		
 		*result = _result.getPtr();
+		
+		if (*result == NULL) {
+			_CL_LOG << "Error: Requesting for " << request << " failed!" LOG_
+			return ERR_MODULE_NOT_FOUND;
+		}
+		
 		(*result)->setModuleManager(this, __FILE__, __LINE__);
 		_result++;
 		if (isVerbose()) Instances();

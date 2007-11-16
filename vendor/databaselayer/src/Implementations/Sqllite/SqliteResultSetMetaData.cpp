@@ -80,4 +80,19 @@ int SqliteResultSetMetaData::GetColumnCount()
   return sqlite3_column_count(m_pSqliteStatement);
 }
 
+wxString SqliteResultSetMetaData::GetTableForColumn(int i) {
+  printf("SqliteResultSetMetaData::GetTableForColumn() called.\n");
+  wxString columnName = ConvertFromUnicodeStream(sqlite3_column_table_name(m_pSqliteStatement, i-1));
+  return columnName;
+}
+
+wxString SqliteResultSetMetaData::GetTableForColumn(wxString column) {
+	int count = GetColumnCount();
+	
+	for (int i = 1; i <= count; i++) {
+		if (GetColumnName(i) == column) return GetTableForColumn(i);
+	}
+	// Error
+	return "";
+}
 

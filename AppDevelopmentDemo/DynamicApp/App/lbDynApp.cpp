@@ -383,6 +383,8 @@ lbErrCodes LB_STDCALL lbDynamicApplication::loadDatabaseSchema(lb_I_Unknown* uk)
 	
 	if ((database != NULL) && (database->connect("lbDMF", "lbDMF", lbDMFUser, lbDMFPasswd) != ERR_NONE)) {
 		_LOG << "Warning: No system database available." LOG_
+/// \todo Implement fallback to Sqlite3.
+		metaapp->msgBox("Warning", "No system database available.");
 	} else {
 		pl = PM->getFirstMatchingPlugin("lb_I_DatabaseOperation", "DatabaseInputStreamVisitor");
 		if (pl != NULL)	ukPl = pl->getImplementation();
@@ -445,6 +447,8 @@ lbErrCodes LB_STDCALL lbDynamicApplication::loadDatabaseSchema(lb_I_Unknown* uk)
 			
 			if ((customDB != NULL) && (customDB->connect(dbname->charrep(), dbname->charrep(), dbuser->charrep(), dbpass->charrep()) != ERR_NONE)) {
 				_LOG << "Fatal: No custom database available. Cannot read database model for custom application!" LOG_
+/// \todo Implement fallback to Sqlite3.
+				metaapp->msgBox("Fatal", "No custom database available. Cannot read database model for custom application!");
 			} else {
 				pl = PM->getFirstMatchingPlugin("lb_I_DatabaseOperation", "DatabaseInputStreamVisitor");
 				if (pl != NULL)	ukPl = pl->getImplementation();
@@ -888,7 +892,11 @@ lbErrCodes LB_STDCALL lbDynamicApplication::resetCustomDBFormsToDynamic(lb_I_Unk
 		if (!lbDMFUser) lbDMFUser = "dba";
 		if (!lbDMFPasswd) lbDMFPasswd = "trainres";
 		
-		database->connect("lbDMF", "lbDMF", lbDMFUser, lbDMFPasswd);
+		if (database->connect("lbDMF", "lbDMF", lbDMFUser, lbDMFPasswd) != ERR_NONE) {
+/// \todo Implement fallback to Sqlite3.
+			metaapp->msgBox("Warning", "No system database available.");
+			return ERR_DB_CONNECT;
+		}
 	}
 	
 	UAP(lb_I_Query, sampleQuery)
@@ -1017,7 +1025,11 @@ lbErrCodes LB_STDCALL lbDynamicApplication::getDynamicDBForm(lb_I_Unknown* uk) {
 				if (!lbDMFUser) lbDMFUser = "dba";
 				if (!lbDMFPasswd) lbDMFPasswd = "trainres";
 				
-				database->connect("lbDMF", "lbDMF", lbDMFUser, lbDMFPasswd);
+				if (database->connect("lbDMF", "lbDMF", lbDMFUser, lbDMFPasswd) != ERR_NONE) {
+/// \todo Implement fallback to Sqlite3.
+					metaapp->msgBox("Warning", "No system database available.");
+					return ERR_DB_CONNECT;
+				}
 			}
 			
 			sampleQuery = database->getQuery("lbDMF", 0);
@@ -1369,7 +1381,8 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 		
 	
 		if ((database != NULL) && (database->connect("lbDMF", "lbDMF", lbDMFUser, lbDMFPasswd) != ERR_NONE)) {
-			_LOG << "Warning: No system database available." LOG_
+/// \todo Implement fallback to Sqlite3 database.
+			metaapp->msgBox("Error", "No system database available!");
 		} else {
 			pl = PM->getFirstMatchingPlugin("lb_I_DatabaseOperation", "DatabaseInputStreamVisitor");
 			if (pl != NULL)	ukPl = pl->getImplementation();
@@ -1482,7 +1495,9 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 					*DBPass = appParams->getParameter("DBPass", metaapp->getApplicationID());
 					
 					if ((database != NULL) && (database->connect(DBName->charrep(), DBName->charrep(), DBUser->charrep(), DBPass->charrep()) != ERR_NONE)) {
+/// \todo Implement fallback to Sqlite3 database.
 						_LOG << "Warning: No application database available. (DBName=" << DBName->charrep() << ", DBUser=" << DBUser->charrep() << ", ApplicationID=" << metaapp->getApplicationID() << ")" LOG_
+						metaapp->msgBox("Error", "No application database available.");
 					}				
 				}
 				

@@ -34,6 +34,9 @@ public:
   virtual wxString GetColumnName(int i) = 0;
   /// Retrieve the number of columns in the result set
   virtual int GetColumnCount() = 0;
+  // The table name of given column
+  virtual wxString GetTableForColumn(int i) = 0;
+  virtual wxString GetTableForColumn(wxString column) = 0;
 
   enum {
     COLUMN_UNKNOWN = 0,

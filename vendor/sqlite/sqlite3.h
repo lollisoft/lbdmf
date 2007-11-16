@@ -30,7 +30,7 @@
 ** the version number) and changes its name to "SQLITE_DLLEXPORT sqlite3.h" as
 ** part of the build process.
 **
-** @(#) $Id: sqlite3.h,v 1.2 2007/11/07 22:19:48 lollisoft Exp $
+** @(#) $Id: sqlite3.h,v 1.3 2007/11/16 20:53:20 lollisoft Exp $
 */
 #ifdef WINDOWS
 #ifndef SQLITE_DLLEXPORT
@@ -1873,12 +1873,12 @@ SQLITE_DLLEXPORT const void * sqlite3_column_name16(SQLITE_DLLEXPORT sqlite3_stm
 ** prepared statement and column at the same time then the results are
 ** undefined.
 */
-SQLITE_DLLEXPORT const char * sqlite3_column_database_name(SQLITE_DLLEXPORT sqlite3_stmt*,int);
-SQLITE_DLLEXPORT const void * sqlite3_column_database_name16(SQLITE_DLLEXPORT sqlite3_stmt*,int);
-SQLITE_DLLEXPORT const char * sqlite3_column_table_name(SQLITE_DLLEXPORT sqlite3_stmt*,int);
-SQLITE_DLLEXPORT const void * sqlite3_column_table_name16(SQLITE_DLLEXPORT sqlite3_stmt*,int);
-SQLITE_DLLEXPORT const char * sqlite3_column_origin_name(SQLITE_DLLEXPORT sqlite3_stmt*,int);
-SQLITE_DLLEXPORT const void * sqlite3_column_origin_name16(SQLITE_DLLEXPORT sqlite3_stmt*,int);
+SQLITE_DLLEXPORT const char * sqlite3_column_database_name(sqlite3_stmt*,int);
+SQLITE_DLLEXPORT const void * sqlite3_column_database_name16(sqlite3_stmt*,int);
+SQLITE_DLLEXPORT const char * sqlite3_column_table_name(sqlite3_stmt*,int);
+SQLITE_DLLEXPORT const void * sqlite3_column_table_name16(sqlite3_stmt*,int);
+SQLITE_DLLEXPORT const char * sqlite3_column_origin_name(sqlite3_stmt*,int);
+SQLITE_DLLEXPORT const void * sqlite3_column_origin_name16(sqlite3_stmt*,int);
 
 /*
 ** CAPI3REF: Declared Datatype Of A Query Result

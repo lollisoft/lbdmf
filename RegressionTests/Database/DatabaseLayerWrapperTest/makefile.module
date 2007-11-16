@@ -26,22 +26,17 @@
 #
 #            40235 Duesseldorf (germany)
 
-
 ifeq ($(OSTYPE), Windows_NT)
-SLASH=/
-wxBase=$(DEVROOT_MAKE)$(SLASH)wxwin$(SLASH)wx$(SLASH)lib
-MOD_INCL = $(STD_INCL) -i=..\\.. -i=$(DEVROOT)\\wxwin\\wx\\include
-MOD_INCL_CPP=$(STD_INCL_CPP) -i=../.. -i=$(DEVROOT_MAKE)/wxwin/wx/include -i=$(DEVROOT_MAKE)$(RELPATH)/vendor/sqlite
-LIBS = $(BASE_LIBS) $(DEVROOT_MAKE)/projects/dll/libs/lbhook.lib, $(DEVROOT_MAKE)/projects/dll/libs/sqlite3.lib, \
-	$(wxBase)$(SLASH)wat_dll$(SLASH)wxmsw$(WX_VERSION)$(WX_DEBUG).lib
-CPP_DLLOPS+= -xs /DWXUSINGDLL
+MOD_INCL=$(STD_INCL)
+MOD_INCL_CPP=$(STD_INCL_CPP)
+OBJDEP=
+LIBS = $(BASE_LIBS) $(DEVROOT_MAKE)/projects/dll/libs/lbhook.lib
 
 # use global setup
 #COMPILER=MICROSOFT
 ifeq ($(COMPILER), MICROSOFT)
 MOD_INCL = $(STD_INCL_MICROSOFT)
 MOD_INCL += $(foreach s, $(INCLS), /I "$s")
-LIBS = Q:/develop/Tools/msc/VC98/Lib/odbc32.lib
 CC=Cl
 C_DLLOPS= $(C_DLLOPS_MICROSOFT$(MODE))
 C_EXEOPS= $(C_EXEOPS_MICROSOFT$(MODE))
@@ -49,35 +44,30 @@ C_LIBOPS= $(C_LIBOPS_MICROSOFT$(MODE))
 LINK=  $(LINK_MICROSOFT)
 L_DLLOPS= $(L_DLLOPS_MICROSOFT)
 LNKDLLOPS = $(L_DLLOPS_MICROSOFT)
+COMPILERFLAGS = $(LIBS)
 endif
 
-#OBJDEP=../lbHook/lbHook.o
-# ../lbHook/conio.o
 endif
 
 ifeq ($(OSTYPE), solaris)
-MOD_INCL=$(STD_INCL) -I ../.. -I $(DEVROOT)$(RELPATH)/vendor/sqlite
+MOD_INCL=$(STD_INCL)
 OBJDEP=
-VENDORLIBS=-L$(prefix)/lib -llbHook /usr/local/lib/libodbc.so
-endif    
-ifeq ($(OSTYPE), linux)
-MOD_INCL=$(STD_INCL) -I ../.. -I $(DEVROOT)$(RELPATH)/vendor/sqlite
-C_SOOPS_WX = -DOSX -DUNIX -DLINUX `wx-config --inplace --cxxflags` 
-C_SOOPS= $(C_SOOPS_WX)
-OBJDEP=
-VENDORLIBS=-L$(prefix)/lib -llbHook /usr/lib/libodbc.so
+VENDORLIBS=-L$(prefix)/lib -llbHook
 endif    
 
+ifeq ($(OSTYPE), linux)
+MOD_INCL=$(STD_INCL)
+OBJDEP=
+VENDORLIBS=-L$(prefix)/lib -llbHook
+endif    
 
 ifeq ($(LB_USE_FRAMEWORKS), yes)
 
 ifeq ($(OSTYPE), osx)
-MOD_INCL=$(STD_INCL) -I ../.. -I $(DEVROOT)$(RELPATH)/vendor/sqlite
-C_SOOPS_WX = -DOSX -DUNIX -DLINUX `wx-config --inplace --cxxflags` -DSQLITE_ENABLE_COLUMN_METADATA
-C_SOOPS= $(C_SOOPS_WX)
-VENDORLIBS=$(HOME)/lib/sqlite3.so
-L_OPS=-lc /usr/lib/libodbc.dylib -lc /usr/lib/libgcc_s.1.dylib 
-LIBS=$(L_SOOPS) -F$(HOME)/lib -framework lbHook
+MOD_INCL=$(STD_INCL)
+OBJDEP=
+LIBS = -F$(HOME)/lib -framework lbHook
+VENDORLIBS=
 endif    
 
 endif
@@ -86,10 +76,9 @@ ifeq ($(LB_USE_FRAMEWORKS), no)
 
 ifeq ($(OSTYPE), osx)
 MOD_INCL=$(STD_INCL)
-C_SOOPS_WX = -DOSX -DUNIX -DLINUX `wx-config --inplace --cxxflags` -DSQLITE_ENABLE_COLUMN_METADATA
-C_SOOPS= $(C_SOOPS_WX)
+C_SOOPS+= 
 OBJDEP=
-VENDORLIBS=$(HOME)/lib/lbHook.so /usr/lib/libiodbc.dylib
+VENDORLIBS=-lc $(prefix)/lib/lbHook.so
 endif    
 
 endif

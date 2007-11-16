@@ -32,11 +32,21 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.54 $
+ * $Revision: 1.55 $
  * $Name:  $
- * $Id: lbPluginManager.cpp,v 1.54 2007/06/18 22:54:50 lollisoft Exp $
+ * $Id: lbPluginManager.cpp,v 1.55 2007/11/16 20:53:19 lollisoft Exp $
  *
  * $Log: lbPluginManager.cpp,v $
+ * Revision 1.55  2007/11/16 20:53:19  lollisoft
+ * Initial DatabaseLayer based lb_I_Query and lb_I_Database classes. Rudimentary readonly queries are working.
+ *
+ * But also full cursor functionality emulation works.
+ *
+ * More than simple queries are not tested.
+ * (No order, where, join and subqueries)
+ *
+ * See DatabaseLayerWrapperTest.
+ *
  * Revision 1.54  2007/06/18 22:54:50  lollisoft
  * Partly rewrite of the database report classes works.
  * There are still the issues to place the report to the
@@ -972,9 +982,9 @@ lb_I_Plugin* LB_STDCALL lbPluginManager::getFirstMatchingPlugin(char* match, cha
 			
 				if (pl == NULL) break;
 	
-				pl->initialize();
+				//pl->initialize();
 				
-				_LOG << "Plugin name: " << pl->getName() LOG_
+				_CL_LOG << "Plugin name: " << pl->getName() LOG_
 #ifdef bla				
 				if ((strcmp(answer, "y") == 0) || (strcmp(answer, "Y") == 0)) {
 					UAP(lb_I_Unknown, uk)

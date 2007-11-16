@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.145 2007/10/11 13:38:40 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.146 2007/11/16 20:53:19 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,21 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.145 $
+ * $Revision: 1.146 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.145 2007/10/11 13:38:40 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.146 2007/11/16 20:53:19 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.146  2007/11/16 20:53:19  lollisoft
+ * Initial DatabaseLayer based lb_I_Query and lb_I_Database classes. Rudimentary readonly queries are working.
+ *
+ * But also full cursor functionality emulation works.
+ *
+ * More than simple queries are not tested.
+ * (No order, where, join and subqueries)
+ *
+ * See DatabaseLayerWrapperTest.
+ *
  * Revision 1.145  2007/10/11 13:38:40  lollisoft
  * Propably completed offline capability from system database.
  *
@@ -2131,7 +2141,6 @@ bool MyApp::OnInit(void)
     char b[100] = "";
     wxStopWatch sw;
 
-
     UAP(lb_I_Module, mm)
     mm = getModuleInstance();
 
@@ -2151,10 +2160,7 @@ bool MyApp::OnInit(void)
 									6000, NULL, -1, wxDefaultPosition, wxDefaultSize,
 									wxSIMPLE_BORDER); //|wxSTAY_ON_TOP);
 	}	
-
-	
-	
-    wxYield();
+	wxYield();
 
     if (mm == NULL) {
 	wxMessageDialog dialog(NULL, "Module manager not found. could not run application.", "Error", wxOK);
@@ -2175,7 +2181,6 @@ bool MyApp::OnInit(void)
     UAP_REQUEST(mm.getPtr(), lb_I_Database, tempDB) // Preload this module
     UAP_REQUEST(mm.getPtr(), lb_I_PluginManager, PM)
     UAP_REQUEST(mm.getPtr(), lb_I_MetaApplication, metaApp)
-
 
     PM->initialize();
 

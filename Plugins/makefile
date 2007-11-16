@@ -70,6 +70,7 @@ TARGETPLUGIN=soplugin
 
 ALLTARGETS = \
 	TestPlugin \
+	DatabaseLayerGateway \
 	VisitorOperations \
 	DatabaseForm \
 	lbDMFDataModel \
@@ -115,6 +116,10 @@ TestPlugin: dummy
 
 DatabaseForm: dummy
 	$(MAKE) -C $@ -e MODULE=lbDatabaseForm -e TARGET=$(TARGETWXPLUGIN) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
+	$(MAKE) -C $@
+	
+DatabaseLayerGateway: dummy
+	$(MAKE) -C $@ -e MODULE=DatabaseLayerGateway -e TARGET=$(TARGETWXPLUGIN) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	$(MAKE) -C $@
 	
 lbDMFDataModel: dummy

@@ -25,11 +25,21 @@
 #            73252 Lenningen (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.107 $
+# * $Revision: 1.108 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.107 2007/11/14 20:45:57 lollisoft Exp $
+# * $Id: STD_MAKE,v 1.108 2007/11/16 20:53:19 lollisoft Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.108  2007/11/16 20:53:19  lollisoft
+# * Initial DatabaseLayer based lb_I_Query and lb_I_Database classes. Rudimentary readonly queries are working.
+# *
+# * But also full cursor functionality emulation works.
+# *
+# * More than simple queries are not tested.
+# * (No order, where, join and subqueries)
+# *
+# * See DatabaseLayerWrapperTest.
+# *
 # * Revision 1.107  2007/11/14 20:45:57  lollisoft
 # * Some changes for mkmk to compile c files in subdirectories well under Windows.
 # * Added xsltc target and some other changes.
@@ -782,7 +792,7 @@ COMPILER_VERSION=
 #LB_USE_FRAMEWORKS=no
 LB_USE_FRAMEWORKS=yes
 
-DEBUG=no
+DEBUG=yes
 
 
 STD_INCL = -I $(DEVROOT)$(RELPATH)/BaseDevelopment/lbHook/linuxCode \

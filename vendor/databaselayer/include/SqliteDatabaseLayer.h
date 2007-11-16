@@ -70,6 +70,7 @@ public:
   virtual wxArrayString GetTables();
   virtual wxArrayString GetViews();
   virtual wxArrayString GetColumns(const wxString& table);
+  virtual wxArrayString GetPrimaryKeys(const wxString& table);
 
   static int TranslateErrorCode(int nCode);
 

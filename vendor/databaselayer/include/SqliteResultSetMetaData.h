@@ -35,7 +35,9 @@ public:
   virtual int GetColumnSize(int i);
   virtual wxString GetColumnName(int i);
   virtual int GetColumnCount();
-  
+  virtual wxString GetTableForColumn(int i);
+  virtual wxString GetTableForColumn(wxString column);
+
 private:
   sqlite3_stmt* m_pSqliteStatement;
 };

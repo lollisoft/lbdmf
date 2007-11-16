@@ -243,10 +243,11 @@ PreparedStatement* SqliteDatabaseLayer::PrepareStatement(const wxString& strQuer
         }
         pReturnStatement->AddPreparedStatement(pStatement);
 
+	  }
 #if wxUSE_UNICODE
-      } while (strlen(szTail) > 0);
+      while (strlen(szTail) > 0);
 #else
-      } while (wxStrlen(szTail) > 0);
+      while (wxStrlen(szTail) > 0);
 #endif    
       
       start++;
@@ -391,6 +392,41 @@ bool SqliteDatabaseLayer::ViewExists(const wxString& view)
 
   return bReturn;
 }
+
+wxArrayString SqliteDatabaseLayer::GetPrimaryKeys(const wxString& table) {
+  wxArrayString returnArray;
+  char const *pzDataType;    /* OUTPUT: Declared data type */
+  char const *pzCollSeq;     /* OUTPUT: Collation sequence name */
+  int pNotNull;              /* OUTPUT: True if NOT NULL constraint exists */
+  int pPrimaryKey;           /* OUTPUT: True if column part of PK */
+  int pAutoinc;               /* OUTPUT: True if column is auto-increment */
+
+  wxArrayString columns = GetColumns(table);
+  
+  for (int i = 0; i < columns.Count(); i++) {
+  
+    printf("Check if %s is a primary key.\n", columns[i].c_str());
+  
+	sqlite3_table_column_metadata(
+		m_pDatabase,		/* Connection handle */
+		NULL,				/* Database name or NULL */
+		table.c_str(),		/* Table name */
+		columns[i].c_str(),/* Column name */
+		&pzDataType,		/* OUTPUT: Declared data type */
+		&pzCollSeq,			/* OUTPUT: Collation sequence name */
+		&pNotNull,			/* OUTPUT: True if NOT NULL constraint exists */
+		&pPrimaryKey,		/* OUTPUT: True if column part of PK */
+		&pAutoinc			/* OUTPUT: True if column is auto-increment */
+		);
+
+	if (pPrimaryKey == 1) {
+		printf("Yes.\n");
+		returnArray.Add(columns[i]);
+	}
+  }
+  return returnArray;
+}
+
 
 wxArrayString SqliteDatabaseLayer::GetTables()
 {

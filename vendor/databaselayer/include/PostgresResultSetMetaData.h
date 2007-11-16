@@ -38,6 +38,8 @@ public:
   virtual int GetColumnSize(int i);
   virtual wxString GetColumnName(int i);
   virtual int GetColumnCount();
+  virtual int GetPrimaryKeys() { return 0; }
+  virtual wxString GetPrimaryKey(int i) { return wxString(""); }
   
 private:
   PGresult* m_pResult;
