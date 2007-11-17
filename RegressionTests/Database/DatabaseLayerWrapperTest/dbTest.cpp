@@ -108,7 +108,7 @@ int main(int argc, char *argv[]) {
 			preloaddb = NULL;
 			PM->unload();
 			unHookAll();
-			return;
+			return 0;
 		} else {
 			QI(ukDatabaseWrapper, lb_I_Database, DatabaseWrapper)
 			if (DatabaseWrapper == NULL) {
@@ -116,7 +116,7 @@ int main(int argc, char *argv[]) {
 				preloaddb.resetPtr();
 				PM->unload();
 				unHookAll();
-				return;
+				return 0;
 			}
 		}
 		
@@ -124,12 +124,12 @@ int main(int argc, char *argv[]) {
 		
 		if (ukDatabaseWrapper1 == NULL) {
 			_CL_LOG << "Database regression tests failed. Database gateway plugin not found." LOG_
-			return;
+			return 0;
 		} else {
 			QI(ukDatabaseWrapper1, lb_I_Database, DatabaseWrapper1)
 			if (DatabaseWrapper1 == NULL) {
 				_CL_LOG << "Database regression tests failed. Database gateway plugin has not the expected interface." LOG_
-				return;
+				return 0;
 			}
 		}
 		
@@ -201,47 +201,14 @@ int main(int argc, char *argv[]) {
 		query2->query("select id, test, btest, btest1 from regressiontest");
 		
 		query2->PrintData();
-/*		
-		query2->first();
-		UAP_REQUEST(mm, lb_I_String, col)
-		UAP_REQUEST(mm, lb_I_String, val)
-			
-		col->setData("btest");
-		val->setData("true");
 		
-		query2->setString(*&col, *&val);
-		query2->update();
-		query2->next();
-		query2->next();
-		query2->next();
-		query2->remove();
-		query2->update();
-		//query2->previous();
-		
-		query2->PrintData();
-		query2->PrintData(true);
-		
-		
-		UAP(lb_I_Query, query3)
-			query3 = DatabaseWrapper1->getQuery("lbDMF", 0);
-		
-		query3->query("select 'userid', 'anwendungenid' from 'user_anwendungen' where userid = 2");
-		
-		query3->first();
-		query3->add();
-		
-		*col = "userid";
-		*val = "2";
-		query3->setString(*&col, *&val);
-		
-		_CL_LOG << "Call query->update() on added row." LOG_
-			query3->update();
-		_CL_LOG << "Called query->update() on added row." LOG_
-*/			
+		_CL_LOG << "" LOG_
+
+		preloaddb.resetPtr();
+		PM->unload();
+		unHookAll();
 	}
 
-	unHookAll();
-	exit(0);
 }
 
         return 0;
