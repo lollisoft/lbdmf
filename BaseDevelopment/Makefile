@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.157 $
+# * $Revision: 1.158 $
 # * $Name:  $
-# * $Id: Makefile,v 1.157 2007/11/14 20:45:57 lollisoft Exp $
+# * $Id: Makefile,v 1.158 2007/11/17 09:35:30 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.158  2007/11/17 09:35:30  lollisoft
+# * Added new xsltc target for linux.
+# *
 # * Revision 1.157  2007/11/14 20:45:57  lollisoft
 # * Some changes for mkmk to compile c files in subdirectories well under Windows.
 # * Added xsltc target and some other changes.
@@ -795,6 +798,7 @@ ALLDIRS = \
 	lbclasses \
 	lbMetaApplication \
 	lbPluginManager \
+	../vendor/xsltc \
 	../vendor/propgrid \
 	../vendor/sqlite \
 	../vendor/databaselayer/src/Implementations/ODBC \
