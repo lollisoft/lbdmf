@@ -200,7 +200,7 @@ public:
 		count = 0; 
 		firstfetched = 0;
 		cols = 0;
-		cursor = 1;
+		cursor = 0;
 		haveData = false;
 		mode = 0;
 		_dataFetched = false;
@@ -2098,7 +2098,7 @@ char* LB_STDCALL lbDatabaseLayerQuery::getColumnName(int col) {
 		_CL_LOG << "Error: Have only " << metadata->GetColumnCount() << " columns, but get called with " << col << "!" LOG_
 	}
 	wxString column = metadata->GetColumnName(col);
-	return column.c_str();
+	return (char*) column.c_str();
 }
 /*...e*/
 
@@ -2255,6 +2255,7 @@ bool LB_STDCALL lbDatabaseLayerQuery::selectCurrentRow() {
 	theResult = currentdbLayer->RunQueryWithResults(newQuery);
 	
 	if (theResult && theResult->Next()) return true;
+	_CL_LOG << "lbDatabaseLayerQuery::selectCurrentRow() Query gave no data: " << newQuery.c_str() LOG_
 	return false;
 }
 
@@ -2270,7 +2271,6 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::first() {
 	cursor = max_in_cursor;
 	currentCursorview[max_in_cursor-1] = "0";
 	if (!selectCurrentRow()) return ERR_DB_NODATA;
-	
 	return ERR_NONE;
 }
 
@@ -2280,6 +2280,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::next() {
 	if (cursorFeature == true) {
 		cursor++;
 		if (!selectCurrentRow()) return ERR_DB_NODATA;
+		return ERR_NONE;
 	} else {
 		if (theResult->Next() == true) {
 			return ERR_NONE;
