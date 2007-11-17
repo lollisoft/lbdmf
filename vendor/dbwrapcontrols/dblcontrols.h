@@ -107,6 +107,10 @@ public:
     int IsFieldInList(const wxString &Value);
 	void clear(void);
 
+    wxString GetTableForColumn(int) { return wxString(""); }
+    wxString GetTableForColumn(wxString) { return wxString(""); }
+          
+
 private:
     std::vector<wxDBLMetaDataItem*> m_MetaData;
     std::vector<wxString> m_MetaFields;
