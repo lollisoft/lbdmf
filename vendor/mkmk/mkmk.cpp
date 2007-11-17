@@ -12,11 +12,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.88 $
+ * $Revision: 1.89 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.88 2007/11/14 20:45:57 lollisoft Exp $
+ * $Id: mkmk.cpp,v 1.89 2007/11/17 09:44:31 lollisoft Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.89  2007/11/17 09:44:31  lollisoft
+ * Bugfix for false #include statements (codegenertaion string literals may heve them).
+ *
  * Revision 1.88  2007/11/14 20:45:57  lollisoft
  * Some changes for mkmk to compile c files in subdirectories well under Windows.
  * Added xsltc target and some other changes.
@@ -654,15 +657,18 @@ void TIncludeParser::ParseCLine(char *s)
       {
         *p2=0;
 /*...sVERBOSE:0:*/
-        #ifdef VERBOSE
-        printf("Add the include %s\n", p1);
-        #endif
+#ifdef VERBOSE
+        printf("Add the include '%s' for line '%s'\n", p1, s);
+#endif
 /*...e*/
-        AddInclude(p1);
+/// \todo Find a better way to skip wrong include detections.
+	if (strcmp(p1, "") != 0) {
+    	    AddInclude(p1);
+	}
 /*...sVERBOSE:0:*/
-        #ifdef VERBOSE
+#ifdef VERBOSE
         printf("Added\n");
-        #endif
+#endif
 /*...e*/
       }
     }
@@ -1623,7 +1629,7 @@ void ShowHelp(int argc, char *argv[])
 
   fprintf(stderr, "Enhanced by Lothar Behrens (lothar.behrens@lollisoft.de)\n\n");
 
-  fprintf(stderr, "MKMK: makefile generator $Revision: 1.88 $\n");
+  fprintf(stderr, "MKMK: makefile generator $Revision: 1.89 $\n");
   fprintf(stderr, "Usage: MKMK lib|exe|dll|so modulname includepath,[includepath,...] file1 [file2 file3...]\n");
   
   fprintf(stderr, "Your parameters are: ");
@@ -2091,6 +2097,7 @@ void DoDep(FILE *f, TDepItem *d, char** iPathList, int count)
   p.setIncludes(iPathList, count);
   
   p.Parse(FileName);
+  
   char fullName[1000] = "";
   
   strcpy(fullName, d->Path);
@@ -2294,7 +2301,7 @@ int main(int argc, char *argv[])
 	printf("\t\techo FIL %s >> $@\n", ObjName);  	
   
   }
-#endif  
+#endif
   for (i=0; i<Sources.Count; i++) DoDep(f,(TDepItem*)Sources[i], copyIPathList, count);
   WriteEnding(f,targetname,&Sources);
 //  fclose(f);
