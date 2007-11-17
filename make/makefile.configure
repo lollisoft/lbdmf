@@ -248,7 +248,7 @@ $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	@echo all: $(_MODULE) >> makefile
 	@rm -f $(DEVROOT_MAKE)$(RELPATH)/include/lbkey.h
 	@cp -f $(DEVROOT_MAKE)$(RELPATH)/BaseDevelopment/lbclasses/lbkey.h $(DEVROOT_MAKE)$(RELPATH)/include
-	$(MKMK) $(TARGET) $(_MODULE) . *.c *.cpp >> makefile
+	$(MKMK) $(TARGET) $(_MODULE) . *.c *.cpp $(CUSTOM_FILES) >> makefile
 
 endif
 
