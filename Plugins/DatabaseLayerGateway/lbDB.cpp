@@ -2370,7 +2370,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::update() {
 	}
 	if (mode == 1) {
 		// Add mode
-		
+		mode = 0;
 		if (tables.Count() > 1) {
 			_CL_LOG << "Error: Could not yet handle insert statements on multiple tables." LOG_
 			return ERR_DB_QUERYFAILED;
@@ -2404,6 +2404,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::update() {
             try
             {
 				pStatement->RunQuery();
+				last();
             }
             catch (DatabaseLayerException& e)
             {

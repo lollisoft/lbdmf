@@ -203,10 +203,21 @@ int main(int argc, char *argv[]) {
 		UAP_REQUEST(getModuleInstance(), lb_I_String, column)
 		UAP_REQUEST(getModuleInstance(), lb_I_String, value)
 		
+		query2->last();
 		*column = "test";
 		*value = "Updated column";
+		query2->setString(*&column, *&value);
+		*column = "btest";
+		*value = "0";
+		query2->setString(*&column, *&value);
+		query2->update();
 		
-		query2->last();
+		query2->add();
+		*column = "test";
+		*value = "Inserted column";
+		query2->setString(*&column, *&value);
+		*column = "btest";
+		*value = "0";
 		query2->setString(*&column, *&value);
 		query2->update();
 		
