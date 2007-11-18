@@ -92,7 +92,7 @@ int main(int argc, char *argv[]) {
 	
 	{
 		UAP_REQUEST(mm, lb_I_PluginManager, PM)
-		UAP_REQUEST(mm, lb_I_Database, preloaddb)
+		//UAP_REQUEST(mm, lb_I_Database, preloaddb)
 		UAP(lb_I_Unknown, ukDatabaseWrapper)
 		UAP(lb_I_Database, DatabaseWrapper)
 		
@@ -104,8 +104,8 @@ int main(int argc, char *argv[]) {
 		
 		if (ukDatabaseWrapper == NULL) {
 			_CL_LOG << "Database regression tests failed. Database gateway plugin not found." LOG_
-			preloaddb.resetPtr();
-			preloaddb = NULL;
+			//preloaddb.resetPtr();
+			//preloaddb = NULL;
 			PM->unload();
 			unHookAll();
 			return 0;
@@ -113,7 +113,7 @@ int main(int argc, char *argv[]) {
 			QI(ukDatabaseWrapper, lb_I_Database, DatabaseWrapper)
 			if (DatabaseWrapper == NULL) {
 				_CL_LOG << "Database regression tests failed. Database gateway plugin has not the expected interface." LOG_
-				preloaddb.resetPtr();
+				//preloaddb.resetPtr();
 				PM->unload();
 				unHookAll();
 				return 0;
@@ -200,11 +200,21 @@ int main(int argc, char *argv[]) {
 		query2->skipPeeking();
 		query2->query("select id, test, btest, btest1 from regressiontest");
 		
+		UAP_REQUEST(getModuleInstance(), lb_I_String, column)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, value)
+		
+		*column = "test";
+		*value = "Updated column";
+		
+		query2->last();
+		query2->setString(*&column, *&value);
+		query2->update();
+		
 		query2->PrintData();
 		
-		_CL_LOG << "" LOG_
+		_CL_LOG << "Done testing DatabaseLayer wrapper." LOG_
 
-		preloaddb.resetPtr();
+		//preloaddb.resetPtr();
 		PM->unload();
 		unHookAll();
 	}

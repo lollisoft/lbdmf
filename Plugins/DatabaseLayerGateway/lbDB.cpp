@@ -338,7 +338,7 @@ public:
 	lbErrCodes					LB_STDCALL setBinaryData(const char* column, lb_I_BinaryData* value);
 #endif        
 	
-	lbErrCodes					LB_STDCALL init(DatabaseLayer* dbLayer);
+	lbErrCodes					LB_STDCALL init(DatabaseLayer* dbLayer, bool ro = false);
 	
 	lbErrCodes					LB_STDCALL executeDirect(char* SQL);
 	
@@ -454,6 +454,11 @@ private:
 	wxString whereClause;	// If there are where clauses
 	
 	wxString cursorWhere;	// Actiual cursor position
+	
+	// Datamanipulation helpers
+	
+	wxArrayString queryColumns;
+	wxArrayString queryValues;
 	
 	DatabaseLayer* currentdbLayer;
 	DatabaseResultSet* theResult;
@@ -1393,11 +1398,17 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::executeDirect(char* SQL) {
 	return ERR_DB_INIT;
 }
 
-lbErrCodes LB_STDCALL lbDatabaseLayerQuery::init(DatabaseLayer* dbLayer) {
+lbErrCodes LB_STDCALL lbDatabaseLayerQuery::init(DatabaseLayer* dbLayer, bool ro) {
 	currentdbLayer = dbLayer;
 	if (!dbLayer || !dbLayer->IsOpen()) {
 		return ERR_DB_INIT;
 	}
+	
+	if (ro) {
+		_CL_LOG << "Set actual query to be readonly." LOG_
+		_readonly = 1;
+	} else _readonly = 0;
+	
 	return ERR_NONE;
 }
 
@@ -2309,16 +2320,16 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::last() {
 }
 
 lbErrCodes LB_STDCALL lbDatabaseLayerQuery::setString(lb_I_String* columnName, lb_I_String* value) {
-	if (boundColumns == NULL) {
-		_LOG << "lbDatabaseLayerQuery::setString() failed!" LOG_
-		return ERR_NONE;
+	if (_readonly == 1) {
+		_CL_LOG << "Error: Query is readonly." LOG_
+		return ERR_DB_READONLY;
 	}
 	
-	if (_readonly == 1) return ERR_DB_READONLY;
-	if (mode == 1) {
-		boundColumns->setString(columnName->charrep(), value);
+	if (queryColumns.Index(columnName->charrep()) != wxNOT_FOUND) {
+		queryValues[queryColumns.Index(columnName->charrep())] = value->charrep();
 	} else {
-		boundColumns->setString(columnName->charrep(), value);
+		queryColumns.Add(columnName->charrep());
+		queryValues.Add(value->charrep());
 	}
 
 	return ERR_NONE;
@@ -2329,14 +2340,14 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::add() {
 	if (_readonly == 1) return ERR_DB_READONLY;
 
 	mode = 1;
-
+/*
 	if (boundColumns != NULL) {
 		boundColumns->invalidateData();
 		boundColumns->add();
 	} else {
 		_LOG << "Error: Did not have bound columns. Could not really add data." LOG_
 	}
-
+*/
 	return ERR_NONE;
 }
 
@@ -2352,6 +2363,95 @@ void LB_STDCALL lbDatabaseLayerQuery::setAutoRefresh(bool b) {
 }
 
 lbErrCodes LB_STDCALL lbDatabaseLayerQuery::update() {
+/// \todo Create a prepared statement for it.
+	if (queryColumns.Count() == 0) {
+		_CL_LOG << "Warning: Noting to update." LOG_
+		return ERR_NONE;
+	}
+	if (mode == 1) {
+		// Add mode
+		
+		if (tables.Count() > 1) {
+			_CL_LOG << "Error: Could not yet handle insert statements on multiple tables." LOG_
+			return ERR_DB_QUERYFAILED;
+		}
+		
+		wxString strSQL = _("INSERT INTO ");
+		strSQL += tables[0];
+		strSQL += " ( ";
+		for (int i = 0; i < queryColumns.Count(); i++) {
+			if (i > 0) strSQL += ", ";
+			strSQL += queryColumns[i];
+		}
+		
+		strSQL += " ) VALUES (";
+
+		for (int i = 0; i < queryValues.Count(); i++) {
+			if (i > 0) strSQL += ", ";
+			strSQL += "?";
+		}
+
+		strSQL += " )";
+
+		PreparedStatement* pStatement = currentdbLayer->PrepareStatement(strSQL);
+
+		if (pStatement)
+		{
+			for (int i = 0; i < queryValues.Count(); i++) {
+				pStatement->SetParamString(i+1, queryValues[i]);
+			}
+
+            try
+            {
+				pStatement->RunQuery();
+            }
+            catch (DatabaseLayerException& e)
+            {
+				_CL_LOG << "Error: Adding a row failed." LOG_
+            }
+		}
+	} else {
+		if (tables.Count() > 1) {
+			_CL_LOG << "Error: Could not yet handle insert statements on multiple tables." LOG_
+			return ERR_DB_QUERYFAILED;
+		}
+		
+		wxString strSQL = _("UPDATE ");
+		strSQL += tables[0];
+		strSQL += " SET ";
+		for (int i = 0; i < queryColumns.Count(); i++) {
+			if (i > 0) strSQL += ", ";
+			strSQL += queryColumns[i];
+			strSQL += " = ?";
+		}
+		
+		strSQL += " WHERE ";
+		strSQL += primarykeys[0];
+		strSQL += " = ";
+		strSQL += currentCursorview[cursor];
+
+		_CL_LOG << "Update statement: " << strSQL.c_str() LOG_
+
+		PreparedStatement* pStatement = currentdbLayer->PrepareStatement(strSQL);
+
+		if (pStatement)
+		{
+			for (int i = 0; i < queryValues.Count(); i++) {
+				pStatement->SetParamString(i+1, queryValues[i]);
+			}
+
+            try
+            {
+				pStatement->RunQuery();
+            }
+            catch (DatabaseLayerException& e)
+            {
+				_CL_LOG << "Error: Updating a row failed." LOG_
+            }
+		}
+	}
+	queryColumns.Clear();
+	queryValues.Clear();
 }
 
 void LB_STDCALL lbDatabaseLayerQuery::dbError(char* lp, HSTMT hstmt)
