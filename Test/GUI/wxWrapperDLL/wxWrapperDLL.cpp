@@ -735,16 +735,23 @@ lbErrCodes LB_STDCALL lb_wxGUI::cleanup() {
 	 */
 
 	if (forms == NULL) {
-		_CL_LOG << "lb_wxGUI::cleanup() has nothing to clean up." LOG_
+		_LOG << "lb_wxGUI::cleanup() has nothing to clean up. Forms list is not initialized." LOG_
 		return ERR_NONE;
 	} 
 
+	if (forms->Count() == 0) {
+		_LOG << "Info: No forms to be destroyed." LOG_
+	}
+
+	forms->finishIteration();
 	while (forms->hasMoreElements()) {
 		lbErrCodes err = ERR_NONE;
 				
 		lb_I_Unknown* form = forms->nextElement();
 
 		if (!form) continue;
+
+		_LOG << "Destroy a dynamic form '" << form->getClassName() << "'." LOG_
 
 		UAP(lb_I_DatabaseForm, d)		
 		QI(form, lb_I_DatabaseForm, d)
@@ -759,17 +766,17 @@ lbErrCodes LB_STDCALL lb_wxGUI::cleanup() {
 		 */
 		
 		if (d != NULL) {
-			_CL_LOG << "Destroy a dynamic form with " << d->getRefCount() << " references ..." LOG_
+			_LOG << "Destroy a dynamic form with " << d->getRefCount() << " references ..." LOG_
 			d++;
 			d->destroy();
-			_CL_LOG << "Destroyed the dynamic form." LOG_
+			_LOG << "Destroyed the dynamic form." LOG_
 		}
 
 		if (fd != NULL) {
-			_CL_LOG << "Destroy a custom form with " << fd->getRefCount() << " references ..." LOG_
+			_LOG << "Destroy a custom form with " << fd->getRefCount() << " references ..." LOG_
 			fd++;
 			fd->destroy();
-			_CL_LOG << "Destroyed the custom form." LOG_
+			_LOG << "Destroyed the custom form." LOG_
 		}
 	}
 	
