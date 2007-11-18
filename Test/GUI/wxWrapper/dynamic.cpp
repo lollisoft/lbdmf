@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.146 2007/11/16 20:53:19 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.147 2007/11/18 19:40:41 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.146 $
+ * $Revision: 1.147 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.146 2007/11/16 20:53:19 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.147 2007/11/18 19:40:41 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.147  2007/11/18 19:40:41  lollisoft
+ * Added handler to load xrc file.
+ *
  * Revision 1.146  2007/11/16 20:53:19  lollisoft
  * Initial DatabaseLayer based lb_I_Query and lb_I_Database classes. Rudimentary readonly queries are working.
  *
@@ -553,6 +556,8 @@
 #include <wx/image.h>
 #include <wx/notebook.h>
 #include <wx/file.h>
+#include <wx/fs_zip.h>
+#include <wx/xrc/xmlres.h>
 /*...e*/
 
 // ID for the menu commands
@@ -2016,6 +2021,8 @@ public wxApp
          */
         lbErrCodes LB_STDCALL HandleAddMenu(lb_I_Unknown* uk);  // Thread parameter as input
     
+		lbErrCodes LB_STDCALL setXRCFile(lb_I_Unknown* uk);
+
         DECLARE_LB_UNKNOWN()
     
 protected:
@@ -2044,6 +2051,7 @@ protected:
         int _disableEvent;
         int _toggleEvent;
         int _askYesNo;
+		int _setXRCFile;
 	int AskOpenFileReadStream;
 		
         
@@ -2213,6 +2221,8 @@ bool MyApp::OnInit(void)
 		ev_manager->registerEvent("enableEvent", _enableEvent);
 		ev_manager->registerEvent("disableEvent", _disableEvent);
 		ev_manager->registerEvent("toggleEvent", _toggleEvent);
+		ev_manager->registerEvent("setXRCFile", _setXRCFile);
+		
 
         registerEventHandler(*&disp);
     }
@@ -2297,6 +2307,7 @@ lbErrCodes LB_STDCALL MyApp::registerEventHandler(lb_I_Dispatcher* disp) {
 	disp->addEventHandlerFn(this, (lbEvHandler) &MyApp::enableEvent, "enableEvent");
 	disp->addEventHandlerFn(this, (lbEvHandler) &MyApp::disableEvent, "disableEvent");
 	disp->addEventHandlerFn(this, (lbEvHandler) &MyApp::toggleEvent, "toggleEvent");
+	disp->addEventHandlerFn(this, (lbEvHandler) &MyApp::setXRCFile, "setXRCFile");
 
 	return ERR_NONE;
 }
@@ -2372,6 +2383,30 @@ lbErrCodes LB_STDCALL MyApp::askOpenFileReadStream(lb_I_Unknown* uk) {
 	return err;
 }
 /*...e*/
+
+
+lbErrCodes LB_STDCALL MyApp::setXRCFile(lb_I_Unknown* uk) {
+	lbErrCodes err = ERR_NONE;
+
+	UAP_REQUEST(manager.getPtr(), lb_I_EventManager, ev_manager)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, filename)
+
+	UAP(lb_I_Parameter, param)
+	
+	QI(uk, lb_I_Parameter, param)
+	
+	parameter->setData("xrcfilename");
+	param->getUAPString(*&parameter, *&filename);
+	
+    wxXmlResource::Get()->InitAllHandlers();
+    wxFileSystem::AddHandler(new wxZipFSHandler);
+    wxXmlResource::Get()->Load(filename->charrep());
+
+	
+	return ERR_NONE;
+}
+
 /*...saskYesNo\9\\9\\9\Handler:0:*/
 lbErrCodes LB_STDCALL MyApp::askYesNo(lb_I_Unknown* uk) {
 	lbErrCodes err = ERR_NONE;
