@@ -33,11 +33,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.27 $
+ * $Revision: 1.28 $
  * $Name:  $
- * $Id: wxWrapperDLL.h,v 1.27 2007/08/02 07:12:00 lollisoft Exp $
+ * $Id: wxWrapperDLL.h,v 1.28 2007/11/19 11:16:14 lollisoft Exp $
  *
  * $Log: wxWrapperDLL.h,v $
+ * Revision 1.28  2007/11/19 11:16:14  lollisoft
+ * These chanes do not really help, but some unused code has been removed. Check codegeneration on Windows.
+ *
  * Revision 1.27  2007/08/02 07:12:00  lollisoft
  * Added member function to remove a toolbar.
  *
@@ -431,9 +434,7 @@ public:
 	}
 
 	virtual ~lb_wxGUI() { 
-		#ifdef VERBOSE
-	        _LOG << "lb_wxGUI::~lb_wxGUI() called.\n" LOG_
-	        #endif
+        _LOG << "lb_wxGUI::~lb_wxGUI() called.\n" LOG_
 	}
 
         DECLARE_LB_UNKNOWN()

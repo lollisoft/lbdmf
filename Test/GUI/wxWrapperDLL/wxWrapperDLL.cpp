@@ -780,11 +780,13 @@ lbErrCodes LB_STDCALL lb_wxGUI::cleanup() {
 		}
 	}
 	
+	_LOG << "Detach all database forms from forms list." LOG_
+
 	forms->detachAll();
 
-	_CL_LOG << "List of forms has " << forms->getRefCount() << " references." LOG_
+	_LOG << "List of forms has " << forms->getRefCount() << " references." LOG_
 
-        return ERR_NONE;
+	return ERR_NONE;
 }
 /*...e*/
 /*...slb_I_Form\42\ LB_STDCALL lb_wxGUI\58\\58\createLoginForm\40\\41\:0:*/
