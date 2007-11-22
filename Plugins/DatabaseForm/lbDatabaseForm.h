@@ -30,11 +30,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.43 $
+ * $Revision: 1.44 $
  * $Name:  $
- * $Id: lbDatabaseForm.h,v 1.43 2007/10/12 16:16:32 lollisoft Exp $
+ * $Id: lbDatabaseForm.h,v 1.44 2007/11/22 16:16:32 lollisoft Exp $
  *
  * $Log: lbDatabaseForm.h,v $
+ * Revision 1.44  2007/11/22 16:16:32  lollisoft
+ * Indicate, if window has been created.
+ *
  * Revision 1.43  2007/10/12 16:16:32  lollisoft
  * React with error message, if action field was not found in formular. This is a configuration error either in UML or later in designer.
  *
@@ -605,7 +608,8 @@ public:
 
 	void LB_STDCALL show() { Show (TRUE); };
 	void LB_STDCALL destroy() {
-	    //Destroy();
+		if (_created) Destroy();
+		_created = false;
 	};
 	
 /*...sfrom DatabaseForm interface:8:*/

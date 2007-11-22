@@ -1442,6 +1442,7 @@ _CL_LOG << "Connect event handlers" LOG_
 		lastButton->Disable();
 		deleteButton->Disable();
 	}
+	_created = true;
 }
 /*...e*/
 
