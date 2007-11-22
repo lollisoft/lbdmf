@@ -33,11 +33,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.28 $
+ * $Revision: 1.29 $
  * $Name:  $
- * $Id: wxWrapperDLL.h,v 1.28 2007/11/19 11:16:14 lollisoft Exp $
+ * $Id: wxWrapperDLL.h,v 1.29 2007/11/22 16:09:10 lollisoft Exp $
  *
  * $Log: wxWrapperDLL.h,v $
+ * Revision 1.29  2007/11/22 16:09:10  lollisoft
+ * Removed an unneeded return.
+ *
  * Revision 1.28  2007/11/19 11:16:14  lollisoft
  * These chanes do not really help, but some unused code has been removed. Check codegeneration on Windows.
  *
@@ -434,7 +437,7 @@ public:
 	}
 
 	virtual ~lb_wxGUI() { 
-        _LOG << "lb_wxGUI::~lb_wxGUI() called.\n" LOG_
+        _LOG << "lb_wxGUI::~lb_wxGUI() called." LOG_
 	}
 
         DECLARE_LB_UNKNOWN()
