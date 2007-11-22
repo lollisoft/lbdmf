@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.33 $
+ * $Revision: 1.34 $
  * $Name:  $
- * $Id: lbErrcodes.h,v 1.33 2007/09/23 11:20:00 lollisoft Exp $
+ * $Id: lbErrcodes.h,v 1.34 2007/11/22 16:13:28 lollisoft Exp $
  *
  * $Log: lbErrcodes.h,v $
+ * Revision 1.34  2007/11/22 16:13:28  lollisoft
+ * New module error code.
+ *
  * Revision 1.33  2007/09/23 11:20:00  lollisoft
  * New error code to catch unknown column names.
  *
@@ -200,6 +203,7 @@ enum lbErrCodes {
 
 /* Module error codes */
 
+	ERR_MODULE_INVALID_PARAMETER,
 	ERR_MODULE_NOT_FOUND,
 	ERR_FUNCTION_NOT_FOUND,
 	ERR_MODULE_NO_INTERFACE,
