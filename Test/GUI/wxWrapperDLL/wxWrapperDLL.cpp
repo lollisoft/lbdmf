@@ -725,65 +725,67 @@ lbErrCodes LB_STDCALL lb_wxGUI::registerEventHandler(lb_I_Dispatcher* disp) {
 /*...e*/
 /*...slbErrCodes LB_STDCALL lb_wxGUI\58\\58\cleanup\40\\41\:0:*/
 lbErrCodes LB_STDCALL lb_wxGUI::cleanup() {
+	_LOG << "lb_wxGUI::cleanup() called." LOG_
 	
 	/* Destroy all still created forms that are hidden.
-	 * If this would not be taken, the application will hang,
-	 * because these windows are still there.
-	 *
-	 * But the container must be deleted and there seems to be
-	 * a double delete. So I need a removeAll function for the container. 
-	 */
-
+	* If this would not be taken, the application will hang,
+	* because these windows are still there.
+	*
+	* But the container must be deleted and there seems to be
+	* a double delete. So I need a removeAll function for the container. 
+	*/
+	
 	if (forms == NULL) {
 		_LOG << "lb_wxGUI::cleanup() has nothing to clean up. Forms list is not initialized." LOG_
 		return ERR_NONE;
 	} 
-
+	
 	if (forms->Count() == 0) {
 		_LOG << "Info: No forms to be destroyed." LOG_
 	}
-
+	
 	forms->finishIteration();
 	while (forms->hasMoreElements()) {
 		lbErrCodes err = ERR_NONE;
-				
+		
 		lb_I_Unknown* form = forms->nextElement();
-
+		
 		if (!form) continue;
-
+		
 		_LOG << "Destroy a dynamic form '" << form->getClassName() << "'." LOG_
-
+			
 		UAP(lb_I_DatabaseForm, d)		
 		QI(form, lb_I_DatabaseForm, d)
 		UAP(lb_I_FixedDatabaseForm, fd)		
 		QI(form, lb_I_FixedDatabaseForm, fd)
 		
 		/* Really needed here !
-		 * The wxWidgets system doesn't have a or at least has it's own reference counting system.
-		 *
-		 * So here I must ensure, that the object it self doesn't get deleted in the container.
-		 * wxWidgets should call the destructor of the form.
-		 */
+		* The wxWidgets system doesn't have a or at least has it's own reference counting system.
+		*
+		* So here I must ensure, that the object it self doesn't get deleted in the container.
+		* wxWidgets should call the destructor of the form.
+		*/
 		
 		if (d != NULL) {
 			_LOG << "Destroy a dynamic form with " << d->getRefCount() << " references ..." LOG_
-			d++;
+			
 			d->destroy();
+			d.resetPtr();
 			_LOG << "Destroyed the dynamic form." LOG_
 		}
-
+		
 		if (fd != NULL) {
 			_LOG << "Destroy a custom form with " << fd->getRefCount() << " references ..." LOG_
-			fd++;
 			fd->destroy();
+			fd.resetPtr();
 			_LOG << "Destroyed the custom form." LOG_
 		}
 	}
 	
 	_LOG << "Detach all database forms from forms list." LOG_
-
+		
 	forms->detachAll();
-
+	
 	_LOG << "List of forms has " << forms->getRefCount() << " references." LOG_
 
 	return ERR_NONE;
@@ -1384,7 +1386,7 @@ lb_wxFrame::lb_wxFrame(wxFrame *frame, char *title, int x, int y, int w, int h):
 }
 
 lb_wxFrame::~lb_wxFrame() {
-
+	_LOG << "lb_wxFrame::~lb_wxFrame() called." LOG_
 	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, metaApp)
 	
 	metaApp->setGUIMaximized(IsMaximized());
@@ -1395,6 +1397,7 @@ lb_wxFrame::~lb_wxFrame() {
 #endif
 	
 	if (guiCleanedUp == 0) {
+		_LOG << "lb_wxFrame::~lb_wxFrame() Info: GUI cleanup has not yet been done. Do it now." LOG_
 		if (gui) gui->cleanup();
 		guiCleanedUp = 1;
 	}
