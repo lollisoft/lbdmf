@@ -447,7 +447,12 @@ DLLEXPORT bool LB_STDCALL FileExists(char *filename)
 
 /*...slbErrCodes LB_STDCALL lbLoadModule\40\const char\42\ name\44\ HINSTANCE \38\ hinst\44\ bool skipAutoUnload\41\:0:*/
 DLLEXPORT lbErrCodes LB_STDCALL lbLoadModule(const char* name, HINSTANCE & hinst, bool skipAutoUnload) {
-	
+	if (name == NULL) {
+		_LOG << "Erro: lbLoadModule() called with an invalid parameter!" LOG_
+		return ERR_MODULE_INVALID_PARAMETER;
+	}
+
+	_LOG << "Try to load a module " << name LOG_
 #ifdef WINDOWS
 	
 	_Modules *m = findModule(name);
@@ -593,6 +598,11 @@ DLLEXPORT lbErrCodes LB_STDCALL lbLoadModule(const char* name, HINSTANCE & hinst
 /*...e*/
 /*...slbErrCodes LB_STDCALL lbGetFunctionPtr\40\const char\42\ name\44\ const HINSTANCE \38\ hinst\44\ void\42\\42\ pfn\41\:0:*/
 DLLEXPORT lbErrCodes LB_STDCALL lbGetFunctionPtr(const char* name, HINSTANCE hinst, void** pfn) {
+		if (name == NULL) {
+			_LOG << "Erro: lbGetFunctionPtr() called with an invalid parameter!" LOG_
+			return ERR_MODULE_INVALID_PARAMETER;
+		}
+
 #ifdef WINDOWS
         if ((*pfn = (void*) GetProcAddress(hinst, name)) == NULL)
         {
