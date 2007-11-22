@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.147 2007/11/18 19:40:41 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.148 2007/11/22 16:11:35 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.147 $
+ * $Revision: 1.148 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.147 2007/11/18 19:40:41 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.148 2007/11/22 16:11:35 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.148  2007/11/22 16:11:35  lollisoft
+ * Added some logging messages.
+ *
  * Revision 1.147  2007/11/18 19:40:41  lollisoft
  * Added handler to load xrc file.
  *
@@ -1903,14 +1906,12 @@ public wxApp
 	 * Deletes the lb_I_GUI instance used for independent GUI component handlers.
 	 */
 	virtual ~MyApp() { 
+		_LOG << "wxApp::~MyApp() called." LOG_
 /*
  * It seems, that frame was deleted prior !!
  */
 
 		if (wxGUI) delete wxGUI;
-
-
-		printf("MyApp::~MyApp() called.\n");
 	}
 
 	/**
@@ -2122,6 +2123,7 @@ IMPLEMENT_APP  (MyApp)
 
 /*...sint MyApp\58\\58\OnExit\40\\41\:0:*/
 int MyApp::OnExit() {
+	_LOG << "MyApp::OnExit() called." LOG_
 	lbErrCodes err = ERR_NONE;
 	
 	if (metaApp == NULL) {
