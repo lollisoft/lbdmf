@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.125 $
+ * $Revision: 1.126 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.125 2007/11/19 11:16:11 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.126 2007/11/22 16:08:10 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.126  2007/11/22 16:08:10  lollisoft
+ * Other starting ID.
+ *
  * Revision 1.125  2007/11/19 11:16:11  lollisoft
  * These chanes do not really help, but some unused code has been removed. Check codegeneration on Windows.
  *
@@ -2772,7 +2775,7 @@ BEGIN_IMPLEMENT_SINGLETON_LB_UNKNOWN(lb_EventManager)
 END_IMPLEMENT_LB_UNKNOWN()
 
 lb_EventManager::lb_EventManager() {
-	maxEvId = 10000;
+	maxEvId = 12000;
 	ref = STARTREF;
 }
 
