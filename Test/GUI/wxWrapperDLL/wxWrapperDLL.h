@@ -22,9 +22,9 @@
     The author of this work will be reached by e-Mail or paper mail.
     e-Mail: lothar.behrens@lollisoft.de
     p-Mail: Lothar Behrens
-            Rosmarinstr. 3
+            Heinrich-Scheufelen-Platz 2
             
-            40235 Duesseldorf (germany)
+            73252 Lenningen (germany)
 */
 /*...e*/
 
@@ -33,11 +33,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.29 $
+ * $Revision: 1.30 $
  * $Name:  $
- * $Id: wxWrapperDLL.h,v 1.29 2007/11/22 16:09:10 lollisoft Exp $
+ * $Id: wxWrapperDLL.h,v 1.30 2007/11/25 08:47:37 lollisoft Exp $
  *
  * $Log: wxWrapperDLL.h,v $
+ * Revision 1.30  2007/11/25 08:47:37  lollisoft
+ * Added function to close current notebook page.
+ *
  * Revision 1.29  2007/11/22 16:09:10  lollisoft
  * Removed an unneeded return.
  *
@@ -189,6 +192,7 @@
 #define DYNAMIC_VERBOSE         1006
 
 #define PGID					1007
+#define CLOSE_CURRENT_PAGE		1008
 
 class lb_wxGUI;
 
@@ -255,7 +259,7 @@ public:
 public:
 	void OnQuit(wxCommandEvent& event);
 	void OnVerbose(wxCommandEvent& event);
-	
+	void OnCloseCurrentPage(wxCommandEvent& event);
 	/**
 	 * Displays the about form of the application.
 	 */
@@ -581,6 +585,8 @@ public:
 	 */
 
 	lbErrCodes LB_STDCALL cleanup();
+
+	void LB_STDCALL closeCurrentPage();
 
         int eventCount;
         

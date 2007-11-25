@@ -584,6 +584,11 @@ lbErrCodes LB_STDCALL lb_wxFrame::registerEventHandler(lb_I_Dispatcher* disp) {
 			 (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
 			 &lb_wxFrame::OnVerbose );
 	
+	Connect( CLOSE_CURRENT_PAGE, -1, wxEVT_COMMAND_MENU_SELECTED,
+			 (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
+			 &lb_wxFrame::OnCloseCurrentPage );
+	
+	
 
 	// Make a menubar
 	wxMenu *file_menu = new wxMenu;
@@ -591,6 +596,7 @@ lbErrCodes LB_STDCALL lb_wxFrame::registerEventHandler(lb_I_Dispatcher* disp) {
 	file_menu->Append(DYNAMIC_ABOUT	 , _trans("&About\tCtrl-A"));
 	file_menu->Append(DYNAMIC_VERBOSE, _trans("&Verbose\tCtrl-V"));
 	file_menu->Append(DYNAMIC_QUIT	 , _trans("E&xit\tCtrl-x"));
+	file_menu->Append(CLOSE_CURRENT_PAGE, "&Close current page\tCtrl-c");
 
 	file_menu->Append(on_panel_usage, _trans("&switch Panel usage\tCtrl-S"));
 	file_menu->Append(_showLeftPropertyBar, _trans("Show &left property panel\tCtrl-l"));
@@ -1350,6 +1356,40 @@ void LB_STDCALL lb_wxGUI::showForm(char* name) {
 	}
 }
 
+void LB_STDCALL lb_wxGUI::closeCurrentPage() {
+	int sel = notebook->GetSelection();
+	
+	if (sel != wxNOT_FOUND)
+	{
+		wxWindow* w = notebook->GetCurrentPage();
+		lb_I_KeyBase* key = NULL;
+		forms->finishIteration();
+		while (forms->hasMoreElements()) {
+			lbErrCodes err = ERR_NONE;
+			
+			lb_I_Unknown* form = forms->nextElement();
+			
+			if (!form) continue;
+			
+			_LOG << "Destroy a dynamic form '" << form->getClassName() << "'." LOG_
+				
+			UAP(lb_I_Window, window)
+			QI(form, lb_I_Window, window)
+			
+			if ((window != NULL) && (window->getId() == w->GetId())) {
+				key = forms->currentKey();
+			}
+		}
+		
+		if (key != NULL) {
+			forms->remove(&key);
+		}
+		msgBox("Info", "Now I will call notebook->DeletePage(sel);");
+		notebook->DeletePage(sel);
+	}
+	
+}
+
 void LB_STDCALL lb_wxGUI::setIcon(char* name) {
 	#ifdef __WXMSW__
 	    frame->SetIcon(wxIcon("mondrian"));
@@ -1429,6 +1469,13 @@ void lb_wxFrame::OnRunLogonWizard(wxCommandEvent& WXUNUSED(event)) {
     wizard->Destroy();
 }
 /*...e*/
+
+void lb_wxFrame::OnCloseCurrentPage(wxCommandEvent& WXUNUSED(event) )
+{
+	gui->msgBox("Info", "Close current page ...");
+	if (gui) gui->closeCurrentPage();
+}
+
 /*...slb_wxFrame\58\\58\OnQuit\40\wxCommandEvent\38\ WXUNUSED\40\event\41\ \41\:0:*/
 void lb_wxFrame::OnQuit(wxCommandEvent& WXUNUSED(event) )
 {
