@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.159 $
+# * $Revision: 1.160 $
 # * $Name:  $
-# * $Id: Makefile,v 1.159 2007/11/26 16:54:14 lollisoft Exp $
+# * $Id: Makefile,v 1.160 2007/11/26 17:25:12 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.160  2007/11/26 17:25:12  lollisoft
+# * Removed databaselayer test target.
+# *
 # * Revision 1.159  2007/11/26 16:54:14  lollisoft
 # * Changing build order of some modules.
 # *
@@ -886,7 +889,6 @@ ALLTARGETS = \
 	../vendor/sqlite \
 	../vendor/databaselayer/src/Implementations/ODBC \
 	../vendor/databaselayer/src/Implementations/Sqllite \
-	../vendor/databaselayer/test \
 	../vendor/dbwrapcontrols \
 	../vendor/wxaui-0.9.1/src \
 	../vendor/libxml2-2.6.29/bakefile \
