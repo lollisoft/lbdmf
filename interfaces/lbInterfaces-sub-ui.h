@@ -277,6 +277,8 @@ public:
 	 * control or in a dialog based control.
 	 */
 	virtual lb_I_FixedDatabaseForm* LB_STDCALL addCustomDBForm(lb_I_FixedDatabaseForm* form, const char* formName) = 0;
+	
+	virtual void LB_STDCALL closeCurrentPage() = 0;
 };
 /*...e*/
 /*...sclass lb_I_wxGUI:0:*/
