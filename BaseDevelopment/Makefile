@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.158 $
+# * $Revision: 1.159 $
 # * $Name:  $
-# * $Id: Makefile,v 1.158 2007/11/17 09:35:30 lollisoft Exp $
+# * $Id: Makefile,v 1.159 2007/11/26 16:54:14 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.159  2007/11/26 16:54:14  lollisoft
+# * Changing build order of some modules.
+# *
 # * Revision 1.158  2007/11/17 09:35:30  lollisoft
 # * Added new xsltc target for linux.
 # *
@@ -662,12 +665,6 @@ ALLTARGETS = \
 	../include/lbkey.h \
 	../vendor/dosdir \
 	../vendor/mkmk \
-	../vendor/wxShapeFramework/src \
-	../vendor/wxShapeFramework/example \
-	../vendor/sqlite \
-	../vendor/databaselayer/src/Implementations/ODBC \
-	../vendor/databaselayer/src/Implementations/Sqllite \
-	../vendor/dbwrapcontrols \
 	lbHook \
 	lbModule \
 	lbMetaApplication \
@@ -681,6 +678,12 @@ ALLTARGETS = \
 	../Test/GUI/wxWrapperDLL \
 	../Test/GUI/wxPlugins/lbLoginWizard \
 	../Test/GUI/wxWrapper \
+	../vendor/wxShapeFramework/src \
+	../vendor/wxShapeFramework/example \
+	../vendor/sqlite \
+	../vendor/databaselayer/src/Implementations/ODBC \
+	../vendor/databaselayer/src/Implementations/Sqllite \
+	../vendor/dbwrapcontrols \
 	../Test/Console/XML \
 	$(BASEDIRECTORIES)
 
