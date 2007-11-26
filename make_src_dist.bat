@@ -30,6 +30,8 @@ call make_dist_base.bat BaseDevelopment\lbtransfer
 call make_dist_base.bat BaseDevelopment\lbXMLConfig\lbDOMConfig 
 call make_dist_base.bat Plugins
 call make_dist_base.bat vendor\mkmk
+call make_dist_base.bat vendor\sqlite
+call make_dist_base.bat vendor\databaselayer
 call make_dist_base.bat vendor\dosdir
 call make_dist_base.bat vendor\propgrid
 call make_dist_base.bat vendor\wxaui-0.9.1
