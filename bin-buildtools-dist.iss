@@ -3,8 +3,8 @@
 
 [Setup]
 AppName=lbDMF Binary Build Tools
-AppVerName=lbDMF Binary Build Tools 1.0rc2
-OutputBaseFilename=lbDMF-BinbuildTools-1.0rc2
+AppVerName=lbDMF Binary Build Tools 1.0rc3
+OutputBaseFilename=lbDMF-BinbuildTools-1.0rc3
 AppPublisher=Lothar Behrens
 AppPublisherURL=http://www.lollisoft.de
 AppSupportURL=http://www.sourceforge.net/projects/lbdmf
@@ -18,6 +18,7 @@ DefaultGroupName=lbDMF
 ;Name: "desktopicon"; Description: "Create a &desktop icon"; GroupDescription: "Additional icons:"; MinVersion: 4,4
 
 [Files]
+Source: "Q:\develop\Tools\BinBuildTools\gawk.exe"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
 Source: "Q:\develop\Tools\BinBuildTools\sh.exe"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
 Source: "Q:\develop\Tools\BinBuildTools\ssh.exe"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
 Source: "Q:\develop\Tools\BinBuildTools\cp.exe"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
@@ -26,7 +27,11 @@ Source: "Q:\develop\Tools\BinBuildTools\echo.exe"; DestDir: "{app}\Develop\Proje
 Source: "Q:\develop\Tools\BinBuildTools\rm.exe"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
 Source: "Q:\develop\Tools\BinBuildTools\mkdir.exe"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
 Source: "Q:\develop\Projects\bin\mkmk.exe"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
+Source: "Q:\develop\Tools\BinBuildTools\unixfind.exe"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
+Source: "Q:\develop\Tools\BinBuildTools\grep.exe"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
 Source: "Q:\develop\Tools\BinBuildTools\cygcrypto-0.9.8.dll"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
+Source: "Q:\develop\Tools\BinBuildTools\cygintl-3.dll"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
+Source: "Q:\develop\Tools\BinBuildTools\cygpcre-0.dll"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
 Source: "Q:\develop\Tools\BinBuildTools\cygwin1.dll"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
 Source: "Q:\develop\Tools\BinBuildTools\cygz.dll"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
 Source: "Q:\develop\Tools\BinBuildTools\cygminires.dll"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
