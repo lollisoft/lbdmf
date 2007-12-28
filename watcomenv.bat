@@ -77,11 +77,13 @@ set BINROOT=%RUNROOT%\bin;%RUNROOT%\CPP\bin
 
 set Path=%DEVLW%\%BASE%\bin;%SystemRoot%\system32;%DEVLW%\;%WATBIN%;%DEVBIN%;%DLLROOT%;%BINROOT%
 set Path=%Path%;q:\develop\tools\cygwin\bin;Q:\develop\Tools\Perl\bin;G:\gs\gs8.15\bin
+set Path=%Path%;Q:\develop\Tools\TP;Q:\develop\Tools\TP\TPU
+set Path=%path%;G:\FPC\2.0.4\bin\i386-win32
 
 rem Enable my Power++ IDE
 set Path=%Path%;"E:\Program Files\Powersoft\Power21\System"
 
-set Path=%Path%;c:\tp;Q:\develop\Tools\Bakefile\src
+set Path=%Path%;Q:\develop\Tools\Bakefile\src
 
 set MSC=%MSVCDir%\Bin;%MSVCDir%\Lib
 
