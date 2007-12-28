@@ -87,6 +87,7 @@ TARGETPLUGIN=plugin
 
 ALLTARGETS = \
 	TestPlugin \
+	DatabaseLayerGateway \
 	VisitorOperations \
 	DatabaseForm \
 	lbDMFDataModel \
