@@ -35,8 +35,8 @@ WATCOMLIBS=$(DEVROOT_MAKE)$(SLASH)Tools$(SLASH)watcom$(SLASH)lib386$(SLASH)nt
 wxBase=$(DEVROOT_MAKE)$(SLASH)wxwin$(SLASH)wx$(SLASH)lib
 LIBS = $(BASE_LIBS)	$(DEVROOT_MAKE)$(SLASH)projects$(SLASH)dll$(SLASH)libs$(SLASH)lbhook.lib, \
 			$(DEVROOT_MAKE)$(SLASH)projects$(SLASH)dll$(SLASH)libs$(SLASH)databaselayer_sqllite.lib, \
-			$(DEVROOT_MAKE)$(SLASH)projects$(SLASH)dll$(SLASH)libs$(SLASH)sqlite3.lib \
-#	$(wxBase)$(SLASH)wat_dll$(SLASH)wxmsw26$(WX_DEBUG).lib
+			$(wxBase)$(SLASH)wat_dll$(SLASH)wxmsw$(WX_VERSION)$(WX_DEBUG).lib
+#			$(DEVROOT_MAKE)$(SLASH)projects$(SLASH)dll$(SLASH)libs$(SLASH)sqlite3.lib
 	
 LIBRS =	libr $(WATCOMLIBS)$(SLASH)kernel32.lib \
 	libr $(WATCOMLIBS)$(SLASH)user32.lib \
@@ -86,7 +86,8 @@ CPP_EXEOPS= $(CPP_EXEOPS_WATCOM$(MODE)) /D__WIN32__ /DWINVER=0x0400 /D__WINDOWS9
 		/D__WINDOWS__ /D__WXMSW__ /DLB_I_EXTENTIONS
 		
 CPP_DLLOPS= $(CPP_DLLOPS_WATCOM$(MODE)) /D__WIN32__ /DWINVER=0x0400 /D__WINDOWS95__ \
-		/D__WINDOWS__ /D__WXMSW__ /DLB_I_EXTENTIONS /D_WINDLL /DWXUSINGDLL
+		/D__WINDOWS__ /D__WXMSW__ /DLB_I_EXTENTIONS /D_WINDLL /DWXUSINGDLL \
+		-xs
 
 ifeq ($MODE), _DEBUG)
 C_EXEOPS+= /D__WXDEBUG__

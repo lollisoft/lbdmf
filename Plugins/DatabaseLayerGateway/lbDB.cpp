@@ -1413,6 +1413,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::init(DatabaseLayer* dbLayer, bool ro
 }
 
 lbErrCodes LB_STDCALL lbDatabaseLayerQuery::bind() {
+    return ERR_NONE;
 }
 /*...e*/
 /*...schar\42\ LB_STDCALL lbDatabaseLayerQuery\58\\58\setWhereClause\40\const char\42\ query\44\ char\42\ where\41\:0:*/
@@ -1834,6 +1835,7 @@ lb_I_String* LB_STDCALL lbDatabaseLayerQuery::getPKTable(char const * FKName) {
 /*...e*/
 /*...slb_I_String\42\ LB_STDCALL lbDatabaseLayerQuery\58\\58\getPKColumn\40\char const \42\ FKName\41\:0:*/
 lb_I_String* LB_STDCALL lbDatabaseLayerQuery::getPKColumn(char const * FKName) {
+    return NULL;
 }
 /*...e*/
 
@@ -1983,6 +1985,7 @@ void LB_STDCALL lbDatabaseLayerQuery::prepareFKList() {
 /*...e*/
 /*...sint LB_STDCALL lbDatabaseLayerQuery\58\\58\getPKColumns\40\\41\:0:*/
 int LB_STDCALL lbDatabaseLayerQuery::getPKColumns() {
+    return 0;
 }
 /*...e*/
 /*...slb_I_String\42\ LB_STDCALL lbDatabaseLayerQuery\58\\58\getPKColumn\40\int pos\41\:0:*/
@@ -2453,6 +2456,8 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::update() {
 	}
 	queryColumns.Clear();
 	queryValues.Clear();
+
+	return ERR_NONE;
 }
 
 void LB_STDCALL lbDatabaseLayerQuery::dbError(char* lp, HSTMT hstmt)
@@ -3144,6 +3149,7 @@ bool LB_STDCALL lbDatabase::isConnected() {
 
 /*...slbErrCodes LB_STDCALL lbDatabase\58\\58\connect\40\char\42\ DSN\44\ char\42\ user\44\ char\42\ passwd\41\:0:*/
 lbErrCodes LB_STDCALL lbDatabase::connect(char* connectionname, char* DSN, char* user, char* passwd) {
+    return ERR_NONE;
 }
 /*...e*/
 lb_I_Query* LB_STDCALL lbDatabase::getQuery(char* connectionname, int readonly) {
