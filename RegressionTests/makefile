@@ -111,6 +111,7 @@ TARGETDLL=dll
 TARGETEXE=exe
 
 ALLTARGETS = \
+	Database/DatabaseLayerWrapperTest \
 	Database/Plain-ODBC-Test \
 	Database/Plain-ODBC-Test-Blob \
 	Database/Plain-ODBC-Test-Refresh \
