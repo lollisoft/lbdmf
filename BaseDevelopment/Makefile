@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.160 $
+# * $Revision: 1.161 $
 # * $Name:  $
-# * $Id: Makefile,v 1.160 2007/11/26 17:25:12 lollisoft Exp $
+# * $Id: Makefile,v 1.161 2007/12/28 17:08:40 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.161  2007/12/28 17:08:40  lollisoft
+# * Removed some targets from the build target list.
+# *
 # * Revision 1.160  2007/11/26 17:25:12  lollisoft
 # * Removed databaselayer test target.
 # *
@@ -804,7 +807,6 @@ ALLDIRS = \
 	lbclasses \
 	lbMetaApplication \
 	lbPluginManager \
-	../vendor/xsltc \
 	../vendor/propgrid \
 	../vendor/sqlite \
 	../vendor/databaselayer/src/Implementations/ODBC \
@@ -885,11 +887,9 @@ ALLTARGETS = \
 	lbMetaApplication \
 	lbPluginManager \
 	../vendor/propgrid \
-	../vendor/xsltc \
 	../vendor/sqlite \
 	../vendor/databaselayer/src/Implementations/ODBC \
 	../vendor/databaselayer/src/Implementations/Sqllite \
-	../vendor/dbwrapcontrols \
 	../vendor/wxaui-0.9.1/src \
 	../vendor/libxml2-2.6.29/bakefile \
 	../vendor/libxslt-1.1.21/libxslt \
@@ -902,6 +902,8 @@ ALLTARGETS = \
 	../Samples/HelloWorld \
 	../Doc/html \
 	$(BASEDIRECTORIES)
+
+#	../vendor/dbwrapcontrols
 
 ALLDIRS = \
 	lbHook \
