@@ -474,26 +474,28 @@ DLLEXPORT lbErrCodes LB_STDCALL lbLoadModule(const char* name, HINSTANCE & hinst
 		free(buffer);
 		
 		LPVOID lpMsgBuf;
-		if (!FormatMessage( 
-							FORMAT_MESSAGE_ALLOCATE_BUFFER | 
-							FORMAT_MESSAGE_FROM_SYSTEM | 
-							FORMAT_MESSAGE_IGNORE_INSERTS,
-							NULL,
-							GetLastError(),
-							MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
-							(LPTSTR) &lpMsgBuf,
-							0,
-							NULL))
-		{
-			// Handle the error.
-			return ERR_MODULE_NOT_FOUND;
+		if (isVerbose()) {
+			if (!FormatMessage( 
+								FORMAT_MESSAGE_ALLOCATE_BUFFER | 
+								FORMAT_MESSAGE_FROM_SYSTEM | 
+								FORMAT_MESSAGE_IGNORE_INSERTS,
+								NULL,
+								GetLastError(),
+								MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
+								(LPTSTR) &lpMsgBuf,
+								0,
+								NULL))
+			{
+				// Handle the error.
+				return ERR_MODULE_NOT_FOUND;
+			}
+			
+			MessageBox( NULL, (LPCTSTR)lpMsgBuf, "Error", MB_OK | MB_ICONINFORMATION );
+			
+			// Free the buffer.
+			LocalFree( lpMsgBuf );
 		}
-		
-		MessageBox( NULL, (LPCTSTR)lpMsgBuf, "Error", MB_OK | MB_ICONINFORMATION );
-		
-		// Free the buffer.
-		LocalFree( lpMsgBuf );
-		
+				
 		return ERR_MODULE_NOT_FOUND;
 	}
 	
