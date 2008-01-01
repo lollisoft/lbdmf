@@ -1,0 +1,139 @@
+/*
+ * fk.c
+ * Released into the public domain August/15/2004
+ *
+ * Author: Cody Pisto <cpisto@gmail.com>
+ *
+ * Parses sqlite sql schema, and generates triggers to 
+ * enforce foreign key constraints
+ *
+ */
+
+#include <stdio.h>
+#include <stdlib.h>
+#include "sql.h"
+#include "mempool.h"
+
+extern int yyparse(void);
+extern void scanner_finish(void);
+
+List *schema;
+MemPool mempool;
+
+
+int
+main (int argc, char **argv)
+{
+    int i,x;
+    ListItem *tabitem, *fkitem;
+    Table *table;
+    ForeignKey *fk;
+
+    schema = list_new();
+    MemPoolCreate(&mempool, 4096);
+    /* yyparse will fill the schema with
+     * tables
+     */
+    yyparse();
+    scanner_finish();
+
+    printf("BEGIN TRANSACTION;\n\n");
+
+    /*
+     * Iterate over the tables
+     */
+    tabitem = list_head(schema);
+    for (i = 0; tabitem; i++)
+    {
+        table = (Table *)list_data(tabitem);
+
+        /*
+         * Iterate over foreign keys
+         */
+        fkitem = list_head(table->fks);
+        for (x = 0; fkitem; x++)
+        {
+            fk = (ForeignKey *)list_data(fkitem);
+            if (fk == NULL)
+                goto next;
+
+            /*
+             * triggers that dont have to check for null
+             */
+            if (fk->notnull)
+            {
+                /* table */
+                printf("CREATE TRIGGER \"fk_%s_%s_ins\" BEFORE INSERT ON %s FOR EACH ROW\n"
+                       "BEGIN\n"
+                       "    SELECT CASE WHEN ((SELECT %s FROM %s WHERE %s = new.%s) IS NULL)\n"
+                       "                 THEN RAISE(ABORT, '%s violates foreign key %s(%s)')\n"
+                       "    END;\n"
+                       "END;\n", table->name, fk->col, table->name, fk->fcol, fk->ftab, fk->fcol, fk->col,
+                       fk->col, fk->ftab, fk->fcol);
+                printf("CREATE TRIGGER \"fk_%s_%s_upd\" BEFORE UPDATE ON %s FOR EACH ROW\n"
+                       "BEGIN\n"
+                       "    SELECT CASE WHEN ((SELECT %s FROM %s WHERE %s = new.%s) IS NULL)\n"
+                       "                 THEN RAISE(ABORT, '%s violates foreign key %s(%s)')\n"
+                       "    END;\n"
+                       "END;\n", table->name, fk->col, table->name, fk->fcol, fk->ftab, fk->fcol, fk->col,
+                       fk->col, fk->ftab, fk->fcol);
+
+                /* foreign table */
+                printf("CREATE TRIGGER \"fk_%s_%s_del\" BEFORE DELETE ON %s FOR EACH ROW\n"
+                       "BEGIN\n"
+                       "    SELECT CASE WHEN ((SELECT %s FROM %s WHERE %s = old.%s) IS NOT NULL)\n"
+                       "                 THEN RAISE(ABORT, '%s violates foreign key %s(%s)')\n"
+                       "    END;\n"
+                       "END;\n", table->name, fk->col, fk->ftab, fk->col, table->name, fk->col, fk->fcol,
+                       fk->fcol, table->name, fk->col);
+            }
+
+            /*
+             * triggers that do have to check for null
+             */
+            else
+            {
+                /* table */
+                printf("CREATE TRIGGER \"fk_%s_%s_ins\" BEFORE INSERT ON %s FOR EACH ROW\n"
+                       "BEGIN\n"
+                       "    SELECT CASE WHEN ((new.%s IS NOT NULL) AND ((SELECT %s FROM %s WHERE %s = new.%s) IS NULL))\n"
+                       "                 THEN RAISE(ABORT, '%s violates foreign key %s(%s)')\n"
+                       "    END;\n"
+                       "END;\n", table->name, fk->col, table->name, fk->col, fk->fcol, fk->ftab, fk->fcol, fk->col,
+                       fk->col, fk->ftab, fk->fcol);
+                printf("CREATE TRIGGER \"fk_%s_%s_upd\" BEFORE UPDATE ON %s FOR EACH ROW\n"
+                       "BEGIN\n"
+                       "    SELECT CASE WHEN ((new.%s IS NOT NULL) AND ((SELECT %s FROM %s WHERE %s = new.%s) IS NULL))\n"
+                       "                 THEN RAISE(ABORT, '%s violates foreign key %s(%s)')\n"
+                       "    END;\n"
+                       "END;\n", table->name, fk->col, table->name, fk->col, fk->fcol, fk->ftab, fk->fcol, fk->col,
+                       fk->col, fk->ftab, fk->fcol);
+
+                /* foreign table */
+                printf("CREATE TRIGGER \"fk_%s_%s_del\" BEFORE DELETE ON %s FOR EACH ROW\n"
+                       "BEGIN\n"
+                       "    SELECT CASE WHEN ((SELECT %s FROM %s WHERE %s = old.%s) IS NOT NULL)\n"
+                       "                 THEN RAISE(ABORT, '%s violates foreign key %s(%s)')\n"
+                       "    END;\n"
+                       "END;\n", table->name, fk->col, fk->ftab, fk->col, table->name, fk->col, fk->fcol,
+                       fk->fcol, table->name, fk->col);
+            }
+
+            printf("\n");
+
+next:
+            fkitem = list_next(fkitem);
+        }
+
+        list_destroy(table->fks);
+
+        tabitem = list_next(tabitem);
+    }
+
+    list_destroy(schema);
+    MemPoolDestroy(&mempool);
+
+    printf("COMMIT;\n");
+
+    return 0;
+}

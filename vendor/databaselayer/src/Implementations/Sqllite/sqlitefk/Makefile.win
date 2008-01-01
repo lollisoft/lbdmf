@@ -1,0 +1,7 @@
+all:
+	cd src && make -f Makefile.win
+	mv src/fk.exe .
+
+clean:
+	cd src && make -f Makefile.win clean
+	rm -f fk.exe

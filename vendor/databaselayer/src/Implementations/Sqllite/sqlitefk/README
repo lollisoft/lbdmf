@@ -1,0 +1,14 @@
+This is a simple tool that parses a basic dialect of SQL
+looking for foreign key references, it then generates
+SQL triggers to enforce them, it does not generate triggers
+for cascading deletes at this time.
+
+I've included a static x86 linux binary, and a win32 exe
+
+usage:
+    cat test.sql | ./fk > fktriggers.sql
+
+usage win32:
+    cat test.sql | fk.exe > fktriggers.sql
+
+Any questions or suggestions to Cody Pisto <cpisto@gmail.com>

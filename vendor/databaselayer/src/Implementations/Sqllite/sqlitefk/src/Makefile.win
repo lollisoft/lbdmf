@@ -1,0 +1,28 @@
+YACC   = bison
+LEX    = flex
+CC     = i586-mingw32msvc-cc
+CCOPTS = -Wall -O2 -s
+
+.PHONY: clean
+all: fk.exe
+
+COMMON = \
+lex.yy.c \
+gram.tab.c \
+mempool.c \
+list.c
+
+lex.yy.c: scan.l
+	$(LEX) -i $<
+
+gram.tab.c: gram.y
+	$(YACC) -d -v gram.y
+
+fk.exe: fk.c $(COMMON)
+	$(CC) $(CCOPTS) -o $@ fk.c $(COMMON)
+	upx $@
+
+clean:
+	rm -f gram.tab.c gram.tab.h gram.output
+	rm -f lex.yy.c
+	rm -f fk.exe
