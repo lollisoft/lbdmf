@@ -1,7 +1,7 @@
 YACC   = bison
 LEX    = flex
 CC     = gcc
-CCOPTS = -Wall -O2 -s -static
+CCOPTS = -Wall -O2 -s
 
 .PHONY: clean
 all: fk
@@ -20,7 +20,6 @@ gram.tab.c: gram.y
 
 fk: fk.c $(COMMON)
 	$(CC) $(CCOPTS) -o $@ fk.c $(COMMON)
-	upx $@
 
 clean:
 	rm -f gram.tab.c gram.tab.h gram.output

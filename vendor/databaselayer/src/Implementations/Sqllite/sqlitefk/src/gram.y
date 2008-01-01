@@ -29,6 +29,7 @@ extern MemPool mempool;
 
 %token CREATE
 %token TABLE
+%token CONSTRAINT FOREIGN
 %token REFERENCES NOT NIL PRIMARY KEY DEFAULT UNIQUE
 %token TOK_TYPE
 %token <str> TOK_WORD
@@ -67,7 +68,7 @@ table:
                 $$ = (Table *) malloc(sizeof(Table));
                 $$->name = $3;
                 $$->fks = $5;
-                fprintf(stderr, "Parsed table %s\n", $3);
+                //fprintf(stderr, "Parsed table %s\n", $3);
             }
             /* no foreign keys on this table
                ignore it */
@@ -142,6 +143,15 @@ columndef:
                 }
                 list_destroy($3);
             }
+        }
+    | CONSTRAINT TOK_WORD FOREIGN KEY '(' TOK_WORD ')' REFERENCES TOK_WORD '(' TOK_WORD ')'
+        {
+            Constraint *constraint;
+            $$ = (Constraint *) malloc(sizeof(Constraint));
+            $$->col = $6;
+
+            $$->ftab = $9;
+            $$->fcol = $11;
         }
 ;
 

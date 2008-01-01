@@ -54,10 +54,12 @@ type       (int)|(integer)|(varchar\([0-9]+\))|(char\([0-9]+\))|(datetime)|(text
 create                         return CREATE;
 table                          return TABLE;
 references                     return REFERENCES;
+constraint                     return CONSTRAINT;
 not                            return NOT;
 null                           return NIL;
 unique                         return UNIQUE;
 primary                        return PRIMARY;
+foreign                        return FOREIGN;
 key                            return KEY;
 default                        return DEFAULT;
 [a-zA-Z0-9_-]+                 { 
@@ -77,9 +79,9 @@ default                        return DEFAULT;
 void
 yyerror (const char *msg)
 {
-    /* ignore
+    /* ignore */
     fprintf(stderr, "yyerror: %s\n", msg);
-    */
+    
 }
 
 

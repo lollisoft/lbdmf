@@ -14,6 +14,7 @@
 #include "sql.h"
 #include "mempool.h"
 
+extern FILE* yyin;
 extern int yyparse(void);
 extern void scanner_finish(void);
 
@@ -23,6 +24,8 @@ MemPool mempool;
 
 int
 main (int argc, char **argv)
+
+//void calcFKList(char* table)
 {
     int i,x;
     ListItem *tabitem, *fkitem;
@@ -34,6 +37,12 @@ main (int argc, char **argv)
     /* yyparse will fill the schema with
      * tables
      */
+	 
+	 
+	yyin = fopen("test.sql", "rb");
+	  
+	if (yyin == NULL) printf("Error: Can't open file.\n");
+	  
     yyparse();
     scanner_finish();
 
