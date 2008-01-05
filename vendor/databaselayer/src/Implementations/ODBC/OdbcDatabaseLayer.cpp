@@ -565,6 +565,17 @@ wxArrayString OdbcDatabaseLayer::GetColumns(const wxString& table)
   return returnArray;
 }
 
+#ifdef SUPPORT_FOREIGN_KEYS
+wxArrayString OdbcDatabaseLayer::GetForeignKeys(const wxString& table) {
+  wxArrayString returnArray;
+
+  throw new DatabaseLayerException(DATABASE_LAYER_NOT_IMPLEMENTED, "Foreign keys support not implemented.");
+
+  return returnArray;
+}
+#endif
+
+
 void OdbcDatabaseLayer::InterpretErrorCodes( long nCode, SQLHSTMT stmth_ptr )
 {
   wxLogDebug(_("OdbcDatabaseLayer::InterpretErrorCodes()\n"));

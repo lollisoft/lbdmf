@@ -72,6 +72,10 @@ public:
   virtual wxArrayString GetColumns(const wxString& table);
   virtual wxArrayString GetPrimaryKeys(const wxString& table);
 
+#ifdef SUPPORT_FOREIGN_KEYS
+  virtual wxArrayString GetForeignKeys(const wxString& table);
+#endif
+
   static int TranslateErrorCode(int nCode);
 
 private:

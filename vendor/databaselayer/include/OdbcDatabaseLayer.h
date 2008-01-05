@@ -73,6 +73,11 @@ public:
   virtual wxArrayString GetTables();
   virtual wxArrayString GetViews();
   virtual wxArrayString GetColumns(const wxString& table);
+  //virtual wxArrayString GetPrimaryKeys(const wxString& table);
+
+#ifdef SUPPORT_FOREIGN_KEYS
+  virtual wxArrayString GetForeignKeys(const wxString& table);
+#endif
 
 private:
   virtual PreparedStatement* PrepareStatement(const wxString& strQuery, bool bParseQuery);

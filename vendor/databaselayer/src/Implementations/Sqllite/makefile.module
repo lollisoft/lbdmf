@@ -73,7 +73,7 @@ ifeq ($(LB_USE_FRAMEWORKS), yes)
 
 ifeq ($(OSTYPE), osx)
 MOD_INCL=$(STD_INCL) -I ../.. -I $(DEVROOT)$(RELPATH)/vendor/sqlite
-C_SOOPS_WX = -DOSX -DUNIX -DLINUX `wx-config --inplace --cxxflags` -DSQLITE_ENABLE_COLUMN_METADATA
+C_SOOPS_WX = -DOSX -DUNIX -DLINUX `wx-config --inplace --cxxflags` -DSQLITE_ENABLE_COLUMN_METADATA -DSUPPORT_FOREIGN_KEYS
 C_SOOPS= $(C_SOOPS_WX)
 VENDORLIBS=$(HOME)/lib/sqlite3.so
 L_OPS=-lc /usr/lib/libodbc.dylib -lc /usr/lib/libgcc_s.1.dylib 
@@ -86,7 +86,7 @@ ifeq ($(LB_USE_FRAMEWORKS), no)
 
 ifeq ($(OSTYPE), osx)
 MOD_INCL=$(STD_INCL)
-C_SOOPS_WX = -DOSX -DUNIX -DLINUX `wx-config --inplace --cxxflags` -DSQLITE_ENABLE_COLUMN_METADATA
+C_SOOPS_WX = -DOSX -DUNIX -DLINUX `wx-config --inplace --cxxflags` -DSQLITE_ENABLE_COLUMN_METADATA -DSUPPORT_FOREIGN_KEYS
 C_SOOPS= $(C_SOOPS_WX)
 OBJDEP=
 VENDORLIBS=$(HOME)/lib/lbHook.so /usr/lib/libiodbc.dylib

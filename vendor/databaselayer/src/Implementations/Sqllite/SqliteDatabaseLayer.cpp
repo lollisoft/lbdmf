@@ -50,6 +50,11 @@ bool SqliteDatabaseLayer::Open(const wxString& strDatabase)
     ThrowDatabaseException();
     return false;
   }
+  
+#ifdef SUPPORT_FOREIGN_KEYS
+
+#endif
+  
   return true;
 }
 
@@ -63,6 +68,10 @@ bool SqliteDatabaseLayer::Close()
 
   if (m_pDatabase != NULL)
   {
+#ifdef SUPPORT_FOREIGN_KEYS
+
+#endif
+  
     int nReturn = sqlite3_close(m_pDatabase);
     if (nReturn != SQLITE_OK)
     {
@@ -411,7 +420,7 @@ wxArrayString SqliteDatabaseLayer::GetPrimaryKeys(const wxString& table) {
 		m_pDatabase,		/* Connection handle */
 		NULL,				/* Database name or NULL */
 		table.c_str(),		/* Table name */
-		columns[i].c_str(),/* Column name */
+		columns[i].c_str(), /* Column name */
 		&pzDataType,		/* OUTPUT: Declared data type */
 		&pzCollSeq,			/* OUTPUT: Collation sequence name */
 		&pNotNull,			/* OUTPUT: True if NOT NULL constraint exists */
@@ -426,6 +435,16 @@ wxArrayString SqliteDatabaseLayer::GetPrimaryKeys(const wxString& table) {
   }
   return returnArray;
 }
+
+#ifdef SUPPORT_FOREIGN_KEYS
+wxArrayString SqliteDatabaseLayer::GetForeignKeys(const wxString& table) {
+  wxArrayString returnArray;
+
+  throw new DatabaseLayerException(DATABASE_LAYER_NOT_IMPLEMENTED, "Foreign keys support not implemented.");
+
+  return returnArray;
+}
+#endif
 
 
 wxArrayString SqliteDatabaseLayer::GetTables()

@@ -96,6 +96,14 @@ public:
   /// Retrieve all primary columns for a table
   virtual wxArrayString GetPrimaryKeys(const wxString& table) = 0;
 
+
+#ifdef SUPPORT_FOREIGN_KEYS
+  /// Retrieve the number of foreign columns per table.
+  /// Throws DATABASE_LAYER_NOT_SUPPORTED when the backend does not support foreign keys.
+  /// Throws DATABASE_LAYER_NOT_IMPLEMENTED when the backend does not implement this function.
+  virtual wxArrayString GetForeignKeys(const wxString& table) = 0;
+#endif
+
   // Database single result retrieval API contributed by Guru Kathiresan
   /// With the GetSingleResultX API, two additional exception types are thrown:
   ///   DATABASE_LAYER_NO_ROWS_FOUND - No database rows were returned

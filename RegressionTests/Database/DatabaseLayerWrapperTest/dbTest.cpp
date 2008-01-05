@@ -156,15 +156,28 @@ int main(int argc, char *argv[]) {
 		query1 = DatabaseWrapper->getQuery("lbDMF", 0);
 		query1->skipFKCollecting();
 		query1->query("drop table regressiontest");
+		query1->query("drop table test");
 		
 		
 		_CL_LOG << "query has " << query->getRefCount() << " references." LOG_
-			char buf[] = "create table regressiontest ("
+
+		char* buf = "create table regressiontest ("
 			"id INTEGER PRIMARY KEY,"
 			"test char(100) DEFAULT 'Nothing',"
 			"btest bool DEFAULT false, "
-			"btest1 bool DEFAULT false"
-			");";
+			"btest1 bool DEFAULT false)";
+			
+		query->skipFKCollecting();
+		query->query(buf);
+			
+			
+		buf = 
+			"CREATE TABLE test ("
+			"	id INTEGER PRIMARY KEY,"
+			"	test char(100),"
+			"	id_reg INTEGER,"
+			"	constraint fk_reg foreign key (id_reg) references regressiontest (id)"
+			")";
 		
 		// I have problems which collecting foreign key data, if no result sets are there.
 		query->skipFKCollecting();
@@ -172,13 +185,13 @@ int main(int argc, char *argv[]) {
 		
 		_CL_LOG << "query has " << query->getRefCount() << " references." LOG_
 			
-		query1->query("insert into regressiontest (test,btest,btest1) values('Nix 1', 1, 0)");
-		query1->query("insert into regressiontest (test,btest,btest1) values('Nix 2', 0, 1)");
-		query1->query("insert into regressiontest (test,btest,btest1) values('Nix 3', 1, 0)");
-		query1->query("insert into regressiontest (test,btest,btest1) values('Nix 4', 0, 1)");
-		query1->query("insert into regressiontest (test,btest,btest1) values('Nix 5', 1, 0)");
-		query1->query("insert into regressiontest (test,btest,btest1) values('Nix 6', 0, 1)");
-		query1->query("insert into regressiontest (test,btest,btest1) values('Nix 7', 1, 0)");
+		query1->query("insert into regressiontest (test,btest,btest1) values('Bla 1', 1, 0)");
+		query1->query("insert into regressiontest (test,btest,btest1) values('Bla 2', 0, 1)");
+		query1->query("insert into regressiontest (test,btest,btest1) values('Bla 3', 1, 0)");
+		query1->query("insert into regressiontest (test,btest,btest1) values('Bla 4', 0, 1)");
+		query1->query("insert into regressiontest (test,btest,btest1) values('Bla 5', 1, 0)");
+		query1->query("insert into regressiontest (test,btest,btest1) values('Bla 6', 0, 1)");
+		query1->query("insert into regressiontest (test,btest,btest1) values('Bla 7', 1, 0)");
 
 		query1->query("select id, test, btest, btest1 from regressiontest");
 		

@@ -21,16 +21,22 @@ extern void scanner_finish(void);
 List *schema;
 MemPool mempool;
 
-
+#ifndef BUILD_LIBRARY
 int
 main (int argc, char **argv)
+#endif
 
-//void calcFKList(char* table)
+#ifdef BUILD_LIBRARY
+ListItem* getForeignKeyList(char* _table)
+#endif
 {
     int i,x;
     ListItem *tabitem, *fkitem;
     Table *table;
     ForeignKey *fk;
+#ifdef BUILD_LIBRARY
+	List *foreign_keys;
+#endif
 
     schema = list_new();
     MemPoolCreate(&mempool, 4096);
@@ -45,6 +51,43 @@ main (int argc, char **argv)
 	  
     yyparse();
     scanner_finish();
+
+#ifdef BUILD_LIBRARY
+    tabitem = list_head(schema);
+    for (i = 0; tabitem; i++)
+    {
+        table = (Table *)list_data(tabitem);
+		
+		if (strcmp(table->name, _table) == 0) {
+			foreign_keys = list_new();
+			
+			fkitem = list_head(table->fks);
+			for (x = 0; fkitem; x++)
+			{
+				ForeignKey* copy_of_fk = (ForeignKey*) malloc(sizeof(ForeignKey));
+				fk = (ForeignKey *)list_data(fkitem);
+				if (fk == NULL)
+					goto fk_next;
+				
+				copy_of_fk.col = strdup(fk.col);
+				copy_of_fk.ftab = strdup(fk.ftab);
+				copy_of_fk.fcol = strdup(fk.fcol);
+				
+				list_append(foreign_keys, copy_of_fk);
+					
+fk_next:					
+				fkitem = list_next(fkitem);
+			}
+	        list_destroy(table->fks);
+		}
+	}
+	
+    list_destroy(schema);
+    MemPoolDestroy(&mempool);
+	return foreign_keys;
+#endif
+
+#ifndef BUILD_LIBRARY
 
     printf("BEGIN TRANSACTION;\n\n");
 
@@ -145,4 +188,5 @@ next:
     printf("COMMIT;\n");
 
     return 0;
+#endif // not BUILD_LIBRARY
 }
