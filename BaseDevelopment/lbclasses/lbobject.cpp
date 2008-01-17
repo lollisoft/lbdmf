@@ -104,6 +104,7 @@ lbLocale::lbLocale() {
 	_lang = (char*) malloc(100);
 	_lang[0] = 0;
 	strcpy(_lang, "german");
+	dbAvailable = true;
 	//REQUEST(getModuleInstance(), lb_I_Translations, translations)
 }
 
@@ -141,7 +142,9 @@ void LB_STDCALL lbLocale::translate(char ** text, char const * to_translate) {
 		if (!lbDMFUser) lbDMFUser = "dba";
 		if (!lbDMFPasswd) lbDMFPasswd = "trainres";
 		
-		if (database->connect("lbDMF", "lbDMF", lbDMFUser, lbDMFPasswd) != ERR_NONE) {
+		if (!dbAvailable || database->connect("lbDMF", "lbDMF", lbDMFUser, lbDMFPasswd) != ERR_NONE) {
+			_LOG << "lbLocale::translate() Error: Failed to connect to the database." LOG_
+			dbAvailable = false;
 			char* temp = *text;
 			*text = (char*) malloc(strlen(to_translate)+1);
 			*text[0] = 0;

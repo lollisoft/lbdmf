@@ -31,10 +31,13 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.41 $
+ * $Revision: 1.42 $
  * $Name:  $
- * $Id: lbobject.h,v 1.41 2007/08/08 19:48:50 lollisoft Exp $
+ * $Id: lbobject.h,v 1.42 2008/01/17 19:28:31 lollisoft Exp $
  * $Log: lbobject.h,v $
+ * Revision 1.42  2008/01/17 19:28:31  lollisoft
+ * Shortcircuit the translation when no database is available.
+ *
  * Revision 1.41  2007/08/08 19:48:50  lollisoft
  * Changes to allow using BLOB data fields. Not completely finished.
  *
@@ -300,6 +303,7 @@ public:
 
         UAP(lb_I_Translations, translations)
         char* _lang;
+		bool  dbAvailable;
 };
 /*...e*/
 
