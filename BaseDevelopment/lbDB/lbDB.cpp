@@ -5203,6 +5203,7 @@ private:
 	char*	 db;
 	bool	 connected;
 
+	UAP(lb_I_Container, brokenConnections)
 	UAP(lb_I_Container, connPooling)
 };
 
@@ -5221,6 +5222,7 @@ lbDatabase::lbDatabase() {
 	user = NULL;
 	db = NULL;
 	connPooling = NULL;
+	brokenConnections = NULL;
 	connected = false;
 	_CL_VERBOSE << "lbDatabase::lbDatabase() called." LOG_
 }
@@ -5284,62 +5286,72 @@ bool LB_STDCALL lbDatabase::isConnected() {
 /*...slbErrCodes LB_STDCALL lbDatabase\58\\58\connect\40\char\42\ DSN\44\ char\42\ user\44\ char\42\ passwd\41\:0:*/
 lbErrCodes LB_STDCALL lbDatabase::connect(char* connectionname, char* DSN, char* user, char* passwd) {
 	lbErrCodes err = ERR_NONE;
-
+	
 	// Put me to unconnected state, if anything goes wrong...
 	connected = false;
 	
 	if (connPooling == NULL) {
-	    UAP_REQUEST(manager.getPtr(), lb_I_Container, container)
-	    container->queryInterface("lb_I_Container", (void**) &connPooling, __FILE__, __LINE__);
+	    REQUEST(manager.getPtr(), lb_I_Container, connPooling)
 	}
+	
+	if (brokenConnections == NULL) {
+	    REQUEST(manager.getPtr(), lb_I_Container, brokenConnections)
+	}
+	
 	
 	UAP_REQUEST(manager.getPtr(), lb_I_String, ConnectionName)
 	*ConnectionName = connectionname;
 	
 	UAP(lb_I_KeyBase, key)
 	UAP(lb_I_Unknown, uk)
-	
+		
 	QI(ConnectionName, lb_I_KeyBase, key)
+	
+	/// \todo Implement a retry function in the GUI or automatically.
+	if (brokenConnections->exists(&key) != 1) {
+		_LOG << "Error: This connection is currently not available." LOG_
+		return ERR_DB_CONNECT;
+	}
 	
 	if (connPooling->exists(&key) != 1) {
 	    _CL_VERBOSE << "SQLAllocConnect(henv, &hdbc);" LOG_
-
+		
 	    retcode = SQLAllocConnect(henv, &hdbc); /* Connection handle */
-
+		
 	    if (retcode != SQL_SUCCESS)
 	    {
-		_LOG << "SQLAllocConnect(henv, &hdbc) failed." LOG_
+			_LOG << "SQLAllocConnect(henv, &hdbc) failed." LOG_
     		_dbError_ENV("SQLAllocConnect()", henv);
         	SQLFreeEnv(henv);
     		return ERR_DB_CONNECT;
-    	    }	
+		}	
         
 	    lbConnection* c = new lbConnection();
 	    
 	    c->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
-	
+		
 	    c->setConnection(hdbc);
-
+		
 	    QI(c, lb_I_Unknown, uk)
-	    
-	    _CL_VERBOSE << "SQLSetConnectOption(hdbc, SQL_LOGIN_TIMEOUT, 15);" LOG_
-	    retcode = SQLSetConnectOption(hdbc, SQL_LOGIN_TIMEOUT, 15); /* Set login timeout to 15 seconds. */
-
-            if (retcode != SQL_SUCCESS)
-            {
-		_LOG << "SQLSetConnectOption(hdbc, SQL_LOGIN_TIMEOUT, 15) failed." LOG_
-                _dbError_DBC( "SQLSetConnectOption()", hdbc);
-                SQLFreeEnv(henv);
-                return ERR_DB_CONNECT;
-            }
-
+			
+		_CL_VERBOSE << "SQLSetConnectOption(hdbc, SQL_LOGIN_TIMEOUT, 5);" LOG_
+		retcode = SQLSetConnectOption(hdbc, SQL_LOGIN_TIMEOUT, 5); /* Set login timeout to 15 seconds. */
+		
+		if (retcode != SQL_SUCCESS)
+		{
+			_LOG << "SQLSetConnectOption(hdbc, SQL_LOGIN_TIMEOUT, 5) failed." LOG_
+			_dbError_DBC( "SQLSetConnectOption()", hdbc);
+			SQLFreeEnv(henv);
+			return ERR_DB_CONNECT;
+		}
+		
 	    _CL_VERBOSE << "SQLSetConnectAttr(hdbc, SQL_ATTR_ODBC_CURSORS, SQL_CUR_USE_IF_NEEDED, 0);" LOG_
-
+			
 		// SQL_CUR_USE_IF_NEEDED does not work with psqlODBC 8.x.x
 		// Use Cursor library.
-	    //retcode = SQLSetConnectAttr(hdbc, SQL_ATTR_ODBC_CURSORS, (void*)SQL_CUR_USE_ODBC/*SQL_CUR_USE_IF_NEEDED*/, 0);
-	    retcode = SQLSetConnectAttr(hdbc, SQL_ATTR_ODBC_CURSORS, SQL_CUR_USE_IF_NEEDED, 0);
-
+		//retcode = SQLSetConnectAttr(hdbc, SQL_ATTR_ODBC_CURSORS, (void*)SQL_CUR_USE_ODBC/*SQL_CUR_USE_IF_NEEDED*/, 0);
+		retcode = SQLSetConnectAttr(hdbc, SQL_ATTR_ODBC_CURSORS, SQL_CUR_USE_IF_NEEDED, 0);
+		
 		if (retcode != SQL_SUCCESS)
 		{
 			_LOG << "SQLSetConnectAttr(hdbc, SQL_ATTR_ODBC_CURSORS, SQL_CUR_USE_IF_NEEDED, 0) failed." LOG_
@@ -5347,41 +5359,48 @@ lbErrCodes LB_STDCALL lbDatabase::connect(char* connectionname, char* DSN, char*
 			SQLFreeEnv(henv);
 			return ERR_DB_CONNECT;
 	    }
-
+		
 	    retcode = SQLConnect(hdbc, (unsigned char*) DSN, SQL_NTS, 
-				       (unsigned char*) user, SQL_NTS, 
-				       (unsigned char*) passwd, SQL_NTS); /* Connect to data source */
-
-	    if (retcode != SQL_SUCCESS && retcode != SQL_SUCCESS_WITH_INFO)
+							 (unsigned char*) user, SQL_NTS, 
+							 (unsigned char*) passwd, SQL_NTS); /* Connect to data source */
+							 
+		if (retcode != SQL_SUCCESS && retcode != SQL_SUCCESS_WITH_INFO)
 		{
 			_dbError_DBC( "SQLConnect()", hdbc);
 			_LOG << "Connection to database failed." LOG_
 			SQLFreeEnv(henv);
+			
+			UAP(lb_I_Unknown, ukConn)
+			QI(ConnectionName, lb_I_Unknown, ukConn)
+			
+			brokenConnections->insert(&ukConn, &key);
+			
 			return ERR_DB_CONNECT;
 		}
-            
-/* Does not help :-(
-	    retcode = SQLSetConnectAttr(hdbc, SQL_TXN_ISOLATION, (void*) SQL_TXN_SERIALIZABLE, 0); //(void*) SQL_TXN_REPEATABLE_READ, 0);
-	    
-	    if (retcode != SQL_SUCCESS)
-	    {
-	        _dbError_DBC( "SQLSetConnectOption(SQL_TXN_ISOLATION, SQL_TXN_REPEATABLE_READ)", hdbc);
-	        SQLFreeEnv(henv);
-	        return ERR_DB_CONNECT;
-	    }
-*/
+		 
+		/* Does not help :-(
+		retcode = SQLSetConnectAttr(hdbc, SQL_TXN_ISOLATION, (void*) SQL_TXN_SERIALIZABLE, 0); //(void*) SQL_TXN_REPEATABLE_READ, 0);
+		 
+		if (retcode != SQL_SUCCESS)
+		{
+			_dbError_DBC( "SQLSetConnectOption(SQL_TXN_ISOLATION, SQL_TXN_REPEATABLE_READ)", hdbc);
+			SQLFreeEnv(henv);
+			return ERR_DB_CONNECT;
+		}
+		*/
 		retcode = SQLSetConnectOption(hdbc, SQL_AUTOCOMMIT, SQL_AUTOCOMMIT_ON);
-
+		 
 		if (retcode != SQL_SUCCESS)
 		{
 			_LOG << "SQLSetConnectOption(hdbc, SQL_AUTOCOMMIT, SQL_AUTOCOMMIT_ON) failed." LOG_
 			_dbError_DBC( "SQLSetConnectOption(SQL_AUTOCOMMIT, SQL_AUTOCOMMIT_ON)", hdbc);
 			SQLFreeEnv(henv);
 			return ERR_DB_CONNECT;
-	    }
-	    
-	    connPooling->insert(&uk, &key);
+		}
+		 
+		connPooling->insert(&uk, &key);
 	}
+
 	connected = true;
 
 	return ERR_NONE;
