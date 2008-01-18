@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.161 $
+# * $Revision: 1.162 $
 # * $Name:  $
-# * $Id: Makefile,v 1.161 2007/12/28 17:08:40 lollisoft Exp $
+# * $Id: Makefile,v 1.162 2008/01/18 21:36:25 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.162  2008/01/18 21:36:25  lollisoft
+# * Added build steps for sqlite fk implementation.
+# *
 # * Revision 1.161  2007/12/28 17:08:40  lollisoft
 # * Removed some targets from the build target list.
 # *
@@ -1037,7 +1040,11 @@ dummy:
 	$(MAKE) -s -C $@
 
 ../vendor/databaselayer/src/Implementations/Sqllite: dummy
-	$(MAKE) -s -C $@ -e MODULE=databaselayer_sqllite -e TARGET=$(TARGETWXSHARED) -e CUSTOM_FILES=../../*.cpp -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@/sqlitefk/src -e MODULE=gram -e TARGET=$(YACC) -e CUSTOM_FILES='*.y' -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@/sqlitefk/src -f makefile.yacc
+	$(MAKE) -s -C $@/sqlitefk/src -e MODULE=lex -e TARGET=$(LEX) -e CUSTOM_FILES='*.l' -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@/sqlitefk/src -f makefile.lex
+	$(MAKE) -s -C $@ -e MODULE=databaselayer_sqllite -e TARGET=$(TARGETWXSHARED) -e CUSTOM_FILES='../../*.cpp sqlitefk/src/*.c' -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@
 
 ../vendor/databaselayer/test: dummy
