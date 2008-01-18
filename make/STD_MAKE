@@ -25,11 +25,14 @@
 #            73252 Lenningen (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.110 $
+# * $Revision: 1.111 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.110 2008/01/18 21:42:32 lollisoft Exp $
+# * $Id: STD_MAKE,v 1.111 2008/01/18 22:40:07 lollisoft Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.111  2008/01/18 22:40:07  lollisoft
+# * Small problems with new lex and yacc make defines.
+# *
 # * Revision 1.110  2008/01/18 21:42:32  lollisoft
 # * Added lex and yacc target.
 # *
@@ -580,6 +583,8 @@ CPP_LIBOPS_WATCOM_DEBUG = $(WATCOM_STD_CPP_OPS) $(WATCOM_STDDEBUG)  $(WATCOM_LIB
 CC =wcc386
 CPP =wpp386
 RM =del
+LEX=flex
+YACC=bison
 
 # Microsoft
 OUTDIR=.
@@ -735,6 +740,8 @@ CPP=cc
 LD =cc -s
 CP =cp
 EXEDIR =
+LEX=flex
+YACC=bison
 endif
 
 ifeq ($(OSTYPE), solaris)
@@ -788,6 +795,8 @@ CPP=g++
 LD =cc -s
 CP =cp
 EXEDIR =
+LEX=flex
+YACC=bison
 endif
 
 ifeq ($(OSTYPE), osx)
