@@ -146,8 +146,8 @@ columndef:
         }
     | CONSTRAINT TOK_WORD FOREIGN KEY '(' TOK_WORD ')' REFERENCES TOK_WORD '(' TOK_WORD ')'
         {
-            Constraint *constraint;
-            $$ = (Constraint *) malloc(sizeof(Constraint));
+            //ForeignKey *constraint;
+            $$ = (ForeignKey *) malloc(sizeof(ForeignKey));
             $$->col = $6;
 
             $$->ftab = $9;

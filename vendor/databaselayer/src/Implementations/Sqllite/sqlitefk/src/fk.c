@@ -14,6 +14,10 @@
 #include "sql.h"
 #include "mempool.h"
 
+#ifdef BUILD_LIBRARY
+#include <string.h>
+#endif
+
 extern FILE* yyin;
 extern int yyparse(void);
 extern void scanner_finish(void);
@@ -69,9 +73,9 @@ ListItem* getForeignKeyList(char* _table)
 				if (fk == NULL)
 					goto fk_next;
 				
-				copy_of_fk.col = strdup(fk.col);
-				copy_of_fk.ftab = strdup(fk.ftab);
-				copy_of_fk.fcol = strdup(fk.fcol);
+				copy_of_fk->col = strdup(fk->col);
+				copy_of_fk->ftab = strdup(fk->ftab);
+				copy_of_fk->fcol = strdup(fk->fcol);
 				
 				list_append(foreign_keys, copy_of_fk);
 					
@@ -84,7 +88,7 @@ fk_next:
 	
     list_destroy(schema);
     MemPoolDestroy(&mempool);
-	return foreign_keys;
+	return list_head(foreign_keys);
 #endif
 
 #ifndef BUILD_LIBRARY

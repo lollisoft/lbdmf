@@ -43,17 +43,17 @@ list_append(List *list, void *data)
 {
     ListItem *tail;
     int i;
-    ListItem *new = (ListItem *) malloc(sizeof(ListItem));
+    ListItem *_new = (ListItem *) malloc(sizeof(ListItem));
 
-    if (new == NULL)
+    if (_new == NULL)
         return -1;
 
-    new->next = NULL;
-    new->data = data;
+    _new->next = NULL;
+    _new->data = data;
 
     if (list->len == 0)
     {
-        list->head = new;
+        list->head = _new;
         i = 0;
     }
     else
@@ -62,7 +62,7 @@ list_append(List *list, void *data)
         for (i = 1; tail->next; i++)
             tail = tail->next;
 
-        tail->next = new;
+        tail->next = _new;
     }
 
     list->len = i + 1;

@@ -1,7 +1,10 @@
 #ifndef MEMPOOL_H
 #define MEMPOOL_H
 
+#ifndef BUILD_LIBRARY
 typedef unsigned char bool;
+#endif
+
 #define TRUE  1
 #define FALSE 0
 
