@@ -127,6 +127,42 @@ $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 
 endif
 
+ifeq ($(TARGET), yacc)
+
+makefile: makefile.module \
+$(DEVROOT_MAKE)$(RELPATH)/BaseDevelopment/Makefile \
+$(DEVROOT_MAKE)$(RELPATH)/make/makefile.template \
+$(DEVROOT_MAKE)$(RELPATH)/make/STD_MAKE \
+$(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
+	@cat $(DEVROOT_MAKE)$(RELPATH)/make/makefile.template > makefile.yacc
+	@cat makefile.module >> makefile.yacc
+	@echo Path=$(PATH) >> makefile.yacc
+	@echo all: $(_MODULE).output >> makefile.yacc
+	@rm -f $(_MODULE).bak
+	@rm -f $(DEVROOT_MAKE)$(RELPATH)/include/lbkey.h
+	@cp -f $(DEVROOT_MAKE)$(RELPATH)/BaseDevelopment/lbclasses/lbkey.h $(DEVROOT_MAKE)$(RELPATH)/include
+	$(MKMK) $(TARGET) $(_MODULE) ../dosdir $(CUSTOM_FILES) >> makefile.yacc
+
+endif
+
+ifeq ($(TARGET), lex)
+
+makefile: makefile.module \
+$(DEVROOT_MAKE)$(RELPATH)/BaseDevelopment/Makefile \
+$(DEVROOT_MAKE)$(RELPATH)/make/makefile.template \
+$(DEVROOT_MAKE)$(RELPATH)/make/STD_MAKE \
+$(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
+	@cat $(DEVROOT_MAKE)$(RELPATH)/make/makefile.template > makefile.lex
+	@cat makefile.module >> makefile.lex
+	@echo Path=$(PATH) >> makefile.lex
+	@echo all: $(_MODULE).yy.c >> makefile.lex
+	@rm -f $(_MODULE).bak
+	@rm -f $(DEVROOT_MAKE)$(RELPATH)/include/lbkey.h
+	@cp -f $(DEVROOT_MAKE)$(RELPATH)/BaseDevelopment/lbclasses/lbkey.h $(DEVROOT_MAKE)$(RELPATH)/include
+	$(MKMK) $(TARGET) $(_MODULE) ../dosdir $(CUSTOM_FILES) >> makefile.lex
+
+endif
+
 ifeq ($(TARGET), wxplugin)
 
 makefile: makefile.module \

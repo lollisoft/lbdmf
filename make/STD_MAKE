@@ -25,11 +25,14 @@
 #            73252 Lenningen (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.109 $
+# * $Revision: 1.110 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.109 2007/11/26 16:49:51 lollisoft Exp $
+# * $Id: STD_MAKE,v 1.110 2008/01/18 21:42:32 lollisoft Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.110  2008/01/18 21:42:32  lollisoft
+# * Added lex and yacc target.
+# *
 # * Revision 1.109  2007/11/26 16:49:51  lollisoft
 # * Switched off debug informations.
 # *
@@ -820,6 +823,8 @@ LIBS    = #-lc /usr/lib/libSystem.dylib #-lcurses #-llibstdc++
 CC =c++$(COMPILER_VERSION)
 CPP =c++$(COMPILER_VERSION)
 LD =c++$(COMPILER_VERSION)
+LEX=flex
+YACC=bison
 CP =cp
 EXEDIR =
 endif

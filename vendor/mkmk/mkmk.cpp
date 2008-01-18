@@ -12,11 +12,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.89 $
+ * $Revision: 1.90 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.89 2007/11/17 09:44:31 lollisoft Exp $
+ * $Id: mkmk.cpp,v 1.90 2008/01/18 21:44:30 lollisoft Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.90  2008/01/18 21:44:30  lollisoft
+ * Added lex and yacc target.
+ *
  * Revision 1.89  2007/11/17 09:44:31  lollisoft
  * Bugfix for false #include statements (codegenertaion string literals may heve them).
  *
@@ -374,6 +377,12 @@
 #define WXSHARED_TARGET  17
 #define FRAMEWORK_TARGET  18
 #define WXFRAMEWORK_TARGET  19
+
+// Separate mkmk invoke to build the pice of make rule for generating the sources.
+// Generating an extra makefile for this would be callable before the real makefile would be build.
+#define LEX_TARGET 20
+#define YACC_TARGET 21
+
 /*...e*/
 
 int targettype=EXE_TARGET;
@@ -819,7 +828,8 @@ void ObjExt(char *s, char *ObjName, int Len)
   if (l<1) return;
   while (l>=0 && s[l]!='.') l--;
   if (l>=0 && l<Len) memcpy(ObjName,s,l+1);
-  strcat(ObjName,"$(OBJ)");
+  if ((targettype != LEX_TARGET) && (targettype != YACC_TARGET)) 
+	strcat(ObjName,"$(OBJ)");
 }
 /*...e*/
 
@@ -965,6 +975,38 @@ void writeExeTarget(char* modulename) {
 #endif
 }
 /*...e*/
+void writeLexTarget(char* modulename) {
+#ifdef UNIX
+  //printf("\n%s.yy.c: $(OBJS)\n", modulename);
+  //printf("\t\techo Dummy target for lex files.\n");
+#endif
+#ifdef __WATCOMC__
+#endif
+
+#ifdef UNIX
+  printf("install:\n");
+  printf("\n", modulename);
+
+  printf("install-strip:\n");
+  printf("\n", modulename);
+#endif
+}
+void writeYaccTarget(char* modulename) {
+#ifdef UNIX
+  //printf("\n%s.output: $(OBJS)\n", modulename);
+  //printf("\t\techo Dummy target for yacc files.\n");
+#endif
+#ifdef __WATCOMC__
+#endif
+
+#ifdef UNIX
+  printf("install:\n");
+  printf("\n", modulename);
+
+  printf("install-strip:\n");
+  printf("\n", modulename);
+#endif
+}
 /*...swriteDllTarget\40\char\42\ modulename\41\:0:*/
 void writeDllTarget(char* modulename) {
 #ifdef UNIX
@@ -1143,6 +1185,41 @@ void writeLibTarget(char* modulename, TDepList* l) {
 #endif
 }
 /*...e*/
+/// \todo Implement cleanup routine
+void write_lex_clean(char* modulename = NULL) {
+#ifdef __WATCOMC__
+    // Write the normal clean rule
+    printf("clean:\n");
+    
+    // Write the distclean rule
+    printf("distclean:\n");
+#endif //__WATCOMC__
+#ifdef UNIX
+    // Write the normal clean rule
+    printf("clean:\n");
+    
+    // Write the distclean rule
+    printf("distclean:\n");
+#endif //UNIX
+}
+
+/// \todo Implement cleanup routine
+void write_yacc_clean(char* modulename = NULL) {
+#ifdef __WATCOMC__
+    // Write the normal clean rule
+    printf("clean:\n");
+    
+    // Write the distclean rule
+    printf("distclean:\n");
+#endif //__WATCOMC__
+#ifdef UNIX
+    // Write the normal clean rule
+    printf("clean:\n");
+    
+    // Write the distclean rule
+    printf("distclean:\n");
+#endif //UNIX
+}
 
 /*...swrite_clean\40\char\42\ modulename \61\ NULL\41\:0:*/
 void write_clean(char* modulename = NULL) {
@@ -1629,7 +1706,7 @@ void ShowHelp(int argc, char *argv[])
 
   fprintf(stderr, "Enhanced by Lothar Behrens (lothar.behrens@lollisoft.de)\n\n");
 
-  fprintf(stderr, "MKMK: makefile generator $Revision: 1.89 $\n");
+  fprintf(stderr, "MKMK: makefile generator $Revision: 1.90 $\n");
   fprintf(stderr, "Usage: MKMK lib|exe|dll|so modulname includepath,[includepath,...] file1 [file2 file3...]\n");
   
   fprintf(stderr, "Your parameters are: ");
@@ -1811,6 +1888,23 @@ void WriteDep(FILE *f, char *Name, TIncludeParser *p)
 
   for(int c = 0; c < strlen(SExt); c++) SExt[c] = toupper(SExt[c]);
 
+  // Lex and yacc files are a pre step before creating the makefile. At the time mkmk scans for C and CPP files, it doesn't find
+  // these files generated from LEX and YACC. Thus these *.Y and *.L files must be passed before all other source files.
+  // Also usable would be setting new target types for these files.
+  //
+  // Either calling mkmk with a separate set of files for lex and yacc files specifying the correct tardet or implementing the suggested
+  // two pass mechanism are workable. I choose the first to get a solution for this earlier. 
+
+  if (strcmp(SExt, ".L") == 0) {
+  	CPPFlag = 0;
+  	strcpy(Compiler, "$(LEX)");
+  }
+  
+  if (strcmp(SExt, ".Y") == 0) {
+  	CPPFlag = 0;
+  	strcpy(Compiler, "$(YACC)");
+  }
+  
   if (strcmp(SExt, ".C") == 0) {
   	CPPFlag = 0;
   	strcpy(Compiler, "$(CC)");
@@ -1826,8 +1920,17 @@ void WriteDep(FILE *f, char *Name, TIncludeParser *p)
   	strcpy(Compiler, "$(CPP)");
   }
   
-  ObjExt(Name,ObjName,sizeof(ObjName));
-  sprintf(Line,"%s: makefile %s",ObjName,Name);
+  if ((targettype == LEX_TARGET) || (targettype == YACC_TARGET)) {
+	ObjExt(Name,ObjName,sizeof(ObjName));
+	if (targettype == LEX_TARGET) {
+		sprintf(Line, "lex.yy.c: makefile %s",Name);
+	} else {
+		sprintf(Line, "%soutput: makefile %s",ObjName,Name);
+	}
+  } else {
+	ObjExt(Name,ObjName,sizeof(ObjName));
+	sprintf(Line, "%s: makefile %s",ObjName,Name);
+  }
   
   strcpy(ObjNameC, ObjName);
   
@@ -1837,6 +1940,12 @@ void WriteDep(FILE *f, char *Name, TIncludeParser *p)
   int len;
   
   switch (targettype) {
+		case LEX_TARGET:
+                printf("\t\t@%s -i %s\n\n", Compiler, Name);
+				break;
+		case YACC_TARGET:
+                printf("\t\t@%s -d -v %s\n\n", Compiler, Name);
+				break;
         case LIB_TARGET:
                 printf("\t\t@%s $(C_LIBOPS) $(MOD_INCL) %s\n\n", Compiler, Name);
                 break;
@@ -1955,14 +2064,15 @@ void WriteEnding(FILE *f, char *ModuleName, TDepList *l)
 {
   char Line[120] = "";
 
-  printf("OBJS =");
-  
-  ListFiles(f,Line,l,true);
-  Line[0] = 0;
-  
-  printf("OBJLIST =");
-  ListFilesWithComma(f,Line,l,true);
-
+	if ((targettype != LEX_TARGET) && (targettype != YACC_TARGET)) {
+		printf("OBJS =");
+		
+		ListFiles(f,Line,l,true);
+		Line[0] = 0;
+		
+		printf("OBJLIST =");
+		ListFilesWithComma(f,Line,l,true);
+	}
 #ifndef UNIX
 //  printf("LIBS = $(DEVROOT)\\projects\\lib\\lbhook.lib \n");
 #endif
@@ -2006,6 +2116,14 @@ void WriteEnding(FILE *f, char *ModuleName, TDepList *l)
 #else
 
   switch (targettype) {
+		case LEX_TARGET:
+				writeLexTarget(ModuleName);
+				write_lex_clean();
+				break;
+		case YACC_TARGET:
+				writeYaccTarget(ModuleName);
+				write_yacc_clean();
+				break;
         case DLL_TARGET:
                 writeDllTarget(ModuleName);
                 write_clean();
@@ -2238,6 +2356,20 @@ int main(int argc, char *argv[])
         target_ext = strdup(".exe");
   }
   
+  if (strcmp(target, "LEX") == 0) {
+        targettype = LEX_TARGET;
+        target_ext = strdup("");
+  }
+  
+  if (strcmp(target, "YACC") == 0) {
+        targettype = YACC_TARGET;
+        target_ext = strdup("");
+  }
+  
+#define LEX_TARGET 20
+#define YACC_TARGET 21
+
+
   if (strchr(targetname, '.') == NULL) targetname = strcat(targetname, target_ext);
 /*...e*/
   
