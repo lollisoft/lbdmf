@@ -4,6 +4,9 @@
 #ifndef BUILD_LIBRARY
 typedef unsigned char bool;
 #endif
+#ifdef __WATCOMC__
+typedef unsigned char bool;
+#endif
 
 #define TRUE  1
 #define FALSE 0
