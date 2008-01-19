@@ -31,7 +31,7 @@ main (int argc, char **argv)
 #endif
 
 #ifdef BUILD_LIBRARY
-ListItem* getForeignKeyList(char* _table)
+List* getForeignKeyList(char* _table)
 #endif
 {
     int i,x;

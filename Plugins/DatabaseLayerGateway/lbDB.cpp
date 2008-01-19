@@ -65,6 +65,8 @@ extern "C" {
 //#define USE_FETCH_SCROLL
 
 extern "C" {
+// Here I may collide with the both sql.h versions (ODBC and Cody Pisto's version)
+#include <sqlitefk/src/sql.h>
 #include <sql.h>
 #include <sqlext.h>
 }
@@ -1843,7 +1845,7 @@ lb_I_String* LB_STDCALL lbDatabaseLayerQuery::getPKColumn(char const * FKName) {
 void LB_STDCALL lbDatabaseLayerQuery::prepareFKList() {
 	#define TAB_LEN 100
 	#define COL_LEN 100
-	
+	lbErrCodes err = ERR_NONE;
 	void* that = this;
 
 	if (this == NULL) {
@@ -1875,9 +1877,61 @@ void LB_STDCALL lbDatabaseLayerQuery::prepareFKList() {
 	    return;
 	}
 
-// MySQL does not yet support Foreign keys or my tests with type INNODB doesn't work
-// Fallback to use manual queries. (Using MySQL-Max solved that)
+    char* table = getTableName(getColumnName(1));
+    // Use fk code from Cody Pisto
+    wxArrayString* list = currentdbLayer->GetForeignKeys(table);
+    
+    if (list != NULL) {
+        ListItem* templist = list_head(list);
+        
+        while (templist != NULL) {
+   				UAP_REQUEST(manager.getPtr(), lb_I_String, FKName)
+				UAP_REQUEST(manager.getPtr(), lb_I_String, PKTable)
+				UAP_REQUEST(manager.getPtr(), lb_I_String, PKName)
+				UAP_REQUEST(manager.getPtr(), lb_I_String, PKTable_PKName)
+	
+				UAP_REQUEST(manager.getPtr(), lb_I_String, PKColumn)
+	
+                ForeignKey* fk = (ForeignKey *) list_data(templist);
+	
+				*PKTable = fk->ftab;//q->getAsString(1);
+				*PKName = fk->fcol;//q->getAsString(2);		
+				*FKName = fk->col;//->setData(column);
+		
+				UAP(lb_I_Unknown, uk_PKTable)
+				UAP(lb_I_KeyBase, key_FKName)
 
+				UAP(lb_I_Unknown, uk_FKName)
+				UAP(lb_I_KeyBase, key_PKTable_PKName)
+	      
+				QI(FKName, lb_I_KeyBase, key_FKName)
+				QI(PKTable, lb_I_Unknown, uk_PKTable)
+
+
+				//if (isVerbose())
+					printf("%-s ( %-s ) <-- %-s ( %-s )\n", PKTable->charrep(), PKName->charrep(), table, FKName->charrep());
+
+				ForeignColumns->insert(&uk_PKTable, &key_FKName);
+	        
+				*PKTable_PKName = PKTable->charrep();
+				PKColumn = getPKColumn(FKName->charrep());
+				*PKTable_PKName += PKColumn->charrep();
+
+				QI(PKTable_PKName, lb_I_KeyBase, key_PKTable_PKName)
+				QI(FKName, lb_I_Unknown, uk_FKName)
+
+				//PKTable_PKName->toLower();
+
+				_CL_VERBOSE << "Insert map for '" << key_PKTable_PKName->charrep() << 
+					"' to '" << FKName->charrep() << "'" LOG_
+
+				mapPKTable_PKColumns_To_FKName->insert(&uk_FKName, &key_PKTable_PKName);
+
+                templist = list_next(templist);
+        }
+    }
+    
+    // Logical relations, but not defined in the database model.
 	if (ForeignColumns->Count() == 0) {		
 /*...sOriginally for Linux:8:*/
 	lbErrCodes err = ERR_NONE;
@@ -1890,7 +1944,7 @@ void LB_STDCALL lbDatabaseLayerQuery::prepareFKList() {
 
 	_CL_VERBOSE << "lbDatabaseLayerQuery::prepareFKList() tries to read foreign column information from table" LOG_
 	
-	char* table = getTableName(getColumnName(1));
+	
 	
 	lb_I_Module* m = getModuleManager();
 

@@ -452,7 +452,10 @@ DLLEXPORT lbErrCodes LB_STDCALL lbLoadModule(const char* name, HINSTANCE & hinst
 		return ERR_MODULE_INVALID_PARAMETER;
 	}
 
-	_LOG << "Try to load a module " << name LOG_
+	if (isVerbose()) {
+		_LOG << "Try to load a module " << name LOG_
+	}
+	
 #ifdef WINDOWS
 	
 	_Modules *m = findModule(name);

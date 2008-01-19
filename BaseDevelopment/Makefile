@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.163 $
+# * $Revision: 1.164 $
 # * $Name:  $
-# * $Id: Makefile,v 1.163 2008/01/18 22:38:34 lollisoft Exp $
+# * $Id: Makefile,v 1.164 2008/01/19 21:51:42 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.164  2008/01/19 21:51:42  lollisoft
+# * Go to Mac for further development.
+# *
 # * Revision 1.163  2008/01/18 22:38:34  lollisoft
 # * Small problems with new lex and yacc make defines.
 # *
@@ -918,6 +921,9 @@ ALLTARGETS = \
 	$(BASEDIRECTORIES)
 
 #	../vendor/dbwrapcontrols
+# sqlitefk is included in Sqllite target, but may be used separately including this target.
+# When including this target, the include path for sql.h must pount to ./sqlite/src
+#	../vendor/databaselayer/src/Implementations/Sqllite/sqlitefk/build/mkmk
 
 ALLDIRS = \
 	lbHook \
@@ -1057,6 +1063,11 @@ dummy:
 	$(MAKE) -s -C $@/sqlitefk/src -f makefile.lex
 	$(MAKE) -s -C $@ -e MODULE=databaselayer_sqllite -e TARGET=$(TARGETWXSHARED) -e CUSTOM_FILES='../../*.cpp sqlitefk/src/*.c' -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@
+
+../vendor/databaselayer/src/Implementations/Sqllite/sqlitefk/build/mkmk: dummy
+	$(MAKE) -s -C $@ -e MODULE=sqllitefk -e TARGET=$(TARGETDLL) -e CUSTOM_FILES=../../src/*.c -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@
+
 
 ../vendor/databaselayer/test: dummy
 	$(MAKE) -s -C $@ -e MODULE=databaselayer_test -e TARGET=$(TARGETWXEXE) -e CUSTOM_FILES=../../*.cpp -f $(MAKE_CONFIG_FILE)

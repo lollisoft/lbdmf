@@ -41,4 +41,6 @@ typedef struct table
     List *fks;
 } Table;
 
+List* getForeignKeyList(char* _table);
+
 #endif

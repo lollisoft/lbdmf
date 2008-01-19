@@ -3,8 +3,10 @@
 ifeq ($(OSTYPE), Windows_NT)
 ifeq ($(CRUISECONTROL), yes)
 RELPATH=
+RELPATH_MAKE=
 else
-RELPATH=\Projects\CPP
+RELPATH_MAKE=\Projects\CPP
+RELPATH=//Projects//CPP
 endif
 include $(DEVROOT)$(RELPATH)\make\STD_MAKE
 endif
