@@ -5,6 +5,8 @@
 #include "../include/DatabaseErrorCodes.h"
 #include "../include/DatabaseLayerException.h"
 
+#include <sqlitefk/src/sql.h>
+
 #include <wx/tokenzr.h>
 
 // ctor()
@@ -14,6 +16,7 @@ SqliteDatabaseLayer::SqliteDatabaseLayer()
   m_pDatabase = NULL; //&m_Database; //new sqlite3;
   wxCSConv conv(_("UTF-8"));
   SetEncoding(&conv);
+  m_fklist = NULL;
 }
 
 SqliteDatabaseLayer::SqliteDatabaseLayer(const wxString& strDatabase)
@@ -23,12 +26,16 @@ SqliteDatabaseLayer::SqliteDatabaseLayer(const wxString& strDatabase)
   wxCSConv conv(_("UTF-8"));
   SetEncoding(&conv);
   Open(strDatabase);
+  m_fklist = NULL;
 }
 
 // dtor()
 SqliteDatabaseLayer::~SqliteDatabaseLayer()
 {
   //wxPrintf(_("~SqliteDatabaseLayer()\n"));
+
+  if (m_fklist) list_destroy((List*)m_fklist);
+
   Close();
   //wxDELETE(m_pDatabase);
 }
@@ -436,15 +443,52 @@ wxArrayString SqliteDatabaseLayer::GetPrimaryKeys(const wxString& table) {
   return returnArray;
 }
 
-#ifdef SUPPORT_FOREIGN_KEYS
-wxArrayString SqliteDatabaseLayer::GetForeignKeys(const wxString& table) {
-  wxArrayString returnArray;
+int SqliteDatabaseLayer::GetForeignKeys(const wxString& table) {
+	printf("SqliteDatabaseLayer::GetForeignKeys() called.\n");
+	if (m_fklist) list_destroy((List*)m_fklist);
+	
+	// select the corresponding SQL definition from the system table and pass it to sql_ddl.
+	
+	char* sql_ddl = "CREATE TABLE test (	id INTEGER PRIMARY KEY,	test CHAR(100),	id_reg INTEGER,	CONSTRAINT fk_reg FOREIGN KEY (id_reg) REFERENCES regressiontest (id));";
+	
+	m_fklist = (void*) getForeignKeyList((char*) table.c_str(), sql_ddl);
 
-  throw new DatabaseLayerException(DATABASE_LAYER_NOT_IMPLEMENTED, "Foreign keys support not implemented.");
+	printf("SqliteDatabaseLayer::GetForeignKeys() getForeignKeyList called.\n");
+	
+	if (m_fklist)	{
+		ListItem* item = list_head((List*) m_fklist);
 
-  return returnArray;
+		arrFKCols.Clear();
+		arrPKCols.Clear();
+		arrPKTables.Clear();
+
+		for (int i = 0; i < ((List*) m_fklist)->len; i++) {
+			if (item == NULL) break; 
+			ForeignKey *fk = (ForeignKey *)list_data(item);
+			arrFKCols.Add(fk->col);
+			arrPKCols.Add(fk->fcol);
+			arrPKTables.Add(fk->ftab);
+			item = list_next(item);
+			if (item == NULL) break; 
+		}
+
+		return ((List*) m_fklist)->len;
+	}
+	
+	return 0;
 }
-#endif
+
+wxString& SqliteDatabaseLayer::GetForeignKeyFKColumn(const int index) {
+	return arrFKCols[index];
+}
+
+wxString& SqliteDatabaseLayer::GetForeignKeyPKColumn(const int index) {
+	return arrPKCols[index];
+}
+
+wxString& SqliteDatabaseLayer::GetForeignKeyPKTable(const int index) {
+	return arrPKTables[index];
+}
 
 
 wxArrayString SqliteDatabaseLayer::GetTables()

@@ -72,14 +72,24 @@ public:
   virtual wxArrayString GetColumns(const wxString& table);
   virtual wxArrayString GetPrimaryKeys(const wxString& table);
 
-#ifdef SUPPORT_FOREIGN_KEYS
-  virtual wxArrayString GetForeignKeys(const wxString& table);
-#endif
+  virtual int GetForeignKeys(const wxString& table);
+
+  /// Retrieve the foreign key column name
+  virtual wxString& GetForeignKeyFKColumn(const int index);
+
+  /// Retrieve the primary key column name of the current foreign key
+  virtual wxString& GetForeignKeyPKColumn(const int index);
+
+  /// Retrieve the primary key table name of the current foreign key
+  virtual wxString& GetForeignKeyPKTable(const int index);
 
   static int TranslateErrorCode(int nCode);
 
 private:
-  
+  wxArrayString arrFKCols;
+  wxArrayString arrPKCols;
+  wxArrayString arrPKTables;
+  void* m_fklist;
   sqlite3* m_pDatabase;
 };
 

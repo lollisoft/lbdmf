@@ -18,6 +18,12 @@
 #include <string.h>
 #endif
 
+typedef struct yy_buffer_state *YY_BUFFER_STATE; 
+
+int             yylex( void ); 
+YY_BUFFER_STATE yy_scan_string( const char * ); 
+void            yy_delete_buffer( YY_BUFFER_STATE ); 
+
 extern FILE* yyin;
 extern int yyparse(void);
 extern void scanner_finish(void);
@@ -31,7 +37,7 @@ main (int argc, char **argv)
 #endif
 
 #ifdef BUILD_LIBRARY
-List* getForeignKeyList(char* _table)
+List* getForeignKeyList(char* _table, char* sql_ddl)
 #endif
 {
     int i,x;
@@ -49,19 +55,32 @@ List* getForeignKeyList(char* _table)
      */
 	 
 	 
-	yyin = fopen("test.sql", "rb");
-	  
-	if (yyin == NULL) printf("Error: Can't open file.\n");
-	  
-    yyparse();
-    scanner_finish();
+	if (sql_ddl == NULL) {
+		yyin = fopen("test.sql", "rb");
+		if (yyin == NULL) printf("Error: Can't open file.\n");
+		yyparse();
+		scanner_finish();
+	} else {
+		YY_BUFFER_STATE mybuf;
+		printf("Parsing for the following SQL definition: %s\n", sql_ddl);
+		mybuf = yy_scan_string(sql_ddl);
+		yyparse();
+		scanner_finish();
+		//yy_delete_buffer(mybuf); 
+	}
+	
 
 #ifdef BUILD_LIBRARY
+	printf("Start reading structure generated from scanner...\n");
     tabitem = list_head(schema);
-    for (i = 0; tabitem; i++)
+    while (tabitem != NULL)
     {
         table = (Table *)list_data(tabitem);
 		
+		if (table == NULL)
+			goto table_next;
+		
+		printf("Compare table '%s' with '%s'.\n", table->name, _table);
 		if (strcmp(table->name, _table) == 0) {
 			foreign_keys = list_new();
 			
@@ -73,6 +92,7 @@ List* getForeignKeyList(char* _table)
 				if (fk == NULL)
 					goto fk_next;
 				
+				printf("Foreign key %s points to %s.\n", fk->col, fk->ftab);
 				copy_of_fk->col = strdup(fk->col);
 				copy_of_fk->ftab = strdup(fk->ftab);
 				copy_of_fk->fcol = strdup(fk->fcol);
@@ -84,11 +104,13 @@ fk_next:
 			}
 	        list_destroy(table->fks);
 		}
+table_next:		
+		tabitem = list_next(tabitem);
 	}
 	
     list_destroy(schema);
     MemPoolDestroy(&mempool);
-	return list_head(foreign_keys);
+	return foreign_keys;
 #endif
 
 #ifndef BUILD_LIBRARY

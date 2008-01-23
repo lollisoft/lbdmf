@@ -66,7 +66,7 @@ extern "C" {
 
 extern "C" {
 // Here I may collide with the both sql.h versions (ODBC and Cody Pisto's version)
-#include <sqlitefk/src/sql.h>
+//#include <sqlitefk/src/sql.h>
 #include <sql.h>
 #include <sqlext.h>
 }
@@ -1489,11 +1489,14 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::query(char* q, bool bind) {
 		
 		if (theResult != NULL) {
 			if (!theResult->Next()) {
+				if (skipFKCollections == 0) prepareFKList();
 				return ERR_DB_NODATA;
 			} else {
 				///\todo Read in all primary key values used as 'cursor'
 				wxString theQuery = szSql;
+				if (skipFKCollections == 0) prepareFKList();
 							
+
 /*				
 				if (theQuery.Upper().Contains("JOIN")) {
 					joinClause = theQuery.SubString(theQuery.Find(wxString("JOIN")), theQuery.Length());
@@ -1590,6 +1593,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::query(char* q, bool bind) {
 		} else {
 			return ERR_DB_QUERYFAILED;
 		}
+		
 		return ERR_NONE;
 	} catch (...) {
 		return ERR_DB_QUERYFAILED;
@@ -1726,6 +1730,11 @@ int LB_STDCALL lbDatabaseLayerQuery::hasFKColumn(char* FKName) {
 int LB_STDCALL lbDatabaseLayerQuery::getFKColumns() {
 	if (skipFKCollections == 1) return 0;
 
+	if (ForeignColumns == NULL) {
+		_CL_LOG << "Error: List of foreign columns is not initialized!" LOG_
+		return 0;
+	}
+
 	return ForeignColumns->Count();
 }
 /*...e*/
@@ -1843,6 +1852,8 @@ lb_I_String* LB_STDCALL lbDatabaseLayerQuery::getPKColumn(char const * FKName) {
 
 /*...svoid LB_STDCALL lbDatabaseLayerQuery\58\\58\prepareFKList\40\\41\:0:*/
 void LB_STDCALL lbDatabaseLayerQuery::prepareFKList() {
+	_CL_LOG << "lbDatabaseLayerQuery::prepareFKList() called." LOG_
+
 	#define TAB_LEN 100
 	#define COL_LEN 100
 	lbErrCodes err = ERR_NONE;
@@ -1857,16 +1868,20 @@ void LB_STDCALL lbDatabaseLayerQuery::prepareFKList() {
 	}
 
 	if (mapPKTable_PKColumns_To_FKName == NULL) {
-		REQUEST(manager.getPtr(), lb_I_Container, mapPKTable_PKColumns_To_FKName)
+		REQUEST(getModuleInstance(), lb_I_Container, mapPKTable_PKColumns_To_FKName)
 	} else {
 		mapPKTable_PKColumns_To_FKName->deleteAll();
 	}
 
 
 	if (ForeignColumns == NULL) {
-		REQUEST(manager.getPtr(), lb_I_Container, ForeignColumns)
+		REQUEST(getModuleInstance(), lb_I_Container, ForeignColumns)
 	} else {
 		ForeignColumns->deleteAll();
+	}
+
+	if (ForeignColumns == NULL) {
+		_CL_LOG << "FATAL: ForeignColumns could note be initialized!" LOG_
 	}
 
 	if (skipFKCollections == 1) {
@@ -1879,59 +1894,65 @@ void LB_STDCALL lbDatabaseLayerQuery::prepareFKList() {
 
     char* table = getTableName(getColumnName(1));
     // Use fk code from Cody Pisto
-    wxArrayString* list = currentdbLayer->GetForeignKeys(table);
-    
-    if (list != NULL) {
-        ListItem* templist = list_head(list);
-        
-        while (templist != NULL) {
-   				UAP_REQUEST(manager.getPtr(), lb_I_String, FKName)
-				UAP_REQUEST(manager.getPtr(), lb_I_String, PKTable)
-				UAP_REQUEST(manager.getPtr(), lb_I_String, PKName)
-				UAP_REQUEST(manager.getPtr(), lb_I_String, PKTable_PKName)
 	
-				UAP_REQUEST(manager.getPtr(), lb_I_String, PKColumn)
-	
-                ForeignKey* fk = (ForeignKey *) list_data(templist);
-	
-				*PKTable = fk->ftab;//q->getAsString(1);
-				*PKName = fk->fcol;//q->getAsString(2);		
-				*FKName = fk->col;//->setData(column);
-		
-				UAP(lb_I_Unknown, uk_PKTable)
-				UAP(lb_I_KeyBase, key_FKName)
-
-				UAP(lb_I_Unknown, uk_FKName)
-				UAP(lb_I_KeyBase, key_PKTable_PKName)
-	      
-				QI(FKName, lb_I_KeyBase, key_FKName)
-				QI(PKTable, lb_I_Unknown, uk_PKTable)
-
-
-				//if (isVerbose())
-					printf("%-s ( %-s ) <-- %-s ( %-s )\n", PKTable->charrep(), PKName->charrep(), table, FKName->charrep());
-
-				ForeignColumns->insert(&uk_PKTable, &key_FKName);
-	        
-				*PKTable_PKName = PKTable->charrep();
-				PKColumn = getPKColumn(FKName->charrep());
-				*PKTable_PKName += PKColumn->charrep();
-
-				QI(PKTable_PKName, lb_I_KeyBase, key_PKTable_PKName)
-				QI(FKName, lb_I_Unknown, uk_FKName)
-
-				//PKTable_PKName->toLower();
-
-				_CL_VERBOSE << "Insert map for '" << key_PKTable_PKName->charrep() << 
-					"' to '" << FKName->charrep() << "'" LOG_
-
-				mapPKTable_PKColumns_To_FKName->insert(&uk_FKName, &key_PKTable_PKName);
-
-                templist = list_next(templist);
-        }
-    }
+	try {
+		int count = currentdbLayer->GetForeignKeys(table);
+		//_CL_LOG << "Number of foreign keys: " << count LOG_
+		for (int i = 0; i < count; i++) {
+			UAP_REQUEST(manager.getPtr(), lb_I_String, FKName)
+			UAP_REQUEST(manager.getPtr(), lb_I_String, PKTable)
+			UAP_REQUEST(manager.getPtr(), lb_I_String, PKName)
+			UAP_REQUEST(manager.getPtr(), lb_I_String, PKTable_PKName)
+			
+			UAP_REQUEST(manager.getPtr(), lb_I_String, PKColumn)
+			
+			wxString fkEntry = currentdbLayer->GetForeignKeyFKColumn(i);
+			wxString pkEntry = currentdbLayer->GetForeignKeyPKColumn(i);
+			wxString pkTable = currentdbLayer->GetForeignKeyPKTable(i);
+			
+			//_CL_LOG << "FKColumn = " << fkEntry.c_str() << ", PKColumn = " << pkEntry.c_str() << ", PKTable = " << pkTable.c_str() LOG_
+			
+			*PKTable = pkTable.c_str();
+			*PKName = pkEntry.c_str();		
+			*FKName = fkEntry.c_str();
+			
+			UAP(lb_I_Unknown, uk_PKTable)
+			UAP(lb_I_KeyBase, key_FKName)
+				
+			UAP(lb_I_Unknown, uk_FKName)
+			UAP(lb_I_KeyBase, key_PKTable_PKName)
+				
+			QI(FKName, lb_I_KeyBase, key_FKName)
+			QI(PKTable, lb_I_Unknown, uk_PKTable)
+				
+				
+			if (isVerbose())
+			printf("%-s ( %-s ) <-- %-s ( %-s )\n", PKTable->charrep(), PKName->charrep(), table, FKName->charrep());
+			
+			ForeignColumns->insert(&uk_PKTable, &key_FKName);
+			
+			*PKTable_PKName = PKTable->charrep();
+			// Geht wahrscheinlich nicht.
+			//PKColumn = getPKColumn(FKName->charrep());
+			*PKTable_PKName += PKName->charrep();
+			
+			QI(PKTable_PKName, lb_I_KeyBase, key_PKTable_PKName)
+			QI(FKName, lb_I_Unknown, uk_FKName)
+				
+			//PKTable_PKName->toLower();
+				
+			_CL_VERBOSE << "Insert map for '" << key_PKTable_PKName->charrep() << 
+			"' to '" << FKName->charrep() << "'" LOG_
+				
+			mapPKTable_PKColumns_To_FKName->insert(&uk_FKName, &key_PKTable_PKName);
+		}
+	} catch (...) {
+		_CL_LOG << "Exception caught!" LOG_
+	}
     
     // Logical relations, but not defined in the database model.
+
+#ifdef Bla
 	if (ForeignColumns->Count() == 0) {		
 /*...sOriginally for Linux:8:*/
 	lbErrCodes err = ERR_NONE;
@@ -2035,6 +2056,7 @@ void LB_STDCALL lbDatabaseLayerQuery::prepareFKList() {
 	}
 /*...e*/
 	}
+#endif //Bla
 }
 /*...e*/
 /*...sint LB_STDCALL lbDatabaseLayerQuery\58\\58\getPKColumns\40\\41\:0:*/
@@ -2142,7 +2164,7 @@ void LB_STDCALL lbDatabaseLayerQuery::setReadonly(char* column, bool updateable)
 		boundColumns->setReadonly(column, updateable);
 	}
 	
-	_CL_LOG << "lbDatabaseLayerQuery::setReadonly(...) returns." LOG_
+	_CL_VERBOSE << "lbDatabaseLayerQuery::setReadonly(...) returns." LOG_
 }
 /*...e*/
 /*...sbool LB_STDCALL lbDatabaseLayerQuery\58\\58\getReadonly\40\char\42\ column\41\:0:*/
@@ -2152,8 +2174,10 @@ bool LB_STDCALL lbDatabaseLayerQuery::getReadonly(char* column) {
 /*...e*/
 /*...schar\42\ LB_STDCALL lbDatabaseLayerQuery\58\\58\getTableName\40\char\42\ columnName\41\:0:*/
 char* LB_STDCALL lbDatabaseLayerQuery::getTableName(char* columnName) {
-	///\todo Implement
-	return "Umimplemented";
+	ResultSetMetaData* metadata = theResult->GetMetaData();
+	static wxString table = metadata->GetTableForColumn(columnName);
+	_CL_VERBOSE << "Returning table name " << table.c_str() << " for columnname " << columnName LOG_
+	return (char*) table.c_str();
 }
 /*...e*/
 /*...schar\42\ LB_STDCALL lbDatabaseLayerQuery\58\\58\getColumnName\40\int col\41\:0:*/
@@ -2165,7 +2189,8 @@ char* LB_STDCALL lbDatabaseLayerQuery::getColumnName(int col) {
 	if (metadata->GetColumnCount() < col) {
 		_CL_LOG << "Error: Have only " << metadata->GetColumnCount() << " columns, but get called with " << col << "!" LOG_
 	}
-	wxString column = metadata->GetColumnName(col);
+	static wxString column = metadata->GetColumnName(col);
+	_CL_VERBOSE << "Returning column " << column.c_str() LOG_
 	return (char*) column.c_str();
 }
 /*...e*/

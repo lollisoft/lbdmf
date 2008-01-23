@@ -244,21 +244,19 @@
 								<string>270BA7B6086C0A0900799F65</string>
 								<string>2764970D086ED80A000EB62C</string>
 								<string>1C37FBAC04509CD000000102</string>
-								<string>273DA0E20CE9AD4E00677239</string>
-								<string>273DA0E30CE9AD4E00677239</string>
+								<string>27A964010D3F37640077363F</string>
 								<string>1C37FAAC04509CD000000102</string>
 								<string>1C37FABC05509CD000000102</string>
 							</array>
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
-									<integer>94</integer>
-									<integer>83</integer>
-									<integer>0</integer>
+									<integer>107</integer>
+									<integer>96</integer>
 								</array>
 							</array>
 							<key>PBXSmartGroupTreeModuleOutlineStateVisibleRectKey</key>
-							<string>{{0, 1083}, {294, 821}}</string>
+							<string>{{0, 1168}, {294, 821}}</string>
 						</dict>
 						<key>PBXTopSmartGroupGIDs</key>
 						<array/>
@@ -299,7 +297,7 @@
 										<key>PBXProjectModuleLabel</key>
 										<string>formularactions.cpp</string>
 										<key>bookmark</key>
-										<string>273DA0E70CE9AD4E00677239</string>
+										<string>27A964020D3F37640077363F</string>
 										<key>history</key>
 										<array>
 											<string>2778C2A50B5A4E1E003524C2</string>
@@ -385,7 +383,7 @@
 											<string>2773F23C0C3D1B740037A8EB</string>
 											<string>2773F23D0C3D1B740037A8EB</string>
 											<string>275A5D2F0CA3E69E00D366CC</string>
-											<string>27C769BF0CB6277600395A7A</string>
+											<string>273DA0E70CE9AD4E00677239</string>
 										</array>
 										<key>prevStack</key>
 										<array>
@@ -530,9 +528,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>273DA0E50CE9AD4E00677239</string>
+				<string>27A964030D3F37640077363F</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>273DA0E60CE9AD4E00677239</string>
+				<string>27A964040D3F37640077363F</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>

@@ -209,7 +209,6 @@ int main(int argc, char *argv[]) {
 		DatabaseWrapper1->connect("lbDMF", "lbDMF", lbDMFUser, lbDMFPasswd);
 		
 		query2 = DatabaseWrapper1->getQuery("lbDMF", 0);
-		query2->enableFKCollecting();
 		query2->skipPeeking();
 		query2->query("select id, test, btest, btest1 from regressiontest");
 		
@@ -235,6 +234,12 @@ int main(int argc, char *argv[]) {
 		query2->update();
 		
 		query2->PrintData();
+		
+		query2->enableFKCollecting();
+		query2->query("select * from test");
+		int fkcolumns = query2->getFKColumns();
+		
+		_CL_LOG << "Have " << fkcolumns << " foreign keys in table." LOG_
 		
 		_CL_LOG << "Done testing DatabaseLayer wrapper." LOG_
 
