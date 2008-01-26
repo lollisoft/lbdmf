@@ -192,14 +192,14 @@ public:
 	 *
 	 * \param col Integer index of the column.
 	 */
-	virtual char*      LB_STDCALL getColumnName(int col) = 0;
+	virtual lb_I_String*      LB_STDCALL getColumnName(int col) = 0;
 
 	/**
 	 * \brief Get the table name of the query.
 	 *
 	 * This is still buggy, if the query has joins.
 	 */
-	virtual char* LB_STDCALL getTableName(char* columnName = NULL) = 0;
+	virtual lb_I_String* LB_STDCALL getTableName(char* columnName = NULL) = 0;
 
 	/**
 	 * \brief Skip foreign column informations.
@@ -1025,7 +1025,7 @@ public:
 	 *
 	 * Return the related table name, that contains the given column name.
 	 */
-	virtual char* LB_STDCALL getTableName(char* columnName) = 0;
+	virtual lb_I_String* LB_STDCALL getTableName(char* columnName) = 0;
 
 /*...sMaster Detail form interface part:8:*/
 	/** \brief Get the number of master columns.
@@ -1097,7 +1097,7 @@ public:
 	 */
 	virtual void LB_STDCALL ignoreForeignKeys(char* toTable) = 0;
 
-	virtual char* LB_STDCALL getColumnName(int pos) = 0;
+	virtual lb_I_String* LB_STDCALL getColumnName(int pos) = 0;
 	
 	/** \brief Reopen the form.
 	 * Used in SQL actions to ensure valid data (after deletion of some data for sample).

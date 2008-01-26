@@ -1,11 +1,17 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.164 $
+# * $Revision: 1.165 $
 # * $Name:  $
-# * $Id: Makefile,v 1.164 2008/01/19 21:51:42 lollisoft Exp $
+# * $Id: Makefile,v 1.165 2008/01/26 20:24:43 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.165  2008/01/26 20:24:43  lollisoft
+# * Implemented more functions regarding to meta data for sqlite database gateway. Some interface functions have
+# * been changed to get proper working test application.
+# *
+# * These are getTableName and getColumnName in lb_I_Query interface.
+# *
 # * Revision 1.164  2008/01/19 21:51:42  lollisoft
 # * Go to Mac for further development.
 # *
@@ -705,6 +711,7 @@ ALLTARGETS = \
 	$(BASEDIRECTORIES)
 
 #	../vendor/wxARG/src \
+#	../vendor/databaselayer/tests \
 
 ALLDIRS = \
 	../vendor/dosdir \
@@ -1062,6 +1069,10 @@ dummy:
 	$(MAKE) -s -C $@/sqlitefk/src -e MODULE=lex -e TARGET=$(TARGETLEX) -e CUSTOM_FILES='*.l' -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@/sqlitefk/src -f makefile.lex
 	$(MAKE) -s -C $@ -e MODULE=databaselayer_sqllite -e TARGET=$(TARGETWXSHARED) -e CUSTOM_FILES='../../*.cpp sqlitefk/src/*.c' -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@
+
+../vendor/databaselayer/tests: dummy
+	$(MAKE) -s -C $@ -e MODULE=databaselayer_sqllite_tests -e TARGET=$(TARGETWXEXE) -e CUSTOM_FILES='*.cxx' -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@
 
 ../vendor/databaselayer/src/Implementations/Sqllite/sqlitefk/build/mkmk: dummy

@@ -537,14 +537,12 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 	int columns = sampleQuery->getColumns();
 
 	for (int co = 1; co <= columns; co++) {
-		char* name = NULL;
-		name = strdup(sampleQuery->getColumnName(co));
+		UAP(lb_I_String, name)
+		name = sampleQuery->getColumnName(co);
 
-		if (FFI->isReadonly(name)) {
-		        sampleQuery->setReadonly(name);
+		if (FFI->isReadonly(name->charrep())) {
+		        sampleQuery->setReadonly(name->charrep());
 		}
-		
-		free(name);
 	}
 /*...e*/
 
@@ -557,14 +555,14 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 
 	for(int i = 1; i <= columns; i++) {
 		sizerHor = new wxBoxSizer(wxHORIZONTAL);
-		char* name = NULL;
+		UAP(lb_I_String, name)
 
 		bool createdControl = false;
 
 		UAP(lb_I_Query, FKColumnQuery)
 		UAP(lb_I_Query, FKColumnQuery1)
 		
-		name = strdup(sampleQuery->getColumnName(i));
+		name = sampleQuery->getColumnName(i);
 
 		/* Determine, if the column is a foreign key. If so try to get the
 		   configured column to show instead.
@@ -572,7 +570,7 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 
 		bool hideThisColumn = false;
 
-		if (sampleQuery->hasFKColumn(name) == 1) {
+		if (sampleQuery->hasFKColumn(name->charrep()) == 1) {
 /*...sCreate a combobox:32:*/
 			lbErrCodes err = ERR_NONE;
 
@@ -588,14 +586,14 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 
 			// This is the input parameter
 
-			cbName->setData(name);
+			*cbName = name->charrep();
 			
 			UAP_REQUEST(manager.getPtr(), lb_I_String, table)
 			UAP(lb_I_KeyBase, key)
 	
 			UAP(lb_I_String, t)
 	
-			t = sampleQuery->getPKTable(name);
+			t = sampleQuery->getPKTable(name->charrep());
 	
 			table->setData(t->charrep());
 	
@@ -645,7 +643,7 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 				formularfields->setNextField();
 				
 				if (formularfields->getFormularID() == FormID) {
-					if (strcmp(formularfields->getName(), name) == 0) {
+					if (strcmp(formularfields->getName(), name->charrep()) == 0) {
 						definitionFound = true;
 						formularfields->finishFieldsIteration();
 						break;
@@ -680,7 +678,7 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 					formularfields->setNextField();
 					
 					if (formularfields->getFormularID() == FormID) {
-						if (strcmp(formularfields->getName(), name) == 0) {
+						if (strcmp(formularfields->getName(), name->charrep()) == 0) {
 							definitionFound = true;
 							formularfields->finishFieldsIteration();
 							break;
@@ -756,7 +754,7 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 				*PKTable = formularfields->getFKTable(); 
 #endif					
 				wxChoice *cbox = new wxChoice(this, -1);
-				cbox->SetName(name);
+				cbox->SetName(name->charrep());
 				
 				s = sampleQuery->getAsString(i);
 				
@@ -764,7 +762,7 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 				
 				buffer[0] = 0;
 				
-				*TargetPKColumn = sampleQuery->getPKColumn(name);
+				*TargetPKColumn = sampleQuery->getPKColumn(name->charrep());
 				
 				// This query is dynamic. Thus it could not mapped to an object. Also these data is from target database, not config database.
 				sprintf(buffer, "select \"%s\", \"%s\" from \"%s\" order by \"%s\"", PKName->charrep(), TargetPKColumn->charrep(), PKTable->charrep(), TargetPKColumn->charrep());
@@ -863,7 +861,7 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 				}
 				
 				if (hideThisColumn == false) {
-					addLabel(name, sizerHor, hideThisColumn);
+					addLabel(name->charrep(), sizerHor, hideThisColumn);
 					sizerHor->Add(cbox, 1, wxALL, 5);
 					sizerMain->Add(sizerHor, 0, wxEXPAND | wxALL, 5);
 				}
@@ -874,11 +872,11 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 			free(buffer);
 /*...e*/
 		} else {
-			if (FFI->isSpecialColumn(name)) {
+			if (FFI->isSpecialColumn(name->charrep())) {
 /*...sCreate controls based on configuration in a database:40:*/
 				//printf("Creating a special control. (%s)\n", FFI->getControlType(name));
 
-				char* type = FFI->getControlType(name);
+				char* type = FFI->getControlType(name->charrep());
 
 				if (strcmp(type, "toolbarimagefile") == 0) {
 					UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, app)
@@ -916,7 +914,7 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 
 
 					int ImageButonClick;
-					sprintf(eventName, "%pImageButtonClick%s", this, name);
+					sprintf(eventName, "%pImageButtonClick%s", this, name->charrep());
 					eman->registerEvent(eventName,  ImageButonClick);
 					
 					_LOG << "Assign a file to an image button: " << file->charrep() LOG_
@@ -925,9 +923,9 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 					im.Rescale(32, 32);
 					wxBitmap bm = wxBitmap(im);
 					wxBitmapButton* imagebutton = new wxBitmapButton(this, ImageButonClick, bm);
-					imagebutton->SetName(name);
+					imagebutton->SetName(name->charrep());
 					
-					addLabel(name, sizerHor, hideThisColumn);
+					addLabel(name->charrep(), sizerHor, hideThisColumn);
 					sizerHor->Add(imagebutton, 1, wxALL, 5);
 					sizerMain->Add(sizerHor, 0, wxEXPAND | wxALL, 5);
 
@@ -936,7 +934,7 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 					UAP(lb_I_KeyBase, key)
 					UAP(lb_I_Unknown, uk)
 					
-					*elementname = name;
+					*elementname = name->charrep();
 					*element = "";
 					
 					QI(element, lb_I_Unknown, uk)
@@ -953,13 +951,13 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 					ownerdraw->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
 					ownerdraw->init(this);
 				
-					ownerdraw->SetName(name);
+					ownerdraw->SetName(name->charrep());
 				
-					addLabel(name, sizerHor, hideThisColumn);
+					addLabel(name->charrep(), sizerHor, hideThisColumn);
 					sizerHor->Add(ownerdraw, 1, 0, 5);
 					sizerMain->Add(sizerHor, 1, wxALL, 5);
 
-					if (FFI->isReadonly(name)) {
+					if (FFI->isReadonly(name->charrep())) {
 				        ownerdraw->Disable();
 					}
 				}
@@ -1002,13 +1000,13 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 					im.Rescale(32, 32);
 					wxBitmap bm = wxBitmap(im);
 					wxStaticBitmap *bitmap = new wxStaticBitmap(this, -1, bm);
-					bitmap->SetName(name);
+					bitmap->SetName(name->charrep());
 				
-					addLabel(name, sizerHor, hideThisColumn);
+					addLabel(name->charrep(), sizerHor, hideThisColumn);
 					sizerHor->Add(bitmap, 1, wxALL, 5);
 					sizerMain->Add(sizerHor, 1, wxEXPAND | wxALL, 5);
 
-					if (FFI->isReadonly(name)) {
+					if (FFI->isReadonly(name->charrep())) {
 				        bitmap->Disable();
 					}
 				}
@@ -1026,12 +1024,12 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 					{
 						wxCheckBox *check = new wxCheckBox(this, -1, 
 							"", wxPoint());
-						check->SetName(name);
-						addLabel(name, sizerHor, hideThisColumn);
+						check->SetName(name->charrep());
+						addLabel(name->charrep(), sizerHor, hideThisColumn);
 						sizerHor->Add(check, 1, wxALL, 5);	
 						sizerMain->Add(sizerHor, 0, wxEXPAND | wxALL, 5);
 
-						if (FFI->isReadonly(name)) {
+						if (FFI->isReadonly(name->charrep())) {
 						        check->Disable();
 						}
 
@@ -1065,13 +1063,13 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 						s = sampleQuery->getAsString(i);
 						
 						wxTextCtrl *text = new wxTextCtrl(this, -1, s->charrep(), wxPoint(), wxDefaultSize, 0, val);
-						text->SetName(name);
+						text->SetName(name->charrep());
 
-						addLabel(name, sizerHor, hideThisColumn);
+						addLabel(name->charrep(), sizerHor, hideThisColumn);
 						sizerHor->Add(text, 1, wxALL, 5);
 						sizerMain->Add(sizerHor, 0, wxEXPAND | wxALL, 5);
 						
-						if (FFI->isReadonly(name)) {
+						if (FFI->isReadonly(name->charrep())) {
 							text->Disable();
 						}
 
@@ -1085,13 +1083,13 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 						s = sampleQuery->getAsString(i);
 						
 						wxTextCtrl *text = new wxTextCtrl(this, -1, s->charrep(), wxPoint(), wxDefaultSize);
-						text->SetName(name);
+						text->SetName(name->charrep());
 
-						addLabel(name, sizerHor, hideThisColumn);
+						addLabel(name->charrep(), sizerHor, hideThisColumn);
 						sizerHor->Add(text, 1, wxALL, 5);
 						sizerMain->Add(sizerHor, 0, wxEXPAND | wxALL, 5);
 						
-						if (FFI->isReadonly(name)) {
+						if (FFI->isReadonly(name->charrep())) {
 							text->Disable();
 						}
 
@@ -1111,13 +1109,13 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 #ifndef WINDOWS
 						wxDatePickerCtrl *date = new wxDatePickerCtrl(this, -1, dt, wxPoint(), wxDefaultSize);
 #endif
-						date->SetName(name);
+						date->SetName(name->charrep());
 
-						addLabel(name, sizerHor, hideThisColumn);
+						addLabel(name->charrep(), sizerHor, hideThisColumn);
 						sizerHor->Add(date, 1, wxALL, 5);
 						sizerMain->Add(sizerHor, 0, wxEXPAND | wxALL, 5);
 						
-						if (FFI->isReadonly(name)) {
+						if (FFI->isReadonly(name->charrep())) {
 							date->Disable();
 						}
 
@@ -1129,16 +1127,16 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 				{
 					UAP(lb_I_BinaryData, binary)
 					
-					binary = sampleQuery->getBinaryData(name);
+					binary = sampleQuery->getBinaryData(name->charrep());
 					
 					if (binary == NULL) {
 						wxTextCtrl *text = new wxTextCtrl(this, -1, "", wxPoint(), wxSize(200, 20), wxTE_MULTILINE);
-						text->SetName(name);
-						addLabel(name, sizerHor, hideThisColumn);
+						text->SetName(name->charrep());
+						addLabel(name->charrep(), sizerHor, hideThisColumn);
 						sizerHor->Add(text, 1, wxEXPAND | wxALL, 5);
 						sizerMain->Add(sizerHor, 1, wxEXPAND | wxALL, 5);
 						
-						if (FFI->isReadonly(name)) {
+						if (FFI->isReadonly(name->charrep())) {
 							text->Disable();
 						}
 					} else {
@@ -1148,12 +1146,12 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 						
 						wxTextCtrl *text = new wxTextCtrl(this, -1, buffer, wxPoint(), wxSize(200, 20), wxTE_MULTILINE);
 						free(buffer);
-						text->SetName(name);
-						addLabel(name, sizerHor, hideThisColumn);
+						text->SetName(name->charrep());
+						addLabel(name->charrep(), sizerHor, hideThisColumn);
 						sizerHor->Add(text, 1, wxEXPAND | wxALIGN_TOP | wxALL, 5);
 						sizerMain->Add(sizerHor, 1, wxEXPAND | wxALL, 5);
 						
-						if (FFI->isReadonly(name)) {
+						if (FFI->isReadonly(name->charrep())) {
 							text->Disable();
 						}
 					}
@@ -1187,12 +1185,12 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 						s = sampleQuery->getAsString(i);
 					
 						wxTextCtrl *text = new wxTextCtrl(this, -1, s->charrep(), wxPoint(), wxDefaultSize, 0, val);
-				        text->SetName(name);
-						addLabel(name, sizerHor, hideThisColumn);
+				        text->SetName(name->charrep());
+						addLabel(name->charrep(), sizerHor, hideThisColumn);
 						sizerHor->Add(text, 1, wxALL, 5);
 						sizerMain->Add(sizerHor, 0, wxEXPAND | wxALL, 5);
 						
-						if (FFI->isReadonly(name)) {
+						if (FFI->isReadonly(name->charrep())) {
  							text->Disable();
 						}
 
@@ -1206,26 +1204,6 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 /*...e*/
 			}
 		}
-#ifdef bla		
-		if (createdControl) {
-			char* tLabel = (char*) malloc(strlen(name) + 6);
-		
-			tLabel[0] = 0;
-			
-			tLabel = strcat(tLabel, name); 
-						
-			wxStaticText *label = new wxStaticText(this, -1, _trans(tLabel), wxPoint());
-
-			tLabel = strcat(tLabel, "_lbl");
-						
-			label->SetName(_trans(tLabel));
-			
-			if (hideThisColumn == false) sizerHor->Add(label, 1, wxALL, 5);
-			
-			free(tLabel);
-		}	
-#endif		
-		free(name);
 	}
 /*...e*/
 
@@ -1596,7 +1574,7 @@ char* LB_STDCALL lbDatabasePanel::getQuery() {
 }
 /*...e*/
 /*...schar\42\ LB_STDCALL lbDatabasePanel\58\\58\getColumnName\40\int pos\41\:0:*/
-char* LB_STDCALL lbDatabasePanel::getColumnName(int pos) {
+lb_I_String* LB_STDCALL lbDatabasePanel::getColumnName(int pos) {
 	return sampleQuery->getColumnName(pos);
 }
 /*...e*/
@@ -1677,7 +1655,9 @@ int LB_STDCALL lbDatabasePanel::getControls() {
 /*...e*/
 /*...sconst char\42\ LB_STDCALL lbDatabasePanel\58\\58\getControlValue\40\int pos\41\:0:*/
 const char* LB_STDCALL lbDatabasePanel::getControlValue(int pos) {
-	return getControlValue(getColumnName(pos));
+	UAP(lb_I_String, c)
+	c = getColumnName(pos);
+	return getControlValue(c->charrep());
 }
 /*...e*/
 /*...sconst char\42\ LB_STDCALL lbDatabasePanel\58\\58\getControlValue\40\char\42\ name\41\:0:*/
@@ -1920,6 +1900,7 @@ void LB_STDCALL lbDatabasePanel::updateFromMaster() {
 
 	err = PKQuery->query(newMasterIDQuery->charrep());
 
+	UAP(lb_I_String, c)
 	if (err == ERR_NONE) {
 
 		UAP_REQUEST(manager.getPtr(), lb_I_String, colName)
@@ -1935,20 +1916,20 @@ void LB_STDCALL lbDatabasePanel::updateFromMaster() {
 			
 			for (int i = 1; i <= columns-1; i++) {
 /*...sBuild expression for one column:40:*/
-				*colName = PKQuery->getColumnName(i);
+				c = PKQuery->getColumnName(i);
+				*colName = c->charrep();
 				colValue = PKQuery->getAsString(i);
 		
 				bool isChar = PKQuery->getColumnType(i) == lb_I_Query::lbDBColumnChar;
 		
 				UAP(lb_I_String, fk)
+				UAP(lb_I_String, tn)
 		
-				fk = sampleQuery->getFKColumn(
-						PKQuery->getTableName(colName->charrep()),
-						colName->charrep()
-						);
+				tn = PKQuery->getTableName(colName->charrep());
+				fk = sampleQuery->getFKColumn(tn->charrep(), colName->charrep());
 		
 				if (fk == NULL) {
-					_LOG << "Error: could not get foreign column for '" << PKQuery->getTableName(colName->charrep()) << "." << colName->charrep() << "' on newMasterIDQuery '" << newMasterIDQuery->charrep() << "' !" LOG_
+					_LOG << "Error: could not get foreign column for '" << tn->charrep() << "." << colName->charrep() << "' on newMasterIDQuery '" << newMasterIDQuery->charrep() << "' !" LOG_
 					_LOG << "Have master form '" << masterForm->charrep() << 
 					           "', source field name '" << SourceFieldName->charrep() << 
 					           "' and source field value '" << SourceFieldValue->charrep() <<
@@ -1987,20 +1968,20 @@ void LB_STDCALL lbDatabasePanel::updateFromMaster() {
 			}
 
 /*...sBuild expression for last column:32:*/
-			*colName = PKQuery->getColumnName(columns);
+			c = PKQuery->getColumnName(columns);
+			*colName = c->charrep();
 			colValue = PKQuery->getAsString(columns);
 		
 			bool isChar = PKQuery->getColumnType(columns) == lb_I_Query::lbDBColumnChar;
 		
 			UAP(lb_I_String, fk)
+			UAP(lb_I_String, tn)
 		
-			fk = sampleQuery->getFKColumn(
-					PKQuery->getTableName(colName->charrep()),
-					colName->charrep()
-					);
+			tn = PKQuery->getTableName(colName->charrep());
+			fk = sampleQuery->getFKColumn(tn->charrep(), colName->charrep());
 		
 			if (fk == NULL) {
-				_LOG << "Error: could not get foreign column for '" << PKQuery->getTableName(colName->charrep()) << "." << colName->charrep() << "' on newMasterIDQuery '" << newMasterIDQuery->charrep() << "' !" LOG_
+				_LOG << "Error: could not get foreign column for '" << tn->charrep() << "." << colName->charrep() << "' on newMasterIDQuery '" << newMasterIDQuery->charrep() << "' !" LOG_
 				_LOG << "Have master form '" << masterForm->charrep() << 
 				           "', source field name '" << SourceFieldName->charrep() << 
 				           "' and source field value '" << SourceFieldValue->charrep() <<
@@ -2044,20 +2025,23 @@ void LB_STDCALL lbDatabasePanel::updateFromMaster() {
 			
 			for (int i = 1; i <= columns-1; i++) {
 /*...sBuild expression for one column:40:*/
-				*colName = PKQuery->getColumnName(i);
+				c = PKQuery->getColumnName(i);
+				*colName = c->charrep();
 				colValue = PKQuery->getAsString(i);
 		
 				bool isChar = PKQuery->getColumnType(i) == lb_I_Query::lbDBColumnChar;
 		
 				UAP(lb_I_String, fk)
+				UAP(lb_I_String, tn)
 		
+				tn = PKQuery->getTableName(colName->charrep());
 				fk = sampleQuery->getFKColumn(
-						PKQuery->getTableName(colName->charrep()),
+						tn->charrep(),
 						colName->charrep()
 						);
 		
 				if (fk == NULL) {
-					_LOG << "Error: could not get foreign column for '" << PKQuery->getTableName(colName->charrep()) << "." << colName->charrep() << "' on newMasterIDQuery '" << newMasterIDQuery->charrep() << "' !" LOG_
+					_LOG << "Error: could not get foreign column for '" << tn->charrep() << "." << colName->charrep() << "' on newMasterIDQuery '" << newMasterIDQuery->charrep() << "' !" LOG_
 					_LOG << "Have master form '" << masterForm->charrep() << 
 					           "', source field name '" << SourceFieldName->charrep() << 
 					           "' and source field value '" << SourceFieldValue->charrep() <<
@@ -2095,20 +2079,22 @@ void LB_STDCALL lbDatabasePanel::updateFromMaster() {
 			}
 			
 /*...sBuild expression for last column:32:*/
-			*colName = PKQuery->getColumnName(columns);
+			c = PKQuery->getColumnName(columns);
+			*colName = c->charrep();
 			colValue = PKQuery->getAsString(columns);
 		
 			bool isChar = PKQuery->getColumnType(columns) == lb_I_Query::lbDBColumnChar;
 		
 			UAP(lb_I_String, fk)
-		
+			UAP(lb_I_String, tn)
+			tn = PKQuery->getTableName(colName->charrep());
 			fk = sampleQuery->getFKColumn(
-					PKQuery->getTableName(colName->charrep()),
+					tn->charrep(),
 					colName->charrep()
 					);
 		
 			if (fk == NULL) {
-				_LOG << "Error: could not get foreign column for '" << PKQuery->getTableName(colName->charrep()) << "." << colName->charrep() << "' on newMasterIDQuery '" << newMasterIDQuery->charrep() << "' !" LOG_
+				_LOG << "Error: could not get foreign column for '" << tn->charrep() << "." << colName->charrep() << "' on newMasterIDQuery '" << newMasterIDQuery->charrep() << "' !" LOG_
 				_LOG << "Have master form '" << masterForm->charrep() << 
 				           "', source field name '" << SourceFieldName->charrep() << 
 				           "' and source field value '" << SourceFieldValue->charrep() <<
@@ -2301,15 +2287,17 @@ void LB_STDCALL lbDatabasePanel::updateFromDetail() {
 	
 	bool isChar = _detail->isCharacterColumn(SourceFieldName->charrep());
 	
-	char* sourceTable = strdup(_detail->getTableName(SourceFieldName->charrep()));
+	UAP(lb_I_String, sourceTable)
+	sourceTable = _detail->getTableName(SourceFieldName->charrep());
 	
+	UAP(lb_I_String, tn)
 	for (int i = 1; i <= columns-1; i++) {
 		colName = _detail->getForeignColumn(i);
+		tn = _detail->getTableName(colName->charrep());
 
-		_CL_LOG << "lbDatabasePanel::updateFromDetail() creates query column '" << 
-			colName->charrep() << "'" LOG_
+		_CL_LOG << "lbDatabasePanel::updateFromDetail() creates query column '" << colName->charrep() << "'" LOG_
 		
-		if (strcmp(sourceTable, _detail->getTableName(colName->charrep())) == 0) {
+		if (strcmp(sourceTable->charrep(), tn->charrep()) == 0) {
 			*newMasterIDQuery += colName->charrep();
 			*newMasterIDQuery += ", ";
 		}
@@ -2317,15 +2305,15 @@ void LB_STDCALL lbDatabasePanel::updateFromDetail() {
 
 	colName = _detail->getForeignColumn(columns);
 		
-	_CL_LOG << "lbDatabasePanel::updateFromDetail() creates query column '" <<
-		colName->charrep() << "'" LOG_
-		
-	if (strcmp(sourceTable, _detail->getTableName(colName->charrep())) == 0) {
+	_CL_LOG << "lbDatabasePanel::updateFromDetail() creates query column '" << colName->charrep() << "'" LOG_
+	tn = _detail->getTableName(colName->charrep());
+	if (strcmp(sourceTable->charrep(), tn->charrep()) == 0) {
 		*newMasterIDQuery += colName->charrep();
 	}
 
+	tn = _detail->getTableName(SourceFieldName->charrep());
 	*newMasterIDQuery += " from \"";
-	*newMasterIDQuery += _detail->getTableName(SourceFieldName->charrep());
+	*newMasterIDQuery += tn->charrep();
 	*newMasterIDQuery += "\" where \"";
 	*newMasterIDQuery += SourceFieldName->charrep();
 	*newMasterIDQuery += "\"";
@@ -2364,12 +2352,14 @@ void LB_STDCALL lbDatabasePanel::updateFromDetail() {
 
 	UAP_REQUEST(getModuleInstance(), lb_I_String, st)
 
+	UAP(lb_I_String, c)
 	_LOG << "Try to get table name for old query: " << getQuery() LOG_
 	if (sourceTableQuery->query(getQuery()) != ERR_NONE) {
 		*st = "Unknown table";
 		meta->setStatusText("Info", "Error: Could not get table name of target formular!");
 	} else {
-		*st = sourceTableQuery->getTableName(sourceTableQuery->getColumnName(1));
+		c = sourceTableQuery->getColumnName(1);
+		*st = sourceTableQuery->getTableName(c->charrep());
 	}
 
 	if (err == ERR_NONE) {
@@ -2387,7 +2377,8 @@ void LB_STDCALL lbDatabasePanel::updateFromDetail() {
 			
 			for (int i = 1; i <= columns-1; i++) {
 /*...sBuild expression for one column:40:*/
-				*colName = PKQuery->getColumnName(i);
+				c = PKQuery->getColumnName(i);
+				*colName = c->charrep();
 				colValue = PKQuery->getAsString(i);
 		
 				bool isChar = PKQuery->getColumnType(i) == lb_I_Query::lbDBColumnChar;
@@ -2438,7 +2429,8 @@ void LB_STDCALL lbDatabasePanel::updateFromDetail() {
 			}
 
 /*...sBuild expression for one column:32:*/
-				*colName = PKQuery->getColumnName(columns);
+				c = PKQuery->getColumnName(columns);
+				*colName = c->charrep();
 				colValue = PKQuery->getAsString(columns);
 		
 				bool isChar = PKQuery->getColumnType(columns) == lb_I_Query::lbDBColumnChar;
@@ -2499,7 +2491,8 @@ void LB_STDCALL lbDatabasePanel::updateFromDetail() {
 			
 			for (int i = 1; i <= columns-1; i++) {
 /*...sBuild expression for one column:40:*/
-				*colName = PKQuery->getColumnName(i);
+				c = PKQuery->getColumnName(i);
+				*colName = c->charrep();
 				colValue = PKQuery->getAsString(i);
 		
 				bool isChar = PKQuery->getColumnType(i) == lb_I_Query::lbDBColumnChar;
@@ -2549,7 +2542,8 @@ void LB_STDCALL lbDatabasePanel::updateFromDetail() {
 			}
 			
 /*...sBuild expression for one column:32:*/
-				*colName = PKQuery->getColumnName(columns);
+				c = PKQuery->getColumnName(columns);
+				*colName = c->charrep();
 				colValue = PKQuery->getAsString(columns);
 		
 				bool isChar = PKQuery->getColumnType(columns) == lb_I_Query::lbDBColumnChar;
@@ -2607,7 +2601,6 @@ void LB_STDCALL lbDatabasePanel::updateFromDetail() {
 	}
 /*...e*/
 
-	free(sourceTable);
 
 	newQuery->setData(getQuery());
 	
@@ -2668,7 +2661,7 @@ void LB_STDCALL lbDatabasePanel::setFilter(char* filter) {
 /*...e*/
 
 /*...schar\42\ lbDatabasePanel\58\\58\getTableName\40\char\42\ columnName\41\:0:*/
-char* lbDatabasePanel::getTableName(char* columnName) {
+lb_I_String* lbDatabasePanel::getTableName(char* columnName) {
 	return sampleQuery->getTableName(columnName);
 }
 /*...e*/
@@ -2678,20 +2671,21 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBClear() {
 	int columns = sampleQuery->getColumns();
 
 	for (int i = 1; i <= columns; i++) {
-		char* name = strdup(sampleQuery->getColumnName(i));
+		UAP(lb_I_String, name)
+		name = sampleQuery->getColumnName(i);
 
-		wxWindow* w = FindWindowByName(wxString(name), this);
+		wxWindow* w = FindWindowByName(wxString(name->charrep()), this);
 
 		if (w != NULL) {
-			if (sampleQuery->hasFKColumn(name) == 1) {
+			if (sampleQuery->hasFKColumn(name->charrep()) == 1) {
 /*...sUpdate drop down box:32:*/
 				wxChoice* cbox = (wxChoice*) w;
 				if (sampleQuery->isAdding() == 1)
-					if (cbox->IsEnabled()) sampleQuery->setNull(name);
+					if (cbox->IsEnabled()) sampleQuery->setNull(name->charrep());
 				cbox->SetSelection(-1);
 /*...e*/
 			} else {
-				if (FFI->isSpecialColumn(name)) {
+				if (FFI->isSpecialColumn(name->charrep())) {
 				} else {
 /*...sUpdate controls:40:*/
 				lb_I_Query::lbDBColumnTypes coltype = sampleQuery->getColumnType(i);
@@ -2740,10 +2734,8 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBClear() {
 				}
 			}
 		} else {
-			_CL_VERBOSE << "Control '" << name << "' nicht gefunden." LOG_
+			_CL_VERBOSE << "Control '" << name->charrep() << "' nicht gefunden." LOG_
 		}
-		
-		free(name);
 	}
 	
 	return ERR_NONE;
@@ -2761,15 +2753,16 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBUpdate() {
 	for (int i = 1; i <= columns; i++) {
 		UAP_REQUEST(manager.getPtr(), lb_I_String, col)
 		UAP_REQUEST(manager.getPtr(), lb_I_String, val)
-		char* name = strdup(sampleQuery->getColumnName(i));
+		UAP(lb_I_String, name)
+		name = sampleQuery->getColumnName(i);
 
 		// Find the corresponding window
 		
-		wxWindow* w = FindWindowByName(wxString(name), this);
+		wxWindow* w = FindWindowByName(wxString(name->charrep()), this);
 
 		if (w != NULL) {
 		
-			if (sampleQuery->hasFKColumn(name) == 1) {
+			if (sampleQuery->hasFKColumn(name->charrep()) == 1) {
 /*...sUpdate drop down box:32:*/
 				wxChoice* cbox = (wxChoice*) w;
 				
@@ -2781,7 +2774,7 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBUpdate() {
 					UAP_REQUEST(manager.getPtr(), lb_I_Integer, key)
 					UAP_REQUEST(manager.getPtr(), lb_I_String, cbName)
 					
-					cbName->setData(name);
+					cbName->setData(name->charrep());
 					
 					UAP(lb_I_KeyBase, key_cbName)
 					UAP(lb_I_Unknown, uk_cbMapper)
@@ -2804,7 +2797,7 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBUpdate() {
 					uk_mapping = cbMapper->getElement(&key_pos);
 					
 					if (uk_mapping == NULL)  { 
-						if (!sampleQuery->isNullable(name)) {
+						if (!sampleQuery->isNullable(name->charrep())) {
 							if (!meta->askYesNo(_trans("Failed to save data. Not all fields are filled."))) return ERR_UPDATE_FAILED;
 						}
 					} else {
@@ -2818,29 +2811,29 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBUpdate() {
 						
 						sprintf(pp, "%d", p);
 					
-						col->setData(name);
+						col->setData(name->charrep());
 						val->setData(pp);
 					
-						sampleQuery->setNull(name, false);
+						sampleQuery->setNull(name->charrep(), false);
 						sampleQuery->setString(*&col, *&val);
 					}
 				} else {
-					if (!sampleQuery->isNullable(name)) {
+					if (!sampleQuery->isNullable(name->charrep())) {
 						if (!meta->askYesNo(_trans("Failed to save data. Not all fields are filled."))) return ERR_UPDATE_FAILED;
 					}
 				}
 /*...e*/
 			} else {
-				if (FFI->isSpecialColumn(name)) {
+				if (FFI->isSpecialColumn(name->charrep())) {
 					_CL_LOG << "lbDatabasePanel::lbDBUpdate() updates special column" LOG_
 					lbErrCodes err = ERR_NONE;
 					
-					char* type = FFI->getControlType(name);
+					char* type = FFI->getControlType(name->charrep());
 
 					if (strcmp(type, "toolbarimagefile") == 0) {
 						UAP_REQUEST(manager.getPtr(), lb_I_String, filename)
 						UAP_REQUEST(manager.getPtr(), lb_I_String, controlname)
-						*controlname = name;
+						*controlname = name->charrep();
 						UAP(lb_I_KeyBase, key)
 						QI(controlname, lb_I_KeyBase, key)
 						
@@ -2858,17 +2851,17 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBUpdate() {
 				switch (coltype) {
 					case lb_I_Query::lbDBColumnBit:
 						{
-							if (!sampleQuery->getReadonly(name)) {
+							if (!sampleQuery->getReadonly(name->charrep())) {
 								wxCheckBox *check = (wxCheckBox*) w;
 								if (check->GetValue() == TRUE) {
 									wxString v = "true";
-									col->setData(name);
+									col->setData(name->charrep());
 									val->setData(v.c_str());
 							
 									sampleQuery->setString(*&col, *&val);
 								} else {
 									wxString v = "false";
-									col->setData(name);
+									col->setData(name->charrep());
 									val->setData(v.c_str());
 								
 									sampleQuery->setString(*&col, *&val);
@@ -2880,12 +2873,12 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBUpdate() {
 					case lb_I_Query::lbDBColumnFloat:
 					case lb_I_Query::lbDBColumnChar:
 						{
-							if (!sampleQuery->getReadonly(name)) {
+							if (!sampleQuery->getReadonly(name->charrep())) {
 								wxTextCtrl* tx = (wxTextCtrl*) w;
 			
 								wxString v = tx->GetValue();
 			
-								col->setData(name);
+								col->setData(name->charrep());
 								val->setData(v.c_str());
 
 								sampleQuery->setString(*&col, *&val);
@@ -2895,12 +2888,12 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBUpdate() {
 					
 					case lb_I_Query::lbDBColumnDate:
 						{
-							if (!sampleQuery->getReadonly(name)) {
+							if (!sampleQuery->getReadonly(name->charrep())) {
 								wxDatePickerCtrl* tx = (wxDatePickerCtrl*) w;
 			
 								wxDateTime v = tx->GetValue();
 			
-								col->setData(name);
+								col->setData(name->charrep());
 								val->setData(v.FormatISODate().c_str());
 
 								sampleQuery->setString(*&col, *&val);
@@ -2912,12 +2905,12 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBUpdate() {
 					case lb_I_Query::lbDBColumnBigInteger:
 					case lb_I_Query::lbDBColumnInteger:
 						{
-							if (!sampleQuery->getReadonly(name)) {
+							if (!sampleQuery->getReadonly(name->charrep())) {
 								wxTextCtrl* tx = (wxTextCtrl*) w;
 			
 								wxString v = tx->GetValue();
 			
-								col->setData(name);
+								col->setData(name->charrep());
 								val->setData(v.c_str());
 
 								sampleQuery->setString(*&col, *&val);
@@ -2926,12 +2919,12 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBUpdate() {
 						break;
 					case lb_I_Query::lbDBColumnBinary:
 						{
-							if (!sampleQuery->getReadonly(name)) {
+							if (!sampleQuery->getReadonly(name->charrep())) {
 								wxTextCtrl* tx = (wxTextCtrl*) w;
 			
 								wxString v = tx->GetValue();
 			
-								col->setData(name);
+								col->setData(name->charrep());
 
 								UAP_REQUEST(getModuleInstance(), lb_I_BinaryData, binary)
 								
@@ -2958,10 +2951,8 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBUpdate() {
 				}
 			}
 		} else {
-			_LOG << "Control '" << name << "' nicht gefunden." LOG_
+			_LOG << "Control '" << name->charrep() << "' nicht gefunden." LOG_
 		}
-		
-		free(name);
 	}
 
 	if (sampleQuery->update() != ERR_NONE) {
@@ -2994,13 +2985,14 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBRead() {
 	int columns = sampleQuery->getColumns();
 	
 	for (int i = 1; i <= columns; i++) {
-		char* name = strdup(sampleQuery->getColumnName(i));
+		UAP(lb_I_String, name)
+		name = sampleQuery->getColumnName(i);
 		// Find the corresponding window
 		
-		wxWindow* w = FindWindowByName(wxString(name), this);
+		wxWindow* w = FindWindowByName(wxString(name->charrep()), this);
 		
 		if (w != NULL) {
-			if (sampleQuery->hasFKColumn(name) == 1) {
+			if (sampleQuery->hasFKColumn(name->charrep()) == 1) {
 /*...sfill combo box with data:32:*/
 				wxChoice* cbox = (wxChoice*) w;
 				
@@ -3009,7 +3001,7 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBRead() {
 				UAP_REQUEST(manager.getPtr(), lb_I_Integer, key)
 				UAP_REQUEST(manager.getPtr(), lb_I_String, cbName)
 
-				cbName->setData(name);
+				cbName->setData(name->charrep());
 
 				UAP(lb_I_KeyBase, key_cbName)
 				UAP(lb_I_Unknown, uk_cbMapper)
@@ -3064,9 +3056,9 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBRead() {
 				}
 /*...e*/
 			} else {
-				if (FFI->isSpecialColumn(name)) {
+				if (FFI->isSpecialColumn(name->charrep())) {
 					lbErrCodes err = ERR_NONE;
-					char* type = FFI->getControlType(name);
+					char* type = FFI->getControlType(name->charrep());
 					
 					if (strcmp(type, "toolbarimagefile") == 0) {
 						UAP_REQUEST(manager.getPtr(), lb_I_String, filename)
@@ -3074,7 +3066,7 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBRead() {
 						UAP_REQUEST(manager.getPtr(), lb_I_String, toolbarfile)
 						UAP_REQUEST(manager.getPtr(), lb_I_String, images)
 
-						*controlname = name;
+						*controlname = name->charrep();
 						UAP(lb_I_KeyBase, key)
 						QI(controlname, lb_I_KeyBase, key)
 						
@@ -3223,10 +3215,8 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBRead() {
 				}
 			}
 		} else {
-			_CL_VERBOSE << "Control '" << name << "' nicht gefunden." LOG_
+			_CL_VERBOSE << "Control '" << name->charrep() << "' nicht gefunden." LOG_
 		}
-		
-		free(name);
 	}
 	
 	return ERR_NONE;
@@ -4312,7 +4302,7 @@ char* LB_STDCALL lbDatabaseDialog::getQuery() {
 }
 /*...e*/
 /*...schar\42\ LB_STDCALL lbDatabaseDialog\58\\58\getColumnName\40\int pos\41\:0:*/
-char* LB_STDCALL lbDatabaseDialog::getColumnName(int pos) {
+lb_I_String* LB_STDCALL lbDatabaseDialog::getColumnName(int pos) {
 	return panel->getColumnName(pos);
 }
 /*...e*/
@@ -4335,7 +4325,9 @@ int LB_STDCALL lbDatabaseDialog::getControls() {
 /*...e*/
 /*...sconst char\42\ LB_STDCALL lbDatabaseDialog\58\\58\getControlValue\40\int pos\41\:0:*/
 const char* LB_STDCALL lbDatabaseDialog::getControlValue(int pos) {
-	return panel->getControlValue(panel->getColumnName(pos));
+	UAP(lb_I_String, c)
+	c = panel->getColumnName(pos);
+	return panel->getControlValue(c->charrep());
 }
 /*...e*/
 /*...sconst char\42\ LB_STDCALL lbDatabaseDialog\58\\58\getControlValue\40\char\42\ name\41\:0:*/
@@ -4378,7 +4370,7 @@ void LB_STDCALL lbDatabaseDialog::setFilter(char* filter) {
 /*...e*/
 
 /*...schar\42\ lbDatabaseDialog\58\\58\getTableName\40\char\42\ columnName\41\:0:*/
-char* lbDatabaseDialog::getTableName(char* columnName) {
+lb_I_String* lbDatabaseDialog::getTableName(char* columnName) {
 	return panel->getTableName(columnName);
 }
 /*...e*/

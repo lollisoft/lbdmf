@@ -30,11 +30,17 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.44 $
+ * $Revision: 1.45 $
  * $Name:  $
- * $Id: lbDatabaseForm.h,v 1.44 2007/11/22 16:16:32 lollisoft Exp $
+ * $Id: lbDatabaseForm.h,v 1.45 2008/01/26 20:24:44 lollisoft Exp $
  *
  * $Log: lbDatabaseForm.h,v $
+ * Revision 1.45  2008/01/26 20:24:44  lollisoft
+ * Implemented more functions regarding to meta data for sqlite database gateway. Some interface functions have
+ * been changed to get proper working test application.
+ *
+ * These are getTableName and getColumnName in lb_I_Query interface.
+ *
  * Revision 1.44  2007/11/22 16:16:32  lollisoft
  * Indicate, if window has been created.
  *
@@ -646,9 +652,9 @@ public:
 
 	void LB_STDCALL ignoreForeignKeys(char* toTable);
 
-	char* LB_STDCALL getTableName(char* columnName);
+	lb_I_String* LB_STDCALL getTableName(char* columnName);
 	
-	char* LB_STDCALL getColumnName(int pos);
+	lb_I_String* LB_STDCALL getColumnName(int pos);
 
 	void  LB_STDCALL reopen();
 
@@ -903,9 +909,9 @@ public:
 
 	void LB_STDCALL ignoreForeignKeys(char* toTable);
 
-	char* LB_STDCALL getTableName(char* columnName);
+	lb_I_String* LB_STDCALL getTableName(char* columnName);
 	
-	char* LB_STDCALL getColumnName(int pos);
+	lb_I_String* LB_STDCALL getColumnName(int pos);
 
 	void  LB_STDCALL reopen();
 

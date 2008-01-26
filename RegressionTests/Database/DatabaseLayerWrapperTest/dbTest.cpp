@@ -98,6 +98,9 @@ int main(int argc, char *argv[]) {
 		
 		UAP(lb_I_Unknown, ukDatabaseWrapper1)
 		UAP(lb_I_Database, DatabaseWrapper1)
+
+		UAP(lb_I_Unknown, ukDatabaseWrapper2)
+		UAP(lb_I_Database, DatabaseWrapper2)
 		
 		
 		ukDatabaseWrapper = findPluginByInterfaceAndNamespace("lb_I_Database", "DatabaseLayerGateway");
@@ -132,6 +135,19 @@ int main(int argc, char *argv[]) {
 				return 0;
 			}
 		}
+
+		ukDatabaseWrapper2 = findPluginByInterfaceAndNamespace("lb_I_Database", "DatabaseLayerGateway");
+		
+		if (ukDatabaseWrapper2 == NULL) {
+			_CL_LOG << "Database regression tests failed. Database gateway plugin not found." LOG_
+			return 0;
+		} else {
+			QI(ukDatabaseWrapper2, lb_I_Database, DatabaseWrapper2)
+			if (DatabaseWrapper2 == NULL) {
+				_CL_LOG << "Database regression tests failed. Database gateway plugin has not the expected interface." LOG_
+				return 0;
+			}
+		}
 		
 		_CL_LOG << "Database regression tests..." LOG_
 			
@@ -146,6 +162,7 @@ int main(int argc, char *argv[]) {
 		DatabaseWrapper->connect("lbDMF", "lbDMF", lbDMFUser, lbDMFPasswd);
 		
 		UAP(lb_I_Query, query2)
+		UAP(lb_I_Query, query3)
 		UAP(lb_I_Query, queryA)
 		UAP(lb_I_Query, query)
 		UAP(lb_I_Query, query1)
@@ -157,6 +174,7 @@ int main(int argc, char *argv[]) {
 		query1->skipFKCollecting();
 		query1->query("drop table regressiontest");
 		query1->query("drop table test");
+		query1->query("drop table test1");
 		
 		
 		_CL_LOG << "query has " << query->getRefCount() << " references." LOG_
@@ -181,6 +199,16 @@ int main(int argc, char *argv[]) {
 		
 		// I have problems which collecting foreign key data, if no result sets are there.
 		query->skipFKCollecting();
+		query->query(buf);
+			
+		buf = 
+			"CREATE TABLE test1 ("
+			"	id1 INTEGER PRIMARY KEY,"
+			"	test1 char(100),"
+			"	id_reg1 INTEGER,"
+			"	constraint fk_reg1 foreign key (id_reg1) references regressiontest (id)"
+			")";
+		
 		query->query(buf);
 		
 		_CL_LOG << "query has " << query->getRefCount() << " references." LOG_
@@ -208,9 +236,19 @@ int main(int argc, char *argv[]) {
 		
 		DatabaseWrapper1->connect("lbDMF", "lbDMF", lbDMFUser, lbDMFPasswd);
 		
+		DatabaseWrapper2->init();
+		
+		lbDMFPasswd = getenv("lbDMFPasswd");
+		lbDMFUser   = getenv("lbDMFUser");
+		
+		if (!lbDMFUser) lbDMFUser = "dba";
+		if (!lbDMFPasswd) lbDMFPasswd = "trainres";
+		
+		DatabaseWrapper2->connect("lbDMF", "lbDMF", lbDMFUser, lbDMFPasswd);
+		
 		query2 = DatabaseWrapper1->getQuery("lbDMF", 0);
 		query2->skipPeeking();
-		query2->query("select id, test, btest, btest1 from regressiontest");
+		query2->query("select test, id, btest, btest1 from regressiontest");
 		
 		UAP_REQUEST(getModuleInstance(), lb_I_String, column)
 		UAP_REQUEST(getModuleInstance(), lb_I_String, value)
@@ -236,10 +274,87 @@ int main(int argc, char *argv[]) {
 		query2->PrintData();
 		
 		query2->enableFKCollecting();
-		query2->query("select * from test");
+		query2->query("select * from test1");
 		int fkcolumns = query2->getFKColumns();
 		
-		_CL_LOG << "Have " << fkcolumns << " foreign keys in table." LOG_
+		UAP(lb_I_String, tn)
+		UAP(lb_I_String, cn)
+		cn = query2->getColumnName(1);
+		tn = query2->getTableName(cn->charrep());
+		
+		_CL_LOG << "Have " << fkcolumns << " foreign keys in table " << tn->charrep() << "." LOG_
+
+		for (int i = 1; i <= fkcolumns; i++) {
+			UAP(lb_I_String, s)
+			s = query2->getFKColumn(i);
+			_CL_LOG << "Foreign key " << s->charrep() LOG_
+		}
+
+		query3 = DatabaseWrapper2->getQuery("lbDMF", 0);
+
+		query3->enableFKCollecting();
+		query3->query("select * from test");
+		fkcolumns = query3->getFKColumns();
+		
+		cn = query3->getColumnName(1);
+		tn = query3->getTableName(cn->charrep());
+
+		_CL_LOG << "Have " << fkcolumns << " foreign keys in table " << tn->charrep() << "." LOG_
+		
+		for (int ii = 1; ii <= fkcolumns; ii++) {
+			UAP(lb_I_String, s)
+			s = query3->getFKColumn(ii);
+			_CL_LOG << "Foreign key " << s->charrep() LOG_
+		}
+		
+		UAP(lb_I_Container, tables)
+		
+		tables = DatabaseWrapper2->getTables("lbDMF");
+		
+		_CL_LOG << "Tables in database: "  LOG_
+
+		while (tables->hasMoreElements() == 1) {
+			UAP(lb_I_Unknown, uk)
+			UAP(lb_I_String, s)
+			
+			uk = tables->nextElement();
+			
+			QI(uk, lb_I_String, s)
+			
+			_CL_LOG << "Table: " << s->charrep() LOG_
+		}
+
+		UAP(lb_I_Container, columns)
+		
+		columns = DatabaseWrapper2->getColumns("lbDMF");
+		
+		_CL_LOG << "Columns in tables: "  LOG_
+
+		while (columns->hasMoreElements() == 1) {
+			UAP(lb_I_Unknown, uk)
+			UAP(lb_I_Parameter, param)
+			
+			uk = columns->nextElement();
+			
+			QI(uk, lb_I_Parameter, param)
+			
+			UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+			UAP_REQUEST(getModuleInstance(), lb_I_String, tableName)
+			UAP_REQUEST(getModuleInstance(), lb_I_String, columnName)
+			UAP_REQUEST(getModuleInstance(), lb_I_String, columnType)
+			
+			*name = "TableName";
+			param->getUAPString(*&name, *&tableName);
+
+			*name = "ColumnName";
+			param->getUAPString(*&name, *&columnName);
+
+			*name = "TypeName";
+			param->getUAPString(*&name, *&columnType);
+			
+			_CL_LOG << "TableName: " << tableName->charrep() << ", ColumnName: " << columnName->charrep() << ", TypeName: " << columnType->charrep() LOG_
+		}
+		
 		
 		_CL_LOG << "Done testing DatabaseLayer wrapper." LOG_
 

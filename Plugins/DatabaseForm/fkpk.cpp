@@ -148,8 +148,9 @@ void lbConfigure_FK_PK_MappingDialog::OnFKComboBoxSelected( wxCommandEvent &even
 	sampleQuery->query(buffer);
 	
 	for (int i = 1; i <= sampleQuery->getColumns(); i++) {
-		char* name = sampleQuery->getColumnName(i);
-		cBoxPKNames->Append(wxString(name));
+		UAP(lb_I_String, name)
+		name = sampleQuery->getColumnName(i);
+		cBoxPKNames->Append(wxString(name->charrep()));
 	}
 	
 	if (sampleQuery->getColumns() == 0) {
@@ -252,8 +253,10 @@ void lbConfigure_FK_PK_MappingDialog::OnPKComboBoxSelected( wxCommandEvent &even
 		database->connect("lbDMF", "lbDMF", lbDMFUser, lbDMFPasswd);
 		
 		UAP(lb_I_String, PKTable)
+		UAP(lb_I_String, T)
 			
-		char* fkTable = strdup(sourceQuery->getTableName((char*) FKName.c_str()));
+		T = sourceQuery->getTableName((char*) FKName.c_str());
+		char* fkTable = strdup(T->charrep());
 		
 		char* p = strdup(FKName.c_str());
 		
@@ -405,10 +408,11 @@ void LB_STDCALL lbConfigure_FK_PK_MappingDialog::init(lb_I_Query* query, char* D
 	cBoxPKNames->Disable();
 
 	for (int i = 1; i <= query->getColumns(); i++) {
-		char* name = query->getColumnName(i);
+		UAP(lb_I_String, name)
+		name = query->getColumnName(i);
 		
-		if (query->hasFKColumn(name) == 1) {
-			cBoxFKNames->Append(wxString(name));
+		if (query->hasFKColumn(name->charrep()) == 1) {
+			cBoxFKNames->Append(wxString(name->charrep()));
 		}
 	}
 

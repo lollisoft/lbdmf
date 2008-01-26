@@ -444,37 +444,42 @@ wxArrayString SqliteDatabaseLayer::GetPrimaryKeys(const wxString& table) {
 }
 
 int SqliteDatabaseLayer::GetForeignKeys(const wxString& table) {
-	printf("SqliteDatabaseLayer::GetForeignKeys() called.\n");
 	if (m_fklist) list_destroy((List*)m_fklist);
 	
-	// select the corresponding SQL definition from the system table and pass it to sql_ddl.
+	wxString sysQ = wxString("select sql from sqlite_master where tbl_name = '");
+	sysQ += table;
+	sysQ += "'";
 	
-	char* sql_ddl = "CREATE TABLE test (	id INTEGER PRIMARY KEY,	test CHAR(100),	id_reg INTEGER,	CONSTRAINT fk_reg FOREIGN KEY (id_reg) REFERENCES regressiontest (id));";
+	DatabaseResultSet* system_query = RunQueryWithResults(sysQ);
 	
-	m_fklist = (void*) getForeignKeyList((char*) table.c_str(), sql_ddl);
-
-	printf("SqliteDatabaseLayer::GetForeignKeys() getForeignKeyList called.\n");
-	
-	if (m_fklist)	{
-		ListItem* item = list_head((List*) m_fklist);
-
-		arrFKCols.Clear();
-		arrPKCols.Clear();
-		arrPKTables.Clear();
-
-		for (int i = 0; i < ((List*) m_fklist)->len; i++) {
-			if (item == NULL) break; 
-			ForeignKey *fk = (ForeignKey *)list_data(item);
-			arrFKCols.Add(fk->col);
-			arrPKCols.Add(fk->fcol);
-			arrPKTables.Add(fk->ftab);
-			item = list_next(item);
-			if (item == NULL) break; 
+	if (system_query->Next()) {
+		wxString result = 	system_query->GetResultString(1);
+		// Parser needs this
+		result += ";";
+		
+		m_fklist = (void*) getForeignKeyList((char*) table.c_str(), result.c_str());
+		
+		if (m_fklist)	{
+			ListItem* item = list_head((List*) m_fklist);
+			
+			arrFKCols.Clear();
+			arrPKCols.Clear();
+			arrPKTables.Clear();
+			
+			for (int i = 0; i < ((List*) m_fklist)->len; i++) {
+				if (item == NULL) break; 
+				ForeignKey *fk = (ForeignKey *)list_data(item);
+				arrFKCols.Add(fk->col);
+				arrPKCols.Add(fk->fcol);
+				arrPKTables.Add(fk->ftab);
+				item = list_next(item);
+				if (item == NULL) break; 
+			}
+			
+			return ((List*) m_fklist)->len;
 		}
-
-		return ((List*) m_fklist)->len;
 	}
-	
+
 	return 0;
 }
 

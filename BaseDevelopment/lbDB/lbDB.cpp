@@ -295,7 +295,7 @@ public:
 	void LB_STDCALL enableFKCollecting();
 	void LB_STDCALL prepareFKList();
 
-	char* LB_STDCALL getTableName(char* columnName = NULL);
+	lb_I_String* LB_STDCALL getTableName(char* columnName = NULL);
 
 	void LB_STDCALL dbError(char* lp, HSTMT hstmt);
 
@@ -335,7 +335,7 @@ public:
 	int			LB_STDCALL getColumns();
 	bool			LB_STDCALL hasColumnName(char* name);
 
-	char*			LB_STDCALL getColumnName(int col);
+	lb_I_String*	LB_STDCALL getColumnName(int col);
 
 	int			LB_STDCALL hasFKColumn(char* FKName);
 			
@@ -1460,11 +1460,13 @@ void LB_STDCALL lbQuery::PrintFooter() {
 /*...svoid LB_STDCALL lbQuery\58\\58\PrintHeader\40\\41\:0:*/
 void LB_STDCALL lbQuery::PrintHeader() {
 	int cols = getColumns();
+	UAP(lb_I_String, col)
 	for (int i = 1; i < cols; i++) {
-	        printf("%19s", getColumnName(i));
+			col = getColumnName(i);
+	        printf("%19s", col->charrep());
 	}
-
-	printf("%19s\n", getColumnName(cols));
+	col = getColumnName(cols);
+	printf("%19s\n", col->charrep());
 
 	PrintFooter();
 }
@@ -2032,12 +2034,18 @@ lbErrCodes LB_STDCALL lbQuery::setBinaryData(int column, lb_I_BinaryData* value)
 	BinaryLenOrInd = value->getSize();
 	remainingsize = value->getSize();
 	
+	UAP(lb_I_String, T)
+	UAP(lb_I_String, C)
+	
+	C = getColumnName(column);
+	T = getTableName(C->charrep());
+	
 	*update_query = "UPDATE \"";
-	*update_query += getTableName(getColumnName(column));
+	*update_query += T->charrep();
 	*update_query += "\" SET \"";
-	*update_query += getColumnName(column);
+	*update_query += C->charrep();
 	*update_query += "\" = ? WHERE \"";
-	*update_query += getColumnName(column);
+	*update_query += C->charrep();
 	*update_query += "\" LIKE '";
 	*update_query += cursorname;
 	*update_query += "%'";
@@ -2230,12 +2238,14 @@ int LB_STDCALL lbQuery::hasFKColumn(char* FKName) {
 			if (ForeignColumns->exists(&key) == 1) {
 			UAP(lb_I_Unknown, uk)
 			UAP(lb_I_String, s)
+			UAP(lb_I_String, T)
 			
 			uk = ForeignColumns->getElement(&key);
 			QI(uk, lb_I_String, s)
 			
+			T = getTableName(FKName);
 			// Check, if FKName does not point from other table to me
-			if (strcmp(s->charrep(), getTableName(FKName)) != 0) return 1;
+			if (strcmp(s->charrep(), T->charrep()) != 0) return 1;
 			}
 		}
 	}
@@ -2386,7 +2396,13 @@ lb_I_String* LB_STDCALL lbQuery::getPKColumn(char const * FKName) {
 	SQLBindCol(hstmt, 8, SQL_C_CHAR, szFkCol, COL_LEN, &cbFkCol);
 /*...e*/
 
-	char* temp = (char*) getTableName(getColumnName(1));
+	UAP(lb_I_String, T)
+	UAP(lb_I_String, C)
+
+	C = getColumnName(1);
+	T = getTableName(C->charrep());
+
+	char* temp = (char*) T->charrep();
 	szTable = (unsigned char*) malloc(strlen(temp)+1);
 	szTable[0] = 0;
 	strcpy((char*) szTable, temp);
@@ -2530,7 +2546,13 @@ void LB_STDCALL lbQuery::prepareFKList() {
 	SQLBindCol(hstmt, 8, SQL_C_CHAR, szFkCol, COL_LEN, &cbFkCol);
 /*...e*/
 
-	char* temp = (char*) getTableName(getColumnName(1));
+	UAP(lb_I_String, T)
+	UAP(lb_I_String, C)
+
+	C = getColumnName(1);
+	T = getTableName(C->charrep());
+
+	char* temp = (char*) T->charrep();
 	szTable = (unsigned char*) malloc(strlen(temp)+1);
 	szTable[0] = 0;
 	strcpy((char*) szTable, temp);
@@ -2643,7 +2665,14 @@ void LB_STDCALL lbQuery::prepareFKList() {
 
 	_CL_VERBOSE << "lbQuery::prepareFKList() tries to read foreign column information from table" LOG_
 	
-	char* table = getTableName(getColumnName(1));
+	UAP(lb_I_String, T)
+	UAP(lb_I_String, C)
+	
+	C = getColumnName(1);
+	T = getTableName(C->charrep());
+
+	
+	char* table = T->charrep();
 	
 	lb_I_Module* m = getModuleManager();
 
@@ -2664,7 +2693,9 @@ void LB_STDCALL lbQuery::prepareFKList() {
 
 	    buffer[0] = 0;
 	    
-	    char* column = strdup(getColumnName(i));
+		UAP(lb_I_String, C)
+		C = getColumnName(i);
+	    char* column = strdup(C->charrep());
 
 	    sprintf(buffer, "select PKTable, PKName from ForeignKey_VisibleData_Mapping where FKTable = '%s' and FKName = '%s'", table, column);
 
@@ -2777,9 +2808,15 @@ int LB_STDCALL lbQuery::getPKColumns() {
 	        dbError("SQLAllocStmt()", hstmt);
 	}
 	
-	_CL_VERBOSE << "Call getTableName('" << getColumnName(1) << "')" LOG_
+	UAP(lb_I_String, T)
+	UAP(lb_I_String, C)
+	
+	C = getColumnName(1);
+	T = getTableName(C->charrep());
 
-	char* temp = (char*) getTableName(getColumnName(1));
+	_CL_VERBOSE << "Call getTableName('" << C->charrep() << "')" LOG_
+
+	char* temp = T->charrep();
 	szTable = (unsigned char*) malloc(strlen(temp)+1);
 	szTable[0] = 0;
 	strcpy((char*) szTable, temp);
@@ -2950,16 +2987,21 @@ bool LB_STDCALL lbQuery::getReadonly(char* column) {
 }
 /*...e*/
 /*...schar\42\ LB_STDCALL lbQuery\58\\58\getTableName\40\char\42\ columnName\41\:0:*/
-char* LB_STDCALL lbQuery::getTableName(char* columnName) {
-		
+lb_I_String* LB_STDCALL lbQuery::getTableName(char* columnName) {
+		UAP_REQUEST(getModuleInstance(), lb_I_String, Table)
+
 		if (columnName == NULL) {
 			_LOG << "Error: lbQuery::getTableName(char* columnName) called with a NULL pointer as parameter." LOG_
-			return "";
+			Table++;
+			*Table = "";
+			return Table.getPtr();
 		}
 		
 		if (strlen(columnName) == 0) {
 			_LOG << "Error: lbQuery::getTableName(char* columnName) called with an empty string as parameter." LOG_
-			return "";
+			Table++;
+			*Table = "";
+			return Table.getPtr();
 		}
 		
 		SQLHSTMT	StatementHandle;
@@ -3043,14 +3085,15 @@ char* LB_STDCALL lbQuery::getTableName(char* columnName) {
 	}
 		
 		
-		
-		return lpszTable;
+		*Table = lpszTable;
+		Table++;
+		return Table.getPtr();
 	}
 /*...e*/
 /*...schar\42\ LB_STDCALL lbQuery\58\\58\getColumnName\40\int col\41\:0:*/
 char lbQuery_column_Name[100] = "";
 
-char* LB_STDCALL lbQuery::getColumnName(int col) {
+lb_I_String* LB_STDCALL lbQuery::getColumnName(int col) {
 	SQLSMALLINT     ColumnNumber = 0;
 	SQLCHAR         ColumnName[1000] = "";
 	SQLSMALLINT     BufferLength = 500;
@@ -3075,7 +3118,11 @@ char* LB_STDCALL lbQuery::getColumnName(int col) {
 		strcpy(lbQuery_column_Name, (char*) ColumnName);
 	}
 	
-	return lbQuery_column_Name;
+	UAP_REQUEST(getModuleInstance(), lb_I_String, Column)
+		
+	*Column = lbQuery_column_Name;
+	Column++;
+	return Column.getPtr();
 }
 /*...e*/
 
@@ -3544,10 +3591,13 @@ UDWORD  RowsFetched = 0;
 	UAP(lb_I_String, pk)
 
 	int  PKCols = getPKColumns();
-
 	pk = getPKColumn(PKCols);
+
+	UAP(lb_I_String, T)
+	T = getTableName(pk->charrep());
+
 	*SQL = "delete from ";
-	*SQL += getTableName(pk->charrep()); // What is, if I have a joined query ?
+	*SQL += T->charrep(); // What is, if I have a joined query ?
 	*SQL += " where ";
 
 	for (int i = 1; i < PKCols; i++) {

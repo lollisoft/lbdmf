@@ -246,7 +246,7 @@ public:
 	void						LB_STDCALL enableFKCollecting();
 	void						LB_STDCALL prepareFKList();
 	
-	char*						LB_STDCALL getTableName(char* columnName = NULL);
+	lb_I_String*				LB_STDCALL getTableName(char* columnName = NULL);
 	
 	void						LB_STDCALL dbError(char* lp, HSTMT hstmt);
 	
@@ -274,7 +274,7 @@ public:
 	int							LB_STDCALL getColumns();
 	bool						LB_STDCALL hasColumnName(char* name);
 	
-	char*						LB_STDCALL getColumnName(int col);
+	lb_I_String*				LB_STDCALL getColumnName(int col);
 	
 	int							LB_STDCALL hasFKColumn(char* FKName);
 	
@@ -1362,11 +1362,13 @@ void LB_STDCALL lbDatabaseLayerQuery::PrintFooter() {
 
 void LB_STDCALL lbDatabaseLayerQuery::PrintHeader() {
 	int cols = getColumns();
+	UAP(lb_I_String, col)
 	for (int i = 1; i < cols; i++) {
-	        printf("%19s", getColumnName(i));
+			col = getColumnName(i);
+	        printf("%19s", col->charrep());
 	}
-
-	printf("%19s\n", getColumnName(cols));
+	col = getColumnName(cols);
+	printf("%19s\n", col->charrep());
 
 	PrintFooter();
 }
@@ -1713,12 +1715,14 @@ int LB_STDCALL lbDatabaseLayerQuery::hasFKColumn(char* FKName) {
 			if (ForeignColumns->exists(&key) == 1) {
 			UAP(lb_I_Unknown, uk)
 			UAP(lb_I_String, s)
+			UAP(lb_I_String, T)
 			
 			uk = ForeignColumns->getElement(&key);
 			QI(uk, lb_I_String, s)
 			
 			// Check, if FKName does not point from other table to me
-			if (strcmp(s->charrep(), getTableName(FKName)) != 0) return 1;
+			T = getTableName(FKName);
+			if (strcmp(s->charrep(), T->charrep()) != 0) return 1;
 			}
 		}
 	}
@@ -1892,12 +1896,19 @@ void LB_STDCALL lbDatabaseLayerQuery::prepareFKList() {
 	    return;
 	}
 
-    char* table = getTableName(getColumnName(1));
+	UAP(lb_I_String, tbl)
+	UAP(lb_I_String, col)
+	
+	col = getColumnName(1);
+	tbl = getTableName(col->charrep());
+	
+    char* table = tbl->charrep();
+	
     // Use fk code from Cody Pisto
 	
 	try {
 		int count = currentdbLayer->GetForeignKeys(table);
-		//_CL_LOG << "Number of foreign keys: " << count LOG_
+		_CL_LOG << "Number of foreign keys for table (" << table << "): " << count LOG_
 		for (int i = 0; i < count; i++) {
 			UAP_REQUEST(manager.getPtr(), lb_I_String, FKName)
 			UAP_REQUEST(manager.getPtr(), lb_I_String, PKTable)
@@ -2173,25 +2184,34 @@ bool LB_STDCALL lbDatabaseLayerQuery::getReadonly(char* column) {
 }
 /*...e*/
 /*...schar\42\ LB_STDCALL lbDatabaseLayerQuery\58\\58\getTableName\40\char\42\ columnName\41\:0:*/
-char* LB_STDCALL lbDatabaseLayerQuery::getTableName(char* columnName) {
+lb_I_String* LB_STDCALL lbDatabaseLayerQuery::getTableName(char* columnName) {
 	ResultSetMetaData* metadata = theResult->GetMetaData();
-	static wxString table = metadata->GetTableForColumn(columnName);
-	_CL_VERBOSE << "Returning table name " << table.c_str() << " for columnname " << columnName LOG_
-	return (char*) table.c_str();
+	wxString table = metadata->GetTableForColumn(columnName);
+	_CL_LOG << "Returning table name " << table.c_str() << " for columnname " << columnName LOG_
+	UAP_REQUEST(getModuleInstance(), lb_I_String, t)
+	
+	*t = (char*) table.c_str();
+	t++;
+	return t.getPtr();
 }
 /*...e*/
 /*...schar\42\ LB_STDCALL lbDatabaseLayerQuery\58\\58\getColumnName\40\int col\41\:0:*/
 char lbDatabaseLayerQuery_column_Name[100] = "";
 
-char* LB_STDCALL lbDatabaseLayerQuery::getColumnName(int col) {
+lb_I_String* LB_STDCALL lbDatabaseLayerQuery::getColumnName(int col) {
 	///\todo Implement
 	ResultSetMetaData* metadata = theResult->GetMetaData();
 	if (metadata->GetColumnCount() < col) {
 		_CL_LOG << "Error: Have only " << metadata->GetColumnCount() << " columns, but get called with " << col << "!" LOG_
 	}
-	static wxString column = metadata->GetColumnName(col);
+	wxString column = metadata->GetColumnName(col);
 	_CL_VERBOSE << "Returning column " << column.c_str() LOG_
-	return (char*) column.c_str();
+	
+	UAP_REQUEST(getModuleInstance(), lb_I_String, t)
+	
+	*t = (char*) column.c_str();
+	t++;
+	return t.getPtr();
 }
 /*...e*/
 
@@ -3259,15 +3279,190 @@ lb_I_Query* LB_STDCALL lbDatabase::getQuery(char* connectionname, int readonly) 
 /*...e*/
 
 lb_I_Container* LB_STDCALL lbDatabase::getTables(char* connectionname) {
+	lbErrCodes err = ERR_NONE;
 	UAP_REQUEST(getModuleInstance(), lb_I_Container, container)
 ///\todo Implement.
+
+	DatabaseLayer* dbl = new SqliteDatabaseLayer();
+	dbl->Open(connectionname);
+	
+	wxArrayString tables = dbl->GetTables();
+	UAP_REQUEST(getModuleInstance(), lb_I_String, table)
+	UAP(lb_I_Unknown, uk)
+	UAP(lb_I_KeyBase, key)
+	
+	QI(table, lb_I_Unknown, uk)
+	QI(table, lb_I_KeyBase, key)
+	
+	for (int i = 0; i < tables.Count(); i++) {
+		*table = tables[i].c_str();
+		 container->insert(&uk, &key);
+	}
+
+	container++;
 	return container.getPtr();
 }
 
 lb_I_Container* LB_STDCALL lbDatabase::getColumns(char* connectionname) {
-	UAP_REQUEST(getModuleInstance(), lb_I_Container, container)
-///\todo Implement.
-	return container.getPtr();
+	lbErrCodes err = ERR_NONE;
+	UAP_REQUEST(getModuleInstance(), lb_I_Container, columns)
+	columns++;
+	
+	DatabaseLayer* dbl = new SqliteDatabaseLayer();
+	dbl->Open(connectionname);
+	
+	DatabaseResultSet* pResult = NULL;
+	ResultSetMetaData* pMetaData = NULL;
+	
+	wxArrayString tables = dbl->GetTables();
+
+	for (int i = 0; i < tables.Count(); i++) {
+		wxString table = tables[i];
+		
+		wxString q = "select * from ";
+		q += table;
+		q += " LIMIT 0";
+		
+		pResult = dbl->ExecuteQuery(q);
+		pResult->Next();
+		pMetaData = pResult->GetMetaData();
+		
+		UAP_REQUEST(getModuleInstance(), lb_I_Long, index)
+		UAP(lb_I_KeyBase, key)
+		QI(index, lb_I_KeyBase, key)
+		
+		// 1-based
+		for(long i=1; i<=pMetaData->GetColumnCount(); i++)
+		{
+			UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
+			
+			UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+			
+			UAP_REQUEST(getModuleInstance(), lb_I_String, colName)
+			UAP_REQUEST(getModuleInstance(), lb_I_String, TableName)
+			UAP_REQUEST(getModuleInstance(), lb_I_String, typeName)
+			UAP_REQUEST(getModuleInstance(), lb_I_Long, typeLong)
+			
+			UAP_REQUEST(getModuleInstance(), lb_I_String, dummyString)
+			UAP_REQUEST(getModuleInstance(), lb_I_Long, dummyLong)
+			
+			dummyLong->setData((long)0);
+			*name = "DatetimeSubtypeCode";
+			param->setUAPLong(*&name, *&dummyLong);
+			
+			*dummyString = (const char*) "sqlite";
+			*name = "TableCatalog";
+			param->setUAPString(*&name, *&dummyString);
+			
+			*dummyString = (const char*) "lbDMF";
+			*name = "TableSchema";
+			param->setUAPString(*&name, *&dummyString);
+			
+			*TableName = (const char*) table.c_str();
+			*name = "TableName";
+			param->setUAPString(*&name, *&TableName);
+			
+			*colName = pMetaData->GetColumnName(i).c_str();
+			*name = "ColumnName";
+			param->setUAPString(*&name, *&colName);
+			
+			long   colTypeLong = (long) pMetaData->GetColumnType(i);
+			typeLong->setData((long)colTypeLong);
+			*name = "DataType";
+			param->setUAPLong(*&name, *&typeLong);
+			
+			switch (colTypeLong)
+			{
+				case ResultSetMetaData::COLUMN_INTEGER:
+					*typeName = "COLUMN_INTEGER";
+					break;
+				case ResultSetMetaData::COLUMN_DOUBLE:
+					*typeName = "COLUMN_DOUBLE";
+					break;
+				case ResultSetMetaData::COLUMN_STRING:
+					*typeName = "COLUMN_STRING";
+					break;
+				case ResultSetMetaData::COLUMN_BOOL:
+					*typeName = "COLUMN_BOOL";
+					break;
+				case ResultSetMetaData::COLUMN_BLOB:
+					*typeName = "COLUMN_BLOB";
+					break;
+				case ResultSetMetaData::COLUMN_NULL:
+					*typeName = "COLUMN_NULL";
+					break;
+				default:
+					*typeName = "COLUMN_UNKNOWN";
+					break;
+			};
+			*name = "TypeName";
+			param->setUAPString(*&name, *&typeName);
+			
+			dummyLong->setData((long)-1);
+			*name = "BufferLength";
+			param->setUAPLong(*&name, *&dummyLong);
+			
+			dummyLong->setData((long)-1);
+			*name = "DecimalDigits";
+			param->setUAPLong(*&name, *&dummyLong);
+			
+			dummyLong->setData((long)-1);
+			*name = "NumPrecRadix";
+			param->setUAPLong(*&name, *&dummyLong);
+			
+			dummyLong->setData((long)-1);
+			*name = "Nullable";
+			param->setUAPLong(*&name, *&dummyLong);
+			
+			*dummyString = (const char*) "";
+			*name = "Remarks";
+			param->setUAPString(*&name, *&dummyString);
+			
+			*dummyString = (const char*) "";
+			*name = "ColumnDefault";
+			param->setUAPString(*&name, *&dummyString);
+			
+			dummyLong->setData((long)-1);
+			*name = "SQLDataType";
+			param->setUAPLong(*&name, *&dummyLong);
+			
+			dummyLong->setData((long)-1);
+			*name = "CharOctetLength";
+			param->setUAPLong(*&name, *&dummyLong);
+			
+			dummyLong->setData((long)-1);
+			*name = "OrdinalPosition";
+			param->setUAPLong(*&name, *&dummyLong);
+			
+			*dummyString = (const char*) "";
+			*name = "IsNullable";
+			param->setUAPString(*&name, *&dummyString);
+			
+			dummyLong->setData((long)-1);
+			*name = "ColumnSize";
+			param->setUAPLong(*&name, *&dummyLong);
+			
+			UAP(lb_I_Unknown, uk)
+			QI(param, lb_I_Unknown, uk)
+				
+			index->setData(i);
+			columns->insert(&uk, &key);
+		}
+		
+		if (pMetaData != NULL)
+		{
+			pResult->CloseMetaData(pMetaData);
+			pMetaData = NULL;
+		}
+		
+		if (pResult != NULL)
+		{
+			dbl->CloseResultSet(pResult);
+			pResult = NULL;
+		}
+	}
+	
+	return columns.getPtr();
 }
 
 lb_I_Container* LB_STDCALL lbDatabase::getPrimaryKeys(char* connectionname) {
