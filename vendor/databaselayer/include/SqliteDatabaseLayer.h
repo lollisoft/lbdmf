@@ -28,7 +28,6 @@
 
 #include <sqlite3.h>
 
-
 class PreparedStatement;
 
 class DLLEXPORT SqliteDatabaseLayer : public DatabaseLayer
@@ -70,7 +69,12 @@ public:
   virtual wxArrayString GetTables();
   virtual wxArrayString GetViews();
   virtual wxArrayString GetColumns(const wxString& table);
-  virtual wxArrayString GetPrimaryKeys(const wxString& table);
+
+  virtual int GetPrimaryKeys(const wxString& table);
+
+  virtual wxString& GetPrimaryKeyColumn(const int index);
+
+  virtual wxString& GetPrimaryKeySequence(const int index);
 
   virtual int GetForeignKeys(const wxString& table);
 
@@ -89,6 +93,10 @@ private:
   wxArrayString arrFKCols;
   wxArrayString arrPKCols;
   wxArrayString arrPKTables;
+  
+  wxArrayString arrPrimaryColumns;
+  wxArrayString arrPrimarySequence;
+  
   void* m_fklist;
   sqlite3* m_pDatabase;
 };

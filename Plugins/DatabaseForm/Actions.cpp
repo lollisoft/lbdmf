@@ -833,8 +833,10 @@ void LB_STDCALL lbDetailFormAction::openDetailForm(lb_I_String* formularname, lb
 						}
 						QI(f, lb_I_DatabaseForm, master)						
 						UAP_REQUEST(manager.getPtr(), lb_I_String, table)
+						UAP_REQUEST(manager.getPtr(), lb_I_String, column)
 						master->getPrimaryColumns();
-						*table = master->getTableName(master->getColumnName(1));
+						*column = master->getColumnName(1);
+						*table = master->getTableName(column->charrep());
 						form->ignoreForeignKeys(table->charrep());
 						form->setMasterForm(*&master, *&params);
 						gui->showForm(formularname->charrep());
@@ -978,10 +980,12 @@ void LB_STDCALL lbDetailFormAction::openDetailForm(lb_I_String* formularname, lb
 						QI(f, lb_I_DatabaseForm, master)						
 						
 						UAP_REQUEST(manager.getPtr(), lb_I_String, table)
+						UAP_REQUEST(manager.getPtr(), lb_I_String, column)
 						
 						master->getPrimaryColumns();
-						
-						*table = master->getTableName(master->getColumnName(1));
+
+						*column = master->getColumnName(1);
+						*table = master->getTableName(column->charrep());
 						
 						form->ignoreForeignKeys(table->charrep());
 						
@@ -1313,6 +1317,7 @@ void LB_STDCALL lbMasterFormAction::openMasterForm(lb_I_String* formularname, lb
 					
 					if ((forms->getApplicationID() == AppID) && (strcmp(forms->getName(), formularname->charrep()) == 0)) {
 						UAP_REQUEST(getModuleInstance(), lb_I_String, table)
+						UAP_REQUEST(getModuleInstance(), lb_I_String, column)
 						UAP(lb_I_DatabaseForm, form)
 						UAP(lb_I_DatabaseForm, f)
 						UAP(lb_I_DatabaseForm, detail)
@@ -1331,7 +1336,8 @@ void LB_STDCALL lbMasterFormAction::openMasterForm(lb_I_String* formularname, lb
 						f = gui->findDBForm(detailForm->charrep());
 						QI(f, lb_I_DatabaseForm, detail)
 						detail->getPrimaryColumns();
-						*table = detail->getTableName(detail->getColumnName(1));
+						*column = detail->getColumnName(1);
+						*table = detail->getTableName(column->charrep());
 						form->ignoreForeignKeys(table->charrep());
 						form->setDetailForm(*&detail, *&params);
 						gui->showForm(formularname->charrep());
@@ -1465,10 +1471,12 @@ void LB_STDCALL lbMasterFormAction::openMasterForm(lb_I_String* formularname, lb
 						QI(f, lb_I_DatabaseForm, detail)						
 						
 						UAP_REQUEST(manager.getPtr(), lb_I_String, table)
+						UAP_REQUEST(manager.getPtr(), lb_I_String, column)
 						
 						detail->getPrimaryColumns();
 						
-						*table = detail->getTableName(detail->getColumnName(1));
+						*column = detail->getColumnName(1);
+						*table = detail->getTableName(column->charrep());
 						
 						form->ignoreForeignKeys(table->charrep());
 						

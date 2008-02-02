@@ -3,7 +3,7 @@
 #include "../include/OdbcPreparedStatement.h"
 #include "../include/OdbcResultSet.h"
 #include "../include/DatabaseErrorCodes.h"
-
+#include "../include/DatabaseLayerException.h"
 
 // ctor()
 OdbcDatabaseLayer::OdbcDatabaseLayer()
@@ -565,12 +565,26 @@ wxArrayString OdbcDatabaseLayer::GetColumns(const wxString& table)
   return returnArray;
 }
 
+int OdbcDatabaseLayer::GetPrimaryKeys(const wxString& table) {
+  int count = 0;
+  throw new DatabaseLayerException(DATABASE_LAYER_NOT_IMPLEMENTED, "Primary keys support not implemented.");
+  return count;
+}
+
+wxString& OdbcDatabaseLayer::GetPrimaryKeyColumn(const int index) {
+  throw new DatabaseLayerException(DATABASE_LAYER_NOT_IMPLEMENTED, "Primary keys support not implemented.");
+	return arrPrimaryColumns[index];
+}
+
+wxString& OdbcDatabaseLayer::GetPrimaryKeySequence(const int index) {
+  throw new DatabaseLayerException(DATABASE_LAYER_NOT_IMPLEMENTED, "Primary keys support not implemented.");
+	return arrPrimarySequence[index];
+}
+
 #ifdef SUPPORT_FOREIGN_KEYS
 wxArrayString OdbcDatabaseLayer::GetForeignKeys(const wxString& table) {
   wxArrayString returnArray;
-
   throw new DatabaseLayerException(DATABASE_LAYER_NOT_IMPLEMENTED, "Foreign keys support not implemented.");
-
   return returnArray;
 }
 #endif

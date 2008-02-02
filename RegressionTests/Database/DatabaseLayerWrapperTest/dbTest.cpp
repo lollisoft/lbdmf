@@ -180,8 +180,8 @@ int main(int argc, char *argv[]) {
 		_CL_LOG << "query has " << query->getRefCount() << " references." LOG_
 
 		char* buf = "create table regressiontest ("
-			"id INTEGER PRIMARY KEY,"
-			"test char(100) DEFAULT 'Nothing',"
+			"id INTEGER PRIMARY KEY, "
+			"test char(100) DEFAULT 'Nothing', "
 			"btest bool DEFAULT false, "
 			"btest1 bool DEFAULT false)";
 			
@@ -221,6 +221,7 @@ int main(int argc, char *argv[]) {
 		query1->query("insert into regressiontest (test,btest,btest1) values('Bla 6', 0, 1)");
 		query1->query("insert into regressiontest (test,btest,btest1) values('Bla 7', 1, 0)");
 
+		//query1->enableFKCollecting();
 		query1->query("select id, test, btest, btest1 from regressiontest");
 		
 		query1->PrintData();
@@ -353,6 +354,74 @@ int main(int argc, char *argv[]) {
 			param->getUAPString(*&name, *&columnType);
 			
 			_CL_LOG << "TableName: " << tableName->charrep() << ", ColumnName: " << columnName->charrep() << ", TypeName: " << columnType->charrep() LOG_
+		}
+		
+		UAP(lb_I_Container, foreignkeys)
+		
+		foreignkeys = DatabaseWrapper2->getForeignKeys("lbDMF");
+		
+		_CL_LOG << "Foreign keys in lbDMF: "  LOG_
+		_CL_LOG << "********************** "  LOG_
+
+		while (foreignkeys->hasMoreElements() == 1) {
+			UAP(lb_I_Unknown, uk)
+			UAP(lb_I_Parameter, param)
+			
+			uk = foreignkeys->nextElement();
+			
+			QI(uk, lb_I_Parameter, param)
+			
+			UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+			UAP_REQUEST(getModuleInstance(), lb_I_String, pktableName)
+			UAP_REQUEST(getModuleInstance(), lb_I_String, pkcolumnName)
+			UAP_REQUEST(getModuleInstance(), lb_I_String, fktableName)
+			UAP_REQUEST(getModuleInstance(), lb_I_String, fkcolumnName)
+			
+			*name = "PKTableName";
+			param->getUAPString(*&name, *&pktableName);
+
+			*name = "PKTableColumnName";
+			param->getUAPString(*&name, *&pkcolumnName);
+
+			*name = "FKTableName";
+			param->getUAPString(*&name, *&fktableName);
+
+			*name = "FKTableColumnName";
+			param->getUAPString(*&name, *&fkcolumnName);
+			
+			_CL_LOG << "PKTableName: " << pktableName->charrep() << ", PKTableColumnName: " << pkcolumnName->charrep() << ", FKTableName: " << fktableName->charrep() << ", FKTableColumnName: " << fkcolumnName->charrep() LOG_
+		}
+		
+		UAP(lb_I_Container, primarykeys)
+		
+		primarykeys = DatabaseWrapper2->getPrimaryKeys("lbDMF");
+		
+		_CL_LOG << "Primary keys in lbDMF: "  LOG_
+		_CL_LOG << "********************** "  LOG_
+
+		while (primarykeys->hasMoreElements() == 1) {
+			UAP(lb_I_Unknown, uk)
+			UAP(lb_I_Parameter, param)
+			
+			uk = primarykeys->nextElement();
+			
+			QI(uk, lb_I_Parameter, param)
+			
+			UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+			UAP_REQUEST(getModuleInstance(), lb_I_String, pktableName)
+			UAP_REQUEST(getModuleInstance(), lb_I_String, pkcolumnName)
+			UAP_REQUEST(getModuleInstance(), lb_I_String, pkkeySequence)
+			
+			*name = "TableName";
+			param->getUAPString(*&name, *&pktableName);
+
+			*name = "ColumnName";
+			param->getUAPString(*&name, *&pkcolumnName);
+
+			*name = "KeySequence";
+			param->getUAPString(*&name, *&pkkeySequence);
+			
+			_CL_LOG << "TableName: " << pktableName->charrep() << ", ColumnName: " << pkcolumnName->charrep() << ", KeySequence: " << pkkeySequence->charrep() LOG_
 		}
 		
 		

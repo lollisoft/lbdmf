@@ -20,8 +20,6 @@ int SqliteResultSetMetaData::GetColumnType(int i)
   wxString columnTypeString = ConvertFromUnicodeStream(sqlite3_column_decltype(m_pSqliteStatement, i-1));
   columnTypeString.MakeUpper();
   
-  printf("Datatype is %s\n", columnTypeString.c_str());
-  
   if (columnTypeString.IsSameAs(_("INTEGER")) || columnTypeString.IsSameAs(_("INT")) || columnTypeString.IsSameAs(_("LONG")))
     returnType = COLUMN_INTEGER;
   else if (columnTypeString.IsSameAs(_("STRING")) || columnTypeString.StartsWith(_("VARCHAR")) || columnTypeString.StartsWith(_("CHAR")))
@@ -43,7 +41,6 @@ int SqliteResultSetMetaData::GetColumnType(int i)
     switch (columnType)
     {
       case SQLITE_INTEGER:
-        puts("sqlite3_column_type returned SQLITE_INTEGER");
         returnType = COLUMN_INTEGER;
         break;
       case SQLITE_FLOAT:
@@ -84,7 +81,6 @@ int SqliteResultSetMetaData::GetColumnCount()
 }
 
 wxString SqliteResultSetMetaData::GetTableForColumn(int i) {
-  printf("SqliteResultSetMetaData::GetTableForColumn() called.\n");
   wxString columnName = ConvertFromUnicodeStream(sqlite3_column_table_name(m_pSqliteStatement, i-1));
   return columnName;
 }

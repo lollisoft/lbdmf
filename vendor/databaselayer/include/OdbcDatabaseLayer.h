@@ -73,7 +73,10 @@ public:
   virtual wxArrayString GetTables();
   virtual wxArrayString GetViews();
   virtual wxArrayString GetColumns(const wxString& table);
-  //virtual wxArrayString GetPrimaryKeys(const wxString& table);
+
+  virtual int GetPrimaryKeys(const wxString& table);
+  virtual wxString& GetPrimaryKeyColumn(const int index);
+  virtual wxString& GetPrimaryKeySequence(const int index);
 
 #ifdef SUPPORT_FOREIGN_KEYS
   virtual wxArrayString GetForeignKeys(const wxString& table);
@@ -97,6 +100,10 @@ private:
 #endif
 
   bool m_bIsConnected;
+
+  wxArrayString arrPrimaryColumns;
+  wxArrayString arrPrimarySequence;
+
 
 public:
 

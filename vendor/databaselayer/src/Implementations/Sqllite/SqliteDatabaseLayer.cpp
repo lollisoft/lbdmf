@@ -409,20 +409,20 @@ bool SqliteDatabaseLayer::ViewExists(const wxString& view)
   return bReturn;
 }
 
-wxArrayString SqliteDatabaseLayer::GetPrimaryKeys(const wxString& table) {
-  wxArrayString returnArray;
+int SqliteDatabaseLayer::GetPrimaryKeys(const wxString& table) {
+  int count = 0;
   char const *pzDataType;    /* OUTPUT: Declared data type */
   char const *pzCollSeq;     /* OUTPUT: Collation sequence name */
   int pNotNull;              /* OUTPUT: True if NOT NULL constraint exists */
   int pPrimaryKey;           /* OUTPUT: True if column part of PK */
   int pAutoinc;               /* OUTPUT: True if column is auto-increment */
 
+  arrPrimaryColumns.Clear();
+  arrPrimarySequence.Clear();
+  
   wxArrayString columns = GetColumns(table);
   
   for (int i = 0; i < columns.Count(); i++) {
-  
-    printf("Check if %s is a primary key.\n", columns[i].c_str());
-  
 	sqlite3_table_column_metadata(
 		m_pDatabase,		/* Connection handle */
 		NULL,				/* Database name or NULL */
@@ -436,15 +436,28 @@ wxArrayString SqliteDatabaseLayer::GetPrimaryKeys(const wxString& table) {
 		);
 
 	if (pPrimaryKey == 1) {
-		printf("Yes.\n");
-		returnArray.Add(columns[i]);
+			arrPrimaryColumns.Add(columns[i]);
+			arrPrimarySequence.Add(wxString(pzCollSeq));
+			count++;
 	}
   }
-  return returnArray;
+  return count;
 }
+
+wxString& SqliteDatabaseLayer::GetPrimaryKeyColumn(const int index) {
+	return arrPrimaryColumns[index];
+}
+
+wxString& SqliteDatabaseLayer::GetPrimaryKeySequence(const int index) {
+	return arrPrimarySequence[index];
+}
+
 
 int SqliteDatabaseLayer::GetForeignKeys(const wxString& table) {
 	if (m_fklist) list_destroy((List*)m_fklist);
+	
+	// Workaround: Parser may fail and m_fklist->len is wrong.
+	int realitems = 0;
 	
 	wxString sysQ = wxString("select sql from sqlite_master where tbl_name = '");
 	sysQ += table;
@@ -456,7 +469,8 @@ int SqliteDatabaseLayer::GetForeignKeys(const wxString& table) {
 		wxString result = 	system_query->GetResultString(1);
 		// Parser needs this
 		result += ";";
-		
+		printf("Get foreign key list for %s.\n", result.c_str());
+		//result = result.Lower();
 		m_fklist = (void*) getForeignKeyList((char*) table.c_str(), result.c_str());
 		
 		if (m_fklist)	{
@@ -469,14 +483,17 @@ int SqliteDatabaseLayer::GetForeignKeys(const wxString& table) {
 			for (int i = 0; i < ((List*) m_fklist)->len; i++) {
 				if (item == NULL) break; 
 				ForeignKey *fk = (ForeignKey *)list_data(item);
+				if (fk == NULL) break;
 				arrFKCols.Add(fk->col);
 				arrPKCols.Add(fk->fcol);
 				arrPKTables.Add(fk->ftab);
+				realitems++;
 				item = list_next(item);
 				if (item == NULL) break; 
 			}
 			
-			return ((List*) m_fklist)->len;
+			((List*) m_fklist)->len = realitems;
+			return realitems;
 		}
 	}
 

@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.165 $
+# * $Revision: 1.166 $
 # * $Name:  $
-# * $Id: Makefile,v 1.165 2008/01/26 20:24:43 lollisoft Exp $
+# * $Id: Makefile,v 1.166 2008/02/02 08:22:52 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.166  2008/02/02 08:22:52  lollisoft
+# * Some improvements in sqlite database stuff, but also some problems in parser syntax.
+# *
 # * Revision 1.165  2008/01/26 20:24:43  lollisoft
 # * Implemented more functions regarding to meta data for sqlite database gateway. Some interface functions have
 # * been changed to get proper working test application.
@@ -723,6 +726,7 @@ ALLDIRS = \
 	lbMetaApplication \
 	lbPluginManager \
 	../vendor/propgrid \
+	../vendor/databaselayer/src/Implementations/Sqllite \
 	../vendor/wxaui-0.9.1/src \
 	../vendor/wxaui-0.9.1/sample \
 	../AppDevelopmentDemo/App \

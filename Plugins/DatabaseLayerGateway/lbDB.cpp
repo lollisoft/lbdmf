@@ -1532,7 +1532,6 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::query(char* q, bool bind) {
 				// Get all tables once
 				int count = metadata->GetColumnCount();
 				for (int i = 1; i <= count; i++) {
-					_CL_LOG << "Call metadata->GetTableForColumn(" << i << ")." LOG_
 					wxString table = metadata->GetTableForColumn(i);
 					if (tables.Index(table) == wxNOT_FOUND) tables.Add(table);
 				}
@@ -1565,32 +1564,37 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::query(char* q, bool bind) {
 				}
 								
 				if (cursorFeature) {
-					primarykeys = currentdbLayer->GetPrimaryKeys(tables[0]);
+					int pkeys = currentdbLayer->GetPrimaryKeys(tables[0]);
 					
-					wxString tempSQL = "SELECT ";
-					tempSQL += primarykeys[0];
-					tempSQL += " from ";
-					tempSQL += tables[0];
-					tempSQL += " order by ";
-					tempSQL += primarykeys[0];
-					
-					
-					DatabaseResultSet* tempResult = currentdbLayer->RunQueryWithResults(tempSQL);
-					
-					int count = 0;
-					if (tempResult && tempResult->Next()) {
-						count++;
-						currentCursorview.Add(tempResult->GetResultString(1));
-						while (tempResult->Next()) {
+					if (pkeys >= 1) {
+						wxString tempSQL = "SELECT ";
+						tempSQL += currentdbLayer->GetPrimaryKeyColumn(0);
+						tempSQL += " from ";
+						tempSQL += tables[0];
+						tempSQL += " order by ";
+						tempSQL += currentdbLayer->GetPrimaryKeyColumn(0);
+						
+						
+						DatabaseResultSet* tempResult = currentdbLayer->RunQueryWithResults(tempSQL);
+						
+						int count = 0;
+						if (tempResult && tempResult->Next()) {
 							count++;
 							currentCursorview.Add(tempResult->GetResultString(1));
-							if (count == max_in_cursor) break;
+							while (tempResult->Next()) {
+								count++;
+								currentCursorview.Add(tempResult->GetResultString(1));
+								if (count == max_in_cursor) break;
+							}
 						}
+						cursor = 0;
+						max_in_cursor = count;
+						selectCurrentRow();
 					}
-					cursor = 0;
-					max_in_cursor = count;
-					selectCurrentRow();
+				} else {
+					cursorFeature = false;
 				}
+				
 			}
 		} else {
 			return ERR_DB_QUERYFAILED;
@@ -1856,8 +1860,6 @@ lb_I_String* LB_STDCALL lbDatabaseLayerQuery::getPKColumn(char const * FKName) {
 
 /*...svoid LB_STDCALL lbDatabaseLayerQuery\58\\58\prepareFKList\40\\41\:0:*/
 void LB_STDCALL lbDatabaseLayerQuery::prepareFKList() {
-	_CL_LOG << "lbDatabaseLayerQuery::prepareFKList() called." LOG_
-
 	#define TAB_LEN 100
 	#define COL_LEN 100
 	lbErrCodes err = ERR_NONE;
@@ -1908,7 +1910,6 @@ void LB_STDCALL lbDatabaseLayerQuery::prepareFKList() {
 	
 	try {
 		int count = currentdbLayer->GetForeignKeys(table);
-		_CL_LOG << "Number of foreign keys for table (" << table << "): " << count LOG_
 		for (int i = 0; i < count; i++) {
 			UAP_REQUEST(manager.getPtr(), lb_I_String, FKName)
 			UAP_REQUEST(manager.getPtr(), lb_I_String, PKTable)
@@ -1920,8 +1921,6 @@ void LB_STDCALL lbDatabaseLayerQuery::prepareFKList() {
 			wxString fkEntry = currentdbLayer->GetForeignKeyFKColumn(i);
 			wxString pkEntry = currentdbLayer->GetForeignKeyPKColumn(i);
 			wxString pkTable = currentdbLayer->GetForeignKeyPKTable(i);
-			
-			//_CL_LOG << "FKColumn = " << fkEntry.c_str() << ", PKColumn = " << pkEntry.c_str() << ", PKTable = " << pkTable.c_str() LOG_
 			
 			*PKTable = pkTable.c_str();
 			*PKName = pkEntry.c_str();		
@@ -1960,114 +1959,6 @@ void LB_STDCALL lbDatabaseLayerQuery::prepareFKList() {
 	} catch (...) {
 		_CL_LOG << "Exception caught!" LOG_
 	}
-    
-    // Logical relations, but not defined in the database model.
-
-#ifdef Bla
-	if (ForeignColumns->Count() == 0) {		
-/*...sOriginally for Linux:8:*/
-	lbErrCodes err = ERR_NONE;
-	
-	char buffer[1000] = "";
-	
-	/* For each column in the table for the current query try to select the PKTable and associate it to
-	   the foreign column.
-	 */
-
-	_CL_VERBOSE << "lbDatabaseLayerQuery::prepareFKList() tries to read foreign column information from table" LOG_
-	
-	
-	
-	lb_I_Module* m = getModuleManager();
-
-        UAP_REQUEST(m, lb_I_Database, db)
-        db->init();
-	
-        char* user = getenv("lbDMFUser");
-        char* pass = getenv("lbDMFPasswd");
-	
-        if (!user) user = "dba";
-        if (!pass) pass = "trainres";
-	
-        db->connect("lbDMF", "lbDMF", user, pass);
-
-	
-	for (int i = 1; i <= getColumns(); i++) { 
-    	    UAP(lb_I_Query, q)
-
-	    buffer[0] = 0;
-	    
-	    char* column = strdup(getColumnName(i));
-
-	    sprintf(buffer, "select PKTable, PKName from ForeignKey_VisibleData_Mapping where FKTable = '%s' and FKName = '%s'", table, column);
-
-	    _CL_LOG << "Query: " << buffer LOG_
-
-	    q = db->getQuery("lbDMF", 0);
-
-	    skipFKCollections = 1;
-	    err = q->query(buffer);
-	    skipFKCollections = 0;
-
-	    if ((err != ERR_NONE) || (err != WARN_DB_NODATA)) {
-				_CL_VERBOSE << "No foreign key to primary data mapping found." LOG_
-		} else {
-			err = q->first();
-
-			if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
-				UAP_REQUEST(manager.getPtr(), lb_I_String, FKName)
-				UAP_REQUEST(manager.getPtr(), lb_I_String, PKTable)
-				UAP_REQUEST(manager.getPtr(), lb_I_String, PKName)
-				UAP_REQUEST(manager.getPtr(), lb_I_String, PKTable_PKName)
-	
-				UAP_REQUEST(manager.getPtr(), lb_I_String, PKColumn)
-	
-				PKTable = q->getAsString(1);
-				PKName = q->getAsString(2);
-		
-				FKName->setData(column);
-				//FKName->toLower();
-				//PKTable->toLower();
-		
-		
-				UAP(lb_I_Unknown, uk_PKTable)
-				UAP(lb_I_KeyBase, key_FKName)
-
-				UAP(lb_I_Unknown, uk_FKName)
-				UAP(lb_I_KeyBase, key_PKTable_PKName)
-	      
-				QI(FKName, lb_I_KeyBase, key_FKName)
-				QI(PKTable, lb_I_Unknown, uk_PKTable)
-
-
-				//if (isVerbose())
-					printf("%-s ( %-s ) <-- %-s ( %-s )\n", PKTable->charrep(), PKName->charrep(), table, FKName->charrep());
-
-				ForeignColumns->insert(&uk_PKTable, &key_FKName);
-	        
-				*PKTable_PKName = PKTable->charrep();
-				PKColumn = getPKColumn(FKName->charrep());
-				*PKTable_PKName += PKColumn->charrep();
-
-				QI(PKTable_PKName, lb_I_KeyBase, key_PKTable_PKName)
-				QI(FKName, lb_I_Unknown, uk_FKName)
-
-				//PKTable_PKName->toLower();
-
-				_CL_VERBOSE << "Insert map for '" << key_PKTable_PKName->charrep() << 
-					"' to '" << FKName->charrep() << "'" LOG_
-
-				mapPKTable_PKColumns_To_FKName->insert(&uk_FKName, &key_PKTable_PKName);
-	        
-			} else {
-				_CL_VERBOSE << "No foreign key to primary data mapping found." LOG_
-			}
-		}	    
-	    free(column);
-	}
-/*...e*/
-	}
-#endif //Bla
 }
 /*...e*/
 /*...sint LB_STDCALL lbDatabaseLayerQuery\58\\58\getPKColumns\40\\41\:0:*/
@@ -2187,7 +2078,6 @@ bool LB_STDCALL lbDatabaseLayerQuery::getReadonly(char* column) {
 lb_I_String* LB_STDCALL lbDatabaseLayerQuery::getTableName(char* columnName) {
 	ResultSetMetaData* metadata = theResult->GetMetaData();
 	wxString table = metadata->GetTableForColumn(columnName);
-	_CL_LOG << "Returning table name " << table.c_str() << " for columnname " << columnName LOG_
 	UAP_REQUEST(getModuleInstance(), lb_I_String, t)
 	
 	*t = (char*) table.c_str();
@@ -2205,7 +2095,6 @@ lb_I_String* LB_STDCALL lbDatabaseLayerQuery::getColumnName(int col) {
 		_CL_LOG << "Error: Have only " << metadata->GetColumnCount() << " columns, but get called with " << col << "!" LOG_
 	}
 	wxString column = metadata->GetColumnName(col);
-	_CL_VERBOSE << "Returning column " << column.c_str() LOG_
 	
 	UAP_REQUEST(getModuleInstance(), lb_I_String, t)
 	
@@ -2238,15 +2127,15 @@ bool LB_STDCALL lbDatabaseLayerQuery::selectCurrentRow() {
 		// Try to read 100 more key values less than the first key in currentCursorview: currentCursorview[0]-1
 		
 		wxString tempSQL = "SELECT ";
-		tempSQL += primarykeys[0];
+		tempSQL += currentdbLayer->GetPrimaryKeyColumn(0);
 		tempSQL += " FROM ";
 		tempSQL += tables[0];
 		tempSQL += " WHERE ";
-		tempSQL += primarykeys[0];
+		tempSQL += currentdbLayer->GetPrimaryKeyColumn(0);
 		tempSQL += " < ";
 		tempSQL += currentCursorview[0];
 		tempSQL += " ORDER BY ";
-		tempSQL += primarykeys[0];
+		tempSQL += currentdbLayer->GetPrimaryKeyColumn(0);
 		tempSQL += " DESC "; // Reverse order to get the top most 100 key values, not the minimum 100 values. 
 		
 		DatabaseResultSet* tempResult = currentdbLayer->RunQueryWithResults(tempSQL);
@@ -2284,11 +2173,11 @@ bool LB_STDCALL lbDatabaseLayerQuery::selectCurrentRow() {
 		if (cursor > max_in_cursor) {
 			// Jump to last
 			wxString tempSQL = "SELECT ";
-			tempSQL += primarykeys[0];
+			tempSQL += currentdbLayer->GetPrimaryKeyColumn(0);
 			tempSQL += " FROM ";
 			tempSQL += tables[0];
 			tempSQL += " ORDER BY ";
-			tempSQL += primarykeys[0];
+			tempSQL += currentdbLayer->GetPrimaryKeyColumn(0);
 			tempSQL += " DESC "; // Reverse order to get the top most 100 key values, not the minimum 100 values. 
 			
 			DatabaseResultSet* tempResult = currentdbLayer->RunQueryWithResults(tempSQL);
@@ -2320,15 +2209,15 @@ bool LB_STDCALL lbDatabaseLayerQuery::selectCurrentRow() {
 			cursor = count-1;
 		} else {
 			wxString tempSQL = "SELECT ";
-			tempSQL += primarykeys[0];
+			tempSQL += currentdbLayer->GetPrimaryKeyColumn(0);
 			tempSQL += " FROM ";
 			tempSQL += tables[0];
 			tempSQL += " WHERE ";
-			tempSQL += primarykeys[0];
+			tempSQL += currentdbLayer->GetPrimaryKeyColumn(0);
 			tempSQL += " > ";
 			tempSQL += currentCursorview[max_in_cursor-1];
 			tempSQL += " ORDER BY ";
-			tempSQL += primarykeys[0];
+			tempSQL += currentdbLayer->GetPrimaryKeyColumn(0);
 			
 			
 			DatabaseResultSet* tempResult = currentdbLayer->RunQueryWithResults(tempSQL);
@@ -2356,7 +2245,7 @@ bool LB_STDCALL lbDatabaseLayerQuery::selectCurrentRow() {
 	}
 
 	wxString cursorWhere = " WHERE ";
-	cursorWhere += primarykeys[0];
+	cursorWhere += currentdbLayer->GetPrimaryKeyColumn(0);
 	cursorWhere += " = ";
 	
 	if (currentCursorview.Count() == 0) return false;
@@ -2529,7 +2418,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::update() {
 		}
 		
 		strSQL += " WHERE ";
-		strSQL += primarykeys[0];
+		strSQL += currentdbLayer->GetPrimaryKeyColumn(0);
 		strSQL += " = ";
 		strSQL += currentCursorview[cursor];
 
@@ -3314,6 +3203,8 @@ lb_I_Container* LB_STDCALL lbDatabase::getColumns(char* connectionname) {
 	DatabaseResultSet* pResult = NULL;
 	ResultSetMetaData* pMetaData = NULL;
 	
+	long ind = 0;
+	
 	wxArrayString tables = dbl->GetTables();
 
 	for (int i = 0; i < tables.Count(); i++) {
@@ -3332,7 +3223,7 @@ lb_I_Container* LB_STDCALL lbDatabase::getColumns(char* connectionname) {
 		QI(index, lb_I_KeyBase, key)
 		
 		// 1-based
-		for(long i=1; i<=pMetaData->GetColumnCount(); i++)
+		for(long ii=1; ii<=pMetaData->GetColumnCount(); ii++)
 		{
 			UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
 			
@@ -3362,11 +3253,11 @@ lb_I_Container* LB_STDCALL lbDatabase::getColumns(char* connectionname) {
 			*name = "TableName";
 			param->setUAPString(*&name, *&TableName);
 			
-			*colName = pMetaData->GetColumnName(i).c_str();
+			*colName = pMetaData->GetColumnName(ii).c_str();
 			*name = "ColumnName";
 			param->setUAPString(*&name, *&colName);
 			
-			long   colTypeLong = (long) pMetaData->GetColumnType(i);
+			long   colTypeLong = (long) pMetaData->GetColumnType(ii);
 			typeLong->setData((long)colTypeLong);
 			*name = "DataType";
 			param->setUAPLong(*&name, *&typeLong);
@@ -3445,7 +3336,7 @@ lb_I_Container* LB_STDCALL lbDatabase::getColumns(char* connectionname) {
 			UAP(lb_I_Unknown, uk)
 			QI(param, lb_I_Unknown, uk)
 				
-			index->setData(i);
+			index->setData(++ind);
 			columns->insert(&uk, &key);
 		}
 		
@@ -3466,15 +3357,176 @@ lb_I_Container* LB_STDCALL lbDatabase::getColumns(char* connectionname) {
 }
 
 lb_I_Container* LB_STDCALL lbDatabase::getPrimaryKeys(char* connectionname) {
-	UAP_REQUEST(getModuleInstance(), lb_I_Container, container)
-///\todo Implement.
-	return container.getPtr();
+	lbErrCodes err = ERR_NONE;
+	//UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
+	UAP_REQUEST(getModuleInstance(), lb_I_Container, columns)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, msg)
+	//meta->setStatusText("Info", "Get primary keys ...");
+
+	columns++;
+	
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, index)
+	UAP(lb_I_KeyBase, key)
+	QI(index, lb_I_KeyBase, key)
+		
+	long ind = 0;
+
+	DatabaseLayer* dbl = new SqliteDatabaseLayer();
+	dbl->Open(connectionname);
+	
+	DatabaseResultSet* pResult = NULL;
+	ResultSetMetaData* pMetaData = NULL;
+	
+	wxArrayString tables = dbl->GetTables();
+
+	for (int i = 0; i < tables.Count(); i++) {
+		int fks = dbl->GetPrimaryKeys(tables[i]);
+		
+		for (int ii = 0;ii < fks;ii++) {
+			wxString pkcol = dbl->GetPrimaryKeyColumn(ii);
+			wxString pkseq = dbl->GetPrimaryKeySequence(ii);
+
+			UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
+			UAP_REQUEST(getModuleInstance(), lb_I_Long, number)
+			UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+			UAP_REQUEST(getModuleInstance(), lb_I_String, value)
+			
+			*name = "TableCatalog";
+			*value = (const char*) "";
+			param->setUAPString(*&name, *&value);
+			*name = "TableSchema";
+			*value = (const char*) "";
+			param->setUAPString(*&name, *&value);
+			*name = "TableName";
+			*value = (const char*) tables[i].c_str();
+			param->setUAPString(*&name, *&value);
+			*name = "ColumnName";
+			*value = (const char*) pkcol.c_str();
+			param->setUAPString(*&name, *&value);
+			*name = "ColumnName_V2";
+			*value = (const char*) "";
+			param->setUAPString(*&name, *&value);
+			
+			*name = "KeySequence";
+			value->setData(pkseq.c_str());
+			param->setUAPString(*&name, *&value);
+	
+			UAP(lb_I_Unknown, uk)
+			QI(param, lb_I_Unknown, uk)
+			
+			*msg = "Get primary column ";
+			*msg += (const char*) pkcol.c_str();
+			*msg += " of table ";
+			*msg += (const char*) tables[i].c_str();
+			*msg += " ...";
+
+			index->setData(++ind);
+
+			//meta->setStatusText("Info", msg->charrep());
+
+			
+			columns->insert(&uk, &key);
+			}
+	}
+
+	return columns.getPtr();
 }
 
 lb_I_Container* LB_STDCALL lbDatabase::getForeignKeys(char* connectionname) {
-	UAP_REQUEST(getModuleInstance(), lb_I_Container, container)
-///\todo Implement.
-	return container.getPtr();
+	lbErrCodes err = ERR_NONE;
+	//UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
+	UAP_REQUEST(getModuleInstance(), lb_I_Container, columns)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, msg)
+	//meta->setStatusText("Info", "Get foreign keys ...");
+
+	columns++;
+	
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, index)
+	UAP(lb_I_KeyBase, key)
+	QI(index, lb_I_KeyBase, key)
+		
+	long ind = 0;
+
+	DatabaseLayer* dbl = new SqliteDatabaseLayer();
+	dbl->Open(connectionname);
+	
+	DatabaseResultSet* pResult = NULL;
+	ResultSetMetaData* pMetaData = NULL;
+	
+	wxArrayString tables = dbl->GetTables();
+	for (int i = 0; i < tables.Count(); i++) {
+	    if (!tables[i].Upper().Contains("SQLITE_STAT1")) {
+			//printf("Get foreign keys for table %s.\n", tables[i].c_str());
+			int fks = dbl->GetForeignKeys(tables[i]);
+			
+			if (fks > 0) {
+				for (int ii = 0;ii < fks;ii++) {
+					wxString fkcol = dbl->GetForeignKeyFKColumn(ii);
+					wxString pkcol = dbl->GetForeignKeyPKColumn(ii);
+					wxString pktab = dbl->GetForeignKeyPKTable(ii);
+					
+					UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
+					UAP_REQUEST(getModuleInstance(), lb_I_Long, number)
+					UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+					UAP_REQUEST(getModuleInstance(), lb_I_String, value)
+						
+					*name = "PKTableCatalog";
+					*value = (const char*) "";
+					param->setUAPString(*&name, *&value);
+					*name = "PKTableSchema";
+					*value = (const char*) "";
+					param->setUAPString(*&name, *&value);
+					*name = "PKTableName";
+					*value = (const char*) pktab;
+					param->setUAPString(*&name, *&value);
+					*name = "PKTableColumnName";
+					*value = (const char*) pkcol;
+					param->setUAPString(*&name, *&value);
+					*name = "FKTableCatalog";
+					*value = (const char*) "";
+					param->setUAPString(*&name, *&value);
+					*name = "FKTableSchema";
+					*value = (const char*) "";
+					param->setUAPString(*&name, *&value);
+					*name = "FKTableName";
+					*value = (const char*) tables[i].c_str();
+					param->setUAPString(*&name, *&value);
+					*name = "FKTableColumnName";
+					*value = (const char*) fkcol;
+					param->setUAPString(*&name, *&value);
+					*name = "KeySequence";
+					number->setData(-1);
+					param->setUAPLong(*&name, *&number);
+					*name = "UpdateRule";
+					number->setData(-1);
+					param->setUAPLong(*&name, *&number);
+					*name = "DeleteRule";
+					number->setData(-1);
+					param->setUAPLong(*&name, *&number);
+					
+					index->setData(++ind);
+					
+					UAP(lb_I_Unknown, uk)
+					QI(param, lb_I_Unknown, uk)
+						
+					*msg = "Get foreign column ";
+					*msg += (const char*) fkcol.c_str();
+					*msg += " of table ";
+					*msg += (const char*) tables[i].c_str();
+					*msg += " pointing to column ";
+					*msg += (const char*) pkcol.c_str();
+					*msg += " of table ";
+					*msg += (const char*) pktab.c_str();
+					*msg += " ...";
+					
+					//meta->setStatusText("Info", msg->charrep());
+					columns->insert(&uk, &key);
+				}
+			}
+		}
+	}
+
+	return columns.getPtr();
 }
 
 /*...svoid _dbError_STMT\40\char\42\ lp\44\ HSTMT hstmt\41\:0:*/

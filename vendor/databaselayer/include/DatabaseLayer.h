@@ -93,9 +93,15 @@ public:
   virtual wxArrayString GetViews() = 0;
   /// Retrieve all column names for a table
   virtual wxArrayString GetColumns(const wxString& table) = 0;
-  /// Retrieve all primary columns for a table
-  virtual wxArrayString GetPrimaryKeys(const wxString& table) = 0;
 
+  /// Retrieve all primary columns for a table
+  virtual int GetPrimaryKeys(const wxString& table) = 0;
+
+  /// Retrieve the foreign key column name
+  virtual wxString& GetPrimaryKeyColumn(const int index) = 0;
+
+  /// Retrieve the foreign key column name
+  virtual wxString& GetPrimaryKeySequence(const int index) = 0;
 
   /// Retrieve the number of foreign columns per table.
   /// Throws DATABASE_LAYER_NOT_SUPPORTED when the backend does not support foreign keys.
