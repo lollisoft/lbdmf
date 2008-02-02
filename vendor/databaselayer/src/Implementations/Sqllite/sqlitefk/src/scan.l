@@ -77,11 +77,28 @@ default                        return DEFAULT;
 %%
 
 void
-yyerror (const char *msg)
+yyerror (const char *message)
 {
-    /* ignore */
-    fprintf(stderr, "yyerror: %s\n", msg);
-    
+       char    *p, *underline; 
+        int     buflen  = strlen(yy_current_buffer->yy_ch_buf); 
+
+        if (!buflen) 
+                fprintf(stderr, "parser: %s at or near \"%s\"", 
+                        message, yytext); 
+
+        underline = malloc(buflen); 
+        memset(underline, ' ', buflen); 
+        *(underline + buflen) = '\0'; 
+
+        for(p = underline + (buflen - yyleng); *p != '\0'; p++) 
+                *p = '^'; 
+
+        fprintf(stderr, "%s\n        %s\n        parser: %s at or near \"%s\"", 
+                YY_CURRENT_BUFFER->yy_ch_buf, underline, 
+                message, yytext); 
+
+        free(underline); 
+
 }
 
 
