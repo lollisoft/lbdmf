@@ -62,7 +62,6 @@ List* getForeignKeyList(char* _table, char* sql_ddl)
 		scanner_finish();
 	} else {
 		YY_BUFFER_STATE mybuf;
-		printf("Parsing for the following SQL definition: %s\n", sql_ddl);
 		mybuf = yy_scan_string(sql_ddl);
 		yyparse();
 		scanner_finish();
@@ -71,7 +70,6 @@ List* getForeignKeyList(char* _table, char* sql_ddl)
 	
 
 #ifdef BUILD_LIBRARY
-	printf("Start reading structure generated from scanner...\n");
     tabitem = list_head(schema);
     while (tabitem != NULL)
     {
@@ -80,7 +78,6 @@ List* getForeignKeyList(char* _table, char* sql_ddl)
 		if (table == NULL)
 			goto table_next;
 		
-		printf("Compare table '%s' with '%s'.\n", table->name, _table);
 		if (strcmp(table->name, _table) == 0) {
 			foreign_keys = list_new();
 			
@@ -92,7 +89,6 @@ List* getForeignKeyList(char* _table, char* sql_ddl)
 				if (fk == NULL)
 					goto fk_next;
 				
-				printf("Foreign key %s points to %s.\n", fk->col, fk->ftab);
 				copy_of_fk->col = strdup(fk->col);
 				copy_of_fk->ftab = strdup(fk->ftab);
 				copy_of_fk->fcol = strdup(fk->fcol);
