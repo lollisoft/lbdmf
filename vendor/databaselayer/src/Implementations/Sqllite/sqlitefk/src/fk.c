@@ -40,6 +40,7 @@ main (int argc, char **argv)
 List* getForeignKeyList(char* _table, char* sql_ddl)
 #endif
 {
+	bool haveItems = false;
     int i,x;
     ListItem *tabitem, *fkitem;
     Table *table;
@@ -94,19 +95,22 @@ List* getForeignKeyList(char* _table, char* sql_ddl)
 				copy_of_fk->fcol = strdup(fk->fcol);
 				
 				list_append(foreign_keys, copy_of_fk);
+				haveItems = true;
 					
 fk_next:					
 				fkitem = list_next(fkitem);
 			}
-	        list_destroy(table->fks);
 		}
+
+        list_destroy(table->fks);
 table_next:		
 		tabitem = list_next(tabitem);
 	}
 	
     list_destroy(schema);
     MemPoolDestroy(&mempool);
-	return foreign_keys;
+	if (haveItems) return foreign_keys;
+	else return NULL;
 #endif
 
 #ifndef BUILD_LIBRARY
