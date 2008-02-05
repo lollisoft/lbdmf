@@ -206,6 +206,13 @@ protected:
 	UAP(lb_I_String, UMLImportTargetDBUser)
 	UAP(lb_I_String, UMLImportTargetDBPass)
 
+	UAP(lb_I_String, DatabaseSettingNamespace)
+	UAP(lb_I_Boolean, UsePlugin)
+
+	UAP(lb_I_FileLocation, XSLFileSystemDatabase)
+	UAP(lb_I_FileLocation, XSLFileApplicationDatabase)
+	UAP(lb_I_Boolean, UseOtherXSLFile)
+
 
 	char hdsihd[100];
 };
@@ -222,6 +229,17 @@ lbDynamicApplication::lbDynamicApplication() {
 	REQUEST(getModuleInstance(), lb_I_String, UMLImportTargetDBName)
 	REQUEST(getModuleInstance(), lb_I_String, UMLImportTargetDBUser)
 	REQUEST(getModuleInstance(), lb_I_String, UMLImportTargetDBPass)
+
+	REQUEST(getModuleInstance(), lb_I_String, DatabaseSettingNamespace)
+	REQUEST(getModuleInstance(), lb_I_Boolean, UsePlugin)
+
+	REQUEST(getModuleInstance(), lb_I_FileLocation, XSLFileSystemDatabase)
+	REQUEST(getModuleInstance(), lb_I_FileLocation, XSLFileApplicationDatabase)
+	REQUEST(getModuleInstance(), lb_I_Boolean, UseOtherXSLFile)
+	
+	XSLFileSystemDatabase->setData("");
+	XSLFileApplicationDatabase->setData("");
+	
 	*lastExportedApp = "";
 }
 
@@ -258,6 +276,92 @@ lbErrCodes LB_STDCALL lbDynamicApplication::editProperties(lb_I_Unknown* uk) {
 		UAP_REQUEST(manager.getPtr(), lb_I_Parameter, paramGeneral)
 		UAP_REQUEST(manager.getPtr(), lb_I_String, parameterGeneral)
 		UAP_REQUEST(manager.getPtr(), lb_I_String, valueGeneral)
+		UAP_REQUEST(manager.getPtr(), lb_I_Boolean, boolGeneral)
+		
+		// Project manager parameters
+		UAP_REQUEST(manager.getPtr(), lb_I_Parameter, paramProject)
+		UAP_REQUEST(manager.getPtr(), lb_I_String, parameterProject)
+		UAP_REQUEST(manager.getPtr(), lb_I_String, valueProject)
+		UAP_REQUEST(manager.getPtr(), lb_I_Boolean, boolProject)
+		
+		// XSL import definitions
+		UAP_REQUEST(manager.getPtr(), lb_I_Parameter, paramXSL)
+		UAP_REQUEST(manager.getPtr(), lb_I_String, parameterXSL)
+		UAP_REQUEST(manager.getPtr(), lb_I_String, valueXSL)
+		UAP_REQUEST(manager.getPtr(), lb_I_FileLocation, fileXSL)
+		UAP_REQUEST(manager.getPtr(), lb_I_Boolean, boolXSL)
+		
+		
+		UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
+		UAP_REQUEST(manager.getPtr(), lb_I_String, value)
+		UAP_REQUEST(manager.getPtr(), lb_I_Integer, i)
+		
+		parameter->setData("Transformation settings");
+		//--------------------------------------------
+		
+		parameterXSL->setData("Ask for other XSL files");
+		boolXSL->setData(UseOtherXSLFile->getData());
+		paramXSL->setUAPBoolean(*&parameterXSL, *&boolXSL);
+		
+		parameterXSL->setData("XSL file for system database");
+		fileXSL->setData(XSLFileSystemDatabase->getData());
+		paramXSL->setUAPFileLocation(*&parameterXSL, *&fileXSL);
+		
+		parameterXSL->setData("XSL file for application database");
+		fileXSL->setData(XSLFileApplicationDatabase->getData());
+		paramXSL->setUAPFileLocation(*&parameterXSL, *&fileXSL);
+		
+		metaapp->registerPropertyChangeEventGroup(	parameter->charrep(), *&paramXSL, 
+													this, (lbEvHandler) &lbDynamicApplication::OnPropertiesDataChange);
+		
+		param->setUAPParameter(*&parameter, *&paramXSL);
+
+		parameter->setData("Database settings");
+		//--------------------------------------
+		
+		parameterGeneral->setData("Use plugin");
+		boolGeneral->setData(UsePlugin->getData());
+		paramGeneral->setUAPBoolean(*&parameterGeneral, *&boolGeneral);
+		
+		parameterGeneral->setData("DB plugin namespace");
+		valueGeneral->setData(DatabaseSettingNamespace->charrep());
+		paramGeneral->setUAPString(*&parameterGeneral, *&valueGeneral);
+		
+		metaapp->registerPropertyChangeEventGroup(	parameter->charrep(), *&paramGeneral, 
+													this, (lbEvHandler) &lbDynamicApplication::OnPropertiesDataChange);
+		
+		param->setUAPParameter(*&parameter, *&paramGeneral);
+
+		parameter->setData("lbDMF Manager Import Definitions");
+		//--------------------------------------------------------
+		
+		parameterProject->setData("DB Name");
+		valueProject->setData(UMLImportTargetDBName->charrep());
+		paramProject->setUAPString(*&parameterProject, *&valueProject);
+		
+		parameterProject->setData("DB User");
+		valueProject->setData(UMLImportTargetDBUser->charrep());
+		paramProject->setUAPString(*&parameterProject, *&valueProject);
+		
+		parameterProject->setData("DB Password");
+		valueProject->setData(UMLImportTargetDBPass->charrep());
+		paramProject->setUAPString(*&parameterProject, *&valueProject);
+		
+		metaapp->registerPropertyChangeEventGroup(	parameter->charrep(), *&paramProject, 
+													this, (lbEvHandler) &lbDynamicApplication::OnPropertiesDataChange);
+		
+		param->setUAPParameter(*&parameter, *&paramProject);
+		
+		metaapp->showPropertyPanel(*&param);
+	} else {
+		// Build up a preferences object and pass it to the property view
+		UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
+		
+		// General parameters for this application
+		UAP_REQUEST(manager.getPtr(), lb_I_Parameter, paramGeneral)
+		UAP_REQUEST(manager.getPtr(), lb_I_String, parameterGeneral)
+		UAP_REQUEST(manager.getPtr(), lb_I_String, valueGeneral)
+		UAP_REQUEST(manager.getPtr(), lb_I_Boolean, boolGeneral)
 		
 		// Project manager parameters
 		UAP_REQUEST(manager.getPtr(), lb_I_Parameter, paramProject)
@@ -270,27 +374,17 @@ lbErrCodes LB_STDCALL lbDynamicApplication::editProperties(lb_I_Unknown* uk) {
 		UAP_REQUEST(manager.getPtr(), lb_I_String, value)
 		UAP_REQUEST(manager.getPtr(), lb_I_Integer, i)
 		
-		parameter->setData("lbDMF Manager Import Definitions");
-		//--------------------------------------------------------
-		/*
-		 parameterProject->setData("Autoopen last project");
-		 boolProject->setData(true);
-		 paramProject->setUAPBoolean(*&parameterProject, *&boolProject);
-		 */
+		parameter->setData("Database settings");
 		
-		parameterProject->setData("DB Name");
-		valueProject->setData("CRM");
-		paramProject->setUAPString(*&parameterProject, *&valueProject);
+		parameterGeneral->setData("Use plugin");
+		boolGeneral->setData(UsePlugin->getData());
+		paramGeneral->setUAPBoolean(*&parameterGeneral, *&boolGeneral);
 		
-		parameterProject->setData("DB User");
-		valueProject->setData("dba");
-		paramProject->setUAPString(*&parameterProject, *&valueProject);
+		parameterGeneral->setData("DB plugin namespace");
+		valueGeneral->setData(DatabaseSettingNamespace->charrep());
+		paramGeneral->setUAPString(*&parameterGeneral, *&valueGeneral);
 		
-		parameterProject->setData("DB Password");
-		valueProject->setData("trainres");
-		paramProject->setUAPString(*&parameterProject, *&valueProject);
-		
-		metaapp->registerPropertyChangeEventGroup(	parameter->charrep(), *&paramProject, 
+		metaapp->registerPropertyChangeEventGroup(	parameter->charrep(), *&paramGeneral, 
 													this, (lbEvHandler) &lbDynamicApplication::OnPropertiesDataChange);
 		
 		param->setUAPParameter(*&parameter, *&paramProject);
@@ -335,6 +429,41 @@ lbErrCodes LB_STDCALL lbDynamicApplication::OnPropertiesDataChange(lb_I_Unknown*
 		if (strcmp(key->charrep(), "lbDMF Manager Import DefinitionsDB Password") == 0) {
 					*UMLImportTargetDBPass = value->charrep();
 		}
+
+
+		if (strcmp(key->charrep(), "Database settingsUse plugin") == 0) {
+					if (strcmp(value->charrep(), "TRUE") == 0) {
+						UsePlugin->setData(true);
+					} else {
+						UsePlugin->setData(false);
+					}
+		}
+		
+		if (strcmp(key->charrep(), "Database settingsDB plugin namespace") == 0) {
+					*DatabaseSettingNamespace = value->charrep();
+		}
+
+		if (strcmp(key->charrep(), "Transformation settingsAsk for other XSL files") == 0) {
+					if (strcmp(value->charrep(), "TRUE") == 0) {
+						UseOtherXSLFile->setData(true);
+					} else {
+						UseOtherXSLFile->setData(false);
+					}
+		}
+
+		if (strcmp(key->charrep(), "Transformation settingsXSL file for system database") == 0) {
+					XSLFileSystemDatabase->setData(value->charrep());
+		}
+
+		if (strcmp(key->charrep(), "Transformation settingsXSL file for application database") == 0) {
+					XSLFileApplicationDatabase->setData(value->charrep());
+		}
+
+		if (strcmp(key->charrep(), "") == 0) {
+					*DatabaseSettingNamespace = value->charrep();
+		}
+
+		_LOG << "User has changed a property: " << key->charrep() << " = " << value->charrep() LOG_
 	} else {
 		_LOG << "ERROR: Could not decode parameter structure!" LOG_
 	}
@@ -1242,6 +1371,63 @@ lbErrCodes LB_STDCALL lbDynamicApplication::uninitialize() {
 			
 			*tempStorageNamespace = "lbDynAppInternalFormat";
 			document->setUAPString(*&param, *&tempStorageNamespace);
+			
+			UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+			UAP(lb_I_Unknown, uk)
+			UAP(lb_I_KeyBase, key)
+			UAP_REQUEST(getModuleInstance(), lb_I_Container, ApplicationData)
+			ApplicationData->setCloning(false);
+			
+			QI(name, lb_I_KeyBase, key)
+			
+			// Get the container that stores the application data
+			*name = "ApplicationData";
+			document->getUAPContainer(*&name, *&ApplicationData);
+			
+			// Store the current values into the container
+			
+			*name = "UMLImportTargetDBName";
+			if (ApplicationData->exists(&key) == 1) ApplicationData->remove(&key);
+			QI(UMLImportTargetDBName, lb_I_Unknown, uk)
+			ApplicationData->insert(&uk, &key);
+			
+			*name = "UMLImportTargetDBUser";
+			if (ApplicationData->exists(&key) == 1) ApplicationData->remove(&key);
+			QI(UMLImportTargetDBUser, lb_I_Unknown, uk)
+			ApplicationData->insert(&uk, &key);
+			
+			*name = "UMLImportTargetDBPass";
+			if (ApplicationData->exists(&key) == 1) ApplicationData->remove(&key);
+			QI(UMLImportTargetDBPass, lb_I_Unknown, uk)
+			ApplicationData->insert(&uk, &key);
+			
+			*name = "DatabaseSettingNamespace";
+			if (ApplicationData->exists(&key) == 1) ApplicationData->remove(&key);
+			QI(DatabaseSettingNamespace, lb_I_Unknown, uk)
+			ApplicationData->insert(&uk, &key);
+			
+			*name = "UsePlugin";
+			if (ApplicationData->exists(&key) == 1) ApplicationData->remove(&key);
+			QI(UsePlugin, lb_I_Unknown, uk)
+			ApplicationData->insert(&uk, &key);
+			
+			*name = "XSLFileSystemDatabase";
+			if (ApplicationData->exists(&key) == 1) ApplicationData->remove(&key);
+			QI(XSLFileSystemDatabase, lb_I_Unknown, uk)
+			ApplicationData->insert(&uk, &key);
+			
+			*name = "XSLFileApplicationDatabase";
+			if (ApplicationData->exists(&key) == 1) ApplicationData->remove(&key);
+			QI(XSLFileApplicationDatabase, lb_I_Unknown, uk)
+			ApplicationData->insert(&uk, &key);
+			
+			*name = "UseOtherXSLFile";
+			if (ApplicationData->exists(&key) == 1) ApplicationData->remove(&key);
+			QI(UseOtherXSLFile, lb_I_Unknown, uk)
+			ApplicationData->insert(&uk, &key);
+			
+			*name = "ApplicationData";
+			document->setUAPContainer(*&name, *&ApplicationData);
 		}
 		
 		/// \todo Move storing procedure to a storage handler.
@@ -1820,7 +2006,8 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 					UAP(lb_I_Parameter, document)
 					ukDoc = metaapp->getActiveDocument();
 					QI(ukDoc, lb_I_Parameter, document)
-						
+
+/*
 					if (document != NULL) {
 						*param = "UMLImportDBName";
 						document->setUAPString(*&param, *&UMLImportTargetDBName);
@@ -1829,7 +2016,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(char* user, char* app) {
 						*param = "UMLImportDBPass";
 						document->setUAPString(*&param, *&UMLImportTargetDBPass);
 					}
-					
+*/
 					editProperties(NULL);
 				}
 				
@@ -1921,6 +2108,39 @@ void LB_STDCALL lbDynamicApplication::loadDataFromActiveDocument() {
     QI(uk, lb_I_Applications_Formulars, ApplicationFormulars)
 
 
+	// Read out application settings
+
+    *name = "UMLImportTargetDBName";
+    uk = document->getElement(&key);
+	UMLImportTargetDBName->setData(*&uk);
+
+    *name = "UMLImportTargetDBUser";
+    uk = document->getElement(&key);
+	UMLImportTargetDBUser->setData(*&uk);
+
+    *name = "UMLImportTargetDBPass";
+    uk = document->getElement(&key);
+	UMLImportTargetDBPass->setData(*&uk);
+
+    *name = "DatabaseSettingNamespace";
+    uk = document->getElement(&key);
+	DatabaseSettingNamespace->setData(*&uk);
+
+    *name = "UsePlugin";
+    uk = document->getElement(&key);
+	UsePlugin->setData(*&uk);
+
+    *name = "XSLFileSystemDatabase";
+    uk = document->getElement(&key);
+	XSLFileSystemDatabase->setData(*&uk);
+
+    *name = "XSLFileApplicationDatabase";
+    uk = document->getElement(&key);
+	XSLFileApplicationDatabase->setData(*&uk);
+
+    *name = "UseOtherXSLFile";
+    uk = document->getElement(&key);
+	UseOtherXSLFile->setData(*&uk);
 
     if (forms == NULL) _LOG << "Error: forms is NULL." LOG_
 }
