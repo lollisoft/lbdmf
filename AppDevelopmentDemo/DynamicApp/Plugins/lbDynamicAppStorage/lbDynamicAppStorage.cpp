@@ -434,6 +434,28 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_InputStream* iStrea
 	appActionTypes->accept(*&aspect);
 	appActionSteps->accept(*&aspect);
 
+	// Read out application settings
+	UAP_REQUEST(getModuleInstance(), lb_I_String, UMLImportTargetDBName)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, UMLImportTargetDBUser)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, UMLImportTargetDBPass)
+
+	UAP_REQUEST(getModuleInstance(), lb_I_FileLocation, XSLFileSystemDatabase)
+	UAP_REQUEST(getModuleInstance(), lb_I_FileLocation, XSLFileApplicationDatabase)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, DatabaseSettingNamespace)
+
+	UAP_REQUEST(getModuleInstance(), lb_I_Boolean, UsePlugin)
+	UAP_REQUEST(getModuleInstance(), lb_I_Boolean, UseOtherXSLFile)
+
+	UMLImportTargetDBName->accept(*&aspect);
+	UMLImportTargetDBUser->accept(*&aspect);
+	UMLImportTargetDBPass->accept(*&aspect);
+
+	DatabaseSettingNamespace->accept(*&aspect);
+	UsePlugin->accept(*&aspect);
+	XSLFileSystemDatabase->accept(*&aspect);
+	XSLFileApplicationDatabase->accept(*&aspect);
+	UseOtherXSLFile->accept(*&aspect);
+
 	UAP(lb_I_Unknown, ukDoc)
 	UAP(lb_I_KeyBase, key)
 	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, metaapp)
@@ -533,6 +555,41 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_InputStream* iStrea
 		*name = "AppActionTypes";
 		QI(appActionTypes, lb_I_Unknown, uk)
 		document->insert(&uk, &key);
+
+
+
+		
+		*name = "UMLImportTargetDBName";
+		QI(UMLImportTargetDBName, lb_I_Unknown, uk)
+		document->insert(&uk, &key);
+		
+		*name = "UMLImportTargetDBUser";
+		QI(UMLImportTargetDBUser, lb_I_Unknown, uk)
+		document->insert(&uk, &key);
+		
+		*name = "UMLImportTargetDBPass";
+		QI(UMLImportTargetDBPass, lb_I_Unknown, uk)
+		document->insert(&uk, &key);
+		
+		*name = "DatabaseSettingNamespace";
+		QI(DatabaseSettingNamespace, lb_I_Unknown, uk)
+		document->insert(&uk, &key);
+		
+		*name = "UsePlugin";
+		QI(UsePlugin, lb_I_Unknown, uk)
+		document->insert(&uk, &key);
+		
+		*name = "XSLFileSystemDatabase";
+		QI(XSLFileSystemDatabase, lb_I_Unknown, uk)
+		document->insert(&uk, &key);
+		
+		*name = "XSLFileApplicationDatabase";
+		QI(XSLFileApplicationDatabase, lb_I_Unknown, uk)
+		document->insert(&uk, &key);
+		
+		*name = "UseOtherXSLFile";
+		QI(UseOtherXSLFile, lb_I_Unknown, uk)
+		document->insert(&uk, &key);
 	}		
 	
 	*name = "ApplicationData";
@@ -570,6 +627,19 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::save(lb_I_OutputStream* oStre
 	UAP(lb_I_ReportElements, reportelements)
 	UAP(lb_I_ReportElementTypes, reportelementtypes)
 	UAP(lb_I_ReportTexts, reporttextblocks)
+
+	// Save application settings
+	UAP(lb_I_String, UMLImportTargetDBName)
+	UAP(lb_I_String, UMLImportTargetDBUser)
+	UAP(lb_I_String, UMLImportTargetDBPass)
+
+	UAP(lb_I_FileLocation, XSLFileSystemDatabase)
+	UAP(lb_I_FileLocation, XSLFileApplicationDatabase)
+	UAP(lb_I_String, DatabaseSettingNamespace)
+
+	UAP(lb_I_Boolean, UsePlugin)
+	UAP(lb_I_Boolean, UseOtherXSLFile)
+
 
 	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, param)
@@ -661,6 +731,42 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::save(lb_I_OutputStream* oStre
 	uk = document->getElement(&key);
 	QI(uk, lb_I_Action_Types, appActionTypes)
 
+
+	// Store the settings from dynamic application
+	*name = "UMLImportTargetDBName";
+	uk = document->getElement(&key);
+	QI(uk, lb_I_String, UMLImportTargetDBName)
+			
+	*name = "UMLImportTargetDBUser";
+	uk = document->getElement(&key);
+	QI(uk, lb_I_String, UMLImportTargetDBUser)
+			
+	*name = "UMLImportTargetDBPass";
+	uk = document->getElement(&key);
+	QI(uk, lb_I_String, UMLImportTargetDBPass)
+			
+	*name = "XSLFileSystemDatabase";
+	uk = document->getElement(&key);
+	QI(uk, lb_I_FileLocation, XSLFileSystemDatabase)
+			
+	*name = "XSLFileApplicationDatabase";
+	uk = document->getElement(&key);
+	QI(uk, lb_I_FileLocation, XSLFileApplicationDatabase)
+			
+	*name = "DatabaseSettingNamespace";
+	uk = document->getElement(&key);
+	QI(uk, lb_I_String, DatabaseSettingNamespace)
+			
+	*name = "UsePlugin";
+	uk = document->getElement(&key);
+	QI(uk, lb_I_Boolean, UsePlugin)
+			
+	*name = "UseOtherXSLFile";
+	uk = document->getElement(&key);
+	QI(uk, lb_I_Boolean, UseOtherXSLFile)
+
+
+
 	_LOG << "Start storing the data" LOG_
 
 	if ((forms != NULL) &&
@@ -695,6 +801,16 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::save(lb_I_OutputStream* oStre
 		appActions->accept(*&aspect);
 		appActionTypes->accept(*&aspect);
 		appActionSteps->accept(*&aspect);
+
+		UMLImportTargetDBName->accept(*&aspect);
+		UMLImportTargetDBUser->accept(*&aspect);
+		UMLImportTargetDBPass->accept(*&aspect);
+
+		DatabaseSettingNamespace->accept(*&aspect);
+		UsePlugin->accept(*&aspect);
+		XSLFileSystemDatabase->accept(*&aspect);
+		XSLFileApplicationDatabase->accept(*&aspect);
+		UseOtherXSLFile->accept(*&aspect);
 	}
 
 	return err;
