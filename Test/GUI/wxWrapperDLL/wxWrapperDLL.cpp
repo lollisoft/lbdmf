@@ -1614,7 +1614,7 @@ void lb_wxFrame::OnPropertyGridChange ( wxPropertyGridEvent& event )
 	evId->setData(PropertyEvent);
 	param->setUAPInteger(*&name, *&evId);
 
-	_CL_LOG << "Property '" << PropertyName.c_str() << "' changed to '" << PropValue.c_str() << "'" LOG_
+	_LOG << "Property '" << PropertyName.c_str() << "' changed to '" << PropValue.c_str() << "'" LOG_
 
 	name->setData("value");
 	value->setData((char*) PropValue.c_str());
@@ -1852,6 +1852,10 @@ void lb_wxFrame::populateProperties(wxPropertyGrid* pg, lb_I_Container* properti
 			}
 			if (strcmp(uk->getClassName(), "lbDirLocation") == 0) {
 				populateDirLocation(pg, *&uk, *&key, category);
+				found = true;
+			}
+			if (strcmp(uk->getClassName(), "lbFileLocation") == 0) {
+				populateFileLocation(pg, *&uk, *&key, category);
 				found = true;
 			}
 			if (strcmp(uk->getClassName(), "lbInteger") == 0) {
