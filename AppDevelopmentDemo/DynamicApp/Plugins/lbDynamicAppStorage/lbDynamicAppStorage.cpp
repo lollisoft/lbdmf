@@ -1252,7 +1252,9 @@ lbErrCodes LB_STDCALL lbDynamicAppBoUMLImport::load(lb_I_InputStream* iStream) {
 			_LOG << "Create database... (script is " << (const char*) result << ")" LOG_
 			sampleQuery->skipFKCollecting();
 			if (sampleQuery->query((char*) result) != ERR_NONE) {
-				metaapp->msgBox("Error", "Failed to apply SQL Script imported from UML definition (XMI)!");
+				UAP_REQUEST(getModuleInstance(), lb_I_String, msg)
+				*msg = _trans("Failed to apply SQL Script imported from UML definition (XMI)!\n\nPlease see into the logfile for more information.");
+				metaapp->msgBox(_trans("Error"), msg->charrep());
 				sampleQuery->enableFKCollecting();
 
 				xmlFreeDoc(doc);
