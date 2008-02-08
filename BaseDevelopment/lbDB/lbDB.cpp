@@ -5285,14 +5285,14 @@ lbDatabase::~lbDatabase() {
 lbErrCodes LB_STDCALL lbDatabase::init() {
 	retcode = SQLAllocEnv(&henv);
 	if (retcode != SQL_SUCCESS) {
-        	_LOG << "lbDatabase::init(): Database initializion failed." LOG_
-        	return ERR_DB_INIT;
-        }
+		_LOG << "lbDatabase::init(): Database initializion failed." LOG_
+		return ERR_DB_INIT;
+	}
 
 	retcode = SQLSetEnvAttr(henv, SQL_ATTR_ODBC_VERSION, (void*) SQL_OV_ODBC3, 0);
 
 	if (retcode != SQL_SUCCESS) {
-        	_LOG << "lbDatabase::init(): Database version initializion failed." LOG_
+        	_LOG << "lbDatabase::init(): Database version initializion failed (SQL_OV_ODBC3)." LOG_
         	return ERR_DB_INIT;
 	}
 
@@ -5342,10 +5342,24 @@ lbErrCodes LB_STDCALL lbDatabase::connect(char* connectionname, char* DSN, char*
 	
 	if (connPooling == NULL) {
 	    REQUEST(manager.getPtr(), lb_I_Container, connPooling)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, s)
+		UAP(lb_I_Unknown, uk)
+		UAP(lb_I_KeyBase, key)
+		*s = "dummy connection";
+		QI(s, lb_I_KeyBase, key)
+		QI(s, lb_I_Unknown, uk)
+		connPooling->insert(&uk, &key);
 	}
 	
 	if (brokenConnections == NULL) {
 	    REQUEST(manager.getPtr(), lb_I_Container, brokenConnections)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, s)
+		UAP(lb_I_Unknown, uk)
+		UAP(lb_I_KeyBase, key)
+		*s = "broken dummy connection";
+		QI(s, lb_I_KeyBase, key)
+		QI(s, lb_I_Unknown, uk)
+		brokenConnections->insert(&uk, &key);
 	}
 	
 	
@@ -5358,7 +5372,7 @@ lbErrCodes LB_STDCALL lbDatabase::connect(char* connectionname, char* DSN, char*
 	QI(ConnectionName, lb_I_KeyBase, key)
 	
 	/// \todo Implement a retry function in the GUI or automatically.
-	if (brokenConnections->exists(&key) != 1) {
+	if (brokenConnections->exists(&key) == 1) {
 		_LOG << "Error: This connection is currently not available." LOG_
 		return ERR_DB_CONNECT;
 	}
@@ -5385,6 +5399,8 @@ lbErrCodes LB_STDCALL lbDatabase::connect(char* connectionname, char* DSN, char*
 	    QI(c, lb_I_Unknown, uk)
 			
 		_CL_VERBOSE << "SQLSetConnectOption(hdbc, SQL_LOGIN_TIMEOUT, 5);" LOG_
+
+#ifdef SET_LOGIN_TIMEOUT
 		retcode = SQLSetConnectOption(hdbc, SQL_LOGIN_TIMEOUT, 5); /* Set login timeout to 15 seconds. */
 		
 		if (retcode != SQL_SUCCESS)
@@ -5394,12 +5410,14 @@ lbErrCodes LB_STDCALL lbDatabase::connect(char* connectionname, char* DSN, char*
 			SQLFreeEnv(henv);
 			return ERR_DB_CONNECT;
 		}
+#endif
 		
 	    _CL_VERBOSE << "SQLSetConnectAttr(hdbc, SQL_ATTR_ODBC_CURSORS, SQL_CUR_USE_IF_NEEDED, 0);" LOG_
 			
 		// SQL_CUR_USE_IF_NEEDED does not work with psqlODBC 8.x.x
 		// Use Cursor library.
 		//retcode = SQLSetConnectAttr(hdbc, SQL_ATTR_ODBC_CURSORS, (void*)SQL_CUR_USE_ODBC/*SQL_CUR_USE_IF_NEEDED*/, 0);
+		
 		retcode = SQLSetConnectAttr(hdbc, SQL_ATTR_ODBC_CURSORS, SQL_CUR_USE_IF_NEEDED, 0);
 		
 		if (retcode != SQL_SUCCESS)
@@ -5418,6 +5436,7 @@ lbErrCodes LB_STDCALL lbDatabase::connect(char* connectionname, char* DSN, char*
 		{
 			_dbError_DBC( "SQLConnect()", hdbc);
 			_LOG << "Connection to database failed." LOG_
+			_CL_LOG << "Connection to database '" << DSN << "' with user '" << user << "' and password '" << passwd << "' failed." LOG_
 			SQLFreeEnv(henv);
 			
 			UAP(lb_I_Unknown, ukConn)
@@ -5438,6 +5457,7 @@ lbErrCodes LB_STDCALL lbDatabase::connect(char* connectionname, char* DSN, char*
 			return ERR_DB_CONNECT;
 		}
 		*/
+		
 		retcode = SQLSetConnectOption(hdbc, SQL_AUTOCOMMIT, SQL_AUTOCOMMIT_ON);
 		 
 		if (retcode != SQL_SUCCESS)
@@ -5447,7 +5467,7 @@ lbErrCodes LB_STDCALL lbDatabase::connect(char* connectionname, char* DSN, char*
 			SQLFreeEnv(henv);
 			return ERR_DB_CONNECT;
 		}
-		 
+		
 		connPooling->insert(&uk, &key);
 	}
 
