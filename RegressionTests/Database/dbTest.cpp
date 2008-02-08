@@ -190,16 +190,20 @@ int main(int argc, char *argv[]) {
 	mm = getModuleInstance();
 
 	_CL_LOG << "Database regression tests..." LOG_
+	UAP_REQUEST(mm, lb_I_String, preload)
 
 /*...sBlock:8:*/
 	{
-		UAP_REQUEST(mm, lb_I_String, preload)
 	
 		// Try preload lbClasses
 	
 		UAP_REQUEST(mm, lb_I_Database, database)
 
-		database->init();
+		if (database->init() == ERR_DB_INIT) {
+			_CL_LOG << "Error while database initializiation." LOG_
+			unHookAll();
+			return 0;
+		}
 
 		char* lbDMFPasswd = getenv("lbDMFPasswd");
 		char* lbDMFUser   = getenv("lbDMFUser");
@@ -207,7 +211,11 @@ int main(int argc, char *argv[]) {
 		if (!lbDMFUser) lbDMFUser = "dba";
 		if (!lbDMFPasswd) lbDMFPasswd = "trainres";
 
-		database->connect("lbDMF", "lbDMF", lbDMFUser, lbDMFPasswd);
+		if (database->connect("lbDMF", "lbDMF", lbDMFUser, lbDMFPasswd) != ERR_NONE) {
+			_CL_LOG << "Error: Could not login to the database!" LOG_
+			unHookAll();
+			return 0;
+		}
 
 		UAP(lb_I_Query, query2)
 		UAP(lb_I_Query, queryA)
