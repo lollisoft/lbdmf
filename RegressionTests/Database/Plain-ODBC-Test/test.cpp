@@ -535,8 +535,15 @@ int main(void)
 	
 	retcode = SQLConnect(hdbc, DSN, SQL_NTS, user, SQL_NTS, passwd, SQL_NTS);
 	
+	if (retcode != SQL_SUCCESS) {
+		printf("Error while connecting to database!\n");
+		return 0;
+	}
+	
 	retcode = SQLSetConnectOption(hdbc, SQL_AUTOCOMMIT, SQL_AUTOCOMMIT_ON);
+
 	retcode = SQLAllocStmt (hdbc, &hstmt);
+
 	retcode = SQLAllocStmt (hdbc, &hstmt_select);
 	
 	printf("Set select statement options...\n");
