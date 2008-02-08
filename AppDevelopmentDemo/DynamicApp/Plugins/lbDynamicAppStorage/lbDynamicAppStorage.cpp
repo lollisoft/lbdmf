@@ -961,6 +961,68 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_Database* iDB) {
 	params->setCloning(false);
 	document->setCloning(false);
 
+
+	// Need to read the new application settings from a good place
+	
+	UAP_REQUEST(getModuleInstance(), lb_I_String, UMLImportTargetDBName)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, UMLImportTargetDBUser)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, UMLImportTargetDBPass)
+
+	UAP_REQUEST(getModuleInstance(), lb_I_FileLocation, XSLFileSystemDatabase)
+	UAP_REQUEST(getModuleInstance(), lb_I_FileLocation, XSLFileApplicationDatabase)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, DatabaseSettingNamespace)
+
+	UAP_REQUEST(getModuleInstance(), lb_I_Boolean, UsePlugin)
+	UAP_REQUEST(getModuleInstance(), lb_I_Boolean, UseOtherXSLFile)
+
+	UAP(lb_I_Unknown, uk)
+	UAP(lb_I_KeyBase, key)
+	QI(name, lb_I_KeyBase, key)
+
+	// Firstly let them empty
+	*UMLImportTargetDBName = "CRM";
+	*UMLImportTargetDBUser = "<dbuser>";
+	*UMLImportTargetDBPass = "<dbpass>";
+	*DatabaseSettingNamespace = "DatabaseLayerGateway"; // When used, I can support this one yet. But not fully tested.
+
+	UsePlugin->setData(false);
+	UseOtherXSLFile->setData(true);
+
+	XSLFileSystemDatabase->setData("");
+	XSLFileApplicationDatabase->setData("");
+	
+	*name = "UMLImportTargetDBName";
+	QI(UMLImportTargetDBName, lb_I_Unknown, uk)
+	document->insert(&uk, &key);
+	
+	*name = "UMLImportTargetDBUser";
+	QI(UMLImportTargetDBUser, lb_I_Unknown, uk)
+	document->insert(&uk, &key);
+	
+	*name = "UMLImportTargetDBPass";
+	QI(UMLImportTargetDBPass, lb_I_Unknown, uk)
+	document->insert(&uk, &key);
+	
+	*name = "DatabaseSettingNamespace";
+	QI(DatabaseSettingNamespace, lb_I_Unknown, uk)
+	document->insert(&uk, &key);
+	
+	*name = "UsePlugin";
+	QI(UsePlugin, lb_I_Unknown, uk)
+	document->insert(&uk, &key);
+	
+	*name = "XSLFileSystemDatabase";
+	QI(XSLFileSystemDatabase, lb_I_Unknown, uk)
+	document->insert(&uk, &key);
+	
+	*name = "XSLFileApplicationDatabase";
+	QI(XSLFileApplicationDatabase, lb_I_Unknown, uk)
+	document->insert(&uk, &key);
+	
+	*name = "UseOtherXSLFile";
+	QI(UseOtherXSLFile, lb_I_Unknown, uk)
+	document->insert(&uk, &key);
+
 	if ((forms != NULL) && 
 		(ApplicationFormulars != NULL) && 
 		(reports != NULL) && 
@@ -974,12 +1036,7 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_Database* iDB) {
 		(appActionSteps != NULL) && 
 		(appActionTypes != NULL) && 
 		(appParams != NULL)) {
-		
-		UAP(lb_I_Unknown, uk)
-		UAP(lb_I_KeyBase, key)
-		QI(name, lb_I_KeyBase, key)
-		
-		
+
 		*name = "Reports";
 		QI(reports, lb_I_Unknown, uk)
 		document->insert(&uk, &key);
