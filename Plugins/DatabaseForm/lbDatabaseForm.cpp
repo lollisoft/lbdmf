@@ -546,7 +546,24 @@ void LB_STDCALL lbDatabasePanel::init(char* _SQLString, char* DBName, char* DBUs
 	}
 /*...e*/
 
-	sampleQuery->bind();
+	if (sampleQuery->bind() != ERR_NONE) {
+		UAP_REQUEST(getModuleInstance(), lb_I_String, msg)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, msglog)
+
+		*msg = _trans("Failed to prepare database formular.\n\nThe logfile contains more information about this error.");
+		
+		*msglog = _trans("Failed to bind columns for query:\n\n");
+		*msglog += SQLString->charrep();
+		*msglog += _trans("\n\nDatabase: ");
+		*msglog += _DBName->charrep();
+		*msglog += _trans("\nUser: ");
+		*msglog += _DBUser->charrep();
+
+		_LOG << msglog->charrep() LOG_
+
+		meta->msgBox(_trans("Error"), msg->charrep());
+		return;
+	}
 
 	sampleQuery->first();
 	
