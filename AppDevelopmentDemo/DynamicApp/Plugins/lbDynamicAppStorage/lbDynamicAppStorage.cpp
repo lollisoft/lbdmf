@@ -1183,8 +1183,8 @@ lbErrCodes LB_STDCALL lbDynamicAppBoUMLImport::load(lb_I_InputStream* iStream) {
 		
 	UAP(lb_I_String, xmidoc)
 	xmidoc = iStream->getAsString();
-	xmlChar* URL = (xmlChar*) iStream->getFileName();
-	doc = xmlReadMemory((char const*) xmidoc->charrep(), strlen(xmidoc->charrep()), (char const*) URL, NULL, 0);
+	xmlChar* XMIURL = (xmlChar*) iStream->getFileName();
+	doc = xmlReadMemory((char const*) xmidoc->charrep(), strlen(xmidoc->charrep()), (char const*) XMIURL, NULL, 0);
 	if (doc == NULL) {
 		_LOG << "Error: Failed to load in-memory XMI document as an XML document." LOG_
 		return err; 
@@ -1214,14 +1214,56 @@ lbErrCodes LB_STDCALL lbDynamicAppBoUMLImport::load(lb_I_InputStream* iStream) {
 			_LOG << "Parse xml document as stylesheet." LOG_
 			cur = xsltParseStylesheetDoc(stylesheetdoc);
 			
+			if (cur == NULL) {
+				UAP_REQUEST(getModuleInstance(), lb_I_String, msg)
+				
+				*msg = _trans("Failed to parse XSL file.");
+				
+				metaapp->msgBox(_trans("Error"), msg->charrep());
+				return err;
+			}
+			
 			xmlChar* result = NULL;
 			int len = 0;
 
 			_LOG << "Apply the stylesheet document." LOG_
 
-			res = xsltApplyStylesheet(cur, doc, params);
+			xsltTransformContextPtr ctxt;
 
+			res = xsltApplyStylesheet(cur, doc, params);
+/*
+			ctxt = xsltNewTransformContext(cur, doc);
+			res = xsltApplyStylesheetUser(cur, doc, params, NULL, stderr, ctxt);
+			if ((ctxt->state == XSLT_STATE_ERROR) || (ctxt->state == XSLT_STATE_STOPPED)) {
+				if (ctxt->lasttext != NULL) {
+					_LOG << "Fail to do xsltApplyStylesheet(). lasttext: " << ((const char*) ctxt->lasttext) LOG_
+				}
+			}
+*/			
 			_LOG << "Save resulting document as a string." LOG_
+
+			if (res == NULL) {
+				UAP_REQUEST(getModuleInstance(), lb_I_String, msg)
+/*				
+				if (ctxt->output != NULL) {
+					res = ctxt->output;
+				} else {
+*/
+					*msg = _trans("Failed to translate XMI file.\n\nXMI document: ");
+					*msg += (const char*) XMIURL;
+					*msg += "\n\nStylesheet: ";
+					*msg += (const char*) URL;
+/*					
+					if (ctxt->lasttext != NULL) {
+						*msg += "\n\nFail to do xsltApplyStylesheet(). lasttext: ";
+						*msg += ((const char*) ctxt->lasttext);
+					}
+*/					
+					metaapp->msgBox(_trans("Error"), msg->charrep());
+					return err;
+//				}
+				
+			}
 
 			xsltSaveResultToString(&result, &len, res, cur);
 			
@@ -1253,7 +1295,7 @@ lbErrCodes LB_STDCALL lbDynamicAppBoUMLImport::load(lb_I_InputStream* iStream) {
 			sampleQuery->skipFKCollecting();
 			if (sampleQuery->query((char*) result) != ERR_NONE) {
 				UAP_REQUEST(getModuleInstance(), lb_I_String, msg)
-				*msg = _trans("Failed to apply SQL Script imported from UML definition (XMI)!\n\nPlease see into the logfile for more information.");
+				*msg = _trans("Failed to apply SQL Script imported from UML definition (XMI)!\n\nYou may have a permission problem when you manually have created\ntables with another user prior.\nPlease see into the logfile for more information.");
 				metaapp->msgBox(_trans("Error"), msg->charrep());
 				sampleQuery->enableFKCollecting();
 
