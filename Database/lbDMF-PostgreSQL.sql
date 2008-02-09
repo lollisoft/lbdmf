@@ -12,36 +12,39 @@ CREATE OR REPLACE FUNCTION plpgsql_call_handler()
 '$libdir/plpgsql', 'plpgsql_call_handler'
   LANGUAGE 'c' VOLATILE;
 
-DROP LANGUAGE plpgsql;
-CREATE LANGUAGE plpgsql HANDLER plpgsql_call_handler;
-
--- Function: "DropApplication"("varchar")
-
--- DROP FUNCTION "DropApplication"("varchar");
-
--- The function is not complete.
-
-CREATE OR REPLACE FUNCTION "DropApplication"("varchar")
-  RETURNS bool AS
-'	select id from anwendungen where name = $1;
-
-	delete from formular_parameters where formularid in (select id from formulare where anwendungid in (select id from anwendungen where name = $1));
-	delete from anwendungs_parameter where anwendungid in (select id from anwendungen where name = $1);
-	delete from anwendungen_formulare where anwendungid in (select id from anwendungen where name = $1);
-	delete from user_anwendungen where anwendungenid in (select id from anwendungen where name = $1);
-	delete from formular_actions where formular in (select id from formulare where anwendungid in (select id from anwendungen where name = $1));
-	delete from formulare where anwendungid in (select id from anwendungen where name = $1);
-	delete from anwendungen where id in (select id from anwendungen where name = $1);
-
-	select true;'
-  LANGUAGE 'sql' VOLATILE;
-
+-- Activate this on a fresh database
+--DROP LANGUAGE plpgsql;
+--CREATE LANGUAGE plpgsql HANDLER plpgsql_call_handler;
 
 SET SESSION AUTHORIZATION 'dba';
 
 
 
-DROP TABLE column_types;DROP TABLE formular_actions;DROP TABLE translations;DROP TABLE CodegenTarget;DROP TABLE Applevel_Plugin_Registry;DROP TABLE Anwendungs_Parameter;DROP TABLE Formular_Parameters;DROP TABLE ForeignKey_VisibleData_Mapping;DROP TABLE Anwendungen_Formulare;DROP TABLE Anwendungsberechtigungen;DROP TABLE Formulare;DROP TABLE Formulartypen;DROP TABLE User_Anwendungen;DROP TABLE report_parameters;DROP TABLE report_texts;DROP TABLE report_elements;DROP TABLE report_element_types;DROP TABLE reports;DROP TABLE Users;DROP TABLE Anwendungen;DROP TABLE action_steps;DROP TABLE actions;DROP TABLE action_types;
+select dropTable('column_types');
+select dropTable('formular_actions');
+select dropTable('translations');
+select dropTable('codegentarget');
+select dropTable('applevel_plugin_registry');
+select dropTable('anwendungs_parameter');
+select dropTable('formular_parameters');
+select dropTable('foreignkey_visibledata_mapping');
+select dropTable('anwendungen_formulare');
+select dropTable('anwendungsberechtigungen');
+select dropTable('formulare');
+select dropTable('formulartypen');
+select dropTable('user_anwendungen');
+select dropTable('report_parameters');
+select dropTable('report_texts');
+select dropTable('report_elements');
+select dropTable('report_element_types');
+select dropTable('reports');
+select dropTable('users');
+select dropTable('anwendungen');
+
+select dropTable('action_steps');
+select dropTable('actions');
+select dropTable('action_types');
+
 
 --...sCREATE TABLE column_types:0:
 CREATE TABLE column_types
@@ -597,7 +600,7 @@ insert into reports (name, description) values ('Formulare', 'Ein Report aller F
 
 
 --...sCREATE TABLE report_parameters:0:
---DROP TABLE report_parameters;
+--select dropTable('report_parameters;
 
 CREATE TABLE report_parameters
 (
@@ -1348,3 +1351,113 @@ Values (
 );
 --...e
 --...e
+
+SET SESSION AUTHORIZATION 'postgres';
+
+
+-- Function: "DropApplication"("varchar")
+
+-- DROP FUNCTION "DropApplication"("varchar");
+
+-- The function is not complete.
+
+CREATE OR REPLACE FUNCTION "DropApplication"("varchar")
+  RETURNS bool AS
+'	select id from anwendungen where name = $1;
+
+	delete from formular_parameters where formularid in (select id from formulare where anwendungid in (select id from anwendungen where name = $1));
+	delete from anwendungs_parameter where anwendungid in (select id from anwendungen where name = $1);
+	delete from anwendungen_formulare where anwendungid in (select id from anwendungen where name = $1);
+	delete from user_anwendungen where anwendungenid in (select id from anwendungen where name = $1);
+	delete from formular_actions where formular in (select id from formulare where anwendungid in (select id from anwendungen where name = $1));
+	delete from formulare where anwendungid in (select id from anwendungen where name = $1);
+	delete from anwendungen where id in (select id from anwendungen where name = $1);
+
+	select true;'
+  LANGUAGE 'sql' VOLATILE;
+
+-- dropconstraint("varchar", "varchar")
+--
+-- Drops a constraint if it exists.
+
+CREATE OR REPLACE FUNCTION dropconstraint("varchar", "varchar")
+  RETURNS void AS
+'
+declare
+tres text;
+declare tt alias for $2;
+begin
+  select conname into tres from pg_constraint where conname = $2;
+  if not tres is null then
+    execute ''alter table "'' || $1 || ''" drop constraint "'' || $2 || ''"'';
+  end if;
+  return;
+end;
+'
+  LANGUAGE 'plpgsql' VOLATILE;
+
+
+
+-- dropTable("varchar")
+--
+-- This function drops a table, if it exists.
+
+CREATE OR REPLACE FUNCTION dropTable("varchar")
+  RETURNS void AS
+'
+declare
+tres text;
+declare tt alias for $1;
+begin
+  select tablename into tres from pg_tables where tablename = $1;
+  if not tres is null then
+    execute ''DROP TABLE "'' || $1 || ''"'';
+  end if;
+  return;
+end;
+'
+  LANGUAGE 'plpgsql' VOLATILE;
+
+
+-- Function GetFormularId(applicationid, formularname)
+--
+-- This function returns the formular id for a fiven formular name and application id.
+
+CREATE OR REPLACE FUNCTION getformularid(int4, "varchar")
+  RETURNS int4 AS
+'
+declare
+formularid int;
+applicationid alias for $1;
+formularname alias for $2;
+begin
+        select id into formularid from formulare where anwendungid = applicationid and name = formularname;
+        return formularid;
+end;
+'
+  LANGUAGE 'plpgsql' VOLATILE;
+
+CREATE OR REPLACE FUNCTION getorcreateapplication("varchar")
+  RETURNS int4 AS
+'
+declare
+applicationid int;
+applicationname alias for $1;
+begin
+  select id into applicationid from anwendungen where name =  applicationname;
+  if not applicationid is null then
+    return applicationid;
+  end if;
+  if applicationid is null then
+        insert into anwendungen (name, titel, modulename, functor, interface) 
+		values(applicationname, ''Application '' || applicationname, ''lbDynApp'', ''instanceOfApplication'', ''lb_I_Application'');
+        applicationid = GetOrCreateApplication(applicationname);
+        insert into user_anwendungen (userid, anwendungenid) values (1, applicationid);
+        insert into anwendungs_parameter (parametername, parametervalue, anwendungid) values(''DBUser'', ''<dbuser>'', applicationid);
+        insert into anwendungs_parameter (parametername, parametervalue, anwendungid) values(''DBPass'', ''<password>'', applicationid);
+        insert into anwendungs_parameter (parametername, parametervalue, anwendungid) values(''DBName'', applicationname, applicationid);
+  end if;
+return applicationid;
+end;
+'
+  LANGUAGE 'plpgsql' VOLATILE;
