@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.148 2007/11/22 16:11:35 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.149 2008/02/09 23:18:20 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.148 $
+ * $Revision: 1.149 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.148 2007/11/22 16:11:35 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.149 2008/02/09 23:18:20 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.149  2008/02/09 23:18:20  lollisoft
+ * Reactivated splash screen 'always on top' for Mac.
+ *
  * Revision 1.148  2007/11/22 16:11:35  lollisoft
  * Added some logging messages.
  *
@@ -2163,12 +2166,22 @@ bool MyApp::OnInit(void)
 		splash = new wxSplashScreen(bitmap,
 		wxSPLASH_CENTRE_ON_SCREEN|wxSPLASH_TIMEOUT,
 		6000, NULL, -1, wxDefaultPosition, wxDefaultSize,
+#ifndef OSX
 		wxSIMPLE_BORDER); //|wxSTAY_ON_TOP);
+#endif
+#ifdef OSX
+		wxSIMPLE_BORDER|wxSTAY_ON_TOP);
+#endif
     } else if (wxFile::Exists("/usr/share/lbdmf/splash.png") && bitmap.LoadFile("/usr/share/lbdmf/splash.png", wxBITMAP_TYPE_PNG)) {
 		splash = new wxSplashScreen(bitmap,
 									wxSPLASH_CENTRE_ON_SCREEN|wxSPLASH_TIMEOUT,
 									6000, NULL, -1, wxDefaultPosition, wxDefaultSize,
+#ifndef OSX
 									wxSIMPLE_BORDER); //|wxSTAY_ON_TOP);
+#endif
+#ifdef OSX
+									wxSIMPLE_BORDER|wxSTAY_ON_TOP);
+#endif
 	}	
 	wxYield();
 
