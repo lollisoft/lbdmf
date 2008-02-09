@@ -1637,7 +1637,7 @@ lbErrCodes LB_STDCALL lbQuery::bind() {
 		if (retcode != SQL_SUCCESS)
 		{
 			_CL_LOG << "lbQuery::bind() SQLNumResultCols() failed." LOG_
-		        dbError("SQLNumResultCols()", hstmt);
+		        //dbError("SQLNumResultCols()", hstmt);
 		        return ERR_DB_QUERYFAILED;
 		} else {
 			lbErrCodes err = ERR_NONE;
