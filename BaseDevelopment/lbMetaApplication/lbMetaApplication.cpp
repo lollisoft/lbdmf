@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.126 $
+ * $Revision: 1.127 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.126 2007/11/22 16:08:10 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.127 2008/02/12 21:36:27 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.127  2008/02/12 21:36:27  lollisoft
+ * Added code that allows to store parameter sets into the meta application file.
+ *
  * Revision 1.126  2007/11/22 16:08:10  lollisoft
  * Other starting ID.
  *
@@ -694,6 +697,14 @@ lbErrCodes LB_STDCALL lb_MetaApplication::save() {
 	QI(this, lb_I_Unknown, ukAcceptor1)
 	ukAcceptor1->accept(*&fOp1);
 			
+	if (propertySets != NULL) {
+		_LOG << "Save property sets..." LOG_
+		propertySets->accept(*&fOp1);
+		_LOG << "Saved property sets." LOG_
+	} else {
+		_LOG << "Don't save property sets. Not initialized." LOG_
+	}
+
 	// Save a Users list
 	
 	if (Users == NULL) {
@@ -740,6 +751,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::save() {
 		_LOG << "lb_MetaApplication::save(): Save User_Applications list." LOG_
 		User_Applications->accept(*&fOp1);
 	}
+	
 /*				
 	if (ApplicationFormulars == NULL) {
 			UAP(lb_I_Plugin, pl5)
@@ -792,6 +804,12 @@ lbErrCodes LB_STDCALL lb_MetaApplication::load() {
 			QI(this, lb_I_Unknown, ukAcceptor)
 			ukAcceptor->accept(*&fOp);
 
+			_LOG << "Read property sets from metaapp file..." LOG_
+			REQUEST(getModuleInstance(), lb_I_Parameter, propertySets)
+			propertySets->accept(*&fOp);
+			_LOG << "Done reading property sets. Having " << propertySets->Count() << " sets." LOG_
+
+
 			UAP(lb_I_Plugin, pl2)
 			UAP(lb_I_Unknown, ukPl2)
 			pl2 = PM->getFirstMatchingPlugin("lb_I_UserAccounts", "Model");
@@ -813,6 +831,9 @@ lbErrCodes LB_STDCALL lb_MetaApplication::load() {
 			pl5 = PM->getFirstMatchingPlugin("lb_I_Applications_Formulars", "Model");
 			ukPl5 = pl5->getImplementation();
 */
+
+			
+			
 			
 
 			QI(ukPl2, lb_I_UserAccounts, Users)
@@ -835,8 +856,6 @@ lbErrCodes LB_STDCALL lb_MetaApplication::load() {
 				if (Users->getUserCount() == 0) {
 					_LOG << "Warning: Users list from file does not contain any data." LOG_
 				}
-				
-				
 			} else {
 				UAP(lb_I_Container, apps)
 				apps = getApplications();
@@ -2615,6 +2634,43 @@ lb_I_Applications* LB_STDCALL lb_MetaApplication::getApplicationModel() {
 	Applications++;
 	
 	return Applications.getPtr();
+}
+
+void LB_STDCALL lb_MetaApplication::delPropertySet(char* setname) {
+	if (propertySets != NULL) {
+		UAP_REQUEST(getModuleInstance(), lb_I_String, set)
+		*set = setname;
+		propertySets->delParameter(*&set);
+	}
+}
+
+void LB_STDCALL lb_MetaApplication::addPropertySet(lb_I_Parameter* properties, char* setname) {
+	if (propertySets == NULL) {
+		REQUEST(getModuleInstance(), lb_I_Parameter, propertySets)
+	}
+	UAP_REQUEST(getModuleInstance(), lb_I_String, set)
+	*set = setname;
+
+	propertySets->delParameter(*&set);
+	propertySets->setUAPParameter(*&set, properties);
+}
+
+lb_I_Parameter*	LB_STDCALL lb_MetaApplication::getPropertySet(char* setname, bool copy) {
+		UAP_REQUEST(getModuleInstance(), lb_I_Parameter, p)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, set)
+		*set = setname;
+		
+		if (copy == false) {
+			p->setCloning(false);
+		}
+		
+		if (propertySets != NULL) {
+			propertySets->getUAPParameter(*&set, *&p);
+			p++;
+			return p.getPtr();
+		} else {
+			return NULL;
+		}
 }
 
 /*...sbool LB_STDCALL lb_MetaApplication\58\\58\login\40\const char\42\ user\44\ const char\42\ pass\41\:0:*/

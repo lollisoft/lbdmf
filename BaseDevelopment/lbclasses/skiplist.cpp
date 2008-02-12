@@ -38,11 +38,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.52 $
+ * $Revision: 1.53 $
  * $Name:  $
- * $Id: skiplist.cpp,v 1.52 2007/08/06 19:10:29 lollisoft Exp $
+ * $Id: skiplist.cpp,v 1.53 2008/02/12 21:36:27 lollisoft Exp $
  *
  * $Log: skiplist.cpp,v $
+ * Revision 1.53  2008/02/12 21:36:27  lollisoft
+ * Added code that allows to store parameter sets into the meta application file.
+ *
  * Revision 1.52  2007/08/06 19:10:29  lollisoft
  * Improved installation process on Windows.
  *
@@ -435,7 +438,7 @@ SkipList::~SkipList() {
 		
 		head = NULL;
 	} else {
-		delete head;
+		if (head) delete head;
 	}
 }
 /*...sSkipList\58\\58\Count\40\\41\:0:*/
@@ -445,7 +448,7 @@ int LB_STDCALL SkipList::Count() {
 /*...e*/
 
 /*...sSkipList\58\\58\deleteAll\40\\41\:0:*/
-void LB_STDCALL SkipList::deleteAll() { 
+void LB_STDCALL SkipList::deleteAll() {
 	if (can_dump() == 1) {
 		while (skipiterator) {
 			SkipNode* temp = skipiterator;

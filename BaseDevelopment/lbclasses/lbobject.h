@@ -31,10 +31,13 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.42 $
+ * $Revision: 1.43 $
  * $Name:  $
- * $Id: lbobject.h,v 1.42 2008/01/17 19:28:31 lollisoft Exp $
+ * $Id: lbobject.h,v 1.43 2008/02/12 21:36:27 lollisoft Exp $
  * $Log: lbobject.h,v $
+ * Revision 1.43  2008/02/12 21:36:27  lollisoft
+ * Added code that allows to store parameter sets into the meta application file.
+ *
  * Revision 1.42  2008/01/17 19:28:31  lollisoft
  * Shortcircuit the translation when no database is available.
  *
@@ -347,6 +350,8 @@ public:
 	virtual lb_I_Container* LB_STDCALL getParameterList();
 
 	void LB_STDCALL setCloning(bool doClone=true);
+	
+	void LB_STDCALL delParameter(lb_I_String*& parameter);
 protected:
 	bool cloning;
 	UAP(lb_I_Container, parameters)

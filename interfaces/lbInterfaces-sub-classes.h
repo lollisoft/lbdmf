@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.77 $
+ * $Revision: 1.78 $
  * $Name:  $
- * $Id: lbInterfaces-sub-classes.h,v 1.77 2007/08/08 19:48:50 lollisoft Exp $
+ * $Id: lbInterfaces-sub-classes.h,v 1.78 2008/02/12 21:36:27 lollisoft Exp $
  *
  * $Log: lbInterfaces-sub-classes.h,v $
+ * Revision 1.78  2008/02/12 21:36:27  lollisoft
+ * Added code that allows to store parameter sets into the meta application file.
+ *
  * Revision 1.77  2007/08/08 19:48:50  lollisoft
  * Changes to allow using BLOB data fields. Not completely finished.
  *
@@ -875,6 +878,8 @@ public:
 	virtual lb_I_Container* LB_STDCALL getParameterList() = 0;
 	
 	virtual	void LB_STDCALL setCloning(bool doClone=true) = 0;
+	
+	virtual void LB_STDCALL delParameter(lb_I_String*& parameter) = 0;
 
 };
 /*...e*/

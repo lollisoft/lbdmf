@@ -2378,12 +2378,58 @@ lbErrCodes LB_STDCALL lb_wxFrame::setText_To_StatusBarTextArea(lb_I_Unknown* uk)
 lbErrCodes LB_STDCALL lb_wxFrame::showLeftPropertyBar(lb_I_Unknown* uk) {
 	lbErrCodes err = ERR_NONE;
 
+	if (currentProperties == NULL) {
+		REQUEST(manager.getPtr(), lb_I_Parameter, currentProperties)
+	}
+
+	// Fill optionally given bunch of parameters
+	UAP(lb_I_Parameter, params)
+	QI(uk, lb_I_Parameter, params)
+	if (params != NULL) {
+		
+		if (params->Count() > 0) {
+			// Delete old properties.
+			UAP(lb_I_Container, list)
+			list = currentProperties->getParameterList();
+			if ((list != NULL) && (list->Count() > 0)) list->deleteAll();
+
+			currentProperties->setData(uk);
+
+			// Fill up the properties from meta application
+			UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
+			UAP_REQUEST(manager.getPtr(), lb_I_String, group)
+			UAP(lb_I_Parameter, param)
+			
+			param = meta->getParameter();
+			
+			group->setData("General");
+			
+			currentProperties->setUAPParameter(*&group, *&param);
+		}
+	} else {
+		return ERR_NONE;
+	}
+
+
 #ifdef USE_WXAUI
 	wxPropertyGrid* oldpg = (wxPropertyGrid*) m_mgr.GetPane("Properties").window;
 
 	if (oldpg != NULL) {
+		_LOG << "Replace old property page..." LOG_
 		m_mgr.DetachPane(oldpg);
-		m_mgr.AddPane(oldpg, wxPaneInfo().
+
+		wxPropertyGrid* newpg = CreatePropertyGrid(oldpg->GetParent());
+
+		oldpg->Destroy();
+		oldpg = NULL;
+
+		if (currentProperties != NULL) {
+			UAP(lb_I_Container, parameter)
+			parameter = currentProperties->getParameterList();
+			populateProperties(newpg, *&parameter);
+		}
+		
+		m_mgr.AddPane(newpg, wxPaneInfo().
 			Name(wxT("Properties")).Caption(wxT("Properties")).
 			//Float().FloatingPosition(GetStartPosition()).
 			Left().
@@ -2392,35 +2438,6 @@ lbErrCodes LB_STDCALL lb_wxFrame::showLeftPropertyBar(lb_I_Unknown* uk) {
 		return ERR_NONE;
 	}
 #endif
-
-	if (currentProperties == NULL) {
-		REQUEST(manager.getPtr(), lb_I_Parameter, currentProperties)
-	}
-
-	UAP(lb_I_Container, list)
-
-	list = currentProperties->getParameterList();
-	if ((list != NULL) && (list->Count() > 0)) list->deleteAll();
-
-	// Fill optionally given bunch of patameters
-
-	UAP(lb_I_Parameter, params)
-	QI(uk, lb_I_Parameter, params)
-	if (params != NULL) {
-		currentProperties->setData(uk);
-	}
-
-	// Fill up the properties from meta application
-	
-	UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
-	UAP_REQUEST(manager.getPtr(), lb_I_String, group)
-	UAP(lb_I_Parameter, param)
-	
-	param = meta->getParameter();
-	
-	group->setData("General");
-	
-	currentProperties->setUAPParameter(*&group, *&param);
 
 /*...sNo wxAUI:0:*/
 #ifndef USE_WXAUI	

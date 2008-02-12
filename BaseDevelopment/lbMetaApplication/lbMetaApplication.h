@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.52 $
+ * $Revision: 1.53 $
  * $Name:  $
- * $Id: lbMetaApplication.h,v 1.52 2007/10/11 13:38:40 lollisoft Exp $
+ * $Id: lbMetaApplication.h,v 1.53 2008/02/12 21:36:27 lollisoft Exp $
  *
  * $Log: lbMetaApplication.h,v $
+ * Revision 1.53  2008/02/12 21:36:27  lollisoft
+ * Added code that allows to store parameter sets into the meta application file.
+ *
  * Revision 1.52  2007/10/11 13:38:40  lollisoft
  * Propably completed offline capability from system database.
  *
@@ -393,6 +396,10 @@ public:
 	lb_I_Applications*		LB_STDCALL getApplicationModel();
 	void                    LB_STDCALL setLoadFromDatabase(bool b);
 	bool                    LB_STDCALL getLoadFromDatabase();
+	
+	void					LB_STDCALL delPropertySet(char* setname);
+	void					LB_STDCALL addPropertySet(lb_I_Parameter* properties, char* setname);
+	lb_I_Parameter*			LB_STDCALL getPropertySet(char* setname, bool copy = false);
 protected:
 	lb_I_GUI* gui;
 	
@@ -408,6 +415,9 @@ protected:
 	UAP(lb_I_Container, activeDocuments)
 	
 	UAP(lb_I_Parameter, myProperties)
+	
+	// To store propertysets
+	UAP(lb_I_Parameter, propertySets)
 	
 	/// \brief Applications stored in file or database.
 	UAP(lb_I_Applications, Applications)

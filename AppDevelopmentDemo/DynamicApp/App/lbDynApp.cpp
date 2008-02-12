@@ -209,6 +209,7 @@ protected:
 	UAP(lb_I_String, DatabaseSettingNamespace)
 	UAP(lb_I_Boolean, UsePlugin)
 
+	UAP(lb_I_FileLocation, XMIFileUMLProject)
 	UAP(lb_I_FileLocation, XSLFileSystemDatabase)
 	UAP(lb_I_FileLocation, XSLFileApplicationDatabase)
 	UAP(lb_I_Boolean, UseOtherXSLFile)
@@ -233,10 +234,12 @@ lbDynamicApplication::lbDynamicApplication() {
 	REQUEST(getModuleInstance(), lb_I_String, DatabaseSettingNamespace)
 	REQUEST(getModuleInstance(), lb_I_Boolean, UsePlugin)
 
+	REQUEST(getModuleInstance(), lb_I_FileLocation, XMIFileUMLProject)
 	REQUEST(getModuleInstance(), lb_I_FileLocation, XSLFileSystemDatabase)
 	REQUEST(getModuleInstance(), lb_I_FileLocation, XSLFileApplicationDatabase)
 	REQUEST(getModuleInstance(), lb_I_Boolean, UseOtherXSLFile)
 	
+	XMIFileUMLProject->setData("");
 	XSLFileSystemDatabase->setData("");
 	XSLFileApplicationDatabase->setData("");
 	
@@ -335,6 +338,10 @@ lbErrCodes LB_STDCALL lbDynamicApplication::editProperties(lb_I_Unknown* uk) {
 		parameter->setData("lbDMF Manager Import Definitions");
 		//--------------------------------------------------------
 		
+		parameterProject->setData("XMI UML input file");
+		fileXSL->setData(XMIFileUMLProject->getData());
+		paramProject->setUAPFileLocation(*&parameterProject, *&fileXSL);
+		
 		parameterProject->setData("DB Name");
 		valueProject->setData(UMLImportTargetDBName->charrep());
 		paramProject->setUAPString(*&parameterProject, *&valueProject);
@@ -429,6 +436,10 @@ lbErrCodes LB_STDCALL lbDynamicApplication::OnPropertiesDataChange(lb_I_Unknown*
 		if (strcmp(key->charrep(), "lbDMF Manager Import DefinitionsDB Password") == 0) {
 					*UMLImportTargetDBPass = value->charrep();
 		}
+		
+		if (strcmp(key->charrep(), "lbDMF Manager Import DefinitionsXMI UML input file") == 0) {
+					XMIFileUMLProject->setData(value->charrep());
+		}
 
 
 		if (strcmp(key->charrep(), "Database settingsUse plugin") == 0) {
@@ -476,6 +487,12 @@ lbErrCodes LB_STDCALL lbDynamicApplication::OnPropertiesDataChange(lb_I_Unknown*
 	QI(ukDoc, lb_I_Parameter, document)
 								
 	if (document != NULL) {
+		*paramname = "XSLFileSystemDatabase";
+		document->setUAPFileLocation(*&paramname, *&XSLFileSystemDatabase);
+		*paramname = "XSLFileApplicationDatabase";
+		document->setUAPFileLocation(*&paramname, *&XSLFileApplicationDatabase);
+		*paramname = "XMIFileUMLProject";
+		document->setUAPFileLocation(*&paramname, *&XMIFileUMLProject);
 		*paramname = "UMLImportDBName";
 		document->setUAPString(*&paramname, *&UMLImportTargetDBName);
 		*paramname = "UMLImportDBUser";
@@ -483,6 +500,31 @@ lbErrCodes LB_STDCALL lbDynamicApplication::OnPropertiesDataChange(lb_I_Unknown*
 		*paramname = "UMLImportDBPass";
 		document->setUAPString(*&paramname, *&UMLImportTargetDBPass);
 	}
+
+	UAP_REQUEST(getModuleInstance(), lb_I_Parameter, temp_params)
+	
+	*paramname = "UMLImportDBName";
+	temp_params->setUAPString(*&paramname, *&UMLImportTargetDBName);
+	*paramname = "UMLImportDBUser";
+	temp_params->setUAPString(*&paramname, *&UMLImportTargetDBUser);
+	*paramname = "UMLImportDBPass";
+	temp_params->setUAPString(*&paramname, *&UMLImportTargetDBPass);
+	*paramname = "DatabaseSettingNamespace";
+	temp_params->setUAPString(*&paramname, *&DatabaseSettingNamespace);
+	*paramname = "UsePlugin";
+	temp_params->setUAPBoolean(*&paramname, *&UsePlugin);
+	*paramname = "UseOtherXSLFile";
+	temp_params->setUAPBoolean(*&paramname, *&UseOtherXSLFile);
+	*paramname = "XSLFileSystemDatabase";
+	temp_params->setUAPFileLocation(*&paramname, *&XSLFileSystemDatabase);
+	*paramname = "XSLFileApplicationDatabase";
+	temp_params->setUAPFileLocation(*&paramname, *&XSLFileApplicationDatabase);
+	*paramname = "XMIFileUMLProject";
+	temp_params->setUAPFileLocation(*&paramname, *&XMIFileUMLProject);
+
+	metaapp->delPropertySet("DynamicAppDefaultSettings");
+	metaapp->addPropertySet(*&temp_params, "DynamicAppDefaultSettings");
+
 	
 	return ERR_NONE;
 }
@@ -665,7 +707,20 @@ lbErrCodes LB_STDCALL lbDynamicApplication::importUMLXMIDocIntoApplication(lb_I_
 	UAP_REQUEST(manager.getPtr(), lb_I_String, filename)
 	UAP(lb_I_InputStream, importfile)
 	
-	importfile = metaapp->askOpenFileReadStream("xmi");
+	if (XMIFileUMLProject->charrep() == NULL) {
+		XMIFileUMLProject->setData("");
+	}
+	
+	if (strcmp(XMIFileUMLProject->charrep(), "") == 0) {
+		UAP_REQUEST(getModuleInstance(), lb_I_Parameter, params)
+		importfile = metaapp->askOpenFileReadStream("xmi");
+		XMIFileUMLProject->setData(importfile->getFileName());
+		//metaapp->showPropertyPanel(*&params);
+	} else {
+		REQUEST(getModuleInstance(), lb_I_InputStream, importfile)
+		importfile->setFileName(XMIFileUMLProject->getData());
+	}
+	
 
 	// Get the active document and set temporary a different storage handler (xmi import)
 	UAP_REQUEST(manager.getPtr(), lb_I_String, param)
@@ -1421,6 +1476,11 @@ lbErrCodes LB_STDCALL lbDynamicApplication::uninitialize() {
 			QI(XSLFileApplicationDatabase, lb_I_Unknown, uk)
 			ApplicationData->insert(&uk, &key);
 			
+			*name = "XMIFileUMLProject";
+			if (ApplicationData->exists(&key) == 1) ApplicationData->remove(&key);
+			QI(XMIFileUMLProject, lb_I_Unknown, uk)
+			ApplicationData->insert(&uk, &key);
+			
 			*name = "UseOtherXSLFile";
 			if (ApplicationData->exists(&key) == 1) ApplicationData->remove(&key);
 			QI(UseOtherXSLFile, lb_I_Unknown, uk)
@@ -2141,6 +2201,49 @@ void LB_STDCALL lbDynamicApplication::loadDataFromActiveDocument() {
     *name = "UseOtherXSLFile";
     uk = document->getElement(&key);
 	UseOtherXSLFile->setData(*&uk);
+
+    *name = "XMIFileUMLProject";
+    uk = document->getElement(&key);
+	XMIFileUMLProject->setData(*&uk);
+	
+
+	// UML import routines currently rely on this.
+	*name = "XSLFileSystemDatabase";
+	param->setUAPFileLocation(*&name, *&XSLFileSystemDatabase);
+	*name = "XSLFileApplicationDatabase";
+	param->setUAPFileLocation(*&name, *&XSLFileApplicationDatabase);
+	*name = "XMIFileUMLProject";
+	param->setUAPFileLocation(*&name, *&XMIFileUMLProject);
+	*name = "UMLImportDBName";
+	param->setUAPString(*&name, *&UMLImportTargetDBName);
+	*name = "UMLImportDBUser";
+	param->setUAPString(*&name, *&UMLImportTargetDBUser);
+	*name = "UMLImportDBPass";
+	param->setUAPString(*&name, *&UMLImportTargetDBPass);
+
+	UAP_REQUEST(getModuleInstance(), lb_I_Parameter, temp_params)
+	
+	*name = "UMLImportDBName";
+	temp_params->setUAPString(*&name, *&UMLImportTargetDBName);
+	*name = "UMLImportDBUser";
+	temp_params->setUAPString(*&name, *&UMLImportTargetDBUser);
+	*name = "UMLImportDBPass";
+	temp_params->setUAPString(*&name, *&UMLImportTargetDBPass);
+	*name = "DatabaseSettingNamespace";
+	temp_params->setUAPString(*&name, *&DatabaseSettingNamespace);
+	*name = "UsePlugin";
+	temp_params->setUAPBoolean(*&name, *&UsePlugin);
+	*name = "UseOtherXSLFile";
+	temp_params->setUAPBoolean(*&name, *&UseOtherXSLFile);
+	*name = "XSLFileSystemDatabase";
+	temp_params->setUAPFileLocation(*&name, *&XSLFileSystemDatabase);
+	*name = "XSLFileApplicationDatabase";
+	temp_params->setUAPFileLocation(*&name, *&XSLFileApplicationDatabase);
+	*name = "XMIFileUMLProject";
+	temp_params->setUAPFileLocation(*&name, *&XMIFileUMLProject);
+
+
+	metaapp->addPropertySet(*&temp_params, "DynamicAppDefaultSettings");
 
     if (forms == NULL) _LOG << "Error: forms is NULL." LOG_
 }

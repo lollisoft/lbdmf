@@ -110,7 +110,7 @@ public:
 	void LB_STDCALL visit(lb_I_OutputStream*) { _CL_LOG << "visit(lb_I_OutputStream*)" LOG_ }
 	void LB_STDCALL visit(lb_I_FileOperation*) { _CL_LOG << "visit(lb_I_FileOperation*)" LOG_ }
 	void LB_STDCALL visit(lb_I_Locale*) { _CL_LOG << "visit(lb_I_Locale*)" LOG_ }
-	void LB_STDCALL visit(lb_I_Parameter*) { _CL_LOG << "visit(lb_I_Parameter*)" LOG_ }
+	void LB_STDCALL visit(lb_I_Parameter*); // { _CL_LOG << "visit(lb_I_Parameter*)" LOG_ }
 	void LB_STDCALL visit(lb_I_Reference*) { _CL_LOG << "visit(lb_I_Reference*)" LOG_ }
 	void LB_STDCALL visit(lb_I_Log*) { _CL_LOG << "visit(lb_I_Log*)" LOG_ }
 	void LB_STDCALL visit(lb_I_Plugin*) { _CL_LOG << "visit(lb_I_Plugin*)" LOG_ }
@@ -303,6 +303,60 @@ void LB_STDCALL lbOutputStream::visit(lb_I_Applications_Formulars* applicationfo
 		*oStream << applicationformulars->getID();
 		*oStream << applicationformulars->getApplicationID();
 		*oStream << applicationformulars->getFormularID();
+	}
+}
+
+void LB_STDCALL lbOutputStream::visit(lb_I_Parameter* params) {
+	int count;
+
+	count = params->Count();
+	*oStream << count;
+
+	UAP(lb_I_Container, container)
+	
+	container = params->getParameterList();
+	
+	if (count == 0) return;
+	
+	container->finishIteration();
+
+	UAP_REQUEST(getModuleInstance(), lb_I_FileLocation, f)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, s)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, l)
+	UAP_REQUEST(getModuleInstance(), lb_I_Boolean, b)
+	UAP_REQUEST(getModuleInstance(), lb_I_Parameter, p)
+	
+	while (container->hasMoreElements()) {
+		UAP(lb_I_Unknown, uk)
+		UAP(lb_I_KeyBase, key)
+		uk = container->nextElement();
+		key = container->currentKey();
+		
+		*oStream << key->charrep();
+		*oStream << uk->getClassName();
+
+		_LOG << "Writing object name '" << key->charrep() << "' of type '" << uk->getClassName() << "'." LOG_ 
+
+		if (strcmp(uk->getClassName(), p->getClassName()) == 0) {
+			p->setData(*&uk);
+			visit(*&p);
+		}
+		if (strcmp(uk->getClassName(), f->getClassName()) == 0) {
+			f->setData(*&uk);
+			visit(*&f);
+		}
+		if (strcmp(uk->getClassName(), s->getClassName()) == 0) {
+			s->setData(*&uk);
+			visit(*&s);
+		}
+		if (strcmp(uk->getClassName(), l->getClassName()) == 0) {
+			l->setData(*&uk);
+			visit(*&l);
+		}
+		if (strcmp(uk->getClassName(), b->getClassName()) == 0) {
+			b ->setData(*&uk);
+			visit(*&b);
+		}
 	}
 }
 
@@ -766,7 +820,7 @@ void LB_STDCALL lbOutputStream::visit(lb_I_User_Applications* app) {
 }
 
 void LB_STDCALL lbOutputStream::visit(lb_I_MetaApplication* app) {
-	_CL_LOG << "Save a lb_I_MetaApplication object." LOG_
+	_LOG << "Save a lb_I_MetaApplication object." LOG_
 
 	UAP_REQUEST(manager.getPtr(), lb_I_String, temp)
 	bool  b;

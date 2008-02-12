@@ -582,8 +582,11 @@ lbErrCodes LB_STDCALL lbParameter::getUAPFileLocation(lb_I_String*& parameter, l
 
 	uk_p_fileloc = parameters->getElement(&key);
 
-	if (uk_p_fileloc == NULL) return ERR_PARAM_NOT_FOUND;
-
+	if (uk_p_fileloc == NULL) {
+		_LOG << "Error: Parameter not found." LOG_
+		return ERR_PARAM_NOT_FOUND;
+	}
+	
 	UAP(lb_I_FileLocation, fileloc)
 	QI(uk_p_fileloc, lb_I_FileLocation, fileloc)
 	
@@ -680,6 +683,19 @@ lbErrCodes LB_STDCALL lbParameter::getUAPBoolean(lb_I_String*& parameter, lb_I_B
 	
 	return ERR_NONE;
 }
+
+void LB_STDCALL lbParameter::delParameter(lb_I_String*& parameter) {
+	lbErrCodes err = ERR_NONE;
+	if (parameters != NULL) {
+		UAP(lb_I_KeyBase, key)
+		QI(parameter, lb_I_KeyBase, key)
+
+		if (parameters->exists(&key) == 1) {
+			parameters->remove(&key);
+		}
+	}
+}
+
 /*...e*/
 /*...slbReference:0:*/
 #ifndef _MSC_VER
@@ -972,6 +988,10 @@ lbFileLocation::~lbFileLocation() {
 
 void lbFileLocation::setData(char* path) {
 	if (_path != NULL) free(_path);
+	if (path == NULL) {
+		_path = strdup("");
+		return;
+	}
 	_path = strdup(path);
 }
 

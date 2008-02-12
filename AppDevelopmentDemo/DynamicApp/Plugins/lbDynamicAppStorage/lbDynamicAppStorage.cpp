@@ -439,6 +439,7 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_InputStream* iStrea
 	UAP_REQUEST(getModuleInstance(), lb_I_String, UMLImportTargetDBUser)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, UMLImportTargetDBPass)
 
+	UAP_REQUEST(getModuleInstance(), lb_I_FileLocation, XMIFileUMLProject)
 	UAP_REQUEST(getModuleInstance(), lb_I_FileLocation, XSLFileSystemDatabase)
 	UAP_REQUEST(getModuleInstance(), lb_I_FileLocation, XSLFileApplicationDatabase)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, DatabaseSettingNamespace)
@@ -455,6 +456,7 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_InputStream* iStrea
 	XSLFileSystemDatabase->accept(*&aspect);
 	XSLFileApplicationDatabase->accept(*&aspect);
 	UseOtherXSLFile->accept(*&aspect);
+	XMIFileUMLProject->accept(*&aspect);
 
 	UAP(lb_I_Unknown, ukDoc)
 	UAP(lb_I_KeyBase, key)
@@ -586,7 +588,11 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_InputStream* iStrea
 		*name = "XSLFileApplicationDatabase";
 		QI(XSLFileApplicationDatabase, lb_I_Unknown, uk)
 		document->insert(&uk, &key);
-		
+
+		*name = "XMIFileUMLProject";
+		QI(XMIFileUMLProject, lb_I_Unknown, uk)
+		document->insert(&uk, &key);
+
 		*name = "UseOtherXSLFile";
 		QI(UseOtherXSLFile, lb_I_Unknown, uk)
 		document->insert(&uk, &key);
@@ -633,6 +639,7 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::save(lb_I_OutputStream* oStre
 	UAP(lb_I_String, UMLImportTargetDBUser)
 	UAP(lb_I_String, UMLImportTargetDBPass)
 
+	UAP(lb_I_FileLocation, XMIFileUMLProject)
 	UAP(lb_I_FileLocation, XSLFileSystemDatabase)
 	UAP(lb_I_FileLocation, XSLFileApplicationDatabase)
 	UAP(lb_I_String, DatabaseSettingNamespace)
@@ -764,6 +771,10 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::save(lb_I_OutputStream* oStre
 	*name = "UseOtherXSLFile";
 	uk = document->getElement(&key);
 	QI(uk, lb_I_Boolean, UseOtherXSLFile)
+			
+	*name = "XMIFileUMLProject";
+	uk = document->getElement(&key);
+	QI(uk, lb_I_FileLocation, XMIFileUMLProject)
 
 
 
@@ -811,6 +822,7 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::save(lb_I_OutputStream* oStre
 		XSLFileSystemDatabase->accept(*&aspect);
 		XSLFileApplicationDatabase->accept(*&aspect);
 		UseOtherXSLFile->accept(*&aspect);
+		XMIFileUMLProject->accept(*&aspect);
 	}
 
 	return err;
@@ -968,6 +980,7 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_Database* iDB) {
 	UAP_REQUEST(getModuleInstance(), lb_I_String, UMLImportTargetDBUser)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, UMLImportTargetDBPass)
 
+	UAP_REQUEST(getModuleInstance(), lb_I_FileLocation, XMIFileUMLProject)
 	UAP_REQUEST(getModuleInstance(), lb_I_FileLocation, XSLFileSystemDatabase)
 	UAP_REQUEST(getModuleInstance(), lb_I_FileLocation, XSLFileApplicationDatabase)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, DatabaseSettingNamespace)
@@ -979,18 +992,47 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_Database* iDB) {
 	UAP(lb_I_KeyBase, key)
 	QI(name, lb_I_KeyBase, key)
 
-	// Firstly let them empty
-	*UMLImportTargetDBName = "CRM";
-	*UMLImportTargetDBUser = "<dbuser>";
-	*UMLImportTargetDBPass = "<dbpass>";
-	*DatabaseSettingNamespace = "DatabaseLayerGateway"; // When used, I can support this one yet. But not fully tested.
-
-	UsePlugin->setData(false);
-	UseOtherXSLFile->setData(true);
-
-	XSLFileSystemDatabase->setData("");
-	XSLFileApplicationDatabase->setData("");
+	UAP(lb_I_Parameter, SomeBaseSettings)
 	
+	SomeBaseSettings = meta->getPropertySet("DynamicAppDefaultSettings");
+
+	if (SomeBaseSettings == NULL || SomeBaseSettings->Count() == 0) {
+		// Firstly let them empty
+		_LOG << "Initialize the dynamic app import settings..." LOG_
+		*UMLImportTargetDBName = "CRM";
+		*UMLImportTargetDBUser = "<dbuser>";
+		*UMLImportTargetDBPass = "<dbpass>";
+
+		*DatabaseSettingNamespace = "DatabaseLayerGateway"; // When used, I can support this one yet. But not fully tested.
+		XMIFileUMLProject->setData("");
+
+		UsePlugin->setData(false);
+		UseOtherXSLFile->setData(true);
+
+		XSLFileSystemDatabase->setData("<system>");
+		XSLFileApplicationDatabase->setData("<application>");
+	 } else {
+		_LOG << "Load the dynamic app import settings from parameter set..." LOG_
+		*name = "UMLImportDBName";
+		SomeBaseSettings->getUAPString(*&name, *&UMLImportTargetDBName);
+		*name = "UMLImportDBUser";
+		SomeBaseSettings->getUAPString(*&name, *&UMLImportTargetDBUser);
+		*name = "UMLImportDBPass";
+		SomeBaseSettings->getUAPString(*&name, *&UMLImportTargetDBPass);
+		*name = "DatabaseSettingNamespace";
+		SomeBaseSettings->getUAPString(*&name, *&DatabaseSettingNamespace);
+		*name = "UsePlugin";
+		SomeBaseSettings->getUAPBoolean(*&name, *&UsePlugin);
+		*name = "UseOtherXSLFile";
+		SomeBaseSettings->getUAPBoolean(*&name, *&UseOtherXSLFile);
+		*name = "XSLFileSystemDatabase";
+		SomeBaseSettings->getUAPFileLocation(*&name, *&XSLFileSystemDatabase);
+		*name = "XSLFileApplicationDatabase";
+		SomeBaseSettings->getUAPFileLocation(*&name, *&XSLFileApplicationDatabase);
+		*name = "XMIFileUMLProject";
+		SomeBaseSettings->getUAPFileLocation(*&name, *&XMIFileUMLProject);
+	} 
+
 	*name = "UMLImportTargetDBName";
 	QI(UMLImportTargetDBName, lb_I_Unknown, uk)
 	document->insert(&uk, &key);
@@ -1021,6 +1063,10 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_Database* iDB) {
 	
 	*name = "UseOtherXSLFile";
 	QI(UseOtherXSLFile, lb_I_Unknown, uk)
+	document->insert(&uk, &key);
+
+	*name = "XMIFileUMLProject";
+	QI(XMIFileUMLProject, lb_I_Unknown, uk)
 	document->insert(&uk, &key);
 
 	if ((forms != NULL) && 
@@ -1156,12 +1202,22 @@ lbErrCodes LB_STDCALL lbDynamicAppBoUMLImport::load(lb_I_InputStream* iStream) {
 	UAP_REQUEST(getModuleInstance(), lb_I_String, DBUser)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, DBPass)
 
+	UAP_REQUEST(getModuleInstance(), lb_I_FileLocation, XSLFileSystemDatabase)
+	UAP_REQUEST(getModuleInstance(), lb_I_FileLocation, XSLFileApplicationDatabase)
+
 	UAP(lb_I_Unknown, ukDoc)
 	UAP(lb_I_Parameter, document)
 	ukDoc = metaapp->getActiveDocument();
 	QI(ukDoc, lb_I_Parameter, document)
 								
 	if (document != NULL) {
+		*param = "XSLFileSystemDatabase";
+		document->getUAPFileLocation(*&param, *&XSLFileSystemDatabase);
+		*param = "XSLFileApplicationDatabase";
+		document->getUAPFileLocation(*&param, *&XSLFileApplicationDatabase);
+
+		_LOG << "Have got the following files: " << XSLFileSystemDatabase->charrep() << " and " << XSLFileApplicationDatabase->charrep() LOG_		
+
 		*param = "UMLImportDBName";
 		document->getUAPString(*&param, *&DBName);
 		*param = "UMLImportDBUser";
@@ -1195,9 +1251,24 @@ lbErrCodes LB_STDCALL lbDynamicAppBoUMLImport::load(lb_I_InputStream* iStream) {
 
 	if (metaapp->askYesNo("Would you create the database for the application to be imported ?")) {
 		UAP(lb_I_String, styledoc)
-		UAP_REQUEST(getModuleInstance(), lb_I_InputStream, input)
+		UAP(lb_I_InputStream, input)
 		
-		input = metaapp->askOpenFileReadStream("xsl");
+		// May not initialized
+		if (XSLFileApplicationDatabase->charrep() == NULL) {
+			XSLFileApplicationDatabase->setData("");
+		}
+		
+		if (strcmp(XSLFileApplicationDatabase->charrep(), "") == 0) {
+			input = metaapp->askOpenFileReadStream("xsl");
+			UAP_REQUEST(getModuleInstance(), lb_I_Parameter, params)
+			XSLFileApplicationDatabase->setData(input->getFileName());
+			metaapp->showPropertyPanel(*&params);
+		} else {
+			UAP_REQUEST(getModuleInstance(), lb_I_Parameter, params)
+			REQUEST(getModuleInstance(), lb_I_InputStream, input)
+			input->setFileName(XSLFileApplicationDatabase->charrep());
+		}
+		
 		if (input->open()) {
 			_LOG << "Try to get the file as a string..." LOG_
 			styledoc = input->getAsString();
@@ -1231,38 +1302,18 @@ lbErrCodes LB_STDCALL lbDynamicAppBoUMLImport::load(lb_I_InputStream* iStream) {
 			xsltTransformContextPtr ctxt;
 
 			res = xsltApplyStylesheet(cur, doc, params);
-/*
-			ctxt = xsltNewTransformContext(cur, doc);
-			res = xsltApplyStylesheetUser(cur, doc, params, NULL, stderr, ctxt);
-			if ((ctxt->state == XSLT_STATE_ERROR) || (ctxt->state == XSLT_STATE_STOPPED)) {
-				if (ctxt->lasttext != NULL) {
-					_LOG << "Fail to do xsltApplyStylesheet(). lasttext: " << ((const char*) ctxt->lasttext) LOG_
-				}
-			}
-*/			
+
 			_LOG << "Save resulting document as a string." LOG_
 
 			if (res == NULL) {
 				UAP_REQUEST(getModuleInstance(), lb_I_String, msg)
-/*				
-				if (ctxt->output != NULL) {
-					res = ctxt->output;
-				} else {
-*/
-					*msg = _trans("Failed to translate XMI file.\n\nXMI document: ");
-					*msg += (const char*) XMIURL;
-					*msg += "\n\nStylesheet: ";
-					*msg += (const char*) URL;
-/*					
-					if (ctxt->lasttext != NULL) {
-						*msg += "\n\nFail to do xsltApplyStylesheet(). lasttext: ";
-						*msg += ((const char*) ctxt->lasttext);
-					}
-*/					
-					metaapp->msgBox(_trans("Error"), msg->charrep());
-					return err;
-//				}
-				
+
+				*msg = _trans("Failed to translate XMI file.\n\nXMI document: ");
+				*msg += (const char*) XMIURL;
+				*msg += "\n\nStylesheet: ";
+				*msg += (const char*) URL;
+				metaapp->msgBox(_trans("Error"), msg->charrep());
+				return err;
 			}
 
 			xsltSaveResultToString(&result, &len, res, cur);
@@ -1316,11 +1367,26 @@ lbErrCodes LB_STDCALL lbDynamicAppBoUMLImport::load(lb_I_InputStream* iStream) {
 	
 	metaapp->setStatusText("Info", "Importing lbDMF application definition ...");
 
-	if (metaapp->askYesNo("Would you create the application definition for the application to be imported ?")) {
+	if (metaapp->askYesNo("Would you create the application definition for the application to be imported into the system database ?")) {
 		UAP(lb_I_String, styledoc)
 		UAP_REQUEST(getModuleInstance(), lb_I_InputStream, input)
 		
-		input = metaapp->askOpenFileReadStream("xsl");
+		// May not initialized
+		if (XSLFileSystemDatabase->charrep() == NULL) {
+			XSLFileSystemDatabase->setData("");
+		}
+		
+		if (strcmp(XSLFileSystemDatabase->charrep(), "") == 0) {
+			input = metaapp->askOpenFileReadStream("xsl");
+			UAP_REQUEST(getModuleInstance(), lb_I_Parameter, params)
+			XSLFileSystemDatabase->setData(input->getFileName());
+			metaapp->showPropertyPanel(*&params);
+		} else {
+			UAP_REQUEST(getModuleInstance(), lb_I_Parameter, params)
+			REQUEST(getModuleInstance(), lb_I_InputStream, input)
+			input->setFileName(XSLFileSystemDatabase->charrep());
+		}
+
 		if (input->open()) {
 			_LOG << "Try to get the file as a string..." LOG_
 			styledoc = input->getAsString();

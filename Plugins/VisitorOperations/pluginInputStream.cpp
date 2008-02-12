@@ -110,7 +110,7 @@ public:
 	void LB_STDCALL visit(lb_I_OutputStream*) { _CL_LOG << "visit(lb_I_OutputStream*)" LOG_ }
 	void LB_STDCALL visit(lb_I_FileOperation*) { _CL_LOG << "visit(lb_I_FileOperation*)" LOG_ }
 	void LB_STDCALL visit(lb_I_Locale*) { _CL_LOG << "visit(lb_I_Locale*)" LOG_ }
-	void LB_STDCALL visit(lb_I_Parameter*) { _CL_LOG << "visit(lb_I_Parameter*)" LOG_ }
+	void LB_STDCALL visit(lb_I_Parameter*); // { _CL_LOG << "visit(lb_I_Parameter*)" LOG_ }
 	void LB_STDCALL visit(lb_I_Reference*) { _CL_LOG << "visit(lb_I_Reference*)" LOG_ }
 	void LB_STDCALL visit(lb_I_Log*) { _CL_LOG << "visit(lb_I_Log*)" LOG_ }
 	void LB_STDCALL visit(lb_I_Plugin*) { _CL_LOG << "visit(lb_I_Plugin*)" LOG_ }
@@ -277,6 +277,66 @@ void LB_STDCALL lbInputStreamOpr::visit(lb_I_Boolean* b) {
 	bool _b = NULL;
 	*iStream >> _b;
 	b->setData(_b);
+}
+
+void LB_STDCALL lbInputStreamOpr::visit(lb_I_Parameter* params) {
+	int count = 0;
+	*iStream >> count;
+	
+	UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
+
+	UAP_REQUEST(getModuleInstance(), lb_I_FileLocation, f)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, s)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, l)
+	UAP_REQUEST(getModuleInstance(), lb_I_Boolean, b)
+	UAP_REQUEST(getModuleInstance(), lb_I_Parameter, p)
+
+	for (int i = 0; i < count; i++) {
+		char* ParameterName = NULL;
+		char* ParameterClassName = NULL;
+
+		*iStream >> ParameterName;
+		*iStream >> ParameterClassName;
+		
+		_LOG << "Reading object name '" << ParameterName << "' of type '" << ParameterClassName << "'." LOG_ 
+		
+		*paramname = ParameterName;
+		
+		if (strcmp(ParameterClassName, p->getClassName()) == 0) {
+			visit(*&p);
+			params->setUAPParameter(*&paramname, *&p);
+		}
+		else
+		if (strcmp(ParameterClassName, f->getClassName()) == 0) {
+			char* _f;
+			*iStream >> _f;
+			f->setData(_f);
+			params->setUAPFileLocation(*&paramname, *&f);
+		}
+		else
+		if (strcmp(ParameterClassName, s->getClassName()) == 0) {
+			char* _s;
+			*iStream >> _s;
+			*s = _s;
+			params->setUAPString(*&paramname, *&s);
+		}
+		else
+		if (strcmp(ParameterClassName, l->getClassName()) == 0) {
+			long _l;
+			*iStream >> _l;
+			l->setData(_l);
+			params->setUAPLong(*&paramname, *&l);
+		}
+		else
+		if (strcmp(ParameterClassName, b->getClassName()) == 0) {
+			bool _b;
+			*iStream >> _b;
+			b->setData(_b);
+			params->setUAPBoolean(*&paramname, *&b);
+		} else {
+			_LOG << "lbInputStreamOpr::visit(lb_I_Parameter* params) Error: Not supported type '" << ParameterClassName << "'" LOG_
+		}
+	}
 }
 
 void LB_STDCALL lbInputStreamOpr::visit(lb_I_Applications_Formulars* applicationformulars) {

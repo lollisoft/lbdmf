@@ -2782,6 +2782,20 @@ public:
 	 */
 	virtual void	   LB_STDCALL setLoadFromDatabase(bool b) = 0;
 	virtual bool	   LB_STDCALL getLoadFromDatabase() = 0;
+	
+	/** \brief Add a set of properties to be stored in file.
+	 *
+	 * This could be used for temporary storage of variable data.
+	 */
+	virtual void	LB_STDCALL addPropertySet(lb_I_Parameter* properties, char* setname) = 0;
+
+	/** \brief Delete a set of properties.
+	 *
+	 * This could be used to remove property sets again.
+	 */
+	virtual void			LB_STDCALL delPropertySet(char* setname) = 0;
+
+	virtual lb_I_Parameter*	LB_STDCALL getPropertySet(char* setname, bool copy = false) = 0;
 };
 /*...e*/
 
