@@ -359,6 +359,8 @@ lbErrCodes LB_STDCALL lbDynamicApplication::editProperties(lb_I_Unknown* uk) {
 		
 		param->setUAPParameter(*&parameter, *&paramProject);
 		
+		
+		
 		metaapp->showPropertyPanel(*&param);
 	} else {
 		// Build up a preferences object and pass it to the property view
@@ -817,11 +819,22 @@ lbErrCodes LB_STDCALL lbDynamicApplication::exportApplicationToXMLBuffer(lb_I_Un
 	// Get the active document and set temporary a different storage handler (dax)
 		
 	if (document != NULL) {
+		UAP(lb_I_KeyBase, key)
+		UAP_REQUEST(getModuleInstance(), lb_I_Container, doc)
+		doc->setCloning(false);
 		*name = "StorageDelegateNamespace";
 		document->getUAPString(*&name, *&StorageNamespace);
 			
 		*tempStorageNamespace = "lbDynAppXMLFormat";
 		document->setUAPString(*&name, *&tempStorageNamespace);
+		
+		*name = "ApplicationData";
+		document->getUAPContainer(*&name, *&doc);
+		*name = "AppParams";
+		QI(name, lb_I_KeyBase, key)
+		uk = doc->getElement(&key);
+		QI(uk, lb_I_ApplicationParameter, appParams)
+
 	}
 	
 	
