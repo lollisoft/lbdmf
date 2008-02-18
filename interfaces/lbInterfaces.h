@@ -742,6 +742,7 @@ class lb_I_Formular_Fields;
 class lb_I_FixedDatabaseForm;
 class lb_I_DBReportTextblock;
 class lb_I_DBReportProperties;
+class lb_I_DirLocation;
 /*...e*/
 
 /*...scallback \47\ handler typedefs:0:*/
@@ -2796,6 +2797,12 @@ public:
 	virtual void			LB_STDCALL delPropertySet(char* setname) = 0;
 
 	virtual lb_I_Parameter*	LB_STDCALL getPropertySet(char* setname, bool copy = false) = 0;
+	
+	/** \brief Gets a directory from user.
+	 *
+	 * The user gets a directory chooser dialog and should provide with that information.
+	 */
+	virtual bool			LB_STDCALL askForDirectory(lb_I_DirLocation* loc) = 0;
 };
 /*...e*/
 
