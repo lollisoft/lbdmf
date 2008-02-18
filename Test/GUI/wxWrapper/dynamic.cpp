@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.149 2008/02/09 23:18:20 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.150 2008/02/18 19:57:19 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.149 $
+ * $Revision: 1.150 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.149 2008/02/09 23:18:20 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.150 2008/02/18 19:57:19 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.150  2008/02/18 19:57:19  lollisoft
+ * Added function to get a directory from the user.
+ *
  * Revision 1.149  2008/02/09 23:18:20  lollisoft
  * Reactivated splash screen 'always on top' for Mac.
  *
@@ -2027,6 +2030,8 @@ public wxApp
     
 		lbErrCodes LB_STDCALL setXRCFile(lb_I_Unknown* uk);
 
+		lbErrCodes LB_STDCALL askForDirectory(lb_I_Unknown* uk);
+
         DECLARE_LB_UNKNOWN()
     
 protected:
@@ -2056,6 +2061,7 @@ protected:
         int _toggleEvent;
         int _askYesNo;
 		int _setXRCFile;
+		int _askForDirectory;
 	int AskOpenFileReadStream;
 		
         
@@ -2157,6 +2163,92 @@ bool MyApp::OnInit(void)
     UAP(lb_I_Module, mm)
     mm = getModuleInstance();
 
+    if (mm == NULL) {
+	wxMessageDialog dialog(NULL, "Module manager not found. could not run application.", "Error", wxOK);
+
+	dialog.ShowModal();  
+	return FALSE;
+    } 
+
+    mm->setModuleManager(mm.getPtr(), __FILE__, __LINE__);
+    setModuleManager(mm.getPtr(), __FILE__, __LINE__);
+    
+    UAP_REQUEST(mm.getPtr(), lb_I_Dispatcher, disp)
+	REQUEST(mm.getPtr(), lb_I_EventManager, ev_manager)        
+
+    if (disp == NULL) {
+		_LOG << "Fatal: Have not got a dispatcher!" LOG_
+    }
+	
+	disp->setEventManager(ev_manager.getPtr());
+
+    UAP_REQUEST(mm.getPtr(), lb_I_String, string)
+    UAP_REQUEST(mm.getPtr(), lb_I_Database, tempDB) // Preload this module
+    UAP_REQUEST(mm.getPtr(), lb_I_PluginManager, PM)
+    UAP_REQUEST(mm.getPtr(), lb_I_MetaApplication, metaApp)
+
+	// Register Events, that I provide
+
+	ev_manager->registerEvent("AddMenu", AddMenu);
+	ev_manager->registerEvent("AddMenuBar", AddMenuBar);
+	ev_manager->registerEvent("AddButton", AddButton);	
+
+	ev_manager->registerEvent("showLeft", AddButton);	
+
+	ev_manager->registerEvent("AddMenuEntry", AddMenuEntry);
+	ev_manager->registerEvent("AddLabel", AddLabel);
+	ev_manager->registerEvent("AddTextField", AddTextField);
+	ev_manager->registerEvent("askOpenFileReadStream", AskOpenFileReadStream);
+	ev_manager->registerEvent("askYesNo", _askYesNo);
+	ev_manager->registerEvent("enableEvent", _enableEvent);
+	ev_manager->registerEvent("disableEvent", _disableEvent);
+	ev_manager->registerEvent("toggleEvent", _toggleEvent);
+	ev_manager->registerEvent("setXRCFile", _setXRCFile);
+	ev_manager->registerEvent("askForDirectory", _askForDirectory);
+
+	registerEventHandler(*&disp);
+
+    /// \todo Find leak.
+    metaApp++;
+
+    lbErrCodes err = ERR_NONE;
+		
+    if (wxGUI == NULL) {
+        wxGUI = new lb_wxGUI();
+        wxGUI->setModuleManager(mm.getPtr(), __FILE__, __LINE__);
+    }
+
+    if (metaApp != NULL) {
+        metaApp->setGUI(wxGUI);
+	}
+
+	// Preload to enable flag modifications in plugins. Such as loading from database instead file
+	metaApp->load();
+
+    UAP(lb_I_Unknown, uk)
+    uk = wxGUI->createFrame();
+    uk++;
+    uk++;
+
+    frame = (lb_wxFrame*) uk.getPtr();
+
+    frame->registerEventHandler(*&disp);
+
+    // Fake. Parameter not used yet.
+    wxGUI->setIcon("mondrian");
+
+    //err = frame->createEventsource(this);
+
+    wxGUI->registerEventHandler(*&disp);
+
+    if (err != ERR_NONE) _LOG << "Have some problems to set up menu event sources" LOG_
+  
+    frame->Centre();
+
+    SetTopWindow(frame);
+
+    PM->initialize();
+
     wxImage::AddHandler(new wxPNGHandler);
 
     wxSplashScreen* splash = NULL;
@@ -2185,95 +2277,12 @@ bool MyApp::OnInit(void)
 	}	
 	wxYield();
 
-    if (mm == NULL) {
-	wxMessageDialog dialog(NULL, "Module manager not found. could not run application.", "Error", wxOK);
-
-	dialog.ShowModal();  
-	return FALSE;
-    } 
-
-    mm->setModuleManager(mm.getPtr(), __FILE__, __LINE__);
-    setModuleManager(mm.getPtr(), __FILE__, __LINE__);
-
-
-    
-    UAP_REQUEST(mm.getPtr(), lb_I_Dispatcher, disp)
-	REQUEST(mm.getPtr(), lb_I_EventManager, ev_manager)        
-
-    UAP_REQUEST(mm.getPtr(), lb_I_String, string)
-    UAP_REQUEST(mm.getPtr(), lb_I_Database, tempDB) // Preload this module
-    UAP_REQUEST(mm.getPtr(), lb_I_PluginManager, PM)
-    UAP_REQUEST(mm.getPtr(), lb_I_MetaApplication, metaApp)
-
-    PM->initialize();
-
-    /// \todo Find leak.
-    metaApp++;
-
-    lbErrCodes err = ERR_NONE;
-
-    disp->setEventManager(ev_manager.getPtr());
-		
-    if (disp == NULL) _LOG << "Fatal: Have not got a dispatcher!" LOG_
-
-    if (wxGUI == NULL) {
-        wxGUI = new lb_wxGUI();
-        wxGUI->setModuleManager(mm.getPtr(), __FILE__, __LINE__);
-
-		// Register Events, that I provide
-
-		ev_manager->registerEvent("AddMenu", AddMenu);
-		ev_manager->registerEvent("AddMenuBar", AddMenuBar);
-		ev_manager->registerEvent("AddButton", AddButton);	
-
-		ev_manager->registerEvent("showLeft", AddButton);	
-	
-		ev_manager->registerEvent("AddMenuEntry", AddMenuEntry);
-		ev_manager->registerEvent("AddLabel", AddLabel);
-		ev_manager->registerEvent("AddTextField", AddTextField);
-		ev_manager->registerEvent("askOpenFileReadStream", AskOpenFileReadStream);
-		ev_manager->registerEvent("askYesNo", _askYesNo);
-		ev_manager->registerEvent("enableEvent", _enableEvent);
-		ev_manager->registerEvent("disableEvent", _disableEvent);
-		ev_manager->registerEvent("toggleEvent", _toggleEvent);
-		ev_manager->registerEvent("setXRCFile", _setXRCFile);
-		
-
-        registerEventHandler(*&disp);
-    }
-
-    if (metaApp != NULL) {
-        metaApp->setGUI(wxGUI);
-	}
-	
-    UAP(lb_I_Unknown, uk)
-    uk = wxGUI->createFrame();
-    uk++;
-    uk++;
-
-    frame = (lb_wxFrame*) uk.getPtr();
-
-    frame->registerEventHandler(*&disp);
-
-    // Fake. Parameter not used yet.
-    wxGUI->setIcon("mondrian");
-
-    //err = frame->createEventsource(this);
-
-    wxGUI->registerEventHandler(*&disp);
-
-    if (err != ERR_NONE) _LOG << "Have some problems to set up menu event sources" LOG_
-  
-    frame->Centre();
-
-    SetTopWindow(frame);
-
     if (metaApp != NULL) {
         metaApp->initialize();
 
-	//if (metaApp->isPropertyPaneLayoutLeft()) metaApp->showPropertyPanel();
-	//if (metaApp->isPropertyPaneLayoutFloating()) metaApp->showPropertyPanel();
-	if (metaApp->getGUIMaximized()) frame->Maximize();
+		//if (metaApp->isPropertyPaneLayoutLeft()) metaApp->showPropertyPanel();
+		//if (metaApp->isPropertyPaneLayoutFloating()) metaApp->showPropertyPanel();
+		if (metaApp->getGUIMaximized()) frame->Maximize();
     } 
 
     if (PM->beginEnumPlugins()) {
@@ -2285,7 +2294,7 @@ bool MyApp::OnInit(void)
             pl->autorun();
         }
     }
-	
+
     frame->Show(TRUE);
     
 #ifdef LINUX
@@ -2323,6 +2332,9 @@ lbErrCodes LB_STDCALL MyApp::registerEventHandler(lb_I_Dispatcher* disp) {
 	disp->addEventHandlerFn(this, (lbEvHandler) &MyApp::disableEvent, "disableEvent");
 	disp->addEventHandlerFn(this, (lbEvHandler) &MyApp::toggleEvent, "toggleEvent");
 	disp->addEventHandlerFn(this, (lbEvHandler) &MyApp::setXRCFile, "setXRCFile");
+
+	disp->addEventHandlerFn(this, (lbEvHandler) &MyApp::askForDirectory, "askForDirectory");
+	
 
 	return ERR_NONE;
 }
@@ -2398,6 +2410,34 @@ lbErrCodes LB_STDCALL MyApp::askOpenFileReadStream(lb_I_Unknown* uk) {
 	return err;
 }
 /*...e*/
+lbErrCodes LB_STDCALL MyApp::askForDirectory(lb_I_Unknown* uk) {
+	lbErrCodes err = ERR_NONE;
+
+	UAP_REQUEST(manager.getPtr(), lb_I_EventManager, ev_manager)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, name)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, filepath)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, defaultdir)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, after)
+
+	UAP(lb_I_Parameter, param)
+	
+	QI(uk, lb_I_Parameter, param)
+	
+	wxDirDialog dirDialog(NULL, _trans("Choose a directory"));
+
+	if (dirDialog.ShowModal() == wxID_OK) {
+		parameter->setData("result");
+		filepath->setData(dirDialog.GetPath().c_str());
+		param->setUAPString(*&parameter, *&filepath);
+	} else {
+		parameter->setData("result");
+		filepath->setData("");
+		param->setUAPString(*&parameter, *&filepath);
+	}
+	
+	return err;
+}
 
 
 lbErrCodes LB_STDCALL MyApp::setXRCFile(lb_I_Unknown* uk) {
