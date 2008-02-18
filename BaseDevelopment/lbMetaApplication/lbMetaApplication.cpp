@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.127 $
+ * $Revision: 1.128 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.127 2008/02/12 21:36:27 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.128 2008/02/18 20:02:51 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.128  2008/02/18 20:02:51  lollisoft
+ * Added function to get a directory from the user.
+ *
  * Revision 1.127  2008/02/12 21:36:27  lollisoft
  * Added code that allows to store parameter sets into the meta application file.
  *
@@ -537,6 +540,8 @@ lb_MetaApplication::lb_MetaApplication() {
 	gui = NULL;
 	moduleName = NULL;
 
+	_loaded = false;
+
 	_autoload = true;
 	_autoselect = false;
 	_autorefresh = false;
@@ -778,6 +783,8 @@ lbErrCodes LB_STDCALL lb_MetaApplication::save() {
 lbErrCodes LB_STDCALL lb_MetaApplication::load() {
 	lbErrCodes err = ERR_NONE;
 	
+	_loading_object_data = true;
+
 	// Get the plugin to read a standard stream based file
 
 	UAP_REQUEST(manager.getPtr(), lb_I_PluginManager, PM)
@@ -862,6 +869,8 @@ lbErrCodes LB_STDCALL lb_MetaApplication::load() {
 			}
 
 			fOp->end();
+			
+			_loaded = true;
 			
 			return ERR_NONE;
 		} else {
@@ -1089,15 +1098,15 @@ lbErrCodes LB_STDCALL lb_MetaApplication::initialize(char* user, char* appName) 
 	
 	_CL_LOG << "Load properties from file..." LOG_
 	
-	_loading_object_data = true;
-	
 	REQUEST(manager.getPtr(), lb_I_Parameter, myProperties)
 		
 
-	if (load() != ERR_NONE) {
-		_LOG << "ERROR: Could not load file for MetaApplication data. Save a default file !" LOG_
-		if (save() != ERR_NONE) {
-			_LOG << "ERROR: Could not save a default file for MetaApplication data!" LOG_
+	if (!_loaded) {
+		if (load() != ERR_NONE) {
+			_LOG << "ERROR: Could not load file for MetaApplication data. Save a default file !" LOG_
+			if (save() != ERR_NONE) {
+				_LOG << "ERROR: Could not save a default file for MetaApplication data!" LOG_
+			}
 		}
 	}
 	
@@ -1949,6 +1958,12 @@ bool LB_STDCALL lb_MetaApplication::askYesNo(char* msg) {
 	UAP(lb_I_Unknown, uk_result)
 	QI(result, lb_I_Unknown, uk_result)
 	
+	if (dispatcher == NULL) {
+		REQUEST(getModuleInstance(), lb_I_EventManager, eman)
+		REQUEST(getModuleInstance(), lb_I_Dispatcher, dispatcher)
+		dispatcher->setEventManager(eman.getPtr());
+	}
+	
 	dispatcher->dispatch("askYesNo", uk.getPtr(), &uk_result);
 
 	// Got a name of the file. Create an input stream.
@@ -2671,6 +2686,37 @@ lb_I_Parameter*	LB_STDCALL lb_MetaApplication::getPropertySet(char* setname, boo
 		} else {
 			return NULL;
 		}
+}
+
+bool LB_STDCALL lb_MetaApplication::askForDirectory(lb_I_DirLocation* loc) {
+	lbErrCodes err = ERR_NONE;
+	
+	UAP_REQUEST(manager.getPtr(), lb_I_Parameter, param)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
+	UAP_REQUEST(manager.getPtr(), lb_I_String, value)
+	UAP_REQUEST(manager.getPtr(), lb_I_Integer, i)
+
+	UAP(lb_I_Unknown, uk)
+	QI(param, lb_I_Unknown, uk)
+	
+	UAP_REQUEST(manager.getPtr(), lb_I_String, result)
+	UAP(lb_I_Unknown, uk_result)
+	QI(result, lb_I_Unknown, uk_result)
+	
+	dispatcher->dispatch("askForDirectory", uk.getPtr(), &uk_result);
+
+	// Got a name of the file. Create an input stream.
+	
+	parameter->setData("result");
+	param->getUAPString(*&parameter, *&value);
+
+	if (strcmp(value->charrep(), "") == 0) return false;
+	
+	_LOG << "Got a directory name: " << value->charrep() << "." LOG_
+
+	loc->setData(value->charrep());
+
+	return true;
 }
 
 /*...sbool LB_STDCALL lb_MetaApplication\58\\58\login\40\const char\42\ user\44\ const char\42\ pass\41\:0:*/

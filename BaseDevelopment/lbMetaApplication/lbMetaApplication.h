@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.53 $
+ * $Revision: 1.54 $
  * $Name:  $
- * $Id: lbMetaApplication.h,v 1.53 2008/02/12 21:36:27 lollisoft Exp $
+ * $Id: lbMetaApplication.h,v 1.54 2008/02/18 20:02:52 lollisoft Exp $
  *
  * $Log: lbMetaApplication.h,v $
+ * Revision 1.54  2008/02/18 20:02:52  lollisoft
+ * Added function to get a directory from the user.
+ *
  * Revision 1.53  2008/02/12 21:36:27  lollisoft
  * Added code that allows to store parameter sets into the meta application file.
  *
@@ -400,6 +403,7 @@ public:
 	void					LB_STDCALL delPropertySet(char* setname);
 	void					LB_STDCALL addPropertySet(lb_I_Parameter* properties, char* setname);
 	lb_I_Parameter*			LB_STDCALL getPropertySet(char* setname, bool copy = false);
+	bool					LB_STDCALL askForDirectory(lb_I_DirLocation* loc);
 protected:
 	lb_I_GUI* gui;
 	
@@ -438,6 +442,8 @@ protected:
 	bool _GUIMaximized;
 	bool _logged_in;
 	bool _loading_object_data;
+	
+	bool _loaded;
 	
 	char gwedgd[100];
 };
