@@ -1750,9 +1750,7 @@ wxPropertyGrid* lb_wxFrame::CreatePropertyGrid(wxWindow* parent) {
 		   wxT("first one. Edit it by clicking the button.")));
 	} else {
 		UAP(lb_I_Container, parameter)
-	
 		parameter = currentProperties->getParameterList();
-	
 		populateProperties(pg, *&parameter);
 	}
 	 
@@ -1766,12 +1764,16 @@ void lb_wxFrame::populateFileLocation(wxPropertyGrid* pg, lb_I_Unknown* uk, lb_I
 	UAP_REQUEST(manager.getPtr(), lb_I_String, category_name)
 	QI(uk, lb_I_FileLocation, s)
 	
-	_CL_LOG << "Add file location property (" << name->charrep() << "): " << s->charrep() LOG_
-	
 	if (category) *category_name = category;
 	*category_name += name->charrep();
 	
-	pg->Append(wxFileProperty (name->charrep(), category_name->charrep(), s->charrep()));
+	wxPGId pgid = pg->GetPropertyByLabel(name->charrep());
+	
+	if (pgid.IsOk()) {
+		pg->SetPropertyValueString(pgid, s->charrep());
+	} else {
+		pg->Append(wxFileProperty (name->charrep(), category_name->charrep(), s->charrep()));
+	}
 }
 /*...e*/
 /*...svoid lb_wxFrame\58\\58\populateDirLocation\40\wxPropertyGrid\42\ pg\44\ lb_I_Unknown\42\ uk\44\ lb_I_KeyBase\42\ name\44\ char\42\ category\41\:0:*/
@@ -1781,12 +1783,16 @@ void lb_wxFrame::populateDirLocation(wxPropertyGrid* pg, lb_I_Unknown* uk, lb_I_
 	UAP_REQUEST(manager.getPtr(), lb_I_String, category_name)
 	QI(uk, lb_I_DirLocation, s)
 	
-	_CL_LOG << "Add file location property (" << name->charrep() << "): " << s->charrep() LOG_
-	
 	if (category) *category_name = category;
 	*category_name += name->charrep();
 	
-	pg->Append(wxDirProperty (name->charrep(), category_name->charrep(), s->charrep()));
+	wxPGId pgid = pg->GetPropertyByLabel(name->charrep());
+	
+	if (pgid.IsOk()) {
+		pg->SetPropertyValueString(pgid, s->charrep());
+	} else {
+		pg->Append(wxDirProperty (name->charrep(), category_name->charrep(), s->charrep()));
+	}
 }
 /*...e*/
 /*...svoid lb_wxFrame\58\\58\populateString\40\wxPropertyGrid\42\ pg\44\ lb_I_Unknown\42\ uk\44\ lb_I_KeyBase\42\ name\44\ char\42\ category\41\:0:*/
@@ -1796,12 +1802,16 @@ void lb_wxFrame::populateString(wxPropertyGrid* pg, lb_I_Unknown* uk, lb_I_KeyBa
 	UAP_REQUEST(manager.getPtr(), lb_I_String, category_name)
 	QI(uk, lb_I_String, s)
 	
-	_CL_LOG << "Add string property (" << name->charrep() << "): " << s->charrep() LOG_
-	
 	if (category) *category_name = category;
 	*category_name += name->charrep();
 	
-	pg->Append(wxStringProperty (name->charrep(), category_name->charrep(), s->charrep()));
+	wxPGId pgid = pg->GetPropertyByLabel(name->charrep());
+	
+	if (pgid.IsOk()) {
+		pg->SetPropertyValueString(pgid, s->charrep());
+	} else {
+		pg->Append(wxStringProperty (name->charrep(), category_name->charrep(), s->charrep()));
+	}
 }
 /*...e*/
 /*...svoid lb_wxFrame\58\\58\populateBoolean\40\wxPropertyGrid\42\ pg\44\ lb_I_Unknown\42\ uk\44\ lb_I_KeyBase\42\ name\44\ char\42\ category\41\:0:*/
@@ -1811,12 +1821,16 @@ void lb_wxFrame::populateBoolean(wxPropertyGrid* pg, lb_I_Unknown* uk, lb_I_KeyB
 	UAP_REQUEST(manager.getPtr(), lb_I_String, category_name)
 	QI(uk, lb_I_Boolean, s)
 	
-	_CL_LOG << "Add boolean property (" << name->charrep() << "): " << s->charrep() LOG_
-	
 	if (category) *category_name = category;
 	*category_name += name->charrep();
 	
-	pg->Append(wxBoolProperty (name->charrep(), category_name->charrep(), s->getData()));
+	wxPGId pgid = pg->GetPropertyByLabel(name->charrep());
+	
+	if (pgid.IsOk()) {
+		pg->SetPropertyValueBool(pgid, s->getData());
+	} else {
+		pg->Append(wxBoolProperty (name->charrep(), category_name->charrep(), s->getData()));
+	}
 }
 /*...e*/
 /*...svoid lb_wxFrame\58\\58\populateInteger\40\wxPropertyGrid\42\ pg\44\ lb_I_Unknown\42\ uk\44\ lb_I_KeyBase\42\ name\44\ char\42\ category\41\:0:*/
@@ -1826,12 +1840,18 @@ void lb_wxFrame::populateInteger(wxPropertyGrid* pg, lb_I_Unknown* uk, lb_I_KeyB
 	UAP_REQUEST(manager.getPtr(), lb_I_String, category_name)
 	QI(uk, lb_I_Integer, i)
 	
-	_CL_LOG << "Add integer property (" << name->charrep() << "): " << i->charrep() LOG_
+	_LOG << "Add integer property (" << name->charrep() << "): " << i->charrep() LOG_
 
 	if (category) *category_name = category;
 	*category_name += name->charrep();
 
-	pg->Append(wxIntProperty (name->charrep(), category_name->charrep(), i->getData()));
+	wxPGId pgid = pg->GetPropertyByLabel(name->charrep());
+	
+	if (pgid.IsOk()) {
+		pg->SetPropertyValueLong(pgid, i->getData());
+	} else {
+		pg->Append(wxIntProperty (name->charrep(), category_name->charrep(), i->getData()));
+	}
 }
 /*...e*/
 /*...svoid lb_wxFrame\58\\58\populateProperties\40\wxPropertyGrid\42\ pg\44\ lb_I_Container\42\ properties\44\ char\42\ category\41\:0:*/
@@ -2388,10 +2408,9 @@ lbErrCodes LB_STDCALL lb_wxFrame::showLeftPropertyBar(lb_I_Unknown* uk) {
 	if (params != NULL) {
 		
 		if (params->Count() > 0) {
-			// Delete old properties.
-			UAP(lb_I_Container, list)
-			list = currentProperties->getParameterList();
-			if ((list != NULL) && (list->Count() > 0)) list->deleteAll();
+			currentProperties--;
+			currentProperties.resetPtr();
+			REQUEST(manager.getPtr(), lb_I_Parameter, currentProperties)
 
 			currentProperties->setData(uk);
 
@@ -2406,8 +2425,11 @@ lbErrCodes LB_STDCALL lb_wxFrame::showLeftPropertyBar(lb_I_Unknown* uk) {
 			
 			currentProperties->setUAPParameter(*&group, *&param);
 		}
+/*
 	} else {
+		_LOG << "No optional properties given. Do nothing." LOG_
 		return ERR_NONE;
+*/
 	}
 
 
@@ -2415,26 +2437,16 @@ lbErrCodes LB_STDCALL lb_wxFrame::showLeftPropertyBar(lb_I_Unknown* uk) {
 	wxPropertyGrid* oldpg = (wxPropertyGrid*) m_mgr.GetPane("Properties").window;
 
 	if (oldpg != NULL) {
-		_LOG << "Replace old property page..." LOG_
-		m_mgr.DetachPane(oldpg);
+		_LOG << "Replace old property values..." LOG_
 
-		wxPropertyGrid* newpg = CreatePropertyGrid(oldpg->GetParent());
-
-		oldpg->Destroy();
-		oldpg = NULL;
-
-		if (currentProperties != NULL) {
-			UAP(lb_I_Container, parameter)
-			parameter = currentProperties->getParameterList();
-			populateProperties(newpg, *&parameter);
-		}
+		UAP(lb_I_Container, parameter)
+		parameter = currentProperties->getParameterList();
+		populateProperties(oldpg, *&parameter);
 		
-		m_mgr.AddPane(newpg, wxPaneInfo().
-			Name(wxT("Properties")).Caption(wxT("Properties")).
-			//Float().FloatingPosition(GetStartPosition()).
-			Left().
-			FloatingSize(wxSize(300,200)));
+		m_mgr.GetPane("Properties").Show();
+		
 		m_mgr.Update();
+		
 		return ERR_NONE;
 	}
 #endif
@@ -2464,7 +2476,7 @@ lbErrCodes LB_STDCALL lb_wxFrame::showLeftPropertyBar(lb_I_Unknown* uk) {
 			//			if (PanelNamespace == NULL) 
 			//				leftPanel = new wxScrolledWindow(m_splitter);
 			//				else {
-#ifdef IN_PANEL			
+#ifdef IN_PANEL
 			wxPanel* panel = new wxPanel(m_splitter,-1);
 			wxPropertyGrid* pg = CreatePropertyGrid(panel);
 			leftPanel = panel;
@@ -2536,7 +2548,7 @@ lbErrCodes LB_STDCALL lb_wxFrame::showLeftPropertyBar(lb_I_Unknown* uk) {
 
 		leftPanel->SetAutoLayout(TRUE);
 		pg->SetAutoLayout(TRUE);
-
+/*
 		wxSizer* s = GetSizer();
 
 		if (s != NULL) {
@@ -2545,7 +2557,7 @@ lbErrCodes LB_STDCALL lb_wxFrame::showLeftPropertyBar(lb_I_Unknown* uk) {
 		}
 			
 		pg->SetSizeHints(leftPanel->GetSize());
-
+*/
 		
 
 		m_mgr.AddPane(pg, wxPaneInfo().
