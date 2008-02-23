@@ -12,9 +12,32 @@ CREATE OR REPLACE FUNCTION plpgsql_call_handler()
 '$libdir/plpgsql', 'plpgsql_call_handler'
   LANGUAGE 'c' VOLATILE;
 
--- Activate this on a fresh database
+
 --DROP LANGUAGE plpgsql;
+
+-- Activate this on a fresh database
 --CREATE LANGUAGE plpgsql HANDLER plpgsql_call_handler;
+
+-- dropTable("varchar")
+--
+-- This function drops a table, if it exists.
+
+CREATE OR REPLACE FUNCTION dropTable("varchar")
+  RETURNS void AS
+'
+declare
+tres text;
+declare tt alias for $1;
+begin
+  select tablename into tres from pg_tables where tablename = $1;
+  if not tres is null then
+    execute ''DROP TABLE "'' || $1 || ''"'';
+  end if;
+  return;
+end;
+'
+  LANGUAGE 'plpgsql' VOLATILE;
+
 
 SET SESSION AUTHORIZATION 'dba';
 
@@ -60,6 +83,8 @@ CREATE TABLE column_types
 insert into column_types (name, tablename, ro) values('kundennr', 'kunden', TRUE);
 insert into column_types (name, tablename, ro) values('id', 'chart', TRUE);
 insert into column_types (name, tablename, ro) values('language', 'translations', TRUE);
+insert into column_types (name, tablename, ro) values('id', 'formular_actions', TRUE);
+insert into column_types (name, tablename, ro) values('id', 'Anwendungs_Parameter', TRUE);
 insert into column_types (name, tablename, ro, controltype, specialcolumn) values('toolbarimage', 'formulare', FALSE, 'toolbarimagefile', TRUE);
 
 --...sCREATE TABLE actions:0:
@@ -1396,27 +1421,6 @@ end;
 '
   LANGUAGE 'plpgsql' VOLATILE;
 
-
-
--- dropTable("varchar")
---
--- This function drops a table, if it exists.
-
-CREATE OR REPLACE FUNCTION dropTable("varchar")
-  RETURNS void AS
-'
-declare
-tres text;
-declare tt alias for $1;
-begin
-  select tablename into tres from pg_tables where tablename = $1;
-  if not tres is null then
-    execute ''DROP TABLE "'' || $1 || ''"'';
-  end if;
-  return;
-end;
-'
-  LANGUAGE 'plpgsql' VOLATILE;
 
 
 -- Function GetFormularId(applicationid, formularname)
