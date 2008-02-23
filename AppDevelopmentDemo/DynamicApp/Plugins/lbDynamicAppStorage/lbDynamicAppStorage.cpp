@@ -1258,11 +1258,35 @@ lbErrCodes LB_STDCALL lbDynamicAppBoUMLImport::load(lb_I_InputStream* iStream) {
 			XSLFileApplicationDatabase->setData("");
 		}
 		
+		UAP_REQUEST(getModuleInstance(), lb_I_String, ts)
+		*ts = XSLFileApplicationDatabase->charrep();
+		ts->trim();
+		XSLFileApplicationDatabase->setData(ts->charrep());
+		
 		if (strcmp(XSLFileApplicationDatabase->charrep(), "") == 0) {
 			input = metaapp->askOpenFileReadStream("xsl");
 			UAP_REQUEST(getModuleInstance(), lb_I_Parameter, params)
 			XSLFileApplicationDatabase->setData(input->getFileName());
-			metaapp->showPropertyPanel(*&params);
+			
+			UAP_REQUEST(manager.getPtr(), lb_I_Parameter, paramXSL)
+			UAP_REQUEST(manager.getPtr(), lb_I_String, parameterXSL)
+			UAP_REQUEST(manager.getPtr(), lb_I_String, valueXSL)
+			UAP_REQUEST(manager.getPtr(), lb_I_FileLocation, fileXSL)
+			UAP_REQUEST(manager.getPtr(), lb_I_Boolean, boolXSL)
+
+			UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
+			UAP_REQUEST(manager.getPtr(), lb_I_String, value)
+			UAP_REQUEST(manager.getPtr(), lb_I_Integer, i)
+			
+			parameter->setData("Transformation settings");
+			//--------------------------------------------
+			
+			parameterXSL->setData("XSL file for application database");
+			fileXSL->setData(XSLFileApplicationDatabase->getData());
+			paramXSL->setUAPFileLocation(*&parameterXSL, *&fileXSL);
+			
+			params->setUAPParameter(*&parameter, *&paramXSL);
+			metaapp->showPropertyPanel(*&params, true);
 		} else {
 			UAP_REQUEST(getModuleInstance(), lb_I_Parameter, params)
 			REQUEST(getModuleInstance(), lb_I_InputStream, input)
@@ -1376,11 +1400,34 @@ lbErrCodes LB_STDCALL lbDynamicAppBoUMLImport::load(lb_I_InputStream* iStream) {
 			XSLFileSystemDatabase->setData("");
 		}
 		
+		UAP_REQUEST(getModuleInstance(), lb_I_String, ts)
+		*ts = XSLFileSystemDatabase->charrep();
+		ts->trim();
+		XSLFileSystemDatabase->setData(ts->charrep());
+		
 		if (strcmp(XSLFileSystemDatabase->charrep(), "") == 0) {
 			input = metaapp->askOpenFileReadStream("xsl");
 			UAP_REQUEST(getModuleInstance(), lb_I_Parameter, params)
 			XSLFileSystemDatabase->setData(input->getFileName());
-			metaapp->showPropertyPanel(*&params);
+			UAP_REQUEST(manager.getPtr(), lb_I_Parameter, paramXSL)
+			UAP_REQUEST(manager.getPtr(), lb_I_String, parameterXSL)
+			UAP_REQUEST(manager.getPtr(), lb_I_String, valueXSL)
+			UAP_REQUEST(manager.getPtr(), lb_I_FileLocation, fileXSL)
+			UAP_REQUEST(manager.getPtr(), lb_I_Boolean, boolXSL)
+
+			UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
+			UAP_REQUEST(manager.getPtr(), lb_I_String, value)
+			UAP_REQUEST(manager.getPtr(), lb_I_Integer, i)
+			
+			parameter->setData("Transformation settings");
+			//--------------------------------------------
+			
+			parameterXSL->setData("XSL file for system database");
+			fileXSL->setData(XSLFileSystemDatabase->getData());
+			paramXSL->setUAPFileLocation(*&parameterXSL, *&fileXSL);
+			
+			params->setUAPParameter(*&parameter, *&paramXSL);
+			metaapp->showPropertyPanel(*&params, true);
 		} else {
 			UAP_REQUEST(getModuleInstance(), lb_I_Parameter, params)
 			REQUEST(getModuleInstance(), lb_I_InputStream, input)

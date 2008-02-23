@@ -713,11 +713,34 @@ lbErrCodes LB_STDCALL lbDynamicApplication::importUMLXMIDocIntoApplication(lb_I_
 		XMIFileUMLProject->setData("");
 	}
 	
+	UAP_REQUEST(getModuleInstance(), lb_I_String, ts)
+	*ts = XMIFileUMLProject->charrep();
+	ts->trim();
+	XMIFileUMLProject->setData(ts->charrep());
+	
 	if (strcmp(XMIFileUMLProject->charrep(), "") == 0) {
 		UAP_REQUEST(getModuleInstance(), lb_I_Parameter, params)
 		importfile = metaapp->askOpenFileReadStream("xmi");
 		XMIFileUMLProject->setData(importfile->getFileName());
-		//metaapp->showPropertyPanel(*&params);
+		UAP_REQUEST(manager.getPtr(), lb_I_Parameter, paramXSL)
+		UAP_REQUEST(manager.getPtr(), lb_I_String, parameterXSL)
+		UAP_REQUEST(manager.getPtr(), lb_I_String, valueXSL)
+		UAP_REQUEST(manager.getPtr(), lb_I_FileLocation, fileXSL)
+		UAP_REQUEST(manager.getPtr(), lb_I_Boolean, boolXSL)
+
+		UAP_REQUEST(manager.getPtr(), lb_I_String, parameter)
+		UAP_REQUEST(manager.getPtr(), lb_I_String, value)
+		UAP_REQUEST(manager.getPtr(), lb_I_Integer, i)
+		
+		parameter->setData("lbDMF Manager Import Definitions");
+		//--------------------------------------------
+		
+		parameterXSL->setData("XMI UML input file");
+		fileXSL->setData(XMIFileUMLProject->getData());
+		paramXSL->setUAPFileLocation(*&parameterXSL, *&fileXSL);
+		
+		params->setUAPParameter(*&parameter, *&paramXSL);
+		metaapp->showPropertyPanel(*&params);
 	} else {
 		REQUEST(getModuleInstance(), lb_I_InputStream, importfile)
 		importfile->setFileName(XMIFileUMLProject->getData());
