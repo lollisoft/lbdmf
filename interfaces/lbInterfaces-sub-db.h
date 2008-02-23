@@ -1139,7 +1139,7 @@ public:
 	 *
 	 * Return the related table name, that contains the given column name.
 	 */
-	virtual char* LB_STDCALL getTableName(char* columnName) = 0;
+	virtual lb_I_String* LB_STDCALL getTableName(char* columnName) = 0;
 
 /*...sMaster Detail form interface part:8:*/
 	/** \brief Get the number of master columns.
@@ -1174,12 +1174,12 @@ public:
 	/** \brief Get the value of a control.
 	 *
 	 */
-	virtual const char* LB_STDCALL getControlValue(char* name) = 0;
+	virtual const lb_I_String* LB_STDCALL getControlValue(char* name) = 0;
 
 	/** \brief Get the value of a control.
 	 *
 	 */
-	virtual const char* LB_STDCALL getControlValue(int pos) = 0;
+	virtual const lb_I_String* LB_STDCALL getControlValue(int pos) = 0;
 
 	/** \brief Get the number of controls.
 	 *
@@ -1188,7 +1188,7 @@ public:
 	 */
 	virtual int LB_STDCALL getControls() = 0;
 
-	virtual char* LB_STDCALL getColumnName(int pos) = 0;
+	virtual lb_I_String* LB_STDCALL getColumnName(int pos) = 0;
 /*...e*/
 };
 
