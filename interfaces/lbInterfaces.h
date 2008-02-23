@@ -2720,7 +2720,7 @@ public:
 	/** \brief Let the GUI show the given parameters in a property panel.
 	 *
 	 */
-	virtual lbErrCodes LB_STDCALL showPropertyPanel(lb_I_Parameter* params) = 0;
+	virtual lbErrCodes LB_STDCALL showPropertyPanel(lb_I_Parameter* params, bool update = false) = 0;
 
 	/** \brief Register a handler for change events of parametes.
 	 *
