@@ -31,11 +31,15 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.128 $
+ * $Revision: 1.129 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.128 2008/02/18 20:02:51 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.129 2008/02/23 18:25:11 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.129  2008/02/23 18:25:11  lollisoft
+ * Added an optional boolean parameter that additionally
+ * triggers change events of the properties in parameter 1.
+ *
  * Revision 1.128  2008/02/18 20:02:51  lollisoft
  * Added function to get a directory from the user.
  *
@@ -2273,8 +2277,114 @@ lbErrCodes LB_STDCALL lb_MetaApplication::toggleEvent(char* name) {
 }
 /*...e*/
 
+void LB_STDCALL lb_MetaApplication::firePropertyChangeEvent(char* name, char* value) {
+	lbErrCodes err = ERR_NONE;
+	UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, Name)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, Value)
+	UAP_REQUEST(getModuleInstance(), lb_I_Integer, evId)
+	
+	int PropertyEvent;
+	
+	if (eman == NULL) {
+		REQUEST(getModuleInstance(), lb_I_EventManager, eman)
+	}
+	
+	eman->resolveEvent((char*) name, PropertyEvent);
+	
+	Name->setData("eventId");
+	evId->setData(PropertyEvent);
+	param->setUAPInteger(*&Name, *&evId);
+
+	Name->setData("value");
+	Value->setData((char*) value);
+	param->setUAPString(*&Name, *&Value);
+	
+	Name->setData("name");
+	Value->setData((char*) name);
+	param->setUAPString(*&Name, *&Value);
+	
+	UAP(lb_I_Unknown, uk)
+	QI(param, lb_I_Unknown, uk)
+		
+	UAP_REQUEST(getModuleInstance(), lb_I_String, result)
+	UAP(lb_I_Unknown, uk_result)
+	QI(result, lb_I_Unknown, uk_result)
+	
+	if (dispatcher == NULL) {
+		REQUEST(getModuleInstance(), lb_I_Dispatcher, dispatcher)
+		dispatcher->setEventManager(eman.getPtr());
+	}				
+	
+	dispatcher->dispatch(PropertyEvent, uk.getPtr(), &uk_result);
+}
+
+void LB_STDCALL lb_MetaApplication::updatePropertyGroup(lb_I_Container* properties, char* prefix) {
+	lbErrCodes err = ERR_NONE;
+	UAP_REQUEST(getModuleInstance(), lb_I_FileLocation, fl)
+	UAP_REQUEST(getModuleInstance(), lb_I_DirLocation, dl)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, s)
+	UAP_REQUEST(getModuleInstance(), lb_I_Integer, I)
+	UAP_REQUEST(getModuleInstance(), lb_I_Boolean, b)
+	
+	UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+	
+	
+	for (int i = 1; i <= properties->Count(); i++) {
+		UAP(lb_I_Unknown, uk)
+		UAP(lb_I_KeyBase, key)
+		
+		uk = properties->getElementAt(i);
+		key = properties->getKeyAt(i);
+		
+		bool found = false;
+		
+		if (prefix && prefix[0] != 0) 
+			*name = prefix;
+		else
+			*name = "";
+		
+		
+		*name += key->charrep();
+		
+		if (strcmp(uk->getClassName(), "lbString") == 0) {
+			s->setData(*&uk);
+			firePropertyChangeEvent(name->charrep(), s->charrep());
+		}
+		if (strcmp(uk->getClassName(), "lbDirLocation") == 0) {
+			dl->setData(*&uk);
+			firePropertyChangeEvent(name->charrep(), dl->charrep());
+		}
+		if (strcmp(uk->getClassName(), "lbFileLocation") == 0) {
+			fl->setData(*&uk);
+			firePropertyChangeEvent(name->charrep(), fl->charrep());
+		}
+		if (strcmp(uk->getClassName(), "lbInteger") == 0) {
+			I->setData(*&uk);
+			firePropertyChangeEvent(name->charrep(), I->charrep());
+		}
+		if (strcmp(uk->getClassName(), "lbBoolean") == 0) {
+			b->setData(*&uk);
+			firePropertyChangeEvent(name->charrep(), b->charrep());
+		}
+		if (strcmp(uk->getClassName(), "lbParameter") == 0) {
+			UAP(lb_I_Container, props)
+			UAP(lb_I_Parameter, param)
+			QI(uk, lb_I_Parameter, param)
+			
+			props = param->getParameterList();
+			
+			updatePropertyGroup(*&props, key->charrep());
+		}
+		
+		if (found == false) {
+			_LOG << "No handler for parameter of type " << uk->getClassName() << " found." LOG_ 
+		}
+	}
+}
+
 /*...slbErrCodes LB_STDCALL lb_MetaApplication\58\\58\showPropertyPanel\40\lb_I_Parameter\42\ params\41\:0:*/
-lbErrCodes LB_STDCALL lb_MetaApplication::showPropertyPanel(lb_I_Parameter* params) {
+lbErrCodes LB_STDCALL lb_MetaApplication::showPropertyPanel(lb_I_Parameter* params, bool update) {
 	lbErrCodes err = ERR_NONE;
 
 	UAP(lb_I_Unknown, uk)
@@ -2285,6 +2395,14 @@ lbErrCodes LB_STDCALL lb_MetaApplication::showPropertyPanel(lb_I_Parameter* para
 	QI(result, lb_I_Unknown, uk_result)
 
 	dispatcher->dispatch("ShowPropertyPanel", uk.getPtr(), &uk_result);
+
+	if (update) {
+		// Walk to the properties and fire the change event
+		UAP(lb_I_Container, props)
+		props = params->getParameterList();
+		
+		if (props != NULL) updatePropertyGroup(*&props, "");
+	}
 
 	return ERR_NONE;
 }

@@ -30,11 +30,15 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.54 $
+ * $Revision: 1.55 $
  * $Name:  $
- * $Id: lbMetaApplication.h,v 1.54 2008/02/18 20:02:52 lollisoft Exp $
+ * $Id: lbMetaApplication.h,v 1.55 2008/02/23 18:25:11 lollisoft Exp $
  *
  * $Log: lbMetaApplication.h,v $
+ * Revision 1.55  2008/02/23 18:25:11  lollisoft
+ * Added an optional boolean parameter that additionally
+ * triggers change events of the properties in parameter 1.
+ *
  * Revision 1.54  2008/02/18 20:02:52  lollisoft
  * Added function to get a directory from the user.
  *
@@ -365,7 +369,7 @@ public:
 	/** \brief Let the GUI show the given parameters in a property panel.
 	 *
 	 */
-	lbErrCodes LB_STDCALL showPropertyPanel(lb_I_Parameter* params);
+	lbErrCodes LB_STDCALL showPropertyPanel(lb_I_Parameter* params, bool update = false);
 	
 /*...e*/
 
@@ -404,6 +408,8 @@ public:
 	void					LB_STDCALL addPropertySet(lb_I_Parameter* properties, char* setname);
 	lb_I_Parameter*			LB_STDCALL getPropertySet(char* setname, bool copy = false);
 	bool					LB_STDCALL askForDirectory(lb_I_DirLocation* loc);
+	void					LB_STDCALL updatePropertyGroup(lb_I_Container* properties, char* prefix);
+	void					LB_STDCALL firePropertyChangeEvent(char* name, char* value);
 protected:
 	lb_I_GUI* gui;
 	
