@@ -1486,7 +1486,7 @@ lbErrCodes LB_STDCALL lbDynamicAppBoUMLImport::load(lb_I_InputStream* iStream) {
 			
 			sampleQuery = database->getQuery("lbDMF", 0);
 			
-			_LOG << "Create database..." LOG_
+			_LOG << "Create system database... (script is " << (const char*) result << ")" LOG_
 			sampleQuery->skipFKCollecting();
 			if (sampleQuery->query((char*) result) != ERR_NONE) {
 				metaapp->msgBox("Error", "Failed to apply SQL Script imported from UML definition (XMI)!");
