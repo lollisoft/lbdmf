@@ -5,7 +5,16 @@
 #include "../include/DatabaseErrorCodes.h"
 #include "../include/DatabaseLayerException.h"
 
+#ifdef __WATCOMC__
+extern "C" {
 #include <sqlitefk/src/sql.h>
+}
+#endif
+
+#ifndef __WATCOMC__
+#include <sqlitefk/src/sql.h>
+#endif
+
 
 #include <wx/tokenzr.h>
 
@@ -471,7 +480,7 @@ int SqliteDatabaseLayer::GetForeignKeys(const wxString& table) {
 		result += ";";
 		printf("Get foreign key list for %s.\n", result.c_str());
 		//result = result.Lower();
-		m_fklist = (void*) getForeignKeyList((char*) table.c_str(), result.c_str());
+		m_fklist = (void*) getForeignKeyList((char*) table.c_str(), (char*) result.c_str());
 		
 		if (m_fklist)	{
 			ListItem* item = list_head((List*) m_fklist);
