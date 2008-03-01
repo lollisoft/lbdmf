@@ -18,6 +18,11 @@
 #include <string.h>
 #endif
 
+#ifdef __WATCOMC__
+#define false FALSE
+#define true TRUE
+#endif
+
 typedef struct yy_buffer_state *YY_BUFFER_STATE; 
 
 int             yylex( void ); 
