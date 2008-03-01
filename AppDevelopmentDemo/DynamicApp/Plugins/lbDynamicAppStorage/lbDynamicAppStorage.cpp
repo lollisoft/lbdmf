@@ -1266,7 +1266,7 @@ lbErrCodes LB_STDCALL lbDynamicAppBoUMLImport::load(lb_I_InputStream* iStream) {
 		if (strcmp(XSLFileApplicationDatabase->charrep(), "") == 0) {
 			input = metaapp->askOpenFileReadStream("xsl");
 			UAP_REQUEST(getModuleInstance(), lb_I_Parameter, params)
-			XSLFileApplicationDatabase->setData(input->getFileName());
+			XSLFileApplicationDatabase->setData((char*) input->getFileName());
 			
 			UAP_REQUEST(manager.getPtr(), lb_I_Parameter, paramXSL)
 			UAP_REQUEST(manager.getPtr(), lb_I_String, parameterXSL)
@@ -1408,7 +1408,7 @@ lbErrCodes LB_STDCALL lbDynamicAppBoUMLImport::load(lb_I_InputStream* iStream) {
 		if (strcmp(XSLFileSystemDatabase->charrep(), "") == 0) {
 			input = metaapp->askOpenFileReadStream("xsl");
 			UAP_REQUEST(getModuleInstance(), lb_I_Parameter, params)
-			XSLFileSystemDatabase->setData(input->getFileName());
+			XSLFileSystemDatabase->setData((char*) input->getFileName());
 			UAP_REQUEST(manager.getPtr(), lb_I_Parameter, paramXSL)
 			UAP_REQUEST(manager.getPtr(), lb_I_String, parameterXSL)
 			UAP_REQUEST(manager.getPtr(), lb_I_String, valueXSL)

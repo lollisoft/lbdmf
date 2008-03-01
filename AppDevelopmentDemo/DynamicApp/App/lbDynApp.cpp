@@ -721,7 +721,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::importUMLXMIDocIntoApplication(lb_I_
 	if (strcmp(XMIFileUMLProject->charrep(), "") == 0) {
 		UAP_REQUEST(getModuleInstance(), lb_I_Parameter, params)
 		importfile = metaapp->askOpenFileReadStream("xmi");
-		XMIFileUMLProject->setData(importfile->getFileName());
+		XMIFileUMLProject->setData((char*) importfile->getFileName());
 		UAP_REQUEST(manager.getPtr(), lb_I_Parameter, paramXSL)
 		UAP_REQUEST(manager.getPtr(), lb_I_String, parameterXSL)
 		UAP_REQUEST(manager.getPtr(), lb_I_String, valueXSL)
