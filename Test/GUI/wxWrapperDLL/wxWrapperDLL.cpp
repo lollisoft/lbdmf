@@ -1857,6 +1857,11 @@ void lb_wxFrame::populateInteger(wxPropertyGrid* pg, lb_I_Unknown* uk, lb_I_KeyB
 /*...svoid lb_wxFrame\58\\58\populateProperties\40\wxPropertyGrid\42\ pg\44\ lb_I_Container\42\ properties\44\ char\42\ category\41\:0:*/
 void lb_wxFrame::populateProperties(wxPropertyGrid* pg, lb_I_Container* properties, char* category) {
 	lbErrCodes err = ERR_NONE;
+	if (properties == NULL) {
+		_LOG << "Error: No properties given!" LOG_
+		return;
+	}
+	
 		for (int i = 1; i <= properties->Count(); i++) {
 			UAP(lb_I_Unknown, uk)
 			UAP(lb_I_KeyBase, key)
