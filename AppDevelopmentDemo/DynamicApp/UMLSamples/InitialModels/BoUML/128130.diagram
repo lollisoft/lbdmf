@@ -17,7 +17,7 @@ relationcanvas 128386 relation_ref 136322 // Name
   no_role_a no_role_b
   no_multiplicity_a no_multiplicity_b
 relationcanvas 128770 relation_ref 141570 // Stadt
-  from ref 128619 z 1999 label "Stadt" italic xyz 318 127 3000 stereotype "<<masterdetail_action>>" xyz 266 141 3000 to ref 128107
+  from ref 128619 z 1999 label "Stadt" italic xyz 318 127 1999 stereotype "<<masterdetail_action>>" xyz 266 141 3000 to ref 128107
   no_role_a no_role_b
   no_multiplicity_a no_multiplicity_b
 end

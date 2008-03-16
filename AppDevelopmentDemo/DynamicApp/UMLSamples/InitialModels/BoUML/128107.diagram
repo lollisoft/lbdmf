@@ -2,18 +2,22 @@ format 48
 
 classcanvas 128107 class_ref 130434 // Adresse
   draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
-  xyz 40 110 2000
+  xyz 41 25 2000
   end
 classcanvas 128235 class_ref 131586 // Kontakte
   draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
-  xyz 308 347 2004
+  xyz 479 339 2004
   end
 classcanvas 128491 class_ref 128107 // Konkurrenten
   draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
-  xyz 434 37 2000
+  xyz 443 24 2000
   end
-relationcanvas 128386 relation_ref 136706 // Name
-  from ref 128235 z 1999 label "Name" italic xyz 400 221 1999 stereotype "<<masterdetail_action>>" xyz 458 249 3000 to ref 128491
+relationcanvas 128514 relation_ref 143234 // Stadt
+  from ref 128107 z 1999 label "Stadt" italic xyz 289 58 3000 stereotype "<<masterdetail_action>>" xyz 237 72 3000 to ref 128491
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+relationcanvas 128642 relation_ref 136706 // Name
+  from ref 128235 z 1999 label "Name" italic xyz 512 214 3000 stereotype "<<masterdetail_action>>" xyz 462 228 3000 to ref 128491
   no_role_a no_role_b
   no_multiplicity_a no_multiplicity_b
 end

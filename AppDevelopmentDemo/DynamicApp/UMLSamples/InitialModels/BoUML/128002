@@ -1,6 +1,6 @@
 format 48
 "CRM" // CRM
-  revision 35
+  revision 36
   modified_by 2 "lothar"
   // class settings
   //class diagram settings
@@ -42,8 +42,18 @@ format 48
     //activity diagram settings
     package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
     show_infonote default drawing_language default
-    classdiagram 128107 "Konkurrenten"
+    classdiagram 130434 "Quickstart Step 1"
       draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
+      size A4
+    end
+
+    classdiagram 130562 "Quickstart Step 2 and 3"
+      draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
+      size A4
+    end
+
+    classdiagram 128107 "Konkurrenten"
+      draw_all_relations no hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
       size A4
     end
 
@@ -55,6 +65,93 @@ format 48
     classdiagram 128130 "Kunde-Kontakte-Adresse"
       draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
       size A4
+    end
+
+    class 130434 "Adresse"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      attribute 133634 "Strasse"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	idl_decl ""
+      end
+
+      attribute 133762 "Hausnummer"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	idl_decl ""
+      end
+
+      attribute 133890 "Stadt"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	idl_decl ""
+      end
+
+      attribute 134018 "Plz"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	idl_decl ""
+      end
+
+      classrelation 145026 // (Stadt)
+	relation 140162 o--- name "Stadt"
+	  stereotype "masterdetail_action"
+	  a role_name "" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 145026 // (Stadt)
+	  b role_name "" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 145154 // Stadt
+      end
+
+      classrelation 146818 // (Stadt)
+	relation 141570 o--- name "Stadt"
+	  stereotype "masterdetail_action"
+	  a role_name "" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 146818 // (Stadt)
+	  b role_name "" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 146946 // Stadt
+      end
+
+      classrelation 149122 // (Stadt)
+	relation 143234 o--- name "Stadt"
+	  stereotype "masterdetail_action"
+	  a role_name "" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 149122 // (Stadt)
+	  b role_name "" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 149250 // (Stadt)
+      end
     end
 
     class 128130 "Kunde"
@@ -90,7 +187,7 @@ ${inlines}
 	relation_ref 136322 // Name
       end
 
-      classrelation 146946 // (Stadt)
+      classrelation 146946 // Stadt
 	relation_ref 141570 // Stadt
       end
 
@@ -438,17 +535,17 @@ ${inlines}
 	
       end
 
-      classrelation 141442 // von (Angebotsnummer)
+      classrelation 141442 // (Angebotsnummer)
 	relation 137858 o--- name "Angebotsnummer"
 	  stereotype "masterdetail_action"
-	  a role_name "von" protected
+	  a role_name "" protected
 	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
 "
-	    classrelation_ref 141442 // von (Angebotsnummer)
-	  b role_name "hat" protected
+	    classrelation_ref 141442 // (Angebotsnummer)
+	  b role_name "" protected
 	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
 "
-	    classrelation_ref 141570 // hat (Angebotsnummer)
+	    classrelation_ref 141570 // (Angebotsnummer)
       end
 
       classrelation 142210 // <aggregation>
@@ -510,7 +607,7 @@ ${inlines}
 	idl_decl ""
       end
 
-      classrelation 141570 // hat (Angebotsnummer)
+      classrelation 141570 // (Angebotsnummer)
 	relation_ref 137858 // Angebotsnummer
       end
 
@@ -677,80 +774,6 @@ ${inlines}
       end
     end
 
-    class 130434 "Adresse"
-      visibility package 
-      cpp_decl "${comment}${template}class ${name}${inherit} {
-${members}};
-${inlines}
-"
-      java_decl ""
-      php_decl ""
-      idl_decl ""
-      explicit_switch_type ""
-      
-      attribute 133634 "Strasse"
-	protected explicit_type "string"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	idl_decl ""
-      end
-
-      attribute 133762 "Hausnummer"
-	protected explicit_type "string"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	idl_decl ""
-      end
-
-      attribute 133890 "Stadt"
-	protected explicit_type "string"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	idl_decl ""
-      end
-
-      attribute 134018 "Plz"
-	protected explicit_type "string"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	idl_decl ""
-      end
-
-      classrelation 145026 // (Stadt)
-	relation 140162 o--- name "Stadt"
-	  stereotype "masterdetail_action"
-	  a role_name "" protected
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
-"
-	    classrelation_ref 145026 // (Stadt)
-	  b role_name "" protected
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
-"
-	    classrelation_ref 145154 // Stadt
-      end
-
-      classrelation 146818 // (Stadt)
-	relation 141570 o--- name "Stadt"
-	  stereotype "masterdetail_action"
-	  a role_name "" protected
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
-"
-	    classrelation_ref 146818 // (Stadt)
-	  b role_name "" protected
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
-"
-	    classrelation_ref 146946 // (Stadt)
-      end
-    end
-
     class 131586 "Kontakte"
       visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
@@ -850,7 +873,6 @@ ${inlines}
 "
 	    classrelation_ref 140290 // (Name)
       end
-
     end
 
     class 128107 "Konkurrenten"
@@ -902,6 +924,10 @@ ${inlines}
 
       classrelation 140290 // (Name)
 	relation_ref 136706 // Name
+      end
+
+      classrelation 149250 // (Stadt)
+	relation_ref 143234 // Stadt
       end
     end
   end
