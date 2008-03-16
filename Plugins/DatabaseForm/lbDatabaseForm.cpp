@@ -276,6 +276,7 @@ void LB_STDCALL lbDatabasePanel::create(int parentId) {
 #define DISABLE_EOF() \
 	if (sampleQuery->dataFetched()) activateActionButtons(); \
 	else deactivateActionButtons(); \
+	refreshButton->Enable(); \
 	if (allNaviDisabled == false) { \
 		nextButton->Disable(); \
 		lastButton->Disable(); \
@@ -289,6 +290,7 @@ void LB_STDCALL lbDatabasePanel::create(int parentId) {
 #define DISABLE_BOF() \
 	if (sampleQuery->dataFetched()) activateActionButtons(); \
 	else deactivateActionButtons(); \
+	refreshButton->Enable(); \
 	if (allNaviDisabled == false) { \
 		prevButton->Disable(); \
 		firstButton->Disable(); \
@@ -300,8 +302,10 @@ void LB_STDCALL lbDatabasePanel::create(int parentId) {
 
 
 #define DISABLE_FOR_ONE_DATA() \
-	prevButton->Disable(); \
-	firstButton->Disable(); \
+	refreshButton->Enable(); \
+	deleteButton->Enable(); \
+	prevButton->Enable(); \
+	firstButton->Enable(); \
 	lastButton->Disable(); \
 	nextButton->Disable();
 
@@ -310,6 +314,7 @@ void LB_STDCALL lbDatabasePanel::create(int parentId) {
 	deactivateActionButtons(); \
 	DISABLE_FOR_ONE_DATA() \
 	deleteButton->Disable(); \
+	refreshButton->Disable(); \
 	allNaviDisabled = true;
 
 /*...e*/
@@ -3396,6 +3401,10 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBRefresh(lb_I_Unknown* uk) {
 	_LOG << "lbErrCodes LB_STDCALL lbDatabasePanel::lbDBRefresh(lb_I_Unknown* uk) called." LOG_
 	sampleQuery->reopen();
 	
+	if (database == NULL) {
+		REQUEST(getModuleInstance(), lb_I_Database, database)
+		database->init();
+	}
 	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
 	
 	if (err == ERR_DB_NODATA) {
@@ -3641,9 +3650,9 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBRefresh(lb_I_Unknown* uk) {
 				
 				UAP(lb_I_Query, ReplacementColumnQuery)
 				
-				database->connect(DBName->charrep(), DBName->charrep(), DBUser->charrep(), DBPass->charrep());
+				database->connect(_DBName->charrep(), _DBName->charrep(), _DBUser->charrep(), _DBPass->charrep());
 				
-				ReplacementColumnQuery = database->getQuery(DBName->charrep(), 0);
+				ReplacementColumnQuery = database->getQuery(_DBName->charrep(), 0);
 				
 				ReplacementColumnQuery->query(buffer);
 				
