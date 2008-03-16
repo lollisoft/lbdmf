@@ -52,6 +52,14 @@
       <xsl:attribute name="id">
         <xsl:call-template name="XMI1_2_getID"/>
       </xsl:attribute>
+
+      <xsl:for-each select="UML:Namespace.ownedElement/UML:Class">
+        <xsl:variable name="classID" select="@xmi.id"/>
+        <xsl:call-template name="dropAssociations">
+          <xsl:with-param name="classID" select="$classID"/>
+        </xsl:call-template>
+      </xsl:for-each>
+
       <xsl:apply-templates select="UML:Namespace.ownedElement/UML:Class"/>
     </xsl:element>
       <xsl:for-each select="UML:Namespace.ownedElement/UML:Class">
@@ -64,17 +72,29 @@
 
   <xsl:template match="UML:Package|UML:Subsystem">
     <xsl:variable name="packageID" select="@xmi.id"/>
-    <xsl:variable name="stereoTypeID" select="UML:ModelElement.stereotype//@xmi.idref"/>
+<!--
+    <xsl:variable name="stereoTypeID" select="UML:ModelElement.stereotype/@xmi.idref"/>
+
     <xsl:variable name="stereoTypeName">
       <xsl:value-of select="//UML:Stereotype[@xmi.id = $stereoTypeID]/@name"/>
     </xsl:variable>
-    <xsl:variable name="name" select="concat(@name, UML:ModelElement.name)"/>
+-->
+    <xsl:variable name="packagename" select="concat(@name, UML:ModelElement.name)"/>
     <xsl:message>
--- Package: <xsl:value-of select="$name"/>
+-- New version
+-- Package: <xsl:value-of select="@name"/>
     </xsl:message>
+
+      <xsl:for-each select="UML:Namespace.ownedElement/UML:Class">
+        <xsl:variable name="classID" select="@xmi.id"/>
+        <xsl:call-template name="dropAssociations">
+          <xsl:with-param name="classID" select="$classID"/>
+        </xsl:call-template>
+      </xsl:for-each>
+
     <xsl:element name="package">
       <xsl:attribute name="name">
-        <xsl:value-of select="$name"/>
+        <xsl:value-of select="@name"/>
       </xsl:attribute>
       <xsl:apply-templates select="UML:Namespace.ownedElement/UML:Class"/>
     </xsl:element>
@@ -91,6 +111,7 @@
     <xsl:variable name="classID" select="@xmi.id"/>
     <xsl:element name="class">
 -- Class is <xsl:value-of select="@name"/>
+select dropTable('<xsl:value-of select="@name"/>');
 
 CREATE TABLE "<xsl:value-of select="@name"/>" (
 "ID" SERIAL,
@@ -124,6 +145,14 @@ PRIMARY KEY ("ID")<xsl:for-each select="./UML:Classifier.feature/UML:Attribute">
     </xsl:call-template>
   </xsl:template>
 
+  <xsl:template name="dropAssociations">
+    <!-- ****************** CLASS ********************* -->
+    <xsl:param name="classID"/>
+    <xsl:call-template name="drop_associationsForClass_12">
+      <xsl:with-param name="id" select="$classID"/>
+    </xsl:call-template>
+  </xsl:template>
+
   <xsl:template name="associationsForClass_12">
     <xsl:param name="id"/>
     <!-- UML1.4: -->
@@ -138,12 +167,33 @@ PRIMARY KEY ("ID")<xsl:for-each select="./UML:Classifier.feature/UML:Attribute">
       <xsl:variable name="otherEndId" select="$otherEnd/@type"/>
       <xsl:variable name="otherClassID" select="../../../UML:AssociationEnd[@type=$otherEndId]/UML:AssociationEnd.participant/@xmi.idref"/>
       <xsl:variable name="otherClassName" select="//UML:Class[@xmi.id=$otherEndId]/@name"/>
-<xsl:if test="../../../UML:AssociationEnd[@type=$otherEndId]/@aggregation='aggregate'">
--- Association <xsl:value-of select="$thisClassName"/> -&gt; <xsl:value-of select="$otherClassName"/>
+<xsl:if test="../../../UML:AssociationEnd[@type=$otherEndId]/@aggregation='none'">
+-- Association <xsl:value-of select="$otherClassName"/> -&gt; <xsl:value-of select="$thisClassName"/>
 
 ALTER TABLE "<xsl:value-of select="$otherClassName"/>" ADD COLUMN "<xsl:value-of select="$thisClassName"/>" INT;
-ALTER TABLE "<xsl:value-of select="$otherClassName"/>" ADD CONSTRAINT fk_<xsl:value-of select="$otherClassName"/>_<xsl:value-of select="$thisClassName"/>_ID FOREIGN KEY ( "<xsl:value-of select="$thisClassName"/>" )
+ALTER TABLE "<xsl:value-of select="$otherClassName"/>" ADD CONSTRAINT "fk_<xsl:value-of select="$otherClassName"/>_<xsl:value-of select="$thisClassName"/>_ID" FOREIGN KEY ( "<xsl:value-of select="$thisClassName"/>" )
    REFERENCES "<xsl:value-of select="$thisClassName"/>" ( "ID" );
+</xsl:if>
+    </xsl:for-each>
+  </xsl:template>
+
+  <xsl:template name="drop_associationsForClass_12">
+    <xsl:param name="id"/>
+    <!-- UML1.4: -->
+    <xsl:for-each select="//UML:AssociationEnd/UML:AssociationEnd.participant/*[@xmi.idref = $id]">
+      <!-- Choose only association ends where navigable is true. -->
+      <xsl:variable name="thisEnd" select="../.."/>
+      <xsl:variable name="thisEndId" select="$thisEnd/@xmi.id"/>
+      <xsl:variable name="thisEndType" select="$thisEnd/@type"/>
+      <xsl:variable name="thisClassName" select="//UML:Class[@xmi.id=$thisEndType]/@name"/>
+      <xsl:variable name="otherEnd" select="../../../UML:AssociationEnd[@type != $thisEndType]"/>
+      <xsl:variable name="otherEndType" select="../../../UML:AssociationEnd[@type != $thisEndType]/@type"/>
+      <xsl:variable name="otherEndId" select="$otherEnd/@type"/>
+      <xsl:variable name="otherClassID" select="../../../UML:AssociationEnd[@type=$otherEndId]/UML:AssociationEnd.participant/@xmi.idref"/>
+      <xsl:variable name="otherClassName" select="//UML:Class[@xmi.id=$otherEndId]/@name"/>
+<xsl:if test="../../../UML:AssociationEnd[@type=$otherEndId]/@aggregation='none'">
+-- Association <xsl:value-of select="$thisClassName"/> -&gt; <xsl:value-of select="$otherClassName"/>
+select dropConstraint('<xsl:value-of select="$otherClassName"/>', 'fk_<xsl:value-of select="$otherClassName"/>_<xsl:value-of select="$thisClassName"/>_ID');
 </xsl:if>
     </xsl:for-each>
   </xsl:template>

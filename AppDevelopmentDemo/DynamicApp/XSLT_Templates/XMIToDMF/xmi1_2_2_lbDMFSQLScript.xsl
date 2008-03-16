@@ -46,6 +46,8 @@
 
   <xsl:template name="XMI1_2_Model">
     <xsl:variable name="modelID" select="@xmi.id"/>
+    <xsl:variable name="packagename" select="concat(@name, UML:ModelElement.name)"/>
+	
     <xsl:element name="package">
       <xsl:attribute name="name">
         <xsl:value-of select="concat(@name, UML:ModelElement.name)"/>
@@ -56,22 +58,19 @@
       <xsl:apply-templates select="UML:Namespace.ownedElement/UML:Class"/>
     </xsl:element>
       <xsl:for-each select="UML:Namespace.ownedElement/UML:Class">
+-- Execute model genAssociations for <xsl:value-of select="@name"/>
         <xsl:variable name="classID" select="@xmi.id"/>
         <xsl:call-template name="genAssociations">
           <xsl:with-param name="classID" select="$classID"/>
+          <xsl:with-param name="package" select="$packagename"/>
         </xsl:call-template>
       </xsl:for-each>
   </xsl:template>
 
   <xsl:template match="UML:Package|UML:Subsystem">
     <xsl:variable name="packageID" select="@xmi.id"/>
-    <xsl:variable name="stereoTypeID" select="UML:ModelElement.stereotype//@xmi.idref"/>
-    <xsl:variable name="stereoTypeName">
-      <xsl:value-of select="//UML:Stereotype[@xmi.id = $stereoTypeID]/@name"/>
-    </xsl:variable>
     <xsl:variable name="name" select="concat(@name, UML:ModelElement.name)"/>
-    <xsl:message>
-
+<xsl:message>
 SET SESSION AUTHORIZATION 'postgres';
 
 DROP FUNCTION GetOrCreateApplication(varchar);
@@ -82,8 +81,9 @@ CREATE OR REPLACE FUNCTION plpgsql_call_handler()
 '$libdir/plpgsql', 'plpgsql_call_handler'
   LANGUAGE 'c' VOLATILE;
 
-DROP LANGUAGE plpgsql;
-CREATE LANGUAGE plpgsql HANDLER plpgsql_call_handler;
+-- May be a problem
+--DROP LANGUAGE plpgsql;
+--CREATE LANGUAGE plpgsql HANDLER plpgsql_call_handler;
 
 
 CREATE OR REPLACE FUNCTION GetOrCreateApplication(varchar)
@@ -123,28 +123,31 @@ begin
 end;
 '
   LANGUAGE 'plpgsql' VOLATILE;
-
+</xsl:message>
 	
 	
--- Package: <xsl:value-of select="$name"/>
+-- Package: <xsl:value-of select="@name"/>
 
 
-select GetOrCreateApplication('<xsl:value-of select="$name"/>');
-
-    </xsl:message>
+select GetOrCreateApplication('<xsl:value-of select="@name"/>');
     <xsl:element name="package">
       <xsl:attribute name="name">
-        <xsl:value-of select="$name"/>
+        <xsl:value-of select="@name"/>
       </xsl:attribute>
+    <xsl:variable name="packagename" select="@name"/>
+-- Apply class templates for package <xsl:value-of select="@name"/>	  
       <xsl:apply-templates select="UML:Namespace.ownedElement/UML:Class"/>
-    </xsl:element>
+
       <xsl:for-each select="UML:Namespace.ownedElement/UML:Class">
         <xsl:variable name="classID" select="@xmi.id"/>
+-- Execute in package genAssociations for <xsl:value-of select="$packagename"/>
         <xsl:call-template name="genAssociations">
           <xsl:with-param name="classID" select="$classID"/>
-          <xsl:with-param name="package" select="$name"/>
+          <xsl:with-param name="package" select="$packagename"/>
         </xsl:call-template>
       </xsl:for-each>
+
+    </xsl:element>
   </xsl:template>
 
   <xsl:template match="UML:Class">
@@ -215,9 +218,11 @@ insert into anwendungen_formulare (anwendungid, formularid) values(GetOrCreateAp
   </xsl:template>
 
   <xsl:template name="genAssociations">
-    <!-- ****************** CLASS ********************* -->
     <xsl:param name="classID"/>
     <xsl:param name="package"/>
+
+-- 	genAssociations called.
+
     <xsl:call-template name="associationsForClass_12">
       <xsl:with-param name="id" select="$classID"/>
       <xsl:with-param name="package" select="$package"/>
@@ -238,8 +243,8 @@ insert into anwendungen_formulare (anwendungid, formularid) values(GetOrCreateAp
       <xsl:variable name="otherEndType" select="../../../UML:AssociationEnd[@type != $thisEndType]/@type"/>
       <xsl:variable name="otherEndId" select="$otherEnd/@type"/>
       <xsl:variable name="otherClassID" select="../../../UML:AssociationEnd[@type=$otherEndId]/UML:AssociationEnd.participant/@xmi.idref"/>
-      <xsl:variable name="otherClassName" select="//UML:Class[@xmi.id=$otherEndId]/@name"/><xsl:if test="../../../UML:AssociationEnd[@type=$otherEndId]/@aggregation='none'">
-<xsl:if test="../../../UML:AssociationEnd/UML:ModelElement.stereotype/UML:Stereotype/@name='masterdetail_action'">, "<xsl:value-of select="$otherClassName"/>" </xsl:if>
+      <xsl:variable name="otherClassName" select="//UML:Class[@xmi.id=$otherEndId]/@name"/><xsl:if test="../../../UML:AssociationEnd[@type=$otherEndId]/@aggregation='aggregate'">
+<!--<xsl:if test="../../../UML:AssociationEnd/UML:ModelElement.stereotype/UML:Stereotype/@name='masterdetail_action'">-->, "<xsl:value-of select="$otherClassName"/>" <!--</xsl:if>-->
 </xsl:if>
 </xsl:for-each>
   </xsl:template>
@@ -248,6 +253,7 @@ insert into anwendungen_formulare (anwendungid, formularid) values(GetOrCreateAp
     <xsl:param name="id"/>
     <xsl:param name="package"/>    
     <!-- UML1.4: -->
+-- associationsForClass_12 called.
     <xsl:for-each select="//UML:AssociationEnd/UML:AssociationEnd.participant/*[@xmi.idref = $id]">
       <!-- Choose only association ends where navigable is true. -->
       <xsl:variable name="thisEnd" select="../.."/>
@@ -259,7 +265,18 @@ insert into anwendungen_formulare (anwendungid, formularid) values(GetOrCreateAp
       <xsl:variable name="otherEndId" select="$otherEnd/@type"/>
       <xsl:variable name="otherClassID" select="../../../UML:AssociationEnd[@type=$otherEndId]/UML:AssociationEnd.participant/@xmi.idref"/>
       <xsl:variable name="otherClassName" select="//UML:Class[@xmi.id=$otherEndId]/@name"/>
+
+-- Have an association <xsl:value-of select="$thisClassName"/> -&gt; <xsl:value-of select="$otherClassName"/>
+	  
 <xsl:if test="../../../UML:AssociationEnd[@type=$otherEndId]/@aggregation='aggregate'">
+<xsl:variable name="assocVisibleName" select="substring-after(substring-before(../../../../@name, ')'), '(')"/>
+-- Visible name is <xsl:value-of select="$assocVisibleName"/>
+<xsl:if test="$assocVisibleName!=''">
+insert into foreignkey_visibledata_mapping (fkname, fktable, pkname, pktable) values ('<xsl:value-of select="$otherClassName"/>', '<xsl:value-of select="$thisClassName"/>', '<xsl:value-of select="$assocVisibleName"/>', '<xsl:value-of select="$otherClassName"/>');
+</xsl:if>
+</xsl:if>
+
+<xsl:if test="../../../UML:AssociationEnd[@type=$otherEndId]/@aggregation='none'">
 <xsl:if test="../../../UML:AssociationEnd/UML:ModelElement.stereotype/UML:Stereotype/@name='masterdetail_action'">
 -- Association <xsl:value-of select="$thisClassName"/> -&gt; <xsl:value-of select="$otherClassName"/>
 <xsl:variable name="assocname" select="../../../../@name"/>
